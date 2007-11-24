@@ -1,0 +1,405 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F50AF90E0885FDA400F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF90D0885FDA400F261B1 /* os_defs.h */; };
+		F53502210B2A85B60000CC3D /* model_light_spot.c in Sources */ = {isa = PBXBuildFile; fileRef = F53502200B2A85B60000CC3D /* model_light_spot.c */; };
+		F55ACE5B097C830900F4AE50 /* mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = F55ACE5A097C830900F4AE50 /* mesh.c */; };
+		F55ACEE4097D724C00F4AE50 /* bone.c in Sources */ = {isa = PBXBuildFile; fileRef = F55ACEE3097D724C00F4AE50 /* bone.c */; };
+		F55ACF3F097D805A00F4AE50 /* pose.c in Sources */ = {isa = PBXBuildFile; fileRef = F55ACF3E097D805A00F4AE50 /* pose.c */; };
+		F55ACF41097D805F00F4AE50 /* animation.c in Sources */ = {isa = PBXBuildFile; fileRef = F55ACF40097D805F00F4AE50 /* animation.c */; };
+		F56B61E0080B6F4300E9D08B /* modelprivate.h in Headers */ = {isa = PBXBuildFile; fileRef = F56B61DF080B6F4300E9D08B /* modelprivate.h */; };
+		F56E4BB80921B42700BDE927 /* file_model_shader.c in Sources */ = {isa = PBXBuildFile; fileRef = F56E4BB70921B42700BDE927 /* file_model_shader.c */; };
+		F5934A48099E642F0063E081 /* PNG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5934A47099E642F0063E081 /* PNG.framework */; };
+		F594130E0978BA2A00223F2A /* vertex_masks.c in Sources */ = {isa = PBXBuildFile; fileRef = F594130D0978BA2A00223F2A /* vertex_masks.c */; };
+		F59413210978BC6600223F2A /* draw_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = F59413200978BC6600223F2A /* draw_setup.c */; };
+		F594132B0978BCF500223F2A /* size.c in Sources */ = {isa = PBXBuildFile; fileRef = F594132A0978BCF500223F2A /* size.c */; };
+		F594136C0978C18E00223F2A /* vertex_transform.c in Sources */ = {isa = PBXBuildFile; fileRef = F594136B0978C18E00223F2A /* vertex_transform.c */; };
+		F594147C0979776300223F2A /* draw_normals.c in Sources */ = {isa = PBXBuildFile; fileRef = F594147B0979776300223F2A /* draw_normals.c */; };
+		F5941502097A002C00223F2A /* file_model_mesh_v1.c in Sources */ = {isa = PBXBuildFile; fileRef = F5941501097A002C00223F2A /* file_model_mesh_v1.c */; };
+		F5941504097A003000223F2A /* file_model_mesh_v2.c in Sources */ = {isa = PBXBuildFile; fileRef = F5941503097A003000223F2A /* file_model_mesh_v2.c */; };
+		F5A31C2D0C5EDC52002470A9 /* model_transform.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A31C2C0C5EDC52002470A9 /* model_transform.c */; };
+		F5AD54000BBE1E11001C7C04 /* libBaseUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD53FF0BBE1E11001C7C04 /* libBaseUtility.dylib */; };
+		F5AD54040BBE1E46001C7C04 /* baseutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD54030BBE1E46001C7C04 /* baseutility.h */; };
+		F5AD540A0BBE1E94001C7C04 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD54090BBE1E94001C7C04 /* OpenGL.framework */; };
+		F5CEE227097DF7EA00B5F1C2 /* hit_box.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CEE226097DF7EA00B5F1C2 /* hit_box.c */; };
+		F5DB0B900856705A005A7CB7 /* libModelUtility.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5F494F8067BF85000E809E7 /* libModelUtility.dylib */; };
+		F5F494F9067BF90600E809E7 /* dim3modelutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5127DF10513A79A009F12F0 /* dim3modelutility.h */; };
+		F5F494FE067BF90800E809E7 /* modelutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5CA4EF305100FB60055C8B8 /* modelutility.h */; };
+		F5F494FF067BF90900E809E7 /* file_model_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = F56D96E80502F83C00143299 /* file_model_mesh.c */; };
+		F5F49500067BF90A00E809E7 /* file_model_pose.c in Sources */ = {isa = PBXBuildFile; fileRef = F56D96E90502F83C00143299 /* file_model_pose.c */; };
+		F5F49501067BF90A00E809E7 /* file_model_animate.c in Sources */ = {isa = PBXBuildFile; fileRef = F56D96E60502F83C00143299 /* file_model_animate.c */; };
+		F5F49502067BF90B00E809E7 /* file_model_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = F56D96E70502F83C00143299 /* file_model_texture.c */; };
+		F5F49503067BF90B00E809E7 /* model_frames.c in Sources */ = {isa = PBXBuildFile; fileRef = F5E514E00542395B006E0418 /* model_frames.c */; };
+		F5F49504067BF90C00E809E7 /* calculate.c in Sources */ = {isa = PBXBuildFile; fileRef = F50BF8A905717CFE000499EB /* calculate.c */; };
+		F5F49505067BF90C00E809E7 /* draw_bones.c in Sources */ = {isa = PBXBuildFile; fileRef = F51B2619055E0251000B696C /* draw_bones.c */; };
+		F5F49506067BF90D00E809E7 /* draw_vertexes.c in Sources */ = {isa = PBXBuildFile; fileRef = F51B261A055E0251000B696C /* draw_vertexes.c */; };
+		F5F49507067BF90D00E809E7 /* normals.c in Sources */ = {isa = PBXBuildFile; fileRef = F50BF8AA05717CFE000499EB /* normals.c */; };
+		F5F49508067BF90E00E809E7 /* positions.c in Sources */ = {isa = PBXBuildFile; fileRef = F56C53710572F5C400254DBD /* positions.c */; };
+		F5F49509067BF90F00E809E7 /* lookup.c in Sources */ = {isa = PBXBuildFile; fileRef = F5EBD379053A13C30076219C /* lookup.c */; };
+		F5F4950A067BF91000E809E7 /* model_main.c in Sources */ = {isa = PBXBuildFile; fileRef = F56D96EA0502F83C00143299 /* model_main.c */; };
+		F5F49515067BF9E700E809E7 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F49514067BF9E700E809E7 /* Carbon.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F5DB0B840856703F005A7CB7 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(SRCROOT)/../dim3Common/Libraries/";
+			dstSubfolderSpec = 0;
+			files = (
+				F5DB0B900856705A005A7CB7 /* libModelUtility.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		F50AF90D0885FDA400F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
+		F50BF8A905717CFE000499EB /* calculate.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = calculate.c; path = Sources/calculate.c; sourceTree = "<group>"; };
+		F50BF8AA05717CFE000499EB /* normals.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = normals.c; path = Sources/normals.c; sourceTree = "<group>"; };
+		F5127DF10513A79A009F12F0 /* dim3modelutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dim3modelutility.h; path = Headers/dim3modelutility.h; sourceTree = "<group>"; };
+		F51B2619055E0251000B696C /* draw_bones.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_bones.c; path = Sources/draw_bones.c; sourceTree = "<group>"; };
+		F51B261A055E0251000B696C /* draw_vertexes.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_vertexes.c; path = Sources/draw_vertexes.c; sourceTree = "<group>"; };
+		F53502200B2A85B60000CC3D /* model_light_spot.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = model_light_spot.c; path = Sources/model_light_spot.c; sourceTree = "<group>"; };
+		F55A4CC705995CB40006C01E /* dim3modelutility.exp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.exports; name = dim3modelutility.exp; path = Exports/dim3modelutility.exp; sourceTree = "<group>"; };
+		F55ACE5A097C830900F4AE50 /* mesh.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = mesh.c; path = Sources/mesh.c; sourceTree = "<group>"; };
+		F55ACEE3097D724C00F4AE50 /* bone.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = bone.c; path = Sources/bone.c; sourceTree = "<group>"; };
+		F55ACF3E097D805A00F4AE50 /* pose.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pose.c; path = Sources/pose.c; sourceTree = "<group>"; };
+		F55ACF40097D805F00F4AE50 /* animation.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = animation.c; path = Sources/animation.c; sourceTree = "<group>"; };
+		F56B61DF080B6F4300E9D08B /* modelprivate.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = modelprivate.h; path = Headers/modelprivate.h; sourceTree = "<group>"; };
+		F56C53710572F5C400254DBD /* positions.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = positions.c; path = Sources/positions.c; sourceTree = "<group>"; };
+		F56D96E60502F83C00143299 /* file_model_animate.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_model_animate.c; path = Sources/file_model_animate.c; sourceTree = "<group>"; };
+		F56D96E70502F83C00143299 /* file_model_texture.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_model_texture.c; path = Sources/file_model_texture.c; sourceTree = "<group>"; };
+		F56D96E80502F83C00143299 /* file_model_mesh.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_model_mesh.c; path = Sources/file_model_mesh.c; sourceTree = "<group>"; };
+		F56D96E90502F83C00143299 /* file_model_pose.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_model_pose.c; path = Sources/file_model_pose.c; sourceTree = "<group>"; };
+		F56D96EA0502F83C00143299 /* model_main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = model_main.c; path = Sources/model_main.c; sourceTree = "<group>"; };
+		F56E4BB70921B42700BDE927 /* file_model_shader.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_model_shader.c; path = Sources/file_model_shader.c; sourceTree = "<group>"; };
+		F5934A47099E642F0063E081 /* PNG.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PNG.framework; path = ../dim3Common/Frameworks/PNG.framework; sourceTree = SOURCE_ROOT; };
+		F594130D0978BA2A00223F2A /* vertex_masks.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = vertex_masks.c; path = Sources/vertex_masks.c; sourceTree = "<group>"; };
+		F59413200978BC6600223F2A /* draw_setup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_setup.c; path = Sources/draw_setup.c; sourceTree = "<group>"; };
+		F594132A0978BCF500223F2A /* size.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = size.c; path = Sources/size.c; sourceTree = "<group>"; };
+		F594136B0978C18E00223F2A /* vertex_transform.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = vertex_transform.c; path = Sources/vertex_transform.c; sourceTree = "<group>"; };
+		F594147B0979776300223F2A /* draw_normals.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_normals.c; path = Sources/draw_normals.c; sourceTree = "<group>"; };
+		F5941501097A002C00223F2A /* file_model_mesh_v1.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_model_mesh_v1.c; path = Sources/file_model_mesh_v1.c; sourceTree = "<group>"; };
+		F5941503097A003000223F2A /* file_model_mesh_v2.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_model_mesh_v2.c; path = Sources/file_model_mesh_v2.c; sourceTree = "<group>"; };
+		F5A31C2C0C5EDC52002470A9 /* model_transform.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = model_transform.c; path = Sources/model_transform.c; sourceTree = "<group>"; };
+		F5AD53FF0BBE1E11001C7C04 /* libBaseUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBaseUtility.dylib; path = ../dim3Common/Libraries/libBaseUtility.dylib; sourceTree = SOURCE_ROOT; };
+		F5AD54030BBE1E46001C7C04 /* baseutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = baseutility.h; path = ../dim3Common/Headers/baseutility.h; sourceTree = SOURCE_ROOT; };
+		F5AD54090BBE1E94001C7C04 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		F5CA4EF305100FB60055C8B8 /* modelutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = modelutility.h; path = ../dim3Common/Headers/modelutility.h; sourceTree = SOURCE_ROOT; };
+		F5CEE226097DF7EA00B5F1C2 /* hit_box.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = hit_box.c; path = Sources/hit_box.c; sourceTree = "<group>"; };
+		F5E514E00542395B006E0418 /* model_frames.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = model_frames.c; path = Sources/model_frames.c; sourceTree = "<group>"; };
+		F5EBD379053A13C30076219C /* lookup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lookup.c; path = Sources/lookup.c; sourceTree = "<group>"; };
+		F5F494F8067BF85000E809E7 /* libModelUtility.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libModelUtility.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		F5F49514067BF9E700E809E7 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F5F4950C067BF93700E809E7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F5F49515067BF9E700E809E7 /* Carbon.framework in Frameworks */,
+				F5934A48099E642F0063E081 /* PNG.framework in Frameworks */,
+				F5AD54000BBE1E11001C7C04 /* libBaseUtility.dylib in Frameworks */,
+				F5AD540A0BBE1E94001C7C04 /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F51B260E055E0217000B696C /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				F5941501097A002C00223F2A /* file_model_mesh_v1.c */,
+				F5941503097A003000223F2A /* file_model_mesh_v2.c */,
+				F56D96E80502F83C00143299 /* file_model_mesh.c */,
+				F56D96E90502F83C00143299 /* file_model_pose.c */,
+				F56D96E60502F83C00143299 /* file_model_animate.c */,
+				F56D96E70502F83C00143299 /* file_model_texture.c */,
+				F56E4BB70921B42700BDE927 /* file_model_shader.c */,
+			);
+			name = Files;
+			sourceTree = "<group>";
+		};
+		F51B2611055E021D000B696C /* Draw */ = {
+			isa = PBXGroup;
+			children = (
+				F5E514E00542395B006E0418 /* model_frames.c */,
+				F53502200B2A85B60000CC3D /* model_light_spot.c */,
+				F59413200978BC6600223F2A /* draw_setup.c */,
+				F51B2619055E0251000B696C /* draw_bones.c */,
+				F51B261A055E0251000B696C /* draw_vertexes.c */,
+				F594147B0979776300223F2A /* draw_normals.c */,
+				F56C53710572F5C400254DBD /* positions.c */,
+			);
+			name = Draw;
+			sourceTree = "<group>";
+		};
+		F51B2614055E0226000B696C /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				F5EBD379053A13C30076219C /* lookup.c */,
+				F56D96EA0502F83C00143299 /* model_main.c */,
+			);
+			name = Main;
+			sourceTree = "<group>";
+		};
+		F562691D04FEBC1C00EDBBA9 = {
+			isa = PBXGroup;
+			children = (
+				F562692204FEBC2C00EDBBA9 /* Headers */,
+				F562692304FEBC3200EDBBA9 /* Exports */,
+				F562692404FEBC3900EDBBA9 /* Sources */,
+				F5F4950B067BF92900E809E7 /* Libraries */,
+				F5F49513067BF9CC00E809E7 /* Frameworks */,
+				F562692B04FEBC6000EDBBA9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F562692204FEBC2C00EDBBA9 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				F5127DF10513A79A009F12F0 /* dim3modelutility.h */,
+				F50AF90D0885FDA400F261B1 /* os_defs.h */,
+				F5AD54030BBE1E46001C7C04 /* baseutility.h */,
+				F5CA4EF305100FB60055C8B8 /* modelutility.h */,
+				F56B61DF080B6F4300E9D08B /* modelprivate.h */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
+		F562692304FEBC3200EDBBA9 /* Exports */ = {
+			isa = PBXGroup;
+			children = (
+				F55A4CC705995CB40006C01E /* dim3modelutility.exp */,
+			);
+			name = Exports;
+			sourceTree = "<group>";
+		};
+		F562692404FEBC3900EDBBA9 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				F51B260E055E0217000B696C /* Files */,
+				F51B2611055E021D000B696C /* Draw */,
+				F594131F0978BC4000223F2A /* Data */,
+				F51B2614055E0226000B696C /* Main */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		F562692B04FEBC6000EDBBA9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F5F494F8067BF85000E809E7 /* libModelUtility.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F594131F0978BC4000223F2A /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				F594132A0978BCF500223F2A /* size.c */,
+				F50BF8A905717CFE000499EB /* calculate.c */,
+				F55ACE5A097C830900F4AE50 /* mesh.c */,
+				F55ACEE3097D724C00F4AE50 /* bone.c */,
+				F55ACF3E097D805A00F4AE50 /* pose.c */,
+				F55ACF40097D805F00F4AE50 /* animation.c */,
+				F5CEE226097DF7EA00B5F1C2 /* hit_box.c */,
+				F50BF8AA05717CFE000499EB /* normals.c */,
+				F5A31C2C0C5EDC52002470A9 /* model_transform.c */,
+				F594136B0978C18E00223F2A /* vertex_transform.c */,
+				F594130D0978BA2A00223F2A /* vertex_masks.c */,
+			);
+			name = Data;
+			sourceTree = "<group>";
+		};
+		F5F4950B067BF92900E809E7 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				F5AD53FF0BBE1E11001C7C04 /* libBaseUtility.dylib */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		F5F49513067BF9CC00E809E7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F5F49514067BF9E700E809E7 /* Carbon.framework */,
+				F5AD54090BBE1E94001C7C04 /* OpenGL.framework */,
+				F5934A47099E642F0063E081 /* PNG.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		F5F494F5067BF85000E809E7 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F5F494F9067BF90600E809E7 /* dim3modelutility.h in Headers */,
+				F5F494FE067BF90800E809E7 /* modelutility.h in Headers */,
+				F56B61E0080B6F4300E9D08B /* modelprivate.h in Headers */,
+				F50AF90E0885FDA400F261B1 /* os_defs.h in Headers */,
+				F5AD54040BBE1E46001C7C04 /* baseutility.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		F5F494F7067BF85000E809E7 /* ModelUtility */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F5DB0A82085660A9005A7CB7 /* Build configuration list for PBXNativeTarget "ModelUtility" */;
+			buildPhases = (
+				F5F494F5067BF85000E809E7 /* Headers */,
+				F5F494F6067BF85000E809E7 /* Sources */,
+				F5F4950C067BF93700E809E7 /* Frameworks */,
+				F5DB0B840856703F005A7CB7 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ModelUtility;
+			productName = ModelUtility;
+			productReference = F5F494F8067BF85000E809E7 /* libModelUtility.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F562692104FEBC1C00EDBBA9 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = F5DB0A84085660A9005A7CB7 /* Build configuration list for PBXProject "dim3ModelUtility" */;
+			hasScannedForEncodings = 1;
+			mainGroup = F562691D04FEBC1C00EDBBA9;
+			productRefGroup = F562692B04FEBC6000EDBBA9 /* Products */;
+			projectDirPath = "";
+			targets = (
+				F5F494F7067BF85000E809E7 /* ModelUtility */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F5F494F6067BF85000E809E7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F5F494FF067BF90900E809E7 /* file_model_mesh.c in Sources */,
+				F5F49500067BF90A00E809E7 /* file_model_pose.c in Sources */,
+				F5F49501067BF90A00E809E7 /* file_model_animate.c in Sources */,
+				F5F49502067BF90B00E809E7 /* file_model_texture.c in Sources */,
+				F5F49503067BF90B00E809E7 /* model_frames.c in Sources */,
+				F5F49504067BF90C00E809E7 /* calculate.c in Sources */,
+				F5F49505067BF90C00E809E7 /* draw_bones.c in Sources */,
+				F5F49506067BF90D00E809E7 /* draw_vertexes.c in Sources */,
+				F5F49507067BF90D00E809E7 /* normals.c in Sources */,
+				F5F49508067BF90E00E809E7 /* positions.c in Sources */,
+				F5F49509067BF90F00E809E7 /* lookup.c in Sources */,
+				F5F4950A067BF91000E809E7 /* model_main.c in Sources */,
+				F56E4BB80921B42700BDE927 /* file_model_shader.c in Sources */,
+				F594130E0978BA2A00223F2A /* vertex_masks.c in Sources */,
+				F59413210978BC6600223F2A /* draw_setup.c in Sources */,
+				F594132B0978BCF500223F2A /* size.c in Sources */,
+				F594136C0978C18E00223F2A /* vertex_transform.c in Sources */,
+				F594147C0979776300223F2A /* draw_normals.c in Sources */,
+				F5941502097A002C00223F2A /* file_model_mesh_v1.c in Sources */,
+				F5941504097A003000223F2A /* file_model_mesh_v2.c in Sources */,
+				F55ACE5B097C830900F4AE50 /* mesh.c in Sources */,
+				F55ACEE4097D724C00F4AE50 /* bone.c in Sources */,
+				F55ACF3F097D805A00F4AE50 /* pose.c in Sources */,
+				F55ACF41097D805F00F4AE50 /* animation.c in Sources */,
+				F5CEE227097DF7EA00B5F1C2 /* hit_box.c in Sources */,
+				F53502210B2A85B60000CC3D /* model_light_spot.c in Sources */,
+				F5A31C2D0C5EDC52002470A9 /* model_transform.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F5DB0A83085660A9005A7CB7 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				COPY_PHASE_STRIP = NO;
+				EXPORTED_SYMBOLS_FILE = Exports/dim3modelutility.exp;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"$(SRCROOT)/../dim3Common/Frameworks",
+				);
+				GCC_AUTO_VECTORIZATION = NO;
+				GCC_CW_ASM_SYNTAX = NO;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_FAST_MATH = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Headers/dim3modelutility.h;
+				GCC_STRICT_ALIASING = YES;
+				GCC_UNROLL_LOOPS = YES;
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries";
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				MACOSX_DEPLOYMENT_TARGET = 10.3;
+				OTHER_LDFLAGS = (
+					"-seg1addr",
+					0x18000000,
+				);
+				PER_ARCH_CFLAGS_i386 = "-fast -msse2 -fPIC";
+				PER_ARCH_CFLAGS_ppc = "-fast -faltivec -fPIC -mcpu=G4";
+				PREBINDING = NO;
+				PRODUCT_NAME = libModelUtility;
+				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT_ppc = /Developer/SDKs/MacOSX10.3.9.sdk;
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		F5DB0A85085660A9005A7CB7 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Deployment;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F5DB0A82085660A9005A7CB7 /* Build configuration list for PBXNativeTarget "ModelUtility" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F5DB0A83085660A9005A7CB7 /* Deployment */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Deployment;
+		};
+		F5DB0A84085660A9005A7CB7 /* Build configuration list for PBXProject "dim3ModelUtility" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F5DB0A85085660A9005A7CB7 /* Deployment */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Deployment;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F562692104FEBC1C00EDBBA9 /* Project object */;
+}

@@ -1,0 +1,197 @@
+/****************************** File *********************************
+
+Module: dim3 Editor
+Author: Brian Barnes
+ Usage: Application/UI defines
+
+***************************** License ********************************
+
+This code can be freely used as long as these conditions are met:
+
+1. This header, in its entirety, is kept with the code
+2. This credit “Created with dim3 Technology” is given on a single
+application screen and in a single piece of the documentation
+3. It is not resold, in it's current form or modified, as an
+engine-only product
+
+This code is presented as is. The author of dim3 takes no
+responsibilities for any version of this code.
+
+Any non-engine product (games, etc) created with this code is free
+from any and all payment and/or royalties to the author of dim3,
+and can be sold or given away.
+
+(c) 2000-2007 Klink! Software www.klinksoftware.com
+ 
+*********************************************************************/
+
+//
+// menu definitions
+//
+
+#define app_menu_apple					128
+#define app_menu_file					129
+#define app_menu_edit					130
+#define app_menu_view					131
+#define app_menu_map					132
+#define app_menu_portal					133
+#define app_menu_pieces					134
+#define app_menu_segments				135
+#define app_menu_groups					136
+
+#define kCommandAbout					FOUR_CHAR_CODE('abot')
+
+#define kCommandNew						FOUR_CHAR_CODE('new ')
+#define kCommandOpen					FOUR_CHAR_CODE('open')
+#define kCommandClose					FOUR_CHAR_CODE('clse')
+#define kCommandImportOBJ				FOUR_CHAR_CODE('iobj')
+#define kCommandImportHeightMap			FOUR_CHAR_CODE('ihmp')
+#define kCommandAutoGenerateMap			FOUR_CHAR_CODE('atgn')
+#define kCommandSave					FOUR_CHAR_CODE('save')
+
+#define kCommandUndo					FOUR_CHAR_CODE('undo')
+#define kCommandCut						FOUR_CHAR_CODE('cut ')
+#define kCommandCopy					FOUR_CHAR_CODE('copy')
+#define kCommandPaste					FOUR_CHAR_CODE('pste')
+#define kCommandClear					FOUR_CHAR_CODE('cler')
+
+#define kCommandViewTopWalk				FOUR_CHAR_CODE('vw01')
+#define kCommandViewPortalOnly			FOUR_CHAR_CODE('vw02')
+#define kCommandViewSitePathOnly		FOUR_CHAR_CODE('vw03')
+#define kCommandViewTopOnly				FOUR_CHAR_CODE('vw04')
+#define kCommandViewWalkOnly			FOUR_CHAR_CODE('vw05')
+#define kCommandViewFOV45				FOUR_CHAR_CODE('fv45')
+#define kCommandViewFOV60				FOUR_CHAR_CODE('fv60')
+
+#define kCommandMapSettings				FOUR_CHAR_CODE('mset')
+#define kCommandMapCounts				FOUR_CHAR_CODE('cset')
+#define kCommandMapOptimizations		FOUR_CHAR_CODE('mopt')
+#define kCommandMapMedia				FOUR_CHAR_CODE('medi')
+#define kCommandAmbientLightSoundSettings	FOUR_CHAR_CODE('mamb')
+#define kCommandSkySettings				FOUR_CHAR_CODE('msky')
+#define kCommandRainSettings			FOUR_CHAR_CODE('mrin')
+#define kCommandFogSettings				FOUR_CHAR_CODE('mfog')
+#define kCommandAutoGenerateSightPaths	FOUR_CHAR_CODE('agsp')
+#define kCommandRebuildPaths			FOUR_CHAR_CODE('rpth')
+#define kCommandSortSegments			FOUR_CHAR_CODE('sseg')
+#define kCommandRun						FOUR_CHAR_CODE('mrun')
+
+#define kCommandPortalSettings			FOUR_CHAR_CODE('rset')
+#define kCommandPortalDuplicate			FOUR_CHAR_CODE('rdup')
+#define kCommandPortalDelete			FOUR_CHAR_CODE('rdel')
+#define kCommandResetTextureSize		FOUR_CHAR_CODE('rtsz')
+#define kCommandPortalGoToTop			FOUR_CHAR_CODE('topp')
+#define kCommandPortalGoToBottom		FOUR_CHAR_CODE('botp')
+#define kCommandPortalGoToSelection		FOUR_CHAR_CODE('selp')
+#define kCommandClearPath				FOUR_CHAR_CODE('clrp')
+
+#define kCommandPieceCombinePrimitive	FOUR_CHAR_CODE('pcmb')
+#define kCommandPieceBreakPrimivite		FOUR_CHAR_CODE('pbrk')
+#define kCommandPieceReformPrimivite	FOUR_CHAR_CODE('prfm')
+#define kCommandPieceAddPrimivite		FOUR_CHAR_CODE('padd')
+#define kCommandPieceDuplicate			FOUR_CHAR_CODE('pdup')
+#define kCommandPieceDelete				FOUR_CHAR_CODE('pdel')
+#define kCommandPieceMove				FOUR_CHAR_CODE('pmov')
+#define kCommandPieceDuplicateMove		FOUR_CHAR_CODE('pdmv')
+
+#define kCommandGroupAdd				FOUR_CHAR_CODE('gadd')
+#define kCommandGroupDelete				FOUR_CHAR_CODE('gdel')
+#define kCommandGroupClear				FOUR_CHAR_CODE('gclr')
+#define kCommandGroupMovements			FOUR_CHAR_CODE('mmov')
+
+#define kCommandSegmentSetting			FOUR_CHAR_CODE('sset')
+#define kCommandAmbientSettings			FOUR_CHAR_CODE('aset')
+#define kCommandLiquidSettings			FOUR_CHAR_CODE('lset')
+#define kCommandCurvedSurface			FOUR_CHAR_CODE('curv')
+#define kCommandWallClipping			FOUR_CHAR_CODE('clip')
+#define kCommandAddPoint				FOUR_CHAR_CODE('addp')
+#define kCommandSubtractPoint			FOUR_CHAR_CODE('subp')
+#define kCommandTesselate				FOUR_CHAR_CODE('tess')
+#define kCommandExtrude					FOUR_CHAR_CODE('extr')
+
+#define kCommandMapRaiseY				FOUR_CHAR_CODE('mrsy')
+#define kCommandMapLowerY				FOUR_CHAR_CODE('mlwy')
+
+#define kCommandPortalResize			FOUR_CHAR_CODE('rsiz')
+#define kCommandPortalFlipHorizontal	FOUR_CHAR_CODE('flph')
+#define kCommandPortalFlipVertical		FOUR_CHAR_CODE('flpv')
+#define kCommandPortalRotate			FOUR_CHAR_CODE('rot ')
+#define kCommandPortalRaiseY			FOUR_CHAR_CODE('rrsy')
+#define kCommandPortalLowerY			FOUR_CHAR_CODE('rlry')
+#define kCommandPortalSplitHorizontal	FOUR_CHAR_CODE('rshz')
+#define kCommandPortalSplitVertical		FOUR_CHAR_CODE('rsvt')
+
+#define kCommandResetTextureWall		FOUR_CHAR_CODE('rtwl')
+#define kCommandResetTextureFloor		FOUR_CHAR_CODE('rtfl')
+#define kCommandResetTextureCeiling		FOUR_CHAR_CODE('rtcl')
+
+#define kCommandPieceFlipHorizontal		FOUR_CHAR_CODE('pfhz')
+#define kCommandPieceFlipVertical		FOUR_CHAR_CODE('pfvt')
+#define kCommandPieceRotate				FOUR_CHAR_CODE('prot')
+#define kCommandPieceFreeRotate			FOUR_CHAR_CODE('prtf')
+#define kCommandPieceRaiseY				FOUR_CHAR_CODE('prsy')
+#define kCommandPieceLowerY				FOUR_CHAR_CODE('plry')
+
+#define kCommandSelectAllAll			FOUR_CHAR_CODE('saaa')
+#define kCommandSelectAllWall			FOUR_CHAR_CODE('sawl')
+#define kCommandSelectAllFloor			FOUR_CHAR_CODE('safl')
+#define kCommandSelectAllCeiling		FOUR_CHAR_CODE('sacl')
+#define kCommandSelectAllTexture		FOUR_CHAR_CODE('satx')
+
+#define kCommandSwitchFloorCeiling		FOUR_CHAR_CODE('swfc')
+#define kCommandPieceSwitchSpotScenery	FOUR_CHAR_CODE('swss')
+
+//
+// views
+//
+
+#define vw_walk_top			0
+#define vw_portal_only		1
+#define vw_site_path_only	2
+#define vw_top_only			3
+#define vw_walk_only		4
+
+//
+// keyboard focus
+//
+
+#define kf_portal			0
+#define kf_site_path		1
+#define kf_top				2
+#define kf_walk				3
+
+//
+// vertex modes
+//
+
+#define vm_none				0
+#define vm_lock				1
+#define vm_snap				2
+
+//
+// selection types
+//
+
+#define segment_piece		100
+#define primitive_piece		101
+#define node_piece			102
+#define spot_piece			103
+#define scenery_piece		104
+#define light_piece			105
+#define sound_piece			106
+#define particle_piece		107
+
+//
+// magnify factors
+//
+
+#define magnify_factor_min	4
+#define magnify_factor_max	210
+
+//
+// walk view opengl settings
+//
+
+#define walk_view_near_z		(6*map_enlarge)
+#define walk_view_far_z			(2000*map_enlarge)
+#define walk_view_near_offset	(3*map_enlarge)

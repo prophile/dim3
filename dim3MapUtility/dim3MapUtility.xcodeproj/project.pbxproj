@@ -1,0 +1,451 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F50AF9290885FF0E00F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF9280885FF0E00F261B1 /* os_defs.h */; };
+		F50B25C8092065C900879CCC /* file_map_shader.c in Sources */ = {isa = PBXBuildFile; fileRef = F50B25C7092065C900879CCC /* file_map_shader.c */; };
+		F511664F093CDA2C00E766C3 /* groups.c in Sources */ = {isa = PBXBuildFile; fileRef = F511664E093CDA2C00E766C3 /* groups.c */; };
+		F52A9B7509F0A63C008CE744 /* portal_sight_path.c in Sources */ = {isa = PBXBuildFile; fileRef = F52A9B7409F0A63C008CE744 /* portal_sight_path.c */; };
+		F52A9D4209F2057F008CE744 /* primitives.c in Sources */ = {isa = PBXBuildFile; fileRef = F52A9D4109F2057F008CE744 /* primitives.c */; };
+		F53F263D0BC05D0A00EB3C0F /* libBaseUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD541A0BBE1EE6001C7C04 /* libBaseUtility.dylib */; };
+		F55255260CE57DFA0045350D /* portal_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = F55255250CE57DFA0045350D /* portal_mesh.c */; };
+		F56B6201080C885A00E9D08B /* mapprivate.h in Headers */ = {isa = PBXBuildFile; fileRef = F56B6200080C885A00E9D08B /* mapprivate.h */; };
+		F58F951009B7E260004DD122 /* movements.c in Sources */ = {isa = PBXBuildFile; fileRef = F58F950F09B7E260004DD122 /* movements.c */; };
+		F5934B04099E651F0063E081 /* PNG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5934B03099E651F0063E081 /* PNG.framework */; };
+		F59C593006BF40C9009851C6 /* segments.c in Sources */ = {isa = PBXBuildFile; fileRef = F59C592F06BF40C9009851C6 /* segments.c */; };
+		F5AD54160BBE1EBD001C7C04 /* baseutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD54150BBE1EBD001C7C04 /* baseutility.h */; };
+		F5AD541F0BBE1F16001C7C04 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD541E0BBE1F16001C7C04 /* OpenGL.framework */; };
+		F5DB0B780856700C005A7CB7 /* libMapUtility.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5F4951F067BFCCA00E809E7 /* libMapUtility.dylib */; };
+		F5DD16E10907328000721649 /* prepare_vertex_middles.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD16DD0907328000721649 /* prepare_vertex_middles.c */; };
+		F5DD16E20907328000721649 /* prepare_curve.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD16DE0907328000721649 /* prepare_curve.c */; };
+		F5DD16E30907328000721649 /* prepare_polygon.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD16DF0907328000721649 /* prepare_polygon.c */; };
+		F5DD16E40907328000721649 /* prepare.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD16E00907328000721649 /* prepare.c */; };
+		F5DD177F09074E1E00721649 /* portal.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD177E09074E1E00721649 /* portal.c */; };
+		F5DD178A09074E5000721649 /* portal_segment_update.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD178609074E5000721649 /* portal_segment_update.c */; };
+		F5DD178B09074E5000721649 /* portal_segment_list.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD178709074E5000721649 /* portal_segment_list.c */; };
+		F5DD178C09074E5000721649 /* portal_vertex_list.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD178809074E5000721649 /* portal_vertex_list.c */; };
+		F5DD178D09074E5000721649 /* portal_segment_vertex_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD178909074E5000721649 /* portal_segment_vertex_liquid.c */; };
+		F5DD17D609074FFB00721649 /* portal_changes.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD17D509074FFB00721649 /* portal_changes.c */; };
+		F5DD18B90907FD6700721649 /* portal_light_spot.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD18B80907FD6700721649 /* portal_light_spot.c */; };
+		F5DD18BB0907FD6E00721649 /* spots.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD18BA0907FD6E00721649 /* spots.c */; };
+		F5F49529067BFDB900E809E7 /* map_main.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A8B1B105229DA4008D4331 /* map_main.c */; };
+		F5F4952A067BFDBA00E809E7 /* nodes.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DA8623059148C40043E685 /* nodes.c */; };
+		F5F4952B067BFDBA00E809E7 /* map_frames.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C40DAB05439C17002FA7E9 /* map_frames.c */; };
+		F5F4952C067BFDBB00E809E7 /* file_map_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A10B6C052D294C006A2E68 /* file_map_texture.c */; };
+		F5F4952D067BFDBC00E809E7 /* file_map_write.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A8B1B005229DA4008D4331 /* file_map_write.c */; };
+		F5F4952E067BFDBC00E809E7 /* file_map_read.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A8B1AF05229DA4008D4331 /* file_map_read.c */; };
+		F5F4952F067BFDC000E809E7 /* maputility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5C53548051C085800968AF1 /* maputility.h */; };
+		F5F49534067BFDC300E809E7 /* dim3maputility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5C5353D051C074F00968AF1 /* dim3maputility.h */; };
+		F5F49536067BFDD100E809E7 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F49535067BFDD100E809E7 /* Carbon.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F5DB0B5C08566F88005A7CB7 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(SRCROOT)/../dim3Common/Libraries/";
+			dstSubfolderSpec = 0;
+			files = (
+				F5DB0B780856700C005A7CB7 /* libMapUtility.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		F50AF9280885FF0E00F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
+		F50B25C7092065C900879CCC /* file_map_shader.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_map_shader.c; path = Sources/file_map_shader.c; sourceTree = "<group>"; };
+		F511664E093CDA2C00E766C3 /* groups.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = groups.c; path = Sources/groups.c; sourceTree = "<group>"; };
+		F52A9B7409F0A63C008CE744 /* portal_sight_path.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_sight_path.c; path = Sources/portal_sight_path.c; sourceTree = "<group>"; };
+		F52A9D4109F2057F008CE744 /* primitives.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = primitives.c; path = Sources/primitives.c; sourceTree = "<group>"; };
+		F55255250CE57DFA0045350D /* portal_mesh.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_mesh.c; path = Sources/portal_mesh.c; sourceTree = "<group>"; };
+		F55A4CE5059A4A3E0006C01E /* dim3maputility.exp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.exports; name = dim3maputility.exp; path = Exports/dim3maputility.exp; sourceTree = "<group>"; };
+		F56B6200080C885A00E9D08B /* mapprivate.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mapprivate.h; path = Headers/mapprivate.h; sourceTree = "<group>"; };
+		F58F950F09B7E260004DD122 /* movements.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = movements.c; path = Sources/movements.c; sourceTree = "<group>"; };
+		F5934B03099E651F0063E081 /* PNG.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PNG.framework; path = ../dim3Common/Frameworks/PNG.framework; sourceTree = SOURCE_ROOT; };
+		F59C592F06BF40C9009851C6 /* segments.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = segments.c; path = Sources/segments.c; sourceTree = "<group>"; };
+		F5A10B6C052D294C006A2E68 /* file_map_texture.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_map_texture.c; path = Sources/file_map_texture.c; sourceTree = "<group>"; };
+		F5A8B1AF05229DA4008D4331 /* file_map_read.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_map_read.c; path = Sources/file_map_read.c; sourceTree = "<group>"; };
+		F5A8B1B005229DA4008D4331 /* file_map_write.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_map_write.c; path = Sources/file_map_write.c; sourceTree = "<group>"; };
+		F5A8B1B105229DA4008D4331 /* map_main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = map_main.c; path = Sources/map_main.c; sourceTree = "<group>"; };
+		F5AD54150BBE1EBD001C7C04 /* baseutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = baseutility.h; path = ../dim3Common/Headers/baseutility.h; sourceTree = SOURCE_ROOT; };
+		F5AD541A0BBE1EE6001C7C04 /* libBaseUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBaseUtility.dylib; path = ../dim3Common/Libraries/libBaseUtility.dylib; sourceTree = SOURCE_ROOT; };
+		F5AD541E0BBE1F16001C7C04 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		F5C40DAB05439C17002FA7E9 /* map_frames.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = map_frames.c; path = Sources/map_frames.c; sourceTree = "<group>"; };
+		F5C5353D051C074F00968AF1 /* dim3maputility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dim3maputility.h; path = Headers/dim3maputility.h; sourceTree = "<group>"; };
+		F5C53548051C085800968AF1 /* maputility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = maputility.h; path = ../dim3Common/Headers/maputility.h; sourceTree = SOURCE_ROOT; };
+		F5DA8623059148C40043E685 /* nodes.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = nodes.c; path = Sources/nodes.c; sourceTree = "<group>"; };
+		F5DD16DD0907328000721649 /* prepare_vertex_middles.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = prepare_vertex_middles.c; path = Sources/prepare_vertex_middles.c; sourceTree = "<group>"; };
+		F5DD16DE0907328000721649 /* prepare_curve.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = prepare_curve.c; path = Sources/prepare_curve.c; sourceTree = "<group>"; };
+		F5DD16DF0907328000721649 /* prepare_polygon.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = prepare_polygon.c; path = Sources/prepare_polygon.c; sourceTree = "<group>"; };
+		F5DD16E00907328000721649 /* prepare.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = prepare.c; path = Sources/prepare.c; sourceTree = "<group>"; };
+		F5DD177E09074E1E00721649 /* portal.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal.c; path = Sources/portal.c; sourceTree = "<group>"; };
+		F5DD178609074E5000721649 /* portal_segment_update.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_segment_update.c; path = Sources/portal_segment_update.c; sourceTree = "<group>"; };
+		F5DD178709074E5000721649 /* portal_segment_list.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_segment_list.c; path = Sources/portal_segment_list.c; sourceTree = "<group>"; };
+		F5DD178809074E5000721649 /* portal_vertex_list.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_vertex_list.c; path = Sources/portal_vertex_list.c; sourceTree = "<group>"; };
+		F5DD178909074E5000721649 /* portal_segment_vertex_liquid.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_segment_vertex_liquid.c; path = Sources/portal_segment_vertex_liquid.c; sourceTree = "<group>"; };
+		F5DD17D509074FFB00721649 /* portal_changes.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_changes.c; path = Sources/portal_changes.c; sourceTree = "<group>"; };
+		F5DD18B80907FD6700721649 /* portal_light_spot.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_light_spot.c; path = Sources/portal_light_spot.c; sourceTree = "<group>"; };
+		F5DD18BA0907FD6E00721649 /* spots.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = spots.c; path = Sources/spots.c; sourceTree = "<group>"; };
+		F5F4951F067BFCCA00E809E7 /* libMapUtility.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libMapUtility.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		F5F49535067BFDD100E809E7 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F5F49522067BFD9600E809E7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F5F49536067BFDD100E809E7 /* Carbon.framework in Frameworks */,
+				F5934B04099E651F0063E081 /* PNG.framework in Frameworks */,
+				F5AD541F0BBE1F16001C7C04 /* OpenGL.framework in Frameworks */,
+				F53F263D0BC05D0A00EB3C0F /* libBaseUtility.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F5C5352C051C058600968AF1 = {
+			isa = PBXGroup;
+			children = (
+				F5C53538051C06F100968AF1 /* Headers */,
+				F5C53539051C06F900968AF1 /* Exports */,
+				F5C5353A051C06FF00968AF1 /* Sources */,
+				F5F49520067BFD8200E809E7 /* Libraries */,
+				F5F49521067BFD8800E809E7 /* Frameworks */,
+				F5C53537051C059F00968AF1 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F5C53537051C059F00968AF1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F5F4951F067BFCCA00E809E7 /* libMapUtility.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F5C53538051C06F100968AF1 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				F5C5353D051C074F00968AF1 /* dim3maputility.h */,
+				F50AF9280885FF0E00F261B1 /* os_defs.h */,
+				F5AD54150BBE1EBD001C7C04 /* baseutility.h */,
+				F5C53548051C085800968AF1 /* maputility.h */,
+				F56B6200080C885A00E9D08B /* mapprivate.h */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
+		F5C53539051C06F900968AF1 /* Exports */ = {
+			isa = PBXGroup;
+			children = (
+				F55A4CE5059A4A3E0006C01E /* dim3maputility.exp */,
+			);
+			name = Exports;
+			sourceTree = "<group>";
+		};
+		F5C5353A051C06FF00968AF1 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				F5DA862D059148E60043E685 /* Files */,
+				F5DD16DB0907326E00721649 /* Prepare */,
+				F5DD177C09074DEE00721649 /* Portals */,
+				F5DA8632059148F80043E685 /* Objects */,
+				F5DA86350591490E0043E685 /* Main */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		F5DA862D059148E60043E685 /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				F5A8B1AF05229DA4008D4331 /* file_map_read.c */,
+				F5A8B1B005229DA4008D4331 /* file_map_write.c */,
+				F5A10B6C052D294C006A2E68 /* file_map_texture.c */,
+				F50B25C7092065C900879CCC /* file_map_shader.c */,
+			);
+			name = Files;
+			sourceTree = "<group>";
+		};
+		F5DA8632059148F80043E685 /* Objects */ = {
+			isa = PBXGroup;
+			children = (
+				F5C40DAB05439C17002FA7E9 /* map_frames.c */,
+				F5DD18BA0907FD6E00721649 /* spots.c */,
+				F5DA8623059148C40043E685 /* nodes.c */,
+				F52A9D4109F2057F008CE744 /* primitives.c */,
+				F59C592F06BF40C9009851C6 /* segments.c */,
+				F511664E093CDA2C00E766C3 /* groups.c */,
+				F58F950F09B7E260004DD122 /* movements.c */,
+			);
+			name = Objects;
+			sourceTree = "<group>";
+		};
+		F5DA86350591490E0043E685 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				F5A8B1B105229DA4008D4331 /* map_main.c */,
+			);
+			name = Main;
+			sourceTree = "<group>";
+		};
+		F5DD16DB0907326E00721649 /* Prepare */ = {
+			isa = PBXGroup;
+			children = (
+				F5DD16E00907328000721649 /* prepare.c */,
+				F5DD16DF0907328000721649 /* prepare_polygon.c */,
+				F5DD16DE0907328000721649 /* prepare_curve.c */,
+				F5DD16DD0907328000721649 /* prepare_vertex_middles.c */,
+			);
+			name = Prepare;
+			sourceTree = "<group>";
+		};
+		F5DD177C09074DEE00721649 /* Portals */ = {
+			isa = PBXGroup;
+			children = (
+				F5DD177E09074E1E00721649 /* portal.c */,
+				F55255250CE57DFA0045350D /* portal_mesh.c */,
+				F52A9B7409F0A63C008CE744 /* portal_sight_path.c */,
+				F5DD17D509074FFB00721649 /* portal_changes.c */,
+				F5DD178809074E5000721649 /* portal_vertex_list.c */,
+				F5DD178909074E5000721649 /* portal_segment_vertex_liquid.c */,
+				F5DD178709074E5000721649 /* portal_segment_list.c */,
+				F5DD178609074E5000721649 /* portal_segment_update.c */,
+				F5DD18B80907FD6700721649 /* portal_light_spot.c */,
+			);
+			name = Portals;
+			sourceTree = "<group>";
+		};
+		F5F49520067BFD8200E809E7 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				F5AD541A0BBE1EE6001C7C04 /* libBaseUtility.dylib */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		F5F49521067BFD8800E809E7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F5F49535067BFDD100E809E7 /* Carbon.framework */,
+				F5AD541E0BBE1F16001C7C04 /* OpenGL.framework */,
+				F5934B03099E651F0063E081 /* PNG.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		F5F4951C067BFCCA00E809E7 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F5F4952F067BFDC000E809E7 /* maputility.h in Headers */,
+				F5F49534067BFDC300E809E7 /* dim3maputility.h in Headers */,
+				F56B6201080C885A00E9D08B /* mapprivate.h in Headers */,
+				F50AF9290885FF0E00F261B1 /* os_defs.h in Headers */,
+				F5AD54160BBE1EBD001C7C04 /* baseutility.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		F5F4951E067BFCCA00E809E7 /* MapUtility */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F5DB0B6208566F8A005A7CB7 /* Build configuration list for PBXNativeTarget "MapUtility" */;
+			buildPhases = (
+				F5F4951C067BFCCA00E809E7 /* Headers */,
+				F5F4951D067BFCCA00E809E7 /* Sources */,
+				F5F49522067BFD9600E809E7 /* Frameworks */,
+				F5DB0B5C08566F88005A7CB7 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MapUtility;
+			productName = MapUtility;
+			productReference = F5F4951F067BFCCA00E809E7 /* libMapUtility.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F5C53530051C058600968AF1 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = F5DB0B6508566F8A005A7CB7 /* Build configuration list for PBXProject "dim3MapUtility" */;
+			hasScannedForEncodings = 1;
+			mainGroup = F5C5352C051C058600968AF1;
+			productRefGroup = F5C53537051C059F00968AF1 /* Products */;
+			projectDirPath = "";
+			targets = (
+				F5F4951E067BFCCA00E809E7 /* MapUtility */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F5F4951D067BFCCA00E809E7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F5F49529067BFDB900E809E7 /* map_main.c in Sources */,
+				F5F4952A067BFDBA00E809E7 /* nodes.c in Sources */,
+				F5F4952B067BFDBA00E809E7 /* map_frames.c in Sources */,
+				F5F4952C067BFDBB00E809E7 /* file_map_texture.c in Sources */,
+				F5F4952D067BFDBC00E809E7 /* file_map_write.c in Sources */,
+				F5F4952E067BFDBC00E809E7 /* file_map_read.c in Sources */,
+				F59C593006BF40C9009851C6 /* segments.c in Sources */,
+				F5DD16E10907328000721649 /* prepare_vertex_middles.c in Sources */,
+				F5DD16E20907328000721649 /* prepare_curve.c in Sources */,
+				F5DD16E30907328000721649 /* prepare_polygon.c in Sources */,
+				F5DD16E40907328000721649 /* prepare.c in Sources */,
+				F5DD177F09074E1E00721649 /* portal.c in Sources */,
+				F5DD178A09074E5000721649 /* portal_segment_update.c in Sources */,
+				F5DD178B09074E5000721649 /* portal_segment_list.c in Sources */,
+				F5DD178C09074E5000721649 /* portal_vertex_list.c in Sources */,
+				F5DD178D09074E5000721649 /* portal_segment_vertex_liquid.c in Sources */,
+				F5DD17D609074FFB00721649 /* portal_changes.c in Sources */,
+				F5DD18B90907FD6700721649 /* portal_light_spot.c in Sources */,
+				F5DD18BB0907FD6E00721649 /* spots.c in Sources */,
+				F50B25C8092065C900879CCC /* file_map_shader.c in Sources */,
+				F511664F093CDA2C00E766C3 /* groups.c in Sources */,
+				F58F951009B7E260004DD122 /* movements.c in Sources */,
+				F52A9B7509F0A63C008CE744 /* portal_sight_path.c in Sources */,
+				F52A9D4209F2057F008CE744 /* primitives.c in Sources */,
+				F55255260CE57DFA0045350D /* portal_mesh.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F5DB0B6308566F8A005A7CB7 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				COPY_PHASE_STRIP = NO;
+				EXPORTED_SYMBOLS_FILE = Exports/dim3maputility.exp;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"$(SRCROOT)/../dim3Common/Frameworks",
+				);
+				GCC_AUTO_VECTORIZATION = NO;
+				GCC_CW_ASM_SYNTAX = NO;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_FAST_MATH = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Headers/dim3maputility.h;
+				GCC_STRICT_ALIASING = YES;
+				GCC_UNROLL_LOOPS = YES;
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries";
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				MACOSX_DEPLOYMENT_TARGET = 10.3;
+				OTHER_LDFLAGS = (
+					"-seg1addr",
+					0x19000000,
+				);
+				PER_ARCH_CFLAGS_i386 = "-fast -msse2 -fPIC";
+				PER_ARCH_CFLAGS_ppc = "-fast -faltivec -fPIC -mcpu=G4";
+				PREBINDING = NO;
+				PRODUCT_NAME = libMapUtility;
+				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT_ppc = /Developer/SDKs/MacOSX10.3.9.sdk;
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		F5DB0B6408566F8A005A7CB7 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = ppc7400;
+				COPY_PHASE_STRIP = NO;
+				EXPORTED_SYMBOLS_FILE = Exports/dim3maputility.exp;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(FRAMEWORK_SEARCH_PATHS)",
+					"$(SRCROOT)/../dim3Common/Frameworks",
+				);
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_CW_ASM_SYNTAX = NO;
+				GCC_FAST_MATH = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Headers/dim3maputility.h;
+				GCC_STRICT_ALIASING = YES;
+				GCC_UNROLL_LOOPS = YES;
+				INSTALL_PATH = "@executable_path/../../../dim3 Libraries";
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../dim3Common/Libraries\"";
+				LIBRARY_STYLE = DYNAMIC;
+				MACH_O_TYPE = mh_dylib;
+				MACOSX_DEPLOYMENT_TARGET = 10.3;
+				OTHER_CFLAGS = (
+					"-fast",
+					"-fPIC",
+				);
+				OTHER_LDFLAGS = (
+					"-seg1addr",
+					0x19000000,
+				);
+				PREBINDING = YES;
+				PRODUCT_NAME = libMapUtility;
+				WARNING_CFLAGS = "-Wmost";
+			};
+			name = Default;
+		};
+		F5DB0B6608566F8A005A7CB7 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Deployment;
+		};
+		F5DB0B6708566F8A005A7CB7 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F5DB0B6208566F8A005A7CB7 /* Build configuration list for PBXNativeTarget "MapUtility" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F5DB0B6308566F8A005A7CB7 /* Deployment */,
+				F5DB0B6408566F8A005A7CB7 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		F5DB0B6508566F8A005A7CB7 /* Build configuration list for PBXProject "dim3MapUtility" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F5DB0B6608566F8A005A7CB7 /* Deployment */,
+				F5DB0B6708566F8A005A7CB7 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F5C53530051C058600968AF1 /* Project object */;
+}

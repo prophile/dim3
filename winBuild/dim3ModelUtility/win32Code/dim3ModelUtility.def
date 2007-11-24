@@ -1,0 +1,123 @@
+LIBRARY      "dim3ModelUtility"
+
+EXPORTS
+	text_to_model_tag						@100
+	model_tag_to_text						@101
+
+	model_mesh_add							@110
+	model_mesh_duplicate					@111
+	model_mesh_copy							@112
+	model_mesh_delete						@113
+
+	model_bone_add							@120
+	model_bone_delete						@121
+	model_set_sel_vertex_to_bone			@122
+	model_check_bone_duplicate_tag			@123
+	model_check_bone_circular				@124
+	model_bone_move							@125
+
+	model_pose_add							@130
+	model_pose_duplicate					@131
+	model_pose_delete						@132
+	model_pose_clear						@133
+	model_check_pose_in_animation			@134
+
+	model_animate_add						@140
+	model_animate_duplicate					@141
+	model_animate_delete					@142
+	model_animate_pose_insert				@143
+	model_animate_pose_delete				@144
+	model_animate_set_loop_start			@145
+	model_animate_set_loop_end				@146
+
+	model_hit_box_add						@150
+	model_hit_box_delete					@151
+
+	model_find_mesh							@160
+	model_find_bone							@161
+	model_find_pose							@162
+	model_find_animate						@163
+
+	model_count_texture_frames				@170
+	model_setup_animated_textures			@171
+	model_add_texture_frame					@172
+	model_delete_texture_frame				@173
+
+	model_clear_draw_setup					@180
+
+	model_calculate_parents					@190
+
+	model_create_draw_bones					@200
+	model_create_draw_vertexes				@201
+	model_create_draw_2D_vertexes			@202
+
+	model_resize_draw_vertex				@210
+	model_translate_draw_vertex				@211
+
+	model_create_draw_normals				@220
+
+	model_get_point_position				@230
+	model_get_draw_bone_position			@231
+	model_calc_draw_bone_position			@232
+	model_get_light_position				@233
+	model_get_halo_position					@234
+	model_get_name_position					@235
+
+	model_clear_lights						@240
+	model_add_light							@241
+	model_find_closest_light				@242
+	model_calculate_light_color_and_normal	@243
+	model_calculate_normal_vector			@244
+
+	model_get_size							@250
+	model_get_vertex_extent					@251
+	model_get_vertex_extent_all				@252
+	model_get_view_complex_bounding_box		@253
+	model_recalc_boxes						@254
+
+	model_recalc_normals					@260
+
+	model_rescale_box						@270
+	model_scale								@271
+	model_scale_all							@272
+	model_flip								@273
+	model_flip_all							@274
+	model_swap_xz							@275
+	model_swap_yz							@276
+	model_swap_xz_all						@277
+	model_swap_yz_all						@278
+	model_center_xz							@279
+	model_center_xz_all						@280
+	model_floor								@281
+	model_floor_all							@282
+	model_flip_uv							@283
+
+	model_move_sel_vertexes					@290
+	model_scale_sel_vertexes				@291
+	model_rotate_sel_vertexes				@292
+	model_invert_normal_sel_vertexes		@293
+	model_delete_sel_vertex					@294
+
+	model_clear_sel_mask					@300
+	model_set_sel_mask						@301
+	model_set_sel_mask_all					@302
+	model_check_sel_mask					@303
+	model_clear_hide_mask					@304
+	model_set_hide_mask						@305
+	model_check_hide_mask					@306
+	model_hide_mask_set_sel_vertexes		@307
+	model_hide_mask_set_non_sel_vertexes	@308
+	model_hide_mask_show_all_vertexes		@309
+	model_check_hide_mask_trig				@310
+	model_set_sel_mask_bone					@311
+	model_set_sel_mask_no_bone				@312
+	model_set_sel_mask_near_bone			@313
+	model_set_sel_mask_material				@314
+
+	model_setup								@320
+	model_new								@321
+	model_open								@322
+	model_save								@323
+	model_close								@324
+
+	model_refresh_textures					@330

@@ -1,0 +1,341 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8D0C4E8D0486CD37000505A6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0867D6AAFE840B52C02AAC07 /* InfoPlist.strings */; };
+		8D0C4E920486CD37000505A6 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20286C33FDCF999611CA2CEA /* Carbon.framework */; };
+		F50C5E1009EB67D200FBC496 /* server_query_info.c in Sources */ = {isa = PBXBuildFile; fileRef = F50C5E0E09EB67D200FBC496 /* server_query_info.c */; };
+		F50C5E1109EB67D200FBC496 /* server_query.c in Sources */ = {isa = PBXBuildFile; fileRef = F50C5E0F09EB67D200FBC496 /* server_query.c */; };
+		F52BFB7A0C74EF1100FDB222 /* clients.c in Sources */ = {isa = PBXBuildFile; fileRef = F52BFB790C74EF1100FDB222 /* clients.c */; };
+		F54A71960C76AAA8005AAE98 /* broadcast.c in Sources */ = {isa = PBXBuildFile; fileRef = F54A71950C76AAA8005AAE98 /* broadcast.c */; };
+		F57230A20C44432D00BE0825 /* status.c in Sources */ = {isa = PBXBuildFile; fileRef = F57230A00C44432D00BE0825 /* status.c */; };
+		F57230A30C44432D00BE0825 /* ui_mac.c in Sources */ = {isa = PBXBuildFile; fileRef = F57230A10C44432D00BE0825 /* ui_mac.c */; };
+		F57230CA0C44471700BE0825 /* ui_win32.c in Sources */ = {isa = PBXBuildFile; fileRef = F57230C90C44471700BE0825 /* ui_win32.c */; };
+		F58B8B1F0BCC7DF700E4F994 /* PNG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F58B8B1E0BCC7DF700E4F994 /* PNG.framework */; };
+		F58B8B410BCC7E2500E4F994 /* PNG.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F58B8B1E0BCC7DF700E4F994 /* PNG.framework */; };
+		F5AD545E0BBE20D6001C7C04 /* libBaseUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD545D0BBE20D6001C7C04 /* libBaseUtility.dylib */; };
+		F5AD545F0BBE20E6001C7C04 /* libBaseUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD545D0BBE20D6001C7C04 /* libBaseUtility.dylib */; };
+		F5AD54680BBE20FA001C7C04 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD54670BBE20FA001C7C04 /* OpenGL.framework */; };
+		F5C5EC1409141E0C00F94729 /* dim3 Server.icns in Resources */ = {isa = PBXBuildFile; fileRef = F5C5EC1109141E0C00F94729 /* dim3 Server.icns */; };
+		F5C5EC1609141E0C00F94729 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F5C5EC1309141E0C00F94729 /* Info.plist */; };
+		F5C5EC2909141EA700F94729 /* host.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5EC2609141EA700F94729 /* host.c */; };
+		F5C5EC2A09141EA700F94729 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5EC2709141EA700F94729 /* main.c */; };
+		F5C5EC5C0914243F00F94729 /* dim3 Server.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8D0C4E970486CD37000505A6 /* dim3 Server.app */; };
+		F5E483C109F865F6001910AB /* players.c in Sources */ = {isa = PBXBuildFile; fileRef = F5E483C009F865F6001910AB /* players.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F5C5EC570914242A00F94729 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(SRCROOT)/../../dim3/";
+			dstSubfolderSpec = 0;
+			files = (
+				F5C5EC5C0914243F00F94729 /* dim3 Server.app in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F5FEF6C20BB4EB7A00198897 /* Copy Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F5AD545F0BBE20E6001C7C04 /* libBaseUtility.dylib in Copy Frameworks */,
+				F58B8B410BCC7E2500E4F994 /* PNG.framework in Copy Frameworks */,
+			);
+			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		4A9504C8FFE6A3BC11CA0CBA /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
+		4A9504CAFFE6A41611CA0CBA /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
+		8D0C4E970486CD37000505A6 /* dim3 Server.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dim3 Server.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F50C5E0B09EB67BE00FBC496 /* serverprivate.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = serverprivate.h; path = Headers/serverprivate.h; sourceTree = "<group>"; };
+		F50C5E0E09EB67D200FBC496 /* server_query_info.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = server_query_info.c; path = Sources/server_query_info.c; sourceTree = "<group>"; };
+		F50C5E0F09EB67D200FBC496 /* server_query.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = server_query.c; path = Sources/server_query.c; sourceTree = "<group>"; };
+		F52BFB790C74EF1100FDB222 /* clients.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = clients.c; path = Sources/clients.c; sourceTree = "<group>"; };
+		F54A71950C76AAA8005AAE98 /* broadcast.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = broadcast.c; path = Sources/broadcast.c; sourceTree = "<group>"; };
+		F57230A00C44432D00BE0825 /* status.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = status.c; path = Sources/status.c; sourceTree = "<group>"; };
+		F57230A10C44432D00BE0825 /* ui_mac.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = ui_mac.c; path = Sources/ui_mac.c; sourceTree = "<group>"; };
+		F57230C90C44471700BE0825 /* ui_win32.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = ui_win32.c; path = Sources/ui_win32.c; sourceTree = "<group>"; };
+		F58B8B1E0BCC7DF700E4F994 /* PNG.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PNG.framework; path = ../dim3Common/Frameworks/PNG.framework; sourceTree = SOURCE_ROOT; };
+		F5AD54580BBE2098001C7C04 /* baseutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = baseutility.h; path = ../dim3Common/Headers/baseutility.h; sourceTree = SOURCE_ROOT; };
+		F5AD545D0BBE20D6001C7C04 /* libBaseUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBaseUtility.dylib; path = ../dim3Common/Libraries/libBaseUtility.dylib; sourceTree = SOURCE_ROOT; };
+		F5AD54670BBE20FA001C7C04 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		F5C5EC1109141E0C00F94729 /* dim3 Server.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "dim3 Server.icns"; path = "Resources/dim3 Server.icns"; sourceTree = "<group>"; };
+		F5C5EC1309141E0C00F94729 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = Info.plist; path = Resources/Info.plist; sourceTree = "<group>"; };
+		F5C5EC1D09141E7200F94729 /* dim3server.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dim3server.h; path = Headers/dim3server.h; sourceTree = "<group>"; };
+		F5C5EC2409141E8700F94729 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
+		F5C5EC2609141EA700F94729 /* host.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = host.c; path = Sources/host.c; sourceTree = "<group>"; };
+		F5C5EC2709141EA700F94729 /* main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = main.c; path = Sources/main.c; sourceTree = "<group>"; };
+		F5E483C009F865F6001910AB /* players.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = players.c; path = Sources/players.c; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D0C4E910486CD37000505A6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D0C4E920486CD37000505A6 /* Carbon.framework in Frameworks */,
+				F5AD545E0BBE20D6001C7C04 /* libBaseUtility.dylib in Frameworks */,
+				F5AD54680BBE20FA001C7C04 /* OpenGL.framework in Frameworks */,
+				F58B8B1F0BCC7DF700E4F994 /* PNG.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		195DF8CFFE9D517E11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D0C4E970486CD37000505A6 /* dim3 Server.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		20286C29FDCF999611CA2CEA /* dim3 Server */ = {
+			isa = PBXGroup;
+			children = (
+				F5C5EC1009141DF700F94729 /* Headers */,
+				20286C2AFDCF999611CA2CEA /* Sources */,
+				20286C2CFDCF999611CA2CEA /* Resources */,
+				F5C5EC1A09141E4D00F94729 /* Libraries */,
+				20286C32FDCF999611CA2CEA /* Frameworks */,
+				195DF8CFFE9D517E11CA2CBB /* Products */,
+			);
+			name = "dim3 Server";
+			sourceTree = "<group>";
+		};
+		20286C2AFDCF999611CA2CEA /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				F572309E0C44430600BE0825 /* Server */,
+				F572309F0C44430E00BE0825 /* UI */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		20286C2CFDCF999611CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F5C5EC1109141E0C00F94729 /* dim3 Server.icns */,
+				F5C5EC1309141E0C00F94729 /* Info.plist */,
+				0867D6AAFE840B52C02AAC07 /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		20286C32FDCF999611CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				20286C33FDCF999611CA2CEA /* Carbon.framework */,
+				F5AD54670BBE20FA001C7C04 /* OpenGL.framework */,
+				4A9504CAFFE6A41611CA0CBA /* CoreServices.framework */,
+				4A9504C8FFE6A3BC11CA0CBA /* ApplicationServices.framework */,
+				F58B8B1E0BCC7DF700E4F994 /* PNG.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F572309E0C44430600BE0825 /* Server */ = {
+			isa = PBXGroup;
+			children = (
+				F5C5EC2609141EA700F94729 /* host.c */,
+				F54A71950C76AAA8005AAE98 /* broadcast.c */,
+				F52BFB790C74EF1100FDB222 /* clients.c */,
+				F5E483C009F865F6001910AB /* players.c */,
+				F50C5E0F09EB67D200FBC496 /* server_query.c */,
+				F50C5E0E09EB67D200FBC496 /* server_query_info.c */,
+			);
+			name = Server;
+			sourceTree = "<group>";
+		};
+		F572309F0C44430E00BE0825 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				F5C5EC2709141EA700F94729 /* main.c */,
+				F57230A00C44432D00BE0825 /* status.c */,
+				F57230A10C44432D00BE0825 /* ui_mac.c */,
+				F57230C90C44471700BE0825 /* ui_win32.c */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		F5C5EC1009141DF700F94729 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				F5C5EC1D09141E7200F94729 /* dim3server.h */,
+				F5C5EC2409141E8700F94729 /* os_defs.h */,
+				F5AD54580BBE2098001C7C04 /* baseutility.h */,
+				F50C5E0B09EB67BE00FBC496 /* serverprivate.h */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
+		F5C5EC1A09141E4D00F94729 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				F5AD545D0BBE20D6001C7C04 /* libBaseUtility.dylib */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D0C4E890486CD37000505A6 /* dim3 Server */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F5C5EC0509141D3B00F94729 /* Build configuration list for PBXNativeTarget "dim3 Server" */;
+			buildPhases = (
+				8D0C4E8C0486CD37000505A6 /* Resources */,
+				8D0C4E8F0486CD37000505A6 /* Sources */,
+				8D0C4E910486CD37000505A6 /* Frameworks */,
+				F5FEF6C20BB4EB7A00198897 /* Copy Frameworks */,
+				F5C5EC570914242A00F94729 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "dim3 Server";
+			productInstallPath = "$(HOME)/Applications";
+			productName = "dim3 Server";
+			productReference = 8D0C4E970486CD37000505A6 /* dim3 Server.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		20286C28FDCF999611CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = F5C5EC0909141D3B00F94729 /* Build configuration list for PBXProject "dim3Server" */;
+			hasScannedForEncodings = 1;
+			mainGroup = 20286C29FDCF999611CA2CEA /* dim3 Server */;
+			projectDirPath = "";
+			targets = (
+				8D0C4E890486CD37000505A6 /* dim3 Server */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D0C4E8C0486CD37000505A6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D0C4E8D0486CD37000505A6 /* InfoPlist.strings in Resources */,
+				F5C5EC1409141E0C00F94729 /* dim3 Server.icns in Resources */,
+				F5C5EC1609141E0C00F94729 /* Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D0C4E8F0486CD37000505A6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F5C5EC2909141EA700F94729 /* host.c in Sources */,
+				F5C5EC2A09141EA700F94729 /* main.c in Sources */,
+				F50C5E1009EB67D200FBC496 /* server_query_info.c in Sources */,
+				F50C5E1109EB67D200FBC496 /* server_query.c in Sources */,
+				F5E483C109F865F6001910AB /* players.c in Sources */,
+				F57230A20C44432D00BE0825 /* status.c in Sources */,
+				F57230A30C44432D00BE0825 /* ui_mac.c in Sources */,
+				F57230CA0C44471700BE0825 /* ui_win32.c in Sources */,
+				F52BFB7A0C74EF1100FDB222 /* clients.c in Sources */,
+				F54A71960C76AAA8005AAE98 /* broadcast.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		0867D6AAFE840B52C02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0867D6ABFE840B52C02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		F5C5EC0709141D3B00F94729 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dim3Common/Frameworks\"";
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G3;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Headers/dim3server.h;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = Resources/Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries";
+				MACOSX_DEPLOYMENT_TARGET = 10.3;
+				PER_ARCH_CFLAGS_i386 = "-fast";
+				PER_ARCH_CFLAGS_ppc = "-fast -mcpu=G3";
+				PREBINDING = NO;
+				PRODUCT_NAME = "dim3 Server";
+				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT_ppc = /Developer/SDKs/MacOSX10.3.9.sdk;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		F5C5EC0B09141D3B00F94729 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Deployment;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F5C5EC0509141D3B00F94729 /* Build configuration list for PBXNativeTarget "dim3 Server" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F5C5EC0709141D3B00F94729 /* Deployment */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Deployment;
+		};
+		F5C5EC0909141D3B00F94729 /* Build configuration list for PBXProject "dim3Server" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F5C5EC0B09141D3B00F94729 /* Deployment */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Deployment;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 20286C28FDCF999611CA2CEA /* Project object */;
+}
