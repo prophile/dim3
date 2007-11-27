@@ -121,7 +121,7 @@ void select_model_wind(Point start_pt,unsigned long modifiers)
 	Point					pt,last_pt;
 	MouseTrackingResult		track;
 	
-	reset_animation_play(FALSE);
+	model_wind_play(FALSE,FALSE);
 	
 		// setup the draw pose
 		
@@ -297,7 +297,7 @@ bool drag_bone_model_wind(Point start_pt)
 	model_draw_bone_type	*draw_bone;
 	MouseTrackingResult		track;
 	
-	reset_animation_play(FALSE);
+	model_wind_play(FALSE,FALSE);
 	
 		// setup the draw pose
 		

@@ -500,16 +500,16 @@ void model_move_draw_bones(model_type *model,model_draw_bone_type *draw_bones)
       
 ======================================================= */
 
-void model_create_draw_bones_single(model_type *model,model_draw_setup *draw_setup,model_draw_bone_type *bones)
+void model_create_draw_bones_single(model_type *model,model_draw_setup *draw_setup,int blend_idx,model_draw_bone_type *bones)
 {
 	int			pose_1,pose_2;
 	float		pose_factor;
 	
 		// get poses
 
-	pose_1=draw_setup->poses[0].idx_1;
-	pose_2=draw_setup->poses[0].idx_2;
-	pose_factor=draw_setup->poses[0].factor;
+	pose_1=draw_setup->poses[blend_idx].idx_1;
+	pose_2=draw_setup->poses[blend_idx].idx_2;
+	pose_factor=draw_setup->poses[blend_idx].factor;
 
 		// no poses get simple neutral bones
 
@@ -521,7 +521,7 @@ void model_create_draw_bones_single(model_type *model,model_draw_setup *draw_set
 		// change pose factor for animation based acceleration
 
 	if (pose_2!=-1) {
-		pose_factor=acceleration_calculate(pose_factor,draw_setup->poses[0].acceleration);
+		pose_factor=acceleration_calculate(pose_factor,draw_setup->poses[blend_idx].acceleration);
 	}
 
 			// create bones
@@ -570,6 +570,7 @@ void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
 	int						n,i,nbone,cnt,
 							idx,avg_mat_cnt[max_model_bone];
 	float					f_cnt;
+	d3pnt					fpnt[max_model_bone];
 	matrix_type				avg_mats[max_model_bone][max_model_blend_animation];
 	model_draw_bone_type	bones[max_model_blend_animation][max_model_bone];
 
@@ -585,7 +586,7 @@ void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
 		// to setup bone set
 
 	if (cnt<=1) {
-		model_create_draw_bones_single(model,draw_setup,draw_setup->bones);
+		model_create_draw_bones_single(model,draw_setup,0,draw_setup->bones);
 		return;
 	}
 
@@ -593,7 +594,7 @@ void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
 
 	for (n=0;n!=max_model_blend_animation;n++) {
 		if (draw_setup->poses[n].idx_1!=-1) {
-			model_create_draw_bones_single(model,draw_setup,bones[n]);
+			model_create_draw_bones_single(model,draw_setup,n,bones[n]);
 		}
 	}
 
@@ -601,15 +602,15 @@ void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
 
 	nbone=model->nbone;
 
-	memmove(&draw_setup->bones,&bones[0],(sizeof(model_draw_bone_type)*nbone));
+	memmove(&draw_setup->bones,bones[0],(sizeof(model_draw_bone_type)*nbone));
 
 		// clear out position and matrix count
 		// to get ready to average out the positions
 
 	for (n=0;n!=nbone;n++) {
-		draw_setup->bones[n].fpnt.x=0.0f;
-		draw_setup->bones[n].fpnt.y=0.0f;
-		draw_setup->bones[n].fpnt.z=0.0f;
+		fpnt[n].x=0.0f;
+		fpnt[n].y=0.0f;
+		fpnt[n].z=0.0f;
 		avg_mat_cnt[n]=0;
 	}
 
@@ -627,28 +628,29 @@ void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
 
 			for (i=0;i!=nbone;i++) {
 
-				if (matrix_has_rotation(&draw_setup->bones[i].rot_mat)) {
+				if (matrix_has_rotation(&bones[n][i].rot_mat)) {
 
-					idx=avg_mat_cnt[n];
+					idx=avg_mat_cnt[i];
+					avg_mat_cnt[i]++;
 
-					draw_setup->bones[i].fpnt.x+=bones[idx][i].fpnt.x;
-					draw_setup->bones[i].fpnt.y+=bones[idx][i].fpnt.y;
-					draw_setup->bones[i].fpnt.z+=bones[idx][i].fpnt.z;
+					fpnt[i].x+=bones[n][i].fpnt.x;
+					fpnt[i].y+=bones[n][i].fpnt.y;
+					fpnt[i].z+=bones[n][i].fpnt.z;
 
-					memmove(&avg_mats[i][idx],&draw_setup->bones[i].rot_mat,sizeof(matrix_type));
+					memmove(&avg_mats[i][idx],&bones[n][i].rot_mat,sizeof(matrix_type));
 
-					avg_mat_cnt[n]++;
 				}
 			}
 		}
 	}
 
 	for (n=0;n!=nbone;n++) {
+		if (avg_mat_cnt[n]==0) continue;
 		f_cnt=(float)avg_mat_cnt[n];
 
-		draw_setup->bones[n].fpnt.x/=f_cnt;
-		draw_setup->bones[n].fpnt.y/=f_cnt;
-		draw_setup->bones[n].fpnt.z/=f_cnt;
+		draw_setup->bones[n].fpnt.x=fpnt[n].x/f_cnt;
+		draw_setup->bones[n].fpnt.y=fpnt[n].y/f_cnt;
+		draw_setup->bones[n].fpnt.z=fpnt[n].z/f_cnt;
 
 		matrix_average(&draw_setup->bones[n].rot_mat,cnt,(matrix_type*)&avg_mats[n]);
 	}

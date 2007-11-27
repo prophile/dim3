@@ -119,29 +119,11 @@ static pascal OSStatus animate_list_item_proc(ControlRef ctrl,DataBrowserItemID 
 			i=itemID-(k*1000);
 			k--;
 			
-			if ((model.animates[k].loop_start==i) && (model.animates[k].loop_end==i)) {
-				strcpy(txt,"><");
-			}
-			else {
-				if (model.animates[k].loop_start==i) {
-					strcpy(txt,"> ");
-				}
-				else {
-					if (model.animates[k].loop_end==i) {
-						strcpy(txt,"< ");
-					}
-					else {
-						strcpy(txt,"  ");
-					}
-				}
-			}
-
 			n=model.animates[k].pose_moves[i].pose_idx;
-			strcat(txt,model.poses[n].name);
-			
-			sprintf(str," (%d)",(int)model.animates[k].pose_moves[i].msec);
-			strcat(txt,str);
-			
+			sprintf(txt,"  %s (%d)",model.poses[n].name,model.animates[k].pose_moves[i].msec);
+
+			if ((i>=model.animates[k].loop_start) && (i<=model.animates[k].loop_end)) txt[0]='¥';
+
 			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,txt,kCFStringEncodingMacRoman);
 			SetDataBrowserItemDataText(itemData,cfstr);
 			CFRelease(cfstr);

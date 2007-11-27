@@ -34,11 +34,13 @@ and can be sold or given away.
 
 char							filename[256];
 
-extern int						draw_type,cur_mesh,cur_bone,cur_pose,cur_bone_move,cur_animate,cur_animate_pose,cur_hit_box,
-								shift_x,shift_y,magnify_z,play_pose,drag_bone_mode;
+extern int						draw_type,cur_mesh,cur_bone,cur_pose,cur_bone_move,
+								cur_animate,cur_animate_pose,cur_hit_box,
+								shift_x,shift_y,magnify_z,drag_bone_mode,
+								play_animate_blend_idx[max_model_blend_animation];
 extern float					ang_y,ang_x;
 extern bool						done,fileopen,model_box_on,model_bump_on,model_normal_on,
-								model_bone_drag_on,play_animate,model_show_first_mesh;
+								model_bone_drag_on,play_animate,play_animate_blend,model_show_first_mesh;
 							
 extern model_type				model;
 extern model_draw_setup			draw_setup;
@@ -87,10 +89,18 @@ void menu_start(void)
 
 void windows_start(void)
 {
+	int				n;
+	
 	cur_mesh=0;
 	cur_bone=-1;
 	cur_pose=-1;
+	
 	play_animate=FALSE;
+	play_animate_blend=FALSE;
+	
+	for (n=0;n!=max_model_blend_animation;n++) {
+		play_animate_blend_idx[n]=-1;
+	}
 	
 	model_wind_open();
 	model_wind_reset_tools();
@@ -609,19 +619,19 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			// --------------------------------
 
 		case kCommandNew:
-			reset_animation_play(FALSE);
+			model_wind_play(FALSE,FALSE);
 			new_model_xml();
 			return(noErr);
 
 		case kCommandOpen:
-			reset_animation_play(FALSE);
+			model_wind_play(FALSE,FALSE);
 			open_model_xml();
 			return(noErr);
 			
 		case kCommandClose:
 			save_changes();
 			close_model_xml();
-			reset_animation_play(FALSE);
+			model_wind_play(FALSE,FALSE);
 			fix_menus();
 			return(noErr);
 			
@@ -817,27 +827,27 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			return(noErr);
 			
 		case kCommandImportOBJ:
-			reset_animation_play(FALSE);
+			model_wind_play(FALSE,FALSE);
 			import_mesh_obj();
 			return(noErr);
 			
 		case kCommandImportLWO:
-			reset_animation_play(FALSE);
+			model_wind_play(FALSE,FALSE);
 			import_mesh_lightwave();
 			return(noErr);
 			
 		case kCommandImportMW:
-			reset_animation_play(FALSE);
+			model_wind_play(FALSE,FALSE);
 			import_mesh_meshwork();
 			return(noErr);
 			
 		case kCommandImportC4DXML:
-			reset_animation_play(FALSE);
+			model_wind_play(FALSE,FALSE);
 			import_mesh_c4d_xml();
 			return(noErr);
 			
 		case kCommandInsertXML:
-			reset_animation_play(FALSE);
+			model_wind_play(FALSE,FALSE);
 			insert_mesh_dim3_model();
 			return(noErr);
 			
@@ -1105,7 +1115,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 				StandardAlert(0,"\pCan't Create Animation","\pYou need to have at least one pose before creating an animation.",NULL,NULL);
 				return(noErr);
 			}
-			reset_animation_play(FALSE);
+			model_wind_play(FALSE,FALSE);
             switch_tab_animate();
 			idx=model_animate_add(&model);
 			if (idx!=-1) {
@@ -1118,7 +1128,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			
 		case kCommandDupAnimate:
 			if (cur_animate==-1) return(noErr);
-			reset_animation_play(FALSE);
+			model_wind_play(FALSE,FALSE);
             switch_tab_animate();
 			idx=model_animate_duplicate(&model,cur_animate);
 			if (idx!=-1) {
@@ -1131,7 +1141,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
             
 		case kCommandDeleteAnimate:
 			if (cur_animate==-1) return(noErr);
-			reset_animation_play(FALSE);
+			model_wind_play(FALSE,FALSE);
             switch_tab_animate();
 			model_animate_delete(&model,cur_animate);
 			cur_animate=-1;
@@ -1141,14 +1151,20 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			
 		case kCommandResetTimeAnimate:
 			if (cur_animate==-1) return(noErr);
-			reset_animation_play(FALSE);
+			model_wind_play(FALSE,FALSE);
             switch_tab_animate();
 			dialog_animation_reset_time_run(cur_animate);
 			reset_animate_tab(cur_animate,-1);
 			return(noErr);
 			
 		case kCommandPlayAnimate:
-			reset_animation_play(!play_animate);
+			model_wind_play(!play_animate,FALSE);
+			return(noErr);
+			
+		case kCommandPlayBlendAnimate:
+			if (dialog_play_blend_animation_run()) {
+				model_wind_play(TRUE,TRUE);
+			}
 			return(noErr);
 			
 			// --------------------------------

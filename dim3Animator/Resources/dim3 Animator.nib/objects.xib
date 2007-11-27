@@ -4,7 +4,7 @@
   <object name="rootObject" class="NSCustomObject" id="1">
     <string name="customClass">NSApplication</string>
   </object>
-  <array count="734" name="allObjects">
+  <array count="751" name="allObjects">
     <object class="IBCarbonMenu" id="29">
       <string name="title">Menu</string>
       <array count="11" name="items">
@@ -568,7 +568,7 @@
           <object name="submenu" class="IBCarbonMenu" id="218">
             <string name="title">Animations</string>
             <int name="menuID">137</int>
-            <array count="8" name="items">
+            <array count="9" name="items">
               <object class="IBCarbonMenuItem" id="216">
                 <boolean name="updateSingleItem">TRUE</boolean>
                 <string name="title">New Animation...</string>
@@ -607,6 +607,11 @@
                 <string name="title">Play Animation</string>
                 <string name="keyEquivalent">p</string>
                 <ostype name="command">plya</ostype>
+              </object>
+              <object class="IBCarbonMenuItem" id="1800">
+                <boolean name="updateSingleItem">TRUE</boolean>
+                <string name="title">Play Blended Animation...</string>
+                <ostype name="command">plyb</ostype>
               </object>
             </array>
           </object>
@@ -5071,8 +5076,115 @@
     <reference idRef="1797"/>
     <reference idRef="1798"/>
     <reference idRef="1799"/>
+    <reference idRef="1800"/>
+    <object class="IBCarbonWindow" id="1801">
+      <string name="windowRect">100 212 290 677 </string>
+      <string name="title">Play Blended Animations</string>
+      <object name="rootControl" class="IBCarbonRootControl" id="1802">
+        <string name="bounds">0 0 190 465 </string>
+        <array count="6" name="subviews">
+          <object class="IBCarbonPopupButton" id="1804">
+            <string name="bounds">20 20 40 445 </string>
+            <ostype name="controlSignature">ani1</ostype>
+            <string name="title">Animation 1:</string>
+            <object name="menu" class="IBCarbonMenu" id="1805">
+              <string name="title">Popup</string>
+              <array count="1" name="items">
+                <object class="IBCarbonMenuItem" id="1806">
+                  <boolean name="checked">TRUE</boolean>
+                  <boolean name="updateSingleItem">TRUE</boolean>
+                  <string name="title">-</string>
+                </object>
+              </array>
+            </object>
+          </object>
+          <object class="IBCarbonButton" id="1807">
+            <string name="bounds">150 295 170 365 </string>
+            <int name="controlID">2</int>
+            <string name="title">Cancel</string>
+            <ostype name="command">not!</ostype>
+          </object>
+          <object class="IBCarbonButton" id="1808">
+            <string name="bounds">150 375 170 445 </string>
+            <int name="controlID">1</int>
+            <string name="title">Play</string>
+            <ostype name="command">ok  </ostype>
+            <int name="buttonType">1</int>
+          </object>
+          <object class="IBCarbonPopupButton" id="1816">
+            <string name="bounds">50 20 70 445 </string>
+            <ostype name="controlSignature">ani2</ostype>
+            <string name="title">Animation 2:</string>
+            <object name="menu" class="IBCarbonMenu" id="1817">
+              <string name="title">Popup</string>
+              <array count="1" name="items">
+                <object class="IBCarbonMenuItem" id="1818">
+                  <boolean name="checked">TRUE</boolean>
+                  <boolean name="updateSingleItem">TRUE</boolean>
+                  <string name="title">-</string>
+                </object>
+              </array>
+            </object>
+          </object>
+          <object class="IBCarbonPopupButton" id="1819">
+            <string name="bounds">80 20 100 445 </string>
+            <ostype name="controlSignature">ani3</ostype>
+            <string name="title">Animation 3:</string>
+            <object name="menu" class="IBCarbonMenu" id="1820">
+              <string name="title">Popup</string>
+              <array count="1" name="items">
+                <object class="IBCarbonMenuItem" id="1821">
+                  <boolean name="checked">TRUE</boolean>
+                  <boolean name="updateSingleItem">TRUE</boolean>
+                  <string name="title">-</string>
+                </object>
+              </array>
+            </object>
+          </object>
+          <object class="IBCarbonPopupButton" id="1822">
+            <string name="bounds">110 20 130 445 </string>
+            <ostype name="controlSignature">ani4</ostype>
+            <string name="title">Animation 4:</string>
+            <object name="menu" class="IBCarbonMenu" id="1823">
+              <string name="title">Popup</string>
+              <array count="1" name="items">
+                <object class="IBCarbonMenuItem" id="1824">
+                  <boolean name="checked">TRUE</boolean>
+                  <boolean name="updateSingleItem">TRUE</boolean>
+                  <string name="title">-</string>
+                </object>
+              </array>
+            </object>
+          </object>
+        </array>
+      </object>
+      <boolean name="receiveUpdates">FALSE</boolean>
+      <boolean name="hasHorizontalZoom">FALSE</boolean>
+      <boolean name="isResizable">FALSE</boolean>
+      <boolean name="hasVerticalZoom">FALSE</boolean>
+      <int name="carbonWindowClass">4</int>
+      <int name="windowPosition">1</int>
+      <boolean name="isConstrained">FALSE</boolean>
+      <boolean name="doesNotCycle">TRUE</boolean>
+      <boolean name="inWindowMenu">FALSE</boolean>
+    </object>
+    <reference idRef="1802"/>
+    <reference idRef="1804"/>
+    <reference idRef="1805"/>
+    <reference idRef="1806"/>
+    <reference idRef="1807"/>
+    <reference idRef="1808"/>
+    <reference idRef="1816"/>
+    <reference idRef="1817"/>
+    <reference idRef="1818"/>
+    <reference idRef="1819"/>
+    <reference idRef="1820"/>
+    <reference idRef="1821"/>
+    <reference idRef="1822"/>
+    <reference idRef="1823"/>
+    <reference idRef="1824"/>
   </array>
-  <array count="734" name="allParents">
+  <array count="751" name="allParents">
     <reference idRef="1"/>
     <reference idRef="29"/>
     <reference idRef="131"/>
@@ -5807,8 +5919,25 @@
     <reference idRef="1793"/>
     <reference idRef="1444"/>
     <reference idRef="1444"/>
+    <reference idRef="218"/>
+    <reference idRef="1"/>
+    <reference idRef="1801"/>
+    <reference idRef="1802"/>
+    <reference idRef="1804"/>
+    <reference idRef="1805"/>
+    <reference idRef="1802"/>
+    <reference idRef="1802"/>
+    <reference idRef="1802"/>
+    <reference idRef="1816"/>
+    <reference idRef="1817"/>
+    <reference idRef="1802"/>
+    <reference idRef="1819"/>
+    <reference idRef="1820"/>
+    <reference idRef="1802"/>
+    <reference idRef="1822"/>
+    <reference idRef="1823"/>
   </array>
-  <dictionary count="32" name="nameTable">
+  <dictionary count="33" name="nameTable">
     <string>About</string>
     <reference idRef="379"/>
     <string>AnimationSettings</string>
@@ -5817,6 +5946,8 @@
     <reference idRef="1535"/>
     <string>BitmapOpen</string>
     <reference idRef="301"/>
+    <string>BlendAnimation</string>
+    <reference idRef="1801"/>
     <string>BoneMoveSettings</string>
     <reference idRef="450"/>
     <string>BoneNudgePick</string>
@@ -5874,5 +6005,5 @@
     <string>VertexShaderOpen</string>
     <reference idRef="313"/>
   </dictionary>
-  <unsigned_int name="nextObjectID">1800</unsigned_int>
+  <unsigned_int name="nextObjectID">1825</unsigned_int>
 </object>

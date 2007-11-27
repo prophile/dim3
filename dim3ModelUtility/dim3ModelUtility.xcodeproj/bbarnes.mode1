@@ -417,9 +417,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>F559071B0CF6024900276A62</string>
+				<string>F5D1A8A30CFA504A001B5E1B</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>F559071C0CF6024900276A62</string>
+				<string>F5D1A8A40CFA504A001B5E1B</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -548,7 +548,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>217449729.91820201</real>
+	<real>217731146.538102</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -564,8 +564,7 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>F5C0B9DD092AB45D00513681</string>
-		<string>1C530D57069F1CE1000CFCEE</string>
-		<string>/Users/bbarnes/dim3CodeImport/dim3ModelUtility/dim3ModelUtility.xcodeproj</string>
+		<string>/Users/bbarnes/dim3Code/dim3ModelUtility/dim3ModelUtility.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>1131 156 300 867 0 0 1680 1028 </string>
@@ -645,7 +644,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>F5C0B9DD092AB45D00513681</string>
-				<string>F55907150CF6023C00276A62</string>
+				<string>F5D1A8A50CFA504A001B5E1B</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

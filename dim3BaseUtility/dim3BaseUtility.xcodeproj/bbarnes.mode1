@@ -413,9 +413,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>F559067A0CF553B000276A62</string>
+				<string>F5D1A76F0CF8F8DB001B5E1B</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>F559067B0CF553B000276A62</string>
+				<string>F5D1A7700CF8F8DB001B5E1B</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -534,7 +534,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>217404480.339057</real>
+	<real>217643227.91296199</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -550,7 +550,7 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>F5AD52A50BBE16D9001C7C04</string>
-		<string>/Users/bbarnes/dim3CodeImport/dim3BaseUtility/dim3BaseUtility.xcodeproj</string>
+		<string>/Users/bbarnes/dim3Code/dim3BaseUtility/dim3BaseUtility.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>851 140 315 879 0 0 1680 1028 </string>
@@ -591,6 +591,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -630,7 +632,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>F5AD52A50BBE16D9001C7C04</string>
-				<string>F55906810CF553D800276A62</string>
+				<string>F5D1A76E0CF8F8DA001B5E1B</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

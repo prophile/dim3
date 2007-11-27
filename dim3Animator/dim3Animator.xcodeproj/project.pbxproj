@@ -75,6 +75,7 @@
 		F5C5352F09267BFD00663E36 /* tab.h in Headers */ = {isa = PBXBuildFile; fileRef = F5C5352E09267BFD00663E36 /* tab.h */; };
 		F5C5354709267C6D00663E36 /* dialog.h in Headers */ = {isa = PBXBuildFile; fileRef = F5C5354609267C6D00663E36 /* dialog.h */; };
 		F5C6C64B09D659BB005DFE3D /* dialog_model_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C6C64A09D659BB005DFE3D /* dialog_model_settings.c */; };
+		F5D1A7A40CF933E6001B5E1B /* dialog_play_blend_animation.c in Sources */ = {isa = PBXBuildFile; fileRef = F5D1A7A30CF933E6001B5E1B /* dialog_play_blend_animation.c */; };
 		F5D97E180857E233000BB6A3 /* dialog_file_open.c in Sources */ = {isa = PBXBuildFile; fileRef = F5D97E160857E233000BB6A3 /* dialog_file_open.c */; };
 		F5D97E190857E233000BB6A3 /* dialog_file_new.c in Sources */ = {isa = PBXBuildFile; fileRef = F5D97E170857E233000BB6A3 /* dialog_file_new.c */; };
 		F5DB0C310856A832005A7CB7 /* dim3 Animator.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5A42DC40555EC87002DF965 /* dim3 Animator.app */; };
@@ -178,6 +179,7 @@
 		F5C6C64A09D659BB005DFE3D /* dialog_model_settings.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_model_settings.c; path = Code/dialog_model_settings.c; sourceTree = "<group>"; };
 		F5CA4EF7051010AD0055C8B8 /* modelutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = modelutility.h; path = ../dim3Common/Headers/modelutility.h; sourceTree = SOURCE_ROOT; };
 		F5CAF0140183DF6A013CEF5C /* nav_serve.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = nav_serve.c; path = Code/nav_serve.c; sourceTree = "<group>"; };
+		F5D1A7A30CF933E6001B5E1B /* dialog_play_blend_animation.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_play_blend_animation.c; path = Code/dialog_play_blend_animation.c; sourceTree = "<group>"; };
 		F5D97E160857E233000BB6A3 /* dialog_file_open.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_file_open.c; path = Code/dialog_file_open.c; sourceTree = "<group>"; };
 		F5D97E170857E233000BB6A3 /* dialog_file_new.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_file_new.c; path = Code/dialog_file_new.c; sourceTree = "<group>"; };
 		F5EA20E80CCB0B6D005A75F6 /* dialog_finish_import.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_finish_import.c; path = Code/dialog_finish_import.c; sourceTree = "<group>"; };
@@ -390,6 +392,7 @@
 				F5B3736A0C56807100D6AE9E /* dialog_animation_settings.c */,
 				F5895D3E0C6570EC00AA2669 /* dialog_animation_time_reset.c */,
 				F594B48509A96EFB00408388 /* dialog_hit_box_settings.c */,
+				F5D1A7A30CF933E6001B5E1B /* dialog_play_blend_animation.c */,
 				F5C48B850C88F5CE0011D6B1 /* dialog_scale.c */,
 				F5C48B870C88F5E10011D6B1 /* dialog_nudge_rotate.c */,
 			);
@@ -536,6 +539,7 @@
 				F5C48B880C88F5E10011D6B1 /* dialog_nudge_rotate.c in Sources */,
 				F5263C1E0CC58C7E00A84EB9 /* c4d_xml_import.c in Sources */,
 				F5EA20E90CCB0B6D005A75F6 /* dialog_finish_import.c in Sources */,
+				F5D1A7A40CF933E6001B5E1B /* dialog_play_blend_animation.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -556,7 +560,10 @@
 		F5DB0C230856A7FD005A7CB7 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = ppc;
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;

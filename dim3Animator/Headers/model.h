@@ -25,8 +25,6 @@ and can be sold or given away.
  
 *********************************************************************/
 
-extern void reset_animation_play(bool play);
-
 extern void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 extern void draw_model_faded(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 

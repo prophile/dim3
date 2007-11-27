@@ -120,6 +120,7 @@
 #define kCommandDeleteAnimate			FOUR_CHAR_CODE('kani')
 #define kCommandResetTimeAnimate		FOUR_CHAR_CODE('artm')
 #define kCommandPlayAnimate				FOUR_CHAR_CODE('plya')
+#define kCommandPlayBlendAnimate		FOUR_CHAR_CODE('plyb')
 
 #define kCommandNewHitBox				FOUR_CHAR_CODE('nhbx')
 #define kCommandDeleteHitBox			FOUR_CHAR_CODE('dhbx')

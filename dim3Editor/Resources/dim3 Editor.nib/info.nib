@@ -14,7 +14,7 @@
 	<key>IBOldestOS</key>
 	<integer>3</integer>
 	<key>IBSystem Version</key>
-	<string>8R218</string>
+	<string>8S165</string>
 	<key>targetFramework</key>
 	<string>IBCarbonFramework</string>
 </dict>

@@ -98,6 +98,7 @@ extern bool dialog_bone_move_settings_run(model_bone_move_type *bone_move);
 extern void dialog_animation_settings_run(int animate_idx,int pose_move_idx);
 extern bool dialog_animation_reset_time_run(int animate_idx);
 extern bool dialog_hit_box_settings_run(model_hit_box_type *hit_box);
+extern bool dialog_play_blend_animation_run(void);
 
 extern bool dialog_scale_run(model_type *mdl,float *x,float *z,float *y);
 extern bool dialog_nudge_rotate_run(int *x,int *z,int *y,char *diag_name,int def_value);

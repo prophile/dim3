@@ -45,3 +45,6 @@ extern void texture_palette_click(Point pt,bool dblclick);
 
 extern void info_palette_draw(void);
 
+extern void model_wind_play(bool play,bool blend);
+
+

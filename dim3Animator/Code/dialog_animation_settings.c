@@ -25,6 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#include "window.h"
 #include "dialog.h"
 #include "model.h"
 #include "tab.h"
@@ -290,7 +291,7 @@ static pascal OSStatus animation_settings_event_proc(EventHandlerCallRef handler
 					return(noErr);
 			
 				case kAnimationPosePlay:
-					reset_animation_play(!play_animate);
+					model_wind_play(!play_animate,FALSE);
 					return(noErr);
 					
 				case kHICommandOK:
