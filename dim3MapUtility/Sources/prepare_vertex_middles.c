@@ -60,7 +60,6 @@ void map_prepare_calculate_segment_vertex_middle(segment_type *seg)
 
         case sg_floor:
         case sg_ceiling:
-		case sg_poly:
             fc=&seg->data.fc;
 			
 			mx=mz=my=0;

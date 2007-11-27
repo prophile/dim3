@@ -94,7 +94,6 @@ void map_segment_move(map_type *map,segment_type *seg,int x,int y,int z)
 			
 		case sg_floor:
 		case sg_ceiling:
-		case sg_poly:
             fc=&seg->data.fc;
             
 			ptsz=fc->ptsz;
@@ -260,7 +259,6 @@ void map_segment_calculate_extent(map_type *map,int seg_idx,int *min_x,int *min_
 			
 		case sg_floor:
 		case sg_ceiling:
-		case sg_poly:
 			*min_x=*max_x=seg->data.fc.x[0];
 			*min_z=*max_z=seg->data.fc.z[0];
 			*min_y=*max_y=seg->data.fc.y[0];
@@ -337,7 +335,6 @@ void map_segment_calculate_center(map_type *map,int seg_idx,int *x,int *y,int *z
 			break;
 		case sg_floor:
 		case sg_ceiling:
-		case sg_poly:
 			cx=cz=cy=0;
             for (i=0;i!=seg->data.fc.ptsz;i++) {
                 cx+=seg->data.fc.x[i];

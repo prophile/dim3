@@ -81,7 +81,6 @@ bool map_portal_create_single_segment_list(map_type *map,int rn)
 				break;
 			case sg_floor:
 			case sg_ceiling:
-			case sg_poly:
 				portal->fc_list_hit.max_count++;
 				break;
 			case sg_liquid:
@@ -271,7 +270,6 @@ void map_portal_build_single_segment_list(map_type *map,int rn)
 					break;
 				case sg_floor:
 				case sg_ceiling:
-				case sg_poly:
 					*fc_ptr++=n;
 					fc_cnt++;
 					break;

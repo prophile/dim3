@@ -203,25 +203,6 @@ void map_prepare_segments(map_type *map)
 				map_prepare_create_fc_segment_slope(seg);
 				break;
 
-			case sg_poly:
-				ptsz=(int)seg->data.fc.ptsz;
-                
-				for ((t=0);(t!=ptsz);t++) {
-					seg->data.fc.x[t]=(seg->data.fc.x[t]*map_enlarge)+portal->x;
-					seg->data.fc.z[t]=(seg->data.fc.z[t]*map_enlarge)+portal->z;
-                    seg->data.fc.y[t]=seg->data.fc.y[t]*map_enlarge;
-                    
-					if (seg->data.fc.y[t]<portal->ty) portal->ty=seg->data.fc.y[t];
-					if (seg->data.fc.y[t]>portal->by) portal->by=seg->data.fc.y[t];
-				}
-				
-				if (ptsz==3) seg->simple_tessel=TRUE;
-
-				map_prepare_set_fc_segment_square(seg);
-                map_prepare_create_poly_segment_uv(seg);
-				map_prepare_create_fc_segment_slope(seg);
-				break;
-				
 			case sg_liquid:
 				seg->data.liquid.lft=(seg->data.liquid.lft*map_enlarge)+portal->x;
 				seg->data.liquid.rgt=(seg->data.liquid.rgt*map_enlarge)+portal->x;
@@ -394,7 +375,6 @@ void map_prepare_curves_clips(map_type *map,int curve_level)
 				
 			case sg_floor:
 			case sg_ceiling:
-			case sg_poly:
 				if (seg->curve!=cv_none) map_prepare_create_fc_curve(map,seg);
 				break;
 				

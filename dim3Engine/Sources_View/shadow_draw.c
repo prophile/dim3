@@ -339,7 +339,6 @@ void shadow_render_draw_segment(segment_type *seg,int x,int y,int z,int *bx,int 
 			shadow_render_draw_wall(seg,x,y,z,bx,bz,gx,gy,high);
 			return;
 		case sg_floor:
-		case sg_poly:
 			shadow_render_draw_floor(seg,x,y,z,bx,bz,gx,gy);
 			return;
     }

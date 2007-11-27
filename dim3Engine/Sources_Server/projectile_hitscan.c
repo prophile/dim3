@@ -104,7 +104,6 @@ void projectile_hitscan(int tick,obj_type *obj,weapon_type *weap,proj_setup_type
 				proj->contact.wall_seg_idx=contact.seg_idx;
 				break;
 			case sg_floor:
-			case sg_poly:
 				proj->contact.floor_seg_idx=contact.seg_idx;
 				break;
 			case sg_ceiling:

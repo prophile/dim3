@@ -197,52 +197,6 @@ void map_prepare_create_fc_segment_uv(segment_type *seg)
 
 /* =======================================================
 
-      Create UVs for Polygon Segments
-      
-======================================================= */
-
-void map_prepare_create_poly_segment_uv(segment_type *seg)
-{
-	int					i,ptsz,lft,top;
-	int					*y_data;
-    float				xsize,ysize,x_txtoff,y_txtoff,x_txtfact,y_txtfact;
-    fc_segment_data		*fc;
-	segment_draw_type	*draw;
-    
-	fc=&seg->data.fc;
-	draw=&seg->draw;
-    
- 	lft=fc->min_x;
-	xsize=(float)(fc->max_x-lft);
-
-	if (fc->max_z>fc->max_y) {
-		top=fc->min_z;
-		ysize=(float)(fc->max_z-top);
-		y_data=fc->z;
-	}
-	else {
-		top=fc->min_y;
-		ysize=(float)(fc->max_y-top);
-		y_data=fc->y;
-	}
-
-	x_txtoff=seg->x_txtoff;
-	x_txtfact=seg->x_txtfact;
-	y_txtoff=seg->y_txtoff;
-	y_txtfact=seg->y_txtfact;
-
-    ptsz=fc->ptsz;
-   
-    for (i=0;i!=ptsz;i++) {
-		draw->gx[i]=x_txtoff+((x_txtfact*(float)(fc->x[i]-lft))/xsize);
-		draw->gy[i]=y_txtoff+((y_txtfact*(float)(y_data[i]-top))/ysize);
-    }
-	
-	map_prepare_orient_uv_polygon(fc->ptsz,draw->gx,draw->gy,seg->txt_ang);
-}
-
-/* =======================================================
-
       Create Slopes for FC Segments
       
 ======================================================= */

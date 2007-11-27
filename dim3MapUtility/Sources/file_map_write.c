@@ -584,31 +584,6 @@ bool write_map_xml(map_type *map)
 			
 			xml_add_tagclose("Ceilings");
 		}
-
- 			// polygon segments
-			
-		if (portal_has_segment_type(map,i,sg_poly)) {
-			xml_add_tagstart("Polys");
-			xml_add_tagend(FALSE);
-			
-			for (k=0;k!=map->nsegment;k++) {
-				seg=&map->segments[k];
-				if (seg->rn!=i) continue;
-				if (seg->type!=sg_poly) continue;
-		
-				xml_add_tagstart("Poly");
-				write_single_segment(seg);
-				xml_add_tagend(FALSE);
-			
-				for (j=0;j!=seg->data.fc.ptsz;j++) {
-					write_single_vertex(seg->data.fc.x[j],seg->data.fc.y[j],seg->data.fc.z[j]);
-				}
-			
-				xml_add_tagclose("Poly");
-			}
-			
-			xml_add_tagclose("Polys");
-		}
 		
  			// liquid segments
 			

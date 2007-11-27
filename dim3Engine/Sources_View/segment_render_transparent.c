@@ -74,7 +74,6 @@ float segment_render_transparent_segments_far_z(segment_type *seg,int cx,int cy,
 				
 		case sg_floor:
 		case sg_ceiling:
-		case sg_poly:
 			ptsz=seg->data.fc.ptsz;
 			x=seg->data.fc.x;
 			y=seg->data.fc.y;

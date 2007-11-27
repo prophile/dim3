@@ -203,7 +203,6 @@ int map_portal_add_segment_single_vertex_list(portal_vertex_list_type *vl,int vl
 		
 		case sg_floor:
 		case sg_ceiling:
-		case sg_poly:
 			fc=&seg->data.fc;
 			ptsz=fc->ptsz;
 					
@@ -509,7 +508,6 @@ int map_portal_add_light_single_vertex_list(portal_vertex_list_type *vl,int vl_c
 		
 		case sg_floor:
 		case sg_ceiling:
-		case sg_poly:
 			fc=&seg->data.fc;
 			if ((seg->simple_tessel) || (fc->ptsz==3) || (!high_quality_lighting)) return(map_portal_add_light_simple_vertex_list(vl,vl_cnt,fc->ptsz,fc->x,fc->y,fc->z,moveable,light));
 			return(map_portal_add_light_tessel_floor_ceiling_vertex_list(vl,vl_cnt,fc->ptsz,fc->x,fc->y,fc->z,moveable,light));
@@ -594,7 +592,6 @@ int map_portal_create_vertex_list_count_segment(segment_type *seg)
 			return(seg->data.wall.ptsz);
 		case sg_floor:
 		case sg_ceiling:
-		case sg_poly:
 			return(seg->data.fc.ptsz);
 		case sg_liquid:
 			return(map_liquid_count_vertexes(seg));

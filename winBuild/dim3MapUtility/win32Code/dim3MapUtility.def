@@ -81,8 +81,6 @@ EXPORTS
 	map_segments_clear_touch					@234
 	map_segments_count_touch					@235
 
-	map_prepare_create_poly_segment_uv			@236
-
 	map_group_create_segment_list				@240
 	map_group_dispose_segment_list				@241
 	map_group_get_center						@242

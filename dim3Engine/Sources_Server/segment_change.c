@@ -76,7 +76,6 @@ void segment_move(int group_idx,int xmove,int zmove,int ymove)
 						object_move_with_wall_segment((int)(*seg_list),xmove,zmove);
 						break;
 					case sg_floor:
-					case sg_poly:
 						object_move_with_floor_segment((int)(*seg_list),xmove,zmove);
 						break;
 				}

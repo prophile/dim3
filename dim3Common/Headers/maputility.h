@@ -107,7 +107,6 @@ extern char light_type_str[][32];
 #define sg_liquid					3
 #define sg_ambient_wall				4
 #define sg_ambient_fc				5
-#define sg_poly						6
 
 #define max_primitive_stack			8					// size of primitive stack (for hierarchy)
 
@@ -698,8 +697,6 @@ extern void map_segment_calculate_extent(map_type *map,int seg_idx,int *min_x,in
 extern void map_segment_calculate_center(map_type *map,int seg_idx,int *x,int *y,int *z);
 extern void map_segments_clear_touch(map_type *map);
 extern int map_segments_count_touch(map_type *map);
-
-extern void map_prepare_create_poly_segment_uv(segment_type *seg);
 
 extern bool map_group_create_segment_list(map_type *map);
 extern void map_group_dispose_segment_list(map_type *map);

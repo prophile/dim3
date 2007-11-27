@@ -134,7 +134,8 @@ bool read_map_xml(map_type *map)
 	movement_type			*movement;
 	movement_move_type		*move;
 
-//	int x,z,x2,y2,z2;		// supergumba -- NEW COLLIDE -- editing here also
+		// supergumba -- NEW COLLIDE -- editing here also
+	segment_type temp_seg;
 	
 	if (!xml_open_file(map->info.load_path)) return(FALSE);
     
@@ -428,29 +429,39 @@ bool read_map_xml(map_type *map)
 					
 					read_single_segment(seg_tag,seg,i,sg_wall);
 
-					// supergumba -- NEW COLLIDE -- start -- testing new collisions
-
 					tag=xml_findfirstchild("v",seg_tag);
 					xml_get_attribute_3_coord_int(tag,"c3",&seg->data.wall.lx,&seg->data.wall.ty,&seg->data.wall.lz);
 					tag=xml_findnextchild(tag);
 					xml_get_attribute_3_coord_int(tag,"c3",&seg->data.wall.rx,&seg->data.wall.by,&seg->data.wall.rz);
 
-					/*
-					tag=xml_findfirstchild("v",seg_tag);
-					xml_get_attribute_3_coord_int(tag,"c3",&x,&y,&z);
-					tag=xml_findnextchild(tag);
-					xml_get_attribute_3_coord_int(tag,"c3",&x2,&y2,&z2);
 
-					
-					seg->type=sg_poly;
-					seg->data.fc.ptsz=4;
-					seg->data.fc.x[0]=seg->data.fc.x[3]=x;
-					seg->data.fc.x[1]=seg->data.fc.x[2]=x2;
-					seg->data.fc.z[0]=seg->data.fc.z[3]=z;
-					seg->data.fc.z[1]=seg->data.fc.z[2]=z2;
-					seg->data.fc.y[0]=seg->data.fc.y[1]=y;
-					seg->data.fc.y[2]=seg->data.fc.y[3]=y2+1;
-					*/
+					// supergumba -- NEW COLLIDE -- start -- testing new collisions
+
+
+
+					memmove(&temp_seg,seg,sizeof(segment_type));
+
+					if (seg->clip==wc_none) {
+						seg->data.fc.ptsz=4;
+						seg->data.fc.x[0]=seg->data.fc.x[3]=temp_seg.data.wall.lx;
+						seg->data.fc.x[1]=seg->data.fc.x[2]=temp_seg.data.wall.rx;
+						seg->data.fc.z[0]=seg->data.fc.z[3]=temp_seg.data.wall.lz;
+						seg->data.fc.z[1]=seg->data.fc.z[2]=temp_seg.data.wall.rz;
+						seg->data.fc.y[0]=seg->data.fc.y[1]=temp_seg.data.wall.ty;
+						seg->data.fc.y[2]=seg->data.fc.y[3]=temp_seg.data.wall.by+1;
+					}
+					else {
+						map_prepare_create_wall_clip(map,&temp_seg);
+
+						seg->data.fc.ptsz=temp_seg.data.wall.ptsz;
+
+						memmove(seg->data.fc.x,temp_seg.data.wall.x,(sizeof(int)*4));
+						memmove(seg->data.fc.y,temp_seg.data.wall.y,(sizeof(int)*4));
+						memmove(seg->data.fc.z,temp_seg.data.wall.z,(sizeof(int)*4));
+					}
+
+					seg->type=sg_floor;
+
 
 					// supergumba -- NEW COLLIDE -- end
 
@@ -497,32 +508,6 @@ bool read_map_xml(map_type *map)
 					map->nsegment++;
 					
 					read_single_segment(seg_tag,seg,i,sg_ceiling);
-					
-					seg->data.fc.ptsz=xml_countchildren(seg_tag);
-					tag=xml_findfirstchild("v",seg_tag);
-					
-					for (j=0;j!=seg->data.fc.ptsz;j++) {
-						xml_get_attribute_3_coord_int(tag,"c3",&seg->data.fc.x[j],&seg->data.fc.y[j],&seg->data.fc.z[j]);
-						tag=xml_findnextchild(tag);
-					}
-					
-					seg_tag=xml_findnextchild(seg_tag);
-				}
-			}
-
-				// polygons
-				
-            main_seg_tag=xml_findfirstchild("Polys",portal_tag);
-            if (main_seg_tag!=-1) {
-                
-                cnt=xml_countchildren(main_seg_tag);
-				seg_tag=xml_findfirstchild("Poly",main_seg_tag);
-                
-                for (k=0;k!=cnt;k++) {
-					seg=&map->segments[map->nsegment];
-					map->nsegment++;
-					
-					read_single_segment(seg_tag,seg,i,sg_poly);
 					
 					seg->data.fc.ptsz=xml_countchildren(seg_tag);
 					tag=xml_findfirstchild("v",seg_tag);

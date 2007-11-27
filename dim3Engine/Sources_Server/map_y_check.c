@@ -333,7 +333,6 @@ int pin_downward_movement_proj(proj_type *proj,int my)
 
 	switch (map.segments[seg_idx].type) {
 		case sg_floor:
-		case sg_poly:
 			proj->contact.floor_seg_idx=seg_idx;
 			break;
 		case sg_ceiling:
@@ -355,7 +354,6 @@ int pin_upward_movement_proj(proj_type *proj,int my)
 
 	switch (map.segments[seg_idx].type) {
 		case sg_floor:
-		case sg_poly:
 			proj->contact.floor_seg_idx=seg_idx;
 			break;
 		case sg_ceiling:

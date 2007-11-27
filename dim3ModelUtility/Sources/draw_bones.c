@@ -202,139 +202,6 @@ void model_create_draw_bone_from_pose_factor(model_type *model,model_draw_bone_t
 
 /* =======================================================
 
-      Create Draw Bones (Comulative)
-      
-======================================================= */
-
-void model_comulative_create_draw_bone_from_pose(model_type *model,model_draw_bone_type *draw_bones,int pose_1)
-{
-	int						n,nbone;
-	model_bone_type			*bone;
-	model_draw_bone_type	*draw_bone;
-	model_bone_move_type	*bone_move;
-	
-		// build draw list from model bones
-	
-	bone=model->bones;
-	bone_move=model->poses[pose_1].bone_moves;
-	draw_bone=draw_bones;
-	
-	nbone=model->nbone;
-	
-	for (n=0;n!=nbone;n++) {
-		draw_bone->parent_idx=bone->parent_idx;
-		
-		draw_bone->rot.x=bone_move->rot.x;
-        draw_bone->rot.y=bone_move->rot.y;
-        draw_bone->rot.z=bone_move->rot.z;
-		
-		draw_bone->parent_dist.x=bone->parent_dist.x*bone_move->mov.x;
-		draw_bone->parent_dist.y=bone->parent_dist.y*bone_move->mov.y;
-		draw_bone->parent_dist.z=bone->parent_dist.z*bone_move->mov.z;
-		
-			// auto touch bone with no parent
-		
-		if (bone->parent_idx==-1) {
-			draw_bone->touch=TRUE;
-			
-			draw_bone->fpnt.x=(float)bone->pnt.x;
-			draw_bone->fpnt.z=(float)bone->pnt.z;
-			draw_bone->fpnt.y=(float)bone->pnt.y;
-		}
-		else {
-			draw_bone->touch=FALSE;
-		}
-		
-		bone++;
-		draw_bone++;
-		bone_move++;
-	}
-}
-
-void model_comulative_create_draw_bone_from_pose_factor(model_type *model,model_draw_bone_type *draw_bones,int pose_1,int pose_2,float pose_factor)
-{
-	int						n,nbone;
-	float					accel_pose_factor,
-							mov_x_start,mov_z_start,mov_y_start,
-							mov_x_end,mov_z_end,mov_y_end,
-							rot_x_start,rot_z_start,rot_y_start,
-							rot_x_end,rot_z_end,rot_y_end;
-	model_bone_type			*bone;
-	model_draw_bone_type	*draw_bone;
-	model_bone_move_type	*bone_move_start,*bone_move_end;
-	
-		// find the bone moves to interept from
-	
-	bone_move_start=model->poses[pose_1].bone_moves;
-	bone_move_end=model->poses[pose_2].bone_moves;
-	
-		// build draw list from model bones
-	
-	bone=model->bones;
-	draw_bone=draw_bones;
-	
-	nbone=model->nbone;
-	
-	for (n=0;n!=nbone;n++) {
-		draw_bone->parent_idx=bone->parent_idx;
-		
-			// find the bone moves
-		
-		rot_x_start=bone_move_start->rot.x;
-		rot_z_start=bone_move_start->rot.z;
-		rot_y_start=bone_move_start->rot.y;
-		
-		mov_x_start=bone_move_start->mov.x;
-		mov_z_start=bone_move_start->mov.z;
-		mov_y_start=bone_move_start->mov.y;
-		
-		rot_x_end=bone_move_end->rot.x;
-		rot_z_end=bone_move_end->rot.z;
-		rot_y_end=bone_move_end->rot.y;
-		
-		mov_x_end=bone_move_end->mov.x;
-		mov_z_end=bone_move_end->mov.z;
-		mov_y_end=bone_move_end->mov.y;
-		
-			// change the factor based on acceleration
-
-		accel_pose_factor=acceleration_calculate(pose_factor,bone_move_start->acceleration);
-		
-			// factor the bone moves
-		
-		draw_bone->rot.x=rot_x_end+((rot_x_start-rot_x_end)*accel_pose_factor);
-		draw_bone->rot.z=rot_z_end+((rot_z_start-rot_z_end)*accel_pose_factor);
-		draw_bone->rot.y=rot_y_end+((rot_y_start-rot_y_end)*accel_pose_factor);
-		
-		mov_x_start=mov_x_end+((mov_x_start-mov_x_end)*accel_pose_factor);
-		draw_bone->parent_dist.x=bone->parent_dist.x*mov_x_start;
-		mov_y_start=mov_y_end+((mov_y_start-mov_y_end)*accel_pose_factor);
-		draw_bone->parent_dist.y=bone->parent_dist.y*mov_y_start;
-		mov_z_start=mov_z_end+((mov_z_start-mov_z_end)*accel_pose_factor);
-		draw_bone->parent_dist.z=bone->parent_dist.z*mov_z_start;
-		
-			// auto touch bone with no parent
-		
-		if (draw_bone->parent_idx==-1) {
-			draw_bone->touch=TRUE;
-			
-			draw_bone->fpnt.x=(float)bone->pnt.x;
-			draw_bone->fpnt.z=(float)bone->pnt.z;
-			draw_bone->fpnt.y=(float)bone->pnt.y;
-		}
-		else {
-			draw_bone->touch=FALSE;
-		}
-		
-		bone++;
-		draw_bone++;
-		bone_move_start++;
-		bone_move_end++;
-	}
-}
-
-/* =======================================================
-
       Combine Model Rotations Through Parents (Non-Comulative)
       
 ======================================================= */
@@ -524,45 +391,30 @@ void model_create_draw_bones_single(model_type *model,model_draw_setup *draw_set
 		pose_factor=acceleration_calculate(pose_factor,draw_setup->poses[blend_idx].acceleration);
 	}
 
-			// create bones
+		// get single pose or tween pose bones
+
+	if (pose_2==-1) {
+		model_create_draw_bone_from_pose(model,bones,pose_1);
+	}
+	else {
+		model_create_draw_bone_from_pose_factor(model,bones,pose_1,pose_2,pose_factor);
+	}
+
+		// combine rotations and create matrixes
+		// based on deform mode
 
 	switch(model->deform_mode) {
 	
 		case deform_mode_single_rotate:
-				
-				// single or tween poses
-			
-			if (pose_2==-1) {
-				model_create_draw_bone_from_pose(model,bones,pose_1);
-			}
-			else {
-				model_create_draw_bone_from_pose_factor(model,bones,pose_1,pose_2,pose_factor);
-			}
-
-				// combine rotations and create draw bone matrixes and positions
-
 			model_combine_draw_bone_rotations(model,bones);
 			model_move_draw_bones(model,bones);
 			break;
 		
 		case deform_mode_comulative_rotate:
-			
-				// single or tween poses
-			
-			if (pose_2==-1) {
-				model_comulative_create_draw_bone_from_pose(model,bones,pose_1);
-			}
-			else {
-				model_comulative_create_draw_bone_from_pose_factor(model,bones,pose_1,pose_2,pose_factor);
-			}
-
-				// combine rotations and create draw bone matrixes and positions
-			
 			model_comulative_combine_draw_bone_rotations(model,bones);
 			model_move_draw_bones(model,bones);
 			break;
 	}
-	
 }
 
 void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
@@ -570,7 +422,7 @@ void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
 	int						n,i,nbone,cnt,
 							idx,avg_mat_cnt[max_model_bone];
 	float					f_cnt;
-	d3pnt					fpnt[max_model_bone];
+	d3vct					fpnt[max_model_bone];
 	matrix_type				avg_mats[max_model_bone][max_model_blend_animation];
 	model_draw_bone_type	bones[max_model_blend_animation][max_model_bone];
 
