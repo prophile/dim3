@@ -77,8 +77,11 @@ and can be sold or given away.
 #define ctrl_mouse_y_speed_id				45
 #define ctrl_mouse_y_accel_id				46
 #define ctrl_mouse_smooth_id				47
+#define ctrl_joystick_turn_id				48
+#define ctrl_joystick_x_speed_id			49
+#define ctrl_joystick_y_speed_id			50
 
-#define ctrl_action_id						50
+#define ctrl_action_id						55
 
 #define ctrl_network_name_id				60
 #define ctrl_network_team_id				61
@@ -250,7 +253,7 @@ void setup_mouse_pane(void)
 	int			x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	control_y_sz=(6*control_y_add)+(4*8);
+	control_y_sz=(10*control_y_add)+(3*8);
 	
 	x=(int)(((float)setup.screen.x_scale)*0.4f);
 	y=(setup.screen.y_scale>>1)-(control_y_sz>>1);
@@ -261,7 +264,7 @@ void setup_mouse_pane(void)
 	y+=control_y_add+8;
 	
 	element_checkbox_add("Invert Look",setup.invert_look,ctrl_invert_look_id,x,y,TRUE);
-	y+=control_y_add+8;
+	y+=control_y_add;
 	element_checkbox_add("Mouse Smoothing",setup.mouse_smooth,ctrl_mouse_smooth_id,x,y,TRUE);
 	y+=control_y_add+8;
 
@@ -272,6 +275,13 @@ void setup_mouse_pane(void)
 	element_slider_add("Mouse Y Speed",setup.mouse_y.speed,setup.mouse_y.speed_min,setup.mouse_y.speed_max,ctrl_mouse_y_speed_id,x,y,TRUE);
 	y+=control_y_add;
 	element_slider_add("Mouse Y Acceleration",setup.mouse_y.acceleration,setup.mouse_y.acceleration_min,setup.mouse_y.acceleration_max,ctrl_mouse_y_accel_id,x,y,TRUE);
+	y+=control_y_add+8;
+
+	element_checkbox_add("Joystick Turning",setup.joystick_turn,ctrl_joystick_turn_id,x,y,TRUE);
+	y+=control_y_add;
+	element_slider_add("Joystick X Speed",setup.joystick_x.speed,setup.joystick_x.speed_min,setup.joystick_x.speed_max,ctrl_joystick_x_speed_id,x,y,TRUE);
+	y+=control_y_add;
+	element_slider_add("Joystick Y Speed",setup.joystick_y.speed,setup.joystick_y.speed_min,setup.joystick_y.speed_max,ctrl_joystick_y_speed_id,x,y,TRUE);
 }
 
 void setup_action_pane(void)
@@ -1045,6 +1055,18 @@ void setup_handle_click(int id)
 
 		case ctrl_mouse_y_accel_id:
 			setup.mouse_y.acceleration=element_get_slider_value(ctrl_mouse_y_accel_id);
+			break;
+
+		case ctrl_joystick_turn_id:
+			setup.joystick_turn=element_get_value(ctrl_joystick_turn_id);
+			break;
+
+		case ctrl_joystick_x_speed_id:
+			setup.joystick_x.speed=element_get_slider_value(ctrl_joystick_x_speed_id);
+			break;
+
+		case ctrl_joystick_y_speed_id:
+			setup.joystick_y.speed=element_get_slider_value(ctrl_joystick_y_speed_id);
 			break;
 		
 			// action pane

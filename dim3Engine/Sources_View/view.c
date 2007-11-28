@@ -260,11 +260,7 @@ bool view_initialize(char *err_str)
 
 		// start SDL
 
-#ifdef D3_OS_MAC		
-	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_NOPARACHUTE)==-1) {
-#else
-	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_NOPARACHUTE)==-1) {
-#endif
+	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK|SDL_INIT_NOPARACHUTE)==-1) {
 		view_memory_release();
 		sprintf(err_str,"SDL: Could not init (Error: %s)\n",SDL_GetError());
 		return(FALSE);

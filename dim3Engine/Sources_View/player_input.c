@@ -799,10 +799,15 @@ void player_get_input(int tick)
         
 	if ((obj->hidden) || (obj->input_freeze)) return;
 	
-		// get mouse movement
+		// get turning movement
 		
-	input_get_mouse_movement(tick,&mouse_x,&mouse_y);
-	
+	if (!setup.joystick_turn) {
+		input_get_mouse_movement(tick,&mouse_x,&mouse_y);
+	}
+	else {
+		input_get_joystick_movement(&mouse_x,&mouse_y);
+	}
+
 		// turning and movement
 		
 	player_turn_mouse_input(obj,mouse_x);

@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: Main Input Routines
+ Usage: Keyboard Input Routines
 
 ***************************** License ********************************
 

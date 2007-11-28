@@ -43,6 +43,9 @@ char					media_type_str[][32]={"none","story","title","movie"},
 						lighting_mode_str[][32]={"flat","hilite","hilite_diffuse","vertex"},
 						map_bump_mode_str[][32]=bump_mode_xml_list_str;
 
+
+bool map_convert_segment_to_mesh(map_type *map);	// supergumba -- new mesh stuff, forward reference
+
 /* =======================================================
 
       Read Segment XML
@@ -135,7 +138,7 @@ bool read_map_xml(map_type *map)
 	movement_move_type		*move;
 
 		// supergumba -- NEW COLLIDE -- editing here also
-	segment_type temp_seg;
+//	segment_type temp_seg;
 	
 	if (!xml_open_file(map->info.load_path)) return(FALSE);
     
@@ -438,28 +441,29 @@ bool read_map_xml(map_type *map)
 					// supergumba -- NEW COLLIDE -- start -- testing new collisions
 
 
-
+					/*
 					memmove(&temp_seg,seg,sizeof(segment_type));
 
 					switch (seg->clip) {
-					
 						case wc_top:
 							seg->data.fc.ptsz=3;
-							seg->data.fc.x[0]=temp_seg.data.wall.lx;
-							seg->data.fc.x[1]=seg->data.fc.x[2]=temp_seg.data.wall.rx;
-							seg->data.fc.z[0]=temp_seg.data.wall.lz;
-							seg->data.fc.z[1]=seg->data.fc.z[2]=temp_seg.data.wall.rz;
+							seg->data.fc.x[0]=seg->data.fc.x[2]=temp_seg.data.wall.lx;
+							seg->data.fc.x[1]=temp_seg.data.wall.rx;
+							seg->data.fc.z[0]=seg->data.fc.z[2]=temp_seg.data.wall.lz;
+							seg->data.fc.z[1]=temp_seg.data.wall.rz;
 							seg->data.fc.y[0]=temp_seg.data.wall.ty;
 							seg->data.fc.y[1]=seg->data.fc.y[2]=temp_seg.data.wall.by+1;
+							seg->simple_tessel=TRUE;
 							break;
 						case wc_bottom:
 							seg->data.fc.ptsz=3;
-							seg->data.fc.x[0]=temp_seg.data.wall.lx;
-							seg->data.fc.x[1]=seg->data.fc.x[2]=temp_seg.data.wall.rx;
-							seg->data.fc.z[0]=temp_seg.data.wall.lz;
-							seg->data.fc.z[1]=seg->data.fc.z[2]=temp_seg.data.wall.rz;
+							seg->data.fc.x[0]=seg->data.fc.x[2]=temp_seg.data.wall.lx;
+							seg->data.fc.x[1]=temp_seg.data.wall.rx;
+							seg->data.fc.z[0]=seg->data.fc.z[2]=temp_seg.data.wall.lz;
+							seg->data.fc.z[1]=temp_seg.data.wall.rz;
 							seg->data.fc.y[0]=temp_seg.data.wall.by+1;
 							seg->data.fc.y[1]=seg->data.fc.y[2]=temp_seg.data.wall.ty;
+							seg->simple_tessel=TRUE;
 							break;
 						default:
 							seg->data.fc.ptsz=4;
@@ -473,7 +477,12 @@ bool read_map_xml(map_type *map)
 					}
 					
 					seg->type=sg_floor;
+					seg->clip=wc_none;
+					seg->curve=cv_none;
 
+					seg->x_txtoff=seg->y_txtoff=0.0f;
+					seg->x_txtfact=seg->y_txtfact=0.0f;
+					*/
 
 					// supergumba -- NEW COLLIDE -- end
 
@@ -789,7 +798,117 @@ bool read_map_xml(map_type *map)
     }
 	
 	xml_close_file();
+
+	// supergumba -- new mesh stuff
+
+//	return(map_convert_segment_to_mesh(map));
     
+	return(TRUE);
+}
+
+
+
+
+// supergumba -- segment to mesh converter
+
+int map_convert_segment_to_mesh_add_point_vlist(int nvertex,d3pnt *vlist,int x,int y,int z)
+{
+	int				n;
+	d3pnt			*vptr;
+
+	vptr=vlist;
+
+	for (n=0;n!=nvertex;n++) {
+		if ((vptr->x==x) && (vptr->y==y) && (vptr->z==z)) return(nvertex);
+		vptr++;
+	}
+
+	vptr->x=x;
+	vptr->y=y;
+	vptr->z=z;
+
+	return(nvertex+1);
+}
+
+int map_convert_segment_to_mesh_add_poly_vlist(int nvertex,d3pnt *vlist,int ptsz,int *x,int *y,int *z)
+{
+	int				n;
+
+	for (n=0;n!=ptsz;n++) {
+		nvertex=map_convert_segment_to_mesh_add_point_vlist(nvertex,vlist,x[n],y[n],z[n]);
+	}
+
+	return(nvertex);
+}
+
+bool map_convert_segment_to_mesh(map_type *map)
+{
+	int				n,i,vlist_sz,nvertex,npoly;
+	d3pnt			*vlist;
+	segment_type	*seg;
+
+			// memory for vertex lists
+			// just use enough vertexes to cover most maps,
+			// hopefully this'll work on all conversions
+
+	vlist_sz=sizeof(d3pnt)*10000;
+
+	vlist=valloc(vlist_sz);
+	if (vlist==NULL) return(FALSE);
+
+		// create a mesh out of all segments in a portal
+
+	for (n=0;n!=map->nportal;n++) {
+
+			// clear vertex list
+
+		bzero(vlist,vlist_sz);
+		
+			// count the vertexes and polys
+
+		nvertex=npoly=0;
+
+		for (i=0;i!=map->nsegment;i++) {
+			seg=&map->segments[i];
+			if (seg->rn!=n) continue;
+
+			switch (seg->type) {
+
+				case sg_wall:
+					nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,seg->data.wall.ptsz,seg->data.wall.x,seg->data.wall.y,seg->data.wall.z);
+					npoly++;
+					break;
+
+				case sg_floor:
+				case sg_ceiling:
+					nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,seg->data.fc.ptsz,seg->data.fc.x,seg->data.fc.y,seg->data.fc.z);
+					npoly++;
+					break;
+
+			}
+
+		}
+
+		if ((nvertex==0) || (npoly==0)) continue;
+
+			// create new mesh
+
+	//	if (!map_portal_mesh_add(map,n,1)) {
+	//		free(vlist);
+	//		return(FALSE);
+	//	}
+
+			// add vertexes and polys
+
+		fprintf(stdout,"portal = %d; nvertex=%d, npoly=%d\n",n,nvertex,npoly);
+
+
+
+		
+	}
+	
+	free(vlist);
+
 	return(TRUE);
 }
 

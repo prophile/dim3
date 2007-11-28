@@ -231,10 +231,21 @@ and can be sold or given away.
 											SDLK_HELP,SDLK_PRINT,SDLK_SYSREQ,SDLK_BREAK,SDLK_MENU,SDLK_POWER,SDLK_EURO \
 										}
 										
-#define input_max_button_define			5
+#define input_max_mouse_button_define		5
 
-#define button_names					{"MouseLeft","MouseRight","MouseMiddle","MouseWheelUp","MouseWheelDown"}
-#define button_codes					{SDL_BUTTON_LEFT,SDL_BUTTON_RIGHT,SDL_BUTTON_MIDDLE,SDL_BUTTON_WHEELUP,SDL_BUTTON_WHEELDOWN}
+#define mouse_button_names					{"MouseLeft","MouseRight","MouseMiddle","MouseWheelUp","MouseWheelDown"}
+#define mouse_button_codes					{SDL_BUTTON_LEFT,SDL_BUTTON_RIGHT,SDL_BUTTON_MIDDLE,SDL_BUTTON_WHEELUP,SDL_BUTTON_WHEELDOWN}
+
+#define input_max_joystick_button_define	8
+
+#define joystick_button_names				{"Left","Right","Up","Down","Button 1","Button 2","Button 3","Button 4"}
+
+//
+// joystick axis points
+//
+
+#define joystick_axis_half_value		16384
+#define joystick_axis_max_value			32768
 
 //
 // action structures
@@ -244,12 +255,22 @@ and can be sold or given away.
 
 #define input_type_key					0
 #define input_type_mouse_button			1
+#define input_type_joystick_button		2
 
-#define input_button_left				0
-#define input_button_right				1
-#define input_button_middle				2
-#define input_button_wheel_up			3
-#define input_button_wheel_down			4
+#define input_mouse_button_left			0
+#define input_mouse_button_right		1
+#define input_mouse_button_middle		2
+#define input_mouse_button_wheel_up		3
+#define input_mouse_button_wheel_down	4
+
+#define input_joystick_button_left		0
+#define input_joystick_button_right		1
+#define input_joystick_button_up		2
+#define input_joystick_button_down		3
+#define input_joystick_button_1			4
+#define input_joystick_button_2			5
+#define input_joystick_button_3			6
+#define input_joystick_button_4			7
 
 typedef struct		{
 						int						type,index;

@@ -1335,6 +1335,10 @@ SOURCE=..\..\dim3Engine\Sources_View\input.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3Engine\Sources_View\input_joystick.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Engine\Sources_View\input_keyboard.c
 # End Source File
 # Begin Source File

@@ -92,7 +92,23 @@ void setup_xml_default(void)
 	setup.mouse_y.acceleration=0.6f;
 	setup.mouse_y.acceleration_min=0.0f;
 	setup.mouse_y.acceleration_max=1.0f;
-	
+
+	setup.joystick_x.speed=0.03f;
+	setup.joystick_x.speed_min=0.0f;
+	setup.joystick_x.speed_max=0.1f;
+	setup.joystick_x.acceleration=0.6f;
+	setup.joystick_x.acceleration_min=0.0f;
+	setup.joystick_x.acceleration_max=1.0f;
+
+	setup.joystick_y.speed=0.03f;
+	setup.joystick_y.speed_min=0.0f;
+	setup.joystick_y.speed_max=0.1f;
+	setup.joystick_y.acceleration=0.6f;
+	setup.joystick_y.acceleration_min=0.0f;
+	setup.joystick_y.acceleration_max=1.0f;
+
+	setup.joystick_turn=FALSE;
+
 	setup.action_list.naction=0;
 
 	strcpy(setup.network.name,"Player");
@@ -112,7 +128,7 @@ void setup_xml_default(void)
       
 ======================================================= */
 
-void setup_xml_fix_mouse_axis(setup_mouse_axis_type *axis)
+void setup_xml_fix_axis(setup_axis_type *axis)
 {
 	if (axis->speed<axis->speed_min) axis->speed=axis->speed_min;
 	if (axis->speed>axis->speed_max) axis->speed=axis->speed_max;
@@ -223,6 +239,19 @@ bool setup_xml_read_path(char *path)
 	setup_xml_read_key_float(setup_tag,"Mouse_Y_Acceleration",&setup.mouse_y.acceleration);
 	setup_xml_read_key_float(setup_tag,"Mouse_Y_Acceleration_Min",&setup.mouse_y.acceleration_min);
 	setup_xml_read_key_float(setup_tag,"Mouse_Y_Acceleration_Max",&setup.mouse_y.acceleration_max);
+	setup_xml_read_key_float(setup_tag,"Joystick_X_Speed",&setup.joystick_x.speed);
+	setup_xml_read_key_float(setup_tag,"Joystick_X_Speed_Min",&setup.joystick_x.speed_min);
+	setup_xml_read_key_float(setup_tag,"Joystick_X_Speed_Max",&setup.joystick_x.speed_max);
+	setup_xml_read_key_float(setup_tag,"Joystick_X_Acceleration",&setup.joystick_x.acceleration);
+	setup_xml_read_key_float(setup_tag,"Joystick_X_Acceleration_Min",&setup.joystick_x.acceleration_min);
+	setup_xml_read_key_float(setup_tag,"Joystick_X_Acceleration_Max",&setup.joystick_x.acceleration_max);
+	setup_xml_read_key_float(setup_tag,"Joystick_Y_Speed",&setup.joystick_y.speed);
+	setup_xml_read_key_float(setup_tag,"Joystick_Y_Speed_Min",&setup.joystick_y.speed_min);
+	setup_xml_read_key_float(setup_tag,"Joystick_Y_Speed_Max",&setup.joystick_y.speed_max);
+	setup_xml_read_key_float(setup_tag,"Joystick_Y_Acceleration",&setup.joystick_y.acceleration);
+	setup_xml_read_key_float(setup_tag,"Joystick_Y_Acceleration_Min",&setup.joystick_y.acceleration_min);
+	setup_xml_read_key_float(setup_tag,"Joystick_Y_Acceleration_Max",&setup.joystick_y.acceleration_max);
+	setup_xml_read_key_boolean(setup_tag,"Joystick_Turn",&setup.joystick_turn);
 	setup_xml_read_key_text(setup_tag,"Network_Name",setup.network.name,name_str_len);
 	setup_xml_read_key_int(setup_tag,"Network_Team",&setup.network.team_idx);
 	setup_xml_read_key_int(setup_tag,"Network_Timeout_Mode",&setup.network.timeout_mode);
@@ -233,8 +262,8 @@ bool setup_xml_read_path(char *path)
 
 		// fix some items
 
-	setup_xml_fix_mouse_axis(&setup.mouse_x);
-	setup_xml_fix_mouse_axis(&setup.mouse_y);
+	setup_xml_fix_axis(&setup.mouse_x);
+	setup_xml_fix_axis(&setup.mouse_y);
 	
 		// actions
 
@@ -402,6 +431,19 @@ bool setup_xml_write(void)
 	setup_xml_write_key_float("Mouse_Y_Acceleration",setup.mouse_y.acceleration);
 	setup_xml_write_key_float("Mouse_Y_Acceleration_Min",setup.mouse_y.acceleration_min);
 	setup_xml_write_key_float("Mouse_Y_Acceleration_Max",setup.mouse_y.acceleration_max);
+	setup_xml_write_key_float("Joystick_X_Speed",setup.joystick_x.speed);
+	setup_xml_write_key_float("Joystick_X_Speed_Min",setup.joystick_x.speed_min);
+	setup_xml_write_key_float("Joystick_X_Speed_Max",setup.joystick_x.speed_max);
+	setup_xml_write_key_float("Joystick_X_Acceleration",setup.joystick_x.acceleration);
+	setup_xml_write_key_float("Joystick_X_Acceleration_Min",setup.joystick_x.acceleration_min);
+	setup_xml_write_key_float("Joystick_X_Acceleration_Max",setup.joystick_x.acceleration_max);
+	setup_xml_write_key_float("Joystick_Y_Speed",setup.joystick_y.speed);
+	setup_xml_write_key_float("Joystick_Y_Speed_Min",setup.joystick_y.speed_min);
+	setup_xml_write_key_float("Joystick_Y_Speed_Max",setup.joystick_y.speed_max);
+	setup_xml_write_key_float("Joystick_Y_Acceleration",setup.joystick_y.acceleration);
+	setup_xml_write_key_float("Joystick_Y_Acceleration_Min",setup.joystick_y.acceleration_min);
+	setup_xml_write_key_float("Joystick_Y_Acceleration_Max",setup.joystick_y.acceleration_max);
+	setup_xml_write_key_boolean("Joystick_Turn",setup.joystick_turn);
 	setup_xml_write_key_text("Network_Name",setup.network.name);
 	setup_xml_write_key_int("Network_Team",setup.network.team_idx);
 	setup_xml_write_key_int("Network_Timeout_Mode",setup.network.timeout_mode);

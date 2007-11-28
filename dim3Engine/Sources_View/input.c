@@ -32,13 +32,16 @@ and can be sold or given away.
 #include "inputs.h"
 
 int							key_define_code[input_max_keyboard_define]=key_codes,
-							button_define_code[input_max_button_define]=button_codes;
+							mouse_button_define_code[input_max_mouse_button_define]=mouse_button_codes;
 char						key_define_str[input_max_keyboard_define][32]=key_names,
-							button_define_str[input_max_button_define][32]=button_names,
+							mouse_button_define_str[input_max_mouse_button_define][32]=mouse_button_names,
+							joystick_button_define_str[input_max_joystick_button_define][32]=joystick_button_names,
 							control_names_str[][32]=control_names;
-bool						input_key_set_skip_flag[input_max_keyboard_define];
+bool						input_joystick_on,input_key_set_skip_flag[input_max_keyboard_define];
 												
 input_action_type			input_actions[256];
+
+SDL_Joystick				*input_joy;
 
 extern bool					game_loop_quit;
 extern setup_type			setup;
@@ -51,27 +54,34 @@ extern setup_type			setup;
 
 void input_initialize(bool in_window)
 {
+		// setup events
+
 	SDL_EventState(SDL_ACTIVEEVENT,SDL_IGNORE);
 	SDL_EventState(SDL_KEYUP,SDL_IGNORE);
 	SDL_EventState(SDL_MOUSEBUTTONUP,SDL_IGNORE);
-	SDL_EventState(SDL_JOYAXISMOTION,SDL_IGNORE);
 	SDL_EventState(SDL_JOYBALLMOTION,SDL_IGNORE);
 	SDL_EventState(SDL_JOYHATMOTION,SDL_IGNORE);
-	SDL_EventState(SDL_JOYBUTTONDOWN,SDL_IGNORE);
 	SDL_EventState(SDL_JOYBUTTONUP,SDL_IGNORE);
+	SDL_EventState(SDL_JOYBUTTONDOWN,SDL_IGNORE);
+	SDL_EventState(SDL_JOYAXISMOTION,SDL_IGNORE);
 	SDL_EventState(SDL_SYSWMEVENT,SDL_IGNORE);
 	SDL_EventState(SDL_VIDEORESIZE,SDL_IGNORE);
 	SDL_EventState(SDL_USEREVENT,SDL_IGNORE);
 
-	if (!in_window) {
-		SDL_EventState(SDL_QUIT,SDL_IGNORE);
-	}
+	if (!in_window) SDL_EventState(SDL_QUIT,SDL_IGNORE);
+
+		// initialize mouse
 
 	input_mouse_initialize();
+
+		// initialize joysticks
+
+	input_joystick_on=input_joystick_initialize();
 }
 
 void input_shutdown(void)
 {
+	if (input_joystick_on) input_joystick_shutdown();
 	input_mouse_shutdown();
 }
 
@@ -204,12 +214,26 @@ bool input_set_key_wait(char *name,bool *no_key_up)
 	
 		// any mouse buttons
 		
-	for (i=0;i!=input_max_button_define;i++) {
-		if (input_get_mouse_button(button_define_code[i])) {
-			strcpy(name,button_define_str[i]);
-			*no_key_up=((button_define_code[i]==SDL_BUTTON_WHEELUP) || (button_define_code[i]==SDL_BUTTON_WHEELDOWN));
+	for (i=0;i!=input_max_mouse_button_define;i++) {
+		if (input_get_mouse_button(mouse_button_define_code[i])) {
+			strcpy(name,mouse_button_define_str[i]);
+			*no_key_up=((mouse_button_define_code[i]==SDL_BUTTON_WHEELUP) || (mouse_button_define_code[i]==SDL_BUTTON_WHEELDOWN));
 			return(TRUE);
 		}
+	}
+	
+		// any joystick buttons
+		
+	if (input_joystick_on) {
+
+		for (i=0;i!=input_max_joystick_button_define;i++) {
+			if (input_get_joystick_button(i)) {
+				strcpy(name,joystick_button_define_str[i]);
+				*no_key_up=FALSE;
+				return(TRUE);
+			}
+		}
+
 	}
 	
 	return(FALSE);
@@ -246,8 +270,8 @@ void input_event_pump(void)
 				input_event_keydown(event.key.keysym.sym);
 				break;
 				
-			case SDL_MOUSEBUTTONDOWN:
-				input_event_button_down(event.button.button);
+			case SDL_MOUSEBUTTONDOWN:		// specific case to deal with wheel up/down
+				input_event_mouse_button_down(event.button.button);
 				break;
 
 			case SDL_MOUSEMOTION:
@@ -291,10 +315,24 @@ void input_action_attach(char *attach_name,int action_index)
 	
 	if (index==-1) {
 	
-		for (i=0;i!=input_max_button_define;i++) {
-			if (strcasecmp(attach_name,button_define_str[i])==0) {
-				index=button_define_code[i];
+		for (i=0;i!=input_max_mouse_button_define;i++) {
+			if (strcasecmp(attach_name,mouse_button_define_str[i])==0) {
+				index=mouse_button_define_code[i];
 				type=input_type_mouse_button;
+				break;
+			}
+		}
+	
+	}
+
+		// is it a joystick button?
+	
+	if ((index==-1) && (input_joystick_on)) {
+	
+		for (i=0;i!=input_max_joystick_button_define;i++) {
+			if (strcasecmp(attach_name,joystick_button_define_str[i])==0) {
+				index=i;
+				type=input_type_joystick_button;
 				break;
 			}
 		}
@@ -385,6 +423,13 @@ bool input_action_get_state(int action_index)
 			case input_type_mouse_button:
 				if (input_get_mouse_button(item->index)) return(TRUE);
 				break;
+
+				// joystick buttons
+				
+			case input_type_joystick_button:
+				if (input_get_joystick_button(item->index)) return(TRUE);
+				break;
+
 		}
 		
 		item++;

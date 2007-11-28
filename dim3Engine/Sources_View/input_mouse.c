@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: Main Input Routines
+ Usage: Mouse Input Routines
 
 ***************************** License ********************************
 
@@ -105,7 +105,7 @@ void input_mouse_resume(void)
       
 ======================================================= */
 
-void input_event_button_down(int button)
+void input_event_mouse_button_down(int button)
 {
 		// treat wheel up/down as special cases as they
 		// don't last long enough to be caught and we

@@ -95,17 +95,18 @@ bool map_portal_mesh_set_vertex_count(map_type *map,int portal_idx,int mesh_idx,
 	nptr=(d3pnt*)valloc(nvertex*sizeof(d3pnt));
 	if (nptr==NULL) return(FALSE);
 
-		// move old vertexes
+		// move and delete old vertexes
 
-	if (map_mesh->nvertex!=0) {
-		memmove(nptr,map_mesh->vertexes,(map_mesh->nvertex*sizeof(d3pnt)));
+	if (map_mesh->vertexes!=NULL) {
+		if (map_mesh->nvertex!=0) {
+			memmove(nptr,map_mesh->vertexes,(map_mesh->nvertex*sizeof(d3pnt)));
+		}
+		free(map_mesh->vertexes);
 	}
 
 		// finish setup
 
-	free(map_mesh->vertexes);
 	map_mesh->vertexes=nptr;
-
 	map_mesh->nvertex=nvertex;
 
 	return(TRUE);
@@ -123,17 +124,18 @@ bool map_portal_mesh_set_poly_count(map_type *map,int portal_idx,int mesh_idx,in
 	nptr=(map_mesh_poly_type*)valloc(npoly*sizeof(map_mesh_poly_type));
 	if (nptr==NULL) return(FALSE);
 
-		// move old polygons
+		// move and delete old polygons
 
-	if (map_mesh->npoly!=0) {
-		memmove(nptr,map_mesh->polys,(map_mesh->npoly*sizeof(map_mesh_poly_type)));
+	if (map_mesh->polys!=NULL) {
+		if (map_mesh->npoly!=0) {
+			memmove(nptr,map_mesh->polys,(map_mesh->npoly*sizeof(map_mesh_poly_type)));
+		}
+		free(map_mesh->polys);
 	}
 
 		// finish setup
 
-	free(map_mesh->polys);
 	map_mesh->polys=nptr;
-
 	map_mesh->npoly=npoly;
 
 	return(TRUE);

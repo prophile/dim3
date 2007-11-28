@@ -97,13 +97,13 @@ typedef struct		{
 					} setup_screen_type;
 
 //
-// setup mouse axis
+// setup mouse/joystick axis
 //
 
 typedef struct		{
 						float						speed,speed_min,speed_max,
 													acceleration,acceleration_min,acceleration_max;
-					} setup_mouse_axis_type;
+					} setup_axis_type;
 
 //
 // setup network
@@ -145,11 +145,11 @@ typedef struct		{
 													high_quality_lighting,diffuse_lighting,ray_trace_lighting,
 													bump_mapping,specular_mapping,glow_mapping,
 													segment_darken,halo,mark,fog,
-													always_run,toggle_run,invert_look,mouse_smooth,
+													always_run,toggle_run,invert_look,mouse_smooth,joystick_turn,
 													music_on,debug_console,window,window_editor;
 						setup_path_type				path;
 						setup_screen_type			screen;
-						setup_mouse_axis_type		mouse_x,mouse_y;
+						setup_axis_type				mouse_x,mouse_y,joystick_x,joystick_y;
 						setup_action_list_type		action_list;
 						setup_network_type			network;
 						file_path_setup_type		file_path_setup;
