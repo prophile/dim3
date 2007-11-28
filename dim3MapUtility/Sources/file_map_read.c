@@ -441,25 +441,37 @@ bool read_map_xml(map_type *map)
 
 					memmove(&temp_seg,seg,sizeof(segment_type));
 
-					if (seg->clip==wc_none) {
-						seg->data.fc.ptsz=4;
-						seg->data.fc.x[0]=seg->data.fc.x[3]=temp_seg.data.wall.lx;
-						seg->data.fc.x[1]=seg->data.fc.x[2]=temp_seg.data.wall.rx;
-						seg->data.fc.z[0]=seg->data.fc.z[3]=temp_seg.data.wall.lz;
-						seg->data.fc.z[1]=seg->data.fc.z[2]=temp_seg.data.wall.rz;
-						seg->data.fc.y[0]=seg->data.fc.y[1]=temp_seg.data.wall.ty;
-						seg->data.fc.y[2]=seg->data.fc.y[3]=temp_seg.data.wall.by+1;
+					switch (seg->clip) {
+					
+						case wc_top:
+							seg->data.fc.ptsz=3;
+							seg->data.fc.x[0]=temp_seg.data.wall.lx;
+							seg->data.fc.x[1]=seg->data.fc.x[2]=temp_seg.data.wall.rx;
+							seg->data.fc.z[0]=temp_seg.data.wall.lz;
+							seg->data.fc.z[1]=seg->data.fc.z[2]=temp_seg.data.wall.rz;
+							seg->data.fc.y[0]=temp_seg.data.wall.ty;
+							seg->data.fc.y[1]=seg->data.fc.y[2]=temp_seg.data.wall.by+1;
+							break;
+						case wc_bottom:
+							seg->data.fc.ptsz=3;
+							seg->data.fc.x[0]=temp_seg.data.wall.lx;
+							seg->data.fc.x[1]=seg->data.fc.x[2]=temp_seg.data.wall.rx;
+							seg->data.fc.z[0]=temp_seg.data.wall.lz;
+							seg->data.fc.z[1]=seg->data.fc.z[2]=temp_seg.data.wall.rz;
+							seg->data.fc.y[0]=temp_seg.data.wall.by+1;
+							seg->data.fc.y[1]=seg->data.fc.y[2]=temp_seg.data.wall.ty;
+							break;
+						default:
+							seg->data.fc.ptsz=4;
+							seg->data.fc.x[0]=seg->data.fc.x[3]=temp_seg.data.wall.lx;
+							seg->data.fc.x[1]=seg->data.fc.x[2]=temp_seg.data.wall.rx;
+							seg->data.fc.z[0]=seg->data.fc.z[3]=temp_seg.data.wall.lz;
+							seg->data.fc.z[1]=seg->data.fc.z[2]=temp_seg.data.wall.rz;
+							seg->data.fc.y[0]=seg->data.fc.y[1]=temp_seg.data.wall.ty;
+							seg->data.fc.y[2]=seg->data.fc.y[3]=temp_seg.data.wall.by+1;
+							break;
 					}
-					else {
-						map_prepare_create_wall_clip(map,&temp_seg);
-
-						seg->data.fc.ptsz=temp_seg.data.wall.ptsz;
-
-						memmove(seg->data.fc.x,temp_seg.data.wall.x,(sizeof(int)*4));
-						memmove(seg->data.fc.y,temp_seg.data.wall.y,(sizeof(int)*4));
-						memmove(seg->data.fc.z,temp_seg.data.wall.z,(sizeof(int)*4));
-					}
-
+					
 					seg->type=sg_floor;
 
 

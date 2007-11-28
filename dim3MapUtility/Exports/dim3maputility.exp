@@ -78,8 +78,6 @@ _map_segment_calculate_center
 _map_segments_clear_touch
 _map_segments_count_touch
 
-_map_prepare_create_poly_segment_uv
-
 _map_group_create_segment_list
 _map_group_dispose_segment_list
 _map_group_get_center
