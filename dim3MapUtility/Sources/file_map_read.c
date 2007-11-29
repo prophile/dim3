@@ -136,9 +136,6 @@ bool read_map_xml(map_type *map)
 	map_scenery_type		*scenery;
 	movement_type			*movement;
 	movement_move_type		*move;
-
-		// supergumba -- NEW COLLIDE -- editing here also
-//	segment_type temp_seg;
 	
 	if (!xml_open_file(map->info.load_path)) return(FALSE);
     
@@ -436,55 +433,6 @@ bool read_map_xml(map_type *map)
 					xml_get_attribute_3_coord_int(tag,"c3",&seg->data.wall.lx,&seg->data.wall.ty,&seg->data.wall.lz);
 					tag=xml_findnextchild(tag);
 					xml_get_attribute_3_coord_int(tag,"c3",&seg->data.wall.rx,&seg->data.wall.by,&seg->data.wall.rz);
-
-
-					// supergumba -- NEW COLLIDE -- start -- testing new collisions
-
-
-					/*
-					memmove(&temp_seg,seg,sizeof(segment_type));
-
-					switch (seg->clip) {
-						case wc_top:
-							seg->data.fc.ptsz=3;
-							seg->data.fc.x[0]=seg->data.fc.x[2]=temp_seg.data.wall.lx;
-							seg->data.fc.x[1]=temp_seg.data.wall.rx;
-							seg->data.fc.z[0]=seg->data.fc.z[2]=temp_seg.data.wall.lz;
-							seg->data.fc.z[1]=temp_seg.data.wall.rz;
-							seg->data.fc.y[0]=temp_seg.data.wall.ty;
-							seg->data.fc.y[1]=seg->data.fc.y[2]=temp_seg.data.wall.by+1;
-							seg->simple_tessel=TRUE;
-							break;
-						case wc_bottom:
-							seg->data.fc.ptsz=3;
-							seg->data.fc.x[0]=seg->data.fc.x[2]=temp_seg.data.wall.lx;
-							seg->data.fc.x[1]=temp_seg.data.wall.rx;
-							seg->data.fc.z[0]=seg->data.fc.z[2]=temp_seg.data.wall.lz;
-							seg->data.fc.z[1]=temp_seg.data.wall.rz;
-							seg->data.fc.y[0]=temp_seg.data.wall.by+1;
-							seg->data.fc.y[1]=seg->data.fc.y[2]=temp_seg.data.wall.ty;
-							seg->simple_tessel=TRUE;
-							break;
-						default:
-							seg->data.fc.ptsz=4;
-							seg->data.fc.x[0]=seg->data.fc.x[3]=temp_seg.data.wall.lx;
-							seg->data.fc.x[1]=seg->data.fc.x[2]=temp_seg.data.wall.rx;
-							seg->data.fc.z[0]=seg->data.fc.z[3]=temp_seg.data.wall.lz;
-							seg->data.fc.z[1]=seg->data.fc.z[2]=temp_seg.data.wall.rz;
-							seg->data.fc.y[0]=seg->data.fc.y[1]=temp_seg.data.wall.ty;
-							seg->data.fc.y[2]=seg->data.fc.y[3]=temp_seg.data.wall.by+1;
-							break;
-					}
-					
-					seg->type=sg_floor;
-					seg->clip=wc_none;
-					seg->curve=cv_none;
-
-					seg->x_txtoff=seg->y_txtoff=0.0f;
-					seg->x_txtfact=seg->y_txtfact=0.0f;
-					*/
-
-					// supergumba -- NEW COLLIDE -- end
 
 					seg_tag=xml_findnextchild(seg_tag);
 				}

@@ -44,7 +44,7 @@ SDL_Joystick				*input_joystick;
 bool input_joystick_initialize(void)
 {
 		// any joysticks?
-
+		
 	if (SDL_NumJoysticks()==0) return(FALSE);
 
 	input_joystick=SDL_JoystickOpen(0);
@@ -70,19 +70,36 @@ void input_joystick_shutdown(void)
 
 void input_get_joystick_movement(float *x,float *y)
 {
-		// use the 0.003f factor to get the joystick movements
+	int				kx,ky;
+	
+		// only consider movement past the quarter point
+		
+	kx=SDL_JoystickGetAxis(input_joystick,0);
+	if (abs(kx)<joystick_axis_quarter_value) kx=0;
+	
+	ky=SDL_JoystickGetAxis(input_joystick,1);
+	if (abs(ky)<joystick_axis_quarter_value) ky=0;
+	
+		// use the factor to get the joystick movements
 		// within the same range as the mouse
 
-	*x=(((float)SDL_JoystickGetAxis(input_joystick,0))*0.003f)*setup.joystick_x.speed;
-	*y=(((float)SDL_JoystickGetAxis(input_joystick,1))*0.003f)*setup.joystick_y.speed;
+	*x=(((float)kx)*0.004f)*setup.joystick_x.speed;
+	*y=(((float)ky)*0.004f)*setup.joystick_y.speed;
 }
 
 bool input_get_joystick_button(int button_idx)
 {
-	switch (button_idx) {
+		// regular joystick input buttons
+		
+	if ((button_idx>=input_joystick_button_1) && (button_idx<=input_joystick_button_16)) {
+		return(SDL_JoystickGetButton(input_joystick,(button_idx-input_joystick_button_1))!=0);
+	
+	}
 
-			// these inputs are hard left/right/up/down on an axis
-			// we determine this by a movement greater then halfway
+		// these inputs are hard left/right/up/down on an axis
+		// we determine this by a movement greater then halfway
+	
+	switch (button_idx) {
 
 		case input_joystick_button_left:
 			return(SDL_JoystickGetAxis(input_joystick,0)<-joystick_axis_half_value);
@@ -95,20 +112,6 @@ bool input_get_joystick_button(int button_idx)
 
 		case input_joystick_button_down:
 			return(SDL_JoystickGetAxis(input_joystick,1)>joystick_axis_half_value);
-
-			// these inputs are regular joystick buttons
-
-		case input_joystick_button_1:
-			return(SDL_JoystickGetButton(input_joystick,0)!=0);
-
-		case input_joystick_button_2:
-			return(SDL_JoystickGetButton(input_joystick,1)!=0);
-
-		case input_joystick_button_3:
-			return(SDL_JoystickGetButton(input_joystick,2)!=0);
-
-		case input_joystick_button_4:
-			return(SDL_JoystickGetButton(input_joystick,3)!=0);
 
 	}
 	

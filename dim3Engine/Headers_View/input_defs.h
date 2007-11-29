@@ -193,84 +193,103 @@ and can be sold or given away.
 // SDL key lookups
 //
 
-#define key_names						{ \
-											"Backspace","Tab","Clear","Return","Pause","Escape","Space", \
-											"!","\"","#","$","&","'","(",")","*","+",",","-",".","/", \
-											"0","1","2","3","4","5","6","7","8","9", \
-											":",";","<","=",">","?","@","[","\\","]","^","_","`", \
-											"A","B","C","D","E","F","G","H","I","J","K","L","M", \
-											"N","O","P","Q","R","S","T","U","V","W","X","Y","Z", \
-											"Delete","KeyPad0","KeyPad1","KeyPad2","KeyPad3","KeyPad4","KeyPad5", \
-											"KeyPad6","KeyPad7","KeyPad8","KeyPad9", \
-											"KeyPad.","KeyPad/","KeyPad*","KeyPad-","KeyPad+","KeyPadEnter","KeyPad=", \
-											"UpArrow","DownArrow","RightArrow","LeftArrow", \
-											"Insert","Home","End","PageUp","PageDown", \
-											"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","F13","F14","F15", \
-											"NumLock","CapsLock","ScrollLock", \
-											"RightShift","LeftShift","RightControl","LeftControl","RightOption","LeftOption", \
-											"RightCommand","LeftCommand","LeftWindow","RightWindow", \
-											"ModeShift","Help","PrintScreen","SysRq","Break","Menu","Power","Euro" \
-										}
+#define key_names							{ \
+												"Backspace","Tab","Clear","Return","Pause","Escape","Space", \
+												"!","\"","#","$","&","'","(",")","*","+",",","-",".","/", \
+												"0","1","2","3","4","5","6","7","8","9", \
+												":",";","<","=",">","?","@","[","\\","]","^","_","`", \
+												"A","B","C","D","E","F","G","H","I","J","K","L","M", \
+												"N","O","P","Q","R","S","T","U","V","W","X","Y","Z", \
+												"Delete","KeyPad0","KeyPad1","KeyPad2","KeyPad3","KeyPad4","KeyPad5", \
+												"KeyPad6","KeyPad7","KeyPad8","KeyPad9", \
+												"KeyPad.","KeyPad/","KeyPad*","KeyPad-","KeyPad+","KeyPadEnter","KeyPad=", \
+												"UpArrow","DownArrow","RightArrow","LeftArrow", \
+												"Insert","Home","End","PageUp","PageDown", \
+												"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","F13","F14","F15", \
+												"NumLock","CapsLock","ScrollLock", \
+												"RightShift","LeftShift","RightControl","LeftControl","RightOption","LeftOption", \
+												"RightCommand","LeftCommand","LeftWindow","RightWindow", \
+												"ModeShift","Help","PrintScreen","SysRq","Break","Menu","Power","Euro" \
+											}
 										
-#define key_codes						{ \
-											SDLK_BACKSPACE,SDLK_TAB,SDLK_CLEAR,SDLK_RETURN,SDLK_PAUSE,SDLK_ESCAPE,SDLK_SPACE, \
-											SDLK_EXCLAIM,SDLK_QUOTEDBL,SDLK_HASH,SDLK_DOLLAR,SDLK_AMPERSAND,SDLK_QUOTE,SDLK_LEFTPAREN,SDLK_RIGHTPAREN,SDLK_ASTERISK,SDLK_PLUS,SDLK_COMMA,SDLK_MINUS,SDLK_PERIOD,SDLK_SLASH, \
-											SDLK_0,SDLK_1,SDLK_2,SDLK_3,SDLK_4,SDLK_5,SDLK_6,SDLK_7,SDLK_8,SDLK_9, \
-											SDLK_COLON,SDLK_SEMICOLON,SDLK_LESS,SDLK_EQUALS,SDLK_GREATER,SDLK_QUESTION,SDLK_AT,SDLK_LEFTBRACKET,SDLK_BACKSLASH,SDLK_RIGHTBRACKET,SDLK_CARET,SDLK_UNDERSCORE,SDLK_BACKQUOTE, \
-											SDLK_a,SDLK_b,SDLK_c,SDLK_d,SDLK_e,SDLK_f,SDLK_g,SDLK_h,SDLK_i,SDLK_j,SDLK_k,SDLK_l,SDLK_m, \
-											SDLK_n,SDLK_o,SDLK_p,SDLK_q,SDLK_r,SDLK_s,SDLK_t,SDLK_u,SDLK_v,SDLK_w,SDLK_x,SDLK_y,SDLK_z, \
-											SDLK_DELETE,SDLK_KP0,SDLK_KP1,SDLK_KP2,SDLK_KP3,SDLK_KP4,SDLK_KP5, \
-											SDLK_KP6,SDLK_KP7,SDLK_KP8,SDLK_KP9, \
-											SDLK_KP_PERIOD,SDLK_KP_DIVIDE,SDLK_KP_MULTIPLY,SDLK_KP_MINUS,SDLK_KP_PLUS,SDLK_KP_ENTER,SDLK_KP_EQUALS, \
-											SDLK_UP,SDLK_DOWN,SDLK_RIGHT,SDLK_LEFT, \
-											SDLK_INSERT,SDLK_HOME,SDLK_END,SDLK_PAGEUP,SDLK_PAGEDOWN, \
-											SDLK_F1,SDLK_F2,SDLK_F3,SDLK_F4,SDLK_F5,SDLK_F6,SDLK_F7,SDLK_F8,SDLK_F9,SDLK_F10,SDLK_F11,SDLK_F12,SDLK_F13,SDLK_F14,SDLK_F15, \
-											SDLK_NUMLOCK,SDLK_CAPSLOCK,SDLK_SCROLLOCK, \
-											SDLK_RSHIFT,SDLK_LSHIFT,SDLK_RCTRL,SDLK_LCTRL,SDLK_RALT,SDLK_LALT, \
-											SDLK_RMETA,SDLK_LMETA,SDLK_LSUPER,SDLK_RSUPER, \
-											SDLK_HELP,SDLK_PRINT,SDLK_SYSREQ,SDLK_BREAK,SDLK_MENU,SDLK_POWER,SDLK_EURO \
-										}
+#define key_codes							{ \
+												SDLK_BACKSPACE,SDLK_TAB,SDLK_CLEAR,SDLK_RETURN,SDLK_PAUSE,SDLK_ESCAPE,SDLK_SPACE, \
+												SDLK_EXCLAIM,SDLK_QUOTEDBL,SDLK_HASH,SDLK_DOLLAR,SDLK_AMPERSAND,SDLK_QUOTE,SDLK_LEFTPAREN,SDLK_RIGHTPAREN,SDLK_ASTERISK,SDLK_PLUS,SDLK_COMMA,SDLK_MINUS,SDLK_PERIOD,SDLK_SLASH, \
+												SDLK_0,SDLK_1,SDLK_2,SDLK_3,SDLK_4,SDLK_5,SDLK_6,SDLK_7,SDLK_8,SDLK_9, \
+												SDLK_COLON,SDLK_SEMICOLON,SDLK_LESS,SDLK_EQUALS,SDLK_GREATER,SDLK_QUESTION,SDLK_AT,SDLK_LEFTBRACKET,SDLK_BACKSLASH,SDLK_RIGHTBRACKET,SDLK_CARET,SDLK_UNDERSCORE,SDLK_BACKQUOTE, \
+												SDLK_a,SDLK_b,SDLK_c,SDLK_d,SDLK_e,SDLK_f,SDLK_g,SDLK_h,SDLK_i,SDLK_j,SDLK_k,SDLK_l,SDLK_m, \
+												SDLK_n,SDLK_o,SDLK_p,SDLK_q,SDLK_r,SDLK_s,SDLK_t,SDLK_u,SDLK_v,SDLK_w,SDLK_x,SDLK_y,SDLK_z, \
+												SDLK_DELETE,SDLK_KP0,SDLK_KP1,SDLK_KP2,SDLK_KP3,SDLK_KP4,SDLK_KP5, \
+												SDLK_KP6,SDLK_KP7,SDLK_KP8,SDLK_KP9, \
+												SDLK_KP_PERIOD,SDLK_KP_DIVIDE,SDLK_KP_MULTIPLY,SDLK_KP_MINUS,SDLK_KP_PLUS,SDLK_KP_ENTER,SDLK_KP_EQUALS, \
+												SDLK_UP,SDLK_DOWN,SDLK_RIGHT,SDLK_LEFT, \
+												SDLK_INSERT,SDLK_HOME,SDLK_END,SDLK_PAGEUP,SDLK_PAGEDOWN, \
+												SDLK_F1,SDLK_F2,SDLK_F3,SDLK_F4,SDLK_F5,SDLK_F6,SDLK_F7,SDLK_F8,SDLK_F9,SDLK_F10,SDLK_F11,SDLK_F12,SDLK_F13,SDLK_F14,SDLK_F15, \
+												SDLK_NUMLOCK,SDLK_CAPSLOCK,SDLK_SCROLLOCK, \
+												SDLK_RSHIFT,SDLK_LSHIFT,SDLK_RCTRL,SDLK_LCTRL,SDLK_RALT,SDLK_LALT, \
+												SDLK_RMETA,SDLK_LMETA,SDLK_LSUPER,SDLK_RSUPER, \
+												SDLK_HELP,SDLK_PRINT,SDLK_SYSREQ,SDLK_BREAK,SDLK_MENU,SDLK_POWER,SDLK_EURO \
+											}
 										
 #define input_max_mouse_button_define		5
 
 #define mouse_button_names					{"MouseLeft","MouseRight","MouseMiddle","MouseWheelUp","MouseWheelDown"}
 #define mouse_button_codes					{SDL_BUTTON_LEFT,SDL_BUTTON_RIGHT,SDL_BUTTON_MIDDLE,SDL_BUTTON_WHEELUP,SDL_BUTTON_WHEELDOWN}
 
-#define input_max_joystick_button_define	8
+#define input_max_joystick_button_define	20
 
-#define joystick_button_names				{"Left","Right","Up","Down","Button 1","Button 2","Button 3","Button 4"}
+#define joystick_button_names				{ \
+												"Left","Right","Up","Down", \
+												"Button 1","Button 2","Button 3","Button 4","Button 5", \
+												"Button 6","Button 7","Button 8","Button 9","Button 10", \
+												"Button 11","Button 12","Button 13","Button 14","Button 15", \
+												"Button 16" \
+											}
 
 //
 // joystick axis points
 //
 
-#define joystick_axis_half_value		16384
-#define joystick_axis_max_value			32768
+#define joystick_axis_quarter_value			8192
+#define joystick_axis_half_value			16384
+#define joystick_axis_max_value				32768
 
 //
 // action structures
 //
 
-#define input_max_action_item			4
+#define input_max_action_item					4
 
-#define input_type_key					0
-#define input_type_mouse_button			1
-#define input_type_joystick_button		2
+#define input_type_key							0
+#define input_type_mouse_button					1
+#define input_type_joystick_button				2
 
-#define input_mouse_button_left			0
-#define input_mouse_button_right		1
-#define input_mouse_button_middle		2
-#define input_mouse_button_wheel_up		3
-#define input_mouse_button_wheel_down	4
+#define input_mouse_button_left					0
+#define input_mouse_button_right				1
+#define input_mouse_button_middle				2
+#define input_mouse_button_wheel_up				3
+#define input_mouse_button_wheel_down			4
 
-#define input_joystick_button_left		0
-#define input_joystick_button_right		1
-#define input_joystick_button_up		2
-#define input_joystick_button_down		3
-#define input_joystick_button_1			4
-#define input_joystick_button_2			5
-#define input_joystick_button_3			6
-#define input_joystick_button_4			7
+#define input_joystick_button_left				0
+#define input_joystick_button_right				1
+#define input_joystick_button_up				2
+#define input_joystick_button_down				3
+#define input_joystick_button_1					4
+#define input_joystick_button_2					5
+#define input_joystick_button_3					6
+#define input_joystick_button_4					7
+#define input_joystick_button_5					8
+#define input_joystick_button_6					9
+#define input_joystick_button_7					10
+#define input_joystick_button_8					11
+#define input_joystick_button_9					12
+#define input_joystick_button_10				13
+#define input_joystick_button_11				14
+#define input_joystick_button_12				15
+#define input_joystick_button_13				16
+#define input_joystick_button_14				17
+#define input_joystick_button_15				18
+#define input_joystick_button_16				19
 
 typedef struct		{
 						int						type,index;

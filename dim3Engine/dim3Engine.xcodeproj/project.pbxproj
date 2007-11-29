@@ -16,6 +16,7 @@
 		F50F79CC09C4937D0096C059 /* fade.c in Sources */ = {isa = PBXBuildFile; fileRef = F50F79CB09C4937D0096C059 /* fade.c */; };
 		F50F7A7109C4E37D0096C059 /* script_interface_fade.c in Sources */ = {isa = PBXBuildFile; fileRef = F50F7A7009C4E37D0096C059 /* script_interface_fade.c */; };
 		F51925CA0A4E3D50005B1F5E /* zoom_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = F51925C90A4E3D50005B1F5E /* zoom_draw.c */; };
+		F51AB0DD0CFE3BDA0085DC72 /* input_joystick.c in Sources */ = {isa = PBXBuildFile; fileRef = F51AB0DC0CFE3BDA0085DC72 /* input_joystick.c */; };
 		F51B6B9A0936F0A800505E9C /* xml_action.c in Sources */ = {isa = PBXBuildFile; fileRef = F51B6B990936F0A800505E9C /* xml_action.c */; };
 		F51D59370A0063FB00C13E23 /* script_obj_rigid_body.c in Sources */ = {isa = PBXBuildFile; fileRef = F51D59360A0063FB00C13E23 /* script_obj_rigid_body.c */; };
 		F51EE0AB0AEED99E0013EC4A /* script_game_score.c in Sources */ = {isa = PBXBuildFile; fileRef = F51EE0A90AEED99E0013EC4A /* script_game_score.c */; };
@@ -387,6 +388,7 @@
 		F50F79CB09C4937D0096C059 /* fade.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = fade.c; path = Sources_View/fade.c; sourceTree = "<group>"; };
 		F50F7A7009C4E37D0096C059 /* script_interface_fade.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_interface_fade.c; path = Sources_Server/script_interface_fade.c; sourceTree = "<group>"; };
 		F51925C90A4E3D50005B1F5E /* zoom_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = zoom_draw.c; path = Sources_View/zoom_draw.c; sourceTree = "<group>"; };
+		F51AB0DC0CFE3BDA0085DC72 /* input_joystick.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = input_joystick.c; path = Sources_View/input_joystick.c; sourceTree = "<group>"; };
 		F51B6B990936F0A800505E9C /* xml_action.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xml_action.c; path = Sources_View/xml_action.c; sourceTree = "<group>"; };
 		F51D59360A0063FB00C13E23 /* script_obj_rigid_body.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_obj_rigid_body.c; path = Sources_Server/script_obj_rigid_body.c; sourceTree = "<group>"; };
 		F51EE0A90AEED99E0013EC4A /* script_game_score.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_game_score.c; path = Sources_Server/script_game_score.c; sourceTree = "<group>"; };
@@ -959,6 +961,7 @@
 				F5DD1AAE09085DC300721649 /* input.c */,
 				F5DD1AAB09085DC300721649 /* input_keyboard.c */,
 				F5DD1AAD09085DC300721649 /* input_mouse.c */,
+				F51AB0DC0CFE3BDA0085DC72 /* input_joystick.c */,
 			);
 			name = Input;
 			sourceTree = "<group>";
@@ -1859,6 +1862,7 @@
 				F5FD1E480CDECD9500CB5AC7 /* error.c in Sources */,
 				F5DD2C8F0CEABBA20028796D /* collision_map.c in Sources */,
 				F59447210CEF4F1E0027E360 /* script_model_mesh.c in Sources */,
+				F51AB0DD0CFE3BDA0085DC72 /* input_joystick.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1879,7 +1883,10 @@
 		F5DB0BF1085671A9005A7CB7 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = ppc;
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;

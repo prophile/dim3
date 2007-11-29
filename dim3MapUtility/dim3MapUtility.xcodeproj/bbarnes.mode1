@@ -318,7 +318,7 @@
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {276, 815}}</string>
+							<string>{{0, 69}, {276, 815}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -418,9 +418,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>F51AB0920CFCFA2F0085DC72</string>
+				<string>F51AB0EF0CFE3D030085DC72</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>F51AB0930CFCFA2F0085DC72</string>
+				<string>F51AB0F00CFE3D030085DC72</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -551,7 +551,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>217918629.658972</real>
+	<real>217988355.39616901</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -566,7 +566,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>F50B25E50920681E00879CCC</string>
 		<string>/Users/bbarnes/dim3Code/dim3MapUtility/dim3MapUtility.xcodeproj</string>
 	</array>
@@ -609,8 +608,6 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -650,7 +647,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>F50B25E50920681E00879CCC</string>
-				<string>F51AB0940CFCFA2F0085DC72</string>
+				<string>F51AB0F10CFE3D030085DC72</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
