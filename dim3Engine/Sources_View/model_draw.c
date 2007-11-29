@@ -403,7 +403,7 @@ inline void model_draw_material_transparent_glow(texture_type *texture,model_mat
 
 void model_draw_material_shader(model_type *mdl,model_draw *draw,model_mesh_type *mesh,texture_type *texture,model_material_type *material)
 {
-	int					trig_count;
+	int					frame,trig_count;
 	d3pnt				pnt;
 	light_spot_type		*lspot;
 	
@@ -411,8 +411,10 @@ void model_draw_material_shader(model_type *mdl,model_draw *draw,model_mesh_type
 	if (trig_count==0) return;
         
 		// set up the shader
+
+	frame=texture->animate.current_frame;
 		
-	gl_texture_shader_set(texture->bitmaps[texture->animate.current_frame].gl_id,texture->bumpmaps[texture->animate.current_frame].gl_id,texture->specularmaps[texture->animate.current_frame].gl_id,texture->glowmaps[texture->animate.current_frame].gl_id);
+	gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
 	gl_shader_set_program(texture->shader.program_obj);
 	
 	pnt.x=draw->pos.x;

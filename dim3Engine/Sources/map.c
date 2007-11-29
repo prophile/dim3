@@ -173,7 +173,7 @@ void map_lookups_setup(void)
 
 bool map_start(bool skip_media,char *err_str)
 {
-	int				tick;
+	int				n,tick;
 	char			txt[256];
 	bool			load_shaders;
 	obj_type		*obj;
@@ -203,8 +203,17 @@ bool map_start(bool skip_media,char *err_str)
 		return(FALSE);
 	}
 
-	map_shader_errors_write_console();
-	
+		// deal with shader errors or shaders turned off
+
+	if (!load_shaders) {
+		for (n=0;n!=max_map_texture;n++) {
+			map.textures[n].shader.on=FALSE;
+		}
+	}
+	else {
+		map_shader_errors_write_console();
+	}
+
 		// prepare map surfaces
 	
 	progress_draw(15);

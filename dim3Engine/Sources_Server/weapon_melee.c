@@ -241,7 +241,7 @@ bool melee_strike_position_object_model(int tick,obj_type *obj,weapon_type *weap
 
 	model_draw_setup_object(tick,obj);
 
-	setup=&weap->draw.setup;
+	setup=&obj->draw.setup;
 
 	setup->move.x=setup->move.y=setup->move.z=0;
 	setup->sway.x=setup->sway.y=setup->sway.z=0.0f;

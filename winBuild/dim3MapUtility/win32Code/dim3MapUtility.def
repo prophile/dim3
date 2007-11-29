@@ -67,8 +67,9 @@ EXPORTS
 	map_node_to_node_distance					@213
 
 	map_portal_mesh_add							@215
-	map_portal_mesh_set_vertex_count			@216
-	map_portal_mesh_set_poly_count				@217
+	map_portal_mesh_delete						@216
+	map_portal_mesh_set_vertex_count			@217
+	map_portal_mesh_set_poly_count				@218
 
 	map_primitive_create_uid					@220
 	map_primitive_push_uid						@221

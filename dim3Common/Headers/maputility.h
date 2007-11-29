@@ -688,6 +688,7 @@ extern void map_primitive_push_uid(map_type *map,segment_type *seg,int primitive
 extern void map_primitive_pop_uid(map_type *map,segment_type *seg);
 
 extern bool map_portal_mesh_add(map_type *map,int portal_idx,int add_count);
+extern bool map_portal_mesh_delete(map_type *map,int portal_idx,int mesh_idx);
 extern bool map_portal_mesh_set_vertex_count(map_type *map,int portal_idx,int mesh_idx,int nvertex);
 extern bool map_portal_mesh_set_poly_count(map_type *map,int portal_idx,int mesh_idx,int npoly);
 

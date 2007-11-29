@@ -77,6 +77,48 @@ bool map_portal_mesh_add(map_type *map,int portal_idx,int add_count)
 	return(TRUE);
 }
 
+bool map_portal_mesh_delete(map_type *map,int portal_idx,int mesh_idx)
+{
+	int					sz;
+	portal_mesh_type	*portal_mesh;
+	map_mesh_type		*map_mesh,*nptr;
+	
+	portal_mesh=&map->portals[portal_idx].mesh;
+
+		// free the mesh data
+
+	map_mesh=&portal_mesh->meshes[mesh_idx];
+
+	if (map_mesh->vertexes!=NULL) free(map_mesh->vertexes);
+	if (map_mesh->polys!=NULL) free(map_mesh->polys);
+
+		// detele the mesh
+
+	if (portal_mesh->nmesh<=1) {
+		portal_mesh->nmesh=0;
+		free(portal_mesh->meshes);
+		return(TRUE);
+	}
+
+	nptr=(map_mesh_type*)valloc((portal_mesh->nmesh-1)*sizeof(map_mesh_type));
+	if (nptr==NULL) return(FALSE);
+
+	if (mesh_idx>0) {
+		sz=(mesh_idx+1)*sizeof(map_mesh_type);
+		memmove(nptr,portal_mesh->meshes,sz);
+	}
+
+	sz=(portal_mesh->nmesh-mesh_idx)*sizeof(map_mesh_type);
+	if (sz>0) memmove(&nptr[mesh_idx],&portal_mesh->meshes[mesh_idx+1],sz);
+
+	free(portal_mesh->meshes);
+
+	portal_mesh->meshes=nptr;
+	portal_mesh->nmesh--;
+
+	return(TRUE);
+}
+
 /* =======================================================
 
       Change Mesh Vertex and Poly Counts

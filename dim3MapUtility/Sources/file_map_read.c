@@ -759,7 +759,7 @@ bool read_map_xml(map_type *map)
 
 // supergumba -- segment to mesh converter
 
-int map_convert_segment_to_mesh_add_point_vlist(int nvertex,d3pnt *vlist,int x,int y,int z)
+int map_convert_segment_to_mesh_find_point_vlist(int nvertex,d3pnt *vlist,int x,int y,int z)
 {
 	int				n;
 	d3pnt			*vptr;
@@ -770,6 +770,21 @@ int map_convert_segment_to_mesh_add_point_vlist(int nvertex,d3pnt *vlist,int x,i
 		if ((vptr->x==x) && (vptr->y==y) && (vptr->z==z)) return(nvertex);
 		vptr++;
 	}
+
+	return(-1);
+}
+
+int map_convert_segment_to_mesh_add_point_vlist(int nvertex,d3pnt *vlist,int x,int y,int z)
+{
+	d3pnt			*vptr;
+
+		// already in list?
+
+	if (map_convert_segment_to_mesh_find_point_vlist(nvertex,vlist,x,y,z)!=-1) return(nvertex);
+
+		// add to list
+
+	vptr=vlist+nvertex;
 
 	vptr->x=x;
 	vptr->y=y;
@@ -789,11 +804,34 @@ int map_convert_segment_to_mesh_add_poly_vlist(int nvertex,d3pnt *vlist,int ptsz
 	return(nvertex);
 }
 
+
+void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,int *x,int *y,int *z,int txt_idx)
+{
+	int					n;
+	map_mesh_poly_type	*mesh_poly;
+
+	mesh_poly=map_mesh->polys+map_mesh->npoly;
+
+		// get the vertexes
+
+	for (n=0;n!=ptsz;n++) {
+		mesh_poly->v[n]=(short)map_convert_segment_to_mesh_find_point_vlist(map_mesh->nvertex,map_mesh->vertexes,x[n],y[n],z[n]);
+		if (mesh_poly->v[n]==-1) return;
+		mesh_poly->gx[n]=mesh_poly->gy[n]=0;
+	}
+
+	mesh_poly->txt_idx=txt_idx;
+
+	map_mesh->npoly++;
+}
+
+
 bool map_convert_segment_to_mesh(map_type *map)
 {
 	int				n,i,vlist_sz,nvertex,npoly;
 	d3pnt			*vlist;
 	segment_type	*seg;
+	map_mesh_type	*map_mesh;
 
 			// memory for vertex lists
 			// just use enough vertexes to cover most maps,
@@ -841,22 +879,62 @@ bool map_convert_segment_to_mesh(map_type *map)
 
 			// create new mesh
 
-	//	if (!map_portal_mesh_add(map,n,1)) {
-	//		free(vlist);
-	//		return(FALSE);
-	//	}
+		if (!map_portal_mesh_add(map,n,1)) {
+			free(vlist);
+			return(FALSE);
+		}
 
-			// add vertexes and polys
+		if (!map_portal_mesh_set_vertex_count(map,n,0,nvertex)) {
+			map_portal_mesh_delete(map,n,0);
+			free(vlist);
+			return(FALSE);
+		}
 
-		fprintf(stdout,"portal = %d; nvertex=%d, npoly=%d\n",n,nvertex,npoly);
+		if (!map_portal_mesh_set_poly_count(map,n,0,npoly)) {
+			map_portal_mesh_delete(map,n,0);
+			free(vlist);
+			return(FALSE);
+		}
 
+		map_mesh=&map->portals[n].mesh.meshes[0];
 
+			// add vertexes
 
-		
+		map_mesh->nvertex=nvertex;
+		memmove(map_mesh->vertexes,vlist,(sizeof(d3pnt)*nvertex));
+			
+			// add polys
+
+		map_mesh->npoly=0;
+
+		for (i=0;i!=map->nsegment;i++) {
+			seg=&map->segments[i];
+			if (seg->rn!=n) continue;
+
+			switch (seg->type) {
+
+				case sg_wall:
+					map_convert_segment_to_mesh_add_mesh_poly(map_mesh,seg->data.wall.ptsz,seg->data.wall.x,seg->data.wall.y,seg->data.wall.z,seg->fill);
+					break;
+
+				case sg_floor:
+				case sg_ceiling:
+					map_convert_segment_to_mesh_add_mesh_poly(map_mesh,seg->data.fc.ptsz,seg->data.fc.x,seg->data.fc.y,seg->data.fc.z,seg->fill);
+					break;
+
+			}
+
+		}
 	}
 	
 	free(vlist);
 
+		// turn off all segments
+
+	map->nsegment=0;
+
 	return(TRUE);
 }
+
+
 

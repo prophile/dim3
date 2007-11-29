@@ -110,6 +110,7 @@ void model_shader_errors_write_console(model_type *model)
 
 model_type* model_load_single(char *name,int bind,bool load_shaders)
 {
+	int					n;
 	model_type			*mdl;
 	
 		// has model been already loaded?
@@ -130,7 +131,16 @@ model_type* model_load_single(char *name,int bind,bool load_shaders)
 	model_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.texture_quality_mode,setup.mipmap_mode,setup.mipmap_card_generated,setup.texture_compression);
 	if (!model_open(mdl,name,bind,TRUE,TRUE,load_shaders)) return(NULL);
 
-	model_shader_errors_write_console(mdl);
+		// deal with shader errors or shaders turned off
+
+	if (!load_shaders) {
+		for (n=0;n!=max_model_texture;n++) {
+			mdl->textures[n].shader.on=FALSE;
+		}
+	}
+	else {
+		model_shader_errors_write_console(mdl);
+	}
 
 		// setup some animation indexes to avoid name lookups
 
