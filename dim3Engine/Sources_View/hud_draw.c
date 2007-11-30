@@ -134,12 +134,13 @@ void hud_bitmaps_draw(int tick)
 	int							n,r,
 								px[4],py[4],sx,sy,rx,ry,
 								wid,high,repeat_count;
-	float						gx,gy,gx2,gy2,g_size,alpha;
+	float						gx,gy,gx2,gy2,g_size,alpha,cur_alpha;
 	GLuint						cur_gl_id;
 	hud_bitmap_type				*bitmap;
 	bitmap_type					*bitmap_data;
 		
 	cur_gl_id=-1;
+	cur_alpha=1.0f;
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -205,12 +206,15 @@ void hud_bitmaps_draw(int tick)
 			gy2=gy;
 			gy+=g_size;
 		}
+		
+		alpha=1.0f;
 
 			// need to change texture?
 
-		if (cur_gl_id!=bitmap_data->gl_id) {
+		if ((cur_gl_id!=bitmap_data->gl_id) || (cur_alpha!=alpha)) {
 			cur_gl_id=bitmap_data->gl_id;
-			gl_texture_simple_set(cur_gl_id,TRUE,1,1,1,alpha);
+			cur_alpha=alpha;
+			gl_texture_simple_set(cur_gl_id,TRUE,1,1,1,cur_alpha);
 		}
 		
 			// find the repeat count

@@ -64,7 +64,9 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 
 		// fail under liquid?
 
-	if ((weap->fail_in_liquid) && (obj->liquid_mode==lm_under)) return;
+	if (weap!=NULL) {
+		if ((weap->fail_in_liquid) && (obj->liquid_mode==lm_under)) return;
+	}
 	
 		// original position for network melees
 		
@@ -238,7 +240,7 @@ bool melee_strike_position_object_model(int tick,obj_type *obj,weapon_type *weap
 		if (err_str!=NULL) strcpy(err_str,"Object has missing or no strike bone");
 		return(FALSE);
 	}
-
+	
 	model_draw_setup_object(tick,obj);
 
 	setup=&obj->draw.setup;

@@ -211,9 +211,8 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 		
 		// smoothing and anti-aliasing
 		
-	glEnable(GL_SMOOTH);
-	glEnable(GL_POINT_SMOOTH);
-	glHint(GL_POINT_SMOOTH_HINT,GL_NICEST);
+	glDisable(GL_DITHER);
+	
 	glEnable(GL_LINE_SMOOTH);
 	glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
 	

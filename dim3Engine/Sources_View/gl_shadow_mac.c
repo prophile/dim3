@@ -116,8 +116,6 @@ bool gl_shadow_initialize_pbuffer(int shadow_mode,char *err_str)
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_SMOOTH);
-	glDisable(GL_DITHER);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_STENCIL_TEST);
 
