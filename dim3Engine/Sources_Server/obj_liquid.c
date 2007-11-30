@@ -78,7 +78,7 @@ void object_liquid_contact(obj_type *obj)
 		dy=liq->y;
 		
 		if (y>=dy) {
-			eye_y=y+obj->size.eye_offset;
+			eye_y=(y+obj->duck.y_move)+obj->size.eye_offset;
 			
  			if (eye_y>dy) {
 				obj->liquid_mode=lm_under;

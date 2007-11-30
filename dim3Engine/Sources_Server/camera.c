@@ -68,6 +68,7 @@ void camera_initialize(void)
     camera.static_follow=TRUE;
 
 	camera.auto_walk.on=FALSE;
+	camera.auto_walk.node_slop=map_enlarge*5;
 
 	camera.plane.type=cp_fov;
 	camera.plane.fov=60;

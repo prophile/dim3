@@ -65,5 +65,8 @@ extern char input_gui_get_keyboard_key(void);
 
 extern bool input_joystick_initialize(void);
 extern void input_joystick_shutdown(void);
+extern bool input_check_joystick_ok(void);
 extern void input_get_joystick_movement(float *x,float *y);
+extern bool input_get_joystick_move_forward(void);
+extern bool input_get_joystick_move_backward(void);
 extern bool input_get_joystick_button(int button_idx);

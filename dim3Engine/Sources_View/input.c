@@ -37,7 +37,7 @@ char						key_define_str[input_max_keyboard_define][32]=key_names,
 							mouse_button_define_str[input_max_mouse_button_define][32]=mouse_button_names,
 							joystick_button_define_str[input_max_joystick_button_define][32]=joystick_button_names,
 							control_names_str[][32]=control_names;
-bool						input_joystick_on,input_key_set_skip_flag[input_max_keyboard_define];
+bool						input_key_set_skip_flag[input_max_keyboard_define];
 												
 input_action_type			input_actions[256];
 
@@ -76,12 +76,12 @@ void input_initialize(bool in_window)
 
 		// initialize joysticks
 
-	input_joystick_on=input_joystick_initialize();
+	input_joystick_initialize();
 }
 
 void input_shutdown(void)
 {
-	if (input_joystick_on) input_joystick_shutdown();
+	input_joystick_shutdown();
 	input_mouse_shutdown();
 }
 
@@ -224,7 +224,7 @@ bool input_set_key_wait(char *name,bool *no_key_up)
 	
 		// any joystick buttons
 		
-	if (input_joystick_on) {
+	if (input_check_joystick_ok()) {
 
 		for (i=0;i!=input_max_joystick_button_define;i++) {
 			if (input_get_joystick_button(i)) {
@@ -327,7 +327,7 @@ void input_action_attach(char *attach_name,int action_index)
 
 		// is it a joystick button?
 	
-	if ((index==-1) && (input_joystick_on)) {
+	if ((index==-1) && (input_check_joystick_ok())) {
 	
 		for (i=0;i!=input_max_joystick_button_define;i++) {
 			if (strcasecmp(attach_name,joystick_button_define_str[i])==0) {
@@ -402,7 +402,7 @@ bool input_action_get_state(int action_index)
 	int						n,nitem;
 	input_action_type		*action;
 	input_action_item_type  *item;
-	
+
 	action=&input_actions[action_index];
 	
 	nitem=action->nitem;

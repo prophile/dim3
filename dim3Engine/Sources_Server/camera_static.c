@@ -197,9 +197,9 @@ bool camera_walk_to_node_setup(char *start_node,char *end_node,int msec,int even
 
 void camera_static_run(void)
 {
-	int			dist,seek_idx,dest_idx;
-	float		sx,sy,sz,tot;
-	node_type	*node;
+	int			dist,dist2,seek_idx,dest_idx,next_idx;
+	float		f,sx,sy,sz,tot;
+	node_type	*node,*next_node;
 	obj_type	*player_obj;
 
 		// auto-walk on?
@@ -241,10 +241,28 @@ void camera_static_run(void)
 	
 	map_find_portal_by_pos(&map,&camera_static_pos);
 
+		// distance to seek node
+
+	dist=distance_get(node->pos.x,node->pos.y,node->pos.z,camera_static_pos.x,camera_static_pos.y,camera_static_pos.z);
+
+		// get the look angle if not following
+
+    if ((!camera.static_follow) && (seek_idx!=dest_idx)) {
+		next_idx=map_find_next_node_in_path(&map,seek_idx,dest_idx);
+		next_node=&map.nodes[next_idx];
+
+		dist2=distance_get(next_node->pos.x,next_node->pos.y,next_node->pos.z,node->pos.x,node->pos.y,node->pos.z);
+
+		f=(float)dist2/(float)dist;
+
+		camera_static_walk_ang.x=node->ang.x+((next_node->ang.x-node->ang.x)*f);
+		camera_static_walk_ang.y=node->ang.y+((next_node->ang.y-node->ang.y)*f);
+		camera_static_walk_ang.z=node->ang.z+((next_node->ang.z-node->ang.z)*f);
+	}
+
 		// near current seek node?
 		
-	dist=distance_get(node->pos.x,node->pos.y,node->pos.z,camera_static_pos.x,camera_static_pos.y,camera_static_pos.z);
-	if (dist>nw_node_slop) return;	
+	if (dist>camera.auto_walk.node_slop) return;	
 	
 		// move on to next node
 		

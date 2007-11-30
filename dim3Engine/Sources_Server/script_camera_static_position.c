@@ -49,6 +49,7 @@ JSClass			camera_static_position_class={"camera_static_position_class",JSCLASS_H
 
 JSPropertySpec	camera_static_position_props[]={
 							{"follow",				camera_static_position_prop_follow,		JSPROP_PERMANENT|JSPROP_SHARED},
+							{"nodeSlop",			camera_static_position_prop_node_slop,	JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 							
 JSFunctionSpec	camera_static_position_functions[]={
@@ -88,6 +89,10 @@ JSBool js_get_camera_static_position_property(JSContext *cx,JSObject *j_obj,jsva
             *vp=BOOLEAN_TO_JSVAL(camera.static_follow);
 			break;
 
+		case camera_static_position_prop_node_slop:
+            *vp=INT_TO_JSVAL(camera.auto_walk.node_slop);
+			break;
+
 	}
 
 	return(JS_TRUE);
@@ -101,6 +106,10 @@ JSBool js_set_camera_static_position_property(JSContext *cx,JSObject *j_obj,jsva
 	
 		case camera_static_position_prop_follow:
             camera.static_follow=JSVAL_TO_BOOLEAN(*vp);
+			break;
+
+		case camera_static_position_prop_node_slop:
+            camera.auto_walk.node_slop=JSVAL_TO_INT(*vp);
 			break;
 			
 	}

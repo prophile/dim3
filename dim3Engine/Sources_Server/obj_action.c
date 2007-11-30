@@ -441,6 +441,12 @@ void object_start_jump(obj_type *obj)
 
 void object_water_jump(obj_type *obj)
 {
+		// only jump if in contact with a wall
+
+	if (obj->contact.wall_seg_idx==-1) return;
+
+		// jump out of water
+
 	scripts_post_event_console(&obj->attach,sd_event_jump,0,0);
     
 	obj->force.vct.y=-(float)obj->jump.y_add;

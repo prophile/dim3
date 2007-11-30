@@ -183,7 +183,6 @@ and can be sold or given away.
 
 #define ws_step_factor				4					// how much to reduce movement when wall sliding
 #define pd_parent_grace				100					// how long till projectile can strike parent again
-#define nw_node_slop				(map_enlarge*5)		// how close you have to be to be 'touching' a node
 #define ci_object_click_angle		20.0f				// angle at which you can click an object
 #define ky_turn_speed				1.8f				// speed for keyboard turning, should eventually be a setting
 
@@ -466,7 +465,8 @@ typedef struct		{
 					
 typedef struct		{
 						int					mode,obj_uid,
-											node_seek_idx,node_dest_idx,node_event_id;
+											node_seek_idx,node_dest_idx,node_event_id,
+											node_slop;
 					} obj_auto_walk;
 					
 typedef struct		{

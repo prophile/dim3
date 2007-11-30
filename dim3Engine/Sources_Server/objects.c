@@ -499,6 +499,9 @@ obj_type* object_create(int bind)
 	
 	obj->last_move_animation_event=-1;
 	obj->last_turn_animation_event=-1;
+
+	obj->auto_walk.mode=aw_none;
+	obj->auto_walk.node_slop=map_enlarge*5;
 	
 	object_clear_contact(&obj->contact);
 	object_clear_touch(&obj->touch);

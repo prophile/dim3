@@ -107,7 +107,7 @@ void setup_xml_default(void)
 	setup.joystick_y.acceleration_min=0.0f;
 	setup.joystick_y.acceleration_max=1.0f;
 
-	setup.joystick_turn=FALSE;
+	setup.joystick_mode=joystick_mode_not_used;
 
 	setup.action_list.naction=0;
 
@@ -251,7 +251,7 @@ bool setup_xml_read_path(char *path)
 	setup_xml_read_key_float(setup_tag,"Joystick_Y_Acceleration",&setup.joystick_y.acceleration);
 	setup_xml_read_key_float(setup_tag,"Joystick_Y_Acceleration_Min",&setup.joystick_y.acceleration_min);
 	setup_xml_read_key_float(setup_tag,"Joystick_Y_Acceleration_Max",&setup.joystick_y.acceleration_max);
-	setup_xml_read_key_boolean(setup_tag,"Joystick_Turn",&setup.joystick_turn);
+	setup_xml_read_key_int(setup_tag,"Joystick_Mode",&setup.joystick_mode);
 	setup_xml_read_key_text(setup_tag,"Network_Name",setup.network.name,name_str_len);
 	setup_xml_read_key_int(setup_tag,"Network_Team",&setup.network.team_idx);
 	setup_xml_read_key_int(setup_tag,"Network_Timeout_Mode",&setup.network.timeout_mode);
@@ -443,7 +443,7 @@ bool setup_xml_write(void)
 	setup_xml_write_key_float("Joystick_Y_Acceleration",setup.joystick_y.acceleration);
 	setup_xml_write_key_float("Joystick_Y_Acceleration_Min",setup.joystick_y.acceleration_min);
 	setup_xml_write_key_float("Joystick_Y_Acceleration_Max",setup.joystick_y.acceleration_max);
-	setup_xml_write_key_boolean("Joystick_Turn",setup.joystick_turn);
+	setup_xml_write_key_int("Joystick_Mode",setup.joystick_mode);
 	setup_xml_write_key_text("Network_Name",setup.network.name);
 	setup_xml_write_key_int("Network_Team",setup.network.team_idx);
 	setup_xml_write_key_int("Network_Timeout_Mode",setup.network.timeout_mode);

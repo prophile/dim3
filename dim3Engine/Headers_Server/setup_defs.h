@@ -67,6 +67,12 @@ and can be sold or given away.
 #define setup_timeout_mode_list_def		{"Short","Medium","Long",""}
 #define setup_timeout_mode_values		{3,5,10}
 
+#define setup_joystick_mode_list_def	{"Not Used","Turning and Moving","Turning and Looking",""}
+
+#define joystick_mode_not_used			0
+#define joystick_mode_turn_move			1
+#define joystick_mode_turn_look			2
+
 //
 // setup paths
 //
@@ -138,14 +144,14 @@ typedef struct		{
 typedef struct		{
 						int							screen_wid,screen_high,
 													anisotropic_mode,texture_quality_mode,
-													mipmap_mode,fsaa_mode,
-													curve_mode,shadow_mode;
+													mipmap_mode,fsaa_mode,curve_mode,shadow_mode,
+													joystick_mode;
 						float						gamma,sound_volume,music_volume;
 						bool						lock_fps_refresh,mipmap_card_generated,texture_compression,
 													high_quality_lighting,diffuse_lighting,ray_trace_lighting,
 													bump_mapping,specular_mapping,glow_mapping,
 													segment_darken,halo,mark,fog,
-													always_run,toggle_run,invert_look,mouse_smooth,joystick_turn,
+													always_run,toggle_run,invert_look,mouse_smooth,
 													music_on,debug_console,window,window_editor;
 						setup_path_type				path;
 						setup_screen_type			screen;

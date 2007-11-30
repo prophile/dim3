@@ -77,7 +77,7 @@ and can be sold or given away.
 #define ctrl_mouse_y_speed_id				45
 #define ctrl_mouse_y_accel_id				46
 #define ctrl_mouse_smooth_id				47
-#define ctrl_joystick_turn_id				48
+#define ctrl_joystick_mode_id				48
 #define ctrl_joystick_x_speed_id			49
 #define ctrl_joystick_y_speed_id			50
 
@@ -127,6 +127,7 @@ char						setup_screen_size_list[max_screen_size][32],
 							setup_fsaa_mode_list[][32]=setup_fsaa_mode_list_def,
 							setup_curve_mode_list[][32]=setup_curve_mode_list_def,
 							setup_shadow_mode_list[][32]=setup_shadow_mode_list_def,
+							setup_joystick_mode_list[][32]=setup_joystick_mode_list_def,
 							setup_control_names[][32]=control_names,
 							setup_team_color_list[][32]=net_team_color_list_def,
 							setup_timeout_mode_list[][32]=setup_timeout_mode_list_def,
@@ -277,7 +278,8 @@ void setup_mouse_pane(void)
 	element_slider_add("Mouse Y Acceleration",setup.mouse_y.acceleration,setup.mouse_y.acceleration_min,setup.mouse_y.acceleration_max,ctrl_mouse_y_accel_id,x,y,TRUE);
 	y+=control_y_add+8;
 
-	element_checkbox_add("Joystick Turning",setup.joystick_turn,ctrl_joystick_turn_id,x,y,TRUE);
+	element_combo_add("Joystick Mode",(char*)setup_joystick_mode_list,setup.joystick_mode,ctrl_joystick_mode_id,x,y,TRUE);
+	element_enable(ctrl_joystick_mode_id,input_check_joystick_ok());
 	y+=control_y_add;
 	element_slider_add("Joystick X Speed",setup.joystick_x.speed,setup.joystick_x.speed_min,setup.joystick_x.speed_max,ctrl_joystick_x_speed_id,x,y,TRUE);
 	y+=control_y_add;
@@ -1057,8 +1059,8 @@ void setup_handle_click(int id)
 			setup.mouse_y.acceleration=element_get_slider_value(ctrl_mouse_y_accel_id);
 			break;
 
-		case ctrl_joystick_turn_id:
-			setup.joystick_turn=element_get_value(ctrl_joystick_turn_id);
+		case ctrl_joystick_mode_id:
+			setup.joystick_mode=element_get_value(ctrl_joystick_mode_id);
 			break;
 
 		case ctrl_joystick_x_speed_id:

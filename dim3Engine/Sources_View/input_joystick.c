@@ -43,6 +43,8 @@ SDL_Joystick				*input_joystick;
 
 bool input_joystick_initialize(void)
 {
+	input_joystick=NULL;
+
 		// any joysticks?
 		
 	if (SDL_NumJoysticks()==0) return(FALSE);
@@ -58,8 +60,23 @@ bool input_joystick_initialize(void)
 
 void input_joystick_shutdown(void)
 {
+	if (input_joystick==NULL) return;
+
 	SDL_JoystickEventState(SDL_IGNORE);
 	SDL_JoystickClose(input_joystick);
+
+	input_joystick=NULL;
+}
+
+/* =======================================================
+
+      Check If JoyStick Input OK
+      
+======================================================= */
+
+bool input_check_joystick_ok(void)
+{
+	return(input_joystick!=NULL);
 }
 
 /* =======================================================
@@ -70,13 +87,13 @@ void input_joystick_shutdown(void)
 
 void input_get_joystick_movement(float *x,float *y)
 {
-	int				kx,ky;
+	int			kx,ky;
 	
 		// only consider movement past the quarter point
 		
 	kx=SDL_JoystickGetAxis(input_joystick,0);
 	if (abs(kx)<joystick_axis_quarter_value) kx=0;
-	
+
 	ky=SDL_JoystickGetAxis(input_joystick,1);
 	if (abs(ky)<joystick_axis_quarter_value) ky=0;
 	
@@ -85,6 +102,16 @@ void input_get_joystick_movement(float *x,float *y)
 
 	*x=(((float)kx)*0.004f)*setup.joystick_x.speed;
 	*y=(((float)ky)*0.004f)*setup.joystick_y.speed;
+}
+
+bool input_get_joystick_move_forward(void)
+{
+	return(SDL_JoystickGetAxis(input_joystick,1)<-joystick_axis_half_value);
+}
+
+bool input_get_joystick_move_backward(void)
+{
+	return(SDL_JoystickGetAxis(input_joystick,1)>joystick_axis_half_value);
 }
 
 bool input_get_joystick_button(int button_idx)
