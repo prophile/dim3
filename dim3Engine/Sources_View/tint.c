@@ -41,21 +41,17 @@ extern setup_type			setup;
       
 ======================================================= */
 
-void view_draw_liquid_tint(obj_type *obj)
+void view_draw_liquid_tint(int under_liquid_idx)
 {
-	int				idx;
 	segment_type	*seg;
 	
 		// under liquid
 		
-	if (obj->liquid_mode!=lm_under) return;
+	if (under_liquid_idx==-1) return;
 	
 		// get the liquid
 		
-	idx=obj->contact.liquid_seg_idx;
-    if (idx==-1) return;
-	
-    seg=&map.segments[idx];
+    seg=&map.segments[under_liquid_idx];
 	
 		// draw
 

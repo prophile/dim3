@@ -891,6 +891,11 @@ void segment_flip_horizontal(segment_type *seg,int min,int max)
 		case sg_liquid:
 			seg->data.liquid.lft=(max-(seg->data.liquid.lft-min))+min;
 			seg->data.liquid.rgt=(max-(seg->data.liquid.rgt-min))+min;
+			if (seg->data.liquid.lft>seg->data.liquid.rgt) {
+				t=seg->data.liquid.lft;
+				seg->data.liquid.lft=seg->data.liquid.rgt;
+				seg->data.liquid.rgt=t;
+			}
 			break;
 		case sg_ambient_wall:
 			seg->data.ambient_wall.lx=(max-(seg->data.ambient_wall.lx-min))+min;
@@ -924,6 +929,11 @@ void segment_flip_vertical(segment_type *seg,int min,int max)
 		case sg_liquid:
 			seg->data.liquid.top=(max-(seg->data.liquid.top-min))+min;
 			seg->data.liquid.bot=(max-(seg->data.liquid.bot-min))+min;
+			if (seg->data.liquid.top>seg->data.liquid.bot) {
+				t=seg->data.liquid.top;
+				seg->data.liquid.top=seg->data.liquid.bot;
+				seg->data.liquid.bot=t;
+			}
 			break;
 		case sg_ambient_wall:
 			seg->data.ambient_wall.lz=(max-(seg->data.ambient_wall.lz-min))+min;

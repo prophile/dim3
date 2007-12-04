@@ -104,7 +104,7 @@ void rain_setup(int tick,int cx,int cy,int cz)
       
 ======================================================= */
 
-void rain_draw(int tick,obj_type *obj)
+void rain_draw(int tick)
 {
 	int				n,x,y,z,cx,cy,cz,xadd,yadd,zadd,density,
 					slant_add,slant_mult,slant_div;
@@ -114,11 +114,11 @@ void rain_draw(int tick,obj_type *obj)
 		// is rain on and not under liquid?
 
 	if (!map.rain.on) return;
-	if (obj->liquid_mode==lm_under) return;
+	if (view.camera.under_liquid_idx!=-1) return;
 	
-	cx=obj->pos.x;
-	cy=obj->pos.y;
-	cz=obj->pos.z;
+	cx=view.camera.pos.x;
+	cy=view.camera.pos.y;
+	cz=view.camera.pos.z;
 	
 		// reset on?
 		

@@ -202,5 +202,4 @@ extern void node_link_add(Point pt);
 extern void node_link_cut(Point pt);
 extern int node_path_node_in_path(int from_node,int to_node,unsigned char *node_hits,int curdist,int windist);
 extern int node_path_find_next_node_to_node(int from_node,int to_node);
-extern void node_path_rebuild_run(void);
 extern void node_path_rebuild(void);

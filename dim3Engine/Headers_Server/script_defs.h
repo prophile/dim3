@@ -191,6 +191,7 @@ and can be sold or given away.
 
 #define camera_static_position_prop_follow			0
 #define camera_static_position_prop_node_slop		1
+#define camera_static_position_prop_walk_turn_speed	2
 
 #define camera_plane_prop_projection_type			0
 #define camera_plane_prop_fov						1

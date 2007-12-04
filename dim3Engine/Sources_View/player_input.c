@@ -209,7 +209,7 @@ void player_movement_fpp_xz_input(obj_type *obj)
 
 	if (!key_forward) {
 		key_backward=input_action_get_state(nc_move_backward);
-		if (joy_ok) key_forward=input_get_joystick_move_backward();
+		if (joy_ok) key_backward=input_get_joystick_move_backward();
 	}
 
 		// no quick reverse locks
@@ -812,13 +812,14 @@ void player_get_input(int tick)
 		
 	switch (setup.joystick_mode) {
 
+		case joystick_mode_turn_only:
 		case joystick_mode_turn_move:
-			input_get_joystick_movement(&mouse_x,&mouse_y);
+			input_get_joystick_movement(&mouse_x,&temp_y);
+			input_get_mouse_movement(tick,&temp_x,&mouse_y);
 			break;
 
 		case joystick_mode_turn_look:
-			input_get_joystick_movement(&mouse_x,&temp_y);
-			input_get_mouse_movement(tick,&temp_x,&mouse_y);
+			input_get_joystick_movement(&mouse_x,&mouse_y);
 			break;
 
 		default:

@@ -55,6 +55,5 @@ void camera_fpp_get_position(d3pos *pos,d3ang *ang,int eye_offset)
 	ang->x=camera.ang.x-obj->view_ang.x;
 	ang->y=angle_add(obj->ang.y,camera.ang.y);
     ang->z=camera.ang.z+obj->view_ang.z;
-	
 }
 

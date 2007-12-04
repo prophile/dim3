@@ -67,11 +67,12 @@ and can be sold or given away.
 #define setup_timeout_mode_list_def		{"Short","Medium","Long",""}
 #define setup_timeout_mode_values		{3,5,10}
 
-#define setup_joystick_mode_list_def	{"Not Used","Turning and Moving","Turning and Looking",""}
+#define setup_joystick_mode_list_def	{"Not Used","Turn Only","Turning and Moving","Turning and Looking",""}
 
 #define joystick_mode_not_used			0
-#define joystick_mode_turn_move			1
-#define joystick_mode_turn_look			2
+#define joystick_mode_turn_only			1
+#define joystick_mode_turn_move			2
+#define joystick_mode_turn_look			3
 
 //
 // setup paths

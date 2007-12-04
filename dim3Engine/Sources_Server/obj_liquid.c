@@ -147,7 +147,7 @@ void object_liquid(int tick,obj_type *obj)
 			}
 			if (old_liquid_mode==lm_under) {
 				scripts_post_event_console(&obj->attach,sd_event_liquid,sd_event_liquid_surface,0);
-				object_water_jump(obj);			// jump out of water when surfacing
+				object_liquid_jump(obj);			// jump out of liquid when surfacing
 				break;
 			}
 			break;

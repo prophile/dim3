@@ -72,7 +72,6 @@ and can be sold or given away.
 #define kCommandRainSettings			FOUR_CHAR_CODE('mrin')
 #define kCommandFogSettings				FOUR_CHAR_CODE('mfog')
 #define kCommandAutoGenerateSightPaths	FOUR_CHAR_CODE('agsp')
-#define kCommandRebuildPaths			FOUR_CHAR_CODE('rpth')
 #define kCommandSortSegments			FOUR_CHAR_CODE('sseg')
 #define kCommandRun						FOUR_CHAR_CODE('mrun')
 

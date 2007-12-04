@@ -36,7 +36,6 @@ extern map_type			map;
 extern setup_type		setup;
 extern view_type		view;
 
-
 /* =======================================================
 
       Draw Background

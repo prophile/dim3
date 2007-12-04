@@ -226,9 +226,9 @@ int node_path_find_next_node_to_node(int from_node,int to_node)
       
 ======================================================= */
 
-void node_path_rebuild_run(void)
+void node_path_rebuild(void)
 {
-    int				i,x,z,x2,z2,k,n;
+    int				i,x,z,k,n;
 	node_type		*node,*to_node;
     
         // find distances between all node links
@@ -248,9 +248,7 @@ void node_path_rebuild_run(void)
                 link_dist[i][k]=0;
             }
             else {
-				x2=to_node->pos.x*map_enlarge;
-				z2=to_node->pos.z*map_enlarge;
-            	link_dist[i][k]=distance_2D_get(x,z,x2,z2);
+            	link_dist[i][k]=distance_2D_get(x,z,(to_node->pos.x*map_enlarge),(to_node->pos.z*map_enlarge));
             }
 			
 			to_node++;
@@ -261,8 +259,6 @@ void node_path_rebuild_run(void)
         for (k=0;k!=map.nnode;k++) {
             node->path_hint[k]=-1;
         }
-		
-		progress_wind_update(i);
         
         node++;
     }
@@ -277,25 +273,7 @@ void node_path_rebuild_run(void)
             if (k!=i) node->path_hint[k]=node_path_find_next_node_to_node(i,k);
         }
 		
-		progress_wind_update(map.nnode+i);
-		
 		node++;
     }
 }
-
-/* =======================================================
-
-      Rebuild Paths Mainline
-      
-======================================================= */
-
-void node_path_rebuild(void)
-{
-    progress_wind_start("Building Node Paths...",(map.nnode+map.nnode));
-	node_path_rebuild_run();
-	progress_wind_close();
-}
-
-
-
 

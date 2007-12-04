@@ -135,7 +135,7 @@ extern void object_post_turn_animation_event(obj_type *obj,int sub_event);
 extern bool object_post_turn_animation_event_change(obj_type *obj,int sub_event);
 extern void object_event_animations(obj_type *obj);
 extern void object_start_jump(obj_type *obj);
-extern void object_water_jump(obj_type *obj);
+extern void object_liquid_jump(obj_type *obj);
 extern void object_start_stand(obj_type *obj);
 extern void object_start_duck(obj_type *obj);
 extern void object_set_ambient(obj_type *obj,char *name,float pitch);

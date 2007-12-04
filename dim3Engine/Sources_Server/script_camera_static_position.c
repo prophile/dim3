@@ -48,8 +48,9 @@ JSClass			camera_static_position_class={"camera_static_position_class",JSCLASS_H
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 JSPropertySpec	camera_static_position_props[]={
-							{"follow",				camera_static_position_prop_follow,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"nodeSlop",			camera_static_position_prop_node_slop,	JSPROP_PERMANENT|JSPROP_SHARED},
+							{"follow",				camera_static_position_prop_follow,				JSPROP_PERMANENT|JSPROP_SHARED},
+							{"nodeSlop",			camera_static_position_prop_node_slop,			JSPROP_PERMANENT|JSPROP_SHARED},
+							{"walkTurnSpeed",		camera_static_position_prop_walk_turn_speed,	JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 							
 JSFunctionSpec	camera_static_position_functions[]={
@@ -88,9 +89,11 @@ JSBool js_get_camera_static_position_property(JSContext *cx,JSObject *j_obj,jsva
 		case camera_static_position_prop_follow:
             *vp=BOOLEAN_TO_JSVAL(camera.static_follow);
 			break;
-
 		case camera_static_position_prop_node_slop:
             *vp=INT_TO_JSVAL(camera.auto_walk.node_slop);
+			break;
+		case camera_static_position_prop_walk_turn_speed:
+            *vp=script_float_to_value(camera.auto_walk.turn_speed);
 			break;
 
 	}
@@ -107,9 +110,11 @@ JSBool js_set_camera_static_position_property(JSContext *cx,JSObject *j_obj,jsva
 		case camera_static_position_prop_follow:
             camera.static_follow=JSVAL_TO_BOOLEAN(*vp);
 			break;
-
 		case camera_static_position_prop_node_slop:
             camera.auto_walk.node_slop=JSVAL_TO_INT(*vp);
+			break;
+		case camera_static_position_prop_walk_turn_speed:
+			camera.auto_walk.turn_speed=script_value_to_float(*vp);
 			break;
 			
 	}

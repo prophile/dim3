@@ -307,6 +307,22 @@ void menu_auto_generate_paths_dialog(void)
 	if (hit==kAlertStdAlertOKButton) map_portal_sight_generate_paths(&map,FALSE);
 }
 
+bool menu_delete_portal_dialog(void)
+{
+	short					hit;
+	AlertStdAlertParamRec	alert_param;
+	
+	memset(&alert_param,0x0,sizeof(AlertStdAlertParamRec));
+	alert_param.defaultText="\pYes";
+	alert_param.cancelText="\pNo";
+	alert_param.defaultButton=kAlertStdAlertOKButton;
+	alert_param.position=kWindowDefaultPosition;
+
+	StandardAlert(0,"\pDelete Portal?","\pAre you sure you want to delete this portal?",&alert_param,&hit);
+	
+	return(hit==kAlertStdAlertOKButton);
+}
+
 /* =======================================================
 
       Menu Events
@@ -459,10 +475,6 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			menu_auto_generate_paths_dialog();
 			return(noErr);
             
-        case kCommandRebuildPaths:
-            node_path_rebuild();
-            return(noErr);
-			
 		case kCommandSortSegments:
             segments_sort();
 			return(noErr);
@@ -492,7 +504,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
             return(noErr);
             
         case kCommandPortalDelete:
-            portal_delete();
+			if (menu_delete_portal_dialog()) portal_delete();
             return(noErr);
             
 		case kCommandResetTextureSize:

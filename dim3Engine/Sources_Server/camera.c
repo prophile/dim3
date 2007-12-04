@@ -32,6 +32,8 @@ and can be sold or given away.
 #include "objects.h"
 #include "cameras.h"
 
+extern map_type				map;
+
 camera_type					camera;
 camera_type					state_camera;
 
@@ -68,7 +70,8 @@ void camera_initialize(void)
     camera.static_follow=TRUE;
 
 	camera.auto_walk.on=FALSE;
-	camera.auto_walk.node_slop=map_enlarge*5;
+	camera.auto_walk.node_slop=map_enlarge*2;
+	camera.auto_walk.turn_speed=1.0f;
 
 	camera.plane.type=cp_fov;
 	camera.plane.fov=60;
@@ -145,6 +148,33 @@ void camera_get_angle_from(d3pnt *pt,d3ang *ang)
 	ang->y=angle_find(pt->x,pt->z,pos.x,pos.z);
 
 	ang->z=0;
+}
+
+/* =======================================================
+
+      Check Camera for Liquids
+      
+======================================================= */
+
+int camera_check_liquid(d3pos *pos)
+{
+	int						i,cnt,idx,rn;
+	short					*sptr;
+	liquid_segment_data		*liq;
+	
+	rn=pos->rn;
+	
+	cnt=map.portals[rn].liquid_list_hit.count;
+	sptr=map.portals[rn].liquid_list_hit.list;
+	
+	for (i=0;i!=cnt;i++) {
+		idx=(int)*sptr++;
+		
+		liq=&map.segments[idx].data.liquid;
+		if ((pos->x>=liq->lft) && (pos->x<=liq->rgt) && (pos->z>=liq->top) && (pos->z<=liq->bot) && (pos->y>=liq->y)) return(idx);
+	}
+
+	return(-1);
 }
 
 /* =======================================================

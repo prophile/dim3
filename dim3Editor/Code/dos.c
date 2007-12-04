@@ -338,8 +338,11 @@ void file_save_map(void)
 {
 	bool			ok;
 	
-    SetCursor(*GetCursor(watchCursor));        
-	ok=map_save(&map);
+    SetCursor(*GetCursor(watchCursor)); 
+	
+	node_path_rebuild();		// force rebuild on node paths
+	ok=map_save(&map);			// save map
+	
 	InitCursor();
 	
 	if (!ok) StandardAlert(kAlertCautionAlert,"\pdim3 Editor could not save map","\pThe disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).",NULL,NULL);

@@ -208,37 +208,37 @@ void portal_flip_horizontal(void)
 	
 	ex=map.portals[cr].ex-map.portals[cr].x;
 	
-	for ((i=0);(i!=map.nsegment);i++) {
+	for (i=0;i!=map.nsegment;i++) {
 		seg=&map.segments[i];
 		if (seg->rn==cr) segment_flip_horizontal(seg,0,ex);
 	}
     
-    for ((i=0);(i!=map.nspot);i++) {
+    for (i=0;i!=map.nspot;i++) {
         if (map.spots[i].pos.rn==cr) {
             map.spots[i].pos.x=ex-map.spots[i].pos.x;
 			map.spots[i].ang.y=angle_add(0,-map.spots[i].ang.y);
         }
     }
     
-    for ((i=0);(i!=map.nnode);i++) {
+    for (i=0;i!=map.nnode;i++) {
         if (map.nodes[i].pos.rn==cr) {
             map.nodes[i].pos.x=ex-map.nodes[i].pos.x;
         }
     }
 	
-    for ((i=0);(i!=map.nsound);i++) {
+    for (i=0;i!=map.nsound;i++) {
         if (map.sounds[i].pos.rn==cr) {
             map.sounds[i].pos.x=ex-map.sounds[i].pos.x;
         }
     }
 	
-    for ((i=0);(i!=map.nlight);i++) {
+    for (i=0;i!=map.nlight;i++) {
         if (map.lights[i].pos.rn==cr) {
             map.lights[i].pos.x=ex-map.lights[i].pos.x;
         }
     }
 	
-    for ((i=0);(i!=map.nscenery);i++) {
+    for (i=0;i!=map.nscenery;i++) {
         if (map.sceneries[i].pos.rn==cr) {
             map.sceneries[i].pos.x=ex-map.sceneries[i].pos.x;
 			map.sceneries[i].ang.y=angle_add(0,-map.sceneries[i].ang.y);
@@ -255,37 +255,37 @@ void portal_flip_vertical(void)
 	
 	ey=map.portals[cr].ez-map.portals[cr].z;
 	
-	for ((i=0);(i!=map.nsegment);i++) {
+	for (i=0;i!=map.nsegment;i++) {
 		seg=&map.segments[i];
 		if (seg->rn==cr) segment_flip_vertical(seg,0,ey);
 	}
     
-    for ((i=0);(i!=map.nspot);i++) {
+    for (i=0;i!=map.nspot;i++) {
         if (map.spots[i].pos.rn==cr) {
             map.spots[i].pos.z=ey-map.spots[i].pos.z;
 			map.spots[i].ang.y=angle_add(90.0f,(90.0f-map.spots[i].ang.y));
         }
     }
     
-    for ((i=0);(i!=map.nnode);i++) {
+    for (i=0;i!=map.nnode;i++) {
         if (map.nodes[i].pos.rn==cr) {
             map.nodes[i].pos.z=ey-map.nodes[i].pos.z;
         }
     }
 	
-    for ((i=0);(i!=map.nsound);i++) {
+    for (i=0;i!=map.nsound;i++) {
         if (map.sounds[i].pos.rn==cr) {
             map.sounds[i].pos.z=ey-map.sounds[i].pos.z;
         }
     }
 	
-    for ((i=0);(i!=map.nlight);i++) {
+    for (i=0;i!=map.nlight;i++) {
         if (map.lights[i].pos.rn==cr) {
             map.lights[i].pos.z=ey-map.lights[i].pos.z;
         }
     }
 	
-    for ((i=0);(i!=map.nscenery);i++) {
+    for (i=0;i!=map.nscenery;i++) {
         if (map.sceneries[i].pos.rn==cr) {
             map.sceneries[i].pos.z=ey-map.sceneries[i].pos.z;
 			map.sceneries[i].ang.y=angle_add(90.0f,(90.0f-map.sceneries[i].ang.y));
@@ -300,12 +300,12 @@ void portal_rotate(void)
 	int				i,k,ex,ey;
 	segment_type	*seg;
 	
-	for ((i=0);(i!=map.nsegment);i++) {
+	for (i=0;i!=map.nsegment;i++) {
 		seg=&map.segments[i];
 		if (seg->rn==cr) segment_rotate(seg,0,0);
 	}
     
-    for ((i=0);(i!=map.nspot);i++) {
+    for (i=0;i!=map.nspot;i++) {
         if (map.spots[i].pos.rn==cr) {
             k=map.spots[i].pos.x;
             map.spots[i].pos.x=map.spots[i].pos.z;
@@ -315,7 +315,7 @@ void portal_rotate(void)
         }
     }
     
-    for ((i=0);(i!=map.nnode);i++) {
+    for (i=0;i!=map.nnode;i++) {
         if (map.nodes[i].pos.rn==cr) {
             k=map.nodes[i].pos.x;
             map.nodes[i].pos.x=map.nodes[i].pos.z;
@@ -323,7 +323,7 @@ void portal_rotate(void)
         }
     }
 	
-    for ((i=0);(i!=map.nsound);i++) {
+    for (i=0;i!=map.nsound;i++) {
         if (map.sounds[i].pos.rn==cr) {
             k=map.sounds[i].pos.x;
             map.sounds[i].pos.x=map.sounds[i].pos.z;
@@ -331,7 +331,7 @@ void portal_rotate(void)
         }
     }
 	
-    for ((i=0);(i!=map.nlight);i++) {
+    for (i=0;i!=map.nlight;i++) {
         if (map.lights[i].pos.rn==cr) {
             k=map.lights[i].pos.x;
             map.lights[i].pos.x=map.lights[i].pos.z;
@@ -339,7 +339,7 @@ void portal_rotate(void)
         }
     }
 	
-    for ((i=0);(i!=map.nscenery);i++) {
+    for (i=0;i!=map.nscenery;i++) {
         if (map.sceneries[i].pos.rn==cr) {
             k=map.sceneries[i].pos.x;
             map.sceneries[i].pos.x=map.sceneries[i].pos.z;

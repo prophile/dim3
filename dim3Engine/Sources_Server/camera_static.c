@@ -197,9 +197,9 @@ bool camera_walk_to_node_setup(char *start_node,char *end_node,int msec,int even
 
 void camera_static_run(void)
 {
-	int			dist,dist2,seek_idx,dest_idx,next_idx;
-	float		f,sx,sy,sz,tot;
-	node_type	*node,*next_node;
+	int			dist,seek_idx,dest_idx;
+	float		sx,sy,sz,tot;
+	node_type	*node;
 	obj_type	*player_obj;
 
 		// auto-walk on?
@@ -247,19 +247,12 @@ void camera_static_run(void)
 
 		// get the look angle if not following
 
-    if ((!camera.static_follow) && (seek_idx!=dest_idx)) {
-		next_idx=map_find_next_node_in_path(&map,seek_idx,dest_idx);
-		next_node=&map.nodes[next_idx];
-
-		dist2=distance_get(next_node->pos.x,next_node->pos.y,next_node->pos.z,node->pos.x,node->pos.y,node->pos.z);
-
-		f=(float)dist2/(float)dist;
-
-		camera_static_walk_ang.x=node->ang.x+((next_node->ang.x-node->ang.x)*f);
-		camera_static_walk_ang.y=node->ang.y+((next_node->ang.y-node->ang.y)*f);
-		camera_static_walk_ang.z=node->ang.z+((next_node->ang.z-node->ang.z)*f);
+    if (!camera.static_follow) {
+		camera_static_walk_ang.x=angle_turn_toward(camera_static_walk_ang.x,node->ang.x,camera.auto_walk.turn_speed);
+		camera_static_walk_ang.y=angle_turn_toward(camera_static_walk_ang.y,node->ang.y,camera.auto_walk.turn_speed);
+		camera_static_walk_ang.z=angle_turn_toward(camera_static_walk_ang.z,node->ang.z,camera.auto_walk.turn_speed);
 	}
-
+	
 		// near current seek node?
 		
 	if (dist>camera.auto_walk.node_slop) return;	
@@ -268,7 +261,6 @@ void camera_static_run(void)
 		
 	if (seek_idx!=dest_idx) {
 		camera.auto_walk.node_seek_idx=map_find_next_node_in_path(&map,seek_idx,dest_idx);
-		memmove(&camera_static_walk_ang,&node->ang,sizeof(d3ang));
 		scripts_post_event_console(&js.course_attach,sd_event_path,sd_event_path_node,(int)node->user_value);
 		return;
 	}
@@ -276,6 +268,7 @@ void camera_static_run(void)
 		// at last node
 		
 	camera.auto_walk.on=FALSE;
+	memmove(&camera_static_walk_ang,&node->ang,sizeof(d3ang));
 
 		// player freeze
 		

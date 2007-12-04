@@ -29,6 +29,7 @@ extern void camera_initialize(void);
 extern void camera_connect(obj_type *obj);
 extern void camera_get_position(d3pos *pos,d3ang *ang,int eye_offset);
 extern void camera_get_angle_from(d3pnt *pt,d3ang *ang);
+extern int camera_check_liquid(d3pos *pos);
 extern void camera_save(void);
 extern void camera_restore(void);
 extern void camera_run(void);

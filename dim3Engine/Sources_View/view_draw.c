@@ -57,13 +57,13 @@ extern bool model_inview(model_draw *draw);
 extern void model_calc_pose_bones(model_draw *draw);
 extern void segment_render_opaque(int portal_cnt,int *portal_list);
 extern void segment_render_transparent(int portal_cnt,int *portal_list);
-extern void rain_draw(int tick,obj_type *obj);
+extern void rain_draw(int tick);
 extern void fog_draw(int tick);
 extern void polygon_segment_start(void);
 extern void polygon_segment_end(void);
 extern bool model_inview(model_draw *draw);
 extern void model_render(int tick,model_draw *draw);
-extern void view_draw_liquid_tint(obj_type *obj);
+extern void view_draw_liquid_tint(int under_liquid_idx);
 extern void view_draw_effect_tint(int tick,obj_type *obj);
 extern void fade_screen_draw(int tick);
 extern void fade_object_draw(int tick,obj_type *obj);
@@ -331,7 +331,7 @@ void view_draw(int tick)
 	
 		// draw rain
 		
-	rain_draw(tick,obj);
+	rain_draw(tick);
 
 		// draw fog
 
@@ -363,7 +363,7 @@ void view_draw(int tick)
 	
 		// draw tints and fades
 		
-	view_draw_liquid_tint(obj);
+	view_draw_liquid_tint(view.camera.under_liquid_idx);
 	view_draw_effect_tint(tick,obj);
 
 	fade_screen_draw(tick);

@@ -206,8 +206,6 @@ void hud_bitmaps_draw(int tick)
 			gy2=gy;
 			gy+=g_size;
 		}
-		
-		alpha=1.0f;
 
 			// need to change texture?
 

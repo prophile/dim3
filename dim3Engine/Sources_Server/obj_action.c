@@ -439,17 +439,20 @@ void object_start_jump(obj_type *obj)
 	scripts_post_event_console(&obj->attach,sd_event_animation_object,sd_event_animation_object_jump,0);
 }
 
-void object_water_jump(obj_type *obj)
+void object_liquid_jump(obj_type *obj)
 {
-		// only jump if in contact with a wall
+	int				jump_add;
+	
+		// small jump if no wall contact
 
-	if (obj->contact.wall_seg_idx==-1) return;
+	jump_add=obj->jump.y_add;
+	if (obj->contact.wall_seg_idx==-1) jump_add/=2;
 
 		// jump out of water
 
 	scripts_post_event_console(&obj->attach,sd_event_jump,0,0);
     
-	obj->force.vct.y=-(float)obj->jump.y_add;
+	obj->force.vct.y=-(float)jump_add;
     obj->force.gravity=gravity_start_power;
     
 	scripts_post_event_console(&obj->attach,sd_event_animation_object,sd_event_animation_object_jump,0);
