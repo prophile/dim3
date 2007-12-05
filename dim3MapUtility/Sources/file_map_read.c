@@ -71,6 +71,7 @@ void read_single_segment(int tag,segment_type *seg,int rn,int seg_type)
 	seg->pass_through=xml_get_attribute_boolean(tag,"pass");
 	seg->moveable=xml_get_attribute_boolean(tag,"moveable");
 	seg->shiftable=xml_get_attribute_boolean(tag,"shiftable");
+	seg->climbable=xml_get_attribute_boolean(tag,"climbable");
 	seg->on=!xml_get_attribute_boolean(tag,"off");
 	
 	seg->fill=xml_get_attribute_int(tag,"fill");

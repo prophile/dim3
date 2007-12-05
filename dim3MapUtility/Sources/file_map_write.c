@@ -178,6 +178,7 @@ void write_single_segment(segment_type *seg)
 	xml_add_attribute_boolean("pass",seg->pass_through);
 	xml_add_attribute_boolean("moveable",seg->moveable);
 	xml_add_attribute_boolean("shiftable",seg->shiftable);
+	xml_add_attribute_boolean("climbable",seg->climbable);
 	xml_add_attribute_boolean("off",!seg->on);
 
 	xml_add_attribute_int("fill",seg->fill);

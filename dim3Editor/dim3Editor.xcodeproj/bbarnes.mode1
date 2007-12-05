@@ -315,14 +315,14 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>109</integer>
-									<integer>107</integer>
+									<integer>28</integer>
+									<integer>24</integer>
 									<integer>17</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 1451}, {280, 795}}</string>
+							<string>{{0, 273}, {280, 795}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -422,9 +422,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>F56E78A50D047414004136B5</string>
+				<string>F583BC180D0661830081E6D3</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>F56E78A60D047414004136B5</string>
+				<string>F583BC190D0661830081E6D3</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -556,7 +556,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>218399450.99557501</real>
+	<real>218523112.29696301</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -571,7 +571,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>F5E1D2A20932D2E1007292A8</string>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>/Users/bbarnes/dim3Code/dim3Editor/dim3Editor.xcodeproj</string>
@@ -654,7 +653,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>F5E1D2A20932D2E1007292A8</string>
-				<string>F56E78B90D047A1A004136B5</string>
+				<string>F583BC240D0662150081E6D3</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -1016,9 +1015,9 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C0AD2B3069F1EA900FABCE6</string>
-				<string>F56E78A70D047414004136B5</string>
+				<string>F583BC1A0D0661830081E6D3</string>
 				<string>1CD0528B0623707200166675</string>
-				<string>F56E78A80D047414004136B5</string>
+				<string>F583BC1B0D0661830081E6D3</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>

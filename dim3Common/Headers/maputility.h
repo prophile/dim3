@@ -303,8 +303,8 @@ typedef struct		{
 													decal_count;
 						float						x_txtfact,y_txtfact,x_txtoff,y_txtoff,
 													x_shift,y_shift,dark_factor,alpha;
-						bool						on,pass_through,moveable,shiftable,lock,
-													simple_tessel,touched;
+						bool						on,pass_through,moveable,shiftable,climbable,
+													lock,simple_tessel,touched;
 						d3pnt						middle;
 						segment_draw_type			draw;
 						segment_light_type			light;

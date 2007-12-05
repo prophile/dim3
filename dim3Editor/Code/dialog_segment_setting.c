@@ -44,6 +44,7 @@ extern map_type				map;
 #define kSegmentSettingLockTextureSize				FOUR_CHAR_CODE('flts')
 #define kSegmentSettingMovable						FOUR_CHAR_CODE('fmov')
 #define kSegmentSettingShiftable					FOUR_CHAR_CODE('fsht')
+#define kSegmentSettingClimbable					FOUR_CHAR_CODE('fclb')
 #define kSegmentSettingTag							FOUR_CHAR_CODE('tagg')
 #define kSegmentSettingOrientation					FOUR_CHAR_CODE('orin')
 
@@ -107,6 +108,7 @@ void dialog_segment_setting_dup_changes(segment_type *org_seg,segment_type *seg,
 	if (seg->on!=org_seg->on) seg2->on=seg->on;
 	if (seg->pass_through!=org_seg->pass_through) seg2->pass_through=seg->pass_through;
 	if (seg->moveable!=org_seg->moveable) seg2->moveable=seg->moveable;
+	if (seg->climbable!=org_seg->climbable) seg2->climbable=seg->climbable;
 	if (seg->lock!=org_seg->lock) seg2->lock=seg->lock;
 }
 
@@ -146,6 +148,7 @@ bool dialog_segment_setting_run(int seg_idx)
 	dialog_set_boolean(dialog_segment_setting_wind,kSegmentSettingLockTextureSize,0,seg->lock);
 	dialog_set_boolean(dialog_segment_setting_wind,kSegmentSettingMovable,0,seg->moveable);
 	dialog_set_boolean(dialog_segment_setting_wind,kSegmentSettingShiftable,0,seg->shiftable);
+	dialog_set_boolean(dialog_segment_setting_wind,kSegmentSettingClimbable,0,seg->climbable);
 
 	dialog_set_int(dialog_segment_setting_wind,kSegmentSettingTag,0,seg->tag);
 	dialog_set_combo(dialog_segment_setting_wind,kSegmentSettingOrientation,0,seg->txt_ang);
@@ -184,6 +187,7 @@ bool dialog_segment_setting_run(int seg_idx)
 		seg->lock=dialog_get_boolean(dialog_segment_setting_wind,kSegmentSettingLockTextureSize,0);
 		seg->moveable=dialog_get_boolean(dialog_segment_setting_wind,kSegmentSettingMovable,0);
 		seg->shiftable=dialog_get_boolean(dialog_segment_setting_wind,kSegmentSettingShiftable,0);
+		seg->climbable=dialog_get_boolean(dialog_segment_setting_wind,kSegmentSettingClimbable,0);
 
 		seg->tag=dialog_get_int(dialog_segment_setting_wind,kSegmentSettingTag,0);
 		seg->txt_ang=dialog_get_combo(dialog_segment_setting_wind,kSegmentSettingOrientation,0);

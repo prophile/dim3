@@ -175,6 +175,7 @@ void segment_clear(segment_type *seg,int type,int primitive_uid)
 	seg->group_idx=-1;
     seg->pass_through=FALSE;
 	seg->moveable=FALSE;
+	seg->climbable=FALSE;
 	seg->lock=FALSE;
 	seg->on=TRUE;
 	
