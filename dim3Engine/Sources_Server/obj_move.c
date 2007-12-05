@@ -75,6 +75,8 @@ void object_motion_setup(obj_type *obj,float *xmove,float *ymove,float *zmove)
 		// vertical motion
 		
 	*ymove=0;
+
+		// flying or swiming
 	
 	if ((obj->fly) || (obj->liquid_mode==lm_under)) {
 	
@@ -91,10 +93,19 @@ void object_motion_setup(obj_type *obj,float *xmove,float *ymove,float *zmove)
 			
 		else {
 			*ymove=obj->vert_move.speed;
-			if (obj->vert_move.reverse) {
-				*ymove=-(*ymove);
-			}
+			if (obj->vert_move.reverse) *ymove=-(*ymove);
 		}
+	}
+
+		// climbing ladders
+
+	else {
+
+		if (obj->on_ladder) {
+			*ymove=obj->vert_move.speed;
+			if (obj->vert_move.reverse) *ymove=-(*ymove);
+		}
+
 	}
 
 		// add in outside forces
@@ -219,9 +230,9 @@ void object_gravity(obj_type *obj)
     float		weight,gravity,gravity_max_power,
 				liq_speed_alter;
     
-		// reset gravity if flying or on ground
+		// reset gravity if flying, climbing ladder, or on ground
 
-	if ((obj->fly) || (obj->air_mode==am_ground)) {
+	if ((obj->fly) || (obj->on_ladder) || (obj->air_mode==am_ground)) {
 		obj->force.gravity=gravity_start_power;
 		return;
 	}
@@ -928,9 +939,17 @@ void object_move_swim(obj_type *obj)
 
 void object_move(obj_type *obj)
 {
+	int				x,y,z;
+
 		// clear all contacts
 
 	object_clear_contact(&obj->contact);
+
+		// save original position for ladder checks
+
+	x=obj->pos.x;
+	y=obj->pos.y;
+	z=obj->pos.z;
 
 		// call proper movement
 
@@ -949,15 +968,27 @@ void object_move(obj_type *obj)
 	}
 
 		// check for contacts
+		// on send contact event once per hit, and check for
+		// ladder contacts.  If no contacts, only turn off
+		// ladder if there was actually movement
 
 	if (obj->contact.wall_seg_idx!=-1) {
+
+			// collide events
+
 		if (!obj->in_collide_event) {
 			obj->in_collide_event=TRUE;
 			scripts_post_event_console(&obj->attach,sd_event_collide,0,0);
 		}
+
+			// ladder check
+
+		obj->on_ladder=map.segments[obj->contact.wall_seg_idx].climbable;
 	}
 	else {
 		obj->in_collide_event=FALSE;
+
+		if ((x!=obj->pos.x) && (y!=obj->pos.y) && (z!=obj->pos.z)) obj->on_ladder=FALSE;
 	}
 }
 

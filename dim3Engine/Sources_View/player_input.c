@@ -320,6 +320,25 @@ void player_movement_fly_swim_y_input(obj_type *obj)
     }
 }
 
+void player_movement_ladder_y_input(obj_type *obj)
+{
+	if ((!obj->on_ladder) || (!obj->forward_move.moving)) return;
+			
+    if (obj->view_ang.x<-obj->vert_move.slop) {
+        obj->vert_move.moving=TRUE;
+        if (obj->vert_move.reverse==obj->forward_move.reverse) obj->vert_move.speed=0;
+        obj->vert_move.reverse=!obj->forward_move.reverse;
+		return;
+    }
+    
+	if (obj->view_ang.x>obj->vert_move.slop) {
+		obj->vert_move.moving=TRUE;
+        if (!obj->vert_move.reverse==obj->forward_move.reverse) obj->vert_move.speed=0;
+        obj->vert_move.reverse=obj->forward_move.reverse;
+		return;
+    }
+}
+
 void player_movement_side_scroll_input(obj_type *obj)
 {
 		// left-right movement
@@ -421,6 +440,7 @@ void player_movement_input(obj_type *obj)
 			player_movement_fpp_xz_input(obj);
 			if ((!obj->fly) && (obj->liquid_mode!=lm_under)) {
 				player_movement_fpp_y_input(obj);
+				player_movement_ladder_y_input(obj);
 			}
 			else {
 				player_movement_fly_swim_y_input(obj);

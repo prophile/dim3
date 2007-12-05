@@ -725,7 +725,7 @@ typedef struct		{
 						bool				spawning,hidden,suspend,fly,slope_gravity,
 											player,side_step,crawl,single_speed,no_slide,
 											open_doors,input_freeze,hide_all_weapons,
-											find_on,in_collide_event,
+											find_on,in_collide_event,on_ladder,
 											quick_reverse,death_trigger;
 						d3pos				pos,org_pos;
 						d3ang				ang,view_ang,org_ang;

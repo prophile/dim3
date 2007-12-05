@@ -379,6 +379,7 @@ obj_type* object_create(int bind)
 	
 	obj->stand_obj_uid=-1;
 	obj->damage_obj_uid=-1;
+	obj->on_ladder=FALSE;
 	
 	obj->name[0]=0x0;
 	obj->team_idx=net_team_none;
