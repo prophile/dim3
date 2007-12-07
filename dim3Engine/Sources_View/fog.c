@@ -154,7 +154,6 @@ void fog_draw_solid(int tick)
 {
 	int					n,count,outer_radius,inner_radius,
 						radius_add,radius;
-	GLUquadricObj		*quadric;
 
 		// setup viewpoint
 	
@@ -182,29 +181,25 @@ void fog_draw_solid(int tick)
 
 	radius_add=(inner_radius-outer_radius)/count;
 
-		// draw obscuring globes
+		// draw obscuring planes
 
-	quadric=gluNewQuadric();
-	gluQuadricNormals(quadric,GLU_NONE);
-	gluQuadricTexture(quadric,GL_FALSE);
-	
 	radius=outer_radius;
 	
+	glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,map.fog.alpha);
+	
+	glBegin(GL_QUADS);
+
 	for (n=0;n!=count;n++) {
-
-		if (n==0) {
-			glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,1.0f);	// farthest fog is always opaque
-		}
-		else {
-			glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,map.fog.alpha);
-		}
-
-		gluSphere(quadric,radius,8,8);
+	
+		glVertex3i(-radius,-radius,-radius);
+		glVertex3i(radius,-radius,-radius);
+		glVertex3i(radius,radius,-radius);
+		glVertex3i(-radius,radius,-radius);
 
 		radius+=radius_add;
 	}
 	
-	gluDeleteQuadric(quadric);
+	glEnd();
 }
 
 /* =======================================================

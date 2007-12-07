@@ -32,6 +32,7 @@ and can be sold or given away.
 extern setup_type			setup;
 extern render_info_type		render_info;
 extern server_type			server;
+extern map_type				map;
 extern view_type			view;
 
 extern bool					hilite_on;
@@ -48,11 +49,14 @@ double						mod_matrix[16],proj_matrix[16],
 
 void gl_frame_start(void)
 {
-	if ((!hilite_on) || (server.state!=gs_running)) {
-		glClearColor(0.0f,0.0f,0.0f,0.0f);
+		// if fog is on, background is fog color
+		
+	if ((server.state==gs_running) && (map.fog.on) && (setup.fog) && (map.fog.use_solid_color)) {
+		glClearColor(map.fog.col.r,map.fog.col.g,map.fog.col.b,0.0f);
+	
 	}
 	else {
-		glClearColor(1.0f,1.0f,1.0f,0.0f);
+		glClearColor(0.0f,0.0f,0.0f,0.0f);
 	}
 
 	glDepthMask(GL_TRUE);
