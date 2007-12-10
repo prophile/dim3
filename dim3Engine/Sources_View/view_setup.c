@@ -49,7 +49,7 @@ extern setup_type			setup;
 
 int							draw_portal_cnt,draw_portal_list[max_portal];
 
-extern void view_portal_create_sight_path(int rn);
+extern void view_portal_create_sight_path(d3pos *pos);
 extern void segment_render_setup(int tick,int portal_cnt,int *portal_list);
 extern bool model_inview(model_draw *draw);
 extern int distance_to_view_center(int x,int y,int z);
@@ -575,7 +575,7 @@ void view_draw_setup(int tick)
 
 		// get sight path
 
-	view_portal_create_sight_path(view.camera.pos.rn);
+	view_portal_create_sight_path(&view.camera.pos);
 	
 		// any portal updates
 		

@@ -47,7 +47,6 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
-extern void view_portal_create_sight_path(int rn);
 extern void particle_draw_position(effect_type *effect,int count,int *x,int *y,int *z);
 extern void ring_draw_position(effect_type *effect,int count,int *x,int *y,int *z);
 
@@ -150,6 +149,32 @@ bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by)
 	py[4]=py[5]=py[6]=py[7]=by;
 	
 	return(complex_boundbox_inview(px,py,pz));
+}
+
+/* =======================================================
+
+      OutSide of Fog Cut-off
+      
+======================================================= */
+
+bool portal_outside_fog(d3pos *pos,portal_type *portal)
+{
+	int				dist;
+	
+		// is fog on?
+		
+	if ((!map.fog.on) || (!setup.fog) || (!map.fog.use_solid_color)) return(FALSE);
+	
+		// outside of solid fog view?
+		
+	dist=map.fog.outer_radius*map_enlarge;
+		
+	if (distance_2D_get(portal->x,portal->z,pos->x,pos->z)<dist) return(FALSE);
+	if (distance_2D_get(portal->x,portal->ez,pos->x,pos->z)<dist) return(FALSE);
+	if (distance_2D_get(portal->ex,portal->z,pos->x,pos->z)<dist) return(FALSE);
+	if (distance_2D_get(portal->ex,portal->ez,pos->x,pos->z)<dist) return(FALSE);
+
+	return(TRUE);
 }
 
 /* =======================================================

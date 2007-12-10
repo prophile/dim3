@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
+extern bool portal_outside_fog(d3pos *pos,portal_type *portal);
 
 extern map_type					map;
 
@@ -39,9 +40,9 @@ extern map_type					map;
       
 ======================================================= */
 
-void view_portal_trace_sight_path(portal_sight_list_type *sight,int k)
+void view_portal_trace_sight_path(d3pos *pos,portal_sight_list_type *sight,int k)
 {
-	int					i,t;
+	int					i,t,dist;
     portal_type			*portal;
 	
         // is portal already in path?
@@ -53,17 +54,21 @@ void view_portal_trace_sight_path(portal_sight_list_type *sight,int k)
 		
 	portal->in_path=boundbox_inview(portal->x,portal->z,portal->ex,portal->ez,portal->ty,portal->by);
 	
+		// outside of solid fog view?
+		
+	if (portal->in_path) portal->in_path=!portal_outside_fog(pos,portal);
+	
         // trace path from portal
 
 	for (i=0;i!=max_sight_link;i++) {
 		t=(int)sight[k].link[i];
 		if (t!=nopath) {
-			view_portal_trace_sight_path(sight,t);
+			view_portal_trace_sight_path(pos,sight,t);
 		}
 	}
 }
 
-void view_portal_create_sight_path(int rn)
+void view_portal_create_sight_path(d3pos *pos)
 {
 	int							i,k;
     portal_type					*portal;
@@ -79,7 +84,7 @@ void view_portal_create_sight_path(int rn)
     
 		// start with current portal
 	
-    portal=&map.portals[rn];
+    portal=&map.portals[pos->rn];
     portal->in_path=TRUE;
 
 		// add in portals sighted with linked portal list
@@ -88,7 +93,7 @@ void view_portal_create_sight_path(int rn)
 
 	for (k=0;k!=max_sight_list;k++) {
         if (sight->root) {
-			view_portal_trace_sight_path(portal->sight,k);
+			view_portal_trace_sight_path(pos,portal->sight,k);
 		}
 		sight++;
 	}
