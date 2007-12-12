@@ -53,7 +53,6 @@ void gl_frame_start(void)
 		
 	if ((server.state==gs_running) && (map.fog.on) && (setup.fog) && (map.fog.use_solid_color)) {
 		glClearColor(map.fog.col.r,map.fog.col.g,map.fog.col.b,0.0f);
-	
 	}
 	else {
 		glClearColor(0.0f,0.0f,0.0f,0.0f);

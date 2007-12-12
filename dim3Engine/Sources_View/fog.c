@@ -155,6 +155,8 @@ void fog_draw_solid(int tick)
 	int					n,count,outer_radius,inner_radius,
 						radius_add,radius;
 
+	return;
+	
 		// setup viewpoint
 	
 	gl_setup_viewport(console_y_offset());
