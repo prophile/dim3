@@ -178,7 +178,7 @@ void gui_draw_background(float alpha)
 
 void gui_draw(float background_alpha,bool cursor)
 {
-	gl_frame_start();
+	gl_frame_start(NULL);
 	gl_2D_view();
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
@@ -202,7 +202,7 @@ void gui_draw_message(char *txt)
 	int				x,y,lx,rx,ty,by,high;
 	d3col			col;
 	
-	gl_frame_start();
+	gl_frame_start(NULL);
 	gl_2D_view();
 
 	glEnable(GL_BLEND);

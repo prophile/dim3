@@ -58,6 +58,7 @@ extern void model_calc_pose_bones(model_draw *draw);
 extern void segment_render_opaque(int portal_cnt,int *portal_list);
 extern void segment_render_transparent(int portal_cnt,int *portal_list);
 extern void rain_draw(int tick);
+extern bool fog_solid_on(void);
 extern void fog_draw(int tick);
 extern void polygon_segment_start(void);
 extern void polygon_segment_end(void);
@@ -304,13 +305,13 @@ void view_draw(int tick)
 		shadow_texture_finish();
 	}
 	
-		// draw background
+		// draw background and sky
+		// unless obscured by fog
 	
-	draw_background(view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
-	
-		// draw sky
-
-	draw_sky(tick,view.camera.pos.y);
+	if (!fog_solid_on()) {
+		draw_background(view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
+		draw_sky(tick,view.camera.pos.y);
+	}
 	
 		// draw opaque segments
 

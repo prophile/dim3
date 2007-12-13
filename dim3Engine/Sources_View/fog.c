@@ -150,12 +150,116 @@ void fog_draw_textured(int tick)
       
 ======================================================= */
 
+
+
 void fog_draw_solid(int tick)
 {
 	int					n,count,outer_radius,inner_radius,
 						radius_add,radius;
+	float				lx,rx,mx,ty,by,my,
+						f_outer_radius,f_inner_radius;
+	
+		// setup viewpoint
+	
+	gl_setup_viewport(console_y_offset());
+	gl_2D_view();
 
-	return;
+		// setup drawing
+		
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glDisable(GL_ALPHA_TEST);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+
+	glDisable(GL_DEPTH_TEST);
+
+		// drawing layers
+	
+	count=map.fog.count;
+	outer_radius=map.fog.outer_radius*map_enlarge;
+	inner_radius=map.fog.inner_radius*map_enlarge;
+
+	radius_add=(inner_radius-outer_radius)/count;
+
+
+		// get drawing positions
+
+	lx=0.0f;
+	rx=(float)setup.screen.x_sz;
+
+	ty=0.0f;
+	by=(float)setup.screen.y_sz;
+
+	mx=(lx+rx)/2;
+	my=(ty+by)/2;
+
+	f_inner_radius=(float)(map.fog.inner_radius*map_enlarge)/(float)view.camera.far_z;
+	f_outer_radius=(float)(map.fog.outer_radius*map_enlarge)/(float)view.camera.far_z;
+
+//	fprintf(stdout,"in = %f, out = %f, far_z= %d/%d\n",f_inner_radius,f_outer_radius,view.camera.far_z,outer_radius);
+	f_inner_radius=0.5f;
+	f_outer_radius=1.0f;
+
+		// draw obscuring planes
+
+	radius=outer_radius;
+	
+	glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,map.fog.alpha);
+	
+	glBegin(GL_TRIANGLES);
+
+	glColor4f(1,0,0,1);
+
+	glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,map.fog.alpha);
+	glVertex3f(lx,ty,-f_inner_radius);
+	glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,1.0f);
+	glVertex3f(mx,my,-f_outer_radius);
+	glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,map.fog.alpha);
+	glVertex3f(lx,by,-f_inner_radius);
+
+
+	glColor4f(0,1,0,1);
+
+
+	glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,map.fog.alpha);
+	glVertex3f(rx,ty,-f_inner_radius);
+	glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,1.0f);
+	glVertex3f(mx,my,-f_outer_radius);
+	glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,map.fog.alpha);
+	glVertex3f(rx,by,-f_inner_radius);
+
+	glColor4f(0,0,1,1);
+
+
+	glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,map.fog.alpha);
+	glVertex3f(lx,ty,-f_inner_radius);
+	glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,1.0f);
+	glVertex3f(mx,my,-f_outer_radius);
+	glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,map.fog.alpha);
+	glVertex3f(rx,ty,-f_inner_radius);
+
+
+	glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,map.fog.alpha);
+	glVertex3f(lx,by,-f_inner_radius);
+	glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,1.0f);
+	glVertex3f(mx,my,-f_outer_radius);
+	glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,map.fog.alpha);
+	glVertex3f(rx,by,-f_inner_radius);
+
+	glEnd();
+}
+
+
+
+/*
+void fog_draw_solid(int tick)
+{
+	int					n,count,outer_radius,inner_radius,
+						radius_add,radius;
 	
 		// setup viewpoint
 	
@@ -191,6 +295,19 @@ void fog_draw_solid(int tick)
 	
 	glBegin(GL_QUADS);
 
+	glColor4f(1,0,0,1);
+
+//	glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,map.fog.alpha);
+	glVertex3i(-radius,-radius,-inner_radius);
+//	glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,1.0f);
+	glVertex3i(0,-radius,-outer_radius);
+//	glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,1.0f);
+	glVertex3i(0,radius,-outer_radius);
+//	glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,map.fog.alpha);
+	glVertex3i(-radius,radius,-inner_radius);
+
+
+
 	for (n=0;n!=count;n++) {
 	
 		glVertex3i(-radius,-radius,-radius);
@@ -200,8 +317,20 @@ void fog_draw_solid(int tick)
 
 		radius+=radius_add;
 	}
-	
+
 	glEnd();
+}
+*/
+
+/* =======================================================
+
+      Check if Solid Fog is On
+      
+======================================================= */
+
+bool fog_solid_on(void)
+{
+	return((map.fog.on) && (setup.fog) && (map.fog.use_solid_color));
 }
 
 /* =======================================================

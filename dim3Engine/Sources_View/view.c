@@ -46,6 +46,7 @@ and can be sold or given away.
 view_type					view;
 render_info_type			render_info;
 
+extern map_type				map;
 extern server_type			server;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
@@ -59,6 +60,7 @@ extern void view_draw_setup(int tick);
 extern void view_draw(int tick);
 extern int game_time_get(void);
 extern void chat_clear_messages(void);
+extern bool fog_solid_on(void);
 
 /* =======================================================
 
@@ -437,8 +439,14 @@ void view_loop_draw(int tick)
 		// draw view
 
 	view_draw_setup(tick);
-		
-	gl_frame_start();
+	
+	if (!fog_solid_on()) {
+		gl_frame_start(NULL);
+	}
+	else {
+		gl_frame_start(&map.fog.col);		// is obscuring fog on, then background = fog color
+	}
+
 	gl_render_arrays_frame_start();
 	
 	view_draw(tick);
@@ -461,7 +469,7 @@ void view_loop_draw(int tick)
 
 void view_capture_draw(int tick,char *path)
 {
-	gl_frame_start();
+	gl_frame_start(NULL);
 	gl_render_arrays_frame_start();
 	
 	view_draw(tick);
@@ -480,7 +488,7 @@ void view_pause_draw(void)
 {
 	d3col		col;
 
-	gl_frame_start();
+	gl_frame_start(NULL);
 	gl_render_arrays_frame_start();
 
 	gl_setup_viewport(0);

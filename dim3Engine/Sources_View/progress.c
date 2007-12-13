@@ -98,7 +98,7 @@ void progress_draw(float percentage)
 	
 		// start the frame
 	
-	gl_frame_start();
+	gl_frame_start(NULL);
 	
 		// setup draw
 		

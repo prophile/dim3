@@ -191,7 +191,7 @@ char input_gui_get_keyboard_key(void)
 		// special keys
 
 	if (keystate[SDLK_SPACE]) return(0x20);
-	if (keystate[SDLK_PERIOD]) return('.');
+	if ((keystate[SDLK_PERIOD]) || (keystate[SDLK_KP_PERIOD])) return('.');
 	if (keystate[SDLK_BACKSPACE]) return(0x8);
 	if (keystate[SDLK_TAB]) return(0x9);
 	if ((keystate[SDLK_RETURN]) || (keystate[SDLK_KP_ENTER])) return(0xD);
@@ -200,6 +200,9 @@ char input_gui_get_keyboard_key(void)
 
 	for (n=SDLK_0;n<=SDLK_9;n++) {
 		if (keystate[n]) return('0'+(n-SDLK_0));
+	}
+	for (n=SDLK_KP0;n<=SDLK_KP9;n++) {
+		if (keystate[n]) return('0'+(n-SDLK_KP0));
 	}
 
 		// letters

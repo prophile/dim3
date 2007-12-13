@@ -47,15 +47,13 @@ double						mod_matrix[16],proj_matrix[16],
       
 ======================================================= */
 
-void gl_frame_start(void)
+void gl_frame_start(d3col *col)
 {
-		// if fog is on, background is fog color
-		
-	if ((server.state==gs_running) && (map.fog.on) && (setup.fog) && (map.fog.use_solid_color)) {
-		glClearColor(map.fog.col.r,map.fog.col.g,map.fog.col.b,0.0f);
+	if (col==NULL) {
+		glClearColor(0.0f,0.0f,0.0f,0.0f);
 	}
 	else {
-		glClearColor(0.0f,0.0f,0.0f,0.0f);
+		glClearColor(col->r,col->g,col->b,0.0f);
 	}
 
 	glDepthMask(GL_TRUE);

@@ -42,7 +42,7 @@ extern map_type					map;
 
 void view_portal_trace_sight_path(d3pos *pos,portal_sight_list_type *sight,int k)
 {
-	int					i,t,dist;
+	int					i,t;
     portal_type			*portal;
 	
         // is portal already in path?
