@@ -152,11 +152,31 @@ void fog_draw_textured(int tick)
 
 void fog_draw_solid(int tick)
 {
-	int					n,count,outer_radius,inner_radius,
-						radius_add,radius;
-	float				lx,rx,mx,ty,by,my,
+	int					n,count;
+	float				f_x_sz,f_y_sz,
 						f_radius,f_outer_radius,f_inner_radius,f_radius_add;
-						
+		
+	GLfloat		col[4];
+
+	glEnable(GL_FOG);
+
+	col[0]=1; // map.fog.col.r;
+	col[1]=0; // map.fog.col.g;
+	col[2]=0; // map.fog.col.b;
+	col[3]=1;
+
+	col[0]=map.fog.col.r;
+	col[1]=map.fog.col.g;
+	col[2]=map.fog.col.b;
+	col[3]=1;
+
+	glFogfv(GL_FOG_COLOR,col);
+	glFogi(GL_FOG_MODE,GL_LINEAR);
+	glFogi(GL_FOG_START,(map.fog.inner_radius*map_enlarge));
+	glFogi(GL_FOG_END,(map.fog.outer_radius*map_enlarge));
+
+	return;
+
 		// translate fog z's
 						
 	gl_3D_view(&view.camera);
@@ -188,6 +208,9 @@ void fog_draw_solid(int tick)
 	f_radius=f_outer_radius;
 	f_radius_add=(f_inner_radius-f_outer_radius)/(float)count;
 
+	f_x_sz=(float)setup.screen.x_sz;
+	f_y_sz=(float)setup.screen.y_sz;
+
 		// draw obscuring planes
 
 	glBegin(GL_QUADS);
@@ -202,9 +225,9 @@ void fog_draw_solid(int tick)
 		}
 	
 		glVertex3f(0.0f,0.0f,-f_radius);
-		glVertex3f(setup.screen.x_sz,0.0f,-f_radius);
-		glVertex3f(setup.screen.x_sz,setup.screen.y_sz,-f_radius);
-		glVertex3f(0.0f,setup.screen.y_sz,-f_radius);
+		glVertex3f(f_x_sz,0.0f,-f_radius);
+		glVertex3f(f_x_sz,f_y_sz,-f_radius);
+		glVertex3f(0.0f,f_y_sz,-f_radius);
 
 		f_radius+=f_radius_add;
 	}

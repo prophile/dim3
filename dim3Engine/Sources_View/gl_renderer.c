@@ -195,7 +195,7 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 		CGLSetParameter(current_ctx,kCGLCPSwapInterval,&swapint);
 	}
 	
-// this seems to slow the game to a crawl on Intel macs, leave it off for now
+// supergumba -- retest then when I get an intel mac
 //	CGLEnable(current_ctx,kCGLCEMPEngine);
 
 #endif
