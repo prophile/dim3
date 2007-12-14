@@ -49,6 +49,7 @@ extern setup_type			setup;
 
 extern void particle_draw_position(effect_type *effect,int count,int *x,int *y,int *z);
 extern void ring_draw_position(effect_type *effect,int count,int *x,int *y,int *z);
+extern bool fog_solid_on(void);
 
 /* =======================================================
 
@@ -163,11 +164,13 @@ bool portal_outside_fog(d3pos *pos,portal_type *portal)
 	
 		// is fog on?
 		
-	if ((!map.fog.on) || (!setup.fog) || (!map.fog.use_solid_color)) return(FALSE);
+	if (!fog_solid_on()) return(FALSE);
 	
 		// outside of solid fog view?
+		// use a little greater than fog radius as z
+		// projection can be a bit sloppy
 		
-	dist=map.fog.outer_radius*map_enlarge;
+	dist=((map.fog.outer_radius>>1)*3)*map_enlarge;
 		
 	if (distance_2D_get(portal->x,portal->z,pos->x,pos->z)<dist) return(FALSE);
 	if (distance_2D_get(portal->x,portal->ez,pos->x,pos->z)<dist) return(FALSE);
