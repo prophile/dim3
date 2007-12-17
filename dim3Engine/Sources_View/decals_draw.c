@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "effects.h"
 #include "consoles.h"
 #include "video.h"
 
@@ -41,7 +42,7 @@ extern int game_time_get(void);
 
 /* =======================================================
 
-      Marks Bitmaps
+      Decal Bitmaps
       
 ======================================================= */
 
@@ -71,5 +72,189 @@ void mark_free_bitmaps(void)
 		bitmap_close(&mark->bitmap);
 		mark++;
 	}
+}
+
+/* =======================================================
+
+      Decals
+      
+======================================================= */
+
+void decal_render_stencil(int stencil_idx,segment_type *seg)
+{
+	int			i,ptsz;
+	int			*px,*py,*pz;
+
+		// already stenciled?
+
+	if (seg->render.stencil_idx!=0) return;
+
+		// stencil
+
+	switch (seg->type) {
+		case sg_wall:
+			ptsz=seg->data.wall.ptsz;
+			px=seg->data.wall.x;
+			py=seg->data.wall.y;
+			pz=seg->data.wall.z;
+			break;
+		case sg_floor:
+			ptsz=seg->data.fc.ptsz;
+			px=seg->data.fc.x;
+			py=seg->data.fc.y;
+			pz=seg->data.fc.z;
+			break;
+		default:
+			return;
+	}
+
+	glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
+
+	glBegin(GL_POLYGON);
+
+	for (i=0;i!=ptsz;i++) {
+		glVertex3i((px[i]-view.camera.pos.x),(py[i]-view.camera.pos.y),(view.camera.pos.z-pz[i]));
+	}
+	
+	glEnd();
+
+		// remember stencil
+
+	seg->render.stencil_idx=stencil_idx;
+}
+
+void decal_render_mark(int stencil_idx,decal_type *decal)
+{
+	int				n,k,tick,fade_out_start_tick,
+					x[4],z[4],y[4];
+	float			alpha,g_size,gx,gy;
+	mark_type		*mark;
+	
+		// get the alpha
+	
+	mark=&server.marks[decal->mark_idx];
+		
+	alpha=decal->alpha;
+	tick=game_time_get()-decal->start_tick;
+	
+	if (tick<mark->fade_in_msec) {
+		alpha=(alpha*(float)tick)/(float)mark->fade_in_msec;
+	}
+	else {
+		fade_out_start_tick=mark->fade_in_msec+mark->life_msec;
+		if (tick>=fade_out_start_tick) {
+			k=tick-fade_out_start_tick;
+			alpha=(alpha*(float)(mark->fade_out_msec-k))/(float)mark->fade_out_msec;
+		}
+	}
+	
+		// get the decal image
+		
+	effect_image_animate_get_uv(tick,&mark->animate,&gx,&gy,&g_size);
+
+		// setup to draw
+		
+	for (n=0;n!=4;n++) {
+		x[n]=decal->x[n]-view.camera.pos.x;
+		y[n]=decal->y[n]-view.camera.pos.y;
+		z[n]=view.camera.pos.z-decal->z[n];		// switch negative here
+	}
+	
+         // draw the polygon
+			
+	glStencilFunc(GL_EQUAL,stencil_idx,0xFF);
+	gl_texture_decal_set(server.marks[decal->mark_idx].bitmap.gl_id,alpha);
+	
+	glBegin(GL_QUADS);
+    glTexCoord2f(gx,gy);
+    glVertex3i(x[0],y[0],z[0]);
+    glTexCoord2f((gx+g_size),gy);
+    glVertex3i(x[1],y[1],z[1]);
+    glTexCoord2f((gx+g_size),(gy+g_size));
+    glVertex3i(x[2],y[2],z[2]);
+    glTexCoord2f(gx,(gy+g_size));
+    glVertex3i(x[3],y[3],z[3]);
+    glEnd();
+}
+
+void decal_render(void)
+{
+	int					n,stencil_idx;
+	decal_type			*decal;
+
+	if (server.count.decal==0) return;
+
+		// clear all rendering stencil marks
+
+	decal=server.decals;
+
+	for (n=0;n!=server.count.decal;n++) {
+		map.segments[decal->seg_idx].render.stencil_idx=0;
+		decal++;
+	}
+
+		// decals use stenciling
+
+	glEnable(GL_STENCIL_TEST);
+
+	glClear(GL_STENCIL_BUFFER_BIT);
+
+		// stencil decal segments
+
+	glDisable(GL_BLEND);
+			
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+
+	glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
+
+	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+
+	stencil_idx=stencil_segment_start;
+	decal=server.decals;
+
+	for (n=0;n!=server.count.decal;n++) {
+
+		if (map.portals[decal->rn].in_path) {
+			decal_render_stencil(stencil_idx,&map.segments[decal->seg_idx]);
+			stencil_idx++;
+		}
+
+		decal++;
+	}
+
+	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
+
+		// draw decals to stencils
+
+	gl_texture_decal_start();
+				
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	
+	glDisable(GL_DEPTH_TEST);
+			
+	glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
+
+	decal=server.decals;
+
+	for (n=0;n!=server.count.decal;n++) {
+
+		if (map.portals[decal->rn].in_path) {
+			decal_render_mark(map.segments[decal->seg_idx].render.stencil_idx,decal);
+		}
+
+		decal++;
+	}
+
+	gl_texture_decal_end();
+	
+	glDisable(GL_STENCIL_TEST);
 }
 

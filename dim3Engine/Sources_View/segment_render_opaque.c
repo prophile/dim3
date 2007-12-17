@@ -341,82 +341,6 @@ void segment_piece_draw_shader(int cnt,short *sptr)
 
 /* =======================================================
 
-      Decals
-      
-======================================================= */
-
-void segment_piece_draw_decal(int stencil_idx,decal_type *decal)
-{
-	int				n,k,tick,fade_out_start_tick,
-					x[4],z[4],y[4];
-	float			alpha,g_size,gx,gy;
-	mark_type		*mark;
-	
-		// get the alpha
-	
-	mark=&server.marks[decal->mark_idx];
-		
-	alpha=decal->alpha;
-	tick=game_time_get()-decal->start_tick;
-	
-	if (tick<mark->fade_in_msec) {
-		alpha=(alpha*(float)tick)/(float)mark->fade_in_msec;
-	}
-	else {
-		fade_out_start_tick=mark->fade_in_msec+mark->life_msec;
-		if (tick>=fade_out_start_tick) {
-			k=tick-fade_out_start_tick;
-			alpha=(alpha*(float)(mark->fade_out_msec-k))/(float)mark->fade_out_msec;
-		}
-	}
-	
-		// get the decal image
-		
-	effect_image_animate_get_uv(tick,&mark->animate,&gx,&gy,&g_size);
-
-		// setup to draw
-		
-	for (n=0;n!=4;n++) {
-		x[n]=decal->x[n]-view.camera.pos.x;
-		y[n]=decal->y[n]-view.camera.pos.y;
-		z[n]=view.camera.pos.z-decal->z[n];		// switch negative here
-	}
-	
-         // draw the polygon
-			
-	glStencilFunc(GL_EQUAL,stencil_idx,0xFF);
-	gl_texture_decal_set(server.marks[decal->mark_idx].bitmap.gl_id,alpha);
-	
-	glBegin(GL_QUADS);
-    glTexCoord2f(gx,gy);
-    glVertex3i(x[0],y[0],z[0]);
-    glTexCoord2f((gx+g_size),gy);
-    glVertex3i(x[1],y[1],z[1]);
-    glTexCoord2f((gx+g_size),(gy+g_size));
-    glVertex3i(x[2],y[2],z[2]);
-    glTexCoord2f(gx,(gy+g_size));
-    glVertex3i(x[3],y[3],z[3]);
-    glEnd();
-}
-
-
-void segment_piece_draw_decals(int rn,int stencil_pass)
-{
-	int					n;
-	segment_type		*seg;
-	decal_type			*decal;
-
-	decal=server.decals;
-
-	for (n=0;n!=server.count.decal;n++) {
-		seg=&map.segments[decal->seg_idx];
-		if ((seg->rn==rn) && (seg->render.stencil_pass==stencil_pass)) segment_piece_draw_decal(seg->render.stencil_idx,decal);
-		decal++;
-	}
-}
-
-/* =======================================================
-
       Opaque Segment Drawing
       
 ======================================================= */
@@ -471,7 +395,7 @@ int segment_render_opaque_portal(int rn,int pass_last)
 			glDepthFunc(GL_LEQUAL);
 			glDepthMask(GL_TRUE);
 
-			glEnable(GL_STENCIL_TEST);					// stencil for decal and lighting pass
+			glEnable(GL_STENCIL_TEST);					// stencil for lighting pass
 			glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
 
 			segment_piece_draw_opaque_normal(stencil_pass,draw->opaque_normal_count,draw->opaque_normal_list);
@@ -496,7 +420,7 @@ int segment_render_opaque_portal(int rn,int pass_last)
 			glDepthFunc(GL_LEQUAL);
 			glDepthMask(GL_TRUE);
 
-			glEnable(GL_STENCIL_TEST);					// stencil for decal and lighting pass
+			glEnable(GL_STENCIL_TEST);					// stencil for lighting pass
 			glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
 
 			segment_piece_draw_opaque_bump(stencil_pass,draw->opaque_bump_count,draw->opaque_bump_list);
@@ -504,31 +428,6 @@ int segment_render_opaque_portal(int rn,int pass_last)
 			glDisable(GL_STENCIL_TEST);
 
 			gl_texture_opaque_bump_end();
-		}
-
-			// decals
-			// compare with has opaque light segments as that contains both opaque and opaque bumped
-			
-		if ((draw->opaque_light_count!=0) && (setup.mark) && (portal->decal_count>0)) {
-
-			gl_texture_decal_start();
-				
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc(GL_NOTEQUAL,0);
-				
-			glDisable(GL_DEPTH_TEST);
-			
-			glEnable(GL_STENCIL_TEST);					// stencil for decal pass
-			glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
-
-			segment_piece_draw_decals(rn,stencil_pass);
-
-			glDisable(GL_STENCIL_TEST);
-
-			gl_texture_decal_end();
 		}
 
 			// opaque tesseled lighting

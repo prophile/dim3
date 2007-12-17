@@ -84,7 +84,7 @@ void segment_render_setup_single_opaque(portal_type *portal,short s_idx,segment_
 		if ((!light_changed) || (seg->moveable)) map_portal_calculate_normal_vector_smooth(portal,(double)seg->middle.x,(double)seg->middle.y,(double)seg->middle.z,seg->render.normal);
 	}
 	else {
-		if ((seg->render.light_simple) && (seg->decal_count==0)) {
+		if (seg->render.light_simple) {
 			draw->opaque_simple_normal_list[draw->opaque_simple_normal_count++]=s_idx;
 		}
 		else {
