@@ -230,9 +230,6 @@ bool game_file_save(char *err_str)
 	bool			ok;
 	struct tm		*tm;
 	time_t			curtime;
-	obj_type		*obj;
-	weapon_type		*weap;
-	proj_setup_type	*proj_setup;
 	segment_type	*seg;
 	
 	progress_initialize("Saving");
@@ -274,30 +271,12 @@ bool game_file_save(char *err_str)
 		
 	game_file_add_chunk(&tick,sizeof(int));
 	
-		// send scripts save state
+		// send scripts save event
+		// to backup globals
 		
 	progress_draw(10);
 	
-	script_state_save(&js.game_attach);
-	script_state_save(&js.course_attach);
-	
-	obj=server.objs;
-	for (n=0;n!=server.count.obj;n++) {
-		script_state_save(&obj->attach);
-		obj++;
-	}
-	
-	weap=server.weapons;
-	for (n=0;n!=server.count.weapon;n++) {
-		script_state_save(&weap->attach);
-		weap++;
-	}
-	
-	proj_setup=server.proj_setups;
-	for (n=0;n!=server.count.proj_setup;n++) {
-		script_state_save(&proj_setup->attach);
-		proj_setup++;
-	}
+	script_state_save();
 	
 		// add structures
 		
@@ -401,9 +380,6 @@ bool game_file_load(char *file_name,char *err_str)
 {
 	int				n,tick,ntouch_segment,seg_idx;
 	char			*c,path[1024],fname[256],name[256],vers[16];
-	obj_type		*obj;
-	weapon_type		*weap;
-	proj_setup_type	*proj_setup;
 
 		// load and expand
 		
@@ -527,30 +503,12 @@ bool game_file_load(char *file_name,char *err_str)
 	game_file_get_chunk(js.moves);
 	game_file_get_chunk(js.globals);
 	
-		// send scripts load state
+		// send scripts load event
+		// to restore globals
 		
 	progress_draw(90);
 	
-	script_state_load(&js.game_attach);
-	script_state_load(&js.course_attach);
-	
-	obj=server.objs;
-	for (n=0;n!=server.count.obj;n++) {
-		script_state_load(&obj->attach);
-		obj++;
-	}
-	
-	weap=server.weapons;
-	for (n=0;n!=server.count.weapon;n++) {
-		script_state_load(&weap->attach);
-		weap++;
-	}
-	
-	proj_setup=server.proj_setups;
-	for (n=0;n!=server.count.proj_setup;n++) {
-		script_state_load(&proj_setup->attach);
-		proj_setup++;
-	}
+	script_state_load();
 	
 		// free game data
 		

@@ -182,8 +182,8 @@ extern jsval script_get_global(char *name,int script_uid);
 extern bool script_add_global(char *name,int script_uid,jsval val);
 extern void script_delete_global(char *name,int script_uid);
 
-extern void script_state_save(attach_type *attach);
-extern void script_state_load(attach_type *attach);
+extern void script_state_save(void);
+extern void script_state_load(void);
 
 extern void timers_initialize(void);
 extern int timers_find(attach_type *attach,int mode);

@@ -41,6 +41,7 @@ extern camera_type		camera;
 extern view_type		view;
 
 extern void portal_compile_gl_lists(int tick,int rn);
+extern bool fog_solid_on(void);
 
 /* =======================================================
 
