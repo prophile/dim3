@@ -39,7 +39,7 @@ extern setup_type			setup;
 
 /* =======================================================
 
-      Draw Textured Fog
+      Textured Fog
       
 ======================================================= */
 
@@ -53,6 +53,10 @@ void fog_draw_textured(int tick)
 	d3ang				ang;
 	texture_type		*texture;
 	GLUquadricObj		*quadric;
+	
+		// textured fog on?
+		
+	if ((!map.fog.on) || (!setup.fog) || (map.fog.use_solid_color)) return;
 
 		// setup viewpoint
 		
@@ -146,98 +150,7 @@ void fog_draw_textured(int tick)
 
 /* =======================================================
 
-      Draw Solid Fog
-      
-======================================================= */
-
-void fog_draw_solid(int tick)
-{
-	int					n,count;
-	float				f_x_sz,f_y_sz,
-						f_radius,f_outer_radius,f_inner_radius,f_radius_add;
-		
-	GLfloat		col[4];
-
-	glEnable(GL_FOG);
-
-	col[0]=1; // map.fog.col.r;
-	col[1]=0; // map.fog.col.g;
-	col[2]=0; // map.fog.col.b;
-	col[3]=1;
-
-	col[0]=map.fog.col.r;
-	col[1]=map.fog.col.g;
-	col[2]=map.fog.col.b;
-	col[3]=1;
-
-	glFogfv(GL_FOG_COLOR,col);
-	glFogi(GL_FOG_MODE,GL_LINEAR);
-	glFogi(GL_FOG_START,(map.fog.inner_radius*map_enlarge));
-	glFogi(GL_FOG_END,(map.fog.outer_radius*map_enlarge));
-
-	return;
-
-		// translate fog z's
-						
-	gl_3D_view(&view.camera);
-	gl_setup_project();
-	
-	f_outer_radius=gl_project_point_z(0,0,(map.fog.outer_radius*map_enlarge));
-	f_inner_radius=gl_project_point_z(0,0,(map.fog.inner_radius*map_enlarge));
-	
-		// setup viewpoint
-	
-	gl_setup_viewport(console_y_offset());
-	gl_2D_view();
-
-		// setup drawing
-		
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glDisable(GL_ALPHA_TEST);
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_FALSE);
-
-		// drawing layers
-	
-	count=map.fog.count;
-	
-	f_radius=f_outer_radius;
-	f_radius_add=(f_inner_radius-f_outer_radius)/(float)count;
-
-	f_x_sz=(float)setup.screen.x_sz;
-	f_y_sz=(float)setup.screen.y_sz;
-
-		// draw obscuring planes
-
-	glBegin(GL_QUADS);
-	
-	for (n=0;n!=count;n++) {
-	
-		if (n==0) {
-			glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,1.0f);		// furthest layer always blanks out everything
-		}
-		else {
-			glColor4f(map.fog.col.r,map.fog.col.g,map.fog.col.b,map.fog.alpha);
-		}
-	
-		glVertex3f(0.0f,0.0f,-f_radius);
-		glVertex3f(f_x_sz,0.0f,-f_radius);
-		glVertex3f(f_x_sz,f_y_sz,-f_radius);
-		glVertex3f(0.0f,f_y_sz,-f_radius);
-
-		f_radius+=f_radius_add;
-	}
-	
-	glEnd();
-}
-
-/* =======================================================
-
-      Check if Solid Fog is On
+      Solid Fog
       
 ======================================================= */
 
@@ -246,25 +159,25 @@ inline bool fog_solid_on(void)
 	return((map.fog.on) && (setup.fog) && (map.fog.use_solid_color));
 }
 
-/* =======================================================
-
-      Draw Fog Mainline
-      
-======================================================= */
-
-void fog_draw(int tick)
+void fog_solid_start(void)
 {
-		// is fog on?
-	
-	if ((!map.fog.on) || (!setup.fog)) return;
+	GLfloat		col[4];
 
-		// draw correct fog
-							
-	if (!map.fog.use_solid_color) {
-		fog_draw_textured(tick);
-	}
-	else {
-		fog_draw_solid(tick);
-	}
+	glEnable(GL_FOG);
+
+	col[0]=map.fog.col.r;
+	col[1]=map.fog.col.g;
+	col[2]=map.fog.col.b;
+	col[3]=1.0f;
+
+	glFogfv(GL_FOG_COLOR,col);
+	glFogi(GL_FOG_MODE,GL_LINEAR);
+	glFogi(GL_FOG_START,(map.fog.inner_radius*map_enlarge));
+	glFogi(GL_FOG_END,(map.fog.outer_radius*map_enlarge));
+}
+
+void fog_solid_end(void)
+{
+	glDisable(GL_FOG);
 }
 

@@ -59,7 +59,9 @@ extern void segment_render_opaque(int portal_cnt,int *portal_list);
 extern void segment_render_transparent(int portal_cnt,int *portal_list);
 extern void rain_draw(int tick);
 extern bool fog_solid_on(void);
-extern void fog_draw(int tick);
+extern void fog_draw_textured(int tick);
+extern void fog_solid_start(void);
+extern void fog_solid_end(void);
 extern void polygon_segment_start(void);
 extern void polygon_segment_end(void);
 extern bool model_inview(model_draw *draw);
@@ -313,6 +315,9 @@ void view_draw(int tick)
 		draw_background(view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
 		draw_sky(tick,view.camera.pos.y);
 	}
+	else {
+		fog_solid_start();
+	}
 	
 		// draw opaque segments
 
@@ -341,7 +346,9 @@ void view_draw(int tick)
 
 		// draw fog
 
-	fog_draw(tick);
+	fog_draw_textured(tick);
+	
+	if (fog_solid_on()) fog_solid_end();
 	
 		// setup halos, crosshairs, zoom masks
 		

@@ -111,7 +111,7 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 	int							n,i,rn,cnt,frame,
 								lod_dist,stencil_pass,stencil_idx;
 	short						s_idx;
-	bool						light_changed;
+	bool						light_changed,global_light_simple;
 	short						*sptr;
 	portal_type					*portal;
 	segment_type				*seg;
@@ -144,6 +144,10 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 			// has lighting changed in this portal?
 			
 		light_changed=map_portal_light_check_changes(portal);
+		
+			// combined global simple lighting
+			
+		global_light_simple=(!setup.high_quality_lighting) || (fog_solid_on());
 	
 			// create segment rendering values and lists
 
@@ -162,7 +166,7 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 
 				// default setup
 		
-			seg->render.light_simple=(!setup.high_quality_lighting) || (lod_dist>map.optimizations.lod_light_distance) || (seg->simple_tessel);
+			seg->render.light_simple=(global_light_simple) || (lod_dist>map.optimizations.lod_light_distance) || (seg->simple_tessel);
 			seg->render.lod_dist=lod_dist;
 
 				// clear the stencil
