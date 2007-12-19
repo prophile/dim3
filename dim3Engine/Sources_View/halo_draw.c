@@ -42,47 +42,13 @@ extern setup_type			setup;
 
 /* =======================================================
 
-      Halo Bitmaps
-      
-======================================================= */
-
-void halo_load_bitmaps(void)
-{
-	int			n;
-	char		path[1024];
-	halo_type	*halo;
-
-	halo=server.halos;
-	
-	for (n=0;n!=server.count.halo;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Halos",halo->bitmap.name,"png");
-		bitmap_open(&halo->bitmap,path,setup.anisotropic_mode,setup.texture_quality_mode,setup.mipmap_mode,setup.mipmap_card_generated,setup.texture_compression);
-		halo++;
-	}
-}
-
-void halo_free_bitmaps(void)
-{
-	int			n;
-	halo_type	*halo;
-
-	halo=server.halos;
-	
-	for (n=0;n!=server.count.halo;n++) {
-		bitmap_close(&halo->bitmap);
-		halo++;
-	}
-}
-
-/* =======================================================
-
       Add Halos
       
 ======================================================= */
 
 void halo_draw_clear(void)
 {
-	view.nhalo_draw=0;
+	view.count.halo_draw=0;
 }
 
 void halo_draw_add(int x,int z,int y,int obj_uid,model_draw_halo *mdl_halo)
@@ -90,10 +56,10 @@ void halo_draw_add(int x,int z,int y,int obj_uid,model_draw_halo *mdl_halo)
 	halo_draw_type		*halo_draw;
 	
 	if (mdl_halo->idx==-1) return;
-	if (view.nhalo_draw>=max_light_spot) return;
+	if (view.count.halo_draw>=max_light_spot) return;
 	
-	halo_draw=&view.halo_draws[view.nhalo_draw];
-	view.nhalo_draw++;
+	halo_draw=&view.halo_draws[view.count.halo_draw];
+	view.count.halo_draw++;
 	
 	halo_draw->idx=mdl_halo->idx;
 
@@ -132,7 +98,7 @@ void halo_draw_setup(void)
 	halo_draw_type		*halo_draw;
 	ray_trace_contact	contact;
 	
-	view.nhalo_draw_in_view=0;
+	view.count.halo_draw_in_view=0;
 
 	if (!setup.halo) return;
 	
@@ -140,7 +106,7 @@ void halo_draw_setup(void)
 	
 	halo_draw=view.halo_draws;
 	
-	for (i=0;i<view.nhalo_draw;i++) {
+	for (i=0;i<view.count.halo_draw;i++) {
 		halo_draw->in_view=TRUE;
 		halo_draw++;
 	}
@@ -152,7 +118,7 @@ void halo_draw_setup(void)
 	gl_3D_rotate(&view.camera.ang);
 	gl_setup_project();
 
-	for (i=0;i<view.nhalo_draw;i++) {
+	for (i=0;i<view.count.halo_draw;i++) {
 		halo_draw=&view.halo_draws[i];
 		
 			// translate and rotate point
@@ -191,7 +157,7 @@ void halo_draw_setup(void)
 	contact.proj_on=FALSE;
 	contact.proj_ignore_uid=-1;
 
-	for (i=0;i<view.nhalo_draw;i++) {
+	for (i=0;i<view.count.halo_draw;i++) {
 		halo_draw=&view.halo_draws[i];
 		if (!halo_draw->in_view) continue;
 
@@ -280,7 +246,7 @@ void halo_draw_setup(void)
 		
 			// add to view count
 
-		view.nhalo_draw_in_view++;
+		view.count.halo_draw_in_view++;
 	}
 }
 
@@ -297,7 +263,7 @@ void halo_draw_render(void)
 	
 		// any halos to draw?
 		
-	if (view.nhalo_draw_in_view==0) return;
+	if (view.count.halo_draw_in_view==0) return;
 		
 		// halos are post-render overlay effects
 		
@@ -314,7 +280,7 @@ void halo_draw_render(void)
 
 	glDisable(GL_DEPTH_TEST);
 	
-	for (i=0;i<view.nhalo_draw;i++) {
+	for (i=0;i<view.count.halo_draw;i++) {
 		halo_draw=&view.halo_draws[i];
 		if (!halo_draw->in_view) continue;
 	
@@ -326,7 +292,7 @@ void halo_draw_render(void)
 
 			// draw halo
 			
-		gl_texture_simple_set(server.halos[halo_draw->idx].bitmap.gl_id,TRUE,1,1,1,halo_draw->alpha);
+		gl_texture_simple_set(view_images_get_gl_id(server.halos[halo_draw->idx].image_idx),TRUE,1,1,1,halo_draw->alpha);
 
 		glBegin(GL_QUADS);
 		glTexCoord2f(0,0);

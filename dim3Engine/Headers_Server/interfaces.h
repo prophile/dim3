@@ -101,8 +101,6 @@ extern void progress_draw(float percentage);
 
 extern void hud_initialize(void);
 
-extern void hud_load_bitmaps(void);
-extern void hud_free_bitmaps(void);
 extern hud_bitmap_type* hud_bitmaps_find(char *name);
 extern hud_text_type* hud_texts_find(char *name);
 extern hud_bar_type* hud_bars_find(char *name);
@@ -120,9 +118,6 @@ extern void network_draw(int tick);
 // radar
 //
 
-extern void radar_load_bitmaps(void);
-extern void radar_free_bitmaps(void);
-
 extern void radar_draw(void);
 
 //
@@ -130,8 +125,6 @@ extern void radar_draw(void);
 //
 
 extern void crosshair_initialize(void);
-extern void crosshair_load_bitmaps(void);
-extern void crosshair_free_bitmaps(void);
 
 extern int crosshair_find(char *name);
 extern void crosshair_show_alt(int tick,obj_type *obj);

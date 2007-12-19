@@ -43,52 +43,6 @@ extern setup_type			setup;
 
 /* =======================================================
 
-      Particle Bitmaps
-      
-======================================================= */
-
-bool particle_load_bitmaps(void)
-{
-	int				n;
-	char			path[1024];
-	particle_type	*particle;
-	
-	particle=server.particles;
-	
-	for (n=0;n!=server.count.particle;n++) {
-
-			// load bitmap
-			
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Particles",particle->bitmap.name,"png");
-		bitmap_open(&particle->bitmap,path,anisotropic_mode_none,setup.texture_quality_mode,mipmap_mode_none,FALSE,setup.texture_compression);
-		
-			// precalculate particles
-			
-		particle_precalculate(particle);
-		
-		particle++;
-	}
-	
-	return(TRUE);
-}
-
-void particle_free_bitmaps(void)
-{
-	int				n;
-	particle_type	*particle;
-    
-		// close particle bitmaps
-		
-	particle=server.particles;
-	
-	for (n=0;n!=server.count.particle;n++) {
-		bitmap_close(&particle->bitmap);
-		particle++;
-	}
-}
-
-/* =======================================================
-
       Get Particle Connected Model Draw
       
 ======================================================= */
@@ -428,7 +382,7 @@ void particle_draw(effect_type *effect,int count)
 		// draw arrays
 		
 	gl_texture_simple_start();
-	gl_texture_simple_set(particle->bitmap.gl_id,FALSE,r,g,b,alpha);
+	gl_texture_simple_set(view_images_get_gl_id(particle->image_idx),FALSE,r,g,b,alpha);
 
 	glEnable(GL_BLEND);
 

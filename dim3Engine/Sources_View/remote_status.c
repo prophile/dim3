@@ -45,30 +45,7 @@ extern network_setup_type	net_setup;
 
 extern bitmap_type			font_small_bitmap;
 
-bitmap_type					remote_slow_bitmap,remote_talk_bitmap;
-
-/* =======================================================
-
-      Remote Status Bitmaps
-      
-======================================================= */
-
-void remote_load_bitmaps(void)
-{
-	char						path[1024];
-    
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Network","slow","png");
-	bitmap_open(&remote_slow_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
-	
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Network","talk","png");
-	bitmap_open(&remote_talk_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
-}
-
-void remote_free_bitmaps(void)
-{
-	bitmap_close(&remote_slow_bitmap);
-	bitmap_close(&remote_talk_bitmap);
-}
+int							remote_slow_image_idx,remote_talk_image_idx;
 
 /* =======================================================
 
@@ -76,7 +53,7 @@ void remote_free_bitmaps(void)
       
 ======================================================= */
 
-void remote_draw_icon(obj_type *obj,bitmap_type *bitmap)
+void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 {
 	int				x,y,z,x_sz,y_sz,z_sz;
 	
@@ -105,7 +82,7 @@ void remote_draw_icon(obj_type *obj,bitmap_type *bitmap)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 
-	gl_texture_simple_set(bitmap->gl_id,TRUE,1,1,1,1);
+	gl_texture_simple_set(gl_id,TRUE,1,1,1,1);
 
 	glBegin(GL_QUADS);
 	glTexCoord2f(0,0);
@@ -126,14 +103,14 @@ void remote_draw_status(obj_type *obj)
 		// slow status
 		
 	if (remote_timed_out(obj)) {
-		remote_draw_icon(obj,&remote_slow_bitmap);
+		remote_draw_icon(obj,view_images_get_gl_id(remote_slow_image_idx));
 		return;
 	}
 	
 		// talking status
 		
 	if (obj->remote.talking) {
-		remote_draw_icon(obj,&remote_talk_bitmap);
+		remote_draw_icon(obj,view_images_get_gl_id(remote_talk_image_idx));
 		return;
 	}
 }

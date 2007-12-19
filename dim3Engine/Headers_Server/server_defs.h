@@ -925,20 +925,19 @@ typedef struct		{
 					} particle_piece_type;
 
 typedef struct		{
-						int						count,trail_count,trail_step,
+						int						image_idx,count,trail_count,trail_step,
 												spread_offset,life_msec,
 												start_pixel_size,end_pixel_size,
 												current_variation_idx;
 						float					start_gravity,gravity_add,
 												start_alpha,end_alpha,reduce_pixel_fact,
 												ambient_factor;
-						char					name[name_str_len];
+						char					name[name_str_len],bitmap_name[name_str_len];
 						bool					reverse,blend_add;
 						d3pnt					pt;
 						d3ang					rot;
 						d3vct					vct,rot_accel;
 						d3col					start_color,end_color;
-						bitmap_type				bitmap;
 						image_animation_type	animate;
 						particle_piece_type		pieces[max_particle_variation][max_particle_count];
 						particle_group_type		group;
@@ -949,16 +948,15 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						life_msec,
+						int						image_idx,life_msec,
 												start_outer_size,end_outer_size,
 												start_inner_size,end_inner_size;
 						float					start_alpha,end_alpha;
-						char					name[name_str_len];
+						char					name[name_str_len],bitmap_name[name_str_len];
 						bool					blend_add;
 						d3ang					ang,rot;
 						d3vct					vct,rot_accel;
 						d3col					start_color,end_color;
-						bitmap_type				bitmap;
 						image_animation_type	animate;
 					} ring_type;
 
@@ -967,21 +965,21 @@ typedef struct		{
 //
 					
 typedef struct		{
-						char					name[name_str_len];
-						bitmap_type				bitmap;
+						int						image_idx;
+						char					name[name_str_len],bitmap_name[name_str_len];
 					} halo_type;
 					
 typedef struct		{
-						int						fade_in_msec,life_msec,fade_out_msec,total_msec;
-						char					name[name_str_len];
+						int						image_idx,
+												fade_in_msec,life_msec,fade_out_msec,total_msec;
+						char					name[name_str_len],bitmap_name[name_str_len];
 						bool					no_rotate,no_transparent,no_opaque;
-						bitmap_type				bitmap;
 						image_animation_type	animate;
 					} mark_type;
 
 typedef struct		{
-						char					name[name_str_len];
-						bitmap_type				bitmap;
+						int						image_idx;
+						char					name[name_str_len],bitmap_name[name_str_len];
 					} crosshair_type;
 					
 //

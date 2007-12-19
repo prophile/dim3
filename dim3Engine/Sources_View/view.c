@@ -72,11 +72,15 @@ bool view_memory_allocate(void)
 {
 		// initialize pointers
 		
+	view.images=NULL;
 	view.halo_draws=NULL;
 	view.rain_draws=NULL;
 	
 		// view pointers
-		
+
+	view.images=(view_image_type*)valloc(max_view_image*sizeof(view_image_type));
+	if (view.images==NULL) return(FALSE);
+
 	view.halo_draws=(halo_draw_type*)valloc(max_light_spot*sizeof(halo_draw_type));
 	if (view.halo_draws==NULL) return(FALSE);
 
@@ -85,6 +89,7 @@ bool view_memory_allocate(void)
 	
 		// clear pointers
 
+	bzero(view.images,(max_view_image*sizeof(view_image_type)));
 	bzero(view.halo_draws,(max_light_spot*sizeof(halo_draw_type)));
 	bzero(view.rain_draws,(max_rain_density*sizeof(rain_draw_type)));
 			
@@ -93,6 +98,7 @@ bool view_memory_allocate(void)
 
 void view_memory_release(void)
 {
+	if (view.images!=NULL) free(view.images);
 	if (view.halo_draws!=NULL) free(view.halo_draws);
 	if (view.rain_draws!=NULL) free(view.rain_draws);
 }
@@ -357,17 +363,10 @@ void view_game_start(void)
     camera_initialize();
 	game_file_initialize();
 	
-		// load bitmaps
+		// load images for hud bitmaps, radar, particles,
+		// rings, halos, marks, crosshairs and remote icons
 	
-	hud_load_bitmaps();
-	radar_load_bitmaps();
-	particle_load_bitmaps();
-	ring_load_bitmaps();
-	halo_load_bitmaps();
-	mark_load_bitmaps();
-	crosshair_load_bitmaps();
-		
-	if (net_setup.client.joined) remote_load_bitmaps();
+	view_images_load();
 	
 		// no chat
 		
@@ -380,18 +379,10 @@ void view_game_stop(void)
 	
 	al_music_stop();
 	
-		// free bitmaps
+		// free images for hud bitmaps, radar, particles,
+		// rings, halos, marks, crosshairs and remote icons
 	
-	hud_free_bitmaps();
-	radar_free_bitmaps();
-	particle_free_bitmaps();
-	halo_free_bitmaps();
-	mark_free_bitmaps();
-	crosshair_free_bitmaps();
-		
-		// free remote bitmaps
-		
-	if (net_setup.client.joined) remote_free_bitmaps();
+	view_images_free();
 }
 
 /* =======================================================

@@ -185,3 +185,10 @@ extern int gl_text_get_string_width(char *str,bool small_text);
 extern void gl_text_start(bool small_text);
 extern void gl_text_end(void);
 extern void gl_text_draw(int x,int y,char *txt,int just,d3col *col,float alpha);
+
+	// images
+
+extern void view_images_load(void);
+extern void view_images_free(void);
+extern bitmap_type* view_images_get_bitmap(int idx);
+extern unsigned long view_images_get_gl_id(int idx);

@@ -68,7 +68,7 @@ void read_settings_crosshair(void)
 			
 			tag=xml_findfirstchild("Image",crosshair_tag);
 			if (tag!=-1) {
-				xml_get_attribute_text(tag,"file",crosshair->bitmap.name,file_str_len);
+				xml_get_attribute_text(tag,"file",crosshair->bitmap_name,file_str_len);
 			}
 			
 				// move on to next crosshair

@@ -43,46 +43,6 @@ extern setup_type			setup;
 
 /* =======================================================
 
-      Ring Bitmaps
-      
-======================================================= */
-
-bool ring_load_bitmaps(void)
-{
-	int				n;
-	ring_type		*ring;
-	char			path[1024];
-	
-		// load ring bitmaps
-
-	ring=server.rings;
-	
-	for (n=0;n!=server.count.ring;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Rings",ring->bitmap.name,"png");
-		bitmap_open(&ring->bitmap,path,anisotropic_mode_none,setup.texture_quality_mode,mipmap_mode_none,FALSE,setup.texture_compression);
-		ring++;
-	}
-	
-	return(TRUE);
-}
-
-void ring_free_bitmaps(void)
-{
-	int				n;
-	ring_type		*ring;
-    
-		// close ring bitmaps
-		
-	ring=server.rings;
-	
-	for (n=0;n!=server.count.ring;n++) {
-		bitmap_close(&ring->bitmap);
-		ring++;
-	}
-}
-
-/* =======================================================
-
       Draw Ring Position
       
 ======================================================= */
@@ -262,7 +222,7 @@ void ring_draw(effect_type *effect,int count)
 		// draw ring
 		
 	gl_texture_simple_start();
-	gl_texture_simple_set(ring->bitmap.gl_id,FALSE,r,g,b,alpha);
+	gl_texture_simple_set(view_images_get_gl_id(ring->image_idx),FALSE,r,g,b,alpha);
 	
 	glEnable(GL_BLEND);
 	

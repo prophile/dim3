@@ -110,7 +110,7 @@ void read_settings_particle(void)
 		
         tag=xml_findfirstchild("Image",particle_tag);
         if (tag!=-1) {
-            xml_get_attribute_text(tag,"file",particle->bitmap.name,file_str_len);
+            xml_get_attribute_text(tag,"file",particle->bitmap_name,file_str_len);
             particle->animate.image_count=xml_get_attribute_int(tag,"count");
 			particle->animate.image_per_row=(int)sqrt((float)particle->animate.image_count);
 			particle->animate.msec=xml_get_attribute_int(tag,"time");

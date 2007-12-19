@@ -138,7 +138,7 @@ bool server_memory_allocate(void)
 	if (js.globals==NULL) return(FALSE);
 	
 		// hud pointers
-		
+
 	hud.bitmaps=(hud_bitmap_type*)valloc(max_hud_bitmap*sizeof(hud_bitmap_type));
 	if (hud.bitmaps==NULL) return(FALSE);
 	

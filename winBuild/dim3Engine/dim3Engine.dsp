@@ -1467,6 +1467,10 @@ SOURCE=..\..\dim3Engine\Sources_View\view_draw.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3Engine\Sources_View\view_images.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Engine\Sources_View\view_run.c
 # End Source File
 # Begin Source File

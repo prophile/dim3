@@ -43,57 +43,6 @@ extern render_info_type		render_info;
 
 /* =======================================================
 
-      Bitmaps
-      
-======================================================= */
-
-void radar_load_bitmaps(void)
-{
-	int						n;
-	char					path[1024];
-	hud_radar_icon_type		*icon;
-
-	if (!hud.radar.on) return;
-	
-		// open background bitmap
- 
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Radar",hud.radar.background_bitmap.name,"png");
-	bitmap_open(&hud.radar.background_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
-
-		// open icon bitmaps
-	
-	icon=hud.radar.icons;
-	
-	for (n=0;n!=hud.radar.nicon;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Radar",icon->bitmap.name,"png");
-		bitmap_open(&icon->bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
-		icon++;
-	}
-}
-
-void radar_free_bitmaps(void)
-{
-	int						n;
-	hud_radar_icon_type		*icon;
-	
-	if (!hud.radar.on) return;
-
-		// close background bitmap
-
-	bitmap_close(&hud.radar.background_bitmap);
-    
-		// close icon bitmaps
-
-	icon=hud.radar.icons;
-	
-	for (n=0;n!=hud.radar.nicon;n++) {
-		bitmap_close(&icon->bitmap);
-		icon++;
-	}
-}
-
-/* =======================================================
-
       Draw HUD Radar
       
 ======================================================= */
@@ -139,7 +88,7 @@ void radar_draw(void)
 		// draw radar background
 
 	gl_texture_simple_start();
-	gl_texture_simple_set(hud.radar.background_bitmap.gl_id,TRUE,1.0f,1.0f,1.0f,1.0f);
+	gl_texture_simple_set(view_images_get_gl_id(hud.radar.background_image_idx),TRUE,1.0f,1.0f,1.0f,1.0f);
 
 	glBegin(GL_QUADS);
 	glTexCoord2f(0.0f,0.0f);
@@ -205,7 +154,7 @@ void radar_draw(void)
 		
 		icon=&hud.radar.icons[obj->radar.icon_idx];
 		
-		gl_id=icon->bitmap.gl_id;
+		gl_id=view_images_get_gl_id(icon->image_idx);
 		if ((gl_id!=cur_gl_id) || (alpha!=cur_alpha)) {
 			cur_gl_id=gl_id;
 			cur_alpha=alpha;

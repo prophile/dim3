@@ -42,40 +42,6 @@ extern int game_time_get(void);
 
 /* =======================================================
 
-      Decal Bitmaps
-      
-======================================================= */
-
-void mark_load_bitmaps(void)
-{
-	int			n;
-	char		path[1024];
-	mark_type	*mark;
-
-	mark=server.marks;
-	
-	for (n=0;n!=server.count.mark;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Marks",mark->bitmap.name,"png");
-		bitmap_open(&mark->bitmap,path,setup.anisotropic_mode,setup.texture_quality_mode,setup.mipmap_mode,setup.mipmap_card_generated,setup.texture_compression);
-		mark++;
-	}
-}
-
-void mark_free_bitmaps(void)
-{
-	int			n;
-	mark_type	*mark;
-
-	mark=server.marks;
-	
-	for (n=0;n!=server.count.mark;n++) {
-		bitmap_close(&mark->bitmap);
-		mark++;
-	}
-}
-
-/* =======================================================
-
       Decals
       
 ======================================================= */
@@ -163,7 +129,7 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
          // draw the polygon
 			
 	glStencilFunc(GL_EQUAL,stencil_idx,0xFF);
-	gl_texture_decal_set(server.marks[decal->mark_idx].bitmap.gl_id,alpha);
+	gl_texture_decal_set(view_images_get_gl_id(server.marks[decal->mark_idx].image_idx),alpha);
 	
 	glBegin(GL_QUADS);
     glTexCoord2f(gx,gy);

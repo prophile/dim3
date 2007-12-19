@@ -68,7 +68,7 @@ void read_settings_halo(void)
 			
 			tag=xml_findfirstchild("Image",halo_tag);
 			if (tag!=-1) {
-				xml_get_attribute_text(tag,"file",halo->bitmap.name,file_str_len);
+				xml_get_attribute_text(tag,"file",halo->bitmap_name,file_str_len);
 			}
 			
 				// move on to next halo

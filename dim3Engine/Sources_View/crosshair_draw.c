@@ -45,40 +45,6 @@ extern setup_type			setup;
 
 /* =======================================================
 
-      Crosshair Bitmaps
-      
-======================================================= */
-
-void crosshair_load_bitmaps(void)
-{
-	int				n;
-	char			path[1024];
-	crosshair_type	*crosshair;
-
-	crosshair=server.crosshairs;
-	
-	for (n=0;n!=server.count.crosshair;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Crosshairs",crosshair->bitmap.name,"png");
-		bitmap_open(&crosshair->bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
-		crosshair++;
-	}
-}
-
-void crosshair_free_bitmaps(void)
-{
-	int				n;
-	crosshair_type	*crosshair;
-
-	crosshair=server.crosshairs;
-	
-	for (n=0;n!=server.count.crosshair;n++) {
-		bitmap_close(&crosshair->bitmap);
-		crosshair++;
-	}
-}
-
-/* =======================================================
-
       Alternate Crosshairs
       
 ======================================================= */
@@ -169,7 +135,7 @@ void crosshair_setup_click(int tick,obj_type *obj)
 		return;
 	}
 
-	crosshair_draw->gl_id=server.crosshairs[idx].bitmap.gl_id;
+	crosshair_draw->gl_id=view_images_get_gl_id(server.crosshairs[idx].image_idx);
 }
 
 void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
@@ -268,7 +234,7 @@ void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 	
 		// regular weapon crosshair
 		
-	crosshair_draw->gl_id=server.crosshairs[weap->crosshair.fire_idx].bitmap.gl_id;
+	crosshair_draw->gl_id=view_images_get_gl_id(server.crosshairs[weap->crosshair.fire_idx].image_idx);
 	
 		// change color if picking up an item or empty
 

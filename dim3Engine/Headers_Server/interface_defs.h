@@ -115,9 +115,13 @@ typedef struct		{
 // HUD defines
 //
 
+#define max_hud_image				300	
+
 #define max_hud_bitmap				256
 #define max_hud_text				256
 #define max_hud_bar					32
+
+#define max_radar_icon				16
 
 #define max_hud_text_str_sz			256
 
@@ -159,7 +163,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						d3col						base,header,disabled,mouse_over,hilite;
+						d3col					base,header,disabled,mouse_over,hilite;
 					} hud_color_type;
 
 //
@@ -178,12 +182,11 @@ typedef struct		{
 					} hud_bitmap_repeat_type;
 					
 typedef struct		{
-						int						x,y,x_size,y_size,show_tick;
+						int						x,y,x_size,y_size,image_idx,show_tick;
 						float					alpha,rot;
 						char					name[name_str_len],filename[file_str_len];
 						bool					show,flash,flip_horz,flip_vert;
 						hud_bitmap_repeat_type	repeat;
-						bitmap_type				bitmap;
 						image_animation_type	animate;
 						hud_item_fade_type		fade;
 					} hud_bitmap_type;
@@ -209,18 +212,16 @@ typedef struct		{
 // radar
 //
 
-#define max_radar_icon			16
-
 typedef struct		{
-						int						size;
-						char					name[name_str_len];
-						bitmap_type				bitmap;
+						int						size,image_idx;
+						char					name[name_str_len],bitmap_name[name_str_len];
 					} hud_radar_icon_type;
 
 typedef struct		{
-						int						x,y,display_radius,view_radius,nicon;
+						int						x,y,display_radius,view_radius,
+												background_image_idx,nicon;
 						bool					on;
-						bitmap_type				background_bitmap;
+						char					background_bitmap_name[name_str_len];
 						hud_radar_icon_type		icons[max_radar_icon];
 					} hud_radar_type;
 			

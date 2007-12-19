@@ -93,7 +93,7 @@ void read_settings_mark(void)
 		
 			tag=xml_findfirstchild("Image",mark_tag);
 			if (tag!=-1) {
-				xml_get_attribute_text(tag,"file",mark->bitmap.name,file_str_len);
+				xml_get_attribute_text(tag,"file",mark->bitmap_name,file_str_len);
 				mark->animate.image_count=xml_get_attribute_int(tag,"count");
 				mark->animate.image_per_row=(int)sqrt((float)mark->animate.image_count);
 				mark->animate.msec=xml_get_attribute_int(tag,"time");

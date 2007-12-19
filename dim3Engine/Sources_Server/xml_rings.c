@@ -86,7 +86,7 @@ void read_settings_ring(void)
 		
         tag=xml_findfirstchild("Image",ring_tag);
         if (tag!=-1) {
-            xml_get_attribute_text(tag,"file",ring->bitmap.name,file_str_len);
+            xml_get_attribute_text(tag,"file",ring->bitmap_name,file_str_len);
             ring->animate.image_count=xml_get_attribute_int(tag,"count");
 			ring->animate.image_per_row=(int)sqrt((float)ring->animate.image_count);
 			ring->animate.msec=xml_get_attribute_int(tag,"time");

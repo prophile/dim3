@@ -26,6 +26,12 @@ and can be sold or given away.
 *********************************************************************/
 
 //
+// view images (huds, particles, crosshairs, etc)
+//
+
+#define max_view_image				1024
+
+//
 // input rate
 //
 
@@ -53,6 +59,15 @@ and can be sold or given away.
 
 #define view_sort_object			0
 #define view_sort_projectile		1
+
+//
+// image structures
+//
+
+typedef struct		{
+						char					path[1024];
+						bitmap_type				bitmap;
+					} view_image_type;
 
 //
 // object sorting structures
@@ -139,18 +154,28 @@ typedef struct		{
 						int						tick,count,time;
 						float					total;
 					} view_fps_type;
-					
+
+//
+// count structure
+//
+
+typedef struct		{
+						int						image,
+												halo_draw,halo_draw_in_view;
+					} view_count_type;
+
 //
 // main display structure
 //
  
- typedef struct		{
-						int						nhalo_draw,nhalo_draw_in_view;
+typedef struct		{
 						float					draw_forward_ang_y;
+						view_count_type			count;
 						view_camera_type		camera;
 						view_time_type			time;
 						view_fps_type			fps;
 						view_sort_type			sort;
+						view_image_type			*images;
 						halo_draw_type			*halo_draws;
 						rain_draw_type			*rain_draws;
 					} view_type;

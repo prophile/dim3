@@ -401,7 +401,7 @@ void read_settings_interface_radar(int radar_tag)
 	hud.radar.display_radius=32;
 	hud.radar.view_radius=map_enlarge*100;
 	hud.radar.nicon=0;
-	hud.radar.background_bitmap.name[0]=0x0;
+	hud.radar.background_bitmap_name[0]=0x0;
 
 		// read settings
 
@@ -419,7 +419,7 @@ void read_settings_interface_radar(int radar_tag)
 
 	tag=xml_findfirstchild("Background",radar_tag);
 	if (tag!=-1) {
-		xml_get_attribute_text(tag,"file",hud.radar.background_bitmap.name,name_str_len);
+		xml_get_attribute_text(tag,"file",hud.radar.background_bitmap_name,name_str_len);
 	}
 
 		// get the icons
@@ -431,7 +431,7 @@ void read_settings_interface_radar(int radar_tag)
 	
 	while (icon_tag!=-1) {
 		xml_get_attribute_text(icon_tag,"name",hud.radar.icons[hud.radar.nicon].name,name_str_len);
-		xml_get_attribute_text(icon_tag,"file",hud.radar.icons[hud.radar.nicon].bitmap.name,name_str_len);
+		xml_get_attribute_text(icon_tag,"file",hud.radar.icons[hud.radar.nicon].bitmap_name,name_str_len);
 		hud.radar.icons[hud.radar.nicon].size=xml_get_attribute_int(icon_tag,"size");
 		hud.radar.nicon++;
 

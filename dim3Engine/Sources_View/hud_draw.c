@@ -46,44 +46,6 @@ extern render_info_type		render_info;
 
 /* =======================================================
 
-      Bitmaps
-      
-======================================================= */
-
-void hud_load_bitmaps(void)
-{
-	int					n;
-	char				path[1024];
-	hud_bitmap_type		*bitmap;
-    
-		// open the bitmaps
-		
-	bitmap=hud.bitmaps;
-	
-	for (n=0;n!=hud.count.bitmap;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Interface",bitmap->filename,"png");
-		bitmap_open(&bitmap->bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
-		bitmap++;
-	}
-}
-
-void hud_free_bitmaps(void)
-{
-	int					n;
-	hud_bitmap_type		*bitmap;
-    
-		// close the bitmaps
-		
-	bitmap=hud.bitmaps;
-	
-	for (n=0;n!=hud.count.bitmap;n++) {
-		bitmap_close(&bitmap->bitmap);
-		bitmap++;
-	}
-}
-
-/* =======================================================
-
       Run HUD Item Fades
       
 ======================================================= */
@@ -169,9 +131,9 @@ void hud_bitmaps_draw(int tick)
 			continue;
 		}
 
-            // find position
+            // get bitmap and position
 			
-		bitmap_data=&bitmap->bitmap;
+		bitmap_data=view_images_get_bitmap(bitmap->image_idx);
             
 		sx=bitmap->x;
 		sy=bitmap->y;
