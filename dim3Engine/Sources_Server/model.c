@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "projectiles.h"
 #include "models.h"
 #include "consoles.h"
 
@@ -77,6 +78,21 @@ model_type* model_find(char *name)
 	
 	for (i=0;i!=server.count.model;i++) {
 		if (strcmp(mdl->name,name)==0) return(mdl);
+		mdl++;
+	}
+	
+	return(NULL);
+}
+
+model_type* model_bind_find(char *name,int bind)
+{
+	int				i;
+	model_type		*mdl;
+
+	mdl=server.models;
+	
+	for (i=0;i!=server.count.model;i++) {
+		if ((strcmp(mdl->name,name)==0) && (mdl->bind==bind)) return(mdl);
 		mdl++;
 	}
 	
@@ -243,6 +259,63 @@ void models_dispose(int bind)
 		
 		server.count.model--;
 		if (server.count.model==0) break;
+	}
+}
+
+/* =======================================================
+
+      Reset Model UIDs after Load
+      
+======================================================= */
+
+void models_reset_uid_single(model_draw *draw,int bind)
+{
+	model_type			*mdl;
+
+	mdl=model_bind_find(draw->name,bind);
+	if (mdl==NULL) {
+		draw->on=FALSE;
+		return;
+	}
+
+	draw->uid=mdl->uid;
+}
+
+void models_reset_uid(void)
+{
+	int					i;
+	obj_type			*obj;
+	weapon_type			*weap;
+	proj_setup_type		*proj_setup;
+	proj_type			*proj;
+	
+	obj=server.objs;
+	
+	for (i=0;i!=server.count.obj;i++) {
+		models_reset_uid_single(&obj->draw,obj->bind);
+		obj++;
+	}
+
+	weap=server.weapons;
+	
+	for (i=0;i!=server.count.weapon;i++) {
+		models_reset_uid_single(&weap->draw,weap->bind);
+		weap++;
+	}
+
+	proj_setup=server.proj_setups;
+	
+    for (i=0;i!=server.count.proj_setup;i++) {
+		models_reset_uid_single(&proj_setup->draw,proj_setup->bind);
+		proj_setup++;
+	}
+
+	proj=server.projs;
+	
+    for (i=0;i!=server.count.proj;i++) {
+		proj_setup=proj_setups_find_uid(proj->proj_setup_uid);
+		models_reset_uid_single(&proj->draw,proj_setup->bind);
+		proj++;
 	}
 }
 

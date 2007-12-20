@@ -367,8 +367,12 @@ void view_game_start(void)
 		// rings, halos, marks, crosshairs and remote icons
 	
 	view_images_load();
+
+		// precalculate particles
+
+	particle_precalculate_all();
 	
-		// no chat
+		// clear chat messages
 		
 	chat_clear_messages();
 }

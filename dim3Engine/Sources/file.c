@@ -31,6 +31,12 @@ and can be sold or given away.
 
 #include "scripts.h"
 #include "interfaces.h"
+#include "models.h"
+
+typedef struct		{
+						int					tick;
+						char				version[16],map_name[name_str_len];
+					} file_save_header;					
 
 extern map_type			map;
 extern hud_type			hud;
@@ -219,26 +225,17 @@ bool game_file_expand_load(char *path,char *err_str)
 
 /* =======================================================
 
-      Save Game
+      Get Save File Path
       
 ======================================================= */
 
-bool game_file_save(char *err_str)
+void game_file_create_name(int tick,char *file_name)
 {
-	int				n,tick,seg_idx,ntouch_segment,sec;
-	char			path[1024],file_name[256],elapse_str[32],time_str[32];
-	bool			ok;
-	struct tm		*tm;
-	time_t			curtime;
-	segment_type	*seg;
-	
-	progress_initialize("Saving");
-	progress_draw(5);
-	
-		// get saved data file names
-		
-	tick=game_time_get();
-	
+	int					sec;
+	char				elapse_str[32],time_str[32];
+	struct tm			*tm;
+	time_t				curtime;
+
 	curtime=time(NULL);
 	tm=localtime(&curtime);
 	sprintf(time_str,"%.4d%.2d%.2d%.2d%.2d",(tm->tm_year+1900),(tm->tm_mon+1),tm->tm_mday,tm->tm_hour,tm->tm_min);
@@ -246,12 +243,36 @@ bool game_file_save(char *err_str)
 	sec=(game_time_get()-map.start_game_tick)/1000;
 	if (sec>(99*60)) sec=99*60;
 	sprintf(elapse_str,"%.2d%.2d",(sec/60),(sec%60));
+		
+	sprintf(file_name,"%s_%s_%s",time_str,elapse_str,map.info.name);
+}
+
+/* =======================================================
+
+      Save Game
+      
+======================================================= */
+
+bool game_file_save(char *err_str)
+{
+	int					n,tick,seg_idx,ntouch_segment;
+	char				path[1024],file_name[256];
+	bool				ok;
+	file_save_header	head;
+	segment_type		*seg;
+	
+	progress_initialize("Saving");
+	progress_draw(5);
+	
+		// get saved data file names
+		
+	tick=game_time_get();
+
+	game_file_create_name(tick,file_name);
 	
 		// save screen
 		
-	sprintf(file_name,"%s_%s_%s",time_str,elapse_str,map.info.name);
 	file_paths_documents(&setup.file_path_setup,path,"Saved Games",file_name,"png");
-	
 	view_capture_draw(tick,path);
 	
 		// start chunks
@@ -259,17 +280,13 @@ bool game_file_save(char *err_str)
 	game_file_sz=0;
 	game_file_data=valloc(32);
 
-		// version
-		
-	game_file_add_chunk(dim3_version,16);
-	
-		// map name
-		
-	game_file_add_chunk(&map.info.name,name_str_len);
+		// header
 
-		// timing
+	head.tick=tick;
+	strcpy(head.version,dim3_version);
+	strcpy(head.map_name,map.info.name);
 		
-	game_file_add_chunk(&tick,sizeof(int));
+	game_file_add_chunk(&head,sizeof(file_save_header));
 	
 		// send scripts save event
 		// to backup globals
@@ -278,7 +295,7 @@ bool game_file_save(char *err_str)
 	
 	script_state_save();
 	
-		// add structures
+		// view & server objects
 		
 	progress_draw(20);
 		
@@ -293,7 +310,6 @@ bool game_file_save(char *err_str)
 	
 	game_file_add_chunk(&server.uid,sizeof(server_uid_type));
 	game_file_add_chunk(&server.count,sizeof(server_count_type));
-	game_file_add_chunk(&hud.count,sizeof(hud_count_type));
 	
 	progress_draw(40);
 
@@ -311,16 +327,21 @@ bool game_file_save(char *err_str)
 	
 	game_file_add_chunk(hud.bitmaps,(hud.count.bitmap*sizeof(hud_bitmap_type)));
 	game_file_add_chunk(hud.texts,(hud.count.text*sizeof(hud_text_type)));
-
-	game_file_add_chunk(&map.fog,sizeof(map_fog_type));
+	game_file_add_chunk(hud.bars,(hud.count.bar*sizeof(hud_bar_type)));
+	game_file_add_chunk(&hud.radar,sizeof(hud_radar_type));
 	
-		// touched segments and movements
+		// map changes
 		
 	progress_draw(70);
+
+	game_file_add_chunk(&map.ambient,sizeof(map_ambient_type));					
+	game_file_add_chunk(&map.rain,sizeof(map_rain_type));					
+	game_file_add_chunk(&map.background,sizeof(map_background_type));					
+	game_file_add_chunk(&map.sky,sizeof(map_sky_type));
+	game_file_add_chunk(&map.fog,sizeof(map_fog_type));
 	
 	ntouch_segment=map_segments_count_touch(&map);
 	
-	game_file_add_chunk(&map.nsegment,sizeof(int));
 	game_file_add_chunk(&ntouch_segment,sizeof(int));
 	
 	seg=map.segments;
@@ -336,7 +357,7 @@ bool game_file_save(char *err_str)
 	
 	game_file_add_chunk(map.movements,sizeof(movement_type)*map.nmovement);
 	
-		// timers, moves and globals
+		// script objects
 		
 	progress_draw(80);
 	
@@ -378,8 +399,9 @@ bool game_file_save(char *err_str)
 
 bool game_file_load(char *file_name,char *err_str)
 {
-	int				n,tick,ntouch_segment,seg_idx;
-	char			*c,path[1024],fname[256],name[256],vers[16];
+	int					n,ntouch_segment,seg_idx;
+	char				*c,path[1024],fname[256];
+	file_save_header	head;
 
 		// load and expand
 		
@@ -391,7 +413,9 @@ bool game_file_load(char *file_name,char *err_str)
 	if (!game_file_expand_load(path,err_str)) return(FALSE);
 	
 	game_file_pos=0;
-	
+
+	progress_initialize("Loading");
+
 		// if game isn't running, then start
 		
 	if (!server.game_open) {
@@ -401,26 +425,27 @@ bool game_file_load(char *file_name,char *err_str)
 		}
 	}
 
-		// version
+		// get header
+
+	game_file_get_chunk(&head);
+
+		// check version
 		
-	game_file_get_chunk(vers);
-	if (strcmp(vers,dim3_version)!=0) {
+	if (strcmp(head.version,dim3_version)!=0) {
 		sprintf(err_str,"This saved game file is from a different version of dim3");
 		free(game_file_data);
 		return(FALSE);
 	}
-	
-		// map name
-		
-	game_file_get_chunk(name);
 		
 		// reload map
+
+	progress_draw(10);
 	
-	if ((!server.map_open) || (strcmp(name,map.info.name)!=0)) {		// need to load a map?
+	if ((!server.map_open) || (strcmp(head.map_name,map.info.name)!=0)) {		// need to load a map?
 	
 		if (server.map_open) map_end();
 		
-		strcpy(map.info.name,name);
+		strcpy(map.info.name,head.map_name);
 		map.info.player_start_name[0]=0x0;
 		map.info.player_start_type[0]=0x0;
 		map.info.in_load=TRUE;
@@ -431,15 +456,11 @@ bool game_file_load(char *file_name,char *err_str)
 		}
 	}
 	
-	progress_initialize("Loading");
-	progress_draw(10);
-	
 		// timing
 		
-	game_file_get_chunk(&tick);
-	game_time_set(tick);
+	game_time_set(head.tick);
 
-		// load structures
+		// view and server objects
 		
 	progress_draw(20);
 					
@@ -454,7 +475,6 @@ bool game_file_load(char *file_name,char *err_str)
 
 	game_file_get_chunk(&server.uid);
 	game_file_get_chunk(&server.count);
-	game_file_get_chunk(&hud.count);
 	
 	progress_draw(40);
 
@@ -468,16 +488,23 @@ bool game_file_load(char *file_name,char *err_str)
 	game_file_get_chunk(server.effects);
 	game_file_get_chunk(server.decals);
 
+	progress_draw(60);
+
 	game_file_get_chunk(hud.bitmaps);
 	game_file_get_chunk(hud.texts);
+	game_file_get_chunk(hud.bars);
+	game_file_get_chunk(&hud.radar);
 	
+		// map changes
+		
+	progress_draw(70);
+
+	game_file_get_chunk(&map.ambient);					
+	game_file_get_chunk(&map.rain);					
+	game_file_get_chunk(&map.background);					
+	game_file_get_chunk(&map.sky);
 	game_file_get_chunk(&map.fog);
-	
-		// touched segments
 		
-	progress_draw(60);
-		
-	game_file_get_chunk(&map.nsegment);
 	game_file_get_chunk(&ntouch_segment);
 
 	for (n=0;n<ntouch_segment;n++) {
@@ -489,24 +516,28 @@ bool game_file_load(char *file_name,char *err_str)
 	
 	map_portal_rebuild_vertex_lists(&map,setup.high_quality_lighting);
 	
-		// load timers, moves and globals
+		// script objects
 		
-	progress_draw(70);
+	progress_draw(80);
 
 	game_file_get_chunk(&js.script_current_uid);
 	game_file_get_chunk(&js.count);
 	game_file_get_chunk(&js.time);
 	
-	progress_draw(80);
-
 	game_file_get_chunk(js.timers);
 	game_file_get_chunk(js.moves);
 	game_file_get_chunk(js.globals);
+
+		// reset model UIDs
+
+	progress_draw(90);
+
+	models_reset_uid();
 	
 		// send scripts load event
 		// to restore globals
 		
-	progress_draw(90);
+	progress_draw(95);
 	
 	script_state_load();
 	

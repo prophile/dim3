@@ -44,6 +44,7 @@ extern void effect_draw(int tick);
 
 extern void particle_initialize(void);
 extern void particle_precalculate(particle_type *particle);
+extern void particle_precalculate_all(void);
 extern particle_type* particle_find(char *name);
 extern int particle_find_index(char *name);
 extern bool particle_spawn(int particle_idx,d3pnt *pt,particle_rotate *rot,particle_motion *motion);

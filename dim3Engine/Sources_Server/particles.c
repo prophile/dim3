@@ -111,6 +111,19 @@ void particle_precalculate(particle_type *particle)
 	particle->current_variation_idx=0;
 }
 
+void particle_precalculate_all(void)
+{
+	int					n;
+	particle_type		*particle;
+
+	particle=server.particles;
+	
+	for (n=0;n!=server.count.particle;n++) {
+		particle_precalculate(particle);
+		particle++;
+	}
+}
+
 /* =======================================================
 
       Find Particle by Name

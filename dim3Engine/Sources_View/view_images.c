@@ -162,16 +162,8 @@ void view_images_load(void)
 	particle=server.particles;
 	
 	for (n=0;n!=server.count.particle;n++) {
-
-			// load bitmap
-			
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Particles",particle->bitmap_name,"png");
 		particle->image_idx=view_images_load_single(path,FALSE);
-		
-			// precalculate particles
-			
-		particle_precalculate(particle);	// supergumba -- move this!
-		
 		particle++;
 	}
 	

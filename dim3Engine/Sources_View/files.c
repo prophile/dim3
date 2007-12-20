@@ -49,6 +49,7 @@ extern void console_add_error(char *txt);
 extern void intro_open(void);
 extern void map_end(void);
 extern void game_end(void);
+extern void game_time_pause_end(void);
 
 extern server_type			server;
 extern setup_type			setup;
@@ -342,12 +343,10 @@ void file_close(void)
 {
 	gui_shutdown();
 	file_close_list();
-	
-	if (!server.map_open) {			// if no map opened, then return to intro
-		intro_open();
-		return;
-	}
+}
 
+void file_return_to_game(void)
+{
 	server.state=gs_running;
 }
 
@@ -411,6 +410,7 @@ void file_click(void)
 		case file_button_save_id:
 			if (!game_file_save(err_str)) console_add_error(err_str);
 			file_close();
+			file_return_to_game();
 			break;
 			
 		case file_button_load_id:
@@ -421,7 +421,11 @@ void file_click(void)
 
 			file_close();
 
-			if (game_file_load(file_name,err_str)) break;
+			if (game_file_load(file_name,err_str)) {
+				game_time_pause_end();
+				file_return_to_game();
+				break;
+			}
 
 			if (server.map_open) map_end();
 			if (server.game_open) game_end();
@@ -435,6 +439,11 @@ void file_click(void)
 			
 		case file_button_cancel_id:
 			file_close();
+			if (!server.map_open) {
+				intro_open();
+				return;
+			}
+			file_return_to_game();
 			break;
 			
 		case file_directory_id:

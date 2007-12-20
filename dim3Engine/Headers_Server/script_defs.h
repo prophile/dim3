@@ -482,6 +482,7 @@ and can be sold or given away.
 #define obj_watch_prop_object_is_player				2
 #define obj_watch_prop_object_team					3
 #define obj_watch_prop_base_team					4
+#define obj_watch_prop_sound_name					5
 
 #define obj_weapon_fire_prop_name					0
 #define obj_weapon_fire_prop_method					1
@@ -664,14 +665,14 @@ and can be sold or given away.
 // hit constants
 //
 
-#define sd_proj_hit_type_none						1000
-#define sd_proj_hit_type_object						1001
-#define sd_proj_hit_type_wall						1002
-#define sd_proj_hit_type_floor						1003
-#define sd_proj_hit_type_ceiling					1004
-#define sd_proj_hit_type_projectile					1005
-#define sd_proj_hit_type_melee						1006
-#define sd_proj_hit_type_auto						1007
+#define sd_proj_hit_type_none							1000
+#define sd_proj_hit_type_object							1001
+#define sd_proj_hit_type_wall							1002
+#define sd_proj_hit_type_floor							1003
+#define sd_proj_hit_type_ceiling						1004
+#define sd_proj_hit_type_projectile						1005
+#define sd_proj_hit_type_melee							1006
+#define sd_proj_hit_type_auto							1007
 
 //
 // crosshair constants
@@ -688,114 +689,114 @@ and can be sold or given away.
 // camera constants
 //
 
-#define sd_camera_type_fpp							1020
-#define sd_camera_type_chase						1021
-#define sd_camera_type_static						1022
-#define sd_camera_type_chase_static					1023
+#define sd_camera_type_fpp								1020
+#define sd_camera_type_chase							1021
+#define sd_camera_type_static							1022
+#define sd_camera_type_chase_static						1023
 
 //
 // input constants
 //
 
-#define sd_input_mode_fpp							1030
-#define sd_input_mode_side_scroll					1031
-#define sd_input_mode_top_down						1032
-#define sd_input_mode_fly							1033
+#define sd_input_mode_fpp								1030
+#define sd_input_mode_side_scroll						1031
+#define sd_input_mode_top_down							1032
+#define sd_input_mode_fly								1033
 
 //
 // light constants
 //
 
-#define sd_light_type_normal						1040
-#define sd_light_type_blink							1041
-#define sd_light_type_glow							1042
-#define sd_light_type_pulse							1043
-#define sd_light_type_flicker						1044
-#define sd_light_type_failing						1045
+#define sd_light_type_normal							1040
+#define sd_light_type_blink								1041
+#define sd_light_type_glow								1042
+#define sd_light_type_pulse								1043
+#define sd_light_type_flicker							1044
+#define sd_light_type_failing							1045
 
 //
 // segment constants
 //
 
-#define sd_segment_type_wall						1050
-#define sd_segment_type_floor						1051
-#define sd_segment_type_ceiling						1052
-#define sd_segment_type_liquid						1053
-#define sd_segment_type_ambient						1054
+#define sd_segment_type_wall							1050
+#define sd_segment_type_floor							1051
+#define sd_segment_type_ceiling							1052
+#define sd_segment_type_liquid							1053
+#define sd_segment_type_ambient							1054
 
 //
 // model constants
 //
 
-#define sd_model_lit_flat							1060
-#define sd_model_lit_hilite							1061
-#define sd_model_lit_hilite_diffuse					1062
-#define sd_model_lit_vertex							1063
+#define sd_model_lit_flat								1060
+#define sd_model_lit_hilite								1061
+#define sd_model_lit_hilite_diffuse						1062
+#define sd_model_lit_vertex								1063
 
-#define sd_model_shadow_mode_normal					1070
-#define sd_model_shadow_mode_static					1071
+#define sd_model_shadow_mode_normal						1070
+#define sd_model_shadow_mode_static						1071
 
 //
 // message constants
 //
 
-#define sd_message_to_player						1080
-#define sd_message_to_object						1081
-#define sd_message_to_course						1082
-#define sd_message_to_game							1083
+#define sd_message_to_player							1080
+#define sd_message_to_object							1081
+#define sd_message_to_course							1082
+#define sd_message_to_game								1083
 
 //
 // ducking constants
 //
 
-#define sd_stand_standing							1090
-#define sd_stand_ducking							1091
-#define sd_stand_standing_up						1092
-#define sd_stand_ducking_down						1093
+#define sd_stand_standing								1090
+#define sd_stand_ducking								1091
+#define sd_stand_standing_up							1092
+#define sd_stand_ducking_down							1093
 
 //
 // air constants
 //
 
-#define sd_air_up									1100
-#define sd_air_down									1101
-#define sd_air_falling								1102
-#define sd_air_ground								1103
+#define sd_air_up										1100
+#define sd_air_down										1101
+#define sd_air_falling									1102
+#define sd_air_ground									1103
 
 //
 // liquid constants
 //
 
-#define sd_liquid_out								1110
-#define sd_liquid_in								1111
-#define sd_liquid_under								1112
+#define sd_liquid_out									1110
+#define sd_liquid_in									1111
+#define sd_liquid_under									1112
 
 //
 // gl fog contants
 //
 
-#define sd_gl_fog_type_linear						1120
-#define sd_gl_fog_type_exp							1121
-#define sd_gl_fog_type_exp2							1122
+#define sd_gl_fog_type_linear							1120
+#define sd_gl_fog_type_exp								1121
+#define sd_gl_fog_type_exp2								1122
 
 //
 // projection constants
 //
 
-#define sd_projection_type_fov						1130
-#define sd_projection_type_frustum					1131
+#define sd_projection_type_fov							1130
+#define sd_projection_type_frustum						1131
 
 //
 // team constants
 // (these must be equal to defines in networkutility.h)
 //
 
-#define sd_team_none								1140
-#define sd_team_red									1141
-#define sd_team_blue								1142
-#define sd_team_green								1143
-#define sd_team_yellow								1144
-#define sd_team_purple								1145
+#define sd_team_none									1140
+#define sd_team_red										1141
+#define sd_team_blue									1142
+#define sd_team_green									1143
+#define sd_team_yellow									1144
+#define sd_team_purple									1145
 
 //
 // main events constants
@@ -909,33 +910,34 @@ and can be sold or given away.
 #define sd_event_watch_object_exit_portal				3054
 #define sd_event_watch_object_enter_base				3055
 #define sd_event_watch_object_exit_base					3056
+#define sd_event_watch_object_sound						3057
 
-#define sd_event_weapon_fire_single						3057
-#define sd_event_weapon_fire_up							3058
-#define sd_event_weapon_fire_down						3059
-#define sd_event_weapon_fire_repeat						3060
-#define sd_event_weapon_fire_clip_change				3061
-#define sd_event_weapon_fire_zoom_enter					3062
-#define sd_event_weapon_fire_zoom_exit					3063
+#define sd_event_weapon_fire_single						3058
+#define sd_event_weapon_fire_up							3059
+#define sd_event_weapon_fire_down						3060
+#define sd_event_weapon_fire_repeat						3061
+#define sd_event_weapon_fire_clip_change				3062
+#define sd_event_weapon_fire_zoom_enter					3063
+#define sd_event_weapon_fire_zoom_exit					3064
 
-#define sd_event_projectile_bounce						3064
-#define sd_event_projectile_reflect						3065
+#define sd_event_projectile_bounce						3065
+#define sd_event_projectile_reflect						3066
 
-#define sd_event_vehicle_enter							3066
-#define sd_event_vehicle_exit							3067
+#define sd_event_vehicle_enter							3067
+#define sd_event_vehicle_exit							3068
 
-#define sd_event_move_done								3068
-#define sd_event_move_loop								3069
+#define sd_event_move_done								3069
+#define sd_event_move_loop								3070
 
-#define sd_event_interface_title_done					3070
-#define sd_event_interface_story_done					3071
-#define sd_event_interface_movie_done					3072
+#define sd_event_interface_title_done					3071
+#define sd_event_interface_story_done					3072
+#define sd_event_interface_movie_done					3073
 
-#define sd_event_state_load								3073
-#define sd_event_state_save								3074
+#define sd_event_state_load								3074
+#define sd_event_state_save								3075
 
-#define sd_event_rule_join								3075
-#define sd_event_rule_score								3076
+#define sd_event_rule_join								3076
+#define sd_event_rule_score								3077
 
 //
 // define structure
