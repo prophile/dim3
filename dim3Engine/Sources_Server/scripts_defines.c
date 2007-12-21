@@ -225,6 +225,7 @@ script_define_type			script_dim3_defines[]={
 								{sd_event_watch_object_exit_portal,				"",		"DIM3_EVENT_WATCH_OBJECT_EXIT_PORTAL"},
 								{sd_event_watch_object_enter_base,				"",		"DIM3_EVENT_WATCH_OBJECT_ENTER_BASE"},
 								{sd_event_watch_object_exit_base,				"",		"DIM3_EVENT_WATCH_OBJECT_EXIT_BASE"},
+								{sd_event_watch_object_sound,					"",		"DIM3_EVENT_WATCH_OBJECT_SOUND"},
 								
 								{sd_event_weapon_fire_single,					"",		"DIM3_EVENT_WEAPON_FIRE_SINGLE"},
 								{sd_event_weapon_fire_up,						"",		"DIM3_EVENT_WEAPON_FIRE_UP"},

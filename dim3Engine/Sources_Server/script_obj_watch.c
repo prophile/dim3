@@ -50,6 +50,7 @@ JSPropertySpec	obj_watch_props[]={
 							{"objectIsPlayer",		obj_watch_prop_object_is_player,	JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"objectTeam",			obj_watch_prop_object_team,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"baseTeam",			obj_watch_prop_base_team,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"soundName",			obj_watch_prop_sound_name,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 							
 JSFunctionSpec	obj_watch_functions[]={
@@ -116,6 +117,10 @@ JSBool js_get_obj_watch_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 			
 		case obj_watch_prop_base_team:
 			*vp=INT_TO_JSVAL(obj->watch.base_team+sd_team_none);
+			break;
+
+		case obj_watch_prop_sound_name:
+			*vp=script_string_to_value(obj->watch.sound_name);
 			break;
 			
 	}

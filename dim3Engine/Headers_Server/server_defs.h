@@ -471,7 +471,7 @@ typedef struct		{
 					
 typedef struct		{
 						int					dist,obj_uid,base_team;
-						char				obj_flags[max_object];
+						char				obj_flags[max_object],sound_name[name_str_len];
 						bool				on;
 					} obj_watch;
 		

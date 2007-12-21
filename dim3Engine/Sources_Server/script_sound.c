@@ -82,7 +82,7 @@ void script_add_global_sound_object(JSObject *parent_obj)
 
 JSBool js_sound_play_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	int				x,y,z,buffer_idx;
+	int				x,y,z,buffer_idx,sound_obj_uid;
 	float			pitch;
 	char			name[name_str_len];
 	bool			remote_ok,player;
@@ -92,9 +92,11 @@ JSBool js_sound_play_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,j
 		// check if this is player
 
 	player=FALSE;
+	sound_obj_uid=-1;
 
 	if (js.attach.thing_type==thing_type_object) {
 		obj=object_find_uid(js.attach.thing_uid);
+		sound_obj_uid=obj->uid;
 		player=obj->player;
 	}
 	
@@ -113,6 +115,10 @@ JSBool js_sound_play_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,j
 	}
 
 	al_play_source(buffer_idx,x,y,z,pitch,FALSE,FALSE,FALSE,player);
+
+		// run sound watches
+
+	if (sound_obj_uid!=-1) object_watch_sound_alert(x,y,z,sound_obj_uid,name);
 	
 		// detect if sound should be remoted
 		

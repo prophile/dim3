@@ -105,6 +105,12 @@ void object_watch(obj_type *obj)
 	}
 }
 
+/* =======================================================
+
+      Object Watch Alerts
+      
+======================================================= */
+
 void object_watch_death_alert(obj_type *dead_obj)
 {
 	int				n;
@@ -170,6 +176,36 @@ void object_watch_base_alert(portal_type *portal,obj_type *enter_obj,bool entry)
 				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_exit_base,0);
 			}
 		}
+		obj++;
+	}
+}
+
+/* =======================================================
+
+      Object Watch Sound
+      
+======================================================= */
+
+void object_watch_sound_alert(int x,int y,int z,int sound_obj_uid,char *sound_name)
+{
+	int				n;
+	obj_type		*obj;
+	
+		// notify watching objects of sounds
+
+	obj=server.objs;
+
+	for (n=0;n!=server.count.obj;n++) {
+
+		if ((obj->watch.on) && (obj->watch.dist!=0)) {
+
+			if (distance_get(x,y,z,obj->pos.x,obj->pos.y,obj->pos.z)<=obj->watch.dist) {
+				obj->watch.obj_uid=sound_obj_uid;
+				strcpy(obj->watch.sound_name,sound_name);
+				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_sound,0);
+			}
+		}
+
 		obj++;
 	}
 }

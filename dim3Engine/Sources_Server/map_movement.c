@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "scripts.h"
+#include "objects.h"
 #include "cameras.h"
 #include "sounds.h"
 
@@ -113,7 +114,13 @@ void map_movements_start(int movement_idx,int move_idx,attach_type *attach)
 	map_movements_get_center(movement,&x,&y,&z);
 	
 	buffer_idx=al_find_buffer(move->sound_name);
-	if (buffer_idx!=-1) al_play_source(buffer_idx,x,y,z,move->sound_pitch,FALSE,FALSE,FALSE,FALSE);
+	if (buffer_idx==-1) return;
+	
+	al_play_source(buffer_idx,x,y,z,move->sound_pitch,FALSE,FALSE,FALSE,FALSE);
+
+		// sound watches
+
+	object_watch_sound_alert(x,y,z,-1,move->sound_name);
 }
 
 /* =======================================================
