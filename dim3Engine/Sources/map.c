@@ -196,13 +196,23 @@ bool map_start(bool skip_media,char *err_str)
 	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.texture_quality_mode,setup.mipmap_mode,setup.mipmap_card_generated,setup.texture_compression);
 	
 	load_shaders=gl_check_shader_ok();
-	
-	if (!map_open(&map,map.info.name,TRUE,TRUE,load_shaders)) {
+
+
+	/* supergumba -- testing! */
+
+	if (!map_auto_generate_test(&map,load_shaders)) {
 		progress_shutdown();
 		sprintf(err_str,"Could not open map: %s",map.info.name);
 		return(FALSE);
 	}
 
+	/*
+	if (!map_open(&map,map.info.name,TRUE,TRUE,load_shaders)) {
+		progress_shutdown();
+		sprintf(err_str,"Could not open map: %s",map.info.name);
+		return(FALSE);
+	}
+	*/
 		// deal with shader errors or shaders turned off
 
 	if (!load_shaders) {

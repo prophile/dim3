@@ -32,4 +32,5 @@ and can be sold or given away.
 #include "os_defs.h"
 #include "baseutility.h"
 #include "maputility.h"
+#include "mapimport.h"
 #include "mapprivate.h"

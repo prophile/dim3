@@ -411,3 +411,148 @@ int map_segments_count_touch(map_type *map)
 	return(count);
 }
 
+/* =======================================================
+
+      Segment Texture UVs
+      
+======================================================= */
+
+void map_segment_reset_texture_uv_get_scale(map_type *map,segment_type *seg,float *txt_scale_x,float *txt_scale_y)
+{
+	texture_type		*texture;
+
+	texture=&map->textures[seg->fill];
+	if (!texture->scale.on) {
+		*txt_scale_x=map->settings.txt_scale_x;
+		*txt_scale_y=map->settings.txt_scale_y;
+		return;
+	}
+	
+	*txt_scale_x=texture->scale.x;
+	*txt_scale_y=texture->scale.y;
+}
+
+float map_segment_reset_texture_uv_reduce_txtoff(float txtoff)
+{
+	while (txtoff>=1) txtoff-=1;
+	return(txtoff);
+}
+
+void map_segment_reset_texture_find_bound_rect(int ptsz,int *x,int *z,int *lft,int *rgt,int *top,int *bot)
+{
+	int			i,lx,rx,ty,by;
+	
+	lx=rx=x[0];
+	ty=by=z[0];
+	for (i=1;i<ptsz;i++) {
+		if (x[i]<lx) lx=x[i];
+		if (x[i]>rx) rx=x[i];
+		if (z[i]<ty) ty=z[i];
+		if (z[i]>by) by=z[i];
+	}
+	*lft=lx;
+	*rgt=rx;
+	*top=ty;
+	*bot=by;
+}
+
+void map_segment_reset_texture_uv_get_factor_size(int sx,int sz,int ptsz,int *x,int *z,float *xtoff,float *ztoff,float *xfact,float *zfact,float txt_scale_x,float txt_scale_y)
+{
+	int			lft,rgt,top,bot;
+	float		ltxtx,rtxtx,ltxtz,rtxtz;
+
+	map_segment_reset_texture_find_bound_rect(ptsz,x,z,&lft,&rgt,&top,&bot);
+
+	ltxtx=(float)lft*txt_scale_x;
+	rtxtx=(float)rgt*txt_scale_x;
+
+	ltxtz=(float)top*txt_scale_y;
+	rtxtz=(float)bot*txt_scale_y;
+
+	*xtoff=map_segment_reset_texture_uv_reduce_txtoff(ltxtx);
+	*xfact=rtxtx-ltxtx;
+	
+	*ztoff=map_segment_reset_texture_uv_reduce_txtoff(ltxtz);
+	*zfact=rtxtz-ltxtz;
+}
+
+void map_segment_reset_texture_uvs(map_type *map,segment_type *seg)
+{
+	int					k;
+	float				ltxtx,rtxtx,ltxty,rtxty,x_txtfact,x_txtfact_2,
+						txt_scale_x,txt_scale_y;
+	double				d,dx,dz;
+	portal_type			*portal;
+
+	if (seg->lock) return;
+	
+	portal=&map->portals[seg->rn];
+	
+	map_segment_reset_texture_uv_get_scale(map,seg,&txt_scale_x,&txt_scale_y);
+	
+	switch (seg->type) {
+		case sg_wall:
+			ltxtx=(float)((seg->data.wall.lx+portal->x)+(seg->data.wall.lz+portal->z))*txt_scale_x;
+			rtxtx=(float)((seg->data.wall.rx+portal->x)+(seg->data.wall.rz+portal->z))*txt_scale_x;
+			
+				// get point texture factor
+				
+			x_txtfact=rtxtx-ltxtx;
+			
+				// get distance texture factor
+				
+			dx=(double)(seg->data.wall.lx-seg->data.wall.rx);
+			dz=(double)(seg->data.wall.lz-seg->data.wall.rz);
+			d=(dx*dx)+(dz*dz);
+			x_txtfact_2=(float)(sqrt(d)*txt_scale_x);
+			if (x_txtfact<0) x_txtfact_2=-x_txtfact_2;
+			
+			if (fabs(x_txtfact_2)>fabs(x_txtfact)) x_txtfact=x_txtfact_2;		// is distance calc is longer, use that
+			
+			seg->x_txtoff=map_segment_reset_texture_uv_reduce_txtoff(ltxtx);
+			seg->x_txtfact=x_txtfact;
+
+			ltxty=((float)seg->data.wall.ty)*txt_scale_y;
+			rtxty=((float)(seg->data.wall.by+1))*txt_scale_y;
+			
+			seg->y_txtoff=map_segment_reset_texture_uv_reduce_txtoff(ltxty);
+			seg->y_txtfact=rtxty-ltxty;
+			break;
+		case sg_floor:
+		case sg_ceiling:
+			map_segment_reset_texture_uv_get_factor_size(portal->x,portal->z,seg->data.fc.ptsz,seg->data.fc.x,seg->data.fc.z,&seg->x_txtoff,&seg->y_txtoff,&seg->x_txtfact,&seg->y_txtfact,txt_scale_x,txt_scale_y);
+			break;
+		case sg_liquid:		
+			ltxtx=(float)(seg->data.liquid.lft+portal->x)*txt_scale_x;
+			rtxtx=(float)(seg->data.liquid.rgt+portal->x)*txt_scale_x;
+			
+			seg->x_txtoff=map_segment_reset_texture_uv_reduce_txtoff(ltxtx);
+			seg->x_txtfact=rtxtx-ltxtx;
+			
+			ltxty=(float)(seg->data.liquid.top+portal->z)*txt_scale_y;
+			rtxty=(float)(seg->data.liquid.bot+portal->z)*txt_scale_y;
+			
+			seg->y_txtoff=map_segment_reset_texture_uv_reduce_txtoff(ltxty);
+			seg->y_txtfact=rtxty-ltxty;
+			break;
+	}
+
+		// offset lock
+
+	if (map->textures[seg->fill].scale.lock_offset) {
+		seg->x_txtoff=0.0f;
+		seg->y_txtoff=0.0f;
+	}
+	
+		// round off to 10th
+
+	k=(int)(seg->x_txtfact*100);
+	seg->x_txtfact=((float)k)/100;
+	k=(int)(seg->y_txtfact*100);
+	seg->y_txtfact=((float)k)/100;
+	k=(int)(seg->x_txtoff*100);
+	seg->x_txtoff=((float)k)/100;
+	k=(int)(seg->y_txtoff*100);
+	seg->y_txtoff=((float)k)/100;
+}
+

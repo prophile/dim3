@@ -65,6 +65,10 @@ SOURCE=..\..\dim3Common\Headers\baseutility.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3Common\Headers\mapimport.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Common\Headers\maputility.h
 # End Source File
 # Begin Source File
@@ -179,6 +183,18 @@ SOURCE=..\..\dim3MapUtility\Headers\mapprivate.h
 # Begin Group "MapSources"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\dim3MapUtility\Sources\auto_generate.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3MapUtility\Sources\auto_generate_blocking.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3MapUtility\Sources\auto_generate_utility.c
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\dim3MapUtility\Sources\file_map_read.c

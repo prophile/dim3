@@ -698,6 +698,7 @@ extern void map_segment_calculate_extent(map_type *map,int seg_idx,int *min_x,in
 extern void map_segment_calculate_center(map_type *map,int seg_idx,int *x,int *y,int *z);
 extern void map_segments_clear_touch(map_type *map);
 extern int map_segments_count_touch(map_type *map);
+extern void map_segment_reset_texture_uvs(map_type *map,segment_type *seg);
 
 extern bool map_group_create_segment_list(map_type *map);
 extern void map_group_dispose_segment_list(map_type *map);
@@ -711,3 +712,11 @@ extern void map_movement_move_delete(map_type *map,int movement_idx,int move_idx
 
 extern bool map_add_texture_frame(map_type *map,int txt,char *bitmap_name,char *bumpmap_name,char *specularmap_name,char *glowmap_name);
 extern bool map_delete_texture_frame(map_type *map,int txt);
+
+extern void map_auto_generate_clear(map_type *map);
+extern void map_auto_generate_fix_segments_uv(map_type *map);
+extern void map_auto_generate_add_simple_lights(map_type *map);
+extern void map_auto_generate_add_player_spot(map_type *map);
+
+extern void map_auto_generate(map_type *map,void *ags);
+extern bool map_auto_generate_test(map_type *map,bool load_shaders);

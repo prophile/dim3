@@ -75,6 +75,11 @@ typedef struct	{
 #define ag_corridor_type_slanted_ceiling	1
 #define ag_corridor_type_octagon			2
 
+#define ag_stair_neg_z						0
+#define ag_stair_pos_z						1
+#define ag_stair_neg_x						2
+#define ag_stair_pos_x						3
+
 //
 // auto-generate blockings
 //
@@ -95,6 +100,16 @@ typedef struct	{
 //
 
 typedef struct	{
+					int									portal_wall,portal_floor,portal_ceiling,steps,
+														corridor_wall,corridor_floor,corridor_ceiling,
+														door;
+				} auto_generate_setting_texture_type;
+
+typedef struct	{
+					int									sz,high;
+				} auto_generate_setting_steps_type;
+
+typedef struct	{
 					int						seed,
 											max_map_x_size,max_map_z_size,
 											map_left,map_right,map_top,map_bottom,
@@ -109,17 +124,16 @@ typedef struct	{
 											open_hole_percentage,rough_floor_factor,door_percentage,
 											light_fudge_factor,light_fill_percentage,
 											light_color_percentage,light_flicker_percentage,
-											spot_count,
-											texture_portal_wall,texture_portal_floor,texture_portal_ceiling,
-											texture_corridor_wall,texture_corridor_floor,texture_corridor_ceiling,
-											texture_door;
+											spot_count;
 					char					door_sound[name_str_len];
 					bool					walls,floors,rough_portal_floors,rough_corridor_floors,
 											ceilings,open_hole_ceilings,doors,
 											lights,sight_path,spots;
 					unsigned char			block[max_ag_block_sz][max_ag_block_sz],
-											corridor_flags[max_portal];
-					bool					open_hole_flags[max_portal];
+															corridor_flags[max_portal];
+					bool									open_hole_flags[max_portal];
+					auto_generate_setting_steps_type		steps;
+					auto_generate_setting_texture_type		texture;
 				} auto_generate_settings_type;
 
 

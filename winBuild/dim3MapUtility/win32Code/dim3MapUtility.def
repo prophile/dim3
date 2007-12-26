@@ -81,6 +81,7 @@ EXPORTS
 	map_segment_calculate_center				@233
 	map_segments_clear_touch					@234
 	map_segments_count_touch					@235
+	map_segment_reset_texture_uvs				@236
 
 	map_group_create_segment_list				@240
 	map_group_dispose_segment_list				@241
@@ -105,3 +106,11 @@ EXPORTS
 
 	map_add_texture_frame						@280
 	map_delete_texture_frame					@281
+
+	map_auto_generate_clear						@290
+	map_auto_generate_fix_segments_uv			@291
+	map_auto_generate_add_simple_lights			@292
+	map_auto_generate_add_player_spot			@293
+
+	map_auto_generate							@295
+	map_auto_generate_test						@296
