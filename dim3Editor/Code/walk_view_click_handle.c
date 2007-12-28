@@ -181,7 +181,7 @@ void walk_view_move_single_handle(int index,int wpt,int xadd,int zadd,int yadd)
             break;
     }
 	
-	if (dp_auto_texture) segment_reset_texture_uvs(seg);
+	if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg);
 }
 
 bool walk_view_drag_segment_handle(Point pt,int index,int wpt)

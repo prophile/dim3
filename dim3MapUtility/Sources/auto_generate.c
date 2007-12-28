@@ -1885,9 +1885,7 @@ void map_auto_generate_clear_flags(void)
       
 ======================================================= */
 
-// supergumba -- void* is a workaround (for now) to avoid defining auto_generate_settings_type in headers
-
-void map_auto_generate(map_type *map,void *ags)
+void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 {
 		// setup global
 
@@ -1984,28 +1982,30 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 	ags.seed=GetTickCount();
 #endif
 
-	ags.max_map_x_size=1000;
-	ags.max_map_z_size=1000;
-	ags.split_factor=20;
+	ags.max_map_x_size=2000;
+	ags.max_map_z_size=2000;
+	ags.split_factor=40;
 
-	ags.initial_portal_count=10;
-	ags.min_portal_sz=150;
-	ags.max_portal_sz=250;
+	ags.initial_portal_count=15;
+	ags.min_portal_sz=300;
+	ags.max_portal_sz=500;
 	ags.portal_by=200;
-	ags.portal_ty=170;
-	ags.min_portal_extra_y=10;
-	ags.max_portal_extra_y=30;
-	ags.open_ceiling_extra_y=5;
+	ags.portal_ty=160;
+	ags.portal.min_raise_y=10;
+	ags.portal.max_raise_y=40;
+	aps.portal.min_drop_y=0;
+	aps.portal.max_drop_y=10;
+	ags.open_ceiling_extra_y=40;
 	
-	ags.max_portal_merge_distance=20;
-	ags.min_portal_connect_distance=10;
-	ags.max_portal_connect_distance=100;
-	ags.min_portal_connect_sz=30;
-	ags.max_portal_connect_sz=50;
-	ags.ceiling_slant_extra_y=2;
+	ags.max_portal_merge_distance=40;
+	ags.min_portal_connect_distance=100;
+	ags.max_portal_connect_distance=500;
+	ags.min_portal_connect_sz=80;
+	ags.max_portal_connect_sz=120;
+	ags.ceiling_slant_extra_y=10;
 	ags.corridor_type=ag_corridor_type_slanted_ceiling;
 
-	ags.steps.sz=4;
+	ags.steps.sz=6;
 	ags.steps.high=2;
 	
 	ags.texture.portal_wall=0;
@@ -2042,7 +2042,7 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 
 		// create the map
 
-	map_auto_generate(map,(void*)&ags);
+	map_auto_generate(map,&ags);
 
 		// clear all save touches
 

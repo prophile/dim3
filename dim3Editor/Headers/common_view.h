@@ -129,7 +129,6 @@ extern void segment_flip_horizontal(segment_type *seg,int min,int max);
 extern void segment_flip_vertical(segment_type *seg,int min,int max);
 extern void segment_rotate(segment_type *seg,int cx,int cz);
 extern void segment_rotate_free(segment_type *seg,float ang,int cx,int cz);
-extern void segment_reset_texture_uvs(segment_type *seg);
 extern void segments_sort(void);
 
 //

@@ -593,7 +593,7 @@ void primitive_resize(int primitive_uid,int minx,int maxx,int minz,int maxz,int 
 				seg->data.wall.by++;
 				primitive_resize_vertex(&seg->data.wall.by,org_miny,org_maxy,miny,maxy);
 				seg->data.wall.by--;
-				if (dp_auto_texture) segment_reset_texture_uvs(seg);
+				if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg);
 				break;
 				
 			case sg_floor:
@@ -603,7 +603,7 @@ void primitive_resize(int primitive_uid,int minx,int maxx,int minz,int maxz,int 
 					primitive_resize_vertex(&seg->data.fc.z[k],org_minz,org_maxz,minz,maxz);
 					primitive_resize_vertex(&seg->data.fc.y[k],org_miny,org_maxy,miny,maxy);
 				}
-				if (dp_auto_texture) segment_reset_texture_uvs(seg);
+				if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg);
 				break;
 				
 		}

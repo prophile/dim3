@@ -177,7 +177,7 @@ void map_import_height_map(import_height_map_settings_type *hmi_settings)
 	
 		// clear the map
 		
-	import_clear_map();
+	map_auto_generate_clear(&map);
 	
 		// get the portal sizes
 		
@@ -288,17 +288,17 @@ void map_import_height_map(import_height_map_settings_type *hmi_settings)
 	
 		// fix segments
 		
-	import_fix_segments_uv();
+	map_auto_generate_fix_segments_uv(&map);
 	import_height_map_fix_segments_fill(hmi_settings);
 	
 		// lights and sight paths
 		
-	if (hmi_settings->lights) import_add_simple_lights();
+	if (hmi_settings->lights) map_auto_generate_add_simple_lights(&map);
 	if (hmi_settings->sight_path) map_portal_sight_generate_paths(&map,hmi_settings->sight_path_all);
 	
 		// create player spot
 		
-	import_add_player_spot();
+	map_auto_generate_add_player_spot(&map);
 }
 
 

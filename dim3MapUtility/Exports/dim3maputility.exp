@@ -78,6 +78,7 @@ _map_segment_calculate_extent
 _map_segment_calculate_center
 _map_segments_clear_touch
 _map_segments_count_touch
+_map_segment_reset_texture_uvs
 
 _map_group_create_segment_list
 _map_group_dispose_segment_list
@@ -102,3 +103,13 @@ _map_prepare
 
 _map_add_texture_frame
 _map_delete_texture_frame
+
+_map_auto_generate_clear
+_map_auto_generate_fix_segments_uv
+_map_auto_generate_add_simple_lights
+_map_auto_generate_add_player_spot
+
+_map_auto_generate_block_preset
+
+_map_auto_generate
+_map_auto_generate_test

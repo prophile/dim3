@@ -29,10 +29,6 @@ and can be sold or given away.
 // import utility
 //
 
-extern void import_clear_map(void);
-extern void import_fix_segments_uv(void);
-extern void import_add_simple_lights(void);
-extern void import_add_player_spot(void);
 extern void import_nav_event_proc(const NavEventCallbackMessage callBackSelector,NavCBRecPtr callBackParms,NavCallBackUserData callBackUD);
 extern Boolean import_nav_file_filter(AEDesc *theItem,void *info,void *callBackUD,NavFilterModes filterMode);
 extern bool import_load_file(char *path,char *ext);

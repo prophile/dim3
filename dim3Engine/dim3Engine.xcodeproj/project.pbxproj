@@ -184,6 +184,7 @@
 		F5AD54770BBE2121001C7C04 /* baseutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD54760BBE2121001C7C04 /* baseutility.h */; };
 		F5AD547C0BBE2155001C7C04 /* libBaseUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD547B0BBE2155001C7C04 /* libBaseUtility.dylib */; };
 		F5AD547D0BBE216E001C7C04 /* libBaseUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD547B0BBE2155001C7C04 /* libBaseUtility.dylib */; };
+		F5AEF0F60D1CD57B00C99FF6 /* view_images.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AEF0F50D1CD57B00C99FF6 /* view_images.c */; };
 		F5B01D2E08F8650600AE5F87 /* SDLMain.h in Headers */ = {isa = PBXBuildFile; fileRef = F5B01D2B08F8650600AE5F87 /* SDLMain.h */; };
 		F5B01D3008F8650600AE5F87 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = F5B01D2D08F8650600AE5F87 /* SDLMain.m */; };
 		F5B01DA908F867E600AE5F87 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B01DA808F867E600AE5F87 /* Cocoa.framework */; };
@@ -556,6 +557,7 @@
 		F5A60CEE0B279D5A003002D4 /* obj_held.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = obj_held.c; path = Sources_Server/obj_held.c; sourceTree = "<group>"; };
 		F5AD54760BBE2121001C7C04 /* baseutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = baseutility.h; path = ../dim3Common/Headers/baseutility.h; sourceTree = SOURCE_ROOT; };
 		F5AD547B0BBE2155001C7C04 /* libBaseUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBaseUtility.dylib; path = ../dim3Common/Libraries/libBaseUtility.dylib; sourceTree = SOURCE_ROOT; };
+		F5AEF0F50D1CD57B00C99FF6 /* view_images.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = view_images.c; path = Sources_View/view_images.c; sourceTree = "<group>"; };
 		F5B01D2B08F8650600AE5F87 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SDLMain.h; path = SDL/SDLMain.h; sourceTree = "<group>"; };
 		F5B01D2D08F8650600AE5F87 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = SDLMain.m; path = SDL/SDLMain.m; sourceTree = "<group>"; };
 		F5B01DA808F867E600AE5F87 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -1148,6 +1150,7 @@
 				F5DD19DD0908310200721649 /* view.c */,
 				F5DD19E20908310200721649 /* view_run.c */,
 				F5E92CCD0AAFC3430019B693 /* view_bounds.c */,
+				F5AEF0F50D1CD57B00C99FF6 /* view_images.c */,
 				F5DD19E00908310200721649 /* view_setup.c */,
 				F5DD19DE0908310200721649 /* view_vertex_list.c */,
 				F5BD968B0C20EF34000F74E1 /* view_vertex_light.c */,
@@ -1863,6 +1866,7 @@
 				F5DD2C8F0CEABBA20028796D /* collision_map.c in Sources */,
 				F59447210CEF4F1E0027E360 /* script_model_mesh.c in Sources */,
 				F51AB0DD0CFE3BDA0085DC72 /* input_joystick.c in Sources */,
+				F5AEF0F60D1CD57B00C99FF6 /* view_images.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -20,6 +20,10 @@
 		F59C593006BF40C9009851C6 /* segments.c in Sources */ = {isa = PBXBuildFile; fileRef = F59C592F06BF40C9009851C6 /* segments.c */; };
 		F5AD54160BBE1EBD001C7C04 /* baseutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD54150BBE1EBD001C7C04 /* baseutility.h */; };
 		F5AD541F0BBE1F16001C7C04 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD541E0BBE1F16001C7C04 /* OpenGL.framework */; };
+		F5CE96BE0D23584100512EE1 /* mapimport.h in Headers */ = {isa = PBXBuildFile; fileRef = F5CE96BD0D23584100512EE1 /* mapimport.h */; };
+		F5CE96C30D23586E00512EE1 /* auto_generate_blocking.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CE96C00D23586E00512EE1 /* auto_generate_blocking.c */; };
+		F5CE96C40D23586E00512EE1 /* auto_generate_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CE96C10D23586E00512EE1 /* auto_generate_utility.c */; };
+		F5CE96C50D23586E00512EE1 /* auto_generate.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CE96C20D23586E00512EE1 /* auto_generate.c */; };
 		F5DB0B780856700C005A7CB7 /* libMapUtility.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5F4951F067BFCCA00E809E7 /* libMapUtility.dylib */; };
 		F5DD16E10907328000721649 /* prepare_vertex_middles.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD16DD0907328000721649 /* prepare_vertex_middles.c */; };
 		F5DD16E20907328000721649 /* prepare_curve.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD16DE0907328000721649 /* prepare_curve.c */; };
@@ -79,6 +83,10 @@
 		F5C40DAB05439C17002FA7E9 /* map_frames.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = map_frames.c; path = Sources/map_frames.c; sourceTree = "<group>"; };
 		F5C5353D051C074F00968AF1 /* dim3maputility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dim3maputility.h; path = Headers/dim3maputility.h; sourceTree = "<group>"; };
 		F5C53548051C085800968AF1 /* maputility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = maputility.h; path = ../dim3Common/Headers/maputility.h; sourceTree = SOURCE_ROOT; };
+		F5CE96BD0D23584100512EE1 /* mapimport.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mapimport.h; path = ../dim3Common/Headers/mapimport.h; sourceTree = SOURCE_ROOT; };
+		F5CE96C00D23586E00512EE1 /* auto_generate_blocking.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = auto_generate_blocking.c; path = Sources/auto_generate_blocking.c; sourceTree = "<group>"; };
+		F5CE96C10D23586E00512EE1 /* auto_generate_utility.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = auto_generate_utility.c; path = Sources/auto_generate_utility.c; sourceTree = "<group>"; };
+		F5CE96C20D23586E00512EE1 /* auto_generate.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = auto_generate.c; path = Sources/auto_generate.c; sourceTree = "<group>"; };
 		F5DA8623059148C40043E685 /* nodes.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = nodes.c; path = Sources/nodes.c; sourceTree = "<group>"; };
 		F5DD16DD0907328000721649 /* prepare_vertex_middles.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = prepare_vertex_middles.c; path = Sources/prepare_vertex_middles.c; sourceTree = "<group>"; };
 		F5DD16DE0907328000721649 /* prepare_curve.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = prepare_curve.c; path = Sources/prepare_curve.c; sourceTree = "<group>"; };
@@ -137,6 +145,7 @@
 				F5C5353D051C074F00968AF1 /* dim3maputility.h */,
 				F50AF9280885FF0E00F261B1 /* os_defs.h */,
 				F5AD54150BBE1EBD001C7C04 /* baseutility.h */,
+				F5CE96BD0D23584100512EE1 /* mapimport.h */,
 				F5C53548051C085800968AF1 /* maputility.h */,
 				F56B6200080C885A00E9D08B /* mapprivate.h */,
 			);
@@ -158,9 +167,20 @@
 				F5DD16DB0907326E00721649 /* Prepare */,
 				F5DD177C09074DEE00721649 /* Portals */,
 				F5DA8632059148F80043E685 /* Objects */,
+				F5CE96BF0D23584D00512EE1 /* AutoGenerate */,
 				F5DA86350591490E0043E685 /* Main */,
 			);
 			name = Sources;
+			sourceTree = "<group>";
+		};
+		F5CE96BF0D23584D00512EE1 /* AutoGenerate */ = {
+			isa = PBXGroup;
+			children = (
+				F5CE96C20D23586E00512EE1 /* auto_generate.c */,
+				F5CE96C00D23586E00512EE1 /* auto_generate_blocking.c */,
+				F5CE96C10D23586E00512EE1 /* auto_generate_utility.c */,
+			);
+			name = AutoGenerate;
 			sourceTree = "<group>";
 		};
 		F5DA862D059148E60043E685 /* Files */ = {
@@ -253,6 +273,7 @@
 				F56B6201080C885A00E9D08B /* mapprivate.h in Headers */,
 				F50AF9290885FF0E00F261B1 /* os_defs.h in Headers */,
 				F5AD54160BBE1EBD001C7C04 /* baseutility.h in Headers */,
+				F5CE96BE0D23584100512EE1 /* mapimport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -323,6 +344,9 @@
 				F52A9B7509F0A63C008CE744 /* portal_sight_path.c in Sources */,
 				F52A9D4209F2057F008CE744 /* primitives.c in Sources */,
 				F55255260CE57DFA0045350D /* portal_mesh.c in Sources */,
+				F5CE96C30D23586E00512EE1 /* auto_generate_blocking.c in Sources */,
+				F5CE96C40D23586E00512EE1 /* auto_generate_utility.c in Sources */,
+				F5CE96C50D23586E00512EE1 /* auto_generate.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

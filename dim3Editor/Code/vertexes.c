@@ -91,7 +91,7 @@ void vertexes_move_similiar_to_vertex(segment_type *seg,int x,int y,int z,int xa
 					wall->lx-=xadd;
 					wall->lz-=zadd;
 					wall->ty-=yadd;
-					if (dp_auto_texture) segment_reset_texture_uvs(seg2);
+					if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg2);
 					break;
 				}
 				
@@ -99,7 +99,7 @@ void vertexes_move_similiar_to_vertex(segment_type *seg,int x,int y,int z,int xa
 					wall->lx-=xadd;
 					wall->lz-=zadd;
 					wall->by-=yadd;
-					if (dp_auto_texture) segment_reset_texture_uvs(seg2);
+					if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg2);
 					break;
 				}
 				
@@ -107,7 +107,7 @@ void vertexes_move_similiar_to_vertex(segment_type *seg,int x,int y,int z,int xa
 					wall->rx-=xadd;
 					wall->rz-=zadd;
 					wall->ty-=yadd;
-					if (dp_auto_texture) segment_reset_texture_uvs(seg2);
+					if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg2);
 					break;
 				}
 				
@@ -115,7 +115,7 @@ void vertexes_move_similiar_to_vertex(segment_type *seg,int x,int y,int z,int xa
 					wall->rx-=xadd;
 					wall->rz-=zadd;
 					wall->by-=yadd;
-					if (dp_auto_texture) segment_reset_texture_uvs(seg2);
+					if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg2);
 					break;
 				}
 					
@@ -129,7 +129,7 @@ void vertexes_move_similiar_to_vertex(segment_type *seg,int x,int y,int z,int xa
 						fc->x[k]-=xadd;
 						fc->z[k]-=zadd;
 						fc->y[k]-=yadd;
-						if (dp_auto_texture) segment_reset_texture_uvs(seg2);
+						if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg2);
 					}
 				}
 				break;
@@ -211,14 +211,14 @@ void vertexes_move_to_2D_similiar_to_vertex(segment_type *seg,int x,int y,int z,
 				if ((lx==x) && (lz==z)) {
 					wall->lx=to_x;
 					wall->lz=to_z;
-					if (dp_auto_texture) segment_reset_texture_uvs(seg2);
+					if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg2);
 					break;
 				}
 				
 				if ((rx==x) && (rz==z)) {
 					wall->rx=to_x;
 					wall->rz=to_z;
-					if (dp_auto_texture) segment_reset_texture_uvs(seg2);
+					if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg2);
 					break;
 				}
 					
@@ -231,7 +231,7 @@ void vertexes_move_to_2D_similiar_to_vertex(segment_type *seg,int x,int y,int z,
 					if (((fc->x[n]+portal->x)==x) && ((fc->z[n]+portal->z)==z) && (fc->y[n]==y)) {
 						fc->x[n]=to_x;
 						fc->z[n]=to_z;
-						if (dp_auto_texture) segment_reset_texture_uvs(seg2);
+						if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg2);
 					}
 				}
 				break;
@@ -287,13 +287,13 @@ void vertexes_move_to_2D(segment_type *seg,int whand,int x,int z)
             if (whand==0) {
                 seg->data.wall.lx=x;
 				seg->data.wall.lz=z;
-				if (dp_auto_texture) segment_reset_texture_uvs(seg);
+				if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg);
                 return;
             }
             if (whand==1) {
                 seg->data.wall.rx=x;
                 seg->data.wall.rz=z;
-				if (dp_auto_texture) segment_reset_texture_uvs(seg);
+				if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg);
                 return;
             }
             return;
@@ -302,7 +302,7 @@ void vertexes_move_to_2D(segment_type *seg,int whand,int x,int z)
         case sg_ceiling:
             seg->data.fc.x[whand]=x;
             seg->data.fc.z[whand]=z;
-			if (dp_auto_texture) segment_reset_texture_uvs(seg);
+			if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg);
 			return;
 			
 		case sg_liquid:
@@ -324,20 +324,20 @@ void vertexes_move_to_2D(segment_type *seg,int whand,int x,int z)
 					seg->data.liquid.bot=z;
 					break;
 			}
-			if (dp_auto_texture) segment_reset_texture_uvs(seg);
+			if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg);
 			return;
 			
         case sg_ambient_wall:
             if (whand==0) {
                 seg->data.ambient_wall.lx=x;
                 seg->data.ambient_wall.lz=z;
-				if (dp_auto_texture) segment_reset_texture_uvs(seg);
+				if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg);
                 return;
             }
             if (whand==1) {
                 seg->data.ambient_wall.rx=x;
                 seg->data.ambient_wall.rz=z;
-				if (dp_auto_texture) segment_reset_texture_uvs(seg);
+				if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg);
                 return;
             }
             return;
@@ -345,7 +345,7 @@ void vertexes_move_to_2D(segment_type *seg,int whand,int x,int z)
         case sg_ambient_fc:
             seg->data.ambient_fc.x[whand]=x;
             seg->data.ambient_fc.z[whand]=z;
-			if (dp_auto_texture) segment_reset_texture_uvs(seg);
+			if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg);
             return;
             
     }

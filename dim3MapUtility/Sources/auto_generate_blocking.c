@@ -139,40 +139,40 @@ unsigned char ag_block_data_horizontal_h[max_ag_block_sz][max_ag_block_sz]= \
       
 ======================================================= */
 
-void map_auto_generate_block_preset(auto_generate_settings_type *ag_settings,int block)
+void map_auto_generate_block_preset(auto_generate_settings_type *ags,int block)
 {
 	switch (block) {
 	
 		case ag_block_preset_empty:
-			memmove(ag_settings->block,ag_block_data_empty,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
+			memmove(ags->block,ag_block_data_empty,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
 			break;
 	
 		case ag_block_preset_circle:
-			memmove(ag_settings->block,ag_block_data_circle,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
+			memmove(ags->block,ag_block_data_circle,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
 			break;
 			
 		case ag_block_preset_top_u:
-			memmove(ag_settings->block,ag_block_data_top_u,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
+			memmove(ags->block,ag_block_data_top_u,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
 			break;
 
 		case ag_block_preset_bottom_u:
-			memmove(ag_settings->block,ag_block_data_bottom_u,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
+			memmove(ags->block,ag_block_data_bottom_u,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
 			break;
 
 		case ag_block_preset_left_u:
-			memmove(ag_settings->block,ag_block_data_left_u,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
+			memmove(ags->block,ag_block_data_left_u,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
 			break;
 
 		case ag_block_preset_right_u:
-			memmove(ag_settings->block,ag_block_data_right_u,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
+			memmove(ags->block,ag_block_data_right_u,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
 			break;
 
 		case ag_block_preset_vertical_h:
-			memmove(ag_settings->block,ag_block_data_vertical_h,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
+			memmove(ags->block,ag_block_data_vertical_h,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
 			break;
 
 		case ag_block_preset_horizontal_h:
-			memmove(ag_settings->block,ag_block_data_horizontal_h,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
+			memmove(ags->block,ag_block_data_horizontal_h,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
 			break;
 	}
 

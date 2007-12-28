@@ -550,7 +550,7 @@ void map_import_obj(import_obj_settings_type *oi_settings)
 	
 		// clear the map
 		
-	import_clear_map();
+	map_auto_generate_clear(&map);
 	
 		// get the portal sizes
 	
@@ -603,17 +603,17 @@ void map_import_obj(import_obj_settings_type *oi_settings)
 	
 		// fix segments uv and fills
 		
-	import_fix_segments_uv();
+	map_auto_generate_fix_segments_uv(&map);
 	import_obj_fix_segments_fill(oi_settings);
 	
 		// lights and sight paths
 		
-	if (oi_settings->lights) import_add_simple_lights();
+	if (oi_settings->lights) map_auto_generate_add_simple_lights(&map);
 	if (oi_settings->sight_path) map_portal_sight_generate_paths(&map,FALSE);
 	
 		// create player spot
 		
-	import_add_player_spot();
+	map_auto_generate_add_player_spot(&map);
 }
 
 

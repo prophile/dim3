@@ -12,7 +12,6 @@
 		F50AF9AE088601C600F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF9AD088601C600F261B1 /* os_defs.h */; };
 		F50EC44809DE5A00007A0B8A /* dialog_map_obj_import.c in Sources */ = {isa = PBXBuildFile; fileRef = F50EC44709DE5A00007A0B8A /* dialog_map_obj_import.c */; };
 		F50EC4D709DEED57007A0B8A /* mapimport.h in Headers */ = {isa = PBXBuildFile; fileRef = F50EC4D609DEED57007A0B8A /* mapimport.h */; };
-		F50EC57909E0B499007A0B8A /* import_auto_generate_blocking.c in Sources */ = {isa = PBXBuildFile; fileRef = F50EC57809E0B499007A0B8A /* import_auto_generate_blocking.c */; };
 		F50EC58B09E0B9F0007A0B8A /* import.c in Sources */ = {isa = PBXBuildFile; fileRef = F50EC58A09E0B9F0007A0B8A /* import.c */; };
 		F50EC5D709E0C1C5007A0B8A /* dialog_map_height_map_import.c in Sources */ = {isa = PBXBuildFile; fileRef = F50EC5D609E0C1C5007A0B8A /* dialog_map_height_map_import.c */; };
 		F51B05240A85391500714D26 /* dialog_special_combo_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = F51B05230A85391500714D26 /* dialog_special_combo_utility.c */; };
@@ -118,7 +117,6 @@
 		F5AF0C5709638BC600F99950 /* dialog_texture_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AF0C5609638BC600F99950 /* dialog_texture_setting.c */; };
 		F5C461460970A68600FBB643 /* dialog_about.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C461450970A68600FBB643 /* dialog_about.c */; };
 		F5CA0193098D8E6E00039712 /* dialog_map_auto_generate.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CA0192098D8E6E00039712 /* dialog_map_auto_generate.c */; };
-		F5CAFFA3098C737D00039712 /* import_auto_generate.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CAFFA2098C737D00039712 /* import_auto_generate.c */; };
 		F5D0565E0C80C09300FC9405 /* dialog_primitive_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = F5D0565D0C80C09300FC9405 /* dialog_primitive_settings.c */; };
 		F5D3312D0C39FF2C00BED1CE /* info_status_line.c in Sources */ = {isa = PBXBuildFile; fileRef = F5D3312C0C39FF2C00BED1CE /* info_status_line.c */; };
 		F5D3316F0C3B191200BED1CE /* dialog_map_counts.c in Sources */ = {isa = PBXBuildFile; fileRef = F5D3316E0C3B191200BED1CE /* dialog_map_counts.c */; };
@@ -128,7 +126,6 @@
 		F5DC8CA7089C8B6F00813B7D /* primitives.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DC8CA6089C8B6F00813B7D /* primitives.c */; };
 		F5DD757B092CFD8700465E14 /* launch.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD757A092CFD8700465E14 /* launch.c */; };
 		F5E3879E096091CF003264F6 /* import_height_map.c in Sources */ = {isa = PBXBuildFile; fileRef = F5E3879D096091CF003264F6 /* import_height_map.c */; };
-		F5E387BB09609451003264F6 /* import_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = F5E387BA09609451003264F6 /* import_utility.c */; };
 		F5E3883A0960AC1D003264F6 /* import.h in Headers */ = {isa = PBXBuildFile; fileRef = F5E388390960AC1D003264F6 /* import.h */; };
 		F5E4C0FA0899DA1E005B03EC /* import_text_decode.c in Sources */ = {isa = PBXBuildFile; fileRef = F5E4C0F90899DA1E005B03EC /* import_text_decode.c */; };
 		F5E4C1080899DA68005B03EC /* import_obj.c in Sources */ = {isa = PBXBuildFile; fileRef = F5E4C1070899DA68005B03EC /* import_obj.c */; };
@@ -250,7 +247,6 @@
 		F50AF9AD088601C600F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
 		F50EC44709DE5A00007A0B8A /* dialog_map_obj_import.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_map_obj_import.c; path = Code/dialog_map_obj_import.c; sourceTree = "<group>"; };
 		F50EC4D609DEED57007A0B8A /* mapimport.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mapimport.h; path = ../dim3Common/Headers/mapimport.h; sourceTree = SOURCE_ROOT; };
-		F50EC57809E0B499007A0B8A /* import_auto_generate_blocking.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = import_auto_generate_blocking.c; path = Code/import_auto_generate_blocking.c; sourceTree = "<group>"; };
 		F50EC58A09E0B9F0007A0B8A /* import.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = import.c; path = Code/import.c; sourceTree = "<group>"; };
 		F50EC5D609E0C1C5007A0B8A /* dialog_map_height_map_import.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_map_height_map_import.c; path = Code/dialog_map_height_map_import.c; sourceTree = "<group>"; };
 		F510D43D02485F2F01DF5EE2 /* progress_window.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = progress_window.c; path = Code/progress_window.c; sourceTree = "<group>"; };
@@ -342,7 +338,6 @@
 		F5BEC2290100EBE001000001 /* top_view_portal_click.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = top_view_portal_click.c; path = Code/top_view_portal_click.c; sourceTree = "<group>"; };
 		F5C461450970A68600FBB643 /* dialog_about.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_about.c; path = Code/dialog_about.c; sourceTree = "<group>"; };
 		F5CA0192098D8E6E00039712 /* dialog_map_auto_generate.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_map_auto_generate.c; path = Code/dialog_map_auto_generate.c; sourceTree = "<group>"; };
-		F5CAFFA2098C737D00039712 /* import_auto_generate.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = import_auto_generate.c; path = Code/import_auto_generate.c; sourceTree = "<group>"; };
 		F5D0565D0C80C09300FC9405 /* dialog_primitive_settings.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_primitive_settings.c; path = Code/dialog_primitive_settings.c; sourceTree = "<group>"; };
 		F5D3312C0C39FF2C00BED1CE /* info_status_line.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = info_status_line.c; path = Code/info_status_line.c; sourceTree = "<group>"; };
 		F5D3316E0C3B191200BED1CE /* dialog_map_counts.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_map_counts.c; path = Code/dialog_map_counts.c; sourceTree = "<group>"; };
@@ -351,7 +346,6 @@
 		F5DC8CA6089C8B6F00813B7D /* primitives.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = primitives.c; path = Code/primitives.c; sourceTree = "<group>"; };
 		F5DD757A092CFD8700465E14 /* launch.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = launch.c; path = Code/launch.c; sourceTree = "<group>"; };
 		F5E3879D096091CF003264F6 /* import_height_map.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = import_height_map.c; path = Code/import_height_map.c; sourceTree = "<group>"; };
-		F5E387BA09609451003264F6 /* import_utility.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = import_utility.c; path = Code/import_utility.c; sourceTree = "<group>"; };
 		F5E388390960AC1D003264F6 /* import.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = import.h; path = Headers/import.h; sourceTree = "<group>"; };
 		F5E4C0F90899DA1E005B03EC /* import_text_decode.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = import_text_decode.c; path = Code/import_text_decode.c; sourceTree = "<group>"; };
 		F5E4C1070899DA68005B03EC /* import_obj.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = import_obj.c; path = Code/import_obj.c; sourceTree = "<group>"; };
@@ -617,12 +611,9 @@
 			isa = PBXGroup;
 			children = (
 				F50EC58A09E0B9F0007A0B8A /* import.c */,
-				F5E387BA09609451003264F6 /* import_utility.c */,
 				F5E4C0F90899DA1E005B03EC /* import_text_decode.c */,
 				F5E4C1070899DA68005B03EC /* import_obj.c */,
 				F5E3879D096091CF003264F6 /* import_height_map.c */,
-				F5CAFFA2098C737D00039712 /* import_auto_generate.c */,
-				F50EC57809E0B499007A0B8A /* import_auto_generate_blocking.c */,
 			);
 			name = Import;
 			sourceTree = "<group>";
@@ -824,12 +815,10 @@
 				F52E48CD0958F369007CA082 /* walk_view_click_handle.c in Sources */,
 				F52E48CF0958F370007CA082 /* walk_view_draw_handle.c in Sources */,
 				F5E3879E096091CF003264F6 /* import_height_map.c in Sources */,
-				F5E387BB09609451003264F6 /* import_utility.c in Sources */,
 				F5AF0C5509638BC100F99950 /* dialog_utility.c in Sources */,
 				F5AF0C5709638BC600F99950 /* dialog_texture_setting.c in Sources */,
 				F5C461460970A68600FBB643 /* dialog_about.c in Sources */,
 				F56425B9098C1C760008DECC /* dialog_background_sky_setting.c in Sources */,
-				F5CAFFA3098C737D00039712 /* import_auto_generate.c in Sources */,
 				F5CA0193098D8E6E00039712 /* dialog_map_auto_generate.c in Sources */,
 				F58860EB09A188F4000408ED /* dialog_spot_setting.c in Sources */,
 				F51C0DDC09A5854F00C7B54C /* dialog_map_optimizations.c in Sources */,
@@ -852,7 +841,6 @@
 				F501B27D09D4B36D00742D03 /* dialog_map_media.c in Sources */,
 				F501B2F909D5129B00742D03 /* dialog_texture_combo_utility.c in Sources */,
 				F50EC44809DE5A00007A0B8A /* dialog_map_obj_import.c in Sources */,
-				F50EC57909E0B499007A0B8A /* import_auto_generate_blocking.c in Sources */,
 				F50EC58B09E0B9F0007A0B8A /* import.c in Sources */,
 				F50EC5D709E0C1C5007A0B8A /* dialog_map_height_map_import.c in Sources */,
 				F550A14009FC68C100968FF8 /* dialog_piece_move.c in Sources */,
@@ -895,10 +883,7 @@
 		F5DB0C540856A994005A7CB7 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = ppc;
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				FRAMEWORK_SEARCH_PATHS = (

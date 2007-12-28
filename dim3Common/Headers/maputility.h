@@ -95,7 +95,7 @@ extern char light_type_str[][32];
 #define proj_reflect_slope_max_y	0.5f			// how big a slope before bounces become reflects
 #define proj_bounce_min_speed		10.0f			// minimum speed before bounces cancel
 
-#define ambient_push_size			8				// pixel push for ambients
+#define ambient_push_size			4				// pixel push for ambients
 
 //
 // segment constants
@@ -712,11 +712,3 @@ extern void map_movement_move_delete(map_type *map,int movement_idx,int move_idx
 
 extern bool map_add_texture_frame(map_type *map,int txt,char *bitmap_name,char *bumpmap_name,char *specularmap_name,char *glowmap_name);
 extern bool map_delete_texture_frame(map_type *map,int txt);
-
-extern void map_auto_generate_clear(map_type *map);
-extern void map_auto_generate_fix_segments_uv(map_type *map);
-extern void map_auto_generate_add_simple_lights(map_type *map);
-extern void map_auto_generate_add_player_spot(map_type *map);
-
-extern void map_auto_generate(map_type *map,void *ags);
-extern bool map_auto_generate_test(map_type *map,bool load_shaders);

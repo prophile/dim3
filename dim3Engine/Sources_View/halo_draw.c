@@ -202,10 +202,6 @@ void halo_draw_setup(void)
 					continue;
 				}
 			}
-			else {
-				halo_draw->in_view=FALSE;
-				continue;
-			}
 		}
 		else {
 			if (hit) {

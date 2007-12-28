@@ -398,7 +398,7 @@ void portal_y_change(int yadd)
 				break;
 		}
 		
-		if (dp_auto_texture) segment_reset_texture_uvs(seg);
+		if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg);
 	}
     
     for ((i=0);(i!=map.nspot);i++) {
@@ -580,7 +580,7 @@ void portal_reset_texture_uvs(void)
 	
 	for (i=0;i!=map.nsegment;i++) {
 		seg=&map.segments[i];
-		if (seg->rn==cr) segment_reset_texture_uvs(seg);
+		if (seg->rn==cr) map_segment_reset_texture_uvs(&map,seg);
 	}
 	
 	main_wind_draw();

@@ -49,7 +49,6 @@ auto_generate_settings_type			ag_settings;
 
 extern void map_import_obj(import_obj_settings_type *io_settings);
 extern void map_import_height_map(import_height_map_settings_type *hmi_settings);
-extern void map_import_auto_generate(void);
 
 /* =======================================================
 
@@ -136,7 +135,7 @@ void import_auto_generate(void)
 		// run the auto-generate
 		
 	SetCursor(*GetCursor(watchCursor));
-	map_import_auto_generate();
+	map_auto_generate(&map,&ag_settings);
 	InitCursor();
 	
 		// redraw the map

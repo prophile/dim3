@@ -820,11 +820,13 @@ void object_move_normal(obj_type *obj)
         if (oldfalling) {
             if (obj->fall.dist>map_enlarge) {
 			
-					// get damage
+					// get damage if not in water
 					
-				if (obj->fall.dist>=obj->fall.damage_minimum_height) {
-					fall_damage=(int)(((float)(obj->fall.dist-obj->fall.damage_minimum_height))*obj->fall.damage_factor);
-					if (fall_damage!=0) object_damage(obj,NULL,NULL,NULL,NULL,fall_damage);
+				if (obj->liquid_mode==lm_out) {
+					if (obj->fall.dist>=obj->fall.damage_minimum_height) {
+						fall_damage=(int)(((float)(obj->fall.dist-obj->fall.damage_minimum_height))*obj->fall.damage_factor);
+						if (fall_damage!=0) object_damage(obj,NULL,NULL,NULL,NULL,fall_damage);
+					}
 				}
 				
 					// send the land events
