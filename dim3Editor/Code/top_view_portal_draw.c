@@ -27,10 +27,38 @@ and can be sold or given away.
 
 #include "top_view.h"
 
-extern int					cr,cx,cz,cy;
+extern int					cr,cx,cz,cy,magnify_factor;
 extern float				walk_view_y_angle;
+extern Rect					top_view_box;
 
 extern map_type				map;
+
+/* =======================================================
+
+      Portal In View
+      
+======================================================= */
+
+bool top_view_portal_in_view(int rn)
+{
+	int			x,z,ex,ez;
+
+	x=map.portals[rn].x;
+	z=map.portals[rn].z;
+	top_view_map_to_pane(&x,&z);
+	
+	if (x>top_view_box.right) return(FALSE);
+	if (z>top_view_box.bottom) return(FALSE);
+
+	ex=map.portals[rn].ex;
+	ez=map.portals[rn].ez;
+	top_view_map_to_pane(&ex,&ez);
+	
+	if (ex<top_view_box.left) return(FALSE);
+	if (ez<top_view_box.top) return(FALSE);
+
+	return(TRUE);
+}
 
 /* =======================================================
 
@@ -38,45 +66,80 @@ extern map_type				map;
       
 ======================================================= */
 
-void top_view_portal_draw_outline(Rect *box)
+void top_view_portal_draw_block(int rn)
 {
-	Pattern		gray;
+	int			x,z,ex,ez;
+
+	x=map.portals[rn].x;
+	z=map.portals[rn].z;
+	top_view_map_to_pane(&x,&z);
 	
-	box->left--;
-	box->top--;
-	box->right+=2;
-	box->bottom+=2;
-	GetQDGlobalsGray(&gray);
-	PenPat(&gray);
-	FrameRect(box);
-	PenNormal();
+	ex=map.portals[rn].ex;
+	ez=map.portals[rn].ez;
+	top_view_map_to_pane(&ex,&ez);
+
+	glColor4f(0.75f,0.75f,0.75f,1.0f);
+	
+	glBegin(GL_QUADS);
+	glVertex2i(x,z);
+	glVertex2i(ex,z);
+	glVertex2i(ex,ez);
+	glVertex2i(x,ez);
+	glEnd();
+}
+
+void top_view_portal_draw_outline(int rn)
+{
+	int			x,z,ex,ez;
+
+	x=map.portals[rn].x;
+	z=map.portals[rn].z;
+	top_view_map_to_pane(&x,&z);
+	
+	ex=map.portals[rn].ex;
+	ez=map.portals[rn].ez;
+	top_view_map_to_pane(&ex,&ez);
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(x,z);
+	glVertex2i(ex,z);
+	glVertex2i(ex,ez);
+	glVertex2i(x,ez);
+	glEnd();
 }
 
 void top_view_portal_selection_draw(void)
 {
 	int			x,z,ex,ez;
-	Rect		box;
-	Pattern		gray;
-	RGBColor	blackcolor={0x0,0x0,0x0},purplecolor={0x9999,0x0,0x6666};
 
 	x=map.portals[cr].x;
 	z=map.portals[cr].z;
 	top_view_map_to_pane(&x,&z);
 	
+	x-=6;
+	z-=6;
+	
 	ex=map.portals[cr].ex;
 	ez=map.portals[cr].ez;
 	top_view_map_to_pane(&ex,&ez);
-			
-	SetRect(&box,(x-8),(z-8),(ex+8),(ez+8));
 	
-	RGBForeColor(&purplecolor);
-	PenSize(3,3);
-	GetQDGlobalsGray(&gray);
-	PenPat(&gray);
-	FrameRect(&box);
-	PenNormal();
-    
-	RGBForeColor(&blackcolor);
+	ex+=6;
+	ez+=6;
+	
+	glLineWidth(3.0f);
+	
+	glColor4f(0.6f,0.0f,0.3f,0.5f);
+	
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(x,z);
+	glVertex2i(ex,z);
+	glVertex2i(ex,ez);
+	glVertex2i(x,ez);
+	glEnd();
+	
+	glLineWidth(1.0f);
 }
 
 /* =======================================================
@@ -85,29 +148,20 @@ void top_view_portal_selection_draw(void)
             
 ======================================================= */
 
-void top_view_portal_draw(Rect *clipbox)
+void top_view_portal_draw(void)
 {
-    int			i,x,z,ex,ez;
-    Rect		box;
+    int			n;
     
-	for ((i=0);(i!=map.nportal);i++) {
-		x=map.portals[i].x;
-		z=map.portals[i].z;
-		top_view_map_to_pane(&x,&z);
+	for (n=0;n!=map.nportal;n++) {
+		if (top_view_portal_in_view(n)) top_view_portal_draw_block(n);
+	}
 	
-		ex=map.portals[i].ex;
-		ez=map.portals[i].ez;
-		top_view_map_to_pane(&ex,&ez);
-        
-        if (x>clipbox->right) continue;
-        if (ex<clipbox->left) continue;
-        if (z>clipbox->bottom) continue;
-        if (ez<clipbox->top) continue;
-
-		top_view_piece_draw(i,clipbox);
-
-		SetRect(&box,x,z,ex,ez);
-		top_view_portal_draw_outline(&box);
+	for (n=0;n!=map.nportal;n++) {
+		if (top_view_portal_in_view(n)) top_view_portal_draw_outline(n);
+	}
+	
+	for (n=0;n!=map.nportal;n++) {
+		if (top_view_portal_in_view(n)) top_view_piece_draw(n);
 	}
 }
 
@@ -119,31 +173,31 @@ void top_view_portal_draw(Rect *clipbox)
 
 void top_view_portal_position_draw(void)
 {
-    int			x,z,px[3],pz[3];
- 	RGBColor	blackcolor={0x0,0x0,0x0};
+    int			x,z,k,px[3],pz[3];
    
     x=cx/map_enlarge;
     z=cz/map_enlarge;
 	top_view_map_to_pane(&x,&z);
 	
-	px[0]=x-5;
-	pz[0]=z+5;
+	k=(8*magnify_factor)/40;
+	
+	px[0]=x-k;
+	pz[0]=z+k;
 	
 	px[1]=x;
-	pz[1]=z-5;
+	pz[1]=z-k;
 	
-	px[2]=x+5;
-	pz[2]=z+5;
+	px[2]=x+k;
+	pz[2]=z+k;
 	
 	rotate_2D_polygon(3,px,pz,x,z,walk_view_y_angle);
-    
-	RGBForeColor(&blackcolor);
-    PenSize(2,2);
-    
-	MoveTo(px[0],pz[0]);
-	LineTo(px[1],pz[1]);
-	LineTo(px[2],pz[2]);
-
-    PenSize(1,1);
+	
+	glColor4f(0.0f,0.0f,0.0f,0.8f);
+	
+	glBegin(GL_TRIANGLES);
+	glVertex2i(px[0],pz[0]);
+	glVertex2i(px[1],pz[1]);
+	glVertex2i(px[2],pz[2]);
+	glEnd();
 }
 

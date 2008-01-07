@@ -750,10 +750,14 @@ bool read_map_xml(map_type *map)
 
 	// supergumba -- new mesh stuff
 
-//	return(map_convert_segment_to_mesh(map));
+	return(map_convert_segment_to_mesh(map));
     
 	return(TRUE);
 }
+
+
+
+
 
 
 
@@ -768,7 +772,7 @@ int map_convert_segment_to_mesh_find_point_vlist(int nvertex,d3pnt *vlist,int x,
 	vptr=vlist;
 
 	for (n=0;n!=nvertex;n++) {
-		if ((vptr->x==x) && (vptr->y==y) && (vptr->z==z)) return(nvertex);
+		if ((vptr->x==x) && (vptr->y==y) && (vptr->z==z)) return(n);
 		vptr++;
 	}
 
@@ -806,7 +810,7 @@ int map_convert_segment_to_mesh_add_poly_vlist(int nvertex,d3pnt *vlist,int ptsz
 }
 
 
-void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,int *x,int *y,int *z,int txt_idx)
+void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,int *x,int *y,int *z,float *gx,float *gy,int txt_idx,float alpha)
 {
 	int					n;
 	map_mesh_poly_type	*mesh_poly;
@@ -817,19 +821,182 @@ void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,
 
 	for (n=0;n!=ptsz;n++) {
 		mesh_poly->v[n]=(short)map_convert_segment_to_mesh_find_point_vlist(map_mesh->nvertex,map_mesh->vertexes,x[n],y[n],z[n]);
-		if (mesh_poly->v[n]==-1) return;
-		mesh_poly->gx[n]=mesh_poly->gy[n]=0;
 	}
+	
+	memmove(mesh_poly->gx,gx,(sizeof(float)*ptsz));
+	memmove(mesh_poly->gy,gy,(sizeof(float)*ptsz));
+	
+	mesh_poly->alpha=alpha;
 
+	mesh_poly->ptsz=ptsz;
 	mesh_poly->txt_idx=txt_idx;
 
 	map_mesh->npoly++;
 }
 
+void map_convert_segment_to_mesh_orient_uv(int ptsz,float *gx,float *gy,int txt_ang)
+{
+	int				n;
+	float			g;
+	
+	if (txt_ang==ta_0) return;
+	
+	for (n=0;n!=ptsz;n++) {
+	
+		switch (txt_ang) {
+		
+			case ta_90:
+				g=gx[n];
+				gx[n]=gy[n];
+				gy[n]=-g;
+				break;
+				
+			case ta_180:
+				gx[n]=-gx[n];
+				gy[n]=-gy[n];
+				break;
+				
+			case ta_270:
+				g=gx[n];
+				gx[n]=-gy[n];
+				gy[n]=g;
+				break;
+		
+		}
+	}
+}
+
+int map_convert_segment_to_mesh_wall_to_polygon(segment_type *seg,int *px,int *py,int *pz,float *gx,float *gy)
+{
+	int					ptsz,my;
+    wall_segment_data	*wall;
+	
+	ptsz=0;
+	wall=&seg->data.wall;
+	
+	switch (seg->clip) {
+	
+        case wc_none:
+			ptsz=4;
+			px[0]=px[3]=wall->lx;
+			px[1]=px[2]=wall->rx;
+			pz[0]=pz[3]=wall->lz;
+			pz[1]=pz[2]=wall->rz;
+			py[0]=py[1]=wall->ty;
+			py[2]=py[3]=wall->by+1;
+            gx[0]=gx[3]=seg->x_txtoff;
+            gx[1]=gx[2]=seg->x_txtoff+seg->x_txtfact;
+            gy[0]=gy[1]=seg->y_txtoff;
+            gy[2]=gy[3]=seg->y_txtoff+seg->y_txtfact;
+            break;
+			
+		case wc_bottom:
+			ptsz=3;
+			px[0]=wall->lx;
+			px[1]=px[2]=wall->rx;
+			pz[0]=wall->lz;
+			pz[1]=pz[2]=wall->rz;
+			py[0]=py[1]=wall->ty;
+			py[2]=wall->by+1;
+			gx[0]=seg->x_txtoff;
+			gx[1]=gx[2]=seg->x_txtoff+seg->x_txtfact;
+			gy[0]=gy[1]=seg->y_txtoff;
+			gy[2]=seg->y_txtoff+seg->y_txtfact;
+			break;
+			
+		case wc_top:
+			ptsz=3;
+			px[0]=px[2]=wall->lx;
+			px[1]=wall->rx;
+			pz[0]=pz[2]=wall->lz;
+			pz[1]=wall->rz;
+			py[0]=wall->ty;
+			py[1]=py[2]=wall->by+1;
+			gx[0]=gx[2]=seg->x_txtoff;
+			gx[1]=seg->x_txtoff+seg->x_txtfact;
+			gy[0]=seg->y_txtoff;
+			gy[1]=gy[2]=seg->y_txtoff+seg->y_txtfact;
+			break;
+			
+		case wc_slant:
+			ptsz=4;
+			my=(wall->by+wall->ty)>>1;
+			px[0]=px[3]=wall->lx;
+			px[1]=px[2]=wall->rx;
+			pz[0]=pz[3]=wall->lz;
+			pz[1]=pz[2]=wall->rz;
+			py[0]=wall->ty;
+			py[1]=py[3]=(wall->by+wall->ty)>>1;
+			py[2]=wall->by+1;
+			gx[0]=gx[3]=seg->x_txtoff;
+			gx[1]=gx[2]=seg->x_txtoff+seg->x_txtfact;
+			gy[0]=seg->y_txtoff;
+			gy[1]=gy[3]=seg->y_txtoff+(seg->y_txtfact/2);
+			gy[2]=seg->y_txtoff+seg->y_txtfact;
+			break;
+	}
+	
+	map_convert_segment_to_mesh_orient_uv(ptsz,gx,gy,seg->txt_ang);
+	
+	return(ptsz);
+}
+
+int map_convert_segment_to_mesh_fc_to_polygon(segment_type *seg,int *px,int *py,int *pz,float *gx,float *gy)
+{
+	int					n,ptsz,lft,rgt,top,bot;
+    float				xsize,ysize,x_txtoff,y_txtoff,x_txtfact,y_txtfact;
+    fc_segment_data		*fc;
+    
+	fc=&seg->data.fc;
+	
+    ptsz=fc->ptsz;
+	
+		// convert vertex coordinates
+		
+	lft=rgt=fc->x[0];
+	top=bot=fc->z[0];
+
+	for (n=0;n!=ptsz;n++) {
+		px[n]=fc->x[n];
+		if (px[n]<lft) lft=px[n];
+		if (px[n]>rgt) rgt=px[n];
+		
+		pz[n]=fc->z[n];
+		if (pz[n]<top) top=pz[n];
+		if (pz[n]>bot) bot=pz[n];
+    
+		py[n]=fc->y[n];
+	}
+	
+		// get texture coordinates
+		
+	xsize=(float)(rgt-lft);
+	ysize=(float)(bot-top);
+ 
+	x_txtoff=seg->x_txtoff;
+	x_txtfact=seg->x_txtfact;
+	y_txtoff=seg->y_txtoff;
+	y_txtfact=seg->y_txtfact;
+   
+    for (n=0;n!=ptsz;n++) {
+		gx[n]=x_txtoff+((x_txtfact*(float)(px[n]-lft))/xsize);
+		gy[n]=y_txtoff+((y_txtfact*(float)(pz[n]-top))/ysize);
+    }
+	
+	map_convert_segment_to_mesh_orient_uv(ptsz,gx,gy,seg->txt_ang);
+	
+	return(ptsz);
+}
+
+
+
+
 
 bool map_convert_segment_to_mesh(map_type *map)
 {
 	int				n,i,vlist_sz,nvertex,npoly;
+	int				ptsz,px[8],py[8],pz[8];
+	float			gx[8],gy[8];
 	d3pnt			*vlist;
 	segment_type	*seg;
 	map_mesh_type	*map_mesh;
@@ -846,6 +1013,8 @@ bool map_convert_segment_to_mesh(map_type *map)
 		// create a mesh out of all segments in a portal
 
 	for (n=0;n!=map->nportal;n++) {
+	
+		map->portals[n].mesh.nmesh=0;
 
 			// clear vertex list
 
@@ -862,13 +1031,15 @@ bool map_convert_segment_to_mesh(map_type *map)
 			switch (seg->type) {
 
 				case sg_wall:
-					nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,seg->data.wall.ptsz,seg->data.wall.x,seg->data.wall.y,seg->data.wall.z);
+					ptsz=map_convert_segment_to_mesh_wall_to_polygon(seg,px,py,pz,gx,gy);
+					nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,ptsz,px,py,pz);
 					npoly++;
 					break;
 
 				case sg_floor:
 				case sg_ceiling:
-					nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,seg->data.fc.ptsz,seg->data.fc.x,seg->data.fc.y,seg->data.fc.z);
+					ptsz=map_convert_segment_to_mesh_fc_to_polygon(seg,px,py,pz,gx,gy);
+					nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,ptsz,px,py,pz);
 					npoly++;
 					break;
 
@@ -899,7 +1070,7 @@ bool map_convert_segment_to_mesh(map_type *map)
 
 		map_mesh=&map->portals[n].mesh.meshes[0];
 
-			// add vertexes
+			// move over vertexes
 
 		map_mesh->nvertex=nvertex;
 		memmove(map_mesh->vertexes,vlist,(sizeof(d3pnt)*nvertex));
@@ -915,12 +1086,14 @@ bool map_convert_segment_to_mesh(map_type *map)
 			switch (seg->type) {
 
 				case sg_wall:
-					map_convert_segment_to_mesh_add_mesh_poly(map_mesh,seg->data.wall.ptsz,seg->data.wall.x,seg->data.wall.y,seg->data.wall.z,seg->fill);
+					ptsz=map_convert_segment_to_mesh_wall_to_polygon(seg,px,py,pz,gx,gy);
+					map_convert_segment_to_mesh_add_mesh_poly(map_mesh,ptsz,px,py,pz,gx,gy,seg->fill,seg->alpha);
 					break;
 
 				case sg_floor:
 				case sg_ceiling:
-					map_convert_segment_to_mesh_add_mesh_poly(map_mesh,seg->data.fc.ptsz,seg->data.fc.x,seg->data.fc.y,seg->data.fc.z,seg->fill);
+					ptsz=map_convert_segment_to_mesh_fc_to_polygon(seg,px,py,pz,gx,gy);
+					map_convert_segment_to_mesh_add_mesh_poly(map_mesh,ptsz,px,py,pz,gx,gy,seg->fill,seg->alpha);
 					break;
 
 			}

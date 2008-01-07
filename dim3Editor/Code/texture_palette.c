@@ -42,6 +42,7 @@ extern map_type			map;
 
 int						txt_page,txt_offset,
 						txt_palette_y,txt_palette_high,txt_pixel_sz;
+Rect					txt_palette_box;
 
 extern WindowRef		mainwind;
 
@@ -62,138 +63,11 @@ void texture_palette_setup(void)
 	
 	txt_palette_high=(txt_wind_row_count*txt_pixel_sz);
 	txt_palette_y=(wbox.bottom-txt_palette_high)-info_high;
-}
-
-/* =======================================================
-
-      Texture Drawing
-      
-======================================================= */
-
-void texture_palette_bitmap_draw(bitmap_type *bitmap,CGrafPtr dport,Rect *dbox)
-{
-	int					x,y,xsz,ysz,row_add,
-						xbyte,k,gray;
-	unsigned char		r,g,b;
-	float				alpha,fr,fg,fb;
-	ptr					sptr,dptr;
-	Rect				box;
-	PixMapHandle		texturemap;
-	GWorldPtr			gworld;
 	
-	xsz=bitmap->wid;
-	ysz=bitmap->high;
-	
-		// make gworld for texture
-		
-	SetRect(&box,0,0,xsz,ysz);
-	NewGWorld(&gworld,32,&box,NULL,NULL,0);
-    
-        // copy RGB for gworld
-        
-	texturemap=GetGWorldPixMap(gworld);
-	
-	LockPixels(texturemap);
-	sptr=(ptr)GetPixBaseAddr(texturemap);
-	xbyte=xsz<<2;
-	row_add=GetPixRowBytes(texturemap)-xbyte;
-
-	dptr=bitmap->data;
-	
-	switch (bitmap->alpha_mode) {
-	
-		case alpha_mode_none:
-		
-			for (y=0;y!=ysz;y++) {
-				for (x=0;x!=xsz;x++) {
-					*sptr++=0xFF;
-					*sptr++=*dptr++;
-					*sptr++=*dptr++;
-					*sptr++=*dptr++;
-					dptr++;
-				}
-				sptr=sptr+row_add;
-			}
-			break;
-			
-		case alpha_mode_cut_out:
-		
-			for (y=0;y!=ysz;y++) {
-				for (x=0;x!=xsz;x++) {
-					r=*dptr++;
-					g=*dptr++;
-					b=*dptr++;
-					alpha=*dptr++;
-					
-					*sptr++=0xFF;
-					
-					if (alpha!=255) {
-						*sptr++=0x0;
-						*sptr++=0x0;
-						*sptr++=0xFF;
-					}
-					else {
-						*sptr++=r;
-						*sptr++=g;
-						*sptr++=b;
-					}
-				}
-				sptr=sptr+row_add;
-			}
-			break;
-		
-		case alpha_mode_transparent:
-
-			for (y=0;y!=ysz;y++) {
-				for (x=0;x!=xsz;x++) {
-					
-					r=*dptr++;
-					g=*dptr++;
-					b=*dptr++;
-					alpha=((float)*dptr++)/255.0f;
-				
-						// calculate alpha
-						
-					if (alpha!=1.0f) {
-						gray=((((y/5)+(x/5))&0x1)==0x0)?0x00:0x55;
-						
-						fr=((float)r)/255.0f;
-						fr*=alpha;
-						k=(int)(fr*255.0f)+gray;
-						if (k>255) k=255;
-						r=(unsigned char)k;
-						
-						fg=((float)g)/255.0f;
-						fg*=alpha;
-						k=(int)(fg*255.0f)+gray;
-						if (k>255) k=255;
-						g=(unsigned char)k;
-						
-						fb=((float)b)/255.0f;
-						fb*=alpha;
-						k=(int)(fb*255.0f)+gray;
-						if (k>255) k=255;
-						b=(unsigned char)k;
-					}
-					
-					*sptr++=0xFF;
-					*sptr++=r;
-					*sptr++=g;
-					*sptr++=b;
-				}
-				
-				sptr=sptr+row_add;
-			}
-			break;
-	}
-
-	CopyBits((BitMap*)(*texturemap),GetPortBitMapForCopyBits(dport),&box,dbox,srcCopy,NULL);
-    
-	UnlockPixels(texturemap);
-	
-		// dispose the gworld
-		
-	DisposeGWorld(gworld);
+	txt_palette_box.left=wbox.left;
+	txt_palette_box.right=wbox.right-piece_wid;
+	txt_palette_box.top=txt_palette_y;
+	txt_palette_box.bottom=txt_palette_box.top+txt_palette_high;
 }
 
 /* =======================================================
@@ -257,98 +131,72 @@ void texture_palette_put_selected_fill(int fill)
       
 ======================================================= */
 
-void texture_palette_draw_select(void)
-{
-	int					i,x,y,k,idx,sel,page;
-	Rect				box;
-	GrafPtr				saveport;
-	RGBColor			blackcolor={0x0,0x0,0x0},redcolor={0xFFFF,0x0,0x0};
-	
-	GetPort(&saveport);
-	SetPort(GetWindowPort(mainwind));
-		
-	sel=texture_palette_get_selected_fill();
-
-	for (i=0;i!=max_map_texture;i++) {
-	
-		page=i/txt_wind_per_page;
-		if (page!=txt_page) continue;
-		
-		idx=i-(txt_page*txt_wind_per_page);
-	
-		k=idx/txt_wind_column_count;
-		x=((idx-(k*txt_wind_column_count))*txt_pixel_sz)+16;
-		y=txt_palette_y+(k*txt_pixel_sz);
-		
-		if (i!=sel) {
-			RGBForeColor(&blackcolor);
-		}
-		else {
-			RGBForeColor(&redcolor);
-		}
-		
-		SetRect(&box,x,y,(x+txt_pixel_sz),(y+txt_pixel_sz));
-		FrameRect(&box);
-	}
-    
-    RGBForeColor(&blackcolor);
-
-	SetPort(saveport);
-}
-
 void texture_palette_draw(void)
 {
-	int					i,x,y,yadd,k,idx,page,page_cnt;
-	char				str[8];
-	Rect				wbox,box;
+	int					i,x,y,yadd,sel,k,idx,page,page_cnt;
 	texture_type		*texture;
-	GrafPtr				saveport;
-	RGBColor			blackcolor={0x0,0x0,0x0},ltltgraycolor={0xCCCC,0xCCCC,0xCCCC},dkgraycolor={0x5555,0x5555,0x5555};
 	
-	GetPort(&saveport);
-	SetPort(GetWindowPort(mainwind));
-	
-	GetWindowPortBounds(mainwind,&wbox);
-	
-		// clear the entire bottom
+		// viewport setup
 		
-	box=wbox;
-	box.top=txt_palette_y;
-	box.bottom=box.top+txt_palette_high;
+	main_wind_set_viewport(&txt_palette_box);
+	main_wind_set_2D_projection(&txt_palette_box);
 	
-	EraseRect(&box);
+	glDisable(GL_DEPTH_TEST);
 	
-		// texture pages
+		// background
+		
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
+	
+	glBegin(GL_QUADS);
+	glVertex2i(txt_palette_box.left,txt_palette_box.top);
+	glVertex2i(txt_palette_box.right,txt_palette_box.top);
+	glVertex2i(txt_palette_box.right,txt_palette_box.bottom);
+	glVertex2i(txt_palette_box.left,txt_palette_box.bottom);
+	glEnd();
+	
+		// texture page switch
 		
 	page_cnt=max_map_texture/txt_wind_per_page;
 	yadd=(txt_wind_row_count*txt_pixel_sz)/page_cnt;
-	
+
 	for (i=0;i!=page_cnt;i++) {
 		y=txt_palette_y+(i*yadd);
-		SetRect(&box,0,y,16,(y+yadd));
+		
+		glColor4f(0.75f,0.75f,0.75f,1.0f);
+		
+		glBegin(GL_QUADS);
+		glVertex2i(0,y);
+		glVertex2i(16,y);
+		glVertex2i(16,(y+yadd));
+		glVertex2i(0,(y+yadd));
+		glEnd();
+		
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+		
+		glBegin(GL_LINE_LOOP);
+		glVertex2i(0,y);
+		glVertex2i(16,y);
+		glVertex2i(16,(y+yadd));
+		glVertex2i(0,(y+yadd));
+		glEnd();
 		
 		if (txt_page==i) {
-			RGBForeColor(&ltltgraycolor);
+			glColor4f(0.3f,0.3f,1.0f,1.0f);
+			
+			glBegin(GL_TRIANGLES);
+			glVertex2i(1,(y+1));
+			glVertex2i(15,(y+(yadd/2)));
+			glVertex2i(1,((y+yadd)-1));
+			glEnd();
 		}
-		else {
-			RGBForeColor(&dkgraycolor);
-		}
-		
-		PaintRect(&box);
-		
-		RGBForeColor(&blackcolor);
-		FrameRect(&box);
-		
-		sprintf(str,"%d",(i+1));
-		
-		MoveTo(5,((y+(yadd/2))+4));
-		DrawText(str,0,strlen(str));
 	}
-		
+
 		// textures
+	
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
+	glEnable(GL_TEXTURE_2D);
 		
 	for (i=0;i!=max_map_texture;i++) {
-	
 		texture=&map.textures[i];
 	
 		page=i/txt_wind_per_page;
@@ -360,39 +208,70 @@ void texture_palette_draw(void)
 		x=((idx-(k*txt_wind_column_count))*txt_pixel_sz)+16;
 		y=txt_palette_y+(k*txt_pixel_sz);
 		
-		SetRect(&box,x,y,(x+txt_pixel_sz),(y+txt_pixel_sz));
-		
 			// the textures
 			
-		if (texture->bitmaps[0].data==NULL) {
-			RGBForeColor(&ltltgraycolor);
-			PaintRect(&box);
-            RGBForeColor(&blackcolor);
-		}
-		else {
-            texture_palette_bitmap_draw(&texture->bitmaps[0],GetWindowPort(mainwind),&box);
+		if (texture->bitmaps[0].data!=NULL) {
+			glBindTexture(GL_TEXTURE_2D,texture->bitmaps[0].gl_id);
+
+			glBegin(GL_QUADS);
+			glTexCoord2f(0,0);
+			glVertex2i(x,y);
+			glTexCoord2f(1,0);
+			glVertex2i((x+txt_pixel_sz),y);
+			glTexCoord2f(1,1);
+			glVertex2i((x+txt_pixel_sz),(y+txt_pixel_sz));
+			glTexCoord2f(0,1);
+			glVertex2i(x,(y+txt_pixel_sz));
+			glEnd();
 		}
 	}
-    
-    RGBForeColor(&blackcolor);
-
-	SetPort(saveport);
 	
-		// draw selection
+	glDisable(GL_TEXTURE_2D);
+	
+		// lines
+	
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
 		
-	texture_palette_draw_select();
-}
+	for (i=0;i!=max_map_texture;i++) {
+		page=i/txt_wind_per_page;
+		if (page!=txt_page) continue;
+		
+		idx=i-(txt_page*txt_wind_per_page);
+	
+		k=idx/txt_wind_column_count;
+		x=((idx-(k*txt_wind_column_count))*txt_pixel_sz)+16;
+		y=txt_palette_y+(k*txt_pixel_sz);
+		
+		glBegin(GL_LINE_LOOP);
+		glVertex2i(x,(y+1));
+		glVertex2i((x+txt_pixel_sz),(y+1));
+		glVertex2i((x+txt_pixel_sz),(y+txt_pixel_sz));
+		glVertex2i(x,(y+txt_pixel_sz));
+		glEnd();
+	}
+	
+		// selection
+		
+	sel=texture_palette_get_selected_fill();
+	if (sel==-1) return;
+	
+	page=sel/txt_wind_per_page;
+	if (page!=txt_page) return;
+	
+	idx=sel-(txt_page*txt_wind_per_page);
 
-/* =======================================================
-
-      Texture Palette Resize
-      
-======================================================= */
-
-void texture_palette_resize(void)
-{
-	texture_palette_setup();
-	texture_palette_draw();
+	k=idx/txt_wind_column_count;
+	x=((idx-(k*txt_wind_column_count))*txt_pixel_sz)+16;
+	y=txt_palette_y+(k*txt_pixel_sz);
+	
+	glColor4f(1.0f,0.0f,0.0f,1.0f);
+	
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(x,(y+1));
+	glVertex2i((x+txt_pixel_sz),(y+1));
+	glVertex2i((x+txt_pixel_sz),(y+txt_pixel_sz));
+	glVertex2i(x,(y+txt_pixel_sz));
+	glEnd();
 }
 
 /* =======================================================
@@ -409,10 +288,6 @@ void texture_palette_reset(void)
 		
 	sel=texture_palette_get_selected_fill();
 	if (sel!=-1) txt_offset=sel/8;
-	
-		// redraw window
-		
-	texture_palette_draw_select();
 }
 
 /* =======================================================
@@ -437,7 +312,7 @@ void texture_palette_click(Point pt,bool dblclick)
 		page=pt.v/yadd;
 		if (txt_page!=page) {
 			txt_page=page;
-			texture_palette_draw();
+			main_wind_draw();
 		}
 		return;
 	}
@@ -451,7 +326,7 @@ void texture_palette_click(Point pt,bool dblclick)
 		
 	if (dblclick) {
 		dialog_texture_setting_run(nsel);
-		texture_palette_draw();
+		main_wind_draw();
 		return;
 	}
     
@@ -460,7 +335,7 @@ void texture_palette_click(Point pt,bool dblclick)
 	if (map.textures[nsel].bitmaps[0].data==NULL) return;
 	
 	texture_palette_put_selected_fill(nsel);
-	main_wind_draw();
 	texture_palette_reset();
+	main_wind_draw();
 }
 

@@ -178,3 +178,44 @@ void map_auto_generate_block_preset(auto_generate_settings_type *ags,int block)
 
 }
 
+/* =======================================================
+
+      Auto-Generate Dectect Block Collisions
+      
+======================================================= */
+
+bool map_auto_generate_block_collision(map_type *map,auto_generate_settings_type *ags,int x,int z,int ex,int ez)
+{
+	int				blck_x,blck_z,lx,rx,tz,bz,map_x_factor,map_z_factor;
+
+	map_x_factor=(ags->map_right-ags->map_left)/max_ag_block_sz;
+	map_z_factor=(ags->map_bottom-ags->map_top)/max_ag_block_sz;
+
+	bz=ags->map_top;
+
+	for (blck_z=0;blck_z!=max_ag_block_sz;blck_z++) {
+
+		tz=bz;
+		bz+=map_z_factor;
+
+		rx=ags->map_left;
+
+		for (blck_x=0;blck_x!=max_ag_block_sz;blck_x++) {
+
+			lx=rx;
+			rx+=map_x_factor;
+
+			if (ags->block[blck_z][blck_x]!=0x0) {
+				if (ez<=tz) continue;
+				if (ex<=lx) continue;
+				if (x>=rx) continue;
+				if (z>=bz) continue;
+
+				return(TRUE);
+			}
+		}
+	}
+
+	return(FALSE);
+}
+

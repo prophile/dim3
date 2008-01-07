@@ -157,7 +157,8 @@ and can be sold or given away.
 #define kf_portal			0
 #define kf_site_path		1
 #define kf_top				2
-#define kf_walk				3
+#define kf_walk_forward		3
+#define kf_walk_side		4
 
 //
 // vertex modes

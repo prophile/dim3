@@ -559,7 +559,7 @@ void piece_free_rotate(float ang)
       
 ======================================================= */
 
-void piece_key(int rn,char ch,bool walk)
+void piece_key(int rn,char ch,bool walk,bool on_side)
 {
 	int				mv;
 	

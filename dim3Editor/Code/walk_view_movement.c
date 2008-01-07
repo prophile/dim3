@@ -33,7 +33,6 @@ and can be sold or given away.
 
 extern int						cr,cx,cz,cy;
 extern float					walk_view_y_angle,walk_view_x_angle;
-extern Rect						walk_view_box;
 
 extern CCrsrHandle				handcur,forwardcur,rotatecur;
 
@@ -69,22 +68,34 @@ void walk_view_mouse_reset_portal(void)
       
 ======================================================= */
 
-void walk_view_get_forward_movement(int x,int y,int *xadd,int *zadd,int *yadd)
+void walk_view_get_forward_movement(int x,int y,int *xadd,int *zadd,int *yadd,bool on_side)
 {
-	*xadd=0;
-	*zadd=y;
-	*yadd=0;
+	if (!on_side) {
+		*xadd=0;
+		*zadd=y;
+		*yadd=0;
+	}
+	else {
+		*xadd=-y;
+		*zadd=0;
+		*yadd=0;
+	}
 	
 	rotate_2D_point_center(xadd,zadd,walk_view_y_angle);
 }
 
-void walk_view_get_move_movement(int x,int y,int *xadd,int *zadd,int *yadd)
+void walk_view_get_move_movement(int x,int y,int *xadd,int *zadd,int *yadd,bool on_side)
 {
-	*xadd=*zadd=*yadd=0;
-
-	*xadd=x;
-	*zadd=0;
-	*yadd=y;
+	if (!on_side) {
+		*xadd=x;
+		*zadd=0;
+		*yadd=y;
+	}
+	else {
+		*xadd=0;
+		*zadd=x;
+		*yadd=y;
+	}
 	
 	rotate_2D_point_center(xadd,zadd,walk_view_y_angle);
 }
@@ -95,7 +106,7 @@ void walk_view_get_move_movement(int x,int y,int *xadd,int *zadd,int *yadd)
       
 ======================================================= */
 
-void walk_view_mouse_xy_movement(Point pt)
+void walk_view_mouse_xy_movement(Point pt,bool on_side)
 {
 	int						x,y,xadd,zadd,yadd;
 	Point					oldpt;
@@ -114,7 +125,7 @@ void walk_view_mouse_xy_movement(Point pt)
 		y=oldpt.v-pt.v;
 		oldpt=pt;
 	
-		walk_view_get_move_movement(x,y,&xadd,&zadd,&yadd);
+		walk_view_get_move_movement(x,y,&xadd,&zadd,&yadd,on_side);
 		
 		cz+=(zadd*32);
 		cx+=(xadd*32);
@@ -134,7 +145,7 @@ void walk_view_mouse_xy_movement(Point pt)
       
 ======================================================= */
 
-void walk_view_mouse_z_movement(Point pt)
+void walk_view_mouse_z_movement(Point pt,bool on_side)
 {
 	int						x,y,xadd,zadd,yadd;
 	Point					oldpt;
@@ -152,7 +163,7 @@ void walk_view_mouse_z_movement(Point pt)
 		y=oldpt.v-pt.v;
 		oldpt=pt;
 	
-		walk_view_get_forward_movement(x,y,&xadd,&zadd,&yadd);
+		walk_view_get_forward_movement(x,y,&xadd,&zadd,&yadd,on_side);
 		
 		cz+=(zadd*32);
 		cx+=(xadd*32);
@@ -166,11 +177,11 @@ void walk_view_mouse_z_movement(Point pt)
 	} while (track!=kMouseTrackingMouseReleased);
 }
 
-void walk_view_scroll_wheel_z_movement(int delta)
+void walk_view_scroll_wheel_z_movement(int delta,bool on_side)
 {
 	int						xadd,zadd,yadd;
 
-	walk_view_get_forward_movement(0,-(delta*10),&xadd,&zadd,&yadd);
+	walk_view_get_forward_movement(0,-(delta*10),&xadd,&zadd,&yadd,on_side);
 	
 	cz+=(zadd*32);
 	cx+=(xadd*32);
@@ -246,31 +257,6 @@ void walk_view_mouse_turn(Point pt)
 			
 		
 	} while (track!=kMouseTrackingMouseReleased);
-
-/*
-    int			xsz,ysz;
-    
-    SetCCursor(rotatecur);
-    
-    xsz=(walk_view_box.right-walk_view_box.left)/4;
-    ysz=(walk_view_box.bottom-walk_view_box.top)/4;
-	
-        // left click
-        
-    if (pt.h<xsz) {
-		walk_view_y_angle=angle_add(walk_view_y_angle,-45);
-    }
-    
-        // right click
-        
-    if (pt.h>(walk_view_box.right-xsz)) {
-		walk_view_y_angle=angle_add(walk_view_y_angle,45);
-    }
-   
-    top_view_reset();
-	portal_view_reset();
-    main_wind_draw();
-*/
 }
 
 /* =======================================================

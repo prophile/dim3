@@ -46,40 +46,53 @@ extern void primitive_get_center(int primitive_uid,int *x,int *z,int *y);
       
 ======================================================= */
 
-void top_view_piece_draw_floor_ceiling(int rn,fc_segment_data *fc,Rect *clipbox,RGBColor *col)
+void top_view_piece_draw_floor_ceiling(int rn,fc_segment_data *fc,bool light_color)
 {
-	Rect		box;
-	PolyHandle	tply;
-	RGBColor	blackcolor={0x0,0x0,0x0};
+	int				n,x,z;
+	portal_type		*portal;
 	
 		// Y hiding
 		
 	if (top_view_hide_y(fc)) return;
 	
-		// square segments
-
-	if (segment_is_floor_ceiling_square(rn,fc,&box)) {
-	
-		if ((box.right<clipbox->left) || (box.left>clipbox->right) || (box.bottom<clipbox->top) || (box.top>clipbox->bottom)) return;
-
-		RGBForeColor(col);
-		PaintRect(&box);
-		RGBForeColor(&blackcolor);
-		box.right++;
-		box.bottom++;
-		FrameRect(&box);
+		// color
 		
-		return;
+	if (light_color) {
+		glColor4f(0.75f,0.75f,0.75f,1.0f);
 	}
-
-		// non-square segments
+	else {
+		glColor4f(0.5f,0.5f,0.5f,1.0f);
+	}
 		
-	top_view_make_poly(rn,fc->ptsz,fc->x,fc->z,&tply);
-	RGBForeColor(col);
-	PaintPoly(tply);
-	RGBForeColor(&blackcolor);
-	FramePoly(tply);
-	KillPoly(tply);
+		// polygon
+		
+	portal=&map.portals[rn];
+	
+	glBegin(GL_POLYGON);
+	
+	for (n=0;n!=fc->ptsz;n++) {
+		x=fc->x[n]+portal->x;
+		z=fc->z[n]+portal->z;
+		top_view_map_to_pane(&x,&z);
+		glVertex2i(x,z);
+	}
+	
+	glEnd();
+	
+		// outline
+		
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	
+	glBegin(GL_LINE_LOOP);
+	
+	for (n=0;n!=fc->ptsz;n++) {
+		x=fc->x[n]+portal->x;
+		z=fc->z[n]+portal->z;
+		top_view_map_to_pane(&x,&z);
+		glVertex2i(x,z);
+	}
+	
+	glEnd();
 }
 
 void top_view_piece_draw_liquid(int rn,liquid_segment_data *liq)
@@ -103,21 +116,27 @@ void top_view_piece_draw_grade(int lx,int lz,int rx,int rz)
 	dx=(float)rx-lx;
 	dz=(float)lz-rz;
 	
+	x=z=0;
+	
+	glBegin(GL_LINES);
+	
 	for (i=0;i<=90;i=i+gadd) {
+		glVertex2i((lx+x),(rz+z));
+		
 		r=(float)i*.0174533;
 		x=(int)(cos(r)*dx);
 		z=(int)(sin(r)*dz);
 
-		if (i==0) MoveTo((lx+x),(rz+z));
-		LineTo((lx+x),(rz+z));
+		glVertex2i((lx+x),(rz+z));
 	}
+	
+	glEnd();
 }
 
-void top_view_piece_draw_wall(int rn,wall_segment_data *wall,int curve,int clip,Rect *clipbox)
+void top_view_piece_draw_wall(int rn,wall_segment_data *wall,int curve,int clip)
 {
 	int			lx,rx,lz,rz;
 	portal_type	*portal;
-	RGBColor	blackcolor={0x0,0x0,0x0},redcolor={0xFFFF,0x0,0x0},bluecolor={0x0,0x0,0xFFFF};
 	
 	portal=&map.portals[rn];
 
@@ -128,32 +147,32 @@ void top_view_piece_draw_wall(int rn,wall_segment_data *wall,int curve,int clip,
 	rx=wall->rx+portal->x;
 	rz=wall->rz+portal->z;
 	top_view_map_to_pane(&rx,&rz);
-	
-	if ((lx<clipbox->left) && (rx<clipbox->left)) return;
-	if ((lx>clipbox->right) && (rx>clipbox->right)) return;
-	if ((lz<clipbox->top) && (rz<clipbox->top)) return;
-	if ((lz>clipbox->bottom) && (rz>clipbox->bottom)) return;
 
-	RGBForeColor(&bluecolor);
-	
+	glColor4f(0.0f,0.0f,1.0f,1.0f);
+
 	if (curve==cv_forward) {
 		top_view_piece_draw_grade(lx,lz,rx,rz);
-		RGBForeColor(&redcolor);
+		glColor4f(1.0f,0.0f,0.0f,1.0f);
 	}
 	if (curve==cv_backward) {
 		top_view_piece_draw_grade(rx,rz,lx,lz);
-		RGBForeColor(&redcolor);
+		glColor4f(1.0f,0.0f,0.0f,1.0f);
 	}
-	MoveTo(lx,lz);	
-	LineTo(rx,rz);
-	RGBForeColor(&blackcolor);
+	
+	glBegin(GL_LINES);
+	glVertex2i(lx,lz);
+	glVertex2i(rx,rz);
+	glEnd();
 
 	if (clip!=0) {
-		MoveTo((lx-2),(lz-2));
-		LineTo((lx+3),(lz-2));
-		LineTo((lx+3),(lz+3));
-		LineTo((lx-2),(lz+3));
-		LineTo((lx-2),(lz-2));
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+		
+		glBegin(GL_LINE_LOOP);
+		glVertex2i((lx-2),(lz-2));
+		glVertex2i((lx+3),(lz-2));
+		glVertex2i((lx+3),(lz+3));
+		glVertex2i((lx-2),(lz+3));
+		glEnd();
 	}
 }
 
@@ -273,7 +292,8 @@ void top_view_piece_draw_arrow(Rect *box,char *name,int fang,Rect *clipbox,RGBCo
       
 ======================================================= */
 
-void top_view_piece_draw(int rn,Rect *clipbox)
+// supergumba -- delete me!
+void top_view_piece_draw2(int rn)
 {
 	register int			i,k,t;
 	register segment_type	*seg;
@@ -282,7 +302,7 @@ void top_view_piece_draw(int rn,Rect *clipbox)
 	RGBColor				col;
 	RGBColor				blackcolor={0x0,0x0,0x0},ltgraycolor={0xAAAA,0xAAAA,0xAAAA},graycolor={0x7FFF,0x7FFF,0x7FFF},
 							orangecolor={0xF300,0x7FFF,0x1F00},redcolor={0xFFFF,0x0,0x0},greencolor={0x0,0xFFFF,0x0},yellowcolor={0xFFFF,0xFFFF,0x0};
-	
+
 		// floors
 		
 	if (dp_floor) {
@@ -291,7 +311,7 @@ void top_view_piece_draw(int rn,Rect *clipbox)
 		
 		for (i=0;i!=map.nsegment;i++) {
 			if ((seg->type==sg_floor) && (seg->rn==rn)) {
-				top_view_piece_draw_floor_ceiling(seg->rn,&seg->data.fc,clipbox,&graycolor);
+				top_view_piece_draw_floor_ceiling(seg->rn,&seg->data.fc,FALSE);
 			}
 			seg++;
 		}
@@ -306,13 +326,13 @@ void top_view_piece_draw(int rn,Rect *clipbox)
 	
 		for (i=0;i!=map.nsegment;i++) {
 			if ((seg->type==sg_ceiling) && (seg->rn==rn)) {
-				top_view_piece_draw_floor_ceiling(seg->rn,&seg->data.fc,clipbox,&ltgraycolor);
+				top_view_piece_draw_floor_ceiling(seg->rn,&seg->data.fc,TRUE);
 			}
 			seg++;
 		}
 		
 	}
-	
+/*	
 		// liquids
 		
 	if (dp_liquid) {
@@ -326,7 +346,7 @@ void top_view_piece_draw(int rn,Rect *clipbox)
 			seg++;
 		}
 	}
-	
+	*/
 		// walls
 		
 	if (dp_wall) {
@@ -335,12 +355,12 @@ void top_view_piece_draw(int rn,Rect *clipbox)
 		
 		for (i=0;i!=map.nsegment;i++) {
 			if ((seg->type==sg_wall) && (seg->rn==rn)) {
-				top_view_piece_draw_wall(seg->rn,&seg->data.wall,seg->curve,seg->clip,clipbox);
+				top_view_piece_draw_wall(seg->rn,&seg->data.wall,seg->curve,seg->clip);
 			}
 			seg++;
 		}
 	}
-	
+	/*
 		// ambients
 		
 	if (dp_ambient) {
@@ -455,6 +475,63 @@ void top_view_piece_draw(int rn,Rect *clipbox)
 	}
 	
 	RGBForeColor(&blackcolor);
+	*/
+}
+
+
+
+
+
+
+
+// supergumba -- delete a bunch of this
+
+
+void top_view_piece_draw(int rn)
+{
+	int					n,k,t,x,z;
+	d3pnt				*pt;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*mesh_poly;
+	
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
+	glEnable(GL_TEXTURE_2D);
+	
+	portal=&map.portals[rn];
+	
+	mesh=portal->mesh.meshes;
+	
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+	
+		mesh_poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+		
+			glBindTexture(GL_TEXTURE_2D,map.textures[mesh_poly->txt_idx].bitmaps[0].gl_id);
+		
+			glBegin(GL_POLYGON);
+			
+			for (t=0;t!=mesh_poly->ptsz;t++) {
+				pt=&mesh->vertexes[mesh_poly->v[t]];
+				x=pt->x+portal->x;
+				z=pt->z+portal->z;
+				top_view_map_to_pane(&x,&z);
+				glTexCoord2f(mesh_poly->gx[t],mesh_poly->gy[t]);
+				glVertex2i(x,z);
+			}
+			
+			glEnd();
+		
+			mesh_poly++;
+		}
+	
+	
+		mesh++;
+	}
+
+	glDisable(GL_TEXTURE_2D);
+
 }
 
 /* =======================================================

@@ -32,7 +32,7 @@ and can be sold or given away.
 
 extern int					cr,cx,cy,cz;
 extern bool					dp_wall,dp_floor,dp_ceiling,dp_liquid,dp_ambient,dp_object,dp_lightsoundparticle,dp_node;
-extern Rect					walk_view_box;
+extern Rect					walk_view_forward_box,walk_view_side_box;
 
 extern CCrsrHandle			towardcur,dragcur;
 
@@ -378,7 +378,7 @@ bool walk_view_piece_drag(Point pt)
       
 ======================================================= */
 
-bool walk_view_handle_click(int xorg,int yorg,Point pt)
+bool walk_view_handle_click(int xorg,int yorg,Point pt,bool on_side)
 {
     int			k,type,index,idx,n,nitem,x,y,ysz;
     Rect		box;
@@ -394,7 +394,7 @@ bool walk_view_handle_click(int xorg,int yorg,Point pt)
 	glFeedbackBuffer(128,GL_3D,buf);
 	glRenderMode(GL_FEEDBACK);
 	
-	walk_view_gl_setup();
+	walk_view_gl_setup(on_side);
 	walk_view_draw_segment_handles();
 
 	nitem=glRenderMode(GL_RENDER);
@@ -406,7 +406,12 @@ bool walk_view_handle_click(int xorg,int yorg,Point pt)
 	n=0;
 	f=buf;
 	
-	ysz=walk_view_box.bottom-walk_view_box.top;
+	if (!on_side) {
+		ysz=walk_view_forward_box.bottom-walk_view_forward_box.top;
+	}
+	else {
+		ysz=walk_view_side_box.bottom-walk_view_side_box.top;
+	}
 	
 	while (n<nitem) {
 	
@@ -452,7 +457,7 @@ bool walk_view_handle_click(int xorg,int yorg,Point pt)
       
 ======================================================= */
 
-void walk_view_polygon_click_index(int xorg,int yorg,Point pt,int *p_index,int *p_type,bool sel_only)
+void walk_view_polygon_click_index(int xorg,int yorg,Point pt,int *p_index,int *p_type,bool sel_only,bool on_side)
 {
     int			n,i,k,nitem,type,index,pt_type,pt_index,px,py,ysz,
 				ptsz,x[8],y[8];
@@ -474,7 +479,9 @@ void walk_view_polygon_click_index(int xorg,int yorg,Point pt,int *p_index,int *
 	glFeedbackBuffer(100240,GL_3D,buf);
 	glRenderMode(GL_FEEDBACK);
 	
-	walk_view_gl_setup();
+	walk_view_gl_setup(on_side);
+	
+	glClear(GL_DEPTH_BUFFER_BIT);
 	
     for (n=0;n!=map.nportal;n++) {
         if (!map.portals[n].in_path) continue;
@@ -494,7 +501,12 @@ void walk_view_polygon_click_index(int xorg,int yorg,Point pt,int *p_index,int *
 	type=-1;
 	index=-1;
 	
-	ysz=walk_view_box.bottom-walk_view_box.top;
+	if (!on_side) {
+		ysz=walk_view_forward_box.bottom-walk_view_forward_box.top;
+	}
+	else {
+		ysz=walk_view_side_box.bottom-walk_view_side_box.top;
+	}
 	
 	while (n<nitem) {
 	
@@ -548,7 +560,7 @@ void walk_view_polygon_click_index(int xorg,int yorg,Point pt,int *p_index,int *
 	*p_type=type;
 }
 
-bool walk_view_polygon_click_select(int xorg,int yorg,Point pt)
+bool walk_view_polygon_click_select(int xorg,int yorg,Point pt,bool on_side)
 {
 	int				index,type;
 	
@@ -559,7 +571,7 @@ bool walk_view_polygon_click_select(int xorg,int yorg,Point pt)
 	
 		// anything clicked?
 		
-	walk_view_polygon_click_index(xorg,yorg,pt,&index,&type,TRUE);
+	walk_view_polygon_click_index(xorg,yorg,pt,&index,&type,TRUE,on_side);
 	if (index==-1) return(FALSE);
 	
 		// if not shift down and a primitive clicked,
@@ -587,13 +599,13 @@ bool walk_view_polygon_click_select(int xorg,int yorg,Point pt)
 	return(walk_view_piece_drag(pt));
 }
 	
-void walk_view_polygon_click_normal(int xorg,int yorg,Point pt,bool dblclick)
+void walk_view_polygon_click_normal(int xorg,int yorg,Point pt,bool dblclick,bool on_side)
 {
 	int				index,primitive_index,type;
 	
 		// anything clicked?
 		
-	walk_view_polygon_click_index(xorg,yorg,pt,&index,&type,FALSE);
+	walk_view_polygon_click_index(xorg,yorg,pt,&index,&type,FALSE,on_side);
 	
 		// if no select, then can still drag previous selections
 		
@@ -716,15 +728,15 @@ void walk_view_polygon_click_normal(int xorg,int yorg,Point pt,bool dblclick)
       
 ======================================================= */
 
-void walk_view_click_piece(int xorg,int yorg,Point pt,bool dblclick)
+void walk_view_click_piece(int xorg,int yorg,Point pt,bool dblclick,bool on_side)
 {
-	if (walk_view_handle_click(xorg,yorg,pt)) return;
+	if (walk_view_handle_click(xorg,yorg,pt,on_side)) return;
 	
 	if (!dblclick) {
-		if (walk_view_polygon_click_select(xorg,yorg,pt)) return;
+		if (walk_view_polygon_click_select(xorg,yorg,pt,on_side)) return;
 	}
 	
-	walk_view_polygon_click_normal(xorg,yorg,pt,dblclick);
+	walk_view_polygon_click_normal(xorg,yorg,pt,dblclick,on_side);
 }
 
 

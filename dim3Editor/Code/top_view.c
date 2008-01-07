@@ -166,20 +166,19 @@ bool top_view_hide_y(fc_segment_data *fc)
 
 void top_view_draw(void)
 {
-	Rect			wbox;
-	
-	if (!top_view_active) return;
-	
-	ClipRect(&top_view_box);
-    EraseRect(&top_view_box);
-    
-    top_view_portal_draw(&top_view_box);
+		// setup viewport
+		
+	main_wind_set_viewport(&top_view_box);
+	main_wind_set_2D_projection(&top_view_box);
+
+	glDisable(GL_DEPTH_TEST);
+
+		// draw top down view
+		
+    top_view_portal_draw();
 	top_view_piece_selection_draw();
     top_view_portal_selection_draw();
     top_view_portal_position_draw();
-	
-	GetWindowPortBounds(mainwind,&wbox);
-	ClipRect(&wbox);
 }
 
 /* =======================================================
@@ -305,7 +304,7 @@ void top_view_cursor(void)
 
 void top_view_key(char ch)
 {
-	if (top_view_active) piece_key(cr,ch,FALSE);
+	piece_key(cr,ch,FALSE,FALSE);
 }
 
 /* =======================================================

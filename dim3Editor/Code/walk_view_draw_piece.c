@@ -29,12 +29,14 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int				cr,cx,cz,cy;
+extern int				cr,cx,cz,cy,txt_palette_high;
 extern float			walk_view_fov,walk_view_y_angle,walk_view_x_angle;
-extern bool				walk_view_active,
+extern bool				walk_view_active,main_wind_rot,
 						dp_wall,dp_floor,dp_ceiling,dp_liquid,dp_ambient,
 						dp_object,dp_lightsoundparticle,dp_node,dp_textured;
-extern Rect				walk_view_box;
+extern Rect				walk_view_forward_box,walk_view_side_box;
+
+extern WindowRef		mainwind;
 extern AGLContext		ctx;
 
 extern map_type			map;
@@ -261,11 +263,17 @@ void walk_view_draw_sprite(d3pos *pos,int xadd,int zadd,int txt)
 
 void walk_view_draw_portal_segments(int rn,bool opaque)
 {
-	register int			i,t;
-	register segment_type	*seg;
-	int						xadd,zadd,ptsz,x[8],z[8],y[8],lft,rgt,top,bot;
-	float					gx[8],gy[8],
-							x_txtoff,z_txtoff,x_txtfact,z_txtfact;
+//	register int			i,t;	// supergumba
+//	register segment_type	*seg;
+//	int						xadd,zadd,ptsz,x[8],z[8],y[8],lft,rgt,top,bot;
+//	float					gx[8],gy[8],
+//							x_txtoff,z_txtoff,x_txtfact,z_txtfact;
+	int					n,k,t,x,y,z,xadd,zadd;
+	d3pnt				*pt;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*mesh_poly;
+	texture_type		*texture;
 							
 	if (dp_textured) glEnable(GL_TEXTURE_2D);
 	
@@ -284,6 +292,57 @@ void walk_view_draw_portal_segments(int rn,bool opaque)
 	glEnable(GL_DEPTH_TEST);
 	
 	if (!opaque) glDepthMask(GL_FALSE);
+	
+	
+	
+	
+	
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
+	glEnable(GL_TEXTURE_2D);
+	
+	portal=&map.portals[rn];
+	
+	mesh=portal->mesh.meshes;
+	
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+	
+		for (k=0;k!=mesh->npoly;k++) {
+		
+			mesh_poly=&mesh->polys[k];
+			texture=&map.textures[mesh_poly->txt_idx];
+		
+			if (opaque) {
+				if ((mesh_poly->alpha!=1.0f) || (texture->bitmaps[0].alpha_mode==alpha_mode_transparent)) continue;
+			}
+			else {
+				if ((mesh_poly->alpha==1.0f) && (texture->bitmaps[0].alpha_mode!=alpha_mode_transparent)) continue;
+			}
+		
+			glBindTexture(GL_TEXTURE_2D,texture->bitmaps[0].gl_id);
+		
+			glBegin(GL_POLYGON);
+			
+			for (t=0;t!=mesh_poly->ptsz;t++) {
+				pt=&mesh->vertexes[mesh_poly->v[t]];
+				x=((pt->x*map_enlarge)+xadd)-cx;
+				y=(pt->y*map_enlarge)-cy;
+				z=cz-((pt->z*map_enlarge)+zadd);
+				glTexCoord2f(mesh_poly->gx[t],mesh_poly->gy[t]);
+				glVertex3i(x,y,z);
+			}
+			
+			glEnd();
+		}
+	
+	
+		mesh++;
+	}
+
+	glDisable(GL_TEXTURE_2D);
+
+
+
+/*
 	
 		// draw segments
 		
@@ -443,6 +502,7 @@ void walk_view_draw_portal_segments(int rn,bool opaque)
 		}
 		
 	}
+	*/
 	
 	if (!opaque) glDepthMask(GL_TRUE);
 	
@@ -530,42 +590,40 @@ void walk_view_draw_portal_pieces(int rn)
       
 ======================================================= */
 
-void walk_view_gl_setup(void)
+void walk_view_gl_setup(bool on_side)
 {
-	float			ratio;
+	float			ang_y;
 	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
+		// y view angle
+		
+	ang_y=walk_view_y_angle;
+	if (on_side) ang_y=angle_add(ang_y,90.0f);
+	ang_y=(360.0f-ang_y)+180.0f;
+	
+		// viewport setup
+		
+	if (!on_side) {
+		main_wind_set_viewport(&walk_view_forward_box);
+		main_wind_set_3D_projection(&walk_view_forward_box,walk_view_x_angle,ang_y,walk_view_fov,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
+	}
+	else {
+		main_wind_set_viewport(&walk_view_side_box);
+		main_wind_set_3D_projection(&walk_view_forward_box,walk_view_x_angle,ang_y,walk_view_fov,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
+	}
 
-	ratio=(float)(walk_view_box.right-walk_view_box.left)/(float)(walk_view_box.bottom-walk_view_box.top);
-	
-	gluPerspective(walk_view_fov,ratio,walk_view_near_z,walk_view_far_z);
-	glScalef(-1,-1,1);						// x and y are reversed
-	glTranslatef(0,0,walk_view_near_offset);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glRotatef(walk_view_x_angle,1,0,0);
-	glRotatef(((360-walk_view_y_angle)+180),0,1,0);
-	
-	glClearColor(0,0,0,0);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	
 	glEnable(GL_DEPTH_TEST);
 	
 	walk_view_sight_path_mark(cr);
 }
 
-void walk_view_draw_piece(void)
+void walk_view_draw(bool on_side)
 {
 	int			i,rn,
 				portal_cnt,portal_list[max_portal];
 	
-	if (!walk_view_active) return;
-	
         // 3D view
         
-	walk_view_gl_setup();
+	walk_view_gl_setup(on_side);
 	
 		// get the portals to draw
 		
@@ -603,8 +661,6 @@ void walk_view_draw_piece(void)
 	
 		// draw compass
 		
-	walk_view_compass_draw();
-	
-	aglSwapBuffers(ctx);
+	walk_view_compass_draw(on_side);
 }
 

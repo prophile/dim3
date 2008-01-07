@@ -29,7 +29,7 @@ and can be sold or given away.
 #include "dialog.h"
 #include "import.h"
 
-#define kMapGenerateTabCount						7
+#define kMapGenerateTabCount						8
 
 #define kMapGenerateTab								FOUR_CHAR_CODE('tabb')
 
@@ -44,19 +44,23 @@ and can be sold or given away.
 #define kMapGenerateMaxPortalSize					FOUR_CHAR_CODE('mxps')
 #define kMapGeneratePortalBottomY					FOUR_CHAR_CODE('boty')
 #define kMapGeneratePortalTopY						FOUR_CHAR_CODE('topy')
-#define kMapGenerateMinPortalExtraY					FOUR_CHAR_CODE('mnxy')
-#define kMapGenerateMaxPortalExtraY					FOUR_CHAR_CODE('mxxy')
-#define kMapGenerateOpenCeilingExtraY				FOUR_CHAR_CODE('ocxy')
+#define kMapGeneratePortalExtraBottomY				FOUR_CHAR_CODE('peby')
+#define kMapGeneratePortalExtraTopY					FOUR_CHAR_CODE('pety')
+#define kMapGenerateCeilingType1					FOUR_CHAR_CODE('clt1')
+#define kMapGenerateCeilingType2					FOUR_CHAR_CODE('clt2')
+#define kMapGenerateCeilingType3					FOUR_CHAR_CODE('clt3')
 
 #define kMapGenerateMaxMergeDistance				FOUR_CHAR_CODE('mxmd')
-#define kMapGenerateMinConnectDistance				FOUR_CHAR_CODE('mncd')
 #define kMapGenerateMaxConnectDistance				FOUR_CHAR_CODE('mxcd')
 #define kMapGenerateMinConnectSize					FOUR_CHAR_CODE('mncs')
 #define kMapGenerateMaxConnectSize					FOUR_CHAR_CODE('mxcs')
-#define kMapGenerateCeilingSlantExtraY				FOUR_CHAR_CODE('snty')
-#define kMapGenerateCorridorType					FOUR_CHAR_CODE('crty')
+#define kMapGenerateCorridorType1					FOUR_CHAR_CODE('crt1')
+#define kMapGenerateCorridorType2					FOUR_CHAR_CODE('crt2')
+#define kMapGenerateCorridorType3					FOUR_CHAR_CODE('crt3')
+
 #define kMapGenerateStepSize						FOUR_CHAR_CODE('stsz')
 #define kMapGenerateStepHigh						FOUR_CHAR_CODE('sthg')
+#define kMapGenerateRampSize						FOUR_CHAR_CODE('rmsz')
 
 #define kMapGenerateTexturePortalWall				FOUR_CHAR_CODE('pwtx')
 #define kMapGenerateTexturePortalFloor				FOUR_CHAR_CODE('pftx')
@@ -66,17 +70,13 @@ and can be sold or given away.
 #define kMapGenerateTextureCorridorCeiling			FOUR_CHAR_CODE('cctx')
 #define kMapGenerateTextureDoor						FOUR_CHAR_CODE('drtx')
 #define kMapGenerateTextureStep						FOUR_CHAR_CODE('sttx')
+#define kMapGenerateTextureRamp						FOUR_CHAR_CODE('rmtx')
 
 #define kMapGenerateBlock							FOUR_CHAR_CODE('bloc')
 
-#define kMapGenerateIncludeWalls					FOUR_CHAR_CODE('iwal')
-#define kMapGenerateIncludeFloors					FOUR_CHAR_CODE('iflr')
 #define kMapGenerateRoughPortalFloors				FOUR_CHAR_CODE('rgfr')
 #define kMapGenerateRoughCorridorFloors				FOUR_CHAR_CODE('rcfr')
 #define kMapGenerateRoughFloorFactor				FOUR_CHAR_CODE('rfff')
-#define kMapGenerateIncludeCeilings					FOUR_CHAR_CODE('iclg')
-#define kMapGenerateOpenHoleCeilings				FOUR_CHAR_CODE('oclg')
-#define kMapGenerateOpenHoldePercentage				FOUR_CHAR_CODE('cprc')
 #define kMapGenerateIncludeDoors					FOUR_CHAR_CODE('idor')
 #define kMapGenerateDoorPercentage					FOUR_CHAR_CODE('dprc')
 #define kMapGenerateDoorSound						FOUR_CHAR_CODE('dsnd')
@@ -250,25 +250,29 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_set_int(dialog_map_generate_wind,kMapGenerateMapZSize,0,ag_settings.max_map_z_size);
 		dialog_set_int(dialog_map_generate_wind,kMapGenerateSplitFactor,0,ag_settings.split_factor);
 		
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateInitialPortalCount,0,ag_settings.initial_portal_count);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateMinPortalSize,0,ag_settings.min_portal_sz);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateMaxPortalSize,0,ag_settings.max_portal_sz);
-		dialog_set_int(dialog_map_generate_wind,kMapGeneratePortalBottomY,0,ag_settings.portal_by);
-		dialog_set_int(dialog_map_generate_wind,kMapGeneratePortalTopY,0,ag_settings.portal_ty);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateMinPortalExtraY,0,ag_settings.min_portal_extra_y);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateMaxPortalExtraY,0,ag_settings.max_portal_extra_y);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateOpenCeilingExtraY,0,ag_settings.open_ceiling_extra_y);
+		dialog_set_int(dialog_map_generate_wind,kMapGenerateInitialPortalCount,0,ag_settings.portal.initial_count);
+		dialog_set_int(dialog_map_generate_wind,kMapGenerateMinPortalSize,0,ag_settings.portal.min_sz);
+		dialog_set_int(dialog_map_generate_wind,kMapGenerateMaxPortalSize,0,ag_settings.portal.max_sz);
+		dialog_set_int(dialog_map_generate_wind,kMapGeneratePortalBottomY,0,ag_settings.portal.by);
+		dialog_set_int(dialog_map_generate_wind,kMapGeneratePortalTopY,0,ag_settings.portal.ty);
+		dialog_set_int(dialog_map_generate_wind,kMapGeneratePortalExtraBottomY,0,ag_settings.portal.extra_by);
+		dialog_set_int(dialog_map_generate_wind,kMapGeneratePortalExtraTopY,0,ag_settings.portal.extra_ty);
+		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCeilingType1,0,ag_settings.ceiling.type_on[0]);
+		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCeilingType2,0,ag_settings.ceiling.type_on[1]);
+		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCeilingType3,0,ag_settings.ceiling.type_on[2]);
 		
 		dialog_set_int(dialog_map_generate_wind,kMapGenerateMaxMergeDistance,0,ag_settings.max_portal_merge_distance);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateMinConnectDistance,0,ag_settings.min_portal_connect_distance);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateMaxConnectDistance,0,ag_settings.max_portal_connect_distance);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateMinConnectSize,0,ag_settings.min_portal_connect_sz);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateMaxConnectSize,0,ag_settings.max_portal_connect_sz);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateCeilingSlantExtraY,0,ag_settings.ceiling_slant_extra_y);
-		dialog_set_combo(dialog_map_generate_wind,kMapGenerateCorridorType,0,ag_settings.corridor_type);
+		dialog_set_int(dialog_map_generate_wind,kMapGenerateMaxConnectDistance,0,ag_settings.corridor.max_connect_distance);
+		dialog_set_int(dialog_map_generate_wind,kMapGenerateMinConnectSize,0,ag_settings.corridor.min_sz);
+		dialog_set_int(dialog_map_generate_wind,kMapGenerateMaxConnectSize,0,ag_settings.corridor.max_sz);
+		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCorridorType1,0,ag_settings.corridor.type_on[0]);
+		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCorridorType2,0,ag_settings.corridor.type_on[1]);
+		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCorridorType3,0,ag_settings.corridor.type_on[2]);
+		
 		dialog_set_int(dialog_map_generate_wind,kMapGenerateStepSize,0,ag_settings.steps.sz);
 		dialog_set_int(dialog_map_generate_wind,kMapGenerateStepHigh,0,ag_settings.steps.high);
-		
+		dialog_set_int(dialog_map_generate_wind,kMapGenerateRampSize,0,ag_settings.ramp.sz);
+	
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalWall,0,FALSE,ag_settings.texture.portal_wall);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalFloor,0,FALSE,ag_settings.texture.portal_floor);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalCeiling,0,FALSE,ag_settings.texture.portal_ceiling);
@@ -277,15 +281,11 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorCeiling,0,FALSE,ag_settings.texture.corridor_ceiling);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureDoor,0,FALSE,ag_settings.texture.door);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureStep,0,FALSE,ag_settings.texture.steps);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE,ag_settings.texture.ramp);
 		
-		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateIncludeWalls,0,ag_settings.walls);
-		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateIncludeFloors,0,ag_settings.floors);
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateRoughPortalFloors,0,ag_settings.rough_portal_floors);
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateRoughCorridorFloors,0,ag_settings.rough_corridor_floors);
 		dialog_set_value(dialog_map_generate_wind,kMapGenerateRoughFloorFactor,0,ag_settings.rough_floor_factor);
-		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateIncludeCeilings,0,ag_settings.ceilings);
-		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateOpenHoleCeilings,0,ag_settings.open_hole_ceilings);
-		dialog_set_value(dialog_map_generate_wind,kMapGenerateOpenHoldePercentage,0,ag_settings.open_hole_percentage);
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateIncludeDoors,0,ag_settings.doors);
 		dialog_set_value(dialog_map_generate_wind,kMapGenerateDoorPercentage,0,ag_settings.door_percentage);
 		dialog_set_text(dialog_map_generate_wind,kMapGenerateDoorSound,0,ag_settings.door_sound);
@@ -313,6 +313,7 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorCeiling,0,FALSE,5);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureDoor,0,FALSE,6);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureStep,0,FALSE,7);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE,8);
 	}
 	
 		// show window
@@ -337,24 +338,28 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	ag_settings.max_map_z_size=dialog_get_int(dialog_map_generate_wind,kMapGenerateMapZSize,0);
 	ag_settings.split_factor=dialog_get_int(dialog_map_generate_wind,kMapGenerateSplitFactor,0);
 	
-	ag_settings.initial_portal_count=dialog_get_int(dialog_map_generate_wind,kMapGenerateInitialPortalCount,0);
-	ag_settings.min_portal_sz=dialog_get_int(dialog_map_generate_wind,kMapGenerateMinPortalSize,0);
-	ag_settings.max_portal_sz=dialog_get_int(dialog_map_generate_wind,kMapGenerateMaxPortalSize,0);
-	ag_settings.portal_by=dialog_get_int(dialog_map_generate_wind,kMapGeneratePortalBottomY,0);
-	ag_settings.portal_ty=dialog_get_int(dialog_map_generate_wind,kMapGeneratePortalTopY,0);
-	ag_settings.min_portal_extra_y=dialog_get_int(dialog_map_generate_wind,kMapGenerateMinPortalExtraY,0);
-	ag_settings.max_portal_extra_y=dialog_get_int(dialog_map_generate_wind,kMapGenerateMaxPortalExtraY,0);
-	ag_settings.open_ceiling_extra_y=dialog_get_int(dialog_map_generate_wind,kMapGenerateOpenCeilingExtraY,0);
+	ag_settings.portal.initial_count=dialog_get_int(dialog_map_generate_wind,kMapGenerateInitialPortalCount,0);
+	ag_settings.portal.min_sz=dialog_get_int(dialog_map_generate_wind,kMapGenerateMinPortalSize,0);
+	ag_settings.portal.max_sz=dialog_get_int(dialog_map_generate_wind,kMapGenerateMaxPortalSize,0);
+	ag_settings.portal.by=dialog_get_int(dialog_map_generate_wind,kMapGeneratePortalBottomY,0);
+	ag_settings.portal.ty=dialog_get_int(dialog_map_generate_wind,kMapGeneratePortalTopY,0);
+	ag_settings.portal.extra_by=dialog_get_int(dialog_map_generate_wind,kMapGeneratePortalExtraBottomY,0);
+	ag_settings.portal.extra_ty=dialog_get_int(dialog_map_generate_wind,kMapGeneratePortalExtraTopY,0);
+	ag_settings.ceiling.type_on[0]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCeilingType1,0);
+	ag_settings.ceiling.type_on[1]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCeilingType2,0);
+	ag_settings.ceiling.type_on[2]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCeilingType3,0);
 	
 	ag_settings.max_portal_merge_distance=dialog_get_int(dialog_map_generate_wind,kMapGenerateMaxMergeDistance,0);
-	ag_settings.min_portal_connect_distance=dialog_get_int(dialog_map_generate_wind,kMapGenerateMinConnectDistance,0);
-	ag_settings.max_portal_connect_distance=dialog_get_int(dialog_map_generate_wind,kMapGenerateMaxConnectDistance,0);
-	ag_settings.min_portal_connect_sz=dialog_get_int(dialog_map_generate_wind,kMapGenerateMinConnectSize,0);
-	ag_settings.max_portal_connect_sz=dialog_get_int(dialog_map_generate_wind,kMapGenerateMaxConnectSize,0);
-	ag_settings.ceiling_slant_extra_y=dialog_get_int(dialog_map_generate_wind,kMapGenerateCeilingSlantExtraY,0);
-	ag_settings.corridor_type=dialog_get_combo(dialog_map_generate_wind,kMapGenerateCorridorType,0);
+	ag_settings.corridor.max_connect_distance=dialog_get_int(dialog_map_generate_wind,kMapGenerateMaxConnectDistance,0);
+	ag_settings.corridor.min_sz=dialog_get_int(dialog_map_generate_wind,kMapGenerateMinConnectSize,0);
+	ag_settings.corridor.max_sz=dialog_get_int(dialog_map_generate_wind,kMapGenerateMaxConnectSize,0);
+	ag_settings.corridor.type_on[0]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCorridorType1,0);
+	ag_settings.corridor.type_on[1]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCorridorType2,0);
+	ag_settings.corridor.type_on[2]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCorridorType3,0);
+	
 	ag_settings.steps.sz=dialog_get_int(dialog_map_generate_wind,kMapGenerateStepSize,0);
 	ag_settings.steps.high=dialog_get_int(dialog_map_generate_wind,kMapGenerateStepHigh,0);
+	ag_settings.ramp.sz=dialog_get_int(dialog_map_generate_wind,kMapGenerateRampSize,0);
 	
 	ag_settings.texture.portal_wall=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalWall,0,FALSE);
 	ag_settings.texture.portal_floor=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalFloor,0,FALSE);
@@ -364,15 +369,11 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	ag_settings.texture.corridor_ceiling=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorCeiling,0,FALSE);
 	ag_settings.texture.door=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureDoor,0,FALSE);
 	ag_settings.texture.steps=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureStep,0,FALSE);
+	ag_settings.texture.ramp=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE);
 	
-	ag_settings.walls=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateIncludeWalls,0);
-	ag_settings.floors=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateIncludeFloors,0);
 	ag_settings.rough_portal_floors=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateRoughPortalFloors,0);
 	ag_settings.rough_corridor_floors=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateRoughCorridorFloors,0);
 	ag_settings.rough_floor_factor=dialog_get_value(dialog_map_generate_wind,kMapGenerateRoughFloorFactor,0);
-	ag_settings.ceilings=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateIncludeCeilings,0);
-	ag_settings.open_hole_ceilings=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateOpenHoleCeilings,0);
-	ag_settings.open_hole_percentage=dialog_get_value(dialog_map_generate_wind,kMapGenerateOpenHoldePercentage,0);
 	ag_settings.doors=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateIncludeDoors,0);
 	ag_settings.door_percentage=dialog_get_value(dialog_map_generate_wind,kMapGenerateDoorPercentage,0);
 	dialog_get_text(dialog_map_generate_wind,kMapGenerateDoorSound,0,ag_settings.door_sound,name_str_len);

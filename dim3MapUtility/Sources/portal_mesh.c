@@ -61,6 +61,8 @@ bool map_portal_mesh_add(map_type *map,int portal_idx,int add_count)
 
 		portal_mesh->meshes=nptr;
 	}
+	
+	portal_mesh->nmesh++;
 
 		// setup meshes
 	

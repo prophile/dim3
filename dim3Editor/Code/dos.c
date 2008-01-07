@@ -85,7 +85,6 @@ void redraw_windows(void)
     SelectWindow(mainwind);
     
 	main_wind_draw();
-	texture_palette_draw();
 	texture_palette_reset();
 }
 
@@ -245,8 +244,6 @@ bool file_new_map(bool create_initial_portal)
 	main_wind_set_title(file_name);
 	
 		// create first portal
-		
-	texture_palette_draw();
 		
 	if (!create_initial_portal) return(TRUE);
 	

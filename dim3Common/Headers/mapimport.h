@@ -77,6 +77,12 @@ typedef struct	{
 #define ag_corridor_type_slanted_ceiling	1
 #define ag_corridor_type_octagon			2
 
+#define ag_ceiling_type_count				3
+
+#define ag_ceiling_type_closed				0
+#define ag_ceiling_type_open				1
+#define ag_ceiling_type_cross				2
+
 #define ag_stair_neg_z						0
 #define ag_stair_pos_z						1
 #define ag_stair_neg_x						2
@@ -103,18 +109,23 @@ typedef struct	{
 
 typedef struct	{
 					int										initial_count,
-															min_sz,max_sz,ty,by,extra_ty,extra_by,
-															open_ceiling_extra_y;
+															min_sz,max_sz,ty,by,extra_ty,extra_by;
 				} auto_generate_setting_portal_type;
 	
 typedef struct	{
+					int										max_connect_distance,
+															min_sz,max_sz;
 					bool									type_on[ag_corridor_type_count];
 				} auto_generate_setting_corridor_type;
+				
+typedef struct	{
+					bool									type_on[ag_ceiling_type_count];
+				} auto_generate_setting_ceiling_type;
 
 typedef struct	{
-					int										portal_wall,portal_floor,portal_ceiling,steps,
+					int										portal_wall,portal_floor,portal_ceiling,
 															corridor_wall,corridor_floor,corridor_ceiling,
-															door;
+															door,steps,ramp;
 				} auto_generate_setting_texture_type;
 
 typedef struct	{
@@ -129,21 +140,18 @@ typedef struct	{
 					int										seed,
 															max_map_x_size,max_map_z_size,
 															map_left,map_right,map_top,map_bottom,
-															max_portal_merge_distance,
-															min_portal_connect_distance,max_portal_connect_distance,
-															min_portal_connect_sz,max_portal_connect_sz,
-															ceiling_slant_extra_y,split_factor,
-															open_hole_percentage,rough_floor_factor,door_percentage,
+															max_portal_merge_distance,split_factor,
+															rough_floor_factor,door_percentage,
 															light_fudge_factor,light_fill_percentage,
 															light_color_percentage,light_flicker_percentage,
 															spot_count;
 					char									door_sound[name_str_len];
-					bool									walls,floors,rough_portal_floors,rough_corridor_floors,
-															ceilings,open_hole_ceilings,doors,
+					bool									rough_portal_floors,rough_corridor_floors,doors,
 															lights,sight_path,spots;
 					unsigned char							block[max_ag_block_sz][max_ag_block_sz];
 					auto_generate_setting_portal_type		portal;
 					auto_generate_setting_corridor_type		corridor;
+					auto_generate_setting_ceiling_type		ceiling;
 					auto_generate_setting_steps_type		steps;
 					auto_generate_setting_ramp_type			ramp;
 					auto_generate_setting_texture_type		texture;

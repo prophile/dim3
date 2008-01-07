@@ -221,7 +221,7 @@ typedef struct		{
 typedef struct		{
 						int							ptsz,min_x,max_x,min_y,max_y,min_z,max_z;
 						short						txt_idx,v[8];
-						float						gx[8],gy[8],
+						float						gx[8],gy[8],alpha,
 													slope_y,slope_ang_y,slope_move_x,slope_move_z;
 						bool						flat;
 					} map_mesh_poly_type;

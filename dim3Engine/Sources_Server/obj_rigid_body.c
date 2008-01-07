@@ -175,6 +175,8 @@ void object_rigid_body_reset_angle(obj_type *obj)
 		obj->ang.x=obj->ang.x+((x_ang-obj->ang.x)*obj->rigid_body.smooth_factor_x);
 	}
 
+	z_ang=-z_ang;
+	
 	if (fabsf(obj->ang.z-z_ang)<1.0f) {
 		obj->ang.z=z_ang;
 	}

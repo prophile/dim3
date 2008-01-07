@@ -47,10 +47,9 @@ extern CCrsrHandle				handcur,rotatecur,forwardcur,towardcur;
 int								cx,cz,cy;
 float							walk_view_fov,walk_view_y_angle,walk_view_x_angle;
 bool							walk_view_active;
-Rect							walk_view_box;
+Rect							walk_view_forward_box,walk_view_side_box;
 bitmap_type						spot_bitmap,scenery_bitmap,node_bitmap,
 								light_bitmap,sound_bitmap,particle_bitmap;
-AGLContext						ctx;
 
 /* =======================================================
 
@@ -73,24 +72,6 @@ void walk_view_set_fov(float fov)
 bool walk_view_initialize(void)
 {
 	char			path[1024];
-	GLint			attrib[]={AGL_NO_RECOVERY,AGL_RGBA,AGL_DOUBLEBUFFER,AGL_ACCELERATED,AGL_PIXEL_SIZE,24,AGL_ALPHA_SIZE,8,AGL_DEPTH_SIZE,16,AGL_NONE};
-	GDHandle		gdevice;
-	AGLPixelFormat	pf;
-
-		// gl setup
-		
-	gdevice=GetMainDevice();
-
-	pf=aglChoosePixelFormat(&gdevice,1,attrib);
-	ctx=aglCreateContext(pf,NULL);
-	aglSetCurrentContext(ctx);
-	aglDestroyPixelFormat(pf);
-
-	glEnable(GL_SMOOTH);
-	glEnable(GL_DITHER);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_DEPTH_TEST);
 	
 		// interface textures
 		
@@ -129,12 +110,6 @@ void walk_view_shutdown(void)
     bitmap_close(&light_bitmap);
     bitmap_close(&sound_bitmap);
     bitmap_close(&particle_bitmap);
-	
-		// gl shutdown
-		
-	aglSetCurrentContext(NULL);
-	aglSetDrawable(ctx,NULL);
-	aglDestroyContext(ctx);
 }
 
 /* =======================================================
@@ -143,64 +118,44 @@ void walk_view_shutdown(void)
       
 ======================================================= */
 
-void walk_view_setup(bool active,bool full_screen)
+void walk_view_setup(bool active)
 {
-	int				bot_y;
     Rect			wbox;
-	GLint			rect[4];
 	
 	walk_view_active=active;
-    
+
 		// deactivated view
 		
 	if (!active) {
-		aglSetDrawable(ctx,NULL);
-		SetRect(&walk_view_box,-1,-1,-1,-1);
+		SetRect(&walk_view_forward_box,-1,-1,-1,-1);
+		SetRect(&walk_view_side_box,-1,-1,-1,-1);
 		return;
 	}
 	
 		// active view
 		
  	GetWindowPortBounds(mainwind,&wbox);
-	bot_y=wbox.bottom;
 		
-	if (full_screen) {
-		walk_view_box=wbox;
-		walk_view_box.top+=toolbar_high;
-		walk_view_box.bottom-=(txt_palette_high+info_high);
-		walk_view_box.right-=piece_wid;
+	if (!main_wind_rot) {
+		walk_view_forward_box.top=walk_view_side_box.top=wbox.top+(toolbar_high+2);
+		walk_view_forward_box.bottom=walk_view_side_box.bottom=(wbox.top+toolbar_high)+(((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2);
+
+		walk_view_forward_box.left=wbox.left+2;
+		walk_view_forward_box.right=(wbox.right-piece_wid)-(((wbox.right-piece_wid)-wbox.left)/2);
+
+		walk_view_side_box.left=walk_view_forward_box.right+2;
+		walk_view_side_box.right=wbox.right-(piece_wid+2);
 	}
 	else {
-		if (!main_wind_rot) {
-			walk_view_box.top=wbox.top+(toolbar_high+2);
-			walk_view_box.bottom=(wbox.top+toolbar_high)+((((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2)-2);
-			walk_view_box.left=wbox.left+2;
-			walk_view_box.right=wbox.right-(piece_wid+2);
-		}
-		else {
-			walk_view_box.top=wbox.top+(toolbar_high+2);
-			walk_view_box.bottom=wbox.bottom-((txt_palette_high+info_high)+2);
-			walk_view_box.left=wbox.left+2;
-			walk_view_box.right=(wbox.right-piece_wid)-(((wbox.right-piece_wid)-wbox.left)/2);
-		}
-	}
-	
-		// setup opengl
+		walk_view_forward_box.left=walk_view_side_box.left=wbox.left+2;
+		walk_view_forward_box.right=walk_view_side_box.right=(wbox.right-piece_wid)-((((wbox.right-piece_wid)-wbox.left)/2)+2);
 		
-	aglSetDrawable(ctx,(AGLDrawable)GetWindowPort(mainwind));
+		walk_view_forward_box.top=wbox.top+(toolbar_high+2);
+		walk_view_forward_box.bottom=walk_view_side_box.bottom=(wbox.top+toolbar_high)+((((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2)-2);
 
-	rect[0]=walk_view_box.left;
-	rect[1]=bot_y-walk_view_box.bottom;
-	rect[2]=walk_view_box.right-walk_view_box.left;
-	rect[3]=walk_view_box.bottom-walk_view_box.top;
-	
-	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
-	aglEnable(ctx,AGL_BUFFER_RECT);
-
-	glEnable(GL_SCISSOR_TEST);
-	glScissor(0,0,(walk_view_box.right-walk_view_box.left),(walk_view_box.bottom-walk_view_box.top));
-
-	glViewport(0,0,(walk_view_box.right-walk_view_box.left),(walk_view_box.bottom-walk_view_box.top));
+		walk_view_forward_box.top=walk_view_forward_box.bottom+1;
+		walk_view_forward_box.bottom=wbox.bottom-((txt_palette_high+info_high)+2);
+	}
 }
 
 /* =======================================================
@@ -209,23 +164,27 @@ void walk_view_setup(bool active,bool full_screen)
       
 ======================================================= */
 
-void walk_view_click(Point pt,bool dblclick)
+void walk_view_click(Point pt,bool dblclick,bool on_side)
 {
     int			xorg,yorg;
 
-	if (!walk_view_active) return;
-    
-    xorg=walk_view_box.left;
-    yorg=walk_view_box.top;
-
+	if (!on_side) {
+		xorg=walk_view_forward_box.left;
+		yorg=walk_view_forward_box.top;
+	}
+	else {
+		xorg=walk_view_side_box.left;
+		yorg=walk_view_side_box.top;
+	}
+	
         // cmd-view scrolling
         
     if (main_wind_space_down()) {
-        walk_view_mouse_xy_movement(pt);
+        walk_view_mouse_xy_movement(pt,on_side);
         return;
     }
     if (main_wind_option_down()) {
-        walk_view_mouse_z_movement(pt);
+        walk_view_mouse_z_movement(pt,on_side);
         return;
     }
     if (main_wind_command_down()) {
@@ -235,11 +194,11 @@ void walk_view_click(Point pt,bool dblclick)
 	
 		// click the compass
 		
-	if (walk_view_compass_click(pt)) return;
+	if (walk_view_compass_click(pt,on_side)) return;
     
         // click the map pieces
     
-    walk_view_click_piece(xorg,yorg,pt,dblclick);
+    walk_view_click_piece(xorg,yorg,pt,dblclick,on_side);
 }
 
 /* =======================================================
@@ -278,9 +237,9 @@ void walk_view_cursor(void)
       
 ======================================================= */
 
-void walk_view_key(char ch)
+void walk_view_key(char ch,bool on_side)
 {
-	if (walk_view_active) piece_key(cr,ch,TRUE);
+	piece_key(cr,ch,TRUE,on_side);
 }
 
 /* =======================================================

@@ -38,7 +38,7 @@ extern float			walk_view_y_angle,walk_view_x_angle;
 extern bool				map_opened,
 						dp_primitive,dp_auto_texture,dp_wall,dp_floor,dp_ceiling,dp_liquid,dp_ambient,
 						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide;
-extern Rect				walk_view_box,portal_view_box,site_path_view_box,top_view_box;
+extern Rect				walk_view_forward_box,walk_view_side_box,portal_view_box,site_path_view_box,top_view_box;
 
 extern map_type			map;
 extern setup_type		setup;
@@ -46,6 +46,7 @@ extern setup_type		setup;
 int						main_wind_view,main_wind_focus;
 int						wtpt;
 bool					main_wind_rot;
+Rect					main_wind_box;
 
 WindowRef				mainwind;
 EventHandlerRef			main_wind_event;
@@ -56,6 +57,8 @@ IconSuiteRef			tool_icon[tool_count],piece_icon[piece_count];
 ControlActionUPP		magnify_proc;
 MenuRef					group_menu;
 Rect					group_box;
+
+AGLContext				ctx;
 
 char					tool_tooltip_str[tool_count][64]=
 								{
@@ -481,6 +484,37 @@ void main_wind_magnify_scroll(int delta)
 
 /* =======================================================
 
+      Main Window Viewport Coordinates
+      
+======================================================= */
+
+void main_wind_setup(void)
+{
+	Rect			wbox;
+	GLint			rect[4];
+	
+		// setup view box
+		
+	GetWindowPortBounds(mainwind,&wbox);
+
+	main_wind_box.left=0;
+	main_wind_box.right=wbox.right-piece_wid;
+	main_wind_box.top=toolbar_high;
+	main_wind_box.bottom=wbox.bottom-(txt_palette_high+info_high);
+	
+		// buffer rect clipping
+		
+	rect[0]=0;
+	rect[1]=info_high;
+	rect[2]=(wbox.right-wbox.left)-piece_wid;
+	rect[3]=(wbox.bottom-wbox.top)-(toolbar_high+info_high);
+	
+	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
+	aglEnable(ctx,AGL_BUFFER_RECT);
+}
+
+/* =======================================================
+
       Open & Close Main Window
       
 ======================================================= */
@@ -489,6 +523,9 @@ void main_wind_open(void)
 {
 	int							n,rspace;
 	Rect						wbox,box;
+	GLint						attrib[]={AGL_NO_RECOVERY,AGL_RGBA,AGL_DOUBLEBUFFER,AGL_ACCELERATED,AGL_PIXEL_SIZE,24,AGL_ALPHA_SIZE,8,AGL_DEPTH_SIZE,16,AGL_NONE};
+	GDHandle					gdevice;
+	AGLPixelFormat				pf;
 	IconFamilyHandle			iconfamily;
 	ControlButtonContentInfo	icon_info;
 	HMHelpContentRec			tag;
@@ -634,19 +671,34 @@ void main_wind_open(void)
 	TextFont(FMGetFontFamilyFromName("\pMonaco"));
 	TextSize(10);
 	
-		// setup textures
+		// opengl setup
+		
+	gdevice=GetMainDevice();
+
+	pf=aglChoosePixelFormat(&gdevice,1,attrib);
+	ctx=aglCreateContext(pf,NULL);
+	aglSetCurrentContext(ctx);
+	aglDestroyPixelFormat(pf);
+
+	glEnable(GL_SMOOTH);
+	glDisable(GL_DITHER);
+	
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	
+	glEnable(GL_DEPTH_TEST);
+	
+	aglSetDrawable(ctx,(AGLDrawable)GetWindowPort(mainwind));
+
+		// setup view sizes
 		
 	texture_palette_setup();
-
-        // start opengl views
-        
+	main_wind_setup();
 	walk_view_initialize();
-	
-        // setup views
 		
 	main_wind_rot=setup.view_flip;
 	
-	walk_view_setup(TRUE,FALSE);
+	walk_view_setup(TRUE);
 	portal_view_setup(TRUE,FALSE);
 	portal_view_center();
 	site_path_view_setup(TRUE,FALSE);
@@ -669,7 +721,13 @@ void main_wind_close(void)
 {
 	int			n;
 	
-        // close opengl views
+		// gl shutdown
+		
+	aglSetCurrentContext(NULL);
+	aglSetDrawable(ctx,NULL);
+	aglDestroyContext(ctx);
+	
+        // close walkview icons
         
 	walk_view_shutdown();
 	
@@ -775,7 +833,8 @@ void main_wind_resize(void)
 
 		// fix all views and palettes
 
-	texture_palette_resize();
+	texture_palette_setup();
+	main_wind_setup();
 	main_wind_resize_buttons();
 	DrawControls(mainwind);
 	main_wind_set_view(main_wind_view);
@@ -797,7 +856,7 @@ void main_wind_set_view(int view)
 	switch (main_wind_view) {
 	
 		case vw_walk_top:
-			walk_view_setup(TRUE,FALSE);
+			walk_view_setup(TRUE);
 			portal_view_setup(FALSE,FALSE);
 			site_path_view_setup(FALSE,FALSE);
 			top_view_setup(TRUE,FALSE);
@@ -806,7 +865,7 @@ void main_wind_set_view(int view)
 			break;
 			
 		case vw_portal_only:
-			walk_view_setup(FALSE,FALSE);
+			walk_view_setup(FALSE);
 			portal_view_setup(TRUE,TRUE);
 			site_path_view_setup(FALSE,FALSE);
 			top_view_setup(FALSE,FALSE);
@@ -815,7 +874,7 @@ void main_wind_set_view(int view)
 			break;
 
 		case vw_site_path_only:
-			walk_view_setup(FALSE,FALSE);
+			walk_view_setup(FALSE);
 			portal_view_setup(FALSE,FALSE);
 			site_path_view_setup(TRUE,TRUE);
 			top_view_setup(FALSE,FALSE);
@@ -824,7 +883,7 @@ void main_wind_set_view(int view)
 			break;
 			
 		case vw_top_only:
-			walk_view_setup(FALSE,FALSE);
+			walk_view_setup(FALSE);
 			portal_view_setup(FALSE,FALSE);
 			site_path_view_setup(FALSE,FALSE);
 			top_view_setup(TRUE,TRUE);
@@ -833,12 +892,12 @@ void main_wind_set_view(int view)
 			break;
 			
 		case vw_walk_only:
-			walk_view_setup(TRUE,TRUE);
+			walk_view_setup(TRUE);
 			portal_view_setup(FALSE,FALSE);
 			site_path_view_setup(FALSE,FALSE);
 			top_view_setup(FALSE,FALSE);
 			portal_view_reset();
-			main_wind_focus=kf_walk;
+			main_wind_focus=kf_walk_forward;
 			break;
 	
 	}
@@ -865,54 +924,108 @@ void main_wind_set_view_piece_segment(void)
 
 /* =======================================================
 
+      Viewport and Projection Setup
+      
+======================================================= */
+
+void main_wind_set_viewport(Rect *view_box)
+{
+	int				bot_y;
+	Rect			wbox;
+	
+	GetWindowPortBounds(mainwind,&wbox);
+	bot_y=wbox.bottom-info_high;
+
+	glEnable(GL_SCISSOR_TEST);
+	glScissor(view_box->left,(bot_y-view_box->bottom),(view_box->right-view_box->left),(view_box->bottom-view_box->top));
+
+	glViewport(view_box->left,(bot_y-view_box->bottom),(view_box->right-view_box->left),(view_box->bottom-view_box->top));
+}
+
+void main_wind_set_2D_projection(Rect *view_box)
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho((GLdouble)view_box->left,(GLdouble)view_box->right,(GLdouble)view_box->bottom,(GLdouble)view_box->top,-1.0,1.0);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
+
+void main_wind_set_3D_projection(Rect *view_box,float ang_x,float ang_y,float fov,float near_z,float far_z,float near_z_offset)
+{
+	float			ratio;
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	
+	ratio=(float)(walk_view_forward_box.right-walk_view_forward_box.left)/(float)(walk_view_forward_box.bottom-walk_view_forward_box.top);
+	
+	gluPerspective(fov,ratio,near_z,far_z);
+	glScalef(-1,-1,1);						// x and y are reversed
+	glTranslatef(0,0,near_z_offset);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	glRotatef(ang_x,1,0,0);
+	glRotatef(ang_y,0,1,0);
+}
+
+/* =======================================================
+
       Drawing
       
 ======================================================= */
 
+void main_wind_draw_dividers_single(Rect *box,bool selected)
+{
+	glColor4f((selected?1.0f:0.0f),0.0f,0.0f,1.0f);
+	
+	glBegin(GL_LINE_LOOP);
+	glVertex2i((box->left-1),(box->top-1));
+	glVertex2i((box->right+1),(box->top-1));
+	glVertex2i((box->right+1),(box->bottom+1));
+	glVertex2i((box->left-1),(box->bottom+1));
+	glEnd();
+}
+
 void main_wind_draw_dividers(void)
 {
-	Rect		dbox;
-	RGBColor	blackcolor={0x0,0x0,0x0},redcolor={0xFFFF,0x0,0x0};
+		// use full view port
 	
-	if ((main_wind_view==vw_top_only) || (main_wind_view==vw_portal_only) || (main_wind_view==vw_walk_only)) return;
+	main_wind_set_viewport(&main_wind_box);
+	main_wind_set_2D_projection(&main_wind_box);
+	
+	glDisable(GL_DEPTH_TEST);
+	
+		// draw dividers
 
-	PenSize(2,2);
+	glLineWidth(2.0f);
 	
-		// walk box
-		
-	dbox=walk_view_box;
-	InsetRect(&dbox,-2,-2);
+	switch (main_wind_focus) {
 	
-	if (main_wind_focus==kf_walk) {
-		RGBForeColor(&redcolor);
-	}
-	else {
-		RGBForeColor(&blackcolor);
-	}
-	
-	FrameRect(&dbox);
-	
-		// top-portal box
-		
-	if (main_wind_view==vw_walk_top) {
-		dbox=top_view_box;
-	}
-	else {
-		dbox=portal_view_box;
-	}
-	
-	InsetRect(&dbox,-2,-2);
-	
-	if (main_wind_focus!=kf_walk) {
-		RGBForeColor(&redcolor);
-	}
-	else {
-		RGBForeColor(&blackcolor);
+		case kf_walk_forward:
+			main_wind_draw_dividers_single(&walk_view_side_box,FALSE);
+			main_wind_draw_dividers_single(&top_view_box,FALSE);
+			main_wind_draw_dividers_single(&walk_view_forward_box,TRUE);
+			break;
+			
+		case kf_walk_side:
+			main_wind_draw_dividers_single(&walk_view_forward_box,FALSE);
+			main_wind_draw_dividers_single(&top_view_box,FALSE);
+			main_wind_draw_dividers_single(&walk_view_side_box,TRUE);
+			break;
+			
+		case kf_top:
+			main_wind_draw_dividers_single(&walk_view_forward_box,FALSE);
+			main_wind_draw_dividers_single(&walk_view_side_box,FALSE);
+			main_wind_draw_dividers_single(&top_view_box,TRUE);
+			break;
+			
 	}
 	
-	FrameRect(&dbox);
-		
-	PenNormal();
+	glLineWidth(1.0f);
 }
 
 void main_wind_draw(void)
@@ -924,14 +1037,23 @@ void main_wind_draw(void)
 	SetPort(GetWindowPort(mainwind));
     
 	GetWindowPortBounds(mainwind,&wbox);
+	
+		// clear gl buffer
+		
+	glDisable(GL_SCISSOR_TEST);
+	
+	glClearColor(1.0f,1.0f,1.0f,0.0f);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
         // the views
 		
 	switch (main_wind_view) {
 	
 		case vw_walk_top:
-			walk_view_draw_piece();
+			walk_view_draw(FALSE);
+			walk_view_draw(TRUE);
 			top_view_draw();
+			texture_palette_draw();
 			main_wind_draw_dividers();
 			break;
 			
@@ -948,9 +1070,13 @@ void main_wind_draw(void)
 			break;
 			
 		case vw_walk_only:
-			walk_view_draw_piece();
+			walk_view_draw(FALSE);
 			break;
 	}
+	
+		// swap GL buffer
+		
+	aglSwapBuffers(ctx);
 	
 	SetPort(saveport);
 	
@@ -972,7 +1098,7 @@ void main_wind_set_focus(int focus,bool redraw)
 	focus_change=main_wind_focus!=focus;
 	main_wind_focus=focus;
 	
-	if ((focus_change) && (redraw)) main_wind_draw_dividers();
+	if ((main_wind_view==vw_walk_top) && (focus_change) && (redraw)) main_wind_draw_dividers();
 }
 
 /* =======================================================
@@ -1009,9 +1135,15 @@ void main_wind_center_position_in_map(void)
 
 bool main_wind_click(Point pt,bool dblclick)
 {
-    if (PtInRect(pt,&walk_view_box)) {
-		main_wind_set_focus(kf_walk,TRUE);
-        walk_view_click(pt,dblclick);
+    if (PtInRect(pt,&walk_view_forward_box)) {
+		main_wind_set_focus(kf_walk_forward,TRUE);
+        walk_view_click(pt,dblclick,FALSE);
+        return(TRUE);
+    }
+	
+    if (PtInRect(pt,&walk_view_side_box)) {
+		main_wind_set_focus(kf_walk_side,TRUE);
+        walk_view_click(pt,dblclick,TRUE);
         return(TRUE);
     }
 	
@@ -1044,7 +1176,7 @@ bool main_wind_click(Point pt,bool dblclick)
 
 void main_wind_cursor(Point pt)
 {
-    if (PtInRect(pt,&walk_view_box)) {
+    if ((PtInRect(pt,&walk_view_forward_box)) || (PtInRect(pt,&walk_view_side_box))) {
         walk_view_cursor();
         return;
     }
@@ -1124,11 +1256,16 @@ void main_wind_key_down(char ch)
 	if (ch==0x9) {
 	
 		if (main_wind_view==vw_walk_top) {
-			if (main_wind_focus==kf_walk) {
-				main_wind_focus=kf_top;
+			if (main_wind_focus==kf_walk_forward) {
+				main_wind_focus=kf_walk_side;
 			}
 			else {
-				main_wind_focus=kf_walk;
+				if (main_wind_focus==kf_walk_side) {
+					main_wind_focus=kf_top;
+				}
+				else {
+					main_wind_focus=kf_walk_forward;
+				}
 			}
 		}
 		
@@ -1148,8 +1285,12 @@ void main_wind_key_down(char ch)
 		
 	switch (main_wind_focus) {
 	
-		case kf_walk:
-			walk_view_key(ch);
+		case kf_walk_forward:
+			walk_view_key(ch,FALSE);
+			break;
+			
+		case kf_walk_side:
+			walk_view_key(ch,TRUE);
 			break;
 			
 		case kf_portal:
@@ -1176,8 +1317,12 @@ void main_wind_scroll_wheel(int delta)
 {
 	switch (main_wind_focus) {
 	
-		case kf_walk:
-			walk_view_scroll_wheel_z_movement(delta);
+		case kf_walk_forward:
+			walk_view_scroll_wheel_z_movement(delta,FALSE);
+			break;
+			
+		case kf_walk_side:
+			walk_view_scroll_wheel_z_movement(delta,TRUE);
 			break;
 			
 		case kf_portal:

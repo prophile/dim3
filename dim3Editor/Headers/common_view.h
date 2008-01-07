@@ -143,7 +143,7 @@ extern void piece_flip_horizontal(void);
 extern void piece_flip_vertical(void);
 extern void piece_rotate(void);
 extern void piece_free_rotate(float ang);
-extern void piece_key(int rn,char ch,bool walk);
+extern void piece_key(int rn,char ch,bool walk,bool on_side);
 extern void piece_switch_spot_scenery(void);
 
 //

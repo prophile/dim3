@@ -62,11 +62,9 @@ extern void undo_run(void);
 //
 
 extern void texture_palette_setup(void);
-extern void texture_palette_bitmap_draw(bitmap_type *bitmap,CGrafPtr dport,Rect *dbox);
 extern int texture_palette_get_selected_fill(void);
 extern void texture_palette_put_selected_fill(int fill);
 extern void texture_palette_draw(void);
-extern void texture_palette_resize(void);
 extern void texture_palette_reset(void);
 extern void texture_palette_click(Point pt,bool dbl_click);
 
@@ -99,6 +97,9 @@ extern void main_wind_set_view(int view);
 extern void main_wind_rotate_view(void);
 extern void main_wind_set_view_piece_portal(void);
 extern void main_wind_set_view_piece_segment(void);
+extern void main_wind_set_viewport(Rect *view_box);
+extern void main_wind_set_2D_projection(Rect *view_box);
+extern void main_wind_set_3D_projection(Rect *view_box,float ang_x,float ang_y,float fov,float near_z,float far_z,float near_z_offset);
 extern void main_wind_draw_dividers(void);
 extern void main_wind_draw(void);
 extern void main_wind_set_focus(int focus,bool redraw);

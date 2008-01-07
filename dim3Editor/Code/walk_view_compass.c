@@ -38,7 +38,7 @@ and can be sold or given away.
 
 extern int				edit_view;
 extern float			walk_view_y_angle,walk_view_x_angle;
-extern Rect				walk_view_box;
+extern Rect				walk_view_forward_box,walk_view_side_box;
 
 extern map_type			map;
 
@@ -48,14 +48,23 @@ extern map_type			map;
 	        
 ======================================================= */
 
-void walk_view_compass_draw(void)
+void walk_view_compass_draw(bool on_side)
 {
 	int				n,px[3],py[3],lx,rx,mx,ty,by,my,wid,high;
 	bool			sel;
+	float			ang_y;
 	GLUquadricObj	*disk;
 	
-	wid=walk_view_box.right-walk_view_box.left;
-	high=walk_view_box.bottom-walk_view_box.top;
+	if (!on_side) {
+		ang_y=walk_view_y_angle;
+		wid=walk_view_forward_box.right-walk_view_forward_box.left;
+		high=walk_view_forward_box.bottom-walk_view_forward_box.top;
+	}
+	else {
+		ang_y=angle_add(walk_view_y_angle,90.0f);
+		wid=walk_view_side_box.right-walk_view_side_box.left;
+		high=walk_view_side_box.bottom-walk_view_side_box.top;
+	}
 	
 		// 2D drawing
 		
@@ -97,7 +106,7 @@ void walk_view_compass_draw(void)
 	my=(ty+by)>>1;
 	
 	for (n=0;n!=360;n+=45) {
-		sel=(((int)walk_view_y_angle)==n);
+		sel=(((int)ang_y)==n);
 		glColor4f(1,(sel?0:1),0,1);
 	
 		px[0]=mx;
@@ -165,14 +174,25 @@ void walk_view_compass_draw(void)
 	        
 ======================================================= */
 
-bool walk_view_compass_click(Point pt)
+bool walk_view_compass_click(Point pt,bool on_side)
 {
-	int				n,px[4],py[4],lft,rgt,top,bot,
+	int				n,px[4],py[4],box_left,box_top,
+					lft,rgt,top,bot,
 					lx,rx,mx,ty,by,my,wid,high;
 	Rect			box;
 	
-	wid=walk_view_box.right-walk_view_box.left;
-	high=walk_view_box.bottom-walk_view_box.top;
+	if (!on_side) {
+		box_left=walk_view_forward_box.left;
+		box_top=walk_view_forward_box.top;
+		wid=walk_view_forward_box.right-walk_view_forward_box.left;
+		high=walk_view_forward_box.bottom-walk_view_forward_box.top;
+	}
+	else {
+		box_left=walk_view_side_box.left;
+		box_top=walk_view_side_box.top;
+		wid=walk_view_side_box.right-walk_view_side_box.left;
+		high=walk_view_side_box.bottom-walk_view_side_box.top;
+	}
 		
 		// click Y angle triangles
 		
@@ -197,9 +217,10 @@ bool walk_view_compass_click(Point pt)
 		polygon_2D_get_box(4,px,py,&lft,&rgt,&top,&bot);
 	
 		SetRect(&box,lft,top,rgt,bot);
-		OffsetRect(&box,walk_view_box.left,walk_view_box.top);
+		OffsetRect(&box,box_left,box_top);
 		if (PtInRect(pt,&box)) {
 			walk_view_y_angle=(float)n;
+			if (on_side) walk_view_y_angle=angle_add(walk_view_y_angle,-90.0f);
 			main_wind_draw();
 			return(TRUE);
 		}
@@ -214,7 +235,7 @@ bool walk_view_compass_click(Point pt)
 	by=ty+(view_compass_triangle_size*2);
 	
 	SetRect(&box,lx,ty,rx,by);
-	OffsetRect(&box,walk_view_box.left,walk_view_box.top);
+	OffsetRect(&box,box_left,box_top);
 	if (PtInRect(pt,&box)) {
 		walk_view_x_angle=30.0f;
 		main_wind_draw();
@@ -225,7 +246,7 @@ bool walk_view_compass_click(Point pt)
 	ty=by-(view_compass_triangle_size*2);
 	
 	SetRect(&box,lx,ty,rx,by);
-	OffsetRect(&box,walk_view_box.left,walk_view_box.top);
+	OffsetRect(&box,box_left,box_top);
 	if (PtInRect(pt,&box)) {
 		walk_view_x_angle=0.0f;
 		main_wind_draw();
@@ -236,7 +257,7 @@ bool walk_view_compass_click(Point pt)
 	ty=by-(view_compass_triangle_size*2);
 	
 	SetRect(&box,lx,ty,rx,by);
-	OffsetRect(&box,walk_view_box.left,walk_view_box.top);
+	OffsetRect(&box,box_left,box_top);
 	if (PtInRect(pt,&box)) {
 		walk_view_x_angle=-30.0f;
 		main_wind_draw();

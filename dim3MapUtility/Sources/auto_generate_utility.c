@@ -29,6 +29,9 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
+int					map_ag_seg_group_idx,map_ag_seg_primitive_uid,map_ag_seg_fill;
+bool				map_ag_seg_moveable;
+
 /* =======================================================
 
       Import Map Clear
@@ -40,11 +43,162 @@ void map_auto_generate_clear(map_type *map)
 	map->nportal=0;
 	map->nlight=0;
 	map->nsound=0;
+	map->nparticle=0;
 	map->nspot=0;
+	map->nscenery=0;
 	map->nnode=0;
 	map->nsegment=0;
 	map->ngroup=0;
 	map->nmovement=0;
+}
+
+/* =======================================================
+
+      Portal Collisions and Connections
+      
+======================================================= */
+
+bool map_auto_generate_portal_collision(map_type *map,int x,int z,int ex,int ez,int skip_idx)
+{
+	int			n;
+	portal_type	*portal;
+
+	for (n=0;n!=map->nportal;n++) {
+		if (skip_idx==n) continue;
+
+		portal=&map->portals[n];
+
+		if (ez<=portal->z) continue;
+		if (ex<=portal->x) continue;
+		if (x>=portal->ex) continue;
+		if (z>=portal->ez) continue;
+
+		return(TRUE);
+	}
+
+	return(FALSE);
+}
+
+int map_auto_generate_portal_find_to_left(map_type *map,portal_type *org_portal)
+{
+	int			n;
+	portal_type	*portal;
+
+	portal=map->portals;
+	
+	for (n=0;n!=map->nportal;n++) {
+		if ((portal->ex==org_portal->x) && (portal->z<=org_portal->z) && (portal->ez>=org_portal->ez)) return(n);
+		portal++;
+	}
+	
+	return(0);
+}
+
+int map_auto_generate_portal_find_to_right(map_type *map,portal_type *org_portal)
+{
+	int			n;
+	portal_type	*portal;
+
+	portal=map->portals;
+	
+	for (n=0;n!=map->nportal;n++) {
+		if ((portal->x==org_portal->ex) && (portal->z<=org_portal->z) && (portal->ez>=org_portal->ez)) return(n);
+		portal++;
+	}
+	
+	return(0);
+}
+
+int map_auto_generate_portal_find_to_top(map_type *map,portal_type *org_portal)
+{
+	int			n;
+	portal_type	*portal;
+
+	portal=map->portals;
+	
+	for (n=0;n!=map->nportal;n++) {
+		if ((portal->ez==org_portal->z) && (portal->x<=org_portal->x) && (portal->ex>=org_portal->ex)) return(n);
+		portal++;
+	}
+	
+	return(0);
+}
+
+int map_auto_generate_portal_find_to_bottom(map_type *map,portal_type *org_portal)
+{
+	int			n;
+	portal_type	*portal;
+
+	portal=map->portals;
+	
+	for (n=0;n!=map->nportal;n++) {
+		if ((portal->z==org_portal->ez) && (portal->x<=org_portal->x) && (portal->ex>=org_portal->ex)) return(n);
+		portal++;
+	}
+	
+	return(0);
+}
+
+/* =======================================================
+
+      Random Types
+      
+======================================================= */
+
+int map_auto_generate_get_corridor_type(auto_generate_settings_type *ags)
+{
+	int			n,idx,count;
+
+		// count types
+
+	count=0;
+
+	for (n=0;n!=ag_corridor_type_count;n++) {
+		if (ags->corridor.type_on[n]) count++;
+	}
+
+	if (count==0) return(ag_corridor_type_normal);
+
+		// get random type
+
+	idx=rand()%count;
+
+	for (n=0;n!=ag_corridor_type_count;n++) {
+		if (ags->corridor.type_on[n]) {
+			idx--;
+			if (idx<0) return(n);
+		}
+	}
+
+	return(ag_corridor_type_normal);
+}
+
+int map_auto_generate_get_ceiling_type(auto_generate_settings_type *ags)
+{
+	int			n,idx,count;
+
+		// count types
+
+	count=0;
+
+	for (n=0;n!=ag_ceiling_type_count;n++) {
+		if (ags->ceiling.type_on[n]) count++;
+	}
+
+	if (count==0) return(ag_ceiling_type_closed);
+
+		// get random type
+
+	idx=rand()%count;
+
+	for (n=0;n!=ag_ceiling_type_count;n++) {
+		if (ags->ceiling.type_on[n]) {
+			idx--;
+			if (idx<0) return(n);
+		}
+	}
+
+	return(ag_ceiling_type_closed);
 }
 
 /* =======================================================
@@ -64,6 +218,143 @@ void map_auto_generate_fix_segments_uv(map_type *map)
 		map_segment_reset_texture_uvs(map,seg);
 		seg++;
 	}
+}
+
+/* =======================================================
+
+      Segment Adding
+      
+======================================================= */
+
+void map_auto_generate_segment_start(int group_idx,int primitive_uid,int fill,bool moveable)
+{
+	map_ag_seg_group_idx=group_idx;
+	map_ag_seg_primitive_uid=primitive_uid;
+	map_ag_seg_fill=fill;
+	map_ag_seg_moveable=moveable;
+}
+
+int map_auto_generate_segment_wall(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty,int by,int clip)
+{
+	segment_type	*seg;
+	
+	if (map->nsegment==max_segment) return(-1);
+	
+	seg=&map->segments[map->nsegment];
+	
+	seg->type=sg_wall;
+	seg->rn=rn;
+	seg->fill=map_ag_seg_fill;
+    seg->clip=clip;
+    seg->curve=cv_none;
+	seg->x_txtoff=seg->y_txtoff=0;
+	seg->x_txtfact=seg->y_txtfact=1;
+    seg->x_shift=seg->y_shift=0;
+	seg->txt_ang=0;
+	seg->dark_factor=1.0f;
+    seg->alpha=1.0f;
+	seg->group_idx=map_ag_seg_group_idx;
+	seg->primitive_uid[0]=map_ag_seg_primitive_uid;
+    seg->pass_through=FALSE;
+	seg->moveable=map_ag_seg_moveable;
+	seg->lock=FALSE;
+	seg->on=TRUE;
+	
+	seg->data.wall.lx=lx;
+	seg->data.wall.rx=rx;
+	seg->data.wall.lz=lz;
+	seg->data.wall.rz=rz;
+	seg->data.wall.ty=ty;
+	seg->data.wall.by=by;
+
+	map->nsegment++;
+	
+	return(map->nsegment-1);
+}
+
+void map_auto_generate_segment_fc(map_type *map,int rn,int type,int lx,int lz,int rx,int rz,int y,int yadd,int lower_mode)
+{
+	segment_type	*seg;
+	
+	if (map->nsegment==max_segment) return;
+	
+		// create segment
+		
+	seg=&map->segments[map->nsegment];
+	
+	seg->type=type;
+	seg->rn=rn;
+	seg->fill=map_ag_seg_fill;
+    seg->clip=wc_none;
+    seg->curve=cv_none;
+	seg->x_txtoff=seg->y_txtoff=0;
+	seg->x_txtfact=seg->y_txtfact=1;
+    seg->x_shift=seg->y_shift=0;
+	seg->txt_ang=0;
+	seg->dark_factor=1.0f;
+    seg->alpha=1.0f;
+	seg->group_idx=map_ag_seg_group_idx;
+	seg->primitive_uid[0]=map_ag_seg_primitive_uid;
+    seg->pass_through=FALSE;
+	seg->moveable=map_ag_seg_moveable;
+	seg->lock=FALSE;
+	seg->on=TRUE;
+	
+	seg->data.fc.ptsz=4;
+	
+	seg->data.fc.x[0]=seg->data.fc.x[3]=lx;
+	seg->data.fc.x[1]=seg->data.fc.x[2]=rx;
+	seg->data.fc.z[0]=seg->data.fc.z[1]=lz;
+	seg->data.fc.z[2]=seg->data.fc.z[3]=rz;
+		
+	seg->data.fc.y[0]=seg->data.fc.y[1]=seg->data.fc.y[2]=seg->data.fc.y[3]=y;
+	
+	if (type==sg_ceiling) {
+	
+		switch (lower_mode) {
+			case ag_ceiling_lower_neg_x:
+				seg->data.fc.y[0]+=yadd;
+				seg->data.fc.y[3]+=yadd;
+				break;
+			case ag_ceiling_lower_pos_x:
+				seg->data.fc.y[1]+=yadd;
+				seg->data.fc.y[2]+=yadd;
+				break;
+			case ag_ceiling_lower_neg_z:
+				seg->data.fc.y[0]+=yadd;
+				seg->data.fc.y[1]+=yadd;
+				break;
+			case ag_ceiling_lower_pos_z:
+				seg->data.fc.y[2]+=yadd;
+				seg->data.fc.y[3]+=yadd;
+				break;
+		}
+	}
+	
+	else {
+	
+		switch (lower_mode) {
+			case ag_ceiling_lower_neg_x:
+				seg->data.fc.y[0]-=yadd;
+				seg->data.fc.y[3]-=yadd;
+				break;
+			case ag_ceiling_lower_pos_x:
+				seg->data.fc.y[1]-=yadd;
+				seg->data.fc.y[2]-=yadd;
+				break;
+			case ag_ceiling_lower_neg_z:
+				seg->data.fc.y[0]-=yadd;
+				seg->data.fc.y[1]-=yadd;
+				break;
+			case ag_ceiling_lower_pos_z:
+				seg->data.fc.y[2]-=yadd;
+				seg->data.fc.y[3]-=yadd;
+				break;
+		}
+	
+	}
+	
+	map->nsegment++;
 }
 
 /* =======================================================
