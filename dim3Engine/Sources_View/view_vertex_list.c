@@ -43,11 +43,14 @@ extern setup_type		setup;
 
 void portal_compile_gl_lists(int tick,int rn)
 {
-	int						n,nvlist;
+	int						n,k,t,nvlist,v_idx;
 	float					fx,fy,fz;
 	float					*pv,*pp,*pc;
+	d3pnt					*pt;
 	portal_type				*portal;
 	portal_vertex_list_type	*vl;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*mesh_poly;
 	
 	portal=&map.portals[rn];
 		
@@ -60,6 +63,56 @@ void portal_compile_gl_lists(int tick,int rn)
 	vl=portal->vertexes.vertex_list;
 	pv=(float*)portal->vertexes.pvert;
 	pp=(float*)portal->vertexes.pcoord;
+	pc=(float*)portal->vertexes.pcolor;
+
+
+
+// supergumba -- NEED TO FIX -- all temporary.  Need to check for light changes
+// before recalcing color, etc
+
+	fx=(float)view.camera.pos.x;
+	fy=(float)view.camera.pos.y;
+	fz=(float)view.camera.pos.z;
+
+	v_idx=0;
+
+	mesh=portal->mesh.meshes;
+	
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+
+		mesh_poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+		
+			for (t=0;t!=mesh_poly->ptsz;t++) {
+				pt=&mesh->vertexes[mesh_poly->v[t]];
+
+				*pv++=((float)((pt->x*map_enlarge)+portal->x)-fx);
+				*pv++=((float)(pt->y*map_enlarge)-fy);
+				*pv++=(fz-(float)((pt->z*map_enlarge)+portal->z));
+				*pp++=mesh_poly->gx[t];
+				*pp++=mesh_poly->gy[t];
+				*pc++=1.0f;
+				*pc++=1.0f;
+				*pc++=1.0f;
+
+				mesh_poly->draw.v[t]=v_idx;		// supergumba -- cache all this?
+				v_idx++;
+			}
+		
+			mesh_poly++;
+		}
+	
+		mesh++;
+	}
+
+
+	return;
+
+
+
+
+
 
 	nvlist=portal->vertexes.nvlist;
 
@@ -175,9 +228,9 @@ void portal_compile_gl_list_attach(int rn,int txt_unit_count)
 	glTexCoordPointer(2,GL_FLOAT,0,portal->vertexes.pcoord);
 
 		// color array
-		
-	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(3,GL_FLOAT,0,portal->vertexes.pcolor);
+// supergumba -- turned this off for testing		
+//	glEnableClientState(GL_COLOR_ARRAY);
+//	glColorPointer(3,GL_FLOAT,0,portal->vertexes.pcolor);
 
 #ifdef D3_OS_MAC
 	glFlushVertexArrayRangeAPPLE(sz,portal->vertexes.pvert);

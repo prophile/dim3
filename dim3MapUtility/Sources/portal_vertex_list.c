@@ -612,13 +612,18 @@ int map_portal_create_vertex_list_count_segment(segment_type *seg)
 
 bool map_portal_create_single_vertex_list(map_type *map,int rn,bool high_quality_lighting)
 {
-	int							i,nvlist,sz,rough_sz;
+	int							i,n,k,t,nvlist,sz,rough_sz;
 	portal_vertex_list_type		*nvl;
 	portal_type					*portal;
 	segment_type				*seg;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*mesh_poly;
 	
 	portal=&map->portals[rn];
 	
+
+	/* supergumba -- can probably all go away
+
 		// count maximum number of vertexes
 	
 	nvlist=0;
@@ -666,6 +671,31 @@ bool map_portal_create_single_vertex_list(map_type *map,int rn,bool high_quality
 		free(portal->vertexes.vertex_list);
 		portal->vertexes.vertex_list=nvl;
 	}
+*/
+
+
+	// supergumba -- temporary
+
+
+	nvlist=0;
+
+	mesh=portal->mesh.meshes;
+	
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+	
+		mesh_poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+			nvlist+=mesh_poly->ptsz;
+			nvlist+=light_tessel_max_vertex;			// maximum number of lighting elements in list
+			mesh_poly++;
+		}
+	
+		mesh++;
+	}
+
+	portal->vertexes.nvlist=nvlist;
+
 
 		// compiled vertex, coord and color lists
 		

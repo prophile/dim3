@@ -39,170 +39,170 @@ extern char light_type_str[][32];
 // map sizes
 //
 
-#define map_enlarge					144				// each units of maze equals this many game units
+#define map_enlarge									144				// each units of maze equals this many game units
 
-#define map_x_size					2500			// # of units on X
-#define map_z_size					2500			// # of units on Z
+#define map_x_size									2500			// # of units on X
+#define map_z_size									2500			// # of units on Z
 
 //
 // map maximums
 //
 
-#define max_portal					256				// maximum number of portals in a map
-#define max_segment					32768			// maximum number of segments in a map
+#define max_portal									256				// maximum number of portals in a map
+#define max_segment									32768			// maximum number of segments in a map
 
-#define max_map_scenery				512				// maximum number of ambient scenery
-#define max_map_light				256				// maximum number of ambient lights
-#define max_map_sound				256				// maximum number of ambient sounds
-#define max_map_particle			256				// maximum number of ambient particles
+#define max_map_scenery								512				// maximum number of ambient scenery
+#define max_map_light								256				// maximum number of ambient lights
+#define max_map_sound								256				// maximum number of ambient sounds
+#define max_map_particle							256				// maximum number of ambient particles
 
-#define max_sight_list				64				// maximum number of portals that can be seen from current portal
-#define max_sight_link				8				// maximum number of sight links from a single portal
+#define max_sight_list								64				// maximum number of portals that can be seen from current portal
+#define max_sight_link								8				// maximum number of sight links from a single portal
 
-#define max_group					128				// maximum number of segment groups
+#define max_group									128				// maximum number of segment groups
 
-#define max_map_texture				128				// maximum number of textures in a map
+#define max_map_texture								128				// maximum number of textures in a map
 
-#define max_spot					512				// maximum number of spot in a map
-#define max_node					512				// maximum number of nodes in a map
-#define max_node_link				16				// maximum number of connected nodes
+#define max_spot									512				// maximum number of spot in a map
+#define max_node									512				// maximum number of nodes in a map
+#define max_node_link								16				// maximum number of connected nodes
 
-#define max_movement				64				// maximum number of movements
-#define max_movement_move			16				// maximum number of separate moves in a movement
+#define max_movement								64				// maximum number of movements
+#define max_movement_move							16				// maximum number of separate moves in a movement
 
-#define nopath						-1				// no path in sight structs
+#define nopath										-1				// no path in sight structs
 
 //
 // strings
 //
 
-#define param_str_len				256				// length of parameter string
+#define param_str_len								256				// length of parameter string
 
 //
 // physics
 //
 
-#define floor_slop					128				// how close to floor to be "standing" on it
+#define floor_slop									128				// how close to floor to be "standing" on it
 
-#define gravity_start_power			0				// starting gravity
-#define gravity_factor				5000			// factor to divide gravity out by when combing with weight
+#define gravity_start_power							0				// starting gravity
+#define gravity_factor								5000			// factor to divide gravity out by when combing with weight
 
-#define gravity_slope_min_y			0.4f			// minimum slope needed to activate gravity
-#define gravity_slope_max_y			1.5f			// maximum climbable slope
-#define gravity_slope_factor		150.0f			// slope gravity factor
-#define gravity_slope_down_cut		0.2f			// amount to count gravity when running with it
+#define gravity_slope_min_y							0.4f			// minimum slope needed to activate gravity
+#define gravity_slope_max_y							1.5f			// maximum climbable slope
+#define gravity_slope_factor						150.0f			// slope gravity factor
+#define gravity_slope_down_cut						0.2f			// amount to count gravity when running with it
 
-#define proj_reflect_slope_max_y	0.5f			// how big a slope before bounces become reflects
-#define proj_bounce_min_speed		10.0f			// minimum speed before bounces cancel
+#define proj_reflect_slope_max_y					0.5f			// how big a slope before bounces become reflects
+#define proj_bounce_min_speed						10.0f			// minimum speed before bounces cancel
 
-#define ambient_push_size			4				// pixel push for ambients
+#define ambient_push_size							4				// pixel push for ambients
 
 //
 // segment constants
 //
 
-#define sg_wall						0					// segment types
-#define sg_floor					1
-#define sg_ceiling					2
-#define sg_liquid					3
-#define sg_ambient_wall				4
-#define sg_ambient_fc				5
+#define sg_wall										0					// segment types
+#define sg_floor									1
+#define sg_ceiling									2
+#define sg_liquid									3
+#define sg_ambient_wall								4
+#define sg_ambient_fc								5
 
-#define max_primitive_stack			8					// size of primitive stack (for hierarchy)
+#define max_primitive_stack							8					// size of primitive stack (for hierarchy)
 
-#define no_curve					0
+#define no_curve									0
 
-#define wc_none						0
-#define wc_top						1
-#define wc_bottom					2
-#define wc_slant					3
-#define wc_top_curve				4
-#define wc_top_arch					5
-#define wc_bottom_curve				6
-#define wc_bottom_arch				7
-#define wc_top_curve_arch			8
-#define wc_bottom_curve_arch		9
+#define wc_none										0
+#define wc_top										1
+#define wc_bottom									2
+#define wc_slant									3
+#define wc_top_curve								4
+#define wc_top_arch									5
+#define wc_bottom_curve								6
+#define wc_bottom_arch								7
+#define wc_top_curve_arch							8
+#define wc_bottom_curve_arch						9
 
-#define wc_tessel_start				4					// which wall clippings cause tesselation?
-#define wc_tessel_end				9
+#define wc_tessel_start								4					// which wall clippings cause tesselation?
+#define wc_tessel_end								9
 
-#define cv_none						0
-#define cv_forward					1
-#define cv_backward					2
+#define cv_none										0
+#define cv_forward									1
+#define cv_backward									2
 
-#define ap_none						0
-#define ap_top						1
-#define ap_bottom					2
-#define ap_left						3
-#define ap_right					4
-#define ap_up						5
-#define ap_down						6
+#define ap_none										0
+#define ap_top										1
+#define ap_bottom									2
+#define ap_left										3
+#define ap_right									4
+#define ap_up										5
+#define ap_down										6
 
 //
 // texture angles
 //
 
-#define ta_0						0
-#define ta_90						1
-#define ta_180						2
-#define ta_270						3
+#define ta_0										0
+#define ta_90										1
+#define ta_180										2
+#define ta_270										3
 
 //
 // lights
 //
 
-#define max_light_spot				64					// maximum number of lighting objects in a view
+#define max_light_spot								64					// maximum number of lighting objects in a view
 
-#define lt_normal					0
-#define lt_blink					1
-#define lt_glow						2
-#define lt_pulse					3
-#define lt_flicker					4
-#define lt_failing					5
+#define lt_normal									0
+#define lt_blink									1
+#define lt_glow										2
+#define lt_pulse									3
+#define lt_flicker									4
+#define lt_failing									5
 
 //
 // media types
 //
 
-#define mi_none						0
-#define mi_story					1
-#define mi_title					2
-#define mi_movie					3
+#define mi_none										0
+#define mi_story									1
+#define mi_title									2
+#define mi_movie									3
 
 //
 // sky types
 //
 
-#define st_globe					0
-#define st_dome_panoramic			1
-#define st_dome_hemisphere			2
-#define st_cylinder					3
-#define st_cube						4
+#define st_globe									0
+#define st_dome_panoramic							1
+#define st_dome_hemisphere							2
+#define st_cylinder									3
+#define st_cube										4
 
 //
 // liquids
 //
 
-#define ld_horizontal				0
-#define ld_vertical					1
+#define ld_horizontal								0
+#define ld_vertical									1
 
 //
 // light tessel constants
 //
 
-#define light_tessel_grid_sz		6
-#define light_tessel_max_size		(map_enlarge*64)
+#define light_tessel_grid_sz						6
+#define light_tessel_max_size						(map_enlarge*64)
 
-#define light_tessel_max_trig		72
-#define light_tessel_max_vertex		216
+#define light_tessel_max_trig						72
+#define light_tessel_max_vertex						216
 
 //
 // portal vertex list constants
 //
 
-#define flag_pvl_none				0x00
-#define flag_pvl_moveable			0x01
-#define flag_pvl_shiftable			0x02
+#define flag_pvl_none								0x00
+#define flag_pvl_moveable							0x01
+#define flag_pvl_shiftable							0x02
 
 //
 // group structure
@@ -219,11 +219,21 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							ptsz,min_x,max_x,min_y,max_y,min_z,max_z;
-						short						txt_idx,v[8];
-						float						gx[8],gy[8],alpha,
-													slope_y,slope_ang_y,slope_move_x,slope_move_z;
+						float						y,ang_y,move_x,move_z;
+					} map_mesh_poly_slope_type;
+
+typedef struct		{
+						int							v[8],txt_frame_offset;
+					} map_mesh_poly_draw_type;
+
+typedef struct		{
+						int							ptsz,v[8];
+						short						txt_idx;
+						float						gx[8],gy[8],alpha;
 						bool						flat;
+						d3pnt						min,max;
+						map_mesh_poly_slope_type	slope;
+						map_mesh_poly_draw_type		draw;
 					} map_mesh_poly_type;
 
 typedef struct		{

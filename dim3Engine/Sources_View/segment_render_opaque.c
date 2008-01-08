@@ -347,10 +347,15 @@ void segment_piece_draw_shader(int cnt,short *sptr)
 
 int segment_render_opaque_portal(int rn,int pass_last)
 {
-	int							stencil_pass,
+	int							n,k,t,stencil_pass,
 								pass_start,pass_end;
 	portal_type					*portal;
 	portal_segment_draw_type	*draw;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*mesh_poly;
+	texture_type	*texture;
+	int		frame;
+	unsigned long	txt_id;
 
 	portal=&map.portals[rn];
 	draw=&portal->segment_draw;
@@ -363,6 +368,55 @@ int segment_render_opaque_portal(int rn,int pass_last)
 	else {
 		portal_compile_gl_list_attach(rn,2);
 	}
+
+
+// supergumba -- another hack to get meshes running
+// will need to support all the stuff below
+
+	gl_texture_opaque_start();
+
+	glDisable(GL_BLEND);
+	
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_TRUE);
+
+	glColor4f(1,1,1,1);
+	
+	mesh=portal->mesh.meshes;
+	
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+	
+		txt_id=-1;
+		mesh_poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+
+			texture=&map.textures[mesh_poly->txt_idx];
+			frame=(texture->animate.current_frame+mesh_poly->draw.txt_frame_offset)&max_texture_frame_mask;
+			frame=0;	// supergumba -- bug fix here, need real frame settings
+
+			if (texture->bitmaps[frame].gl_id!=txt_id) {
+				txt_id=texture->bitmaps[frame].gl_id;
+				gl_texture_opaque_set(txt_id);
+			}
+
+			glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.v);
+		
+			mesh_poly++;
+		}
+	
+	
+		mesh++;
+	}
+
+	gl_texture_opaque_end();
+
+	return(pass_last);
+
 
 		// need to potentially run multiple passes
 		// so 8-bit stencil buffer can be used for more
