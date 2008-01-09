@@ -62,7 +62,7 @@ bool complex_boundbox_inview(int *cbx,int *cby,int *cbz)
 	int			n,x,y,z,
 				px[14],py[14],pz[14];
 	bool		hit,lft,rgt,top,bot;
-	
+
 		// add midpoints of faces to check
 		
 	memmove(px,cbx,(sizeof(int)*8));

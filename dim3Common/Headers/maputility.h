@@ -219,19 +219,24 @@ typedef struct		{
 //
 
 typedef struct		{
+						bool						flat;
+						d3pnt						min,max;
+					} map_mesh_poly_box_type;
+
+typedef struct		{
 						float						y,ang_y,move_x,move_z;
 					} map_mesh_poly_slope_type;
 
 typedef struct		{
 						int							v[8],txt_frame_offset;
+						bool						simple_tessel,shiftable;
 					} map_mesh_poly_draw_type;
 
 typedef struct		{
-						int							ptsz,v[8];
-						short						txt_idx;
-						float						gx[8],gy[8],alpha;
-						bool						flat;
-						d3pnt						min,max;
+						int							ptsz,v[8],txt_idx;
+						float						gx[8],gy[8],x_shift,y_shift,
+													alpha;
+						map_mesh_poly_box_type		box;
 						map_mesh_poly_slope_type	slope;
 						map_mesh_poly_draw_type		draw;
 					} map_mesh_poly_type;

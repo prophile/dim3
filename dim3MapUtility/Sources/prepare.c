@@ -35,6 +35,58 @@ and can be sold or given away.
       
 ======================================================= */
 
+void map_prepare_set_mesh_poly_box(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
+{
+	int				n,y,ptsz,
+					min_x,max_x,min_z,max_z,min_y,max_y;
+	bool			flat;
+	d3pnt			*pt;
+	
+		// find enclosing square
+		
+	pt=&mesh->vertexes[mesh_poly->v[0]];
+
+	min_x=max_x=pt->x;
+	min_y=max_y=y=pt->y;
+	min_z=max_z=pt->z;
+
+	flat=TRUE;
+    
+    ptsz=mesh_poly->ptsz;
+    
+	for (n=1;n<ptsz;n++) {
+		pt=&mesh->vertexes[mesh_poly->v[n]];
+
+			// get min and max
+
+		if (pt->x<min_x) min_x=pt->x;
+		if (pt->x>max_x) max_x=pt->x;
+		if (pt->y<min_y) min_y=pt->y;
+		if (pt->y>max_y) max_y=pt->y;
+		if (pt->z<min_z) min_z=pt->z;
+		if (pt->z>max_z) max_z=pt->z;
+
+			// check for flat y
+
+		if (pt->y!=y) flat=FALSE;
+	}
+    
+	mesh_poly->box.min.x=min_x;
+	mesh_poly->box.max.x=max_x;
+	mesh_poly->box.min.y=min_y;
+	mesh_poly->box.max.y=max_y;
+	mesh_poly->box.min.z=min_z;
+	mesh_poly->box.max.z=max_z;
+	
+	mesh_poly->box.flat=flat;
+}
+
+
+
+
+
+// supergumba -- delete these
+
 void map_prepare_set_fc_segment_square(segment_type *seg)
 {
 	int					i,y,ptsz,
@@ -118,9 +170,12 @@ void map_prepare_set_ambient_fc_segment_square(segment_type *seg)
 
 void map_prepare_segments(map_type *map)
 {
-	int					i,t,ptsz;
+	int					i,n,k,t,ptsz;
+	d3pnt				*pt;
 	portal_type			*portal;
 	segment_type		*seg;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*mesh_poly;
 	node_type			*node;
 	map_scenery_type	*scenery;
 	map_light_type		*light;
@@ -143,21 +198,66 @@ void map_prepare_segments(map_type *map)
 	portal=map->portals;
 	
 	for (i=0;i!=map->nportal;i++) {
+
+			// portal sizes
+
 		portal->x*=map_enlarge;
 		portal->z*=map_enlarge;
 		portal->ex*=map_enlarge;
 		portal->ez*=map_enlarge;
 		portal->mx=(portal->x+portal->ex)>>1;
 		portal->mz=(portal->z+portal->ez)>>1;
+
+			// search for y size when
+			// preparing meshes
 		
-		portal->ty=99999;			// use to find total top & bottom y of portal
+		portal->ty=99999;
 		portal->by=0;
 		
+			// prepare meshes
+
+		mesh=portal->mesh.meshes;
+		
+		for (n=0;n!=portal->mesh.nmesh;n++) {
+
+			mesh_poly=mesh->polys;
+			
+			for (k=0;k!=mesh->npoly;k++) {
+			
+					// check for portal Ys
+
+				for (t=0;t!=mesh_poly->ptsz;t++) {
+					pt=&mesh->vertexes[mesh_poly->v[t]];
+
+					if (pt->y<portal->ty) portal->ty=pt->y;
+					if (pt->y>portal->by) portal->by=pt->y;
+				}
+				
+					// setup box
+
+				map_prepare_set_mesh_poly_box(mesh,mesh_poly);
+
+					// setup simple tessel and shifting flag
+
+				mesh_poly->draw.txt_frame_offset=0;
+				mesh_poly->draw.simple_tessel=(mesh_poly->ptsz==3);
+				mesh_poly->draw.shiftable=((mesh_poly->x_shift!=0.0f) || (mesh_poly->y_shift!=0.0f));
+			
+				mesh_poly++;
+			}
+		
+			mesh++;
+		}
+
 		portal++;
 	}
 
+
+		// supergumba -- all needs to be deleted, etc
+
 		// segments
     
+	/*
     seg=map->segments;
     
 	for (i=0;i!=map->nsegment;i++) {
@@ -251,6 +351,7 @@ void map_prepare_segments(map_type *map)
         
         seg++;
 	}
+	*/
 	
 		// fix portal heights
 	

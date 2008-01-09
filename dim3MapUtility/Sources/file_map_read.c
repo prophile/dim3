@@ -769,6 +769,10 @@ int map_convert_segment_to_mesh_find_point_vlist(int nvertex,d3pnt *vlist,int x,
 	int				n;
 	d3pnt			*vptr;
 
+	x*=map_enlarge;
+	y*=map_enlarge;
+	z*=map_enlarge;
+
 	vptr=vlist;
 
 	for (n=0;n!=nvertex;n++) {
@@ -791,9 +795,9 @@ int map_convert_segment_to_mesh_add_point_vlist(int nvertex,d3pnt *vlist,int x,i
 
 	vptr=vlist+nvertex;
 
-	vptr->x=x;
-	vptr->y=y;
-	vptr->z=z;
+	vptr->x=x*map_enlarge;
+	vptr->y=y*map_enlarge;
+	vptr->z=z*map_enlarge;
 
 	return(nvertex+1);
 }
