@@ -132,6 +132,56 @@ float ray_trace_triangle(d3pnt *spt,d3vct *vct,d3pnt *hpt,int *x,int *y,int *z)
 	return(t);
 }
 
+float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
+{
+	int			n,trig_count;
+	int			px[3],py[3],pz[3];
+	float		t,hit_t;
+	d3pnt		pt,*m_pt;
+	
+	hit_t=-1.0f;
+	
+		// first vertex is always 0
+
+	m_pt=&mesh->vertexes[mesh_poly->v[0]];
+		
+	px[0]=m_pt->x;
+	py[0]=m_pt->y;
+	pz[0]=m_pt->z;
+	
+		// run through all the triangles of the polygon
+		
+	trig_count=mesh_poly->ptsz-2;
+	
+	for (n=0;n<trig_count;n++) {
+		m_pt=&mesh->vertexes[mesh_poly->v[n+1]];
+		px[1]=m_pt->x;
+		py[1]=m_pt->y;
+		pz[1]=m_pt->z;
+
+		m_pt=&mesh->vertexes[mesh_poly->v[n+2]];
+		px[2]=m_pt->x;
+		py[2]=m_pt->y;
+		pz[2]=m_pt->z;
+		
+			// check for hit
+			
+		t=ray_trace_triangle(spt,vct,&pt,px,py,pz);
+		if (t==-1.0f) continue;
+		
+			// closer hit or first hit?
+			
+		if ((t<hit_t) || (hit_t==-1.0f)) {
+			hit_t=t;
+			hpt->x=pt.x;
+			hpt->y=pt.y;
+			hpt->z=pt.z;
+		}
+	}
+	
+	return(hit_t);
+}
+
 float ray_trace_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,int ptsz,int *x,int *y,int *z)
 {
 	int			n,k,trig_count;
@@ -431,15 +481,14 @@ float ray_trace_projectile(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,proj_type
 
 void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_trace_contact *contact)
 {
-	int					n,idx,cnt;
-	short				*sptr;
+	int					n,k;
 	float				t;
 	d3pnt				pt;
 	obj_type			*obj;
 	proj_type			*proj;
-	wall_segment_data	*wall;
-	fc_segment_data		*fc;
 	portal_type			*portal;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*mesh_poly;
 	
 	portal=&map.portals[rn];
 	pt.x=pt.y=pt.z=0;
@@ -498,92 +547,49 @@ void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *
 		}
 	
 	}
+
+		// check the meshes
+
+	mesh=portal->mesh.meshes;
 	
-		// check the wall segments
+	for (n=0;n!=portal->mesh.nmesh;n++) {
 
-	sptr=portal->wall_list_hit.list;
-	cnt=portal->wall_list_hit.count;
+		mesh_poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+
+				// rough bounds check
+
+			if ((spt->y<mesh_poly->box.min.y) && (ept->y<mesh_poly->box.min.y)) continue;
+			if ((spt->y>mesh_poly->box.max.y) && (ept->y>mesh_poly->box.max.y)) continue;
+			if ((spt->x<mesh_poly->box.min.x) && (ept->x<mesh_poly->box.min.x)) continue;
+			if ((spt->x>mesh_poly->box.max.x) && (ept->x>mesh_poly->box.max.x)) continue;
+			if ((spt->z<mesh_poly->box.min.z) && (ept->z<mesh_poly->box.min.z)) continue;
+			if ((spt->z>mesh_poly->box.max.z) && (ept->z>mesh_poly->box.max.z)) continue;
+
+				// ray trace
+				
+			t=ray_trace_mesh_polygon(spt,vct,&pt,mesh,mesh_poly);
+			if (t==-1.0f) continue;
+				
+				// closer hit?
+			
+			if (t>=(*hit_t)) continue;
+			
+			*hit_t=t;
+			hpt->x=pt.x;
+			hpt->y=pt.y;
+			hpt->z=pt.z;
+			
+			ray_trace_contact_clear(contact);
+		//	contact->seg_idx=idx;			// supergumba -- need to change contact types
+		
+			mesh_poly++;
+		}
 	
-	for (n=0;n!=cnt;n++) {
-		idx=(int)*sptr++;
-		wall=&map.segments[idx].data.wall;
-			
-			// rough bounds check
-
-		if (wall->lx<wall->rx) {
-			if ((spt->x<wall->lx) && (ept->x<wall->lx)) continue;
-			if ((spt->x>wall->rx) && (ept->x>wall->rx)) continue;
-		}
-		else {
-			if ((spt->x>wall->lx) && (ept->x>wall->lx)) continue;
-			if ((spt->x<wall->rx) && (ept->x<wall->rx)) continue;
-		}
-		
-		if (wall->lz<wall->rz) {
-			if ((spt->z<wall->lz) && (ept->z<wall->lz)) continue;
-			if ((spt->z>wall->rz) && (ept->z>wall->rz)) continue;
-		}
-		else {
-			if ((spt->z>wall->lz) && (ept->z>wall->lz)) continue;
-			if ((spt->z<wall->rz) && (ept->z<wall->rz)) continue;
-		}
-		
-		if ((spt->y<wall->ty) && (ept->y<wall->ty)) continue;
-		if ((spt->y>wall->by) && (ept->y>wall->by)) continue;
-
-			// ray trace
-			
-		t=ray_trace_polygon(spt,vct,&pt,wall->ptsz,wall->x,wall->y,wall->z);
-		if (t==-1.0f) continue;
-		
-			// closer hit?
-			
-		if (t>=(*hit_t)) continue;
-		
-		*hit_t=t;
-		hpt->x=pt.x;
-		hpt->y=pt.y;
-		hpt->z=pt.z;
-		
-		ray_trace_contact_clear(contact);
-		contact->seg_idx=idx;
+		mesh++;
 	}
-	
-		// check the floor\ceiling segments
 
-	sptr=portal->fc_list_hit.list;
-	cnt=portal->fc_list_hit.count;
-	
-	for (n=0;n!=cnt;n++) {
-		idx=(int)*sptr++;
-		fc=&map.segments[idx].data.fc;
-			
-			// rough bounds check
-
-		if ((spt->y<fc->min_y) && (ept->y<fc->min_y)) continue;
-		if ((spt->y>fc->max_y) && (ept->y>fc->max_y)) continue;
-		if ((spt->x<fc->min_x) && (ept->x<fc->min_x)) continue;
-		if ((spt->x>fc->max_x) && (ept->x>fc->max_x)) continue;
-		if ((spt->z<fc->min_z) && (ept->z<fc->min_z)) continue;
-		if ((spt->z>fc->max_z) && (ept->z>fc->max_z)) continue;
-
-			// ray trace
-			
-		t=ray_trace_polygon(spt,vct,&pt,fc->ptsz,fc->x,fc->y,fc->z);
-		if (t==-1.0f) continue;
-		
-			// closer hit?
-			
-		if (t>=(*hit_t)) continue;
-		
-		*hit_t=t;
-		hpt->x=pt.x;
-		hpt->y=pt.y;
-		hpt->z=pt.z;
-		
-		ray_trace_contact_clear(contact);
-		contact->seg_idx=idx;
-	}
 }
 
 /* =======================================================

@@ -170,10 +170,9 @@ void map_prepare_set_ambient_fc_segment_square(segment_type *seg)
 
 void map_prepare_segments(map_type *map)
 {
-	int					i,n,k,t,ptsz;
+	int					i,n,k,t,portal_v_idx;
 	d3pnt				*pt;
 	portal_type			*portal;
-	segment_type		*seg;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*mesh_poly;
 	node_type			*node;
@@ -182,6 +181,9 @@ void map_prepare_segments(map_type *map)
 	map_sound_type		*sound;
 	map_particle_type	*particle;
 	spot_type			*spot;
+
+	fprintf(stdout,"HERE 1\n");
+	fflush(stdout);
 	
 		// optimizations
 		
@@ -209,6 +211,11 @@ void map_prepare_segments(map_type *map)
 		
 		portal->ty=99999;
 		portal->by=0;
+
+			// polygons need index into portal
+			// vertex list
+
+		portal_v_idx=0;
 		
 			// prepare meshes
 
@@ -232,9 +239,17 @@ void map_prepare_segments(map_type *map)
 			
 			for (k=0;k!=mesh->npoly;k++) {
 			
-					// and find lowest/highest portal Y
+					// run through the polygon points
 
 				for (t=0;t!=mesh_poly->ptsz;t++) {
+
+						// setup portal vertex list offset
+
+					mesh_poly->draw.portal_v[t]=portal_v_idx;
+					portal_v_idx++;
+
+						// find lowest and highest Y for portal
+
 					pt=&mesh->vertexes[mesh_poly->v[t]];
 
 					if (pt->y<portal->ty) portal->ty=pt->y;
@@ -249,7 +264,7 @@ void map_prepare_segments(map_type *map)
 
 				mesh_poly->draw.txt_frame_offset=0;
 				mesh_poly->draw.simple_tessel=(mesh_poly->ptsz==3);
-				mesh_poly->draw.shiftable=((mesh_poly->x_shift!=0.0f) || (mesh_poly->y_shift!=0.0f));
+				mesh_poly->draw.shift_on=((mesh_poly->x_shift!=0.0f) || (mesh_poly->y_shift!=0.0f));
 			
 				mesh_poly++;
 			}
@@ -331,7 +346,6 @@ void map_prepare_segments(map_type *map)
 		spot->pos.z=spot->pos.z+portal->z;
 		spot++;
 	}
-
 
 		// supergumba -- all needs to be deleted, etc
 

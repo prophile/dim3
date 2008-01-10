@@ -43,7 +43,7 @@ extern setup_type		setup;
 
 void portal_compile_gl_lists(int tick,int rn)
 {
-	int						n,k,t,nvlist,v_idx;
+	int						n,k,t,nvlist;
 	float					fx,fy,fz;
 	float					*pv,*pp,*pc;
 	d3pnt					*pt;
@@ -74,7 +74,12 @@ void portal_compile_gl_lists(int tick,int rn)
 	fy=(float)view.camera.pos.y;
 	fz=(float)view.camera.pos.z;
 
-	v_idx=0;
+
+		// check if lights or vertex data has changed in
+		// room.  If not, only run through the vertexes
+		// instead of recreating the lights
+
+//	if (!map_portal_light_check_changes(portal)) {
 
 	mesh=portal->mesh.meshes;
 	
@@ -95,9 +100,6 @@ void portal_compile_gl_lists(int tick,int rn)
 				*pc++=1.0f;
 				*pc++=1.0f;
 				*pc++=1.0f;
-
-				mesh_poly->draw.v[t]=v_idx;		// supergumba -- cache all this?
-				v_idx++;
 			}
 		
 			mesh_poly++;

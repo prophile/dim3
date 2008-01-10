@@ -228,16 +228,22 @@ typedef struct		{
 					} map_mesh_poly_slope_type;
 
 typedef struct		{
-						int							v[8],txt_frame_offset;
-						bool						simple_tessel,shiftable;
+						bool						on,pass_through,moveable,
+													climbable,touched;
+					} map_mesh_poly_flag_type;
+
+typedef struct		{
+						int							portal_v[8],txt_frame_offset;
+						bool						simple_tessel,shift_on;
 					} map_mesh_poly_draw_type;
 
 typedef struct		{
 						int							ptsz,v[8],txt_idx;
 						float						gx[8],gy[8],x_shift,y_shift,
-													alpha;
+													dark_factor,alpha;
 						map_mesh_poly_box_type		box;
 						map_mesh_poly_slope_type	slope;
+						map_mesh_poly_flag_type		flag;
 						map_mesh_poly_draw_type		draw;
 					} map_mesh_poly_type;
 

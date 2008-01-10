@@ -813,8 +813,7 @@ int map_convert_segment_to_mesh_add_poly_vlist(int nvertex,d3pnt *vlist,int ptsz
 	return(nvertex);
 }
 
-
-void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,int *x,int *y,int *z,float *gx,float *gy,int txt_idx,float alpha)
+void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,int *x,int *y,int *z,float *gx,float *gy,segment_type *seg)
 {
 	int					n;
 	map_mesh_poly_type	*mesh_poly;
@@ -830,10 +829,19 @@ void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,
 	memmove(mesh_poly->gx,gx,(sizeof(float)*ptsz));
 	memmove(mesh_poly->gy,gy,(sizeof(float)*ptsz));
 	
-	mesh_poly->alpha=alpha;
+	mesh_poly->x_shift=seg->x_shift;
+	mesh_poly->y_shift=seg->y_shift;
+	mesh_poly->dark_factor=seg->dark_factor;
+	mesh_poly->alpha=seg->alpha;
+
+	mesh_poly->flag.on=TRUE;
+	mesh_poly->flag.pass_through=seg->pass_through;
+	mesh_poly->flag.moveable=seg->moveable;
+	mesh_poly->flag.climbable=seg->climbable;
+	mesh_poly->flag.touched=FALSE;
 
 	mesh_poly->ptsz=ptsz;
-	mesh_poly->txt_idx=txt_idx;
+	mesh_poly->txt_idx=seg->fill;
 
 	map_mesh->npoly++;
 }
@@ -1107,13 +1115,13 @@ bool map_convert_segment_to_mesh(map_type *map)
 
 				case sg_wall:
 					ptsz=map_convert_segment_to_mesh_wall_to_polygon(seg,px,py,pz,gx,gy);
-					map_convert_segment_to_mesh_add_mesh_poly(map_mesh,ptsz,px,py,pz,gx,gy,seg->fill,seg->alpha);
+					map_convert_segment_to_mesh_add_mesh_poly(map_mesh,ptsz,px,py,pz,gx,gy,seg);
 					break;
 
 				case sg_floor:
 				case sg_ceiling:
 					ptsz=map_convert_segment_to_mesh_fc_to_polygon(seg,px,py,pz,gx,gy);
-					map_convert_segment_to_mesh_add_mesh_poly(map_mesh,ptsz,px,py,pz,gx,gy,seg->fill,seg->alpha);
+					map_convert_segment_to_mesh_add_mesh_poly(map_mesh,ptsz,px,py,pz,gx,gy,seg);
 					break;
 
 			}

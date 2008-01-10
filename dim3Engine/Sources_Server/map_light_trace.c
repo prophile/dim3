@@ -34,7 +34,7 @@ and can be sold or given away.
 extern map_type				map;
 extern server_type			server;
 
-extern float ray_trace_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,int ptsz,int *x,int *y,int *z);
+extern float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mesh,map_mesh_poly_type *mesh_poly);
 
 /* =======================================================
 
@@ -44,90 +44,44 @@ extern float ray_trace_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,int ptsz,int *x,
 
 bool light_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct)
 {
-	int					n,idx,cnt;
-	short				*sptr;
+	int					n,k;
 	float				t;
 	d3pnt				pt;
-	segment_type		*seg;
-	wall_segment_data	*wall;
-	fc_segment_data		*fc;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*mesh_poly;
 	portal_type			*portal;
 	
 	portal=&map.portals[rn];
 	pt.x=pt.y=pt.z=0;
+
+		// check the meshes
+
+	mesh=portal->mesh.meshes;
 	
-		// check the wall segments
+	for (n=0;n!=portal->mesh.nmesh;n++) {
 
-	sptr=portal->wall_list_hit.list;
-	cnt=portal->wall_list_hit.count;
-	
-	for (n=0;n!=cnt;n++) {
-		idx=(int)*sptr++;
-
-			// skip transparents
-
-		seg=&map.segments[idx];
-		if (map.textures[seg->fill].bitmaps[0].alpha_mode!=alpha_mode_none) continue;
-
-		wall=&seg->data.wall;
-			
-			// rough bounds check
-
-		if (wall->lx<wall->rx) {
-			if ((spt->x<wall->lx) && (ept->x<wall->lx)) continue;
-			if ((spt->x>wall->rx) && (ept->x>wall->rx)) continue;
-		}
-		else {
-			if ((spt->x>wall->lx) && (ept->x>wall->lx)) continue;
-			if ((spt->x<wall->rx) && (ept->x<wall->rx)) continue;
-		}
+		mesh_poly=mesh->polys;
 		
-		if (wall->lz<wall->rz) {
-			if ((spt->z<wall->lz) && (ept->z<wall->lz)) continue;
-			if ((spt->z>wall->rz) && (ept->z>wall->rz)) continue;
-		}
-		else {
-			if ((spt->z>wall->lz) && (ept->z>wall->lz)) continue;
-			if ((spt->z<wall->rz) && (ept->z<wall->rz)) continue;
-		}
+		for (k=0;k!=mesh->npoly;k++) {
+
+				// rough bounds check
+
+			if ((spt->y<mesh_poly->box.min.y) && (ept->y<mesh_poly->box.min.y)) continue;
+			if ((spt->y>mesh_poly->box.max.y) && (ept->y>mesh_poly->box.max.y)) continue;
+			if ((spt->x<mesh_poly->box.min.x) && (ept->x<mesh_poly->box.min.x)) continue;
+			if ((spt->x>mesh_poly->box.max.x) && (ept->x>mesh_poly->box.max.x)) continue;
+			if ((spt->z<mesh_poly->box.min.z) && (ept->z<mesh_poly->box.min.z)) continue;
+			if ((spt->z>mesh_poly->box.max.z) && (ept->z>mesh_poly->box.max.z)) continue;
+
+				// ray trace
+				
+			t=ray_trace_mesh_polygon(spt,vct,&pt,mesh,mesh_poly);
+			if (t!=-1.0f) return(TRUE);
 		
-		if ((spt->y<wall->ty) && (ept->y<wall->ty)) continue;
-		if ((spt->y>wall->by) && (ept->y>wall->by)) continue;
-
-			// ray trace
-			
-		t=ray_trace_polygon(spt,vct,&pt,wall->ptsz,wall->x,wall->y,wall->z);
-		if (t!=-1.0f) return(TRUE);
-	}
+			mesh_poly++;
+		}
 	
-		// check the floor\ceiling segments
-
-	sptr=portal->fc_list_hit.list;
-	cnt=portal->fc_list_hit.count;
-	
-	for (n=0;n!=cnt;n++) {
-		idx=(int)*sptr++;
-
-			// skip transparents
-
-		seg=&map.segments[idx];
-		if (map.textures[seg->fill].bitmaps[0].alpha_mode!=alpha_mode_none) continue;
-
-		fc=&seg->data.fc;
-			
-			// rough bounds check
-
-		if ((spt->y<fc->min_y) && (ept->y<fc->min_y)) continue;
-		if ((spt->y>fc->max_y) && (ept->y>fc->max_y)) continue;
-		if ((spt->x<fc->min_x) && (ept->x<fc->min_x)) continue;
-		if ((spt->x>fc->max_x) && (ept->x>fc->max_x)) continue;
-		if ((spt->z<fc->min_z) && (ept->z<fc->min_z)) continue;
-		if ((spt->z>fc->max_z) && (ept->z>fc->max_z)) continue;
-
-			// ray trace
-			
-		t=ray_trace_polygon(spt,vct,&pt,fc->ptsz,fc->x,fc->y,fc->z);
-		if (t!=-1.0f) return(TRUE);
+		mesh++;
 	}
 
 	return(FALSE);

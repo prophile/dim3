@@ -347,7 +347,7 @@ void segment_piece_draw_shader(int cnt,short *sptr)
 
 int segment_render_opaque_portal(int rn,int pass_last)
 {
-	int							n,k,t,stencil_pass,
+	int							n,k,stencil_pass,
 								pass_start,pass_end;
 	portal_type					*portal;
 	portal_segment_draw_type	*draw;
@@ -404,7 +404,7 @@ int segment_render_opaque_portal(int rn,int pass_last)
 				gl_texture_opaque_set(txt_id);
 			}
 
-			glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.v);
+			glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
 		
 			mesh_poly++;
 		}
