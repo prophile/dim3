@@ -74,8 +74,8 @@ extern bool portal_view_click_sight(Point pt);
 // transforms
 //
 
-extern void portal_get_size(int q,int *pex,int *pey);
-extern void portal_get_y_size(int q,int *pty,int *pby);
+extern void portal_get_size(int rn,int *pex,int *pey);
+extern void portal_get_y_size(int rn,int *pty,int *pby);
 extern void portal_get_dimension(int rn,int *lx,int *rx,int *tz,int *bz);
 extern void portal_set_dimension(int rn,int x,int ex,int z,int ez);
 extern void portal_set_spot(int rn,int x,int z);

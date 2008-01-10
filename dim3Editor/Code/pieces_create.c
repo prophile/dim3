@@ -52,7 +52,7 @@ int piece_create_get_spot(int *x,int *y,int *z,int x_wid,int z_wid,int high)
 		portal=&map.portals[cr];
 		*x=((portal->x+portal->ex)/2)-portal->x;
 		*z=((portal->z+portal->ez)/2)-portal->z;
-		*y=(cy/map_enlarge);
+		*y=cy;
 	}
 	else {
 	

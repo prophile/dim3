@@ -87,9 +87,9 @@ void portal_compile_gl_lists(int tick,int rn)
 			for (t=0;t!=mesh_poly->ptsz;t++) {
 				pt=&mesh->vertexes[mesh_poly->v[t]];
 
-				*pv++=((float)(pt->x+portal->x)-fx);
+				*pv++=((float)pt->x-fx);
 				*pv++=((float)pt->y-fy);
-				*pv++=(fz-(float)(pt->z+portal->z));
+				*pv++=(fz-(float)pt->z);
 				*pp++=mesh_poly->gx[t];
 				*pp++=mesh_poly->gy[t];
 				*pc++=1.0f;

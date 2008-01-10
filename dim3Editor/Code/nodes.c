@@ -237,8 +237,8 @@ void node_path_rebuild(void)
 		
     for (i=0;i!=map.nnode;i++) {
     
-        x=node->pos.x*map_enlarge;
-        z=node->pos.z*map_enlarge;
+        x=node->pos.x;
+        z=node->pos.z;
 		
 		to_node=map.nodes;
     
@@ -248,7 +248,7 @@ void node_path_rebuild(void)
                 link_dist[i][k]=0;
             }
             else {
-            	link_dist[i][k]=distance_2D_get(x,z,(to_node->pos.x*map_enlarge),(to_node->pos.z*map_enlarge));
+            	link_dist[i][k]=distance_2D_get(x,z,to_node->pos.x,to_node->pos.z);
             }
 			
 			to_node++;

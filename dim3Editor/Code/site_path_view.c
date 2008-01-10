@@ -286,8 +286,8 @@ void site_path_view_reset(void)
     x_sz=site_path_view_box.right-site_path_view_box.left;
     z_sz=site_path_view_box.bottom-site_path_view_box.top;
     
-    site_path_view_x=(cx/map_enlarge)-top_view_pane_to_map_factor(x_sz/2);
-    site_path_view_z=(cz/map_enlarge)-top_view_pane_to_map_factor(z_sz/2);
+    site_path_view_x=cx-top_view_pane_to_map_factor(x_sz/2);
+    site_path_view_z=cz-top_view_pane_to_map_factor(z_sz/2);
 }
 
 

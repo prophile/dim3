@@ -310,8 +310,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>11</integer>
-									<integer>10</integer>
+									<integer>16</integer>
+									<integer>15</integer>
 									<integer>9</integer>
 									<integer>0</integer>
 								</array>
@@ -417,9 +417,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>F5BBA4620D30B7B0009F7C91</string>
+				<string>F5DE23FE0D35CCA600C0A850</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>F5BBA4630D30B7B0009F7C91</string>
+				<string>F5DE23FF0D35CCA600C0A850</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -550,7 +550,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>221296560.14575201</real>
+	<real>221629606.356603</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -607,6 +607,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -646,7 +648,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>F50B25E50920681E00879CCC</string>
-				<string>F5BBA4640D30B7B0009F7C91</string>
+				<string>F5DE23B00D35C88200C0A850</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -840,8 +842,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>F5C5AEEF0D276820005124C0</string>
-				<string>F5C5AEF00D276820005124C0</string>
+				<string>F5CF28630D34824800BF97EC</string>
+				<string>F5CF28640D34824800BF97EC</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>

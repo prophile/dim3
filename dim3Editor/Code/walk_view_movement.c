@@ -331,9 +331,9 @@ void walk_view_portal_go_to_selection(void)
 	select_get_extent(&min_x,&min_z,&min_y,&max_x,&max_z,&max_y);
 	
 	portal=&map.portals[cr];
-	cx=(((min_x+max_x)/2)+portal->x)*map_enlarge;
-	cz=(((min_z+max_z)/2)+portal->z)*map_enlarge;
-	cy=((min_y+max_y)/2)*map_enlarge;
+	cx=((min_x+max_x)/2)+portal->x;
+	cz=((min_z+max_z)/2)+portal->z;
+	cy=(min_y+max_y)/2;
 
 	main_wind_draw();
 }

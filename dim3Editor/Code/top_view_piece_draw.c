@@ -495,6 +495,8 @@ void top_view_piece_draw(int rn)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*mesh_poly;
 	
+		// meshes
+		
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	glEnable(GL_TEXTURE_2D);
 	
@@ -531,6 +533,31 @@ void top_view_piece_draw(int rn)
 	}
 
 	glDisable(GL_TEXTURE_2D);
+	
+		// spots
+		
+	if (dp_object) {
+	
+			// script spots
+			
+		for (n=0;n!=map.nspot;n++) {
+			if (map.spots[n].pos.rn!=rn) continue;
+			
+		//	top_view_make_rect_by_pos(&map.spots[n].pos,5,&box);
+		//	top_view_piece_draw_arrow(&box,map.spots[n].name,map.spots[i].ang.y,clipbox,&orangecolor);
+		}
+	
+			// scenery
+		
+		for (n=0;n!=map.nscenery;n++) {
+			if (map.sceneries[n].pos.rn!=rn) continue;
+			
+		//	top_view_make_rect_by_pos(&map.sceneries[n].pos,5,&box);
+		//	top_view_piece_draw_arrow(&box,map.sceneries[n].model_name,map.sceneries[n].ang.y,clipbox,&yellowcolor);
+		}
+		
+	}
+
 
 }
 

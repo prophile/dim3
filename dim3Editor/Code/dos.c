@@ -165,8 +165,8 @@ bool create_first_portal(void)
 	
 		// get first portal
 		
-	cx=(map_x_size>>1)*map_enlarge;
-	cz=(map_z_size>>1)*map_enlarge;
+	cx=map_x_size>>1;
+	cz=map_z_size>>1;
 	cy=200*map_enlarge;
 	
 	map.nportal=0;

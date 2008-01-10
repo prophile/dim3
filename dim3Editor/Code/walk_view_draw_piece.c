@@ -177,9 +177,9 @@ void walk_view_draw_sprite(d3pos *pos,int xadd,int zadd,int txt)
 {
     int			x,y,z,wid,high;
   
-    x=((pos->x*map_enlarge)+xadd)-cx;
-    y=((pos->y+1)*map_enlarge)-cy;
-    z=((pos->z*map_enlarge)+zadd)-cz;
+    x=(pos->x+xadd)-cx;
+    y=(pos->y+1)-cy;
+    z=(pos->z+zadd)-cz;
     
     wid=map_enlarge*3;
     high=map_enlarge*4;
@@ -279,8 +279,8 @@ void walk_view_draw_portal_segments(int rn,bool opaque)
 	
 	old_gl_id=-1;
 	
-	xadd=map.portals[rn].x*map_enlarge;
-	zadd=map.portals[rn].z*map_enlarge;
+	xadd=map.portals[rn].x;
+	zadd=map.portals[rn].z;
 
 		// no depth buffer for transparent segments
 		
@@ -324,9 +324,9 @@ void walk_view_draw_portal_segments(int rn,bool opaque)
 			
 			for (t=0;t!=mesh_poly->ptsz;t++) {
 				pt=&mesh->vertexes[mesh_poly->v[t]];
-				x=((pt->x*map_enlarge)+xadd)-cx;
-				y=(pt->y*map_enlarge)-cy;
-				z=cz-((pt->z*map_enlarge)+zadd);
+				x=(pt->x+xadd)-cx;
+				y=pt->y-cy;
+				z=cz-(pt->z+zadd);
 				glTexCoord2f(mesh_poly->gx[t],mesh_poly->gy[t]);
 				glVertex3i(x,y,z);
 			}
@@ -519,8 +519,8 @@ void walk_view_draw_portal_pieces(int rn)
 
 	glEnable(GL_TEXTURE_2D);
 	
-	xadd=map.portals[rn].x*map_enlarge;
-	zadd=map.portals[rn].z*map_enlarge;
+	xadd=map.portals[rn].x;
+	zadd=map.portals[rn].z;
 	
 		// draw the nodes
 	

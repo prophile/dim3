@@ -118,7 +118,7 @@ void walk_view_shutdown(void)
       
 ======================================================= */
 
-void walk_view_setup(bool active)
+void walk_view_setup(bool active,bool full_screen)
 {
     Rect			wbox;
 	
@@ -135,26 +135,36 @@ void walk_view_setup(bool active)
 		// active view
 		
  	GetWindowPortBounds(mainwind,&wbox);
+	
+	if (full_screen) {
+		walk_view_forward_box=wbox;
+		walk_view_forward_box.top+=toolbar_high;
+		walk_view_forward_box.bottom-=(txt_palette_high+info_high);
+		walk_view_forward_box.right-=piece_wid;
 		
-	if (!main_wind_rot) {
-		walk_view_forward_box.top=walk_view_side_box.top=wbox.top+(toolbar_high+2);
-		walk_view_forward_box.bottom=walk_view_side_box.bottom=(wbox.top+toolbar_high)+(((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2);
-
-		walk_view_forward_box.left=wbox.left+2;
-		walk_view_forward_box.right=(wbox.right-piece_wid)-(((wbox.right-piece_wid)-wbox.left)/2);
-
-		walk_view_side_box.left=walk_view_forward_box.right+2;
-		walk_view_side_box.right=wbox.right-(piece_wid+2);
+		SetRect(&walk_view_side_box,-1,-1,-1,-1);
 	}
 	else {
-		walk_view_forward_box.left=walk_view_side_box.left=wbox.left+2;
-		walk_view_forward_box.right=walk_view_side_box.right=(wbox.right-piece_wid)-((((wbox.right-piece_wid)-wbox.left)/2)+2);
-		
-		walk_view_forward_box.top=wbox.top+(toolbar_high+2);
-		walk_view_forward_box.bottom=walk_view_side_box.bottom=(wbox.top+toolbar_high)+((((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2)-2);
+		if (!main_wind_rot) {
+			walk_view_forward_box.top=walk_view_side_box.top=wbox.top+(toolbar_high+2);
+			walk_view_forward_box.bottom=walk_view_side_box.bottom=(wbox.top+toolbar_high)+(((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2);
 
-		walk_view_forward_box.top=walk_view_forward_box.bottom+1;
-		walk_view_forward_box.bottom=wbox.bottom-((txt_palette_high+info_high)+2);
+			walk_view_forward_box.left=wbox.left+2;
+			walk_view_forward_box.right=(wbox.right-piece_wid)-(((wbox.right-piece_wid)-wbox.left)/2);
+
+			walk_view_side_box.left=walk_view_forward_box.right+2;
+			walk_view_side_box.right=wbox.right-(piece_wid+2);
+		}
+		else {
+			walk_view_forward_box.left=walk_view_side_box.left=wbox.left+2;
+			walk_view_forward_box.right=walk_view_side_box.right=(wbox.right-piece_wid)-((((wbox.right-piece_wid)-wbox.left)/2)+2);
+			
+			walk_view_forward_box.top=wbox.top+(toolbar_high+2);
+			walk_view_forward_box.bottom=walk_view_side_box.bottom=(wbox.top+toolbar_high)+((((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2)-2);
+
+			walk_view_forward_box.top=walk_view_forward_box.bottom+1;
+			walk_view_forward_box.bottom=wbox.bottom-((txt_palette_high+info_high)+2);
+		}
 	}
 }
 
@@ -255,8 +265,8 @@ void walk_view_top_reset(void)
     x_sz=top_view_box.right-top_view_box.left;
     z_sz=top_view_box.bottom-top_view_box.top;
     
-    cx=(top_view_x+top_view_pane_to_map_factor(x_sz/2))*map_enlarge;
-    cz=(top_view_z+top_view_pane_to_map_factor(z_sz/2))*map_enlarge;
+    cx=top_view_x+top_view_pane_to_map_factor(x_sz/2);
+    cz=top_view_z+top_view_pane_to_map_factor(z_sz/2);
 }
 
 void walk_view_portal_view_reset(void)
@@ -266,8 +276,8 @@ void walk_view_portal_view_reset(void)
     x_sz=portal_view_box.right-portal_view_box.left;
     z_sz=portal_view_box.bottom-portal_view_box.top;
     
-    cx=(portal_view_x+top_view_pane_to_map_factor(x_sz/2))*map_enlarge;
-    cz=(portal_view_z+top_view_pane_to_map_factor(z_sz/2))*map_enlarge;
+    cx=portal_view_x+top_view_pane_to_map_factor(x_sz/2);
+    cz=portal_view_z+top_view_pane_to_map_factor(z_sz/2);
 }
 
 void walk_view_site_path_view_reset(void)
@@ -277,7 +287,7 @@ void walk_view_site_path_view_reset(void)
     x_sz=site_path_view_box.right-site_path_view_box.left;
     z_sz=site_path_view_box.bottom-site_path_view_box.top;
     
-    cx=(site_path_view_x+top_view_pane_to_map_factor(x_sz/2))*map_enlarge;
-    cz=(site_path_view_z+top_view_pane_to_map_factor(z_sz/2))*map_enlarge;
+    cx=site_path_view_x+top_view_pane_to_map_factor(x_sz/2);
+    cz=site_path_view_z+top_view_pane_to_map_factor(z_sz/2);
 }
 

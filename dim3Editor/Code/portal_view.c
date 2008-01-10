@@ -330,8 +330,8 @@ void portal_view_reset(void)
     x_sz=portal_view_box.right-portal_view_box.left;
     z_sz=portal_view_box.bottom-portal_view_box.top;
     
-    portal_view_x=(cx/map_enlarge)-top_view_pane_to_map_factor(x_sz/2);
-    portal_view_z=(cz/map_enlarge)-top_view_pane_to_map_factor(z_sz/2);
+    portal_view_x=cx-top_view_pane_to_map_factor(x_sz/2);
+    portal_view_z=cz-top_view_pane_to_map_factor(z_sz/2);
 }
 
 

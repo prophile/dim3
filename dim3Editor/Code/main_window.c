@@ -698,7 +698,7 @@ void main_wind_open(void)
 		
 	main_wind_rot=setup.view_flip;
 	
-	walk_view_setup(TRUE);
+	walk_view_setup(TRUE,FALSE);
 	portal_view_setup(TRUE,FALSE);
 	portal_view_center();
 	site_path_view_setup(TRUE,FALSE);
@@ -856,7 +856,7 @@ void main_wind_set_view(int view)
 	switch (main_wind_view) {
 	
 		case vw_walk_top:
-			walk_view_setup(TRUE);
+			walk_view_setup(TRUE,FALSE);
 			portal_view_setup(FALSE,FALSE);
 			site_path_view_setup(FALSE,FALSE);
 			top_view_setup(TRUE,FALSE);
@@ -865,7 +865,7 @@ void main_wind_set_view(int view)
 			break;
 			
 		case vw_portal_only:
-			walk_view_setup(FALSE);
+			walk_view_setup(FALSE,FALSE);
 			portal_view_setup(TRUE,TRUE);
 			site_path_view_setup(FALSE,FALSE);
 			top_view_setup(FALSE,FALSE);
@@ -874,7 +874,7 @@ void main_wind_set_view(int view)
 			break;
 
 		case vw_site_path_only:
-			walk_view_setup(FALSE);
+			walk_view_setup(FALSE,FALSE);
 			portal_view_setup(FALSE,FALSE);
 			site_path_view_setup(TRUE,TRUE);
 			top_view_setup(FALSE,FALSE);
@@ -883,7 +883,7 @@ void main_wind_set_view(int view)
 			break;
 			
 		case vw_top_only:
-			walk_view_setup(FALSE);
+			walk_view_setup(FALSE,FALSE);
 			portal_view_setup(FALSE,FALSE);
 			site_path_view_setup(FALSE,FALSE);
 			top_view_setup(TRUE,TRUE);
@@ -892,7 +892,7 @@ void main_wind_set_view(int view)
 			break;
 			
 		case vw_walk_only:
-			walk_view_setup(TRUE);
+			walk_view_setup(TRUE,TRUE);
 			portal_view_setup(FALSE,FALSE);
 			site_path_view_setup(FALSE,FALSE);
 			top_view_setup(FALSE,FALSE);
@@ -1031,11 +1031,7 @@ void main_wind_draw_dividers(void)
 void main_wind_draw(void)
 {
 	Rect			wbox;
-	CGrafPtr		saveport;
 
-	GetPort(&saveport);
-	SetPort(GetWindowPort(mainwind));
-    
 	GetWindowPortBounds(mainwind,&wbox);
 	
 		// clear gl buffer
@@ -1053,7 +1049,6 @@ void main_wind_draw(void)
 			walk_view_draw(FALSE);
 			walk_view_draw(TRUE);
 			top_view_draw();
-			texture_palette_draw();
 			main_wind_draw_dividers();
 			break;
 			
@@ -1074,13 +1069,15 @@ void main_wind_draw(void)
 			break;
 	}
 	
+		// texture window
+		
+	texture_palette_draw();
+	
 		// swap GL buffer
 		
 	aglSwapBuffers(ctx);
 	
-	SetPort(saveport);
-	
-		// piggy back info window drawing when main window is drawn
+		// status line
 		
 	info_status_line_draw();
 }
@@ -1117,9 +1114,9 @@ void main_wind_center_position_in_map(void)
 	zsz=map.portals[cr].ez-cz;
 	portal_get_y_size(cr,&ty,&by);
 			
-	cx=(cx+(xsz/2))*map_enlarge;		// center starting position
-	cz=(cz+(zsz/2))*map_enlarge;
-	cy=((ty+by)/2)*map_enlarge;
+	cx=cx+(xsz/2);		// center starting position
+	cz=cz+(zsz/2);
+	cy=(ty+by)/2;
 	
 	walk_view_y_angle=0.0f;
 	walk_view_x_angle=0.0f;

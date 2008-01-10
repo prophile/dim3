@@ -32,7 +32,7 @@ and can be sold or given away.
 extern bool walk_view_initialize(void);
 extern void walk_view_shutdown(void);
 extern void walk_view_set_fov(float fov);
-extern void walk_view_setup(bool active);
+extern void walk_view_setup(bool active,bool full_screen);
 extern void walk_view_click(Point pt,bool dblclick,bool on_side);
 extern void walk_view_cursor(void);
 extern void walk_view_key(char ch,bool on_side);

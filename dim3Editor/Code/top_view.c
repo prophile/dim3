@@ -29,7 +29,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "top_view.h"
 
-#define wvfact_div				40
+#define wvfact_div				(40*map_enlarge)
 
 extern int						cr,cx,cz,cy,txt_palette_high;
 extern bool						dp_node,dp_y_hide,main_wind_rot;
@@ -139,7 +139,7 @@ void top_view_setup(bool active,bool full_screen)
 
 bool top_view_hide_y(fc_segment_data *fc)
 {
-	int				i,y,ptsz;
+	int				i,ptsz;
 	
 		// is Y hiding on?
 		
@@ -147,12 +147,10 @@ bool top_view_hide_y(fc_segment_data *fc)
 	
 		// Y hiding
 		
-	y=cy/map_enlarge;
-	
 	ptsz=fc->ptsz;
 	
 	for (i=0;i<ptsz;i++) {
-		if (labs(fc->y[i]-y)<=10) return(FALSE);
+		if (labs(fc->y[i]-cy)<=10) return(FALSE);
 	}
 	
 	return(TRUE);
@@ -326,8 +324,8 @@ void top_view_reset(void)
     x_sz=top_view_box.right-top_view_box.left;
     z_sz=top_view_box.bottom-top_view_box.top;
     
-    top_view_x=(cx/map_enlarge)-top_view_pane_to_map_factor(x_sz/2);
-    top_view_z=(cz/map_enlarge)-top_view_pane_to_map_factor(z_sz/2);
+    top_view_x=cx-top_view_pane_to_map_factor(x_sz/2);
+    top_view_z=cz-top_view_pane_to_map_factor(z_sz/2);
 }
 
 

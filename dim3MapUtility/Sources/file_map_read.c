@@ -998,12 +998,19 @@ int map_convert_segment_to_mesh_fc_to_polygon(segment_type *seg,int *px,int *py,
 
 bool map_convert_segment_to_mesh(map_type *map)
 {
-	int				n,i,vlist_sz,nvertex,npoly;
-	int				ptsz,px[8],py[8],pz[8];
-	float			gx[8],gy[8];
-	d3pnt			*vlist;
-	segment_type	*seg;
-	map_mesh_type	*map_mesh;
+	int					n,i,vlist_sz,nvertex,npoly;
+	int					ptsz,px[8],py[8],pz[8];
+	float				gx[8],gy[8];
+	d3pnt				*vlist;
+	portal_type			*portal;
+	segment_type		*seg;
+	map_mesh_type		*map_mesh;
+	node_type			*node;
+	map_scenery_type	*scenery;
+	map_light_type		*light;
+	map_sound_type		*sound;
+	map_particle_type	*particle;
+	spot_type			*spot;
 
 			// memory for vertex lists
 			// just use enough vertexes to cover most maps,
@@ -1018,7 +1025,16 @@ bool map_convert_segment_to_mesh(map_type *map)
 
 	for (n=0;n!=map->nportal;n++) {
 	
-		map->portals[n].mesh.nmesh=0;
+		portal=&map->portals[n];
+	
+			// enlarge portal
+			
+		portal->x*=map_enlarge;
+		portal->z*=map_enlarge;
+		portal->ex*=map_enlarge;
+		portal->ez*=map_enlarge;		// supergumba -- maybe do during load
+	
+		portal->mesh.nmesh=0;
 
 			// clear vertex list
 
@@ -1072,7 +1088,7 @@ bool map_convert_segment_to_mesh(map_type *map)
 			return(FALSE);
 		}
 
-		map_mesh=&map->portals[n].mesh.meshes[0];
+		map_mesh=&portal->mesh.meshes[0];
 
 			// move over vertexes
 
@@ -1110,6 +1126,85 @@ bool map_convert_segment_to_mesh(map_type *map)
 		// turn off all segments
 
 	map->nsegment=0;
+	
+		// enlarge other items
+		// supergumba -- maybe do during load?
+		
+		// map scenery
+	
+	scenery=map->sceneries;
+	
+	for ((i=0);(i!=map->nscenery);i++) {
+		portal=&map->portals[scenery->pos.rn];
+		scenery->pos.x=(scenery->pos.x*map_enlarge);
+		scenery->pos.y=(scenery->pos.y+1)*map_enlarge;
+		scenery->pos.z=(scenery->pos.z*map_enlarge);
+		scenery++;
+	}
+		
+		// map lights
+	
+	light=map->lights;
+	
+	for ((i=0);(i!=map->nlight);i++) {
+		portal=&map->portals[light->pos.rn];
+		light->intensity*=map_enlarge;
+		light->pos.x=(light->pos.x*map_enlarge);
+		light->pos.y=(light->pos.y+1)*map_enlarge;
+		light->pos.z=(light->pos.z*map_enlarge);
+		light++;
+	}
+	
+		// map sounds
+	
+	sound=map->sounds;
+	
+	for ((i=0);(i!=map->nsound);i++) {
+		portal=&map->portals[sound->pos.rn];
+		sound->pos.x=(sound->pos.x*map_enlarge);
+		sound->pos.y=(sound->pos.y+1)*map_enlarge;
+		sound->pos.z=(sound->pos.z*map_enlarge);
+		
+		sound++;
+	}
+	
+		// map particles
+	
+	particle=map->particles;
+	
+	for ((i=0);(i!=map->nparticle);i++) {
+		portal=&map->portals[particle->pos.rn];
+		particle->pos.x=(particle->pos.x*map_enlarge);
+		particle->pos.y=(particle->pos.y+1)*map_enlarge;
+		particle->pos.z=(particle->pos.z*map_enlarge);
+		
+		particle++;
+	}
+	
+		// nodes
+
+	node=map->nodes;
+	
+	for ((i=0);(i!=map->nnode);i++) {
+        node->idx=i;
+		portal=&map->portals[node->pos.rn];
+		node->pos.x=(node->pos.x*map_enlarge);
+		node->pos.y=(node->pos.y+1)*map_enlarge;
+		node->pos.z=(node->pos.z*map_enlarge);
+		node++;
+	}
+    
+		// object starts
+		
+	spot=map->spots;
+
+	for ((i=0);(i!=map->nspot);i++) {
+		portal=&map->portals[spot->pos.rn];
+		spot->pos.x=(spot->pos.x*map_enlarge);
+		spot->pos.y=(spot->pos.y+1)*map_enlarge;
+		spot->pos.z=(spot->pos.z*map_enlarge);
+		spot++;
+	}
 
 	return(TRUE);
 }

@@ -173,10 +173,10 @@ void top_view_portal_draw(void)
 
 void top_view_portal_position_draw(void)
 {
-    int			x,z,k,px[3],pz[3];
+    int			x,z,k,px[4],pz[4];
    
-    x=cx/map_enlarge;
-    z=cz/map_enlarge;
+    x=cx;
+    z=cz;
 	top_view_map_to_pane(&x,&z);
 	
 	k=(8*magnify_factor)/40;
@@ -190,14 +190,18 @@ void top_view_portal_position_draw(void)
 	px[2]=x+k;
 	pz[2]=z+k;
 	
-	rotate_2D_polygon(3,px,pz,x,z,walk_view_y_angle);
+	px[3]=x;
+	pz[3]=z+(k>>1);
 	
-	glColor4f(0.0f,0.0f,0.0f,0.8f);
+	rotate_2D_polygon(4,px,pz,x,z,walk_view_y_angle);
 	
-	glBegin(GL_TRIANGLES);
+	glColor4f(0.0f,0.0f,0.0f,0.75f);
+	
+	glBegin(GL_QUADS);
 	glVertex2i(px[0],pz[0]);
 	glVertex2i(px[1],pz[1]);
 	glVertex2i(px[2],pz[2]);
+	glVertex2i(px[3],pz[3]);
 	glEnd();
 }
 

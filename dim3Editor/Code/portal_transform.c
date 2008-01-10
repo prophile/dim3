@@ -42,7 +42,7 @@ extern map_type				map;
       
 ======================================================= */
 
-void portal_get_size(int q,int *pex,int *pey)
+void portal_get_size(int rn,int *pex,int *pey)
 {
 	int				i,t,ex,ey;
 	segment_type	*seg;
@@ -51,7 +51,7 @@ void portal_get_size(int q,int *pex,int *pey)
 	
 	for ((i=0);(i!=map.nsegment);i++) {
 		seg=&map.segments[i];
-		if (seg->rn!=q) {
+		if (seg->rn!=rn) {
 			continue;
 		}
 		
@@ -103,38 +103,41 @@ void portal_get_size(int q,int *pex,int *pey)
 	*pey=ey;
 }
 
-void portal_get_y_size(int q,int *pty,int *pby)
+void portal_get_y_size(int rn,int *pty,int *pby)
 {
-	int				i,t,ty,by;
-	segment_type	*seg;
+	int					n,k,t,ty,by;
+	d3pnt				*pt;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*mesh_poly;
+
+	ty=99999;
+	by=0;
 	
-	ty=9999;
-	by=-9999;
-	
-	for ((i=0);(i!=map.nsegment);i++) {
-		seg=&map.segments[i];
-		if (seg->rn!=q) continue;
+	portal=&map.portals[rn];
 		
-		switch (seg->type) {
-			case sg_wall:
-				if (seg->data.wall.ty<ty) ty=seg->data.wall.ty;
-				if (seg->data.wall.by>by) by=seg->data.wall.by;
-				break;
-			case sg_floor:
-			case sg_ceiling:
-				for ((t=0);(t!=seg->data.fc.ptsz);t++) {
-					if (seg->data.fc.y[t]<ty) ty=seg->data.fc.y[t];
-					if (seg->data.fc.y[t]>by) by=seg->data.fc.y[t];
-				}
-				break;
-			case sg_liquid:
-				if (seg->data.liquid.y<ty) ty=seg->data.liquid.y;
-				if (seg->data.liquid.y>by) by=seg->data.liquid.y;
-				break;
+	mesh=portal->mesh.meshes;
+		
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+
+		mesh_poly=mesh->polys;
+			
+		for (k=0;k!=mesh->npoly;k++) {
+
+			for (t=0;t!=mesh_poly->ptsz;t++) {
+				pt=&mesh->vertexes[mesh_poly->v[t]];
+
+				if (pt->y<ty) ty=pt->y;
+				if (pt->y>by) by=pt->y;
+			}
+		
+			mesh_poly++;
 		}
+	
+		mesh++;
 	}
     
-    if ((ty==9999) || (by==-9999)) ty=by=29;
+    if ((ty==9999) || (by==0)) ty=by=29;
 
 	*pty=ty;
 	*pby=by;

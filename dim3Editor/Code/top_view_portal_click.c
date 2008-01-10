@@ -117,8 +117,8 @@ void top_view_portal_hand_scroll(Point pt)
 		sx=x;
 		sy=y;
 		
-		top_view_x=h+x;
-		top_view_z=v+y;
+		top_view_x=h+(x*map_enlarge);
+		top_view_z=v+(y*map_enlarge);
 		
         walk_view_top_reset();
         main_wind_draw();
@@ -137,8 +137,8 @@ bool top_view_click_position(Point pt)
     int			x,z;
     Rect		box;
     
-	x=cx/map_enlarge;
-	z=cz/map_enlarge;
+	x=cx;
+	z=cz;
 	top_view_map_to_pane(&x,&z);
     
     SetRect(&box,(x-5),(z-5),(x+5),(z+5));

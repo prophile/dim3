@@ -122,8 +122,8 @@ bool portal_new(void)
 	
 		// move portal till it's at a clear spot
 		
-	x=(cx/map_enlarge)-(x_size/2);
-	z=(cz/map_enlarge)-(z_size/2);
+	x=cx-(x_size/2);
+	z=cz-(z_size/2);
 	spot_ok=FALSE;
 	
 	for (i=0;i!=250;i++) {
@@ -148,7 +148,7 @@ bool portal_new(void)
     
         // add segments
     
-    y=(cy/map_enlarge)+(high/2);
+    y=cy+(high/2);
     if (high>y) y=high;
         
     for ((x=0);(x!=div);x++) {

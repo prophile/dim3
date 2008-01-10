@@ -199,12 +199,8 @@ void map_prepare_segments(map_type *map)
 	
 	for (i=0;i!=map->nportal;i++) {
 
-			// portal sizes
+			// portal middle
 
-		portal->x*=map_enlarge;
-		portal->z*=map_enlarge;
-		portal->ex*=map_enlarge;
-		portal->ez*=map_enlarge;
 		portal->mx=(portal->x+portal->ex)>>1;
 		portal->mz=(portal->z+portal->ez)>>1;
 
@@ -219,12 +215,24 @@ void map_prepare_segments(map_type *map)
 		mesh=portal->mesh.meshes;
 		
 		for (n=0;n!=portal->mesh.nmesh;n++) {
+				
+				// translate vertexes from portal to global
+					
+			pt=mesh->vertexes;
+			
+			for (k=0;k!=mesh->nvertex;k++) {
+				pt->x+=portal->x;
+				pt->z+=portal->z;
+				pt++;
+			}
+			
+				// run through the mesh polygons
 
 			mesh_poly=mesh->polys;
 			
 			for (k=0;k!=mesh->npoly;k++) {
 			
-					// check for portal Ys
+					// and find lowest/highest portal Y
 
 				for (t=0;t!=mesh_poly->ptsz;t++) {
 					pt=&mesh->vertexes[mesh_poly->v[t]];
@@ -248,8 +256,80 @@ void map_prepare_segments(map_type *map)
 		
 			mesh++;
 		}
+		
+			// fix portal heights
+
+		if ((portal->ty==99999) && (portal->by!=0)) portal->ty=portal->by;
+		if ((portal->by==0) && (portal->ty!=99999)) portal->by=portal->ty;
+		if ((portal->ty==99999) || (portal->by==0)) portal->ty=portal->by=0;
 
 		portal++;
+	}
+	
+		// translate other objects from portal
+		// to global coordinates
+	
+	scenery=map->sceneries;
+	
+	for (n=0;n!=map->nscenery;n++) {
+		portal=&map->portals[scenery->pos.rn];
+		scenery->pos.x+=portal->x;
+		scenery->pos.z=scenery->pos.z+portal->z;
+		scenery++;
+	}
+		
+	light=map->lights;
+	
+	for (n=0;n!=map->nlight;n++) {
+		portal=&map->portals[light->pos.rn];
+		light->pos.x=light->pos.x+portal->x;
+		light->pos.z=light->pos.z+portal->z;
+		light++;
+	}
+	
+		// map sounds
+	
+	sound=map->sounds;
+	
+	for (n=0;n!=map->nsound;n++) {
+		portal=&map->portals[sound->pos.rn];
+		sound->pos.x=sound->pos.x+portal->x;
+		sound->pos.z=sound->pos.z+portal->z;
+		sound++;
+	}
+	
+		// map particles
+	
+	particle=map->particles;
+	
+	for (n=0;n!=map->nparticle;n++) {
+		portal=&map->portals[particle->pos.rn];
+		particle->pos.x=particle->pos.x+portal->x;
+		particle->pos.z=particle->pos.z+portal->z;
+		particle++;
+	}
+	
+		// nodes
+
+	node=map->nodes;
+	
+	for (n=0;n!=map->nnode;n++) {
+		portal=&map->portals[node->pos.rn];
+        node->idx=i;
+		node->pos.x=node->pos.x+portal->x;
+		node->pos.z=node->pos.z+portal->z;
+		node++;
+	}
+    
+		// object starts
+		
+	spot=map->spots;
+
+	for (n=0;n!=map->nspot;n++) {
+		portal=&map->portals[spot->pos.rn];
+		spot->pos.x=spot->pos.x+portal->x;
+		spot->pos.z=spot->pos.z+portal->z;
+		spot++;
 	}
 
 
@@ -351,7 +431,6 @@ void map_prepare_segments(map_type *map)
         
         seg++;
 	}
-	*/
 	
 		// fix portal heights
 	
@@ -439,6 +518,7 @@ void map_prepare_segments(map_type *map)
 		spot->pos.z=(spot->pos.z*map_enlarge)+portal->z;
 		spot++;
 	}
+	*/
 }
 
 /* =======================================================

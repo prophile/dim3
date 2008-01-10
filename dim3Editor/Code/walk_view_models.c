@@ -246,9 +246,9 @@ bool walk_view_model_draw(d3pos *pos,d3ang *ang,char *name)
 		
 	rn=pos->rn;
 	
-	x=((pos->x+map.portals[rn].x)*map_enlarge)-cx;
-	y=((pos->y+1)*map_enlarge)-cy;
-	z=((pos->z+map.portals[rn].z)*map_enlarge)-cz;
+	x=(pos->x+map.portals[rn].x)-cx;
+	y=(pos->y+1)-cy;
+	z=(pos->z+map.portals[rn].z)-cz;
 	
 		// build model vertex list
 		
@@ -332,9 +332,9 @@ bool walk_view_model_click_select_size(char *name,d3pos *pos,d3ang *ang,int *px,
 		
 	rn=pos->rn;
 	
-	x=((pos->x+map.portals[rn].x)*map_enlarge)-cx;
-	y=((pos->y+1)*map_enlarge)-cy;
-	z=cz-((pos->z+map.portals[rn].z)*map_enlarge);
+	x=(pos->x+map.portals[rn].x)-cx;
+	y=(pos->y+1)-cy;
+	z=cz-(pos->z+map.portals[rn].z);
 
 		// default size
 		
