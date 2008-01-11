@@ -888,20 +888,6 @@ int map_convert_segment_to_mesh_wall_to_polygon(segment_type *seg,int *px,int *p
 	
 	switch (seg->clip) {
 	
-        case wc_none:
-			ptsz=4;
-			px[0]=px[3]=wall->lx;
-			px[1]=px[2]=wall->rx;
-			pz[0]=pz[3]=wall->lz;
-			pz[1]=pz[2]=wall->rz;
-			py[0]=py[1]=wall->ty;
-			py[2]=py[3]=wall->by+1;
-            gx[0]=gx[3]=seg->x_txtoff;
-            gx[1]=gx[2]=seg->x_txtoff+seg->x_txtfact;
-            gy[0]=gy[1]=seg->y_txtoff;
-            gy[2]=gy[3]=seg->y_txtoff+seg->y_txtfact;
-            break;
-			
 		case wc_bottom:
 			ptsz=3;
 			px[0]=wall->lx;
@@ -946,6 +932,20 @@ int map_convert_segment_to_mesh_wall_to_polygon(segment_type *seg,int *px,int *p
 			gy[1]=gy[3]=seg->y_txtoff+(seg->y_txtfact/2);
 			gy[2]=seg->y_txtoff+seg->y_txtfact;
 			break;
+
+        default:
+			ptsz=4;
+			px[0]=px[3]=wall->lx;
+			px[1]=px[2]=wall->rx;
+			pz[0]=pz[3]=wall->lz;
+			pz[1]=pz[2]=wall->rz;
+			py[0]=py[1]=wall->ty;
+			py[2]=py[3]=wall->by+1;
+            gx[0]=gx[3]=seg->x_txtoff;
+            gx[1]=gx[2]=seg->x_txtoff+seg->x_txtfact;
+            gy[0]=gy[1]=seg->y_txtoff;
+            gy[2]=gy[3]=seg->y_txtoff+seg->y_txtfact;
+            break;
 	}
 	
 	map_convert_segment_to_mesh_orient_uv(ptsz,gx,gy,seg->txt_ang);

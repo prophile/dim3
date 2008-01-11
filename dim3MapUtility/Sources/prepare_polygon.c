@@ -29,6 +29,9 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
+
+// supergumba -- tons of this can be deleted
+
 /* =======================================================
 
       Re-Orient UV Coordinates
@@ -193,22 +196,6 @@ void map_prepare_create_fc_segment_uv(segment_type *seg)
     }
 	
 	map_prepare_orient_uv_polygon(fc->ptsz,draw->gx,draw->gy,seg->txt_ang);
-}
-
-/* =======================================================
-
-      Create Slopes for FC Segments
-      
-======================================================= */
-
-void map_prepare_create_fc_segment_slope(segment_type *seg)
-{
-    fc_segment_data		*fc;
-    
-	fc=&seg->data.fc;
-
-	fc->slope_y=polygon_get_slope_y(fc->ptsz,fc->x,fc->y,fc->z,&fc->slope_ang_y);
-	angle_get_movement_float(fc->slope_ang_y,(gravity_slope_factor*fc->slope_y),&fc->slope_move_x,&fc->slope_move_z);
 }
 
 /* =======================================================

@@ -219,7 +219,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						bool						flat;
+						bool						flat,vertical;
 						d3pnt						min,max;
 					} map_mesh_poly_box_type;
 
@@ -233,7 +233,13 @@ typedef struct		{
 					} map_mesh_poly_flag_type;
 
 typedef struct		{
-						int							portal_v[8],txt_frame_offset;
+						int							trig_count,
+													trig_vertex_idx[light_tessel_max_vertex];
+					} map_mesh_poly_light_type;
+
+typedef struct		{
+						int							portal_v[8],txt_frame_offset,
+													stencil_pass,stencil_idx;
 						bool						simple_tessel,shift_on;
 					} map_mesh_poly_draw_type;
 
@@ -244,6 +250,7 @@ typedef struct		{
 						map_mesh_poly_box_type		box;
 						map_mesh_poly_slope_type	slope;
 						map_mesh_poly_flag_type		flag;
+						map_mesh_poly_light_type	light;
 						map_mesh_poly_draw_type		draw;
 					} map_mesh_poly_type;
 

@@ -127,7 +127,7 @@ void map_prepare_draw_frwd_4_curve(map_type *map,segment_type *seg)
         curve_fc->ptsz=curve_draw->ptsz=4;
 		
         curve_seg->curve=cv_none;
-        map_prepare_set_fc_segment_square(curve_seg);
+//        map_prepare_set_fc_segment_square(curve_seg);
 
         r=r2;
     }
@@ -209,7 +209,7 @@ void map_prepare_draw_frwd_3_curve(map_type *map,segment_type *seg)
         curve_fc->ptsz=curve_draw->ptsz=4;
 		
         curve_seg->curve=cv_none;
-        map_prepare_set_fc_segment_square(curve_seg);
+//        map_prepare_set_fc_segment_square(curve_seg);
         
         r=r2;
     }
@@ -291,7 +291,7 @@ void map_prepare_draw_bkwd_4_curve(map_type *map,segment_type *seg)
         curve_fc->ptsz=curve_draw->ptsz=4;
 		
         curve_seg->curve=cv_none;
-        map_prepare_set_fc_segment_square(curve_seg);
+//        map_prepare_set_fc_segment_square(curve_seg);
         
         r=r2;
     }
@@ -373,7 +373,7 @@ void map_prepare_draw_bkwd_3_curve(map_type *map,segment_type *seg)
         curve_fc->ptsz=curve_draw->ptsz=4;
 		
         curve_seg->curve=cv_none;
-        map_prepare_set_fc_segment_square(curve_seg);
+//        map_prepare_set_fc_segment_square(curve_seg);
         
         r=r2;
     }

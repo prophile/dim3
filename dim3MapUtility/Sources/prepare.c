@@ -41,7 +41,7 @@ void map_prepare_set_mesh_poly_box(map_mesh_type *mesh,map_mesh_poly_type *mesh_
 					y,min_x,max_x,min_z,max_z,min_y,max_y;
 	bool			flat;
 	d3pnt			*pt;
-	
+
 		// find enclosing square
 		
 	pt=&mesh->vertexes[mesh_poly->v[0]];
@@ -79,87 +79,29 @@ void map_prepare_set_mesh_poly_box(map_mesh_type *mesh,map_mesh_poly_type *mesh_
 	mesh_poly->box.max.z=max_z;
 	
 	mesh_poly->box.flat=flat;
+	mesh_poly->box.vertical=((max_x-min_x)>(max_z-min_z));
 }
 
+/* =======================================================
 
+      Create Slopes Data
+      
+======================================================= */
 
-
-
-// supergumba -- delete these
-
-void map_prepare_set_fc_segment_square(segment_type *seg)
+void map_prepare_set_mesh_poly_slope(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
 {
-	int					i,y,ptsz,
-						min_x,max_x,min_z,max_z,min_y,max_y;
-	fc_segment_data		*fc;
+	int				n,x[8],y[8],z[8];
+	d3pnt			*pt;
 	
-	fc=&seg->data.fc;
-	
-		// find enclosing square
-		
-	min_x=max_x=fc->x[0];
-	min_z=max_z=fc->z[0];
-	min_y=max_y=fc->y[0];
-    
-    ptsz=fc->ptsz;
-    
-	for (i=1;i<ptsz;i++) {
-		if (fc->x[i]<min_x) min_x=fc->x[i];
-		if (fc->x[i]>max_x) max_x=fc->x[i];
-		if (fc->z[i]<min_z) min_z=fc->z[i];
-		if (fc->z[i]>max_z) max_z=fc->z[i];
-		if (fc->y[i]<min_y) min_y=fc->y[i];
-		if (fc->y[i]>max_y) max_y=fc->y[i];
+	for (n=0;n!=mesh_poly->ptsz;n++) {
+		pt=&mesh->vertexes[mesh_poly->v[n]];
+		x[n]=pt->x;
+		y[n]=pt->y;
+		z[n]=pt->z;
 	}
-    
-	fc->min_x=min_x;
-	fc->max_x=max_x;
-	fc->min_z=min_z;
-	fc->max_z=max_z;
-	fc->min_y=min_y;
-	fc->max_y=max_y;
-	
-		// check for flat y's
-		
-	y=fc->y[0];
-	fc->flat=TRUE;
-	
-	for (i=1;i<ptsz;i++) {
-		if (fc->y[i]!=y) fc->flat=FALSE;
-	}
-}
 
-void map_prepare_set_ambient_fc_segment_square(segment_type *seg)
-{
-	int							i,ptsz,
-								min_x,max_x,min_z,max_z,min_y,max_y;
-	ambient_fc_segment_data		*ambient_fc;
-	
-	ambient_fc=&seg->data.ambient_fc;
-	
-		// find enclosing square
-		
-	min_x=max_x=ambient_fc->x[0];
-	min_z=max_z=ambient_fc->z[0];
-	min_y=max_y=ambient_fc->y[0];
-    
-    ptsz=ambient_fc->ptsz;
-    
-	for (i=1;i<ptsz;i++) {
-		if (ambient_fc->x[i]<min_x) min_x=ambient_fc->x[i];
-		if (ambient_fc->x[i]>max_x) max_x=ambient_fc->x[i];
-		if (ambient_fc->z[i]<min_z) min_z=ambient_fc->z[i];
-		if (ambient_fc->z[i]>max_z) max_z=ambient_fc->z[i];
-		if (ambient_fc->y[i]<min_y) min_y=ambient_fc->y[i];
-		if (ambient_fc->y[i]>max_y) max_y=ambient_fc->y[i];
-	}
-    
-	ambient_fc->min_x=min_x;
-	ambient_fc->max_x=max_x;
-	ambient_fc->min_z=min_z;
-	ambient_fc->max_z=max_z;
-	ambient_fc->min_y=min_y;
-	ambient_fc->max_y=max_y;
+	mesh_poly->slope.y=polygon_get_slope_y(mesh_poly->ptsz,x,y,z,&mesh_poly->slope.ang_y);
+	angle_get_movement_float(mesh_poly->slope.ang_y,(gravity_slope_factor*mesh_poly->slope.y),&mesh_poly->slope.move_x,&mesh_poly->slope.move_z);
 }
 
 /* =======================================================
@@ -170,7 +112,7 @@ void map_prepare_set_ambient_fc_segment_square(segment_type *seg)
 
 void map_prepare_segments(map_type *map)
 {
-	int					i,n,k,t,portal_v_idx;
+	int					i,n,k,t;
 	d3pnt				*pt;
 	portal_type			*portal;
 	map_mesh_type		*mesh;
@@ -208,11 +150,6 @@ void map_prepare_segments(map_type *map)
 		
 		portal->ty=99999;
 		portal->by=0;
-
-			// polygons need index into portal
-			// vertex list
-
-		portal_v_idx=0;
 		
 			// prepare meshes
 
@@ -236,26 +173,19 @@ void map_prepare_segments(map_type *map)
 			
 			for (k=0;k!=mesh->npoly;k++) {
 			
-					// run through the polygon points
+					// find lowest and highest Y for portal
 
 				for (t=0;t!=mesh_poly->ptsz;t++) {
-
-						// setup portal vertex list offset
-
-					mesh_poly->draw.portal_v[t]=portal_v_idx;
-					portal_v_idx++;
-
-						// find lowest and highest Y for portal
-
 					pt=&mesh->vertexes[mesh_poly->v[t]];
 
 					if (pt->y<portal->ty) portal->ty=pt->y;
 					if (pt->y>portal->by) portal->by=pt->y;
 				}
 				
-					// setup box
+					// setup box and slope
 
 				map_prepare_set_mesh_poly_box(mesh,mesh_poly);
+				map_prepare_set_mesh_poly_slope(mesh,mesh_poly);
 
 					// setup simple tessel and shifting flag
 

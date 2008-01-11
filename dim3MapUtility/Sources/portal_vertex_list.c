@@ -164,91 +164,20 @@ int map_portal_add_single_light_vertex_list(portal_vertex_list_type *vl,int vl_c
 
 /* =======================================================
 
-      Build Portal Vertex List for Segment
+      Build Portal Vertex List for Mesh Poly
       
 ======================================================= */
 
-int map_portal_add_segment_single_vertex_list(portal_vertex_list_type *vl,int vl_cnt,segment_type *seg)
+int map_portal_add_mesh_poly_single_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
 {
-	int							n,ptsz;
-	bool						moveable,shiftable;
-	segment_draw_type			*draw;
-	wall_segment_data			*wall;
-	fc_segment_data				*fc;
-	ambient_wall_segment_data	*ambient_wall;
-	ambient_fc_segment_data		*ambient_fc;
-	
-	moveable=seg->moveable;
-	shiftable=seg->shiftable;
-	
-	draw=&seg->draw;
-		
-	switch (seg->type) {
-	
-			// walls
-		
-		case sg_wall:
-			wall=&seg->data.wall;
-			ptsz=wall->ptsz;
-			
-			for (n=0;n!=ptsz;n++) {
-				vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,wall->x[n],wall->y[n],wall->z[n],draw->gx[n],draw->gy[n],moveable,shiftable,&draw->idx[n]);
-			}
+	int				n;
+	d3pnt			*pt;
 
-			draw->ptsz=ptsz;
-			
-			return(vl_cnt);
-	
-			// floors and ceilings
-		
-		case sg_floor:
-		case sg_ceiling:
-			fc=&seg->data.fc;
-			ptsz=fc->ptsz;
-					
-			for (n=0;n!=ptsz;n++) {
-				vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,fc->x[n],fc->y[n],fc->z[n],draw->gx[n],draw->gy[n],moveable,shiftable,&draw->idx[n]);
-			}
-
-			draw->ptsz=ptsz;
-			
-			return(vl_cnt);
-			
-			// liquids
-			
-		case sg_liquid:
-			vl_cnt=map_liquid_add_vertex_list(vl,vl_cnt,seg);
-			return(vl_cnt);
-			
-			// ambient walls
-		
-		case sg_ambient_wall:
-			ambient_wall=&seg->data.ambient_wall;
-	
-			for (n=0;n!=4;n++) {
-				vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,ambient_wall->x[n],ambient_wall->y[n],ambient_wall->z[n],draw->gx[n],draw->gy[n],moveable,shiftable,&draw->idx[n]);
-			}
-
-			draw->ptsz=4;
-			
-			return(vl_cnt);
-			
-			// ambient fcs
-			
-		case sg_ambient_fc:
-			ambient_fc=&seg->data.ambient_fc;
-			ptsz=ambient_fc->ptsz;
-					
-			for (n=0;n!=ptsz;n++) {
-				vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,ambient_fc->x[n],ambient_fc->y[n],ambient_fc->z[n],draw->gx[n],draw->gy[n],moveable,shiftable,&draw->idx[n]);
-			}
-
-			draw->ptsz=ptsz;
-			
-			return(vl_cnt);
-	
+	for (n=0;n!=mesh_poly->ptsz;n++) {
+		pt=&mesh->vertexes[mesh_poly->v[n]];
+		vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,pt->x,pt->y,pt->z,mesh_poly->gx[n],mesh_poly->gy[n],mesh_poly->flag.moveable,mesh_poly->draw.shift_on,&mesh_poly->draw.portal_v[n]);
 	}
-	
+
 	return(vl_cnt);
 }
 
@@ -258,116 +187,22 @@ int map_portal_add_segment_single_vertex_list(portal_vertex_list_type *vl,int vl
       
 ======================================================= */
 
-int map_portal_add_light_tessel_wall_vertex_list(portal_vertex_list_type *vl,int vl_cnt,int lx,int rx,int lz,int rz,int ty,int by,bool moveable,segment_light_type *light)
+
+
+int map_portal_add_light_tessel_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
 {
-	int			n,y,xdist,ydist,zdist,walldist,walltot,ytot,ntrig;
-	int			grid_x[light_tessel_grid_sz+1],
-				grid_y[light_tessel_grid_sz+1],
-				grid_z[light_tessel_grid_sz+1],
-				idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
-	double		dx,dz;
+	int							n,x,z,y,ptsz,px[8],py[8],pz[8],
+								xdist,zdist,xtot,ztot,xskip,zskip,ntrig;
+	int							grid_x[light_tessel_grid_sz+1],
+								grid_z[light_tessel_grid_sz+1],
+								idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
+	d3pnt						*pt;
+	map_mesh_poly_light_type	*light;
 
-		// find splitting size, total of 64 triangles, 8 grid spots (max)
-		// find best splits for grid spots
+		// get tessel size, possible total of 64 triangles, 8 grid spots (max)
 
-	xdist=rx-lx;
-	zdist=rz-lz;
-	
-	dx=(double)xdist;
-	dz=(double)zdist;
-	walldist=(int)sqrt((dx*dx)+(dz*dz));
-
-	ydist=abs(by-ty);
-
-	walltot=(walldist*light_tessel_grid_sz)/light_tessel_max_size;
-	if (walltot>light_tessel_grid_sz) walltot=light_tessel_grid_sz;
-	if (walltot<=0) walltot=1;
-
-	ytot=(ydist*light_tessel_grid_sz)/light_tessel_max_size;
-	if (ytot>light_tessel_grid_sz) ytot=light_tessel_grid_sz;
-	if (ytot<=0) ytot=1;
-
-		// create the grid overlay
-
-	for (n=0;n<=walltot;n++) {
-		grid_x[n]=lx+((xdist*n)/walltot);
-		grid_z[n]=lz+((zdist*n)/walltot);
-	}
-
-	for (n=0;n<=ytot;n++) {
-		grid_y[n]=ty+((ydist*n)/ytot);
-	}
-	
-
-		// get vertexes for grid
-
-	for (y=0;y<=ytot;y++) {
-		for (n=0;n<=walltot;n++) {
-			vl_cnt=map_portal_add_single_light_vertex_list(vl,vl_cnt,grid_x[n],grid_y[y],grid_z[n],moveable,&idx[n][y]);
-		}
-	}
-
-		// tesselate grid into triangles
-
-	ntrig=0;
-
-	for (y=0;y!=ytot;y++) {
-		
-		for (n=0;n!=walltot;n++) {
-
-			if (((y+n)&0x1)==0) {
-				light->trig_vertex_idx[(ntrig*3)]=idx[n][y];
-				light->trig_vertex_idx[(ntrig*3)+1]=idx[n+1][y];
-				light->trig_vertex_idx[(ntrig*3)+2]=idx[n+1][y+1];
-				ntrig++;
-				
-				light->trig_vertex_idx[(ntrig*3)]=idx[n][y];
-				light->trig_vertex_idx[(ntrig*3)+1]=idx[n][y+1];
-				light->trig_vertex_idx[(ntrig*3)+2]=idx[n+1][y+1];
-				ntrig++;
-			}
-			else {
-				light->trig_vertex_idx[(ntrig*3)]=idx[n+1][y];
-				light->trig_vertex_idx[(ntrig*3)+1]=idx[n][y];
-				light->trig_vertex_idx[(ntrig*3)+2]=idx[n][y+1];
-				ntrig++;
-				
-				light->trig_vertex_idx[(ntrig*3)]=idx[n+1][y];
-				light->trig_vertex_idx[(ntrig*3)+1]=idx[n+1][y+1];
-				light->trig_vertex_idx[(ntrig*3)+2]=idx[n][y+1];
-				ntrig++;
-			}
-		}
-	}
-
-	light->trig_count=ntrig;
-
-	return(vl_cnt);
-}
-
-int map_portal_add_light_tessel_floor_ceiling_vertex_list(portal_vertex_list_type *vl,int vl_cnt,int ptsz,int *px,int *py,int *pz,bool moveable,segment_light_type *light)
-{
-	int			n,x,z,y,min_x,max_x,min_z,max_z,
-				xdist,zdist,xtot,ztot,xskip,zskip,ntrig;
-	int			grid_x[light_tessel_grid_sz+1],
-				grid_z[light_tessel_grid_sz+1],
-				idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
-
-		// find splitting size, total of 64 triangles, 8 grid spots (max)
-		// find best splits for grid spots
-
-	min_x=max_x=px[0];
-	min_z=max_z=pz[0];
-
-	for (n=1;n!=ptsz;n++) {
-		if (px[n]<min_x) min_x=px[n];
-		if (px[n]>max_x) max_x=px[n];
-		if (pz[n]<min_z) min_z=pz[n];
-		if (pz[n]>max_z) max_z=pz[n];
-	}
-
-	xdist=max_x-min_x;
-	zdist=max_z-min_z;
+	xdist=mesh_poly->box.max.x-mesh_poly->box.min.x;
+	zdist=mesh_poly->box.max.z-mesh_poly->box.min.z;
 
 	xtot=(xdist*light_tessel_grid_sz)/light_tessel_max_size;
 	if (xtot>light_tessel_grid_sz) xtot=light_tessel_grid_sz;
@@ -384,33 +219,44 @@ int map_portal_add_light_tessel_floor_ceiling_vertex_list(portal_vertex_list_typ
 
 	for (x=0;x<=xtot;x++) {
 		if (x==xtot) {
-			grid_x[x]=max_x;
+			grid_x[x]=mesh_poly->box.max.x;
 		}
 		else {
-			grid_x[x]=min_x+(x*xskip);
+			grid_x[x]=mesh_poly->box.min.x+(x*xskip);
 		}
 	}
 
 	for (z=0;z<=ztot;z++) {
 		if (z==ztot) {
-			grid_z[z]=max_z;
+			grid_z[z]=mesh_poly->box.max.z;
 		}
 		else {
-			grid_z[z]=min_z+(z*zskip);
+			grid_z[z]=mesh_poly->box.min.z+(z*zskip);
 		}
 	}
 
 		// get vertexes for grid
 
+	ptsz=mesh_poly->ptsz;
+
+	for (n=0;n!=ptsz;n++) {
+		pt=&mesh->vertexes[mesh_poly->v[n]];
+		px[n]=pt->x;
+		py[n]=pt->y;
+		pz[n]=pt->z;
+	}
+
 	for (z=0;z<=ztot;z++) {
 		for (x=0;x<=xtot;x++) {
 			y=polygon_find_y(ptsz,px,py,pz,grid_x[x],grid_z[z]);
 			if (y==-1) y=polygon_infinite_find_y(ptsz,px,py,pz,grid_x[x],grid_z[z]);
-			vl_cnt=map_portal_add_single_light_vertex_list(vl,vl_cnt,grid_x[x],y,grid_z[z],moveable,&idx[x][z]);
+			vl_cnt=map_portal_add_single_light_vertex_list(vl,vl_cnt,grid_x[x],y,grid_z[z],mesh_poly->flag.moveable,&idx[x][z]);
 		}
 	}
 
 		// tesselate grid into triangles
+
+	light=&mesh_poly->light;
 
 	ntrig=0;
 
@@ -449,32 +295,47 @@ int map_portal_add_light_tessel_floor_ceiling_vertex_list(portal_vertex_list_typ
 	return(vl_cnt);
 }
 
-int map_portal_add_light_simple_vertex_list(portal_vertex_list_type *vl,int vl_cnt,int ptsz,int *px,int *py,int *pz,bool moveable,segment_light_type *light)
+
+
+
+
+
+
+
+int map_portal_add_light_simple_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
 {
-	int			n,k,ntrig,tx[3],ty[3],tz[3];
-	
+	int							n,k,ntrig,tx[3],ty[3],tz[3];
+	d3pnt						*pt;
+	map_mesh_poly_light_type	*light;
+
+	light=&mesh_poly->light;
+
 	light->trig_count=0;
 
 		// break up polygon into triangles
 		// but no tesselation of triangles
-		// this is used for simple lighting on ambients
+		// this is used for simple lighting
 		
-	ntrig=ptsz-3;
+	ntrig=mesh_poly->ptsz-3;
 
-	tx[0]=px[0];
-	ty[0]=py[0];
-	tz[0]=pz[0];
+	pt=&mesh->vertexes[mesh_poly->v[0]];
+	tx[0]=pt->x;
+	ty[0]=pt->y;
+	tz[0]=pt->z;
 	
 	for (n=0;n<=ntrig;n++) {
-		tx[1]=px[n+1];
-		ty[1]=py[n+1];
-		tz[1]=pz[n+1];
-		tx[2]=px[n+2];
-		ty[2]=py[n+2];
-		tz[2]=pz[n+2];
+		pt=&mesh->vertexes[mesh_poly->v[n+1]];
+		tx[1]=pt->x;
+		ty[1]=pt->y;
+		tz[1]=pt->z;
+
+		pt=&mesh->vertexes[mesh_poly->v[n+2]];
+		tx[2]=pt->x;
+		ty[2]=pt->y;
+		tz[2]=pt->z;
 
 		for (k=0;k!=3;k++) {
-			vl_cnt=map_portal_add_single_light_vertex_list(vl,vl_cnt,tx[k],ty[k],tz[k],moveable,&light->trig_vertex_idx[(n*3)+k]);
+			vl_cnt=map_portal_add_single_light_vertex_list(vl,vl_cnt,tx[k],ty[k],tz[k],mesh_poly->flag.moveable,&light->trig_vertex_idx[(n*3)+k]);
 		}
 
 		light->trig_count++;
@@ -483,63 +344,10 @@ int map_portal_add_light_simple_vertex_list(portal_vertex_list_type *vl,int vl_c
 	return(vl_cnt);
 }
 
-int map_portal_add_light_single_vertex_list(portal_vertex_list_type *vl,int vl_cnt,bool high_quality_lighting,segment_type *seg)
+int map_portal_add_light_single_vertex_list(portal_vertex_list_type *vl,int vl_cnt,bool high_quality_lighting,map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
 {
-	bool						moveable;
-	segment_light_type			*light;
-	wall_segment_data			*wall;
-	fc_segment_data				*fc;
-	ambient_wall_segment_data	*ambient_wall;
-	ambient_fc_segment_data		*ambient_fc;
-	
-	moveable=seg->moveable;
-	light=&seg->light;
-		
-	switch (seg->type) {
-	
-			// walls
-		
-		case sg_wall:
-			wall=&seg->data.wall;
-			if ((seg->simple_tessel) || (wall->ptsz==3) || (!high_quality_lighting)) return(map_portal_add_light_simple_vertex_list(vl,vl_cnt,wall->ptsz,wall->x,wall->y,wall->z,moveable,light));
-			return(map_portal_add_light_tessel_wall_vertex_list(vl,vl_cnt,wall->lx,wall->rx,wall->lz,wall->rz,wall->ty,wall->by,moveable,light));
-	
-			// floors and ceilings
-		
-		case sg_floor:
-		case sg_ceiling:
-			fc=&seg->data.fc;
-			if ((seg->simple_tessel) || (fc->ptsz==3) || (!high_quality_lighting)) return(map_portal_add_light_simple_vertex_list(vl,vl_cnt,fc->ptsz,fc->x,fc->y,fc->z,moveable,light));
-			return(map_portal_add_light_tessel_floor_ceiling_vertex_list(vl,vl_cnt,fc->ptsz,fc->x,fc->y,fc->z,moveable,light));
-			
-			// liquids
-			// liquids are already tesselated, no need to create separate light values
-			
-		case sg_liquid:
-			light->trig_count=0;
-			return(vl_cnt);
-			
-			// ambient walls
-			// same as draw vertexes (no tesselation)
-			// these will end up being no-ops as they will
-			// already be in draw vertex list
-		
-		case sg_ambient_wall:
-			ambient_wall=&seg->data.ambient_wall;
-			return(map_portal_add_light_simple_vertex_list(vl,vl_cnt,4,ambient_wall->x,ambient_wall->y,ambient_wall->z,moveable,light));
-			
-			// ambient fcs
-			// same as draw vertexes (no tesselation)
-			// these will end up being no-ops as they will
-			// already be in draw vertex list
-			
-		case sg_ambient_fc:
-			ambient_fc=&seg->data.ambient_fc;
-			return(map_portal_add_light_simple_vertex_list(vl,vl_cnt,ambient_fc->ptsz,ambient_fc->x,ambient_fc->y,ambient_fc->z,moveable,light));
-	
-	}
-	
-	return(vl_cnt);
+	if ((mesh_poly->draw.simple_tessel) || (mesh_poly->ptsz==3) || (!high_quality_lighting)) return(map_portal_add_light_simple_vertex_list(vl,vl_cnt,mesh,mesh_poly));
+	return(map_portal_add_light_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
 }
 
 /* =======================================================
@@ -550,10 +358,11 @@ int map_portal_add_light_single_vertex_list(portal_vertex_list_type *vl,int vl_c
 
 bool map_portal_build_single_vertex_list(map_type *map,int rn,int nvlist,bool high_quality_lighting)
 {
-	int							i,vl_cnt;
+	int							n,k,vl_cnt;
 	portal_vertex_list_type		*vl;
 	portal_type					*portal;
-	segment_type				*seg;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*mesh_poly;
 	
 	portal=&map->portals[rn];
 	
@@ -561,15 +370,20 @@ bool map_portal_build_single_vertex_list(map_type *map,int rn,int nvlist,bool hi
 	vl=portal->vertexes.vertex_list;
 	
 		// build list of vertexes and colors
-		
-	seg=map->segments;
+
+	mesh=portal->mesh.meshes;
 	
-	for (i=0;i!=map->nsegment;i++) {
-		if (seg->rn==rn) {
-			vl_cnt=map_portal_add_segment_single_vertex_list(vl,vl_cnt,seg);
-			vl_cnt=map_portal_add_light_single_vertex_list(vl,vl_cnt,high_quality_lighting,seg);
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+	
+		mesh_poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+			vl_cnt=map_portal_add_mesh_poly_single_vertex_list(vl,vl_cnt,mesh,mesh_poly);
+			vl_cnt=map_portal_add_light_single_vertex_list(vl,vl_cnt,high_quality_lighting,mesh,mesh_poly);
+			mesh_poly++;
 		}
-		seg++;
+	
+		mesh++;
 	}
 	
 		// total number of vertexes
@@ -581,62 +395,37 @@ bool map_portal_build_single_vertex_list(map_type *map,int rn,int nvlist,bool hi
 
 /* =======================================================
 
-      Count Vertexes for Segment
-      
-======================================================= */
-
-int map_portal_create_vertex_list_count_segment(segment_type *seg)
-{
-	switch (seg->type) {
-		case sg_wall:
-			return(seg->data.wall.ptsz);
-		case sg_floor:
-		case sg_ceiling:
-			return(seg->data.fc.ptsz);
-		case sg_liquid:
-			return(map_liquid_count_vertexes(seg));
-		case sg_ambient_wall:
-			return(4);
-		case sg_ambient_fc:
-			return(seg->data.ambient_fc.ptsz);
-	}
-	
-	return(0);
-}
-
-/* =======================================================
-
       Create/Destroy Portal Vertex List
       
 ======================================================= */
 
 bool map_portal_create_single_vertex_list(map_type *map,int rn,bool high_quality_lighting)
 {
-	int							i,n,k,t,nvlist,sz,rough_sz;
+	int							n,k,nvlist,sz,rough_sz;
 	portal_vertex_list_type		*nvl;
 	portal_type					*portal;
-	segment_type				*seg;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*mesh_poly;
 	
 	portal=&map->portals[rn];
-	
 
-	/* supergumba -- can probably all go away
+		// find maximum possible number of vertexes
 
-		// count maximum number of vertexes
-	
 	nvlist=0;
+
+	mesh=portal->mesh.meshes;
 	
-	seg=map->segments;
+	for (n=0;n!=portal->mesh.nmesh;n++) {
 	
-	for (i=0;i!=map->nsegment;i++) {
-		if (seg->rn==rn) {
-			nvlist+=map_portal_create_vertex_list_count_segment(seg);
-			nvlist+=light_tessel_max_vertex;			// maximum number of lighting elements in list
-		}
+		mesh_poly=mesh->polys;
 		
-		seg++;
+		for (k=0;k!=mesh->npoly;k++) {
+			nvlist+=mesh_poly->ptsz;
+			nvlist+=light_tessel_max_vertex;			// maximum number of lighting elements in list
+			mesh_poly++;
+		}
+	
+		mesh++;
 	}
 	
 		// create rough vertex list
@@ -671,30 +460,6 @@ bool map_portal_create_single_vertex_list(map_type *map,int rn,bool high_quality
 		free(portal->vertexes.vertex_list);
 		portal->vertexes.vertex_list=nvl;
 	}
-*/
-
-
-	// supergumba -- temporary
-
-
-	nvlist=0;
-
-	mesh=portal->mesh.meshes;
-	
-	for (n=0;n!=portal->mesh.nmesh;n++) {
-	
-		mesh_poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-			nvlist+=mesh_poly->ptsz;
-			nvlist+=light_tessel_max_vertex;			// maximum number of lighting elements in list
-			mesh_poly++;
-		}
-	
-		mesh++;
-	}
-
-	portal->vertexes.nvlist=nvlist;
 	
 		// compiled vertex, coord and color lists
 		

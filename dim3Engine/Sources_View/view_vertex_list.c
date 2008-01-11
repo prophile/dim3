@@ -43,14 +43,11 @@ extern setup_type		setup;
 
 void portal_compile_gl_lists(int tick,int rn)
 {
-	int						n,k,t,nvlist;
+	int						n,nvlist;
 	float					fx,fy,fz;
 	float					*pv,*pp,*pc;
-	d3pnt					*pt;
 	portal_type				*portal;
 	portal_vertex_list_type	*vl;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*mesh_poly;
 	
 	portal=&map.portals[rn];
 		
@@ -61,6 +58,8 @@ void portal_compile_gl_lists(int tick,int rn)
 		// the arrays
 
 	vl=portal->vertexes.vertex_list;
+	nvlist=portal->vertexes.nvlist;
+
 	pv=(float*)portal->vertexes.pvert;
 	pp=(float*)portal->vertexes.pcoord;
 	pc=(float*)portal->vertexes.pcolor;
@@ -70,10 +69,6 @@ void portal_compile_gl_lists(int tick,int rn)
 	fx=(float)view.camera.pos.x;
 	fy=(float)view.camera.pos.y;
 	fz=(float)view.camera.pos.z;
-	
-		// run through all the portal meshes
-		
-	mesh=portal->mesh.meshes;
 
 		// check if lights or vertex data has changed in
 		// room.  If not, only run through the vertexes
@@ -81,164 +76,54 @@ void portal_compile_gl_lists(int tick,int rn)
 
 	if (!map_portal_light_check_changes(portal)) {
 
-		for (n=0;n!=portal->mesh.nmesh;n++) {
+		for (n=0;n!=nvlist;n++) {
+			*pv++=(vl->x-fx);
+			*pv++=(vl->y-fy);
+			*pv++=(fz-vl->z);
+			*pp++=vl->gx;
+			*pp++=vl->gy;
 
-			mesh_poly=mesh->polys;
-			
-			for (k=0;k!=mesh->npoly;k++) {
-			
-				for (t=0;t!=mesh_poly->ptsz;t++) {
-					pt=&mesh->vertexes[mesh_poly->v[t]];
-
-					*pv++=((float)pt->x-fx);
-					*pv++=((float)pt->y-fy);
-					*pv++=(fz-(float)pt->z);
-					*pp++=mesh_poly->gx[t];
-					*pp++=mesh_poly->gy[t];
-				}
-			
-				mesh_poly++;
-			}
-		
-			mesh++;
+			vl++;
 		}
-
+		
 		return;
 	}
-
+	
 		// run ray-traced lighting if option is
 		// turned on
 		
 	if (setup.ray_trace_lighting) {
 
-		for (n=0;n!=portal->mesh.nmesh;n++) {
+		for (n=0;n!=nvlist;n++) {
+			light_trace_calculate_light_color(portal,vl->x,vl->y,vl->z,pc);
+			pc+=3;
 
-			mesh_poly=mesh->polys;
-			
-			for (k=0;k!=mesh->npoly;k++) {
-			
-				for (t=0;t!=mesh_poly->ptsz;t++) {
-					pt=&mesh->vertexes[mesh_poly->v[t]];
-					
-					light_trace_calculate_light_color(portal,pt->x,pt->y,pt->z,pc);
-					pc+=3;
+			*pv++=(vl->x-fx);
+			*pv++=(vl->y-fy);
+			*pv++=(fz-vl->z);
+			*pp++=vl->gx;
+			*pp++=vl->gy;
 
-					*pv++=((float)pt->x-fx);
-					*pv++=((float)pt->y-fy);
-					*pv++=(fz-(float)pt->z);
-					*pp++=mesh_poly->gx[t];
-					*pp++=mesh_poly->gy[t];
-				}
-			
-				mesh_poly++;
-			}
-		
-			mesh++;
+			vl++;
 		}
 		
 		return;
 	}
 
 		// run regular lighting
-		
-	for (n=0;n!=portal->mesh.nmesh;n++) {
 
-		mesh_poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-		
-			for (t=0;t!=mesh_poly->ptsz;t++) {
-				pt=&mesh->vertexes[mesh_poly->v[t]];
-				
-				map_portal_calculate_light_color(portal,(double)pt->x,(double)pt->y,(double)pt->z,pc);
-				pc+=3;
-
-				*pv++=((float)pt->x-fx);
-				*pv++=((float)pt->y-fy);
-				*pv++=(fz-(float)pt->z);
-				*pp++=mesh_poly->gx[t];
-				*pp++=mesh_poly->gy[t];
-			}
-		
-			mesh_poly++;
-		}
-	
-		mesh++;
-	}
-		
-
-
-
-
-/*
-	nvlist=portal->vertexes.nvlist;
-
-		// check if lights or vertex data has changed in
-		// room.  If not, only run through the vertexes
-		// instead of recreating the lights
-
-	if (!map_portal_light_check_changes(portal)) {
-		
-			// run through vertexes only
-
-		fx=(float)view.camera.pos.x;
-		fy=(float)view.camera.pos.y;
-		fz=(float)view.camera.pos.z;
-		
-		for (n=0;n!=nvlist;n++) {
-			*pv++=(vl->x-fx);
-			*pv++=(vl->y-fy);
-			*pv++=(fz-vl->z);
-			*pp++=vl->gx;
-			*pp++=vl->gy;
-			vl++;
-		}
-
-		return;
-	}
-
-	if (setup.ray_trace_lighting) {
-		pc=(float*)portal->vertexes.pcolor;
-
-		fx=(float)view.camera.pos.x;
-		fy=(float)view.camera.pos.y;
-		fz=(float)view.camera.pos.z;
-		
-		for (n=0;n!=nvlist;n++) {
-			light_trace_calculate_light_color(portal,vl->x,vl->y,vl->z,pc);
-			pc+=3;
-			
-			*pv++=(vl->x-fx);
-			*pv++=(vl->y-fy);
-			*pv++=(fz-vl->z);
-			*pp++=vl->gx;
-			*pp++=vl->gy;
-			vl++;
-		}
-		
-		return;
-	}
-
-		// create vertexes and lights
-
-	pc=(float*)portal->vertexes.pcolor;
-
-	fx=(float)view.camera.pos.x;
-	fy=(float)view.camera.pos.y;
-	fz=(float)view.camera.pos.z;
-	
 	for (n=0;n!=nvlist;n++) {
 		map_portal_calculate_light_color(portal,(double)vl->x,(double)vl->y,(double)vl->z,pc);
 		pc+=3;
-		
+
 		*pv++=(vl->x-fx);
 		*pv++=(vl->y-fy);
 		*pv++=(fz-vl->z);
 		*pp++=vl->gx;
 		*pp++=vl->gy;
+
 		vl++;
 	}
-	*/
 }
 
 /* =======================================================
