@@ -928,11 +928,13 @@ void main_wind_set_view_piece_segment(void)
       
 ======================================================= */
 
-void main_wind_set_viewport(Rect *view_box)
+void main_wind_set_viewport(Rect *view_box,float rgb)
 {
 	int				bot_y;
 	Rect			wbox;
 	
+		// set viewport
+		
 	GetWindowPortBounds(mainwind,&wbox);
 	bot_y=wbox.bottom-info_high;
 
@@ -940,6 +942,30 @@ void main_wind_set_viewport(Rect *view_box)
 	glScissor(view_box->left,(bot_y-view_box->bottom),(view_box->right-view_box->left),(view_box->bottom-view_box->top));
 
 	glViewport(view_box->left,(bot_y-view_box->bottom),(view_box->right-view_box->left),(view_box->bottom-view_box->top));
+	
+		// default setup
+		
+	glDisable(GL_DEPTH_TEST);
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho((GLdouble)view_box->left,(GLdouble)view_box->right,(GLdouble)view_box->bottom,(GLdouble)view_box->top,-1.0,1.0);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+		
+		// erase viewport
+		
+	if (rgb<0) return;
+		
+	glColor4f(rgb,rgb,rgb,1.0f);
+	
+	glBegin(GL_QUADS);
+	glVertex2i(view_box->left,view_box->top);
+	glVertex2i(view_box->right,view_box->top);
+	glVertex2i(view_box->right,view_box->bottom);
+	glVertex2i(view_box->left,view_box->bottom);
+	glEnd();
 }
 
 void main_wind_set_2D_projection(Rect *view_box)
@@ -994,10 +1020,7 @@ void main_wind_draw_dividers(void)
 {
 		// use full view port
 	
-	main_wind_set_viewport(&main_wind_box);
-	main_wind_set_2D_projection(&main_wind_box);
-	
-	glDisable(GL_DEPTH_TEST);
+	main_wind_set_viewport(&main_wind_box,-1.0f);
 	
 		// draw dividers
 

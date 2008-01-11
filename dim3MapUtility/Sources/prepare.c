@@ -37,8 +37,8 @@ and can be sold or given away.
 
 void map_prepare_set_mesh_poly_box(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
 {
-	int				n,y,ptsz,
-					min_x,max_x,min_z,max_z,min_y,max_y;
+	int				n,ptsz,
+					y,min_x,max_x,min_z,max_z,min_y,max_y;
 	bool			flat;
 	d3pnt			*pt;
 	
@@ -181,9 +181,6 @@ void map_prepare_segments(map_type *map)
 	map_sound_type		*sound;
 	map_particle_type	*particle;
 	spot_type			*spot;
-
-	fprintf(stdout,"HERE 1\n");
-	fflush(stdout);
 	
 		// optimizations
 		

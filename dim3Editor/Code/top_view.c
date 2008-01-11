@@ -29,15 +29,13 @@ and can be sold or given away.
 #include "common_view.h"
 #include "top_view.h"
 
-#define wvfact_div				(40*map_enlarge)
-
 extern int						cr,cx,cz,cy,txt_palette_high;
 extern bool						dp_node,dp_y_hide,main_wind_rot;
 
 extern WindowRef				mainwind;
 extern CCrsrHandle				handcur,cutcur,addcur;
 
-int								top_view_x,top_view_z,magnify_factor=wvfact_div;
+int								top_view_x,top_view_z,magnify_factor=magnify_size;
 bool							top_view_active;
 Rect							top_view_box;
 
@@ -52,10 +50,10 @@ void top_view_map_to_pane(int *x,int *z)
 	int			sx,sz;
 	
 	sx=(*x)-(top_view_x-1);
-    *x=((sx*magnify_factor)/wvfact_div)+top_view_box.left;
+    *x=((sx*magnify_factor)/magnify_size)+top_view_box.left;
 	
 	sz=(*z)-(top_view_z-1);
-    *z=((sz*magnify_factor)/wvfact_div)+top_view_box.top;
+    *z=((sz*magnify_factor)/magnify_size)+top_view_box.top;
 }
 
 void top_view_pane_to_map(int *x,int *z)
@@ -63,27 +61,27 @@ void top_view_pane_to_map(int *x,int *z)
 	int			sx,sz;
 	
 	sx=(*x)-top_view_box.left;
-	*x=((sx*wvfact_div)/magnify_factor)+(top_view_x-1);
+	*x=((sx*magnify_size)/magnify_factor)+(top_view_x-1);
 	
 	sz=(*z)-top_view_box.top;
-	*z=((sz*wvfact_div)/magnify_factor)+(top_view_z-1);
+	*z=((sz*magnify_size)/magnify_factor)+(top_view_z-1);
 }
 
 int top_view_pane_to_map_factor(int k)
 {
-	return((k*wvfact_div)/magnify_factor);
+	return((k*magnify_size)/magnify_factor);
 }
 
 void top_view_distance_pane_to_map(int *x,int *z)
 {
-	*x=((*x)*wvfact_div)/magnify_factor;
-	*z=((*z)*wvfact_div)/magnify_factor;
+	*x=((*x)*magnify_size)/magnify_factor;
+	*z=((*z)*magnify_size)/magnify_factor;
 }
 
 void top_view_drag_pane_to_map(int x,int z,int *rx,int *rz)
 {
-	*rx=((x+(top_view_x-1))*wvfact_div)/magnify_factor;
-	*rz=((z+(top_view_z-1))*wvfact_div)/magnify_factor;
+	*rx=((x+(top_view_x-1))*magnify_size)/magnify_factor;
+	*rz=((z+(top_view_z-1))*magnify_size)/magnify_factor;
 }
 
 /* =======================================================
@@ -166,10 +164,7 @@ void top_view_draw(void)
 {
 		// setup viewport
 		
-	main_wind_set_viewport(&top_view_box);
-	main_wind_set_2D_projection(&top_view_box);
-
-	glDisable(GL_DEPTH_TEST);
+	main_wind_set_viewport(&top_view_box,0.75f);
 
 		// draw top down view
 		

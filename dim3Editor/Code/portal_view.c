@@ -98,10 +98,10 @@ void portal_view_map_to_pane(int *x,int *z)
 	int			sx,sz;
 	
 	sx=(*x)-(portal_view_x-1);
-    *x=((sx*magnify_factor)/40)+portal_view_box.left;
+    *x=((sx*magnify_factor)/magnify_size)+portal_view_box.left;
 	
 	sz=(*z)-(portal_view_z-1);
-    *z=((sz*magnify_factor)/40)+portal_view_box.top;
+    *z=((sz*magnify_factor)/magnify_size)+portal_view_box.top;
 }
 
 void portal_view_pane_to_map(int *x,int *z)
@@ -109,16 +109,16 @@ void portal_view_pane_to_map(int *x,int *z)
 	int			sx,sz;
 	
 	sx=(*x)-portal_view_box.left;
-	*x=((sx*40)/magnify_factor)+(portal_view_x-1);
+	*x=((sx*magnify_size)/magnify_factor)+(portal_view_x-1);
 	
 	sz=(*z)-portal_view_box.top;
-	*z=((sz*40)/magnify_factor)+(portal_view_z-1);
+	*z=((sz*magnify_size)/magnify_factor)+(portal_view_z-1);
 }
 
 void portal_view_distance_pane_to_map(int *x,int *z)
 {
-	*x=(((*x)*40)/magnify_factor);
-	*z=(((*z)*40)/magnify_factor);
+	*x=(((*x)*magnify_size)/magnify_factor);
+	*z=(((*z)*magnify_size)/magnify_factor);
 }
 
 /* =======================================================
@@ -129,12 +129,46 @@ void portal_view_distance_pane_to_map(int *x,int *z)
 
 void portal_view_draw(void)
 {
-	int				i,x,z,ex,ez;
+	int				n,i,x,z,ex,ez;
 	Rect			wbox,box;
-	Pattern			gray;
-	RGBColor		blackcolor={0x0,0x0,0x0},whitecolor={0xFFFF,0xFFFF,0xFFFF},ltltgraycolor={0xEEEE,0xEEEE,0xEEEE},
-					purplecolor={0x9999,0x0,0x6666};
 	
+		// setup viewport
+		
+	main_wind_set_viewport(&portal_view_box,0.75f);
+	
+		// draw portal block
+		
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
+	
+	for (n=0;n!=map.nportal;n++) {
+		portal_view_get_portal(n,&x,&z,&ex,&ez);
+	
+		glBegin(GL_QUADS);
+		glVertex2i(x,z);
+		glVertex2i(ex,z);
+		glVertex2i(ex,ez);
+		glVertex2i(x,ez);
+		glEnd();
+	}
+
+		// draw portal outlines
+		
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+		
+	for (n=0;n!=map.nportal;n++) {
+		portal_view_get_portal(n,&x,&z,&ex,&ez);
+	
+		glBegin(GL_LINE_LOOP);
+		glVertex2i(x,z);
+		glVertex2i(ex,z);
+		glVertex2i(ex,ez);
+		glVertex2i(x,ez);
+		glEnd();
+	}
+	
+	
+	
+	/*
 	if (!portal_view_active) return;
 
 	ClipRect(&portal_view_box);
@@ -192,6 +226,7 @@ void portal_view_draw(void)
 	ClipRect(&wbox);
 	
 	RGBForeColor(&blackcolor);
+	*/
 }
 
 /* =======================================================

@@ -25,6 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#include "interface.h"
 #include "top_view.h"
 
 extern int					cr,cx,cz,cy,magnify_factor;
@@ -78,7 +79,7 @@ void top_view_portal_draw_block(int rn)
 	ez=map.portals[rn].ez;
 	top_view_map_to_pane(&ex,&ez);
 
-	glColor4f(0.75f,0.75f,0.75f,1.0f);
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	
 	glBegin(GL_QUADS);
 	glVertex2i(x,z);
@@ -179,7 +180,7 @@ void top_view_portal_position_draw(void)
     z=cz;
 	top_view_map_to_pane(&x,&z);
 	
-	k=(8*magnify_factor)/40;
+	k=(1000*magnify_factor)/magnify_size;
 	
 	px[0]=x-k;
 	pz[0]=z+k;

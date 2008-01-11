@@ -603,12 +603,12 @@ void walk_view_gl_setup(bool on_side)
 		// viewport setup
 		
 	if (!on_side) {
-		main_wind_set_viewport(&walk_view_forward_box);
+		main_wind_set_viewport(&walk_view_forward_box,0.75f);
 		main_wind_set_3D_projection(&walk_view_forward_box,walk_view_x_angle,ang_y,walk_view_fov,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
 	}
 	else {
-		main_wind_set_viewport(&walk_view_side_box);
-		main_wind_set_3D_projection(&walk_view_forward_box,walk_view_x_angle,ang_y,walk_view_fov,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
+		main_wind_set_viewport(&walk_view_side_box,0.75f);
+		main_wind_set_3D_projection(&walk_view_side_box,walk_view_x_angle,ang_y,walk_view_fov,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
 	}
 
 	glEnable(GL_DEPTH_TEST);

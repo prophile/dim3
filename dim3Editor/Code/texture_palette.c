@@ -138,21 +138,7 @@ void texture_palette_draw(void)
 	
 		// viewport setup
 		
-	main_wind_set_viewport(&txt_palette_box);
-	main_wind_set_2D_projection(&txt_palette_box);
-	
-	glDisable(GL_DEPTH_TEST);
-	
-		// background
-		
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
-	
-	glBegin(GL_QUADS);
-	glVertex2i(txt_palette_box.left,txt_palette_box.top);
-	glVertex2i(txt_palette_box.right,txt_palette_box.top);
-	glVertex2i(txt_palette_box.right,txt_palette_box.bottom);
-	glVertex2i(txt_palette_box.left,txt_palette_box.bottom);
-	glEnd();
+	main_wind_set_viewport(&txt_palette_box,1.0f);
 	
 		// texture page switch
 		
@@ -162,7 +148,7 @@ void texture_palette_draw(void)
 	for (i=0;i!=page_cnt;i++) {
 		y=txt_palette_y+(i*yadd);
 		
-		glColor4f(0.75f,0.75f,0.75f,1.0f);
+		glColor4f(0.5f,0.5f,0.5f,1.0f);
 		
 		glBegin(GL_QUADS);
 		glVertex2i(0,y);
@@ -181,7 +167,7 @@ void texture_palette_draw(void)
 		glEnd();
 		
 		if (txt_page==i) {
-			glColor4f(0.3f,0.3f,1.0f,1.0f);
+			glColor4f(0.0f,0.0f,1.0f,1.0f);
 			
 			glBegin(GL_TRIANGLES);
 			glVertex2i(1,(y+1));

@@ -91,8 +91,8 @@ void site_path_view_mouse_move(Point pt)
 		sx=x;
 		sy=y;
 		
-		site_path_view_x=h+x;
-		site_path_view_z=v+y;
+		site_path_view_x=h+(x*map_enlarge);
+		site_path_view_z=v+(y*map_enlarge);
 		
         walk_view_site_path_view_reset();
         main_wind_draw();

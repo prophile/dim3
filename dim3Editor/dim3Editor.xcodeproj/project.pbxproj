@@ -624,6 +624,7 @@
 				F52F19B70946A63100FEFE18 /* selection.c */,
 				0123D86800C0AFD57F000001 /* selection_move.c */,
 				F5A989A3094D0233005E55AE /* clipboard.c */,
+				F5498A7600F7C7E501000001 /* portal.c */,
 				F54797150107EA3C01000001 /* pieces.c */,
 				F54583E3094F868300CBE89A /* pieces_create.c */,
 				F5595F7D0918717300B60FAD /* groups.c */,
@@ -651,7 +652,6 @@
 		F5EE017C0699EE6800C42C5D /* Portal View */ = {
 			isa = PBXGroup;
 			children = (
-				F5498A7600F7C7E501000001 /* portal.c */,
 				F5EE017D0699EED300C42C5D /* portal_view.c */,
 				F58EEB76069FC63C00686146 /* portal_view_click.c */,
 				F5EE0186069A582C00C42C5D /* portal_view_draw.c */,

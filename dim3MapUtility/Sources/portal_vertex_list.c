@@ -695,8 +695,7 @@ bool map_portal_create_single_vertex_list(map_type *map,int rn,bool high_quality
 	}
 
 	portal->vertexes.nvlist=nvlist;
-
-
+	
 		// compiled vertex, coord and color lists
 		
 	sz=portal->vertexes.nvlist*(sizeof(float)*3);

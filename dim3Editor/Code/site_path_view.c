@@ -99,10 +99,10 @@ void site_path_view_map_to_pane(int *x,int *z)
 	int			sx,sz;
 	
 	sx=(*x)-(site_path_view_x-1);
-    *x=((sx*magnify_factor)/40)+site_path_view_box.left;
+    *x=((sx*magnify_factor)/magnify_size)+site_path_view_box.left;
 	
 	sz=(*z)-(site_path_view_z-1);
-    *z=((sz*magnify_factor)/40)+site_path_view_box.top;
+    *z=((sz*magnify_factor)/magnify_size)+site_path_view_box.top;
 }
 
 void site_path_view_pane_to_map(int *x,int *z)
@@ -110,16 +110,16 @@ void site_path_view_pane_to_map(int *x,int *z)
 	int			sx,sz;
 	
 	sx=(*x)-site_path_view_box.left;
-	*x=((sx*40)/magnify_factor)+(site_path_view_x-1);
+	*x=((sx*magnify_size)/magnify_factor)+(site_path_view_x-1);
 	
 	sz=(*z)-site_path_view_box.top;
-	*z=((sz*40)/magnify_factor)+(site_path_view_z-1);
+	*z=((sz*magnify_size)/magnify_factor)+(site_path_view_z-1);
 }
 
 void site_path_view_distance_pane_to_map(int *x,int *z)
 {
-	*x=(((*x)*40)/magnify_factor);
-	*z=(((*z)*40)/magnify_factor);
+	*x=(((*x)*magnify_size)/magnify_factor);
+	*z=(((*z)*magnify_size)/magnify_factor);
 }
 
 /* =======================================================
@@ -130,11 +130,60 @@ void site_path_view_distance_pane_to_map(int *x,int *z)
 
 void site_path_view_draw(int drag_hilite_rn)
 {
-	int				i,x,z,ex,ez;
+	int				n,x,z,ex,ez;
 	Rect			wbox,box;
-	RGBColor		blackcolor={0x0,0x0,0x0},ltltgraycolor={0xEEEE,0xEEEE,0xEEEE},
-					ltgraycolor={0x9999,0x9999,0x9999},graycolor={0x7FFF,0x7FFF,0x7FFF},dkgraycolor={0x1FFF,0x1FFF,0x1FFF};
+
+		// setup viewport
+		
+	main_wind_set_viewport(&site_path_view_box,0.75f);
 	
+		// draw portal block
+	
+	for (n=0;n!=map.nportal;n++) {
+		site_path_view_get_portal(n,&x,&z,&ex,&ez);
+		
+		if (n==cr) {
+			glColor4f(1.0f,1.0f,1.0f,1.0f);
+		}
+		else {
+			if ((site_path_portal_in_path(cr,n)) || (drag_hilite_rn==n)) {
+				glColor4f(0.5f,0.5f,0.5f,1.0f);
+			}
+			else {
+				glColor4f(0.25f,0.25f,0.25f,1.0f);
+			}
+		}
+	
+		glBegin(GL_QUADS);
+		glVertex2i(x,z);
+		glVertex2i(ex,z);
+		glVertex2i(ex,ez);
+		glVertex2i(x,ez);
+		glEnd();
+	}
+
+		// draw portal outlines
+		
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+		
+	for (n=0;n!=map.nportal;n++) {
+		site_path_view_get_portal(n,&x,&z,&ex,&ez);
+	
+		glBegin(GL_LINE_LOOP);
+		glVertex2i(x,z);
+		glVertex2i(ex,z);
+		glVertex2i(ex,ez);
+		glVertex2i(x,ez);
+		glEnd();
+	}
+	
+	
+		// portal sight path
+		
+	site_path_view_draw_portal_sight_path(cr);
+	
+	
+	/*
 	if (!site_path_view_active) return;
 
 	ClipRect(&site_path_view_box);
@@ -182,6 +231,7 @@ void site_path_view_draw(int drag_hilite_rn)
 	ClipRect(&wbox);
 	
 	RGBForeColor(&blackcolor);
+	*/
 }
 
 /* =======================================================

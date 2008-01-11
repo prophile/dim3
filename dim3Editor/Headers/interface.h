@@ -43,6 +43,12 @@ and can be sold or given away.
 #define piece_wid							36
 
 //
+// magnification size
+//
+
+#define magnify_size						6000
+
+//
 // menu
 //
 
@@ -97,8 +103,7 @@ extern void main_wind_set_view(int view);
 extern void main_wind_rotate_view(void);
 extern void main_wind_set_view_piece_portal(void);
 extern void main_wind_set_view_piece_segment(void);
-extern void main_wind_set_viewport(Rect *view_box);
-extern void main_wind_set_2D_projection(Rect *view_box);
+extern void main_wind_set_viewport(Rect *view_box,float rgb);
 extern void main_wind_set_3D_projection(Rect *view_box,float ang_x,float ang_y,float fov,float near_z,float far_z,float near_z_offset);
 extern void main_wind_draw_dividers(void);
 extern void main_wind_draw(void);

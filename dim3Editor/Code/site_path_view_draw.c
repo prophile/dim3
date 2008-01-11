@@ -151,19 +151,31 @@ void site_path_view_draw_single_path(int r1,int r2)
 	
 		// the link
 		
-	MoveTo(((box1.left+box1.right)/2),((box1.top+box1.bottom)/2));
-	LineTo(((box2.left+box2.right)/2),((box2.top+box2.bottom)/2));
+	glBegin(GL_LINES);
+	glVertex2i(((box1.left+box1.right)/2),((box1.top+box1.bottom)/2));
+	glVertex2i(((box2.left+box2.right)/2),((box2.top+box2.bottom)/2));
+	glEnd();
 	
 		// the boxes
 		
-	PaintRect(&box1);
-	PaintRect(&box2);
+	glBegin(GL_QUADS);
+	
+	glVertex2i(box1.left,box1.top);
+	glVertex2i(box1.right,box1.top);
+	glVertex2i(box1.right,box1.bottom);
+	glVertex2i(box1.left,box1.bottom);
+	
+	glVertex2i(box2.left,box2.top);
+	glVertex2i(box2.right,box2.top);
+	glVertex2i(box2.right,box2.bottom);
+	glVertex2i(box2.left,box2.bottom);
+	
+	glEnd();
 }
 
 void site_path_view_draw_path_list(int rn,int idx)
 {
-	register int	i;
-	int				t,nr;
+	int				i,t,nr;
 	portal_type		*portal;
 	
 	portal=&map.portals[rn];
@@ -181,12 +193,11 @@ void site_path_view_draw_path_list(int rn,int idx)
 
 void site_path_view_draw_portal_sight_path(int rn)
 {
-	register int	i;
+	int				i;
 	Rect			box;
 	portal_type		*portal;
-	RGBColor		blackcolor={0x0,0x0,0x0},redcolor={0xFFFF,0x0,0x0},greencolor={0x0,0xFFFF,0x0};
 	
-	RGBForeColor(&greencolor);
+	glColor4f(0.0f,1.0f,0.0f,1.0f);
 	
 	portal=&map.portals[rn];
     
@@ -201,9 +212,13 @@ void site_path_view_draw_portal_sight_path(int rn)
 		
 	site_path_view_get_site_path_box(rn,&box);
 	
-	RGBForeColor(&redcolor);
-	PaintRect(&box);
+	glColor4f(1.0f,0.0f,0.0f,1.0f);
 	
-	RGBForeColor(&blackcolor);
+	glBegin(GL_QUADS);
+	glVertex2i(box.left,box.top);
+	glVertex2i(box.right,box.top);
+	glVertex2i(box.right,box.bottom);
+	glVertex2i(box.left,box.bottom);
+	glEnd();
 }
 

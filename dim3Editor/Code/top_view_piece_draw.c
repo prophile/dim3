@@ -542,7 +542,7 @@ void top_view_piece_draw(int rn)
 			
 		for (n=0;n!=map.nspot;n++) {
 			if (map.spots[n].pos.rn!=rn) continue;
-			
+			// supergumba -- need to work on this!
 		//	top_view_make_rect_by_pos(&map.spots[n].pos,5,&box);
 		//	top_view_piece_draw_arrow(&box,map.spots[n].name,map.spots[i].ang.y,clipbox,&orangecolor);
 		}

@@ -1026,7 +1026,7 @@ bool map_convert_segment_to_mesh(map_type *map)
 
 	vlist_sz=sizeof(d3pnt)*10000;
 
-	vlist=valloc(vlist_sz);
+	vlist=(d3pnt*)valloc(vlist_sz);
 	if (vlist==NULL) return(FALSE);
 
 		// create a mesh out of all segments in a portal

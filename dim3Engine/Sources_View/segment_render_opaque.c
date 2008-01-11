@@ -356,6 +356,7 @@ int segment_render_opaque_portal(int rn,int pass_last)
 	texture_type	*texture;
 	int		frame;
 	unsigned long	txt_id;
+	float	dark_factor;
 
 	portal=&map.portals[rn];
 	draw=&portal->segment_draw;
@@ -373,7 +374,7 @@ int segment_render_opaque_portal(int rn,int pass_last)
 // supergumba -- another hack to get meshes running
 // will need to support all the stuff below
 
-	gl_texture_opaque_start();
+	gl_texture_opaque_lighting_start();
 
 	glDisable(GL_BLEND);
 	
@@ -383,25 +384,28 @@ int segment_render_opaque_portal(int rn,int pass_last)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
-
-	glColor4f(1,1,1,1);
 	
 	mesh=portal->mesh.meshes;
 	
 	for (n=0;n!=portal->mesh.nmesh;n++) {
 	
 		txt_id=-1;
+		dark_factor=1.0f;
+		
 		mesh_poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {
 
 			texture=&map.textures[mesh_poly->txt_idx];
 			frame=(texture->animate.current_frame+mesh_poly->draw.txt_frame_offset)&max_texture_frame_mask;
-			frame=0;	// supergumba -- bug fix here, need real frame settings
 
 			if (texture->bitmaps[frame].gl_id!=txt_id) {
 				txt_id=texture->bitmaps[frame].gl_id;
-				gl_texture_opaque_set(txt_id);
+				gl_texture_opaque_lighting_set(txt_id);
+			}
+			if (mesh_poly->dark_factor!=dark_factor) {
+				dark_factor=mesh_poly->dark_factor;
+				gl_texture_opaque_lighting_factor(dark_factor);
 			}
 
 			glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
@@ -413,7 +417,7 @@ int segment_render_opaque_portal(int rn,int pass_last)
 		mesh++;
 	}
 
-	gl_texture_opaque_end();
+	gl_texture_opaque_lighting_end();
 
 	return(pass_last);
 

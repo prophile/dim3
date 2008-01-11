@@ -65,24 +65,82 @@ void portal_compile_gl_lists(int tick,int rn)
 	pp=(float*)portal->vertexes.pcoord;
 	pc=(float*)portal->vertexes.pcolor;
 
-
-
-// supergumba -- NEED TO FIX -- all temporary.  Need to check for light changes
-// before recalcing color, etc
+		// the eye offset
 
 	fx=(float)view.camera.pos.x;
 	fy=(float)view.camera.pos.y;
 	fz=(float)view.camera.pos.z;
-
+	
+		// run through all the portal meshes
+		
+	mesh=portal->mesh.meshes;
 
 		// check if lights or vertex data has changed in
 		// room.  If not, only run through the vertexes
 		// instead of recreating the lights
 
-//	if (!map_portal_light_check_changes(portal)) {
+	if (!map_portal_light_check_changes(portal)) {
 
-	mesh=portal->mesh.meshes;
-	
+		for (n=0;n!=portal->mesh.nmesh;n++) {
+
+			mesh_poly=mesh->polys;
+			
+			for (k=0;k!=mesh->npoly;k++) {
+			
+				for (t=0;t!=mesh_poly->ptsz;t++) {
+					pt=&mesh->vertexes[mesh_poly->v[t]];
+
+					*pv++=((float)pt->x-fx);
+					*pv++=((float)pt->y-fy);
+					*pv++=(fz-(float)pt->z);
+					*pp++=mesh_poly->gx[t];
+					*pp++=mesh_poly->gy[t];
+				}
+			
+				mesh_poly++;
+			}
+		
+			mesh++;
+		}
+
+		return;
+	}
+
+		// run ray-traced lighting if option is
+		// turned on
+		
+	if (setup.ray_trace_lighting) {
+
+		for (n=0;n!=portal->mesh.nmesh;n++) {
+
+			mesh_poly=mesh->polys;
+			
+			for (k=0;k!=mesh->npoly;k++) {
+			
+				for (t=0;t!=mesh_poly->ptsz;t++) {
+					pt=&mesh->vertexes[mesh_poly->v[t]];
+					
+					light_trace_calculate_light_color(portal,pt->x,pt->y,pt->z,pc);
+					pc+=3;
+
+					*pv++=((float)pt->x-fx);
+					*pv++=((float)pt->y-fy);
+					*pv++=(fz-(float)pt->z);
+					*pp++=mesh_poly->gx[t];
+					*pp++=mesh_poly->gy[t];
+				}
+			
+				mesh_poly++;
+			}
+		
+			mesh++;
+		}
+		
+		return;
+	}
+
+		// run regular lighting
+		
 	for (n=0;n!=portal->mesh.nmesh;n++) {
 
 		mesh_poly=mesh->polys;
@@ -91,15 +149,15 @@ void portal_compile_gl_lists(int tick,int rn)
 		
 			for (t=0;t!=mesh_poly->ptsz;t++) {
 				pt=&mesh->vertexes[mesh_poly->v[t]];
+				
+				map_portal_calculate_light_color(portal,(double)pt->x,(double)pt->y,(double)pt->z,pc);
+				pc+=3;
 
 				*pv++=((float)pt->x-fx);
 				*pv++=((float)pt->y-fy);
 				*pv++=(fz-(float)pt->z);
 				*pp++=mesh_poly->gx[t];
 				*pp++=mesh_poly->gy[t];
-				*pc++=1.0f;
-				*pc++=1.0f;
-				*pc++=1.0f;
 			}
 		
 			mesh_poly++;
@@ -107,15 +165,12 @@ void portal_compile_gl_lists(int tick,int rn)
 	
 		mesh++;
 	}
-
-
-	return;
-
+		
 
 
 
 
-
+/*
 	nvlist=portal->vertexes.nvlist;
 
 		// check if lights or vertex data has changed in
@@ -183,6 +238,7 @@ void portal_compile_gl_lists(int tick,int rn)
 		*pp++=vl->gy;
 		vl++;
 	}
+	*/
 }
 
 /* =======================================================
@@ -230,9 +286,9 @@ void portal_compile_gl_list_attach(int rn,int txt_unit_count)
 	glTexCoordPointer(2,GL_FLOAT,0,portal->vertexes.pcoord);
 
 		// color array
-// supergumba -- turned this off for testing		
-//	glEnableClientState(GL_COLOR_ARRAY);
-//	glColorPointer(3,GL_FLOAT,0,portal->vertexes.pcolor);
+
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(3,GL_FLOAT,0,portal->vertexes.pcolor);
 
 #ifdef D3_OS_MAC
 	glFlushVertexArrayRangeAPPLE(sz,portal->vertexes.pvert);

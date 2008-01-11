@@ -90,8 +90,8 @@ void portal_view_mouse_move(Point pt)
 		sx=x;
 		sy=y;
 		
-		portal_view_x=h+x;
-		portal_view_z=v+y;
+		portal_view_x=h+(x*map_enlarge);
+		portal_view_z=v+(y*map_enlarge);
 		
         walk_view_portal_view_reset();
         main_wind_draw();
