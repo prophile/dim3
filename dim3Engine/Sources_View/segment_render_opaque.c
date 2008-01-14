@@ -378,93 +378,67 @@ int segment_render_opaque_portal(int rn,int pass_last)
 
 
 
+		// need to potentially run multiple passes
+		// so 8-bit stencil buffer can be used for more
+		// than 256 polygons in a portal
 
+	pass_start=portal->opaque_stencil_pass_start;
+	pass_end=portal->opaque_stencil_pass_end;
 
-
-	gl_texture_opaque_start();
-
-	glDisable(GL_BLEND);
+	for (stencil_pass=pass_start;stencil_pass<=pass_end;stencil_pass++) {
 	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
+			// clear buffer when passes change
 
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_TRUE);
-
-	glEnable(GL_STENCIL_TEST);					// stencil for lighting pass
-	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
-	
-	sidx=1;
-	txt_id=-1;
-
-	mesh=portal->mesh.meshes;
-	
-	for (n=0;n!=portal->mesh.nmesh;n++) {
-	
-		mesh_poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-
-			texture=&map.textures[mesh_poly->txt_idx];
-			frame=(texture->animate.current_frame+mesh_poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-			if (texture->bitmaps[frame].gl_id!=txt_id) {
-				txt_id=texture->bitmaps[frame].gl_id;
-				gl_texture_opaque_set(txt_id);
-			}
-			
-			glStencilFunc(GL_ALWAYS,sidx,0xFF);
-			sidx++;
-
-			glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
-		
-			mesh_poly++;
+		if (stencil_pass!=pass_last) {
+			glClear(GL_STENCIL_BUFFER_BIT);
+			pass_last=stencil_pass;
 		}
-	
-		mesh++;
-	}
 
-	glDisable(GL_STENCIL_TEST);
+		gl_texture_opaque_start();
 
-	gl_texture_opaque_end();
+		glDisable(GL_BLEND);
+		
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_NOTEQUAL,0);
 
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
+		glDepthMask(GL_TRUE);
 
-	if (!hilite_on) {
-
-		gl_texture_tesseled_lighting_start();
-
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_ZERO,GL_SRC_COLOR);
-
-		glDisable(GL_ALPHA_TEST);
-		glDisable(GL_DEPTH_TEST);
-				
-		glEnable(GL_STENCIL_TEST);				// use stencil for lighting pass
-		glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
-
-		sidx=1;
-		dark_factor=1.0f;
+		glEnable(GL_STENCIL_TEST);					// stencil for lighting pass
+		glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
+		
+		txt_id=-1;
 
 		mesh=portal->mesh.meshes;
 		
 		for (n=0;n!=portal->mesh.nmesh;n++) {
 		
+			if ((mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) {
+				mesh++;
+				continue;
+			}
+			
 			mesh_poly=mesh->polys;
 			
 			for (k=0;k!=mesh->npoly;k++) {
-
-				glStencilFunc(GL_EQUAL,sidx,0xFF);
-				sidx++;
-		
-				if (dark_factor!=mesh_poly->dark_factor) {
-					dark_factor=mesh_poly->dark_factor;
-					gl_texture_tesseled_lighting_factor(dark_factor);
+			
+				if (mesh_poly->draw.stencil_pass!=stencil_pass) {
+					mesh_poly++;
+					continue;
 				}
 
-				ntrig=mesh_poly->light.trig_count;
-				glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)mesh_poly->light.trig_vertex_idx);
-				if ((mesh_poly->ptsz-2)!=ntrig) glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+				texture=&map.textures[mesh_poly->txt_idx];
+				frame=(texture->animate.current_frame+mesh_poly->draw.txt_frame_offset)&max_texture_frame_mask;
+
+				if (texture->bitmaps[frame].gl_id!=txt_id) {
+					txt_id=texture->bitmaps[frame].gl_id;
+					gl_texture_opaque_set(txt_id);
+				}
+				
+				glStencilFunc(GL_ALWAYS,mesh_poly->draw.stencil_idx,0xFF);
+
+				glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
 			
 				mesh_poly++;
 			}
@@ -472,80 +446,88 @@ int segment_render_opaque_portal(int rn,int pass_last)
 			mesh++;
 		}
 
-
 		glDisable(GL_STENCIL_TEST);
 
-		gl_texture_tesseled_lighting_end();
-
-	}
+		gl_texture_opaque_end();
 
 
-	return(pass_last);
+		if (!hilite_on) {
 
+			gl_texture_tesseled_lighting_start();
 
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_ZERO,GL_SRC_COLOR);
 
+			glDisable(GL_ALPHA_TEST);
+			glDisable(GL_DEPTH_TEST);
+					
+			glEnable(GL_STENCIL_TEST);				// use stencil for lighting pass
+			glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
 
+			dark_factor=1.0f;
 
+			mesh=portal->mesh.meshes;
+			
+			for (n=0;n!=portal->mesh.nmesh;n++) {
+			
+				if ((mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) {
+					mesh++;
+					continue;
+				}
+			
+				mesh_poly=mesh->polys;
+				
+				for (k=0;k!=mesh->npoly;k++) {
+				
+					if (mesh_poly->draw.stencil_pass!=stencil_pass) {
+						mesh_poly++;
+						continue;
+					}
 
+					glStencilFunc(GL_EQUAL,mesh_poly->draw.stencil_idx,0xFF);
+					sidx++;
+			
+					if (dark_factor!=mesh_poly->dark_factor) {
+						dark_factor=mesh_poly->dark_factor;
+						gl_texture_tesseled_lighting_factor(dark_factor);
+					}
 
-
-
-
-
-	
-
-
-
-
-	
-	/*
-	gl_texture_opaque_lighting_start();
-
-	glDisable(GL_BLEND);
-	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_TRUE);
-	
-	mesh=portal->mesh.meshes;
-	
-	for (n=0;n!=portal->mesh.nmesh;n++) {
-	
-		txt_id=-1;
-		dark_factor=1.0f;
-		
-		mesh_poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-
-			texture=&map.textures[mesh_poly->txt_idx];
-			frame=(texture->animate.current_frame+mesh_poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-			if (texture->bitmaps[frame].gl_id!=txt_id) {
-				txt_id=texture->bitmaps[frame].gl_id;
-				gl_texture_opaque_lighting_set(txt_id);
-			}
-			if (mesh_poly->dark_factor!=dark_factor) {
-				dark_factor=mesh_poly->dark_factor;
-				gl_texture_opaque_lighting_factor(dark_factor);
+					ntrig=mesh_poly->light.trig_count;
+					glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)mesh_poly->light.trig_vertex_idx);
+					if ((mesh_poly->ptsz-2)!=ntrig) glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+				
+					mesh_poly++;
+				}
+			
+				mesh++;
 			}
 
-			glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
-		
-			mesh_poly++;
+			glDisable(GL_STENCIL_TEST);
+
+			gl_texture_tesseled_lighting_end();
+
 		}
-	
-	
-		mesh++;
 	}
 
-	gl_texture_opaque_lighting_end();
-
 	return(pass_last);
-*/
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+	
+// supergumba -- need to rework all this
 
 		// need to potentially run multiple passes
 		// so 8-bit stencil buffer can be used for more
@@ -733,6 +715,9 @@ void segment_render_opaque(int portal_cnt,int *portal_list)
 		// run through portals
 		// we want to go from closest to furthest to
 		// catch as much z-buffer eliminates as possible
+		
+		// remember the last stencil pass set so we
+		// only clear the stencil when necessary
 
 	pass_last=0;
 		

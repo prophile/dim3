@@ -109,7 +109,7 @@ void segment_render_setup_single_opaque(portal_type *portal,short s_idx,segment_
 
 void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 {
-	int							n,i,rn,cnt,frame,
+	int							n,k,i,rn,cnt,frame,
 								lod_dist,stencil_pass,stencil_idx;
 	short						s_idx;
 	bool						light_changed,global_light_simple;
@@ -118,6 +118,8 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 	segment_type				*seg;
 	texture_type				*texture;
 	portal_segment_draw_type	*draw;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*mesh_poly;
 	
 		// setup segment rendering for draw types
 	
@@ -198,34 +200,46 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 	}
 
 		// setup the opaque per-portal stencil passes
-		// there might be more than 256 segments per portal, so we need to run in passes
+		// there might be more than 256 polygons per portal, so we need to run in passes
 		// transparent items don't use stencils
+		
+		// each polygon gets a stencil pass and stencil index within that pass
+		// the mesh itself remembers the first and last stencil pass for
+		// optimization purposes
 		
 	stencil_pass=0;
 	stencil_idx=stencil_segment_start;
 	
-	for (n=(portal_cnt-1);n>=0;n--) {
-		rn=portal_list[n];
-
-		portal=&map.portals[rn];
-		draw=&portal->segment_draw;
+	for (i=(portal_cnt-1);i>=0;i--) {
+		portal=&map.portals[portal_list[i]];
 
 		portal->opaque_stencil_pass_start=stencil_pass;
-
-		cnt=draw->opaque_light_count;
-		sptr=draw->opaque_light_list;
 		
-		for (i=0;i!=cnt;i++) {
-			seg=&map.segments[*sptr++];
+		mesh=portal->mesh.meshes;
+	
+		for (n=0;n!=portal->mesh.nmesh;n++) {
+		
+			mesh->draw.stencil_pass_start=stencil_pass;
 			
-			seg->render.stencil_pass=stencil_pass;
-			seg->render.stencil_idx=stencil_idx;
+			mesh_poly=mesh->polys;
 			
-			stencil_idx++;
-			if (stencil_idx>stencil_segment_end) {
-				stencil_idx=stencil_segment_start;
-				stencil_pass++;
+			for (k=0;k!=mesh->npoly;k++) {
+			
+				mesh_poly->draw.stencil_pass=stencil_pass;
+				mesh_poly->draw.stencil_idx=stencil_idx;
+				
+				stencil_idx++;
+				if (stencil_idx>stencil_segment_end) {
+					stencil_idx=stencil_segment_start;
+					stencil_pass++;
+				}
+			
+				mesh_poly++;
 			}
+			
+			mesh->draw.stencil_pass_end=stencil_pass;
+		
+			mesh++;
 		}
 
 		portal->opaque_stencil_pass_end=stencil_pass;

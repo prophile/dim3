@@ -103,8 +103,8 @@
 	F5A8B1AF05229DA4008D4331 /* file_map_read.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1046, 17108}}";
-			sepNavSelRange = "{29851, 0}";
-			sepNavVisRect = "{{0, 10416}, {789, 717}}";
+			sepNavSelRange = "{31845, 0}";
+			sepNavVisRect = "{{0, 12027}, {789, 717}}";
 			sepNavWindowFrame = "{{386, 162}, {804, 790}}";
 		};
 	};
@@ -234,7 +234,7 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 221703555;
+			PBXPerProjectTemplateStateSaveDate = 221977755;
 			PBXPrepackagedSmartGroups_v2 = (
 				{
 					PBXTransientLocationAtTop = bottom;
@@ -619,7 +619,7 @@
 				};
 				RubberWindowFrame = "8 94 265 647 0 0 1024 746 ";
 			};
-			PBXWorkspaceStateSaveDate = 221703555;
+			PBXWorkspaceStateSaveDate = 221977755;
 		};
 		sourceControlManager = F5A42CF40555E8A0002DF965 /* Source Control */;
 		userBuildSettings = {
@@ -719,8 +719,8 @@
 	F5DD16DE0907328000721649 /* prepare_curve.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1124, 13720}}";
-			sepNavSelRange = "{27865, 28}";
-			sepNavVisRect = "{{0, 12024}, {789, 728}}";
+			sepNavSelRange = "{28211, 0}";
+			sepNavVisRect = "{{0, 10340}, {789, 728}}";
 			sepNavWindowFrame = "{{114, 153}, {804, 801}}";
 		};
 	};

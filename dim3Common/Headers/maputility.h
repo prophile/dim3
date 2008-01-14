@@ -255,9 +255,14 @@ typedef struct		{
 					} map_mesh_poly_type;
 
 typedef struct		{
+						int							stencil_pass_start,stencil_pass_end;
+					} map_mesh_draw_type;
+
+typedef struct		{
 						int							nvertex,npoly;
 						d3pnt						*vertexes;
 						map_mesh_poly_type			*polys;
+						map_mesh_draw_type			draw;
 					} map_mesh_type;
 
 //
