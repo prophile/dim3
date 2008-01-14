@@ -354,7 +354,7 @@ int segment_render_opaque_portal(int rn,int pass_last)
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*mesh_poly;
 	texture_type	*texture;
-	int		frame,sidx,ntrig;
+	int		frame,ntrig;
 	unsigned long	txt_id;
 	float	dark_factor;
 
@@ -485,7 +485,6 @@ int segment_render_opaque_portal(int rn,int pass_last)
 					}
 
 					glStencilFunc(GL_EQUAL,mesh_poly->draw.stencil_idx,0xFF);
-					sidx++;
 			
 					if (dark_factor!=mesh_poly->dark_factor) {
 						dark_factor=mesh_poly->dark_factor;
