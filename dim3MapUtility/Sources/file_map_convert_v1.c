@@ -412,8 +412,8 @@ void map_convert_enlarge(map_type *map)
             case sg_ceiling:
 				for (t=0;t!=seg->data.fc.ptsz;t++) {
 					seg->data.fc.x[t]*=map_enlarge;
-					seg->data.fc.z[t]*=map_enlarge;
                     seg->data.fc.y[t]*=map_enlarge;
+					seg->data.fc.z[t]*=map_enlarge;
 				}
 				break;
 
@@ -437,8 +437,8 @@ void map_convert_enlarge(map_type *map)
 			case sg_ambient_fc:
 				for (t=0;t!=seg->data.ambient_fc.ptsz;t++) {
 					seg->data.ambient_fc.x[t]*=map_enlarge;
-					seg->data.ambient_fc.z[t]*=map_enlarge;
                     seg->data.ambient_fc.y[t]*=map_enlarge;
+					seg->data.ambient_fc.z[t]*=map_enlarge;
 				}
 				break;
 
@@ -528,6 +528,8 @@ bool map_convert_v1(map_type *map)
 		}
 
 		if ((nvertex==0) || (npoly==0)) continue;
+
+		fprintf(stdout,"%d: nvertex = %d\n",n,nvertex);
 
 			// create new mesh
 
