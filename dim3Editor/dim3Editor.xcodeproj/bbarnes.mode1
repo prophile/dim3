@@ -316,9 +316,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>43</integer>
-									<integer>42</integer>
-									<integer>17</integer>
+									<integer>9</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -423,9 +422,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>F5CB5C1D0D3939CE00B79317</string>
+				<string>F5330A7F0D3DC59B0051532C</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>F5CB5C1E0D3939CE00B79317</string>
+				<string>F5330A800D3DC59B0051532C</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -557,7 +556,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>221854766.836108</real>
+	<real>222154578.253952</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -573,8 +572,8 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>F5E1D2A20932D2E1007292A8</string>
-		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>/Users/bbarnes/dim3Code/dim3Editor/dim3Editor.xcodeproj</string>
+		<string>1C0AD2B3069F1EA900FABCE6</string>
 	</array>
 	<key>WindowString</key>
 	<string>13 166 302 854 0 0 1680 1028 </string>
@@ -656,7 +655,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>F5E1D2A20932D2E1007292A8</string>
-				<string>F5CB5C1F0D3939CE00B79317</string>
+				<string>F5330A810D3DC59B0051532C</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -1018,9 +1017,9 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C0AD2B3069F1EA900FABCE6</string>
-				<string>F5CB5C200D3939CE00B79317</string>
+				<string>F5330A820D3DC59B0051532C</string>
 				<string>1CD0528B0623707200166675</string>
-				<string>F5CB5C210D3939CE00B79317</string>
+				<string>F5330A830D3DC59B0051532C</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>

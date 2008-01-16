@@ -354,7 +354,7 @@ int segment_render_opaque_portal(int rn,int pass_last)
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*mesh_poly;
 	texture_type	*texture;
-	int		frame,ntrig;
+	int		frame,ntrig,t;
 	unsigned long	txt_id;
 	float	dark_factor;
 
@@ -492,8 +492,16 @@ int segment_render_opaque_portal(int rn,int pass_last)
 					}
 
 					ntrig=mesh_poly->light.trig_count;
-					glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)mesh_poly->light.trig_vertex_idx);
-					if ((mesh_poly->ptsz-2)!=ntrig) glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+					
+					// supergumba -- testing
+					glLineWidth(2.0f);
+					for (t=0;t!=ntrig;t++) {
+						glDrawElements(GL_LINE_LOOP,3,GL_UNSIGNED_INT,(GLvoid*)&mesh_poly->light.trig_vertex_idx[t*3]);
+					}
+					glLineWidth(1.0f);
+					
+				//	glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)mesh_poly->light.trig_vertex_idx);
+				//	if ((mesh_poly->ptsz-2)!=ntrig) glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
 				
 					mesh_poly++;
 				}

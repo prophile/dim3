@@ -456,6 +456,8 @@ void map_prepare_create_frwd_wall_curve(map_type *map,segment_type *seg,int lx,i
         
 		draw=&curve_seg->draw;
         wall=&curve_seg->data.wall;
+		
+		wall->ptsz=4;
 
 		if (i==0) {
 			wall->x[0]=wall->x[3]=wall->lx=rx;
@@ -478,6 +480,9 @@ void map_prepare_create_frwd_wall_curve(map_type *map,segment_type *seg,int lx,i
 			wall->z[1]=wall->z[2]=wall->rz=rz-(int)(sin(r2)*dz);
 			draw->gx[1]=draw->gx[2]=x_txtoff-(x_txtfact_div*(float)(i+1));
 		}
+		
+		wall->y[0]=wall->y[1]=ty;
+		wall->y[2]=wall->y[3]=by;
 
         curve_seg->curve=cv_none;
         
@@ -523,6 +528,8 @@ void map_prepare_create_bkwd_wall_curve(map_type *map,segment_type *seg,int lx,i
         
 		draw=&curve_seg->draw;
         wall=&curve_seg->data.wall;
+		
+		wall->ptsz=4;
 
 		if (i==0) {
 			wall->x[0]=wall->x[3]=wall->lx=lx;
@@ -545,6 +552,9 @@ void map_prepare_create_bkwd_wall_curve(map_type *map,segment_type *seg,int lx,i
 			wall->z[1]=wall->z[2]=wall->rz=lz+(int)(sin(r2)*dz);
 			draw->gx[1]=draw->gx[2]=x_txtoff+(x_txtfact_div*(float)(i+1));
 		}
+		
+		wall->y[0]=wall->y[1]=ty;
+		wall->y[2]=wall->y[3]=by;
 
         curve_seg->curve=cv_none;
         

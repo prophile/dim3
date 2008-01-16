@@ -324,50 +324,6 @@ int map_convert_segment_to_mesh_fc_to_polygon(segment_type *seg,int *px,int *py,
 
 /* =======================================================
 
-      Create Curved and Clipped Segments
-      
-======================================================= */
-
-void map_convert_tesselate_curves_clips(map_type *map)
-{
-	int					i,orig_nsegment;
-	segment_type		*seg;
-	        
-	map_prepare_setup_curve_constant(2);		// supergumba -- hard coded to high
- 
-		// create new segments for curves
-		
-    seg=map->segments;
-    orig_nsegment=map->nsegment;
-    
-	for (i=0;i!=orig_nsegment;i++) {
-    
-		switch (seg->type) {
-			
-			case sg_wall:
-				if (seg->curve!=cv_none) {
-					map_prepare_create_wall_curve(map,seg);
-					break;
-				}
-				if ((seg->clip>=wc_tessel_start) && (seg->clip<=wc_tessel_end)) {
-					map_prepare_create_wall_clip(map,seg);
-					break;
-				}
-				break;
-				
-			case sg_floor:
-			case sg_ceiling:
-				if (seg->curve!=cv_none) map_prepare_create_fc_curve(map,seg);
-				break;
-				
-		}
-        
-        seg++;
-	}
-}
-
-/* =======================================================
-
       Enlarge Map
       
 ======================================================= */
@@ -450,6 +406,70 @@ void map_convert_enlarge(map_type *map)
 
 /* =======================================================
 
+      Setup UVs
+      
+======================================================= */
+
+void map_convert_setup_uv(map_type *map)
+{
+	int				n;
+	segment_type	*seg;
+	
+	seg=map->segments;
+
+	for (n=0;n!=map->nsegment;n++) {
+
+		switch (seg->type) {
+		}
+	}
+}
+
+/* =======================================================
+
+      Create Curved and Clipped Segments
+      
+======================================================= */
+
+void map_convert_tesselate_curves_clips(map_type *map)
+{
+	int					i,orig_nsegment;
+	segment_type		*seg;
+	        
+	map_prepare_setup_curve_constant(2);		// supergumba -- hard coded to high
+ 
+		// create new segments for curves
+		
+    seg=map->segments;
+    orig_nsegment=map->nsegment;
+    
+	for (i=0;i!=orig_nsegment;i++) {
+    
+		switch (seg->type) {
+			
+			case sg_wall:
+				if (seg->curve!=cv_none) {
+					map_prepare_create_wall_curve(map,seg);
+					break;
+				}
+				if ((seg->clip>=wc_tessel_start) && (seg->clip<=wc_tessel_end)) {
+					map_prepare_create_wall_clip(map,seg);
+					break;
+				}
+				break;
+				
+			case sg_floor:
+			case sg_ceiling:
+				if (seg->curve!=cv_none) map_prepare_create_fc_curve(map,seg);
+				break;
+				
+		}
+        
+        seg++;
+	}
+}
+
+/* =======================================================
+
       Convert Entire Map
       
 ======================================================= */
@@ -479,9 +499,11 @@ bool map_convert_v1(map_type *map)
 	vlist=(d3pnt*)valloc(vlist_sz);
 	if (vlist==NULL) return(FALSE);
 
-		// enlarge map
+		// enlarge map and setup vertexes
+		// and UVs inside the segments
 
 	map_convert_enlarge(map);
+	map_convert_setup_uv(map);
 
 		// tesselate up any curved or clipped segments into
 		// multiple segments before converting to a mesh
@@ -528,8 +550,6 @@ bool map_convert_v1(map_type *map)
 		}
 
 		if ((nvertex==0) || (npoly==0)) continue;
-
-		fprintf(stdout,"%d: nvertex = %d\n",n,nvertex);
 
 			// create new mesh
 
