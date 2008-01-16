@@ -110,7 +110,7 @@ void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,
 	mesh_poly->alpha=seg->alpha;
 
 	mesh_poly->flag.on=TRUE;
-	mesh_poly->flag.pass_through=seg->pass_through;
+	mesh_poly->flag.pass_through=seg->pass_through || (seg->type==sg_ambient_wall) || (seg->type==sg_ambient_fc);
 	mesh_poly->flag.moveable=seg->moveable;
 	mesh_poly->flag.climbable=seg->climbable;
 	mesh_poly->flag.touched=FALSE;
@@ -121,207 +121,6 @@ void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,
 	map_mesh->npoly++;
 }
 
-void map_convert_segment_to_mesh_orient_uv(int ptsz,float *gx,float *gy,int txt_ang)
-{
-	int				n;
-	float			g;
-	
-	if (txt_ang==ta_0) return;
-	
-	for (n=0;n!=ptsz;n++) {
-	
-		switch (txt_ang) {
-		
-			case ta_90:
-				g=gx[n];
-				gx[n]=gy[n];
-				gy[n]=-g;
-				break;
-				
-			case ta_180:
-				gx[n]=-gx[n];
-				gy[n]=-gy[n];
-				break;
-				
-			case ta_270:
-				g=gx[n];
-				gx[n]=-gy[n];
-				gy[n]=g;
-				break;
-		
-		}
-	}
-}
-
-/* =======================================================
-
-      Convert Wall Segments
-      
-======================================================= */
-
-int map_convert_segment_to_mesh_wall_to_polygon(segment_type *seg,int *px,int *py,int *pz,float *gx,float *gy)
-{
-	int					ptsz,my;
-    wall_segment_data	*wall;
-
-	wall=&seg->data.wall;
-
-		// any segment that was created by tesselating
-		// a clip or a curve will have the simple tessel
-		// flag set, just grab the tesseled data
-
-	if (seg->simple_tessel) {
-		ptsz=wall->ptsz;
-
-		memmove(px,wall->x,(sizeof(int)*ptsz));
-		memmove(py,wall->y,(sizeof(int)*ptsz));
-		memmove(pz,wall->z,(sizeof(int)*ptsz));
-		memmove(gx,seg->draw.gx,(sizeof(float)*ptsz));
-		memmove(gy,seg->draw.gy,(sizeof(float)*ptsz));
-		map_convert_segment_to_mesh_orient_uv(ptsz,gx,gy,seg->txt_ang);
-		return(ptsz);
-	}
-
-		// otherwise convert segment to polygon
-	
-	ptsz=0;
-	
-	switch (seg->clip) {
-	
-		case wc_bottom:
-			ptsz=3;
-			px[0]=wall->lx;
-			px[1]=px[2]=wall->rx;
-			pz[0]=wall->lz;
-			pz[1]=pz[2]=wall->rz;
-			py[0]=py[1]=wall->ty;
-			py[2]=wall->by+1;
-			gx[0]=seg->x_txtoff;
-			gx[1]=gx[2]=seg->x_txtoff+seg->x_txtfact;
-			gy[0]=gy[1]=seg->y_txtoff;
-			gy[2]=seg->y_txtoff+seg->y_txtfact;
-			break;
-			
-		case wc_top:
-			ptsz=3;
-			px[0]=px[2]=wall->lx;
-			px[1]=wall->rx;
-			pz[0]=pz[2]=wall->lz;
-			pz[1]=wall->rz;
-			py[0]=wall->ty;
-			py[1]=py[2]=wall->by+1;
-			gx[0]=gx[2]=seg->x_txtoff;
-			gx[1]=seg->x_txtoff+seg->x_txtfact;
-			gy[0]=seg->y_txtoff;
-			gy[1]=gy[2]=seg->y_txtoff+seg->y_txtfact;
-			break;
-			
-		case wc_slant:
-			ptsz=4;
-			my=(wall->by+wall->ty)>>1;
-			px[0]=px[3]=wall->lx;
-			px[1]=px[2]=wall->rx;
-			pz[0]=pz[3]=wall->lz;
-			pz[1]=pz[2]=wall->rz;
-			py[0]=wall->ty;
-			py[1]=py[3]=(wall->by+wall->ty)>>1;
-			py[2]=wall->by+1;
-			gx[0]=gx[3]=seg->x_txtoff;
-			gx[1]=gx[2]=seg->x_txtoff+seg->x_txtfact;
-			gy[0]=seg->y_txtoff;
-			gy[1]=gy[3]=seg->y_txtoff+(seg->y_txtfact/2);
-			gy[2]=seg->y_txtoff+seg->y_txtfact;
-			break;
-
-        default:
-			ptsz=4;
-			px[0]=px[3]=wall->lx;
-			px[1]=px[2]=wall->rx;
-			pz[0]=pz[3]=wall->lz;
-			pz[1]=pz[2]=wall->rz;
-			py[0]=py[1]=wall->ty;
-			py[2]=py[3]=wall->by+1;
-            gx[0]=gx[3]=seg->x_txtoff;
-            gx[1]=gx[2]=seg->x_txtoff+seg->x_txtfact;
-            gy[0]=gy[1]=seg->y_txtoff;
-            gy[2]=gy[3]=seg->y_txtoff+seg->y_txtfact;
-            break;
-	}
-	
-	map_convert_segment_to_mesh_orient_uv(ptsz,gx,gy,seg->txt_ang);
-	
-	return(ptsz);
-}
-
-/* =======================================================
-
-      Convert Floor/Ceiling Segments
-      
-======================================================= */
-
-int map_convert_segment_to_mesh_fc_to_polygon(segment_type *seg,int *px,int *py,int *pz,float *gx,float *gy)
-{
-	int					n,ptsz,lft,rgt,top,bot;
-    float				xsize,ysize,x_txtoff,y_txtoff,x_txtfact,y_txtfact;
-    fc_segment_data		*fc;
-    
-	fc=&seg->data.fc;
-	
-    ptsz=fc->ptsz;
-
-		// any segment that was created by tesselating
-		// a clip or a curve will have the simple tessel
-		// flag set, just grab the tesseled data
-
-	if (seg->simple_tessel) {
-		memmove(px,fc->x,(sizeof(int)*ptsz));
-		memmove(py,fc->y,(sizeof(int)*ptsz));
-		memmove(pz,fc->z,(sizeof(int)*ptsz));
-		memmove(gx,seg->draw.gx,(sizeof(float)*ptsz));
-		memmove(gy,seg->draw.gy,(sizeof(float)*ptsz));
-		map_convert_segment_to_mesh_orient_uv(ptsz,gx,gy,seg->txt_ang);
-		return(ptsz);
-	}
-
-		// otherwise convert segment to polygon
-
-		// get extents
-		
-	lft=rgt=fc->x[0];
-	top=bot=fc->z[0];
-
-	for (n=0;n!=ptsz;n++) {
-		px[n]=fc->x[n];
-		if (px[n]<lft) lft=px[n];
-		if (px[n]>rgt) rgt=px[n];
-		
-		pz[n]=fc->z[n];
-		if (pz[n]<top) top=pz[n];
-		if (pz[n]>bot) bot=pz[n];
-    
-		py[n]=fc->y[n];
-	}
-	
-		// get texture coordinates
-		
-	xsize=(float)(rgt-lft);
-	ysize=(float)(bot-top);
- 
-	x_txtoff=seg->x_txtoff;
-	x_txtfact=seg->x_txtfact;
-	y_txtoff=seg->y_txtoff;
-	y_txtfact=seg->y_txtfact;
-   
-    for (n=0;n!=ptsz;n++) {
-		gx[n]=x_txtoff+((x_txtfact*(float)(px[n]-lft))/xsize);
-		gy[n]=y_txtoff+((y_txtfact*(float)(pz[n]-top))/ysize);
-    }
-	
-	map_convert_segment_to_mesh_orient_uv(ptsz,gx,gy,seg->txt_ang);
-	
-	return(ptsz);
-}
-
 /* =======================================================
 
       Enlarge Map
@@ -330,9 +129,15 @@ int map_convert_segment_to_mesh_fc_to_polygon(segment_type *seg,int *px,int *py,
 
 void map_convert_enlarge(map_type *map)
 {
-	int				n,t;
-	portal_type		*portal;
-	segment_type	*seg;
+	int					n,t;
+	portal_type			*portal;
+	segment_type		*seg;
+	map_scenery_type	*scenery;
+	map_light_type		*light;
+	map_sound_type		*sound;
+	map_particle_type	*particle;
+	node_type			*node;
+	spot_type			*spot;
 
 		// enlarge portals
 
@@ -402,15 +207,307 @@ void map_convert_enlarge(map_type *map)
 
 		seg++;
 	}
+
+		// scenery
+
+	scenery=map->sceneries;
+	
+	for (n=0;n!=map->nscenery;n++) {
+		portal=&map->portals[scenery->pos.rn];
+		scenery->pos.x=(scenery->pos.x*map_enlarge);
+		scenery->pos.y=(scenery->pos.y+1)*map_enlarge;
+		scenery->pos.z=(scenery->pos.z*map_enlarge);
+		scenery++;
+	}
+		
+		// map lights
+	
+	light=map->lights;
+	
+	for (n=0;n!=map->nlight;n++) {
+		portal=&map->portals[light->pos.rn];
+		light->intensity*=map_enlarge;
+		light->pos.x=(light->pos.x*map_enlarge);
+		light->pos.y=(light->pos.y+1)*map_enlarge;
+		light->pos.z=(light->pos.z*map_enlarge);
+		light++;
+	}
+	
+		// map sounds
+	
+	sound=map->sounds;
+	
+	for (n=0;n!=map->nsound;n++) {
+		portal=&map->portals[sound->pos.rn];
+		sound->pos.x=(sound->pos.x*map_enlarge);
+		sound->pos.y=(sound->pos.y+1)*map_enlarge;
+		sound->pos.z=(sound->pos.z*map_enlarge);
+		
+		sound++;
+	}
+	
+		// map particles
+	
+	particle=map->particles;
+	
+	for (n=0;n!=map->nparticle;n++) {
+		portal=&map->portals[particle->pos.rn];
+		particle->pos.x=(particle->pos.x*map_enlarge);
+		particle->pos.y=(particle->pos.y+1)*map_enlarge;
+		particle->pos.z=(particle->pos.z*map_enlarge);
+		
+		particle++;
+	}
+	
+		// nodes
+
+	node=map->nodes;
+	
+	for (n=0;n!=map->nnode;n++) {
+        node->idx=n;
+		portal=&map->portals[node->pos.rn];
+		node->pos.x=(node->pos.x*map_enlarge);
+		node->pos.y=(node->pos.y+1)*map_enlarge;
+		node->pos.z=(node->pos.z*map_enlarge);
+		node++;
+	}
+    
+		// object starts
+		
+	spot=map->spots;
+
+	for (n=0;n!=map->nspot;n++) {
+		portal=&map->portals[spot->pos.rn];
+		spot->pos.x=(spot->pos.x*map_enlarge);
+		spot->pos.y=(spot->pos.y+1)*map_enlarge;
+		spot->pos.z=(spot->pos.z*map_enlarge);
+		spot++;
+	}
 }
 
 /* =======================================================
 
-      Setup UVs
+      Turn Segments into Polygons
       
 ======================================================= */
 
-void map_convert_setup_uv(map_type *map)
+void map_convert_segment_orient_uv(int ptsz,float *gx,float *gy,int txt_ang)
+{
+	int				n;
+	float			g;
+	
+	if (txt_ang==ta_0) return;
+	
+	for (n=0;n!=ptsz;n++) {
+	
+		switch (txt_ang) {
+		
+			case ta_90:
+				g=gx[n];
+				gx[n]=gy[n];
+				gy[n]=-g;
+				break;
+				
+			case ta_180:
+				gx[n]=-gx[n];
+				gy[n]=-gy[n];
+				break;
+				
+			case ta_270:
+				g=gx[n];
+				gx[n]=-gy[n];
+				gy[n]=g;
+				break;
+		
+		}
+	}
+}
+
+void map_convert_segments_wall(segment_type *seg)
+{
+	int					ptsz,my;
+    wall_segment_data	*wall;
+
+	wall=&seg->data.wall;
+	
+	switch (seg->clip) {
+	
+		case wc_bottom:
+			ptsz=3;
+			wall->x[0]=wall->lx;
+			wall->x[1]=wall->x[2]=wall->rx;
+			wall->z[0]=wall->lz;
+			wall->z[1]=wall->z[2]=wall->rz;
+			wall->y[0]=wall->y[1]=wall->ty;
+			wall->y[2]=wall->by+1;
+			seg->draw.gx[0]=seg->x_txtoff;
+			seg->draw.gx[1]=seg->draw.gx[2]=seg->x_txtoff+seg->x_txtfact;
+			seg->draw.gy[0]=seg->draw.gy[1]=seg->y_txtoff;
+			seg->draw.gy[2]=seg->y_txtoff+seg->y_txtfact;
+			break;
+			
+		case wc_top:
+			ptsz=3;
+			wall->x[0]=wall->x[2]=wall->lx;
+			wall->x[1]=wall->rx;
+			wall->z[0]=wall->z[2]=wall->lz;
+			wall->z[1]=wall->rz;
+			wall->y[0]=wall->ty;
+			wall->y[1]=wall->y[2]=wall->by+1;
+			seg->draw.gx[0]=seg->draw.gx[2]=seg->x_txtoff;
+			seg->draw.gx[1]=seg->x_txtoff+seg->x_txtfact;
+			seg->draw.gy[0]=seg->y_txtoff;
+			seg->draw.gy[1]=seg->draw.gy[2]=seg->y_txtoff+seg->y_txtfact;
+			break;
+			
+		case wc_slant:
+			ptsz=4;
+			my=(wall->by+wall->ty)>>1;
+			wall->x[0]=wall->x[3]=wall->lx;
+			wall->x[1]=wall->x[2]=wall->rx;
+			wall->z[0]=wall->z[3]=wall->lz;
+			wall->z[1]=wall->z[2]=wall->rz;
+			wall->y[0]=wall->ty;
+			wall->y[1]=wall->y[3]=(wall->by+wall->ty)>>1;
+			wall->y[2]=wall->by+1;
+			seg->draw.gx[0]=seg->draw.gx[3]=seg->x_txtoff;
+			seg->draw.gx[1]=seg->draw.gx[2]=seg->x_txtoff+seg->x_txtfact;
+			seg->draw.gy[0]=seg->y_txtoff;
+			seg->draw.gy[1]=seg->draw.gy[3]=seg->y_txtoff+(seg->y_txtfact/2);
+			seg->draw.gy[2]=seg->y_txtoff+seg->y_txtfact;
+			break;
+
+        default:
+			ptsz=4;
+			wall->x[0]=wall->x[3]=wall->lx;
+			wall->x[1]=wall->x[2]=wall->rx;
+			wall->z[0]=wall->z[3]=wall->lz;
+			wall->z[1]=wall->z[2]=wall->rz;
+			wall->y[0]=wall->y[1]=wall->ty;
+			wall->y[2]=wall->y[3]=wall->by+1;
+            seg->draw.gx[0]=seg->draw.gx[3]=seg->x_txtoff;
+            seg->draw.gx[1]=seg->draw.gx[2]=seg->x_txtoff+seg->x_txtfact;
+            seg->draw.gy[0]=seg->draw.gy[1]=seg->y_txtoff;
+            seg->draw.gy[2]=seg->draw.gy[3]=seg->y_txtoff+seg->y_txtfact;
+            break;
+	}
+	
+	map_convert_segment_orient_uv(ptsz,seg->draw.gx,seg->draw.gy,seg->txt_ang);
+
+	wall->ptsz=ptsz;
+}
+
+void map_convert_segments_fc(segment_type *seg)
+{
+	int					n,ptsz,lft,rgt,top,bot;
+    float				xsize,ysize,x_txtoff,y_txtoff,x_txtfact,y_txtfact;
+    fc_segment_data		*fc;
+    
+	fc=&seg->data.fc;
+	
+    ptsz=fc->ptsz;
+
+		// get extents
+		
+	lft=rgt=fc->x[0];
+	top=bot=fc->z[0];
+
+	for (n=0;n!=ptsz;n++) {
+		if (fc->x[n]<lft) lft=fc->x[n];
+		if (fc->x[n]>rgt) rgt=fc->x[n];
+		
+		if (fc->z[n]<top) top=fc->z[n];
+		if (fc->z[n]>bot) bot=fc->z[n];
+	}
+	
+		// get texture coordinates
+		
+	xsize=(float)(rgt-lft);
+	ysize=(float)(bot-top);
+ 
+	x_txtoff=seg->x_txtoff;
+	x_txtfact=seg->x_txtfact;
+	y_txtoff=seg->y_txtoff;
+	y_txtfact=seg->y_txtfact;
+   
+    for (n=0;n!=ptsz;n++) {
+		seg->draw.gx[n]=x_txtoff+((x_txtfact*(float)(fc->x[n]-lft))/xsize);
+		seg->draw.gy[n]=y_txtoff+((y_txtfact*(float)(fc->z[n]-top))/ysize);
+    }
+	
+	map_convert_segment_orient_uv(ptsz,seg->draw.gx,seg->draw.gy,seg->txt_ang);
+}
+
+void map_convert_segments_ambient_wall(segment_type *seg)
+{
+	ambient_wall_segment_data	*ambient_wall;
+	segment_draw_type			*draw;
+    
+	ambient_wall=&seg->data.ambient_wall;
+	draw=&seg->draw;
+
+	ambient_wall->ptsz=4;
+	ambient_wall->x[0]=ambient_wall->x[3]=ambient_wall->lx;
+	ambient_wall->x[1]=ambient_wall->x[2]=ambient_wall->rx;
+	ambient_wall->z[0]=ambient_wall->z[3]=ambient_wall->lz;
+	ambient_wall->z[1]=ambient_wall->z[2]=ambient_wall->rz;
+	ambient_wall->y[0]=ambient_wall->y[1]=ambient_wall->ty;
+	ambient_wall->y[2]=ambient_wall->y[3]=ambient_wall->by+1;
+
+	draw->gx[0]=draw->gx[3]=seg->x_txtoff+seg->x_txtfact;
+	draw->gx[1]=draw->gx[2]=seg->x_txtoff;
+	draw->gy[0]=draw->gy[1]=seg->y_txtoff;
+	draw->gy[2]=draw->gy[3]=seg->y_txtoff+seg->y_txtfact;
+	
+	map_prepare_create_push_ambient_wall_segment_polygon(seg);
+	map_convert_segment_orient_uv(4,seg->draw.gx,seg->draw.gy,seg->txt_ang);
+}
+
+void map_convert_segments_ambient_fc(segment_type *seg)
+{
+	int						n,ptsz,lft,rgt,top,bot;
+    float					xsize,ysize,x_txtoff,y_txtoff,x_txtfact,y_txtfact;
+    ambient_fc_segment_data	*ambient_fc;
+	segment_draw_type		*draw;
+    
+	ambient_fc=&seg->data.ambient_fc;
+ 	draw=&seg->draw;
+ 
+    ptsz=ambient_fc->ptsz;
+ 
+		// get extents
+		
+	lft=rgt=ambient_fc->x[0];
+	top=bot=ambient_fc->z[0];
+
+	for (n=0;n!=ptsz;n++) {
+		if (ambient_fc->x[n]<lft) lft=ambient_fc->x[n];
+		if (ambient_fc->x[n]>rgt) rgt=ambient_fc->x[n];
+		
+		if (ambient_fc->z[n]<top) top=ambient_fc->z[n];
+		if (ambient_fc->z[n]>bot) bot=ambient_fc->z[n];
+	}
+
+		// create uvs
+
+	xsize=(float)(rgt-lft);
+	ysize=(float)(bot-top);
+ 
+	x_txtoff=seg->x_txtoff;
+	x_txtfact=seg->x_txtfact;
+	y_txtoff=seg->y_txtoff;
+	y_txtfact=seg->y_txtfact;
+   
+    for (n=0;n!=ptsz;n++) {
+		draw->gx[n]=x_txtoff+((x_txtfact*(float)(ambient_fc->x[n]-lft))/xsize);
+		draw->gy[n]=y_txtoff+((y_txtfact*(float)(ambient_fc->z[n]-top))/ysize);
+    }
+
+	map_prepare_push_ambient_fc_segment_polygon(seg);
+	map_convert_segment_orient_uv(ptsz,seg->draw.gx,seg->draw.gy,seg->txt_ang);
+}
+
+void map_convert_segments(map_type *map)
 {
 	int				n;
 	segment_type	*seg;
@@ -420,7 +517,28 @@ void map_convert_setup_uv(map_type *map)
 	for (n=0;n!=map->nsegment;n++) {
 
 		switch (seg->type) {
+
+			case sg_wall:
+				map_convert_segments_wall(seg);
+				break;
+
+			case sg_floor:
+			case sg_ceiling:
+				map_convert_segments_fc(seg);
+				break;
+
+			case sg_ambient_wall:
+				map_convert_segments_ambient_wall(seg);
+				break;
+				
+			case sg_ambient_fc:
+				map_convert_segments_ambient_fc(seg);
+				break;
+
+
 		}
+
+		seg++;
 	}
 }
 
@@ -477,18 +595,10 @@ void map_convert_tesselate_curves_clips(map_type *map)
 bool map_convert_v1(map_type *map)
 {
 	int					n,i,vlist_sz,nvertex,npoly;
-	int					ptsz,px[8],py[8],pz[8];
-	float				gx[8],gy[8];
 	d3pnt				*vlist;
 	portal_type			*portal;
 	segment_type		*seg;
 	map_mesh_type		*map_mesh;
-	node_type			*node;
-	map_scenery_type	*scenery;
-	map_light_type		*light;
-	map_sound_type		*sound;
-	map_particle_type	*particle;
-	spot_type			*spot;
 
 		// memory for vertex lists
 		// just use enough vertexes to cover most maps,
@@ -503,7 +613,7 @@ bool map_convert_v1(map_type *map)
 		// and UVs inside the segments
 
 	map_convert_enlarge(map);
-	map_convert_setup_uv(map);
+	map_convert_segments(map);
 
 		// tesselate up any curved or clipped segments into
 		// multiple segments before converting to a mesh
@@ -533,15 +643,23 @@ bool map_convert_v1(map_type *map)
 			switch (seg->type) {
 
 				case sg_wall:
-					ptsz=map_convert_segment_to_mesh_wall_to_polygon(seg,px,py,pz,gx,gy);
-					nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,ptsz,px,py,pz);
+					nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,seg->data.wall.ptsz,seg->data.wall.x,seg->data.wall.y,seg->data.wall.z);
 					npoly++;
 					break;
 
 				case sg_floor:
 				case sg_ceiling:
-					ptsz=map_convert_segment_to_mesh_fc_to_polygon(seg,px,py,pz,gx,gy);
-					nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,ptsz,px,py,pz);
+					nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,seg->data.fc.ptsz,seg->data.fc.x,seg->data.fc.y,seg->data.fc.z);
+					npoly++;
+					break;
+
+				case sg_ambient_wall:
+					nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,seg->data.ambient_wall.ptsz,seg->data.ambient_wall.x,seg->data.ambient_wall.y,seg->data.ambient_wall.z);
+					npoly++;
+					break;
+
+				case sg_ambient_fc:
+					nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,seg->data.ambient_fc.ptsz,seg->data.ambient_fc.x,seg->data.ambient_fc.y,seg->data.ambient_fc.z);
 					npoly++;
 					break;
 
@@ -588,14 +706,20 @@ bool map_convert_v1(map_type *map)
 			switch (seg->type) {
 
 				case sg_wall:
-					ptsz=map_convert_segment_to_mesh_wall_to_polygon(seg,px,py,pz,gx,gy);
-					map_convert_segment_to_mesh_add_mesh_poly(map_mesh,ptsz,px,py,pz,gx,gy,seg);
+					map_convert_segment_to_mesh_add_mesh_poly(map_mesh,seg->data.wall.ptsz,seg->data.wall.x,seg->data.wall.y,seg->data.wall.z,seg->draw.gx,seg->draw.gy,seg);
 					break;
 
 				case sg_floor:
 				case sg_ceiling:
-					ptsz=map_convert_segment_to_mesh_fc_to_polygon(seg,px,py,pz,gx,gy);
-					map_convert_segment_to_mesh_add_mesh_poly(map_mesh,ptsz,px,py,pz,gx,gy,seg);
+					map_convert_segment_to_mesh_add_mesh_poly(map_mesh,seg->data.fc.ptsz,seg->data.fc.x,seg->data.fc.y,seg->data.fc.z,seg->draw.gx,seg->draw.gy,seg);
+					break;
+
+				case sg_ambient_wall:
+					map_convert_segment_to_mesh_add_mesh_poly(map_mesh,seg->data.ambient_wall.ptsz,seg->data.ambient_wall.x,seg->data.ambient_wall.y,seg->data.ambient_wall.z,seg->draw.gx,seg->draw.gy,seg);
+					break;
+
+				case sg_ambient_fc:
+					map_convert_segment_to_mesh_add_mesh_poly(map_mesh,seg->data.ambient_fc.ptsz,seg->data.ambient_fc.x,seg->data.ambient_fc.y,seg->data.ambient_fc.z,seg->draw.gx,seg->draw.gy,seg);
 					break;
 
 			}
@@ -608,85 +732,6 @@ bool map_convert_v1(map_type *map)
 		// turn off all segments
 
 	map->nsegment=0;
-	
-		// enlarge other items
-		// supergumba -- maybe do during load?
-		
-		// map scenery
-	
-	scenery=map->sceneries;
-	
-	for ((i=0);(i!=map->nscenery);i++) {
-		portal=&map->portals[scenery->pos.rn];
-		scenery->pos.x=(scenery->pos.x*map_enlarge);
-		scenery->pos.y=(scenery->pos.y+1)*map_enlarge;
-		scenery->pos.z=(scenery->pos.z*map_enlarge);
-		scenery++;
-	}
-		
-		// map lights
-	
-	light=map->lights;
-	
-	for ((i=0);(i!=map->nlight);i++) {
-		portal=&map->portals[light->pos.rn];
-		light->intensity*=map_enlarge;
-		light->pos.x=(light->pos.x*map_enlarge);
-		light->pos.y=(light->pos.y+1)*map_enlarge;
-		light->pos.z=(light->pos.z*map_enlarge);
-		light++;
-	}
-	
-		// map sounds
-	
-	sound=map->sounds;
-	
-	for ((i=0);(i!=map->nsound);i++) {
-		portal=&map->portals[sound->pos.rn];
-		sound->pos.x=(sound->pos.x*map_enlarge);
-		sound->pos.y=(sound->pos.y+1)*map_enlarge;
-		sound->pos.z=(sound->pos.z*map_enlarge);
-		
-		sound++;
-	}
-	
-		// map particles
-	
-	particle=map->particles;
-	
-	for ((i=0);(i!=map->nparticle);i++) {
-		portal=&map->portals[particle->pos.rn];
-		particle->pos.x=(particle->pos.x*map_enlarge);
-		particle->pos.y=(particle->pos.y+1)*map_enlarge;
-		particle->pos.z=(particle->pos.z*map_enlarge);
-		
-		particle++;
-	}
-	
-		// nodes
-
-	node=map->nodes;
-	
-	for ((i=0);(i!=map->nnode);i++) {
-        node->idx=i;
-		portal=&map->portals[node->pos.rn];
-		node->pos.x=(node->pos.x*map_enlarge);
-		node->pos.y=(node->pos.y+1)*map_enlarge;
-		node->pos.z=(node->pos.z*map_enlarge);
-		node++;
-	}
-    
-		// object starts
-		
-	spot=map->spots;
-
-	for ((i=0);(i!=map->nspot);i++) {
-		portal=&map->portals[spot->pos.rn];
-		spot->pos.x=(spot->pos.x*map_enlarge);
-		spot->pos.y=(spot->pos.y+1)*map_enlarge;
-		spot->pos.z=(spot->pos.z*map_enlarge);
-		spot++;
-	}
 
 	return(TRUE);
 }

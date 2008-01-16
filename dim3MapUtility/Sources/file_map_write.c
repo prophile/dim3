@@ -238,6 +238,8 @@ bool write_map_xml(map_type *map)
     node_type				*node;
     spot_type				*spot;
 	map_scenery_type		*scenery;
+
+	return(TRUE);		// supergumba -- save in new format
 	
     xml_new_file();
     

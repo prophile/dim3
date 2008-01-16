@@ -294,7 +294,7 @@ typedef struct		{
 typedef struct		{
 						short						push;
 						int							lx,rx,lz,rz,ty,by,
-													x[4],z[4],y[4];
+													ptsz,x[4],z[4],y[4];
 					} ambient_wall_segment_data;
 					
 typedef struct		{
