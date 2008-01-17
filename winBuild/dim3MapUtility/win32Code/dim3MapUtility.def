@@ -66,51 +66,54 @@ EXPORTS
 	map_find_next_node_in_path					@212
 	map_node_to_node_distance					@213
 
-	map_portal_mesh_add							@215
-	map_portal_mesh_delete						@216
-	map_portal_mesh_set_vertex_count			@217
-	map_portal_mesh_set_poly_count				@218
+	map_portal_mesh_add							@220
+	map_portal_mesh_delete						@221
+	map_portal_mesh_set_vertex_count			@222
+	map_portal_mesh_set_poly_count				@223
 
-	map_primitive_create_uid					@220
-	map_primitive_push_uid						@221
-	map_primitive_pop_uid						@222
+	map_portal_liquid_add						@225
+	map_portal_liquid_delete					@226
 
-	map_segment_group_find_name					@230
-	map_segment_move							@231
-	map_segment_calculate_extent				@232
-	map_segment_calculate_center				@233
-	map_segments_clear_touch					@234
-	map_segments_count_touch					@235
-	map_segment_reset_texture_uvs				@236
+	map_primitive_create_uid					@230
+	map_primitive_push_uid						@231
+	map_primitive_pop_uid						@232
 
-	map_group_create_segment_list				@240
-	map_group_dispose_segment_list				@241
-	map_group_get_center						@242
+	map_segment_group_find_name					@240
+	map_segment_move							@241
+	map_segment_calculate_extent				@242
+	map_segment_calculate_center				@243
+	map_segments_clear_touch					@244
+	map_segments_count_touch					@245
+	map_segment_reset_texture_uvs				@246
 
-	map_movement_find							@250
-	map_movement_add							@251
-	map_movement_delete							@252
-	map_movement_move_add						@253
-	map_movement_move_delete					@254
+	map_group_create_segment_list				@250
+	map_group_dispose_segment_list				@251
+	map_group_get_center						@252
 
-	map_setup									@260
-	map_new										@261
-	map_open									@262
-	map_open_primitive							@263
-	map_reload									@264
-	map_save									@265
-	map_close									@266
-	map_refresh_textures						@267
+	map_movement_find							@260
+	map_movement_add							@261
+	map_movement_delete							@262
+	map_movement_move_add						@263
+	map_movement_move_delete					@264
 
-	map_prepare									@270
+	map_setup									@270
+	map_new										@271
+	map_open									@272
+	map_open_primitive							@273
+	map_reload									@274
+	map_save									@275
+	map_close									@276
+	map_refresh_textures						@277
 
-	map_add_texture_frame						@280
-	map_delete_texture_frame					@281
+	map_prepare									@280
 
-	map_auto_generate_clear						@290
-	map_auto_generate_fix_segments_uv			@291
-	map_auto_generate_add_simple_lights			@292
-	map_auto_generate_add_player_spot			@293
+	map_add_texture_frame						@290
+	map_delete_texture_frame					@291
 
-	map_auto_generate							@295
-	map_auto_generate_test						@296
+	map_auto_generate_clear						@300
+	map_auto_generate_fix_segments_uv			@301
+	map_auto_generate_add_simple_lights			@302
+	map_auto_generate_add_player_spot			@303
+
+	map_auto_generate							@310
+	map_auto_generate_test						@311

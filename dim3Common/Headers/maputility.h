@@ -266,6 +266,31 @@ typedef struct		{
 					} map_mesh_type;
 
 //
+// liquid structures
+//
+
+typedef struct		{
+						int							in_harm,drown_harm,drown_tick;
+					} map_liquid_harm_type;
+
+typedef struct		{
+						int							rate,size,direction,high;
+					} map_liquid_tide_type;
+
+typedef struct		{
+						int							vl_idx_start,vl_x_sz,vl_z_sz;
+					} map_liquid_draw_type;
+
+typedef struct		{
+						int							y,lft,rgt,top,bot;
+						float						speed_alter,tint_alpha;
+						d3col						col;
+						map_liquid_harm_type		harm;
+						map_liquid_tide_type		tide;
+						map_liquid_draw_type		draw;
+					} map_liquid_type;
+
+//
 // segment structures
 //
 
@@ -409,6 +434,11 @@ typedef struct		{
 					} portal_mesh_type;
 
 typedef struct		{
+						int							nliquid;
+						map_liquid_type				*liquids;
+					} portal_liquid_type;
+
+typedef struct		{
 						int							x,z,ex,ez,mx,mz,ty,by,
 													opaque_stencil_pass_start,
 													opaque_stencil_pass_end,
@@ -418,6 +448,7 @@ typedef struct		{
 						portal_message_type			msg;
 						portal_sight_list_type		sight[max_sight_list];
 						portal_mesh_type			mesh;
+						portal_liquid_type			liquid;
 						portal_segment_list_type	wall_list_hit,
 													fc_list_hit,
 													liquid_list_hit,
@@ -724,6 +755,9 @@ extern bool map_portal_mesh_add(map_type *map,int portal_idx,int add_count);
 extern bool map_portal_mesh_delete(map_type *map,int portal_idx,int mesh_idx);
 extern bool map_portal_mesh_set_vertex_count(map_type *map,int portal_idx,int mesh_idx,int nvertex);
 extern bool map_portal_mesh_set_poly_count(map_type *map,int portal_idx,int mesh_idx,int npoly);
+
+extern bool map_portal_liquid_add(map_type *map,int portal_idx,int add_count);
+extern bool map_portal_liquid_delete(map_type *map,int portal_idx,int liquid_idx);
 
 extern int map_segment_group_find_name(map_type *map,char *name);
 extern void map_segment_move(map_type *map,segment_type *seg,int x,int y,int z);

@@ -123,6 +123,43 @@ void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,
 
 /* =======================================================
 
+      Add Liquid to Portal
+      
+======================================================= */
+
+void map_convert_liquid(map_type *map,int rn,segment_type *seg)
+{
+	portal_type		*portal;
+	map_liquid_type	*liquid;
+
+	if (!map_portal_liquid_add(map,rn,1)) return;
+
+	portal=&map->portals[rn];
+	liquid=&portal->liquid.liquids[portal->liquid.nliquid-1];
+
+	liquid->y=seg->data.liquid.y;
+	liquid->lft=seg->data.liquid.lft;
+	liquid->rgt=seg->data.liquid.rgt;
+	liquid->top=seg->data.liquid.top;
+	liquid->bot=seg->data.liquid.bot;
+
+	liquid->speed_alter=seg->data.liquid.speed_alter;
+	liquid->tint_alpha=seg->data.liquid.tint_alpha;
+
+	memmove(&liquid->col,&seg->data.liquid.col,sizeof(d3col));
+
+	liquid->harm.in_harm=seg->data.liquid.harm;
+	liquid->harm.drown_harm=seg->data.liquid.drown_harm;
+	liquid->harm.drown_tick=seg->data.liquid.drown_tick;
+	
+	liquid->tide.rate=seg->data.liquid.tiderate;
+	liquid->tide.size=seg->data.liquid.tidesize;
+	liquid->tide.direction=seg->data.liquid.tidedirection;
+	liquid->tide.high=seg->data.liquid.wavesize;
+}
+
+/* =======================================================
+
       Enlarge Map
       
 ======================================================= */
@@ -728,6 +765,22 @@ bool map_convert_v1(map_type *map)
 	}
 	
 	free(vlist);
+
+		// convert liquids
+
+	for (n=0;n!=map->nportal;n++) {
+	
+		portal=&map->portals[n];
+	
+		portal->liquid.nliquid=0;
+
+		seg=map->segments;
+
+		for (i=0;i!=map->nsegment;i++) {
+			if ((seg->rn==n) && (seg->type==sg_liquid)) map_convert_liquid(map,n,seg);
+			seg++;
+		}
+	}
 
 		// turn off all segments
 

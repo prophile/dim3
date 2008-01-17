@@ -249,6 +249,10 @@ SOURCE=..\..\dim3MapUtility\Sources\portal_light_spot.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3MapUtility\Sources\portal_liquid.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3MapUtility\Sources\portal_mesh.c
 # End Source File
 # Begin Source File
