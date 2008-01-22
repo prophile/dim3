@@ -556,14 +556,28 @@ int map_portal_add_light_single_vertex_list(portal_vertex_list_type *vl,int vl_c
 	if ((mesh_poly->draw.simple_tessel) || (mesh_poly->ptsz==3) || (!high_quality_lighting)) return(map_portal_add_light_simple_vertex_list(vl,vl_cnt,mesh,mesh_poly));
 
 		// tessel depending on shape of polygon
+		// first, automatically tessel on the other two
+		// axises if any axies' length is 0
 
 	xsz=mesh_poly->box.max.x-mesh_poly->box.min.x;
-	ysz=mesh_poly->box.max.y-mesh_poly->box.min.y;
-	zsz=mesh_poly->box.max.z-mesh_poly->box.min.z;
+	if (xsz==0) return(map_portal_add_light_yz_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
 
-	if ((xsz>=ysz) || (zsz>=ysz))  return(map_portal_add_light_xz_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
-	if (xsz>zsz) return(map_portal_add_light_xy_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
-	return(map_portal_add_light_yz_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
+	ysz=mesh_poly->box.max.y-mesh_poly->box.min.y;
+	if (ysz==0) return(map_portal_add_light_xz_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
+
+	zsz=mesh_poly->box.max.z-mesh_poly->box.min.z;
+	if (zsz==0) return(map_portal_add_light_xy_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
+
+		// polygons standing straight up will have common x/z's
+
+	if (mesh_poly->box.common_xz) {
+		if (xsz>zsz) return(map_portal_add_light_xy_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
+		return(map_portal_add_light_yz_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
+	}
+
+		// else treat as floor or ceiling like polygon
+
+	return(map_portal_add_light_xz_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
 }
 
 /* =======================================================

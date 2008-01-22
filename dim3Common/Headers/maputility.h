@@ -205,6 +205,15 @@ extern char light_type_str[][32];
 #define flag_pvl_shiftable							0x02
 
 //
+// mesh poly draw flag
+//
+
+#define map_mesh_poly_draw_normal					0
+#define map_mesh_poly_draw_bump						1
+#define map_mesh_poly_draw_transparent				2
+#define map_mesh_poly_draw_shader					3
+
+//
 // group structure
 //
 
@@ -219,8 +228,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						bool						flat,vertical;
-						d3pnt						min,max;
+						bool						flat,common_xz;
+						d3pnt						min,max,mid;
 					} map_mesh_poly_box_type;
 
 typedef struct		{
@@ -238,9 +247,11 @@ typedef struct		{
 					} map_mesh_poly_light_type;
 
 typedef struct		{
-						int							portal_v[8],txt_frame_offset,
+						int							portal_v[8],draw_type,
+													cur_frame,txt_frame_offset,
 													stencil_pass,stencil_idx;
-						bool						simple_tessel,shift_on;
+						float						normal[3];
+						bool						simple_tessel,shift_on,is_lighting;
 					} map_mesh_poly_draw_type;
 
 typedef struct		{
@@ -256,6 +267,8 @@ typedef struct		{
 
 typedef struct		{
 						int							stencil_pass_start,stencil_pass_end;
+						bool						has_normal,has_bump,has_lighting,
+													has_transparent,has_shader;
 					} map_mesh_draw_type;
 
 typedef struct		{
@@ -394,7 +407,7 @@ typedef struct		{
 					} portal_segment_list_type;
 
 typedef struct		{
-						int							opaque_normal_count,
+						int							opaque_normal_count,	// supergumba -- can probably delete all this
 													opaque_bump_count,
 													opaque_light_count,
 													opaque_simple_normal_count,

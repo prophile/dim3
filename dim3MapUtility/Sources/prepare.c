@@ -37,18 +37,19 @@ and can be sold or given away.
 
 void map_prepare_set_mesh_poly_box(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
 {
-	int				n,ptsz,
-					y,min_x,max_x,min_z,max_z,min_y,max_y;
-	bool			flat;
+	int				n,k,ptsz,v_idx,y;
+	bool			flat,common_xz;
+	d3pnt			min,max,mid;
 	d3pnt			*pt;
 
 		// find enclosing square
+		// and middle and if polygon is flat
 		
 	pt=&mesh->vertexes[mesh_poly->v[0]];
 
-	min_x=max_x=pt->x;
-	min_y=max_y=y=pt->y;
-	min_z=max_z=pt->z;
+	min.x=max.x=mid.x=pt->x;
+	min.y=max.y=mid.y=y=pt->y;
+	min.z=max.z=mid.z=pt->z;
 
 	flat=TRUE;
     
@@ -59,27 +60,54 @@ void map_prepare_set_mesh_poly_box(map_mesh_type *mesh,map_mesh_poly_type *mesh_
 
 			// get min and max
 
-		if (pt->x<min_x) min_x=pt->x;
-		if (pt->x>max_x) max_x=pt->x;
-		if (pt->y<min_y) min_y=pt->y;
-		if (pt->y>max_y) max_y=pt->y;
-		if (pt->z<min_z) min_z=pt->z;
-		if (pt->z>max_z) max_z=pt->z;
+		if (pt->x<min.x) min.x=pt->x;
+		if (pt->x>max.x) max.x=pt->x;
+		if (pt->y<min.y) min.y=pt->y;
+		if (pt->y>max.y) max.y=pt->y;
+		if (pt->z<min.z) min.z=pt->z;
+		if (pt->z>max.z) max.z=pt->z;
+
+			// add for middle
+
+		mid.x+=pt->x;
+		mid.y+=pt->y;
+		mid.z+=pt->z;
 
 			// check for flat y
 
 		if (pt->y!=y) flat=FALSE;
 	}
     
-	mesh_poly->box.min.x=min_x;
-	mesh_poly->box.max.x=max_x;
-	mesh_poly->box.min.y=min_y;
-	mesh_poly->box.max.y=max_y;
-	mesh_poly->box.min.z=min_z;
-	mesh_poly->box.max.z=max_z;
+	memmove(&mesh_poly->box.min,&min,sizeof(d3pnt));
+	memmove(&mesh_poly->box.max,&max,sizeof(d3pnt));
+	
+	mesh_poly->box.mid.x=mid.x/ptsz;
+	mesh_poly->box.mid.y=mid.y/ptsz;
+	mesh_poly->box.mid.z=mid.z/ptsz;
 	
 	mesh_poly->box.flat=flat;
-	mesh_poly->box.vertical=((max_x-min_x)>(max_z-min_z));
+
+		// check for common xz points
+		// this helps determine which way
+		// to tessel lighting
+
+	common_xz=FALSE;
+
+	for (n=0;n!=ptsz;n++) {
+		v_idx=mesh_poly->v[n];
+
+		for (k=0;k!=ptsz;k++) {
+			if (k==n) continue;
+			if (mesh_poly->v[k]==v_idx) {
+				common_xz=TRUE;
+				break;
+			}
+		}
+
+		if (common_xz) break;
+	}
+
+	mesh_poly->box.common_xz=common_xz;
 }
 
 /* =======================================================

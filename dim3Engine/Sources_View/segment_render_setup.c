@@ -45,22 +45,39 @@ extern bool fog_solid_on(void);
 
 /* =======================================================
 
-      Normal Smoothing
+      Normal Smoothing Init
       
 ======================================================= */
 
-void segment_normal_smooth_init(void)
+void mesh_normal_smooth_init(void)
 {
-	int				n;
-	segment_type	*seg;
+	int						i,n,k;
+	portal_type				*portal;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*mesh_poly;
 
-	seg=map.segments;
+	portal=map.portals;
 
-	for (n=0;n!=map.nsegment;n++) {
-		seg->render.normal[0]=0.5f;
-		seg->render.normal[1]=0.5f;
-		seg->render.normal[2]=1.0f;
-		seg++;
+	for (i=0;i!=map.nportal;i++) {
+
+		mesh=portal->mesh.meshes;
+
+		for (n=0;n!=portal->mesh.nmesh;n++) {
+			
+			mesh_poly=mesh->polys;
+			
+			for (k=0;k!=mesh->npoly;k++) {
+				mesh_poly->draw.normal[0]=0.5f;
+				mesh_poly->draw.normal[1]=0.5f;
+				mesh_poly->draw.normal[2]=1.0f;
+				
+				mesh_poly++;
+			}
+		
+			mesh++;
+		}
+			
+		portal++;
 	}
 }
 
@@ -122,7 +139,7 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 	map_mesh_poly_type			*mesh_poly;
 	
 		// setup segment rendering for draw types
-	
+/*	
 	for (n=(portal_cnt-1);n>=0;n--) {
 		rn=portal_list[n];
 		
@@ -153,6 +170,9 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 		global_light_simple=(!setup.high_quality_lighting) || (fog_solid_on());
 	
 			// create segment rendering values and lists
+
+
+		// supergumba -- delete all this and ALL segment lists
 
 		cnt=portal->segment_list_draw.count;
 		sptr=portal->segment_list_draw.list;
@@ -198,6 +218,98 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 
 		portal++;
 	}
+*/
+
+		// setup portal and mesh drawing
+		// compile gl lists for portal and per mesh and
+		// poly flags from rendering
+		
+	for (i=(portal_cnt-1);i>=0;i--) {
+		rn=portal_list[i];
+		portal=&map.portals[rn];
+
+			// create vertex, normal, and color lists
+			
+		portal_compile_gl_lists(tick,rn);
+
+			// has lighting changed in this portal?
+			
+		light_changed=map_portal_light_check_changes(portal);
+		
+			// combined global simple lighting
+			
+		global_light_simple=(!setup.high_quality_lighting) || (fog_solid_on());
+
+			// supergumba -- add per portal has_normal, has_bump flags
+
+		mesh=portal->mesh.meshes;
+
+		for (n=0;n!=portal->mesh.nmesh;n++) {
+		
+			mesh->draw.has_normal=FALSE;
+			mesh->draw.has_bump=FALSE;
+			mesh->draw.has_lighting=FALSE;
+			mesh->draw.has_transparent=FALSE;
+			mesh->draw.has_shader=FALSE;
+			
+			mesh_poly=mesh->polys;
+			
+			for (k=0;k!=mesh->npoly;k++) {
+				
+				lod_dist=abs(mesh_poly->box.mid.x-view.camera.pos.x)+abs(mesh_poly->box.mid.y-view.camera.pos.y)+abs(mesh_poly->box.mid.z-view.camera.pos.z);
+
+				texture=&map.textures[mesh_poly->txt_idx];
+				frame=(texture->animate.current_frame+mesh_poly->draw.txt_frame_offset)&max_texture_frame_mask;
+
+					// is shader
+
+				if (texture->shader.on) {
+					mesh->draw.has_shader=TRUE;
+					mesh_poly->draw.draw_type=map_mesh_poly_draw_shader;
+					mesh_poly->draw.is_lighting=FALSE;
+				}
+				else {
+
+						// is transparent?
+				
+					if ((mesh_poly->alpha!=1.0f) || (texture->bitmaps[frame].alpha_mode==alpha_mode_transparent)) {
+						mesh->draw.has_transparent=TRUE;
+						mesh_poly->draw.draw_type=map_mesh_poly_draw_transparent;
+						mesh_poly->draw.is_lighting=FALSE;
+					}
+					else {
+
+							// is bump?
+
+						if ((setup.bump_mapping) && (lod_dist<map.optimizations.lod_bump_distance) && (texture->bumpmaps[frame].gl_id!=-1)) {
+							mesh->draw.has_bump=TRUE;
+							mesh_poly->draw.draw_type=map_mesh_poly_draw_bump;
+							mesh_poly->draw.is_lighting=TRUE;
+							if ((!light_changed) || (mesh_poly->flag.moveable)) map_portal_calculate_normal_vector_smooth(portal,(double)mesh_poly->box.mid.x,(double)mesh_poly->box.mid.y,(double)mesh_poly->box.mid.z,mesh_poly->draw.normal);
+						}
+
+							// is normal?
+
+						else {
+							mesh->draw.has_normal=TRUE;
+							mesh_poly->draw.draw_type=map_mesh_poly_draw_normal;
+							mesh_poly->draw.is_lighting=TRUE;
+						}
+					}
+				}
+
+				mesh_poly->draw.cur_frame=frame;
+
+				mesh_poly++;
+			}
+
+			mesh->draw.has_lighting=(mesh->draw.has_normal) || (mesh->draw.has_bump);
+
+			mesh++;
+		}
+			
+		portal++;
+	}
 
 		// setup the opaque per-portal stencil passes
 		// there might be more than 256 polygons per portal, so we need to run in passes
@@ -211,7 +323,9 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 	stencil_idx=stencil_segment_start;
 	
 	for (i=(portal_cnt-1);i>=0;i--) {
-		portal=&map.portals[portal_list[i]];
+
+		rn=portal_list[i];
+		portal=&map.portals[rn];
 
 		portal->opaque_stencil_pass_start=stencil_pass;
 		
@@ -221,29 +335,32 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 		
 			mesh->draw.stencil_pass_start=stencil_pass;
 			
-			mesh_poly=mesh->polys;
-			
-			for (k=0;k!=mesh->npoly;k++) {
-			
-				mesh_poly->draw.stencil_pass=stencil_pass;
-				mesh_poly->draw.stencil_idx=stencil_idx;
+			if (mesh->draw.has_lighting) {
+
+				mesh_poly=mesh->polys;
 				
-				stencil_idx++;
-				if (stencil_idx>stencil_segment_end) {
-					stencil_idx=stencil_segment_start;
-					stencil_pass++;
+				for (k=0;k!=mesh->npoly;k++) {
+
+					if (mesh_poly->draw.is_lighting) {
+						mesh_poly->draw.stencil_pass=stencil_pass;
+						mesh_poly->draw.stencil_idx=stencil_idx;
+						
+						stencil_idx++;
+						if (stencil_idx>stencil_segment_end) {
+							stencil_idx=stencil_segment_start;
+							stencil_pass++;
+						}
+					}
+				
+					mesh_poly++;
 				}
-			
-				mesh_poly++;
 			}
-			
+
 			mesh->draw.stencil_pass_end=stencil_pass;
 		
 			mesh++;
 		}
 
 		portal->opaque_stencil_pass_end=stencil_pass;
-			
-		portal++;
 	}
 }

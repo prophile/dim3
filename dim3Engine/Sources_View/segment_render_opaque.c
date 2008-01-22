@@ -56,6 +56,8 @@ extern void segment_liquid_tide_draw_lighting(segment_type *seg);
 
 ======================================================= */
 
+// supergumba -- will be able to delete a lot of this
+
 void segment_piece_draw_opaque_normal(int stencil_pass,int cnt,short *sptr)
 {
 	int					i,frame;
@@ -355,7 +357,7 @@ int segment_render_opaque_portal(int rn,int pass_last)
 	map_mesh_poly_type			*mesh_poly;
 	texture_type	*texture;
 	int		frame,ntrig,t;
-	unsigned long	txt_id;
+	unsigned long	txt_id,bump_id;
 	float	dark_factor;
 
 	portal=&map.portals[rn];
@@ -394,6 +396,8 @@ int segment_render_opaque_portal(int rn,int pass_last)
 			pass_last=stencil_pass;
 		}
 
+			// texture drawing pass
+
 		gl_texture_opaque_start();
 
 		glDisable(GL_BLEND);
@@ -405,7 +409,7 @@ int segment_render_opaque_portal(int rn,int pass_last)
 		glDepthFunc(GL_LEQUAL);
 		glDepthMask(GL_TRUE);
 
-		glEnable(GL_STENCIL_TEST);					// stencil for lighting pass
+		glEnable(GL_STENCIL_TEST);
 		glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
 		
 		txt_id=-1;
@@ -414,7 +418,7 @@ int segment_render_opaque_portal(int rn,int pass_last)
 		
 		for (n=0;n!=portal->mesh.nmesh;n++) {
 		
-			if ((mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) {
+			if ((!mesh->draw.has_normal) || (mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) {
 				mesh++;
 				continue;
 			}
@@ -422,14 +426,14 @@ int segment_render_opaque_portal(int rn,int pass_last)
 			mesh_poly=mesh->polys;
 			
 			for (k=0;k!=mesh->npoly;k++) {
-			
-				if (mesh_poly->draw.stencil_pass!=stencil_pass) {
+
+				if ((mesh_poly->draw.draw_type!=map_mesh_poly_draw_normal) || (mesh_poly->draw.stencil_pass!=stencil_pass)) {
 					mesh_poly++;
 					continue;
 				}
 
 				texture=&map.textures[mesh_poly->txt_idx];
-				frame=(texture->animate.current_frame+mesh_poly->draw.txt_frame_offset)&max_texture_frame_mask;
+				frame=mesh_poly->draw.cur_frame;
 
 				if (texture->bitmaps[frame].gl_id!=txt_id) {
 					txt_id=texture->bitmaps[frame].gl_id;
@@ -450,6 +454,68 @@ int segment_render_opaque_portal(int rn,int pass_last)
 
 		gl_texture_opaque_end();
 
+			// bump pass
+
+		gl_texture_opaque_bump_start();
+
+		glDisable(GL_BLEND);
+		
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_NOTEQUAL,0);
+
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
+		glDepthMask(GL_TRUE);
+
+		glEnable(GL_STENCIL_TEST);
+		glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
+
+		txt_id=bump_id=-1;
+
+		mesh=portal->mesh.meshes;
+		
+		for (n=0;n!=portal->mesh.nmesh;n++) {
+		
+			if ((!mesh->draw.has_bump) || (mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) {
+				mesh++;
+				continue;
+			}
+			
+			mesh_poly=mesh->polys;
+			
+			for (k=0;k!=mesh->npoly;k++) {
+			
+				if ((mesh_poly->draw.draw_type!=map_mesh_poly_draw_bump) || (mesh_poly->draw.stencil_pass!=stencil_pass)) {
+					mesh_poly++;
+					continue;
+				}
+
+				texture=&map.textures[mesh_poly->txt_idx];
+				frame=mesh_poly->draw.cur_frame;
+
+				if ((texture->bitmaps[frame].gl_id!=txt_id) || (texture->bumpmaps[frame].gl_id!=bump_id)) {
+					txt_id=texture->bitmaps[frame].gl_id;
+					bump_id=texture->bumpmaps[frame].gl_id;
+					gl_texture_opaque_bump_set(txt_id,bump_id);
+				}
+			
+				gl_texture_opaque_bump_factor(mesh_poly->draw.normal);
+				
+				glStencilFunc(GL_ALWAYS,mesh_poly->draw.stencil_idx,0xFF);
+
+				glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+			
+				mesh_poly++;
+			}
+		
+			mesh++;
+		}
+
+		glDisable(GL_STENCIL_TEST);
+
+		gl_texture_opaque_bump_end();
+
+			// tesseled lighting pass
 
 		if (!hilite_on) {
 
@@ -461,7 +527,7 @@ int segment_render_opaque_portal(int rn,int pass_last)
 			glDisable(GL_ALPHA_TEST);
 			glDisable(GL_DEPTH_TEST);
 					
-			glEnable(GL_STENCIL_TEST);				// use stencil for lighting pass
+			glEnable(GL_STENCIL_TEST);
 			glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
 
 			dark_factor=1.0f;
@@ -470,7 +536,7 @@ int segment_render_opaque_portal(int rn,int pass_last)
 			
 			for (n=0;n!=portal->mesh.nmesh;n++) {
 			
-				if ((mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) {
+				if ((!mesh->draw.has_lighting) || (mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) {
 					mesh++;
 					continue;
 				}
@@ -479,7 +545,7 @@ int segment_render_opaque_portal(int rn,int pass_last)
 				
 				for (k=0;k!=mesh->npoly;k++) {
 				
-					if (mesh_poly->draw.stencil_pass!=stencil_pass) {
+					if ((!mesh_poly->draw.is_lighting) || (mesh_poly->draw.stencil_pass!=stencil_pass)) {
 						mesh_poly++;
 						continue;
 					}
@@ -490,20 +556,25 @@ int segment_render_opaque_portal(int rn,int pass_last)
 						dark_factor=mesh_poly->dark_factor;
 						gl_texture_tesseled_lighting_factor(dark_factor);
 					}
-
-					ntrig=mesh_poly->light.trig_count;
 					
 					// supergumba -- testing
-					if (!mesh_poly->draw.simple_tessel) {
 					glLineWidth(2.0f);
+					ntrig=mesh_poly->light.trig_count;
 					for (t=0;t!=ntrig;t++) {
 						glDrawElements(GL_LINE_LOOP,3,GL_UNSIGNED_INT,(GLvoid*)&mesh_poly->light.trig_vertex_idx[t*3]);
 					}
 					glLineWidth(1.0f);
+
+					/*
+					if (mesh_poly->draw.simple_tessel) {
+						glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
 					}
-					
-			//		glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)mesh_poly->light.trig_vertex_idx);
-			//		if ((mesh_poly->ptsz-2)!=ntrig) glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+					else {
+						ntrig=mesh_poly->light.trig_count;
+						glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)mesh_poly->light.trig_vertex_idx);
+						if ((mesh_poly->ptsz-2)!=ntrig) glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+					}
+					*/
 
 					mesh_poly++;
 				}

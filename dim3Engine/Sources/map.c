@@ -61,7 +61,7 @@ extern int game_time_get(void);
 extern void spot_start_attach(void);
 extern bool gl_check_shader_ok(void);
 extern void map_movements_initialize(void);
-extern void segment_normal_smooth_init(void);
+extern void mesh_normal_smooth_init(void);
 extern void fade_screen_start(int tick);
 
 /* =======================================================
@@ -229,7 +229,7 @@ bool map_start(bool skip_media,char *err_str)
 	progress_draw(15);
 	map_prepare(&map,setup.curve_mode);
 
-	segment_normal_smooth_init();
+	mesh_normal_smooth_init();
 	
 		// create group lists
 	
