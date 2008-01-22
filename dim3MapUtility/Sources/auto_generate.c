@@ -39,7 +39,7 @@ extern int map_auto_generate_get_corridor_type(auto_generate_settings_type *ags)
 extern int map_auto_generate_get_ceiling_type(auto_generate_settings_type *ags);
 
 extern void map_auto_generate_block_preset(auto_generate_settings_type *ag_settings,int block);
-extern bool map_auto_generate_block_collision(map_type *map,auto_generate_settings_type *ags,int x,int z,int ex,int ez);
+extern bool map_auto_generate_block_collision(auto_generate_settings_type *ags,int x,int z,int ex,int ez);
 
 extern void map_auto_generate_segment_start(int group_idx,int primitive_uid,int fill,bool moveable);
 extern int map_auto_generate_segment_wall(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty,int by,int clip);
@@ -144,7 +144,7 @@ void map_auto_generate_initial_portals(map_type *map)
 
 				// check for collisions
 				
-			if ((!map_auto_generate_block_collision(map,&ag_settings,x,z,ex,ez)) && (!map_auto_generate_portal_collision(map,x,z,ex,ez,-1))) break;
+			if ((!map_auto_generate_block_collision(&ag_settings,x,z,ex,ez)) && (!map_auto_generate_portal_collision(map,x,z,ex,ez,-1))) break;
 			
 				// try to much?
 				
@@ -336,7 +336,7 @@ void map_auto_generate_connect_portals(map_type *map)
 			z2=z-ag_settings.split_factor;
 			ez2=ez+ag_settings.split_factor;			// don't create if z's will touch other portals, then it's no longer a corridor
 
-			if ((map_auto_generate_block_collision(map,&ag_settings,x,z2,ex,ez2)) || (map_auto_generate_portal_collision(map,x,z2,ex,ez2,-1))) continue;
+			if ((map_auto_generate_block_collision(&ag_settings,x,z2,ex,ez2)) || (map_auto_generate_portal_collision(map,x,z2,ex,ez2,-1))) continue;
 
 				// create portal
 
@@ -419,7 +419,7 @@ void map_auto_generate_connect_portals(map_type *map)
 			x2=x-ag_settings.split_factor;
 			ex2=ex+ag_settings.split_factor;			// don't create if x's will touch other portals, then it's no longer a corridor
 
-			if ((map_auto_generate_block_collision(map,&ag_settings,x2,z,ex2,ez)) || (map_auto_generate_portal_collision(map,x2,z,ex2,ez,-1))) continue;
+			if ((map_auto_generate_block_collision(&ag_settings,x2,z,ex2,ez)) || (map_auto_generate_portal_collision(map,x2,z,ex2,ez,-1))) continue;
 
 				// create portal
 				

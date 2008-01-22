@@ -35,7 +35,7 @@ and can be sold or given away.
 	        
 ======================================================= */
 
-void model_get_point_position(model_type *model,model_draw_setup *draw_setup,int *x,int *y,int *z)
+void model_get_point_position(model_draw_setup *draw_setup,int *x,int *y,int *z)
 {
 	int					cx,cy,cz;
 	float				fx,fy,fz;
@@ -79,7 +79,7 @@ void model_get_point_position(model_type *model,model_draw_setup *draw_setup,int
       
 ======================================================= */
 
-void model_get_draw_bone_position(model_type *model,model_draw_setup *draw_setup,int bone_idx,int *x,int *y,int *z)
+void model_get_draw_bone_position(model_draw_setup *draw_setup,int bone_idx,int *x,int *y,int *z)
 {
 	model_draw_bone_type		*draw_bone;
 	
@@ -88,7 +88,7 @@ void model_get_draw_bone_position(model_type *model,model_draw_setup *draw_setup
 	*y=(int)draw_bone->fpnt.y;
 	*z=(int)draw_bone->fpnt.z;
 	
-	model_get_point_position(model,draw_setup,x,y,z);	
+	model_get_point_position(draw_setup,x,y,z);	
 }
 
 void model_calc_draw_bone_position(model_type *model,model_draw_setup *draw_setup,int pose_idx,int bone_idx,int *x,int *y,int *z)
@@ -100,7 +100,7 @@ void model_calc_draw_bone_position(model_type *model,model_draw_setup *draw_setu
 	
 	model_create_draw_bones(model,draw_setup);
 	
-	model_get_draw_bone_position(model,draw_setup,bone_idx,x,y,z);
+	model_get_draw_bone_position(draw_setup,bone_idx,x,y,z);
 }
 
 /* =======================================================
@@ -118,7 +118,7 @@ bool model_get_light_position(model_type *model,model_draw_setup *draw_setup,int
 	bone_idx=model->tags.light_bone_idx[idx];
 	if (bone_idx==-1) return(FALSE);
 	
-	model_get_draw_bone_position(model,draw_setup,bone_idx,&px,&py,&pz);
+	model_get_draw_bone_position(draw_setup,bone_idx,&px,&py,&pz);
 	
 		// add in model position
 		
@@ -138,7 +138,7 @@ bool model_get_halo_position(model_type *model,model_draw_setup *draw_setup,int 
 	bone_idx=model->tags.halo_bone_idx[idx];
 	if (bone_idx==-1) return(FALSE);
 		
-	model_get_draw_bone_position(model,draw_setup,bone_idx,&px,&py,&pz);
+	model_get_draw_bone_position(draw_setup,bone_idx,&px,&py,&pz);
 	
 		// add in model position
 		
@@ -158,7 +158,7 @@ bool model_get_name_position(model_type *model,model_draw_setup *draw_setup,int 
 	bone_idx=model->tags.name_bone_idx;
 	if (bone_idx==-1) return(FALSE);
 		
-	model_get_draw_bone_position(model,draw_setup,bone_idx,&px,&py,&pz);
+	model_get_draw_bone_position(draw_setup,bone_idx,&px,&py,&pz);
 	
 		// add in model position
 		

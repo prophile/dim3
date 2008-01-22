@@ -44,7 +44,7 @@ extern map_type					map;
 extern WindowRef				mainwind;
 extern CCrsrHandle				handcur,rotatecur,forwardcur,towardcur;
 
-int								cx,cz,cy;
+int								cx,cz,cy,walk_view_last_rn;
 float							walk_view_fov,walk_view_y_angle,walk_view_x_angle;
 bool							walk_view_active;
 Rect							walk_view_forward_box,walk_view_side_box;
@@ -166,6 +166,25 @@ void walk_view_setup(bool active,bool full_screen)
 			walk_view_forward_box.bottom=wbox.bottom-((txt_palette_high+info_high)+2);
 		}
 	}
+}
+
+/* =======================================================
+
+      Walk View Portal Start
+      
+======================================================= */
+
+int walk_view_find_start_portal(void)
+{
+	int			rn;
+	
+	rn=map_find_portal(&map,cx,cy,cz);
+	if (rn==-1) rn=walk_view_last_rn;
+	if (rn==-1) rn=cr;
+	
+	walk_view_last_rn=rn;
+	
+	return(rn);
 }
 
 /* =======================================================

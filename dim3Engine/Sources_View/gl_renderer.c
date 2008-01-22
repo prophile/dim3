@@ -195,9 +195,6 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 		CGLSetParameter(current_ctx,kCGLCPSwapInterval,&swapint);
 	}
 	
-// supergumba -- retest then when I get an intel mac
-//	CGLEnable(current_ctx,kCGLCEMPEngine);
-
 #endif
     
 	glEnable(GL_SCISSOR_TEST);

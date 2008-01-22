@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		260AFEC30D404EAA00F6C42F /* portal_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = 260AFEC20D404EAA00F6C42F /* portal_liquid.c */; };
 		F50AF9290885FF0E00F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF9280885FF0E00F261B1 /* os_defs.h */; };
 		F50B25C8092065C900879CCC /* file_map_shader.c in Sources */ = {isa = PBXBuildFile; fileRef = F50B25C7092065C900879CCC /* file_map_shader.c */; };
 		F511664F093CDA2C00E766C3 /* groups.c in Sources */ = {isa = PBXBuildFile; fileRef = F511664E093CDA2C00E766C3 /* groups.c */; };
@@ -63,6 +64,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		260AFEC20D404EAA00F6C42F /* portal_liquid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = portal_liquid.c; path = Sources/portal_liquid.c; sourceTree = "<group>"; };
 		F50AF9280885FF0E00F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
 		F50B25C7092065C900879CCC /* file_map_shader.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_map_shader.c; path = Sources/file_map_shader.c; sourceTree = "<group>"; };
 		F511664E093CDA2C00E766C3 /* groups.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = groups.c; path = Sources/groups.c; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 			children = (
 				F5DD177E09074E1E00721649 /* portal.c */,
 				F55255250CE57DFA0045350D /* portal_mesh.c */,
+				260AFEC20D404EAA00F6C42F /* portal_liquid.c */,
 				F52A9B7409F0A63C008CE744 /* portal_sight_path.c */,
 				F5DD17D509074FFB00721649 /* portal_changes.c */,
 				F5DD178809074E5000721649 /* portal_vertex_list.c */,
@@ -307,10 +310,12 @@
 		F5C53530051C058600968AF1 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = F5DB0B6508566F8A005A7CB7 /* Build configuration list for PBXProject "dim3MapUtility" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = F5C5352C051C058600968AF1;
 			productRefGroup = F5C53537051C059F00968AF1 /* Products */;
 			projectDirPath = "";
+			projectRoot = "";
 			targets = (
 				F5F4951E067BFCCA00E809E7 /* MapUtility */,
 			);
@@ -351,13 +356,14 @@
 				F5CE96C40D23586E00512EE1 /* auto_generate_utility.c in Sources */,
 				F5CE96C50D23586E00512EE1 /* auto_generate.c in Sources */,
 				F5C418F50D3C258400BD96D5 /* file_map_convert_v1.c in Sources */,
+				260AFEC30D404EAA00F6C42F /* portal_liquid.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		F5DB0B6308566F8A005A7CB7 /* Deployment */ = {
+		F5DB0B6408566F8A005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
@@ -370,87 +376,77 @@
 					"$(FRAMEWORK_SEARCH_PATHS)",
 					"$(SRCROOT)/../dim3Common/Frameworks",
 				);
-				GCC_AUTO_VECTORIZATION = NO;
+				GCC_AUTO_VECTORIZATION = YES;
 				GCC_CW_ASM_SYNTAX = NO;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
 				GCC_FAST_MATH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_MODEL_TUNING = G4;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Headers/dim3maputility.h;
 				GCC_STRICT_ALIASING = YES;
 				GCC_UNROLL_LOOPS = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries";
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../dim3Common/Libraries\"";
 				LIBRARY_STYLE = DYNAMIC;
 				MACH_O_TYPE = mh_dylib;
 				MACOSX_DEPLOYMENT_TARGET = 10.3;
-				OTHER_LDFLAGS = (
-					"-seg1addr",
-					0x19000000,
-				);
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
 				PER_ARCH_CFLAGS_i386 = "-fast -msse2 -fPIC";
 				PER_ARCH_CFLAGS_ppc = "-fast -faltivec -fPIC -mcpu=G4";
 				PREBINDING = NO;
 				PRODUCT_NAME = libMapUtility;
 				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
 				SDKROOT_ppc = /Developer/SDKs/MacOSX10.3.9.sdk;
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
+				WARNING_CFLAGS = "";
 			};
-			name = Deployment;
+			name = Release;
 		};
-		F5DB0B6408566F8A005A7CB7 /* Default */ = {
+		F5DB0B6708566F8A005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = ppc7400;
-				COPY_PHASE_STRIP = NO;
-				EXPORTED_SYMBOLS_FILE = Exports/dim3maputility.exp;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(FRAMEWORK_SEARCH_PATHS)",
-					"$(SRCROOT)/../dim3Common/Frameworks",
+				ARCHS = (
+					ppc,
+					i386,
 				);
-				GCC_AUTO_VECTORIZATION = YES;
-				GCC_CW_ASM_SYNTAX = NO;
-				GCC_FAST_MATH = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Headers/dim3maputility.h;
-				GCC_STRICT_ALIASING = YES;
-				GCC_UNROLL_LOOPS = YES;
-				INSTALL_PATH = "@executable_path/../../../dim3 Libraries";
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../dim3Common/Libraries\"";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_EXTENSION = dylib;
+				EXPORTED_SYMBOLS_FILE = Exports/dim3maputility.exp;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Frameworks";
+				INFOPLIST_EXPAND_BUILD_SETTINGS = YES;
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				LD_DYLIB_INSTALL_NAME = "@executable_path/../Frameworks/libMapUtility.dylib";
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries";
 				LIBRARY_STYLE = DYNAMIC;
 				MACH_O_TYPE = mh_dylib;
 				MACOSX_DEPLOYMENT_TARGET = 10.3;
-				OTHER_CFLAGS = (
-					"-fast",
-					"-fPIC",
-				);
-				OTHER_LDFLAGS = (
-					"-seg1addr",
-					0x19000000,
-				);
-				PREBINDING = YES;
+				PER_ARCH_CFLAGS_i386 = "-fast -msse2 -fPIC";
+				PER_ARCH_CFLAGS_ppc = "-fast -faltivec -fPIC -mcpu=G4";
 				PRODUCT_NAME = libMapUtility;
-				WARNING_CFLAGS = "-Wmost";
+				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT_ppc = /Developer/SDKs/MacOSX10.3.9.sdk;
+				STRIP_INSTALLED_PRODUCT = NO;
+				STRIP_STYLE = debugging;
 			};
-			name = Default;
-		};
-		F5DB0B6608566F8A005A7CB7 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Deployment;
-		};
-		F5DB0B6708566F8A005A7CB7 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Default;
+			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
@@ -458,20 +454,18 @@
 		F5DB0B6208566F8A005A7CB7 /* Build configuration list for PBXNativeTarget "MapUtility" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F5DB0B6308566F8A005A7CB7 /* Deployment */,
-				F5DB0B6408566F8A005A7CB7 /* Default */,
+				F5DB0B6408566F8A005A7CB7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Release;
 		};
 		F5DB0B6508566F8A005A7CB7 /* Build configuration list for PBXProject "dim3MapUtility" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F5DB0B6608566F8A005A7CB7 /* Deployment */,
-				F5DB0B6708566F8A005A7CB7 /* Default */,
+				F5DB0B6708566F8A005A7CB7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

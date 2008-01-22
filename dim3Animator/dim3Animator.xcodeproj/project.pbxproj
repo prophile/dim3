@@ -451,9 +451,11 @@
 		20286C28FDCF999611CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = F5DB0C250856A7FD005A7CB7 /* Build configuration list for PBXProject "dim3Animator" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 20286C29FDCF999611CA2CEA /* dim3 Animator */;
 			projectDirPath = "";
+			projectRoot = "";
 			targets = (
 				F5A42D7F0555EC87002DF965 /* dim3 Animator */,
 			);
@@ -557,7 +559,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		F5DB0C230856A7FD005A7CB7 /* Deployment */ = {
+		F5DB0C230856A7FD005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
@@ -572,11 +574,13 @@
 					"$(SRCROOT)/../dim3Common/Frameworks",
 				);
 				GCC_ALTIVEC_EXTENSIONS = NO;
-				GCC_AUTO_VECTORIZATION = NO;
+				GCC_AUTO_VECTORIZATION = YES;
 				GCC_CHAR_IS_UNSIGNED_CHAR = NO;
 				GCC_CW_ASM_SYNTAX = NO;
 				GCC_DYNAMIC_NO_PIC = YES;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
 				GCC_FAST_MATH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G4;
@@ -585,7 +589,18 @@
 				GCC_PREFIX_HEADER = headers/dim3animator.h;
 				GCC_STRICT_ALIASING = NO;
 				GCC_UNROLL_LOOPS = YES;
-				GCC_USE_GCC3_PFE_SUPPORT = YES;
+				GCC_USE_GCC3_PFE_SUPPORT = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "Resources/Info-dim3_Animator.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/../dim3Common/Libraries",
@@ -599,17 +614,17 @@
 				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
 				SDKROOT_ppc = /Developer/SDKs/MacOSX10.3.9.sdk;
 				UNSTRIPPED_PRODUCT = YES;
-				WARNING_CFLAGS = "-Wmost";
+				WARNING_CFLAGS = "";
 				WRAPPER_EXTENSION = app;
 			};
-			name = Deployment;
+			name = Release;
 		};
-		F5DB0C260856A7FD005A7CB7 /* Deployment */ = {
+		F5DB0C260856A7FD005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 			};
-			name = Deployment;
+			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
@@ -617,18 +632,18 @@
 		F5DB0C220856A7FD005A7CB7 /* Build configuration list for PBXNativeTarget "dim3 Animator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F5DB0C230856A7FD005A7CB7 /* Deployment */,
+				F5DB0C230856A7FD005A7CB7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Deployment;
+			defaultConfigurationName = Release;
 		};
 		F5DB0C250856A7FD005A7CB7 /* Build configuration list for PBXProject "dim3Animator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F5DB0C260856A7FD005A7CB7 /* Deployment */,
+				F5DB0C260856A7FD005A7CB7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Deployment;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

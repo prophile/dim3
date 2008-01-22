@@ -43,7 +43,7 @@ extern model_draw_setup		draw_setup;
       
 ======================================================= */
 
-void draw_model_gl_setup(model_type *model,model_draw_setup *draw_setup)
+void draw_model_gl_setup(model_type *model)
 {
 	int				yoff,sz,bsz;
 	float			aspect;
@@ -118,11 +118,11 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 
 		// setup transformation to fit model in middle of screen
 		
-	draw_model_gl_setup(model,draw_setup);
+	draw_model_gl_setup(model);
 	
 		// draw the center
 		
-	draw_model_axis(model,draw_setup);
+	draw_model_axis(model);
 
 		// create the drawing bones, vertex arrays and normal arrays
 		

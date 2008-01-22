@@ -336,8 +336,8 @@ extern light_spot_type* model_find_closest_light(model_type *model,double x,doub
 extern void model_calculate_light_color_and_normal(model_type *model,d3col *light_base,double x,double y,double z,float *cf,float *nf);
 extern void model_calculate_normal_vector(model_type *model,double x,double y,double z,float *nf);
 
-extern void model_get_point_position(model_type *model,model_draw_setup *draw_setup,int *x,int *y,int *z);
-extern void model_get_draw_bone_position(model_type *model,model_draw_setup *draw_setup,int bone_idx,int *x,int *y,int *z);
+extern void model_get_point_position(model_draw_setup *draw_setup,int *x,int *y,int *z);
+extern void model_get_draw_bone_position(model_draw_setup *draw_setup,int bone_idx,int *x,int *y,int *z);
 extern void model_calc_draw_bone_position(model_type *model,model_draw_setup *draw_setup,int pose_idx,int bone_idx,int *x,int *y,int *z);
 extern bool model_get_light_position(model_type *model,model_draw_setup *draw_setup,int idx,int *x,int *y,int *z);
 extern bool model_get_halo_position(model_type *model,model_draw_setup *draw_setup,int idx,int *x,int *y,int *z);

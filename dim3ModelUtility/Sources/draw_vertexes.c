@@ -35,7 +35,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-void model_move_single_vertex(model_type *model,model_draw_bone_type *draw_bones,model_vertex_type *vertex,float *px,float *py,float *pz)
+void model_move_single_vertex(model_draw_bone_type *draw_bones,model_vertex_type *vertex,float *px,float *py,float *pz)
 {
 	int						n;
 	float					bone_factor,
@@ -142,7 +142,7 @@ void model_create_draw_vertexes_normal(model_type *model,int mesh_idx,model_draw
     
 	for (n=0;n!=nvertex;n++) {
 
-		model_move_single_vertex(model,draw_setup->bones,vertex,&x,&y,&z);
+		model_move_single_vertex(draw_setup->bones,vertex,&x,&y,&z);
 		matrix_vertex_multiply(&sway_mat,&x,&y,&z);
 		
 		x-=cx;
@@ -198,7 +198,7 @@ void model_create_draw_vertexes_no_xzrot(model_type *model,int mesh_idx,model_dr
     
 	for (n=0;n!=nvertex;n++) {
 
-		model_move_single_vertex(model,draw_setup->bones,vertex,&x,&y,&z);
+		model_move_single_vertex(draw_setup->bones,vertex,&x,&y,&z);
 		matrix_vertex_multiply(&sway_mat,&x,&y,&z);
 		
 		x-=cx;
@@ -250,7 +250,7 @@ void model_create_draw_vertexes_no_sway(model_type *model,int mesh_idx,model_dra
     
 	for (n=0;n!=nvertex;n++) {
 
-		model_move_single_vertex(model,draw_setup->bones,vertex,&x,&y,&z);
+		model_move_single_vertex(draw_setup->bones,vertex,&x,&y,&z);
 		
 		x-=cx;
 		y-=cy;
@@ -301,7 +301,7 @@ void model_create_draw_vertexes_no_sway_xzrot(model_type *model,int mesh_idx,mod
     
 	for (n=0;n!=nvertex;n++) {
 
-		model_move_single_vertex(model,draw_setup->bones,vertex,&x,&y,&z);
+		model_move_single_vertex(draw_setup->bones,vertex,&x,&y,&z);
 		
 		x-=cx;
 		y-=cy;
@@ -342,7 +342,7 @@ void model_create_draw_vertexes_no_sway_center_move(model_type *model,int mesh_i
     
 	for (n=0;n!=nvertex;n++) {
 
-		model_move_single_vertex(model,draw_setup->bones,vertex,&x,&y,&z);
+		model_move_single_vertex(draw_setup->bones,vertex,&x,&y,&z);
 		
 		matrix_vertex_multiply(&rot_x_mat,&x,&y,&z);
 		matrix_vertex_multiply(&rot_z_mat,&x,&y,&z);
@@ -379,7 +379,7 @@ void model_create_draw_vertexes_no_sway_center_move_xzrot(model_type *model,int 
     
 	for (n=0;n!=nvertex;n++) {
 
-		model_move_single_vertex(model,draw_setup->bones,vertex,&x,&y,&z);
+		model_move_single_vertex(draw_setup->bones,vertex,&x,&y,&z);
 		
 		matrix_vertex_multiply(&rot_y_mat,&x,&y,&z);
 
@@ -479,7 +479,7 @@ void model_create_draw_2D_vertexes(model_type *model,int mesh_idx,model_draw_set
 
 		for (n=0;n!=nvertex;n++) {
 
-			model_move_single_vertex(model,draw_setup->bones,vertex,&x,&y,&z);
+			model_move_single_vertex(draw_setup->bones,vertex,&x,&y,&z);
 			matrix_vertex_multiply(&sway_mat,&x,&y,&z);
 			
 			x-=cx;
@@ -507,7 +507,7 @@ void model_create_draw_2D_vertexes(model_type *model,int mesh_idx,model_draw_set
 	
 		for (n=0;n!=nvertex;n++) {
 
-			model_move_single_vertex(model,draw_setup->bones,vertex,&x,&y,&z);
+			model_move_single_vertex(draw_setup->bones,vertex,&x,&y,&z);
 			
 			x-=cx;
 			y-=cy;
@@ -528,7 +528,7 @@ void model_create_draw_2D_vertexes(model_type *model,int mesh_idx,model_draw_set
 
 	for (n=0;n!=nvertex;n++) {
 
-		model_move_single_vertex(model,draw_setup->bones,vertex,&x,&y,&z);
+		model_move_single_vertex(draw_setup->bones,vertex,&x,&y,&z);
 		
 		matrix_vertex_multiply(&rot_x_mat,&x,&y,&z);
 		matrix_vertex_multiply(&rot_z_mat,&x,&y,&z);

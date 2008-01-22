@@ -312,7 +312,7 @@ void crosshair_draw_debug(obj_type *obj,weapon_type *weap)
 	bone_idx=model_find_bone(mdl,weap->proj.barrel_bone_tag);
 	if (bone_idx==-1) return;
 
-	model_get_draw_bone_position(mdl,&weap->draw.setup,bone_idx,&bx,&by,&bz);
+	model_get_draw_bone_position(&weap->draw.setup,bone_idx,&bx,&by,&bz);
 
 	bx+=weap->draw.pos.x;
 	by+=weap->draw.pos.y;

@@ -70,7 +70,7 @@ void redraw_windows(void)
 
         // some defaults
         
-	magnify_factor=40;
+	magnify_factor=magnify_factor_min+((magnify_factor_max-magnify_factor_min)/3);
 	main_wind_set_view(vw_walk_top);
 	main_wind_set_focus(kf_top,FALSE);
 	

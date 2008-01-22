@@ -26,9 +26,10 @@ and can be sold or given away.
 *********************************************************************/
 
 #include "common_view.h"
+#include "interface.h"
 #include "top_view.h"
 
-extern int					cr,cy;
+extern int					cr,cy,magnify_factor;
 extern bool					dp_wall,dp_floor,dp_ceiling,dp_liquid,dp_ambient,dp_object,dp_node,dp_lightsoundparticle,dp_y_hide;
 extern CIconHandle			maplight_icon,mapsound_icon,mapparticle_icon;
 
@@ -45,6 +46,9 @@ extern void primitive_get_center(int primitive_uid,int *x,int *z,int *y);
       Draw Pieces
       
 ======================================================= */
+
+
+// supergumba -- need to go over all of this
 
 void top_view_piece_draw_floor_ceiling(int rn,fc_segment_data *fc,bool light_color)
 {
@@ -234,56 +238,62 @@ void top_view_piece_draw_icon(d3pos *pos,CIconHandle icn,RGBColor *col,Rect *cli
 	PlotCIcon(&box,icn);
 }
 
-void top_view_piece_draw_arrow(Rect *box,char *name,int fang,Rect *clipbox,RGBColor *col)
+void top_view_piece_draw_arrow(d3pos *pos,char *name,int ang_y,float r,float g,float b)
 {
-	int				t,mx,my,x[3],y[3],xsz,len;
-	float			d,d2,dx,dy,r,cs,sn;
-	PolyHandle		ph;
-	RGBColor		blackcolor={0x0,0x0,0x0};
+	int				x,z,k,px[3],pz[3];
+	portal_type		*portal;
 	
-	if (((box->right+25)<clipbox->left) || ((box->left-25)>clipbox->right) || ((box->bottom+10)<clipbox->top) || (box->top>clipbox->bottom)) return;
+		// arrow position
+			
+	portal=&map.portals[pos->rn];
+	x=pos->x+portal->x;
+	z=pos->z+portal->z;
 	
-	mx=(box->left+box->right)/2;
-	my=(box->top+box->bottom)/2;
-	x[0]=mx;
-	x[1]=box->right;
-	x[2]=box->left;
-	y[0]=box->bottom;
-	y[1]=y[2]=box->top;
+	top_view_map_to_pane(&x,&z);
 	
-	r=(float)fang*.0174533;
-	cs=cos(r);
-	sn=sin(r);
-	for ((t=0);(t!=3);t++) {
-		d=(float)(x[t]-mx);
-		d2=(float)(y[t]-my);
-		dx=(d*cs)+(d2*sn);
-		x[t]=(int)dx+mx;
-		dy=(d*sn)-(d2*cs);
-		y[t]=(int)dy+my;
-	}
+	k=(600*magnify_factor)/magnify_size;
 	
-	ph=OpenPoly();
-	MoveTo(x[0],y[0]);
-	LineTo(x[1],y[1]);
-	LineTo(x[2],y[2]);
-	LineTo(x[0],y[0]);
-	ClosePoly();
+	px[0]=x-k;
+	pz[0]=z+k;
 	
-	RGBForeColor(col);
-	PaintPoly(ph);
-	RGBForeColor(&blackcolor);
-	FramePoly(ph);
-	KillPoly(ph);
+	px[1]=x;
+	pz[1]=z-k;
+	
+	px[2]=x+k;
+	pz[2]=z+k;
+	
+	rotate_2D_polygon(3,px,pz,x,z,ang_y);
+	
+		// arrow fill
+		
+	glColor4f(r,g,b,1.0f);
+	
+	glBegin(GL_TRIANGLES);
+	glVertex2i(px[0],pz[0]);
+	glVertex2i(px[1],pz[1]);
+	glVertex2i(px[2],pz[2]);
+	glEnd();
+	
+		// arrow outline
+		
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(px[0],pz[0]);
+	glVertex2i(px[1],pz[1]);
+	glVertex2i(px[2],pz[2]);
+	glEnd();
+	
 	
 		// start name
-		
+	/* supergumba -- fix this	
 	TextSize(9);
 	len=strlen(name);
 	xsz=TextWidth(name,0,len)/2;
 	MoveTo((mx-xsz),(box->bottom+10));
 	DrawText(name,0,len);
 	TextSize(12);
+	*/
 }
 
 /* =======================================================
@@ -489,18 +499,114 @@ void top_view_piece_draw2(int rn)
 
 void top_view_piece_draw(int rn)
 {
-	int					n,k,t,x,z;
-	d3pnt				*pt;
-	portal_type			*portal;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*mesh_poly;
+	int								n,k,t,x,z,poly_cnt,
+									sort_idx,sort_cnt;
+	unsigned long					gl_id;
+	float							fy;
+	d3pnt							*pt;
+	portal_type						*portal;
+	map_mesh_type					*mesh;
+	map_mesh_poly_type				*mesh_poly;
+	map_portal_mesh_poly_sort_type	*poly_sort;
+	spot_type						*spot;
+	map_scenery_type				*scenery;
 	
-		// meshes
+	portal=&map.portals[rn];
+	
+		// count polys
+		
+	poly_cnt=0;
+	
+	mesh=portal->mesh.meshes;
+	
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+		poly_cnt+=mesh->npoly;
+	}
+	
+	poly_sort=(map_portal_mesh_poly_sort_type*)valloc(sizeof(map_portal_mesh_poly_sort_type)*(poly_cnt+1));
+	if (poly_sort==NULL) return;
+	
+		// sort pieces
+		
+	sort_cnt=0;
+		
+	mesh=portal->mesh.meshes;
+	
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+	
+		mesh_poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+		
+			fy=(float)mesh->vertexes[mesh_poly->v[0]].y;		// rough sort on first vertex
+
+				// find position in sort list
+
+			sort_idx=sort_cnt;
+
+			for (t=0;t!=sort_cnt;t++) {
+				if (fy<poly_sort[t].dist) {
+					sort_idx=t;
+					break;
+				}
+			}
+
+				// add to sort list
+
+			if (sort_idx<sort_cnt) memmove(&poly_sort[sort_idx+1],&poly_sort[sort_idx],((sort_cnt-sort_idx)*sizeof(map_portal_mesh_poly_sort_type)));
+
+			poly_sort[sort_idx].mesh_idx=n;
+			poly_sort[sort_idx].poly_idx=k;
+			poly_sort[sort_idx].dist=fy;
+
+			sort_cnt++;
+
+			mesh_poly++;
+		}
+
+		mesh++;
+	}
+
+		// draw sorted meshes
 		
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	glEnable(GL_TEXTURE_2D);
 	
-	portal=&map.portals[rn];
+	gl_id=-1;
+	
+	for (n=(sort_cnt-1);n>=0;n--) {
+	
+		mesh=&portal->mesh.meshes[poly_sort[n].mesh_idx];
+		mesh_poly=&mesh->polys[poly_sort[n].poly_idx];
+		
+		if (gl_id!=map.textures[mesh_poly->txt_idx].bitmaps[0].gl_id) {
+			gl_id=map.textures[mesh_poly->txt_idx].bitmaps[0].gl_id;
+			glBindTexture(GL_TEXTURE_2D,gl_id);
+		}
+	
+		glBegin(GL_POLYGON);
+		
+		for (t=0;t!=mesh_poly->ptsz;t++) {
+			pt=&mesh->vertexes[mesh_poly->v[t]];
+			x=pt->x+portal->x;
+			z=pt->z+portal->z;
+			top_view_map_to_pane(&x,&z);
+			glTexCoord2f(mesh_poly->gx[t],mesh_poly->gy[t]);
+			glVertex2i(x,z);
+		}
+		
+		glEnd();
+	}
+
+	glDisable(GL_TEXTURE_2D);
+	
+		// free sorting memory
+		
+	free(poly_sort);
+	
+		// draw mesh outlines
+		
+	glColor4f(0.5f,0.5f,1.0f,1.0f);
 	
 	mesh=portal->mesh.meshes;
 	
@@ -510,16 +616,13 @@ void top_view_piece_draw(int rn)
 		
 		for (k=0;k!=mesh->npoly;k++) {
 		
-			glBindTexture(GL_TEXTURE_2D,map.textures[mesh_poly->txt_idx].bitmaps[0].gl_id);
-		
-			glBegin(GL_POLYGON);
+			glBegin(GL_LINE_LOOP);
 			
 			for (t=0;t!=mesh_poly->ptsz;t++) {
 				pt=&mesh->vertexes[mesh_poly->v[t]];
 				x=pt->x+portal->x;
 				z=pt->z+portal->z;
 				top_view_map_to_pane(&x,&z);
-				glTexCoord2f(mesh_poly->gx[t],mesh_poly->gy[t]);
 				glVertex2i(x,z);
 			}
 			
@@ -527,12 +630,9 @@ void top_view_piece_draw(int rn)
 		
 			mesh_poly++;
 		}
-	
-	
+
 		mesh++;
 	}
-
-	glDisable(GL_TEXTURE_2D);
 	
 		// spots
 		
@@ -540,25 +640,23 @@ void top_view_piece_draw(int rn)
 	
 			// script spots
 			
+		spot=map.spots;
+		
 		for (n=0;n!=map.nspot;n++) {
-			if (map.spots[n].pos.rn!=rn) continue;
-			// supergumba -- need to work on this!
-		//	top_view_make_rect_by_pos(&map.spots[n].pos,5,&box);
-		//	top_view_piece_draw_arrow(&box,map.spots[n].name,map.spots[i].ang.y,clipbox,&orangecolor);
+			if (spot->pos.rn==rn) top_view_piece_draw_arrow(&spot->pos,spot->name,spot->ang.y,1.0f,0.6f,0.0f);
+			spot++;
 		}
 	
 			// scenery
+			
+		scenery=map.sceneries;
 		
 		for (n=0;n!=map.nscenery;n++) {
-			if (map.sceneries[n].pos.rn!=rn) continue;
-			
-		//	top_view_make_rect_by_pos(&map.sceneries[n].pos,5,&box);
-		//	top_view_piece_draw_arrow(&box,map.sceneries[n].model_name,map.sceneries[n].ang.y,clipbox,&yellowcolor);
+			if (scenery->pos.rn==rn) top_view_piece_draw_arrow(&scenery->pos,scenery->model_name,scenery->ang.y,1.0f,1.0f,0.0f);
+			scenery++;
 		}
 		
 	}
-
-
 }
 
 /* =======================================================

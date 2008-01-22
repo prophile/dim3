@@ -450,6 +450,8 @@ int server_player_create_remote_add_list(int player_remote_uid,network_request_r
       
 ======================================================= */
 
+// supergumba -- need to implement skip_flooded here
+
 void server_player_send_others_packet(int player_remote_uid,int action,int queue_mode,unsigned char *data,int len,bool skip_flooded)
 {
 	int						n,nsock;

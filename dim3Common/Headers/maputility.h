@@ -289,6 +289,15 @@ typedef struct		{
 						map_liquid_tide_type		tide;
 						map_liquid_draw_type		draw;
 					} map_liquid_type;
+					
+//
+// mesh poygon sort structure
+//
+
+typedef struct		{
+						int							mesh_idx,poly_idx;
+						float						dist;
+					} map_portal_mesh_poly_sort_type;
 
 //
 // segment structures
@@ -748,8 +757,8 @@ extern int map_find_next_node_in_path(map_type *map,int from_idx,int to_idx);
 extern int map_node_to_node_distance(map_type *map,int from_idx,int to_idx);
 
 extern int map_primitive_create_uid(map_type *map);
-extern void map_primitive_push_uid(map_type *map,segment_type *seg,int primitive_uid);
-extern void map_primitive_pop_uid(map_type *map,segment_type *seg);
+extern void map_primitive_push_uid(segment_type *seg,int primitive_uid);
+extern void map_primitive_pop_uid(segment_type *seg);
 
 extern bool map_portal_mesh_add(map_type *map,int portal_idx,int add_count);
 extern bool map_portal_mesh_delete(map_type *map,int portal_idx,int mesh_idx);

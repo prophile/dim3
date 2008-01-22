@@ -70,13 +70,13 @@ int map_primitive_create_uid(map_type *map)
       
 ======================================================= */
 
-void map_primitive_push_uid(map_type *map,segment_type *seg,int primitive_uid)
+void map_primitive_push_uid(segment_type *seg,int primitive_uid)
 {
 	memmove(&seg->primitive_uid[1],&seg->primitive_uid[0],(sizeof(short)*(max_primitive_stack-1)));
 	seg->primitive_uid[0]=primitive_uid;
 }
 
-void map_primitive_pop_uid(map_type *map,segment_type *seg)
+void map_primitive_pop_uid(segment_type *seg)
 {
 	if (seg->primitive_uid[0]==-1) return;		// nothing to pop
 	

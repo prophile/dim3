@@ -733,9 +733,11 @@
 		20286C28FDCF999611CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = F5DB0C560856A994005A7CB7 /* Build configuration list for PBXProject "dim3Editor" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 20286C29FDCF999611CA2CEA /* dim3 Editor */;
 			projectDirPath = "";
+			projectRoot = "";
 			targets = (
 				F5A4320D055602DF002DF965 /* dim3 Editor */,
 			);
@@ -880,29 +882,47 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		F5DB0C540856A994005A7CB7 /* Deployment */ = {
+		F5DB0C540856A994005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = ppc;
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(FRAMEWORK_SEARCH_PATHS)",
 					"$(SRCROOT)/../dim3Common/Frameworks",
 				);
-				GCC_AUTO_VECTORIZATION = NO;
+				GCC_AUTO_VECTORIZATION = YES;
 				GCC_CW_ASM_SYNTAX = NO;
 				GCC_DYNAMIC_NO_PIC = YES;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
 				GCC_FAST_MATH = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G4;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = headers/dim3editor.h;
+				GCC_STRICT_ALIASING = NO;
 				GCC_UNROLL_LOOPS = YES;
-				GCC_USE_GCC3_PFE_SUPPORT = YES;
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/Headers";
+				GCC_USE_GCC3_PFE_SUPPORT = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
+				GCC_WARN_UNUSED_VALUE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "Resources/Info-dim3_Editor.plist";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries";
 				MACOSX_DEPLOYMENT_TARGET = 10.3;
@@ -913,16 +933,20 @@
 				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
 				SDKROOT_ppc = /Developer/SDKs/MacOSX10.3.9.sdk;
 				UNSTRIPPED_PRODUCT = YES;
-				WARNING_CFLAGS = "-Wmost";
+				WARNING_CFLAGS = "";
 				WRAPPER_EXTENSION = app;
 			};
-			name = Deployment;
+			name = Release;
 		};
-		F5DB0C570856A994005A7CB7 /* Deployment */ = {
+		F5DB0C570856A994005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 			};
-			name = Deployment;
+			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
@@ -930,18 +954,18 @@
 		F5DB0C530856A994005A7CB7 /* Build configuration list for PBXNativeTarget "dim3 Editor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F5DB0C540856A994005A7CB7 /* Deployment */,
+				F5DB0C540856A994005A7CB7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Deployment;
+			defaultConfigurationName = Release;
 		};
 		F5DB0C560856A994005A7CB7 /* Build configuration list for PBXProject "dim3Editor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F5DB0C570856A994005A7CB7 /* Deployment */,
+				F5DB0C570856A994005A7CB7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Deployment;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

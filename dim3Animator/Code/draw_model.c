@@ -147,7 +147,7 @@ void model_end_texture(texture_type *texture)
       
 ======================================================= */
 
-void draw_model_material(model_type *model,int mesh_idx,model_draw_setup *draw_setup,texture_type *texture,model_material_type *material)
+void draw_model_material(model_type *model,int mesh_idx,texture_type *texture,model_material_type *material)
 {
 	int					k,trig_count;
     model_trig_type		*trig;
@@ -218,7 +218,7 @@ void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 	material=mesh->materials;
     
     for (n=0;n!=max_model_texture;n++) {
-		if (texture->bitmaps[0].alpha_mode!=alpha_mode_transparent) draw_model_material(model,mesh_idx,draw_setup,texture,material);
+		if (texture->bitmaps[0].alpha_mode!=alpha_mode_transparent) draw_model_material(model,mesh_idx,texture,material);
 		texture++;
 		material++;
 	}
@@ -233,7 +233,7 @@ void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 	material=mesh->materials;
     
     for (n=0;n!=max_model_texture;n++) {
-		if (texture->bitmaps[0].alpha_mode==alpha_mode_transparent) draw_model_material(model,mesh_idx,draw_setup,texture,material);
+		if (texture->bitmaps[0].alpha_mode==alpha_mode_transparent) draw_model_material(model,mesh_idx,texture,material);
 		texture++;
 		material++;
 	}
@@ -286,7 +286,7 @@ void draw_model_faded(model_type *model,int mesh_idx,model_draw_setup *draw_setu
 	material=mesh->materials;
     
     for (n=0;n!=max_model_texture;n++) {
-		draw_model_material(model,mesh_idx,draw_setup,texture,material);
+		draw_model_material(model,mesh_idx,texture,material);
 		texture++;
 		material++;
 	}

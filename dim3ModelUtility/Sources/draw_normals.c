@@ -35,7 +35,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-void model_move_single_normal(model_type *model,model_draw_bone_type *draw_bones,model_vertex_type *vertex,float *nx,float *nz,float *ny)
+void model_move_single_normal(model_draw_bone_type *draw_bones,model_vertex_type *vertex,float *nx,float *nz,float *ny)
 {
 	int						n;
 	float					bone_factor,
@@ -130,7 +130,7 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 		matrix_rotate_zyx(&sway_mat,draw_setup->sway.x,draw_setup->sway.y,draw_setup->sway.z);
 		
 		for (i=0;i!=nt;i++) {
-			model_move_single_normal(model,draw_setup->bones,vertex,&x,&z,&y);
+			model_move_single_normal(draw_setup->bones,vertex,&x,&z,&y);
 			matrix_vertex_multiply(&sway_mat,&x,&z,&y);
 			matrix_vertex_multiply(&rot_mat,&x,&y,&z);
 
@@ -147,7 +147,7 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 		// normals with no sways
 		
 	for (i=0;i!=nt;i++) {
-		model_move_single_normal(model,draw_setup->bones,vertex,&x,&z,&y);
+		model_move_single_normal(draw_setup->bones,vertex,&x,&z,&y);
 		matrix_vertex_multiply(&rot_mat,&x,&y,&z);
 
 		*pn++=x;

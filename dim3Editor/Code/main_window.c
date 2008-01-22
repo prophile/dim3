@@ -617,7 +617,7 @@ void main_wind_open(void)
 	box.bottom=box.bottom-3;
 
 	magnify_proc=NewControlActionUPP(main_wind_magnify_action);
-	CreateSliderControl(mainwind,&box,(magnify_factor-1),5,210,kControlSliderDoesNotPoint,0,TRUE,magnify_proc,&magnify_slider);
+	CreateSliderControl(mainwind,&box,(magnify_factor-1),magnify_factor_min,magnify_factor_max,kControlSliderDoesNotPoint,0,TRUE,magnify_proc,&magnify_slider);
  
 	tag.version=kMacHelpVersion;
 	tag.tagSide=kHMDefaultSide;

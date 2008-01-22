@@ -61,7 +61,7 @@ void draw_model_selected_vertexes(model_type *model,int mesh_idx)
       
 ======================================================= */
 
-void draw_model_box(model_type *model,model_box_type *box,model_draw_setup *draw_setup,bool draw_floor)
+void draw_model_box(model_box_type *box,model_draw_setup *draw_setup,bool draw_floor)
 {
 	int				i,xsz,zsz,ysz,offx,offz,offy,
 					x[8],y[8],z[8];
@@ -81,7 +81,7 @@ void draw_model_box(model_type *model,model_box_type *box,model_draw_setup *draw
 	z[1]=z[2]=z[5]=z[6]=offz+zsz;
 	
 	for (i=0;i!=8;i++) {
-		model_get_point_position(model,draw_setup,&x[i],&y[i],&z[i]);
+		model_get_point_position(draw_setup,&x[i],&y[i],&z[i]);
 	}
     
     glLineWidth(4);
@@ -125,7 +125,7 @@ void draw_model_boxes(model_type *model,model_draw_setup *draw_setup,int sel_hit
 		// shadow box
 		
 	glColor4f(0,0,1,0.5);
-	draw_model_box(model,&model->shadow_box,draw_setup,FALSE);
+	draw_model_box(&model->shadow_box,draw_setup,FALSE);
 	
 		// hit boxes
 		
@@ -136,13 +136,13 @@ void draw_model_boxes(model_type *model,model_draw_setup *draw_setup,int sel_hit
 		else {
 			glColor4f(1,1,0,0.5);
 		}
-		draw_model_box(model,&model->hit_boxes[n].box,draw_setup,FALSE);
+		draw_model_box(&model->hit_boxes[n].box,draw_setup,FALSE);
 	}
 	
 		// view box
 		
 	glColor4f(0,1,0,0.5);
-	draw_model_box(model,&model->view_box,draw_setup,TRUE);
+	draw_model_box(&model->view_box,draw_setup,TRUE);
 }
 
 /* =======================================================
@@ -206,7 +206,7 @@ void draw_model_normals(model_type *model,int mesh_idx)
       
 ======================================================= */
 
-void draw_model_axis(model_type *model,model_draw_setup *draw_setup)
+void draw_model_axis(model_type *model)
 {
 	int				n,sz;
 	

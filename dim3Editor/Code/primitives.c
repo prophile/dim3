@@ -218,7 +218,7 @@ void primitive_combine(void)
 			seg=&map.segments[index];
 			if ((seg->type==sg_ambient_wall) || (seg->type==sg_ambient_fc) || (seg->type==sg_liquid)) continue;
 			
-			map_primitive_push_uid(&map,seg,primitive_uid);
+			map_primitive_push_uid(seg,primitive_uid);
 		}
 		else {
 			uid=map.segments[index].primitive_uid[0];
@@ -227,7 +227,7 @@ void primitive_combine(void)
 			
 			for (k=0;k!=map.nsegment;k++) {
 				if (seg->primitive_uid[0]==uid) {
-					map_primitive_push_uid(&map,seg,primitive_uid);
+					map_primitive_push_uid(seg,primitive_uid);
 					// seg->primitive_uid[0]=primitive_uid;
 				}
 				seg++;
@@ -279,7 +279,7 @@ void primitive_break(void)
 		
 		for (k=0;k!=map.nsegment;k++) {
 			if (seg->primitive_uid[0]==primitive_uid) {
-				map_primitive_pop_uid(&map,seg);
+				map_primitive_pop_uid(seg);
 				primitive_reform_idx[reform_idx++]=k;
 				select_duplicate_add(segment_piece,k);
 			}

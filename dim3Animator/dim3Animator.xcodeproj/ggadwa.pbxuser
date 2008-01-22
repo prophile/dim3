@@ -1,0 +1,247 @@
+// !$*UTF8*$!
+{
+	0111608A00BE2A8F7F000001 /* draw_window.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2926}}";
+			sepNavSelRange = "{1495, 44}";
+			sepNavVisRange = "{788, 1340}";
+			sepNavWindowFrame = "{{144, 182}, {1041, 747}}";
+		};
+	};
+	20286C28FDCF999611CA2CEA /* Project object */ = {
+		activeArchitecture = i386;
+		activeBuildConfigurationName = Release;
+		activeExecutable = 260AFF750D406EF900F6C42F /* dim3 Animator in dim3 */;
+		activeTarget = F5A42D7F0555EC87002DF965 /* dim3 Animator */;
+		codeSenseManager = 260AFEF00D40506700F6C42F /* Code sense */;
+		executables = (
+			260AFEE30D40504C00F6C42F /* dim3 Animator */,
+			260AFF750D406EF900F6C42F /* dim3 Animator in dim3 */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXExecutablesDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXExecutablesDataSource_NameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					22,
+					300,
+					57.58349609375,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXExecutablesDataSource_ActiveFlagID,
+					PBXExecutablesDataSource_NameID,
+					PBXExecutablesDataSource_CommentsID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					10,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					10,
+					60,
+					20,
+					48,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 222456400;
+			PBXWorkspaceStateSaveDate = 222456400;
+		};
+		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	260AFEE30D40504C00F6C42F /* dim3 Animator */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+			"PBXLSLaunchAction-0" = {
+				PBXLSLaunchAction = 0;
+				PBXLSLaunchStartAction = 1;
+				PBXLSLaunchStdioStyle = 2;
+				PBXLSLaunchStyle = 0;
+				class = PBXLSRunLaunchConfig;
+				commandLineArgs = (
+				);
+				displayName = "Executable Runner";
+				environment = {
+				};
+				identifier = com.apple.Xcode.launch.runConfig;
+				remoteHostInfo = "";
+				startActionInfo = "";
+			};
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = "dim3 Animator";
+		sourceDirectories = (
+		);
+		startupPath = /Users/ggadwa/dim3;
+	};
+	260AFEEF0D40506700F6C42F /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+	};
+	260AFEF00D40506700F6C42F /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	260AFF750D406EF900F6C42F /* dim3 Animator in dim3 */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+			"PBXLSLaunchAction-0" = {
+				PBXLSLaunchAction = 0;
+				PBXLSLaunchStartAction = 1;
+				PBXLSLaunchStdioStyle = 2;
+				PBXLSLaunchStyle = 0;
+				class = PBXLSRunLaunchConfig;
+				commandLineArgs = (
+				);
+				displayName = "Executable Runner";
+				environment = {
+				};
+				identifier = com.apple.Xcode.launch.runConfig;
+				remoteHostInfo = "";
+				startActionInfo = "";
+			};
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		launchableReference = 260AFF760D406EF900F6C42F /* dim3 Animator.app */;
+		libgmallocEnabled = 0;
+		name = "dim3 Animator in dim3";
+		sourceDirectories = (
+		);
+		startupPath = ../../dim3;
+	};
+	260AFF760D406EF900F6C42F /* dim3 Animator.app */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = wrapper.application;
+		name = "dim3 Animator.app";
+		path = "../../dim3/dim3 Animator.app";
+		sourceTree = SOURCE_ROOT;
+	};
+	F502976802E0BC0201701C02 /* bone_tab.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {536, 6020}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 501}";
+			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
+		};
+	};
+	F503D2560981A35B00DEDC74 /* draw_model.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4242}}";
+			sepNavSelRange = "{3861, 19}";
+			sepNavVisRange = "{3436, 1121}";
+			sepNavWindowFrame = "{{61, 234}, {1041, 747}}";
+		};
+	};
+	F503D2670981A42C00DEDC74 /* draw_vertex_boxes.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 3920}}";
+			sepNavSelRange = "{4468, 15}";
+			sepNavVisRange = "{3891, 855}";
+			sepNavWindowFrame = "{{176, 129}, {1041, 747}}";
+		};
+	};
+	F594B44609A947F800408388 /* dialog_pose_settings.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {656, 1580}}";
+			sepNavSelRange = "{1283, 103}";
+			sepNavVisRange = "{0, 0}";
+		};
+	};
+	F594B48509A96EFB00408388 /* dialog_hit_box_settings.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2098}}";
+			sepNavSelRange = "{1597, 106}";
+			sepNavVisRange = "{874, 1357}";
+			sepNavWindowFrame = "{{199, 108}, {1041, 747}}";
+		};
+	};
+	F5A42D7F0555EC87002DF965 /* dim3 Animator */ = {
+		activeExec = 0;
+		executables = (
+			260AFEE30D40504C00F6C42F /* dim3 Animator */,
+		);
+	};
+	F5B4082707104E7700600D33 /* click_window.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6636}}";
+			sepNavSelRange = "{7652, 0}";
+			sepNavVisRange = "{7064, 1084}";
+			sepNavWindowFrame = "{{739, 133}, {1041, 747}}";
+		};
+	};
+	F5C5352A09267BF600663E36 /* model.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 675}}";
+			sepNavSelRange = "{1632, 0}";
+			sepNavVisRange = "{0, 1891}";
+			sepNavWindowFrame = "{{670, 194}, {1041, 747}}";
+		};
+	};
+}

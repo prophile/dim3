@@ -555,14 +555,14 @@ int map_portal_add_light_single_vertex_list(portal_vertex_list_type *vl,int vl_c
 
 	if ((mesh_poly->draw.simple_tessel) || (mesh_poly->ptsz==3) || (!high_quality_lighting)) return(map_portal_add_light_simple_vertex_list(vl,vl_cnt,mesh,mesh_poly));
 
-		// tessel on two biggest directions
+		// tessel depending on shape of polygon
 
 	xsz=mesh_poly->box.max.x-mesh_poly->box.min.x;
 	ysz=mesh_poly->box.max.y-mesh_poly->box.min.y;
 	zsz=mesh_poly->box.max.z-mesh_poly->box.min.z;
 
-	if ((xsz>zsz) && (ysz>zsz)) return(map_portal_add_light_xy_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
-	if ((xsz>ysz) && (zsz>ysz)) return(map_portal_add_light_xz_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
+	if ((xsz>=ysz) || (zsz>=ysz))  return(map_portal_add_light_xz_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
+	if (xsz>zsz) return(map_portal_add_light_xy_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
 	return(map_portal_add_light_yz_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
 }
 
@@ -572,7 +572,7 @@ int map_portal_add_light_single_vertex_list(portal_vertex_list_type *vl,int vl_c
       
 ======================================================= */
 
-bool map_portal_build_single_vertex_list(map_type *map,int rn,int nvlist,bool high_quality_lighting)
+bool map_portal_build_single_vertex_list(map_type *map,int rn,bool high_quality_lighting)
 {
 	int							n,k,vl_cnt;
 	portal_vertex_list_type		*vl;
@@ -654,7 +654,7 @@ bool map_portal_create_single_vertex_list(map_type *map,int rn,bool high_quality
 	
 		// build vertex list
 		
-	if (!map_portal_build_single_vertex_list(map,rn,nvlist,high_quality_lighting)) {
+	if (!map_portal_build_single_vertex_list(map,rn,high_quality_lighting)) {
 		free(portal->vertexes.vertex_list);
 		portal->vertexes.vertex_list=NULL;
 		return(FALSE);
@@ -743,7 +743,7 @@ void map_portal_rebuild_vertex_lists(map_type *map,bool high_quality_lighting)
 	int			i;
 	
 	for (i=0;i!=map->nportal;i++) {
-		map_portal_build_single_vertex_list(map,i,map->portals[i].vertexes.nvlist,high_quality_lighting);
+		map_portal_build_single_vertex_list(map,i,high_quality_lighting);
 	}
 }
 

@@ -29,6 +29,9 @@ and can be sold or given away.
 
 extern map_type				map;
 
+
+// supergumba -- can probably delete a lot of this
+
 /* =======================================================
 
       Polygon Routines

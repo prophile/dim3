@@ -612,8 +612,6 @@ void walk_view_gl_setup(bool on_side)
 	}
 
 	glEnable(GL_DEPTH_TEST);
-	
-	walk_view_sight_path_mark(cr);
 }
 
 void walk_view_draw(bool on_side)
@@ -621,7 +619,12 @@ void walk_view_draw(bool on_side)
 	int			i,rn,
 				portal_cnt,portal_list[max_portal];
 	
-        // 3D view
+ 		// always draw from portal that cursor is in
+		
+	rn=walk_view_find_start_portal();
+	walk_view_sight_path_mark(rn);
+		
+       // 3D view
         
 	walk_view_gl_setup(on_side);
 	
@@ -632,8 +635,8 @@ void walk_view_draw(bool on_side)
 		map.portals[i].mz=(map.portals[i].z+map.portals[i].ez)/2;
 		map.portals[i].by=0;
 	}
-		
-	portal_cnt=map_portal_draw_sort(&map,cr,cx,cy,cz,portal_list);
+	
+	portal_cnt=map_portal_draw_sort(&map,rn,cx,cy,cz,portal_list);
 
         // draw opaque parts of portals in sight path
         

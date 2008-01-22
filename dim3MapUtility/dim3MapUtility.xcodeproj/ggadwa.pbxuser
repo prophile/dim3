@@ -1,0 +1,167 @@
+// !$*UTF8*$!
+{
+	260AFEBF0D404E9300F6C42F /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+	};
+	260AFEC00D404E9300F6C42F /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	F52A9B7409F0A63C008CE744 /* portal_sight_path.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 3766}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{3945, 1294}";
+			sepNavWindowFrame = "{{107, 192}, {1041, 747}}";
+		};
+	};
+	F52A9D4109F2057F008CE744 /* primitives.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1316}}";
+			sepNavSelRange = "{1879, 0}";
+			sepNavVisRange = "{1265, 860}";
+			sepNavWindowFrame = "{{84, 213}, {1041, 747}}";
+		};
+	};
+	F55A4CE5059A4A3E0006C01E /* dim3maputility.exp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1666}}";
+			sepNavSelRange = "{1744, 0}";
+			sepNavVisRange = "{1305, 991}";
+			sepNavWindowFrame = "{{182, 235}, {1041, 747}}";
+		};
+	};
+	F56B6200080C885A00E9D08B /* mapprivate.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1064}}";
+			sepNavSelRange = "{2786, 0}";
+			sepNavVisRange = "{943, 2352}";
+			sepNavWindowFrame = "{{153, 150}, {1041, 747}}";
+		};
+	};
+	F59C592F06BF40C9009851C6 /* segments.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1160, 7602}}";
+			sepNavSelRange = "{12519, 0}";
+			sepNavVisRange = "{11878, 1637}";
+			sepNavWindowFrame = "{{130, 54}, {1041, 747}}";
+		};
+	};
+	F5C53530051C058600968AF1 /* Project object */ = {
+		activeArchitecture = i386;
+		activeBuildConfigurationName = Release;
+		activeTarget = F5F4951E067BFCCA00E809E7 /* MapUtility */;
+		addToTargets = (
+			F5F4951E067BFCCA00E809E7 /* MapUtility */,
+		);
+		breakpoints = (
+		);
+		codeSenseManager = 260AFEC00D404E9300F6C42F /* Code sense */;
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					10,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					10,
+					60,
+					20,
+					48,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 222561439;
+			PBXWorkspaceStateSaveDate = 222561439;
+		};
+		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	F5C53548051C085800968AF1 /* maputility.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1064, 9702}}";
+			sepNavSelRange = "{22442, 0}";
+			sepNavVisRange = "{21591, 2662}";
+			sepNavWindowFrame = "{{153, 234}, {1041, 691}}";
+		};
+	};
+	F5CE96C00D23586E00512EE1 /* auto_generate_blocking.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 3122}}";
+			sepNavSelRange = "{5831, 0}";
+			sepNavVisRange = "{5457, 1025}";
+			sepNavWindowFrame = "{{107, 192}, {1041, 747}}";
+		};
+	};
+	F5CE96C20D23586E00512EE1 /* auto_generate.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 29148}}";
+			sepNavSelRange = "{11356, 0}";
+			sepNavVisRange = "{10904, 1287}";
+			sepNavWindowFrame = "{{130, 171}, {1041, 747}}";
+		};
+	};
+	F5DD16E00907328000721649 /* prepare.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7238}}";
+			sepNavSelRange = "{2568, 18}";
+			sepNavVisRange = "{1938, 1299}";
+			sepNavWindowFrame = "{{153, 150}, {1041, 747}}";
+		};
+	};
+	F5DD177E09074E1E00721649 /* portal.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6860}}";
+			sepNavSelRange = "{9542, 20}";
+			sepNavVisRange = "{9306, 827}";
+			sepNavWindowFrame = "{{131, 90}, {1041, 747}}";
+		};
+	};
+	F5DD178809074E5000721649 /* portal_vertex_list.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 10346}}";
+			sepNavSelRange = "{13425, 0}";
+			sepNavVisRange = "{12647, 1569}";
+			sepNavWindowFrame = "{{279, 174}, {1041, 747}}";
+		};
+	};
+	F5F4951E067BFCCA00E809E7 /* MapUtility */ = {
+		activeExec = 0;
+	};
+}

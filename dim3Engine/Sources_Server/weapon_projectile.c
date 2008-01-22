@@ -233,7 +233,7 @@ bool weapon_get_projectile_position_angle_weapon_barrel(int tick,obj_type *obj,w
 		return(FALSE);
 	}
 
-	model_get_draw_bone_position(mdl,setup,bone_idx,&barrel_pnt.x,&barrel_pnt.y,&barrel_pnt.z);
+	model_get_draw_bone_position(setup,bone_idx,&barrel_pnt.x,&barrel_pnt.y,&barrel_pnt.z);
 	
 	barrel_pnt.x+=weap->draw.pos.x;
 	barrel_pnt.y+=weap->draw.pos.y;

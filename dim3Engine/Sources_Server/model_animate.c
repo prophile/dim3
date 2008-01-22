@@ -638,7 +638,7 @@ bool model_find_bone_position_for_current_animation(model_draw *draw,int bone_id
 		// calculate bones
 
 	model_create_draw_bones(mdl,&draw->setup);
-	model_get_draw_bone_position(mdl,&draw->setup,bone_idx,x,y,z);
+	model_get_draw_bone_position(&draw->setup,bone_idx,x,y,z);
 
 	*x=(*x)+draw->pos.x;
 	*y=(*y)+draw->pos.y;

@@ -68,6 +68,9 @@ _map_portal_mesh_delete
 _map_portal_mesh_set_vertex_count
 _map_portal_mesh_set_poly_count
 
+_map_portal_liquid_add
+_map_portal_liquid_delete
+
 _map_primitive_create_uid
 _map_primitive_push_uid
 _map_primitive_pop_uid

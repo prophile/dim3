@@ -380,7 +380,7 @@ bool walk_view_piece_drag(Point pt)
 
 bool walk_view_handle_click(int xorg,int yorg,Point pt,bool on_side)
 {
-    int			k,type,index,idx,n,nitem,x,y,ysz;
+    int			k,rn,type,index,idx,n,nitem,x,y,ysz;
     Rect		box;
     GLfloat		*f,buf[128];
 	
@@ -394,6 +394,8 @@ bool walk_view_handle_click(int xorg,int yorg,Point pt,bool on_side)
 	glFeedbackBuffer(128,GL_3D,buf);
 	glRenderMode(GL_FEEDBACK);
 	
+	rn=walk_view_find_start_portal();
+	walk_view_sight_path_mark(rn);
 	walk_view_gl_setup(on_side);
 	walk_view_draw_segment_handles();
 
@@ -459,7 +461,7 @@ bool walk_view_handle_click(int xorg,int yorg,Point pt,bool on_side)
 
 void walk_view_polygon_click_index(int xorg,int yorg,Point pt,int *p_index,int *p_type,bool sel_only,bool on_side)
 {
-    int			n,i,k,nitem,type,index,pt_type,pt_index,px,py,ysz,
+    int			n,i,k,rn,nitem,type,index,pt_type,pt_index,px,py,ysz,
 				ptsz,x[8],y[8];
 	float		z,cur_z;
     GLfloat		*f,*pnt,*buf;
@@ -479,6 +481,8 @@ void walk_view_polygon_click_index(int xorg,int yorg,Point pt,int *p_index,int *
 	glFeedbackBuffer(100240,GL_3D,buf);
 	glRenderMode(GL_FEEDBACK);
 	
+	rn=walk_view_find_start_portal();
+	walk_view_sight_path_mark(rn);
 	walk_view_gl_setup(on_side);
 	
 	glClear(GL_DEPTH_BUFFER_BIT);

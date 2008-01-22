@@ -456,7 +456,7 @@ void map_segment_reset_texture_find_bound_rect(int ptsz,int *x,int *z,int *lft,i
 	*bot=by;
 }
 
-void map_segment_reset_texture_uv_get_factor_size(int sx,int sz,int ptsz,int *x,int *z,float *xtoff,float *ztoff,float *xfact,float *zfact,float txt_scale_x,float txt_scale_y)
+void map_segment_reset_texture_uv_get_factor_size(int ptsz,int *x,int *z,float *xtoff,float *ztoff,float *xfact,float *zfact,float txt_scale_x,float txt_scale_y)
 {
 	int			lft,rgt,top,bot;
 	float		ltxtx,rtxtx,ltxtz,rtxtz;
@@ -520,7 +520,7 @@ void map_segment_reset_texture_uvs(map_type *map,segment_type *seg)
 			break;
 		case sg_floor:
 		case sg_ceiling:
-			map_segment_reset_texture_uv_get_factor_size(portal->x,portal->z,seg->data.fc.ptsz,seg->data.fc.x,seg->data.fc.z,&seg->x_txtoff,&seg->y_txtoff,&seg->x_txtfact,&seg->y_txtfact,txt_scale_x,txt_scale_y);
+			map_segment_reset_texture_uv_get_factor_size(seg->data.fc.ptsz,seg->data.fc.x,seg->data.fc.z,&seg->x_txtoff,&seg->y_txtoff,&seg->x_txtfact,&seg->y_txtfact,txt_scale_x,txt_scale_y);
 			break;
 		case sg_liquid:		
 			ltxtx=(float)(seg->data.liquid.lft+portal->x)*txt_scale_x;

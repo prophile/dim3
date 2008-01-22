@@ -1,0 +1,208 @@
+// !$*UTF8*$!
+{
+	20286C28FDCF999611CA2CEA /* Project object */ = {
+		activeArchitecture = ppc;
+		activeBuildConfigurationName = Release;
+		activeExecutable = 2644F0760D426C6E00470CB5 /* dim3Engine in dim3 */;
+		activeTarget = F5CD86AF055771B80023AD9B /* dim3 Engine */;
+		codeSenseManager = 260AFF620D40531F00F6C42F /* Code sense */;
+		executables = (
+			260AFF520D4052E200F6C42F /* dim3 Engine */,
+			2644F0760D426C6E00470CB5 /* dim3Engine in dim3 */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXExecutablesDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXExecutablesDataSource_NameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					22,
+					300,
+					57.58349609375,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXExecutablesDataSource_ActiveFlagID,
+					PBXExecutablesDataSource_NameID,
+					PBXExecutablesDataSource_CommentsID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					10,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					10,
+					60,
+					20,
+					48,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 222559272;
+			PBXWorkspaceStateSaveDate = 222559272;
+		};
+		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	260AFF520D4052E200F6C42F /* dim3 Engine */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = "dim3 Engine";
+		sourceDirectories = (
+		);
+	};
+	260AFF610D40531F00F6C42F /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+	};
+	260AFF620D40531F00F6C42F /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	2644F0760D426C6E00470CB5 /* dim3Engine in dim3 */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+			"PBXLSLaunchAction-0" = {
+				PBXLSLaunchAction = 0;
+				PBXLSLaunchStartAction = 1;
+				PBXLSLaunchStdioStyle = 2;
+				PBXLSLaunchStyle = 0;
+				class = PBXLSRunLaunchConfig;
+				commandLineArgs = (
+				);
+				displayName = "Executable Runner";
+				environment = {
+				};
+				identifier = com.apple.Xcode.launch.runConfig;
+				remoteHostInfo = "";
+				startActionInfo = "";
+			};
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		launchableReference = 2644F0770D426C6E00470CB5 /* dim3 Engine.app */;
+		libgmallocEnabled = 0;
+		name = "dim3Engine in dim3";
+		sourceDirectories = (
+		);
+		startupPath = ../../dim3;
+	};
+	2644F0770D426C6E00470CB5 /* dim3 Engine.app */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = wrapper.application;
+		name = "dim3 Engine.app";
+		path = "../../dim3/dim3 Engine.app";
+		sourceTree = SOURCE_ROOT;
+	};
+	F5A17A610CC14D340083AF08 /* segment_render_transparent.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5684}}";
+			sepNavSelRange = "{2835, 1339}";
+			sepNavVisRange = "{3259, 1132}";
+			sepNavWindowFrame = "{{91, 147}, {1041, 747}}";
+		};
+	};
+	F5CD86AF055771B80023AD9B /* dim3 Engine */ = {
+		activeExec = 0;
+		executables = (
+			260AFF520D4052E200F6C42F /* dim3 Engine */,
+		);
+	};
+	F5DD198F09080EA300721649 /* crosshair_draw.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5936}}";
+			sepNavSelRange = "{7980, 0}";
+			sepNavVisRange = "{7387, 1102}";
+			sepNavWindowFrame = "{{84, 213}, {1041, 747}}";
+		};
+	};
+	F5DD1A2A0908588500721649 /* weapon_projectile.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 10372}}";
+			sepNavSelRange = "{6247, 89}";
+			sepNavVisRange = "{5631, 1523}";
+			sepNavWindowFrame = "{{107, 192}, {1041, 747}}";
+		};
+	};
+	F5DD1A9209085CAA00721649 /* gl_renderer.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4242}}";
+			sepNavSelRange = "{5424, 0}";
+			sepNavVisRange = "{4600, 1215}";
+			sepNavWindowFrame = "{{176, 129}, {1041, 747}}";
+		};
+	};
+	F5DD1AE80908620D00721649 /* model_animate.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 9646}}";
+			sepNavSelRange = "{16439, 0}";
+			sepNavVisRange = "{15736, 1242}";
+			sepNavWindowFrame = "{{130, 171}, {1041, 747}}";
+		};
+	};
+}

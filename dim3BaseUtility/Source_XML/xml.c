@@ -584,6 +584,8 @@ int xml_get_attribute_short_array(int n,char *name,short *value,int count)
         value[nvalue++]=(short)atoi(c);
         if (c2==NULL) break;
         c=c2+1;
+		
+		if (nvalue==count) break;
     }
     
 	return(nvalue);
@@ -624,6 +626,8 @@ int xml_get_attribute_float_array(int n,char *name,float *value,int count)
         value[nvalue++]=strtof(c,NULL);
         if (c2==NULL) break;
         c=c2+1;
+		
+		if (nvalue==count) break;
     }
     
 	return(nvalue);

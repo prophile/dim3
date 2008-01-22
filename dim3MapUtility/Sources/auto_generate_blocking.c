@@ -184,7 +184,7 @@ void map_auto_generate_block_preset(auto_generate_settings_type *ags,int block)
       
 ======================================================= */
 
-bool map_auto_generate_block_collision(map_type *map,auto_generate_settings_type *ags,int x,int z,int ex,int ez)
+bool map_auto_generate_block_collision(auto_generate_settings_type *ags,int x,int z,int ex,int ez)
 {
 	int				blck_x,blck_z,lx,rx,tz,bz,map_x_factor,map_z_factor;
 

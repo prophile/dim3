@@ -80,6 +80,8 @@ int map_find_portal(map_type *map,int x,int y,int z)
 	int				n,nportal;
 	portal_type		*portal;
 	
+	y=0;		// temporary fix to stop compiler warning; later on portals could become 3D
+
 	nportal=map->nportal;
 	portal=map->portals;
 	
@@ -93,7 +95,6 @@ int map_find_portal(map_type *map,int x,int y,int z)
 
 int map_find_portal_hint(map_type *map,int hint_rn,int x,int y,int z)
 {
-	int				n,nportal;
 	portal_type		*portal;
 	
 		// check hint first
@@ -104,16 +105,8 @@ int map_find_portal_hint(map_type *map,int hint_rn,int x,int y,int z)
 	}
 	
 		// check all others
-	
-	nportal=map->nportal;
-	portal=map->portals;
-	
-	for (n=0;n!=nportal;n++) {
-		if ((x>=portal->x) && (x<=portal->ex) && (z>=portal->z) && (z<=portal->ez)) return(n);
-		portal++;
-	}
-	
-	return(-1);
+		
+	return(map_find_portal(map,x,y,z));
 }
 
 bool map_find_portal_by_pos(map_type *map,d3pos *pos)
