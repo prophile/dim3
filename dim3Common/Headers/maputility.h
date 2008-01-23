@@ -251,7 +251,8 @@ typedef struct		{
 													cur_frame,txt_frame_offset,
 													stencil_pass,stencil_idx;
 						float						normal[3];
-						bool						simple_tessel,shift_on,is_lighting;
+						bool						simple_tessel,shift_on,
+													is_lighting,simple_lighting;
 					} map_mesh_poly_draw_type;
 
 typedef struct		{

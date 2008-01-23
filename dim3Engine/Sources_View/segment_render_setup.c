@@ -261,6 +261,8 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 				texture=&map.textures[mesh_poly->txt_idx];
 				frame=(texture->animate.current_frame+mesh_poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
+				mesh_poly->draw.simple_lighting=(global_light_simple) || (lod_dist>map.optimizations.lod_light_distance) || (mesh_poly->draw.simple_tessel);
+
 					// is shader
 
 				if (texture->shader.on) {

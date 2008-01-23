@@ -558,15 +558,17 @@ int segment_render_opaque_portal(int rn,int pass_last)
 					}
 					
 					// supergumba -- testing
-					glLineWidth(2.0f);
-					ntrig=mesh_poly->light.trig_count;
-					for (t=0;t!=ntrig;t++) {
-						glDrawElements(GL_LINE_LOOP,3,GL_UNSIGNED_INT,(GLvoid*)&mesh_poly->light.trig_vertex_idx[t*3]);
+					if (!mesh_poly->draw.simple_lighting) {
+						glLineWidth(2.0f);
+						ntrig=mesh_poly->light.trig_count;
+						for (t=0;t!=ntrig;t++) {
+							glDrawElements(GL_LINE_LOOP,3,GL_UNSIGNED_INT,(GLvoid*)&mesh_poly->light.trig_vertex_idx[t*3]);
+						}
+						glLineWidth(1.0f);
 					}
-					glLineWidth(1.0f);
 
 					/*
-					if (mesh_poly->draw.simple_tessel) {
+					if (mesh_poly->draw.simple_lighting) {
 						glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
 					}
 					else {
