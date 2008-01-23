@@ -37,10 +37,10 @@ and can be sold or given away.
 
 void map_prepare_set_mesh_poly_box(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
 {
-	int				n,k,ptsz,v_idx,y;
+	int				n,k,ptsz,y;
 	bool			flat,common_xz;
 	d3pnt			min,max,mid;
-	d3pnt			*pt;
+	d3pnt			*pt,*chk_pt;
 
 		// find enclosing square
 		// and middle and if polygon is flat
@@ -94,11 +94,13 @@ void map_prepare_set_mesh_poly_box(map_mesh_type *mesh,map_mesh_poly_type *mesh_
 	common_xz=FALSE;
 
 	for (n=0;n!=ptsz;n++) {
-		v_idx=mesh_poly->v[n];
+		pt=&mesh->vertexes[mesh_poly->v[n]];
 
 		for (k=0;k!=ptsz;k++) {
 			if (k==n) continue;
-			if (mesh_poly->v[k]==v_idx) {
+			
+			chk_pt=&mesh->vertexes[mesh_poly->v[k]];
+			if ((pt->x==chk_pt->x) && (pt->z==chk_pt->z)) {
 				common_xz=TRUE;
 				break;
 			}
