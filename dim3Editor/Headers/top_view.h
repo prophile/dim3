@@ -92,11 +92,7 @@ extern void top_view_piece_double_click(int type,int index);
 // piece drawing routines
 //
 
-extern void top_view_piece_draw_liquid(int rn,liquid_segment_data *liq);
-extern void top_view_piece_draw_wall(int rn,wall_segment_data *wall,int curve,int clip);
-extern void top_view_piece_draw_ambient_wall(int rn,ambient_wall_segment_data *ambient_wall,Rect *clipbox);
-extern void top_view_piece_draw_ambient_fc(int rn,ambient_fc_segment_data *ambient_fc);
-extern void top_view_piece_draw_icon(d3pos *pos,CIconHandle icn,RGBColor *col,Rect *clipbox);
+extern void top_view_piece_draw_icon(d3pos *pos,unsigned long gl_id);
 extern void top_view_piece_draw_get_rect_by_pos(d3pos *pos,int sz,Rect *box);
 
 extern void top_view_piece_draw(int rn);

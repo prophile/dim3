@@ -95,7 +95,6 @@
 		F5A4324C055602DF002DF965 /* top_view_portal_click.c in Sources */ = {isa = PBXBuildFile; fileRef = F5BEC2290100EBE001000001 /* top_view_portal_click.c */; };
 		F5A4324D055602DF002DF965 /* top_view_piece_click.c in Sources */ = {isa = PBXBuildFile; fileRef = F54797140107EA3C01000001 /* top_view_piece_click.c */; };
 		F5A4324E055602DF002DF965 /* pieces.c in Sources */ = {isa = PBXBuildFile; fileRef = F54797150107EA3C01000001 /* pieces.c */; };
-		F5A43250055602DF002DF965 /* walk_view_draw_curve.c in Sources */ = {isa = PBXBuildFile; fileRef = F56BF19D010E86C601000001 /* walk_view_draw_curve.c */; };
 		F5A43251055602DF002DF965 /* vertexes.c in Sources */ = {isa = PBXBuildFile; fileRef = F5971549020519FD01B94E58 /* vertexes.c */; };
 		F5A43252055602DF002DF965 /* main_window.c in Sources */ = {isa = PBXBuildFile; fileRef = F54CD2090233430101250BB8 /* main_window.c */; };
 		F5A43253055602DF002DF965 /* walk_view.c in Sources */ = {isa = PBXBuildFile; fileRef = F54CD20D0233497001250BB8 /* walk_view.c */; };
@@ -296,7 +295,6 @@
 		F55D786C0A8051FA00BD4B22 /* dialog_map_rain_settings.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_map_rain_settings.c; path = Code/dialog_map_rain_settings.c; sourceTree = "<group>"; };
 		F56425B8098C1C760008DECC /* dialog_background_sky_setting.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_background_sky_setting.c; path = Code/dialog_background_sky_setting.c; sourceTree = "<group>"; };
 		F5691684084E6B9000ADFA44 /* dialog_file_open.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_file_open.c; path = Code/dialog_file_open.c; sourceTree = "<group>"; };
-		F56BF19D010E86C601000001 /* walk_view_draw_curve.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = walk_view_draw_curve.c; path = Code/walk_view_draw_curve.c; sourceTree = "<group>"; };
 		F56EF37B09A69A3400F06521 /* dialog_map_settings.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_map_settings.c; path = Code/dialog_map_settings.c; sourceTree = "<group>"; };
 		F56EF39D09A6F08400F06521 /* dialog_portal_settings.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_portal_settings.c; path = Code/dialog_portal_settings.c; sourceTree = "<group>"; };
 		F56EF3F609A6F70700F06521 /* dialog_map_light_settings.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_map_light_settings.c; path = Code/dialog_map_light_settings.c; sourceTree = "<group>"; };
@@ -489,7 +487,6 @@
 				F54CD20D0233497001250BB8 /* walk_view.c */,
 				F58D0FAF05B8C0A800DBBDC5 /* walk_view_click_piece.c */,
 				F5D458ED0953160300AF9CE1 /* walk_view_draw_piece.c */,
-				F56BF19D010E86C601000001 /* walk_view_draw_curve.c */,
 				0123D87500C0AFD57F000001 /* walk_view_draw_select.c */,
 				F52E48CC0958F369007CA082 /* walk_view_click_handle.c */,
 				F52E48CE0958F370007CA082 /* walk_view_draw_handle.c */,
@@ -787,7 +784,6 @@
 				F5A4324C055602DF002DF965 /* top_view_portal_click.c in Sources */,
 				F5A4324D055602DF002DF965 /* top_view_piece_click.c in Sources */,
 				F5A4324E055602DF002DF965 /* pieces.c in Sources */,
-				F5A43250055602DF002DF965 /* walk_view_draw_curve.c in Sources */,
 				F5A43251055602DF002DF965 /* vertexes.c in Sources */,
 				F5A43252055602DF002DF965 /* main_window.c in Sources */,
 				F5A43253055602DF002DF965 /* walk_view.c in Sources */,
@@ -932,6 +928,7 @@
 				PRODUCT_NAME = "dim3 Editor";
 				SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk;
 				SDKROOT_ppc = /Developer/SDKs/MacOSX10.3.9.sdk;
+				SKIP_INSTALL = NO;
 				UNSTRIPPED_PRODUCT = YES;
 				WARNING_CFLAGS = "";
 				WRAPPER_EXTENSION = app;

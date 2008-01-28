@@ -60,31 +60,8 @@ extern void walk_view_click_piece(int xorg,int yorg,Point pt,bool dblclick,bool 
 
 extern void walk_view_sight_path_trace(portal_sight_list_type *sight,int u);
 extern void walk_view_sight_path_mark(int rn);
-extern void walk_view_draw_textured_poly(int ptsz,int *x,int *y,int *z,float *gx,float *gy,int txt,int txt_ang,float darken,float alpha);
-extern void walk_view_draw_colored_poly(int ptsz,int *x,int *y,int *z,float r,float g,float b,float alpha);
-extern void walk_view_draw_sprite(d3pos *pos,int xadd,int zadd,int txt);
-extern void walk_view_draw_portal_segments(int rn,bool opaque);
-extern void walk_view_draw_portal_pieces(int rn);
 extern void walk_view_gl_setup(bool on_side);
 extern void walk_view_draw(bool on_side);
-
-//
-// walk view draw curve
-//
-
-extern void walk_view_draw_frwd_4_curve(int *x,int *z,int *y,float *gx,float *gy,int fill,int txt_ang,float r,float g,float b,float dark_factor,float alpha);
-extern void walk_view_draw_frwd_3_curve(int *x,int *z,int *y,float *gx,float *gy,int fill,int txt_ang,float r,float g,float b,float dark_factor,float alpha);
-extern void walk_view_draw_bkwd_4_curve(int *x,int *z,int *y,float *gx,float *gy,int fill,int txt_ang,float r,float g,float b,float dark_factor,float alpha);
-extern void walk_view_draw_bkwd_3_curve(int *x,int *z,int *y,float *gx,float *gy,int fill,int txt_ang,float r,float g,float b,float dark_factor,float alpha);
-extern void walk_view_draw_fc_curve(int ptsz,int *x,int *z,int *y,float *gx,float *gy,int curve_type,int fill,int txt_ang,float r,float g,float b,float dark_factor,float alpha);
-extern void walk_view_draw_frwd_wall_curve(int lx,int lz,int rx,int rz,int ty,int by,float x_txtoff,float x_txtfact,float y_txtoff,float y_txtfact,int fill,int txt_ang,float dark_factor,float alpha);
-extern void walk_view_draw_bkwd_wall_curve(int lx,int lz,int rx,int rz,int ty,int by,float x_txtoff,float x_txtfact,float y_txtoff,float y_txtfact,int fill,int txt_ang,float dark_factor,float alpha);
-extern void walk_view_draw_wall_curve(segment_type *seg,int xadd,int zadd,int fill,int txt_ang,float dark_factor,float alpha);
-extern void walk_view_draw_wall_top_curve(int lx,int lz,int rx,int rz,int ty,int by,float x_txtoff,float x_txtfact,float y_txtoff,float y_txtfact,int fill,int txt_ang,float dark_factor,float alpha);
-extern void walk_view_draw_wall_top_arch(int lx,int lz,int rx,int rz,int ty,int by,float x_txtoff,float x_txtfact,float y_txtoff,float y_txtfact,int fill,int txt_ang,float dark_factor,float alpha);
-extern void walk_view_draw_wall_bottom_curve(int lx,int lz,int rx,int rz,int ty,int by,float x_txtoff,float x_txtfact,float y_txtoff,float y_txtfact,int fill,int txt_ang,float dark_factor,float alpha);
-extern void walk_view_draw_wall_bottom_arch(int lx,int lz,int rx,int rz,int ty,int by,float x_txtoff,float x_txtfact,float y_txtoff,float y_txtfact,int fill,int txt_ang,float dark_factor,float alpha);
-extern void walk_view_draw_wall_clip_curve(segment_type *seg,int xadd,int zadd,int fill,int txt_ang,float dark_factor,float alpha);
 
 //
 // walk view draw select

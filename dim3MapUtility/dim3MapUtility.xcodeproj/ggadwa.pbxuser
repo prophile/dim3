@@ -51,6 +51,14 @@
 			sepNavWindowFrame = "{{130, 54}, {1041, 747}}";
 		};
 	};
+	F5C418F40D3C258400BD96D5 /* file_map_convert_v1.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 11732}}";
+			sepNavSelRange = "{4109, 0}";
+			sepNavVisRange = "{3175, 1408}";
+			sepNavWindowFrame = "{{153, 150}, {1041, 747}}";
+		};
+	};
 	F5C53530051C058600968AF1 /* Project object */ = {
 		activeArchitecture = i386;
 		activeBuildConfigurationName = Release;
@@ -106,8 +114,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 222758218;
-			PBXWorkspaceStateSaveDate = 222758218;
+			PBXPerProjectTemplateStateSaveDate = 223174640;
+			PBXWorkspaceStateSaveDate = 223174640;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {

@@ -296,8 +296,10 @@ typedef struct		{
 					} map_liquid_draw_type;
 
 typedef struct		{
-						int							y,lft,rgt,top,bot;
-						float						speed_alter,tint_alpha;
+						int							y,lft,rgt,top,bot,txt_idx;
+						float						alpha,speed_alter,tint_alpha,
+													x_txtfact,y_txtfact,x_txtoff,y_txtoff,
+													x_shift,y_shift;
 						d3col						col;
 						map_liquid_harm_type		harm;
 						map_liquid_tide_type		tide;

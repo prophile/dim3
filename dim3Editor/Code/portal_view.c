@@ -129,8 +129,7 @@ void portal_view_distance_pane_to_map(int *x,int *z)
 
 void portal_view_draw(void)
 {
-	int				n,i,x,z,ex,ez;
-	Rect			wbox,box;
+	int				n,x,z,ex,ez;
 	
 		// setup viewport
 		
@@ -165,6 +164,12 @@ void portal_view_draw(void)
 		glVertex2i(x,ez);
 		glEnd();
 	}
+	
+	
+	
+		// draw cursor position
+		
+	portal_view_portal_position_draw();
 	
 	
 	

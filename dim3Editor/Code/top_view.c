@@ -168,10 +168,10 @@ void top_view_draw(void)
 
 		// draw top down view
 		
-    top_view_portal_draw();
+	top_view_portal_draw();
 	top_view_piece_selection_draw();
-    top_view_portal_selection_draw();
-    top_view_portal_position_draw();
+	top_view_portal_selection_draw();
+	top_view_portal_position_draw();
 }
 
 /* =======================================================

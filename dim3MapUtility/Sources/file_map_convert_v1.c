@@ -143,8 +143,18 @@ void map_convert_liquid(map_type *map,int rn,segment_type *seg)
 	liquid->top=seg->data.liquid.top;
 	liquid->bot=seg->data.liquid.bot;
 
+	liquid->alpha=seg->alpha;
 	liquid->speed_alter=seg->data.liquid.speed_alter;
 	liquid->tint_alpha=seg->data.liquid.tint_alpha;
+	
+	liquid->x_txtfact=seg->x_txtfact;
+	liquid->y_txtfact=seg->y_txtfact;
+	liquid->x_txtoff=seg->x_txtoff;
+	liquid->y_txtoff=seg->y_txtoff;
+	liquid->x_shift=seg->x_shift;
+	liquid->y_shift=seg->y_shift;
+	
+	liquid->txt_idx=seg->fill;
 
 	memmove(&liquid->col,&seg->data.liquid.col,sizeof(d3col));
 

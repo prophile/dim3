@@ -131,7 +131,6 @@ void site_path_view_distance_pane_to_map(int *x,int *z)
 void site_path_view_draw(int drag_hilite_rn)
 {
 	int				n,x,z,ex,ez;
-	Rect			wbox,box;
 
 		// setup viewport
 		

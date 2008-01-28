@@ -268,6 +268,8 @@ bool walk_view_model_draw(d3pos *pos,d3ang *ang,char *name)
 
 	mesh=&model->meshes[0];
 	
+	glEnable(GL_TEXTURE_2D);
+	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,mesh->gl_vertex_array);
 	glLockArraysEXT(0,mesh->nvertex);	
@@ -312,6 +314,8 @@ bool walk_view_model_draw(d3pos *pos,d3ang *ang,char *name)
     
 	glUnlockArraysEXT();
 	glDisableClientState(GL_VERTEX_ARRAY);
+	
+	glDisable(GL_TEXTURE_2D);
 	
 	return(TRUE);
 }

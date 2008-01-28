@@ -152,7 +152,7 @@ void top_view_portal_selection_draw(void)
 void top_view_portal_draw(void)
 {
     int			n;
-    
+	
 	for (n=0;n!=map.nportal;n++) {
 		if (top_view_portal_in_view(n)) top_view_portal_draw_block(n);
 	}

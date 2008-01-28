@@ -33,6 +33,8 @@ extern int					cr,cy,magnify_factor;
 extern bool					dp_wall,dp_floor,dp_ceiling,dp_liquid,dp_ambient,dp_object,dp_node,dp_lightsoundparticle,dp_y_hide;
 extern CIconHandle			maplight_icon,mapsound_icon,mapparticle_icon;
 
+extern bitmap_type			light_bitmap,sound_bitmap,particle_bitmap;
+
 extern map_type				map;
 
 unsigned short				effect,effectmask;
@@ -47,195 +49,109 @@ extern void primitive_get_center(int primitive_uid,int *x,int *z,int *y);
       
 ======================================================= */
 
-
-// supergumba -- need to go over all of this
-
-void top_view_piece_draw_floor_ceiling(int rn,fc_segment_data *fc,bool light_color)
+void top_view_piece_draw_icon(d3pos *pos,unsigned long gl_id)
 {
-	int				n,x,z;
+	int				x,z,k;
 	portal_type		*portal;
 	
-		// Y hiding
-		
-	if (top_view_hide_y(fc)) return;
+		// box position
+			
+	portal=&map.portals[pos->rn];
+	x=pos->x+portal->x;
+	z=pos->z+portal->z;
 	
-		// color
-		
-	if (light_color) {
-		glColor4f(0.75f,0.75f,0.75f,1.0f);
-	}
-	else {
-		glColor4f(0.5f,0.5f,0.5f,1.0f);
-	}
-		
-		// polygon
-		
-	portal=&map.portals[rn];
+	top_view_map_to_pane(&x,&z);
 	
-	glBegin(GL_POLYGON);
+	k=(600*magnify_factor)/magnify_size;
 	
-	for (n=0;n!=fc->ptsz;n++) {
-		x=fc->x[n]+portal->x;
-		z=fc->z[n]+portal->z;
-		top_view_map_to_pane(&x,&z);
-		glVertex2i(x,z);
-	}
+	glEnable(GL_TEXTURE_2D);
+	 
+    glBindTexture(GL_TEXTURE_2D,gl_id);
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	
+	glBegin(GL_QUADS);
+    glTexCoord2f(0,0);
+	glVertex2i((x-k),(z-k));
+    glTexCoord2f(1,0);
+	glVertex2i((x+k),(z-k));
+    glTexCoord2f(1,1);
+	glVertex2i((x+k),(z+k));
+    glTexCoord2f(0,1);
+	glVertex2i((x-k),(z+k));
 	glEnd();
 	
-		// outline
+	glDisable(GL_TEXTURE_2D);
+}
+
+void top_view_piece_draw_box(d3pos *pos,float r,float g,float b)
+{
+	int				x,z,k;
+	portal_type		*portal;
+	
+		// box position
+			
+	portal=&map.portals[pos->rn];
+	x=pos->x+portal->x;
+	z=pos->z+portal->z;
+	
+	top_view_map_to_pane(&x,&z);
+	
+	k=(400*magnify_factor)/magnify_size;
+	
+		// box fill
+		
+	glColor4f(r,g,b,1.0f);
+	
+	glBegin(GL_QUADS);
+	glVertex2i((x-k),(z-k));
+	glVertex2i((x+k),(z-k));
+	glVertex2i((x+k),(z+k));
+	glVertex2i((x-k),(z+k));
+	glEnd();
+	
+		// box outline
 		
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	
 	glBegin(GL_LINE_LOOP);
-	
-	for (n=0;n!=fc->ptsz;n++) {
-		x=fc->x[n]+portal->x;
-		z=fc->z[n]+portal->z;
-		top_view_map_to_pane(&x,&z);
-		glVertex2i(x,z);
-	}
-	
+	glVertex2i((x-k),(z-k));
+	glVertex2i((x+k),(z-k));
+	glVertex2i((x+k),(z+k));
+	glVertex2i((x-k),(z+k));
 	glEnd();
 }
 
-void top_view_piece_draw_liquid(int rn,liquid_segment_data *liq)
+void top_view_piece_draw_circle(d3pos *pos,int radius,float r,float g,float b)
 {
-	Rect		box;
-	RGBColor	blackcolor={0x0,0x0,0x0},greencolor={0x6666,0xFFFF,0x0};
+	int				x,z,n;
+	double			rad,d_radius;
+	portal_type		*portal;
 	
-	top_view_make_rect(rn,liq->lft,liq->rgt,liq->top,liq->bot,&box);
-	RGBForeColor(&greencolor);
-	PaintRect(&box);
-	RGBForeColor(&blackcolor);
-	FrameRect(&box);
-}
-
-void top_view_piece_draw_grade(int lx,int lz,int rx,int rz)
-{
-	int			i,x,z,gadd;
-	float		dx,dz,r;
+		// box position
+			
+	portal=&map.portals[pos->rn];
+	x=pos->x+portal->x;
+	z=pos->z+portal->z;
 	
-	gadd=90/10;
-	dx=(float)rx-lx;
-	dz=(float)lz-rz;
+	top_view_map_to_pane(&x,&z);
 	
-	x=z=0;
+	d_radius=(double)((radius*magnify_factor)/magnify_size);
 	
-	glBegin(GL_LINES);
-	
-	for (i=0;i<=90;i=i+gadd) {
-		glVertex2i((lx+x),(rz+z));
+		// circle
 		
-		r=(float)i*.0174533;
-		x=(int)(cos(r)*dx);
-		z=(int)(sin(r)*dz);
-
-		glVertex2i((lx+x),(rz+z));
-	}
+	glLineWidth(2.0f);
+	glColor4f(r,g,b,1.0f);
 	
+	glBegin(GL_LINE_LOOP);
+	
+	for (n=0;n!=360;n+=10) {
+		rad=((float)n)*ANG_to_RAD;
+		glVertex2i((x+(int)(d_radius*sin(rad))),(z-(int)(d_radius*cos(rad))));
+	}
+
 	glEnd();
-}
-
-void top_view_piece_draw_wall(int rn,wall_segment_data *wall,int curve,int clip)
-{
-	int			lx,rx,lz,rz;
-	portal_type	*portal;
 	
-	portal=&map.portals[rn];
-
-	lx=wall->lx+portal->x;
-	lz=wall->lz+portal->z;
-	top_view_map_to_pane(&lx,&lz);
-	
-	rx=wall->rx+portal->x;
-	rz=wall->rz+portal->z;
-	top_view_map_to_pane(&rx,&rz);
-
-	glColor4f(0.0f,0.0f,1.0f,1.0f);
-
-	if (curve==cv_forward) {
-		top_view_piece_draw_grade(lx,lz,rx,rz);
-		glColor4f(1.0f,0.0f,0.0f,1.0f);
-	}
-	if (curve==cv_backward) {
-		top_view_piece_draw_grade(rx,rz,lx,lz);
-		glColor4f(1.0f,0.0f,0.0f,1.0f);
-	}
-	
-	glBegin(GL_LINES);
-	glVertex2i(lx,lz);
-	glVertex2i(rx,rz);
-	glEnd();
-
-	if (clip!=0) {
-		glColor4f(0.0f,0.0f,0.0f,1.0f);
-		
-		glBegin(GL_LINE_LOOP);
-		glVertex2i((lx-2),(lz-2));
-		glVertex2i((lx+3),(lz-2));
-		glVertex2i((lx+3),(lz+3));
-		glVertex2i((lx-2),(lz+3));
-		glEnd();
-	}
-}
-
-void top_view_piece_draw_ambient_wall(int rn,ambient_wall_segment_data *ambient_wall,Rect *clipbox)
-{
-	int			lx,rx,lz,rz;
-	portal_type	*portal;
-	RGBColor	purplecolor={0x9999,0x0,0x6666};
-	
-	portal=&map.portals[rn];
-
-	lx=ambient_wall->lx+portal->x;
-	lz=ambient_wall->lz+portal->z;
-	top_view_map_to_pane(&lx,&lz);
-	
-	rx=ambient_wall->rx+portal->x;
-	rz=ambient_wall->rz+portal->z;
-	top_view_map_to_pane(&rx,&rz);
-	
-	if ((lx<clipbox->left) && (rx<clipbox->left)) return;
-	if ((lx>clipbox->right) && (rx>clipbox->right)) return;
-	if ((lz<clipbox->top) && (rz<clipbox->top)) return;
-	if ((lz>clipbox->bottom) && (rz>clipbox->bottom)) return;
-	
-	RGBForeColor(&purplecolor);
-	MoveTo(lx,lz);	
-	LineTo(rx,rz);
-}
-
-void top_view_piece_draw_ambient_fc(int rn,ambient_fc_segment_data *ambient_fc)
-{
-	PolyHandle	tply;
-	RGBColor	blackcolor={0x0,0x0,0x0},purplecolor={0x9999,0x0,0x6666};
-	
-	top_view_make_poly(rn,ambient_fc->ptsz,ambient_fc->x,ambient_fc->z,&tply);
-	
-	RGBForeColor(&purplecolor);
-	PaintPoly(tply);
-	RGBForeColor(&blackcolor);
-	FramePoly(tply);
-	KillPoly(tply);
-}
-
-void top_view_piece_draw_icon(d3pos *pos,CIconHandle icn,RGBColor *col,Rect *clipbox)
-{
-	Rect			box;
-	
-	if (col!=NULL) {
-		top_view_make_rect_by_pos(pos,10,&box);
-		if ((box.right<clipbox->left) || (box.left>clipbox->right) || (box.bottom<clipbox->top) || (box.top>clipbox->bottom)) return;
-		
-		RGBForeColor(col);
-		PaintOval(&box);
-	}
-	
-	top_view_make_rect_by_pos(pos,8,&box);
-	if ((box.right<clipbox->left) || (box.left>clipbox->right) || (box.bottom<clipbox->top) || (box.top>clipbox->bottom)) return;
-
-	PlotCIcon(&box,icn);
+	glLineWidth(1.0f);     
 }
 
 void top_view_piece_draw_arrow(d3pos *pos,char *name,int ang_y,float r,float g,float b)
@@ -286,14 +202,7 @@ void top_view_piece_draw_arrow(d3pos *pos,char *name,int ang_y,float r,float g,f
 	
 	
 		// start name
-	/* supergumba -- fix this	
-	TextSize(9);
-	len=strlen(name);
-	xsz=TextWidth(name,0,len)/2;
-	MoveTo((mx-xsz),(box->bottom+10));
-	DrawText(name,0,len);
-	TextSize(12);
-	*/
+	// supergumba -- fix this	
 }
 
 /* =======================================================
@@ -302,202 +211,7 @@ void top_view_piece_draw_arrow(d3pos *pos,char *name,int ang_y,float r,float g,f
       
 ======================================================= */
 
-// supergumba -- delete me!
-void top_view_piece_draw2(int rn)
-{
-	register int			i,k,t;
-	register segment_type	*seg;
-	int						x1,x2,y1,y2;
-	Rect					box;
-	RGBColor				col;
-	RGBColor				blackcolor={0x0,0x0,0x0},ltgraycolor={0xAAAA,0xAAAA,0xAAAA},graycolor={0x7FFF,0x7FFF,0x7FFF},
-							orangecolor={0xF300,0x7FFF,0x1F00},redcolor={0xFFFF,0x0,0x0},greencolor={0x0,0xFFFF,0x0},yellowcolor={0xFFFF,0xFFFF,0x0};
-
-		// floors
-		
-	if (dp_floor) {
-	
-		seg=map.segments;
-		
-		for (i=0;i!=map.nsegment;i++) {
-			if ((seg->type==sg_floor) && (seg->rn==rn)) {
-				top_view_piece_draw_floor_ceiling(seg->rn,&seg->data.fc,FALSE);
-			}
-			seg++;
-		}
-		
-	}
-	
-		// ceilings
-		
-	if (dp_ceiling) {
-	
-		seg=map.segments;
-	
-		for (i=0;i!=map.nsegment;i++) {
-			if ((seg->type==sg_ceiling) && (seg->rn==rn)) {
-				top_view_piece_draw_floor_ceiling(seg->rn,&seg->data.fc,TRUE);
-			}
-			seg++;
-		}
-		
-	}
-/*	
-		// liquids
-		
-	if (dp_liquid) {
-	
-		seg=map.segments;
-		
-		for (i=0;i!=map.nsegment;i++) {
-			if ((seg->type==sg_liquid) && (seg->rn==rn)) {
-				top_view_piece_draw_liquid(seg->rn,&seg->data.liquid);
-			}
-			seg++;
-		}
-	}
-	*/
-		// walls
-		
-	if (dp_wall) {
-	
-		seg=map.segments;
-		
-		for (i=0;i!=map.nsegment;i++) {
-			if ((seg->type==sg_wall) && (seg->rn==rn)) {
-				top_view_piece_draw_wall(seg->rn,&seg->data.wall,seg->curve,seg->clip);
-			}
-			seg++;
-		}
-	}
-	/*
-		// ambients
-		
-	if (dp_ambient) {
-	
-		seg=map.segments;
-	
-		for (i=0;i!=map.nsegment;i++) {
-			if (seg->rn==rn) {
-				if (seg->type==sg_ambient_fc) top_view_piece_draw_ambient_fc(seg->rn,&seg->data.ambient_fc);
-				if (seg->type==sg_ambient_wall) top_view_piece_draw_ambient_wall(seg->rn,&seg->data.ambient_wall,clipbox);
-			}
-			
-			seg++;
-		}
-	}
-	
-		// nodes
-		
-	if (dp_node) {
-	
-			// connections
-        
-		RGBForeColor(&redcolor);
-    
-		for (i=0;i!=map.nnode;i++) {
-			top_view_make_rect_by_pos(&map.nodes[i].pos,5,&box);
-			x1=(box.left+box.right)/2;
-			y1=(box.top+box.bottom)/2;
-			
-			for (k=0;k!=max_node_link;k++) {
-				t=map.nodes[i].link[k];
-				if (t==-1) continue;
-			
-				if ((map.nodes[i].pos.rn!=rn) && (map.nodes[t].pos.rn!=rn)) continue;
-				
-				top_view_make_rect_by_pos(&map.nodes[t].pos,5,&box);
-				x2=(box.left+box.right)/2;
-				y2=(box.top+box.bottom)/2;
-				
-				MoveTo(x1,y1);
-				LineTo(x2,y2);
-			}
-		}
-		
-			// nodes
-			
-		for (i=0;i!=map.nnode;i++) {
-			if (map.nodes[i].pos.rn!=rn) continue;
-			
-			top_view_make_rect_by_pos(&map.nodes[i].pos,5,&box);
-			RGBForeColor(&greencolor);
-			PaintRect(&box);
-			RGBForeColor(&blackcolor);
-			FrameRect(&box);
-		}
-	
-	}
-	
-		// lights and sounds
-		
-	if (dp_lightsoundparticle) {
-	
-		for (i=0;i!=map.nparticle;i++) {
-			if (map.particles[i].pos.rn==rn) top_view_piece_draw_icon(&map.particles[i].pos,mapparticle_icon,NULL,clipbox);
-		}
-
-		for (i=0;i!=map.nsound;i++) {
-			if (map.sounds[i].pos.rn==rn) top_view_piece_draw_icon(&map.sounds[i].pos,mapsound_icon,NULL,clipbox);
-		}
-
-		for (i=0;i!=map.nlight;i++) {
-			if (map.lights[i].pos.rn!=rn) continue;
-			
-			col.red=(unsigned short)(map.lights[i].col.r*(float)0xFFFF);
-			col.green=(unsigned short)(map.lights[i].col.g*(float)0xFFFF);
-			col.blue=(unsigned short)(map.lights[i].col.b*(float)0xFFFF);
-
-			top_view_piece_draw_icon(&map.lights[i].pos,maplight_icon,&col,clipbox);
-			
-			top_view_make_rect_by_pos(&map.lights[i].pos,map.lights[i].intensity,&box);
-			if ((box.right<clipbox->left) || (box.left>clipbox->right) || (box.bottom<clipbox->top) || (box.top>clipbox->bottom)) continue;
-
-			RGBForeColor(&yellowcolor);
-			FrameOval(&box);
-			RGBForeColor(&blackcolor);
-		}
-	
-	}
-	
-		// spots
-		
-	if (dp_object) {
-	
-			// script spots
-			
-		for (i=0;i!=map.nspot;i++) {
-			if (map.spots[i].pos.rn!=rn) continue;
-			
-			top_view_make_rect_by_pos(&map.spots[i].pos,5,&box);
-			top_view_piece_draw_arrow(&box,map.spots[i].name,map.spots[i].ang.y,clipbox,&orangecolor);
-		}
-	
-			// scenery
-		
-		for (i=0;i!=map.nscenery;i++) {
-			if (map.sceneries[i].pos.rn!=rn) continue;
-			
-			top_view_make_rect_by_pos(&map.sceneries[i].pos,5,&box);
-			top_view_piece_draw_arrow(&box,map.sceneries[i].model_name,map.sceneries[i].ang.y,clipbox,&yellowcolor);
-		}
-		
-	}
-	
-	RGBForeColor(&blackcolor);
-	*/
-}
-
-
-
-
-
-
-
-// supergumba -- delete a bunch of this
-
-
-void top_view_piece_draw(int rn)
+void top_view_piece_draw_meshes(int rn)
 {
 	int								n,k,t,x,z,poly_cnt,
 									sort_idx,sort_cnt;
@@ -508,8 +222,6 @@ void top_view_piece_draw(int rn)
 	map_mesh_type					*mesh;
 	map_mesh_poly_type				*mesh_poly;
 	map_portal_mesh_poly_sort_type	*poly_sort;
-	spot_type						*spot;
-	map_scenery_type				*scenery;
 	
 	portal=&map.portals[rn];
 	
@@ -521,7 +233,10 @@ void top_view_piece_draw(int rn)
 	
 	for (n=0;n!=portal->mesh.nmesh;n++) {
 		poly_cnt+=mesh->npoly;
+		mesh++;
 	}
+	
+	if (poly_cnt==0) return;
 	
 	poly_sort=(map_portal_mesh_poly_sort_type*)valloc(sizeof(map_portal_mesh_poly_sort_type)*(poly_cnt+1));
 	if (poly_sort==NULL) return;
@@ -633,30 +348,163 @@ void top_view_piece_draw(int rn)
 
 		mesh++;
 	}
+}
+
+void top_view_piece_draw_nodes(int rn)
+{
+	int				n,k,node_idx,x1,z1,x2,z2;
+	portal_type		*portal;
+	node_type		*node,*node2;
+
+	if (!dp_node) return;
 	
-		// spots
+		// connections
+
+	glColor4f(1.0f,0.0f,0.0f,1.0f);
+
+	node=map.nodes;
+	
+	for (n=0;n!=map.nnode;n++) {
+		portal=&map.portals[node->pos.rn];
+		x1=node->pos.x+portal->x;
+		z1=node->pos.z+portal->z;
 		
-	if (dp_object) {
+		top_view_map_to_pane(&x1,&z1);
 	
-			// script spots
+		for (k=0;k!=max_node_link;k++) {
+			node_idx=node->link[k];
+			if (node_idx==-1) continue;
 			
-		spot=map.spots;
-		
-		for (n=0;n!=map.nspot;n++) {
-			if (spot->pos.rn==rn) top_view_piece_draw_arrow(&spot->pos,spot->name,spot->ang.y,1.0f,0.6f,0.0f);
-			spot++;
-		}
-	
-			// scenery
+			node2=&map.nodes[node_idx];
+			if (node2->pos.rn!=rn) continue;
 			
-		scenery=map.sceneries;
-		
-		for (n=0;n!=map.nscenery;n++) {
-			if (scenery->pos.rn==rn) top_view_piece_draw_arrow(&scenery->pos,scenery->model_name,scenery->ang.y,1.0f,1.0f,0.0f);
-			scenery++;
+			portal=&map.portals[node2->pos.rn];
+			x2=node2->pos.x+portal->x;
+			z2=node2->pos.z+portal->z;
+			
+			top_view_map_to_pane(&x2,&z2);
+			
+			glBegin(GL_LINES);
+			glVertex2i(x1,z1);
+			glVertex2i(x2,z2);
+			glEnd();
 		}
 		
+		node++;
 	}
+	
+		// nodes
+		
+	node=map.nodes;
+	
+	for (n=0;n!=map.nnode;n++) {
+		if (node->pos.rn==rn) top_view_piece_draw_box(&node->pos,0.0f,1.0f,0.0f);
+		node++;
+	}
+}
+
+
+
+void top_view_piece_draw_particle_light_sound(int rn)
+{
+	int				n;
+	
+	if (!dp_lightsoundparticle) return;
+	
+	for (n=0;n!=map.nparticle;n++) {
+		if (map.particles[n].pos.rn==rn) top_view_piece_draw_icon(&map.particles[n].pos,particle_bitmap.gl_id);
+	}
+
+	for (n=0;n!=map.nsound;n++) {
+		if (map.sounds[n].pos.rn==rn) top_view_piece_draw_icon(&map.sounds[n].pos,sound_bitmap.gl_id);
+	}
+
+	for (n=0;n!=map.nlight;n++) {
+		if (map.lights[n].pos.rn==rn) {
+			top_view_piece_draw_icon(&map.lights[n].pos,light_bitmap.gl_id);
+			top_view_piece_draw_circle(&map.lights[n].pos,map.lights[n].intensity,map.lights[n].col.r,map.lights[n].col.g,map.lights[n].col.b);
+		}
+	}
+}
+
+void top_view_piece_draw_spots_scenery(int rn)
+{
+	int						n;
+	spot_type				*spot;
+	map_scenery_type		*scenery;
+	
+	if (!dp_object) return;
+	
+		// script spots
+		
+	spot=map.spots;
+	
+	for (n=0;n!=map.nspot;n++) {
+		if (spot->pos.rn==rn) top_view_piece_draw_arrow(&spot->pos,spot->name,spot->ang.y,1.0f,0.6f,0.0f);
+		spot++;
+	}
+
+		// scenery
+		
+	scenery=map.sceneries;
+	
+	for (n=0;n!=map.nscenery;n++) {
+		if (scenery->pos.rn==rn) top_view_piece_draw_arrow(&scenery->pos,scenery->model_name,scenery->ang.y,1.0f,1.0f,0.0f);
+		scenery++;
+	}
+}
+
+void top_view_piece_draw_liquids(int rn)
+{
+	int					n,x1,z1,x2,z2;
+	portal_type			*portal;
+	portal_liquid_type	*portal_liquid;
+	map_liquid_type		*liquid;
+	
+	if (!dp_liquid) return;
+	
+	portal=&map.portals[rn];
+	portal_liquid=&portal->liquid;
+	liquid=portal_liquid->liquids;
+	
+	glEnable(GL_TEXTURE_2D);
+	
+	for (n=0;n!=portal_liquid->nliquid;n++) {
+		x1=liquid->lft+portal->x;
+		z1=liquid->top+portal->z;
+		top_view_map_to_pane(&x1,&z1);
+		
+		x2=liquid->rgt+portal->x;
+		z2=liquid->bot+portal->z;
+		top_view_map_to_pane(&x2,&z2);
+		
+		glColor4f(1.0f,1.0f,1.0f,liquid->alpha);
+		glBindTexture(GL_TEXTURE_2D,map.textures[liquid->txt_idx].bitmaps[0].gl_id);
+		
+		glBegin(GL_QUADS);
+		glTexCoord2f(liquid->x_txtoff,liquid->y_txtoff);
+		glVertex2i(x1,z1);
+		glTexCoord2f((liquid->x_txtoff+liquid->x_txtfact),liquid->y_txtoff);
+		glVertex2i(x2,z1);
+		glTexCoord2f((liquid->x_txtoff+liquid->x_txtfact),(liquid->y_txtoff+liquid->y_txtfact));
+		glVertex2i(x2,z2);
+		glTexCoord2f(liquid->x_txtoff,(liquid->y_txtoff+liquid->y_txtfact));
+		glVertex2i(x1,z2);
+		glEnd();
+	
+		liquid++;
+	}
+	
+	glDisable(GL_TEXTURE_2D);
+}
+
+void top_view_piece_draw(int rn)
+{
+	top_view_piece_draw_meshes(rn);
+	top_view_piece_draw_liquids(rn);
+	top_view_piece_draw_nodes(rn);
+	top_view_piece_draw_particle_light_sound(rn);
+	top_view_piece_draw_spots_scenery(rn);	
 }
 
 /* =======================================================

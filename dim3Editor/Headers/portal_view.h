@@ -57,6 +57,7 @@ extern void portal_view_reset(void);
 
 extern void portal_view_get_portal(int rn,int *x,int *z,int *ex,int *ez);
 extern void portal_view_draw_portal_walls(int rn);
+extern void portal_view_portal_position_draw(void);
 
 //
 // click routines
