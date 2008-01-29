@@ -206,7 +206,8 @@ bool dialog_segment_setting_run(int seg_idx)
 		}
 		
 			// need to set flag across selection?
-			
+		
+			/* supergumba	
 		nsel=select_count();
 		
 		for (n=0;n!=nsel;n++) {
@@ -219,6 +220,7 @@ bool dialog_segment_setting_run(int seg_idx)
 		}
 		
 		main_wind_draw();
+		*/
 	}
 
 		// close window

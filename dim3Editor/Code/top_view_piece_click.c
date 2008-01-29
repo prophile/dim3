@@ -32,7 +32,7 @@ and can be sold or given away.
 
 extern CCrsrHandle			dragcur;
 
-extern int					cx,cz,vertex_mode;
+extern int					cr,cx,cz,vertex_mode,magnify_factor;
 extern unsigned short		effect,effectmask;
 extern int					cr,txtfill,txtrbfill;
 extern bool					dp_wall,dp_floor,dp_ceiling,dp_liquid,dp_ambient,dp_object,dp_lightsoundparticle,dp_node;
@@ -226,7 +226,7 @@ bool top_view_primitive_handle_drag(int index,int whand)
 bool top_view_segment_handle_drag(Point pt)
 {
 	int				i,rn,x,z,lx,rx,lz,rz,mx,mz,my,
-					type,index,primitive_uid,minx,maxx,minz,maxz,miny,maxy;
+					type,portal_idx,main_idx,sub_idx,index,primitive_uid,minx,maxx,minz,maxz,miny,maxy;
 	Rect			box;
 	portal_type		*portal;
 	segment_type	*seg;
@@ -235,7 +235,7 @@ bool top_view_segment_handle_drag(Point pt)
 		
 	if (select_count()!=1) return(FALSE);
 	
-	select_get(0,&type,&index);
+	select_get(0,&type,&portal_idx,&index,&sub_idx);		// supergumba -- fix this!
 	if ((type!=segment_piece) && (type!=primitive_piece)) return(FALSE);
 	
 		// get segment to move
@@ -402,35 +402,82 @@ void top_view_piece_drag(Point pt)
       
 ======================================================= */
 
-bool top_view_piece_click(Point pt,int *type,int *index)
+bool top_view_piece_click_rect_pos(d3pos *pos,int sz,int tx,int tz)
 {
-	int				i;
-	segment_type	*seg;
+	int				x,z,k;
+	portal_type		*portal;
+
+	portal=&map.portals[pos->rn];
+	x=pos->x+portal->x;
+	z=pos->z+portal->z;
+	
+	top_view_map_to_pane(&x,&z);
+	
+	k=(sz*magnify_factor)/magnify_size;
+		
+	if (tx<(x-k)) return(FALSE);
+	if (tx>(x+k)) return(FALSE);
+	if (tz<(z-k)) return(FALSE);
+	if (tz>(z+k)) return(FALSE);
+	
+	return(TRUE);
+}
+
+bool top_view_piece_click_polygon(int rn,int ptsz,int *x,int *z,int tx,int tz)
+{
+	int				n,px[8],pz[8];
+	portal_type		*portal;
+	
+	portal=&map.portals[rn];
+		
+	for (n=0;n!=ptsz;n++) {
+		px[n]=x[n]+portal->x;
+		pz[n]=z[n]+portal->z;
+		top_view_map_to_pane(&px[n],&pz[n]);
+	}
+	
+	return(polygon_2D_point_inside(ptsz,px,pz,tx,tz));
+}
+
+bool top_view_piece_click(Point pt,int *type,int *portal_idx,int *main_idx,int *sub_idx)
+{
+	int								n,k,t,px[8],pz[8];
+	d3pnt							*pt2;
+	portal_type						*portal;
+	map_mesh_type					*mesh;
+	map_mesh_poly_type				*mesh_poly;
+	
+	*portal_idx=-1;
+	*main_idx=-1;
+	*sub_idx=-1;
 	
 		// lights, sounds, particles
 		
 	if (dp_lightsoundparticle) {
 	
-		for (i=0;i!=map.nlight;i++) {
-			if (top_view_pos_rect_click(&map.lights[i].pos,8,pt.h,pt.v)) {
+		for (n=0;n!=map.nlight;n++) {
+			if (top_view_piece_click_rect_pos(&map.lights[n].pos,700,pt.h,pt.v)) {
 				*type=light_piece;
-				*index=i;
+				*portal_idx=map.lights[n].pos.rn;
+				*main_idx=n;
 				return(TRUE);
 			}
 		}
 		
-		for (i=0;i!=map.nsound;i++) {
-			if (top_view_pos_rect_click(&map.sounds[i].pos,8,pt.h,pt.v)) {
+		for (n=0;n!=map.nsound;n++) {
+			if (top_view_piece_click_rect_pos(&map.sounds[n].pos,700,pt.h,pt.v)) {
 				*type=sound_piece;
-				*index=i;
+				*portal_idx=map.sounds[n].pos.rn;
+				*main_idx=n;
 				return(TRUE);
 			}
 		}
 		
-		for (i=0;i!=map.nparticle;i++) {
-			if (top_view_pos_rect_click(&map.particles[i].pos,8,pt.h,pt.v)) {
+		for (n=0;n!=map.nparticle;n++) {
+			if (top_view_piece_click_rect_pos(&map.particles[n].pos,700,pt.h,pt.v)) {
 				*type=particle_piece;
-				*index=i;
+				*portal_idx=map.particles[n].pos.rn;
+				*main_idx=n;
 				return(TRUE);
 			}
 		}
@@ -440,41 +487,83 @@ bool top_view_piece_click(Point pt,int *type,int *index)
 		// nodes
 		
 	if (dp_node) {
-		for (i=0;i!=map.nnode;i++) {
-			if (top_view_pos_rect_click(&map.nodes[i].pos,5,pt.h,pt.v)) {
+		for (n=0;n!=map.nnode;n++) {
+			if (top_view_piece_click_rect_pos(&map.nodes[n].pos,600,pt.h,pt.v)) {
 				*type=node_piece;
-				*index=i;
+				*portal_idx=map.nodes[n].pos.rn;
+				*main_idx=n;
 				return(TRUE);
 			}
 		}
 	}
 	
-		// spots
+		// spots and scenery
 		
 	if (dp_object) {
-	    for (i=0;i!=map.nspot;i++) {
-			if (top_view_pos_rect_click(&map.spots[i].pos,5,pt.h,pt.v)) {
+	
+	    for (n=0;n!=map.nspot;n++) {
+			if (top_view_piece_click_rect_pos(&map.spots[n].pos,800,pt.h,pt.v)) {
 				*type=spot_piece;
-				*index=i;
+				*portal_idx=map.spots[n].pos.rn;
+				*main_idx=n;
+				return(TRUE);
+			}
+		}
+
+	    for (n=0;n!=map.nscenery;n++) {
+			if (top_view_piece_click_rect_pos(&map.sceneries[n].pos,800,pt.h,pt.v)) {
+				*type=scenery_piece;
+				*portal_idx=map.sceneries[n].pos.rn;
+				*main_idx=n;
 				return(TRUE);
 			}
 		}
     }
 	
-		// scenery
+		// find portal clicked in
+	
+		// meshes
 		
-	if (dp_object) {
-	    for (i=0;i!=map.nscenery;i++) {
-			if (top_view_pos_rect_click(&map.sceneries[i].pos,5,pt.h,pt.v)) {
-				*type=scenery_piece;
-				*index=i;
+	portal=&map.portals[cr];
+	
+	mesh=portal->mesh.meshes;
+	
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+	
+		mesh_poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+		
+			for (t=0;t!=mesh_poly->ptsz;t++) {
+				pt2=&mesh->vertexes[mesh_poly->v[t]];
+				px[t]=pt2->x;
+				pz[t]=pt2->z;
+			}
+			
+			if (top_view_piece_click_polygon(cr,mesh_poly->ptsz,px,pz,pt.h,pt.v)) {
+				*type=mesh_piece;
+				*portal_idx=cr;
+				*main_idx=n;
+				*sub_idx=k;
 				return(TRUE);
 			}
+		
+			mesh_poly++;
 		}
-    }
+
+		mesh++;
+	}
+
+
+
+
+		
+
+	
+	return(FALSE);
 		
 		// ambients
-
+/*
 	if (dp_ambient) {
 	
 		for (i=0;i!=map.nsegment;i++) {
@@ -532,7 +621,7 @@ bool top_view_piece_click(Point pt,int *type,int *index)
 	}
 	
 		// liquids
-		
+
 	if (dp_liquid) {
 	
 		for (i=(map.nsegment-1);i>=0;i--) {
@@ -595,7 +684,7 @@ bool top_view_piece_click(Point pt,int *type,int *index)
 			}
 		}
 	}
-
+*/
 		// no hits
 		
 	return(FALSE);

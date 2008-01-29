@@ -209,7 +209,7 @@ void walk_view_draw_portal_meshes(int rn,bool opaque)
 	
 	old_gl_id=-1;
 
-		// run through the portal meshes
+		// draw portal meshes
 		
 	portal=&map.portals[rn];
 	
@@ -258,6 +258,46 @@ void walk_view_draw_portal_meshes(int rn,bool opaque)
 	if (opaque) glEnable(GL_BLEND);
 	
 	glDisable(GL_TEXTURE_2D);
+	
+		// draw portal mesh lines
+		
+	glColor4f(0.5f,0.5f,1.0f,1.0f);
+	glLineWidth(2.0f);
+	
+	mesh=portal->mesh.meshes;
+	
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+	
+		for (k=0;k!=mesh->npoly;k++) {
+		
+			mesh_poly=&mesh->polys[k];
+			texture=&map.textures[mesh_poly->txt_idx];
+		
+			if (opaque) {
+				if ((mesh_poly->alpha!=1.0f) || (texture->bitmaps[0].alpha_mode==alpha_mode_transparent)) continue;
+			}
+			else {
+				if ((mesh_poly->alpha==1.0f) && (texture->bitmaps[0].alpha_mode!=alpha_mode_transparent)) continue;
+			}
+		
+			glBegin(GL_LINE_LOOP);
+			
+			for (t=0;t!=mesh_poly->ptsz;t++) {
+				pt=&mesh->vertexes[mesh_poly->v[t]];
+				x=(pt->x+portal->x)-cx;
+				y=pt->y-cy;
+				z=cz-(pt->z+portal->z);
+				glVertex3i(x,y,z);
+			}
+			
+			glEnd();
+		}
+	
+	
+		mesh++;
+	}
+	
+	glLineWidth(1.0f);
 }
 
 void walk_view_draw_portal_liquids(int rn,bool opaque)
@@ -436,6 +476,7 @@ void walk_view_gl_setup(bool on_side)
 	}
 
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
 }
 
 void walk_view_draw(bool on_side)

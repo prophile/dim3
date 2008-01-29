@@ -513,6 +513,7 @@ void top_view_piece_draw(int rn)
       
 ======================================================= */
 
+// supergumba -- a lot of this can be deleted
 void top_view_piece_selection_draw_line(int rn,int lx,int rx,int lz,int rz)
 {
 	Rect		box;
@@ -562,28 +563,45 @@ void top_view_piece_selection_draw_rect(int rn,int lft,int rgt,int top,int bot)
 
 void top_view_piece_selection_draw_rect_pos(d3pos *pos,int sz)
 {
-	int			lx,lz,rx,rz;
-	Rect		box;
-	portal_type	*portal;
-	
+	int				x,z,k,pixel_sz;
+	portal_type		*portal;
+
 	portal=&map.portals[pos->rn];
+	x=pos->x+portal->x;
+	z=pos->z+portal->z;
 	
-	lx=portal->x+pos->x-sz;
-	lz=portal->z+pos->z-sz;
-	top_view_map_to_pane(&lx,&lz);
+	top_view_map_to_pane(&x,&z);
 	
-	rx=portal->x+pos->x+sz;
-	rz=portal->z+pos->z+sz;
-	top_view_map_to_pane(&rx,&rz);
+	k=(sz*magnify_factor)/magnify_size;
 	
-	SetRect(&box,(lx-2),(lz-2),(lx+3),(lz+3));
-	PaintRect(&box);
-	SetRect(&box,(rx-2),(lz-2),(rx+3),(lz+3));
-	PaintRect(&box);
-	SetRect(&box,(lx-2),(rz-2),(lx+3),(rz+3));
-	PaintRect(&box);
-	SetRect(&box,(rx-2),(rz-2),(rx+3),(rz+3));
-	PaintRect(&box);
+	pixel_sz=(200*magnify_factor)/magnify_size;
+	if (pixel_sz<3) pixel_sz=3;
+	
+	glColor4f(0.0f,0.0f,0.0f,0.7f);
+	
+	glBegin(GL_QUADS);
+	
+	glVertex2i(((x-k)-pixel_sz),((z-k)-pixel_sz));
+	glVertex2i(((x-k)+pixel_sz),((z-k)-pixel_sz));
+	glVertex2i(((x-k)+pixel_sz),((z-k)+pixel_sz));
+	glVertex2i(((x-k)-pixel_sz),((z-k)+pixel_sz));
+	
+	glVertex2i(((x+k)-pixel_sz),((z-k)-pixel_sz));
+	glVertex2i(((x+k)+pixel_sz),((z-k)-pixel_sz));
+	glVertex2i(((x+k)+pixel_sz),((z-k)+pixel_sz));
+	glVertex2i(((x+k)-pixel_sz),((z-k)+pixel_sz));
+
+	glVertex2i(((x+k)-pixel_sz),((z+k)-pixel_sz));
+	glVertex2i(((x+k)+pixel_sz),((z+k)-pixel_sz));
+	glVertex2i(((x+k)+pixel_sz),((z+k)+pixel_sz));
+	glVertex2i(((x+k)-pixel_sz),((z+k)+pixel_sz));
+
+	glVertex2i(((x-k)-pixel_sz),((z+k)-pixel_sz));
+	glVertex2i(((x-k)+pixel_sz),((z+k)-pixel_sz));
+	glVertex2i(((x-k)+pixel_sz),((z+k)+pixel_sz));
+	glVertex2i(((x-k)-pixel_sz),((z+k)+pixel_sz));
+	
+	glEnd();
 }
 
 void top_view_piece_selection_draw_poly(int rn,int ptsz,int *x,int *z)
@@ -675,66 +693,55 @@ void top_view_piece_selection_draw_primitive(int primitive_uid)
 
 void top_view_piece_selection_draw(void)
 {
-	int				n,sel_count,type,index;
-	RGBColor		curcolor;
-	RGBColor		blackcolor={0x0,0x0,0x0},dkgraycolor={0x5555,0x5555,0x5555};
+	int				n,sel_count,type,portal_idx,main_idx,sub_idx;
 	
 	sel_count=select_count();
 	sel_count--;
-	
-		// get handle color
-		
-	if (sel_count==0) {
-		RGBForeColor(&blackcolor);
-	}
-	else {
-		RGBForeColor(&dkgraycolor);
-	}
 	
 		// draw the selection
 		
 	for (n=sel_count;n>=0;n--) {
 	
-		select_get(n,&type,&index);
+		select_get(n,&type,&portal_idx,main_idx,sub_idx);
 		
 			// draw selection
 			
 		switch (type) {
 		
 			case segment_piece:
-				top_view_piece_selection_draw_segment(index);
+				top_view_piece_selection_draw_segment(main_idx);
 				break;
 				
 			case primitive_piece:
-				GetForeColor(&curcolor);
-				RGBForeColor(&dkgraycolor);
-				top_view_piece_selection_draw_segment(index);
-				RGBForeColor(&curcolor);
-				top_view_piece_selection_draw_primitive(map.segments[index].primitive_uid[0]);
+			//	GetForeColor(&curcolor);
+			//	RGBForeColor(&dkgraycolor);
+			//	top_view_piece_selection_draw_segment(index);
+			//	RGBForeColor(&curcolor);
+			//	top_view_piece_selection_draw_primitive(map.segments[index].primitive_uid[0]);
 				break;
 				
 			case node_piece:
-				top_view_piece_selection_draw_rect_pos(&map.nodes[index].pos,5);
+				top_view_piece_selection_draw_rect_pos(&map.nodes[main_idx].pos,500);
 				break;
 				
 			case spot_piece:
-				top_view_piece_selection_draw_rect_pos(&map.spots[index].pos,5);
+				top_view_piece_selection_draw_rect_pos(&map.spots[main_idx].pos,700);
 				break;
 				
 			case scenery_piece:
-				top_view_piece_selection_draw_rect_pos(&map.sceneries[index].pos,5);
+				top_view_piece_selection_draw_rect_pos(&map.sceneries[main_idx].pos,700);
 				break;
 				
 			case light_piece:
-				top_view_piece_selection_draw_rect_pos(&map.lights[index].pos,8);
+				top_view_piece_selection_draw_rect_pos(&map.lights[main_idx].pos,600);
 				break;
 				
 			case sound_piece:
-				top_view_piece_selection_draw_rect_pos(&map.sounds[index].pos,8);
+				top_view_piece_selection_draw_rect_pos(&map.sounds[main_idx].pos,600);
 				break;
 				
 			case particle_piece:
-				top_view_piece_selection_draw_rect_pos(&map.particles[index].pos,8);
+				top_view_piece_selection_draw_rect_pos(&map.particles[main_idx].pos,600);
 				break;
 		}
 	}

@@ -197,6 +197,7 @@ int primitive_count_segments(int primitive_uid)
 
 void primitive_combine(void)
 {
+/* supergumba
 	int				n,k,nsel_count,
 					type,index,first_seg_idx,uid,primitive_uid;
 	segment_type	*seg;
@@ -241,17 +242,19 @@ void primitive_combine(void)
 		
 	if (first_seg_idx!=-1) {
 		select_clear();
-		select_add(primitive_piece,first_seg_idx);
+	//	select_add(primitive_piece,first_seg_idx);
 	}
 	
 	primitive_reform_ok=FALSE;
 	menu_fix_enable();
 	
 	main_wind_draw();
+	*/
 }
 
 void primitive_break(void)
 {
+/* supergumba
 	int				n,k,nsel_count,reform_idx,
 					type,index,primitive_uid;
 	segment_type	*seg;
@@ -295,6 +298,7 @@ void primitive_break(void)
 	menu_fix_enable();
 	
 	main_wind_draw();
+	*/
 }
 
 void primitive_reform(void)
@@ -318,7 +322,7 @@ void primitive_reform(void)
 	}
 	
 	select_clear();
-	select_add(primitive_piece,primitive_reform_idx[0]);
+//	select_add(primitive_piece,primitive_reform_idx[0]);
 	
 	primitive_reform_ok=FALSE;
 	menu_fix_enable();
@@ -680,7 +684,7 @@ void primitive_add(void)
 		// change selection and redraw
 		
 	select_clear();
-	select_add(primitive_piece,(map.nsegment-1));
+//	select_add(primitive_piece,(map.nsegment-1));
 	
 	main_wind_draw();
 	texture_palette_reset();
@@ -758,7 +762,7 @@ void primitive_replace(void)
 		// change selection and redraw
 		
 	select_clear();
-	select_add(primitive_piece,(map.nsegment-1));
+//	select_add(primitive_piece,(map.nsegment-1));
 	
 	main_wind_draw();
 	texture_palette_reset();
@@ -775,6 +779,7 @@ void primitive_replace(void)
 
 void primitive_save(void)
 {
+/* supergumba
 	int				n,type,index,rn,nportal,x,z,x_sz,z_sz,
 					primitive_uid,minx,maxx,minz,maxz,miny,maxy;
 	char			name[name_str_len],path[1024];
@@ -853,4 +858,5 @@ void primitive_save(void)
 		// close map
 	
 	map_close(&primitive_map_data);
+	*/
 }

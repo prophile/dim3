@@ -39,6 +39,7 @@ extern map_type				map;
 
 void select_get_extent(int *min_x,int *min_z,int *min_y,int *max_x,int *max_z,int *max_y)
 {
+/* supergumba
 	int				n,sel_count,
 					type,index,t_min_x,t_min_z,t_max_x,t_max_z,t_min_y,t_max_y;
 	
@@ -59,6 +60,7 @@ void select_get_extent(int *min_x,int *min_z,int *min_y,int *max_x,int *max_z,in
 		if (t_max_z>(*max_z)) *max_z=t_max_z;
 		if (t_max_y>(*max_y)) *max_y=t_max_y;
 	}
+	*/
 }
 
 /* =======================================================
@@ -69,6 +71,7 @@ void select_get_extent(int *min_x,int *min_z,int *min_y,int *max_x,int *max_z,in
 
 void select_move(int rn,int xadd,int zadd,int yadd)
 {
+/* supergumba
 	int				n,sel_count,
 					type,index,sel_min_x,sel_min_z,sel_max_x,sel_max_z,sel_min_y,sel_max_y;
 	
@@ -145,5 +148,6 @@ void select_move(int rn,int xadd,int zadd,int yadd)
 				
 		}
 	}
+	*/
 }
 

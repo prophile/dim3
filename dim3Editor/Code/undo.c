@@ -53,6 +53,7 @@ void undo_clear(void)
 
 void undo_set_segment_move(void)
 {
+/* supergumba
 	int				n,k,primitive_uid,
 					sel_count,type,index,cnt;
 	segment_type	*seg;
@@ -113,10 +114,12 @@ void undo_set_segment_move(void)
 	undo_type=undo_type_segment_move;
 
 	EnableMenuItem(GetMenuRef(app_menu_edit),1);
+	*/
 }
 
 void undo_get_segment_move(void)
 {
+/* supergumba
 	int				n,k,primitive_uid,
 					sel_count,type,index;
 	segment_type	*seg;
@@ -146,6 +149,7 @@ void undo_get_segment_move(void)
 				break;
 		}
 	}
+	*/
 }
 
 void undo_run(void)

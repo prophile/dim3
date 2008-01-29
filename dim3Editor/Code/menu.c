@@ -153,7 +153,7 @@ void menu_fix_enable(void)
 		}
 		else {
 			EnableMenuItem(GetMenuHandle(app_menu_segments),0);
-			
+			/* supergumba
 			select_get(0,&type,&index);
 			
 			switch (map.segments[index].type) {
@@ -204,6 +204,7 @@ void menu_fix_enable(void)
 					DisableMenuItem(GetMenuHandle(app_menu_segments),12);
 					break;
 			}
+			*/
 		}
 	}
 	
@@ -570,31 +571,31 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			// segment menu
 		
         case kCommandSegmentSetting:
-			select_get(0,&type,&index);
-            dialog_segment_setting_run(index);
+		//	select_get(0,&type,&index);
+        //    dialog_segment_setting_run(index);
             return(noErr);
  			
 		case kCommandAmbientSettings:
-			select_get(0,&type,&index);
-			dialog_ambient_settings_run(&map.segments[index]);
+		//	select_get(0,&type,&index);
+		//	dialog_ambient_settings_run(&map.segments[index]);
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandLiquidSettings:
-			select_get(0,&type,&index);
-			dialog_liquid_settings_run(&map.segments[index]);
+		//	select_get(0,&type,&index);
+		//	dialog_liquid_settings_run(&map.segments[index]);
 			return(noErr);
            
 		case kCommandCurvedSurface:
-			select_get(0,&type,&index);
-            dialog_curved_surfaces_run(&map.segments[index]);
-			main_wind_draw();
+		//	select_get(0,&type,&index);
+        //    dialog_curved_surfaces_run(&map.segments[index]);
+		//	main_wind_draw();
 			return(noErr);
 			
 		case kCommandWallClipping:
-			select_get(0,&type,&index);
-			dialog_wall_clipping_run(&map.segments[index]);
-			main_wind_draw();
+		//	select_get(0,&type,&index);
+		//	dialog_wall_clipping_run(&map.segments[index]);
+		//	main_wind_draw();
 			return(noErr);
 			
 		case kCommandAddPoint:
@@ -613,10 +614,10 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			return(noErr);
 			
 		case kCommandExtrude:
-			select_get(0,&type,&index);
-			primitive_extrude(index);
-			select_clear();
-			select_add(primitive_piece,index);
+		//	select_get(0,&type,&index);
+	//		primitive_extrude(index);
+	//		select_clear();
+		//	select_add(primitive_piece,index);		// supergumba -- possibly delete?
 			main_wind_draw();
 			return(noErr);
 			

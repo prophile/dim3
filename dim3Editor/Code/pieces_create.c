@@ -121,7 +121,7 @@ void piece_create_spot(void)
     dp_object=TRUE;
 	
 	select_clear();
-	select_add(spot_piece,index);
+	select_add(spot_piece,rn,index,-1);
 	
 	main_wind_draw();
 	main_wind_tool_reset();
@@ -173,7 +173,7 @@ void piece_create_scenery(void)
     dp_object=TRUE;
 	
 	select_clear();
-	select_add(scenery_piece,index);
+	select_add(scenery_piece,rn,index,-1);
 	
 	main_wind_draw();
 	main_wind_tool_reset();
@@ -221,7 +221,7 @@ void piece_create_light(void)
 	dp_lightsoundparticle=TRUE;
 	
 	select_clear();
-	select_add(light_piece,index);
+	select_add(light_piece,rn,index,-1);
 	
 	main_wind_draw();
 	dialog_map_light_settings_run(lit);
@@ -265,7 +265,7 @@ void piece_create_sound(void)
     dp_lightsoundparticle=TRUE;
 	
 	select_clear();
-	select_add(sound_piece,index);
+	select_add(sound_piece,rn,index,-1);
 	
 	main_wind_draw();
 	dialog_map_sound_settings_run(snd);
@@ -310,7 +310,7 @@ void piece_create_particle(void)
     dp_lightsoundparticle=TRUE;
 	
 	select_clear();
-	select_add(particle_piece,index);
+	select_add(particle_piece,rn,index,-1);
 	
 	main_wind_draw();
 	dialog_map_particle_settings_run(prt);
@@ -359,7 +359,7 @@ void piece_create_node(void)
 	dp_node=TRUE;
 	
 	select_clear();
-	select_add(node_piece,index);
+	select_add(node_piece,rn,index,-1);
 	
 	main_wind_draw();
 	main_wind_tool_reset();

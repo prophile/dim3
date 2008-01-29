@@ -240,7 +240,7 @@ void walk_view_draw_feedback_map(int rn,bool sel_only)
 			if (node->pos.rn!=rn) continue;
 			
 			if (sel_only) {
-				if (!select_check(node_piece,n)) continue;
+				if (!select_check(node_piece,rn,n,-1)) continue;
 			}
 			
 			walk_view_draw_feedback_sprite(node_piece,n,&node->pos,NULL,NULL);
@@ -257,7 +257,7 @@ void walk_view_draw_feedback_map(int rn,bool sel_only)
 			if (spot->pos.rn!=rn) continue;
 			
 			if (sel_only) {
-				if (!select_check(spot_piece,n)) continue;
+				if (!select_check(spot_piece,rn,n,-1)) continue;
 			}
 			
 			walk_view_draw_feedback_sprite(spot_piece,n,&spot->pos,NULL,spot->display_model);
@@ -268,7 +268,7 @@ void walk_view_draw_feedback_map(int rn,bool sel_only)
 			if (scenery->pos.rn!=rn) continue;
 			
 			if (sel_only) {
-				if (!select_check(scenery_piece,n)) continue;
+				if (!select_check(scenery_piece,rn,n,-1)) continue;
 			}
 			
 			walk_view_draw_feedback_sprite(scenery_piece,n,&scenery->pos,&scenery->ang,scenery->model_name);
@@ -284,7 +284,7 @@ void walk_view_draw_feedback_map(int rn,bool sel_only)
 			if (light->pos.rn!=rn) continue;
 			
 			if (sel_only) {
-				if (!select_check(light_piece,n)) continue;
+				if (!select_check(light_piece,rn,n,-1)) continue;
 			}
 			
 			walk_view_draw_feedback_sprite(light_piece,n,&light->pos,NULL,NULL);
@@ -295,7 +295,7 @@ void walk_view_draw_feedback_map(int rn,bool sel_only)
 			if (sound->pos.rn!=rn) continue;
 			
 			if (sel_only) {
-				if (!select_check(sound_piece,n)) continue;
+				if (!select_check(sound_piece,rn,n,-1)) continue;
 			}
 			
 			walk_view_draw_feedback_sprite(sound_piece,n,&sound->pos,NULL,NULL);
@@ -306,7 +306,7 @@ void walk_view_draw_feedback_map(int rn,bool sel_only)
 			if (particle->pos.rn!=rn) continue;
 			
 			if (sel_only) {
-				if (!select_check(particle_piece,n)) continue;
+				if (!select_check(particle_piece,rn,n,-1)) continue;
 			}
 			
 			walk_view_draw_feedback_sprite(particle_piece,n,&particle->pos,NULL,NULL);
@@ -380,13 +380,13 @@ bool walk_view_piece_drag(Point pt)
 
 bool walk_view_handle_click(int xorg,int yorg,Point pt,bool on_side)
 {
-    int			k,rn,type,index,idx,n,nitem,x,y,ysz;
+    int			k,rn,type,portal_idx,main_idx,sub_idx,index,idx,n,nitem,x,y,ysz;
     Rect		box;
     GLfloat		*f,buf[128];
 	
     if (select_count()!=1) return(FALSE);
 	
-	select_get(0,&type,&index);
+	select_get(0,&type,&portal_idx,&index,&sub_idx);		// supergumba -- fix this
 	if ((type!=segment_piece) && (type!=primitive_piece)) return(FALSE);
 	
 		// draw into feedback buffer
@@ -566,7 +566,7 @@ void walk_view_polygon_click_index(int xorg,int yorg,Point pt,int *p_index,int *
 
 bool walk_view_polygon_click_select(int xorg,int yorg,Point pt,bool on_side)
 {
-	int				index,type;
+	int				index,type,portal_idx,main_idx,sub_idx;
 	
 		// run through selected items first so we
 		// can click and drag selections even when hidden
@@ -584,9 +584,9 @@ bool walk_view_polygon_click_select(int xorg,int yorg,Point pt,bool on_side)
 	if ((!main_wind_shift_down()) && (type==segment_piece)) {
 	
 		if (map.segments[index].primitive_uid[0]!=-1) {
-			if (!select_check(primitive_piece,index)) {
+			if (!select_check(primitive_piece,portal_idx,main_idx,sub_idx)) {
 				select_clear();	
-				select_add(primitive_piece,index);
+				select_add(primitive_piece,portal_idx,main_idx,sub_idx);
 				
 				menu_fix_enable();
 				main_wind_tool_fix_enable();
@@ -605,7 +605,7 @@ bool walk_view_polygon_click_select(int xorg,int yorg,Point pt,bool on_side)
 	
 void walk_view_polygon_click_normal(int xorg,int yorg,Point pt,bool dblclick,bool on_side)
 {
-	int				index,primitive_index,type;
+	int				index,primitive_index,type,portal_idx,main_idx,sub_idx;
 	
 		// anything clicked?
 		
@@ -662,9 +662,9 @@ void walk_view_polygon_click_normal(int xorg,int yorg,Point pt,bool dblclick,boo
 		// add to selection
 		
 	if (!main_wind_shift_down()) {
-		if (!select_check(type,index)) {			// keep selection if selecting an already selected piece
+		if (!select_check(type,portal_idx,main_idx,sub_idx)) {			// keep selection if selecting an already selected piece
 			select_clear();	
-			select_add(type,index);
+			select_add(type,portal_idx,main_idx,sub_idx);
 		}
 	}
 	else {
@@ -673,7 +673,7 @@ void walk_view_polygon_click_normal(int xorg,int yorg,Point pt,bool dblclick,boo
 			if (primitive_index!=-1) index=primitive_index;
 		}
 
-		select_flip(type,index);
+		select_flip(type,portal_idx,main_idx,sub_idx);
 	}
 	
 		// redraw

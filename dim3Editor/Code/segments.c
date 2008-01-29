@@ -221,7 +221,7 @@ void segment_add_wall(int lx,int lz,int rx,int rz,int ty,int by,int clip,int cur
     
 	dp_wall=TRUE;
 	select_clear();
-	select_add(segment_piece,(map.nsegment-1));
+//	select_add(segment_piece,(map.nsegment-1));
 	
 	main_wind_draw();
 	texture_palette_reset();
@@ -270,7 +270,7 @@ void segment_add_floor_quad(int x1,int z1,int y1,int x2,int z2,int y2,int x3,int
     
 	dp_floor=TRUE;
 	select_clear();
-	select_add(segment_piece,(map.nsegment-1));
+//	select_add(segment_piece,(map.nsegment-1));
 
 	main_wind_draw();
 	texture_palette_reset();
@@ -310,7 +310,7 @@ void segment_add_floor_trig(int x1,int z1,int y1,int x2,int z2,int y2,int x3,int
     
 	dp_floor=TRUE;
 	select_clear();
-	select_add(segment_piece,(map.nsegment-1));
+//	select_add(segment_piece,(map.nsegment-1));
 
 	main_wind_draw();
 	texture_palette_reset();
@@ -358,7 +358,7 @@ void segment_add_ceiling_quad(int x1,int z1,int y1,int x2,int z2,int y2,int x3,i
 
 	dp_ceiling=TRUE;
 	select_clear();
-	select_add(segment_piece,(map.nsegment-1));
+//	select_add(segment_piece,(map.nsegment-1));
 
 	main_wind_draw();
 	texture_palette_reset();
@@ -416,7 +416,7 @@ void segment_add_liquid(bool redraw)
 
 	dp_liquid=TRUE;
 	select_clear();
-	select_add(segment_piece,(map.nsegment-1));
+//	select_add(segment_piece,(map.nsegment-1));
 
 	main_wind_draw();
 	texture_palette_reset();
@@ -463,7 +463,7 @@ void segment_add_ambient_wall(int lx,int rx,int lz,int rz,int ty,int by,bool red
 
 	dp_ambient=TRUE;
 	select_clear();
-	select_add(segment_piece,(map.nsegment-1));
+//	select_add(segment_piece,(map.nsegment-1));
 
 	main_wind_draw();
 	texture_palette_reset();
@@ -509,7 +509,7 @@ void segment_add_ambient_fc(int x1,int z1,int x2,int z2,int y,bool redraw)
     
 	dp_ambient=TRUE;
 	select_clear();
-	select_add(segment_piece,(map.nsegment-1));
+//	select_add(segment_piece,(map.nsegment-1));
 
 	main_wind_draw();
 	texture_palette_reset();
@@ -652,6 +652,7 @@ void segment_delete(int idx)
 
 void segment_add_point(void)
 {
+/* supergumba
 	int					n,sel_count,type,index,p;
 	segment_type		*seg;
 	fc_segment_data		*fc;
@@ -676,10 +677,12 @@ void segment_add_point(void)
 		fc->z[p]=(fc->z[p-1]+fc->z[0])/2;
 		fc->y[p]=(fc->y[p-1]+fc->y[0])/2;
 	}
+	*/
 }
 
 void segment_sub_point(void)
 {
+/* supergumba
 	int					n,sel_count,type,index;
 	segment_type		*seg;
 	fc_segment_data		*fc;
@@ -698,6 +701,7 @@ void segment_sub_point(void)
 		
 		fc->ptsz--;
 	}
+	*/
 }
 
 /* =======================================================
@@ -708,6 +712,7 @@ void segment_sub_point(void)
 
 void segment_tesselate(void)
 {
+/* supergumba
 	int					n,k,i,sel_count,type,index;
 	segment_type		*seg,*seg2;
 	
@@ -743,13 +748,14 @@ void segment_tesselate(void)
 			
 			seg2->data.fc.ptsz=3;
 			
-			select_add(segment_piece,map.nsegment);
+		//	select_add(segment_piece,map.nsegment);
 			
 			map.nsegment++;
 		}
 		
 		seg->data.fc.ptsz=3;
 	}
+	*/
 }
 
 /* =======================================================
@@ -760,6 +766,7 @@ void segment_tesselate(void)
 
 void segment_switch_floor_ceiling(void)
 {
+/* supergumba
 	int					n,sel_count,type,index;
 	segment_type		*seg;
 	
@@ -781,6 +788,7 @@ void segment_switch_floor_ceiling(void)
 			continue;
 		}
 	}
+	*/
 }
 
 /* =======================================================
@@ -799,7 +807,7 @@ void segment_select_all(void)
 	seg=map.segments;
 	
 	for (n=0;n!=map.nsegment;n++) {
-		if (seg->rn==cr) select_add(segment_piece,n);
+	//	if (seg->rn==cr) select_add(segment_piece,n);
 		seg++;
 	}
 }
@@ -814,7 +822,7 @@ void segment_select_all_wall(void)
 	seg=map.segments;
 	
 	for (n=0;n!=map.nsegment;n++) {
-		if ((seg->rn==cr) && (seg->type==sg_wall) && (seg->primitive_uid[0]==-1)) select_add(segment_piece,n);
+	//	if ((seg->rn==cr) && (seg->type==sg_wall) && (seg->primitive_uid[0]==-1)) select_add(segment_piece,n);
 		seg++;
 	}
 }
@@ -829,7 +837,7 @@ void segment_select_all_floor(void)
 	seg=map.segments;
 	
 	for (n=0;n!=map.nsegment;n++) {
-		if ((seg->rn==cr) && (seg->type==sg_floor) && (seg->primitive_uid[0]==-1)) select_add(segment_piece,n);
+	//	if ((seg->rn==cr) && (seg->type==sg_floor) && (seg->primitive_uid[0]==-1)) select_add(segment_piece,n);
 		seg++;
 	}
 }
@@ -844,7 +852,7 @@ void segment_select_all_ceiling(void)
 	seg=map.segments;
 	
 	for (n=0;n!=map.nsegment;n++) {
-		if ((seg->rn==cr) && (seg->type==sg_ceiling) && (seg->primitive_uid[0]==-1)) select_add(segment_piece,n);
+	//	if ((seg->rn==cr) && (seg->type==sg_ceiling) && (seg->primitive_uid[0]==-1)) select_add(segment_piece,n);
 		seg++;
 	}
 }
@@ -861,7 +869,7 @@ void segment_select_all_texture(void)
 	seg=map.segments;
 	
 	for (n=0;n!=map.nsegment;n++) {
-		if ((seg->rn==cr) && (seg->fill==fill) && (seg->primitive_uid[0]==-1)) select_add(segment_piece,n);
+	//	if ((seg->rn==cr) && (seg->fill==fill) && (seg->primitive_uid[0]==-1)) select_add(segment_piece,n);
 		seg++;
 	}
 }

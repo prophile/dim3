@@ -1482,17 +1482,6 @@ void main_wind_tool_fix_enable(void)
 	has_fc_seg=FALSE;
 	nsel=select_count();
 	
-	for (n=0;n!=nsel;n++) {
-		select_get(0,&type,&index);
-		if (type==segment_piece) {
-			seg_type=map.segments[index].type;
-			if ((seg_type==sg_floor) || (seg_type==sg_ceiling)) {
-				has_fc_seg=TRUE;
-				break;
-			}
-		}
-	}
-	
 	if (!has_fc_seg) {
 		HiliteControl(tool_ctrl[16],255);
 		HiliteControl(tool_ctrl[17],255);
@@ -1509,8 +1498,9 @@ void main_wind_tool_fix_enable(void)
 	group_idx=-1;
 	
 	if (select_count()==1) {
-		select_get(0,&type,&index);
-		if ((type==segment_piece) || (type==primitive_piece)) group_idx=map.segments[index].group_idx;
+// supergumba
+//		select_get(0,&type,&index);
+//		if ((type==segment_piece) || (type==primitive_piece)) group_idx=map.segments[index].group_idx;
 	}
 	
 	if (group_idx==-1) {

@@ -80,16 +80,22 @@ int texture_palette_get_selected_fill(void)
 {
 	int				type,index;
 	
+	return(-1);
+	
+	/* supergumba
+	
 	if (select_count()!=1) return(-1);
 	
 	select_get(0,&type,&index);
 	if ((type!=segment_piece) && (type!=primitive_piece)) return(-1);
 
 	return(map.segments[index].fill);
+	*/
 }
 
 void texture_palette_put_selected_fill(int fill)
 {
+/* supergumba
 	int				n,k,sel_count,type,index,primitive_uid;
 	segment_type	*seg;
 	
@@ -123,6 +129,7 @@ void texture_palette_put_selected_fill(int fill)
 		}
 		
 	}
+	*/
 }
 
 /* =======================================================

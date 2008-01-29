@@ -200,23 +200,23 @@ void portal_delete(void)
 	select_clear();
 	
 	for (n=0;n!=map.nnode;n++) {
-		if (map.nodes[n].pos.rn==cr) select_add(node_piece,n);
+		if (map.nodes[n].pos.rn==cr) select_add(node_piece,map.nodes[n].pos.rn,n,-1);
 	}
 	
 	for (n=0;n!=map.nsound;n++) {
-		if (map.sounds[n].pos.rn==cr) select_add(sound_piece,n);
+		if (map.sounds[n].pos.rn==cr) select_add(sound_piece,map.sounds[n].pos.rn,n,-1);
 	}
 
 	for (n=0;n!=map.nlight;n++) {
-		if (map.lights[n].pos.rn==cr) select_add(light_piece,n);
+		if (map.lights[n].pos.rn==cr) select_add(light_piece,map.lights[n].pos.rn,n,-1);
 	}
 
 	for (n=0;n!=map.nspot;n++) {
-		if (map.spots[n].pos.rn==cr) select_add(spot_piece,n);
+		if (map.spots[n].pos.rn==cr) select_add(spot_piece,map.spots[n].pos.rn,n,-1);
 	}
 	
 	for (n=0;n!=map.nscenery;n++) {
-		if (map.sceneries[n].pos.rn==cr) select_add(scenery_piece,n);
+		if (map.sceneries[n].pos.rn==cr) select_add(scenery_piece,map.sceneries[n].pos.rn,n,-1);
 	}
 	
 	piece_delete();

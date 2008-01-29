@@ -54,14 +54,14 @@ int node_link_find_node_by_point(Point pt)
 
 int node_link_is_node_link_selected(void)
 {
-	int			type,index;
+	int			type,portal_idx,main_idx,sub_idx;
 	
 	if (select_count()!=1) return(-1);
 	
-	select_get(0,&type,&index);
+	select_get(0,&type,&portal_idx,&main_idx,&sub_idx);
 	if (type!=node_piece) return(-1);
 	
-	return(index);
+	return(main_idx);
 }
 
 /* =======================================================

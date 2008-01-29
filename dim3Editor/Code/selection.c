@@ -43,36 +43,19 @@ void select_clear(void)
 	nselect_item=0;
 }
 
-void select_add(int type,int index)
+void select_add(int type,int portal_idx,int main_idx,int sub_idx)
 {
 	int					n,primitive_uid;
 	select_item_type	*select_item;
 	
 	if (nselect_item==select_max_item) return;
-	
-		// special check for primitives already selected by another segment
-		// if so, just switch selected segment with new one
-		
-	if (type==primitive_piece) {
-	
-		primitive_uid=map.segments[index].primitive_uid[0];
-		select_item=select_items;
-		
-		for (n=0;n!=nselect_item;n++) {
-			if (select_item->type==primitive_piece) {
-				if (map.segments[select_item->index].primitive_uid[0]==primitive_uid) {
-					select_item->index=index;
-					return;
-				}
-			}
-			select_item++;
-		}
-	}
 		
 		// add to selection list
 	
 	select_items[nselect_item].type=type;
-	select_items[nselect_item].index=index;
+	select_items[nselect_item].portal_idx=portal_idx;
+	select_items[nselect_item].main_idx=main_idx;
+	select_items[nselect_item].sub_idx=sub_idx;
 	nselect_item++;
 }
 
@@ -81,13 +64,15 @@ int select_count(void)
 	return(nselect_item);
 }
 
-void select_get(int sel_idx,int *type,int *index)
+void select_get(int sel_idx,int *type,int *portal_idx,int *main_idx,int *sub_idx)
 {
 	*type=select_items[sel_idx].type;
-	*index=select_items[sel_idx].index;
+	*portal_idx=select_items[sel_idx].portal_idx;
+	*main_idx=select_items[sel_idx].main_idx;
+	*sub_idx=select_items[sel_idx].sub_idx;
 }
 
-int select_find(int type,int index)
+int select_find(int type,int portal_idx,int main_idx,int sub_idx)
 {
 	int					n;
 	select_item_type	*select_item;
@@ -95,11 +80,11 @@ int select_find(int type,int index)
 	select_item=select_items;
 	
 	for (n=0;n!=nselect_item;n++) {
-		if (index==-1) {
+		if (main_idx==-1) {
 			if (select_item->type==type) return(n);
 		}
 		else {
-			if ((select_item->type==type) && (select_item->index==index)) return(n);
+			if ((select_item->type==type) && (select_item->portal_idx==portal_idx) && (select_item->main_idx==main_idx) && (select_item->sub_idx==sub_idx)) return(n);
 		}
 		select_item++;
 	}
@@ -107,13 +92,14 @@ int select_find(int type,int index)
 	return(-1);
 }
 
-bool select_check(int type,int index)
+bool select_check(int type,int portal_idx,int main_idx,int sub_idx)
 {
-	return(select_find(type,index)!=-1);
+	return(select_find(type,portal_idx,main_idx,sub_idx)!=-1);
 }
 
 bool select_check_segment(int index)
 {
+/* supergumba
 	int					n,primitive_uid;
 	select_item_type	*select_item;
 	
@@ -135,12 +121,13 @@ bool select_check_segment(int index)
 		
 		select_item++;
 	}
-	
+	*/
 	return(FALSE);
 }	
 
 int select_check_primitive_find_index(int primitive_uid)
 {
+/* supergumba
 	int					n;
 	select_item_type	*select_item;
 	
@@ -159,23 +146,23 @@ int select_check_primitive_find_index(int primitive_uid)
 		
 		select_item++;
 	}
-	
+*/	
 	return(-1);
 }	
 
 bool select_has_type(int type)
 {
-	return(select_find(type,-1)!=-1);
+	return(select_find(type,-1,-1,-1)!=-1);
 }
 
-void select_flip(int type,int index)
+void select_flip(int type,int portal_idx,int main_idx,int sub_idx)
 {
 	int				n,sel_idx;
 	
-	sel_idx=select_find(type,index);
+	sel_idx=select_find(type,portal_idx,main_idx,sub_idx);
 		
 	if (sel_idx==-1) {
-		select_add(type,index);
+		select_add(type,portal_idx,main_idx,sub_idx);
 		return;
 	}
 	
@@ -194,6 +181,7 @@ void select_flip(int type,int index)
 
 void select_sort(void)
 {
+/* supergumba
 	int						n;
 	bool					switch_item;
 	select_item_type		*temp_item;
@@ -213,6 +201,7 @@ void select_sort(void)
 			}
 		}
 	}
+	*/
 }
 
 /* =======================================================
@@ -226,12 +215,14 @@ void select_duplicate_clear(void)
 	nselect_duplicate_item=0;
 }
 
-void select_duplicate_add(int type,int index)
+void select_duplicate_add(int type,int portal_idx,int main_idx,int sub_idx)
 {
 	if (nselect_duplicate_item==select_max_item) return;
 	
 	select_duplicate_items[nselect_duplicate_item].type=type;
-	select_duplicate_items[nselect_duplicate_item].index=index;
+	select_duplicate_items[nselect_duplicate_item].portal_idx=portal_idx;
+	select_duplicate_items[nselect_duplicate_item].main_idx=main_idx;
+	select_duplicate_items[nselect_duplicate_item].sub_idx=sub_idx;
 	nselect_duplicate_item++;
 }
 

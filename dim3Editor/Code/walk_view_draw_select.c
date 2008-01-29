@@ -355,6 +355,7 @@ void walk_view_draw_select_sprite(d3pos *pos)
 
 void walk_view_draw_select_portal(int rn)
 {
+/* supergumba
 	int						n,k,
 							sel_count,index,type,primitive_uid;
 	segment_type			*seg,*seg2;
@@ -429,5 +430,6 @@ void walk_view_draw_select_portal(int rn)
 				break;
 		}
 	}
+	*/
 }
 			

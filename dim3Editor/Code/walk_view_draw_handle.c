@@ -63,6 +63,7 @@ void walk_view_draw_sel_handles(int ptsz,int *x,int *y,int *z)
 
 void walk_view_draw_segment_handles(void)
 {
+/* supergumba
 	int				t,rn,type,index,primitive_uid,
 					xadd,zadd,ptsz,x[8],z[8],y[8],lx,rx,lz,rz,ty,by;
 	segment_type	*seg;
@@ -181,5 +182,6 @@ void walk_view_draw_segment_handles(void)
     }
     
     walk_view_draw_sel_handles(ptsz,x,y,z);
+	*/
 }
 

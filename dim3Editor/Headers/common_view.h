@@ -41,14 +41,15 @@ typedef struct		{
 // selection defines
 //
 
-#define select_max_item						1024
+#define select_max_item								1024
 
 //
 // selection structure
 //
 
 typedef struct		{
-                        short				type,index;
+                        short						type,
+													portal_idx,main_idx,sub_idx;
 					} select_item_type;
 
 //
@@ -56,18 +57,18 @@ typedef struct		{
 //
 
 extern void select_clear(void);
-extern void select_add(int type,int index);
+extern void select_add(int type,int portal_idx,int main_idx,int sub_idx);
 extern int select_count(void);
-extern void select_get(int sel_idx,int *type,int *index);
-extern int select_find(int type,int index);
-extern bool select_check(int type,int index);
+extern void select_get(int sel_idx,int *type,int *portal_idx,int *main_idx,int *sub_idx);
+extern int select_find(int type,int portal_idx,int main_idx,int sub_idx);
+extern bool select_check(int type,int portal_idx,int main_idx,int sub_idx);
 extern bool select_check_segment(int index);
 extern int select_check_primitive_find_index(int primitive_uid);
 extern bool select_has_type(int type);
-extern void select_flip(int type,int index);
+extern void select_flip(int type,int portal_idx,int main_idx,int sub_idx);
 extern void select_sort(void);
 extern void select_duplicate_clear(void);
-extern void select_duplicate_add(int type,int index);
+extern void select_duplicate_add(int type,int portal_idx,int main_idx,int sub_idx);
 extern void select_duplicate_copy(void);
 
 //

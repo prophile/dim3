@@ -152,6 +152,7 @@ int group_count(int group_idx)
 
 void group_set(int group_idx)
 {
+/* supergumba
 	int				n,k,sel_count,type,index,primitive_uid;
 	segment_type	*seg;
 	
@@ -180,5 +181,6 @@ void group_set(int group_idx)
 	}
 	
 	main_wind_tool_fill_group_combo();
+	*/
 }
 

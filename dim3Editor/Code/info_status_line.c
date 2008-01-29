@@ -94,7 +94,7 @@ void info_status_line_get_segment_str(segment_type *seg,char *txt)
 
 void info_status_line_draw_selection(Rect *box)
 {
-	int				type,index,len,
+	int				type,portal_idx,main_idx,sub_idx,len,
 					minx,maxx,minz,maxz,miny,maxy;
 	char			txt[256];
 	portal_type		*portal;
@@ -124,41 +124,41 @@ void info_status_line_draw_selection(Rect *box)
 	}
 	else {
 	
-		select_get(0,&type,&index);
+		select_get(0,&type,&portal_idx,&main_idx,&sub_idx);
 
 		switch (type) {
 		
 			case segment_piece:
-				info_status_line_get_segment_str(&map.segments[index],txt);
+				info_status_line_get_segment_str(&map.segments[main_idx],txt);
 				break;
 				
 			case primitive_piece:
-				primitive_get_extend(map.segments[index].primitive_uid[0],&minx,&maxx,&minz,&maxz,&miny,&maxy);
+				primitive_get_extend(map.segments[main_idx].primitive_uid[0],&minx,&maxx,&minz,&maxz,&miny,&maxy);
 				sprintf(txt,"Primitive: (%d,%d,%d) - (%d,%d,%d) : (%d,%d,%d)",minx,miny,minz,maxx,maxy,maxz,(maxx-minx),(maxy-miny),(maxz-minz));
 				break;
 				
 			case node_piece:
-				sprintf(txt,"Node: %s (%d,%d,%d)",map.nodes[index].name,map.nodes[index].pos.x,map.nodes[index].pos.y,map.nodes[index].pos.z);
+				sprintf(txt,"Node: %s (%d,%d,%d)",map.nodes[main_idx].name,map.nodes[main_idx].pos.x,map.nodes[main_idx].pos.y,map.nodes[main_idx].pos.z);
 				break;
 				
 			case spot_piece:
-				sprintf(txt,"Spot: %s (%d,%d,%d)",map.spots[index].name,map.spots[index].pos.x,map.spots[index].pos.y,map.spots[index].pos.z);
+				sprintf(txt,"Spot: %s (%d,%d,%d)",map.spots[main_idx].name,map.spots[main_idx].pos.x,map.spots[main_idx].pos.y,map.spots[main_idx].pos.z);
 				break;
 				
 			case scenery_piece:
-				sprintf(txt,"Scenery: %s (%d,%d,%d)",map.sceneries[index].model_name,map.sceneries[index].pos.x,map.sceneries[index].pos.y,map.sceneries[index].pos.z);
+				sprintf(txt,"Scenery: %s (%d,%d,%d)",map.sceneries[main_idx].model_name,map.sceneries[main_idx].pos.x,map.sceneries[main_idx].pos.y,map.sceneries[main_idx].pos.z);
 				break;
 				
 			case light_piece:
-				sprintf(txt,"Light: (%d,%d,%d)",map.lights[index].pos.x,map.lights[index].pos.y,map.lights[index].pos.z);
+				sprintf(txt,"Light: (%d,%d,%d)",map.lights[main_idx].pos.x,map.lights[main_idx].pos.y,map.lights[main_idx].pos.z);
 				break;
 				
 			case sound_piece:
-				sprintf(txt,"Sound: %s (%d,%d,%d)",map.sounds[index].name,map.sounds[index].pos.x,map.sounds[index].pos.y,map.sounds[index].pos.z);
+				sprintf(txt,"Sound: %s (%d,%d,%d)",map.sounds[main_idx].name,map.sounds[main_idx].pos.x,map.sounds[main_idx].pos.y,map.sounds[main_idx].pos.z);
 				break;
 				
 			case particle_piece:
-				sprintf(txt,"Particle: %s (%d,%d,%d)",map.particles[index].name,map.particles[index].pos.x,map.particles[index].pos.y,map.particles[index].pos.z);
+				sprintf(txt,"Particle: %s (%d,%d,%d)",map.particles[main_idx].name,map.particles[main_idx].pos.x,map.particles[main_idx].pos.y,map.particles[main_idx].pos.z);
 				break;
 		}
 	}

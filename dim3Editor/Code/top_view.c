@@ -182,7 +182,7 @@ void top_view_draw(void)
 
 void top_view_click(Point pt,bool dblclick)
 {	
-	int				type,index;
+	int				type,portal_idx,main_idx,sub_idx;
 	
 	if (!top_view_active) return;
     
@@ -228,16 +228,16 @@ void top_view_click(Point pt,bool dblclick)
 	
 		// click pieces
 		
-	if (top_view_piece_click(pt,&type,&index)) {
+	if (top_view_piece_click(pt,&type,&portal_idx,&main_idx,&sub_idx)) {
 	
 		if (!main_wind_shift_down()) {
-			if (!select_check(type,index)) {			// keep selection if selecting an already selected piece
+			if (!select_check(type,portal_idx,main_idx,sub_idx)) {			// keep selection if selecting an already selected piece
 				select_clear();	
-				select_add(type,index);
+				select_add(type,portal_idx,main_idx,sub_idx);
 			}
 		}
 		else {
-			select_flip(type,index);
+			select_flip(type,portal_idx,main_idx,sub_idx);
 		}
 		
 		main_wind_draw();

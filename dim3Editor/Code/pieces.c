@@ -103,6 +103,7 @@ void piece_get_extent(int type,int index,int *min_x,int *min_z,int *max_x,int *m
 
 void piece_move_to_portal(int rn)
 {
+/* supergumba
 	int			n,nsel_count,
 				type,index,min_x,min_z,min_y,max_x,max_z,max_y;
 			
@@ -158,6 +159,7 @@ void piece_move_to_portal(int rn)
 	select_move(rn,min_x,min_z,0);
 	
 	main_wind_draw();
+	*/
 }
 
 /* =======================================================
@@ -168,6 +170,7 @@ void piece_move_to_portal(int rn)
 
 void piece_duplicate(void)
 {
+/* supergumba
 	int				n,i,nsel_count,
 					type,index,xadd,zadd,dup_index,
 					cx,cy,cz;
@@ -304,10 +307,12 @@ void piece_duplicate(void)
 	select_duplicate_copy();
 	
 	main_wind_draw();
+	*/
 }
 
 void piece_delete(void)
 {
+/* supergumba
 	int				n,i,k,nsel_count,
 					type,index;
 	
@@ -399,6 +404,7 @@ void piece_delete(void)
 	select_clear();
     
 	main_wind_draw();
+	*/
 }
 
 /* =======================================================
@@ -409,6 +415,7 @@ void piece_delete(void)
 
 void piece_flip_horizontal(void)
 {
+/* supergumba
 	int					n,k,sel_count,type,index,
 						primitive_uid,min_x,max_x,min_z,max_z,min_y,max_y;
 	segment_type		*seg;
@@ -440,10 +447,12 @@ void piece_flip_horizontal(void)
 	}
 	
 	main_wind_draw();
+	*/
 }
 
 void piece_flip_vertical(void)
 {
+/* supergumba
 	int					n,k,sel_count,type,index,
 						primitive_uid,min_x,max_x,min_z,max_z,min_y,max_y;
 	segment_type		*seg;
@@ -475,10 +484,12 @@ void piece_flip_vertical(void)
 	}
 	
 	main_wind_draw();
+	*/
 }
 
 void piece_rotate(void)
 {
+/* supergumba
 	int					n,k,sel_count,type,index,cx,cz,
 						primitive_uid,min_x,max_x,min_z,max_z,min_y,max_y;
 	segment_type		*seg;
@@ -512,10 +523,12 @@ void piece_rotate(void)
 	}
 	
 	main_wind_draw();
+	*/
 }
 
 void piece_free_rotate(float ang)
 {
+/* supergumba
 	int					n,k,sel_count,type,index,primitive_uid,
 						cx,cz,min_x,max_x,min_z,max_z,min_y,max_y;;
 	segment_type		*seg;
@@ -551,6 +564,7 @@ void piece_free_rotate(float ang)
 	}
 	
 	main_wind_draw();
+	*/
 }
 
 /* =======================================================
@@ -619,6 +633,7 @@ void piece_key(int rn,char ch,bool walk,bool on_side)
 
 void piece_switch_spot_scenery(void)
 {
+/* supergumba
 	int					i,type,index;
 	spot_type			*spot;
 	map_scenery_type	*scenery;
@@ -671,5 +686,6 @@ void piece_switch_spot_scenery(void)
 	select_clear();
 	
 	main_wind_draw();
+	*/
 }
 

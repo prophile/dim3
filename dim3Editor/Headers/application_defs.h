@@ -180,6 +180,7 @@ and can be sold or given away.
 #define light_piece			105
 #define sound_piece			106
 #define particle_piece		107
+#define mesh_piece			108
 
 //
 // magnify factors
