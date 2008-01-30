@@ -649,7 +649,7 @@ int map_convert_get_primitive_list(map_type *map,int rn,int *plist)
 
 	for (n=0;n!=map->nsegment;n++) {
 
-		if (seg->rn==rn) {
+		if ((seg->rn==rn) && (seg->primitive_uid[0]!=-1)) {
 			
 			p_idx=-1;
 
@@ -674,19 +674,133 @@ int map_convert_get_primitive_list(map_type *map,int rn,int *plist)
 
 /* =======================================================
 
+      Convert One Section of Segments to Mesh
+      
+======================================================= */
+
+bool map_convert_segment_section_to_mesh(map_type *map,int rn,int primitive_uid,int seg_type,d3pnt *vlist,int vlist_sz)
+{
+	int					n,nvertex,npoly,mesh_idx;
+	portal_type			*portal;
+	segment_type		*seg;
+	map_mesh_type		*map_mesh;
+
+	portal=&map->portals[rn];
+
+		// clear vertex list
+
+	bzero(vlist,vlist_sz);
+	
+		// count the vertexes and polys
+
+	nvertex=npoly=0;
+
+	for (n=0;n!=map->nsegment;n++) {
+		seg=&map->segments[n];
+		if (seg->rn!=rn) continue;
+		if (seg->primitive_uid[0]!=primitive_uid) continue;
+		if ((seg_type!=-1) && (seg->type!=seg_type)) continue;
+
+		switch (seg->type) {
+
+			case sg_wall:
+				nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,seg->data.wall.ptsz,seg->data.wall.x,seg->data.wall.y,seg->data.wall.z);
+				npoly++;
+				break;
+
+			case sg_floor:
+			case sg_ceiling:
+				nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,seg->data.fc.ptsz,seg->data.fc.x,seg->data.fc.y,seg->data.fc.z);
+				npoly++;
+				break;
+
+			case sg_ambient_wall:
+				nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,seg->data.ambient_wall.ptsz,seg->data.ambient_wall.x,seg->data.ambient_wall.y,seg->data.ambient_wall.z);
+				npoly++;
+				break;
+
+			case sg_ambient_fc:
+				nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,seg->data.ambient_fc.ptsz,seg->data.ambient_fc.x,seg->data.ambient_fc.y,seg->data.ambient_fc.z);
+				npoly++;
+				break;
+
+		}
+
+	}
+
+	if ((nvertex==0) || (npoly==0)) return(TRUE);
+
+		// create new mesh
+
+	mesh_idx=portal->mesh.nmesh;
+
+	if (!map_portal_mesh_add(map,rn,1)) return(FALSE);
+
+	if (!map_portal_mesh_set_vertex_count(map,rn,mesh_idx,nvertex)) {
+		map_portal_mesh_delete(map,rn,mesh_idx);
+		return(FALSE);
+	}
+
+	if (!map_portal_mesh_set_poly_count(map,rn,mesh_idx,npoly)) {
+		map_portal_mesh_delete(map,rn,mesh_idx);
+		return(FALSE);
+	}
+
+	map_mesh=&portal->mesh.meshes[mesh_idx];
+
+		// move over vertexes
+
+	map_mesh->nvertex=nvertex;
+	memmove(map_mesh->vertexes,vlist,(sizeof(d3pnt)*nvertex));
+		
+		// add polys
+
+	map_mesh->npoly=0;
+
+	for (n=0;n!=map->nsegment;n++) {
+		seg=&map->segments[n];
+		if (seg->rn!=rn) continue;
+		if (seg->primitive_uid[0]!=primitive_uid) continue;
+		if ((seg_type!=-1) && (seg->type!=seg_type)) continue;
+
+		switch (seg->type) {
+
+			case sg_wall:
+				map_convert_segment_to_mesh_add_mesh_poly(map_mesh,seg->data.wall.ptsz,seg->data.wall.x,seg->data.wall.y,seg->data.wall.z,seg->draw.gx,seg->draw.gy,seg);
+				break;
+
+			case sg_floor:
+			case sg_ceiling:
+				map_convert_segment_to_mesh_add_mesh_poly(map_mesh,seg->data.fc.ptsz,seg->data.fc.x,seg->data.fc.y,seg->data.fc.z,seg->draw.gx,seg->draw.gy,seg);
+				break;
+
+			case sg_ambient_wall:
+				map_convert_segment_to_mesh_add_mesh_poly(map_mesh,seg->data.ambient_wall.ptsz,seg->data.ambient_wall.x,seg->data.ambient_wall.y,seg->data.ambient_wall.z,seg->draw.gx,seg->draw.gy,seg);
+				break;
+
+			case sg_ambient_fc:
+				map_convert_segment_to_mesh_add_mesh_poly(map_mesh,seg->data.ambient_fc.ptsz,seg->data.ambient_fc.x,seg->data.ambient_fc.y,seg->data.ambient_fc.z,seg->draw.gx,seg->draw.gy,seg);
+				break;
+
+		}
+	}
+
+	return(TRUE);
+}
+
+/* =======================================================
+
       Convert Entire Map
       
 ======================================================= */
 
 bool map_convert_v1(map_type *map)
 {
-	int					n,i,p,vlist_sz,plist_sz,mesh_idx,
-						primitive_uid,nvertex,npoly;
+	int					n,i,p,vlist_sz,plist_sz;
 	int					*plist;
 	d3pnt				*vlist;
 	portal_type			*portal;
 	segment_type		*seg;
-	map_mesh_type		*map_mesh;
 
 		// memory for vertex and primitive lists
 		// just use enough vertexes to cover most maps,
@@ -724,115 +838,51 @@ bool map_convert_v1(map_type *map)
 	
 		portal->mesh.nmesh=0;
 
-			// get the primitives in the map
+			// create meshes from all primitives
 
 		plist_sz=map_convert_get_primitive_list(map,n,plist);
 
-			// create a mesh per vertex
-
 		for (p=0;p!=plist_sz;p++) {
 
-			primitive_uid=plist[p];
-
-				// clear vertex list
-
-			bzero(vlist,vlist_sz);
-			
-				// count the vertexes and polys
-
-			nvertex=npoly=0;
-
-			for (i=0;i!=map->nsegment;i++) {
-				seg=&map->segments[i];
-				if ((seg->rn!=n) || (seg->primitive_uid[0]!=primitive_uid)) continue;
-
-				switch (seg->type) {
-
-					case sg_wall:
-						nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,seg->data.wall.ptsz,seg->data.wall.x,seg->data.wall.y,seg->data.wall.z);
-						npoly++;
-						break;
-
-					case sg_floor:
-					case sg_ceiling:
-						nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,seg->data.fc.ptsz,seg->data.fc.x,seg->data.fc.y,seg->data.fc.z);
-						npoly++;
-						break;
-
-					case sg_ambient_wall:
-						nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,seg->data.ambient_wall.ptsz,seg->data.ambient_wall.x,seg->data.ambient_wall.y,seg->data.ambient_wall.z);
-						npoly++;
-						break;
-
-					case sg_ambient_fc:
-						nvertex=map_convert_segment_to_mesh_add_poly_vlist(nvertex,vlist,seg->data.ambient_fc.ptsz,seg->data.ambient_fc.x,seg->data.ambient_fc.y,seg->data.ambient_fc.z);
-						npoly++;
-						break;
-
-				}
-
-			}
-
-			if ((nvertex==0) || (npoly==0)) continue;
-
-				// create new mesh
-
-			mesh_idx=portal->mesh.nmesh;
-
-			if (!map_portal_mesh_add(map,n,1)) {
+			if (!map_convert_segment_section_to_mesh(map,n,plist[p],-1,vlist,vlist_sz)) {
 				free(vlist);
+				free(plist);
 				return(FALSE);
-			}
-
-			if (!map_portal_mesh_set_vertex_count(map,n,mesh_idx,nvertex)) {
-				map_portal_mesh_delete(map,n,mesh_idx);
-				free(vlist);
-				return(FALSE);
-			}
-
-			if (!map_portal_mesh_set_poly_count(map,n,mesh_idx,npoly)) {
-				map_portal_mesh_delete(map,n,mesh_idx);
-				free(vlist);
-				return(FALSE);
-			}
-
-			map_mesh=&portal->mesh.meshes[mesh_idx];
-
-				// move over vertexes
-
-			map_mesh->nvertex=nvertex;
-			memmove(map_mesh->vertexes,vlist,(sizeof(d3pnt)*nvertex));
-				
-				// add polys
-
-			map_mesh->npoly=0;
-
-			for (i=0;i!=map->nsegment;i++) {
-				seg=&map->segments[i];
-				if ((seg->rn!=n) || (seg->primitive_uid[0]!=primitive_uid)) continue;
-
-				switch (seg->type) {
-
-					case sg_wall:
-						map_convert_segment_to_mesh_add_mesh_poly(map_mesh,seg->data.wall.ptsz,seg->data.wall.x,seg->data.wall.y,seg->data.wall.z,seg->draw.gx,seg->draw.gy,seg);
-						break;
-
-					case sg_floor:
-					case sg_ceiling:
-						map_convert_segment_to_mesh_add_mesh_poly(map_mesh,seg->data.fc.ptsz,seg->data.fc.x,seg->data.fc.y,seg->data.fc.z,seg->draw.gx,seg->draw.gy,seg);
-						break;
-
-					case sg_ambient_wall:
-						map_convert_segment_to_mesh_add_mesh_poly(map_mesh,seg->data.ambient_wall.ptsz,seg->data.ambient_wall.x,seg->data.ambient_wall.y,seg->data.ambient_wall.z,seg->draw.gx,seg->draw.gy,seg);
-						break;
-
-					case sg_ambient_fc:
-						map_convert_segment_to_mesh_add_mesh_poly(map_mesh,seg->data.ambient_fc.ptsz,seg->data.ambient_fc.x,seg->data.ambient_fc.y,seg->data.ambient_fc.z,seg->draw.gx,seg->draw.gy,seg);
-						break;
-
-				}
 			}
 		}
+
+			// create meshes for each left over type
+
+		if (!map_convert_segment_section_to_mesh(map,n,-1,sg_wall,vlist,vlist_sz)) {
+			free(vlist);
+			free(plist);
+			return(FALSE);
+		}
+
+		if (!map_convert_segment_section_to_mesh(map,n,-1,sg_floor,vlist,vlist_sz)) {
+			free(vlist);
+			free(plist);
+			return(FALSE);
+		}
+
+		if (!map_convert_segment_section_to_mesh(map,n,-1,sg_ceiling,vlist,vlist_sz)) {
+			free(vlist);
+			free(plist);
+			return(FALSE);
+		}
+
+		if (!map_convert_segment_section_to_mesh(map,n,-1,sg_ambient_wall,vlist,vlist_sz)) {
+			free(vlist);
+			free(plist);
+			return(FALSE);
+		}
+
+		if (!map_convert_segment_section_to_mesh(map,n,-1,sg_ambient_fc,vlist,vlist_sz)) {
+			free(vlist);
+			free(plist);
+			return(FALSE);
+		}
+
 	}
 	
 	free(vlist);
