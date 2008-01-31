@@ -43,9 +43,7 @@ extern void portal_compile_gl_list_dettach(void);
 
 extern void segment_liquid_tide_draw(segment_type *seg);
 
-
-short					segment_render_sort_list[1024];		// supergumba -- move this to per-portal!
-float					segment_render_z_list[1024];
+map_portal_mesh_poly_sort_type		segment_render_sort_list[1024];		// supergumba -- move this to memory
 
 /* =======================================================
 
@@ -53,6 +51,8 @@ float					segment_render_z_list[1024];
       
 ======================================================= */
 
+
+/* supergumba -- delete
 float segment_render_transparent_segments_far_z(segment_type *seg,int cx,int cy,int cz)
 {
 	int				n,ptsz,kx,kz,ky;
@@ -177,6 +177,102 @@ void segment_render_transparent_sort(portal_segment_draw_type *draw,int cx,int c
 	}
 }
 
+*/
+
+
+float segment_render_transparent_segments_far_z(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly,int cx,int cy,int cz)
+{
+	int				n,kx,ky,kz;
+	float			d,dist;
+	d3pnt			*pt;
+
+		// calculate the farest z
+		// that is on screen
+
+	dist=0.0f;
+
+	for (n=0;n!=mesh_poly->ptsz;n++) {
+		pt=&mesh->vertexes[mesh_poly->v[n]];
+		kx=pt->x-cx;
+		ky=pt->y-cy;
+		kz=pt->z-cz;
+		if (gl_rotate_point_on_screen(kx,ky,kz)) {
+			d=gl_project_point_z(kx,ky,kz);
+			if (d>dist) dist=d;
+		}
+	}
+
+	return(dist);
+}
+
+int segment_render_transparent_sort(int rn,int cx,int cy,int cz)
+{
+	int							n,k,i,sort_cnt,sort_idx;
+	float						dist;
+	portal_type					*portal;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*mesh_poly;
+
+	portal=&map.portals[rn];
+
+		// create sort list
+
+	sort_cnt=0;
+
+	mesh=portal->mesh.meshes;
+		
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+	
+		if (!mesh->draw.has_transparent) {
+			mesh++;
+			continue;
+		}
+		
+		mesh_poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+
+			if (mesh_poly->draw.draw_type==map_mesh_poly_draw_transparent) {
+				mesh_poly++;
+				continue;
+			}
+
+				// find distance from camera
+
+			dist=segment_render_transparent_segments_far_z(mesh,mesh_poly,cx,cy,cz);
+
+				// find position in sort list
+
+			sort_idx=sort_cnt;
+
+			for (i=0;i!=sort_cnt;i++) {
+				if (dist>segment_render_sort_list[i].dist) {
+					sort_idx=i;
+					break;
+				}
+			}
+
+				// add to sort list
+
+			if (sort_idx<sort_cnt) {
+				memmove(&segment_render_sort_list[sort_idx+1],&segment_render_sort_list[sort_idx],((sort_cnt-sort_idx)*sizeof(map_portal_mesh_poly_sort_type)));
+			}
+
+			segment_render_sort_list[sort_idx].mesh_idx=n;
+			segment_render_sort_list[sort_idx].poly_idx=k;
+			segment_render_sort_list[sort_idx].dist=dist;
+
+			sort_cnt++;
+
+			mesh_poly++;
+		}
+	
+		mesh++;
+	}
+
+	return(sort_cnt);
+}
+
 /* =======================================================
 
       Transparent Segment Drawing
@@ -185,14 +281,14 @@ void segment_render_transparent_sort(portal_segment_draw_type *draw,int cx,int c
 
 void segment_render_transparent_portal(int rn)
 {
-	int							n,cnt,frame;
+	int							n,sort_cnt,frame;
 	unsigned long				txt_id;
 	float						alpha;
 	bool						txt_setup_reset;
-	short						*sptr;
 	portal_type					*portal;
 	portal_segment_draw_type	*draw;
-	segment_type				*seg;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*mesh_poly;
 	texture_type				*texture;
 
 	portal=&map.portals[rn];
@@ -220,8 +316,144 @@ void segment_render_transparent_portal(int rn)
 
 		// sort the segments
 
-	segment_render_transparent_sort(draw,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
+	sort_cnt=segment_render_transparent_sort(rn,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
 
+		// texture mapped transparent segments
+		// these are lighted by themselves
+
+	txt_id=-1;
+	alpha=0.0f;
+
+	for (n=0;n!=sort_cnt;n++) {
+		mesh=&portal->mesh.meshes[segment_render_sort_list[n].mesh_idx];
+		mesh_poly=&mesh->polys[segment_render_sort_list[n].poly_idx];
+
+		texture=&map.textures[mesh_poly->txt_idx];
+		frame=mesh_poly->draw.cur_frame;
+
+			// do we need to get back to rendering for transparencies?
+			// this happens when a specular or glow interrupt the normal
+			// rendering flow.  This also forces a reset of the current
+			// texture and alpha
+
+		if (txt_setup_reset) {
+			gl_texture_transparent_start();
+						
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+			glEnable(GL_ALPHA_TEST);
+			glAlphaFunc(GL_NOTEQUAL,0);
+						
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(GL_LEQUAL);
+			glDepthMask(GL_FALSE);
+
+			txt_setup_reset=FALSE;
+
+			txt_id=-1;
+			alpha=0.0f;
+		}
+
+			// draw the transparent texture
+
+		if ((texture->bitmaps[frame].gl_id!=txt_id) || (mesh_poly->alpha!=alpha)) {
+		
+			txt_id=texture->bitmaps[frame].gl_id;
+			alpha=mesh_poly->alpha;
+			gl_texture_transparent_set(txt_id,alpha);
+			
+			if (texture->additive) {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+			}
+			else {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+			}
+		}
+
+		glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+
+			// draw any specular on the transparent segment
+
+		if (mesh_poly->draw.is_specular) {
+			
+				// end transparencies drawing and start specular
+
+			gl_texture_transparent_end();
+			
+			gl_texture_transparent_specular_start();
+
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_ONE,GL_ONE);		// speculars are always additive
+
+			glDisable(GL_ALPHA_TEST);
+
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(GL_LEQUAL);
+			glDepthMask(GL_FALSE);
+
+				// draw specular
+
+			gl_texture_transparent_specular_set(texture->specularmaps[frame].gl_id,mesh_poly->alpha);
+
+			glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+
+				// end specular drawing and force a transparencies reset
+
+			gl_texture_transparent_specular_end();
+			txt_setup_reset=TRUE;
+
+		}
+
+			// draw any glow on the transparent segment
+
+		if (mesh_poly->draw.is_glow) {
+
+				// end transparencies drawing and start glow
+
+			gl_texture_transparent_end();
+		
+			gl_texture_transparent_glow_start();
+			
+			glEnable(GL_BLEND);
+			if (texture->additive) {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+			}
+			else {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);	// glows can also be additive
+			}
+
+			glEnable(GL_ALPHA_TEST);
+			glAlphaFunc(GL_NOTEQUAL,0);
+
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(GL_LEQUAL);
+			glDepthMask(GL_FALSE);
+		
+				// draw glow
+
+			gl_texture_transparent_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,mesh_poly->alpha);
+			gl_texture_transparent_glow_color(texture->glow.current_color);
+
+			glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+
+				// end glow drawing and force a transparencies reset
+
+			gl_texture_transparent_glow_end();
+			txt_setup_reset=TRUE;
+		}
+	}
+
+	gl_texture_transparent_end();
+
+
+
+
+
+
+
+
+	/* supergumba -- delete
 	cnt=draw->transparent_count;
 	sptr=draw->transparent_sort_list;
 	
@@ -366,6 +598,7 @@ void segment_render_transparent_portal(int rn)
 	}
 
 	gl_texture_transparent_end();
+	*/
 }
 
 void segment_render_transparent(int portal_cnt,int *portal_list)

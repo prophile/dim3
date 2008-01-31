@@ -589,6 +589,12 @@ int segment_render_opaque_portal(int rn,int pass_last)
 			gl_texture_tesseled_lighting_end();
 
 		}
+
+		
+
+
+
+		// supergumba -- need to add specular and glow and shaders
 	}
 
 	return(pass_last);

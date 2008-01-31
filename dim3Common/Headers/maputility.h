@@ -252,7 +252,8 @@ typedef struct		{
 													stencil_pass,stencil_idx;
 						float						normal[3];
 						bool						simple_tessel,shift_on,
-													is_lighting,simple_lighting;
+													is_lighting,simple_lighting,
+													is_glow,is_specular;
 					} map_mesh_poly_draw_type;
 
 typedef struct		{
@@ -269,7 +270,7 @@ typedef struct		{
 typedef struct		{
 						int							stencil_pass_start,stencil_pass_end;
 						bool						has_normal,has_bump,has_lighting,
-													has_transparent,has_shader;
+													has_transparent,has_specular,has_glow,has_shader;
 					} map_mesh_draw_type;
 
 typedef struct		{

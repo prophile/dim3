@@ -250,6 +250,8 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 			mesh->draw.has_bump=FALSE;
 			mesh->draw.has_lighting=FALSE;
 			mesh->draw.has_transparent=FALSE;
+			mesh->draw.has_glow=FALSE;
+			mesh->draw.has_specular=FALSE;
 			mesh->draw.has_shader=FALSE;
 			
 			mesh_poly=mesh->polys;
@@ -298,6 +300,14 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 							mesh_poly->draw.is_lighting=TRUE;
 						}
 					}
+
+						// check for glow and specular
+
+					mesh_poly->draw.is_glow=((setup.glow_mapping) && (lod_dist<map.optimizations.lod_glow_distance) && (texture->glowmaps[frame].gl_id!=-1));
+					mesh_poly->draw.is_specular=((setup.specular_mapping) && (lod_dist<map.optimizations.lod_specular_distance) && (texture->specularmaps[frame].gl_id!=-1));
+
+					mesh->draw.has_glow|=mesh_poly->draw.is_glow;
+					mesh->draw.has_specular|=mesh_poly->draw.is_specular;
 				}
 
 				mesh_poly->draw.cur_frame=frame;
