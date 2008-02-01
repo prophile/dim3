@@ -490,8 +490,8 @@
 				0123D87500C0AFD57F000001 /* walk_view_draw_select.c */,
 				F52E48CC0958F369007CA082 /* walk_view_click_handle.c */,
 				F52E48CE0958F370007CA082 /* walk_view_draw_handle.c */,
-				F5498A7B00F7C83E01000001 /* walk_view_movement.c */,
 				F545877C0952652700CBE89A /* walk_view_compass.c */,
+				F5498A7B00F7C83E01000001 /* walk_view_movement.c */,
 				F595F34D0A8C47D2004AB8BA /* walk_view_models.c */,
 			);
 			name = "Walk View";
@@ -881,10 +881,7 @@
 		F5DB0C540856A994005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
+				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;

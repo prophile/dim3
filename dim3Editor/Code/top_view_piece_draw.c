@@ -513,6 +513,90 @@ void top_view_piece_draw(int rn)
       
 ======================================================= */
 
+void top_view_piece_selection_draw_mesh(int rn,int mesh_idx,int mesh_poly_idx)
+{
+	int						k,t,x,z;
+	d3pnt					*pt;
+	portal_type				*portal;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*mesh_poly;
+		
+	glColor4f(1.0f,0.0f,0.0f,1.0f);
+	
+	portal=&map.portals[rn];
+	mesh=&portal->mesh.meshes[mesh_idx];
+	
+	mesh_poly=mesh->polys;
+		
+	for (k=0;k!=mesh->npoly;k++) {
+		if (k==mesh_poly_idx) glLineWidth(2.0f);
+	
+		glBegin(GL_LINE_LOOP);
+		
+		for (t=0;t!=mesh_poly->ptsz;t++) {
+			pt=&mesh->vertexes[mesh_poly->v[t]];
+			x=pt->x+portal->x;
+			z=pt->z+portal->z;
+			top_view_map_to_pane(&x,&z);
+			glVertex2i(x,z);
+		}
+		
+		glEnd();
+	
+		glLineWidth(1.0f);
+			
+		mesh_poly++;
+	}
+}
+
+void top_view_piece_selection_draw_liquid(int portal_idx,int liquid_idx)
+{
+	int				x1,z1,x2,z2,pixel_sz;
+	portal_type		*portal;
+	map_liquid_type	*liquid;
+
+	portal=&map.portals[portal_idx];
+	liquid=&portal->liquid.liquids[liquid_idx];
+	
+	x1=liquid->lft+portal->x;
+	z1=liquid->top+portal->z;
+	top_view_map_to_pane(&x1,&z1);
+	
+	x2=liquid->rgt+portal->x;
+	z2=liquid->bot+portal->z;
+	top_view_map_to_pane(&x2,&z2);
+	
+	pixel_sz=(200*magnify_factor)/magnify_size;
+	if (pixel_sz<3) pixel_sz=3;
+	
+	glColor4f(0.0f,0.0f,0.0f,0.7f);
+	
+	glBegin(GL_QUADS);
+	
+	glVertex2i((x1-pixel_sz),(z1-pixel_sz));
+	glVertex2i((x1+pixel_sz),(z1-pixel_sz));
+	glVertex2i((x1+pixel_sz),(z1+pixel_sz));
+	glVertex2i((x1-pixel_sz),(z1+pixel_sz));
+	
+	glVertex2i((x2-pixel_sz),(z1-pixel_sz));
+	glVertex2i((x2+pixel_sz),(z1-pixel_sz));
+	glVertex2i((x2+pixel_sz),(z1+pixel_sz));
+	glVertex2i((x2-pixel_sz),(z1+pixel_sz));
+
+	glVertex2i((x2-pixel_sz),(z2-pixel_sz));
+	glVertex2i((x2+pixel_sz),(z2-pixel_sz));
+	glVertex2i((x2+pixel_sz),(z2+pixel_sz));
+	glVertex2i((x2-pixel_sz),(z2+pixel_sz));
+
+	glVertex2i((x1-pixel_sz),(z2-pixel_sz));
+	glVertex2i((x1+pixel_sz),(z2-pixel_sz));
+	glVertex2i((x1+pixel_sz),(z2+pixel_sz));
+	glVertex2i((x1-pixel_sz),(z2+pixel_sz));
+	
+	glEnd();
+}
+
+
 // supergumba -- a lot of this can be deleted
 void top_view_piece_selection_draw_line(int rn,int lx,int rx,int lz,int rz)
 {
@@ -702,22 +786,18 @@ void top_view_piece_selection_draw(void)
 		
 	for (n=sel_count;n>=0;n--) {
 	
-		select_get(n,&type,&portal_idx,main_idx,sub_idx);
+		select_get(n,&type,&portal_idx,&main_idx,&sub_idx);
 		
 			// draw selection
 			
 		switch (type) {
 		
-			case segment_piece:
-				top_view_piece_selection_draw_segment(main_idx);
+			case mesh_piece:
+				top_view_piece_selection_draw_mesh(portal_idx,main_idx,sub_idx);
 				break;
 				
-			case primitive_piece:
-			//	GetForeColor(&curcolor);
-			//	RGBForeColor(&dkgraycolor);
-			//	top_view_piece_selection_draw_segment(index);
-			//	RGBForeColor(&curcolor);
-			//	top_view_piece_selection_draw_primitive(map.segments[index].primitive_uid[0]);
+			case liquid_piece:
+				top_view_piece_selection_draw_liquid(portal_idx,main_idx);
 				break;
 				
 			case node_piece:

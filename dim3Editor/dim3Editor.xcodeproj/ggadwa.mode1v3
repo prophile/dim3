@@ -318,19 +318,19 @@
 								<string>F5EE0188069A5ED700C42C5D</string>
 								<string>F508860900E8413C01000001</string>
 								<string>F503BCC9011B901401000001</string>
+								<string>20286C2CFDCF999611CA2CEA</string>
 								<string>1C37FBAC04509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>25</integer>
-									<integer>24</integer>
-									<integer>17</integer>
+									<integer>10</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 242}, {298, 759}}</string>
+							<string>{{0, 0}, {298, 759}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -430,9 +430,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26D51DAA0D4EAA9100223EDF</string>
+				<string>267A487D0D52D7C600690A0B</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26D51DAB0D4EAA9100223EDF</string>
+				<string>267A487E0D52D7C600690A0B</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -551,7 +551,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>223277510.411998</real>
+	<real>223534182.89431199</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -566,10 +566,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>26D51E7B0D4EF15400223EDF</string>
-		<string>26D51E7C0D4EF15400223EDF</string>
-		<string>26D51E7D0D4EF15400223EDF</string>
-		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>1C78EAAD065D492600B07095</string>
 		<string>1CD10A99069EF8BA00B06720</string>
 		<string>260AFEFF0D4050AF00F6C42F</string>
@@ -655,7 +651,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEFF0D4050AF00F6C42F</string>
-				<string>26D51DA90D4EAA9100223EDF</string>
+				<string>267A487F0D52D7C600690A0B</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -775,13 +771,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>26D51DAC0D4EAA9100223EDF</string>
+				<string>267A48800D52D7C600690A0B</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>26D51DAD0D4EAA9100223EDF</string>
-				<string>26D51DAE0D4EAA9100223EDF</string>
-				<string>26D51DAF0D4EAA9100223EDF</string>
-				<string>26D51DB00D4EAA9100223EDF</string>
-				<string>26D51DB10D4EAA9100223EDF</string>
+				<string>267A48810D52D7C600690A0B</string>
+				<string>267A48820D52D7C600690A0B</string>
+				<string>267A48830D52D7C600690A0B</string>
+				<string>267A48840D52D7C600690A0B</string>
+				<string>267A48850D52D7C600690A0B</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -871,8 +867,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>26D51DBD0D4EAB4500223EDF</string>
-				<string>26D51DBE0D4EAB4500223EDF</string>
+				<string>2606ACC00D52D41400FBF762</string>
+				<string>2606ACC10D52D41400FBF762</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
@@ -935,7 +931,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C78EAAD065D492600B07095</string>
-				<string>26D51DB20D4EAA9100223EDF</string>
+				<string>267A48860D52D7C600690A0B</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>ToolbarConfiguration</key>

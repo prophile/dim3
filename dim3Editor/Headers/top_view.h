@@ -86,7 +86,7 @@ extern bool top_view_segment_handle_drag(Point pt);
 
 extern void top_view_piece_drag(Point pt);
 extern bool top_view_piece_click(Point pt,int *type,int *portal_idx,int *main_idx,int *sub_idx);
-extern void top_view_piece_double_click(int type,int index);
+extern void top_view_piece_double_click(int type,int portal_idx,int main_idx,int sub_idx);
 
 //
 // piece drawing routines

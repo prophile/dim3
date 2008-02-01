@@ -229,7 +229,7 @@ void top_view_click(Point pt,bool dblclick)
 		// click pieces
 		
 	if (top_view_piece_click(pt,&type,&portal_idx,&main_idx,&sub_idx)) {
-	
+
 		if (!main_wind_shift_down()) {
 			if (!select_check(type,portal_idx,main_idx,sub_idx)) {			// keep selection if selecting an already selected piece
 				select_clear();	
@@ -239,14 +239,14 @@ void top_view_click(Point pt,bool dblclick)
 		else {
 			select_flip(type,portal_idx,main_idx,sub_idx);
 		}
-		
+
 		main_wind_draw();
 		texture_palette_reset();
 		menu_fix_enable();
 		main_wind_tool_fix_enable();
 		
 		if (dblclick) {
-			top_view_piece_double_click(type,index);
+			top_view_piece_double_click(type,portal_idx,main_idx,sub_idx);
 		}
 		else {
 			top_view_piece_drag(pt);

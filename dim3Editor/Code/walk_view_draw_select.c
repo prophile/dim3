@@ -34,40 +34,11 @@ extern map_type				map;
 
 /* =======================================================
 
-      Draw Select Polygons
-      
-======================================================= */
-
-void walk_view_draw_select_poly(int ptsz,int *x,int *y,int *z,int width)
-{
-	int				t,k;
-
-	glDisable(GL_DEPTH_TEST);
-	
-	glLineWidth(width);
- 	glColor4f(1,0,0,1);
-	glBegin(GL_LINES);
-	
-	for (t=0;t<ptsz;t++) {
-		k=t+1;
-		if (k>=ptsz) k=0;
-
-        glVertex3i((x[t]-cx),(y[t]-cy),(cz-z[t]));
-        glVertex3i((x[k]-cx),(y[k]-cy),(cz-z[k]));
-	}
-	
-	glEnd();
-	glLineWidth(1);
-	
-	glEnable(GL_DEPTH_TEST);
-}
-
-/* =======================================================
-
       Get Room Segments
       
 ======================================================= */
 
+// supergumba -- delete!
 int walk_view_get_wall_poly(segment_type *seg,int *x,int *z,int *y,float *gx,float *gy,int xadd,int zadd)
 {
 	int			ty,by,my;
@@ -246,47 +217,50 @@ void walk_view_get_ambient_fc_poly(segment_type *seg,int *x,int *z,int *y,float 
       
 ======================================================= */
 
-void walk_view_draw_select_segment(segment_type *seg,int width)
+void walk_view_draw_select_mesh(int rn,int mesh_idx,int poly_idx)
 {
-	int				t,xadd,zadd,ptsz,x[8],z[8],y[8];
-	float			gx[8],gy[8];
-    
-	xadd=map.portals[seg->rn].x*map_enlarge;
-    zadd=map.portals[seg->rn].z*map_enlarge;
-    
-	switch (seg->type) {
-	   case sg_wall:
-			ptsz=walk_view_get_wall_poly(seg,x,z,y,gx,gy,xadd,zadd);
-			walk_view_draw_select_poly(ptsz,x,y,z,width);
-			break;
-		case sg_floor:
-		case sg_ceiling:
-			ptsz=seg->data.fc.ptsz;
-			for (t=0;t<ptsz;t++) {
-				x[t]=(seg->data.fc.x[t]*map_enlarge)+xadd;
-				z[t]=(seg->data.fc.z[t]*map_enlarge)+zadd;
-				y[t]=seg->data.fc.y[t]*map_enlarge;
-			}
-			walk_view_draw_select_poly(ptsz,x,y,z,width);
-			break;
-		case sg_liquid:
-			x[0]=x[3]=(seg->data.liquid.lft*map_enlarge)+xadd;
-			x[1]=x[2]=(seg->data.liquid.rgt*map_enlarge)+xadd;
-			z[0]=z[1]=(seg->data.liquid.top*map_enlarge)+zadd;
-			z[2]=z[3]=(seg->data.liquid.bot*map_enlarge)+zadd;
-			y[0]=y[1]=y[2]=y[3]=(seg->data.liquid.y+1)*map_enlarge;
-			
-			walk_view_draw_select_poly(4,x,y,z,width);
-			break;				
-		case sg_ambient_wall:
-			walk_view_get_ambient_wall_poly(seg,x,z,y,xadd,zadd);
-			walk_view_draw_select_poly(4,x,y,z,width);
-			break;
-		case sg_ambient_fc:
-			walk_view_get_ambient_fc_poly(seg,x,z,y,NULL,NULL,xadd,zadd);
-			walk_view_draw_select_poly(seg->data.ambient_fc.ptsz,x,y,z,width);
-			break;
+	int						k,t,x,y,z;
+	d3pnt					*pt;
+	portal_type				*portal;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*mesh_poly;
+	
+	portal=&map.portals[rn];
+	mesh=&portal->mesh.meshes[mesh_idx];
+	
+		// draw selected mesh
+		
+	glColor4f(1.0f,0.0f,0.0f,1.0f);
+	
+	glLineWidth(2.0f);
+	
+	mesh_poly=mesh->polys;
+	
+	for (k=0;k!=mesh->npoly;k++) {
+	
+		if (k==poly_idx) {
+			glLineWidth(6.0f);
+		}
+		else {
+			glLineWidth(2.0f);
+		}
+	
+		glBegin(GL_LINE_LOOP);
+		
+		for (t=0;t!=mesh_poly->ptsz;t++) {
+			pt=&mesh->vertexes[mesh_poly->v[t]];
+			x=(pt->x+portal->x)-cx;
+			y=pt->y-cy;
+			z=cz-(pt->z+portal->z);
+			glVertex3i(x,y,z);
+		}
+		
+		glEnd();
+		
+		mesh_poly++;
 	}
+	
+	glLineWidth(1.0f);
 }
 
 /* =======================================================
@@ -297,16 +271,14 @@ void walk_view_draw_select_segment(segment_type *seg,int width)
 
 void walk_view_draw_select_sprite(d3pos *pos)
 {
-    int			x,z,y,wid,high,xadd,zadd;
+    int			x,z,y,wid,high;
+	portal_type	*portal;
 	
-	xadd=map.portals[pos->rn].x*map_enlarge;
-    zadd=map.portals[pos->rn].z*map_enlarge;
+	portal=&map.portals[pos->rn];
   
-	glDisable(GL_DEPTH_TEST);
-	
-    x=((pos->x*map_enlarge)+xadd)-cx;
-    y=((pos->y+1)*map_enlarge)-cy;
-    z=((pos->z*map_enlarge)+zadd)-cz;
+    x=(pos->x+portal->x)-cx;
+    y=(pos->y+1)-cy;
+    z=(pos->z+portal->z)-cz;
     
     wid=map_enlarge*3;
     high=map_enlarge*4;
@@ -343,8 +315,6 @@ void walk_view_draw_select_sprite(d3pos *pos)
 	glEnd();
     
     glLineWidth(1);
-	
-	glEnable(GL_DEPTH_TEST);
 }
 
 /* =======================================================
@@ -355,10 +325,8 @@ void walk_view_draw_select_sprite(d3pos *pos)
 
 void walk_view_draw_select_portal(int rn)
 {
-/* supergumba
-	int						n,k,
-							sel_count,index,type,primitive_uid;
-	segment_type			*seg,*seg2;
+	int						n,sel_count,
+							type,portal_idx, main_idx,sub_idx;
 	
 	sel_count=select_count();
 	if (sel_count==0) return;
@@ -367,69 +335,45 @@ void walk_view_draw_select_portal(int rn)
 		
 	for (n=(sel_count-1);n>=0;n--) {
 	
-		select_get(n,&type,&index);
+		select_get(n,&type,&portal_idx,&main_idx,&sub_idx);
+		if (portal_idx!=rn) continue;
 		
 			// draw selection
 			
 		switch (type) {
 		
-			case segment_piece:
-				seg=&map.segments[index];
-				if (seg->rn!=rn) break;
-				walk_view_draw_select_segment(seg,3);
-				break;
-				
-			case primitive_piece:
-				seg=&map.segments[index];
-				if (seg->rn!=rn) break;
-				
-				primitive_uid=seg->primitive_uid[0];
-				
-				seg2=map.segments;
-					
-				for (k=0;k!=map.nsegment;k++) {
-					if ((seg2->primitive_uid[0]==primitive_uid) && (k!=index)) walk_view_draw_select_segment(seg2,1);
-					seg2++;
-				}
-				
-				walk_view_draw_select_segment(seg,3);
+			case mesh_piece:
+				walk_view_draw_select_mesh(rn,main_idx,sub_idx);
 				break;
 				
 			case node_piece:
-				if (map.nodes[index].pos.rn!=rn) break;
-				walk_view_draw_select_sprite(&map.nodes[index].pos);
+				walk_view_draw_select_sprite(&map.nodes[main_idx].pos);
 				break;
 				
 			case spot_piece:
-				if (map.spots[index].pos.rn!=rn) break;
-				if (!walk_view_model_draw_select(&map.spots[index].pos,&map.spots[index].ang,map.spots[index].display_model)) {
-					walk_view_draw_select_sprite(&map.spots[index].pos);
+				if (!walk_view_model_draw_select(&map.spots[main_idx].pos,&map.spots[main_idx].ang,map.spots[main_idx].display_model)) {
+					walk_view_draw_select_sprite(&map.spots[main_idx].pos);
 				}
 				break;
 				
 			case scenery_piece:
-				if (map.sceneries[index].pos.rn!=rn) break;
-				if (!walk_view_model_draw_select(&map.sceneries[index].pos,&map.sceneries[index].ang,map.sceneries[index].model_name)) {
-					walk_view_draw_select_sprite(&map.sceneries[index].pos);
+				if (!walk_view_model_draw_select(&map.sceneries[main_idx].pos,&map.sceneries[main_idx].ang,map.sceneries[main_idx].model_name)) {
+					walk_view_draw_select_sprite(&map.sceneries[main_idx].pos);
 				}
 				break;
 				
 			case light_piece:
-				if (map.lights[index].pos.rn!=rn) break;
-				walk_view_draw_select_sprite(&map.lights[index].pos);
+				walk_view_draw_select_sprite(&map.lights[main_idx].pos);
 				break;
 				
 			case sound_piece:
-				if (map.sounds[index].pos.rn!=rn) break;
-				walk_view_draw_select_sprite(&map.sounds[index].pos);
+				walk_view_draw_select_sprite(&map.sounds[main_idx].pos);
 				break;
 				
 			case particle_piece:
-				if (map.particles[index].pos.rn!=rn) break;
-				walk_view_draw_select_sprite(&map.particles[index].pos);
+				walk_view_draw_select_sprite(&map.particles[main_idx].pos);
 				break;
 		}
 	}
-	*/
 }
 			

@@ -696,37 +696,37 @@ bool top_view_piece_click(Point pt,int *type,int *portal_idx,int *main_idx,int *
       
 ======================================================= */
 
-void top_view_piece_double_click(int type,int index)
+void top_view_piece_double_click(int type,int portal_idx,int main_idx,int sub_idx)
 {
 	switch (type) {
-	
+	/* supergumba
 		case segment_piece:
 		case primitive_piece:
 			dialog_segment_setting_run(index);
 			break;
-
+*/
 		case spot_piece:
-            dialog_spot_setting_run(&map.spots[index]);
+            dialog_spot_setting_run(&map.spots[main_idx]);
 			break;
 			
 		case scenery_piece:
-            dialog_scenery_setting_run(&map.sceneries[index]);
+            dialog_scenery_setting_run(&map.sceneries[main_idx]);
 			break;
 			
 		case node_piece:
-            dialog_node_settings_run(&map.nodes[index]);
+            dialog_node_settings_run(&map.nodes[main_idx]);
 			break;
 			
 		case light_piece:
-			dialog_map_light_settings_run(&map.lights[index]);
+			dialog_map_light_settings_run(&map.lights[main_idx]);
 			break;
 			
 		case sound_piece:
-			dialog_map_sound_settings_run(&map.sounds[index]);
+			dialog_map_sound_settings_run(&map.sounds[main_idx]);
 			break;
 			
 		case particle_piece:
-			dialog_map_particle_settings_run(&map.particles[index]);
+			dialog_map_particle_settings_run(&map.particles[main_idx]);
 			break;
 	}
 }

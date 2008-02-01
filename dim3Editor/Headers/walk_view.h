@@ -67,11 +67,9 @@ extern void walk_view_draw(bool on_side);
 // walk view draw select
 //
 
-extern void walk_view_draw_select_poly(int ptsz,int *x,int *y,int *z,int width);
 extern int walk_view_get_wall_poly(segment_type *seg,int *x,int *z,int *y,float *gx,float *gy,int xadd,int zadd);
 extern void walk_view_get_ambient_wall_poly(segment_type *seg,int *x,int *z,int *y,int xadd,int zadd);
 extern void walk_view_get_ambient_fc_poly(segment_type *seg,int *x,int *z,int *y,float *gx,float *gy,int xadd,int zadd);
-extern void walk_view_draw_select_segment(segment_type *seg,int width);
 extern void walk_view_draw_select_sprite(d3pos *pos);
 extern void walk_view_draw_select_portal(int rn);			
 

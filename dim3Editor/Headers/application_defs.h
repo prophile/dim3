@@ -172,15 +172,18 @@ and can be sold or given away.
 // selection types
 //
 
-#define segment_piece		100
-#define primitive_piece		101
+#define mesh_piece			100
+#define liquid_piece		101
 #define node_piece			102
 #define spot_piece			103
 #define scenery_piece		104
 #define light_piece			105
 #define sound_piece			106
 #define particle_piece		107
-#define mesh_piece			108
+
+// supergumba -- delete these
+#define segment_piece		110
+#define primitive_piece		111
 
 //
 // magnify factors
