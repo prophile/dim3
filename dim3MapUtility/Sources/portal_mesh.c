@@ -185,4 +185,78 @@ bool map_portal_mesh_set_poly_count(map_type *map,int portal_idx,int mesh_idx,in
 	return(TRUE);
 }
 
+/* =======================================================
+
+      Mesh Counts
+      
+======================================================= */
+
+int map_portal_mesh_count_poly(map_type *map,int portal_idx)
+{
+	int				n,cnt;
+	portal_type		*portal;
+	map_mesh_type	*mesh;
+
+	portal=&map->portals[portal_idx];
+	mesh=portal->mesh.meshes;
+
+	cnt=0;
+
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+		cnt+=mesh->npoly;
+		mesh++;
+	}
+
+	return(cnt);
+}
+
+/* =======================================================
+
+      Mesh Transparency Sorting Lists
+      
+======================================================= */
+
+bool map_portal_mesh_create_transparent_sort_lists(map_type *map)
+{
+	int				n,npoly;
+	portal_type		*portal;
+
+		// clear out pointers
+
+	portal=map->portals;
+
+	for (n=0;n!=map->nportal;n++) {
+		portal->mesh.draw.sort_cnt=0;
+		portal->mesh.draw.sort_list=NULL;
+		portal++;
+	}
+	
+		// create sort lists
+
+	portal=map->portals;
+
+	for (n=0;n!=map->nportal;n++) {
+		npoly=map_portal_mesh_count_poly(map,n);
+
+		portal->mesh.draw.sort_list=(map_mesh_poly_sort_type*)valloc(npoly*sizeof(map_mesh_poly_sort_type));
+		if (portal->mesh.draw.sort_list==NULL) return(FALSE);
+
+		portal++;
+	}
+	
+	return(TRUE);
+}
+
+void map_portal_mesh_dispose_transparent_sort_lists(map_type *map)
+{
+	int				n;
+	portal_type		*portal;
+	
+	portal=map->portals;
+
+	for (n=0;n!=map->nportal;n++) {
+		if (portal->mesh.draw.sort_list!=NULL) free(portal->mesh.draw.sort_list);
+		portal++;
+	}
+}
 

@@ -296,7 +296,7 @@ bool object_sight_test_object(obj_type *obj,int test_obj_uid)
 	float					side_start,look_start,side_add,look_add;
 	d3pnt					spt,hpt;
 	d3ang					ang;
-	ray_trace_contact		contact;
+	ray_trace_contact_type	contact;
 
 		// setup contact
 

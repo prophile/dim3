@@ -90,6 +90,7 @@ void projectile_collision(proj_type *proj)
 
 void projectile_decals(proj_type *proj,proj_setup_type *proj_setup)
 {
+	/* supergumba
 	int					mark_idx,seg_idx,size;
 	float				alpha;
 	
@@ -117,6 +118,7 @@ void projectile_decals(proj_type *proj,proj_setup_type *proj_setup)
 		decal_add_floor_ceiling(proj->pos.x,proj->pos.y,proj->pos.z,mark_idx,seg_idx,size,alpha);
 		return;
 	}
+	*/
 }
 
 /* =======================================================
@@ -128,7 +130,7 @@ void projectile_decals(proj_type *proj,proj_setup_type *proj_setup)
 bool projectile_hit(int tick,proj_type *proj,bool hit_scan)
 {
 	int					uid;
-	bool				auto_hit;
+	bool				auto_hit,wall_hit;
     obj_type			*obj,*hurt_obj;
     weapon_type			*weap;
 	proj_setup_type		*proj_setup;
@@ -143,17 +145,19 @@ bool projectile_hit(int tick,proj_type *proj,bool hit_scan)
 		// hits?
     
 	if (!hit_scan) {			// hit scans always hit
-		if ((proj->contact.wall_seg_idx==-1) && (proj->contact.floor_seg_idx==-1) && (proj->contact.ceiling_seg_idx==-1) && (proj->contact.obj_uid==-1) && (proj->contact.proj_uid==-1) && (!proj->contact.melee) && (!auto_hit)) return(FALSE);
+		if ((proj->contact.hit_poly.portal_idx==-1) && (proj->contact.obj_uid==-1) && (proj->contact.proj_uid==-1) && (!proj->contact.melee) && (!auto_hit)) return(FALSE);
 	}
 	
 		// auto-bounces and reflects
 		
-	if ((!auto_hit) && (!hit_scan)) {
-		if ((proj->action.reflect) && (proj->contact.wall_seg_idx!=-1)) {
+	if ((!auto_hit) && (!hit_scan) && (proj->contact.hit_poly.portal_idx!=-1)) {
+		wall_hit=collide_contact_is_wall_hit(&proj->contact.hit_poly);
+
+		if ((proj->action.reflect) && (wall_hit)) {
 			projectile_reflect(proj,TRUE);
 			return(FALSE);
 		}
-		if ((proj->action.bounce) && ((proj->contact.floor_seg_idx!=-1) || (proj->contact.ceiling_seg_idx!=-1))) {
+		if ((proj->action.bounce) && (!wall_hit)) {
 			if (!projectile_bounce(proj,proj->action.bounce_min_move,proj->action.bounce_reduce,TRUE)) return(FALSE);
 		}
 	}
@@ -188,7 +192,7 @@ bool projectile_hit(int tick,proj_type *proj,bool hit_scan)
 		// decals
 		
 	projectile_decals(proj,proj_setup);
-	
+
 	return(TRUE);
 }
 

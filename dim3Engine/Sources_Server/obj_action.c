@@ -411,6 +411,7 @@ void object_event_animations(obj_type *obj)
 
 void object_start_jump(obj_type *obj)
 {
+	/* supergumba
 	fc_segment_data	*fc;
 	
 		// can't jump if flying or not on ground
@@ -437,10 +438,12 @@ void object_start_jump(obj_type *obj)
     obj->force.gravity=gravity_start_power;
     
 	scripts_post_event_console(&obj->attach,sd_event_animation_object,sd_event_animation_object_jump,0);
+	*/
 }
 
 void object_liquid_jump(obj_type *obj)
 {
+	/* supergumba
 	int				jump_add;
 	
 		// small jump if no wall contact
@@ -456,6 +459,7 @@ void object_liquid_jump(obj_type *obj)
     obj->force.gravity=gravity_start_power;
     
 	scripts_post_event_console(&obj->attach,sd_event_animation_object,sd_event_animation_object_jump,0);
+	*/
 }
 
 /* =======================================================

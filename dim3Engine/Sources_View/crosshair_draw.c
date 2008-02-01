@@ -64,7 +64,7 @@ bool crosshair_get_location(int tick,obj_type *obj,weapon_type *weap,int *kx,int
 {
 	d3pnt					fpt,hpt;
 	d3ang					ang;
-	ray_trace_contact		contact;
+	ray_trace_contact_type	contact;
 
 		// get projectile position and angle
 

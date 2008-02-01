@@ -90,13 +90,13 @@ void halo_draw_add(int x,int z,int y,int obj_uid,model_draw_halo *mdl_halo)
 
 void halo_draw_setup(void)
 {
-	int					i,x,y,z,x2,y2,z2,pixel_sz,dist,d;
-	float				alpha;
-	bool				hit;
-	d3pnt				spt,ept,hpt;
-	obj_type			*obj;
-	halo_draw_type		*halo_draw;
-	ray_trace_contact	contact;
+	int						i,x,y,z,x2,y2,z2,pixel_sz,dist,d;
+	float					alpha;
+	bool					hit;
+	d3pnt					spt,ept,hpt;
+	obj_type				*obj;
+	halo_draw_type			*halo_draw;
+	ray_trace_contact_type	contact;
 	
 	view.count.halo_draw_in_view=0;
 

@@ -45,6 +45,22 @@ extern void object_move_xz_bounce(obj_type *obj);
 
 /* =======================================================
 
+      Determine if Contact is Wall or Floor/Ceiling like
+      
+======================================================= */
+
+bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly)
+{
+	map_mesh_poly_type		*mesh_poly;
+
+	if (hit_poly->portal_idx==-1) return(FALSE);
+
+	mesh_poly=&map.portals[hit_poly->portal_idx].mesh.meshes[hit_poly->mesh_idx].polys[hit_poly->poly_idx];
+	return((mesh_poly->box.common_xz) && (!mesh_poly->box.flat));
+}
+
+/* =======================================================
+
       Check for Object-Map Collisions
       
 ======================================================= */
@@ -146,10 +162,10 @@ void collide_object_ray_trace_points(obj_type *obj,int x_add,int z_add,int *px,i
 
 bool collide_object_to_map(obj_type *obj,int hit_fudge,int *xadd,int *yadd,int *zadd)
 {
-	int					n,x,z,idx,px[15],py[15],pz[15],
-						d,dist;
-	d3pnt				spt,ept,hpt[15];
-	ray_trace_contact	contact[15];
+	int						n,x,z,idx,px[15],py[15],pz[15],
+							d,dist;
+	d3pnt					spt,ept,hpt[15];
+	ray_trace_contact_type	contact[15];
 
 		// get collision points
 
@@ -224,18 +240,8 @@ bool collide_object_to_map(obj_type *obj,int hit_fudge,int *xadd,int *yadd,int *
 
 		// setup the hits
 
-	if (contact[idx].seg_idx!=-1) {
-		switch (map.segments[contact[idx].seg_idx].type) {
-			case sg_wall:
-				obj->contact.wall_seg_idx=contact[idx].seg_idx;
-				break;
-			case sg_floor:
-				obj->contact.floor_seg_idx=contact[idx].seg_idx;
-				break;
-			case sg_ceiling:
-				obj->contact.ceiling_seg_idx=contact[idx].seg_idx;
-				break;
-		}
+	if (contact[idx].poly.portal_idx!=-1) {
+		memmove(&obj->contact.hit_poly,&contact[idx].poly,sizeof(poly_pointer_type));
 	}
 
 	return(TRUE);
@@ -313,6 +319,7 @@ void object_move_y_up(obj_type *obj,int ymove)
 
 void object_move_y_fall(obj_type *obj)
 {
+	/*
 	int				y,fy,ymove,uid;
 	obj_type		*hit_obj;
 	
@@ -380,6 +387,7 @@ void object_move_y_fall(obj_type *obj)
 	else {
 		obj->air_mode=am_falling;
 	}
+	*/
 }
 
 void object_move_y_down(obj_type *obj,int ymove)
@@ -523,6 +531,7 @@ bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int l
 
 bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 {
+	/*
 	int					xadd2,yadd2,zadd2,
 						bump_y,lx,rx,lz,rz,hit_box_idx;
 	wall_segment_data	*wall;
@@ -547,7 +556,7 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		// that was hit and attempt to slide across
 		// the wall
 	
-	if (obj->contact.wall_seg_idx!=-1) {
+	if (obj->contact.poly.portal_idx!=-1) {
 
 		wall=&map.segments[obj->contact.wall_seg_idx].data.wall;
 
@@ -594,6 +603,9 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		
 	if (!collide_object_to_object_hit_box_slide(obj,*xadd,*zadd,cnt_obj,&model->hit_boxes[hit_box_idx],&lx,&rx,&lz,&rz)) return(TRUE);
 	return(object_move_xz_slide_line(obj,xadd,yadd,zadd,lx,rx,lz,rz));
+	*/
+
+	return(FALSE);
 }
 
 /* =======================================================

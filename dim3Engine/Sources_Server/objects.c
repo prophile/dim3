@@ -105,10 +105,10 @@ void object_clear_force(obj_force *force)
 
 void object_clear_contact(obj_contact *contact)
 {
-	contact->wall_seg_idx=-1;
-	contact->floor_seg_idx=-1;
-	contact->ceiling_seg_idx=-1;
-	contact->liquid_seg_idx=-1;
+	contact->hit_poly.portal_idx=-1;
+	contact->stand_poly.portal_idx=-1;
+
+	contact->liquid_idx=-1;
 	
 	contact->obj_uid=-1;
 	contact->proj_uid=-1;

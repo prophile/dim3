@@ -191,6 +191,7 @@ void projectile_seek(proj_type *proj,obj_type *to_obj,float turn_add,float thrus
 
 bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_event)
 {
+	/* supergumba
 	int			xmove,ymove,zmove,seg_idx;
 	float		fy,slope_y;
 
@@ -232,6 +233,8 @@ bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_ev
 	if (send_event) scripts_post_event_console(&proj->attach,sd_event_projectile,sd_event_projectile_bounce,0);
 	
 	return(ymove==min_ymove);
+	*/
+	return(FALSE);
 }
 
 /* =======================================================
@@ -242,6 +245,7 @@ bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_ev
 
 void projectile_reflect(proj_type *proj,bool send_event)
 {
+	/* supergumba
 	int					seg_idx,x,z,y;
 	float				f,ang;
 	wall_segment_data	*wall;
@@ -292,6 +296,7 @@ void projectile_reflect(proj_type *proj,bool send_event)
 		// send event
 
 	if (send_event) scripts_post_event_console(&proj->attach,sd_event_projectile,sd_event_projectile_reflect,0);
+	*/
 }
 
 /* =======================================================

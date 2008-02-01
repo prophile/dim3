@@ -1,119 +1,122 @@
 LIBRARY      "dim3MapUtility"
 
 EXPORTS
-	segment_type_str							@100
-	segment_clip_str							@101
-	segment_curve_str							@102
-	segment_push_str							@103
-	light_type_str								@104
+	segment_type_str								@100
+	segment_clip_str								@101
+	segment_curve_str								@102
+	segment_push_str								@103
+	light_type_str									@104
 
-	map_count_texture_frames					@110
-	map_setup_animated_textures					@111
+	map_count_texture_frames						@110
+	map_setup_animated_textures						@111
 
-	map_portal_create							@120
-	map_find_portal								@121
-	map_find_portal_hint						@122
-	map_find_portal_by_pos						@123
-	map_portal_count_segments					@124
-	map_portal_calculate_center					@125
-	map_portal_calculate_center_floor			@126
-	map_portal_delete							@127
-	map_portal_duplicate						@128
-	map_portal_touching_portal					@129
-	map_portal_draw_sort						@130
+	map_portal_create								@120
+	map_find_portal									@121
+	map_find_portal_hint							@122
+	map_find_portal_by_pos							@123
+	map_portal_count_segments						@124
+	map_portal_calculate_center						@125
+	map_portal_calculate_center_floor				@126
+	map_portal_delete								@127
+	map_portal_duplicate							@128
+	map_portal_touching_portal						@129
+	map_portal_draw_sort							@130
 
-	map_portal_sight_clear						@140
-	map_portal_sight_prune						@141
-	map_portal_sight_delete_adjust_path			@142
-	map_portal_sight_generate_paths				@143
+	map_portal_sight_clear							@140
+	map_portal_sight_prune							@141
+	map_portal_sight_delete_adjust_path				@142
+	map_portal_sight_generate_paths					@143
 
-	map_portal_clear_segment_list_changes		@150
-	map_portal_set_segment_list_changes			@151
-	map_portal_rebuild_segment_list_changes		@152
+	map_portal_clear_segment_list_changes			@150
+	map_portal_set_segment_list_changes				@151
+	map_portal_rebuild_segment_list_changes			@152
 
-	map_portal_create_vertex_lists				@160
-	map_portal_dispose_vertex_lists				@161
-	map_portal_rebuild_vertex_lists				@162
-	map_portal_create_segment_lists				@163
-	map_portal_dispose_segment_lists			@164
+	map_portal_create_vertex_lists					@160
+	map_portal_dispose_vertex_lists					@161
+	map_portal_rebuild_vertex_lists					@162
+	map_portal_create_segment_lists					@163
+	map_portal_dispose_segment_lists				@164
 
-	map_portal_liquid_vertex_set_tide			@170
-	map_portal_segment_update_shift				@171
+	map_portal_liquid_vertex_set_tide				@170
+	map_portal_segment_update_shift					@171
 
-	map_set_light_base							@180
-	map_portal_clear_lights						@181
-	map_portal_add_light						@182
-	map_portal_light_check_changes				@183
-	map_portal_light_check_changes_reset		@184
-	map_portal_light_check_changes_reset_all	@185
-	map_portal_light_in_view					@186
-	map_portal_get_light						@187
-	map_portal_find_closest_light				@188
-	map_portal_calculate_light_color			@189
-	map_portal_calculate_normal_vector			@190
-	map_portal_calculate_normal_vector_smooth	@191
-	map_portal_create_light_spots				@192
-	map_portal_dispose_light_spots				@193
+	map_set_light_base								@180
+	map_portal_clear_lights							@181
+	map_portal_add_light							@182
+	map_portal_light_check_changes					@183
+	map_portal_light_check_changes_reset			@184
+	map_portal_light_check_changes_reset_all		@185
+	map_portal_light_in_view						@186
+	map_portal_get_light							@187
+	map_portal_find_closest_light					@188
+	map_portal_calculate_light_color				@189
+	map_portal_calculate_normal_vector				@190
+	map_portal_calculate_normal_vector_smooth		@191
+	map_portal_create_light_spots					@192
+	map_portal_dispose_light_spots					@193
 
-	map_count_spot								@200
-	map_find_spot								@201
-	map_find_random_spot						@202
-	map_spot_clear_attach						@203
-	map_spot_attach_object						@204
+	map_count_spot									@200
+	map_find_spot									@201
+	map_find_random_spot							@202
+	map_spot_clear_attach							@203
+	map_spot_attach_object							@204
 
-	map_find_node								@210
-	map_find_nearest_node						@211
-	map_find_next_node_in_path					@212
-	map_node_to_node_distance					@213
+	map_find_node									@210
+	map_find_nearest_node							@211
+	map_find_next_node_in_path						@212
+	map_node_to_node_distance						@213
 
-	map_portal_mesh_add							@220
-	map_portal_mesh_delete						@221
-	map_portal_mesh_set_vertex_count			@222
-	map_portal_mesh_set_poly_count				@223
+	map_portal_mesh_add								@220
+	map_portal_mesh_delete							@221
+	map_portal_mesh_set_vertex_count				@222
+	map_portal_mesh_set_poly_count					@223
+	map_portal_mesh_count_poly						@224
+	map_portal_mesh_create_transparent_sort_lists	@225
+	map_portal_mesh_dispose_transparent_sort_lists	@226
 
-	map_portal_liquid_add						@225
-	map_portal_liquid_delete					@226
+	map_portal_liquid_add							@230
+	map_portal_liquid_delete						@231
 
-	map_primitive_create_uid					@230
-	map_primitive_push_uid						@231
-	map_primitive_pop_uid						@232
+	map_primitive_create_uid						@240
+	map_primitive_push_uid							@241
+	map_primitive_pop_uid							@242
 
-	map_segment_group_find_name					@240
-	map_segment_move							@241
-	map_segment_calculate_extent				@242
-	map_segment_calculate_center				@243
-	map_segments_clear_touch					@244
-	map_segments_count_touch					@245
-	map_segment_reset_texture_uvs				@246
+	map_segment_group_find_name						@250
+	map_segment_move								@251
+	map_segment_calculate_extent					@252
+	map_segment_calculate_center					@253
+	map_segments_clear_touch						@254
+	map_segments_count_touch						@255
+	map_segment_reset_texture_uvs					@256
 
-	map_group_create_segment_list				@250
-	map_group_dispose_segment_list				@251
-	map_group_get_center						@252
+	map_group_create_segment_list					@260
+	map_group_dispose_segment_list					@261
+	map_group_get_center							@262
 
-	map_movement_find							@260
-	map_movement_add							@261
-	map_movement_delete							@262
-	map_movement_move_add						@263
-	map_movement_move_delete					@264
+	map_movement_find								@270
+	map_movement_add								@271
+	map_movement_delete								@272
+	map_movement_move_add							@273
+	map_movement_move_delete						@274
 
-	map_setup									@270
-	map_new										@271
-	map_open									@272
-	map_open_primitive							@273
-	map_reload									@274
-	map_save									@275
-	map_close									@276
-	map_refresh_textures						@277
+	map_setup										@280
+	map_new											@281
+	map_open										@282
+	map_open_primitive								@283
+	map_reload										@284
+	map_save										@285
+	map_close										@286
+	map_refresh_textures							@287
 
-	map_prepare									@280
+	map_prepare										@290
 
-	map_add_texture_frame						@290
-	map_delete_texture_frame					@291
+	map_add_texture_frame							@300
+	map_delete_texture_frame						@301
 
-	map_auto_generate_clear						@300
-	map_auto_generate_fix_segments_uv			@301
-	map_auto_generate_add_simple_lights			@302
-	map_auto_generate_add_player_spot			@303
+	map_auto_generate_clear							@310
+	map_auto_generate_fix_segments_uv				@311
+	map_auto_generate_add_simple_lights				@312
+	map_auto_generate_add_player_spot				@313
 
-	map_auto_generate							@310
-	map_auto_generate_test						@311
+	map_auto_generate								@320
+	map_auto_generate_test							@321

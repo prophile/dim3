@@ -244,6 +244,13 @@ bool map_start(bool skip_media,char *err_str)
 
 	progress_draw(20);
 
+	if (!map_portal_mesh_create_transparent_sort_lists(&map)) {
+		progress_shutdown();
+		strcpy(err_str,"Out of memory");
+		return(FALSE);
+	}
+
+	// supergumba -- delete this
 	if (!map_portal_create_segment_lists(&map)) {
 		progress_shutdown();
 		strcpy(err_str,"Out of memory");
@@ -472,7 +479,8 @@ void map_end(void)
 		// free group, portal segment, vertex and light lists
 		
 	map_group_dispose_segment_list(&map);
-	map_portal_dispose_segment_lists(&map);
+	map_portal_mesh_dispose_transparent_sort_lists(&map);
+	map_portal_dispose_segment_lists(&map);		// supergumba -- delete!
 	map_portal_dispose_vertex_lists(&map);
 	map_portal_dispose_light_spots(&map);
 	

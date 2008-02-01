@@ -119,12 +119,14 @@ JSBool js_get_obj_status_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 			*vp=INT_TO_JSVAL(obj->liquid_mode+sd_liquid_out);
 			break;
 		case obj_status_prop_floor_tag:
+			/* supergumba -- need to fix this
 			if (obj->contact.floor_seg_idx==-1) {
 				*vp=INT_TO_JSVAL(-1);
 			}
 			else {
 				*vp=INT_TO_JSVAL(map.segments[obj->contact.floor_seg_idx].tag);
 			}
+			*/
 			break;
 		case obj_status_prop_stand_on_object_id:
 			*vp=INT_TO_JSVAL(obj->stand_obj_uid);

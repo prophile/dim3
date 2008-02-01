@@ -58,6 +58,8 @@ extern int collide_find_object_for_sphere_hit(int sx,int sy,int sz,int radius,in
 extern int collide_find_object_for_sphere(int sx,int sy,int sz,int radius,int ignore_obj_uid);
 extern void collide_push_objects(int sx,int sz,int sy,int radius,int force);
 
+extern bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly);
+
 extern bool map_obj_move_xz(obj_type *obj,int x,int z);
 extern bool move_obj_check_xz_map_slide(obj_type *obj,int x,int z);
 extern bool move_obj_check_bump(obj_type *obj,int x,int z,int y);
@@ -81,6 +83,6 @@ extern bool map_stand_check_object(obj_type *obj);
 
 extern void ray_push(d3pnt *pt,d3ang *ang,int dist);
 extern void ray_push_to_end(d3pnt *pt,d3pnt *ept,int dist);
-extern bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_contact *contact);
-extern bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact *contact);
+extern bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_contact_type *contact);
+extern bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_type *contact);
 

@@ -314,7 +314,7 @@ typedef struct		{
 typedef struct		{
 						int							mesh_idx,poly_idx;
 						float						dist;
-					} map_portal_mesh_poly_sort_type;
+					} map_mesh_poly_sort_type;
 
 //
 // segment structures
@@ -455,8 +455,17 @@ typedef struct		{
 					} portal_vertex_type;
 
 typedef struct		{
+						int							sort_cnt;
+						bool						has_normal,has_bump,has_lighting,
+													has_transparent,has_glow,has_specular,
+													has_shader;
+						map_mesh_poly_sort_type		*sort_list;
+					} portal_mesh_draw_type;
+
+typedef struct		{
 						int							nmesh;
 						map_mesh_type				*meshes;
+						portal_mesh_draw_type		draw;
 					} portal_mesh_type;
 
 typedef struct		{
@@ -781,6 +790,9 @@ extern bool map_portal_mesh_add(map_type *map,int portal_idx,int add_count);
 extern bool map_portal_mesh_delete(map_type *map,int portal_idx,int mesh_idx);
 extern bool map_portal_mesh_set_vertex_count(map_type *map,int portal_idx,int mesh_idx,int nvertex);
 extern bool map_portal_mesh_set_poly_count(map_type *map,int portal_idx,int mesh_idx,int npoly);
+extern int map_portal_mesh_count_poly(map_type *map,int portal_idx);
+extern bool map_portal_mesh_create_transparent_sort_lists(map_type *map);
+extern void map_portal_mesh_dispose_transparent_sort_lists(map_type *map);
 
 extern bool map_portal_liquid_add(map_type *map,int portal_idx,int add_count);
 extern bool map_portal_liquid_delete(map_type *map,int portal_idx,int liquid_idx);

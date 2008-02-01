@@ -83,143 +83,20 @@ void mesh_normal_smooth_init(void)
 
 /* =======================================================
 
-      Setup Segments To Render
+      Setup Meshes To Render
       
 ======================================================= */
 
-void segment_render_setup_single_opaque(portal_type *portal,short s_idx,segment_type *seg,texture_type *texture,int frame,int lod_dist,bool light_changed)
+void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 {
-	portal_segment_draw_type	*draw;
-
-	draw=&portal->segment_draw;
-	
-		// opaque bumps
-
-	if ((setup.bump_mapping) && (lod_dist<map.optimizations.lod_bump_distance) && (texture->bumpmaps[frame].gl_id!=-1)) {
-		draw->opaque_bump_list[draw->opaque_bump_count++]=s_idx;
-		draw->opaque_light_list[draw->opaque_light_count++]=s_idx;
-
-		if ((!light_changed) || (seg->moveable)) map_portal_calculate_normal_vector_smooth(portal,(double)seg->middle.x,(double)seg->middle.y,(double)seg->middle.z,seg->render.normal);
-	}
-	else {
-		if (seg->render.light_simple) {
-			draw->opaque_simple_normal_list[draw->opaque_simple_normal_count++]=s_idx;
-		}
-		else {
-			draw->opaque_normal_list[draw->opaque_normal_count++]=s_idx;
-			draw->opaque_light_list[draw->opaque_light_count++]=s_idx;
-		}
-	}
-
-		// opaque specular
-
-	if ((setup.specular_mapping) && (texture->specularmaps[frame].gl_id!=-1) && (lod_dist<map.optimizations.lod_specular_distance)) {
-		draw->opaque_specular_list[draw->opaque_specular_count++]=s_idx;
-	}
-	
-		// opaque glow
-
-	if ((setup.glow_mapping) && (texture->glowmaps[frame].gl_id!=-1) && (lod_dist<map.optimizations.lod_glow_distance)) {
-		draw->opaque_glow_list[draw->opaque_glow_count++]=s_idx;
-	}
-}
-
-void segment_render_setup(int tick,int portal_cnt,int *portal_list)
-{
-	int							n,k,i,rn,cnt,frame,
+	int							n,k,i,rn,frame,
 								lod_dist,stencil_pass,stencil_idx;
-	short						s_idx;
 	bool						light_changed,global_light_simple;
-	short						*sptr;
 	portal_type					*portal;
-	segment_type				*seg;
 	texture_type				*texture;
-	portal_segment_draw_type	*draw;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*mesh_poly;
 	
-		// setup segment rendering for draw types
-/*	
-	for (n=(portal_cnt-1);n>=0;n--) {
-		rn=portal_list[n];
-		
-		portal=&map.portals[rn];
-		draw=&portal->segment_draw;
-		
-			// create vertex, normal, and color lists
-			
-		portal_compile_gl_lists(tick,rn);
-			
-			// get ready for opaque/bump/transparent sorting
-		
-		draw->opaque_normal_count=0;
-		draw->opaque_bump_count=0;
-		draw->opaque_light_count=0;
-		draw->opaque_simple_normal_count=0;
-		draw->opaque_specular_count=0;
-		draw->opaque_glow_count=0;
-		draw->transparent_count=0;
-		draw->shader_count=0;
-		
-			// has lighting changed in this portal?
-			
-		light_changed=map_portal_light_check_changes(portal);
-		
-			// combined global simple lighting
-			
-		global_light_simple=(!setup.high_quality_lighting) || (fog_solid_on());
-	
-			// create segment rendering values and lists
-
-
-		// supergumba -- delete all this and ALL segment lists
-
-		cnt=portal->segment_list_draw.count;
-		sptr=portal->segment_list_draw.list;
-
-		for (i=0;i!=cnt;i++) {
-			s_idx=*sptr++;
-			
-			seg=&map.segments[s_idx];
-			
-			texture=&map.textures[seg->fill];
-			frame=(texture->animate.current_frame+seg->txt_offset)&max_texture_frame_mask;
-
-			lod_dist=abs(seg->middle.x-view.camera.pos.x)+abs(seg->middle.y-view.camera.pos.y)+abs(seg->middle.z-view.camera.pos.z);
-
-				// default setup
-		
-			seg->render.light_simple=(global_light_simple) || (lod_dist>map.optimizations.lod_light_distance) || (seg->simple_tessel);
-			seg->render.lod_dist=lod_dist;
-
-				// clear the stencil
-				
-			seg->render.stencil_pass=0;
-			seg->render.stencil_idx=stencil_none;
-			
-				// shader only?
-				
-			if (texture->shader.on) {
-				draw->shader_list[draw->shader_count++]=s_idx;
-				continue;
-			}
-			
-				// opaque
-				
-			if ((seg->alpha==1.0f) && (texture->bitmaps[frame].alpha_mode!=alpha_mode_transparent)) {
-				segment_render_setup_single_opaque(portal,s_idx,seg,texture,frame,lod_dist,light_changed);
-				continue;
-			}
-			
-				// transparent
-				
-			draw->transparent_list[draw->transparent_count++]=s_idx;
-		}
-
-		portal++;
-	}
-*/
-
 		// setup portal and mesh drawing
 		// compile gl lists for portal and per mesh and
 		// poly flags from rendering
@@ -240,7 +117,14 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 			
 		global_light_simple=(!setup.high_quality_lighting) || (fog_solid_on());
 
-			// supergumba -- add per portal has_normal, has_bump flags
+			// per-portal flags
+
+		portal->mesh.draw.has_transparent=FALSE;
+		portal->mesh.draw.has_glow=FALSE;
+		portal->mesh.draw.has_specular=FALSE;
+		portal->mesh.draw.has_shader=FALSE;
+
+			// run through the meses
 
 		mesh=portal->mesh.meshes;
 
@@ -271,6 +155,7 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 					mesh->draw.has_shader=TRUE;
 					mesh_poly->draw.draw_type=map_mesh_poly_draw_shader;
 					mesh_poly->draw.is_lighting=FALSE;
+					portal->mesh.draw.has_shader=TRUE;
 				}
 				else {
 
@@ -280,6 +165,7 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 						mesh->draw.has_transparent=TRUE;
 						mesh_poly->draw.draw_type=map_mesh_poly_draw_transparent;
 						mesh_poly->draw.is_lighting=FALSE;
+						portal->mesh.draw.has_transparent=TRUE;
 					}
 					else {
 
@@ -289,6 +175,8 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 							mesh->draw.has_bump=TRUE;
 							mesh_poly->draw.draw_type=map_mesh_poly_draw_bump;
 							mesh_poly->draw.is_lighting=TRUE;
+							portal->mesh.draw.has_bump=TRUE;
+							portal->mesh.draw.has_lighting=TRUE;
 							if ((!light_changed) || (mesh_poly->flag.moveable)) map_portal_calculate_normal_vector_smooth(portal,(double)mesh_poly->box.mid.x,(double)mesh_poly->box.mid.y,(double)mesh_poly->box.mid.z,mesh_poly->draw.normal);
 						}
 
@@ -298,6 +186,8 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 							mesh->draw.has_normal=TRUE;
 							mesh_poly->draw.draw_type=map_mesh_poly_draw_normal;
 							mesh_poly->draw.is_lighting=TRUE;
+							portal->mesh.draw.has_normal=TRUE;
+							portal->mesh.draw.has_lighting=TRUE;
 						}
 					}
 
@@ -307,7 +197,10 @@ void segment_render_setup(int tick,int portal_cnt,int *portal_list)
 					mesh_poly->draw.is_specular=((setup.specular_mapping) && (lod_dist<map.optimizations.lod_specular_distance) && (texture->specularmaps[frame].gl_id!=-1));
 
 					mesh->draw.has_glow|=mesh_poly->draw.is_glow;
+					portal->mesh.draw.has_glow|=mesh_poly->draw.is_glow;
+
 					mesh->draw.has_specular|=mesh_poly->draw.is_specular;
+					portal->mesh.draw.has_specular|=mesh_poly->draw.is_specular;
 				}
 
 				mesh_poly->draw.cur_frame=frame;

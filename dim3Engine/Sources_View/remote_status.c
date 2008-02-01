@@ -123,12 +123,12 @@ void remote_draw_status(obj_type *obj)
 
 void remote_draw_names_setup(void)
 {
-	int					n,x,y,z,x2,y2,z2,dist;
-	bool				hit,has_tag;
-	d3pnt				spt,ept,hpt;
-	obj_type			*obj;
-	model_type			*mdl;
-	ray_trace_contact	contact;
+	int						n,x,y,z,x2,y2,z2,dist;
+	bool					hit,has_tag;
+	d3pnt					spt,ept,hpt;
+	obj_type				*obj;
+	model_type				*mdl;
+	ray_trace_contact_type	contact;
 	
 	if (!net_setup.client.joined) return;
 	if (!setup.network.show_names) return;

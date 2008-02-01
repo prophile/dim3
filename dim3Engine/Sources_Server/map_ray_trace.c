@@ -67,9 +67,9 @@ float ray_trace_vector_inner_product(d3vct *v1,d3vct *v2)
       
 ======================================================= */
 
-void ray_trace_contact_clear(ray_trace_contact *contact)
+void ray_trace_contact_clear(ray_trace_contact_type *contact)
 {
-	contact->seg_idx=-1;
+	contact->poly.portal_idx=-1;
 	contact->obj_uid=-1;
 	contact->proj_uid=-1;
 }
@@ -479,7 +479,7 @@ float ray_trace_projectile(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,proj_type
       
 ======================================================= */
 
-void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_trace_contact *contact)
+void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_trace_contact_type *contact)
 {
 	int					n,k;
 	float				t;
@@ -554,9 +554,9 @@ void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *
 	
 	for (n=0;n!=portal->mesh.nmesh;n++) {
 
-		mesh_poly=mesh->polys;
-		
 		for (k=0;k!=mesh->npoly;k++) {
+
+			mesh_poly=&mesh->polys[k];
 
 				// rough bounds check
 
@@ -582,9 +582,9 @@ void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *
 			hpt->z=pt.z;
 			
 			ray_trace_contact_clear(contact);
-		//	contact->seg_idx=idx;			// supergumba -- need to change contact types
-		
-			mesh_poly++;
+			contact->poly.portal_idx=rn;
+			contact->poly.mesh_idx=n;
+			contact->poly.poly_idx=k;
 		}
 	
 		mesh++;
@@ -648,7 +648,7 @@ void ray_push_to_end(d3pnt *pt,d3pnt *ept,int dist)
       
 ======================================================= */
 
-bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_contact *contact)
+bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_contact_type *contact)
 {
 	int					n;
 	float				hit_t;
@@ -720,7 +720,7 @@ bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_
       
 ======================================================= */
 
-bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact *contact)
+bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_type *contact)
 {
 	int					n;
 	float				hit_t;

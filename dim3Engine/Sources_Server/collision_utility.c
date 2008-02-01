@@ -528,3 +528,4 @@ bool collide_sphere_to_projectile(int sx,int sy,int sz,int radius,proj_type *pro
 	d=(int)sqrtf((float)((x*x)+(z*z)));
 	return(d<=(radius+proj->size.radius));
 }
+

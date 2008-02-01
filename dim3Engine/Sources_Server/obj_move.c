@@ -339,6 +339,7 @@ void object_alter_gravity(obj_type *obj,float alt_gravity)
 
 bool object_bump_up(obj_type *obj,int xmove,int zmove)
 {
+	/* supergumba
 	int				uid,idx,ydif,ymove;
     obj_type		*hit_obj;
 	segment_type	*seg;
@@ -382,6 +383,8 @@ bool object_bump_up(obj_type *obj,int xmove,int zmove)
 	obj->bump.smooth_offset+=abs(ymove);					// bump moves player up, but offset pushes them down and smoothes out the bump
 	
 	return(obj->contact.ceiling_seg_idx==-1);
+	*/
+	return(FALSE);
 }
 
 /* =======================================================
@@ -392,6 +395,7 @@ bool object_bump_up(obj_type *obj,int xmove,int zmove)
 
 void object_fall(obj_type *obj)
 {
+	/* supergumba
 	int				y,fy,ymove,uid;
 	obj_type		*hit_obj;
 	
@@ -463,6 +467,7 @@ void object_fall(obj_type *obj)
 	else {
 		obj->air_mode=am_falling;
 	}
+	*/
 }
 
 /* =======================================================
@@ -497,6 +502,7 @@ bool object_move_xz(obj_type *obj,int xmove,int zmove)
 
 void object_move_xz_bounce(obj_type *obj)
 {
+	/* supergumba
 	if (obj->contact.wall_seg_idx==-1) {
 		obj->bounce.wall_seg_idx=-1;
 		return;
@@ -511,6 +517,7 @@ void object_move_xz_bounce(obj_type *obj)
 		
 	obj->force.vct.x-=(obj->motion.vct.x*obj->bounce.factor);
 	obj->force.vct.z-=(obj->motion.vct.z*obj->bounce.factor);
+	*/
 }
 
 void object_to_object_push(obj_type *obj,float xmove,float zmove)
@@ -626,6 +633,7 @@ void object_move_y(obj_type *obj,int ymove)
 
 void object_fly_y(obj_type *obj,int ymove)
 {
+	/* supergumba
 	int				by;
 	
 		// moving up
@@ -656,6 +664,7 @@ void object_fly_y(obj_type *obj,int ymove)
 	if (obj->pos.y>=by) {
 		obj->pos.y=by;
 	}
+	*/
 }
 
 /* =======================================================
@@ -963,9 +972,9 @@ void object_move(obj_type *obj)
 			object_move_swim(obj);
 		}
 		else {
-			object_move_normal(obj);
+		//	object_move_normal(obj);
 
-		//	object_move_normal_2(obj);		// supergumba -- NEW COLLIDE -- more collision edits
+			object_move_normal_2(obj);		// supergumba -- NEW COLLIDE -- more collision edits
 		}
 	}
 
@@ -973,7 +982,7 @@ void object_move(obj_type *obj)
 		// on send contact event once per hit, and check for
 		// ladder contacts.  If no contacts, only turn off
 		// ladder if there was actually movement
-
+/* supergumba
 	if (obj->contact.wall_seg_idx!=-1) {
 
 			// collide events
@@ -992,6 +1001,7 @@ void object_move(obj_type *obj)
 
 		if ((x!=obj->pos.x) && (y!=obj->pos.y) && (z!=obj->pos.z)) obj->on_ladder=FALSE;
 	}
+	*/
 }
 
 /* =======================================================
@@ -1080,6 +1090,7 @@ void object_move_with_wall_segment(int seg_idx,int xmove,int zmove)
 
 void object_move_with_floor_segment(int seg_idx,int xmove,int zmove)
 {
+	/* supergumba
 	int			i;
 	obj_type	*obj;
 	
@@ -1096,6 +1107,7 @@ void object_move_with_floor_segment(int seg_idx,int xmove,int zmove)
 		}
 		obj++;
 	}
+	*/
 }
 
 void object_move_with_object(obj_type *obj,int xmove,int zmove)

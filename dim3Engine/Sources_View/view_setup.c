@@ -50,7 +50,7 @@ extern setup_type			setup;
 int							draw_portal_cnt,draw_portal_list[max_portal];
 
 extern void view_portal_create_sight_path(d3pos *pos);
-extern void segment_render_setup(int tick,int portal_cnt,int *portal_list);
+extern void mesh_render_setup(int tick,int portal_cnt,int *portal_list);
 extern bool model_inview(model_draw *draw);
 extern int distance_to_view_center(int x,int y,int z);
 
@@ -600,6 +600,6 @@ void view_draw_setup(int tick)
 		
 	draw_portal_cnt=map_portal_draw_sort(&map,obj->pos.rn,obj->pos.x,obj->pos.y,obj->pos.z,draw_portal_list);
 
-	segment_render_setup(tick,draw_portal_cnt,draw_portal_list);
+	mesh_render_setup(tick,draw_portal_cnt,draw_portal_list);
 }
 

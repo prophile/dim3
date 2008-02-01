@@ -29,6 +29,9 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
+
+// supergumba -- can probably delete most of this
+
 /* =======================================================
 
       Create/Destroy Single Portal Segment List

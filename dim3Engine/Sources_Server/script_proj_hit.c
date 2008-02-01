@@ -74,6 +74,7 @@ void script_add_proj_hit_object(JSObject *parent_obj)
 
 int js_get_proj_hit_type(proj_type *proj)
 {
+	/* supergumba -- need to replace scripting here
 		// check auto hits
 		
 	if (proj->action.hit_tick!=0) {
@@ -88,7 +89,7 @@ int js_get_proj_hit_type(proj_type *proj)
     if (proj->contact.obj_uid!=-1) return(sd_proj_hit_type_object);
 	if (proj->contact.proj_uid!=-1) return(sd_proj_hit_type_projectile);
 	if (!proj->contact.melee) return(sd_proj_hit_type_melee);
-	
+	*/
 	return(sd_proj_hit_type_none);
 }
 
@@ -120,6 +121,7 @@ void js_get_proj_hit_name(proj_type *proj,int hit_type,char *name)
 
 void js_get_proj_hit_material_name(proj_type *proj,int hit_type,char *name)
 {
+	/* supergumba
 	segment_type		*seg;
 	texture_type		*texture;
 	
@@ -148,6 +150,7 @@ void js_get_proj_hit_material_name(proj_type *proj,int hit_type,char *name)
 			return;
 			
 	}
+	*/
 }
 
 JSBool js_get_proj_hit_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)

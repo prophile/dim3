@@ -275,7 +275,15 @@ typedef struct		{
 						model_draw_remote_name	remote_name;
 						model_draw_setup		setup;
 					} model_draw;
-					
+
+//
+// polygon pointer
+//
+
+typedef struct		{
+						int					portal_idx,mesh_idx,poly_idx;
+					} poly_pointer_type;
+
 //
 // object sounds
 //
@@ -326,11 +334,11 @@ typedef struct		{
 											health_recover_tick,health_recover_amount,health_recover_count,
 											liquid_under_tick,liquid_harm_count,liquid_drown_count;
 					} obj_status;
-					
+			
 typedef struct		{
-						int					wall_seg_idx,floor_seg_idx,ceiling_seg_idx,liquid_seg_idx,
-											obj_uid,proj_uid,hit_box_idx;
+						int					liquid_idx,obj_uid,proj_uid,hit_box_idx;
 						bool				on,melee,pushable;
+						poly_pointer_type	hit_poly,stand_poly;
 					} obj_contact;
 					
 typedef struct		{
@@ -879,10 +887,11 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						seg_idx,obj_uid,proj_uid,
+						int						obj_uid,proj_uid,
 												obj_ignore_uid,proj_ignore_uid;
 						bool					obj_on,proj_on;
-					} ray_trace_contact;
+						poly_pointer_type		poly;
+					} ray_trace_contact_type;
 
 //
 // timing structures

@@ -146,6 +146,7 @@ int move_check_xz_portals(d3box *box)
 
 bool map_obj_move_xz(obj_type *obj,int x,int z)
 {
+	/* supergumba
 	int			wall_seg_idx,obj_uid;
 	d3box		box;
 	
@@ -175,7 +176,7 @@ bool map_obj_move_xz(obj_type *obj,int x,int z)
 		
 	obj->pos.x+=x;
 	obj->pos.z+=z;
-
+*/
 	return(FALSE);
 }
 
@@ -256,6 +257,7 @@ bool move_obj_check_xz_map_slide_line(obj_type *obj,int x,int z,int lx,int rx,in
 
 bool move_obj_check_xz_map_slide(obj_type *obj,int x,int z)
 {
+	/* supergumba
 	int					bump_y,lx,rx,lz,rz,hit_box_idx;
 	wall_segment_data	*wall;
 	obj_type			*cnt_obj;
@@ -317,6 +319,8 @@ bool move_obj_check_xz_map_slide(obj_type *obj,int x,int z)
 		
 	if (!collide_object_to_object_hit_box_slide(obj,x,z,cnt_obj,&model->hit_boxes[hit_box_idx],&lx,&rx,&lz,&rz)) return(TRUE);
 	return(move_obj_check_xz_map_slide_line(obj,x,z,lx,rx,lz,rz));
+	*/
+	return(FALSE);
 }
 
 bool move_obj_check_bump(obj_type *obj,int x,int z,int y)
@@ -350,6 +354,7 @@ bool move_obj_check_bump(obj_type *obj,int x,int z,int y)
 
 bool map_proj_move_xz(proj_type *proj,int ignore_obj_uid,int x,int z)
 {
+	/* supergumba
 	int				wall_seg_idx,obj_uid;
 	d3box			box;
 	
@@ -379,7 +384,7 @@ bool map_proj_move_xz(proj_type *proj,int ignore_obj_uid,int x,int z)
 		proj->contact.obj_uid=obj_uid;
 		return(TRUE);
 	}
-	
+	*/
 	return(FALSE);
 }
 
@@ -421,6 +426,7 @@ bool map_spot_empty_sphere(int sx,int sy,int sz,int radius,int ignore_obj_uid,in
 
 bool map_spot_empty_object(obj_type *obj)
 {
+	/* supergumba
 	d3box			box;
 	
 	obj->contact.wall_seg_idx=-1;
@@ -434,10 +440,13 @@ bool map_spot_empty_object(obj_type *obj)
 	
 	obj->contact.obj_uid=collide_find_object_for_object(obj);
 	return(obj->contact.obj_uid!=-1);
+	*/
+	return(TRUE);
 }
 
 bool map_spot_empty_projectile(proj_type *proj)
 {
+	/* supergumba
 	d3box			box;
 	
 	proj->contact.wall_seg_idx=-1;
@@ -451,4 +460,6 @@ bool map_spot_empty_projectile(proj_type *proj)
 	
 	proj->contact.obj_uid=collide_find_object_for_projectile(proj,proj->obj_uid);
 	return(proj->contact.obj_uid!=-1);
+	*/
+	return(TRUE);
 }	

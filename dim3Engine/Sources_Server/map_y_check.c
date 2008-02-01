@@ -294,6 +294,7 @@ int pin_upward_movement_box(d3box *box,int ydist,int *hit)
 
 int pin_downward_movement_obj(obj_type *obj,int my)
 {
+	/* supergumba
 	int				y;
 	d3box			box;
 
@@ -303,10 +304,13 @@ int pin_downward_movement_obj(obj_type *obj,int my)
 	if (y==-1) return(my);
 
 	return(y-box.max_y);
+	*/
+	return(0);
 }
 
 int pin_upward_movement_obj(obj_type *obj,int my)
 {
+	/* supergumba
 	int				y;
 	d3box			box;
 
@@ -316,6 +320,8 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 	if (y==-1) return(my);
 
 	return(box.min_y-y);
+	*/
+	return(0);
 }
 
 /* =======================================================
@@ -326,6 +332,7 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 
 int pin_downward_movement_proj(proj_type *proj,int my)
 {
+	/* supergumba
 	int			sy,seg_idx;
 	
 	sy=find_fc_for_downward_point(proj->pos.rn,proj->pos.x,proj->pos.y,proj->pos.z,my,&seg_idx);
@@ -341,10 +348,13 @@ int pin_downward_movement_proj(proj_type *proj,int my)
 	}
 
 	return(sy-proj->pos.y);
+	*/
+	return(0);
 }
 
 int pin_upward_movement_proj(proj_type *proj,int my)
 {
+	/* supergumba
 	int			y,sy,seg_idx;
 	
 	y=proj->pos.y-proj->size.y;
@@ -362,6 +372,8 @@ int pin_upward_movement_proj(proj_type *proj,int my)
 	}
 
 	return(sy-proj->pos.y);
+	*/
+	return(0);
 }
 
 /* =======================================================

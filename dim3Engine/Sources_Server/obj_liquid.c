@@ -44,6 +44,7 @@ extern server_type			server;
 
 void object_liquid_contact(obj_type *obj)
 {
+	/* supergumba
 	int						i,cnt,idx,
 							rn,y,eye_y,dy,lft,rgt,top,bot;
 	short					*sptr;
@@ -90,6 +91,7 @@ void object_liquid_contact(obj_type *obj)
 			obj->contact.liquid_seg_idx=idx;
         }
 	}
+	*/
 }
 
 /* =======================================================
@@ -100,6 +102,7 @@ void object_liquid_contact(obj_type *obj)
 
 float object_liquid_alter_speed(obj_type *obj)
 {
+	/* supergumba
 	int						idx;
 
 	if (obj->liquid_mode!=lm_under) return(1.0f);
@@ -108,6 +111,9 @@ float object_liquid_alter_speed(obj_type *obj)
 	if (idx==-1) return(1.0f);
 
 	return(map.segments[idx].data.liquid.speed_alter);
+	*/
+
+	return(0.0f);
 }
 
 /* =======================================================
@@ -118,6 +124,7 @@ float object_liquid_alter_speed(obj_type *obj)
 
 void object_liquid(int tick,obj_type *obj)
 {
+	/* supergumba
 	int				idx,harm,old_liquid_mode;
     segment_type	*seg;
 	
@@ -205,5 +212,6 @@ void object_liquid(int tick,obj_type *obj)
 			obj->status.liquid_harm_count--;
 		}
 	}
+	*/
 }
 

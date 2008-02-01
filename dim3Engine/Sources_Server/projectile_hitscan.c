@@ -49,9 +49,9 @@ extern network_setup_type	net_setup;
 
 void projectile_hitscan(int tick,obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,d3pnt *pt,d3ang *ang)
 {
-	d3pnt				spt,hpt;
-	proj_type			*proj,*hit_proj;
-	ray_trace_contact	contact;
+	d3pnt					spt,hpt;
+	proj_type				*proj,*hit_proj;
+	ray_trace_contact_type	contact;
 	
 		// setup projectile
 		
@@ -95,22 +95,8 @@ void projectile_hitscan(int tick,obj_type *obj,weapon_type *weap,proj_setup_type
 	
 	map_find_portal_by_pos(&map,&proj->pos);
 	
-	proj->contact.wall_seg_idx=proj->contact.floor_seg_idx=proj->contact.ceiling_seg_idx=proj->contact.liquid_seg_idx=-1;
-
-	if (contact.seg_idx!=-1) {
-
-		switch(map.segments[contact.seg_idx].type) {
-			case sg_wall:
-				proj->contact.wall_seg_idx=contact.seg_idx;
-				break;
-			case sg_floor:
-				proj->contact.floor_seg_idx=contact.seg_idx;
-				break;
-			case sg_ceiling:
-				proj->contact.ceiling_seg_idx=contact.seg_idx;
-				break;
-		}
-	}
+	memmove(&proj->contact.hit_poly,&contact.poly,sizeof(poly_pointer_type));
+	proj->contact.liquid_idx=-1;
 
 	proj->contact.obj_uid=contact.obj_uid;
 	proj->contact.proj_uid=contact.proj_uid;
