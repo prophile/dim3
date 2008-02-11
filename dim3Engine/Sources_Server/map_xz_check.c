@@ -352,6 +352,8 @@ bool move_obj_check_bump(obj_type *obj,int x,int z,int y)
       
 ======================================================= */
 
+// supergumba -- can delete all this
+
 bool map_proj_move_xz(proj_type *proj,int ignore_obj_uid,int x,int z)
 {
 	/* supergumba
@@ -461,5 +463,5 @@ bool map_spot_empty_projectile(proj_type *proj)
 	proj->contact.obj_uid=collide_find_object_for_projectile(proj,proj->obj_uid);
 	return(proj->contact.obj_uid!=-1);
 	*/
-	return(TRUE);
+	return(FALSE);
 }	

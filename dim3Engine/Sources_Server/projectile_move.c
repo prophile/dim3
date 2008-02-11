@@ -36,6 +36,8 @@ and can be sold or given away.
 extern map_type				map;
 extern server_type			server;
 
+extern bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd);	// supergumba
+
 /* =======================================================
 
       Increase Gravity
@@ -92,32 +94,21 @@ bool projectile_move(proj_type *proj)
 		// project movement
 		
 	projectile_set_motion(proj,proj->speed,proj->motion.ang.y,proj->motion.ang.x,&xmove,&ymove,&zmove);
-	
 	if ((xmove==0) && (zmove==0) && (ymove==0)) return(FALSE);
 		
 		// save old position
 
 	memmove(&savepos,&proj->pos,sizeof(d3pos));
 	
-        // Moving X/Z
-    
-    if ((xmove!=0) || (zmove!=0)) {
-		move_proj_check_xz_map(proj,xmove,zmove);
-        if (!map_find_portal_by_pos(&map,&proj->pos)) {			// might have moved into a new portal
-            memmove(&proj->pos,&savepos,sizeof(d3pos));
-            return(TRUE);
-        }
-    }
-	
-        // Moving Y
-    
-    if (ymove!=0) {
-        if (ymove<0) {
-			proj->pos.y+=pin_upward_movement_proj(proj,ymove);
-        }
-        else {
-			proj->pos.y+=pin_downward_movement_proj(proj,ymove);
-        }
+        // move
+
+	collide_projectile_to_map(proj,xmove,ymove,zmove);
+
+		// check for moving into a new portal
+
+	if (!map_find_portal_by_pos(&map,&proj->pos)) {
+		memmove(&proj->pos,&savepos,sizeof(d3pos));
+		return(TRUE);
     }
     
         // check for above or below portal

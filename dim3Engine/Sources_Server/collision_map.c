@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "scripts.h"
 #include "objects.h"
+#include "projectiles.h"
 #include "models.h"
 #include "physics.h"
 
@@ -157,9 +158,6 @@ void collide_object_ray_trace_points(obj_type *obj,int x_add,int z_add,int *px,i
 	py[12]=py[13]=py[14]=obj->pos.y-(map_enlarge>>1);
 }
 
-
-
-
 bool collide_object_to_map(obj_type *obj,int hit_fudge,int *xadd,int *yadd,int *zadd)
 {
 	int						n,x,z,idx,px[15],py[15],pz[15],
@@ -247,13 +245,63 @@ bool collide_object_to_map(obj_type *obj,int hit_fudge,int *xadd,int *yadd,int *
 	return(TRUE);
 }
 
+/* =======================================================
 
+      Check for Project-Map Collisions
+      
+======================================================= */
 
+bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
+{
+	d3pnt					spt,ept,hpt;
+	ray_trace_contact_type	contact;
+	proj_setup_type			*proj_setup;
 
+		// setup ray trace
 
+	spt.x=proj->pos.x;
+	spt.y=proj->pos.y;
+	spt.z=proj->pos.z;
 
+	ept.x=spt.x+xadd;
+	ept.y=spt.y+yadd;
+	ept.z=spt.z+zadd;
 
+	contact.obj_on=TRUE;
+	if (proj->parent_grace>0) {
+		contact.obj_ignore_uid=proj->obj_uid;
+	}
+	else {
+		contact.obj_ignore_uid=-1;
+	}
 
+	proj_setup=proj_setups_find_uid(proj->proj_setup_uid);
+	contact.proj_on=proj_setup->collision;
+	contact.proj_ignore_uid=proj->uid;
+
+		// run trace
+
+	if (!ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
+		proj->pos.x=ept.x;
+		proj->pos.y=ept.y;
+		proj->pos.z=ept.z;
+		return(FALSE);
+	}
+
+		// move to hit point
+
+	proj->pos.x=hpt.x;
+	proj->pos.y=hpt.y;
+	proj->pos.z=hpt.z;
+
+		// setup hits
+
+	proj->contact.obj_uid=contact.obj_uid;
+	proj->contact.proj_uid=contact.proj_uid;
+	memmove(&proj->contact.hit_poly,&contact.poly,sizeof(poly_pointer_type));
+
+	return(TRUE);
+}
 
 /* =======================================================
 
@@ -531,7 +579,7 @@ bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int l
 
 bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 {
-	/*
+	/* supergumba
 	int					xadd2,yadd2,zadd2,
 						bump_y,lx,rx,lz,rz,hit_box_idx;
 	wall_segment_data	*wall;
@@ -610,9 +658,11 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 
 /* =======================================================
 
-      Object Movement MainLine
+      Object Movement Main Line
 
 ======================================================= */
+
+// supergumba -- move to object_move
 
 void object_move_normal_2(obj_type *obj)
 {
@@ -736,3 +786,4 @@ void object_move_normal_2(obj_type *obj)
 		obj->fall.change=TRUE;
 	}
 }
+
