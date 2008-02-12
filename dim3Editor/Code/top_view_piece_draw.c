@@ -29,9 +29,9 @@ and can be sold or given away.
 #include "interface.h"
 #include "top_view.h"
 
-extern int					cr,cy,magnify_factor;
+extern int					cr,cx,cy,cz,top_view_x,top_view_z,magnify_factor;
 extern bool					dp_wall,dp_floor,dp_ceiling,dp_liquid,dp_ambient,dp_object,dp_node,dp_lightsoundparticle,dp_y_hide;
-extern CIconHandle			maplight_icon,mapsound_icon,mapparticle_icon;
+extern Rect					top_view_box;
 
 extern bitmap_type			light_bitmap,sound_bitmap,particle_bitmap;
 
@@ -42,6 +42,22 @@ int							txtfill,txtrbfill;
 
 extern void primitive_get_extend(int primitive_uid,int *p_minx,int *p_maxx,int *p_minz,int *p_maxz,int *p_miny,int *p_maxy);
 extern void primitive_get_center(int primitive_uid,int *x,int *z,int *y);
+
+/* =======================================================
+
+      Handle Draw Size
+      
+======================================================= */
+
+int top_view_piece_handle_size(void)
+{
+	int			pixel_sz;
+	
+	pixel_sz=(200*magnify_factor)/magnify_size;
+	if (pixel_sz<3) pixel_sz=3;
+	
+	return(pixel_sz);
+}
 
 /* =======================================================
 
@@ -213,15 +229,15 @@ void top_view_piece_draw_arrow(d3pos *pos,char *name,int ang_y,float r,float g,f
 
 void top_view_piece_draw_meshes(int rn)
 {
-	int								n,k,t,x,z,poly_cnt,
-									sort_idx,sort_cnt;
-	unsigned long					gl_id;
-	float							fy;
-	d3pnt							*pt;
-	portal_type						*portal;
-	map_mesh_type					*mesh;
-	map_mesh_poly_type				*mesh_poly;
-	map_portal_mesh_poly_sort_type	*poly_sort;
+	int							n,k,t,x,z,poly_cnt,
+								sort_idx,sort_cnt;
+	unsigned long				gl_id;
+	float						fy;
+	d3pnt						*pt;
+	portal_type					*portal;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*mesh_poly;
+	map_mesh_poly_sort_type		*poly_sort;
 	
 	portal=&map.portals[rn];
 	
@@ -238,7 +254,7 @@ void top_view_piece_draw_meshes(int rn)
 	
 	if (poly_cnt==0) return;
 	
-	poly_sort=(map_portal_mesh_poly_sort_type*)valloc(sizeof(map_portal_mesh_poly_sort_type)*(poly_cnt+1));
+	poly_sort=(map_mesh_poly_sort_type*)valloc(sizeof(map_mesh_poly_sort_type)*(poly_cnt+1));
 	if (poly_sort==NULL) return;
 	
 		// sort pieces
@@ -268,7 +284,7 @@ void top_view_piece_draw_meshes(int rn)
 
 				// add to sort list
 
-			if (sort_idx<sort_cnt) memmove(&poly_sort[sort_idx+1],&poly_sort[sort_idx],((sort_cnt-sort_idx)*sizeof(map_portal_mesh_poly_sort_type)));
+			if (sort_idx<sort_cnt) memmove(&poly_sort[sort_idx+1],&poly_sort[sort_idx],((sort_cnt-sort_idx)*sizeof(map_mesh_poly_sort_type)));
 
 			poly_sort[sort_idx].mesh_idx=n;
 			poly_sort[sort_idx].poly_idx=k;
@@ -515,13 +531,15 @@ void top_view_piece_draw(int rn)
 
 void top_view_piece_selection_draw_mesh(int rn,int mesh_idx,int mesh_poly_idx)
 {
-	int						k,t,x,z;
+	int						n,k,t,x,z,pixel_sz;
 	d3pnt					*pt;
 	portal_type				*portal;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*mesh_poly;
 		
-	glColor4f(1.0f,0.0f,0.0f,1.0f);
+		// the selected mesh
+		
+	glColor4f(1.0f,1.0f,0.0f,1.0f);
 	
 	portal=&map.portals[rn];
 	mesh=&portal->mesh.meshes[mesh_idx];
@@ -529,7 +547,6 @@ void top_view_piece_selection_draw_mesh(int rn,int mesh_idx,int mesh_poly_idx)
 	mesh_poly=mesh->polys;
 		
 	for (k=0;k!=mesh->npoly;k++) {
-		if (k==mesh_poly_idx) glLineWidth(2.0f);
 	
 		glBegin(GL_LINE_LOOP);
 		
@@ -542,11 +559,55 @@ void top_view_piece_selection_draw_mesh(int rn,int mesh_idx,int mesh_poly_idx)
 		}
 		
 		glEnd();
-	
-		glLineWidth(1.0f);
 			
 		mesh_poly++;
 	}
+	
+		// the selected mesh poly
+		
+	glColor4f(1.0f,0.0f,0.0f,1.0f);
+	glLineWidth(2.0f);
+		
+	mesh_poly=&mesh->polys[mesh_poly_idx];
+	
+	glBegin(GL_LINE_LOOP);
+	
+	for (t=0;t!=mesh_poly->ptsz;t++) {
+		pt=&mesh->vertexes[mesh_poly->v[t]];
+		x=pt->x+portal->x;
+		z=pt->z+portal->z;
+		top_view_map_to_pane(&x,&z);
+		glVertex2i(x,z);
+	}
+	
+	glEnd();
+	
+	glLineWidth(1.0f);
+	
+		// the vertexes
+		
+	pixel_sz=top_view_piece_handle_size();
+	
+	pt=mesh->vertexes;
+	
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	
+	glBegin(GL_QUADS);
+
+	for (n=0;n!=mesh->nvertex;n++) {
+		x=pt->x+portal->x;
+		z=pt->z+portal->z;
+		top_view_map_to_pane(&x,&z);
+
+		glVertex2i((x-pixel_sz),(z-pixel_sz));
+		glVertex2i((x+pixel_sz),(z-pixel_sz));
+		glVertex2i((x+pixel_sz),(z+pixel_sz));
+		glVertex2i((x-pixel_sz),(z+pixel_sz));
+		
+		pt++;
+	}
+
+	glEnd();
 }
 
 void top_view_piece_selection_draw_liquid(int portal_idx,int liquid_idx)
@@ -566,8 +627,7 @@ void top_view_piece_selection_draw_liquid(int portal_idx,int liquid_idx)
 	z2=liquid->bot+portal->z;
 	top_view_map_to_pane(&x2,&z2);
 	
-	pixel_sz=(200*magnify_factor)/magnify_size;
-	if (pixel_sz<3) pixel_sz=3;
+	pixel_sz=top_view_piece_handle_size();
 	
 	glColor4f(0.0f,0.0f,0.0f,0.7f);
 	
@@ -658,8 +718,7 @@ void top_view_piece_selection_draw_rect_pos(d3pos *pos,int sz)
 	
 	k=(sz*magnify_factor)/magnify_size;
 	
-	pixel_sz=(200*magnify_factor)/magnify_size;
-	if (pixel_sz<3) pixel_sz=3;
+	pixel_sz=top_view_piece_handle_size();
 	
 	glColor4f(0.0f,0.0f,0.0f,0.7f);
 	

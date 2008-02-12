@@ -557,6 +557,7 @@ void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *
 		for (k=0;k!=mesh->npoly;k++) {
 
 			mesh_poly=&mesh->polys[k];
+			if (mesh_poly->flag.pass_through) continue;
 
 				// rough bounds check
 

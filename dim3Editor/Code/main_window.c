@@ -500,7 +500,7 @@ void main_wind_setup(void)
 	main_wind_box.left=0;
 	main_wind_box.right=wbox.right-piece_wid;
 	main_wind_box.top=toolbar_high;
-	main_wind_box.bottom=wbox.bottom-(txt_palette_high+info_high);
+	main_wind_box.bottom=wbox.bottom-info_high;
 	
 		// buffer rect clipping
 		
@@ -978,14 +978,14 @@ void main_wind_set_2D_projection(Rect *view_box)
 	glLoadIdentity();
 }
 
-void main_wind_set_3D_projection(Rect *view_box,float ang_x,float ang_y,float fov,float near_z,float far_z,float near_z_offset)
+void main_wind_set_3D_projection(Rect *view_box,d3ang *ang,float fov,float near_z,float far_z,float near_z_offset)
 {
 	float			ratio;
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
-	ratio=(float)(walk_view_forward_box.right-walk_view_forward_box.left)/(float)(walk_view_forward_box.bottom-walk_view_forward_box.top);
+	ratio=(float)(view_box->right-view_box->left)/(float)(view_box->bottom-view_box->top);
 	
 	gluPerspective(fov,ratio,near_z,far_z);
 	glScalef(-1,-1,1);						// x and y are reversed
@@ -994,8 +994,87 @@ void main_wind_set_3D_projection(Rect *view_box,float ang_x,float ang_y,float fo
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	glRotatef(ang_x,1,0,0);
-	glRotatef(ang_y,0,1,0);
+	glRotatef(ang->x,1,0,0);
+	glRotatef(ang->y,0,1,0);
+}
+
+/* =======================================================
+
+      3D View Point and Angle Setup
+      
+======================================================= */
+
+void main_wind_setup_walk_view_forward(d3pnt *pnt,d3ang *view_ang)
+{
+	if (pnt!=NULL) {
+		pnt->x=cx;
+		pnt->y=cy;
+		pnt->z=cz;
+	}
+	
+	if (view_ang!=NULL) {
+		view_ang->x=view_ang->z=0.0f;
+		view_ang->y=180.0f;
+	}
+}
+
+void main_wind_setup_walk_view_side(d3pnt *pnt,d3ang *view_ang)
+{
+	if (pnt!=NULL) {
+		pnt->x=cx;
+		pnt->y=cy;
+		pnt->z=cz;
+	}
+	
+	if (view_ang!=NULL) {
+		view_ang->x=view_ang->z=0.0f;
+		view_ang->y=270.0f;
+	}
+}
+
+void main_wind_setup_walk_view_top(d3pnt *pnt,d3ang *view_ang)
+{
+	if (pnt!=NULL) {
+		pnt->x=cx;
+		pnt->y=cy-(250*map_enlarge);
+		pnt->z=cz;
+	}
+	
+	if (view_ang!=NULL) {
+		view_ang->x=-90.0f;
+		view_ang->z=0.0f;
+		view_ang->y=180.0f;
+	}
+}
+
+void main_wind_setup_walk_view_forward_full(d3pnt *pnt,d3ang *view_ang)
+{
+	if (pnt!=NULL) {
+		pnt->x=cx;
+		pnt->y=cy;
+		pnt->z=cz;
+	}
+	
+	if (view_ang!=NULL) {
+		view_ang->x=walk_view_x_angle;
+		view_ang->z=0.0f;
+		view_ang->y=(360.0f-walk_view_y_angle)+180.0f;
+	}
+}
+
+void main_wind_setup_walk_view_top_full(d3pnt *pnt,d3ang *view_ang)
+{
+	if (pnt!=NULL) {
+		pnt->x=cx;
+		pnt->y=cy-(250*map_enlarge);
+		pnt->z=cz;
+	}
+	
+	if (view_ang!=NULL) {
+		view_ang->x=-90.0f;
+		view_ang->z=0.0f;
+		view_ang->y=(360.0f-walk_view_y_angle)+180.0f;
+	}
 }
 
 /* =======================================================
@@ -1054,6 +1133,8 @@ void main_wind_draw_dividers(void)
 void main_wind_draw(void)
 {
 	Rect			wbox;
+	d3pnt			pt;
+	d3ang			ang;
 
 	GetWindowPortBounds(mainwind,&wbox);
 	
@@ -1068,10 +1149,16 @@ void main_wind_draw(void)
 		
 	switch (main_wind_view) {
 	
-		case vw_walk_top:
-			walk_view_draw(FALSE);
-			walk_view_draw(TRUE);
-			top_view_draw();
+		case vw_walk_top:		// supergumba -- change name of this
+			main_wind_setup_walk_view_forward(&pt,&ang);
+			walk_view_draw(&walk_view_forward_box,&pt,&ang,walk_view_forward_fov,FALSE);
+			
+			main_wind_setup_walk_view_side(&pt,&ang);
+			walk_view_draw(&walk_view_side_box,&pt,&ang,walk_view_side_fov,FALSE);
+			
+			main_wind_setup_walk_view_top(&pt,&ang);
+			walk_view_draw(&top_view_box,&pt,&ang,top_view_fov,TRUE);
+
 			main_wind_draw_dividers();
 			break;
 			
@@ -1088,7 +1175,9 @@ void main_wind_draw(void)
 			break;
 			
 		case vw_walk_only:
-			walk_view_draw(FALSE);
+			main_wind_setup_walk_view_forward_full(&pt,&ang);
+			walk_view_draw(&walk_view_forward_box,&pt,&ang,walk_view_forward_fov,FALSE);
+			walk_view_compass_draw(&walk_view_forward_box);
 			break;
 	}
 	
@@ -1155,22 +1244,37 @@ void main_wind_center_position_in_map(void)
 
 bool main_wind_click(Point pt,bool dblclick)
 {
-    if (PtInRect(pt,&walk_view_forward_box)) {
+	bool			rot_ok;
+	d3pnt			cpt;
+	d3ang			ang;
+	
+	if (PtInRect(pt,&walk_view_forward_box)) {
 		main_wind_set_focus(kf_walk_forward,TRUE);
-        walk_view_click(pt,dblclick,FALSE);
+		if (main_wind_view==vw_walk_only) {
+			if (walk_view_compass_click(&walk_view_forward_box,pt)) return(TRUE);
+			main_wind_setup_walk_view_forward_full(&cpt,&ang);
+			rot_ok=TRUE;
+		}
+		else {
+			main_wind_setup_walk_view_forward(&cpt,&ang);
+			rot_ok=FALSE;
+		}
+        walk_view_click(&walk_view_forward_box,&cpt,&ang,walk_view_forward_fov,pt,vm_dir_forward,rot_ok,dblclick);
         return(TRUE);
     }
 	
     if (PtInRect(pt,&walk_view_side_box)) {
 		main_wind_set_focus(kf_walk_side,TRUE);
-        walk_view_click(pt,dblclick,TRUE);
+		main_wind_setup_walk_view_side(&cpt,&ang);
+		walk_view_click(&walk_view_side_box,&cpt,&ang,walk_view_side_fov,pt,vm_dir_side,FALSE,dblclick);
         return(TRUE);
     }
 	
     if (PtInRect(pt,&top_view_box)) {
 		main_wind_set_focus(kf_top,TRUE);
-        top_view_click(pt,dblclick);
-        return(TRUE);
+		main_wind_setup_walk_view_top(&cpt,&ang);
+		walk_view_click(&top_view_box,&cpt,&ang,top_view_fov,pt,vm_dir_top,FALSE,dblclick);
+		return(TRUE);
     }
     
     if (PtInRect(pt,&portal_view_box)) {
@@ -1196,13 +1300,8 @@ bool main_wind_click(Point pt,bool dblclick)
 
 void main_wind_cursor(Point pt)
 {
-    if ((PtInRect(pt,&walk_view_forward_box)) || (PtInRect(pt,&walk_view_side_box))) {
-        walk_view_cursor();
-        return;
-    }
-	
-    if (PtInRect(pt,&top_view_box)) {
-        top_view_cursor();
+    if ((PtInRect(pt,&walk_view_forward_box)) || (PtInRect(pt,&walk_view_side_box)) || (PtInRect(pt,&top_view_box))) {
+        walk_view_cursor(main_wind_view==vw_walk_only);
         return;
     }
     
@@ -1335,14 +1434,23 @@ void main_wind_key_down(char ch)
 
 void main_wind_scroll_wheel(int delta)
 {
+	d3ang			ang;
+	
 	switch (main_wind_focus) {
 	
 		case kf_walk_forward:
-			walk_view_scroll_wheel_z_movement(delta,FALSE);
+			main_wind_setup_walk_view_forward(NULL,&ang);
+			walk_view_scroll_wheel_z_movement(&ang,delta,vm_dir_forward);
 			break;
 			
 		case kf_walk_side:
-			walk_view_scroll_wheel_z_movement(delta,TRUE);
+			main_wind_setup_walk_view_forward(NULL,&ang);
+			walk_view_scroll_wheel_z_movement(&ang,delta,vm_dir_side);
+			break;
+			
+		case kf_top:
+			main_wind_magnify_scroll(delta);
+			top_view_reset();
 			break;
 			
 		case kf_portal:
@@ -1355,10 +1463,6 @@ void main_wind_scroll_wheel(int delta)
 			site_path_view_reset();
 			break;
 			
-		case kf_top:
-			main_wind_magnify_scroll(delta);
-			top_view_reset();
-			break;
 	}
 
 }

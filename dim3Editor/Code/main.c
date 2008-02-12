@@ -35,7 +35,6 @@ bool					done,map_opened;
 file_path_setup_type	file_path_setup;
 
 CCrsrHandle				handcur,dragcur,cutcur,rotatecur,towardcur,forwardcur,resizecur,addcur;
-CIconHandle				maplight_icon,mapsound_icon,mapparticle_icon;
 
 extern bool setup_xml_read(void);
 
@@ -96,10 +95,6 @@ void doinit(void)
 	forwardcur=GetCCursor(133);
 	resizecur=GetCCursor(134);
 	addcur=GetCCursor(135);
-
-	maplight_icon=GetCIcon(650);
-	mapsound_icon=GetCIcon(651);
-	mapparticle_icon=GetCIcon(652);
     
 	cr=-1;
 	map_opened=FALSE;
@@ -123,10 +118,6 @@ void doshutdown(void)
 	DisposeCCursor(forwardcur);
 	DisposeCCursor(resizecur);
 	DisposeCCursor(addcur);
-	
-	DisposeCIcon(maplight_icon);
-	DisposeCIcon(mapsound_icon);
-	DisposeCIcon(mapparticle_icon);
 
 	UnregisterAppearanceClient();
 }

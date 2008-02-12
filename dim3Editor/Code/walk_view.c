@@ -193,41 +193,26 @@ int walk_view_find_start_portal(void)
       
 ======================================================= */
 
-void walk_view_click(Point pt,bool dblclick,bool on_side)
+void walk_view_click(Rect *box,d3pnt *cpt,d3ang *ang,float fov,Point pt,int view_move_dir,bool rot_ok,bool dblclick)
 {
-    int			xorg,yorg;
-
-	if (!on_side) {
-		xorg=walk_view_forward_box.left;
-		yorg=walk_view_forward_box.top;
-	}
-	else {
-		xorg=walk_view_side_box.left;
-		yorg=walk_view_side_box.top;
-	}
-	
         // cmd-view scrolling
         
     if (main_wind_space_down()) {
-        walk_view_mouse_xy_movement(pt,on_side);
+        walk_view_mouse_xy_movement(ang,pt,view_move_dir);
         return;
     }
     if (main_wind_option_down()) {
-        walk_view_mouse_z_movement(pt,on_side);
+        walk_view_mouse_z_movement(ang,pt,view_move_dir);
         return;
     }
-    if (main_wind_command_down()) {
+    if ((main_wind_command_down()) && (rot_ok)) {
         walk_view_mouse_turn(pt);
         return;
     }
-	
-		// click the compass
-		
-	if (walk_view_compass_click(pt,on_side)) return;
     
         // click the map pieces
     
-    walk_view_click_piece(xorg,yorg,pt,dblclick,on_side);
+    walk_view_click_piece(box,cpt,ang,fov,pt,dblclick);
 }
 
 /* =======================================================
@@ -236,7 +221,7 @@ void walk_view_click(Point pt,bool dblclick,bool on_side)
       
 ======================================================= */
 
-void walk_view_cursor(void)
+void walk_view_cursor(bool rot_ok)
 {
 	if (!walk_view_active) return;
 
@@ -248,7 +233,7 @@ void walk_view_cursor(void)
         SetCCursor(forwardcur);
         return;
     }
-    if (main_wind_command_down()) {
+    if ((main_wind_command_down()) && (rot_ok)) {
         SetCCursor(rotatecur);
         return;
     }

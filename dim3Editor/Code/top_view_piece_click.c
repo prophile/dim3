@@ -423,11 +423,14 @@ bool top_view_piece_click_rect_pos(d3pos *pos,int sz,int tx,int tz)
 	return(TRUE);
 }
 
+
 bool top_view_piece_click_polygon(int rn,int ptsz,int *x,int *z,int tx,int tz)
 {
 	int				n,px[8],pz[8];
 	portal_type		*portal;
 	
+		// create click polygon
+		
 	portal=&map.portals[rn];
 		
 	for (n=0;n!=ptsz;n++) {
@@ -441,7 +444,7 @@ bool top_view_piece_click_polygon(int rn,int ptsz,int *x,int *z,int tx,int tz)
 
 bool top_view_piece_click(Point pt,int *type,int *portal_idx,int *main_idx,int *sub_idx)
 {
-	int								n,k,t,px[8],pz[8];
+	int								n,k,t,y,hit_y,px[8],pz[8];
 	d3pnt							*pt2;
 	portal_type						*portal;
 	map_mesh_type					*mesh;
@@ -520,11 +523,11 @@ bool top_view_piece_click(Point pt,int *type,int *portal_idx,int *main_idx,int *
 		}
     }
 	
-		// find portal clicked in
-	
 		// meshes
 		
 	portal=&map.portals[cr];
+	
+	hit_y=-1;
 	
 	mesh=portal->mesh.meshes;
 	
@@ -541,11 +544,13 @@ bool top_view_piece_click(Point pt,int *type,int *portal_idx,int *main_idx,int *
 			}
 			
 			if (top_view_piece_click_polygon(cr,mesh_poly->ptsz,px,pz,pt.h,pt.v)) {
-				*type=mesh_piece;
-				*portal_idx=cr;
-				*main_idx=n;
-				*sub_idx=k;
-				return(TRUE);
+				y=mesh->vertexes[mesh_poly->v[0]].y;
+				if ((hit_y==-1) || (y<hit_y)) {
+					*portal_idx=cr;
+					*main_idx=n;
+					*sub_idx=k;
+					hit_y=y;
+				}
 			}
 		
 			mesh_poly++;
@@ -553,138 +558,18 @@ bool top_view_piece_click(Point pt,int *type,int *portal_idx,int *main_idx,int *
 
 		mesh++;
 	}
-
-
-
-
-		
-
 	
-	return(FALSE);
-		
-		// ambients
-/*
-	if (dp_ambient) {
-	
-		for (i=0;i!=map.nsegment;i++) {
-			seg=&map.segments[i];
-			if ((seg->type!=sg_ambient_wall) || (seg->rn!=cr)) continue;
-			
-			if (top_view_line_click(seg->rn,seg->data.ambient_wall.lx,seg->data.ambient_wall.lz,seg->data.ambient_wall.rx,seg->data.ambient_wall.rz,pt.h,pt.v)) {
-				if (seg->primitive_uid[0]!=-1) {
-					*type=primitive_piece;
-				}
-				else {
-					*type=segment_piece;
-				}
-				*index=i;
-				return(TRUE);
-			}
-		}
-		
-		for (i=(map.nsegment-1);i>=0;i--) {
-			seg=&map.segments[i];
-			if ((seg->type!=sg_ambient_fc) || (seg->rn!=cr)) continue;
-			
-			if (top_view_polygon_click(seg->rn,seg->data.ambient_fc.ptsz,seg->data.ambient_fc.x,seg->data.ambient_fc.z,pt.h,pt.v)) {
-				if (seg->primitive_uid[0]!=-1) {
-					*type=primitive_piece;
-				}
-				else {
-					*type=segment_piece;
-				}
-				*index=i;
-				return(TRUE);
-			}
-		}
+	if (hit_y!=-1) {
+		*type=mesh_piece;
+		return(TRUE);
 	}
-	
-		// walls
 
-	if (dp_wall) {
-	
-		for (i=0;i!=map.nsegment;i++) {
-			seg=&map.segments[i];
-			if ((seg->type!=sg_wall) || (seg->rn!=cr)) continue;
-			
-			if (top_view_line_click(seg->rn,seg->data.wall.lx,seg->data.wall.lz,seg->data.wall.rx,seg->data.wall.rz,pt.h,pt.v)) {
-				if (seg->primitive_uid[0]!=-1) {
-					*type=primitive_piece;
-				}
-				else {
-					*type=segment_piece;
-				}
-				*index=i;
-				return(TRUE);
-			}
-		}
-	}
-	
-		// liquids
 
-	if (dp_liquid) {
-	
-		for (i=(map.nsegment-1);i>=0;i--) {
-			seg=&map.segments[i];
-			if ((seg->type!=sg_liquid) || (seg->rn!=cr)) continue;
+		// supergumba -- liquid here
 
-			if (top_view_rect_click(seg->rn,seg->data.liquid.lft,seg->data.liquid.rgt,seg->data.liquid.top,seg->data.liquid.bot,pt.h,pt.v)) {
-				if (seg->primitive_uid[0]!=-1) {
-					*type=primitive_piece;
-				}
-				else {
-					*type=segment_piece;
-				}
-				*index=i;
-				return(TRUE);
-			}
-		}
-	}
-    
-		// ceilings
 		
-	if (dp_ceiling) {
+
 	
-		for (i=(map.nsegment-1);i>=0;i--) {
-			seg=&map.segments[i];
-			if ((seg->type!=sg_ceiling) || (seg->rn!=cr)) continue;
-			if (top_view_hide_y(&seg->data.fc)) continue;
-			
-			if (top_view_polygon_click(seg->rn,seg->data.fc.ptsz,seg->data.fc.x,seg->data.fc.z,pt.h,pt.v)) {
-				if (seg->primitive_uid[0]!=-1) {
-					*type=primitive_piece;
-				}
-				else {
-					*type=segment_piece;
-				}
-				*index=i;
-				return(TRUE);
-			}
-		}
-	}	
-	
-		// floors
-		
-	if (dp_floor) {
-	
-		for (i=(map.nsegment-1);i>=0;i--) {
-			seg=&map.segments[i];
-			if ((seg->type!=sg_floor) || (seg->rn!=cr)) continue;
-			if (top_view_hide_y(&seg->data.fc)) continue;
-			
-			if (top_view_polygon_click(seg->rn,seg->data.fc.ptsz,seg->data.fc.x,seg->data.fc.z,pt.h,pt.v)) {
-				if (seg->primitive_uid[0]!=-1) {
-					*type=primitive_piece;
-				}
-				else {
-					*type=segment_piece;
-				}
-				*index=i;
-				return(TRUE);
-			}
-		}
-	}
-*/
 		// no hits
 		
 	return(FALSE);

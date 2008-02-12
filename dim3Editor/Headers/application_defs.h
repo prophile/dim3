@@ -151,6 +151,14 @@ and can be sold or given away.
 #define vw_walk_only		4
 
 //
+// movement directions
+//
+
+#define vm_dir_forward		0
+#define vm_dir_side			1
+#define vm_dir_top			2
+
+//
 // keyboard focus
 //
 
@@ -191,6 +199,14 @@ and can be sold or given away.
 
 #define magnify_factor_min	4
 #define magnify_factor_max	210
+
+//
+// fovs
+//
+
+#define walk_view_forward_fov	45
+#define walk_view_side_fov		45
+#define top_view_fov			30
 
 //
 // walk view opengl settings

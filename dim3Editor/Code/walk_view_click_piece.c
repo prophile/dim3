@@ -32,11 +32,14 @@ and can be sold or given away.
 
 extern int					cr,cx,cy,cz;
 extern bool					dp_wall,dp_floor,dp_ceiling,dp_liquid,dp_ambient,dp_object,dp_lightsoundparticle,dp_node;
-extern Rect					walk_view_forward_box,walk_view_side_box;
+extern Rect					main_wind_box,walk_view_forward_box,walk_view_side_box;
 
 extern CCrsrHandle			towardcur,dragcur;
 
 extern map_type				map;
+
+int							walk_view_vport[4];
+double						walk_view_mod_matrix[16],walk_view_proj_matrix[16];
 
 /* =======================================================
 
@@ -44,6 +47,7 @@ extern map_type				map;
       
 ======================================================= */
 
+// supergumba -- delete most of this
 void walk_view_draw_feedback_poly(int idx,int ptsz,int *x,int *y,int *z)
 {
 	int			i;
@@ -62,9 +66,10 @@ void walk_view_draw_feedback_poly(int idx,int ptsz,int *x,int *y,int *z)
 
 void walk_view_draw_feedback_sprite(int type,int idx,d3pos *pos,d3ang *ang,char *display_model)
 {
+/*
     int			px[4],pz[4],ty,by;
   
-	walk_view_model_click_select_size(display_model,pos,ang,px,pz,&ty,&by);
+	walk_view_model_click_select_size(cpt,display_model,pos,ang,px,pz,&ty,&by);
      
 	glBegin(GL_POLYGON);
     glTexCoord2f(0,0);
@@ -149,6 +154,7 @@ void walk_view_draw_feedback_sprite(int type,int idx,d3pos *pos,d3ang *ang,char 
 	
 	glPassThrough((float)type);
 	glPassThrough((float)idx);
+	*/
 }
 
 /* =======================================================
@@ -157,6 +163,7 @@ void walk_view_draw_feedback_sprite(int type,int idx,d3pos *pos,d3ang *ang,char 
       
 ======================================================= */
 
+// supergumba -- delete all feedback map stuff
 void walk_view_draw_feedback_map(int rn,bool sel_only)
 {
 	register int				n,t;
@@ -169,11 +176,11 @@ void walk_view_draw_feedback_map(int rn,bool sel_only)
 	register map_particle_type	*particle;
 	register segment_type		*seg;
     
-    xadd=map.portals[rn].x*map_enlarge;
-    zadd=map.portals[rn].z*map_enlarge;
+    xadd=map.portals[rn].x;
+    zadd=map.portals[rn].z;
 	
 		// segments
-	
+	/* supergumba
 	for (n=0;n!=map.nsegment;n++) {
 		seg=&map.segments[n];
 		if (seg->rn!=rn) continue;
@@ -230,7 +237,7 @@ void walk_view_draw_feedback_map(int rn,bool sel_only)
 				
 		}
 	}
-            
+    */        
 		// nodes
 		
 	if (dp_node) {
@@ -378,8 +385,9 @@ bool walk_view_piece_drag(Point pt)
       
 ======================================================= */
 
-bool walk_view_handle_click(int xorg,int yorg,Point pt,bool on_side)
+bool walk_view_click_handle(int xorg,int yorg,Point pt,bool on_side)
 {
+/* supergumba
     int			k,rn,type,portal_idx,main_idx,sub_idx,index,idx,n,nitem,x,y,ysz;
     Rect		box;
     GLfloat		*f,buf[128];
@@ -396,7 +404,7 @@ bool walk_view_handle_click(int xorg,int yorg,Point pt,bool on_side)
 	
 	rn=walk_view_find_start_portal();
 	walk_view_sight_path_mark(rn);
-	walk_view_gl_setup(on_side);
+	walk_view_gl_setup(box,ang);
 	walk_view_draw_segment_handles();
 
 	nitem=glRenderMode(GL_RENDER);
@@ -449,7 +457,7 @@ bool walk_view_handle_click(int xorg,int yorg,Point pt,bool on_side)
 	else {
 		walk_view_drag_segment_handle(pt,index,k);
 	}
- 
+ */
     return(TRUE);
 }
 
@@ -458,7 +466,7 @@ bool walk_view_handle_click(int xorg,int yorg,Point pt,bool on_side)
       View Polygon Clicking
       
 ======================================================= */
-
+/* supergumba -- delete a lot of this
 void walk_view_polygon_click_index(int xorg,int yorg,Point pt,int *p_index,int *p_type,bool sel_only,bool on_side)
 {
     int			n,i,k,rn,nitem,type,index,pt_type,pt_index,px,py,ysz,
@@ -563,9 +571,144 @@ void walk_view_polygon_click_index(int xorg,int yorg,Point pt,int *p_index,int *
 	*p_index=index;
 	*p_type=type;
 }
+*/
 
-bool walk_view_polygon_click_select(int xorg,int yorg,Point pt,bool on_side)
+
+
+void walk_view_click_setup_project(Rect *box,d3ang *ang,float fov)
 {
+	int				rn;
+	
+		// setup walk view
+		
+	rn=walk_view_find_start_portal();
+	walk_view_sight_path_mark(rn);
+	walk_view_gl_setup(box,ang,fov);
+	
+		// get projection
+		
+	glGetDoublev(GL_MODELVIEW_MATRIX,walk_view_mod_matrix);
+	glGetDoublev(GL_PROJECTION_MATRIX,walk_view_proj_matrix);
+	glGetIntegerv(GL_VIEWPORT,(GLint*)walk_view_vport);
+}
+
+bool walk_view_click_check_z(int x,int y,int z)
+{
+	double			dx,dy,dz;
+	
+	dx=(double)(x-cx);
+	dy=(double)(y-cy);
+	dz=(double)(cz-z);
+	
+	return((int)((dx*walk_view_mod_matrix[2])+(dy*walk_view_mod_matrix[6])+(dz*walk_view_mod_matrix[10])+walk_view_mod_matrix[14])>0);
+}
+
+void walk_view_click_project_polygon(Rect *box,int *x,int *y,int *z)
+{
+	double		dx,dy,dz;
+	
+	gluProject(*x,*y,*z,walk_view_mod_matrix,walk_view_proj_matrix,(GLint*)walk_view_vport,&dx,&dy,&dz);
+	*x=((int)dx)-box->left;
+	*y=(main_wind_box.bottom-((int)dy))-box->top;
+	*z=(int)((dz)*10000.0f);
+}
+
+void walk_view_polygon_click_index(Rect *box,d3pnt *cpt,d3ang *ang,float fov,int x,int y,int *type,int *portal_idx,int *main_idx,int *sub_idx,bool sel_only)
+{
+	int					i,n,k,t,z,box_wid,box_high,hit_z,px[8],py[8],pz[8];
+	bool				behind_z,off_left,off_right,off_top,off_bottom;
+	d3pnt				*pt;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*mesh_poly;
+	
+	int	cnt=0;
+	
+	walk_view_click_setup_project(box,ang,fov);
+	
+	box_wid=box->right-box->left;
+	box_high=box->bottom-box->top;
+	
+	*type=-1;
+	hit_z=100000;
+	
+		// run through the portal meshes
+		
+	for (i=0;i!=map.nportal;i++) {
+		portal=&map.portals[i];
+        if (!portal->in_path) continue;
+		
+		mesh=portal->mesh.meshes;
+		
+		for (n=0;n!=portal->mesh.nmesh;n++) {
+		
+			for (k=0;k!=mesh->npoly;k++) {
+			
+				mesh_poly=&mesh->polys[k];
+			
+				behind_z=TRUE;
+				z=0;
+			
+				for (t=0;t!=mesh_poly->ptsz;t++) {
+					pt=&mesh->vertexes[mesh_poly->v[t]];
+					px[t]=(pt->x+portal->x)-cpt->x;
+					py[t]=pt->y-cpt->y;
+					pz[t]=cpt->z-(pt->z+portal->z);
+					behind_z=behind_z&&walk_view_click_check_z(px[t],py[t],pz[t]);
+					walk_view_click_project_polygon(box,&px[t],&py[t],&pz[t]);
+					z+=pz[t];
+				}
+				
+					// check if outside box
+					
+				off_left=off_right=off_top=off_bottom=TRUE;
+				
+				for (t=0;t!=mesh_poly->ptsz;t++) {
+					off_left=off_left&&(px[t]<0);
+					off_right=off_right&&(px[t]>box_wid);
+					off_top=off_top&&(py[t]<0);
+					off_bottom=off_bottom&&(py[t]>box_high);
+				}
+				
+				if ((off_left) || (off_right) || (off_top) || (off_bottom)) continue;
+				
+				cnt++;
+				
+				z/=mesh_poly->ptsz;
+				if (z<0) continue;
+				
+				/*
+				if (behind_z) {
+					mesh_poly++;
+					continue;
+				}
+				*/
+				if (polygon_2D_point_inside(mesh_poly->ptsz,px,py,x,y)) {
+					if (z<hit_z) {
+						hit_z=z;
+						*type=mesh_piece;
+						*portal_idx=i;
+						*main_idx=n;
+						*sub_idx=k;
+					}
+				}
+				
+			}
+		
+			mesh++;
+		}
+	}
+	
+	
+	
+	fprintf(stdout,"count = %d\n",cnt);
+}
+
+
+
+bool walk_view_click_piece_select(int xorg,int yorg,Point pt,bool on_side)
+{
+/* supergumba
 	int				index,type,portal_idx,main_idx,sub_idx;
 	
 		// run through selected items first so we
@@ -601,19 +744,21 @@ bool walk_view_polygon_click_select(int xorg,int yorg,Point pt,bool on_side)
 		// run drag
 	
 	return(walk_view_piece_drag(pt));
+	*/
+	return(FALSE);
 }
 	
-void walk_view_polygon_click_normal(int xorg,int yorg,Point pt,bool dblclick,bool on_side)
+void walk_view_click_piece_normal(Rect *box,d3pnt *cpt,d3ang *ang,float fov,int x,int y,bool dblclick)
 {
 	int				index,primitive_index,type,portal_idx,main_idx,sub_idx;
 	
 		// anything clicked?
 		
-	walk_view_polygon_click_index(xorg,yorg,pt,&index,&type,FALSE,on_side);
+	walk_view_polygon_click_index(box,cpt,ang,fov,x,y,&type,&portal_idx,&main_idx,&sub_idx,FALSE);
 	
 		// if no select, then can still drag previous selections
-		
-	if (index==-1) {
+	/* supergumba	
+	if (type==-1) {
 		if (select_count()!=0) {
 			if (!walk_view_piece_drag(pt)) {
 				select_clear();					// if no drag, clear selection
@@ -625,39 +770,10 @@ void walk_view_polygon_click_normal(int xorg,int yorg,Point pt,bool dblclick,boo
 		}
 		return;
 	}
-	
-		// switch primitive segments to primitives
-		
-	if (type==segment_piece) {
-		if (map.segments[index].primitive_uid[0]!=-1) type=primitive_piece;
-	}
-	
+	*/
 		// if a selection, make sure in right portal
 		
-	switch (type) {
-		case segment_piece:
-		case primitive_piece:
-			cr=map.segments[index].rn;
-			break;
-		case node_piece:
-			cr=map.nodes[index].pos.rn;
-			break;
-		case spot_piece:
-			cr=map.spots[index].pos.rn;
-			break;
-		case scenery_piece:
-			cr=map.sceneries[index].pos.rn;
-			break;
-		case light_piece:
-			cr=map.lights[index].pos.rn;
-			break;
-		case sound_piece:
-			cr=map.sounds[index].pos.rn;
-			break;
-		case particle_piece:
-			cr=map.particles[index].pos.rn;
-			break;
-	}
+	if (type!=-1) cr=portal_idx;
 	
 		// add to selection
 		
@@ -668,11 +784,6 @@ void walk_view_polygon_click_normal(int xorg,int yorg,Point pt,bool dblclick,boo
 		}
 	}
 	else {
-		if (type==primitive_piece) {				// if it's a primitive, then let's find the original index to flip
-			primitive_index=select_check_primitive_find_index(map.segments[index].primitive_uid[0]);
-			if (primitive_index!=-1) index=primitive_index;
-		}
-
 		select_flip(type,portal_idx,main_idx,sub_idx);
 	}
 	
@@ -686,10 +797,12 @@ void walk_view_polygon_click_normal(int xorg,int yorg,Point pt,bool dblclick,boo
 	
 		// dragging clicks
 		
+	/* supergumba
 	if (!dblclick) {
 		walk_view_piece_drag(pt);
 		return;
 	}
+	*/
 	
 		// double clicks
 		
@@ -732,15 +845,24 @@ void walk_view_polygon_click_normal(int xorg,int yorg,Point pt,bool dblclick,boo
       
 ======================================================= */
 
-void walk_view_click_piece(int xorg,int yorg,Point pt,bool dblclick,bool on_side)
+void walk_view_click_piece(Rect *box,d3pnt *cpt,d3ang *ang,float fov,Point pt,bool dblclick)
 {
-	if (walk_view_handle_click(xorg,yorg,pt,on_side)) return;
+    int			x,y;
+
+		// put click within box
+		
+	x=pt.h-box->left;
+	y=pt.v-box->top;
+	
+
+/* supergumba
+	if (walk_view_click_handle(xorg,yorg,pt,on_side)) return;
 	
 	if (!dblclick) {
-		if (walk_view_polygon_click_select(xorg,yorg,pt,on_side)) return;
+		if (walk_view_click_piece_select(xorg,yorg,pt,on_side)) return;
 	}
-	
-	walk_view_polygon_click_normal(xorg,yorg,pt,dblclick,on_side);
+*/
+	walk_view_click_piece_normal(box,cpt,ang,fov,x,y,dblclick);
 }
 
 

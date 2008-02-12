@@ -64,49 +64,11 @@ void walk_view_mouse_reset_portal(void)
 
 /* =======================================================
 
-      Find Movement for Walk View
-      
-======================================================= */
-
-void walk_view_get_forward_movement(int x,int y,int *xadd,int *zadd,int *yadd,bool on_side)
-{
-	if (!on_side) {
-		*xadd=0;
-		*zadd=y;
-		*yadd=0;
-	}
-	else {
-		*xadd=-y;
-		*zadd=0;
-		*yadd=0;
-	}
-	
-	rotate_2D_point_center(xadd,zadd,walk_view_y_angle);
-}
-
-void walk_view_get_move_movement(int x,int y,int *xadd,int *zadd,int *yadd,bool on_side)
-{
-	if (!on_side) {
-		*xadd=x;
-		*zadd=0;
-		*yadd=y;
-	}
-	else {
-		*xadd=0;
-		*zadd=x;
-		*yadd=y;
-	}
-	
-	rotate_2D_point_center(xadd,zadd,walk_view_y_angle);
-}
-
-/* =======================================================
-
       X/Y Mouse Movement
       
 ======================================================= */
 
-void walk_view_mouse_xy_movement(Point pt,bool on_side)
+void walk_view_mouse_xy_movement(d3ang *ang,Point pt,int view_move_dir)
 {
 	int						x,y,xadd,zadd,yadd;
 	Point					oldpt;
@@ -124,8 +86,29 @@ void walk_view_mouse_xy_movement(Point pt,bool on_side)
 		x=oldpt.h-pt.h;
 		y=oldpt.v-pt.v;
 		oldpt=pt;
-	
-		walk_view_get_move_movement(x,y,&xadd,&zadd,&yadd,on_side);
+		
+		switch (view_move_dir) {
+			case vm_dir_forward:
+				xadd=-x;
+				yadd=y;
+				zadd=0;
+				rotate_2D_point_center(&xadd,&zadd,ang->y);
+				break;
+			case vm_dir_side:
+				xadd=x;
+				yadd=y;
+				zadd=0;
+				rotate_2D_point_center(&xadd,&zadd,ang->y);
+				break;
+			case vm_dir_top:
+				xadd=x;
+				yadd=0;
+				zadd=y;
+				break;
+			default:
+				xadd=yadd=zadd=0;
+				break;
+		}
 		
 		cz+=(zadd*32);
 		cx+=(xadd*32);
@@ -145,7 +128,7 @@ void walk_view_mouse_xy_movement(Point pt,bool on_side)
       
 ======================================================= */
 
-void walk_view_mouse_z_movement(Point pt,bool on_side)
+void walk_view_mouse_z_movement(d3ang *ang,Point pt,int view_move_dir)
 {
 	int						x,y,xadd,zadd,yadd;
 	Point					oldpt;
@@ -162,8 +145,30 @@ void walk_view_mouse_z_movement(Point pt,bool on_side)
 		x=oldpt.h-pt.h;
 		y=oldpt.v-pt.v;
 		oldpt=pt;
-	
-		walk_view_get_forward_movement(x,y,&xadd,&zadd,&yadd,on_side);
+		
+		switch (view_move_dir) {
+			case vm_dir_forward:
+				xadd=0;
+				yadd=0;
+				zadd=-y;
+				rotate_2D_point_center(&xadd,&zadd,ang->y);
+				break;
+			case vm_dir_side:
+				xadd=0;
+				yadd=0;
+				zadd=y;
+				rotate_2D_point_center(&xadd,&zadd,ang->y);
+				break;
+			case vm_dir_top:
+				xadd=0;
+				yadd=-y;
+				zadd=0;
+				rotate_2D_point_center(&xadd,&zadd,ang->y);
+				break;
+			default:
+				xadd=yadd=zadd=0;
+				break;
+		}
 		
 		cz+=(zadd*32);
 		cx+=(xadd*32);
@@ -177,11 +182,15 @@ void walk_view_mouse_z_movement(Point pt,bool on_side)
 	} while (track!=kMouseTrackingMouseReleased);
 }
 
-void walk_view_scroll_wheel_z_movement(int delta,bool on_side)
+void walk_view_scroll_wheel_z_movement(d3ang *ang,int delta,int view_move_dir)
 {
 	int						xadd,zadd,yadd;
 
-	walk_view_get_forward_movement(0,-(delta*10),&xadd,&zadd,&yadd,on_side);
+	xadd=0;
+	yadd=0;
+	zadd=delta*10;
+		
+	rotate_2D_point_center(&xadd,&zadd,angle_add(ang->y,180.0f));
 	
 	cz+=(zadd*32);
 	cx+=(xadd*32);

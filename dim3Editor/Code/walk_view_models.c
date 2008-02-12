@@ -30,7 +30,6 @@ and can be sold or given away.
 #include "top_view.h"
 #include "walk_view.h"
 
-extern int						cx,cy,cz;
 extern map_type					map;
 
 extern file_path_setup_type		file_path_setup;
@@ -226,7 +225,7 @@ void walk_view_model_draw_material(model_type *model,model_draw_setup *draw_setu
 	glEnd();
 }
 
-bool walk_view_model_draw(d3pos *pos,d3ang *ang,char *name)
+bool walk_view_model_draw(d3pnt *cpt,d3pos *pos,d3ang *ang,char *name)
 {
 	int								idx,rn,x,y,z,n;
 	model_type						*model;
@@ -246,9 +245,9 @@ bool walk_view_model_draw(d3pos *pos,d3ang *ang,char *name)
 		
 	rn=pos->rn;
 	
-	x=(pos->x+map.portals[rn].x)-cx;
-	y=(pos->y+1)-cy;
-	z=(pos->z+map.portals[rn].z)-cz;
+	x=(pos->x+map.portals[rn].x)-cpt->x;
+	y=(pos->y+1)-cpt->y;
+	z=(pos->z+map.portals[rn].z)-cpt->z;
 	
 		// build model vertex list
 		
@@ -327,7 +326,7 @@ bool walk_view_model_draw(d3pos *pos,d3ang *ang,char *name)
       
 ======================================================= */
 
-bool walk_view_model_click_select_size(char *name,d3pos *pos,d3ang *ang,int *px,int *pz,int *ty,int *by)
+bool walk_view_model_click_select_size(d3pnt *cpt,char *name,d3pos *pos,d3ang *ang,int *px,int *pz,int *ty,int *by)
 {
 	int						idx,rn,x,y,z,wid_x,wid_z,high;
 	model_type				*model;
@@ -336,9 +335,9 @@ bool walk_view_model_click_select_size(char *name,d3pos *pos,d3ang *ang,int *px,
 		
 	rn=pos->rn;
 	
-	x=(pos->x+map.portals[rn].x)-cx;
-	y=(pos->y+1)-cy;
-	z=cz-(pos->z+map.portals[rn].z);
+	x=(pos->x+map.portals[rn].x)-cpt->x;
+	y=(pos->y+1)-cpt->y;
+	z=cpt->z-(pos->z+map.portals[rn].z);
 
 		// default size
 		
@@ -384,13 +383,13 @@ bool walk_view_model_click_select_size(char *name,d3pos *pos,d3ang *ang,int *px,
       
 ======================================================= */
 
-bool walk_view_model_draw_select(d3pos *pos,d3ang *ang,char *name)
+bool walk_view_model_draw_select(d3pnt *cpt,d3pos *pos,d3ang *ang,char *name)
 {
 	int				px[4],pz[4],ty,by;
 	
 		// get polygons
 		
-	if (!walk_view_model_click_select_size(name,pos,ang,px,pz,&ty,&by)) return(FALSE);
+	if (!walk_view_model_click_select_size(cpt,name,pos,ang,px,pz,&ty,&by)) return(FALSE);
 
 		// draw selection
 		

@@ -420,9 +420,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>2644F0480D426A6700470CB5</string>
+				<string>267D5AEB0D5AAD0C0045B80A</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>2644F0490D426A6700470CB5</string>
+				<string>267D5AEC0D5AAD0C0045B80A</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -541,7 +541,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>222456428.41514701</real>
+	<real>224046335.74467099</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -556,9 +556,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C78EAAD065D492600B07095</string>
-		<string>1CD10A99069EF8BA00B06720</string>
-		<string>260AFEE90D40505C00F6C42F</string>
+		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>/Users/ggadwa/dim3Code/dim3Animator/dim3Animator.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -855,8 +853,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>26821BBA0D41CE9800D6DEBB</string>
-				<string>26821BBB0D41CE9800D6DEBB</string>
+				<string>267D5AE90D5AAD0B0045B80A</string>
+				<string>267D5AEA0D5AAD0B0045B80A</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>

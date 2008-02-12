@@ -46,7 +46,7 @@ extern void object_move_xz_bounce(obj_type *obj);
 
 /* =======================================================
 
-      Determine if Contact is Wall or Floor/Ceiling like
+      Determine if Contact Poly is Wall-Like
       
 ======================================================= */
 
