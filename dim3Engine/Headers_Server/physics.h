@@ -67,7 +67,6 @@ extern bool map_proj_move_xz(proj_type *proj,int ignore_obj_uid,int x,int z);
 extern bool move_proj_check_xz_map(proj_type *proj,int x,int z);
 extern bool map_spot_empty_sphere(int sx,int sy,int sz,int radius,int ignore_obj_uid,int *hit_obj_uid);
 extern bool map_spot_empty_object(obj_type *obj);
-extern bool map_spot_empty_projectile(proj_type *proj);
 
 extern int find_fc_for_upward_point(int rn,int x,int y,int z,int ydist,int *hit);
 extern int find_fc_for_downward_point(int rn,int x,int y,int z,int ydist,int *hit);

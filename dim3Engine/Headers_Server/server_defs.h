@@ -790,7 +790,7 @@ typedef struct		{
 												start_tick;
 						float					speed,decel_speed,decel_min_speed;
 						bool					dispose,stick,reset_angle,flag_melee_hit;
-						d3pos					pos,org_pos;
+						d3pos					pos,org_pos,last_pos;
 						d3ang					ang;
 						obj_size				size;
 						obj_motion				motion;

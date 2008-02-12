@@ -88,7 +88,6 @@ void projectile_speed(proj_type *proj)
 bool projectile_move(proj_type *proj)
 {
 	int				rn,y,xmove,zmove,ymove;
-	d3pos			savepos;
 	portal_type		*portal;
 
 		// project movement
@@ -98,7 +97,7 @@ bool projectile_move(proj_type *proj)
 		
 		// save old position
 
-	memmove(&savepos,&proj->pos,sizeof(d3pos));
+	memmove(&proj->last_pos,&proj->pos,sizeof(d3pos));
 	
         // move
 
@@ -107,7 +106,7 @@ bool projectile_move(proj_type *proj)
 		// check for moving into a new portal
 
 	if (!map_find_portal_by_pos(&map,&proj->pos)) {
-		memmove(&proj->pos,&savepos,sizeof(d3pos));
+		memmove(&proj->pos,&proj->last_pos,sizeof(d3pos));
 		return(TRUE);
     }
     
@@ -182,18 +181,20 @@ void projectile_seek(proj_type *proj,obj_type *to_obj,float turn_add,float thrus
 
 bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_event)
 {
-	/* supergumba
-	int			xmove,ymove,zmove,seg_idx;
-	float		fy,slope_y;
+	int					xmove,ymove,zmove;
+	float				fy,slope_y;
+	poly_pointer_type	*poly;
 
-		// get floor slope
+		// get polygon slope
 
+	poly=&proj->contact.hit_poly;
 	slope_y=0.0f;
 
-	seg_idx=proj->contact.floor_seg_idx;
-	if (seg_idx==-1) seg_idx=proj->contact.ceiling_seg_idx;
-	
-	if (seg_idx!=-1) slope_y=map.segments[seg_idx].data.fc.slope_y;
+	if (poly->portal_idx!=-1) slope_y=map.portals[poly->portal_idx].mesh.meshes[poly->mesh_idx].polys[poly->poly_idx].slope.y;
+
+		// reset to last good position
+
+	memmove(&proj->pos,&proj->last_pos,sizeof(d3pos));
 
 		// if floor is over a certain slope, just reflect instead
 
@@ -224,8 +225,6 @@ bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_ev
 	if (send_event) scripts_post_event_console(&proj->attach,sd_event_projectile,sd_event_projectile_bounce,0);
 	
 	return(ymove==min_ymove);
-	*/
-	return(FALSE);
 }
 
 /* =======================================================
@@ -236,25 +235,38 @@ bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_ev
 
 void projectile_reflect(proj_type *proj,bool send_event)
 {
-	/* supergumba
-	int					seg_idx,x,z,y;
+	int					x,z,y;
 	float				f,ang;
-	wall_segment_data	*wall;
+	bool				wall_hit;
+	poly_pointer_type	*poly;
+	map_mesh_poly_type	*mesh_poly;
 	d3vct				proj_vct,normal_vct;
 	
-	seg_idx=proj->contact.wall_seg_idx;
+		// get information about collided mesh
+
+	poly=&proj->contact.hit_poly;
+
+	mesh_poly=NULL;
+	wall_hit=FALSE;
 	
-		// if not wall, then just reverse
+	if (poly->portal_idx!=-1) {
+		mesh_poly=&map.portals[poly->portal_idx].mesh.meshes[poly->mesh_idx].polys[poly->poly_idx];
+		wall_hit=mesh_poly->box.common_xz;
+	}
+
+		// reset to last good position
+
+	memmove(&proj->pos,&proj->last_pos,sizeof(d3pos));
+	
+		// if not wall-like, then just reverse
 		
-	if (seg_idx==-1) {
+	if ((mesh_poly==NULL) || (!wall_hit)) {
 		proj->ang.y=proj->motion.ang.y=angle_add(proj->motion.ang.y,180);
 	}
 	else {
 
-			// get the projectile and wall vector
+			// get the projectile and polygon vector
 
-		wall=&map.segments[seg_idx].data.wall;
-		
 		projectile_set_motion(proj,1000,proj->motion.ang.y,0,&x,&y,&z);
 		
 		proj_vct.x=(float)x;			// projectile vector
@@ -262,7 +274,7 @@ void projectile_reflect(proj_type *proj,bool send_event)
 		proj_vct.z=(float)z;
 		vector_normalize(&proj_vct);
 		
-		vector_create(&normal_vct,wall->lx,0,wall->lz,wall->rx,0,wall->rz);		// perpendicular vector (swap x/z)
+		vector_create(&normal_vct,mesh_poly->box.min.x,0,mesh_poly->box.min.z,mesh_poly->box.max.x,0,mesh_poly->box.max.z);		// perpendicular vector (swap x/z)
 		
 			// get the angle between them
 
@@ -279,15 +291,9 @@ void projectile_reflect(proj_type *proj,bool send_event)
 		proj->ang.y=proj->motion.ang.y=ang;
 	}
 
-		// move away from reflection point
-		// so we don't double the reflection
-
-	projectile_move(proj);
-
 		// send event
 
 	if (send_event) scripts_post_event_console(&proj->attach,sd_event_projectile,sd_event_projectile_reflect,0);
-	*/
 }
 
 /* =======================================================

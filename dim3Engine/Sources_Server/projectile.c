@@ -133,7 +133,7 @@ proj_type* projectile_find_uid(int uid)
 
 void projectile_set_position(proj_type *proj,d3pnt *pt,d3ang *ang)
 {
-	d3pos				*pos;
+	d3pos			*pos;
 	
 		// position
 		
@@ -144,6 +144,8 @@ void projectile_set_position(proj_type *proj,d3pnt *pt,d3ang *ang)
 	pos->z=pt->z;
 	
 	map_find_portal_by_pos(&map,pos);
+
+	memmove(&proj->last_pos,pos,sizeof(d3pos));
 
 		// angles
 		
@@ -177,10 +179,12 @@ bool projectile_spawn_position(proj_type *proj,d3pnt *pt,d3ang *ang,obj_type *pa
 	proj->contact.obj_uid=-1;
 	
 	if (map_find_portal_by_pos(&map,&proj->pos)) {					// don't spawn projectiles out of map
-		if (!map_spot_empty_projectile(proj)) {
+	//	if (!map_spot_empty_projectile(proj)) {
 			return(FALSE);
-		}
+	//	}
 	}
+
+	// supergumba -- need to redo all this -- might not be necessary anymore
 	
 	uid=proj->contact.obj_uid;
 	if (uid!=-1) {								// reset projectile to explode on object

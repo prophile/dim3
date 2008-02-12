@@ -445,23 +445,3 @@ bool map_spot_empty_object(obj_type *obj)
 	*/
 	return(TRUE);
 }
-
-bool map_spot_empty_projectile(proj_type *proj)
-{
-	/* supergumba
-	d3box			box;
-	
-	proj->contact.wall_seg_idx=-1;
-	proj->contact.obj_uid=-1;
-	
-	box_create_from_projectile(&box,proj);
-	if (!box_in_map(&box)) return(TRUE);
-
-	proj->contact.wall_seg_idx=move_check_xz_portals(&box);
-	if (proj->contact.wall_seg_idx!=-1) return(TRUE);
-	
-	proj->contact.obj_uid=collide_find_object_for_projectile(proj,proj->obj_uid);
-	return(proj->contact.obj_uid!=-1);
-	*/
-	return(FALSE);
-}	
