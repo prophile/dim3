@@ -170,38 +170,23 @@ void projectile_set_origin(proj_type *proj)
 
 bool projectile_spawn_position(proj_type *proj,d3pnt *pt,d3ang *ang,obj_type *parentobj)
 {
-	int				uid;
-	obj_type		*hit_obj;
-	
 	projectile_set_position(proj,pt,ang);
 	projectile_set_origin(proj);
 	
 	proj->contact.obj_uid=-1;
-	
-	if (map_find_portal_by_pos(&map,&proj->pos)) {					// don't spawn projectiles out of map
-	//	if (!map_spot_empty_projectile(proj)) {
-			return(FALSE);
-	//	}
-	}
 
-	// supergumba -- need to redo all this -- might not be necessary anymore
+		// check for spawning outside map
 	
-	uid=proj->contact.obj_uid;
-	if (uid!=-1) {								// reset projectile to explode on object
-		hit_obj=object_find_uid(uid);
-		proj->pos.x=hit_obj->pos.x;
-		proj->pos.z=hit_obj->pos.z;
-		proj->pos.y=parentobj->pos.y-(parentobj->size.y>>1);
-		proj->pos.rn=hit_obj->pos.rn;
-	}
-	else {	
-		proj->pos.x=parentobj->pos.x;			// reset projectile to explode on you
-		proj->pos.z=parentobj->pos.z;
-		proj->pos.y=parentobj->pos.y-(parentobj->size.y>>1);
-		proj->pos.rn=parentobj->pos.rn;
+	if (map_find_portal_by_pos(&map,&proj->pos)) return(FALSE);
+		
+		// reset projectile to explode on parent object
+
+	proj->pos.x=parentobj->pos.x;
+	proj->pos.z=parentobj->pos.z;
+	proj->pos.y=parentobj->pos.y-(parentobj->size.y>>1);
+	proj->pos.rn=parentobj->pos.rn;
 	
-		proj->contact.obj_uid=parentobj->uid;
-	}
+	proj->contact.obj_uid=parentobj->uid;
 	
 	return(TRUE);
 }

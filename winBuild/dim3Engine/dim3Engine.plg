@@ -6,38 +6,13 @@
 --------------------Configuration: dim3Engine - Win32 Release--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSP7D89.tmp" with contents
+Creating temporary file "C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSPE0.tmp" with contents
 [
 /nologo /MD /W3 /Z7 /O2 /I "..\win32Includes\pthreads" /I "..\win32Includes\GLEW" /I "..\win32Includes\ZLib" /I "..\win32Includes\SDL" /I "..\win32Includes\OpenAL" /I "..\win32Includes\JS" /I "..\win32Includes\PNG" /I "..\..\dim3Engine\Headers_View" /I "..\..\dim3Engine\Headers_Server" /I "..\..\dim3Engine\Headers" /I "..\..\dim3MapUtility\Headers" /I "..\..\dim3ModelUtility\Headers" /I "..\..\dim3BaseUtility\Headers" /I "..\..\dim3Common\Headers" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "D3_PCH" /D "D3_ENGINE" /Fp"Release/dim3Engine.pch" /YX"dim3Engine.h" /Fo"Release/" /Fd"Release/" /FD /c 
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\box.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\item.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_ray_trace.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_xz_check.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_y_check.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_liquid.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_rigid_body.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_hit.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_hitscan.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_move.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\remote.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_spawn.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\weapon_melee.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_View\crosshair_draw.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_View\halo_draw.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_View\remote_status.c"
-"C:\Gumba\dim3Code\dim3Engine\Sources_View\shadow_volume.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\segment_liquid.c"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSP7D89.tmp" 
-Creating temporary file "C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSP7D8A.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSPE0.tmp" 
+Creating temporary file "C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSPE1.tmp" with contents
 [
 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"Release/dim3 Engine.pdb" /machine:I386 /out:"..\..\..\dim3\dim3 Engine.exe" 
 .\Release\app.obj
@@ -336,42 +311,16 @@ kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32
 ..\dim3ModelUtility\Release\dim3ModelUtility.lib
 ..\dim3MapUtility\Release\dim3MapUtility.lib
 ]
-Creating command line "link.exe @C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSP7D8A.tmp"
+Creating command line "link.exe @C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSPE1.tmp"
 <h3>Output Window</h3>
 Compiling...
-box.c
-camera_chase.c
-collision.c
-collision_map.c
-collision_utility.c
-item.c
-map_ray_trace.c
-map_xz_check.c
-map_y_check.c
-obj_action.c
-obj_find.c
-obj_liquid.c
-obj_move.c
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(977) : warning C4013: 'object_move_normal_2' undefined; assuming extern returning int
-obj_rigid_body.c
-obj_state.c
-projectile.c
-projectile_hit.c
-projectile_hitscan.c
-projectile_move.c
-remote.c
-script_spawn.c
-weapon_melee.c
-crosshair_draw.c
-halo_draw.c
-remote_status.c
-shadow_volume.c
+segment_liquid.c
 Linking...
 
 
 
 <h3>Results</h3>
-dim3 Engine.exe - 0 error(s), 1 warning(s)
+dim3 Engine.exe - 0 error(s), 0 warning(s)
 </pre>
 </body>
 </html>

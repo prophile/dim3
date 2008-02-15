@@ -29,6 +29,9 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "consoles.h"
+#include "video.h"
+
 extern map_type				map;
 extern server_type			server;
 extern view_type			view;
@@ -210,6 +213,120 @@ void segment_liquid_tide_draw_lighting(segment_type *seg,bool light)
 	
 		tz=bz;
 		top_row=bot_row;
+	}
+}
+
+/* =======================================================
+
+      Liquid Rendering Portal
+      
+======================================================= */
+
+void liquid_render_portal(int rn)
+{
+	int							n,nliquid,y,frame;
+	unsigned long				txt_id;
+	float						alpha;
+	portal_type					*portal;
+	map_liquid_type				*liq;
+	texture_type				*texture;
+
+	portal=&map.portals[rn];
+
+		// if no liquids then skip
+
+	nliquid=portal->liquid.nliquid;
+	if (nliquid==0) return;
+
+		// setup drawing
+
+	gl_texture_transparent_start();
+						
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+						
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+
+	txt_id=-1;
+	alpha=0.0f;
+
+		// run through liquids
+
+	liq=portal->liquid.liquids;
+
+	for (n=0;n!=nliquid;n++) {
+
+		texture=&map.textures[liq->txt_idx];
+		frame=texture->animate.current_frame&max_texture_frame_mask;
+
+			// draw the transparent texture
+
+		if ((texture->bitmaps[frame].gl_id!=txt_id) || (liq->alpha!=alpha)) {
+		
+			txt_id=texture->bitmaps[frame].gl_id;
+			alpha=liq->alpha;
+			gl_texture_transparent_set(txt_id,alpha);
+			
+			if (texture->additive) {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+			}
+			else {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+			}
+		}
+
+		y=liq->y-view.camera.pos.y;
+
+		glBegin(GL_QUADS);
+
+		glTexCoord2f(liq->x_txtoff,liq->y_txtoff);
+		glVertex3i(liq->lft-view.camera.pos.x,y,view.camera.pos.z-liq->top);
+
+		glTexCoord2f(liq->x_txtoff+liq->x_txtfact,liq->y_txtoff);
+		glVertex3i(liq->rgt-view.camera.pos.x,y,view.camera.pos.z-liq->top);
+
+		glTexCoord2f(liq->x_txtoff+liq->x_txtfact,liq->y_txtoff+liq->y_txtfact);
+		glVertex3i(liq->rgt-view.camera.pos.x,y,view.camera.pos.z-liq->bot);
+
+		glTexCoord2f(liq->x_txtoff,liq->y_txtoff+liq->y_txtfact);
+		glVertex3i(liq->lft-view.camera.pos.x,y,view.camera.pos.z-liq->bot);
+
+		glEnd();
+
+		liq++;
+	}
+
+	gl_texture_transparent_end();
+}
+
+/* =======================================================
+
+      Liquid Rendering
+      
+======================================================= */
+
+void liquid_render(int portal_cnt,int *portal_list)
+{
+	int					i;
+
+		// setup view
+
+	gl_setup_viewport(console_y_offset());
+	gl_3D_view(&view.camera);
+	gl_3D_rotate(&view.camera.ang);
+	gl_setup_project();
+	
+		// run through portals
+		// we want to go from furthest away to closest
+		// for the transparency sorting
+		
+	for (i=0;i<portal_cnt;i++) {
+		liquid_render_portal(portal_list[i]);
 	}
 }
 

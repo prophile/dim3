@@ -70,6 +70,7 @@ extern void view_draw_liquid_tint(int under_liquid_idx);
 extern void view_draw_effect_tint(int tick,obj_type *obj);
 extern void fade_screen_draw(int tick);
 extern void fade_object_draw(int tick,obj_type *obj);
+extern void liquid_render(int portal_cnt,int *portal_list);
 extern void decal_render(void);
 
 /* =======================================================
@@ -331,6 +332,10 @@ void view_draw(int tick)
 		// draw tranparent segments
 		
 	segment_render_transparent(draw_portal_cnt,draw_portal_list);
+
+		// draw liquids
+
+	liquid_render(draw_portal_cnt,draw_portal_list);
 
 		// draw decals
 

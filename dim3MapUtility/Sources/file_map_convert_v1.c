@@ -137,11 +137,11 @@ void map_convert_liquid(map_type *map,int rn,segment_type *seg)
 	portal=&map->portals[rn];
 	liquid=&portal->liquid.liquids[portal->liquid.nliquid-1];
 
-	liquid->y=seg->data.liquid.y;
-	liquid->lft=seg->data.liquid.lft;
-	liquid->rgt=seg->data.liquid.rgt;
-	liquid->top=seg->data.liquid.top;
-	liquid->bot=seg->data.liquid.bot;
+	liquid->y=seg->data.liquid.y*map_enlarge;
+	liquid->lft=portal->x+(seg->data.liquid.lft*map_enlarge);
+	liquid->rgt=portal->x+(seg->data.liquid.rgt*map_enlarge);
+	liquid->top=portal->z+(seg->data.liquid.top*map_enlarge);
+	liquid->bot=portal->z+(seg->data.liquid.bot*map_enlarge);
 
 	liquid->alpha=seg->alpha;
 	liquid->speed_alter=seg->data.liquid.speed_alter;

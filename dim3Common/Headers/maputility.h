@@ -487,7 +487,7 @@ typedef struct		{
 						portal_segment_list_type	wall_list_hit,
 													fc_list_hit,
 													liquid_list_hit,
-													segment_list_all,
+													segment_list_all,	// supergumba -- delete all this
 													segment_list_draw,
 													segment_list_texture_shift;
 						portal_segment_draw_type	segment_draw;
