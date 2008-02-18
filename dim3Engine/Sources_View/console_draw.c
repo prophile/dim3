@@ -153,7 +153,7 @@ void console_draw_fps(void)
 	}
 
 	col.r=col.g=col.b=0.0f;
-	gl_text_draw((setup.screen.x_scale-5),y,fps_txt,tx_right,&col,1.0f);
+	gl_text_draw((setup.screen.x_scale-5),y,fps_txt,tx_right,FALSE,&col,1.0f);
 
 	gl_text_end();
 }
@@ -210,7 +210,7 @@ void console_draw_open(void)
 	
 	for (i=0;i!=console_count;i++) {
 		y+=y_add;
-		gl_text_draw(5,y,cline->txt,tx_left,&cline->color,1.0f);
+		gl_text_draw(5,y,cline->txt,tx_left,FALSE,&cline->color,1.0f);
 		cline++;
 	}
 

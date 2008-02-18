@@ -60,10 +60,9 @@ and can be sold or given away.
 #define ctrl_glowmapping_id					16
 #define ctrl_segmentdarken_id				17
 #define ctrl_halo_id						18
-#define ctrl_curve_id						19
-#define ctrl_fog_id							20
-#define ctrl_mark_id						21
-#define ctrl_shadow_id						22
+#define ctrl_fog_id							19
+#define ctrl_mark_id						20
+#define ctrl_shadow_id						21
 
 #define ctrl_sound_volume_id				30
 #define ctrl_music_on_id					31
@@ -125,7 +124,6 @@ char						setup_screen_size_list[max_screen_size][32],
 							setup_texture_quality_mode_list[][32]=texture_quality_mode_setup_list_def,
 							setup_mipmap_mode_list[][32]=mipmap_mode_setup_list_def,
 							setup_fsaa_mode_list[][32]=setup_fsaa_mode_list_def,
-							setup_curve_mode_list[][32]=setup_curve_mode_list_def,
 							setup_shadow_mode_list[][32]=setup_shadow_mode_list_def,
 							setup_joystick_mode_list[][32]=setup_joystick_mode_list_def,
 							setup_control_names[][32]=control_names,
@@ -148,7 +146,8 @@ action_display_type			action_display[ncontrol];
 
 void setup_display_pane(void)
 {
-	int			n,idx,x,y,control_y_add,control_y_sz;
+	int			n,idx,wid,high,
+				x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
 	control_y_sz=(control_y_add*8)+8;
@@ -159,7 +158,14 @@ void setup_display_pane(void)
 		// setup screen size list
 		
 	for (n=0;n!=render_info.nscreen_size;n++) {
-		sprintf(setup_screen_size_list[n],"%dx%d",render_info.screen_sizes[n].wid,render_info.screen_sizes[n].high);
+		wid=render_info.screen_sizes[n].wid;
+		high=render_info.screen_sizes[n].high;
+		if (((float)high/(float)wid)<=0.625f) {
+			sprintf(setup_screen_size_list[n],"%dx%d Widescreen",wid,high);
+		}
+		else {
+			sprintf(setup_screen_size_list[n],"%dx%d",wid,high);
+		}
 	}
 	idx=view_search_screen_size_list(setup.screen_wid,setup.screen_high);
 	if (idx==-1) idx=0;
@@ -191,7 +197,7 @@ void setup_graphics_pane(void)
 	int			x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	control_y_sz=(control_y_add*13)+(2*8);
+	control_y_sz=(control_y_add*12)+(2*8);
 	
 	x=(int)(((float)setup.screen.x_scale)*0.4f);
 	y=(setup.screen.y_scale>>1)-(control_y_sz>>1);
@@ -226,9 +232,6 @@ void setup_graphics_pane(void)
 
 	element_combo_add("Shadows",(char*)setup_shadow_mode_list,setup.shadow_mode,ctrl_shadow_id,x,y,TRUE);
 	element_enable(ctrl_shadow_id,gl_check_shadow_ok());
-	y+=control_y_add;
-	element_combo_add("Curve Detail",(char*)setup_curve_mode_list,setup.curve_mode,ctrl_curve_id,x,y,TRUE);
-	element_enable(ctrl_curve_id,(!setup_in_game));
 }
 
 void setup_audio_pane(void)
@@ -993,10 +996,6 @@ void setup_handle_click(int id)
 
 		case ctrl_halo_id:
 			setup.halo=element_get_value(ctrl_halo_id);
-			break;
-			
-		case ctrl_curve_id:
-			setup.curve_mode=element_get_value(ctrl_curve_id);
 			break;
 			
 		case ctrl_fog_id:

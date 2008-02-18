@@ -253,7 +253,14 @@ void element_clear(void)
 
 int element_get_control_high(void)
 {
-	return(20);
+	int			wid,high;
+
+	wid=256;
+	high=20;
+
+	gl_scale_2D_aspect_size(&wid,&high);
+
+	return(high);
 }
 
 /* =======================================================
@@ -787,9 +794,7 @@ void element_draw_button(element_type *element,int sel_id)
 	}
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
-	
-	gl_scale_2D_point(&lft,&top);
-	gl_scale_2D_point(&rgt,&bot);
+	gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
 	
 	glBegin(GL_QUADS);
 	glTexCoord2f(0,0);
@@ -819,9 +824,7 @@ void element_draw_bitmap(element_type *element)
 	int				lft,rgt,top,bot;
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
-	
-	gl_scale_2D_point(&lft,&top);
-	gl_scale_2D_point(&rgt,&bot);
+	gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
 
 		// the picture
 		
@@ -884,18 +887,18 @@ void element_draw_text(element_type *element,int sel_id)
 	if (element->setup.text.alert) {
 		col.r=1.0f;
 		col.g=col.b=0.0f;
-		gl_text_draw(element->x,element->y,element->str,element->setup.text.just,&col,1.0f);
+		gl_text_draw(element->x,element->y,element->str,element->setup.text.just,FALSE,&col,1.0f);
 	}
 	else {
 		if (!element->enabled) {
-			gl_text_draw(element->x,element->y,element->str,element->setup.text.just,&hud.color.disabled,1.0f);
+			gl_text_draw(element->x,element->y,element->str,element->setup.text.just,FALSE,&hud.color.disabled,1.0f);
 		}
 		else {
 			if ((element->id!=-1) && (element->id==sel_id)) {
-				gl_text_draw(element->x,element->y,element->str,element->setup.text.just,&hud.color.mouse_over,1.0f);
+				gl_text_draw(element->x,element->y,element->str,element->setup.text.just,FALSE,&hud.color.mouse_over,1.0f);
 			}
 			else {
-				gl_text_draw(element->x,element->y,element->str,element->setup.text.just,&hud.color.base,1.0f);
+				gl_text_draw(element->x,element->y,element->str,element->setup.text.just,FALSE,&hud.color.base,1.0f);
 			}
 		}
 	}
@@ -946,8 +949,8 @@ void element_draw_text_field(element_type *element,int sel_id)
 		// label
 		
 	gl_text_start(TRUE);
-	gl_text_draw((x-5),(y-1),element->str,tx_right,&hud.color.base,1.0f);
-	gl_text_draw(x,(y-1),":",tx_center,&hud.color.base,1.0f);
+	gl_text_draw((x-5),(y-1),element->str,tx_right,FALSE,&hud.color.base,1.0f);
+	gl_text_draw(x,(y-1),":",tx_center,FALSE,&hud.color.base,1.0f);
 	gl_text_end();
 		
 		// control box
@@ -957,8 +960,7 @@ void element_draw_text_field(element_type *element,int sel_id)
 	top=(y-element->high)-1;
 	bot=y+1;
 	
-	gl_scale_2D_point(&lft,&top);
-	gl_scale_2D_point(&rgt,&bot);
+	gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
 	
 	alpha=(element->enabled?1.0f:0.5f);
 
@@ -1004,14 +1006,14 @@ void element_draw_text_field(element_type *element,int sel_id)
 		
 	if (element->enabled) {
 		if (element->id==element_open_text_field_id) {
-			gl_text_draw((x+10),y,txt,tx_left,&hud.color.mouse_over,1.0f);
+			gl_text_draw((x+10),y,txt,tx_left,FALSE,&hud.color.mouse_over,1.0f);
 		}
 		else {
-			gl_text_draw((x+10),y,txt,tx_left,&hud.color.base,1.0f);
+			gl_text_draw((x+10),y,txt,tx_left,FALSE,&hud.color.base,1.0f);
 		}
 	}
 	else {
-		gl_text_draw((x+10),y,txt,tx_left,&hud.color.disabled,1.0f);
+		gl_text_draw((x+10),y,txt,tx_left,FALSE,&hud.color.disabled,1.0f);
 	}
 	
 	gl_text_end();
@@ -1039,8 +1041,8 @@ void element_draw_checkbox(element_type *element,int sel_id)
 		// label
 		
 	gl_text_start(TRUE);
-	gl_text_draw((x-5),(y-1),element->str,tx_right,&hud.color.base,1.0f);
-	gl_text_draw(x,(y-1),":",tx_center,&hud.color.base,1.0f);
+	gl_text_draw((x-5),(y-1),element->str,tx_right,FALSE,&hud.color.base,1.0f);
+	gl_text_draw(x,(y-1),":",tx_center,FALSE,&hud.color.base,1.0f);
 	gl_text_end();
 	
 		// checkbox
@@ -1050,8 +1052,7 @@ void element_draw_checkbox(element_type *element,int sel_id)
 	top=(y-element->high)+1;
 	bot=y-1;
 
-	gl_scale_2D_point(&lft,&top);
-	gl_scale_2D_point(&rgt,&bot);
+	gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
 	
 	alpha=(element->enabled?1.0f:0.5f);
 
@@ -1181,8 +1182,8 @@ void element_draw_combo(element_type *element,int sel_id)
 		// label
 		
 	gl_text_start(TRUE);
-	gl_text_draw((x-5),(y-1),element->str,tx_right,&hud.color.base,1.0f);
-	gl_text_draw(x,(y-1),":",tx_center,&hud.color.base,1.0f);
+	gl_text_draw((x-5),(y-1),element->str,tx_right,FALSE,&hud.color.base,1.0f);
+	gl_text_draw(x,(y-1),":",tx_center,FALSE,&hud.color.base,1.0f);
 	gl_text_end();
 		
 		// combo box
@@ -1192,8 +1193,7 @@ void element_draw_combo(element_type *element,int sel_id)
 	top=(y-element->high)-1;
 	bot=y+1;
 	
-	gl_scale_2D_point(&lft,&top);
-	gl_scale_2D_point(&rgt,&bot);
+	gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
 
 	alpha=(element->enabled?1.0f:0.5f);
 
@@ -1233,16 +1233,18 @@ void element_draw_combo(element_type *element,int sel_id)
 	gl_texture_simple_end();
 
 		// control text
+
+	y=element->y-(element->high>>1);
 		
 	strcpy(str,(element->data+(element->value*32)));
 		
 	gl_text_start(TRUE);
 		
 	if (element->enabled) {
-		gl_text_draw((x+10),(y-1),str,tx_left,&hud.color.base,1.0f);
+		gl_text_draw((x+10),y,str,tx_left,TRUE,&hud.color.base,1.0f);
 	}
 	else {
-		gl_text_draw((x+10),(y-1),str,tx_left,&hud.color.disabled,1.0f);
+		gl_text_draw((x+10),y,str,tx_left,TRUE,&hud.color.disabled,1.0f);
 	}
 	
 	gl_text_end();
@@ -1269,8 +1271,7 @@ void element_draw_combo_open(element_type *element)
 		top=(y-element->high)-1;
 		bot=y+1;
 
-		gl_scale_2D_point(&lft,&top);
-		gl_scale_2D_point(&rgt,&bot);
+		gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
 
 		gl_texture_simple_start();
 
@@ -1329,7 +1330,7 @@ void element_draw_combo_open(element_type *element)
 
 		gl_text_start(TRUE);
 		strcpy(str,(element->data+(n*32)));
-		gl_text_draw((x+10),(y-1),str,tx_left,&hud.color.base,1.0f);
+		gl_text_draw((x+10),(y-(element->high>>1)),str,tx_left,TRUE,&hud.color.base,1.0f);
 		gl_text_end();
 
 		y+=element->high;
@@ -1370,8 +1371,8 @@ void element_draw_slider(element_type *element,int sel_id)
 		// label
 		
 	gl_text_start(TRUE);
-	gl_text_draw((x-5),(y-1),element->str,tx_right,&hud.color.base,1.0f);
-	gl_text_draw(x,(y-1),":",tx_center,&hud.color.base,1.0f);
+	gl_text_draw((x-5),(y-1),element->str,tx_right,FALSE,&hud.color.base,1.0f);
+	gl_text_draw(x,(y-1),":",tx_center,FALSE,&hud.color.base,1.0f);
 	gl_text_end();
 	
 		// slider size
@@ -1383,8 +1384,7 @@ void element_draw_slider(element_type *element,int sel_id)
 	
 	mid=lft+(int)(((float)element->wid)*element->setup.slider.value);
 	
-	gl_scale_2D_point(&lft,&top);
-	gl_scale_2D_point(&rgt,&bot);
+	gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
 	gl_scale_2D_x_coordinate(&mid);
 
 	alpha=(element->enabled?1.0f:0.5f);
@@ -1573,7 +1573,7 @@ void element_draw_table_line_header(element_type *element,int x,int y,int wid,in
 	
 	for (n=0;n!=element->setup.table.ncolumn;n++) {
 		gl_text_start(TRUE);
-		gl_text_draw((x+4),y,element->setup.table.cols[n].name,tx_left,&hud.color.header,1.0f);
+		gl_text_draw((x+4),y,element->setup.table.cols[n].name,tx_left,FALSE,&hud.color.header,1.0f);
 		gl_text_end();
 		
 		x+=(int)(element->setup.table.cols[n].percent_size*(float)wid);
@@ -1599,7 +1599,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int wid,int 
 			// draw
 			
 		gl_text_start(TRUE);
-		gl_text_draw((x+4),y,txt,tx_left,txt_col,1.0f);
+		gl_text_draw((x+4),y,txt,tx_left,FALSE,txt_col,1.0f);
 		gl_text_end();
 		
 			// get next data
@@ -1714,8 +1714,7 @@ void element_draw_table(element_type *element,int sel_id)
 		top+=2;
 		bot=top+high;
 		
-		gl_scale_2D_point(&lft,&top);
-		gl_scale_2D_point(&rgt,&bot);
+		gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
 		
 		gl_texture_simple_set(element_busy.gl_id,TRUE,1,1,1,1.0f);
 		
@@ -1743,8 +1742,7 @@ void element_draw_table(element_type *element,int sel_id)
 	top+=(high+8);
 	bot=top+16;
 	
-	gl_scale_2D_point(&lft,&top);
-	gl_scale_2D_point(&rgt,&bot);
+	gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
 	
 	gl_texture_simple_set(element_scroll_up.gl_id,TRUE,1,1,1,(up_ok?1.0f:0.5f));
 	
@@ -1767,8 +1765,7 @@ void element_draw_table(element_type *element,int sel_id)
 	bot-=4;
 	top=bot-16;
 
-	gl_scale_2D_point(&lft,&top);
-	gl_scale_2D_point(&rgt,&bot);
+	gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
 	
 	gl_texture_simple_set(element_scroll_down.gl_id,TRUE,1,1,1,(down_ok?1.0f:0.5f));
 	

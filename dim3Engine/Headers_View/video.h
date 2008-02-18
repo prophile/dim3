@@ -110,6 +110,8 @@ extern void gl_setup_viewport(int y_off);
 extern void gl_scale_2D_point(int *x,int *y);
 extern void gl_scale_2D_x_coordinate(int *x);
 extern void gl_scale_2D_y_coordinate(int *y);
+extern void gl_scale_2D_aspect_size(int *wid,int *high);
+extern void gl_scale_2D_aspect_box(int *lft,int *rgt,int *top,int *bot);
 extern void gl_unscale_2D_point(int *x,int *y);
 extern void gl_unscale_2D_x_coordinate(int *x);
 extern void gl_unscale_2D_y_coordinate(int *y);
@@ -184,7 +186,7 @@ extern int gl_text_get_char_height(bool small_text);
 extern int gl_text_get_string_width(char *str,bool small_text);
 extern void gl_text_start(bool small_text);
 extern void gl_text_end(void);
-extern void gl_text_draw(int x,int y,char *txt,int just,d3col *col,float alpha);
+extern void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float alpha);
 
 	// images
 

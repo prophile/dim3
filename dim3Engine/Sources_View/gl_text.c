@@ -192,7 +192,7 @@ void gl_text_end(void)
       
 ======================================================= */
 
-void gl_text_draw_line(int x,int y,char *txt,int txtlen)
+void gl_text_draw_line(int x,int y,char *txt,int txtlen,bool vcenter)
 {
 	int			i,ch,
 				lft,rgt,top,bot,xoff,yoff,wid,high;
@@ -205,7 +205,7 @@ void gl_text_draw_line(int x,int y,char *txt,int txtlen)
 	high=gl_text_get_char_height(font_small);
 		
 	gl_scale_2D_point(&x,&y);
-	gl_scale_2D_point(&wid,&high);
+	gl_scale_2D_aspect_size(&wid,&high);
 	
 		// draw text
 	
@@ -213,6 +213,7 @@ void gl_text_draw_line(int x,int y,char *txt,int txtlen)
 
 	lft=x;
 	bot=y;
+	if (vcenter) bot+=((high>>1)+(high/8));		// add in middle + descender
 	top=bot-high;
 	
 	c=txt;
@@ -254,7 +255,7 @@ void gl_text_draw_line(int x,int y,char *txt,int txtlen)
 	glEnd();
 }
 
-void gl_text_draw(int x,int y,char *txt,int just,d3col *col,float alpha)
+void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float alpha)
 {
 	GLfloat				fct[4];
 
@@ -280,5 +281,5 @@ void gl_text_draw(int x,int y,char *txt,int just,d3col *col,float alpha)
 
 		// draw text line
 
-	gl_text_draw_line(x,y,txt,strlen(txt));
+	gl_text_draw_line(x,y,txt,strlen(txt),vcenter);
 }

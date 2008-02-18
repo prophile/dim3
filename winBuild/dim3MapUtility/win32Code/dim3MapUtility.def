@@ -17,10 +17,11 @@ EXPORTS
 	map_portal_count_segments						@124
 	map_portal_calculate_center						@125
 	map_portal_calculate_center_floor				@126
-	map_portal_delete								@127
-	map_portal_duplicate							@128
-	map_portal_touching_portal						@129
-	map_portal_draw_sort							@130
+	map_portal_calculate_y_extent					@127
+	map_portal_delete								@128
+	map_portal_duplicate							@129
+	map_portal_touching_portal						@130
+	map_portal_draw_sort							@131
 
 	map_portal_sight_clear							@140
 	map_portal_sight_prune							@141

@@ -89,8 +89,8 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int y)
 	sprintf(txt,"%d",score);
 		
 	gl_text_start(FALSE);
-	gl_text_draw(lx,(y+1),name,tx_left,&col,0.75f);
-	gl_text_draw(rx,(y+1),txt,tx_right,&col,0.75f);
+	gl_text_draw(lx,(y+1),name,tx_left,FALSE,&col,0.75f);
+	gl_text_draw(rx,(y+1),txt,tx_right,FALSE,&col,0.75f);
 	gl_text_end();
 }
 
@@ -156,7 +156,7 @@ void network_score_players_draw(void)
 
 	col.r=col.g=col.b=1.0f;
 	gl_text_start(FALSE);
-	gl_text_draw(lx,(y-(yadd+3)),"Players",tx_left,&col,1.0f);
+	gl_text_draw(lx,(y-(yadd+3)),"Players",tx_left,FALSE,&col,1.0f);
 	gl_text_end();
 	
 		// player boxes
@@ -280,7 +280,7 @@ void network_score_teams_draw(void)
 
 	col.r=col.g=col.b=1.0f;
 	gl_text_start(FALSE);
-	gl_text_draw(rx,(y-(yadd+3)),"Teams",tx_right,&col,1.0f);
+	gl_text_draw(rx,(y-(yadd+3)),"Teams",tx_right,FALSE,&col,1.0f);
 	gl_text_end();
 	
 		// team boxes
@@ -357,7 +357,7 @@ void network_chat_draw(int tick)
 
 	if (hud.chat.type_on) {
 		col.r=col.g=col.b=1.0f;
-		gl_text_draw(x,y,hud.chat.type_str,tx_right,&col,1.0f);
+		gl_text_draw(x,y,hud.chat.type_str,tx_right,FALSE,&col,1.0f);
 		y-=yadd;
 	}
 
@@ -373,7 +373,7 @@ void network_chat_draw(int tick)
 	for (n=(hud.chat.nline-1);n>=ntop;n--) {
 		line=&hud.chat.lines[n];
 		sprintf(txt,"%s [%s]",line->str,line->name);
-		gl_text_draw(x,y,txt,tx_right,&line->col,1.0f);
+		gl_text_draw(x,y,txt,tx_right,FALSE,&line->col,1.0f);
 		y-=yadd;
 	}
 

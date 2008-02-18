@@ -242,12 +242,12 @@ void gui_draw_message(char *txt)
 		// draw the text
 		
 	x=setup.screen.x_scale>>1;
-	y=(setup.screen.y_scale>>1)+(gl_text_get_char_height(FALSE)>>1);
+	y=setup.screen.y_scale>>1;
 	
 	col.r=col.g=col.b=0.0f;
 	
 	gl_text_start(FALSE);
-	gl_text_draw(x,y,txt,tx_center,&col,1.0f);
+	gl_text_draw(x,y,txt,tx_center,TRUE,&col,1.0f);
 	gl_text_end();
 	
 	gl_frame_end();

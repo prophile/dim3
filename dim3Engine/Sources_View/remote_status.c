@@ -287,7 +287,7 @@ void remote_draw_names_render(void)
 			gl_unscale_2D_point(&x,&y);			// text drawing is scaled
 
 			remote_get_ui_color(obj,&col);
-			gl_text_draw(x,y,obj->name,tx_center,&col,obj->draw.remote_name.fade);
+			gl_text_draw(x,y,obj->name,tx_center,FALSE,&col,obj->draw.remote_name.fade);
 		}
 		
 		obj++;

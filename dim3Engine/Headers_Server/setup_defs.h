@@ -48,12 +48,6 @@ and can be sold or given away.
 
 #define setup_fsaa_mode_list_def		{"None","Low","Medium","High",""}
 
-#define curve_mode_low					0
-#define curve_mode_medium				1
-#define curve_mode_high					2
-
-#define setup_curve_mode_list_def		{"Low","Medium","High",""}
-
 #define shadow_mode_none				0
 #define shadow_mode_low					1
 #define shadow_mode_high				2

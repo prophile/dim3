@@ -273,7 +273,7 @@ void hud_texts_draw_return(int x,int y,int ysz,char *data,int just,d3col *col,fl
 		c2=strstr(c,"{r}");
 		if (c2!=NULL) *c2=0x0;
 		
-		gl_text_draw(x,y,c,just,col,alpha);
+		gl_text_draw(x,y,c,just,FALSE,col,alpha);
 		
 		if (c2==NULL) return;
 		
@@ -342,7 +342,7 @@ void hud_texts_draw(int tick)
 					hud_texts_draw_return(text->x,text->y,high,text->data,text->just,&text->color,alpha);
 				}
 				else {
-					gl_text_draw(text->x,text->y,text->data,text->just,&text->color,alpha);
+					gl_text_draw(text->x,text->y,text->data,text->just,FALSE,&text->color,alpha);
 				}
 			}
 
@@ -382,7 +382,7 @@ void hud_texts_draw(int tick)
 					hud_texts_draw_return(text->x,text->y,high,text->data,text->just,&text->color,alpha);
 				}
 				else {
-					gl_text_draw(text->x,text->y,text->data,text->just,&text->color,alpha);
+					gl_text_draw(text->x,text->y,text->data,text->just,FALSE,&text->color,alpha);
 				}
 			}
 

@@ -62,7 +62,6 @@ void setup_xml_default(void)
 	setup.halo=TRUE;
 	
 	setup.fsaa_mode=fsaa_mode_none;
-	setup.curve_mode=curve_mode_medium;
 	
 	setup.fog=TRUE;
 	setup.mark=TRUE;
@@ -537,7 +536,6 @@ void setup_restore(void)
 	setup.halo=FALSE;
 	
 	setup.fsaa_mode=fsaa_mode_none;
-	setup.curve_mode=curve_mode_low;
 	
 	setup.fog=FALSE;
 	setup.mark=FALSE;

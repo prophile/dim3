@@ -74,9 +74,8 @@ void cursor_draw(void)
 	rgt=lft+cursor_bitmap.wid;
 	top=y;
 	bot=top+cursor_bitmap.high;
-	
-	gl_scale_2D_point(&lft,&top);
-	gl_scale_2D_point(&rgt,&bot);
+
+	gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
 
 		// draw mouse
 		

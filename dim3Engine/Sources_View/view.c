@@ -156,15 +156,23 @@ void view_create_screen_size_list(void)
 			}
 		}
 
-			// add to list
+			// add to list if ratio is equal or
+			// better than 4:3
 
 		if (!hit) {
-			render_info.screen_sizes[k].wid=modes[n]->w;
-			render_info.screen_sizes[k].high=modes[n]->h;
-			k++;
-			if (k>=max_screen_size) break;
+			if (((float)modes[n]->h/(float)modes[n]->w)>=0.75f) {
+				render_info.screen_sizes[k].wid=modes[n]->w;
+				render_info.screen_sizes[k].high=modes[n]->h;
+
+				k++;
+				if (k>=max_screen_size) break;
+			}
 		}
 	}
+
+	render_info.screen_sizes[k].wid=768;
+	render_info.screen_sizes[k].high=480;
+	k++;
 	
 	render_info.nscreen_size=k;
 }
@@ -492,8 +500,8 @@ void view_pause_draw(void)
 	col.r=col.g=col.b=1.0f;
 			
 	gl_text_start(TRUE);
-	gl_text_draw(2,(setup.screen.y_scale-2),"[paused]",tx_left,&col,1.0f);
-	gl_text_draw((setup.screen.x_scale-2),(setup.screen.y_scale-2),"[click to resume]",tx_right,&col,1.0f);
+	gl_text_draw(2,(setup.screen.y_scale-2),"[paused]",tx_left,FALSE,&col,1.0f);
+	gl_text_draw((setup.screen.x_scale-2),(setup.screen.y_scale-2),"[click to resume]",tx_right,FALSE,&col,1.0f);
 	gl_text_end();
 	
 	gl_render_arrays_frame_finish();

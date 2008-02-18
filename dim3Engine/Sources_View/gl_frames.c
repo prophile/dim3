@@ -171,6 +171,40 @@ void gl_scale_2D_y_coordinate(int *y)
 	*y=((*y)*setup.screen.y_sz)/setup.screen.y_scale;
 }
 
+void gl_scale_2D_aspect_size(int *wid,int *high)
+{
+	int			org_wid;
+
+		// scale the width
+
+	org_wid=*wid;
+	*wid=(org_wid*setup.screen.x_sz)/setup.screen.x_scale;
+
+		// maintain aspect ratio with height
+
+	*high=((*high)*(*wid))/org_wid;
+}
+
+void gl_scale_2D_aspect_box(int *lft,int *rgt,int *top,int *bot)
+{
+	int			wid,high;
+
+		// scale the width/height
+
+	wid=(*rgt)-(*lft);
+	high=(*bot)-(*top);
+	gl_scale_2D_aspect_size(&wid,&high);
+
+		// scale the left/top
+
+	gl_scale_2D_point(lft,top);
+
+		// recreate the box
+
+	*rgt=(*lft)+wid;
+	*bot=(*top)+high;
+}
+
 void gl_unscale_2D_point(int *x,int *y)
 {
 	*x=((*x)*setup.screen.x_scale)/setup.screen.x_sz;

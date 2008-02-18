@@ -184,9 +184,9 @@ void progress_draw(float percentage)
 	gl_text_start(TRUE);
 	
 	x=(hud.progress.lx+hud.progress.rx)>>1;
-	y=hud.progress.by-(((hud.progress.by-hud.progress.ty)-sz)/2);
+	y=(hud.progress.ty+hud.progress.by)>>1;
 	
-	gl_text_draw(x,y,progress_str,tx_center,&hud.progress.text_color,1.0f);
+	gl_text_draw(x,y,progress_str,tx_center,TRUE,&hud.progress.text_color,1.0f);
 	
 	gl_text_end();
 
