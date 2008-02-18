@@ -29,8 +29,10 @@ and can be sold or given away.
 
 extern map_type				map;
 
-extern int					cx,cz;
+extern int					cr,cx,cz,site_path_view_drag_hilite_rn;
 extern float				walk_view_y_angle;
+extern bool					site_path_view_drag_on;
+extern d3pnt				site_path_view_drag_start_pt,site_path_view_drag_end_pt;
 extern Rect					site_path_view_box;
 
 /* =======================================================
@@ -56,50 +58,139 @@ void site_path_view_get_portal(int rn,int *x,int *z,int *ex,int *ez)
 
 /* =======================================================
 
-      Draw Portal View Walls
+      Draw Site Path View Mesh
       
 ======================================================= */
 
-void site_path_view_draw_portal_walls(int rn)
+void site_path_view_draw_mesh(int rn)
 {
-	register int				i,x,z;
-	int							lx,rx,lz,rz;
-	register segment_type		*seg;
-	register wall_segment_data  *wall;
-	RGBColor					blackcolor={0x0,0x0,0x0},bluecolor={0x0,0x0,0xFFFF};
+	int							n,k,t,x,z;
+	d3pnt						*pt;
+	portal_type					*portal;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*mesh_poly;
 	
-		// room x,z
+	portal=&map.portals[rn];
+
+		// draw mesh outlines
 		
-	x=map.portals[rn].x;
-	z=map.portals[rn].z;
+	mesh=portal->mesh.meshes;
 	
-		// draw walls
+	for (n=0;n!=portal->mesh.nmesh;n++) {
 	
-	RGBForeColor(&bluecolor);
-	
-	seg=map.segments;
+		mesh_poly=mesh->polys;
 		
-	for (i=0;i!=map.nsegment;i++) {
-	
-		if ((seg->type==sg_wall) && (seg->rn==rn)) {
+		for (k=0;k!=mesh->npoly;k++) {
 		
-			wall=&seg->data.wall;
+			glBegin(GL_LINE_LOOP);
 			
-			lx=wall->lx+x;
-			lz=wall->lz+z;
-			site_path_view_map_to_pane(&lx,&lz);
-			rx=wall->rx+x;
-			rz=wall->rz+z;
-			site_path_view_map_to_pane(&rx,&rz);
+			for (t=0;t!=mesh_poly->ptsz;t++) {
+				pt=&mesh->vertexes[mesh_poly->v[t]];
+				x=pt->x+portal->x;
+				z=pt->z+portal->z;
+				site_path_view_map_to_pane(&x,&z);
+				glVertex2i(x,z);
+			}
 			
-			MoveTo(lx,lz);	
-			LineTo(rx,rz);
+			glEnd();
+		
+			mesh_poly++;
 		}
+
+		mesh++;
+	}
+}
+
+/* =======================================================
+
+      Site Path Drag Line
+      
+======================================================= */
+
+void site_path_view_draw_drag_line(void)
+{
+		// if not dropping, then transparent
 		
-		seg++;
+	glColor4f(0.0f,1.0f,0.0f,((site_path_view_drag_hilite_rn==-1)?1.0f:0.5f));
+	
+		// dragged point
+		
+	glBegin(GL_QUADS);
+	glVertex2i((site_path_view_drag_end_pt.x-6),(site_path_view_drag_end_pt.y-6));
+	glVertex2i((site_path_view_drag_end_pt.x+6),(site_path_view_drag_end_pt.y-6));
+	glVertex2i((site_path_view_drag_end_pt.x+6),(site_path_view_drag_end_pt.y+6));
+	glVertex2i((site_path_view_drag_end_pt.x-6),(site_path_view_drag_end_pt.y+6));
+	glEnd();
+	
+		// line
+		
+	glLineWidth(2.0f);
+	
+	glBegin(GL_LINES);
+	glVertex2i(site_path_view_drag_start_pt.x,site_path_view_drag_start_pt.y);
+	glVertex2i(site_path_view_drag_end_pt.x,site_path_view_drag_end_pt.y);
+	glEnd();
+
+	glLineWidth(1.0f);
+}
+
+/* =======================================================
+
+      Draw Site Path Portals
+      
+======================================================= */
+
+void site_path_view_draw_portals(void)
+{
+	int				n,x,z,ex,ez;
+	
+		// draw portal block
+	
+	for (n=0;n!=map.nportal;n++) {
+		site_path_view_get_portal(n,&x,&z,&ex,&ez);
+		
+		if (n==cr) {
+			glColor4f(1.0f,1.0f,1.0f,1.0f);
+		}
+		else {
+			if ((site_path_portal_in_path(cr,n)) || ((site_path_view_drag_on) && (site_path_view_drag_hilite_rn==n))) {
+				glColor4f(0.5f,0.5f,0.5f,1.0f);
+			}
+			else {
+				glColor4f(0.25f,0.25f,0.25f,1.0f);
+			}
+		}
+	
+		glBegin(GL_QUADS);
+		glVertex2i(x,z);
+		glVertex2i(ex,z);
+		glVertex2i(ex,ez);
+		glVertex2i(x,ez);
+		glEnd();
+		
+		glColor4f(0.5f,0.5f,1.0f,1.0f);
+		
+		site_path_view_draw_mesh(n);
+	}
+
+		// draw portal outlines
+		
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+		
+	for (n=0;n!=map.nportal;n++) {
+		site_path_view_get_portal(n,&x,&z,&ex,&ez);
+	
+		glBegin(GL_LINE_LOOP);
+		glVertex2i(x,z);
+		glVertex2i(ex,z);
+		glVertex2i(ex,ez);
+		glVertex2i(x,ez);
+		glEnd();
 	}
 	
-	RGBForeColor(&blackcolor);
+		// dragging line
+		
+	if (site_path_view_drag_on) site_path_view_draw_drag_line();
 }
 
 /* =======================================================
@@ -220,5 +311,35 @@ void site_path_view_draw_portal_sight_path(int rn)
 	glVertex2i(box.right,box.bottom);
 	glVertex2i(box.left,box.bottom);
 	glEnd();
+}
+
+/* =======================================================
+
+      Draw Portal Position
+      
+======================================================= */
+
+void site_path_view_draw_position(void)
+{
+    int			x,z,sz;
+   
+    x=cx;
+    z=cz;
+	site_path_view_map_to_pane(&x,&z);
+	
+	sz=10;
+	
+	glColor4f(0.0f,0.0f,0.0f,0.75f);
+
+	glLineWidth(3.0f);
+	
+	glBegin(GL_LINES);
+	glVertex2i(x,(z-sz));
+	glVertex2i(x,(z+sz));
+	glVertex2i((x-sz),z);
+	glVertex2i((x+sz),z);
+	glEnd();
+	
+	glLineWidth(1.0f);
 }
 

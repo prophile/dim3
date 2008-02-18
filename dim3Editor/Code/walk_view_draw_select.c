@@ -38,7 +38,7 @@ extern map_type				map;
 
 void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
 {
-	int						k,t,x,y,z;
+	int						n,k,t,x,y,z;
 	d3pnt					*pt;
 	portal_type				*portal;
 	map_mesh_type			*mesh;
@@ -92,6 +92,26 @@ void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
 	glEnd();
 
 	glLineWidth(1.0f);
+	
+		// draw the vertexes
+		
+	pt=mesh->vertexes;
+	
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glPointSize(walk_view_handle_size);
+	
+	glBegin(GL_POINTS);
+
+	for (n=0;n!=mesh->nvertex;n++) {
+		x=(pt->x+portal->x)-cpt->x;
+		y=pt->y-cpt->y;
+		z=cpt->z-(pt->z+portal->z);
+		glVertex3i(x,y,z);
+		
+		pt++;
+	}
+
+	glEnd();
 }
 
 /* =======================================================

@@ -30,7 +30,6 @@ and can be sold or given away.
 #include "import.h"
 #include "common_view.h"
 #include "portal_view.h"
-#include "top_view.h"
 #include "walk_view.h"
 
 extern int					cr;

@@ -32,14 +32,11 @@ and can be sold or given away.
 extern bool walk_view_initialize(void);
 extern void walk_view_shutdown(void);
 extern void walk_view_set_fov(float fov);
-extern void walk_view_setup(bool active,bool full_screen);
+extern void walk_view_setup(bool active,bool full_screen_forward,bool full_screen_top);
 extern int walk_view_find_start_portal(void);
-extern void walk_view_click(Rect *box,d3pnt *cpt,d3ang *ang,float fov,Point pt,int view_move_dir,bool rot_ok,bool dblclick);
+extern void walk_view_click(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool rot_ok,bool dblclick);
 extern void walk_view_cursor(bool rot_ok);
-extern void walk_view_key(char ch,bool on_side);
-extern void walk_view_top_reset(void);
-extern void walk_view_portal_view_reset(void);
-extern void walk_view_site_path_view_reset(void);
+extern void walk_view_key(char ch,int view_move_dir);
 
 //
 // walk view click piece
@@ -48,7 +45,7 @@ extern void walk_view_site_path_view_reset(void);
 extern void walk_view_draw_feedback_poly(int idx,int ptsz,int *x,int *y,int *z);
 extern void walk_view_draw_feedback_sprite(int type,int idx,d3pos *pos,d3ang *ang,char *display_model);
 extern void walk_view_draw_feedback_map(int rn,bool sel_only);
-extern void walk_view_click_piece(Rect *box,d3pnt *cpt,d3ang *ang,float fov,Point pt,bool dblclick);
+extern void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,bool dblclick);
 
 //
 // walk view draw piece
@@ -56,8 +53,8 @@ extern void walk_view_click_piece(Rect *box,d3pnt *cpt,d3ang *ang,float fov,Poin
 
 extern void walk_view_sight_path_trace(portal_sight_list_type *sight,int u);
 extern void walk_view_sight_path_mark(int rn);
-extern void walk_view_gl_setup(Rect *box,d3ang *ang,float fov);
-extern void walk_view_draw(Rect *box,d3pnt *cpt,d3ang *ang,float fov,bool draw_position);
+extern void walk_view_gl_setup(editor_3D_view_setup *view_setup);
+extern void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position);
 
 //
 // walk view draw select
@@ -86,10 +83,10 @@ extern void walk_view_draw_segment_handles(void);
 //
 
 extern void walk_view_mouse_reset_portal(void);
-extern void walk_view_mouse_xy_movement(d3ang *ang,Point pt,int view_move_dir);
-extern void walk_view_mouse_z_movement(d3ang *ang,Point pt,int view_move_dir);
-extern void walk_view_scroll_wheel_z_movement(d3ang *ang,int delta,int view_move_dir);
-extern void walk_view_mouse_turn(Point pt);
+extern void walk_view_mouse_xy_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
+extern void walk_view_mouse_z_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
+extern void walk_view_scroll_wheel_z_movement(editor_3D_view_setup *view_setup,int delta,int view_move_dir);
+extern void walk_view_mouse_turn(d3pnt *pt);
 extern void walk_view_portal_go_to_top(void);
 extern void walk_view_portal_go_to_bottom(void);
 extern void walk_view_portal_go_to_selection(void);
@@ -100,7 +97,7 @@ extern void walk_view_get_piece_movement(bool cmdkey,int x,int y,int *xadd,int *
 //
 
 extern void walk_view_compass_draw(Rect *box);
-extern bool walk_view_compass_click(Rect *box,Point pt);
+extern bool walk_view_compass_click(Rect *box,d3pnt *pt);
 
 //
 // walk view models

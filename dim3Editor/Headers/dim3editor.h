@@ -36,14 +36,6 @@ and can be sold or given away.
 #endif
 
 //
-// Application Headers
-//
-
-#ifdef D3_OS_MAC
-	#include "application_defs.h"
-#endif
-
-//
 // Utility Headers
 //
 
@@ -51,4 +43,12 @@ and can be sold or given away.
 #include "modelutility.h"
 #include "maputility.h"
 #include "mapimport.h"
+
+//
+// Application Headers
+//
+
+#ifdef D3_OS_MAC
+	#include "application_defs.h"
+#endif
 

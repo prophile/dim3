@@ -29,7 +29,7 @@ and can be sold or given away.
 #include "portal_view.h"
 #include "walk_view.h"
 
-extern int					cr,cx,cz,portal_view_x,portal_view_z,vertex_mode;
+extern int					cr,cx,cz,vertex_mode;
 extern float				walk_view_y_angle;
 extern Rect					portal_view_box;
 extern CCrsrHandle			dragcur,resizecur;
@@ -43,7 +43,7 @@ extern map_type				map;
       
 ======================================================= */
 
-int portal_view_select_portal(Point pt)
+int portal_view_select_portal(d3pnt *pt)
 {
 	register int	i;
 	int				x,z,ex,ez;
@@ -55,7 +55,7 @@ int portal_view_select_portal(Point pt)
 		portal_view_get_portal(i,&x,&z,&ex,&ez);
 		SetRect(&box,x,z,(ex+1),(ez+1));
 		
-		if (PtInRect(pt,&box)) return(i);
+		if (main_wind_click_check_box(pt,&box)) return(i);
 	}
     
 	return(-1);
@@ -67,33 +67,32 @@ int portal_view_select_portal(Point pt)
       
 ======================================================= */
 
-void portal_view_mouse_move(Point pt)
+void portal_view_mouse_move(d3pnt *pt)
 {
-	int						x,y,sx,sy,h,v;
-	Point					oldpt;
+	int						x,y,sx,sy;
+	d3pnt					old_pt;
+	Point					uipt;
 	MouseTrackingResult		track;
 
-	h=portal_view_x;
-	v=portal_view_z;
+	memmove(&old_pt,pt,sizeof(d3pnt));
 	
-	oldpt=pt;
 	sx=sy=-1;
 	
 	do {
-		TrackMouseLocation(NULL,&pt,&track);
+		TrackMouseLocation(NULL,&uipt,&track);
+		pt->x=uipt.h;
+		pt->y=uipt.v;
 
-		x=oldpt.h-pt.h;
-		y=oldpt.v-pt.v;
+		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
-		if ((x==sx) && (y==sy)) continue;
+		x=old_pt.x-pt->x;
+		y=old_pt.y-pt->y;
+
+		memmove(&old_pt,pt,sizeof(d3pnt));
 		
-		sx=x;
-		sy=y;
+		cx+=(x*map_enlarge);
+		cz+=(y*map_enlarge);
 		
-		portal_view_x=h+(x*map_enlarge);
-		portal_view_z=v+(y*map_enlarge);
-		
-        walk_view_portal_view_reset();
         main_wind_draw();
 		
 	} while (track!=kMouseTrackingMouseReleased);
@@ -105,18 +104,19 @@ void portal_view_mouse_move(Point pt)
       
 ======================================================= */
 
-void portal_view_portal_resize_top_left(Point pt)
+void portal_view_portal_resize_top_left(d3pnt *pt)
 {
 	int						x,z,ex,ez,sx,sz,rx,rz,tox,toz,minx,minz,
 							lastx,lastz,newx,newz,itemx,itemz,cur_itemx,cur_itemz;
-	Point					oldpt;
+	d3pnt					old_pt;
+	Point					uipt;
 	MouseTrackingResult		track;
 	portal_type				*portal;
 
 	portal=&map.portals[cr];
 		
-	oldpt=pt;
-	
+	memmove(&old_pt,pt,sizeof(d3pnt));
+		
 	x=portal->x;
 	z=portal->z;
 	ex=portal->ex;
@@ -130,10 +130,12 @@ void portal_view_portal_resize_top_left(Point pt)
 	portal_get_size(cr,&minx,&minz);
 	
 	do {
-		TrackMouseLocation(NULL,&pt,&track);
+		TrackMouseLocation(NULL,&uipt,&track);
+		pt->x=uipt.h;
+		pt->y=uipt.v;
 
-		rx=oldpt.h-pt.h;
-		rz=oldpt.v-pt.v;
+		rx=old_pt.x-pt->x;
+		rz=old_pt.y-pt->y;
 		portal_view_distance_pane_to_map(&rx,&rz);
 		tox=x-rx;
 		toz=z-rz;
@@ -199,17 +201,18 @@ void portal_view_portal_resize_top_left(Point pt)
 	InitCursor();
 }
 
-void portal_view_portal_resize_bottom_right(Point pt)
+void portal_view_portal_resize_bottom_right(d3pnt *pt)
 {
 	int						x,z,sx,sz,rx,rz,tox,toz,minx,minz,
 							lenx,lenz,orgx,orgz,oldlenx,oldlenz;
-	Point					oldpt;
+	d3pnt					old_pt;
+	Point					uipt;
 	MouseTrackingResult		track;
 	portal_type				*portal;
 
 	portal=&map.portals[cr];
 		
-	oldpt=pt;
+	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	x=portal->x;
 	z=portal->z;
@@ -220,10 +223,12 @@ void portal_view_portal_resize_bottom_right(Point pt)
 	portal_get_size(cr,&minx,&minz);
 	
 	do {
-		TrackMouseLocation(NULL,&pt,&track);
+		TrackMouseLocation(NULL,&uipt,&track);
+		pt->x=uipt.h;
+		pt->y=uipt.v;
 
-		rx=pt.h-oldpt.h;
-		rz=pt.v-oldpt.v;
+		rx=pt->x-old_pt.x;
+		rz=pt->y-old_pt.y;
 		portal_view_distance_pane_to_map(&rx,&rz);
 		tox=oldlenx+rx;
 		toz=oldlenz+rz;
@@ -275,27 +280,27 @@ void portal_view_portal_resize_bottom_right(Point pt)
 	InitCursor();
 }
 
-bool portal_view_portal_resize(Point pt)
+bool portal_view_portal_resize(d3pnt *pt)
 {
-	int						x,z,ex,ez;
+	int						sx,sz,ex,ez;
 	Rect					box;
 
 		// in resize handles?
 		
-	portal_view_get_portal(cr,&x,&z,&ex,&ez);
+	portal_view_get_portal(cr,&sx,&sz,&ex,&ez);
 	
-	SetRect(&box,(x-5),(z-5),(x+5),(z+5));
-	if (PtInRect(pt,&box)) {
+	SetRect(&box,(sx-5),(sz-5),(sx+5),(sz+5));
+	if (main_wind_click_check_box(pt,&box)) {
 		portal_view_portal_resize_top_left(pt);
 		return(TRUE);
 	}
 
 	SetRect(&box,(ex-5),(ez-5),(ex+5),(ez+5));
-	if (PtInRect(pt,&box)) {
+	if (main_wind_click_check_box(pt,&box)) {
 		portal_view_portal_resize_bottom_right(pt);
 		return(TRUE);
 	}
-	
+
 	return(FALSE);
 }
 
@@ -305,13 +310,13 @@ bool portal_view_portal_resize(Point pt)
       
 ======================================================= */
 
-void portal_snap(int rn,int *x,int *z)
+void portal_snap(int rn,d3pnt *pt)
 {
-	register int		n,nx,nz;
+	int					n,nx,nz;
 	portal_type			*portal;
 	
-	nx=*x;
-	nz=*z;
+	nx=pt->x;
+	nz=pt->z;
 	
 	for (n=0;n!=map.nportal;n++) {
 		if (n==rn) continue;
@@ -321,32 +326,32 @@ void portal_snap(int rn,int *x,int *z)
 			// top-left
 			
 		if ((abs(portal->x-nx)<=10) && (abs(portal->z-nz<=10))) {
-			*x=portal->x;
-			*z=portal->z;
+			pt->x=portal->x;
+			pt->z=portal->z;
 			return;
 		}
 		
 			// top-right
 			
 		if ((abs(portal->ex-nx)<=10) && (abs(portal->z-nz<=10))) {
-			*x=portal->ex;
-			*z=portal->z;
+			pt->x=portal->ex;
+			pt->z=portal->z;
 			return;
 		}
 
 			// bottom-left
 			
 		if ((abs(portal->x-nx)<=10) && (abs(portal->ez-nz<=10))) {
-			*x=portal->x;
-			*z=portal->ez;
+			pt->x=portal->x;
+			pt->z=portal->ez;
 			return;
 		}
 
 			// bottom-right
 			
 		if ((abs(portal->ex-nx)<=10) && (abs(portal->ez-nz<=10))) {
-			*x=portal->ex;
-			*z=portal->ez;
+			pt->x=portal->ex;
+			pt->z=portal->ez;
 			return;
 		}
 		
@@ -359,71 +364,74 @@ void portal_snap(int rn,int *x,int *z)
       
 ======================================================= */
 
-void portal_view_portal_drag(Point pt)
+void portal_view_portal_drag(d3pnt *pt)
 {
-	int						x,z,ex,ez,tox,toz,px,pz,rx,rz,orgx,orgz,lenx,lenz,sx,sz;
-	Point					oldpt;
+	int						x,z,ex,ez,px,pz,rx,rz,orgx,orgz,lenx,lenz,sx,sz;
+	d3pnt					old_pt,to_pt;
+	Point					uipt;
 	MouseTrackingResult		track;
 	portal_type				*portal;
 
 	if (!Button()) return;
 	
 	portal=&map.portals[cr];
-	
-	rx=pt.h;
-	rz=pt.v;
+		
+	rx=pt->x;
+	rz=pt->y;
 	portal_view_pane_to_map(&rx,&rz);
 	
 	px=portal->x;
 	pz=portal->z;
 	
-	oldpt=pt;
+	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	do {
-		TrackMouseLocation(NULL,&pt,&track);
+		TrackMouseLocation(NULL,&uipt,&track);
+		pt->x=uipt.h;
+		pt->y=uipt.v;
 		
-		rx=pt.h-oldpt.h;
-		rz=pt.v-oldpt.v;
+		rx=pt->x-old_pt.x;
+		rz=pt->y-old_pt.y;
 		portal_view_distance_pane_to_map(&rx,&rz);
-		tox=px+rx;
-		toz=pz+rz;
+		to_pt.x=px+rx;
+		to_pt.z=pz+rz;
 
 		x=portal->x;
 		z=portal->z;
 		ex=portal->ex;
 		ez=portal->ez;
 		
-		if (vertex_mode==vm_snap) portal_snap(cr,&tox,&toz);
+		if (vertex_mode==vm_snap) portal_snap(cr,&to_pt);
 		
 		orgx=x;
 		orgz=z;
 		lenx=ex-x;
 		lenz=ez-z;
 		
-		if (tox!=x) {
+		if (to_pt.x!=x) {
 			do {
 				sx=x;
-				if (tox<x) x--;
-				if (tox>x) x++;
+				if (to_pt.x<x) x--;
+				if (to_pt.x>x) x++;
 
 				if (!portal_is_spot_ok(cr,x,z,(x+lenx),(z+lenz))) {
 					x=sx;
 					break;
 				}
-			} while (tox!=x);
+			} while (to_pt.x!=x);
 		}
 			
-		if (toz!=z) {
+		if (to_pt.z!=z) {
 			do {
 				sz=z;
-				if (toz<z) z--;
-				if (toz>z) z++;
+				if (to_pt.z<z) z--;
+				if (to_pt.z>z) z++;
 
 				if (!portal_is_spot_ok(cr,x,z,(x+lenx),(z+lenz))) {
 					z=sz;
 					break;
 				}
-			} while (toz!=z);
+			} while (to_pt.z!=z);
 		}
 		
 		if ((x!=orgx) || (z!=orgz)) {

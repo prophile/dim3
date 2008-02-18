@@ -14,6 +14,7 @@ _map_find_portal_by_pos
 _map_portal_count_segments
 _map_portal_calculate_center
 _map_portal_calculate_center_floor
+_map_portal_calculate_y_extent
 _map_portal_delete
 _map_portal_duplicate
 _map_portal_touching_portal

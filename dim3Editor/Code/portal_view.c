@@ -29,7 +29,6 @@ and can be sold or given away.
 #include "dialog.h"
 #include "common_view.h"
 #include "portal_view.h"
-#include "top_view.h"
 
 extern int						cr,cx,cz,magnify_factor,txt_palette_high;
 extern bool						main_wind_rot;
@@ -38,8 +37,6 @@ extern map_type					map;
 extern WindowRef				mainwind;
 extern CCrsrHandle				handcur,cutcur,addcur;
 
-int								portal_view_x,portal_view_z;
-bool							portal_view_active;
 Rect							portal_view_box;
 
 /* =======================================================
@@ -51,8 +48,6 @@ Rect							portal_view_box;
 void portal_view_setup(bool active,bool full_screen)
 {
     Rect			wbox;
-	
-	portal_view_active=active;
 	
 		// deactived view
 		
@@ -93,26 +88,37 @@ void portal_view_setup(bool active,bool full_screen)
 
 ======================================================= */
 
+int portal_view_pane_to_map_factor(int k)
+{
+	return((k*magnify_size)/magnify_factor);
+}
+
 void portal_view_map_to_pane(int *x,int *z)
 {
-	int			sx,sz;
+	int			sx,sz,view_x,view_z;
 	
-	sx=(*x)-(portal_view_x-1);
+    view_x=cx-portal_view_pane_to_map_factor((portal_view_box.right-portal_view_box.left)>>1);
+    view_z=cz-portal_view_pane_to_map_factor((portal_view_box.bottom-portal_view_box.top)>>1);
+
+	sx=(*x)-(view_x-1);
     *x=((sx*magnify_factor)/magnify_size)+portal_view_box.left;
 	
-	sz=(*z)-(portal_view_z-1);
+	sz=(*z)-(view_z-1);
     *z=((sz*magnify_factor)/magnify_size)+portal_view_box.top;
 }
 
 void portal_view_pane_to_map(int *x,int *z)
 {
-	int			sx,sz;
+	int			sx,sz,view_x,view_z;
+	
+    view_x=cx-portal_view_pane_to_map_factor((portal_view_box.right-portal_view_box.left)>>1);
+    view_z=cz-portal_view_pane_to_map_factor((portal_view_box.bottom-portal_view_box.top)>>1);
 	
 	sx=(*x)-portal_view_box.left;
-	*x=((sx*magnify_size)/magnify_factor)+(portal_view_x-1);
+	*x=((sx*magnify_size)/magnify_factor)+(view_x-1);
 	
 	sz=(*z)-portal_view_box.top;
-	*z=((sz*magnify_size)/magnify_factor)+(portal_view_z-1);
+	*z=((sz*magnify_size)/magnify_factor)+(view_z-1);
 }
 
 void portal_view_distance_pane_to_map(int *x,int *z)
@@ -129,109 +135,15 @@ void portal_view_distance_pane_to_map(int *x,int *z)
 
 void portal_view_draw(void)
 {
-	int				n,x,z,ex,ez;
-	
 		// setup viewport
 		
 	main_wind_set_viewport(&portal_view_box,0.75f);
 	
-		// draw portal block
+		// draw portal pieces
 		
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
-	
-	for (n=0;n!=map.nportal;n++) {
-		portal_view_get_portal(n,&x,&z,&ex,&ez);
-	
-		glBegin(GL_QUADS);
-		glVertex2i(x,z);
-		glVertex2i(ex,z);
-		glVertex2i(ex,ez);
-		glVertex2i(x,ez);
-		glEnd();
-	}
-
-		// draw portal outlines
-		
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
-		
-	for (n=0;n!=map.nportal;n++) {
-		portal_view_get_portal(n,&x,&z,&ex,&ez);
-	
-		glBegin(GL_LINE_LOOP);
-		glVertex2i(x,z);
-		glVertex2i(ex,z);
-		glVertex2i(ex,ez);
-		glVertex2i(x,ez);
-		glEnd();
-	}
-	
-	
-	
-		// draw cursor position
-		
-	portal_view_portal_position_draw();
-	
-	
-	
-	/*
-	if (!portal_view_active) return;
-
-	ClipRect(&portal_view_box);
-	
-	RGBForeColor(&ltltgraycolor);
-    PaintRect(&portal_view_box);
-	
-		// draw the portal background and outlines
-		
-	for (i=0;i!=map.nportal;i++) {
-		portal_view_get_portal(i,&x,&z,&ex,&ez);
-		SetRect(&box,x,z,(ex+1),(ez+1));
-			
-		RGBForeColor(&whitecolor);
-		PaintRect(&box);
-			
-		RGBForeColor(&blackcolor);
-		FrameRect(&box);
-	}
-	
-		// selected portal
-		
-	portal_view_get_portal(cr,&x,&z,&ex,&ez);
-	SetRect(&box,x,z,(ex+1),(ez+1));
-
-	RGBForeColor(&purplecolor);
-	PenSize(3,3);
-	GetQDGlobalsGray(&gray);
-	PenPat(&gray);
-	FrameRect(&box);
-	PenNormal();
-	
-		// draw the portal walls
-		
-	for (i=0;i!=map.nportal;i++) {
-		portal_view_get_portal(i,&x,&z,&ex,&ez);
-		portal_view_draw_portal_walls(i);
-	}
-	
-		// portal resize handles
-		
-	portal_view_get_portal(cr,&x,&z,&ex,&ez);
-
-	RGBForeColor(&purplecolor);
-
-	SetRect(&box,(x-5),(z-5),(x+5),(z+5));
-	PaintRect(&box);
-	
-	SetRect(&box,(ex-5),(ez-5),(ex+5),(ez+5));
-	PaintRect(&box);
-		
-		// reset clip
-	
-	GetWindowPortBounds(mainwind,&wbox);
-	ClipRect(&wbox);
-	
-	RGBForeColor(&blackcolor);
-	*/
+	portal_view_draw_portals();
+	portal_view_draw_selection();
+	portal_view_draw_position();
 }
 
 /* =======================================================
@@ -240,11 +152,9 @@ void portal_view_draw(void)
       
 ======================================================= */
 
-void portal_view_click(Point pt,bool dblclick)
+void portal_view_click(d3pnt *pt,bool dblclick)
 {
     int			rn;
-	
-	if (!portal_view_active) return;
     
         // cmd-portal scrolling
 
@@ -252,7 +162,7 @@ void portal_view_click(Point pt,bool dblclick)
         portal_view_mouse_move(pt);
         return;
     }
-	
+
         // portal resizing?
         
 	if (portal_view_portal_resize(pt)) return;
@@ -264,8 +174,7 @@ void portal_view_click(Point pt,bool dblclick)
 	
 	if (cr!=rn) {
 		cr=rn;
-		portal_view_draw();
-		info_status_line_draw();
+		main_wind_draw();
 	}
 	
 		// double click brings up info
@@ -288,15 +197,8 @@ void portal_view_click(Point pt,bool dblclick)
 
 void portal_view_cursor(void)
 {
-	if (!portal_view_active) return;
-    
     if (main_wind_space_down()) {
         SetCCursor(handcur);
-        return;
-    }
-
-    if (main_wind_option_down()) {
-        SetCCursor(cutcur);
         return;
     }
 
@@ -313,8 +215,6 @@ void portal_view_key(char ch)
 {
 	portal_type		*portal;
 	
-	if (!portal_view_active) return;
-
     if (cr==-1) return;
 	
 	portal=&map.portals[cr];
@@ -350,30 +250,4 @@ void portal_view_key(char ch)
 			break;
 	}
 }
-
-/* =======================================================
-
-      Portal Window Scrolling
-      
-======================================================= */
-
-void portal_view_center(void)
-{
-	portal_view_x=(map_x_size-top_view_pane_to_map_factor(portal_view_box.right-portal_view_box.left))/2;
-	portal_view_z=(map_z_size-top_view_pane_to_map_factor(portal_view_box.bottom-portal_view_box.top))/2;
-}
-
-void portal_view_reset(void)
-{
-    int			x_sz,z_sz;
-
-    x_sz=portal_view_box.right-portal_view_box.left;
-    z_sz=portal_view_box.bottom-portal_view_box.top;
-    
-    portal_view_x=cx-top_view_pane_to_map_factor(x_sz/2);
-    portal_view_z=cz-top_view_pane_to_map_factor(z_sz/2);
-}
-
-
-
 

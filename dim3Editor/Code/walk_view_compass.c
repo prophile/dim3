@@ -97,7 +97,7 @@ void walk_view_compass_draw(Rect *box)
 	my=(ty+by)>>1;
 	
 	for (n=0;n!=360;n+=45) {
-		sel=(((int)walk_view_y_angle)==n);
+		sel=(((int)walk_view_y_angle)==((360-n)%360));
 		glColor4f(1,(sel?0:1),0,1);
 	
 		px[0]=mx;
@@ -165,7 +165,7 @@ void walk_view_compass_draw(Rect *box)
 	        
 ======================================================= */
 
-bool walk_view_compass_click(Rect *box,Point pt)
+bool walk_view_compass_click(Rect *box,d3pnt *pt)
 {
 	int				n,px[4],py[4],box_left,box_top,
 					lft,rgt,top,bot,
@@ -201,8 +201,8 @@ bool walk_view_compass_click(Rect *box,Point pt)
 	
 		SetRect(&click_box,lft,top,rgt,bot);
 		OffsetRect(&click_box,box_left,box_top);
-		if (PtInRect(pt,&click_box)) {
-			walk_view_y_angle=(float)n;
+		if (main_wind_click_check_box(pt,&click_box)) {
+			walk_view_y_angle=(float)(360-n);
 			main_wind_draw();
 			return(TRUE);
 		}
@@ -218,7 +218,7 @@ bool walk_view_compass_click(Rect *box,Point pt)
 	
 	SetRect(&click_box,lx,ty,rx,by);
 	OffsetRect(&click_box,box_left,box_top);
-	if (PtInRect(pt,&click_box)) {
+	if (main_wind_click_check_box(pt,&click_box)) {
 		walk_view_x_angle=30.0f;
 		main_wind_draw();
 		return(TRUE);
@@ -229,7 +229,7 @@ bool walk_view_compass_click(Rect *box,Point pt)
 	
 	SetRect(&click_box,lx,ty,rx,by);
 	OffsetRect(&click_box,box_left,box_top);
-	if (PtInRect(pt,&click_box)) {
+	if (main_wind_click_check_box(pt,&click_box)) {
 		walk_view_x_angle=0.0f;
 		main_wind_draw();
 		return(TRUE);
@@ -240,7 +240,7 @@ bool walk_view_compass_click(Rect *box,Point pt)
 	
 	SetRect(&click_box,lx,ty,rx,by);
 	OffsetRect(&click_box,box_left,box_top);
-	if (PtInRect(pt,&click_box)) {
+	if (main_wind_click_check_box(pt,&click_box)) {
 		walk_view_x_angle=-30.0f;
 		main_wind_draw();
 		return(TRUE);

@@ -733,6 +733,7 @@ extern bool map_find_portal_by_pos(map_type *map,d3pos *pos);
 extern int map_portal_count_segments(map_type *map,int rn);
 extern void map_portal_calculate_center(map_type *map,int rn,int *x,int *y,int *z);
 extern void map_portal_calculate_center_floor(map_type *map,int rn,int *x,int *y,int *z);
+extern void map_portal_calculate_y_extent(map_type *map,int rn,int *p_ty,int *p_by);
 extern void map_portal_delete(map_type *map,int rn);
 extern int map_portal_duplicate(map_type *map,int rn,int x,int z);
 extern bool map_portal_touching_portal(map_type *map,int base_rn,int rn);

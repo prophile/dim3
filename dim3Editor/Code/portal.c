@@ -29,14 +29,13 @@ and can be sold or given away.
 #include "dialog.h"
 #include "common_view.h"
 #include "portal_view.h"
-#include "top_view.h"
 #include "walk_view.h"
 
 int							vertex_mode;
 bool						dp_primitive,dp_auto_texture,dp_wall,dp_floor,dp_ceiling,dp_ambient,dp_liquid,
 							dp_object,dp_node,dp_lightsoundparticle,dp_textured,dp_y_hide;
 
-extern int					cr,cx,cz,cy,portal_view_x,portal_view_z;
+extern int					cr,cx,cz,cy;
 
 extern setup_type			setup;
 extern map_type				map;
@@ -228,8 +227,6 @@ void portal_delete(void)
 	cr=0;
     
 	main_wind_center_position_in_map();
-	top_view_reset();
-	walk_view_portal_view_reset();
 	main_wind_draw();
 }
 

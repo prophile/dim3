@@ -575,7 +575,7 @@ void walk_view_polygon_click_index(int xorg,int yorg,Point pt,int *p_index,int *
 
 
 
-void walk_view_click_setup_project(Rect *box,d3ang *ang,float fov)
+void walk_view_click_setup_project(editor_3D_view_setup *view_setup)
 {
 	int				rn;
 	
@@ -583,7 +583,7 @@ void walk_view_click_setup_project(Rect *box,d3ang *ang,float fov)
 		
 	rn=walk_view_find_start_portal();
 	walk_view_sight_path_mark(rn);
-	walk_view_gl_setup(box,ang,fov);
+	walk_view_gl_setup(view_setup);
 	
 		// get projection
 		
@@ -592,15 +592,17 @@ void walk_view_click_setup_project(Rect *box,d3ang *ang,float fov)
 	glGetIntegerv(GL_VIEWPORT,(GLint*)walk_view_vport);
 }
 
-bool walk_view_click_check_z(int x,int y,int z)
+bool walk_view_click_rotate_polygon_behind_z(int x,int y,int z)
 {
+	int				rz;
 	double			dx,dy,dz;
 	
-	dx=(double)(x-cx);
-	dy=(double)(y-cy);
-	dz=(double)(cz-z);
+	dx=(double)x;
+	dy=(double)y;
+	dz=(double)z;
 	
-	return((int)((dx*walk_view_mod_matrix[2])+(dy*walk_view_mod_matrix[6])+(dz*walk_view_mod_matrix[10])+walk_view_mod_matrix[14])>0);
+	rz=-(int)((dx*walk_view_mod_matrix[2])+(dy*walk_view_mod_matrix[6])+(dz*walk_view_mod_matrix[10])+walk_view_mod_matrix[14]);
+	return(rz<=walk_view_near_z);
 }
 
 void walk_view_click_project_polygon(Rect *box,int *x,int *y,int *z)
@@ -613,21 +615,19 @@ void walk_view_click_project_polygon(Rect *box,int *x,int *y,int *z)
 	*z=(int)((dz)*10000.0f);
 }
 
-void walk_view_polygon_click_index(Rect *box,d3pnt *cpt,d3ang *ang,float fov,int x,int y,int *type,int *portal_idx,int *main_idx,int *sub_idx,bool sel_only)
+void walk_view_polygon_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,int *type,int *portal_idx,int *main_idx,int *sub_idx,bool sel_only)
 {
-	int					i,n,k,t,z,box_wid,box_high,hit_z,px[8],py[8],pz[8];
+	int					i,n,k,t,fz,box_wid,box_high,hit_z,px[8],py[8],pz[8];
 	bool				behind_z,off_left,off_right,off_top,off_bottom;
 	d3pnt				*pt;
 	portal_type			*portal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*mesh_poly;
 	
-	int	cnt=0;
+	walk_view_click_setup_project(view_setup);
 	
-	walk_view_click_setup_project(box,ang,fov);
-	
-	box_wid=box->right-box->left;
-	box_high=box->bottom-box->top;
+	box_wid=view_setup->box.right-view_setup->box.left;
+	box_high=view_setup->box.bottom-view_setup->box.top;
 	
 	*type=-1;
 	hit_z=100000;
@@ -646,18 +646,27 @@ void walk_view_polygon_click_index(Rect *box,d3pnt *cpt,d3ang *ang,float fov,int
 			
 				mesh_poly=&mesh->polys[k];
 			
-				behind_z=TRUE;
-				z=0;
+				fz=0;
+				behind_z=FALSE;
 			
 				for (t=0;t!=mesh_poly->ptsz;t++) {
 					pt=&mesh->vertexes[mesh_poly->v[t]];
-					px[t]=(pt->x+portal->x)-cpt->x;
-					py[t]=pt->y-cpt->y;
-					pz[t]=cpt->z-(pt->z+portal->z);
-					behind_z=behind_z&&walk_view_click_check_z(px[t],py[t],pz[t]);
-					walk_view_click_project_polygon(box,&px[t],&py[t],&pz[t]);
-					z+=pz[t];
+					px[t]=(pt->x+portal->x)-view_setup->cpt.x;
+					py[t]=pt->y-view_setup->cpt.y;
+					pz[t]=view_setup->cpt.z-(pt->z+portal->z);
+					
+					if (walk_view_click_rotate_polygon_behind_z(px[t],py[t],pz[t])) {
+						behind_z=TRUE;
+						break;
+					}
+					
+					walk_view_click_project_polygon(&view_setup->box,&px[t],&py[t],&pz[t]);
+					fz+=pz[t];
 				}
+				
+					// behind z?
+					
+				if (behind_z) continue;
 				
 					// check if outside box
 					
@@ -672,20 +681,15 @@ void walk_view_polygon_click_index(Rect *box,d3pnt *cpt,d3ang *ang,float fov,int
 				
 				if ((off_left) || (off_right) || (off_top) || (off_bottom)) continue;
 				
-				cnt++;
+					// get average z
+					
+				fz/=mesh_poly->ptsz;
 				
-				z/=mesh_poly->ptsz;
-				if (z<0) continue;
-				
-				/*
-				if (behind_z) {
-					mesh_poly++;
-					continue;
-				}
-				*/
-				if (polygon_2D_point_inside(mesh_poly->ptsz,px,py,x,y)) {
-					if (z<hit_z) {
-						hit_z=z;
+					// check hits
+					
+				if (polygon_2D_point_inside(mesh_poly->ptsz,px,py,click_pt->x,click_pt->y)) {
+					if (fz<hit_z) {
+						hit_z=fz;
 						*type=mesh_piece;
 						*portal_idx=i;
 						*main_idx=n;
@@ -698,10 +702,6 @@ void walk_view_polygon_click_index(Rect *box,d3pnt *cpt,d3ang *ang,float fov,int
 			mesh++;
 		}
 	}
-	
-	
-	
-	fprintf(stdout,"count = %d\n",cnt);
 }
 
 
@@ -748,13 +748,13 @@ bool walk_view_click_piece_select(int xorg,int yorg,Point pt,bool on_side)
 	return(FALSE);
 }
 	
-void walk_view_click_piece_normal(Rect *box,d3pnt *cpt,d3ang *ang,float fov,int x,int y,bool dblclick)
+void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,bool dblclick)
 {
 	int				index,primitive_index,type,portal_idx,main_idx,sub_idx;
 	
 		// anything clicked?
 		
-	walk_view_polygon_click_index(box,cpt,ang,fov,x,y,&type,&portal_idx,&main_idx,&sub_idx,FALSE);
+	walk_view_polygon_click_index(view_setup,pt,&type,&portal_idx,&main_idx,&sub_idx,FALSE);
 	
 		// if no select, then can still drag previous selections
 	/* supergumba	
@@ -845,14 +845,12 @@ void walk_view_click_piece_normal(Rect *box,d3pnt *cpt,d3ang *ang,float fov,int 
       
 ======================================================= */
 
-void walk_view_click_piece(Rect *box,d3pnt *cpt,d3ang *ang,float fov,Point pt,bool dblclick)
+void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,bool dblclick)
 {
-    int			x,y;
-
 		// put click within box
 		
-	x=pt.h-box->left;
-	y=pt.v-box->top;
+	pt->x-=view_setup->box.left;
+	pt->y-=view_setup->box.top;
 	
 
 /* supergumba
@@ -862,7 +860,7 @@ void walk_view_click_piece(Rect *box,d3pnt *cpt,d3ang *ang,float fov,Point pt,bo
 		if (walk_view_click_piece_select(xorg,yorg,pt,on_side)) return;
 	}
 */
-	walk_view_click_piece_normal(box,cpt,ang,fov,x,y,dblclick);
+	walk_view_click_piece_normal(view_setup,pt,dblclick);
 }
 
 

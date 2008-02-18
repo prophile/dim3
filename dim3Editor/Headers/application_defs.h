@@ -215,3 +215,18 @@ and can be sold or given away.
 #define walk_view_near_z		(6*map_enlarge)
 #define walk_view_far_z			(2000*map_enlarge)
 #define walk_view_near_offset	(3*map_enlarge)
+
+#define walk_view_handle_size	10.0f
+
+//
+// draw passing struct
+//
+
+typedef struct		{
+						Rect					box;
+						d3pnt					cpt;
+						d3ang					ang;
+						float					fov;
+						bool					draw_portal;
+					} editor_3D_view_setup;
+

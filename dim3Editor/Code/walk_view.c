@@ -27,14 +27,11 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "common_view.h"
-#include "top_view.h"
 #include "portal_view.h"
 #include "site_path_view.h"
 #include "walk_view.h"
 
-extern int						cr,top_view_x,top_view_z,
-								portal_view_x,portal_view_z,site_path_view_x,site_path_view_z,
-								txt_palette_high;
+extern int						cr,top_view_x,top_view_z,txt_palette_high;
 extern bool						main_wind_rot;
 extern Rect						top_view_box,portal_view_box,site_path_view_box;
 
@@ -45,9 +42,9 @@ extern WindowRef				mainwind;
 extern CCrsrHandle				handcur,rotatecur,forwardcur,towardcur;
 
 int								cx,cz,cy,walk_view_last_rn;
+int								magnify_factor=magnify_size;
 float							walk_view_fov,walk_view_y_angle,walk_view_x_angle;
-bool							walk_view_active;
-Rect							walk_view_forward_box,walk_view_side_box;
+Rect							walk_view_forward_box,walk_view_side_box,top_view_box;
 bitmap_type						spot_bitmap,scenery_bitmap,node_bitmap,
 								light_bitmap,sound_bitmap,particle_bitmap;
 
@@ -118,17 +115,16 @@ void walk_view_shutdown(void)
       
 ======================================================= */
 
-void walk_view_setup(bool active,bool full_screen)
+void walk_view_setup(bool active,bool full_screen_forward,bool full_screen_top)
 {
     Rect			wbox;
-	
-	walk_view_active=active;
 
 		// deactivated view
 		
 	if (!active) {
 		SetRect(&walk_view_forward_box,-1,-1,-1,-1);
 		SetRect(&walk_view_side_box,-1,-1,-1,-1);
+		SetRect(&top_view_box,-1,-1,-1,-1);
 		return;
 	}
 	
@@ -136,34 +132,56 @@ void walk_view_setup(bool active,bool full_screen)
 		
  	GetWindowPortBounds(mainwind,&wbox);
 	
-	if (full_screen) {
+	if (full_screen_forward) {
 		walk_view_forward_box=wbox;
 		walk_view_forward_box.top+=toolbar_high;
 		walk_view_forward_box.bottom-=(txt_palette_high+info_high);
 		walk_view_forward_box.right-=piece_wid;
 		
 		SetRect(&walk_view_side_box,-1,-1,-1,-1);
+		SetRect(&top_view_box,-1,-1,-1,-1);
 	}
 	else {
-		if (!main_wind_rot) {
-			walk_view_forward_box.top=walk_view_side_box.top=wbox.top+(toolbar_high+2);
-			walk_view_forward_box.bottom=walk_view_side_box.bottom=(wbox.top+toolbar_high)+(((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2);
-
-			walk_view_forward_box.left=wbox.left+2;
-			walk_view_forward_box.right=(wbox.right-piece_wid)-(((wbox.right-piece_wid)-wbox.left)/2);
-
-			walk_view_side_box.left=walk_view_forward_box.right+2;
-			walk_view_side_box.right=wbox.right-(piece_wid+2);
+		if (full_screen_top) {
+			top_view_box=wbox;
+			top_view_box.top+=toolbar_high;
+			top_view_box.bottom-=(txt_palette_high+info_high);
+			top_view_box.right-=piece_wid;
+		
+			SetRect(&walk_view_forward_box,-1,-1,-1,-1);
+			SetRect(&walk_view_side_box,-1,-1,-1,-1);
 		}
 		else {
-			walk_view_forward_box.left=walk_view_side_box.left=wbox.left+2;
-			walk_view_forward_box.right=walk_view_side_box.right=(wbox.right-piece_wid)-((((wbox.right-piece_wid)-wbox.left)/2)+2);
-			
-			walk_view_forward_box.top=wbox.top+(toolbar_high+2);
-			walk_view_forward_box.bottom=walk_view_side_box.bottom=(wbox.top+toolbar_high)+((((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2)-2);
+			if (!main_wind_rot) {
+				walk_view_forward_box.top=walk_view_side_box.top=wbox.top+(toolbar_high+2);
+				walk_view_forward_box.bottom=walk_view_side_box.bottom=(wbox.top+toolbar_high)+(((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2);
 
-			walk_view_forward_box.top=walk_view_forward_box.bottom+1;
-			walk_view_forward_box.bottom=wbox.bottom-((txt_palette_high+info_high)+2);
+				walk_view_forward_box.left=wbox.left+2;
+				walk_view_forward_box.right=(wbox.right-piece_wid)-(((wbox.right-piece_wid)-wbox.left)/2);
+
+				walk_view_side_box.left=walk_view_forward_box.right+2;
+				walk_view_side_box.right=wbox.right-(piece_wid+2);
+				
+				top_view_box.top=(wbox.top+toolbar_high)+((((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2)+2);
+				top_view_box.bottom=wbox.bottom-((txt_palette_high+info_high)+2);
+				top_view_box.left=wbox.left+2;
+				top_view_box.right=wbox.right-(piece_wid+2);
+			}
+			else {
+				walk_view_forward_box.left=walk_view_side_box.left=wbox.left+2;
+				walk_view_forward_box.right=walk_view_side_box.right=(wbox.right-piece_wid)-((((wbox.right-piece_wid)-wbox.left)/2)+2);
+				
+				walk_view_forward_box.top=wbox.top+(toolbar_high+2);
+				walk_view_forward_box.bottom=walk_view_side_box.bottom=(wbox.top+toolbar_high)+((((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2)-2);
+
+				walk_view_forward_box.top=walk_view_forward_box.bottom+1;
+				walk_view_forward_box.bottom=wbox.bottom-((txt_palette_high+info_high)+2);
+				
+				top_view_box.top=wbox.top+(toolbar_high+2);
+				top_view_box.bottom=wbox.bottom-((txt_palette_high+info_high)+2);
+				top_view_box.left=(wbox.right-piece_wid)-(((wbox.right-piece_wid)-wbox.left)/2);
+				top_view_box.right=wbox.right-(piece_wid+2);
+			}
 		}
 	}
 }
@@ -193,26 +211,28 @@ int walk_view_find_start_portal(void)
       
 ======================================================= */
 
-void walk_view_click(Rect *box,d3pnt *cpt,d3ang *ang,float fov,Point pt,int view_move_dir,bool rot_ok,bool dblclick)
+void walk_view_click(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool rot_ok,bool dblclick)
 {
         // cmd-view scrolling
         
     if (main_wind_space_down()) {
-        walk_view_mouse_xy_movement(ang,pt,view_move_dir);
+        walk_view_mouse_xy_movement(view_setup,pt,view_move_dir);
         return;
     }
+
     if (main_wind_option_down()) {
-        walk_view_mouse_z_movement(ang,pt,view_move_dir);
+        walk_view_mouse_z_movement(view_setup,pt,view_move_dir);
         return;
     }
+
     if ((main_wind_command_down()) && (rot_ok)) {
         walk_view_mouse_turn(pt);
         return;
     }
-    
+
         // click the map pieces
     
-    walk_view_click_piece(box,cpt,ang,fov,pt,dblclick);
+    walk_view_click_piece(view_setup,pt,dblclick);
 }
 
 /* =======================================================
@@ -223,8 +243,6 @@ void walk_view_click(Rect *box,d3pnt *cpt,d3ang *ang,float fov,Point pt,int view
 
 void walk_view_cursor(bool rot_ok)
 {
-	if (!walk_view_active) return;
-
     if (main_wind_space_down()) {
         SetCCursor(handcur);
         return;
@@ -251,47 +269,10 @@ void walk_view_cursor(bool rot_ok)
       
 ======================================================= */
 
-void walk_view_key(char ch,bool on_side)
+void walk_view_key(char ch,int view_move_dir)
 {
+/* supergumba -- fix this
 	piece_key(cr,ch,TRUE,on_side);
-}
-
-/* =======================================================
-
-      Reset Edit Window to Portal or Top Window
-      
-======================================================= */
-
-void walk_view_top_reset(void)
-{
-    int			x_sz,z_sz;
-
-    x_sz=top_view_box.right-top_view_box.left;
-    z_sz=top_view_box.bottom-top_view_box.top;
-    
-    cx=top_view_x+top_view_pane_to_map_factor(x_sz/2);
-    cz=top_view_z+top_view_pane_to_map_factor(z_sz/2);
-}
-
-void walk_view_portal_view_reset(void)
-{
-    int			x_sz,z_sz;
-
-    x_sz=portal_view_box.right-portal_view_box.left;
-    z_sz=portal_view_box.bottom-portal_view_box.top;
-    
-    cx=portal_view_x+top_view_pane_to_map_factor(x_sz/2);
-    cz=portal_view_z+top_view_pane_to_map_factor(z_sz/2);
-}
-
-void walk_view_site_path_view_reset(void)
-{
-    int			x_sz,z_sz;
-
-    x_sz=site_path_view_box.right-site_path_view_box.left;
-    z_sz=site_path_view_box.bottom-site_path_view_box.top;
-    
-    cx=site_path_view_x+top_view_pane_to_map_factor(x_sz/2);
-    cz=site_path_view_z+top_view_pane_to_map_factor(z_sz/2);
+	*/
 }
 

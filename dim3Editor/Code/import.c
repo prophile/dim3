@@ -30,7 +30,6 @@ and can be sold or given away.
 #include "import.h"
 #include "common_view.h"
 #include "portal_view.h"
-#include "top_view.h"
 #include "walk_view.h"
 
 extern int			cr;
@@ -59,12 +58,10 @@ extern void map_import_height_map(import_height_map_settings_type *hmi_settings)
 void import_redraw(void)
 {
 	cr=0;
-	main_wind_center_position_in_map();
-	portal_view_reset();
-	top_view_reset();
-	walk_view_portal_view_reset();
-		
+	
+	main_wind_center_position_in_map();		
 	main_wind_draw();
+	
 	texture_palette_reset();
 	main_wind_tool_reset();
 	main_wind_tool_fix_enable();

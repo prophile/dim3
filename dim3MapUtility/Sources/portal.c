@@ -236,6 +236,44 @@ void map_portal_calculate_center_floor(map_type *map,int rn,int *x,int *y,int *z
 	}
 }
 
+void map_portal_calculate_y_extent(map_type *map,int rn,int *p_ty,int *p_by)
+{
+	int					n,k,ty,by;
+	d3pnt				*pt;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+	
+	portal=&map->portals[rn];
+	
+	ty=1000000;
+	by=-1000000;
+	
+		// run through all the vertexes
+	
+	mesh=portal->mesh.meshes;
+	
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+	
+		pt=mesh->vertexes;
+		
+		for (k=0;k!=mesh->nvertex;k++) {
+			if (pt->y>by) by=pt->y;
+			if (pt->y<ty) ty=pt->y;
+			pt++;
+		}
+	
+		mesh++;
+	}
+	
+		// corrections if no hits
+		
+	if (ty==1000000) ty=0;
+	if (by==-1000000) by=0;
+	
+	*p_ty=ty;
+	*p_by=by;
+}
+
 /* =======================================================
 
       Delete Portal

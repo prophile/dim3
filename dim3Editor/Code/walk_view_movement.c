@@ -28,7 +28,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "common_view.h"
 #include "portal_view.h"
-#include "top_view.h"
 #include "walk_view.h"
 
 extern int						cr,cx,cz,cy;
@@ -68,37 +67,41 @@ void walk_view_mouse_reset_portal(void)
       
 ======================================================= */
 
-void walk_view_mouse_xy_movement(d3ang *ang,Point pt,int view_move_dir)
+void walk_view_mouse_xy_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
 	int						x,y,xadd,zadd,yadd;
-	Point					oldpt;
+	d3pnt					old_pt;
+	Point					uipt;
 	MouseTrackingResult		track;
     
     SetCCursor(handcur);
 	
-	oldpt=pt;
+	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	do {
-		TrackMouseLocation(NULL,&pt,&track);
+		TrackMouseLocation(NULL,&uipt,&track);
+		pt->x=uipt.h;
+		pt->y=uipt.v;
 		
-		if ((pt.h==oldpt.h) && (pt.v==oldpt.v)) continue;
+		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 
-		x=oldpt.h-pt.h;
-		y=oldpt.v-pt.v;
-		oldpt=pt;
+		x=old_pt.x-pt->x;
+		y=old_pt.y-pt->y;
+		
+		memmove(&old_pt,pt,sizeof(d3pnt));
 		
 		switch (view_move_dir) {
 			case vm_dir_forward:
-				xadd=-x;
-				yadd=y;
-				zadd=0;
-				rotate_2D_point_center(&xadd,&zadd,ang->y);
-				break;
-			case vm_dir_side:
 				xadd=x;
 				yadd=y;
 				zadd=0;
-				rotate_2D_point_center(&xadd,&zadd,ang->y);
+				rotate_2D_point_center(&xadd,&zadd,-view_setup->ang.y);
+				break;
+			case vm_dir_side:
+				xadd=-x;
+				yadd=y;
+				zadd=0;
+				rotate_2D_point_center(&xadd,&zadd,view_setup->ang.y);
 				break;
 			case vm_dir_top:
 				xadd=x;
@@ -115,8 +118,6 @@ void walk_view_mouse_xy_movement(d3ang *ang,Point pt,int view_move_dir)
 		cy+=(yadd*32);
 
 		walk_view_mouse_reset_portal();
-        top_view_reset();
-		portal_view_reset();
         main_wind_draw();
 		
 	} while (track!=kMouseTrackingMouseReleased);
@@ -128,42 +129,47 @@ void walk_view_mouse_xy_movement(d3ang *ang,Point pt,int view_move_dir)
       
 ======================================================= */
 
-void walk_view_mouse_z_movement(d3ang *ang,Point pt,int view_move_dir)
+void walk_view_mouse_z_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
 	int						x,y,xadd,zadd,yadd;
-	Point					oldpt;
+	d3pnt					old_pt;
+	Point					uipt;
 	MouseTrackingResult		track;
     
     SetCCursor(forwardcur);
 
-	oldpt=pt;
+	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	do {
-		TrackMouseLocation(NULL,&pt,&track);
-		if ((pt.h==oldpt.h) && (pt.v==oldpt.v)) continue;
+		TrackMouseLocation(NULL,&uipt,&track);
+		pt->x=uipt.h;
+		pt->y=uipt.v;
 		
-		x=oldpt.h-pt.h;
-		y=oldpt.v-pt.v;
-		oldpt=pt;
+		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
+		
+		x=old_pt.x-pt->x;
+		y=old_pt.y-pt->y;
+		
+		memmove(&old_pt,pt,sizeof(d3pnt));
 		
 		switch (view_move_dir) {
 			case vm_dir_forward:
 				xadd=0;
 				yadd=0;
-				zadd=-y;
-				rotate_2D_point_center(&xadd,&zadd,ang->y);
+				zadd=y;
+				rotate_2D_point_center(&xadd,&zadd,-view_setup->ang.y);
 				break;
 			case vm_dir_side:
 				xadd=0;
 				yadd=0;
-				zadd=y;
-				rotate_2D_point_center(&xadd,&zadd,ang->y);
+				zadd=-y;
+				rotate_2D_point_center(&xadd,&zadd,view_setup->ang.y);
 				break;
 			case vm_dir_top:
 				xadd=0;
 				yadd=-y;
 				zadd=0;
-				rotate_2D_point_center(&xadd,&zadd,ang->y);
+				rotate_2D_point_center(&xadd,&zadd,view_setup->ang.y);
 				break;
 			default:
 				xadd=yadd=zadd=0;
@@ -175,14 +181,12 @@ void walk_view_mouse_z_movement(d3ang *ang,Point pt,int view_move_dir)
 		cy+=(yadd*32);
 
         walk_view_mouse_reset_portal();
-        top_view_reset();
-		portal_view_reset();
         main_wind_draw();
 		
 	} while (track!=kMouseTrackingMouseReleased);
 }
 
-void walk_view_scroll_wheel_z_movement(d3ang *ang,int delta,int view_move_dir)
+void walk_view_scroll_wheel_z_movement(editor_3D_view_setup *view_setup,int delta,int view_move_dir)
 {
 	int						xadd,zadd,yadd;
 
@@ -190,15 +194,13 @@ void walk_view_scroll_wheel_z_movement(d3ang *ang,int delta,int view_move_dir)
 	yadd=0;
 	zadd=delta*10;
 		
-	rotate_2D_point_center(&xadd,&zadd,angle_add(ang->y,180.0f));
+	rotate_2D_point_center(&xadd,&zadd,angle_add(view_setup->ang.y,180.0f));
 	
 	cz+=(zadd*32);
 	cx+=(xadd*32);
 	cy+=(yadd*32);
 	
 	walk_view_mouse_reset_portal();
-	top_view_reset();
-	portal_view_reset();
 	main_wind_draw();
 }
 
@@ -208,36 +210,37 @@ void walk_view_scroll_wheel_z_movement(d3ang *ang,int delta,int view_move_dir)
       
 ======================================================= */
 
-void walk_view_mouse_turn(Point pt)
+void walk_view_mouse_turn(d3pnt *pt)
 {
 	int						x,y;
-	Point					oldpt;
+	d3pnt					old_pt;
+	Point					uipt;
 	MouseTrackingResult		track;
     
     SetCCursor(rotatecur);
 
-	oldpt=pt;
+	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	do {
-		TrackMouseLocation(NULL,&pt,&track);
+		TrackMouseLocation(NULL,&uipt,&track);
+		pt->x=uipt.h;
+		pt->y=uipt.v;
 		
-		x=oldpt.h-pt.h;
-		y=oldpt.v-pt.v;
+		x=old_pt.x-pt->x;
+		y=old_pt.y-pt->y;
 	
 			// y turning
 			
 		if (labs(x)>25) {
-			oldpt=pt;
+			old_pt.x=pt->x;
 			
 			if (x>0) {
-				walk_view_y_angle=angle_add(walk_view_y_angle,-45);
+				walk_view_y_angle=angle_add(walk_view_y_angle,45.0f);
 			}
 			else {
-				walk_view_y_angle=angle_add(walk_view_y_angle,45);
+				walk_view_y_angle=angle_add(walk_view_y_angle,-45.0f);
 			}
 
-			top_view_reset();
-			portal_view_reset();
 			main_wind_draw();
 			
 			continue;
@@ -246,19 +249,17 @@ void walk_view_mouse_turn(Point pt)
 			// x turning
 			
 		if (labs(y)>25) {
-			oldpt=pt;
+			old_pt.y=pt->y;
 			
 			if (y<0) {
-				walk_view_x_angle-=30;
-				if (walk_view_x_angle<-30) walk_view_x_angle=-30;
+				walk_view_x_angle-=30.0f;
+				if (walk_view_x_angle<-30.0f) walk_view_x_angle=-30.0f;
 			}
 			else {
-				walk_view_x_angle+=30;
-				if (walk_view_x_angle>30) walk_view_x_angle=30;
+				walk_view_x_angle+=30.0f;
+				if (walk_view_x_angle>30.0f) walk_view_x_angle=30.0f;
 			}
 
-			top_view_reset();
-			portal_view_reset();
 			main_wind_draw();
 			
 			continue;

@@ -45,29 +45,27 @@ extern void portal_view_map_to_pane(int *x,int *z);
 extern void portal_view_pane_to_map(int *x,int *z);
 extern void portal_view_distance_pane_to_map(int *x,int *z);
 extern void portal_view_draw(void);
-extern void portal_view_click(Point pt,bool dblclick);
+extern void portal_view_click(d3pnt *pt,bool dblclick);
 extern void portal_view_cursor(void);
 extern void portal_view_key(char ch);
-extern void portal_view_center(void);
-extern void portal_view_reset(void);
 
 //
 // draw routines
 //
 
 extern void portal_view_get_portal(int rn,int *x,int *z,int *ex,int *ez);
-extern void portal_view_draw_portal_walls(int rn);
-extern void portal_view_portal_position_draw(void);
+extern void portal_view_draw_portals(void);
+extern void portal_view_draw_selection(void);
+extern void portal_view_draw_position(void);
 
 //
 // click routines
 //
 
-extern int portal_view_select_portal(Point pt);
-extern void portal_view_mouse_move(Point pt);
-extern bool portal_view_portal_resize(Point pt);
-extern void portal_snap(int rn,int *x,int *z);
-extern void portal_view_portal_drag(Point pt);
+extern int portal_view_select_portal(d3pnt *pt);
+extern void portal_view_mouse_move(d3pnt *pt);
+extern bool portal_view_portal_resize(d3pnt *pt);
+extern void portal_view_portal_drag(d3pnt *pt);
 extern bool portal_view_path_duplicate(int rn);
 extern bool portal_view_click_sight(Point pt);
 

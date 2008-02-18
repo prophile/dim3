@@ -30,8 +30,11 @@ and can be sold or given away.
 #include "site_path_view.h"
 #include "walk_view.h"
 
-extern int					cr,cx,cz,site_path_view_x,site_path_view_z,vertex_mode;
+extern int					cr,cx,cz,vertex_mode,
+							site_path_view_drag_hilite_rn;
 extern float				walk_view_y_angle;
+extern bool					site_path_view_drag_on;
+extern d3pnt				site_path_view_drag_start_pt,site_path_view_drag_end_pt;
 extern Rect					site_path_view_box;
 extern CCrsrHandle			dragcur,resizecur;
 extern WindowRef			mainwind;
@@ -44,7 +47,7 @@ extern map_type				map;
       
 ======================================================= */
 
-int site_path_view_select_portal(Point pt)
+int site_path_view_select_portal(d3pnt *pt)
 {
 	register int	i;
 	int				x,z,ex,ez;
@@ -56,7 +59,7 @@ int site_path_view_select_portal(Point pt)
 		site_path_view_get_portal(i,&x,&z,&ex,&ez);
 		SetRect(&box,x,z,(ex+1),(ez+1));
 		
-		if (PtInRect(pt,&box)) return(i);
+		if (main_wind_click_check_box(pt,&box)) return(i);
 	}
     
 	return(-1);
@@ -68,34 +71,33 @@ int site_path_view_select_portal(Point pt)
       
 ======================================================= */
 
-void site_path_view_mouse_move(Point pt)
+void site_path_view_mouse_move(d3pnt *pt)
 {
-	int						x,y,sx,sy,h,v;
-	Point					oldpt;
+	int						x,y,sx,sy;
+	d3pnt					old_pt;
+	Point					uipt;
 	MouseTrackingResult		track;
 
-	h=site_path_view_x;
-	v=site_path_view_z;
+	memmove(&old_pt,pt,sizeof(d3pnt));
 	
-	oldpt=pt;
 	sx=sy=-1;
 	
 	do {
-		TrackMouseLocation(NULL,&pt,&track);
+		TrackMouseLocation(NULL,&uipt,&track);
+		pt->x=uipt.h;
+		pt->y=uipt.v;
 
-		x=oldpt.h-pt.h;
-		y=oldpt.v-pt.v;
+		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
-		if ((x==sx) && (y==sy)) continue;
+		x=old_pt.x-pt->x;
+		y=old_pt.y-pt->y;
+
+		memmove(&old_pt,pt,sizeof(d3pnt));
 		
-		sx=x;
-		sy=y;
+		cx+=(x*map_enlarge);
+		cz+=(y*map_enlarge);
 		
-		site_path_view_x=h+(x*map_enlarge);
-		site_path_view_z=v+(y*map_enlarge);
-		
-        walk_view_site_path_view_reset();
-        main_wind_draw();
+         main_wind_draw();
 		
 	} while (track!=kMouseTrackingMouseReleased);
 }
@@ -158,7 +160,7 @@ bool site_path_view_path_duplicate(int rn)
       
 ======================================================= */
 
-bool site_path_view_cut_sight(Point pt)
+bool site_path_view_cut_sight(d3pnt *pt)
 {
 	int				rn,site_idx;
 	
@@ -184,54 +186,25 @@ bool site_path_view_cut_sight(Point pt)
       
 ======================================================= */
 
-void site_path_view_draw_drag_sight(int rn,int sx,int sy,int tx,int ty)
+int site_path_view_sight_drag(int start_rn,d3pnt *pt)
 {
-	Rect		box;
-	Pattern		gray;
-	RGBColor	blackcolor={0x0,0x0,0x0},greencolor={0x0,0xFFFF,0x0};
-	
-	ClipRect(&site_path_view_box);
-
-		// dragged point
-		
-	RGBForeColor(&greencolor);
-	
-	SetRect(&box,(tx-6),(ty-6),(tx+6),(ty+6));
-	PaintRect(&box);
-	
-		// if not dropping on portal, then dot line
-		
-	if (rn==-1) {
-		GetQDGlobalsGray(&gray);
-		PenPat(&gray);
-	}
-	
-		// line
-		
-	PenSize(2,2);
-	MoveTo(sx,sy);
-	LineTo(tx,ty);
-	
-	PenNormal();
-	
-	RGBForeColor(&blackcolor);
-}
-
-int site_path_view_sight_drag(int start_rn,int sx,int sy)
-{
-	int						x,y,old_x,old_y,rn;
-	Point					pt;
+	int						rn;
+	d3pnt					old_pt;
+	Point					uipt;
 	MouseTrackingResult		track;
-
-	ClipRect(&site_path_view_box);
 	
-	old_x=old_y=-1;
+	memmove(&old_pt,pt,sizeof(d3pnt));
 	
-	site_path_view_draw(start_rn);
-	site_path_view_draw_drag_sight(start_rn,sx,sy,sx,sy);
+	site_path_view_drag_on=TRUE;
+	site_path_view_drag_hilite_rn=start_rn;
+	memmove(&site_path_view_drag_start_pt.x,pt,sizeof(d3pnt));
+	memmove(&site_path_view_drag_end_pt.x,pt,sizeof(d3pnt));
+	main_wind_draw();
 	
 	do {
-		TrackMouseLocation(NULL,&pt,&track);
+		TrackMouseLocation(NULL,&uipt,&track);
+		pt->x=uipt.h;
+		pt->y=uipt.v;
 	
 		rn=site_path_view_select_portal(pt);
 		
@@ -241,20 +214,21 @@ int site_path_view_sight_drag(int start_rn,int sx,int sy)
 			if (site_path_view_path_duplicate(rn)) rn=-1;
 		}
 
-		x=pt.h;
-		y=pt.v;
+		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
-		if ((x==old_x) && (y==old_y)) continue;
+		site_path_view_drag_hilite_rn=rn;
+		memmove(&site_path_view_drag_end_pt.x,pt,sizeof(d3pnt));
 		
-		site_path_view_draw(rn);
-		site_path_view_draw_drag_sight(rn,sx,sy,x,y);
+		main_wind_draw();
 
-		old_x=x;
-		old_y=y;
+		memmove(&old_pt,pt,sizeof(d3pnt));
 		
 	} while (track!=kMouseTrackingMouseReleased);
 
-	site_path_view_draw(-1);
+	site_path_view_drag_on=FALSE;
+	site_path_view_drag_hilite_rn=-1;
+	
+	main_wind_draw();
 
 	return(rn);	
 }
@@ -265,10 +239,11 @@ int site_path_view_sight_drag(int start_rn,int sx,int sy)
       
 ======================================================= */
 
-bool site_path_view_click_sight(Point pt)
+bool site_path_view_click_sight(d3pnt *pt)
 {
 	register int	n;
 	int				t,i,k,start_rn,rn;
+	d3pnt			dpt;
 	Rect			box;
 	portal_type		*portal;
 	
@@ -285,7 +260,11 @@ bool site_path_view_click_sight(Point pt)
 		// run the drag
 		
 	site_path_view_get_site_path_box(start_rn,&box);
-	rn=site_path_view_sight_drag(start_rn,((box.left+box.right)/2),((box.top+box.bottom)/2));
+	
+	dpt.x=(box.left+box.right)/2;
+	dpt.y=(box.top+box.bottom)/2;
+	
+	rn=site_path_view_sight_drag(start_rn,&dpt);
 
 		// path dropping
 		

@@ -27,7 +27,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "common_view.h"
-#include "top_view.h"
 
 extern int					cr;
 extern bool					dp_auto_texture,dp_wall,dp_floor,dp_ceiling,dp_ambient,dp_liquid;
