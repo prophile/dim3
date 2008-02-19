@@ -160,7 +160,7 @@ void setup_display_pane(void)
 	for (n=0;n!=render_info.nscreen_size;n++) {
 		wid=render_info.screen_sizes[n].wid;
 		high=render_info.screen_sizes[n].high;
-		if (((float)high/(float)wid)<=0.625f) {
+		if (gl_is_size_widescreen(wid,high)) {
 			sprintf(setup_screen_size_list[n],"%dx%d Widescreen",wid,high);
 		}
 		else {

@@ -160,7 +160,7 @@ void view_create_screen_size_list(void)
 			// better than 4:3
 
 		if (!hit) {
-			if (((float)modes[n]->h/(float)modes[n]->w)>=0.75f) {
+			if (((float)modes[n]->h/(float)modes[n]->w)<=0.75f) {
 				render_info.screen_sizes[k].wid=modes[n]->w;
 				render_info.screen_sizes[k].high=modes[n]->h;
 
@@ -170,7 +170,7 @@ void view_create_screen_size_list(void)
 		}
 	}
 
-	render_info.screen_sizes[k].wid=768;
+	render_info.screen_sizes[k].wid=768;		// supergumba -- testing
 	render_info.screen_sizes[k].high=480;
 	k++;
 	

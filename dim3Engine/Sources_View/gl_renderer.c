@@ -255,6 +255,22 @@ void gl_shutdown(void)
 
 /* =======================================================
 
+      Check Widescreen
+      
+======================================================= */
+
+bool gl_is_size_widescreen(int wid,int high)
+{
+	return(((float)high/(float)wid)<=0.625f);
+}
+
+bool gl_is_screen_widescreen(void)
+{
+	return(gl_is_size_widescreen(setup.screen.x_sz,setup.screen.y_sz));
+}
+
+/* =======================================================
+
       ScreenShots
       
 ======================================================= */

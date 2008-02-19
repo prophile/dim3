@@ -33,6 +33,8 @@ extern void gl_shutdown(void);
 
 	// drawables
 	
+extern bool gl_is_size_widescreen(int wid,int high);
+extern bool gl_is_screen_widescreen(void);
 extern bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *path);
 
 	// settings

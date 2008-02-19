@@ -55,7 +55,7 @@ extern void map_restart_ambient(void);
 void gui_initialize(char *background_path,char *bitmap_name)
 {
 	int			x,y;
-	char		path[1024];
+	char		name[256],path[1024];
 	
 		// pause game
 		
@@ -71,12 +71,22 @@ void gui_initialize(char *background_path,char *bitmap_name)
 	element_initialize();
 	
 		// load the background bitmap
+		// we pick the version with _wide on the
+		// end if screen is in widescreen resolutions
 		
 	gui_has_background=FALSE;
 	
 	if (bitmap_name!=NULL) {
 		gui_has_background=TRUE;
-		file_paths_data(&setup.file_path_setup,path,background_path,bitmap_name,"png");
+
+		if (gl_is_screen_widescreen()) {
+			sprintf(name,"%s_wide",bitmap_name);
+			file_paths_data(&setup.file_path_setup,path,background_path,name,"png");
+		}
+		else {
+			file_paths_data(&setup.file_path_setup,path,background_path,bitmap_name,"png");
+		}
+
 		bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
 	}
 

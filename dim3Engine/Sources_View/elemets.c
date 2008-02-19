@@ -939,7 +939,7 @@ bool element_click_text_field_open(element_type *element,int x,int y)
 
 void element_draw_text_field(element_type *element,int sel_id)
 {
-	int				x,y,lft,rgt,top,bot;
+	int				x,y,ky,lft,rgt,top,bot;
 	float			alpha;
 	char			txt[256];
 	
@@ -947,10 +947,12 @@ void element_draw_text_field(element_type *element,int sel_id)
 	y=element->y;
 	
 		// label
+
+	ky=y-(element->high>>1);
 		
 	gl_text_start(TRUE);
-	gl_text_draw((x-5),(y-1),element->str,tx_right,FALSE,&hud.color.base,1.0f);
-	gl_text_draw(x,(y-1),":",tx_center,FALSE,&hud.color.base,1.0f);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.base,1.0f);
+	gl_text_draw(x,ky,":",tx_center,TRUE,&hud.color.base,1.0f);
 	gl_text_end();
 		
 		// control box
@@ -1001,19 +1003,19 @@ void element_draw_text_field(element_type *element,int sel_id)
 
 	strcpy(txt,element->value_str);
 	if (element_open_text_field_id==element->id) strcat(txt,"_");
-		
+
 	gl_text_start(TRUE);
 		
 	if (element->enabled) {
 		if (element->id==element_open_text_field_id) {
-			gl_text_draw((x+10),y,txt,tx_left,FALSE,&hud.color.mouse_over,1.0f);
+			gl_text_draw((x+10),ky,txt,tx_left,TRUE,&hud.color.mouse_over,1.0f);
 		}
 		else {
-			gl_text_draw((x+10),y,txt,tx_left,FALSE,&hud.color.base,1.0f);
+			gl_text_draw((x+10),ky,txt,tx_left,TRUE,&hud.color.base,1.0f);
 		}
 	}
 	else {
-		gl_text_draw((x+10),y,txt,tx_left,FALSE,&hud.color.disabled,1.0f);
+		gl_text_draw((x+10),ky,txt,tx_left,TRUE,&hud.color.disabled,1.0f);
 	}
 	
 	gl_text_end();
@@ -1032,17 +1034,19 @@ void element_click_checkbox(element_type *element)
 
 void element_draw_checkbox(element_type *element,int sel_id)
 {
-	int				x,y,lft,rgt,top,bot;
+	int				x,y,ky,lft,rgt,top,bot;
 	float			alpha;
 	
 	x=element->x;
 	y=element->y;
 	
 		// label
-		
+
+	ky=y-(element->high>>1);
+
 	gl_text_start(TRUE);
-	gl_text_draw((x-5),(y-1),element->str,tx_right,FALSE,&hud.color.base,1.0f);
-	gl_text_draw(x,(y-1),":",tx_center,FALSE,&hud.color.base,1.0f);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.base,1.0f);
+	gl_text_draw(x,ky,":",tx_center,TRUE,&hud.color.base,1.0f);
 	gl_text_end();
 	
 		// checkbox
@@ -1172,7 +1176,7 @@ bool element_click_combo_open(element_type *element,int x,int y)
 
 void element_draw_combo(element_type *element,int sel_id)
 {
-	int				x,y,lft,rgt,top,bot;
+	int				x,y,ky,lft,rgt,top,bot;
 	char			str[256];
 	float			alpha;
 	
@@ -1180,10 +1184,12 @@ void element_draw_combo(element_type *element,int sel_id)
 	y=element->y;
 	
 		// label
-		
+	
+	ky=y-(element->high>>1);
+
 	gl_text_start(TRUE);
-	gl_text_draw((x-5),(y-1),element->str,tx_right,FALSE,&hud.color.base,1.0f);
-	gl_text_draw(x,(y-1),":",tx_center,FALSE,&hud.color.base,1.0f);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.base,1.0f);
+	gl_text_draw(x,ky,":",tx_center,TRUE,&hud.color.base,1.0f);
 	gl_text_end();
 		
 		// combo box
@@ -1234,17 +1240,15 @@ void element_draw_combo(element_type *element,int sel_id)
 
 		// control text
 
-	y=element->y-(element->high>>1);
-		
 	strcpy(str,(element->data+(element->value*32)));
 		
 	gl_text_start(TRUE);
 		
 	if (element->enabled) {
-		gl_text_draw((x+10),y,str,tx_left,TRUE,&hud.color.base,1.0f);
+		gl_text_draw((x+10),ky,str,tx_left,TRUE,&hud.color.base,1.0f);
 	}
 	else {
-		gl_text_draw((x+10),y,str,tx_left,TRUE,&hud.color.disabled,1.0f);
+		gl_text_draw((x+10),ky,str,tx_left,TRUE,&hud.color.disabled,1.0f);
 	}
 	
 	gl_text_end();
@@ -1362,17 +1366,19 @@ void element_move_slider(element_type *element,int x,int y)
 
 void element_draw_slider(element_type *element,int sel_id)
 {
-	int				x,y,lft,rgt,top,bot,mid;
+	int				x,y,ky,lft,rgt,top,bot,mid;
 	float			alpha;
 	
 	x=element->x;
 	y=element->y;
 	
 		// label
-		
+	
+	ky=y-(element->high>>1);
+
 	gl_text_start(TRUE);
-	gl_text_draw((x-5),(y-1),element->str,tx_right,FALSE,&hud.color.base,1.0f);
-	gl_text_draw(x,(y-1),":",tx_center,FALSE,&hud.color.base,1.0f);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.base,1.0f);
+	gl_text_draw(x,ky,":",tx_center,TRUE,&hud.color.base,1.0f);
 	gl_text_end();
 	
 		// slider size
@@ -1599,7 +1605,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int wid,int 
 			// draw
 			
 		gl_text_start(TRUE);
-		gl_text_draw((x+4),y,txt,tx_left,FALSE,txt_col,1.0f);
+		gl_text_draw((x+4),y,txt,tx_left,TRUE,txt_col,1.0f);
 		gl_text_end();
 		
 			// get next data
@@ -1621,11 +1627,11 @@ void element_draw_table(element_type *element,int sel_id)
 	d3col			line_col;
 	
 	wid=element->wid-30;
-	high=gl_text_get_char_height(TRUE);
+	high=gl_text_get_char_height(TRUE)+2;
 	
 		// get element counts
 		
-	cnt=((element->high-4)/high)-1;
+	cnt=((element->high-(high+4))/high)-1;
 	up_ok=(element->offset!=0);
 	down_ok=((element->offset+cnt)<element_get_table_row_count(element));
 		
@@ -1844,7 +1850,7 @@ void element_draw_table(element_type *element,int sel_id)
 			// table line
 			
 		element_draw_table_line_lines(element,x,y,wid,high,&line_col);
-		element_draw_table_line_data(element,x,y,wid,high,&hud.color.base,c);
+		element_draw_table_line_data(element,x,(y-(high>>1)),wid,high,&hud.color.base,c);
 		
 		c+=128;
 		y+=high;
@@ -1891,13 +1897,17 @@ bool element_click_tab(element_type *element,int x)
 void element_draw_tab(element_type *element,int sel_id,int x)
 {
 	int				n,ky,xstart,xadd,high,
-					lft,rgt,top,bot,lx,rx,ty,by;
+					lft,rgt,top,bot,lx,rx,ty,by,
+					klft,krgt,ktop;
 	
 	high=gl_text_get_char_height(TRUE);
 		
 		// sizes
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
+
+	xadd=((rgt-lft)-30)/element->setup.tab.ntab;
+	if (xadd>128) xadd=128;
 
 		// bitmap drawing
 		
@@ -1918,9 +1928,13 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 	
 	gl_scale_2D_x_coordinate(&lx);
 	gl_scale_2D_x_coordinate(&rx);
-	
-	ky=bot+1;
-	gl_scale_2D_y_coordinate(&ky);
+
+	klft=0;
+	krgt=xadd;
+	ktop=top;
+	ky=bot;
+
+	gl_scale_2D_aspect_box(&klft,&krgt,&ktop,&ky);		// need to use aspect box to get tab size
 
 	gl_texture_simple_set(element_tab_border.gl_id,FALSE,1,1,1,1);
 	
@@ -1952,8 +1966,6 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 		// tabs
 		
 	xstart=lft+15;
-	xadd=((rgt-lft)-30)/element->setup.tab.ntab;
-	if (xadd>128) xadd=128;
 		
 	for (n=0;n!=element->setup.tab.ntab;n++) {
 		lx=xstart+(xadd*n);
@@ -1968,8 +1980,7 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 			gl_texture_simple_set(element->setup.tab.bitmap[n].gl_id,TRUE,1,1,1,1);
 		}
 		
-		gl_scale_2D_point(&lx,&ty);
-		gl_scale_2D_point(&rx,&by);
+		gl_scale_2D_aspect_box(&lx,&rx,&ty,&by);
 
 		glBegin(GL_QUADS);
 		glTexCoord2f(0,0);
