@@ -188,19 +188,18 @@ void hud_bitmaps_draw(int tick)
 		}
 
 			// scale and rotate bitmap
-			
+
+		rx=sx+wid;
+		ry=sy+high;
+		gl_scale_2D_aspect_box(&sx,&rx,&sy,&ry);
+
 		px[0]=px[3]=sx;
-		px[1]=px[2]=sx+wid;
+		px[1]=px[2]=rx;
 
 		py[0]=py[1]=sy;
-		py[2]=py[3]=sy+high;
+		py[2]=py[3]=ry;
 
-		if (bitmap->rot!=0.0f) rotate_2D_polygon(4,px,py,(sx+(wid>>1)),(sy+(high>>1)),bitmap->rot);
-		
-		gl_scale_2D_point(&px[0],&py[0]);
-		gl_scale_2D_point(&px[1],&py[1]);
-		gl_scale_2D_point(&px[2],&py[2]);
-		gl_scale_2D_point(&px[3],&py[3]);
+		if (bitmap->rot!=0.0f) rotate_2D_polygon(4,px,py,((sx+rx)>>1),((sy+ry)>>1),bitmap->rot);
 
 		rx=bitmap->repeat.x_add;
 		ry=bitmap->repeat.y_add;

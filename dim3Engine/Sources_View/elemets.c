@@ -253,14 +253,7 @@ void element_clear(void)
 
 int element_get_control_high(void)
 {
-	int			wid,high;
-
-	wid=256;
-	high=20;
-
-	gl_scale_2D_aspect_size(&wid,&high);
-
-	return(high);
+	return(20);
 }
 
 /* =======================================================
@@ -1504,7 +1497,7 @@ bool element_click_table(element_type *element,int x,int y)
 	
 		// get text sizes
 		
-	high=gl_text_get_char_height(TRUE);
+	high=gl_text_get_char_height(TRUE)+2;
 	
 	row_cnt=element_get_table_row_count(element);
 	
@@ -1806,7 +1799,7 @@ void element_draw_table(element_type *element,int sel_id)
 		
 	if (element->data==NULL) return;
 	
-	y=(element->y+4)+(high+2)+high;
+	y=((element->y+4)+(high+2)+high)-1;
 	
 	c=element->data+(element->offset*128);
 	
@@ -1834,8 +1827,8 @@ void element_draw_table(element_type *element,int sel_id)
 		
 		lft+=2;
 		rgt-=26;
-		top=y-high;
-		bot=y;
+		top=(y-high)+1;
+		bot=y+2;
 		
 		gl_scale_2D_point(&lft,&top);
 		gl_scale_2D_point(&rgt,&bot);
