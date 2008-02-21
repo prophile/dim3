@@ -137,7 +137,7 @@ void map_convert_liquid(map_type *map,int rn,segment_type *seg)
 	portal=&map->portals[rn];
 	liquid=&portal->liquid.liquids[portal->liquid.nliquid-1];
 
-	liquid->y=seg->data.liquid.y*map_enlarge;
+	liquid->y=(seg->data.liquid.y+1)*map_enlarge;
 	liquid->lft=portal->x+(seg->data.liquid.lft*map_enlarge);
 	liquid->rgt=portal->x+(seg->data.liquid.rgt*map_enlarge);
 	liquid->top=portal->z+(seg->data.liquid.top*map_enlarge);
@@ -163,9 +163,9 @@ void map_convert_liquid(map_type *map,int rn,segment_type *seg)
 	liquid->harm.drown_tick=seg->data.liquid.drown_tick;
 	
 	liquid->tide.rate=seg->data.liquid.tiderate;
-	liquid->tide.size=seg->data.liquid.tidesize;
+	liquid->tide.high=seg->data.liquid.tidesize;
 	liquid->tide.direction=seg->data.liquid.tidedirection;
-	liquid->tide.high=seg->data.liquid.wavesize;
+	liquid->tide.split=seg->data.liquid.wavesize;
 }
 
 /* =======================================================
@@ -225,14 +225,6 @@ void map_convert_enlarge(map_type *map)
 				}
 				break;
 
-			case sg_liquid:
-				seg->data.liquid.lft*=map_enlarge;
-				seg->data.liquid.rgt*=map_enlarge;
-				seg->data.liquid.top*=map_enlarge;
-				seg->data.liquid.bot*=map_enlarge;
-				seg->data.liquid.y=(seg->data.liquid.y+1)*map_enlarge;
-				break;
-				
 			case sg_ambient_wall:
 				seg->data.ambient_wall.lx*=map_enlarge;
 				seg->data.ambient_wall.rx*=map_enlarge;

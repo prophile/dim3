@@ -289,11 +289,11 @@ typedef struct		{
 					} map_liquid_harm_type;
 
 typedef struct		{
-						int							rate,size,direction,high;
+						int							rate,high,direction,split;
 					} map_liquid_tide_type;
 
 typedef struct		{
-						int							vl_idx_start,vl_x_sz,vl_z_sz;
+						int							vl_idx_start,vl_x_sz,vl_z_sz;	// supergumba -- probably not necessary
 					} map_liquid_draw_type;
 
 typedef struct		{

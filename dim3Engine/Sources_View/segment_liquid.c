@@ -216,6 +216,150 @@ void segment_liquid_tide_draw_lighting(segment_type *seg,bool light)
 	}
 }
 
+
+/* =======================================================
+
+      Liquid Rendering Liquid
+      
+======================================================= */
+
+void liquid_render_portal_liquid(map_liquid_type *liq)
+{
+	int						x,z,x_add,z_add,x_sz,z_sz,
+							tz,bz,tz_add,top_row,bot_row,
+							lx,rx,lx_add,vl_idx[4],
+							tide_split;
+	float					fy,fgx,fgy;
+	bool					x_break,z_break;
+	float					*vl,*uv,vl_list[10240],uv_list[10240];
+	
+	fy=(float)(liq->y-view.camera.pos.y);
+	
+		// supergumba! -- make these memory
+
+	vl=vl_list;
+	uv=uv_list;
+
+		// create vertexes from tide splits
+
+	tide_split=liq->tide.split;
+
+	fgx=(float)(liq->rgt-liq->lft);
+	fgy=(float)(liq->bot-liq->top);
+		
+	z=liq->top;
+	z_add=tide_split-(z%tide_split);
+	z_break=FALSE;
+
+	z_sz=0;
+	
+	while (TRUE) {
+
+		x=liq->lft;
+		x_add=tide_split-(x%tide_split);
+		x_break=FALSE;
+
+		x_sz=0;
+		
+		while (TRUE) {
+			*vl++=(float)(x-view.camera.pos.x);
+			*vl++=fy;
+			*vl++=(float)(view.camera.pos.z-z);
+
+			*uv++=liq->x_txtoff+((liq->x_txtfact*(float)(x-liq->lft))/fgx);
+			*uv++=liq->y_txtoff+((liq->y_txtfact*(float)(z-liq->top))/fgy);
+			
+			x_sz++;
+
+			if (x_break) break;
+			
+			x+=x_add;
+			x_add=tide_split;
+			
+			if (x>=liq->rgt) {
+				x=liq->rgt;
+				x_break=TRUE;
+			}
+		}
+
+		z_sz++;
+		
+		if (z_break) break;
+		
+		z+=z_add;
+		z_add=tide_split;
+		
+		if (z>=liq->bot) {
+			z=liq->bot;
+			z_break=TRUE;
+		}
+	}
+
+		// draw the pieces
+		
+	tz=liq->top;
+	tz_add=tide_split-(tz%tide_split);
+	top_row=0;
+	
+	for (z=0;z!=z_sz;z++) {
+		bz=tz+tz_add;
+		tz_add=tide_split;
+		if (bz>=liq->bot) bz=liq->bot;
+		
+		lx=liq->lft;
+		lx_add=tide_split-(lx%tide_split);
+		bot_row=top_row+(x_sz+1);
+		
+		for (x=0;x!=x_sz;x++) {
+			rx=lx+lx_add;
+			lx_add=tide_split;
+			if (rx>=liq->rgt) rx=liq->rgt;
+				
+				// pull polygon vertexes out of liquid vertex list
+			
+			vl_idx[0]=top_row+x;
+			vl_idx[1]=top_row+(x+1);
+			vl_idx[2]=bot_row+(x+1);
+			vl_idx[3]=bot_row+x;
+			
+				// draw polygon
+				
+//			glDrawElements(GL_POLYGON,4,GL_UNSIGNED_INT,(GLvoid*)vl_idx);
+
+			glBegin(GL_QUADS);
+
+			vl=vl_list+(vl_idx[0]*3);
+			uv=uv_list+(vl_idx[0]*2);
+		//	glTexCoord2f(*uv,*(uv+1));
+			glVertex3f(*vl,*(vl+1),*(vl+2));
+
+			vl=vl_list+(vl_idx[1]*3);
+			uv=uv_list+(vl_idx[1]*2);
+		//	glTexCoord2f(*uv,*(uv+1));
+			glVertex3f(*vl,*(vl+1),*(vl+2));
+
+			vl=vl_list+(vl_idx[2]*3);
+			uv=uv_list+(vl_idx[2]*2);
+		//	glTexCoord2f(*uv,*(uv+1));
+			glVertex3f(*vl,*(vl+1),*(vl+2));
+
+			vl=vl_list+(vl_idx[3]*3);
+			uv=uv_list+(vl_idx[3]*2);
+		//	glTexCoord2f(*uv,*(uv+1));
+			glVertex3f(*vl,*(vl+1),*(vl+2));
+
+			glEnd();
+
+
+			
+			lx=rx;
+		}
+	
+		tz=bz;
+		top_row=bot_row;
+	}
+}
+
 /* =======================================================
 
       Liquid Rendering Portal
@@ -224,7 +368,7 @@ void segment_liquid_tide_draw_lighting(segment_type *seg,bool light)
 
 void liquid_render_portal(int rn)
 {
-	int							n,nliquid,y,frame;
+	int							n,nliquid,frame;
 	unsigned long				txt_id;
 	float						alpha;
 	portal_type					*portal;
@@ -280,6 +424,9 @@ void liquid_render_portal(int rn)
 			}
 		}
 
+		liquid_render_portal_liquid(liq);
+
+		/*
 		y=liq->y-view.camera.pos.y;
 
 		glBegin(GL_QUADS);
@@ -297,7 +444,7 @@ void liquid_render_portal(int rn)
 		glVertex3i(liq->lft-view.camera.pos.x,y,view.camera.pos.z-liq->bot);
 
 		glEnd();
-
+*/
 		liq++;
 	}
 
