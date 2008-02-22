@@ -293,7 +293,9 @@ typedef struct		{
 					} map_liquid_tide_type;
 
 typedef struct		{
-						int							vl_idx_start,vl_x_sz,vl_z_sz;	// supergumba -- probably not necessary
+						int							v_cnt,x_sz,z_sz;
+						int							*idx_list;
+						float						*vl_list,*uv_list;
 					} map_liquid_draw_type;
 
 typedef struct		{
@@ -754,7 +756,6 @@ extern void map_portal_rebuild_vertex_lists(map_type *map,bool high_quality_ligh
 extern bool map_portal_create_segment_lists(map_type *map);
 extern void map_portal_dispose_segment_lists(map_type *map);
 
-extern void map_portal_liquid_vertex_set_tide(map_type *map,int tick,portal_type *portal);
 extern void map_portal_segment_update_shift(map_type *map,int tick,int rn);
 
 extern void map_set_light_base(d3col *col);

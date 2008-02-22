@@ -63,6 +63,9 @@ extern bool gl_check_shader_ok(void);
 extern void map_movements_initialize(void);
 extern void mesh_normal_smooth_init(void);
 extern void fade_screen_start(int tick);
+extern bool liquid_create_memory(void);
+extern void liquid_free_memory(void);
+
 
 /* =======================================================
 
@@ -252,6 +255,12 @@ bool map_start(bool skip_media,char *err_str)
 
 	// supergumba -- delete this
 	if (!map_portal_create_segment_lists(&map)) {
+		progress_shutdown();
+		strcpy(err_str,"Out of memory");
+		return(FALSE);
+	}
+
+	if (!liquid_create_memory()) {
 		progress_shutdown();
 		strcpy(err_str,"Out of memory");
 		return(FALSE);
@@ -478,6 +487,7 @@ void map_end(void)
 	
 		// free group, portal segment, vertex and light lists
 		
+	liquid_create_memory();
 	map_group_dispose_segment_list(&map);
 	map_portal_mesh_dispose_transparent_sort_lists(&map);
 	map_portal_dispose_segment_lists(&map);		// supergumba -- delete!

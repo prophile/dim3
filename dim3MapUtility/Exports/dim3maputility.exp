@@ -35,7 +35,6 @@ _map_portal_rebuild_vertex_lists
 _map_portal_create_segment_lists
 _map_portal_dispose_segment_lists
 
-_map_portal_liquid_vertex_set_tide
 _map_portal_segment_update_shift
 
 _map_set_light_base

@@ -50,10 +50,6 @@ void portal_compile_gl_lists(int tick,int rn)
 	portal_vertex_list_type	*vl;
 	
 	portal=&map.portals[rn];
-		
-		// if liquids, alter the y's for tiding effect
-		
-	map_portal_liquid_vertex_set_tide(&map,tick,portal);
 
 		// the arrays
 

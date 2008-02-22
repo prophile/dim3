@@ -38,8 +38,7 @@ EXPORTS
 	map_portal_create_segment_lists					@163
 	map_portal_dispose_segment_lists				@164
 
-	map_portal_liquid_vertex_set_tide				@170
-	map_portal_segment_update_shift					@171
+	map_portal_segment_update_shift					@170
 
 	map_set_light_base								@180
 	map_portal_clear_lights							@181

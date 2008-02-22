@@ -41,8 +41,6 @@ extern setup_type		setup;
 extern void portal_compile_gl_list_attach(int rn,int txt_unit_count);
 extern void portal_compile_gl_list_dettach(void);
 
-extern void segment_liquid_tide_draw(segment_type *seg);
-
 /* =======================================================
 
       Segment Sorting

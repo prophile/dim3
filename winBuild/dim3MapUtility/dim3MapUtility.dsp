@@ -265,10 +265,6 @@ SOURCE=..\..\dim3MapUtility\Sources\portal_segment_update.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3MapUtility\Sources\portal_segment_vertex_liquid.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3MapUtility\Sources\portal_sight_path.c
 # End Source File
 # Begin Source File

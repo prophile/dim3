@@ -38,184 +38,75 @@ extern view_type			view;
 
 /* =======================================================
 
-      Draw Liquid Tide
+      Liquid Memory
       
 ======================================================= */
 
-void segment_liquid_tide_draw(segment_type *seg)
+bool liquid_create_memory(void)
 {
-	int						x,z,lx,rx,tz,bz,top_row,bot_row,
-							vl_idx[4],xsz,zsz,lx_add,tz_add,vl_idx_start;
-	liquid_segment_data		*liq;
-	
-	liq=&seg->data.liquid;
-	
-		// get texture vertexes sizes
+	int				n,k,x_sz,z_sz,v_sz;
+	portal_type		*portal;
+	map_liquid_type	*liq;
 
-	xsz=liq->vl_x_sz;
-	zsz=liq->vl_z_sz;
-	
-	vl_idx_start=liq->vl_idx_start;
-	
-		// run through tide segments
-		
-	tz=liq->top;
-	tz_add=liq->wavesize-(tz%liq->wavesize);
-	top_row=vl_idx_start;
-	
-	for (z=0;z!=zsz;z++) {
-		bz=tz+tz_add;
-		tz_add=liq->wavesize;
-		if (bz>=liq->bot) bz=liq->bot;
-		
-		lx=liq->lft;
-		lx_add=liq->wavesize-(lx%liq->wavesize);
-		bot_row=top_row+(xsz+1);
-		
-		for (x=0;x!=xsz;x++) {
-			rx=lx+lx_add;
-			lx_add=liq->wavesize;
-			if (rx>=liq->rgt) rx=liq->rgt;
-				
-				// pull polygon vertexes out of liquid vertex list
-			
-			vl_idx[0]=top_row+x;
-			vl_idx[1]=top_row+(x+1);
-			vl_idx[2]=bot_row+(x+1);
-			vl_idx[3]=bot_row+x;
-			
-				// draw polygon
+	portal=map.portals;
 
-			glDrawElements(GL_POLYGON,4,GL_UNSIGNED_INT,(GLvoid*)vl_idx);
-			
-			lx=rx;
+	for (n=0;n!=map.nportal;n++) {
+
+		liq=portal->liquid.liquids;
+
+		for (k=0;k!=portal->liquid.nliquid;k++) {
+
+			x_sz=((liq->rgt-liq->lft)/liq->tide.split)+2;
+			z_sz=((liq->bot-liq->top)/liq->tide.split)+2;
+
+			v_sz=x_sz*z_sz;
+
+				// vertex list
+
+			liq->draw.vl_list=(float*)valloc((v_sz*3)*sizeof(float));
+			if (liq->draw.vl_list==NULL) return(FALSE);
+
+				// uv list
+
+			liq->draw.uv_list=(float*)valloc((v_sz*2)*sizeof(float));
+			if (liq->draw.uv_list==NULL) return(FALSE);
+
+				// element index list
+
+			liq->draw.idx_list=(int*)valloc((v_sz*4)*sizeof(int));
+			if (liq->draw.idx_list==NULL) return(FALSE);
+
+			liq++;
 		}
-	
-		tz=bz;
-		top_row=bot_row;
+
+		portal++;
 	}
+
+	return(TRUE);
 }
 
-/* =======================================================
-
-      Draw Liquid Tide Bump
-      
-======================================================= */
-
-void segment_liquid_tide_draw_bump(segment_type *seg)
+void liquid_free_memory(void)
 {
-	int						x,z,lx,rx,tz,bz,top_row,bot_row;
-	int						vl_idx[4],xsz,zsz,lx_add,tz_add,vl_idx_start;
-	liquid_segment_data		*liq;
-	
-	liq=&seg->data.liquid;
-	
-		// get texture vertexes sizes
+	int				n,k;
+	portal_type		*portal;
+	map_liquid_type	*liq;
 
-	xsz=liq->vl_x_sz;
-	zsz=liq->vl_z_sz;
-	
-	vl_idx_start=liq->vl_idx_start;
-	
-		// run through tide segments
-		
-	tz=liq->top;
-	tz_add=liq->wavesize-(tz%liq->wavesize);
-	top_row=vl_idx_start;
-	
-	for (z=0;z!=zsz;z++) {
-		bz=tz+tz_add;
-		tz_add=liq->wavesize;
-		if (bz>=liq->bot) bz=liq->bot;
-		
-		lx=liq->lft;
-		lx_add=liq->wavesize-(lx%liq->wavesize);
-		bot_row=top_row+(xsz+1);
-		
-		for (x=0;x!=xsz;x++) {
-			rx=lx+lx_add;
-			lx_add=liq->wavesize;
-			if (rx>=liq->rgt) rx=liq->rgt;
-				
-				// pull polygon vertexes out of liquid vertex list
-			
-			vl_idx[0]=top_row+x;
-			vl_idx[1]=top_row+(x+1);
-			vl_idx[2]=bot_row+(x+1);
-			vl_idx[3]=bot_row+x;
-			
-				// draw polygon
-				
-			glDrawElements(GL_POLYGON,4,GL_UNSIGNED_INT,(GLvoid*)vl_idx);
-			
-			lx=rx;
+	portal=map.portals;
+
+	for (n=0;n!=map.nportal;n++) {
+
+		liq=portal->liquid.liquids;
+
+		for (k=0;k!=portal->liquid.nliquid;k++) {
+			free(liq->draw.vl_list);
+			free(liq->draw.uv_list);
+			free(liq->draw.idx_list);
+			liq++;
 		}
-	
-		tz=bz;
-		top_row=bot_row;
+
+		portal++;
 	}
 }
-
-/* =======================================================
-
-      Draw Liquid Tide Lighting
-      
-======================================================= */
-
-void segment_liquid_tide_draw_lighting(segment_type *seg,bool light)
-{
-	int						x,z,lx,rx,tz,bz,top_row,bot_row,
-							vl_idx[4],xsz,zsz,lx_add,tz_add,vl_idx_start;
-	liquid_segment_data		*liq;
-	
-	liq=&seg->data.liquid;
-	
-		// get texture vertexes sizes
-
-	xsz=liq->vl_x_sz;
-	zsz=liq->vl_z_sz;
-	
-	vl_idx_start=liq->vl_idx_start;
-	
-		// run through tide segments
-		
-	tz=liq->top;
-	tz_add=liq->wavesize-(tz%liq->wavesize);
-	top_row=vl_idx_start;
-	
-	for (z=0;z!=zsz;z++) {
-		bz=tz+tz_add;
-		tz_add=liq->wavesize;
-		if (bz>=liq->bot) bz=liq->bot;
-		
-		lx=liq->lft;
-		lx_add=liq->wavesize-(lx%liq->wavesize);
-		bot_row=top_row+(xsz+1);
-		
-		for (x=0;x!=xsz;x++) {
-			rx=lx+lx_add;
-			lx_add=liq->wavesize;
-			if (rx>=liq->rgt) rx=liq->rgt;
-				
-				// pull polygon vertexes out of liquid vertex list
-			
-			vl_idx[0]=top_row+x;
-			vl_idx[1]=top_row+(x+1);
-			vl_idx[2]=bot_row+(x+1);
-			vl_idx[3]=bot_row+x;
-			
-				// draw polygon
-				
-			glDrawElements(GL_POLYGON,4,GL_UNSIGNED_INT,(GLvoid*)vl_idx);
-			
-			lx=rx;
-		}
-	
-		tz=bz;
-		top_row=bot_row;
-	}
-}
-
 
 /* =======================================================
 
@@ -223,22 +114,18 @@ void segment_liquid_tide_draw_lighting(segment_type *seg,bool light)
       
 ======================================================= */
 
-void liquid_render_portal_liquid(map_liquid_type *liq)
+void liquid_render_portal_liquid_create_vertex(map_liquid_type *liq)
 {
 	int						x,z,x_add,z_add,x_sz,z_sz,
-							tz,bz,tz_add,top_row,bot_row,
-							lx,rx,lx_add,vl_idx[4],
-							tide_split;
+							v_cnt,tide_split;
 	float					fy,fgx,fgy;
 	bool					x_break,z_break;
-	float					*vl,*uv,vl_list[10240],uv_list[10240];
+	float					*vl,*uv;
 	
 	fy=(float)(liq->y-view.camera.pos.y);
-	
-		// supergumba! -- make these memory
 
-	vl=vl_list;
-	uv=uv_list;
+	vl=liq->draw.vl_list;
+	uv=liq->draw.uv_list;
 
 		// create vertexes from tide splits
 
@@ -250,6 +137,8 @@ void liquid_render_portal_liquid(map_liquid_type *liq)
 	z=liq->top;
 	z_add=tide_split-(z%tide_split);
 	z_break=FALSE;
+
+	v_cnt=0;
 
 	z_sz=0;
 	
@@ -268,6 +157,8 @@ void liquid_render_portal_liquid(map_liquid_type *liq)
 
 			*uv++=liq->x_txtoff+((liq->x_txtfact*(float)(x-liq->lft))/fgx);
 			*uv++=liq->y_txtoff+((liq->y_txtfact*(float)(z-liq->top))/fgy);
+
+			v_cnt++;
 			
 			x_sz++;
 
@@ -295,7 +186,102 @@ void liquid_render_portal_liquid(map_liquid_type *liq)
 		}
 	}
 
-		// draw the pieces
+		// setup split sizes
+
+	liq->draw.v_cnt=v_cnt;
+
+	liq->draw.x_sz=x_sz;
+	liq->draw.z_sz=z_sz;
+}
+
+void liquid_render_portal_liquid_alter_tide(int tick,map_liquid_type *liq)
+{
+	int						x,z,k,x_sz,z_sz,
+							tide_split_half,tide_high,tide_rate;
+	float					fy,f_break,f_time,sn,
+							f_tide_split_half,f_tide_high;
+	float					*vl;
+	
+		// any tide differences?
+
+	tide_high=liq->tide.high;
+	tide_rate=liq->tide.rate;
+
+	if ((tide_high<=0) || (tide_rate<=0)) return;
+
+		// setup tide changes
+
+	x_sz=liq->draw.x_sz;
+	z_sz=liq->draw.z_sz;
+
+	fy=(float)(liq->y-view.camera.pos.y);
+
+	tide_split_half=liq->tide.split<<2;
+	f_tide_split_half=(float)tide_split_half;
+	
+	f_tide_high=(float)tide_high;
+
+	f_time=(float)(tick%tide_rate);		// get rate between 0..1
+	f_time=f_time/(float)tide_rate;
+
+		// alter Ys
+
+	vl=liq->draw.vl_list;
+
+	for (z=0;z!=z_sz;z++) {
+		for (x=0;x!=x_sz;x++) {
+			
+				// get tide breaking into 0...1
+				
+			if (liq->tide.direction==ld_vertical) {
+				k=((int)*(vl+2))-view.camera.pos.z;
+			}
+			else {
+				k=((int)*vl)+view.camera.pos.x;
+			}
+				
+			f_break=(float)(k%tide_split_half);
+			f_break=f_break/f_tide_split_half;
+				
+				// create tide Y
+		   
+			sn=(float)sin((TRIG_PI*2.0f)*(f_break+f_time));
+			*(vl+1)=fy-(f_tide_high*sn);
+
+			vl+=3;
+		}
+	}
+}
+
+void liquid_render_portal_liquid(int tick,map_liquid_type *liq)
+{
+	int						x,z,x_sz,z_sz,quad_cnt,v_sz,
+							tz,bz,tz_add,top_row,bot_row,
+							lx,rx,lx_add,tide_split;
+	int						*d_idx;
+	
+		// create vertexes and UVs
+
+	liquid_render_portal_liquid_create_vertex(liq);
+
+		// alter Ys for tide
+
+	liquid_render_portal_liquid_alter_tide(tick,liq);
+
+		// drawing the quads only draws to the edges
+
+	x_sz=liq->draw.x_sz-1;
+	if (x_sz<=0) return;
+
+	z_sz=liq->draw.z_sz-1;
+	if (z_sz<=0) return;
+
+	tide_split=liq->tide.split;
+
+		// create the draw indexes
+
+	quad_cnt=0;
+	d_idx=liq->draw.idx_list;
 		
 	tz=liq->top;
 	tz_add=tide_split-(tz%tide_split);
@@ -314,50 +300,53 @@ void liquid_render_portal_liquid(map_liquid_type *liq)
 			rx=lx+lx_add;
 			lx_add=tide_split;
 			if (rx>=liq->rgt) rx=liq->rgt;
-				
-				// pull polygon vertexes out of liquid vertex list
 			
-			vl_idx[0]=top_row+x;
-			vl_idx[1]=top_row+(x+1);
-			vl_idx[2]=bot_row+(x+1);
-			vl_idx[3]=bot_row+x;
-			
-				// draw polygon
-				
-//			glDrawElements(GL_POLYGON,4,GL_UNSIGNED_INT,(GLvoid*)vl_idx);
+			*d_idx++=top_row+x;
+			*d_idx++=top_row+(x+1);
+			*d_idx++=bot_row+(x+1);
+			*d_idx++=bot_row+x;
 
-			glBegin(GL_QUADS);
+			quad_cnt++;
 
-			vl=vl_list+(vl_idx[0]*3);
-			uv=uv_list+(vl_idx[0]*2);
-		//	glTexCoord2f(*uv,*(uv+1));
-			glVertex3f(*vl,*(vl+1),*(vl+2));
-
-			vl=vl_list+(vl_idx[1]*3);
-			uv=uv_list+(vl_idx[1]*2);
-		//	glTexCoord2f(*uv,*(uv+1));
-			glVertex3f(*vl,*(vl+1),*(vl+2));
-
-			vl=vl_list+(vl_idx[2]*3);
-			uv=uv_list+(vl_idx[2]*2);
-		//	glTexCoord2f(*uv,*(uv+1));
-			glVertex3f(*vl,*(vl+1),*(vl+2));
-
-			vl=vl_list+(vl_idx[3]*3);
-			uv=uv_list+(vl_idx[3]*2);
-		//	glTexCoord2f(*uv,*(uv+1));
-			glVertex3f(*vl,*(vl+1),*(vl+2));
-
-			glEnd();
-
-
-			
 			lx=rx;
 		}
 	
 		tz=bz;
 		top_row=bot_row;
 	}
+
+		// vertex array
+
+	v_sz=(liq->draw.v_cnt*4)*sizeof(float);
+
+#ifdef D3_OS_MAC
+	glVertexArrayRangeAPPLE(v_sz,liq->draw.vl_list);
+	glEnableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
+#endif
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3,GL_FLOAT,0,liq->draw.vl_list);
+
+		// uv array
+		
+	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,liq->draw.uv_list);
+
+		// draw the quads
+
+	glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)liq->draw.idx_list);
+
+		// release the lists
+
+	glClientActiveTexture(GL_TEXTURE0);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+#ifdef D3_OS_MAC
+	glDisableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
+#endif
 }
 
 /* =======================================================
@@ -366,7 +355,7 @@ void liquid_render_portal_liquid(map_liquid_type *liq)
       
 ======================================================= */
 
-void liquid_render_portal(int rn)
+void liquid_render_portal(int tick,int rn)
 {
 	int							n,nliquid,frame;
 	unsigned long				txt_id;
@@ -424,7 +413,7 @@ void liquid_render_portal(int rn)
 			}
 		}
 
-		liquid_render_portal_liquid(liq);
+		liquid_render_portal_liquid(tick,liq);
 
 		/*
 		y=liq->y-view.camera.pos.y;
@@ -457,7 +446,7 @@ void liquid_render_portal(int rn)
       
 ======================================================= */
 
-void liquid_render(int portal_cnt,int *portal_list)
+void liquid_render(int tick,int portal_cnt,int *portal_list)
 {
 	int					i;
 
@@ -473,7 +462,7 @@ void liquid_render(int portal_cnt,int *portal_list)
 		// for the transparency sorting
 		
 	for (i=0;i<portal_cnt;i++) {
-		liquid_render_portal(portal_list[i]);
+		liquid_render_portal(tick,portal_list[i]);
 	}
 }
 

@@ -94,11 +94,6 @@ void map_portal_segment_update_shift(map_type *map,int tick,int rn)
 				map_portal_segment_update_uvs(portal,seg);
 				break;
 
-			case sg_liquid:
-				map_portal_segment_update_shift_single(f_tick,seg);
-				map_liquid_vertex_update_uvs(portal,seg);
-				break;
-
 			case sg_ambient_wall:
 				map_portal_segment_update_shift_single(f_tick,seg);
 				map_prepare_create_ambient_wall_segment_uv(seg);

@@ -69,7 +69,4 @@ extern bool map_portal_build_single_vertex_list(map_type *map,int rn,bool high_q
 extern bool map_portal_create_single_vertex_list(map_type *map,int rn,bool high_quality_lighting);
 extern void map_portal_dispose_single_vertex_list(map_type *map,int rn);
 extern void map_portal_build_single_segment_list(map_type *map,int rn);
-extern int map_liquid_count_vertexes(segment_type *seg);
-extern int map_liquid_add_vertex_list(portal_vertex_list_type *vl,int vl_cnt,segment_type *seg);
-extern void map_liquid_vertex_update_uvs(portal_type *portal,segment_type *seg);
 
