@@ -37,14 +37,13 @@ extern float			walk_view_y_angle,walk_view_x_angle;
 extern bool				map_opened,
 						dp_primitive,dp_auto_texture,dp_wall,dp_floor,dp_ceiling,dp_liquid,dp_ambient,
 						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide;
-extern Rect				walk_view_forward_box,walk_view_side_box,portal_view_box,site_path_view_box,top_view_box;
 
 extern map_type			map;
 extern setup_type		setup;
 
-int						main_wind_view,main_wind_focus;
+int						main_wind_view,main_wind_panel_focus,main_wind_perspective;
 int						wtpt;
-bool					main_wind_rot;
+bool					swap_panel_forward,swap_panel_side,swap_panel_top;
 Rect					main_wind_box;
 
 WindowRef				mainwind;
@@ -119,7 +118,7 @@ void main_wind_control_tool(int tool_idx)
 			break;
 		case 5:
 			SetControlValue(tool_ctrl[tool_idx],0);			// pop back up
-			main_wind_rotate_view();
+		//	main_wind_rotate_view();
 			main_wind_draw();
 			break;
 		case 6:
@@ -695,17 +694,13 @@ void main_wind_open(void)
 	texture_palette_setup();
 	main_wind_setup();
 	walk_view_initialize();
-		
-	main_wind_rot=setup.view_flip;
-	
-	walk_view_setup(TRUE,FALSE,FALSE);
-	portal_view_setup(TRUE,FALSE);
-	site_path_view_setup(TRUE,FALSE);
    
         // misc setup
         
 	walk_view_y_angle=0.0f;
 	walk_view_x_angle=0.0f;
+	
+	swap_panel_forward=swap_panel_side=swap_panel_top=FALSE;
 	
         // events
     
@@ -846,53 +841,15 @@ void main_wind_resize(void)
 void main_wind_set_view(int view)
 {
 	main_wind_view=view;
+	main_wind_panel_focus=kf_panel_top;
 	
 	menu_set_view_check(view);
-	
-	switch (main_wind_view) {
-	
-		case vw_walk_top:
-			walk_view_setup(TRUE,FALSE,FALSE);
-			portal_view_setup(FALSE,FALSE);
-			site_path_view_setup(FALSE,FALSE);
-			main_wind_focus=kf_top;
-			break;
-			
-		case vw_portal_only:
-			walk_view_setup(FALSE,FALSE,FALSE);
-			portal_view_setup(TRUE,TRUE);
-			site_path_view_setup(FALSE,FALSE);
-			main_wind_focus=kf_portal;
-			break;
-
-		case vw_site_path_only:
-			walk_view_setup(FALSE,FALSE,FALSE);
-			portal_view_setup(FALSE,FALSE);
-			site_path_view_setup(TRUE,TRUE);
-			main_wind_focus=kf_site_path;
-			break;
-			
-		case vw_top_only:
-			walk_view_setup(TRUE,FALSE,TRUE);
-			portal_view_setup(FALSE,FALSE);
-			site_path_view_setup(FALSE,FALSE);
-			main_wind_focus=kf_top;
-			break;
-			
-		case vw_walk_only:
-			walk_view_setup(TRUE,TRUE,FALSE);
-			portal_view_setup(FALSE,FALSE);
-			site_path_view_setup(FALSE,FALSE);
-			main_wind_focus=kf_walk_forward;
-			break;
-	
-	}
 }
 
-void main_wind_rotate_view(void)
+void main_wind_set_perspective(int perspective)
 {
-	main_wind_rot=!main_wind_rot;
-	main_wind_set_view(main_wind_view);
+	main_wind_perspective=perspective;
+	menu_set_perspective_check(perspective);
 }
 
 void main_wind_set_view_piece_portal(void)
@@ -902,10 +859,12 @@ void main_wind_set_view_piece_portal(void)
 
 void main_wind_set_view_piece_segment(void)
 {
+/* supergumba
 	if ((main_wind_view==vw_portal_only) || (main_wind_view==vw_site_path_only)) {
-		main_wind_set_view(vw_walk_top);
+		main_wind_set_view(vw_3_panel);
 		return;
 	}
+	*/
 }
 
 /* =======================================================
@@ -966,14 +925,22 @@ void main_wind_set_2D_projection(Rect *view_box)
 
 void main_wind_set_3D_projection(Rect *view_box,d3ang *ang,float fov,float near_z,float far_z,float near_z_offset)
 {
+	int				x_sz,y_sz;
 	float			ratio;
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
-	ratio=(float)(view_box->right-view_box->left)/(float)(view_box->bottom-view_box->top);
+	if (main_wind_perspective==ps_perspective) {
+		ratio=(float)(view_box->right-view_box->left)/(float)(view_box->bottom-view_box->top);
+		gluPerspective(fov,ratio,near_z,far_z);
+	}
+	else {
+		x_sz=(view_box->right-view_box->left)*(map_enlarge>>2);
+		y_sz=(view_box->bottom-view_box->top)*(map_enlarge>>2);
+		glOrtho((GLdouble)-x_sz,(GLdouble)x_sz,(GLdouble)-y_sz,(GLdouble)y_sz,near_z,far_z);
+	}
 	
-	gluPerspective(fov,ratio,near_z,far_z);
 	glScalef(-1,-1,1);						// x and y are reversed
 	glTranslatef(0,0,near_z_offset);
 
@@ -986,93 +953,7 @@ void main_wind_set_3D_projection(Rect *view_box,d3ang *ang,float fov,float near_
 
 /* =======================================================
 
-      3D View Point and Angle Setup
-      
-======================================================= */
-
-void main_wind_setup_walk_view_forward(editor_3D_view_setup *view_setup)
-{
-	memmove(&view_setup->box,&walk_view_forward_box,sizeof(Rect));
-	
-	view_setup->cpt.x=cx;
-	view_setup->cpt.y=cy;
-	view_setup->cpt.z=cz;
-
-	view_setup->ang.x=0.0f;
-	view_setup->ang.y=0.0f;
-	view_setup->ang.z=0.0f;
-	
-	view_setup->fov=walk_view_forward_fov;
-	view_setup->draw_portal=FALSE;
-}
-
-void main_wind_setup_walk_view_side(editor_3D_view_setup *view_setup)
-{
-	memmove(&view_setup->box,&walk_view_side_box,sizeof(Rect));
-	
-	view_setup->cpt.x=cx;
-	view_setup->cpt.y=cy;
-	view_setup->cpt.z=cz;
-
-	view_setup->ang.x=0.0f;
-	view_setup->ang.y=270.0f;
-	view_setup->ang.z=0.0f;
-	
-	view_setup->fov=walk_view_side_fov;
-	view_setup->draw_portal=FALSE;
-}
-
-void main_wind_setup_walk_view_top(editor_3D_view_setup *view_setup)
-{
-	memmove(&view_setup->box,&top_view_box,sizeof(Rect));
-	
-	view_setup->cpt.x=cx;
-	view_setup->cpt.y=cy-(250*map_enlarge);
-	view_setup->cpt.z=cz;
-
-	view_setup->ang.x=-90.0f;
-	view_setup->ang.y=0.0f;
-	view_setup->ang.z=0.0f;
-	
-	view_setup->fov=top_view_fov;
-	view_setup->draw_portal=TRUE;
-}
-
-void main_wind_setup_walk_view_forward_full(editor_3D_view_setup *view_setup)
-{
-	memmove(&view_setup->box,&walk_view_forward_box,sizeof(Rect));
-
-	view_setup->cpt.x=cx;
-	view_setup->cpt.y=cy;
-	view_setup->cpt.z=cz;
-
-	view_setup->ang.x=walk_view_x_angle;
-	view_setup->ang.y=walk_view_y_angle;
-	view_setup->ang.z=0.0f;
-	
-	view_setup->fov=walk_view_forward_fov;
-	view_setup->draw_portal=FALSE;
-}
-
-void main_wind_setup_walk_view_top_full(editor_3D_view_setup *view_setup)
-{
-	memmove(&view_setup->box,&top_view_box,sizeof(Rect));
-
-	view_setup->cpt.x=cx;
-	view_setup->cpt.y=cy-(250*map_enlarge);
-	view_setup->cpt.z=cz;
-
-	view_setup->ang.x=-90.0f;
-	view_setup->ang.y=0.0f;
-	view_setup->ang.z=0.0f;
-	
-	view_setup->fov=top_view_fov;
-	view_setup->draw_portal=TRUE;
-}
-
-/* =======================================================
-
-      Drawing
+      Divider Drawing
       
 ======================================================= */
 
@@ -1088,8 +969,10 @@ void main_wind_draw_dividers_single(Rect *box,bool selected)
 	glEnd();
 }
 
-void main_wind_draw_dividers(void)
+void main_wind_draw_3_panel_dividers(void)
 {
+	editor_3D_view_setup	view_setup;
+	
 		// use full view port
 	
 	main_wind_set_viewport(&main_wind_box,-1.0f);
@@ -1098,30 +981,126 @@ void main_wind_draw_dividers(void)
 
 	glLineWidth(2.0f);
 	
-	switch (main_wind_focus) {
+	switch (main_wind_panel_focus) {
 	
-		case kf_walk_forward:
-			main_wind_draw_dividers_single(&walk_view_side_box,FALSE);
-			main_wind_draw_dividers_single(&top_view_box,FALSE);
-			main_wind_draw_dividers_single(&walk_view_forward_box,TRUE);
+		case kf_panel_forward:
+			main_wind_setup_panel_side(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,FALSE);
+			
+			main_wind_setup_panel_top(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,FALSE);
+			
+			main_wind_setup_panel_forward(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,TRUE);
 			break;
 			
-		case kf_walk_side:
-			main_wind_draw_dividers_single(&walk_view_forward_box,FALSE);
-			main_wind_draw_dividers_single(&top_view_box,FALSE);
-			main_wind_draw_dividers_single(&walk_view_side_box,TRUE);
+		case kf_panel_side:
+			main_wind_setup_panel_forward(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,FALSE);
+			
+			main_wind_setup_panel_top(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,FALSE);
+			
+			main_wind_setup_panel_side(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,TRUE);
 			break;
 			
-		case kf_top:
-			main_wind_draw_dividers_single(&walk_view_forward_box,FALSE);
-			main_wind_draw_dividers_single(&walk_view_side_box,FALSE);
-			main_wind_draw_dividers_single(&top_view_box,TRUE);
+		case kf_panel_top:
+			main_wind_setup_panel_forward(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,FALSE);
+			
+			main_wind_setup_panel_side(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,FALSE);
+			
+			main_wind_setup_panel_top(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,TRUE);
 			break;
 			
 	}
 	
 	glLineWidth(1.0f);
 }
+
+void main_wind_draw_4_panel_dividers(void)
+{
+	editor_3D_view_setup	view_setup;
+	
+		// use full view port
+	
+	main_wind_set_viewport(&main_wind_box,-1.0f);
+	
+		// draw dividers
+
+	glLineWidth(2.0f);
+	
+	switch (main_wind_panel_focus) {
+	
+		case kf_panel_forward:
+			main_wind_setup_panel_side_frame(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,FALSE);
+			
+			main_wind_setup_panel_top_frame(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,FALSE);
+			
+			main_wind_setup_panel_walk(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,FALSE);
+		
+			main_wind_setup_panel_forward_frame(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,TRUE);
+			break;
+			
+		case kf_panel_side:
+			main_wind_setup_panel_forward_frame(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,FALSE);
+			
+			main_wind_setup_panel_top_frame(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,FALSE);
+			
+			main_wind_setup_panel_walk(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,FALSE);
+			
+			main_wind_setup_panel_side_frame(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,TRUE);
+			break;
+			
+		case kf_panel_top:
+			main_wind_setup_panel_forward_frame(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,FALSE);
+			
+			main_wind_setup_panel_side_frame(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,FALSE);
+			
+			main_wind_setup_panel_walk(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,FALSE);
+			
+			main_wind_setup_panel_top_frame(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,TRUE);
+			break;
+			
+		case kf_panel_walk:
+			main_wind_setup_panel_forward_frame(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,FALSE);
+			
+			main_wind_setup_panel_side_frame(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,FALSE);
+			
+			main_wind_setup_panel_top_frame(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,FALSE);
+			
+			main_wind_setup_panel_walk(&view_setup);
+			main_wind_draw_dividers_single(&view_setup.box,TRUE);
+			break;
+			
+	}
+	
+	glLineWidth(1.0f);
+}
+
+/* =======================================================
+
+      View Drawing
+      
+======================================================= */
 
 void main_wind_draw(void)
 {
@@ -1141,17 +1120,40 @@ void main_wind_draw(void)
 		
 	switch (main_wind_view) {
 	
-		case vw_walk_top:		// supergumba -- change name of this
-			main_wind_setup_walk_view_forward(&view_setup);
+		case vw_3_panel:
+			main_wind_setup_panel_forward(&view_setup);
 			walk_view_draw(&view_setup,FALSE);
+			walk_view_swap_draw(&view_setup);
 			
-			main_wind_setup_walk_view_side(&view_setup);
+			main_wind_setup_panel_side(&view_setup);
 			walk_view_draw(&view_setup,FALSE);
+			walk_view_swap_draw(&view_setup);
 			
-			main_wind_setup_walk_view_top(&view_setup);
+			main_wind_setup_panel_top(&view_setup);
 			walk_view_draw(&view_setup,TRUE);
+		//	walk_view_swap_draw(&view_setup);
 
-			main_wind_draw_dividers();
+			main_wind_draw_3_panel_dividers();
+			break;
+			
+		case vw_4_panel:
+			main_wind_setup_panel_forward_frame(&view_setup);
+			walk_view_draw(&view_setup,FALSE);
+			walk_view_swap_draw(&view_setup);
+			
+			main_wind_setup_panel_side_frame(&view_setup);
+			walk_view_draw(&view_setup,FALSE);
+			walk_view_swap_draw(&view_setup);
+			
+			main_wind_setup_panel_top_frame(&view_setup);
+			walk_view_draw(&view_setup,TRUE);
+		//	walk_view_swap_draw(&view_setup);
+			
+			main_wind_setup_panel_walk(&view_setup);
+			walk_view_draw(&view_setup,FALSE);
+			walk_view_compass_draw(&view_setup);
+			
+			main_wind_draw_4_panel_dividers();
 			break;
 			
 		case vw_portal_only:
@@ -1163,14 +1165,14 @@ void main_wind_draw(void)
 			break;
 			
 		case vw_top_only:
-			main_wind_setup_walk_view_top_full(&view_setup);
+			main_wind_setup_panel_top_full(&view_setup);
 			walk_view_draw(&view_setup,TRUE);
 			break;
 			
-		case vw_walk_only:
-			main_wind_setup_walk_view_forward_full(&view_setup);
+		case vw_forward_only:
+			main_wind_setup_panel_forward_full(&view_setup);
 			walk_view_draw(&view_setup,FALSE);
-			walk_view_compass_draw(&walk_view_forward_box);
+			walk_view_compass_draw(&view_setup);
 			break;
 	}
 	
@@ -1193,14 +1195,12 @@ void main_wind_draw(void)
 	        
 ======================================================= */
 
-void main_wind_set_focus(int focus,bool redraw)
+void main_wind_set_focus(int focus)
 {
-	bool			focus_change;
-	
-	focus_change=main_wind_focus!=focus;
-	main_wind_focus=focus;
-	
-	if ((main_wind_view==vw_walk_top) && (focus_change) && (redraw)) main_wind_draw_dividers();
+	if (main_wind_panel_focus!=focus) {
+		main_wind_panel_focus=focus;
+		main_wind_draw();
+	}
 }
 
 /* =======================================================
@@ -1245,55 +1245,108 @@ bool main_wind_click_check_box(d3pnt *pt,Rect *box)
 
 bool main_wind_click(d3pnt *pt,bool dblclick)
 {
-	bool					rot_ok;
+	Rect					box;
 	editor_3D_view_setup	view_setup;
+
+	switch (main_wind_view) {
 	
-	if (main_wind_click_check_box(pt,&walk_view_forward_box)) {
-		main_wind_set_focus(kf_walk_forward,TRUE);
-		if (main_wind_view==vw_walk_only) {
-			if (walk_view_compass_click(&walk_view_forward_box,pt)) return(TRUE);
-			main_wind_setup_walk_view_forward_full(&view_setup);
-			rot_ok=TRUE;
-		}
-		else {
-			main_wind_setup_walk_view_forward(&view_setup);
-			rot_ok=FALSE;
-		}
-        walk_view_click(&view_setup,pt,vm_dir_forward,rot_ok,dblclick);
-        return(TRUE);
-    }
-	
-    if (main_wind_click_check_box(pt,&walk_view_side_box)) {
-		main_wind_set_focus(kf_walk_side,TRUE);
-		main_wind_setup_walk_view_side(&view_setup);
-		walk_view_click(&view_setup,pt,vm_dir_side,FALSE,dblclick);
-        return(TRUE);
-    }
-	
-    if (main_wind_click_check_box(pt,&top_view_box)) {
-		main_wind_set_focus(kf_top,TRUE);
-		if (main_wind_view==vw_top_only) {
-			main_wind_setup_walk_view_top_full(&view_setup);
-		}
-		else {
-			main_wind_setup_walk_view_top(&view_setup);
-		}
-		walk_view_click(&view_setup,pt,vm_dir_top,FALSE,dblclick);
-		return(TRUE);
-    }
-    
-    if (main_wind_click_check_box(pt,&portal_view_box)) {
-		main_wind_set_focus(kf_portal,TRUE);
-        portal_view_click(pt,dblclick);
-        return(TRUE);
-    }
-	
-    if (main_wind_click_check_box(pt,&site_path_view_box)) {
-		main_wind_set_focus(kf_site_path,TRUE);
-        site_path_view_click(pt,dblclick);
-        return(TRUE);
-    }
-    
+		case vw_3_panel:
+			main_wind_setup_panel_forward(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) {
+				main_wind_set_focus(kf_panel_forward);
+				if (walk_view_swap_click(&view_setup,pt,&swap_panel_forward)) return(TRUE);
+				walk_view_click(&view_setup,pt,vm_dir_forward,FALSE,dblclick);
+				return(TRUE);
+			}
+			
+			main_wind_setup_panel_side(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) {
+				main_wind_set_focus(kf_panel_side);
+				if (walk_view_swap_click(&view_setup,pt,&swap_panel_side)) return(TRUE);
+				walk_view_click(&view_setup,pt,vm_dir_side,FALSE,dblclick);
+				return(TRUE);
+			}
+			
+			main_wind_setup_panel_top(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) {
+				main_wind_set_focus(kf_panel_top);
+			//	if (walk_view_swap_click(&view_setup,pt,&swap_panel_top)) return(TRUE);
+				walk_view_click(&view_setup,pt,vm_dir_top,FALSE,dblclick);
+				return(TRUE);
+			}
+			break;
+			
+		case vw_4_panel:
+			main_wind_setup_panel_forward_frame(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) {
+				main_wind_set_focus(kf_panel_forward);
+				if (walk_view_swap_click(&view_setup,pt,&swap_panel_forward)) return(TRUE);
+				walk_view_click(&view_setup,pt,vm_dir_forward,FALSE,dblclick);
+				return(TRUE);
+			}
+			
+			main_wind_setup_panel_side_frame(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) {
+				main_wind_set_focus(kf_panel_side);
+				if (walk_view_swap_click(&view_setup,pt,&swap_panel_side)) return(TRUE);
+				walk_view_click(&view_setup,pt,vm_dir_side,FALSE,dblclick);
+				return(TRUE);
+			}
+			
+			main_wind_setup_panel_top_frame(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) {
+				main_wind_set_focus(kf_panel_top);
+			//	if (walk_view_swap_click(&view_setup,pt,&swap_panel_top)) return(TRUE);
+				walk_view_click(&view_setup,pt,vm_dir_top,FALSE,dblclick);
+				return(TRUE);
+			}
+			
+			main_wind_setup_panel_walk(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) {
+				main_wind_set_focus(kf_panel_walk);
+				if (!walk_view_compass_click(&view_setup,pt)) {
+					walk_view_click(&view_setup,pt,vm_dir_forward,FALSE,dblclick);
+				}
+				return(TRUE);
+			}
+			break;
+			
+		case vw_portal_only:
+			main_wind_setup_full_screen_box(&box);
+			if (main_wind_click_check_box(pt,&box)) {
+				portal_view_click(pt,dblclick);
+				return(TRUE);
+			}
+			break;
+			
+		case vw_site_path_only:
+			main_wind_setup_full_screen_box(&box);
+			if (main_wind_click_check_box(pt,&box)) {
+				site_path_view_click(pt,dblclick);
+				return(TRUE);
+			}
+			break;
+			
+		case vw_top_only:
+			main_wind_setup_panel_top_full(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) {
+				walk_view_click(&view_setup,pt,vm_dir_top,FALSE,dblclick);
+				return(TRUE);
+			}
+			break;
+			
+		case vw_forward_only:
+			main_wind_setup_panel_forward_full(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) {
+				if (!walk_view_compass_click(&view_setup,pt)) {
+					walk_view_click(&view_setup,pt,vm_dir_forward,TRUE,dblclick);
+				}
+				return(TRUE);
+			}
+			break;
+			
+	}
+	    
     return(FALSE);
 }
 
@@ -1305,20 +1358,53 @@ bool main_wind_click(d3pnt *pt,bool dblclick)
 
 void main_wind_cursor(d3pnt *pt)
 {
-    if ((main_wind_click_check_box(pt,&walk_view_forward_box)) || (main_wind_click_check_box(pt,&walk_view_side_box)) || (main_wind_click_check_box(pt,&top_view_box))) {
-        walk_view_cursor(main_wind_view==vw_walk_only);
-        return;
-    }
-    
-    if (main_wind_click_check_box(pt,&portal_view_box)) {
-        portal_view_cursor();
-        return;
-    }
+	Rect					box;
+	editor_3D_view_setup	view_setup;
+
+	switch (main_wind_view) {
 	
-    if (main_wind_click_check_box(pt,&site_path_view_box)) {
-        site_path_view_cursor();
-        return;
-    }
+		case vw_3_panel:
+			main_wind_setup_panel_forward(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) walk_view_cursor(FALSE);
+			
+			main_wind_setup_panel_side(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) walk_view_cursor(FALSE);
+			
+			main_wind_setup_panel_top(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) walk_view_cursor(FALSE);
+			break;
+			
+		case vw_4_panel:
+			main_wind_setup_panel_forward_frame(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) walk_view_cursor(FALSE);
+			
+			main_wind_setup_panel_side_frame(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) walk_view_cursor(FALSE);
+			
+			main_wind_setup_panel_top_frame(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) walk_view_cursor(FALSE);
+			break;
+			
+		case vw_portal_only:
+			main_wind_setup_full_screen_box(&box);
+			if (main_wind_click_check_box(pt,&box)) portal_view_cursor();
+			break;
+			
+		case vw_site_path_only:
+			main_wind_setup_full_screen_box(&box);
+			if (main_wind_click_check_box(pt,&box)) site_path_view_cursor();
+			break;
+			
+		case vw_top_only:
+			main_wind_setup_panel_top_full(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) walk_view_cursor(FALSE);
+			break;
+			
+		case vw_forward_only:
+			main_wind_setup_panel_forward_full(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) walk_view_cursor(TRUE);
+			break;
+	}
 }
 
 /* =======================================================
@@ -1383,18 +1469,15 @@ void main_wind_key_down(char ch)
 		
 	if (ch==0x9) {
 	
-		if (main_wind_view==vw_walk_top) {
-			if (main_wind_focus==kf_walk_forward) {
-				main_wind_focus=kf_walk_side;
-			}
-			else {
-				if (main_wind_focus==kf_walk_side) {
-					main_wind_focus=kf_top;
-				}
-				else {
-					main_wind_focus=kf_walk_forward;
-				}
-			}
+		switch (main_wind_view) {
+			case vw_3_panel:
+				main_wind_panel_focus++;
+				if (main_wind_panel_focus==3) main_wind_panel_focus=0;
+				break;
+			case vw_4_panel:
+				main_wind_panel_focus++;
+				if (main_wind_panel_focus==4) main_wind_panel_focus=0;
+				break;
 		}
 		
 		main_wind_draw();
@@ -1409,28 +1492,45 @@ void main_wind_key_down(char ch)
 		return;
 	}
 	
-		// send keys to proper pane
+		// send keys to proper panel
 		
-	switch (main_wind_focus) {
+	switch (main_wind_view) {
 	
-		case kf_walk_forward:
-			walk_view_key(ch,vm_dir_forward);
+		case vw_3_panel:
+		case vw_4_panel:
+		
+			switch (main_wind_panel_focus) {
+			
+				case kf_panel_forward:
+				case kf_panel_walk:
+					walk_view_key(ch,vm_dir_forward);
+					break;
+					
+				case kf_panel_side:
+					walk_view_key(ch,vm_dir_side);
+					break;
+					
+				case kf_panel_top:
+					walk_view_key(ch,vm_dir_top);
+					break;
+			}
+			
 			break;
 			
-		case kf_walk_side:
-			walk_view_key(ch,vm_dir_side);
-			break;
-			
-		case kf_top:
-			walk_view_key(ch,vm_dir_top);
-			break;
-			
-		case kf_portal:
+		case vw_portal_only:
 			portal_view_key(ch);
 			break;
 			
-		case kf_site_path:
+		case vw_site_path_only:
 			site_path_view_key(ch);
+			break;
+			
+		case vw_top_only:
+			walk_view_key(ch,vm_dir_top);
+			break;
+			
+		case vw_forward_only:
+			walk_view_key(ch,vm_dir_forward);
 			break;
 	}
 }
@@ -1445,32 +1545,45 @@ void main_wind_scroll_wheel(int delta)
 {
 	editor_3D_view_setup		view_setup;
 	
-	switch (main_wind_focus) {
+	switch (main_wind_view) {
 	
-		case kf_walk_forward:
-			main_wind_setup_walk_view_forward(&view_setup);
+		case vw_3_panel:
+		case vw_4_panel:
+		
+			switch (main_wind_panel_focus) {
+				case kf_panel_forward:
+					main_wind_setup_panel_forward(&view_setup);
+					walk_view_scroll_wheel_z_movement(&view_setup,delta,vm_dir_forward);
+					break;
+					
+				case kf_panel_side:
+					main_wind_setup_panel_forward(&view_setup);
+					walk_view_scroll_wheel_z_movement(&view_setup,delta,vm_dir_side);
+					break;
+					
+				case kf_panel_top:
+					main_wind_magnify_scroll(delta);
+					break;
+					
+				case kf_panel_walk:
+					main_wind_setup_panel_walk(&view_setup);
+					walk_view_scroll_wheel_z_movement(&view_setup,delta,vm_dir_forward);
+					break;
+			}
+			
+			break;
+			
+		case vw_portal_only:
+		case vw_site_path_only:
+		case vw_top_only:
+			main_wind_magnify_scroll(delta);
+			break;
+			
+		case vw_forward_only:
+			main_wind_setup_panel_forward_full(&view_setup);
 			walk_view_scroll_wheel_z_movement(&view_setup,delta,vm_dir_forward);
 			break;
-			
-		case kf_walk_side:
-			main_wind_setup_walk_view_forward(&view_setup);
-			walk_view_scroll_wheel_z_movement(&view_setup,delta,vm_dir_side);
-			break;
-			
-		case kf_top:
-			main_wind_magnify_scroll(delta);
-			break;
-			
-		case kf_portal:
-			main_wind_magnify_scroll(delta);
-			break;
-			
-		case kf_site_path:
-			main_wind_magnify_scroll(delta);
-			break;
-			
 	}
-
 }
 
 /* =======================================================

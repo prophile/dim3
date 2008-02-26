@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "site_path_view.h"
 
 extern int						cr,cx,cz,magnify_factor,txt_palette_high;
-extern bool						main_wind_rot;
 extern map_type					map;
 
 extern WindowRef				mainwind;
@@ -41,53 +40,6 @@ extern CCrsrHandle				handcur,cutcur,addcur;
 int								site_path_view_drag_hilite_rn;
 bool							site_path_view_drag_on;
 d3pnt							site_path_view_drag_start_pt,site_path_view_drag_end_pt;
-Rect							site_path_view_box;
-
-/* =======================================================
-
-      Setup Site Path View
-      
-======================================================= */
-
-void site_path_view_setup(bool active,bool full_screen)
-{
-    Rect			wbox;
-	
-		// deactived view
-		
-	if (!active) {
-		SetRect(&site_path_view_box,-1,-1,-1,-1);
-		return;
-	}
-	
-		// active view
-    
- 	GetWindowPortBounds(mainwind,&wbox);
-	
-	if (full_screen) {
-		site_path_view_box=wbox;
-		site_path_view_box.top+=toolbar_high;
-		site_path_view_box.bottom-=(txt_palette_high+info_high);
-		site_path_view_box.right-=piece_wid;
-	}
-	else {
-		if (!main_wind_rot) {
-			site_path_view_box.top=(wbox.top+toolbar_high)+((((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2)+2);
-			site_path_view_box.bottom=wbox.bottom-2;
-			site_path_view_box.left=wbox.left+2;
-			site_path_view_box.right=wbox.right-(piece_wid+2);
-		}
-		else {
-			site_path_view_box.top=wbox.top+(toolbar_high+2);
-			site_path_view_box.bottom=wbox.bottom-((txt_palette_high+info_high)+2);
-			site_path_view_box.left=(wbox.right-piece_wid)-(((wbox.right-piece_wid)-wbox.left)/2);
-			site_path_view_box.right=wbox.right-2;
-		}
-	}
-	
-	site_path_view_drag_on=FALSE;
-	site_path_view_drag_hilite_rn=-1;
-}
 
 /* =======================================================
 
@@ -103,28 +55,34 @@ int site_path_view_pane_to_map_factor(int k)
 void site_path_view_map_to_pane(int *x,int *z)
 {
 	int			sx,sz,view_x,view_z;
+	Rect		box;
 	
-    view_x=cx-site_path_view_pane_to_map_factor((site_path_view_box.right-site_path_view_box.left)>>1);
-	view_z=cz-site_path_view_pane_to_map_factor((site_path_view_box.bottom-site_path_view_box.top)>>1);
+	main_wind_setup_full_screen_box(&box);
+	
+    view_x=cx-site_path_view_pane_to_map_factor((box.right-box.left)>>1);
+	view_z=cz-site_path_view_pane_to_map_factor((box.bottom-box.top)>>1);
 	
 	sx=(*x)-(view_x-1);
-    *x=((sx*magnify_factor)/magnify_size)+site_path_view_box.left;
+    *x=((sx*magnify_factor)/magnify_size)+box.left;
 	
 	sz=(*z)-(view_z-1);
-    *z=((sz*magnify_factor)/magnify_size)+site_path_view_box.top;
+    *z=((sz*magnify_factor)/magnify_size)+box.top;
 }
 
 void site_path_view_pane_to_map(int *x,int *z)
 {
 	int			sx,sz,view_x,view_z;
+	Rect		box;
 	
-    view_x=cx-site_path_view_pane_to_map_factor((site_path_view_box.right-site_path_view_box.left)>>1);
-	view_z=cz-site_path_view_pane_to_map_factor((site_path_view_box.bottom-site_path_view_box.top)>>1);
+	main_wind_setup_full_screen_box(&box);
+	
+    view_x=cx-site_path_view_pane_to_map_factor((box.right-box.left)>>1);
+	view_z=cz-site_path_view_pane_to_map_factor((box.bottom-box.top)>>1);
 
-	sx=(*x)-site_path_view_box.left;
+	sx=(*x)-box.left;
 	*x=((sx*magnify_size)/magnify_factor)+(view_x-1);
 	
-	sz=(*z)-site_path_view_box.top;
+	sz=(*z)-box.top;
 	*z=((sz*magnify_size)/magnify_factor)+(view_z-1);
 }
 
@@ -142,9 +100,12 @@ void site_path_view_distance_pane_to_map(int *x,int *z)
 
 void site_path_view_draw(void)
 {
+	Rect			box;
+	
 		// setup viewport
 		
-	main_wind_set_viewport(&site_path_view_box,0.75f);
+	main_wind_setup_full_screen_box(&box);
+	main_wind_set_viewport(&box,0.75f);
 	
 		// draw portals
 	

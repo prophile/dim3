@@ -29,7 +29,6 @@ and can be sold or given away.
 // view routines
 //
 
-extern void site_path_view_setup(bool active,bool full_screen);
 extern void site_path_view_map_to_pane(int *x,int *z);
 extern void site_path_view_pane_to_map(int *x,int *z);
 extern void site_path_view_distance_pane_to_map(int *x,int *z);

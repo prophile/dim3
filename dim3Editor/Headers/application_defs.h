@@ -55,13 +55,14 @@ and can be sold or given away.
 #define kCommandPaste					FOUR_CHAR_CODE('pste')
 #define kCommandClear					FOUR_CHAR_CODE('cler')
 
-#define kCommandViewTopWalk				FOUR_CHAR_CODE('vw01')
-#define kCommandViewPortalOnly			FOUR_CHAR_CODE('vw02')
-#define kCommandViewSitePathOnly		FOUR_CHAR_CODE('vw03')
-#define kCommandViewTopOnly				FOUR_CHAR_CODE('vw04')
-#define kCommandViewWalkOnly			FOUR_CHAR_CODE('vw05')
-#define kCommandViewFOV45				FOUR_CHAR_CODE('fv45')
-#define kCommandViewFOV60				FOUR_CHAR_CODE('fv60')
+#define kCommandView3Panel				FOUR_CHAR_CODE('vw01')
+#define kCommandView4Panel				FOUR_CHAR_CODE('vw02')
+#define kCommandViewPortal				FOUR_CHAR_CODE('vw03')
+#define kCommandViewSitePath			FOUR_CHAR_CODE('vw04')
+#define kCommandViewTopOnly				FOUR_CHAR_CODE('vw05')
+#define kCommandViewForwardOnly			FOUR_CHAR_CODE('vw06')
+#define kCommandViewPerspective			FOUR_CHAR_CODE('vwps')
+#define kCommandViewOrtho				FOUR_CHAR_CODE('vwot')
 
 #define kCommandMapSettings				FOUR_CHAR_CODE('mset')
 #define kCommandMapCounts				FOUR_CHAR_CODE('cset')
@@ -144,11 +145,19 @@ and can be sold or given away.
 // views
 //
 
-#define vw_walk_top			0
-#define vw_portal_only		1
-#define vw_site_path_only	2
-#define vw_top_only			3
-#define vw_walk_only		4
+#define vw_3_panel			0
+#define vw_4_panel			1
+#define vw_portal_only		2
+#define vw_site_path_only	3
+#define vw_top_only			4
+#define vw_forward_only		5
+
+//
+// perspective
+//
+
+#define ps_perspective		0
+#define ps_ortho			1
 
 //
 // movement directions
@@ -159,14 +168,13 @@ and can be sold or given away.
 #define vm_dir_top			2
 
 //
-// keyboard focus
+// keyboard panel focus
 //
 
-#define kf_portal			0
-#define kf_site_path		1
-#define kf_top				2
-#define kf_walk_forward		3
-#define kf_walk_side		4
+#define kf_panel_forward	0
+#define kf_panel_side		1
+#define kf_panel_top		2
+#define kf_panel_walk		3
 
 //
 // vertex modes
@@ -216,7 +224,7 @@ and can be sold or given away.
 #define walk_view_far_z			(2000*map_enlarge)
 #define walk_view_near_offset	(3*map_enlarge)
 
-#define walk_view_handle_size	10.0f
+#define walk_view_handle_size	8.0f
 
 //
 // draw passing struct
@@ -227,6 +235,7 @@ typedef struct		{
 						d3pnt					cpt;
 						d3ang					ang;
 						float					fov;
-						bool					draw_portal;
+						bool					mesh_only,draw_portal,ignore_site_path,
+												swap_on;
 					} editor_3D_view_setup;
 

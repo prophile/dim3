@@ -51,7 +51,7 @@ void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
 		
 	glColor4f(1.0f,1.0f,0.0f,1.0f);
 	
-	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
 	
 	mesh_poly=mesh->polys;
 	
@@ -74,8 +74,11 @@ void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
 	
 		// draw selected mesh poly
 		
-	glColor4f(1.0f,0.0f,0.0f,1.0f);
+	glDisable(GL_DEPTH_TEST);
+	
 	glLineWidth(2.0f);
+
+	glColor4f(1.0f,0.0f,0.0f,1.0f);
 	
 	mesh_poly=&mesh->polys[poly_idx];
 	
@@ -92,6 +95,8 @@ void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
 	glEnd();
 
 	glLineWidth(1.0f);
+	
+	glEnable(GL_DEPTH_TEST);
 	
 		// draw the vertexes
 		

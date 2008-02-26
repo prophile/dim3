@@ -32,7 +32,7 @@ and can be sold or given away.
 
 extern int					cr,cx,cy,cz;
 extern bool					dp_wall,dp_floor,dp_ceiling,dp_liquid,dp_ambient,dp_object,dp_lightsoundparticle,dp_node;
-extern Rect					main_wind_box,walk_view_forward_box,walk_view_side_box;
+extern Rect					main_wind_box;
 
 extern CCrsrHandle			towardcur,dragcur;
 

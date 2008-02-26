@@ -40,7 +40,6 @@ extern void portal_move_all_items(int rn,int x,int y,int z);
 // view routines
 //
 
-extern void portal_view_setup(bool active,bool full_screen);
 extern void portal_view_map_to_pane(int *x,int *z);
 extern void portal_view_pane_to_map(int *x,int *z);
 extern void portal_view_distance_pane_to_map(int *x,int *z);

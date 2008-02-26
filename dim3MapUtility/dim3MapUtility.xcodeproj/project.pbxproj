@@ -35,7 +35,6 @@
 		F5DD178A09074E5000721649 /* portal_segment_update.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD178609074E5000721649 /* portal_segment_update.c */; };
 		F5DD178B09074E5000721649 /* portal_segment_list.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD178709074E5000721649 /* portal_segment_list.c */; };
 		F5DD178C09074E5000721649 /* portal_vertex_list.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD178809074E5000721649 /* portal_vertex_list.c */; };
-		F5DD178D09074E5000721649 /* portal_segment_vertex_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD178909074E5000721649 /* portal_segment_vertex_liquid.c */; };
 		F5DD17D609074FFB00721649 /* portal_changes.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD17D509074FFB00721649 /* portal_changes.c */; };
 		F5DD18B90907FD6700721649 /* portal_light_spot.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD18B80907FD6700721649 /* portal_light_spot.c */; };
 		F5DD18BB0907FD6E00721649 /* spots.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD18BA0907FD6E00721649 /* spots.c */; };
@@ -100,7 +99,6 @@
 		F5DD178609074E5000721649 /* portal_segment_update.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_segment_update.c; path = Sources/portal_segment_update.c; sourceTree = "<group>"; };
 		F5DD178709074E5000721649 /* portal_segment_list.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_segment_list.c; path = Sources/portal_segment_list.c; sourceTree = "<group>"; };
 		F5DD178809074E5000721649 /* portal_vertex_list.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_vertex_list.c; path = Sources/portal_vertex_list.c; sourceTree = "<group>"; };
-		F5DD178909074E5000721649 /* portal_segment_vertex_liquid.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_segment_vertex_liquid.c; path = Sources/portal_segment_vertex_liquid.c; sourceTree = "<group>"; };
 		F5DD17D509074FFB00721649 /* portal_changes.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_changes.c; path = Sources/portal_changes.c; sourceTree = "<group>"; };
 		F5DD18B80907FD6700721649 /* portal_light_spot.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_light_spot.c; path = Sources/portal_light_spot.c; sourceTree = "<group>"; };
 		F5DD18BA0907FD6E00721649 /* spots.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = spots.c; path = Sources/spots.c; sourceTree = "<group>"; };
@@ -241,7 +239,6 @@
 				F52A9B7409F0A63C008CE744 /* portal_sight_path.c */,
 				F5DD17D509074FFB00721649 /* portal_changes.c */,
 				F5DD178809074E5000721649 /* portal_vertex_list.c */,
-				F5DD178909074E5000721649 /* portal_segment_vertex_liquid.c */,
 				F5DD178709074E5000721649 /* portal_segment_list.c */,
 				F5DD178609074E5000721649 /* portal_segment_update.c */,
 				F5DD18B80907FD6700721649 /* portal_light_spot.c */,
@@ -342,7 +339,6 @@
 				F5DD178A09074E5000721649 /* portal_segment_update.c in Sources */,
 				F5DD178B09074E5000721649 /* portal_segment_list.c in Sources */,
 				F5DD178C09074E5000721649 /* portal_vertex_list.c in Sources */,
-				F5DD178D09074E5000721649 /* portal_segment_vertex_liquid.c in Sources */,
 				F5DD17D609074FFB00721649 /* portal_changes.c in Sources */,
 				F5DD18B90907FD6700721649 /* portal_light_spot.c in Sources */,
 				F5DD18BB0907FD6E00721649 /* spots.c in Sources */,

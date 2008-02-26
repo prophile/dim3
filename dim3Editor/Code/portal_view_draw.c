@@ -30,7 +30,6 @@ and can be sold or given away.
 
 extern int					cr,cx,cz,magnify_factor;
 extern float				walk_view_y_angle;
-extern Rect					portal_view_box;
 
 extern map_type				map;
 
@@ -109,10 +108,6 @@ void portal_view_draw_mesh(int rn)
 void portal_view_draw_portals(void)
 {
 	int				n,x,z,ex,ez;
-	
-		// setup viewport
-		
-	main_wind_set_viewport(&portal_view_box,0.75f);
 	
 		// draw portal block and mesh
 		

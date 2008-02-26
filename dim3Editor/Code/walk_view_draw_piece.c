@@ -31,10 +31,8 @@ and can be sold or given away.
 
 extern int				cr,cy,txt_palette_high;
 extern float			walk_view_fov,walk_view_y_angle,walk_view_x_angle;
-extern bool				main_wind_rot,
-						dp_wall,dp_floor,dp_ceiling,dp_liquid,dp_ambient,
+extern bool				dp_wall,dp_floor,dp_ceiling,dp_liquid,dp_ambient,
 						dp_object,dp_lightsoundparticle,dp_node,dp_textured;
-extern Rect				walk_view_forward_box,walk_view_side_box;
 
 extern WindowRef		mainwind;
 extern AGLContext		ctx;
@@ -246,7 +244,7 @@ void walk_view_draw_portal_block(int rn,d3pnt *cpt)
       
 ======================================================= */
 
-void walk_view_draw_portal_meshes(int rn,d3pnt *cpt,bool opaque)
+void walk_view_draw_portal_meshes_texture(int rn,d3pnt *cpt,bool opaque)
 {
 	int					n,k,t,x,y,z;
 	unsigned long		old_gl_id;
@@ -315,18 +313,28 @@ void walk_view_draw_portal_meshes(int rn,d3pnt *cpt,bool opaque)
 	}
 	
 	if (!opaque) glDepthMask(GL_TRUE);
-	
-	glDisable(GL_ALPHA_TEST);
-	if (opaque) glEnable(GL_BLEND);
-	
+}
+
+void walk_view_draw_portal_meshes_line(int rn,d3pnt *cpt,bool opaque)
+{
+	int					n,k,t,x,y,z;
+	d3pnt				*pt;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*mesh_poly;
+	texture_type		*texture;
+							
 	glDisable(GL_TEXTURE_2D);
+
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_BLEND);
+	
+	glColor4f(0.5f,0.5f,1.0f,1.0f);
 	
 		// draw portal mesh lines
 		
-	glColor4f(0.5f,0.5f,1.0f,1.0f);
-	
-	glDisable(GL_DEPTH_TEST);
-	
+	portal=&map.portals[rn];
+
 	mesh=portal->mesh.meshes;
 	
 	for (n=0;n!=portal->mesh.nmesh;n++) {
@@ -359,8 +367,6 @@ void walk_view_draw_portal_meshes(int rn,d3pnt *cpt,bool opaque)
 	
 		mesh++;
 	}
-	
-	glEnable(GL_DEPTH_TEST);
 }
 
 void walk_view_draw_portal_liquids(int rn,d3pnt *cpt,bool opaque)
@@ -581,13 +587,25 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 	
 		// get the portals to draw
 		
-	for (i=0;i!=map.nportal;i++) {			// routine depends on mx/mz being set
-		map.portals[i].mx=(map.portals[i].x+map.portals[i].ex)/2;
-		map.portals[i].mz=(map.portals[i].z+map.portals[i].ez)/2;
-		map.portals[i].by=0;
-	}
+	if (view_setup->ignore_site_path) {
 	
-	portal_cnt=map_portal_draw_sort(&map,rn,view_setup->cpt.x,view_setup->cpt.y,view_setup->cpt.z,portal_list);
+		for (i=0;i!=map.nportal;i++) {
+			portal_list[i]=i;
+		}
+		
+		portal_cnt=map.nportal;
+	
+	}
+	else {
+	
+		for (i=0;i!=map.nportal;i++) {			// routine depends on mx/mz being set
+			map.portals[i].mx=(map.portals[i].x+map.portals[i].ex)/2;
+			map.portals[i].mz=(map.portals[i].z+map.portals[i].ez)/2;
+			map.portals[i].by=0;
+		}
+		
+		portal_cnt=map_portal_draw_sort(&map,rn,view_setup->cpt.x,view_setup->cpt.y,view_setup->cpt.z,portal_list);
+	}
 	
 		// draw the portal outlines
 		
@@ -601,7 +619,8 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
         
     for (i=0;i!=portal_cnt;i++) {
 		rn=portal_list[i];
-        walk_view_draw_portal_meshes(rn,&view_setup->cpt,TRUE);
+        if (!view_setup->mesh_only) walk_view_draw_portal_meshes_texture(rn,&view_setup->cpt,TRUE);
+        walk_view_draw_portal_meshes_line(rn,&view_setup->cpt,TRUE);
 		walk_view_draw_portal_nodes(rn,&view_setup->cpt);
 		walk_view_draw_portal_spots_scenery(rn,&view_setup->cpt);
 		walk_view_draw_portal_lights_sounds_particles(rn,&view_setup->cpt);
@@ -612,7 +631,8 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
         
     for (i=0;i!=portal_cnt;i++) {
 		rn=portal_list[i];
-        walk_view_draw_portal_meshes(rn,&view_setup->cpt,FALSE);
+        if (!view_setup->mesh_only) walk_view_draw_portal_meshes_texture(rn,&view_setup->cpt,FALSE);
+		walk_view_draw_portal_meshes_line(rn,&view_setup->cpt,TRUE);
 		walk_view_draw_portal_liquids(rn,&view_setup->cpt,FALSE);
     }
 	

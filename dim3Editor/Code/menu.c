@@ -220,53 +220,66 @@ void menu_fix_enable(void)
 void menu_set_view_check(int view)
 {
 	switch (view) {
-		case vw_walk_top:
+		case vw_3_panel:
 			CheckMenuItem(GetMenuHandle(app_menu_view),1,TRUE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),2,FALSE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),3,FALSE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),4,FALSE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),5,FALSE);
+			CheckMenuItem(GetMenuHandle(app_menu_view),6,FALSE);
 			break;
-		case vw_portal_only:
+		case vw_4_panel:
 			CheckMenuItem(GetMenuHandle(app_menu_view),1,FALSE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),2,TRUE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),3,FALSE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),4,FALSE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),5,FALSE);
+			CheckMenuItem(GetMenuHandle(app_menu_view),6,FALSE);
 			break;
-		case vw_site_path_only:
+		case vw_portal_only:
 			CheckMenuItem(GetMenuHandle(app_menu_view),1,FALSE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),2,FALSE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),3,TRUE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),4,FALSE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),5,FALSE);
+			CheckMenuItem(GetMenuHandle(app_menu_view),6,FALSE);
 			break;
-		case vw_top_only:
+		case vw_site_path_only:
 			CheckMenuItem(GetMenuHandle(app_menu_view),1,FALSE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),2,FALSE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),3,FALSE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),4,TRUE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),5,FALSE);
+			CheckMenuItem(GetMenuHandle(app_menu_view),6,FALSE);
 			break;
-		case vw_walk_only:
+		case vw_top_only:
 			CheckMenuItem(GetMenuHandle(app_menu_view),1,FALSE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),2,FALSE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),3,FALSE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),4,FALSE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),5,TRUE);
+			CheckMenuItem(GetMenuHandle(app_menu_view),6,FALSE);
+			break;
+		case vw_forward_only:
+			CheckMenuItem(GetMenuHandle(app_menu_view),1,FALSE);
+			CheckMenuItem(GetMenuHandle(app_menu_view),2,FALSE);
+			CheckMenuItem(GetMenuHandle(app_menu_view),3,FALSE);
+			CheckMenuItem(GetMenuHandle(app_menu_view),4,FALSE);
+			CheckMenuItem(GetMenuHandle(app_menu_view),5,FALSE);
+			CheckMenuItem(GetMenuHandle(app_menu_view),6,TRUE);
 			break;
 	}
 }
 
-void menu_set_fov_check(float fov)
+void menu_set_perspective_check(int perspective)
 {
-	if (fov==45) {
-		CheckMenuItem(GetMenuHandle(app_menu_view),7,TRUE);
-		CheckMenuItem(GetMenuHandle(app_menu_view),8,FALSE);
+	if (perspective==ps_perspective) {
+		CheckMenuItem(GetMenuHandle(app_menu_view),8,TRUE);
+		CheckMenuItem(GetMenuHandle(app_menu_view),9,FALSE);
 	}
 	else {
-		CheckMenuItem(GetMenuHandle(app_menu_view),7,FALSE);
-		CheckMenuItem(GetMenuHandle(app_menu_view),8,TRUE);
+		CheckMenuItem(GetMenuHandle(app_menu_view),8,FALSE);
+		CheckMenuItem(GetMenuHandle(app_menu_view),9,TRUE);
 	}
 }
 
@@ -403,17 +416,22 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 			// view menu
 			
-		case kCommandViewTopWalk:
-			main_wind_set_view(vw_walk_top);
+		case kCommandView3Panel:
+			main_wind_set_view(vw_3_panel);
 			main_wind_draw();
 			return(noErr);
 			
-		case kCommandViewPortalOnly:
+		case kCommandView4Panel:
+			main_wind_set_view(vw_4_panel);
+			main_wind_draw();
+			return(noErr);
+			
+		case kCommandViewPortal:
 			main_wind_set_view(vw_portal_only);
 			main_wind_draw();
 			return(noErr);
 		
-		case kCommandViewSitePathOnly:
+		case kCommandViewSitePath:
 			main_wind_set_view(vw_site_path_only);
 			main_wind_draw();
 			return(noErr);
@@ -423,18 +441,18 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			main_wind_draw();
 			return(noErr);
 			
-		case kCommandViewWalkOnly:
-			main_wind_set_view(vw_walk_only);
+		case kCommandViewForwardOnly:
+			main_wind_set_view(vw_forward_only);
 			main_wind_draw();
 			return(noErr);
 
-		case kCommandViewFOV45:
-			walk_view_set_fov(45.0);
+		case kCommandViewPerspective:
+			main_wind_set_perspective(ps_perspective);
 			main_wind_draw();
 			return(noErr);
 			
-		case kCommandViewFOV60:
-			walk_view_set_fov(60.0);
+		case kCommandViewOrtho:
+			main_wind_set_perspective(ps_ortho);
 			main_wind_draw();
 			return(noErr);
 			

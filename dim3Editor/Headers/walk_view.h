@@ -31,8 +31,6 @@ and can be sold or given away.
 
 extern bool walk_view_initialize(void);
 extern void walk_view_shutdown(void);
-extern void walk_view_set_fov(float fov);
-extern void walk_view_setup(bool active,bool full_screen_forward,bool full_screen_top);
 extern int walk_view_find_start_portal(void);
 extern void walk_view_click(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool rot_ok,bool dblclick);
 extern void walk_view_cursor(bool rot_ok);
@@ -93,11 +91,13 @@ extern void walk_view_portal_go_to_selection(void);
 extern void walk_view_get_piece_movement(bool cmdkey,int x,int y,int *xadd,int *zadd,int *yadd);
 
 //
-// walk view compass
+// walk view controls
 //
 
-extern void walk_view_compass_draw(Rect *box);
-extern bool walk_view_compass_click(Rect *box,d3pnt *pt);
+extern void walk_view_compass_draw(editor_3D_view_setup *view_setup);
+extern bool walk_view_compass_click(editor_3D_view_setup *view_setup,d3pnt *pt);
+extern void walk_view_swap_draw(editor_3D_view_setup *view_setup);
+extern bool walk_view_swap_click(editor_3D_view_setup *view_setup,d3pnt *pt,bool *swap_on);
 
 //
 // walk view models

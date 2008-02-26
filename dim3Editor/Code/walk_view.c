@@ -32,8 +32,6 @@ and can be sold or given away.
 #include "walk_view.h"
 
 extern int						cr,top_view_x,top_view_z,txt_palette_high;
-extern bool						main_wind_rot;
-extern Rect						top_view_box,portal_view_box,site_path_view_box;
 
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;
@@ -44,21 +42,8 @@ extern CCrsrHandle				handcur,rotatecur,forwardcur,towardcur;
 int								cx,cz,cy,walk_view_last_rn;
 int								magnify_factor=magnify_size;
 float							walk_view_fov,walk_view_y_angle,walk_view_x_angle;
-Rect							walk_view_forward_box,walk_view_side_box,top_view_box;
 bitmap_type						spot_bitmap,scenery_bitmap,node_bitmap,
 								light_bitmap,sound_bitmap,particle_bitmap;
-
-/* =======================================================
-
-      Set FOV
-      
-======================================================= */
-
-void walk_view_set_fov(float fov)
-{
-	walk_view_fov=fov;
-	menu_set_fov_check(fov);
-}
 
 /* =======================================================
 
@@ -89,10 +74,6 @@ bool walk_view_initialize(void)
 
 	file_paths_app(&file_path_setup,path,"Contents/Resources/Icons","particle","png");
 	bitmap_open(&particle_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
-	
-		// setup fov
-		
-	walk_view_set_fov(45);
 
 	return(TRUE);
 }
@@ -107,83 +88,6 @@ void walk_view_shutdown(void)
     bitmap_close(&light_bitmap);
     bitmap_close(&sound_bitmap);
     bitmap_close(&particle_bitmap);
-}
-
-/* =======================================================
-
-      Setting up Drawing
-      
-======================================================= */
-
-void walk_view_setup(bool active,bool full_screen_forward,bool full_screen_top)
-{
-    Rect			wbox;
-
-		// deactivated view
-		
-	if (!active) {
-		SetRect(&walk_view_forward_box,-1,-1,-1,-1);
-		SetRect(&walk_view_side_box,-1,-1,-1,-1);
-		SetRect(&top_view_box,-1,-1,-1,-1);
-		return;
-	}
-	
-		// active view
-		
- 	GetWindowPortBounds(mainwind,&wbox);
-	
-	if (full_screen_forward) {
-		walk_view_forward_box=wbox;
-		walk_view_forward_box.top+=toolbar_high;
-		walk_view_forward_box.bottom-=(txt_palette_high+info_high);
-		walk_view_forward_box.right-=piece_wid;
-		
-		SetRect(&walk_view_side_box,-1,-1,-1,-1);
-		SetRect(&top_view_box,-1,-1,-1,-1);
-	}
-	else {
-		if (full_screen_top) {
-			top_view_box=wbox;
-			top_view_box.top+=toolbar_high;
-			top_view_box.bottom-=(txt_palette_high+info_high);
-			top_view_box.right-=piece_wid;
-		
-			SetRect(&walk_view_forward_box,-1,-1,-1,-1);
-			SetRect(&walk_view_side_box,-1,-1,-1,-1);
-		}
-		else {
-			if (!main_wind_rot) {
-				walk_view_forward_box.top=walk_view_side_box.top=wbox.top+(toolbar_high+2);
-				walk_view_forward_box.bottom=walk_view_side_box.bottom=(wbox.top+toolbar_high)+(((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2);
-
-				walk_view_forward_box.left=wbox.left+2;
-				walk_view_forward_box.right=(wbox.right-piece_wid)-(((wbox.right-piece_wid)-wbox.left)/2);
-
-				walk_view_side_box.left=walk_view_forward_box.right+2;
-				walk_view_side_box.right=wbox.right-(piece_wid+2);
-				
-				top_view_box.top=(wbox.top+toolbar_high)+((((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2)+2);
-				top_view_box.bottom=wbox.bottom-((txt_palette_high+info_high)+2);
-				top_view_box.left=wbox.left+2;
-				top_view_box.right=wbox.right-(piece_wid+2);
-			}
-			else {
-				walk_view_forward_box.left=walk_view_side_box.left=wbox.left+2;
-				walk_view_forward_box.right=walk_view_side_box.right=(wbox.right-piece_wid)-((((wbox.right-piece_wid)-wbox.left)/2)+2);
-				
-				walk_view_forward_box.top=wbox.top+(toolbar_high+2);
-				walk_view_forward_box.bottom=walk_view_side_box.bottom=(wbox.top+toolbar_high)+((((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2)-2);
-
-				walk_view_forward_box.top=walk_view_forward_box.bottom+1;
-				walk_view_forward_box.bottom=wbox.bottom-((txt_palette_high+info_high)+2);
-				
-				top_view_box.top=wbox.top+(toolbar_high+2);
-				top_view_box.bottom=wbox.bottom-((txt_palette_high+info_high)+2);
-				top_view_box.left=(wbox.right-piece_wid)-(((wbox.right-piece_wid)-wbox.left)/2);
-				top_view_box.right=wbox.right-(piece_wid+2);
-			}
-		}
-	}
 }
 
 /* =======================================================

@@ -31,7 +31,6 @@ and can be sold or given away.
 
 extern int					cr,cx,cz,vertex_mode;
 extern float				walk_view_y_angle;
-extern Rect					portal_view_box;
 extern CCrsrHandle			dragcur,resizecur;
 extern WindowRef			mainwind;
 

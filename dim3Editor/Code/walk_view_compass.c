@@ -38,7 +38,6 @@ and can be sold or given away.
 
 extern int				edit_view;
 extern float			walk_view_y_angle,walk_view_x_angle;
-extern Rect				walk_view_forward_box,walk_view_side_box;
 
 extern map_type			map;
 
@@ -48,14 +47,14 @@ extern map_type			map;
 	        
 ======================================================= */
 
-void walk_view_compass_draw(Rect *box)
+void walk_view_compass_draw(editor_3D_view_setup *view_setup)
 {
 	int				n,px[3],py[3],lx,rx,mx,ty,by,my,wid,high;
 	bool			sel;
 	GLUquadricObj	*disk;
 	
-	wid=box->right-box->left;
-	high=box->bottom-box->top;
+	wid=view_setup->box.right-view_setup->box.left;
+	high=view_setup->box.bottom-view_setup->box.top;
 	
 		// 2D drawing
 		
@@ -65,6 +64,8 @@ void walk_view_compass_draw(Rect *box)
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	
+	glEnable(GL_BLEND);
 	
 		// no depth buffer
 		
@@ -165,17 +166,17 @@ void walk_view_compass_draw(Rect *box)
 	        
 ======================================================= */
 
-bool walk_view_compass_click(Rect *box,d3pnt *pt)
+bool walk_view_compass_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 {
 	int				n,px[4],py[4],box_left,box_top,
 					lft,rgt,top,bot,
 					lx,rx,mx,ty,by,my,wid,high;
 	Rect			click_box;
 	
-	box_left=box->left;
-	box_top=box->top;
-	wid=box->right-box->left;
-	high=box->bottom-box->top;
+	box_left=view_setup->box.left;
+	box_top=view_setup->box.top;
+	wid=view_setup->box.right-view_setup->box.left;
+	high=view_setup->box.bottom-view_setup->box.top;
 		
 		// click Y angle triangles
 		

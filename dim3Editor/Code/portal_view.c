@@ -31,56 +31,10 @@ and can be sold or given away.
 #include "portal_view.h"
 
 extern int						cr,cx,cz,magnify_factor,txt_palette_high;
-extern bool						main_wind_rot;
 extern map_type					map;
 
 extern WindowRef				mainwind;
 extern CCrsrHandle				handcur,cutcur,addcur;
-
-Rect							portal_view_box;
-
-/* =======================================================
-
-      Setup Portal View
-      
-======================================================= */
-
-void portal_view_setup(bool active,bool full_screen)
-{
-    Rect			wbox;
-	
-		// deactived view
-		
-	if (!active) {
-		SetRect(&portal_view_box,-1,-1,-1,-1);
-		return;
-	}
-	
-		// active view
-    
- 	GetWindowPortBounds(mainwind,&wbox);
-	
-	if (full_screen) {
-		portal_view_box=wbox;
-		portal_view_box.top+=toolbar_high;
-		portal_view_box.bottom-=(txt_palette_high+info_high);
-		portal_view_box.right-=piece_wid;
-	}
-	else {
-		if (!main_wind_rot) {
-			portal_view_box.top=(wbox.top+toolbar_high)+((((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2)+2);
-			portal_view_box.bottom=wbox.bottom-2;
-			portal_view_box.left=wbox.left+2;
-			portal_view_box.right=wbox.right-(piece_wid+2);
-		}
-		else {
-			portal_view_box.top=wbox.top+(toolbar_high+2);
-			portal_view_box.bottom=wbox.bottom-((txt_palette_high+info_high)+2);
-			portal_view_box.left=(wbox.right-piece_wid)-(((wbox.right-piece_wid)-wbox.left)/2);
-			portal_view_box.right=wbox.right-(piece_wid+2);
-		}
-	}
-}
 
 /* =======================================================
 
@@ -96,28 +50,34 @@ int portal_view_pane_to_map_factor(int k)
 void portal_view_map_to_pane(int *x,int *z)
 {
 	int			sx,sz,view_x,view_z;
+	Rect		box;
 	
-    view_x=cx-portal_view_pane_to_map_factor((portal_view_box.right-portal_view_box.left)>>1);
-    view_z=cz-portal_view_pane_to_map_factor((portal_view_box.bottom-portal_view_box.top)>>1);
+	main_wind_setup_full_screen_box(&box);
+	
+    view_x=cx-portal_view_pane_to_map_factor((box.right-box.left)>>1);
+    view_z=cz-portal_view_pane_to_map_factor((box.bottom-box.top)>>1);
 
 	sx=(*x)-(view_x-1);
-    *x=((sx*magnify_factor)/magnify_size)+portal_view_box.left;
+    *x=((sx*magnify_factor)/magnify_size)+box.left;
 	
 	sz=(*z)-(view_z-1);
-    *z=((sz*magnify_factor)/magnify_size)+portal_view_box.top;
+    *z=((sz*magnify_factor)/magnify_size)+box.top;
 }
 
 void portal_view_pane_to_map(int *x,int *z)
 {
 	int			sx,sz,view_x,view_z;
+	Rect		box;
 	
-    view_x=cx-portal_view_pane_to_map_factor((portal_view_box.right-portal_view_box.left)>>1);
-    view_z=cz-portal_view_pane_to_map_factor((portal_view_box.bottom-portal_view_box.top)>>1);
+	main_wind_setup_full_screen_box(&box);
 	
-	sx=(*x)-portal_view_box.left;
+    view_x=cx-portal_view_pane_to_map_factor((box.right-box.left)>>1);
+    view_z=cz-portal_view_pane_to_map_factor((box.bottom-box.top)>>1);
+	
+	sx=(*x)-box.left;
 	*x=((sx*magnify_size)/magnify_factor)+(view_x-1);
 	
-	sz=(*z)-portal_view_box.top;
+	sz=(*z)-box.top;
 	*z=((sz*magnify_size)/magnify_factor)+(view_z-1);
 }
 
@@ -135,9 +95,12 @@ void portal_view_distance_pane_to_map(int *x,int *z)
 
 void portal_view_draw(void)
 {
+	Rect			box;
+	
 		// setup viewport
 		
-	main_wind_set_viewport(&portal_view_box,0.75f);
+	main_wind_setup_full_screen_box(&box);
+	main_wind_set_viewport(&box,0.75f);
 	
 		// draw portal pieces
 		
