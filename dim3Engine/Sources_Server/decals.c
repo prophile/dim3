@@ -98,13 +98,9 @@ decal_type* decal_find_free(void)
       
 ======================================================= */
 
-bool decal_segment_ok(int seg_idx,int mark_idx)
+bool decal_segment_ok(map_mesh_poly_type *mesh_poly,int mark_idx)
 {
-	segment_type		*seg;
-	
-	seg=&map.segments[seg_idx];
-	
-	if ((seg->alpha==1.0f) && (map.textures[seg->fill].bitmaps[0].alpha_mode!=alpha_mode_transparent)) {
+	if ((mesh_poly->alpha==1.0f) && (map.textures[mesh_poly->txt_idx].bitmaps[0].alpha_mode!=alpha_mode_transparent)) {
 		return(!server.marks[mark_idx].no_opaque);
 	}
 
@@ -119,6 +115,7 @@ bool decal_segment_ok(int seg_idx,int mark_idx)
 
 void decal_move_for_segment(int seg_idx,int xmove,int ymove,int zmove)
 {
+	/* supergumba -- need to work on this
 	int			n,i;
 	decal_type	*decal;
 
@@ -134,6 +131,7 @@ void decal_move_for_segment(int seg_idx,int xmove,int ymove,int zmove)
 		}
 		decal++;
 	}
+	*/
 }
 
 /* =======================================================
@@ -142,6 +140,7 @@ void decal_move_for_segment(int seg_idx,int xmove,int ymove,int zmove)
       
 ======================================================= */
 
+/* supergumba -- delete
 void decal_add_wall(int x,int y,int z,float ang,int mark_idx,int seg_idx,int sz,float alpha)
 {
 	int					idx,kx,kz,lx,rx,lz,rz;
@@ -201,25 +200,28 @@ void decal_add_wall(int x,int y,int z,float ang,int mark_idx,int seg_idx,int sz,
 	map.segments[seg_idx].decal_count++;
 	map.portals[seg->rn].decal_count++;
 }
+*/
 
 /* =======================================================
 
-      Add Decal to Floor
+      Add Decal to Poly
       
 ======================================================= */
 
-void decal_add_floor_ceiling(int x,int y,int z,int mark_idx,int seg_idx,int sz,float alpha)
+void decal_add_poly(d3pos *pos,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha)
 {
-	int					i;
-	segment_type		*seg;
-	fc_segment_data		*fc;
+	int					i,rn;
 	decal_type			*decal;
+	map_mesh_poly_type	*mesh_poly;
     
-    if (!setup.mark) return;
-	if (seg_idx==-1) return;
 	if (server.count.decal>=max_decal) return;
+
+		// can decal this poly?
+
+	rn=poly_ptr->portal_idx;
+	mesh_poly=&map.portals[rn].mesh.meshes[poly_ptr->mesh_idx].polys[poly_ptr->poly_idx];
 	
-	if (!decal_segment_ok(seg_idx,mark_idx)) return;
+	if (!decal_segment_ok(mesh_poly,mark_idx)) return;
     
         // find a decal spot
         
@@ -228,39 +230,56 @@ void decal_add_floor_ceiling(int x,int y,int z,int mark_idx,int seg_idx,int sz,f
 	
 	decal->start_tick=game_time_get();
 	
-        // find the mark polygon
+        // wall-like decals
+
+	if (mesh_poly->box.common_xz) {
+
+		decal->x[0]=decal->x[3]=pos->x-sz;
+		decal->x[1]=decal->x[2]=pos->x+sz;
+		decal->z[0]=decal->z[3]=pos->z-sz;
+		decal->z[1]=decal->z[2]=pos->z+sz;
+		decal->z[0]=decal->z[1]=pos->y-sz;
+		decal->z[2]=decal->z[3]=pos->y+sz;
+
+
+
+	}
+
+		// floor/ceiling like decals
+
+	else {
         
-	decal->x[0]=decal->x[3]=decal->z[0]=decal->z[1]=-sz;
-	decal->x[1]=decal->x[2]=decal->z[2]=decal->z[3]=sz;
-	decal->y[0]=decal->y[1]=decal->y[2]=decal->y[3]=y;
+		decal->x[0]=decal->x[3]=decal->z[0]=decal->z[1]=-sz;
+		decal->x[1]=decal->x[2]=decal->z[2]=decal->z[3]=sz;
+		decal->y[0]=decal->y[1]=decal->y[2]=decal->y[3]=pos->y;
 
-	if (!server.marks[mark_idx].no_rotate) rotate_polygon_center(4,decal->x,decal->y,decal->z,0,random_float(359),0);
-	
-	seg=&map.segments[seg_idx];
-	fc=&seg->data.fc;
+		if (!server.marks[mark_idx].no_rotate) rotate_polygon_center(4,decal->x,decal->y,decal->z,0,random_float(359),0);
+		
+		for (i=0;i!=4;i++) {
+			decal->x[i]=decal->x[i]+pos->x;
+			decal->z[i]=decal->z[i]+pos->z;
+			decal->y[i]=pos->y;
 
-	for (i=0;i!=4;i++) {
-		decal->x[i]=decal->x[i]+x;
-		decal->z[i]=decal->z[i]+z;
-		if (fc->flat) {
-			decal->y[i]=fc->y[0];
-		}
-		else {
-			decal->y[i]=polygon_find_y(fc->ptsz,fc->x,fc->y,fc->z,decal->x[i],decal->z[i]);
-			if (decal->y[i]==-1) decal->y[i]=fc->y[0];
+			/* supergumba -- work on this!
+			if (mesh_poly->box.flat) {
+				decal->y[i]=mesh_poly->y[0];
+			}
+			else {
+				decal->y[i]=polygon_find_y(fc->ptsz,fc->x,fc->y,fc->z,decal->x[i],decal->z[i]);
+				if (decal->y[i]==-1) decal->y[i]=fc->y[0];
+			}
+			*/
 		}
 	}
-	
-    decal->seg_idx=seg_idx;
-	decal->rn=seg->rn;
+
+		// finish decal setup
+
+	decal->rn=rn;
+	decal->mesh_idx=poly_ptr->mesh_idx;
+	decal->poly_idx=poly_ptr->poly_idx;
     
     decal->mark_idx=mark_idx;
     decal->alpha=alpha;
-	
-		// change portal/segment decal count
-		
-	map.segments[seg_idx].decal_count++;
-	map.portals[seg->rn].decal_count++;
 }
 
 /* =======================================================
@@ -290,11 +309,6 @@ void decal_dispose(void)
 			i++;
 			continue;
 		}
-		
-			// change portal/segment decal count
-		
-		map.segments[decal->seg_idx].decal_count--;
-		map.portals[decal->rn].decal_count--;
 
 			// remove decal
 			

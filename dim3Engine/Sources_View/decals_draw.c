@@ -46,47 +46,31 @@ extern int game_time_get(void);
       
 ======================================================= */
 
-void decal_render_stencil(int stencil_idx,segment_type *seg)
+void decal_render_stencil(int stencil_idx,map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
 {
-	int			i,ptsz;
-	int			*px,*py,*pz;
+	int			n;
+	d3pnt		*pt;
 
 		// already stenciled?
 
-	if (seg->render.stencil_idx!=0) return;
+	if (mesh_poly->draw.stencil_idx!=0) return;
 
 		// stencil
-
-	switch (seg->type) {
-		case sg_wall:
-			ptsz=seg->data.wall.ptsz;
-			px=seg->data.wall.x;
-			py=seg->data.wall.y;
-			pz=seg->data.wall.z;
-			break;
-		case sg_floor:
-			ptsz=seg->data.fc.ptsz;
-			px=seg->data.fc.x;
-			py=seg->data.fc.y;
-			pz=seg->data.fc.z;
-			break;
-		default:
-			return;
-	}
 
 	glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
 
 	glBegin(GL_POLYGON);
 
-	for (i=0;i!=ptsz;i++) {
-		glVertex3i((px[i]-view.camera.pos.x),(py[i]-view.camera.pos.y),(view.camera.pos.z-pz[i]));
+	for (n=0;n!=mesh_poly->ptsz;n++) {
+		pt=&mesh->vertexes[mesh_poly->v[n]];
+		glVertex3i((pt->x-view.camera.pos.x),(pt->y-view.camera.pos.y),(view.camera.pos.z-pt->z));
 	}
 	
 	glEnd();
 
 		// remember stencil
 
-	seg->render.stencil_idx=stencil_idx;
+	mesh_poly->draw.stencil_idx=stencil_idx;
 }
 
 void decal_render_mark(int stencil_idx,decal_type *decal)
@@ -147,6 +131,8 @@ void decal_render(void)
 {
 	int					n,stencil_idx;
 	decal_type			*decal;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*mesh_poly;
 
 	if (server.count.decal==0) return;
 
@@ -155,7 +141,8 @@ void decal_render(void)
 	decal=server.decals;
 
 	for (n=0;n!=server.count.decal;n++) {
-		map.segments[decal->seg_idx].render.stencil_idx=0;
+		mesh_poly=&map.portals[decal->rn].mesh.meshes[decal->mesh_idx].polys[decal->poly_idx];
+		mesh_poly->draw.stencil_idx=0;
 		decal++;
 	}
 
@@ -188,7 +175,9 @@ void decal_render(void)
 	for (n=0;n!=server.count.decal;n++) {
 
 		if (map.portals[decal->rn].in_path) {
-			decal_render_stencil(stencil_idx,&map.segments[decal->seg_idx]);
+			mesh=&map.portals[decal->rn].mesh.meshes[decal->mesh_idx];
+			mesh_poly=&mesh->polys[decal->poly_idx];
+			decal_render_stencil(stencil_idx,mesh,mesh_poly);
 			stencil_idx++;
 		}
 
@@ -213,7 +202,8 @@ void decal_render(void)
 	for (n=0;n!=server.count.decal;n++) {
 
 		if (map.portals[decal->rn].in_path) {
-			decal_render_mark(map.segments[decal->seg_idx].render.stencil_idx,decal);
+			mesh_poly=&map.portals[decal->rn].mesh.meshes[decal->mesh_idx].polys[decal->poly_idx];
+			decal_render_mark(mesh_poly->draw.stencil_idx,decal);
 		}
 
 		decal++;

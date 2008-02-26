@@ -877,7 +877,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						rn,mark_idx,seg_idx,
+						int						rn,mark_idx,mesh_idx,poly_idx,
 												start_tick,x[4],z[4],y[4];
                         float					alpha;
 					} decal_type;

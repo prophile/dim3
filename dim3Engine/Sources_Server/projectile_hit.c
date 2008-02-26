@@ -38,6 +38,7 @@ and can be sold or given away.
 
 extern map_type				map;
 extern server_type			server;
+extern setup_type			setup;
 
 /* =======================================================
 
@@ -90,35 +91,23 @@ void projectile_collision(proj_type *proj)
 
 void projectile_decals(proj_type *proj,proj_setup_type *proj_setup)
 {
-	/* supergumba
-	int					mark_idx,seg_idx,size;
+	int					mark_idx,size;
 	float				alpha;
 	
-    if (!proj_setup->mark.on) return;
+		// can decal this projectile hit?
+
+	if (!setup.mark) return;
+	if (!proj_setup->mark.on) return;
 	if (proj_setup->mark.idx==-1) return;
+	if (proj->contact.hit_poly.portal_idx==-1) return;
 	
+		// decal hit
+
 	mark_idx=proj_setup->mark.idx;
 	size=proj_setup->mark.size;
 	alpha=proj_setup->mark.alpha;
 	
-	seg_idx=proj->contact.wall_seg_idx;
-	if (seg_idx!=-1) {
-		decal_add_wall(proj->pos.x,proj->pos.y,proj->pos.z,proj->motion.ang.y,mark_idx,seg_idx,size,alpha);
-		return;
-	}
-
-	seg_idx=proj->contact.floor_seg_idx;
-	if (seg_idx!=-1) {
-		decal_add_floor_ceiling(proj->pos.x,proj->pos.y,proj->pos.z,mark_idx,seg_idx,size,alpha);
-		return;
-	}
-	
-	seg_idx=proj->contact.ceiling_seg_idx;
-	if (seg_idx!=-1) {
-		decal_add_floor_ceiling(proj->pos.x,proj->pos.y,proj->pos.z,mark_idx,seg_idx,size,alpha);
-		return;
-	}
-	*/
+	decal_add_poly(&proj->pos,&proj->contact.hit_poly,mark_idx,size,alpha);
 }
 
 /* =======================================================
