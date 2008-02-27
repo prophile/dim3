@@ -60,8 +60,10 @@ inline int fc_in_point(fc_segment_data *fc,int x,int y,int z,int ydist)
 	return(polygon_find_y(fc->ptsz,fc->x,fc->y,fc->z,x,z));
 }
 
-int find_fc_for_upward_point(int rn,int x,int y,int z,int ydist,int *hit)
+int find_poly_for_upward_point(int rn,int x,int y,int z,int ydist,int *mesh_idx,int *poly_idx)
 {
+	/* supergumba
+
 	int			i,cnt,idx,ty,by,sy;
 	short		*sptr;
 	
@@ -92,40 +94,67 @@ int find_fc_for_upward_point(int rn,int x,int y,int z,int ydist,int *hit)
 	if (*hit==-1) return(-1);
 	
 	return(ty);
+	*/
+	return(y);
 }
 
-int find_fc_for_downward_point(int rn,int x,int y,int z,int ydist,int *hit)
-{
-	int			i,cnt,idx,ty,by,sy;
-	short		*sptr;
-	
-	*hit=-1;
 
-	ty=y-ydist;
-	by=y+ydist;
-	
-	cnt=map.portals[rn].fc_list_hit.count;
-	sptr=map.portals[rn].fc_list_hit.list;
+/*
+	ray_trace_contact_type	contact[15];
 
-	for (i=0;i!=cnt;i++) {
-		idx=(int)*sptr++;
+		// get collision points
 
-		sy=fc_in_point(&map.segments[idx].data.fc,x,y,z,ydist);
-		if (sy==-1) continue;
+	collide_object_ray_trace_points(obj,*xadd,*zadd,px,py,pz);
 
-			// when comparing floor/ceiling points in a downward
-			// direction, we want to find the highest
-			// point within the slope distance
+		// run rays on all points
+		// find the one that moves the leasts
+		// as the most suitable hit point
+
+	idx=-1;
+	dist=0;
+
+	for (n=0;n!=15;n++) {
 			
-		if ((sy<by) && (sy>ty)) {
-			*hit=idx;
-			by=sy;
+			// setup ray trace
+
+	
+			// run trace
+
+		if (ray_trace_map_by_point(&spt,&ept,&hpt[n],&contact[n])) {
+			d=collide_point_distance(&spt,&hpt[n]);
+			if ((d<=dist) || (idx==-1)) {
+				dist=d;
+				idx=n;
+			}
 		}
 	}
+*/
 
-	if (*hit==-1) return(-1);
-	
-	return(by);
+int find_poly_for_downward_point(int x,int y,int z,int ydist,poly_pointer_type *poly)
+{
+	int						i,cnt,idx,ty,by,sy;
+	d3pnt					spt,ept,hpt;
+	ray_trace_contact_type	contact;
+
+	spt.x=x;
+	spt.y=y-ydist;
+	spt.z=z;
+
+	ept.x=x;
+	ept.y=y+ydist;
+	ept.z=z;
+
+	contact.obj_on=FALSE;
+	contact.proj_on=FALSE;		// supergumba -- rewrite ALL of this
+
+	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
+		memmove(poly,&contact.poly,sizeof(poly_pointer_type));
+		return(hpt.y);
+	}
+
+	poly->portal_idx=-1;
+
+	return(y+ydist);
 }
 
 /* =======================================================
@@ -178,10 +207,12 @@ int fc_nearest_y(int rn,int x,int y,int z,int ydist,bool ignore_higher)
       
 ======================================================= */
 
-int pin_downward_movement_box(d3box *box,int ydist,int *hit)
+int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly)
 {
-	int				i,k,rn,x,y,z,
-					cy,fy,idx,px[5],pz[5];
+	int				i,rn,x,y,z,cy,fy,
+					portal_idx,mesh_idx,poly_idx,hit_portal_idx,hit_mesh_idx,hit_poly_idx,
+					px[5],pz[5];
+	poly_pointer_type	poly;
 	
 	y=box->max_y;
 	
@@ -196,7 +227,7 @@ int pin_downward_movement_box(d3box *box,int ydist,int *hit)
 	
 		// find the highest point
 		
-	k=-1;
+	stand_poly->portal_idx=-1;
 	cy=-1;
 	
 	for (i=0;i!=5;i++) {
@@ -208,24 +239,21 @@ int pin_downward_movement_box(d3box *box,int ydist,int *hit)
 		
 			// check floor\ceiling
 			
-		fy=find_fc_for_downward_point(rn,x,y,z,ydist,&idx);
-		if (idx!=-1) {
-			if (k==-1) {
-				k=idx;
+		fy=find_poly_for_downward_point(x,y,z,ydist,&poly);
+		if (poly.portal_idx!=-1) {
+			if (stand_poly->portal_idx==-1) {
+				memmove(stand_poly,&poly,sizeof(poly_pointer_type));
 				cy=fy;
 			}
 			else {
 				if (fy<cy) {
-					k=idx;
+					memmove(stand_poly,&poly,sizeof(poly_pointer_type));
 					cy=fy;
 				}
 			}
 		}
 	}
 	
-		// any hits?
-		
-	*hit=k;
 	return(cy);
 }
 
@@ -235,10 +263,11 @@ int pin_downward_movement_box(d3box *box,int ydist,int *hit)
       
 ======================================================= */
 
-int pin_upward_movement_box(d3box *box,int ydist,int *hit)
+int pin_upward_movement_box(d3box *box,int ydist,poly_pointer_type *head_poly)
 {
-	int				i,k,rn,x,y,z,
-					cy,fy,idx,px[5],pz[5];
+	int				i,rn,x,y,z,cy,fy,
+					mesh_idx,poly_idx,hit_mesh_idx,hit_poly_idx,
+					px[5],pz[5];
 	
 	y=box->min_y;
 	
@@ -253,7 +282,7 @@ int pin_upward_movement_box(d3box *box,int ydist,int *hit)
 	
 		// find the lowest point
 		
-	k=-1;
+	hit_mesh_idx=-1;
 	cy=-1;
 	
 	for (i=0;i!=5;i++) {
@@ -265,15 +294,17 @@ int pin_upward_movement_box(d3box *box,int ydist,int *hit)
 		
 			// check floor\ceiling
 			
-		fy=find_fc_for_upward_point(rn,x,y,z,ydist,&idx);
-		if (idx!=-1) {
-			if (k==-1) {
-				k=idx;
+		fy=find_poly_for_upward_point(rn,x,y,z,ydist,&mesh_idx,&poly_idx);
+		if (mesh_idx!=-1) {
+			if (hit_mesh_idx==-1) {
+				hit_mesh_idx=mesh_idx;
+				hit_poly_idx=poly_idx;
 				cy=fy;
 			}
 			else {
 				if (fy>cy) {
-					k=idx;
+					hit_mesh_idx=mesh_idx;
+					hit_poly_idx=poly_idx;
 					cy=fy;
 				}
 			}
@@ -282,7 +313,12 @@ int pin_upward_movement_box(d3box *box,int ydist,int *hit)
 	
 		// any hits?
 		
-	*hit=k;
+	if (mesh_idx!=-1) {
+		head_poly->portal_idx=rn;
+		head_poly->mesh_idx=hit_mesh_idx;
+		head_poly->poly_idx=hit_poly_idx;
+	}
+
 	return(cy);
 }
 
@@ -294,34 +330,28 @@ int pin_upward_movement_box(d3box *box,int ydist,int *hit)
 
 int pin_downward_movement_obj(obj_type *obj,int my)
 {
-	/* supergumba
 	int				y;
 	d3box			box;
 
 	box_create_from_object(&box,obj);
-	y=pin_downward_movement_box(&box,my,&obj->contact.floor_seg_idx);
+	y=pin_downward_movement_box(&box,my,&obj->contact.stand_poly);
 
 	if (y==-1) return(my);
 
 	return(y-box.max_y);
-	*/
-	return(0);
 }
 
 int pin_upward_movement_obj(obj_type *obj,int my)
 {
-	/* supergumba
 	int				y;
 	d3box			box;
 
 	box_create_from_object(&box,obj);
-	y=pin_upward_movement_box(&box,abs(my),&obj->contact.ceiling_seg_idx);
+	y=pin_upward_movement_box(&box,abs(my),&obj->contact.head_poly);
 
 	if (y==-1) return(my);
 
 	return(box.min_y-y);
-	*/
-	return(0);
 }
 
 /* =======================================================
@@ -335,7 +365,7 @@ int pin_downward_movement_proj(proj_type *proj,int my)
 	/* supergumba
 	int			sy,seg_idx;
 	
-	sy=find_fc_for_downward_point(proj->pos.rn,proj->pos.x,proj->pos.y,proj->pos.z,my,&seg_idx);
+	sy=find_poly_for_downward_point(proj->pos.rn,proj->pos.x,proj->pos.y,proj->pos.z,my,&seg_idx);
 	if ((sy==-1) || (seg_idx==-1)) return(my);
 
 	switch (map.segments[seg_idx].type) {
@@ -359,7 +389,7 @@ int pin_upward_movement_proj(proj_type *proj,int my)
 	
 	y=proj->pos.y-proj->size.y;
 	
-	sy=find_fc_for_upward_point(proj->pos.rn,proj->pos.x,y,proj->pos.z,abs(my),&seg_idx);
+	sy=find_poly_for_upward_point(proj->pos.rn,proj->pos.x,y,proj->pos.z,abs(my),&seg_idx);
 	if ((sy==-1) || (seg_idx==-1)) return(my);
 
 	switch (map.segments[seg_idx].type) {
@@ -384,22 +414,28 @@ int pin_upward_movement_proj(proj_type *proj,int my)
 
 int pin_downward_movement_point(int rn,int x,int y,int z,int my,int *seg_idx)
 {
+	/* supergumba -- fix
 	int			sy;
 
-	sy=find_fc_for_downward_point(rn,x,y,z,my,seg_idx);
+	sy=find_poly_for_downward_point(rn,x,y,z,my,seg_idx);
 	if (sy==-1) return(my);
 
 	return(sy-y);
+	*/
+	return(0);
 }
 
 int pin_upward_movement_point(int rn,int x,int y,int z,int my,int *seg_idx)
 {
+	/* supergumba -- fix
 	int			sy;
 
-	sy=find_fc_for_upward_point(rn,x,y,z,abs(my),seg_idx);
+	sy=find_poly_for_upward_point(rn,x,y,z,abs(my),seg_idx);
 	if (sy==-1) return(my);
 
 	return(sy-y);
+	*/
+	return(0);
 }
 
 /* =======================================================

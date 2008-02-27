@@ -675,6 +675,7 @@ void object_fly_y(obj_type *obj,int ymove)
 
 void object_motion_slope_alter_movement_single(float *mv,float slope_y,float slope_mv)
 {
+	/* supergumba -- fix me
 	bool			same_dir;
 	
 		// are we going in same direction as slope?
@@ -705,10 +706,13 @@ void object_motion_slope_alter_movement_single(float *mv,float slope_y,float slo
 		// subtract slope push from movement
 
 	*mv-=slope_mv;
+	*/
 }
 
 void object_motion_slope_alter_movement(obj_type *obj,float *xmove,float *zmove)
 {
+	/* supergumba -- need to fix
+
 	int				rn,x,y,z,sy,seg_idx;
 	fc_segment_data	*fc;
 
@@ -726,7 +730,7 @@ void object_motion_slope_alter_movement(obj_type *obj,float *xmove,float *zmove)
 
 	rn=map_find_portal_hint(&map,obj->pos.rn,x,y,z);
 	
-	sy=find_fc_for_downward_point(rn,x,y,z,obj->size.y,&seg_idx);
+	sy=find_poly_for_downward_point(rn,x,y,z,obj->size.y,&seg_idx);
 	if (seg_idx==-1) return;
 
 		// ignore flat floors
@@ -742,6 +746,7 @@ void object_motion_slope_alter_movement(obj_type *obj,float *xmove,float *zmove)
 	
 	object_motion_slope_alter_movement_single(xmove,fc->slope_y,fc->slope_move_x);
 	object_motion_slope_alter_movement_single(zmove,fc->slope_y,fc->slope_move_z);
+	*/
 }
 
 /* =======================================================

@@ -338,7 +338,7 @@ typedef struct		{
 typedef struct		{
 						int					liquid_idx,obj_uid,proj_uid,hit_box_idx;
 						bool				on,melee,pushable;
-						poly_pointer_type	hit_poly,stand_poly;
+						poly_pointer_type	hit_poly,stand_poly,head_poly;
 					} obj_contact;
 					
 typedef struct		{

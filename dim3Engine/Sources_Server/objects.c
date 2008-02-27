@@ -107,6 +107,7 @@ void object_clear_contact(obj_contact *contact)
 {
 	contact->hit_poly.portal_idx=-1;
 	contact->stand_poly.portal_idx=-1;
+	contact->head_poly.portal_idx=-1;
 
 	contact->liquid_idx=-1;
 	

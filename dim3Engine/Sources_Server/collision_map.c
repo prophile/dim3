@@ -367,20 +367,19 @@ void object_move_y_up(obj_type *obj,int ymove)
 
 void object_move_y_fall(obj_type *obj)
 {
-	/*
 	int				y,fy,ymove,uid;
 	obj_type		*hit_obj;
 	
-		// check standing on floors
+		// check standing on polygons
 
 	y=obj->pos.y;
 		
 	fy=pin_downward_movement_obj(obj,floor_slop);
 	fy+=y;
 
-		// deal with floor contacts
+		// deal with polygon contacts
 		
-	if (obj->contact.floor_seg_idx!=-1) {
+	if (obj->contact.stand_poly.portal_idx!=-1) {
 	
 		obj->stand_obj_uid=-1;
 
@@ -392,7 +391,7 @@ void object_move_y_fall(obj_type *obj)
 			return;
 		}
 		
-			// above the floor
+			// above the polygon
 
 		ymove=(int)obj->force.vct.y;
 		if ((y>(fy-floor_slop)) || ((y+ymove)>fy)) {		// next floor or slop will go past floor
@@ -435,7 +434,6 @@ void object_move_y_fall(obj_type *obj)
 	else {
 		obj->air_mode=am_falling;
 	}
-	*/
 }
 
 void object_move_y_down(obj_type *obj,int ymove)
@@ -579,7 +577,6 @@ bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int l
 
 bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 {
-	/* supergumba
 	int					xadd2,yadd2,zadd2,
 						bump_y,lx,rx,lz,rz,hit_box_idx;
 	wall_segment_data	*wall;
@@ -604,8 +601,9 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		// that was hit and attempt to slide across
 		// the wall
 	
-	if (obj->contact.poly.portal_idx!=-1) {
+	if (obj->contact.hit_poly.portal_idx!=-1) {
 
+		/* supergumba
 		wall=&map.segments[obj->contact.wall_seg_idx].data.wall;
 
 			// don't slide on walls that are bump up candidates
@@ -618,6 +616,9 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 			// slide against the angle of the wall
 			
 		return(object_move_xz_slide_line(obj,xadd,yadd,zadd,wall->lx,wall->rx,wall->lz,wall->rz));
+		*/
+
+		return(FALSE);
 	}
 
 		// if object hit, find the collision lines
@@ -651,9 +652,6 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		
 	if (!collide_object_to_object_hit_box_slide(obj,*xadd,*zadd,cnt_obj,&model->hit_boxes[hit_box_idx],&lx,&rx,&lz,&rz)) return(TRUE);
 	return(object_move_xz_slide_line(obj,xadd,yadd,zadd,lx,rx,lz,rz));
-	*/
-
-	return(FALSE);
 }
 
 /* =======================================================

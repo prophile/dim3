@@ -411,23 +411,27 @@ void object_event_animations(obj_type *obj)
 
 void object_start_jump(obj_type *obj)
 {
-	/* supergumba
-	fc_segment_data	*fc;
+	poly_pointer_type	*poly_ptr;
+	map_mesh_poly_type	*mesh_poly;
 	
 		// can't jump if flying or not on ground
 		
 	if ((obj->fly) || (!obj->jump.on)) return;
 	if ((obj->liquid_mode==lm_under) || (obj->air_mode!=am_ground)) return;
 	
-		// if slope is too high to climb, you can't jump
+		// if current standing slope is too high to climb, you can't jump
 		
 	if (obj->slope_gravity) {
-		if (obj->contact.floor_seg_idx!=-1) {
-			fc=&map.segments[obj->contact.floor_seg_idx].data.fc;
-			if (!fc->flat) {
-				if (fc->slope_y>gravity_slope_max_y) return;
+
+		poly_ptr=&obj->contact.stand_poly;
+
+		if (poly_ptr->portal_idx!=-1) {
+			mesh_poly=&map.portals[poly_ptr->portal_idx].mesh.meshes[poly_ptr->mesh_idx].polys[poly_ptr->poly_idx];
+			if (!mesh_poly->box.flat) {
+				if (mesh_poly->slope.y>gravity_slope_max_y) return;
 			}
 		}
+
 	}
 	
 		// start jump
@@ -438,18 +442,16 @@ void object_start_jump(obj_type *obj)
     obj->force.gravity=gravity_start_power;
     
 	scripts_post_event_console(&obj->attach,sd_event_animation_object,sd_event_animation_object_jump,0);
-	*/
 }
 
 void object_liquid_jump(obj_type *obj)
 {
-	/* supergumba
 	int				jump_add;
 	
-		// small jump if no wall contact
+		// small jump if no polygon contact
 
 	jump_add=obj->jump.y_add;
-	if (obj->contact.wall_seg_idx==-1) jump_add/=2;
+	if (obj->contact.hit_poly.portal_idx==-1) jump_add/=2;
 
 		// jump out of water
 
@@ -459,7 +461,6 @@ void object_liquid_jump(obj_type *obj)
     obj->force.gravity=gravity_start_power;
     
 	scripts_post_event_console(&obj->attach,sd_event_animation_object,sd_event_animation_object_jump,0);
-	*/
 }
 
 /* =======================================================
