@@ -123,8 +123,9 @@ int camera_chase_get_division(int x,int z,int y)
 void camera_chase_get_position(d3pos *pos,d3ang *ang)
 {
 	int				n,xadd,yadd,zadd,radius,div,
-					crn,cx,cz,cy,nx,nz,old_crn,ychng,seg_idx,hit_obj_uid;
+					crn,cx,cz,cy,nx,nz,old_crn,ychng,hit_obj_uid;
 	float			fang,fx,fy,fz;
+	bool			hit;
 	matrix_type		mat;
 	obj_type		*obj;
 	weapon_type		*weap;
@@ -200,8 +201,8 @@ void camera_chase_get_position(d3pos *pos,d3ang *ang)
 		
 			// y movement
 			
-		ychng=pin_upward_movement_point(crn,cx,cy,cz,yadd,&seg_idx);
-		if (seg_idx==-1) cy+=ychng;
+		ychng=pin_upward_movement_point(cx,cy,cz,yadd,&hit);
+		if (!hit) cy+=ychng;
 	}
 	
         // new camera position

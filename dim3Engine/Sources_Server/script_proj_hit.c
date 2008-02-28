@@ -74,23 +74,39 @@ void script_add_proj_hit_object(JSObject *parent_obj)
 
 int js_get_proj_hit_type(proj_type *proj)
 {
-	/* supergumba -- need to replace scripting here
+	int					portal_idx,mesh_idx,poly_idx;
+	map_mesh_poly_type	*mesh_poly;
+
 		// check auto hits
 		
 	if (proj->action.hit_tick!=0) {
 		if ((proj->start_tick+proj->action.hit_tick)<=js.time.current_tick) return(sd_proj_hit_type_auto);
 	}
 
-		// map hits
-		
-	if (proj->contact.wall_seg_idx!=-1) return(sd_proj_hit_type_wall);
-	if (proj->contact.floor_seg_idx!=-1) return(sd_proj_hit_type_floor);
-	if (proj->contact.ceiling_seg_idx!=-1) return(sd_proj_hit_type_ceiling);
+		// object or projectile hits
+
     if (proj->contact.obj_uid!=-1) return(sd_proj_hit_type_object);
 	if (proj->contact.proj_uid!=-1) return(sd_proj_hit_type_projectile);
-	if (!proj->contact.melee) return(sd_proj_hit_type_melee);
-	*/
-	return(sd_proj_hit_type_none);
+	if (proj->contact.melee) return(sd_proj_hit_type_melee);
+
+		// map hits
+		// we could polygons with common x/z as
+		// wall type hits.  We determine floor/ceiling
+		// hits by proximity to projectile Y
+
+	portal_idx=proj->contact.hit_poly.portal_idx;
+	if (portal_idx==-1) return(sd_proj_hit_type_none);
+
+	mesh_idx=proj->contact.hit_poly.mesh_idx;
+	poly_idx=proj->contact.hit_poly.poly_idx;
+
+	mesh_poly=&map.portals[portal_idx].mesh.meshes[mesh_idx].polys[poly_idx];
+	
+	if (mesh_poly->box.common_xz) return(sd_proj_hit_type_wall);
+
+	if (mesh_poly->box.mid.y<proj->pos.y) return(sd_proj_hit_type_ceiling);
+		
+	return(sd_proj_hit_type_floor);
 }
 
 void js_get_proj_hit_name(proj_type *proj,int hit_type,char *name)
@@ -121,36 +137,27 @@ void js_get_proj_hit_name(proj_type *proj,int hit_type,char *name)
 
 void js_get_proj_hit_material_name(proj_type *proj,int hit_type,char *name)
 {
-	/* supergumba
-	segment_type		*seg;
+	int					portal_idx,mesh_idx,poly_idx;
+	map_mesh_poly_type	*mesh_poly;
 	texture_type		*texture;
-	
-	switch (hit_type) {
-	
-		case sd_proj_hit_type_wall:
-			seg=&map.segments[proj->contact.wall_seg_idx];
-			texture=&map.textures[seg->fill];
-			strcpy(name,texture->material_name);
-			return;
-			
-		case sd_proj_hit_type_floor:
-			seg=&map.segments[proj->contact.floor_seg_idx];
-			texture=&map.textures[seg->fill];
-			strcpy(name,texture->material_name);
-			return;
-	
-		case sd_proj_hit_type_ceiling:
-			seg=&map.segments[proj->contact.ceiling_seg_idx];
-			texture=&map.textures[seg->fill];
-			strcpy(name,texture->material_name);
-			return;
-		
-		default:
-			name[0]=0x0;
-			return;
-			
+
+		// get hit poly
+
+	portal_idx=proj->contact.hit_poly.portal_idx;
+	if (portal_idx==-1) {
+		name[0]=0x0;
+		return;
 	}
-	*/
+
+	mesh_idx=proj->contact.hit_poly.mesh_idx;
+	poly_idx=proj->contact.hit_poly.poly_idx;
+
+	mesh_poly=&map.portals[portal_idx].mesh.meshes[mesh_idx].polys[poly_idx];
+	
+		// get material name
+
+	texture=&map.textures[mesh_poly->txt_idx];
+	strcpy(name,texture->material_name);
 }
 
 JSBool js_get_proj_hit_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)

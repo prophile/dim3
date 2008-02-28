@@ -169,7 +169,7 @@ bool shadow_get_volume_air(model_draw *draw)
 	z=draw->pos.z;
 	y=draw->pos.y;
 		
-    fy=fc_nearest_y(draw->pos.rn,x,(y-draw->size.y),z,(map_enlarge*100),TRUE);
+    fy=find_poly_nearest_stand(x,(y-draw->size.y),z,(map_enlarge*100),TRUE);
     if (fy==-1) return(FALSE);
 
 		// setup volume

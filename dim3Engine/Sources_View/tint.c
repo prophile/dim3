@@ -41,21 +41,21 @@ extern setup_type			setup;
       
 ======================================================= */
 
-void view_draw_liquid_tint(int under_liquid_idx)
+void view_draw_liquid_tint(liquid_pointer_type *liq_ptr)
 {
-	segment_type	*seg;
+	map_liquid_type		*liq;
 	
 		// under liquid
 		
-	if (under_liquid_idx==-1) return;
+	if (liq_ptr->portal_idx==-1) return;
 	
 		// get the liquid
 		
-    seg=&map.segments[under_liquid_idx];
+	liq=&map.portals[liq_ptr->portal_idx].liquid.liquids[liq_ptr->liquid_idx];
 	
 		// draw
 
-	glColor4f(seg->data.liquid.col.r,seg->data.liquid.col.g,seg->data.liquid.col.b,seg->data.liquid.tint_alpha);
+	glColor4f(liq->col.r,liq->col.g,liq->col.b,liq->tint_alpha);
 		
 	gl_setup_viewport(console_y_offset());
 	gl_2D_view();

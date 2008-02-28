@@ -675,7 +675,6 @@ void object_fly_y(obj_type *obj,int ymove)
 
 void object_motion_slope_alter_movement_single(float *mv,float slope_y,float slope_mv)
 {
-	/* supergumba -- fix me
 	bool			same_dir;
 	
 		// are we going in same direction as slope?
@@ -706,15 +705,13 @@ void object_motion_slope_alter_movement_single(float *mv,float slope_y,float slo
 		// subtract slope push from movement
 
 	*mv-=slope_mv;
-	*/
 }
 
 void object_motion_slope_alter_movement(obj_type *obj,float *xmove,float *zmove)
 {
-	/* supergumba -- need to fix
-
-	int				rn,x,y,z,sy,seg_idx;
-	fc_segment_data	*fc;
+	int					x,y,z,sy;
+	poly_pointer_type	poly;
+	map_mesh_poly_type	*mesh_poly;
 
 		// if not on ground or ignoring slope gravity, then no speed reduction
 		
@@ -728,25 +725,22 @@ void object_motion_slope_alter_movement(obj_type *obj,float *xmove,float *zmove)
 	y=obj->pos.y;
 	z=obj->pos.z+(int)(*zmove);
 
-	rn=map_find_portal_hint(&map,obj->pos.rn,x,y,z);
-	
-	sy=find_poly_for_downward_point(rn,x,y,z,obj->size.y,&seg_idx);
-	if (seg_idx==-1) return;
+	sy=find_poly_for_downward_point(x,y,z,obj->size.y,&poly);
+	if (poly.portal_idx==-1) return;
 
-		// ignore flat floors
+		// ignore flat polygons
 
-	fc=&map.segments[seg_idx].data.fc;
-	if (fc->flat) return;
+	mesh_poly=&map.portals[poly.portal_idx].mesh.meshes[poly.mesh_idx].polys[poly.poly_idx];
+	if (mesh_poly->box.flat) return;
 
 		// if less then min slope, no gravity effects
 
-	if (fc->slope_y<gravity_slope_min_y) return;
+	if (mesh_poly->slope.y<gravity_slope_min_y) return;
 
 		// apply gravity
 	
-	object_motion_slope_alter_movement_single(xmove,fc->slope_y,fc->slope_move_x);
-	object_motion_slope_alter_movement_single(zmove,fc->slope_y,fc->slope_move_z);
-	*/
+	object_motion_slope_alter_movement_single(xmove,mesh_poly->slope.y,mesh_poly->slope.move_x);
+	object_motion_slope_alter_movement_single(zmove,mesh_poly->slope.y,mesh_poly->slope.move_z);
 }
 
 /* =======================================================
@@ -974,7 +968,7 @@ void object_move(obj_type *obj)
 	}
 	else {
 		if (obj->liquid_mode==lm_under) {
-			object_move_swim(obj);
+			object_move_swim_2(obj);
 		}
 		else {
 		//	object_move_normal(obj);

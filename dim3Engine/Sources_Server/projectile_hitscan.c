@@ -96,7 +96,7 @@ void projectile_hitscan(int tick,obj_type *obj,weapon_type *weap,proj_setup_type
 	map_find_portal_by_pos(&map,&proj->pos);
 	
 	memmove(&proj->contact.hit_poly,&contact.poly,sizeof(poly_pointer_type));
-	proj->contact.liquid_idx=-1;
+	proj->contact.liquid.portal_idx=-1;
 
 	proj->contact.obj_uid=contact.obj_uid;
 	proj->contact.proj_uid=contact.proj_uid;

@@ -534,7 +534,7 @@ void view_draw_setup(int tick)
 	if (view.camera.pos.rn==-1) {
 		view.camera.pos.rn=camera_obj->pos.rn;
 	}
-	view.camera.under_liquid_idx=camera_check_liquid(&view.camera.pos);
+	camera_check_liquid(&view.camera.pos,&view.camera.under_liquid);
 
 	view.camera.projection_type=camera.plane.type;
 	view.camera.lft=camera.plane.lft;

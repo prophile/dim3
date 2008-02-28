@@ -139,11 +139,12 @@ typedef struct		{
 
 typedef struct		{
 						int						projection_type,
-												lft,rgt,top,bot,under_liquid_idx,
+												lft,rgt,top,bot,
 												near_z,far_z,near_z_offset;
 						float					fov,aspect_ratio;
 						d3pos					pos;
 						d3ang					ang;
+						liquid_pointer_type		under_liquid;
 					} view_camera_type;
 
 //

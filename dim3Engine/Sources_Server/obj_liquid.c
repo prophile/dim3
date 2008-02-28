@@ -44,15 +44,14 @@ extern server_type			server;
 
 void object_liquid_contact(obj_type *obj)
 {
-	/* supergumba
-	int						i,cnt,idx,
-							rn,y,eye_y,dy,lft,rgt,top,bot;
-	short					*sptr;
-	d3box					box;
-	liquid_segment_data		*liq;
+	int					n,nliquid,
+						rn,y,eye_y,dy,lft,rgt,top,bot;
+	d3box				box;
+	map_liquid_type		*liq;
+	portal_type			*portal;
 	
 	obj->liquid_mode=lm_out;
-	obj->contact.liquid_seg_idx=-1;
+	obj->contact.liquid.portal_idx=-1;
 
 	rn=obj->pos.rn;
 	box_create_from_object(&box,obj);
@@ -61,15 +60,14 @@ void object_liquid_contact(obj_type *obj)
 	rgt=box.max_x;
 	top=box.min_z;
 	bot=box.max_z;
+
+	portal=&map.portals[rn];
+
+	nliquid=portal->liquid.nliquid;
 	
-	cnt=map.portals[rn].liquid_list_hit.count;
-	sptr=map.portals[rn].liquid_list_hit.list;
+	for (n=0;n!=nliquid;n++) {
+		liq=&portal->liquid.liquids[n];
 	
-	for (i=0;i!=cnt;i++) {
-		idx=(int)*sptr++;
-		
-		liq=&map.segments[idx].data.liquid;
-		
 		if (rgt<liq->lft) continue;
 		if (lft>liq->rgt) continue;
 		if (bot<liq->top) continue;
@@ -88,10 +86,10 @@ void object_liquid_contact(obj_type *obj)
 				obj->liquid_mode=lm_in;
 			}
             
-			obj->contact.liquid_seg_idx=idx;
+			obj->contact.liquid.portal_idx=rn;
+			obj->contact.liquid.liquid_idx=n;
         }
 	}
-	*/
 }
 
 /* =======================================================
@@ -102,18 +100,14 @@ void object_liquid_contact(obj_type *obj)
 
 float object_liquid_alter_speed(obj_type *obj)
 {
-	/* supergumba
-	int						idx;
+	int					portal_idx;
 
 	if (obj->liquid_mode!=lm_under) return(1.0f);
 
-	idx=obj->contact.liquid_seg_idx;
-	if (idx==-1) return(1.0f);
+	portal_idx=obj->contact.liquid.portal_idx;
+	if (portal_idx==-1) return(1.0f);
 
-	return(map.segments[idx].data.liquid.speed_alter);
-	*/
-
-	return(0.0f);
+	return(map.portals[portal_idx].liquid.liquids[obj->contact.liquid.liquid_idx].speed_alter);
 }
 
 /* =======================================================
@@ -124,9 +118,8 @@ float object_liquid_alter_speed(obj_type *obj)
 
 void object_liquid(int tick,obj_type *obj)
 {
-	/* supergumba
-	int				idx,harm,old_liquid_mode;
-    segment_type	*seg;
+	int					portal_idx,harm,old_liquid_mode;
+	map_liquid_type		*liq;
 	
     old_liquid_mode=obj->liquid_mode;
 	
@@ -134,15 +127,15 @@ void object_liquid(int tick,obj_type *obj)
     
         // leaving liquid
      
-	idx=obj->contact.liquid_seg_idx;
-    if (idx==-1) {
+	portal_idx=obj->contact.liquid.portal_idx;
+    if (portal_idx==-1) {
         if (old_liquid_mode!=lm_out) scripts_post_event_console(&obj->attach,sd_event_liquid,sd_event_liquid_out,0);
         return;
     }
     
         // entering or moving in liquid
         
-    seg=&map.segments[idx];
+    liq=&map.portals[portal_idx].liquid.liquids[obj->contact.liquid.liquid_idx];
 
 	switch (obj->liquid_mode) {
 	
@@ -176,12 +169,12 @@ void object_liquid(int tick,obj_type *obj)
 
 	if (obj->liquid_mode==lm_under) {
 
-		if ((tick-obj->status.liquid_under_tick)>seg->data.liquid.drown_tick) {
+		if ((tick-obj->status.liquid_under_tick)>liq->harm.drown_tick) {
 
 			if (obj->status.liquid_drown_count==0) {
 				obj->status.liquid_drown_count=100;
 
-				harm=seg->data.liquid.drown_harm;
+				harm=liq->harm.drown_harm;
 				if (harm>0) object_damage(obj,NULL,NULL,NULL,NULL,harm);
 			}
 			else {
@@ -198,7 +191,7 @@ void object_liquid(int tick,obj_type *obj)
 		if (obj->status.liquid_harm_count==0) {
 			obj->status.liquid_harm_count=100;
 
-			harm=seg->data.liquid.harm;
+			harm=liq->harm.in_harm;
 			if (harm!=0) {
 				if (harm>0) {
 					object_damage(obj,NULL,NULL,NULL,NULL,harm);
@@ -212,6 +205,5 @@ void object_liquid(int tick,obj_type *obj)
 			obj->status.liquid_harm_count--;
 		}
 	}
-	*/
 }
 

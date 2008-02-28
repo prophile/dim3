@@ -277,12 +277,16 @@ typedef struct		{
 					} model_draw;
 
 //
-// polygon pointer
+// map pointer
 //
 
 typedef struct		{
 						int					portal_idx,mesh_idx,poly_idx;
 					} poly_pointer_type;
+
+typedef struct		{
+						int					portal_idx,liquid_idx;
+					} liquid_pointer_type;
 
 //
 // object sounds
@@ -336,9 +340,10 @@ typedef struct		{
 					} obj_status;
 			
 typedef struct		{
-						int					liquid_idx,obj_uid,proj_uid,hit_box_idx;
+						int					obj_uid,proj_uid,hit_box_idx;
 						bool				on,melee,pushable;
 						poly_pointer_type	hit_poly,stand_poly,head_poly;
+						liquid_pointer_type	liquid;
 					} obj_contact;
 					
 typedef struct		{

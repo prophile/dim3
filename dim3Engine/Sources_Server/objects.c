@@ -109,7 +109,7 @@ void object_clear_contact(obj_contact *contact)
 	contact->stand_poly.portal_idx=-1;
 	contact->head_poly.portal_idx=-1;
 
-	contact->liquid_idx=-1;
+	contact->liquid.portal_idx=-1;
 	
 	contact->obj_uid=-1;
 	contact->proj_uid=-1;

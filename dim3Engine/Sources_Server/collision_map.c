@@ -332,7 +332,7 @@ void object_motion_set_script_property(obj_type *obj,float xmove,float ymove,flo
 void object_move_y_up(obj_type *obj,int ymove)
 {
 	int				fy,up_move;
-	
+
 	obj->air_mode=am_up;
 	
 		// have any floors come up from below
@@ -700,10 +700,13 @@ void object_move_normal_2(obj_type *obj)
 		// for the potential x/z position so
 		// we can ray trace over any height changes
 
-	sfy=fc_nearest_y(rn,obj->pos.x,obj->pos.y,obj->pos.z,(map_enlarge*100),FALSE);
+		// supergumba -- this might be a really bad idea -- try moving
+		//					the y before the x/z?
+
+	sfy=find_poly_nearest_stand(obj->pos.x,obj->pos.y,obj->pos.z,(map_enlarge*100),FALSE);
 	if (sfy==-1) sfy=y;
 
-	efy=fc_nearest_y(rn,x,y,z,(map_enlarge*100),FALSE);
+	efy=find_poly_nearest_stand(x,y,z,(map_enlarge*100),FALSE);
 	if (efy==-1) efy=y;
 
 		// move the object in x/z space
@@ -712,7 +715,7 @@ void object_move_normal_2(obj_type *obj)
 	yadd=efy-sfy;
 	zadd=(int)zmove;
 
-	object_move_xz_slide(obj,&xadd,&yadd,&zadd);
+//	object_move_xz_slide(obj,&xadd,&yadd,&zadd);		// supergumba -- maybe move y first
 
 	obj->pos.x+=xadd;
 	obj->pos.z+=zadd;
@@ -785,3 +788,93 @@ void object_move_normal_2(obj_type *obj)
 	}
 }
 
+/* =======================================================
+
+      Object Flyings
+
+======================================================= */
+
+void object_move_y_fly(obj_type *obj,int ymove)
+{
+	int				by;
+	
+		// moving up
+		
+	if (ymove<0) {
+		obj->pos.y+=pin_upward_movement_obj(obj,ymove);
+		if (obj->contact.head_poly.portal_idx!=-1) return;
+
+			// check for above map
+			
+		if (obj->pos.y<=0) {
+			obj->pos.y=0;
+			return;
+		}
+
+		return;
+	}
+	
+		// moving down
+		
+	if (ymove<=0) return;
+	
+	obj->pos.y+=pin_downward_movement_obj(obj,ymove);
+	
+		// check for below portal
+		
+	by=map.portals[obj->pos.rn].by;
+	if (obj->pos.y>=by) obj->pos.y=by;
+}
+
+/* =======================================================
+
+      Object Swimming
+
+======================================================= */
+
+void object_move_swim_2(obj_type *obj)
+{
+	int				i_xmove,i_ymove,i_zmove;
+    float			xmove,ymove,zmove,liq_speed_alter;
+
+		// get object motion
+		
+	object_motion_setup(obj,&xmove,&ymove,&zmove);
+	object_motion_lock(obj,&xmove,&ymove,&zmove);
+	object_motion_set_script_property(obj,xmove,ymove,zmove);
+
+		// speed cuts
+
+	liq_speed_alter=object_liquid_alter_speed(obj);
+	
+	xmove*=liq_speed_alter;
+  	zmove*=liq_speed_alter;
+	ymove*=liq_speed_alter;
+
+		// falling in water
+
+	if (ymove>=0) object_move_y_fall(obj);
+
+	if ((obj->air_mode==am_ground) || (ymove<0)) {
+		if (obj->force.vct.y>0) obj->force.vct.y=0;
+		obj->force.gravity=gravity_start_power;
+	}
+
+        // moving x/z
+		
+	i_xmove=(int)xmove;
+	i_ymove=(int)ymove;
+	i_zmove=(int)zmove;
+
+	if (object_move_xz_2(obj,&i_xmove,&i_ymove,&i_zmove)) {
+		object_to_object_push(obj,i_xmove,i_zmove);
+	}
+	
+		// bounces
+		
+	object_move_xz_bounce(obj);
+	
+        // move Y
+
+	object_move_y_fly(obj,i_ymove);
+}

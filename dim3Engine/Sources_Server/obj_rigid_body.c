@@ -54,7 +54,7 @@ int object_rigid_body_get_point_y(obj_type *obj,int x_off,int z_off,int y)
 	rn=map_find_portal_hint(&map,obj->pos.rn,x,y,z);
 	if (rn==-1) return(-1);
 	
-	return(fc_nearest_y(rn,x,y,z,obj->rigid_body.max_drop_y,FALSE));
+	return(find_poly_nearest_stand(x,y,z,obj->rigid_body.max_drop_y,FALSE));
 }
 
 void object_rigid_body_offset_reset_y(obj_type *obj)
@@ -87,10 +87,11 @@ void object_rigid_body_angle_reset_z(obj_type *obj)
 
 void object_rigid_body_reset_angle(obj_type *obj)
 {
-	int			xsz,zsz,y,ky,off_y,ry,seg_idx,
+	int			xsz,zsz,y,ky,off_y,ry,
 				fy[4];
 	float		x_ang,x_neg_ang,x_pos_ang,
 				z_ang,z_neg_ang,z_pos_ang;
+	bool		hit;
 
 		// is rigid body on?
 
@@ -114,8 +115,8 @@ void object_rigid_body_reset_angle(obj_type *obj)
 	}
 	else {
 
-		ky=pin_downward_movement_point(obj->pos.rn,obj->pos.x,y,obj->pos.z,obj->rigid_body.max_drop_y,&seg_idx);
-		if ((ky!=-1) && (seg_idx!=-1)) {
+		ky=pin_downward_movement_point(obj->pos.x,y,obj->pos.z,obj->rigid_body.max_drop_y,&hit);
+		if (hit) {
 			ky+=y;
 
 			if (ky>y) {

@@ -43,96 +43,34 @@ extern server_type		server;
       
 ======================================================= */
 
-inline int fc_in_point(fc_segment_data *fc,int x,int y,int z,int ydist)
+int find_poly_for_upward_point(int x,int y,int z,int ydist,poly_pointer_type *poly)
 {
-	if (x<fc->min_x) return(-1);
-	if (x>fc->max_x) return(-1);
-	if (z<fc->min_z) return(-1);
-	if (z>fc->max_z) return(-1);
-	if (y<(fc->min_y-ydist)) return(-1);
-	if (y>(fc->max_y+ydist)) return(-1);
-	
-	if (fc->flat) {
-		if (!polygon_2D_point_inside(fc->ptsz,fc->x,fc->z,x,z)) return(-1);
-		return(fc->y[0]);
+	d3pnt					spt,ept,hpt;
+	ray_trace_contact_type	contact;
+
+	spt.x=x;
+	spt.y=y+ydist;
+	spt.z=z;
+
+	ept.x=x;
+	ept.y=y-ydist;
+	ept.z=z;
+
+	contact.obj_on=FALSE;
+	contact.proj_on=FALSE;		// supergumba -- rewrite ALL of this
+
+	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
+		memmove(poly,&contact.poly,sizeof(poly_pointer_type));
+		return(hpt.y);
 	}
-	
-	return(polygon_find_y(fc->ptsz,fc->x,fc->y,fc->z,x,z));
+
+	poly->portal_idx=-1;
+
+	return(y-ydist);
 }
-
-int find_poly_for_upward_point(int rn,int x,int y,int z,int ydist,int *mesh_idx,int *poly_idx)
-{
-	/* supergumba
-
-	int			i,cnt,idx,ty,by,sy;
-	short		*sptr;
-	
-	*hit=-1;
-
-	ty=y-ydist;
-	by=y+ydist;
-	
-	cnt=map.portals[rn].fc_list_hit.count;
-	sptr=map.portals[rn].fc_list_hit.list;
-
-	for (i=0;i!=cnt;i++) {
-		idx=(int)*sptr++;
-
-		sy=fc_in_point(&map.segments[idx].data.fc,x,y,z,ydist);
-		if (sy==-1) continue;
-
-			// when comparing floor/ceiling points in a upward
-			// direction, we want to find the lowest
-			// point within the slope distance
-			
-		if ((sy<by) && (sy>ty)) {
-			*hit=idx;
-			ty=sy;
-		}
-	}
-
-	if (*hit==-1) return(-1);
-	
-	return(ty);
-	*/
-	return(y);
-}
-
-
-/*
-	ray_trace_contact_type	contact[15];
-
-		// get collision points
-
-	collide_object_ray_trace_points(obj,*xadd,*zadd,px,py,pz);
-
-		// run rays on all points
-		// find the one that moves the leasts
-		// as the most suitable hit point
-
-	idx=-1;
-	dist=0;
-
-	for (n=0;n!=15;n++) {
-			
-			// setup ray trace
-
-	
-			// run trace
-
-		if (ray_trace_map_by_point(&spt,&ept,&hpt[n],&contact[n])) {
-			d=collide_point_distance(&spt,&hpt[n]);
-			if ((d<=dist) || (idx==-1)) {
-				dist=d;
-				idx=n;
-			}
-		}
-	}
-*/
 
 int find_poly_for_downward_point(int x,int y,int z,int ydist,poly_pointer_type *poly)
 {
-	int						i,cnt,idx,ty,by,sy;
 	d3pnt					spt,ept,hpt;
 	ray_trace_contact_type	contact;
 
@@ -159,46 +97,30 @@ int find_poly_for_downward_point(int x,int y,int z,int ydist,poly_pointer_type *
 
 /* =======================================================
 
-      Find Next Nearest Floor\Ceiling Point
+      Find Next Nearest Stand Poly Point
       
 ======================================================= */
 
-int fc_nearest_y(int rn,int x,int y,int z,int ydist,bool ignore_higher)
+int find_poly_nearest_stand(int x,int y,int z,int ydist,bool ignore_higher)
 {
-	int					i,cnt,idx,ty,sy,fy;
-	short				*sptr;
-	fc_segment_data		*fc;
-	
-	fy=-1;
-	
-	cnt=map.portals[rn].fc_list_hit.count;
-	sptr=map.portals[rn].fc_list_hit.list;
-	
-	for (i=0;i!=cnt;i++) {
-		idx=(int)*sptr++;
-		
-		fc=&map.segments[idx].data.fc;
-		
-		if ((x<fc->min_x) || (x>fc->max_x) || (z<fc->min_z) || (z>fc->max_z)) continue;
-		
-		if (fc->flat) {
-			sy=fc->y[0];
-		}
-		else {
-			sy=polygon_find_y(fc->ptsz,fc->x,fc->y,fc->z,x,z);
-			if (sy==-1) continue;
-		}
+	d3pnt					spt,ept,hpt;
+	ray_trace_contact_type	contact;
 
-		if ((ignore_higher) && (sy<y)) continue;
+	spt.x=x;
+	spt.y=y;
+	if (!ignore_higher) spt.y-=ydist;
+	spt.z=z;
 
-		ty=abs(sy-y);
-		if (ty<ydist) {
-			ydist=ty;
-			fy=sy;
-		}
-	}
-	
-	return(fy);
+	ept.x=x;
+	ept.y=y+ydist;
+	ept.z=z;
+
+	contact.obj_on=FALSE;
+	contact.proj_on=FALSE;
+
+	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) return(hpt.y);
+
+	return(-1);
 }
 
 /* =======================================================
@@ -209,9 +131,7 @@ int fc_nearest_y(int rn,int x,int y,int z,int ydist,bool ignore_higher)
 
 int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly)
 {
-	int				i,rn,x,y,z,cy,fy,
-					portal_idx,mesh_idx,poly_idx,hit_portal_idx,hit_mesh_idx,hit_poly_idx,
-					px[5],pz[5];
+	int					i,x,y,z,cy,fy,px[5],pz[5];
 	poly_pointer_type	poly;
 	
 	y=box->max_y;
@@ -234,10 +154,7 @@ int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly
 		x=px[i];
 		z=pz[i];
 		
-		rn=map_find_portal_hint(&map,box->hint_rn,x,y,z);
-		if (rn==-1) continue;
-		
-			// check floor\ceiling
+			// check poly collisions
 			
 		fy=find_poly_for_downward_point(x,y,z,ydist,&poly);
 		if (poly.portal_idx!=-1) {
@@ -265,9 +182,8 @@ int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly
 
 int pin_upward_movement_box(d3box *box,int ydist,poly_pointer_type *head_poly)
 {
-	int				i,rn,x,y,z,cy,fy,
-					mesh_idx,poly_idx,hit_mesh_idx,hit_poly_idx,
-					px[5],pz[5];
+	int					i,x,y,z,cy,fy,px[5],pz[5];
+	poly_pointer_type	poly;
 	
 	y=box->min_y;
 	
@@ -282,41 +198,28 @@ int pin_upward_movement_box(d3box *box,int ydist,poly_pointer_type *head_poly)
 	
 		// find the lowest point
 		
-	hit_mesh_idx=-1;
+	head_poly->portal_idx=-1;
 	cy=-1;
 	
 	for (i=0;i!=5;i++) {
 		x=px[i];
 		z=pz[i];
 		
-		rn=map_find_portal_hint(&map,box->hint_rn,x,y,z);
-		if (rn==-1) continue;
-		
-			// check floor\ceiling
+			// check poly collisions
 			
-		fy=find_poly_for_upward_point(rn,x,y,z,ydist,&mesh_idx,&poly_idx);
-		if (mesh_idx!=-1) {
-			if (hit_mesh_idx==-1) {
-				hit_mesh_idx=mesh_idx;
-				hit_poly_idx=poly_idx;
+		fy=find_poly_for_upward_point(x,y,z,ydist,&poly);
+		if (poly.portal_idx!=-1) {
+			if (head_poly->portal_idx==-1) {
+				memmove(head_poly,&poly,sizeof(poly_pointer_type));
 				cy=fy;
 			}
 			else {
 				if (fy>cy) {
-					hit_mesh_idx=mesh_idx;
-					hit_poly_idx=poly_idx;
+					memmove(head_poly,&poly,sizeof(poly_pointer_type));
 					cy=fy;
 				}
 			}
 		}
-	}
-	
-		// any hits?
-		
-	if (mesh_idx!=-1) {
-		head_poly->portal_idx=rn;
-		head_poly->mesh_idx=hit_mesh_idx;
-		head_poly->poly_idx=hit_poly_idx;
 	}
 
 	return(cy);
@@ -356,130 +259,71 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 
 /* =======================================================
 
-      Pin Projectile Movements
-      
-======================================================= */
-
-int pin_downward_movement_proj(proj_type *proj,int my)
-{
-	/* supergumba
-	int			sy,seg_idx;
-	
-	sy=find_poly_for_downward_point(proj->pos.rn,proj->pos.x,proj->pos.y,proj->pos.z,my,&seg_idx);
-	if ((sy==-1) || (seg_idx==-1)) return(my);
-
-	switch (map.segments[seg_idx].type) {
-		case sg_floor:
-			proj->contact.floor_seg_idx=seg_idx;
-			break;
-		case sg_ceiling:
-			proj->contact.ceiling_seg_idx=seg_idx;
-			break;
-	}
-
-	return(sy-proj->pos.y);
-	*/
-	return(0);
-}
-
-int pin_upward_movement_proj(proj_type *proj,int my)
-{
-	/* supergumba
-	int			y,sy,seg_idx;
-	
-	y=proj->pos.y-proj->size.y;
-	
-	sy=find_poly_for_upward_point(proj->pos.rn,proj->pos.x,y,proj->pos.z,abs(my),&seg_idx);
-	if ((sy==-1) || (seg_idx==-1)) return(my);
-
-	switch (map.segments[seg_idx].type) {
-		case sg_floor:
-			proj->contact.floor_seg_idx=seg_idx;
-			break;
-		case sg_ceiling:
-			proj->contact.ceiling_seg_idx=seg_idx;
-			break;
-	}
-
-	return(sy-proj->pos.y);
-	*/
-	return(0);
-}
-
-/* =======================================================
-
       Pin Y Movement against Map
       
 ======================================================= */
 
-int pin_downward_movement_point(int rn,int x,int y,int z,int my,int *seg_idx)
+int pin_downward_movement_point(int x,int y,int z,int my,bool *hit)
 {
-	/* supergumba -- fix
-	int			sy;
+	int						sy;
+	poly_pointer_type		poly;
 
-	sy=find_poly_for_downward_point(rn,x,y,z,my,seg_idx);
-	if (sy==-1) return(my);
+	sy=find_poly_for_downward_point(x,y,z,my,&poly);
+	if (poly.portal_idx==-1) {
+		*hit=FALSE;
+		return(0);
+	}
 
+	*hit=TRUE;
 	return(sy-y);
-	*/
-	return(0);
 }
 
-int pin_upward_movement_point(int rn,int x,int y,int z,int my,int *seg_idx)
+int pin_upward_movement_point(int x,int y,int z,int my,bool *hit)
 {
-	/* supergumba -- fix
-	int			sy;
+	int						sy;
+	poly_pointer_type		poly;
 
-	sy=find_poly_for_upward_point(rn,x,y,z,abs(my),seg_idx);
-	if (sy==-1) return(my);
+	sy=find_poly_for_upward_point(x,y,z,my,&poly);
+	if (poly.portal_idx==-1) {
+		*hit=FALSE;
+		return(0);
+	}
 
+	*hit=TRUE;
 	return(sy-y);
-	*/
-	return(0);
 }
 
 /* =======================================================
 
-      Check if Floor/Ceiling Segments Crush Object
+      Check if Object is being Crushed
       
 ======================================================= */
 
-bool map_crush_floor_ceiling(fc_segment_data *fc,d3box *box)
-{
-	if (fc->min_x>=box->max_x) return(FALSE);
-	if (fc->max_x<=box->min_x) return(FALSE);
-	if (fc->min_z>=box->max_z) return(FALSE);
-	if (fc->max_z<=box->min_z) return(FALSE);
-	if (fc->min_y>=box->max_y) return(FALSE);
-	return(!(fc->max_y<=box->min_y));
-}
-
 bool map_crush_object(obj_type *obj)
 {
-	int				i,rn,idx,cnt;
-	short			*sptr;
-	d3box			box;
-	portal_type		*portal;
-	segment_type	*seg;
-	
+	/* supergumba -- need to work on this
+	int					sy,fudge;
+	d3box				box;
+	poly_pointer_type	poly;
+
+		// crushing fudge (only check middle 1/2 of object)
+
+	fudge=obj->size.y>>2;
+
+		// get movement box
+
 	box_create_from_object(&box,obj);
+	box.min_y=obj->pos.y-fudge;
 
-	rn=box.hint_rn;
-	portal=&map.portals[rn];
+	sy=obj->size.y-(fudge<<1);
 
-		// check floors/ceilings
+	fprintf(stdout,"obj y = %d, min_y = %d, sy = %d\n",obj->pos.y,box.min_y,sy);
 
-	cnt=portal->fc_list_hit.count;
-	sptr=portal->fc_list_hit.list;
+		// possible to move up?
 
-	for (i=0;i!=cnt;i++) {
-		idx=(int)*sptr++;
-		seg=&map.segments[idx];
-		if (seg->moveable) {
-			if (map_crush_floor_ceiling(&seg->data.fc,&box)) return(TRUE);
-		}
-	}
-
+	pin_upward_movement_box(&box,-sy,&poly);
+	return(poly.portal_idx!=-1);
+*/
 	return(FALSE);
 }
 
@@ -491,35 +335,22 @@ bool map_crush_object(obj_type *obj)
 
 bool map_stand_check_object(obj_type *obj)
 {
-	int				i,rn,idx,cnt,sz;
-	short			*sptr;
-	d3box			box;
-	portal_type		*portal;
-	
+	int					sy;
+	d3box				box;
+	poly_pointer_type	poly;
+
+		// total stand up height
+
+	sy=obj->duck.y_change;
+
+		// get movement box
+
 	box_create_from_object(&box,obj);
-	
-		// reduce hit to only check top of head
-		
-	sz=(obj->size.y>>2)*3;
-	
-	box.y-=sz;
-	box.max_y-=sz;
-		
-		// get check portal
+	box.min_y=(obj->pos.y-obj->size.y)+sy;
 
-	rn=box.hint_rn;
-	portal=&map.portals[rn];
+		// possible to move up?
 
-		// check floors\ceilings
-
-	cnt=portal->fc_list_hit.count;
-	sptr=portal->fc_list_hit.list;
-
-	for (i=0;i!=cnt;i++) {
-		idx=(int)*sptr++;
-		if (map_crush_floor_ceiling(&map.segments[idx].data.fc,&box)) return(TRUE);
-	}
-
-	return(FALSE);
+	pin_upward_movement_box(&box,-sy,&poly);
+	return(poly.portal_idx!=-1);
 }
 
