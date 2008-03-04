@@ -38,19 +38,27 @@ extern js_type			js;
 
 extern bool map_movement_next_move(int movement_idx,attach_type *attach);
 
+// supergumba -- rename this file
+
 /* =======================================================
 
-      Move Segments
+      Move Groups
       
 ======================================================= */
 
-void segment_move(int group_idx,int xmove,int zmove,int ymove)
+void group_move(int group_idx,int xmove,int zmove,int ymove)
 {
-	int					n,rn,idx;
-	short				*seg_list;
+	int					n,rn,idx,unit_cnt;
 	bool				move_objs;
-	segment_type		*seg;
+	unsigned char		portal_hit[max_portal];
 	group_type			*group;
+	group_unit_type		*unit_list;
+	portal_type			*portal;
+
+		// will need to recalc lighting in
+		// portals with moved segments
+
+	bzero(portal_hit,max_portal);
 
 		// can this group move objects?
 
@@ -60,9 +68,51 @@ void segment_move(int group_idx,int xmove,int zmove,int ymove)
 
 	group=&map.groups[group_idx];
 	
-	seg_list=group->seg_list;
+	unit_cnt=group->unit_count;
+	unit_list=group->unit_list;
 	
-	for (n=0;n!=group->seg_count;n++) {
+	for (n=0;n!=unit_cnt;n++) {
+
+		portal=&map.portals[unit_list->portal_idx];
+
+		switch (unit_list->type) {
+
+			case group_type_mesh:
+
+				map_portal_mesh_move(&map,unit_list->portal_idx,unit_list->idx,xmove,ymove,zmove);
+
+					// supergumba -- move objects with segments!
+
+					// supergumba -- move decals with segments!
+
+			//	if (seg->decal_count!=0) decal_move_for_segment(idx,xmove,ymove,zmove);
+
+					// force a lighting recalc if mesh moved in a portal
+
+				if (portal_hit[unit_list->portal_idx]==0x0) {
+					portal_hit[unit_list->portal_idx]=0x1;
+					map_portal_light_check_changes_reset(unit_list->portal_idx);
+				}
+
+				break;
+
+			case group_liquid_type:
+
+				liq=&portal->liquid.liquids[unit_list->idx];
+
+				liq->lft+=xmove;
+				liq->rgt+=xmove;
+				liq->top+=zmove;
+				liq->bot+=zmove;
+				liq->y+=ymove;
+
+				break;
+
+		}
+
+				/*
+
+
 		idx=*seg_list;
 		seg=&map.segments[idx];
 		
@@ -86,17 +136,10 @@ void segment_move(int group_idx,int xmove,int zmove,int ymove)
 			map_segment_move(&map,seg,xmove,ymove,zmove);
 			if (seg->decal_count!=0) decal_move_for_segment(idx,xmove,ymove,zmove);
 		}
+
+*/
 		
-		seg_list++;
-	}
-
-		// forcing a lighting recalculation for moved portal
-
-	if (group->seg_count>0) {
-		seg_list=group->seg_list;
-		rn=map.segments[*seg_list].rn;
-
-		map_portal_light_check_changes_reset(&map.portals[rn]);
+		unit_list++;
 	}
 }
 
@@ -133,7 +176,7 @@ void segment_moves_run(void)
 			move->y-=(float)y;
 			move->z-=(float)z;
 			
-			segment_move(move->group_idx,x,z,y);
+			group_move(move->group_idx,x,z,y);
 			move->count--;
 		}
 		

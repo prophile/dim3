@@ -214,13 +214,24 @@ extern char light_type_str[][32];
 #define map_mesh_poly_draw_shader					3
 
 //
+// group types
+//
+
+#define group_type_mesh								0
+#define group_type_liquid							1
+
+//
 // group structure
 //
 
 typedef struct		{
-						int							seg_count;
+						short						type,portal_idx,idx;
+					} group_unit_type;
+
+typedef struct		{
+						int							unit_count;
 						char						name[name_str_len];
-						short						*seg_list;
+						group_unit_type				*unit_list;
 					} group_type;
 
 //
@@ -274,7 +285,7 @@ typedef struct		{
 					} map_mesh_draw_type;
 
 typedef struct		{
-						int							nvertex,npoly;
+						int							nvertex,npoly,group_idx;
 						d3pnt						*vertexes;
 						map_mesh_poly_type			*polys;
 						map_mesh_draw_type			draw;
@@ -299,7 +310,7 @@ typedef struct		{
 					} map_liquid_draw_type;
 
 typedef struct		{
-						int							y,lft,rgt,top,bot,txt_idx;
+						int							y,lft,rgt,top,bot,txt_idx,group_idx;
 						float						alpha,speed_alter,tint_alpha,
 													x_txtfact,y_txtfact,x_txtoff,y_txtoff,
 													x_shift,y_shift;
@@ -795,6 +806,8 @@ extern bool map_portal_mesh_set_poly_count(map_type *map,int portal_idx,int mesh
 extern int map_portal_mesh_count_poly(map_type *map,int portal_idx);
 extern bool map_portal_mesh_create_transparent_sort_lists(map_type *map);
 extern void map_portal_mesh_dispose_transparent_sort_lists(map_type *map);
+extern void map_portal_mesh_get_center(map_type *map,int portal_idx,int mesh_idx,int *x,int *y,int *z);
+extern void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,int x,int y,int z);
 
 extern bool map_portal_liquid_add(map_type *map,int portal_idx,int add_count);
 extern bool map_portal_liquid_delete(map_type *map,int portal_idx,int liquid_idx);
@@ -807,8 +820,8 @@ extern void map_segments_clear_touch(map_type *map);
 extern int map_segments_count_touch(map_type *map);
 extern void map_segment_reset_texture_uvs(map_type *map,segment_type *seg);
 
-extern bool map_group_create_segment_list(map_type *map);
-extern void map_group_dispose_segment_list(map_type *map);
+extern bool map_group_create_unit_list(map_type *map);
+extern void map_group_dispose_unit_list(map_type *map);
 extern void map_group_get_center(map_type *map,int group_idx,int *x,int *y,int *z);
 
 extern int map_movement_find(map_type *map,char *name);

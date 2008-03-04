@@ -31,54 +31,101 @@ and can be sold or given away.
 
 /* =======================================================
 
-      Create and Dispose Single Group Segment List
+      Create and Dispose Single Group Unit List
       
 ======================================================= */
 
-bool map_group_create_single_segment_list(map_type *map,int group_idx)
+bool map_group_create_single_unit_list(map_type *map,int group_idx)
 {
-	int				n,seg_cnt;
-	short			*seg_list;
-	segment_type	*seg;
+	int				n,k,unit_cnt,nmesh,nliq;
+	portal_type		*portal;
+	map_mesh_type	*mesh;
+	map_liquid_type	*liq;
 	group_type		*group;
+	group_unit_type	*unit_list;
 	
 	group=&map->groups[group_idx];
 	
 		// default setting
 		
-	group->seg_count=0;
-	group->seg_list=NULL;
+	group->unit_count=0;
+	group->unit_list=NULL;
 	
-		// count seg list
+		// count meshes and liquids
+
+	unit_cnt=0;
+	portal=map->portals;
+
+	for (n=0;n!=map->nportal;n++) {
 		
-	seg_cnt=0;
-	seg=map->segments;
-	
-	for (n=0;n!=map->nsegment;n++) {
-		if (seg->group_idx==group_idx) seg_cnt++;
-		seg++;
-	}
-	
-	if (seg_cnt==0) return(TRUE);
-	
-		// create seg list
-		
-	seg_list=(short*)valloc(seg_cnt*sizeof(short));
-	if (seg_list==NULL) return(FALSE);
-	
-	bzero(seg_list,(seg_cnt*sizeof(short)));
-	
-	group->seg_count=seg_cnt;
-	group->seg_list=seg_list;
-	
-	seg=map->segments;
-	
-	for (n=0;n!=map->nsegment;n++) {
-		if (seg->group_idx==group_idx) {
-			*seg_list=(short)n;
-			seg_list++;
+			// meshes
+
+		nmesh=portal->mesh.nmesh;
+		mesh=portal->mesh.meshes;
+
+		for (k=0;k!=nmesh;k++) {
+			if (mesh->group_idx==group_idx) unit_cnt++;
+			mesh++;
 		}
-		seg++;
+
+		nliq=portal->liquid.nliquid;
+		liq=portal->liquid.liquids;
+
+		for (k=0;k!=nliq;k++) {
+			if (liq->group_idx==group_idx) unit_cnt++;
+			liq++;
+		}
+
+		portal++;
+	}
+			
+	if (unit_cnt==0) return(TRUE);
+	
+		// create unit list
+		
+	unit_list=(group_unit_type*)valloc(unit_cnt*sizeof(group_unit_type));
+	if (unit_list==NULL) return(FALSE);
+	
+	bzero(unit_list,(unit_cnt*sizeof(group_unit_type)));
+	
+	group->unit_count=unit_cnt;
+	group->unit_list=unit_list;
+
+		// fill in unit list
+	
+	portal=map->portals;
+
+	for (n=0;n!=map->nportal;n++) {
+		
+			// meshes
+
+		nmesh=portal->mesh.nmesh;
+		mesh=portal->mesh.meshes;
+
+		for (k=0;k!=nmesh;k++) {
+			if (mesh->group_idx==group_idx) {
+				unit_list->type=group_type_mesh;
+				unit_list->portal_idx=n;
+				unit_list->idx=k;
+				unit_list++;
+			}
+			mesh++;
+		}
+
+		nliq=portal->liquid.nliquid;
+		liq=portal->liquid.liquids;
+
+		for (k=0;k!=nliq;k++) {
+			if (liq->group_idx==group_idx) {
+				unit_list->type=group_type_liquid;
+				unit_list->portal_idx=n;
+				unit_list->idx=k;
+				unit_list++;
+			}
+			liq++;
+		}
+
+		portal++;
 	}
 
 	return(TRUE);
@@ -86,22 +133,22 @@ bool map_group_create_single_segment_list(map_type *map,int group_idx)
 
 /* =======================================================
 
-      Setup Group Segment Lists
+      Setup Group Unit Lists
       
 ======================================================= */
 
-bool map_group_create_segment_list(map_type *map)
+bool map_group_create_unit_list(map_type *map)
 {
 	int				n;
 	
 	for (n=0;n!=map->ngroup;n++) {
-		if (!map_group_create_single_segment_list(map,n)) return(FALSE);
+		if (!map_group_create_single_unit_list(map,n)) return(FALSE);
 	}
 	
 	return(TRUE);
 }
 
-void map_group_dispose_segment_list(map_type *map)
+void map_group_dispose_unit_list(map_type *map)
 {
 	int				n;
 	group_type		*group;
@@ -109,10 +156,10 @@ void map_group_dispose_segment_list(map_type *map)
 	group=map->groups;
 	
 	for (n=0;n!=map->ngroup;n++) {
-		if (group->seg_list!=NULL) free(group->seg_list);
+		if (group->unit_list!=NULL) free(group->unit_list);
 	
-		group->seg_count=0;
-		group->seg_list=NULL;
+		group->unit_count=0;
+		group->unit_list=NULL;
 		
 		group++;
 	}
@@ -126,34 +173,46 @@ void map_group_dispose_segment_list(map_type *map)
 
 void map_group_get_center(map_type *map,int group_idx,int *x,int *y,int *z)
 {
-	int					n,seg_cnt,mx,my,mz;
-	short				*seg_list;
-	segment_type		*seg;
+	int					n,unit_cnt,px,py,pz,mx,my,mz;
 	group_type			*group;
+	group_unit_type		*unit_list;
+	map_liquid_type		*liq;
 	
 	group=&map->groups[group_idx];
 	
-	seg_cnt=group->seg_count;
-	if (seg_cnt==0) {
+	unit_cnt=group->unit_count;
+	if (unit_cnt==0) {
 		*x=*y=*z=0;
 		return;
 	}
 	
-	seg_list=group->seg_list;
+	unit_list=group->unit_list;
 	mx=my=mz=0;
 	
-	for (n=0;n!=seg_cnt;n++) {
-		seg=&map->segments[*seg_list];
+	for (n=0;n!=unit_cnt;n++) {
 
-		mx+=seg->middle.x;
-		my+=seg->middle.y;
-		mz+=seg->middle.z;
+		switch (unit_list->type) {
+
+			case group_type_mesh:
+				map_portal_mesh_get_center(map,unit_list->portal_idx,unit_list->idx,&px,&py,&pz);
+				mx+=px;
+				my+=py;
+				mz+=pz;
+				break;
+
+			case group_type_liquid:
+				liq=&map->portals[unit_list->portal_idx].liquid.liquids[unit_list->idx];
+				mx+=(liq->lft+liq->rgt)>>1;
+				my+=liq->y;
+				mz+=(liq->top+liq->bot)>>1;
+				break;
+		}
 		
-		seg_list++;
+		unit_list++;
 	}
 	
-	*x=(mx/seg_cnt);
-	*y=(my/seg_cnt);
-	*z=(mz/seg_cnt);
+	*x=mx/unit_cnt;
+	*y=my/unit_cnt;
+	*z=mz/unit_cnt;
 }
 

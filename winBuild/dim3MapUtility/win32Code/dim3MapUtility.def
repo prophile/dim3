@@ -73,6 +73,8 @@ EXPORTS
 	map_portal_mesh_count_poly						@224
 	map_portal_mesh_create_transparent_sort_lists	@225
 	map_portal_mesh_dispose_transparent_sort_lists	@226
+	map_portal_mesh_get_center						@227
+	map_portal_mesh_move							@228
 
 	map_portal_liquid_add							@230
 	map_portal_liquid_delete						@231
@@ -89,8 +91,8 @@ EXPORTS
 	map_segments_count_touch						@255
 	map_segment_reset_texture_uvs					@256
 
-	map_group_create_segment_list					@260
-	map_group_dispose_segment_list					@261
+	map_group_create_unit_list						@260
+	map_group_dispose_unit_list						@261
 	map_group_get_center							@262
 
 	map_movement_find								@270

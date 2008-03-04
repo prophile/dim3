@@ -80,6 +80,7 @@ void object_clear_angle(d3ang *ang)
 
 void object_clear_motion(obj_motion *motion)
 {
+	motion->last_y_change=0;
 	motion->vct.x=motion->vct.z=motion->vct.y=0;
 	motion->ang.y=motion->ang.x=motion->ang.z=0;
 }
@@ -293,6 +294,7 @@ void object_set_position(obj_type *obj,int x,int z,int y,float ang_y,float ymove
 	
 	motion=&obj->motion;
 	
+	motion->last_y_change=0;
 	motion->ang.y=ang_y;
 	motion->vct.y=ymove;
 	
@@ -315,6 +317,8 @@ void object_stop(obj_type *obj)
 	obj->forward_move.speed=0;
 	obj->side_move.speed=0;
 	obj->vert_move.speed=0;
+
+	obj->motion.last_y_change=0;
 	
 	obj->force.vct.x=obj->force.vct.z=obj->force.vct.y=0;
 	

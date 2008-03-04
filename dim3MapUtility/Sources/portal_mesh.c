@@ -71,6 +71,7 @@ bool map_portal_mesh_add(map_type *map,int portal_idx,int add_count)
 
 	for (n=start_idx;n!=end_idx;n++) {
 		map_mesh->nvertex=map_mesh->npoly=0;
+		map_mesh->group_idx=-1;
 		map_mesh->vertexes=NULL;
 		map_mesh->polys=NULL;
 		map_mesh++;
@@ -260,3 +261,62 @@ void map_portal_mesh_dispose_transparent_sort_lists(map_type *map)
 	}
 }
 
+/* =======================================================
+
+      Get Mesh Center
+      
+======================================================= */
+
+void map_portal_mesh_get_center(map_type *map,int portal_idx,int mesh_idx,int *x,int *y,int *z)
+{
+	int					n,npoly,mx,my,mz;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+	portal=&map->portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+
+	mx=my=mz=0;
+
+	npoly=mesh->npoly;
+	poly=mesh->polys;
+
+	for (n=0;n!=npoly;n++) {
+		mx+=poly->box.mid.x;
+		my+=poly->box.mid.y;
+		mz+=poly->box.mid.z;
+		poly++;
+	}
+
+	*x=mx/npoly;
+	*y=my/npoly;
+	*z=mz/npoly;
+}
+
+/* =======================================================
+
+      Move Mesh
+      
+======================================================= */
+
+void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,int x,int y,int z)
+{
+	int					n,nvertex;
+	d3pnt				*pt;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+
+	portal=&map->portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+
+	nvertex=mesh->nvertex;
+	pt=mesh->vertexes;
+
+	for (n=0;n!=nvertex;n++) {
+		pt->x+=x;
+		pt->y+=y;
+		pt->z+=z;
+		pt++;
+	}
+}

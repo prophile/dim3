@@ -237,7 +237,7 @@ bool map_start(bool skip_media,char *err_str)
 		// create group lists
 	
 	progress_draw(17);
-	if (!map_group_create_segment_list(&map)) {
+	if (!map_group_create_unit_list(&map)) {
 		progress_shutdown();
 		strcpy(err_str,"Out of memory");
 		return(FALSE);
@@ -488,7 +488,7 @@ void map_end(void)
 		// free group, portal segment, vertex and light lists
 		
 	liquid_create_memory();
-	map_group_dispose_segment_list(&map);
+	map_group_dispose_unit_list(&map);
 	map_portal_mesh_dispose_transparent_sort_lists(&map);
 	map_portal_dispose_segment_lists(&map);		// supergumba -- delete!
 	map_portal_dispose_vertex_lists(&map);

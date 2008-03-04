@@ -410,6 +410,7 @@ typedef struct		{
 //
 
 typedef struct		{
+						int					last_y_change;
 						d3vct				vct;
 						d3ang				ang;
 					} obj_motion;

@@ -155,6 +155,7 @@ void map_convert_liquid(map_type *map,int rn,segment_type *seg)
 	liquid->y_shift=seg->y_shift;
 	
 	liquid->txt_idx=seg->fill;
+	liquid->group_idx=seg->group_idx;
 
 	memmove(&liquid->col,&seg->data.liquid.col,sizeof(d3col));
 
@@ -627,14 +628,25 @@ void map_convert_tesselate_curves_clips(map_type *map)
 
 /* =======================================================
 
-      Get a List of Segment Primitives
+      Get a List of Segment Primitives and Groups
       
 ======================================================= */
 
-int map_convert_get_primitive_list(map_type *map,int rn,int *plist)
+int map_convert_get_primitive_group_list(map_type *map,int rn,int *plist)
 {
 	int				n,k,p_idx,p_cnt;
 	segment_type	*seg;
+
+		// translate all groups into primitives with high IDs
+
+	seg=map->segments;
+
+	for (n=0;n!=map->nsegment;n++) {
+		if ((seg->rn==rn) && (seg->group_idx!=-1)) seg->primitive_uid[0]=seg->group_idx*1000;
+		seg++;
+	}
+
+		// sort primitives
 
 	p_cnt=0;
 	seg=map->segments;
@@ -775,6 +787,11 @@ bool map_convert_segment_section_to_mesh(map_type *map,int rn,int primitive_uid,
 				break;
 
 		}
+
+			// groups are sorted together into meshes
+			// so tranfer any groups to mesh
+
+		map_mesh->group_idx=seg->group_idx;
 	}
 
 	return(TRUE);
@@ -831,8 +848,9 @@ bool map_convert_v1(map_type *map)
 		portal->mesh.nmesh=0;
 
 			// create meshes from all primitives
+			// and groups
 
-		plist_sz=map_convert_get_primitive_list(map,n,plist);
+		plist_sz=map_convert_get_primitive_group_list(map,n,plist);
 
 		for (p=0;p!=plist_sz;p++) {
 

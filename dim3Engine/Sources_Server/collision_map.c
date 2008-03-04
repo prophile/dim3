@@ -97,10 +97,10 @@ void collide_object_ray_trace_points(obj_type *obj,int x_add,int z_add,int *px,i
 
 		// polygon size
 
-	x=obj->pos.x+x_add;
+	x=obj->pos.x;
 	x_sz=obj->size.x;
 
-	z=obj->pos.z+z_add;
+	z=obj->pos.z;
 	z_sz=obj->size.z;
 
 		// get points for that poly face
@@ -664,8 +664,8 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 
 void object_move_normal_2(obj_type *obj)
 {
-	int				rn,x,y,z,xadd,yadd,zadd,
-					sfy,efy,fall_damage;
+	int				rn,x,z,xadd,yadd,zadd,
+					start_y,fall_damage;
     float			xmove,zmove,ymove;
 	bool			old_falling;
 	d3pos			old_pos;
@@ -682,58 +682,33 @@ void object_move_normal_2(obj_type *obj)
 	old_falling=(obj->air_mode==am_falling);
 	memmove(&old_pos,&obj->pos,sizeof(d3pos));
 
-		// get potential movement point
-		// downward y forces are canceled if standing on ground
-
-	x=obj->pos.x+(int)xmove;
-	z=obj->pos.z+(int)zmove;
-
-	y=obj->pos.y;
-
-		// any movement that goes outside a portal
-		// is canceled
-
-	rn=map_find_portal_hint(&map,obj->pos.rn,x,y,z);
-	if (rn==-1) return;
-
-		// find a temporary map y position
-		// for the potential x/z position so
-		// we can ray trace over any height changes
-
-		// supergumba -- this might be a really bad idea -- try moving
-		//					the y before the x/z?
-
-	sfy=find_poly_nearest_stand(obj->pos.x,obj->pos.y,obj->pos.z,(map_enlarge*100),FALSE);
-	if (sfy==-1) sfy=y;
-
-	efy=find_poly_nearest_stand(x,y,z,(map_enlarge*100),FALSE);
-	if (efy==-1) efy=y;
-
-		// move the object in x/z space
+		// get int version of movement
 
 	xadd=(int)xmove;
-	yadd=efy-sfy;
 	zadd=(int)zmove;
 
-//	object_move_xz_slide(obj,&xadd,&yadd,&zadd);		// supergumba -- maybe move y first
+		// move the object in y space at the projected
+		// x/z position
+		//
+		// we want to make sure that we move over land
+		// features before they get blocked by wall-like
+		// features in the map
+		//
+		// also, remember the y change and use that when
+		// running the x/z ray trace collisions to continue
+		// to avoid land features that might block foward
+		// movement
 
-	obj->pos.x+=xadd;
-	obj->pos.z+=zadd;
+	x=obj->pos.x+xadd;
+	z=obj->pos.z+zadd;
 
-	if (!map_find_portal_by_pos(&map,&obj->pos)) {
-		xadd=zadd=0;
-		memmove(&obj->pos,&old_pos,sizeof(d3pos));
-	}
+	start_y=obj->pos.y;
 
-		// pushes and bounces
+	rn=map_find_portal_hint(&map,obj->pos.rn,x,obj->pos.y,z);
+	if (rn==-1) return;
 
-	if ((xadd!=0) || (zadd!=0)) {
-		object_move_with_object(obj,xadd,zadd);
-	}
-
-	object_move_xz_bounce(obj);
-
-		// move the object in y space
+	obj->pos.x=x;
+	obj->pos.z=z;
 
 	yadd=(int)ymove;
 
@@ -745,14 +720,61 @@ void object_move_normal_2(obj_type *obj)
 		object_move_y_down(obj,yadd);
 	}
 
+	obj->pos.x-=xadd;
+	obj->pos.z-=zadd;
+
+		// add in the last y change. we use this
+		// information in the next move to help
+		// the object move over radically bumping
+		// ground
+		//
+		// we only use the y change in x/z movement
+		// if we are going up
+
+	yadd=(obj->pos.y-start_y)+obj->motion.last_y_change;
+	if (yadd>0) yadd=0;
+
+	obj->motion.last_y_change=obj->pos.y-start_y;
+
 		// if on ground, stop all downward motion
+		// and forces
 	
 	if (obj->air_mode==am_ground) {
-		if (obj->force.vct.y>0) obj->force.vct.y=0;			// all external forces downward y forces are stopped
+		if (obj->force.vct.y>0) obj->force.vct.y=0;
 		obj->force.gravity=gravity_start_power;
 	}
+
+		// now we move the object in x/z space
+		//
+		// we also add in the y movement into the
+		// collision detection to help eliminate
+		// land features that could hold up the
+		// object
+
+	object_move_xz_slide(obj,&xadd,&yadd,&zadd);
+
+	obj->pos.x+=xadd;
+	obj->pos.z+=zadd;
+
+	if (!map_find_portal_by_pos(&map,&obj->pos)) {
+		xadd=zadd=0;
+		memmove(&obj->pos,&old_pos,sizeof(d3pos));
+	}
+
+		// objects pushing other objects
+
+	if ((xadd!=0) || (zadd!=0)) {
+		object_move_with_object(obj,xadd,zadd);
+	}
+
+		// objects with automatic bouncing
+
+	object_move_xz_bounce(obj);
 	
 		// check for objects that have finished falling
+		//
+		// here we do any damage and send any landing
+		// events
 	
     if (obj->air_mode!=am_falling) {
     
@@ -779,7 +801,7 @@ void object_move_normal_2(obj_type *obj)
 		return;
 	}
 	
-		// objects that are currently falling
+		// check for objects that have started falling
 	
 	if ((obj->fall.dist>map_enlarge) && (!obj->fall.change)) {
 		scripts_post_event_console(&obj->attach,sd_event_fall,0,0);

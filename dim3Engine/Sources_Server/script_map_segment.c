@@ -67,7 +67,7 @@ JSFunctionSpec	map_segment_functions[]={
 							{"setTextureAlpha",		js_map_segment_set_texture_alpha_func,	2},
 							{0}};
 
-extern void segment_move(int group_idx,int xmove,int zmove,int ymove);
+extern void group_move(int group_idx,int xmove,int zmove,int ymove);
 extern void segment_show(int group_idx,bool show);
 extern void segment_solid(int group_idx,bool solid);
 extern void segment_texture(int group_idx,int index);
@@ -102,7 +102,7 @@ JSBool js_map_segment_move_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *
 	group_idx=script_find_group_segment_from_name(argv[0]);
 	if (group_idx==-1) return(JS_FALSE);
 	
-	segment_move(group_idx,JSVAL_TO_INT(argv[1]),JSVAL_TO_INT(argv[2]),JSVAL_TO_INT(argv[3]));
+	group_move(group_idx,JSVAL_TO_INT(argv[1]),JSVAL_TO_INT(argv[2]),JSVAL_TO_INT(argv[3]));
 	return(JS_TRUE);
 }
 
