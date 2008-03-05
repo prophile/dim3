@@ -72,7 +72,7 @@ extern node_type* script_find_node_from_idx_arg(jsval arg);
 extern hud_text_type* script_find_text_from_name(jsval arg);
 extern hud_bitmap_type* script_find_bitmap_from_name(jsval arg);
 extern hud_bar_type* script_find_bar_from_name(jsval arg);
-extern int script_find_group_segment_from_name(jsval arg);
+extern int script_find_group_from_name(jsval arg);
 extern int script_find_map_movement_from_name(jsval arg);
 
 extern void script_add_global_map_object(JSObject *parent_obj);

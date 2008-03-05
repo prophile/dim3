@@ -711,6 +711,11 @@ bool map_portal_create_single_vertex_list(map_type *map,int rn,bool high_quality
 
 	bzero(portal->vertexes.pcolor,sz);
 
+		// hit list
+
+	portal->vertexes.phit=(unsigned char*)valloc(portal->vertexes.nvlist);
+	if (portal->vertexes.phit==NULL) return(FALSE);
+
 	return(TRUE);
 }
 
@@ -724,6 +729,7 @@ void map_portal_dispose_single_vertex_list(map_type *map,int rn)
 	free(portal->vertexes.pvert);
 	free(portal->vertexes.pcoord);
 	free(portal->vertexes.pcolor);
+	free(portal->vertexes.phit);
 }
 
 /* =======================================================

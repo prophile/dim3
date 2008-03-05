@@ -164,7 +164,7 @@ hud_bar_type* script_find_bar_from_name(jsval arg)
       
 ======================================================= */
 
-int script_find_group_segment_from_name(jsval arg)
+int script_find_group_from_name(jsval arg)
 {
 	int				idx;
 	char			name[name_str_len];

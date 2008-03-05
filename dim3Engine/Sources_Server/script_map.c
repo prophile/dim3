@@ -46,7 +46,7 @@ extern void script_add_map_fog_color_object(JSObject *parent_obj);
 extern void script_add_map_spot_object(JSObject *parent_obj);
 extern void script_add_map_node_object(JSObject *parent_obj);
 extern void script_add_map_object_object(JSObject *parent_obj);
-extern void script_add_map_segment_object(JSObject *parent_obj);
+extern void script_add_map_group_object(JSObject *parent_obj);
 extern void script_add_map_movement_object(JSObject *parent_obj);
 extern void script_add_map_action_object(JSObject *parent_obj);
 
@@ -70,7 +70,7 @@ void script_add_global_map_object(JSObject *parent_obj)
 	script_add_map_spot_object(j_obj);
 	script_add_map_node_object(j_obj);
 	script_add_map_object_object(j_obj);
-	script_add_map_segment_object(j_obj);
+	script_add_map_group_object(j_obj);
 	script_add_map_movement_object(j_obj);
 	script_add_map_action_object(j_obj);
 }

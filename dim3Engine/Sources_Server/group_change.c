@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: Segment Changes
+ Usage: Group Changes
 
 ***************************** License ********************************
 
@@ -48,12 +48,13 @@ extern bool map_movement_next_move(int movement_idx,attach_type *attach);
 
 void group_move(int group_idx,int xmove,int zmove,int ymove)
 {
-	int					n,rn,idx,unit_cnt;
+	int					n,unit_cnt;
 	bool				move_objs;
 	unsigned char		portal_hit[max_portal];
 	group_type			*group;
 	group_unit_type		*unit_list;
 	portal_type			*portal;
+	map_liquid_type		*liq;
 
 		// will need to recalc lighting in
 		// portals with moved segments
@@ -79,7 +80,10 @@ void group_move(int group_idx,int xmove,int zmove,int ymove)
 
 			case group_type_mesh:
 
-				map_portal_mesh_move(&map,unit_list->portal_idx,unit_list->idx,xmove,ymove,zmove);
+		//		if (portal->mesh.meshes[
+				// supergumba mesh moveable flag
+
+				map_portal_mesh_move(&map,unit_list->portal_idx,unit_list->idx,TRUE,xmove,ymove,zmove);
 
 					// supergumba -- move objects with segments!
 
@@ -91,12 +95,12 @@ void group_move(int group_idx,int xmove,int zmove,int ymove)
 
 				if (portal_hit[unit_list->portal_idx]==0x0) {
 					portal_hit[unit_list->portal_idx]=0x1;
-					map_portal_light_check_changes_reset(unit_list->portal_idx);
+					map_portal_light_check_changes_reset(portal);
 				}
 
 				break;
 
-			case group_liquid_type:
+			case group_type_liquid:
 
 				liq=&portal->liquid.liquids[unit_list->idx];
 
@@ -149,7 +153,7 @@ void group_move(int group_idx,int xmove,int zmove,int ymove)
       
 ======================================================= */
 
-void segment_moves_run(void)
+void group_moves_run(void)
 {
 	int				n,x,y,z,user_id;
 	move_type		*move;
@@ -224,8 +228,9 @@ void segment_moves_run(void)
       
 ======================================================= */
 
-void segment_show(int group_idx,bool show)
+void group_show(int group_idx,bool show)
 {
+	/* supergumba
 	int				n;
 	short			*seg_list;
 	segment_type	*seg;
@@ -241,10 +246,12 @@ void segment_show(int group_idx,bool show)
 		map_portal_set_segment_list_changes(&map,seg->rn);
 		seg_list++;
 	}
+	*/
 }
 
-void segment_solid(int group_idx,bool solid)
+void group_solid(int group_idx,bool solid)
 {
+	/* supergumba
 	int				n;
 	short			*seg_list;
 	segment_type	*seg;
@@ -260,6 +267,7 @@ void segment_solid(int group_idx,bool solid)
 		map_portal_set_segment_list_changes(&map,seg->rn);
 		seg_list++;
 	}
+	*/
 }
 
 /* =======================================================
@@ -268,8 +276,9 @@ void segment_solid(int group_idx,bool solid)
       
 ======================================================= */
 
-void segment_texture(int group_idx,int index)
+void group_texture(int group_idx,int index)
 {
+	/* supergumba
 	int				n;
 	short			*seg_list;
 	segment_type	*seg;
@@ -284,10 +293,12 @@ void segment_texture(int group_idx,int index)
 		seg->touched=TRUE;
 		seg_list++;
 	}
+	*/
 }
 
-void segment_texture_offset(int group_idx,float x_offset,float y_offset)
+void group_texture_offset(int group_idx,float x_offset,float y_offset)
 {
+	/* supergumba
 	int				n;
 	short			*seg_list;
 	segment_type	*seg;
@@ -303,10 +314,12 @@ void segment_texture_offset(int group_idx,float x_offset,float y_offset)
 		seg->touched=TRUE;
 		seg_list++;
 	}
+	*/
 }
 
-void segment_texture_shift(int group_idx,float x_shift,float y_shift)
+void group_texture_shift(int group_idx,float x_shift,float y_shift)
 {
+	/* supergumba
 	int				n;
 	short			*seg_list;
 	segment_type	*seg;
@@ -322,10 +335,12 @@ void segment_texture_shift(int group_idx,float x_shift,float y_shift)
 		seg->touched=TRUE;
 		seg_list++;
 	}
+	*/
 }
 
-void segment_texture_alpha(int group_idx,float alpha)
+void group_texture_alpha(int group_idx,float alpha)
 {
+	/* supergumba
 	int				n;
 	short			*seg_list;
 	segment_type	*seg;
@@ -340,5 +355,6 @@ void segment_texture_alpha(int group_idx,float alpha)
 		seg->touched=TRUE;
 		seg_list++;
 	}
+	*/
 }
 

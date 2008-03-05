@@ -467,6 +467,10 @@ SOURCE=..\..\dim3Engine\Sources_Server\game_time.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3Engine\Sources_Server\group_change.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Engine\Sources_Server\halos.c
 # End Source File
 # Begin Source File
@@ -731,6 +735,10 @@ SOURCE=..\..\dim3Engine\Sources_Server\script_map_fog_color.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3Engine\Sources_Server\script_map_group.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Engine\Sources_Server\script_map_info.c
 # End Source File
 # Begin Source File
@@ -748,10 +756,6 @@ SOURCE=..\..\dim3Engine\Sources_Server\script_map_node.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_Server\script_map_object.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_map_segment.c
 # End Source File
 # Begin Source File
 
@@ -1132,10 +1136,6 @@ SOURCE=..\..\dim3Engine\Sources_Server\scripts_run.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_Server\scripts_state.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\segment_change.c
 # End Source File
 # Begin Source File
 

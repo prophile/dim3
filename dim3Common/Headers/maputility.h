@@ -464,6 +464,7 @@ typedef struct		{
 typedef struct		{
 						int							nvlist;
 						float						*pvert,*pcoord,*pcolor;
+						unsigned char				*phit;
 						portal_vertex_list_type		*vertex_list;
 					} portal_vertex_type;
 
@@ -807,7 +808,7 @@ extern int map_portal_mesh_count_poly(map_type *map,int portal_idx);
 extern bool map_portal_mesh_create_transparent_sort_lists(map_type *map);
 extern void map_portal_mesh_dispose_transparent_sort_lists(map_type *map);
 extern void map_portal_mesh_get_center(map_type *map,int portal_idx,int mesh_idx,int *x,int *y,int *z);
-extern void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,int x,int y,int z);
+extern void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool do_portal_vertex_list,int x,int y,int z);
 
 extern bool map_portal_liquid_add(map_type *map,int portal_idx,int add_count);
 extern bool map_portal_liquid_delete(map_type *map,int portal_idx,int liquid_idx);

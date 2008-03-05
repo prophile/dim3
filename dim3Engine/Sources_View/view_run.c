@@ -44,7 +44,6 @@ extern view_type			view;
 extern setup_type			setup;
 
 extern void run_objects_animations(void);
-extern void segment_moves_run(void);
 extern void ambient_add_objects(void);
 extern void ambient_add_map_sounds(void);
 extern void map_set_ambient(char *name,float pitch);

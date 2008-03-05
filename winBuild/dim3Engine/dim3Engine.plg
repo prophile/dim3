@@ -6,56 +6,313 @@
 --------------------Configuration: dim3Engine - Win32 Release--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSP96F8.tmp" with contents
+Creating temporary file "C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSP9759.tmp" with contents
 [
-/nologo /MD /W3 /Z7 /O2 /I "..\win32Includes\pthreads" /I "..\win32Includes\GLEW" /I "..\win32Includes\ZLib" /I "..\win32Includes\SDL" /I "..\win32Includes\OpenAL" /I "..\win32Includes\JS" /I "..\win32Includes\PNG" /I "..\..\dim3Engine\Headers_View" /I "..\..\dim3Engine\Headers_Server" /I "..\..\dim3Engine\Headers" /I "..\..\dim3MapUtility\Headers" /I "..\..\dim3ModelUtility\Headers" /I "..\..\dim3BaseUtility\Headers" /I "..\..\dim3Common\Headers" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "D3_PCH" /D "D3_ENGINE" /Fp"Release/dim3Engine.pch" /YX"dim3Engine.h" /Fo"Release/" /Fd"Release/" /FD /c 
-"C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c"
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"Release/dim3 Engine.pdb" /machine:I386 /out:"..\..\..\dim3\dim3 Engine.exe" 
+.\Release\app.obj
+.\Release\client.obj
+.\Release\debug.obj
+.\Release\file.obj
+.\Release\game.obj
+.\Release\loop.obj
+.\Release\main.obj
+.\Release\map.obj
+.\Release\box.obj
+.\Release\camera.obj
+.\Release\camera_chase.obj
+.\Release\camera_fpp.obj
+.\Release\camera_static.obj
+.\Release\chooser.obj
+.\Release\collision.obj
+.\Release\collision_map.obj
+.\Release\collision_utility.obj
+.\Release\console.obj
+.\Release\crosshair.obj
+.\Release\decals.obj
+.\Release\effects.obj
+.\Release\effects_spawn.obj
+.\Release\game_time.obj
+.\Release\group_change.obj
+.\Release\halos.obj
+.\Release\hud.obj
+.\Release\item.obj
+.\Release\map_light_trace.obj
+.\Release\map_movement.obj
+.\Release\map_ray_trace.obj
+.\Release\map_xz_check.obj
+.\Release\map_y_check.obj
+.\Release\menu.obj
+.\Release\model.obj
+.\Release\model_animate.obj
+.\Release\model_draw_setup.obj
+.\Release\model_effect.obj
+.\Release\model_fade.obj
+.\Release\model_mesh.obj
+.\Release\obj_action.obj
+.\Release\obj_auto_walk.obj
+.\Release\obj_find.obj
+.\Release\obj_grow.obj
+.\Release\obj_held.obj
+.\Release\obj_liquid.obj
+.\Release\obj_move.obj
+.\Release\obj_rigid_body.obj
+.\Release\obj_state.obj
+.\Release\obj_turn.obj
+.\Release\obj_watch.obj
+.\Release\objects.obj
+.\Release\particles.obj
+.\Release\player.obj
+.\Release\projectile.obj
+.\Release\projectile_hit.obj
+.\Release\projectile_hitscan.obj
+.\Release\projectile_move.obj
+.\Release\projectile_setup.obj
+.\Release\remote.obj
+.\Release\rings.obj
+.\Release\scenery.obj
+.\Release\script_camera.obj
+.\Release\script_camera_angle.obj
+.\Release\script_camera_chase.obj
+.\Release\script_camera_chase_angle.obj
+.\Release\script_camera_chase_offset.obj
+.\Release\script_camera_chase_slop.obj
+.\Release\script_camera_plane.obj
+.\Release\script_camera_position.obj
+.\Release\script_camera_setting.obj
+.\Release\script_camera_state.obj
+.\Release\script_camera_static_position.obj
+.\Release\script_data.obj
+.\Release\script_event.obj
+.\Release\script_game_join.obj
+.\Release\script_game_score.obj
+.\Release\script_game_setting.obj
+.\Release\script_interface.obj
+.\Release\script_interface_bar.obj
+.\Release\script_interface_bitmap.obj
+.\Release\script_interface_console.obj
+.\Release\script_interface_fade.obj
+.\Release\script_interface_interaction.obj
+.\Release\script_interface_radar.obj
+.\Release\script_interface_screen.obj
+.\Release\script_interface_text.obj
+.\Release\script_map.obj
+.\Release\script_map_action.obj
+.\Release\script_map_fog.obj
+.\Release\script_map_fog_color.obj
+.\Release\script_map_group.obj
+.\Release\script_map_info.obj
+.\Release\script_map_light_color.obj
+.\Release\script_map_movement.obj
+.\Release\script_map_node.obj
+.\Release\script_map_object.obj
+.\Release\script_map_setting.obj
+.\Release\script_map_spot.obj
+.\Release\script_model.obj
+.\Release\script_model_animation.obj
+.\Release\script_model_bone.obj
+.\Release\script_model_fill.obj
+.\Release\script_model_halo.obj
+.\Release\script_model_hilite_color.obj
+.\Release\script_model_light.obj
+.\Release\script_model_light_color.obj
+.\Release\script_model_mesh.obj
+.\Release\script_model_offset.obj
+.\Release\script_model_rotate.obj
+.\Release\script_model_shadow.obj
+.\Release\script_model_spin.obj
+.\Release\script_obj_angle.obj
+.\Release\script_obj_click.obj
+.\Release\script_obj_forward_speed.obj
+.\Release\script_obj_health.obj
+.\Release\script_obj_held.obj
+.\Release\script_obj_hit.obj
+.\Release\script_obj_hit_angle.obj
+.\Release\script_obj_hit_position.obj
+.\Release\script_obj_lock.obj
+.\Release\script_obj_look.obj
+.\Release\script_obj_melee.obj
+.\Release\script_obj_motion_angle.obj
+.\Release\script_obj_motion_vector.obj
+.\Release\script_obj_object_speed.obj
+.\Release\script_obj_pickup.obj
+.\Release\script_obj_position.obj
+.\Release\script_obj_radar.obj
+.\Release\script_obj_rigid_body.obj
+.\Release\script_obj_score.obj
+.\Release\script_obj_setting.obj
+.\Release\script_obj_side_speed.obj
+.\Release\script_obj_sight.obj
+.\Release\script_obj_size.obj
+.\Release\script_obj_status.obj
+.\Release\script_obj_touch.obj
+.\Release\script_obj_touch_angle.obj
+.\Release\script_obj_touch_position.obj
+.\Release\script_obj_turn_speed.obj
+.\Release\script_obj_vehicle.obj
+.\Release\script_obj_vert_speed.obj
+.\Release\script_obj_watch.obj
+.\Release\script_obj_weapon.obj
+.\Release\script_obj_weapon_fire.obj
+.\Release\script_proj_action.obj
+.\Release\script_proj_hit.obj
+.\Release\script_proj_mark.obj
+.\Release\script_proj_melee.obj
+.\Release\script_proj_motion_angle.obj
+.\Release\script_proj_motion_vector.obj
+.\Release\script_proj_origin.obj
+.\Release\script_proj_position.obj
+.\Release\script_proj_push.obj
+.\Release\script_proj_setting.obj
+.\Release\script_proj_size.obj
+.\Release\script_proj_speed.obj
+.\Release\script_sound.obj
+.\Release\script_spawn.obj
+.\Release\script_timers.obj
+.\Release\script_utility.obj
+.\Release\script_utility_angle.obj
+.\Release\script_utility_pack.obj
+.\Release\script_utility_point.obj
+.\Release\script_utility_random.obj
+.\Release\script_weap_alt_ammo.obj
+.\Release\script_weap_ammo.obj
+.\Release\script_weap_crosshair.obj
+.\Release\script_weap_crosshair_color.obj
+.\Release\script_weap_crosshair_empty_color.obj
+.\Release\script_weap_crosshair_pickup_color.obj
+.\Release\script_weap_fire.obj
+.\Release\script_weap_hand.obj
+.\Release\script_weap_hand_angle.obj
+.\Release\script_weap_hand_position.obj
+.\Release\script_weap_kickback.obj
+.\Release\script_weap_melee.obj
+.\Release\script_weap_projectile.obj
+.\Release\script_weap_recoil.obj
+.\Release\script_weap_setting.obj
+.\Release\script_weap_zoom.obj
+.\Release\scripts.obj
+.\Release\scripts_convert.obj
+.\Release\scripts_data.obj
+.\Release\scripts_defines.obj
+.\Release\scripts_events.obj
+.\Release\scripts_file.obj
+.\Release\scripts_lookup.obj
+.\Release\scripts_move.obj
+.\Release\scripts_objects.obj
+.\Release\scripts_run.obj
+.\Release\scripts_state.obj
+.\Release\server.obj
+.\Release\server_run.obj
+.\Release\spots_attach.obj
+.\Release\weapon.obj
+.\Release\weapon_melee.obj
+.\Release\weapon_projectile.obj
+.\Release\weapon_select.obj
+.\Release\xml_crosshairs.obj
+.\Release\xml_halos.obj
+.\Release\xml_interface.obj
+.\Release\xml_marks.obj
+.\Release\xml_particles.obj
+.\Release\xml_rings.obj
+.\Release\xml_setup.obj
+.\Release\al_ambient.obj
+.\Release\al_buffer.obj
+.\Release\al_file.obj
+.\Release\al_music.obj
+.\Release\al_play.obj
+.\Release\al_setup.obj
+.\Release\ambients.obj
+.\Release\chooser_draw.obj
+.\Release\console_draw.obj
+.\Release\crosshair_draw.obj
+.\Release\cursor.obj
+.\Release\decals_draw.obj
+.\Release\effects_draw.obj
+.\Release\effects_lights.obj
+.\Release\elemets.obj
+.\Release\error.obj
+.\Release\fade.obj
+.\Release\files.obj
+.\Release\fog.obj
+.\Release\gl_arrays.obj
+.\Release\gl_check.obj
+.\Release\gl_frames.obj
+.\Release\gl_renderer.obj
+.\Release\gl_shader.obj
+.\Release\gl_shadow.obj
+.\Release\gl_shadow_frame_buffer.obj
+.\Release\gl_shadow_win32.obj
+.\Release\gl_text.obj
+.\Release\gl_texture.obj
+.\Release\gui.obj
+.\Release\halo_draw.obj
+.\Release\hand.obj
+.\Release\hud_draw.obj
+.\Release\input.obj
+.\Release\input_joystick.obj
+.\Release\input_keyboard.obj
+.\Release\input_mouse.obj
+.\Release\intro.obj
+.\Release\join.obj
+.\Release\light.obj
+.\Release\map_pick.obj
+.\Release\menu_draw.obj
+.\Release\model_color.obj
+.\Release\model_draw.obj
+.\Release\movie.obj
+.\Release\network_draw.obj
+.\Release\particles_draw.obj
+.\Release\player_input.obj
+.\Release\progress.obj
+.\Release\radar_draw.obj
+.\Release\rain.obj
+.\Release\remote_status.obj
+.\Release\rings_draw.obj
+.\Release\segment_liquid.obj
+.\Release\segment_render_opaque.obj
+.\Release\segment_render_setup.obj
+.\Release\segment_render_transparent.obj
+.\Release\setup.obj
+.\Release\shadow_draw.obj
+.\Release\shadow_volume.obj
+.\Release\sky.obj
+.\Release\story.obj
+.\Release\tint.obj
+.\Release\title.obj
+.\Release\view.obj
+.\Release\view_bounds.obj
+.\Release\view_draw.obj
+.\Release\view_images.obj
+.\Release\view_run.obj
+.\Release\view_setup.obj
+.\Release\view_sight_path.obj
+.\Release\view_vertex_light.obj
+.\Release\view_vertex_list.obj
+.\Release\xml_action.obj
+.\Release\xml_sound.obj
+.\Release\zoom_draw.obj
+"..\..\..\..\Program Files\Microsoft Visual Studio\VC98\Lib\WSOCK32.LIB"
+"..\..\..\..\Program Files\Microsoft Visual Studio\VC98\Lib\OPENGL32.LIB"
+"..\..\..\..\Program Files\Microsoft Visual Studio\VC98\Lib\GLU32.LIB"
+..\win32Includes\pthreads\pthreadVC2.lib
+..\win32Includes\GLEW\glew32.lib
+..\win32Includes\SDL\SDLmain.lib
+..\win32Includes\SDL\SDL.lib
+..\win32Includes\OpenAL\wrap_oal.lib
+..\win32Includes\ZLib\zdll.lib
+..\win32Includes\PNG\libpng.lib
+..\win32Includes\JS\js32.lib
+..\dim3BaseUtility\Release\dim3BaseUtility.lib
+..\dim3ModelUtility\Release\dim3ModelUtility.lib
+..\dim3MapUtility\Release\dim3MapUtility.lib
 ]
-Creating command line "cl.exe @C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSP96F8.tmp" 
+Creating command line "link.exe @C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSP9759.tmp"
 <h3>Output Window</h3>
-Compiling...
-segment_change.c
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(94) : warning C4047: 'function' : 'struct portal_type *' differs in levels of indirection from 'short '
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(94) : warning C4024: 'map_portal_light_check_changes_reset' : different types for formal and actual parameter 1
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(99) : error C2065: 'group_liquid_type' : undeclared identifier
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(99) : error C2051: case expression not constant
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(101) : error C2065: 'liq' : undeclared identifier
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(101) : warning C4047: '=' : 'int ' differs in levels of indirection from 'struct map_liquid_type *'
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(103) : error C2223: left of '->lft' must point to struct/union
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(104) : error C2223: left of '->rgt' must point to struct/union
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(105) : error C2223: left of '->top' must point to struct/union
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(106) : error C2223: left of '->bot' must point to struct/union
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(107) : error C2223: left of '->y' must point to struct/union
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(235) : error C2039: 'seg_list' : is not a member of 'group_type'
-        ..\..\dim3Common\Headers\maputility.h(231) : see declaration of 'group_type'
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(237) : error C2039: 'seg_count' : is not a member of 'group_type'
-        ..\..\dim3Common\Headers\maputility.h(231) : see declaration of 'group_type'
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(254) : error C2039: 'seg_list' : is not a member of 'group_type'
-        ..\..\dim3Common\Headers\maputility.h(231) : see declaration of 'group_type'
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(256) : error C2039: 'seg_count' : is not a member of 'group_type'
-        ..\..\dim3Common\Headers\maputility.h(231) : see declaration of 'group_type'
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(279) : error C2039: 'seg_list' : is not a member of 'group_type'
-        ..\..\dim3Common\Headers\maputility.h(231) : see declaration of 'group_type'
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(281) : error C2039: 'seg_count' : is not a member of 'group_type'
-        ..\..\dim3Common\Headers\maputility.h(231) : see declaration of 'group_type'
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(297) : error C2039: 'seg_list' : is not a member of 'group_type'
-        ..\..\dim3Common\Headers\maputility.h(231) : see declaration of 'group_type'
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(299) : error C2039: 'seg_count' : is not a member of 'group_type'
-        ..\..\dim3Common\Headers\maputility.h(231) : see declaration of 'group_type'
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(316) : error C2039: 'seg_list' : is not a member of 'group_type'
-        ..\..\dim3Common\Headers\maputility.h(231) : see declaration of 'group_type'
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(318) : error C2039: 'seg_count' : is not a member of 'group_type'
-        ..\..\dim3Common\Headers\maputility.h(231) : see declaration of 'group_type'
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(335) : error C2039: 'seg_list' : is not a member of 'group_type'
-        ..\..\dim3Common\Headers\maputility.h(231) : see declaration of 'group_type'
-C:\Gumba\dim3Code\dim3Engine\Sources_Server\segment_change.c(337) : error C2039: 'seg_count' : is not a member of 'group_type'
-        ..\..\dim3Common\Headers\maputility.h(231) : see declaration of 'group_type'
-Error executing cl.exe.
+Linking...
 
 
 
 <h3>Results</h3>
-segment_change.obj - 20 error(s), 3 warning(s)
+dim3 Engine.exe - 0 error(s), 0 warning(s)
 </pre>
 </body>
 </html>
