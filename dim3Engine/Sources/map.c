@@ -230,7 +230,7 @@ bool map_start(bool skip_media,char *err_str)
 		// prepare map surfaces
 	
 	progress_draw(15);
-	map_prepare(&map,setup.curve_mode);
+	map_prepare(&map);
 
 	mesh_normal_smooth_init();
 	

@@ -136,17 +136,18 @@ void map_prepare_set_mesh_poly_slope(map_mesh_type *mesh,map_mesh_poly_type *mes
 
 /* =======================================================
 
-      Prepare Segments
+      Prepare Map
       
 ======================================================= */
 
-void map_prepare_segments(map_type *map)
+void map_prepare(map_type *map)
 {
 	int					i,n,k,t;
 	d3pnt				*pt;
 	portal_type			*portal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*mesh_poly;
+	map_liquid_type		*liq;
 	node_type			*node;
 	map_scenery_type	*scenery;
 	map_light_type		*light;
@@ -229,6 +230,18 @@ void map_prepare_segments(map_type *map)
 			mesh++;
 		}
 		
+			// liquids
+
+		liq=portal->liquid.liquids;
+		
+		for (n=0;n!=portal->liquid.nliquid;n++) {
+			liq->lft+=portal->x;
+			liq->rgt+=portal->x;
+			liq->top+=portal->z;
+			liq->bot+=portal->z;
+			liq++;
+		}
+		
 			// fix portal heights
 
 		if ((portal->ty==99999) && (portal->by!=0)) portal->ty=portal->by;
@@ -303,249 +316,5 @@ void map_prepare_segments(map_type *map)
 		spot->pos.z=spot->pos.z+portal->z;
 		spot++;
 	}
-
-		// supergumba -- all needs to be deleted, etc
-
-		// segments
-    
-	/*
-    seg=map->segments;
-    
-	for (i=0;i!=map->nsegment;i++) {
-		portal=&map->portals[seg->rn];
-		
-		seg->txt_offset=0;
-		seg->simple_tessel=FALSE;
-		
-		switch (seg->type) {
-		
-			case sg_wall:
-				seg->data.wall.lx=(seg->data.wall.lx*map_enlarge)+portal->x;
-				seg->data.wall.rx=(seg->data.wall.rx*map_enlarge)+portal->x;
-				seg->data.wall.lz=(seg->data.wall.lz*map_enlarge)+portal->z;
-				seg->data.wall.rz=(seg->data.wall.rz*map_enlarge)+portal->z;
-				seg->data.wall.ty=seg->data.wall.ty*map_enlarge;
-				seg->data.wall.by=(seg->data.wall.by+1)*map_enlarge;
-                
-				if (seg->data.wall.ty<portal->ty) portal->ty=seg->data.wall.ty;
-				if (seg->data.wall.by>portal->by) portal->by=seg->data.wall.by;
-                
-                map_prepare_create_wall_segment_polygon(seg);
-                map_prepare_create_wall_segment_uv(seg);
- 				break;
-				
-			case sg_floor:
-            case sg_ceiling:
-				ptsz=(int)seg->data.fc.ptsz;
-                
-				for ((t=0);(t!=ptsz);t++) {
-					seg->data.fc.x[t]=(seg->data.fc.x[t]*map_enlarge)+portal->x;
-					seg->data.fc.z[t]=(seg->data.fc.z[t]*map_enlarge)+portal->z;
-                    seg->data.fc.y[t]=seg->data.fc.y[t]*map_enlarge;
-                    
-					if (seg->data.fc.y[t]<portal->ty) portal->ty=seg->data.fc.y[t];
-					if (seg->data.fc.y[t]>portal->by) portal->by=seg->data.fc.y[t];
-				}
-				
-				if (ptsz==3) seg->simple_tessel=TRUE;
-
-				map_prepare_set_fc_segment_square(seg);
-                map_prepare_create_fc_segment_uv(seg);
-				map_prepare_create_fc_segment_slope(seg);
-				break;
-
-			case sg_liquid:
-				seg->data.liquid.lft=(seg->data.liquid.lft*map_enlarge)+portal->x;
-				seg->data.liquid.rgt=(seg->data.liquid.rgt*map_enlarge)+portal->x;
-				seg->data.liquid.top=(seg->data.liquid.top*map_enlarge)+portal->z;
-				seg->data.liquid.bot=(seg->data.liquid.bot*map_enlarge)+portal->z;
-
-				seg->data.liquid.y=(seg->data.liquid.y+1)*map_enlarge;
-				break;
-				
-			case sg_ambient_wall:
-				seg->data.ambient_wall.lx=(seg->data.ambient_wall.lx*map_enlarge)+portal->x;
-				seg->data.ambient_wall.rx=(seg->data.ambient_wall.rx*map_enlarge)+portal->x;
-				seg->data.ambient_wall.lz=(seg->data.ambient_wall.lz*map_enlarge)+portal->z;
-				seg->data.ambient_wall.rz=(seg->data.ambient_wall.rz*map_enlarge)+portal->z;
-				seg->data.ambient_wall.ty=seg->data.ambient_wall.ty*map_enlarge;
-				seg->data.ambient_wall.by=(seg->data.ambient_wall.by+1)*map_enlarge;
-				
-                map_prepare_create_push_ambient_wall_segment_polygon(seg);
-                map_prepare_create_ambient_wall_segment_uv(seg);
-				
-				seg->simple_tessel=TRUE;
-				break;
-				
-			case sg_ambient_fc:
-				ptsz=(int)seg->data.ambient_fc.ptsz;
-                
-				for ((t=0);(t!=ptsz);t++) {
-					seg->data.ambient_fc.x[t]=(seg->data.ambient_fc.x[t]*map_enlarge)+portal->x;
-					seg->data.ambient_fc.z[t]=(seg->data.ambient_fc.z[t]*map_enlarge)+portal->z;
-                    seg->data.ambient_fc.y[t]=seg->data.ambient_fc.y[t]*map_enlarge;
-				}
-				
-				map_prepare_set_ambient_fc_segment_square(seg);
-				map_prepare_push_ambient_fc_segment_polygon(seg);
-                map_prepare_create_ambient_fc_segment_uv(seg);
-				
-				seg->simple_tessel=TRUE;
-				break;
-							
-		}
-
-			// quick fix for segments with a shift
-			// but shiftable bit not set
-
-		if ((seg->x_shift!=0.0f) || (seg->y_shift!=0.0f)) seg->shiftable=TRUE;
-        
-        seg++;
-	}
-	
-		// fix portal heights
-	
-    portal=map->portals;
-    
-	for ((i=0);(i!=map->nportal);i++) {
-		if ((portal->ty==99999) && (portal->by!=0)) portal->ty=portal->by;
-		if ((portal->by==0) && (portal->ty!=99999)) portal->by=portal->ty;
-		if ((portal->ty==99999) || (portal->by==0)) portal->ty=portal->by=0;
-        portal++;
-	}
-
-		// map scenery
-	
-	scenery=map->sceneries;
-	
-	for ((i=0);(i!=map->nscenery);i++) {
-		portal=&map->portals[scenery->pos.rn];
-		scenery->pos.x=(scenery->pos.x*map_enlarge)+portal->x;
-		scenery->pos.y=(scenery->pos.y+1)*map_enlarge;
-		scenery->pos.z=(scenery->pos.z*map_enlarge)+portal->z;
-		scenery++;
-	}
-		
-		// map lights
-	
-	light=map->lights;
-	
-	for ((i=0);(i!=map->nlight);i++) {
-		portal=&map->portals[light->pos.rn];
-		light->intensity*=map_enlarge;
-		light->pos.x=(light->pos.x*map_enlarge)+portal->x;
-		light->pos.y=(light->pos.y+1)*map_enlarge;
-		light->pos.z=(light->pos.z*map_enlarge)+portal->z;
-		light++;
-	}
-	
-		// map sounds
-	
-	sound=map->sounds;
-	
-	for ((i=0);(i!=map->nsound);i++) {
-		portal=&map->portals[sound->pos.rn];
-		sound->pos.x=(sound->pos.x*map_enlarge)+portal->x;
-		sound->pos.y=(sound->pos.y+1)*map_enlarge;
-		sound->pos.z=(sound->pos.z*map_enlarge)+portal->z;
-		
-		sound++;
-	}
-	
-		// map particles
-	
-	particle=map->particles;
-	
-	for ((i=0);(i!=map->nparticle);i++) {
-		portal=&map->portals[particle->pos.rn];
-		particle->pos.x=(particle->pos.x*map_enlarge)+portal->x;
-		particle->pos.y=(particle->pos.y+1)*map_enlarge;
-		particle->pos.z=(particle->pos.z*map_enlarge)+portal->z;
-		
-		particle++;
-	}
-	
-		// nodes
-
-	node=map->nodes;
-	
-	for ((i=0);(i!=map->nnode);i++) {
-        node->idx=i;
-		portal=&map->portals[node->pos.rn];
-		node->pos.x=(node->pos.x*map_enlarge)+portal->x;
-		node->pos.y=(node->pos.y+1)*map_enlarge;
-		node->pos.z=(node->pos.z*map_enlarge)+portal->z;
-		node++;
-	}
-    
-		// object starts
-		
-	spot=map->spots;
-
-	for ((i=0);(i!=map->nspot);i++) {
-		portal=&map->portals[spot->pos.rn];
-		spot->pos.x=(spot->pos.x*map_enlarge)+portal->x;
-		spot->pos.y=(spot->pos.y+1)*map_enlarge;
-		spot->pos.z=(spot->pos.z*map_enlarge)+portal->z;
-		spot++;
-	}
-	*/
-}
-
-/* =======================================================
-
-      Set up Curves and Clipped Segments
-      
-======================================================= */
-
-void map_prepare_curves_clips(map_type *map,int curve_level)
-{
-	int					i,orig_nsegment;
-	segment_type		*seg;
-	        
-	map_prepare_setup_curve_constant(curve_level);   
- 
-		// create new segments for curves
-		
-    seg=map->segments;
-    orig_nsegment=map->nsegment;
-    
-	for (i=0;i!=orig_nsegment;i++) {
-    
-		switch (seg->type) {
-			
-			case sg_wall:
-				if (seg->curve!=cv_none) {
-					map_prepare_create_wall_curve(map,seg);
-					break;
-				}
-				if ((seg->clip>=wc_tessel_start) && (seg->clip<=wc_tessel_end)) {
-					map_prepare_create_wall_clip(map,seg);
-					break;
-				}
-				break;
-				
-			case sg_floor:
-			case sg_ceiling:
-				if (seg->curve!=cv_none) map_prepare_create_fc_curve(map,seg);
-				break;
-				
-		}
-        
-        seg++;
-	}
-}
-
-/* =======================================================
-
-      Prepare Map For Engine Usage
-	        
-======================================================= */
-
-void map_prepare(map_type *map,int curve_level)
-{
-	map_prepare_segments(map);
-	map_prepare_curves_clips(map,curve_level);
-	map_prepare_create_segment_middles(map);
 }
 

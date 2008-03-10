@@ -27,7 +27,6 @@
 		F5CE96C40D23586E00512EE1 /* auto_generate_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CE96C10D23586E00512EE1 /* auto_generate_utility.c */; };
 		F5CE96C50D23586E00512EE1 /* auto_generate.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CE96C20D23586E00512EE1 /* auto_generate.c */; };
 		F5DB0B780856700C005A7CB7 /* libMapUtility.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5F4951F067BFCCA00E809E7 /* libMapUtility.dylib */; };
-		F5DD16E10907328000721649 /* prepare_vertex_middles.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD16DD0907328000721649 /* prepare_vertex_middles.c */; };
 		F5DD16E20907328000721649 /* prepare_curve.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD16DE0907328000721649 /* prepare_curve.c */; };
 		F5DD16E30907328000721649 /* prepare_polygon.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD16DF0907328000721649 /* prepare_polygon.c */; };
 		F5DD16E40907328000721649 /* prepare.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD16E00907328000721649 /* prepare.c */; };
@@ -91,7 +90,6 @@
 		F5CE96C10D23586E00512EE1 /* auto_generate_utility.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = auto_generate_utility.c; path = Sources/auto_generate_utility.c; sourceTree = "<group>"; };
 		F5CE96C20D23586E00512EE1 /* auto_generate.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = auto_generate.c; path = Sources/auto_generate.c; sourceTree = "<group>"; };
 		F5DA8623059148C40043E685 /* nodes.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = nodes.c; path = Sources/nodes.c; sourceTree = "<group>"; };
-		F5DD16DD0907328000721649 /* prepare_vertex_middles.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = prepare_vertex_middles.c; path = Sources/prepare_vertex_middles.c; sourceTree = "<group>"; };
 		F5DD16DE0907328000721649 /* prepare_curve.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = prepare_curve.c; path = Sources/prepare_curve.c; sourceTree = "<group>"; };
 		F5DD16DF0907328000721649 /* prepare_polygon.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = prepare_polygon.c; path = Sources/prepare_polygon.c; sourceTree = "<group>"; };
 		F5DD16E00907328000721649 /* prepare.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = prepare.c; path = Sources/prepare.c; sourceTree = "<group>"; };
@@ -225,7 +223,6 @@
 				F5DD16E00907328000721649 /* prepare.c */,
 				F5DD16DF0907328000721649 /* prepare_polygon.c */,
 				F5DD16DE0907328000721649 /* prepare_curve.c */,
-				F5DD16DD0907328000721649 /* prepare_vertex_middles.c */,
 			);
 			name = Prepare;
 			sourceTree = "<group>";
@@ -331,7 +328,6 @@
 				F5F4952D067BFDBC00E809E7 /* file_map_write.c in Sources */,
 				F5F4952E067BFDBC00E809E7 /* file_map_read.c in Sources */,
 				F59C593006BF40C9009851C6 /* segments.c in Sources */,
-				F5DD16E10907328000721649 /* prepare_vertex_middles.c in Sources */,
 				F5DD16E20907328000721649 /* prepare_curve.c in Sources */,
 				F5DD16E30907328000721649 /* prepare_polygon.c in Sources */,
 				F5DD16E40907328000721649 /* prepare.c in Sources */,

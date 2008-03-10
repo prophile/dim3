@@ -35,6 +35,7 @@ and can be sold or given away.
 extern map_type				map;
 extern server_type			server;
 extern view_type			view;
+extern setup_type			setup;
 
 /* =======================================================
 
@@ -70,6 +71,11 @@ bool liquid_create_memory(void)
 
 			liq->draw.uv_list=(float*)valloc((v_sz*2)*sizeof(float));
 			if (liq->draw.uv_list==NULL) return(FALSE);
+			
+				// color list
+
+			liq->draw.cl_list=(float*)valloc((v_sz*3)*sizeof(float));
+			if (liq->draw.cl_list==NULL) return(FALSE);
 
 				// element index list
 
@@ -100,6 +106,7 @@ void liquid_free_memory(void)
 		for (k=0;k!=portal->liquid.nliquid;k++) {
 			free(liq->draw.vl_list);
 			free(liq->draw.uv_list);
+			free(liq->draw.cl_list);
 			free(liq->draw.idx_list);
 			liq++;
 		}
@@ -114,18 +121,20 @@ void liquid_free_memory(void)
       
 ======================================================= */
 
-void liquid_render_portal_liquid_create_vertex(map_liquid_type *liq)
+void liquid_render_portal_liquid_create_vertex(portal_type *portal,map_liquid_type *liq)
 {
-	int						x,z,x_add,z_add,x_sz,z_sz,
+	int						x,y,z,x_add,z_add,x_sz,z_sz,
 							v_cnt,tide_split;
 	float					fy,fgx,fgy;
 	bool					x_break,z_break;
-	float					*vl,*uv;
+	float					*vl,*uv,*cl;
 	
-	fy=(float)(liq->y-view.camera.pos.y);
+	y=liq->y;
+	fy=(float)(y-view.camera.pos.y);
 
 	vl=liq->draw.vl_list;
 	uv=liq->draw.uv_list;
+	cl=liq->draw.cl_list;
 
 		// create vertexes from tide splits
 
@@ -151,6 +160,14 @@ void liquid_render_portal_liquid_create_vertex(map_liquid_type *liq)
 		x_sz=0;
 		
 		while (TRUE) {
+			if (setup.ray_trace_lighting) {
+				light_trace_calculate_light_color(portal,x,y,z,cl);
+			}
+			else {
+				map_portal_calculate_light_color(portal,(double)x,(double)y,(double)z,cl);
+			}
+			cl+=3;
+
 			*vl++=(float)(x-view.camera.pos.x);
 			*vl++=fy;
 			*vl++=(float)(view.camera.pos.z-z);
@@ -253,7 +270,7 @@ void liquid_render_portal_liquid_alter_tide(int tick,map_liquid_type *liq)
 	}
 }
 
-void liquid_render_portal_liquid(int tick,map_liquid_type *liq)
+void liquid_render_portal_liquid(int tick,portal_type *portal,map_liquid_type *liq)
 {
 	int						x,z,x_sz,z_sz,quad_cnt,v_sz,
 							tz,bz,tz_add,top_row,bot_row,
@@ -262,7 +279,7 @@ void liquid_render_portal_liquid(int tick,map_liquid_type *liq)
 	
 		// create vertexes and UVs
 
-	liquid_render_portal_liquid_create_vertex(liq);
+	liquid_render_portal_liquid_create_vertex(portal,liq);
 
 		// alter Ys for tide
 
@@ -317,7 +334,7 @@ void liquid_render_portal_liquid(int tick,map_liquid_type *liq)
 
 		// vertex array
 
-	v_sz=(liq->draw.v_cnt*4)*sizeof(float);
+	v_sz=((liq->draw.v_cnt*4)*3)*sizeof(float);
 
 #ifdef D3_OS_MAC
 	glVertexArrayRangeAPPLE(v_sz,liq->draw.vl_list);
@@ -332,12 +349,19 @@ void liquid_render_portal_liquid(int tick,map_liquid_type *liq)
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,liq->draw.uv_list);
+	
+		// color array
+		
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(3,GL_FLOAT,0,liq->draw.cl_list);
 
 		// draw the quads
 
 	glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)liq->draw.idx_list);
 
 		// release the lists
+
+	glDisableClientState(GL_COLOR_ARRAY);
 
 	glClientActiveTexture(GL_TEXTURE0);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -363,7 +387,7 @@ void liquid_render_portal(int tick,int rn)
 	portal_type					*portal;
 	map_liquid_type				*liq;
 	texture_type				*texture;
-
+	
 	portal=&map.portals[rn];
 
 		// if no liquids then skip
@@ -413,27 +437,8 @@ void liquid_render_portal(int tick,int rn)
 			}
 		}
 
-		liquid_render_portal_liquid(tick,liq);
+		liquid_render_portal_liquid(tick,portal,liq);
 
-		/*
-		y=liq->y-view.camera.pos.y;
-
-		glBegin(GL_QUADS);
-
-		glTexCoord2f(liq->x_txtoff,liq->y_txtoff);
-		glVertex3i(liq->lft-view.camera.pos.x,y,view.camera.pos.z-liq->top);
-
-		glTexCoord2f(liq->x_txtoff+liq->x_txtfact,liq->y_txtoff);
-		glVertex3i(liq->rgt-view.camera.pos.x,y,view.camera.pos.z-liq->top);
-
-		glTexCoord2f(liq->x_txtoff+liq->x_txtfact,liq->y_txtoff+liq->y_txtfact);
-		glVertex3i(liq->rgt-view.camera.pos.x,y,view.camera.pos.z-liq->bot);
-
-		glTexCoord2f(liq->x_txtoff,liq->y_txtoff+liq->y_txtfact);
-		glVertex3i(liq->lft-view.camera.pos.x,y,view.camera.pos.z-liq->bot);
-
-		glEnd();
-*/
 		liq++;
 	}
 

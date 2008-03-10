@@ -185,6 +185,14 @@ and can be sold or given away.
 #define vm_snap				2
 
 //
+// drag modes
+//
+
+#define drag_mode_mesh		0
+#define drag_mode_polygon	1
+#define drag_mode_vertex	2
+
+//
 // selection types
 //
 
@@ -231,11 +239,12 @@ and can be sold or given away.
 //
 
 typedef struct		{
+						int						clip_y,portal_y;
 						Rect					box;
 						d3pnt					cpt;
 						d3ang					ang;
 						float					fov;
 						bool					mesh_only,draw_portal,ignore_site_path,
-												swap_on;
+												swap_on,clip_on;
 					} editor_3D_view_setup;
 

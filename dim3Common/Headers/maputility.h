@@ -306,7 +306,7 @@ typedef struct		{
 typedef struct		{
 						int							v_cnt,x_sz,z_sz;
 						int							*idx_list;
-						float						*vl_list,*uv_list;
+						float						*vl_list,*uv_list,*cl_list;
 					} map_liquid_draw_type;
 
 typedef struct		{
@@ -735,7 +735,7 @@ extern bool map_save(map_type *map);
 extern void map_close(map_type *map);
 extern void map_refresh_textures(map_type *map);
 
-extern void map_prepare(map_type *map,int curve_level);
+extern void map_prepare(map_type *map);
 
 extern int map_count_texture_frames(map_type *map,int txt);
 extern void map_setup_animated_textures(map_type *map,int tick);

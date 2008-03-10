@@ -56,6 +56,7 @@ int map_segment_group_find_name(map_type *map,char *name)
       
 ======================================================= */
 
+// supergumba -- can probably delete this
 void map_segment_move(map_type *map,segment_type *seg,int x,int y,int z)
 {
 	int							i,k,
@@ -217,7 +218,7 @@ void map_segment_move(map_type *map,segment_type *seg,int x,int y,int z)
 		
 		// recalculate middles
     
-	map_prepare_calculate_segment_vertex_middle(seg);
+//	map_prepare_calculate_segment_vertex_middle(seg);
 	
 	seg->touched=TRUE;
 }

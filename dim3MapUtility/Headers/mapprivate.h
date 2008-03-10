@@ -62,8 +62,6 @@ extern void map_prepare_create_push_ambient_wall_segment_polygon(segment_type *s
 extern void map_prepare_create_ambient_wall_segment_uv(segment_type *seg);
 extern void map_prepare_push_ambient_fc_segment_polygon(segment_type *seg);
 extern void map_prepare_create_ambient_fc_segment_uv(segment_type *seg);
-extern void map_prepare_calculate_segment_vertex_middle(segment_type *seg);
-extern void map_prepare_create_segment_middles(map_type *map);
 extern void map_prepare_set_ambient_fc_segment_square(segment_type *seg);
 extern bool map_portal_build_single_vertex_list(map_type *map,int rn,bool high_quality_lighting);
 extern bool map_portal_create_single_vertex_list(map_type *map,int rn,bool high_quality_lighting);

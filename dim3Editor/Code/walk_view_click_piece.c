@@ -30,8 +30,8 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int					cr,cx,cy,cz;
-extern bool					dp_wall,dp_floor,dp_ceiling,dp_liquid,dp_ambient,dp_object,dp_lightsoundparticle,dp_node;
+extern int					cr,cx,cy,cz,magnify_factor;
+extern bool					dp_liquid,dp_object,dp_lightsoundparticle,dp_node;
 extern Rect					main_wind_box;
 
 extern CCrsrHandle			towardcur,dragcur;
@@ -43,282 +43,92 @@ double						walk_view_mod_matrix[16],walk_view_proj_matrix[16];
 
 /* =======================================================
 
-      Draw Map Pieces for Feeback Click Selection
+      Click Utilities
       
 ======================================================= */
 
-// supergumba -- delete most of this
-void walk_view_draw_feedback_poly(int idx,int ptsz,int *x,int *y,int *z)
+void walk_view_click_setup_project(editor_3D_view_setup *view_setup)
 {
-	int			i;
+	int				rn;
+	
+		// setup walk view
 		
-	glBegin(GL_POLYGON);
-
-	for (i=0;i<ptsz;i++) {
-		glVertex3i((x[i]-cx),(y[i]-cy),(cz-z[i]));
-	}
+	rn=walk_view_find_start_portal();
+	walk_view_sight_path_mark(rn);
 	
-	glEnd();
+	main_wind_set_viewport(&view_setup->box,0.75f);
+	main_wind_set_3D_projection(&view_setup->box,&view_setup->ang,view_setup->fov,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
 	
-	glPassThrough((float)segment_piece);
-	glPassThrough((float)idx);
+		// get projection
+		
+	glGetDoublev(GL_MODELVIEW_MATRIX,walk_view_mod_matrix);
+	glGetDoublev(GL_PROJECTION_MATRIX,walk_view_proj_matrix);
+	glGetIntegerv(GL_VIEWPORT,(GLint*)walk_view_vport);
 }
 
-void walk_view_draw_feedback_sprite(int type,int idx,d3pos *pos,d3ang *ang,char *display_model)
+bool walk_view_click_rotate_polygon_behind_z(int x,int y,int z)
 {
-/*
-    int			px[4],pz[4],ty,by;
-  
-	walk_view_model_click_select_size(cpt,display_model,pos,ang,px,pz,&ty,&by);
-     
-	glBegin(GL_POLYGON);
-    glTexCoord2f(0,0);
-	glVertex3i(px[0],ty,pz[0]);
-    glTexCoord2f(1,0);
-	glVertex3i(px[1],ty,pz[1]);
-    glTexCoord2f(1,1);
-	glVertex3i(px[1],by,pz[1]);
-    glTexCoord2f(0,1);
-	glVertex3i(px[0],by,pz[0]);
-	glEnd();
+	int				rz;
+	double			dx,dy,dz;
 	
-	glPassThrough((float)type);
-	glPassThrough((float)idx);
+	dx=(double)x;
+	dy=(double)y;
+	dz=(double)z;
+	
+	rz=-(int)((dx*walk_view_mod_matrix[2])+(dy*walk_view_mod_matrix[6])+(dz*walk_view_mod_matrix[10])+walk_view_mod_matrix[14]);
+	return(rz<=walk_view_near_z);
+}
 
-	glBegin(GL_POLYGON);
-    glTexCoord2f(0,0);
-	glVertex3i(px[3],ty,pz[3]);
-    glTexCoord2f(1,0);
-	glVertex3i(px[2],ty,pz[2]);
-    glTexCoord2f(1,1);
-	glVertex3i(px[2],by,pz[2]);
-    glTexCoord2f(0,1);
-	glVertex3i(px[3],by,pz[3]);
-	glEnd();
+void walk_view_click_project_point(Rect *box,int *x,int *y,int *z)
+{
+	double		dx,dy,dz;
 	
-	glPassThrough((float)type);
-	glPassThrough((float)idx);
-	
-	glBegin(GL_POLYGON);
-    glTexCoord2f(0,0);
-	glVertex3i(px[3],ty,pz[3]);
-    glTexCoord2f(1,0);
-	glVertex3i(px[0],ty,pz[0]);
-    glTexCoord2f(1,1);
-	glVertex3i(px[0],by,pz[0]);
-    glTexCoord2f(0,1);
-	glVertex3i(px[3],by,pz[3]);
-	glEnd();
-	
-	glPassThrough((float)type);
-	glPassThrough((float)idx);
-	
-	glBegin(GL_POLYGON);
-    glTexCoord2f(0,0);
-	glVertex3i(px[2],ty,pz[2]);
-    glTexCoord2f(1,0);
-	glVertex3i(px[1],ty,pz[1]);
-    glTexCoord2f(1,1);
-	glVertex3i(px[1],by,pz[1]);
-    glTexCoord2f(0,1);
-	glVertex3i(px[2],by,pz[2]);
-	glEnd();
-	
-	glPassThrough((float)type);
-	glPassThrough((float)idx);
-	
-	glBegin(GL_POLYGON);
-    glTexCoord2f(0,0);
-	glVertex3i(px[0],ty,pz[0]);
-    glTexCoord2f(1,0);
-	glVertex3i(px[1],ty,pz[1]);
-    glTexCoord2f(1,1);
-	glVertex3i(px[2],ty,pz[2]);
-    glTexCoord2f(0,1);
-	glVertex3i(px[3],ty,pz[3]);
-	glEnd();
-	
-	glPassThrough((float)type);
-	glPassThrough((float)idx);
-	
-	glBegin(GL_POLYGON);
-    glTexCoord2f(0,0);
-	glVertex3i(px[0],by,pz[0]);
-    glTexCoord2f(1,0);
-	glVertex3i(px[1],by,pz[1]);
-    glTexCoord2f(1,1);
-	glVertex3i(px[2],by,pz[2]);
-    glTexCoord2f(0,1);
-	glVertex3i(px[3],by,pz[3]);
-	glEnd();
-	
-	glPassThrough((float)type);
-	glPassThrough((float)idx);
-	*/
+	gluProject(*x,*y,*z,walk_view_mod_matrix,walk_view_proj_matrix,(GLint*)walk_view_vport,&dx,&dy,&dz);
+	*x=((int)dx)-box->left;
+	*y=(main_wind_box.bottom-((int)dy))-box->top;
+	*z=(int)((dz)*10000.0f);
 }
 
 /* =======================================================
 
-      Draw Map For Feedback Click Selection
+      Walk View Drag Movement
       
 ======================================================= */
 
-// supergumba -- delete all feedback map stuff
-void walk_view_draw_feedback_map(int rn,bool sel_only)
+void walk_view_click_drag_movement(editor_3D_view_setup *view_setup,int view_move_dir,int x,int y,int *xadd,int *yadd,int *zadd)
 {
-	register int				n,t;
-	int							xadd,zadd,ptsz,x[8],y[8],z[8];
-	register node_type			*node;
-	register spot_type			*spot;
-	register map_scenery_type	*scenery;
-	register map_light_type		*light;
-	register map_sound_type		*sound;
-	register map_particle_type	*particle;
-	register segment_type		*seg;
-    
-    xadd=map.portals[rn].x;
-    zadd=map.portals[rn].z;
+	int				sz;
 	
-		// segments
-	/* supergumba
-	for (n=0;n!=map.nsegment;n++) {
-		seg=&map.segments[n];
-		if (seg->rn!=rn) continue;
-		
-		if (sel_only) {
-			if (!select_check_segment(n)) continue;
-		}
-    
-		switch (seg->type) {
-		
-		   case sg_wall:
-				if (!dp_wall) break;
-				ptsz=walk_view_get_wall_poly(seg,x,z,y,NULL,NULL,xadd,zadd);
-				walk_view_draw_feedback_poly(n,ptsz,x,y,z);
-				break;
-				
-			case sg_floor:
-			case sg_ceiling:
-				if ((seg->type==sg_floor) && (!dp_floor)) break;
-				if ((seg->type==sg_ceiling) && (!dp_ceiling)) break;
-				
-				ptsz=seg->data.fc.ptsz;
-				for ((t=0);(t<ptsz);t++) {
-					x[t]=(seg->data.fc.x[t]*map_enlarge)+xadd;
-					y[t]=seg->data.fc.y[t]*map_enlarge;
-					z[t]=(seg->data.fc.z[t]*map_enlarge)+zadd;
-				}
-				walk_view_draw_feedback_poly(n,ptsz,x,y,z);
-				break;
-				
-			case sg_liquid:
-				if (!dp_liquid) break;
-				
-				x[0]=x[3]=(seg->data.liquid.lft*map_enlarge)+xadd;
-				x[1]=x[2]=(seg->data.liquid.rgt*map_enlarge)+xadd;
-				z[0]=z[1]=(seg->data.liquid.top*map_enlarge)+zadd;
-				z[2]=z[3]=(seg->data.liquid.bot*map_enlarge)+zadd;
-				y[0]=y[1]=y[2]=y[3]=(seg->data.liquid.y+1)*map_enlarge;
-				
-				walk_view_draw_feedback_poly(n,4,x,y,z);
-				break;
-								
-			case sg_ambient_wall:
-				if (!dp_ambient) break;
-				walk_view_get_ambient_wall_poly(seg,x,z,y,xadd,zadd);
-				walk_view_draw_feedback_poly(n,4,x,y,z);
-				break;
-				
-			case sg_ambient_fc:
-				if (!dp_ambient) break;
-				walk_view_get_ambient_fc_poly(seg,x,z,y,NULL,NULL,xadd,zadd);
-				walk_view_draw_feedback_poly(n,seg->data.ambient_fc.ptsz,x,y,z);
-				break;
-				
-		}
+	switch (view_move_dir) {
+	
+		case vm_dir_forward:
+			*xadd=-(x*25);
+			*yadd=-(y*25);
+			*zadd=0;
+			rotate_2D_point_center(xadd,zadd,-view_setup->ang.y);
+			return;
+			
+		case vm_dir_side:
+			*xadd=x*25;
+			*yadd=-(y*25);
+			*zadd=0;
+			rotate_2D_point_center(xadd,zadd,view_setup->ang.y);
+			return;
+			
+		case vm_dir_top:
+			sz=(magnify_factor_max-magnify_factor)>>1;
+			if (sz<10) sz=10;
+			
+			*xadd=-(x*sz);
+			*yadd=0;
+			*zadd=-(y*sz);
+			rotate_2D_point_center(xadd,zadd,view_setup->ang.y);
+			return;
+			
+		default:
+			*xadd=*yadd=*zadd=0;
+			return;
 	}
-    */        
-		// nodes
-		
-	if (dp_node) {
-	
-		for (n=0;n<map.nnode;n++) {
-			node=&map.nodes[n];
-			if (node->pos.rn!=rn) continue;
-			
-			if (sel_only) {
-				if (!select_check(node_piece,rn,n,-1)) continue;
-			}
-			
-			walk_view_draw_feedback_sprite(node_piece,n,&node->pos,NULL,NULL);
-		}
-		
-    }
-	
-		// spots and scenery
-	
-    if (dp_object) {
-	
-		for (n=0;n<map.nspot;n++) {
-			spot=&map.spots[n];
-			if (spot->pos.rn!=rn) continue;
-			
-			if (sel_only) {
-				if (!select_check(spot_piece,rn,n,-1)) continue;
-			}
-			
-			walk_view_draw_feedback_sprite(spot_piece,n,&spot->pos,NULL,spot->display_model);
-		}		
-    
-		for (n=0;n<map.nscenery;n++) {
-			scenery=&map.sceneries[n];
-			if (scenery->pos.rn!=rn) continue;
-			
-			if (sel_only) {
-				if (!select_check(scenery_piece,rn,n,-1)) continue;
-			}
-			
-			walk_view_draw_feedback_sprite(scenery_piece,n,&scenery->pos,&scenery->ang,scenery->model_name);
-		}		
-	}
-	
-		// lights, sounds, particles
-		
-	if (dp_lightsoundparticle) {
-		
-		for (n=0;n<map.nlight;n++) {
-			light=&map.lights[n];
-			if (light->pos.rn!=rn) continue;
-			
-			if (sel_only) {
-				if (!select_check(light_piece,rn,n,-1)) continue;
-			}
-			
-			walk_view_draw_feedback_sprite(light_piece,n,&light->pos,NULL,NULL);
-		}
-		
-		for (n=0;n<map.nsound;n++) {
-			sound=&map.sounds[n];
-			if (sound->pos.rn!=rn) continue;
-			
-			if (sel_only) {
-				if (!select_check(sound_piece,rn,n,-1)) continue;
-			}
-			
-			walk_view_draw_feedback_sprite(sound_piece,n,&sound->pos,NULL,NULL);
-		}
-		
-		for (n=0;n<map.nparticle;n++) {
-			particle=&map.particles[n];
-			if (particle->pos.rn!=rn) continue;
-			
-			if (sel_only) {
-				if (!select_check(particle_piece,rn,n,-1)) continue;
-			}
-			
-			walk_view_draw_feedback_sprite(particle_piece,n,&particle->pos,NULL,NULL);
-		}
-    }
 }
 
 /* =======================================================
@@ -385,80 +195,57 @@ bool walk_view_piece_drag(Point pt)
       
 ======================================================= */
 
-bool walk_view_click_handle(int xorg,int yorg,Point pt,bool on_side)
+bool walk_view_click_handle(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
-/* supergumba
-    int			k,rn,type,portal_idx,main_idx,sub_idx,index,idx,n,nitem,x,y,ysz;
-    Rect		box;
-    GLfloat		*f,buf[128];
+    int					n,x,y,z,sz,type,portal_idx,mesh_idx,poly_idx,idx;
+	float				hit_z;
+    d3pnt				*dpt;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
 	
     if (select_count()!=1) return(FALSE);
 	
-	select_get(0,&type,&portal_idx,&index,&sub_idx);		// supergumba -- fix this
-	if ((type!=segment_piece) && (type!=primitive_piece)) return(FALSE);
+	select_get(0,&type,&portal_idx,&mesh_idx,&poly_idx);
+	if (type!=mesh_piece) return(FALSE);
 	
-		// draw into feedback buffer
-		
-	glFeedbackBuffer(128,GL_3D,buf);
-	glRenderMode(GL_FEEDBACK);
-	
-	rn=walk_view_find_start_portal();
-	walk_view_sight_path_mark(rn);
-	walk_view_gl_setup(box,ang);
-	walk_view_draw_segment_handles();
+		// check for clicking points
 
-	nitem=glRenderMode(GL_RENDER);
-	
-		// search the buffer for hits
+	portal=&map.portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
 		
-    k=-1;
+	idx=-1;
+	hit_z=100000;
 
-	n=0;
-	f=buf;
+	sz=(int)(walk_view_handle_size/2);
 	
-	if (!on_side) {
-		ysz=walk_view_forward_box.bottom-walk_view_forward_box.top;
-	}
-	else {
-		ysz=walk_view_side_box.bottom-walk_view_side_box.top;
-	}
+	dpt=mesh->vertexes;
 	
-	while (n<nitem) {
-	
-			// point
+	for (n=0;n!=mesh->nvertex;n++) {
+		x=(dpt->x+portal->x)-view_setup->cpt.x;
+		y=dpt->y-view_setup->cpt.y;
+		z=view_setup->cpt.z-(dpt->z+portal->z);
+		
+		if (!walk_view_click_rotate_polygon_behind_z(x,y,z)) {
+			walk_view_click_project_point(&view_setup->box,&x,&y,&z);
 			
-		if (*f==GL_POINT_TOKEN) {
-			x=((int)*(f+1))+xorg;
-			y=(ysz-((int)*(f+2)))+yorg;
-			idx=(int)*(f+5);
-			f+=6;
-			n+=6;
-			
-			SetRect(&box,(x-5),(y-5),(x+5),(y+5));
-			if (!PtInRect(pt,&box)) continue;
-			
-			k=idx;
-			break;
+			if ((pt->x>=(x-sz)) && (pt->x<=(x+sz)) && (pt->y>=(y-sz)) && (pt->y<=(y+sz))) {
+				if (z<hit_z) {
+					hit_z=z;
+					idx=n;
+				}
+			}
 		}
 		
-			// just a pass through (point was culled)
-			
-		f+=2;
-		n+=2;
+		dpt++;
 	}
-	
-    if (k==-1) return(FALSE);
+
+    if (idx==-1) return(FALSE);
     
 		// draw the handle
-		
-	if (type==primitive_piece) {
-		walk_view_drag_primitive_handle(pt,index,k);
-	}
-	else {
-		walk_view_drag_segment_handle(pt,index,k);
-	}
- */
-    return(TRUE);
+
+	walk_view_drag_segment_handle(view_setup,pt,view_move_dir,portal_idx,mesh_idx,idx);
+ 
+     return(TRUE);
 }
 
 /* =======================================================
@@ -466,154 +253,6 @@ bool walk_view_click_handle(int xorg,int yorg,Point pt,bool on_side)
       View Polygon Clicking
       
 ======================================================= */
-/* supergumba -- delete a lot of this
-void walk_view_polygon_click_index(int xorg,int yorg,Point pt,int *p_index,int *p_type,bool sel_only,bool on_side)
-{
-    int			n,i,k,rn,nitem,type,index,pt_type,pt_index,px,py,ysz,
-				ptsz,x[8],y[8];
-	float		z,cur_z;
-    GLfloat		*f,*pnt,*buf;
-	
-	*p_index=-1;
-	
-		// line up point with buffer
-		
-	px=pt.h-xorg;
-	py=pt.v-yorg;
-	
-		// draw into feedback buffer
-		
-	buf=valloc(102400*sizeof(GLfloat));
-	if (buf==NULL) return;
-	
-	glFeedbackBuffer(100240,GL_3D,buf);
-	glRenderMode(GL_FEEDBACK);
-	
-	rn=walk_view_find_start_portal();
-	walk_view_sight_path_mark(rn);
-	walk_view_gl_setup(on_side);
-	
-	glClear(GL_DEPTH_BUFFER_BIT);
-	
-    for (n=0;n!=map.nportal;n++) {
-        if (!map.portals[n].in_path) continue;
-        walk_view_draw_feedback_map(n,sel_only);
-    }
-
-	nitem=glRenderMode(GL_RENDER);
-	
-		// search the buffer for hits
-		
-    k=-1;
-	cur_z=1000;
-
-	n=0;
-	f=buf;
-	
-	type=-1;
-	index=-1;
-	
-	if (!on_side) {
-		ysz=walk_view_forward_box.bottom-walk_view_forward_box.top;
-	}
-	else {
-		ysz=walk_view_side_box.bottom-walk_view_side_box.top;
-	}
-	
-	while (n<nitem) {
-	
-			// polygon
-			
-		if (*f==GL_POLYGON_TOKEN) {
-			ptsz=(int)*(f+1);
-			
-			z=0;
-			pnt=f+2;
-			
-			for (i=0;i<ptsz;i++) {
-				x[i]=(int)*pnt;
-				y[i]=ysz-((int)*(pnt+1));
-				z+=(float)*(pnt+2);
-				pnt+=3;
-			}
-			
-			z=z/(float)ptsz;
-			
-			pt_type=(int)*(pnt+1);
-			pt_index=(int)*(pnt+3);
-			
-			if (polygon_2D_point_inside(ptsz,x,y,px,py)) {
-			
-				if (z<cur_z) {
-					cur_z=z;
-					type=pt_type;
-					index=pt_index;
-				}
-				
-			}
-			
-			f+=((ptsz*3)+6);
-			n+=((ptsz*3)+6);
-			
-			continue;
-		}
-		
-			// just a pass through (polygon was culled)
-			
-		f+=4;
-		n+=4;
-	}
-	
-		// free the buffer
-		
-	free(buf);
-	
-	*p_index=index;
-	*p_type=type;
-}
-*/
-
-
-
-void walk_view_click_setup_project(editor_3D_view_setup *view_setup)
-{
-	int				rn;
-	
-		// setup walk view
-		
-	rn=walk_view_find_start_portal();
-	walk_view_sight_path_mark(rn);
-	walk_view_gl_setup(view_setup);
-	
-		// get projection
-		
-	glGetDoublev(GL_MODELVIEW_MATRIX,walk_view_mod_matrix);
-	glGetDoublev(GL_PROJECTION_MATRIX,walk_view_proj_matrix);
-	glGetIntegerv(GL_VIEWPORT,(GLint*)walk_view_vport);
-}
-
-bool walk_view_click_rotate_polygon_behind_z(int x,int y,int z)
-{
-	int				rz;
-	double			dx,dy,dz;
-	
-	dx=(double)x;
-	dy=(double)y;
-	dz=(double)z;
-	
-	rz=-(int)((dx*walk_view_mod_matrix[2])+(dy*walk_view_mod_matrix[6])+(dz*walk_view_mod_matrix[10])+walk_view_mod_matrix[14]);
-	return(rz<=walk_view_near_z);
-}
-
-void walk_view_click_project_polygon(Rect *box,int *x,int *y,int *z)
-{
-	double		dx,dy,dz;
-	
-	gluProject(*x,*y,*z,walk_view_mod_matrix,walk_view_proj_matrix,(GLint*)walk_view_vport,&dx,&dy,&dz);
-	*x=((int)dx)-box->left;
-	*y=(main_wind_box.bottom-((int)dy))-box->top;
-	*z=(int)((dz)*10000.0f);
-}
 
 void walk_view_polygon_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,int *type,int *portal_idx,int *main_idx,int *sub_idx,bool sel_only)
 {
@@ -660,7 +299,7 @@ void walk_view_polygon_click_index(editor_3D_view_setup *view_setup,d3pnt *click
 						break;
 					}
 					
-					walk_view_click_project_polygon(&view_setup->box,&px[t],&py[t],&pz[t]);
+					walk_view_click_project_point(&view_setup->box,&px[t],&py[t],&pz[t]);
 					fz+=pz[t];
 				}
 				
@@ -845,17 +484,16 @@ void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,boo
       
 ======================================================= */
 
-void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,bool dblclick)
+void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool dblclick)
 {
 		// put click within box
 		
 	pt->x-=view_setup->box.left;
 	pt->y-=view_setup->box.top;
 	
-
-/* supergumba
-	if (walk_view_click_handle(xorg,yorg,pt,on_side)) return;
-	
+	if (walk_view_click_handle(view_setup,pt,view_move_dir)) return;
+/*	
+// supergumba
 	if (!dblclick) {
 		if (walk_view_click_piece_select(xorg,yorg,pt,on_side)) return;
 	}

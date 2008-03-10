@@ -35,7 +35,7 @@ extern int				cr,cx,cz,cy,vertex_mode,magnify_factor,
 						txt_palette_y,txt_palette_high;
 extern float			walk_view_y_angle,walk_view_x_angle;
 extern bool				map_opened,swap_panel_forward,swap_panel_side,swap_panel_top,
-						dp_primitive,dp_auto_texture,dp_wall,dp_floor,dp_ceiling,dp_liquid,dp_ambient,
+						dp_primitive,dp_auto_texture,
 						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide;
 
 extern map_type			map;
@@ -75,6 +75,7 @@ void main_wind_setup_panel_forward(editor_3D_view_setup *view_setup)
 	view_setup->ignore_site_path=FALSE;
 	
 	view_setup->swap_on=swap_panel_forward;
+	view_setup->clip_on=FALSE;
 }
 
 void main_wind_setup_panel_forward_frame(editor_3D_view_setup *view_setup)
@@ -103,6 +104,7 @@ void main_wind_setup_panel_forward_frame(editor_3D_view_setup *view_setup)
 	view_setup->ignore_site_path=FALSE;
 
 	view_setup->swap_on=swap_panel_forward;
+	view_setup->clip_on=FALSE;
 }
 
 void main_wind_setup_panel_forward_full(editor_3D_view_setup *view_setup)
@@ -132,6 +134,7 @@ void main_wind_setup_panel_forward_full(editor_3D_view_setup *view_setup)
 	view_setup->ignore_site_path=FALSE;
 
 	view_setup->swap_on=FALSE;
+	view_setup->clip_on=FALSE;
 }
 
 /* =======================================================
@@ -166,6 +169,7 @@ void main_wind_setup_panel_side(editor_3D_view_setup *view_setup)
 	view_setup->ignore_site_path=FALSE;
 
 	view_setup->swap_on=swap_panel_side;
+	view_setup->clip_on=FALSE;
 }
 
 void main_wind_setup_panel_side_frame(editor_3D_view_setup *view_setup)
@@ -194,6 +198,7 @@ void main_wind_setup_panel_side_frame(editor_3D_view_setup *view_setup)
 	view_setup->ignore_site_path=FALSE;
 	
 	view_setup->swap_on=swap_panel_side;
+	view_setup->clip_on=FALSE;
 }
 
 /* =======================================================
@@ -214,12 +219,15 @@ void main_wind_setup_panel_top(editor_3D_view_setup *view_setup)
 	view_setup->box.left=wbox.left+2;
 	view_setup->box.right=wbox.right-(piece_wid+2);
 	
-	mag_sz=(magnify_factor_max-magnify_factor)*(map_enlarge<<2);
+	mag_sz=(magnify_factor_max-magnify_factor)*(map_enlarge<<1);
 	
 	view_setup->cpt.x=cx;
 	view_setup->cpt.y=cy-mag_sz;
 	view_setup->cpt.z=cz;
-
+	
+	view_setup->clip_y=cy;
+	view_setup->portal_y=cy;
+	
 	view_setup->ang.x=swap_panel_top?(90.0f):(-90.0f);
 	view_setup->ang.y=0.0f;
 	view_setup->ang.z=0.0f;
@@ -231,6 +239,7 @@ void main_wind_setup_panel_top(editor_3D_view_setup *view_setup)
 	view_setup->ignore_site_path=TRUE;
 	
 	view_setup->swap_on=swap_panel_top;
+	view_setup->clip_on=TRUE;
 }
 
 void main_wind_setup_panel_top_frame(editor_3D_view_setup *view_setup)
@@ -245,11 +254,14 @@ void main_wind_setup_panel_top_frame(editor_3D_view_setup *view_setup)
 	view_setup->box.left=wbox.left+2;
 	view_setup->box.right=(wbox.right-piece_wid)-(((wbox.right-piece_wid)-wbox.left)/2);
 	
-	mag_sz=(magnify_factor_max-magnify_factor)*(map_enlarge<<2);
+	mag_sz=(magnify_factor_max-magnify_factor)*(map_enlarge<<1);
 	
 	view_setup->cpt.x=cx;
 	view_setup->cpt.y=cy-mag_sz;
 	view_setup->cpt.z=cz;
+	
+	view_setup->clip_y=cy;
+	view_setup->portal_y=cy;
 
 	view_setup->ang.x=-90.0f;
 	view_setup->ang.y=0.0f;
@@ -262,6 +274,7 @@ void main_wind_setup_panel_top_frame(editor_3D_view_setup *view_setup)
 	view_setup->ignore_site_path=TRUE;
 	
 	view_setup->swap_on=swap_panel_top;
+	view_setup->clip_on=FALSE;
 }
 
 void main_wind_setup_panel_top_full(editor_3D_view_setup *view_setup)
@@ -277,11 +290,14 @@ void main_wind_setup_panel_top_full(editor_3D_view_setup *view_setup)
 	view_setup->box.bottom-=(txt_palette_high+info_high);
 	view_setup->box.right-=piece_wid;
 
-	mag_sz=(magnify_factor_max-magnify_factor)*(map_enlarge<<2);
+	mag_sz=(magnify_factor_max-magnify_factor)*(map_enlarge<<1);
 
 	view_setup->cpt.x=cx;
 	view_setup->cpt.y=cy-mag_sz;
 	view_setup->cpt.z=cz;
+	
+	view_setup->clip_y=cy;
+	view_setup->portal_y=cy;
 
 	view_setup->ang.x=-90.0f;
 	view_setup->ang.y=0.0f;
@@ -294,6 +310,7 @@ void main_wind_setup_panel_top_full(editor_3D_view_setup *view_setup)
 	view_setup->ignore_site_path=TRUE;
 	
 	view_setup->swap_on=FALSE;
+	view_setup->clip_on=TRUE;
 }
 
 /* =======================================================
@@ -326,6 +343,9 @@ void main_wind_setup_panel_walk(editor_3D_view_setup *view_setup)
 	view_setup->mesh_only=FALSE;
 	view_setup->draw_portal=FALSE;
 	view_setup->ignore_site_path=FALSE;
+	
+	view_setup->swap_on=FALSE;
+	view_setup->clip_on=FALSE;
 }
 
 /* =======================================================

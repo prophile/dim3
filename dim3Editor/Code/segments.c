@@ -29,7 +29,7 @@ and can be sold or given away.
 #include "common_view.h"
 
 extern int					cr;
-extern bool					dp_auto_texture,dp_wall,dp_floor,dp_ceiling,dp_ambient,dp_liquid;
+extern bool					dp_auto_texture,dp_liquid;
 
 extern map_type				map;
 
@@ -218,7 +218,6 @@ void segment_add_wall(int lx,int lz,int rx,int rz,int ty,int by,int clip,int cur
     
     if (!redraw) return;
     
-	dp_wall=TRUE;
 	select_clear();
 //	select_add(segment_piece,(map.nsegment-1));
 	
@@ -267,7 +266,6 @@ void segment_add_floor_quad(int x1,int z1,int y1,int x2,int z2,int y2,int x3,int
     
     if (!redraw) return;
     
-	dp_floor=TRUE;
 	select_clear();
 //	select_add(segment_piece,(map.nsegment-1));
 
@@ -307,7 +305,6 @@ void segment_add_floor_trig(int x1,int z1,int y1,int x2,int z2,int y2,int x3,int
     
     if (!redraw) return;
     
-	dp_floor=TRUE;
 	select_clear();
 //	select_add(segment_piece,(map.nsegment-1));
 
@@ -355,7 +352,6 @@ void segment_add_ceiling_quad(int x1,int z1,int y1,int x2,int z2,int y2,int x3,i
     
     if (!redraw) return;
 
-	dp_ceiling=TRUE;
 	select_clear();
 //	select_add(segment_piece,(map.nsegment-1));
 
@@ -460,7 +456,6 @@ void segment_add_ambient_wall(int lx,int rx,int lz,int rz,int ty,int by,bool red
 	
 	if (!redraw) return;
 
-	dp_ambient=TRUE;
 	select_clear();
 //	select_add(segment_piece,(map.nsegment-1));
 
@@ -506,7 +501,6 @@ void segment_add_ambient_fc(int x1,int z1,int x2,int z2,int y,bool redraw)
     
     if (!redraw) return;
     
-	dp_ambient=TRUE;
 	select_clear();
 //	select_add(segment_piece,(map.nsegment-1));
 

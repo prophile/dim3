@@ -40,10 +40,8 @@ extern void walk_view_key(char ch,int view_move_dir);
 // walk view click piece
 //
 
-extern void walk_view_draw_feedback_poly(int idx,int ptsz,int *x,int *y,int *z);
-extern void walk_view_draw_feedback_sprite(int type,int idx,d3pos *pos,d3ang *ang,char *display_model);
-extern void walk_view_draw_feedback_map(int rn,bool sel_only);
-extern void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,bool dblclick);
+extern void walk_view_click_drag_movement(editor_3D_view_setup *view_setup,int view_move_dir,int x,int y,int *xadd,int *yadd,int *zadd);
+extern void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool dblclick);
 
 //
 // walk view draw piece
@@ -51,7 +49,6 @@ extern void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,boo
 
 extern void walk_view_sight_path_trace(portal_sight_list_type *sight,int u);
 extern void walk_view_sight_path_mark(int rn);
-extern void walk_view_gl_setup(editor_3D_view_setup *view_setup);
 extern void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position);
 
 //
@@ -65,8 +62,7 @@ extern void walk_view_draw_select_portal(int rn,d3pnt *cpt);
 //
 
 extern void walk_view_move_similiar_handle(int rn,int x,int z,int y,int xadd,int zadd,int yadd);
-extern void walk_view_move_single_handle(int index,int wpt,int xadd,int zadd,int yadd);
-extern bool walk_view_drag_segment_handle(Point pt,int index,int wpt);
+extern bool walk_view_drag_segment_handle(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,int portal_idx,int mesh_idx,int vertex_idx);
 extern bool walk_view_drag_primitive_handle(Point pt,int index,int wpt);
 
 //

@@ -31,8 +31,7 @@ and can be sold or given away.
 
 extern int				cr,cy,txt_palette_high;
 extern float			walk_view_fov,walk_view_y_angle,walk_view_x_angle;
-extern bool				dp_wall,dp_floor,dp_ceiling,dp_liquid,dp_ambient,
-						dp_object,dp_lightsoundparticle,dp_node,dp_textured;
+extern bool				dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_textured;
 
 extern WindowRef		mainwind;
 extern AGLContext		ctx;
@@ -181,9 +180,9 @@ void walk_view_draw_sprite(d3pnt *cpt,d3pos *pos,unsigned long gl_id)
       
 ======================================================= */
 
-void walk_view_draw_portal_block(int rn,d3pnt *cpt)
+void walk_view_draw_portal_block(int rn,d3pnt *cpt,int y)
 {
-	int				lx,rx,y,tz,bz;
+	int				lx,rx,tz,bz;
 	portal_type		*portal;
 	
 		// portal size
@@ -195,7 +194,7 @@ void walk_view_draw_portal_block(int rn,d3pnt *cpt)
 	tz=cpt->z-portal->z;
 	bz=cpt->z-portal->ez;
 	
-	y=cy-cpt->y;
+	y-=cpt->y;
 	
 	glDisable(GL_DEPTH_TEST);
 	
@@ -244,10 +243,11 @@ void walk_view_draw_portal_block(int rn,d3pnt *cpt)
       
 ======================================================= */
 
-void walk_view_draw_portal_meshes_texture(int rn,d3pnt *cpt,bool opaque)
+void walk_view_draw_portal_meshes_texture(int rn,d3pnt *cpt,int clip_y,bool opaque)
 {
 	int					n,k,t,x,y,z;
 	unsigned long		old_gl_id;
+	bool				clip_ok;
 	d3pnt				*pt;
 	portal_type			*portal;
 	map_mesh_type		*mesh;
@@ -283,18 +283,40 @@ void walk_view_draw_portal_meshes_texture(int rn,d3pnt *cpt,bool opaque)
 			mesh_poly=&mesh->polys[k];
 			texture=&map.textures[mesh_poly->txt_idx];
 		
+				// opaque or transparent flag
+				
 			if (opaque) {
 				if ((mesh_poly->alpha!=1.0f) || (texture->bitmaps[0].alpha_mode==alpha_mode_transparent)) continue;
 			}
 			else {
 				if ((mesh_poly->alpha==1.0f) && (texture->bitmaps[0].alpha_mode!=alpha_mode_transparent)) continue;
 			}
+			
+				// y clipping
+				
+			if (clip_y!=-1) {
+			
+				clip_ok=TRUE;
+				
+				for (t=0;t!=mesh_poly->ptsz;t++) {
+					if (mesh->vertexes[mesh_poly->v[t]].y>=clip_y) {
+						clip_ok=FALSE;
+						break;
+					}
+				}
+				
+				if (clip_ok) continue;
+			}
 		
+				// setup texture
+				
 			if (texture->bitmaps[0].gl_id!=old_gl_id) {
 				old_gl_id=texture->bitmaps[0].gl_id;
 				glBindTexture(GL_TEXTURE_2D,old_gl_id);
 			}
 		
+				// draw polygon
+				
 			glBegin(GL_POLYGON);
 			
 			for (t=0;t!=mesh_poly->ptsz;t++) {
@@ -371,11 +393,10 @@ void walk_view_draw_portal_meshes_line(int rn,d3pnt *cpt,bool opaque)
 
 void walk_view_draw_portal_liquids(int rn,d3pnt *cpt,bool opaque)
 {
-	int					n,x,y,z;
+	int					n,nliquid,x,y,z;
 	unsigned long		old_gl_id;
 	portal_type			*portal;
 	texture_type		*texture;
-	portal_liquid_type	*portal_liquid;
 	map_liquid_type		*liquid;
 	
 	if (!dp_liquid) return;
@@ -399,12 +420,13 @@ void walk_view_draw_portal_liquids(int rn,d3pnt *cpt,bool opaque)
 		// run through the portal liquids
 		
 	portal=&map.portals[rn];
-	portal_liquid=&portal->liquid;
-	liquid=portal_liquid->liquids;
+	
+	nliquid=portal->liquid.nliquid;
+	liquid=portal->liquid.liquids;
 	
 	glEnable(GL_TEXTURE_2D);
 	
-	for (n=0;n!=portal_liquid->nliquid;n++) {
+	for (n=0;n!=nliquid;n++) {
 		texture=&map.textures[liquid->txt_idx];
 	
 		if (opaque) {
@@ -573,7 +595,7 @@ void walk_view_draw_position(Rect *box,d3pnt *cpt)
 
 void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 {
-	int			i,rn,
+	int			i,rn,clip_y,
 				portal_cnt,portal_list[max_portal];
 	
  		// always draw from portal that cursor is in
@@ -583,7 +605,11 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 		
        // 3D view
         
-	walk_view_gl_setup(view_setup);
+	main_wind_set_viewport(&view_setup->box,0.75f);
+	main_wind_set_3D_projection(&view_setup->box,&view_setup->ang,view_setup->fov,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
 	
 		// get the portals to draw
 		
@@ -611,31 +637,56 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 		
 	if (view_setup->draw_portal) {
 		for (i=0;i!=portal_cnt;i++) {
-			walk_view_draw_portal_block(portal_list[i],&view_setup->cpt);
+			walk_view_draw_portal_block(portal_list[i],&view_setup->cpt,view_setup->portal_y);
 		}
 	}
+	
+		// y cipping
+		
+	clip_y=-1;
+	if (view_setup->clip_on) clip_y=view_setup->clip_y;
 
         // draw opaque parts of portals in sight path
         
     for (i=0;i!=portal_cnt;i++) {
 		rn=portal_list[i];
-        if (!view_setup->mesh_only) walk_view_draw_portal_meshes_texture(rn,&view_setup->cpt,TRUE);
-        walk_view_draw_portal_meshes_line(rn,&view_setup->cpt,TRUE);
-		walk_view_draw_portal_nodes(rn,&view_setup->cpt);
+        if (!view_setup->mesh_only) walk_view_draw_portal_meshes_texture(rn,&view_setup->cpt,clip_y,TRUE);
+ 		walk_view_draw_portal_nodes(rn,&view_setup->cpt);
 		walk_view_draw_portal_spots_scenery(rn,&view_setup->cpt);
 		walk_view_draw_portal_lights_sounds_particles(rn,&view_setup->cpt);
 		walk_view_draw_portal_liquids(rn,&view_setup->cpt,TRUE);
     }
 	
+		// draw opaque mesh lines
+		// push view forward to better z-buffer lines
+		
+	main_wind_set_3D_projection(&view_setup->box,&view_setup->ang,view_setup->fov,(walk_view_near_z+10),(walk_view_far_z-10),walk_view_near_offset);
+ 
+	for (i=0;i!=portal_cnt;i++) {
+		rn=portal_list[i];
+        walk_view_draw_portal_meshes_line(rn,&view_setup->cpt,TRUE);
+    }
+	
         // draw transparent parts of portals in sight path
         
+	main_wind_set_3D_projection(&view_setup->box,&view_setup->ang,view_setup->fov,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
+
     for (i=0;i!=portal_cnt;i++) {
 		rn=portal_list[i];
-        if (!view_setup->mesh_only) walk_view_draw_portal_meshes_texture(rn,&view_setup->cpt,FALSE);
-		walk_view_draw_portal_meshes_line(rn,&view_setup->cpt,TRUE);
+        if (!view_setup->mesh_only) walk_view_draw_portal_meshes_texture(rn,&view_setup->cpt,clip_y,FALSE);
 		walk_view_draw_portal_liquids(rn,&view_setup->cpt,FALSE);
     }
 	
+        // draw transparent mesh lines
+		// push view forward to better z-buffer lines
+        
+	main_wind_set_3D_projection(&view_setup->box,&view_setup->ang,view_setup->fov,(walk_view_near_z+10),(walk_view_far_z-10),walk_view_near_offset);
+
+    for (i=0;i!=portal_cnt;i++) {
+		rn=portal_list[i];
+		walk_view_draw_portal_meshes_line(rn,&view_setup->cpt,TRUE);
+    }
+		
 		// draw selection
 		
     for (i=0;i!=portal_cnt;i++) {
@@ -643,10 +694,14 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 		walk_view_draw_select_portal(rn,&view_setup->cpt);
     }
 	
-	walk_view_draw_segment_handles();
+	main_wind_set_3D_projection(&view_setup->box,&view_setup->ang,view_setup->fov,(walk_view_near_z+20),(walk_view_far_z-20),walk_view_near_offset);
 	
+	walk_view_draw_segment_handles();
+
 		// position
 		
+	main_wind_set_3D_projection(&view_setup->box,&view_setup->ang,view_setup->fov,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
+
 	if (draw_position) walk_view_draw_position(&view_setup->box,&view_setup->cpt);
 }
 

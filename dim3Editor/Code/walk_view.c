@@ -136,7 +136,7 @@ void walk_view_click(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_di
 
         // click the map pieces
     
-    walk_view_click_piece(view_setup,pt,dblclick);
+    walk_view_click_piece(view_setup,pt,view_move_dir,dblclick);
 }
 
 /* =======================================================

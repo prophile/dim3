@@ -354,6 +354,7 @@ void walk_view_portal_go_to_selection(void)
       
 ======================================================= */
 
+// supergumba -- can probably delete
 void walk_view_get_piece_movement(bool cmdkey,int x,int y,int *xadd,int *zadd,int *yadd)
 {
 	*xadd=*zadd=*yadd=0;

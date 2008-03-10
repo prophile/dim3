@@ -32,7 +32,7 @@ and can be sold or given away.
 #include "walk_view.h"
 
 int							vertex_mode;
-bool						dp_primitive,dp_auto_texture,dp_wall,dp_floor,dp_ceiling,dp_ambient,dp_liquid,
+bool						dp_primitive,dp_auto_texture,dp_liquid,
 							dp_object,dp_node,dp_lightsoundparticle,dp_textured,dp_y_hide;
 
 extern int					cr,cx,cz,cy;

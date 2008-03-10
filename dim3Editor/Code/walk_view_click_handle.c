@@ -41,6 +41,7 @@ extern map_type				map;
       
 ======================================================= */
 
+// supergumba -- delete?
 void walk_view_move_similiar_handle(int rn,int x,int z,int y,int xadd,int zadd,int yadd)
 {
     int				i,k,ptsz,nx,nz,nrn;
@@ -83,130 +84,45 @@ void walk_view_move_similiar_handle(int rn,int x,int z,int y,int xadd,int zadd,i
 
 /* =======================================================
 
-      Drag Single Segment Handles
+      Drag Single Mesh Handles
       
 ======================================================= */
 
-void walk_view_move_single_handle(int index,int wpt,int xadd,int zadd,int yadd)
-{
-	segment_type	*seg;
-    
-    seg=&map.segments[index];
-    
-    switch (seg->type) {
-    
-        case sg_wall:
-            switch (wpt) {
-                case 0:
-                    seg->data.wall.ty-=yadd;
-                    if (seg->data.wall.ty<0) seg->data.wall.ty=0;
-                    if (seg->data.wall.ty>seg->data.wall.by) seg->data.wall.ty=seg->data.wall.by;
-                    break;
-                case 1:
-                    seg->data.wall.rx-=xadd;
-                    seg->data.wall.rz-=zadd;
-                    break;
-                case 2:
-                    seg->data.wall.by-=yadd;
-                    if (seg->data.wall.by<seg->data.wall.ty) seg->data.wall.by=seg->data.wall.ty;
-                    break;
-                case 3:
-                    seg->data.wall.lx-=xadd;
-                    seg->data.wall.lz-=zadd;
-                    break;
-            }
-            break;
-            
-        case sg_floor:
-        case sg_ceiling:
-            if (vertex_mode==vm_lock) {
-                walk_view_move_similiar_handle(seg->rn,seg->data.fc.x[wpt],seg->data.fc.z[wpt],seg->data.fc.y[wpt],xadd,zadd,yadd);
-                break;
-            }
-           
-            seg->data.fc.x[wpt]-=xadd;
-            seg->data.fc.z[wpt]-=zadd;
-            seg->data.fc.y[wpt]-=yadd;
-            break;
-            
-        case sg_liquid:
-            switch (wpt) {
-                case 0:
-                    seg->data.liquid.top-=zadd;
-                    break;
-                case 1:
-                    seg->data.liquid.rgt-=xadd;
-                    break;
-                case 2:
-                    seg->data.liquid.bot-=zadd;
-                    break;
-                case 3:
-                    seg->data.liquid.lft-=xadd;
-                    break;
-            }
-            seg->data.liquid.y-=yadd;
-            break;	
-
-        case sg_ambient_wall:
-            switch (wpt) {
-                case 0:
-                    seg->data.ambient_wall.ty-=yadd;
-                    if (seg->data.ambient_wall.ty<0) seg->data.ambient_wall.ty=0;
-                    if (seg->data.ambient_wall.ty>seg->data.ambient_wall.by) seg->data.ambient_wall.ty=seg->data.ambient_wall.by;
-                    break;
-                case 1:
-                    seg->data.ambient_wall.rx-=xadd;
-                    seg->data.ambient_wall.rz-=zadd;
-                    break;
-                case 2:
-                    seg->data.ambient_wall.by-=yadd;
-                    if (seg->data.ambient_wall.by<seg->data.ambient_wall.ty) seg->data.ambient_wall.by=seg->data.ambient_wall.ty;
-                    break;
-                case 3:
-                    seg->data.ambient_wall.lx-=xadd;
-                    seg->data.ambient_wall.lz-=zadd;
-                    break;
-            }
-            break;
-			
-        case sg_ambient_fc:
-            if (vertex_mode==vm_lock) {
-                walk_view_move_similiar_handle(seg->rn,seg->data.ambient_fc.x[wpt],seg->data.ambient_fc.z[wpt],seg->data.ambient_fc.y[wpt],xadd,zadd,yadd);
-                break;
-            }
-           
-            seg->data.ambient_fc.x[wpt]-=xadd;
-            seg->data.ambient_fc.z[wpt]-=zadd;
-            seg->data.ambient_fc.y[wpt]-=yadd;
-            break;
-    }
-	
-	if (dp_auto_texture) map_segment_reset_texture_uvs(&map,seg);
-}
-
-bool walk_view_drag_segment_handle(Point pt,int index,int wpt)
+bool walk_view_drag_segment_handle(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,int portal_idx,int mesh_idx,int vertex_idx)
 {
 	int						x,y,xadd,zadd,yadd;
-	Point					oldpt;
+	d3pnt					old_pt,*dpt;
+	Point					uipt;
 	bool					first_drag;
 	MouseTrackingResult		track;
+	portal_type				*portal;
+	map_mesh_type			*mesh;
 
     if (!Button()) return(FALSE);
 	
+		// get mesh point
+		
+	portal=&map.portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+	dpt=&mesh->vertexes[vertex_idx];
+		
+		// drag mesh
+	
 	first_drag=TRUE;
 	
-	oldpt=pt;
+	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	do {
-		TrackMouseLocation(NULL,&pt,&track);
+		TrackMouseLocation(NULL,&uipt,&track);
+		pt->x=uipt.h-view_setup->box.left;
+		pt->y=uipt.v-view_setup->box.top;
 		
-		if ((pt.h==oldpt.h) && (pt.v==oldpt.v)) continue;
+		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
-		x=(oldpt.h-pt.h)/5;
-		y=(oldpt.v-pt.v)/5;
-		if ((x==0) && (y==0)) continue;
+		x=old_pt.x-pt->x;
+		y=old_pt.y-pt->y;
 		
-		oldpt=pt;
+		memmove(&old_pt,pt,sizeof(d3pnt));
 		
 			// turn on drag cursor
 			
@@ -215,10 +131,13 @@ bool walk_view_drag_segment_handle(Point pt,int index,int wpt)
 			first_drag=FALSE;
 		}
 		
-			// move item
+			// move vertex
 
-		walk_view_get_piece_movement(FALSE,x,y,&xadd,&zadd,&yadd);
-		walk_view_move_single_handle(index,wpt,xadd,zadd,yadd);
+		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
+			
+		dpt->x+=xadd;
+		dpt->y+=yadd;
+		dpt->z+=zadd;
 
         main_wind_draw();
 		
@@ -234,6 +153,8 @@ bool walk_view_drag_segment_handle(Point pt,int index,int wpt)
       Drag Primitive Handles
       
 ======================================================= */
+
+// supergumba -- can probably delete from new version
 
 bool walk_view_drag_primitive_handle(Point pt,int index,int wpt)
 {
