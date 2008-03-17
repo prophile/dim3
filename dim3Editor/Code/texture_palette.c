@@ -185,6 +185,9 @@ void texture_palette_draw(void)
 	}
 
 		// textures
+		
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
 	
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	glEnable(GL_TEXTURE_2D);
@@ -220,6 +223,8 @@ void texture_palette_draw(void)
 	}
 	
 	glDisable(GL_TEXTURE_2D);
+	
+	glDisable(GL_ALPHA_TEST);
 	
 		// lines
 	

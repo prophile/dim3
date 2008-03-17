@@ -180,9 +180,9 @@ and can be sold or given away.
 // vertex modes
 //
 
-#define vm_none				0
-#define vm_lock				1
-#define vm_snap				2
+#define vertex_mode_none	0
+#define vertex_mode_lock	1
+#define vertex_mode_snap	2
 
 //
 // drag modes
@@ -191,6 +191,15 @@ and can be sold or given away.
 #define drag_mode_mesh		0
 #define drag_mode_polygon	1
 #define drag_mode_vertex	2
+
+//
+// grid modes
+//
+
+#define grid_mode_none		0
+#define grid_mode_small		1
+#define grid_mode_medium	2
+#define grid_mode_large		3
 
 //
 // selection types

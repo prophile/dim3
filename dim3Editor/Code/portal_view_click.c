@@ -400,7 +400,7 @@ void portal_view_portal_drag(d3pnt *pt)
 		ex=portal->ex;
 		ez=portal->ez;
 		
-		if (vertex_mode==vm_snap) portal_snap(cr,&to_pt);
+		if (vertex_mode==vertex_mode_snap) portal_snap(cr,&to_pt);
 		
 		orgx=x;
 		orgz=z;

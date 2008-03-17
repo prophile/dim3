@@ -70,6 +70,7 @@ extern void select_sort(void);
 extern void select_duplicate_clear(void);
 extern void select_duplicate_add(int type,int portal_idx,int main_idx,int sub_idx);
 extern void select_duplicate_copy(void);
+extern void select_combine(int portal_idx);
 
 //
 // selection move routines

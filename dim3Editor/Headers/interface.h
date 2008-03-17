@@ -30,7 +30,7 @@ and can be sold or given away.
 //
 
 #define tool_button_size					28
-#define tool_count							16
+#define tool_count							19
 
 #define tool_group_menu_id					160
 
@@ -124,6 +124,8 @@ extern void main_wind_tool_fill_group_combo(void);
 extern void main_wind_tool_default(void);
 extern void main_wind_tool_fix_enable(void);
 extern void main_wind_tool_switch_vertex_mode(void);
+extern void main_wind_tool_switch_drag_mode(void);
+extern void main_wind_tool_switch_grid_mode(void);
 
 //
 // main window panels

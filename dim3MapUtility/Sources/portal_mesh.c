@@ -213,6 +213,114 @@ int map_portal_mesh_count_poly(map_type *map,int portal_idx)
 
 /* =======================================================
 
+      Combine Meshes
+      
+======================================================= */
+
+void map_portal_mesh_combine_single_mesh(map_mesh_type *mesh,map_mesh_type *mesh_copy)
+{
+	int					n,t,k,v_idx;
+	d3pnt				*d3pt,*chk_d3pt;
+	map_mesh_poly_type	*mesh_poly,*mesh_copy_poly;
+	
+		// get place we last stopped adding
+		
+	d3pt=&mesh->vertexes[mesh->nvertex];
+	mesh_poly=&mesh->polys[mesh->npoly];
+	
+	mesh_copy_poly=mesh_copy->polys;
+	
+	for (n=0;n!=mesh_copy->npoly;n++) {
+	
+			// add the poly
+			
+		memmove(mesh_poly,mesh_copy_poly,sizeof(map_mesh_poly_type));
+	
+			// add in the vertexes, checking for combines
+			
+		for (t=0;t!=mesh_copy_poly->ptsz;t++) {
+			chk_d3pt=&mesh_copy->vertexes[mesh_copy_poly->v[t]];
+			
+			v_idx=-1;
+			
+			for (k=0;k!=mesh->nvertex;k++) {
+				d3pt=&mesh->vertexes[k];
+				
+				if ((d3pt->x==chk_d3pt->x) || (d3pt->x==chk_d3pt->x) || (d3pt->x==chk_d3pt->x)) {
+					v_idx=k;
+					break;
+				}
+			}
+			
+				// need to add new vertex
+				
+			if (v_idx==-1) {
+				v_idx=mesh->nvertex;
+				mesh->nvertex++;
+				
+				d3pt=&mesh->vertexes[v_idx];
+				d3pt->x=chk_d3pt->x;
+				d3pt->y=chk_d3pt->y;
+				d3pt->z=chk_d3pt->z;
+			}
+
+			mesh_poly->v[t]=v_idx;
+		}
+		
+		mesh->npoly++;
+		
+		mesh_poly++;
+		mesh_copy_poly++;
+	}
+}
+
+int map_portal_mesh_combine(map_type *map,int portal_idx,int mesh_1_idx,int mesh_2_idx)
+{
+	int					mesh_idx;
+	map_mesh_type		*mesh,*mesh_1,*mesh_2;
+	
+		// get meshes to combine
+		
+	mesh_1=&map->portals[portal_idx].mesh.meshes[mesh_1_idx];
+	mesh_2=&map->portals[portal_idx].mesh.meshes[mesh_2_idx];
+	
+		// create new combined mesh
+		
+	mesh_idx=map_portal_mesh_add(map,portal_idx,1);
+	if (mesh_idx==-1) return(-1);
+	
+	if (!map_portal_mesh_set_vertex_count(map,portal_idx,mesh_idx,(mesh_1->nvertex+mesh_2->nvertex))) {
+		map_portal_mesh_delete(map,portal_idx,mesh_idx);
+		return(-1);
+	}
+	
+	if (!map_portal_mesh_set_poly_count(map,portal_idx,mesh_idx,(mesh_1->npoly+mesh_2->npoly))) {
+		map_portal_mesh_delete(map,portal_idx,mesh_idx);
+		return(-1);
+	}
+
+		// combined meshes
+		
+	mesh=&map->portals[portal_idx].mesh.meshes[mesh_idx];
+
+	mesh->npoly=0;
+	mesh->nvertex=0;
+		
+	map_portal_mesh_combine_single_mesh(mesh,mesh_1);
+	map_portal_mesh_combine_single_mesh(mesh,mesh_2);
+	
+		// delete original meshes
+		// and return mesh index minus the two
+		// deleted meshes
+		
+	map_portal_mesh_delete(map,portal_idx,mesh_1_idx);
+	map_portal_mesh_delete(map,portal_idx,mesh_2_idx);	
+	
+	return(mesh_idx-2);
+}
+
+/* =======================================================
+
       Mesh Transparency Sorting Lists
       
 ======================================================= */

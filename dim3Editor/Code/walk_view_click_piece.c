@@ -30,7 +30,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int					cr,cx,cy,cz,magnify_factor;
+extern int					cr,cx,cy,cz,magnify_factor,drag_mode,grid_mode;
 extern bool					dp_liquid,dp_object,dp_lightsoundparticle,dp_node;
 extern Rect					main_wind_box;
 
@@ -131,6 +131,33 @@ void walk_view_click_drag_movement(editor_3D_view_setup *view_setup,int view_mov
 	}
 }
 
+void walk_view_click_grid(d3pnt *pt)
+{
+	int			sz;
+	
+	switch (grid_mode) {
+		case grid_mode_none:
+			return;
+		case grid_mode_small:
+			sz=map_enlarge;
+			break;
+		case grid_mode_medium:
+			sz=map_enlarge<<1;
+			break;
+		case grid_mode_large:
+			sz=map_enlarge<<3;
+			break;
+	}
+	
+	pt->x/=sz;
+	pt->y/=sz;
+	pt->z/=sz;
+	
+	pt->x*=sz;
+	pt->y*=sz;
+	pt->z*=sz;
+}
+
 /* =======================================================
 
       Piece Dragging
@@ -191,77 +218,59 @@ bool walk_view_piece_drag(Point pt)
 
 /* =======================================================
 
-      View Handle Clicking
-      
-======================================================= */
-
-bool walk_view_click_handle(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
-{
-    int					n,x,y,z,sz,type,portal_idx,mesh_idx,poly_idx,idx;
-	float				hit_z;
-    d3pnt				*dpt;
-	portal_type			*portal;
-	map_mesh_type		*mesh;
-	
-    if (select_count()!=1) return(FALSE);
-	
-	select_get(0,&type,&portal_idx,&mesh_idx,&poly_idx);
-	if (type!=mesh_piece) return(FALSE);
-	
-		// check for clicking points
-
-	portal=&map.portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
-		
-	idx=-1;
-	hit_z=100000;
-
-	sz=(int)(walk_view_handle_size/2);
-	
-	dpt=mesh->vertexes;
-	
-	for (n=0;n!=mesh->nvertex;n++) {
-		x=(dpt->x+portal->x)-view_setup->cpt.x;
-		y=dpt->y-view_setup->cpt.y;
-		z=view_setup->cpt.z-(dpt->z+portal->z);
-		
-		if (!walk_view_click_rotate_polygon_behind_z(x,y,z)) {
-			walk_view_click_project_point(&view_setup->box,&x,&y,&z);
-			
-			if ((pt->x>=(x-sz)) && (pt->x<=(x+sz)) && (pt->y>=(y-sz)) && (pt->y<=(y+sz))) {
-				if (z<hit_z) {
-					hit_z=z;
-					idx=n;
-				}
-			}
-		}
-		
-		dpt++;
-	}
-
-    if (idx==-1) return(FALSE);
-    
-		// draw the handle
-
-	walk_view_drag_segment_handle(view_setup,pt,view_move_dir,portal_idx,mesh_idx,idx);
- 
-     return(TRUE);
-}
-
-/* =======================================================
-
       View Polygon Clicking
       
 ======================================================= */
 
-void walk_view_polygon_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,int *type,int *portal_idx,int *main_idx,int *sub_idx,bool sel_only)
+bool walk_view_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,portal_type *portal,map_mesh_type *mesh,int poly_idx,int *hit_z)
 {
-	int					i,n,k,t,fz,box_wid,box_high,hit_z,px[8],py[8],pz[8];
-	bool				behind_z,off_left,off_right,off_top,off_bottom;
+	int					t,fz,px[8],py[8],pz[8];
+	bool				off_left,off_right,off_top,off_bottom;
 	d3pnt				*pt;
+	map_mesh_poly_type	*mesh_poly;
+
+	mesh_poly=&mesh->polys[poly_idx];
+
+	fz=0;
+
+	for (t=0;t!=mesh_poly->ptsz;t++) {
+		pt=&mesh->vertexes[mesh_poly->v[t]];
+		px[t]=(pt->x+portal->x)-view_setup->cpt.x;
+		py[t]=pt->y-view_setup->cpt.y;
+		pz[t]=view_setup->cpt.z-(pt->z+portal->z);
+		
+		if (walk_view_click_rotate_polygon_behind_z(px[t],py[t],pz[t])) return(FALSE);
+				
+		walk_view_click_project_point(&view_setup->box,&px[t],&py[t],&pz[t]);
+		fz+=pz[t];
+	}
+	
+		// check if outside box
+		
+	off_left=off_right=off_top=off_bottom=TRUE;
+	
+	for (t=0;t!=mesh_poly->ptsz;t++) {
+		off_left=off_left&&(px[t]<0);
+		off_right=off_right&&(px[t]>(view_setup->box.right-view_setup->box.left));
+		off_top=off_top&&(py[t]<0);
+		off_bottom=off_bottom&&(py[t]>(view_setup->box.bottom-view_setup->box.top));
+	}
+	
+	if ((off_left) || (off_right) || (off_top) || (off_bottom)) return(FALSE);
+	
+		// check hits
+		
+	if (!polygon_2D_point_inside(mesh_poly->ptsz,px,py,click_pt->x,click_pt->y)) return(FALSE);
+	
+	*hit_z=fz/mesh_poly->ptsz;
+	return(TRUE);
+}
+
+void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,int *type,int *portal_idx,int *main_idx,int *sub_idx,bool sel_only)
+{
+	int					i,n,k,fz,box_wid,box_high,hit_z;
 	portal_type			*portal;
 	map_mesh_type		*mesh;
-	map_mesh_poly_type	*mesh_poly;
 	
 	walk_view_click_setup_project(view_setup);
 	
@@ -283,50 +292,7 @@ void walk_view_polygon_click_index(editor_3D_view_setup *view_setup,d3pnt *click
 		
 			for (k=0;k!=mesh->npoly;k++) {
 			
-				mesh_poly=&mesh->polys[k];
-			
-				fz=0;
-				behind_z=FALSE;
-			
-				for (t=0;t!=mesh_poly->ptsz;t++) {
-					pt=&mesh->vertexes[mesh_poly->v[t]];
-					px[t]=(pt->x+portal->x)-view_setup->cpt.x;
-					py[t]=pt->y-view_setup->cpt.y;
-					pz[t]=view_setup->cpt.z-(pt->z+portal->z);
-					
-					if (walk_view_click_rotate_polygon_behind_z(px[t],py[t],pz[t])) {
-						behind_z=TRUE;
-						break;
-					}
-					
-					walk_view_click_project_point(&view_setup->box,&px[t],&py[t],&pz[t]);
-					fz+=pz[t];
-				}
-				
-					// behind z?
-					
-				if (behind_z) continue;
-				
-					// check if outside box
-					
-				off_left=off_right=off_top=off_bottom=TRUE;
-				
-				for (t=0;t!=mesh_poly->ptsz;t++) {
-					off_left=off_left&&(px[t]<0);
-					off_right=off_right&&(px[t]>box_wid);
-					off_top=off_top&&(py[t]<0);
-					off_bottom=off_bottom&&(py[t]>box_high);
-				}
-				
-				if ((off_left) || (off_right) || (off_top) || (off_bottom)) continue;
-				
-					// get average z
-					
-				fz/=mesh_poly->ptsz;
-				
-					// check hits
-					
-				if (polygon_2D_point_inside(mesh_poly->ptsz,px,py,click_pt->x,click_pt->y)) {
+				if (walk_view_poly_click_index(view_setup,click_pt,portal,mesh,k,&fz)) {
 					if (fz<hit_z) {
 						hit_z=fz;
 						*type=mesh_piece;
@@ -335,81 +301,22 @@ void walk_view_polygon_click_index(editor_3D_view_setup *view_setup,d3pnt *click
 						*sub_idx=k;
 					}
 				}
-				
+
 			}
 		
 			mesh++;
 		}
 	}
 }
-
-
-
-bool walk_view_click_piece_select(int xorg,int yorg,Point pt,bool on_side)
-{
-/* supergumba
-	int				index,type,portal_idx,main_idx,sub_idx;
-	
-		// run through selected items first so we
-		// can click and drag selections even when hidden
-		
-	if (select_count()==0) return(FALSE);
-	
-		// anything clicked?
-		
-	walk_view_polygon_click_index(xorg,yorg,pt,&index,&type,TRUE,on_side);
-	if (index==-1) return(FALSE);
-	
-		// if not shift down and a primitive clicked,
-		// then possibly change selected piece in primitive
-		
-	if ((!main_wind_shift_down()) && (type==segment_piece)) {
-	
-		if (map.segments[index].primitive_uid[0]!=-1) {
-			if (!select_check(primitive_piece,portal_idx,main_idx,sub_idx)) {
-				select_clear();	
-				select_add(primitive_piece,portal_idx,main_idx,sub_idx);
-				
-				menu_fix_enable();
-				main_wind_tool_fix_enable();
-
-				main_wind_draw();
-				texture_palette_reset();
-			}
-		}
-		
-	}
-		
-		// run drag
-	
-	return(walk_view_piece_drag(pt));
-	*/
-	return(FALSE);
-}
 	
 void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,bool dblclick)
 {
-	int				index,primitive_index,type,portal_idx,main_idx,sub_idx;
+	int				type,portal_idx,main_idx,sub_idx;
 	
 		// anything clicked?
 		
-	walk_view_polygon_click_index(view_setup,pt,&type,&portal_idx,&main_idx,&sub_idx,FALSE);
+	walk_view_mesh_click_index(view_setup,pt,&type,&portal_idx,&main_idx,&sub_idx,FALSE);
 	
-		// if no select, then can still drag previous selections
-	/* supergumba	
-	if (type==-1) {
-		if (select_count()!=0) {
-			if (!walk_view_piece_drag(pt)) {
-				select_clear();					// if no drag, clear selection
-				menu_fix_enable();
-				main_wind_tool_fix_enable();
-				main_wind_draw();
-				texture_palette_reset();
-			}
-		}
-		return;
-	}
-	*/
 		// if a selection, make sure in right portal
 		
 	if (type!=-1) cr=portal_idx;
@@ -433,18 +340,22 @@ void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,boo
 	
 	main_wind_draw();
 	texture_palette_reset();
+}
+
+/* =======================================================
+
+      Double Clicking
+      
+======================================================= */
+
+void walk_view_click_info(void)
+{
+	int				type,portal_idx,main_idx,sub_idx;
 	
-		// dragging clicks
-		
-	/* supergumba
-	if (!dblclick) {
-		walk_view_piece_drag(pt);
-		return;
-	}
-	*/
+    if (select_count()!=1) return;
 	
-		// double clicks
-		
+	select_get(0,&type,&portal_idx,&main_idx,&sub_idx);
+/* supergumba
 	switch (type) {
 	
 		case segment_piece:
@@ -476,6 +387,8 @@ void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,boo
 			dialog_map_particle_settings_run(&map.particles[index]);
 			break;
 	}
+*/
+
 }
 
 /* =======================================================
@@ -491,14 +404,36 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 	pt->x-=view_setup->box.left;
 	pt->y-=view_setup->box.top;
 	
-	if (walk_view_click_handle(view_setup,pt,view_move_dir)) return;
-/*	
-// supergumba
-	if (!dblclick) {
-		if (walk_view_click_piece_select(xorg,yorg,pt,on_side)) return;
+		// any vertex drags
+		
+	if (drag_mode==drag_mode_vertex) {
+		if (walk_view_click_drag_vertex(view_setup,pt,view_move_dir)) return;
 	}
-*/
+	
+		// select mesh/polygon
+		
 	walk_view_click_piece_normal(view_setup,pt,dblclick);
+
+		// double-click info
+		
+	if (dblclick) {
+		walk_view_click_info();
+		return;
+	}
+	
+		// do any mesh or poly drags
+		
+	switch (drag_mode) {
+	
+		case drag_mode_mesh:
+			if (walk_view_click_drag_mesh(view_setup,pt,view_move_dir)) return;
+			break;
+
+		case drag_mode_polygon:
+			if (walk_view_click_drag_mesh_poly(view_setup,pt,view_move_dir)) return;
+			break;
+			
+	}
 }
 
 

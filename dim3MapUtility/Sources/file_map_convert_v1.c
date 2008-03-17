@@ -379,7 +379,7 @@ void map_convert_segments_wall(segment_type *seg)
 			wall->z[0]=wall->lz;
 			wall->z[1]=wall->z[2]=wall->rz;
 			wall->y[0]=wall->y[1]=wall->ty;
-			wall->y[2]=wall->by+1;
+			wall->y[2]=wall->by;
 			seg->draw.gx[0]=seg->x_txtoff;
 			seg->draw.gx[1]=seg->draw.gx[2]=seg->x_txtoff+seg->x_txtfact;
 			seg->draw.gy[0]=seg->draw.gy[1]=seg->y_txtoff;
@@ -393,7 +393,7 @@ void map_convert_segments_wall(segment_type *seg)
 			wall->z[0]=wall->z[2]=wall->lz;
 			wall->z[1]=wall->rz;
 			wall->y[0]=wall->ty;
-			wall->y[1]=wall->y[2]=wall->by+1;
+			wall->y[1]=wall->y[2]=wall->by;
 			seg->draw.gx[0]=seg->draw.gx[2]=seg->x_txtoff;
 			seg->draw.gx[1]=seg->x_txtoff+seg->x_txtfact;
 			seg->draw.gy[0]=seg->y_txtoff;
@@ -409,7 +409,7 @@ void map_convert_segments_wall(segment_type *seg)
 			wall->z[1]=wall->z[2]=wall->rz;
 			wall->y[0]=wall->ty;
 			wall->y[1]=wall->y[3]=(wall->by+wall->ty)>>1;
-			wall->y[2]=wall->by+1;
+			wall->y[2]=wall->by;
 			seg->draw.gx[0]=seg->draw.gx[3]=seg->x_txtoff;
 			seg->draw.gx[1]=seg->draw.gx[2]=seg->x_txtoff+seg->x_txtfact;
 			seg->draw.gy[0]=seg->y_txtoff;
@@ -424,7 +424,7 @@ void map_convert_segments_wall(segment_type *seg)
 			wall->z[0]=wall->z[3]=wall->lz;
 			wall->z[1]=wall->z[2]=wall->rz;
 			wall->y[0]=wall->y[1]=wall->ty;
-			wall->y[2]=wall->y[3]=wall->by+1;
+			wall->y[2]=wall->y[3]=wall->by;
             seg->draw.gx[0]=seg->draw.gx[3]=seg->x_txtoff;
             seg->draw.gx[1]=seg->draw.gx[2]=seg->x_txtoff+seg->x_txtfact;
             seg->draw.gy[0]=seg->draw.gy[1]=seg->y_txtoff;
@@ -492,7 +492,7 @@ void map_convert_segments_ambient_wall(segment_type *seg)
 	ambient_wall->z[0]=ambient_wall->z[3]=ambient_wall->lz;
 	ambient_wall->z[1]=ambient_wall->z[2]=ambient_wall->rz;
 	ambient_wall->y[0]=ambient_wall->y[1]=ambient_wall->ty;
-	ambient_wall->y[2]=ambient_wall->y[3]=ambient_wall->by+1;
+	ambient_wall->y[2]=ambient_wall->y[3]=ambient_wall->by;
 
 	draw->gx[0]=draw->gx[3]=seg->x_txtoff+seg->x_txtfact;
 	draw->gx[1]=draw->gx[2]=seg->x_txtoff;

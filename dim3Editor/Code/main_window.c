@@ -41,7 +41,8 @@ extern bool				map_opened,
 extern map_type			map;
 extern setup_type		setup;
 
-int						main_wind_view,main_wind_panel_focus,main_wind_perspective,drag_mode;
+int						main_wind_view,main_wind_panel_focus,main_wind_perspective,
+						drag_mode,grid_mode;
 int						wtpt;
 bool					swap_panel_forward,swap_panel_side,swap_panel_top;
 Rect					main_wind_box;
@@ -50,9 +51,8 @@ WindowRef				mainwind;
 EventHandlerRef			main_wind_event;
 EventHandlerUPP			main_wind_upp;
 ControlRef				tool_ctrl[tool_count],piece_ctrl[piece_count],
-						group_combo,magnify_slider;
+						group_combo;
 IconSuiteRef			tool_icon[tool_count],piece_icon[piece_count];
-ControlActionUPP		magnify_proc;
 MenuRef					group_menu;
 Rect					group_box;
 
@@ -60,12 +60,19 @@ AGLContext				ctx;
 
 char					tool_tooltip_str[tool_count][64]=
 								{
-										"Drag Points Freely","Drag Touching Points Together",
-										"Snap To Nearby Points While Dragging","Auto-Texture",
+										"Move Non-Mesh Points Freely\nSwith Mode with Q",
+										"Move Non-Mesh Points Together\nSwith Mode with Q",
+										"Snap Non-Mesh Points\nSwith Mode with Q",
+										"Edit Entire Mesh\nSwitch Mode with W or Middle Button",
+										"Edit Polygon Only\nSwitch Mode with W or Middle Button",
+										"Edit Vertex Only\nSwitch Mode with W or Middle Button",
+										"No Grid\nSwitch Mode with E",
+										"Small Grid\nSwitch Mode with E",
+										"Medium Grid\nSwitch Mode with E",
+										"Large Grid\nSwitch Mode with E",
+										"Combine Meshes","Tesselate Polygon","Auto-Texture",
 										"Show/Hide Liquids","Show/Hide Script Spots/Scenery",
 										"Show/Hide Light/Sound/Particles","Show/Hide Nodes",
-										"Subtract Polygon Point","Add Polygon Point","Tesselate Polygon",
-										"Edit Entire Mesh","Edit Polygon Only","Edit Vertex Only",
 										"Edit Map Script","Run Map In Engine",
 									};
 									
@@ -91,111 +98,132 @@ void main_wind_control_tool(int tool_idx)
 	undo_clear();
 	
 	switch (tool_idx) {
+	
+			// vertex mode
+			
 		case 0:
-			vertex_mode=vm_none;
+			vertex_mode=vertex_mode_none;
 			SetControlValue(tool_ctrl[0],1);
 			SetControlValue(tool_ctrl[1],0);
 			SetControlValue(tool_ctrl[2],0);
 			break;
 		case 1:
-			vertex_mode=vm_lock;
+			vertex_mode=vertex_mode_lock;
 			SetControlValue(tool_ctrl[0],0);
 			SetControlValue(tool_ctrl[1],1);
 			SetControlValue(tool_ctrl[2],0);
 			break;
 		case 2:
-			vertex_mode=vm_snap;
+			vertex_mode=vertex_mode_snap;
 			SetControlValue(tool_ctrl[0],0);
 			SetControlValue(tool_ctrl[1],0);
 			SetControlValue(tool_ctrl[2],1);
 			break;
-		case 3:
-			dp_primitive=!dp_primitive;
-			break;
-		case 4:
-			dp_auto_texture=!dp_auto_texture;
-			break;
-		case 5:
-			SetControlValue(tool_ctrl[tool_idx],0);			// pop back up
-		//	main_wind_rotate_view();
-			main_wind_draw();
-			break;
-		case 6:
-			break;
-		case 7:
-			break;
-		case 8:
-			break;
-		case 9:
-			select_clear();
-			dp_liquid=!dp_liquid;
-			break;
-		case 10:
-			break;
 			
 			// drag mode buttons
 			
-		case 11:
+		case 3:
 			drag_mode=drag_mode_mesh;
-			SetControlValue(tool_ctrl[11],1);
-			SetControlValue(tool_ctrl[12],0);
-			SetControlValue(tool_ctrl[13],0);
+			SetControlValue(tool_ctrl[3],1);
+			SetControlValue(tool_ctrl[4],0);
+			SetControlValue(tool_ctrl[5],0);
+			break;
+			
+		case 4:
+			drag_mode=drag_mode_polygon;
+			SetControlValue(tool_ctrl[3],0);
+			SetControlValue(tool_ctrl[4],1);
+			SetControlValue(tool_ctrl[5],0);
+			break;
+			
+		case 5:
+			drag_mode=drag_mode_vertex;
+			SetControlValue(tool_ctrl[3],0);
+			SetControlValue(tool_ctrl[4],0);
+			SetControlValue(tool_ctrl[5],1);
+			break;
+			
+			// grid mode buttons
+			
+		case 6:
+			grid_mode=grid_mode_none;
+			SetControlValue(tool_ctrl[6],1);
+			SetControlValue(tool_ctrl[7],0);
+			SetControlValue(tool_ctrl[8],0);
+			SetControlValue(tool_ctrl[9],0);
+			break;
+			
+		case 7:
+			grid_mode=grid_mode_small;
+			SetControlValue(tool_ctrl[6],0);
+			SetControlValue(tool_ctrl[7],1);
+			SetControlValue(tool_ctrl[8],0);
+			SetControlValue(tool_ctrl[9],0);
+			break;
+			
+		case 8:
+			grid_mode=grid_mode_medium;
+			SetControlValue(tool_ctrl[6],0);
+			SetControlValue(tool_ctrl[7],0);
+			SetControlValue(tool_ctrl[8],1);
+			SetControlValue(tool_ctrl[9],0);
+			break;
+
+		case 9:
+			grid_mode=grid_mode_large;
+			SetControlValue(tool_ctrl[6],0);
+			SetControlValue(tool_ctrl[7],0);
+			SetControlValue(tool_ctrl[8],0);
+			SetControlValue(tool_ctrl[9],1);
+			break;
+			
+			// tesselate and auto-texture
+			
+		case 10:
+			SetControlValue(tool_ctrl[tool_idx],0);
+			select_combine(cr);
+			main_wind_draw();
+			break;
+
+		case 11:
+			SetControlValue(tool_ctrl[tool_idx],0);
+			segment_tesselate();
 			break;
 			
 		case 12:
-			drag_mode=drag_mode_polygon;
-			SetControlValue(tool_ctrl[11],0);
-			SetControlValue(tool_ctrl[12],1);
-			SetControlValue(tool_ctrl[13],0);
+			dp_auto_texture=!dp_auto_texture;
 			break;
+			
+			// show/hide
 			
 		case 13:
-			drag_mode=drag_mode_vertex;
-			SetControlValue(tool_ctrl[11],0);
-			SetControlValue(tool_ctrl[12],0);
-			SetControlValue(tool_ctrl[13],1);
+			select_clear();
+			dp_liquid=!dp_liquid;
 			break;
 			
-			
-			
-			/*
-		case 11:
+		case 14:
 			select_clear();
 			dp_object=!dp_object;
 			break;
-		case 12:
+			
+		case 15:
 			select_clear();
 			dp_lightsoundparticle=!dp_lightsoundparticle;
 			break;
-		case 13:
+			
+		case 16:
 			select_clear();
 			dp_node=!dp_node;
 			break;
-			*/
-		case 14:
-			dp_textured=!dp_textured;
-			break;
-		case 15:
-			dp_y_hide=!dp_y_hide;
-			break;
-		case 16:
-			SetControlValue(tool_ctrl[tool_idx],0);			// pop back up
-			segment_sub_point();
-			break;
+						
+			// script and run buttons
+			
 		case 17:
-			SetControlValue(tool_ctrl[tool_idx],0);			// pop back up
-			segment_add_point();
-			break;
-		case 18:
-			SetControlValue(tool_ctrl[tool_idx],0);			// pop back up
-			segment_tesselate();
-			break;
-		case 19:
-			SetControlValue(tool_ctrl[tool_idx],0);			// pop back up
+			SetControlValue(tool_ctrl[tool_idx],0);
 			launch_map_script_editor();
 			break;
-		case 20:
-			SetControlValue(tool_ctrl[tool_idx],0);			// pop back up
+		case 18:
+			SetControlValue(tool_ctrl[tool_idx],0);
 			launch_engine();
 			break;
 			
@@ -386,7 +414,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 					GetEventParameter(event,kEventParamMouseButton,typeMouseButton,NULL,sizeof(unsigned short),NULL,&btn);
 					
 					if (btn==kEventMouseButtonTertiary) {
-						main_wind_tool_switch_vertex_mode();
+						main_wind_tool_switch_drag_mode();
 						return(noErr);
 					}
 	
@@ -473,29 +501,15 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 
 /* =======================================================
 
-      Magnify Slider Action
+      Main Window Magnify
       
 ======================================================= */
-
-void main_wind_magnify_action(ControlRef ctrl,ControlPartCode code)
-{
-	int				s;
-	
-	s=GetControlValue(ctrl);
-	if (s==magnify_factor) return;
-	
-	magnify_factor=s;
-	
-    main_wind_draw();
-}
 
 void main_wind_magnify_scroll(int delta)
 {
 	magnify_factor-=delta;
 	if (magnify_factor<magnify_factor_min) magnify_factor=magnify_factor_min;
 	if (magnify_factor>magnify_factor_max) magnify_factor=magnify_factor_max;
-	
-	SetControlValue(magnify_slider,magnify_factor);
 	
     main_wind_draw();
 }
@@ -539,7 +553,7 @@ void main_wind_setup(void)
 
 void main_wind_open(void)
 {
-	int							n,rspace,group_lft,group_rgt,mag_lft,mag_rgt;
+	int							n;
 	Rect						wbox,box;
 	GLint						attrib[]={AGL_NO_RECOVERY,AGL_RGBA,AGL_DOUBLEBUFFER,AGL_ACCELERATED,AGL_PIXEL_SIZE,24,AGL_ALPHA_SIZE,8,AGL_DEPTH_SIZE,16,AGL_NONE};
 	GDHandle					gdevice;
@@ -597,38 +611,19 @@ void main_wind_open(void)
 
 			// next button position
 			
-		if (n==10) {
-			group_lft=box.right+4;
-			OffsetRect(&box,250,0);
-			group_rgt=box.left-4;
-		}
-		else {
-			if (n==13) {
-				mag_lft=box.right+4;
-				OffsetRect(&box,((wbox.right-box.left)-(tool_button_size*2)),0);
-				mag_rgt=box.left-4;
-			}
-			else {
-				OffsetRect(&box,tool_button_size,0);
-				if ((n==2) || (n==7)) OffsetRect(&box,2,0);
-			}
-		}
+		OffsetRect(&box,tool_button_size,0);
+		if ((n==2) || (n==5) || (n==9) || (n==12) || (n==16)) OffsetRect(&box,3,0);
 	}
-	
-		// remaining space
-	
-	rspace=(wbox.right-box.left)-15;
 	
 		// group combo
 		
 	CreateNewMenu(tool_group_menu_id,kMenuAttrExcludesMarkColumn,&group_menu);
 	InsertMenu(group_menu,kInsertHierarchicalMenu);
 	
-	group_box=box;
-	group_box.top+=3;
-	group_box.bottom-=3;
-	group_box.left=group_lft;
-	group_box.right=group_rgt;
+	group_box.top=3;
+	group_box.bottom=tool_button_size-3;
+	group_box.left=wbox.right-205;
+	group_box.right=wbox.right-5;
 	
 	CreatePopupButtonControl(mainwind,&group_box,NULL,tool_group_menu_id,FALSE,0,0,0,&group_combo);
 	
@@ -641,25 +636,6 @@ void main_wind_open(void)
 		
 	HMSetControlHelpContent(group_combo,&tag);
 	
-		// magnify slider
-
-	box.left=mag_lft;
-	box.right=mag_rgt;
-	box.top=box.top+3;
-	box.bottom=box.bottom-3;
-
-	magnify_proc=NewControlActionUPP(main_wind_magnify_action);
-	CreateSliderControl(mainwind,&box,(magnify_factor-1),magnify_factor_min,magnify_factor_max,kControlSliderDoesNotPoint,0,TRUE,magnify_proc,&magnify_slider);
- 
-	tag.version=kMacHelpVersion;
-	tag.tagSide=kHMDefaultSide;
-	SetRect(&tag.absHotRect,0,0,0,0);
-	tag.content[kHMMinimumContentIndex].contentType=kHMCFStringContent;
-	tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,"Magnify",kCFStringEncodingMacRoman);
-	tag.content[kHMMaximumContentIndex].contentType=kHMNoContent;
-		
-	HMSetControlHelpContent(magnify_slider,&tag);
-
 		// piece buttons
 		
 	box.left=wbox.right-(piece_button_size+3);
@@ -736,6 +712,7 @@ void main_wind_open(void)
 	swap_panel_forward=swap_panel_side=swap_panel_top=FALSE;
 	
 	drag_mode=drag_mode_vertex;
+	grid_mode=grid_mode_small;
 	
         // events
     
@@ -763,9 +740,6 @@ void main_wind_close(void)
 		DisposeControl(tool_ctrl[n]);
 		DisposeIconSuite(tool_icon[n],TRUE);
 	}
-	
-	DisposeControl(magnify_slider);
-	DisposeControlActionUPP(magnify_proc);
 	
 	DisposeControl(group_combo);
 	DisposeMenu(group_menu);
@@ -803,34 +777,21 @@ void main_wind_set_title(char *file_name)
 
 void main_wind_resize_buttons(void)
 {
-	int				n,x,y,rspace;
-	Rect			wbox,box;
+	int				n,x,y;
+	Rect			wbox,group_box;
 	
 	GetWindowPortBounds(mainwind,&wbox);
 	
-		// tools
-	
-	x=wbox.left+(tool_count*tool_button_size)+(5*3);
-	rspace=(wbox.right-x)-15;
-
 		// group combo
 		
-	GetControlBounds(group_combo,&group_box);
+	group_box.top=3;
+	group_box.bottom=tool_button_size-3;
+	group_box.left=wbox.right-205;
+	group_box.right=wbox.right-5;
 	
-	group_box.right=group_box.left+(rspace/2);
-	
+	MoveControl(group_combo,group_box.left,group_box.top);
 	SizeControl(group_combo,(group_box.right-group_box.left),(group_box.bottom-group_box.top));
 	
-		// magnify slider
-
-	GetControlBounds(group_combo,&box);
-
-	box.left=(wbox.right-5)-(rspace/2);
-	box.right=box.left+(rspace/2);
-	
-	MoveControl(magnify_slider,box.left,box.top);
-	SizeControl(magnify_slider,(box.right-box.left),(box.bottom-box.top));
-		
 		// pieces
 	
 	x=wbox.right-piece_button_size;
@@ -1523,6 +1484,23 @@ void main_wind_key_down(char ch)
 		return;
 	}
 	
+		// special tool keys
+		
+	if ((ch=='q') || (ch=='Q')) {
+		main_wind_tool_switch_vertex_mode();
+		return;
+	}
+	
+	if ((ch=='w') || (ch=='W')) {
+		main_wind_tool_switch_drag_mode();
+		return;
+	}
+	
+	if ((ch=='e') || (ch=='E')) {
+		main_wind_tool_switch_grid_mode();
+		return;
+	}
+	
 		// send keys to proper panel
 		
 	switch (main_wind_view) {
@@ -1625,39 +1603,35 @@ void main_wind_scroll_wheel(int delta)
 
 void main_wind_tool_reset(void)
 {
-/* supergumba -- fix all this
-    int			n;
-    
-	SetControlValue(tool_ctrl[0],(vertex_mode==vm_none)?1:0);
-	SetControlValue(tool_ctrl[1],(vertex_mode==vm_lock)?1:0);
-	SetControlValue(tool_ctrl[2],(vertex_mode==vm_snap)?1:0);
+		// vertex mode
+		
+	SetControlValue(tool_ctrl[0],(vertex_mode==vertex_mode_none)?1:0);
+	SetControlValue(tool_ctrl[1],(vertex_mode==vertex_mode_lock)?1:0);
+	SetControlValue(tool_ctrl[2],(vertex_mode==vertex_mode_snap)?1:0);
 	
-	SetControlValue(tool_ctrl[3],dp_primitive?1:0);
-	SetControlValue(tool_ctrl[4],dp_auto_texture?1:0);
-    
-	SetControlValue(tool_ctrl[6],dp_wall?1:0);
-	SetControlValue(tool_ctrl[7],dp_floor?1:0);
-	SetControlValue(tool_ctrl[8],dp_ceiling?1:0);
-	SetControlValue(tool_ctrl[9],dp_liquid?1:0);
-	SetControlValue(tool_ctrl[10],dp_ambient?1:0);
-	SetControlValue(tool_ctrl[11],dp_object?1:0);
-	SetControlValue(tool_ctrl[12],dp_lightsoundparticle?1:0);
-	SetControlValue(tool_ctrl[13],dp_node?1:0);
+		// drag mode
+		
+	SetControlValue(tool_ctrl[3],(drag_mode==drag_mode_mesh)?1:0);
+	SetControlValue(tool_ctrl[4],(drag_mode==drag_mode_polygon)?1:0);
+	SetControlValue(tool_ctrl[5],(drag_mode==drag_mode_vertex)?1:0);
 	
-	SetControlValue(tool_ctrl[14],dp_textured?1:0);
-	SetControlValue(tool_ctrl[15],dp_y_hide?1:0);
-   
-	for (n=16;n!=tool_count;n++) {
-		SetControlValue(tool_ctrl[n],0);
-	}
-    */
+		// grid mode
+		
+	SetControlValue(tool_ctrl[6],(grid_mode==grid_mode_none)?1:0);
+	SetControlValue(tool_ctrl[7],(grid_mode==grid_mode_small)?1:0);
+	SetControlValue(tool_ctrl[8],(grid_mode==grid_mode_medium)?1:0);
+	SetControlValue(tool_ctrl[9],(grid_mode==grid_mode_large)?1:0);
 	
-	
-	SetControlValue(tool_ctrl[11],(drag_mode==drag_mode_mesh)?1:0);
-	SetControlValue(tool_ctrl[12],(drag_mode==drag_mode_polygon)?1:0);
-	SetControlValue(tool_ctrl[13],(drag_mode==drag_mode_vertex)?1:0);
-	
-	SetControlValue(magnify_slider,(magnify_factor-1));
+		// auto-texture
+		
+	SetControlValue(tool_ctrl[12],dp_auto_texture?1:0);
+ 
+		// show/hide
+		
+	SetControlValue(tool_ctrl[13],dp_liquid?1:0);
+	SetControlValue(tool_ctrl[14],dp_object?1:0);
+	SetControlValue(tool_ctrl[15],dp_lightsoundparticle?1:0);
+	SetControlValue(tool_ctrl[16],dp_node?1:0);
 }
 
 void main_wind_tool_fill_group_combo(void)
@@ -1720,7 +1694,9 @@ void main_wind_tool_fill_group_combo(void)
 
 void main_wind_tool_default(void)
 {
-    vertex_mode=vm_none;
+    vertex_mode=vertex_mode_none;
+	drag_mode=drag_mode_vertex;
+	grid_mode=grid_mode_small;
 	
 	dp_primitive=TRUE;
 	dp_auto_texture=setup.auto_texture;
@@ -1735,24 +1711,7 @@ void main_wind_tool_default(void)
 
 void main_wind_tool_fix_enable(void)
 {
-	int			n,nsel,type,index,seg_type,group_idx;
-	bool		has_fc_seg;
-	
-		// add-sub-tesselate vertex buttons
-		
-	has_fc_seg=FALSE;
-	nsel=select_count();
-	
-	if (!has_fc_seg) {
-		HiliteControl(tool_ctrl[16],255);
-		HiliteControl(tool_ctrl[17],255);
-		HiliteControl(tool_ctrl[18],255);
-	}
-	else {
-		HiliteControl(tool_ctrl[16],0);
-		HiliteControl(tool_ctrl[17],0);
-		HiliteControl(tool_ctrl[18],0);
-	}
+	int			group_idx;
 	
 		// group combo
 		
@@ -1775,11 +1734,25 @@ void main_wind_tool_fix_enable(void)
 void main_wind_tool_switch_vertex_mode(void)
 {
 	vertex_mode++;
-	if (vertex_mode>vm_snap) vertex_mode=vm_none;
-
-	SetControlValue(tool_ctrl[0],(vertex_mode==vm_none)?1:0);
-	SetControlValue(tool_ctrl[1],(vertex_mode==vm_lock)?1:0);
-	SetControlValue(tool_ctrl[2],(vertex_mode==vm_snap)?1:0);
+	if (vertex_mode>vertex_mode_snap) vertex_mode=vertex_mode_none;
+	
+	main_wind_tool_reset();
 }
 
+void main_wind_tool_switch_drag_mode(void)
+{
+	drag_mode++;
+	if (drag_mode>drag_mode_vertex) drag_mode=drag_mode_mesh;
+
+	main_wind_tool_reset();
+	main_wind_draw();
+}
+
+void main_wind_tool_switch_grid_mode(void)
+{
+	grid_mode++;
+	if (grid_mode>grid_mode_large) grid_mode=grid_mode_none;
+
+	main_wind_tool_reset();
+}
 

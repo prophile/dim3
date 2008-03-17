@@ -28,6 +28,8 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
+extern int					drag_mode;
+
 extern map_type				map;
 
 /* =======================================================
@@ -74,49 +76,55 @@ void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
 	
 		// draw selected mesh poly
 		
-	glDisable(GL_DEPTH_TEST);
+	if (drag_mode==drag_mode_polygon) {
 	
-	glLineWidth(2.0f);
+		glDisable(GL_DEPTH_TEST);
+		
+		glLineWidth(2.0f);
 
-	glColor4f(1.0f,0.0f,0.0f,1.0f);
-	
-	mesh_poly=&mesh->polys[poly_idx];
-	
-	glBegin(GL_LINE_LOOP);
-	
-	for (t=0;t!=mesh_poly->ptsz;t++) {
-		pt=&mesh->vertexes[mesh_poly->v[t]];
-		x=(pt->x+portal->x)-cpt->x;
-		y=pt->y-cpt->y;
-		z=cpt->z-(pt->z+portal->z);
-		glVertex3i(x,y,z);
+		glColor4f(1.0f,0.0f,0.0f,1.0f);
+		
+		mesh_poly=&mesh->polys[poly_idx];
+		
+		glBegin(GL_LINE_LOOP);
+		
+		for (t=0;t!=mesh_poly->ptsz;t++) {
+			pt=&mesh->vertexes[mesh_poly->v[t]];
+			x=(pt->x+portal->x)-cpt->x;
+			y=pt->y-cpt->y;
+			z=cpt->z-(pt->z+portal->z);
+			glVertex3i(x,y,z);
+		}
+		
+		glEnd();
+
+		glLineWidth(1.0f);
 	}
-	
-	glEnd();
-
-	glLineWidth(1.0f);
-	
-	glEnable(GL_DEPTH_TEST);
 	
 		// draw the vertexes
 		
-	pt=mesh->vertexes;
-	
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
-	glPointSize(walk_view_handle_size);
-	
-	glBegin(GL_POINTS);
-
-	for (n=0;n!=mesh->nvertex;n++) {
-		x=(pt->x+portal->x)-cpt->x;
-		y=pt->y-cpt->y;
-		z=cpt->z-(pt->z+portal->z);
-		glVertex3i(x,y,z);
+	if (drag_mode==drag_mode_vertex) {
 		
-		pt++;
-	}
+		glEnable(GL_DEPTH_TEST);
 
-	glEnd();
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+		glPointSize(walk_view_handle_size);
+		
+		pt=mesh->vertexes;
+		
+		glBegin(GL_POINTS);
+
+		for (n=0;n!=mesh->nvertex;n++) {
+			x=(pt->x+portal->x)-cpt->x;
+			y=pt->y-cpt->y;
+			z=cpt->z-(pt->z+portal->z);
+			glVertex3i(x,y,z);
+			
+			pt++;
+		}
+
+		glEnd();
+	}
 }
 
 /* =======================================================
