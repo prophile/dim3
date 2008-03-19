@@ -71,6 +71,7 @@ extern void select_duplicate_clear(void);
 extern void select_duplicate_add(int type,int portal_idx,int main_idx,int sub_idx);
 extern void select_duplicate_copy(void);
 extern void select_combine(int portal_idx);
+extern void select_tesselate(int portal_idx);
 
 //
 // selection move routines
@@ -121,12 +122,6 @@ extern void segment_delete(int idx);
 extern void segment_add_point(void);
 extern void segment_sub_point(void);
 extern void segment_tesselate(void);
-extern void segment_switch_floor_ceiling(void);
-extern void segment_select_all(void);
-extern void segment_select_all_wall(void);
-extern void segment_select_all_floor(void);
-extern void segment_select_all_ceiling(void);
-extern void segment_select_all_texture(void);
 extern void segment_flip_horizontal(segment_type *seg,int min,int max);
 extern void segment_flip_vertical(segment_type *seg,int min,int max);
 extern void segment_rotate(segment_type *seg,int cx,int cz);
@@ -146,7 +141,6 @@ extern void piece_flip_vertical(void);
 extern void piece_rotate(void);
 extern void piece_free_rotate(float ang);
 extern void piece_key(int rn,char ch,bool walk,bool on_side);
-extern void piece_switch_spot_scenery(void);
 
 //
 // piece create routines

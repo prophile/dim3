@@ -187,7 +187,8 @@ void main_wind_control_tool(int tool_idx)
 
 		case 11:
 			SetControlValue(tool_ctrl[tool_idx],0);
-			segment_tesselate();
+			select_tesselate(cr);
+			main_wind_draw();
 			break;
 			
 		case 12:

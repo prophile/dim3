@@ -225,9 +225,7 @@ void map_portal_mesh_combine_single_mesh(map_mesh_type *mesh,map_mesh_type *mesh
 	
 		// get place we last stopped adding
 		
-	d3pt=&mesh->vertexes[mesh->nvertex];
 	mesh_poly=&mesh->polys[mesh->npoly];
-	
 	mesh_copy_poly=mesh_copy->polys;
 	
 	for (n=0;n!=mesh_copy->npoly;n++) {
@@ -242,16 +240,17 @@ void map_portal_mesh_combine_single_mesh(map_mesh_type *mesh,map_mesh_type *mesh
 			chk_d3pt=&mesh_copy->vertexes[mesh_copy_poly->v[t]];
 			
 			v_idx=-1;
-			
+			d3pt=mesh->vertexes;
+
 			for (k=0;k!=mesh->nvertex;k++) {
-				d3pt=&mesh->vertexes[k];
-				
-				if ((d3pt->x==chk_d3pt->x) || (d3pt->x==chk_d3pt->x) || (d3pt->x==chk_d3pt->x)) {
+				if ((d3pt->x==chk_d3pt->x) && (d3pt->y==chk_d3pt->y) && (d3pt->z==chk_d3pt->z)) {
 					v_idx=k;
 					break;
 				}
+				
+				d3pt++;
 			}
-			
+
 				// need to add new vertex
 				
 			if (v_idx==-1) {
@@ -277,18 +276,26 @@ void map_portal_mesh_combine_single_mesh(map_mesh_type *mesh,map_mesh_type *mesh
 int map_portal_mesh_combine(map_type *map,int portal_idx,int mesh_1_idx,int mesh_2_idx)
 {
 	int					mesh_idx;
+	portal_type			*portal;
 	map_mesh_type		*mesh,*mesh_1,*mesh_2;
 	
-		// get meshes to combine
+		// get mesh portal
 		
-	mesh_1=&map->portals[portal_idx].mesh.meshes[mesh_1_idx];
-	mesh_2=&map->portals[portal_idx].mesh.meshes[mesh_2_idx];
+	portal=&map->portals[portal_idx];
 	
 		// create new combined mesh
 		
-	mesh_idx=map_portal_mesh_add(map,portal_idx,1);
-	if (mesh_idx==-1) return(-1);
+	mesh_idx=portal->mesh.nmesh;
+	if (!map_portal_mesh_add(map,portal_idx,1)) return(-1);
+
+		// get combined meshes
+		// need to get after mesh add as mesh add can change mesh pointers
+		
+	mesh_1=&portal->mesh.meshes[mesh_1_idx];
+	mesh_2=&portal->mesh.meshes[mesh_2_idx];
 	
+		// setup enough vertexes and polys for new mesh
+		
 	if (!map_portal_mesh_set_vertex_count(map,portal_idx,mesh_idx,(mesh_1->nvertex+mesh_2->nvertex))) {
 		map_portal_mesh_delete(map,portal_idx,mesh_idx);
 		return(-1);
@@ -301,7 +308,7 @@ int map_portal_mesh_combine(map_type *map,int portal_idx,int mesh_1_idx,int mesh
 
 		// combined meshes
 		
-	mesh=&map->portals[portal_idx].mesh.meshes[mesh_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
 
 	mesh->npoly=0;
 	mesh->nvertex=0;
@@ -309,13 +316,23 @@ int map_portal_mesh_combine(map_type *map,int portal_idx,int mesh_1_idx,int mesh
 	map_portal_mesh_combine_single_mesh(mesh,mesh_1);
 	map_portal_mesh_combine_single_mesh(mesh,mesh_2);
 	
-		// delete original meshes
+		// get back to correct size
+		// ignore failures as it's just a waste of space that
+		// will be reclaimed later
+		
+	map_portal_mesh_set_vertex_count(map,portal_idx,mesh_idx,mesh->nvertex);
+	map_portal_mesh_set_poly_count(map,portal_idx,mesh_idx,mesh->npoly);
+	
+		// delete original meshes, making sure to
+		// change delete index depending on first delete
 		// and return mesh index minus the two
 		// deleted meshes
 		
 	map_portal_mesh_delete(map,portal_idx,mesh_1_idx);
-	map_portal_mesh_delete(map,portal_idx,mesh_2_idx);	
 	
+	if (mesh_1_idx<mesh_2_idx) mesh_2_idx--;
+	map_portal_mesh_delete(map,portal_idx,mesh_2_idx);	
+
 	return(mesh_idx-2);
 }
 

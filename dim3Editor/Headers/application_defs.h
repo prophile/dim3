@@ -36,8 +36,7 @@ and can be sold or given away.
 #define app_menu_map					132
 #define app_menu_portal					133
 #define app_menu_pieces					134
-#define app_menu_segments				135
-#define app_menu_groups					136
+#define app_menu_groups					137
 
 #define kCommandAbout					FOUR_CHAR_CODE('abot')
 
@@ -85,29 +84,24 @@ and can be sold or given away.
 #define kCommandPortalGoToSelection		FOUR_CHAR_CODE('selp')
 #define kCommandClearPath				FOUR_CHAR_CODE('clrp')
 
-#define kCommandPieceCombinePrimitive	FOUR_CHAR_CODE('pcmb')
-#define kCommandPieceBreakPrimivite		FOUR_CHAR_CODE('pbrk')
-#define kCommandPieceReformPrimivite	FOUR_CHAR_CODE('prfm')
-#define kCommandPieceAddPrimivite		FOUR_CHAR_CODE('padd')
+#define kCommandPieceCombineMeshes		FOUR_CHAR_CODE('pcmb')
+#define kCommandPieceTesselatePolygon	FOUR_CHAR_CODE('ptsl')
+#define kCommandPieceAddMeshList		FOUR_CHAR_CODE('padd')
 #define kCommandPieceDuplicate			FOUR_CHAR_CODE('pdup')
 #define kCommandPieceDelete				FOUR_CHAR_CODE('pdel')
 #define kCommandPieceMove				FOUR_CHAR_CODE('pmov')
 #define kCommandPieceDuplicateMove		FOUR_CHAR_CODE('pdmv')
+#define kCommandPieceFlipHorizontal		FOUR_CHAR_CODE('pfhz')
+#define kCommandPieceFlipVertical		FOUR_CHAR_CODE('pfvt')
+#define kCommandPieceRotate				FOUR_CHAR_CODE('prot')
+#define kCommandPieceFreeRotate			FOUR_CHAR_CODE('prtf')
+#define kCommandPieceRaiseY				FOUR_CHAR_CODE('prsy')
+#define kCommandPieceLowerY				FOUR_CHAR_CODE('plry')
 
 #define kCommandGroupAdd				FOUR_CHAR_CODE('gadd')
 #define kCommandGroupDelete				FOUR_CHAR_CODE('gdel')
 #define kCommandGroupClear				FOUR_CHAR_CODE('gclr')
 #define kCommandGroupMovements			FOUR_CHAR_CODE('mmov')
-
-#define kCommandSegmentSetting			FOUR_CHAR_CODE('sset')
-#define kCommandAmbientSettings			FOUR_CHAR_CODE('aset')
-#define kCommandLiquidSettings			FOUR_CHAR_CODE('lset')
-#define kCommandCurvedSurface			FOUR_CHAR_CODE('curv')
-#define kCommandWallClipping			FOUR_CHAR_CODE('clip')
-#define kCommandAddPoint				FOUR_CHAR_CODE('addp')
-#define kCommandSubtractPoint			FOUR_CHAR_CODE('subp')
-#define kCommandTesselate				FOUR_CHAR_CODE('tess')
-#define kCommandExtrude					FOUR_CHAR_CODE('extr')
 
 #define kCommandMapRaiseY				FOUR_CHAR_CODE('mrsy')
 #define kCommandMapLowerY				FOUR_CHAR_CODE('mlwy')
@@ -124,22 +118,6 @@ and can be sold or given away.
 #define kCommandResetTextureWall		FOUR_CHAR_CODE('rtwl')
 #define kCommandResetTextureFloor		FOUR_CHAR_CODE('rtfl')
 #define kCommandResetTextureCeiling		FOUR_CHAR_CODE('rtcl')
-
-#define kCommandPieceFlipHorizontal		FOUR_CHAR_CODE('pfhz')
-#define kCommandPieceFlipVertical		FOUR_CHAR_CODE('pfvt')
-#define kCommandPieceRotate				FOUR_CHAR_CODE('prot')
-#define kCommandPieceFreeRotate			FOUR_CHAR_CODE('prtf')
-#define kCommandPieceRaiseY				FOUR_CHAR_CODE('prsy')
-#define kCommandPieceLowerY				FOUR_CHAR_CODE('plry')
-
-#define kCommandSelectAllAll			FOUR_CHAR_CODE('saaa')
-#define kCommandSelectAllWall			FOUR_CHAR_CODE('sawl')
-#define kCommandSelectAllFloor			FOUR_CHAR_CODE('safl')
-#define kCommandSelectAllCeiling		FOUR_CHAR_CODE('sacl')
-#define kCommandSelectAllTexture		FOUR_CHAR_CODE('satx')
-
-#define kCommandSwitchFloorCeiling		FOUR_CHAR_CODE('swfc')
-#define kCommandPieceSwitchSpotScenery	FOUR_CHAR_CODE('swss')
 
 //
 // views

@@ -70,8 +70,6 @@ void menu_start(void)
 
 void menu_fix_enable(void)
 {
-	int				index,type;
-	bool			is_seg;
 	
 	if (!map_opened) {
 		EnableMenuItem(GetMenuHandle(app_menu_file),1);
@@ -87,7 +85,6 @@ void menu_fix_enable(void)
 		DisableMenuItem(GetMenuHandle(app_menu_map),0);
 		DisableMenuItem(GetMenuHandle(app_menu_portal),0);
 		DisableMenuItem(GetMenuHandle(app_menu_pieces),0);
-		DisableMenuItem(GetMenuHandle(app_menu_segments),0);
 		DisableMenuItem(GetMenuHandle(app_menu_groups),0);
 	}
 	else {
@@ -142,69 +139,6 @@ void menu_fix_enable(void)
 		}
 		else {
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),5);
-		}
-		
-			// no segment selected
-			
-		is_seg=select_has_type(segment_piece) || select_has_type(primitive_piece);
-		
-		if ((select_count()!=1) || (!is_seg)) {
-			DisableMenuItem(GetMenuHandle(app_menu_segments),0);
-		}
-		else {
-			EnableMenuItem(GetMenuHandle(app_menu_segments),0);
-			/* supergumba
-			select_get(0,&type,&index);
-			
-			switch (map.segments[index].type) {
-				case sg_wall:
-					EnableMenuItem(GetMenuHandle(app_menu_segments),1);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),2);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),3);
-					EnableMenuItem(GetMenuHandle(app_menu_segments),5);
-					EnableMenuItem(GetMenuHandle(app_menu_segments),6);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),8);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),9);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),10);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),12);
-					break;
-				case sg_floor:
-				case sg_ceiling:
-					EnableMenuItem(GetMenuHandle(app_menu_segments),1);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),2);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),3);
-					EnableMenuItem(GetMenuHandle(app_menu_segments),5);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),6);
-					EnableMenuItem(GetMenuHandle(app_menu_segments),8);
-					EnableMenuItem(GetMenuHandle(app_menu_segments),9);
-					EnableMenuItem(GetMenuHandle(app_menu_segments),10);
-					EnableMenuItem(GetMenuHandle(app_menu_segments),12);
-					break;
-				case sg_liquid:
-					EnableMenuItem(GetMenuHandle(app_menu_segments),1);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),2);
-					EnableMenuItem(GetMenuHandle(app_menu_segments),3);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),5);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),6);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),8);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),9);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),10);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),12);
-					break;
-				case sg_ambient_wall:
-				case sg_ambient_fc:
-					EnableMenuItem(GetMenuHandle(app_menu_segments),1);
-					EnableMenuItem(GetMenuHandle(app_menu_segments),2);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),3);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),5);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),6);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),8);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),9);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),10);
-					DisableMenuItem(GetMenuHandle(app_menu_segments),12);
-					break;
-			}
-			*/
 		}
 	}
 	
@@ -345,7 +279,7 @@ bool menu_delete_portal_dialog(void)
 
 OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,void *userdata)
 {
-	int				type,index;
+	int				index;
 	float			ang;
 	HICommand		cmd;
 	
@@ -549,19 +483,16 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
             
 			// piece menu
 
-		case kCommandPieceCombinePrimitive:
-			primitive_combine();
+		case kCommandPieceCombineMeshes:
+			select_combine(cr);
+			main_wind_draw();
 			return(noErr);
 			
-		case kCommandPieceBreakPrimivite:
-			primitive_break();
+		case kCommandPieceTesselatePolygon:
+			select_tesselate(cr);
 			return(noErr);
 			
-		case kCommandPieceReformPrimivite:
-			primitive_reform();
-			return(noErr);
-			
-		case kCommandPieceAddPrimivite:
+		case kCommandPieceAddMeshList:
 			primitive_save();
 			return(noErr);
 			
@@ -584,59 +515,6 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			if (index==-1) return(noErr);
 			piece_duplicate();
 			piece_move_to_portal(index);
-			return(noErr);
-			
-			// segment menu
-		
-        case kCommandSegmentSetting:
-		//	select_get(0,&type,&index);
-        //    dialog_segment_setting_run(index);
-            return(noErr);
- 			
-		case kCommandAmbientSettings:
-		//	select_get(0,&type,&index);
-		//	dialog_ambient_settings_run(&map.segments[index]);
-			main_wind_draw();
-			return(noErr);
-			
-		case kCommandLiquidSettings:
-		//	select_get(0,&type,&index);
-		//	dialog_liquid_settings_run(&map.segments[index]);
-			return(noErr);
-           
-		case kCommandCurvedSurface:
-		//	select_get(0,&type,&index);
-        //    dialog_curved_surfaces_run(&map.segments[index]);
-		//	main_wind_draw();
-			return(noErr);
-			
-		case kCommandWallClipping:
-		//	select_get(0,&type,&index);
-		//	dialog_wall_clipping_run(&map.segments[index]);
-		//	main_wind_draw();
-			return(noErr);
-			
-		case kCommandAddPoint:
-			segment_add_point();
-			main_wind_draw();
-			return(noErr);
-
-		case kCommandSubtractPoint:		
-			segment_sub_point();
-			main_wind_draw();
-			return(noErr);
-			
-		case kCommandTesselate:		
-			segment_tesselate();
-			main_wind_draw();
-			return(noErr);
-			
-		case kCommandExtrude:
-		//	select_get(0,&type,&index);
-	//		primitive_extrude(index);
-	//		select_clear();
-		//	select_add(primitive_piece,index);		// supergumba -- possibly delete?
-			main_wind_draw();
 			return(noErr);
 			
 			// group menu
@@ -702,39 +580,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			main_wind_draw();
  			undo_clear();
 			return(noErr);
-			
-			// portal select menu
-			
-        case kCommandSelectAllAll:
-			segment_select_all();
-			menu_fix_enable();
-			main_wind_draw();
-			return(noErr);
-			
-        case kCommandSelectAllWall:
-			segment_select_all_wall();
-			menu_fix_enable();
-			main_wind_draw();
-			return(noErr);
-			
-        case kCommandSelectAllFloor:
- 			segment_select_all_floor();
-			menu_fix_enable();
-			main_wind_draw();
-			return(noErr);
-			
-       case kCommandSelectAllCeiling:
-			segment_select_all_ceiling();
-			menu_fix_enable();
-			main_wind_draw();
-			return(noErr);
-			
-       case kCommandSelectAllTexture:
-			segment_select_all_texture();
-			menu_fix_enable();
-			main_wind_draw();
-			return(noErr);
-            
+			            
 			// reset texture menu
 
 		case kCommandResetTextureWall:
@@ -777,17 +623,6 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			select_move(cr,0,0,-1);
             main_wind_draw();
  			return(noErr);
-
-				// switch menu
-				
-		case kCommandSwitchFloorCeiling:		
-			segment_switch_floor_ceiling();
-			main_wind_draw();
-			return(noErr);
-			
-		case kCommandPieceSwitchSpotScenery:
-			piece_switch_spot_scenery();
-			return(noErr);
 
 	}
 	

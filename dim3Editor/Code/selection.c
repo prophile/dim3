@@ -234,13 +234,13 @@ void select_duplicate_copy(void)
 
 /* =======================================================
 
-      Combine Selection
+      Combine or Tesselate Selection
       
 ======================================================= */
 
 void select_combine(int portal_idx)
 {
-	int				n,k,nsel,sel_idx,org_idx,mesh_combine_idx,new_mesh_combine_idx,
+	int				n,k,nsel,org_idx,mesh_combine_idx,new_mesh_combine_idx,
 					type,chk_portal_idx,mesh_idx,poly_idx;
 	int				sel_mesh_idx[select_max_item];
 	
@@ -251,10 +251,9 @@ void select_combine(int portal_idx)
 	nsel=0;
 	
 	for (n=0;n!=select_count();n++) {
-		select_get(sel_idx,&type,&chk_portal_idx,&mesh_idx,&poly_idx);
+		select_get(n,&type,&chk_portal_idx,&mesh_idx,&poly_idx);
 		if ((type==mesh_piece) && (chk_portal_idx==portal_idx)) {
-			sel_mesh_idx[nsel]=mesh_idx;
-			nsel++;
+			sel_mesh_idx[nsel++]=mesh_idx;
 		}
 	}
 	
@@ -274,6 +273,7 @@ void select_combine(int portal_idx)
 			
 		mesh_idx=sel_mesh_idx[n];
 		new_mesh_combine_idx=map_portal_mesh_combine(&map,portal_idx,mesh_combine_idx,mesh_idx);
+		if (new_mesh_combine_idx==-1) return;
 		
 			// move other meshes in select as combine deleted them
 			
@@ -290,4 +290,9 @@ void select_combine(int portal_idx)
 		select_add(mesh_piece,portal_idx,mesh_combine_idx,0);
 	}
 }
+
+void select_tesselate(int portal_idx)
+{
+}
+
 		
