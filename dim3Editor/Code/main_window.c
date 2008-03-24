@@ -70,7 +70,7 @@ char					tool_tooltip_str[tool_count][64]=
 										"Small Grid\nSwitch Mode with E",
 										"Medium Grid\nSwitch Mode with E",
 										"Large Grid\nSwitch Mode with E",
-										"Combine Meshes","Tesselate Polygon","Auto-Texture",
+										"Combine Meshes","Tesselate Mesh","Auto-Texture",
 										"Show/Hide Liquids","Show/Hide Script Spots/Scenery",
 										"Show/Hide Light/Sound/Particles","Show/Hide Nodes",
 										"Edit Map Script","Run Map In Engine",
@@ -81,10 +81,8 @@ char					piece_tooltip_str[piece_count][64]=
 										"Add Portal","Add Script Spot",
 										"Add Light","Add Sound",
 										"Add Particle","Add Scenery","Add Node",
-										"Add Wall","Add Liquid Volume",
-										"Add Floor","Add Ceiling",
-										"Add Wall Ambient","Add Floor-Ceiling Ambient",
-										"Add Primitive","Replace Primitive with New Primitive"
+										"Add Mesh","Replace Mesh with New Mesh",
+										"Add Liquid Volume"
 									};
 
 /* =======================================================
@@ -181,13 +179,13 @@ void main_wind_control_tool(int tool_idx)
 			
 		case 10:
 			SetControlValue(tool_ctrl[tool_idx],0);
-			select_combine(cr);
+			piece_combine_mesh(cr);
 			main_wind_draw();
 			break;
 
 		case 11:
 			SetControlValue(tool_ctrl[tool_idx],0);
-			select_tesselate(cr);
+			piece_tesselate_mesh(cr);
 			main_wind_draw();
 			break;
 			
@@ -236,8 +234,6 @@ void main_wind_control_tool(int tool_idx)
 
 void main_wind_control_piece(int piece_idx)
 {
-	int				x,y,z;
-	
 	switch (piece_idx) {
 		case 0:
 			main_wind_set_view_piece_portal();
@@ -266,40 +262,15 @@ void main_wind_control_piece(int piece_idx)
 			break;
 		case 7:
 			main_wind_set_view_piece_segment();
-			piece_create_get_spot(&x,&y,&z,0,0,8);
-			segment_add_wall(x,z,(x+8),z,(y-8),y,wc_none,wc_none,-1,TRUE);
+			piece_add_library_mesh();
 			break;
 		case 8:
 			main_wind_set_view_piece_segment();
-			segment_add_liquid(TRUE);
+			piece_replace_library_mesh();
 			break;
 		case 9:
 			main_wind_set_view_piece_segment();
-			piece_create_get_spot(&x,&y,&z,0,0,1);
-			segment_add_floor_box(x,z,(x+8),(z+8),(y-1),-1,TRUE);
-			break;
-		case 10:
-			main_wind_set_view_piece_segment();
-			piece_create_get_spot(&x,&y,&z,0,0,0);
-			segment_add_ceiling_box(x,z,(x+8),(z+8),(y-1),-1,TRUE);
-			break;
-		case 11:
-			main_wind_set_view_piece_segment();
-			piece_create_get_spot(&x,&y,&z,0,0,4);
-			segment_add_ambient_wall(x,(x+4),z,(z+4),(y-4),y,TRUE);
-			break;
-		case 12:
-			main_wind_set_view_piece_segment();
-			piece_create_get_spot(&x,&y,&z,0,0,4);
-			segment_add_ambient_fc(x,z,(x+4),(z+4),y,TRUE);
-			break;
-		case 13:
-			main_wind_set_view_piece_segment();
-			primitive_add();
-			break;
-		case 14:
-			main_wind_set_view_piece_segment();
-			primitive_replace();
+			segment_add_liquid(TRUE);
 			break;
 	}
 	
@@ -632,7 +603,7 @@ void main_wind_open(void)
 	tag.tagSide=kHMDefaultSide;
 	SetRect(&tag.absHotRect,0,0,0,0);
 	tag.content[kHMMinimumContentIndex].contentType=kHMCFStringContent;
-	tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,"Segment Groups",kCFStringEncodingMacRoman);
+	tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,"Mesh Groups",kCFStringEncodingMacRoman);
 	tag.content[kHMMaximumContentIndex].contentType=kHMNoContent;
 		
 	HMSetControlHelpContent(group_combo,&tag);
@@ -1683,7 +1654,7 @@ void main_wind_tool_fill_group_combo(void)
 	tag.tagSide=kHMDefaultSide;
 	SetRect(&tag.absHotRect,0,0,0,0);
 	tag.content[kHMMinimumContentIndex].contentType=kHMCFStringContent;
-	tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,"Segment Groups",kCFStringEncodingMacRoman);
+	tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,"Mesh Groups",kCFStringEncodingMacRoman);
 	tag.content[kHMMaximumContentIndex].contentType=kHMNoContent;
 		
 	HMSetControlHelpContent(group_combo,&tag);
@@ -1712,16 +1683,15 @@ void main_wind_tool_default(void)
 
 void main_wind_tool_fix_enable(void)
 {
-	int			group_idx;
+	int			group_idx,type,portal_idx,mesh_idx,poly_idx;
 	
 		// group combo
 		
 	group_idx=-1;
 	
 	if (select_count()==1) {
-// supergumba
-//		select_get(0,&type,&index);
-//		if ((type==segment_piece) || (type==primitive_piece)) group_idx=map.segments[index].group_idx;
+		select_get(0,&type,&portal_idx,&mesh_idx,&poly_idx);
+		if (type==mesh_piece) group_idx=map.portals[portal_idx].mesh.meshes[mesh_idx].group_idx;
 	}
 	
 	if (group_idx==-1) {

@@ -72,6 +72,13 @@ bool map_portal_mesh_add(map_type *map,int portal_idx,int add_count)
 	for (n=start_idx;n!=end_idx;n++) {
 		map_mesh->nvertex=map_mesh->npoly=0;
 		map_mesh->group_idx=-1;
+		
+		map_mesh->flag.on=TRUE;
+		map_mesh->flag.pass_through=FALSE;
+		map_mesh->flag.moveable=FALSE;
+		map_mesh->flag.climbable=FALSE;
+		map_mesh->flag.touched=FALSE;
+
 		map_mesh->vertexes=NULL;
 		map_mesh->polys=NULL;
 		map_mesh++;
@@ -213,131 +220,6 @@ int map_portal_mesh_count_poly(map_type *map,int portal_idx)
 
 /* =======================================================
 
-      Combine Meshes
-      
-======================================================= */
-
-void map_portal_mesh_combine_single_mesh(map_mesh_type *mesh,map_mesh_type *mesh_copy)
-{
-	int					n,t,k,v_idx;
-	d3pnt				*d3pt,*chk_d3pt;
-	map_mesh_poly_type	*mesh_poly,*mesh_copy_poly;
-	
-		// get place we last stopped adding
-		
-	mesh_poly=&mesh->polys[mesh->npoly];
-	mesh_copy_poly=mesh_copy->polys;
-	
-	for (n=0;n!=mesh_copy->npoly;n++) {
-	
-			// add the poly
-			
-		memmove(mesh_poly,mesh_copy_poly,sizeof(map_mesh_poly_type));
-	
-			// add in the vertexes, checking for combines
-			
-		for (t=0;t!=mesh_copy_poly->ptsz;t++) {
-			chk_d3pt=&mesh_copy->vertexes[mesh_copy_poly->v[t]];
-			
-			v_idx=-1;
-			d3pt=mesh->vertexes;
-
-			for (k=0;k!=mesh->nvertex;k++) {
-				if ((d3pt->x==chk_d3pt->x) && (d3pt->y==chk_d3pt->y) && (d3pt->z==chk_d3pt->z)) {
-					v_idx=k;
-					break;
-				}
-				
-				d3pt++;
-			}
-
-				// need to add new vertex
-				
-			if (v_idx==-1) {
-				v_idx=mesh->nvertex;
-				mesh->nvertex++;
-				
-				d3pt=&mesh->vertexes[v_idx];
-				d3pt->x=chk_d3pt->x;
-				d3pt->y=chk_d3pt->y;
-				d3pt->z=chk_d3pt->z;
-			}
-
-			mesh_poly->v[t]=v_idx;
-		}
-		
-		mesh->npoly++;
-		
-		mesh_poly++;
-		mesh_copy_poly++;
-	}
-}
-
-int map_portal_mesh_combine(map_type *map,int portal_idx,int mesh_1_idx,int mesh_2_idx)
-{
-	int					mesh_idx;
-	portal_type			*portal;
-	map_mesh_type		*mesh,*mesh_1,*mesh_2;
-	
-		// get mesh portal
-		
-	portal=&map->portals[portal_idx];
-	
-		// create new combined mesh
-		
-	mesh_idx=portal->mesh.nmesh;
-	if (!map_portal_mesh_add(map,portal_idx,1)) return(-1);
-
-		// get combined meshes
-		// need to get after mesh add as mesh add can change mesh pointers
-		
-	mesh_1=&portal->mesh.meshes[mesh_1_idx];
-	mesh_2=&portal->mesh.meshes[mesh_2_idx];
-	
-		// setup enough vertexes and polys for new mesh
-		
-	if (!map_portal_mesh_set_vertex_count(map,portal_idx,mesh_idx,(mesh_1->nvertex+mesh_2->nvertex))) {
-		map_portal_mesh_delete(map,portal_idx,mesh_idx);
-		return(-1);
-	}
-	
-	if (!map_portal_mesh_set_poly_count(map,portal_idx,mesh_idx,(mesh_1->npoly+mesh_2->npoly))) {
-		map_portal_mesh_delete(map,portal_idx,mesh_idx);
-		return(-1);
-	}
-
-		// combined meshes
-		
-	mesh=&portal->mesh.meshes[mesh_idx];
-
-	mesh->npoly=0;
-	mesh->nvertex=0;
-		
-	map_portal_mesh_combine_single_mesh(mesh,mesh_1);
-	map_portal_mesh_combine_single_mesh(mesh,mesh_2);
-	
-		// get back to correct size
-		// ignore failures as it's just a waste of space that
-		// will be reclaimed later
-		
-	map_portal_mesh_set_vertex_count(map,portal_idx,mesh_idx,mesh->nvertex);
-	map_portal_mesh_set_poly_count(map,portal_idx,mesh_idx,mesh->npoly);
-	
-		// delete original meshes, making sure to
-		// change delete index depending on first delete
-		// and return mesh index minus the two
-		// deleted meshes
-		
-	map_portal_mesh_delete(map,portal_idx,mesh_1_idx);
-	
-	if (mesh_1_idx<mesh_2_idx) mesh_2_idx--;
-	map_portal_mesh_delete(map,portal_idx,mesh_2_idx);	
-
-	return(mesh_idx-2);
-}
-
-/* =======================================================
-
       Mesh Transparency Sorting Lists
       
 ======================================================= */
@@ -392,6 +274,46 @@ void map_portal_mesh_dispose_transparent_sort_lists(map_type *map)
       
 ======================================================= */
 
+void map_portal_mesh_calculate_extent(map_type *map,int portal_idx,int mesh_idx,d3pnt *min,d3pnt *max)
+{
+	int					n,nvertex;
+	d3pnt				*pt;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+
+	portal=&map->portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+	
+	nvertex=mesh->nvertex;
+	
+	if (nvertex==0) {
+		min->x=min->y=min->z=0;
+		max->x=max->y=max->z=0;
+		return;
+	}
+	
+	pt=mesh->vertexes;
+	
+	min->x=max->x=pt->x;
+	min->y=max->y=pt->y;
+	min->z=max->z=pt->z;
+	
+	if (nvertex==1) return;
+
+	pt++;
+
+	for (n=1;n!=nvertex;n++) {
+		if (pt->x<min->x) min->x=pt->x;
+		if (pt->x>max->x) max->x=pt->x;
+		if (pt->y<min->y) min->y=pt->y;
+		if (pt->y>max->y) max->y=pt->y;
+		if (pt->z<min->z) min->z=pt->z;
+		if (pt->z>max->z) max->z=pt->z;
+		
+		pt++;
+	}
+}
+
 void map_portal_mesh_get_center(map_type *map,int portal_idx,int mesh_idx,int *x,int *y,int *z)
 {
 	int					n,npoly,mx,my,mz;
@@ -419,86 +341,3 @@ void map_portal_mesh_get_center(map_type *map,int portal_idx,int mesh_idx,int *x
 	*z=mz/npoly;
 }
 
-/* =======================================================
-
-      Move Mesh
-      
-======================================================= */
-
-void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool do_portal_vertex_list,int x,int y,int z)
-{
-	int						n,k,idx,nvertex,npoly,nlight;
-	unsigned char			*phit;
-	d3pnt					*pt;
-	portal_type				*portal;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-	portal_vertex_list_type	*pv;
-
-	portal=&map->portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
-
-		// move meshes vertexes
-
-	nvertex=mesh->nvertex;
-	pt=mesh->vertexes;
-
-	for (n=0;n!=nvertex;n++) {
-		pt->x+=x;
-		pt->y+=y;
-		pt->z+=z;
-		pt++;
-	}
-
-		// move vertexes in portal compiled
-		// vertex list
-
-	if (!do_portal_vertex_list) return;
-
-		// clear the hit list so we don't
-		// move combined vertexes twice
-
-	phit=portal->vertexes.phit;
-	bzero(phit,portal->vertexes.nvlist);
-
-		// move portal vertexes
-
-	npoly=mesh->npoly;
-	poly=mesh->polys;
-
-	for (n=0;n!=npoly;n++) {
-
-			// vertexes
-
-		for (k=0;k!=poly->ptsz;k++) {
-			idx=poly->draw.portal_v[k];
-
-			if (phit[idx]==0x0) {
-				phit[idx]=0x1;
-				pv=&portal->vertexes.vertex_list[idx];
-				pv->x+=x;
-				pv->y+=y;
-				pv->z+=z;
-			}
-		}
-
-			// lights
-
-		nlight=poly->light.trig_count*3;
-
-		for (k=0;k!=nlight;k++) {
-			idx=poly->light.trig_vertex_idx[k];
-
-			if (phit[idx]==0x0) {
-				phit[idx]=0x1;
-				pv=&portal->vertexes.vertex_list[idx];
-				pv->x+=x;
-				pv->y+=y;
-				pv->z+=z;
-			}
-		}
-
-
-		poly++;
-	}
-}

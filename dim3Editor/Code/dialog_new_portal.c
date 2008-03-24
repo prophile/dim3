@@ -93,8 +93,8 @@ bool dialog_new_portal_run(int *x_size,int *z_size,bool *floor_on,bool *ceiling_
 
 		// set controls
 		
-	dialog_set_int(dialog_new_portal_wind,kPortalXSize,0,100);
-	dialog_set_int(dialog_new_portal_wind,kPortalZSize,0,100);
+	dialog_set_int(dialog_new_portal_wind,kPortalXSize,0,15000);
+	dialog_set_int(dialog_new_portal_wind,kPortalZSize,0,15000);
 	dialog_set_int(dialog_new_portal_wind,kPortalDivisions,0,5);
 	dialog_set_int(dialog_new_portal_wind,kPortalHeight,0,20);
 	dialog_set_boolean(dialog_new_portal_wind,kPortalFloors,0,TRUE);

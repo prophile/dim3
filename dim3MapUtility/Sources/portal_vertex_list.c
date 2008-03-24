@@ -175,7 +175,7 @@ int map_portal_add_mesh_poly_single_vertex_list(portal_vertex_list_type *vl,int 
 
 	for (n=0;n!=mesh_poly->ptsz;n++) {
 		pt=&mesh->vertexes[mesh_poly->v[n]];
-		vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,pt->x,pt->y,pt->z,mesh_poly->gx[n],mesh_poly->gy[n],mesh_poly->flag.moveable,mesh_poly->draw.shift_on,&mesh_poly->draw.portal_v[n]);
+		vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,pt->x,pt->y,pt->z,mesh_poly->gx[n],mesh_poly->gy[n],mesh->flag.moveable,mesh_poly->draw.shift_on,&mesh_poly->draw.portal_v[n]);
 	}
 
 	return(vl_cnt);
@@ -248,7 +248,7 @@ int map_portal_add_light_xy_tessel_vertex_list(portal_vertex_list_type *vl,int v
 		for (x=0;x<=xtot;x++) {
 			z=polygon_find_y(ptsz,px,pz,py,grid_x[x],grid_y[y]);
 			if (z==-1) z=polygon_infinite_find_y(ptsz,px,pz,py,grid_x[x],grid_y[y]);
-			vl_cnt=map_portal_add_single_light_vertex_list(vl,vl_cnt,grid_x[x],grid_y[y],z,mesh_poly->flag.moveable,&idx[x][y]);
+			vl_cnt=map_portal_add_single_light_vertex_list(vl,vl_cnt,grid_x[x],grid_y[y],z,mesh->flag.moveable,&idx[x][y]);
 		}
 	}
 
@@ -354,7 +354,7 @@ int map_portal_add_light_xz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 		for (x=0;x<=xtot;x++) {
 			y=polygon_find_y(ptsz,px,py,pz,grid_x[x],grid_z[z]);
 			if (y==-1) y=polygon_infinite_find_y(ptsz,px,py,pz,grid_x[x],grid_z[z]);
-			vl_cnt=map_portal_add_single_light_vertex_list(vl,vl_cnt,grid_x[x],y,grid_z[z],mesh_poly->flag.moveable,&idx[x][z]);
+			vl_cnt=map_portal_add_single_light_vertex_list(vl,vl_cnt,grid_x[x],y,grid_z[z],mesh->flag.moveable,&idx[x][z]);
 		}
 	}
 
@@ -460,7 +460,7 @@ int map_portal_add_light_yz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 		for (z=0;z<=ztot;z++) {
 			x=polygon_find_y(ptsz,pz,px,py,grid_z[z],grid_y[y]);
 			if (z==-1) x=polygon_infinite_find_y(ptsz,pz,px,py,grid_z[z],grid_y[y]);
-			vl_cnt=map_portal_add_single_light_vertex_list(vl,vl_cnt,x,grid_y[y],grid_z[z],mesh_poly->flag.moveable,&idx[z][y]);
+			vl_cnt=map_portal_add_single_light_vertex_list(vl,vl_cnt,x,grid_y[y],grid_z[z],mesh->flag.moveable,&idx[z][y]);
 		}
 	}
 
@@ -538,7 +538,7 @@ int map_portal_add_light_simple_vertex_list(portal_vertex_list_type *vl,int vl_c
 		tz[2]=pt->z;
 
 		for (k=0;k!=3;k++) {
-			vl_cnt=map_portal_add_single_light_vertex_list(vl,vl_cnt,tx[k],ty[k],tz[k],mesh_poly->flag.moveable,&light->trig_vertex_idx[(n*3)+k]);
+			vl_cnt=map_portal_add_single_light_vertex_list(vl,vl_cnt,tx[k],ty[k],tz[k],mesh->flag.moveable,&light->trig_vertex_idx[(n*3)+k]);
 		}
 
 		light->trig_count++;

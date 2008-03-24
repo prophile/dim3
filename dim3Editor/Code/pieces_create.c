@@ -30,10 +30,11 @@ and can be sold or given away.
 #include "common_view.h"
 #include "portal_view.h"
 
-extern int					cr,cy;
-extern bool					dp_object,dp_node,dp_lightsoundparticle;
+extern int						cr,cy,drag_mode;
+extern bool						dp_object,dp_node,dp_lightsoundparticle;
 
-extern map_type				map;
+extern file_path_setup_type		file_path_setup;
+extern map_type					map;
 
 /* =======================================================
 
@@ -41,15 +42,17 @@ extern map_type				map;
       
 ======================================================= */
 
+// supergumba -- need to fix this up
 int piece_create_get_spot(int *x,int *y,int *z,int x_wid,int z_wid,int high)
 {
 	int				min_x,min_z,min_y,max_x,max_z,max_y;
 	portal_type		*portal;
 	
-		// does this portal have any segments
+		// does this portal have any meshes?
 		
-	if (map_portal_count_segments(&map,cr)==0) {
-		portal=&map.portals[cr];
+	portal=&map.portals[cr];
+	
+	if (portal->mesh.nmesh==0) {
 		*x=((portal->x+portal->ex)/2)-portal->x;
 		*z=((portal->z+portal->ez)/2)-portal->z;
 		*y=cy;
@@ -365,5 +368,4 @@ void piece_create_node(void)
 	main_wind_tool_reset();
 	main_wind_tool_fix_enable();
 }
-
 

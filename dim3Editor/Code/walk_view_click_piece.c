@@ -218,11 +218,11 @@ bool walk_view_piece_drag(Point pt)
 
 /* =======================================================
 
-      View Polygon Clicking
+      View Piece Clicking Utility
       
 ======================================================= */
 
-bool walk_view_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,portal_type *portal,map_mesh_type *mesh,int poly_idx,int *hit_z)
+bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,portal_type *portal,map_mesh_type *mesh,int poly_idx,int *hit_z)
 {
 	int					t,fz,px[8],py[8],pz[8];
 	bool				off_left,off_right,off_top,off_bottom;
@@ -263,14 +263,127 @@ bool walk_view_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	if (!polygon_2D_point_inside(mesh_poly->ptsz,px,py,click_pt->x,click_pt->y)) return(FALSE);
 	
 	*hit_z=fz/mesh_poly->ptsz;
+	
 	return(TRUE);
 }
 
+bool walk_view_quad_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,portal_type *portal,int *px,int *py,int *pz,int *hit_z)
+{
+	int					t,fz;
+	bool				off_left,off_right,off_top,off_bottom;
+	
+	fz=0;
+
+	for (t=0;t!=4;t++) {
+		if (walk_view_click_rotate_polygon_behind_z(px[t],py[t],pz[t])) return(FALSE);
+		walk_view_click_project_point(&view_setup->box,&px[t],&py[t],&pz[t]);
+		fz+=pz[t];
+	}
+	
+		// check if outside box
+		
+	off_left=off_right=off_top=off_bottom=TRUE;
+	
+	for (t=0;t!=4;t++) {
+		off_left=off_left&&(px[t]<0);
+		off_right=off_right&&(px[t]>(view_setup->box.right-view_setup->box.left));
+		off_top=off_top&&(py[t]<0);
+		off_bottom=off_bottom&&(py[t]>(view_setup->box.bottom-view_setup->box.top));
+	}
+	
+	if ((off_left) || (off_right) || (off_top) || (off_bottom)) return(FALSE);
+	
+		// check hits
+		
+	if (!polygon_2D_point_inside(4,px,py,click_pt->x,click_pt->y)) return(FALSE);
+	
+	*hit_z=fz/4;
+	
+	return(TRUE);
+}
+
+bool walk_view_cube_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,portal_type *portal,int *x,int *z,int ty,int by,int *hit_z)
+{
+	int					px[4],py[4],pz[4];
+	bool				hit;
+	
+	hit=FALSE;
+	
+		// top
+	
+	memmove(px,x,(4*sizeof(int)));
+	memmove(pz,z,(4*sizeof(int)));
+	py[0]=py[1]=py[2]=py[3]=ty;
+
+	hit=hit||walk_view_quad_click_index(view_setup,click_pt,portal,px,py,pz,hit_z);
+	
+		// bottom
+		
+	memmove(px,x,(4*sizeof(int)));
+	memmove(pz,z,(4*sizeof(int)));
+	py[0]=py[1]=py[2]=py[3]=by;
+
+	hit=hit||walk_view_quad_click_index(view_setup,click_pt,portal,px,py,pz,hit_z);
+	
+		// front
+		
+	px[0]=px[3]=x[3];
+	px[1]=px[2]=x[2];
+	pz[0]=pz[3]=z[3];
+	pz[1]=pz[2]=z[2];
+	py[0]=py[1]=ty;
+	py[2]=py[3]=by;
+
+	hit=hit||walk_view_quad_click_index(view_setup,click_pt,portal,px,py,pz,hit_z);
+
+		// back
+		
+	px[0]=px[3]=x[0];
+	px[1]=px[2]=x[1];
+	pz[0]=pz[3]=z[0];
+	pz[1]=pz[2]=z[1];
+	py[0]=py[1]=ty;
+	py[2]=py[3]=by;
+
+	hit=hit||walk_view_quad_click_index(view_setup,click_pt,portal,px,py,pz,hit_z);
+	
+		// left
+		
+	px[0]=px[3]=x[0];
+	px[1]=px[2]=x[3];
+	pz[0]=pz[3]=z[0];
+	pz[1]=pz[2]=z[3];
+	py[0]=py[1]=ty;
+	py[2]=py[3]=by;
+
+	hit=hit||walk_view_quad_click_index(view_setup,click_pt,portal,px,py,pz,hit_z);
+
+		// right
+		
+	px[0]=px[3]=x[1];
+	px[1]=px[2]=x[2];
+	pz[0]=pz[3]=z[1];
+	pz[1]=pz[2]=z[2];
+	py[0]=py[1]=ty;
+	py[2]=py[3]=by;
+
+	return(hit||walk_view_quad_click_index(view_setup,click_pt,portal,px,py,pz,hit_z));
+}
+
+/* =======================================================
+
+      View Piece Get Clicked Index
+      
+======================================================= */
+
 void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,int *type,int *portal_idx,int *main_idx,int *sub_idx,bool sel_only)
 {
-	int					i,n,k,fz,box_wid,box_high,hit_z;
+	int					i,n,k,fz,box_wid,box_high,
+						px[4],pz[4],ty,by,hit_z;
 	portal_type			*portal;
 	map_mesh_type		*mesh;
+	spot_type			*spot;
+	map_scenery_type	*scenery;
 	
 	walk_view_click_setup_project(view_setup);
 	
@@ -280,11 +393,14 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	*type=-1;
 	hit_z=100000;
 	
-		// run through the portal meshes
+		// run through the portals
 		
 	for (i=0;i!=map.nportal;i++) {
+	
 		portal=&map.portals[i];
         if (!portal->in_path) continue;
+		
+			// portal meshes
 		
 		mesh=portal->mesh.meshes;
 		
@@ -292,7 +408,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 		
 			for (k=0;k!=mesh->npoly;k++) {
 			
-				if (walk_view_poly_click_index(view_setup,click_pt,portal,mesh,k,&fz)) {
+				if (walk_view_mesh_poly_click_index(view_setup,click_pt,portal,mesh,k,&fz)) {
 					if (fz<hit_z) {
 						hit_z=fz;
 						*type=mesh_piece;
@@ -306,6 +422,47 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 		
 			mesh++;
 		}
+		
+			// portal spots
+			
+		for (n=0;n!=map.nspot;n++) {
+			
+			spot=&map.spots[n];
+			if (spot->pos.rn==i)  continue;
+			
+			if (!walk_view_model_click_select_size(&view_setup->cpt,spot->display_model,&spot->pos,&spot->ang,px,pz,&ty,&by)) continue;
+			
+			if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&fz)) {
+				if (fz<hit_z) {
+					hit_z=fz;
+					*type=spot_piece;
+					*portal_idx=i;
+					*main_idx=n;
+					*sub_idx=-1;
+				}
+			}
+		}
+	
+			// portal scenery
+			
+		for (n=0;n!=map.nscenery;n++) {
+			
+			scenery=&map.sceneries[n];
+			if (scenery->pos.rn==i)  continue;
+			
+			if (!walk_view_model_click_select_size(&view_setup->cpt,scenery->model_name,&scenery->pos,&scenery->ang,px,pz,&ty,&by)) continue;
+			
+			if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&fz)) {
+				if (fz<hit_z) {
+					hit_z=fz;
+					*type=scenery_piece;
+					*portal_idx=i;
+					*main_idx=n;
+					*sub_idx=-1;
+				}
+			}
+		}
+			
 	}
 }
 	
@@ -351,43 +508,49 @@ void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,boo
 void walk_view_click_info(void)
 {
 	int				type,portal_idx,main_idx,sub_idx;
+	map_mesh_type	*mesh;
+	map_liquid_type	*liq;
 	
     if (select_count()!=1) return;
 	
 	select_get(0,&type,&portal_idx,&main_idx,&sub_idx);
-/* supergumba
+
 	switch (type) {
 	
-		case segment_piece:
-		case primitive_piece:
-			dialog_segment_setting_run(index);
+		case mesh_piece:
+			mesh=&map.portals[portal_idx].mesh.meshes[main_idx];
+			dialog_mesh_setting_run(mesh,sub_idx);
 			break;
 			
+		case liquid_piece:
+			liq=&map.portals[portal_idx].liquid.liquids[main_idx];
+			dialog_liquid_settings_run(liq);
+			break;
+	
 		case node_piece:
-			dialog_node_settings_run(&map.nodes[index]);
+			dialog_node_settings_run(&map.nodes[main_idx]);
 			break;
 		
 		case spot_piece:
-			dialog_spot_setting_run(&map.spots[index]);
+			dialog_spot_setting_run(&map.spots[main_idx]);
 			break;
 			
 		case scenery_piece:
-			dialog_scenery_setting_run(&map.sceneries[index]);
+			dialog_scenery_setting_run(&map.sceneries[main_idx]);
 			break;
 		
 		case light_piece:
-			dialog_map_light_settings_run(&map.lights[index]);
+			dialog_map_light_settings_run(&map.lights[main_idx]);
 			break;
 		
 		case sound_piece:
-			dialog_map_sound_settings_run(&map.sounds[index]);
+			dialog_map_sound_settings_run(&map.sounds[main_idx]);
 			break;
 			
 		case particle_piece:
-			dialog_map_particle_settings_run(&map.particles[index]);
+			dialog_map_particle_settings_run(&map.particles[main_idx]);
 			break;
 	}
-*/
 
 }
 
@@ -406,8 +569,16 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 	
 		// any vertex drags
 		
-	if (drag_mode==drag_mode_vertex) {
-		if (walk_view_click_drag_vertex(view_setup,pt,view_move_dir)) return;
+	switch (drag_mode) {
+	
+		case drag_mode_vertex:
+			if (walk_view_click_drag_vertex(view_setup,pt,view_move_dir)) return;
+			break;
+	
+		case drag_mode_mesh:
+			if (walk_view_click_drag_mesh_handle(view_setup,pt,view_move_dir)) return;
+			break;
+			
 	}
 	
 		// select mesh/polygon

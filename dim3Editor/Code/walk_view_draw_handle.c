@@ -34,6 +34,8 @@ extern CCrsrHandle			dragcur;
 
 extern map_type				map;
 
+// supergumba -- probably delete this file
+
 /* =======================================================
 
       View Draws Handles

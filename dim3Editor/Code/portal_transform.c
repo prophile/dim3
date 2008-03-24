@@ -549,29 +549,7 @@ void portal_resize(void)
 
 /* =======================================================
 
-      Reset Wall Textures
-      
-======================================================= */
-
-void portal_reset_textures(int seg_type)
-{
-	int				i,fill;
-	
-	fill=texture_palette_get_selected_fill();
-	if (fill==-1) fill=0;
-    
-	for (i=0;i!=map.nsegment;i++) {
-		if ((map.segments[i].rn==cr) && (map.segments[i].type==seg_type)) {
-			map.segments[i].fill=fill;
-		}
-	}
-	
-	main_wind_draw();
-}
-
-/* =======================================================
-
-      Reset Portal Textures
+      Reset Portal Textures UVs
       
 ======================================================= */
 

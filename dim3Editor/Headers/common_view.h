@@ -70,8 +70,6 @@ extern void select_sort(void);
 extern void select_duplicate_clear(void);
 extern void select_duplicate_add(int type,int portal_idx,int main_idx,int sub_idx);
 extern void select_duplicate_copy(void);
-extern void select_combine(int portal_idx);
-extern void select_tesselate(int portal_idx);
 
 //
 // selection move routines
@@ -126,7 +124,6 @@ extern void segment_flip_horizontal(segment_type *seg,int min,int max);
 extern void segment_flip_vertical(segment_type *seg,int min,int max);
 extern void segment_rotate(segment_type *seg,int cx,int cz);
 extern void segment_rotate_free(segment_type *seg,float ang,int cx,int cz);
-extern void segments_sort(void);
 
 //
 // piece routines
@@ -153,6 +150,15 @@ extern void piece_create_light(void);
 extern void piece_create_sound(void);
 extern void piece_create_particle(void);
 extern void piece_create_node(void);
+
+//
+// piece mesh routines
+//
+
+extern void piece_add_library_mesh(void);
+extern void piece_replace_library_mesh(void);
+extern void piece_combine_mesh(int portal_idx);
+extern void piece_tesselate_mesh(int portal_idx);
 
 //
 // primitive routines

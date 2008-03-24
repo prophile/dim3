@@ -70,7 +70,6 @@ void menu_start(void)
 
 void menu_fix_enable(void)
 {
-	
 	if (!map_opened) {
 		EnableMenuItem(GetMenuHandle(app_menu_file),1);
 		EnableMenuItem(GetMenuHandle(app_menu_file),2);
@@ -88,6 +87,9 @@ void menu_fix_enable(void)
 		DisableMenuItem(GetMenuHandle(app_menu_groups),0);
 	}
 	else {
+	
+			// file menu
+			
 		DisableMenuItem(GetMenuHandle(app_menu_file),1);
 		DisableMenuItem(GetMenuHandle(app_menu_file),2);
 		EnableMenuItem(GetMenuHandle(app_menu_file),3);
@@ -96,6 +98,8 @@ void menu_fix_enable(void)
 		EnableMenuItem(GetMenuHandle(app_menu_file),7);
 		EnableMenuItem(GetMenuHandle(app_menu_file),9);
 	
+			// other menus
+			
 		EnableMenuItem(GetMenuHandle(app_menu_edit),0);
 		EnableMenuItem(GetMenuHandle(app_menu_view),0);
 		EnableMenuItem(GetMenuHandle(app_menu_map),0);
@@ -106,40 +110,31 @@ void menu_fix_enable(void)
         
 		EnableMenuItem(GetMenuHandle(app_menu_pieces),0);
 		
-        if (select_count()!=0) {
+		if (select_has_type(mesh_piece)) {
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),1);
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),2);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),7);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),8);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),10);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),11);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),13);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),14);
-        }
-        else {
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),4);
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),12);
+		}
+		else {
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),1);
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),2);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),7);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),8);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),10);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),11);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),13);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),14);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),4);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),12);
+		}
+		
+        if (select_count()!=0) {
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),6);
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),7);
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),9);
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),10);
         }
-		
-		if (primitive_reform_ok) {
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),3);
-		}
-		else {
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),3);
-		}
-		
-		if (select_has_type(primitive_piece)) {
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),5);
-		}
-		else {
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),5);
-		}
+        else {
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),6);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),7);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),9);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),10);
+        }
 	}
 	
 	DrawMenuBar();
@@ -427,10 +422,6 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 		case kCommandAutoGenerateSightPaths:
 			menu_auto_generate_paths_dialog();
 			return(noErr);
-            
-		case kCommandSortSegments:
-            segments_sort();
-			return(noErr);
 			
 		case kCommandMapRaiseY:
 			portal_all_y_change(-100);
@@ -484,16 +475,16 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			// piece menu
 
 		case kCommandPieceCombineMeshes:
-			select_combine(cr);
+			piece_combine_mesh(cr);
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandPieceTesselatePolygon:
-			select_tesselate(cr);
+			piece_tesselate_mesh(cr);
 			return(noErr);
 			
-		case kCommandPieceAddMeshList:
-			primitive_save();
+		case kCommandPieceAddLibrary:
+		//	primitive_save();
 			return(noErr);
 			
 		case kCommandPieceDuplicate:
@@ -581,28 +572,18 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
  			undo_clear();
 			return(noErr);
 			            
-			// reset texture menu
-
-		case kCommandResetTextureWall:
-			portal_reset_textures(sg_wall);
-			return(noErr);
-
-		case kCommandResetTextureFloor:
-			portal_reset_textures(sg_floor);
-			return(noErr);
-
-		case kCommandResetTextureCeiling:
-			portal_reset_textures(sg_ceiling);
-			return(noErr);
-			
 			// piece transform menu
 
-		case kCommandPieceFlipHorizontal:
-			piece_flip_horizontal();
+		case kCommandPieceFlipX:
+		//	piece_flip_horizontal();
 			return(noErr);
 			
-		case kCommandPieceFlipVertical:
-			piece_flip_vertical();
+		case kCommandPieceFlipY:
+		//	piece_flip_vertical();
+			return(noErr);
+			
+		case kCommandPieceFlipZ:
+		//	piece_flip_vertical();
 			return(noErr);
 			
 		case kCommandPieceRotate:

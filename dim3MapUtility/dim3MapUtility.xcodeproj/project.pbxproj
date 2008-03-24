@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		260AFEC30D404EAA00F6C42F /* portal_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = 260AFEC20D404EAA00F6C42F /* portal_liquid.c */; };
+		26AFB4320D95B6230004805A /* portal_mesh_update.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AFB4310D95B6230004805A /* portal_mesh_update.c */; };
 		F50AF9290885FF0E00F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF9280885FF0E00F261B1 /* os_defs.h */; };
 		F50B25C8092065C900879CCC /* file_map_shader.c in Sources */ = {isa = PBXBuildFile; fileRef = F50B25C7092065C900879CCC /* file_map_shader.c */; };
 		F511664F093CDA2C00E766C3 /* groups.c in Sources */ = {isa = PBXBuildFile; fileRef = F511664E093CDA2C00E766C3 /* groups.c */; };
@@ -63,6 +64,7 @@
 
 /* Begin PBXFileReference section */
 		260AFEC20D404EAA00F6C42F /* portal_liquid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = portal_liquid.c; path = Sources/portal_liquid.c; sourceTree = "<group>"; };
+		26AFB4310D95B6230004805A /* portal_mesh_update.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = portal_mesh_update.c; path = Sources/portal_mesh_update.c; sourceTree = "<group>"; };
 		F50AF9280885FF0E00F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
 		F50B25C7092065C900879CCC /* file_map_shader.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_map_shader.c; path = Sources/file_map_shader.c; sourceTree = "<group>"; };
 		F511664E093CDA2C00E766C3 /* groups.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = groups.c; path = Sources/groups.c; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 			children = (
 				F5DD177E09074E1E00721649 /* portal.c */,
 				F55255250CE57DFA0045350D /* portal_mesh.c */,
+				26AFB4310D95B6230004805A /* portal_mesh_update.c */,
 				260AFEC20D404EAA00F6C42F /* portal_liquid.c */,
 				F52A9B7409F0A63C008CE744 /* portal_sight_path.c */,
 				F5DD17D509074FFB00721649 /* portal_changes.c */,
@@ -349,6 +352,7 @@
 				F5CE96C50D23586E00512EE1 /* auto_generate.c in Sources */,
 				F5C418F50D3C258400BD96D5 /* file_map_convert_v1.c in Sources */,
 				260AFEC30D404EAA00F6C42F /* portal_liquid.c in Sources */,
+				26AFB4320D95B6230004805A /* portal_mesh_update.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

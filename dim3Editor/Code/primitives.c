@@ -642,7 +642,7 @@ void primitive_add(void)
 		// create
 
 	primitive_uid=map_primitive_create_uid(&map);
-	fill=texture_palette_get_selected_fill();
+	fill=texture_palette_get_selected_texture();
 
 	if (in_editor) {
 		nsegment=primitive_map_editor.nsegment;
@@ -719,7 +719,7 @@ void primitive_replace(void)
 		// create
 
 	primitive_uid=map_primitive_create_uid(&map);
-	fill=texture_palette_get_selected_fill();
+	fill=texture_palette_get_selected_texture();
 
 	if (in_editor) {
 		nsegment=primitive_map_editor.nsegment;

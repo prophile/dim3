@@ -177,7 +177,7 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 							mesh_poly->draw.is_lighting=TRUE;
 							portal->mesh.draw.has_bump=TRUE;
 							portal->mesh.draw.has_lighting=TRUE;
-							if ((!light_changed) || (mesh_poly->flag.moveable)) map_portal_calculate_normal_vector_smooth(portal,(double)mesh_poly->box.mid.x,(double)mesh_poly->box.mid.y,(double)mesh_poly->box.mid.z,mesh_poly->draw.normal);
+							if ((!light_changed) || (mesh->flag.moveable)) map_portal_calculate_normal_vector_smooth(portal,(double)mesh_poly->box.mid.x,(double)mesh_poly->box.mid.y,(double)mesh_poly->box.mid.z,mesh_poly->draw.normal);
 						}
 
 							// is normal?

@@ -59,7 +59,7 @@ void redraw_windows(void)
         // starting room
     
     if (map.nportal==0) {
-		cr=map_portal_create(&map,(map_x_size/2),(map_z_size/2),40,40);
+		cr=map_portal_create(&map,(map_x_size/2),(map_z_size/2),(40*map_enlarge),(40*map_enlarge));
 	}
     
         // center in first room
@@ -170,7 +170,7 @@ bool create_first_portal(void)
 	map.nportal=0;
 	if (!portal_new()) return(FALSE);
 
-	map_portal_calculate_center_floor(&map,0,&x,&y,&z);
+	map_portal_calculate_center(&map,0,&x,&y,&z);
 	if (y==0) y=200;
 	
 		// put player spot in first portal

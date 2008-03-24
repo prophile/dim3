@@ -35,7 +35,7 @@ and can be sold or given away.
 #define tool_group_menu_id					160
 
 #define piece_button_size					36
-#define piece_count							15
+#define piece_count							10
 
 #define toolbar_high						28
 #define info_high							16
@@ -68,8 +68,8 @@ extern void undo_run(void);
 //
 
 extern void texture_palette_setup(void);
-extern int texture_palette_get_selected_fill(void);
-extern void texture_palette_put_selected_fill(int fill);
+extern int texture_palette_get_selected_texture(void);
+extern void texture_palette_put_selected_texture(int txt_idx);
 extern void texture_palette_draw(void);
 extern void texture_palette_reset(void);
 extern void texture_palette_click(Point pt,bool dbl_click);

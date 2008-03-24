@@ -72,7 +72,6 @@ and can be sold or given away.
 #define kCommandRainSettings			FOUR_CHAR_CODE('mrin')
 #define kCommandFogSettings				FOUR_CHAR_CODE('mfog')
 #define kCommandAutoGenerateSightPaths	FOUR_CHAR_CODE('agsp')
-#define kCommandSortSegments			FOUR_CHAR_CODE('sseg')
 #define kCommandRun						FOUR_CHAR_CODE('mrun')
 
 #define kCommandPortalSettings			FOUR_CHAR_CODE('rset')
@@ -86,13 +85,14 @@ and can be sold or given away.
 
 #define kCommandPieceCombineMeshes		FOUR_CHAR_CODE('pcmb')
 #define kCommandPieceTesselatePolygon	FOUR_CHAR_CODE('ptsl')
-#define kCommandPieceAddMeshList		FOUR_CHAR_CODE('padd')
+#define kCommandPieceAddLibrary			FOUR_CHAR_CODE('padd')
 #define kCommandPieceDuplicate			FOUR_CHAR_CODE('pdup')
 #define kCommandPieceDelete				FOUR_CHAR_CODE('pdel')
 #define kCommandPieceMove				FOUR_CHAR_CODE('pmov')
 #define kCommandPieceDuplicateMove		FOUR_CHAR_CODE('pdmv')
-#define kCommandPieceFlipHorizontal		FOUR_CHAR_CODE('pfhz')
-#define kCommandPieceFlipVertical		FOUR_CHAR_CODE('pfvt')
+#define kCommandPieceFlipX				FOUR_CHAR_CODE('pfpx')
+#define kCommandPieceFlipY				FOUR_CHAR_CODE('pfpy')
+#define kCommandPieceFlipZ				FOUR_CHAR_CODE('pfpz')
 #define kCommandPieceRotate				FOUR_CHAR_CODE('prot')
 #define kCommandPieceFreeRotate			FOUR_CHAR_CODE('prtf')
 #define kCommandPieceRaiseY				FOUR_CHAR_CODE('prsy')
@@ -114,10 +114,6 @@ and can be sold or given away.
 #define kCommandPortalLowerY			FOUR_CHAR_CODE('rlry')
 #define kCommandPortalSplitHorizontal	FOUR_CHAR_CODE('rshz')
 #define kCommandPortalSplitVertical		FOUR_CHAR_CODE('rsvt')
-
-#define kCommandResetTextureWall		FOUR_CHAR_CODE('rtwl')
-#define kCommandResetTextureFloor		FOUR_CHAR_CODE('rtfl')
-#define kCommandResetTextureCeiling		FOUR_CHAR_CODE('rtcl')
 
 //
 // views

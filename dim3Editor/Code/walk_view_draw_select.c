@@ -34,13 +34,27 @@ extern map_type				map;
 
 /* =======================================================
 
-      Draw Selection for Segment
+      Draw Selection for Mesh
       
 ======================================================= */
 
+void walk_view_draw_select_mesh_get_grow_handles(int rn,int mesh_idx,int *px,int *py,int *pz)
+{
+	d3pnt			min,max;
+	
+	map_portal_mesh_calculate_extent(&map,rn,mesh_idx,&min,&max);
+	
+	px[0]=px[3]=px[4]=px[7]=min.x;
+	pz[0]=pz[1]=pz[4]=pz[5]=min.z;
+	px[1]=px[2]=px[5]=px[6]=max.x;
+	pz[2]=pz[3]=pz[6]=pz[7]=max.z;
+	py[0]=py[1]=py[2]=py[3]=min.y;
+	py[4]=py[5]=py[6]=py[7]=max.y;
+}
+
 void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
 {
-	int						n,k,t,x,y,z;
+	int						n,k,t,x,y,z,px[8],py[8],pz[8];
 	d3pnt					*pt;
 	portal_type				*portal;
 	map_mesh_type			*mesh;
@@ -74,6 +88,31 @@ void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
 		mesh_poly++;
 	}
 	
+		// is mesh only, draw resize handles
+		
+	if (drag_mode==drag_mode_mesh) {
+	
+		glEnable(GL_DEPTH_TEST);
+
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+		glPointSize(walk_view_handle_size);
+		
+		walk_view_draw_select_mesh_get_grow_handles(rn,mesh_idx,px,py,pz);
+		
+		glBegin(GL_POINTS);
+
+		for (n=0;n!=8;n++) {
+			x=(px[n]+portal->x)-cpt->x;
+			y=py[n]-cpt->y;
+			z=cpt->z-(pz[n]+portal->z);
+			glVertex3i(x,y,z);
+		}
+
+		glEnd();
+	
+		return;
+	}
+	
 		// draw selected mesh poly
 		
 	if (drag_mode==drag_mode_polygon) {
@@ -99,6 +138,8 @@ void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
 		glEnd();
 
 		glLineWidth(1.0f);
+		
+		return;
 	}
 	
 		// draw the vertexes
@@ -124,6 +165,8 @@ void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
 		}
 
 		glEnd();
+		
+		return;
 	}
 }
 

@@ -110,7 +110,7 @@ void info_status_line_draw_selection(Rect *box)
 		// portal text
 		
 	portal=&map.portals[cr];
-	sprintf(txt,"Portal: %d : (%d,%d) - (%d,%d) : (%d,%d) : %d",cr,portal->x,portal->z,portal->ex,portal->ez,(portal->ex-portal->x),(portal->ez-portal->z),map_portal_count_segments(&map,cr));
+	sprintf(txt,"Portal: %d : (%d,%d) - (%d,%d) : (%d,%d) : %d",cr,portal->x,portal->z,portal->ex,portal->ez,(portal->ex-portal->x),(portal->ez-portal->z),portal->mesh.nmesh);
 	
 	MoveTo((box->left+4),(box->bottom-4));
 	DrawText(txt,0,strlen(txt));

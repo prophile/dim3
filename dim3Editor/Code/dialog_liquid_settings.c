@@ -30,18 +30,18 @@ and can be sold or given away.
 
 extern map_type				map;
 
-#define kLiquidSpeedAlter							FOUR_CHAR_CODE('salt')
-#define kLiquidWaveSize								FOUR_CHAR_CODE('wvsz')
-#define kLiquidTideSize								FOUR_CHAR_CODE('tsiz')
-#define kLiquidTideRate								FOUR_CHAR_CODE('trat')
-#define kLiquidTideDirection						FOUR_CHAR_CODE('tdir')
-#define kLiquidHarm									FOUR_CHAR_CODE('harm')
-#define kLiquidDrownTick							FOUR_CHAR_CODE('dwat')
-#define kLiquidDrownHarm							FOUR_CHAR_CODE('dhrm')
-#define kLiquidColor								FOUR_CHAR_CODE('colr')
-#define kLiquidTintAlpha							FOUR_CHAR_CODE('talh')
+#define kLiquidSpeedAlter					FOUR_CHAR_CODE('salt')
+#define kLiquidWaveSize						FOUR_CHAR_CODE('wvsz')
+#define kLiquidTideSize						FOUR_CHAR_CODE('tsiz')
+#define kLiquidTideRate						FOUR_CHAR_CODE('trat')
+#define kLiquidTideDirection				FOUR_CHAR_CODE('tdir')
+#define kLiquidHarm							FOUR_CHAR_CODE('harm')
+#define kLiquidDrownTick					FOUR_CHAR_CODE('dwat')
+#define kLiquidDrownHarm					FOUR_CHAR_CODE('dhrm')
+#define kLiquidColor						FOUR_CHAR_CODE('colr')
+#define kLiquidTintAlpha					FOUR_CHAR_CODE('talh')
 
-#define kLiquidButtonColor							FOUR_CHAR_CODE('colh')
+#define kLiquidButtonColor					FOUR_CHAR_CODE('colh')
 
 bool						dialog_liquid_settings_cancel;
 WindowRef					dialog_liquid_settings_wind;
@@ -98,8 +98,10 @@ static pascal OSStatus liquid_settings_event_proc(EventHandlerCallRef handler,Ev
       
 ======================================================= */
 
-bool dialog_liquid_settings_run(segment_type *seg)
+bool dialog_liquid_settings_run(map_liquid_type *liq)
 {
+/* supergumba
+
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
 	
@@ -170,5 +172,7 @@ bool dialog_liquid_settings_run(segment_type *seg)
 	DisposeWindow(dialog_liquid_settings_wind);
 	
 	return(!dialog_liquid_settings_cancel);
+	*/
+	return(TRUE);
 }
 

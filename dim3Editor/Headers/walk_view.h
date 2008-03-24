@@ -40,6 +40,7 @@ extern void walk_view_key(char ch,int view_move_dir);
 // walk view draw piece
 //
 
+extern void walk_view_draw_select_mesh_get_grow_handles(int rn,int mesh_idx,int *px,int *py,int *pz);
 extern void walk_view_sight_path_trace(portal_sight_list_type *sight,int u);
 extern void walk_view_sight_path_mark(int rn);
 extern void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position);
@@ -52,7 +53,8 @@ extern void walk_view_draw_select_portal(int rn,d3pnt *cpt);
 extern void walk_view_click_drag_movement(editor_3D_view_setup *view_setup,int view_move_dir,int x,int y,int *xadd,int *yadd,int *zadd);
 extern void walk_view_click_grid(d3pnt *pt);
 extern void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool dblclick);
-extern bool walk_view_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,portal_type *portal,map_mesh_type *mesh,int poly_idx,int *hit_z);
+extern bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,portal_type *portal,map_mesh_type *mesh,int poly_idx,int *hit_z);
+extern bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 extern bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 extern bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 extern bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);

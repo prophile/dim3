@@ -63,6 +63,9 @@ int map_portal_create(map_type *map,int x,int z,int ex,int ez)
 
 	portal->mesh.nmesh=0;
 	portal->mesh.meshes=NULL;
+	
+	portal->liquid.nliquid=0;
+	portal->liquid.liquids=NULL;
     
 	map_portal_sight_clear(map,rn);
 
@@ -122,119 +125,9 @@ bool map_find_portal_by_pos(map_type *map,d3pos *pos)
 
 /* =======================================================
 
-      Count Segments for Portals
-      
-======================================================= */
-
-int map_portal_count_segments(map_type *map,int rn)
-{
-	int				n,count;
-	portal_type		*portal;
-	segment_type	*seg;
-	
-	portal=&map->portals[rn];
-
-	count=0;
-	seg=map->segments;
-	
-	for (n=0;n!=map->nsegment;n++) {
-		if (seg->rn==rn) count++;
-		seg++;
-	}
-	
-	return(count);
-}
-
-/* =======================================================
-
       Calculate Centers for Portals
       
 ======================================================= */
-
-void map_portal_calculate_center(map_type *map,int rn,int *x,int *y,int *z)
-{
-	int				n,ty,by,kx,kz,ky;
-	portal_type		*portal;
-	segment_type	*seg;
-	
-	portal=&map->portals[rn];
-	
-		// center in portal
-		
-	*x=((portal->x+portal->ex)/2)-portal->x;
-	*z=((portal->z+portal->ez)/2)-portal->z;
-	
-		// scan for center y
-		
-	ty=by=-1;
-	
-	seg=map->segments;
-	
-	for (n=0;n!=map->nsegment;n++) {
-		if (seg->rn==rn) {
-			map_segment_calculate_center(map,n,&kx,&ky,&kz);
-			if (ty==-1) {
-				ty=ky;
-			}
-			else {
-				if (ky<ty) ty=ky;
-			}
-			if (by==-1) {
-				by=ky;
-			}
-			else {
-				if (ky>by) by=ky;
-			}
-		}
-		seg++;
-	}
-	
-	if ((ty!=-1) && (by!=-1)) {
-		*y=(ty+by)/2;
-	}
-	else {
-		if (ty!=-1) {
-			*y=ty;
-		}
-		else {
-			if (by!=-1) {
-				*y=by;
-			}
-			else {
-				*y=0;
-			}
-		}
-	}
-}
-
-void map_portal_calculate_center_floor(map_type *map,int rn,int *x,int *y,int *z)
-{
-	int				n,kx,kz,ky;
-	portal_type		*portal;
-	segment_type	*seg;
-	
-	portal=&map->portals[rn];
-	
-		// center in portal
-		
-	*x=((portal->x+portal->ex)/2)-portal->x;
-	*z=((portal->z+portal->ez)/2)-portal->z;
-	
-		// scan for bottom y
-		
-	*y=0;
-	
-	seg=map->segments;
-	
-	for (n=0;n!=map->nsegment;n++) {
-		if (seg->rn==rn) {
-			map_segment_calculate_center(map,n,&kx,&ky,&kz);
-			ky--;
-			if (ky>(*y)) *y=ky;
-		}
-		seg++;
-	}
-}
 
 void map_portal_calculate_y_extent(map_type *map,int rn,int *p_ty,int *p_by)
 {
@@ -272,6 +165,21 @@ void map_portal_calculate_y_extent(map_type *map,int rn,int *p_ty,int *p_by)
 	
 	*p_ty=ty;
 	*p_by=by;
+}
+
+void map_portal_calculate_center(map_type *map,int rn,int *x,int *y,int *z)
+{
+	int				ty,by;
+	portal_type		*portal;
+	
+	portal=&map->portals[rn];
+	
+	*x=((portal->x+portal->ex)/2)-portal->x;
+	*z=((portal->z+portal->ez)/2)-portal->z;
+	
+	map_portal_calculate_y_extent(map,rn,&ty,&by);
+	
+	*y=(ty+by)/2;
 }
 
 /* =======================================================

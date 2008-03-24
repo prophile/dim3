@@ -109,11 +109,9 @@ void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,
 	mesh_poly->dark_factor=seg->dark_factor;
 	mesh_poly->alpha=seg->alpha;
 
-	mesh_poly->flag.on=TRUE;
-	mesh_poly->flag.pass_through=seg->pass_through || (seg->type==sg_ambient_wall) || (seg->type==sg_ambient_fc);
-	mesh_poly->flag.moveable=seg->moveable;
-	mesh_poly->flag.climbable=seg->climbable;
-	mesh_poly->flag.touched=FALSE;
+	if (seg->pass_through || (seg->type==sg_ambient_wall) || (seg->type==sg_ambient_fc)) map_mesh->flag.pass_through=TRUE;
+	if (seg->moveable) map_mesh->flag.moveable=TRUE;
+	if (seg->climbable) map_mesh->flag.climbable=TRUE;
 
 	mesh_poly->ptsz=ptsz;
 	mesh_poly->txt_idx=seg->fill;

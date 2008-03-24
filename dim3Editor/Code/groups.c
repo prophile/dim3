@@ -130,15 +130,24 @@ void group_clear(void)
 
 int group_count(int group_idx)
 {
-	int					n,cnt;
-	segment_type		*seg;
+	int					n,k,cnt;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
 	
 	cnt=0;
-	seg=map.segments;
+	
+	portal=map.portals;
 
-	for (n=0;n!=map.nsegment;n++) {
-		if (seg->group_idx==group_idx) cnt++;
-		seg++;
+	for (n=0;n!=map.nportal;n++) {
+	
+		mesh=portal->mesh.meshes;
+		
+		for (k=0;k!=portal->mesh.nmesh;k++) {
+			if (mesh->group_idx==group_idx) cnt++;
+			mesh++;
+		}
+		
+		portal++;
 	}
 	
 	return(cnt);
@@ -152,35 +161,15 @@ int group_count(int group_idx)
 
 void group_set(int group_idx)
 {
-/* supergumba
-	int				n,k,sel_count,type,index,primitive_uid;
-	segment_type	*seg;
+	int				n,sel_count,type,portal_idx,mesh_idx,poly_idx;
 	
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&index);
-		
-		switch (type) {
-			
-			case segment_piece:
-				map.segments[index].group_idx=group_idx;
-				break;
-				
-			case primitive_piece:
-				primitive_uid=map.segments[index].primitive_uid[0];
-		
-				seg=map.segments;
-				
-				for (k=0;k!=map.nsegment;k++) {
-					if (seg->primitive_uid[0]==primitive_uid) seg->group_idx=group_idx;
-					seg++;
-				}
-				break;
-		}
+		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		if (type==mesh_piece) map.portals[portal_idx].mesh.meshes[mesh_idx].group_idx=group_idx;
 	}
 	
 	main_wind_tool_fill_group_combo();
-	*/
 }
 

@@ -37,16 +37,18 @@ extern map_type				map;
 
 /* =======================================================
 
-      Drag Mesh
+      Drag Mesh Handles
       
 ======================================================= */
 
-bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
-	int						n,x,y,mx,my,mz,xadd,yadd,zadd,
-							type,portal_idx,mesh_idx,poly_idx,fz;
-	bool					hit,first_drag;
-	d3pnt					old_pt,*dpt,*old_dpt,*old_dpt_ptr;
+	int						n,x,y,z,mx,my,mz,xadd,yadd,zadd,sz,hit_z,
+							px[8],py[8],pz[8],
+							type,portal_idx,mesh_idx,poly_idx,handle_idx;
+	bool					first_drag;
+	d3pnt					old_pt,*old_dpt,mpt,
+							org_min,org_max,min,max;
 	Point					uipt;
 	portal_type				*portal;
 	map_mesh_type			*mesh;
@@ -58,16 +60,166 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 	
 	select_get(0,&type,&portal_idx,&mesh_idx,&poly_idx);
 	if (type!=mesh_piece) return(FALSE);
-
-		// are we clicking in mesh
-		
+	
 	portal=&map.portals[portal_idx];
 	mesh=&portal->mesh.meshes[mesh_idx];
 	
+		// are we clicking in the grow handles?
+		
+	handle_idx=-1;
+	hit_z=100000;
+
+	sz=(int)(walk_view_handle_size/2);
+	
+	walk_view_draw_select_mesh_get_grow_handles(portal_idx,mesh_idx,px,py,pz);
+
+	for (n=0;n!=8;n++) {
+		x=(px[n]+portal->x)-view_setup->cpt.x;
+		y=py[n]-view_setup->cpt.y;
+		z=view_setup->cpt.z-(pz[n]+portal->z);
+		
+		if (!walk_view_click_rotate_polygon_behind_z(x,y,z)) {
+			walk_view_click_project_point(&view_setup->box,&x,&y,&z);
+			
+			if ((pt->x>=(x-sz)) && (pt->x<=(x+sz)) && (pt->y>=(y-sz)) && (pt->y<=(y+sz))) {
+				if (z<hit_z) {
+					hit_z=z;
+					handle_idx=n;
+				}
+			}
+		}
+	}
+	
+	if (handle_idx==-1) return(FALSE);
+	
+		// are we dragging?
+		
+    if (!Button()) return(FALSE);
+	
+		// backup all the vertexes
+		
+	old_dpt=valloc(mesh->nvertex*sizeof(d3pnt));
+	if (old_dpt==NULL) return(FALSE);
+	
+	memmove(old_dpt,mesh->vertexes,(mesh->nvertex*sizeof(d3pnt)));
+		
+		// start dragging
+
+	first_drag=TRUE;
+	
+	map_portal_mesh_calculate_extent(&map,portal_idx,mesh_idx,&org_min,&org_max);
+	memmove(&old_pt,pt,sizeof(d3pnt));
+	
+	mx=my=mz=0;
+	
+	do {
+		TrackMouseLocation(NULL,&uipt,&track);
+		pt->x=uipt.h-view_setup->box.left;
+		pt->y=uipt.v-view_setup->box.top;
+		
+		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
+		
+		x=old_pt.x-pt->x;
+		y=old_pt.y-pt->y;
+		
+		memmove(&old_pt,pt,sizeof(d3pnt));
+		
+			// turn on drag cursor
+			
+		if (first_drag) {
+			SetCCursor(dragcur);
+			first_drag=FALSE;
+		}
+		
+			// resize mesh
+
+		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
+			
+		mx+=xadd;
+		my+=yadd;
+		mz+=zadd;
+		
+		mpt.x=mx;
+		mpt.y=my;
+		mpt.z=mz;
+		
+		walk_view_click_grid(&mpt);
+		
+		memmove(&min,&org_min,sizeof(d3pnt));
+		memmove(&max,&org_max,sizeof(d3pnt));
+		
+			// use correct handle to alter the mesh
+			
+		if ((handle_idx==0) || (handle_idx==3) || (handle_idx==4) || (handle_idx==7)) {
+			min.x+=mpt.x/2;
+		}
+		else {
+			max.x+=mpt.x/2;
+		}
+		
+		if (handle_idx<4) {
+			min.y+=mpt.y/2;
+		}
+		else {
+			max.y+=mpt.y/2;
+		}
+		
+		if ((handle_idx==0) || (handle_idx==1) || (handle_idx==4) || (handle_idx==5)) {
+			min.z+=mpt.z/2;
+		}
+		else {
+			max.z+=mpt.z/2;
+		}
+		
+			// always resize from original vertexes
+			
+		memmove(mesh->vertexes,old_dpt,(mesh->nvertex*sizeof(d3pnt)));
+		map_portal_mesh_resize(&map,portal_idx,mesh_idx,&min,&max);
+
+        main_wind_draw();
+		
+	} while (track!=kMouseTrackingMouseReleased);
+	
+	free(old_dpt);
+	
+	InitCursor();
+	
+	return(!first_drag);
+}
+
+/* =======================================================
+
+      Drag Mesh
+      
+======================================================= */
+
+bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+{
+	int						n,x,y,mx,my,mz,xadd,yadd,zadd,
+							type,portal_idx,mesh_idx,poly_idx,fz;
+	bool					hit,first_drag;
+	d3pnt					old_pt,*dpt,*old_dpt,*old_dpt_ptr,mpt;
+	Point					uipt;
+	portal_type				*portal;
+	map_mesh_type			*mesh;
+	MouseTrackingResult		track;
+	
+		// any selection?
+		
+	if (select_count()==0) return(FALSE);
+	
+	select_get(0,&type,&portal_idx,&mesh_idx,&poly_idx);
+	if (type!=mesh_piece) return(FALSE);
+	
+	portal=&map.portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+		
+		// are we clicking in mesh
+		
 	hit=FALSE;
 		
 	for (n=0;n!=mesh->npoly;n++) {
-		if (walk_view_poly_click_index(view_setup,pt,portal,mesh,n,&fz)) {
+		if (walk_view_mesh_poly_click_index(view_setup,pt,portal,mesh,n,&fz)) {
 			hit=TRUE;
 			break;
 		}
@@ -117,14 +269,19 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 		my+=yadd;
 		mz+=zadd;
 		
+		mpt.x=mx;
+		mpt.y=my;
+		mpt.z=mz;
+		
+		walk_view_click_grid(&mpt);
+		
 		dpt=mesh->vertexes;
 		old_dpt_ptr=old_dpt;
 		
 		for (n=0;n!=mesh->nvertex;n++) {
-			dpt->x=old_dpt_ptr->x+mx;
-			dpt->y=old_dpt_ptr->y+my;
-			dpt->z=old_dpt_ptr->z+mz;
-			walk_view_click_grid(dpt);
+			dpt->x=old_dpt_ptr->x+mpt.x;
+			dpt->y=old_dpt_ptr->y+mpt.y;
+			dpt->z=old_dpt_ptr->z+mpt.z;
 			
 			dpt++;
 			old_dpt_ptr++;
@@ -133,6 +290,8 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
         main_wind_draw();
 		
 	} while (track!=kMouseTrackingMouseReleased);
+	
+	free(old_dpt);
 	
 	InitCursor();
 	
@@ -150,7 +309,7 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 	int						n,x,y,mx,my,mz,xadd,yadd,zadd,
 							type,portal_idx,mesh_idx,poly_idx,fz;
 	bool					first_drag;
-	d3pnt					old_pt,*dpt,*old_dpt;
+	d3pnt					old_pt,*dpt,*old_dpt,mpt;
 	Point					uipt;
 	portal_type				*portal;
 	map_mesh_type			*mesh;
@@ -170,7 +329,7 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 	mesh=&portal->mesh.meshes[mesh_idx];
 	mesh_poly=&mesh->polys[poly_idx];
 	
-	if (!walk_view_poly_click_index(view_setup,pt,portal,mesh,poly_idx,&fz))  return(FALSE);
+	if (!walk_view_mesh_poly_click_index(view_setup,pt,portal,mesh,poly_idx,&fz))  return(FALSE);
 	
 		// drag
 		
@@ -216,21 +375,26 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 		my+=yadd;
 		mz+=zadd;
 		
+		mpt.x=mx;
+		mpt.y=my;
+		mpt.z=mz;
+		
+		walk_view_click_grid(&mpt);
+		
 		for (n=0;n!=mesh_poly->ptsz;n++) {
 			dpt=&mesh->vertexes[mesh_poly->v[n]];
-			dpt->x=old_dpt[n].x+mx;
-			dpt->y=old_dpt[n].y+my;
-			dpt->z=old_dpt[n].z+mz;
-			walk_view_click_grid(dpt);
+			dpt->x=old_dpt[n].x+mpt.x;
+			dpt->y=old_dpt[n].y+mpt.y;
+			dpt->z=old_dpt[n].z+mpt.z;
 		}
 
         main_wind_draw();
 		
 	} while (track!=kMouseTrackingMouseReleased);
 	
-	InitCursor();
-	
 	free(old_dpt);
+
+	InitCursor();
 	
 	return(!first_drag);
 }
@@ -245,7 +409,7 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 {
 	int						n,x,y,z,mx,my,mz,xadd,zadd,yadd,hit_z,sz,
 							type,portal_idx,mesh_idx,poly_idx,vertex_idx;
-	d3pnt					old_pt,*dpt,old_dpt;
+	d3pnt					old_pt,*dpt,old_dpt,mpt;
 	Point					uipt;
 	bool					first_drag;
 	MouseTrackingResult		track;
@@ -330,11 +494,15 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		my+=yadd;
 		mz+=zadd;
 		
-		dpt->x=old_dpt.x+mx;
-		dpt->y=old_dpt.y+my;
-		dpt->z=old_dpt.z+mz;
+		mpt.x=mx;
+		mpt.y=my;
+		mpt.z=mz;
 		
-		walk_view_click_grid(dpt);
+		walk_view_click_grid(&mpt);
+		
+		dpt->x=old_dpt.x+mpt.x;
+		dpt->y=old_dpt.y+mpt.y;
+		dpt->z=old_dpt.z+mpt.z;
 
         main_wind_draw();
 		

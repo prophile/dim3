@@ -35,7 +35,7 @@ and can be sold or given away.
 
 #define txt_wind_max_pixel_sz		32
 
-extern int				cr;
+extern int				cr,drag_mode;
 extern bool				dp_primitive;
 
 extern map_type			map;
@@ -76,60 +76,52 @@ void texture_palette_setup(void)
       
 ======================================================= */
 
-int texture_palette_get_selected_fill(void)
+int texture_palette_get_selected_texture(void)
 {
-	int				type,index;
-	
-	return(-1);
-	
-	/* supergumba
+	int				type,portal_idx,mesh_idx,poly_idx;
 	
 	if (select_count()!=1) return(-1);
 	
-	select_get(0,&type,&index);
-	if ((type!=segment_piece) && (type!=primitive_piece)) return(-1);
+	select_get(0,&type,&portal_idx,&mesh_idx,&poly_idx);
+	if (type!=mesh_piece) return(-1);
 
-	return(map.segments[index].fill);
-	*/
+	return(map.portals[portal_idx].mesh.meshes[mesh_idx].polys[poly_idx].txt_idx);
 }
 
-void texture_palette_put_selected_fill(int fill)
+void texture_palette_put_selected_texture(int txt_idx)
 {
-/* supergumba
-	int				n,k,sel_count,type,index,primitive_uid;
-	segment_type	*seg;
+	int					n,k,sel_count,type,portal_idx,mesh_idx,poly_idx;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
 	
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&index);
+	
+		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
 		
-		switch (type) {
+		mesh=&map.portals[portal_idx].mesh.meshes[mesh_idx];
 		
-			case segment_piece:
-				map.segments[index].fill=fill;
-				break;
-				
-			case primitive_piece:
+			// only set polygon
 			
-				if (!dp_primitive) {
-					map.segments[index].fill=fill;
-					break;
-				}
-				
-				primitive_uid=map.segments[index].primitive_uid[0];
-				
-				seg=map.segments;
-				
-				for (k=0;k!=map.nsegment;k++) {
-					if (seg->primitive_uid[0]==primitive_uid) seg->fill=fill;
-					seg++;
-				}
-				break;
+		if (drag_mode!=drag_mode_mesh) {
+			mesh->polys[poly_idx].txt_idx=txt_idx;
 		}
 		
+			// set all mesh
+			
+		else {
+			
+			poly=mesh->polys;
+			
+			for (k=0;k!=mesh->npoly;k++) {
+				poly->txt_idx=txt_idx;
+				poly++;
+			}
+		
+		}		
 	}
-	*/
 }
 
 /* =======================================================
@@ -250,7 +242,7 @@ void texture_palette_draw(void)
 	
 		// selection
 		
-	sel=texture_palette_get_selected_fill();
+	sel=texture_palette_get_selected_texture();
 	if (sel==-1) return;
 	
 	page=sel/txt_wind_per_page;
@@ -284,7 +276,7 @@ void texture_palette_reset(void)
 	
 		// reset texture set if necessary
 		
-	sel=texture_palette_get_selected_fill();
+	sel=texture_palette_get_selected_texture();
 	if (sel!=-1) txt_offset=sel/8;
 }
 
@@ -332,7 +324,7 @@ void texture_palette_click(Point pt,bool dblclick)
 		
 	if (map.textures[nsel].bitmaps[0].data==NULL) return;
 	
-	texture_palette_put_selected_fill(nsel);
+	texture_palette_put_selected_texture(nsel);
 	texture_palette_reset();
 	main_wind_draw();
 }
