@@ -257,6 +257,10 @@ SOURCE=..\..\dim3MapUtility\Sources\portal_mesh.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3MapUtility\Sources\portal_mesh_update.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3MapUtility\Sources\portal_segment_list.c
 # End Source File
 # Begin Source File
@@ -282,10 +286,6 @@ SOURCE=..\..\dim3MapUtility\Sources\prepare_curve.c
 # Begin Source File
 
 SOURCE=..\..\dim3MapUtility\Sources\prepare_polygon.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3MapUtility\Sources\prepare_vertex_middles.c
 # End Source File
 # Begin Source File
 

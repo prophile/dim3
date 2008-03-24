@@ -231,6 +231,7 @@ void segment_render_opaque_portal_lighting_mesh(portal_type *portal,int stencil_
 			}
 			
 			// supergumba -- testing
+			/*
 			if (!mesh_poly->draw.simple_lighting) {
 				glLineWidth(2.0f);
 				ntrig=mesh_poly->light.trig_count;
@@ -239,17 +240,16 @@ void segment_render_opaque_portal_lighting_mesh(portal_type *portal,int stencil_
 				}
 				glLineWidth(1.0f);
 			}
+			*/
 
-			/*
 			if (mesh_poly->draw.simple_lighting) {
 				glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
 			}
 			else {
-				ntrig=mesh_poly->light.trig_count;
-				glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)mesh_poly->light.trig_vertex_idx);
-				if ((mesh_poly->ptsz-2)!=ntrig) glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+			//	ntrig=mesh_poly->light.trig_count;
+			//	glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)mesh_poly->light.trig_vertex_idx);
+			//	if ((mesh_poly->ptsz-2)!=ntrig) glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
 			}
-			*/
 
 			mesh_poly++;
 		}

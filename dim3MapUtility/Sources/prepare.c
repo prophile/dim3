@@ -142,7 +142,7 @@ void map_prepare_set_mesh_poly_slope(map_mesh_type *mesh,map_mesh_poly_type *mes
 
 void map_prepare(map_type *map)
 {
-	int					i,n,k,t;
+	int					i,n,k,t,simple_cnt;
 	d3pnt				*pt;
 	portal_type			*portal;
 	map_mesh_type		*mesh;
@@ -218,10 +218,27 @@ void map_prepare(map_type *map)
 				map_prepare_set_mesh_poly_box(mesh,mesh_poly);
 				map_prepare_set_mesh_poly_slope(mesh,mesh_poly);
 
-					// setup simple tessel and shifting flag
+					// detect simple tessel segments
+					// triangles are automatically simple tessels
+					// if two of the axises are under simple
+					// tessel size, then entire polygon is simple tessel
+
+				if (mesh_poly->ptsz==3) {
+					mesh_poly->draw.simple_tessel=TRUE;
+				}
+				else {
+					simple_cnt=0;
+
+					if ((mesh_poly->box.max.x-mesh_poly->box.min.x)<map_simple_tessel_size) simple_cnt++;
+					if ((mesh_poly->box.max.z-mesh_poly->box.min.z)<map_simple_tessel_size) simple_cnt++;
+					if ((mesh_poly->box.max.y-mesh_poly->box.min.y)<map_simple_tessel_size) simple_cnt++;
+				
+					mesh_poly->draw.simple_tessel=(simple_cnt>=2);
+				}
+
+					// setup texture and shifting flags
 
 				mesh_poly->draw.txt_frame_offset=0;
-				mesh_poly->draw.simple_tessel=(mesh_poly->ptsz==3);
 				mesh_poly->draw.shift_on=((mesh_poly->x_shift!=0.0f) || (mesh_poly->y_shift!=0.0f));
 			
 				mesh_poly++;

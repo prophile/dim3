@@ -44,6 +44,8 @@ extern char light_type_str[][32];
 #define map_x_size									400000			// # of units on X
 #define map_z_size									400000			// # of units on Z
 
+#define map_simple_tessel_size						500				// below this size makes simple lighting tessel
+
 //
 // map maximums
 //
