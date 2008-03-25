@@ -58,6 +58,8 @@ extern bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3
 extern bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 extern bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 extern bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
+extern bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
+extern bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 
 //
 // walk view draw handle
@@ -65,6 +67,8 @@ extern bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *
 
 extern void walk_view_draw_sel_handles(int ptsz,int *x,int *y,int *z);
 extern void walk_view_draw_segment_handles(void);
+
+extern void walk_view_sprite_select_size(d3pnt *cpt,d3pos *pos,int *px,int *pz,int *ty,int *by);
 
 //
 // walk view movement

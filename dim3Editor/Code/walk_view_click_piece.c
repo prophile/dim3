@@ -384,6 +384,10 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	map_mesh_type		*mesh;
 	spot_type			*spot;
 	map_scenery_type	*scenery;
+	map_light_type		*map_light;
+	map_sound_type		*map_sound;
+	map_particle_type	*map_particle;
+	node_type			*node;
 	
 	walk_view_click_setup_project(view_setup);
 	
@@ -423,46 +427,134 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 			mesh++;
 		}
 		
-			// portal spots
-			
-		for (n=0;n!=map.nspot;n++) {
-			
-			spot=&map.spots[n];
-			if (spot->pos.rn==i)  continue;
-			
-			if (!walk_view_model_click_select_size(&view_setup->cpt,spot->display_model,&spot->pos,&spot->ang,px,pz,&ty,&by)) continue;
-			
-			if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&fz)) {
-				if (fz<hit_z) {
-					hit_z=fz;
-					*type=spot_piece;
-					*portal_idx=i;
-					*main_idx=n;
-					*sub_idx=-1;
+		if (dp_object) {
+		
+				// portal spots
+				
+			for (n=0;n!=map.nspot;n++) {
+				
+				spot=&map.spots[n];
+				if (spot->pos.rn!=i)  continue;
+				
+				if (!walk_view_model_click_select_size(&view_setup->cpt,spot->display_model,&spot->pos,&spot->ang,px,pz,&ty,&by)) continue;
+				
+				if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&fz)) {
+					if (fz<hit_z) {
+						hit_z=fz;
+						*type=spot_piece;
+						*portal_idx=i;
+						*main_idx=n;
+						*sub_idx=-1;
+					}
+				}
+			}
+		
+				// portal scenery
+				
+			for (n=0;n!=map.nscenery;n++) {
+				
+				scenery=&map.sceneries[n];
+				if (scenery->pos.rn!=i)  continue;
+				
+				if (!walk_view_model_click_select_size(&view_setup->cpt,scenery->model_name,&scenery->pos,&scenery->ang,px,pz,&ty,&by)) continue;
+				
+				if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&fz)) {
+					if (fz<hit_z) {
+						hit_z=fz;
+						*type=scenery_piece;
+						*portal_idx=i;
+						*main_idx=n;
+						*sub_idx=-1;
+					}
 				}
 			}
 		}
-	
-			// portal scenery
+		
+		if (dp_lightsoundparticle) {
+		
+				// map lights
+				
+			for (n=0;n!=map.nlight;n++) {
 			
-		for (n=0;n!=map.nscenery;n++) {
+				map_light=&map.lights[n];
+				if (map_light->pos.rn!=i) continue;
+				
+				walk_view_sprite_select_size(&view_setup->cpt,&map_light->pos,px,pz,&ty,&by);
+				
+				if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&fz)) {
+					if (fz<hit_z) {
+						hit_z=fz;
+						*type=light_piece;
+						*portal_idx=i;
+						*main_idx=n;
+						*sub_idx=-1;
+					}
+				}
+			}
 			
-			scenery=&map.sceneries[n];
-			if (scenery->pos.rn==i)  continue;
+				// map sound
+				
+			for (n=0;n!=map.nsound;n++) {
 			
-			if (!walk_view_model_click_select_size(&view_setup->cpt,scenery->model_name,&scenery->pos,&scenery->ang,px,pz,&ty,&by)) continue;
+				map_sound=&map.sounds[n];
+				if (map_sound->pos.rn!=i) continue;
+				
+				walk_view_sprite_select_size(&view_setup->cpt,&map_sound->pos,px,pz,&ty,&by);
+				
+				if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&fz)) {
+					if (fz<hit_z) {
+						hit_z=fz;
+						*type=sound_piece;
+						*portal_idx=i;
+						*main_idx=n;
+						*sub_idx=-1;
+					}
+				}
+			}
 			
-			if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&fz)) {
-				if (fz<hit_z) {
-					hit_z=fz;
-					*type=scenery_piece;
-					*portal_idx=i;
-					*main_idx=n;
-					*sub_idx=-1;
+				// map particle
+				
+			for (n=0;n!=map.nparticle;n++) {
+			
+				map_particle=&map.particles[n];
+				if (map_particle->pos.rn!=i) continue;
+				
+				walk_view_sprite_select_size(&view_setup->cpt,&map_particle->pos,px,pz,&ty,&by);
+				
+				if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&fz)) {
+					if (fz<hit_z) {
+						hit_z=fz;
+						*type=particle_piece;
+						*portal_idx=i;
+						*main_idx=n;
+						*sub_idx=-1;
+					}
 				}
 			}
 		}
+		
+		if (dp_node) {
+		
+				// map node
+				
+			for (n=0;n!=map.nnode;n++) {
 			
+				node=&map.nodes[n];
+				if (node->pos.rn!=i) continue;
+				
+				walk_view_sprite_select_size(&view_setup->cpt,&node->pos,px,pz,&ty,&by);
+				
+				if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&fz)) {
+					if (fz<hit_z) {
+						hit_z=fz;
+						*type=node_piece;
+						*portal_idx=i;
+						*main_idx=n;
+						*sub_idx=-1;
+					}
+				}
+			}
+		}	
 	}
 }
 	
@@ -580,7 +672,7 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 			break;
 			
 	}
-	
+		
 		// select mesh/polygon
 		
 	walk_view_click_piece_normal(view_setup,pt,dblclick);
@@ -592,16 +684,24 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 		return;
 	}
 	
+		// do any item drags
+			
+	if (walk_view_click_drag_item(view_setup,pt,view_move_dir)) return;
+	
+		// do any liquid drags
+		
+	if (walk_view_click_drag_liquid(view_setup,pt,view_move_dir)) return;
+	
 		// do any mesh or poly drags
 		
 	switch (drag_mode) {
 	
 		case drag_mode_mesh:
-			if (walk_view_click_drag_mesh(view_setup,pt,view_move_dir)) return;
+			walk_view_click_drag_mesh(view_setup,pt,view_move_dir);
 			break;
 
 		case drag_mode_polygon:
-			if (walk_view_click_drag_mesh_poly(view_setup,pt,view_move_dir)) return;
+			walk_view_click_drag_mesh_poly(view_setup,pt,view_move_dir);
 			break;
 			
 	}

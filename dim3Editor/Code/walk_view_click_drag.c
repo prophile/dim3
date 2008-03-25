@@ -513,3 +513,193 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	return(!first_drag);
 }
 
+/* =======================================================
+
+      Drag Item
+      
+======================================================= */
+
+bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+{
+	int						x,y,mx,my,mz,xadd,zadd,yadd,
+							type,portal_idx,main_idx,sub_idx;
+	d3pos					*pos,old_pos;
+	d3pnt					old_pt,mpt;
+	Point					uipt;
+	bool					first_drag;
+	MouseTrackingResult		track;
+	
+    if (select_count()!=1) return(FALSE);
+	
+	select_get(0,&type,&portal_idx,&main_idx,&sub_idx);
+	if (type==mesh_piece) return(FALSE);
+	
+		// get item pos
+		
+	switch (type) {
+		case node_piece:
+			pos=&map.nodes[main_idx].pos;
+			break;
+		case spot_piece:
+			pos=&map.spots[main_idx].pos;
+			break;
+		case scenery_piece:
+			pos=&map.sceneries[main_idx].pos;
+			break;
+		case light_piece:
+			pos=&map.lights[main_idx].pos;
+			break;
+		case sound_piece:
+			pos=&map.sounds[main_idx].pos;
+			break;
+		case particle_piece:
+			pos=&map.particles[main_idx].pos;
+			break;
+	}
+		
+		// drag item
+	
+    if (!Button()) return(FALSE);
+
+	first_drag=TRUE;
+	
+	memmove(&old_pos,pos,sizeof(d3pos));
+	
+	memmove(&old_pt,pt,sizeof(d3pnt));
+	
+	mx=my=mz=0;
+	
+	do {
+		TrackMouseLocation(NULL,&uipt,&track);
+		pt->x=uipt.h-view_setup->box.left;
+		pt->y=uipt.v-view_setup->box.top;
+		
+		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
+		
+		x=old_pt.x-pt->x;
+		y=old_pt.y-pt->y;
+		
+		memmove(&old_pt,pt,sizeof(d3pnt));
+		
+			// turn on drag cursor
+			
+		if (first_drag) {
+			SetCCursor(dragcur);
+			first_drag=FALSE;
+		}
+		
+			// move item
+
+		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
+			
+		mx+=xadd;
+		my+=yadd;
+		mz+=zadd;
+		
+		mpt.x=mx;
+		mpt.y=my;
+		mpt.z=mz;
+		
+		walk_view_click_grid(&mpt);
+		
+		pos->x=old_pos.x+mpt.x;
+		pos->y=old_pos.y+mpt.y;
+		pos->z=old_pos.z+mpt.z;
+
+        main_wind_draw();
+		
+	} while (track!=kMouseTrackingMouseReleased);
+	
+	InitCursor();
+	
+	return(!first_drag);
+}
+
+/* =======================================================
+
+      Drag Liquid
+      
+======================================================= */
+
+bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+{
+	int						x,y,mx,my,mz,xadd,zadd,yadd,
+							old_lft,old_rgt,old_top,old_bot,old_y,
+							type,portal_idx,main_idx,sub_idx;
+	d3pnt					old_pt,mpt;
+	Point					uipt;
+	bool					first_drag;
+	map_liquid_type			*liq;
+	MouseTrackingResult		track;
+	
+    if (select_count()!=1) return(FALSE);
+	
+	select_get(0,&type,&portal_idx,&main_idx,&sub_idx);
+	if (type!=liquid_piece) return(FALSE);
+	
+	liq=&map.portals[portal_idx].liquid.liquids[main_idx];
+		
+		// drag item
+	
+    if (!Button()) return(FALSE);
+
+	first_drag=TRUE;
+	
+	old_lft=liq->lft;
+	old_rgt=liq->rgt;
+	old_top=liq->top;
+	old_bot=liq->bot;
+	old_y=liq->y;
+	
+	memmove(&old_pt,pt,sizeof(d3pnt));
+	
+	mx=my=mz=0;
+	
+	do {
+		TrackMouseLocation(NULL,&uipt,&track);
+		pt->x=uipt.h-view_setup->box.left;
+		pt->y=uipt.v-view_setup->box.top;
+		
+		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
+		
+		x=old_pt.x-pt->x;
+		y=old_pt.y-pt->y;
+		
+		memmove(&old_pt,pt,sizeof(d3pnt));
+		
+			// turn on drag cursor
+			
+		if (first_drag) {
+			SetCCursor(dragcur);
+			first_drag=FALSE;
+		}
+		
+			// move item
+
+		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
+			
+		mx+=xadd;
+		my+=yadd;
+		mz+=zadd;
+		
+		mpt.x=mx;
+		mpt.y=my;
+		mpt.z=mz;
+		
+		walk_view_click_grid(&mpt);
+		
+		liq->lft=old_lft+mpt.x;
+		liq->rgt=old_rgt+mpt.x;
+		liq->top=old_top+mpt.z;
+		liq->bot=old_bot+mpt.z;
+		liq->y=old_y+mpt.y;
+
+        main_wind_draw();
+		
+	} while (track!=kMouseTrackingMouseReleased);
+	
+	InitCursor();
+	
+	return(!first_drag);
+}
+

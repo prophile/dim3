@@ -176,6 +176,29 @@ void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
       
 ======================================================= */
 
+void walk_view_sprite_select_size(d3pnt *cpt,d3pos *pos,int *px,int *pz,int *ty,int *by)
+{
+	int				x,y,z,wid;
+	portal_type		*portal;
+	
+	portal=&map.portals[pos->rn];
+	
+    x=(pos->x+portal->x)-cpt->x;
+    y=(pos->y+1)-cpt->y;
+    z=cpt->z-(pos->z+portal->z);
+    
+    wid=map_enlarge*3;
+
+	px[0]=px[3]=x-wid;
+	px[1]=px[2]=x+wid;
+	
+	pz[0]=pz[1]=z-wid;
+	pz[2]=pz[3]=z+wid;
+	
+	*by=y;
+	*ty=y-(map_enlarge*4);
+}
+
 void walk_view_draw_select_sprite(d3pnt *cpt,d3pos *pos)
 {
     int			x,z,y,wid,high;
