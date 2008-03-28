@@ -114,6 +114,7 @@ extern void object_duck(obj_type *obj);
 extern void object_fix_bump_smooth(obj_type *obj);
 extern float object_liquid_alter_speed(obj_type *obj);
 extern void object_liquid(int tick,obj_type *obj);
+extern void object_to_object_push(obj_type *obj,float xmove,float zmove);
 
 extern void object_rigid_body_reset_angle(obj_type *obj);
 extern void object_fly_reset_angle(obj_type *obj);

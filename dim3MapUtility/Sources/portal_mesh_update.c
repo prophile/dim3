@@ -289,10 +289,69 @@ void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min
 
 void map_portal_mesh_flip(map_type *map,int portal_idx,int mesh_idx,bool flip_x,bool flip_y,bool flip_z)
 {
+	int						n,nvertex,mx,my,mz;
+	d3pnt					*pt;
+	portal_type				*portal;
+	map_mesh_type			*mesh;
+
+		// get center
+
+	map_portal_mesh_get_center(map,portal_idx,mesh_idx,&mx,&my,&mz);
+
+		// flip vertexes
+
+	portal=&map->portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+
+	nvertex=mesh->nvertex;
+	pt=mesh->vertexes;
+
+	for (n=0;n!=nvertex;n++) {
+		if (flip_x) pt->x=mx-(pt->x-mx);
+		if (flip_y) pt->y=my-(pt->y-my);
+		if (flip_z) pt->z=mz-(pt->z-mz);
+		pt++;
+	}
 }
 
 void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,float rot_x,float rot_y,float rot_z)
 {
+	int						n,nvertex,mx,my,mz;
+	float					fx,fy,fz;
+	d3pnt					*pt;
+	matrix_type				mat;
+	portal_type				*portal;
+	map_mesh_type			*mesh;
+
+		// get center
+
+	map_portal_mesh_get_center(map,portal_idx,mesh_idx,&mx,&my,&mz);
+
+		// matrixes
+
+	matrix_rotate_xyz(&mat,rot_x,rot_y,rot_z);
+
+		// rotate vertexes
+
+	portal=&map->portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+
+	nvertex=mesh->nvertex;
+	pt=mesh->vertexes;
+
+	for (n=0;n!=nvertex;n++) {
+		fx=(float)pt->x;
+		fy=(float)pt->y;
+		fz=(float)pt->z;
+
+		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+
+		pt->x=(int)fx;
+		pt->y=(int)fy;
+		pt->z=(int)fz;
+
+		pt++;
+	}
 }
 
 

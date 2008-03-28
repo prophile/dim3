@@ -89,13 +89,15 @@ void map_auto_generate_move_wall_segment_to_portal(map_type *map,int rn,int seg_
 void map_auto_generate_initial_portals(map_type *map)
 {
 	int			i,rn,x,z,ex,ez,try_count,
-				map_x_sz,map_z_sz,portal_sz;
+				map_x_sz,map_z_sz,portal_rand_sz,portal_min_sz;
 
 		// sizes
 
-	map_x_sz=ag_settings.map_right-ag_settings.map_left;
-	map_z_sz=ag_settings.map_bottom-ag_settings.map_top;
-	portal_sz=ag_settings.portal.max_sz-ag_settings.portal.min_sz;
+	map_x_sz=ag_settings.map.right-ag_settings.map.left;
+	map_z_sz=ag_settings.map.bottom-ag_settings.map.top;
+
+	portal_rand_sz=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_random_percent);
+	portal_min_sz=ag_settings.portal.sz-portal_rand_sz;
 
 		// create portals
 
@@ -109,23 +111,23 @@ void map_auto_generate_initial_portals(map_type *map)
 
 				// create portal start
 
-			x=ag_settings.map_left+(rand()%map_x_sz);
-			z=ag_settings.map_top+(rand()%map_z_sz);
+			x=ag_settings.map.left+(rand()%map_x_sz);
+			z=ag_settings.map.top+(rand()%map_z_sz);
 			
 				// create portal size
 				
-			ex=x+(ag_settings.portal.min_sz+(rand()%portal_sz));
-			ez=z+(ag_settings.portal.min_sz+(rand()%portal_sz));
+			ex=x+(portal_min_sz+(rand()%portal_rand_sz));
+			ez=z+(portal_min_sz+(rand()%portal_rand_sz));
 
 				// fix right/bottom overflows
 
-			if (ex>ag_settings.map_right) {
-				x=ag_settings.map_right-(ex-x);
-				ex=ag_settings.map_right;
+			if (ex>ag_settings.map.right) {
+				x=ag_settings.map.right-(ex-x);
+				ex=ag_settings.map.right;
 			}
-			if (ez>ag_settings.map_bottom) {
-				z=ag_settings.map_bottom-(ez-z);
-				ez=ag_settings.map_bottom;
+			if (ez>ag_settings.map.bottom) {
+				z=ag_settings.map.bottom-(ez-z);
+				ez=ag_settings.map.bottom;
 			}
 			
 				// use splits as grid
@@ -167,17 +169,20 @@ void map_auto_generate_initial_portals(map_type *map)
 
 void map_auto_generate_merge_portals(map_type *map)
 {
+	/* supergumba -- redo all this
+
 	int			i,n,k,dist,merge_add,merge_try_count;
 	bool		moved;
 	portal_type	*chk_portal,*merge_portal;
+
+	portal_merge_distance=(int)(((float)ag_settings.portal_sz)*ag_constant_portal_merge_percent);
 
 		// only keep moving for a limited time
 		// so portals that bounce between two don't cause
 		// an infinite loop
 		
-	merge_try_count=ag_settings.max_portal_merge_distance*2;
-	
 	merge_add=ag_settings.split_factor;
+	merge_try_count=(portal_merge_distance/merge_add)*2;
 
 	for (i=0;i!=merge_try_count;i++) {
 
@@ -200,7 +205,7 @@ void map_auto_generate_merge_portals(map_type *map)
 					// merge left
 
 				dist=merge_portal->x-chk_portal->ex;
-				if ((dist>0) && (dist<=ag_settings.max_portal_merge_distance)) {
+				if ((dist>0) && (dist<=portal_merge_distance)) {
 					if (!map_auto_generate_portal_collision(map,(merge_portal->x-merge_add),merge_portal->z,merge_portal->ex,merge_portal->ez,k)) {
 						merge_portal->x-=merge_add;
 						moved=TRUE;
@@ -211,7 +216,7 @@ void map_auto_generate_merge_portals(map_type *map)
 					// merge right
 
 				dist=chk_portal->x-merge_portal->ex;
-				if ((dist>0) && (dist<=ag_settings.max_portal_merge_distance)) {
+				if ((dist>0) && (dist<=portal_merge_distance)) {
 					if (!map_auto_generate_portal_collision(map,merge_portal->x,merge_portal->z,(merge_portal->ex+merge_add),merge_portal->ez,k)) {
 						merge_portal->ex+=merge_add;
 						moved=TRUE;
@@ -222,7 +227,7 @@ void map_auto_generate_merge_portals(map_type *map)
 					// merge top
 
 				dist=merge_portal->z-chk_portal->ez;
-				if ((dist>0) && (dist<=ag_settings.max_portal_merge_distance)) {
+				if ((dist>0) && (dist<=portal_merge_distance)) {
 					if (!map_auto_generate_portal_collision(map,merge_portal->x,(merge_portal->z-merge_add),merge_portal->ex,merge_portal->ez,k)) {
 						merge_portal->z-=merge_add;
 						moved=TRUE;
@@ -233,7 +238,7 @@ void map_auto_generate_merge_portals(map_type *map)
 					// merge bottom
 
 				dist=chk_portal->z-merge_portal->ez;
-				if ((dist>0) && (dist<=ag_settings.max_portal_merge_distance)) {
+				if ((dist>0) && (dist<=portal_merge_distance)) {
 					if (!map_auto_generate_portal_collision(map,merge_portal->x,merge_portal->z,merge_portal->ex,(merge_portal->ez+merge_add),k)) {
 						merge_portal->ez+=merge_add;
 						moved=TRUE;
@@ -245,7 +250,7 @@ void map_auto_generate_merge_portals(map_type *map)
 
 		if (!moved) break;
 	}
-
+	*/
 }
 
 /* =======================================================
@@ -256,9 +261,19 @@ void map_auto_generate_merge_portals(map_type *map)
 
 void map_auto_generate_connect_portals(map_type *map)
 {
-	int				n,k,rn,
-					x,z,ex,ez,x2,z2,ex2,ez2,connect_sz,dist,nportal,cnt;
+	int				n,k,rn,corridor_sz,corridor_rand_sz,corridor_min_sz,
+					portal_merge_distance,portal_connect_distance,connect_sz,
+					x,z,ex,ez,x2,z2,ex2,ez2,dist,nportal,cnt;
 	portal_type		*chk_portal,*cnt_portal;
+
+		// get sizes
+
+	corridor_sz=(int)(((float)ag_settings.portal.sz)*ag_constant_corridor_size_percent);
+	corridor_rand_sz=(int)(((float)corridor_sz)*ag_constant_corridor_random_percent);
+	corridor_min_sz=corridor_sz-corridor_rand_sz;
+
+	portal_merge_distance=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_merge_percent);
+	portal_connect_distance=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_connect_percent);
 
 		// get original portal count
 
@@ -289,15 +304,15 @@ void map_auto_generate_connect_portals(map_type *map)
 
 			dist=cnt_portal->x-chk_portal->ex;
 			if (dist<=0) continue;
-			if (dist<ag_settings.max_portal_merge_distance) continue;
-			if (dist>ag_settings.corridor.max_connect_distance) continue;
+			if (dist<portal_merge_distance) continue;
+			if (dist>portal_connect_distance) continue;
 
 				// get portal size
 
 			x=chk_portal->ex;
 			ex=cnt_portal->x;
 
-			connect_sz=ag_settings.corridor.min_sz+(rand()%(ag_settings.corridor.max_sz-ag_settings.corridor.min_sz));
+			connect_sz=corridor_min_sz+(rand()%corridor_rand_sz);
 			z=(((chk_portal->z+chk_portal->ez)/2)+((cnt_portal->z+cnt_portal->ez)/2))/2;
 			z-=(connect_sz/2);
 			ez=z+connect_sz;
@@ -329,7 +344,7 @@ void map_auto_generate_connect_portals(map_type *map)
 
 				// not enough connection size for portals?
 
-			if ((ez-z)<ag_settings.corridor.min_sz) continue;
+			if ((ez-z)<corridor_min_sz) continue;
 			
 				// check for collisions
 				
@@ -372,15 +387,15 @@ void map_auto_generate_connect_portals(map_type *map)
 
 			dist=cnt_portal->z-chk_portal->ez;
 			if (dist<=0) continue;
-			if (dist<ag_settings.max_portal_merge_distance) continue;
-			if (dist>ag_settings.corridor.max_connect_distance) continue;
+			if (dist<portal_merge_distance) continue;
+			if (dist>portal_connect_distance) continue;
 
 				// get portal size
 
 			z=chk_portal->ez;
 			ez=cnt_portal->z;
 
-			connect_sz=ag_settings.corridor.min_sz+(rand()%(ag_settings.corridor.max_sz-ag_settings.corridor.min_sz));
+			connect_sz=corridor_min_sz+(rand()%corridor_rand_sz);
 			x=(((chk_portal->x+chk_portal->ex)/2)+((cnt_portal->x+cnt_portal->ex)/2))/2;
 			x-=(connect_sz/2);
 			ex=x+connect_sz;
@@ -412,7 +427,7 @@ void map_auto_generate_connect_portals(map_type *map)
 
 				// not enough connection size for portals?
 
-			if ((ex-x)<ag_settings.corridor.min_sz) continue;
+			if ((ex-x)<corridor_min_sz) continue;
 			
 				// check for collisions
 				
@@ -1955,6 +1970,8 @@ void map_auto_generate_clear_flags(void)
 
 void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 {
+	int			sz;
+
 		// setup global
 
 	memmove(&ag_settings,ags,sizeof(auto_generate_settings_type));
@@ -1967,10 +1984,12 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 
 	srand(ag_settings.seed);
 	
-	ag_settings.map_left=(map_x_size/2)-(ag_settings.max_map_x_size/2);
-	ag_settings.map_right=(map_x_size/2)+(ag_settings.max_map_x_size/2);
-	ag_settings.map_top=(map_z_size/2)-(ag_settings.max_map_z_size/2);
-	ag_settings.map_bottom=(map_z_size/2)+(ag_settings.max_map_z_size/2);
+	sz=ag_settings.map.sz/2;
+
+	ag_settings.map.left=(map_x_size/2)-sz;
+	ag_settings.map.right=(map_x_size/2)+sz;
+	ag_settings.map.top=(map_z_size/2)-sz;
+	ag_settings.map.bottom=(map_z_size/2)+sz;
 	
 	map_auto_generate_clear_flags();
 
@@ -2051,17 +2070,15 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 	ags.seed=GetTickCount();
 #endif
 
-	ags.max_map_x_size=2000;
-	ags.max_map_z_size=2000;
+	ags.map.sz=2000*map_enlarge;
 	ags.split_factor=40;
 
 	ags.portal.initial_count=15;
-	ags.portal.min_sz=300;
-	ags.portal.max_sz=500;
-	ags.portal.by=200;
-	ags.portal.ty=160;
-	ags.portal.extra_ty=60;
-	ags.portal.extra_by=30;
+	ags.portal.sz=500*map_enlarge;
+	ags.portal.by=200*map_enlarge;
+	ags.portal.ty=160*map_enlarge;
+	ags.portal.extra_ty=60*map_enlarge;
+	ags.portal.extra_by=30*map_enlarge;
 	
 	ags.ceiling.type_on[ag_ceiling_type_closed]=TRUE;
 	ags.ceiling.type_on[ag_ceiling_type_open]=TRUE;
@@ -2070,11 +2087,6 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 	ags.corridor.type_on[ag_corridor_type_normal]=TRUE;
 	ags.corridor.type_on[ag_corridor_type_slanted_ceiling]=TRUE;
 	ags.corridor.type_on[ag_corridor_type_octagon]=TRUE;
-
-	ags.max_portal_merge_distance=40;
-	ags.corridor.max_connect_distance=500;
-	ags.corridor.min_sz=80;
-	ags.corridor.max_sz=120;
 
 	ags.steps.sz=6;
 	ags.steps.high=2;

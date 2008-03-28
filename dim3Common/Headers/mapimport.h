@@ -104,17 +104,30 @@ typedef struct	{
 #define ag_block_preset_horizontal_h		7
 
 //
+// auto-generate constants
+//
+
+#define ag_constant_portal_random_percent	0.4f
+#define ag_constant_portal_merge_percent	0.08f
+#define ag_constant_portal_connect_percent	1.0f
+
+#define ag_constant_corridor_size_percent	0.25f
+#define ag_constant_corridor_random_percent	0.4f
+
+//
 // auto-generate structure
 //
 
 typedef struct	{
+					int										sz,left,right,top,bottom;
+				} auto_generate_setting_map_type;
+
+typedef struct	{
 					int										initial_count,
-															min_sz,max_sz,ty,by,extra_ty,extra_by;
+															sz,ty,by,extra_ty,extra_by;
 				} auto_generate_setting_portal_type;
 	
 typedef struct	{
-					int										max_connect_distance,
-															min_sz,max_sz;
 					bool									type_on[ag_corridor_type_count];
 				} auto_generate_setting_corridor_type;
 				
@@ -137,10 +150,7 @@ typedef struct	{
 				} auto_generate_setting_ramp_type;
 
 typedef struct	{
-					int										seed,
-															max_map_x_size,max_map_z_size,
-															map_left,map_right,map_top,map_bottom,
-															max_portal_merge_distance,split_factor,
+					int										seed,split_factor,
 															rough_floor_factor,door_percentage,
 															light_fudge_factor,light_fill_percentage,
 															light_color_percentage,light_flicker_percentage,
@@ -149,6 +159,7 @@ typedef struct	{
 					bool									rough_portal_floors,rough_corridor_floors,doors,
 															lights,sight_path,spots;
 					unsigned char							block[max_ag_block_sz][max_ag_block_sz];
+					auto_generate_setting_map_type			map;
 					auto_generate_setting_portal_type		portal;
 					auto_generate_setting_corridor_type		corridor;
 					auto_generate_setting_ceiling_type		ceiling;

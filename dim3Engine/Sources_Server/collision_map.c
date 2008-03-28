@@ -751,20 +751,31 @@ void object_move_normal_2(obj_type *obj)
 		// land features that could hold up the
 		// object
 
-	object_move_xz_slide(obj,&xadd,&yadd,&zadd);
+	while (TRUE) {
+		object_move_xz_slide(obj,&xadd,&yadd,&zadd);
 
-	obj->pos.x+=xadd;
-	obj->pos.z+=zadd;
+		obj->pos.x+=xadd;
+		obj->pos.z+=zadd;
 
-	if (!map_find_portal_by_pos(&map,&obj->pos)) {
-		xadd=zadd=0;
-		memmove(&obj->pos,&old_pos,sizeof(d3pos));
-	}
+		if (!map_find_portal_by_pos(&map,&obj->pos)) {
+			xadd=zadd=0;
+			memmove(&obj->pos,&old_pos,sizeof(d3pos));
+		}
 
-		// objects pushing other objects
+			// objects pushing other objects
 
-	if ((xadd!=0) || (zadd!=0)) {
-		object_move_with_object(obj,xadd,zadd);
+		if ((xadd!=0) || (zadd!=0)) {
+			object_move_with_object(obj,xadd,zadd);
+		}
+			
+			// if bumped up, move again
+
+		if (object_bump_up(obj,xadd,zadd)) {
+			yadd=0;
+			continue;	
+		}
+
+		break;
 	}
 
 		// objects with automatic bouncing

@@ -339,10 +339,10 @@ void object_alter_gravity(obj_type *obj,float alt_gravity)
 
 bool object_bump_up(obj_type *obj,int xmove,int zmove)
 {
-	/* supergumba
-	int				uid,idx,ydif,ymove;
-    obj_type		*hit_obj;
-	segment_type	*seg;
+	int					uid,ydif,ymove;
+    obj_type			*hit_obj;
+	poly_pointer_type	*poly_ptr;
+	map_mesh_poly_type	*mesh_poly;
 	
 	if (!obj->bump.on) return(FALSE);
 	if (obj->air_mode!=am_ground) return(FALSE);			// can't bump up in air
@@ -359,10 +359,11 @@ bool object_bump_up(obj_type *obj,int xmove,int zmove)
     
         // bump up a wall
 	
-	idx=obj->contact.wall_seg_idx;
-	if (idx!=-1) {
-        seg=&map.segments[idx];
-        ydif=obj->pos.y-seg->data.wall.ty;
+	poly_ptr=&obj->contact.hit_poly;
+
+	if (poly_ptr->portal_idx!=-1) {
+		mesh_poly=&map.portals[poly_ptr->portal_idx].mesh.meshes[poly_ptr->mesh_idx].polys[poly_ptr->poly_idx];
+        ydif=obj->pos.y-mesh_poly->box.min.y;
     }
     
 		// get bump move
@@ -372,19 +373,15 @@ bool object_bump_up(obj_type *obj,int xmove,int zmove)
 	ymove=pin_upward_movement_obj(obj,-ydif);
 	
 		// check if bump will be OK
-		
-	if (!move_obj_check_bump(obj,xmove,zmove,ymove)) return(FALSE);
+// supergumba -- need to rewrite this		
+//	if (!move_obj_check_bump(obj,xmove,zmove,ymove)) return(FALSE);
 	
 		// do bump
-	
-	obj->contact.wall_seg_idx=-1;
 	
 	obj->pos.y+=ymove;
 	obj->bump.smooth_offset+=abs(ymove);					// bump moves player up, but offset pushes them down and smoothes out the bump
 	
-	return(obj->contact.ceiling_seg_idx==-1);
-	*/
-	return(FALSE);
+	return(obj->contact.head_poly.portal_idx==-1);
 }
 
 /* =======================================================

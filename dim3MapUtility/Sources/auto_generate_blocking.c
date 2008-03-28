@@ -188,17 +188,17 @@ bool map_auto_generate_block_collision(auto_generate_settings_type *ags,int x,in
 {
 	int				blck_x,blck_z,lx,rx,tz,bz,map_x_factor,map_z_factor;
 
-	map_x_factor=(ags->map_right-ags->map_left)/max_ag_block_sz;
-	map_z_factor=(ags->map_bottom-ags->map_top)/max_ag_block_sz;
+	map_x_factor=(ags->map.right-ags->map.left)/max_ag_block_sz;
+	map_z_factor=(ags->map.bottom-ags->map.top)/max_ag_block_sz;
 
-	bz=ags->map_top;
+	bz=ags->map.top;
 
 	for (blck_z=0;blck_z!=max_ag_block_sz;blck_z++) {
 
 		tz=bz;
 		bz+=map_z_factor;
 
-		rx=ags->map_left;
+		rx=ags->map.left;
 
 		for (blck_x=0;blck_x!=max_ag_block_sz;blck_x++) {
 
