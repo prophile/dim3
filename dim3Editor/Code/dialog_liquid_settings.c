@@ -40,6 +40,9 @@ extern map_type				map;
 #define kLiquidDrownHarm					FOUR_CHAR_CODE('dhrm')
 #define kLiquidColor						FOUR_CHAR_CODE('colr')
 #define kLiquidTintAlpha					FOUR_CHAR_CODE('talh')
+#define kLiquidAlpha						FOUR_CHAR_CODE('alph')
+#define kLiquidShiftX						FOUR_CHAR_CODE('sftx')
+#define kLiquidShiftY						FOUR_CHAR_CODE('sfty')
 
 #define kLiquidButtonColor					FOUR_CHAR_CODE('colh')
 
@@ -100,8 +103,6 @@ static pascal OSStatus liquid_settings_event_proc(EventHandlerCallRef handler,Ev
 
 bool dialog_liquid_settings_run(map_liquid_type *liq)
 {
-/* supergumba
-
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
 	
@@ -111,22 +112,26 @@ bool dialog_liquid_settings_run(map_liquid_type *liq)
 
 		// set controls
 		
-	dialog_set_value(dialog_liquid_settings_wind,kLiquidSpeedAlter,0,(int)(seg->data.liquid.speed_alter*100));
+	dialog_set_value(dialog_liquid_settings_wind,kLiquidSpeedAlter,0,(int)(liq->speed_alter*100));
 	
-	dialog_set_int(dialog_liquid_settings_wind,kLiquidWaveSize,0,seg->data.liquid.wavesize);
-	dialog_set_int(dialog_liquid_settings_wind,kLiquidTideSize,0,seg->data.liquid.tidesize);
-	dialog_set_int(dialog_liquid_settings_wind,kLiquidTideRate,0,seg->data.liquid.tiderate);
-	dialog_set_combo(dialog_liquid_settings_wind,kLiquidTideDirection,0,seg->data.liquid.tidedirection);
+	dialog_set_int(dialog_liquid_settings_wind,kLiquidWaveSize,0,liq->tide.split);
+	dialog_set_int(dialog_liquid_settings_wind,kLiquidTideSize,0,liq->tide.high);
+	dialog_set_int(dialog_liquid_settings_wind,kLiquidTideRate,0,liq->tide.rate);
+	dialog_set_combo(dialog_liquid_settings_wind,kLiquidTideDirection,0,liq->tide.direction);
 	
-	dialog_set_int(dialog_liquid_settings_wind,kLiquidHarm,0,seg->data.liquid.harm);
-	dialog_set_int(dialog_liquid_settings_wind,kLiquidDrownTick,0,seg->data.liquid.drown_tick);
-	dialog_set_int(dialog_liquid_settings_wind,kLiquidDrownHarm,0,seg->data.liquid.drown_harm);
+	dialog_set_int(dialog_liquid_settings_wind,kLiquidHarm,0,liq->harm.in_harm);
+	dialog_set_int(dialog_liquid_settings_wind,kLiquidDrownTick,0,liq->harm.drown_tick);
+	dialog_set_int(dialog_liquid_settings_wind,kLiquidDrownHarm,0,liq->harm.drown_harm);
 	
-	dialog_liquid_settings_color.red=(int)(seg->data.liquid.col.r*(float)0xFFFF);
-	dialog_liquid_settings_color.green=(int)(seg->data.liquid.col.g*(float)0xFFFF);
-	dialog_liquid_settings_color.blue=(int)(seg->data.liquid.col.b*(float)0xFFFF);
+	dialog_liquid_settings_color.red=(int)(liq->col.r*(float)0xFFFF);
+	dialog_liquid_settings_color.green=(int)(liq->col.g*(float)0xFFFF);
+	dialog_liquid_settings_color.blue=(int)(liq->col.b*(float)0xFFFF);
 	
-	dialog_set_float(dialog_liquid_settings_wind,kLiquidTintAlpha,0,seg->data.liquid.tint_alpha);
+	dialog_set_float(dialog_liquid_settings_wind,kLiquidTintAlpha,0,liq->tint_alpha);
+	
+	dialog_set_float(dialog_liquid_settings_wind,kLiquidAlpha,0,liq->alpha);
+	dialog_set_float(dialog_liquid_settings_wind,kLiquidShiftX,0,liq->x_shift);
+	dialog_set_float(dialog_liquid_settings_wind,kLiquidShiftY,0,liq->y_shift);
 	
 		// show window
 	
@@ -149,22 +154,26 @@ bool dialog_liquid_settings_run(map_liquid_type *liq)
 		// dialog to data
 		
 	if (!dialog_liquid_settings_cancel) {
-		seg->data.liquid.speed_alter=((float)dialog_get_value(dialog_liquid_settings_wind,kLiquidSpeedAlter,0))/100.0f;
+		liq->speed_alter=((float)dialog_get_value(dialog_liquid_settings_wind,kLiquidSpeedAlter,0))/100.0f;
 		
-		seg->data.liquid.wavesize=dialog_get_int(dialog_liquid_settings_wind,kLiquidWaveSize,0);
-		seg->data.liquid.tidesize=dialog_get_int(dialog_liquid_settings_wind,kLiquidTideSize,0);
-		seg->data.liquid.tiderate=dialog_get_int(dialog_liquid_settings_wind,kLiquidTideRate,0);
-		seg->data.liquid.tidedirection=dialog_get_combo(dialog_liquid_settings_wind,kLiquidTideDirection,0);
+		liq->tide.split=dialog_get_int(dialog_liquid_settings_wind,kLiquidWaveSize,0);
+		liq->tide.high=dialog_get_int(dialog_liquid_settings_wind,kLiquidTideSize,0);
+		liq->tide.rate=dialog_get_int(dialog_liquid_settings_wind,kLiquidTideRate,0);
+		liq->tide.direction=dialog_get_combo(dialog_liquid_settings_wind,kLiquidTideDirection,0);
 		
-		seg->data.liquid.harm=dialog_get_int(dialog_liquid_settings_wind,kLiquidHarm,0);
-		seg->data.liquid.drown_tick=dialog_get_int(dialog_liquid_settings_wind,kLiquidDrownTick,0);
-		seg->data.liquid.drown_harm=dialog_get_int(dialog_liquid_settings_wind,kLiquidDrownHarm,0);
+		liq->harm.in_harm=dialog_get_int(dialog_liquid_settings_wind,kLiquidHarm,0);
+		liq->harm.drown_tick=dialog_get_int(dialog_liquid_settings_wind,kLiquidDrownTick,0);
+		liq->harm.drown_harm=dialog_get_int(dialog_liquid_settings_wind,kLiquidDrownHarm,0);
 		
-		seg->data.liquid.col.r=((float)dialog_liquid_settings_color.red/(float)0xFFFF);
-		seg->data.liquid.col.g=((float)dialog_liquid_settings_color.green/(float)0xFFFF);
-		seg->data.liquid.col.b=((float)dialog_liquid_settings_color.blue/(float)0xFFFF);
+		liq->col.r=((float)dialog_liquid_settings_color.red/(float)0xFFFF);
+		liq->col.g=((float)dialog_liquid_settings_color.green/(float)0xFFFF);
+		liq->col.b=((float)dialog_liquid_settings_color.blue/(float)0xFFFF);
 		
-		seg->data.liquid.tint_alpha=dialog_get_float(dialog_liquid_settings_wind,kLiquidTintAlpha,0);
+		liq->tint_alpha=dialog_get_float(dialog_liquid_settings_wind,kLiquidTintAlpha,0);
+		
+		liq->alpha=dialog_get_float(dialog_liquid_settings_wind,kLiquidAlpha,0);
+		liq->x_shift=dialog_get_float(dialog_liquid_settings_wind,kLiquidShiftX,0);
+		liq->y_shift=dialog_get_float(dialog_liquid_settings_wind,kLiquidShiftY,0);
 	}
 
 		// close window
@@ -172,7 +181,5 @@ bool dialog_liquid_settings_run(map_liquid_type *liq)
 	DisposeWindow(dialog_liquid_settings_wind);
 	
 	return(!dialog_liquid_settings_cancel);
-	*/
-	return(TRUE);
 }
 

@@ -178,6 +178,7 @@ void portal_set_spot(int rn,int x,int z)
 
 void portal_get_pixelbox(int rn,Rect *box)
 {
+/* supergumba -- delete
 	int			lx,rx,tz,bz;
 	
 	portal_get_dimension(rn,&lx,&rx,&tz,&bz);
@@ -186,6 +187,7 @@ void portal_get_pixelbox(int rn,Rect *box)
 	top_view_map_to_pane(&rx,&bz);
 
 	SetRect(box,lx,tz,rx,bz);
+	*/
 }
 	
 bool portal_point_in_box(int rn,Point pt)

@@ -683,7 +683,7 @@ void main_wind_open(void)
 	
 	swap_panel_forward=swap_panel_side=swap_panel_top=FALSE;
 	
-	drag_mode=drag_mode_vertex;
+	drag_mode=drag_mode_mesh;
 	grid_mode=grid_mode_small;
 	
         // events
@@ -1667,7 +1667,7 @@ void main_wind_tool_fill_group_combo(void)
 void main_wind_tool_default(void)
 {
     vertex_mode=vertex_mode_none;
-	drag_mode=drag_mode_vertex;
+	drag_mode=drag_mode_mesh;
 	grid_mode=grid_mode_small;
 	
 	dp_primitive=TRUE;
@@ -1683,15 +1683,23 @@ void main_wind_tool_default(void)
 
 void main_wind_tool_fix_enable(void)
 {
-	int			group_idx,type,portal_idx,mesh_idx,poly_idx;
+	int			group_idx,type,portal_idx,main_idx,sub_idx;
 	
 		// group combo
 		
 	group_idx=-1;
 	
 	if (select_count()==1) {
-		select_get(0,&type,&portal_idx,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) group_idx=map.portals[portal_idx].mesh.meshes[mesh_idx].group_idx;
+		select_get(0,&type,&portal_idx,&main_idx,&sub_idx);
+		
+		switch (type) {
+			case mesh_piece:
+				group_idx=map.portals[portal_idx].mesh.meshes[main_idx].group_idx;
+				break;
+			case liquid_piece:
+				group_idx=map.portals[portal_idx].liquid.liquids[main_idx].group_idx;
+				break;
+		}
 	}
 	
 	if (group_idx==-1) {

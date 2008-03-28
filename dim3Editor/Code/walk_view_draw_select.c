@@ -172,6 +172,55 @@ void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
 
 /* =======================================================
 
+      Draw Selection for Liquid
+      
+======================================================= */
+
+void walk_view_draw_select_liquid_get_grow_handles(int rn,int liquid_idx,int *px,int *py,int *pz)
+{
+	portal_type				*portal;
+	map_liquid_type			*liq;
+	
+	portal=&map.portals[rn];
+	liq=&portal->liquid.liquids[liquid_idx];
+	
+	px[0]=px[3]=liq->lft;
+	px[1]=px[2]=liq->rgt;
+	pz[0]=pz[1]=liq->top;
+	pz[2]=pz[3]=liq->bot;
+	py[0]=py[1]=py[2]=py[3]=liq->y;
+}
+
+void walk_view_draw_select_liquid(int rn,d3pnt *cpt,int liquid_idx)
+{
+	int						n,x,y,z,px[4],py[4],pz[4];
+	portal_type				*portal;
+	map_liquid_type			*liq;
+	
+	portal=&map.portals[rn];
+	liq=&portal->liquid.liquids[liquid_idx];
+	
+	glEnable(GL_DEPTH_TEST);
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glPointSize(walk_view_handle_size);
+		
+	walk_view_draw_select_liquid_get_grow_handles(rn,liquid_idx,px,py,pz);
+		
+	glBegin(GL_POINTS);
+
+	for (n=0;n!=4;n++) {
+		x=(px[n]+portal->x)-cpt->x;
+		y=py[n]-cpt->y;
+		z=cpt->z-(pz[n]+portal->z);
+		glVertex3i(x,y,z);
+	}
+
+	glEnd();
+}
+
+/* =======================================================
+
       Draw Selection for Sprite
       
 ======================================================= */
@@ -276,6 +325,10 @@ void walk_view_draw_select_portal(int rn,d3pnt *cpt)
 		
 			case mesh_piece:
 				walk_view_draw_select_mesh(rn,cpt,main_idx,sub_idx);
+				break;
+				
+			case liquid_piece:
+				walk_view_draw_select_liquid(rn,cpt,main_idx);
 				break;
 				
 			case node_piece:

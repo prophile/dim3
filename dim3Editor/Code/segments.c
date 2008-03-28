@@ -80,6 +80,8 @@ void poly_find_bound_high(int ptsz,int *y,int *top,int *bot)
 
 bool segment_is_floor_ceiling_square(int rn,fc_segment_data *fc,Rect *box)
 {
+/* supergumba -- delete
+
 	int			lft,rgt,top,bot;
 	portal_type	*portal;
 	
@@ -132,7 +134,7 @@ bool segment_is_floor_ceiling_square(int rn,fc_segment_data *fc,Rect *box)
 		box->bottom=top;
 		box->top=bot;
 	}
-	
+	*/
 	return(TRUE);
 }
 

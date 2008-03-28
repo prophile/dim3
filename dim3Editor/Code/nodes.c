@@ -40,6 +40,7 @@ int						link_dist[max_node][max_node_link];
 
 int node_link_find_node_by_point(Point pt)
 {
+/* supergumba -- need to work on connecting nodes
     int			i;
     Rect		box;
 
@@ -47,7 +48,7 @@ int node_link_find_node_by_point(Point pt)
 		top_view_make_rect_by_pos(&map.nodes[i].pos,5,&box);
 		if (PtInRect(pt,&box)) return(i);
 	}
-	
+	*/
     return(-1);
 }
 

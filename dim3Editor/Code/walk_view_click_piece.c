@@ -370,6 +370,19 @@ bool walk_view_cube_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	return(hit||walk_view_quad_click_index(view_setup,click_pt,portal,px,py,pz,hit_z));
 }
 
+bool walk_view_liquid_click(editor_3D_view_setup *view_setup,d3pnt *click_pt,portal_type *portal,map_liquid_type *liq,int *hit_z)
+{
+	int				px[4],py[4],pz[4];
+
+	px[0]=px[3]=(liq->lft+portal->x)-view_setup->cpt.x;
+	px[1]=px[2]=(liq->rgt+portal->x)-view_setup->cpt.x;
+	py[0]=py[1]=py[2]=py[3]=liq->y-view_setup->cpt.y;
+	pz[0]=pz[1]=view_setup->cpt.z-(liq->top+portal->z);
+	pz[2]=pz[3]=view_setup->cpt.z-(liq->bot+portal->z);
+	
+	return(walk_view_quad_click_index(view_setup,click_pt,portal,px,py,pz,hit_z));
+}
+
 /* =======================================================
 
       View Piece Get Clicked Index
@@ -425,6 +438,23 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 			}
 		
 			mesh++;
+		}
+		
+		if (dp_liquid) {
+		
+				// portal liquids
+				
+			for (n=0;n!=portal->liquid.nliquid;n++) {
+				if (walk_view_liquid_click(view_setup,click_pt,portal,&portal->liquid.liquids[n],&fz)) {
+					if (fz<hit_z) {
+						hit_z=fz;
+						*type=liquid_piece;
+						*portal_idx=i;
+						*main_idx=n;
+						*sub_idx=-1;
+					}
+				}
+			}
 		}
 		
 		if (dp_object) {
@@ -566,20 +596,25 @@ void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,boo
 		
 	walk_view_mesh_click_index(view_setup,pt,&type,&portal_idx,&main_idx,&sub_idx,FALSE);
 	
-		// if a selection, make sure in right portal
-		
+		// if a selection, make sure right portal is selected
+				
 	if (type!=-1) cr=portal_idx;
 	
-		// add to selection
+		// clear or add to selection
 		
-	if (!main_wind_shift_down()) {
-		if (!select_check(type,portal_idx,main_idx,sub_idx)) {			// keep selection if selecting an already selected piece
-			select_clear();	
-			select_add(type,portal_idx,main_idx,sub_idx);
-		}
+	if (type==-1) {
+		if (!main_wind_shift_down()) select_clear();
 	}
 	else {
-		select_flip(type,portal_idx,main_idx,sub_idx);
+		if (!main_wind_shift_down()) {
+			if (!select_check(type,portal_idx,main_idx,sub_idx)) {			// keep selection if selecting an already selected piece
+				select_clear();	
+				select_add(type,portal_idx,main_idx,sub_idx);
+			}
+		}
+		else {
+			select_flip(type,portal_idx,main_idx,sub_idx);
+		}
 	}
 	
 		// redraw
@@ -655,7 +690,7 @@ void walk_view_click_info(void)
 void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool dblclick)
 {
 		// put click within box
-		
+	
 	pt->x-=view_setup->box.left;
 	pt->y-=view_setup->box.top;
 	
@@ -676,6 +711,10 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 		// select mesh/polygon
 		
 	walk_view_click_piece_normal(view_setup,pt,dblclick);
+	
+		// return if no selection
+		
+	if (select_count()==0) return;
 
 		// double-click info
 		

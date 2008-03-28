@@ -96,8 +96,10 @@ void group_delete(void)
 
 void group_clear(void)
 {
-	int					n,group_idx;
-	segment_type		*seg;
+	int					n,k,group_idx;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+	map_liquid_type		*liq;
 	
 		// get current group
 		
@@ -106,17 +108,27 @@ void group_clear(void)
 	group_idx-=3;
 	if (group_idx<0) return;
 	
-		// clear group from segments
+		// clear group from meshes and liquids
+		
+	portal=map.portals;
 
-	seg=map.segments;
-
-	for (n=0;n!=map.nsegment;n++) {
-		if (seg->group_idx!=-1) {
-			if (seg->group_idx==group_idx) {
-				seg->group_idx=-1;
-			}
+	for (n=0;n!=map.nportal;n++) {
+	
+		mesh=portal->mesh.meshes;
+		
+		for (k=0;k!=portal->mesh.nmesh;k++) {
+			if (mesh->group_idx==group_idx) mesh->group_idx=-1;
+			mesh++;
 		}
-		seg++;
+		
+		liq=portal->liquid.liquids;
+		
+		for (k=0;k!=portal->liquid.nliquid;k++) {
+			if (liq->group_idx==group_idx) liq->group_idx=-1;
+			liq++;
+		}
+		
+		portal++;
 	}
 	
 	main_wind_tool_fill_group_combo();
@@ -133,6 +145,7 @@ int group_count(int group_idx)
 	int					n,k,cnt;
 	portal_type			*portal;
 	map_mesh_type		*mesh;
+	map_liquid_type		*liq;
 	
 	cnt=0;
 	
@@ -145,6 +158,13 @@ int group_count(int group_idx)
 		for (k=0;k!=portal->mesh.nmesh;k++) {
 			if (mesh->group_idx==group_idx) cnt++;
 			mesh++;
+		}
+		
+		liq=portal->liquid.liquids;
+		
+		for (k=0;k!=portal->liquid.nliquid;k++) {
+			if (liq->group_idx==group_idx) cnt++;
+			liq++;
 		}
 		
 		portal++;
@@ -161,13 +181,24 @@ int group_count(int group_idx)
 
 void group_set(int group_idx)
 {
-	int				n,sel_count,type,portal_idx,mesh_idx,poly_idx;
+	int				n,sel_count,type,portal_idx,main_idx,sub_idx;
 	
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map.portals[portal_idx].mesh.meshes[mesh_idx].group_idx=group_idx;
+		select_get(n,&type,&portal_idx,&main_idx,&sub_idx);
+		
+		switch (type) {
+		
+			case mesh_piece:
+				map.portals[portal_idx].mesh.meshes[main_idx].group_idx=group_idx;
+				break;
+				
+			case liquid_piece:
+				map.portals[portal_idx].liquid.liquids[main_idx].group_idx=group_idx;
+				break;
+				
+		}
 	}
 	
 	main_wind_tool_fill_group_combo();

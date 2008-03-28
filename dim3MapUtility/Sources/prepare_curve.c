@@ -127,7 +127,6 @@ void map_prepare_draw_frwd_4_curve(map_type *map,segment_type *seg)
         curve_fc->ptsz=curve_draw->ptsz=4;
 		
         curve_seg->curve=cv_none;
-//        map_prepare_set_fc_segment_square(curve_seg);
 
         r=r2;
     }
@@ -209,7 +208,6 @@ void map_prepare_draw_frwd_3_curve(map_type *map,segment_type *seg)
         curve_fc->ptsz=curve_draw->ptsz=4;
 		
         curve_seg->curve=cv_none;
-//        map_prepare_set_fc_segment_square(curve_seg);
         
         r=r2;
     }
@@ -291,7 +289,6 @@ void map_prepare_draw_bkwd_4_curve(map_type *map,segment_type *seg)
         curve_fc->ptsz=curve_draw->ptsz=4;
 		
         curve_seg->curve=cv_none;
-//        map_prepare_set_fc_segment_square(curve_seg);
         
         r=r2;
     }
@@ -373,7 +370,6 @@ void map_prepare_draw_bkwd_3_curve(map_type *map,segment_type *seg)
         curve_fc->ptsz=curve_draw->ptsz=4;
 		
         curve_seg->curve=cv_none;
-//        map_prepare_set_fc_segment_square(curve_seg);
         
         r=r2;
     }
@@ -643,43 +639,18 @@ void map_prepare_create_wall_top_curve(map_type *map,segment_type *seg,long lx,l
         wall->z[0]=wall->z[1]=wall->lz=lz+(int)(cos(r)*dz);
         wall->z[2]=wall->z[3]=wall->rz=lz+(int)(cos(r2)*dz);
         wall->y[0]=wall->y[3]=wall->by=by;
-        wall->y[1]=wall->y[2]=wall->ty=by-(int)(sin(r)*dy);
+        wall->y[1]=wall->by=by-(int)(sin(r)*dy);
+        wall->y[2]=wall->ty=by-(int)(sin(r2)*dy);
             
         draw->gx[0]=draw->gx[1]=x_txtoff+(float)(cos(r)*x_txtfact);
         draw->gx[2]=draw->gx[3]=x_txtoff+(float)(cos(r2)*x_txtfact);
         draw->gy[0]=draw->gy[3]=y_txtoff+y_txtfact;
-        draw->gy[1]=draw->gy[2]=(y_txtoff+y_txtfact)-(float)(sin(r)*y_txtfact);
-
+		draw->gy[1]=(y_txtoff+y_txtfact)-(float)(sin(r)*y_txtfact);
+        draw->gy[2]=(y_txtoff+y_txtfact)-(float)(sin(r2)*y_txtfact);
+ 
         wall->ptsz=draw->ptsz=4;
         curve_seg->clip=wc_none;
 
-        if (map->nsegment>=max_segment) break;
-    
-        curve_seg=&map->segments[map->nsegment];
-		
-        memmove(curve_seg,&org_seg,sizeof(segment_type));
-		curve_seg->simple_tessel=TRUE;
-
-        wall=&curve_seg->data.wall;
-		draw=&curve_seg->draw;
-        map->nsegment++;
-
-        wall->x[0]=wall->x[1]=wall->lx=lx+(int)(cos(r2)*dx);
-        wall->x[2]=wall->rx=lx+(int)(cos(r)*dx);
-        wall->z[0]=wall->z[1]=wall->lz=lz+(int)(cos(r2)*dz);
-        wall->z[2]=wall->rz=lz+(int)(cos(r)*dz);
-        
-        wall->y[1]=wall->ty=by-(int)(sin(r2)*dy);
-        wall->y[0]=wall->y[2]=wall->by=by-(int)(sin(r)*dy);
-        
-        draw->gx[0]=draw->gx[1]=x_txtoff+(float)(cos(r2)*x_txtfact);
-        draw->gx[2]=x_txtoff+(float)(cos(r)*x_txtfact);
-        draw->gy[1]=(y_txtoff+y_txtfact)-(float)(sin(r2)*y_txtfact);
-        draw->gy[0]=draw->gy[2]=(y_txtoff+y_txtfact)-(float)(sin(r)*y_txtfact);
-    
-        wall->ptsz=draw->ptsz=3;
-        curve_seg->clip=wc_none;
-        
         r=r2;
     }
 }
@@ -725,43 +696,19 @@ void map_prepare_create_wall_top_arch(map_type *map,segment_type *seg,long lx,lo
         wall->x[2]=wall->x[3]=wall->rx=lx+(int)(cos(r2)*dx);
         wall->z[0]=wall->z[1]=wall->lz=lz+(int)(cos(r)*dz);
         wall->z[2]=wall->z[3]=wall->rz=lz+(int)(cos(r2)*dz);
-        wall->y[0]=wall->y[3]=wall->by=by-(int)(sin(r2)*dy);
+		wall->y[0]=wall->by=by-(int)(sin(r)*dy);
         wall->y[1]=wall->y[2]=wall->ty=ty;
-            
+        wall->y[3]=wall->ty=by-(int)(sin(r2)*dy);
+          
         draw->gx[0]=draw->gx[1]=x_txtoff+(float)(cos(r)*x_txtfact);
         draw->gx[2]=draw->gx[3]=x_txtoff+(float)(cos(r2)*x_txtfact);
-        draw->gy[0]=draw->gy[3]=(y_txtoff+y_txtfact)-(float)(sin(r2)*y_txtfact);
+        draw->gy[0]=(y_txtoff+y_txtfact)-(float)(sin(r)*y_txtfact);
         draw->gy[1]=draw->gy[2]=y_txtoff;
+        draw->gy[3]=(y_txtoff+y_txtfact)-(float)(sin(r2)*y_txtfact);
 
         wall->ptsz=draw->ptsz=4;
         curve_seg->clip=wc_none;
-    
-        if (map->nsegment>=max_segment) break;
-    
-        curve_seg=&map->segments[map->nsegment];
-        memmove(curve_seg,&org_seg,sizeof(segment_type));
-		curve_seg->simple_tessel=TRUE;
-
-        wall=&curve_seg->data.wall;
-		draw=&curve_seg->draw;
-		map->nsegment++;
-        
-        wall->x[0]=wall->x[1]=wall->lx=lx+(int)(cos(r)*dx);
-        wall->x[2]=wall->rx=lx+(int)(cos(r2)*dx);
-        wall->z[0]=wall->z[1]=wall->lz=lz+(int)(cos(r)*dz);
-        wall->z[2]=wall->rz=lz+(int)(cos(r2)*dz);
-        
-        wall->y[1]=wall->by=by-(int)(sin(r)*dy);
-        wall->y[0]=wall->y[2]=wall->ty=by-(int)(sin(r2)*dy);
-        
-        draw->gx[0]=draw->gx[1]=x_txtoff+(float)(cos(r)*x_txtfact);
-        draw->gx[2]=x_txtoff+(float)(cos(r2)*x_txtfact);
-        draw->gy[1]=(y_txtoff+y_txtfact)-(float)(sin(r)*y_txtfact);
-        draw->gy[0]=draw->gy[2]=(y_txtoff+y_txtfact)-(float)(sin(r2)*y_txtfact);
-
-        wall->ptsz=draw->ptsz=3;
-        curve_seg->clip=wc_none;
-
+	
         r=r2;
     }
 }
@@ -808,43 +755,18 @@ void map_prepare_create_wall_bottom_curve(map_type *map,segment_type *seg,long l
         wall->z[0]=wall->z[1]=wall->lz=rz-(int)(cos(r)*dz);
         wall->z[2]=wall->z[3]=wall->rz=rz-(int)(cos(r2)*dz);
         wall->y[0]=wall->y[3]=wall->by=ty;
-        wall->y[1]=wall->y[2]=wall->ty=ty+(int)(sin(r)*dy);
-            
+        wall->y[1]=wall->by=ty+(int)(sin(r)*dy);
+		wall->y[2]=wall->ty=ty+(int)(sin(r2)*dy);
+           
         draw->gx[0]=draw->gx[1]=x_txtoff-(float)(cos(r)*x_txtfact);
         draw->gx[2]=draw->gx[3]=x_txtoff-(float)(cos(r2)*x_txtfact);
         draw->gy[0]=draw->gy[3]=y_txtoff+y_txtfact;
-        draw->gy[1]=draw->gy[2]=(y_txtoff+y_txtfact)+(float)(sin(r)*y_txtfact);
+        draw->gy[1]=(y_txtoff+y_txtfact)+(float)(sin(r)*y_txtfact);
+        draw->gy[2]=(y_txtoff+y_txtfact)+(float)(sin(r2)*y_txtfact);
 
         wall->ptsz=draw->ptsz=4;
         curve_seg->clip=wc_none;
 
-        if (map->nsegment>=max_segment) break;
-    
-        curve_seg=&map->segments[map->nsegment];
-		
-        memmove(curve_seg,&org_seg,sizeof(segment_type));
-		curve_seg->simple_tessel=TRUE;
-
-        wall=&curve_seg->data.wall;
- 		draw=&curve_seg->draw;
-		map->nsegment++;
-
-        wall->x[0]=wall->x[1]=wall->lx=rx-(int)(cos(r2)*dx);
-        wall->x[2]=wall->rx=rx-(int)(cos(r)*dx);
-        wall->z[0]=wall->z[1]=wall->lz=rz-(int)(cos(r2)*dz);
-        wall->z[2]=wall->rz=rz-(int)(cos(r)*dz);
-        
-        wall->y[1]=wall->ty=ty+(int)(sin(r2)*dy);
-        wall->y[0]=wall->y[2]=wall->by=ty+(int)(sin(r)*dy);
-        
-        draw->gx[0]=draw->gx[1]=x_txtoff-(float)(cos(r2)*x_txtfact);
-        draw->gx[2]=x_txtoff-(float)(cos(r)*x_txtfact);
-        draw->gy[1]=(y_txtoff+y_txtfact)+(float)(sin(r2)*y_txtfact);
-        draw->gy[0]=draw->gy[2]=(y_txtoff+y_txtfact)+(float)(sin(r)*y_txtfact);
-    
-        wall->ptsz=draw->ptsz=3;
-        curve_seg->clip=wc_none;
-        
         r=r2;
     }
 }
@@ -858,7 +780,7 @@ void map_prepare_create_wall_bottom_arch(map_type *map,segment_type *seg,long lx
 	segment_draw_type	*draw;
     wall_segment_data	*wall;
 	segment_type		org_seg;
-    
+	
     r=0;
     
     dx=(float)(rx-lx);
@@ -890,41 +812,17 @@ void map_prepare_create_wall_bottom_arch(map_type *map,segment_type *seg,long lx
         wall->x[2]=wall->x[3]=wall->rx=rx-(int)(cos(r2)*dx);
         wall->z[0]=wall->z[1]=wall->lz=rz-(int)(cos(r)*dz);
         wall->z[2]=wall->z[3]=wall->rz=rz-(int)(cos(r2)*dz);
-        wall->y[0]=wall->y[3]=wall->by=ty+(int)(sin(r2)*dy);
+		wall->y[0]=wall->by=ty+(int)(sin(r)*dy);
         wall->y[1]=wall->y[2]=wall->ty=by;
-            
+        wall->y[3]=wall->ty=ty+(int)(sin(r2)*dy);
+          
         draw->gx[0]=draw->gx[1]=(x_txtoff+x_txtfact)-(float)(cos(r)*x_txtfact);
         draw->gx[2]=draw->gx[3]=(x_txtoff+x_txtfact)-(float)(cos(r2)*x_txtfact);
-        draw->gy[0]=draw->gy[3]=y_txtoff+(float)(sin(r2)*y_txtfact);
+        draw->gy[0]=y_txtoff+(float)(sin(r)*y_txtfact);
         draw->gy[1]=draw->gy[2]=y_txtoff+y_txtfact;
+        draw->gy[3]=y_txtoff+(float)(sin(r2)*y_txtfact);
 
         wall->ptsz=draw->ptsz=4;
-        curve_seg->clip=wc_none;
-    
-        if (map->nsegment>=max_segment) break;
-    
-        curve_seg=&map->segments[map->nsegment];
-        memmove(curve_seg,&org_seg,sizeof(segment_type));
-		curve_seg->simple_tessel=TRUE;
-
-        wall=&curve_seg->data.wall;
-		draw=&curve_seg->draw;
-		map->nsegment++;
-        
-        wall->x[0]=wall->x[1]=wall->lx=rx-(int)(cos(r)*dx);
-        wall->x[2]=wall->rx=rx-(int)(cos(r2)*dx);
-        wall->z[0]=wall->z[1]=wall->lz=rz-(int)(cos(r)*dz);
-        wall->z[2]=wall->rz=rz-(int)(cos(r2)*dz);
-        
-        wall->y[1]=wall->by=ty+(int)(sin(r)*dy);
-        wall->y[0]=wall->y[2]=wall->ty=ty+(int)(sin(r2)*dy);
-        
-        draw->gx[0]=draw->gx[1]=(x_txtoff+x_txtfact)-(float)(cos(r)*x_txtfact);
-        draw->gx[2]=(x_txtoff+x_txtfact)-(float)(cos(r2)*x_txtfact);
-        draw->gy[1]=y_txtoff+(float)(sin(r)*y_txtfact);
-        draw->gy[0]=draw->gy[2]=y_txtoff+(float)(sin(r2)*y_txtfact);
-
-        wall->ptsz=draw->ptsz=3;
         curve_seg->clip=wc_none;
 
         r=r2;
@@ -961,16 +859,16 @@ void map_prepare_create_wall_clip(map_type *map,segment_type *seg)
 
     switch (seg->clip) {
         case wc_top_curve:
-            map_prepare_create_wall_top_curve(map,seg,lx,lz,rx,rz,ty,by,x_txtoff,x_txtfact,y_txtoff,y_txtfact);
+			map_prepare_create_wall_top_curve(map,seg,lx,lz,rx,rz,ty,by,x_txtoff,x_txtfact,y_txtoff,y_txtfact);
             break;
         case wc_top_arch:
-            map_prepare_create_wall_top_arch(map,seg,lx,lz,rx,rz,ty,by,x_txtoff,x_txtfact,y_txtoff,y_txtfact);
+			map_prepare_create_wall_top_arch(map,seg,lx,lz,rx,rz,ty,by,x_txtoff,x_txtfact,y_txtoff,y_txtfact);
             break;
         case wc_bottom_curve:
-            map_prepare_create_wall_bottom_curve(map,seg,lx,lz,rx,rz,ty,by,x_txtoff,x_txtfact,y_txtoff,y_txtfact);
+			map_prepare_create_wall_bottom_curve(map,seg,lx,lz,rx,rz,ty,by,x_txtoff,x_txtfact,y_txtoff,y_txtfact);
             break;
         case wc_bottom_arch:
-            map_prepare_create_wall_bottom_arch(map,seg,lx,lz,rx,rz,ty,by,x_txtoff,x_txtfact,y_txtoff,y_txtfact);
+			map_prepare_create_wall_bottom_arch(map,seg,lx,lz,rx,rz,ty,by,x_txtoff,x_txtfact,y_txtoff,y_txtfact);
             break;
         case wc_top_curve_arch:
             my=(ty+by)/2;

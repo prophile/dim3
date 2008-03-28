@@ -532,10 +532,11 @@ bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
     if (select_count()!=1) return(FALSE);
 	
 	select_get(0,&type,&portal_idx,&main_idx,&sub_idx);
-	if (type==mesh_piece) return(FALSE);
 	
 		// get item pos
 		
+	pos=NULL;
+	
 	switch (type) {
 		case node_piece:
 			pos=&map.nodes[main_idx].pos;
@@ -556,6 +557,8 @@ bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 			pos=&map.particles[main_idx].pos;
 			break;
 	}
+	
+	if (pos==NULL) return(FALSE);
 		
 		// drag item
 	
