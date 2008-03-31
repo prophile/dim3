@@ -30,16 +30,16 @@ and can be sold or given away.
 
 extern map_type				map;
 
-#define kPortalXSize								FOUR_CHAR_CODE('xsiz')
-#define kPortalZSize								FOUR_CHAR_CODE('zsiz')
-#define kPortalDivisions							FOUR_CHAR_CODE('divv')
-#define kPortalHeight								FOUR_CHAR_CODE('high')
-#define kPortalFloors								FOUR_CHAR_CODE('aflr')
-#define kPortalCeilings								FOUR_CHAR_CODE('aclg')
-#define kPortalWalls								FOUR_CHAR_CODE('awal')
+#define kPortalXSize					FOUR_CHAR_CODE('xsiz')
+#define kPortalYSize					FOUR_CHAR_CODE('ysiz')
+#define kPortalZSize					FOUR_CHAR_CODE('zsiz')
 
-bool						dialog_new_portal_cancel;
-WindowRef					dialog_new_portal_wind;
+#define kPortalMesh						FOUR_CHAR_CODE('mesh')
+#define kPortalEditButton				FOUR_CHAR_CODE('edit')
+#define kPortalClearButton				FOUR_CHAR_CODE('cler')
+
+bool									dialog_new_portal_cancel;
+WindowRef								dialog_new_portal_wind;
 
 /* =======================================================
 
@@ -49,6 +49,7 @@ WindowRef					dialog_new_portal_wind;
 
 static pascal OSStatus portal_setting_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
+	char			mesh_name[file_str_len];
 	HICommand		cmd;
 	
 	switch (GetEventKind(event)) {
@@ -57,6 +58,18 @@ static pascal OSStatus portal_setting_event_proc(EventHandlerCallRef handler,Eve
 			GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
 			
 			switch (cmd.commandID) {
+			
+				case kPortalEditButton:
+					if (dialog_choose_library_object_run(mesh_name)) {
+						dialog_set_text(dialog_new_portal_wind,kPortalMesh,0,mesh_name);
+						dialog_redraw(dialog_new_portal_wind,kPortalMesh,0);
+					}
+					return(noErr);
+					
+				case kPortalClearButton:
+					dialog_set_text(dialog_new_portal_wind,kPortalMesh,0,NULL);
+					dialog_redraw(dialog_new_portal_wind,kPortalMesh,0);
+					return(noErr);
 				
 				case kHICommandCancel:
 					dialog_new_portal_cancel=TRUE;
@@ -82,7 +95,7 @@ static pascal OSStatus portal_setting_event_proc(EventHandlerCallRef handler,Eve
       
 ======================================================= */
 
-bool dialog_new_portal_run(int *x_size,int *z_size,bool *floor_on,bool *ceiling_on,bool *wall_on,int *div,int *high)
+bool dialog_new_portal_run(int *x_size,int *y_size,int *z_size,char *mesh_name)
 {
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
@@ -94,12 +107,10 @@ bool dialog_new_portal_run(int *x_size,int *z_size,bool *floor_on,bool *ceiling_
 		// set controls
 		
 	dialog_set_int(dialog_new_portal_wind,kPortalXSize,0,15000);
+	dialog_set_int(dialog_new_portal_wind,kPortalYSize,0,8000);
 	dialog_set_int(dialog_new_portal_wind,kPortalZSize,0,15000);
-	dialog_set_int(dialog_new_portal_wind,kPortalDivisions,0,5);
-	dialog_set_int(dialog_new_portal_wind,kPortalHeight,0,20);
-	dialog_set_boolean(dialog_new_portal_wind,kPortalFloors,0,TRUE);
-	dialog_set_boolean(dialog_new_portal_wind,kPortalCeilings,0,FALSE);
-	dialog_set_boolean(dialog_new_portal_wind,kPortalWalls,0,TRUE);
+	
+	dialog_set_text(dialog_new_portal_wind,kPortalMesh,0,NULL);
 	
 		// show window
 	
@@ -119,12 +130,9 @@ bool dialog_new_portal_run(int *x_size,int *z_size,bool *floor_on,bool *ceiling_
 		
 	if (!dialog_new_portal_cancel) {
 		*x_size=dialog_get_int(dialog_new_portal_wind,kPortalXSize,0);
+		*y_size=dialog_get_int(dialog_new_portal_wind,kPortalYSize,0);
 		*z_size=dialog_get_int(dialog_new_portal_wind,kPortalZSize,0);
-		*div=dialog_get_int(dialog_new_portal_wind,kPortalDivisions,0);
-		*high=dialog_get_int(dialog_new_portal_wind,kPortalHeight,0);
-		*floor_on=dialog_get_boolean(dialog_new_portal_wind,kPortalFloors,0);
-		*ceiling_on=dialog_get_boolean(dialog_new_portal_wind,kPortalCeilings,0);
-		*wall_on=dialog_get_boolean(dialog_new_portal_wind,kPortalWalls,0);
+		dialog_get_text(dialog_new_portal_wind,kPortalMesh,0,mesh_name,file_str_len);
 	}
 
 		// close window

@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit ÒCreated with dim3 TechnologyÓ is given on a single
+2. This credit â€œCreated with dim3 Technologyâ€ is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -184,6 +184,41 @@ void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool do_port
 		pt->z+=z;
 		pt++;
 	}
+	
+		// move all poly boxes
+		
+	npoly=mesh->npoly;
+	poly=mesh->polys;
+	
+	for (n=0;n!=npoly;n++) {
+		poly->box.min.x+=x;
+		poly->box.min.y+=y;
+		poly->box.min.z+=z;
+		
+		poly->box.max.x+=x;
+		poly->box.max.y+=y;
+		poly->box.max.z+=z;
+		
+		poly->box.mid.x+=x;
+		poly->box.mid.y+=y;
+		poly->box.mid.z+=z;
+	
+		poly++;
+	}
+	
+		// move mesh box
+		
+	mesh->box.min.x+=x;
+	mesh->box.min.y+=y;
+	mesh->box.min.z+=z;
+	
+	mesh->box.max.x+=x;
+	mesh->box.max.y+=y;
+	mesh->box.max.z+=z;
+	
+	mesh->box.mid.x+=x;
+	mesh->box.mid.y+=y;
+	mesh->box.mid.z+=z;
 
 		// move vertexes in portal compiled
 		// vertex list
@@ -296,7 +331,7 @@ void map_portal_mesh_flip(map_type *map,int portal_idx,int mesh_idx,bool flip_x,
 
 		// get center
 
-	map_portal_mesh_get_center(map,portal_idx,mesh_idx,&mx,&my,&mz);
+	map_portal_mesh_calculate_center(map,portal_idx,mesh_idx,&mx,&my,&mz);
 
 		// flip vertexes
 
@@ -325,7 +360,7 @@ void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,float rot_
 
 		// get center
 
-	map_portal_mesh_get_center(map,portal_idx,mesh_idx,&mx,&my,&mz);
+	map_portal_mesh_calculate_center(map,portal_idx,mesh_idx,&mx,&my,&mz);
 
 		// matrixes
 
@@ -340,15 +375,15 @@ void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,float rot_
 	pt=mesh->vertexes;
 
 	for (n=0;n!=nvertex;n++) {
-		fx=(float)pt->x;
-		fy=(float)pt->y;
-		fz=(float)pt->z;
+		fx=(float)(pt->x-mx);
+		fy=(float)(pt->y-my);
+		fz=(float)(pt->z-mz);
 
 		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
-		pt->x=(int)fx;
-		pt->y=(int)fy;
-		pt->z=(int)fz;
+		pt->x=((int)fx)+mx;
+		pt->y=((int)fy)+my;
+		pt->z=((int)fz)+mz;
 
 		pt++;
 	}

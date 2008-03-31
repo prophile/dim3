@@ -128,15 +128,8 @@ void info_status_line_draw_selection(Rect *box)
 
 		switch (type) {
 		
-			case segment_piece:
-				info_status_line_get_segment_str(&map.segments[main_idx],txt);
-				break;
-				
-			case primitive_piece:
-				primitive_get_extend(map.segments[main_idx].primitive_uid[0],&minx,&maxx,&minz,&maxz,&miny,&maxy);
-				sprintf(txt,"Primitive: (%d,%d,%d) - (%d,%d,%d) : (%d,%d,%d)",minx,miny,minz,maxx,maxy,maxz,(maxx-minx),(maxy-miny),(maxz-minz));
-				break;
-				
+		// supergumba -- need work here
+		
 			case node_piece:
 				sprintf(txt,"Node: %s (%d,%d,%d)",map.nodes[main_idx].name,map.nodes[main_idx].pos.x,map.nodes[main_idx].pos.y,map.nodes[main_idx].pos.z);
 				break;

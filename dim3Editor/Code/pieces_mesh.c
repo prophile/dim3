@@ -44,12 +44,12 @@ extern map_type					map;
       
 ======================================================= */
 
-int piece_import_mesh(int mx,int my,int mz)
+int piece_import_mesh(char *name,int mx,int my,int mz)
 {
 	int					n,k,nline,nvertex,npoly,npt,vt_start_idx,uv_idx,
 						mesh_idx,x,y,z,
 						min_x,max_x,min_y,max_y,min_z,max_z;
-	char				name[file_str_len],path[1024],
+	char				path[1024],
 						*c,txt[256],vstr[256],uvstr[256];
 	bool				mesh_ok,mesh_delete;
 	d3pnt				*dpt;
@@ -57,10 +57,6 @@ int piece_import_mesh(int mx,int my,int mz)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
-		// get object
-		
-	if (!dialog_choose_library_object_run(name)) return(-1);
-
 		// import the file
 		
 	file_paths_data(&file_path_setup,path,"Library",name,"obj");
@@ -245,6 +241,15 @@ int piece_import_mesh(int mx,int my,int mz)
 	return(mesh_idx);
 }
 
+int piece_import_mesh_pick(int mx,int my,int mz)
+{
+	char				name[file_str_len];
+	
+	if (dialog_choose_library_object_run(name)) return(piece_import_mesh(name,mx,my,mz));
+	
+	return(-1);
+}
+
 /* =======================================================
 
       Add Library Mesh
@@ -261,7 +266,7 @@ void piece_add_library_mesh(void)
 			
 		// import mesh
 		
-	mesh_idx=piece_import_mesh(mx,my,mz);
+	mesh_idx=piece_import_mesh_pick(mx,my,mz);
 	if (mesh_idx==-1) return;
 	
 		// make selection
@@ -300,11 +305,11 @@ void piece_replace_library_mesh(void)
 		// remember size
 		
 	map_portal_mesh_calculate_extent(&map,cr,mesh_idx,&min,&max);
-	map_portal_mesh_get_center(&map,cr,mesh_idx,&mx,&my,&mz);
+	map_portal_mesh_calculate_center(&map,cr,mesh_idx,&mx,&my,&mz);
 	
 		// import new mesh
 	
-	rep_mesh_idx=piece_import_mesh(mx,my,mz);
+	rep_mesh_idx=piece_import_mesh_pick(mx,my,mz);
 	if (rep_mesh_idx==-1) return;
 
 		// delete orginial and replace

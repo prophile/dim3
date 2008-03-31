@@ -97,43 +97,40 @@ void portal_duplicate_piece_offset(int rn,int x,int z,int *xadd,int *zadd)
 
 bool portal_new(void)
 {
-    int				i,x,z,y,xadd,zadd,x_size,z_size,div,high;
-    bool			floor_on,ceiling_on,wall_on,spot_ok;
+    int				n,x,z,x_size,y_size,z_size,xadd,zadd,mesh_idx;
+    char			mesh_name[file_str_len];
+	bool			spot_ok;
+	d3pnt			min,max;
     portal_type		*portal;
 	
 	if (!segment_create_texture_ok()) return(FALSE);
     
 	if (map.nportal==max_portal) {
-		StandardAlert(kAlertCautionAlert,"\pCan Not Create Portal","\pYou've reached the maximum number of portals for a map.",NULL,NULL);
+		StandardAlert(kAlertCautionAlert,"\pCan not create portal","\pYou've reached the maximum number of portals for a map.",NULL,NULL);
 		return(FALSE);
 	}
     
-	if (!dialog_new_portal_run(&x_size,&z_size,&floor_on,&ceiling_on,&wall_on,&div,&high)) return(FALSE);
+	if (!dialog_new_portal_run(&x_size,&y_size,&z_size,mesh_name)) return(FALSE);
     
-        // make sure portal divides evenly
-        
-    if ((floor_on) || (ceiling_on) || (wall_on)) {
-        i=x_size/div;
-        x_size=div*i;
-        i=z_size/div;
-        z_size=div*i;
-    }
-	
 		// move portal till it's at a clear spot
 		
 	x=cx-(x_size/2);
 	z=cz-(z_size/2);
+	
+	xadd=x_size/10;
+	zadd=z_size/10;
+	
 	spot_ok=FALSE;
 	
-	for (i=0;i!=250;i++) {
+	for (n=0;n!=100;n++) {
 		spot_ok=portal_is_spot_ok(-1,x,z,(x+x_size),(z+z_size));
 		if (spot_ok) break;
-		x++;
-		z++;
+		x+=xadd;
+		z+=zadd;
 	}
 	
 	if (!spot_ok) {
-		StandardAlert(kAlertCautionAlert,"\pCan Not Create Portal","\pThere isn't enough free space around the cursor, move to another place on the map and try again.",NULL,NULL);
+		StandardAlert(kAlertCautionAlert,"\pCan not create portal","\pThere isn't enough free space around the cursor, move to another place on the map and try again.",NULL,NULL);
 		return(FALSE);
 	}
     
@@ -141,33 +138,23 @@ bool portal_new(void)
 		
 	cr=map_portal_create(&map,x,z,(x+x_size),(z+z_size));
     portal=&map.portals[cr];
-    
-    xadd=x_size/div;
-    zadd=z_size/div;
-    
-        // add segments
-    
-    y=cy+(high/2);
-    if (high>y) y=high;
-        
-    for ((x=0);(x!=div);x++) {
-        for ((z=0);(z!=div);z++) {
-            if (floor_on) segment_add_floor_box((x*xadd),(z*zadd),((x*xadd)+xadd),((z*zadd)+zadd),y,-1,FALSE);
-            if (ceiling_on) segment_add_ceiling_box((x*xadd),(z*zadd),((x*xadd)+xadd),((z*zadd)+zadd),(y-high),-1,FALSE);
-        }
-    }
-    
-    if (wall_on) {
-        for ((x=0);(x!=div);x++) {
-            segment_add_wall((x*xadd),0,((x+1)*xadd),0,(y-high),(y-1),wc_none,cv_none,-1,FALSE);
-            segment_add_wall((x*xadd),(zadd*div),((x+1)*xadd),(zadd*div),(y-high),(y-1),wc_none,cv_none,-1,FALSE);
-        }
-        for ((z=0);(z!=div);z++) {
-            segment_add_wall(0,(z*zadd),0,((z+1)*zadd),(y-high),(y-1),wc_none,cv_none,-1,FALSE);
-            segment_add_wall((xadd*div),(z*zadd),(xadd*div),((z+1)*zadd),(y-high),(y-1),wc_none,cv_none,-1,FALSE);
-        }
-    }
-    
+
+		// add mesh
+		
+	if (mesh_name[0]!=0x0) {
+		mesh_idx=piece_import_mesh(mesh_name,(x_size/2),cy,(z_size/2));
+		if (mesh_idx!=-1) {
+			min.x=min.z=0;
+			min.y=cy-(y_size/2);
+			max.x=x_size;
+			max.z=z_size;
+			max.y=cy+(y_size/2);
+			map_portal_mesh_resize(&map,cr,mesh_idx,&min,&max);
+		}
+	}
+	
+		// finish
+		
     portal_reset_texture_uvs();
 
 	main_wind_draw();

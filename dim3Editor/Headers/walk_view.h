@@ -65,9 +65,6 @@ extern bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *
 // walk view draw handle
 //
 
-extern void walk_view_draw_sel_handles(int ptsz,int *x,int *y,int *z);
-extern void walk_view_draw_segment_handles(void);
-
 extern void walk_view_sprite_select_size(d3pnt *cpt,d3pos *pos,int *px,int *pz,int *ty,int *by);
 
 //

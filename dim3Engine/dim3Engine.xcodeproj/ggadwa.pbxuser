@@ -72,8 +72,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 228184860;
-			PBXWorkspaceStateSaveDate = 228184860;
+			PBXPerProjectTemplateStateSaveDate = 228602681;
+			PBXWorkspaceStateSaveDate = 228602681;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -244,6 +244,22 @@
 			sepNavWindowFrame = "{{61, 234}, {1041, 747}}";
 		};
 	};
+	F5C5E69E090D910F00F94729 /* halos.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 938}}";
+			sepNavSelRange = "{1568, 6}";
+			sepNavVisRange = "{661, 985}";
+			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
+		};
+	};
+	F5C5EB0A0913264E00F94729 /* main.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 3836}}";
+			sepNavSelRange = "{2104, 10}";
+			sepNavVisRange = "{1413, 1042}";
+			sepNavWindowFrame = "{{61, 234}, {1041, 747}}";
+		};
+	};
 	F5C5EB100913264E00F94729 /* map.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 7406}}";
@@ -274,12 +290,28 @@
 			sepNavWindowFrame = "{{130, 171}, {1041, 747}}";
 		};
 	};
+	F5DD19FE090831D600721649 /* scripts_data.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2590}}";
+			sepNavSelRange = "{1600, 6}";
+			sepNavVisRange = "{1066, 993}";
+			sepNavWindowFrame = "{{84, 213}, {1041, 747}}";
+		};
+	};
 	F5DD1A2A0908588500721649 /* weapon_projectile.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 10372}}";
 			sepNavSelRange = "{6247, 89}";
 			sepNavVisRange = "{5631, 1523}";
 			sepNavWindowFrame = "{{107, 192}, {1041, 747}}";
+		};
+	};
+	F5DD1A31090858B800721649 /* projectile_setup.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 3934}}";
+			sepNavSelRange = "{2102, 6}";
+			sepNavVisRange = "{1522, 1087}";
+			sepNavWindowFrame = "{{38, 255}, {1041, 747}}";
 		};
 	};
 	F5DD1A470908598900721649 /* collision_utility.c */ = {
@@ -336,6 +368,14 @@
 			sepNavSelRange = "{72, 0}";
 			sepNavVisRange = "{141, 1505}";
 			sepNavWindowFrame = "{{148, 260}, {1041, 747}}";
+		};
+	};
+	F5DD634709BAA787004A32DA /* map_movement.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4788}}";
+			sepNavSelRange = "{1538, 20}";
+			sepNavVisRange = "{3107, 1008}";
+			sepNavWindowFrame = "{{90, 102}, {1041, 747}}";
 		};
 	};
 }

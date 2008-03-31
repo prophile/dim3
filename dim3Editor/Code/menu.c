@@ -33,7 +33,7 @@ and can be sold or given away.
 #include "import.h"
 
 extern int				cr;
-extern bool				done,map_opened,primitive_reform_ok;
+extern bool				done,map_opened;
 
 extern map_type			map;
 
@@ -113,27 +113,27 @@ void menu_fix_enable(void)
 		if (select_has_type(mesh_piece)) {
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),1);
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),2);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),4);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),12);
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),3);
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),5);
 		}
 		else {
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),1);
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),2);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),4);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),12);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),3);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),5);
 		}
 		
         if (select_count()!=0) {
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),6);
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),7);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),9);
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),8);
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),10);
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),11);
         }
         else {
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),6);
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),7);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),9);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),8);
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),10);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),11);
         }
 	}
 	
@@ -275,7 +275,6 @@ bool menu_delete_portal_dialog(void)
 OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,void *userdata)
 {
 	int				index;
-	float			ang;
 	HICommand		cmd;
 	
 	GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
@@ -575,24 +574,31 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			// piece transform menu
 
 		case kCommandPieceFlipX:
-		//	piece_flip_horizontal();
+			piece_flip(TRUE,FALSE,TRUE);
 			return(noErr);
 			
 		case kCommandPieceFlipY:
-		//	piece_flip_vertical();
+			piece_flip(FALSE,TRUE,FALSE);
 			return(noErr);
 			
 		case kCommandPieceFlipZ:
-		//	piece_flip_vertical();
+			piece_flip(FALSE,FALSE,TRUE);
 			return(noErr);
 			
-		case kCommandPieceRotate:
-			piece_rotate();
+		case kCommandPieceRotateX:
+			piece_rotate(90.0f,0.0f,0.0f);
+			return(noErr);
+			
+		case kCommandPieceRotateY:
+			piece_rotate(0.0f,90.0f,0.0f);
+			return(noErr);
+			
+		case kCommandPieceRotateZ:
+			piece_rotate(0.0f,0.0f,90.0f);
 			return(noErr);
 
 		case kCommandPieceFreeRotate:
-			ang=dialog_free_rotate_run();
-			piece_free_rotate(ang);
+			piece_free_rotate();
 			return(noErr);
 
 		case kCommandPieceRaiseY:

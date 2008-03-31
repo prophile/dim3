@@ -45,9 +45,6 @@ void select_clear(void)
 
 void select_add(int type,int portal_idx,int main_idx,int sub_idx)
 {
-	int					n,primitive_uid;
-	select_item_type	*select_item;
-	
 	if (nselect_item==select_max_item) return;
 		
 		// add to selection list

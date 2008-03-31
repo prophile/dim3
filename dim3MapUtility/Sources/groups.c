@@ -173,7 +173,8 @@ void map_group_dispose_unit_list(map_type *map)
 
 void map_group_get_center(map_type *map,int group_idx,int *x,int *y,int *z)
 {
-	int					n,unit_cnt,px,py,pz,mx,my,mz;
+	int					n,unit_cnt,mx,my,mz;
+	d3pnt				*pt;
 	group_type			*group;
 	group_unit_type		*unit_list;
 	map_liquid_type		*liq;
@@ -194,10 +195,10 @@ void map_group_get_center(map_type *map,int group_idx,int *x,int *y,int *z)
 		switch (unit_list->type) {
 
 			case group_type_mesh:
-				map_portal_mesh_get_center(map,unit_list->portal_idx,unit_list->idx,&px,&py,&pz);
-				mx+=px;
-				my+=py;
-				mz+=pz;
+				pt=&map->portals[unit_list->portal_idx].mesh.meshes[unit_list->idx].box.mid;
+				mx+=pt->x;
+				my+=pt->y;
+				mz+=pt->z;
 				break;
 
 			case group_type_liquid:

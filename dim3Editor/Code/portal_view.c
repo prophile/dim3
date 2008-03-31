@@ -191,7 +191,7 @@ void portal_view_key(char ch)
 			main_wind_draw();
 			break;
 		case 0x1D:
-			if (portal->ex==map_x_size) break;
+			if (portal->ex==map_max_size) break;
 			if (!portal_is_spot_ok(cr,(portal->x+1),portal->z,(portal->ex+1),portal->ez)) break;
 			portal->x++;
 			portal->ex++;
@@ -205,7 +205,7 @@ void portal_view_key(char ch)
 			main_wind_draw();
 			break;
 		case 0x1F:
-			if (portal->ez==map_z_size) break;
+			if (portal->ez==map_max_size) break;
 			if (!portal_is_spot_ok(cr,portal->x,(portal->z+1),portal->ex,(portal->ez+1))) break;
 			portal->z++;
 			portal->ez++;

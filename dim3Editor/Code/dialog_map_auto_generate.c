@@ -35,25 +35,14 @@ and can be sold or given away.
 
 #define kMapGenerateSeed							FOUR_CHAR_CODE('seed')
 
-#define kMapGenerateMapXSize						FOUR_CHAR_CODE('xsiz')
-#define kMapGenerateMapZSize						FOUR_CHAR_CODE('zsiz')
-#define kMapGenerateSplitFactor						FOUR_CHAR_CODE('splt')
+#define kMapGenerateMapSize							FOUR_CHAR_CODE('mpsz')
+#define kMapGeneratePortalSize						FOUR_CHAR_CODE('ptsz')
+#define kMapGeneratePortalHigh						FOUR_CHAR_CODE('pthg')
 
-#define kMapGenerateInitialPortalCount				FOUR_CHAR_CODE('ipct')
-#define kMapGenerateMinPortalSize					FOUR_CHAR_CODE('mnps')
-#define kMapGenerateMaxPortalSize					FOUR_CHAR_CODE('mxps')
-#define kMapGeneratePortalBottomY					FOUR_CHAR_CODE('boty')
-#define kMapGeneratePortalTopY						FOUR_CHAR_CODE('topy')
-#define kMapGeneratePortalExtraBottomY				FOUR_CHAR_CODE('peby')
-#define kMapGeneratePortalExtraTopY					FOUR_CHAR_CODE('pety')
 #define kMapGenerateCeilingType1					FOUR_CHAR_CODE('clt1')
 #define kMapGenerateCeilingType2					FOUR_CHAR_CODE('clt2')
 #define kMapGenerateCeilingType3					FOUR_CHAR_CODE('clt3')
 
-#define kMapGenerateMaxMergeDistance				FOUR_CHAR_CODE('mxmd')
-#define kMapGenerateMaxConnectDistance				FOUR_CHAR_CODE('mxcd')
-#define kMapGenerateMinConnectSize					FOUR_CHAR_CODE('mncs')
-#define kMapGenerateMaxConnectSize					FOUR_CHAR_CODE('mxcs')
 #define kMapGenerateCorridorType1					FOUR_CHAR_CODE('crt1')
 #define kMapGenerateCorridorType2					FOUR_CHAR_CODE('crt2')
 #define kMapGenerateCorridorType3					FOUR_CHAR_CODE('crt3')
@@ -246,25 +235,14 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		// old settings
 		
 	if (!first) {
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateMapXSize,0,ag_settings.max_map_x_size);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateMapZSize,0,ag_settings.max_map_z_size);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateSplitFactor,0,ag_settings.split_factor);
+		dialog_set_value(dialog_map_generate_wind,kMapGenerateMapSize,0,ag_settings.map.sz);
+		dialog_set_value(dialog_map_generate_wind,kMapGeneratePortalSize,0,ag_settings.portal.sz);
+		dialog_set_value(dialog_map_generate_wind,kMapGeneratePortalHigh,0,ag_settings.portal.high);
 		
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateInitialPortalCount,0,ag_settings.portal.initial_count);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateMinPortalSize,0,ag_settings.portal.min_sz);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateMaxPortalSize,0,ag_settings.portal.max_sz);
-		dialog_set_int(dialog_map_generate_wind,kMapGeneratePortalBottomY,0,ag_settings.portal.by);
-		dialog_set_int(dialog_map_generate_wind,kMapGeneratePortalTopY,0,ag_settings.portal.ty);
-		dialog_set_int(dialog_map_generate_wind,kMapGeneratePortalExtraBottomY,0,ag_settings.portal.extra_by);
-		dialog_set_int(dialog_map_generate_wind,kMapGeneratePortalExtraTopY,0,ag_settings.portal.extra_ty);
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCeilingType1,0,ag_settings.ceiling.type_on[0]);
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCeilingType2,0,ag_settings.ceiling.type_on[1]);
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCeilingType3,0,ag_settings.ceiling.type_on[2]);
 		
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateMaxMergeDistance,0,ag_settings.max_portal_merge_distance);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateMaxConnectDistance,0,ag_settings.corridor.max_connect_distance);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateMinConnectSize,0,ag_settings.corridor.min_sz);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateMaxConnectSize,0,ag_settings.corridor.max_sz);
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCorridorType1,0,ag_settings.corridor.type_on[0]);
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCorridorType2,0,ag_settings.corridor.type_on[1]);
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCorridorType3,0,ag_settings.corridor.type_on[2]);
@@ -333,30 +311,19 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		// dialog to data
 		
 	ag_settings.seed=dialog_get_int(dialog_map_generate_wind,kMapGenerateSeed,0);
-	
-	ag_settings.max_map_x_size=dialog_get_int(dialog_map_generate_wind,kMapGenerateMapXSize,0);
-	ag_settings.max_map_z_size=dialog_get_int(dialog_map_generate_wind,kMapGenerateMapZSize,0);
-	ag_settings.split_factor=dialog_get_int(dialog_map_generate_wind,kMapGenerateSplitFactor,0);
-	
-	ag_settings.portal.initial_count=dialog_get_int(dialog_map_generate_wind,kMapGenerateInitialPortalCount,0);
-	ag_settings.portal.min_sz=dialog_get_int(dialog_map_generate_wind,kMapGenerateMinPortalSize,0);
-	ag_settings.portal.max_sz=dialog_get_int(dialog_map_generate_wind,kMapGenerateMaxPortalSize,0);
-	ag_settings.portal.by=dialog_get_int(dialog_map_generate_wind,kMapGeneratePortalBottomY,0);
-	ag_settings.portal.ty=dialog_get_int(dialog_map_generate_wind,kMapGeneratePortalTopY,0);
-	ag_settings.portal.extra_by=dialog_get_int(dialog_map_generate_wind,kMapGeneratePortalExtraBottomY,0);
-	ag_settings.portal.extra_ty=dialog_get_int(dialog_map_generate_wind,kMapGeneratePortalExtraTopY,0);
+
+	ag_settings.map.sz=dialog_get_value(dialog_map_generate_wind,kMapGenerateMapSize,0);
+	ag_settings.portal.sz=dialog_get_value(dialog_map_generate_wind,kMapGeneratePortalSize,0);
+	ag_settings.portal.high=dialog_get_value(dialog_map_generate_wind,kMapGeneratePortalHigh,0);
+
 	ag_settings.ceiling.type_on[0]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCeilingType1,0);
 	ag_settings.ceiling.type_on[1]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCeilingType2,0);
 	ag_settings.ceiling.type_on[2]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCeilingType3,0);
 	
-	ag_settings.max_portal_merge_distance=dialog_get_int(dialog_map_generate_wind,kMapGenerateMaxMergeDistance,0);
-	ag_settings.corridor.max_connect_distance=dialog_get_int(dialog_map_generate_wind,kMapGenerateMaxConnectDistance,0);
-	ag_settings.corridor.min_sz=dialog_get_int(dialog_map_generate_wind,kMapGenerateMinConnectSize,0);
-	ag_settings.corridor.max_sz=dialog_get_int(dialog_map_generate_wind,kMapGenerateMaxConnectSize,0);
 	ag_settings.corridor.type_on[0]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCorridorType1,0);
 	ag_settings.corridor.type_on[1]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCorridorType2,0);
 	ag_settings.corridor.type_on[2]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCorridorType3,0);
-	
+
 	ag_settings.steps.sz=dialog_get_int(dialog_map_generate_wind,kMapGenerateStepSize,0);
 	ag_settings.steps.high=dialog_get_int(dialog_map_generate_wind,kMapGenerateStepHigh,0);
 	ag_settings.ramp.sz=dialog_get_int(dialog_map_generate_wind,kMapGenerateRampSize,0);

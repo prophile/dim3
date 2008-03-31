@@ -41,8 +41,7 @@ extern char light_type_str[][32];
 
 #define map_enlarge									144				// each units of maze equals this many game units
 
-#define map_x_size									400000			// # of units on X
-#define map_z_size									400000			// # of units on Z
+#define map_max_size								400000			// maximum size of map on x/z units
 
 #define map_simple_tessel_size						500				// below this size makes simple lighting tessel
 
@@ -273,6 +272,10 @@ typedef struct		{
 						map_mesh_poly_light_type	light;
 						map_mesh_poly_draw_type		draw;
 					} map_mesh_poly_type;
+					
+typedef struct		{
+						d3pnt						min,max,mid;
+					} map_mesh_box_type;
 
 typedef struct		{
 						bool						on,pass_through,moveable,
@@ -289,6 +292,7 @@ typedef struct		{
 						int							nvertex,npoly,group_idx;
 						d3pnt						*vertexes;
 						map_mesh_poly_type			*polys;
+						map_mesh_box_type			box;
 						map_mesh_flag_type			flag;
 						map_mesh_draw_type			draw;
 					} map_mesh_type;
@@ -808,7 +812,7 @@ extern int map_portal_mesh_count_poly(map_type *map,int portal_idx);
 extern bool map_portal_mesh_create_transparent_sort_lists(map_type *map);
 extern void map_portal_mesh_dispose_transparent_sort_lists(map_type *map);
 extern void map_portal_mesh_calculate_extent(map_type *map,int portal_idx,int mesh_idx,d3pnt *min,d3pnt *max);
-extern void map_portal_mesh_get_center(map_type *map,int portal_idx,int mesh_idx,int *x,int *y,int *z);
+extern void map_portal_mesh_calculate_center(map_type *map,int portal_idx,int mesh_idx,int *x,int *y,int *z);
 
 extern int map_portal_mesh_combine(map_type *map,int portal_idx,int mesh_1_idx,int mesh_2_idx);
 extern void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool do_portal_vertex_list,int x,int y,int z);

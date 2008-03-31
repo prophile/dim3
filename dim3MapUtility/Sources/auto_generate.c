@@ -88,7 +88,7 @@ void map_auto_generate_move_wall_segment_to_portal(map_type *map,int rn,int seg_
 
 void map_auto_generate_initial_portals(map_type *map)
 {
-	int			i,rn,x,z,ex,ez,try_count,
+	int			i,rn,x,z,ex,ez,initial_count,try_count,split_factor,
 				map_x_sz,map_z_sz,portal_rand_sz,portal_min_sz;
 
 		// sizes
@@ -98,12 +98,18 @@ void map_auto_generate_initial_portals(map_type *map)
 
 	portal_rand_sz=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_random_percent);
 	portal_min_sz=ag_settings.portal.sz-portal_rand_sz;
+	
+	split_factor=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_split_factor_percent);
+	
+		// initial count of portals
+	
+	initial_count=(ag_settings.map.sz/ag_settings.portal.sz)*4;
 
 		// create portals
 
 	map->nportal=0;
 
-	for (i=0;i!=ag_settings.portal.initial_count;i++) {
+	for (i=0;i!=initial_count;i++) {
 		
 		try_count=0;
 
@@ -132,17 +138,17 @@ void map_auto_generate_initial_portals(map_type *map)
 			
 				// use splits as grid
 				
-			x/=ag_settings.split_factor;
-			x*=ag_settings.split_factor;
+			x/=split_factor;
+			x*=split_factor;
 			
-			z/=ag_settings.split_factor;
-			z*=ag_settings.split_factor;
+			z/=split_factor;
+			z*=split_factor;
 			
-			ex/=ag_settings.split_factor;
-			ex*=ag_settings.split_factor;
+			ex/=split_factor;
+			ex*=split_factor;
 			
-			ez/=ag_settings.split_factor;
-			ez*=ag_settings.split_factor;
+			ez/=split_factor;
+			ez*=split_factor;
 
 				// check for collisions
 				
@@ -181,7 +187,7 @@ void map_auto_generate_merge_portals(map_type *map)
 		// so portals that bounce between two don't cause
 		// an infinite loop
 		
-	merge_add=ag_settings.split_factor;
+	merge_add=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_split_factor_percent);
 	merge_try_count=(portal_merge_distance/merge_add)*2;
 
 	for (i=0;i!=merge_try_count;i++) {
@@ -263,7 +269,7 @@ void map_auto_generate_connect_portals(map_type *map)
 {
 	int				n,k,rn,corridor_sz,corridor_rand_sz,corridor_min_sz,
 					portal_merge_distance,portal_connect_distance,connect_sz,
-					x,z,ex,ez,x2,z2,ex2,ez2,dist,nportal,cnt;
+					x,z,ex,ez,x2,z2,ex2,ez2,dist,nportal,cnt,split_factor;
 	portal_type		*chk_portal,*cnt_portal;
 
 		// get sizes
@@ -274,6 +280,8 @@ void map_auto_generate_connect_portals(map_type *map)
 
 	portal_merge_distance=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_merge_percent);
 	portal_connect_distance=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_connect_percent);
+	
+	split_factor=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_split_factor_percent);
 
 		// get original portal count
 
@@ -324,20 +332,20 @@ void map_auto_generate_connect_portals(map_type *map)
 			
 				// fix vertical
 
-			z/=ag_settings.split_factor;
-			z*=ag_settings.split_factor;
+			z/=split_factor;
+			z*=split_factor;
 			
-			ez/=ag_settings.split_factor;
-			ez*=ag_settings.split_factor;
+			ez/=split_factor;
+			ez*=split_factor;
 
 				// make sure corridor isn't in corner
 
 			if ((z==chk_portal->z) || (z==cnt_portal->z)) {
-				z+=ag_settings.split_factor;
+				z+=split_factor;
 			}
 
 			if ((ez==chk_portal->ez) || (ez==cnt_portal->ez)) {
-				ez-=ag_settings.split_factor;
+				ez-=split_factor;
 			}
 
 			if (z>=ez) continue;
@@ -348,8 +356,8 @@ void map_auto_generate_connect_portals(map_type *map)
 			
 				// check for collisions
 				
-			z2=z-ag_settings.split_factor;
-			ez2=ez+ag_settings.split_factor;			// don't create if z's will touch other portals, then it's no longer a corridor
+			z2=z-split_factor;
+			ez2=ez+split_factor;			// don't create if z's will touch other portals, then it's no longer a corridor
 
 			if ((map_auto_generate_block_collision(&ag_settings,x,z2,ex,ez2)) || (map_auto_generate_portal_collision(map,x,z2,ex,ez2,-1))) continue;
 
@@ -407,20 +415,20 @@ void map_auto_generate_connect_portals(map_type *map)
 			
 				// fix horizontal
 
-			x/=ag_settings.split_factor;
-			x*=ag_settings.split_factor;
+			x/=split_factor;
+			x*=split_factor;
 			
-			ex/=ag_settings.split_factor;
-			ex*=ag_settings.split_factor;
+			ex/=split_factor;
+			ex*=split_factor;
 
 				// make sure corridor isn't in corner
 
 			if ((x==chk_portal->x) || (x==cnt_portal->x)) {
-				x+=ag_settings.split_factor;
+				x+=split_factor;
 			}
 
 			if ((ex==chk_portal->ex) || (ex==cnt_portal->ex)) {
-				ex-=ag_settings.split_factor;
+				ex-=split_factor;
 			}
 
 			if (x>=ex) continue;
@@ -431,8 +439,8 @@ void map_auto_generate_connect_portals(map_type *map)
 			
 				// check for collisions
 				
-			x2=x-ag_settings.split_factor;
-			ex2=ex+ag_settings.split_factor;			// don't create if x's will touch other portals, then it's no longer a corridor
+			x2=x-split_factor;
+			ex2=ex+split_factor;			// don't create if x's will touch other portals, then it's no longer a corridor
 
 			if ((map_auto_generate_block_collision(&ag_settings,x2,z,ex2,ez)) || (map_auto_generate_portal_collision(map,x2,z,ex2,ez,-1))) continue;
 
@@ -460,12 +468,20 @@ void map_auto_generate_connect_portals(map_type *map)
 
 void map_auto_generate_portal_y(map_type *map)
 {
-	int				n,corridor_slop_y,by_add;
+	int				n,corridor_slop_y,by_add,ty,by,extra_ty,extra_by;
 	portal_type		*portal;
+	
+		// portal sizes
+		
+	ty=(map_max_size/2)-(ag_settings.portal.high/2);
+	by=(map_max_size/2)+(ag_settings.portal.high/2);
+	
+	extra_ty=(int)(((float)ag_settings.portal.high)*ag_constant_portal_high_extra_top);
+	extra_by=(int)(((float)ag_settings.portal.high)*ag_constant_portal_high_extra_bottom);
 
 		// corridor top slop (so not at very top of portal)
 
-	corridor_slop_y=(ag_settings.portal.by-ag_settings.portal.ty)/5;
+	corridor_slop_y=(by-ty)/5;
 
 		// create portal y
 
@@ -476,9 +492,9 @@ void map_auto_generate_portal_y(map_type *map)
 			// rooms have variable Ys
 			
 		if (corridor_flags[n]==ag_corridor_flag_portal) {
-			portal->ty=ag_settings.portal.ty-(rand()%ag_settings.portal.extra_ty);
+			portal->ty=ty-(rand()%extra_ty);
 
-			by_add=(rand()%ag_settings.portal.extra_by);
+			by_add=(rand()%extra_by);
 			if (by_add<=(ag_settings.steps.high+1)) {
 				by_add=0;
 			}
@@ -487,14 +503,14 @@ void map_auto_generate_portal_y(map_type *map)
 				if (by_add!=0) by_add=((by_add-1)*ag_settings.steps.high);
 			}
 
-			portal->by=ag_settings.portal.by+by_add;
+			portal->by=by+by_add;
 		}
 		
 			// corridors have static Ys
 			
 		else {
-			portal->ty=(ag_settings.portal.ty+corridor_slop_y);
-			portal->by=ag_settings.portal.by;
+			portal->ty=(ty+corridor_slop_y);
+			portal->by=by;
 		}
 		
 		portal++;
@@ -616,13 +632,17 @@ void map_auto_generate_lights(map_type *map)
 
 void map_auto_generate_walls_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty,int by)
 {
-	int					lx2,rx2,lz2,rz2,xadd,zadd;
+	int					lx2,rx2,lz2,rz2,xadd,zadd,split_factor;
+	
+		// get sizes
+		
+	split_factor=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_split_factor_percent);
 
 	   // horizontal walls
 
 	if (lz==rz) {
 
-		xadd=ag_settings.split_factor-(map->portals[rn].x%ag_settings.split_factor);
+		xadd=split_factor-(map->portals[rn].x%split_factor);
 
 		rx2=lx;
 
@@ -630,7 +650,7 @@ void map_auto_generate_walls_add(map_type *map,int rn,int lx,int lz,int rx,int r
 			lx2=rx2;
 			rx2=lx2+xadd;
 			if (rx2>=rx) rx2=rx;
-			xadd=ag_settings.split_factor;
+			xadd=split_factor;
 
 			if (map->nsegment<max_segment) map_auto_generate_segment_wall(map,rn,lx2,lz,rx2,lz,ty,by,wc_none);
 		}
@@ -642,7 +662,7 @@ void map_auto_generate_walls_add(map_type *map,int rn,int lx,int lz,int rx,int r
 
 	if (lx==rx) {
 
-		zadd=ag_settings.split_factor-(map->portals[rn].z%ag_settings.split_factor);
+		zadd=split_factor-(map->portals[rn].z%split_factor);
 
 		rz2=lz;
 
@@ -650,7 +670,7 @@ void map_auto_generate_walls_add(map_type *map,int rn,int lx,int lz,int rx,int r
 			lz2=rz2;
 			rz2=lz2+zadd;
 			if (rz2>=rz) rz2=rz;
-			zadd=ag_settings.split_factor;
+			zadd=split_factor;
 			
 			if (map->nsegment<max_segment) map_auto_generate_segment_wall(map,rn,lx,lz2,lx,rz2,ty,by,wc_none);
 		}
@@ -672,10 +692,10 @@ void map_auto_generate_walls(map_type *map)
 
 		// array for wall runs
 
-	wall_left_run=(char*)malloc(map_x_size);
-	wall_right_run=(char*)malloc(map_x_size);
-	wall_top_run=(char*)malloc(map_z_size);
-	wall_bottom_run=(char*)malloc(map_z_size);
+	wall_left_run=(char*)malloc(map_max_size);
+	wall_right_run=(char*)malloc(map_max_size);
+	wall_top_run=(char*)malloc(map_max_size);
+	wall_bottom_run=(char*)malloc(map_max_size);
 
 		// create surrounding walls for portals
 
@@ -1277,16 +1297,20 @@ bool map_auto_generate_portal_ceiling_ok(int ceiling_type,int lx,int lz,int rx,i
 
 void map_auto_generate_portal_fc_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty,int by)
 {
-	int				xoff,zoff,ceiling_type,
+	int				xoff,zoff,ceiling_type,split_factor,
 					xadd,zadd,lx2,rx2,lz2,rz2,slant_sz;
 	portal_type		*portal;
 		
-	   // get split points
+		// get sizes
+		
+	split_factor=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_split_factor_percent);
+
+		// get split points
 
 	portal=&map->portals[rn];
 	
-	xoff=ag_settings.split_factor-(portal->x%ag_settings.split_factor);
-	zoff=ag_settings.split_factor-(portal->z%ag_settings.split_factor);
+	xoff=split_factor-(portal->x%split_factor);
+	zoff=split_factor-(portal->z%split_factor);
 	
 	slant_sz=(portal->by-portal->ty)>>2;
 	
@@ -1302,7 +1326,7 @@ void map_auto_generate_portal_fc_add(map_type *map,int rn,int lx,int lz,int rx,i
 		lz2=rz2;
 		rz2=lz2+zadd;
 		if (rz2>=rz) rz2=rz;
-		zadd=ag_settings.split_factor;
+		zadd=split_factor;
 
 		rx2=lx;
 		xadd=xoff;
@@ -1311,7 +1335,7 @@ void map_auto_generate_portal_fc_add(map_type *map,int rn,int lx,int lz,int rx,i
 			lx2=rx2;
 			rx2=lx2+xadd;
 			if (rx2>=rx) rx2=rx;
-			xadd=ag_settings.split_factor;
+			xadd=split_factor;
 
 				// floors
 				
@@ -1330,16 +1354,20 @@ void map_auto_generate_portal_fc_add(map_type *map,int rn,int lx,int lz,int rx,i
 
 void map_auto_generate_corridor_fc_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty,int by)
 {
-	int				xoff,zoff,
+	int				xoff,zoff,split_factor,
 					xadd,zadd,lx2,rx2,lz2,rz2,slant_sz;
 	portal_type		*portal;
+	
+		// get sizes
+		
+	split_factor=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_split_factor_percent);
 		
 	   // get split points
 
 	portal=&map->portals[rn];
 	
-	xoff=ag_settings.split_factor-(portal->x%ag_settings.split_factor);
-	zoff=ag_settings.split_factor-(portal->z%ag_settings.split_factor);
+	xoff=split_factor-(portal->x%split_factor);
+	zoff=split_factor-(portal->z%split_factor);
 	
 	slant_sz=(portal->by-portal->ty)>>2;
 	
@@ -1353,7 +1381,7 @@ void map_auto_generate_corridor_fc_add(map_type *map,int rn,int lx,int lz,int rx
 		lz2=rz2;
 		rz2=lz2+zadd;
 		if (rz2>=rz) rz2=rz;
-		zadd=ag_settings.split_factor;
+		zadd=split_factor;
 
 		rx2=lx;
 		xadd=xoff;
@@ -1362,7 +1390,7 @@ void map_auto_generate_corridor_fc_add(map_type *map,int rn,int lx,int lz,int rx
 			lx2=rx2;
 			rx2=lx2+xadd;
 			if (rx2>=rx) rx2=rx;
-			xadd=ag_settings.split_factor;
+			xadd=split_factor;
 
 				// floors
 				
@@ -1986,10 +2014,10 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 	
 	sz=ag_settings.map.sz/2;
 
-	ag_settings.map.left=(map_x_size/2)-sz;
-	ag_settings.map.right=(map_x_size/2)+sz;
-	ag_settings.map.top=(map_z_size/2)-sz;
-	ag_settings.map.bottom=(map_z_size/2)+sz;
+	ag_settings.map.left=(map_max_size/2)-sz;
+	ag_settings.map.right=(map_max_size/2)+sz;
+	ag_settings.map.top=(map_max_size/2)-sz;
+	ag_settings.map.bottom=(map_max_size/2)+sz;
 	
 	map_auto_generate_clear_flags();
 
@@ -2071,14 +2099,9 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 #endif
 
 	ags.map.sz=2000*map_enlarge;
-	ags.split_factor=40;
 
-	ags.portal.initial_count=15;
 	ags.portal.sz=500*map_enlarge;
-	ags.portal.by=200*map_enlarge;
-	ags.portal.ty=160*map_enlarge;
-	ags.portal.extra_ty=60*map_enlarge;
-	ags.portal.extra_by=30*map_enlarge;
+	ags.portal.high=40*map_enlarge;
 	
 	ags.ceiling.type_on[ag_ceiling_type_closed]=TRUE;
 	ags.ceiling.type_on[ag_ceiling_type_open]=TRUE;

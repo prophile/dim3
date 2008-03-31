@@ -314,30 +314,30 @@ void map_portal_mesh_calculate_extent(map_type *map,int portal_idx,int mesh_idx,
 	}
 }
 
-void map_portal_mesh_get_center(map_type *map,int portal_idx,int mesh_idx,int *x,int *y,int *z)
+void map_portal_mesh_calculate_center(map_type *map,int portal_idx,int mesh_idx,int *x,int *y,int *z)
 {
-	int					n,npoly,mx,my,mz;
+	int					n,nvertex,mx,my,mz;
+	d3pnt				*pt;
 	portal_type			*portal;
 	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
 
 	portal=&map->portals[portal_idx];
 	mesh=&portal->mesh.meshes[mesh_idx];
 
 	mx=my=mz=0;
 
-	npoly=mesh->npoly;
-	poly=mesh->polys;
+	nvertex=mesh->nvertex;
+	pt=mesh->vertexes;
 
-	for (n=0;n!=npoly;n++) {
-		mx+=poly->box.mid.x;
-		my+=poly->box.mid.y;
-		mz+=poly->box.mid.z;
-		poly++;
+	for (n=0;n!=nvertex;n++) {
+		mx+=pt->x;
+		my+=pt->y;
+		mz+=pt->z;
+		pt++;
 	}
 
-	*x=mx/npoly;
-	*y=my/npoly;
-	*z=mz/npoly;
+	*x=mx/nvertex;
+	*y=my/nvertex;
+	*z=mz/nvertex;
 }
 

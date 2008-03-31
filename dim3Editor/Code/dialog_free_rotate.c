@@ -30,9 +30,10 @@ and can be sold or given away.
 
 extern map_type				map;
 
-#define kFreeRotateAngle							FOUR_CHAR_CODE('degr')
+#define kFreeRotateX							FOUR_CHAR_CODE('rotx')
+#define kFreeRotateY							FOUR_CHAR_CODE('roty')
+#define kFreeRotateZ							FOUR_CHAR_CODE('rotz')
 
-int							dialog_free_rotate_ang=0;
 bool						dialog_free_rotate_cancel;
 WindowRef					dialog_free_rotate_wind;
 
@@ -77,7 +78,7 @@ static pascal OSStatus portal_setting_event_proc(EventHandlerCallRef handler,Eve
       
 ======================================================= */
 
-float dialog_free_rotate_run(void)
+bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z)
 {
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
@@ -88,8 +89,10 @@ float dialog_free_rotate_run(void)
 
 		// set controls
 		
-	dialog_set_int(dialog_free_rotate_wind,kFreeRotateAngle,0,dialog_free_rotate_ang);
-	dialog_set_focus(dialog_free_rotate_wind,kFreeRotateAngle,0);
+	dialog_set_int(dialog_free_rotate_wind,kFreeRotateX,0,0);
+	dialog_set_int(dialog_free_rotate_wind,kFreeRotateY,0,0);
+	dialog_set_int(dialog_free_rotate_wind,kFreeRotateZ,0,0);
+	dialog_set_focus(dialog_free_rotate_wind,kFreeRotateX,0);
 	
 		// show window
 	
@@ -108,15 +111,15 @@ float dialog_free_rotate_run(void)
 		// dialog to data
 		
 	if (!dialog_free_rotate_cancel) {
-		dialog_free_rotate_ang=dialog_get_int(dialog_free_rotate_wind,kFreeRotateAngle,0);
+		*rot_x=(float)dialog_get_int(dialog_free_rotate_wind,kFreeRotateX,0);
+		*rot_y=(float)dialog_get_int(dialog_free_rotate_wind,kFreeRotateY,0);
+		*rot_z=(float)dialog_get_int(dialog_free_rotate_wind,kFreeRotateZ,0);
 	}
 
 		// close window
 		
 	DisposeWindow(dialog_free_rotate_wind);
 	
-	if (dialog_free_rotate_cancel) return(0);
-	
-	return((float)dialog_free_rotate_ang);
+	return(!dialog_free_rotate_cancel);
 }
 

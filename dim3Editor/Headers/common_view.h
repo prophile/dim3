@@ -133,10 +133,9 @@ extern void piece_get_extent(int type,int index,int *min_x,int *min_z,int *max_x
 extern void piece_move_to_portal(int rn);
 extern void piece_duplicate(void);
 extern void piece_delete(void);
-extern void piece_flip_horizontal(void);
-extern void piece_flip_vertical(void);
-extern void piece_rotate(void);
-extern void piece_free_rotate(float ang);
+extern void piece_flip(bool flip_x,bool flip_y,bool flip_z);
+extern void piece_rotate(float rot_x,float rot_y,float rot_z);
+extern void piece_free_rotate(void);
 extern void piece_key(int rn,char ch,bool walk,bool on_side);
 
 //
@@ -159,31 +158,6 @@ extern void piece_add_library_mesh(void);
 extern void piece_replace_library_mesh(void);
 extern void piece_combine_mesh(int portal_idx);
 extern void piece_tesselate_mesh(int portal_idx);
-
-//
-// primitive routines
-//
-
-extern void primitive_get_extend(int primitive_uid,int *p_minx,int *p_maxx,int *p_minz,int *p_maxz,int *p_miny,int *p_maxy);
-extern void primitive_get_center(int primitive_uid,int *x,int *z,int *y);
-extern void primitive_get_3D_handles(int primitive_uid,int *x,int *z,int *y);
-extern int primitive_count_segments(int primitive_uid);
-extern void primitive_combine(void);
-extern void primitive_break(void);
-extern void primitive_reform(void);
-extern void primitive_reform_reset_for_delete(int seg_idx);
-extern void primitive_move(int primitive_uid,int xchg,int zchg,int ychg);
-extern void primitive_change_portal(int primitive_uid,int rn);
-extern int primitive_duplicate(int primitive_uid,int xadd,int zadd);
-extern void primitive_delete(int primitive_uid);
-extern void primitive_extrude(int seg_index);
-extern void primitive_backup(int primitive_uid);
-extern void primitive_restore(int primitive_uid);
-extern void primitive_resize_vertex(int *k,int org_min,int org_max,int min,int max);
-extern void primitive_resize(int primitive_uid,int minx,int maxx,int minz,int maxz,int miny,int maxy);
-extern void primitive_add(void);
-extern void primitive_replace(void);
-extern void primitive_save(void);
 
 //
 // clipboard routines

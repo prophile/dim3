@@ -51,10 +51,6 @@ void piece_get_extent(int type,int index,int *min_x,int *min_z,int *max_x,int *m
 			map_segment_calculate_extent(&map,index,min_x,min_z,min_y,max_x,max_z,max_y);
 			break;
 			
-		case primitive_piece:
-			primitive_get_extend(map.segments[index].primitive_uid[0],min_x,max_x,min_z,max_z,min_y,max_y);
-			break;
-			
 		case node_piece:
 			*min_x=*max_x=map.nodes[index].pos.x;
 			*min_z=*max_z=map.nodes[index].pos.z;
@@ -412,158 +408,41 @@ void piece_delete(void)
       
 ======================================================= */
 
-void piece_flip_horizontal(void)
+void piece_flip(bool flip_x,bool flip_y,bool flip_z)
 {
-/* supergumba
-	int					n,k,sel_count,type,index,
-						primitive_uid,min_x,max_x,min_z,max_z,min_y,max_y;
-	segment_type		*seg;
-	
-	select_get_extent(&min_x,&min_z,&min_y,&max_x,&max_z,&max_y);
+	int				n,sel_count,type,portal_idx,mesh_idx,poly_idx;
 	
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&index);
-		
-		switch (type) {
-		
-			case segment_piece:
-				segment_flip_horizontal(&map.segments[index],min_x,max_x);
-				break;
-				
-			case primitive_piece:
-				primitive_uid=map.segments[index].primitive_uid[0];
-				
-				seg=map.segments;
-					
-				for (k=0;k!=map.nsegment;k++) {
-					if (seg->primitive_uid[0]==primitive_uid) segment_flip_horizontal(seg,min_x,max_x);
-					seg++;
-				}
-				break;
-		}
+		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		if (type==mesh_piece) map_portal_mesh_flip(&map,portal_idx,mesh_idx,flip_x,flip_y,flip_z);
 	}
 	
 	main_wind_draw();
-	*/
 }
 
-void piece_flip_vertical(void)
+void piece_rotate(float rot_x,float rot_y,float rot_z)
 {
-/* supergumba
-	int					n,k,sel_count,type,index,
-						primitive_uid,min_x,max_x,min_z,max_z,min_y,max_y;
-	segment_type		*seg;
-	
-	select_get_extent(&min_x,&min_z,&min_y,&max_x,&max_z,&max_y);
+	int				n,sel_count,type,portal_idx,mesh_idx,poly_idx;
 	
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&index);
-		
-		switch (type) {
-		
-			case segment_piece:
-				segment_flip_vertical(&map.segments[index],min_z,max_z);
-				break;
-				
-			case primitive_piece:
-				primitive_uid=map.segments[index].primitive_uid[0];
-
-				seg=map.segments;
-					
-				for (k=0;k!=map.nsegment;k++) {
-					if (seg->primitive_uid[0]==primitive_uid) segment_flip_vertical(seg,min_z,max_z);
-					seg++;
-				}
-				break;
-		}
+		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		if (type==mesh_piece) map_portal_mesh_rotate(&map,portal_idx,mesh_idx,rot_x,rot_y,rot_z);
 	}
 	
 	main_wind_draw();
-	*/
 }
 
-void piece_rotate(void)
+void piece_free_rotate(void)
 {
-/* supergumba
-	int					n,k,sel_count,type,index,cx,cz,
-						primitive_uid,min_x,max_x,min_z,max_z,min_y,max_y;
-	segment_type		*seg;
-
-	select_get_extent(&min_x,&min_z,&min_y,&max_x,&max_z,&max_y);
-	cx=(min_x+max_x)/2;
-	cz=(min_z+max_z)/2;
+	float			rot_x,rot_y,rot_z;
 	
-	sel_count=select_count();
+	if (!dialog_free_rotate_run(&rot_x,&rot_y,&rot_z)) return;
 	
-	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&index);
-		
-		switch (type) {
-		
-			case segment_piece:
-				segment_rotate(&map.segments[index],cx,cz);
-				break;
-				
-			case primitive_piece:
-				primitive_uid=map.segments[index].primitive_uid[0];
-
-				seg=map.segments;
-					
-				for (k=0;k!=map.nsegment;k++) {
-					if (seg->primitive_uid[0]==primitive_uid) segment_rotate(seg,cx,cz);
-					seg++;
-				}
-				break;
-		}
-	}
-	
-	main_wind_draw();
-	*/
-}
-
-void piece_free_rotate(float ang)
-{
-/* supergumba
-	int					n,k,sel_count,type,index,primitive_uid,
-						cx,cz,min_x,max_x,min_z,max_z,min_y,max_y;;
-	segment_type		*seg;
-	
-	if (ang==0) return;
-	
-	select_get_extent(&min_x,&min_z,&min_y,&max_x,&max_z,&max_y);
-	cx=(min_x+max_x)/2;
-	cz=(min_z+max_z)/2;
-	
-	sel_count=select_count();
-	
-	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&index);
-		
-		switch (type) {
-		
-			case segment_piece:
-				segment_rotate_free(&map.segments[index],ang,cx,cz);
-				break;
-				
-			case primitive_piece:
-				primitive_uid=map.segments[index].primitive_uid[0];
-
-				seg=map.segments;
-					
-				for (k=0;k!=map.nsegment;k++) {
-					if (seg->primitive_uid[0]==primitive_uid) segment_rotate_free(seg,ang,cx,cz);
-					seg++;
-				}
-				break;
-		}
-	}
-	
-	main_wind_draw();
-	*/
+	piece_rotate(rot_x,rot_y,rot_z);
 }
 
 /* =======================================================

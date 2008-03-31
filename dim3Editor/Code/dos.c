@@ -34,7 +34,7 @@ and can be sold or given away.
 extern WindowRef				mainwind;
 
 extern int						cr,cx,cz,cy,magnify_factor;
-extern bool						map_opened,primitive_reform_ok;
+extern bool						map_opened;
 
 extern file_path_setup_type		file_path_setup;
 extern setup_type				setup;
@@ -59,7 +59,7 @@ void redraw_windows(void)
         // starting room
     
     if (map.nportal==0) {
-		cr=map_portal_create(&map,(map_x_size/2),(map_z_size/2),(40*map_enlarge),(40*map_enlarge));
+		cr=map_portal_create(&map,(map_max_size/2),(map_max_size/2),(40*map_enlarge),(40*map_enlarge));
 	}
     
         // center in first room
@@ -163,8 +163,8 @@ bool create_first_portal(void)
 	
 		// get first portal
 		
-	cx=map_x_size>>1;
-	cz=map_z_size>>1;
+	cx=map_max_size>>1;
+	cz=map_max_size>>1;
 	cy=200*map_enlarge;
 	
 	map.nportal=0;
@@ -260,8 +260,6 @@ bool file_new_map(bool create_initial_portal)
     
 	redraw_windows();
 	main_wind_tool_fill_group_combo();
-
-	primitive_reform_ok=FALSE;
 	
 	return(TRUE);
 }
@@ -316,7 +314,6 @@ bool file_open_map(void)
 		// set flags as opened
 		
 	map_opened=TRUE;
-	primitive_reform_ok=FALSE;
 	
 	redraw_windows();
 	

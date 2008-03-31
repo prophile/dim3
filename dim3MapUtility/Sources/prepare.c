@@ -143,6 +143,7 @@ void map_prepare_set_mesh_poly_slope(map_mesh_type *mesh,map_mesh_poly_type *mes
 void map_prepare(map_type *map)
 {
 	int					i,n,k,t,simple_cnt;
+	d3pnt				mesh_min,mesh_max,mesh_mid;
 	d3pnt				*pt;
 	portal_type			*portal;
 	map_mesh_type		*mesh;
@@ -198,6 +199,12 @@ void map_prepare(map_type *map)
 				pt++;
 			}
 			
+				// start mesh min/max/mid
+				
+			mesh_min.x=mesh_min.y=mesh_min.z=0;
+			mesh_max.x=mesh_max.y=mesh_max.z=0;
+			mesh_mid.x=mesh_mid.y=mesh_mid.z=0;
+			
 				// run through the mesh polygons
 
 			mesh_poly=mesh->polys;
@@ -240,9 +247,39 @@ void map_prepare(map_type *map)
 
 				mesh_poly->draw.txt_frame_offset=0;
 				mesh_poly->draw.shift_on=((mesh_poly->x_shift!=0.0f) || (mesh_poly->y_shift!=0.0f));
+				
+					// setup mesh min, max, mid
+					
+				if (k==0) {
+					memmove(&mesh_min,&mesh_poly->box.min,sizeof(d3pnt));
+					memmove(&mesh_max,&mesh_poly->box.max,sizeof(d3pnt));
+					memmove(&mesh_mid,&mesh_poly->box.mid,sizeof(d3pnt));
+				}
+				else {
+					if (mesh_poly->box.min.x<mesh_min.x) mesh_min.x=mesh_poly->box.min.x;
+					if (mesh_poly->box.min.y<mesh_min.y) mesh_min.y=mesh_poly->box.min.y;
+					if (mesh_poly->box.min.z<mesh_min.z) mesh_min.z=mesh_poly->box.min.z;
+				
+					if (mesh_poly->box.max.x>mesh_max.x) mesh_max.x=mesh_poly->box.max.x;
+					if (mesh_poly->box.max.y>mesh_max.y) mesh_max.y=mesh_poly->box.max.y;
+					if (mesh_poly->box.max.z>mesh_max.z) mesh_max.z=mesh_poly->box.max.z;
+					
+					mesh_mid.x+=mesh_poly->box.mid.x;
+					mesh_mid.y+=mesh_poly->box.mid.y;
+					mesh_mid.z+=mesh_poly->box.mid.z;
+				}
 			
 				mesh_poly++;
 			}
+			
+				// setup mesh box
+				
+			memmove(&mesh->box.min,&mesh_min,sizeof(d3pnt));
+			memmove(&mesh->box.max,&mesh_max,sizeof(d3pnt));
+			
+			mesh->box.mid.x=mesh_mid.x/mesh->npoly;
+			mesh->box.mid.y=mesh_mid.y/mesh->npoly;
+			mesh->box.mid.z=mesh_mid.z/mesh->npoly;
 		
 			mesh++;
 		}

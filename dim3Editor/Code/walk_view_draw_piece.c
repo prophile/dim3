@@ -695,8 +695,6 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
     }
 	
 	main_wind_set_3D_projection(&view_setup->box,&view_setup->ang,view_setup->fov,(walk_view_near_z+20),(walk_view_far_z-20),walk_view_near_offset);
-	
-	walk_view_draw_segment_handles();
 
 		// position
 		

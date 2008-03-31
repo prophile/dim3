@@ -185,8 +185,8 @@ void map_import_height_map(import_height_map_settings_type *hmi_settings)
 	
 	f_portal_y_sz=(float)(hmi_settings->portal_by-hmi_settings->portal_ty);
 	
-	portal_x_start=(map_x_size/2)-((map_x_size-portal_total_x_sz)/2);
-	portal_z_start=(map_z_size/2)-((map_z_size-portal_total_z_sz)/2);
+	portal_x_start=(map_max_size/2)-((map_max_size-portal_total_x_sz)/2);
+	portal_z_start=(map_max_size/2)-((map_max_size-portal_total_z_sz)/2);
 	
 		// create portals
 	

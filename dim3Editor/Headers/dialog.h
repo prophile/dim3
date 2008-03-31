@@ -52,6 +52,7 @@ extern void dialog_draw_color(WindowRef wind,unsigned long sig,int id,RGBColor *
 extern void dialog_set_focus(WindowRef wind,unsigned long sig,int id);
 extern void dialog_enable(WindowRef wind,unsigned long sig,int id,bool enable);
 extern void dialog_hide(WindowRef wind,unsigned long sig,int id,bool show);
+extern void dialog_redraw(WindowRef wind,unsigned long sig,int id);
 
 //
 // special dialog combos
@@ -103,7 +104,7 @@ extern bool dialog_map_rain_settings_run(void);
 //
 
 extern bool dialog_portal_settings_run(portal_type *portal);
-extern bool dialog_new_portal_run(int *x_size,int *z_size,bool *floor_on,bool *ceiling_on,bool *wall_on,int *div,int *high);
+extern bool dialog_new_portal_run(int *x_size,int *y_size,int *z_size,char *mesh_name);
 extern int dialog_portal_resize_run(void);
 
 //
@@ -120,14 +121,12 @@ extern bool dialog_map_particle_settings_run(map_particle_type *particle);
 extern bool dialog_spot_setting_run(spot_type *spot);
 extern bool dialog_scenery_setting_run(map_scenery_type *scenery);
 extern int dialog_piece_move_to_portal_run(void);
-extern float dialog_free_rotate_run(void);
-extern bool dialog_primitive_settings_run(char *name);
+extern bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z);
 
 //
 // segment dialogs
 //
 
-extern bool dialog_choose_primitive_run(int *portal_idx,bool *in_editor);
 extern bool dialog_choose_library_object_run(char *name);
 
 //

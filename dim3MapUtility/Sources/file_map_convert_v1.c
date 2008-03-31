@@ -329,6 +329,57 @@ void map_convert_enlarge(map_type *map)
       
 ======================================================= */
 
+void map_convert_center_map(map_type *map)
+{
+	int				n,lx,rx,tz,bz,mx,mz;
+	portal_type		*portal;
+	
+	lx=rx=tz=bz=0;
+	
+		// get offsets
+		
+	portal=map->portals;
+	
+	for (n=0;n!=map->nportal;n++) {
+	
+		if (n==0) {
+			lx=portal->x;
+			rx=portal->ex;
+			tz=portal->z;
+			bz=portal->ez;
+		}
+		else {
+			if (portal->x<lx) lx=portal->x;
+			if (portal->ex>rx) rx=portal->ex;
+			if (portal->z<tz) tz=portal->z;
+			if (portal->ez>bz) bz=portal->ez;
+		}
+	
+		portal++;
+	}
+	
+	mx=(map_max_size/2)-((lx+rx)/2);
+	mz=(map_max_size/2)-((tz+bz)/2);
+	
+		// fix the portals
+		
+	portal=map->portals;
+	
+	for (n=0;n!=map->nportal;n++) {
+		portal->x+=mx;
+		portal->ex+=mx;
+		portal->z+=mz;
+		portal->ez+=mz;
+		portal++;
+	}
+}
+
+/* =======================================================
+
+      Turn Segments into Polygons
+      
+======================================================= */
+
 void map_convert_segment_orient_uv(int ptsz,float *gx,float *gy,int txt_ang)
 {
 	int				n;
@@ -831,6 +882,10 @@ bool map_convert_v1(map_type *map)
 
 	map_convert_enlarge(map);
 	map_convert_segments(map);
+	
+		// force portals to be centered in map bounds
+		
+	map_convert_center_map(map);
 
 		// tesselate up any curved or clipped segments into
 		// multiple segments before converting to a mesh

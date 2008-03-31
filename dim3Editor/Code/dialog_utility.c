@@ -448,3 +448,15 @@ void dialog_hide(WindowRef wind,unsigned long sig,int id,bool show)
 	SetControlVisibility(ctrl,show,show);
 }
 
+void dialog_redraw(WindowRef wind,unsigned long sig,int id)
+{
+	ControlRef		ctrl;
+	ControlID		ctrl_id;
+	
+	ctrl_id.signature=sig;
+	ctrl_id.id=id;
+	GetControlByID(wind,&ctrl_id,&ctrl);
+	
+	Draw1Control(ctrl);
+}
+

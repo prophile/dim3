@@ -29,91 +29,93 @@ and can be sold or given away.
 // menu definitions
 //
 
-#define app_menu_apple					128
-#define app_menu_file					129
-#define app_menu_edit					130
-#define app_menu_view					131
-#define app_menu_map					132
-#define app_menu_portal					133
-#define app_menu_pieces					134
-#define app_menu_groups					137
+#define app_menu_apple						128
+#define app_menu_file						129
+#define app_menu_edit						130
+#define app_menu_view						131
+#define app_menu_map						132
+#define app_menu_portal						133
+#define app_menu_pieces						134
+#define app_menu_groups						137
 
-#define kCommandAbout					FOUR_CHAR_CODE('abot')
+#define kCommandAbout						FOUR_CHAR_CODE('abot')
 
-#define kCommandNew						FOUR_CHAR_CODE('new ')
-#define kCommandOpen					FOUR_CHAR_CODE('open')
-#define kCommandClose					FOUR_CHAR_CODE('clse')
-#define kCommandImportOBJ				FOUR_CHAR_CODE('iobj')
-#define kCommandImportHeightMap			FOUR_CHAR_CODE('ihmp')
-#define kCommandAutoGenerateMap			FOUR_CHAR_CODE('atgn')
-#define kCommandSave					FOUR_CHAR_CODE('save')
+#define kCommandNew							FOUR_CHAR_CODE('new ')
+#define kCommandOpen						FOUR_CHAR_CODE('open')
+#define kCommandClose						FOUR_CHAR_CODE('clse')
+#define kCommandImportOBJ					FOUR_CHAR_CODE('iobj')
+#define kCommandImportHeightMap				FOUR_CHAR_CODE('ihmp')
+#define kCommandAutoGenerateMap				FOUR_CHAR_CODE('atgn')
+#define kCommandSave						FOUR_CHAR_CODE('save')
 
-#define kCommandUndo					FOUR_CHAR_CODE('undo')
-#define kCommandCut						FOUR_CHAR_CODE('cut ')
-#define kCommandCopy					FOUR_CHAR_CODE('copy')
-#define kCommandPaste					FOUR_CHAR_CODE('pste')
-#define kCommandClear					FOUR_CHAR_CODE('cler')
+#define kCommandUndo						FOUR_CHAR_CODE('undo')
+#define kCommandCut							FOUR_CHAR_CODE('cut ')
+#define kCommandCopy						FOUR_CHAR_CODE('copy')
+#define kCommandPaste						FOUR_CHAR_CODE('pste')
+#define kCommandClear						FOUR_CHAR_CODE('cler')
 
-#define kCommandView3Panel				FOUR_CHAR_CODE('vw01')
-#define kCommandView4Panel				FOUR_CHAR_CODE('vw02')
-#define kCommandViewPortal				FOUR_CHAR_CODE('vw03')
-#define kCommandViewSitePath			FOUR_CHAR_CODE('vw04')
-#define kCommandViewTopOnly				FOUR_CHAR_CODE('vw05')
-#define kCommandViewForwardOnly			FOUR_CHAR_CODE('vw06')
-#define kCommandViewPerspective			FOUR_CHAR_CODE('vwps')
-#define kCommandViewOrtho				FOUR_CHAR_CODE('vwot')
+#define kCommandView3Panel					FOUR_CHAR_CODE('vw01')
+#define kCommandView4Panel					FOUR_CHAR_CODE('vw02')
+#define kCommandViewPortal					FOUR_CHAR_CODE('vw03')
+#define kCommandViewSitePath				FOUR_CHAR_CODE('vw04')
+#define kCommandViewTopOnly					FOUR_CHAR_CODE('vw05')
+#define kCommandViewForwardOnly				FOUR_CHAR_CODE('vw06')
+#define kCommandViewPerspective				FOUR_CHAR_CODE('vwps')
+#define kCommandViewOrtho					FOUR_CHAR_CODE('vwot')
 
-#define kCommandMapSettings				FOUR_CHAR_CODE('mset')
-#define kCommandMapCounts				FOUR_CHAR_CODE('cset')
-#define kCommandMapOptimizations		FOUR_CHAR_CODE('mopt')
-#define kCommandMapMedia				FOUR_CHAR_CODE('medi')
+#define kCommandMapSettings					FOUR_CHAR_CODE('mset')
+#define kCommandMapCounts					FOUR_CHAR_CODE('cset')
+#define kCommandMapOptimizations			FOUR_CHAR_CODE('mopt')
+#define kCommandMapMedia					FOUR_CHAR_CODE('medi')
 #define kCommandAmbientLightSoundSettings	FOUR_CHAR_CODE('mamb')
-#define kCommandSkySettings				FOUR_CHAR_CODE('msky')
-#define kCommandRainSettings			FOUR_CHAR_CODE('mrin')
-#define kCommandFogSettings				FOUR_CHAR_CODE('mfog')
-#define kCommandAutoGenerateSightPaths	FOUR_CHAR_CODE('agsp')
-#define kCommandRun						FOUR_CHAR_CODE('mrun')
+#define kCommandSkySettings					FOUR_CHAR_CODE('msky')
+#define kCommandRainSettings				FOUR_CHAR_CODE('mrin')
+#define kCommandFogSettings					FOUR_CHAR_CODE('mfog')
+#define kCommandAutoGenerateSightPaths		FOUR_CHAR_CODE('agsp')
+#define kCommandRun							FOUR_CHAR_CODE('mrun')
 
-#define kCommandPortalSettings			FOUR_CHAR_CODE('rset')
-#define kCommandPortalDuplicate			FOUR_CHAR_CODE('rdup')
-#define kCommandPortalDelete			FOUR_CHAR_CODE('rdel')
-#define kCommandResetTextureSize		FOUR_CHAR_CODE('rtsz')
-#define kCommandPortalGoToTop			FOUR_CHAR_CODE('topp')
-#define kCommandPortalGoToBottom		FOUR_CHAR_CODE('botp')
-#define kCommandPortalGoToSelection		FOUR_CHAR_CODE('selp')
-#define kCommandClearPath				FOUR_CHAR_CODE('clrp')
+#define kCommandPortalSettings				FOUR_CHAR_CODE('rset')
+#define kCommandPortalDuplicate				FOUR_CHAR_CODE('rdup')
+#define kCommandPortalDelete				FOUR_CHAR_CODE('rdel')
+#define kCommandResetTextureSize			FOUR_CHAR_CODE('rtsz')
+#define kCommandPortalGoToTop				FOUR_CHAR_CODE('topp')
+#define kCommandPortalGoToBottom			FOUR_CHAR_CODE('botp')
+#define kCommandPortalGoToSelection			FOUR_CHAR_CODE('selp')
+#define kCommandClearPath					FOUR_CHAR_CODE('clrp')
 
-#define kCommandPieceCombineMeshes		FOUR_CHAR_CODE('pcmb')
-#define kCommandPieceTesselatePolygon	FOUR_CHAR_CODE('ptsl')
-#define kCommandPieceAddLibrary			FOUR_CHAR_CODE('padd')
-#define kCommandPieceDuplicate			FOUR_CHAR_CODE('pdup')
-#define kCommandPieceDelete				FOUR_CHAR_CODE('pdel')
-#define kCommandPieceMove				FOUR_CHAR_CODE('pmov')
-#define kCommandPieceDuplicateMove		FOUR_CHAR_CODE('pdmv')
-#define kCommandPieceFlipX				FOUR_CHAR_CODE('pfpx')
-#define kCommandPieceFlipY				FOUR_CHAR_CODE('pfpy')
-#define kCommandPieceFlipZ				FOUR_CHAR_CODE('pfpz')
-#define kCommandPieceRotate				FOUR_CHAR_CODE('prot')
-#define kCommandPieceFreeRotate			FOUR_CHAR_CODE('prtf')
-#define kCommandPieceRaiseY				FOUR_CHAR_CODE('prsy')
-#define kCommandPieceLowerY				FOUR_CHAR_CODE('plry')
+#define kCommandPieceCombineMeshes			FOUR_CHAR_CODE('pcmb')
+#define kCommandPieceTesselatePolygon		FOUR_CHAR_CODE('ptsl')
+#define kCommandPieceAddLibrary				FOUR_CHAR_CODE('padd')
+#define kCommandPieceDuplicate				FOUR_CHAR_CODE('pdup')
+#define kCommandPieceDelete					FOUR_CHAR_CODE('pdel')
+#define kCommandPieceMove					FOUR_CHAR_CODE('pmov')
+#define kCommandPieceDuplicateMove			FOUR_CHAR_CODE('pdmv')
+#define kCommandPieceFlipX					FOUR_CHAR_CODE('pfpx')
+#define kCommandPieceFlipY					FOUR_CHAR_CODE('pfpy')
+#define kCommandPieceFlipZ					FOUR_CHAR_CODE('pfpz')
+#define kCommandPieceRotateX				FOUR_CHAR_CODE('prtx')
+#define kCommandPieceRotateY				FOUR_CHAR_CODE('prty')
+#define kCommandPieceRotateZ				FOUR_CHAR_CODE('prtz')
+#define kCommandPieceFreeRotate				FOUR_CHAR_CODE('prtf')
+#define kCommandPieceRaiseY					FOUR_CHAR_CODE('prsy')
+#define kCommandPieceLowerY					FOUR_CHAR_CODE('plry')
 
-#define kCommandGroupAdd				FOUR_CHAR_CODE('gadd')
-#define kCommandGroupDelete				FOUR_CHAR_CODE('gdel')
-#define kCommandGroupClear				FOUR_CHAR_CODE('gclr')
-#define kCommandGroupMovements			FOUR_CHAR_CODE('mmov')
+#define kCommandGroupAdd					FOUR_CHAR_CODE('gadd')
+#define kCommandGroupDelete					FOUR_CHAR_CODE('gdel')
+#define kCommandGroupClear					FOUR_CHAR_CODE('gclr')
+#define kCommandGroupMovements				FOUR_CHAR_CODE('mmov')
 
-#define kCommandMapRaiseY				FOUR_CHAR_CODE('mrsy')
-#define kCommandMapLowerY				FOUR_CHAR_CODE('mlwy')
+#define kCommandMapRaiseY					FOUR_CHAR_CODE('mrsy')
+#define kCommandMapLowerY					FOUR_CHAR_CODE('mlwy')
 
-#define kCommandPortalResize			FOUR_CHAR_CODE('rsiz')
-#define kCommandPortalFlipHorizontal	FOUR_CHAR_CODE('flph')
-#define kCommandPortalFlipVertical		FOUR_CHAR_CODE('flpv')
-#define kCommandPortalRotate			FOUR_CHAR_CODE('rot ')
-#define kCommandPortalRaiseY			FOUR_CHAR_CODE('rrsy')
-#define kCommandPortalLowerY			FOUR_CHAR_CODE('rlry')
-#define kCommandPortalSplitHorizontal	FOUR_CHAR_CODE('rshz')
-#define kCommandPortalSplitVertical		FOUR_CHAR_CODE('rsvt')
+#define kCommandPortalResize				FOUR_CHAR_CODE('rsiz')
+#define kCommandPortalFlipHorizontal		FOUR_CHAR_CODE('flph')
+#define kCommandPortalFlipVertical			FOUR_CHAR_CODE('flpv')
+#define kCommandPortalRotate				FOUR_CHAR_CODE('rot ')
+#define kCommandPortalRaiseY				FOUR_CHAR_CODE('rrsy')
+#define kCommandPortalLowerY				FOUR_CHAR_CODE('rlry')
+#define kCommandPortalSplitHorizontal		FOUR_CHAR_CODE('rshz')
+#define kCommandPortalSplitVertical			FOUR_CHAR_CODE('rsvt')
 
 //
 // views

@@ -556,8 +556,8 @@ void map_import_obj(import_obj_settings_type *oi_settings)
 	portal_total_x_sz=oi_settings->portal_x_sz*oi_settings->portal_x_cnt;
 	portal_total_z_sz=oi_settings->portal_z_sz*oi_settings->portal_z_cnt;
 	
-	portal_x_start=(map_x_size/2)-((map_x_size-portal_total_x_sz)/2);
-	portal_z_start=(map_z_size/2)-((map_z_size-portal_total_z_sz)/2);
+	portal_x_start=(map_max_size/2)-((map_max_size-portal_total_x_sz)/2);
+	portal_z_start=(map_max_size/2)-((map_max_size-portal_total_z_sz)/2);
 	
 		// create segments from OBJ
 		
