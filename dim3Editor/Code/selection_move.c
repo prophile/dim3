@@ -31,15 +31,18 @@ extern int					vertex_mode;
 
 extern map_type				map;
 
+// supergumba -- can probably delete most of this
+
 /* =======================================================
 
       Get Selection 2D Extent
       
 ======================================================= */
 
+/*
 void select_get_extent(int *min_x,int *min_z,int *min_y,int *max_x,int *max_z,int *max_y)
 {
-/* supergumba
+
 	int				n,sel_count,
 					type,index,t_min_x,t_min_z,t_max_x,t_max_z,t_min_y,t_max_y;
 	
@@ -60,8 +63,9 @@ void select_get_extent(int *min_x,int *min_z,int *min_y,int *max_x,int *max_z,in
 		if (t_max_z>(*max_z)) *max_z=t_max_z;
 		if (t_max_y>(*max_y)) *max_y=t_max_y;
 	}
-	*/
+
 }
+*/
 
 /* =======================================================
 

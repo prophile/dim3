@@ -132,12 +132,12 @@ int piece_import_mesh(char *name,int mx,int my,int mz)
 		// create new mesh
 		
 	portal=&map.portals[cr];
-	mesh_idx=portal->mesh.nmesh;
 	
 	mesh_ok=FALSE;
 	mesh_delete=FALSE;
 	
-	if (map_portal_mesh_add(&map,cr,1)) {
+	mesh_idx=map_portal_mesh_add(&map,cr);
+	if (mesh_idx!=-1) {
 		mesh_delete=TRUE;
 		
 		if (map_portal_mesh_set_vertex_count(&map,cr,mesh_idx,nvertex)) {

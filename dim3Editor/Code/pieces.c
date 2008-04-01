@@ -33,62 +33,8 @@ extern CCrsrHandle			dragcur;
 
 extern unsigned short		effect,effectmask;
 extern int					cr;
-extern bool					dp_primitive,primitive_reform_ok;
 
 extern map_type				map;
-
-/* =======================================================
-
-      Get Piece Extent
-      
-======================================================= */
-
-void piece_get_extent(int type,int index,int *min_x,int *min_z,int *max_x,int *max_z,int *min_y,int *max_y)
-{
-	switch (type) {
-	
-		case segment_piece:
-			map_segment_calculate_extent(&map,index,min_x,min_z,min_y,max_x,max_z,max_y);
-			break;
-			
-		case node_piece:
-			*min_x=*max_x=map.nodes[index].pos.x;
-			*min_z=*max_z=map.nodes[index].pos.z;
-			*min_y=*max_y=map.nodes[index].pos.y;
-			break;
-			
-		case spot_piece:
-			*min_x=*max_x=map.spots[index].pos.x;
-			*min_z=*max_z=map.spots[index].pos.z;
-			*min_y=*max_y=map.spots[index].pos.y;
-			break;
-			
-		case scenery_piece:
-			*min_x=*max_x=map.sceneries[index].pos.x;
-			*min_z=*max_z=map.sceneries[index].pos.z;
-			*min_y=*max_y=map.sceneries[index].pos.y;
-			break;
-			
-		case light_piece:
-			*min_x=*max_x=map.lights[index].pos.x;
-			*min_z=*max_z=map.lights[index].pos.z;
-			*min_y=*max_y=map.lights[index].pos.y;
-			break;
-			
-		case sound_piece:
-			*min_x=*max_x=map.sounds[index].pos.x;
-			*min_z=*max_z=map.sounds[index].pos.z;
-			*min_y=*max_y=map.sounds[index].pos.y;
-			break;
-			
-		case particle_piece:
-			*min_x=*max_x=map.particles[index].pos.x;
-			*min_z=*max_z=map.particles[index].pos.z;
-			*min_y=*max_y=map.particles[index].pos.y;
-			break;
-			
-	}
-}
 
 /* =======================================================
 
@@ -101,10 +47,11 @@ void piece_move_to_portal(int rn)
 /* supergumba
 	int			n,nsel_count,
 				type,index,min_x,min_z,min_y,max_x,max_z,max_y;
+	d3pnt		min,max;
 			
 	undo_clear();
 	
-	select_get_extent(&min_x,&min_z,&min_y,&max_x,&max_z,&max_y);
+	select_get_extent(&min,&max);
 	
 	nsel_count=select_count();
 	
@@ -307,9 +254,8 @@ void piece_duplicate(void)
 
 void piece_delete(void)
 {
-/* supergumba
 	int				n,i,k,nsel_count,
-					type,index;
+					type,portal_idx,main_idx,sub_idx;
 	
 	undo_clear();
 	
@@ -322,34 +268,27 @@ void piece_delete(void)
 	nsel_count=select_count();
 	
 	for (n=0;n!=nsel_count;n++) {
-		select_get(n,&type,&index);
+		select_get(n,&type,&portal_idx,&main_idx,&sub_idx);
 	
 		switch (type) {
 			
-			case segment_piece:
-				segment_delete(index);
+			case mesh_piece:
+				map_portal_mesh_delete(&map,portal_idx,main_idx);
 				break;
 				
-			case primitive_piece:
-				if (!dp_primitive) {
-					primitive_reform_reset_for_delete(index);
-					segment_delete(index);
-				}
-				else {
-					primitive_delete(map.segments[index].primitive_uid[0]);
-					primitive_reform_ok=FALSE;
-				}
+			case liquid_piece:
+				map_portal_liquid_delete(&map,portal_idx,main_idx);
 				break;
 				
 			case spot_piece:
-				for (i=index;i<map.nspot;i++) {
+				for (i=main_idx;i<map.nspot;i++) {
 					map.spots[i]=map.spots[i+1];
 				}
 				map.nspot--;
 				break;
 				
 			case scenery_piece:
-				for (i=index;i<map.nscenery;i++) {
+				for (i=main_idx;i<map.nscenery;i++) {
 					map.sceneries[i]=map.sceneries[i+1];
 				}
 				map.nscenery--;
@@ -357,15 +296,15 @@ void piece_delete(void)
 				
 			case node_piece:
 				for (i=0;i!=map.nnode;i++) {			// clear all linkage
-					if (i==index) continue;
+					if (i==main_idx) continue;
 
 					for (k=0;k!=max_node_link;k++) {
-						if (map.nodes[i].link[k]==index) map.nodes[i].link[k]=-1;
-						if (map.nodes[i].link[k]>index) map.nodes[i].link[k]--;
+						if (map.nodes[i].link[k]==main_idx) map.nodes[i].link[k]=-1;
+						if (map.nodes[i].link[k]>main_idx) map.nodes[i].link[k]--;
 					}
 				}
 
-				for (i=index;i<map.nnode;i++) {
+				for (i=main_idx;i<map.nnode;i++) {
 					map.nodes[i]=map.nodes[i+1];
 				}
 				
@@ -373,21 +312,21 @@ void piece_delete(void)
 				break;
 				
 			case light_piece:
-				for (i=index;i<map.nlight;i++) {
+				for (i=main_idx;i<map.nlight;i++) {
 					map.lights[i]=map.lights[i+1];
 				}
 				map.nlight--;
 				break;
 				
 			case sound_piece:
-				for (i=index;i<map.nsound;i++) {
+				for (i=main_idx;i<map.nsound;i++) {
 					map.sounds[i]=map.sounds[i+1];
 				}
 				map.nsound--;
 				break;
 				
 			case particle_piece:
-				for (i=index;i<map.nparticle;i++) {
+				for (i=main_idx;i<map.nparticle;i++) {
 					map.particles[i]=map.particles[i+1];
 				}
 				map.nparticle--;
@@ -399,7 +338,6 @@ void piece_delete(void)
 	select_clear();
     
 	main_wind_draw();
-	*/
 }
 
 /* =======================================================
@@ -458,14 +396,17 @@ void piece_key(int rn,char ch,bool walk,bool on_side)
 	mv=main_wind_shift_down()?10:1;
 	
 	switch (ch) {
+	
 		case 0x1C:
 			select_move(rn,mv,0,0);
 			main_wind_draw();
 			break;
+			
 		case 0x1D:
 			select_move(rn,-mv,0,0);
 			main_wind_draw();
 			break;
+			
 		case 0x1E:
 			if (walk) {
 				if (main_wind_control_down()) {
@@ -480,6 +421,7 @@ void piece_key(int rn,char ch,bool walk,bool on_side)
 			}
 			main_wind_draw();
 			break;
+			
 		case 0x1F:
 			if (walk) {
 				if (main_wind_control_down()) {
@@ -494,6 +436,7 @@ void piece_key(int rn,char ch,bool walk,bool on_side)
 			}
 			main_wind_draw();
 			break;
+			
 		case 8:
 			piece_delete();
 			main_wind_draw();

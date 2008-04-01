@@ -75,8 +75,7 @@ extern void select_duplicate_copy(void);
 // selection move routines
 //
 
-extern void select_get_extent(int *min_x,int *min_z,int *min_y,int *max_x,int *max_z,int *max_y);
-extern void select_move(int rn,int xadd,int zadd,int yadd);
+extern void select_get_extent(d3pnt *min,d3pnt *max);
 
 //
 // multi-vertex move routines
@@ -129,7 +128,6 @@ extern void segment_rotate_free(segment_type *seg,float ang,int cx,int cz);
 // piece routines
 //
 
-extern void piece_get_extent(int type,int index,int *min_x,int *min_z,int *max_x,int *max_z,int *min_y,int *max_y);
 extern void piece_move_to_portal(int rn);
 extern void piece_duplicate(void);
 extern void piece_delete(void);

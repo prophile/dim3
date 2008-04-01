@@ -35,7 +35,7 @@ extern int				cr,cx,cz,cy,vertex_mode,magnify_factor,
 						txt_palette_y,txt_palette_high;
 extern float			walk_view_y_angle,walk_view_x_angle;
 extern bool				map_opened,swap_panel_forward,swap_panel_side,swap_panel_top,
-						dp_primitive,dp_auto_texture,
+						dp_auto_texture,
 						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide;
 
 extern map_type			map;

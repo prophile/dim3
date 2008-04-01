@@ -45,7 +45,7 @@ extern map_type					map;
 // supergumba -- need to fix this up
 int piece_create_get_spot(int *x,int *y,int *z,int x_wid,int z_wid,int high)
 {
-	int				min_x,min_z,min_y,max_x,max_z,max_y;
+	d3pnt			min,max;
 	portal_type		*portal;
 	
 		// does this portal have any meshes?
@@ -62,10 +62,10 @@ int piece_create_get_spot(int *x,int *y,int *z,int x_wid,int z_wid,int high)
 			// find place in selection
 			
 		if (select_count()!=0) {
-			select_get_extent(&min_x,&min_z,&min_y,&max_x,&max_z,&max_y);
-			*x=(min_x+max_x)>>1;
-			*z=(min_z+max_z)>>1;
-			*y=((min_y+max_y)>>1)-1;
+			select_get_extent(&min,&max);
+			*x=(min.x+max.x)>>1;
+			*z=(min.z+max.z)>>1;
+			*y=((min.y+max.y)>>1)-1;
 		}
 		
 			// no selection, find portal center

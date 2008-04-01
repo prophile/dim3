@@ -335,15 +335,15 @@ void walk_view_portal_go_to_bottom(void)
 
 void walk_view_portal_go_to_selection(void)
 {
-	int				min_x,min_z,min_y,max_x,max_z,max_y;
+	d3pnt			min,max;
 	portal_type		*portal;
 	
-	select_get_extent(&min_x,&min_z,&min_y,&max_x,&max_z,&max_y);
+	select_get_extent(&min,&max);
 	
 	portal=&map.portals[cr];
-	cx=((min_x+max_x)/2)+portal->x;
-	cz=((min_z+max_z)/2)+portal->z;
-	cy=(min_y+max_y)/2;
+	cx=((min.x+max.x)/2)+portal->x;
+	cz=((min.z+max.z)/2)+portal->z;
+	cy=(min.y+max.y)/2;
 
 	main_wind_draw();
 }

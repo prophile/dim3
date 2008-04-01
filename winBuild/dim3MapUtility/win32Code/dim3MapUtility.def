@@ -68,17 +68,19 @@ EXPORTS
 	map_portal_mesh_delete							@221
 	map_portal_mesh_set_vertex_count				@222
 	map_portal_mesh_set_poly_count					@223
-	map_portal_mesh_count_poly						@224
-	map_portal_mesh_create_transparent_sort_lists	@225
-	map_portal_mesh_dispose_transparent_sort_lists	@226
-	map_portal_mesh_calculate_extent				@227
-	map_portal_mesh_get_center						@228
+	map_portal_mesh_duplicate						@224
+	map_portal_mesh_count_total_poly				@225
+	map_portal_mesh_add_poly						@226
+	map_portal_mesh_create_transparent_sort_lists	@227
+	map_portal_mesh_dispose_transparent_sort_lists	@228
+	map_portal_mesh_calculate_extent				@229
+	map_portal_mesh_get_center						@230
 	
-	map_portal_mesh_combine							@230
-	map_portal_mesh_move							@231
-	map_portal_mesh_resize							@232
-	map_portal_mesh_flip							@233
-	map_portal_mesh_rotate							@234
+	map_portal_mesh_combine							@231
+	map_portal_mesh_move							@232
+	map_portal_mesh_resize							@233
+	map_portal_mesh_flip							@234
+	map_portal_mesh_rotate							@235
 
 	map_portal_liquid_add							@240
 	map_portal_liquid_delete						@241

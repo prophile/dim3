@@ -103,8 +103,8 @@ int map_portal_mesh_combine(map_type *map,int portal_idx,int mesh_1_idx,int mesh
 	
 		// create new combined mesh
 		
-	mesh_idx=portal->mesh.nmesh;
-	if (!map_portal_mesh_add(map,portal_idx,1)) return(-1);
+	mesh_idx=map_portal_mesh_add(map,portal_idx);
+	if (mesh_idx==-1) return(-1);
 
 		// get combined meshes
 		// need to get after mesh add as mesh add can change mesh pointers

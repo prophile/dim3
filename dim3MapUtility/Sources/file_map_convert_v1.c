@@ -785,9 +785,8 @@ bool map_convert_segment_section_to_mesh(map_type *map,int rn,int primitive_uid,
 
 		// create new mesh
 
-	mesh_idx=portal->mesh.nmesh;
-
-	if (!map_portal_mesh_add(map,rn,1)) return(FALSE);
+	mesh_idx=map_portal_mesh_add(map,rn);
+	if (mesh_idx==-1) return(FALSE);
 
 	if (!map_portal_mesh_set_vertex_count(map,rn,mesh_idx,nvertex)) {
 		map_portal_mesh_delete(map,rn,mesh_idx);

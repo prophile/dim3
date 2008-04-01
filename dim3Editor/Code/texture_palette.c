@@ -36,7 +36,6 @@ and can be sold or given away.
 #define txt_wind_max_pixel_sz		32
 
 extern int				cr,drag_mode;
-extern bool				dp_primitive;
 
 extern map_type			map;
 

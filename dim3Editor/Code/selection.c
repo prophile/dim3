@@ -178,7 +178,6 @@ void select_flip(int type,int portal_idx,int main_idx,int sub_idx)
 
 void select_sort(void)
 {
-/* supergumba
 	int						n;
 	bool					switch_item;
 	select_item_type		*temp_item;
@@ -190,15 +189,16 @@ void select_sort(void)
 		switch_item=FALSE;
 		
 		for (n=0;n<(nselect_item-1);n++) {
-			if (select_items[n].index<select_items[n+1].index) {
-				memmove(&temp_item,&select_items[n],sizeof(select_item_type));
-				memmove(&select_items[n],&select_items[n+1],sizeof(select_item_type));
-				memmove(&select_items[n+1],&temp_item,sizeof(select_item_type));
-				switch_item=TRUE;
+			if (select_items[n].portal_idx==select_items[n+1].portal_idx) {
+				if (select_items[n].main_idx<select_items[n+1].main_idx) {
+					memmove(&temp_item,&select_items[n],sizeof(select_item_type));
+					memmove(&select_items[n],&select_items[n+1],sizeof(select_item_type));
+					memmove(&select_items[n+1],&temp_item,sizeof(select_item_type));
+					switch_item=TRUE;
+				}
 			}
 		}
 	}
-	*/
 }
 
 /* =======================================================
@@ -229,4 +229,83 @@ void select_duplicate_copy(void)
 	nselect_item=nselect_duplicate_item;
 }
 
+/* =======================================================
+
+      Get Selection Extent
+      
+======================================================= */
+
+void select_get_extent(d3pnt *min,d3pnt *max)
+{
+	int				n,sel_count,
+					type,portal_idx,main_idx,sub_idx;
+	d3pnt			t_min,t_max;
 	
+	min->x=min->z=min->y=map_max_size;
+	max->x=max->z=max->y=-map_max_size;
+	
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&portal_idx,&main_idx,&sub_idx);
+		
+		switch (type) {
+		
+			case mesh_piece:
+				map_portal_mesh_calculate_extent(&map,portal_idx,main_idx,&t_min,&t_max);
+				break;
+				
+			case liquid_piece:
+				t_min.x=map.portals[portal_idx].liquid.liquids[main_idx].lft;
+				t_max.x=map.portals[portal_idx].liquid.liquids[main_idx].rgt;
+				t_min.z=map.portals[portal_idx].liquid.liquids[main_idx].top;
+				t_max.z=map.portals[portal_idx].liquid.liquids[main_idx].bot;
+				t_min.y=t_max.y=map.portals[portal_idx].liquid.liquids[main_idx].y;
+				break;
+				
+			case node_piece:
+				t_min.x=t_max.x=map.nodes[main_idx].pos.x;
+				t_min.y=t_max.y=map.nodes[main_idx].pos.y;
+				t_min.z=t_max.z=map.nodes[main_idx].pos.z;
+				break;
+				
+			case spot_piece:
+				t_min.x=t_max.x=map.spots[main_idx].pos.x;
+				t_min.y=t_max.y=map.spots[main_idx].pos.y;
+				t_min.z=t_max.z=map.spots[main_idx].pos.z;
+				break;
+				
+			case scenery_piece:
+				t_min.x=t_max.x=map.sceneries[main_idx].pos.x;
+				t_min.y=t_max.y=map.sceneries[main_idx].pos.y;
+				t_min.z=t_max.z=map.sceneries[main_idx].pos.z;
+				break;
+				
+			case light_piece:
+				t_min.x=t_max.x=map.lights[main_idx].pos.x;
+				t_min.y=t_max.y=map.lights[main_idx].pos.y;
+				t_min.z=t_max.z=map.lights[main_idx].pos.z;
+				break;
+				
+			case sound_piece:
+				t_min.x=t_max.x=map.sounds[main_idx].pos.x;
+				t_min.y=t_max.y=map.sounds[main_idx].pos.y;
+				t_min.z=t_max.z=map.sounds[main_idx].pos.z;
+				break;
+				
+			case particle_piece:
+				t_min.x=t_max.x=map.particles[main_idx].pos.x;
+				t_min.y=t_max.y=map.particles[main_idx].pos.y;
+				t_min.z=t_max.z=map.particles[main_idx].pos.z;
+				break;
+				
+		}
+			
+		if (t_min.x<(min->x)) min->x=t_min.x;
+		if (t_min.y<(min->y)) min->y=t_min.y;
+		if (t_min.z<(min->z)) min->z=t_min.z;
+		if (t_max.x>(max->x)) max->x=t_max.x;
+		if (t_max.y>(max->y)) max->y=t_max.y;
+		if (t_max.z>(max->z)) max->z=t_max.z;
+	}
+}

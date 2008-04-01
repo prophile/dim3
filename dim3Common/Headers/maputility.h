@@ -804,11 +804,13 @@ extern int map_primitive_create_uid(map_type *map);
 extern void map_primitive_push_uid(segment_type *seg,int primitive_uid);
 extern void map_primitive_pop_uid(segment_type *seg);
 
-extern bool map_portal_mesh_add(map_type *map,int portal_idx,int add_count);
+extern int map_portal_mesh_add(map_type *map,int portal_idx);
 extern bool map_portal_mesh_delete(map_type *map,int portal_idx,int mesh_idx);
 extern bool map_portal_mesh_set_vertex_count(map_type *map,int portal_idx,int mesh_idx,int nvertex);
 extern bool map_portal_mesh_set_poly_count(map_type *map,int portal_idx,int mesh_idx,int npoly);
-extern int map_portal_mesh_count_poly(map_type *map,int portal_idx);
+extern int map_portal_mesh_duplicate(map_type *map,int portal_idx,int mesh_idx);
+extern int map_portal_mesh_count_total_poly(map_type *map,int portal_idx);
+extern int map_portal_mesh_add_poly(map_type *map,int portal_idx,int mesh_idx,int ptsz,int *x,int *y,int *z,float *gx,float *gy,int txt_idx);
 extern bool map_portal_mesh_create_transparent_sort_lists(map_type *map);
 extern void map_portal_mesh_dispose_transparent_sort_lists(map_type *map);
 extern void map_portal_mesh_calculate_extent(map_type *map,int portal_idx,int mesh_idx,d3pnt *min,d3pnt *max);

@@ -35,7 +35,7 @@ extern int				cr,cx,cz,cy,vertex_mode,magnify_factor,
 						txt_palette_y,txt_palette_high;
 extern float			walk_view_y_angle,walk_view_x_angle;
 extern bool				map_opened,
-						dp_primitive,dp_auto_texture,dp_liquid,
+						dp_auto_texture,dp_liquid,
 						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide;
 
 extern map_type			map;
@@ -1670,7 +1670,6 @@ void main_wind_tool_default(void)
 	drag_mode=drag_mode_mesh;
 	grid_mode=grid_mode_small;
 	
-	dp_primitive=TRUE;
 	dp_auto_texture=setup.auto_texture;
 	
 	dp_liquid=dp_object=dp_lightsoundparticle=TRUE;
