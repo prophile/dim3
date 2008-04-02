@@ -147,7 +147,7 @@ void draw_sky_globe(int tick,int y)
 	quadric=gluNewQuadric();
 	gluQuadricNormals(quadric,GLU_NONE);
 	gluQuadricTexture(quadric,GL_TRUE);
-	gluSphere(quadric,(map.sky.radius*map_enlarge),24,24);
+	gluSphere(quadric,map.sky.radius,24,24);
 	gluDeleteQuadric(quadric);
 	
 		// restore
@@ -209,10 +209,10 @@ void draw_sky_dome_panoramic(int tick)
 
 		// dome setup
 	
-	radius=(map.sky.radius*map_enlarge);
+	radius=map.sky.radius;
 	d_radius=(double)radius;
 
-	ty=(map.sky.dome_y*map_enlarge);
+	ty=map.sky.dome_y;
 	top_reduce=d_radius;
 
 	r_add=ANG_to_RAD*(360/20);
@@ -373,10 +373,10 @@ void draw_sky_dome_hemisphere(int tick)
 
 		// dome setup
 	
-	radius=(map.sky.radius*map_enlarge);
+	radius=map.sky.radius;
 	d_radius=(double)radius;
 
-	ty=(map.sky.dome_y*map_enlarge);
+	ty=map.sky.dome_y;
 	top_reduce=d_radius;
 
 	r_add=ANG_to_RAD*(360/20);
@@ -510,8 +510,8 @@ void draw_sky_cylinder(int tick,int y)
 	
 	glMatrixMode(GL_MODELVIEW);
 		
-	high=map.sky.extra_height*map_enlarge;
-	radius=map.sky.radius*map_enlarge;
+	high=map.sky.extra_height;
+	radius=map.sky.radius;
 	
 		// draw the cylinder
 		
@@ -607,7 +607,7 @@ void draw_sky_cube(int tick,int y)
 	glTranslatef(txt_x_shift,txt_y_shift,0.0f);
 	glScalef(txt_fact,txt_fact,1.0f);
 		
-	radius=map.sky.radius*map_enlarge;
+	radius=map.sky.radius;
 	
 	g0=0.001f;
 	g1=0.999f;

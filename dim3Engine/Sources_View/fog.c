@@ -70,8 +70,8 @@ void fog_draw_textured(int tick)
 	
 		// translate to correct height
 
-	high=map.fog.high*map_enlarge;
-	drop=map.fog.drop*map_enlarge;
+	high=map.fog.high;
+	drop=map.fog.drop;
 		
 	glMatrixMode(GL_MODELVIEW);
 	glTranslatef(0.0f,0.0f,-(float)(high-drop));
@@ -90,8 +90,8 @@ void fog_draw_textured(int tick)
 		// drawing layers
 	
 	count=map.fog.count;
-	outer_radius=map.fog.outer_radius*map_enlarge;
-	inner_radius=map.fog.inner_radius*map_enlarge;
+	outer_radius=map.fog.outer_radius;
+	inner_radius=map.fog.inner_radius;
 
 	radius_add=(inner_radius-outer_radius)/count;
 
@@ -172,8 +172,8 @@ void fog_solid_start(void)
 
 	glFogfv(GL_FOG_COLOR,col);
 	glFogi(GL_FOG_MODE,GL_LINEAR);
-	glFogi(GL_FOG_START,(map.fog.inner_radius*map_enlarge));
-	glFogi(GL_FOG_END,(map.fog.outer_radius*map_enlarge));
+	glFogi(GL_FOG_START,map.fog.inner_radius);
+	glFogi(GL_FOG_END,map.fog.outer_radius);
 }
 
 void fog_solid_end(void)

@@ -127,13 +127,15 @@ void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,
 
 void map_convert_liquid(map_type *map,int rn,segment_type *seg)
 {
+	int				liq_idx;
 	portal_type		*portal;
 	map_liquid_type	*liquid;
 
-	if (!map_portal_liquid_add(map,rn,1)) return;
+	liq_idx=map_portal_liquid_add(map,rn);
+	if (liq_idx==-1) return;
 
 	portal=&map->portals[rn];
-	liquid=&portal->liquid.liquids[portal->liquid.nliquid-1];
+	liquid=&portal->liquid.liquids[liq_idx];
 
 	liquid->y=(seg->data.liquid.y+1)*map_enlarge;
 	liquid->lft=seg->data.liquid.lft*map_enlarge;
@@ -858,6 +860,25 @@ bool map_convert_v1(map_type *map)
 	d3pnt				*vlist;
 	portal_type			*portal;
 	segment_type		*seg;
+	
+		// convert map settings
+		
+	map->optimizations.lod_light_distance*=map_enlarge;
+	map->optimizations.lod_bump_distance*=map_enlarge;
+	map->optimizations.lod_specular_distance*=map_enlarge;
+	map->optimizations.lod_glow_distance*=map_enlarge;
+	map->optimizations.lod_model_distance*=map_enlarge;
+	map->optimizations.lod_shadow_distance*=map_enlarge;
+	map->optimizations.lod_effect_distance*=map_enlarge;
+	
+    map->sky.radius*=map_enlarge;
+    map->sky.extra_height*=map_enlarge;
+	map->sky.dome_y*=map_enlarge;
+	
+	map->fog.outer_radius*=map_enlarge;
+	map->fog.inner_radius*=map_enlarge;
+	map->fog.high*=map_enlarge;
+	map->fog.drop*=map_enlarge;
 
 		// memory for vertex and primitive lists
 		// just use enough vertexes to cover most maps,
@@ -951,10 +972,10 @@ bool map_convert_v1(map_type *map)
 	free(plist);
 
 		// convert liquids
+		
+	portal=map->portals;
 
 	for (n=0;n!=map->nportal;n++) {
-	
-		portal=&map->portals[n];
 	
 		portal->liquid.nliquid=0;
 
@@ -964,6 +985,8 @@ bool map_convert_v1(map_type *map)
 			if ((seg->rn==n) && (seg->type==sg_liquid)) map_convert_liquid(map,n,seg);
 			seg++;
 		}
+		
+		portal++;
 	}
 
 		// turn off all segments

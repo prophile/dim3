@@ -466,7 +466,7 @@ void walk_view_draw_portal_liquids(int rn,d3pnt *cpt,bool opaque)
 		glVertex3i(x,y,z);
 
 		glEnd();
-	
+		
 		liquid++;
 	}
 	

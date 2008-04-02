@@ -170,7 +170,7 @@ bool portal_outside_fog(d3pos *pos,portal_type *portal)
 		// use a little greater than fog radius as z
 		// projection can be a bit sloppy
 		
-	dist=((map.fog.outer_radius>>1)*3)*map_enlarge;
+	dist=(map.fog.outer_radius>>1)*3;
 		
 	if (distance_2D_get(portal->x,portal->z,pos->x,pos->z)<dist) return(FALSE);
 	if (distance_2D_get(portal->x,portal->ez,pos->x,pos->z)<dist) return(FALSE);

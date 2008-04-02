@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit ÒCreated with dim3 TechnologyÓ is given on a single
+2. This credit â€œCreated with dim3 Technologyâ€ is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -35,22 +35,25 @@ and can be sold or given away.
       
 ======================================================= */
 
-bool map_portal_liquid_add(map_type *map,int portal_idx,int add_count)
+int map_portal_liquid_add(map_type *map,int portal_idx)
 {
+	int					liquid_idx;
 	portal_liquid_type	*portal_liquid;
 	map_liquid_type		*nptr;
 	
 	portal_liquid=&map->portals[portal_idx].liquid;
+	
+	liquid_idx=portal_liquid->nliquid;
 
 		// create new memory
 
 	if (portal_liquid->nliquid==0) {
-		portal_liquid->liquids=(map_liquid_type*)valloc(add_count*sizeof(map_liquid_type));
-		if (portal_liquid->liquids==NULL) return(FALSE);
+		portal_liquid->liquids=(map_liquid_type*)valloc(sizeof(map_liquid_type));
+		if (portal_liquid->liquids==NULL) return(-1);
 	}
 	else {
-		nptr=(map_liquid_type*)valloc((portal_liquid->nliquid+add_count)*sizeof(map_liquid_type));
-		if (nptr==NULL) return(FALSE);
+		nptr=(map_liquid_type*)valloc((portal_liquid->nliquid+1)*sizeof(map_liquid_type));
+		if (nptr==NULL) return(-1);
 
 		memmove(nptr,portal_liquid->liquids,(portal_liquid->nliquid*sizeof(map_liquid_type)));
 		free(portal_liquid->liquids);
@@ -60,7 +63,7 @@ bool map_portal_liquid_add(map_type *map,int portal_idx,int add_count)
 	
 	portal_liquid->nliquid++;
 
-	return(TRUE);
+	return(liquid_idx);
 }
 
 bool map_portal_liquid_delete(map_type *map,int portal_idx,int liquid_idx)

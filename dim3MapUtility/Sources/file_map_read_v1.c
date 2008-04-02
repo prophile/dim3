@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit “Created with dim3 Technology” is given on a single
+2. This credit ‚ÄúCreated with dim3 Technology‚Äù is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -207,7 +207,7 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					path_tag=xml_findnextchild(path_tag);
                 }
              }
-			
+
 				// walls
 				
             main_seg_tag=xml_findfirstchild("Walls",portal_tag);
@@ -232,7 +232,7 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 			}
 
 				// floors
-				
+
             main_seg_tag=xml_findfirstchild("Floors",portal_tag);
             if (main_seg_tag!=-1) {
                 
@@ -305,7 +305,7 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					seg_tag=xml_findnextchild(seg_tag);
 				}
 			}
-			
+
 				// ambient walls
 				
             main_seg_tag=xml_findfirstchild("Ambients",portal_tag);
@@ -537,12 +537,6 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 			portal_tag=xml_findnextchild(portal_tag);
         }
     }
-	
-	xml_close_file();
-
-	// supergumba -- new mesh stuff
 
 	return(map_convert_v1(map));
-    
-	return(TRUE);
 }

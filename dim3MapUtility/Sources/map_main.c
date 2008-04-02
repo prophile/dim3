@@ -80,13 +80,13 @@ bool map_new(map_type *map,char *name)
 	
 		// optimizations
 		
-	map->optimizations.lod_light_distance=1000;
-	map->optimizations.lod_bump_distance=1000;
-	map->optimizations.lod_specular_distance=1000;
-	map->optimizations.lod_glow_distance=1000;
-	map->optimizations.lod_model_distance=1000;
-	map->optimizations.lod_shadow_distance=500;
-	map->optimizations.lod_effect_distance=1000;
+	map->optimizations.lod_light_distance=1000*map_enlarge;
+	map->optimizations.lod_bump_distance=1000*map_enlarge;
+	map->optimizations.lod_specular_distance=1000*map_enlarge;
+	map->optimizations.lod_glow_distance=1000*map_enlarge;
+	map->optimizations.lod_model_distance=1000*map_enlarge;
+	map->optimizations.lod_shadow_distance=500*map_enlarge;
+	map->optimizations.lod_effect_distance=1000*map_enlarge;
 	
 		// media
 		
@@ -140,8 +140,8 @@ bool map_new(map_type *map,char *name)
     map->sky.south_fill=-1;
     map->sky.east_fill=-1;
     map->sky.west_fill=-1;
-    map->sky.radius=300;
-    map->sky.extra_height=50;
+    map->sky.radius=300*map_enlarge;
+    map->sky.extra_height=50*map_enlarge;
 	map->sky.dome_y=0;
 	map->sky.txt_fact=1;
 	map->sky.txt_x_shift=0;
@@ -151,10 +151,10 @@ bool map_new(map_type *map,char *name)
 		
 	map->fog.on=FALSE;
 	map->fog.count=30;
-	map->fog.outer_radius=1000;
-	map->fog.inner_radius=500;
-	map->fog.high=150;
-	map->fog.drop=50;
+	map->fog.outer_radius=1000*map_enlarge;
+	map->fog.inner_radius=500*map_enlarge;
+	map->fog.high=150*map_enlarge;
+	map->fog.drop=50*map_enlarge;
 	map->fog.texture_idx=0;
 	map->fog.speed=0.001f;
 	map->fog.txt_x_fact=8.0f;
@@ -233,6 +233,8 @@ bool map_new(map_type *map,char *name)
 	
 	for (i=0;i!=max_portal;i++) {
 
+			// clear meshes
+			
 		portal->mesh.nmesh=0;
 		portal->mesh.meshes=NULL;
 	
@@ -246,6 +248,11 @@ bool map_new(map_type *map,char *name)
 			}
 			sight++;
 		}
+		
+			// clear liquids
+			
+		portal->liquid.nliquid=0;
+		portal->liquid.liquids=NULL;
 		
 		portal++;
 	}
@@ -271,13 +278,14 @@ bool map_open(map_type *map,char *name,bool load_bitmaps,bool setup_glowmaps,boo
 	file_paths_data(&maputility_settings.file_path_setup,map->info.load_path,"Maps",map->info.name,"xml");
 	
 	if (!read_map_xml(map)) return(FALSE);
-	map_segments_clear_touch(map);
-	
+
+	map_segments_clear_touch(map);		// supergumba -- needs to be mesh touch
+
 	if (load_bitmaps) {
 		if (!map_textures_read(map)) return(FALSE);
 		if (setup_glowmaps) if (!map_textures_setup_glowmaps(map)) return(FALSE);
 	}
-	
+
 	if (load_shaders) {
 		if (!map_shaders_read(map)) return(FALSE);
 	}

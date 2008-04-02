@@ -822,7 +822,7 @@ extern void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3p
 extern void map_portal_mesh_flip(map_type *map,int portal_idx,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);
 extern void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,float rot_x,float rot_y,float rot_z);
 
-extern bool map_portal_liquid_add(map_type *map,int portal_idx,int add_count);
+extern int map_portal_liquid_add(map_type *map,int portal_idx);
 extern bool map_portal_liquid_delete(map_type *map,int portal_idx,int liquid_idx);
 
 extern int map_segment_group_find_name(map_type *map,char *name);
