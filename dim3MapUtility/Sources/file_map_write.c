@@ -49,21 +49,6 @@ extern maputility_settings_type		maputility_settings;
       
 ======================================================= */
 
-bool portal_has_segment_type(map_type *map,int rn,int seg_type)
-{
-	int				n;
-	segment_type	*seg;
-	
-	seg=map->segments;
-	
-	for (n=0;n!=map->nsegment;n++) {
-		if ((seg->rn==rn) && (seg->type==seg_type)) return(TRUE);
-		seg++;
-	}
-	
-	return(FALSE);
-}
-
 bool portal_has_map_light(map_type *map,int rn)
 {
 	int				n;
@@ -156,98 +141,12 @@ bool portal_has_scenery(map_type *map,int rn)
 
 /* =======================================================
 
-      Write Vertexes and Segments
+      Write Settings
       
 ======================================================= */
 
-void write_single_vertex(int x,int y,int z)
+void write_map_settings_xml(map_type *map)
 {
-    xml_add_tagstart("v");
-	xml_add_attribute_3_coord_int("c3",x,y,z);
-    xml_add_tagend(TRUE);
-}
-
-void write_single_segment(segment_type *seg)
-{
-	if (seg->group_idx!=-1) xml_add_attribute_int("group",seg->group_idx);
-	
-	if (seg->primitive_uid[0]!=-1) xml_add_attribute_short_array("primitive",seg->primitive_uid,max_primitive_stack,TRUE);
-	
-	if (seg->clip!=wc_none) xml_add_attribute_list("clip",(char*)segment_clip_str,seg->clip);
-	if (seg->curve!=cv_none) xml_add_attribute_list("curve",(char*)segment_curve_str,seg->curve);
-	xml_add_attribute_boolean("pass",seg->pass_through);
-	xml_add_attribute_boolean("moveable",seg->moveable);
-	xml_add_attribute_boolean("shiftable",seg->shiftable);
-	xml_add_attribute_boolean("climbable",seg->climbable);
-	xml_add_attribute_boolean("off",!seg->on);
-
-	xml_add_attribute_int("fill",seg->fill);
-	if (seg->txt_ang!=0) xml_add_attribute_int("ang",(seg->txt_ang*90));
-	xml_add_attribute_2_coord_float("uv_off",seg->x_txtoff,seg->y_txtoff);
-	xml_add_attribute_2_coord_float("uv_fct",seg->x_txtfact,seg->y_txtfact);
-	if ((seg->x_shift!=0) || (seg->y_shift!=0)) xml_add_attribute_2_coord_float("shift",seg->x_shift,seg->y_shift);
-	if (seg->dark_factor!=1.0f) xml_add_attribute_float("dark_fct",seg->dark_factor);
-	if (seg->alpha!=1.0f) xml_add_attribute_float("alpha",seg->alpha);
-	
-	if (seg->tag!=0) xml_add_attribute_int("tag",seg->tag);
-
-	if (seg->type==sg_liquid) {
-		xml_add_attribute_int("harm",seg->data.liquid.harm);
-		xml_add_attribute_int("drown_harm",seg->data.liquid.drown_harm);
-		xml_add_attribute_int("drown_tick",seg->data.liquid.drown_tick);
-		xml_add_attribute_float("speed_alter",seg->data.liquid.speed_alter);
-		xml_add_attribute_int("wave_size",seg->data.liquid.wavesize);
-		xml_add_attribute_int("tide_rate",seg->data.liquid.tiderate);
-		xml_add_attribute_int("tide_size",seg->data.liquid.tidesize);
-		xml_add_attribute_list("tide_direction",(char*)liquid_tide_direction_str,seg->data.liquid.tidedirection);
-		xml_add_attribute_color("rgb",&seg->data.liquid.col);
-		xml_add_attribute_float("tint_alpha",seg->data.liquid.tint_alpha);
-	}
-	
-	if (seg->type==sg_ambient_wall) {
-		xml_add_attribute_list("push",(char*)segment_push_str,seg->data.ambient_wall.push);
-	}
-	
-	if (seg->type==sg_ambient_fc) {
-		xml_add_attribute_list("push",(char*)segment_push_str,seg->data.ambient_fc.push);
-	}
-	
-	xml_add_attribute_boolean("lock",seg->lock);
-}
-
-/* =======================================================
-
-      Write Map XML
-      
-======================================================= */
-
-bool write_map_xml(map_type *map)
-{
-    int						i,k,j,frame_count;
-	bool					ok;
-	group_type				*group;
-    portal_type				*portal;
-    portal_sight_list_type	*sight;
-    segment_type			*seg;
-    texture_type			*texture;
-	movement_type			*movement;
-	movement_move_type		*move;
-    map_light_type			*light;
-    map_sound_type			*sound;
-	map_particle_type		*particle;
-    node_type				*node;
-    spot_type				*spot;
-	map_scenery_type		*scenery;
-
-	return(TRUE);		// supergumba -- save in new format
-	
-    xml_new_file();
-    
-    xml_add_tagstart("Map");
-    xml_add_tagend(FALSE);
-    
-        // map info
-    
     xml_add_tagstart("Creator");
     xml_add_attribute_text("name","dim3 Map Editor");
     xml_add_attribute_text("version","2.0");
@@ -358,15 +257,19 @@ bool write_map_xml(map_type *map)
 	xml_add_attribute_color("start_rgb",&map->rain.start_color);
 	xml_add_attribute_color("end_rgb",&map->rain.end_color);
     xml_add_tagend(TRUE);
-	
-         // groups
+}
+
+void write_map_groups_xml(map_type *map)
+{
+	int						n;
+	group_type				*group;
 
 	xml_add_tagstart("Groups");
     xml_add_tagend(FALSE);
     
     group=map->groups;
     
-    for (i=0;i!=map->ngroup;i++) {
+    for (n=0;n!=map->ngroup;n++) {
 		xml_add_tagstart("Group");
 		xml_add_attribute_text("name",group->name);
 		xml_add_tagend(TRUE);
@@ -375,20 +278,24 @@ bool write_map_xml(map_type *map)
     }
     
     xml_add_tagclose("Groups");
-  
-        // textures
+}
+
+void write_map_textures_xml(map_type *map)
+{
+	int						n,frame_count;
+    texture_type			*texture;
 
 	xml_add_tagstart("Fills");
     xml_add_tagend(FALSE);
     
     texture=map->textures;
     
-    for (i=0;i!=max_map_texture;i++) {
+    for (n=0;n!=max_map_texture;n++) {
     
-		frame_count=map_count_texture_frames(map,i);
+		frame_count=map_count_texture_frames(map,n);
 		if (frame_count!=0) {
 			xml_add_tagstart("Fill");
-            xml_add_attribute_int("id",i);
+            xml_add_attribute_int("id",n);
 			bitmap_texture_write_xml(texture,frame_count,TRUE);
             xml_add_tagclose("Fill");
          }
@@ -397,15 +304,20 @@ bool write_map_xml(map_type *map)
     }
     
     xml_add_tagclose("Fills");
-	
-         // movements
+}
+
+void write_map_movements_xml(map_type *map)
+{
+	int						n,k;
+	movement_type			*movement;
+	movement_move_type		*move;
 
 	xml_add_tagstart("Movements");
     xml_add_tagend(FALSE);
     
     movement=map->movements;
     
-    for (i=0;i!=map->nmovement;i++) {
+    for (n=0;n!=map->nmovement;n++) {
     
 		xml_add_tagstart("Movement");
 		xml_add_attribute_text("name",movement->name);
@@ -442,6 +354,173 @@ bool write_map_xml(map_type *map)
     }
     
     xml_add_tagclose("Movements");
+}
+
+/* =======================================================
+
+      Write Vertexes and meshes
+      
+======================================================= */
+
+void write_single_vertex(int x,int y,int z)
+{
+    xml_add_tagstart("v");
+	xml_add_attribute_3_coord_int("c3",x,y,z);
+    xml_add_tagend(TRUE);
+}
+
+void write_single_mesh(map_mesh_type *mesh)
+{
+	int					n,k,nvertex,npoly;
+	d3pnt				*pt;
+	map_mesh_poly_type	*poly;
+
+		// mesh settings
+
+    xml_add_tagstart("Mesh");
+
+  	if (mesh->group_idx!=-1) xml_add_attribute_int("group",mesh->group_idx);
+
+	xml_add_attribute_boolean("off",!mesh->flag.on);
+	xml_add_attribute_boolean("pass",mesh->flag.pass_through);
+	xml_add_attribute_boolean("moveable",mesh->flag.moveable);
+	xml_add_attribute_boolean("climbable",mesh->flag.climbable);
+
+	xml_add_tagend(FALSE);
+
+		// vertexes
+
+    xml_add_tagstart("Vertexes");
+	xml_add_tagend(FALSE);
+
+	nvertex=mesh->nvertex;
+	pt=mesh->vertexes;
+
+	for (n=0;n!=nvertex;n++) {
+		write_single_vertex(pt->x,pt->y,pt->z);
+		pt++;
+	}
+	
+	xml_add_tagclose("Vertexes");
+
+		// polys
+
+    xml_add_tagstart("Polys");
+	xml_add_tagend(FALSE);
+
+	npoly=mesh->npoly;
+	poly=mesh->polys;
+
+	for (n=0;n!=npoly;n++) {
+
+			// single polygon
+
+		xml_add_tagstart("Poly");
+		xml_add_attribute_int("txt",poly->txt_idx);
+		if ((poly->x_shift!=0) || (poly->y_shift!=0)) xml_add_attribute_2_coord_float("shift",poly->x_shift,poly->y_shift);
+		if (poly->dark_factor!=1.0f) xml_add_attribute_float("dark_fct",poly->dark_factor);
+		if (poly->alpha!=1.0f) xml_add_attribute_float("alpha",poly->alpha);
+		xml_add_tagend(FALSE);
+
+			// single polygon points
+
+		for (k=0;k!=poly->ptsz;k++) {
+			xml_add_tagstart("p");
+			xml_add_attribute_int("v",poly->v[k]);
+			xml_add_attribute_2_coord_float("uv",poly->gx[k],poly->gy[k]);
+			xml_add_tagend(TRUE);
+		}
+
+		xml_add_tagclose("Poly");
+
+		poly++;
+	}
+	
+	xml_add_tagclose("Polys");
+
+	xml_add_tagclose("Mesh");
+}
+
+void write_single_liquid(map_liquid_type *liq)
+{
+		// liquid settings
+
+    xml_add_tagstart("Liquid");
+  	if (liq->group_idx!=-1) xml_add_attribute_int("group",liq->group_idx);
+	xml_add_tagend(FALSE);
+
+		// polygon
+
+	xml_add_tagclose("Poly");
+	xml_add_attribute_int("txt",liq->txt_idx);
+	write_single_vertex(liq->lft,liq->y,liq->top);
+	write_single_vertex(liq->rgt,liq->y,liq->bot);
+	xml_add_attribute_2_coord_float("uv_off",liq->x_txtoff,liq->y_txtoff);
+	xml_add_attribute_2_coord_float("uv_size",liq->x_txtfact,liq->y_txtfact);
+	xml_add_attribute_color("rgb",&liq->col);
+	xml_add_attribute_float("alpha",liq->alpha);
+	xml_add_attribute_float("tint_alpha",liq->tint_alpha);
+	if ((liq->x_shift!=0) || (liq->y_shift!=0)) xml_add_attribute_2_coord_float("shift",liq->x_shift,liq->y_shift);
+	xml_add_tagend(TRUE);
+
+		// physics
+
+	xml_add_tagclose("Physic");
+	xml_add_attribute_float("speed_alter",liq->speed_alter);
+	xml_add_tagend(TRUE);
+
+		// harm
+
+	xml_add_tagclose("Harm");
+	xml_add_attribute_int("harm",liq->harm.in_harm);
+	xml_add_attribute_int("drown_harm",liq->harm.drown_harm);
+	xml_add_attribute_int("drown_tick",liq->harm.drown_tick);
+	xml_add_tagend(TRUE);
+
+		// tides
+
+	xml_add_tagclose("Tide");
+	xml_add_attribute_int("rate",liq->tide.rate);
+	xml_add_attribute_int("high",liq->tide.high);
+	xml_add_attribute_int("split",liq->tide.split);
+	xml_add_attribute_list("tide_direction",(char*)liquid_tide_direction_str,liq->tide.direction);
+	xml_add_tagend(TRUE);
+
+	xml_add_tagclose("Liquid");
+}
+
+/* =======================================================
+
+      Write Map XML
+      
+======================================================= */
+
+bool write_map_xml(map_type *map)
+{
+    int						n,k,nmesh,nliq;
+	bool					ok;
+    portal_type				*portal;
+    portal_sight_list_type	*sight;
+    map_mesh_type			*mesh;
+	map_liquid_type			*liq;
+    map_light_type			*light;
+    map_sound_type			*sound;
+	map_particle_type		*particle;
+    node_type				*node;
+    spot_type				*spot;
+	map_scenery_type		*scenery;
+
+    xml_new_file();
+    
+    xml_add_tagstart("Map");
+    xml_add_tagend(FALSE);
+    
+        // map settings
+
+	write_map_settings_xml(map);
+	write_map_groups_xml(map);
+	write_map_textures_xml(map);
+	write_map_movements_xml(map);
    
         // portals
 
@@ -450,7 +529,7 @@ bool write_map_xml(map_type *map)
     
     portal=map->portals;
     
-    for (i=0;i!=map->nportal;i++) {
+    for (n=0;n!=map->nportal;n++) {
         xml_add_tagstart("Portal");
         
         xml_add_attribute_text("name",portal->name);
@@ -513,163 +592,46 @@ bool write_map_xml(map_type *map)
         }
         
         xml_add_tagclose("Paths");
-		
-			// wall segments
-		
-		if (portal_has_segment_type(map,i,sg_wall)) {
-			xml_add_tagstart("Walls");
-			xml_add_tagend(FALSE);
-			
-			for (k=0;k!=map->nsegment;k++) {
-				seg=&map->segments[k];
-				if (seg->rn!=i) continue;
-				if (seg->type!=sg_wall) continue;
-		
-				xml_add_tagstart("Wall");
-				write_single_segment(seg);
-				xml_add_tagend(FALSE);
-			
-				write_single_vertex(seg->data.wall.lx,seg->data.wall.ty,seg->data.wall.lz);
-				write_single_vertex(seg->data.wall.rx,seg->data.wall.by,seg->data.wall.rz);
-			
-				xml_add_tagclose("Wall");
-			}
-			
-			xml_add_tagclose("Walls");
+
+			// meshes
+
+		xml_add_tagstart("Meshes");
+		xml_add_tagend(FALSE);
+
+		nmesh=portal->mesh.nmesh;
+		mesh=portal->mesh.meshes;
+
+		for (k=0;k!=nmesh;k++) {
+			write_single_mesh(mesh);
+			mesh++;
 		}
-		
- 			// floor segments
-			
-		if (portal_has_segment_type(map,i,sg_floor)) {
-			xml_add_tagstart("Floors");
-			xml_add_tagend(FALSE);
-			
-			for (k=0;k!=map->nsegment;k++) {
-				seg=&map->segments[k];
-				if (seg->rn!=i) continue;
-				if (seg->type!=sg_floor) continue;
-		
-				xml_add_tagstart("Floor");
-				write_single_segment(seg);
-				xml_add_tagend(FALSE);
-			
-				for (j=0;j!=seg->data.fc.ptsz;j++) {
-					write_single_vertex(seg->data.fc.x[j],seg->data.fc.y[j],seg->data.fc.z[j]);
-				}
-			
-				xml_add_tagclose("Floor");
-			}
-			
-			xml_add_tagclose("Floors");
+
+        xml_add_tagclose("Meshes");
+
+			// liquids
+
+		xml_add_tagstart("Liquids");
+		xml_add_tagend(FALSE);
+
+		nliq=portal->liquid.nliquid;
+		liq=portal->liquid.liquids;
+
+		for (k=0;k!=nliq;k++) {
+			write_single_liquid(liq);
+			liq++;
 		}
-		
- 			// ceiling segments
-			
-		if (portal_has_segment_type(map,i,sg_ceiling)) {
-			xml_add_tagstart("Ceilings");
-			xml_add_tagend(FALSE);
-			
-			for (k=0;k!=map->nsegment;k++) {
-				seg=&map->segments[k];
-				if (seg->rn!=i) continue;
-				if (seg->type!=sg_ceiling) continue;
-		
-				xml_add_tagstart("Ceiling");
-				write_single_segment(seg);
-				xml_add_tagend(FALSE);
-			
-				for (j=0;j!=seg->data.fc.ptsz;j++) {
-					write_single_vertex(seg->data.fc.x[j],seg->data.fc.y[j],seg->data.fc.z[j]);
-				}
-			
-				xml_add_tagclose("Ceiling");
-			}
-			
-			xml_add_tagclose("Ceilings");
-		}
-		
- 			// liquid segments
-			
-		if (portal_has_segment_type(map,i,sg_liquid)) {
-			xml_add_tagstart("Liquids");
-			xml_add_tagend(FALSE);
-			
-			for (k=0;k!=map->nsegment;k++) {
-				seg=&map->segments[k];
-				if (seg->rn!=i) continue;
-				if (seg->type!=sg_liquid) continue;
-		
-				xml_add_tagstart("Liquid");
-				write_single_segment(seg);
-				xml_add_tagend(FALSE);
-			
-				write_single_vertex(seg->data.liquid.lft,seg->data.liquid.y,seg->data.liquid.top);
-				write_single_vertex(seg->data.liquid.rgt,seg->data.liquid.y,seg->data.liquid.bot);
-			
-				xml_add_tagclose("Liquid");
-			}
-			
-			xml_add_tagclose("Liquids");
-		}
-		
- 			// ambient wall segments
-			
-		if (portal_has_segment_type(map,i,sg_ambient_wall)) {
-			xml_add_tagstart("Ambients");
-			xml_add_tagend(FALSE);
-			
-			for (k=0;k!=map->nsegment;k++) {
-				seg=&map->segments[k];
-				if (seg->rn!=i) continue;
-				if (seg->type!=sg_ambient_wall) continue;
-		
-				xml_add_tagstart("Ambient");
-				write_single_segment(seg);
-				xml_add_tagend(FALSE);
-			
-				write_single_vertex(seg->data.ambient_wall.lx,seg->data.ambient_wall.ty,seg->data.ambient_wall.lz);
-				write_single_vertex(seg->data.ambient_wall.rx,seg->data.ambient_wall.by,seg->data.ambient_wall.rz);
-			
-				xml_add_tagclose("Ambient");
-			}
-			
-			xml_add_tagclose("Ambients");
-		}
-		
- 			// ambient floor/ceiling segments
-			
-		if (portal_has_segment_type(map,i,sg_ambient_fc)) {
-			xml_add_tagstart("Ambient_FCs");
-			xml_add_tagend(FALSE);
-			
-			for (k=0;k!=map->nsegment;k++) {
-				seg=&map->segments[k];
-				if (seg->rn!=i) continue;
-				if (seg->type!=sg_ambient_fc) continue;
-		
-				xml_add_tagstart("Ambient_FC");
-				write_single_segment(seg);
-				xml_add_tagend(FALSE);
-			
-				for (j=0;j!=seg->data.ambient_fc.ptsz;j++) {
-					write_single_vertex(seg->data.ambient_fc.x[j],seg->data.ambient_fc.y[j],seg->data.ambient_fc.z[j]);
-				}
-			
-				xml_add_tagclose("Ambient_FC");
-			}
-			
-			xml_add_tagclose("Ambient_FCs");
-		}
+
+        xml_add_tagclose("Liquids");
 		
 			// scenery
 
-		if (portal_has_scenery(map,i)) {
+		if (portal_has_scenery(map,n)) {
 			xml_add_tagstart("Sceneries");
 			xml_add_tagend(FALSE);
 			
 			for (k=0;k!=map->nscenery;k++) {
 				scenery=&map->sceneries[k];
-				if (scenery->pos.rn!=i) continue;
+				if (scenery->pos.rn!=n) continue;
 				
 				xml_add_tagstart("Scenery");
 				xml_add_attribute_3_coord_int("c3",scenery->pos.x,scenery->pos.y,scenery->pos.z);
@@ -692,13 +654,13 @@ bool write_map_xml(map_type *map)
 		
 			// lights
         
-		if (portal_has_map_light(map,i)) {
+		if (portal_has_map_light(map,n)) {
 			xml_add_tagstart("Lights");
 			xml_add_tagend(FALSE);
 		
 			for (k=0;k!=map->nlight;k++) {
 				light=&map->lights[k];
-				if (light->pos.rn!=i) continue;
+				if (light->pos.rn!=n) continue;
 		
 				xml_add_tagstart("Light");
 				xml_add_attribute_list("type",(char*)light_type_str,light->type);
@@ -715,13 +677,13 @@ bool write_map_xml(map_type *map)
     
 			// sounds
 			
-		if (portal_has_map_sound(map,i)) {
+		if (portal_has_map_sound(map,n)) {
 			xml_add_tagstart("Sounds");
 			xml_add_tagend(FALSE);
 			
 			for (k=0;k!=map->nsound;k++) {
 				sound=&map->sounds[k];
-				if (sound->pos.rn!=i) continue;
+				if (sound->pos.rn!=n) continue;
 			
 				xml_add_tagstart("Sound");
 				xml_add_attribute_text("name",sound->name);
@@ -736,13 +698,13 @@ bool write_map_xml(map_type *map)
 		
 			// particles
 			
-		if (portal_has_map_particle(map,i)) {
+		if (portal_has_map_particle(map,n)) {
 			xml_add_tagstart("Particles");
 			xml_add_tagend(FALSE);
 			
 			for (k=0;k!=map->nparticle;k++) {
 				particle=&map->particles[k];
-				if (particle->pos.rn!=i) continue;
+				if (particle->pos.rn!=n) continue;
 			
 				xml_add_tagstart("Particle");
 				xml_add_attribute_text("name",particle->name);
@@ -758,13 +720,13 @@ bool write_map_xml(map_type *map)
 		
 			// nodes
         
-		if (portal_has_node(map,i)) {
+		if (portal_has_node(map,n)) {
 			xml_add_tagstart("Nodes");
 			xml_add_tagend(FALSE);
 		
 			for (k=0;k!=map->nnode;k++) {
 				node=&map->nodes[k];
-				if (node->pos.rn!=i) continue;
+				if (node->pos.rn!=n) continue;
 			
 				xml_add_tagstart("Node");
 				xml_add_attribute_int("id",k);
@@ -790,13 +752,13 @@ bool write_map_xml(map_type *map)
 			
 			// spots
 
-		if (portal_has_spot(map,i)) {
+		if (portal_has_spot(map,n)) {
 			xml_add_tagstart("Spots");
 			xml_add_tagend(FALSE);
 			
 			for (k=0;k!=map->nspot;k++) {
 				spot=&map->spots[k];
-				if (spot->pos.rn!=i) continue;
+				if (spot->pos.rn!=n) continue;
 				
 				xml_add_tagstart("Spot");
 				xml_add_attribute_int("id",k);

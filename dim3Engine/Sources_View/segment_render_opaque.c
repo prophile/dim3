@@ -187,7 +187,7 @@ void segment_render_opaque_portal_bump_mesh(portal_type *portal,int stencil_pass
 
 void segment_render_opaque_portal_lighting_mesh(portal_type *portal,int stencil_pass)
 {
-	int					n,k,t,ntrig;
+	int					n,k,ntrig;
 	float				dark_factor;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*mesh_poly;
@@ -246,9 +246,9 @@ void segment_render_opaque_portal_lighting_mesh(portal_type *portal,int stencil_
 				glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
 			}
 			else {
-			//	ntrig=mesh_poly->light.trig_count;
-			//	glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)mesh_poly->light.trig_vertex_idx);
-			//	if ((mesh_poly->ptsz-2)!=ntrig) glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+				ntrig=mesh_poly->light.trig_count;
+				glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)mesh_poly->light.trig_vertex_idx);
+				if ((mesh_poly->ptsz-2)!=ntrig) glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
 			}
 
 			mesh_poly++;

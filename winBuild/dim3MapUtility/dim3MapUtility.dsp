@@ -197,15 +197,15 @@ SOURCE=..\..\dim3MapUtility\Sources\auto_generate_utility.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3MapUtility\Sources\file_map_convert_v1.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3MapUtility\Sources\file_map_read.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\dim3MapUtility\Sources\file_map_read_v1.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3MapUtility\Sources\file_map_read_v2.c
 # End Source File
 # Begin Source File
 
