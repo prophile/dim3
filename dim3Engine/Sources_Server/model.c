@@ -77,7 +77,7 @@ model_type* model_find(char *name)
 	mdl=server.models;
 	
 	for (i=0;i!=server.count.model;i++) {
-		if (strcmp(mdl->name,name)==0) return(mdl);
+		if (strcasecmp(mdl->name,name)==0) return(mdl);
 		mdl++;
 	}
 	
@@ -92,7 +92,7 @@ model_type* model_bind_find(char *name,int bind)
 	mdl=server.models;
 	
 	for (i=0;i!=server.count.model;i++) {
-		if ((strcmp(mdl->name,name)==0) && (mdl->bind==bind)) return(mdl);
+		if ((strcasecmp(mdl->name,name)==0) && (mdl->bind==bind)) return(mdl);
 		mdl++;
 	}
 	

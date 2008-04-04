@@ -94,7 +94,7 @@ weapon_type* weapon_find_name(obj_type *obj,char *name)
 	
 	for ((i=0);(i!=server.count.weapon);i++) {
 		if (weap->obj_uid==obj_uid) {
-			if (strcmp(weap->name,name)==0) return(weap);
+			if (strcasecmp(weap->name,name)==0) return(weap);
 		}
 		weap++;
 	}

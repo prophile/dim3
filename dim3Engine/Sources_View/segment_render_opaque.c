@@ -412,7 +412,7 @@ void segment_render_opaque_portal_shader_mesh(portal_type *portal)
 	
 	for (n=0;n!=portal->mesh.nmesh;n++) {
 	
-		if (!mesh->draw.has_shader) {
+		if (!mesh->draw.has_opaque_shader) {
 			mesh++;
 			continue;
 		}
@@ -421,7 +421,7 @@ void segment_render_opaque_portal_shader_mesh(portal_type *portal)
 		
 		for (k=0;k!=mesh->npoly;k++) {
 
-			if (mesh_poly->draw.draw_type!=map_mesh_poly_draw_shader) {
+			if (mesh_poly->draw.draw_type!=map_mesh_poly_draw_opaque_shader) {
 				mesh_poly++;
 				continue;
 			}
@@ -465,7 +465,7 @@ int segment_render_opaque_portal(int rn,int pass_last)
 
 		// attach compiled vertex lists
 
-	if ((portal->mesh.draw.has_glow) || (portal->mesh.draw.has_specular)) {
+	if ((portal->mesh.draw.has_glow) || (portal->mesh.draw.has_specular) || (portal->mesh.draw.has_opaque_shader)) {
 		portal_compile_gl_list_attach(rn,3);
 	}
 	else {
@@ -504,7 +504,7 @@ int segment_render_opaque_portal(int rn,int pass_last)
 
 	if (portal->mesh.draw.has_specular) segment_render_opaque_portal_specular_mesh(portal);
 	if (portal->mesh.draw.has_glow) segment_render_opaque_portal_glow_mesh(portal);
-	if (portal->mesh.draw.has_shader) segment_render_opaque_portal_shader_mesh(portal);
+	if (portal->mesh.draw.has_opaque_shader) segment_render_opaque_portal_shader_mesh(portal);
 
 	return(pass_last);
 }

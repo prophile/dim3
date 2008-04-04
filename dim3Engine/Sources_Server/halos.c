@@ -57,7 +57,7 @@ int halo_find(char *name)
 	halo=server.halos;
 	
 	for (n=0;n!=server.count.halo;n++) {
-		if (strcmp(halo->name,name)==0)  return(n);
+		if (strcasecmp(halo->name,name)==0)  return(n);
 		halo++;
 	}
 	

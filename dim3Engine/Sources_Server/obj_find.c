@@ -124,7 +124,7 @@ obj_type* object_find_name(char *name)
 	obj=server.objs;
 	
 	for ((i=0);(i!=server.count.obj);i++) {
-		if (strcmp(obj->name,name)==0) return(obj);
+		if (strcasecmp(obj->name,name)==0) return(obj);
 		obj++;
 	}
 	
@@ -170,7 +170,7 @@ obj_type* object_find_nearest(int x,int z,int y,char *name,char *type,int team_i
 			// check type
 			
 		if (type!=NULL) {
-			if (strcmp(obj->type,type)!=0) continue;
+			if (strcasecmp(obj->type,type)!=0) continue;
 		}
 		
 			// check team

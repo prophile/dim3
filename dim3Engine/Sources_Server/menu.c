@@ -87,7 +87,7 @@ int menu_find(char *name)
 	menu=hud.menus;
 	
 	for (n=0;n!=hud.count.menu;n++) {
-		if (strcmp(menu->name,name)==0) return(n);
+		if (strcasecmp(menu->name,name)==0) return(n);
 		menu++;
 	}
 	

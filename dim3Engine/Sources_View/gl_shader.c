@@ -38,6 +38,7 @@ extern camera_type			camera;
 
 GLhandleARB					gl_shader_current_prog_obj;
 
+extern int game_time_get(void);
 extern float game_time_fequency_second_get(void);
 
 /* =======================================================
@@ -85,7 +86,10 @@ void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type
 
 	if (shader_prog_obj==0) return;
 
-		// frequency variables
+		// time/frequency variables
+
+	var=glGetUniformLocationARB(shader_prog_obj,"dim3TimeMillisec");
+	if (var!=-1) glUniform1iARB(var,game_time_get());
 		
 	var=glGetUniformLocationARB(shader_prog_obj,"dim3FrequencySecond");
 	if (var!=-1) glUniform1fARB(var,game_time_fequency_second_get());

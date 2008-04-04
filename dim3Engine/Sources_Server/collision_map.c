@@ -900,7 +900,7 @@ void object_move_swim_2(obj_type *obj)
 	i_zmove=(int)zmove;
 
 	if (object_move_xz_2(obj,&i_xmove,&i_ymove,&i_zmove)) {
-		object_to_object_push(obj,i_xmove,i_zmove);
+		object_to_object_push(obj,xmove,zmove);
 	}
 	
 		// bounces

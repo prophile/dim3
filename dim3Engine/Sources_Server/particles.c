@@ -138,7 +138,7 @@ particle_type* particle_find(char *name)
 	particle=server.particles;
 	
 	for (n=0;n!=server.count.particle;n++) {
-		if (strcmp(particle->name,name)==0) return(particle);
+		if (strcasecmp(particle->name,name)==0) return(particle);
 		particle++;
 	}
 	
@@ -153,7 +153,7 @@ int particle_find_index(char *name)
 	particle=server.particles;
 	
 	for (n=0;n!=server.count.particle;n++) {
-		if (strcmp(particle->name,name)==0) return(n);
+		if (strcasecmp(particle->name,name)==0) return(n);
 		particle++;
 	}
 	

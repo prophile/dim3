@@ -589,7 +589,7 @@ void object_set_radar_icon(obj_type *obj)
 	nicon=hud.radar.nicon;
 	
 	for (n=0;n!=nicon;n++) {
-		if (strcmp(hud.radar.icons[n].name,obj->radar.icon)==0) {
+		if (strcasecmp(hud.radar.icons[n].name,obj->radar.icon)==0) {
 			obj->radar.icon_idx=n;
 			return;
 		}

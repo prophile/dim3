@@ -56,7 +56,7 @@ int crosshair_find(char *name)
 	crosshair=server.crosshairs;
 	
 	for (n=0;n!=server.count.crosshair;n++) {
-		if (strcmp(crosshair->name,name)==0)  return(n);
+		if (strcasecmp(crosshair->name,name)==0)  return(n);
 		crosshair++;
 	}
 	

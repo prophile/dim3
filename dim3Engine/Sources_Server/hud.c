@@ -64,7 +64,7 @@ hud_bitmap_type* hud_bitmaps_find(char *name)
 	bitmap=hud.bitmaps;
 	
 	for (n=0;n!=hud.count.bitmap;n++) {
-		if (strcmp(bitmap->name,name)==0) return(bitmap);
+		if (strcasecmp(bitmap->name,name)==0) return(bitmap);
 		bitmap++;
 	}
 	
@@ -79,7 +79,7 @@ hud_text_type* hud_texts_find(char *name)
 	text=hud.texts;
 	
 	for (n=0;n!=hud.count.text;n++) {
-		if (strcmp(text->name,name)==0) return(text);
+		if (strcasecmp(text->name,name)==0) return(text);
 		text++;
 	}
 	
@@ -94,7 +94,7 @@ hud_bar_type* hud_bars_find(char *name)
 	bar=hud.bars;
 	
 	for (n=0;n!=hud.count.bar;n++) {
-		if (strcmp(bar->name,name)==0) return(bar);
+		if (strcasecmp(bar->name,name)==0) return(bar);
 		bar++;
 	}
 	

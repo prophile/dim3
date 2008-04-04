@@ -43,7 +43,7 @@ extern void portal_compile_gl_list_dettach(void);
 
 /* =======================================================
 
-      Segment Sorting
+      Transparent Mesh Sorting
       
 ======================================================= */
 
@@ -144,31 +144,23 @@ void segment_render_transparent_sort(int rn,int cx,int cy,int cz)
 
 /* =======================================================
 
-      Transparent Segment Drawing
+      Transparent Mesh Drawing
       
 ======================================================= */
 
-void segment_render_transparent_portal(int rn)
+void segment_render_transparent_portal_mesh(portal_type *portal)
 {
-	int							n,sort_cnt,frame;
-	unsigned long				txt_id;
-	float						alpha;
-	bool						txt_setup_reset;
-	portal_type					*portal;
-	map_mesh_type				*mesh;
-	map_mesh_poly_type			*mesh_poly;
-	map_mesh_poly_sort_type		*sort_list;
-	texture_type				*texture;
+	int						n,sort_cnt,frame;
+	unsigned long			txt_id;
+	float					alpha;
+	bool					txt_setup_reset;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*mesh_poly;
+	map_mesh_poly_sort_type	*sort_list;
+	texture_type			*texture;
 
-	portal=&map.portals[rn];
-		
-		// if no transparent segments, then just skip
-		
-	if (!portal->mesh.draw.has_transparent) return;
-
-		// attach compiled vertex lists
-
-	portal_compile_gl_list_attach(rn,2);
+	sort_cnt=portal->mesh.draw.sort_cnt;
+	sort_list=portal->mesh.draw.sort_list;
 
 		// this flag tells if we need to reset the
 		// texture setup for transparencies.  It starts
@@ -181,15 +173,6 @@ void segment_render_transparent_portal(int rn)
 		// correctly
 
 	txt_setup_reset=TRUE;
-
-		// sort the segments
-
-	segment_render_transparent_sort(rn,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
-
-	sort_cnt=portal->mesh.draw.sort_cnt;
-	if (sort_cnt==0) return;
-
-	sort_list=portal->mesh.draw.sort_list;
 
 		// texture mapped transparent segments
 		// these are lighted by themselves
@@ -320,9 +303,95 @@ void segment_render_transparent_portal(int rn)
 	gl_texture_transparent_end();
 }
 
+void segment_render_transparent_portal_shader(portal_type *portal)
+{
+	int						n,sort_cnt,frame;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*mesh_poly;
+	map_mesh_poly_sort_type	*sort_list;
+	texture_type			*texture;
+	light_spot_type			*lspot;
+
+	gl_shader_start();
+	gl_texture_shader_start();
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+				
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+
+	sort_cnt=portal->mesh.draw.sort_cnt;
+	sort_list=portal->mesh.draw.sort_list;
+	
+	for (n=0;n!=sort_cnt;n++) {
+		mesh=&portal->mesh.meshes[sort_list[n].mesh_idx];
+	
+		if (!mesh->draw.has_transparent_shader) continue;
+		
+		mesh_poly=&mesh->polys[sort_list[n].poly_idx];
+		if (mesh_poly->draw.draw_type!=map_mesh_poly_draw_transparent_shader) continue;
+
+		texture=&map.textures[mesh_poly->txt_idx];
+		frame=mesh_poly->draw.cur_frame;
+
+		gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
+		gl_shader_set_program(texture->shader.program_obj);
+		
+		lspot=map_portal_find_closest_light(portal,(double)mesh_poly->box.mid.x,(double)mesh_poly->box.mid.y,(double)mesh_poly->box.mid.z,NULL);
+		gl_shader_set_variables(texture->shader.program_obj,&mesh_poly->box.mid,texture,lspot);
+		
+		glNormal3f(mesh_poly->draw.normal[0],mesh_poly->draw.normal[1],mesh_poly->draw.normal[2]);
+
+		glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+	}
+
+	gl_texture_shader_end();
+	gl_shader_end();
+}
+
+void segment_render_transparent_portal(int rn)
+{
+	portal_type			*portal;
+
+	portal=&map.portals[rn];
+		
+		// if no transparent segments, then just skip
+		
+	if (!portal->mesh.draw.has_transparent) return;
+
+		// attach compiled vertex lists
+
+	if (portal->mesh.draw.has_opaque_shader) {
+		portal_compile_gl_list_attach(rn,3);
+	}
+	else {
+		portal_compile_gl_list_attach(rn,2);
+	}
+
+		// sort meshes
+
+	segment_render_transparent_sort(rn,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
+
+		// transparent meshes
+
+	segment_render_transparent_portal_mesh(portal);
+	if (portal->mesh.draw.has_transparent_shader) segment_render_transparent_portal_shader(portal);
+}
+
+/* =======================================================
+
+      Transparent Drawing Mainline
+      
+======================================================= */
+
 void segment_render_transparent(int portal_cnt,int *portal_list)
 {
-	int					i;
+	int				n;
 
 		// setup view
 
@@ -335,8 +404,8 @@ void segment_render_transparent(int portal_cnt,int *portal_list)
 		// we want to go from furthest away to closest
 		// for the transparency sorting
 		
-	for (i=0;i<portal_cnt;i++) {
-		segment_render_transparent_portal(portal_list[i]);
+	for (n=0;n<portal_cnt;n++) {
+		segment_render_transparent_portal(portal_list[n]);
 	}
 
 		// dettach any attached lists

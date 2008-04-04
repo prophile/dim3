@@ -87,7 +87,7 @@ int chooser_find(char *name)
 	chooser=hud.choosers;
 	
 	for (n=0;n!=hud.count.chooser;n++) {
-		if (strcmp(chooser->name,name)==0) return(n);
+		if (strcasecmp(chooser->name,name)==0) return(n);
 		chooser++;
 	}
 	

@@ -82,7 +82,7 @@ proj_setup_type* find_proj_setups(weapon_type *weap,char *name)
 	
 	for (i=0;i!=server.count.proj_setup;i++) {
 		if (proj_setup->weap_uid==weap_uid) {
-			if (strcmp(proj_setup->name,name)==0) return(proj_setup);
+			if (strcasecmp(proj_setup->name,name)==0) return(proj_setup);
 		}
 		proj_setup++;
 	}

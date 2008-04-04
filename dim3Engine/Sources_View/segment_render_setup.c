@@ -91,7 +91,7 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 {
 	int							n,k,i,rn,frame,
 								lod_dist,stencil_pass,stencil_idx;
-	bool						light_changed,global_light_simple;
+	bool						is_transparent,light_changed,global_light_simple;
 	portal_type					*portal;
 	texture_type				*texture;
 	map_mesh_type				*mesh;
@@ -122,7 +122,8 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 		portal->mesh.draw.has_transparent=FALSE;
 		portal->mesh.draw.has_glow=FALSE;
 		portal->mesh.draw.has_specular=FALSE;
-		portal->mesh.draw.has_shader=FALSE;
+		portal->mesh.draw.has_opaque_shader=FALSE;
+		portal->mesh.draw.has_transparent_shader=FALSE;
 
 			// run through the meses
 
@@ -136,7 +137,8 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 			mesh->draw.has_transparent=FALSE;
 			mesh->draw.has_glow=FALSE;
 			mesh->draw.has_specular=FALSE;
-			mesh->draw.has_shader=FALSE;
+			mesh->draw.has_opaque_shader=FALSE;
+			mesh->draw.has_transparent_shader=FALSE;
 			
 			mesh_poly=mesh->polys;
 			
@@ -149,19 +151,30 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 
 				mesh_poly->draw.simple_lighting=(global_light_simple) || (lod_dist>map.optimizations.lod_light_distance) || (mesh_poly->draw.simple_tessel);
 
+					// is texture transparent?
+
+				is_transparent=(mesh_poly->alpha!=1.0f) || (texture->bitmaps[frame].alpha_mode==alpha_mode_transparent);
+
 					// is shader
 
 				if (texture->shader.on) {
-					mesh->draw.has_shader=TRUE;
-					mesh_poly->draw.draw_type=map_mesh_poly_draw_shader;
 					mesh_poly->draw.is_lighting=FALSE;
-					portal->mesh.draw.has_shader=TRUE;
+					if (is_transparent) {
+						mesh_poly->draw.draw_type=map_mesh_poly_draw_transparent_shader;
+						mesh->draw.has_transparent_shader=TRUE;
+						portal->mesh.draw.has_transparent_shader=TRUE;
+					}
+					else {
+						mesh_poly->draw.draw_type=map_mesh_poly_draw_opaque_shader;
+						mesh->draw.has_opaque_shader=TRUE;
+						portal->mesh.draw.has_opaque_shader=TRUE;
+					}
 				}
 				else {
 
 						// is transparent?
 				
-					if ((mesh_poly->alpha!=1.0f) || (texture->bitmaps[frame].alpha_mode==alpha_mode_transparent)) {
+					if (is_transparent) {
 						mesh->draw.has_transparent=TRUE;
 						mesh_poly->draw.draw_type=map_mesh_poly_draw_transparent;
 						mesh_poly->draw.is_lighting=FALSE;

@@ -58,7 +58,7 @@ int script_find_global(char *name,int script_uid)
 	global=js.globals;
 	
 	for (i=0;i!=js.count.global;i++) {
-		if (strcmp(global->name,name)==0) {
+		if (strcasecmp(global->name,name)==0) {
 			if (global->script_uid==script_uid) return(i);
 		}
 		global++;

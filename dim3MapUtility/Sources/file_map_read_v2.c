@@ -41,21 +41,148 @@ extern char				media_type_str[][32],
 
 /* =======================================================
 
+      Read Vertexes, Meshes, Liquids
+      
+======================================================= */
+
+bool read_single_mesh(map_type *map,int portal_idx,int mesh_idx,int mesh_tag)
+{
+	int					n,nvertex,npoly,
+						main_vertex_tag,vertex_tag,main_poly_tag,poly_tag;
+	d3pnt				*pt;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+	mesh=&map->portals[portal_idx].mesh.meshes[mesh_idx];
+
+		// mesh settings
+
+	mesh->group_idx=xml_get_attribute_int_default(mesh_tag,"group",-1);
+
+	mesh->flag.on=!xml_get_attribute_boolean(mesh_tag,"off");
+	mesh->flag.pass_through=xml_get_attribute_boolean(mesh_tag,"pass");
+	mesh->flag.moveable=xml_get_attribute_boolean(mesh_tag,"moveable");
+	mesh->flag.climbable=xml_get_attribute_boolean(mesh_tag,"climbable");			
+
+		// vertexes
+
+    main_vertex_tag=xml_findfirstchild("Vertexes",mesh_tag);
+    if (main_vertex_tag!=-1) {
+    
+        nvertex=xml_countchildren(main_vertex_tag);
+		vertex_tag=xml_findfirstchild("v",main_vertex_tag);
+
+		if (!map_portal_mesh_set_vertex_count(map,portal_idx,mesh_idx,nvertex)) return(FALSE);
+
+		pt=mesh->vertexes;
+
+		for (n=0;n!=nvertex;n++) {
+			xml_get_attribute_3_coord_int(vertex_tag,"c3",&pt->x,&pt->y,&pt->z);
+			pt++;
+			vertex_tag=xml_findnextchild(vertex_tag);
+		}
+	}
+
+		// polys
+
+    main_poly_tag=xml_findfirstchild("Polys",mesh_tag);
+    if (main_poly_tag!=-1) {
+    
+        npoly=xml_countchildren(main_poly_tag);
+		poly_tag=xml_findfirstchild("p",main_poly_tag);
+
+		if (!map_portal_mesh_set_poly_count(map,portal_idx,mesh_idx,npoly)) return(FALSE);
+
+		poly=mesh->polys;
+
+		for (n=0;n!=npoly;n++) {
+
+			poly->txt_idx=xml_get_attribute_int(poly_tag,"txt");
+			poly->ptsz=xml_get_attribute_int_array(poly_tag,"v",poly->v,8);
+			xml_get_attribute_float_array(poly_tag,"x",poly->gx,8);
+			xml_get_attribute_float_array(poly_tag,"y",poly->gy,8);
+
+			xml_get_attribute_2_coord_float(poly_tag,"shift",&poly->x_shift,&poly->y_shift);
+			poly->dark_factor=xml_get_attribute_float_default(poly_tag,"dark_fct",1.0f);
+			poly->alpha=xml_get_attribute_float_default(poly_tag,"alpha",1.0f);
+
+			poly++;
+			poly_tag=xml_findnextchild(poly_tag);
+		}
+	}
+
+	return(TRUE);
+}
+
+void read_single_liquid(map_type *map,int portal_idx,int liquid_idx,int liquid_tag)
+{
+	int					tag;
+	map_liquid_type		*liq;
+
+	liq=&map->portals[portal_idx].liquid.liquids[liquid_idx];
+
+		// liquid settings
+
+	liq->group_idx=xml_get_attribute_int_default(liquid_tag,"group",-1);
+
+		// polygon
+
+    tag=xml_findfirstchild("Poly",liquid_tag);
+    if (tag!=-1) {
+		liq->txt_idx=xml_get_attribute_int(tag,"txt");
+		xml_get_attribute_3_coord_int(tag,"v1",&liq->lft,&liq->y,&liq->top);
+		xml_get_attribute_3_coord_int(tag,"v2",&liq->rgt,&liq->y,&liq->bot);
+		xml_get_attribute_2_coord_float(tag,"uv_off",&liq->x_txtoff,&liq->y_txtoff);
+		xml_get_attribute_2_coord_float(tag,"uv_size",&liq->x_txtfact,&liq->y_txtfact);
+		xml_get_attribute_color(tag,"rgb",&liq->col);
+		liq->alpha=xml_get_attribute_float_default(tag,"alpha",1.0f);
+		liq->tint_alpha=xml_get_attribute_float(tag,"tint_alpha");
+		xml_get_attribute_2_coord_float(tag,"shift",&liq->x_shift,&liq->y_shift);
+	}
+
+		// physics
+
+    tag=xml_findfirstchild("Physic",liquid_tag);
+    if (tag!=-1) {
+		liq->speed_alter=xml_get_attribute_float(tag,"speed_alter");
+	}
+
+		// harm
+
+    tag=xml_findfirstchild("Harm",liquid_tag);
+    if (tag!=-1) {
+		liq->harm.in_harm=xml_get_attribute_int(tag,"harm");
+		liq->harm.drown_harm=xml_get_attribute_int(tag,"drown_harm");
+		liq->harm.drown_tick=xml_get_attribute_int(tag,"drown_tick");
+	}
+
+		// tides
+
+    tag=xml_findfirstchild("Tide",liquid_tag);
+    if (tag!=-1) {
+		liq->tide.rate=xml_get_attribute_int(tag,"rate");
+		liq->tide.high=xml_get_attribute_int(tag,"high");
+		liq->tide.split=xml_get_attribute_int(tag,"split");
+		liq->tide.direction=xml_get_attribute_list(tag,"tide_direction",(char*)liquid_tide_direction_str);
+	}
+}
+
+/* =======================================================
+
       Read Map XML
       
 ======================================================= */
 
 bool decode_map_v2_xml(map_type *map,int map_head)
 {
-	/*
-	int						i,k,j,y,idx,
+	int						i,k,j,y,idx,nmesh,mesh_idx,nliquid,liquid_idx,
 							main_portal_tag,portal_tag,msg_tag,main_path_tag,path_tag,
-							main_seg_tag,seg_tag,main_light_tag,light_tag,main_sound_tag,sound_tag,
+							main_mesh_tag,mesh_tag,main_liquid_tag,liquid_tag,
+							main_light_tag,light_tag,main_sound_tag,sound_tag,
 							main_particle_tag,particle_tag,main_node_tag,node_tag,
 							main_obj_tag,obj_tag,tag,id,cnt;
     portal_type				*portal;
 	portal_sight_list_type	*sight;
-    segment_type			*seg;
     map_light_type			*light;
     map_sound_type			*sound;
 	map_particle_type		*particle;
@@ -111,10 +238,13 @@ bool decode_map_v2_xml(map_type *map,int map_head)
                 }
             }
 
-				// default some items
+				// default some ptrs
 
 			portal->mesh.nmesh=0;
 			portal->mesh.meshes=NULL;
+
+			portal->liquid.nliquid=0;
+			portal->liquid.liquids=NULL;
         
                 // paths
                 
@@ -136,150 +266,55 @@ bool decode_map_v2_xml(map_type *map,int map_head)
                 }
              }
 
-				// walls
-				
-            main_seg_tag=xml_findfirstchild("Walls",portal_tag);
-            if (main_seg_tag!=-1) {
-                
-                cnt=xml_countchildren(main_seg_tag);
-				seg_tag=xml_findfirstchild("Wall",main_seg_tag);
-                
-                for (k=0;k!=cnt;k++) {
-					seg=&map->segments[map->nsegment];
-					map->nsegment++;
-					
-					read_single_segment(seg_tag,seg,i,sg_wall);
+				// mesh
 
-					tag=xml_findfirstchild("v",seg_tag);
-					xml_get_attribute_3_coord_int(tag,"c3",&seg->data.wall.lx,&seg->data.wall.ty,&seg->data.wall.lz);
-					tag=xml_findnextchild(tag);
-					xml_get_attribute_3_coord_int(tag,"c3",&seg->data.wall.rx,&seg->data.wall.by,&seg->data.wall.rz);
-
-					seg_tag=xml_findnextchild(seg_tag);
-				}
-			}
-
-				// floors
-
-            main_seg_tag=xml_findfirstchild("Floors",portal_tag);
-            if (main_seg_tag!=-1) {
-                
-                cnt=xml_countchildren(main_seg_tag);
-				seg_tag=xml_findfirstchild("Floor",main_seg_tag);
-                
-                for (k=0;k!=cnt;k++) {
-					seg=&map->segments[map->nsegment];
-					map->nsegment++;
+			main_mesh_tag=xml_findfirstchild("Meshes",portal_tag);
+			if (main_mesh_tag!=-1) {
+    
+				nmesh=xml_countchildren(main_mesh_tag);
+				if (nmesh!=0) {
 					
-					read_single_segment(seg_tag,seg,i,sg_floor);
-					
-					seg->data.fc.ptsz=xml_countchildren(seg_tag);
-					tag=xml_findfirstchild("v",seg_tag);
-					
-					for (j=0;j!=seg->data.fc.ptsz;j++) {
-						xml_get_attribute_3_coord_int(tag,"c3",&seg->data.fc.x[j],&seg->data.fc.y[j],&seg->data.fc.z[j]);
-						tag=xml_findnextchild(tag);
+					mesh_tag=xml_findfirstchild("Mesh",main_mesh_tag);
+
+					for (k=0;k!=nmesh;k++) {
+
+							// create new mesh
+
+						mesh_idx=map_portal_mesh_add(map,i);
+						if (mesh_idx==-1) return(FALSE);
+
+							// read mesh
+
+						if (!read_single_mesh(map,i,mesh_idx,mesh_tag)) return(FALSE);
+						
+						mesh_tag=xml_findnextchild(mesh_tag);
 					}
-					
-					seg_tag=xml_findnextchild(seg_tag);
-				}
-			}
-			
-				// ceilings
-				
-            main_seg_tag=xml_findfirstchild("Ceilings",portal_tag);
-            if (main_seg_tag!=-1) {
-                
-                cnt=xml_countchildren(main_seg_tag);
-				seg_tag=xml_findfirstchild("Ceiling",main_seg_tag);
-                
-                for (k=0;k!=cnt;k++) {
-					seg=&map->segments[map->nsegment];
-					map->nsegment++;
-					
-					read_single_segment(seg_tag,seg,i,sg_ceiling);
-					
-					seg->data.fc.ptsz=xml_countchildren(seg_tag);
-					tag=xml_findfirstchild("v",seg_tag);
-					
-					for (j=0;j!=seg->data.fc.ptsz;j++) {
-						xml_get_attribute_3_coord_int(tag,"c3",&seg->data.fc.x[j],&seg->data.fc.y[j],&seg->data.fc.z[j]);
-						tag=xml_findnextchild(tag);
-					}
-					
-					seg_tag=xml_findnextchild(seg_tag);
 				}
 			}
 
 				// liquids
-				
-            main_seg_tag=xml_findfirstchild("Liquids",portal_tag);
-            if (main_seg_tag!=-1) {
-                
-                cnt=xml_countchildren(main_seg_tag);
-				seg_tag=xml_findfirstchild("Liquid",main_seg_tag);
-                
-                for (k=0;k!=cnt;k++) {
-					seg=&map->segments[map->nsegment];
-					map->nsegment++;
-					
-					read_single_segment(seg_tag,seg,i,sg_liquid);
-					
-					tag=xml_findfirstchild("v",seg_tag);
-					xml_get_attribute_3_coord_int(tag,"c3",&seg->data.liquid.lft,&seg->data.liquid.y,&seg->data.liquid.top);
-					tag=xml_findnextchild(tag);
-					xml_get_attribute_3_coord_int(tag,"c3",&seg->data.liquid.rgt,&seg->data.liquid.y,&seg->data.liquid.bot);
-					
-					seg_tag=xml_findnextchild(seg_tag);
-				}
-			}
 
-				// ambient walls
-				
-            main_seg_tag=xml_findfirstchild("Ambients",portal_tag);
-            if (main_seg_tag!=-1) {
-                
-                cnt=xml_countchildren(main_seg_tag);
-				seg_tag=xml_findfirstchild("Ambient",main_seg_tag);
-                
-                for (k=0;k!=cnt;k++) {
-					seg=&map->segments[map->nsegment];
-					map->nsegment++;
+			main_liquid_tag=xml_findfirstchild("Liquids",portal_tag);
+			if (main_liquid_tag!=-1) {
+    
+				nliquid=xml_countchildren(main_liquid_tag);
+				if (nliquid!=0) {
 					
-					read_single_segment(seg_tag,seg,i,sg_ambient_wall);
-					
-					tag=xml_findfirstchild("v",seg_tag);
-					xml_get_attribute_3_coord_int(tag,"c3",&seg->data.ambient_wall.lx,&seg->data.ambient_wall.ty,&seg->data.ambient_wall.lz);
-					tag=xml_findnextchild(tag);
-					xml_get_attribute_3_coord_int(tag,"c3",&seg->data.ambient_wall.rx,&seg->data.ambient_wall.by,&seg->data.ambient_wall.rz);
-					
-					seg_tag=xml_findnextchild(seg_tag);
-				}
-			}
-			
-				// ambient floor/ceilings
+					liquid_tag=xml_findfirstchild("Liquid",main_liquid_tag);
 
-            main_seg_tag=xml_findfirstchild("Ambient_FCs",portal_tag);
-            if (main_seg_tag!=-1) {
-                
-                cnt=xml_countchildren(main_seg_tag);
-				seg_tag=xml_findfirstchild("Ambient_FC",main_seg_tag);
-                
-                for (k=0;k!=cnt;k++) {
-					seg=&map->segments[map->nsegment];
-					map->nsegment++;
-					
-					read_single_segment(seg_tag,seg,i,sg_ambient_fc);
-					
-					seg->data.ambient_fc.ptsz=xml_countchildren(seg_tag);
-					tag=xml_findfirstchild("v",seg_tag);
-					
-					for (j=0;j!=seg->data.ambient_fc.ptsz;j++) {
-						xml_get_attribute_3_coord_int(tag,"c3",&seg->data.ambient_fc.x[j],&seg->data.ambient_fc.y[j],&seg->data.ambient_fc.z[j]);
-						tag=xml_findnextchild(tag);
+					for (k=0;k!=nliquid;k++) {
+
+							// create new liquid
+
+						liquid_idx=map_portal_liquid_add(map,i);
+						if (liquid_idx==-1) return(FALSE);
+
+							// read liquid
+
+						read_single_liquid(map,i,liquid_idx,liquid_tag);
+						
+						liquid_tag=xml_findnextchild(liquid_tag);
 					}
-					
-					seg_tag=xml_findnextchild(seg_tag);
 				}
 			}
 
@@ -465,6 +500,6 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 			portal_tag=xml_findnextchild(portal_tag);
         }
     }
-*/
+
 	return(TRUE);
 }

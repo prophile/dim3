@@ -358,7 +358,7 @@ void write_map_movements_xml(map_type *map)
 
 /* =======================================================
 
-      Write Vertexes and meshes
+      Write Vertexes, Meshes, Liquids
       
 ======================================================= */
 

@@ -117,7 +117,7 @@ void liquid_free_memory(void)
 
 /* =======================================================
 
-      Liquid Rendering Liquid
+      Setup Liquid Rendering
       
 ======================================================= */
 
@@ -270,28 +270,20 @@ void liquid_render_portal_liquid_alter_tide(int tick,map_liquid_type *liq)
 	}
 }
 
-void liquid_render_portal_liquid(int tick,portal_type *portal,map_liquid_type *liq)
+int liquid_render_portal_liquid_create_quads(map_liquid_type *liq)
 {
-	int						x,z,x_sz,z_sz,quad_cnt,v_sz,
+	int						x,z,x_sz,z_sz,quad_cnt,
 							tz,bz,tz_add,top_row,bot_row,
 							lx,rx,lx_add,tide_split;
 	int						*d_idx;
-	
-		// create vertexes and UVs
-
-	liquid_render_portal_liquid_create_vertex(portal,liq);
-
-		// alter Ys for tide
-
-	liquid_render_portal_liquid_alter_tide(tick,liq);
-
+		
 		// drawing the quads only draws to the edges
 
 	x_sz=liq->draw.x_sz-1;
-	if (x_sz<=0) return;
+	if (x_sz<=0) return(0);
 
 	z_sz=liq->draw.z_sz-1;
-	if (z_sz<=0) return;
+	if (z_sz<=0) return(0);
 
 	tide_split=liq->tide.split;
 
@@ -332,7 +324,12 @@ void liquid_render_portal_liquid(int tick,portal_type *portal,map_liquid_type *l
 		top_row=bot_row;
 	}
 
-		// vertex array
+	return(quad_cnt);
+}
+
+void liquid_render_portal_liquid_start_array(map_liquid_type *liq)
+{
+	int				v_sz;
 
 	v_sz=((liq->draw.v_cnt*4)*3)*sizeof(float);
 
@@ -354,13 +351,10 @@ void liquid_render_portal_liquid(int tick,portal_type *portal,map_liquid_type *l
 		
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(3,GL_FLOAT,0,liq->draw.cl_list);
+}
 
-		// draw the quads
-
-	glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)liq->draw.idx_list);
-
-		// release the lists
-
+void liquid_render_portal_liquid_end_array(void)
+{
 	glDisableClientState(GL_COLOR_ARRAY);
 
 	glClientActiveTexture(GL_TEXTURE0);
@@ -379,14 +373,81 @@ void liquid_render_portal_liquid(int tick,portal_type *portal,map_liquid_type *l
       
 ======================================================= */
 
+void liquid_render_portal_liquid(int tick,portal_type *portal,map_liquid_type *liq)
+{
+	int						quad_cnt,frame;
+	float					normal[3];
+	d3pnt					mid;
+	texture_type			*texture;
+	light_spot_type			*lspot;
+
+		// setup liquid for drawing
+
+	liquid_render_portal_liquid_create_vertex(portal,liq);
+	liquid_render_portal_liquid_alter_tide(tick,liq);
+	quad_cnt=liquid_render_portal_liquid_create_quads(liq);
+	if (quad_cnt==0) return;
+	
+	liquid_render_portal_liquid_start_array(liq);
+
+		// setup texture
+
+	texture=&map.textures[liq->txt_idx];
+	frame=texture->animate.current_frame&max_texture_frame_mask;
+			
+	if (texture->additive) {
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+	}
+	else {
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	}
+
+		// start shader or regular texture
+
+	if (texture->shader.on) {
+		gl_shader_start();
+		gl_texture_shader_start();
+
+		gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
+		gl_shader_set_program(texture->shader.program_obj);
+		
+		mid.x=(liq->lft+liq->rgt)>>1;
+		mid.y=liq->y;
+		mid.z=(liq->top+liq->bot)>>1;
+
+		lspot=map_portal_find_closest_light(portal,(double)mid.x,(double)mid.y,(double)mid.z,NULL);
+		gl_shader_set_variables(texture->shader.program_obj,&mid,texture,lspot);
+
+		map_portal_calculate_normal_vector(portal,(double)mid.x,(double)mid.y,(double)mid.z,normal);
+		glNormal3f(normal[0],normal[1],normal[2]);
+	}
+	else {
+		gl_texture_transparent_start();
+		gl_texture_transparent_set(texture->bitmaps[frame].gl_id,liq->alpha);
+	}
+
+		// draw the quads
+
+	glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)liq->draw.idx_list);
+
+		// end texture
+
+	if (texture->shader.on) {
+		gl_texture_shader_end();
+		gl_shader_end();
+	}
+	else {
+		gl_texture_transparent_end();
+	}
+
+	liquid_render_portal_liquid_end_array();
+}
+
 void liquid_render_portal(int tick,int rn)
 {
-	int							n,nliquid,frame;
-	unsigned long				txt_id;
-	float						alpha;
+	int							n,nliquid;
 	portal_type					*portal;
 	map_liquid_type				*liq;
-	texture_type				*texture;
 	
 	portal=&map.portals[rn];
 
@@ -397,8 +458,6 @@ void liquid_render_portal(int tick,int rn)
 
 		// setup drawing
 
-	gl_texture_transparent_start();
-						
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
@@ -409,40 +468,14 @@ void liquid_render_portal(int tick,int rn)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 
-	txt_id=-1;
-	alpha=0.0f;
-
 		// run through liquids
 
 	liq=portal->liquid.liquids;
 
 	for (n=0;n!=nliquid;n++) {
-
-		texture=&map.textures[liq->txt_idx];
-		frame=texture->animate.current_frame&max_texture_frame_mask;
-
-			// draw the transparent texture
-
-		if ((texture->bitmaps[frame].gl_id!=txt_id) || (liq->alpha!=alpha)) {
-		
-			txt_id=texture->bitmaps[frame].gl_id;
-			alpha=liq->alpha;
-			gl_texture_transparent_set(txt_id,alpha);
-			
-			if (texture->additive) {
-				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-			}
-			else {
-				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-			}
-		}
-
 		liquid_render_portal_liquid(tick,portal,liq);
-
 		liq++;
 	}
-
-	gl_texture_transparent_end();
 }
 
 /* =======================================================

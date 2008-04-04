@@ -60,7 +60,7 @@ int mark_find(char *name)
 	mark=server.marks;
 	
 	for (n=0;n!=server.count.mark;n++) {
-		if (strcmp(mark->name,name)==0)  return(n);
+		if (strcasecmp(mark->name,name)==0)  return(n);
 		mark++;
 	}
 	

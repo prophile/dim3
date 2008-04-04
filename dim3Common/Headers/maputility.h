@@ -212,7 +212,8 @@ extern char light_type_str[][32];
 #define map_mesh_poly_draw_normal					0
 #define map_mesh_poly_draw_bump						1
 #define map_mesh_poly_draw_transparent				2
-#define map_mesh_poly_draw_shader					3
+#define map_mesh_poly_draw_opaque_shader			3
+#define map_mesh_poly_draw_transparent_shader		4
 
 //
 // group types
@@ -285,7 +286,8 @@ typedef struct		{
 typedef struct		{
 						int							stencil_pass_start,stencil_pass_end;
 						bool						has_normal,has_bump,has_lighting,
-													has_transparent,has_specular,has_glow,has_shader;
+													has_transparent,has_specular,has_glow,
+													has_opaque_shader,has_transparent_shader;
 					} map_mesh_draw_type;
 
 typedef struct		{
@@ -478,7 +480,7 @@ typedef struct		{
 						int							sort_cnt;
 						bool						has_normal,has_bump,has_lighting,
 													has_transparent,has_glow,has_specular,
-													has_shader;
+													has_opaque_shader,has_transparent_shader;
 						map_mesh_poly_sort_type		*sort_list;
 					} portal_mesh_draw_type;
 

@@ -63,7 +63,7 @@ ring_type* ring_find(char *name)
 	ring=server.rings;
 	
 	for (n=0;n!=server.count.ring;n++) {
-		if (strcmp(ring->name,name)==0) return(ring);
+		if (strcasecmp(ring->name,name)==0) return(ring);
 		ring++;
 	}
 	
@@ -78,7 +78,7 @@ int ring_find_index(char *name)
 	ring=server.rings;
 	
 	for (n=0;n!=server.count.ring;n++) {
-		if (strcmp(ring->name,name)==0) return(n);
+		if (strcasecmp(ring->name,name)==0) return(n);
 		ring++;
 	}
 	
