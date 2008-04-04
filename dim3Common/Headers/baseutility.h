@@ -304,6 +304,7 @@ extern bool xml_get_attribute_text(int n,char *name,char *value,int valuesz);
 extern bool xml_get_attribute_text_default_blank(int n,char *name,char *value,int valuesz);
 extern int xml_get_attribute_int(int n,char *name);
 extern int xml_get_attribute_int_default(int n,char *name,int def_int);
+extern int xml_get_attribute_int_array(int n,char *name,int *value,int count);
 extern int xml_get_attribute_short_array(int n,char *name,short *value,int count);
 extern float xml_get_attribute_float(int n,char *name);
 extern float xml_get_attribute_float_default(int n,char *name,float def_float);
@@ -324,6 +325,7 @@ extern bool xml_add_tagclose(char *name);
 
 extern bool xml_add_attribute_text(char *name,char *value);
 extern bool xml_add_attribute_int(char *name,int value);
+extern bool xml_add_attribute_int_array(char *name,int *value,int count,bool removenegone);
 extern bool xml_add_attribute_short_array(char *name,short *value,int count,bool removenegone);
 extern bool xml_add_attribute_float(char *name,float value);
 extern bool xml_add_attribute_float_array(char *name,float *value,int count);

@@ -565,6 +565,32 @@ int xml_get_attribute_int_default(int n,char *name,int def_int)
 	return(atoi(str));
 }
 
+int xml_get_attribute_int_array(int n,char *name,int *value,int count)
+{
+    int			nvalue;
+	char		*c,*c2,str[5120];
+
+	if (!xml_get_attribute_raw(n,name,str,5120)) return(0);
+	if (str[0]==0x0) return(0);
+    
+    nvalue=0;
+    c=str;
+    
+    while (TRUE) {
+        c2=strchr(c,',');
+        if (c2!=NULL) {
+            *c2=0x0;
+        }
+        value[nvalue++]=atoi(c);
+        if (c2==NULL) break;
+        c=c2+1;
+		
+		if (nvalue==count) break;
+    }
+    
+	return(nvalue);
+}
+
 int xml_get_attribute_short_array(int n,char *name,short *value,int count)
 {
     int			nvalue;
@@ -1013,6 +1039,25 @@ bool xml_add_attribute_int(char *name,int value)
 	char		txt[256];
 
 	sprintf(txt,"%d",value);
+	return(xml_add_attribute_text(name,txt));
+}
+
+bool xml_add_attribute_int_array(char *name,int *value,int count,bool removenegone)
+{
+    int			i;
+	char		txt[5120],a[256];
+
+    txt[0]=0x0;
+    
+    for ((i=0);(i!=count);i++) {
+        if ((value[i]==-1) && (removenegone)) continue;
+        sprintf(a,"%d",value[i]);
+        if (txt[0]!=0x0) strcat(txt,",");
+        strcat(txt,a);
+    }
+    
+    if (txt[0]==0x0) return(TRUE);
+    
 	return(xml_add_attribute_text(name,txt));
 }
 

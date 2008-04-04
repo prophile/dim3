@@ -124,6 +124,7 @@ _xml_get_attribute_text
 _xml_get_attribute_text_default_blank
 _xml_get_attribute_int
 _xml_get_attribute_int_default
+_xml_get_attribute_int_array
 _xml_get_attribute_short_array
 _xml_get_attribute_float
 _xml_get_attribute_float_default
@@ -144,6 +145,7 @@ _xml_add_tagclose
 
 _xml_add_attribute_text
 _xml_add_attribute_int
+_xml_add_attribute_int_array
 _xml_add_attribute_short_array
 _xml_add_attribute_float
 _xml_add_attribute_float_array

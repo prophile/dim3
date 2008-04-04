@@ -371,7 +371,7 @@ void write_single_vertex(int x,int y,int z)
 
 void write_single_mesh(map_mesh_type *mesh)
 {
-	int					n,k,nvertex,npoly;
+	int					n,nvertex,npoly;
 	d3pnt				*pt;
 	map_mesh_poly_type	*poly;
 
@@ -415,23 +415,19 @@ void write_single_mesh(map_mesh_type *mesh)
 
 			// single polygon
 
-		xml_add_tagstart("Poly");
+		xml_add_tagstart("p");
+		
 		xml_add_attribute_int("txt",poly->txt_idx);
+		
+		xml_add_attribute_int_array("v",poly->v,poly->ptsz,FALSE);
+		xml_add_attribute_float_array("x",poly->gx,poly->ptsz);
+		xml_add_attribute_float_array("y",poly->gy,poly->ptsz);
+		
 		if ((poly->x_shift!=0) || (poly->y_shift!=0)) xml_add_attribute_2_coord_float("shift",poly->x_shift,poly->y_shift);
 		if (poly->dark_factor!=1.0f) xml_add_attribute_float("dark_fct",poly->dark_factor);
 		if (poly->alpha!=1.0f) xml_add_attribute_float("alpha",poly->alpha);
-		xml_add_tagend(FALSE);
 
-			// single polygon points
-
-		for (k=0;k!=poly->ptsz;k++) {
-			xml_add_tagstart("p");
-			xml_add_attribute_int("v",poly->v[k]);
-			xml_add_attribute_2_coord_float("uv",poly->gx[k],poly->gy[k]);
-			xml_add_tagend(TRUE);
-		}
-
-		xml_add_tagclose("Poly");
+		xml_add_tagend(TRUE);
 
 		poly++;
 	}
@@ -451,10 +447,10 @@ void write_single_liquid(map_liquid_type *liq)
 
 		// polygon
 
-	xml_add_tagclose("Poly");
+	xml_add_tagstart("Poly");
 	xml_add_attribute_int("txt",liq->txt_idx);
-	write_single_vertex(liq->lft,liq->y,liq->top);
-	write_single_vertex(liq->rgt,liq->y,liq->bot);
+	xml_add_attribute_3_coord_int("v1",liq->lft,liq->y,liq->top);
+	xml_add_attribute_3_coord_int("v2",liq->rgt,liq->y,liq->bot);
 	xml_add_attribute_2_coord_float("uv_off",liq->x_txtoff,liq->y_txtoff);
 	xml_add_attribute_2_coord_float("uv_size",liq->x_txtfact,liq->y_txtfact);
 	xml_add_attribute_color("rgb",&liq->col);
@@ -465,13 +461,13 @@ void write_single_liquid(map_liquid_type *liq)
 
 		// physics
 
-	xml_add_tagclose("Physic");
+	xml_add_tagstart("Physic");
 	xml_add_attribute_float("speed_alter",liq->speed_alter);
 	xml_add_tagend(TRUE);
 
 		// harm
 
-	xml_add_tagclose("Harm");
+	xml_add_tagstart("Harm");
 	xml_add_attribute_int("harm",liq->harm.in_harm);
 	xml_add_attribute_int("drown_harm",liq->harm.drown_harm);
 	xml_add_attribute_int("drown_tick",liq->harm.drown_tick);
@@ -479,7 +475,7 @@ void write_single_liquid(map_liquid_type *liq)
 
 		// tides
 
-	xml_add_tagclose("Tide");
+	xml_add_tagstart("Tide");
 	xml_add_attribute_int("rate",liq->tide.rate);
 	xml_add_attribute_int("high",liq->tide.high);
 	xml_add_attribute_int("split",liq->tide.split);

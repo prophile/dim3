@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		260AFEC30D404EAA00F6C42F /* portal_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = 260AFEC20D404EAA00F6C42F /* portal_liquid.c */; };
 		26AFB4320D95B6230004805A /* portal_mesh_update.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AFB4310D95B6230004805A /* portal_mesh_update.c */; };
+		26E372E60DA5AB75009653F2 /* file_map_read_v2.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E372E50DA5AB75009653F2 /* file_map_read_v2.c */; };
 		26FC4AAD0DA2F87A00E6ECED /* file_map_read_v1.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FC4AAC0DA2F87A00E6ECED /* file_map_read_v1.c */; };
 		F50AF9290885FF0E00F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF9280885FF0E00F261B1 /* os_defs.h */; };
 		F50B25C8092065C900879CCC /* file_map_shader.c in Sources */ = {isa = PBXBuildFile; fileRef = F50B25C7092065C900879CCC /* file_map_shader.c */; };
@@ -23,7 +24,6 @@
 		F59C593006BF40C9009851C6 /* segments.c in Sources */ = {isa = PBXBuildFile; fileRef = F59C592F06BF40C9009851C6 /* segments.c */; };
 		F5AD54160BBE1EBD001C7C04 /* baseutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD54150BBE1EBD001C7C04 /* baseutility.h */; };
 		F5AD541F0BBE1F16001C7C04 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD541E0BBE1F16001C7C04 /* OpenGL.framework */; };
-		F5C418F50D3C258400BD96D5 /* file_map_convert_v1.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C418F40D3C258400BD96D5 /* file_map_convert_v1.c */; };
 		F5CE96BE0D23584100512EE1 /* mapimport.h in Headers */ = {isa = PBXBuildFile; fileRef = F5CE96BD0D23584100512EE1 /* mapimport.h */; };
 		F5CE96C30D23586E00512EE1 /* auto_generate_blocking.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CE96C00D23586E00512EE1 /* auto_generate_blocking.c */; };
 		F5CE96C40D23586E00512EE1 /* auto_generate_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CE96C10D23586E00512EE1 /* auto_generate_utility.c */; };
@@ -66,6 +66,7 @@
 /* Begin PBXFileReference section */
 		260AFEC20D404EAA00F6C42F /* portal_liquid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = portal_liquid.c; path = Sources/portal_liquid.c; sourceTree = "<group>"; };
 		26AFB4310D95B6230004805A /* portal_mesh_update.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = portal_mesh_update.c; path = Sources/portal_mesh_update.c; sourceTree = "<group>"; };
+		26E372E50DA5AB75009653F2 /* file_map_read_v2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_map_read_v2.c; path = Sources/file_map_read_v2.c; sourceTree = "<group>"; };
 		26FC4AAC0DA2F87A00E6ECED /* file_map_read_v1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_map_read_v1.c; path = Sources/file_map_read_v1.c; sourceTree = "<group>"; };
 		F50AF9280885FF0E00F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
 		F50B25C7092065C900879CCC /* file_map_shader.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_map_shader.c; path = Sources/file_map_shader.c; sourceTree = "<group>"; };
@@ -86,7 +87,6 @@
 		F5AD541A0BBE1EE6001C7C04 /* libBaseUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBaseUtility.dylib; path = ../dim3Common/Libraries/libBaseUtility.dylib; sourceTree = SOURCE_ROOT; };
 		F5AD541E0BBE1F16001C7C04 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		F5C40DAB05439C17002FA7E9 /* map_frames.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = map_frames.c; path = Sources/map_frames.c; sourceTree = "<group>"; };
-		F5C418F40D3C258400BD96D5 /* file_map_convert_v1.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_map_convert_v1.c; path = Sources/file_map_convert_v1.c; sourceTree = "<group>"; };
 		F5C5353D051C074F00968AF1 /* dim3maputility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dim3maputility.h; path = Headers/dim3maputility.h; sourceTree = "<group>"; };
 		F5C53548051C085800968AF1 /* maputility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = maputility.h; path = ../dim3Common/Headers/maputility.h; sourceTree = SOURCE_ROOT; };
 		F5CE96BD0D23584100512EE1 /* mapimport.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mapimport.h; path = ../dim3Common/Headers/mapimport.h; sourceTree = SOURCE_ROOT; };
@@ -190,8 +190,8 @@
 		F5DA862D059148E60043E685 /* Files */ = {
 			isa = PBXGroup;
 			children = (
-				F5C418F40D3C258400BD96D5 /* file_map_convert_v1.c */,
 				26FC4AAC0DA2F87A00E6ECED /* file_map_read_v1.c */,
+				26E372E50DA5AB75009653F2 /* file_map_read_v2.c */,
 				F5A8B1AF05229DA4008D4331 /* file_map_read.c */,
 				F5A8B1B005229DA4008D4331 /* file_map_write.c */,
 				F5A10B6C052D294C006A2E68 /* file_map_texture.c */,
@@ -353,10 +353,10 @@
 				F5CE96C30D23586E00512EE1 /* auto_generate_blocking.c in Sources */,
 				F5CE96C40D23586E00512EE1 /* auto_generate_utility.c in Sources */,
 				F5CE96C50D23586E00512EE1 /* auto_generate.c in Sources */,
-				F5C418F50D3C258400BD96D5 /* file_map_convert_v1.c in Sources */,
 				260AFEC30D404EAA00F6C42F /* portal_liquid.c in Sources */,
 				26AFB4320D95B6230004805A /* portal_mesh_update.c in Sources */,
 				26FC4AAD0DA2F87A00E6ECED /* file_map_read_v1.c in Sources */,
+				26E372E60DA5AB75009653F2 /* file_map_read_v2.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

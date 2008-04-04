@@ -127,19 +127,20 @@ EXPORTS
 	xml_get_attribute_text_default_blank		@302
 	xml_get_attribute_int						@303
 	xml_get_attribute_int_default				@304
-	xml_get_attribute_short_array				@305
-	xml_get_attribute_float						@306
-	xml_get_attribute_float_default				@307
-	xml_get_attribute_float_array				@308
-	xml_get_attribute_boolean					@309
-	xml_get_attribute_list						@310
-	xml_get_attribute_2_coord_int				@311
-	xml_get_attribute_2_coord_float				@312
-	xml_get_attribute_2_coord_float_default		@313
-	xml_get_attribute_3_coord_int				@314
-	xml_get_attribute_3_coord_float				@315
-	xml_get_attribute_4_coord_float				@316
-	xml_get_attribute_color						@317
+	xml_get_attribute_int_array					@305
+	xml_get_attribute_short_array				@306
+	xml_get_attribute_float						@307
+	xml_get_attribute_float_default				@308
+	xml_get_attribute_float_array				@309
+	xml_get_attribute_boolean					@310
+	xml_get_attribute_list						@311
+	xml_get_attribute_2_coord_int				@312
+	xml_get_attribute_2_coord_float				@313
+	xml_get_attribute_2_coord_float_default		@314
+	xml_get_attribute_3_coord_int				@315
+	xml_get_attribute_3_coord_float				@316
+	xml_get_attribute_4_coord_float				@317
+	xml_get_attribute_color						@318
 
 	xml_add_tagstart							@320
 	xml_add_tagend								@321
@@ -147,17 +148,18 @@ EXPORTS
 
 	xml_add_attribute_text						@330
 	xml_add_attribute_int						@331
-	xml_add_attribute_short_array				@332
-	xml_add_attribute_float						@333
-	xml_add_attribute_float_array				@334
-	xml_add_attribute_boolean					@335
-	xml_add_attribute_list						@336
-	xml_add_attribute_2_coord_int				@337
-	xml_add_attribute_2_coord_float				@338
-	xml_add_attribute_3_coord_int				@339
-	xml_add_attribute_3_coord_float				@340
-	xml_add_attribute_4_coord_float				@341
-	xml_add_attribute_color						@342
+	xml_add_attribute_int_array					@332
+	xml_add_attribute_short_array				@333
+	xml_add_attribute_float						@334
+	xml_add_attribute_float_array				@335
+	xml_add_attribute_boolean					@336
+	xml_add_attribute_list						@337
+	xml_add_attribute_2_coord_int				@338
+	xml_add_attribute_2_coord_float				@339
+	xml_add_attribute_3_coord_int				@340
+	xml_add_attribute_3_coord_float				@341
+	xml_add_attribute_4_coord_float				@342
+	xml_add_attribute_color						@343
 
 
 
