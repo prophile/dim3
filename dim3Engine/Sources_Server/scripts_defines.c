@@ -118,6 +118,10 @@ script_define_type			script_dim3_defines[]={
 								{sd_team_yellow,								"",		"DIM3_TEAM_YELLOW"},
 								{sd_team_purple,								"",		"DIM3_TEAM_PURPLE"},
 
+								{sd_skill_easy,									"",		"DIM3_SKILL_EASY"},
+								{sd_skill_medium,								"",		"DIM3_SKILL_MEDIUM"},
+								{sd_skill_hard,									"",		"DIM3_SKILL_HARD"},
+
 									// main events
 									
 								{sd_event_construct,							"",		"DIM3_EVENT_CONSTRUCT"},

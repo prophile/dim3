@@ -2312,6 +2312,25 @@ int element_key(char ch)
 
 /* =======================================================
 
+      Find Hilite
+      
+======================================================= */
+
+int element_get_selected(void)
+{
+	int			x,y;
+
+	if (element_open_text_field_id!=-1) return(element_open_text_field_id);
+	if (element_open_combo_id!=-1) return(element_open_combo_id);
+
+	input_gui_get_mouse_position(&x,&y);
+	gl_unscale_2D_point(&x,&y);
+				
+	return(element_find_for_xy(x,y));
+}
+
+/* =======================================================
+
       Values
       
 ======================================================= */

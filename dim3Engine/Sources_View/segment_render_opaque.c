@@ -302,7 +302,7 @@ void segment_render_opaque_portal_specular_mesh(portal_type *portal)
 		
 		for (k=0;k!=mesh->npoly;k++) {
 
-			if (mesh_poly->draw.is_specular) {
+			if (!mesh_poly->draw.is_specular) {
 				mesh_poly++;
 				continue;
 			}
@@ -363,7 +363,7 @@ void segment_render_opaque_portal_glow_mesh(portal_type *portal)
 		
 		for (k=0;k!=mesh->npoly;k++) {
 
-			if (mesh_poly->draw.is_glow) {
+			if (!mesh_poly->draw.is_glow) {
 				mesh_poly++;
 				continue;
 			}

@@ -32,14 +32,22 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "sounds.h"
 
-#define intro_button_new_id				0
-#define intro_button_load_id			1
-#define intro_button_join_id			4
-#define intro_button_credit_id			5
-#define intro_button_setup_id			6
-#define intro_button_quit_id			7
+#define intro_button_game_id				0
+#define intro_button_game_new_id			1
+#define intro_button_game_load_id			2
+#define intro_button_game_new_easy_id		3
+#define intro_button_game_new_medium_id		4
+#define intro_button_game_new_hard_id		5
 
-extern bool game_start(int remote_count,network_request_remote_add *remotes,char *err_str);
+#define intro_button_multiplayer_id			6
+#define intro_button_multiplayer_host_id	7
+#define intro_button_multiplayer_join_id	8
+
+#define intro_button_credit_id				9
+#define intro_button_setup_id				10
+#define intro_button_quit_id				11
+
+extern bool game_start(int skill,int remote_count,network_request_remote_add *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
 extern void file_open(void);
 extern void setup_open(bool in_game);
@@ -61,50 +69,44 @@ bitmap_type					intro_bitmap;
       
 ======================================================= */
 
+void intro_open_add_button(hud_intro_button_type *btn,char *name,int id,bool hide)
+{
+	char		sel_name[256],path[1024],path2[1024];
+
+	if (!hud.intro.button_game.on) return;
+
+	sprintf(sel_name,"%s_selected",name);
+
+	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements",name,"png");
+	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements",sel_name,"png");
+	element_button_add(path,path2,id,btn->x,btn->y,btn->wid,btn->high,element_pos_left,element_pos_top);
+
+	if (hide) element_hide(id,TRUE);
+}
+
 void intro_open(void)
 {
 	bool		start_music;
-	char		path[1024],path2[1024],wave_path[1024];
+	char		wave_path[1024];
 	
 		// intro UI
 		
 	gui_initialize("Bitmaps/Backgrounds","main");
+
+	intro_open_add_button(&hud.intro.button_game,"button_game",intro_button_game_id,FALSE);
+	intro_open_add_button(&hud.intro.button_game_new,"button_game_new",intro_button_game_new_id,TRUE);
+	intro_open_add_button(&hud.intro.button_game_load,"button_game_load",intro_button_game_load_id,TRUE);
+	intro_open_add_button(&hud.intro.button_game_new_easy,"button_game_new_easy",intro_button_game_new_easy_id,TRUE);
+	intro_open_add_button(&hud.intro.button_game_new_medium,"button_game_new_medium",intro_button_game_new_medium_id,TRUE);
+	intro_open_add_button(&hud.intro.button_game_new_hard,"button_game_new_hard",intro_button_game_new_hard_id,TRUE);
 	
-	if (hud.intro.button_new.on) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_new_game","png");
-		file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_new_game_selected","png");
-		element_button_add(path,path2,intro_button_new_id,hud.intro.button_new.x,hud.intro.button_new.y,hud.intro.button_new.wid,hud.intro.button_new.high,element_pos_left,element_pos_top);
-	}
-	
-	if (hud.intro.button_load.on) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_load_game","png");
-		file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_load_game_selected","png");
-		element_button_add(path,path2,intro_button_load_id,hud.intro.button_load.x,hud.intro.button_load.y,hud.intro.button_load.wid,hud.intro.button_load.high,element_pos_left,element_pos_top);
-	}
-	
-	if (hud.intro.button_join.on) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_join_game","png");
-		file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_join_game_selected","png");
-		element_button_add(path,path2,intro_button_join_id,hud.intro.button_join.x,hud.intro.button_join.y,hud.intro.button_join.wid,hud.intro.button_join.high,element_pos_left,element_pos_top);
-	}
-	
-	if (hud.intro.button_credit.on) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_credit_game","png");
-		file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_credit_game_selected","png");
-		element_button_add(path,path2,intro_button_credit_id,hud.intro.button_credit.x,hud.intro.button_credit.y,hud.intro.button_credit.wid,hud.intro.button_credit.high,element_pos_left,element_pos_top);
-	}
-	
-	if (hud.intro.button_setup.on) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_setup_game","png");
-		file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_setup_game_selected","png");
-		element_button_add(path,path2,intro_button_setup_id,hud.intro.button_setup.x,hud.intro.button_setup.y,hud.intro.button_setup.wid,hud.intro.button_setup.high,element_pos_left,element_pos_top);
-	}
-	
-	if (hud.intro.button_quit.on) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_quit_game","png");
-		file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_quit_game_selected","png");
-		element_button_add(path,path2,intro_button_quit_id,hud.intro.button_quit.x,hud.intro.button_quit.y,hud.intro.button_quit.wid,hud.intro.button_quit.high,element_pos_left,element_pos_top);
-	}
+	intro_open_add_button(&hud.intro.button_multiplayer,"button_multiplayer",intro_button_multiplayer_id,FALSE);
+	intro_open_add_button(&hud.intro.button_multiplayer_host,"button_multiplayer_host",intro_button_multiplayer_host_id,TRUE);
+	intro_open_add_button(&hud.intro.button_multiplayer_join,"button_multiplayer_join",intro_button_multiplayer_join_id,TRUE);
+
+	intro_open_add_button(&hud.intro.button_credit,"button_credit",intro_button_credit_id,FALSE);
+	intro_open_add_button(&hud.intro.button_setup,"button_setup",intro_button_setup_id,FALSE);
+	intro_open_add_button(&hud.intro.button_quit,"button_quit",intro_button_quit_id,FALSE);
 	
 	server.state=gs_intro;
 	
@@ -150,14 +152,112 @@ void intro_close(bool in_game,bool stop_music)
 
 /* =======================================================
 
+      Intro Show Hide Buttons
+      
+======================================================= */
+
+void intro_show_buttons(void)
+{
+	int			id;
+
+	id=element_get_selected();
+
+	switch (id) {
+
+		case intro_button_game_id:
+			element_hide(intro_button_game_new_id,FALSE);
+			element_hide(intro_button_game_load_id,FALSE);
+			element_hide(intro_button_game_new_easy_id,TRUE);
+			element_hide(intro_button_game_new_medium_id,TRUE);
+			element_hide(intro_button_game_new_hard_id,TRUE);
+			element_hide(intro_button_multiplayer_host_id,TRUE);
+			element_hide(intro_button_multiplayer_join_id,TRUE);
+			break;
+	
+		case intro_button_game_new_id:
+			element_hide(intro_button_game_new_id,FALSE);
+			element_hide(intro_button_game_load_id,FALSE);
+			element_hide(intro_button_game_new_easy_id,FALSE);
+			element_hide(intro_button_game_new_medium_id,FALSE);
+			element_hide(intro_button_game_new_hard_id,FALSE);
+			element_hide(intro_button_multiplayer_host_id,TRUE);
+			element_hide(intro_button_multiplayer_join_id,TRUE);
+			break;
+
+		case intro_button_game_new_easy_id:
+		case intro_button_game_new_medium_id:
+		case intro_button_game_new_hard_id:
+			element_hide(intro_button_game_new_id,FALSE);
+			element_hide(intro_button_game_load_id,TRUE);
+			element_hide(intro_button_game_new_easy_id,FALSE);
+			element_hide(intro_button_game_new_medium_id,FALSE);
+			element_hide(intro_button_game_new_hard_id,FALSE);
+			element_hide(intro_button_multiplayer_host_id,TRUE);
+			element_hide(intro_button_multiplayer_join_id,TRUE);
+			break;
+
+		case intro_button_game_load_id:
+			element_hide(intro_button_game_new_id,FALSE);
+			element_hide(intro_button_game_load_id,FALSE);
+			element_hide(intro_button_game_new_easy_id,TRUE);
+			element_hide(intro_button_game_new_medium_id,TRUE);
+			element_hide(intro_button_game_new_hard_id,TRUE);
+			element_hide(intro_button_multiplayer_host_id,TRUE);
+			element_hide(intro_button_multiplayer_join_id,TRUE);
+			break;
+
+		case intro_button_multiplayer_id:
+		case intro_button_multiplayer_host_id:
+		case intro_button_multiplayer_join_id:
+			element_hide(intro_button_game_new_id,TRUE);
+			element_hide(intro_button_game_load_id,TRUE);
+			element_hide(intro_button_game_new_easy_id,TRUE);
+			element_hide(intro_button_game_new_medium_id,TRUE);
+			element_hide(intro_button_game_new_hard_id,TRUE);
+			element_hide(intro_button_multiplayer_host_id,FALSE);
+			element_hide(intro_button_multiplayer_join_id,FALSE);
+			break;
+
+		default:
+			element_hide(intro_button_game_new_id,TRUE);
+			element_hide(intro_button_game_load_id,TRUE);
+			element_hide(intro_button_game_new_easy_id,TRUE);
+			element_hide(intro_button_game_new_medium_id,TRUE);
+			element_hide(intro_button_game_new_hard_id,TRUE);
+			element_hide(intro_button_multiplayer_host_id,TRUE);
+			element_hide(intro_button_multiplayer_join_id,TRUE);
+			break;
+
+	}
+}
+
+/* =======================================================
+
       Intro Input
       
 ======================================================= */
 
+void intro_click_game(int skill)
+{
+	char			err_str[256];
+
+	intro_close(TRUE,TRUE);
+	net_setup.client.joined=FALSE;
+
+	if (!game_start(skill,0,NULL,err_str)) {
+		error_open(err_str,"Game Start Canceled");
+		return;
+	}
+
+	if (!map_start(FALSE,err_str)) {
+		error_open(err_str,"Game Start Canceled");
+		return;
+	}
+}
+
 void intro_click(void)
 {
 	int				id;
-	char			err_str[256];
 	
 		// element being clicked?
 		
@@ -170,28 +270,33 @@ void intro_click(void)
 		
 	switch (id) {
 	
-		case intro_button_new_id:
-			intro_close(TRUE,TRUE);
-			net_setup.client.joined=FALSE;
-			if (!game_start(0,NULL,err_str)) {
-				error_open(err_str,"Game Start Canceled");
-				break;
-			}
-			if (!map_start(FALSE,err_str)) {
-				error_open(err_str,"Game Start Canceled");
-				break;
-			}
+		case intro_button_game_id:
+		case intro_button_game_new_id:
+		case intro_button_game_new_medium_id:
+			intro_click_game(skill_medium);
+			break;
+
+		case intro_button_game_new_easy_id:
+			intro_click_game(skill_easy);
+			break;
+
+		case intro_button_game_new_hard_id:
+			intro_click_game(skill_hard);
 			break;
 			
-		case intro_button_load_id:
+		case intro_button_game_load_id:
 			intro_close(TRUE,FALSE);
 			net_setup.client.joined=FALSE;
 			file_open();
 			break;
 
-		case intro_button_join_id:
+		case intro_button_multiplayer_id:
+		case intro_button_multiplayer_join_id:
 			intro_close(TRUE,FALSE);
 			join_open();
+			break;
+
+		case intro_button_multiplayer_host_id:
 			break;
 			
 		case intro_button_credit_id:
@@ -219,6 +324,7 @@ void intro_click(void)
 
 void intro_run(void)
 {
+	intro_show_buttons();
 	gui_draw(1.0f,TRUE);
 	intro_click();
 }

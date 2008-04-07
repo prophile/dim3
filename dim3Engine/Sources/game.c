@@ -39,7 +39,7 @@ extern network_setup_type	net_setup;
 
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
-extern bool server_game_start(char *game_script_name,int remote_count,network_request_remote_add *remotes,char *err_str);
+extern bool server_game_start(char *game_script_name,int skill,int remote_count,network_request_remote_add *remotes,char *err_str);
 extern void server_game_stop(void);
 extern void view_game_start(void);
 extern void view_game_stop(void);
@@ -50,7 +50,7 @@ extern void view_game_stop(void);
       
 ======================================================= */
 
-bool game_start(int remote_count,network_request_remote_add *remotes,char *err_str)
+bool game_start(int skill,int remote_count,network_request_remote_add *remotes,char *err_str)
 {
 		// pause time
 		
@@ -69,7 +69,7 @@ bool game_start(int remote_count,network_request_remote_add *remotes,char *err_s
 
 		// start server
 	
-	if (!server_game_start("Game",remote_count,remotes,err_str)) {
+	if (!server_game_start("Game",skill,remote_count,remotes,err_str)) {
 		return(FALSE);
 	}
 	

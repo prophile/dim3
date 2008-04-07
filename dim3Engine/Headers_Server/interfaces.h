@@ -65,6 +65,8 @@ extern void element_slider_add(char *str,float value,float value_min,float value
 extern void element_table_add(element_column_type* cols,char *row_data,int id,int ncolumn,int x,int y,int wid,int high);
 extern void element_tab_add(char *path_list,char *path2_list,int value,int id,int ntab,int x,int y,int wid,int high,int ext_high);
 
+extern int element_get_selected(void);
+
 extern int element_get_value(int id);
 extern float element_get_slider_value(int id);
 extern void element_get_value_string(int id,char *str);

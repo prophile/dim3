@@ -278,7 +278,9 @@ typedef struct		{
 					} hud_intro_button_type;
 					
 typedef struct		{
-						hud_intro_button_type	button_new,button_load,button_join,
+						hud_intro_button_type	button_game,button_game_new,button_game_load,
+												button_game_new_easy,button_game_new_medium,button_game_new_hard,
+												button_multiplayer,button_multiplayer_host,button_multiplayer_join,
 												button_credit,button_setup,button_quit;
 					} hud_intro_type;
 

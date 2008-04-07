@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "objects.h"
 
 extern map_type					map;
+extern server_type				server;
 
 /* =======================================================
 
@@ -77,12 +78,14 @@ void spot_start_attach(void)
 	int					i;
 	spot_type			*spot;
 	
-		// create the spots
+		// check if a spot was attached by a
+		// script.  If it was, and the skill levels
+		// are OK, spawn this object into the map
 		
 	spot=map.spots;
 	
 	for (i=0;i!=map.nspot;i++) {
-		if (spot->attach) spot_start_object(spot);
+		if ((spot->attach) && (spot->skill<=server.skill)) spot_start_object(spot);
 		spot++;
 	}
 }

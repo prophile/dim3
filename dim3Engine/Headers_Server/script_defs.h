@@ -112,6 +112,7 @@ and can be sold or given away.
 
 #define game_setting_prop_type						0
 #define game_setting_prop_multiplayer				1
+#define game_setting_prop_skill						2
 
 #define game_score_prop_kill						0
 #define game_score_prop_death						1
@@ -797,6 +798,14 @@ and can be sold or given away.
 #define sd_team_green									1143
 #define sd_team_yellow									1144
 #define sd_team_purple									1145
+
+//
+// skill constants
+//
+
+#define sd_skill_easy									1150
+#define sd_skill_medium									1151
+#define sd_skill_hard									1152
 
 //
 // main events constants

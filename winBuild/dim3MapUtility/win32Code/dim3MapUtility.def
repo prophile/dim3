@@ -36,8 +36,6 @@ EXPORTS
 	map_portal_create_segment_lists					@163
 	map_portal_dispose_segment_lists				@164
 
-	map_portal_segment_update_shift					@170
-
 	map_set_light_base								@180
 	map_portal_clear_lights							@181
 	map_portal_add_light							@182
@@ -82,6 +80,7 @@ EXPORTS
 	map_portal_mesh_resize							@234
 	map_portal_mesh_flip							@235
 	map_portal_mesh_rotate							@236
+	map_portal_mesh_shift_texture_all				@237
 
 	map_portal_liquid_add							@240
 	map_portal_liquid_delete						@241

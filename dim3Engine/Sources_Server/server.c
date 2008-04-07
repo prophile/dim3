@@ -291,7 +291,7 @@ void server_shutdown(void)
       
 ======================================================= */
 
-bool server_game_start(char *game_script_name,int remote_count,network_request_remote_add *remotes,char *err_str)
+bool server_game_start(char *game_script_name,int skill,int remote_count,network_request_remote_add *remotes,char *err_str)
 {
 	int							n;
 	bool						load_shaders;
@@ -308,6 +308,10 @@ bool server_game_start(char *game_script_name,int remote_count,network_request_r
 	scripts_initialize();
 	script_globals_initialize();
 	timers_initialize();
+
+		// setup skill level
+
+	server.skill=skill;
 	
 		// run game script
 

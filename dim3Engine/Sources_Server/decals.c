@@ -109,20 +109,19 @@ bool decal_segment_ok(map_mesh_poly_type *mesh_poly,int mark_idx)
 
 /* =======================================================
 
-      Move Decals Attached To Segments
+      Move Decals Attached To Meshes
       
 ======================================================= */
 
-void decal_move_for_segment(int seg_idx,int xmove,int ymove,int zmove)
+void decal_move_for_mesh(int portal_idx,int mesh_idx,int xmove,int ymove,int zmove)
 {
-	/* supergumba -- need to work on this
 	int			n,i;
 	decal_type	*decal;
 
 	decal=server.decals;
 
 	for (n=0;n!=server.count.decal;n++) {
-		if (decal->seg_idx==seg_idx) {
+		if ((decal->rn==portal_idx) && (decal->mesh_idx==mesh_idx)) {
 			for (i=0;i!=4;i++) {
 				decal->x[i]+=xmove;
 				decal->z[i]+=zmove;
@@ -131,7 +130,6 @@ void decal_move_for_segment(int seg_idx,int xmove,int ymove,int zmove)
 		}
 		decal++;
 	}
-	*/
 }
 
 /* =======================================================
@@ -240,9 +238,6 @@ void decal_add_poly(d3pos *pos,poly_pointer_type *poly_ptr,int mark_idx,int sz,f
 		decal->z[1]=decal->z[2]=pos->z+sz;
 		decal->z[0]=decal->z[1]=pos->y-sz;
 		decal->z[2]=decal->z[3]=pos->y+sz;
-
-
-
 	}
 
 		// floor/ceiling like decals

@@ -290,7 +290,7 @@ typedef struct		{
 
 typedef struct		{
 						bool						on,pass_through,moveable,
-													climbable,touched;
+													climbable,shiftable,touched;
 					} map_mesh_flag_type;
 
 typedef struct		{
@@ -785,8 +785,6 @@ extern void map_portal_rebuild_vertex_lists(map_type *map,bool high_quality_ligh
 extern bool map_portal_create_segment_lists(map_type *map);
 extern void map_portal_dispose_segment_lists(map_type *map);
 
-extern void map_portal_segment_update_shift(map_type *map,int tick,int rn);
-
 extern void map_set_light_base(d3col *col);
 extern void map_portal_clear_lights(portal_type *portal);
 extern void map_portal_add_light(map_type *map,portal_type *portal,light_spot_type *lspot);
@@ -835,6 +833,7 @@ extern void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool 
 extern void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min,d3pnt *max);
 extern void map_portal_mesh_flip(map_type *map,int portal_idx,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);
 extern void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,float rot_x,float rot_y,float rot_z);
+extern void map_portal_mesh_shift_texture_all(map_type *map,int portal_idx,int tick,bool do_portal_vertex_list);
 
 extern int map_portal_liquid_add(map_type *map,int portal_idx);
 extern bool map_portal_liquid_delete(map_type *map,int portal_idx,int liquid_idx);

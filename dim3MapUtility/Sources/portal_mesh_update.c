@@ -424,4 +424,94 @@ void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,float rot_
 	}
 }
 
+/* =======================================================
+
+      Update Meshes for Texture Shifting
+      
+======================================================= */
+
+inline float map_portal_mesh_shift_texture_single_coord(float f_tick,float shift)
+{
+	int				k;
+
+	k=(int)(f_tick*shift);
+	return((float)((1000-k)%1000)/1000.0f);
+}
+
+void map_portal_mesh_shift_texture_all(map_type *map,int portal_idx,int tick,bool do_portal_vertex_list)
+{
+	int						n,k,t,nmesh,npoly,ptsz,idx;
+	float					f_tick;
+	unsigned char			*phit;
+	portal_type				*portal;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	portal_vertex_list_type	*pv;
+	
+	portal=&map->portals[portal_idx];
+	
+	f_tick=(float)tick;
+
+		// clear the hit list so we don't
+		// shift combined vertexes twice
+
+	phit=portal->vertexes.phit;
+	bzero(phit,portal->vertexes.nvlist);
+
+		// run through the meshes
+
+	nmesh=portal->mesh.nmesh;
+	mesh=portal->mesh.meshes;
+
+	for (n=0;n!=nmesh;n++) {
+
+			// shiftable?
+
+		if (!mesh->flag.shiftable) {
+			mesh++;
+			continue;
+		}
+
+			// shift polygons
+
+		npoly=mesh->npoly;
+		poly=mesh->polys;
+
+		for (k=0;k!=npoly;k++) {
+
+				// shiftable?
+
+			if (!poly->draw.shift_on) {
+				poly++;
+				continue;
+			}
+
+				// shift polys
+
+			ptsz=poly->ptsz;
+
+			for (t=0;t!=ptsz;t++) {
+				poly->gx[t]=map_portal_mesh_shift_texture_single_coord(f_tick,poly->gx[t]);
+				poly->gy[t]=map_portal_mesh_shift_texture_single_coord(f_tick,poly->gy[t]);
+			}
+
+				// shift portal vertexes
+
+			if (do_portal_vertex_list) {
+
+				for (t=0;t!=ptsz;t++) {
+					idx=poly->draw.portal_v[t];
+
+					if (phit[idx]==0x0) {
+						phit[idx]=0x1;
+						pv=&portal->vertexes.vertex_list[idx];
+						pv->gx=poly->gx[t];
+						pv->gy=poly->gy[t];
+					}
+				}
+			}
+		}
+	}
+}
+
 

@@ -53,7 +53,7 @@ float						team_color_tint[net_team_count][3]=net_team_color_tint_def;
 
 extern int game_time_get(void);
 extern void chat_add_message(int tick,char *name,char *str,d3col *col);
-extern bool game_start(int remote_count,network_request_remote_add *remotes,char *err_str);
+extern bool game_start(int skill,int remote_count,network_request_remote_add *remotes,char *err_str);
 extern void game_end(void);
 extern bool map_start(bool skip_media,char *err_str);
 extern void map_end(void);
@@ -299,7 +299,7 @@ void remote_host_reset(void)
 	
 		// start the new game
 	
-	if (!game_start(remote_count,remotes,err_str)) {
+	if (!game_start(skill_medium,remote_count,remotes,err_str)) {
 		network_client_leave_host(net_setup.client.remote_uid);
 		error_open(err_str,"Network Game Canceled");
 		return;	

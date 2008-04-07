@@ -45,7 +45,7 @@ and can be sold or given away.
 #define join_tab_value_network			1
 
 extern void intro_open(void);
-extern bool game_start(int remote_count,network_request_remote_add *remotes,char *err_str);
+extern bool game_start(int skill,int remote_count,network_request_remote_add *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
 
 extern map_type				map;
@@ -567,7 +567,7 @@ void join_game(void)
 	
 	gui_shutdown();
 	
-	if (!game_start(remote_count,remotes,err_str)) {
+	if (!game_start(skill_medium,remote_count,remotes,err_str)) {
 		network_client_leave_host(net_setup.client.remote_uid);
 		error_open(err_str,"Network Game Canceled");
 		return;

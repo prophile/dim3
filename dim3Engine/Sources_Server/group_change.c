@@ -54,6 +54,7 @@ void group_move(int group_idx,int xmove,int zmove,int ymove)
 	group_type			*group;
 	group_unit_type		*unit_list;
 	portal_type			*portal;
+	map_mesh_type		*mesh;
 	map_liquid_type		*liq;
 
 		// will need to recalc lighting in
@@ -80,16 +81,28 @@ void group_move(int group_idx,int xmove,int zmove,int ymove)
 
 			case group_type_mesh:
 
-		//		if (portal->mesh.meshes[
-				// supergumba mesh moveable flag
+					// is mesh moveable?
+
+				mesh=&portal->mesh.meshes[unit_list->idx];
+				if (!mesh->flag.moveable) break;
+
+					// move mesh and mark as
+					// touched so it can be saved with games
 
 				map_portal_mesh_move(&map,unit_list->portal_idx,unit_list->idx,TRUE,xmove,ymove,zmove);
+				mesh->flag.touched=TRUE;
 
-					// supergumba -- move objects with segments!
+					// move objects on segment
+					// supergumba
+				
+				if (move_objs) {
+					//		object_move_with_wall_segment((int)(*seg_list),xmove,zmove);
+					//		object_move_with_floor_segment((int)(*seg_list),xmove,zmove);
+				}
 
-					// supergumba -- move decals with segments!
+					// move decals with segments!
 
-			//	if (seg->decal_count!=0) decal_move_for_segment(idx,xmove,ymove,zmove);
+				decal_move_for_mesh(unit_list->portal_idx,unit_list->idx,xmove,ymove,zmove);
 
 					// force a lighting recalc if mesh moved in a portal
 
@@ -113,35 +126,6 @@ void group_move(int group_idx,int xmove,int zmove,int ymove)
 				break;
 
 		}
-
-				/*
-
-
-		idx=*seg_list;
-		seg=&map.segments[idx];
-		
-		if (seg->moveable) {
-			
-				// move objects on segment
-				
-			if (move_objs) {
-				switch (seg->type) {
-					case sg_wall:
-						object_move_with_wall_segment((int)(*seg_list),xmove,zmove);
-						break;
-					case sg_floor:
-						object_move_with_floor_segment((int)(*seg_list),xmove,zmove);
-						break;
-				}
-			}
-		
-				// move segment
-				
-			map_segment_move(&map,seg,xmove,ymove,zmove);
-			if (seg->decal_count!=0) decal_move_for_segment(idx,xmove,ymove,zmove);
-		}
-
-*/
 		
 		unit_list++;
 	}

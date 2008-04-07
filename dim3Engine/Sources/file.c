@@ -52,7 +52,7 @@ ptr						game_file_data;
 
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
-extern bool game_start(int remote_count,network_request_remote_add *remotes,char *err_str);
+extern bool game_start(int skill,int remote_count,network_request_remote_add *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
 extern void map_end(void);
 extern void game_time_reset(void);
@@ -419,7 +419,7 @@ bool game_file_load(char *file_name,char *err_str)
 		// if game isn't running, then start
 		
 	if (!server.game_open) {
-		if (!game_start(0,NULL,err_str)) {
+		if (!game_start(skill_medium,0,NULL,err_str)) {
 			free(game_file_data);
 			return(FALSE);
 		}

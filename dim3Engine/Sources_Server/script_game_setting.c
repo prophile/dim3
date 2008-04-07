@@ -49,6 +49,7 @@ JSClass			game_setting_class={"game_setting_class",0,
 JSPropertySpec	game_setting_props[]={
 							{"type",				game_setting_prop_type,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"multiplayer",			game_setting_prop_multiplayer,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"skill",				game_setting_prop_skill,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 
 /* =======================================================
@@ -87,6 +88,9 @@ JSBool js_get_game_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
 			break;
 		case game_setting_prop_multiplayer:
             *vp=BOOLEAN_TO_JSVAL(net_setup.client.joined);
+			break;
+		case game_setting_prop_skill:
+            *vp=INT_TO_JSVAL(server.skill);
 			break;
 
 	}

@@ -257,6 +257,10 @@ SOURCE=..\..\dim3MapUtility\Sources\portal_liquid.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3MapUtility\Sources\portal_liquid_update.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3MapUtility\Sources\portal_mesh.c
 # End Source File
 # Begin Source File
@@ -266,10 +270,6 @@ SOURCE=..\..\dim3MapUtility\Sources\portal_mesh_update.c
 # Begin Source File
 
 SOURCE=..\..\dim3MapUtility\Sources\portal_segment_list.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3MapUtility\Sources\portal_segment_update.c
 # End Source File
 # Begin Source File
 

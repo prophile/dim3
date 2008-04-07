@@ -188,6 +188,11 @@ void map_prepare(map_type *map)
 		mesh=portal->mesh.meshes;
 		
 		for (n=0;n!=portal->mesh.nmesh;n++) {
+
+				// default some flags
+
+			mesh->flag.touched=FALSE;
+			mesh->flag.shiftable=FALSE;
 				
 				// translate vertexes from portal to global
 					
@@ -247,6 +252,8 @@ void map_prepare(map_type *map)
 
 				mesh_poly->draw.txt_frame_offset=0;
 				mesh_poly->draw.shift_on=((mesh_poly->x_shift!=0.0f) || (mesh_poly->y_shift!=0.0f));
+
+				mesh->flag.shiftable|=mesh_poly->draw.shift_on;
 				
 					// setup mesh min, max, mid
 					

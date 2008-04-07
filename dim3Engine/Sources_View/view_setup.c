@@ -68,7 +68,7 @@ void view_portal_updates(int tick)
 	portal=map.portals;
 
 	for (i=0;i!=map.nportal;i++) {
-		if (portal->in_path) map_portal_segment_update_shift(&map,tick,i);
+		if (portal->in_path) map_portal_mesh_shift_texture_all(&map,i,tick,TRUE);
 		portal++;
 	}
 }

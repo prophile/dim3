@@ -442,7 +442,7 @@ void setup_create_pane(void)
 		
 	if (!setup_in_game) {
 		stab=0;
-		ntab=hud.intro.button_join.on?6:5;		// no network tab if no join button
+		ntab=hud.intro.button_multiplayer.on?6:5;		// no network tab if no join button
 	}
 	else {
 		stab=1;
