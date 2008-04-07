@@ -77,13 +77,19 @@ EXPORTS
 	map_portal_mesh_calculate_center				@230
 	
 	map_portal_mesh_combine							@231
-	map_portal_mesh_move							@232
-	map_portal_mesh_resize							@233
-	map_portal_mesh_flip							@234
-	map_portal_mesh_rotate							@235
+	map_portal_mesh_switch_portal					@232
+	map_portal_mesh_move							@233
+	map_portal_mesh_resize							@234
+	map_portal_mesh_flip							@235
+	map_portal_mesh_rotate							@236
 
 	map_portal_liquid_add							@240
 	map_portal_liquid_delete						@241
+	map_portal_liquid_duplicate						@242
+	map_portal_liquid_calculate_center				@243
+	
+	map_portal_liquid_switch_portal					@245
+	map_portal_liquid_move							@246
 
 	map_primitive_create_uid						@250
 	map_primitive_push_uid							@251

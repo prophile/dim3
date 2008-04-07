@@ -156,6 +156,41 @@ int map_portal_mesh_combine(map_type *map,int portal_idx,int mesh_1_idx,int mesh
 
 /* =======================================================
 
+      Move Mesh To Different Portal
+      
+======================================================= */
+
+int map_portal_mesh_switch_portal(map_type *map,int portal_idx,int mesh_idx,int new_portal_idx)
+{
+	int						new_mesh_idx;
+	map_mesh_type			*org_mesh,*new_mesh;
+	
+		// create new mesh
+		
+	new_mesh_idx=map_portal_mesh_add(map,new_portal_idx);
+	if (new_mesh_idx==-1) return(-1);
+	
+		// switch meshes
+		
+	org_mesh=&map->portals[portal_idx].mesh.meshes[mesh_idx];
+	new_mesh=&map->portals[new_portal_idx].mesh.meshes[new_mesh_idx];
+	
+	memmove(new_mesh,org_mesh,sizeof(map_mesh_type));
+	
+		// set old mesh ptrs to null so they
+		// aren't freed as they now belong to new mesh
+		// then delete
+		
+	org_mesh->vertexes=NULL;
+	org_mesh->polys=NULL;
+	
+	map_portal_mesh_delete(map,portal_idx,mesh_idx);
+	
+	return(new_mesh_idx);
+}
+
+/* =======================================================
+
       Move Mesh
       
 ======================================================= */

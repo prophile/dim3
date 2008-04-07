@@ -201,15 +201,17 @@ int map_portal_mesh_duplicate(map_type *map,int portal_idx,int mesh_idx)
 	portal_type			*portal;
 	map_mesh_type		*mesh,*new_mesh;
 	
-		// original mesh
+		// create new mesh
 	
 	portal=&map->portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
-	
-		// new mesh
 		
 	new_mesh_idx=map_portal_mesh_add(map,portal_idx);
 	if (new_mesh_idx==-1) return(-1);
+
+		// setup vertex and poly memory
+		
+	mesh=&portal->mesh.meshes[mesh_idx];
+	new_mesh=&portal->mesh.meshes[new_mesh_idx];
 	
 	if (!map_portal_mesh_set_vertex_count(map,portal_idx,new_mesh_idx,mesh->nvertex)) {
 		map_portal_mesh_delete(map,portal_idx,new_mesh_idx);
@@ -223,8 +225,6 @@ int map_portal_mesh_duplicate(map_type *map,int portal_idx,int mesh_idx)
 	
 		// mesh setup
 		
-	new_mesh=&portal->mesh.meshes[new_mesh_idx];
-
 	new_mesh->group_idx=mesh->group_idx;
 	memmove(&new_mesh->flag,&mesh->flag,sizeof(map_mesh_flag_type));
 

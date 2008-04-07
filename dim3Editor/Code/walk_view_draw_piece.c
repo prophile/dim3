@@ -480,14 +480,58 @@ void walk_view_draw_portal_liquids(int rn,d3pnt *cpt,bool opaque)
 
 void walk_view_draw_portal_nodes(int rn,d3pnt *cpt)
 {
-	int			n;
+	int			n,k;
+	portal_type	*portal,*lportal;
+	node_type	*node,*lnode;
 
 	if (!dp_node) return;
 	
+		// connections
+		
+	portal=&map.portals[rn];
+		
+	glLineWidth(3.0f);
+	glColor4f(0.0f,1.0f,0.0f,1.0f);
+	
+	glBegin(GL_LINES);
+		
+	node=map.nodes;
+	
 	for (n=0;n!=map.nnode;n++) {
-		if (map.nodes[n].pos.rn==rn) {
-			walk_view_draw_sprite(cpt,&map.nodes[n].pos,node_bitmap.gl_id);
+	
+		if (node->pos.rn==rn) {
+			
+			for (k=0;k!=max_node_link;k++) {
+			
+				if (node->link[k]!=-1) {
+					glVertex3i(((node->pos.x+portal->x)-cpt->x),((node->pos.y-(map_enlarge*2))-cpt->y),(cpt->z-(node->pos.z+portal->z)));
+					lnode=&map.nodes[node->link[k]];
+					lportal=&map.portals[lnode->pos.rn];
+					glVertex3i(((lnode->pos.x+lportal->x)-cpt->x),((lnode->pos.y-(map_enlarge*2))-cpt->y),(cpt->z-(lnode->pos.z+lportal->z)));
+				}
+				
+			}
 		}
+		
+		node++;
+	}
+	
+	glEnd();
+	
+	glLineWidth(1.0f);
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
+		
+		// nodes
+	
+	node=map.nodes;
+	
+	for (n=0;n!=map.nnode;n++) {
+	
+		if (node->pos.rn==rn) {
+			walk_view_draw_sprite(cpt,&node->pos,node_bitmap.gl_id);
+		}
+		
+		node++;
 	}
 }
 

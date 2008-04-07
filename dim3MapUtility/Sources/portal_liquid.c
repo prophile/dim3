@@ -99,3 +99,41 @@ bool map_portal_liquid_delete(map_type *map,int portal_idx,int liquid_idx)
 	return(TRUE);
 }
 
+/* =======================================================
+
+      Duplicate Liquid
+      
+======================================================= */
+
+int map_portal_liquid_duplicate(map_type *map,int portal_idx,int liquid_idx)
+{
+	int					new_liquid_idx;
+	map_liquid_type		*liq,*liq2;
+	
+	new_liquid_idx=map_portal_liquid_add(map,portal_idx);
+	if (new_liquid_idx==-1) return(-1);
+	
+	liq=&map->portals[portal_idx].liquid.liquids[liquid_idx];
+	liq2=&map->portals[portal_idx].liquid.liquids[new_liquid_idx];
+	memmove(liq2,liq,sizeof(map_liquid_type));
+
+	return(new_liquid_idx);
+}
+
+/* =======================================================
+
+      Liquid Info
+      
+======================================================= */
+
+void map_portal_liquid_calculate_center(map_type *map,int portal_idx,int liquid_idx,int *x,int *y,int *z)
+{
+	map_liquid_type			*liq;
+	
+	liq=&map->portals[portal_idx].liquid.liquids[liquid_idx];
+
+	*x=(liq->lft+liq->rgt)>>1;
+	*y=liq->y;
+	*z=(liq->top+liq->bot)>>1;
+}
+

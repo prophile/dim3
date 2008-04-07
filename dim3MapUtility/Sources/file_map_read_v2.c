@@ -492,6 +492,8 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 					xml_get_attribute_text(obj_tag,"params",spot->params,param_str_len);
 					spot->ang.y=xml_get_attribute_float(obj_tag,"angle");
 					
+					spot->skill=xml_get_attribute_int(obj_tag,"skill");
+					
 					obj_tag=xml_findnextchild(obj_tag);
 				}
 			}

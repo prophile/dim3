@@ -104,6 +104,8 @@ inline void gl_texture_opaque_set(int txt_id)
 
 void gl_texture_opaque_lighting_start(void)
 {
+	GLfloat				dark_fct[4];
+	
 		// texture unit 0
 		// contains texture modulated with primary colors
 	
@@ -147,7 +149,12 @@ void gl_texture_opaque_lighting_start(void)
 		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
 		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_PREVIOUS);
 		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-
+		
+			// default dark factor
+			
+		dark_fct[0]=dark_fct[1]=dark_fct[2]=dark_fct[3]=1.0f;
+	
+		glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,dark_fct);
 	}
 }
 
@@ -170,15 +177,15 @@ inline void gl_texture_opaque_lighting_set(int txt_id)
 
 inline void gl_texture_opaque_lighting_factor(float dark_factor)
 {
-	GLfloat				fct[4];
+	GLfloat				dark_fct[4];
 
 	if (!((setup.segment_darken) && (!setup.ray_trace_lighting))) return;
 
-	fct[0]=fct[1]=fct[2]=dark_factor;
-	fct[3]=1.0f;
+	dark_fct[0]=dark_fct[1]=dark_fct[2]=dark_factor;
+	dark_fct[3]=1.0f;
 	
 	glActiveTexture(GL_TEXTURE1);
-	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,fct);
+	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,dark_fct);
 }
 
 /* =======================================================
@@ -374,6 +381,8 @@ inline void gl_texture_opaque_bump_lighting_factor(float *normal)
 
 void gl_texture_tesseled_lighting_start(void)
 {
+	GLfloat			dark_fct[4];
+	
 		// texture unit 0
 		// this contains the lighting color modulated
 		// with the darkness factor.
@@ -400,6 +409,12 @@ void gl_texture_tesseled_lighting_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_CONSTANT);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+		
+		// default dark factor
+			
+	dark_fct[0]=dark_fct[1]=dark_fct[2]=dark_fct[3]=1.0f;
+	
+	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,dark_fct);
 }
 
 void gl_texture_tesseled_lighting_end(void)

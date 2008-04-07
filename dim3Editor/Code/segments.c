@@ -33,6 +33,8 @@ extern bool					dp_auto_texture,dp_liquid;
 
 extern map_type				map;
 
+// supergumba -- can delete a lot of this
+
 /* =======================================================
 
       Polygon Bounds

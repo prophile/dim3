@@ -550,7 +550,7 @@ int map_portal_add_light_simple_vertex_list(portal_vertex_list_type *vl,int vl_c
 int map_portal_add_light_single_vertex_list(portal_vertex_list_type *vl,int vl_cnt,bool high_quality_lighting,map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
 {
 	int			xsz,ysz,zsz;
-
+	
 		// simple light tessels
 
 	if ((mesh_poly->draw.simple_tessel) || (mesh_poly->ptsz==3) || (!high_quality_lighting)) return(map_portal_add_light_simple_vertex_list(vl,vl_cnt,mesh,mesh_poly));

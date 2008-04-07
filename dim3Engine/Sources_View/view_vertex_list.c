@@ -84,7 +84,7 @@ void portal_compile_gl_lists(int tick,int rn)
 		
 		return;
 	}
-	
+
 		// run ray-traced lighting if option is
 		// turned on
 		

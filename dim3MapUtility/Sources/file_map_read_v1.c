@@ -1493,6 +1493,8 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					xml_get_attribute_text(obj_tag,"params",spot->params,param_str_len);
 					spot->ang.y=xml_get_attribute_float(obj_tag,"angle");
 					
+					spot->skill=skill_easy;
+					
 					obj_tag=xml_findnextchild(obj_tag);
 				}
 			}

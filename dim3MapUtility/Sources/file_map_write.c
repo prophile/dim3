@@ -765,6 +765,7 @@ bool write_map_xml(map_type *map)
 				xml_add_attribute_text("display_model",spot->display_model);
 				xml_add_attribute_text("params",spot->params);
 				xml_add_attribute_float("angle",spot->ang.y);
+				xml_add_attribute_int("skill",spot->skill);
 				xml_add_tagend(TRUE);
 			}
 			

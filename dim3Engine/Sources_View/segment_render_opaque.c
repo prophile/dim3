@@ -224,12 +224,12 @@ void segment_render_opaque_portal_lighting_mesh(portal_type *portal,int stencil_
 			}
 
 			glStencilFunc(GL_EQUAL,mesh_poly->draw.stencil_idx,0xFF);
-	
+
 			if (dark_factor!=mesh_poly->dark_factor) {
 				dark_factor=mesh_poly->dark_factor;
 				gl_texture_tesseled_lighting_factor(dark_factor);
 			}
-			
+
 			// supergumba -- testing
 			/*
 			if (!mesh_poly->draw.simple_lighting) {

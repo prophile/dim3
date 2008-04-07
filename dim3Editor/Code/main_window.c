@@ -270,7 +270,7 @@ void main_wind_control_piece(int piece_idx)
 			break;
 		case 9:
 			main_wind_set_view_piece_segment();
-			segment_add_liquid(TRUE);
+			piece_create_liquid();
 			break;
 	}
 	

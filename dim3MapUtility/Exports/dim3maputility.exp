@@ -74,6 +74,7 @@ _map_portal_mesh_calculate_extent
 _map_portal_mesh_calculate_center
 
 _map_portal_mesh_combine
+_map_portal_mesh_switch_portal
 _map_portal_mesh_move
 _map_portal_mesh_resize
 _map_portal_mesh_flip
@@ -81,6 +82,11 @@ _map_portal_mesh_rotate
 
 _map_portal_liquid_add
 _map_portal_liquid_delete
+_map_portal_liquid_duplicate
+_map_portal_liquid_calculate_center
+
+_map_portal_liquid_switch_portal
+_map_portal_liquid_move
 
 _map_primitive_create_uid
 _map_primitive_push_uid

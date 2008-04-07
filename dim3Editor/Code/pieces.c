@@ -44,9 +44,7 @@ extern map_type				map;
 
 void piece_move_to_portal(int rn)
 {
-/* supergumba
-	int			n,nsel_count,
-				type,index,min_x,min_z,min_y,max_x,max_z,max_y;
+	int			n,nsel_count,type,portal_idx,main_idx,sub_idx;
 	d3pnt		min,max;
 			
 	undo_clear();
@@ -56,40 +54,40 @@ void piece_move_to_portal(int rn)
 	nsel_count=select_count();
 	
 	for (n=0;n!=nsel_count;n++) {
-		select_get(n,&type,&index);
+		select_get(n,&type,&portal_idx,&main_idx,&sub_idx);
 		
 		switch (type) {
 		
-			case segment_piece:
-				map.segments[index].rn=rn;
+			case mesh_piece:
+				map_portal_mesh_switch_portal(&map,portal_idx,main_idx,rn);
 				break;
 				
-			case primitive_piece:
-				primitive_change_portal(map.segments[index].primitive_uid[0],rn);
+			case liquid_piece:
+				map_portal_liquid_switch_portal(&map,portal_idx,main_idx,rn);
 				break;
 				
 			case spot_piece:
-				map.spots[index].pos.rn=rn;
+				map.spots[main_idx].pos.rn=rn;
 				break;
 				
 			case scenery_piece:
-				map.sceneries[index].pos.rn=rn;
+				map.sceneries[main_idx].pos.rn=rn;
 				break;
 				
 			case node_piece:
-				map.nodes[index].pos.rn=rn;
+				map.nodes[main_idx].pos.rn=rn;
 				break;
 				
 			case light_piece:
-				map.lights[index].pos.rn=rn;
+				map.lights[main_idx].pos.rn=rn;
 				break;
 				
 			case sound_piece:
-				map.sounds[index].pos.rn=rn;
+				map.sounds[main_idx].pos.rn=rn;
 				break;
 				
 			case particle_piece:
-				map.particles[index].pos.rn=rn;
+				map.particles[main_idx].pos.rn=rn;
 				break;
 				
 		}
@@ -98,10 +96,9 @@ void piece_move_to_portal(int rn)
 		// shift selection to top-left
 		
 	cr=rn;
-	select_move(rn,min_x,min_z,0);
+	select_move(rn,min.x,min.z,0);
 	
 	main_wind_draw();
-	*/
 }
 
 /* =======================================================
@@ -112,10 +109,8 @@ void piece_move_to_portal(int rn)
 
 void piece_duplicate(void)
 {
-/* supergumba
-	int				n,i,nsel_count,
-					type,index,xadd,zadd,dup_index,
-					cx,cy,cz;
+	int					n,i,nsel_count,type,portal_idx,main_idx,sub_idx,
+						index,xadd,zadd,cx,cy,cz;
 
 	undo_clear();
 	
@@ -128,24 +123,36 @@ void piece_duplicate(void)
 	nsel_count=select_count();
 	
 	for (n=0;n!=nsel_count;n++) {
-		select_get(n,&type,&index);
+		select_get(n,&type,&portal_idx,&main_idx,&sub_idx);
 		
 		switch (type) {
-		
-			case segment_piece:
-				map_segment_calculate_center(&map,index,&cx,&cy,&cz);
-				portal_duplicate_piece_offset(map.segments[index].rn,cx,cz,&xadd,&zadd);
-	
-				dup_index=segment_duplicate(index,-1,xadd,zadd);
-				if (dup_index!=-1) select_duplicate_add(segment_piece,dup_index);
+			
+			case mesh_piece:
+				index=map_portal_mesh_duplicate(&map,portal_idx,main_idx);
+				if (index==-1) {
+					StandardAlert(kAlertCautionAlert,"\pCan Not Create Mesh","\pNot enough memory.",NULL,NULL);
+					return;
+				}
+				
+				map_portal_mesh_calculate_center(&map,portal_idx,index,&cx,&cy,&cz);
+				portal_duplicate_piece_offset(portal_idx,cx,cz,&xadd,&zadd);
+				map_portal_mesh_move(&map,portal_idx,index,FALSE,xadd,0,zadd);
+				
+				select_duplicate_add(mesh_piece,portal_idx,index,0);
 				break;
+			
+			case liquid_piece:
+				index=map_portal_liquid_duplicate(&map,portal_idx,main_idx);
+				if (index==-1) {
+					StandardAlert(kAlertCautionAlert,"\pCan Not Create Liquid","\pNot enough memory.",NULL,NULL);
+					return;
+				}
 				
-			case primitive_piece:
-				map_segment_calculate_center(&map,index,&cx,&cy,&cz);
-				portal_duplicate_piece_offset(map.segments[index].rn,cx,cz,&xadd,&zadd);
+				map_portal_liquid_calculate_center(&map,portal_idx,index,&cx,&cy,&cz);
+				portal_duplicate_piece_offset(portal_idx,cx,cz,&xadd,&zadd);
+				map_portal_liquid_move(&map,portal_idx,index,xadd,0,zadd);
 				
-				dup_index=primitive_duplicate(map.segments[index].primitive_uid[0],xadd,zadd);
-				if (dup_index!=-1) select_duplicate_add(primitive_piece,dup_index);
+				select_duplicate_add(liquid_piece,portal_idx,index,0);
 				break;
 				
 			case spot_piece:
@@ -154,12 +161,12 @@ void piece_duplicate(void)
 					return;
 				}
 				
-				portal_duplicate_piece_offset(map.spots[index].pos.rn,map.spots[index].pos.x,map.spots[index].pos.z,&xadd,&zadd);
+				portal_duplicate_piece_offset(map.spots[main_idx].pos.rn,map.spots[main_idx].pos.x,map.spots[main_idx].pos.z,&xadd,&zadd);
 
-				map.spots[map.nspot]=map.spots[index];
+				map.spots[map.nspot]=map.spots[main_idx];
 				map.spots[map.nspot].pos.x+=xadd;
 				map.spots[map.nspot].pos.z+=zadd;
-				select_duplicate_add(spot_piece,map.nspot);
+				select_duplicate_add(spot_piece,portal_idx,map.nspot,0);
 				map.nspot++;
 				break;
 				
@@ -169,12 +176,12 @@ void piece_duplicate(void)
 					return;
 				}
 				
-				portal_duplicate_piece_offset(map.sceneries[index].pos.rn,map.sceneries[index].pos.x,map.sceneries[index].pos.z,&xadd,&zadd);
+				portal_duplicate_piece_offset(map.sceneries[main_idx].pos.rn,map.sceneries[main_idx].pos.x,map.sceneries[main_idx].pos.z,&xadd,&zadd);
 
-				map.sceneries[map.nscenery]=map.sceneries[index];
+				map.sceneries[map.nscenery]=map.sceneries[main_idx];
 				map.sceneries[map.nscenery].pos.x+=xadd;
 				map.sceneries[map.nscenery].pos.z+=zadd;
-				select_duplicate_add(scenery_piece,map.nscenery);
+				select_duplicate_add(scenery_piece,portal_idx,map.nscenery,0);
 				map.nscenery++;
 				break;
 				
@@ -184,15 +191,15 @@ void piece_duplicate(void)
 					return;
 				}
 
-				portal_duplicate_piece_offset(map.nodes[index].pos.rn,map.nodes[index].pos.x,map.nodes[index].pos.z,&xadd,&zadd);
+				portal_duplicate_piece_offset(map.nodes[main_idx].pos.rn,map.nodes[main_idx].pos.x,map.nodes[main_idx].pos.z,&xadd,&zadd);
 
-				map.nodes[map.nnode]=map.nodes[index];
+				map.nodes[map.nnode]=map.nodes[main_idx];
 				map.nodes[map.nnode].pos.x+=xadd;
 				map.nodes[map.nnode].pos.z+=zadd;
 				for (i=0;i!=max_node_link;i++) {
 					map.nodes[map.nnode].link[i]=-1;
 				}
-				select_duplicate_add(node_piece,map.nnode);
+				select_duplicate_add(node_piece,portal_idx,map.nnode,0);
 				map.nnode++;
 				break;
 				
@@ -202,12 +209,12 @@ void piece_duplicate(void)
 					return;
 				}
 
-				portal_duplicate_piece_offset(map.lights[index].pos.rn,map.lights[index].pos.x,map.lights[index].pos.z,&xadd,&zadd);
+				portal_duplicate_piece_offset(map.lights[main_idx].pos.rn,map.lights[main_idx].pos.x,map.lights[main_idx].pos.z,&xadd,&zadd);
 
-				map.lights[map.nlight]=map.lights[index];
+				map.lights[map.nlight]=map.lights[main_idx];
 				map.lights[map.nlight].pos.x+=xadd;
 				map.lights[map.nlight].pos.z+=zadd;
-				select_duplicate_add(light_piece,map.nlight);
+				select_duplicate_add(light_piece,portal_idx,map.nlight,0);
 				map.nlight++;
 				break;
 				
@@ -217,12 +224,12 @@ void piece_duplicate(void)
 					return;
 				}
 
-				portal_duplicate_piece_offset(map.sounds[index].pos.rn,map.sounds[index].pos.x,map.sounds[index].pos.z,&xadd,&zadd);
+				portal_duplicate_piece_offset(map.sounds[main_idx].pos.rn,map.sounds[main_idx].pos.x,map.sounds[main_idx].pos.z,&xadd,&zadd);
 
-				map.sounds[map.nsound]=map.sounds[index];
+				map.sounds[map.nsound]=map.sounds[main_idx];
 				map.sounds[map.nsound].pos.x+=xadd;
 				map.sounds[map.nsound].pos.z+=zadd;
-				select_duplicate_add(sound_piece,map.nsound);
+				select_duplicate_add(sound_piece,portal_idx,map.nsound,0);
 				map.nsound++;
 				break;
 				
@@ -232,12 +239,12 @@ void piece_duplicate(void)
 					return;
 				}
 
-				portal_duplicate_piece_offset(map.particles[index].pos.rn,map.particles[index].pos.x,map.particles[index].pos.z,&xadd,&zadd);
+				portal_duplicate_piece_offset(map.particles[main_idx].pos.rn,map.particles[main_idx].pos.x,map.particles[main_idx].pos.z,&xadd,&zadd);
 
-				map.particles[map.nparticle]=map.particles[index];
+				map.particles[map.nparticle]=map.particles[main_idx];
 				map.particles[map.nparticle].pos.x+=xadd;
 				map.particles[map.nparticle].pos.z+=zadd;
-				select_duplicate_add(particle_piece,map.nparticle);
+				select_duplicate_add(particle_piece,portal_idx,map.nparticle,0);
 				map.nparticle++;
 				break;
 				
@@ -249,7 +256,6 @@ void piece_duplicate(void)
 	select_duplicate_copy();
 	
 	main_wind_draw();
-	*/
 }
 
 void piece_delete(void)

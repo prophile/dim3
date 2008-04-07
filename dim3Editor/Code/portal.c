@@ -85,8 +85,12 @@ void portal_duplicate_piece_offset(int rn,int x,int z,int *xadd,int *zadd)
 	*xadd=setup.duplicate_offset;
 	if (x>mx) *xadd=-setup.duplicate_offset;
 	
+	*xadd=(*xadd)*map_enlarge;
+	
 	*zadd=setup.duplicate_offset;
 	if (z>mz) *zadd=-setup.duplicate_offset;
+	
+	*zadd=(*zadd)*map_enlarge;
 }
 
 /* =======================================================

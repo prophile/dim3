@@ -31,7 +31,7 @@ and can be sold or given away.
 #include "portal_view.h"
 
 extern int						cr,cy,drag_mode;
-extern bool						dp_object,dp_node,dp_lightsoundparticle;
+extern bool						dp_object,dp_node,dp_lightsoundparticle,dp_liquid;
 
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;
@@ -42,7 +42,6 @@ extern map_type					map;
       
 ======================================================= */
 
-// supergumba -- need to fix this up
 int piece_create_get_spot(int *x,int *y,int *z,int x_wid,int z_wid,int high)
 {
 	d3pnt			min,max;
@@ -369,3 +368,67 @@ void piece_create_node(void)
 	main_wind_tool_fix_enable();
 }
 
+/* =======================================================
+
+      Create Liquid
+	        
+======================================================= */
+
+void piece_create_liquid(void)
+{
+	int				rn,x,y,z,index,sz;
+	map_liquid_type	*liq;
+
+	if (!segment_create_texture_ok()) return;
+
+	sz=map_enlarge*4;
+	rn=piece_create_get_spot(&x,&y,&z,sz,sz,0);
+	
+		// create the liquid
+		
+	index=map_portal_liquid_add(&map,rn);
+	if (index==-1) {
+		StandardAlert(kAlertCautionAlert,"\pCan Not Create Liquid","\pNot enough memory.",NULL,NULL);
+		return;
+	}
+	
+	liq=&map.portals[rn].liquid.liquids[index];
+	
+	liq->lft=x-sz;
+	liq->rgt=x+sz;
+	liq->top=z-sz;
+	liq->bot=z+sz;
+	liq->y=y;
+	
+	liq->txt_idx=0;
+	liq->group_idx=-1;
+	
+	liq->alpha=1.0f;
+	liq->tint_alpha=0.5f;
+	liq->speed_alter=1.0f;
+	
+	liq->col.r=liq->col.g=liq->col.b=1.0f;
+	
+	liq->x_txtoff=liq->y_txtoff=0.0f;
+	liq->x_txtfact=liq->y_txtfact=1.0f;
+    liq->x_shift=liq->y_shift=0.0f;
+	
+	liq->tide.rate=1000;
+	liq->tide.high=100;
+	liq->tide.split=600;
+	liq->tide.direction=ld_horizontal;
+	
+	liq->harm.in_harm=0;
+	liq->harm.drown_tick=10000;
+	liq->harm.drown_harm=10;
+
+		// select the liquid
+		
+	dp_liquid=TRUE;
+	select_clear();
+	select_add(liquid_piece,rn,index,-1);
+
+	main_wind_draw();
+	main_wind_tool_reset();
+	main_wind_tool_fix_enable();
+}

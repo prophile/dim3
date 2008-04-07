@@ -113,6 +113,8 @@ extern char light_type_str[][32];
 
 #define no_curve									0
 
+// supergumba -- can delete a lot of this
+
 #define wc_none										0
 #define wc_top										1
 #define wc_bottom									2
@@ -221,6 +223,14 @@ extern char light_type_str[][32];
 
 #define group_type_mesh								0
 #define group_type_liquid							1
+
+//
+// skills
+//
+
+#define skill_easy									0
+#define skill_medium								1
+#define skill_hard									2
 
 //
 // group structure
@@ -562,6 +572,7 @@ typedef struct		{
 //
 
 typedef struct		{
+						int							skill;
 						char						name[name_str_len],
 													type[name_str_len],
 													script[name_str_len],
@@ -819,6 +830,7 @@ extern void map_portal_mesh_calculate_extent(map_type *map,int portal_idx,int me
 extern void map_portal_mesh_calculate_center(map_type *map,int portal_idx,int mesh_idx,int *x,int *y,int *z);
 
 extern int map_portal_mesh_combine(map_type *map,int portal_idx,int mesh_1_idx,int mesh_2_idx);
+extern int map_portal_mesh_switch_portal(map_type *map,int portal_idx,int mesh_idx,int new_portal_idx);
 extern void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool do_portal_vertex_list,int x,int y,int z);
 extern void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min,d3pnt *max);
 extern void map_portal_mesh_flip(map_type *map,int portal_idx,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);
@@ -826,6 +838,11 @@ extern void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,flo
 
 extern int map_portal_liquid_add(map_type *map,int portal_idx);
 extern bool map_portal_liquid_delete(map_type *map,int portal_idx,int liquid_idx);
+extern int map_portal_liquid_duplicate(map_type *map,int portal_idx,int liquid_idx);
+extern void map_portal_liquid_calculate_center(map_type *map,int portal_idx,int liquid_idx,int *x,int *y,int *z);
+
+extern int map_portal_liquid_switch_portal(map_type *map,int portal_idx,int liquid_idx,int new_portal_idx);
+extern void map_portal_liquid_move(map_type *map,int portal_idx,int liquid_idx,int x,int y,int z);
 
 extern int map_segment_group_find_name(map_type *map,char *name);
 extern void map_segment_move(map_type *map,segment_type *seg,int x,int y,int z);
