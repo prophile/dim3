@@ -69,6 +69,14 @@ void select_get(int sel_idx,int *type,int *portal_idx,int *main_idx,int *sub_idx
 	*sub_idx=select_items[sel_idx].sub_idx;
 }
 
+void select_switch(int sel_idx,int type,int portal_idx,int main_idx,int sub_idx)
+{
+	select_items[sel_idx].type=type;
+	select_items[sel_idx].portal_idx=portal_idx;
+	select_items[sel_idx].main_idx=main_idx;
+	select_items[sel_idx].sub_idx=sub_idx;
+}
+
 int select_find(int type,int portal_idx,int main_idx,int sub_idx)
 {
 	int					n;

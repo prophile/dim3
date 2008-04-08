@@ -39,11 +39,6 @@ and can be sold or given away.
 #define join_table_id					2
 #define join_status_id					3
 
-#define join_tab_id						10
-
-#define join_tab_value_local			0
-#define join_tab_value_network			1
-
 extern void intro_open(void);
 extern bool game_start(int skill,int remote_count,network_request_remote_add *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
@@ -59,13 +54,11 @@ extern char					setup_team_color_list[][32];
 char						*join_table_data;
 bool						join_thread_quit;
 pthread_t					join_thread_local,join_thread_local_accept,join_thread_network;
-pthread_mutex_t				join_thread_lock_local;
+pthread_mutex_t				join_thread_lock;
 
-int							join_tab_value,join_start_tick_local,
-							join_count_local,join_count_network;
+int							join_count,join_start_tick_local;
 bool						join_done_local,join_done_network;
-join_server_info			join_list_local[max_setup_network_host],
-							join_list_network[max_setup_network_host];
+join_server_info			join_list[max_setup_network_host];
 			
 /* =======================================================
 
@@ -73,24 +66,33 @@ join_server_info			join_list_local[max_setup_network_host],
       
 ======================================================= */
 
-char* join_create_list(int count,join_server_info *info)
+char* join_create_list(void)
 {
 	int					n,sz;
 	char				*c,*row_data;
+	join_server_info	*info;
 	
 		// create row data
 		
-	sz=(count+1)*128;
+	sz=(join_count+1)*128;
 	
 	row_data=valloc(sz);
 	bzero(row_data,sz);
 	
 		// build table
 	
+	info=join_list;
 	c=row_data;
 	
-	for (n=0;n!=count;n++) {
-		snprintf(c,128,"%s\t%s\t%s\t%d/%d\t%dms",info->name,info->game_name,info->map_name,info->player_count,info->player_max_count,info->ping_msec);
+	for (n=0;n!=join_count;n++) {
+	
+		if (info->local) {
+			snprintf(c,128,"%s (local)\t%s @ %s\t%d/%d\t%dms",info->name,info->game_name,info->map_name,info->player_count,info->player_max_count,info->ping_msec);
+		}
+		else {
+			snprintf(c,128,"%s (net)\t%s @ %s\t%d/%d\t%dms",info->name,info->game_name,info->map_name,info->player_count,info->player_max_count,info->ping_msec);
+		}
+		
 		c[127]=0x0;
 		
 		c+=128;
@@ -119,8 +121,6 @@ void* join_ping_thread_local_accept_read(void *arg)
 	
 		// read reply and add to list
 		
-	pthread_mutex_lock(&join_thread_lock_local);
-	
 	sock=(d3socket)arg;
 	
 	network_socket_blocking(sock,TRUE);
@@ -144,30 +144,31 @@ void* join_ping_thread_local_accept_read(void *arg)
 		if (action==net_action_reply_info) {
 		
 			reply_info=(network_reply_info*)data;
+			
+			pthread_mutex_lock(&join_thread_lock);
 				
-			info=&join_list_local[join_count_local++];
+			info=&join_list[join_count++];
 		
 			strcpy(info->name,reply_info->host_name);
 			strcpy(info->ip,reply_info->host_ip_resolve);
 			strcpy(info->game_name,reply_info->game_name);
 			strcpy(info->map_name,reply_info->map_name);
+			info->local=TRUE;
 			info->player_count=reply_info->player_count;
 			info->player_max_count=reply_info->player_max_count;
 			info->ping_msec=msec;
 
 				// rebuild list
 
-			if (join_tab_value==join_tab_value_local) {
-				row_data=join_create_list(join_count_local,join_list_local);
-				element_set_table_data(join_table_id,row_data);
-				free(row_data);
-			}
+			row_data=join_create_list();
+			element_set_table_data(join_table_id,row_data);
+			free(row_data);
+
+			pthread_mutex_unlock(&join_thread_lock);
 		}
 	}
 	
 	network_close_socket(&sock);
-
-	pthread_mutex_unlock(&join_thread_lock_local);
 	
 	pthread_exit(NULL);
 
@@ -200,7 +201,7 @@ void* join_ping_thread_local_accept(void *arg)
 	return(0);
 }
 
-void join_ping_thread_local_broadcast(void)
+void* join_ping_thread_local(void *arg)
 {
 	int			count;
 	char		ip_name[256],ip_resolve[256],err_str[256];
@@ -210,12 +211,6 @@ void join_ping_thread_local_broadcast(void)
 	
 	network_get_host_ip(ip_name,ip_resolve);
 	
-		// this lock is used to keep multiple
-		// threaded accepts from constantly over-writing
-		// the list
-		
-	pthread_mutex_init(&join_thread_lock_local,NULL);
-	
 		// spawn another thread to wait for replies
 		// we do this on another thread so we can
 		// cancel it under a certain time limit
@@ -224,11 +219,17 @@ void join_ping_thread_local_broadcast(void)
 	broadcast_reply_sock=network_open_socket();
 	network_socket_blocking(broadcast_reply_sock,TRUE);
 
-	if (!network_bind(broadcast_reply_sock,ip_resolve,net_port_host_broadcast_reply,err_str)) return;
-
+	if (!network_bind(broadcast_reply_sock,ip_resolve,net_port_host_broadcast_reply,err_str)) {
+		join_done_local=TRUE;
+		pthread_exit(NULL);
+		return(0);
+	}
+	
 	if (listen(broadcast_reply_sock,32)!=0) {
 		network_close_socket(&broadcast_reply_sock);
-		return;
+		join_done_local=TRUE;
+		pthread_exit(NULL);
+		return(0);
 	}
 
 		// run thread and wait for accepts to start
@@ -240,14 +241,16 @@ void join_ping_thread_local_broadcast(void)
 		
 	join_start_tick_local=time_get();
 		
-	if (!network_udp_send_broadcast(ip_resolve,net_port_host_broadcast)) return;
+	if (network_udp_send_broadcast(ip_resolve,net_port_host_broadcast)) {
 		
-	count=client_timeout_values[setup.network.timeout_mode];
-	count*=1000;
-	
-	while ((count>0) && (!join_thread_quit)) {
-		usleep(1000);
-		count--;
+		count=client_timeout_values[setup.network.timeout_mode];
+		count*=1000;
+		
+		while ((count>0) && (!join_thread_quit)) {
+			usleep(1000);
+			count--;
+		}
+		
 	}
 	
 		// close the socket to cancel the accept and
@@ -256,21 +259,7 @@ void join_ping_thread_local_broadcast(void)
 	network_close_socket(&broadcast_reply_sock);
 	pthread_join(join_thread_local_accept,NULL);
 	
-	pthread_mutex_destroy(&join_thread_lock_local);
-}
-
-void* join_ping_thread_local(void *arg)
-{
-		// main thread, called this way so "mark as done"
-		// doesn't have to be repeated
-		
-	join_ping_thread_local_broadcast();
-
-		// mark this thread as done
-		
 	join_done_local=TRUE;
-	if (join_tab_value==join_tab_value_local) element_table_busy(join_table_id,FALSE);
-	
 	pthread_exit(NULL);
 	return(0);
 }
@@ -303,32 +292,34 @@ void* join_ping_thread_network(void *arg)
 
 		if (network_client_ping_host(host->ip,status,host_name,game_name,map_name,&player_count,&player_max_count,&ping_msec)) {
 
+			pthread_mutex_lock(&join_thread_lock);
+
 				// setup info
 				
-			info=&join_list_network[join_count_network++];
+			info=&join_list[join_count++];
 		
 			strcpy(info->name,host_name);
 			strcpy(info->ip,host->ip);
 			strcpy(info->game_name,game_name);
 			strcpy(info->map_name,map_name);
+			info->local=FALSE;
 			info->player_count=player_count;
 			info->player_max_count=player_max_count;
 			info->ping_msec=ping_msec;
 
 				// rebuild list
 
-			if (join_tab_value==join_tab_value_network) {
-				row_data=join_create_list(join_count_network,join_list_network);
-				element_set_table_data(join_table_id,row_data);
-				free(row_data);
-			}
+			row_data=join_create_list();
+			element_set_table_data(join_table_id,row_data);
+			free(row_data);
+			
+			pthread_mutex_unlock(&join_thread_lock);
 		}
 		
 		idx++;
 	}
 	
 	join_done_network=TRUE;
-	if (join_tab_value==join_tab_value_network) element_table_busy(join_table_id,FALSE);
 	
 	pthread_exit(NULL);
 	
@@ -345,11 +336,28 @@ void join_ping_thread_start(void)
 {
 	join_thread_quit=FALSE;
 	
-	join_done_local=FALSE;
-	join_done_network=FALSE;
+		// table is busy
+		
+	element_table_busy(join_table_id,TRUE);
 	
+		// table update locks
+		
+	pthread_mutex_init(&join_thread_lock,NULL);
+
+		// start pinging local games
+		
+	join_done_local=FALSE;
 	pthread_create(&join_thread_local,NULL,join_ping_thread_local,NULL);
-	if (setup.network.nhost!=0) pthread_create(&join_thread_network,NULL,join_ping_thread_network,NULL);
+
+		// start pinging network games
+		
+	join_done_network=FALSE;
+	pthread_create(&join_thread_network,NULL,join_ping_thread_network,NULL);
+}
+
+void join_ping_thread_idle(void)
+{
+	element_table_busy(join_table_id,((!join_done_local) || (!join_done_network)));
 }
 
 void join_ping_thread_end(void)
@@ -357,7 +365,9 @@ void join_ping_thread_end(void)
 	join_thread_quit=TRUE;
 	
 	pthread_join(join_thread_local,NULL);
-	if (setup.network.nhost!=0) pthread_join(join_thread_network,NULL);
+	pthread_join(join_thread_network,NULL);
+	
+	pthread_mutex_destroy(&join_thread_lock);
 }
 
 /* =======================================================
@@ -368,41 +378,21 @@ void join_ping_thread_end(void)
 
 void join_open(void)
 {
-	int					n,x,y,high,list_wid,list_high;
-	char				path[1024],path2[1024],
-						tab_path[2][1024],tab_path2[2][1024],
-						tab_list[2][32]={"tab_local_servers","tab_network_servers"},
-						tab_selected_list[2][32]={"tab_local_servers_selected","tab_network_servers_selected"};
-	element_column_type	cols[5];
+	int					x,y,high,list_wid,list_high;
+	char				path[1024],path2[1024];
+	element_column_type	cols[4];
 	
 		// setup gui
 		
 	gui_initialize("Bitmaps/Backgrounds","join");
 	
-		// make the join list
+		// empty join list
 		
-	join_count_local=0;
-	join_count_network=0;
+	join_count=0;
 	
 		// controls
 							
 	element_clear();
-	
-		// tabs
-		
-	for (n=0;n!=2;n++) {
-		file_paths_data(&setup.file_path_setup,tab_path[n],"Bitmaps/UI_Elements",tab_list[n],"png");
-		file_paths_data(&setup.file_path_setup,tab_path2[n],"Bitmaps/UI_Elements",tab_selected_list[n],"png");
-	}
-	
-	join_tab_value=join_tab_value_local;
-	
-	x=setup.screen.x_scale/2;
-	if (x>128) x=128;
-	high=x/4;
-	y=41-high;
-	
-	element_tab_add((char*)tab_path,(char*)tab_path2,join_tab_value,join_tab_id,2,0,y,setup.screen.x_scale,high,(setup.screen.y_scale-(60+y)));
 	
 		// controls
 		
@@ -430,17 +420,15 @@ void join_open(void)
 	y=high+30;
 
 	strcpy(cols[0].name,"Name");
-	cols[0].percent_size=0.30f;
+	cols[0].percent_size=0.42f;
 	strcpy(cols[1].name,"Game");
-	cols[1].percent_size=0.25f;
-	strcpy(cols[2].name,"Map");
-	cols[2].percent_size=0.25f;
-	strcpy(cols[3].name,"Players");
-	cols[3].percent_size=0.10f;
-	strcpy(cols[4].name,"Ping");
-	cols[4].percent_size=0.10f;
+	cols[1].percent_size=0.40f;
+	strcpy(cols[2].name,"Players");
+	cols[2].percent_size=0.10f;
+	strcpy(cols[3].name,"Ping");
+	cols[3].percent_size=0.8f;
 
-	element_table_add(cols,NULL,join_table_id,5,15,y,list_wid,list_high);
+	element_table_add(cols,NULL,join_table_id,4,15,y,list_wid,list_high);
 	element_table_busy(join_table_id,TRUE);
 	
 		// status
@@ -463,31 +451,9 @@ void join_close(void)
 
 /* =======================================================
 
-      Tabs and Enabling
+      Enabling
 	        
 ======================================================= */
-
-void join_switch_tab(void)
-{
-	char			*row_data;
-	bool			done;
-	
-		// rebuild list
-
-	if (join_tab_value==join_tab_value_local) {
-		row_data=join_create_list(join_count_local,join_list_local);
-		done=join_done_local;
-	}
-	else {
-		row_data=join_create_list(join_count_network,join_list_network);
-		done=join_done_network;
-	}
-	
-	element_set_table_data(join_table_id,row_data);
-	free(row_data);
-	
-	element_table_busy(join_table_id,!done);
-}
 
 void join_activity_start(void)
 {
@@ -530,13 +496,7 @@ void join_game(void)
 	join_activity_start();
 	
 	idx=element_get_value(join_table_id);
-	
-	if (join_tab_value==join_tab_value_local) {
-		strcpy(net_setup.client.joined_ip,join_list_local[idx].ip);
-	}
-	else {
-		strcpy(net_setup.client.joined_ip,join_list_network[idx].ip);
-	}
+	strcpy(net_setup.client.joined_ip,join_list[idx].ip);
 							
 		// status
 		
@@ -623,11 +583,6 @@ void join_click(void)
 
 	switch (id) {
 	
-		case join_tab_id:
-			join_tab_value=element_get_value(join_tab_id);
-			join_switch_tab();
-			break;
-	
 		case join_button_join_id:
 			join_game();
 			break;
@@ -651,6 +606,13 @@ void join_click(void)
 
 void join_run(void)
 {
+		// idle the ping thread to check if pinging
+		// is finished
+		
+	join_ping_thread_idle();
+	
+		// drawing and clicking
+		
 	gui_draw(1.0f,TRUE);
 	join_click();
 }

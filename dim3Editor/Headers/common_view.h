@@ -60,6 +60,7 @@ extern void select_clear(void);
 extern void select_add(int type,int portal_idx,int main_idx,int sub_idx);
 extern int select_count(void);
 extern void select_get(int sel_idx,int *type,int *portal_idx,int *main_idx,int *sub_idx);
+extern void select_switch(int sel_idx,int type,int portal_idx,int main_idx,int sub_idx);
 extern int select_find(int type,int portal_idx,int main_idx,int sub_idx);
 extern bool select_check(int type,int portal_idx,int main_idx,int sub_idx);
 extern bool select_check_segment(int index);

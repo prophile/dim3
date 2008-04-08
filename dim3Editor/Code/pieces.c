@@ -54,40 +54,49 @@ void piece_move_to_portal(int rn)
 	nsel_count=select_count();
 	
 	for (n=0;n!=nsel_count;n++) {
+		
 		select_get(n,&type,&portal_idx,&main_idx,&sub_idx);
 		
 		switch (type) {
 		
 			case mesh_piece:
-				map_portal_mesh_switch_portal(&map,portal_idx,main_idx,rn);
+				main_idx=map_portal_mesh_switch_portal(&map,portal_idx,main_idx,rn);
+				select_switch(n,type,rn,main_idx,0);
 				break;
 				
 			case liquid_piece:
-				map_portal_liquid_switch_portal(&map,portal_idx,main_idx,rn);
+				main_idx=map_portal_liquid_switch_portal(&map,portal_idx,main_idx,rn);
+				select_switch(n,type,rn,main_idx,0);
 				break;
 				
 			case spot_piece:
 				map.spots[main_idx].pos.rn=rn;
+				select_switch(n,type,rn,main_idx,0);
 				break;
 				
 			case scenery_piece:
 				map.sceneries[main_idx].pos.rn=rn;
+				select_switch(n,type,rn,main_idx,0);
 				break;
 				
 			case node_piece:
 				map.nodes[main_idx].pos.rn=rn;
+				select_switch(n,type,rn,main_idx,0);
 				break;
 				
 			case light_piece:
 				map.lights[main_idx].pos.rn=rn;
+				select_switch(n,type,rn,main_idx,0);
 				break;
 				
 			case sound_piece:
 				map.sounds[main_idx].pos.rn=rn;
+				select_switch(n,type,rn,main_idx,0);
 				break;
 				
 			case particle_piece:
 				map.particles[main_idx].pos.rn=rn;
+				select_switch(n,type,rn,main_idx,0);
 				break;
 				
 		}

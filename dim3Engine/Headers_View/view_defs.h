@@ -98,6 +98,7 @@ typedef struct		{
 
 typedef struct		{
 						int							ping_msec,player_count,player_max_count;
+						bool						local;
 						char						ip[256],name[name_str_len],
 													game_name[name_str_len],map_name[name_str_len];
 					} join_server_info;
