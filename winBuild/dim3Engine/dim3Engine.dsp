@@ -1327,6 +1327,10 @@ SOURCE=..\..\dim3Engine\Sources_View\hand.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3Engine\Sources_View\host.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Engine\Sources_View\hud_draw.c
 # End Source File
 # Begin Source File

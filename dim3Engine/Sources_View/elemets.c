@@ -281,7 +281,14 @@ void element_button_add(char *path,char *path2,int id,int x,int y,int wid,int hi
 	element->enabled=TRUE;
 	element->hidden=FALSE;
 	
-	bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
+		// skip button if graphic is missing to avoid crash
+
+	if (!bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE)) {
+		nelement--;
+		pthread_mutex_unlock(&element_thread_lock);
+		return;
+	}
+
 	bitmap_open(&element->setup.button.bitmap_select,path2,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
 
 	if ((wid!=-1) && (high!=-1)) {

@@ -37,6 +37,8 @@ extern server_type			server;
 extern view_type			view;
 extern setup_type			setup;
 
+extern void light_trace_calculate_light_color(portal_type *portal,float x,float y,float z,float *cf);
+
 /* =======================================================
 
       Liquid Memory
@@ -161,7 +163,7 @@ void liquid_render_portal_liquid_create_vertex(portal_type *portal,map_liquid_ty
 		
 		while (TRUE) {
 			if (setup.ray_trace_lighting) {
-				light_trace_calculate_light_color(portal,x,y,z,cl);
+				light_trace_calculate_light_color(portal,(float)x,(float)y,(float)z,cl);
 			}
 			else {
 				map_portal_calculate_light_color(portal,(double)x,(double)y,(double)z,cl);

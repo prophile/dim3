@@ -432,16 +432,18 @@ void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,float rot_
 
 inline float map_portal_mesh_shift_texture_single_coord(float f_tick,float shift)
 {
-	int				k;
+	int				i_add;
+	float			f_add;
 
-	k=(int)(f_tick*shift);
-	return((float)((1000-k)%1000)/1000.0f);
+	f_add=(f_tick*0.001f)*shift;
+	i_add=(int)f_add;				// keep within 0..1
+	return(f_add-((float)i_add));
 }
 
-void map_portal_mesh_shift_texture_all(map_type *map,int portal_idx,int tick,bool do_portal_vertex_list)
+void map_portal_mesh_shift_portal_vertex_list(map_type *map,int portal_idx,int tick)
 {
 	int						n,k,t,nmesh,npoly,ptsz,idx;
-	float					f_tick;
+	float					f_tick,gx,gy,fx,fy;
 	unsigned char			*phit;
 	portal_type				*portal;
 	map_mesh_type			*mesh;
@@ -490,27 +492,28 @@ void map_portal_mesh_shift_texture_all(map_type *map,int portal_idx,int tick,boo
 
 			ptsz=poly->ptsz;
 
+			fx=map_portal_mesh_shift_texture_single_coord(f_tick,poly->x_shift);
+			fy=map_portal_mesh_shift_texture_single_coord(f_tick,poly->y_shift);
+
 			for (t=0;t!=ptsz;t++) {
-				poly->gx[t]=map_portal_mesh_shift_texture_single_coord(f_tick,poly->gx[t]);
-				poly->gy[t]=map_portal_mesh_shift_texture_single_coord(f_tick,poly->gy[t]);
-			}
 
-				// shift portal vertexes
+				gx=poly->gx[t]+fx;
+				gy=poly->gy[t]+fy;
+				
+				idx=poly->draw.portal_v[t];
 
-			if (do_portal_vertex_list) {
-
-				for (t=0;t!=ptsz;t++) {
-					idx=poly->draw.portal_v[t];
-
-					if (phit[idx]==0x0) {
-						phit[idx]=0x1;
-						pv=&portal->vertexes.vertex_list[idx];
-						pv->gx=poly->gx[t];
-						pv->gy=poly->gy[t];
-					}
+				if (phit[idx]==0x0) {
+					phit[idx]=0x1;
+					pv=&portal->vertexes.vertex_list[idx];
+					pv->gx=gx;
+					pv->gy=gy;
 				}
 			}
+
+			poly++;
 		}
+
+		mesh++;
 	}
 }
 

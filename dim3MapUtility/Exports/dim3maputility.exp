@@ -77,7 +77,7 @@ _map_portal_mesh_move
 _map_portal_mesh_resize
 _map_portal_mesh_flip
 _map_portal_mesh_rotate
-_map_portal_mesh_shift_texture_all
+_map_portal_mesh_shift_portal_vertex_list
 
 _map_portal_liquid_add
 _map_portal_liquid_delete

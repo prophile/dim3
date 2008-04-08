@@ -265,6 +265,10 @@ bool loop_main(char *err_str)
 		case gs_join:
 			join_run();
 			break;
+
+		case gs_host:
+			host_run();
+			break;
 			
 		case gs_menu:
 			menu_run();

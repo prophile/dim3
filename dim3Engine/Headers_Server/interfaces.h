@@ -153,6 +153,7 @@ extern void file_trigger_set(void);
 extern void file_run(void);
 
 extern void join_run(void);
+extern void host_run(void);
 
 extern void intro_open(void);
 extern void intro_run(void);

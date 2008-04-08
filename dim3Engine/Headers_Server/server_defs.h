@@ -33,15 +33,16 @@ and can be sold or given away.
 #define gs_intro					1
 #define gs_credit					2
 #define gs_join						3
-#define gs_menu						4
-#define gs_chooser					5
-#define gs_setup					6
-#define gs_file						7
-#define gs_story					8
-#define gs_title					9
-#define gs_movie					10
-#define gs_error					11
-#define gs_map_pick					12
+#define gs_host						4
+#define gs_menu						5
+#define gs_chooser					6
+#define gs_setup					7
+#define gs_file						8
+#define gs_story					9
+#define gs_title					10
+#define gs_movie					11
+#define gs_error					12
+#define gs_map_pick					13
 
 //
 // maximums

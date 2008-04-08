@@ -53,6 +53,7 @@ extern void file_open(void);
 extern void setup_open(bool in_game);
 extern void title_set_open(char *dir,char *name,char *sound_name);
 extern void join_open(void);
+extern void host_open(void);
 
 extern bool					game_loop_quit;
 
@@ -297,6 +298,8 @@ void intro_click(void)
 			break;
 
 		case intro_button_multiplayer_host_id:
+			intro_close(TRUE,FALSE);
+			host_open();
 			break;
 			
 		case intro_button_credit_id:
