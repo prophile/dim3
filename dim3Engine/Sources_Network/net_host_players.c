@@ -2,7 +2,7 @@
 
 Module: dim3 Server
 Author: Brian Barnes
- Usage: Server Player Code
+ Usage: Network Host Player Code
 
 ***************************** License ********************************
 
@@ -31,11 +31,11 @@ and can be sold or given away.
 
 extern char team_colors[][16];
 
-int						server_player_count,server_next_remote_uid;
+int						net_host_player_count,server_next_remote_uid;
 float					team_color_server_tint[net_team_count][3]=net_team_color_server_tint_def;
-server_player_type		server_players[net_max_remote_count];
+net_host_player_type	net_host_players[net_max_remote_count];
 
-pthread_mutex_t			server_player_lock;
+pthread_mutex_t			net_host_player_lock;
 
 /* =======================================================
 
@@ -43,17 +43,17 @@ pthread_mutex_t			server_player_lock;
       
 ======================================================= */
 
-void server_player_initialize(void)
+void net_host_player_initialize(void)
 {
-	server_player_count=0;
+	net_host_player_count=0;
 	server_next_remote_uid=net_remote_uid_client_start;
 	
-	pthread_mutex_init(&server_player_lock,NULL);
+	pthread_mutex_init(&net_host_player_lock,NULL);
 }
 
-void server_player_shutdown(void)
+void net_host_player_shutdown(void)
 {
-	pthread_mutex_destroy(&server_player_lock);
+	pthread_mutex_destroy(&net_host_player_lock);
 }
 
 /* =======================================================
@@ -62,14 +62,14 @@ void server_player_shutdown(void)
       
 ======================================================= */
 
-int server_player_find(int remote_uid)
+int net_host_player_find(int remote_uid)
 {
-	int					n;
-	server_player_type	*player;
+	int						n;
+	net_host_player_type	*player;
 	
-	player=server_players;
+	player=net_host_players;
 	
-	for (n=0;n!=server_player_count;n++) {
+	for (n=0;n!=net_host_player_count;n++) {
 		if (player->remote_uid==remote_uid) return(n);
 		player++;
 	}
@@ -77,45 +77,45 @@ int server_player_find(int remote_uid)
 	return(-1);
 }
 
-bool server_player_find_name(int remote_uid,char *name)
+bool net_host_player_find_name(int remote_uid,char *name)
 {
 	int				idx;
 	bool			hit;
 	
 	hit=FALSE;
 
-	pthread_mutex_lock(&server_player_lock);
+	pthread_mutex_lock(&net_host_player_lock);
 
-	idx=server_player_find(remote_uid);
+	idx=net_host_player_find(remote_uid);
 	
 	if (idx!=-1) {
-		strcpy(name,server_players[idx].name);
+		strcpy(name,net_host_players[idx].name);
 		hit=TRUE;
 	}
 	
-	pthread_mutex_unlock(&server_player_lock);
+	pthread_mutex_unlock(&net_host_player_lock);
 	
 	return(hit);
 }
 
-bool server_player_find_name_team(int remote_uid,char *name,float *col)
+bool net_host_player_find_name_team(int remote_uid,char *name,float *col)
 {
 	int				idx;
 	bool			hit;
 	
 	hit=FALSE;
 
-	pthread_mutex_lock(&server_player_lock);
+	pthread_mutex_lock(&net_host_player_lock);
 
-	idx=server_player_find(remote_uid);
+	idx=net_host_player_find(remote_uid);
 	
 	if (idx!=-1) {
-		strcpy(name,server_players[idx].name);
-		memmove(col,team_color_server_tint[server_players[idx].team_idx],(3*sizeof(float)));
+		strcpy(name,net_host_players[idx].name);
+		memmove(col,team_color_server_tint[net_host_players[idx].team_idx],(3*sizeof(float)));
 		hit=TRUE;
 	}
 	
-	pthread_mutex_unlock(&server_player_lock);
+	pthread_mutex_unlock(&net_host_player_lock);
 	
 	return(hit);
 }
@@ -126,65 +126,31 @@ bool server_player_find_name_team(int remote_uid,char *name,float *col)
       
 ======================================================= */
 
-int server_player_info_list(server_player_info_type *infos)
+int net_host_player_join(d3socket sock,char *name,char *deny_reason)
 {
-	int						n,cnt;
-	server_player_type		*player;
-	server_player_info_type	*info;
-	
-	pthread_mutex_lock(&server_player_lock);
-
-	player=server_players;
-	info=infos;
-
-	for (n=0;n!=server_player_count;n++) {
-
-		strcpy(info->name,player->name);
-		memmove(info->col,team_color_server_tint[player->team_idx],(3*sizeof(float)));
-		info->score=player->score;
-
-		player++;
-		info++;
-	}
-
-	cnt=server_player_count;
-
-	pthread_mutex_unlock(&server_player_lock);
-
-	return(cnt);
-}
-
-/* =======================================================
-
-      Join and Leave Players
-      
-======================================================= */
-
-int server_player_join(d3socket sock,char *name,char *deny_reason)
-{
-	int					n,remote_uid;
-	server_player_type	*player;
+	int						n,remote_uid;
+	net_host_player_type	*player;
 
 		// lock all player operations
 		
-	pthread_mutex_lock(&server_player_lock);
+	pthread_mutex_lock(&net_host_player_lock);
 	
 		// host full?
 		
-	if (server_player_count==net_max_remote_count) {
+	if (net_host_player_count==net_max_remote_count) {
 		strcpy(deny_reason,"Server is full");
-		pthread_mutex_unlock(&server_player_lock);
+		pthread_mutex_unlock(&net_host_player_lock);
 		return(-1);
 	}
 
 		// id in use?
 
-	player=server_players;
+	player=net_host_players;
 	
-	for (n=0;n!=server_player_count;n++) {
+	for (n=0;n!=net_host_player_count;n++) {
 		if (strcasecmp(player->name,name)==0) {
 			strcpy(deny_reason,"Player name already in use");
-			pthread_mutex_unlock(&server_player_lock);
+			pthread_mutex_unlock(&net_host_player_lock);
 			return(-1);
 		}
 		player++;
@@ -192,7 +158,7 @@ int server_player_join(d3socket sock,char *name,char *deny_reason)
 	
 		// create new player
 		
-	player=&server_players[server_player_count];
+	player=&net_host_players[net_host_player_count];
 	
 	player->remote_uid=server_next_remote_uid;
 	player->sock=sock;
@@ -206,63 +172,63 @@ int server_player_join(d3socket sock,char *name,char *deny_reason)
 	player->ready=FALSE;
 	
 	server_next_remote_uid++;
-	server_player_count++;
+	net_host_player_count++;
 	
 	remote_uid=player->remote_uid;
 	
-	pthread_mutex_unlock(&server_player_lock);
+	pthread_mutex_unlock(&net_host_player_lock);
 	
 	return(remote_uid);
 }
 
-void server_player_ready(int remote_uid,bool ready)
+void net_host_player_ready(int remote_uid,bool ready)
 {
 	int				idx;
 	
 		// lock all player operations
 		
-	pthread_mutex_lock(&server_player_lock);
+	pthread_mutex_lock(&net_host_player_lock);
 		
 		// set player ready state
 		
-	idx=server_player_find(remote_uid);
-	if (idx!=-1) server_players[idx].ready=ready;
+	idx=net_host_player_find(remote_uid);
+	if (idx!=-1) net_host_players[idx].ready=ready;
 	
 		// unlock player operation
 		
-	pthread_mutex_unlock(&server_player_lock);
+	pthread_mutex_unlock(&net_host_player_lock);
 }
 
-void server_player_leave(int remote_uid)
+void net_host_player_leave(int remote_uid)
 {
 	int				idx;
 	char			name[name_str_len];
 	
 		// lock all player operations
 		
-	pthread_mutex_lock(&server_player_lock);
+	pthread_mutex_lock(&net_host_player_lock);
 		
 		// find player
 		
-	idx=server_player_find(remote_uid);
+	idx=net_host_player_find(remote_uid);
 	if (idx==-1) {
-		pthread_mutex_unlock(&server_player_lock);
+		pthread_mutex_unlock(&net_host_player_lock);
 		return;
 	}
 
 		// remember name
 
-	strcpy(name,server_players[idx].name);
+	strcpy(name,net_host_players[idx].name);
 
 		// exit player
 	
-	if (idx<(server_player_count-1)) {
-		memmove(&server_players[idx],&server_players[idx+1],(sizeof(server_player_type)*((server_player_count-idx)-1)));
+	if (idx<(net_host_player_count-1)) {
+		memmove(&net_host_players[idx],&net_host_players[idx+1],(sizeof(net_host_player_type)*((net_host_player_count-idx)-1)));
 	}
 	
-	server_player_count--;
+	net_host_player_count--;
 	
-	pthread_mutex_unlock(&server_player_lock);
+	pthread_mutex_unlock(&net_host_player_lock);
 }
 
 /* =======================================================
@@ -271,16 +237,16 @@ void server_player_leave(int remote_uid)
       
 ======================================================= */
 
-int server_player_count_team(int team_idx)
+int net_host_player_count_team(int team_idx)
 {
-	int					n,count;
-	server_player_type	*player;
+	int						n,count;
+	net_host_player_type	*player;
 	
 	count=0;
 	
-	player=server_players;
+	player=net_host_players;
 	
-	for (n=0;n!=server_player_count;n++) {
+	for (n=0;n!=net_host_player_count;n++) {
 		if (player->team_idx==team_idx) count++;
 		player++;
 	}
@@ -294,56 +260,56 @@ int server_player_count_team(int team_idx)
       
 ======================================================= */
 
-void server_player_update_team(int remote_uid,network_request_team *team)
+void net_host_player_update_team(int remote_uid,network_request_team *team)
 {
-	int						idx;
-	server_player_type		*player;
+	int							idx;
+	net_host_player_type		*player;
 	
-	pthread_mutex_lock(&server_player_lock);
+	pthread_mutex_lock(&net_host_player_lock);
 
-	idx=server_player_find(remote_uid);
+	idx=net_host_player_find(remote_uid);
 	if (idx==-1) {
-		pthread_mutex_unlock(&server_player_lock);
+		pthread_mutex_unlock(&net_host_player_lock);
 		return;
 	}
 
 		// update team
 
-	player=&server_players[idx];
+	player=&net_host_players[idx];
 	player->team_idx=(signed short)ntohs(team->team_idx);
 
-	pthread_mutex_unlock(&server_player_lock);
+	pthread_mutex_unlock(&net_host_player_lock);
 }
 
-void server_player_death(int remote_uid)
+void net_host_player_death(int remote_uid)
 {
 	// supergumba -- send chat message to all players here?
 }
 
-void server_player_telefrag(int remote_uid)
+void net_host_player_telefrag(int remote_uid)
 {
 	// supergumba -- send chat message to all players here?
 }
 
-void server_player_update(int remote_uid,network_request_remote_update *update)
+void net_host_player_update(int remote_uid,network_request_remote_update *update)
 {
-	int						idx,score;
-	bool					score_update;
-	server_player_type		*player;
+	int							idx,score;
+	bool						score_update;
+	net_host_player_type		*player;
 
 	score=(signed short)ntohs(update->score);
 	
 		// update score
 		
-	pthread_mutex_lock(&server_player_lock);
+	pthread_mutex_lock(&net_host_player_lock);
 
-	idx=server_player_find(remote_uid);
+	idx=net_host_player_find(remote_uid);
 	if (idx==-1) {
-		pthread_mutex_unlock(&server_player_lock);
+		pthread_mutex_unlock(&net_host_player_lock);
 		return;
 	}
 
-	player=&server_players[idx];
+	player=&net_host_players[idx];
 	
 		// position
 		
@@ -357,10 +323,10 @@ void server_player_update(int remote_uid,network_request_remote_update *update)
 	score_update=(score!=player->score);
 	player->score=score;
 	
-	pthread_mutex_unlock(&server_player_lock);
+	pthread_mutex_unlock(&net_host_player_lock);
 }
 
-void server_player_message(int remote_uid,network_request_remote_message *message)
+void net_host_player_message(int remote_uid,network_request_remote_message *message)
 {
 	// supergumba -- deal with this
 }
@@ -371,19 +337,19 @@ void server_player_message(int remote_uid,network_request_remote_message *messag
       
 ======================================================= */
 
-int server_player_create_remote_add_list(int player_remote_uid,network_request_remote_add *remotes)
+int net_host_player_create_remote_add_list(int player_remote_uid,network_request_remote_add *remotes)
 {
 	int						n,cnt;
-	server_player_type		*player;
+	net_host_player_type	*player;
 
-	pthread_mutex_lock(&server_player_lock);
+	pthread_mutex_lock(&net_host_player_lock);
 	
 		// set up the remotes
 		
 	cnt=0;
-	player=server_players;
+	player=net_host_players;
 	
-	for (n=0;n!=server_player_count;n++) {
+	for (n=0;n!=net_host_player_count;n++) {
 		
 		if (player->remote_uid!=player_remote_uid) {
 			remotes[cnt].uid=player->remote_uid;
@@ -400,7 +366,7 @@ int server_player_create_remote_add_list(int player_remote_uid,network_request_r
 		player++;
 	}
 	
-	pthread_mutex_unlock(&server_player_lock);
+	pthread_mutex_unlock(&net_host_player_lock);
 
 	return(cnt);
 }
@@ -413,28 +379,28 @@ int server_player_create_remote_add_list(int player_remote_uid,network_request_r
 
 // supergumba -- need to implement skip_flooded here
 
-void server_player_send_others_packet(int player_remote_uid,int action,int queue_mode,unsigned char *data,int len,bool skip_flooded)
+void net_host_player_send_others_packet(int player_remote_uid,int action,int queue_mode,unsigned char *data,int len,bool skip_flooded)
 {
 	int						n,nsock;
 	d3socket				socks[net_max_remote_count];
-	server_player_type		*player;
+	net_host_player_type	*player;
 	
 		// we build the list of other player's sockets
 		// inside the lock to deal with changing player list
 		// we then send outside the lock so we don't hold
 		// the lock too long
 		
-	pthread_mutex_lock(&server_player_lock);
+	pthread_mutex_lock(&net_host_player_lock);
 	
 	nsock=0;
-	player=server_players;
+	player=net_host_players;
 	
-	for (n=0;n!=server_player_count;n++) {
+	for (n=0;n!=net_host_player_count;n++) {
 		if ((player->remote_uid!=player_remote_uid) && (player->ready)) socks[nsock++]=player->sock;
 		player++;
 	}
 	
-	pthread_mutex_unlock(&server_player_lock);
+	pthread_mutex_unlock(&net_host_player_lock);
 	
 		// send to all other players
 	
@@ -443,7 +409,7 @@ void server_player_send_others_packet(int player_remote_uid,int action,int queue
 	}
 }
 
-void server_player_send_all_packet(int action,int queue_mode,unsigned char *data,int len,bool skip_flooded)
+void net_host_player_send_all_packet(int action,int queue_mode,unsigned char *data,int len,bool skip_flooded)
 {
-	server_player_send_others_packet(-1,action,queue_mode,data,len,skip_flooded);
+	net_host_player_send_others_packet(-1,action,queue_mode,data,len,skip_flooded);
 }

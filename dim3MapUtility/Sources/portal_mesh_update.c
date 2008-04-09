@@ -426,6 +426,71 @@ void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,float rot_
 
 /* =======================================================
 
+      Tesselate Mesh
+      
+======================================================= */
+
+bool map_portal_mesh_tesselate(map_type *map,int portal_idx,int mesh_idx)
+{
+	int						n,k,cnt,ntrig,npoly;
+	portal_type				*portal;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly,*trig_polys,*trig_poly;
+
+	portal=&map->portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+
+	if (mesh->npoly==0) return(TRUE);
+
+		// count number of eventually trigs
+
+	npoly=mesh->npoly;
+	poly=mesh->polys;
+
+	ntrig=0;
+
+	for (n=0;n!=npoly;n++) {
+		ntrig+=(poly->ptsz-2);
+		poly++;
+	}
+
+		// create trigs
+
+	trig_polys=(map_mesh_poly_type*)valloc(sizeof(map_mesh_poly_type)*ntrig);
+	if (trig_polys==NULL) return(FALSE);
+
+	trig_poly=trig_polys;
+	poly=mesh->polys;
+
+	for (n=0;n!=npoly;n++) {
+
+		cnt=poly->ptsz-2;
+
+		for (k=0;k!=cnt;k++) {
+			memmove(trig_poly,poly,sizeof(map_mesh_poly_type));
+
+			trig_poly->ptsz=3;
+
+			trig_poly->v[0]=poly->v[0];
+			trig_poly->v[1]=poly->v[k+1];
+			trig_poly->v[2]=poly->v[k+2];
+		}
+
+		poly++;
+	}
+
+		// substitute the trigs
+
+	free(mesh->polys);
+
+	mesh->npoly=ntrig;
+	mesh->polys=trig_polys;
+
+	return(TRUE);
+}
+
+/* =======================================================
+
       Update Meshes for Texture Shifting
       
 ======================================================= */

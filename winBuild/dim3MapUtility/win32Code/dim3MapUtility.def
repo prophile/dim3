@@ -80,7 +80,8 @@ EXPORTS
 	map_portal_mesh_resize							@234
 	map_portal_mesh_flip							@235
 	map_portal_mesh_rotate							@236
-	map_portal_mesh_shift_portal_vertex_list		@237
+	map_portal_mesh_tesselate						@237
+	map_portal_mesh_shift_portal_vertex_list		@238
 
 	map_portal_liquid_add							@240
 	map_portal_liquid_delete						@241

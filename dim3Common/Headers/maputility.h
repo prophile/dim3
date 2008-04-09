@@ -833,6 +833,7 @@ extern void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool 
 extern void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min,d3pnt *max);
 extern void map_portal_mesh_flip(map_type *map,int portal_idx,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);
 extern void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,float rot_x,float rot_y,float rot_z);
+extern bool map_portal_mesh_tesselate(map_type *map,int portal_idx,int mesh_idx);
 extern void map_portal_mesh_shift_portal_vertex_list(map_type *map,int portal_idx,int tick);
 
 extern int map_portal_liquid_add(map_type *map,int portal_idx);

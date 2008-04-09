@@ -41,6 +41,13 @@ extern int map_auto_generate_get_ceiling_type(auto_generate_settings_type *ags);
 extern void map_auto_generate_block_preset(auto_generate_settings_type *ag_settings,int block);
 extern bool map_auto_generate_block_collision(auto_generate_settings_type *ags,int x,int z,int ex,int ez);
 
+extern void map_auto_generate_poly_from_square_wall(int lx,int lz,int rx,int rz,int ty,int by,int *x,int *y,int *z,float *gx,float *gy);
+extern void map_auto_generate_poly_from_square_floor(int lx,int lz,int rx,int rz,int fy,int *x,int *y,int *z,float *gx,float *gy);
+extern void map_auto_generate_poly_from_square_floor_slant(int lx,int lz,int rx,int rz,int fy,int yadd,int lower_mode,bool reverse_slant,int *x,int *y,int *z,float *gx,float *gy);
+
+extern bool map_auto_generate_mesh_start(map_type *map,int portal_idx,int group_idx,int txt_idx,bool moveable,bool new_mesh);
+extern bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z,float *gx,float *gy);
+
 extern void map_auto_generate_segment_start(int group_idx,int primitive_uid,int fill,bool moveable);
 extern int map_auto_generate_segment_wall(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty,int by,int clip);
 extern void map_auto_generate_segment_fc(map_type *map,int rn,int type,int lx,int lz,int rx,int rz,int y,int yadd,int lower_mode);
@@ -164,6 +171,10 @@ void map_auto_generate_initial_portals(map_type *map)
 			
 		rn=map_portal_create(map,x,z,ex,ez);
 		if (rn==-1) break;
+
+			// create initial mesh
+
+		if (map_portal_mesh_add(map,rn)==-1) break;
 	}
 }
 
@@ -632,7 +643,9 @@ void map_auto_generate_lights(map_type *map)
 
 void map_auto_generate_walls_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty,int by)
 {
-	int					lx2,rx2,lz2,rz2,xadd,zadd,split_factor;
+	int				lx2,rx2,lz2,rz2,px[8],py[8],pz[8],
+					xadd,zadd,split_factor;
+	float			gx[8],gy[8];
 	
 		// get sizes
 		
@@ -652,7 +665,8 @@ void map_auto_generate_walls_add(map_type *map,int rn,int lx,int lz,int rx,int r
 			if (rx2>=rx) rx2=rx;
 			xadd=split_factor;
 
-			if (map->nsegment<max_segment) map_auto_generate_segment_wall(map,rn,lx2,lz,rx2,lz,ty,by,wc_none);
+			map_auto_generate_poly_from_square_wall(lx2,lz,rx2,lz,ty,by,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
 		}
 
 		return;
@@ -672,7 +686,8 @@ void map_auto_generate_walls_add(map_type *map,int rn,int lx,int lz,int rx,int r
 			if (rz2>=rz) rz2=rz;
 			zadd=split_factor;
 			
-			if (map->nsegment<max_segment) map_auto_generate_segment_wall(map,rn,lx,lz2,lx,rz2,ty,by,wc_none);
+			map_auto_generate_poly_from_square_wall(lx,lz2,lx,rz2,ty,by,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
 		}
 
 		return;
@@ -680,12 +695,13 @@ void map_auto_generate_walls_add(map_type *map,int rn,int lx,int lz,int rx,int r
 
 	   // regular wall
 
-	if (map->nsegment<max_segment) map_auto_generate_segment_wall(map,rn,lx,lz,rx,rz,ty,by,wc_none);
+	map_auto_generate_poly_from_square_wall(lx,lz,rx,rz,ty,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 }
 
 void map_auto_generate_walls(map_type *map)
 {
-	int				n,x,z,ex,ez,xsz,zsz,lx,rx,x2,lz,rz,z2,ty,by,fill;
+	int				n,x,z,ex,ez,xsz,zsz,lx,rx,x2,lz,rz,z2,ty,by,txt_idx;
 	char			*wall_left_run,*wall_right_run,*wall_top_run,*wall_bottom_run;
 	bool			in_left_wall,in_right_wall,in_top_wall,in_bottom_wall;
 	portal_type		*portal;
@@ -703,11 +719,10 @@ void map_auto_generate_walls(map_type *map)
 
 	for (n=0;n!=map->nportal;n++) {
 		
-			// fill
+			// start mesh
 			
-		fill=(corridor_flags[n]==ag_corridor_flag_portal)?ag_settings.texture.portal_wall:ag_settings.texture.corridor_wall;
-		
-		map_auto_generate_segment_start(-1,-1,fill,FALSE);
+		txt_idx=(corridor_flags[n]==ag_corridor_flag_portal)?ag_settings.texture.portal_wall:ag_settings.texture.corridor_wall;
+		if (!map_auto_generate_mesh_start(map,n,-1,txt_idx,FALSE,FALSE)) return;
 
 			// portal height
 
@@ -1298,7 +1313,9 @@ bool map_auto_generate_portal_ceiling_ok(int ceiling_type,int lx,int lz,int rx,i
 void map_auto_generate_portal_fc_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty,int by)
 {
 	int				xoff,zoff,ceiling_type,split_factor,
-					xadd,zadd,lx2,rx2,lz2,rz2,slant_sz;
+					xadd,zadd,lx2,rx2,lz2,rz2,slant_sz,
+					px[8],py[8],pz[8];
+	float			gx[8],gy[8];
 	portal_type		*portal;
 		
 		// get sizes
@@ -1316,7 +1333,7 @@ void map_auto_generate_portal_fc_add(map_type *map,int rn,int lx,int lz,int rx,i
 	
 	ceiling_type=map_auto_generate_get_ceiling_type(&ag_settings);
 	
-		// create floor/ceiling segments
+		// create floor/ceiling polys
 
 	rz2=lz;
 	zadd=zoff;
@@ -1338,15 +1355,17 @@ void map_auto_generate_portal_fc_add(map_type *map,int rn,int lx,int lz,int rx,i
 			xadd=split_factor;
 
 				// floors
-				
-			map_auto_generate_segment_start(-1,-1,ag_settings.texture.portal_floor,FALSE);
-			map_auto_generate_segment_fc(map,rn,sg_floor,lx2,lz2,rx2,rz2,by,0,ag_ceiling_lower_none);
-			
+
+			if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.portal_floor,FALSE,FALSE)) return;
+			map_auto_generate_poly_from_square_floor(lx2,lz2,rx2,rz2,by,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
+
 				// ceilings
 				
 			if (map_auto_generate_portal_ceiling_ok(ceiling_type,lx,lz,rx,rz,lx2,lz2,rx2,rz2)) {
-				map_auto_generate_segment_start(-1,-1,ag_settings.texture.portal_ceiling,FALSE);
-				map_auto_generate_segment_fc(map,rn,sg_ceiling,lx2,lz2,rx2,rz2,ty,0,ag_ceiling_lower_none);
+				if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.portal_ceiling,FALSE,FALSE)) return;
+				map_auto_generate_poly_from_square_floor(lx2,lz2,rx2,rz2,ty,px,py,pz,gx,gy);
+				if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
 			}
 		}
 	}	
@@ -1355,7 +1374,9 @@ void map_auto_generate_portal_fc_add(map_type *map,int rn,int lx,int lz,int rx,i
 void map_auto_generate_corridor_fc_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty,int by)
 {
 	int				xoff,zoff,split_factor,
-					xadd,zadd,lx2,rx2,lz2,rz2,slant_sz;
+					xadd,zadd,lx2,rx2,lz2,rz2,slant_sz,
+					px[8],py[8],pz[8];
+	float			gx[8],gy[8];
 	portal_type		*portal;
 	
 		// get sizes
@@ -1393,43 +1414,60 @@ void map_auto_generate_corridor_fc_add(map_type *map,int rn,int lx,int lz,int rx
 			xadd=split_factor;
 
 				// floors
-				
-			map_auto_generate_segment_start(-1,-1,ag_settings.texture.corridor_floor,FALSE);
-			map_auto_generate_segment_fc(map,rn,sg_floor,lx2,lz2,rx2,rz2,by,0,ag_ceiling_lower_none);
+
+			if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.corridor_floor,FALSE,FALSE)) return;
+			map_auto_generate_poly_from_square_floor(lx2,lz2,rx2,rz2,by,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
 			
 				// ceilings
 				
-			map_auto_generate_segment_start(-1,-1,ag_settings.texture.corridor_ceiling,FALSE);
-			map_auto_generate_segment_fc(map,rn,sg_ceiling,lx2,lz2,rx2,rz2,ty,0,ag_ceiling_lower_none);
-			
+			if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.corridor_ceiling,FALSE,FALSE)) return;
+			map_auto_generate_poly_from_square_floor(lx2,lz2,rx2,rz2,ty,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
 		}
 	}
 	
 		// additional slanted floors for corridors
 		
 	if (corridor_types[rn]==ag_corridor_type_octagon) {
-		map_auto_generate_segment_start(-1,-1,ag_settings.texture.corridor_floor,FALSE);
+		
+		if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.corridor_floor,FALSE,FALSE)) return;
+
 		if (corridor_flags[rn]==ag_corridor_flag_horizontal) {
-			map_auto_generate_segment_fc(map,rn,sg_floor,lx,lz,rx,(lz+slant_sz),by,slant_sz,ag_ceiling_lower_neg_z);
-			map_auto_generate_segment_fc(map,rn,sg_floor,lx,(rz-slant_sz),rx,rz,by,slant_sz,ag_ceiling_lower_pos_z);
+			map_auto_generate_poly_from_square_floor_slant(lx,lz,rx,(lz+slant_sz),by,slant_sz,ag_ceiling_lower_neg_z,FALSE,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
+
+			map_auto_generate_poly_from_square_floor_slant(lx,(rz-slant_sz),rx,rz,by,slant_sz,ag_ceiling_lower_pos_z,FALSE,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
 		}
 		else {
-			map_auto_generate_segment_fc(map,rn,sg_floor,lx,lz,(lx+slant_sz),rz,by,slant_sz,ag_ceiling_lower_neg_x);
-			map_auto_generate_segment_fc(map,rn,sg_floor,(rx-slant_sz),lz,rx,rz,by,slant_sz,ag_ceiling_lower_pos_x);
+			map_auto_generate_poly_from_square_floor_slant(lx,lz,(lx+slant_sz),rz,by,slant_sz,ag_ceiling_lower_neg_x,FALSE,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
+
+			map_auto_generate_poly_from_square_floor_slant((rx-slant_sz),lz,rx,rz,by,slant_sz,ag_ceiling_lower_pos_x,FALSE,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
 		}
 	}
 	
 		// additional slanted ceilings for corridors
 		
 	if ((corridor_types[rn]==ag_corridor_type_slanted_ceiling) || (corridor_types[rn]==ag_corridor_type_octagon)) {
-		map_auto_generate_segment_start(-1,-1,ag_settings.texture.corridor_ceiling,FALSE);
+
+		if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.corridor_ceiling,FALSE,FALSE)) return;
+
 		if (corridor_flags[rn]==ag_corridor_flag_horizontal) {
-			map_auto_generate_segment_fc(map,rn,sg_ceiling,lx,lz,rx,(lz+slant_sz),ty,slant_sz,ag_ceiling_lower_neg_z);
-			map_auto_generate_segment_fc(map,rn,sg_ceiling,lx,(rz-slant_sz),rx,rz,ty,slant_sz,ag_ceiling_lower_pos_z);
+			map_auto_generate_poly_from_square_floor_slant(lx,lz,rx,(lz+slant_sz),ty,slant_sz,ag_ceiling_lower_neg_z,TRUE,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
+
+			map_auto_generate_poly_from_square_floor_slant(lx,(rz-slant_sz),rx,rz,ty,slant_sz,ag_ceiling_lower_pos_z,TRUE,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
 		}
 		else {
-			map_auto_generate_segment_fc(map,rn,sg_ceiling,lx,lz,(lx+slant_sz),rz,ty,slant_sz,ag_ceiling_lower_neg_x);
-			map_auto_generate_segment_fc(map,rn,sg_ceiling,(rx-slant_sz),lz,rx,rz,ty,slant_sz,ag_ceiling_lower_pos_x);
+			map_auto_generate_poly_from_square_floor_slant(lx,lz,(lx+slant_sz),rz,ty,slant_sz,ag_ceiling_lower_neg_x,TRUE,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
+
+			map_auto_generate_poly_from_square_floor_slant((rx-slant_sz),lz,rx,rz,ty,slant_sz,ag_ceiling_lower_pos_x,TRUE,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
 		}
 	}
 }
@@ -1932,6 +1970,8 @@ void map_auto_generate_spots(map_type *map)
 	int				n,k,x,y,z,idx;
 	segment_type	*seg;
 	spot_type		*spot;
+
+	return;	// supergumba -- not working right now -- no segments
 	
 	if (!ag_settings.spots) return;
 	

@@ -343,7 +343,7 @@ int map_portal_mesh_add_poly(map_type *map,int portal_idx,int mesh_idx,int ptsz,
 	poly->dark_factor=1.0f;
 	poly->alpha=1.0f;
 
-	return(-1);
+	return(poly_idx);
 }
 
 /* =======================================================

@@ -94,7 +94,7 @@ void host_open(void)
 
 		// game type
 
-	y=high+30;
+	y=high+35;
 	control_y_add=element_get_control_high();
 	
 	element_combo_add("Game Type",(char*)net_game_types,0,host_game_type_id,85,y,TRUE);

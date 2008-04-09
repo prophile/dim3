@@ -31,10 +31,10 @@ and can be sold or given away.
 
 extern network_setup_type	net_setup;
 
-d3socket					server_host_socket;
-bool						server_host_complete;
-char						server_host_err_str[256];
-pthread_t					server_host_thread;
+d3socket					host_socket;
+bool						host_complete;
+char						host_err_str[256];
+pthread_t					host_thread;
 
 /* =======================================================
 
@@ -42,14 +42,14 @@ pthread_t					server_host_thread;
       
 ======================================================= */
 
-bool host_initialize(char *err_str)
+bool net_host_initialize(char *err_str)
 {
 		// begin listener thread
 		
-	server_host_complete=FALSE;
-	server_host_socket=D3_NULL_SOCKET;
+	host_complete=FALSE;
+	host_socket=D3_NULL_SOCKET;
 	
-	if (pthread_create(&server_host_thread,NULL,host_thread,NULL)!=0) {
+	if (pthread_create(&host_thread,NULL,net_host_thread,NULL)!=0) {
 		strcpy(err_str,"Networking: Could not start host listener thread");
 		return(FALSE);
 	}
@@ -57,12 +57,12 @@ bool host_initialize(char *err_str)
 		// wait for listenter thread to get into accept
 		
 	while (TRUE) {
-		if (server_host_complete) break;
+		if (host_complete) break;
 		usleep(100000);
 	}
 	
-	if (server_host_err_str[0]!=0x0) {
-		strcpy(err_str,server_host_err_str);
+	if (host_err_str[0]!=0x0) {
+		strcpy(err_str,host_err_str);
 		return(FALSE);
 	}
 
@@ -71,16 +71,16 @@ bool host_initialize(char *err_str)
 	return(TRUE);
 }
 
-void host_shutdown(void)
+void net_host_shutdown(void)
 {
 		// did host never start?
 
-	if (server_host_socket==D3_NULL_SOCKET) return;
+	if (host_socket==D3_NULL_SOCKET) return;
 	
 		// shutdown socket and then wait for termination
 		
-	network_close_socket(&server_host_socket);
-	pthread_join(server_host_thread,NULL);
+	network_close_socket(&host_socket);
+	pthread_join(host_thread,NULL);
 }
 
 /* =======================================================
@@ -89,7 +89,7 @@ void host_shutdown(void)
       
 ======================================================= */
 
-void* host_thread(void *arg)
+void* net_host_thread(void *arg)
 {
 	d3socket			sock;
 	int					err;
@@ -99,57 +99,57 @@ void* host_thread(void *arg)
 	
 		// use host err_str to flag if errors occured
 		
-	server_host_err_str[0]=0x0;
+	host_err_str[0]=0x0;
 	
 		// create host socket
 		
-	server_host_socket=network_open_socket();
-	if (server_host_socket==D3_NULL_SOCKET) {
-		strcpy(server_host_err_str,"Networking: Unable to open socket");
-		server_host_complete=TRUE;
+	host_socket=network_open_socket();
+	if (host_socket==D3_NULL_SOCKET) {
+		strcpy(host_err_str,"Networking: Unable to open socket");
+		host_complete=TRUE;
 		pthread_exit(NULL);
 		return(NULL);
 	}
 	
-	network_socket_blocking(server_host_socket,TRUE);
+	network_socket_blocking(host_socket,TRUE);
 		
 		// bind
 
-	if (!network_bind(server_host_socket,net_setup.host.ip_resolve,net_port_host,server_host_err_str)) {
-		network_close_socket(&server_host_socket);
-		server_host_complete=TRUE;
+	if (!network_bind(host_socket,net_setup.host.ip_resolve,net_port_host,host_err_str)) {
+		network_close_socket(&host_socket);
+		host_complete=TRUE;
 		pthread_exit(NULL);
 		return(NULL);
 	}
 
 		// start listening
 		
-	err=listen(server_host_socket,256);
+	err=listen(host_socket,256);
 	if (err!=0) {
-		network_close_socket(&server_host_socket);
-		sprintf(server_host_err_str,"Networking: Could not start listener on %s (error: %d)",net_setup.host.ip_resolve,errno);
-		server_host_complete=TRUE;
+		network_close_socket(&host_socket);
+		sprintf(host_err_str,"Networking: Could not start listener on %s (error: %d)",net_setup.host.ip_resolve,errno);
+		host_complete=TRUE;
 		pthread_exit(NULL);
 		return(NULL);
 	}
 
 		// host is OK, free thread to run independantly
 		
-	server_host_complete=TRUE;
+	host_complete=TRUE;
 	
 		// begin accepting
 		
 	addr_len=sizeof(struct sockaddr);
 	
 	while (TRUE) {
-		sock=accept(server_host_socket,&addr,&addr_len);
+		sock=accept(host_socket,&addr,&addr_len);
 		if (sock==-1) break;				// accept ending means socket has been closed and host shutting down
 		
 			// spawn thread for client
 			
 		network_socket_blocking(sock,FALSE);
 		
-		if (pthread_create(&message_thread,NULL,host_client_thread,(void*)sock)!=0) {
+		if (pthread_create(&message_thread,NULL,net_host_client_thread,(void*)sock)!=0) {
 			network_close_socket(&sock);
 		}
 	}
@@ -158,3 +158,53 @@ void* host_thread(void *arg)
 	return(NULL);
 }
 
+/* =======================================================
+
+      Start and Stop Hosted Game
+      
+======================================================= */
+
+bool net_host_game_start(char *err_str)
+{
+		// initialize players
+		
+	net_host_player_initialize();
+	
+		// resolve names to IPs
+		
+	if (net_setup.host.name[0]==0x0) network_get_host_name(net_setup.host.name);
+	network_get_host_ip(net_setup.host.ip_name,net_setup.host.ip_resolve);
+
+		// start hosting
+
+	if (!net_host_initialize(err_str)) {
+		network_shutdown();
+		net_host_player_shutdown();
+		return(FALSE);
+	}
+	
+	if (!net_host_broadcast_initialize(err_str)) {
+		net_host_shutdown();
+		network_shutdown();
+		net_host_player_shutdown();
+		return(FALSE);
+	}
+
+	return(TRUE);
+}
+
+void net_host_game_end(void)
+{
+		// inform all player of server shutdown
+
+	net_host_player_send_all_packet(net_action_request_host_exit,net_queue_mode_normal,NULL,0,FALSE);
+
+		// shutdown server
+
+	net_host_broadcast_shutdown();
+	net_host_shutdown();
+	
+	network_shutdown();
+	
+	net_host_player_shutdown();
+}

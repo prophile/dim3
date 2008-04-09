@@ -38,7 +38,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /Z7 /O2 /I "..\win32Includes\pthreads" /I "..\win32Includes\GLEW" /I "..\win32Includes\ZLib" /I "..\win32Includes\SDL" /I "..\win32Includes\OpenAL" /I "..\win32Includes\JS" /I "..\win32Includes\PNG" /I "..\..\dim3Engine\Headers_View" /I "..\..\dim3Engine\Headers_Server" /I "..\..\dim3Engine\Headers" /I "..\..\dim3MapUtility\Headers" /I "..\..\dim3ModelUtility\Headers" /I "..\..\dim3BaseUtility\Headers" /I "..\..\dim3Common\Headers" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "D3_PCH" /D "D3_ENGINE" /YX"dim3Engine.h" /FD /c
+# ADD CPP /nologo /MD /W3 /Z7 /O2 /I "..\win32Includes\pthreads" /I "..\win32Includes\GLEW" /I "..\win32Includes\ZLib" /I "..\win32Includes\SDL" /I "..\win32Includes\OpenAL" /I "..\win32Includes\JS" /I "..\win32Includes\PNG" /I "..\..\dim3Engine\Headers_View" /I "..\..\dim3Engine\Headers_Server" /I "..\..\dim3Engine\Headers_Network" /I "..\..\dim3Engine\Headers" /I "..\..\dim3MapUtility\Headers" /I "..\..\dim3ModelUtility\Headers" /I "..\..\dim3BaseUtility\Headers" /I "..\..\dim3Common\Headers" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "D3_PCH" /D "D3_ENGINE" /YX"dim3Engine.h" /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -246,7 +246,7 @@ SOURCE=..\dim3MapUtility\Release\dim3MapUtility.lib
 # Begin Group "dim3Engine"
 
 # PROP Default_Filter ""
-# Begin Group "EngineHeaders"
+# Begin Group "Engine Headers"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -254,7 +254,43 @@ SOURCE=..\dim3MapUtility\Release\dim3MapUtility.lib
 SOURCE=..\..\dim3Engine\Headers\dim3engine.h
 # End Source File
 # End Group
-# Begin Group "EngineHeadersServer"
+# Begin Group "Engine Sources"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources\app.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources\client.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources\debug.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources\file.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources\game.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources\loop.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources\main.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources\map.c
+# End Source File
+# End Group
+# Begin Group "Server Headers"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -334,75 +370,7 @@ SOURCE=..\..\dim3Engine\Headers_Server\weapons.h
 SOURCE=..\..\dim3Engine\Headers_Server\xmls.h
 # End Source File
 # End Group
-# Begin Group "EngineHeadersView"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Headers_View\input_defs.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Headers_View\inputs.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Headers_View\sound_defs.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Headers_View\sounds.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Headers_View\video.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Headers_View\video_defs.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Headers_View\view_defs.h
-# End Source File
-# End Group
-# Begin Group "EngineSources"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources\app.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources\client.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources\debug.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources\file.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources\game.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources\loop.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources\main.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources\map.c
-# End Source File
-# End Group
-# Begin Group "EngineSourcesServer"
+# Begin Group "Server Sources"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -1194,7 +1162,39 @@ SOURCE=..\..\dim3Engine\Sources_Server\xml_rings.c
 SOURCE=..\..\dim3Engine\Sources_Server\xml_setup.c
 # End Source File
 # End Group
-# Begin Group "EngineSourcesView"
+# Begin Group "View Headers"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Headers_View\input_defs.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Headers_View\inputs.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Headers_View\sound_defs.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Headers_View\sounds.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Headers_View\video.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Headers_View\video_defs.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Headers_View\view_defs.h
+# End Source File
+# End Group
+# Begin Group "View Sources"
 
 # PROP Default_Filter ""
 # Begin Source File
@@ -1504,6 +1504,34 @@ SOURCE=..\..\dim3Engine\Sources_View\xml_sound.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_View\zoom_draw.c
+# End Source File
+# End Group
+# Begin Group "Network Headers"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Headers_Network\network_defs.h
+# End Source File
+# End Group
+# Begin Group "Network Sources"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Network\net_broadcast.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Network\net_host.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Network\net_host_clients.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Network\net_host_players.c
 # End Source File
 # End Group
 # End Group

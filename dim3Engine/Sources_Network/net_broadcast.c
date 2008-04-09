@@ -36,7 +36,7 @@ bool						broadcast_listen_complete;
 char						broadcast_listen_err_str[256];
 pthread_t					broadcast_listen_thread;
 
-extern void client_handle_info(int sock);
+extern void net_host_client_handle_info(int sock);
 
 /* =======================================================
 
@@ -44,14 +44,14 @@ extern void client_handle_info(int sock);
       
 ======================================================= */
 
-bool broadcast_initialize(char *err_str)
+bool net_host_broadcast_initialize(char *err_str)
 {
 		// begin listener thread
 		
 	broadcast_listen_complete=FALSE;
 	broadcast_listen_socket=D3_NULL_SOCKET;
 	
-	if (pthread_create(&broadcast_listen_thread,NULL,broadcast_thread,NULL)!=0) {
+	if (pthread_create(&broadcast_listen_thread,NULL,net_host_broadcast_thread,NULL)!=0) {
 		strcpy(err_str,"Networking: Could not start broadcast listener thread");
 		return(FALSE);
 	}
@@ -73,7 +73,7 @@ bool broadcast_initialize(char *err_str)
 	return(TRUE);
 }
 
-void broadcast_shutdown(void)
+void net_host_broadcast_shutdown(void)
 {
 		// did broadcast listener never start?
 
@@ -91,7 +91,7 @@ void broadcast_shutdown(void)
       
 ======================================================= */
 
-void* broadcast_thread(void *arg)
+void* net_host_broadcast_thread(void *arg)
 {
 	char				ip[32],err_str[256];
 	unsigned char		*uc_ptr;
@@ -145,7 +145,7 @@ void* broadcast_thread(void *arg)
 		sprintf(ip,"%d.%d.%d.%d",uc_ptr[0],uc_ptr[1],uc_ptr[2],uc_ptr[3]);
 		
 		if (network_connect_block(sock,ip,net_port_host_broadcast_reply,5,err_str)) {
-			client_handle_info(sock);
+			net_host_client_handle_info(sock);
 		}
 		
 		network_close_socket(&sock);

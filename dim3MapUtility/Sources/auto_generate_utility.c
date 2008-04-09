@@ -29,6 +29,8 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
+int					map_ag_portal_idx,map_ag_mesh_idx,map_ag_poly_txt_idx;
+
 int					map_ag_seg_group_idx,map_ag_seg_primitive_uid,map_ag_seg_fill;
 bool				map_ag_seg_moveable;
 
@@ -222,6 +224,127 @@ void map_auto_generate_fix_segments_uv(map_type *map)
 
 /* =======================================================
 
+      Polygon Utilities
+      
+======================================================= */
+
+void map_auto_generate_poly_from_square_wall(int lx,int lz,int rx,int rz,int ty,int by,int *x,int *y,int *z,float *gx,float *gy)
+{
+	x[0]=x[3]=lx;
+	x[1]=x[2]=rx;
+	z[0]=z[3]=lz;
+	z[1]=z[2]=rz;
+
+	y[0]=y[1]=ty;
+	y[2]=y[3]=by;
+
+	gx[0]=gx[3]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[1]=0.0f;
+	gy[2]=gy[3]=1.0f;
+}
+
+void map_auto_generate_poly_from_square_floor(int lx,int lz,int rx,int rz,int fy,int *x,int *y,int *z,float *gx,float *gy)
+{
+	x[0]=x[3]=lx;
+	x[1]=x[2]=rx;
+	z[0]=z[1]=lz;
+	z[2]=z[3]=rz;
+		
+	y[0]=y[1]=y[2]=y[3]=fy;
+
+	gx[0]=gx[3]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[1]=0.0f;
+	gy[2]=gy[3]=1.0f;
+}
+
+void map_auto_generate_poly_from_square_floor_slant(int lx,int lz,int rx,int rz,int fy,int yadd,int lower_mode,bool reverse_slant,int *x,int *y,int *z,float *gx,float *gy)
+{
+	map_auto_generate_poly_from_square_floor(lx,lz,rx,rz,fy,x,y,z,gx,gy);
+	
+	if (!reverse_slant) {
+	
+		switch (lower_mode) {
+			case ag_ceiling_lower_neg_x:
+				y[0]+=yadd;
+				y[3]+=yadd;
+				break;
+			case ag_ceiling_lower_pos_x:
+				y[1]+=yadd;
+				y[2]+=yadd;
+				break;
+			case ag_ceiling_lower_neg_z:
+				y[0]+=yadd;
+				y[1]+=yadd;
+				break;
+			case ag_ceiling_lower_pos_z:
+				y[2]+=yadd;
+				y[3]+=yadd;
+				break;
+		}
+	}
+	
+	else {
+	
+		switch (lower_mode) {
+			case ag_ceiling_lower_neg_x:
+				y[0]-=yadd;
+				y[3]-=yadd;
+				break;
+			case ag_ceiling_lower_pos_x:
+				y[1]-=yadd;
+				y[2]-=yadd;
+				break;
+			case ag_ceiling_lower_neg_z:
+				y[0]-=yadd;
+				y[1]-=yadd;
+				break;
+			case ag_ceiling_lower_pos_z:
+				y[2]-=yadd;
+				y[3]-=yadd;
+				break;
+		}
+	
+	}
+}
+
+/* =======================================================
+
+      Mesh/Poly Adding
+      
+======================================================= */
+
+bool map_auto_generate_mesh_start(map_type *map,int portal_idx,int group_idx,int txt_idx,bool moveable,bool new_mesh)
+{
+	map_mesh_type			*mesh;
+
+	map_ag_portal_idx=portal_idx;
+	map_ag_mesh_idx=0;
+
+	map_ag_poly_txt_idx=txt_idx;
+
+		// need a new mesh?
+
+	if (new_mesh) {
+		map_ag_mesh_idx=map_portal_mesh_add(map,portal_idx);
+		if (map_ag_mesh_idx==-1) return(FALSE);
+
+		mesh=&map->portals[portal_idx].mesh.meshes[map_ag_mesh_idx];
+		mesh->group_idx=group_idx;
+		mesh->flag.moveable=moveable;
+	}
+
+	return(TRUE);
+}
+
+bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z,float *gx,float *gy)
+{
+	return(map_portal_mesh_add_poly(map,map_ag_portal_idx,map_ag_mesh_idx,ptsz,x,y,z,gx,gy,map_ag_poly_txt_idx)!=-1);
+}
+
+/* =======================================================
+
       Segment Adding
       
 ======================================================= */
@@ -237,6 +360,8 @@ void map_auto_generate_segment_start(int group_idx,int primitive_uid,int fill,bo
 int map_auto_generate_segment_wall(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty,int by,int clip)
 {
 	segment_type	*seg;
+
+	return(-1);
 	
 	if (map->nsegment==max_segment) return(-1);
 	
@@ -275,6 +400,8 @@ int map_auto_generate_segment_wall(map_type *map,int rn,int lx,int lz,int rx,int
 void map_auto_generate_segment_fc(map_type *map,int rn,int type,int lx,int lz,int rx,int rz,int y,int yadd,int lower_mode)
 {
 	segment_type	*seg;
+
+	return;
 	
 	if (map->nsegment==max_segment) return;
 	

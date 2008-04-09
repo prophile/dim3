@@ -385,7 +385,7 @@ void setup_network_pane(void)
 	wid=(setup.screen.x_scale-105)-x;
 	high=(setup.screen.y_scale-150)-y;
 	
-		// setup action list
+		// setup host list
 		
 	host=setup.network.hosts;
 

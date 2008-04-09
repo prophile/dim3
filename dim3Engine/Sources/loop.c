@@ -49,8 +49,6 @@ extern int game_time_calculate(void);
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
 extern int time_get(void);
-extern bool network_host_intialize(char *err_str);
-extern void network_host_shutdown(void);
 extern int game_time_get(void);
 extern bool server_initialize(char *err_str);
 extern void server_shutdown(void);
