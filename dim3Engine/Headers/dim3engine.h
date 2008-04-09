@@ -63,6 +63,7 @@ and can be sold or given away.
 #include "server_defs.h"
 #include "camera_defs.h"
 #include "view_defs.h"
+#include "network_defs.h"
 #include "interface_defs.h"
 #include "video_defs.h"
 #include "sound_defs.h"

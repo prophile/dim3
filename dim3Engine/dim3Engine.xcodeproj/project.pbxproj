@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		265B377D0D7F8D3A004AE124 /* group_change.c in Sources */ = {isa = PBXBuildFile; fileRef = 265B377C0D7F8D3A004AE124 /* group_change.c */; };
 		265B377F0D7F8D58004AE124 /* script_map_group.c in Sources */ = {isa = PBXBuildFile; fileRef = 265B377E0D7F8D58004AE124 /* script_map_group.c */; };
+		26D109610DAC797D006666F2 /* host.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D109600DAC797D006666F2 /* host.c */; };
+		26F08CA10DAC7DB50097E249 /* net_broadcast.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F08C9D0DAC7DB50097E249 /* net_broadcast.c */; };
+		26F08CA20DAC7DB50097E249 /* net_host.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F08C9E0DAC7DB50097E249 /* net_host.c */; };
+		26F08CA30DAC7DB50097E249 /* net_host_clients.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F08C9F0DAC7DB50097E249 /* net_host_clients.c */; };
+		26F08CA40DAC7DB50097E249 /* net_host_players.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F08CA00DAC7DB50097E249 /* net_host_players.c */; };
+		26F08CBA0DAC7E990097E249 /* network_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26F08CB90DAC7E990097E249 /* network_defs.h */; };
 		F500CC680C27942200F7C8CC /* gl_check.c in Sources */ = {isa = PBXBuildFile; fileRef = F500CC670C27942200F7C8CC /* gl_check.c */; };
 		F5022B5B0AC595C000F5C7D4 /* effects_lights.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022B5A0AC595C000F5C7D4 /* effects_lights.c */; };
 		F503D43809830CD100DEDC74 /* model_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D43709830CD100DEDC74 /* model_mesh.c */; };
@@ -382,6 +388,12 @@
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		265B377C0D7F8D3A004AE124 /* group_change.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = group_change.c; path = Sources_Server/group_change.c; sourceTree = "<group>"; };
 		265B377E0D7F8D58004AE124 /* script_map_group.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_map_group.c; path = Sources_Server/script_map_group.c; sourceTree = "<group>"; };
+		26D109600DAC797D006666F2 /* host.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = host.c; path = Sources_View/host.c; sourceTree = "<group>"; };
+		26F08C9D0DAC7DB50097E249 /* net_broadcast.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_broadcast.c; path = Sources_Network/net_broadcast.c; sourceTree = "<group>"; };
+		26F08C9E0DAC7DB50097E249 /* net_host.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host.c; path = Sources_Network/net_host.c; sourceTree = "<group>"; };
+		26F08C9F0DAC7DB50097E249 /* net_host_clients.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host_clients.c; path = Sources_Network/net_host_clients.c; sourceTree = "<group>"; };
+		26F08CA00DAC7DB50097E249 /* net_host_players.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host_players.c; path = Sources_Network/net_host_players.c; sourceTree = "<group>"; };
+		26F08CB90DAC7E990097E249 /* network_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = network_defs.h; path = Headers_Network/network_defs.h; sourceTree = "<group>"; };
 		F500CC670C27942200F7C8CC /* gl_check.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_check.c; path = Sources_View/gl_check.c; sourceTree = "<group>"; };
 		F5022B5A0AC595C000F5C7D4 /* effects_lights.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = effects_lights.c; path = Sources_View/effects_lights.c; sourceTree = "<group>"; };
 		F503D43709830CD100DEDC74 /* model_mesh.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = model_mesh.c; path = Sources_Server/model_mesh.c; sourceTree = "<group>"; };
@@ -915,6 +927,7 @@
 				016FFAA200BCCD027F000001 /* Headers */,
 				F5DD18AF0907611700721649 /* Server */,
 				F5DD18B00907611D00721649 /* View */,
+				26F08C9C0DAC7D9C0097E249 /* Network */,
 				F5AEEE7909099CF200A73CC8 /* Main */,
 				20286C2CFDCF999611CA2CEA /* Resources */,
 				02DF67D400BE08477F000001 /* Libraries */,
@@ -944,6 +957,34 @@
 				F52E82400C1632E6003D4818 /* OpenGL.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		26F08C9C0DAC7D9C0097E249 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				26F08CB60DAC7E560097E249 /* Headers */,
+				26F08CB70DAC7E5C0097E249 /* Core */,
+			);
+			name = Network;
+			sourceTree = "<group>";
+		};
+		26F08CB60DAC7E560097E249 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				26F08CB90DAC7E990097E249 /* network_defs.h */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
+		26F08CB70DAC7E5C0097E249 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				26F08C9E0DAC7DB50097E249 /* net_host.c */,
+				26F08C9F0DAC7DB50097E249 /* net_host_clients.c */,
+				26F08CA00DAC7DB50097E249 /* net_host_players.c */,
+				26F08C9D0DAC7DB50097E249 /* net_broadcast.c */,
+			);
+			name = Core;
 			sourceTree = "<group>";
 		};
 		F51072B508F9BA3300D0B135 /* GUI */ = {
@@ -1276,6 +1317,7 @@
 				F5DD1A7C09085BC600721649 /* setup.c */,
 				F5DD1A7709085BC600721649 /* files.c */,
 				F5DD1A7909085BC600721649 /* join.c */,
+				26D109600DAC797D006666F2 /* host.c */,
 				F5DD1A7E09085BC600721649 /* title.c */,
 				F5DD1A7D09085BC600721649 /* story.c */,
 				F5DD1A7B09085BC600721649 /* movie.c */,
@@ -1515,6 +1557,7 @@
 				F5F654FC0B549D1F00633A54 /* client.h in Headers */,
 				F5AD54770BBE2121001C7C04 /* baseutility.h in Headers */,
 				F5FD3CFA0C865C4E00087C1C /* physics.h in Headers */,
+				26F08CBA0DAC7E990097E249 /* network_defs.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1869,6 +1912,11 @@
 				F5AEF0F60D1CD57B00C99FF6 /* view_images.c in Sources */,
 				265B377D0D7F8D3A004AE124 /* group_change.c in Sources */,
 				265B377F0D7F8D58004AE124 /* script_map_group.c in Sources */,
+				26D109610DAC797D006666F2 /* host.c in Sources */,
+				26F08CA10DAC7DB50097E249 /* net_broadcast.c in Sources */,
+				26F08CA20DAC7DB50097E249 /* net_host.c in Sources */,
+				26F08CA30DAC7DB50097E249 /* net_host_clients.c in Sources */,
+				26F08CA40DAC7DB50097E249 /* net_host_players.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
