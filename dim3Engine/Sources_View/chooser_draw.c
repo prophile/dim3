@@ -53,15 +53,28 @@ void chooser_open(void)
 	int					n;
 	char				path[1024],path2[1024],fname[256];
 	chooser_type		*chooser;
+	chooser_text_type	*text;
 	chooser_item_type	*item;
 	
-	gui_initialize("Bitmaps/Backgrounds","chooser");
+	gui_initialize(NULL,NULL,TRUE,TRUE);
 	
-		// load up the elements
+		// setup elements
 		
 	chooser=&hud.choosers[chooser_idx];
-	
+		
+		// text
+
+	text=chooser->texts;
+
+	for (n=0;n<chooser->ntext;n++) {
+		element_text_add(text->data,0,text->x,text->y,text->just,(!text->large),text->clickable,FALSE);
+		text++;
+	}
+
+		// items
+
 	item=chooser->items;
+
 	for (n=0;n<chooser->nitem;n++) {
 	
 		file_paths_data(&setup.file_path_setup,path,"Chooser",item->file,"png");

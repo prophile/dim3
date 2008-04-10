@@ -696,7 +696,9 @@ extern void shader_delete(shader_type *shader);
 typedef struct		{
 						char						name[name_str_len],
 													ip_name[256],ip_resolve[64],
-													game_name[name_str_len],map_name[name_str_len];
+													proj_name[name_str_len],
+													game_name[name_str_len],
+													map_name[name_str_len];
 						bool						hosting;
 					} network_setup_host_type;
 
@@ -708,9 +710,14 @@ typedef struct		{
 					} network_setup_client_type;
 
 typedef struct		{
+						char						name[name_str_len];
+					} network_setup_game_type;
+
+typedef struct		{
 						int							ngame;
 						network_setup_host_type		host;
 						network_setup_client_type	client;
+						network_setup_game_type		games[network_setup_max_game];
 					} network_setup_type;
 
 //
@@ -734,7 +741,9 @@ typedef struct		{
 typedef struct		{
 						short						player_count,player_max_count;
 						char						host_name[name_str_len],host_ip_resolve[16],
-													game_name[name_str_len],map_name[name_str_len];
+													proj_name[name_str_len],
+													game_name[name_str_len],
+													map_name[name_str_len];
 					} network_reply_info;
 					
 typedef struct		{
@@ -866,9 +875,3 @@ extern bool network_queue_initialize(network_message_queue *queue);
 extern void network_queue_shutdown(network_message_queue *queue);
 extern bool network_queue_add_message(network_message_queue *queue,int action,int queue_mode,int remote_uid,unsigned char *data,int len);
 extern bool network_queue_check_message(network_message_queue *queue,int *action,int *from_remote_uid,unsigned char *data);
-
-//
-// setup
-//
-
-extern bool network_xml_read(file_path_setup_type *file_path_setup,network_setup_type *net_setup);

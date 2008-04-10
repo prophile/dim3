@@ -437,32 +437,6 @@ typedef struct		{
 					} portal_sight_list_type;
 
 typedef struct		{
-						int							max_count,count;
-						short						*list;
-					} portal_segment_list_type;
-
-typedef struct		{
-						int							opaque_normal_count,	// supergumba -- can probably delete all this
-													opaque_bump_count,
-													opaque_light_count,
-													opaque_simple_normal_count,
-													opaque_specular_count,
-													opaque_glow_count,
-													transparent_count,
-													shader_count;
-						short						*opaque_normal_list,
-													*opaque_bump_list,
-													*opaque_light_list,
-													*opaque_simple_normal_list,
-													*opaque_specular_list,
-													*opaque_glow_list,
-													*transparent_list,
-													*transparent_sort_list,
-													*shader_list;
-						float						*transparent_sort_z_list;
-					} portal_segment_draw_type;
-
-typedef struct		{
 						int							nspot;
 						light_spot_type				*spots;
 					} portal_light_type;
@@ -510,19 +484,12 @@ typedef struct		{
 													opaque_stencil_pass_start,
 													opaque_stencil_pass_end,
 													decal_count;
-						bool						in_path,reset_segment_list;
+						bool						in_path;
 						char						name[name_str_len];
 						portal_message_type			msg;
 						portal_sight_list_type		sight[max_sight_list];
 						portal_mesh_type			mesh;
 						portal_liquid_type			liquid;
-						portal_segment_list_type	wall_list_hit,
-													fc_list_hit,
-													liquid_list_hit,
-													segment_list_all,	// supergumba -- delete all this
-													segment_list_draw,
-													segment_list_texture_shift;
-						portal_segment_draw_type	segment_draw;
 						portal_light_type			light,light_last;
 						portal_vertex_type			vertexes;
 					} portal_type;
@@ -775,15 +742,9 @@ extern void map_portal_sight_prune(map_type *map,int rn,int site_idx);
 extern void map_portal_sight_delete_adjust_path(map_type *map,int rn);
 extern void map_portal_sight_generate_paths(map_type *map,bool ignore_depth);
 
-extern void map_portal_clear_segment_list_changes(map_type *map);
-extern void map_portal_set_segment_list_changes(map_type *map,int rn);
-extern void map_portal_rebuild_segment_list_changes(map_type *map);
-
 extern bool map_portal_create_vertex_lists(map_type *map,bool high_quality_lighting);
 extern void map_portal_dispose_vertex_lists(map_type *map);
 extern void map_portal_rebuild_vertex_lists(map_type *map,bool high_quality_lighting);
-extern bool map_portal_create_segment_lists(map_type *map);
-extern void map_portal_dispose_segment_lists(map_type *map);
 
 extern void map_set_light_base(d3col *col);
 extern void map_portal_clear_lights(portal_type *portal);

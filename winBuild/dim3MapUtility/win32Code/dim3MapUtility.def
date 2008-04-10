@@ -26,15 +26,9 @@ EXPORTS
 	map_portal_sight_delete_adjust_path				@142
 	map_portal_sight_generate_paths					@143
 
-	map_portal_clear_segment_list_changes			@150
-	map_portal_set_segment_list_changes				@151
-	map_portal_rebuild_segment_list_changes			@152
-
 	map_portal_create_vertex_lists					@160
 	map_portal_dispose_vertex_lists					@161
 	map_portal_rebuild_vertex_lists					@162
-	map_portal_create_segment_lists					@163
-	map_portal_dispose_segment_lists				@164
 
 	map_set_light_base								@180
 	map_portal_clear_lights							@181

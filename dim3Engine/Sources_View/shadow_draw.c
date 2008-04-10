@@ -145,6 +145,8 @@ int shadow_render_stencil_fc(int sptr_cnt,short *sptr,int ty,int by,int cnt,int 
 
 int shadow_render_stencil_portal(portal_type *portal,int y,int ty,int by,int cnt,int *seg_idx)
 {
+	/* supergumba -- redo
+
 		// wall segments
 		
 	cnt=shadow_render_stencil_wall(portal->wall_list_hit.count,portal->wall_list_hit.list,ty,y,cnt,seg_idx);
@@ -155,6 +157,8 @@ int shadow_render_stencil_portal(portal_type *portal,int y,int ty,int by,int cnt
 	cnt=shadow_render_stencil_fc(portal->fc_list_hit.count,portal->fc_list_hit.list,ty,by,cnt,seg_idx);
 	
 	return(cnt);
+	*/
+	return(0);
 }
 
 int shadow_render_stencil_map(model_draw_shadow *shadow,int *seg_idx)

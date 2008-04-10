@@ -237,7 +237,14 @@ bool map_new(map_type *map,char *name)
 			
 		portal->mesh.nmesh=0;
 		portal->mesh.meshes=NULL;
-	
+		
+			// clear liquids
+			
+		portal->liquid.nliquid=0;
+		portal->liquid.liquids=NULL;
+
+			// clear sight paths
+
 		sight=portal->sight;
             
 		for (k=0;k!=max_sight_list;k++) {
@@ -248,11 +255,6 @@ bool map_new(map_type *map,char *name)
 			}
 			sight++;
 		}
-		
-			// clear liquids
-			
-		portal->liquid.nliquid=0;
-		portal->liquid.liquids=NULL;
 		
 		portal++;
 	}
@@ -293,6 +295,7 @@ bool map_open(map_type *map,char *name,bool load_bitmaps,bool setup_glowmaps,boo
 	return(TRUE);
 }
 
+// supergumba -- can delete later
 bool map_open_primitive(map_type *map,char *path)
 {
 	if (!map_new(map,"Primitives")) return(FALSE);
@@ -336,10 +339,33 @@ bool map_save(map_type *map)
 
 void map_close(map_type *map)
 {
+	int				n;
+	portal_type		*portal;
+
 		// shaders and bitmaps
 		
 	map_shaders_close(map);
 	map_textures_close(map);
+
+		// portals and liquids
+
+	portal=map->portals;
+
+	for (n=0;n!=map->nportal;n++) {
+		if (portal->mesh.meshes!=NULL) {
+			free(portal->mesh.meshes);
+			portal->mesh.nmesh=0;
+			portal->mesh.meshes=NULL;
+		}
+		if (portal->liquid.liquids!=NULL) {
+			free(portal->liquid.liquids);
+			portal->liquid.nliquid=0;
+			portal->liquid.liquids=NULL;
+		}
+		portal++;
+	}
+
+	map->nportal=0;
 	
 		// memory
 		

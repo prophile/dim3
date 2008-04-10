@@ -2338,6 +2338,52 @@ int element_get_selected(void)
 
 /* =======================================================
 
+      Dialog Sizes
+      
+======================================================= */
+
+void element_get_dialog_size(int *p_lft,int *p_top,int *p_rgt,int *p_bot)
+{
+	int				n,lft,rgt,top,bot,elft,ergt,etop,ebot;
+	element_type	*element;
+
+	lft=rgt=setup.screen.x_scale>>1;
+	top=bot=setup.screen.y_scale>>1;
+
+	pthread_mutex_lock(&element_thread_lock);
+	
+	element=elements;
+	
+	for (n=0;n<nelement;n++) {
+		
+		elft=element->x;
+		etop=element->y;
+
+		if (element->type==element_type_text) {
+			etop-=gl_text_get_char_height(element->setup.text.small_text);		// need to adjust for bottom aligned text
+		}
+
+		ergt=elft+element->wid;
+		ebot=etop+element->high;
+
+		if (elft<lft) lft=elft;
+		if (ergt>rgt) rgt=ergt;
+		if (etop<top) top=etop;
+		if (ebot>bot) bot=ebot;
+
+		element++;
+	}
+
+	pthread_mutex_unlock(&element_thread_lock);
+
+	*p_lft=lft-10;
+	*p_rgt=rgt+10;
+	*p_top=top-10;
+	*p_bot=bot+10;
+}
+
+/* =======================================================
+
       Values
       
 ======================================================= */

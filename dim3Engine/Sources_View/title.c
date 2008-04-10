@@ -61,7 +61,7 @@ void title_open(void)
 
 		// titles
 		
-	gui_initialize(title_dir,title_name);
+	gui_initialize(title_dir,title_name,TRUE,FALSE);
 	
 		// sound
 

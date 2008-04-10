@@ -135,7 +135,7 @@ void movie_draw(void)
 
 void movie_open(void)
 {
-	gui_initialize(NULL,NULL);
+	gui_initialize(NULL,NULL,FALSE,FALSE);
 
 	if (!movie_initialize()) {
 		gui_shutdown();

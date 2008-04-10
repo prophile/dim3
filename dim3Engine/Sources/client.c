@@ -162,7 +162,7 @@ bool network_client_check_message(int *action,int *from_remote_uid,unsigned char
       
 ======================================================= */
 
-bool network_client_ping_host(char *ip,char *status,char *host_name,char *game_name,char *map_name,int *player_count,int *player_max_count,int *ping_msec)
+bool network_client_ping_host(char *ip,char *status,char *host_name,char *proj_name,char *game_name,char *map_name,int *player_count,int *player_max_count,int *ping_msec)
 {
 	int						action,from_remote_uid,len,msec,count;
 	char					err_str[256];
@@ -274,6 +274,8 @@ bool network_client_ping_host(char *ip,char *status,char *host_name,char *game_n
 	
 	strncpy(host_name,reply_info.host_name,name_str_len);
 	host_name[name_str_len-1]=0x0;
+	strncpy(proj_name,reply_info.proj_name,name_str_len);
+	proj_name[name_str_len-1]=0x0;
 	strncpy(game_name,reply_info.game_name,name_str_len);
 	game_name[name_str_len-1]=0x0;
 	strncpy(map_name,reply_info.map_name,name_str_len);

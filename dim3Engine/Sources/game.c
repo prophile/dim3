@@ -43,6 +43,7 @@ extern bool server_game_start(char *game_script_name,int skill,int remote_count,
 extern void server_game_stop(void);
 extern void view_game_start(void);
 extern void view_game_stop(void);
+extern void net_host_game_end(void);
 
 /* =======================================================
 

@@ -186,20 +186,23 @@ void map_auto_generate_initial_portals(map_type *map)
 
 void map_auto_generate_merge_portals(map_type *map)
 {
-	/* supergumba -- redo all this
-
-	int			i,n,k,dist,merge_add,merge_try_count;
+	int			i,n,k,dist,portal_merge_distance,
+				split_factor,merge_try_count;
 	bool		moved;
 	portal_type	*chk_portal,*merge_portal;
 
-	portal_merge_distance=(int)(((float)ag_settings.portal_sz)*ag_constant_portal_merge_percent);
+	portal_merge_distance=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_merge_percent);
+
+		// attempt to merge portals within a certain distance
+		// together.  All portals are grided on the split
+		// factor, so we merge on that
 
 		// only keep moving for a limited time
 		// so portals that bounce between two don't cause
 		// an infinite loop
 		
-	merge_add=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_split_factor_percent);
-	merge_try_count=(portal_merge_distance/merge_add)*2;
+	split_factor=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_split_factor_percent);
+	merge_try_count=(portal_merge_distance/split_factor)*2;
 
 	for (i=0;i!=merge_try_count;i++) {
 
@@ -223,8 +226,8 @@ void map_auto_generate_merge_portals(map_type *map)
 
 				dist=merge_portal->x-chk_portal->ex;
 				if ((dist>0) && (dist<=portal_merge_distance)) {
-					if (!map_auto_generate_portal_collision(map,(merge_portal->x-merge_add),merge_portal->z,merge_portal->ex,merge_portal->ez,k)) {
-						merge_portal->x-=merge_add;
+					if (!map_auto_generate_portal_collision(map,(merge_portal->x-split_factor),merge_portal->z,merge_portal->ex,merge_portal->ez,k)) {
+						merge_portal->x-=split_factor;
 						moved=TRUE;
 						break;
 					}
@@ -234,8 +237,8 @@ void map_auto_generate_merge_portals(map_type *map)
 
 				dist=chk_portal->x-merge_portal->ex;
 				if ((dist>0) && (dist<=portal_merge_distance)) {
-					if (!map_auto_generate_portal_collision(map,merge_portal->x,merge_portal->z,(merge_portal->ex+merge_add),merge_portal->ez,k)) {
-						merge_portal->ex+=merge_add;
+					if (!map_auto_generate_portal_collision(map,merge_portal->x,merge_portal->z,(merge_portal->ex+split_factor),merge_portal->ez,k)) {
+						merge_portal->ex+=split_factor;
 						moved=TRUE;
 						break;
 					}
@@ -245,8 +248,8 @@ void map_auto_generate_merge_portals(map_type *map)
 
 				dist=merge_portal->z-chk_portal->ez;
 				if ((dist>0) && (dist<=portal_merge_distance)) {
-					if (!map_auto_generate_portal_collision(map,merge_portal->x,(merge_portal->z-merge_add),merge_portal->ex,merge_portal->ez,k)) {
-						merge_portal->z-=merge_add;
+					if (!map_auto_generate_portal_collision(map,merge_portal->x,(merge_portal->z-split_factor),merge_portal->ex,merge_portal->ez,k)) {
+						merge_portal->z-=split_factor;
 						moved=TRUE;
 						break;
 					}
@@ -256,8 +259,8 @@ void map_auto_generate_merge_portals(map_type *map)
 
 				dist=chk_portal->z-merge_portal->ez;
 				if ((dist>0) && (dist<=portal_merge_distance)) {
-					if (!map_auto_generate_portal_collision(map,merge_portal->x,merge_portal->z,merge_portal->ex,(merge_portal->ez+merge_add),k)) {
-						merge_portal->ez+=merge_add;
+					if (!map_auto_generate_portal_collision(map,merge_portal->x,merge_portal->z,merge_portal->ex,(merge_portal->ez+split_factor),k)) {
+						merge_portal->ez+=split_factor;
 						moved=TRUE;
 						break;
 					}
@@ -267,7 +270,6 @@ void map_auto_generate_merge_portals(map_type *map)
 
 		if (!moved) break;
 	}
-	*/
 }
 
 /* =======================================================

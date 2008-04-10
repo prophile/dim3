@@ -31,7 +31,7 @@ extern bool network_client_check_message(int *action,int *from_remote_uid,unsign
 
 // host pinging and joining
 
-extern bool network_client_ping_host(char *ip,char *status,char *host_name,char *game_name,char *map_name,int *player_count,int *player_max_count,int *ping_msec);
+extern bool network_client_ping_host(char *ip,char *status,char *host_name,char *proj_name,char *game_name,char *map_name,int *player_count,int *player_max_count,int *ping_msec);
 extern bool network_client_join_host(char *ip,char *name,int *remote_uid,char *game_name,char *map_name,char *deny_reason,int *remote_count,network_request_remote_add *remotes);
 extern bool network_client_ready_host(int remote_uid,char *err_str);
 extern void network_client_set_team(int remote_uid,int team_idx);

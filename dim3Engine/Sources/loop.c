@@ -108,12 +108,8 @@ void loop_game_run(int tick)
 	
 		// run game
 
-	map_portal_clear_segment_list_changes(&map);
-
 	server_loop(tick);
 	view_loop(tick);
-
-	map_portal_rebuild_segment_list_changes(&map);
 	
 		// check interface quits
 		

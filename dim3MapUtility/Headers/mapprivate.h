@@ -66,5 +66,4 @@ extern void map_prepare_set_ambient_fc_segment_square(segment_type *seg);
 extern bool map_portal_build_single_vertex_list(map_type *map,int rn,bool high_quality_lighting);
 extern bool map_portal_create_single_vertex_list(map_type *map,int rn,bool high_quality_lighting);
 extern void map_portal_dispose_single_vertex_list(map_type *map,int rn);
-extern void map_portal_build_single_segment_list(map_type *map,int rn);
 

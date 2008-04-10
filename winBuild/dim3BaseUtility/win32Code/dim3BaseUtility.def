@@ -232,5 +232,3 @@ EXPORTS
 	network_queue_shutdown						@471
 	network_queue_add_message					@472
 	network_queue_check_message					@473
-
-	network_xml_read							@480

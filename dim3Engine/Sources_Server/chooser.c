@@ -54,6 +54,28 @@ int chooser_add(char *name)
 	return(hud.count.chooser-1);
 }
 
+void chooser_add_text(int chooser_idx,int text_id,char *data,int x,int y,bool large,int just,bool clickable)
+{
+	chooser_type		*chooser;
+	chooser_text_type	*text;
+	
+	chooser=&hud.choosers[chooser_idx];
+	
+	if (chooser->ntext>=max_chooser_text) return;
+	
+	text=&chooser->texts[chooser->ntext];
+	chooser->ntext++;
+	
+	text->text_id=text_id;
+	strcpy(text->data,data);
+	text->x=x;
+	text->y=y;
+	text->large=large;
+	text->just=just;
+	text->clickable=clickable;
+}
+
+
 void chooser_add_item(int chooser_idx,int item_id,char *file,int x,int y,bool clickable)
 {
 	chooser_type		*chooser;

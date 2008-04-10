@@ -230,5 +230,3 @@ _network_queue_initialize
 _network_queue_shutdown
 _network_queue_add_message
 _network_queue_check_message
-
-_network_xml_read

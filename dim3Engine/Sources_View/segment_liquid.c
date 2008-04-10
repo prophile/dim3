@@ -106,10 +106,10 @@ void liquid_free_memory(void)
 		liq=portal->liquid.liquids;
 
 		for (k=0;k!=portal->liquid.nliquid;k++) {
-			free(liq->draw.vl_list);
-			free(liq->draw.uv_list);
-			free(liq->draw.cl_list);
-			free(liq->draw.idx_list);
+		//	free(liq->draw.vl_list);
+		//	free(liq->draw.uv_list);
+		//	free(liq->draw.cl_list);
+		//	free(liq->draw.idx_list);
 			liq++;
 		}
 

@@ -277,7 +277,7 @@ void file_open(void)
 	
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","files");
+	gui_initialize("Bitmaps/Backgrounds","files",FALSE,FALSE);
 	
 		// make the file list
 		

@@ -120,6 +120,8 @@ void setup_objects(void)
 	int			n;
 	obj_type	*obj;
 
+	// supergumba -- is this necessary?
+
 	obj=server.objs;
 
 	for (n=0;n!=server.count.obj;n++) {

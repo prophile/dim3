@@ -46,6 +46,7 @@ extern map_type				map;
 extern server_type			server;
 extern js_type				js;
 extern setup_type			setup;
+extern network_setup_type	net_setup;
 
 char						bind_type_str[][16]={"Game","Map","Remote"},
 							effect_type_str[][16]={"Flash","Particle","Lightning","Ray","Globe","Shake"};
@@ -140,6 +141,7 @@ void debug_dump(void)
 	fprintf(stdout,"**************************************\n");
 	fprintf(stdout,"Game\n");
 	fprintf(stdout,"**************************************\n\n");
+	fprintf(stdout,"Project:  %s\n",net_setup.host.proj_name);
 	fprintf(stdout,"Map:  %s\n",map.info.name);
 	fprintf(stdout,"Tick: %d\n",game_time_get());
 	

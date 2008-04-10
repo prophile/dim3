@@ -428,18 +428,14 @@ void view_loop_input(int tick)
 
 /* =======================================================
 
-      View Loop Draw
+      View Draw for Play Loop
       
 ======================================================= */
 
 void view_loop_draw(int tick)
 {
-		// timing
-		
 	if (tick<view.time.draw_tick) return;
 	view.time.draw_tick=tick+view.time.draw_time;
-
-		// draw view
 
 	view_draw_setup(tick);
 	
@@ -466,18 +462,27 @@ void view_loop_draw(int tick)
 
 /* =======================================================
 
-      View Capture Draw
+      View Draw for GUI Screens
       
 ======================================================= */
 
-void view_capture_draw(int tick,char *path)
+void view_gui_draw(void)
+{
+	gl_render_arrays_frame_start();
+	view_draw(game_time_get());
+	gl_render_arrays_frame_finish();
+}
+
+/* =======================================================
+
+      View Draw for Screen Captures
+      
+======================================================= */
+
+void view_capture_draw(char *path)
 {
 	gl_frame_start(NULL);
-	gl_render_arrays_frame_start();
-	
-	view_draw(tick);
-	
-	gl_render_arrays_frame_finish();
+	view_gui_draw();
 	gl_screen_shot(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz,TRUE,path);
 }
 

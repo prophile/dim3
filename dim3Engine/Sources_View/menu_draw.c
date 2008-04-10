@@ -136,7 +136,7 @@ void menu_setup_control(void)
 
 void menu_open(void)
 {
-	gui_initialize("Bitmaps/Backgrounds","menu");
+	gui_initialize(NULL,NULL,TRUE,FALSE);
 
 	menu_idx=0;
 	menu_setup_control();

@@ -81,7 +81,6 @@ bool app_start(char *err_str)
 		// read setup preferences
 		
 	setup_xml_read();
-	network_xml_read(&setup.file_path_setup,&net_setup);
 	
 		// client network defaults
 		

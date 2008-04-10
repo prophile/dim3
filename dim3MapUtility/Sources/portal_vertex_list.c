@@ -740,10 +740,10 @@ void map_portal_dispose_single_vertex_list(map_type *map,int rn)
 
 bool map_portal_create_vertex_lists(map_type *map,bool high_quality_lighting)
 {
-	int			i;
+	int			n;
 	
-	for (i=0;i!=map->nportal;i++) {
-		if (!map_portal_create_single_vertex_list(map,i,high_quality_lighting)) return(FALSE);
+	for (n=0;n!=map->nportal;n++) {
+		if (!map_portal_create_single_vertex_list(map,n,high_quality_lighting)) return(FALSE);
 	}
 	
 	return(TRUE);
@@ -751,19 +751,19 @@ bool map_portal_create_vertex_lists(map_type *map,bool high_quality_lighting)
 
 void map_portal_dispose_vertex_lists(map_type *map)
 {
-	int			i;
+	int			n;
 	
-	for (i=0;i!=map->nportal;i++) {
-		map_portal_dispose_single_vertex_list(map,i);
+	for (n=0;n!=map->nportal;n++) {
+		map_portal_dispose_single_vertex_list(map,n);
 	}
 }
 
 void map_portal_rebuild_vertex_lists(map_type *map,bool high_quality_lighting)
 {
-	int			i;
+	int			n;
 	
-	for (i=0;i!=map->nportal;i++) {
-		map_portal_build_single_vertex_list(map,i,high_quality_lighting);
+	for (n=0;n!=map->nportal;n++) {
+		map_portal_build_single_vertex_list(map,n,high_quality_lighting);
 	}
 }
 

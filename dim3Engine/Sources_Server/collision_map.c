@@ -579,7 +579,6 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 {
 	int					xadd2,yadd2,zadd2,
 						bump_y,lx,rx,lz,rz,hit_box_idx;
-	wall_segment_data	*wall;
 	obj_type			*cnt_obj;
 	model_draw			*draw;
 	model_type			*model;

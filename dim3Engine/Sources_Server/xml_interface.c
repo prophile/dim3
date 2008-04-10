@@ -34,10 +34,14 @@ and can be sold or given away.
 
 extern hud_type					hud;
 extern setup_type				setup;
+extern network_setup_type		net_setup;
+
+char							just_mode_str[][32]={"left","center","right"};
 
 extern int menu_add(char *name);
 extern void menu_add_item(int menu_idx,int item_id,char *data,char *sub_menu,bool multiplayer_disable,bool quit);
 extern int chooser_add(char *name);
+extern void chooser_add_text(int chooser_idx,int text_id,char *data,int x,int y,bool large,int just,bool clickable);
 extern void chooser_add_item(int chooser_idx,int item_id,char *file,int x,int y,bool clickable);
 
 /* =======================================================
@@ -190,6 +194,13 @@ void default_settings_interface(void)
 	hud.intro.button_quit.wid=128;
 	hud.intro.button_quit.high=32;
 	hud.intro.button_quit.on=TRUE;
+
+		// network
+
+	strcpy(net_setup.host.proj_name,"noname");
+
+	net_setup.ngame=1;
+	strcpy(net_setup.games[0].name,"Deathmatch");
 }
 
 /* =======================================================
@@ -291,7 +302,6 @@ void read_settings_interface_text(int text_tag)
 {
 	int					tag;
 	char				data[max_hud_text_str_sz];
-	char				just_mode_str[][32]={"left","center","right"};
 	hud_text_type		*text;
 	
 		// read next text
@@ -523,14 +533,42 @@ void read_settings_interface_menu(int menu_tag)
 
 void read_settings_interface_chooser(int chooser_tag)
 {
-	int					idx,items_head_tag,item_tag,x,y,item_id;
-	char				name[name_str_len],file[file_str_len];
-	bool				clickable;
+	int				idx,just,texts_head_tag,text_tag,
+					items_head_tag,item_tag,x,y,id;
+	char			name[name_str_len],file[file_str_len],
+					data[max_chooser_text_data_sz];
+	bool			clickable,large;
 
 	xml_get_attribute_text(chooser_tag,"name",name,name_str_len);
 	
 	idx=chooser_add(name);
 	if (idx==-1) return;
+
+		// text
+
+	texts_head_tag=xml_findfirstchild("Texts",chooser_tag);
+	if (texts_head_tag==-1) return;
+	
+	text_tag=xml_findfirstchild("Text",texts_head_tag);
+	
+	while (text_tag!=-1) {
+
+		data[0]=0x0;
+
+		id=xml_get_attribute_int(text_tag,"id");
+		xml_get_attribute_text(text_tag,"data",data,max_chooser_text_data_sz);
+		large=xml_get_attribute_boolean(text_tag,"large");
+		just=xml_get_attribute_list(text_tag,"just",(char*)just_mode_str);
+		x=xml_get_attribute_int(text_tag,"x");
+		y=xml_get_attribute_int(text_tag,"y");
+		clickable=xml_get_attribute_boolean(text_tag,"clickable");
+
+		chooser_add_text(idx,id,data,x,y,large,just,clickable);
+
+		text_tag=xml_findnextchild(text_tag);
+	}
+
+		// items
 	
 	items_head_tag=xml_findfirstchild("Items",chooser_tag);
 	if (items_head_tag==-1) return;
@@ -538,13 +576,13 @@ void read_settings_interface_chooser(int chooser_tag)
 	item_tag=xml_findfirstchild("Item",items_head_tag);
 	
 	while (item_tag!=-1) {
-		item_id=xml_get_attribute_int(item_tag,"id");
+		id=xml_get_attribute_int(item_tag,"id");
 		xml_get_attribute_text(item_tag,"file",file,file_str_len);
 		x=xml_get_attribute_int(item_tag,"x");
 		y=xml_get_attribute_int(item_tag,"y");
 		clickable=xml_get_attribute_boolean(item_tag,"clickable");
 		
-		chooser_add_item(idx,item_id,file,x,y,clickable);
+		chooser_add_item(idx,id,file,x,y,clickable);
 		
 		item_tag=xml_findnextchild(item_tag);
 	}
@@ -578,7 +616,8 @@ void read_settings_interface(void)
 	int					interface_head_tag,scale_tag,
 						bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
 						radar_head_tag,menu_head_tag,menu_tag,chooser_head_tag,chooser_tag,
-						color_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,music_tag;
+						color_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,music_tag,
+						proj_tag,games_head_tag,game_tag;
 	char				path[1024];
 
 	default_settings_interface();
@@ -749,7 +788,33 @@ void read_settings_interface(void)
 	if (music_tag!=-1) {
 		xml_get_attribute_text(music_tag,"intro",hud.intro_music,name_str_len);
 	}
-	
+
+		// project setup
+
+	proj_tag=xml_findfirstchild("Project",interface_head_tag);
+	if (proj_tag!=-1) {
+		xml_get_attribute_text(proj_tag,"name",net_setup.host.proj_name,name_str_len);
+	}
+
+		// network games
+
+	games_head_tag=xml_findfirstchild("Games",interface_head_tag);
+	if (games_head_tag!=-1) {
+		
+		net_setup.ngame=0;
+		
+		game_tag=xml_findfirstchild("Game",games_head_tag);
+		while (game_tag!=-1) {
+		
+			xml_get_attribute_text(game_tag,"type",net_setup.games[net_setup.ngame].name,name_str_len);
+			
+			net_setup.ngame++;
+			if (net_setup.ngame==network_setup_max_game) break;
+
+			game_tag=xml_findnextchild(game_tag);
+		}
+	}
+
 	xml_close_file();
 }
 

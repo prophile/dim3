@@ -115,6 +115,7 @@ int move_check_xz_segments(d3box *box,int cnt,short *sptr)
 
 int move_check_xz_portals(d3box *box)
 {
+	/* supergumba -- redo
 	int				n,idx;
 	portal_type		*portal;
 	
@@ -134,7 +135,7 @@ int move_check_xz_portals(d3box *box)
 		
 		portal++;
 	}
-	
+	*/
 	return(-1);
 }
 

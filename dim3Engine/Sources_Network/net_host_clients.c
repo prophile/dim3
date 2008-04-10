@@ -50,6 +50,7 @@ void net_host_client_handle_info(int sock)
 	info.player_max_count=htons((short)net_max_remote_count);
 	strcpy(info.host_name,net_setup.host.name);
 	strcpy(info.host_ip_resolve,net_setup.host.ip_resolve);
+	strcpy(info.proj_name,net_setup.host.proj_name);
 	strcpy(info.game_name,net_setup.host.game_name);
 	strcpy(info.map_name,net_setup.host.map_name);
 

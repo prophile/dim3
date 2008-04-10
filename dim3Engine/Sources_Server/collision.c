@@ -36,6 +36,8 @@ and can be sold or given away.
 extern map_type			map;
 extern server_type		server;
 
+// supergumba -- will need to check which of these to delete
+
 /* =======================================================
 
       Check for Object-Object Collisions
@@ -133,7 +135,7 @@ int collide_find_object_for_standing_object(obj_type *obj)
 	
 	for (n=0;n!=server.count.obj;n++) {
 	
-		if ((stand_obj->uid==ignore_obj_uid) || (!stand_obj->run_setup.stand_ok)) {
+		if ((stand_obj->uid==ignore_obj_uid) || (obj->hidden) || (!obj->contact.on) || (obj->pickup.on)) {
 			stand_obj++;
 			continue;
 		}

@@ -41,6 +41,7 @@ and can be sold or given away.
 #define host_status_id					4
 
 extern void intro_open(void);
+extern bool net_host_game_start(char *err_str);
 extern bool game_start(int skill,int remote_count,network_request_remote_add *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
 
@@ -50,7 +51,7 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 
 char						*net_host_file_list;
-char						net_game_types[][32]={"Death Match","Team Death Match","CTF",""};	// supergumba -- not static
+char						net_game_types[network_setup_max_game+1][32];
 
 /* =======================================================
 
@@ -69,7 +70,7 @@ void host_open(void)
 	
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","host");
+	gui_initialize("Bitmaps/Backgrounds","host",FALSE,FALSE);
 	
 		// controls
 							
@@ -94,6 +95,11 @@ void host_open(void)
 	element_enable(host_button_host_id,FALSE);
 
 		// game type
+
+	for (n=0;n!=net_setup.ngame;n++) {
+		strcpy(net_game_types[n],net_setup.games[n].name);
+	}
+	net_game_types[net_setup.ngame][0]=0x0;
 
 	y=high+40;
 	control_y_add=element_get_control_high();
@@ -163,7 +169,7 @@ void host_game_setup(void)
 	int				idx;
 	
 	idx=element_get_value(host_game_type_id);
-	strcpy(net_setup.host.game_name,net_game_types[idx]);
+	strcpy(net_setup.host.game_name,net_setup.games[idx].name);
 	
 	idx=element_get_value(host_table_id);
 	strcpy(net_setup.host.map_name,(net_host_file_list+(idx*128)));
@@ -180,7 +186,6 @@ void host_game(void)
 		
 	if (!net_host_game_start(err_str)) {
 		host_close();
-		sprintf(err_str,"Unable to Host Game: %s",err_str);
 		error_open(err_str,"Hosting Game Canceled");
 		return;
 	}

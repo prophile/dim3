@@ -38,13 +38,14 @@ extern hud_type				hud;
 extern setup_type			setup;
 
 int							gui_save_x_scale,gui_save_y_scale;
-bool						gui_has_background;
+bool						gui_has_background,gui_show_view,gui_show_dialog;
 char						gui_last_key;
 bitmap_type					gui_background_bitmap;
 
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
 extern void map_restart_ambient(void);
+extern void view_gui_draw(void);
 
 /* =======================================================
 
@@ -52,7 +53,7 @@ extern void map_restart_ambient(void);
       
 ======================================================= */
 
-void gui_initialize(char *background_path,char *bitmap_name)
+void gui_initialize(char *background_path,char *bitmap_name,bool show_view,bool show_dialog)
 {
 	int			x,y;
 	char		name[256],path[1024];
@@ -75,6 +76,8 @@ void gui_initialize(char *background_path,char *bitmap_name)
 		// end if screen is in widescreen resolutions
 		
 	gui_has_background=FALSE;
+	gui_show_view=show_view;
+	gui_show_dialog=show_dialog;
 	
 	if (bitmap_name!=NULL) {
 		gui_has_background=TRUE;
@@ -146,7 +149,25 @@ void gui_shutdown(void)
 
 void gui_draw_background(float alpha)
 {
+		// show view in background
+
+	if (gui_show_view) view_gui_draw();
+
+		// no background at all?
+
 	if (!gui_has_background) return;
+
+		// 2D draw setup
+
+	gl_2D_view();
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_DEPTH_TEST);
 
 		// missing bitmap?
 
@@ -180,15 +201,12 @@ void gui_draw_background(float alpha)
 	gl_texture_simple_end();
 }
 
-/* =======================================================
-
-      GUI Draw
-      
-======================================================= */
-
-void gui_draw(float background_alpha,bool cursor)
+void gui_draw_dialog(void)
 {
-	gl_frame_start(NULL);
+	int			lft,rgt,top,bot;
+
+	if (!gui_show_dialog) return;
+
 	gl_2D_view();
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
@@ -199,11 +217,79 @@ void gui_draw(float background_alpha,bool cursor)
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 
+	element_get_dialog_size(&lft,&top,&rgt,&bot);
+	gl_scale_2D_point(&lft,&top);
+	gl_scale_2D_point(&rgt,&bot);
+
+		// darken
+
+	glColor4f(0.0f,0.0f,0.0f,0.5f);
+
+    glBegin(GL_QUADS);
+	glVertex2i(lft,top);
+	glVertex2i(rgt,top);
+	glVertex2i(rgt,bot);
+	glVertex2i(lft,bot);
+	glEnd();
+
+		// outline
+
+	glLineWidth(4.0f);
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(lft,top);
+	glVertex2i(rgt,top);
+	glVertex2i(rgt,bot);
+	glVertex2i(lft,bot);
+	glEnd();
+
+	glLineWidth(2.0f);
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(lft,top);
+	glVertex2i(rgt,top);
+	glVertex2i(rgt,bot);
+	glVertex2i(lft,bot);
+	glEnd();
+
+	glLineWidth(1.0f);
+}
+
+/* =======================================================
+
+      GUI Draw
+      
+======================================================= */
+
+void gui_draw(float background_alpha,bool cursor)
+{
+	gl_frame_start(NULL);
+
+		// background
+
 	gui_draw_background(background_alpha);
+	gui_draw_dialog();
+
+		// elements
+
+	gl_2D_view();
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_DEPTH_TEST);
+
 	element_draw(TRUE);
 	
 	if (cursor) cursor_draw();
 	
+		// end frame
+
 	gl_frame_end();
 }
 
@@ -213,6 +299,13 @@ void gui_draw_message(char *txt)
 	d3col			col;
 	
 	gl_frame_start(NULL);
+
+		// background
+
+	gui_draw_background(1.0f);
+
+		// messages
+
 	gl_2D_view();
 
 	glEnable(GL_BLEND);
@@ -221,7 +314,6 @@ void gui_draw_message(char *txt)
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 	
-	gui_draw_background(1.0f);
 	element_draw(FALSE);
 	
 		// get band size

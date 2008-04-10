@@ -735,7 +735,7 @@ void setup_open(bool in_game)
 	
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","setup");
+	gui_initialize("Bitmaps/Backgrounds","setup",FALSE,FALSE);
 	
 		// waiting for an action flag
 		

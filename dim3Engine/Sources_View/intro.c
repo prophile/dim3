@@ -92,7 +92,7 @@ void intro_open(void)
 	
 		// intro UI
 		
-	gui_initialize("Bitmaps/Backgrounds","main");
+	gui_initialize("Bitmaps/Backgrounds","main",FALSE,FALSE);
 
 	intro_open_add_button(&hud.intro.button_game,"button_game",intro_button_game_id,FALSE);
 	intro_open_add_button(&hud.intro.button_game_new,"button_game_new",intro_button_game_new_id,TRUE);
@@ -243,6 +243,8 @@ void intro_click_game(int skill)
 	char			err_str[256];
 
 	intro_close(TRUE,TRUE);
+
+	net_setup.host.hosting=FALSE;
 	net_setup.client.joined=FALSE;
 
 	if (!game_start(skill,0,NULL,err_str)) {
@@ -254,6 +256,16 @@ void intro_click_game(int skill)
 		error_open(err_str,"Game Start Canceled");
 		return;
 	}
+}
+
+void intro_click_load(void)
+{
+	intro_close(TRUE,FALSE);
+
+	net_setup.host.hosting=FALSE;
+	net_setup.client.joined=FALSE;
+
+	file_open();
 }
 
 void intro_click(void)
@@ -286,9 +298,7 @@ void intro_click(void)
 			break;
 			
 		case intro_button_game_load_id:
-			intro_close(TRUE,FALSE);
-			net_setup.client.joined=FALSE;
-			file_open();
+			intro_click_load();
 			break;
 
 		case intro_button_multiplayer_id:

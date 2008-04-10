@@ -145,26 +145,34 @@ void* join_ping_thread_local_accept_read(void *arg)
 		
 			reply_info=(network_reply_info*)data;
 			
-			pthread_mutex_lock(&join_thread_lock);
-				
-			info=&join_list[join_count++];
+				// is it the same dim3 project?
+
+			if (strcasecmp(reply_info->proj_name,net_setup.host.proj_name)==0) {
 		
-			strcpy(info->name,reply_info->host_name);
-			strcpy(info->ip,reply_info->host_ip_resolve);
-			strcpy(info->game_name,reply_info->game_name);
-			strcpy(info->map_name,reply_info->map_name);
-			info->local=TRUE;
-			info->player_count=reply_info->player_count;
-			info->player_max_count=reply_info->player_max_count;
-			info->ping_msec=msec;
+				pthread_mutex_lock(&join_thread_lock);
 
-				// rebuild list
+					// setup info
 
-			row_data=join_create_list();
-			element_set_table_data(join_table_id,row_data);
-			free(row_data);
+				info=&join_list[join_count++];
 
-			pthread_mutex_unlock(&join_thread_lock);
+				strcpy(info->name,reply_info->host_name);
+				strcpy(info->ip,reply_info->host_ip_resolve);
+				strcpy(info->game_name,reply_info->game_name);
+				strcpy(info->map_name,reply_info->map_name);
+				info->local=TRUE;
+				info->player_count=reply_info->player_count;
+				info->player_max_count=reply_info->player_max_count;
+				info->ping_msec=msec;
+
+					// rebuild list
+
+				row_data=join_create_list();
+				element_set_table_data(join_table_id,row_data);
+				free(row_data);
+				
+				pthread_mutex_unlock(&join_thread_lock);
+			}
+
 		}
 	}
 	
@@ -274,7 +282,7 @@ void* join_ping_thread_network(void *arg)
 {
 	int							idx,player_count,player_max_count,ping_msec;
 	char						status[32],host_name[name_str_len],
-								game_name[name_str_len],map_name[name_str_len];
+								proj_name[name_str_len],game_name[name_str_len],map_name[name_str_len];
 	char						*row_data;
 	setup_network_hosts_type	*host;
 	join_server_info			*info;
@@ -290,30 +298,35 @@ void* join_ping_thread_network(void *arg)
 
 		host=&setup.network.hosts[idx];
 
-		if (network_client_ping_host(host->ip,status,host_name,game_name,map_name,&player_count,&player_max_count,&ping_msec)) {
+		if (network_client_ping_host(host->ip,status,host_name,proj_name,game_name,map_name,&player_count,&player_max_count,&ping_msec)) {
 
-			pthread_mutex_lock(&join_thread_lock);
-
-				// setup info
+				// is this reply the same dim3 project?
 				
-			info=&join_list[join_count++];
-		
-			strcpy(info->name,host_name);
-			strcpy(info->ip,host->ip);
-			strcpy(info->game_name,game_name);
-			strcpy(info->map_name,map_name);
-			info->local=FALSE;
-			info->player_count=player_count;
-			info->player_max_count=player_max_count;
-			info->ping_msec=ping_msec;
+			if (strcasecmp(proj_name,net_setup.host.proj_name)==0) {
 
-				// rebuild list
+				pthread_mutex_lock(&join_thread_lock);
+				
+					// setup info
 
-			row_data=join_create_list();
-			element_set_table_data(join_table_id,row_data);
-			free(row_data);
+				info=&join_list[join_count++];
 			
-			pthread_mutex_unlock(&join_thread_lock);
+				strcpy(info->name,host_name);
+				strcpy(info->ip,host->ip);
+				strcpy(info->game_name,game_name);
+				strcpy(info->map_name,map_name);
+				info->local=FALSE;
+				info->player_count=player_count;
+				info->player_max_count=player_max_count;
+				info->ping_msec=ping_msec;
+
+					// rebuild list
+
+				row_data=join_create_list();
+				element_set_table_data(join_table_id,row_data);
+				free(row_data);
+				
+				pthread_mutex_unlock(&join_thread_lock);
+			}
 		}
 		
 		idx++;
@@ -384,7 +397,7 @@ void join_open(void)
 	
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","join");
+	gui_initialize("Bitmaps/Backgrounds","join",FALSE,FALSE);
 	
 		// empty join list
 		

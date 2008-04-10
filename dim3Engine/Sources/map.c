@@ -253,13 +253,6 @@ bool map_start(bool skip_media,char *err_str)
 		return(FALSE);
 	}
 
-	// supergumba -- delete this
-	if (!map_portal_create_segment_lists(&map)) {
-		progress_shutdown();
-		strcpy(err_str,"Out of memory");
-		return(FALSE);
-	}
-
 	if (!liquid_create_memory()) {
 		progress_shutdown();
 		strcpy(err_str,"Out of memory");
@@ -392,7 +385,6 @@ bool map_start(bool skip_media,char *err_str)
 		// flag off all map changes
 		
 	map_clear_changes();
-	map_portal_clear_segment_list_changes(&map);
 	
 		// restart all the timing
 		
@@ -458,7 +450,6 @@ void map_end(void)
 		// end all projectiles
 	
 	projectile_dispose_all();
-	
 	progress_draw(15);
     
         // end script
@@ -487,12 +478,15 @@ void map_end(void)
 	
 		// free group, portal segment, vertex and light lists
 		
-	liquid_create_memory();
-	map_group_dispose_unit_list(&map);
-	map_portal_mesh_dispose_transparent_sort_lists(&map);
-	map_portal_dispose_segment_lists(&map);		// supergumba -- delete!
-	map_portal_dispose_vertex_lists(&map);
 	map_portal_dispose_light_spots(&map);
+	fprintf(stdout,"in map end 6\n");
+	fflush(stdout);
+	map_portal_dispose_vertex_lists(&map);
+	fprintf(stdout,"in map end 7\n");
+	fflush(stdout);
+	liquid_free_memory();
+	map_portal_mesh_dispose_transparent_sort_lists(&map);
+	map_group_dispose_unit_list(&map);
 	
 	progress_draw(95);
 	

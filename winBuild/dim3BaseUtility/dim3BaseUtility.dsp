@@ -295,10 +295,6 @@ SOURCE=..\..\dim3BaseUtility\Sources_Network\socket.c
 
 SOURCE=..\..\dim3BaseUtility\Sources_Network\socket_udp.c
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3BaseUtility\Sources_Network\xml_network.c
-# End Source File
 # End Group
 # End Group
 # End Target

@@ -58,7 +58,7 @@ extern void map_end(void);
 extern void game_time_reset(void);
 extern int game_time_get(void);
 extern void game_time_set(int tick);
-extern void view_capture_draw(int tick,char *path);
+extern void view_capture_draw(char *path);
 
 /* =======================================================
 
@@ -273,7 +273,7 @@ bool game_file_save(char *err_str)
 		// save screen
 		
 	file_paths_documents(&setup.file_path_setup,path,"Saved Games",file_name,"png");
-	view_capture_draw(tick,path);
+	view_capture_draw(path);
 	
 		// start chunks
 		
