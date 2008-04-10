@@ -694,9 +694,9 @@ extern void shader_delete(shader_type *shader);
 //
 
 typedef struct		{
-						int							game_idx;
-						char						name[name_str_len],password[32],
-													ip_name[256],ip_resolve[64];
+						char						name[name_str_len],
+													ip_name[256],ip_resolve[64],
+													game_name[name_str_len],map_name[name_str_len];
 						bool						hosting;
 					} network_setup_host_type;
 
@@ -708,14 +708,9 @@ typedef struct		{
 					} network_setup_client_type;
 
 typedef struct		{
-						char						script_name[name_str_len],map_name[name_str_len];
-					} network_setup_game_type;
-					
-typedef struct		{
 						int							ngame;
 						network_setup_host_type		host;
 						network_setup_client_type	client;
-						network_setup_game_type		games[network_setup_max_game];
 					} network_setup_type;
 
 //

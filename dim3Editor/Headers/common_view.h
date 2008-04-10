@@ -132,6 +132,7 @@ extern void segment_rotate_free(segment_type *seg,float ang,int cx,int cz);
 extern void piece_move_to_portal(int rn);
 extern void piece_duplicate(void);
 extern void piece_delete(void);
+extern void piece_tesselate(void);
 extern void piece_flip(bool flip_x,bool flip_y,bool flip_z);
 extern void piece_rotate(float rot_x,float rot_y,float rot_z);
 extern void piece_free_rotate(void);
@@ -157,7 +158,6 @@ extern void piece_create_liquid(void);
 extern void piece_add_library_mesh(void);
 extern void piece_replace_library_mesh(void);
 extern void piece_combine_mesh(int portal_idx);
-extern void piece_tesselate_mesh(int portal_idx);
 
 //
 // clipboard routines

@@ -357,6 +357,26 @@ void piece_delete(void)
 
 /* =======================================================
 
+      Piece Tesselate
+      
+======================================================= */
+
+void piece_tesselate(void)
+{
+	int				n,sel_count,type,portal_idx,mesh_idx,poly_idx;
+	
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		if (type==mesh_piece) map_portal_mesh_tesselate(&map,portal_idx,mesh_idx);
+	}
+	
+	main_wind_draw();
+}
+
+/* =======================================================
+
       Piece Transforms
       
 ======================================================= */

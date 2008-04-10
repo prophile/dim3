@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit “Created with dim3 Technology” is given on a single
+2. This credit ‚ÄúCreated with dim3 Technology‚Äù is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -50,8 +50,8 @@ void net_host_client_handle_info(int sock)
 	info.player_max_count=htons((short)net_max_remote_count);
 	strcpy(info.host_name,net_setup.host.name);
 	strcpy(info.host_ip_resolve,net_setup.host.ip_resolve);
-	strcpy(info.game_name,net_setup.games[net_setup.host.game_idx].script_name);
-	strcpy(info.map_name,net_setup.games[net_setup.host.game_idx].map_name);
+	strcpy(info.game_name,net_setup.host.game_name);
+	strcpy(info.map_name,net_setup.host.map_name);
 
 	network_send_packet(sock,net_action_reply_info,net_queue_mode_normal,net_remote_uid_host,(unsigned char*)&info,sizeof(network_reply_info));
 }
@@ -74,8 +74,8 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 
 		// construct the reply
 	
-	strcpy(reply_join.game_name,net_setup.games[net_setup.host.game_idx].script_name);
-	strcpy(reply_join.map_name,net_setup.games[net_setup.host.game_idx].map_name);
+	strcpy(reply_join.game_name,net_setup.host.game_name);
+	strcpy(reply_join.map_name,net_setup.host.map_name);
 	reply_join.join_uid=htons((short)remote_uid);
 	
 	if (remote_uid!=-1) {

@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit ÒCreated with dim3 TechnologyÓ is given on a single
+2. This credit â€œCreated with dim3 Technologyâ€ is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -49,6 +49,7 @@ extern server_type			server;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
+char						*net_host_file_list;
 char						net_game_types[][32]={"Death Match","Team Death Match","CTF",""};	// supergumba -- not static
 
 /* =======================================================
@@ -62,7 +63,7 @@ void host_open(void)
 	int							x,y,high,list_wid,list_high,control_y_add,
 								n,nfile,sz;
 	char						path[1024],path2[1024];
-	char						*c,*row_data;
+	char						*c;
 	element_column_type			cols[1];
 	file_path_directory_type	*map_pick_fpd;
 	
@@ -94,16 +95,16 @@ void host_open(void)
 
 		// game type
 
-	y=high+35;
+	y=high+40;
 	control_y_add=element_get_control_high();
 	
 	element_combo_add("Game Type",(char*)net_game_types,0,host_game_type_id,85,y,TRUE);
-	y+=control_y_add;
+	y+=10;
 
 		// hosts table
 		
 	list_wid=setup.screen.x_scale-30;
-	list_high=setup.screen.y_scale-((high+30)+85);
+	list_high=setup.screen.y_scale-(high+125);
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=1.0f;
@@ -119,18 +120,20 @@ void host_open(void)
 	if (nfile>0) {
 		sz=(nfile+1)*128;
 		
-		row_data=valloc(sz);
-		bzero(row_data,sz);
+		net_host_file_list=valloc(sz);
+		bzero(net_host_file_list,sz);
 
-		c=row_data;
+		c=net_host_file_list;
 		
 		for (n=0;n!=nfile;n++) {
 			strcpy(c,map_pick_fpd->files[n].file_name);
 			c+=128;
 		}
 		
-		element_set_table_data(host_table_id,row_data);
-		free(row_data);
+		element_set_table_data(host_table_id,net_host_file_list);
+	}
+	else {
+		net_host_file_list=NULL;
 	}
 
 	file_paths_close_directory(map_pick_fpd);
@@ -145,6 +148,7 @@ void host_open(void)
 
 void host_close(void)
 {
+	if (net_host_file_list!=NULL) free(net_host_file_list);
 	gui_shutdown();
 }
 
@@ -154,34 +158,47 @@ void host_close(void)
       
 ======================================================= */
 
-/* supergumba
-void join_game(void)
+void host_game_setup(void)
 {
-	int							idx,remote_uid,remote_count;
+	int				idx;
+	
+	idx=element_get_value(host_game_type_id);
+	strcpy(net_setup.host.game_name,net_game_types[idx]);
+	
+	idx=element_get_value(host_table_id);
+	strcpy(net_setup.host.map_name,(net_host_file_list+(idx*128)));
+}
+
+void host_game(void)
+{
+	int							remote_uid,remote_count;
 	char						game_name[name_str_len],map_name[name_str_len],
 								deny_reason[64],err_str[256];
 	network_request_remote_add	remotes[net_max_remote_count];
 	
-		// end pinging thread
+		// start hosting
 		
-	join_ping_thread_end();
+	if (!net_host_game_start(err_str)) {
+		host_close();
+		sprintf(err_str,"Unable to Host Game: %s",err_str);
+		error_open(err_str,"Hosting Game Canceled");
+		return;
+	}
+	
+	net_setup.host.hosting=TRUE;
+	
+	host_close();		// supergumba -- testing
+	intro_open();
+	return;
 		
 		// get game to join
 		
-	join_activity_start();
-	
-	idx=element_get_value(join_table_id);
-	strcpy(net_setup.client.joined_ip,join_list[idx].ip);
-							
-		// status
-		
-	element_text_change(join_status_id,"Joining ...");
-	gui_draw(1.0f,FALSE);
+	strcpy(net_setup.client.joined_ip,"192.168.0.2");	// supergumba -- all temporary, do in place
 							
 		// attempt to join
 
 	if (!network_client_join_host(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,deny_reason,&remote_count,remotes)) {
-		gui_shutdown();
+		host_close();
 		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
 		error_open(err_str,"Network Game Canceled");
 		return;
@@ -200,7 +217,7 @@ void join_game(void)
 	
 		// start game
 	
-	gui_shutdown();
+	host_close();
 	
 	if (!game_start(skill_medium,remote_count,remotes,err_str)) {
 		network_client_leave_host(net_setup.client.remote_uid);
@@ -228,13 +245,6 @@ void join_game(void)
 	
 	server.state=gs_running;
 }
-*/
-
-void host_cancel(void)
-{
-	gui_shutdown();
-	intro_open();
-}
 
 /* =======================================================
 
@@ -259,11 +269,14 @@ void host_click(void)
 	switch (id) {
 	
 		case host_button_host_id:
-		//	join_game();
+			host_game_setup();
+			host_close();
+			host_game();
 			break;
 			
 		case host_button_cancel_id:
-			host_cancel();
+			host_close();
+			intro_open();
 			break;
 
 		case host_table_id:

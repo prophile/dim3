@@ -479,7 +479,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			return(noErr);
 			
 		case kCommandPieceTesselatePolygon:
-			piece_tesselate_mesh(cr);
+			piece_tesselate();
 			return(noErr);
 			
 		case kCommandPieceAddLibrary:

@@ -474,6 +474,16 @@ bool map_portal_mesh_tesselate(map_type *map,int portal_idx,int mesh_idx)
 			trig_poly->v[0]=poly->v[0];
 			trig_poly->v[1]=poly->v[k+1];
 			trig_poly->v[2]=poly->v[k+2];
+			
+			trig_poly->gx[0]=poly->gx[0];
+			trig_poly->gx[1]=poly->gx[k+1];
+			trig_poly->gx[2]=poly->gx[k+2];
+			
+			trig_poly->gy[0]=poly->gy[0];
+			trig_poly->gy[1]=poly->gy[k+1];
+			trig_poly->gy[2]=poly->gy[k+2];
+			
+			trig_poly++;
 		}
 
 		poly++;

@@ -96,9 +96,10 @@ void game_end(void)
 	progress_initialize("Ending");
 	progress_draw(0);
 	
-		// close any network joins
+		// close any network joins or hosting
 	
 	if (net_setup.client.joined) network_client_leave_host(net_setup.client.remote_uid);
+	if (net_setup.host.hosting) net_host_game_end();
 	
 		// stop view
 		

@@ -487,10 +487,6 @@ void join_game(void)
 								deny_reason[64],err_str[256];
 	network_request_remote_add	remotes[net_max_remote_count];
 	
-		// end pinging thread
-		
-	join_ping_thread_end();
-		
 		// get game to join
 		
 	join_activity_start();
@@ -506,7 +502,7 @@ void join_game(void)
 		// attempt to join
 
 	if (!network_client_join_host(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,deny_reason,&remote_count,remotes)) {
-		gui_shutdown();
+		join_close();
 		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
 		error_open(err_str,"Network Game Canceled");
 		return;
@@ -514,6 +510,8 @@ void join_game(void)
 
 		// mark remote and joined
 		
+	net_setup.host.hosting=FALSE;
+	
 	net_setup.client.joined=TRUE;
 	net_setup.client.remote_uid=remote_uid;
 	net_setup.client.latency=0;
@@ -525,7 +523,7 @@ void join_game(void)
 	
 		// start game
 	
-	gui_shutdown();
+	join_close();
 	
 	if (!game_start(skill_medium,remote_count,remotes,err_str)) {
 		network_client_leave_host(net_setup.client.remote_uid);
@@ -552,13 +550,6 @@ void join_game(void)
 		// game is running
 	
 	server.state=gs_running;
-}
-
-void join_cancel(void)
-{
-	join_ping_thread_end();
-	gui_shutdown();
-	intro_open();
 }
 
 /* =======================================================
@@ -588,7 +579,8 @@ void join_click(void)
 			break;
 			
 		case join_button_cancel_id:
-			join_cancel();
+			join_close();
+			intro_open();
 			break;
 
 		case join_table_id:

@@ -185,7 +185,7 @@ void main_wind_control_tool(int tool_idx)
 
 		case 11:
 			SetControlValue(tool_ctrl[tool_idx],0);
-			piece_tesselate_mesh(cr);
+			piece_tesselate();
 			main_wind_draw();
 			break;
 			

@@ -394,14 +394,3 @@ void piece_combine_mesh(int portal_idx)
 	}
 }
 
-/* =======================================================
-
-      Tesselate Meshes
-      
-======================================================= */
-
-void piece_tesselate_mesh(int portal_idx)
-{
-}
-
-
