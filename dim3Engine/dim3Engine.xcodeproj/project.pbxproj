@@ -9,8 +9,10 @@
 /* Begin PBXBuildFile section */
 		265B377D0D7F8D3A004AE124 /* group_change.c in Sources */ = {isa = PBXBuildFile; fileRef = 265B377C0D7F8D3A004AE124 /* group_change.c */; };
 		265B377F0D7F8D58004AE124 /* script_map_group.c in Sources */ = {isa = PBXBuildFile; fileRef = 265B377E0D7F8D58004AE124 /* script_map_group.c */; };
+		26A4B6440DAF028100E40F35 /* net_host_broadcast.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A4B6430DAF028100E40F35 /* net_host_broadcast.c */; };
+		26A4B6490DAF02D800E40F35 /* net_join_client.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A4B6480DAF02D800E40F35 /* net_join_client.c */; };
+		26A4B6910DAF054900E40F35 /* net_join_client_message.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A4B6900DAF054900E40F35 /* net_join_client_message.c */; };
 		26D109610DAC797D006666F2 /* host.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D109600DAC797D006666F2 /* host.c */; };
-		26F08CA10DAC7DB50097E249 /* net_broadcast.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F08C9D0DAC7DB50097E249 /* net_broadcast.c */; };
 		26F08CA20DAC7DB50097E249 /* net_host.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F08C9E0DAC7DB50097E249 /* net_host.c */; };
 		26F08CA30DAC7DB50097E249 /* net_host_clients.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F08C9F0DAC7DB50097E249 /* net_host_clients.c */; };
 		26F08CA40DAC7DB50097E249 /* net_host_players.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F08CA00DAC7DB50097E249 /* net_host_players.c */; };
@@ -213,7 +215,6 @@
 		F5C5EB110913264E00F94729 /* loop.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5EB090913264E00F94729 /* loop.c */; };
 		F5C5EB120913264E00F94729 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5EB0A0913264E00F94729 /* main.c */; };
 		F5C5EB130913264E00F94729 /* app.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5EB0B0913264E00F94729 /* app.c */; };
-		F5C5EB140913264E00F94729 /* client.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5EB0C0913264E00F94729 /* client.c */; };
 		F5C5EB150913264E00F94729 /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5EB0D0913264E00F94729 /* file.c */; };
 		F5C5EB160913264E00F94729 /* debug.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5EB0E0913264E00F94729 /* debug.c */; };
 		F5C5EB170913264E00F94729 /* game.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5EB0F0913264E00F94729 /* game.c */; };
@@ -388,8 +389,10 @@
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		265B377C0D7F8D3A004AE124 /* group_change.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = group_change.c; path = Sources_Server/group_change.c; sourceTree = "<group>"; };
 		265B377E0D7F8D58004AE124 /* script_map_group.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_map_group.c; path = Sources_Server/script_map_group.c; sourceTree = "<group>"; };
+		26A4B6430DAF028100E40F35 /* net_host_broadcast.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host_broadcast.c; path = Sources_Network/net_host_broadcast.c; sourceTree = "<group>"; };
+		26A4B6480DAF02D800E40F35 /* net_join_client.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_join_client.c; path = Sources_Network/net_join_client.c; sourceTree = "<group>"; };
+		26A4B6900DAF054900E40F35 /* net_join_client_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_join_client_message.c; path = Sources_Network/net_join_client_message.c; sourceTree = "<group>"; };
 		26D109600DAC797D006666F2 /* host.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = host.c; path = Sources_View/host.c; sourceTree = "<group>"; };
-		26F08C9D0DAC7DB50097E249 /* net_broadcast.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_broadcast.c; path = Sources_Network/net_broadcast.c; sourceTree = "<group>"; };
 		26F08C9E0DAC7DB50097E249 /* net_host.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host.c; path = Sources_Network/net_host.c; sourceTree = "<group>"; };
 		26F08C9F0DAC7DB50097E249 /* net_host_clients.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host_clients.c; path = Sources_Network/net_host_clients.c; sourceTree = "<group>"; };
 		26F08CA00DAC7DB50097E249 /* net_host_players.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host_players.c; path = Sources_Network/net_host_players.c; sourceTree = "<group>"; };
@@ -591,7 +594,6 @@
 		F5C5EB090913264E00F94729 /* loop.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = loop.c; path = Sources/loop.c; sourceTree = "<group>"; };
 		F5C5EB0A0913264E00F94729 /* main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = main.c; path = Sources/main.c; sourceTree = "<group>"; };
 		F5C5EB0B0913264E00F94729 /* app.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = app.c; path = Sources/app.c; sourceTree = "<group>"; };
-		F5C5EB0C0913264E00F94729 /* client.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = client.c; path = Sources/client.c; sourceTree = "<group>"; };
 		F5C5EB0D0913264E00F94729 /* file.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file.c; path = Sources/file.c; sourceTree = "<group>"; };
 		F5C5EB0E0913264E00F94729 /* debug.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = debug.c; path = Sources/debug.c; sourceTree = "<group>"; };
 		F5C5EB0F0913264E00F94729 /* game.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = game.c; path = Sources/game.c; sourceTree = "<group>"; };
@@ -959,11 +961,21 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		26A4B6470DAF02A400E40F35 /* Join */ = {
+			isa = PBXGroup;
+			children = (
+				26A4B6480DAF02D800E40F35 /* net_join_client.c */,
+				26A4B6900DAF054900E40F35 /* net_join_client_message.c */,
+			);
+			name = Join;
+			sourceTree = "<group>";
+		};
 		26F08C9C0DAC7D9C0097E249 /* Network */ = {
 			isa = PBXGroup;
 			children = (
 				26F08CB60DAC7E560097E249 /* Headers */,
-				26F08CB70DAC7E5C0097E249 /* Core */,
+				26A4B6470DAF02A400E40F35 /* Join */,
+				26F08CB70DAC7E5C0097E249 /* Host */,
 			);
 			name = Network;
 			sourceTree = "<group>";
@@ -976,15 +988,15 @@
 			name = Headers;
 			sourceTree = "<group>";
 		};
-		26F08CB70DAC7E5C0097E249 /* Core */ = {
+		26F08CB70DAC7E5C0097E249 /* Host */ = {
 			isa = PBXGroup;
 			children = (
 				26F08C9E0DAC7DB50097E249 /* net_host.c */,
 				26F08C9F0DAC7DB50097E249 /* net_host_clients.c */,
 				26F08CA00DAC7DB50097E249 /* net_host_players.c */,
-				26F08C9D0DAC7DB50097E249 /* net_broadcast.c */,
+				26A4B6430DAF028100E40F35 /* net_host_broadcast.c */,
 			);
-			name = Core;
+			name = Host;
 			sourceTree = "<group>";
 		};
 		F51072B508F9BA3300D0B135 /* GUI */ = {
@@ -1510,7 +1522,6 @@
 				F5C5EB0F0913264E00F94729 /* game.c */,
 				F5C5EB100913264E00F94729 /* map.c */,
 				F5C5EB090913264E00F94729 /* loop.c */,
-				F5C5EB0C0913264E00F94729 /* client.c */,
 				F5C5EB0D0913264E00F94729 /* file.c */,
 				F5C5EB0E0913264E00F94729 /* debug.c */,
 				F5C5EB0A0913264E00F94729 /* main.c */,
@@ -1843,7 +1854,6 @@
 				F5C5EB110913264E00F94729 /* loop.c in Sources */,
 				F5C5EB120913264E00F94729 /* main.c in Sources */,
 				F5C5EB130913264E00F94729 /* app.c in Sources */,
-				F5C5EB140913264E00F94729 /* client.c in Sources */,
 				F5C5EB150913264E00F94729 /* file.c in Sources */,
 				F5C5EB160913264E00F94729 /* debug.c in Sources */,
 				F5C5EB170913264E00F94729 /* game.c in Sources */,
@@ -1913,10 +1923,12 @@
 				265B377D0D7F8D3A004AE124 /* group_change.c in Sources */,
 				265B377F0D7F8D58004AE124 /* script_map_group.c in Sources */,
 				26D109610DAC797D006666F2 /* host.c in Sources */,
-				26F08CA10DAC7DB50097E249 /* net_broadcast.c in Sources */,
 				26F08CA20DAC7DB50097E249 /* net_host.c in Sources */,
 				26F08CA30DAC7DB50097E249 /* net_host_clients.c in Sources */,
 				26F08CA40DAC7DB50097E249 /* net_host_players.c in Sources */,
+				26A4B6440DAF028100E40F35 /* net_host_broadcast.c in Sources */,
+				26A4B6490DAF02D800E40F35 /* net_join_client.c in Sources */,
+				26A4B6910DAF054900E40F35 /* net_join_client_message.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

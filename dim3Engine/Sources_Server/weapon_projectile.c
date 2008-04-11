@@ -104,7 +104,7 @@ bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_t
 		
 	if (net_setup.client.joined) {
 		if (obj->uid==server.player_obj_uid) {
-			network_client_send_projectile_add(net_setup.client.remote_uid,weap->name,proj_setup->name,pt,ang);
+			net_join_client_send_projectile_add(net_setup.client.remote_uid,weap->name,proj_setup->name,pt,ang);
 		}
 	}
 	

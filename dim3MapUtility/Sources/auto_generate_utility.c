@@ -42,6 +42,21 @@ bool				map_ag_seg_moveable;
 
 void map_auto_generate_clear(map_type *map)
 {
+	int				n;
+	portal_type		*portal;
+	
+		// if map already has portals, clear any memory
+	
+	portal=map->portals;
+	
+	for (n=0;n!=map->nportal;n++) {
+		if (portal->mesh.meshes!=NULL) free(portal->mesh.meshes);
+		if (portal->liquid.liquids!=NULL) free(portal->liquid.liquids);
+		portal++;
+	}
+	
+		// clear all other settings
+		
 	map->nportal=0;
 	map->nlight=0;
 	map->nsound=0;

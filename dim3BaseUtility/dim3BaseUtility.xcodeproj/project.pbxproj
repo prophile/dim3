@@ -37,7 +37,6 @@
 		F53F28290BC1C7F200EB3C0F /* network.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AD53070BBE1A74001C7C04 /* network.c */; };
 		F53F282A0BC1C7F200EB3C0F /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AD53080BBE1A74001C7C04 /* socket.c */; };
 		F53F282B0BC1C7F200EB3C0F /* queue.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AD53090BBE1A74001C7C04 /* queue.c */; };
-		F53F282C0BC1C7F300EB3C0F /* xml_network.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AD530A0BBE1A74001C7C04 /* xml_network.c */; };
 		F53F282D0BC1C7F600EB3C0F /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB77AAFE841565C02AAC07 /* Carbon.framework */; };
 		F53F28C30BC1C7F700EB3C0F /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD53110BBE1A83001C7C04 /* QuickTime.framework */; };
 		F53F28E50BC1C7F800EB3C0F /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD53120BBE1A83001C7C04 /* OpenGL.framework */; };
@@ -96,7 +95,6 @@
 		F5AD53070BBE1A74001C7C04 /* network.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = network.c; path = Sources_Network/network.c; sourceTree = "<group>"; };
 		F5AD53080BBE1A74001C7C04 /* socket.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = socket.c; path = Sources_Network/socket.c; sourceTree = "<group>"; };
 		F5AD53090BBE1A74001C7C04 /* queue.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = queue.c; path = Sources_Network/queue.c; sourceTree = "<group>"; };
-		F5AD530A0BBE1A74001C7C04 /* xml_network.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xml_network.c; path = Sources_Network/xml_network.c; sourceTree = "<group>"; };
 		F5AD53110BBE1A83001C7C04 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		F5AD53120BBE1A83001C7C04 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		F5AD53130BBE1A83001C7C04 /* PNG.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PNG.framework; path = ../dim3Common/Frameworks/PNG.framework; sourceTree = SOURCE_ROOT; };
@@ -238,7 +236,6 @@
 				F5AD53080BBE1A74001C7C04 /* socket.c */,
 				F54A715E0C76A940005AAE98 /* socket_udp.c */,
 				F5AD53090BBE1A74001C7C04 /* queue.c */,
-				F5AD530A0BBE1A74001C7C04 /* xml_network.c */,
 			);
 			name = Network;
 			sourceTree = "<group>";
@@ -327,7 +324,6 @@
 				F53F28290BC1C7F200EB3C0F /* network.c in Sources */,
 				F53F282A0BC1C7F200EB3C0F /* socket.c in Sources */,
 				F53F282B0BC1C7F200EB3C0F /* queue.c in Sources */,
-				F53F282C0BC1C7F300EB3C0F /* xml_network.c in Sources */,
 				F54A715F0C76A940005AAE98 /* socket_udp.c in Sources */,
 				F556BC750C7BA9E90059E7FC /* file_search.c in Sources */,
 			);

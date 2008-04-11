@@ -2,7 +2,7 @@
 
 Module: dim3 Server
 Author: Brian Barnes
- Usage: Network Client Code
+ Usage: Network Host Client Threads
 
 ***************************** License ********************************
 
@@ -70,7 +70,7 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 	}
 	else {
 		remote_uid=-1;
-		sprintf(reply_join.deny_reason,"Client version differs from Server (%s)",dim3_version);
+		sprintf(reply_join.deny_reason,"Client version (%s) differs from Host version (%s)",request_join->vers,dim3_version);
 	}
 
 		// construct the reply

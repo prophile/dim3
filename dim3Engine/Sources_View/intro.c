@@ -51,7 +51,7 @@ extern bool game_start(int skill,int remote_count,network_request_remote_add *re
 extern bool map_start(bool skip_media,char *err_str);
 extern void file_open(void);
 extern void setup_open(bool in_game);
-extern void title_set_open(char *dir,char *name,char *sound_name);
+extern void title_set_open(char *dir,char *name,char *sound_name,bool show_view);
 extern void join_open(void);
 extern void host_open(void);
 
@@ -314,7 +314,7 @@ void intro_click(void)
 			
 		case intro_button_credit_id:
 			intro_close(FALSE,FALSE);
-			title_set_open("Bitmaps/Backgrounds","credit","");
+			title_set_open("Bitmaps/Backgrounds","credit","",FALSE);
 			break;
 
 		case intro_button_setup_id:

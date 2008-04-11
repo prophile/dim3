@@ -202,7 +202,7 @@ void host_game(void)
 							
 		// attempt to join
 
-	if (!network_client_join_host(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,deny_reason,&remote_count,remotes)) {
+	if (!net_join_client_join_host(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,deny_reason,&remote_count,remotes)) {
 		host_close();
 		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
 		error_open(err_str,"Network Game Canceled");
@@ -225,7 +225,7 @@ void host_game(void)
 	host_close();
 	
 	if (!game_start(skill_medium,remote_count,remotes,err_str)) {
-		network_client_leave_host(net_setup.client.remote_uid);
+		net_join_client_leave_host(net_setup.client.remote_uid);
 		error_open(err_str,"Network Game Canceled");
 		return;
 	}
@@ -233,15 +233,15 @@ void host_game(void)
 		// start the map
 		
 	if (!map_start(FALSE,err_str)) {
-		network_client_leave_host(net_setup.client.remote_uid);
+		net_join_client_leave_host(net_setup.client.remote_uid);
 		error_open(err_str,"Network Game Canceled");
 		return;
 	}
 	
 		// start client network thread
 		
-	if (!network_client_ready_host(remote_uid,err_str)) {
-		network_client_leave_host(net_setup.client.remote_uid);
+	if (!net_join_client_ready_host(remote_uid,err_str)) {
+		net_join_client_leave_host(net_setup.client.remote_uid);
 		error_open(err_str,"Network Game Canceled");
 		return;
 	}

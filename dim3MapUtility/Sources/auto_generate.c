@@ -2041,7 +2041,7 @@ void map_auto_generate_clear_flags(void)
 void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 {
 	int			sz;
-
+	
 		// setup global
 
 	memmove(&ag_settings,ags,sizeof(auto_generate_settings_type));
@@ -2075,7 +2075,7 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 	map_auto_generate_lights(map);
 	
 		// create segments
-
+/*
 	map_auto_generate_walls(map);
 	map_auto_generate_height_walls(map);
 	map_auto_generate_ramps(map);
@@ -2088,10 +2088,10 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 		// create doors
 		
 	map_auto_generate_doors(map);
-	
+*/	
 		// fix segments and sight paths
 		
-	map_auto_generate_fix_segments_uv(map);
+//	map_auto_generate_fix_segments_uv(map);
 	if (ag_settings.sight_path) map_portal_sight_generate_paths(map,FALSE);
 	
 		// create player spot

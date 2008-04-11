@@ -281,7 +281,7 @@ void remote_host_reset(void)
 		
 		// attempt to join to new game
 
-	if (!network_client_join_host(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,deny_reason,&remote_count,remotes)) {
+	if (!net_join_client_join_host(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,deny_reason,&remote_count,remotes)) {
 		error_open("Unable to rejoin server after game reset","Network Game Canceled");
 		return;
 	}
@@ -300,7 +300,7 @@ void remote_host_reset(void)
 		// start the new game
 	
 	if (!game_start(skill_medium,remote_count,remotes,err_str)) {
-		network_client_leave_host(net_setup.client.remote_uid);
+		net_join_client_leave_host(net_setup.client.remote_uid);
 		error_open(err_str,"Network Game Canceled");
 		return;	
 	}
@@ -308,7 +308,7 @@ void remote_host_reset(void)
 		// start the map
 		
 	if (!map_start(FALSE,err_str)) {
-		network_client_leave_host(net_setup.client.remote_uid);
+		net_join_client_leave_host(net_setup.client.remote_uid);
 		error_open(err_str,"Network Game Canceled");
 		return;	
 	}
@@ -629,7 +629,7 @@ bool remote_network_get_updates(int tick)
 	
 			// check for messages
 
-		if (!network_client_check_message(&action,&from_remote_uid,data)) return(TRUE);
+		if (!net_join_client_check_message(&action,&from_remote_uid,data)) return(TRUE);
 		
 			// run message
 		
@@ -708,7 +708,7 @@ void remote_network_send_updates(int tick)
 	obj_type			*obj;
     
 	obj=object_find_uid(server.player_obj_uid);
-	network_client_send_remote_update(tick,net_setup.client.remote_uid,obj,hud.chat.type_on);
+	net_join_client_send_remote_update(tick,net_setup.client.remote_uid,obj,hud.chat.type_on);
 }
 
 /* =======================================================
@@ -720,6 +720,6 @@ void remote_network_send_updates(int tick)
 void remote_network_send_latency_ping(int tick)
 {
 	net_setup.client.latency_ping_tick=tick;
-	network_client_latency_ping_host(net_setup.client.remote_uid);
+	net_join_client_latency_ping_host(net_setup.client.remote_uid);
 }
 

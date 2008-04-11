@@ -2,7 +2,7 @@
 
 Module: dim3 Server
 Author: Brian Barnes
- Usage: Broadcast Listener Code
+ Usage: Network Host Broadcast Listener Code
 
 ***************************** License ********************************
 

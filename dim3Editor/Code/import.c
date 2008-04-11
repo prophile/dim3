@@ -132,7 +132,9 @@ void import_auto_generate(void)
 		// run the auto-generate
 		
 	SetCursor(*GetCursor(watchCursor));
+
 	map_auto_generate(&map,&ag_settings);
+
 	InitCursor();
 	
 		// redraw the map

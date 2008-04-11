@@ -142,7 +142,7 @@ JSBool js_sound_play_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,j
 				break;
 		}
 		
-		if (remote_ok) network_client_send_sound(net_setup.client.remote_uid,x,y,z,pitch,name);
+		if (remote_ok) net_join_client_send_sound(net_setup.client.remote_uid,x,y,z,pitch,name);
 	}
 
 	return(JS_TRUE);

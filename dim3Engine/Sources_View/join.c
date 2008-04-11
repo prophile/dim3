@@ -160,8 +160,8 @@ void* join_ping_thread_local_accept_read(void *arg)
 				strcpy(info->game_name,reply_info->game_name);
 				strcpy(info->map_name,reply_info->map_name);
 				info->local=TRUE;
-				info->player_count=reply_info->player_count;
-				info->player_max_count=reply_info->player_max_count;
+				info->player_count=(int)ntohs(reply_info->player_count);
+				info->player_max_count=(int)ntohs(reply_info->player_max_count);
 				info->ping_msec=msec;
 
 					// rebuild list
@@ -298,7 +298,7 @@ void* join_ping_thread_network(void *arg)
 
 		host=&setup.network.hosts[idx];
 
-		if (network_client_ping_host(host->ip,status,host_name,proj_name,game_name,map_name,&player_count,&player_max_count,&ping_msec)) {
+		if (net_join_client_ping_host(host->ip,status,host_name,proj_name,game_name,map_name,&player_count,&player_max_count,&ping_msec)) {
 
 				// is this reply the same dim3 project?
 				
@@ -514,7 +514,7 @@ void join_game(void)
 							
 		// attempt to join
 
-	if (!network_client_join_host(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,deny_reason,&remote_count,remotes)) {
+	if (!net_join_client_join_host(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,deny_reason,&remote_count,remotes)) {
 		join_close();
 		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
 		error_open(err_str,"Network Game Canceled");
@@ -539,7 +539,7 @@ void join_game(void)
 	join_close();
 	
 	if (!game_start(skill_medium,remote_count,remotes,err_str)) {
-		network_client_leave_host(net_setup.client.remote_uid);
+		net_join_client_leave_host(net_setup.client.remote_uid);
 		error_open(err_str,"Network Game Canceled");
 		return;
 	}
@@ -547,15 +547,15 @@ void join_game(void)
 		// start the map
 		
 	if (!map_start(FALSE,err_str)) {
-		network_client_leave_host(net_setup.client.remote_uid);
+		net_join_client_leave_host(net_setup.client.remote_uid);
 		error_open(err_str,"Network Game Canceled");
 		return;
 	}
 	
 		// start client network thread
 		
-	if (!network_client_ready_host(remote_uid,err_str)) {
-		network_client_leave_host(net_setup.client.remote_uid);
+	if (!net_join_client_ready_host(remote_uid,err_str)) {
+		net_join_client_leave_host(net_setup.client.remote_uid);
 		error_open(err_str,"Network Game Canceled");
 		return;
 	}
