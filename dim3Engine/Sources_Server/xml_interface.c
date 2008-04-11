@@ -137,6 +137,12 @@ void default_settings_interface(void)
 	hud.intro.button_game_load.high=32;
 	hud.intro.button_game_load.on=TRUE;
 
+	hud.intro.button_game_setup.x=128;
+	hud.intro.button_game_setup.y=64;
+	hud.intro.button_game_setup.wid=128;
+	hud.intro.button_game_setup.high=32;
+	hud.intro.button_game_setup.on=TRUE;
+
 	hud.intro.button_game_new_easy.x=256;
 	hud.intro.button_game_new_easy.y=0;
 	hud.intro.button_game_new_easy.wid=128;
@@ -175,19 +181,19 @@ void default_settings_interface(void)
 	hud.intro.button_multiplayer_join.high=32;
 	hud.intro.button_multiplayer_join.on=TRUE;
 
+	hud.intro.button_multiplayer_setup.x=128;
+	hud.intro.button_multiplayer_setup.y=128;
+	hud.intro.button_multiplayer_setup.wid=128;
+	hud.intro.button_multiplayer_setup.high=32;
+	hud.intro.button_multiplayer_setup.on=TRUE;
+
 		// credit, setup, quit buttons
 
 	hud.intro.button_credit.x=0;
-	hud.intro.button_credit.y=192;
+	hud.intro.button_credit.y=256;
 	hud.intro.button_credit.wid=128;
 	hud.intro.button_credit.high=32;
 	hud.intro.button_credit.on=FALSE;
-
-	hud.intro.button_setup.x=0;
-	hud.intro.button_setup.y=256;
-	hud.intro.button_setup.wid=128;
-	hud.intro.button_setup.high=32;
-	hud.intro.button_setup.on=TRUE;
 
 	hud.intro.button_quit.x=0;
 	hud.intro.button_quit.y=320;
@@ -764,14 +770,15 @@ void read_settings_interface(void)
 		read_settings_interface_button(xml_findfirstchild("Game",button_tag),&hud.intro.button_game);
 		read_settings_interface_button(xml_findfirstchild("Game_New",button_tag),&hud.intro.button_game_new);
 		read_settings_interface_button(xml_findfirstchild("Game_Load",button_tag),&hud.intro.button_game_load);
+		read_settings_interface_button(xml_findfirstchild("Game_Setup",button_tag),&hud.intro.button_game_setup);
 		read_settings_interface_button(xml_findfirstchild("Game_New_Easy",button_tag),&hud.intro.button_game_new_easy);
 		read_settings_interface_button(xml_findfirstchild("Game_New_Medium",button_tag),&hud.intro.button_game_new_medium);
 		read_settings_interface_button(xml_findfirstchild("Game_New_Hard",button_tag),&hud.intro.button_game_new_hard);
 		read_settings_interface_button(xml_findfirstchild("Multiplayer",button_tag),&hud.intro.button_multiplayer);
 		read_settings_interface_button(xml_findfirstchild("Multiplayer_Host",button_tag),&hud.intro.button_multiplayer_host);
 		read_settings_interface_button(xml_findfirstchild("Multiplayer_Join",button_tag),&hud.intro.button_multiplayer_join);
+		read_settings_interface_button(xml_findfirstchild("Multiplayer_Setup",button_tag),&hud.intro.button_multiplayer_setup);
 		read_settings_interface_button(xml_findfirstchild("Credit",button_tag),&hud.intro.button_credit);
-		read_settings_interface_button(xml_findfirstchild("Setup",button_tag),&hud.intro.button_setup);
 		read_settings_interface_button(xml_findfirstchild("Quit",button_tag),&hud.intro.button_quit);
 	}
 	

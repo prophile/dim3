@@ -41,6 +41,8 @@ extern d3socket					client_socket;
 
 extern network_setup_type		net_setup;
 
+extern void net_join_client_end_message_handler(void);
+
 /* =======================================================
 
       Team and Host Messages

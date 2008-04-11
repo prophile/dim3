@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "interfaces.h"
 #include "video.h"
+#include "consoles.h"
 #include "sounds.h"
 #include "inputs.h"
 
@@ -65,6 +66,10 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view,bool 
 		// stop playing ambients
 		
 	al_stop_all_looping_sources();
+
+		// make sure console is closed
+
+	console_hide();
 	
 		// initialize cursor and elements
 		

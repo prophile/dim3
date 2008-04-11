@@ -839,13 +839,14 @@ and can be sold or given away.
 #define sd_event_weapon_fire							2025
 #define sd_event_weapon_select							2026
 #define sd_event_projectile								2027
-#define sd_event_vehicle								2028
-#define sd_event_move									2029
-#define sd_event_menu									2030
-#define sd_event_chooser								2031
-#define sd_event_interface								2032
-#define sd_event_state									2033
-#define sd_event_rule									2034
+#define sd_event_melee									2028
+#define sd_event_vehicle								2029
+#define sd_event_move									2030
+#define sd_event_menu									2031
+#define sd_event_chooser								2032
+#define sd_event_interface								2033
+#define sd_event_state									2034
+#define sd_event_rule									2035
 
 //
 // sub events constants
@@ -932,21 +933,23 @@ and can be sold or given away.
 #define sd_event_projectile_bounce						3065
 #define sd_event_projectile_reflect						3066
 
-#define sd_event_vehicle_enter							3067
-#define sd_event_vehicle_exit							3068
+#define sd_event_melee_hit								3067
 
-#define sd_event_move_done								3069
-#define sd_event_move_loop								3070
+#define sd_event_vehicle_enter							3068
+#define sd_event_vehicle_exit							3069
 
-#define sd_event_interface_title_done					3071
-#define sd_event_interface_story_done					3072
-#define sd_event_interface_movie_done					3073
+#define sd_event_move_done								3070
+#define sd_event_move_loop								3071
 
-#define sd_event_state_load								3074
-#define sd_event_state_save								3075
+#define sd_event_interface_title_done					3072
+#define sd_event_interface_story_done					3073
+#define sd_event_interface_movie_done					3074
 
-#define sd_event_rule_join								3076
-#define sd_event_rule_score								3077
+#define sd_event_state_load								3075
+#define sd_event_state_save								3076
+
+#define sd_event_rule_join								3077
+#define sd_event_rule_score								3078
 
 //
 // define structure

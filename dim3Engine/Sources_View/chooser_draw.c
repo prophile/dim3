@@ -38,6 +38,7 @@ extern hud_type				hud;
 extern setup_type			setup;
 
 int							chooser_idx;
+char						chooser_sub_txt[max_chooser_sub_txt][max_chooser_text_data_sz];
 bool						chooser_start_trigger;
 
 extern int chooser_find(char *name);
@@ -50,8 +51,9 @@ extern int chooser_find(char *name);
 
 void chooser_open(void)
 {
-	int					n;
-	char				path[1024],path2[1024],fname[256];
+	int					n,idx;
+	char				path[1024],path2[1024],fname[256],
+						a[32],*c,str[max_chooser_text_data_sz];
 	chooser_type		*chooser;
 	chooser_text_type	*text;
 	chooser_item_type	*item;
@@ -67,7 +69,26 @@ void chooser_open(void)
 	text=chooser->texts;
 
 	for (n=0;n<chooser->ntext;n++) {
-		element_text_add(text->data,0,text->x,text->y,text->just,(!text->large),text->clickable,FALSE);
+
+			// check for substitutions
+
+		strcpy(str,text->data);
+		if ((str[0]=='{') && ((str[1]>='0') && (str[1]<='9'))) {
+			strncpy(a,(char*)&str[1],32);
+			a[32]=0x0;
+			c=strchr(a,'}');
+			if (c!=NULL) {
+				*c=0x0;
+				idx=atoi(a);
+				if ((idx>=0) && (idx<max_chooser_sub_txt)) {
+					strcpy(str,chooser_sub_txt[idx]);
+				}
+			}
+		}
+
+			// add text element
+
+		element_text_add(str,0,text->x,text->y,text->just,(!text->large),text->clickable,FALSE);
 		text++;
 	}
 
@@ -117,10 +138,22 @@ void chooser_trigger_check(void)
 	if (chooser_start_trigger) chooser_open();
 }	
 
-void chooser_trigger_set(char *name)
+void chooser_trigger_set(char *name,char *sub_txt)
 {
+	int				n;
+
+		// find chooser
+
 	chooser_idx=chooser_find(name);
 	if (chooser_idx==-1) return;
+
+		// setup text substitutions
+
+	for (n=0;n!=max_chooser_sub_txt;n++) {
+		strcpy(chooser_sub_txt[n],(char*)&sub_txt[max_chooser_text_data_sz*n]);
+	}
+
+		// trigger chooser open
 	
 	chooser_start_trigger=TRUE;
 }

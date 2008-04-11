@@ -162,7 +162,7 @@ extern void intro_run(void);
 
 extern void chooser_trigger_clear(void);
 extern void chooser_trigger_check(void);
-extern void chooser_trigger_set(char *name);
+extern void chooser_trigger_set(char *name,char *sub_txt);
 extern void chooser_run(void);
 
 extern void menu_trigger_clear(void);

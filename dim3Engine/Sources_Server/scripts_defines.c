@@ -152,6 +152,7 @@ script_define_type			script_dim3_defines[]={
 								{sd_event_weapon_fire,							"",		"DIM3_EVENT_WEAPON_FIRE"},
 								{sd_event_weapon_select,						"",		"DIM3_EVENT_WEAPON_SELECT"},
 								{sd_event_projectile,							"",		"DIM3_EVENT_PROJECTILE"},
+								{sd_event_melee,								"",		"DIM3_EVENT_MELEE"},
 								{sd_event_vehicle,								"",		"DIM3_EVENT_VEHICLE"},
 								{sd_event_move,									"",		"DIM3_EVENT_MOVE"},
 								{sd_event_menu,									"",		"DIM3_EVENT_MENU"},
@@ -241,6 +242,8 @@ script_define_type			script_dim3_defines[]={
 
 								{sd_event_projectile_bounce,					"",		"DIM3_EVENT_PROJECTILE_BOUNCE"},
 								{sd_event_projectile_reflect,					"",		"DIM3_EVENT_PROJECTILE_REFLECT"},
+
+								{sd_event_melee_hit,							"",		"DIM3_EVENT_MELEE_HIT"},
 								
 								{sd_event_vehicle_enter,						"",		"DIM3_EVENT_VEHICLE_ENTER"},
 								{sd_event_vehicle_exit,							"",		"DIM3_EVENT_VEHICLE_EXIT"},

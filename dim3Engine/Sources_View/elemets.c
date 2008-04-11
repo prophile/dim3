@@ -368,6 +368,8 @@ void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool fram
 
 void element_text_add(char *str,int id,int x,int y,int just,bool small_text,bool selectable,bool alert)
 {
+	int				wid,high;
+	char			*c,*c2;
 	element_type	*element;
 
 	pthread_mutex_lock(&element_thread_lock);
@@ -388,11 +390,33 @@ void element_text_add(char *str,int id,int x,int y,int just,bool small_text,bool
 	element->selectable=selectable;
 	element->enabled=TRUE;
 	element->hidden=FALSE;
-
-	element->wid=gl_text_get_string_width(str,small_text);
-	element->high=gl_text_get_char_height(small_text);
 	
 	strcpy(element->str,str);
+
+		// need to calculate size through returns
+
+	high=gl_text_get_char_height(small_text);
+
+	element->wid=0;
+	element->high=high;
+
+	c=element->str;
+	
+	while (*c!=0x0) {
+		c2=strstr(c,"{r}");
+		if (c2!=NULL) *c2=0x0;
+		
+		wid=gl_text_get_string_width(c,small_text);
+		if (wid>element->wid) element->wid=wid;
+		
+		if (c2==NULL) break;
+
+		element->high+=high;
+		
+		*c2='{';
+		
+		c=c2+3;
+	}
 
 	pthread_mutex_unlock(&element_thread_lock);
 }
@@ -880,27 +904,53 @@ void element_draw_bitmap(element_type *element)
 
 void element_draw_text(element_type *element,int sel_id)
 {
+	int				y,high;
+	char			*c,*c2;
 	d3col			col;
 
-	gl_text_start(element->setup.text.small_text);
+		// get text color
 
 	if (element->setup.text.alert) {
 		col.r=1.0f;
 		col.g=col.b=0.0f;
-		gl_text_draw(element->x,element->y,element->str,element->setup.text.just,FALSE,&col,1.0f);
 	}
 	else {
 		if (!element->enabled) {
-			gl_text_draw(element->x,element->y,element->str,element->setup.text.just,FALSE,&hud.color.disabled,1.0f);
+			memmove(&col,&hud.color.disabled,sizeof(d3col));
 		}
 		else {
 			if ((element->id!=-1) && (element->id==sel_id)) {
-				gl_text_draw(element->x,element->y,element->str,element->setup.text.just,FALSE,&hud.color.mouse_over,1.0f);
+				memmove(&col,&hud.color.mouse_over,sizeof(d3col));
 			}
 			else {
-				gl_text_draw(element->x,element->y,element->str,element->setup.text.just,FALSE,&hud.color.base,1.0f);
+				memmove(&col,&hud.color.base,sizeof(d3col));
 			}
 		}
+	}
+
+		// get height
+
+	y=element->y;
+	high=gl_text_get_char_height(element->setup.text.small_text);
+
+		// draw text
+
+	gl_text_start(element->setup.text.small_text);
+
+	c=element->str;
+	
+	while (*c!=0x0) {
+		c2=strstr(c,"{r}");
+		if (c2!=NULL) *c2=0x0;
+		
+		gl_text_draw(element->x,y,c,element->setup.text.just,FALSE,&col,1.0f);
+		
+		if (c2==NULL) break;
+		
+		*c2='{';
+		
+		c=c2+3;
+		y+=high;
 	}
 
 	gl_text_end();

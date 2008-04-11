@@ -139,10 +139,31 @@ JSBool js_interface_interaction_start_movie_func(JSContext *cx,JSObject *j_obj,u
 
 JSBool js_interface_interaction_start_chooser_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	char			name[name_str_len];
+	int				n,cnt;
+	char			name[name_str_len],
+					sub_txt[max_chooser_sub_txt][max_chooser_text_data_sz];
+
+		// get name
 
 	script_value_to_string(argv[0],name,name_str_len);
-	chooser_trigger_set(name);
+
+		// get any substitution text
+
+	for (n=0;n!=max_chooser_sub_txt;n++) {
+		sub_txt[n][0]=0x0;
+	}
+
+	cnt=argc-1;
+	if (cnt<0) cnt=0;
+	if (cnt>max_chooser_sub_txt) cnt=max_chooser_sub_txt;
+
+	for (n=0;n!=cnt;n++) {
+		script_value_to_string(argv[n+1],sub_txt[n],max_chooser_text_data_sz);
+	}
+
+		// start chooser
+
+	chooser_trigger_set(name,(char*)sub_txt);
 	
 	return(JS_TRUE);
 }

@@ -134,6 +134,8 @@ typedef struct		{
 #define max_chooser_item			32
 #define max_chooser_text_data_sz	256
 
+#define max_chooser_sub_txt			16
+
 #define max_story_page				16
 
 //
@@ -287,10 +289,12 @@ typedef struct		{
 					} hud_intro_button_type;
 					
 typedef struct		{
-						hud_intro_button_type	button_game,button_game_new,button_game_load,
+						hud_intro_button_type	button_game,
+												button_game_new,button_game_load,button_game_setup,
 												button_game_new_easy,button_game_new_medium,button_game_new_hard,
-												button_multiplayer,button_multiplayer_host,button_multiplayer_join,
-												button_credit,button_setup,button_quit;
+												button_multiplayer,
+												button_multiplayer_host,button_multiplayer_join,button_multiplayer_setup,
+												button_credit,button_quit;
 					} hud_intro_type;
 
 //

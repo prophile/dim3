@@ -722,7 +722,7 @@ bool map_portal_create_single_vertex_list(map_type *map,int rn,bool high_quality
 void map_portal_dispose_single_vertex_list(map_type *map,int rn)
 {
 	portal_type			*portal;
-	
+
 	portal=&map->portals[rn];
 	
 	free(portal->vertexes.vertex_list);

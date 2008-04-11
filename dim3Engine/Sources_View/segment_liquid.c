@@ -59,8 +59,8 @@ bool liquid_create_memory(void)
 
 		for (k=0;k!=portal->liquid.nliquid;k++) {
 
-			x_sz=((liq->rgt-liq->lft)/liq->tide.split)+2;
-			z_sz=((liq->bot-liq->top)/liq->tide.split)+2;
+			x_sz=((liq->rgt-liq->lft)/liq->tide.split)+4;		// possible extra edges on side because of griding
+			z_sz=((liq->bot-liq->top)/liq->tide.split)+4;
 
 			v_sz=x_sz*z_sz;
 
@@ -106,10 +106,10 @@ void liquid_free_memory(void)
 		liq=portal->liquid.liquids;
 
 		for (k=0;k!=portal->liquid.nliquid;k++) {
-		//	free(liq->draw.vl_list);
-		//	free(liq->draw.uv_list);
-		//	free(liq->draw.cl_list);
-		//	free(liq->draw.idx_list);
+			free(liq->draw.vl_list);
+			free(liq->draw.uv_list);
+			free(liq->draw.cl_list);
+			free(liq->draw.idx_list);
 			liq++;
 		}
 

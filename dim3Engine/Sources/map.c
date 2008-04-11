@@ -479,11 +479,7 @@ void map_end(void)
 		// free group, portal segment, vertex and light lists
 		
 	map_portal_dispose_light_spots(&map);
-	fprintf(stdout,"in map end 6\n");
-	fflush(stdout);
 	map_portal_dispose_vertex_lists(&map);
-	fprintf(stdout,"in map end 7\n");
-	fflush(stdout);
 	liquid_free_memory();
 	map_portal_mesh_dispose_transparent_sort_lists(&map);
 	map_group_dispose_unit_list(&map);

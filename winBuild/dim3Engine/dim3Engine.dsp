@@ -263,10 +263,6 @@ SOURCE=..\..\dim3Engine\Sources\app.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources\client.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3Engine\Sources\debug.c
 # End Source File
 # Begin Source File
@@ -1519,11 +1515,11 @@ SOURCE=..\..\dim3Engine\Headers_Network\network_defs.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_Network\net_broadcast.c
+SOURCE=..\..\dim3Engine\Sources_Network\net_host.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_Network\net_host.c
+SOURCE=..\..\dim3Engine\Sources_Network\net_host_broadcast.c
 # End Source File
 # Begin Source File
 
@@ -1532,6 +1528,14 @@ SOURCE=..\..\dim3Engine\Sources_Network\net_host_clients.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_Network\net_host_players.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Network\net_join_client.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Network\net_join_client_message.c
 # End Source File
 # End Group
 # End Group

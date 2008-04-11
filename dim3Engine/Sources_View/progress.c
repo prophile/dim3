@@ -53,7 +53,7 @@ void progress_initialize(char *action)
 	strcpy(progress_str,action);
 	
 		// progress background
-		
+	
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Backgrounds","load","png");
 	bitmap_open(&progress_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
 	
@@ -77,7 +77,7 @@ void progress_draw(float percentage)
 {
 	int					lft,rgt,top,bot,mid,rgt2,x,y,sz,
 						save_x_scale,save_y_scale;
-	
+
 		// any change?
 		
 	if (progress_current==percentage) return;

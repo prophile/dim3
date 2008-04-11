@@ -113,8 +113,11 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 		
 			// hurt
             
-		if (hit) object_damage(hurt_obj,obj,weap,NULL,pt,melee->damage);
-		
+		if (hit) {
+			object_damage(hurt_obj,obj,weap,NULL,pt,melee->damage);
+			scripts_post_event_console(&weap->attach,sd_event_melee,sd_event_melee_hit,0);
+		}
+
 		hurt_obj++;
 	}
    
