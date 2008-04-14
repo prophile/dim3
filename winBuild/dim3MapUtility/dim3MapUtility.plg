@@ -6,20 +6,11 @@
 --------------------Configuration: dim3MapUtility - Win32 Release--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSP4715.tmp" with contents
-[
-/nologo /MD /W3 /GX /O2 /I "..\win32Includes\pthreads" /I "..\win32Includes\GLEW" /I "..\win32Includes\ZLib" /I "..\win32Includes\SDL" /I "..\win32Includes\OpenAL" /I "..\win32Includes\JS" /I "..\win32Includes\PNG" /I "..\..\dim3MapUtility\Headers" /I "..\..\dim3Common\Headers" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "D3_PCH" /Fp"Release/dim3MapUtility.pch" /YX"dim3MapUtility.h" /Fo"Release/" /Fd"Release/" /FD /c 
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\auto_generate.c"
-]
-Creating command line "cl.exe @C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSP4715.tmp" 
-<h3>Output Window</h3>
-Compiling...
-auto_generate.c
 
 
 
 <h3>Results</h3>
-auto_generate.obj - 0 error(s), 0 warning(s)
+dim3MapUtility.dll - 0 error(s), 0 warning(s)
 </pre>
 </body>
 </html>

@@ -211,7 +211,7 @@ void run_object_normal(obj_type *obj,int tick)
 		object_move(obj);
 		
 		object_fix_bump_smooth(obj);
-		object_duck(obj);
+		object_ducking(obj);
 
 		object_touch(obj);
 		object_liquid(tick,obj);

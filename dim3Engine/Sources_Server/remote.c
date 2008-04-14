@@ -257,8 +257,7 @@ void remote_predict_move(obj_type *obj)
 	
 		// predict movements
 		
-	object_move_xz(obj,(int)obj->motion.vct.x,(int)obj->motion.vct.z);
-	object_move_y(obj,(int)obj->motion.vct.y);
+	object_move_remote(obj);
 }
 
 /* =======================================================

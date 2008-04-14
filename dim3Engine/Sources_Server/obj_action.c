@@ -504,6 +504,35 @@ void object_start_duck(obj_type *obj)
 	scripts_post_event_console(&obj->attach,sd_event_animation_object,sd_event_animation_object_duck_down,0);
 }
 
+void object_ducking(obj_type *obj)
+{
+    int			duck_mode,y_change;
+    
+    duck_mode=obj->duck.mode;
+    if ((duck_mode==dm_stand) || (duck_mode==dm_duck)) return;
+    
+    if (duck_mode==dm_stand_up) {
+        obj->duck.y_move-=obj->duck.y_add;
+        if (obj->duck.y_move>0) return;
+        
+        obj->duck.y_move=0;
+        obj->duck.mode=dm_stand;
+        object_post_move_animation_event(obj,sd_event_animation_object_standing);
+        return;
+    }
+    
+    if (duck_mode==dm_duck_down) {
+        obj->duck.y_move+=obj->duck.y_add;
+        y_change=obj->duck.y_change;
+        if (obj->duck.y_move<y_change) return;
+        
+        obj->duck.y_move=y_change;
+        obj->duck.mode=dm_duck;
+        object_post_move_animation_event(obj,sd_event_animation_object_ducking);
+        return;
+    }
+}
+
 /* =======================================================
 
       Attach Sounds To Objects

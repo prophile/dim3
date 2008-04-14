@@ -677,7 +677,7 @@ void map_auto_generate_walls(map_type *map)
 
 			// build left/right walls
 
-		for (z=0;z!=zsz;z+=split_factor) {
+		for (z=0;z<zsz;z+=split_factor) {
 
 				// left
 
@@ -696,7 +696,7 @@ void map_auto_generate_walls(map_type *map)
 
 			// build top/bottom walls
 
-		for (x=0;x!=xsz;x++) {
+		for (x=0;x<xsz;x+=split_factor) {
 
 				// top
 
@@ -725,10 +725,16 @@ void map_auto_generate_walls(map_type *map)
 
 void map_auto_generate_height_walls(map_type *map)
 {
-	int				n,k,x,ex,z,ez,xsz,zsz,txt_idx,
+	int				n,k,x,ex,kx,z,ez,kz,xsz,zsz,split_factor,txt_idx,
 					px[8],py[8],pz[8];
 	float			gx[8],gy[8];
 	portal_type		*portal,*chk_portal;
+
+		// how we split the walls into a mesh
+
+	split_factor=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_split_factor_percent);
+
+		// create walls for any portals with different heights
 
 	portal=map->portals;
 
@@ -766,8 +772,10 @@ void map_auto_generate_height_walls(map_type *map)
 				x-=portal->x;
 				ex-=portal->x;
 
-				map_auto_generate_poly_from_square_wall(x,0,ex,0,portal->ty,(chk_portal->ty-1),px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				for (kx=x;kx<ex;kx+=split_factor) {
+					map_auto_generate_poly_from_square_wall(kx,0,(kx+split_factor),0,portal->ty,(chk_portal->ty-1),px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
 				continue;
 			}
 			
@@ -783,8 +791,10 @@ void map_auto_generate_height_walls(map_type *map)
 				x-=portal->x;
 				ex-=portal->x;
 
-				map_auto_generate_poly_from_square_wall(x,zsz,ex,zsz,portal->ty,(chk_portal->ty-1),px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				for (kx=x;kx<ex;kx+=split_factor) {
+					map_auto_generate_poly_from_square_wall(kx,zsz,(kx+split_factor),zsz,portal->ty,(chk_portal->ty-1),px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
 				continue;
 			}
 			
@@ -800,8 +810,10 @@ void map_auto_generate_height_walls(map_type *map)
 				z-=portal->z;
 				ez-=portal->z;
 
-				map_auto_generate_poly_from_square_wall(0,z,0,ez,portal->ty,(chk_portal->ty-1),px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				for (kz=z;kz<ex;kz+=split_factor) {
+					map_auto_generate_poly_from_square_wall(0,kz,0,(kz+split_factor),portal->ty,(chk_portal->ty-1),px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
 				continue;
 			}
 			
@@ -817,8 +829,10 @@ void map_auto_generate_height_walls(map_type *map)
 				z-=portal->z;
 				ez-=portal->z;
 
-				map_auto_generate_poly_from_square_wall(xsz,z,xsz,ez,portal->ty,(chk_portal->ty-1),px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				for (kz=z;kz<ex;kz+=split_factor) {
+					map_auto_generate_poly_from_square_wall(xsz,kz,xsz,(kz+split_factor),portal->ty,(chk_portal->ty-1),px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
 				continue;
 			}
 			

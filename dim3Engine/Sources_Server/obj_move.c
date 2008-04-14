@@ -31,14 +31,16 @@ and can be sold or given away.
 
 #include "scripts.h"
 #include "objects.h"
+#include "models.h"
 #include "physics.h"
 
 extern map_type				map;
 extern server_type			server;
 
-// supergumba -- temporary until new move routines
-extern void object_motion_lock(obj_type *obj,float *xmove,float *ymove,float *zmove);
-extern void object_motion_set_script_property(obj_type *obj,float xmove,float ymove,float zmove);
+#define obj_hit_fudge		40
+	// supergumba -- this needs to be setable
+
+extern bool collide_object_to_map(obj_type *obj,int hit_fudge,int *xadd,int *yadd,int *zadd);
 
 /* =======================================================
 
@@ -333,7 +335,7 @@ void object_alter_gravity(obj_type *obj,float alt_gravity)
 
 /* =======================================================
 
-      Object Bump-Ups
+      Object Bumping, Bounce, and Push
       
 ======================================================= */
 
@@ -384,117 +386,19 @@ bool object_bump_up(obj_type *obj,int xmove,int zmove)
 	return(obj->contact.head_poly.portal_idx==-1);
 }
 
-/* =======================================================
-
-      Object Falling
-      
-======================================================= */
-
-void object_fall(obj_type *obj)
+void object_fix_bump_smooth(obj_type *obj)
 {
-	/* supergumba
-	int				y,fy,ymove,uid;
-	obj_type		*hit_obj;
+	int			k;
 	
-		// suspended objects don't fall
+	if (obj->bump.smooth_offset==0) return;
+	
+		// slowly remove bump offset
 		
-	if (obj->suspend) return;
+	k=(int)(((float)obj->bump.smooth_offset)*obj->bump.smooth_factor);
+	if (k<10) k=10;
 	
-		// check standing on floors
-
-	y=obj->pos.y;
-		
-	fy=pin_downward_movement_obj(obj,floor_slop);
-	fy+=y;
-
-		// deal with floor contacts
-		
-	if (obj->contact.floor_seg_idx!=-1) {
-	
-		obj->stand_obj_uid=-1;
-
-			// below or on the floor?
-
-		if (y>=fy) {
-			obj->air_mode=am_ground;
-			obj->pos.y=fy;
-			return;
-		}
-		
-			// above the floor
-
-		ymove=(int)obj->force.vct.y;
-		if ((y>(fy-floor_slop)) || ((y+ymove)>fy)) {		// next floor or slop will go past floor
-			if (ymove>=0) {
-				obj->air_mode=am_ground;
-				obj->pos.y=fy;
-			}
-			return;
-		}
-	}
-	
-		// check standing on objects
-
-	uid=collide_find_object_for_standing_object(obj);
-	if (uid!=-1) {
-		hit_obj=object_find_uid(uid);
-		
-		obj->contact.obj_uid=uid;
-		obj->pos.y=hit_obj->pos.y-hit_obj->size.y;
-		obj->air_mode=am_ground;
-		
-			// stand on script
-			
-		if (obj->stand_obj_uid!=uid) {
-			object_setup_touch(hit_obj,obj,TRUE);
-			scripts_post_event_console(&hit_obj->attach,sd_event_touch,0,0);
-		}
-		
-		obj->stand_obj_uid=uid;
-		return;
-	}
-
-	obj->stand_obj_uid=-1;
-	
-		// find air mode
-		
-	if (obj->force.vct.y<0) {
-		obj->air_mode=am_up;
-	}
-	else {
-		obj->air_mode=am_falling;
-	}
-	*/
-}
-
-/* =======================================================
-
-      X/Z Movement
-      
-======================================================= */
-
-bool object_move_xz(obj_type *obj,int xmove,int zmove)
-{
-	bool			hit;
-	d3pos			savepos;
-	
-	if ((xmove==0) && (zmove==0)) return(FALSE);
-	
-	memmove(&savepos,&obj->pos,sizeof(d3pos));
-	
-	if (obj->no_slide) {
-		hit=map_obj_move_xz(obj,xmove,zmove);
-	}
-	else {
-		hit=move_obj_check_xz_map_slide(obj,xmove,zmove);
-	}
-	
-	if (!map_find_portal_by_pos(&map,&obj->pos)) {			// might have moved into a new portal
-		memmove(&obj->pos,&savepos,sizeof(d3pos));
-		return(TRUE);
-	}
-
-	return(hit);
+	obj->bump.smooth_offset-=k;
+	if (obj->bump.smooth_offset<0) obj->bump.smooth_offset=0;
 }
 
 void object_move_xz_bounce(obj_type *obj)
@@ -547,121 +451,6 @@ void object_to_object_push(obj_type *obj,float xmove,float zmove)
 	
 	pushed_obj->force.vct.x=xmove*f;
 	pushed_obj->force.vct.z=zmove*f;
-}
-
-/* =======================================================
-
-      Y Movement
-      
-======================================================= */
-
-void object_move_y(obj_type *obj,int ymove)
-{
-	int				fy,by,up_move;
-	
-		// moving up
-		
-	if (ymove<0) {
-	
-		obj->air_mode=am_up;
-		
-			// have any floors come up from below
-
-		fy=pin_downward_movement_obj(obj,floor_slop);
-		if (fy<0) {
-			obj->pos.y+=fy;
-			ymove+=fy;
-			if (ymove>=0) return;
-		}
-
-			// go upwards
-
-		up_move=pin_upward_movement_obj(obj,ymove);
-		obj->pos.y+=up_move;
-		
-		if (up_move>ymove) {
-			obj->force.vct.y=0;
-			obj->force.gravity=gravity_start_power;
-			return;
-		}
-
-			// check for above map
-
-		if (obj->pos.y<=0) {
-			obj->pos.y=0;
-			obj->force.vct.y=0;
-			obj->force.gravity=gravity_start_power;
-			return;
-		}
-
-		return;
-	}
-	
-		// check for falling
-
-	object_fall(obj);
-	
-		// fix objects gravity and view angles
-		
-	if (obj->air_mode==am_ground) {
- 		if (obj->force.vct.y>0) obj->force.vct.y=0;
-		obj->force.gravity=gravity_start_power;
-		return;
-	}
-	
-		// moving down
-		
-	if (ymove<=0) return;
-	
-	fy=pin_downward_movement_obj(obj,ymove);
-	obj->pos.y+=fy;
-	
-	if (obj->air_mode==am_falling) obj->fall.dist+=fy;
-	
-		// check for below portal
-		
-	by=map.portals[obj->pos.rn].by;
-	if (obj->pos.y>=by) {
-		obj->pos.y=by;
-		if (obj->force.vct.y>0) obj->force.vct.y=0;
-		obj->force.gravity=gravity_start_power;
-	}
-}
-
-void object_fly_y(obj_type *obj,int ymove)
-{
-	/* supergumba
-	int				by;
-	
-		// moving up
-		
-	if (ymove<0) {
-		obj->pos.y+=pin_upward_movement_obj(obj,ymove);
-		if (obj->contact.ceiling_seg_idx!=-1) return;
-
-			// check for above map
-			
-		if (obj->pos.y<=0) {
-			obj->pos.y=0;
-			return;
-		}
-
-		return;
-	}
-	
-		// moving down
-		
-	if (ymove<=0) return;
-	
-	obj->pos.y+=pin_downward_movement_obj(obj,ymove);
-	
-		// check for below portal
-		
-	by=map.portals[obj->pos.rn].by;
-	if (obj->pos.y>=by) {
-		obj->pos.y=by;
-	}
-	*/
 }
 
 /* =======================================================
@@ -742,123 +531,411 @@ void object_motion_slope_alter_movement(obj_type *obj,float *xmove,float *zmove)
 
 /* =======================================================
 
-      Do Movement Mainline
+      Motion Locks and Script Setup
       
 ======================================================= */
 
-void object_move_normal(obj_type *obj)
+void object_motion_lock(obj_type *obj,float *xmove,float *ymove,float *zmove)
 {
-	int				i_xmove,i_zmove,xchg,zchg,
-					fall_damage;
-    float			xmove,zmove,ymove;
-	bool			oldfalling;
+	if (obj->lock.x) *xmove=0;
+	if (obj->lock.y) *ymove=0;
+	if (obj->lock.z) *zmove=0;
+}
 
-		// get object motion
-		
-	object_motion_setup(obj,&xmove,&ymove,&zmove);
-	object_motion_slope_alter_movement(obj,&xmove,&zmove);
-	object_motion_lock(obj,&xmove,&ymove,&zmove);
-	object_motion_set_script_property(obj,xmove,ymove,zmove);
-    
-		// falling
-		
-	oldfalling=(obj->air_mode==am_falling);
+void object_motion_set_script_property(obj_type *obj,float xmove,float ymove,float zmove)
+{
+	obj->motion.vct.x=xmove;
+	obj->motion.vct.z=zmove;
+	obj->motion.vct.y=ymove;
+}
 
-		// move Y
+/* =======================================================
 
-	object_move_y(obj,(int)ymove);
+      Y Movement
+      
+======================================================= */
+
+void object_move_y_up(obj_type *obj,int ymove)
+{
+	int				fy,up_move;
+
+	obj->air_mode=am_up;
 	
-		// if on ground, stop all downward motion
-		
-	if (obj->air_mode==am_ground) {
-		if (obj->force.vct.y>0) obj->force.vct.y=0;			// all external forces downward y forces are stopped
-		obj->force.gravity=gravity_start_power;
+		// have any floors come up from below
+
+	fy=pin_downward_movement_obj(obj,floor_slop);
+	if (fy<0) {
+		obj->pos.y+=fy;
+		ymove+=fy;
+		if (ymove>=0) return;
 	}
+
+		// go upwards
+
+	up_move=pin_upward_movement_obj(obj,ymove);
+	obj->pos.y+=up_move;
 	
-		// get exact movement
-		
-	xchg=obj->pos.x;
-	zchg=obj->pos.z;
+	if (up_move>ymove) {
+		obj->force.vct.y=0;
+		obj->force.gravity=gravity_start_power;
+		return;
+	}
+
+		// check for above map
+
+	if (obj->pos.y<=0) {
+		obj->pos.y=0;
+		obj->force.vct.y=0;
+		obj->force.gravity=gravity_start_power;
+		return;
+	}
+}
+
+void object_move_y_fall(obj_type *obj)
+{
+	int				y,fy,ymove,uid;
+	obj_type		*hit_obj;
 	
-        // moving x/z
+		// check standing on polygons
+
+	y=obj->pos.y;
 		
-	i_xmove=(int)xmove;
-	i_zmove=(int)zmove;
+	fy=pin_downward_movement_obj(obj,floor_slop);
+	fy+=y;
 
-	while (TRUE) {
-			
-			// move
-
-		if (!object_move_xz(obj,i_xmove,i_zmove)) break;
-
-			// do any pushing
-			
-		object_to_object_push(obj,xmove,zmove);
+		// deal with polygon contacts
 		
-			// if bumped up, move again
+	if (obj->contact.stand_poly.portal_idx!=-1) {
+	
+		obj->stand_obj_uid=-1;
 
-		if (object_bump_up(obj,i_xmove,i_zmove)) {
-			ymove=0;
-			continue;	
+			// below or on the floor?
+
+		if (y>=fy) {
+			obj->air_mode=am_ground;
+			obj->pos.y=fy;
+			return;
 		}
 		
-		break;
+			// above the polygon
+
+		ymove=(int)obj->force.vct.y;
+		if ((y>(fy-floor_slop)) || ((y+ymove)>fy)) {		// next floor or slop will go past floor
+			if (ymove>=0) {
+				obj->air_mode=am_ground;
+				obj->pos.y=fy;
+			}
+			return;
+		}
 	}
 	
-		// force move other objects
+		// check standing on objects
+
+	uid=collide_find_object_for_standing_object(obj);
+	if (uid!=-1) {
+		hit_obj=object_find_uid(uid);
 		
-	xchg=obj->pos.x-xchg;
-	zchg=obj->pos.z-zchg;
-	
-	if ((xchg!=0) || (zchg!=0)) {
-		object_move_with_object(obj,xchg,zchg);
-	}
-	
-		// bounces
+		obj->contact.obj_uid=uid;
+		obj->pos.y=hit_obj->pos.y-hit_obj->size.y;
+		obj->air_mode=am_ground;
 		
-	object_move_xz_bounce(obj);
-	
-		// objects have finished falling
-	
-    if (obj->air_mode!=am_falling) {
-    
-        if (oldfalling) {
-            if (obj->fall.dist>map_enlarge) {
+			// trigger stand on events
 			
-					// get damage if not in water
-					
-				if (obj->liquid_mode==lm_out) {
-					if (obj->fall.dist>=obj->fall.damage_minimum_height) {
-						fall_damage=(int)(((float)(obj->fall.dist-obj->fall.damage_minimum_height))*obj->fall.damage_factor);
-						if (fall_damage!=0) object_damage(obj,NULL,NULL,NULL,NULL,fall_damage);
-					}
-				}
-				
-					// send the land events
-					
-                scripts_post_event_console(&obj->attach,sd_event_land,0,0);
-                object_post_move_animation_event(obj,sd_event_animation_object_land);
-            }
-        }
-        
-        obj->fall.dist=0;
-        obj->fall.change=FALSE;
+		if (obj->stand_obj_uid!=uid) {
+			object_setup_touch(hit_obj,obj,TRUE);
+			scripts_post_event_console(&hit_obj->attach,sd_event_touch,0,0);
+		}
+		
+		obj->stand_obj_uid=uid;
+		return;
+	}
+
+	obj->stand_obj_uid=-1;
+	
+		// find air mode
+		
+	if (obj->force.vct.y<0) {
+		obj->air_mode=am_up;
+	}
+	else {
+		obj->air_mode=am_falling;
+	}
+}
+
+void object_move_y_down(obj_type *obj,int ymove)
+{
+	int			fy,by;
+	
+		// fix objects gravity and view angles
+		// if on ground
+		
+	if (obj->air_mode==am_ground) {
+ 		if (obj->force.vct.y>0) obj->force.vct.y=0;
+		obj->force.gravity=gravity_start_power;
+		return;
+	}
+	
+		// moving down
+		
+	fy=pin_downward_movement_obj(obj,ymove);
+	obj->pos.y+=fy;
+	
+	if (obj->air_mode==am_falling) obj->fall.dist+=fy;
+	
+		// check for below portal
+		
+	by=map.portals[obj->pos.rn].by;
+	if (obj->pos.y>=by) {
+		obj->pos.y=by;
+		if (obj->force.vct.y>0) obj->force.vct.y=0;
+		obj->force.gravity=gravity_start_power;
+	}
+}
+
+void object_move_y(obj_type *obj,int ymove)
+{
+	if (ymove==0) {
+		object_move_y_fall(obj);
+		return;
+	}
+
+	if (ymove<0) {
+		object_move_y_up(obj,ymove);
+	}
+	else {
+		object_move_y_down(obj,ymove);
+	}
+}
+
+void object_move_y_fly(obj_type *obj,int ymove)
+{
+	int				by;
+	
+		// moving up
+		
+	if (ymove<0) {
+		obj->pos.y+=pin_upward_movement_obj(obj,ymove);
+		if (obj->contact.head_poly.portal_idx!=-1) return;
+
+			// check for above map
+			
+		if (obj->pos.y<=0) {
+			obj->pos.y=0;
+			return;
+		}
 
 		return;
 	}
 	
-		// objects are currently falling
+		// moving down
+		
+	if (ymove<=0) return;
 	
-	if ((obj->fall.dist>map_enlarge) && (!obj->fall.change)) {
-		scripts_post_event_console(&obj->attach,sd_event_fall,0,0);
-		scripts_post_event_console(&obj->attach,sd_event_animation_object,sd_event_animation_object_fall,0);
-		obj->fall.change=TRUE;
-	}
+	obj->pos.y+=pin_downward_movement_obj(obj,ymove);
+	
+		// check for below portal
+		
+	by=map.portals[obj->pos.rn].by;
+	if (obj->pos.y>=by) obj->pos.y=by;
 }
+
+/* =======================================================
+
+      X/Z Movement
+      
+======================================================= */
+
+bool object_move_xz(obj_type *obj,int *xadd,int *yadd,int *zadd)
+{
+		// map mesh collisions
+
+	if (collide_object_to_map(obj,obj_hit_fudge,xadd,yadd,zadd)) return(FALSE);
+
+		// supergumba -- need object collisions here
+
+	return(TRUE);
+}
+
+bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int lx,int rx,int lz,int rz)
+{
+	int					n,xadd2,zadd2,mx,mz;
+	float				f,ang,rang;
+	bool				cwise;
+	d3vct				line_vct,obj_vct;
+	
+		// special check for horizontal/vertical walls
+
+	if (lx==rx) {
+		xadd2=zadd2=0;
+		if (!object_move_xz(obj,&xadd2,yadd,zadd)) return(FALSE);
+		return(object_move_xz(obj,xadd,yadd,zadd));
+	}
+	
+	if (lz==rz) {
+		xadd2=zadd2=0;
+		if (!object_move_xz(obj,xadd,yadd,&zadd2)) return(FALSE);
+		return(object_move_xz(obj,&xadd2,yadd,zadd));
+	}
+	
+		// get angle between the line and the object movement
+			
+	obj_vct.x=(float)*xadd;
+	obj_vct.y=0.0f;
+	obj_vct.z=(float)*zadd;
+	vector_normalize(&obj_vct);
+	
+	vector_create(&line_vct,lx,0,lz,rx,0,rz);		// perpendicular vector (swap x/z)
+	
+		// get the angle between them
+
+	f=vector_dot_product(&obj_vct,&line_vct);
+	f=((float)acos(f))*RAD_to_ANG;
+
+		// get angle of wall.  If the angle between the
+		// collision lines is less than 90, then head down
+		// the line the opposite way
+
+	ang=angle_find(lx,lz,rx,rz);
+	if (f<90.0f) ang=angle_add(ang,180.0f);
+
+		// change the motion to reflect the angle of the wall
+		// uses facing instead of motion to check so we
+		// don't get motion build up from sliding against a wall
+		
+	rang=obj->ang.y;
+	if (obj->forward_move.reverse) rang=angle_add(rang,180.0f);
+
+	if (angle_dif(rang,ang,&cwise)<90.0f) {
+		if (!obj->forward_move.reverse) {
+			obj->motion.ang.y=ang;
+		}
+		else {
+			obj->motion.ang.y=angle_add(ang,180.0f);
+		}
+	}
+
+		// reduce movement to slide against the walls
+
+	mz=*zadd/ws_step_factor;
+	mx=*xadd/ws_step_factor;
+
+	for (n=0;n!=ws_step_factor;n++) {
+
+		xadd2=0;
+		zadd2=mz;
+
+		if (!object_move_xz(obj,&xadd2,yadd,&zadd2)) {
+
+			xadd2=mx;
+			zadd2=0;
+			object_move_xz(obj,&xadd2,yadd,&zadd2);
+
+		}
+		else {
+
+			xadd2=mx;
+			zadd2=0;
+
+			if (!object_move_xz(obj,&xadd2,yadd,&zadd2)) {
+
+				xadd2=0;
+				zadd2=mz;
+				object_move_xz(obj,&xadd2,yadd,&zadd2);
+			}
+		}
+	}
+	
+	return(FALSE);
+}
+
+bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
+{
+	int					xadd2,yadd2,zadd2,
+						bump_y,lx,rx,lz,rz,hit_box_idx;
+	obj_type			*cnt_obj;
+	model_draw			*draw;
+	model_type			*model;
+
+		// attempt to move cleanly
+
+	xadd2=*xadd;
+	yadd2=*yadd;
+	zadd2=*zadd;
+
+	if (!object_move_xz(obj,&xadd2,&yadd2,&zadd2)) {
+		*xadd=xadd2;
+		*yadd=yadd2;
+		*zadd=zadd2;
+		return(FALSE);
+	}
+
+		// if wall hit, then find vector for wall
+		// that was hit and attempt to slide across
+		// the wall
+	
+	if (obj->contact.hit_poly.portal_idx!=-1) {
+
+		/* supergumba
+		wall=&map.segments[obj->contact.wall_seg_idx].data.wall;
+
+			// don't slide on walls that are bump up candidates
+
+		if (obj->bump.on) {
+			bump_y=obj->pos.y-wall->ty;
+			if ((bump_y>0) && (bump_y<=obj->bump.high)) return(TRUE);
+		}
+		
+			// slide against the angle of the wall
+			
+		return(object_move_xz_slide_line(obj,xadd,yadd,zadd,wall->lx,wall->rx,wall->lz,wall->rz));
+		*/
+
+		return(FALSE);
+	}
+
+		// if object hit, find the collision lines
+		// between the object and slide across that
+		// line
+
+	if (obj->contact.obj_uid==-1) return(TRUE);
+
+	cnt_obj=object_find_uid(obj->contact.obj_uid);
+	if (cnt_obj==NULL) return(FALSE);
+
+		// no hit box collisions
+
+	if (!cnt_obj->hit_box.on) {
+		if (!collide_object_to_object_slide(obj,*xadd,*zadd,cnt_obj,&lx,&rx,&lz,&rz)) return(TRUE);
+		return(object_move_xz_slide_line(obj,xadd,yadd,zadd,lx,rx,lz,rz));
+	}
+
+		// hit box collisions
+
+	hit_box_idx=obj->contact.hit_box_idx;
+	if (hit_box_idx==-1) return(TRUE);
+		
+	draw=&cnt_obj->draw;
+	if ((draw->uid==-1) || (!draw->on)) return(TRUE);
+	
+	model=model_find_uid(draw->uid);
+	if (model==NULL) return(TRUE);
+	
+		// check hit boxes
+		
+	if (!collide_object_to_object_hit_box_slide(obj,*xadd,*zadd,cnt_obj,&model->hit_boxes[hit_box_idx],&lx,&rx,&lz,&rz)) return(TRUE);
+	return(object_move_xz_slide_line(obj,xadd,yadd,zadd,lx,rx,lz,rz));
+}
+
+/* =======================================================
+
+      Flying, Swiming, Normal Movement Variants
+      
+======================================================= */
 
 void object_move_fly(obj_type *obj)
 {
-	int				xchg,zchg;
+	int				i_xmove,i_ymove,i_zmove,
+					xchg,zchg;
     float			xmove,zmove,ymove;
 
 		// get object motion
@@ -873,8 +950,12 @@ void object_move_fly(obj_type *obj)
 	zchg=obj->pos.z;
 	
         // moving x/z
+
+	i_xmove=(int)xmove;
+	i_ymove=(int)ymove;
+	i_zmove=(int)zmove;
 		
-	if (object_move_xz(obj,(int)xmove,(int)zmove)) {
+	if (object_move_xz(obj,&i_xmove,&i_ymove,&i_zmove)) {
 		object_to_object_push(obj,xmove,zmove);
 	}
 	
@@ -893,12 +974,13 @@ void object_move_fly(obj_type *obj)
 	
         // move Y
 
-	object_fly_y(obj,(int)ymove);
+	object_move_y_fly(obj,(int)ymove);
 }
 
 void object_move_swim(obj_type *obj)
 {
-    float			xmove,zmove,ymove,liq_speed_alter;
+	int				i_xmove,i_ymove,i_zmove;
+    float			xmove,ymove,zmove,liq_speed_alter;
 
 		// get object motion
 		
@@ -916,7 +998,7 @@ void object_move_swim(obj_type *obj)
 
 		// falling in water
 
-	if (ymove>=0) object_fall(obj);
+	if (ymove>=0) object_move_y_fall(obj);
 
 	if ((obj->air_mode==am_ground) || (ymove<0)) {
 		if (obj->force.vct.y>0) obj->force.vct.y=0;
@@ -925,7 +1007,11 @@ void object_move_swim(obj_type *obj)
 
         // moving x/z
 		
-	if (object_move_xz(obj,(int)xmove,(int)zmove)) {
+	i_xmove=(int)xmove;
+	i_ymove=(int)ymove;
+	i_zmove=(int)zmove;
+
+	if (object_move_xz(obj,&i_xmove,&i_ymove,&i_zmove)) {
 		object_to_object_push(obj,xmove,zmove);
 	}
 	
@@ -935,12 +1021,171 @@ void object_move_swim(obj_type *obj)
 	
         // move Y
 
-	object_fly_y(obj,(int)ymove);
+	object_move_y_fly(obj,i_ymove);
+}
+
+void object_move_normal(obj_type *obj)
+{
+	int				rn,x,z,xadd,yadd,zadd,
+					start_y,fall_damage;
+    float			xmove,zmove,ymove;
+	bool			old_falling;
+	d3pos			old_pos;
+
+		// get object motion
+		
+	object_motion_setup(obj,&xmove,&ymove,&zmove);
+	object_motion_slope_alter_movement(obj,&xmove,&zmove);
+	object_motion_lock(obj,&xmove,&ymove,&zmove);
+	object_motion_set_script_property(obj,xmove,ymove,zmove);
+
+		// save old settings
+
+	old_falling=(obj->air_mode==am_falling);
+	memmove(&old_pos,&obj->pos,sizeof(d3pos));
+
+		// get int version of movement
+
+	xadd=(int)xmove;
+	zadd=(int)zmove;
+
+		// move the object in y space at the projected
+		// x/z position
+		//
+		// we want to make sure that we move over land
+		// features before they get blocked by wall-like
+		// features in the map
+		//
+		// also, remember the y change and use that when
+		// running the x/z ray trace collisions to continue
+		// to avoid land features that might block foward
+		// movement
+
+	x=obj->pos.x+xadd;
+	z=obj->pos.z+zadd;
+
+	start_y=obj->pos.y;
+
+	rn=map_find_portal_hint(&map,obj->pos.rn,x,obj->pos.y,z);
+	if (rn==-1) return;
+
+	obj->pos.x=x;
+	obj->pos.z=z;
+
+	yadd=(int)ymove;
+
+	if (yadd<0) {
+		object_move_y_up(obj,yadd);
+	}
+	else {
+		object_move_y_fall(obj);
+		object_move_y_down(obj,yadd);
+	}
+
+	obj->pos.x-=xadd;
+	obj->pos.z-=zadd;
+
+		// add in the last y change. we use this
+		// information in the next move to help
+		// the object move over radically bumping
+		// ground
+		//
+		// we only use the y change in x/z movement
+		// if we are going up
+
+	yadd=(obj->pos.y-start_y)+obj->motion.last_y_change;
+	if (yadd>0) yadd=0;
+
+	obj->motion.last_y_change=obj->pos.y-start_y;
+
+		// if on ground, stop all downward motion
+		// and forces
+	
+	if (obj->air_mode==am_ground) {
+		if (obj->force.vct.y>0) obj->force.vct.y=0;
+		obj->force.gravity=gravity_start_power;
+	}
+
+		// now we move the object in x/z space
+		//
+		// we also add in the y movement into the
+		// collision detection to help eliminate
+		// land features that could hold up the
+		// object
+
+	while (TRUE) {
+		object_move_xz_slide(obj,&xadd,&yadd,&zadd);
+
+		obj->pos.x+=xadd;
+		obj->pos.z+=zadd;
+
+		if (!map_find_portal_by_pos(&map,&obj->pos)) {
+			xadd=zadd=0;
+			memmove(&obj->pos,&old_pos,sizeof(d3pos));
+		}
+
+			// objects pushing other objects
+
+		if ((xadd!=0) || (zadd!=0)) {
+			object_move_with_object(obj,xadd,zadd);
+		}
+			
+			// if bumped up, move again
+
+		if (object_bump_up(obj,xadd,zadd)) {
+			yadd=0;
+			continue;	
+		}
+
+		break;
+	}
+
+		// objects with automatic bouncing
+
+	object_move_xz_bounce(obj);
+	
+		// check for objects that have finished falling
+		//
+		// here we do any damage and send any landing
+		// events
+	
+    if (obj->air_mode!=am_falling) {
+    
+        if (old_falling) {
+            if (obj->fall.dist>map_enlarge) {
+			
+					// get damage
+					
+				if (obj->fall.dist>=obj->fall.damage_minimum_height) {
+					fall_damage=(int)(((float)(obj->fall.dist-obj->fall.damage_minimum_height))*obj->fall.damage_factor);
+					if (fall_damage!=0) object_damage(obj,NULL,NULL,NULL,NULL,fall_damage);
+				}
+				
+					// send the land events
+					
+                scripts_post_event_console(&obj->attach,sd_event_land,0,0);
+                object_post_move_animation_event(obj,sd_event_animation_object_land);
+            }
+        }
+        
+        obj->fall.dist=0;
+        obj->fall.change=FALSE;
+
+		return;
+	}
+	
+		// check for objects that have started falling
+	
+	if ((obj->fall.dist>map_enlarge) && (!obj->fall.change)) {
+		scripts_post_event_console(&obj->attach,sd_event_fall,0,0);
+		scripts_post_event_console(&obj->attach,sd_event_animation_object,sd_event_animation_object_fall,0);
+		obj->fall.change=TRUE;
+	}
 }
 
 /* =======================================================
 
-      Do Movement Mainline
+      Object Movement Mainline
       
 ======================================================= */
 
@@ -965,21 +1210,19 @@ void object_move(obj_type *obj)
 	}
 	else {
 		if (obj->liquid_mode==lm_under) {
-			object_move_swim_2(obj);
+			object_move_swim(obj);
 		}
 		else {
-		//	object_move_normal(obj);
-
-			object_move_normal_2(obj);		// supergumba -- NEW COLLIDE -- more collision edits
+			object_move_normal(obj);
 		}
 	}
 
 		// check for contacts
-		// on send contact event once per hit, and check for
+		// only send contact event once per hit, and check for
 		// ladder contacts.  If no contacts, only turn off
 		// ladder if there was actually movement
-/* supergumba
-	if (obj->contact.wall_seg_idx!=-1) {
+
+	if (obj->contact.hit_poly.portal_idx!=-1) {
 
 			// collide events
 
@@ -990,19 +1233,30 @@ void object_move(obj_type *obj)
 
 			// ladder check
 
-		obj->on_ladder=map.segments[obj->contact.wall_seg_idx].climbable;
+		obj->on_ladder=map.portals[obj->contact.hit_poly.portal_idx].mesh.meshes[obj->contact.hit_poly.mesh_idx].flag.climbable;
 	}
 	else {
 		obj->in_collide_event=FALSE;
 
 		if ((x!=obj->pos.x) && (y!=obj->pos.y) && (z!=obj->pos.z)) obj->on_ladder=FALSE;
 	}
-	*/
+}
+
+void object_move_remote(obj_type *obj)
+{
+	int			i_xmove,i_ymove,i_zmove;
+
+	i_xmove=(int)obj->motion.vct.x;
+	i_ymove=(int)obj->motion.vct.y;
+	i_zmove=(int)obj->motion.vct.z;
+
+	object_move_xz(obj,&i_xmove,&i_ymove,&i_zmove);
+	object_move_y(obj,i_ymove);
 }
 
 /* =======================================================
 
-      Stop Object Movement
+      Start/Stop Object Movement
       
 ======================================================= */
 
@@ -1028,12 +1282,15 @@ void object_move_stop(obj_type *obj)
 
 inline bool object_move_with_move(obj_type *obj,int xmove,int zmove)
 {
+	int			ymove;
+
 	if (obj->lock.x) xmove=0;
 	if (obj->lock.z) zmove=0;
 	
-	return(object_move_xz(obj,xmove,zmove));
+	return(object_move_xz(obj,&xmove,&ymove,&zmove));
 }
 
+// supergumba -- this all needs work
 bool object_move_with_wall_segment_check_wall(d3box *box,int seg_idx,int xmove,int zmove)
 {
 	int					lx,rx,lz,rz;
@@ -1123,85 +1380,5 @@ void object_move_with_object(obj_type *obj,int xmove,int zmove)
 			obj_check++;
 		}
 	}
-}
-
-/* =======================================================
-
-      Reset Object to Original Spot
-      
-======================================================= */
-
-void object_reset_prepare(obj_type *obj)
-{
-	memmove(&obj->org_pos,&obj->pos,sizeof(d3pos));
-	memmove(&obj->org_ang,&obj->ang,sizeof(d3ang));
-}
-
-void object_reset(obj_type *obj)
-{
-	memmove(&obj->pos,&obj->org_pos,sizeof(d3pos));
-	map_find_portal_by_pos(&map,&obj->pos);
-	
-	memmove(&obj->ang,&obj->org_ang,sizeof(d3ang));
-	obj->motion.ang.y=obj->turn.ang_to.y=obj->ang.y;
-}
-
-/* =======================================================
-
-      Objects Ducking/Standing Up
-      
-======================================================= */
-
-void object_duck(obj_type *obj)
-{
-    int			duck_mode,y_change;
-    
-    duck_mode=obj->duck.mode;
-    if ((duck_mode==dm_stand) || (duck_mode==dm_duck)) return;
-    
-    
-    if (duck_mode==dm_stand_up) {
-    
-        obj->duck.y_move-=obj->duck.y_add;
-        if (obj->duck.y_move>0) return;
-        
-        obj->duck.y_move=0;
-        obj->duck.mode=dm_stand;
-        object_post_move_animation_event(obj,sd_event_animation_object_standing);
-        return;
-    }
-    
-    if (duck_mode==dm_duck_down) {
-    
-        obj->duck.y_move+=obj->duck.y_add;
-        y_change=obj->duck.y_change;
-        if (obj->duck.y_move<y_change) return;
-        
-        obj->duck.y_move=y_change;
-        obj->duck.mode=dm_duck;
-        object_post_move_animation_event(obj,sd_event_animation_object_ducking);
-        return;
-    }
-}
-
-/* =======================================================
-
-      Objects Smooth Bumping
-      
-======================================================= */
-
-void object_fix_bump_smooth(obj_type *obj)
-{
-	int			k;
-	
-	if (obj->bump.smooth_offset==0) return;
-	
-		// slowly remove bump offset
-		
-	k=(int)(((float)obj->bump.smooth_offset)*obj->bump.smooth_factor);
-	if (k<10) k=10;
-	
-	obj->bump.smooth_offset-=k;
-	if (obj->bump.smooth_offset<0) obj->bump.smooth_offset=0;
 }
 

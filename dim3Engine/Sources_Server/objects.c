@@ -547,6 +547,27 @@ bool object_start_script(obj_type *obj,char *name,char *params,int bind,char *er
 
 /* =======================================================
 
+      Reset Object to Original Spawn Spot
+      
+======================================================= */
+
+void object_reset_prepare(obj_type *obj)
+{
+	memmove(&obj->org_pos,&obj->pos,sizeof(d3pos));
+	memmove(&obj->org_ang,&obj->ang,sizeof(d3ang));
+}
+
+void object_reset(obj_type *obj)
+{
+	memmove(&obj->pos,&obj->org_pos,sizeof(d3pos));
+	map_find_portal_by_pos(&map,&obj->pos);
+	
+	memmove(&obj->ang,&obj->org_ang,sizeof(d3ang));
+	obj->motion.ang.y=obj->turn.ang_to.y=obj->ang.y;
+}
+
+/* =======================================================
+
       Attaching Crosshairs
       
 ======================================================= */
