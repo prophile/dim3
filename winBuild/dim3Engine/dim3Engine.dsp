@@ -1427,10 +1427,6 @@ SOURCE=..\..\dim3Engine\Sources_View\segment_render_transparent.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_View\setup.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3Engine\Sources_View\shadow_draw.c
 # End Source File
 # Begin Source File

@@ -668,12 +668,10 @@ and can be sold or given away.
 
 #define sd_proj_hit_type_none							1000
 #define sd_proj_hit_type_object							1001
-#define sd_proj_hit_type_wall							1002
-#define sd_proj_hit_type_floor							1003
-#define sd_proj_hit_type_ceiling						1004
-#define sd_proj_hit_type_projectile						1005
-#define sd_proj_hit_type_melee							1006
-#define sd_proj_hit_type_auto							1007
+#define sd_proj_hit_type_mesh							1002
+#define sd_proj_hit_type_projectile						1003
+#define sd_proj_hit_type_melee							1004
+#define sd_proj_hit_type_auto							1005
 
 //
 // crosshair constants
@@ -714,16 +712,6 @@ and can be sold or given away.
 #define sd_light_type_pulse								1043
 #define sd_light_type_flicker							1044
 #define sd_light_type_failing							1045
-
-//
-// segment constants
-//
-
-#define sd_segment_type_wall							1050
-#define sd_segment_type_floor							1051
-#define sd_segment_type_ceiling							1052
-#define sd_segment_type_liquid							1053
-#define sd_segment_type_ambient							1054
 
 //
 // model constants

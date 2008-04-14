@@ -40,9 +40,7 @@ script_define_type			script_dim3_defines[]={
 									
 								{sd_proj_hit_type_none,							"",		"DIM3_PROJ_HIT_TYPE_NONE"},
 								{sd_proj_hit_type_object,						"",		"DIM3_PROJ_HIT_TYPE_OBJECT"},
-								{sd_proj_hit_type_wall,							"",		"DIM3_PROJ_HIT_TYPE_WALL"},
-								{sd_proj_hit_type_floor,						"",		"DIM3_PROJ_HIT_TYPE_FLOOR"},
-								{sd_proj_hit_type_ceiling,						"",		"DIM3_PROJ_HIT_TYPE_CEILING"},
+								{sd_proj_hit_type_mesh,							"",		"DIM3_PROJ_HIT_TYPE_MESH"},
 								{sd_proj_hit_type_projectile,					"",		"DIM3_PROJ_HIT_TYPE_PROJECTILE"},
 								{sd_proj_hit_type_melee,						"",		"DIM3_PROJ_HIT_TYPE_MELEE"},
 								{sd_proj_hit_type_auto,							"",		"DIM3_PROJ_HIT_TYPE_AUTO"},
@@ -71,12 +69,6 @@ script_define_type			script_dim3_defines[]={
 								{sd_light_type_flicker,							"",		"DIM3_LIGHT_TYPE_FLICKER"},
 								{sd_light_type_failing,							"",		"DIM3_LIGHT_TYPE_FAILING"},
 
-								{sd_segment_type_wall,							"",		"DIM3_SEGMENT_TYPE_WALL"},
-								{sd_segment_type_floor,							"",		"DIM3_SEGMENT_TYPE_FLOOR"},
-								{sd_segment_type_ceiling,						"",		"DIM3_SEGMENT_TYPE_CEILING"},
-								{sd_segment_type_liquid,						"",		"DIM3_SEGMENT_TYPE_LIQUID"},
-								{sd_segment_type_ambient,						"",		"DIM3_SEGMENT_TYPE_AMBIENT"},
-					
 								{sd_model_lit_flat,								"",		"DIM3_MODEL_LIT_FLAT"},
 								{sd_model_lit_hilite,							"",		"DIM3_MODEL_LIT_HILITE"},
 								{sd_model_lit_hilite_diffuse,					"",		"DIM3_MODEL_LIT_HILITE_DIFFUSE"},

@@ -43,7 +43,6 @@ JSBool js_map_group_get_center_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 JSBool js_map_group_set_show_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_group_set_solid_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_group_set_texture_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_group_set_texture_offset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_group_set_texture_shift_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_group_set_texture_alpha_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
@@ -57,12 +56,11 @@ JSFunctionSpec	map_group_functions[]={
 							{"moveOverTime",		js_map_group_move_over_time_func,		6},
 							{"moveOverTimeOn",		js_map_group_move_over_time_on_func,	1},
 							{"moveOverTimeFreeze",	js_map_group_move_over_time_freeze_func,1},
-							{"moveOverTimeThaw",	js_map_group_move_over_time_thaw_func,1},
+							{"moveOverTimeThaw",	js_map_group_move_over_time_thaw_func,	1},
 							{"getCenter",			js_map_group_get_center_func,			1},
 							{"setShow",				js_map_group_set_show_func,				2},
 							{"setSolid",			js_map_group_set_solid_func,			2},
 							{"setTexture",			js_map_group_set_texture_func,			2},
-							{"setTextureOffset",	js_map_group_set_texture_offset_func,	3},
 							{"setTextureShift",		js_map_group_set_texture_shift_func,	3},
 							{"setTextureAlpha",		js_map_group_set_texture_alpha_func,	2},
 							{0}};
@@ -71,7 +69,6 @@ extern void group_move(int group_idx,int xmove,int zmove,int ymove);
 extern void group_show(int group_idx,bool show);
 extern void group_solid(int group_idx,bool solid);
 extern void group_texture(int group_idx,int index);
-extern void group_texture_offset(int group_idx,float x_offset,float y_offset);
 extern void group_texture_shift(int group_idx,float x_shift,float y_shift);
 extern void group_texture_alpha(int group_idx,float alpha);
 
@@ -222,17 +219,6 @@ JSBool js_map_group_set_texture_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	if (group_idx==-1) return(JS_FALSE);
 
 	group_texture(group_idx,JSVAL_TO_INT(argv[1]));
-	return(JS_TRUE);
-}
-
-JSBool js_map_group_set_texture_offset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
-{
-	int				group_idx;
-	
-	group_idx=script_find_group_from_name(argv[0]);
-	if (group_idx==-1) return(JS_FALSE);
-
-	group_texture_offset(group_idx,script_value_to_float(argv[1]),script_value_to_float(argv[2]));
 	return(JS_TRUE);
 }
 

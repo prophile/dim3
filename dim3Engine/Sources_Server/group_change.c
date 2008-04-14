@@ -38,8 +38,6 @@ extern js_type			js;
 
 extern bool map_movement_next_move(int movement_idx,attach_type *attach);
 
-// supergumba -- rename this file
-
 /* =======================================================
 
       Find Groups
@@ -235,44 +233,60 @@ void group_moves_run(void)
 
 void group_show(int group_idx,bool show)
 {
-	/* supergumba
-	int				n;
-	short			*seg_list;
-	segment_type	*seg;
-	group_type		*group;
-	
+	int					n,unit_cnt;
+	group_type			*group;
+	group_unit_type		*unit_list;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+
 	group=&map.groups[group_idx];
-	seg_list=group->seg_list;
 	
-	for (n=0;n!=group->seg_count;n++) {
-		seg=&map.segments[*seg_list];
-		seg->on=show;
-		seg->touched=TRUE;
-		map_portal_set_segment_list_changes(&map,seg->rn);
-		seg_list++;
+	unit_cnt=group->unit_count;
+	unit_list=group->unit_list;
+	
+	for (n=0;n!=unit_cnt;n++) {
+
+		if (unit_list->type==group_type_mesh) {
+			unit_list++;
+			continue;
+		}
+
+		portal=&map.portals[unit_list->portal_idx];
+		mesh=&portal->mesh.meshes[unit_list->idx];
+
+		mesh->flag.on=show;
+
+		unit_list++;
 	}
-	*/
 }
 
 void group_solid(int group_idx,bool solid)
 {
-	/* supergumba
-	int				n;
-	short			*seg_list;
-	segment_type	*seg;
-	group_type		*group;
-	
+	int					n,unit_cnt;
+	group_type			*group;
+	group_unit_type		*unit_list;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+
 	group=&map.groups[group_idx];
-	seg_list=group->seg_list;
 	
-	for (n=0;n!=group->seg_count;n++) {
-		seg=&map.segments[*seg_list];
-		seg->pass_through=!solid;
-		seg->touched=TRUE;
-		map_portal_set_segment_list_changes(&map,seg->rn);
-		seg_list++;
+	unit_cnt=group->unit_count;
+	unit_list=group->unit_list;
+	
+	for (n=0;n!=unit_cnt;n++) {
+
+		if (unit_list->type==group_type_mesh) {
+			unit_list++;
+			continue;
+		}
+
+		portal=&map.portals[unit_list->portal_idx];
+		mesh=&portal->mesh.meshes[unit_list->idx];
+
+		mesh->flag.pass_through=!solid;
+
+		unit_list++;
 	}
-	*/
 }
 
 /* =======================================================
@@ -283,83 +297,107 @@ void group_solid(int group_idx,bool solid)
 
 void group_texture(int group_idx,int index)
 {
-	/* supergumba
-	int				n;
-	short			*seg_list;
-	segment_type	*seg;
-	group_type		*group;
-	
-	group=&map.groups[group_idx];
-	seg_list=group->seg_list;
-	
-	for (n=0;n!=group->seg_count;n++) {
-		seg=&map.segments[*seg_list];
-		seg->txt_offset=index;
-		seg->touched=TRUE;
-		seg_list++;
-	}
-	*/
-}
+	int					n,k,unit_cnt;
+	group_type			*group;
+	group_unit_type		*unit_list;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
 
-void group_texture_offset(int group_idx,float x_offset,float y_offset)
-{
-	/* supergumba
-	int				n;
-	short			*seg_list;
-	segment_type	*seg;
-	group_type		*group;
-	
 	group=&map.groups[group_idx];
-	seg_list=group->seg_list;
 	
-	for (n=0;n!=group->seg_count;n++) {
-		seg=&map.segments[*seg_list];
-		seg->x_txtoff=x_offset;
-		seg->y_txtoff=y_offset;
-		seg->touched=TRUE;
-		seg_list++;
+	unit_cnt=group->unit_count;
+	unit_list=group->unit_list;
+	
+	for (n=0;n!=unit_cnt;n++) {
+
+		if (unit_list->type==group_type_mesh) {
+			unit_list++;
+			continue;
+		}
+
+		portal=&map.portals[unit_list->portal_idx];
+		mesh=&portal->mesh.meshes[unit_list->idx];
+
+		poly=mesh->polys;
+
+		for (k=0;k!=mesh->npoly;k++) {
+			poly->draw.txt_frame_offset=index;
+			poly++;
+		}
+
+		unit_list++;
 	}
-	*/
 }
 
 void group_texture_shift(int group_idx,float x_shift,float y_shift)
 {
-	/* supergumba
-	int				n;
-	short			*seg_list;
-	segment_type	*seg;
-	group_type		*group;
-	
+	int					n,k,unit_cnt;
+	group_type			*group;
+	group_unit_type		*unit_list;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
 	group=&map.groups[group_idx];
-	seg_list=group->seg_list;
 	
-	for (n=0;n!=group->seg_count;n++) {
-		seg=&map.segments[*seg_list];
-		seg->x_shift=x_shift;
-		seg->y_shift=y_shift;
-		seg->touched=TRUE;
-		seg_list++;
+	unit_cnt=group->unit_count;
+	unit_list=group->unit_list;
+	
+	for (n=0;n!=unit_cnt;n++) {
+
+		if (unit_list->type==group_type_mesh) {
+			unit_list++;
+			continue;
+		}
+
+		portal=&map.portals[unit_list->portal_idx];
+		mesh=&portal->mesh.meshes[unit_list->idx];
+
+		poly=mesh->polys;
+
+		for (k=0;k!=mesh->npoly;k++) {
+			poly->x_shift=x_shift;
+			poly->y_shift=y_shift;
+			poly++;
+		}
+
+		unit_list++;
 	}
-	*/
 }
 
 void group_texture_alpha(int group_idx,float alpha)
 {
-	/* supergumba
-	int				n;
-	short			*seg_list;
-	segment_type	*seg;
-	group_type		*group;
-	
+	int					n,k,unit_cnt;
+	group_type			*group;
+	group_unit_type		*unit_list;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
 	group=&map.groups[group_idx];
-	seg_list=group->seg_list;
 	
-	for (n=0;n!=group->seg_count;n++) {
-		seg=&map.segments[*seg_list];
-		seg->alpha=alpha;
-		seg->touched=TRUE;
-		seg_list++;
+	unit_cnt=group->unit_count;
+	unit_list=group->unit_list;
+	
+	for (n=0;n!=unit_cnt;n++) {
+
+		if (unit_list->type==group_type_mesh) {
+			unit_list++;
+			continue;
+		}
+
+		portal=&map.portals[unit_list->portal_idx];
+		mesh=&portal->mesh.meshes[unit_list->idx];
+
+		poly=mesh->polys;
+
+		for (k=0;k!=mesh->npoly;k++) {
+			poly->alpha=alpha;
+			poly++;
+		}
+
+		unit_list++;
 	}
-	*/
 }
 

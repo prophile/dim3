@@ -285,14 +285,6 @@ SOURCE=..\..\dim3MapUtility\Sources\prepare_polygon.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3MapUtility\Sources\primitives.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3MapUtility\Sources\segments.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3MapUtility\Sources\spots.c
 # End Source File
 # End Group

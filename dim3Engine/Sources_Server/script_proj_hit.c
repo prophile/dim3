@@ -74,8 +74,7 @@ void script_add_proj_hit_object(JSObject *parent_obj)
 
 int js_get_proj_hit_type(proj_type *proj)
 {
-	int					portal_idx,mesh_idx,poly_idx;
-	map_mesh_poly_type	*mesh_poly;
+	int					portal_idx;
 
 		// check auto hits
 		
@@ -97,16 +96,7 @@ int js_get_proj_hit_type(proj_type *proj)
 	portal_idx=proj->contact.hit_poly.portal_idx;
 	if (portal_idx==-1) return(sd_proj_hit_type_none);
 
-	mesh_idx=proj->contact.hit_poly.mesh_idx;
-	poly_idx=proj->contact.hit_poly.poly_idx;
-
-	mesh_poly=&map.portals[portal_idx].mesh.meshes[mesh_idx].polys[poly_idx];
-	
-	if (mesh_poly->box.common_xz) return(sd_proj_hit_type_wall);
-
-	if (mesh_poly->box.mid.y<proj->pos.y) return(sd_proj_hit_type_ceiling);
-		
-	return(sd_proj_hit_type_floor);
+	return(sd_proj_hit_type_mesh);
 }
 
 void js_get_proj_hit_name(proj_type *proj,int hit_type,char *name)
