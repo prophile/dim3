@@ -26,13 +26,9 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// Constants
+// constants
 //
 
-extern char segment_type_str[][32];
-extern char segment_clip_str[][32];
-extern char segment_curve_str[][32];
-extern char segment_push_str[][32];
 extern char light_type_str[][32];
 
 //
@@ -715,7 +711,6 @@ typedef struct		{
 extern void map_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int texture_quality_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression);
 extern bool map_new(map_type *map,char *name);
 extern bool map_open(map_type *map,char *name,bool load_bitmaps,bool setup_glowmaps,bool load_shaders);
-extern bool map_open_primitive(map_type *map,char *path);
 extern bool map_reload(map_type *map);
 extern bool map_save(map_type *map);
 extern void map_close(map_type *map);
@@ -772,10 +767,6 @@ extern int map_find_nearest_node(map_type *map,int x,int y,int z,int user_value,
 extern int map_find_next_node_in_path(map_type *map,int from_idx,int to_idx);
 extern int map_node_to_node_distance(map_type *map,int from_idx,int to_idx);
 
-extern int map_primitive_create_uid(map_type *map);
-extern void map_primitive_push_uid(segment_type *seg,int primitive_uid);
-extern void map_primitive_pop_uid(segment_type *seg);
-
 extern int map_portal_mesh_add(map_type *map,int portal_idx);
 extern bool map_portal_mesh_delete(map_type *map,int portal_idx,int mesh_idx);
 extern bool map_portal_mesh_set_vertex_count(map_type *map,int portal_idx,int mesh_idx,int nvertex);
@@ -804,14 +795,6 @@ extern void map_portal_liquid_calculate_center(map_type *map,int portal_idx,int 
 
 extern int map_portal_liquid_switch_portal(map_type *map,int portal_idx,int liquid_idx,int new_portal_idx);
 extern void map_portal_liquid_move(map_type *map,int portal_idx,int liquid_idx,int x,int y,int z);
-
-extern int map_segment_group_find_name(map_type *map,char *name);
-extern void map_segment_move(map_type *map,segment_type *seg,int x,int y,int z);
-extern void map_segment_calculate_extent(map_type *map,int seg_idx,int *min_x,int *min_z,int *min_y,int *max_x,int *max_z,int *max_y);
-extern void map_segment_calculate_center(map_type *map,int seg_idx,int *x,int *y,int *z);
-extern void map_segments_clear_touch(map_type *map);
-extern int map_segments_count_touch(map_type *map);
-extern void map_segment_reset_texture_uvs(map_type *map,segment_type *seg);
 
 extern bool map_group_create_unit_list(map_type *map);
 extern void map_group_dispose_unit_list(map_type *map);

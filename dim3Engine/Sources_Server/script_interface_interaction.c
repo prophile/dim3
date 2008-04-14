@@ -176,7 +176,7 @@ JSBool js_interface_interaction_start_save_load_func(JSContext *cx,JSObject *j_o
 
 JSBool js_interface_interaction_start_setup_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	setup_trigger_set();
+	setup_game_trigger_set();
 	return(JS_TRUE);
 }
 

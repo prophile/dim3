@@ -30,7 +30,8 @@ and can be sold or given away.
 #include "common_view.h"
 #include "portal_view.h"
 
-#define import_obj_resize		400.0f
+#define import_obj_float_to_int			1000.0f
+#define import_obj_max_dimension		(map_enlarge*20)
 
 extern int						cr,cy,drag_mode;
 extern bool						dp_object,dp_node,dp_lightsoundparticle;
@@ -47,10 +48,11 @@ extern map_type					map;
 int piece_import_mesh(char *name,int mx,int my,int mz)
 {
 	int					n,k,nline,nvertex,npoly,npt,vt_start_idx,uv_idx,
-						mesh_idx,x,y,z,
+						mesh_idx,x,y,z,sz,
 						min_x,max_x,min_y,max_y,min_z,max_z;
 	char				path[1024],
 						*c,txt[256],vstr[256],uvstr[256];
+	float				scale;
 	bool				mesh_ok,mesh_delete;
 	d3pnt				*dpt;
 	portal_type			*portal;
@@ -86,11 +88,11 @@ int piece_import_mesh(char *name,int mx,int my,int mz)
 			nvertex++;
 			
 			textdecode_get_piece(n,1,txt);
-			x=(int)(strtod(txt,NULL)*import_obj_resize);
+			x=(int)(strtod(txt,NULL)*import_obj_float_to_int);
 			textdecode_get_piece(n,2,txt);
-			y=(int)(strtod(txt,NULL)*import_obj_resize);
+			y=(int)(strtod(txt,NULL)*import_obj_float_to_int);
 			textdecode_get_piece(n,3,txt);
-			z=(int)(strtod(txt,NULL)*import_obj_resize);
+			z=(int)(strtod(txt,NULL)*import_obj_float_to_int);
 			
 			if (x<min_x) min_x=x;
 			if (x>max_x) max_x=x;
@@ -156,6 +158,16 @@ int piece_import_mesh(char *name,int mx,int my,int mz)
 	
 	mesh=&portal->mesh.meshes[mesh_idx];
 	
+		// scale the import
+		
+	sz=max_x-min_x;
+	if ((max_y-min_y)>sz) sz=max_y-min_y;
+	if ((max_z-min_z)>sz) sz=max_z-min_z;
+	
+	scale=1.0f;
+	
+	if (sz>import_obj_max_dimension) scale=(float)import_obj_max_dimension/(float)sz;
+	
 		// get the vertexes
 
  	dpt=mesh->vertexes;
@@ -166,13 +178,16 @@ int piece_import_mesh(char *name,int mx,int my,int mz)
 		if (strcmp(txt,"v")!=0) continue;
                 
 		textdecode_get_piece(n,1,txt);
-		dpt->x=((int)(strtod(txt,NULL)*import_obj_resize)-min_x)+mx;
+		dpt->x=((int)(strtod(txt,NULL)*import_obj_float_to_int)-min_x);
+		dpt->x=(int)((float)dpt->x*scale)+mx;
 		
 		textdecode_get_piece(n,2,txt);
-		dpt->y=-((int)(strtod(txt,NULL)*import_obj_resize)-min_y)+my;
+		dpt->y=-((int)(strtod(txt,NULL)*import_obj_float_to_int)-min_y);
+		dpt->y=(int)((float)dpt->y*scale)+my;
 		
 		textdecode_get_piece(n,3,txt);
-		dpt->z=-((int)(strtod(txt,NULL)*import_obj_resize)-min_z)+mz;
+		dpt->z=-((int)(strtod(txt,NULL)*import_obj_float_to_int)-min_z);
+		dpt->z=(int)((float)dpt->z*scale)+mz;
         
 		dpt++;
     }
@@ -192,7 +207,7 @@ int piece_import_mesh(char *name,int mx,int my,int mz)
 		if (poly->txt_idx==-1) poly->txt_idx=0;
 		
 		poly->x_shift=poly->y_shift=0.0f;
-		poly->dark_factor=0.0f;
+		poly->dark_factor=1.0f;
 		poly->alpha=1.0f;
 
             // get the face points
@@ -260,6 +275,8 @@ void piece_add_library_mesh(void)
 {
 	int					mesh_idx,mx,my,mz;
 	
+	if (!piece_create_texture_ok()) return;
+	
 		// get import location
 		
 	map_portal_calculate_center(&map,cr,&mx,&my,&mz);
@@ -301,6 +318,10 @@ void piece_replace_library_mesh(void)
 	
 	select_get(0,&type,&portal_idx,&mesh_idx,&poly_idx);
 	if ((type!=mesh_piece) || (portal_idx!=cr)) return;
+	
+		// any textures?
+		
+	if (!piece_create_texture_ok()) return;
 	
 		// remember size
 		

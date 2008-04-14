@@ -134,7 +134,7 @@ void import_height_map_fix_segments_fill(import_height_map_settings_type *hmi_se
 				break;
 				
 			case sg_floor:
-				map_segment_calculate_center(&map,i,&x,&y,&z);
+			//	map_segment_calculate_center(&map,i,&x,&y,&z);		// supergumba -- all needs work
 				
 				switch (abs(y-hmi_settings->portal_ty)/high) {
 					case 0:
@@ -225,16 +225,16 @@ void map_import_height_map(import_height_map_settings_type *hmi_settings)
 					cr=rn;
 					
 					if (hmi_settings->import_type==hm_import_quads) {
-						segment_add_floor_quad(lx,tz,y[0],rx,tz,y[1],rx,bz,y[2],lx,bz,y[3],-1,FALSE);
+					//	segment_add_floor_quad(lx,tz,y[0],rx,tz,y[1],rx,bz,y[2],lx,bz,y[3],-1,FALSE);
 					}
 					else {
 						if (((sx+sz)&0x1)!=0) {
-							segment_add_floor_trig(lx,tz,y[0],rx,tz,y[1],rx,bz,y[2],-1,FALSE);
-							segment_add_floor_trig(lx,tz,y[0],rx,bz,y[2],lx,bz,y[3],-1,FALSE);
+						//	segment_add_floor_trig(lx,tz,y[0],rx,tz,y[1],rx,bz,y[2],-1,FALSE);
+						//	segment_add_floor_trig(lx,tz,y[0],rx,bz,y[2],lx,bz,y[3],-1,FALSE);
 						}
 						else {
-							segment_add_floor_trig(lx,tz,y[0],rx,tz,y[1],lx,bz,y[3],-1,FALSE);
-							segment_add_floor_trig(rx,tz,y[1],rx,bz,y[2],lx,bz,y[3],-1,FALSE);
+						//	segment_add_floor_trig(lx,tz,y[0],rx,tz,y[1],lx,bz,y[3],-1,FALSE);
+						//	segment_add_floor_trig(rx,tz,y[1],rx,bz,y[2],lx,bz,y[3],-1,FALSE);		// supergumba -- work on
 						}
 					}
 				}

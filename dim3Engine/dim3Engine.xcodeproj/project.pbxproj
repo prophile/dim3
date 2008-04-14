@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2657380E0DB07F650061E1B4 /* setup_network.c in Sources */ = {isa = PBXBuildFile; fileRef = 2657380C0DB07F650061E1B4 /* setup_network.c */; };
+		2657380F0DB07F650061E1B4 /* setup_game.c in Sources */ = {isa = PBXBuildFile; fileRef = 2657380D0DB07F650061E1B4 /* setup_game.c */; };
 		265B377D0D7F8D3A004AE124 /* group_change.c in Sources */ = {isa = PBXBuildFile; fileRef = 265B377C0D7F8D3A004AE124 /* group_change.c */; };
 		265B377F0D7F8D58004AE124 /* script_map_group.c in Sources */ = {isa = PBXBuildFile; fileRef = 265B377E0D7F8D58004AE124 /* script_map_group.c */; };
 		26A4B6440DAF028100E40F35 /* net_host_broadcast.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A4B6430DAF028100E40F35 /* net_host_broadcast.c */; };
@@ -304,7 +306,6 @@
 		F5DD1A8209085BC600721649 /* join.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A7909085BC600721649 /* join.c */; };
 		F5DD1A8309085BC600721649 /* menu_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A7A09085BC600721649 /* menu_draw.c */; };
 		F5DD1A8409085BC600721649 /* movie.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A7B09085BC600721649 /* movie.c */; };
-		F5DD1A8509085BC600721649 /* setup.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A7C09085BC600721649 /* setup.c */; };
 		F5DD1A8609085BC600721649 /* story.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A7D09085BC600721649 /* story.c */; };
 		F5DD1A8709085BC600721649 /* title.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A7E09085BC600721649 /* title.c */; };
 		F5DD1A8C09085C2500721649 /* cursor.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A8809085C2500721649 /* cursor.c */; };
@@ -387,6 +388,8 @@
 		00CA825D00BF848B7F000001 /* dim3 Engine.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "dim3 Engine.icns"; path = "Resources/dim3 Engine.icns"; sourceTree = "<group>"; };
 		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		2657380C0DB07F650061E1B4 /* setup_network.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = setup_network.c; path = Sources_View/setup_network.c; sourceTree = "<group>"; };
+		2657380D0DB07F650061E1B4 /* setup_game.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = setup_game.c; path = Sources_View/setup_game.c; sourceTree = "<group>"; };
 		265B377C0D7F8D3A004AE124 /* group_change.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = group_change.c; path = Sources_Server/group_change.c; sourceTree = "<group>"; };
 		265B377E0D7F8D58004AE124 /* script_map_group.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_map_group.c; path = Sources_Server/script_map_group.c; sourceTree = "<group>"; };
 		26A4B6430DAF028100E40F35 /* net_host_broadcast.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host_broadcast.c; path = Sources_Network/net_host_broadcast.c; sourceTree = "<group>"; };
@@ -678,7 +681,6 @@
 		F5DD1A7909085BC600721649 /* join.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = join.c; path = Sources_View/join.c; sourceTree = "<group>"; };
 		F5DD1A7A09085BC600721649 /* menu_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = menu_draw.c; path = Sources_View/menu_draw.c; sourceTree = "<group>"; };
 		F5DD1A7B09085BC600721649 /* movie.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = movie.c; path = Sources_View/movie.c; sourceTree = "<group>"; };
-		F5DD1A7C09085BC600721649 /* setup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = setup.c; path = Sources_View/setup.c; sourceTree = "<group>"; };
 		F5DD1A7D09085BC600721649 /* story.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = story.c; path = Sources_View/story.c; sourceTree = "<group>"; };
 		F5DD1A7E09085BC600721649 /* title.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = title.c; path = Sources_View/title.c; sourceTree = "<group>"; };
 		F5DD1A8809085C2500721649 /* cursor.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cursor.c; path = Sources_View/cursor.c; sourceTree = "<group>"; };
@@ -1326,7 +1328,8 @@
 			isa = PBXGroup;
 			children = (
 				F5DD1A7809085BC600721649 /* intro.c */,
-				F5DD1A7C09085BC600721649 /* setup.c */,
+				2657380D0DB07F650061E1B4 /* setup_game.c */,
+				2657380C0DB07F650061E1B4 /* setup_network.c */,
 				F5DD1A7709085BC600721649 /* files.c */,
 				F5DD1A7909085BC600721649 /* join.c */,
 				26D109600DAC797D006666F2 /* host.c */,
@@ -1714,7 +1717,6 @@
 				F5DD1A8209085BC600721649 /* join.c in Sources */,
 				F5DD1A8309085BC600721649 /* menu_draw.c in Sources */,
 				F5DD1A8409085BC600721649 /* movie.c in Sources */,
-				F5DD1A8509085BC600721649 /* setup.c in Sources */,
 				F5DD1A8609085BC600721649 /* story.c in Sources */,
 				F5DD1A8709085BC600721649 /* title.c in Sources */,
 				F5DD1A8C09085C2500721649 /* cursor.c in Sources */,
@@ -1929,6 +1931,8 @@
 				26A4B6440DAF028100E40F35 /* net_host_broadcast.c in Sources */,
 				26A4B6490DAF02D800E40F35 /* net_join_client.c in Sources */,
 				26A4B6910DAF054900E40F35 /* net_join_client_message.c in Sources */,
+				2657380E0DB07F650061E1B4 /* setup_network.c in Sources */,
+				2657380F0DB07F650061E1B4 /* setup_game.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

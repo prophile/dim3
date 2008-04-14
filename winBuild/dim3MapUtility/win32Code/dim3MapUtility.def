@@ -1,11 +1,7 @@
 LIBRARY      "dim3MapUtility"
 
 EXPORTS
-	segment_type_str								@100
-	segment_clip_str								@101
-	segment_curve_str								@102
-	segment_push_str								@103
-	light_type_str									@104
+	light_type_str									@100
 
 	map_count_texture_frames						@110
 	map_setup_animated_textures						@111
@@ -85,18 +81,6 @@ EXPORTS
 	map_portal_liquid_switch_portal					@245
 	map_portal_liquid_move							@246
 
-	map_primitive_create_uid						@250
-	map_primitive_push_uid							@251
-	map_primitive_pop_uid							@252
-
-	map_segment_group_find_name						@260
-	map_segment_move								@261
-	map_segment_calculate_extent					@262
-	map_segment_calculate_center					@263
-	map_segments_clear_touch						@264
-	map_segments_count_touch						@265
-	map_segment_reset_texture_uvs					@266
-
 	map_group_create_unit_list						@270
 	map_group_dispose_unit_list						@271
 	map_group_get_center							@272
@@ -110,7 +94,6 @@ EXPORTS
 	map_setup										@290
 	map_new											@291
 	map_open										@292
-	map_open_primitive								@293
 	map_reload										@294
 	map_save										@295
 	map_close										@296

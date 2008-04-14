@@ -983,7 +983,7 @@ void map_auto_generate_ramps(map_type *map)
 
 				// make ramps a primitive
 
-			primitive_uid=map_primitive_create_uid(map);
+	//		primitive_uid=map_primitive_create_uid(map);		// supergumba -- fix this
 			
 				// portals touching top
 				
@@ -1742,7 +1742,7 @@ void map_auto_generate_corridor_to_portal_steps_single(map_type *map,int rn,int 
 
 		// make steps a primitive
 
-	primitive_uid=map_primitive_create_uid(map);
+//	primitive_uid=map_primitive_create_uid(map);		// supergumba -- fix this!
 	map_auto_generate_segment_start(-1,primitive_uid,ag_settings.texture.steps,FALSE);
 
 		// create steps
@@ -1884,7 +1884,7 @@ void map_auto_generate_doors(map_type *map)
 		
 			// create new primitive
 		
-		primitive_uid=map_primitive_create_uid(map);
+//		primitive_uid=map_primitive_create_uid(map);		// supergumba -- fix this
 		
 			// start segments
 			
@@ -2189,10 +2189,6 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 		// create the map
 
 	map_auto_generate(map,&ags);
-
-		// clear all save touches
-
-	map_segments_clear_touch(map);
 
 	return(TRUE);
 }

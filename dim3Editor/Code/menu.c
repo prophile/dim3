@@ -450,10 +450,6 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			if (menu_delete_portal_dialog()) portal_delete();
             return(noErr);
             
-		case kCommandResetTextureSize:
-			portal_reset_texture_uvs();
-			return(noErr);
-
 		case kCommandPortalGoToTop:
 			walk_view_portal_go_to_top();
 			return(noErr);

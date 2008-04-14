@@ -77,7 +77,6 @@ and can be sold or given away.
 #define kCommandPortalSettings				FOUR_CHAR_CODE('rset')
 #define kCommandPortalDuplicate				FOUR_CHAR_CODE('rdup')
 #define kCommandPortalDelete				FOUR_CHAR_CODE('rdel')
-#define kCommandResetTextureSize			FOUR_CHAR_CODE('rtsz')
 #define kCommandPortalGoToTop				FOUR_CHAR_CODE('topp')
 #define kCommandPortalGoToBottom			FOUR_CHAR_CODE('botp')
 #define kCommandPortalGoToSelection			FOUR_CHAR_CODE('selp')

@@ -105,15 +105,6 @@ void select_move(int rn,int xadd,int zadd,int yadd)
 
 		switch (type) {
 		
-			case segment_piece:
-				if (vertex_mode==vm_lock) vertexes_move_similiar_to_segment(&map.segments[index],xadd,yadd,zadd);
-				segment_move(&map.segments[index],xadd,zadd,yadd);
-				break;
-				
-			case primitive_piece:
-				primitive_move(map.segments[index].primitive_uid[0],xadd,zadd,yadd);
-				break;
-				
 			case node_piece:
 				map.nodes[index].pos.x-=xadd;
 				map.nodes[index].pos.z-=zadd;

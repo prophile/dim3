@@ -191,7 +191,7 @@ bool import_obj_create_segments(char *path,char *err_str)
 			// create the segment
 			
 		seg=&map.segments[map.nsegment];
-		segment_clear(seg,sg_wall,-1);
+	//	segment_clear(seg,sg_wall,-1);
 		
 		if (import_obj_segment_type(npt,pvtx,seg)) {
 			map.nsegment++;
@@ -435,12 +435,12 @@ void import_obj_fix_segment_portal(void)
 		
 			// move segment into correct portal
 			
-		map_segment_calculate_center(&map,i,&x,&y,&z);
+	//	map_segment_calculate_center(&map,i,&x,&y,&z);	// supergumba -- all needs work
 		rn=map_find_portal(&map,x,y,z);
 		
 		seg->rn=rn;
 		portal=&map.portals[rn];
-		segment_move(seg,portal->x,portal->z,0);
+	//	segment_move(seg,portal->x,portal->z,0);
 		
 			// clean out other segment values
 			

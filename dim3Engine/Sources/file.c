@@ -255,11 +255,10 @@ void game_file_create_name(int tick,char *file_name)
 
 bool game_file_save(char *err_str)
 {
-	int					n,tick,seg_idx,ntouch_segment;
+	int					tick;
 	char				path[1024],file_name[256];
 	bool				ok;
 	file_save_header	head;
-	segment_type		*seg;
 	
 	progress_initialize("Saving");
 	progress_draw(5);
@@ -340,6 +339,7 @@ bool game_file_save(char *err_str)
 	game_file_add_chunk(&map.sky,sizeof(map_sky_type));
 	game_file_add_chunk(&map.fog,sizeof(map_fog_type));
 	
+	/* supergumba -- fix this all up
 	ntouch_segment=map_segments_count_touch(&map);
 	
 	game_file_add_chunk(&ntouch_segment,sizeof(int));
@@ -354,6 +354,7 @@ bool game_file_save(char *err_str)
 		}
 		seg++;
 	}
+	*/
 	
 	game_file_add_chunk(map.movements,sizeof(movement_type)*map.nmovement);
 	

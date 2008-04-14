@@ -499,10 +499,140 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		mpt.z=mz;
 		
 		walk_view_click_grid(&mpt);
+		walk_view_click_snap(portal_idx,mesh_idx,vertex_idx,&old_dpt,&mpt);	
 		
 		dpt->x=old_dpt.x+mpt.x;
 		dpt->y=old_dpt.y+mpt.y;
 		dpt->z=old_dpt.z+mpt.z;
+
+        main_wind_draw();
+		
+	} while (track!=kMouseTrackingMouseReleased);
+	
+	InitCursor();
+	
+	return(!first_drag);
+}
+
+/* =======================================================
+
+      Drag Liquid Vertex
+      
+======================================================= */
+
+bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+{
+	int						n,x,y,z,mx,my,mz,xadd,zadd,yadd,hit_z,sz,
+							px[4],py[4],pz[4],
+							type,portal_idx,liquid_idx,sub_idx,vertex_idx;
+	d3pnt					old_pt,old_dpt,mpt;
+	Point					uipt;
+	bool					first_drag;
+	MouseTrackingResult		track;
+	portal_type				*portal;
+	map_liquid_type			*liq;
+	
+    if (select_count()!=1) return(FALSE);
+	
+	select_get(0,&type,&portal_idx,&liquid_idx,&sub_idx);
+	if (type!=liquid_piece) return(FALSE);
+	
+		// check for clicking points
+
+	portal=&map.portals[portal_idx];
+	liq=&portal->liquid.liquids[liquid_idx];
+	
+	walk_view_draw_select_liquid_get_grow_handles(portal_idx,liquid_idx,px,py,pz);
+		
+	vertex_idx=-1;
+	hit_z=100000;
+
+	sz=(int)(walk_view_handle_size/2);
+	
+	for (n=0;n!=4;n++) {
+		x=(px[n]+portal->x)-view_setup->cpt.x;
+		y=py[n]-view_setup->cpt.y;
+		z=view_setup->cpt.z-(pz[n]+portal->z);
+		
+		if (!walk_view_click_rotate_polygon_behind_z(x,y,z)) {
+			walk_view_click_project_point(&view_setup->box,&x,&y,&z);
+			
+			if ((pt->x>=(x-sz)) && (pt->x<=(x+sz)) && (pt->y>=(y-sz)) && (pt->y<=(y+sz))) {
+				if (z<hit_z) {
+					hit_z=z;
+					vertex_idx=n;
+				}
+			}
+		}
+	}
+
+    if (vertex_idx==-1) return(FALSE);
+	
+		// drag liquid vertex
+	
+    if (!Button()) return(FALSE);
+
+	first_drag=TRUE;
+	
+	old_dpt.x=px[vertex_idx];
+	old_dpt.y=py[vertex_idx];
+	old_dpt.z=pz[vertex_idx];
+	
+	memmove(&old_pt,pt,sizeof(d3pnt));
+	
+	mx=my=mz=0;
+	
+	do {
+		TrackMouseLocation(NULL,&uipt,&track);
+		pt->x=uipt.h-view_setup->box.left;
+		pt->y=uipt.v-view_setup->box.top;
+		
+		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
+		
+		x=old_pt.x-pt->x;
+		y=old_pt.y-pt->y;
+		
+		memmove(&old_pt,pt,sizeof(d3pnt));
+		
+			// turn on drag cursor
+			
+		if (first_drag) {
+			SetCCursor(dragcur);
+			first_drag=FALSE;
+		}
+		
+			// move vertex (never on Y)
+
+		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
+			
+		mx+=xadd;
+		my=liq->y;
+		mz+=zadd;
+		
+		mpt.x=mx;
+		mpt.y=my;
+		mpt.z=mz;
+		
+		walk_view_click_grid(&mpt);
+		
+		switch (vertex_idx) {
+			case 0:
+				liq->lft=old_dpt.x+mpt.x;
+				liq->top=old_dpt.z+mpt.z;
+				break;
+			case 1:
+				liq->rgt=old_dpt.x+mpt.x;
+				liq->top=old_dpt.z+mpt.z;
+				break;
+			case 2:
+				liq->rgt=old_dpt.x+mpt.x;
+				liq->bot=old_dpt.z+mpt.z;
+				break;
+			case 3:
+				liq->lft=old_dpt.x+mpt.x;
+				liq->bot=old_dpt.z+mpt.z;
+				break;
+		}
 
         main_wind_draw();
 		

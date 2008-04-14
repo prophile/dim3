@@ -34,6 +34,8 @@ and can be sold or given away.
 #include "weapons.h"
 #include "interfaces.h"
 
+extern int group_find_by_index(char *name);
+
 extern map_type			map;
 extern js_type			js;
 
@@ -170,7 +172,7 @@ int script_find_group_from_name(jsval arg)
 	char			name[name_str_len];
 	
 	script_value_to_string(arg,name,name_str_len);
-	idx=map_segment_group_find_name(&map,name);
+	idx=group_find_by_index(name);
 	if (idx==-1) {
 		JS_ReportError(js.cx,"No segment group exists with the name: %s",name);
 		return(-1);

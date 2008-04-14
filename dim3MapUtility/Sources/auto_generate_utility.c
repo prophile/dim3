@@ -232,7 +232,7 @@ void map_auto_generate_fix_segments_uv(map_type *map)
 	seg=map->segments;
 	
 	for (i=0;i!=map->nsegment;i++) {
-		map_segment_reset_texture_uvs(map,seg);
+	//	map_segment_reset_texture_uvs(map,seg);		// supergumba -- fix!
 		seg++;
 	}
 }
@@ -581,7 +581,7 @@ void map_auto_generate_add_player_spot(map_type *map)
 		// spot place
 
 	if (seg_idx!=-1) {
-		map_segment_calculate_center(map,seg_idx,&x,&y,&z);
+//		map_segment_calculate_center(map,seg_idx,&x,&y,&z);		// supergumba -- fix all this
 	}
 	else {
 		map_portal_calculate_center(map,0,&x,&y,&z);

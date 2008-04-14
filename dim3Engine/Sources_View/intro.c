@@ -51,7 +51,8 @@ and can be sold or given away.
 extern bool game_start(int skill,int remote_count,network_request_remote_add *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
 extern void file_open(void);
-extern void setup_open(bool in_game);
+extern void setup_game_open(bool in_game);
+extern void setup_network_open(void);
 extern void title_set_open(char *dir,char *name,char *sound_name,bool show_view);
 extern void join_open(void);
 extern void host_open(void);
@@ -329,7 +330,7 @@ void intro_click(void)
 
 		case intro_button_game_setup_id:
 			intro_close(FALSE,FALSE);
-			setup_open(FALSE);
+			setup_game_open(FALSE);
 			break;
 
 		case intro_button_multiplayer_id:
@@ -345,7 +346,7 @@ void intro_click(void)
 
 		case intro_button_multiplayer_setup_id:
 			intro_close(FALSE,FALSE);
-			setup_open(FALSE);
+			setup_network_open();
 			break;
 			
 		case intro_button_credit_id:

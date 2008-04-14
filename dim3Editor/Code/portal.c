@@ -107,7 +107,7 @@ bool portal_new(void)
 	d3pnt			min,max;
     portal_type		*portal;
 	
-	if (!segment_create_texture_ok()) return(FALSE);
+	if (!piece_create_texture_ok()) return(FALSE);
     
 	if (map.nportal==max_portal) {
 		StandardAlert(kAlertCautionAlert,"\pCan not create portal","\pYou've reached the maximum number of portals for a map.",NULL,NULL);
@@ -158,8 +158,6 @@ bool portal_new(void)
 	}
 	
 		// finish
-		
-    portal_reset_texture_uvs();
 
 	main_wind_draw();
 	menu_fix_enable();
@@ -274,9 +272,7 @@ void portal_move_all_items(int rn,int x,int y,int z)
 	auto_txt_save=dp_auto_texture;
 	dp_auto_texture=FALSE;
 	
-	for (n=0;n!=map.nsegment;n++) {
-		if (map.segments[n].rn==rn) segment_move(&map.segments[n],x,z,y);
-	}
+	// supergumba -- move all meshes and liquids
 	
 	dp_auto_texture=auto_txt_save;
 		
@@ -309,6 +305,14 @@ void portal_move_all_items(int rn,int x,int y,int z)
 			map.lights[n].pos.x-=x;
 			map.lights[n].pos.y-=y;
 			map.lights[n].pos.z-=z;
+		}
+    }
+	
+    for (n=0;n!=map.nparticle;n++) {
+        if (map.particles[n].pos.rn==rn)  {
+			map.particles[n].pos.x-=x;
+			map.particles[n].pos.y-=y;
+			map.particles[n].pos.z-=z;
 		}
     }
 	

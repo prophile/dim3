@@ -281,8 +281,6 @@ bool map_open(map_type *map,char *name,bool load_bitmaps,bool setup_glowmaps,boo
 	
 	if (!read_map_xml(map)) return(FALSE);
 
-	map_segments_clear_touch(map);		// supergumba -- needs to be mesh touch
-
 	if (load_bitmaps) {
 		if (!map_textures_read(map)) return(FALSE);
 		if (setup_glowmaps) if (!map_textures_setup_glowmaps(map)) return(FALSE);
@@ -295,17 +293,6 @@ bool map_open(map_type *map,char *name,bool load_bitmaps,bool setup_glowmaps,boo
 	return(TRUE);
 }
 
-// supergumba -- can delete later
-bool map_open_primitive(map_type *map,char *path)
-{
-	if (!map_new(map,"Primitives")) return(FALSE);
-	
-	strcpy(map->info.name,"Primitives");
-	strcpy(map->info.load_path,path);
-	
-	return(read_map_xml(map));
-}
-
 /* =======================================================
 
       Reload Maps
@@ -315,7 +302,6 @@ bool map_open_primitive(map_type *map,char *path)
 bool map_reload(map_type *map)
 {
 	if (!read_map_xml(map)) return(FALSE);
-	map_segments_clear_touch(map);
 
 	return(TRUE);
 }

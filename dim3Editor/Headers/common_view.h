@@ -79,14 +79,6 @@ extern void select_duplicate_copy(void);
 extern void select_get_extent(d3pnt *min,d3pnt *max);
 
 //
-// multi-vertex move routines
-//
-
-extern void vertexes_move_similiar_to_segment(segment_type *seg,int xadd,int yadd,int zadd);
-extern void vertexes_move_to_2D_similiar_to_segment(segment_type *seg,int whand,int x,int z);
-extern void vertexes_move_to_2D(segment_type *seg,int whand,int x,int z);
-
-//
 // groups
 //
 
@@ -95,35 +87,6 @@ extern void group_delete(void);
 extern void group_clear(void);
 extern int group_count(int group_idx);
 extern void group_set(int group_idx);
-
-//
-// segment routines
-//
-
-extern void poly_find_bound_rect(int ptsz,int *x,int *z,int *lft,int *rgt,int *top,int *bot);
-extern void poly_find_bound_high(int ptsz,int *y,int *top,int *bot);
-extern bool segment_is_floor_ceiling_square(int rn,fc_segment_data *fc,Rect *box);
-extern bool segment_create_texture_ok(void);
-extern void segment_clear(segment_type *seg,int type,int primitive_uid);
-extern void segment_add_wall(int lx,int lz,int rx,int rz,int ty,int by,int clip,int curve,int primitive_uid,bool redraw);
-extern void segment_add_floor_quad(int x1,int z1,int y1,int x2,int z2,int y2,int x3,int z3,int y3,int x4,int z4,int y4,int primitive_uid,bool redraw);
-extern void segment_add_floor_trig(int x1,int z1,int y1,int x2,int z2,int y2,int x3,int z3,int y3,int primitive_uid,bool redraw);
-extern void segment_add_floor_box(int lx,int lz,int rx,int rz,int y,int primitive_uid,bool redraw);
-extern void segment_add_ceiling_quad(int x1,int z1,int y1,int x2,int z2,int y2,int x3,int z3,int y3,int x4,int z4,int y4,int primitive_uid,bool redraw);
-extern void segment_add_ceiling_box(int lx,int lz,int rx,int rz,int y,int primitive_uid,bool redraw);
-extern void segment_add_liquid(bool redraw);
-extern void segment_add_ambient_wall(int lx,int rx,int lz,int rz,int ty,int by,bool redraw);
-extern void segment_add_ambient_fc(int lx,int lz,int rx,int rz,int y,bool redraw);
-extern void segment_move(segment_type *seg,int xchg,int zchg,int ychg);
-extern int segment_duplicate(int idx,int primitive_uid,int xadd,int zadd);
-extern void segment_delete(int idx);
-extern void segment_add_point(void);
-extern void segment_sub_point(void);
-extern void segment_tesselate(void);
-extern void segment_flip_horizontal(segment_type *seg,int min,int max);
-extern void segment_flip_vertical(segment_type *seg,int min,int max);
-extern void segment_rotate(segment_type *seg,int cx,int cz);
-extern void segment_rotate_free(segment_type *seg,float ang,int cx,int cz);
 
 //
 // piece routines
@@ -142,6 +105,7 @@ extern void piece_key(int rn,char ch,bool walk,bool on_side);
 // piece create routines
 //
 
+extern bool piece_create_texture_ok(void);
 extern int piece_create_get_spot(int *x,int *y,int *z,int x_wid,int z_wid,int high);
 extern void piece_create_spot(void);
 extern void piece_create_scenery(void);

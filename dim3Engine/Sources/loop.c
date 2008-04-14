@@ -235,7 +235,7 @@ bool loop_main(char *err_str)
 	title_trigger_clear();
 	chooser_trigger_clear();
 	movie_trigger_clear();
-	setup_trigger_clear();
+	setup_game_trigger_clear();
 	menu_trigger_clear();
 	file_trigger_clear();
 	map_pick_trigger_clear();
@@ -272,8 +272,12 @@ bool loop_main(char *err_str)
 			chooser_run();
 			break;
 			
-		case gs_setup:
-			setup_run();
+		case gs_setup_game:
+			setup_game_run();
+			break;
+			
+		case gs_setup_network:
+			setup_network_run();
 			break;
 			
 		case gs_file:
@@ -316,7 +320,7 @@ bool loop_main(char *err_str)
 	title_trigger_check();
 	chooser_trigger_check();
 	movie_trigger_check();
-	setup_trigger_check();
+	setup_game_trigger_check();
 	menu_trigger_check();
 	file_trigger_check();
 	map_pick_trigger_check();

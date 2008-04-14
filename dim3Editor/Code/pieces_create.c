@@ -38,6 +38,20 @@ extern map_type					map;
 
 /* =======================================================
 
+      Check if Piece Creation OK
+      
+======================================================= */
+
+bool piece_create_texture_ok(void)
+{
+	if (map.textures[0].bitmaps[0].data!=NULL) return(TRUE);
+
+	StandardAlert(kAlertCautionAlert,"\pYou need at least one texture","\pYou need a default texture in the first spot to add pieces with.  Please add a texture (by double clicking the first open texture) before adding pieces to the map.",NULL,NULL);
+	return(FALSE);
+}
+
+/* =======================================================
+
       Find Create Spot
       
 ======================================================= */
@@ -379,7 +393,7 @@ void piece_create_liquid(void)
 	int				rn,x,y,z,index,sz;
 	map_liquid_type	*liq;
 
-	if (!segment_create_texture_ok()) return;
+	if (!piece_create_texture_ok()) return;
 
 	sz=map_enlarge*4;
 	rn=piece_create_get_spot(&x,&y,&z,sz,sz,0);

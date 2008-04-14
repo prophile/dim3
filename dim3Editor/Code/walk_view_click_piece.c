@@ -30,7 +30,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int					cr,cx,cy,cz,magnify_factor,drag_mode,grid_mode;
+extern int					cr,cx,cy,cz,magnify_factor,vertex_mode,drag_mode,grid_mode;
 extern bool					dp_liquid,dp_object,dp_lightsoundparticle,dp_node;
 extern Rect					main_wind_box;
 
@@ -156,6 +156,59 @@ void walk_view_click_grid(d3pnt *pt)
 	pt->x*=sz;
 	pt->y*=sz;
 	pt->z*=sz;
+}
+
+void walk_view_click_snap(int portal_idx,int mesh_idx,int vertex_idx,d3pnt *pt,d3pnt *mpt)
+{
+	int				n,k,t,chk_x,chk_y,chk_z;
+	d3pnt			*dpt;
+	portal_type		*portal,*chk_portal;
+	map_mesh_type	*mesh;
+	
+	if (vertex_mode!=vertex_mode_snap) return;
+	
+		// put vertexes in map space
+		
+	chk_portal=&map.portals[portal_idx];
+	
+	chk_x=(pt->x+mpt->x)+chk_portal->x;
+	chk_y=pt->y+mpt->y;
+	chk_z=(pt->z+mpt->z)+chk_portal->z;
+	
+		// any vertexes to snap to?
+		
+	portal=map.portals;
+	
+	for (n=0;n!=map.nportal;n++) {
+	
+		mesh=portal->mesh.meshes;
+		
+		for (k=0;k!=portal->mesh.nmesh;k++) {
+			
+			if ((n==portal_idx) && (k==mesh_idx)) {
+				mesh++;
+				continue;
+			}
+	
+			dpt=mesh->vertexes;
+			
+			for (t=0;t!=mesh->nvertex;t++) {
+			
+				if (distance_get((dpt->x+portal->x),dpt->y,(dpt->z+portal->z),chk_x,chk_y,chk_z)<(map_enlarge*5)) {
+					mpt->x=(dpt->x+portal->x)-(pt->x+chk_portal->x);
+					mpt->y=dpt->y-pt->y;
+					mpt->z=(dpt->z+portal->z)-(pt->z+chk_portal->z);
+					return;
+				}
+				
+				dpt++;
+			}
+		
+			mesh++;
+		}
+		
+		portal++;
+	}
 }
 
 /* =======================================================
@@ -694,7 +747,11 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 	pt->x-=view_setup->box.left;
 	pt->y-=view_setup->box.top;
 	
-		// any vertex drags
+		// liquid vertex drags
+		
+	if (walk_view_click_drag_liquid_vertex(view_setup,pt,view_move_dir)) return;
+	
+		// mesh vertex drags
 		
 	switch (drag_mode) {
 	

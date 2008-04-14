@@ -254,9 +254,7 @@ void map_portal_delete(map_type *map,int rn)
 
 int map_portal_duplicate(map_type *map,int rn,int x,int z)
 {
-	int				n,k,old_rn;
-	int				primitive_switch[255][2];
-	bool			primitive_hit;
+	int				n,old_rn;
 	
 		// create new portal
 		
@@ -272,7 +270,7 @@ int map_portal_duplicate(map_type *map,int rn,int x,int z)
 	map->portals[rn].ez=z+(map->portals[old_rn].ez-map->portals[old_rn].z);
 	map_portal_sight_clear(map,rn);
 	
-		// duplicate the segments
+		// duplicate the segments -- supergumba -- meshes and liquids!
 		
 	for (n=0;n!=map->nsegment;n++) {
 		if (map->segments[n].rn==old_rn) {
@@ -281,38 +279,6 @@ int map_portal_duplicate(map_type *map,int rn,int x,int z)
 			memmove(&map->segments[map->nsegment],&map->segments[n],sizeof(segment_type));
 			map->segments[map->nsegment].rn=rn;
 			map->nsegment++;
-		}
-	}
-	
-		// fix any primitives
-		
-	for (k=0;k!=255;k++) {
-		primitive_switch[k][0]=-1;
-	}
-		
-	for (n=0;n!=map->nsegment;n++) {
-		if (map->segments[n].rn!=rn) continue;
-		if (map->segments[n].primitive_uid[0]==-1) continue;
-			
-		primitive_hit=FALSE;
-		
-		for (k=0;k!=255;k++) {
-			if (primitive_switch[k][0]==map->segments[n].primitive_uid[0]) {
-				map->segments[n].primitive_uid[0]=primitive_switch[k][1];
-				primitive_hit=TRUE;
-				break;
-			}
-		}
-		
-		if (!primitive_hit) {
-			for (k=0;k!=255;k++) {
-				if (primitive_switch[k][0]==-1) {
-					primitive_switch[k][0]=map->segments[n].primitive_uid[0];
-					primitive_switch[k][1]=map_primitive_create_uid(map);
-					map->segments[n].primitive_uid[0]=primitive_switch[k][1];
-					break;
-				}
-			}
 		}
 	}
 	
@@ -355,6 +321,16 @@ int map_portal_duplicate(map_type *map,int rn,int x,int z)
 			memmove(&map->lights[map->nlight],&map->lights[n],sizeof(map_light_type));
 			map->lights[map->nlight].pos.rn=rn;
 			map->nlight++;
+		}
+	}
+	
+	for (n=0;n!=map->nparticle;n++) {
+		if (map->particles[n].pos.rn==old_rn) {
+			if (map->nparticle>=max_map_particle) break;
+
+			memmove(&map->particles[map->nparticle],&map->particles[n],sizeof(map_particle_type));
+			map->particles[map->nparticle].pos.rn=rn;
+			map->nparticle++;
 		}
 	}
 	

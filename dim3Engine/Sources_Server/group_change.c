@@ -42,6 +42,27 @@ extern bool map_movement_next_move(int movement_idx,attach_type *attach);
 
 /* =======================================================
 
+      Find Groups
+      
+======================================================= */
+
+int group_find_by_index(char *name)
+{
+	int				n;
+	group_type		*group;
+	
+	group=map.groups;
+	
+	for (n=0;n!=map.ngroup;n++) {
+		if (strcasecmp(group->name,name)==0) return(n);
+		group++;
+	}
+	
+	return(-1);
+}
+
+/* =======================================================
+
       Move Groups
       
 ======================================================= */

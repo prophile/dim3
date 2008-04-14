@@ -41,61 +41,9 @@ extern WindowRef		mainwind;
       
 ======================================================= */
 
-void info_status_line_get_segment_str(segment_type *seg,char *txt)
-{
-	int			x,y,z,lx,rx,lz,rz,ty,by;
-	
-	switch (seg->type) {
-		case sg_wall:
-			x=labs(seg->data.wall.rx-seg->data.wall.lx);
-			y=labs(seg->data.wall.by-seg->data.wall.ty);
-			z=labs(seg->data.wall.rz-seg->data.wall.lz);
-			sprintf(txt,"Wall: (%d,%d,%d) - (%d,%d,%d) : (%d,%d,%d)",seg->data.wall.lx,seg->data.wall.ty,seg->data.wall.lz,seg->data.wall.rx,seg->data.wall.by,seg->data.wall.rz,x,y,z);
-			return;
-		case sg_floor:
-			poly_find_bound_rect(seg->data.fc.ptsz,seg->data.fc.x,seg->data.fc.z,&lx,&rx,&lz,&rz);
-			poly_find_bound_high(seg->data.fc.ptsz,seg->data.fc.y,&ty,&by);
-			x=labs(rx-lx);
-			y=labs(by-ty);
-			z=labs(rz-lz);
-			sprintf(txt,"Floor: (%d,%d,%d) - (%d,%d,%d) : (%d,%d,%d)",lx,ty,lz,rx,by,rz,x,y,z);
-			return;
-		case sg_ceiling:			
-			poly_find_bound_rect(seg->data.fc.ptsz,seg->data.fc.x,seg->data.fc.z,&lx,&rx,&lz,&rz);
-			poly_find_bound_high(seg->data.fc.ptsz,seg->data.fc.y,&ty,&by);
-			x=labs(rx-lx);
-			y=labs(by-ty);
-			z=labs(rz-lz);
-			sprintf(txt,"Ceiling: (%d,%d,%d) - (%d,%d,%d) : (%d,%d,%d)",lx,ty,lz,rx,by,rz,x,y,z);
-			return;
-		case sg_liquid:
-			x=labs(seg->data.liquid.rgt-seg->data.liquid.lft);
-			y=0;
-			z=labs(seg->data.liquid.bot-seg->data.liquid.top);
-			sprintf(txt,"Liquid: (%d,%d,%d) - (%d,%d,%d) : (%d,%d,%d)",seg->data.liquid.lft,seg->data.liquid.y,seg->data.liquid.top,seg->data.liquid.rgt,seg->data.liquid.y,seg->data.liquid.bot,x,y,z);
-			return;
-		case sg_ambient_wall:
-			x=labs(seg->data.ambient_wall.rx-seg->data.ambient_wall.lx);
-			y=labs(seg->data.ambient_wall.by-seg->data.ambient_wall.ty);
-			z=labs(seg->data.ambient_wall.rz-seg->data.ambient_wall.lz);
-			sprintf(txt,"Ambient Wall: (%d,%d,%d) - (%d,%d,%d) : (%d,%d,%d)",seg->data.ambient_wall.lx,seg->data.ambient_wall.ty,seg->data.ambient_wall.lz,seg->data.ambient_wall.rx,seg->data.ambient_wall.by,seg->data.ambient_wall.rz,x,y,z);
-			return;
-		case sg_ambient_fc:
-			poly_find_bound_rect(seg->data.ambient_fc.ptsz,seg->data.ambient_fc.x,seg->data.ambient_fc.z,&lx,&rx,&lz,&rz);
-			poly_find_bound_high(seg->data.ambient_fc.ptsz,seg->data.ambient_fc.y,&ty,&by);
-			x=labs(rx-lx);
-			y=labs(by-ty);
-			z=labs(rz-lz);
-			sprintf(txt,"Ambient Floor/Ceiling: (%d,%d,%d) - (%d,%d,%d) : (%d,%d,%d)",lx,ty,lz,rx,by,rz,x,y,z);
-			return;
-	}
-
-}
-
 void info_status_line_draw_selection(Rect *box)
 {
-	int				type,portal_idx,main_idx,sub_idx,len,
-					minx,maxx,minz,maxz,miny,maxy;
+	int				type,portal_idx,main_idx,sub_idx,len;
 	char			txt[256];
 	portal_type		*portal;
 	

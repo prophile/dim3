@@ -288,12 +288,12 @@ void file_open(void)
 	high=gl_text_get_char_height(FALSE);
 		
 	list_wid=setup.screen.x_scale-143;
-	list_high=setup.screen.y_scale-(high+75);
+	list_high=setup.screen.y_scale-(high+95);
 		
 		// buttons
 		
 	x=setup.screen.x_scale-10;
-	y=((high+20)+list_high)+10;
+	y=((high+40)+list_high)+10;
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_cancel","png");
 	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_cancel_selected","png");
@@ -321,7 +321,7 @@ void file_open(void)
 	
 		// files
 		
-	y=high+15;
+	y=high+25;
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=0.50f;

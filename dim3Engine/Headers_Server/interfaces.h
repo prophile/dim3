@@ -144,10 +144,12 @@ extern void zoom_draw(obj_type *obj,weapon_type *weap);
 // interfaces
 //
 
-extern void setup_trigger_clear(void);
-extern void setup_trigger_check(void);
-extern void setup_trigger_set(void);
-extern void setup_run(void);
+extern void setup_game_trigger_clear(void);
+extern void setup_game_trigger_check(void);
+extern void setup_game_trigger_set(void);
+extern void setup_game_run(void);
+
+extern void setup_network_run(void);
 
 extern void file_trigger_clear(void);
 extern void file_trigger_check(void);
