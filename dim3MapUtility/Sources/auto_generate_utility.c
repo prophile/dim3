@@ -96,6 +96,42 @@ bool map_auto_generate_portal_collision(map_type *map,int x,int z,int ex,int ez,
 	return(FALSE);
 }
 
+bool map_auto_generate_portal_horz_edge_block(map_type *map,int skip_portal_idx,int z,int ez,int x)
+{
+	int			n;
+	portal_type	*portal;
+
+	for (n=0;n!=map->nportal;n++) {
+		if (skip_portal_idx==n) continue;
+
+		portal=&map->portals[n];
+
+		if ((portal->x!=x) && (portal->ex!=x)) continue;
+		if ((z>=portal->z) && (z<portal->ez)) return(TRUE);
+		if ((ez>portal->z) && (ez<=portal->ez)) return(TRUE);
+	}
+
+	return(FALSE);
+}
+
+bool map_auto_generate_portal_vert_edge_block(map_type *map,int skip_portal_idx,int x,int ex,int z)
+{
+	int			n;
+	portal_type	*portal;
+
+	for (n=0;n!=map->nportal;n++) {
+		if (skip_portal_idx==n) continue;
+
+		portal=&map->portals[n];
+
+		if ((portal->z!=z) && (portal->ez!=z)) continue;
+		if ((x>=portal->x) && (x<portal->ex)) return(TRUE);
+		if ((ex>portal->x) && (ex<=portal->ex)) return(TRUE);
+	}
+
+	return(FALSE);
+}
+
 int map_auto_generate_portal_find_to_left(map_type *map,portal_type *org_portal)
 {
 	int			n;
@@ -341,7 +377,7 @@ bool map_auto_generate_mesh_start(map_type *map,int portal_idx,int group_idx,int
 
 		// need a new mesh?
 
-	if (new_mesh) {
+	if ((new_mesh) || (map->portals[portal_idx].mesh.nmesh==0)) {
 		map_ag_mesh_idx=map_portal_mesh_add(map,portal_idx);
 		if (map_ag_mesh_idx==-1) return(FALSE);
 
