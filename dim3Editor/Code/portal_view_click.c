@@ -126,7 +126,7 @@ void portal_view_portal_resize_top_left(d3pnt *pt)
 	
 	cur_itemx=cur_itemz=0;
 	
-	portal_get_size(cr,&minx,&minz);
+	portal_get_xz_size(cr,&minx,&minz);
 	
 	do {
 		TrackMouseLocation(NULL,&uipt,&track);
@@ -219,7 +219,7 @@ void portal_view_portal_resize_bottom_right(d3pnt *pt)
 	oldlenx=portal->ex-x;
 	oldlenz=portal->ez-z;
 	
-	portal_get_size(cr,&minx,&minz);
+	portal_get_xz_size(cr,&minx,&minz);
 	
 	do {
 		TrackMouseLocation(NULL,&uipt,&track);

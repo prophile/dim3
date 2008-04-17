@@ -72,19 +72,16 @@ extern bool portal_view_click_sight(Point pt);
 // transforms
 //
 
-extern void portal_get_size(int rn,int *pex,int *pey);
+extern void portal_get_xz_size(int rn,int *pex,int *pez);
 extern void portal_get_y_size(int rn,int *pty,int *pby);
 extern void portal_get_dimension(int rn,int *lx,int *rx,int *tz,int *bz);
 extern void portal_set_dimension(int rn,int x,int ex,int z,int ez);
 extern void portal_set_spot(int rn,int x,int z);
-extern void portal_get_pixelbox(int rn,Rect *box);
-extern bool portal_point_in_box(int rn,Point pt);
 extern void portal_flip_horizontal(void);
 extern void portal_flip_vertical(void);
 extern void portal_rotate(void);
 extern void portal_y_change(int yadd);
 extern void portal_all_y_change(int yadd);
-extern void portal_empty(int rn);
 extern void portal_resize(void);
 extern void portal_split(int rn,bool vertical);
 

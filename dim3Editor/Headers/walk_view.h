@@ -81,7 +81,6 @@ extern void walk_view_mouse_turn(d3pnt *pt);
 extern void walk_view_portal_go_to_top(void);
 extern void walk_view_portal_go_to_bottom(void);
 extern void walk_view_portal_go_to_selection(void);
-extern void walk_view_get_piece_movement(bool cmdkey,int x,int y,int *xadd,int *zadd,int *yadd);
 
 //
 // walk view controls

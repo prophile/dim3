@@ -423,12 +423,12 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			return(noErr);
 			
 		case kCommandMapRaiseY:
-			portal_all_y_change(-100);
+			portal_all_y_change(-(map_enlarge*10));
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandMapLowerY:
-			portal_all_y_change(100);
+			portal_all_y_change(map_enlarge*10);
 			main_wind_draw();
 			return(noErr);
 			
@@ -544,13 +544,13 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			return(noErr);
             
         case kCommandPortalRaiseY:
-            portal_y_change(-1);
+            portal_y_change(-map_enlarge);
 			main_wind_draw();
 			undo_clear();
             return(noErr);
             
         case kCommandPortalLowerY:
-            portal_y_change(1);
+            portal_y_change(map_enlarge);
 			main_wind_draw();
 			undo_clear();
             return(noErr);
@@ -598,12 +598,12 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			return(noErr);
 
 		case kCommandPieceRaiseY:
-			select_move(cr,0,0,1);
+			select_move(cr,0,0,map_enlarge);
 			main_wind_draw();
 			return(noErr);
             
 		case kCommandPieceLowerY:
-			select_move(cr,0,0,-1);
+			select_move(cr,0,0,-map_enlarge);
             main_wind_draw();
  			return(noErr);
 

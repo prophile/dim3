@@ -277,59 +277,18 @@ void walk_view_mouse_turn(d3pnt *pt)
 
 void walk_view_portal_go_to_top(void)
 {
-	register int			n,ty;
-	register segment_type	*seg;
+	int					by;
 	
-	ty=10000;
-	seg=map.segments;
-	
-	for (n=0;n!=map.nsegment;n++) {
-		if (seg->rn==cr) {
-			switch (seg->type) {
-				case sg_wall:
-					if (seg->data.wall.ty<ty) ty=seg->data.wall.ty;
-					break;
-				case sg_floor:
-				case sg_ceiling:
-					if (seg->data.fc.y[0]<ty) ty=seg->data.fc.y[0];
-					break;
-			}
-		}
-		seg++;
-	}
-	
-	if (ty==10000) return;
-	
-	cy=ty*map_enlarge;
+	portal_get_y_size(cr,&cy,&by);
 	main_wind_draw();
 }
 
 void walk_view_portal_go_to_bottom(void)
 {
-	register int			n,by;
-	register segment_type	*seg;
+	int					ty;
 	
-	by=0;
-	seg=map.segments;
-	
-	for (n=0;n!=map.nsegment;n++) {
-		if (seg->rn==cr) {
-			switch (seg->type) {
-				case sg_wall:
-					if (seg->data.wall.by>by) by=seg->data.wall.by;
-					break;
-				case sg_floor:
-				case sg_ceiling:
-					if (seg->data.fc.y[0]>by) by=seg->data.fc.y[0];
-					break;
-			}
-		}
-		seg++;
-	}
-	
-	if (by==0) return;
-	
-	cy=by*map_enlarge;
+	portal_get_y_size(cr,&ty,&cy);
+	main_wind_draw();
 	main_wind_draw();
 }
 
@@ -346,30 +305,5 @@ void walk_view_portal_go_to_selection(void)
 	cy=(min.y+max.y)/2;
 
 	main_wind_draw();
-}
-
-/* =======================================================
-
-      Find Piece Movement for Walk View
-      
-======================================================= */
-
-// supergumba -- can probably delete
-void walk_view_get_piece_movement(bool cmdkey,int x,int y,int *xadd,int *zadd,int *yadd)
-{
-	*xadd=*zadd=*yadd=0;
-	
-	if (!cmdkey) {
-		*xadd=x;
-		*zadd=0;
-		*yadd=y;
-	}
-	else {
-		*xadd=0;
-		*zadd=y;
-		*yadd=0;
-	}
-	
-	rotate_2D_point_center(xadd,zadd,walk_view_y_angle);
 }
 

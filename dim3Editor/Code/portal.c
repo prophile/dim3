@@ -260,7 +260,7 @@ void portal_duplicate(void)
 	
 /* =======================================================
 
-      Move Portal Segments
+      Move All Portal Items
       
 ======================================================= */
 
@@ -268,11 +268,20 @@ void portal_move_all_items(int rn,int x,int y,int z)
 {
 	int				n;
 	bool			auto_txt_save;
+	portal_type		*portal;
 	
 	auto_txt_save=dp_auto_texture;
 	dp_auto_texture=FALSE;
 	
-	// supergumba -- move all meshes and liquids
+	portal=&map.portals[rn];
+	
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+		map_portal_mesh_move(&map,rn,n,FALSE,-x,-y,-z);
+	}
+	
+	for (n=0;n!=portal->liquid.nliquid;n++) {
+		map_portal_liquid_move(&map,rn,n,-x,-y,-z);
+	}
 	
 	dp_auto_texture=auto_txt_save;
 		

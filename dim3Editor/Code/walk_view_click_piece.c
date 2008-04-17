@@ -213,64 +213,6 @@ void walk_view_click_snap(int portal_idx,int mesh_idx,int vertex_idx,d3pnt *pt,d
 
 /* =======================================================
 
-      Piece Dragging
-      
-======================================================= */
-
-bool walk_view_piece_drag(Point pt)
-{
-	int						x,y,xadd,zadd,yadd,dv,maxx,maxz;
-	Point					oldpt;
-	bool					first_drag,ctrl_key;
-	MouseTrackingResult		track;
-	
-    if (!Button()) return(FALSE);
-	
-	undo_set_segment_move();
-	
-	maxx=map.portals[cr].ex-map.portals[cr].x;
-	maxz=map.portals[cr].ez-map.portals[cr].z;
-   
-	first_drag=TRUE;
-	ctrl_key=main_wind_control_down();
-	
-	oldpt=pt;
-	dv=ctrl_key?2:5;
-	
-	do {
-		TrackMouseLocation(NULL,&pt,&track);
-		
-		if ((pt.h==oldpt.h) && (pt.v==oldpt.v)) continue;
-		
-		x=(oldpt.h-pt.h)/dv;
-		y=(oldpt.v-pt.v)/dv;
-		if ((x==0) && (y==0)) continue;
-		
-		oldpt=pt;
-		
-			// turn on drag cursor
-			
-		if (first_drag) {
-			SetCCursor(ctrl_key?towardcur:dragcur);
-			first_drag=FALSE;
-		}
-		
-			// move item
-
-		walk_view_get_piece_movement(ctrl_key,x,y,&xadd,&zadd,&yadd);
-		select_move(cr,xadd,zadd,yadd);
-
-        main_wind_draw();
-		
-	} while (track!=kMouseTrackingMouseReleased);
-	
-	InitCursor();
-	
-	return(!first_drag);
-}
-
-/* =======================================================
-
       View Piece Clicking Utility
       
 ======================================================= */

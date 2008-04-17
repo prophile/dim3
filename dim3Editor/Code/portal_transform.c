@@ -41,76 +41,48 @@ extern map_type				map;
       
 ======================================================= */
 
-void portal_get_size(int rn,int *pex,int *pey)
+void portal_get_xz_size(int rn,int *pex,int *pez)
 {
-	int				i,t,ex,ey;
-	segment_type	*seg;
+	int					n,k,ex,ez;
+	d3pnt				*pt;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
 	
-	ex=ey=0;
+	ex=ez=0;
 	
-	for ((i=0);(i!=map.nsegment);i++) {
-		seg=&map.segments[i];
-		if (seg->rn!=rn) {
-			continue;
-		}
+	portal=&map.portals[rn];
 		
-		switch (seg->type) {
-			case sg_wall:
-				if (seg->data.wall.lx>ex) {
-					ex=seg->data.wall.lx;
-				}
-				if (seg->data.wall.rx>ex) {
-					ex=seg->data.wall.rx;
-				}
-				if (seg->data.wall.lz>ey) {
-					ey=seg->data.wall.lz;
-				}
-				if (seg->data.wall.rz>ey) {
-					ey=seg->data.wall.rz;
-				}
-				break;
-			case sg_floor:
-			case sg_ceiling:
-				for ((t=0);(t!=seg->data.fc.ptsz);t++) {
-					if (seg->data.fc.x[t]>ex) {
-						ex=seg->data.fc.x[t];
-					}
-					if (seg->data.fc.z[t]>ey) {
-						ey=seg->data.fc.z[t];
-					}
-				}
-				break;
-			case sg_liquid:
-				if (seg->data.liquid.rgt>ex) {
-					ex=seg->data.liquid.rgt;
-				}
-				if (seg->data.liquid.bot>ey) {
-					ey=seg->data.liquid.bot;
-				}
-				break;
+	mesh=portal->mesh.meshes;
+		
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+
+		pt=mesh->vertexes;
+		
+		for (k=0;k!=mesh->nvertex;k++) {
+			if (pt->x>ex) ex=pt->x;
+			if (pt->z>ez) ez=pt->z;
+			
+			pt++;
 		}
+	
+		mesh++;
 	}
 
-	if (ex<=0) {
-		ex=10;
-	}
-	if (ey<=0) {
-		ey=10;
-	}
+	if (ex==0) ex=10*map_enlarge;
+	if (ez==0) ez=10*map_enlarge;
 	
 	*pex=ex;
-	*pey=ey;
+	*pez=ez;
 }
 
 void portal_get_y_size(int rn,int *pty,int *pby)
 {
-	int					n,k,t,ty,by;
+	int					n,k,ty,by;
 	d3pnt				*pt;
 	portal_type			*portal;
 	map_mesh_type		*mesh;
-	map_mesh_poly_type	*mesh_poly;
 
-	ty=99999;
+	ty=map_max_size;
 	by=0;
 	
 	portal=&map.portals[rn];
@@ -119,24 +91,19 @@ void portal_get_y_size(int rn,int *pty,int *pby)
 		
 	for (n=0;n!=portal->mesh.nmesh;n++) {
 
-		mesh_poly=mesh->polys;
-			
-		for (k=0;k!=mesh->npoly;k++) {
-
-			for (t=0;t!=mesh_poly->ptsz;t++) {
-				pt=&mesh->vertexes[mesh_poly->v[t]];
-
-				if (pt->y<ty) ty=pt->y;
-				if (pt->y>by) by=pt->y;
-			}
+		pt=mesh->vertexes;
 		
-			mesh_poly++;
+		for (k=0;k!=mesh->nvertex;k++) {
+			if (pt->y<ty) ty=pt->y;
+			if (pt->y>by) by=pt->y;
+			
+			pt++;
 		}
 	
 		mesh++;
 	}
     
-    if ((ty==9999) || (by==0)) ty=by=29;
+    if ((ty==map_max_size) || (by==0)) ty=by=map_max_size/2;
 
 	*pty=ty;
 	*pby=by;
@@ -174,29 +141,6 @@ void portal_set_spot(int rn,int x,int z)
 	map.portals[rn].ex=x+sx;
 	map.portals[rn].z=z;
 	map.portals[rn].ez=z+sz;
-}
-
-void portal_get_pixelbox(int rn,Rect *box)
-{
-/* supergumba -- delete
-	int			lx,rx,tz,bz;
-	
-	portal_get_dimension(rn,&lx,&rx,&tz,&bz);
-	
-	top_view_map_to_pane(&lx,&tz);
-	top_view_map_to_pane(&rx,&bz);
-
-	SetRect(box,lx,tz,rx,bz);
-	*/
-}
-	
-bool portal_point_in_box(int rn,Point pt)
-{
-	Rect		box;
-	
-	portal_get_pixelbox(rn,&box);
-	InsetRect(&box,-5,-5);
-	return(PtInRect(pt,&box));
 }
 
 /* =======================================================
@@ -378,10 +322,41 @@ void portal_rotate(void)
 
 void portal_y_change(int yadd)
 {
-	int				n;
+	int				n,k;
+	d3pnt			*pt;
+	portal_type		*portal;
+	map_mesh_type	*mesh;
+	map_liquid_type	*liq;
 	
-	// supergumba -- all mesh and liquids
+	portal=&map.portals[cr];
+	
+		// run through meshes
+		
+	mesh=portal->mesh.meshes;
+		
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+
+		pt=mesh->vertexes;
+		
+		for (k=0;k!=mesh->nvertex;k++) {
+			pt->y+=yadd;
+			pt++;
+		}
+	
+		mesh++;
+	}
     
+		// run through liquids
+		
+	liq=portal->liquid.liquids;
+	
+	for (n=0;n!=portal->liquid.nliquid;n++) {
+		liq->y+=yadd;
+		liq++;
+	}
+		
+		// run through all other items
+		
     for (n=0;n!=map.nspot;n++) {
         if (map.spots[n].pos.rn==cr) {
             map.spots[n].pos.y+=yadd;
@@ -431,33 +406,6 @@ void portal_all_y_change(int yadd)
 	}
 	
 	cr=old_rn;
-}
-
-/* =======================================================
-
-      Empty a Portal of Segments
-      
-======================================================= */
-
-void portal_empty(int rn)
-{
-	int				i,k;
-	segment_type	*seg;
-	
-	i=0;
-	while (i<map.nsegment) {
-		seg=&map.segments[i];
-		if (seg->rn!=rn) {
-			i++;
-			continue;
-		}
-		
-		for (k=i;k<map.nsegment;k++) {
-			map.segments[k]=map.segments[k+1];
-		}
-		
-		map.nsegment--;
-	}
 }
 
 /* =======================================================

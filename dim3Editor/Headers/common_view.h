@@ -83,8 +83,8 @@ extern void select_get_extent(d3pnt *min,d3pnt *max);
 //
 
 extern void group_add(void);
-extern void group_delete(void);
 extern void group_clear(void);
+extern void group_delete(void);
 extern int group_count(int group_idx);
 extern void group_set(int group_idx);
 

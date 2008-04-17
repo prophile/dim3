@@ -56,44 +56,6 @@ void group_add(void)
 	main_wind_tool_fill_group_combo();
 }
 
-void group_delete(void)
-{
-	int					n,group_idx;
-	segment_type		*seg;
-	
-		// get current group
-		
-	group_idx=GetControl32BitValue(group_combo);
-	
-	group_idx-=3;
-	if (group_idx<0) return;
-	
-		// delete group from segments
-		
-	seg=map.segments;
-
-	for (n=0;n!=map.nsegment;n++) {
-		if (seg->group_idx!=-1) {
-			if (seg->group_idx==group_idx) {
-				seg->group_idx=-1;
-			}
-			else {
-				if (seg->group_idx>group_idx) seg->group_idx--;
-			}
-		}
-		seg++;
-	}
-
-		// remove group
-
-	for (n=group_idx;n<map.ngroup;n++) {
-		map.groups[n]=map.groups[n+1];
-	}
-	map.ngroup--;
-	
-	main_wind_tool_fill_group_combo();
-}
-
 void group_clear(void)
 {
 	int					n,k,group_idx;
@@ -133,6 +95,30 @@ void group_clear(void)
 	
 	main_wind_tool_fill_group_combo();
 }
+
+void group_delete(void)
+{
+	int					n,group_idx;
+	
+		// clear group
+		
+	group_clear();
+	
+		// remove group
+		
+	group_idx=GetControl32BitValue(group_combo);
+	
+	group_idx-=3;
+	if (group_idx<0) return;
+
+	for (n=group_idx;n<map.ngroup;n++) {
+		map.groups[n]=map.groups[n+1];
+	}
+	map.ngroup--;
+	
+	main_wind_tool_fill_group_combo();
+}
+
 
 /* =======================================================
 
