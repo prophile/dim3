@@ -6,41 +6,7 @@
 --------------------Configuration: dim3BaseUtility - Win32 Release--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSP13F.tmp" with contents
-[
-/nologo /MD /W3 /GX /Z7 /O2 /I "..\win32Includes\pthreads" /I "..\win32Includes\GLEW" /I "..\win32Includes\ZLib" /I "..\win32Includes\SDL" /I "..\win32Includes\OpenAL" /I "..\win32Includes\JS" /I "..\win32Includes\PNG" /I "..\..\dim3BaseUtility\Headers" /I "..\..\dim3Common\Headers" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "D3_PCH" /Fp"Release/dim3BaseUtility.pch" /YX"dim3baseutility.h" /Fo"Release/" /Fd"Release/" /FD /c 
-"C:\Gumba\dim3Code\winBuild\dim3BaseUtility\win32Code\dim3BaseUtility.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Math\acceleration.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Math\angles.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Math\clip.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Math\distance.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Math\fast_trig.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Math\lines.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Math\matrix.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Math\polygons.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Math\random.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Math\rotations.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Math\strings.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Math\time.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Math\vector.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_File\file_paths.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_File\file_search.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Source_XML\xml.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Bitmap\bitmap_main.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Bitmap\bitmap_movie.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Bitmap\glow_map.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Bitmap\normal_map.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Bitmap\pngutility.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Bitmap\reduce.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Bitmap\shaders.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Bitmap\textures.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Network\network.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Network\queue.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Network\socket.c"
-"C:\Gumba\dim3Code\dim3BaseUtility\Sources_Network\socket_udp.c"
-]
-Creating command line "cl.exe @C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSP13F.tmp" 
-Creating temporary file "C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSP140.tmp" with contents
+Creating temporary file "C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSP4847.tmp" with contents
 [
 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"Release/dim3BaseUtility.pdb" /machine:I386 /def:".\win32Code\dim3BaseUtility.def" /out:"..\..\..\dim3\dim3BaseUtility.dll" /implib:"Release/dim3BaseUtility.lib" 
 .\Release\dim3BaseUtility.obj
@@ -80,38 +46,8 @@ kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32
 ..\win32Includes\PNG\libpng.lib
 ..\win32Includes\ZLib\zdll.lib
 ]
-Creating command line "link.exe @C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSP140.tmp"
+Creating command line "link.exe @C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSP4847.tmp"
 <h3>Output Window</h3>
-Compiling...
-dim3BaseUtility.c
-acceleration.c
-angles.c
-clip.c
-distance.c
-fast_trig.c
-lines.c
-matrix.c
-polygons.c
-random.c
-rotations.c
-strings.c
-time.c
-vector.c
-file_paths.c
-file_search.c
-xml.c
-bitmap_main.c
-bitmap_movie.c
-glow_map.c
-normal_map.c
-pngutility.c
-reduce.c
-shaders.c
-textures.c
-network.c
-queue.c
-socket.c
-socket_udp.c
 Linking...
    Creating library Release/dim3BaseUtility.lib and object Release/dim3BaseUtility.exp
 

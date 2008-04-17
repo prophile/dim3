@@ -451,7 +451,7 @@ typedef struct		{
 					} obj_bump;
 					
 typedef struct		{
-						int					wall_seg_idx;
+						int					portal_idx,mesh_idx;
 						float				factor;
 					} obj_bounce;
 

@@ -71,6 +71,25 @@ void map_auto_generate_clear(map_type *map)
 
 /* =======================================================
 
+      Random Number Generator
+      
+======================================================= */
+
+void map_auto_generate_random_seed(int seed)
+{
+	srandom(seed);
+}
+
+int map_auto_generate_random_int(int max)
+{
+	float			f;
+
+	f=(float)random()/(float)RAND_MAX;
+	return((int)(f*(float)max));
+}
+
+/* =======================================================
+
       Portal Collisions and Connections
       
 ======================================================= */
@@ -214,7 +233,7 @@ int map_auto_generate_get_corridor_type(auto_generate_settings_type *ags)
 
 		// get random type
 
-	idx=rand()%count;
+	idx=map_auto_generate_random_int(count);
 
 	for (n=0;n!=ag_corridor_type_count;n++) {
 		if (ags->corridor.type_on[n]) {
@@ -242,7 +261,7 @@ int map_auto_generate_get_ceiling_type(auto_generate_settings_type *ags)
 
 		// get random type
 
-	idx=rand()%count;
+	idx=map_auto_generate_random_int(count);
 
 	for (n=0;n!=ag_ceiling_type_count;n++) {
 		if (ags->ceiling.type_on[n]) {
@@ -295,6 +314,22 @@ void map_auto_generate_poly_from_square_wall(int lx,int lz,int rx,int rz,int ty,
 	gy[2]=gy[3]=1.0f;
 }
 
+void map_auto_generate_poly_from_top_trig_wall(int lx,int lz,int rx,int rz,int ty,int by,int *x,int *y,int *z,float *gx,float *gy)
+{
+	x[0]=lx;
+	x[1]=x[2]=rx;
+	z[0]=lz;
+	z[1]=z[2]=rz;
+
+	y[0]=y[2]=by;
+	y[1]=ty;
+
+	gx[0]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[2]=0.0f;
+	gy[1]=1.0f;
+}
+
 void map_auto_generate_poly_from_square_floor(int lx,int lz,int rx,int rz,int fy,int *x,int *y,int *z,float *gx,float *gy)
 {
 	x[0]=x[3]=lx;
@@ -314,7 +349,7 @@ void map_auto_generate_poly_from_square_floor_slant(int lx,int lz,int rx,int rz,
 {
 	map_auto_generate_poly_from_square_floor(lx,lz,rx,rz,fy,x,y,z,gx,gy);
 	
-	if (!reverse_slant) {
+	if (reverse_slant) {
 	
 		switch (lower_mode) {
 			case ag_ceiling_lower_neg_x:

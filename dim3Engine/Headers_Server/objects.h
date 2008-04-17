@@ -127,7 +127,7 @@ extern void object_move_stop(obj_type *obj);
 extern bool object_move_with_move(obj_type *obj,int xmove,int zmove);
 extern bool object_move_with_wall_segment_check_wall(d3box *box,int seg_idx,int xmove,int zmove);
 extern void object_move_with_wall_segment(int seg_idx,int xmove,int zmove);
-extern void object_move_with_floor_segment(int seg_idx,int xmove,int zmove);
+extern void object_move_with_standing_mesh(int portal_idx,int mesh_idx,int xmove,int zmove);
 extern void object_move_with_object(obj_type *obj,int xmove,int zmove);
 
 extern float object_liquid_alter_speed(obj_type *obj);

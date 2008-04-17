@@ -37,7 +37,7 @@ extern char light_type_str[][32];
 
 #define map_enlarge									144				// each units of maze equals this many game units
 
-#define map_max_size								400000			// maximum size of map on x/z units
+#define map_max_size								500000			// maximum size of map on x/z units
 
 #define map_simple_tessel_size						500				// below this size makes simple lighting tessel
 

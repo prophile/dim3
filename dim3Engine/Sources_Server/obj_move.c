@@ -403,22 +403,20 @@ void object_fix_bump_smooth(obj_type *obj)
 
 void object_move_xz_bounce(obj_type *obj)
 {
-	/* supergumba
-	if (obj->contact.wall_seg_idx==-1) {
-		obj->bounce.wall_seg_idx=-1;
+	if (obj->contact.hit_poly.portal_idx==-1) {
+		obj->bounce.portal_idx=-1;
 		return;
 	}
 
-		// only bounce if bounce factor != 0 and not same wall segment
+		// only bounce if bounce factor != 0 and not same mesh
 		
 	if (obj->bounce.factor==0.0f) return;
-	if (obj->bounce.wall_seg_idx==obj->contact.wall_seg_idx) return;
+	if ((obj->bounce.portal_idx==obj->contact.hit_poly.portal_idx) && (obj->bounce.mesh_idx==obj->contact.hit_poly.mesh_idx)) return;
 	
 		// bounce
 		
 	obj->force.vct.x-=(obj->motion.vct.x*obj->bounce.factor);
 	obj->force.vct.z-=(obj->motion.vct.z*obj->bounce.factor);
-	*/
 }
 
 void object_to_object_push(obj_type *obj,float xmove,float zmove)
@@ -1125,10 +1123,12 @@ void object_move_normal(obj_type *obj)
 		}
 
 			// objects pushing other objects
+		
+		object_to_object_push(obj,xmove,zmove);
 
-		if ((xadd!=0) || (zadd!=0)) {
-			object_move_with_object(obj,xadd,zadd);
-		}
+			// moving objects standing on object
+
+		if ((xadd!=0) || (zadd!=0)) object_move_with_object(obj,xadd,zadd);
 			
 			// if bumped up, move again
 
@@ -1276,7 +1276,7 @@ void object_move_stop(obj_type *obj)
 
 /* =======================================================
 
-      Objects Moving with Segments/Objects
+      Objects Moving with Meshes/Objects
       
 ======================================================= */
 
@@ -1287,7 +1287,13 @@ inline bool object_move_with_move(obj_type *obj,int xmove,int zmove)
 	if (obj->lock.x) xmove=0;
 	if (obj->lock.z) zmove=0;
 	
-	return(object_move_xz(obj,&xmove,&ymove,&zmove));
+	if (!object_move_xz(obj,&xmove,&ymove,&zmove)) return(TRUE);
+
+	obj->pos.x+=xmove;
+	obj->pos.y+=ymove;
+	obj->pos.z+=zmove;
+
+	return(FALSE);
 }
 
 // supergumba -- this all needs work
@@ -1341,9 +1347,8 @@ void object_move_with_wall_segment(int seg_idx,int xmove,int zmove)
 	}
 }
 
-void object_move_with_floor_segment(int seg_idx,int xmove,int zmove)
+void object_move_with_standing_mesh(int portal_idx,int mesh_idx,int xmove,int zmove)
 {
-	/* supergumba
 	int			i;
 	obj_type	*obj;
 	
@@ -1353,14 +1358,14 @@ void object_move_with_floor_segment(int seg_idx,int xmove,int zmove)
 
 		if (!obj->remote.on) {
 
-				// are we standing on this floor?
+				// are we standing on this mesh?
 
-			if (obj->contact.floor_seg_idx==seg_idx) object_move_with_move(obj,xmove,zmove);
+			if ((obj->contact.stand_poly.portal_idx==portal_idx) && (obj->contact.stand_poly.mesh_idx==mesh_idx)) object_move_with_move(obj,xmove,zmove);
 
 		}
+
 		obj++;
 	}
-	*/
 }
 
 void object_move_with_object(obj_type *obj,int xmove,int zmove)
@@ -1373,9 +1378,7 @@ void object_move_with_object(obj_type *obj,int xmove,int zmove)
 	for (i=0;i!=server.count.obj;i++) {
 		if (!obj_check->remote.on) {
 			if (obj_check->stand_obj_uid==obj->uid) {
-				if (!obj_check->suspend) {
-					object_move_with_move(obj_check,xmove,zmove);
-				}
+				if (!obj_check->suspend) object_move_with_move(obj_check,xmove,zmove);
 			}
 			obj_check++;
 		}

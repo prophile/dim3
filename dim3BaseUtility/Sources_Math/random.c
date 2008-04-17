@@ -40,24 +40,19 @@ void random_reset(void)
 	srandom((long)clock());
 }
 
+inline float random_base(void)
+{
+	return((float)random()/(float)RAND_MAX);
+}
+
 int random_int(int max)
 {
-	int			r;
-	
-	if (max==0) return(0);
-	
-	r=(int)random();
-	return(r%max);
+	return((int)(random_base()*(float)max));
 }
 
 float random_float(float max)
 {
-	int			r;
-	
-	r=(int)random();
-	r=r%10240;
-	
-	return((max*(float)r)/10240);
+	return(random_base()*max);
 }
 
 bool random_boolean(void)

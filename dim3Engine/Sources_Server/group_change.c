@@ -116,7 +116,7 @@ void group_move(int group_idx,int xmove,int zmove,int ymove)
 				
 				if (move_objs) {
 					//		object_move_with_wall_segment((int)(*seg_list),xmove,zmove);
-					//		object_move_with_floor_segment((int)(*seg_list),xmove,zmove);
+					object_move_with_standing_mesh(unit_list->portal_idx,unit_list->idx,xmove,zmove);
 				}
 
 					// move decals with segments!

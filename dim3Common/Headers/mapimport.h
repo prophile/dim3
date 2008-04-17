@@ -107,16 +107,22 @@ typedef struct	{
 // auto-generate constants
 //
 
+#define ag_constant_portal_high_percent				0.10f
+
 #define ag_constant_portal_random_percent			0.4f
 #define ag_constant_portal_merge_percent			0.08f
 #define ag_constant_portal_connect_percent			1.0f
 #define ag_constant_portal_split_factor_percent		0.1f
 
 #define ag_constant_portal_high_extra_top			0.75f
-#define ag_constant_portal_high_extra_bottom		1.5f
+#define ag_constant_portal_high_extra_bottom		0.50f
 
 #define ag_constant_corridor_size_percent			0.25f
 #define ag_constant_corridor_random_percent			0.4f
+
+#define ag_constant_step_high						(2*map_enlarge)
+#define ag_constant_step_min_size					(8*map_enlarge)
+#define ag_constant_step_max_size					(20*map_enlarge)
 
 //
 // auto-generate structure
@@ -128,7 +134,7 @@ typedef struct	{
 				} auto_generate_setting_map_type;
 
 typedef struct	{
-					int										sz,high;
+					int										sz;
 				} auto_generate_setting_portal_type;
 	
 typedef struct	{
@@ -144,10 +150,6 @@ typedef struct	{
 															corridor_wall,corridor_floor,corridor_ceiling,
 															door,steps,ramp;
 				} auto_generate_setting_texture_type;
-
-typedef struct	{
-					int										sz,high;
-				} auto_generate_setting_steps_type;
 
 typedef struct	{
 					int										sz;
@@ -167,7 +169,6 @@ typedef struct	{
 					auto_generate_setting_portal_type		portal;
 					auto_generate_setting_corridor_type		corridor;
 					auto_generate_setting_ceiling_type		ceiling;
-					auto_generate_setting_steps_type		steps;
 					auto_generate_setting_ramp_type			ramp;
 					auto_generate_setting_texture_type		texture;
 				} auto_generate_settings_type;

@@ -430,7 +430,7 @@ obj_type* object_create(int bind)
 
 	obj->slope_gravity=TRUE;
 	
-	obj->bounce.wall_seg_idx=-1;
+	obj->bounce.portal_idx=-1;
 	obj->bounce.factor=0.0f;
 	
 	obj->turn.ignore_mouse=FALSE;

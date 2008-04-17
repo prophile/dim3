@@ -38,47 +38,49 @@ and can be sold or given away.
 int map_portal_mesh_add(map_type *map,int portal_idx)
 {
 	int					mesh_idx;
-	portal_mesh_type	*portal_mesh;
-	map_mesh_type		*map_mesh,*nptr;
+	portal_type			*portal;
+	map_mesh_type		*mesh,*nptr;
 	
-	portal_mesh=&map->portals[portal_idx].mesh;
+	portal=&map->portals[portal_idx];
 
 		// create new memory
 
-	if (portal_mesh->nmesh==0) {
+	if (portal->mesh.nmesh==0) {
 		mesh_idx=0;
-		portal_mesh->meshes=(map_mesh_type*)valloc(sizeof(map_mesh_type));
-		if (portal_mesh->meshes==NULL) return(FALSE);
+		portal->mesh.meshes=(map_mesh_type*)valloc(sizeof(map_mesh_type));
+		if (portal->mesh.meshes==NULL) return(FALSE);
 	}
 	else {
-		mesh_idx=portal_mesh->nmesh;
+		mesh_idx=portal->mesh.nmesh;
 
-		nptr=(map_mesh_type*)valloc((portal_mesh->nmesh+1)*sizeof(map_mesh_type));
+		nptr=(map_mesh_type*)valloc((portal->mesh.nmesh+1)*sizeof(map_mesh_type));
 		if (nptr==NULL) return(FALSE);
 
-		memmove(nptr,portal_mesh->meshes,(portal_mesh->nmesh*sizeof(map_mesh_type)));
-		free(portal_mesh->meshes);
+		memmove(nptr,portal->mesh.meshes,(portal->mesh.nmesh*sizeof(map_mesh_type)));
+		free(portal->mesh.meshes);
 
-		portal_mesh->meshes=nptr;
+		portal->mesh.meshes=nptr;
 	}
 	
-	portal_mesh->nmesh++;
+	portal->mesh.nmesh++;
 
 		// setup meshes
 	
-	map_mesh=&portal_mesh->meshes[mesh_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
 
-	map_mesh->nvertex=map_mesh->npoly=0;
-	map_mesh->group_idx=-1;
+	mesh->group_idx=-1;
 		
-	map_mesh->flag.on=TRUE;
-	map_mesh->flag.pass_through=FALSE;
-	map_mesh->flag.moveable=FALSE;
-	map_mesh->flag.climbable=FALSE;
-	map_mesh->flag.touched=FALSE;
+	mesh->flag.on=TRUE;
+	mesh->flag.pass_through=FALSE;
+	mesh->flag.moveable=FALSE;
+	mesh->flag.climbable=FALSE;
+	mesh->flag.touched=FALSE;
 
-	map_mesh->vertexes=NULL;
-	map_mesh->polys=NULL;
+	mesh->nvertex=0;
+	mesh->vertexes=NULL;
+
+	mesh->npoly=0;
+	mesh->polys=NULL;
 
 	return(mesh_idx);
 }
@@ -86,41 +88,42 @@ int map_portal_mesh_add(map_type *map,int portal_idx)
 bool map_portal_mesh_delete(map_type *map,int portal_idx,int mesh_idx)
 {
 	int					sz;
-	portal_mesh_type	*portal_mesh;
-	map_mesh_type		*map_mesh,*nptr;
+	portal_type			*portal;
+	map_mesh_type		*mesh,*nptr;
 	
-	portal_mesh=&map->portals[portal_idx].mesh;
+	portal=&map->portals[portal_idx];
 
 		// free the mesh data
 
-	map_mesh=&portal_mesh->meshes[mesh_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
 
-	if (map_mesh->vertexes!=NULL) free(map_mesh->vertexes);
-	if (map_mesh->polys!=NULL) free(map_mesh->polys);
+	if (mesh->vertexes!=NULL) free(mesh->vertexes);
+	if (mesh->polys!=NULL) free(mesh->polys);
 
 		// detele the mesh
 
-	if (portal_mesh->nmesh<=1) {
-		portal_mesh->nmesh=0;
-		free(portal_mesh->meshes);
+	if (portal->mesh.nmesh<=1) {
+		portal->mesh.nmesh=0;
+		free(portal->mesh.meshes);
+		portal->mesh.meshes=NULL;
 		return(TRUE);
 	}
 
-	nptr=(map_mesh_type*)valloc((portal_mesh->nmesh-1)*sizeof(map_mesh_type));
+	nptr=(map_mesh_type*)valloc((portal->mesh.nmesh-1)*sizeof(map_mesh_type));
 	if (nptr==NULL) return(FALSE);
 
 	if (mesh_idx>0) {
 		sz=(mesh_idx+1)*sizeof(map_mesh_type);
-		memmove(nptr,portal_mesh->meshes,sz);
+		memmove(nptr,portal->mesh.meshes,sz);
 	}
 
-	sz=(portal_mesh->nmesh-mesh_idx)*sizeof(map_mesh_type);
-	if (sz>0) memmove(&nptr[mesh_idx],&portal_mesh->meshes[mesh_idx+1],sz);
+	sz=(portal->mesh.nmesh-mesh_idx)*sizeof(map_mesh_type);
+	if (sz>0) memmove(&nptr[mesh_idx],&portal->mesh.meshes[mesh_idx+1],sz);
 
-	free(portal_mesh->meshes);
+	free(portal->mesh.meshes);
 
-	portal_mesh->meshes=nptr;
-	portal_mesh->nmesh--;
+	portal->mesh.meshes=nptr;
+	portal->mesh.nmesh--;
 
 	return(TRUE);
 }
@@ -133,10 +136,11 @@ bool map_portal_mesh_delete(map_type *map,int portal_idx,int mesh_idx)
 
 bool map_portal_mesh_set_vertex_count(map_type *map,int portal_idx,int mesh_idx,int nvertex)
 {
-	map_mesh_type		*map_mesh;
+	map_mesh_type		*mesh;
 	d3pnt				*nptr;
 	
-	map_mesh=&map->portals[portal_idx].mesh.meshes[mesh_idx];
+	mesh=&map->portals[portal_idx].mesh.meshes[mesh_idx];
+	if (mesh->nvertex==nvertex) return(TRUE);
 
 		// new memory
 
@@ -145,27 +149,28 @@ bool map_portal_mesh_set_vertex_count(map_type *map,int portal_idx,int mesh_idx,
 
 		// move and delete old vertexes
 
-	if (map_mesh->vertexes!=NULL) {
-		if (map_mesh->nvertex!=0) {
-			memmove(nptr,map_mesh->vertexes,(map_mesh->nvertex*sizeof(d3pnt)));
+	if (mesh->vertexes!=NULL) {
+		if (mesh->nvertex!=0) {
+			memmove(nptr,mesh->vertexes,(mesh->nvertex*sizeof(d3pnt)));
 		}
-		free(map_mesh->vertexes);
+		free(mesh->vertexes);
 	}
 
 		// finish setup
 
-	map_mesh->vertexes=nptr;
-	map_mesh->nvertex=nvertex;
+	mesh->vertexes=nptr;
+	mesh->nvertex=nvertex;
 
 	return(TRUE);
 }
 
 bool map_portal_mesh_set_poly_count(map_type *map,int portal_idx,int mesh_idx,int npoly)
 {
-	map_mesh_type		*map_mesh;
+	map_mesh_type		*mesh;
 	map_mesh_poly_type	*nptr;
 
-	map_mesh=&map->portals[portal_idx].mesh.meshes[mesh_idx];
+	mesh=&map->portals[portal_idx].mesh.meshes[mesh_idx];
+	if (mesh->npoly==npoly) return(TRUE);
 
 		// new memory
 
@@ -174,17 +179,17 @@ bool map_portal_mesh_set_poly_count(map_type *map,int portal_idx,int mesh_idx,in
 
 		// move and delete old polygons
 
-	if (map_mesh->polys!=NULL) {
-		if (map_mesh->npoly!=0) {
-			memmove(nptr,map_mesh->polys,(map_mesh->npoly*sizeof(map_mesh_poly_type)));
+	if (mesh->polys!=NULL) {
+		if (mesh->npoly!=0) {
+			memmove(nptr,mesh->polys,(mesh->npoly*sizeof(map_mesh_poly_type)));
 		}
-		free(map_mesh->polys);
+		free(mesh->polys);
 	}
 
 		// finish setup
 
-	map_mesh->polys=nptr;
-	map_mesh->npoly=npoly;
+	mesh->polys=nptr;
+	mesh->npoly=npoly;
 
 	return(TRUE);
 }
@@ -317,7 +322,7 @@ int map_portal_mesh_add_poly(map_type *map,int portal_idx,int mesh_idx,int ptsz,
 		}
 
 			// need to add new vertex
-			
+
 		if (v_idx==-1) {
 			v_idx=map_portal_mesh_add_vertex(map,portal_idx,mesh_idx,&chk_pt);
 			if (v_idx==-1) {
