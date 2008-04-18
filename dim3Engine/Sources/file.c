@@ -260,6 +260,12 @@ bool game_file_save(char *err_str)
 	bool				ok;
 	file_save_header	head;
 	
+		// supergumba -- re-implement this
+		
+	strcpy(err_str,"Not implemented");
+	return(FALSE);
+
+	
 	progress_initialize("Saving");
 	progress_draw(5);
 	
@@ -403,6 +409,11 @@ bool game_file_load(char *file_name,char *err_str)
 	int					n,ntouch_segment,seg_idx;
 	char				*c,path[1024],fname[256];
 	file_save_header	head;
+	
+	// supergumba -- re-implement
+	
+	strcpy(err_str,"Not implemented");
+	return(FALSE);
 
 		// load and expand
 		
@@ -510,7 +521,7 @@ bool game_file_load(char *file_name,char *err_str)
 
 	for (n=0;n<ntouch_segment;n++) {
 		game_file_get_chunk(&seg_idx);
-		game_file_get_chunk(&map.segments[seg_idx]);
+	//	game_file_get_chunk(&map.segments[seg_idx]);
 	}
 
 	game_file_get_chunk(map.movements);

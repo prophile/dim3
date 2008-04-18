@@ -63,8 +63,6 @@ extern bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly);
 extern bool map_obj_move_xz(obj_type *obj,int x,int z);
 extern bool move_obj_check_xz_map_slide(obj_type *obj,int x,int z);
 extern bool move_obj_check_bump(obj_type *obj,int x,int z,int y);
-extern bool map_proj_move_xz(proj_type *proj,int ignore_obj_uid,int x,int z);
-extern bool move_proj_check_xz_map(proj_type *proj,int x,int z);
 extern bool map_spot_empty_sphere(int sx,int sy,int sz,int radius,int ignore_obj_uid,int *hit_obj_uid);
 extern bool map_spot_empty_object(obj_type *obj);
 

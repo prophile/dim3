@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit ÒCreated with dim3 TechnologyÓ is given on a single
+2. This credit â€œCreated with dim3 Technologyâ€ is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -189,7 +189,7 @@ void map_convert_liquid(map_type *map,int rn,segment_type *seg)
       
 ======================================================= */
 
-void map_convert_enlarge(map_type *map)
+void map_convert_enlarge(map_type *map,int seg_cnt,segment_type *seg_list)
 {
 	int					n,t;
 	portal_type			*portal;
@@ -216,9 +216,9 @@ void map_convert_enlarge(map_type *map)
 
 		// enlarge segments
 	
-	seg=map->segments;
+	seg=seg_list;
 
-	for (n=0;n!=map->nsegment;n++) {
+	for (n=0;n!=seg_cnt;n++) {
 
 		switch (seg->type) {
 
@@ -550,6 +550,33 @@ void map_convert_segments_ambient_wall(segment_type *seg)
     
 	ambient_wall=&seg->data.ambient_wall;
 	draw=&seg->draw;
+	
+	switch (ambient_wall->push) {
+		case ap_top:
+			ambient_wall->lz-=ambient_push_size;
+			ambient_wall->rz-=ambient_push_size;
+			break;
+		case ap_bottom:
+			ambient_wall->lz+=ambient_push_size;
+			ambient_wall->rz+=ambient_push_size;
+			break;
+		case ap_left:
+			ambient_wall->lx-=ambient_push_size;
+			ambient_wall->rx-=ambient_push_size;
+			break;
+		case ap_right:
+			ambient_wall->lx+=ambient_push_size;
+			ambient_wall->rx+=ambient_push_size;
+			break;
+		case ap_up:
+			ambient_wall->ty-=ambient_push_size;
+			ambient_wall->by-=ambient_push_size;
+			break;
+		case ap_down:
+			ambient_wall->ty+=ambient_push_size;
+			ambient_wall->by+=ambient_push_size;
+			break;
+	}
 
 	ambient_wall->ptsz=4;
 	ambient_wall->x[0]=ambient_wall->x[3]=ambient_wall->lx;
@@ -564,7 +591,6 @@ void map_convert_segments_ambient_wall(segment_type *seg)
 	draw->gy[0]=draw->gy[1]=seg->y_txtoff;
 	draw->gy[2]=draw->gy[3]=seg->y_txtoff+seg->y_txtfact;
 	
-	map_prepare_create_push_ambient_wall_segment_polygon(seg);
 	map_convert_segment_orient_uv(4,seg->draw.gx,seg->draw.gy,seg->txt_ang);
 }
 
@@ -579,7 +605,33 @@ void map_convert_segments_ambient_fc(segment_type *seg)
  	draw=&seg->draw;
  
     ptsz=ambient_fc->ptsz;
- 
+ 	
+		// handle pushes
+   
+    for (n=0;n!=ptsz;n++) {
+	
+		switch (ambient_fc->push) {
+			case ap_top:
+				ambient_fc->z[n]-=ambient_push_size;
+				break;
+			case ap_bottom:
+				ambient_fc->z[n]+=ambient_push_size;
+				break;
+			case ap_left:
+				ambient_fc->x[n]-=ambient_push_size;
+				break;
+			case ap_right:
+				ambient_fc->x[n]+=ambient_push_size;
+				break;
+			case ap_up:
+				ambient_fc->y[n]-=ambient_push_size;
+				break;
+			case ap_down:
+				ambient_fc->y[n]+=ambient_push_size;
+				break;
+		}
+    }
+
 		// get extents
 		
 	lft=rgt=ambient_fc->x[0];
@@ -608,18 +660,17 @@ void map_convert_segments_ambient_fc(segment_type *seg)
 		draw->gy[n]=y_txtoff+((y_txtfact*(float)(ambient_fc->z[n]-top))/ysize);
     }
 
-	map_prepare_push_ambient_fc_segment_polygon(seg);
 	map_convert_segment_orient_uv(ptsz,seg->draw.gx,seg->draw.gy,seg->txt_ang);
 }
 
-void map_convert_segments(map_type *map)
+void map_convert_segments(int seg_cnt,segment_type *seg_list)
 {
 	int				n;
 	segment_type	*seg;
 	
-	seg=map->segments;
+	seg=seg_list;
 
-	for (n=0;n!=map->nsegment;n++) {
+	for (n=0;n!=seg_cnt;n++) {
 
 		switch (seg->type) {
 
@@ -653,17 +704,15 @@ void map_convert_segments(map_type *map)
       
 ======================================================= */
 
-void map_convert_tesselate_curves_clips(map_type *map)
+int map_convert_tesselate_curves_clips(int seg_cnt,segment_type *seg_list)
 {
 	int					i,orig_nsegment;
 	segment_type		*seg;
-	        
-	map_prepare_setup_curve_constant(2);		// supergumba -- hard coded to high
  
 		// create new segments for curves
 		
-    seg=map->segments;
-    orig_nsegment=map->nsegment;
+    seg=seg_list;
+    orig_nsegment=seg_cnt;
     
 	for (i=0;i!=orig_nsegment;i++) {
     
@@ -671,24 +720,26 @@ void map_convert_tesselate_curves_clips(map_type *map)
 			
 			case sg_wall:
 				if (seg->curve!=cv_none) {
-					map_prepare_create_wall_curve(map,seg);
+					seg_cnt=map_prepare_create_wall_curve(seg_cnt,seg_list,seg);
 					break;
 				}
 				if ((seg->clip>=wc_tessel_start) && (seg->clip<=wc_tessel_end)) {
-					map_prepare_create_wall_clip(map,seg);
+					seg_cnt=map_prepare_create_wall_clip(seg_cnt,seg_list,seg);
 					break;
 				}
 				break;
 				
 			case sg_floor:
 			case sg_ceiling:
-				if (seg->curve!=cv_none) map_prepare_create_fc_curve(map,seg);
+				if (seg->curve!=cv_none) seg_cnt=map_prepare_create_fc_curve(seg_cnt,seg_list,seg);
 				break;
 				
 		}
         
         seg++;
 	}
+	
+	return(seg_cnt);
 }
 
 /* =======================================================
@@ -697,16 +748,16 @@ void map_convert_tesselate_curves_clips(map_type *map)
       
 ======================================================= */
 
-int map_convert_get_primitive_group_list(map_type *map,int rn,int *plist)
+int map_convert_get_primitive_group_list(int seg_cnt,segment_type *seg_list,int rn,int *plist)
 {
 	int				n,k,p_idx,p_cnt;
 	segment_type	*seg;
 
 		// translate all groups into primitives with high IDs
 
-	seg=map->segments;
+	seg=seg_list;
 
-	for (n=0;n!=map->nsegment;n++) {
+	for (n=0;n!=seg_cnt;n++) {
 		if ((seg->rn==rn) && (seg->group_idx!=-1)) seg->primitive_uid[0]=seg->group_idx*1000;
 		seg++;
 	}
@@ -714,9 +765,9 @@ int map_convert_get_primitive_group_list(map_type *map,int rn,int *plist)
 		// sort primitives
 
 	p_cnt=0;
-	seg=map->segments;
+	seg=seg_list;
 
-	for (n=0;n!=map->nsegment;n++) {
+	for (n=0;n!=seg_cnt;n++) {
 
 		if ((seg->rn==rn) && (seg->primitive_uid[0]!=-1)) {
 			
@@ -747,7 +798,7 @@ int map_convert_get_primitive_group_list(map_type *map,int rn,int *plist)
       
 ======================================================= */
 
-bool map_convert_segment_section_to_mesh(map_type *map,int rn,int primitive_uid,int seg_type,d3pnt *vlist,int vlist_sz)
+bool map_convert_segment_section_to_mesh(map_type *map,int seg_cnt,segment_type *seg_list,int rn,int primitive_uid,int seg_type,d3pnt *vlist,int vlist_sz)
 {
 	int					n,nvertex,npoly,mesh_idx;
 	portal_type			*portal;
@@ -764,8 +815,8 @@ bool map_convert_segment_section_to_mesh(map_type *map,int rn,int primitive_uid,
 
 	nvertex=npoly=0;
 
-	for (n=0;n!=map->nsegment;n++) {
-		seg=&map->segments[n];
+	for (n=0;n!=seg_cnt;n++) {
+		seg=&seg_list[n];
 		if (seg->rn!=rn) continue;
 		if (seg->primitive_uid[0]!=primitive_uid) continue;
 		if ((seg_type!=-1) && (seg->type!=seg_type)) continue;
@@ -825,8 +876,8 @@ bool map_convert_segment_section_to_mesh(map_type *map,int rn,int primitive_uid,
 
 	map_mesh->npoly=0;
 
-	for (n=0;n!=map->nsegment;n++) {
-		seg=&map->segments[n];
+	for (n=0;n!=seg_cnt;n++) {
+		seg=&seg_list[n];
 		if (seg->rn!=rn) continue;
 		if (seg->primitive_uid[0]!=primitive_uid) continue;
 		if ((seg_type!=-1) && (seg->type!=seg_type)) continue;
@@ -867,7 +918,7 @@ bool map_convert_segment_section_to_mesh(map_type *map,int rn,int primitive_uid,
       
 ======================================================= */
 
-bool map_convert_v1(map_type *map)
+bool map_convert_v1(map_type *map,int seg_cnt,segment_type *seg_list)
 {
 	int					n,i,p,vlist_sz,plist_sz;
 	int					*plist;
@@ -914,8 +965,8 @@ bool map_convert_v1(map_type *map)
 		// enlarge map and setup vertexes
 		// and UVs inside the segments
 
-	map_convert_enlarge(map);
-	map_convert_segments(map);
+	map_convert_enlarge(map,seg_cnt,seg_list);
+	map_convert_segments(seg_cnt,seg_list);
 	
 		// force portals to be centered in map bounds
 		
@@ -924,7 +975,7 @@ bool map_convert_v1(map_type *map)
 		// tesselate up any curved or clipped segments into
 		// multiple segments before converting to a mesh
 
-	map_convert_tesselate_curves_clips(map);
+	seg_cnt=map_convert_tesselate_curves_clips(seg_cnt,seg_list);
 
 		// create a mesh out of all segments in a portal
 
@@ -937,11 +988,11 @@ bool map_convert_v1(map_type *map)
 			// create meshes from all primitives
 			// and groups
 
-		plist_sz=map_convert_get_primitive_group_list(map,n,plist);
+		plist_sz=map_convert_get_primitive_group_list(seg_cnt,seg_list,n,plist);
 
 		for (p=0;p!=plist_sz;p++) {
 
-			if (!map_convert_segment_section_to_mesh(map,n,plist[p],-1,vlist,vlist_sz)) {
+			if (!map_convert_segment_section_to_mesh(map,seg_cnt,seg_list,n,plist[p],-1,vlist,vlist_sz)) {
 				free(vlist);
 				free(plist);
 				return(FALSE);
@@ -950,31 +1001,31 @@ bool map_convert_v1(map_type *map)
 
 			// create meshes for each left over type
 
-		if (!map_convert_segment_section_to_mesh(map,n,-1,sg_wall,vlist,vlist_sz)) {
+		if (!map_convert_segment_section_to_mesh(map,seg_cnt,seg_list,n,-1,sg_wall,vlist,vlist_sz)) {
 			free(vlist);
 			free(plist);
 			return(FALSE);
 		}
 
-		if (!map_convert_segment_section_to_mesh(map,n,-1,sg_floor,vlist,vlist_sz)) {
+		if (!map_convert_segment_section_to_mesh(map,seg_cnt,seg_list,n,-1,sg_floor,vlist,vlist_sz)) {
 			free(vlist);
 			free(plist);
 			return(FALSE);
 		}
 
-		if (!map_convert_segment_section_to_mesh(map,n,-1,sg_ceiling,vlist,vlist_sz)) {
+		if (!map_convert_segment_section_to_mesh(map,seg_cnt,seg_list,n,-1,sg_ceiling,vlist,vlist_sz)) {
 			free(vlist);
 			free(plist);
 			return(FALSE);
 		}
 
-		if (!map_convert_segment_section_to_mesh(map,n,-1,sg_ambient_wall,vlist,vlist_sz)) {
+		if (!map_convert_segment_section_to_mesh(map,seg_cnt,seg_list,n,-1,sg_ambient_wall,vlist,vlist_sz)) {
 			free(vlist);
 			free(plist);
 			return(FALSE);
 		}
 
-		if (!map_convert_segment_section_to_mesh(map,n,-1,sg_ambient_fc,vlist,vlist_sz)) {
+		if (!map_convert_segment_section_to_mesh(map,seg_cnt,seg_list,n,-1,sg_ambient_fc,vlist,vlist_sz)) {
 			free(vlist);
 			free(plist);
 			return(FALSE);
@@ -993,19 +1044,15 @@ bool map_convert_v1(map_type *map)
 	
 		portal->liquid.nliquid=0;
 
-		seg=map->segments;
+		seg=seg_list;
 
-		for (i=0;i!=map->nsegment;i++) {
+		for (i=0;i!=seg_cnt;i++) {
 			if ((seg->rn==n) && (seg->type==sg_liquid)) map_convert_liquid(map,n,seg);
 			seg++;
 		}
 		
 		portal++;
 	}
-
-		// turn off all segments
-
-	map->nsegment=0;
 
 	return(TRUE);
 }
@@ -1084,20 +1131,28 @@ void read_single_segment(int tag,segment_type *seg,int rn,int seg_type)
 
 bool decode_map_v1_xml(map_type *map,int map_head)
 {
-	int						i,k,j,y,idx,
+	int						i,k,j,y,idx,seg_cnt,
 							main_portal_tag,portal_tag,msg_tag,main_path_tag,path_tag,
 							main_seg_tag,seg_tag,main_light_tag,light_tag,main_sound_tag,sound_tag,
 							main_particle_tag,particle_tag,main_node_tag,node_tag,
 							main_obj_tag,obj_tag,tag,id,cnt;
+	bool					convert_ok;
     portal_type				*portal;
 	portal_sight_list_type	*sight;
-    segment_type			*seg;
+    segment_type			*seg_list,*seg;
     map_light_type			*light;
     map_sound_type			*sound;
 	map_particle_type		*particle;
     node_type				*node;
     spot_type				*spot;
 	map_scenery_type		*scenery;
+	
+		// temporary segments for converting from v1 to v2
+		
+	seg_cnt=0;
+	
+	seg_list=(segment_type*)valloc(max_segment*sizeof(segment_type));
+	if (seg_list==NULL) return(FALSE);
 	        
         // portals
 
@@ -1181,8 +1236,8 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 				seg_tag=xml_findfirstchild("Wall",main_seg_tag);
                 
                 for (k=0;k!=cnt;k++) {
-					seg=&map->segments[map->nsegment];
-					map->nsegment++;
+					seg=&seg_list[seg_cnt];
+					seg_cnt++;
 					
 					read_single_segment(seg_tag,seg,i,sg_wall);
 
@@ -1204,8 +1259,8 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 				seg_tag=xml_findfirstchild("Floor",main_seg_tag);
                 
                 for (k=0;k!=cnt;k++) {
-					seg=&map->segments[map->nsegment];
-					map->nsegment++;
+					seg=&seg_list[seg_cnt];
+					seg_cnt++;
 					
 					read_single_segment(seg_tag,seg,i,sg_floor);
 					
@@ -1230,8 +1285,8 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 				seg_tag=xml_findfirstchild("Ceiling",main_seg_tag);
                 
                 for (k=0;k!=cnt;k++) {
-					seg=&map->segments[map->nsegment];
-					map->nsegment++;
+					seg=&seg_list[seg_cnt];
+					seg_cnt++;
 					
 					read_single_segment(seg_tag,seg,i,sg_ceiling);
 					
@@ -1256,8 +1311,8 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 				seg_tag=xml_findfirstchild("Liquid",main_seg_tag);
                 
                 for (k=0;k!=cnt;k++) {
-					seg=&map->segments[map->nsegment];
-					map->nsegment++;
+					seg=&seg_list[seg_cnt];
+					seg_cnt++;
 					
 					read_single_segment(seg_tag,seg,i,sg_liquid);
 					
@@ -1279,8 +1334,8 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 				seg_tag=xml_findfirstchild("Ambient",main_seg_tag);
                 
                 for (k=0;k!=cnt;k++) {
-					seg=&map->segments[map->nsegment];
-					map->nsegment++;
+					seg=&seg_list[seg_cnt];
+					seg_cnt++;
 					
 					read_single_segment(seg_tag,seg,i,sg_ambient_wall);
 					
@@ -1302,8 +1357,8 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 				seg_tag=xml_findfirstchild("Ambient_FC",main_seg_tag);
                 
                 for (k=0;k!=cnt;k++) {
-					seg=&map->segments[map->nsegment];
-					map->nsegment++;
+					seg=&seg_list[seg_cnt];
+					seg_cnt++;
 					
 					read_single_segment(seg_tag,seg,i,sg_ambient_fc);
 					
@@ -1504,5 +1559,9 @@ bool decode_map_v1_xml(map_type *map,int map_head)
         }
     }
 
-	return(map_convert_v1(map));
+	convert_ok=map_convert_v1(map,seg_cnt,seg_list);
+	
+	free(seg_list);
+	
+	return(convert_ok);
 }

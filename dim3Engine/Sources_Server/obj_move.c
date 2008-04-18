@@ -1299,6 +1299,7 @@ inline bool object_move_with_move(obj_type *obj,int xmove,int zmove)
 // supergumba -- this all needs work
 bool object_move_with_wall_segment_check_wall(d3box *box,int seg_idx,int xmove,int zmove)
 {
+/*
 	int					lx,rx,lz,rz;
 	wall_segment_data	*wall;
 	
@@ -1318,10 +1319,13 @@ bool object_move_with_wall_segment_check_wall(d3box *box,int seg_idx,int xmove,i
 		// check x/z (2D) wall
 			
 	return(box_collide_2D_line(box,lx,rx,lz,rz));
+	*/
+	return(FALSE);
 }
 
 void object_move_with_wall_segment(int seg_idx,int xmove,int zmove)
 {
+/* supergumba -- work on this
 	int			i;
 	d3box		box;
 	obj_type	*obj;
@@ -1345,6 +1349,7 @@ void object_move_with_wall_segment(int seg_idx,int xmove,int zmove)
 
 		obj++;
 	}
+	*/
 }
 
 void object_move_with_standing_mesh(int portal_idx,int mesh_idx,int xmove,int zmove)

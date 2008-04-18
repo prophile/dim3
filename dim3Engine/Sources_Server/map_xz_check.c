@@ -46,6 +46,7 @@ extern server_type		server;
 
 void map_clipped_wall_y_at_spot(int x,int z,int lx,int lz,int rx,int rz,int *ty,int *by,int clip)
 {
+/* supergumba
 	int			ys,hitdist,totdist;
 	
 	hitdist=distance_2D_get(x,z,lx,lz);
@@ -66,10 +67,12 @@ void map_clipped_wall_y_at_spot(int x,int z,int lx,int lz,int rx,int rz,int *ty,
 			*by=(*by)-ys;
 			break;
 	}
+	*/
 }
 
 int move_check_xz_segments(d3box *box,int cnt,short *sptr)
 {
+/*
 	int					i,idx,
 						lx,rx,lz,rz,ty,by,clip;
 	segment_type		*seg;
@@ -109,7 +112,7 @@ int move_check_xz_segments(d3box *box,int cnt,short *sptr)
 			
 		if (box_collide_2D_line(box,lx,rx,lz,rz)) return(idx);
 	}
-	
+	*/
 	return(-1);
 }
 
@@ -347,65 +350,6 @@ bool move_obj_check_bump(obj_type *obj,int x,int z,int y)
 	return(move_check_xz_portals(&box)==-1);
 }	
 
-/* =======================================================
-
-      Move Projectile In XZ Map
-      
-======================================================= */
-
-// supergumba -- can delete all this
-
-bool map_proj_move_xz(proj_type *proj,int ignore_obj_uid,int x,int z)
-{
-	/* supergumba
-	int				wall_seg_idx,obj_uid;
-	d3box			box;
-	
-		// no contact
-		
-	proj->contact.wall_seg_idx=-1;
-	proj->contact.obj_uid=-1;
-	
-		// get box
-		
-	box_create_from_projectile(&box,proj);
-	box_add_movement(&box,x,z);
-	if (!box_in_map(&box)) return(TRUE);
-	
-		// wall segments
-
-	wall_seg_idx=move_check_xz_portals(&box);
-	if (wall_seg_idx!=-1) {
-		proj->contact.wall_seg_idx=wall_seg_idx;
-		return(TRUE);
-	}
-
-		// objects
-		
-	obj_uid=collide_find_object_for_projectile_hit(proj,ignore_obj_uid);
-	if (obj_uid!=-1) {
-		proj->contact.obj_uid=obj_uid;
-		return(TRUE);
-	}
-	*/
-	return(FALSE);
-}
-
-bool move_proj_check_xz_map(proj_type *proj,int x,int z)
-{
-	int			ignore_obj_uid;
-	
-	ignore_obj_uid=-1;
-	if (proj->parent_grace>0) ignore_obj_uid=proj->obj_uid;			// parent grace is on
-	
-	if (map_proj_move_xz(proj,ignore_obj_uid,x,z)) return(TRUE);
-	
-	proj->pos.x+=x;
-	proj->pos.z+=z;
-	
-	return(FALSE);
-}
-	
 /* =======================================================
 
       Map Spot Empty

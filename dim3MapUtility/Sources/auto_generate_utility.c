@@ -58,15 +58,14 @@ void map_auto_generate_clear(map_type *map)
 		// clear all other settings
 		
 	map->nportal=0;
+	map->nspot=0;
+	map->nnode=0;
+	map->nscenery=0;
 	map->nlight=0;
 	map->nsound=0;
 	map->nparticle=0;
-	map->nspot=0;
-	map->nscenery=0;
-	map->nnode=0;
-	map->nsegment=0;
-	map->ngroup=0;
 	map->nmovement=0;
+	map->ngroup=0;
 }
 
 /* =======================================================
@@ -275,25 +274,6 @@ int map_auto_generate_get_ceiling_type(auto_generate_settings_type *ags)
 
 /* =======================================================
 
-      Fix Segments UVs
-      
-======================================================= */
-
-void map_auto_generate_fix_segments_uv(map_type *map)
-{
-	register int		i;
-	segment_type		*seg;
-	
-	seg=map->segments;
-	
-	for (i=0;i!=map->nsegment;i++) {
-	//	map_segment_reset_texture_uvs(map,seg);		// supergumba -- fix!
-		seg++;
-	}
-}
-
-/* =======================================================
-
       Polygon Utilities
       
 ======================================================= */
@@ -431,147 +411,6 @@ bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z
 
 /* =======================================================
 
-      Segment Adding
-      
-======================================================= */
-
-void map_auto_generate_segment_start(int group_idx,int primitive_uid,int fill,bool moveable)
-{
-	map_ag_seg_group_idx=group_idx;
-	map_ag_seg_primitive_uid=primitive_uid;
-	map_ag_seg_fill=fill;
-	map_ag_seg_moveable=moveable;
-}
-
-int map_auto_generate_segment_wall(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty,int by,int clip)
-{
-	segment_type	*seg;
-
-	return(-1);
-	
-	if (map->nsegment==max_segment) return(-1);
-	
-	seg=&map->segments[map->nsegment];
-	
-	seg->type=sg_wall;
-	seg->rn=rn;
-	seg->fill=map_ag_seg_fill;
-    seg->clip=clip;
-    seg->curve=cv_none;
-	seg->x_txtoff=seg->y_txtoff=0;
-	seg->x_txtfact=seg->y_txtfact=1;
-    seg->x_shift=seg->y_shift=0;
-	seg->txt_ang=0;
-	seg->dark_factor=1.0f;
-    seg->alpha=1.0f;
-	seg->group_idx=map_ag_seg_group_idx;
-	seg->primitive_uid[0]=map_ag_seg_primitive_uid;
-    seg->pass_through=FALSE;
-	seg->moveable=map_ag_seg_moveable;
-	seg->lock=FALSE;
-	seg->on=TRUE;
-	
-	seg->data.wall.lx=lx;
-	seg->data.wall.rx=rx;
-	seg->data.wall.lz=lz;
-	seg->data.wall.rz=rz;
-	seg->data.wall.ty=ty;
-	seg->data.wall.by=by;
-
-	map->nsegment++;
-	
-	return(map->nsegment-1);
-}
-
-void map_auto_generate_segment_fc(map_type *map,int rn,int type,int lx,int lz,int rx,int rz,int y,int yadd,int lower_mode)
-{
-	segment_type	*seg;
-
-	return;
-	
-	if (map->nsegment==max_segment) return;
-	
-		// create segment
-		
-	seg=&map->segments[map->nsegment];
-	
-	seg->type=type;
-	seg->rn=rn;
-	seg->fill=map_ag_seg_fill;
-    seg->clip=wc_none;
-    seg->curve=cv_none;
-	seg->x_txtoff=seg->y_txtoff=0;
-	seg->x_txtfact=seg->y_txtfact=1;
-    seg->x_shift=seg->y_shift=0;
-	seg->txt_ang=0;
-	seg->dark_factor=1.0f;
-    seg->alpha=1.0f;
-	seg->group_idx=map_ag_seg_group_idx;
-	seg->primitive_uid[0]=map_ag_seg_primitive_uid;
-    seg->pass_through=FALSE;
-	seg->moveable=map_ag_seg_moveable;
-	seg->lock=FALSE;
-	seg->on=TRUE;
-	
-	seg->data.fc.ptsz=4;
-	
-	seg->data.fc.x[0]=seg->data.fc.x[3]=lx;
-	seg->data.fc.x[1]=seg->data.fc.x[2]=rx;
-	seg->data.fc.z[0]=seg->data.fc.z[1]=lz;
-	seg->data.fc.z[2]=seg->data.fc.z[3]=rz;
-		
-	seg->data.fc.y[0]=seg->data.fc.y[1]=seg->data.fc.y[2]=seg->data.fc.y[3]=y;
-	
-	if (type==sg_ceiling) {
-	
-		switch (lower_mode) {
-			case ag_ceiling_lower_neg_x:
-				seg->data.fc.y[0]+=yadd;
-				seg->data.fc.y[3]+=yadd;
-				break;
-			case ag_ceiling_lower_pos_x:
-				seg->data.fc.y[1]+=yadd;
-				seg->data.fc.y[2]+=yadd;
-				break;
-			case ag_ceiling_lower_neg_z:
-				seg->data.fc.y[0]+=yadd;
-				seg->data.fc.y[1]+=yadd;
-				break;
-			case ag_ceiling_lower_pos_z:
-				seg->data.fc.y[2]+=yadd;
-				seg->data.fc.y[3]+=yadd;
-				break;
-		}
-	}
-	
-	else {
-	
-		switch (lower_mode) {
-			case ag_ceiling_lower_neg_x:
-				seg->data.fc.y[0]-=yadd;
-				seg->data.fc.y[3]-=yadd;
-				break;
-			case ag_ceiling_lower_pos_x:
-				seg->data.fc.y[1]-=yadd;
-				seg->data.fc.y[2]-=yadd;
-				break;
-			case ag_ceiling_lower_neg_z:
-				seg->data.fc.y[0]-=yadd;
-				seg->data.fc.y[1]-=yadd;
-				break;
-			case ag_ceiling_lower_pos_z:
-				seg->data.fc.y[2]-=yadd;
-				seg->data.fc.y[3]-=yadd;
-				break;
-		}
-	
-	}
-	
-	map->nsegment++;
-}
-
-/* =======================================================
-
       Create Simple Lights
       
 ======================================================= */
@@ -628,40 +467,15 @@ void map_auto_generate_add_simple_lights(map_type *map)
 
 void map_auto_generate_add_player_spot(map_type *map)
 {
-	register int			n;
-	register segment_type	*seg;
-	int						x,y,z,seg_idx;
-	spot_type				*spot;
+	int					x,y,z,ty;
+	spot_type			*spot;
 	
 	if (map->nportal==0) return;
-	
-		// find first floor in first portal
 		
-	seg_idx=-1;
-	
-	seg=map->segments;
-	
-	for (n=0;n!=map->nsegment;n++) {
-		if ((seg->rn==0) && (seg->type==sg_floor)) {
-			seg_idx=n;
-			break;
-		}
-		seg++;
-	}
-	
 		// spot place
-
-	if (seg_idx!=-1) {
-//		map_segment_calculate_center(map,seg_idx,&x,&y,&z);		// supergumba -- fix all this
-	}
-	else {
-		map_portal_calculate_center(map,0,&x,&y,&z);
-	}
 	
-	if (x<20) x=20;
-	if (z<20) z=20;			// sanity check for getting caught in walls
-	
-	y--;
+	map_portal_calculate_center(map,0,&x,&y,&z);
+	map_portal_calculate_y_extent(map,0,&ty,&y);
 	
 		// add spot
 		

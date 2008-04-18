@@ -73,6 +73,8 @@ void shadow_render_stencil_add(int add)
 
 int shadow_render_stencil_wall(int sptr_cnt,short *sptr,int ty,int y,int cnt,int *seg_idx)
 {
+/* supergumba -- will need to rewrite all this
+
 	int					i,n,sx,sy,sz,idx;
 	segment_type		*seg;
 	wall_segment_data	*wall;
@@ -105,10 +107,15 @@ int shadow_render_stencil_wall(int sptr_cnt,short *sptr,int ty,int y,int cnt,int
 	}
 	
 	return(cnt);
+	*/
+	
+	return(0);
 }
 
 int shadow_render_stencil_fc(int sptr_cnt,short *sptr,int ty,int by,int cnt,int *seg_idx)
 {
+/* supergumba -- will need to rewrite all this
+
 	int					i,n,sx,sy,sz,idx;
 	segment_type		*seg;
 	fc_segment_data		*fc;
@@ -141,6 +148,9 @@ int shadow_render_stencil_fc(int sptr_cnt,short *sptr,int ty,int by,int cnt,int 
 	}
 	
 	return(cnt);
+	*/
+	
+	return(0);
 }
 
 int shadow_render_stencil_portal(portal_type *portal,int y,int ty,int by,int cnt,int *seg_idx)
@@ -229,6 +239,7 @@ int shadow_render_stencil_map(model_draw_shadow *shadow,int *seg_idx)
       
 ======================================================= */
 
+/* supergumba -- rewrite
 void shadow_render_draw_wall(segment_type *seg,int x,int y,int z,int *bx,int *bz,float gx,float gy,int high)
 {
 	int			n,kx,kz,lx,rx,lz,rz,by,px[4],pz[4],py[4],d;
@@ -347,9 +358,11 @@ void shadow_render_draw_segment(segment_type *seg,int x,int y,int z,int *bx,int 
 			return;
     }
 }
+*/
 
 void shadow_render_draw_map(model_draw_shadow *shadow,float gx,float gy,int seg_cnt,int *seg_idx)
 {
+/*
 	int				n,x,y,z,high;
 	int				*px,*pz;
 	float			ang_y;
@@ -390,6 +403,7 @@ void shadow_render_draw_map(model_draw_shadow *shadow,float gx,float gy,int seg_
 	glDisable(GL_STENCIL_TEST);
 
 	gl_shadow_texture_bind_end();
+	*/
 }
 
 /* =======================================================

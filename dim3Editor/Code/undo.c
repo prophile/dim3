@@ -33,7 +33,7 @@ and can be sold or given away.
 extern map_type						map;
 
 int									undo_type;
-segment_type						*undo_segments=NULL;
+//segment_type						*undo_segments=NULL;
 
 /* =======================================================
 
@@ -43,12 +43,14 @@ segment_type						*undo_segments=NULL;
 
 void undo_clear(void)
 {
+/*
 	DisableMenuItem(GetMenuRef(app_menu_edit),1);
 	
 	if (undo_segments!=NULL) {
 		free(undo_segments);
 		undo_segments=NULL;
 	}
+	*/
 }
 
 void undo_set_segment_move(void)
@@ -154,6 +156,7 @@ void undo_get_segment_move(void)
 
 void undo_run(void)
 {
+/*
 	switch (undo_type) {
 	
 		case undo_type_segment_move:
@@ -164,5 +167,6 @@ void undo_run(void)
 	}
 	
 	undo_clear();
+	*/
 }
 

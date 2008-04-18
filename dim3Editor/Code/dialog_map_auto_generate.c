@@ -237,7 +237,6 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	if (!first) {
 		dialog_set_value(dialog_map_generate_wind,kMapGenerateMapSize,0,ag_settings.map.sz);
 		dialog_set_value(dialog_map_generate_wind,kMapGeneratePortalSize,0,ag_settings.portal.sz);
-		dialog_set_value(dialog_map_generate_wind,kMapGeneratePortalHigh,0,ag_settings.portal.high);
 		
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCeilingType1,0,ag_settings.ceiling.type_on[0]);
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCeilingType2,0,ag_settings.ceiling.type_on[1]);
@@ -246,10 +245,6 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCorridorType1,0,ag_settings.corridor.type_on[0]);
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCorridorType2,0,ag_settings.corridor.type_on[1]);
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCorridorType3,0,ag_settings.corridor.type_on[2]);
-		
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateStepSize,0,ag_settings.steps.sz);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateStepHigh,0,ag_settings.steps.high);
-		dialog_set_int(dialog_map_generate_wind,kMapGenerateRampSize,0,ag_settings.ramp.sz);
 	
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalWall,0,FALSE,ag_settings.texture.portal_wall);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalFloor,0,FALSE,ag_settings.texture.portal_floor);
@@ -314,7 +309,6 @@ bool dialog_map_auto_generate_setting_run(bool first)
 
 	ag_settings.map.sz=dialog_get_value(dialog_map_generate_wind,kMapGenerateMapSize,0);
 	ag_settings.portal.sz=dialog_get_value(dialog_map_generate_wind,kMapGeneratePortalSize,0);
-	ag_settings.portal.high=dialog_get_value(dialog_map_generate_wind,kMapGeneratePortalHigh,0);
 
 	ag_settings.ceiling.type_on[0]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCeilingType1,0);
 	ag_settings.ceiling.type_on[1]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCeilingType2,0);
@@ -323,10 +317,6 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	ag_settings.corridor.type_on[0]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCorridorType1,0);
 	ag_settings.corridor.type_on[1]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCorridorType2,0);
 	ag_settings.corridor.type_on[2]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCorridorType3,0);
-
-	ag_settings.steps.sz=dialog_get_int(dialog_map_generate_wind,kMapGenerateStepSize,0);
-	ag_settings.steps.high=dialog_get_int(dialog_map_generate_wind,kMapGenerateStepHigh,0);
-	ag_settings.ramp.sz=dialog_get_int(dialog_map_generate_wind,kMapGenerateRampSize,0);
 	
 	ag_settings.texture.portal_wall=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalWall,0,FALSE);
 	ag_settings.texture.portal_floor=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalFloor,0,FALSE);

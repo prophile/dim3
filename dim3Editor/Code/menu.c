@@ -313,16 +313,16 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			undo_clear();
 			return(noErr);
 			
-		case kCommandImportOBJ:
-			select_clear();
-			import_obj();
-			undo_clear();
+		case kCommandImportOBJ:				// supergumba
+		//	select_clear();
+		//	import_obj();
+		//	undo_clear();
 			return(noErr);
 			
-		case kCommandImportHeightMap:
-			select_clear();
-			import_height_map();
-			undo_clear();
+		case kCommandImportHeightMap:		// supergumba
+		//	select_clear();
+		//	import_height_map();
+		//	undo_clear();
 			return(noErr);
 			
 		case kCommandAutoGenerateMap:
@@ -606,6 +606,14 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			select_move(cr,0,0,-map_enlarge);
             main_wind_draw();
  			return(noErr);
+			
+			// face menu
+			
+		case kCommandFaceDelete:
+			return(noErr);
+			
+		case kCommandFaceHole1:
+			return(noErr);
 
 	}
 	

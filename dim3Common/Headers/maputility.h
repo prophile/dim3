@@ -46,7 +46,6 @@ extern char light_type_str[][32];
 //
 
 #define max_portal									256				// maximum number of portals in a map
-#define max_segment									32768			// maximum number of segments in a map
 
 #define max_map_scenery								512				// maximum number of ambient scenery
 #define max_map_light								256				// maximum number of ambient lights
@@ -56,7 +55,7 @@ extern char light_type_str[][32];
 #define max_sight_list								64				// maximum number of portals that can be seen from current portal
 #define max_sight_link								8				// maximum number of sight links from a single portal
 
-#define max_group									128				// maximum number of segment groups
+#define max_group									128				// maximum number of mesh groups
 
 #define max_map_texture								128				// maximum number of textures in a map
 
@@ -91,60 +90,6 @@ extern char light_type_str[][32];
 
 #define proj_reflect_slope_max_y					0.5f			// how big a slope before bounces become reflects
 #define proj_bounce_min_speed						10.0f			// minimum speed before bounces cancel
-
-#define ambient_push_size							4				// pixel push for ambients
-
-//
-// segment constants
-//
-
-#define sg_wall										0					// segment types
-#define sg_floor									1
-#define sg_ceiling									2
-#define sg_liquid									3
-#define sg_ambient_wall								4
-#define sg_ambient_fc								5
-
-#define max_primitive_stack							8					// size of primitive stack (for hierarchy)
-
-#define no_curve									0
-
-// supergumba -- can delete a lot of this
-
-#define wc_none										0
-#define wc_top										1
-#define wc_bottom									2
-#define wc_slant									3
-#define wc_top_curve								4
-#define wc_top_arch									5
-#define wc_bottom_curve								6
-#define wc_bottom_arch								7
-#define wc_top_curve_arch							8
-#define wc_bottom_curve_arch						9
-
-#define wc_tessel_start								4					// which wall clippings cause tesselation?
-#define wc_tessel_end								9
-
-#define cv_none										0
-#define cv_forward									1
-#define cv_backward									2
-
-#define ap_none										0
-#define ap_top										1
-#define ap_bottom									2
-#define ap_left										3
-#define ap_right									4
-#define ap_up										5
-#define ap_down										6
-
-//
-// texture angles
-//
-
-#define ta_0										0
-#define ta_90										1
-#define ta_180										2
-#define ta_270										3
 
 //
 // lights
@@ -342,86 +287,6 @@ typedef struct		{
 						int							mesh_idx,poly_idx;
 						float						dist;
 					} map_mesh_poly_sort_type;
-
-//
-// segment structures
-//
-
-typedef struct		{
-                        int							lx,rx,lz,rz,ty,by,
-													ptsz,x[4],z[4],y[4];
-					} wall_segment_data;
-					
-typedef struct		{
-						int							ptsz,x[8],z[8],y[8],
-													min_x,max_x,min_z,max_z,min_y,max_y;
-						float						slope_y,slope_ang_y,slope_move_x,slope_move_z;
-						bool						flat;
-					} fc_segment_data;
-
-typedef struct		{
-						short						harm,drown_harm,wavesize,
-													tiderate,tidesize,tidedirection;
-						int							y,lft,rgt,top,bot,
-													vl_idx_start,vl_x_sz,vl_z_sz,
-													drown_tick;
-						float						speed_alter,tint_alpha;
-						d3col						col;
-					} liquid_segment_data;
-
-typedef struct		{
-						short						push;
-						int							lx,rx,lz,rz,ty,by,
-													ptsz,x[4],z[4],y[4];
-					} ambient_wall_segment_data;
-					
-typedef struct		{
-						short						push;
-						int							ptsz,x[8],z[8],y[8],
-													min_x,max_x,min_z,max_z,min_y,max_y;
-					} ambient_fc_segment_data;
-					
-typedef union		{
-						wall_segment_data			wall;
-						fc_segment_data				fc;
-						liquid_segment_data			liquid;
-						ambient_wall_segment_data	ambient_wall;
-						ambient_fc_segment_data		ambient_fc;
-					} segment_data;
-
-typedef struct		{
-						int							ptsz;
-						int							idx[8];
-						float						gx[8],gy[8];
-					} segment_draw_type;
-
-typedef struct		{
-						int							trig_count,
-													trig_vertex_idx[light_tessel_max_vertex];
-					} segment_light_type;
-					
-typedef struct		{
-						int							stencil_pass,stencil_idx,
-													lod_dist;
-						float						normal[3];
-						bool						light_simple;
-					} segment_render_type;
-
-typedef struct		{
-						short						type,rn,group_idx,
-													primitive_uid[max_primitive_stack],
-													tag,clip,curve,fill,txt_ang,txt_offset,
-													decal_count;
-						float						x_txtfact,y_txtfact,x_txtoff,y_txtoff,
-													x_shift,y_shift,dark_factor,alpha;
-						bool						on,pass_through,moveable,shiftable,climbable,
-													lock,simple_tessel,touched;
-						d3pnt						middle;
-						segment_draw_type			draw;
-						segment_light_type			light;
-						segment_render_type			render;
-						segment_data				data;
-					} segment_type;
 
 //
 // portal structures
@@ -669,8 +534,7 @@ typedef struct		{
 typedef struct		{
 						int							nportal,nlight,nsound,nparticle,
 													nspot,nnode,nscenery,nmovement,
-													ngroup,nsegment,
-													start_game_tick;
+													ngroup,start_game_tick;
 													
 						map_info_type				info;
 						
@@ -700,7 +564,6 @@ typedef struct		{
 						movement_type				*movements;
 						
 						group_type					*groups;
-						segment_type				*segments;
 						
 					} map_type;
 

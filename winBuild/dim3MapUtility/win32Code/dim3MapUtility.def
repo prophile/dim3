@@ -105,9 +105,8 @@ EXPORTS
 	map_delete_texture_frame						@311
 
 	map_auto_generate_clear							@320
-	map_auto_generate_fix_segments_uv				@321
-	map_auto_generate_add_simple_lights				@322
-	map_auto_generate_add_player_spot				@323
+	map_auto_generate_add_simple_lights				@321
+	map_auto_generate_add_player_spot				@322
 
 	map_auto_generate								@330
 	map_auto_generate_test							@331

@@ -50,12 +50,6 @@ extern void textdecode_get_piece(int i,int k,char *txt);
 // import obj map
 //
 
-extern bool import_obj_segment_type(int npt,int *pvtx,segment_type *seg);
-extern bool import_obj_run(char *path,char *err_str);
-extern bool import_obj_fix_segment_xz_touch_wall_top(int x,int z,int y);
-extern void import_obj_fix_segments(void);
-extern void import_obj(void);
-
 //
 // import height map
 //

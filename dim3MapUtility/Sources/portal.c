@@ -190,29 +190,23 @@ void map_portal_calculate_center(map_type *map,int rn,int *x,int *y,int *z)
 
 void map_portal_delete(map_type *map,int rn)
 {
-	int				n,i;
+	int				n;
+	portal_type		*portal;
 	
-		// delete segments
-	
-	n=0;
-	while (n<map->nsegment) {
-		if (map->segments[n].rn==rn) {
-			for (i=n;i<map->nsegment;i++) {
-				map->segments[i]=map->segments[i+1];
-			}
-			map->nsegment--;
-		}
-		else {
-			n++;
-		}
-	}
-
-		// fix all portal segments and pieces
+		// delete meshes and liquids
 		
-	for (n=0;n!=map->nsegment;n++) {
-		if (map->segments[n].rn>rn) map->segments[n].rn--;
+	portal=&map->portals[rn];
+		
+	while (portal->mesh.nmesh>0) {
+		if (!map_portal_mesh_delete(map,rn,(portal->mesh.nmesh-1))) break;
+	}
+	
+	while (portal->liquid.nliquid>0) {
+		if (!map_portal_liquid_delete(map,rn,(portal->liquid.nliquid-1))) break;
 	}
 
+		// fix all map portal indexes
+		
 	for (n=0;n!=map->nnode;n++) {
 		if (map->nodes[n].pos.rn>rn) map->nodes[n].pos.rn--;
 	}
@@ -231,6 +225,10 @@ void map_portal_delete(map_type *map,int rn)
 	
 	for (n=0;n!=map->nlight;n++) {
 		if (map->lights[n].pos.rn>rn) map->lights[n].pos.rn--;
+	}
+	
+	for (n=0;n!=map->nparticle;n++) {
+		if (map->particles[n].pos.rn>rn) map->particles[n].pos.rn--;
 	}
 	
 		// adjust sight paths
@@ -254,7 +252,10 @@ void map_portal_delete(map_type *map,int rn)
 
 int map_portal_duplicate(map_type *map,int rn,int x,int z)
 {
-	int				n,old_rn;
+	int				n,old_rn,mesh_idx,liq_idx;
+	portal_type		*portal,*old_portal;
+	map_mesh_type	*mesh,*old_mesh;
+	map_liquid_type	*liq,*old_liq;
 	
 		// create new portal
 		
@@ -270,19 +271,48 @@ int map_portal_duplicate(map_type *map,int rn,int x,int z)
 	map->portals[rn].ez=z+(map->portals[old_rn].ez-map->portals[old_rn].z);
 	map_portal_sight_clear(map,rn);
 	
-		// duplicate the segments -- supergumba -- meshes and liquids!
+		// duplicate meshes
 		
-	for (n=0;n!=map->nsegment;n++) {
-		if (map->segments[n].rn==old_rn) {
-			if (map->nsegment>=max_segment) break;
+	old_portal=&map->portals[old_rn];
+	portal=&map->portals[rn];
+	
+	portal->mesh.nmesh=0;
+	portal->mesh.meshes=NULL;
+	
+	for (n=0;n!=old_portal->mesh.nmesh;n++) {
+		mesh_idx=map_portal_mesh_add(map,rn);
+		if (mesh_idx==-1) break;
+	
+		old_mesh=&old_portal->mesh.meshes[n];
+		mesh=&portal->mesh.meshes[mesh_idx];
+	
+		if (!map_portal_mesh_set_vertex_count(map,rn,mesh_idx,old_mesh->nvertex)) break;		
+		if (!map_portal_mesh_set_poly_count(map,rn,mesh_idx,old_mesh->npoly)) break;
+					
+		mesh->group_idx=old_mesh->group_idx;
+		memmove(&mesh->flag,&old_mesh->flag,sizeof(map_mesh_flag_type));
 
-			memmove(&map->segments[map->nsegment],&map->segments[n],sizeof(segment_type));
-			map->segments[map->nsegment].rn=rn;
-			map->nsegment++;
-		}
+		memmove(mesh->vertexes,old_mesh->vertexes,(sizeof(d3pnt)*old_mesh->nvertex));
+		memmove(mesh->polys,old_mesh->polys,(sizeof(map_mesh_poly_type)*old_mesh->npoly));
 	}
 	
-		// duplicate the spots, sceneries, lights, and sounds
+		// duplicate liquids
+		
+	portal->liquid.nliquid=0;
+	portal->liquid.liquids=NULL;
+	
+	for (n=0;n!=old_portal->liquid.nliquid;n++) {
+		liq_idx=map_portal_liquid_add(map,rn);
+		if (liq_idx==-1) break;
+	
+		old_liq=&old_portal->liquid.liquids[n];
+		liq=&portal->liquid.liquids[liq_idx];
+	
+		memmove(liq,old_liq,sizeof(map_liquid_type));
+	}
+		
+		// duplicate the other items
+		// except for nodes
 		
 	for (n=0;n!=map->nspot;n++) {
 		if (map->spots[n].pos.rn==old_rn) {

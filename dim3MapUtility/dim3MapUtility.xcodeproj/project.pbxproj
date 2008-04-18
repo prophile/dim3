@@ -29,7 +29,6 @@
 		F5CE96C50D23586E00512EE1 /* auto_generate.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CE96C20D23586E00512EE1 /* auto_generate.c */; };
 		F5DB0B780856700C005A7CB7 /* libMapUtility.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5F4951F067BFCCA00E809E7 /* libMapUtility.dylib */; };
 		F5DD16E20907328000721649 /* prepare_curve.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD16DE0907328000721649 /* prepare_curve.c */; };
-		F5DD16E30907328000721649 /* prepare_polygon.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD16DF0907328000721649 /* prepare_polygon.c */; };
 		F5DD16E40907328000721649 /* prepare.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD16E00907328000721649 /* prepare.c */; };
 		F5DD177F09074E1E00721649 /* portal.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD177E09074E1E00721649 /* portal.c */; };
 		F5DD178C09074E5000721649 /* portal_vertex_list.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD178809074E5000721649 /* portal_vertex_list.c */; };
@@ -90,7 +89,6 @@
 		F5CE96C20D23586E00512EE1 /* auto_generate.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = auto_generate.c; path = Sources/auto_generate.c; sourceTree = "<group>"; };
 		F5DA8623059148C40043E685 /* nodes.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = nodes.c; path = Sources/nodes.c; sourceTree = "<group>"; };
 		F5DD16DE0907328000721649 /* prepare_curve.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = prepare_curve.c; path = Sources/prepare_curve.c; sourceTree = "<group>"; };
-		F5DD16DF0907328000721649 /* prepare_polygon.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = prepare_polygon.c; path = Sources/prepare_polygon.c; sourceTree = "<group>"; };
 		F5DD16E00907328000721649 /* prepare.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = prepare.c; path = Sources/prepare.c; sourceTree = "<group>"; };
 		F5DD177E09074E1E00721649 /* portal.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal.c; path = Sources/portal.c; sourceTree = "<group>"; };
 		F5DD178809074E5000721649 /* portal_vertex_list.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_vertex_list.c; path = Sources/portal_vertex_list.c; sourceTree = "<group>"; };
@@ -216,7 +214,6 @@
 			isa = PBXGroup;
 			children = (
 				F5DD16E00907328000721649 /* prepare.c */,
-				F5DD16DF0907328000721649 /* prepare_polygon.c */,
 				F5DD16DE0907328000721649 /* prepare_curve.c */,
 			);
 			name = Prepare;
@@ -322,7 +319,6 @@
 				F5F4952D067BFDBC00E809E7 /* file_map_write.c in Sources */,
 				F5F4952E067BFDBC00E809E7 /* file_map_read.c in Sources */,
 				F5DD16E20907328000721649 /* prepare_curve.c in Sources */,
-				F5DD16E30907328000721649 /* prepare_polygon.c in Sources */,
 				F5DD16E40907328000721649 /* prepare.c in Sources */,
 				F5DD177F09074E1E00721649 /* portal.c in Sources */,
 				F5DD178C09074E5000721649 /* portal_vertex_list.c in Sources */,

@@ -124,6 +124,8 @@ typedef struct	{
 #define ag_constant_step_min_size					(8*map_enlarge)
 #define ag_constant_step_max_size					(20*map_enlarge)
 
+#define ag_constant_ramp_size_percent				8.0f
+
 //
 // auto-generate structure
 //
@@ -152,10 +154,6 @@ typedef struct	{
 				} auto_generate_setting_texture_type;
 
 typedef struct	{
-					int										sz;
-				} auto_generate_setting_ramp_type;
-
-typedef struct	{
 					int										seed,
 															rough_floor_factor,door_percentage,
 															light_fudge_factor,light_fill_percentage,
@@ -169,7 +167,6 @@ typedef struct	{
 					auto_generate_setting_portal_type		portal;
 					auto_generate_setting_corridor_type		corridor;
 					auto_generate_setting_ceiling_type		ceiling;
-					auto_generate_setting_ramp_type			ramp;
 					auto_generate_setting_texture_type		texture;
 				} auto_generate_settings_type;
 
@@ -178,7 +175,6 @@ typedef struct	{
 //
 
 extern void map_auto_generate_clear(map_type *map);
-extern void map_auto_generate_fix_segments_uv(map_type *map);
 extern void map_auto_generate_add_simple_lights(map_type *map);
 extern void map_auto_generate_add_player_spot(map_type *map);
 

@@ -42,12 +42,15 @@ d3pnt						import_vertexes[import_max_vertex];	// supergumba -- make memory
 extern void portal_split_segments_wall(int seg_idx,bool is_local);
 extern void portal_split_segments_fc(int seg_idx,bool is_local);
 
+// supergumba -- will need to be all rebuilt
+
 /* =======================================================
 
       Import Segments from OBJs
       
 ======================================================= */
 
+/*
 bool import_obj_segment_type(int npt,int *pvtx,segment_type *seg)
 {
 	int				n,y;
@@ -202,13 +205,14 @@ bool import_obj_create_segments(char *path,char *err_str)
 
 	return(TRUE);
 }
-
+*/
 /* =======================================================
 
       Fix Imported Segments to Fit Total Portal Size
       
 ======================================================= */
 
+/* supergumba
 void import_obj_segments_fit_portals(import_obj_settings_type *oi_settings,int portal_x_start,int portal_z_start,int portal_total_x_sz,int portal_total_z_sz)
 {
 	int				i,t,minx,minz,maxx,maxz,miny,maxy;
@@ -322,13 +326,14 @@ void import_obj_segments_fit_portals(import_obj_settings_type *oi_settings,int p
 	}
 	
 }
-	
+*/
+
 /* =======================================================
 
       Convert Floors to Ceilings
       
 ======================================================= */
-
+/*
 bool import_obj_fix_segment_xz_touch_wall_top(int x,int z,int y)
 {
 	register int	i;
@@ -386,13 +391,14 @@ void import_obj_fix_floor_to_ceilings(void)
 		if ((touch_top) && (!touch_bottom)) seg->type=sg_ceiling;
 	}
 }
-
+*/
 /* =======================================================
 
       Split segments that cross portals
       
 ======================================================= */
 
+/*
 void import_obj_split_segments(void)
 {
 	int					n,nsegment;
@@ -415,13 +421,13 @@ void import_obj_split_segments(void)
 		}
 	}
 }
-
+*/
 /* =======================================================
 
       Put Segments in Correct Portal and Remove Unused
       
 ======================================================= */
-
+/*
 void import_obj_fix_segment_portal(void)
 {
 	register int			i;
@@ -501,13 +507,13 @@ void import_obj_remove_unused_portals(void)
 		}
 	}
 }
-
+*/
 /* =======================================================
 
       Segment Fills
       
 ======================================================= */
-
+/*
 void import_obj_fix_segments_fill(import_obj_settings_type *oi_settings)
 {
 	register int		i;
@@ -532,13 +538,13 @@ void import_obj_fix_segments_fill(import_obj_settings_type *oi_settings)
 		seg++;
 	}
 }
-
+*/
 /* =======================================================
 
       Import OBJ
       
 ======================================================= */
-
+/*
 void map_import_obj(import_obj_settings_type *oi_settings)
 {
 	int							x,z,px,pz,pex,pez,
@@ -614,5 +620,5 @@ void map_import_obj(import_obj_settings_type *oi_settings)
 		
 	map_auto_generate_add_player_spot(&map);
 }
-
+*/
 

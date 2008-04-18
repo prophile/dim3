@@ -29,21 +29,9 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-int							curve_size;
-float						curve_float_div,curve_ang_add;
-
-/* =======================================================
-
-      Setup Curve Constants
-      
-======================================================= */
-
-void map_prepare_setup_curve_constant(int curve_level)
-{
-	curve_size=(curve_level+1)*5;
-    curve_float_div=(float)curve_size;
-    curve_ang_add=(ANG_to_RAD*(90/curve_float_div));
-}
+#define curve_size			15
+#define curve_float_div		15.0f
+#define curve_ang_add		(ANG_to_RAD*6.0f)
 
 /* =======================================================
 
@@ -51,7 +39,7 @@ void map_prepare_setup_curve_constant(int curve_level)
       
 ======================================================= */
 
-void map_prepare_draw_frwd_4_curve(map_type *map,segment_type *seg)
+int map_prepare_draw_frwd_4_curve(int seg_cnt,segment_type *seg_list,segment_type *seg)
 {
 	int					i;
 	float				dx,dy,dz,dgx,dgy;
@@ -74,11 +62,11 @@ void map_prepare_draw_frwd_4_curve(map_type *map,segment_type *seg)
 			curve_seg=seg;				// replace original segment with first part of curve
 		}
 		else {
-			if (map->nsegment>=max_segment) break;
+			if (seg_cnt>=max_segment) break;
         
-			curve_seg=&map->segments[map->nsegment];
+			curve_seg=&seg_list[seg_cnt];
 			memmove(curve_seg,&org_seg,sizeof(segment_type));
-			map->nsegment++;
+			seg_cnt++;
         }
 		
 		curve_seg->simple_tessel=TRUE;
@@ -130,9 +118,11 @@ void map_prepare_draw_frwd_4_curve(map_type *map,segment_type *seg)
 
         r=r2;
     }
+	
+	return(seg_cnt);
 }
 
-void map_prepare_draw_frwd_3_curve(map_type *map,segment_type *seg)
+int map_prepare_draw_frwd_3_curve(int seg_cnt,segment_type *seg_list,segment_type *seg)
 {
 	int					i;
 	float				dx,dy,dz,dgx,dgy;
@@ -155,11 +145,11 @@ void map_prepare_draw_frwd_3_curve(map_type *map,segment_type *seg)
 			curve_seg=seg;				// replace original segment with first part of curve
 		}
 		else {
-			if (map->nsegment>=max_segment) break;
+			if (seg_cnt>=max_segment) break;
         
-			curve_seg=&map->segments[map->nsegment];
+			curve_seg=&seg_list[seg_cnt];
 			memmove(curve_seg,&org_seg,sizeof(segment_type));
-			map->nsegment++;
+			seg_cnt++;
         }
 		
 		curve_seg->simple_tessel=TRUE;
@@ -211,9 +201,11 @@ void map_prepare_draw_frwd_3_curve(map_type *map,segment_type *seg)
         
         r=r2;
     }
+	
+	return(seg_cnt);
 }
 
-void map_prepare_draw_bkwd_4_curve(map_type *map,segment_type *seg)
+int map_prepare_draw_bkwd_4_curve(int seg_cnt,segment_type *seg_list,segment_type *seg)
 {
 	int					i;
 	float				dx,dy,dz,dgx,dgy;
@@ -236,11 +228,11 @@ void map_prepare_draw_bkwd_4_curve(map_type *map,segment_type *seg)
 			curve_seg=seg;				// replace original segment with first part of curve
 		}
 		else {
-			if (map->nsegment>=max_segment) break;
+			if (seg_cnt>=max_segment) break;
         
-			curve_seg=&map->segments[map->nsegment];
+			curve_seg=&seg_list[seg_cnt];
 			memmove(curve_seg,&org_seg,sizeof(segment_type));
-			map->nsegment++;
+			seg_cnt++;
         }
 		
  		curve_seg->simple_tessel=TRUE;
@@ -292,9 +284,11 @@ void map_prepare_draw_bkwd_4_curve(map_type *map,segment_type *seg)
         
         r=r2;
     }
+	
+	return(seg_cnt);
 }
 
-void map_prepare_draw_bkwd_3_curve(map_type *map,segment_type *seg)
+int map_prepare_draw_bkwd_3_curve(int seg_cnt,segment_type *seg_list,segment_type *seg)
 {
 	int					i;
 	float				dx,dy,dz,dgx,dgy;
@@ -317,11 +311,11 @@ void map_prepare_draw_bkwd_3_curve(map_type *map,segment_type *seg)
 			curve_seg=seg;				// replace original segment with first part of curve
 		}
 		else {
-			if (map->nsegment>=max_segment) break;
+			if (seg_cnt>=max_segment) break;
         
-			curve_seg=&map->segments[map->nsegment];
+			curve_seg=&seg_list[seg_cnt];
 			memmove(curve_seg,&org_seg,sizeof(segment_type));
-			map->nsegment++;
+			seg_cnt++;
         }
 		
 		curve_seg->simple_tessel=TRUE;
@@ -373,6 +367,8 @@ void map_prepare_draw_bkwd_3_curve(map_type *map,segment_type *seg)
         
         r=r2;
     }
+	
+	return(seg_cnt);
 }
 
 /* =======================================================
@@ -381,7 +377,7 @@ void map_prepare_draw_bkwd_3_curve(map_type *map,segment_type *seg)
       
 ======================================================= */
 
-void map_prepare_create_fc_curve(map_type *map,segment_type *seg)
+int map_prepare_create_fc_curve(int seg_cnt,segment_type *seg_list,segment_type *seg)
 {
     fc_segment_data		*fc;
     
@@ -390,21 +386,15 @@ void map_prepare_create_fc_curve(map_type *map,segment_type *seg)
     switch (seg->curve) {
 
         case cv_forward:
-            if (fc->ptsz==3) {
-                map_prepare_draw_frwd_3_curve(map,seg);
-                break;
-            }
-            map_prepare_draw_frwd_4_curve(map,seg);
-            break;
+            if (fc->ptsz==3) return(map_prepare_draw_frwd_3_curve(seg_cnt,seg_list,seg));
+            return(map_prepare_draw_frwd_4_curve(seg_cnt,seg_list,seg));
 
         case cv_backward:
-            if (fc->ptsz==3) {
-                map_prepare_draw_bkwd_3_curve(map,seg);
-                break;
-            }
-            map_prepare_draw_bkwd_4_curve(map,seg);
-            break;
+            if (fc->ptsz==3) return(map_prepare_draw_bkwd_3_curve(seg_cnt,seg_list,seg));
+            return(map_prepare_draw_bkwd_4_curve(seg_cnt,seg_list,seg));
     }
+	
+	return(seg_cnt);
 }
 
 /* =======================================================
@@ -413,7 +403,7 @@ void map_prepare_create_fc_curve(map_type *map,segment_type *seg)
       
 ======================================================= */
 
-void map_prepare_create_frwd_wall_curve(map_type *map,segment_type *seg,int lx,int rx,int lz,int rz,int ty,int by,float x_txtoff,float x_txtfact)
+int map_prepare_create_frwd_wall_curve(int seg_cnt,segment_type *seg_list,segment_type *seg,int lx,int rx,int lz,int rz,int ty,int by,float x_txtoff,float x_txtfact)
 {
 	int					i;
 	float				dx,dz,x_txtfact_div;
@@ -436,11 +426,11 @@ void map_prepare_create_frwd_wall_curve(map_type *map,segment_type *seg,int lx,i
 			curve_seg=seg;				// replace original segment with first part of curve
 		}
 		else {
-			if (map->nsegment>=max_segment) break;
+			if (seg_cnt>=max_segment) break;
         
-			curve_seg=&map->segments[map->nsegment];
+			curve_seg=&seg_list[seg_cnt];
 			memmove(curve_seg,&org_seg,sizeof(segment_type));
-			map->nsegment++;
+			seg_cnt++;
         }
 		
 		curve_seg->simple_tessel=TRUE;
@@ -484,9 +474,11 @@ void map_prepare_create_frwd_wall_curve(map_type *map,segment_type *seg,int lx,i
         
         r=r2;
     }
+	
+	return(seg_cnt);
 }
 
-void map_prepare_create_bkwd_wall_curve(map_type *map,segment_type *seg,int lx,int rx,int lz,int rz,int ty,int by,float x_txtoff,float x_txtfact)
+int map_prepare_create_bkwd_wall_curve(int seg_cnt,segment_type *seg_list,segment_type *seg,int lx,int rx,int lz,int rz,int ty,int by,float x_txtoff,float x_txtfact)
 {
 	int					i;
 	float				dx,dz,x_txtfact_div;
@@ -508,11 +500,11 @@ void map_prepare_create_bkwd_wall_curve(map_type *map,segment_type *seg,int lx,i
 			curve_seg=seg;				// replace original segment with first part of curve
 		}
 		else {
-			if (map->nsegment>=max_segment) break;
+			if (seg_cnt>=max_segment) break;
         
-			curve_seg=&map->segments[map->nsegment];
+			curve_seg=&seg_list[seg_cnt];
 			memmove(curve_seg,&org_seg,sizeof(segment_type));
-			map->nsegment++;
+			seg_cnt++;
         }
 		
 		curve_seg->simple_tessel=TRUE;
@@ -556,6 +548,8 @@ void map_prepare_create_bkwd_wall_curve(map_type *map,segment_type *seg,int lx,i
         
         r=r2;
     }
+	
+	return(seg_cnt);
 }
 
 /* =======================================================
@@ -564,7 +558,7 @@ void map_prepare_create_bkwd_wall_curve(map_type *map,segment_type *seg,int lx,i
       
 ======================================================= */
 
-void map_prepare_create_wall_curve(map_type *map,segment_type *seg)
+int map_prepare_create_wall_curve(int seg_cnt,segment_type *seg_list,segment_type *seg)
 {
 	int				lx,rx,lz,rz,ty,by;
 	float			x_txtoff,x_txtfact;
@@ -583,12 +577,12 @@ void map_prepare_create_wall_curve(map_type *map,segment_type *seg)
         
     switch (seg->curve) {
         case cv_forward:
-			map_prepare_create_frwd_wall_curve(map,seg,lx,rx,lz,rz,ty,by,x_txtoff,x_txtfact);
-            break;
+			return(map_prepare_create_frwd_wall_curve(seg_cnt,seg_list,seg,lx,rx,lz,rz,ty,by,x_txtoff,x_txtfact));
         case cv_backward:
-			map_prepare_create_bkwd_wall_curve(map,seg,lx,rx,lz,rz,ty,by,x_txtoff,x_txtfact);
-            break;
+			return(map_prepare_create_bkwd_wall_curve(seg_cnt,seg_list,seg,lx,rx,lz,rz,ty,by,x_txtoff,x_txtfact));
     }
+	
+	return(seg_cnt);
 }
 
 /* =======================================================
@@ -597,7 +591,7 @@ void map_prepare_create_wall_curve(map_type *map,segment_type *seg)
       
 ======================================================= */
 
-void map_prepare_create_wall_top_curve(map_type *map,segment_type *seg,long lx,long lz,long rx,long rz,long ty,long by,float x_txtoff,float x_txtfact,float y_txtoff,float y_txtfact)
+int map_prepare_create_wall_top_curve(int seg_cnt,segment_type *seg_list,segment_type *seg,long lx,long lz,long rx,long rz,long ty,long by,float x_txtoff,float x_txtfact,float y_txtoff,float y_txtfact)
 {
     int					i;
     float				dx,dz,dy;
@@ -622,11 +616,11 @@ void map_prepare_create_wall_top_curve(map_type *map,segment_type *seg,long lx,l
 			curve_seg=seg;				// replace original segment with first part of curve
 		}
 		else {
-			if (map->nsegment>=max_segment) break;
+			if (seg_cnt>=max_segment) break;
     
-			curve_seg=&map->segments[map->nsegment];
+			curve_seg=&seg_list[seg_cnt];
 			memmove(curve_seg,&org_seg,sizeof(segment_type));
-			map->nsegment++;
+			seg_cnt++;
 		}
 		
 		curve_seg->simple_tessel=TRUE;
@@ -653,9 +647,11 @@ void map_prepare_create_wall_top_curve(map_type *map,segment_type *seg,long lx,l
 
         r=r2;
     }
+	
+	return(seg_cnt);
 }
 
-void map_prepare_create_wall_top_arch(map_type *map,segment_type *seg,long lx,long lz,long rx,long rz,long ty,long by,float x_txtoff,float x_txtfact,float y_txtoff,float y_txtfact)
+int map_prepare_create_wall_top_arch(int seg_cnt,segment_type *seg_list,segment_type *seg,long lx,long lz,long rx,long rz,long ty,long by,float x_txtoff,float x_txtfact,float y_txtoff,float y_txtfact)
 {
     int					i;
     float				dx,dz,dy;
@@ -680,11 +676,11 @@ void map_prepare_create_wall_top_arch(map_type *map,segment_type *seg,long lx,lo
 			curve_seg=seg;				// replace original segment with first part of curve
 		}
 		else {
-			if (map->nsegment>=max_segment) break;
+			if (seg_cnt>=max_segment) break;
     
-			curve_seg=&map->segments[map->nsegment];
+			curve_seg=&seg_list[seg_cnt];
 			memmove(curve_seg,&org_seg,sizeof(segment_type));
-			map->nsegment++;
+			seg_cnt++;
 		}
 		
 		curve_seg->simple_tessel=TRUE;
@@ -711,9 +707,11 @@ void map_prepare_create_wall_top_arch(map_type *map,segment_type *seg,long lx,lo
 	
         r=r2;
     }
+	
+	return(seg_cnt);
 }
 
-void map_prepare_create_wall_bottom_curve(map_type *map,segment_type *seg,long lx,long lz,long rx,long rz,long ty,long by,float x_txtoff,float x_txtfact,float y_txtoff,float y_txtfact)
+int map_prepare_create_wall_bottom_curve(int seg_cnt,segment_type *seg_list,segment_type *seg,long lx,long lz,long rx,long rz,long ty,long by,float x_txtoff,float x_txtfact,float y_txtoff,float y_txtfact)
 {
     int					i;
     float				dx,dz,dy;
@@ -738,11 +736,11 @@ void map_prepare_create_wall_bottom_curve(map_type *map,segment_type *seg,long l
 			curve_seg=seg;				// replace original segment with first part of curve
 		}
 		else {
-			if (map->nsegment>=max_segment) break;
+			if (seg_cnt>=max_segment) break;
     
-			curve_seg=&map->segments[map->nsegment];
+			curve_seg=&seg_list[seg_cnt];
 			memmove(curve_seg,&org_seg,sizeof(segment_type));
-			map->nsegment++;
+			seg_cnt++;
 		}
 		
 		curve_seg->simple_tessel=TRUE;
@@ -769,9 +767,11 @@ void map_prepare_create_wall_bottom_curve(map_type *map,segment_type *seg,long l
 
         r=r2;
     }
+	
+	return(seg_cnt);
 }
 
-void map_prepare_create_wall_bottom_arch(map_type *map,segment_type *seg,long lx,long lz,long rx,long rz,long ty,long by,float x_txtoff,float x_txtfact,float y_txtoff,float y_txtfact)
+int map_prepare_create_wall_bottom_arch(int seg_cnt,segment_type *seg_list,segment_type *seg,long lx,long lz,long rx,long rz,long ty,long by,float x_txtoff,float x_txtfact,float y_txtoff,float y_txtfact)
 {
     int					i;
     float				dx,dz,dy;
@@ -796,11 +796,11 @@ void map_prepare_create_wall_bottom_arch(map_type *map,segment_type *seg,long lx
 			curve_seg=seg;				// replace original segment with first part of curve
 		}
 		else {
-			if (map->nsegment>=max_segment) break;
+			if (seg_cnt>=max_segment) break;
     
-			curve_seg=&map->segments[map->nsegment];
+			curve_seg=&seg_list[seg_cnt];
 			memmove(curve_seg,&org_seg,sizeof(segment_type));
-			map->nsegment++;
+			seg_cnt++;
 		}
 		
 		curve_seg->simple_tessel=TRUE;
@@ -827,6 +827,8 @@ void map_prepare_create_wall_bottom_arch(map_type *map,segment_type *seg,long lx
 
         r=r2;
     }
+	
+	return(seg_cnt);
 }
 
 /* =======================================================
@@ -835,7 +837,7 @@ void map_prepare_create_wall_bottom_arch(map_type *map,segment_type *seg,long lx
       
 ======================================================= */
 
-void map_prepare_create_wall_clip(map_type *map,segment_type *seg)
+int map_prepare_create_wall_clip(int seg_cnt,segment_type *seg_list,segment_type *seg)
 {
     int					lx,rx,lz,rz,ty,by,my;
 	float				x_txtoff,x_txtfact,y_txtoff,y_txtfact;
@@ -859,29 +861,25 @@ void map_prepare_create_wall_clip(map_type *map,segment_type *seg)
 
     switch (seg->clip) {
         case wc_top_curve:
-			map_prepare_create_wall_top_curve(map,seg,lx,lz,rx,rz,ty,by,x_txtoff,x_txtfact,y_txtoff,y_txtfact);
-            break;
-        case wc_top_arch:
-			map_prepare_create_wall_top_arch(map,seg,lx,lz,rx,rz,ty,by,x_txtoff,x_txtfact,y_txtoff,y_txtfact);
-            break;
+			return(map_prepare_create_wall_top_curve(seg_cnt,seg_list,seg,lx,lz,rx,rz,ty,by,x_txtoff,x_txtfact,y_txtoff,y_txtfact));
+         case wc_top_arch:
+			return(map_prepare_create_wall_top_arch(seg_cnt,seg_list,seg,lx,lz,rx,rz,ty,by,x_txtoff,x_txtfact,y_txtoff,y_txtfact));
         case wc_bottom_curve:
-			map_prepare_create_wall_bottom_curve(map,seg,lx,lz,rx,rz,ty,by,x_txtoff,x_txtfact,y_txtoff,y_txtfact);
-            break;
-        case wc_bottom_arch:
-			map_prepare_create_wall_bottom_arch(map,seg,lx,lz,rx,rz,ty,by,x_txtoff,x_txtfact,y_txtoff,y_txtfact);
-            break;
+			return(map_prepare_create_wall_bottom_curve(seg_cnt,seg_list,seg,lx,lz,rx,rz,ty,by,x_txtoff,x_txtfact,y_txtoff,y_txtfact));
+         case wc_bottom_arch:
+			return(map_prepare_create_wall_bottom_arch(seg_cnt,seg_list,seg,lx,lz,rx,rz,ty,by,x_txtoff,x_txtfact,y_txtoff,y_txtfact));
         case wc_top_curve_arch:
             my=(ty+by)/2;
             y_txtfact=y_txtfact/2;
-            map_prepare_create_wall_top_curve(map,seg,lx,lz,rx,rz,ty,my,x_txtoff,x_txtfact,y_txtoff,y_txtfact);
-            map_prepare_create_wall_top_arch(map,seg,lx,lz,rx,rz,my,by,x_txtoff,x_txtfact,(y_txtoff+y_txtfact),y_txtfact);
-            break;
+            seg_cnt=map_prepare_create_wall_top_curve(seg_cnt,seg_list,seg,lx,lz,rx,rz,ty,my,x_txtoff,x_txtfact,y_txtoff,y_txtfact);
+			return(map_prepare_create_wall_top_arch(seg_cnt,seg_list,seg,lx,lz,rx,rz,my,by,x_txtoff,x_txtfact,(y_txtoff+y_txtfact),y_txtfact));
         case wc_bottom_curve_arch:
             my=(ty+by)/2;
             y_txtfact=y_txtfact/2;
-            map_prepare_create_wall_bottom_arch(map,seg,lx,lz,rx,rz,ty,my,x_txtoff,x_txtfact,(y_txtoff+y_txtfact),-y_txtfact);
-            map_prepare_create_wall_bottom_curve(map,seg,lx,lz,rx,rz,my,by,x_txtoff,x_txtfact,y_txtoff,y_txtfact);
-            break;
+            seg_cnt=map_prepare_create_wall_bottom_arch(seg_cnt,seg_list,seg,lx,lz,rx,rz,ty,my,x_txtoff,x_txtfact,(y_txtoff+y_txtfact),-y_txtfact);
+            return(map_prepare_create_wall_bottom_curve(seg_cnt,seg_list,seg,lx,lz,rx,rz,my,by,x_txtoff,x_txtfact,y_txtoff,y_txtfact));
     }
+	
+	return(seg_cnt);
 }
 

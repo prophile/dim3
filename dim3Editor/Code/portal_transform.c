@@ -151,47 +151,79 @@ void portal_set_spot(int rn,int x,int z)
 
 void portal_flip_horizontal(void)
 {
-	int				i,ex;
-	
+	int				n,k,ex;
+	d3pnt			*pt;
+	portal_type		*portal;
+	map_mesh_type	*mesh;
+	map_liquid_type	*liq;
+		
 	ex=map.portals[cr].ex-map.portals[cr].x;
 	
-	// flip meshes and liquids
+	portal=&map.portals[cr];
+	
+		// run through meshes
+		
+	mesh=portal->mesh.meshes;
+		
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+
+		pt=mesh->vertexes;
+		
+		for (k=0;k!=mesh->nvertex;k++) {
+			pt->x=ex-pt->x;
+			pt++;
+		}
+	
+		mesh++;
+	}
     
-    for (i=0;i!=map.nspot;i++) {
-        if (map.spots[i].pos.rn==cr) {
-            map.spots[i].pos.x=ex-map.spots[i].pos.x;
-			map.spots[i].ang.y=angle_add(0,-map.spots[i].ang.y);
+		// run through liquids
+		
+	liq=portal->liquid.liquids;
+	
+	for (n=0;n!=portal->liquid.nliquid;n++) {
+		liq->lft=ex-liq->lft;
+		liq->rgt=ex-liq->rgt;
+		liq++;
+	}
+		
+		// run through all other items
+    
+    for (n=0;n!=map.nspot;n++) {
+        if (map.spots[n].pos.rn==cr) {
+            map.spots[n].pos.x=ex-map.spots[n].pos.x;
+			map.spots[n].ang.y=angle_add(0,-map.spots[n].ang.y);
         }
     }
     
-    for (i=0;i!=map.nnode;i++) {
-        if (map.nodes[i].pos.rn==cr) {
-            map.nodes[i].pos.x=ex-map.nodes[i].pos.x;
+    for (n=0;n!=map.nnode;n++) {
+        if (map.nodes[n].pos.rn==cr) {
+            map.nodes[n].pos.x=ex-map.nodes[n].pos.x;
         }
     }
 	
-    for (i=0;i!=map.nsound;i++) {
-        if (map.sounds[i].pos.rn==cr) {
-            map.sounds[i].pos.x=ex-map.sounds[i].pos.x;
+    for (n=0;n!=map.nsound;n++) {
+        if (map.sounds[n].pos.rn==cr) {
+            map.sounds[n].pos.x=ex-map.sounds[n].pos.x;
         }
     }
 	
-    for (i=0;i!=map.nlight;i++) {
-        if (map.lights[i].pos.rn==cr) {
-            map.lights[i].pos.x=ex-map.lights[i].pos.x;
+    for (n=0;n!=map.nlight;n++) {
+        if (map.lights[n].pos.rn==cr) {
+            map.lights[n].pos.x=ex-map.lights[n].pos.x;
         }
     }
 	
-    for (i=0;i!=map.nparticle;i++) {
-        if (map.particles[i].pos.rn==cr) {
-            map.particles[i].pos.x=ex-map.particles[i].pos.x;
+    for (n=0;n!=map.nparticle;n++) {
+        if (map.particles[n].pos.rn==cr) {
+            map.particles[n].pos.x=ex-map.particles[n].pos.x;
         }
     }
 	
-    for (i=0;i!=map.nscenery;i++) {
-        if (map.sceneries[i].pos.rn==cr) {
-            map.sceneries[i].pos.x=ex-map.sceneries[i].pos.x;
-			map.sceneries[i].ang.y=angle_add(0,-map.sceneries[i].ang.y);
+    for (n=0;n!=map.nscenery;n++) {
+        if (map.sceneries[n].pos.rn==cr) {
+            map.sceneries[n].pos.x=ex-map.sceneries[n].pos.x;
+			map.sceneries[n].ang.y=angle_add(0,-map.sceneries[n].ang.y);
         }
     }
 	
@@ -200,47 +232,79 @@ void portal_flip_horizontal(void)
 	
 void portal_flip_vertical(void)
 {
-	int				i,ey;
+	int				n,k,ez;
+	d3pnt			*pt;
+	portal_type		*portal;
+	map_mesh_type	*mesh;
+	map_liquid_type	*liq;
+		
+	ez=map.portals[cr].ez-map.portals[cr].z;
 	
-	ey=map.portals[cr].ez-map.portals[cr].z;
+	portal=&map.portals[cr];
 	
-	// flip meshes and liquids
+		// run through meshes
+		
+	mesh=portal->mesh.meshes;
+		
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+
+		pt=mesh->vertexes;
+		
+		for (k=0;k!=mesh->nvertex;k++) {
+			pt->z=ez-pt->z;
+			pt++;
+		}
+	
+		mesh++;
+	}
+    
+		// run through liquids
+		
+	liq=portal->liquid.liquids;
+	
+	for (n=0;n!=portal->liquid.nliquid;n++) {
+		liq->top=ez-liq->top;
+		liq->bot=ez-liq->bot;
+		liq++;
+	}
+		
+		// run through all other items
 	    
-    for (i=0;i!=map.nspot;i++) {
-        if (map.spots[i].pos.rn==cr) {
-            map.spots[i].pos.z=ey-map.spots[i].pos.z;
-			map.spots[i].ang.y=angle_add(90.0f,(90.0f-map.spots[i].ang.y));
+    for (n=0;n!=map.nspot;n++) {
+        if (map.spots[n].pos.rn==cr) {
+            map.spots[n].pos.z=ez-map.spots[n].pos.z;
+			map.spots[n].ang.y=angle_add(90.0f,(90.0f-map.spots[n].ang.y));
         }
     }
     
-    for (i=0;i!=map.nnode;i++) {
-        if (map.nodes[i].pos.rn==cr) {
-            map.nodes[i].pos.z=ey-map.nodes[i].pos.z;
+    for (n=0;n!=map.nnode;n++) {
+        if (map.nodes[n].pos.rn==cr) {
+            map.nodes[n].pos.z=ez-map.nodes[n].pos.z;
         }
     }
 	
-    for (i=0;i!=map.nsound;i++) {
-        if (map.sounds[i].pos.rn==cr) {
-            map.sounds[i].pos.z=ey-map.sounds[i].pos.z;
+    for (n=0;n!=map.nsound;n++) {
+        if (map.sounds[n].pos.rn==cr) {
+            map.sounds[n].pos.z=ez-map.sounds[n].pos.z;
         }
     }
 	
-    for (i=0;i!=map.nlight;i++) {
-        if (map.lights[i].pos.rn==cr) {
-            map.lights[i].pos.z=ey-map.lights[i].pos.z;
+    for (n=0;n!=map.nlight;n++) {
+        if (map.lights[n].pos.rn==cr) {
+            map.lights[n].pos.z=ez-map.lights[n].pos.z;
         }
     }
 	
-    for (i=0;i!=map.nparticle;i++) {
-        if (map.particles[i].pos.rn==cr) {
-            map.particles[i].pos.z=ey-map.particles[i].pos.z;
+    for (n=0;n!=map.nparticle;n++) {
+        if (map.particles[n].pos.rn==cr) {
+            map.particles[n].pos.z=ez-map.particles[n].pos.z;
         }
     }
 	
-    for (i=0;i!=map.nscenery;i++) {
-        if (map.sceneries[i].pos.rn==cr) {
-            map.sceneries[i].pos.z=ey-map.sceneries[i].pos.z;
-			map.sceneries[i].ang.y=angle_add(90.0f,(90.0f-map.sceneries[i].ang.y));
+    for (n=0;n!=map.nscenery;n++) {
+        if (map.sceneries[n].pos.rn==cr) {
+            map.sceneries[n].pos.z=ez-map.sceneries[n].pos.z;
+			map.sceneries[n].ang.y=angle_add(90.0f,(90.0f-map.sceneries[n].ang.y));
         }
     }
 	
@@ -249,59 +313,97 @@ void portal_flip_vertical(void)
 
 void portal_rotate(void)
 {
-	int				i,k,ex,ey;
+	int				n,k,t,ex,ey;
+	d3pnt			*pt;
+	portal_type		*portal;
+	map_mesh_type	*mesh;
+	map_liquid_type	*liq;
 	
-	// supergumba -- rotate meshes and liquids
+	portal=&map.portals[cr];
+	
+		// run through meshes
+		
+	mesh=portal->mesh.meshes;
+		
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+
+		pt=mesh->vertexes;
+		
+		for (k=0;k!=mesh->nvertex;k++) {
+			t=pt->x;
+			pt->x=pt->z;
+			pt->z=t;
+			pt++;
+		}
+	
+		mesh++;
+	}
     
-    for (i=0;i!=map.nspot;i++) {
-        if (map.spots[i].pos.rn==cr) {
-            k=map.spots[i].pos.x;
-            map.spots[i].pos.x=map.spots[i].pos.z;
-            map.spots[i].pos.z=k;
-			map.spots[i].ang.y=angle_add(map.spots[i].ang.y,-90.0f);
-			map.spots[i].ang.y=angle_add(90.0f,(90.0f-map.spots[i].ang.y));
+		// run through liquids
+		
+	liq=portal->liquid.liquids;
+	
+	for (n=0;n!=portal->liquid.nliquid;n++) {
+		t=liq->lft;
+		liq->lft=liq->top;
+		liq->top=t;
+		t=liq->rgt;
+		liq->rgt=liq->bot;
+		liq->bot=t;
+		liq++;
+	}
+		
+		// run through all other items
+    
+    for (n=0;n!=map.nspot;n++) {
+        if (map.spots[n].pos.rn==cr) {
+            k=map.spots[n].pos.x;
+            map.spots[n].pos.x=map.spots[n].pos.z;
+            map.spots[n].pos.z=k;
+			map.spots[n].ang.y=angle_add(map.spots[n].ang.y,-90.0f);
+			map.spots[n].ang.y=angle_add(90.0f,(90.0f-map.spots[n].ang.y));
         }
     }
     
-    for (i=0;i!=map.nnode;i++) {
-        if (map.nodes[i].pos.rn==cr) {
-            k=map.nodes[i].pos.x;
-            map.nodes[i].pos.x=map.nodes[i].pos.z;
-            map.nodes[i].pos.z=k;
+    for (n=0;n!=map.nnode;n++) {
+        if (map.nodes[n].pos.rn==cr) {
+            k=map.nodes[n].pos.x;
+            map.nodes[n].pos.x=map.nodes[n].pos.z;
+            map.nodes[n].pos.z=k;
         }
     }
 	
-    for (i=0;i!=map.nsound;i++) {
-        if (map.sounds[i].pos.rn==cr) {
-            k=map.sounds[i].pos.x;
-            map.sounds[i].pos.x=map.sounds[i].pos.z;
-            map.sounds[i].pos.z=k;
+    for (n=0;n!=map.nsound;n++) {
+        if (map.sounds[n].pos.rn==cr) {
+            k=map.sounds[n].pos.x;
+            map.sounds[n].pos.x=map.sounds[n].pos.z;
+            map.sounds[n].pos.z=k;
         }
     }
 	
-    for (i=0;i!=map.nlight;i++) {
-        if (map.lights[i].pos.rn==cr) {
-            k=map.lights[i].pos.x;
-            map.lights[i].pos.x=map.lights[i].pos.z;
-            map.lights[i].pos.z=k;
+    for (n=0;n!=map.nlight;n++) {
+        if (map.lights[n].pos.rn==cr) {
+            k=map.lights[n].pos.x;
+            map.lights[n].pos.x=map.lights[n].pos.z;
+            map.lights[n].pos.z=k;
         }
     }
 	
-    for (i=0;i!=map.nparticle;i++) {
-        if (map.particles[i].pos.rn==cr) {
-            k=map.particles[i].pos.x;
-            map.particles[i].pos.x=map.particles[i].pos.z;
-            map.particles[i].pos.z=k;
+    for (n=0;n!=map.nparticle;n++) {
+        if (map.particles[n].pos.rn==cr) {
+            k=map.particles[n].pos.x;
+            map.particles[n].pos.x=map.particles[n].pos.z;
+            map.particles[n].pos.z=k;
         }
     }
 	
-    for (i=0;i!=map.nscenery;i++) {
-        if (map.sceneries[i].pos.rn==cr) {
-            k=map.sceneries[i].pos.x;
-            map.sceneries[i].pos.x=map.sceneries[i].pos.z;
-            map.sceneries[i].pos.z=k;
-			map.sceneries[i].ang.y=angle_add(map.sceneries[i].ang.y,-90.0f);
-			map.sceneries[i].ang.y=angle_add(90.0f,(90.0f-map.sceneries[i].ang.y));
+    for (n=0;n!=map.nscenery;n++) {
+        if (map.sceneries[n].pos.rn==cr) {
+            k=map.sceneries[n].pos.x;
+            map.sceneries[n].pos.x=map.sceneries[n].pos.z;
+            map.sceneries[n].pos.z=k;
+			map.sceneries[n].ang.y=angle_add(map.sceneries[n].ang.y,-90.0f);
+			map.sceneries[n].ang.y=angle_add(90.0f,(90.0f-map.sceneries[n].ang.y));
         }
     }
 	
@@ -416,8 +518,11 @@ void portal_all_y_change(int yadd)
 
 void portal_resize(void)
 {
-    int				i,t,ptsz,fct,sx,sz;
-    segment_type	*seg;
+    int				n,k,fct,sx,sz;
+	d3pnt			*pt;
+	portal_type		*portal;
+	map_mesh_type	*mesh;
+	map_liquid_type	*liq;
     
     fct=dialog_portal_resize_run();
     if ((fct==-1) || (fct==100)) return;
@@ -429,53 +534,80 @@ void portal_resize(void)
 	sz=((map.portals[cr].ez-map.portals[cr].z)*fct)/100;
 	map.portals[cr].ez=map.portals[cr].z+sz;
 	
-        // segments
-        
-	for (i=0;i!=map.nsegment;i++) {
-        seg=&map.segments[i];
-        if (seg->rn!=cr) continue;
-        
-        switch (seg->type) {
-        
-            case sg_wall:
-                seg->data.wall.lx=(seg->data.wall.lx*fct)/100;
-                seg->data.wall.rx=(seg->data.wall.rx*fct)/100;
-                seg->data.wall.lz=(seg->data.wall.lz*fct)/100;
-                seg->data.wall.rz=(seg->data.wall.rz*fct)/100;
-                break;
-                
-            case sg_floor:
-            case sg_ceiling:
-                ptsz=seg->data.fc.ptsz;
-                for ((t=0);(t!=ptsz);t++) {
-                    seg->data.fc.x[t]=(seg->data.fc.x[t]*fct)/100;
-                    seg->data.fc.z[t]=(seg->data.fc.z[t]*fct)/100;
-                }
-                break;
-                
-            case sg_liquid:
-                seg->data.liquid.lft=(seg->data.liquid.lft*fct)/100;
-                seg->data.liquid.rgt=(seg->data.liquid.rgt*fct)/100;
-                seg->data.liquid.top=(seg->data.liquid.top*fct)/100;
-                seg->data.liquid.bot=(seg->data.liquid.bot*fct)/100;
-                break;
-        }
+	portal=&map.portals[cr];
+	
+		// run through meshes
+		
+	mesh=portal->mesh.meshes;
+		
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+
+		pt=mesh->vertexes;
+		
+		for (k=0;k!=mesh->nvertex;k++) {
+			pt->x=(pt->x*fct)/100;
+			pt->z=(pt->z*fct)/100;
+			pt++;
+		}
+	
+		mesh++;
+	}
+    
+		// run through liquids
+		
+	liq=portal->liquid.liquids;
+	
+	for (n=0;n!=portal->liquid.nliquid;n++) {
+		liq->lft=(liq->lft*fct)/100;
+		liq->rgt=(liq->rgt*fct)/100;
+		liq->top=(liq->top*fct)/100;
+		liq->bot=(liq->bot*fct)/100;
+		liq++;
 	}
 	
-        // objects, nodes, and cameras
-        
-	for (i=0;i<map.nspot;i++) {
-		if (map.spots[i].pos.rn==cr) {
-			map.spots[i].pos.x=(map.spots[i].pos.x*fct)/100;
-			map.spots[i].pos.z=(map.spots[i].pos.z*fct)/100;
-		}
-	}
-	for (i=0;i<map.nnode;i++) {
-		if (map.nodes[i].pos.rn==cr) {
-			map.nodes[i].pos.x=(map.nodes[i].pos.x*fct)/100;
-			map.nodes[i].pos.z=(map.nodes[i].pos.z*fct)/100;
-		}
-	}
+		// run through all other items
+		
+    for (n=0;n!=map.nspot;n++) {
+        if (map.spots[n].pos.rn==cr) {
+			map.spots[n].pos.x=(map.spots[n].pos.x*fct)/100;
+			map.spots[n].pos.z=(map.spots[n].pos.z*fct)/100;
+        }
+    }
+    
+    for (n=0;n!=map.nnode;n++) {
+        if (map.nodes[n].pos.rn==cr) {
+			map.nodes[n].pos.x=(map.nodes[n].pos.x*fct)/100;
+			map.nodes[n].pos.z=(map.nodes[n].pos.z*fct)/100;
+        }
+    }
+	
+    for (n=0;n!=map.nsound;n++) {
+        if (map.sounds[n].pos.rn==cr) {
+			map.sounds[n].pos.x=(map.sounds[n].pos.x*fct)/100;
+			map.sounds[n].pos.z=(map.sounds[n].pos.z*fct)/100;
+        }
+    }
+	
+    for (n=0;n!=map.nlight;n++) {
+        if (map.lights[n].pos.rn==cr) {
+			map.lights[n].pos.x=(map.lights[n].pos.x*fct)/100;
+			map.lights[n].pos.z=(map.lights[n].pos.z*fct)/100;
+        }
+    }
+	
+    for (n=0;n!=map.nparticle;n++) {
+        if (map.particles[n].pos.rn==cr) {
+ 			map.particles[n].pos.x=(map.particles[n].pos.x*fct)/100;
+			map.particles[n].pos.z=(map.particles[n].pos.z*fct)/100;
+        }
+    }
+	
+    for (n=0;n!=map.nscenery;n++) {
+        if (map.sceneries[n].pos.rn==cr) {
+			map.sceneries[n].pos.x=(map.sceneries[n].pos.x*fct)/100;
+			map.sceneries[n].pos.z=(map.sceneries[n].pos.z*fct)/100;
+        }
+    }
 
 	main_wind_draw();
 }
@@ -485,6 +617,8 @@ void portal_resize(void)
       Portal Split
       
 ======================================================= */
+
+/* supergumba -- will all need to be reworked
 
 void portal_split_segment_to_global(segment_type *seg)
 {
@@ -755,9 +889,11 @@ void portal_split_object_pos(d3pos *pos)
 	pos->x-=map.portals[pos->rn].x;
 	pos->z-=map.portals[pos->rn].z;
 }
+*/
 
 void portal_split(int rn,bool vertical)
 {
+/* supergumba
 	int					n,x,z,rn2,nsegment;
 	portal_type			*org_portal,*portal;
 	segment_type		*seg;
@@ -816,6 +952,10 @@ void portal_split(int rn,bool vertical)
     for (n=0;n!=map.nspot;n++) {
         if (map.spots[n].pos.rn==rn) portal_split_object_pos(&map.spots[n].pos);
     }
+	
+    for (n=0;n!=map.nscenery;n++) {
+        if (map.sceneries[n].pos.rn==rn) portal_split_object_pos(&map.sceneries[n].pos);
+    }
     
     for (n=0;n!=map.nnode;n++) {
         if (map.nodes[n].pos.rn==rn) portal_split_object_pos(&map.nodes[n].pos);
@@ -829,10 +969,10 @@ void portal_split(int rn,bool vertical)
         if (map.lights[n].pos.rn==rn) portal_split_object_pos(&map.lights[n].pos);
     }
 	
-    for (n=0;n!=map.nscenery;n++) {
-        if (map.sceneries[n].pos.rn==rn) portal_split_object_pos(&map.sceneries[n].pos);
+    for (n=0;n!=map.nparticle;n++) {
+        if (map.particles[n].pos.rn==rn) portal_split_object_pos(&map.particles[n].pos);
     }
 
-	
+	*/
 }
 

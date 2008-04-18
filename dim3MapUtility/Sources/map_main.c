@@ -176,7 +176,6 @@ bool map_new(map_type *map,char *name)
 	map->nsound=0;
 	map->nparticle=0;
 	map->ngroup=0;
-	map->nsegment=0;
 	
 		// memory
 		
@@ -209,9 +208,6 @@ bool map_new(map_type *map,char *name)
 	
 	map->groups=(group_type*)valloc(max_group*sizeof(group_type));
 	if (map->groups==NULL) return(FALSE);
-	
-	map->segments=(segment_type*)valloc(max_segment*sizeof(segment_type));
-	if (map->segments==NULL) return(FALSE);
 
 		// zero memory
 		
@@ -225,7 +221,6 @@ bool map_new(map_type *map,char *name)
 	bzero(map->sounds,(max_map_sound*sizeof(map_sound_type)));
 	bzero(map->particles,(max_map_particle*sizeof(map_particle_type)));
 	bzero(map->groups,(max_group*sizeof(group_type)));
-	bzero(map->segments,(max_segment*sizeof(segment_type)));
 
 		// portals
 		
@@ -365,7 +360,6 @@ void map_close(map_type *map)
 	free(map->sounds);
 	free(map->particles);
 	free(map->groups);
-	free(map->segments);
 }
 
 /* =======================================================

@@ -46,8 +46,8 @@ import_height_map_settings_type		hmi_settings;
 bool								ag_first=TRUE;
 auto_generate_settings_type			ag_settings;
 
-extern void map_import_obj(import_obj_settings_type *io_settings);
-extern void map_import_height_map(import_height_map_settings_type *hmi_settings);
+//extern void map_import_obj(import_obj_settings_type *io_settings);
+//extern void map_import_height_map(import_height_map_settings_type *hmi_settings);
 
 /* =======================================================
 
@@ -76,6 +76,7 @@ void import_redraw(void)
 
 void import_obj(void)
 {
+/* supergumba
 		// the dialog
 		
 	if (!dialog_map_obj_import_setting_run(&oi_settings,oi_first)) return;
@@ -90,6 +91,7 @@ void import_obj(void)
 		// redraw the map
 		
 	import_redraw();
+	*/
 }
 
 /* =======================================================
@@ -100,6 +102,7 @@ void import_obj(void)
 
 void import_height_map(void)
 {
+/* supergumba
 		// the dialog
 		
 	if (!dialog_map_height_import_setting_run(&hmi_settings,hmi_first)) return;
@@ -114,6 +117,7 @@ void import_height_map(void)
 		// redraw the map
 		
 	import_redraw();
+	*/
 }
 
 /* =======================================================

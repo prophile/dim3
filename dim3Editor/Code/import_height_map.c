@@ -41,6 +41,7 @@ extern map_type				map;
       
 ======================================================= */
 
+/* supergumba
 float import_height_map_get_height(bitmap_type *bitmap,int portal_x_start,int portal_z_start,int portal_total_x_sz,int portal_total_z_sz,portal_type *portal,int seg_x,int seg_z)
 {
 	int			x,z,y;
@@ -62,13 +63,17 @@ float import_height_map_get_height(bitmap_type *bitmap,int portal_x_start,int po
 	p=bitmap->data+((y*(bitmap->wid<<2))+(x<<2));
 	
 	return(((float)*p)/255.0f);
+
 }
+*/
 
 /* =======================================================
 
       Add Walls and Floors
       
 ======================================================= */
+
+/* supergumba
 
 void import_height_map_walls_add_segment(int rn,int lx,int lz,int rx,int rz,int ty,int by)
 {
@@ -105,6 +110,7 @@ void import_height_map_walls_add_segment(int rn,int lx,int lz,int rx,int rz,int 
 
 	map.nsegment++;
 }
+	*/
 
 /* =======================================================
 
@@ -112,6 +118,7 @@ void import_height_map_walls_add_segment(int rn,int lx,int lz,int rx,int rz,int 
       
 ======================================================= */
 
+/* supergumba
 void import_height_map_fix_segments_fill(import_height_map_settings_type *hmi_settings)
 {
 	int					i,x,y,z,high;
@@ -153,12 +160,15 @@ void import_height_map_fix_segments_fill(import_height_map_settings_type *hmi_se
 		seg++;
 	}
 }
+	*/
 
 /* =======================================================
 
       Import Height Map
       
 ======================================================= */
+
+/* supergumba
 
 void map_import_height_map(import_height_map_settings_type *hmi_settings)
 {
@@ -299,5 +309,6 @@ void map_import_height_map(import_height_map_settings_type *hmi_settings)
 		
 	map_auto_generate_add_player_spot(&map);
 }
+	*/
 
 

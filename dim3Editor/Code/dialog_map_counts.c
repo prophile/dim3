@@ -89,7 +89,7 @@ void dialog_map_counts_run(void)
 		// set controls
 		
 	dialog_set_int(dialog_map_counts_wind,kMapPortalCount,0,map.nportal);
-	dialog_set_int(dialog_map_counts_wind,kMapSegmentCount,0,map.nsegment);
+	dialog_set_int(dialog_map_counts_wind,kMapSegmentCount,0,0);			// supergumba -- need to fix this
 	dialog_set_int(dialog_map_counts_wind,kMapSpotCount,0,map.nspot);
 	dialog_set_int(dialog_map_counts_wind,kMapSceneryCount,0,map.nscenery);
 	dialog_set_int(dialog_map_counts_wind,kMapLightCount,0,map.nlight);

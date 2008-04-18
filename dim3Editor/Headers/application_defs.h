@@ -98,6 +98,8 @@ and can be sold or given away.
 #define kCommandPieceFreeRotate				FOUR_CHAR_CODE('prtf')
 #define kCommandPieceRaiseY					FOUR_CHAR_CODE('prsy')
 #define kCommandPieceLowerY					FOUR_CHAR_CODE('plry')
+#define kCommandFaceDelete					FOUR_CHAR_CODE('fdel')
+#define kCommandFaceHole1					FOUR_CHAR_CODE('fhl1')
 
 #define kCommandGroupAdd					FOUR_CHAR_CODE('gadd')
 #define kCommandGroupDelete					FOUR_CHAR_CODE('gdel')

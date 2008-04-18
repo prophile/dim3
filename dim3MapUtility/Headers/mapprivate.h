@@ -36,6 +36,115 @@ typedef struct		{
                     } maputility_settings_type;
 
 //
+// Old map version structures (v1)
+//
+
+#define max_segment									32768
+#define max_primitive_stack							8
+#define ambient_push_size							4
+
+#define sg_wall										0
+#define sg_floor									1
+#define sg_ceiling									2
+#define sg_liquid									3
+#define sg_ambient_wall								4
+#define sg_ambient_fc								5
+
+#define no_curve									0
+
+#define wc_none										0
+#define wc_top										1
+#define wc_bottom									2
+#define wc_slant									3
+#define wc_top_curve								4
+#define wc_top_arch									5
+#define wc_bottom_curve								6
+#define wc_bottom_arch								7
+#define wc_top_curve_arch							8
+#define wc_bottom_curve_arch						9
+
+#define wc_tessel_start								4
+#define wc_tessel_end								9
+
+#define cv_none										0
+#define cv_forward									1
+#define cv_backward									2
+
+#define ap_none										0
+#define ap_top										1
+#define ap_bottom									2
+#define ap_left										3
+#define ap_right									4
+#define ap_up										5
+#define ap_down										6
+
+#define ta_0										0
+#define ta_90										1
+#define ta_180										2
+#define ta_270										3
+
+typedef struct		{
+                        int							lx,rx,lz,rz,ty,by,
+													ptsz,x[4],z[4],y[4];
+					} wall_segment_data;
+					
+typedef struct		{
+						int							ptsz,x[8],z[8],y[8],
+													min_x,max_x,min_z,max_z,min_y,max_y;
+						float						slope_y,slope_ang_y,slope_move_x,slope_move_z;
+						bool						flat;
+					} fc_segment_data;
+
+typedef struct		{
+						short						harm,drown_harm,wavesize,
+													tiderate,tidesize,tidedirection;
+						int							y,lft,rgt,top,bot,
+													vl_idx_start,vl_x_sz,vl_z_sz,
+													drown_tick;
+						float						speed_alter,tint_alpha;
+						d3col						col;
+					} liquid_segment_data;
+
+typedef struct		{
+						short						push;
+						int							lx,rx,lz,rz,ty,by,
+													ptsz,x[4],z[4],y[4];
+					} ambient_wall_segment_data;
+					
+typedef struct		{
+						short						push;
+						int							ptsz,x[8],z[8],y[8],
+													min_x,max_x,min_z,max_z,min_y,max_y;
+					} ambient_fc_segment_data;
+					
+typedef union		{
+						wall_segment_data			wall;
+						fc_segment_data				fc;
+						liquid_segment_data			liquid;
+						ambient_wall_segment_data	ambient_wall;
+						ambient_fc_segment_data		ambient_fc;
+					} segment_data;
+
+typedef struct		{
+						int							ptsz;
+						int							idx[8];
+						float						gx[8],gy[8];
+					} segment_draw_type;
+
+typedef struct		{
+						short						type,rn,group_idx,
+													primitive_uid[max_primitive_stack],
+													tag,clip,curve,fill,txt_ang,txt_offset;
+						float						x_txtfact,y_txtfact,x_txtoff,y_txtoff,
+													x_shift,y_shift,dark_factor,alpha;
+						bool						on,pass_through,moveable,shiftable,climbable,
+													lock,simple_tessel;
+						d3pnt						middle;
+						segment_draw_type			draw;
+						segment_data				data;
+					} segment_type;
+
+//
 // Functions
 //
 
@@ -49,20 +158,6 @@ extern bool read_map_xml(map_type *map);
 extern bool write_map_xml(map_type *map);
 extern void map_textures_new(map_type *map);
 
-extern void map_segments_clear_touch(map_type *map);
-
-extern void map_prepare_setup_curve_constant(int curve_level);
-extern void map_prepare_create_wall_curve(map_type *map,segment_type *seg);
-extern void map_prepare_create_fc_curve(map_type *map,segment_type *seg);
-extern void map_prepare_create_wall_clip(map_type *map,segment_type *seg);
-extern void map_prepare_create_wall_segment_polygon(segment_type *seg);
-extern void map_prepare_create_wall_segment_uv(segment_type *seg);
-extern void map_prepare_create_fc_segment_uv(segment_type *seg);
-extern void map_prepare_create_push_ambient_wall_segment_polygon(segment_type *seg);
-extern void map_prepare_create_ambient_wall_segment_uv(segment_type *seg);
-extern void map_prepare_push_ambient_fc_segment_polygon(segment_type *seg);
-extern void map_prepare_create_ambient_fc_segment_uv(segment_type *seg);
-extern void map_prepare_set_ambient_fc_segment_square(segment_type *seg);
 extern bool map_portal_build_single_vertex_list(map_type *map,int rn,bool high_quality_lighting);
 extern bool map_portal_create_single_vertex_list(map_type *map,int rn,bool high_quality_lighting);
 extern void map_portal_dispose_single_vertex_list(map_type *map,int rn);
