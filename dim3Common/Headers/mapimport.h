@@ -121,10 +121,12 @@ typedef struct	{
 #define ag_constant_corridor_random_percent			0.4f
 
 #define ag_constant_step_high						(2*map_enlarge)
-#define ag_constant_step_min_size					(8*map_enlarge)
-#define ag_constant_step_max_size					(20*map_enlarge)
+#define ag_constant_step_min_size					(6*map_enlarge)
+#define ag_constant_step_max_size					(12*map_enlarge)
 
-#define ag_constant_ramp_size_percent				8.0f
+#define ag_constant_ramp_min_high					(4*map_enlarge)
+#define ag_constant_ramp_min_size					(10*map_enlarge)
+#define ag_constant_ramp_size_percent				4.0f
 
 //
 // auto-generate structure

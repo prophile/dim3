@@ -180,8 +180,8 @@ void map_prepare(map_type *map)
 			// search for y size when
 			// preparing meshes
 		
-		portal->ty=99999;
-		portal->by=0;
+		portal->ty=map_max_size;
+		portal->by=-map_max_size;
 		
 			// prepare meshes
 
@@ -305,9 +305,9 @@ void map_prepare(map_type *map)
 		
 			// fix portal heights
 
-		if ((portal->ty==99999) && (portal->by!=0)) portal->ty=portal->by;
-		if ((portal->by==0) && (portal->ty!=99999)) portal->by=portal->ty;
-		if ((portal->ty==99999) || (portal->by==0)) portal->ty=portal->by=0;
+		if ((portal->ty==map_max_size) && (portal->by!=-map_max_size)) portal->ty=portal->by;
+		if ((portal->by==-map_max_size) && (portal->ty!=map_max_size)) portal->by=portal->ty;
+		if ((portal->ty==map_max_size) || (portal->by==-map_max_size)) portal->ty=portal->by=0;
 
 		portal++;
 	}

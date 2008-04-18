@@ -45,6 +45,10 @@ char					segment_type_str[][32]={"wall","floor","ceiling","liquid","ambient",""}
                         segment_curve_str[][32]={"none","forward","backward",""},
                         segment_push_str[][32]={"none","top","bottom","left","right","up","down",""};
 
+extern int map_prepare_create_fc_curve(int seg_cnt,segment_type *seg_list,segment_type *seg);
+extern int map_prepare_create_wall_curve(int seg_cnt,segment_type *seg_list,segment_type *seg);
+extern int map_prepare_create_wall_clip(int seg_cnt,segment_type *seg_list,segment_type *seg);
+
 /* =======================================================
 
       Add Vertex to Mesh

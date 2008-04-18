@@ -50,17 +50,23 @@ void model_get_size(model_type *model,int *x,int *y,int *z)
 
 void model_get_vertex_extent(model_type *model,int mesh_idx,int *p_minx,int *p_maxx,int *p_minz,int *p_maxz,int *p_miny,int *p_maxy)
 {
-	int					i,nvertex,
+	int					n,nvertex,
 						minx,maxx,minz,maxz,miny,maxy;
 	model_vertex_type	*vertex;
 	
 	nvertex=model->meshes[mesh_idx].nvertex;
 	vertex=model->meshes[mesh_idx].vertexes;
+
+	if (nvertex==0) {
+		*p_minx=*p_maxx=*p_minz=*p_maxz=*p_miny=*p_maxy=0;
+		return;
+	}
 	
-	minx=minz=miny=999999;
-    maxx=maxz=maxy=-999999;
+	minx=maxx=vertex->pnt.x;
+	miny=maxy=vertex->pnt.y;
+	minz=maxz=vertex->pnt.z;
 	
-	for (i=0;i!=nvertex;i++) {
+	for (n=1;n<nvertex;n++) {
 		if (vertex->pnt.x<minx) minx=vertex->pnt.x;
 		if (vertex->pnt.x>maxx) maxx=vertex->pnt.x;
 		if (vertex->pnt.z<minz) minz=vertex->pnt.z;

@@ -351,6 +351,116 @@ int map_portal_mesh_add_poly(map_type *map,int portal_idx,int mesh_idx,int ptsz,
 	return(poly_idx);
 }
 
+bool map_portal_mesh_delete_poly(map_type *map,int portal_idx,int mesh_idx,int poly_idx)
+{
+	int					n,k,t,sz,v_idx,del_idx[8];
+	bool				del_ok[8];
+	d3pnt				*nvertex_ptr;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly,*chk_poly,*nmesh_ptr;
+
+	portal=&map->portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+
+		// mark all vertexes only owned
+		// by this poly and delete
+
+	for (k=0;k!=poly->ptsz;k++) {
+
+		del_idx[k]=poly->v[k];
+		del_ok[k]=TRUE;
+
+		chk_poly=mesh->polys;
+
+		for (n=0;n!=mesh->npoly;n++) {
+			
+			if (n!=poly_idx) {
+				for (t=0;t!=chk_poly->ptsz;t++) {
+					if (chk_poly->v[t]==del_idx[k]) {
+						del_ok[k]=FALSE;
+						break;
+					}
+				}
+			}
+
+			chk_poly++;
+		}
+	}
+
+		// remove the polygon
+
+	if (mesh->npoly<=1) {
+		free(mesh->polys);
+		mesh->npoly=0;
+		mesh->polys=NULL;
+	}
+	else {
+		nmesh_ptr=(map_mesh_poly_type*)valloc((mesh->npoly-1)*sizeof(map_mesh_poly_type));
+		if (nmesh_ptr==NULL) return(FALSE);
+
+		if (poly_idx>0) {
+			sz=(poly_idx+1)*sizeof(map_mesh_poly_type);
+			memmove(nmesh_ptr,mesh->polys,sz);
+		}
+
+		sz=(mesh->npoly-poly_idx)*sizeof(map_mesh_poly_type);
+		if (sz>0) memmove(&nmesh_ptr[poly_idx],&mesh->polys[poly_idx+1],sz);
+
+		free(mesh->polys);
+
+		mesh->polys=nmesh_ptr;
+		mesh->npoly--;
+	}
+
+		// remove the vertexes
+
+	for (k=0;k!=poly->ptsz;k++) {
+		if (!del_ok[k]) continue;
+
+		v_idx=del_idx[k];
+
+			// fix all vertexe indexes
+
+		chk_poly=mesh->polys;
+
+		for (n=0;n!=mesh->npoly;n++) {
+			for (t=0;t!=chk_poly->ptsz;t++) {
+				if (chk_poly->v[t]>v_idx) chk_poly->v[t]--;
+			}
+			chk_poly++;
+		}
+
+			// delete vertex
+
+		if (mesh->nvertex<=1) {
+			free(mesh->vertexes);
+			mesh->nvertex=0;
+			mesh->vertexes=NULL;
+			break;
+		}
+
+		nvertex_ptr=(d3pnt*)valloc((mesh->nvertex-1)*sizeof(d3pnt));
+		if (nvertex_ptr==NULL) return(FALSE);
+
+		if (v_idx>0) {
+			sz=(v_idx+1)*sizeof(d3pnt);
+			memmove(nvertex_ptr,mesh->vertexes,sz);
+		}
+
+		sz=(mesh->nvertex-v_idx)*sizeof(d3pnt);
+		if (sz>0) memmove(&nvertex_ptr[v_idx],&mesh->vertexes[v_idx+1],sz);
+
+		free(mesh->vertexes);
+
+		mesh->vertexes=nvertex_ptr;
+		mesh->nvertex--;
+	}
+
+	return(TRUE);
+}
+
 /* =======================================================
 
       Mesh Transparency Sorting Lists

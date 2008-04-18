@@ -296,18 +296,34 @@ void map_auto_generate_poly_from_square_wall(int lx,int lz,int rx,int rz,int ty,
 
 void map_auto_generate_poly_from_top_trig_wall(int lx,int lz,int rx,int rz,int ty,int by,int *x,int *y,int *z,float *gx,float *gy)
 {
-	x[0]=lx;
-	x[1]=x[2]=rx;
-	z[0]=lz;
-	z[1]=z[2]=rz;
+	x[0]=x[2]=lx;
+	x[1]=rx;
+	z[0]=z[2]=lz;
+	z[1]=rz;
 
-	y[0]=y[2]=by;
-	y[1]=ty;
+	y[0]=ty;
+	y[1]=y[2]=by;
 
-	gx[0]=0.0f;
-	gx[1]=gx[2]=1.0f;
-	gy[0]=gy[2]=0.0f;
-	gy[1]=1.0f;
+	gx[0]=gx[2]=0.0f;
+	gx[1]=1.0f;
+	gy[0]=0.0f;
+	gy[1]=gy[2]=1.0f;
+}
+
+void map_auto_generate_poly_from_bot_trig_wall(int lx,int lz,int rx,int rz,int ty,int by,int *x,int *y,int *z,float *gx,float *gy)
+{
+	x[0]=x[2]=lx;
+	x[1]=rx;
+	z[0]=z[2]=lz;
+	z[1]=rz;
+
+	y[0]=by;
+	y[1]=y[2]=ty;
+
+	gx[0]=gx[2]=0.0f;
+	gx[1]=1.0f;
+	gy[0]=0.0f;
+	gy[1]=gy[2]=1.0f;
 }
 
 void map_auto_generate_poly_from_square_floor(int lx,int lz,int rx,int rz,int fy,int *x,int *y,int *z,float *gx,float *gy)

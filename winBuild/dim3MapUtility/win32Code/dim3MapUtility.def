@@ -59,27 +59,28 @@ EXPORTS
 	map_portal_mesh_duplicate						@224
 	map_portal_mesh_count_total_poly				@225
 	map_portal_mesh_add_poly						@226
-	map_portal_mesh_create_transparent_sort_lists	@227
-	map_portal_mesh_dispose_transparent_sort_lists	@228
-	map_portal_mesh_calculate_extent				@229
-	map_portal_mesh_calculate_center				@230
+	map_portal_mesh_delete_poly						@227
+	map_portal_mesh_create_transparent_sort_lists	@228
+	map_portal_mesh_dispose_transparent_sort_lists	@229
+	map_portal_mesh_calculate_extent				@230
+	map_portal_mesh_calculate_center				@231
 	
-	map_portal_mesh_combine							@231
-	map_portal_mesh_switch_portal					@232
-	map_portal_mesh_move							@233
-	map_portal_mesh_resize							@234
-	map_portal_mesh_flip							@235
-	map_portal_mesh_rotate							@236
-	map_portal_mesh_tesselate						@237
-	map_portal_mesh_shift_portal_vertex_list		@238
+	map_portal_mesh_combine							@232
+	map_portal_mesh_switch_portal					@233
+	map_portal_mesh_move							@234
+	map_portal_mesh_resize							@235
+	map_portal_mesh_flip							@236
+	map_portal_mesh_rotate							@237
+	map_portal_mesh_tesselate						@238
+	map_portal_mesh_shift_portal_vertex_list		@239
 
-	map_portal_liquid_add							@240
-	map_portal_liquid_delete						@241
-	map_portal_liquid_duplicate						@242
-	map_portal_liquid_calculate_center				@243
+	map_portal_liquid_add							@250
+	map_portal_liquid_delete						@251
+	map_portal_liquid_duplicate						@252
+	map_portal_liquid_calculate_center				@253
 	
-	map_portal_liquid_switch_portal					@245
-	map_portal_liquid_move							@246
+	map_portal_liquid_switch_portal					@265
+	map_portal_liquid_move							@266
 
 	map_group_create_unit_list						@270
 	map_group_dispose_unit_list						@271
