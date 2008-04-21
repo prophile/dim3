@@ -76,7 +76,7 @@ void walk_view_swap_draw(editor_3D_view_setup *view_setup)
 	ty=view_swap_y_offset;
 	by=ty+(view_swap_triangle_size*2);
 	
-	glColor4f(1,(view_setup->swap_on?1:0),0,1);
+	glColor4f(1,(view_setup->swap_on?0:1),0,1);
 	
 	glBegin(GL_TRIANGLES);
 	glVertex2i(lx,by);
@@ -84,19 +84,37 @@ void walk_view_swap_draw(editor_3D_view_setup *view_setup)
 	glVertex2i(rx,by);
 	glEnd();
 	
+	if (!view_setup->swap_on) {
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+		glBegin(GL_LINE_LOOP);
+		glVertex2i(lx,by);
+		glVertex2i(mx,ty);
+		glVertex2i(rx,by);
+		glEnd();
+	}	
+	
 		// swap right arrow
 
 	lx=(wid-view_swap_x_rgt_offset)-view_swap_triangle_size;
 	rx=(wid-view_swap_x_rgt_offset)+view_swap_triangle_size;
 	mx=(lx+rx)>>1;
 
-	glColor4f(1,(view_setup->swap_on?0:1),0,1);
+	glColor4f(1,(view_setup->swap_on?1:0),0,1);
 	
 	glBegin(GL_TRIANGLES);
 	glVertex2i(lx,ty);
 	glVertex2i(mx,by);
 	glVertex2i(rx,ty);
 	glEnd();
+	
+	if (view_setup->swap_on) {
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+		glBegin(GL_LINE_LOOP);
+		glVertex2i(lx,ty);
+		glVertex2i(mx,by);
+		glVertex2i(rx,ty);
+		glEnd();
+	}	
 }
 
 /* =======================================================

@@ -173,10 +173,8 @@ void walk_view_cursor(bool rot_ok)
       
 ======================================================= */
 
-void walk_view_key(char ch,int view_move_dir)
+void walk_view_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch)
 {
-/* supergumba -- fix this
-	piece_key(cr,ch,TRUE,on_side);
-	*/
+	piece_key(view_setup,view_move_dir,ch);
 }
 

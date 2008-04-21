@@ -131,23 +131,25 @@ void walk_view_click_drag_movement(editor_3D_view_setup *view_setup,int view_mov
 	}
 }
 
+int walk_view_get_grid(void)
+{
+	switch (grid_mode) {
+		case grid_mode_small:
+			return(map_enlarge);
+		case grid_mode_medium:
+			return(map_enlarge<<1);
+		case grid_mode_large:
+			return(map_enlarge<<3);
+	}
+
+	return(1);
+}
+
 void walk_view_click_grid(d3pnt *pt)
 {
 	int			sz;
 	
-	switch (grid_mode) {
-		case grid_mode_none:
-			return;
-		case grid_mode_small:
-			sz=map_enlarge;
-			break;
-		case grid_mode_medium:
-			sz=map_enlarge<<1;
-			break;
-		case grid_mode_large:
-			sz=map_enlarge<<3;
-			break;
-	}
+	sz=walk_view_get_grid();
 	
 	pt->x/=sz;
 	pt->y/=sz;

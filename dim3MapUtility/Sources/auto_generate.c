@@ -56,8 +56,12 @@ extern void map_auto_generate_poly_from_square_floor_slant(int lx,int lz,int rx,
 extern bool map_auto_generate_mesh_start(map_type *map,int portal_idx,int group_idx,int txt_idx,bool moveable,bool new_mesh);
 extern bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z,float *gx,float *gy);
 
+unsigned char						ag_ceiling_data[ag_ceiling_type_count][12]=ag_ceiling_data_bytes,
+									ag_ceiling_wall_data[ag_ceiling_type_count][7]=ag_ceiling_wall_data_bytes;
+
 unsigned char						corridor_flags[max_portal],
-									corridor_types[max_portal];
+									corridor_types[max_portal],
+									ceiling_types[max_portal];
 
 auto_generate_settings_type			ag_settings;
 
@@ -145,6 +149,8 @@ void map_auto_generate_initial_portals(map_type *map)
 			
 		rn=map_portal_create(map,x,z,ex,ez);
 		if (rn==-1) break;
+		
+		corridor_flags[rn]=ag_corridor_flag_portal;
 
 			// create initial mesh
 
@@ -327,13 +333,8 @@ void map_auto_generate_connect_portals(map_type *map)
 
 				// make sure corridor isn't in corner
 
-			if ((z==chk_portal->z) || (z==cnt_portal->z)) {
-				z+=split_factor;
-			}
-
-			if ((ez==chk_portal->ez) || (ez==cnt_portal->ez)) {
-				ez-=split_factor;
-			}
+			if ((z==chk_portal->z) || (z==cnt_portal->z)) z+=split_factor;
+			if ((ez==chk_portal->ez) || (ez==cnt_portal->ez)) ez-=split_factor;
 
 			if (z>=ez) continue;
 
@@ -350,11 +351,11 @@ void map_auto_generate_connect_portals(map_type *map)
 
 				// create portal
 
-			corridor_flags[map->nportal]=ag_corridor_flag_horizontal;
-			corridor_types[map->nportal]=map_auto_generate_get_corridor_type(&ag_settings);
-
 			rn=map_portal_create(map,x,z,ex,ez);
 			if (rn==-1) break;
+			
+			corridor_flags[rn]=ag_corridor_flag_horizontal;
+			corridor_types[rn]=map_auto_generate_get_corridor_type(&ag_settings);
 
 				// only allow up to 2 connections in a direction
 
@@ -410,13 +411,8 @@ void map_auto_generate_connect_portals(map_type *map)
 
 				// make sure corridor isn't in corner
 
-			if ((x==chk_portal->x) || (x==cnt_portal->x)) {
-				x+=split_factor;
-			}
-
-			if ((ex==chk_portal->ex) || (ex==cnt_portal->ex)) {
-				ex-=split_factor;
-			}
+			if ((x==chk_portal->x) || (x==cnt_portal->x)) x+=split_factor;
+			if ((ex==chk_portal->ex) || (ex==cnt_portal->ex)) ex-=split_factor;
 
 			if (x>=ex) continue;
 
@@ -433,11 +429,11 @@ void map_auto_generate_connect_portals(map_type *map)
 
 				// create portal
 				
-			corridor_flags[map->nportal]=ag_corridor_flag_vertical;
-			corridor_types[map->nportal]=map_auto_generate_get_corridor_type(&ag_settings);
-
 			rn=map_portal_create(map,x,z,ex,ez);
 			if (rn==-1) break;
+			
+			corridor_flags[rn]=ag_corridor_flag_vertical;
+			corridor_types[rn]=map_auto_generate_get_corridor_type(&ag_settings);
 
 				// only allow up to 2 connections in a direction
 
@@ -471,7 +467,7 @@ void map_auto_generate_portal_y(map_type *map)
 
 		// corridor top slop (so not at very top of portal)
 
-	corridor_slop_y=(by-ty)/5;
+	corridor_slop_y=(int)((float)(by-ty)*ag_constant_portal_high_slop_y);
 
 		// create portal y
 
@@ -830,273 +826,6 @@ void map_auto_generate_height_walls(map_type *map)
 
 /* =======================================================
 
-      Auto-Generate Portal Ramps
-      
-======================================================= */
-
-void map_auto_generate_ramps_position(int *x,int *ex)
-{
-	int			mx,wid,sz;
-
-	wid=(*ex)-(*x);
-	sz=wid>>1;
-
-		// make sure ramp is at least a certain width
-
-	if (sz<ag_constant_ramp_min_size) {
-		sz=ag_constant_ramp_min_size;
-		if (sz>wid) return;
-	}
-
-		// shift ramp to a side or middle
-
-	switch (map_auto_generate_random_int(3)) {
-
-			// ramp to left
-
-		case 0:
-			*ex=(*x)+sz;
-			break;
-
-			// ramp to right
-
-		case 1:
-			*x=(*ex)-sz;
-			break;
-
-			// ramp in middle
-
-		default:
-			mx=((*x)+(*ex))/2;
-			sz=sz>>1;
-			*x=mx-sz;
-			*ex=mx+sz;
-			break;
-
-	}
-}
-
-void map_auto_generate_ramps(map_type *map)
-{
-	int				n,k,x,ex,z,ez,xsz,zsz,kx,kz,
-					split_factor,high,ramp_sz,
-					px[8],py[8],pz[8];
-	float			gx[8],gy[8];
-	portal_type		*portal,*chk_portal;
-
-		// how we split the walls into a mesh
-
-	split_factor=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_split_factor_percent);
-	
-		// create ramps
-
-	for (n=0;n!=map->nportal;n++) {
-		if (corridor_flags[n]!=ag_corridor_flag_portal) continue;
-		
-			// portal size
-
-		portal=&map->portals[n];
-
-		xsz=portal->ex-portal->x;
-		zsz=portal->ez-portal->z;
-		
-			// check for touching portals
-	
-		for (k=0;k!=map->nportal;k++) {
-			if (k==n) continue;
-			if (corridor_flags[k]!=ag_corridor_flag_portal) continue;
-			
-				// only put ramps in rooms that are lower
-				
-			chk_portal=&map->portals[k];
-			if (portal->by<=chk_portal->by) continue;
-
-			high=portal->by-chk_portal->by;
-			
-				// get ramp size
-				
-			ramp_sz=(int)(((float)high)*ag_constant_ramp_size_percent);
-
-				// portals touching top
-				
-			if (portal->z==chk_portal->ez) {
-				x=portal->x;
-				if (chk_portal->x>x) x=chk_portal->x;
-				ex=portal->ex;
-				if (chk_portal->ex<ex) ex=chk_portal->ex;
-				if (x>ex) continue;
-
-				x-=portal->x;
-				ex-=portal->x;
-
-				z=0;
-				ez=z+ramp_sz;
-
-					// portal wall
-
-				if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.portal_wall,FALSE,FALSE)) return;
-
-				for (kx=x;kx<ex;kx+=split_factor) {
-					map_auto_generate_poly_from_square_wall(kx,z,(kx+split_factor),z,chk_portal->by,portal->by,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-				}
-
-					// ramp
-
-				if (high>=ag_constant_ramp_min_high) {
-					if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.ramp,FALSE,TRUE)) return;
-
-					map_auto_generate_ramps_position(&x,&ex);
-				
-					map_auto_generate_poly_from_top_trig_wall(x,z,x,ez,chk_portal->by,portal->by,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
-					map_auto_generate_poly_from_top_trig_wall(ex,z,ex,ez,chk_portal->by,portal->by,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
-					
-					map_auto_generate_poly_from_square_floor_slant(x,z,ex,ez,portal->by,high,ag_ceiling_lower_neg_z,FALSE,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-				}
-				
-				continue;
-			}
-			
-				// portals touching bottom
-				
-			if (portal->ez==chk_portal->z) {
-				x=portal->x;
-				if (chk_portal->x>x) x=chk_portal->x;
-				ex=portal->ex;
-				if (chk_portal->ex<ex) ex=chk_portal->ex;
-				if (x>ex) continue;
-				
-				x-=portal->x;
-				ex-=portal->x;
-
-				ez=portal->ez-portal->z;
-				z=ez-ramp_sz;
-
-					// portal wall
-
-				if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.portal_wall,FALSE,FALSE)) return;
-			
-				for (kx=x;kx<ex;kx+=split_factor) {
-					map_auto_generate_poly_from_square_wall(kx,ez,(kx+split_factor),ez,chk_portal->by,portal->by,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-				}
-
-					// ramp
-
-				if (high>=ag_constant_ramp_min_high) {
-					if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.ramp,FALSE,TRUE)) return;
-
-					map_auto_generate_ramps_position(&x,&ex);
-
-					map_auto_generate_poly_from_top_trig_wall(x,ez,x,z,chk_portal->by,portal->by,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
-					map_auto_generate_poly_from_top_trig_wall(ex,ez,ex,z,chk_portal->by,portal->by,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
-
-					map_auto_generate_poly_from_square_floor_slant(x,z,ex,ez,portal->by,high,ag_ceiling_lower_pos_z,FALSE,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-				}
-				
-				continue;
-			}
-			
-				// portals touching left
-				
-			if (portal->x==chk_portal->ex) {
-				z=portal->z;
-				if (chk_portal->z>z) z=chk_portal->z;
-				ez=portal->ez;
-				if (chk_portal->ez<ez) ez=chk_portal->ez;
-				if (z>ez) continue;
-
-				z-=portal->z;
-				ez-=portal->z;
-
-				x=0;
-				ex=x+ramp_sz;
-
-					// portal wall
-
-				if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.portal_wall,FALSE,FALSE)) return;
-
-				for (kz=z;kz<ez;kz+=split_factor) {
-					map_auto_generate_poly_from_square_wall(x,kz,x,(kz+split_factor),chk_portal->by,portal->by,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-				}
-
-					// ramp
-
-				if (high>=ag_constant_ramp_min_high) {
-					if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.ramp,FALSE,TRUE)) return;
-
-					map_auto_generate_ramps_position(&z,&ez);
-
-					map_auto_generate_poly_from_top_trig_wall(x,z,ex,z,chk_portal->by,portal->by,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
-					map_auto_generate_poly_from_top_trig_wall(x,ez,ex,ez,chk_portal->by,portal->by,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
-
-					map_auto_generate_poly_from_square_floor_slant(x,z,ex,ez,portal->by,high,ag_ceiling_lower_neg_x,FALSE,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-				}
-				
-				continue;
-			}
-			
-				// portals touching right
-				
-			if (portal->ex==chk_portal->x) {
-				z=portal->z;
-				if (chk_portal->z>z) z=chk_portal->z;
-				ez=portal->ez;
-				if (chk_portal->ez<ez) ez=chk_portal->ez;
-				if (z>ez) continue;
-				
-				z-=portal->z;
-				ez-=portal->z;
-
-				ex=portal->ex-portal->x;
-				x=ex-ramp_sz;
-
-					// portal wall
-
-				if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.portal_wall,FALSE,FALSE)) return;
-				
-				for (kz=z;kz<ez;kz+=split_factor) {
-					map_auto_generate_poly_from_square_wall(ex,kz,ex,(kz+split_factor),chk_portal->by,portal->by,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-				}
-
-					// ramp
-
-				if (high>=ag_constant_ramp_min_high) {
-					if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.ramp,FALSE,TRUE)) return;
-
-					map_auto_generate_ramps_position(&z,&ez);
-
-					map_auto_generate_poly_from_top_trig_wall(ex,z,x,z,chk_portal->by,portal->by,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
-					map_auto_generate_poly_from_top_trig_wall(ex,ez,x,ez,chk_portal->by,portal->by,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
-
-					map_auto_generate_poly_from_square_floor_slant(x,z,ex,ez,portal->by,high,ag_ceiling_lower_pos_x,FALSE,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-				}
-				
-				continue;
-			}
-			
-		}
-	
-		portal++;
-	}
-}
-
-/* =======================================================
-
       Auto-Generate Clipping Corridor Walls
       
 ======================================================= */
@@ -1114,8 +843,11 @@ void map_auto_generate_corridor_clip_walls(map_type *map)
 
 	for (n=0;n!=map->nportal;n++) {
 		
-		if (corridor_flags[n]==ag_corridor_flag_portal) continue;
-
+		if (corridor_flags[n]==ag_corridor_flag_portal) {
+			portal++;
+			continue;
+		}
+		
 			// portal size
 
 		xsz=portal->ex-portal->x;
@@ -1133,30 +865,30 @@ void map_auto_generate_corridor_clip_walls(map_type *map)
 			by=ty+clip_sz;
 		
 			if (corridor_flags[n]==ag_corridor_flag_horizontal) {
-				map_auto_generate_poly_from_top_trig_wall(0,0,0,clip_sz,ty,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_bot_trig_wall(0,0,0,clip_sz,ty,by,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
 
-				map_auto_generate_poly_from_top_trig_wall(0,(zsz-clip_sz),0,zsz,ty,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_bot_trig_wall(0,zsz,0,(zsz-clip_sz),ty,by,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
 
-				map_auto_generate_poly_from_top_trig_wall(xsz,0,xsz,clip_sz,ty,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_bot_trig_wall(xsz,0,xsz,clip_sz,ty,by,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
 
-				map_auto_generate_poly_from_top_trig_wall(xsz,(zsz-clip_sz),xsz,zsz,ty,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_bot_trig_wall(xsz,zsz,xsz,(zsz-clip_sz),ty,by,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
 			}
 
 			if (corridor_flags[n]==ag_corridor_flag_vertical) {
-				map_auto_generate_poly_from_top_trig_wall(0,0,clip_sz,0,ty,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_bot_trig_wall(0,0,clip_sz,0,ty,by,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
 
-				map_auto_generate_poly_from_top_trig_wall((xsz-clip_sz),0,xsz,0,ty,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_bot_trig_wall(xsz,0,(xsz-clip_sz),0,ty,by,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
 				
-				map_auto_generate_poly_from_top_trig_wall(0,zsz,clip_sz,zsz,ty,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_bot_trig_wall(0,zsz,clip_sz,zsz,ty,by,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
 
-				map_auto_generate_poly_from_top_trig_wall((xsz-clip_sz),zsz,xsz,zsz,ty,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_bot_trig_wall(xsz,zsz,(xsz-clip_sz),zsz,ty,by,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
 			}
 
@@ -1172,30 +904,30 @@ void map_auto_generate_corridor_clip_walls(map_type *map)
 			by=portal->by;
 		
 			if (corridor_flags[n]==ag_corridor_flag_horizontal) {
-				map_auto_generate_poly_from_bot_trig_wall(0,0,0,clip_sz,ty,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_top_trig_wall(0,0,0,clip_sz,ty,by,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
 
-				map_auto_generate_poly_from_bot_trig_wall(0,(zsz-clip_sz),0,zsz,ty,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_top_trig_wall(0,zsz,0,(zsz-clip_sz),ty,by,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
 
-				map_auto_generate_poly_from_bot_trig_wall(xsz,0,xsz,clip_sz,ty,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_top_trig_wall(xsz,0,xsz,clip_sz,ty,by,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
 
-				map_auto_generate_poly_from_bot_trig_wall(xsz,(zsz-clip_sz),xsz,zsz,ty,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_top_trig_wall(xsz,zsz,xsz,(zsz-clip_sz),ty,by,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
 			}
 
 			if (corridor_flags[n]==ag_corridor_flag_vertical) {
-				map_auto_generate_poly_from_bot_trig_wall(0,0,clip_sz,0,ty,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_top_trig_wall(0,0,clip_sz,0,ty,by,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
 
-				map_auto_generate_poly_from_bot_trig_wall((xsz-clip_sz),0,xsz,0,ty,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_top_trig_wall(xsz,0,(xsz-clip_sz),0,ty,by,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
 				
-				map_auto_generate_poly_from_bot_trig_wall(0,zsz,clip_sz,zsz,ty,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_top_trig_wall(0,zsz,clip_sz,zsz,ty,by,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
 
-				map_auto_generate_poly_from_bot_trig_wall((xsz-clip_sz),zsz,xsz,zsz,ty,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_top_trig_wall(xsz,zsz,(xsz-clip_sz),zsz,ty,by,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
 			}
 
@@ -1253,6 +985,8 @@ void map_auto_generate_portal_fc_add(map_type *map,int rn,int lx,int lz,int rx,i
 	slant_sz=(portal->by-portal->ty)>>2;
 	
 	ceiling_type=map_auto_generate_get_ceiling_type(&ag_settings);
+	
+	ceiling_types[rn]=ceiling_types;
 	
 		// create floor/ceiling polys
 
@@ -1651,6 +1385,275 @@ void map_auto_generate_rough_floor(map_type *map)
 
 /* =======================================================
 
+      Auto-Generate Portal Ramps
+      
+======================================================= */
+
+void map_auto_generate_ramps_position(int *x,int *ex)
+{
+	int			mx,wid,split_factor,sz;
+
+	wid=(*ex)-(*x);
+	sz=wid>>1;
+
+		// make sure ramp is at least a certain width
+		
+	split_factor=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_split_factor_percent);
+
+	if (sz<split_factor) {
+		sz=split_factor;
+		if (sz>wid) sz=wid;
+	}
+
+		// shift ramp to a side or middle
+
+	switch (map_auto_generate_random_int(3)) {
+
+			// ramp to left
+
+		case 0:
+			*ex=(*x)+sz;
+			break;
+
+			// ramp to right
+
+		case 1:
+			*x=(*ex)-sz;
+			break;
+
+			// ramp in middle
+
+		default:
+			mx=((*x)+(*ex))/2;
+			sz=sz>>1;
+			*x=mx-sz;
+			*ex=mx+sz;
+			break;
+
+	}
+}
+
+void map_auto_generate_ramps(map_type *map)
+{
+	int				n,k,x,ex,z,ez,xsz,zsz,kx,kz,
+					split_factor,high,ramp_sz,
+					px[8],py[8],pz[8];
+	float			gx[8],gy[8];
+	portal_type		*portal,*chk_portal;
+
+		// how we split the walls into a mesh
+
+	split_factor=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_split_factor_percent);
+	
+		// create ramps
+
+	for (n=0;n!=map->nportal;n++) {
+		if (corridor_flags[n]!=ag_corridor_flag_portal) continue;
+		
+			// portal size
+
+		portal=&map->portals[n];
+
+		xsz=portal->ex-portal->x;
+		zsz=portal->ez-portal->z;
+		
+			// check for touching portals
+	
+		for (k=0;k!=map->nportal;k++) {
+			if (k==n) continue;
+			if (corridor_flags[k]!=ag_corridor_flag_portal) continue;
+			
+				// only put ramps in rooms that are lower
+				
+			chk_portal=&map->portals[k];
+			if (portal->by<=chk_portal->by) continue;
+
+			high=portal->by-chk_portal->by;
+			
+				// get ramp size
+				
+			ramp_sz=(int)(((float)high)*ag_constant_ramp_size_percent);
+
+				// portals touching top
+				
+			if (portal->z==chk_portal->ez) {
+				x=portal->x;
+				if (chk_portal->x>x) x=chk_portal->x;
+				ex=portal->ex;
+				if (chk_portal->ex<ex) ex=chk_portal->ex;
+				if (x>ex) continue;
+
+				x-=portal->x;
+				ex-=portal->x;
+
+				z=0;
+				ez=z+ramp_sz;
+
+					// portal wall
+
+				if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.portal_wall,FALSE,FALSE)) return;
+
+				for (kx=x;kx<ex;kx+=split_factor) {
+					map_auto_generate_poly_from_square_wall(kx,z,(kx+split_factor),z,chk_portal->by,portal->by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
+
+					// ramp
+
+				if (high>=ag_constant_ramp_min_high) {
+					if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.ramp,FALSE,TRUE)) return;
+
+					map_auto_generate_ramps_position(&x,&ex);
+				
+					map_auto_generate_poly_from_top_trig_wall(x,z,x,ez,chk_portal->by,portal->by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
+					map_auto_generate_poly_from_top_trig_wall(ex,z,ex,ez,chk_portal->by,portal->by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
+					
+					map_auto_generate_poly_from_square_floor_slant(x,z,ex,ez,portal->by,high,ag_ceiling_lower_neg_z,FALSE,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
+				
+				continue;
+			}
+			
+				// portals touching bottom
+				
+			if (portal->ez==chk_portal->z) {
+				x=portal->x;
+				if (chk_portal->x>x) x=chk_portal->x;
+				ex=portal->ex;
+				if (chk_portal->ex<ex) ex=chk_portal->ex;
+				if (x>ex) continue;
+				
+				x-=portal->x;
+				ex-=portal->x;
+
+				ez=portal->ez-portal->z;
+				z=ez-ramp_sz;
+
+					// portal wall
+
+				if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.portal_wall,FALSE,FALSE)) return;
+			
+				for (kx=x;kx<ex;kx+=split_factor) {
+					map_auto_generate_poly_from_square_wall(kx,ez,(kx+split_factor),ez,chk_portal->by,portal->by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
+
+					// ramp
+
+				if (high>=ag_constant_ramp_min_high) {
+					if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.ramp,FALSE,TRUE)) return;
+
+					map_auto_generate_ramps_position(&x,&ex);
+
+					map_auto_generate_poly_from_top_trig_wall(x,ez,x,z,chk_portal->by,portal->by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
+					map_auto_generate_poly_from_top_trig_wall(ex,ez,ex,z,chk_portal->by,portal->by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
+
+					map_auto_generate_poly_from_square_floor_slant(x,z,ex,ez,portal->by,high,ag_ceiling_lower_pos_z,FALSE,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
+				
+				continue;
+			}
+			
+				// portals touching left
+				
+			if (portal->x==chk_portal->ex) {
+				z=portal->z;
+				if (chk_portal->z>z) z=chk_portal->z;
+				ez=portal->ez;
+				if (chk_portal->ez<ez) ez=chk_portal->ez;
+				if (z>ez) continue;
+
+				z-=portal->z;
+				ez-=portal->z;
+
+				x=0;
+				ex=x+ramp_sz;
+
+					// portal wall
+
+				if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.portal_wall,FALSE,FALSE)) return;
+
+				for (kz=z;kz<ez;kz+=split_factor) {
+					map_auto_generate_poly_from_square_wall(x,kz,x,(kz+split_factor),chk_portal->by,portal->by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
+
+					// ramp
+
+				if (high>=ag_constant_ramp_min_high) {
+					if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.ramp,FALSE,TRUE)) return;
+
+					map_auto_generate_ramps_position(&z,&ez);
+
+					map_auto_generate_poly_from_top_trig_wall(x,z,ex,z,chk_portal->by,portal->by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
+					map_auto_generate_poly_from_top_trig_wall(x,ez,ex,ez,chk_portal->by,portal->by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
+
+					map_auto_generate_poly_from_square_floor_slant(x,z,ex,ez,portal->by,high,ag_ceiling_lower_neg_x,FALSE,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
+				
+				continue;
+			}
+			
+				// portals touching right
+				
+			if (portal->ex==chk_portal->x) {
+				z=portal->z;
+				if (chk_portal->z>z) z=chk_portal->z;
+				ez=portal->ez;
+				if (chk_portal->ez<ez) ez=chk_portal->ez;
+				if (z>ez) continue;
+				
+				z-=portal->z;
+				ez-=portal->z;
+
+				ex=portal->ex-portal->x;
+				x=ex-ramp_sz;
+
+					// portal wall
+
+				if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.portal_wall,FALSE,FALSE)) return;
+				
+				for (kz=z;kz<ez;kz+=split_factor) {
+					map_auto_generate_poly_from_square_wall(ex,kz,ex,(kz+split_factor),chk_portal->by,portal->by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
+
+					// ramp
+
+				if (high>=ag_constant_ramp_min_high) {
+					if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.ramp,FALSE,TRUE)) return;
+
+					map_auto_generate_ramps_position(&z,&ez);
+
+					map_auto_generate_poly_from_top_trig_wall(ex,z,x,z,chk_portal->by,portal->by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
+					map_auto_generate_poly_from_top_trig_wall(ex,ez,x,ez,chk_portal->by,portal->by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
+
+					map_auto_generate_poly_from_square_floor_slant(x,z,ex,ez,portal->by,high,ag_ceiling_lower_pos_x,FALSE,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
+				
+				continue;
+			}
+			
+		}
+	
+		portal++;
+	}
+}
+
+/* =======================================================
+
       Corridor to Portal Steps
       
 ======================================================= */
@@ -1799,9 +1802,10 @@ void map_auto_generate_corridor_to_portal_steps(map_type *map)
 void map_auto_generate_doors(map_type *map)
 {
 	int						n,k,x,z,xsz,zsz,ty,by,
-							door_cnt,group_idx,
+							px[8],py[8],pz[8],door_cnt,group_idx,
 							movement_idx,move_idx;
 	char					name[name_str_len];
+	float					gx[8],gy[8];
 	portal_type				*portal;
 	movement_type			*movement;
 	movement_move_type		*move;
@@ -1840,13 +1844,9 @@ void map_auto_generate_doors(map_type *map)
 		
 		strcpy(map->groups[group_idx].name,name);
 		
-			// create new primitive
-		
-//		primitive_uid=map_primitive_create_uid(map);		// supergumba -- fix this
-		
-			// start segments
+			// start meshes
 			
-//		map_auto_generate_segment_start(group_idx,-1,ag_settings.texture.door,TRUE);
+		if (!map_auto_generate_mesh_start(map,n,group_idx,ag_settings.texture.door,FALSE,TRUE)) return;
 		
 			// create the movement
 			
@@ -1878,39 +1878,53 @@ void map_auto_generate_doors(map_type *map)
 		
 			switch (k) {
 				case 0:
-					x=4;
+					x=ag_constant_door_width*2;
 					break;
 				case 1:
-					x=xsz-6;
+					x=xsz-(ag_constant_door_width*3);
 					break;
 				default:
-					x=(xsz/2)-1;
+					x=xsz/2;
 					break;
 			}
+			
+			map_auto_generate_poly_from_square_wall(x,0,x,zsz,ty,by,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
 
-		//	map_auto_generate_segment_wall(map,n,x,0,x,zsz,ty,by,wc_none);
-		//	map_auto_generate_segment_wall(map,n,(x+2),0,(x+2),zsz,ty,by,wc_none);
-		//	map_auto_generate_segment_fc(map,n,sg_ceiling,x,0,(x+2),zsz,ty,0,ag_ceiling_lower_none);
-		//	map_auto_generate_segment_fc(map,n,sg_floor,x,0,(x+2),zsz,(by+1),0,ag_ceiling_lower_none);
+			map_auto_generate_poly_from_square_wall((x+ag_constant_door_width),0,(x+ag_constant_door_width),zsz,ty,by,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
+			
+			map_auto_generate_poly_from_square_floor(x,0,(x+ag_constant_door_width),zsz,ty,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
+
+			map_auto_generate_poly_from_square_floor(x,0,(x+ag_constant_door_width),zsz,by,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
 		}
 		else {
 		
 			switch (k) {
 				case 0:
-					z=4;
+					z=ag_constant_door_width*2;
 					break;
 				case 1:
-					z=zsz-6;
+					z=zsz-(ag_constant_door_width*3);
 					break;
 				default:
-					z=(zsz/2)-1;
+					z=zsz/2;
 					break;
 			}
 
-		//	map_auto_generate_segment_wall(map,n,0,z,xsz,z,ty,by,wc_none);
-		//	map_auto_generate_segment_wall(map,n,0,(z+2),xsz,(z+2),ty,by,wc_none);
-		//	map_auto_generate_segment_fc(map,n,sg_ceiling,0,z,xsz,(z+2),ty,0,ag_ceiling_lower_none);
-		//	map_auto_generate_segment_fc(map,n,sg_floor,0,z,xsz,(z+2),(by+1),0,ag_ceiling_lower_none);
+			map_auto_generate_poly_from_square_wall(0,z,xsz,z,ty,by,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
+
+			map_auto_generate_poly_from_square_wall(0,(z+ag_constant_door_width),xsz,(z+ag_constant_door_width),ty,by,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
+
+			map_auto_generate_poly_from_square_floor(0,z,xsz,(z+ag_constant_door_width),ty,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
+
+			map_auto_generate_poly_from_square_floor(0,z,xsz,(z+ag_constant_door_width),by,px,py,pz,gx,gy);
+			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
 		}
 		
 			// next door
@@ -2041,12 +2055,12 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 	map_auto_generate_fcs(map);
 //	map_auto_generate_ceiling_walls(map);
 //	map_auto_generate_rough_floor(map);
+	
+		// create ramps, steps, and doors
+		
 	map_auto_generate_ramps(map);
 	map_auto_generate_corridor_to_portal_steps(map);
-	
-		// create doors
-		
-//	map_auto_generate_doors(map);
+	map_auto_generate_doors(map);
 	
 		// fix segments and sight paths
 		

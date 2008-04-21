@@ -77,16 +77,62 @@ typedef struct	{
 #define ag_corridor_type_slanted_ceiling			1
 #define ag_corridor_type_octagon					2
 
-#define ag_ceiling_type_count						3
-
-#define ag_ceiling_type_closed						0
-#define ag_ceiling_type_open						1
-#define ag_ceiling_type_cross						2
-
 #define ag_stair_neg_z								0
 #define ag_stair_pos_z								1
 #define ag_stair_neg_x								2
 #define ag_stair_pos_x								3
+
+//
+// auto-generate ceiling indexes
+//
+
+#define ag_ceiling_type_count						6
+
+#define ag_ceiling_type_closed						0
+#define ag_ceiling_type_open						1
+#define ag_ceiling_type_a_frame						2
+#define ag_ceiling_type_cross						3
+#define ag_ceiling_type_inverse_cross				4
+#define ag_ceiling_type_a_frame_bar					5
+
+#define ag_ceiling_outer_ring						0
+#define ag_ceiling_top_left							1
+#define ag_ceiling_top_middle						2
+#define ag_ceiling_top_right						3
+#define ag_ceiling_middle_left						4
+#define ag_ceiling_middle_middle					5
+#define ag_ceiling_middle_right						6
+#define ag_ceiling_bottom_left						7
+#define ag_ceiling_bottom_middle					8
+#define ag_ceiling_bottom_right						9
+#define ag_ceiling_slant_left						10
+#define ag_ceiling_slant_right						11
+
+#define ag_ceiling_wall_outer_ring					0
+#define ag_ceiling_wall_left_horizontal				1
+#define ag_ceiling_wall_right_horizontal			2
+#define ag_ceiling_wall_top_vertical				3
+#define ag_ceiling_wall_bottom_vertical				4
+#define ag_ceiling_wall_top_triangle				5
+#define ag_ceiling_wall_bot_triangle				6
+
+#define ag_ceiling_data_bytes						{ \
+													 {1,1,1,1,1,1,1,1,1,1,1,1}, \
+													 {1,0,0,0,0,0,0,0,0,0,0,0}, \
+													 {1,0,0,0,0,0,0,0,0,0,1,1}, \
+													 {1,0,1,0,1,1,1,0,1,0,0,0}, \
+													 {1,1,0,1,0,0,0,1,0,1,0,0}, \
+													 {1,0,0,0,1,1,1,0,0,0,1,1} \
+													}
+
+#define ag_ceiling_wall_data_bytes					{ \
+													 {0,0,0,0,0,0,0}, \
+													 {1,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,1,1}, \
+													 {1,1,1,1,1,0,0}, \
+													 {0,1,1,1,1,0,0}, \
+													 {0,0,0,1,1,1,1} \
+													}
 
 //
 // auto-generate blockings
@@ -103,6 +149,110 @@ typedef struct	{
 #define ag_block_preset_vertical_h					6
 #define ag_block_preset_horizontal_h				7
 
+#define ag_block_data_empty_bytes				{ \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0} \
+												}
+
+#define ag_block_data_circle_bytes				{ \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,1,1,1,1,0,0,0}, \
+												 {0,0,0,1,1,1,1,0,0,0}, \
+												 {0,0,0,1,1,1,1,0,0,0}, \
+												 {0,0,0,1,1,1,1,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0} \
+												}
+
+#define ag_block_data_top_u_bytes				{ \
+												 {0,0,0,1,1,1,1,0,0,0}, \
+												 {0,0,0,1,1,1,1,0,0,0}, \
+												 {0,0,0,1,1,1,1,0,0,0}, \
+												 {0,0,0,1,1,1,1,0,0,0}, \
+												 {0,0,0,1,1,1,1,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0} \
+												}
+
+#define ag_block_data_bottom_u_bytes			{ \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,1,1,1,1,0,0,0}, \
+												 {0,0,0,1,1,1,1,0,0,0}, \
+												 {0,0,0,1,1,1,1,0,0,0}, \
+												 {0,0,0,1,1,1,1,0,0,0}, \
+												 {0,0,0,1,1,1,1,0,0,0} \
+												}
+
+#define ag_block_data_left_u_bytes				{ \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {1,1,1,1,1,0,0,0,0,0}, \
+												 {1,1,1,1,1,0,0,0,0,0}, \
+												 {1,1,1,1,1,0,0,0,0,0}, \
+												 {1,1,1,1,1,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0} \
+												}
+							
+#define ag_block_data_right_u_bytes				{ \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,1,1,1,1,1}, \
+												 {0,0,0,0,0,1,1,1,1,1}, \
+												 {0,0,0,0,0,1,1,1,1,1}, \
+												 {0,0,0,0,0,1,1,1,1,1}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0} \
+												}
+
+#define ag_block_data_vertical_h_bytes			{ \
+												 {0,0,0,1,1,1,1,0,0,0}, \
+												 {0,0,0,1,1,1,1,0,0,0}, \
+												 {0,0,0,1,1,1,1,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,1,1,1,1,0,0,0}, \
+												 {0,0,0,1,1,1,1,0,0,0}, \
+												 {0,0,0,1,1,1,1,0,0,0} \
+												}
+
+#define ag_block_data_horizontal_h_bytes		{ \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {1,1,1,0,0,0,0,1,1,1}, \
+												 {1,1,1,0,0,0,0,1,1,1}, \
+												 {1,1,1,0,0,0,0,1,1,1}, \
+												 {1,1,1,0,0,0,0,1,1,1}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0}, \
+												 {0,0,0,0,0,0,0,0,0,0} \
+												}
+
 //
 // auto-generate constants
 //
@@ -116,16 +266,18 @@ typedef struct	{
 
 #define ag_constant_portal_high_extra_top			0.75f
 #define ag_constant_portal_high_extra_bottom		0.50f
+#define ag_constant_portal_high_slop_y				0.10f
 
 #define ag_constant_corridor_size_percent			0.25f
 #define ag_constant_corridor_random_percent			0.4f
+
+#define ag_constant_door_width						(2*map_enlarge)
 
 #define ag_constant_step_high						(2*map_enlarge)
 #define ag_constant_step_min_size					(6*map_enlarge)
 #define ag_constant_step_max_size					(12*map_enlarge)
 
 #define ag_constant_ramp_min_high					(4*map_enlarge)
-#define ag_constant_ramp_min_size					(10*map_enlarge)
 #define ag_constant_ramp_size_percent				4.0f
 
 //

@@ -3,6 +3,7 @@
 Module: dim3 Map Utility
 Author: Brian Barnes
  Usage: Deconstruct Curved Segments into Multiple Segments
+		(for old v1 type maps)
 
 ***************************** License ********************************
 

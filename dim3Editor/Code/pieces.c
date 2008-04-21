@@ -29,10 +29,8 @@ and can be sold or given away.
 #include "common_view.h"
 #include "portal_view.h"
 
+extern int					cr,drag_mode;
 extern CCrsrHandle			dragcur;
-
-extern unsigned short		effect,effectmask;
-extern int					cr;
 
 extern map_type				map;
 
@@ -357,6 +355,35 @@ void piece_delete(void)
 
 /* =======================================================
 
+      Piece Delete Face
+      
+======================================================= */
+
+void piece_delete_face(void)
+{
+	int				type,portal_idx,main_idx,sub_idx;
+	
+	undo_clear();
+	
+		// only delete in polygon mode
+		
+	if (drag_mode!=drag_mode_polygon) return;
+	
+		// is a face selected?
+		
+	select_get(0,&type,&portal_idx,&main_idx,&sub_idx);
+	if (type!=mesh_piece) return;
+	if (sub_idx==-1) return;
+	
+	map_portal_mesh_delete_poly(&map,portal_idx,main_idx,sub_idx);
+	
+	select_switch(0,mesh_piece,portal_idx,main_idx,0);
+	
+	main_wind_draw();
+}
+
+/* =======================================================
+
       Piece Tesselate
       
 ======================================================= */
@@ -424,51 +451,36 @@ void piece_free_rotate(void)
       
 ======================================================= */
 
-void piece_key(int rn,char ch,bool walk,bool on_side)
+void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch)
 {
-	int				mv;
+	int				mv,xadd,yadd,zadd;
 	
-	mv=main_wind_shift_down()?10:1;
-	
+	mv=walk_view_get_grid();
+	if (main_wind_shift_down()) mv*=10;
+		
 	switch (ch) {
 	
 		case 0x1C:
-			select_move(rn,mv,0,0);
+			walk_view_click_drag_movement(view_setup,view_move_dir,mv,0,&xadd,&yadd,&zadd);
+			select_move(cr,xadd,yadd,zadd);
 			main_wind_draw();
 			break;
 			
 		case 0x1D:
-			select_move(rn,-mv,0,0);
+			walk_view_click_drag_movement(view_setup,view_move_dir,-mv,0,&xadd,&yadd,&zadd);
+			select_move(cr,xadd,yadd,zadd);
 			main_wind_draw();
 			break;
 			
 		case 0x1E:
-			if (walk) {
-				if (main_wind_control_down()) {
-					select_move(rn,0,mv,0);
-				}
-				else {
-					select_move(rn,0,0,mv);
-				}
-			}
-			else {
-				select_move(rn,0,mv,0);
-			}
+			walk_view_click_drag_movement(view_setup,view_move_dir,0,mv,&xadd,&yadd,&zadd);
+			select_move(cr,xadd,yadd,zadd);
 			main_wind_draw();
 			break;
 			
 		case 0x1F:
-			if (walk) {
-				if (main_wind_control_down()) {
-					select_move(rn,0,-mv,0);
-				}
-				else {
-					select_move(rn,0,0,-mv);
-				}
-			}
-			else {
-				select_move(rn,0,-mv,0);
-			}
+			walk_view_click_drag_movement(view_setup,view_move_dir,0,-mv,&xadd,&yadd,&zadd);
+			select_move(cr,xadd,yadd,zadd);
 			main_wind_draw();
 			break;
 			

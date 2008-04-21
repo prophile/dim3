@@ -1429,6 +1429,8 @@ void main_wind_key_cursor(void)
 
 void main_wind_key_down(char ch)
 {
+	editor_3D_view_setup	view_setup;
+
 		// tab key switches panes
 		
 	if (ch==0x9) {
@@ -1484,15 +1486,18 @@ void main_wind_key_down(char ch)
 			
 				case kf_panel_forward:
 				case kf_panel_walk:
-					walk_view_key(ch,vm_dir_forward);
+					main_wind_setup_panel_forward(&view_setup);
+					walk_view_key(&view_setup,vm_dir_forward,ch);
 					break;
 					
 				case kf_panel_side:
-					walk_view_key(ch,vm_dir_side);
+					main_wind_setup_panel_side(&view_setup);
+					walk_view_key(&view_setup,vm_dir_side,ch);
 					break;
 					
 				case kf_panel_top:
-					walk_view_key(ch,vm_dir_top);
+					main_wind_setup_panel_top(&view_setup);
+					walk_view_key(&view_setup,vm_dir_top,ch);
 					break;
 			}
 			
@@ -1507,11 +1512,13 @@ void main_wind_key_down(char ch)
 			break;
 			
 		case vw_top_only:
-			walk_view_key(ch,vm_dir_top);
+			main_wind_setup_panel_top_full(&view_setup);
+			walk_view_key(&view_setup,vm_dir_top,ch);
 			break;
 			
 		case vw_forward_only:
-			walk_view_key(ch,vm_dir_forward);
+			main_wind_setup_panel_forward_full(&view_setup);
+			walk_view_key(&view_setup,vm_dir_forward,ch);
 			break;
 	}
 }

@@ -195,7 +195,7 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 
 bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
-	int						n,x,y,mx,my,mz,xadd,yadd,zadd,
+	int						n,x,y,mx,my,mz,xadd,yadd,zadd,rgt,bot,chk_x,chk_z,
 							type,portal_idx,mesh_idx,poly_idx,fz;
 	bool					hit,first_drag;
 	d3pnt					old_pt,*dpt,*old_dpt,*old_dpt_ptr,mpt;
@@ -239,6 +239,9 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 	memmove(old_dpt,mesh->vertexes,(mesh->nvertex*sizeof(d3pnt)));
 	
 	mx=my=mz=0;
+
+	rgt=portal->ex-portal->x;
+	bot=portal->ez-portal->z;
 	
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
@@ -261,7 +264,7 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 			first_drag=FALSE;
 		}
 		
-			// move vertexes
+			// get movement
 
 		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
 		
@@ -274,6 +277,26 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 		mpt.z=mz;
 		
 		walk_view_click_grid(&mpt);
+		
+			// stick vertexes within portal
+			
+		dpt=mesh->vertexes;
+		old_dpt_ptr=old_dpt;
+		
+		for (n=0;n!=mesh->nvertex;n++) {
+			chk_x=old_dpt_ptr->x+mpt.x;
+			chk_z=old_dpt_ptr->z+mpt.z;
+			
+			if ((mpt.x<0) && (chk_x<0)) mpt.x=-old_dpt_ptr->x;
+			if ((mpt.x>0) && (chk_x>=rgt)) mpt.x=(rgt-1)-old_dpt_ptr->x;
+			if ((mpt.z<0) && (chk_z<0)) mpt.z=-old_dpt_ptr->z;
+			if ((mpt.z>0) && (chk_z>=rgt)) mpt.z=(rgt-1)-old_dpt_ptr->z;
+			
+			dpt++;
+			old_dpt_ptr++;
+		}
+
+			// move vertexes
 		
 		dpt=mesh->vertexes;
 		old_dpt_ptr=old_dpt;
@@ -306,7 +329,7 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 
 bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
-	int						n,x,y,mx,my,mz,xadd,yadd,zadd,
+	int						n,x,y,mx,my,mz,xadd,yadd,zadd,rgt,bot,chk_x,chk_z,
 							type,portal_idx,mesh_idx,poly_idx,fz;
 	bool					first_drag;
 	d3pnt					old_pt,*dpt,*old_dpt,mpt;
@@ -346,6 +369,9 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 	
 	mx=my=mz=0;
 	
+	rgt=portal->ex-portal->x;
+	bot=portal->ez-portal->z;
+	
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	do {
@@ -367,7 +393,7 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 			first_drag=FALSE;
 		}
 		
-			// move vertexes
+			// get vertex movement
 
 		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
 		
@@ -381,6 +407,20 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 		
 		walk_view_click_grid(&mpt);
 		
+			// stick vertexes within portal
+			
+		for (n=0;n!=mesh_poly->ptsz;n++) {
+			chk_x=old_dpt[n].x+mpt.x;
+			chk_z=old_dpt[n].z+mpt.z;
+			
+			if ((mpt.x<0) && (chk_x<0)) mpt.x=-old_dpt[n].x;
+			if ((mpt.x>0) && (chk_x>=rgt)) mpt.x=(rgt-1)-old_dpt[n].x;
+			if ((mpt.z<0) && (chk_z<0)) mpt.z=-old_dpt[n].z;
+			if ((mpt.z>0) && (chk_z>=rgt)) mpt.z=(rgt-1)-old_dpt[n].z;
+		}
+		
+			// move vertexes
+			
 		for (n=0;n!=mesh_poly->ptsz;n++) {
 			dpt=&mesh->vertexes[mesh_poly->v[n]];
 			dpt->x=old_dpt[n].x+mpt.x;
@@ -407,7 +447,7 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 
 bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
-	int						n,x,y,z,mx,my,mz,xadd,zadd,yadd,hit_z,sz,
+	int						n,x,y,z,mx,my,mz,xadd,zadd,yadd,hit_z,sz,rgt,bot,
 							type,portal_idx,mesh_idx,poly_idx,vertex_idx;
 	d3pnt					old_pt,*dpt,old_dpt,mpt;
 	Point					uipt;
@@ -467,6 +507,9 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	
 	mx=my=mz=0;
 	
+	rgt=portal->ex-portal->x;
+	bot=portal->ez-portal->z;
+	
 	do {
 		TrackMouseLocation(NULL,&uipt,&track);
 		pt->x=uipt.h-view_setup->box.left;
@@ -486,7 +529,7 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 			first_drag=FALSE;
 		}
 		
-			// move vertex
+			// get vertex movement
 
 		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
 			
@@ -499,11 +542,19 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		mpt.z=mz;
 		
 		walk_view_click_grid(&mpt);
-		walk_view_click_snap(portal_idx,mesh_idx,vertex_idx,&old_dpt,&mpt);	
+		walk_view_click_snap(portal_idx,mesh_idx,vertex_idx,&old_dpt,&mpt);
 		
+			// move vertex
+			
 		dpt->x=old_dpt.x+mpt.x;
+		if (dpt->x<0) dpt->x=0;
+		if (dpt->x>=rgt) dpt->x=rgt-1;
+		
 		dpt->y=old_dpt.y+mpt.y;
+		
 		dpt->z=old_dpt.z+mpt.z;
+		if (dpt->z<0) dpt->z=0;
+		if (dpt->z>=bot) dpt->z=bot-1;
 
         main_wind_draw();
 		
@@ -522,7 +573,7 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 
 bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
-	int						n,x,y,z,mx,my,mz,xadd,zadd,yadd,hit_z,sz,
+	int						n,x,y,z,mx,my,mz,xadd,zadd,yadd,hit_z,sz,rgt,bot,chk_x,chk_z,
 							px[4],py[4],pz[4],
 							type,portal_idx,liquid_idx,sub_idx,vertex_idx;
 	d3pnt					old_pt,old_dpt,mpt;
@@ -582,6 +633,9 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 	
 	mx=my=mz=0;
 	
+	rgt=portal->ex-portal->x;
+	bot=portal->ez-portal->z;
+	
 	do {
 		TrackMouseLocation(NULL,&uipt,&track);
 		pt->x=uipt.h-view_setup->box.left;
@@ -601,7 +655,7 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 			first_drag=FALSE;
 		}
 		
-			// move vertex (never on Y)
+			// get vertex move (never on Y)
 
 		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
 			
@@ -615,6 +669,18 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 		
 		walk_view_click_grid(&mpt);
 		
+			// confine to portal
+			
+		chk_x=old_dpt.x+mpt.x;
+		if (chk_x<0) mpt.x=-old_dpt.x;
+		if (chk_x>=rgt) mpt.x=(rgt-1)-old_dpt.x;
+		
+		chk_z=old_dpt.z+mpt.z;
+		if (chk_z<0) mpt.z=-old_dpt.z;
+		if (chk_z>=bot) mpt.x=(rgt-1)-old_dpt.x;
+
+			// move vertex
+			
 		switch (vertex_idx) {
 			case 0:
 				liq->lft=old_dpt.x+mpt.x;
@@ -638,6 +704,20 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 		
 	} while (track!=kMouseTrackingMouseReleased);
 	
+		// fix any left/right swaps
+		
+	if (liq->lft>liq->rgt) {
+		chk_x=liq->lft;
+		liq->lft=liq->rgt;
+		liq->rgt=chk_x;
+	}
+	
+	if (liq->top>liq->bot) {
+		chk_z=liq->top;
+		liq->top=liq->bot;
+		liq->bot=chk_z;
+	}
+	
 	InitCursor();
 	
 	return(!first_drag);
@@ -651,12 +731,13 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 
 bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
-	int						x,y,mx,my,mz,xadd,zadd,yadd,
+	int						x,y,mx,my,mz,xadd,zadd,yadd,rgt,bot,
 							type,portal_idx,main_idx,sub_idx;
 	d3pos					*pos,old_pos;
 	d3pnt					old_pt,mpt;
 	Point					uipt;
 	bool					first_drag;
+	portal_type				*portal;
 	MouseTrackingResult		track;
 	
     if (select_count()!=1) return(FALSE);
@@ -702,6 +783,10 @@ bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 	
 	mx=my=mz=0;
 	
+	portal=&map.portals[portal_idx];
+	rgt=portal->ex-portal->x;
+	bot=portal->ez-portal->z;
+	
 	do {
 		TrackMouseLocation(NULL,&uipt,&track);
 		pt->x=uipt.h-view_setup->box.left;
@@ -721,7 +806,7 @@ bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 			first_drag=FALSE;
 		}
 		
-			// move item
+			// get movement
 
 		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
 			
@@ -735,9 +820,17 @@ bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 		
 		walk_view_click_grid(&mpt);
 		
+			// confine to portal
+			
 		pos->x=old_pos.x+mpt.x;
+		if (pos->x<0) pos->x=0;
+		if (pos->x>=rgt) pos->x=rgt-1;
+		
 		pos->y=old_pos.y+mpt.y;
+		
 		pos->z=old_pos.z+mpt.z;
+		if (pos->z<0) pos->z=0;
+		if (pos->z>=bot) pos->z=bot-1;
 
         main_wind_draw();
 		
@@ -756,12 +849,13 @@ bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 
 bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
-	int						x,y,mx,my,mz,xadd,zadd,yadd,
+	int						x,y,mx,my,mz,xadd,zadd,yadd,rgt,bot,chk_x,chk_z,
 							old_lft,old_rgt,old_top,old_bot,old_y,
 							type,portal_idx,main_idx,sub_idx;
 	d3pnt					old_pt,mpt;
 	Point					uipt;
 	bool					first_drag;
+	portal_type				*portal;
 	map_liquid_type			*liq;
 	MouseTrackingResult		track;
 	
@@ -788,6 +882,10 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	
 	mx=my=mz=0;
 	
+	portal=&map.portals[portal_idx];
+	rgt=portal->ex-portal->x;
+	bot=portal->ez-portal->z;
+	
 	do {
 		TrackMouseLocation(NULL,&uipt,&track);
 		pt->x=uipt.h-view_setup->box.left;
@@ -807,7 +905,7 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 			first_drag=FALSE;
 		}
 		
-			// move item
+			// get movement
 
 		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
 			
@@ -821,6 +919,22 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		
 		walk_view_click_grid(&mpt);
 		
+			// confine to portal
+			
+		chk_x=old_lft+mpt.x;
+		if ((chk_x<0) && (mpt.x<0)) mpt.x=-old_lft;
+		
+		chk_x=old_rgt+mpt.x;
+		if ((chk_x>=rgt) && (mpt.x>0)) mpt.x=(rgt-1)-old_rgt;
+		
+		chk_z=old_top+mpt.z;
+		if ((chk_z<0) && (mpt.z<0)) mpt.z=-old_top;
+		
+		chk_z=old_bot+mpt.z;
+		if ((chk_z>=bot) && (mpt.z>0)) mpt.z=(bot-1)-old_bot;
+		
+			// move liquid
+			
 		liq->lft=old_lft+mpt.x;
 		liq->rgt=old_rgt+mpt.x;
 		liq->top=old_top+mpt.z;

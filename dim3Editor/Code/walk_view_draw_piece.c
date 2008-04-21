@@ -182,7 +182,7 @@ void walk_view_draw_sprite(d3pnt *cpt,d3pos *pos,unsigned long gl_id)
 
 void walk_view_draw_portal_block(int rn,d3pnt *cpt,int y)
 {
-	int				lx,rx,tz,bz;
+	int				lx,rx,tz,bz,ty,by;
 	portal_type		*portal;
 	
 		// portal size
@@ -194,7 +194,10 @@ void walk_view_draw_portal_block(int rn,d3pnt *cpt,int y)
 	tz=cpt->z-portal->z;
 	bz=cpt->z-portal->ez;
 	
-	y-=cpt->y;
+	map_portal_calculate_y_extent(&map,rn,&ty,&by);
+
+	ty-=cpt->y;
+	by-=cpt->y;
 	
 	glDisable(GL_DEPTH_TEST);
 	
@@ -203,21 +206,39 @@ void walk_view_draw_portal_block(int rn,d3pnt *cpt,int y)
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	
 	glBegin(GL_QUADS);
-	glVertex3i(lx,y,tz);
-	glVertex3i(rx,y,tz);
-	glVertex3i(rx,y,bz);
-	glVertex3i(lx,y,bz);
+	glVertex3i(lx,by,tz);
+	glVertex3i(rx,by,tz);
+	glVertex3i(rx,by,bz);
+	glVertex3i(lx,by,bz);
 	glEnd();
 	
 		// outline
 		
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glColor4f(0.5f,0.5f,0.5f,1.0f);
 	
 	glBegin(GL_LINE_LOOP);
-	glVertex3i(lx,y,tz);
-	glVertex3i(rx,y,tz);
-	glVertex3i(rx,y,bz);
-	glVertex3i(lx,y,bz);
+	glVertex3i(lx,by,tz);
+	glVertex3i(rx,by,tz);
+	glVertex3i(rx,by,bz);
+	glVertex3i(lx,by,bz);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	glVertex3i(lx,ty,tz);
+	glVertex3i(rx,ty,tz);
+	glVertex3i(rx,ty,bz);
+	glVertex3i(lx,ty,bz);
+	glEnd();
+	
+	glBegin(GL_LINES);
+	glVertex3i(lx,by,tz);
+	glVertex3i(lx,ty,tz);
+	glVertex3i(rx,by,tz);
+	glVertex3i(rx,ty,tz);
+	glVertex3i(lx,by,bz);
+	glVertex3i(lx,ty,bz);
+	glVertex3i(rx,by,bz);
+	glVertex3i(rx,ty,bz);
 	glEnd();
 	
 		// selection
@@ -227,10 +248,28 @@ void walk_view_draw_portal_block(int rn,d3pnt *cpt,int y)
 		glLineWidth(4.0f);
 		
 		glBegin(GL_LINE_LOOP);
-		glVertex3i(lx,y,tz);
-		glVertex3i(rx,y,tz);
-		glVertex3i(rx,y,bz);
-		glVertex3i(lx,y,bz);
+		glVertex3i(lx,by,tz);
+		glVertex3i(rx,by,tz);
+		glVertex3i(rx,by,bz);
+		glVertex3i(lx,by,bz);
+		glEnd();
+
+		glBegin(GL_LINE_LOOP);
+		glVertex3i(lx,ty,tz);
+		glVertex3i(rx,ty,tz);
+		glVertex3i(rx,ty,bz);
+		glVertex3i(lx,ty,bz);
+		glEnd();
+		
+		glBegin(GL_LINES);
+		glVertex3i(lx,by,tz);
+		glVertex3i(lx,ty,tz);
+		glVertex3i(rx,by,tz);
+		glVertex3i(rx,ty,tz);
+		glVertex3i(lx,by,bz);
+		glVertex3i(lx,ty,bz);
+		glVertex3i(rx,by,bz);
+		glVertex3i(rx,ty,bz);
 		glEnd();
 		
 		glLineWidth(1.0f);

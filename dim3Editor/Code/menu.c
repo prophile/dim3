@@ -32,7 +32,7 @@ and can be sold or given away.
 #include "walk_view.h"
 #include "import.h"
 
-extern int				cr;
+extern int				cr,drag_mode;
 extern bool				done,map_opened;
 
 extern map_type			map;
@@ -114,26 +114,33 @@ void menu_fix_enable(void)
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),1);
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),2);
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),3);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),5);
+			if (drag_mode==drag_mode_polygon) {
+				EnableMenuItem(GetMenuHandle(app_menu_pieces),5);
+			}
+			else {
+				DisableMenuItem(GetMenuHandle(app_menu_pieces),5);
+			}
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),7);
 		}
 		else {
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),1);
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),2);
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),3);
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),5);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),7);
 		}
 		
         if (select_count()!=0) {
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),7);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),8);
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),9);
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),10);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),11);
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),12);
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),13);
         }
         else {
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),7);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),8);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),9);
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),10);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),11);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),12);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),13);
         }
 	}
 	
@@ -326,10 +333,10 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			return(noErr);
 			
 		case kCommandAutoGenerateMap:
-			select_clear();
-			import_auto_generate();
-			main_wind_tool_fill_group_combo();
-			undo_clear();
+		//	select_clear();
+		//	import_auto_generate();
+		//	main_wind_tool_fill_group_combo();
+		//	undo_clear();
 			return(noErr);
 			
 		case kCommandSave:
@@ -610,6 +617,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			// face menu
 			
 		case kCommandFaceDelete:
+			piece_delete_face();
 			return(noErr);
 			
 		case kCommandFaceHole1:

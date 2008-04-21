@@ -113,11 +113,11 @@ bool map_portal_mesh_delete(map_type *map,int portal_idx,int mesh_idx)
 	if (nptr==NULL) return(FALSE);
 
 	if (mesh_idx>0) {
-		sz=(mesh_idx+1)*sizeof(map_mesh_type);
+		sz=mesh_idx*sizeof(map_mesh_type);
 		memmove(nptr,portal->mesh.meshes,sz);
 	}
 
-	sz=(portal->mesh.nmesh-mesh_idx)*sizeof(map_mesh_type);
+	sz=((portal->mesh.nmesh-mesh_idx)-1)*sizeof(map_mesh_type);
 	if (sz>0) memmove(&nptr[mesh_idx],&portal->mesh.meshes[mesh_idx+1],sz);
 
 	free(portal->mesh.meshes);
@@ -353,7 +353,7 @@ int map_portal_mesh_add_poly(map_type *map,int portal_idx,int mesh_idx,int ptsz,
 
 bool map_portal_mesh_delete_poly(map_type *map,int portal_idx,int mesh_idx,int poly_idx)
 {
-	int					n,k,t,sz,v_idx,del_idx[8];
+	int					n,k,t,sz,ptsz,v_idx,del_idx[8];
 	bool				del_ok[8];
 	d3pnt				*nvertex_ptr;
 	portal_type			*portal;
@@ -363,11 +363,13 @@ bool map_portal_mesh_delete_poly(map_type *map,int portal_idx,int mesh_idx,int p
 	portal=&map->portals[portal_idx];
 	mesh=&portal->mesh.meshes[mesh_idx];
 	poly=&mesh->polys[poly_idx];
+	
+	ptsz=poly->ptsz;
 
 		// mark all vertexes only owned
 		// by this poly and delete
 
-	for (k=0;k!=poly->ptsz;k++) {
+	for (k=0;k!=ptsz;k++) {
 
 		del_idx[k]=poly->v[k];
 		del_ok[k]=TRUE;
@@ -384,6 +386,8 @@ bool map_portal_mesh_delete_poly(map_type *map,int portal_idx,int mesh_idx,int p
 					}
 				}
 			}
+			
+			if (!del_ok[k]) break;
 
 			chk_poly++;
 		}
@@ -401,11 +405,11 @@ bool map_portal_mesh_delete_poly(map_type *map,int portal_idx,int mesh_idx,int p
 		if (nmesh_ptr==NULL) return(FALSE);
 
 		if (poly_idx>0) {
-			sz=(poly_idx+1)*sizeof(map_mesh_poly_type);
+			sz=poly_idx*sizeof(map_mesh_poly_type);
 			memmove(nmesh_ptr,mesh->polys,sz);
 		}
 
-		sz=(mesh->npoly-poly_idx)*sizeof(map_mesh_poly_type);
+		sz=((mesh->npoly-poly_idx)-1)*sizeof(map_mesh_poly_type);
 		if (sz>0) memmove(&nmesh_ptr[poly_idx],&mesh->polys[poly_idx+1],sz);
 
 		free(mesh->polys);
@@ -416,7 +420,7 @@ bool map_portal_mesh_delete_poly(map_type *map,int portal_idx,int mesh_idx,int p
 
 		// remove the vertexes
 
-	for (k=0;k!=poly->ptsz;k++) {
+	for (k=0;k!=ptsz;k++) {
 		if (!del_ok[k]) continue;
 
 		v_idx=del_idx[k];
@@ -445,11 +449,11 @@ bool map_portal_mesh_delete_poly(map_type *map,int portal_idx,int mesh_idx,int p
 		if (nvertex_ptr==NULL) return(FALSE);
 
 		if (v_idx>0) {
-			sz=(v_idx+1)*sizeof(d3pnt);
+			sz=v_idx*sizeof(d3pnt);
 			memmove(nvertex_ptr,mesh->vertexes,sz);
 		}
 
-		sz=(mesh->nvertex-v_idx)*sizeof(d3pnt);
+		sz=((mesh->nvertex-v_idx)-1)*sizeof(d3pnt);
 		if (sz>0) memmove(&nvertex_ptr[v_idx],&mesh->vertexes[v_idx+1],sz);
 
 		free(mesh->vertexes);

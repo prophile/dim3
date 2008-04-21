@@ -34,7 +34,7 @@ extern void walk_view_shutdown(void);
 extern int walk_view_find_start_portal(void);
 extern void walk_view_click(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool rot_ok,bool dblclick);
 extern void walk_view_cursor(bool rot_ok);
-extern void walk_view_key(char ch,int view_move_dir);
+extern void walk_view_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch);
 
 //
 // walk view draw piece
@@ -51,6 +51,7 @@ extern void walk_view_draw_select_portal(int rn,d3pnt *cpt);
 //
 
 extern void walk_view_click_drag_movement(editor_3D_view_setup *view_setup,int view_move_dir,int x,int y,int *xadd,int *yadd,int *zadd);
+extern int walk_view_get_grid(void);
 extern void walk_view_click_grid(d3pnt *pt);
 extern void walk_view_click_snap(int portal_idx,int mesh_idx,int vertex_idx,d3pnt *pt,d3pnt *mpt);
 extern void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool dblclick);

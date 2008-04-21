@@ -29,109 +29,14 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-unsigned char ag_block_data_empty[max_ag_block_sz][max_ag_block_sz]= \
-						{ \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}};
-
-unsigned char ag_block_data_circle[max_ag_block_sz][max_ag_block_sz]= \
-						{ \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,1,1,1,1,0,0,0}, \
-						{0,0,0,1,1,1,1,0,0,0}, \
-						{0,0,0,1,1,1,1,0,0,0}, \
-						{0,0,0,1,1,1,1,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}};
-
-unsigned char ag_block_data_top_u[max_ag_block_sz][max_ag_block_sz]= \
-						{ \
-						{0,0,0,1,1,1,1,0,0,0}, \
-						{0,0,0,1,1,1,1,0,0,0}, \
-						{0,0,0,1,1,1,1,0,0,0}, \
-						{0,0,0,1,1,1,1,0,0,0}, \
-						{0,0,0,1,1,1,1,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}};
-							
-unsigned char ag_block_data_bottom_u[max_ag_block_sz][max_ag_block_sz]= \
-						{ \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,1,1,1,1,0,0,0}, \
-						{0,0,0,1,1,1,1,0,0,0}, \
-						{0,0,0,1,1,1,1,0,0,0}, \
-						{0,0,0,1,1,1,1,0,0,0}, \
-						{0,0,0,1,1,1,1,0,0,0}};
-
-unsigned char ag_block_data_left_u[max_ag_block_sz][max_ag_block_sz]= \
-						{ \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{1,1,1,1,1,0,0,0,0,0}, \
-						{1,1,1,1,1,0,0,0,0,0}, \
-						{1,1,1,1,1,0,0,0,0,0}, \
-						{1,1,1,1,1,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}};
-							
-unsigned char ag_block_data_right_u[max_ag_block_sz][max_ag_block_sz]= \
-						{ \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,1,1,1,1,1}, \
-						{0,0,0,0,0,1,1,1,1,1}, \
-						{0,0,0,0,0,1,1,1,1,1}, \
-						{0,0,0,0,0,1,1,1,1,1}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}};
-
-unsigned char ag_block_data_vertical_h[max_ag_block_sz][max_ag_block_sz]= \
-						{ \
-						{0,0,0,1,1,1,1,0,0,0}, \
-						{0,0,0,1,1,1,1,0,0,0}, \
-						{0,0,0,1,1,1,1,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,1,1,1,1,0,0,0}, \
-						{0,0,0,1,1,1,1,0,0,0}, \
-						{0,0,0,1,1,1,1,0,0,0}};
-
-unsigned char ag_block_data_horizontal_h[max_ag_block_sz][max_ag_block_sz]= \
-						{ \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{1,1,1,0,0,0,0,1,1,1}, \
-						{1,1,1,0,0,0,0,1,1,1}, \
-						{1,1,1,0,0,0,0,1,1,1}, \
-						{1,1,1,0,0,0,0,1,1,1}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}, \
-						{0,0,0,0,0,0,0,0,0,0}};
+unsigned char		ag_block_data_empty[max_ag_block_sz][max_ag_block_sz]=ag_block_data_empty_bytes,
+					ag_block_data_circle[max_ag_block_sz][max_ag_block_sz]=ag_block_data_circle_bytes,
+					ag_block_data_top_u[max_ag_block_sz][max_ag_block_sz]=ag_block_data_top_u_bytes,
+					ag_block_data_bottom_u[max_ag_block_sz][max_ag_block_sz]=ag_block_data_bottom_u_bytes,
+					ag_block_data_left_u[max_ag_block_sz][max_ag_block_sz]=ag_block_data_left_u_bytes,
+					ag_block_data_right_u[max_ag_block_sz][max_ag_block_sz]=ag_block_data_right_u_bytes,
+					ag_block_data_vertical_h[max_ag_block_sz][max_ag_block_sz]=ag_block_data_vertical_h_bytes,
+					ag_block_data_horizontal_h[max_ag_block_sz][max_ag_block_sz]=ag_block_data_horizontal_h_bytes;
 
 /* =======================================================
 

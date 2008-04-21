@@ -8,6 +8,14 @@
 			sepNavWindowFrame = "{{144, 182}, {1041, 747}}";
 		};
 	};
+	0867D6ABFE840B52C02AAC07 /* English */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 675}}";
+			sepNavSelRange = "{206, 0}";
+			sepNavVisRange = "{0, 225}";
+			sepNavWindowFrame = "{{130, 171}, {1041, 747}}";
+		};
+	};
 	20286C28FDCF999611CA2CEA /* Project object */ = {
 		activeArchitecture = i386;
 		activeBuildConfigurationName = Release;
@@ -77,8 +85,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 228184787;
-			PBXWorkspaceStateSaveDate = 228184787;
+			PBXPerProjectTemplateStateSaveDate = 230441151;
+			PBXWorkspaceStateSaveDate = 230441151;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -227,6 +235,14 @@
 		executables = (
 			260AFEE30D40504C00F6C42F /* dim3 Animator */,
 		);
+	};
+	F5A431F0055601EC002DF965 /* Info-dim3_Animator.plist */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 675}}";
+			sepNavSelRange = "{893, 0}";
+			sepNavVisRange = "{0, 963}";
+			sepNavWindowFrame = "{{107, 192}, {1041, 747}}";
+		};
 	};
 	F5B4082707104E7700600D33 /* click_window.c */ = {
 		uiCtxt = {

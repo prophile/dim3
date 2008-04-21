@@ -95,11 +95,12 @@ extern void group_set(int group_idx);
 extern void piece_move_to_portal(int rn);
 extern void piece_duplicate(void);
 extern void piece_delete(void);
+extern void piece_delete_face(void);
 extern void piece_tesselate(void);
 extern void piece_flip(bool flip_x,bool flip_y,bool flip_z);
 extern void piece_rotate(float rot_x,float rot_y,float rot_z);
 extern void piece_free_rotate(void);
-extern void piece_key(int rn,char ch,bool walk,bool on_side);
+extern void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch);
 
 //
 // piece create routines
