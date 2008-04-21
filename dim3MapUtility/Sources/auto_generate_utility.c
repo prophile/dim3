@@ -216,7 +216,7 @@ int map_auto_generate_portal_find_to_bottom(map_type *map,portal_type *org_porta
       
 ======================================================= */
 
-int map_auto_generate_get_corridor_type(auto_generate_settings_type *ags)
+int map_auto_generate_get_floor_type(auto_generate_settings_type *ags)
 {
 	int			n,idx,count;
 
@@ -224,24 +224,24 @@ int map_auto_generate_get_corridor_type(auto_generate_settings_type *ags)
 
 	count=0;
 
-	for (n=0;n!=ag_corridor_type_count;n++) {
-		if (ags->corridor.type_on[n]) count++;
+	for (n=0;n!=ag_floor_type_count;n++) {
+		if (ags->floor_type_on[n]) count++;
 	}
 
-	if (count==0) return(ag_corridor_type_normal);
+	if (count==0) return(ag_floor_type_flat);
 
 		// get random type
 
 	idx=map_auto_generate_random_int(count);
 
-	for (n=0;n!=ag_corridor_type_count;n++) {
-		if (ags->corridor.type_on[n]) {
+	for (n=0;n!=ag_floor_type_count;n++) {
+		if (ags->floor_type_on[n]) {
 			idx--;
 			if (idx<0) return(n);
 		}
 	}
 
-	return(ag_corridor_type_normal);
+	return(ag_floor_type_flat);
 }
 
 int map_auto_generate_get_ceiling_type(auto_generate_settings_type *ags)
@@ -253,7 +253,7 @@ int map_auto_generate_get_ceiling_type(auto_generate_settings_type *ags)
 	count=0;
 
 	for (n=0;n!=ag_ceiling_type_count;n++) {
-		if (ags->ceiling.type_on[n]) count++;
+		if (ags->ceiling_type_on[n]) count++;
 	}
 
 	if (count==0) return(ag_ceiling_type_closed);
@@ -263,13 +263,41 @@ int map_auto_generate_get_ceiling_type(auto_generate_settings_type *ags)
 	idx=map_auto_generate_random_int(count);
 
 	for (n=0;n!=ag_ceiling_type_count;n++) {
-		if (ags->ceiling.type_on[n]) {
+		if (ags->ceiling_type_on[n]) {
 			idx--;
 			if (idx<0) return(n);
 		}
 	}
 
 	return(ag_ceiling_type_closed);
+}
+
+int map_auto_generate_get_corridor_type(auto_generate_settings_type *ags)
+{
+	int			n,idx,count;
+
+		// count types
+
+	count=0;
+
+	for (n=0;n!=ag_corridor_type_count;n++) {
+		if (ags->corridor_type_on[n]) count++;
+	}
+
+	if (count==0) return(ag_corridor_type_normal);
+
+		// get random type
+
+	idx=map_auto_generate_random_int(count);
+
+	for (n=0;n!=ag_corridor_type_count;n++) {
+		if (ags->corridor_type_on[n]) {
+			idx--;
+			if (idx<0) return(n);
+		}
+	}
+
+	return(ag_corridor_type_normal);
 }
 
 /* =======================================================

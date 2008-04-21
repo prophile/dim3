@@ -83,17 +83,28 @@ typedef struct	{
 #define ag_stair_pos_x								3
 
 //
-// auto-generate ceiling indexes
+// auto-generate floor types
 //
 
-#define ag_ceiling_type_count						6
+#define ag_floor_type_count							3
+
+#define ag_floor_type_flat							0
+#define ag_floor_type_rough							1
+#define ag_floor_type_pit							2
+
+//
+// auto-generate ceiling types
+//
+
+#define ag_ceiling_type_count						7
 
 #define ag_ceiling_type_closed						0
 #define ag_ceiling_type_open						1
-#define ag_ceiling_type_a_frame						2
-#define ag_ceiling_type_cross						3
-#define ag_ceiling_type_inverse_cross				4
-#define ag_ceiling_type_a_frame_bar					5
+#define ag_ceiling_type_cross						2
+#define ag_ceiling_type_a_frame_horz_bar			3
+#define ag_ceiling_type_a_frame_vert_bar			4
+#define ag_ceiling_type_horz_bar					5
+#define ag_ceiling_type_vert_bar					6
 
 #define ag_ceiling_outer_ring						0
 #define ag_ceiling_top_left							1
@@ -105,34 +116,38 @@ typedef struct	{
 #define ag_ceiling_bottom_left						7
 #define ag_ceiling_bottom_middle					8
 #define ag_ceiling_bottom_right						9
-#define ag_ceiling_slant_left						10
-#define ag_ceiling_slant_right						11
+#define ag_ceiling_slant							10
 
 #define ag_ceiling_wall_outer_ring					0
-#define ag_ceiling_wall_left_horizontal				1
-#define ag_ceiling_wall_right_horizontal			2
-#define ag_ceiling_wall_top_vertical				3
-#define ag_ceiling_wall_bottom_vertical				4
-#define ag_ceiling_wall_top_triangle				5
-#define ag_ceiling_wall_bot_triangle				6
+#define ag_ceiling_wall_horizontal					1
+#define ag_ceiling_wall_vertical					2
+#define ag_ceiling_wall_slant						3
 
 #define ag_ceiling_data_bytes						{ \
-													 {1,1,1,1,1,1,1,1,1,1,1,1}, \
-													 {1,0,0,0,0,0,0,0,0,0,0,0}, \
-													 {1,0,0,0,0,0,0,0,0,0,1,1}, \
-													 {1,0,1,0,1,1,1,0,1,0,0,0}, \
-													 {1,1,0,1,0,0,0,1,0,1,0,0}, \
-													 {1,0,0,0,1,1,1,0,0,0,1,1} \
+													 {1,1,1,1,1,1,1,1,1,1,0}, \
+													 {1,0,0,0,0,0,0,0,0,0,0}, \
+													 {1,0,1,0,1,1,1,0,1,0,0}, \
+													 {1,0,0,0,1,1,1,0,0,0,1}, \
+													 {1,0,1,0,0,1,0,0,1,0,1}, \
+													 {1,0,0,0,1,1,1,0,0,0,0}, \
+													 {1,0,1,0,0,1,0,0,1,0,0} \
 													}
 
 #define ag_ceiling_wall_data_bytes					{ \
-													 {0,0,0,0,0,0,0}, \
-													 {1,0,0,0,0,0,0}, \
-													 {0,0,0,0,0,1,1}, \
-													 {1,1,1,1,1,0,0}, \
-													 {0,1,1,1,1,0,0}, \
-													 {0,0,0,1,1,1,1} \
+													 {0,0,0,0}, \
+													 {1,0,0,0}, \
+													 {1,1,1,0}, \
+													 {0,1,0,1}, \
+													 {0,0,1,1}, \
+													 {1,1,0,0}, \
+													 {1,0,1,0} \
 													}
+
+//
+// auto-generate doors
+//
+
+#define ag_door_type_count							2
 
 //
 // auto-generate blockings
@@ -149,109 +164,109 @@ typedef struct	{
 #define ag_block_preset_vertical_h					6
 #define ag_block_preset_horizontal_h				7
 
-#define ag_block_data_empty_bytes				{ \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0} \
-												}
+#define ag_block_data_empty_bytes					{ \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0} \
+													}
 
-#define ag_block_data_circle_bytes				{ \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,1,1,1,1,0,0,0}, \
-												 {0,0,0,1,1,1,1,0,0,0}, \
-												 {0,0,0,1,1,1,1,0,0,0}, \
-												 {0,0,0,1,1,1,1,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0} \
-												}
+#define ag_block_data_circle_bytes					{ \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,1,1,1,1,0,0,0}, \
+													 {0,0,0,1,1,1,1,0,0,0}, \
+													 {0,0,0,1,1,1,1,0,0,0}, \
+													 {0,0,0,1,1,1,1,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0} \
+													}
 
-#define ag_block_data_top_u_bytes				{ \
-												 {0,0,0,1,1,1,1,0,0,0}, \
-												 {0,0,0,1,1,1,1,0,0,0}, \
-												 {0,0,0,1,1,1,1,0,0,0}, \
-												 {0,0,0,1,1,1,1,0,0,0}, \
-												 {0,0,0,1,1,1,1,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0} \
-												}
+#define ag_block_data_top_u_bytes					{ \
+													 {0,0,0,1,1,1,1,0,0,0}, \
+													 {0,0,0,1,1,1,1,0,0,0}, \
+													 {0,0,0,1,1,1,1,0,0,0}, \
+													 {0,0,0,1,1,1,1,0,0,0}, \
+													 {0,0,0,1,1,1,1,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0} \
+													}
 
-#define ag_block_data_bottom_u_bytes			{ \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,1,1,1,1,0,0,0}, \
-												 {0,0,0,1,1,1,1,0,0,0}, \
-												 {0,0,0,1,1,1,1,0,0,0}, \
-												 {0,0,0,1,1,1,1,0,0,0}, \
-												 {0,0,0,1,1,1,1,0,0,0} \
-												}
+#define ag_block_data_bottom_u_bytes				{ \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,1,1,1,1,0,0,0}, \
+													 {0,0,0,1,1,1,1,0,0,0}, \
+													 {0,0,0,1,1,1,1,0,0,0}, \
+													 {0,0,0,1,1,1,1,0,0,0}, \
+													 {0,0,0,1,1,1,1,0,0,0} \
+													}
 
-#define ag_block_data_left_u_bytes				{ \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {1,1,1,1,1,0,0,0,0,0}, \
-												 {1,1,1,1,1,0,0,0,0,0}, \
-												 {1,1,1,1,1,0,0,0,0,0}, \
-												 {1,1,1,1,1,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0} \
-												}
+#define ag_block_data_left_u_bytes					{ \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {1,1,1,1,1,0,0,0,0,0}, \
+													 {1,1,1,1,1,0,0,0,0,0}, \
+													 {1,1,1,1,1,0,0,0,0,0}, \
+													 {1,1,1,1,1,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0} \
+													}
 							
-#define ag_block_data_right_u_bytes				{ \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,1,1,1,1,1}, \
-												 {0,0,0,0,0,1,1,1,1,1}, \
-												 {0,0,0,0,0,1,1,1,1,1}, \
-												 {0,0,0,0,0,1,1,1,1,1}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0} \
-												}
+#define ag_block_data_right_u_bytes					{ \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,1,1,1,1,1}, \
+													 {0,0,0,0,0,1,1,1,1,1}, \
+													 {0,0,0,0,0,1,1,1,1,1}, \
+													 {0,0,0,0,0,1,1,1,1,1}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0} \
+													}
 
-#define ag_block_data_vertical_h_bytes			{ \
-												 {0,0,0,1,1,1,1,0,0,0}, \
-												 {0,0,0,1,1,1,1,0,0,0}, \
-												 {0,0,0,1,1,1,1,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,1,1,1,1,0,0,0}, \
-												 {0,0,0,1,1,1,1,0,0,0}, \
-												 {0,0,0,1,1,1,1,0,0,0} \
-												}
+#define ag_block_data_vertical_h_bytes				{ \
+													 {0,0,0,1,1,1,1,0,0,0}, \
+													 {0,0,0,1,1,1,1,0,0,0}, \
+													 {0,0,0,1,1,1,1,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,1,1,1,1,0,0,0}, \
+													 {0,0,0,1,1,1,1,0,0,0}, \
+													 {0,0,0,1,1,1,1,0,0,0} \
+													}
 
-#define ag_block_data_horizontal_h_bytes		{ \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {1,1,1,0,0,0,0,1,1,1}, \
-												 {1,1,1,0,0,0,0,1,1,1}, \
-												 {1,1,1,0,0,0,0,1,1,1}, \
-												 {1,1,1,0,0,0,0,1,1,1}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0}, \
-												 {0,0,0,0,0,0,0,0,0,0} \
-												}
+#define ag_block_data_horizontal_h_bytes			{ \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {1,1,1,0,0,0,0,1,1,1}, \
+													 {1,1,1,0,0,0,0,1,1,1}, \
+													 {1,1,1,0,0,0,0,1,1,1}, \
+													 {1,1,1,0,0,0,0,1,1,1}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0}, \
+													 {0,0,0,0,0,0,0,0,0,0} \
+													}
 
 //
 // auto-generate constants
@@ -267,11 +282,14 @@ typedef struct	{
 #define ag_constant_portal_high_extra_top			0.75f
 #define ag_constant_portal_high_extra_bottom		0.50f
 #define ag_constant_portal_high_slop_y				0.10f
+#define ag_constant_portal_rough_floor_percent		0.01f
+#define ag_constant_portal_ceiling_slant_percent	0.40f
 
 #define ag_constant_corridor_size_percent			0.25f
 #define ag_constant_corridor_random_percent			0.4f
 
 #define ag_constant_door_width						(2*map_enlarge)
+#define ag_constant_door_open_millisec				1000
 
 #define ag_constant_step_high						(2*map_enlarge)
 #define ag_constant_step_min_size					(6*map_enlarge)
@@ -294,33 +312,25 @@ typedef struct	{
 				} auto_generate_setting_portal_type;
 	
 typedef struct	{
-					bool									type_on[ag_corridor_type_count];
-				} auto_generate_setting_corridor_type;
-				
-typedef struct	{
-					bool									type_on[ag_ceiling_type_count];
-				} auto_generate_setting_ceiling_type;
-
-typedef struct	{
 					int										portal_wall,portal_floor,portal_ceiling,
 															corridor_wall,corridor_floor,corridor_ceiling,
 															door,steps,ramp;
 				} auto_generate_setting_texture_type;
 
 typedef struct	{
-					int										seed,
-															rough_floor_factor,door_percentage,
+					int										seed,door_percentage,
 															light_fudge_factor,light_fill_percentage,
 															light_color_percentage,light_flicker_percentage,
 															spot_count;
 					char									door_sound[name_str_len];
-					bool									rough_portal_floors,rough_corridor_floors,doors,
-															lights,sight_path,spots;
-					unsigned char							block[max_ag_block_sz][max_ag_block_sz];
+					bool									doors,lights,spots;
+					unsigned char							floor_type_on[ag_floor_type_count],
+															ceiling_type_on[ag_ceiling_type_count],
+															corridor_type_on[ag_corridor_type_count],
+															door_type_on[ag_door_type_count],
+															block[max_ag_block_sz][max_ag_block_sz];
 					auto_generate_setting_map_type			map;
 					auto_generate_setting_portal_type		portal;
-					auto_generate_setting_corridor_type		corridor;
-					auto_generate_setting_ceiling_type		ceiling;
 					auto_generate_setting_texture_type		texture;
 				} auto_generate_settings_type;
 

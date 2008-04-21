@@ -193,6 +193,14 @@ SOURCE=..\..\dim3MapUtility\Sources\auto_generate_blocking.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3MapUtility\Sources\auto_generate_door_ramp_step.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3MapUtility\Sources\auto_generate_light_spot.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3MapUtility\Sources\auto_generate_utility.c
 # End Source File
 # Begin Source File
@@ -202,6 +210,10 @@ SOURCE=..\..\dim3MapUtility\Sources\file_map_read.c
 # Begin Source File
 
 SOURCE=..\..\dim3MapUtility\Sources\file_map_read_v1.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3MapUtility\Sources\file_map_read_v1_curves.c
 # End Source File
 # Begin Source File
 
@@ -274,10 +286,6 @@ SOURCE=..\..\dim3MapUtility\Sources\portal_vertex_list.c
 # Begin Source File
 
 SOURCE=..\..\dim3MapUtility\Sources\prepare.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3MapUtility\Sources\prepare_curve.c
 # End Source File
 # Begin Source File
 
