@@ -333,10 +333,10 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			return(noErr);
 			
 		case kCommandAutoGenerateMap:
-		//	select_clear();
-		//	import_auto_generate();
-		//	main_wind_tool_fill_group_combo();
-		//	undo_clear();
+			select_clear();
+			import_auto_generate();
+			main_wind_tool_fill_group_combo();
+			undo_clear();
 			return(noErr);
 			
 		case kCommandSave:

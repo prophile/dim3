@@ -41,8 +41,9 @@ extern int map_auto_generate_portal_find_to_right(map_type *map,portal_type *org
 extern int map_auto_generate_portal_find_to_top(map_type *map,portal_type *org_portal);
 extern int map_auto_generate_portal_find_to_bottom(map_type *map,portal_type *org_portal);
 
-extern int map_auto_generate_get_corridor_type(auto_generate_settings_type *ags);
+extern int map_auto_generate_get_floor_type(auto_generate_settings_type *ags);
 extern int map_auto_generate_get_ceiling_type(auto_generate_settings_type *ags);
+extern int map_auto_generate_get_corridor_type(auto_generate_settings_type *ags);
 
 extern void map_auto_generate_block_preset(auto_generate_settings_type *ag_settings,int block);
 extern bool map_auto_generate_block_collision(auto_generate_settings_type *ags,int x,int z,int ex,int ez);
@@ -875,7 +876,7 @@ bool map_auto_generate_portal_ceiling_ok(unsigned char *data,int lx,int lz,int r
 	return(FALSE);
 }
 
-void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty,int by)
+void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty)
 {
 	int				ceiling_type,split_factor,lx2,rx2,lz2,rz2,
 					k,kx,kz,mx,wall_sz,
@@ -1031,7 +1032,7 @@ void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int
 
 }
 
-void map_auto_generate_corridor_ceiling_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty,int by)
+void map_auto_generate_corridor_ceiling_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty)
 {
 	int				split_factor,lx2,rx2,lz2,rz2,slant_sz,
 					px[8],py[8],pz[8];
@@ -1112,10 +1113,10 @@ void map_auto_generate_ceilings(map_type *map)
 			// ceilings
 			
 		if (corridor_flags[n]==ag_corridor_flag_portal) {
-			map_auto_generate_portal_ceiling_add(map,n,0,0,xsz,zsz,portal->ty,portal->by);
+			map_auto_generate_portal_ceiling_add(map,n,0,0,xsz,zsz,portal->ty);
 		}
 		else {
-			map_auto_generate_corridor_ceiling_add(map,n,0,0,xsz,zsz,portal->ty,portal->by);
+			map_auto_generate_corridor_ceiling_add(map,n,0,0,xsz,zsz,portal->ty);
 		}
 		
 		portal++;
@@ -1128,10 +1129,10 @@ void map_auto_generate_ceilings(map_type *map)
       
 ======================================================= */
 
-void map_auto_generate_portal_floor_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty,int by)
+void map_auto_generate_portal_floor_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int by)
 {
 	int				split_factor,lx2,rx2,lz2,rz2,
-					rough_max,row_add,col_add,xadd,zadd,
+					floor_type,rough_max,row_add,col_add,xadd,zadd,
 					px[8],py[8],pz[8];
 	int				*fys,*fy;
 	float			gx[8],gy[8];
@@ -1144,24 +1145,30 @@ void map_auto_generate_portal_floor_add(map_type *map,int rn,int lx,int lz,int r
 	split_factor=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_split_factor_percent);
 	rough_max=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_rough_floor_percent);
 	
+		// get floor type
+		
+	floor_type=map_auto_generate_get_floor_type(&ag_settings);
+	
 		// create floor Ys
 
 	col_add=((rx-lx)/split_factor)+1;
 	row_add=((rz-lz)/split_factor)+1;
-
-	fys=valloc(sizeof(int)*(col_add*row_add));
+	
+	fys=(int*)valloc(sizeof(int)*(col_add*row_add));
 	if (fys==NULL) return;
 
 	fy=fys;
 
-	for (lz=0;lz<=row_add;lz++) {
-		for (lx=0;lx<=col_add;lx++) {
-			if ((lz==0) || (lz==row_add) || (lx==0) || (lx==col_add)) {
+	for (lz=0;lz<row_add;lz++) {
+		for (lx=0;lx<col_add;lx++) {
+		
+			if ((lz==0) || (lz==(row_add-1)) || (lx==0) || (lx==(col_add-1)) || (floor_type!=ag_floor_type_rough)) {
 				*fy=by;
 			}
 			else {
 				*fy=by+((rough_max>>1)-map_auto_generate_random_int(rough_max));
 			}
+			
 			fy++;
 		}
 	}
@@ -1213,7 +1220,7 @@ void map_auto_generate_portal_floor_add(map_type *map,int rn,int lx,int lz,int r
 	free(fys);
 }
 
-void map_auto_generate_corridor_floor_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty,int by)
+void map_auto_generate_corridor_floor_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int by)
 {
 	int				split_factor,lx2,rx2,lz2,rz2,slant_sz,
 					px[8],py[8],pz[8];
@@ -1294,10 +1301,10 @@ void map_auto_generate_floors(map_type *map)
 			// floors and ceilings
 			
 		if (corridor_flags[n]==ag_corridor_flag_portal) {
-			map_auto_generate_portal_floor_add(map,n,0,0,xsz,zsz,portal->ty,portal->by);
+			map_auto_generate_portal_floor_add(map,n,0,0,xsz,zsz,portal->by);
 		}
 		else {
-			map_auto_generate_corridor_floor_add(map,n,0,0,xsz,zsz,portal->ty,portal->by);
+			map_auto_generate_corridor_floor_add(map,n,0,0,xsz,zsz,portal->by);
 		}
 		
 		portal++;

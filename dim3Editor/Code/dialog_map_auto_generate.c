@@ -39,13 +39,10 @@ and can be sold or given away.
 #define kMapGeneratePortalSize						FOUR_CHAR_CODE('ptsz')
 #define kMapGeneratePortalHigh						FOUR_CHAR_CODE('pthg')
 
-#define kMapGenerateCeilingType1					FOUR_CHAR_CODE('clt1')
-#define kMapGenerateCeilingType2					FOUR_CHAR_CODE('clt2')
-#define kMapGenerateCeilingType3					FOUR_CHAR_CODE('clt3')
-
-#define kMapGenerateCorridorType1					FOUR_CHAR_CODE('crt1')
-#define kMapGenerateCorridorType2					FOUR_CHAR_CODE('crt2')
-#define kMapGenerateCorridorType3					FOUR_CHAR_CODE('crt3')
+#define kMapGenerateFloorType						FOUR_CHAR_CODE('flrt')
+#define kMapGenerateCeilingType						FOUR_CHAR_CODE('clgt')
+#define kMapGenerateCorridorType					FOUR_CHAR_CODE('cort')
+#define kMapGenerateDoorType						FOUR_CHAR_CODE('dort')
 
 #define kMapGenerateStepSize						FOUR_CHAR_CODE('stsz')
 #define kMapGenerateStepHigh						FOUR_CHAR_CODE('sthg')
@@ -63,9 +60,6 @@ and can be sold or given away.
 
 #define kMapGenerateBlock							FOUR_CHAR_CODE('bloc')
 
-#define kMapGenerateRoughPortalFloors				FOUR_CHAR_CODE('rgfr')
-#define kMapGenerateRoughCorridorFloors				FOUR_CHAR_CODE('rcfr')
-#define kMapGenerateRoughFloorFactor				FOUR_CHAR_CODE('rfff')
 #define kMapGenerateIncludeDoors					FOUR_CHAR_CODE('idor')
 #define kMapGenerateDoorPercentage					FOUR_CHAR_CODE('dprc')
 #define kMapGenerateDoorSound						FOUR_CHAR_CODE('dsnd')
@@ -75,7 +69,7 @@ and can be sold or given away.
 #define kMapGenerateLightFillPercentage				FOUR_CHAR_CODE('lfpr')
 #define kMapGenerateLightColorPercentage			FOUR_CHAR_CODE('lcol')
 #define kMapGenerateLightFlickerPercentage			FOUR_CHAR_CODE('lflk')
-#define kMapGenerateIncludeSightPath				FOUR_CHAR_CODE('isit')
+
 #define kMapGenerateIncludeSpots					FOUR_CHAR_CODE('ispt')
 #define kMapGenerateSpotCount						FOUR_CHAR_CODE('cspt')
 
@@ -206,7 +200,7 @@ static pascal OSStatus map_generate_setting_tab_proc(EventHandlerCallRef handler
 
 bool dialog_map_auto_generate_setting_run(bool first)
 {
-	int						x,z;
+	int						n,x,z;
 	ControlRef				ctrl;
 	ControlID				ctrl_id;
 	EventHandlerUPP			event_upp,tab_event_upp;
@@ -238,13 +232,21 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_set_value(dialog_map_generate_wind,kMapGenerateMapSize,0,ag_settings.map.sz);
 		dialog_set_value(dialog_map_generate_wind,kMapGeneratePortalSize,0,ag_settings.portal.sz);
 		
-		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCeilingType1,0,ag_settings.ceiling.type_on[0]);
-		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCeilingType2,0,ag_settings.ceiling.type_on[1]);
-		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCeilingType3,0,ag_settings.ceiling.type_on[2]);
+		for (n=0;n!=ag_floor_type_count;n++) {
+			dialog_set_boolean(dialog_map_generate_wind,kMapGenerateFloorType,n,ag_settings.floor_type_on[n]);
+		}
 		
-		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCorridorType1,0,ag_settings.corridor.type_on[0]);
-		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCorridorType2,0,ag_settings.corridor.type_on[1]);
-		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCorridorType3,0,ag_settings.corridor.type_on[2]);
+		for (n=0;n!=ag_ceiling_type_count;n++) {
+			dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCeilingType,n,ag_settings.ceiling_type_on[n]);
+		}
+		
+		for (n=0;n!=ag_corridor_type_count;n++) {
+			dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCorridorType,n,ag_settings.corridor_type_on[n]);
+		}
+		
+		for (n=0;n!=ag_door_type_count;n++) {
+			dialog_set_boolean(dialog_map_generate_wind,kMapGenerateDoorType,n,ag_settings.door_type_on[n]);
+		}
 	
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalWall,0,FALSE,ag_settings.texture.portal_wall);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalFloor,0,FALSE,ag_settings.texture.portal_floor);
@@ -256,9 +258,6 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureStep,0,FALSE,ag_settings.texture.steps);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE,ag_settings.texture.ramp);
 		
-		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateRoughPortalFloors,0,ag_settings.rough_portal_floors);
-		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateRoughCorridorFloors,0,ag_settings.rough_corridor_floors);
-		dialog_set_value(dialog_map_generate_wind,kMapGenerateRoughFloorFactor,0,ag_settings.rough_floor_factor);
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateIncludeDoors,0,ag_settings.doors);
 		dialog_set_value(dialog_map_generate_wind,kMapGenerateDoorPercentage,0,ag_settings.door_percentage);
 		dialog_set_text(dialog_map_generate_wind,kMapGenerateDoorSound,0,ag_settings.door_sound);
@@ -268,7 +267,6 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_set_value(dialog_map_generate_wind,kMapGenerateLightFillPercentage,0,ag_settings.light_fill_percentage);
 		dialog_set_value(dialog_map_generate_wind,kMapGenerateLightColorPercentage,0,ag_settings.light_color_percentage);
 		dialog_set_value(dialog_map_generate_wind,kMapGenerateLightFlickerPercentage,0,ag_settings.light_flicker_percentage);
-		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateIncludeSightPath,0,ag_settings.sight_path);
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateIncludeSpots,0,ag_settings.spots);
 		dialog_set_value(dialog_map_generate_wind,kMapGenerateSpotCount,0,ag_settings.spot_count);
 		
@@ -310,13 +308,21 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	ag_settings.map.sz=dialog_get_value(dialog_map_generate_wind,kMapGenerateMapSize,0);
 	ag_settings.portal.sz=dialog_get_value(dialog_map_generate_wind,kMapGeneratePortalSize,0);
 
-	ag_settings.ceiling.type_on[0]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCeilingType1,0);
-	ag_settings.ceiling.type_on[1]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCeilingType2,0);
-	ag_settings.ceiling.type_on[2]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCeilingType3,0);
+	for (n=0;n!=ag_floor_type_count;n++) {
+		ag_settings.floor_type_on[n]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateFloorType,n);
+	}
 	
-	ag_settings.corridor.type_on[0]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCorridorType1,0);
-	ag_settings.corridor.type_on[1]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCorridorType2,0);
-	ag_settings.corridor.type_on[2]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCorridorType3,0);
+	for (n=0;n!=ag_ceiling_type_count;n++) {
+		ag_settings.ceiling_type_on[n]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCeilingType,n);
+	}
+	
+	for (n=0;n!=ag_corridor_type_count;n++) {
+		ag_settings.corridor_type_on[n]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCorridorType,n);
+	}
+	
+	for (n=0;n!=ag_door_type_count;n++) {
+		ag_settings.door_type_on[n]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateDoorType,n);
+	}
 	
 	ag_settings.texture.portal_wall=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalWall,0,FALSE);
 	ag_settings.texture.portal_floor=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalFloor,0,FALSE);
@@ -328,9 +334,6 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	ag_settings.texture.steps=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureStep,0,FALSE);
 	ag_settings.texture.ramp=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE);
 	
-	ag_settings.rough_portal_floors=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateRoughPortalFloors,0);
-	ag_settings.rough_corridor_floors=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateRoughCorridorFloors,0);
-	ag_settings.rough_floor_factor=dialog_get_value(dialog_map_generate_wind,kMapGenerateRoughFloorFactor,0);
 	ag_settings.doors=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateIncludeDoors,0);
 	ag_settings.door_percentage=dialog_get_value(dialog_map_generate_wind,kMapGenerateDoorPercentage,0);
 	dialog_get_text(dialog_map_generate_wind,kMapGenerateDoorSound,0,ag_settings.door_sound,name_str_len);
@@ -340,7 +343,6 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	ag_settings.light_fill_percentage=dialog_get_value(dialog_map_generate_wind,kMapGenerateLightFillPercentage,0);
 	ag_settings.light_color_percentage=dialog_get_value(dialog_map_generate_wind,kMapGenerateLightColorPercentage,0);
 	ag_settings.light_flicker_percentage=dialog_get_value(dialog_map_generate_wind,kMapGenerateLightFlickerPercentage,0);
-	ag_settings.sight_path=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateIncludeSightPath,0);
 	ag_settings.spots=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateIncludeSpots,0);
 	ag_settings.spot_count=dialog_get_value(dialog_map_generate_wind,kMapGenerateSpotCount,0);
 	
