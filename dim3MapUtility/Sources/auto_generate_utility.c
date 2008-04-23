@@ -156,7 +156,28 @@ bool map_auto_generate_portal_vert_edge_block(map_type *map,int skip_portal_idx,
       
 ======================================================= */
 
-bool map_auto_generate_portal_touching_portal(map_type *map,int portal_idx,unsigned char *corridor_flags)
+bool map_auto_generate_portal_touching_left(map_type *map,int portal_idx,unsigned char *corridor_flags)
+{
+	int				n;
+	portal_type		*portal,*chk_portal;
+
+	portal=&map->portals[portal_idx];
+	
+	for (n=0;n!=map->nportal;n++) {
+		if (portal_idx==n) continue;
+		if (corridor_flags[n]!=ag_corridor_flag_portal) continue;		// don't check corridors
+
+		chk_portal=&map->portals[n];
+		
+		if (((chk_portal->z>=portal->z) && (chk_portal->z<portal->ez)) || ((chk_portal->ez>portal->z) && (chk_portal->ez<=portal->ez))) {
+			if (portal->x==chk_portal->ex) return(TRUE);
+		}
+	}
+
+	return(FALSE);
+}
+
+bool map_auto_generate_portal_touching_right(map_type *map,int portal_idx,unsigned char *corridor_flags)
 {
 	int				n;
 	portal_type		*portal,*chk_portal;
@@ -171,14 +192,63 @@ bool map_auto_generate_portal_touching_portal(map_type *map,int portal_idx,unsig
 		
 		if (((chk_portal->z>=portal->z) && (chk_portal->z<portal->ez)) || ((chk_portal->ez>portal->z) && (chk_portal->ez<=portal->ez))) {
 			if (portal->ex==chk_portal->x) return(TRUE);
-			if (portal->x==chk_portal->ex) return(TRUE);
 		}
+	}
+
+	return(FALSE);
+}
+
+bool map_auto_generate_portal_touching_top(map_type *map,int portal_idx,unsigned char *corridor_flags)
+{
+	int				n;
+	portal_type		*portal,*chk_portal;
+
+	portal=&map->portals[portal_idx];
+	
+	for (n=0;n!=map->nportal;n++) {
+		if (portal_idx==n) continue;
+		if (corridor_flags[n]!=ag_corridor_flag_portal) continue;		// don't check corridors
+
+		chk_portal=&map->portals[n];
 		
 		if (((chk_portal->x>=portal->x) && (chk_portal->x<portal->ex)) || ((chk_portal->ex>portal->x) && (chk_portal->ex<=portal->ex))) {
-			if (portal->ez==chk_portal->z) return(TRUE);
 			if (portal->z==chk_portal->ez) return(TRUE);
 		}
 	}
+
+	return(FALSE);
+}
+
+bool map_auto_generate_portal_touching_bottom(map_type *map,int portal_idx,unsigned char *corridor_flags)
+{
+	int				n;
+	portal_type		*portal,*chk_portal;
+
+	portal=&map->portals[portal_idx];
+	
+	for (n=0;n!=map->nportal;n++) {
+		if (portal_idx==n) continue;
+		if (corridor_flags[n]!=ag_corridor_flag_portal) continue;		// don't check corridors
+
+		chk_portal=&map->portals[n];
+		
+		if (((chk_portal->x>=portal->x) && (chk_portal->x<portal->ex)) || ((chk_portal->ex>portal->x) && (chk_portal->ex<=portal->ex))) {
+			if (portal->ez==chk_portal->z) return(TRUE);
+		}
+	}
+
+	return(FALSE);
+}
+
+bool map_auto_generate_portal_touching_any(map_type *map,int portal_idx,unsigned char *corridor_flags)
+{
+	int				n;
+	portal_type		*portal,*chk_portal;
+
+	if (map_auto_generate_portal_touching_left(map,portal_idx,*corridor_flags)) return(TRUE);
+	if (map_auto_generate_portal_touching_right(map,portal_idx,corridor_flags)) return(TRUE);
+	if (map_auto_generate_portal_touching_top(map,portal_idx,corridor_flags)) return(TRUE);
+	if (map_auto_generate_portal_touching_bottom(map,portal_idx,corridor_flags)) return(TRUE);
 
 	return(FALSE);
 }

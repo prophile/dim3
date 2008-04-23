@@ -35,7 +35,11 @@ extern int map_auto_generate_random_int(int max);
 extern bool map_auto_generate_portal_collision(map_type *map,int x,int z,int ex,int ez,int skip_idx);
 extern bool map_auto_generate_portal_horz_edge_block(map_type *map,int skip_portal_idx,int z,int ez,int x);
 extern bool map_auto_generate_portal_vert_edge_block(map_type *map,int skip_portal_idx,int x,int ex,int z);
-extern bool map_auto_generate_portal_touching_portal(map_type *map,int portal_idx,unsigned char *corridor_flags);
+extern bool map_auto_generate_portal_touching_left(map_type *map,int portal_idx,unsigned char *corridor_flags);
+extern bool map_auto_generate_portal_touching_right(map_type *map,int portal_idx,unsigned char *corridor_flags);
+extern bool map_auto_generate_portal_touching_top(map_type *map,int portal_idx,unsigned char *corridor_flags);
+extern bool map_auto_generate_portal_touching_bottom(map_type *map,int portal_idx,unsigned char *corridor_flags);
+extern bool map_auto_generate_portal_touching_any(map_type *map,int portal_idx,unsigned char *corridor_flags);
 
 extern int map_auto_generate_get_floor_type(auto_generate_settings_type *ags);
 extern int map_auto_generate_get_ceiling_type(auto_generate_settings_type *ags);
@@ -487,7 +491,7 @@ void map_auto_generate_portal_y(map_type *map)
 
 				// touching rooms get second stories
 				
-			if (map_auto_generate_portal_touching_portal(map,n,corridor_flags)) {
+			if (map_auto_generate_portal_touching_any(map,n,corridor_flags)) {
 				portal->ty-=portal_high_story_add;
 			}
 			
@@ -1323,13 +1327,79 @@ void map_auto_generate_floors(map_type *map)
 
 void map_auto_generate_second_story(map_type *map)
 {
-	int				n;
+	int				n,portal_high,split_factor,x,y,z,xsz,zsz,
+					px[8],py[8],pz[8];
+	bool			lft,rgt,top,bot;
+	float			gx[8],gy[8];
 	portal_type		*portal;
+
+		// get sizes
+		
+	portal_high=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_high_percent);
+	split_factor=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_split_factor_percent);
+
+		// create second story in touching portals
 
 	portal=map->portals;
 
 	for (n=0;n!=map->nportal;n++) {
-		if (map_auto_generate_portal_touching_portal(map,n,corridor_flags)) {
+		if (!corridor_flags[n]==ag_corridor_flag_portal) continue;
+
+			// find touching edges
+
+		lft=map_auto_generate_portal_touching_left(map,n,corridor_flags);
+		rgt=map_auto_generate_portal_touching_right(map,n,corridor_flags);
+		top=map_auto_generate_portal_touching_top(map,n,corridor_flags);
+		bot=map_auto_generate_portal_touching_bottom(map,n,corridor_flags);
+
+		if ((!lft) && (!rgt) && (!top) && (!bot)) return;
+
+			// create polygons
+
+		if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.corridor_floor,FALSE,FALSE)) return;
+
+		xsz=portal->ex-portal->x;
+		zsz=portal->ez-portal->z;
+
+		y=(map_max_size>>1)-(portal_high>>1);
+
+		if ((lft) || (rgt)) {
+
+			for (z=0;z<zsz;z+=split_factor) {
+
+				if (lft) {
+					map_auto_generate_poly_from_square_floor(x,z,(x+split_factor),(z+split_factor),y,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
+
+				if (rgt) {
+					map_auto_generate_poly_from_square_floor(x,z,(x+split_factor),(z+split_factor),y,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
+
+			}
+
+		}
+
+		if ((top) || (bot)) {
+
+			for (x=0;x<xsz;x+=split_factor) {
+
+				if ((x==0) && (lft)) continue;			// might have already laid these down
+				if ((x==(xsz-split_factor)) && (rgt)) continue;
+
+				if (top) {
+					map_auto_generate_poly_from_square_floor(x,z,(x+split_factor),(z+split_factor),y,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
+
+				if (rgt) {
+					map_auto_generate_poly_from_square_floor(x,z,(x+split_factor),(z+split_factor),y,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
+
+			}
+
 		}
 	}
 }
