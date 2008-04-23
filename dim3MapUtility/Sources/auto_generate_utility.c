@@ -150,64 +150,37 @@ bool map_auto_generate_portal_vert_edge_block(map_type *map,int skip_portal_idx,
 	return(FALSE);
 }
 
-int map_auto_generate_portal_find_to_left(map_type *map,portal_type *org_portal)
-{
-	int			n;
-	portal_type	*portal;
+/* =======================================================
 
-	portal=map->portals;
+      Edge Touching
+      
+======================================================= */
+
+bool map_auto_generate_portal_touching_portal(map_type *map,int portal_idx,unsigned char *corridor_flags)
+{
+	int				n;
+	portal_type		*portal,*chk_portal;
+
+	portal=&map->portals[portal_idx];
 	
 	for (n=0;n!=map->nportal;n++) {
-		if ((portal->ex==org_portal->x) && (portal->z<=org_portal->z) && (portal->ez>=org_portal->ez)) return(n);
-		portal++;
+		if (portal_idx==n) continue;
+		if (corridor_flags[n]!=ag_corridor_flag_portal) continue;		// don't check corridors
+
+		chk_portal=&map->portals[n];
+		
+		if (((chk_portal->z>=portal->z) && (chk_portal->z<portal->ez)) || ((chk_portal->ez>portal->z) && (chk_portal->ez<=portal->ez))) {
+			if (portal->ex==chk_portal->x) return(TRUE);
+			if (portal->x==chk_portal->ex) return(TRUE);
+		}
+		
+		if (((chk_portal->x>=portal->x) && (chk_portal->x<portal->ex)) || ((chk_portal->ex>portal->x) && (chk_portal->ex<=portal->ex))) {
+			if (portal->ez==chk_portal->z) return(TRUE);
+			if (portal->z==chk_portal->ez) return(TRUE);
+		}
 	}
-	
-	return(0);
-}
 
-int map_auto_generate_portal_find_to_right(map_type *map,portal_type *org_portal)
-{
-	int			n;
-	portal_type	*portal;
-
-	portal=map->portals;
-	
-	for (n=0;n!=map->nportal;n++) {
-		if ((portal->x==org_portal->ex) && (portal->z<=org_portal->z) && (portal->ez>=org_portal->ez)) return(n);
-		portal++;
-	}
-	
-	return(0);
-}
-
-int map_auto_generate_portal_find_to_top(map_type *map,portal_type *org_portal)
-{
-	int			n;
-	portal_type	*portal;
-
-	portal=map->portals;
-	
-	for (n=0;n!=map->nportal;n++) {
-		if ((portal->ez==org_portal->z) && (portal->x<=org_portal->x) && (portal->ex>=org_portal->ex)) return(n);
-		portal++;
-	}
-	
-	return(0);
-}
-
-int map_auto_generate_portal_find_to_bottom(map_type *map,portal_type *org_portal)
-{
-	int			n;
-	portal_type	*portal;
-
-	portal=map->portals;
-	
-	for (n=0;n!=map->nportal;n++) {
-		if ((portal->z==org_portal->ez) && (portal->x<=org_portal->x) && (portal->ex>=org_portal->ex)) return(n);
-		portal++;
-	}
-	
-	return(0);
+	return(FALSE);
 }
 
 /* =======================================================
@@ -520,6 +493,10 @@ void map_auto_generate_add_player_spot(map_type *map)
 	
 	map_portal_calculate_center(map,0,&x,&y,&z);
 	map_portal_calculate_y_extent(map,0,&ty,&y);
+	
+		// supergumba -- temp fix for rough floors
+		
+	y-=(map_enlarge*5);
 	
 		// add spot
 		

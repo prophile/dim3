@@ -35,11 +35,7 @@ extern int map_auto_generate_random_int(int max);
 extern bool map_auto_generate_portal_collision(map_type *map,int x,int z,int ex,int ez,int skip_idx);
 extern bool map_auto_generate_portal_horz_edge_block(map_type *map,int skip_portal_idx,int z,int ez,int x);
 extern bool map_auto_generate_portal_vert_edge_block(map_type *map,int skip_portal_idx,int x,int ex,int z);
-
-extern int map_auto_generate_portal_find_to_left(map_type *map,portal_type *org_portal);
-extern int map_auto_generate_portal_find_to_right(map_type *map,portal_type *org_portal);
-extern int map_auto_generate_portal_find_to_top(map_type *map,portal_type *org_portal);
-extern int map_auto_generate_portal_find_to_bottom(map_type *map,portal_type *org_portal);
+extern bool map_auto_generate_portal_touching_portal(map_type *map,int portal_idx,unsigned char *corridor_flags);
 
 extern int map_auto_generate_get_floor_type(auto_generate_settings_type *ags);
 extern int map_auto_generate_get_ceiling_type(auto_generate_settings_type *ags);
@@ -458,13 +454,14 @@ void map_auto_generate_connect_portals(map_type *map)
 
 void map_auto_generate_portal_y(map_type *map)
 {
-	int				n,corridor_slop_y,by_add,portal_high,
+	int				n,corridor_slop_y,by_add,portal_high,portal_high_story_add,
 					ty,by,extra_ty,extra_by;
 	portal_type		*portal;
 	
 		// portal sizes
 
 	portal_high=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_high_percent);
+	portal_high_story_add=(int)(((float)ag_settings.portal.sz)*ag_constant_portal_story_high_add_percent);
 		
 	ty=(map_max_size/2)-(portal_high/2);
 	by=(map_max_size/2)+(portal_high/2);
@@ -485,8 +482,15 @@ void map_auto_generate_portal_y(map_type *map)
 			// rooms have variable Ys
 			
 		if (corridor_flags[n]==ag_corridor_flag_portal) {
+		
 			portal->ty=ty-map_auto_generate_random_int(extra_ty);
 
+				// touching rooms get second stories
+				
+			if (map_auto_generate_portal_touching_portal(map,n,corridor_flags)) {
+				portal->ty-=portal_high_story_add;
+			}
+			
 			by_add=map_auto_generate_random_int(extra_by);
 			if (by_add<=ag_constant_step_high) {
 				by_add=0;
@@ -1313,6 +1317,25 @@ void map_auto_generate_floors(map_type *map)
 
 /* =======================================================
 
+      Second Stories
+      
+======================================================= */
+
+void map_auto_generate_second_story(map_type *map)
+{
+	int				n;
+	portal_type		*portal;
+
+	portal=map->portals;
+
+	for (n=0;n!=map->nportal;n++) {
+		if (map_auto_generate_portal_touching_portal(map,n,corridor_flags)) {
+		}
+	}
+}
+
+/* =======================================================
+
       Initialize Flags
       
 ======================================================= */
@@ -1376,6 +1399,10 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 	map_auto_generate_corridor_clip_walls(map);
 	map_auto_generate_floors(map);
 	map_auto_generate_ceilings(map);
+	
+		// second stories
+		
+	map_auto_generate_second_story(map);
 	
 		// create ramps, steps, and doors
 		
