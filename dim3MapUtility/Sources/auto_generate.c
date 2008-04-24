@@ -1340,13 +1340,13 @@ void map_auto_generate_second_story(map_type *map)
 
 		// create second story in touching portals
 
-	portal=map->portals;
-
 	for (n=0;n!=map->nportal;n++) {
 		if (!corridor_flags[n]==ag_corridor_flag_portal) continue;
 
 			// find touching edges
 
+		portal=&map->portals[n];
+		
 		lft=map_auto_generate_portal_touching_left(map,n,corridor_flags);
 		rgt=map_auto_generate_portal_touching_right(map,n,corridor_flags);
 		top=map_auto_generate_portal_touching_top(map,n,corridor_flags);
@@ -1364,16 +1364,16 @@ void map_auto_generate_second_story(map_type *map)
 		y=(map_max_size>>1)-(portal_high>>1);
 
 		if ((lft) || (rgt)) {
-
+		
 			for (z=0;z<zsz;z+=split_factor) {
 
 				if (lft) {
-					map_auto_generate_poly_from_square_floor(x,z,(x+split_factor),(z+split_factor),y,px,py,pz,gx,gy);
+					map_auto_generate_poly_from_square_floor(0,z,split_factor,(z+split_factor),y,px,py,pz,gx,gy);
 					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 				}
 
 				if (rgt) {
-					map_auto_generate_poly_from_square_floor(x,z,(x+split_factor),(z+split_factor),y,px,py,pz,gx,gy);
+					map_auto_generate_poly_from_square_floor((xsz-split_factor),z,xsz,(z+split_factor),y,px,py,pz,gx,gy);
 					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 				}
 
@@ -1389,12 +1389,12 @@ void map_auto_generate_second_story(map_type *map)
 				if ((x==(xsz-split_factor)) && (rgt)) continue;
 
 				if (top) {
-					map_auto_generate_poly_from_square_floor(x,z,(x+split_factor),(z+split_factor),y,px,py,pz,gx,gy);
+					map_auto_generate_poly_from_square_floor(x,0,(x+split_factor),split_factor,y,px,py,pz,gx,gy);
 					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 				}
 
 				if (rgt) {
-					map_auto_generate_poly_from_square_floor(x,z,(x+split_factor),(z+split_factor),y,px,py,pz,gx,gy);
+					map_auto_generate_poly_from_square_floor(x,(zsz-split_factor),(x+split_factor),zsz,y,px,py,pz,gx,gy);
 					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 				}
 

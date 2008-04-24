@@ -242,10 +242,7 @@ bool map_auto_generate_portal_touching_bottom(map_type *map,int portal_idx,unsig
 
 bool map_auto_generate_portal_touching_any(map_type *map,int portal_idx,unsigned char *corridor_flags)
 {
-	int				n;
-	portal_type		*portal,*chk_portal;
-
-	if (map_auto_generate_portal_touching_left(map,portal_idx,*corridor_flags)) return(TRUE);
+	if (map_auto_generate_portal_touching_left(map,portal_idx,corridor_flags)) return(TRUE);
 	if (map_auto_generate_portal_touching_right(map,portal_idx,corridor_flags)) return(TRUE);
 	if (map_auto_generate_portal_touching_top(map,portal_idx,corridor_flags)) return(TRUE);
 	if (map_auto_generate_portal_touching_bottom(map,portal_idx,corridor_flags)) return(TRUE);
