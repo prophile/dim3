@@ -284,8 +284,10 @@ typedef struct	{
 #define ag_constant_portal_high_extra_top			0.75f
 #define ag_constant_portal_high_extra_bottom		0.50f
 #define ag_constant_portal_high_slop_y				0.10f
-#define ag_constant_portal_rough_floor_percent		0.03f
+#define ag_constant_portal_rough_floor_percent		0.025f
 #define ag_constant_portal_ceiling_slant_percent	0.40f
+
+#define ag_constant_portal_story_high				(4*map_enlarge)
 
 #define ag_constant_corridor_size_percent			0.25f
 #define ag_constant_corridor_random_percent			0.4f
@@ -316,7 +318,7 @@ typedef struct	{
 typedef struct	{
 					int										portal_wall,portal_floor,portal_ceiling,
 															corridor_wall,corridor_floor,corridor_ceiling,
-															door,steps,ramp;
+															second_story,door,steps,ramp;
 				} auto_generate_setting_texture_type;
 
 typedef struct	{

@@ -165,7 +165,7 @@ bool map_auto_generate_portal_touching_left(map_type *map,int portal_idx,unsigne
 	
 	for (n=0;n!=map->nportal;n++) {
 		if (portal_idx==n) continue;
-		if (corridor_flags[n]!=ag_corridor_flag_portal) continue;		// don't check corridors
+		if (corridor_flags!=NULL) if (corridor_flags[n]!=ag_corridor_flag_portal) continue;
 
 		chk_portal=&map->portals[n];
 		
@@ -186,7 +186,7 @@ bool map_auto_generate_portal_touching_right(map_type *map,int portal_idx,unsign
 	
 	for (n=0;n!=map->nportal;n++) {
 		if (portal_idx==n) continue;
-		if (corridor_flags[n]!=ag_corridor_flag_portal) continue;		// don't check corridors
+		if (corridor_flags!=NULL) if (corridor_flags[n]!=ag_corridor_flag_portal) continue;
 
 		chk_portal=&map->portals[n];
 		
@@ -207,7 +207,7 @@ bool map_auto_generate_portal_touching_top(map_type *map,int portal_idx,unsigned
 	
 	for (n=0;n!=map->nportal;n++) {
 		if (portal_idx==n) continue;
-		if (corridor_flags[n]!=ag_corridor_flag_portal) continue;		// don't check corridors
+		if (corridor_flags!=NULL) if (corridor_flags[n]!=ag_corridor_flag_portal) continue;
 
 		chk_portal=&map->portals[n];
 		
@@ -228,7 +228,7 @@ bool map_auto_generate_portal_touching_bottom(map_type *map,int portal_idx,unsig
 	
 	for (n=0;n!=map->nportal;n++) {
 		if (portal_idx==n) continue;
-		if (corridor_flags[n]!=ag_corridor_flag_portal) continue;		// don't check corridors
+		if (corridor_flags!=NULL) if (corridor_flags[n]!=ag_corridor_flag_portal) continue;
 
 		chk_portal=&map->portals[n];
 		
@@ -338,6 +338,65 @@ int map_auto_generate_get_corridor_type(auto_generate_settings_type *ags)
 	}
 
 	return(ag_corridor_type_normal);
+}
+
+/* =======================================================
+
+      Second Story Utilities
+      
+======================================================= */
+
+void map_auto_generate_story_extra_floor(bool *lft,bool *rgt,bool *top,bool *bot,bool *horz,bool *vert)
+{
+	*horz=FALSE;
+	*vert=FALSE;
+
+		// if only one side is filled, create an L from the other
+
+	if ((*lft) && (!(*rgt)) && (!(*top)) && (!(*bot))) {
+		if (map_auto_generate_random_int(100)>50) {
+			*top=TRUE;
+		}
+		else {
+			*bot=TRUE;
+		}
+		return;
+	}
+
+	if ((*rgt) && (!(*lft)) && (!(*top)) && (!(*bot))) {
+		if (map_auto_generate_random_int(100)>50) {
+			*top=TRUE;
+		}
+		else {
+			*bot=TRUE;
+		}
+		return;
+	}
+
+	if ((*top) && (!(*bot)) && (!(*lft)) && (!(*rgt))) {
+		if (map_auto_generate_random_int(100)>50) {
+			*lft=TRUE;
+		}
+		else {
+			*rgt=TRUE;
+		}
+		return;
+	}
+
+	if ((*bot) && (!(*top)) && (!(*lft)) && (!(*rgt))) {
+		if (map_auto_generate_random_int(100)>50) {
+			*lft=TRUE;
+		}
+		else {
+			*rgt=TRUE;
+		}
+		return;
+	}
+
+		// if opposite sides, connect
+
+	*horz=((*lft) && (*rgt));
+	*vert=((*top) && (*bot));
 }
 
 /* =======================================================
@@ -486,6 +545,11 @@ bool map_auto_generate_mesh_start(map_type *map,int portal_idx,int group_idx,int
 	}
 
 	return(TRUE);
+}
+
+void map_auto_generate_mesh_change_texture(int txt_idx)
+{
+	map_ag_poly_txt_idx=txt_idx;
 }
 
 bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z,float *gx,float *gy)
