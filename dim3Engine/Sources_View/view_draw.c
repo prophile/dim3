@@ -293,7 +293,7 @@ void view_draw(int tick)
 		
 	obj=object_find_uid(server.player_obj_uid);
 	weap=weapon_find_current(obj);
-	
+
 		// setup viewport
 	
 	gl_setup_viewport(console_y_offset());

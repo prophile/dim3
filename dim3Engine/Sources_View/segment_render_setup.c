@@ -131,9 +131,9 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 
 		for (n=0;n!=portal->mesh.nmesh;n++) {
 		
-			mesh->draw.has_normal=FALSE;
-			mesh->draw.has_bump=FALSE;
-			mesh->draw.has_lighting=FALSE;
+			mesh->draw.has_stencil_normal=FALSE;
+			mesh->draw.has_stencil_bump=FALSE;
+			mesh->draw.has_stencil_lighting=FALSE;
 			mesh->draw.has_transparent=FALSE;
 			mesh->draw.has_glow=FALSE;
 			mesh->draw.has_specular=FALSE;
@@ -149,7 +149,7 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 				texture=&map.textures[mesh_poly->txt_idx];
 				frame=(texture->animate.current_frame+mesh_poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
-				mesh_poly->draw.simple_lighting=(global_light_simple) || (lod_dist>map.optimizations.lod_light_distance) || (mesh_poly->draw.simple_tessel);
+				mesh_poly->draw.is_simple_lighting=(global_light_simple) || (lod_dist>map.optimizations.lod_light_distance) || (mesh_poly->draw.simple_tessel);
 
 					// is texture transparent?
 
@@ -158,7 +158,7 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 					// is shader
 
 				if (texture->shader.on) {
-					mesh_poly->draw.is_lighting=FALSE;
+					mesh_poly->draw.is_stencil_lighting=FALSE;
 					if (is_transparent) {
 						mesh_poly->draw.draw_type=map_mesh_poly_draw_transparent_shader;
 						mesh->draw.has_transparent_shader=TRUE;
@@ -177,7 +177,7 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 					if (is_transparent) {
 						mesh->draw.has_transparent=TRUE;
 						mesh_poly->draw.draw_type=map_mesh_poly_draw_transparent;
-						mesh_poly->draw.is_lighting=FALSE;
+						mesh_poly->draw.is_stencil_lighting=FALSE;
 						portal->mesh.draw.has_transparent=TRUE;
 					}
 					else {
@@ -185,22 +185,36 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 							// is bump?
 
 						if ((setup.bump_mapping) && (lod_dist<map.optimizations.lod_bump_distance) && (texture->bumpmaps[frame].gl_id!=-1)) {
-							mesh->draw.has_bump=TRUE;
 							mesh_poly->draw.draw_type=map_mesh_poly_draw_bump;
-							mesh_poly->draw.is_lighting=TRUE;
-							portal->mesh.draw.has_bump=TRUE;
-							portal->mesh.draw.has_lighting=TRUE;
+							if (!mesh_poly->draw.is_simple_lighting) {
+								mesh->draw.has_stencil_bump=TRUE;
+								mesh_poly->draw.is_stencil_lighting=TRUE;
+								portal->mesh.draw.has_stencil_bump=TRUE;
+								portal->mesh.draw.has_stencil_lighting=TRUE;
+							}
+							else {
+								mesh->draw.has_simple_bump=TRUE;
+								portal->mesh.draw.has_simple_bump=TRUE;
+								portal->mesh.draw.has_simple_lighting=TRUE;
+							}
 							if ((!light_changed) || (mesh->flag.moveable)) map_portal_calculate_normal_vector_smooth(portal,(double)mesh_poly->box.mid.x,(double)mesh_poly->box.mid.y,(double)mesh_poly->box.mid.z,mesh_poly->draw.normal);
 						}
 
 							// is normal?
 
 						else {
-							mesh->draw.has_normal=TRUE;
 							mesh_poly->draw.draw_type=map_mesh_poly_draw_normal;
-							mesh_poly->draw.is_lighting=TRUE;
-							portal->mesh.draw.has_normal=TRUE;
-							portal->mesh.draw.has_lighting=TRUE;
+							if (!mesh_poly->draw.is_simple_lighting) {
+								mesh->draw.has_stencil_normal=TRUE;
+								mesh_poly->draw.is_stencil_lighting=TRUE;
+								portal->mesh.draw.has_stencil_normal=TRUE;
+								portal->mesh.draw.has_stencil_lighting=TRUE;
+							}
+							else {
+								mesh->draw.has_simple_normal=TRUE;
+								portal->mesh.draw.has_simple_normal=TRUE;
+								portal->mesh.draw.has_simple_lighting=TRUE;
+							}
 						}
 					}
 
@@ -220,8 +234,6 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 
 				mesh_poly++;
 			}
-
-			mesh->draw.has_lighting=(mesh->draw.has_normal) || (mesh->draw.has_bump);
 
 			mesh++;
 		}
@@ -251,15 +263,15 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 	
 		for (n=0;n!=portal->mesh.nmesh;n++) {
 		
-			mesh->draw.stencil_pass_start=stencil_pass;
-			
-			if (mesh->draw.has_lighting) {
+			if (mesh->draw.has_stencil_lighting) {
+				
+				mesh->draw.stencil_pass_start=stencil_pass;
 
 				mesh_poly=mesh->polys;
 				
 				for (k=0;k!=mesh->npoly;k++) {
 
-					if (mesh_poly->draw.is_lighting) {
+					if (mesh_poly->draw.is_stencil_lighting) {
 						mesh_poly->draw.stencil_pass=stencil_pass;
 						mesh_poly->draw.stencil_idx=stencil_idx;
 						
@@ -272,9 +284,10 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 				
 					mesh_poly++;
 				}
+				
+				mesh->draw.stencil_pass_end=stencil_pass;
 			}
 
-			mesh->draw.stencil_pass_end=stencil_pass;
 		
 			mesh++;
 		}

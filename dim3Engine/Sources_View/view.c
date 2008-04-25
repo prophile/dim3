@@ -437,6 +437,8 @@ void view_loop_draw(int tick)
 	if (tick<view.time.draw_tick) return;
 	view.time.draw_tick=tick+view.time.draw_time;
 
+	gl_render_arrays_frame_finish();
+
 	view_draw_setup(tick);
 	
 	if (!fog_solid_on()) {
@@ -447,14 +449,13 @@ void view_loop_draw(int tick)
 	}
 
 	gl_render_arrays_frame_start();
-	
+
 	view_draw(tick);
 	radar_draw();
 	hud_draw(tick);
 	network_draw(tick);
 	console_draw();
 	
-	gl_render_arrays_frame_finish();
 	gl_frame_end();
 
 	view.fps.count++;

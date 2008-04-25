@@ -60,6 +60,8 @@ extern bool map_auto_generate_mesh_start(map_type *map,int portal_idx,int group_
 extern void map_auto_generate_mesh_change_texture(int txt_idx);
 extern bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z,float *gx,float *gy);
 
+extern void map_auto_generate_steps(map_type *map,int rn,int ty,int by,int stair_mode,int step_sz,int lx,int rx,int lz,int rz);
+
 extern void map_auto_generate_lights(map_type *map);
 extern void map_auto_generate_spots(map_type *map);
 extern void map_auto_generate_ramps(map_type *map);
@@ -1472,7 +1474,7 @@ void map_auto_generate_second_story(map_type *map)
 
 		if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.second_story,FALSE,TRUE)) return;
 
-		y=(map_max_size>>1)-((portal_high>>1)+extra_ty+(ag_constant_portal_story_high>>1));
+		y=(map_max_size>>1)-((portal_high+extra_ty)>>1);
 
 		for (z=0;z<zsz;z++) {
 			for (x=0;x<xsz;x++) {
@@ -1482,22 +1484,30 @@ void map_auto_generate_second_story(map_type *map)
 
 			// is there a place for steps?
 
-		y+=ag_constant_portal_story_high;
-
 		if ((lft) && (!old_lft)) {
-			map_auto_generate_second_story_steps(map,(split_factor*2),((zsz/2)*split_factor),y,portal->by);
+			x=split_factor*2;
+			z=((zsz/2)-1)*split_factor;
+			map_auto_generate_steps(map,n,y,portal->by,ag_stair_pos_x,ag_constant_step_story_size,x,x,z,z+(split_factor*2));
 		}
-
-		if ((rgt) && (!old_rgt)) {
-			map_auto_generate_second_story_steps(map,((xsz-2)*split_factor),((zsz/2)*split_factor),y,portal->by);
+		else {
+			if ((rgt) && (!old_rgt)) {
+				x=(xsz-2)*split_factor;
+				z=((zsz/2)-1)*split_factor;
+				map_auto_generate_steps(map,n,y,portal->by,ag_stair_neg_x,ag_constant_step_story_size,x,x,z,z+(split_factor*2));
+			}
 		}
 
 		if ((top) && (!old_top)) {
-			map_auto_generate_second_story_steps(map,((xsz/2)*split_factor),(split_factor*2),y,portal->by);
+			x=((xsz/2)-1)*split_factor;
+			z=split_factor*2;
+			map_auto_generate_steps(map,n,y,portal->by,ag_stair_pos_z,ag_constant_step_story_size,x,x+(split_factor*2),z,z);
 		}
-
-		if ((bot) && (!old_bot)) {
-			map_auto_generate_second_story_steps(map,((xsz/2)*split_factor),((zsz-2)*split_factor),y,portal->by);
+		else {
+			if ((bot) && (!old_bot)) {
+				x=((xsz/2)-1)*split_factor;
+				z=(zsz-2)*split_factor;
+				map_auto_generate_steps(map,n,y,portal->by,ag_stair_neg_z,ag_constant_step_story_size,x,x+(split_factor*2),z,z);
+			}
 		}
 	}
 }
