@@ -1545,7 +1545,7 @@ void main_wind_scroll_wheel(int delta)
 					break;
 					
 				case kf_panel_side:
-					main_wind_setup_panel_forward(&view_setup);
+					main_wind_setup_panel_side(&view_setup);
 					walk_view_scroll_wheel_z_movement(&view_setup,delta,vm_dir_side);
 					break;
 					

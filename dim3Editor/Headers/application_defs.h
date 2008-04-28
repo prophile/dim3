@@ -98,6 +98,8 @@ and can be sold or given away.
 #define kCommandPieceFreeRotate				FOUR_CHAR_CODE('prtf')
 #define kCommandPieceRaiseY					FOUR_CHAR_CODE('prsy')
 #define kCommandPieceLowerY					FOUR_CHAR_CODE('plry')
+#define kCommandPieceSnapToGrid				FOUR_CHAR_CODE('msnp')
+
 #define kCommandFaceDelete					FOUR_CHAR_CODE('fdel')
 #define kCommandFaceHole1					FOUR_CHAR_CODE('fhl1')
 
@@ -122,85 +124,81 @@ and can be sold or given away.
 // views
 //
 
-#define vw_3_panel			0
-#define vw_4_panel			1
-#define vw_portal_only		2
-#define vw_site_path_only	3
-#define vw_top_only			4
-#define vw_forward_only		5
+#define vw_3_panel				0
+#define vw_4_panel				1
+#define vw_portal_only			2
+#define vw_site_path_only		3
+#define vw_top_only				4
+#define vw_forward_only			5
 
 //
 // perspective
 //
 
-#define ps_perspective		0
-#define ps_ortho			1
+#define ps_perspective			0
+#define ps_ortho				1
 
 //
 // movement directions
 //
 
-#define vm_dir_forward		0
-#define vm_dir_side			1
-#define vm_dir_top			2
+#define vm_dir_forward			0
+#define vm_dir_side				1
+#define vm_dir_top				2
 
 //
 // keyboard panel focus
 //
 
-#define kf_panel_forward	0
-#define kf_panel_side		1
-#define kf_panel_top		2
-#define kf_panel_walk		3
+#define kf_panel_forward		0
+#define kf_panel_side			1
+#define kf_panel_top			2
+#define kf_panel_walk			3
 
 //
 // vertex modes
 //
 
-#define vertex_mode_none	0
-#define vertex_mode_lock	1
-#define vertex_mode_snap	2
+#define vertex_mode_none		0
+#define vertex_mode_lock		1
+#define vertex_mode_snap		2
 
 //
 // drag modes
 //
 
-#define drag_mode_mesh		0
-#define drag_mode_polygon	1
-#define drag_mode_vertex	2
+#define drag_mode_mesh			0
+#define drag_mode_polygon		1
+#define drag_mode_vertex		2
 
 //
 // grid modes
 //
 
-#define grid_mode_none		0
-#define grid_mode_small		1
-#define grid_mode_medium	2
-#define grid_mode_large		3
+#define grid_mode_none			0
+#define grid_mode_small			1
+#define grid_mode_medium		2
+#define grid_mode_large			3
 
 //
 // selection types
 //
 
-#define mesh_piece			100
-#define liquid_piece		101
-#define node_piece			102
-#define spot_piece			103
-#define scenery_piece		104
-#define light_piece			105
-#define sound_piece			106
-#define particle_piece		107
-
-// supergumba -- delete these
-#define segment_piece		110
-#define primitive_piece		111
+#define mesh_piece				100
+#define liquid_piece			101
+#define node_piece				102
+#define spot_piece				103
+#define scenery_piece			104
+#define light_piece				105
+#define sound_piece				106
+#define particle_piece			107
 
 //
 // magnify factors
 //
 
-#define magnify_factor_min	4
-#define magnify_factor_max	210
+#define magnify_factor_min		4
+#define magnify_factor_max		210
 
 //
 // fovs

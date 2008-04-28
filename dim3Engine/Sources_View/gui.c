@@ -58,6 +58,7 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view,bool 
 {
 	int			x,y;
 	char		name[256],path[1024];
+	bool		load_ok;
 	
 		// pause game
 		
@@ -79,6 +80,7 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view,bool 
 		// load the background bitmap
 		// we pick the version with _wide on the
 		// end if screen is in widescreen resolutions
+		// and fail-over to the original if not loaded
 		
 	gui_has_background=FALSE;
 	gui_show_view=show_view;
@@ -87,15 +89,18 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view,bool 
 	if (bitmap_name!=NULL) {
 		gui_has_background=TRUE;
 
+		load_ok=FALSE;
+		
 		if (gl_is_screen_widescreen()) {
 			sprintf(name,"%s_wide",bitmap_name);
 			file_paths_data(&setup.file_path_setup,path,background_path,name,"png");
-		}
-		else {
-			file_paths_data(&setup.file_path_setup,path,background_path,bitmap_name,"png");
+			load_ok=bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
 		}
 
-		bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
+		if (!load_ok) {
+			file_paths_data(&setup.file_path_setup,path,background_path,bitmap_name,"png");
+			bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
+		}
 	}
 
 		// GUI scaling set by interface.xml

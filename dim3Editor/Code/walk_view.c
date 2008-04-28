@@ -151,7 +151,7 @@ void walk_view_cursor(bool rot_ok)
         SetCCursor(handcur);
         return;
     }
-    if (main_wind_option_down()) {
+    if ((main_wind_option_down()) && ((!main_wind_control_down()) && (!main_wind_shift_down()))) {
         SetCCursor(forwardcur);
         return;
     }
@@ -159,10 +159,6 @@ void walk_view_cursor(bool rot_ok)
         SetCCursor(rotatecur);
         return;
     }
-	if (main_wind_control_down()) {
-		SetCCursor(towardcur);
-		return;
-	}
     
     InitCursor();
 }

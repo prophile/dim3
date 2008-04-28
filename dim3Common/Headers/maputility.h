@@ -152,11 +152,13 @@ extern char light_type_str[][32];
 // mesh poly draw flag
 //
 
-#define map_mesh_poly_draw_normal					0
-#define map_mesh_poly_draw_bump						1
-#define map_mesh_poly_draw_transparent				2
-#define map_mesh_poly_draw_opaque_shader			3
-#define map_mesh_poly_draw_transparent_shader		4
+#define map_mesh_poly_draw_stencil_normal			0
+#define map_mesh_poly_draw_stencil_bump				1
+#define map_mesh_poly_draw_simple_normal			2
+#define map_mesh_poly_draw_simple_bump				3
+#define map_mesh_poly_draw_transparent				4
+#define map_mesh_poly_draw_opaque_shader			5
+#define map_mesh_poly_draw_transparent_shader		6
 
 //
 // group types
@@ -211,8 +213,7 @@ typedef struct		{
 													stencil_pass,stencil_idx;
 						float						normal[3];
 						bool						simple_tessel,shift_on,
-													is_stencil_lighting,is_simple_lighting,
-													is_glow,is_specular;
+													is_simple_lighting,is_glow,is_specular;
 					} map_mesh_poly_draw_type;
 
 typedef struct		{
@@ -236,8 +237,8 @@ typedef struct		{
 
 typedef struct		{
 						int							stencil_pass_start,stencil_pass_end;
-						bool						has_stencil_normal,has_stencil_bump,has_stencil_lighting,
-													has_simple_normal,has_simple_bump,has_simple_lighting,
+						bool						has_stencil_normal,has_stencil_bump,
+													has_simple_normal,has_simple_bump,
 													has_transparent,has_specular,has_glow,
 													has_opaque_shader,has_transparent_shader;
 					} map_mesh_draw_type;

@@ -675,7 +675,8 @@ void walk_view_click_info(void)
 			dialog_map_particle_settings_run(&map.particles[main_idx]);
 			break;
 	}
-
+	
+	main_wind_draw();
 }
 
 /* =======================================================
@@ -737,11 +738,21 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 	switch (drag_mode) {
 	
 		case drag_mode_mesh:
-			walk_view_click_drag_mesh(view_setup,pt,view_move_dir);
+			if (!main_wind_control_down()) {
+				walk_view_click_drag_mesh(view_setup,pt,view_move_dir);
+			}
+			else {
+				walk_view_click_drag_texture(view_setup,pt,view_move_dir,TRUE);
+			}
 			break;
 
 		case drag_mode_polygon:
-			walk_view_click_drag_mesh_poly(view_setup,pt,view_move_dir);
+			if (!main_wind_control_down()) {
+				walk_view_click_drag_mesh_poly(view_setup,pt,view_move_dir);
+			}
+			else {
+				walk_view_click_drag_texture(view_setup,pt,view_move_dir,FALSE);
+			}
 			break;
 			
 	}

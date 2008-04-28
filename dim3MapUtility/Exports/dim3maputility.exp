@@ -106,7 +106,5 @@ _map_auto_generate_clear
 _map_auto_generate_add_simple_lights
 _map_auto_generate_add_player_spot
 
-_map_auto_generate_block_preset
-
 _map_auto_generate
 _map_auto_generate_test

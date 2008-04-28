@@ -424,6 +424,7 @@ void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
 	float					f_cnt;
 	d3vct					fpnt[max_model_bone];
 	matrix_type				avg_mats[max_model_bone][max_model_blend_animation];
+	model_bone_move_type	*bone_moves;
 	model_draw_bone_type	bones[max_model_blend_animation][max_model_bone];
 
 		// count number of animations
@@ -471,16 +472,18 @@ void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
 		// rotational data in them (which is why we
 		// need a separate count for each bone so
 		// we can average them correctly)
-
+		
 	for (n=0;n!=max_model_blend_animation;n++) {
 
 		if (draw_setup->poses[n].idx_1!=-1) {
+			
+			bone_moves=model->poses[draw_setup->poses[n].idx_1].bone_moves;
 
 				// average position and matrixes
 
 			for (i=0;i!=nbone;i++) {
 
-				if (matrix_has_rotation(&bones[n][i].rot_mat)) {
+				if ((matrix_has_rotation(&bones[n][i].rot_mat)) && (!bone_moves[i].skip_blended)) {
 
 					idx=avg_mat_cnt[i];
 					avg_mat_cnt[i]++;

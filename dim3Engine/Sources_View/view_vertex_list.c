@@ -128,7 +128,7 @@ void portal_compile_gl_lists(int tick,int rn)
       
 ======================================================= */
 
-void portal_compile_gl_list_attach(int rn,int txt_unit_count)
+void portal_compile_gl_list_attach(int rn)
 {
 	int						nvlist,sz;
 	portal_type				*portal;
@@ -150,17 +150,13 @@ void portal_compile_gl_list_attach(int rn,int txt_unit_count)
 
 		// uvs
 		
-	if (txt_unit_count>=3) {
-		glClientActiveTexture(GL_TEXTURE2);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(2,GL_FLOAT,0,portal->vertexes.pcoord);
-	}
+	glClientActiveTexture(GL_TEXTURE2);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,portal->vertexes.pcoord);
 
-	if (txt_unit_count>=2) {
-		glClientActiveTexture(GL_TEXTURE1);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(2,GL_FLOAT,0,portal->vertexes.pcoord);
-	}
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,portal->vertexes.pcoord);
 	
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);

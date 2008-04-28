@@ -43,7 +43,7 @@ extern view_type		view;
 
 extern int game_time_get(void);
 
-extern void portal_compile_gl_list_attach(int rn,int txt_unit_count);
+extern void portal_compile_gl_list_attach(int rn);
 extern void portal_compile_gl_list_dettach(void);
 
 /* =======================================================
@@ -89,7 +89,7 @@ void segment_render_opaque_stencil_portal_normal_mesh(portal_type *portal,int st
 		
 		for (k=0;k!=mesh->npoly;k++) {
 
-			if ((mesh_poly->draw.draw_type!=map_mesh_poly_draw_normal) || (mesh_poly->draw.stencil_pass!=stencil_pass)) {
+			if ((mesh_poly->draw.draw_type!=map_mesh_poly_draw_stencil_normal) || (mesh_poly->draw.stencil_pass!=stencil_pass)) {
 				mesh_poly++;
 				continue;
 			}
@@ -154,7 +154,7 @@ void segment_render_opaque_stencil_portal_bump_mesh(portal_type *portal,int sten
 		
 		for (k=0;k!=mesh->npoly;k++) {
 		
-			if ((mesh_poly->draw.draw_type!=map_mesh_poly_draw_bump) || (mesh_poly->draw.stencil_pass!=stencil_pass)) {
+			if ((mesh_poly->draw.draw_type!=map_mesh_poly_draw_stencil_bump) || (mesh_poly->draw.stencil_pass!=stencil_pass)) {
 				mesh_poly++;
 				continue;
 			}
@@ -191,7 +191,9 @@ void segment_render_opaque_stencil_portal_lighting_mesh(portal_type *portal,int 
 	float				dark_factor;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*mesh_poly;
-
+	
+	fprintf(stdout,"IN TESSEL LIGHTING\n");
+	
 	gl_texture_tesseled_lighting_start();
 
 	glEnable(GL_BLEND);
@@ -208,17 +210,21 @@ void segment_render_opaque_stencil_portal_lighting_mesh(portal_type *portal,int 
 	mesh=portal->mesh.meshes;
 	
 	for (n=0;n!=portal->mesh.nmesh;n++) {
-	
-		if ((!mesh->draw.has_stencil_lighting) || (mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) {
+		
+		fprintf(stdout,"  * drawing a portal (%s)\n",mesh->draw.has_stencil_bump?"yes":"no");
+
+		if ((!((mesh->draw.has_stencil_normal) || (mesh->draw.has_stencil_bump))) || (mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) {
 			mesh++;
 			continue;
 		}
+
+			fprintf(stdout,"  * drawing a mesh \n");
 	
 		mesh_poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {
 		
-			if ((!mesh_poly->draw.is_stencil_lighting) || (mesh_poly->draw.stencil_pass!=stencil_pass)) {
+			if ((!((mesh_poly->draw.draw_type!=map_mesh_poly_draw_stencil_normal) || (mesh_poly->draw.draw_type!=map_mesh_poly_draw_stencil_bump))) || (mesh_poly->draw.stencil_pass!=stencil_pass)) {
 				mesh_poly++;
 				continue;
 			}
@@ -229,6 +235,7 @@ void segment_render_opaque_stencil_portal_lighting_mesh(portal_type *portal,int 
 				dark_factor=mesh_poly->dark_factor;
 				gl_texture_tesseled_lighting_factor(dark_factor);
 			}
+			fprintf(stdout,"  * drawing a poly \n");
 
 			// supergumba -- testing
 			/*
@@ -304,7 +311,7 @@ void segment_render_opaque_simple_portal_normal_mesh(portal_type *portal)
 		
 		for (k=0;k!=mesh->npoly;k++) {
 
-			if (mesh_poly->draw.draw_type!=map_mesh_poly_draw_normal) {
+			if (mesh_poly->draw.draw_type!=map_mesh_poly_draw_simple_normal) {
 				mesh_poly++;
 				continue;
 			}
@@ -369,7 +376,7 @@ void segment_render_opaque_simple_portal_bump_mesh(portal_type *portal)
 		
 		for (k=0;k!=mesh->npoly;k++) {
 		
-			if (mesh_poly->draw.draw_type!=map_mesh_poly_draw_bump) {
+			if (mesh_poly->draw.draw_type!=map_mesh_poly_draw_simple_bump) {
 				mesh_poly++;
 				continue;
 			}
@@ -599,12 +606,7 @@ int segment_render_opaque_portal(int rn,int pass_last)
 
 		// attach compiled vertex lists
 
-	if ((portal->mesh.draw.has_glow) || (portal->mesh.draw.has_specular) || (portal->mesh.draw.has_opaque_shader)) {
-		portal_compile_gl_list_attach(rn,3);
-	}
-	else {
-		portal_compile_gl_list_attach(rn,2);
-	}
+	portal_compile_gl_list_attach(rn);
 
 		// meshes that use stencil-based lighting
 

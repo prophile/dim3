@@ -156,16 +156,13 @@ typedef struct	{
 
 #define max_ag_block_sz								10
 
-#define ag_block_preset_empty						0
-#define ag_block_preset_circle						1
-#define ag_block_preset_top_u						2
-#define ag_block_preset_bottom_u					3
-#define ag_block_preset_left_u						4
-#define ag_block_preset_right_u						5
-#define ag_block_preset_vertical_h					6
-#define ag_block_preset_horizontal_h				7
+#define ag_block_none								0
+#define ag_block_circle								1
+#define ag_block_u									2
+#define ag_block_preset_h							3
+#define ag_block_preset_l							4
 
-#define ag_block_data_empty_bytes					{ \
+#define ag_block_data_none_bytes					{ \
 													 {0,0,0,0,0,0,0,0,0,0}, \
 													 {0,0,0,0,0,0,0,0,0,0}, \
 													 {0,0,0,0,0,0,0,0,0,0}, \
@@ -191,7 +188,7 @@ typedef struct	{
 													 {0,0,0,0,0,0,0,0,0,0} \
 													}
 
-#define ag_block_data_top_u_bytes					{ \
+#define ag_block_data_u_bytes						{ \
 													 {0,0,0,1,1,1,1,0,0,0}, \
 													 {0,0,0,1,1,1,1,0,0,0}, \
 													 {0,0,0,1,1,1,1,0,0,0}, \
@@ -204,46 +201,7 @@ typedef struct	{
 													 {0,0,0,0,0,0,0,0,0,0} \
 													}
 
-#define ag_block_data_bottom_u_bytes				{ \
-													 {0,0,0,0,0,0,0,0,0,0}, \
-													 {0,0,0,0,0,0,0,0,0,0}, \
-													 {0,0,0,0,0,0,0,0,0,0}, \
-													 {0,0,0,0,0,0,0,0,0,0}, \
-													 {0,0,0,0,0,0,0,0,0,0}, \
-													 {0,0,0,1,1,1,1,0,0,0}, \
-													 {0,0,0,1,1,1,1,0,0,0}, \
-													 {0,0,0,1,1,1,1,0,0,0}, \
-													 {0,0,0,1,1,1,1,0,0,0}, \
-													 {0,0,0,1,1,1,1,0,0,0} \
-													}
-
-#define ag_block_data_left_u_bytes					{ \
-													 {0,0,0,0,0,0,0,0,0,0}, \
-													 {0,0,0,0,0,0,0,0,0,0}, \
-													 {0,0,0,0,0,0,0,0,0,0}, \
-													 {1,1,1,1,1,0,0,0,0,0}, \
-													 {1,1,1,1,1,0,0,0,0,0}, \
-													 {1,1,1,1,1,0,0,0,0,0}, \
-													 {1,1,1,1,1,0,0,0,0,0}, \
-													 {0,0,0,0,0,0,0,0,0,0}, \
-													 {0,0,0,0,0,0,0,0,0,0}, \
-													 {0,0,0,0,0,0,0,0,0,0} \
-													}
-							
-#define ag_block_data_right_u_bytes					{ \
-													 {0,0,0,0,0,0,0,0,0,0}, \
-													 {0,0,0,0,0,0,0,0,0,0}, \
-													 {0,0,0,0,0,0,0,0,0,0}, \
-													 {0,0,0,0,0,1,1,1,1,1}, \
-													 {0,0,0,0,0,1,1,1,1,1}, \
-													 {0,0,0,0,0,1,1,1,1,1}, \
-													 {0,0,0,0,0,1,1,1,1,1}, \
-													 {0,0,0,0,0,0,0,0,0,0}, \
-													 {0,0,0,0,0,0,0,0,0,0}, \
-													 {0,0,0,0,0,0,0,0,0,0} \
-													}
-
-#define ag_block_data_vertical_h_bytes				{ \
+#define ag_block_data_h_bytes						{ \
 													 {0,0,0,1,1,1,1,0,0,0}, \
 													 {0,0,0,1,1,1,1,0,0,0}, \
 													 {0,0,0,1,1,1,1,0,0,0}, \
@@ -255,15 +213,15 @@ typedef struct	{
 													 {0,0,0,1,1,1,1,0,0,0}, \
 													 {0,0,0,1,1,1,1,0,0,0} \
 													}
-
-#define ag_block_data_horizontal_h_bytes			{ \
+													
+#define ag_block_data_l_bytes						{ \
+													 {0,0,0,0,0,1,1,1,1,1}, \
+													 {0,0,0,0,0,1,1,1,1,1}, \
+													 {0,0,0,0,0,1,1,1,1,1}, \
+													 {0,0,0,0,0,1,1,1,1,1}, \
+													 {0,0,0,0,0,1,1,1,1,1}, \
+													 {0,0,0,0,0,1,1,1,1,1}, \
 													 {0,0,0,0,0,0,0,0,0,0}, \
-													 {0,0,0,0,0,0,0,0,0,0}, \
-													 {0,0,0,0,0,0,0,0,0,0}, \
-													 {1,1,1,0,0,0,0,1,1,1}, \
-													 {1,1,1,0,0,0,0,1,1,1}, \
-													 {1,1,1,0,0,0,0,1,1,1}, \
-													 {1,1,1,0,0,0,0,1,1,1}, \
 													 {0,0,0,0,0,0,0,0,0,0}, \
 													 {0,0,0,0,0,0,0,0,0,0}, \
 													 {0,0,0,0,0,0,0,0,0,0} \
@@ -288,6 +246,7 @@ typedef struct	{
 #define ag_constant_portal_ceiling_slant_percent	0.40f
 
 #define ag_constant_portal_story_high				(4*map_enlarge)
+#define ag_constant_story_steps_split_factor		1
 
 #define ag_constant_corridor_size_percent			0.25f
 #define ag_constant_corridor_random_percent			0.4f
@@ -307,14 +266,10 @@ typedef struct	{
 //
 
 typedef struct	{
-					int										sz,
+					int										map_sz,portal_sz,
 															left,right,top,bottom;
 				} auto_generate_setting_map_type;
 
-typedef struct	{
-					int										sz;
-				} auto_generate_setting_portal_type;
-	
 typedef struct	{
 					int										portal_wall,portal_floor,portal_ceiling,
 															corridor_wall,corridor_floor,corridor_ceiling,
@@ -322,7 +277,7 @@ typedef struct	{
 				} auto_generate_setting_texture_type;
 
 typedef struct	{
-					int										seed,door_percentage,
+					int										seed,block,door_percentage,
 															light_fudge_factor,light_fill_percentage,
 															light_color_percentage,light_flicker_percentage,
 															spot_count;
@@ -331,10 +286,8 @@ typedef struct	{
 					unsigned char							floor_type_on[ag_floor_type_count],
 															ceiling_type_on[ag_ceiling_type_count],
 															corridor_type_on[ag_corridor_type_count],
-															door_type_on[ag_door_type_count],
-															block[max_ag_block_sz][max_ag_block_sz];
+															door_type_on[ag_door_type_count];
 					auto_generate_setting_map_type			map;
-					auto_generate_setting_portal_type		portal;
 					auto_generate_setting_texture_type		texture;
 				} auto_generate_settings_type;
 
@@ -345,8 +298,6 @@ typedef struct	{
 extern void map_auto_generate_clear(map_type *map);
 extern void map_auto_generate_add_simple_lights(map_type *map);
 extern void map_auto_generate_add_player_spot(map_type *map);
-
-extern void map_auto_generate_block_preset(auto_generate_settings_type *ags,int block);
 
 extern void map_auto_generate(map_type *map,auto_generate_settings_type *ags);
 extern bool map_auto_generate_test(map_type *map,bool load_shaders);

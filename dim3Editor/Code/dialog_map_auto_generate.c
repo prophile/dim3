@@ -29,12 +29,12 @@ and can be sold or given away.
 #include "dialog.h"
 #include "import.h"
 
-#define kMapGenerateTabCount						8
+#define kMapGenerateTabCount						4
 
 #define kMapGenerateTab								FOUR_CHAR_CODE('tabb')
 
 #define kMapGenerateSeed							FOUR_CHAR_CODE('seed')
-
+#define kMapGenerateBlock							FOUR_CHAR_CODE('blck')
 #define kMapGenerateMapSize							FOUR_CHAR_CODE('mpsz')
 #define kMapGeneratePortalSize						FOUR_CHAR_CODE('ptsz')
 #define kMapGeneratePortalHigh						FOUR_CHAR_CODE('pthg')
@@ -54,11 +54,10 @@ and can be sold or given away.
 #define kMapGenerateTextureCorridorWall				FOUR_CHAR_CODE('cwtx')
 #define kMapGenerateTextureCorridorFloor			FOUR_CHAR_CODE('cftx')
 #define kMapGenerateTextureCorridorCeiling			FOUR_CHAR_CODE('cctx')
+#define kMapGenerateTextureSecondStory				FOUR_CHAR_CODE('sstx')
 #define kMapGenerateTextureDoor						FOUR_CHAR_CODE('drtx')
 #define kMapGenerateTextureStep						FOUR_CHAR_CODE('sttx')
 #define kMapGenerateTextureRamp						FOUR_CHAR_CODE('rmtx')
-
-#define kMapGenerateBlock							FOUR_CHAR_CODE('bloc')
 
 #define kMapGenerateIncludeDoors					FOUR_CHAR_CODE('idor')
 #define kMapGenerateDoorPercentage					FOUR_CHAR_CODE('dprc')
@@ -73,39 +72,10 @@ and can be sold or given away.
 #define kMapGenerateIncludeSpots					FOUR_CHAR_CODE('ispt')
 #define kMapGenerateSpotCount						FOUR_CHAR_CODE('cspt')
 
-#define kMapGenerateBlockCombo						FOUR_CHAR_CODE('bcmb')
-#define kMapGenerateBlockPresetEmpty				FOUR_CHAR_CODE('blk0')
-#define kMapGenerateBlockPresetCircle				FOUR_CHAR_CODE('blk1')
-#define kMapGenerateBlockPresetTopU					FOUR_CHAR_CODE('blk2')
-#define kMapGenerateBlockPresetBottomU				FOUR_CHAR_CODE('blk3')
-#define kMapGenerateBlockPresetLeftU				FOUR_CHAR_CODE('blk4')
-#define kMapGenerateBlockPresetRightU				FOUR_CHAR_CODE('blk5')
-#define kMapGenerateBlockPresetVerticalH			FOUR_CHAR_CODE('blk6')
-#define kMapGenerateBlockPresetHorizontalH			FOUR_CHAR_CODE('blk7')
-
-extern void map_auto_generate_block_preset(auto_generate_settings_type *ag_settings,int block);
-
 extern auto_generate_settings_type			ag_settings;
 
 bool						dialog_map_generate_cancel;
 WindowRef					dialog_map_generate_wind;
-
-/* =======================================================
-
-      Map Generate Setting Utilities
-      
-======================================================= */
-
-void map_generate_setting_fill_block_buttons(void)
-{
-	int			x,z;
-	
-	for (z=0;z!=max_ag_block_sz;z++) {
-		for (x=0;x!=max_ag_block_sz;x++) {
-			dialog_set_boolean(dialog_map_generate_wind,kMapGenerateBlock,((z*10)+x),(ag_settings.block[z][x]!=0));
-		}
-	}
-}
 
 /* =======================================================
 
@@ -123,50 +93,6 @@ static pascal OSStatus map_generate_setting_event_proc(EventHandlerCallRef handl
 			GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
 			
 			switch (cmd.commandID) {
-			
-					// blocking combo
-					
-				case kMapGenerateBlockPresetEmpty:
-					map_auto_generate_block_preset(&ag_settings,ag_block_preset_empty);
-					map_generate_setting_fill_block_buttons();
-					return(noErr);
-					
-				case kMapGenerateBlockPresetCircle:
-					map_auto_generate_block_preset(&ag_settings,ag_block_preset_circle);
-					map_generate_setting_fill_block_buttons();
-					return(noErr);
-					
-				case kMapGenerateBlockPresetTopU:
-					map_auto_generate_block_preset(&ag_settings,ag_block_preset_top_u);
-					map_generate_setting_fill_block_buttons();
-					return(noErr);
-					
-				case kMapGenerateBlockPresetBottomU:
-					map_auto_generate_block_preset(&ag_settings,ag_block_preset_bottom_u);
-					map_generate_setting_fill_block_buttons();
-					return(noErr);
-					
-				case kMapGenerateBlockPresetLeftU:
-					map_auto_generate_block_preset(&ag_settings,ag_block_preset_left_u);
-					map_generate_setting_fill_block_buttons();
-					return(noErr);
-					
-				case kMapGenerateBlockPresetRightU:
-					map_auto_generate_block_preset(&ag_settings,ag_block_preset_right_u);
-					map_generate_setting_fill_block_buttons();
-					return(noErr);
-
-				case kMapGenerateBlockPresetVerticalH:
-					map_auto_generate_block_preset(&ag_settings,ag_block_preset_vertical_h);
-					map_generate_setting_fill_block_buttons();
-					return(noErr);
-					
-				case kMapGenerateBlockPresetHorizontalH:
-					map_auto_generate_block_preset(&ag_settings,ag_block_preset_horizontal_h);
-					map_generate_setting_fill_block_buttons();
-					return(noErr);
-
-					// buttons
 					
 				case kHICommandCancel:
 					dialog_map_generate_cancel=TRUE;
@@ -200,7 +126,7 @@ static pascal OSStatus map_generate_setting_tab_proc(EventHandlerCallRef handler
 
 bool dialog_map_auto_generate_setting_run(bool first)
 {
-	int						n,x,z;
+	int						n;
 	ControlRef				ctrl;
 	ControlID				ctrl_id;
 	EventHandlerUPP			event_upp,tab_event_upp;
@@ -229,8 +155,9 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		// old settings
 		
 	if (!first) {
-		dialog_set_value(dialog_map_generate_wind,kMapGenerateMapSize,0,ag_settings.map.sz);
-		dialog_set_value(dialog_map_generate_wind,kMapGeneratePortalSize,0,ag_settings.portal.sz);
+		dialog_set_value(dialog_map_generate_wind,kMapGenerateMapSize,0,ag_settings.map.map_sz);
+		dialog_set_combo(dialog_map_generate_wind,kMapGenerateBlock,0,ag_settings.block);
+		dialog_set_value(dialog_map_generate_wind,kMapGeneratePortalSize,0,ag_settings.map.portal_sz);
 		
 		for (n=0;n!=ag_floor_type_count;n++) {
 			dialog_set_boolean(dialog_map_generate_wind,kMapGenerateFloorType,n,ag_settings.floor_type_on[n]);
@@ -254,6 +181,7 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorWall,0,FALSE,ag_settings.texture.corridor_wall);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorFloor,0,FALSE,ag_settings.texture.corridor_floor);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorCeiling,0,FALSE,ag_settings.texture.corridor_ceiling);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureSecondStory,0,FALSE,ag_settings.texture.second_story);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureDoor,0,FALSE,ag_settings.texture.door);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureStep,0,FALSE,ag_settings.texture.steps);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE,ag_settings.texture.ramp);
@@ -269,8 +197,6 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_set_value(dialog_map_generate_wind,kMapGenerateLightFlickerPercentage,0,ag_settings.light_flicker_percentage);
 		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateIncludeSpots,0,ag_settings.spots);
 		dialog_set_value(dialog_map_generate_wind,kMapGenerateSpotCount,0,ag_settings.spot_count);
-		
-		map_generate_setting_fill_block_buttons();
 	}
 	else {
 	
@@ -282,9 +208,10 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorWall,0,FALSE,3);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorFloor,0,FALSE,4);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorCeiling,0,FALSE,5);
-		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureDoor,0,FALSE,6);
-		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureStep,0,FALSE,7);
-		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE,8);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureSecondStory,0,FALSE,6);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureDoor,0,FALSE,7);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureStep,0,FALSE,8);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE,9);
 	}
 	
 		// show window
@@ -304,9 +231,10 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		// dialog to data
 		
 	ag_settings.seed=dialog_get_int(dialog_map_generate_wind,kMapGenerateSeed,0);
+	ag_settings.block=dialog_get_combo(dialog_map_generate_wind,kMapGenerateBlock,0);
 
-	ag_settings.map.sz=dialog_get_value(dialog_map_generate_wind,kMapGenerateMapSize,0);
-	ag_settings.portal.sz=dialog_get_value(dialog_map_generate_wind,kMapGeneratePortalSize,0);
+	ag_settings.map.map_sz=dialog_get_value(dialog_map_generate_wind,kMapGenerateMapSize,0);
+	ag_settings.map.portal_sz=dialog_get_value(dialog_map_generate_wind,kMapGeneratePortalSize,0);
 
 	for (n=0;n!=ag_floor_type_count;n++) {
 		ag_settings.floor_type_on[n]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateFloorType,n);
@@ -330,6 +258,7 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	ag_settings.texture.corridor_wall=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorWall,0,FALSE);
 	ag_settings.texture.corridor_floor=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorFloor,0,FALSE);
 	ag_settings.texture.corridor_ceiling=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorCeiling,0,FALSE);
+	ag_settings.texture.second_story=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureSecondStory,0,FALSE);
 	ag_settings.texture.door=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureDoor,0,FALSE);
 	ag_settings.texture.steps=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureStep,0,FALSE);
 	ag_settings.texture.ramp=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE);
@@ -345,12 +274,6 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	ag_settings.light_flicker_percentage=dialog_get_value(dialog_map_generate_wind,kMapGenerateLightFlickerPercentage,0);
 	ag_settings.spots=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateIncludeSpots,0);
 	ag_settings.spot_count=dialog_get_value(dialog_map_generate_wind,kMapGenerateSpotCount,0);
-	
-	for (z=0;z!=max_ag_block_sz;z++) {
-		for (x=0;x!=max_ag_block_sz;x++) {
-			ag_settings.block[z][x]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateBlock,((z*10)+x))?1:0;
-		}
-	}
 	
 		// close window
 		

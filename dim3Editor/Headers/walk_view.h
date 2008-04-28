@@ -63,6 +63,7 @@ extern bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *
 extern bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 extern bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 extern bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
+extern bool walk_view_click_drag_texture(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool entire_mesh);
 
 //
 // walk view draw handle

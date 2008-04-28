@@ -165,6 +165,7 @@ typedef struct		{
 
 typedef struct		{
 						float							acceleration;
+						bool							skip_blended;
 						d3vct							rot;
 						d3vct							mov;
 					} model_bone_move_type;

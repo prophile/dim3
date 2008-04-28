@@ -190,11 +190,21 @@ void walk_view_scroll_wheel_z_movement(editor_3D_view_setup *view_setup,int delt
 {
 	int						xadd,zadd,yadd;
 
-	xadd=0;
-	yadd=0;
-	zadd=delta*10;
-		
-	rotate_2D_point_center(&xadd,&zadd,angle_add(view_setup->ang.y,180.0f));
+	xadd=yadd=zadd=0;
+	
+	if (view_move_dir==vm_dir_forward) {
+		xadd=0;
+		yadd=0;
+		zadd=delta*10;
+		if (view_setup->swap_on) zadd=-zadd;
+	}
+	else {
+		xadd=-(delta*10);
+		yadd=0;
+		zadd=0;
+		if (view_setup->swap_on) xadd=-xadd;
+	}
+	
 	
 	cz+=(zadd*32);
 	cx+=(xadd*32);

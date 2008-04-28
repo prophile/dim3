@@ -85,8 +85,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 230441151;
-			PBXWorkspaceStateSaveDate = 230441151;
+			PBXPerProjectTemplateStateSaveDate = 230962105;
+			PBXWorkspaceStateSaveDate = 230962105;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -215,11 +215,27 @@
 			sepNavWindowFrame = "{{176, 129}, {1041, 747}}";
 		};
 	};
+	F52F2B3804D9D8C700145290 /* application_defs.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2562}}";
+			sepNavSelRange = "{5076, 22}";
+			sepNavVisRange = "{4123, 1295}";
+			sepNavWindowFrame = "{{61, 234}, {1041, 747}}";
+		};
+	};
 	F594B44609A947F800408388 /* dialog_pose_settings.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {656, 1580}}";
 			sepNavSelRange = "{1283, 103}";
 			sepNavVisRange = "{0, 0}";
+		};
+	};
+	F594B46809A9494800408388 /* dialog_pose_bone_settings.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1946}}";
+			sepNavSelRange = "{3406, 0}";
+			sepNavVisRange = "{2343, 2042}";
+			sepNavWindowFrame = "{{213, 263}, {1041, 747}}";
 		};
 	};
 	F594B48509A96EFB00408388 /* dialog_hit_box_settings.c */ = {
@@ -252,6 +268,14 @@
 			sepNavWindowFrame = "{{739, 133}, {1041, 747}}";
 		};
 	};
+	F5C01E8401EABB0C01A091D9 /* pose_tab.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5600}}";
+			sepNavSelRange = "{10255, 0}";
+			sepNavVisRange = "{9341, 1581}";
+			sepNavWindowFrame = "{{199, 108}, {1041, 747}}";
+		};
+	};
 	F5C12EAB0143003C01000001 /* obj_import.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 4018}}";
@@ -266,6 +290,14 @@
 			sepNavSelRange = "{1632, 0}";
 			sepNavVisRange = "{0, 1891}";
 			sepNavWindowFrame = "{{670, 194}, {1041, 747}}";
+		};
+	};
+	F5C5354609267C6D00663E36 /* dialog.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1526}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{530, 2692}";
+			sepNavWindowFrame = "{{38, 255}, {1041, 747}}";
 		};
 	};
 }

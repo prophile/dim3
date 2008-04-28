@@ -92,6 +92,7 @@ int model_bone_add(model_type *model,int mesh_idx)
 		model->poses[i].bone_moves[nbone].mov.y=1;
 		model->poses[i].bone_moves[nbone].mov.z=1;
 		model->poses[i].bone_moves[nbone].acceleration=0;
+		model->poses[i].bone_moves[nbone].skip_blended=FALSE;
 	}
 	
 	model_calculate_parents(model);

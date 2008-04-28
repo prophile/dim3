@@ -37,6 +37,40 @@ extern map_type				map;
 
 /* =======================================================
 
+      Drag Constraints
+      
+======================================================= */
+
+void walk_view_click_drag_constraint(int *x,int *y)
+{
+	int			ax,ay;
+	
+	if (!main_wind_shift_down()) return;
+	
+	ax=abs(*x);
+	ay=abs(*y);
+	
+	if (ax>ay) {
+		if ((*y)<0) {
+			*y=-ax;
+		}
+		else {
+			*y=ax;
+		}
+		
+		return;
+	}
+
+	if ((*x)<0) {
+		*x=-ay;
+	}
+	else {
+		*x=ay;
+	}
+}
+
+/* =======================================================
+
       Drag Mesh Handles
       
 ======================================================= */
@@ -131,10 +165,14 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 			first_drag=FALSE;
 		}
 		
+			// constraints
+			
+		walk_view_click_drag_constraint(&x,&y);
+		
 			// resize mesh
 
 		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
-			
+
 		mx+=xadd;
 		my+=yadd;
 		mz+=zadd;

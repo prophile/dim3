@@ -29,59 +29,11 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-unsigned char		ag_block_data_empty[max_ag_block_sz][max_ag_block_sz]=ag_block_data_empty_bytes,
+unsigned char		ag_block_data_none[max_ag_block_sz][max_ag_block_sz]=ag_block_data_none_bytes,
 					ag_block_data_circle[max_ag_block_sz][max_ag_block_sz]=ag_block_data_circle_bytes,
-					ag_block_data_top_u[max_ag_block_sz][max_ag_block_sz]=ag_block_data_top_u_bytes,
-					ag_block_data_bottom_u[max_ag_block_sz][max_ag_block_sz]=ag_block_data_bottom_u_bytes,
-					ag_block_data_left_u[max_ag_block_sz][max_ag_block_sz]=ag_block_data_left_u_bytes,
-					ag_block_data_right_u[max_ag_block_sz][max_ag_block_sz]=ag_block_data_right_u_bytes,
-					ag_block_data_vertical_h[max_ag_block_sz][max_ag_block_sz]=ag_block_data_vertical_h_bytes,
-					ag_block_data_horizontal_h[max_ag_block_sz][max_ag_block_sz]=ag_block_data_horizontal_h_bytes;
-
-/* =======================================================
-
-      Auto-Generate Custom Blocking
-      
-======================================================= */
-
-void map_auto_generate_block_preset(auto_generate_settings_type *ags,int block)
-{
-	switch (block) {
-	
-		case ag_block_preset_empty:
-			memmove(ags->block,ag_block_data_empty,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
-			break;
-	
-		case ag_block_preset_circle:
-			memmove(ags->block,ag_block_data_circle,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
-			break;
-			
-		case ag_block_preset_top_u:
-			memmove(ags->block,ag_block_data_top_u,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
-			break;
-
-		case ag_block_preset_bottom_u:
-			memmove(ags->block,ag_block_data_bottom_u,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
-			break;
-
-		case ag_block_preset_left_u:
-			memmove(ags->block,ag_block_data_left_u,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
-			break;
-
-		case ag_block_preset_right_u:
-			memmove(ags->block,ag_block_data_right_u,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
-			break;
-
-		case ag_block_preset_vertical_h:
-			memmove(ags->block,ag_block_data_vertical_h,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
-			break;
-
-		case ag_block_preset_horizontal_h:
-			memmove(ags->block,ag_block_data_horizontal_h,((sizeof(unsigned char)*max_ag_block_sz)*max_ag_block_sz));
-			break;
-	}
-
-}
+					ag_block_data_u[max_ag_block_sz][max_ag_block_sz]=ag_block_data_u_bytes,
+					ag_block_data_h[max_ag_block_sz][max_ag_block_sz]=ag_block_data_h_bytes,
+					ag_block_data_l[max_ag_block_sz][max_ag_block_sz]=ag_block_data_l_bytes;
 
 /* =======================================================
 
@@ -92,6 +44,35 @@ void map_auto_generate_block_preset(auto_generate_settings_type *ags,int block)
 bool map_auto_generate_block_collision(auto_generate_settings_type *ags,int x,int z,int ex,int ez)
 {
 	int				blck_x,blck_z,lx,rx,tz,bz,map_x_factor,map_z_factor;
+	unsigned char	*block;
+	
+		// get block data
+		
+	switch (ags->block) {
+	
+		case ag_block_none:
+			block=(unsigned char*)ag_block_data_none;
+			break;
+		
+		case ag_block_circle:
+			block=(unsigned char*)ag_block_data_circle;
+			break;
+			
+		case ag_block_u:
+			block=(unsigned char*)ag_block_data_u;
+			break;
+			
+		case ag_block_preset_h:
+			block=(unsigned char*)ag_block_data_h;
+			break;
+			
+		case ag_block_preset_l:
+			block=(unsigned char*)ag_block_data_l;
+			break;
+			
+	}
+		
+		// calculate block
 
 	map_x_factor=(ags->map.right-ags->map.left)/max_ag_block_sz;
 	map_z_factor=(ags->map.bottom-ags->map.top)/max_ag_block_sz;
@@ -110,7 +91,7 @@ bool map_auto_generate_block_collision(auto_generate_settings_type *ags,int x,in
 			lx=rx;
 			rx+=map_x_factor;
 
-			if (ags->block[blck_z][blck_x]!=0x0) {
+			if (block[(blck_z*max_ag_block_sz)+blck_x]!=0x0) {
 				if (ez<=tz) continue;
 				if (ex<=lx) continue;
 				if (x>=rx) continue;

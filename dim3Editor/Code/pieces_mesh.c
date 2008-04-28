@@ -273,13 +273,13 @@ int piece_import_mesh_pick(int mx,int my,int mz)
 
 void piece_add_library_mesh(void)
 {
-	int					mesh_idx,mx,my,mz;
+	int					mesh_idx,rn,mx,my,mz;
 	
 	if (!piece_create_texture_ok()) return;
 	
 		// get import location
 		
-	map_portal_calculate_center(&map,cr,&mx,&my,&mz);
+	rn=piece_create_get_spot(&mx,&my,&mz,0,0,0);
 			
 		// import mesh
 		
@@ -289,7 +289,7 @@ void piece_add_library_mesh(void)
 		// make selection
 		
 	select_clear();
-	select_add(mesh_piece,cr,mesh_idx,0);
+	select_add(mesh_piece,rn,mesh_idx,0);
 	
 		// change mode to move entire mesh
 		

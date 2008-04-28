@@ -38,7 +38,7 @@ extern server_type		server;
 extern view_type		view;
 extern setup_type		setup;
 
-extern void portal_compile_gl_list_attach(int rn,int txt_unit_count);
+extern void portal_compile_gl_list_attach(int rn);
 extern void portal_compile_gl_list_dettach(void);
 
 /* =======================================================
@@ -366,12 +366,7 @@ void segment_render_transparent_portal(int rn)
 
 		// attach compiled vertex lists
 
-	if (portal->mesh.draw.has_opaque_shader) {
-		portal_compile_gl_list_attach(rn,3);
-	}
-	else {
-		portal_compile_gl_list_attach(rn,2);
-	}
+	portal_compile_gl_list_attach(rn);
 
 		// sort meshes
 

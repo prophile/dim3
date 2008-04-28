@@ -142,9 +142,46 @@ static pascal OSStatus pose_list_item_proc(ControlRef ctrl,DataBrowserItemID ite
 			string_convert_float(s_mov_x,bone_move->mov.x);
 			string_convert_float(s_mov_y,bone_move->mov.y);
 			string_convert_float(s_mov_z,bone_move->mov.z);
+			
+			sprintf(txt,"(%d,%d,%d) / (%s,%s,%s)",(int)bone_move->rot.x,(int)bone_move->rot.y,(int)bone_move->rot.z,s_mov_x,s_mov_y,s_mov_z);
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,txt,kCFStringEncodingMacRoman);
+			SetDataBrowserItemDataText(itemData,cfstr);
+			CFRelease(cfstr);
+			return(noErr);
+			
+		case kPoseBoneAccDBColumn:
+			if (itemID<1000) return(noErr);
+
+			k=itemID/1000;
+			i=itemID-(k*1000);
+			k=k-2;
+			
+			bone_move=&model.poses[k].bone_moves[i];
+			
 			string_convert_float(s_mov_acc,bone_move->acceleration);
 			
-			sprintf(txt,"(%d,%d,%d) / (%s,%s,%s) / %s",(int)bone_move->rot.x,(int)bone_move->rot.y,(int)bone_move->rot.z,s_mov_x,s_mov_y,s_mov_z,s_mov_acc);
+			sprintf(txt,"%s",s_mov_acc);
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,txt,kCFStringEncodingMacRoman);
+			SetDataBrowserItemDataText(itemData,cfstr);
+			CFRelease(cfstr);
+			return(noErr);
+		
+		case kPoseBoneBlendDBColumn:
+			if (itemID<1000) return(noErr);
+
+			k=itemID/1000;
+			i=itemID-(k*1000);
+			k=k-2;
+			
+			bone_move=&model.poses[k].bone_moves[i];
+			
+			if (bone_move->skip_blended) {
+				strcpy(txt,"Y");
+			}
+			else {
+				strcpy(txt,"N");
+			}
+			
 			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,txt,kCFStringEncodingMacRoman);
 			SetDataBrowserItemDataText(itemData,cfstr);
 			CFRelease(cfstr);
@@ -320,7 +357,9 @@ void start_pose_controls(WindowRef wind,Rect *box)
 
 	add_db_column(pose_list,"Name",kPoseNameDBColumn,kDataBrowserTextType,100,0);
 	add_db_column(pose_list,"Bone",kPoseBoneDBColumn,kDataBrowserTextType,200,1);
-	add_db_column(pose_list,"Bone Move",kPoseBoneMoveDBColumn,kDataBrowserTextType,300,2);
+	add_db_column(pose_list,"Rot & Move",kPoseBoneMoveDBColumn,kDataBrowserTextType,250,2);
+	add_db_column(pose_list,"Accel",kPoseBoneAccDBColumn,kDataBrowserTextType,60,3);
+	add_db_column(pose_list,"Skip Blend",kPoseBoneBlendDBColumn,kDataBrowserTextType,80,4);
 
 	SetDataBrowserListViewDisclosureColumn(pose_list,kPoseNameDBColumn,FALSE);
 	

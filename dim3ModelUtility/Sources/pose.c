@@ -56,6 +56,7 @@ int model_pose_add(model_type *model)
 		bone_move->mov.z=1;
 		bone_move->mov.y=1;
 		bone_move->acceleration=0;
+		bone_move->skip_blended=FALSE;
 		bone_move++;
 	}
 	
@@ -135,6 +136,7 @@ void model_pose_clear(model_type *model,int pose_idx)
 		bone_move->mov.z=1;
 		bone_move->mov.y=1;
 		bone_move->acceleration=0;
+		bone_move->skip_blended=FALSE;
 		
 		bone_move++;
 	}

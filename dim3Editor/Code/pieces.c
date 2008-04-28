@@ -447,6 +447,39 @@ void piece_free_rotate(void)
 
 /* =======================================================
 
+      Snap Mesh to Grid
+      
+======================================================= */
+
+void piece_snap_to_grid(void)
+{
+	int						n,k,sel_count,
+							type,portal_idx,mesh_idx,poly_idx,nvertex;
+	d3pnt					*pt;
+	portal_type				*portal;
+	map_mesh_type			*mesh;
+
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
+
+		portal=&map.portals[portal_idx];
+		mesh=&portal->mesh.meshes[mesh_idx];
+
+		nvertex=mesh->nvertex;
+		pt=mesh->vertexes;
+
+		for (k=0;k!=nvertex;k++) {
+			walk_view_click_grid(pt);
+			pt++;
+		}
+	}
+}
+
+/* =======================================================
+
       Piece Keys
       
 ======================================================= */

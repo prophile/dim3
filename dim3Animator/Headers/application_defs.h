@@ -140,6 +140,8 @@
 #define kPoseNameDBColumn				1080
 #define kPoseBoneDBColumn				1081
 #define kPoseBoneMoveDBColumn			1082
+#define kPoseBoneAccDBColumn			1083
+#define kPoseBoneBlendDBColumn			1084
 
 #define kAnimateNameDBColumn			1090
 #define kAnimatePoseDBColumn			1091

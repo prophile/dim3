@@ -85,6 +85,7 @@ bool read_pose_xml(model_type *model)
                 xml_get_attribute_3_coord_float(tag,"rot",&bone_move->rot.x,&bone_move->rot.y,&bone_move->rot.z);
 				xml_get_attribute_3_coord_float(tag,"move",&bone_move->mov.x,&bone_move->mov.y,&bone_move->mov.z);
 				bone_move->acceleration=xml_get_attribute_float(tag,"acceleration");
+				bone_move->skip_blended=xml_get_attribute_boolean(tag,"skip_blended");
             }
 			tag=xml_findnextchild(tag);
         }
@@ -109,6 +110,7 @@ bool write_bone_move(model_bone_move_type *bone_move)
     if ((bone_move->rot.x!=0) || (bone_move->rot.z!=0) || (bone_move->rot.y!=0)) return(TRUE);
     if ((bone_move->mov.x!=1) || (bone_move->mov.z!=1) || (bone_move->mov.y!=1)) return(TRUE);
 	if (bone_move->acceleration!=0) return(TRUE);
+	if (bone_move->skip_blended) return(TRUE);
     return(FALSE);
 }
 
@@ -158,6 +160,7 @@ bool write_pose_xml(model_type *model)
                 xml_add_attribute_3_coord_float("rot",bone_move->rot.x,bone_move->rot.y,bone_move->rot.z);
                 xml_add_attribute_3_coord_float("move",bone_move->mov.x,bone_move->mov.y,bone_move->mov.z);
 				xml_add_attribute_float("acceleration",bone_move->acceleration);
+				xml_add_attribute_boolean("skip_blended",bone_move->skip_blended);
                 xml_add_tagend(TRUE);
             }
             

@@ -36,6 +36,7 @@ extern model_type		model;
 #define kBoneMoveMoveY						FOUR_CHAR_CODE('movy')
 #define kBoneMoveMoveZ						FOUR_CHAR_CODE('movz')
 #define kBoneMoveAcceleration				FOUR_CHAR_CODE('accl')
+#define kBoneMoveSkipBlended				FOUR_CHAR_CODE('sbld')
 
 bool						dialog_bone_move_settings_cancel;
 WindowRef					dialog_bone_move_settings_wind;
@@ -99,6 +100,7 @@ bool dialog_bone_move_settings_run(model_bone_move_type *bone_move)
 	dialog_set_float(dialog_bone_move_settings_wind,kBoneMoveMoveY,0,bone_move->mov.y);
 	dialog_set_float(dialog_bone_move_settings_wind,kBoneMoveMoveZ,0,bone_move->mov.z);
 	dialog_set_float(dialog_bone_move_settings_wind,kBoneMoveAcceleration,0,bone_move->acceleration);
+	dialog_set_boolean(dialog_bone_move_settings_wind,kBoneMoveSkipBlended,0,bone_move->skip_blended);
 	
 		// show window
 	
@@ -124,6 +126,7 @@ bool dialog_bone_move_settings_run(model_bone_move_type *bone_move)
 		bone_move->mov.y=dialog_get_float(dialog_bone_move_settings_wind,kBoneMoveMoveY,0);
 		bone_move->mov.z=dialog_get_float(dialog_bone_move_settings_wind,kBoneMoveMoveZ,0);
 		bone_move->acceleration=dialog_get_float(dialog_bone_move_settings_wind,kBoneMoveAcceleration,0);
+		bone_move->skip_blended=dialog_get_boolean(dialog_bone_move_settings_wind,kBoneMoveSkipBlended,0);
 	}
 
 		// close window
