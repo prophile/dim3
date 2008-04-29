@@ -1103,6 +1103,34 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 				if (parent_idx!=-1) reset_pose_tab(cur_pose,parent_idx);
 			}
 			return(noErr);
+			
+			// --------------------------------
+			//
+			// blending menu
+			//
+			// --------------------------------
+			
+		case kCommandBlendSetSkipAll:
+			if (cur_pose!=-1) {
+				model_pose_blend_set_all(&model,cur_pose,TRUE);
+				reset_pose_tab(cur_pose,-1);
+			}
+			return(noErr);
+			
+		case kCommandBlendSetSkipNone:
+			if (cur_pose!=-1) {
+				model_pose_blend_set_all(&model,cur_pose,FALSE);
+				reset_pose_tab(cur_pose,-1);
+			}
+			return(noErr);
+			
+		case kCommandBlendFlipSkip:
+            switch_tab_pose();
+			if ((cur_pose!=-1) && (cur_bone_move!=-1)) {
+				model.poses[cur_pose].bone_moves[cur_bone_move].skip_blended=!model.poses[cur_pose].bone_moves[cur_bone_move].skip_blended;
+				reset_pose_tab(cur_pose,cur_bone_move);
+			}
+			return(noErr);
 						
 			// --------------------------------
 			//

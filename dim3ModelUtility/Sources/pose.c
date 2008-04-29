@@ -168,3 +168,23 @@ bool model_check_pose_in_animation(model_type *model,int pose_idx)
 	return(FALSE);
 }
 
+/* =======================================================
+
+      Blending Skip Settings
+      
+======================================================= */
+
+void model_pose_blend_set_all(model_type *model,int pose_idx,bool skip_blended)
+{
+	int						n,nbone;
+	model_bone_move_type	*bone_move;
+	
+	nbone=model->nbone;
+	bone_move=model->poses[pose_idx].bone_moves;
+	
+	for (n=0;n!=nbone;n++) {
+		bone_move->skip_blended=skip_blended;
+		bone_move++;
+	}
+}
+

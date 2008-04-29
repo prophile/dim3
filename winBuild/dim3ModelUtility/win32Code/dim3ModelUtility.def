@@ -21,6 +21,7 @@ EXPORTS
 	model_pose_delete						@132
 	model_pose_clear						@133
 	model_check_pose_in_animation			@134
+	model_pose_blend_set_all				@135
 
 	model_animate_add						@140
 	model_animate_duplicate					@141

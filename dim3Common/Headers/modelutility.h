@@ -297,6 +297,7 @@ extern int model_pose_duplicate(model_type *model,int pose_idx);
 extern void model_pose_delete(model_type *model,int pose_idx);
 extern void model_pose_clear(model_type *model,int pose_idx);
 extern bool model_check_pose_in_animation(model_type *model,int pose_idx);
+extern void model_pose_blend_set_all(model_type *model,int pose_idx,bool skip_blended);
 
 extern int model_animate_add(model_type *model);
 extern int model_animate_duplicate(model_type *model,int animate_idx);

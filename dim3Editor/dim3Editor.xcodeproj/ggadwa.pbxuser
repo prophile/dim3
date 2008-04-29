@@ -139,8 +139,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 231008833;
-			PBXWorkspaceStateSaveDate = 231008833;
+			PBXPerProjectTemplateStateSaveDate = 231132094;
+			PBXWorkspaceStateSaveDate = 231132094;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -299,18 +299,18 @@
 	};
 	26AFB4BF0D9612570004805A /* dialog_mesh_setting.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2380}}";
-			sepNavSelRange = "{2697, 23}";
-			sepNavVisRange = "{2210, 1553}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2282}}";
+			sepNavSelRange = "{5265, 0}";
+			sepNavVisRange = "{3523, 2218}";
 			sepNavWindowFrame = "{{262, 189}, {1041, 747}}";
 		};
 	};
 	26AFB4D10D9615C00004805A /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1068, 9800}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1068, 9282}}";
 			sepNavSelRange = "{7254, 9}";
-			sepNavVisRange = "{6421, 1192}";
-			sepNavWindowFrame = "{{1013, 218}, {1041, 747}}";
+			sepNavVisRange = "{18421, 3539}";
+			sepNavWindowFrame = "{{489, 259}, {1041, 747}}";
 		};
 	};
 	26FA0EA10DA1F22100D9C232 /* selection_move.c */ = {
@@ -532,8 +532,8 @@
 	F56EF55C09A7EA3800F06521 /* dialog_liquid_settings.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 2814}}";
-			sepNavSelRange = "{7006, 0}";
-			sepNavVisRange = "{5193, 2163}";
+			sepNavSelRange = "{4635, 308}";
+			sepNavVisRange = "{3663, 2182}";
 			sepNavWindowFrame = "{{393, 197}, {1041, 747}}";
 		};
 	};

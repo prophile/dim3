@@ -40,7 +40,7 @@ void model_create_draw_bone_from_neutral(model_type *model,model_draw_bone_type 
 {
 	int						n,nbone;
 	model_bone_type			*bone;
-	model_draw_bone_type   *draw_bone;
+	model_draw_bone_type	*draw_bone;
 
 	bone=model->bones;
 	draw_bone=draw_bones;
@@ -424,8 +424,9 @@ void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
 	float					f_cnt;
 	d3vct					fpnt[max_model_bone];
 	matrix_type				avg_mats[max_model_bone][max_model_blend_animation];
+	model_bone_type			*model_bone;
 	model_bone_move_type	*bone_moves;
-	model_draw_bone_type	bones[max_model_blend_animation][max_model_bone];
+	model_draw_bone_type	*draw_bone,draw_bones[max_model_blend_animation][max_model_bone];
 
 		// count number of animations
 
@@ -447,7 +448,7 @@ void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
 
 	for (n=0;n!=max_model_blend_animation;n++) {
 		if (draw_setup->poses[n].idx_1!=-1) {
-			model_create_draw_bones_single(model,draw_setup,n,bones[n]);
+			model_create_draw_bones_single(model,draw_setup,n,draw_bones[n]);
 		}
 	}
 
@@ -455,7 +456,7 @@ void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
 
 	nbone=model->nbone;
 
-	memmove(&draw_setup->bones,bones[0],(sizeof(model_draw_bone_type)*nbone));
+	memmove(&draw_setup->bones,draw_bones[0],(sizeof(model_draw_bone_type)*nbone));
 
 		// clear out position and matrix count
 		// to get ready to average out the positions
@@ -483,16 +484,16 @@ void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
 
 			for (i=0;i!=nbone;i++) {
 
-				if ((matrix_has_rotation(&bones[n][i].rot_mat)) && (!bone_moves[i].skip_blended)) {
+				if ((matrix_has_rotation(&draw_bones[n][i].rot_mat)) && (!bone_moves[i].skip_blended)) {
 
 					idx=avg_mat_cnt[i];
 					avg_mat_cnt[i]++;
 
-					fpnt[i].x+=bones[n][i].fpnt.x;
-					fpnt[i].y+=bones[n][i].fpnt.y;
-					fpnt[i].z+=bones[n][i].fpnt.z;
+					fpnt[i].x+=draw_bones[n][i].fpnt.x;
+					fpnt[i].y+=draw_bones[n][i].fpnt.y;
+					fpnt[i].z+=draw_bones[n][i].fpnt.z;
 
-					memmove(&avg_mats[i][idx],&bones[n][i].rot_mat,sizeof(matrix_type));
+					memmove(&avg_mats[i][idx],&draw_bones[n][i].rot_mat,sizeof(matrix_type));
 
 				}
 			}
@@ -500,7 +501,34 @@ void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
 	}
 
 	for (n=0;n!=nbone;n++) {
-		if (avg_mat_cnt[n]==0) continue;
+	
+			// if no moves for this bone in the blended animation, then pick default bone
+			// position from the model itself
+			
+		if (avg_mat_cnt[n]==0) {
+		
+			model_bone=&model->bones[n];
+			draw_bone=&draw_setup->bones[n];
+
+			draw_bone->parent_idx=model_bone->parent_idx;
+			
+			draw_bone->fpnt.x=(float)model_bone->pnt.x;
+			draw_bone->fpnt.z=(float)model_bone->pnt.z;
+			draw_bone->fpnt.y=(float)model_bone->pnt.y;
+			
+			draw_bone->rot.x=0.0f;
+			draw_bone->rot.z=0.0f;
+			draw_bone->rot.y=0.0f;
+
+			matrix_identity(&draw_bone->rot_mat);
+			
+			draw_bone->touch=TRUE;
+		
+			continue;
+		}
+		
+			// else calculate the average of all the bone moves
+			
 		f_cnt=(float)avg_mat_cnt[n];
 
 		draw_setup->bones[n].fpnt.x=fpnt[n].x/f_cnt;

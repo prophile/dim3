@@ -11,6 +11,24 @@
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
 	};
+	269C54C90DC6D71D00D2CA5A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: 'bones' undeclared (first use in this function)";
+		fRef = F51B2619055E0251000B696C /* draw_bones.c */;
+		rLen = 1;
+		rLoc = 458;
+		rType = 1;
+	};
+	269C54DC0DC6D8C800D2CA5A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F51B2619055E0251000B696C /* draw_bones.c */;
+		name = "draw_bones.c: 525";
+		rLen = 0;
+		rLoc = 13728;
+		rType = 0;
+		vrLen = 1160;
+		vrLoc = 12908;
+	};
 	F5127DF10513A79A009F12F0 /* dim3modelutility.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 675}}";
@@ -21,9 +39,9 @@
 	};
 	F51B2619055E0251000B696C /* draw_bones.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7266}}";
-			sepNavSelRange = "{12600, 0}";
-			sepNavVisRange = "{12084, 1165}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7574}}";
+			sepNavSelRange = "{13728, 0}";
+			sepNavVisRange = "{12908, 1160}";
 			sepNavWindowFrame = "{{153, 150}, {1041, 747}}";
 		};
 	};
@@ -33,6 +51,14 @@
 			sepNavSelRange = "{1156, 138}";
 			sepNavVisRange = "{0, 1440}";
 			sepNavWindowFrame = "{{153, 150}, {1041, 747}}";
+		};
+	};
+	F55A4CC705995CB40006C01E /* dim3modelutility.exp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1750}}";
+			sepNavSelRange = "{387, 0}";
+			sepNavVisRange = "{0, 899}";
+			sepNavWindowFrame = "{{38, 255}, {1041, 747}}";
 		};
 	};
 	F55ACEE3097D724C00F4AE50 /* bone.c */ = {
@@ -45,10 +71,10 @@
 	};
 	F55ACF3E097D805A00F4AE50 /* pose.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2394}}";
-			sepNavSelRange = "{3350, 0}";
-			sepNavVisRange = "{2805, 1105}";
-			sepNavWindowFrame = "{{107, 192}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2842}}";
+			sepNavSelRange = "{3527, 29}";
+			sepNavVisRange = "{3373, 1036}";
+			sepNavWindowFrame = "{{400, 154}, {1041, 747}}";
 		};
 	};
 	F562692104FEBC1C00EDBBA9 /* Project object */ = {
@@ -113,8 +139,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 230961408;
-			PBXWorkspaceStateSaveDate = 230961408;
+			PBXPerProjectTemplateStateSaveDate = 231132913;
+			PBXWorkspaceStateSaveDate = 231132913;
+		};
+		perUserProjectItems = {
+			269C54C90DC6D71D00D2CA5A /* PBXTextBookmark */ = 269C54C90DC6D71D00D2CA5A /* PBXTextBookmark */;
+			269C54DC0DC6D8C800D2CA5A /* PBXTextBookmark */ = 269C54DC0DC6D8C800D2CA5A /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEDB0D404F5000F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -146,9 +176,9 @@
 	};
 	F5CA4EF305100FB60055C8B8 /* modelutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6524}}";
-			sepNavSelRange = "{4598, 20}";
-			sepNavVisRange = "{4312, 1197}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6174}}";
+			sepNavSelRange = "{2596, 20}";
+			sepNavVisRange = "{1814, 1073}";
 			sepNavWindowFrame = "{{199, 108}, {1041, 747}}";
 		};
 	};

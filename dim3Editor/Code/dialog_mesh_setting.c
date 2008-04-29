@@ -37,13 +37,14 @@ extern map_type				map;
 #define kMeshSettingShiftable					FOUR_CHAR_CODE('fsht')
 #define kMeshSettingClimbable					FOUR_CHAR_CODE('fclb')
 
+#define kMeshPolySettingOffX					FOUR_CHAR_CODE('offx')
+#define kMeshPolySettingOffY					FOUR_CHAR_CODE('offy')
+#define kMeshPolySettingSizeX					FOUR_CHAR_CODE('sizx')
+#define kMeshPolySettingSizeY					FOUR_CHAR_CODE('sizy')
 #define kMeshPolySettingAlpha					FOUR_CHAR_CODE('alph')
 #define kMeshPolySettingDark					FOUR_CHAR_CODE('dark')
 #define kMeshPolySettingShiftX					FOUR_CHAR_CODE('sftx')
 #define kMeshPolySettingShiftY					FOUR_CHAR_CODE('sfty')
-
-#define kMeshPolyXCoord							FOUR_CHAR_CODE('ucrd')
-#define kMeshPolyYCoord							FOUR_CHAR_CODE('vcrd')
 
 bool						dialog_mesh_setting_cancel;
 WindowRef					dialog_mesh_setting_wind;
@@ -91,7 +92,7 @@ static pascal OSStatus mesh_setting_event_proc(EventHandlerCallRef handler,Event
 
 bool dialog_mesh_setting_run(map_mesh_type *mesh,int poly_idx)
 {
-	int						n;
+	float					x_txtoff,y_txtoff,x_txtfact,y_txtfact;
 	map_mesh_poly_type		*mesh_poly;
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
@@ -109,21 +110,15 @@ bool dialog_mesh_setting_run(map_mesh_type *mesh,int poly_idx)
 	
 	mesh_poly=&mesh->polys[poly_idx];
 	
+	dialog_set_float(dialog_liquid_settings_wind,kMeshPolyOffX,0,x_txtoff);
+	dialog_set_float(dialog_liquid_settings_wind,kMeshPolyOffY,0,y_txtoff);
+	dialog_set_float(dialog_liquid_settings_wind,kMeshPolySizeX,0,x_txtfact);
+	dialog_set_float(dialog_liquid_settings_wind,kMeshPolySizeY,0,y_txtfact);
+	
 	dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingAlpha,0,mesh_poly->alpha);
 	dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingDark,0,mesh_poly->dark_factor);
 	dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingShiftX,0,mesh_poly->x_shift);
 	dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingShiftY,0,mesh_poly->y_shift);
-	
-	for (n=0;n!=8;n++) {
-		if (n>=mesh_poly->ptsz) {
-			dialog_enable(dialog_mesh_setting_wind,kMeshPolyXCoord,n,FALSE);
-			dialog_enable(dialog_mesh_setting_wind,kMeshPolyYCoord,n,FALSE);
-		}
-		else {
-			dialog_set_float(dialog_mesh_setting_wind,kMeshPolyXCoord,n,mesh_poly->gx[n]);
-			dialog_set_float(dialog_mesh_setting_wind,kMeshPolyYCoord,n,mesh_poly->gy[n]);
-		}
-	}
 	
 		// show window
 	
@@ -146,18 +141,16 @@ bool dialog_mesh_setting_run(map_mesh_type *mesh,int poly_idx)
 		mesh->flag.pass_through=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingPassThrough,0);
 		mesh->flag.moveable=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingMovable,0);
 		mesh->flag.climbable=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingClimbable,0);
+		
+		x_txtoff=dialog_get_float(dialog_liquid_settings_wind,kMeshPolyOffX,0);
+		y_txtoff=dialog_get_float(dialog_liquid_settings_wind,kMeshPolyOffY,0);
+		x_txtfact=dialog_get_float(dialog_liquid_settings_wind,kMeshPolySizeX,0);
+		y_txtfact=dialog_get_float(dialog_liquid_settings_wind,kMeshPolySizeY,0);
 
 		mesh_poly->dark_factor=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingDark,0);
 		mesh_poly->alpha=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingAlpha,0);
 		mesh_poly->x_shift=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingShiftX,0);
 		mesh_poly->y_shift=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingShiftY,0);
-		
-		for (n=0;n!=8;n++) {
-			if (n<mesh_poly->ptsz) {
-				mesh_poly->gx[n]=dialog_get_float(dialog_mesh_setting_wind,kMeshPolyXCoord,n);
-				mesh_poly->gy[n]=dialog_get_float(dialog_mesh_setting_wind,kMeshPolyYCoord,n);
-			}
-		}
 	}
 	
 		// close window

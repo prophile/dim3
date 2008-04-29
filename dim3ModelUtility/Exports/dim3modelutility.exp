@@ -18,6 +18,7 @@ _model_pose_duplicate
 _model_pose_delete
 _model_pose_clear
 _model_check_pose_in_animation
+_model_pose_blend_set_all
 
 _model_animate_add
 _model_animate_duplicate

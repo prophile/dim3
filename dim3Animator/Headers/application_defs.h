@@ -37,8 +37,10 @@
 #define animatemenu						137
 #define hitboxmenu						138
 
-#define importmenu						139
-#define flipmenu						140
+#define modeltransformmenu				141
+#define meshimportmenu					140
+#define meshtransformmenu				141
+#define poseblendingmenu				142
 
 #define kCommandAbout					FOUR_CHAR_CODE('abot')
 
@@ -114,6 +116,10 @@
 #define kCommandClearPose				FOUR_CHAR_CODE('cpse')
 #define kCommandDeletePose				FOUR_CHAR_CODE('kpse')
 #define kCommandGoToBoneMoveParent		FOUR_CHAR_CODE('pmbn')
+
+#define kCommandBlendSetSkipAll			FOUR_CHAR_CODE('bsas')
+#define kCommandBlendSetSkipNone		FOUR_CHAR_CODE('bsns')
+#define kCommandBlendFlipSkip			FOUR_CHAR_CODE('bfsk')
 
 #define kCommandNewAnimate				FOUR_CHAR_CODE('nani')
 #define kCommandDupAnimate				FOUR_CHAR_CODE('dani')
