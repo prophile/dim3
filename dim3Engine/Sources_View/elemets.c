@@ -251,9 +251,14 @@ void element_clear(void)
       
 ======================================================= */
 
-int element_get_control_high(void)
+inline int element_get_control_high(void)
 {
 	return(20);
+}
+
+inline int element_get_separator_high(void)
+{
+	return(8);
 }
 
 /* =======================================================

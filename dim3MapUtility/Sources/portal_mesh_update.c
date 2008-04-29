@@ -314,17 +314,25 @@ void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool do_port
       
 ======================================================= */
 
-void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min,d3pnt *max)
+void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min,d3pnt *max,bool fix_uvs)
 {
-	int						n,nvertex;
-	d3pnt					*pt,org_min,org_max,dif,org_dif;
+	int						n,k,npoly,nvertex;
+	float					m_gx,m_gy,f_dist;
+	double					dx,dy,dz,org_dist,new_dist;
+	d3pnt					*pt,mpt,org_min,org_max,dif,org_dif;
 	portal_type				*portal;
 	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
 
-		// get original size
+		// get original size and uv center
 		
 	map_portal_mesh_calculate_extent(map,portal_idx,mesh_idx,&org_min,&org_max);
-	
+
+	if (fix_uvs) {
+		map_portal_mesh_calculate_center(map,portal_idx,mesh_idx,&mpt);
+		map_portal_mesh_calculate_uv_center(map,portal_idx,mesh_idx,&m_gx,&m_gy);
+	}
+
 		// get resize factor
 		
 	dif.x=max->x-min->x;
@@ -339,6 +347,47 @@ void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min
 
 	portal=&map->portals[portal_idx];
 	mesh=&portal->mesh.meshes[mesh_idx];
+
+		// fix uvs
+
+	if (fix_uvs) {
+
+		npoly=mesh->npoly;
+		poly=mesh->polys;
+
+		for (n=0;n!=npoly;n++) {
+
+			for (k=0;k!=poly->ptsz;k++) {
+
+				pt=&mesh->vertexes[poly->v[k]];
+
+					// get original and new distance
+					// from center of mesh
+
+				dx=(double)(mpt.x-pt->x);
+				dy=(double)(mpt.y-pt->y);
+				dz=(double)(mpt.z-pt->z);
+				org_dist=(float)sqrt((dx*dx)+(dy*dy)+(dz*dz));
+
+				dx=(double)(mpt.x-((((pt->x-org_min.x)*dif.x)/org_dif.x)+min->x));
+				dy=(double)(mpt.y-((((pt->y-org_min.y)*dif.y)/org_dif.y)+min->y));
+				dz=(double)(mpt.z-((((pt->z-org_min.z)*dif.z)/org_dif.z)+min->z));
+				new_dist=(float)sqrt((dx*dx)+(dy*dy)+(dz*dz));
+
+					// calculate distance change
+
+				f_dist=(float)(new_dist/org_dist);
+
+				poly->gx[k]=((poly->gx[k]-m_gx)*f_dist)+m_gx;
+				poly->gy[k]=((poly->gy[k]-m_gx)*f_dist)+m_gy;
+			}
+
+
+			poly++;
+		}
+	}
+
+		// resize vertexes
 
 	nvertex=mesh->nvertex;
 	pt=mesh->vertexes;
@@ -359,14 +408,15 @@ void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min
 
 void map_portal_mesh_flip(map_type *map,int portal_idx,int mesh_idx,bool flip_x,bool flip_y,bool flip_z)
 {
-	int						n,nvertex,mx,my,mz;
+	int						n,nvertex;
+	d3pnt					mpt;
 	d3pnt					*pt;
 	portal_type				*portal;
 	map_mesh_type			*mesh;
 
 		// get center
 
-	map_portal_mesh_calculate_center(map,portal_idx,mesh_idx,&mx,&my,&mz);
+	map_portal_mesh_calculate_center(map,portal_idx,mesh_idx,&mpt);
 
 		// flip vertexes
 
@@ -377,17 +427,18 @@ void map_portal_mesh_flip(map_type *map,int portal_idx,int mesh_idx,bool flip_x,
 	pt=mesh->vertexes;
 
 	for (n=0;n!=nvertex;n++) {
-		if (flip_x) pt->x=mx-(pt->x-mx);
-		if (flip_y) pt->y=my-(pt->y-my);
-		if (flip_z) pt->z=mz-(pt->z-mz);
+		if (flip_x) pt->x=mpt.x-(pt->x-mpt.x);
+		if (flip_y) pt->y=mpt.y-(pt->y-mpt.y);
+		if (flip_z) pt->z=mpt.z-(pt->z-mpt.z);
 		pt++;
 	}
 }
 
 void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,float rot_x,float rot_y,float rot_z)
 {
-	int						n,nvertex,mx,my,mz;
+	int						n,nvertex;
 	float					fx,fy,fz;
+	d3pnt					mpt;
 	d3pnt					*pt;
 	matrix_type				mat;
 	portal_type				*portal;
@@ -395,7 +446,7 @@ void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,float rot_
 
 		// get center
 
-	map_portal_mesh_calculate_center(map,portal_idx,mesh_idx,&mx,&my,&mz);
+	map_portal_mesh_calculate_center(map,portal_idx,mesh_idx,&mpt);
 
 		// matrixes
 
@@ -410,15 +461,15 @@ void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,float rot_
 	pt=mesh->vertexes;
 
 	for (n=0;n!=nvertex;n++) {
-		fx=(float)(pt->x-mx);
-		fy=(float)(pt->y-my);
-		fz=(float)(pt->z-mz);
+		fx=(float)(pt->x-mpt.x);
+		fy=(float)(pt->y-mpt.y);
+		fz=(float)(pt->z-mpt.z);
 
 		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
-		pt->x=((int)fx)+mx;
-		pt->y=((int)fy)+my;
-		pt->z=((int)fz)+mz;
+		pt->x=((int)fx)+mpt.x;
+		pt->y=((int)fy)+mpt.y;
+		pt->z=((int)fz)+mpt.z;
 
 		pt++;
 	}
@@ -592,4 +643,75 @@ void map_portal_mesh_shift_portal_vertex_list(map_type *map,int portal_idx,int t
 	}
 }
 
+/* =======================================================
 
+      Poly UV Coordinates as Offset/Size
+      
+======================================================= */
+
+void map_portal_mesh_get_poly_uv_as_box(map_type *map,int portal_idx,int mesh_idx,int poly_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact)
+{
+	int						n;
+	float					gx_min,gx_max,gy_min,gy_max;
+	portal_type				*portal;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+
+	portal=&map->portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+
+		// get UV extends
+
+	gx_min=gx_max=poly->gx[0];
+	gy_min=gy_max=poly->gy[0];
+
+	for (n=1;n<poly->ptsz;n++) {
+		if (poly->gx[n]<gx_min) gx_min=poly->gx[n];
+		if (poly->gx[n]>gx_max) gx_max=poly->gx[n];
+		if (poly->gy[n]<gy_min) gy_min=poly->gy[n];
+		if (poly->gy[n]>gy_max) gy_max=poly->gy[n];
+	}
+
+		// create boxed coordinates
+
+	*x_txtoff=gx_min;
+	*y_txtoff=gy_min;
+
+	*x_txtfact=(gx_max-gx_min);
+	*y_txtfact=(gy_max-gy_min);
+}
+
+void map_portal_mesh_set_poly_uv_as_box(map_type *map,int portal_idx,int mesh_idx,int poly_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact)
+{
+	int						n;
+	float					gx,gy,
+							org_x_txtoff,org_y_txtoff,org_x_txtfact,org_y_txtfact;
+	portal_type				*portal;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+
+	portal=&map->portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+
+		// get current box coordinates
+
+	map_portal_mesh_get_poly_uv_as_box(map,portal_idx,mesh_idx,poly_idx,&org_x_txtoff,&org_y_txtoff,&org_x_txtfact,&org_y_txtfact);
+
+		// reset to new coordinates
+
+	for (n=0;n!=poly->ptsz;n++) {
+		gx=poly->gx[n]-org_x_txtfact;
+		gy=poly->gy[n]-org_y_txtfact;
+
+		gx/=org_x_txtfact;
+		gx*=x_txtfact;
+
+		gy/=org_y_txtfact;
+		gy*=y_txtfact;
+
+		poly->gx[n]=x_txtfact+gx;
+		poly->gy[n]=y_txtfact+gy;
+	}
+}

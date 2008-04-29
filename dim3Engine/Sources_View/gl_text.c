@@ -78,16 +78,14 @@ void gl_text_shutdown(void)
       
 ======================================================= */
 
-int gl_text_get_char_width(bool small_text)
+inline int gl_text_get_char_width(bool small_text)
 {
-	if (small_text) return(12);
-	return(24);
+	return(small_text?12:24);
 }
 
-int gl_text_get_char_height(bool small_text)
+inline int gl_text_get_char_height(bool small_text)
 {
-	if (small_text) return(14);
-	return(28);
+	return(small_text?14:28);
 }
 
 int gl_text_get_string_width(char *str,bool small_text)

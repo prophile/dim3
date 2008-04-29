@@ -150,6 +150,9 @@ typedef struct	{
 
 #define ag_door_type_count							2
 
+#define ag_door_type_slide_up						0
+#define ag_door_type_split							1
+
 //
 // auto-generate blockings
 //

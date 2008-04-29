@@ -86,7 +86,7 @@ void setup_network_create_host_list(void)
 
 void setup_network_open(void)
 {
-	int							x,y,wid,high,control_y_add;
+	int							x,y,wid,high,control_y_add,separate_y_add;
 	char						path[1024],path2[1024];
 	element_column_type			cols[1];
 	
@@ -100,6 +100,7 @@ void setup_network_open(void)
 		
 	y=70;
 	control_y_add=element_get_control_high();
+	separate_y_add=element_get_separator_high();
 
 	element_text_field_add("Name",setup.network.name,name_str_len,ctrl_network_name_id,100,y,TRUE);
 	y+=control_y_add;

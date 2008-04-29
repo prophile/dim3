@@ -133,10 +133,11 @@ action_display_type			action_display[ncontrol];
 void setup_game_display_pane(void)
 {
 	int			n,idx,wid,high,
-				x,y,control_y_add,control_y_sz;
+				x,y,control_y_add,separate_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	control_y_sz=(control_y_add*8)+8;
+	separate_y_add=element_get_separator_high();
+	control_y_sz=(control_y_add*8)+separate_y_add;
 	
 	x=(int)(((float)setup.screen.x_scale)*0.4f);
 	y=(setup.screen.y_scale>>1)-(control_y_sz>>1);
@@ -162,7 +163,7 @@ void setup_game_display_pane(void)
 	element_enable(ctrl_fsaa_id,gl_check_fsaa_ok());
 	y+=control_y_add;
 	element_checkbox_add("Lock FPS to Refresh Rate",setup.lock_fps_refresh,ctrl_lock_fps_refresh_id,x,y,TRUE);
-	y+=control_y_add+8;
+	y+=control_y_add+separate_y_add;
 	
 	element_combo_add("Anisotropic Filtering",(char*)setup_anisotropic_mode_list,setup.anisotropic_mode,ctrl_anisotropic_id,x,y,TRUE);
 	element_enable(ctrl_anisotropic_id,gl_check_texture_anisotropic_filter_ok());
@@ -180,10 +181,11 @@ void setup_game_display_pane(void)
 
 void setup_game_graphics_pane(void)
 {
-	int			x,y,control_y_add,control_y_sz;
+	int			x,y,control_y_add,separate_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	control_y_sz=(control_y_add*12)+(2*8);
+	separate_y_add=element_get_separator_high();
+	control_y_sz=(control_y_add*12)+(2*separate_y_add);
 	
 	x=(int)(((float)setup.screen.x_scale)*0.4f);
 	y=(setup.screen.y_scale>>1)-(control_y_sz>>1);
@@ -196,7 +198,7 @@ void setup_game_graphics_pane(void)
 	element_checkbox_add("Ray-Trace Lighting",setup.ray_trace_lighting,ctrl_raytracelighting_id,x,y,TRUE);
 	y+=control_y_add;
 	element_slider_add("Gamma",setup.gamma,-0.5f,0.5f,ctrl_gamma_id,x,y,TRUE);
-	y+=control_y_add+8;
+	y+=control_y_add+separate_y_add;
 
 	element_checkbox_add("Bump Mapping",setup.bump_mapping,ctrl_bumpmapping_id,x,y,TRUE);
 	element_enable(ctrl_bumpmapping_id,gl_check_bump_ok());
@@ -214,7 +216,7 @@ void setup_game_graphics_pane(void)
 	element_checkbox_add("Decals",setup.mark,ctrl_mark_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Fog",setup.fog,ctrl_fog_id,x,y,TRUE);
-	y+=control_y_add+8;
+	y+=control_y_add+separate_y_add;
 
 	element_combo_add("Shadows",(char*)setup_shadow_mode_list,setup.shadow_mode,ctrl_shadow_id,x,y,TRUE);
 	element_enable(ctrl_shadow_id,gl_check_shadow_ok());
@@ -222,16 +224,17 @@ void setup_game_graphics_pane(void)
 
 void setup_game_audio_pane(void)
 {
-	int			x,y,control_y_add,control_y_sz;
+	int			x,y,control_y_add,separate_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	control_y_sz=(control_y_add*3)+8;
+	separate_y_add=element_get_separator_high();
+	control_y_sz=(control_y_add*3)+separate_y_add;
 	
 	x=(int)(((float)setup.screen.x_scale)*0.4f);
 	y=(setup.screen.y_scale>>1)-(control_y_sz>>1);
 	
 	element_slider_add("Sound Volume",setup.sound_volume,0.0f,1.0f,ctrl_sound_volume_id,x,y,TRUE);
-	y+=control_y_add+8;
+	y+=control_y_add+separate_y_add;
 
 	element_checkbox_add("Music",setup.music_on,ctrl_music_on_id,x,y,TRUE);
 	y+=control_y_add;
@@ -240,10 +243,11 @@ void setup_game_audio_pane(void)
 
 void setup_game_mouse_pane(void)
 {
-	int			x,y,control_y_add,control_y_sz;
+	int			x,y,control_y_add,separate_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	control_y_sz=(10*control_y_add)+(3*8);
+	separate_y_add=element_get_separator_high();
+	control_y_sz=(10*control_y_add)+(3*separate_y_add);
 	
 	x=(int)(((float)setup.screen.x_scale)*0.4f);
 	y=(setup.screen.y_scale>>1)-(control_y_sz>>1);
@@ -251,12 +255,12 @@ void setup_game_mouse_pane(void)
 	element_checkbox_add("Always Run",setup.always_run,ctrl_always_run_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Toggle Run",setup.toggle_run,ctrl_toggle_run_id,x,y,TRUE);
-	y+=control_y_add+8;
+	y+=control_y_add+separate_y_add;
 	
 	element_checkbox_add("Invert Look",setup.invert_look,ctrl_invert_look_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Mouse Smoothing",setup.mouse_smooth,ctrl_mouse_smooth_id,x,y,TRUE);
-	y+=control_y_add+8;
+	y+=control_y_add+separate_y_add;
 
 	element_slider_add("Mouse X Speed",setup.mouse_x.speed,setup.mouse_x.speed_min,setup.mouse_x.speed_max,ctrl_mouse_x_speed_id,x,y,TRUE);
 	y+=control_y_add;
@@ -265,7 +269,7 @@ void setup_game_mouse_pane(void)
 	element_slider_add("Mouse Y Speed",setup.mouse_y.speed,setup.mouse_y.speed_min,setup.mouse_y.speed_max,ctrl_mouse_y_speed_id,x,y,TRUE);
 	y+=control_y_add;
 	element_slider_add("Mouse Y Acceleration",setup.mouse_y.acceleration,setup.mouse_y.acceleration_min,setup.mouse_y.acceleration_max,ctrl_mouse_y_accel_id,x,y,TRUE);
-	y+=control_y_add+8;
+	y+=control_y_add+separate_y_add;
 
 	element_combo_add("Joystick Mode",(char*)setup_joystick_mode_list,setup.joystick_mode,ctrl_joystick_mode_id,x,y,TRUE);
 	element_enable(ctrl_joystick_mode_id,input_check_joystick_ok());

@@ -1642,6 +1642,8 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 	ags.seed=GetTickCount();
 #endif
 
+	ags.seed=5;		// supergumba -- testing
+
 	ags.block=ag_block_none;
 	
 	ags.map.map_sz=2000*map_enlarge;

@@ -54,6 +54,7 @@ extern void element_shutdown(void);
 extern void element_clear(void);
 
 extern int element_get_control_high(void);
+extern int element_get_separator_high(void);
 
 extern void element_button_add(char *path,char *path2,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
 extern void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool framed);

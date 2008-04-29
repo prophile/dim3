@@ -112,6 +112,7 @@ void view_memory_release(void)
 void view_create_screen_size_list(void)
 {
 	int				n,k,i,nscreen_size;
+	float			ratio;
 	bool			hit;
 	SDL_Rect		**modes;
 		
@@ -157,10 +158,12 @@ void view_create_screen_size_list(void)
 		}
 
 			// add to list if ratio is equal or
-			// better than 4:3
+			// better than 4:3 (0.75) and not less
+			// then 1:85:1 (0.54)
 
 		if (!hit) {
-			if (((float)modes[n]->h/(float)modes[n]->w)<=0.75f) {
+			ratio=(float)modes[n]->h/(float)modes[n]->w;
+			if ((ratio>=0.54) && (ratio<=0.75f)) {
 				render_info.screen_sizes[k].wid=modes[n]->w;
 				render_info.screen_sizes[k].high=modes[n]->h;
 
@@ -170,9 +173,9 @@ void view_create_screen_size_list(void)
 		}
 	}
 
-//	render_info.screen_sizes[k].wid=768;		// supergumba -- testing
-//	render_info.screen_sizes[k].high=480;
-//	k++;
+	render_info.screen_sizes[k].wid=768;		// supergumba -- testing
+	render_info.screen_sizes[k].high=480;
+	k++;
 	
 	render_info.nscreen_size=k;
 }

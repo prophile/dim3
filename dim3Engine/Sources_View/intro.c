@@ -78,6 +78,8 @@ void intro_open_add_button(hud_intro_button_type *btn,char *name,int id,bool hid
 
 	if (!hud.intro.button_game.on) return;
 
+		// get name and position
+
 	sprintf(sel_name,"%s_selected",name);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements",name,"png");

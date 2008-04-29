@@ -192,8 +192,6 @@ void segment_render_opaque_stencil_portal_lighting_mesh(portal_type *portal,int 
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*mesh_poly;
 	
-	fprintf(stdout,"IN TESSEL LIGHTING\n");
-	
 	gl_texture_tesseled_lighting_start();
 
 	glEnable(GL_BLEND);
@@ -210,15 +208,11 @@ void segment_render_opaque_stencil_portal_lighting_mesh(portal_type *portal,int 
 	mesh=portal->mesh.meshes;
 	
 	for (n=0;n!=portal->mesh.nmesh;n++) {
-		
-		fprintf(stdout,"  * drawing a portal (%s)\n",mesh->draw.has_stencil_bump?"yes":"no");
 
 		if ((!((mesh->draw.has_stencil_normal) || (mesh->draw.has_stencil_bump))) || (mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) {
 			mesh++;
 			continue;
 		}
-
-			fprintf(stdout,"  * drawing a mesh \n");
 	
 		mesh_poly=mesh->polys;
 		
@@ -235,7 +229,6 @@ void segment_render_opaque_stencil_portal_lighting_mesh(portal_type *portal,int 
 				dark_factor=mesh_poly->dark_factor;
 				gl_texture_tesseled_lighting_factor(dark_factor);
 			}
-			fprintf(stdout,"  * drawing a poly \n");
 
 			// supergumba -- testing
 			/*

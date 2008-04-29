@@ -317,8 +317,6 @@ bool map_crush_object(obj_type *obj)
 
 	sy=obj->size.y-(fudge<<1);
 
-	fprintf(stdout,"obj y = %d, min_y = %d, sy = %d\n",obj->pos.y,box.min_y,sy);
-
 		// possible to move up?
 
 	pin_upward_movement_box(&box,-sy,&poly);

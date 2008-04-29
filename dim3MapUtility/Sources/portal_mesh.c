@@ -561,7 +561,7 @@ void map_portal_mesh_calculate_extent(map_type *map,int portal_idx,int mesh_idx,
 	}
 }
 
-void map_portal_mesh_calculate_center(map_type *map,int portal_idx,int mesh_idx,int *x,int *y,int *z)
+void map_portal_mesh_calculate_center(map_type *map,int portal_idx,int mesh_idx,d3pnt *mpt)
 {
 	int					n,nvertex,mx,my,mz;
 	d3pnt				*pt;
@@ -583,8 +583,42 @@ void map_portal_mesh_calculate_center(map_type *map,int portal_idx,int mesh_idx,
 		pt++;
 	}
 
-	*x=mx/nvertex;
-	*y=my/nvertex;
-	*z=mz/nvertex;
+	mpt->x=mx/nvertex;
+	mpt->y=my/nvertex;
+	mpt->z=mz/nvertex;
+}
+
+void map_portal_mesh_calculate_uv_center(map_type *map,int portal_idx,int mesh_idx,float *gx,float *gy)
+{
+	int					n,k,cnt;
+	float				kx,ky,f_cnt;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+	portal=&map->portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+
+	kx=ky=0.0f;
+	cnt=0;
+
+	poly=mesh->polys;
+
+	for (n=0;n!=mesh->npoly;n++) {
+
+		for (k=0;k!=poly->ptsz;k++) {
+			kx+=poly->gx[k];
+			ky+=poly->gy[k];
+		}
+
+		cnt+=poly->ptsz;
+
+		poly++;
+	}
+
+	f_cnt=(float)cnt;
+
+	*gx=kx/f_cnt;
+	*gy=ky/f_cnt;
 }
 

@@ -644,16 +644,19 @@ extern bool map_portal_mesh_delete_poly(map_type *map,int portal_idx,int mesh_id
 extern bool map_portal_mesh_create_transparent_sort_lists(map_type *map);
 extern void map_portal_mesh_dispose_transparent_sort_lists(map_type *map);
 extern void map_portal_mesh_calculate_extent(map_type *map,int portal_idx,int mesh_idx,d3pnt *min,d3pnt *max);
-extern void map_portal_mesh_calculate_center(map_type *map,int portal_idx,int mesh_idx,int *x,int *y,int *z);
+extern void map_portal_mesh_calculate_center(map_type *map,int portal_idx,int mesh_idx,d3pnt *mpt);
+extern void map_portal_mesh_calculate_uv_center(map_type *map,int portal_idx,int mesh_idx,float *gx,float *gy);
 
 extern int map_portal_mesh_combine(map_type *map,int portal_idx,int mesh_1_idx,int mesh_2_idx);
 extern int map_portal_mesh_switch_portal(map_type *map,int portal_idx,int mesh_idx,int new_portal_idx);
 extern void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool do_portal_vertex_list,int x,int y,int z);
-extern void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min,d3pnt *max);
+extern void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min,d3pnt *max,bool fix_uvs);
 extern void map_portal_mesh_flip(map_type *map,int portal_idx,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);
 extern void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,float rot_x,float rot_y,float rot_z);
 extern bool map_portal_mesh_tesselate(map_type *map,int portal_idx,int mesh_idx);
 extern void map_portal_mesh_shift_portal_vertex_list(map_type *map,int portal_idx,int tick);
+extern void map_portal_mesh_get_poly_uv_as_box(map_type *map,int portal_idx,int mesh_idx,int poly_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact);
+extern void map_portal_mesh_set_poly_uv_as_box(map_type *map,int portal_idx,int mesh_idx,int poly_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact);
 
 extern int map_portal_liquid_add(map_type *map,int portal_idx);
 extern bool map_portal_liquid_delete(map_type *map,int portal_idx,int liquid_idx);

@@ -61,7 +61,7 @@ char						net_game_types[network_setup_max_game+1][32];
 
 void host_open(void)
 {
-	int							x,y,high,list_wid,list_high,control_y_add,
+	int							x,y,high,list_wid,list_high,control_y_add,separate_y_add,
 								n,nfile,sz;
 	char						path[1024],path2[1024];
 	char						*c;
@@ -103,9 +103,10 @@ void host_open(void)
 
 	y=high+40;
 	control_y_add=element_get_control_high();
+	separate_y_add=element_get_separator_high();
 	
 	element_combo_add("Game Type",(char*)net_game_types,0,host_game_type_id,85,y,TRUE);
-	y+=10;
+	y+=separate_y_add;
 
 		// hosts table
 		
