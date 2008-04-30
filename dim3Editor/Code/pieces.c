@@ -116,8 +116,9 @@ void piece_move_to_portal(int rn)
 
 void piece_duplicate(void)
 {
-	int					n,i,nsel_count,type,portal_idx,main_idx,sub_idx,
-						index,xadd,zadd,cx,cy,cz;
+	int				n,i,nsel_count,type,portal_idx,main_idx,sub_idx,
+					index,xadd,zadd;
+	d3pnt			mpt;
 
 	undo_clear();
 	
@@ -141,8 +142,8 @@ void piece_duplicate(void)
 					return;
 				}
 				
-				map_portal_mesh_calculate_center(&map,portal_idx,index,&cx,&cy,&cz);
-				portal_duplicate_piece_offset(portal_idx,cx,cz,&xadd,&zadd);
+				map_portal_mesh_calculate_center(&map,portal_idx,index,&mpt);
+				portal_duplicate_piece_offset(portal_idx,mpt.x,mpt.z,&xadd,&zadd);
 				map_portal_mesh_move(&map,portal_idx,index,FALSE,xadd,0,zadd);
 				
 				select_duplicate_add(mesh_piece,portal_idx,index,0);
@@ -155,8 +156,8 @@ void piece_duplicate(void)
 					return;
 				}
 				
-				map_portal_liquid_calculate_center(&map,portal_idx,index,&cx,&cy,&cz);
-				portal_duplicate_piece_offset(portal_idx,cx,cz,&xadd,&zadd);
+				map_portal_liquid_calculate_center(&map,portal_idx,index,&mpt);
+				portal_duplicate_piece_offset(portal_idx,mpt.x,mpt.z,&xadd,&zadd);
 				map_portal_liquid_move(&map,portal_idx,index,xadd,0,zadd);
 				
 				select_duplicate_add(liquid_piece,portal_idx,index,0);

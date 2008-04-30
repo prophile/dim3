@@ -14,8 +14,8 @@
 	260AFEC20D404EAA00F6C42F /* portal_liquid.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 1960}}";
-			sepNavSelRange = "{3202, 44}";
-			sepNavVisRange = "{2445, 1241}";
+			sepNavSelRange = "{3655, 0}";
+			sepNavVisRange = "{2510, 1174}";
 			sepNavWindowFrame = "{{424, 101}, {1041, 747}}";
 		};
 	};
@@ -45,10 +45,10 @@
 	};
 	26AFB4310D95B6230004805A /* portal_mesh_update.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 8624}}";
-			sepNavSelRange = "{8154, 469}";
-			sepNavVisRange = "{11840, 668}";
-			sepNavWindowFrame = "{{128, 104}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 10220}}";
+			sepNavSelRange = "{15649, 0}";
+			sepNavVisRange = "{14603, 1125}";
+			sepNavWindowFrame = "{{219, 190}, {1041, 747}}";
 		};
 	};
 	26BF8BBA0DBA5B900071D014 /* file_map_read_v1_curves.c */ = {
@@ -194,8 +194,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 231121816;
-			PBXWorkspaceStateSaveDate = 231121816;
+			PBXPerProjectTemplateStateSaveDate = 231206503;
+			PBXWorkspaceStateSaveDate = 231206503;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -211,9 +211,9 @@
 	};
 	F5C53548051C085800968AF1 /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 10528}}";
-			sepNavSelRange = "{3250, 0}";
-			sepNavVisRange = "{7008, 1096}";
+			sepNavIntBoundsRect = "{{0, 0}, {1068, 9226}}";
+			sepNavSelRange = "{20468, 0}";
+			sepNavVisRange = "{18826, 3577}";
 			sepNavWindowFrame = "{{148, 281}, {1041, 691}}";
 		};
 	};
@@ -243,9 +243,9 @@
 	};
 	F5CE96C20D23586E00512EE1 /* auto_generate.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1086, 23660}}";
-			sepNavSelRange = "{46888, 0}";
-			sepNavVisRange = "{46212, 1229}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 23926}}";
+			sepNavSelRange = "{46848, 0}";
+			sepNavVisRange = "{46156, 1256}";
 			sepNavWindowFrame = "{{228, 144}, {1041, 747}}";
 		};
 	};

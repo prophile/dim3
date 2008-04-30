@@ -632,7 +632,6 @@ void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,boo
 void walk_view_click_info(void)
 {
 	int				type,portal_idx,main_idx,sub_idx;
-	map_mesh_type	*mesh;
 	map_liquid_type	*liq;
 	
     if (select_count()!=1) return;
@@ -642,8 +641,7 @@ void walk_view_click_info(void)
 	switch (type) {
 	
 		case mesh_piece:
-			mesh=&map.portals[portal_idx].mesh.meshes[main_idx];
-			dialog_mesh_setting_run(mesh,sub_idx);
+			dialog_mesh_setting_run(portal_idx,main_idx,sub_idx);
 			break;
 			
 		case liquid_piece:

@@ -19,16 +19,6 @@
 		rLoc = 458;
 		rType = 1;
 	};
-	269C54DC0DC6D8C800D2CA5A /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F51B2619055E0251000B696C /* draw_bones.c */;
-		name = "draw_bones.c: 525";
-		rLen = 0;
-		rLoc = 13728;
-		rType = 0;
-		vrLen = 1160;
-		vrLoc = 12908;
-	};
 	F5127DF10513A79A009F12F0 /* dim3modelutility.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 675}}";
@@ -139,12 +129,11 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 231132913;
-			PBXWorkspaceStateSaveDate = 231132913;
+			PBXPerProjectTemplateStateSaveDate = 231206572;
+			PBXWorkspaceStateSaveDate = 231206572;
 		};
 		perUserProjectItems = {
 			269C54C90DC6D71D00D2CA5A /* PBXTextBookmark */ = 269C54C90DC6D71D00D2CA5A /* PBXTextBookmark */;
-			269C54DC0DC6D8C800D2CA5A /* PBXTextBookmark */ = 269C54DC0DC6D8C800D2CA5A /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEDB0D404F5000F6C42F /* Source Control */;
 		userBuildSettings = {

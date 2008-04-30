@@ -309,8 +309,8 @@ void piece_add_library_mesh(void)
 void piece_replace_library_mesh(void)
 {
 	int			type,portal_idx,mesh_idx,poly_idx,
-				rep_mesh_idx,mx,my,mz;
-	d3pnt		min,max;
+				rep_mesh_idx;
+	d3pnt		min,max,mpt;
 	
 		// get mesh to replace
 		
@@ -326,11 +326,11 @@ void piece_replace_library_mesh(void)
 		// remember size
 		
 	map_portal_mesh_calculate_extent(&map,cr,mesh_idx,&min,&max);
-	map_portal_mesh_calculate_center(&map,cr,mesh_idx,&mx,&my,&mz);
+	map_portal_mesh_calculate_center(&map,cr,mesh_idx,&mpt);
 	
 		// import new mesh
 	
-	rep_mesh_idx=piece_import_mesh_pick(mx,my,mz);
+	rep_mesh_idx=piece_import_mesh_pick(mpt.x,mpt.y,mpt.z);
 	if (rep_mesh_idx==-1) return;
 
 		// delete orginial and replace
@@ -340,7 +340,7 @@ void piece_replace_library_mesh(void)
 		rep_mesh_idx--;
 	}
 	
-	map_portal_mesh_resize(&map,cr,rep_mesh_idx,&min,&max);
+	map_portal_mesh_resize(&map,cr,rep_mesh_idx,&min,&max,FALSE);
 	
 		// make selection
 		

@@ -661,7 +661,7 @@ extern void map_portal_mesh_set_poly_uv_as_box(map_type *map,int portal_idx,int 
 extern int map_portal_liquid_add(map_type *map,int portal_idx);
 extern bool map_portal_liquid_delete(map_type *map,int portal_idx,int liquid_idx);
 extern int map_portal_liquid_duplicate(map_type *map,int portal_idx,int liquid_idx);
-extern void map_portal_liquid_calculate_center(map_type *map,int portal_idx,int liquid_idx,int *x,int *y,int *z);
+extern void map_portal_liquid_calculate_center(map_type *map,int portal_idx,int liquid_idx,d3pnt *pt);
 
 extern int map_portal_liquid_switch_portal(map_type *map,int portal_idx,int liquid_idx,int new_portal_idx);
 extern void map_portal_liquid_move(map_type *map,int portal_idx,int liquid_idx,int x,int y,int z);

@@ -126,14 +126,14 @@ int map_portal_liquid_duplicate(map_type *map,int portal_idx,int liquid_idx)
       
 ======================================================= */
 
-void map_portal_liquid_calculate_center(map_type *map,int portal_idx,int liquid_idx,int *x,int *y,int *z)
+void map_portal_liquid_calculate_center(map_type *map,int portal_idx,int liquid_idx,d3pnt *pt)
 {
 	map_liquid_type			*liq;
 	
 	liq=&map->portals[portal_idx].liquid.liquids[liquid_idx];
 
-	*x=(liq->lft+liq->rgt)>>1;
-	*y=liq->y;
-	*z=(liq->top+liq->bot)>>1;
+	pt->x=(liq->lft+liq->rgt)>>1;
+	pt->y=liq->y;
+	pt->z=(liq->top+liq->bot)>>1;
 }
 

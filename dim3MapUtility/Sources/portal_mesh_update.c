@@ -702,16 +702,25 @@ void map_portal_mesh_set_poly_uv_as_box(map_type *map,int portal_idx,int mesh_id
 		// reset to new coordinates
 
 	for (n=0;n!=poly->ptsz;n++) {
-		gx=poly->gx[n]-org_x_txtfact;
-		gy=poly->gy[n]-org_y_txtfact;
-
-		gx/=org_x_txtfact;
-		gx*=x_txtfact;
-
-		gy/=org_y_txtfact;
-		gy*=y_txtfact;
-
-		poly->gx[n]=x_txtfact+gx;
-		poly->gy[n]=y_txtfact+gy;
+	
+		if (poly->gx[n]==org_x_txtoff) {
+			poly->gx[n]=x_txtoff;
+		}
+		else {
+			gx=poly->gx[n]-org_x_txtoff;
+			gx/=org_x_txtfact;
+			gx*=x_txtfact;
+			poly->gx[n]=x_txtoff+gx;
+		}
+		
+		if (poly->gy[n]==org_y_txtoff) {
+			poly->gy[n]=y_txtoff;
+		}
+		else {
+			gy=poly->gy[n]-org_y_txtoff;
+			gy/=org_y_txtfact;
+			gy*=y_txtfact;
+			poly->gy[n]=y_txtoff+gy;
+		}
 	}
 }

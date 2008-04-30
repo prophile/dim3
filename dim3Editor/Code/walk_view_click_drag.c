@@ -212,7 +212,7 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 			// always resize from original vertexes
 			
 		memmove(mesh->vertexes,old_dpt,(mesh->nvertex*sizeof(d3pnt)));
-		map_portal_mesh_resize(&map,portal_idx,mesh_idx,&min,&max);
+		map_portal_mesh_resize(&map,portal_idx,mesh_idx,&min,&max,TRUE);
 
         main_wind_draw();
 		
