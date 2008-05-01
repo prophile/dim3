@@ -246,44 +246,7 @@
 		</dict>
 	</array>
 	<key>OpenEditors</key>
-	<array>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
-				<string>269C54CC0DC6D73D00D2CA5A</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>draw_bones.c</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>269C54CD0DC6D73D00D2CA5A</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>draw_bones.c</string>
-						<key>history</key>
-						<array>
-							<string>269C54C90DC6D71D00D2CA5A</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<true/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, 20}, {1041, 706}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<false/>
-				<key>RubberWindowFrame</key>
-				<string>153 150 1041 747 0 0 1680 1028 </string>
-			</dict>
-		</dict>
-	</array>
+	<array/>
 	<key>PerspectiveWidths</key>
 	<array>
 		<integer>-1</integer>
@@ -355,7 +318,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>14</integer>
+									<integer>15</integer>
 									<integer>10</integer>
 									<integer>8</integer>
 									<integer>0</integer>
@@ -462,9 +425,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26FE9C170DC7EEB900144DFF</string>
+				<string>26FBAB9F0DC95F2900DAD543</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26FE9C180DC7EEB900144DFF</string>
+				<string>26FBABA00DC95F2900DAD543</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -583,7 +546,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>231211753.35603401</real>
+	<real>231302243.879978</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -598,7 +561,9 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>26FBABC90DC9646300DAD543</string>
 		<string>260AFED80D404F3200F6C42F</string>
+		<string>26FBABCA0DC9646300DAD543</string>
 		<string>/Users/ggadwa/dim3Code/dim3ModelUtility/dim3ModelUtility.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -640,6 +605,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -679,7 +646,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFED80D404F3200F6C42F</string>
-				<string>26FE9C130DC7EEB600144DFF</string>
+				<string>26FBABA90DC95F8E00DAD543</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

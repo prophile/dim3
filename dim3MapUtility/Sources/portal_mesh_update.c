@@ -331,6 +331,8 @@ void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min
 	if (fix_uvs) {
 		map_portal_mesh_calculate_center(map,portal_idx,mesh_idx,&mpt);
 		map_portal_mesh_calculate_uv_center(map,portal_idx,mesh_idx,&m_gx,&m_gy);
+		
+		m_gx=m_gy=0;
 	}
 
 		// get resize factor
@@ -367,21 +369,20 @@ void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min
 				dx=(double)(mpt.x-pt->x);
 				dy=(double)(mpt.y-pt->y);
 				dz=(double)(mpt.z-pt->z);
-				org_dist=(float)sqrt((dx*dx)+(dy*dy)+(dz*dz));
+				org_dist=sqrt((dx*dx)+(dy*dy)+(dz*dz));
 
 				dx=(double)(mpt.x-((((pt->x-org_min.x)*dif.x)/org_dif.x)+min->x));
 				dy=(double)(mpt.y-((((pt->y-org_min.y)*dif.y)/org_dif.y)+min->y));
 				dz=(double)(mpt.z-((((pt->z-org_min.z)*dif.z)/org_dif.z)+min->z));
-				new_dist=(float)sqrt((dx*dx)+(dy*dy)+(dz*dz));
+				new_dist=sqrt((dx*dx)+(dy*dy)+(dz*dz));
 
 					// calculate distance change
 
 				f_dist=(float)(new_dist/org_dist);
 
 				poly->gx[k]=((poly->gx[k]-m_gx)*f_dist)+m_gx;
-				poly->gy[k]=((poly->gy[k]-m_gx)*f_dist)+m_gy;
+				poly->gy[k]=((poly->gy[k]-m_gy)*f_dist)+m_gy;
 			}
-
 
 			poly++;
 		}

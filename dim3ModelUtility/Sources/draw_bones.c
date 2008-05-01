@@ -504,26 +504,30 @@ void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
 	
 			// if no moves for this bone in the blended animation, then pick default bone
 			// position from the model itself
-			
-		if (avg_mat_cnt[n]==0) {
 		
+		if (avg_mat_cnt[n]==0) {
+
 			model_bone=&model->bones[n];
 			draw_bone=&draw_setup->bones[n];
 
-			draw_bone->parent_idx=model_bone->parent_idx;
-			
 			draw_bone->fpnt.x=(float)model_bone->pnt.x;
-			draw_bone->fpnt.z=(float)model_bone->pnt.z;
 			draw_bone->fpnt.y=(float)model_bone->pnt.y;
-			
-			draw_bone->rot.x=0.0f;
-			draw_bone->rot.z=0.0f;
-			draw_bone->rot.y=0.0f;
+			draw_bone->fpnt.z=(float)model_bone->pnt.z;
 
 			matrix_identity(&draw_bone->rot_mat);
-			
-			draw_bone->touch=TRUE;
+
+			continue;
+		}
 		
+			// only single bone move
+			
+		if (avg_mat_cnt[n]==1) {
+			draw_setup->bones[n].fpnt.x=fpnt[n].x;
+			draw_setup->bones[n].fpnt.y=fpnt[n].y;
+			draw_setup->bones[n].fpnt.z=fpnt[n].z;
+
+			memmove(&draw_setup->bones[n].rot_mat,&avg_mats[n][0],sizeof(matrix_type));
+			
 			continue;
 		}
 		
