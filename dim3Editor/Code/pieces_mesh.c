@@ -340,7 +340,7 @@ void piece_replace_library_mesh(void)
 		rep_mesh_idx--;
 	}
 	
-	map_portal_mesh_resize(&map,cr,rep_mesh_idx,&min,&max,FALSE);
+	map_portal_mesh_resize(&map,cr,rep_mesh_idx,&min,&max);
 	
 		// make selection
 		

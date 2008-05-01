@@ -153,7 +153,7 @@ bool portal_new(void)
 			max.x=x_size;
 			max.z=z_size;
 			max.y=cy+(y_size/2);
-			map_portal_mesh_resize(&map,cr,mesh_idx,&min,&max,FALSE);
+			map_portal_mesh_resize(&map,cr,mesh_idx,&min,&max);
 		}
 	}
 	

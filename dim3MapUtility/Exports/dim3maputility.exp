@@ -73,6 +73,8 @@ _map_portal_mesh_tesselate
 _map_portal_mesh_shift_portal_vertex_list
 _map_portal_mesh_get_poly_uv_as_box
 _map_portal_mesh_set_poly_uv_as_box
+_map_portal_mesh_reset_poly_uv
+_map_portal_mesh_reset_uv
 
 _map_portal_liquid_add
 _map_portal_liquid_delete

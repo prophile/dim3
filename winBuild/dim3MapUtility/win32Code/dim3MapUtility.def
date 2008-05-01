@@ -76,6 +76,8 @@ EXPORTS
 	map_portal_mesh_shift_portal_vertex_list		@240
 	map_portal_mesh_get_poly_uv_as_box				@241
 	map_portal_mesh_set_poly_uv_as_box				@242
+	map_portal_mesh_reset_poly_uv					@243
+	map_portal_mesh_reset_uv						@244
 
 	map_portal_liquid_add							@250
 	map_portal_liquid_delete						@251

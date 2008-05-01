@@ -29,6 +29,9 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
+extern void map_prepare_set_mesh_poly_box(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly);
+extern void map_prepare_set_mesh_poly_slope(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly);
+
 /* =======================================================
 
       Combine Meshes
@@ -314,26 +317,16 @@ void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool do_port
       
 ======================================================= */
 
-void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min,d3pnt *max,bool fix_uvs)
+void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min,d3pnt *max)
 {
-	int						n,k,npoly,nvertex;
-	float					m_gx,m_gy,f_dist;
-	double					dx,dy,dz,org_dist,new_dist;
-	d3pnt					*pt,mpt,org_min,org_max,dif,org_dif;
+	int						n,nvertex;
+	d3pnt					*pt,org_min,org_max,dif,org_dif;
 	portal_type				*portal;
 	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
 
 		// get original size and uv center
 		
 	map_portal_mesh_calculate_extent(map,portal_idx,mesh_idx,&org_min,&org_max);
-
-	if (fix_uvs) {
-		map_portal_mesh_calculate_center(map,portal_idx,mesh_idx,&mpt);
-		map_portal_mesh_calculate_uv_center(map,portal_idx,mesh_idx,&m_gx,&m_gy);
-		
-		m_gx=m_gy=0;
-	}
 
 		// get resize factor
 		
@@ -349,44 +342,6 @@ void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min
 
 	portal=&map->portals[portal_idx];
 	mesh=&portal->mesh.meshes[mesh_idx];
-
-		// fix uvs
-
-	if (fix_uvs) {
-
-		npoly=mesh->npoly;
-		poly=mesh->polys;
-
-		for (n=0;n!=npoly;n++) {
-
-			for (k=0;k!=poly->ptsz;k++) {
-
-				pt=&mesh->vertexes[poly->v[k]];
-
-					// get original and new distance
-					// from center of mesh
-
-				dx=(double)(mpt.x-pt->x);
-				dy=(double)(mpt.y-pt->y);
-				dz=(double)(mpt.z-pt->z);
-				org_dist=sqrt((dx*dx)+(dy*dy)+(dz*dz));
-
-				dx=(double)(mpt.x-((((pt->x-org_min.x)*dif.x)/org_dif.x)+min->x));
-				dy=(double)(mpt.y-((((pt->y-org_min.y)*dif.y)/org_dif.y)+min->y));
-				dz=(double)(mpt.z-((((pt->z-org_min.z)*dif.z)/org_dif.z)+min->z));
-				new_dist=sqrt((dx*dx)+(dy*dy)+(dz*dz));
-
-					// calculate distance change
-
-				f_dist=(float)(new_dist/org_dist);
-
-				poly->gx[k]=((poly->gx[k]-m_gx)*f_dist)+m_gx;
-				poly->gy[k]=((poly->gy[k]-m_gy)*f_dist)+m_gy;
-			}
-
-			poly++;
-		}
-	}
 
 		// resize vertexes
 
@@ -725,3 +680,147 @@ void map_portal_mesh_set_poly_uv_as_box(map_type *map,int portal_idx,int mesh_id
 		}
 	}
 }
+
+/* =======================================================
+
+      Recalculate UVs
+      
+======================================================= */
+
+void map_get_texture_uv_get_scale(map_type *map,int txt_idx,float *txt_scale_x,float *txt_scale_y)
+{
+	texture_type		*texture;
+
+	texture=&map->textures[txt_idx];
+	if (!texture->scale.on) {
+		*txt_scale_x=map->settings.txt_scale_x;
+		*txt_scale_y=map->settings.txt_scale_y;
+		return;
+	}
+	
+	*txt_scale_x=texture->scale.x;
+	*txt_scale_y=texture->scale.y;
+}
+
+float map_get_texture_reduce_coord(float f)
+{
+	int			i;
+
+	i=(int)f;
+	return(f-(float)i);
+}
+
+float map_get_texture_round_coord(float f)
+{
+	int			i;
+
+	i=(int)(f*100);
+	return(((float)i)/100);
+}
+
+void map_portal_mesh_reset_poly_uv(map_type *map,int portal_idx,int mesh_idx,int poly_idx)
+{
+	int						n,kx,kz;
+	float					fx,fz,ltxtx,rtxtx,ltxtz,rtxtz,
+							x_txtoff,y_txtoff,x_txtfact,y_txtfact,
+							txt_scale_x,txt_scale_y;
+	d3pnt					*pt;
+	portal_type				*portal;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+
+	portal=&map->portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+	
+		// get scale
+
+	map_get_texture_uv_get_scale(map,poly->txt_idx,&txt_scale_x,&txt_scale_y);
+	
+		// setup slope and box
+		// needed for texture calculations
+
+	map_prepare_set_mesh_poly_box(mesh,poly);
+	map_prepare_set_mesh_poly_slope(mesh,poly);
+
+	// walls
+	
+	/*
+		ltxtx=(float)((seg->data.wall.lx+portal->x)+(seg->data.wall.lz+portal->z))*txt_scale_x;
+			rtxtx=(float)((seg->data.wall.rx+portal->x)+(seg->data.wall.rz+portal->z))*txt_scale_x;
+			
+				// get point texture factor
+				
+			x_txtfact=rtxtx-ltxtx;
+			
+				// get distance texture factor
+				
+			dx=(double)(seg->data.wall.lx-seg->data.wall.rx);
+			dz=(double)(seg->data.wall.lz-seg->data.wall.rz);
+			d=(dx*dx)+(dz*dz);
+			x_txtfact_2=(float)(sqrt(d)*txt_scale_x);
+			if (x_txtfact<0) x_txtfact_2=-x_txtfact_2;
+			
+			if (fabs(x_txtfact_2)>fabs(x_txtfact)) x_txtfact=x_txtfact_2;		// is distance calc is longer, use that
+			
+			seg->x_txtoff=segment_reset_texture_uv_reduce_txtoff(ltxtx);
+			seg->x_txtfact=x_txtfact;
+
+			ltxty=((float)seg->data.wall.ty)*txt_scale_y;
+			rtxty=((float)(seg->data.wall.by+1))*txt_scale_y;
+			
+			seg->y_txtoff=segment_reset_texture_uv_reduce_txtoff(ltxty);
+			seg->y_txtfact=rtxty-ltxty;
+			break;
+*/
+			
+		// floors and ceilings
+
+	ltxtx=((float)poly->box.min.x)*txt_scale_x;
+	rtxtx=((float)poly->box.max.x)*txt_scale_x;
+
+	ltxtz=((float)poly->box.min.z)*txt_scale_y;
+	rtxtz=((float)poly->box.max.z)*txt_scale_y;
+
+	x_txtoff=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtx));
+	x_txtfact=map_get_texture_round_coord(rtxtx-ltxtx);
+	
+	y_txtoff=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtz));
+	y_txtfact=map_get_texture_round_coord(rtxtz-ltxtz);
+
+	if (map->textures[poly->txt_idx].scale.lock_offset) {
+		x_txtoff=0.0f;
+		y_txtoff=0.0f;
+	}
+
+	for (n=0;n!=poly->ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+
+		kx=pt->x-poly->box.min.x;
+		kz=pt->z-poly->box.min.z;
+
+		fx=(float)kx/(float)(poly->box.max.x-poly->box.min.x);
+		fz=(float)kz/(float)(poly->box.max.z-poly->box.min.z);
+
+		poly->gx[n]=x_txtoff+(x_txtfact*fx);
+		poly->gy[n]=y_txtoff+(y_txtfact*fz);
+	}
+}
+
+void map_portal_mesh_reset_uv(map_type *map,int portal_idx,int mesh_idx)
+{
+	int						n,npoly;
+	portal_type				*portal;
+	map_mesh_type			*mesh;
+
+	portal=&map->portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+
+	npoly=mesh->npoly;
+
+	for (n=0;n!=npoly;n++) {
+		map_portal_mesh_reset_poly_uv(map,portal_idx,mesh_idx,n);
+	}
+}
+
+
