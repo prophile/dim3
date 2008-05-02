@@ -693,13 +693,13 @@ void map_get_texture_uv_get_scale(map_type *map,int txt_idx,float *txt_scale_x,f
 
 	texture=&map->textures[txt_idx];
 	if (!texture->scale.on) {
-		*txt_scale_x=map->settings.txt_scale_x;
-		*txt_scale_y=map->settings.txt_scale_y;
+		*txt_scale_x=map->settings.txt_scale_x/(float)map_enlarge;			// need to reflect original scale
+		*txt_scale_y=map->settings.txt_scale_y/(float)map_enlarge;
 		return;
 	}
 	
-	*txt_scale_x=texture->scale.x;
-	*txt_scale_y=texture->scale.y;
+	*txt_scale_x=texture->scale.x/(float)map_enlarge;
+	*txt_scale_y=texture->scale.y/(float)map_enlarge;
 }
 
 float map_get_texture_reduce_coord(float f)
@@ -720,10 +720,11 @@ float map_get_texture_round_coord(float f)
 
 void map_portal_mesh_reset_poly_uv(map_type *map,int portal_idx,int mesh_idx,int poly_idx)
 {
-	int						n,kx,kz;
-	float					fx,fz,ltxtx,rtxtx,ltxtz,rtxtz,
-							x_txtoff,y_txtoff,x_txtfact,y_txtfact,
-							txt_scale_x,txt_scale_y;
+	int						n,kx,ky,kz;
+	float					fx,fy,fz,ltxtx,rtxtx,ltxty,rtxty,ltxtz,rtxtz,
+							x_txtoff,y_txtoff,x_txtfact,y_txtfact,x_txtfact_2,
+							f_dist_1,f_dist_2,txt_scale_x,txt_scale_y;
+	double					dx,dz,d;
 	d3pnt					*pt;
 	portal_type				*portal;
 	map_mesh_type			*mesh;
@@ -743,56 +744,91 @@ void map_portal_mesh_reset_poly_uv(map_type *map,int portal_idx,int mesh_idx,int
 	map_prepare_set_mesh_poly_box(mesh,poly);
 	map_prepare_set_mesh_poly_slope(mesh,poly);
 
-	// walls
+		// walls-like polygons
+		
+	if ((poly->box.common_xz) || (poly->slope.ang_y>60.0f)) {
+
+		ltxtx=(float)((poly->box.min.x+portal->x)+(poly->box.min.z+portal->z))*txt_scale_x;
+		rtxtx=(float)((poly->box.max.x+portal->x)+(poly->box.max.z+portal->z))*txt_scale_x;
+			
+			// get point texture factor
+				
+		x_txtfact=rtxtx-ltxtx;
+			
+			// get distance texture factor
+				
+		dx=(double)(poly->box.min.x-poly->box.max.x);
+		dz=(double)(poly->box.min.z-poly->box.max.z);
+		d=(dx*dx)+(dz*dz);
+		x_txtfact_2=(float)(sqrt(d)*txt_scale_x);
+		if (x_txtfact<0) x_txtfact_2=-x_txtfact_2;
+		
+		if (fabs(x_txtfact_2)>fabs(x_txtfact)) x_txtfact=x_txtfact_2;		// is distance calc is longer, use that
+		
+		x_txtoff=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtx));
+		x_txtfact=map_get_texture_round_coord(x_txtfact);
+		
+		ltxty=((float)poly->box.min.y)*txt_scale_y;
+		rtxty=((float)poly->box.max.y)*txt_scale_y;
+		
+		y_txtoff=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxty));
+		y_txtfact=map_get_texture_round_coord(rtxty-ltxty);
 	
-	/*
-		ltxtx=(float)((seg->data.wall.lx+portal->x)+(seg->data.wall.lz+portal->z))*txt_scale_x;
-			rtxtx=(float)((seg->data.wall.rx+portal->x)+(seg->data.wall.rz+portal->z))*txt_scale_x;
+			// deal with offset locks
 			
-				// get point texture factor
-				
-			x_txtfact=rtxtx-ltxtx;
-			
-				// get distance texture factor
-				
-			dx=(double)(seg->data.wall.lx-seg->data.wall.rx);
-			dz=(double)(seg->data.wall.lz-seg->data.wall.rz);
-			d=(dx*dx)+(dz*dz);
-			x_txtfact_2=(float)(sqrt(d)*txt_scale_x);
-			if (x_txtfact<0) x_txtfact_2=-x_txtfact_2;
-			
-			if (fabs(x_txtfact_2)>fabs(x_txtfact)) x_txtfact=x_txtfact_2;		// is distance calc is longer, use that
-			
-			seg->x_txtoff=segment_reset_texture_uv_reduce_txtoff(ltxtx);
-			seg->x_txtfact=x_txtfact;
+		if (map->textures[poly->txt_idx].scale.lock_offset) {
+			x_txtoff=0.0f;
+			y_txtoff=0.0f;
+		}
 
-			ltxty=((float)seg->data.wall.ty)*txt_scale_y;
-			rtxty=((float)(seg->data.wall.by+1))*txt_scale_y;
+			// set the polygon UVs
 			
-			seg->y_txtoff=segment_reset_texture_uv_reduce_txtoff(ltxty);
-			seg->y_txtfact=rtxty-ltxty;
-			break;
-*/
+		for (n=0;n!=poly->ptsz;n++) {
+			pt=&mesh->vertexes[poly->v[n]];
+
+			dx=(double)(pt->x-poly->box.min.x);
+			dz=(double)(pt->z-poly->box.min.z);
+			f_dist_1=(float)sqrt((dx*dx)+(dz*dz));
 			
-		// floors and ceilings
+			dx=(double)(poly->box.max.x-poly->box.min.x);
+			dz=(double)(poly->box.max.z-poly->box.min.z);
+			f_dist_2=(float)sqrt((dx*dx)+(dz*dz));
+			
+			ky=pt->y-poly->box.min.y;
 
-	ltxtx=((float)poly->box.min.x)*txt_scale_x;
-	rtxtx=((float)poly->box.max.x)*txt_scale_x;
+			fx=f_dist_1/f_dist_2;
+			fy=(float)ky/(float)(poly->box.max.y-poly->box.min.y);
 
-	ltxtz=((float)poly->box.min.z)*txt_scale_y;
-	rtxtz=((float)poly->box.max.z)*txt_scale_y;
+			poly->gx[n]=x_txtoff+(x_txtfact*fx);
+			poly->gy[n]=y_txtoff+(y_txtfact*fy);
+		}
+		
+		return;
+	}
+			
+		// floor-like polygon
+
+	ltxtx=((float)(poly->box.min.x+portal->x))*txt_scale_x;
+	rtxtx=((float)(poly->box.max.x+portal->x))*txt_scale_x;
+
+	ltxtz=((float)(poly->box.min.z+portal->z))*txt_scale_y;
+	rtxtz=((float)(poly->box.max.z+portal->z))*txt_scale_y;
 
 	x_txtoff=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtx));
 	x_txtfact=map_get_texture_round_coord(rtxtx-ltxtx);
 	
 	y_txtoff=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtz));
 	y_txtfact=map_get_texture_round_coord(rtxtz-ltxtz);
-
+	
+		// deal with offset locks
+		
 	if (map->textures[poly->txt_idx].scale.lock_offset) {
 		x_txtoff=0.0f;
 		y_txtoff=0.0f;
 	}
 
+		// set the polygon UVs
+		
 	for (n=0;n!=poly->ptsz;n++) {
 		pt=&mesh->vertexes[poly->v[n]];
 
