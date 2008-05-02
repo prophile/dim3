@@ -35,6 +35,7 @@ extern int map_auto_generate_random_int(int max);
 extern bool map_auto_generate_portal_collision(map_type *map,int x,int z,int ex,int ez,int skip_idx);
 extern bool map_auto_generate_portal_horz_edge_block(map_type *map,int skip_portal_idx,int z,int ez,int x);
 extern bool map_auto_generate_portal_vert_edge_block(map_type *map,int skip_portal_idx,int x,int ex,int z);
+extern bool map_auto_generate_portal_vert_edge_touch(map_type *map,int skip_portal_idx,int x,int ex,int z);
 extern bool map_auto_generate_portal_touching_left(map_type *map,int portal_idx,unsigned char *corridor_flags);
 extern bool map_auto_generate_portal_touching_right(map_type *map,int portal_idx,unsigned char *corridor_flags);
 extern bool map_auto_generate_portal_touching_top(map_type *map,int portal_idx,unsigned char *corridor_flags);
@@ -59,7 +60,7 @@ extern bool map_auto_generate_mesh_start(map_type *map,int portal_idx,int group_
 extern void map_auto_generate_mesh_change_texture(int txt_idx);
 extern bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z,float *gx,float *gy);
 
-extern void map_auto_generate_steps(map_type *map,int rn,int ty,int by,int stair_mode,int step_sz,bool top_step_wall,int lx,int rx,int lz,int rz);
+extern void map_auto_generate_steps(map_type *map,int rn,int ty,int by,int stair_mode,int step_sz,bool top_step_wall,bool back_wall,int lx,int rx,int lz,int rz);
 
 extern void map_auto_generate_lights(map_type *map);
 extern void map_auto_generate_spots(map_type *map);
@@ -1452,7 +1453,7 @@ void map_auto_generate_second_story(map_type *map)
 			mx=xsz>>1;
 		
 			for (z=0;z<zsz;z++) {
-				if (lft) poly_map[(z*xsz)]=poly_map[((z+1)*xsz)]=0x1;
+				if (lft) poly_map[(z*xsz)]=poly_map[(z*xsz)+1]=0x1;
 				if (rgt) poly_map[(z*xsz)+(xsz-1)]=poly_map[(z*xsz)+(xsz-2)]=0x1;
 				if (vert) poly_map[(z*xsz)+mx]=0x1;
 			}
@@ -1482,33 +1483,76 @@ void map_auto_generate_second_story(map_type *map)
 		}
 
 			// is there a place for steps?
-			
+
+		xsz=portal->ex-portal->x;
+		zsz=portal->ez-portal->z;
+
 		step_wid=split_factor*ag_constant_story_steps_split_factor;
 		by=portal->by;
 
 		if ((lft) && (!old_lft)) {
 			x=split_factor*2;
-			z=((zsz/2)-1)*split_factor;
-			map_auto_generate_steps(map,n,y,by,ag_stair_pos_x,ag_constant_step_story_size,FALSE,x,x,z,(z+step_wid));
+
+			if (top) {
+
+				if (!map_auto_generate_portal_vert_edge_touch(map,n,x,(x+(ag_constant_step_story_size*15)),portal->ez)) {
+					z=zsz-step_wid;
+				}
+				else {
+					z=split_factor*2;
+				}
+
+			}
+			else {
+
+				if (!map_auto_generate_portal_vert_edge_touch(map,n,x,(x+(ag_constant_step_story_size*15)),portal->z)) {
+					z=0;
+				}
+				else {
+					z=zsz-((split_factor*2)+step_wid);
+				}
+			}
+
+			map_auto_generate_steps(map,n,y,by,ag_stair_pos_x,ag_constant_step_story_size,FALSE,TRUE,x,x,z,(z+step_wid));
 		}
 		else {
 			if ((rgt) && (!old_rgt)) {
-				x=(xsz-2)*split_factor;
-				z=((zsz/2)-1)*split_factor;
-				map_auto_generate_steps(map,n,y,by,ag_stair_neg_x,ag_constant_step_story_size,FALSE,x,x,z,(z+step_wid));
+				x=xsz-(split_factor*2);
+
+				if (top) {
+
+					if (!map_auto_generate_portal_vert_edge_touch(map,n,(x-(ag_constant_step_story_size*15)),x,portal->ez)) {
+						z=zsz-step_wid;
+					}
+					else {
+						z=split_factor*2;
+					}
+
+				}
+				else {
+
+					if (!map_auto_generate_portal_vert_edge_touch(map,n,(x-(ag_constant_step_story_size*15)),x,portal->z)) {
+						z=0;
+					}
+					else {
+						z=zsz-((split_factor*2)+step_wid);
+					}
+				}
+
+				map_auto_generate_steps(map,n,y,by,ag_stair_neg_x,ag_constant_step_story_size,FALSE,TRUE,x,x,z,(z+step_wid));
 			}
 		}
 
 		if ((top) && (!old_top)) {
-			x=((xsz/2)-1)*split_factor;
+			x=rgt?(xsz-((split_factor*2)+step_wid)):(split_factor*2);
 			z=split_factor*2;
-			map_auto_generate_steps(map,n,y,by,ag_stair_pos_z,ag_constant_step_story_size,FALSE,x,(x+step_wid),z,z);
+			map_auto_generate_steps(map,n,y,by,ag_stair_pos_z,ag_constant_step_story_size,FALSE,TRUE,x,(x+step_wid),z,z);
 		}
 		else {
 			if ((bot) && (!old_bot)) {
-				x=((xsz/2)-1)*split_factor;
-				z=(zsz-2)*split_factor;
-				map_auto_generate_steps(map,n,y,by,ag_stair_neg_z,ag_constant_step_story_size,FALSE,x,(x+step_wid),z,z);
+				x=rgt?(xsz-((split_factor*2)+step_wid)):(split_factor*2);
+				z=zsz-(split_factor*2);
+				map_auto_generate_steps(map,n,y,by,ag_stair_neg_z,ag_constant_step_story_size,FALSE,TRUE,x,(x+step_wid),z,z);
 			}
 		}
 	}
@@ -1641,6 +1685,8 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 #else
 	ags.seed=GetTickCount();
 #endif
+
+	ags.seed=5;	// supergumba -- testing
 
 	ags.block=ag_block_none;
 	

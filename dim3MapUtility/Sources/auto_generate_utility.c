@@ -150,6 +150,26 @@ bool map_auto_generate_portal_vert_edge_block(map_type *map,int skip_portal_idx,
 	return(FALSE);
 }
 
+bool map_auto_generate_portal_vert_edge_touch(map_type *map,int skip_portal_idx,int x,int ex,int z)
+{
+	int			n;
+	portal_type	*portal;
+
+	for (n=0;n!=map->nportal;n++) {
+		if (skip_portal_idx==n) continue;
+
+		portal=&map->portals[n];
+
+		if ((portal->z!=z) && (portal->ez!=z)) continue;
+		if ((x>=portal->x) && (x<portal->ex)) return(TRUE);
+		if ((ex>portal->x) && (ex<=portal->ex)) return(TRUE);
+		if ((portal->x>=x) && (portal->x<=ex)) return(TRUE);
+		if ((portal->ex>=x) && (portal->ex<=ex)) return(TRUE);
+	}
+
+	return(FALSE);
+}
+
 /* =======================================================
 
       Edge Touching

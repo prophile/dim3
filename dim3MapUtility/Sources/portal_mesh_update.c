@@ -746,7 +746,7 @@ void map_portal_mesh_reset_poly_uv(map_type *map,int portal_idx,int mesh_idx,int
 
 		// walls-like polygons
 		
-	if ((poly->box.common_xz) || (poly->slope.ang_y>60.0f)) {
+	if ((!poly->box.flat) && ((poly->box.common_xz) || (poly->slope.ang_y>60.0f))) {
 
 		ltxtx=(float)((poly->box.min.x+portal->x)+(poly->box.min.z+portal->z))*txt_scale_x;
 		rtxtx=(float)((poly->box.max.x+portal->x)+(poly->box.max.z+portal->z))*txt_scale_x;

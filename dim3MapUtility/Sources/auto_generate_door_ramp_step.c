@@ -320,7 +320,7 @@ void map_auto_generate_ramps(map_type *map)
       
 ======================================================= */
 
-void map_auto_generate_steps(map_type *map,int rn,int ty,int by,int stair_mode,int step_sz,bool top_step_wall,int lx,int rx,int lz,int rz)
+void map_auto_generate_steps(map_type *map,int rn,int ty,int by,int stair_mode,int step_sz,bool top_step_wall,bool back_wall,int lx,int rx,int lz,int rz)
 {
 	int				y,y2,step_cnt,px[8],py[8],pz[8];
 	float			gx[8],gy[8];
@@ -332,6 +332,13 @@ void map_auto_generate_steps(map_type *map,int rn,int ty,int by,int stair_mode,i
 		// get step size
 
 	step_cnt=(by-ty)/ag_constant_step_high;
+
+		// step back wall
+
+	if (back_wall) {
+		map_auto_generate_poly_from_square_wall(lx,lz,rx,rz,(ty+ag_constant_step_high),by,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	}
 
 		// create steps
 
@@ -451,13 +458,13 @@ void map_auto_generate_corridor_to_portal_steps(map_type *map)
 			if (chk_portal->by>=portal->by) continue;
 
 			if ((chk_portal->x>=portal->x) && (chk_portal->x<=portal->ex)) {
-				if (chk_portal->ez==portal->z) map_auto_generate_steps(map,n,chk_portal->by,portal->by,ag_stair_pos_z,ag_constant_step_corridor_size,TRUE,(chk_portal->x-portal->x),(chk_portal->ex-portal->x),0,0);
-				if (chk_portal->z==portal->ez) map_auto_generate_steps(map,n,chk_portal->by,portal->by,ag_stair_neg_z,ag_constant_step_corridor_size,TRUE,(chk_portal->x-portal->x),(chk_portal->ex-portal->x),(portal->ez-portal->z),(portal->ez-portal->z));
+				if (chk_portal->ez==portal->z) map_auto_generate_steps(map,n,chk_portal->by,portal->by,ag_stair_pos_z,ag_constant_step_corridor_size,TRUE,FALSE,(chk_portal->x-portal->x),(chk_portal->ex-portal->x),0,0);
+				if (chk_portal->z==portal->ez) map_auto_generate_steps(map,n,chk_portal->by,portal->by,ag_stair_neg_z,ag_constant_step_corridor_size,TRUE,FALSE,(chk_portal->x-portal->x),(chk_portal->ex-portal->x),(portal->ez-portal->z),(portal->ez-portal->z));
 			}
 			
 			if ((chk_portal->z>=portal->z) && (chk_portal->z<=portal->ez)) {
-				if (chk_portal->ex==portal->x) map_auto_generate_steps(map,n,chk_portal->by,portal->by,ag_stair_pos_x,ag_constant_step_corridor_size,TRUE,0,0,(chk_portal->z-portal->z),(chk_portal->ez-portal->z));
-				if (chk_portal->x==portal->ex) map_auto_generate_steps(map,n,chk_portal->by,portal->by,ag_stair_neg_x,ag_constant_step_corridor_size,TRUE,(portal->ex-portal->x),(portal->ex-portal->x),(chk_portal->z-portal->z),(chk_portal->ez-portal->z));
+				if (chk_portal->ex==portal->x) map_auto_generate_steps(map,n,chk_portal->by,portal->by,ag_stair_pos_x,ag_constant_step_corridor_size,TRUE,FALSE,0,0,(chk_portal->z-portal->z),(chk_portal->ez-portal->z));
+				if (chk_portal->x==portal->ex) map_auto_generate_steps(map,n,chk_portal->by,portal->by,ag_stair_neg_x,ag_constant_step_corridor_size,TRUE,FALSE,(portal->ex-portal->x),(portal->ex-portal->x),(chk_portal->z-portal->z),(chk_portal->ez-portal->z));
 			}
 		}
 	}
