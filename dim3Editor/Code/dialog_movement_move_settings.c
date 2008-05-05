@@ -29,13 +29,16 @@ and can be sold or given away.
 
 extern map_type			map;
 
-#define kMoveMoveX						FOUR_CHAR_CODE('movx')
-#define kMoveMoveY						FOUR_CHAR_CODE('movy')
-#define kMoveMoveZ						FOUR_CHAR_CODE('movz')
 #define kMoveUserID						FOUR_CHAR_CODE('user')
 #define kMoveMillisecond				FOUR_CHAR_CODE('msec')
 #define kMoveSoundName					FOUR_CHAR_CODE('snds')
 #define kMoveSoundPitch					FOUR_CHAR_CODE('pith')
+#define kMoveMoveX						FOUR_CHAR_CODE('movx')
+#define kMoveMoveY						FOUR_CHAR_CODE('movy')
+#define kMoveMoveZ						FOUR_CHAR_CODE('movz')
+#define kMoveRotX						FOUR_CHAR_CODE('rotx')
+#define kMoveRotY						FOUR_CHAR_CODE('roty')
+#define kMoveRotZ						FOUR_CHAR_CODE('rotz')
 
 bool						dialog_movement_move_settings_cancel;
 WindowRef					dialog_movement_move_settings_wind;
@@ -92,14 +95,19 @@ bool dialog_movement_move_settings_run(movement_move_type *move)
 
 		// set controls
 
-	dialog_set_int(dialog_movement_move_settings_wind,kMoveMoveX,0,move->mov.x);
-	dialog_set_int(dialog_movement_move_settings_wind,kMoveMoveY,0,move->mov.y);
-	dialog_set_int(dialog_movement_move_settings_wind,kMoveMoveZ,0,move->mov.z);
 	dialog_set_int(dialog_movement_move_settings_wind,kMoveMillisecond,0,move->msec);
 	dialog_set_int(dialog_movement_move_settings_wind,kMoveUserID,0,move->user_id);
 	dialog_special_combo_fill_sound(dialog_movement_move_settings_wind,kMoveSoundName,0,move->sound_name);
 	dialog_set_float(dialog_movement_move_settings_wind,kMoveSoundPitch,0,move->sound_pitch);
 	
+	dialog_set_int(dialog_movement_move_settings_wind,kMoveMoveX,0,move->mov.x);
+	dialog_set_int(dialog_movement_move_settings_wind,kMoveMoveY,0,move->mov.y);
+	dialog_set_int(dialog_movement_move_settings_wind,kMoveMoveZ,0,move->mov.z);
+	
+	dialog_set_float(dialog_movement_move_settings_wind,kMoveRotX,0,move->rot.x);
+	dialog_set_float(dialog_movement_move_settings_wind,kMoveRotY,0,move->rot.y);
+	dialog_set_float(dialog_movement_move_settings_wind,kMoveRotZ,0,move->rot.z);
+
 		// show window
 	
 	ShowWindow(dialog_movement_move_settings_wind);
@@ -117,13 +125,18 @@ bool dialog_movement_move_settings_run(movement_move_type *move)
 		// dialog to data
 		
 	if (!dialog_movement_move_settings_cancel) {
-		move->mov.x=dialog_get_int(dialog_movement_move_settings_wind,kMoveMoveX,0);
-		move->mov.y=dialog_get_int(dialog_movement_move_settings_wind,kMoveMoveY,0);
-		move->mov.z=dialog_get_int(dialog_movement_move_settings_wind,kMoveMoveZ,0);
 		move->msec=dialog_get_int(dialog_movement_move_settings_wind,kMoveMillisecond,0);
 		move->user_id=dialog_get_int(dialog_movement_move_settings_wind,kMoveUserID,0);
 		dialog_special_combo_get_sound(dialog_movement_move_settings_wind,kMoveSoundName,0,move->sound_name,name_str_len);
 		move->sound_pitch=dialog_get_float(dialog_movement_move_settings_wind,kMoveSoundPitch,0);
+		
+		move->mov.x=dialog_get_int(dialog_movement_move_settings_wind,kMoveMoveX,0);
+		move->mov.y=dialog_get_int(dialog_movement_move_settings_wind,kMoveMoveY,0);
+		move->mov.z=dialog_get_int(dialog_movement_move_settings_wind,kMoveMoveZ,0);
+		
+		move->rot.x=dialog_get_float(dialog_movement_move_settings_wind,kMoveRotX,0);
+		move->rot.y=dialog_get_float(dialog_movement_move_settings_wind,kMoveRotY,0);
+		move->rot.z=dialog_get_float(dialog_movement_move_settings_wind,kMoveRotZ,0);
 	}
 
 		// close window

@@ -338,6 +338,7 @@ void write_map_movements_xml(map_type *map)
 		for (k=0;k!=movement->nmove;k++) {
 			xml_add_tagstart("Move");
 			xml_add_attribute_3_coord_int("c3",move->mov.x,move->mov.y,move->mov.z);
+			xml_add_attribute_3_coord_float("r3",move->rot.x,move->rot.y,move->rot.z);
 			xml_add_attribute_int("msec",move->msec);
 			xml_add_attribute_int("user_id",move->user_id);
 			xml_add_attribute_text("sound_name",move->sound_name);
@@ -385,6 +386,9 @@ void write_single_mesh(map_mesh_type *mesh)
 	xml_add_attribute_boolean("pass",mesh->flag.pass_through);
 	xml_add_attribute_boolean("moveable",mesh->flag.moveable);
 	xml_add_attribute_boolean("climbable",mesh->flag.climbable);
+	xml_add_attribute_boolean("lock_uv",mesh->flag.lock_uv);
+	
+	xml_add_attribute_3_coord_int("rot_off",mesh->rot_off.x,mesh->rot_off.y,mesh->rot_off.z);
 
 	xml_add_tagend(FALSE);
 

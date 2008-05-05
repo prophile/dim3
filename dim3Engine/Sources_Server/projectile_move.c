@@ -251,7 +251,7 @@ void projectile_reflect(proj_type *proj,bool send_event)
 	
 	if (poly->portal_idx!=-1) {
 		mesh_poly=&map.portals[poly->portal_idx].mesh.meshes[poly->mesh_idx].polys[poly->poly_idx];
-		wall_hit=mesh_poly->box.common_xz;
+		wall_hit=mesh_poly->box.wall_like;
 	}
 
 		// reset to last good position

@@ -39,7 +39,7 @@ extern js_type			js;
       
 ======================================================= */
 
-bool script_move_add(int group_idx,int movement_idx,int x,int y,int z,int count,int user_id)
+bool script_move_add(int group_idx,int movement_idx,d3pnt *mov,d3ang *rot,int count,int user_id)
 {
 	float			f_count;
 	move_type		*move;
@@ -58,12 +58,19 @@ bool script_move_add(int group_idx,int movement_idx,int x,int y,int z,int count,
 	move->count=count;
 	
 	f_count=(float)move->count;
-	move->dx=((float)x)/f_count;
-	move->dy=((float)y)/f_count;
-	move->dz=((float)z)/f_count;
+	move->mov_add.x=((float)mov->x)/f_count;
+	move->mov_add.y=((float)mov->y)/f_count;
+	move->mov_add.z=((float)mov->z)/f_count;
 	
-	move->x=move->y=move->z=0;
+	move->rot_add.x=rot->x/f_count;
+	move->rot_add.y=rot->y/f_count;
+	move->rot_add.z=rot->z/f_count;
+
+	move->cur_mov.x=move->cur_mov.y=move->cur_mov.z=0.0f;
 	
+	move->has_mov=((mov->x!=0) || (mov->y!=0) || (mov->z!=0));
+	move->has_rot=((rot->x!=0.0f) || (rot->y!=0.0f) || (rot->z!=0.0f));
+		
 	move->group_idx=group_idx;
 	move->movement_idx=movement_idx;		// -1 if launched from a script
 	move->user_id=user_id;

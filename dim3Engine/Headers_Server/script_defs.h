@@ -978,8 +978,9 @@ typedef struct		{
 
 typedef struct		{
 						int					count,group_idx,movement_idx,user_id;
-						float				x,y,z,dx,dy,dz;
-						bool				freeze;
+						d3fpnt				cur_mov;
+						d3vct				mov_add,rot_add;
+						bool				freeze,has_mov,has_rot;
 						attach_type			attach;
 					} move_type;
  

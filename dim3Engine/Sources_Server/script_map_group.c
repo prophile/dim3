@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit “Created with dim3 Technology” is given on a single
+2. This credit ‚ÄúCreated with dim3 Technology‚Äù is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -52,11 +52,11 @@ JSClass			map_group_class={"map_group_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 JSFunctionSpec	map_group_functions[]={
-							{"move",				js_map_group_move_func,					4},
-							{"moveOverTime",		js_map_group_move_over_time_func,		6},
-							{"moveOverTimeOn",		js_map_group_move_over_time_on_func,	1},
-							{"moveOverTimeFreeze",	js_map_group_move_over_time_freeze_func,1},
-							{"moveOverTimeThaw",	js_map_group_move_over_time_thaw_func,	1},
+//							{"move",				js_map_group_move_func,					4},		// supergumba -- depreciated
+//							{"moveOverTime",		js_map_group_move_over_time_func,		6},
+//							{"moveOverTimeOn",		js_map_group_move_over_time_on_func,	1},
+//							{"moveOverTimeFreeze",	js_map_group_move_over_time_freeze_func,1},
+//							{"moveOverTimeThaw",	js_map_group_move_over_time_thaw_func,	1},
 							{"getCenter",			js_map_group_get_center_func,			1},
 							{"setShow",				js_map_group_set_show_func,				2},
 							{"setSolid",			js_map_group_set_solid_func,			2},
@@ -97,6 +97,9 @@ void script_add_map_group_object(JSObject *parent_obj)
       
 ======================================================= */
 
+
+/* depreciate these
+
 JSBool js_map_group_move_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
 	int				group_idx;
@@ -111,11 +114,19 @@ JSBool js_map_group_move_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *ar
 JSBool js_map_group_move_over_time_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
 	int				group_idx;
+	d3pnt			mov;
+	d3ang			rot;
 	
 	group_idx=script_find_group_from_name(argv[0]);
 	if (group_idx==-1) return(JS_FALSE);
 	
-	if (!script_move_add(group_idx,-1,JSVAL_TO_INT(argv[1]),JSVAL_TO_INT(argv[3]),JSVAL_TO_INT(argv[2]),(JSVAL_TO_INT(argv[4])*10),JSVAL_TO_INT(argv[5]))) return(JS_FALSE);
+	mov.x=JSVAL_TO_INT(argv[1]);
+	mov.y=JSVAL_TO_INT(argv[3]);
+	mov.z=JSVAL_TO_INT(argv[2]);
+	
+	rot.x=rot.y=rot.z=0.0f;
+	
+	if (!script_move_add(group_idx,-1,&mov,&rot,(JSVAL_TO_INT(argv[4])*10),JSVAL_TO_INT(argv[5]))) return(JS_FALSE);
 	return(JS_TRUE);
 }
 
@@ -157,6 +168,7 @@ JSBool js_map_group_move_over_time_thaw_func(JSContext *cx,JSObject *j_obj,uintN
 	script_move_freeze(group_idx,FALSE);
 	return(JS_TRUE);
 }
+*/
 
 /* =======================================================
 

@@ -194,7 +194,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						bool						flat,common_xz;
+						bool						flat,common_xz,wall_like;
 						d3pnt						min,max,mid;
 					} map_mesh_poly_box_type;
 
@@ -232,7 +232,8 @@ typedef struct		{
 
 typedef struct		{
 						bool						on,pass_through,moveable,
-													climbable,shiftable,touched;
+													climbable,shiftable,
+													lock_uv,touched;
 					} map_mesh_flag_type;
 
 typedef struct		{
@@ -245,6 +246,7 @@ typedef struct		{
 
 typedef struct		{
 						int							nvertex,npoly,group_idx;
+						d3pnt						rot_off;
 						d3pnt						*vertexes;
 						map_mesh_poly_type			*polys;
 						map_mesh_box_type			box;
@@ -436,6 +438,7 @@ typedef struct		{
 						char						sound_name[name_str_len];
 						float						sound_pitch;
 						d3pnt						mov;
+						d3ang						rot;
 					} movement_move_type;
 
 typedef struct		{
@@ -652,7 +655,7 @@ extern int map_portal_mesh_switch_portal(map_type *map,int portal_idx,int mesh_i
 extern void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool do_portal_vertex_list,int x,int y,int z);
 extern void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min,d3pnt *max);
 extern void map_portal_mesh_flip(map_type *map,int portal_idx,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);
-extern void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,float rot_x,float rot_y,float rot_z);
+extern void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,bool do_portal_vertex_list,float rot_x,float rot_y,float rot_z);
 extern bool map_portal_mesh_tesselate(map_type *map,int portal_idx,int mesh_idx);
 extern void map_portal_mesh_shift_portal_vertex_list(map_type *map,int portal_idx,int tick);
 extern void map_portal_mesh_get_poly_uv_as_box(map_type *map,int portal_idx,int mesh_idx,int poly_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact);

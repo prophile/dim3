@@ -230,7 +230,7 @@ void decal_add_poly(d3pos *pos,poly_pointer_type *poly_ptr,int mark_idx,int sz,f
 	
         // wall-like decals
 
-	if (mesh_poly->box.common_xz) {
+	if (mesh_poly->box.wall_like) {
 
 		decal->x[0]=decal->x[3]=pos->x-sz;
 		decal->x[1]=decal->x[2]=pos->x+sz;
@@ -240,7 +240,7 @@ void decal_add_poly(d3pos *pos,poly_pointer_type *poly_ptr,int mark_idx,int sz,f
 		decal->z[2]=decal->z[3]=pos->y+sz;
 	}
 
-		// floor/ceiling like decals
+		// floor-like decals
 
 	else {
         

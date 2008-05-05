@@ -101,6 +101,7 @@ extern void piece_flip(bool flip_x,bool flip_y,bool flip_z);
 extern void piece_rotate(float rot_x,float rot_y,float rot_z);
 extern void piece_free_rotate(void);
 extern void piece_snap_to_grid(void);
+extern void piece_reset_uvs(void);
 extern void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch);
 
 //

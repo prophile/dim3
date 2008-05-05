@@ -107,6 +107,7 @@ int map_movement_move_add(map_type *map,int movement_idx)
 	
 	move->msec=100;
 	move->mov.x=move->mov.y=move->mov.z=0;
+	move->rot.x=move->rot.y=move->rot.z=0.0f;
 	move->user_id=0;
 	move->sound_name[0]=0x0;
 	move->sound_pitch=1.0f;

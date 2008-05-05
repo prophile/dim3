@@ -614,6 +614,24 @@ void portal_resize(void)
 
 /* =======================================================
 
+      Portal Reset UVs
+      
+======================================================= */
+
+void portal_reset_uvs(void)
+{
+    int				n;
+	portal_type		*portal;
+    
+ 	portal=&map.portals[cr];
+	
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+		if (!map.portals[cr].mesh.meshes[n].flag.lock_uv) map_portal_mesh_reset_uv(&map,cr,n);
+	}
+}
+
+/* =======================================================
+
       Portal Split
       
 ======================================================= */

@@ -88,9 +88,9 @@ void map_prepare_set_mesh_poly_box(map_mesh_type *mesh,map_mesh_poly_type *mesh_
 	mesh_poly->box.flat=flat;
 
 		// check for common xz points
-		// this helps determine which way
-		// to tessel lighting
-
+		// this helps determine this
+		// polygon's type
+		
 	common_xz=FALSE;
 
 	for (n=0;n!=ptsz;n++) {
@@ -110,6 +110,14 @@ void map_prepare_set_mesh_poly_box(map_mesh_type *mesh,map_mesh_poly_type *mesh_
 	}
 
 	mesh_poly->box.common_xz=common_xz;
+	
+		// determine if wall like
+		
+	mesh_poly->box.wall_like=FALSE;
+	
+	if (!mesh_poly->box.flat) {
+		mesh_poly->box.wall_like=(common_xz) || (((mesh_poly->box.max.x-mesh_poly->box.min.x)+(mesh_poly->box.max.z-mesh_poly->box.min.z))<(mesh_poly->box.max.y-mesh_poly->box.min.y));
+	}
 }
 
 /* =======================================================

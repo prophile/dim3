@@ -99,6 +99,7 @@ and can be sold or given away.
 #define kCommandPieceRaiseY					FOUR_CHAR_CODE('prsy')
 #define kCommandPieceLowerY					FOUR_CHAR_CODE('plry')
 #define kCommandPieceSnapToGrid				FOUR_CHAR_CODE('msnp')
+#define kCommandPieceResetUV				FOUR_CHAR_CODE('mruv')
 
 #define kCommandFaceDelete					FOUR_CHAR_CODE('fdel')
 #define kCommandFaceHole1					FOUR_CHAR_CODE('fhl1')
@@ -117,6 +118,8 @@ and can be sold or given away.
 #define kCommandPortalRotate				FOUR_CHAR_CODE('rot ')
 #define kCommandPortalRaiseY				FOUR_CHAR_CODE('rrsy')
 #define kCommandPortalLowerY				FOUR_CHAR_CODE('rlry')
+#define kCommandPortalResetUV				FOUR_CHAR_CODE('pruv')
+
 #define kCommandPortalSplitHorizontal		FOUR_CHAR_CODE('rshz')
 #define kCommandPortalSplitVertical			FOUR_CHAR_CODE('rsvt')
 

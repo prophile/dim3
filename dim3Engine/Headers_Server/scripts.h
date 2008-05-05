@@ -166,7 +166,7 @@ extern bool script_add_global_object(script_type *script,char *err_str);
 extern void script_set_property_lock(bool lock);
 extern JSBool script_add_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-extern bool script_move_add(int group_idx,int movement_idx,int x,int y,int z,int count,int user_id);
+extern bool script_move_add(int group_idx,int movement_idx,d3pnt *mov,d3ang *rot,int count,int user_id);
 extern void script_move_dispose(int idx);
 extern void script_move_clear_all(void);
 extern int script_move_find(int group_idx);

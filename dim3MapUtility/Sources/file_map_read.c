@@ -246,6 +246,7 @@ void decode_map_movements_xml(map_type *map,int map_head)
 			
 			for (k=0;k!=movement->nmove;k++) {
 				xml_get_attribute_3_coord_int(movement_move_tag,"c3",&move->mov.x,&move->mov.y,&move->mov.z);
+				xml_get_attribute_3_coord_float(movement_move_tag,"r3",&move->rot.x,&move->rot.y,&move->rot.z);
 				move->msec=(short)xml_get_attribute_int(movement_move_tag,"msec");
 				move->user_id=(short)xml_get_attribute_int(movement_move_tag,"user_id");
 				xml_get_attribute_text(movement_move_tag,"sound_name",move->sound_name,name_str_len);

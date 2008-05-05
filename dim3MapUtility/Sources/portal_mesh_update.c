@@ -306,7 +306,6 @@ void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool do_port
 			}
 		}
 
-
 		poly++;
 	}
 }
@@ -358,7 +357,7 @@ void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min
 
 /* =======================================================
 
-      Flip and Rotate Mesh
+      Flip Mesh
       
 ======================================================= */
 
@@ -390,28 +389,40 @@ void map_portal_mesh_flip(map_type *map,int portal_idx,int mesh_idx,bool flip_x,
 	}
 }
 
-void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,float rot_x,float rot_y,float rot_z)
+/* =======================================================
+
+      Rotate Mesh
+      
+======================================================= */
+
+void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,bool do_portal_vertex_list,float rot_x,float rot_y,float rot_z)
 {
-	int						n,nvertex;
+	int						n,k,idx,nvertex,npoly,nlight;
 	float					fx,fy,fz;
+	unsigned char			*phit;
 	d3pnt					mpt;
 	d3pnt					*pt;
 	matrix_type				mat;
 	portal_type				*portal;
 	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	portal_vertex_list_type	*pv;
+
+	portal=&map->portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
 
 		// get center
 
 	map_portal_mesh_calculate_center(map,portal_idx,mesh_idx,&mpt);
+	mpt.x+=mesh->rot_off.x;
+	mpt.y+=mesh->rot_off.y;
+	mpt.z+=mesh->rot_off.z;
 
 		// matrixes
 
 	matrix_rotate_xyz(&mat,rot_x,rot_y,rot_z);
 
 		// rotate vertexes
-
-	portal=&map->portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
 
 	nvertex=mesh->nvertex;
 	pt=mesh->vertexes;
@@ -428,6 +439,71 @@ void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,float rot_
 		pt->z=((int)fz)+mpt.z;
 
 		pt++;
+	}
+	
+		// rotate vertexes in portal compiled
+		// vertex list
+
+	if (!do_portal_vertex_list) return;
+
+		// clear the hit list so we don't
+		// rotate combined vertexes twice
+
+	phit=portal->vertexes.phit;
+	bzero(phit,portal->vertexes.nvlist);
+
+		// rotate portal vertexes
+
+	npoly=mesh->npoly;
+	poly=mesh->polys;
+
+	for (n=0;n!=npoly;n++) {
+
+			// vertexes
+
+		for (k=0;k!=poly->ptsz;k++) {
+			idx=poly->draw.portal_v[k];
+
+			if (phit[idx]==0x0) {
+				phit[idx]=0x1;
+				pv=&portal->vertexes.vertex_list[idx];
+				
+				fx=(float)(pv->x-mpt.x);
+				fy=(float)(pv->y-mpt.y);
+				fz=(float)(pv->z-mpt.z);
+
+				matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+
+				pv->x=((int)fx)+mpt.x;
+				pv->y=((int)fy)+mpt.y;
+				pv->z=((int)fz)+mpt.z;
+			}
+		}
+
+			// lighting vertexes
+
+		nlight=poly->light.trig_count*3;
+
+		for (k=0;k!=nlight;k++) {
+			idx=poly->light.trig_vertex_idx[k];
+
+			if (phit[idx]==0x0) {
+				phit[idx]=0x1;
+				pv=&portal->vertexes.vertex_list[idx];
+				
+				fx=(float)(pv->x-mpt.x);
+				fy=(float)(pv->y-mpt.y);
+				fz=(float)(pv->z-mpt.z);
+
+				matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+
+				pv->x=((int)fx)+mpt.x;
+				pv->y=((int)fy)+mpt.y;
+				pv->z=((int)fz)+mpt.z;
+			}
+		}
+
+		poly++;
 	}
 }
 
@@ -746,8 +822,8 @@ void map_portal_mesh_reset_poly_uv(map_type *map,int portal_idx,int mesh_idx,int
 
 		// walls-like polygons
 		
-	if ((!poly->box.flat) && ((poly->box.common_xz) || (poly->slope.ang_y>60.0f))) {
-
+	if (poly->box.wall_like) {
+		
 		ltxtx=(float)((poly->box.min.x+portal->x)+(poly->box.min.z+portal->z))*txt_scale_x;
 		rtxtx=(float)((poly->box.max.x+portal->x)+(poly->box.max.z+portal->z))*txt_scale_x;
 			

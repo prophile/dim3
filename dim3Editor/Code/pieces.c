@@ -431,7 +431,7 @@ void piece_rotate(float rot_x,float rot_y,float rot_z)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map_portal_mesh_rotate(&map,portal_idx,mesh_idx,rot_x,rot_y,rot_z);
+		if (type==mesh_piece) map_portal_mesh_rotate(&map,portal_idx,mesh_idx,FALSE,rot_x,rot_y,rot_z);
 	}
 	
 	main_wind_draw();
@@ -476,6 +476,27 @@ void piece_snap_to_grid(void)
 			walk_view_click_grid(pt);
 			pt++;
 		}
+	}
+}
+
+/* =======================================================
+
+      Reset Mesh UVs
+      
+======================================================= */
+
+void piece_reset_uvs(void)
+{
+	int						n,sel_count,
+							type,portal_idx,mesh_idx,poly_idx;
+
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
+		
+		if (!map.portals[portal_idx].mesh.meshes[mesh_idx].flag.lock_uv) map_portal_mesh_reset_uv(&map,portal_idx,mesh_idx);
 	}
 }
 

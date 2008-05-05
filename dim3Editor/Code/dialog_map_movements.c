@@ -33,7 +33,10 @@ extern map_type				map;
 #define kMapMovementList					FOUR_CHAR_CODE('list')
 #define kMapMovementListNameColumn			FOUR_CHAR_CODE('name')
 #define kMapMovementListGroupColumn			FOUR_CHAR_CODE('grop')
+#define kMapMovementListTimeColumn			FOUR_CHAR_CODE('time')
 #define kMapMovementListMoveColumn			FOUR_CHAR_CODE('move')
+#define kMapMovementListRotateColumn		FOUR_CHAR_CODE('rott')
+#define kMapMovementListSoundColumn			FOUR_CHAR_CODE('sond')
 
 #define kMapMovementAddMovementButton		FOUR_CHAR_CODE('amov')
 #define kMapMovementAddMovementMoveButton	FOUR_CHAR_CODE('ammv')
@@ -243,7 +246,7 @@ static pascal OSStatus map_movements_event_proc(EventHandlerCallRef handler,Even
 static pascal OSStatus map_movements_list_item_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserPropertyID property,DataBrowserItemDataRef itemData,Boolean changeValue)
 {
 	int					movement_idx,move_idx;
-	char				str[256],v1[32];
+	char				str[256];
 	movement_move_type	*move;
 	CFStringRef			cfstr;
 
@@ -267,6 +270,20 @@ static pascal OSStatus map_movements_list_item_proc(ControlRef ctrl,DataBrowserI
 			CFRelease(cfstr);
 			return(noErr);
 			
+		case kMapMovementListTimeColumn:
+			if (itemID<1000) return(noErr);
+			
+			movement_idx=(itemID/1000)-1;
+			move_idx=itemID%1000;
+			
+			move=&map.movements[movement_idx].moves[move_idx];
+			sprintf(str,"%d msec",move->msec);
+			
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
+			SetDataBrowserItemDataText(itemData,cfstr);
+			CFRelease(cfstr);
+			return(noErr);
+			
 		case kMapMovementListMoveColumn:
 			if (itemID<1000) return(noErr);
 			
@@ -274,15 +291,37 @@ static pascal OSStatus map_movements_list_item_proc(ControlRef ctrl,DataBrowserI
 			move_idx=itemID%1000;
 			
 			move=&map.movements[movement_idx].moves[move_idx];
+			sprintf(str,"%d,%d,%d",move->mov.x,move->mov.y,move->mov.z);
 			
-			if (move->sound_name[0]==0x0) {
-				sprintf(str,"(%d,%d,%d) for %d msec",move->mov.x,move->mov.y,move->mov.z,move->msec);
-			}
-			else {
-				string_convert_float(v1,move->sound_pitch);
-				sprintf(str,"(%d,%d,%d) for %d msec (%s @ %s)",move->mov.x,move->mov.y,move->mov.z,move->msec,move->sound_name,v1);
-			}
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
+			SetDataBrowserItemDataText(itemData,cfstr);
+			CFRelease(cfstr);
+			return(noErr);
 			
+		case kMapMovementListRotateColumn:
+			if (itemID<1000) return(noErr);
+			
+			movement_idx=(itemID/1000)-1;
+			move_idx=itemID%1000;
+			
+			move=&map.movements[movement_idx].moves[move_idx];
+			sprintf(str,"%.2f,%.2f,%.2f",move->rot.x,move->rot.y,move->rot.z);
+			
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
+			SetDataBrowserItemDataText(itemData,cfstr);
+			CFRelease(cfstr);
+			return(noErr);
+			
+		case kMapMovementListSoundColumn:
+			if (itemID<1000) return(noErr);
+			
+			movement_idx=(itemID/1000)-1;
+			move_idx=itemID%1000;
+			
+			move=&map.movements[movement_idx].moves[move_idx];
+			if (move->sound_name[0]==0x0) return(noErr);
+			sprintf(str,"%s @ %.2f",move->sound_name,move->sound_pitch);
+				
 			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
 			SetDataBrowserItemDataText(itemData,cfstr);
 			CFRelease(cfstr);

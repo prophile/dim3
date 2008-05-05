@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit ÒCreated with dim3 TechnologyÓ is given on a single
+2. This credit â€œCreated with dim3 Technologyâ€ is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -61,7 +61,7 @@ int group_find_by_index(char *name)
 
 /* =======================================================
 
-      Move Groups
+      Move/Rotate Groups
       
 ======================================================= */
 
@@ -69,23 +69,17 @@ void group_move(int group_idx,int xmove,int zmove,int ymove)
 {
 	int					n,unit_cnt;
 	bool				move_objs;
-	unsigned char		portal_hit[max_portal];
 	group_type			*group;
 	group_unit_type		*unit_list;
 	portal_type			*portal;
 	map_mesh_type		*mesh;
 	map_liquid_type		*liq;
 
-		// will need to recalc lighting in
-		// portals with moved segments
-
-	bzero(portal_hit,max_portal);
-
 		// can this group move objects?
 
 	move_objs=(xmove!=0) || (zmove!=0);
 	
-		// move the segments
+		// move the meshes
 
 	group=&map.groups[group_idx];
 	
@@ -125,11 +119,7 @@ void group_move(int group_idx,int xmove,int zmove,int ymove)
 
 					// force a lighting recalc if mesh moved in a portal
 
-				if (portal_hit[unit_list->portal_idx]==0x0) {
-					portal_hit[unit_list->portal_idx]=0x1;
-					map_portal_light_check_changes_reset(portal);
-				}
-
+				map_portal_light_check_changes_reset(portal);
 				break;
 
 			case group_type_liquid:
@@ -144,6 +134,64 @@ void group_move(int group_idx,int xmove,int zmove,int ymove)
 
 				break;
 
+		}
+		
+		unit_list++;
+	}
+}
+
+void group_rotate(int group_idx,float x,float y,float z)
+{
+	int					n,unit_cnt;
+	bool				move_objs;
+	group_type			*group;
+	group_unit_type		*unit_list;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+
+		// can this group move objects?
+
+	move_objs=(y!=0.0f);
+	
+		// move the meshes
+
+	group=&map.groups[group_idx];
+	
+	unit_cnt=group->unit_count;
+	unit_list=group->unit_list;
+	
+	for (n=0;n!=unit_cnt;n++) {
+
+		portal=&map.portals[unit_list->portal_idx];
+
+		if (unit_list->type==group_type_mesh) {
+
+				// is mesh moveable?
+
+			mesh=&portal->mesh.meshes[unit_list->idx];
+			if (!mesh->flag.moveable) break;
+
+				// move mesh and mark as
+				// touched so it can be saved with games
+
+			map_portal_mesh_rotate(&map,unit_list->portal_idx,unit_list->idx,TRUE,x,y,z);
+			mesh->flag.touched=TRUE;
+
+				// move objects on segment
+				// supergumba
+			
+			if (move_objs) {
+				//		object_move_with_wall_segment((int)(*seg_list),xmove,zmove);
+			//	object_move_with_standing_mesh(unit_list->portal_idx,unit_list->idx,xmove,zmove);
+			}
+
+				// move decals with segments!
+
+		//	decal_move_for_mesh(unit_list->portal_idx,unit_list->idx,xmove,ymove,zmove);
+
+				// force a lighting recalc if mesh moved in a portal
+
+			map_portal_light_check_changes_reset(portal);
 		}
 		
 		unit_list++;
@@ -169,21 +217,30 @@ void group_moves_run(void)
 	
 		if (!move->freeze) {
 		
-				// get the next move
+				// movements
 				
-			move->x+=move->dx;
-			move->y+=move->dy;
-			move->z+=move->dz;
+			if (move->has_mov) {
+				move->cur_mov.x+=move->mov_add.x;
+				move->cur_mov.y+=move->mov_add.y;
+				move->cur_mov.z+=move->mov_add.z;
+					
+				x=(int)move->cur_mov.x;
+				y=(int)move->cur_mov.y;
+				z=(int)move->cur_mov.z;
+					
+				move->cur_mov.x-=(float)x;
+				move->cur_mov.y-=(float)y;
+				move->cur_mov.z-=(float)z;
+					
+				group_move(move->group_idx,x,z,y);
+			}
 			
-			x=(int)move->x;
-			y=(int)move->y;
-			z=(int)move->z;
+				// rotations
+				
+			if (move->has_rot) {
+				group_rotate(move->group_idx,move->rot_add.x,move->rot_add.y,move->rot_add.z);
+			}
 			
-			move->x-=(float)x;
-			move->y-=(float)y;
-			move->z-=(float)z;
-			
-			group_move(move->group_idx,x,z,y);
 			move->count--;
 		}
 		

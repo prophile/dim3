@@ -51,7 +51,7 @@ bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly)
 	if (hit_poly->portal_idx==-1) return(FALSE);
 
 	mesh_poly=&map.portals[hit_poly->portal_idx].mesh.meshes[hit_poly->mesh_idx].polys[hit_poly->poly_idx];
-	return((mesh_poly->box.common_xz) && (!mesh_poly->box.flat));
+	return(mesh_poly->box.wall_like);
 }
 
 /* =======================================================

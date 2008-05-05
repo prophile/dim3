@@ -568,14 +568,14 @@ int map_portal_add_light_single_vertex_list(portal_vertex_list_type *vl,int vl_c
 	zsz=mesh_poly->box.max.z-mesh_poly->box.min.z;
 	if (zsz==0) return(map_portal_add_light_xy_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
 
-		// polygons standing straight up will have common x/z's
+		// last ditch wall type checks
 
-	if (mesh_poly->box.common_xz) {
+	if (mesh_poly->box.wall_like) {
 		if (xsz>zsz) return(map_portal_add_light_xy_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
 		return(map_portal_add_light_yz_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
 	}
 
-		// else treat as floor or ceiling like polygon
+		// else treat as floor like polygon
 
 	return(map_portal_add_light_xz_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
 }

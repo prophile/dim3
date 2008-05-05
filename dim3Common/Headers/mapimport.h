@@ -148,10 +148,11 @@ typedef struct	{
 // auto-generate doors
 //
 
-#define ag_door_type_count							2
+#define ag_door_type_count							3
 
-#define ag_door_type_slide_up						0
+#define ag_door_type_slide							0
 #define ag_door_type_split							1
+#define ag_door_type_swing							2
 
 //
 // auto-generate blockings

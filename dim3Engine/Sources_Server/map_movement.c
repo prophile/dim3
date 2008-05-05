@@ -71,6 +71,8 @@ void map_movements_get_center(movement_type *movement,int *cx,int *cy,int *cz)
 void map_movements_start(int movement_idx,int move_idx,attach_type *attach)
 {
 	int						x,y,z,msec,buffer_idx;
+	d3pnt					rev_mov;
+	d3ang					rev_rot;
 	movement_type			*movement;
 	movement_move_type		*move;
 	attach_type				bkup_attach;
@@ -87,6 +89,16 @@ void map_movements_start(int movement_idx,int move_idx,attach_type *attach)
 	memmove(&bkup_attach,&js.attach,sizeof(attach_type));
 	memmove(&js.attach,attach,sizeof(attach_type));
 	
+		// get reverse movement
+		
+	rev_mov.x=-move->mov.x;
+	rev_mov.y=-move->mov.y;
+	rev_mov.z=-move->mov.z;
+	
+	rev_rot.x=-move->rot.x;
+	rev_rot.y=-move->rot.y;
+	rev_rot.z=-move->rot.z;
+	
 		// start move over time
 	
 	movement->cur_move_idx=move_idx;
@@ -95,12 +107,12 @@ void map_movements_start(int movement_idx,int move_idx,attach_type *attach)
 	msec=move->msec/10;
 	
 	if (!movement->reverse) {
-		script_move_add(movement->group_idx,movement_idx,move->mov.x,move->mov.y,move->mov.z,msec,move->user_id);
-		if (movement->reverse_group_idx!=-1) script_move_add(movement->reverse_group_idx,movement_idx,-move->mov.x,-move->mov.y,-move->mov.z,msec,move->user_id);
+		script_move_add(movement->group_idx,movement_idx,&move->mov,&move->rot,msec,move->user_id);
+		if (movement->reverse_group_idx!=-1) script_move_add(movement->reverse_group_idx,movement_idx,&rev_mov,&rev_rot,msec,move->user_id);
 	}
 	else {
-		script_move_add(movement->group_idx,movement_idx,-move->mov.x,-move->mov.y,-move->mov.z,msec,move->user_id);
-		if (movement->reverse_group_idx!=-1) script_move_add(movement->reverse_group_idx,movement_idx,move->mov.x,move->mov.y,move->mov.z,msec,move->user_id);
+		script_move_add(movement->group_idx,movement_idx,&rev_mov,&rev_rot,msec,move->user_id);
+		if (movement->reverse_group_idx!=-1) script_move_add(movement->reverse_group_idx,movement_idx,&move->mov,&move->rot,msec,move->user_id);
 	}
 	
 		// restore old attach

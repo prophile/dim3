@@ -320,6 +320,14 @@ void map_auto_generate_ramps(map_type *map)
       
 ======================================================= */
 
+int map_auto_generate_steps_get_length(int ty,int by,int step_size)
+{
+	int				step_cnt;
+	
+	step_cnt=(by-ty)/ag_constant_step_high;
+	return(step_cnt*step_size);
+}
+
 void map_auto_generate_steps(map_type *map,int rn,int ty,int by,int stair_mode,int step_sz,bool top_step_wall,bool back_wall,int lx,int rx,int lz,int rz)
 {
 	int				y,y2,step_cnt,px[8],py[8],pz[8];

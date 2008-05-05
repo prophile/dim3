@@ -41,7 +41,7 @@ extern map_type				map;
       
 ======================================================= */
 
-void walk_view_click_drag_constraint(int *x,int *y)
+void walk_view_click_drag_constraint_axis(int *x,int *y)
 {
 	int			ax,ay;
 	
@@ -66,6 +66,21 @@ void walk_view_click_drag_constraint(int *x,int *y)
 	}
 	else {
 		*x=ay;
+	}
+}
+
+void walk_view_click_drag_constraint(int *x,int *y,int *z,int view_mode_dir)
+{
+	switch (view_mode_dir) {
+		case vm_dir_forward:
+			walk_view_click_drag_constraint_axis(x,y);
+			break;
+		case vm_dir_side:
+			walk_view_click_drag_constraint_axis(z,y);
+			break;
+		case vm_dir_top:
+			walk_view_click_drag_constraint_axis(x,z);
+			break;
 	}
 }
 
@@ -165,10 +180,6 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 			first_drag=FALSE;
 		}
 		
-			// constraints
-			
-		walk_view_click_drag_constraint(&x,&y);
-		
 			// resize mesh
 
 		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
@@ -176,7 +187,9 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 		mx+=xadd;
 		my+=yadd;
 		mz+=zadd;
-		
+			
+		walk_view_click_drag_constraint(&mx,&my,&mz,view_move_dir);
+
 		mpt.x=mx;
 		mpt.y=my;
 		mpt.z=mz;
@@ -214,7 +227,7 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 		memmove(mesh->vertexes,old_dpt,(mesh->nvertex*sizeof(d3pnt)));
 		map_portal_mesh_resize(&map,portal_idx,mesh_idx,&min,&max);
 		
-		if (dp_auto_texture) map_portal_mesh_reset_uv(&map,portal_idx,mesh_idx);
+		if ((dp_auto_texture) && (!mesh->flag.lock_uv)) map_portal_mesh_reset_uv(&map,portal_idx,mesh_idx);
 
         main_wind_draw();
 		
@@ -350,7 +363,7 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 			old_dpt_ptr++;
 		}
 		
-		if (dp_auto_texture) map_portal_mesh_reset_uv(&map,portal_idx,mesh_idx);
+		if ((dp_auto_texture) && (!mesh->flag.lock_uv)) map_portal_mesh_reset_uv(&map,portal_idx,mesh_idx);
 
         main_wind_draw();
 		
@@ -470,7 +483,7 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 			dpt->z=old_dpt[n].z+mpt.z;
 		}
 
-		if (dp_auto_texture) map_portal_mesh_reset_poly_uv(&map,portal_idx,mesh_idx,poly_idx);
+		if ((dp_auto_texture) && (!mesh->flag.lock_uv)) map_portal_mesh_reset_poly_uv(&map,portal_idx,mesh_idx,poly_idx);
 
         main_wind_draw();
 		
@@ -599,6 +612,8 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		dpt->z=old_dpt.z+mpt.z;
 		if (dpt->z<0) dpt->z=0;
 		if (dpt->z>=bot) dpt->z=bot-1;
+		
+		if ((dp_auto_texture) && (!mesh->flag.lock_uv)) map_portal_mesh_reset_uv(&map,portal_idx,mesh_idx);
 
         main_wind_draw();
 		

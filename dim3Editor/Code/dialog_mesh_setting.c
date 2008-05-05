@@ -36,6 +36,11 @@ extern map_type				map;
 #define kMeshSettingMovable						FOUR_CHAR_CODE('fmov')
 #define kMeshSettingShiftable					FOUR_CHAR_CODE('fsht')
 #define kMeshSettingClimbable					FOUR_CHAR_CODE('fclb')
+#define kMeshSettingLockUV						FOUR_CHAR_CODE('lkuv')
+
+#define kMeshSettingRotX						FOUR_CHAR_CODE('rotx')
+#define kMeshSettingRotY						FOUR_CHAR_CODE('roty')
+#define kMeshSettingRotZ						FOUR_CHAR_CODE('rotz')
 
 #define kMeshPolySettingOffX					FOUR_CHAR_CODE('offx')
 #define kMeshPolySettingOffY					FOUR_CHAR_CODE('offy')
@@ -110,6 +115,11 @@ bool dialog_mesh_setting_run(int portal_idx,int mesh_idx,int poly_idx)
 	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSettingPassThrough,0,mesh->flag.pass_through);
 	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSettingMovable,0,mesh->flag.moveable);
 	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSettingClimbable,0,mesh->flag.climbable);
+	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSettingLockUV,0,mesh->flag.lock_uv);
+
+	dialog_set_int(dialog_mesh_setting_wind,kMeshSettingRotX,0,mesh->rot_off.x);
+	dialog_set_int(dialog_mesh_setting_wind,kMeshSettingRotY,0,mesh->rot_off.y);
+	dialog_set_int(dialog_mesh_setting_wind,kMeshSettingRotZ,0,mesh->rot_off.z);
 	
 	mesh_poly=&mesh->polys[poly_idx];
 	
@@ -146,7 +156,12 @@ bool dialog_mesh_setting_run(int portal_idx,int mesh_idx,int poly_idx)
 		mesh->flag.pass_through=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingPassThrough,0);
 		mesh->flag.moveable=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingMovable,0);
 		mesh->flag.climbable=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingClimbable,0);
+		mesh->flag.lock_uv=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingLockUV,0);
 		
+		mesh->rot_off.x=dialog_get_int(dialog_mesh_setting_wind,kMeshSettingRotX,0);
+		mesh->rot_off.y=dialog_get_int(dialog_mesh_setting_wind,kMeshSettingRotY,0);
+		mesh->rot_off.z=dialog_get_int(dialog_mesh_setting_wind,kMeshSettingRotZ,0);
+	
 		x_txtoff=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingOffX,0);
 		y_txtoff=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingOffY,0);
 		x_txtfact=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingSizeX,0);

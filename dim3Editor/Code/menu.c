@@ -554,6 +554,12 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			undo_clear();
             return(noErr);
 			
+		case kCommandPortalResetUV:
+			portal_reset_uvs();
+			main_wind_draw();
+			undo_clear();
+			return(noErr);
+			
         case kCommandPortalSplitHorizontal:
             portal_split(cr,FALSE);
 			main_wind_draw();
@@ -608,6 +614,11 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 		case kCommandPieceSnapToGrid:
 			piece_snap_to_grid();
+			main_wind_draw();
+			return(noErr);
+			
+		case kCommandPieceResetUV:
+			piece_reset_uvs();
 			main_wind_draw();
 			return(noErr);
 			

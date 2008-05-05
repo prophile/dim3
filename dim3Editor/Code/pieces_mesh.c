@@ -34,7 +34,7 @@ and can be sold or given away.
 #define import_obj_max_dimension		(map_enlarge*20)
 
 extern int						cr,cy,drag_mode;
-extern bool						dp_object,dp_node,dp_lightsoundparticle;
+extern bool						dp_object,dp_node,dp_lightsoundparticle,dp_auto_texture;
 
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;
@@ -295,6 +295,13 @@ void piece_add_library_mesh(void)
 		
 	drag_mode=drag_mode_mesh;
 	
+	if (dp_auto_texture) {
+		map_portal_mesh_reset_uv(&map,rn,mesh_idx);
+	}
+	else {
+		map.portals[rn].mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
+	}
+	
 	main_wind_draw();
 	main_wind_tool_reset();
 	main_wind_tool_fix_enable();
@@ -350,6 +357,13 @@ void piece_replace_library_mesh(void)
 		// change mode to move entire mesh
 		
 	drag_mode=drag_mode_mesh;
+	
+	if (dp_auto_texture) {
+		map_portal_mesh_reset_uv(&map,cr,mesh_idx);
+	}
+	else {
+		map.portals[portal_idx].mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
+	}
 	
 	main_wind_draw();
 	main_wind_tool_reset();
