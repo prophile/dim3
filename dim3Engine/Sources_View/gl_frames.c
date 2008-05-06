@@ -67,7 +67,7 @@ void gl_frame_end(void)
 
 /* =======================================================
 
-      Setup Projections
+      3D Projections
       
 ======================================================= */
 
@@ -118,7 +118,13 @@ void gl_3D_rotate(d3ang *ang)
 	glRotatef(((360-ang->y)+180),0,1,0);	// y rotate -- need to reverse the winding
 }
 
-void gl_2D_view(void)
+/* =======================================================
+
+      2D Projections
+      
+======================================================= */
+
+void gl_2D_view_screen(void)
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -128,11 +134,11 @@ void gl_2D_view(void)
 	glLoadIdentity();
 }
 
-void gl_2D_depth_view(int nearz,int farz)
+void gl_2D_view_interface(void)
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0,(GLdouble)setup.screen.x_sz,(GLdouble)setup.screen.y_sz,0,nearz,farz);
+	gluOrtho2D(0,(GLdouble)setup.screen.x_scale,(GLdouble)setup.screen.y_scale,0);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -147,78 +153,6 @@ void gl_2D_depth_view(int nearz,int farz)
 void gl_setup_viewport(int y_off)
 {
 	glViewport(render_info.view_x,(render_info.view_y+y_off),setup.screen.x_sz,(setup.screen.y_sz-y_off));
-}
-
-/* =======================================================
-
-      2D Scaling
-      
-======================================================= */
-
-void gl_scale_2D_point(int *x,int *y)
-{
-	*x=((*x)*setup.screen.x_sz)/setup.screen.x_scale;
-	*y=((*y)*setup.screen.y_sz)/setup.screen.y_scale;
-}
-
-void gl_scale_2D_x_coordinate(int *x)
-{
-	*x=((*x)*setup.screen.x_sz)/setup.screen.x_scale;
-}
-
-void gl_scale_2D_y_coordinate(int *y)
-{
-	*y=((*y)*setup.screen.y_sz)/setup.screen.y_scale;
-}
-
-void gl_scale_2D_aspect_size(int *wid,int *high)
-{
-	int			org_wid;
-
-		// scale the width
-
-	org_wid=*wid;
-	*wid=(org_wid*setup.screen.x_sz)/setup.screen.x_scale;
-
-		// maintain aspect ratio with height
-
-	*high=((*high)*(*wid))/org_wid;
-}
-
-void gl_scale_2D_aspect_box(int *lft,int *rgt,int *top,int *bot)
-{
-	int			wid,high;
-
-		// scale the width/height
-
-	wid=(*rgt)-(*lft);
-	high=(*bot)-(*top);
-	gl_scale_2D_aspect_size(&wid,&high);
-
-		// scale the left/top
-
-	gl_scale_2D_point(lft,top);
-
-		// recreate the box
-
-	*rgt=(*lft)+wid;
-	*bot=(*top)+high;
-}
-
-void gl_unscale_2D_point(int *x,int *y)
-{
-	*x=((*x)*setup.screen.x_scale)/setup.screen.x_sz;
-	*y=((*y)*setup.screen.y_scale)/setup.screen.y_sz;
-}
-
-void gl_unscale_2D_x_coordinate(int *x)
-{
-	*x=((*x)*setup.screen.x_scale)/setup.screen.x_sz;
-}
-
-void gl_unscale_2D_y_coordinate(int *y)
-{
-	*y=((*y)*setup.screen.y_scale)/setup.screen.y_sz;
 }
 
 /* =======================================================

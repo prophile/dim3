@@ -228,8 +228,15 @@ void input_gui_set_mouse(int x,int y)
 
 void input_gui_get_mouse_position(int *x,int *y)
 {
+		// get mouse
+
 	SDL_PumpEvents();
 	SDL_GetMouseState(x,y);
+
+		// scale from window to screen
+
+	*x=((*x)*setup.screen.x_scale)/setup.screen.x_sz;
+	*y=((*y)*setup.screen.y_scale)/setup.screen.y_sz;
 }
 
 bool input_gui_get_mouse_left_button_down(void)

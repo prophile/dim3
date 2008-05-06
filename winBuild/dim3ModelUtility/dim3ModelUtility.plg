@@ -6,40 +6,13 @@
 --------------------Configuration: dim3ModelUtility - Win32 Release--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSPDC02.tmp" with contents
+Creating temporary file "C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSPDDA3.tmp" with contents
 [
 /nologo /MD /W3 /GX /Z7 /O2 /I "..\win32Includes\pthreads" /I "..\win32Includes\GLEW" /I "..\win32Includes\ZLib" /I "..\win32Includes\SDL" /I "..\win32Includes\OpenAL" /I "..\win32Includes\JS" /I "..\win32Includes\PNG" /I "..\..\dim3ModelUtility\Headers" /I "..\..\dim3Common\Headers" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "D3_PCH" /Fp"Release/dim3ModelUtility.pch" /YX"dim3ModelUtility.h" /Fo"Release/" /Fd"Release/" /FD /c 
-"C:\Gumba\dim3Code\winBuild\dim3ModelUtility\win32Code\dim3ModelUtility.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\animation.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\bone.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\calculate.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\draw_bones.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\draw_normals.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\draw_setup.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\draw_vertexes.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\file_model_animate.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\file_model_mesh.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\file_model_mesh_v1.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\file_model_mesh_v2.c"
 "C:\Gumba\dim3Code\dim3ModelUtility\Sources\file_model_pose.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\file_model_shader.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\file_model_texture.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\hit_box.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\lookup.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\mesh.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\model_frames.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\model_light_spot.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\model_main.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\model_transform.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\normals.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\pose.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\positions.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\size.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\vertex_masks.c"
-"C:\Gumba\dim3Code\dim3ModelUtility\Sources\vertex_transform.c"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSPDC02.tmp" 
-Creating temporary file "C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSPDC03.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSPDDA3.tmp" 
+Creating temporary file "C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSPDDA4.tmp" with contents
 [
 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"Release/dim3ModelUtility.pdb" /machine:I386 /def:".\win32Code\dim3ModelUtility.def" /out:"..\..\..\dim3\dim3ModelUtility.dll" /implib:"Release/dim3ModelUtility.lib" 
 .\Release\dim3ModelUtility.obj
@@ -78,37 +51,10 @@ kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32
 ..\win32Includes\ZLib\zdll.lib
 ..\dim3BaseUtility\Release\dim3BaseUtility.lib
 ]
-Creating command line "link.exe @C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSPDC03.tmp"
+Creating command line "link.exe @C:\DOCUME~1\BBarnes\LOCALS~1\Temp\RSPDDA4.tmp"
 <h3>Output Window</h3>
 Compiling...
-dim3ModelUtility.c
-animation.c
-bone.c
-calculate.c
-draw_bones.c
-draw_normals.c
-draw_setup.c
-draw_vertexes.c
-file_model_animate.c
-file_model_mesh.c
-file_model_mesh_v1.c
-file_model_mesh_v2.c
 file_model_pose.c
-file_model_shader.c
-file_model_texture.c
-hit_box.c
-lookup.c
-mesh.c
-model_frames.c
-model_light_spot.c
-model_main.c
-model_transform.c
-normals.c
-pose.c
-positions.c
-size.c
-vertex_masks.c
-vertex_transform.c
 Linking...
    Creating library Release/dim3ModelUtility.lib and object Release/dim3ModelUtility.exp
 

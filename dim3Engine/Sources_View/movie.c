@@ -100,7 +100,7 @@ void movie_draw(void)
 		// start the frame
 	
 	gl_frame_start(NULL);
-	gl_2D_view();
+	gl_2D_view_screen();
 	
 	gl_texture_movie_start(movie_bitmap_gl_id);
 

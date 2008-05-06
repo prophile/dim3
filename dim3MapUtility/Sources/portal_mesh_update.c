@@ -400,8 +400,8 @@ void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,bool do_po
 	int						n,k,idx,nvertex,npoly,nlight;
 	float					fx,fy,fz;
 	unsigned char			*phit;
-	d3pnt					mpt;
-	d3pnt					*pt;
+	d3vct					f_mpt;
+	d3pnt					*pt,mpt;
 	matrix_type				mat;
 	portal_type				*portal;
 	map_mesh_type			*mesh;
@@ -414,9 +414,9 @@ void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,bool do_po
 		// get center
 
 	map_portal_mesh_calculate_center(map,portal_idx,mesh_idx,&mpt);
-	mpt.x+=mesh->rot_off.x;
-	mpt.y+=mesh->rot_off.y;
-	mpt.z+=mesh->rot_off.z;
+	f_mpt.x=(float)(mpt.x+mesh->rot_off.x);
+	f_mpt.y=(float)(mpt.y+mesh->rot_off.y);
+	f_mpt.z=(float)(mpt.z+mesh->rot_off.z);
 
 		// matrixes
 
@@ -428,15 +428,15 @@ void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,bool do_po
 	pt=mesh->vertexes;
 
 	for (n=0;n!=nvertex;n++) {
-		fx=(float)(pt->x-mpt.x);
-		fy=(float)(pt->y-mpt.y);
-		fz=(float)(pt->z-mpt.z);
+		fx=((float)pt->x)-f_mpt.x;
+		fy=((float)pt->y)-f_mpt.y;
+		fz=((float)pt->z)-f_mpt.z;
 
 		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
-		pt->x=((int)fx)+mpt.x;
-		pt->y=((int)fy)+mpt.y;
-		pt->z=((int)fz)+mpt.z;
+		pt->x=(int)(fx+f_mpt.x);
+		pt->y=(int)(fy+f_mpt.y);
+		pt->z=(int)(fz+f_mpt.z);
 
 		pt++;
 	}
@@ -468,15 +468,15 @@ void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,bool do_po
 				phit[idx]=0x1;
 				pv=&portal->vertexes.vertex_list[idx];
 				
-				fx=(float)(pv->x-mpt.x);
-				fy=(float)(pv->y-mpt.y);
-				fz=(float)(pv->z-mpt.z);
+				fx=((float)pv->x)-f_mpt.x;
+				fy=((float)pv->y)-f_mpt.y;
+				fz=((float)pv->z)-f_mpt.z;
 
 				matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
-				pv->x=((int)fx)+mpt.x;
-				pv->y=((int)fy)+mpt.y;
-				pv->z=((int)fz)+mpt.z;
+				pv->x=fx+f_mpt.x;
+				pv->y=fy+f_mpt.y;
+				pv->z=fz+f_mpt.z;
 			}
 		}
 
@@ -491,15 +491,15 @@ void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,bool do_po
 				phit[idx]=0x1;
 				pv=&portal->vertexes.vertex_list[idx];
 				
-				fx=(float)(pv->x-mpt.x);
-				fy=(float)(pv->y-mpt.y);
-				fz=(float)(pv->z-mpt.z);
+				fx=pv->x-f_mpt.x;
+				fy=pv->y-f_mpt.y;
+				fz=pv->z-f_mpt.z;
 
 				matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
-				pv->x=((int)fx)+mpt.x;
-				pv->y=((int)fy)+mpt.y;
-				pv->z=((int)fz)+mpt.z;
+				pv->x=fx+f_mpt.x;
+				pv->y=fy+f_mpt.y;
+				pv->z=fz+f_mpt.z;
 			}
 		}
 

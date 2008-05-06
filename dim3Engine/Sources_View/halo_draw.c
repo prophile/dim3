@@ -264,7 +264,7 @@ void halo_draw_render(void)
 		// halos are post-render overlay effects
 		
 	gl_setup_viewport(console_y_offset());
-	gl_2D_view();
+	gl_2D_view_screen();
 	
 	gl_texture_simple_start();
 

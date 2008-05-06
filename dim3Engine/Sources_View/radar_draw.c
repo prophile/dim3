@@ -63,7 +63,7 @@ void radar_draw(void)
 		// set up view
 		
 	gl_setup_viewport(console_y_offset());
-	gl_2D_view();
+	gl_2D_view_interface();
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -81,9 +81,6 @@ void radar_draw(void)
 	ty=hud.radar.y-radar_sz;
 	rx=lx+(radar_sz<<1);
 	by=ty+(radar_sz<<1);
-	
-	gl_scale_2D_point(&lx,&ty);
-	gl_scale_2D_point(&rx,&by);
 
 		// draw radar background
 
@@ -165,9 +162,6 @@ void radar_draw(void)
 		rx=x+icon->size;
 		ty=y-icon->size;
 		by=y+icon->size;
-		
-		gl_scale_2D_point(&lx,&ty);
-		gl_scale_2D_point(&rx,&by);
 		
 		glBegin(GL_QUADS);
 		glTexCoord2f(0.0f,0.0f);

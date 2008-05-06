@@ -84,6 +84,9 @@ void map_movements_start(int movement_idx,int move_idx,attach_type *attach)
 		
 	movement->started=TRUE;
 	
+	movement->cur_move_idx=move_idx;
+	move=&movement->moves[move_idx];
+	
 		// save current script attach and use course
 			
 	memmove(&bkup_attach,&js.attach,sizeof(attach_type));
@@ -100,9 +103,6 @@ void map_movements_start(int movement_idx,int move_idx,attach_type *attach)
 	rev_rot.z=-move->rot.z;
 	
 		// start move over time
-	
-	movement->cur_move_idx=move_idx;
-	move=&movement->moves[move_idx];
 	
 	msec=move->msec/10;
 	

@@ -154,7 +154,7 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 		// setup drawing
 		
 	gl_setup_viewport(console_y_offset());
-	gl_2D_view();
+	gl_2D_view_screen();
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);

@@ -77,7 +77,7 @@ int map_portal_mesh_add(map_type *map,int portal_idx)
 	mesh->flag.touched=FALSE;
 	mesh->flag.lock_uv=FALSE;
 
-	mesh->rot_off.x=mesh->rot_off.y=mesh->rot_off.z=0.0f;
+	mesh->rot_off.x=mesh->rot_off.y=mesh->rot_off.z=0;
 	
 	mesh->nvertex=0;
 	mesh->vertexes=NULL;

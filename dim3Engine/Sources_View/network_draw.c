@@ -69,9 +69,6 @@ void network_score_single_box_draw(int lx,int rx,int y,int yadd,d3col *team_col)
 	y2=y;
 	y=y2-yadd;
 	
-	gl_scale_2D_point(&x,&y);
-	gl_scale_2D_point(&x2,&y2);
-	
 	glBegin(GL_QUADS);
 	glVertex2i((x-2),(y-1));
 	glVertex2i((x2+2),(y-1));
@@ -393,7 +390,7 @@ void network_draw(int tick)
 		// set up view
 		
 	gl_setup_viewport(console_y_offset());
-	gl_2D_view();
+	gl_2D_view_interface();
 	
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);

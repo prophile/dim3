@@ -95,7 +95,7 @@ bool read_pose_xml(model_type *model)
 				bone_move->skip_blended=xml_get_attribute_boolean(tag,"skip_blended");
 				
 				bone_move->constraint.bone_idx=-1;
-				bone_move->constraint.offset.x=bone_move->constraint.offset.y=bone_move->constraint.offset.z=0.0f;
+				bone_move->constraint.offset.x=bone_move->constraint.offset.y=bone_move->constraint.offset.z=0;
 				
 				constraint_bone_tag=xml_get_attribute_model_tag(tag,"constraint_bone");
 				if (constraint_bone_tag!=model_null_tag) {
@@ -185,7 +185,7 @@ bool write_pose_xml(model_type *model)
 				
 				if (bone_move->constraint.bone_idx!=-1) {
 					xml_add_attribute_model_tag("constraint_bone",model->bones[bone_move->constraint.bone_idx].tag);
-					xml_add_attribute_3_coord_float("constraint_offset",bone_move->constraint.offset.x,bone_move->constraint.offset.y,bone_move->constraint.offset.z);
+					xml_add_attribute_3_coord_int("constraint_offset",bone_move->constraint.offset.x,bone_move->constraint.offset.y,bone_move->constraint.offset.z);
 				}
 				
 				xml_add_tagend(TRUE);

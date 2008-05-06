@@ -60,12 +60,10 @@ int console_y_offset(void)
 			
 		case console_mode_fps:
 			y=gl_text_get_char_height(TRUE);
-			gl_scale_2D_y_coordinate(&y);
 			return(y);
 			
 		case console_mode_open:
 			y=gl_text_get_char_height(TRUE);
-			gl_scale_2D_y_coordinate(&y);
 			return((max_console_line*y)+2);
 		
 	}
@@ -99,7 +97,7 @@ void console_draw_fps(void)
 		// setup view
 				
 	gl_setup_viewport(0);
-	gl_2D_view();
+	gl_2D_view_interface();
 	
 		// setup fonts
 	
@@ -113,9 +111,6 @@ void console_draw_fps(void)
 	by=setup.screen.y_scale;
 
 	y=ty+(y_add+1);
-	
-	gl_scale_2D_point(&lx,&ty);
-	gl_scale_2D_point(&rx,&by);
 		
 	glColor3f(0.75f,0.75f,0.75f);
 	
@@ -166,7 +161,7 @@ void console_draw_open(void)
 		// setup view
 				
 	gl_setup_viewport(0);
-	gl_2D_view();
+	gl_2D_view_interface();
 	
 		// setup fonts
 	
@@ -182,10 +177,6 @@ void console_draw_open(void)
 	
 	y=ty2+1;
 	
-	gl_scale_2D_point(&lx,&ty);
-	gl_scale_2D_y_coordinate(&ty2);
-	gl_scale_2D_point(&rx,&by);
-		
 	glColor3f(0.75f,0.75f,0.75f);
 	glBegin(GL_QUADS);
 	glVertex2i(lx,ty);

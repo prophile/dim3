@@ -56,7 +56,7 @@ void draw_background(int cx,int cy,int cz)
 		// setup view
 
 	gl_setup_viewport(console_y_offset());
-	gl_2D_view();
+	gl_2D_view_screen();
 	
 		// get scrolling
 		

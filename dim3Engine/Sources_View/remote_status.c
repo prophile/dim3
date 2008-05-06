@@ -271,7 +271,7 @@ void remote_draw_names_render(void)
 	if (!setup.network.show_names) return;
 
 	gl_setup_viewport(console_y_offset());
-	gl_2D_view();
+	gl_2D_view_interface();
 	
 		// draw all names
 
@@ -282,9 +282,18 @@ void remote_draw_names_render(void)
 	for (n=0;n!=server.count.obj;n++) {
 	
 		if (obj->draw.remote_name.on) {
+
+				// get 2D position in screen resolution
+
 			x=obj->draw.remote_name.proj_pnt.x;
 			y=setup.screen.y_sz-obj->draw.remote_name.proj_pnt.y;
-			gl_unscale_2D_point(&x,&y);			// text drawing is scaled
+
+				// covert to interface resolution
+
+			x=(x*setup.screen.x_scale)/setup.screen.x_sz;
+			y=(y*setup.screen.y_scale)/setup.screen.y_sz;
+
+				// draw text
 
 			remote_get_ui_color(obj,&col);
 			gl_text_draw(x,y,obj->name,tx_center,FALSE,&col,obj->draw.remote_name.fade);

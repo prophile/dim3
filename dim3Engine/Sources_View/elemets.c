@@ -32,6 +32,9 @@ and can be sold or given away.
 #include "video.h"
 #include "inputs.h"
 
+#define element_control_high_factor				1.5f
+#define element_control_separator_factor		0.6f
+
 extern hud_type				hud;
 extern setup_type			setup;
 
@@ -253,12 +256,12 @@ void element_clear(void)
 
 inline int element_get_control_high(void)
 {
-	return(20);
+	return((int)(((float)gl_text_get_char_height(TRUE))*element_control_high_factor));
 }
 
 inline int element_get_separator_high(void)
 {
-	return(8);
+	return((int)(((float)gl_text_get_char_height(TRUE))*element_control_separator_factor));
 }
 
 /* =======================================================
@@ -823,7 +826,6 @@ void element_draw_button(element_type *element,int sel_id)
 	}
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
-	gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
 	
 	glBegin(GL_QUADS);
 	glTexCoord2f(0,0);
@@ -853,7 +855,6 @@ void element_draw_bitmap(element_type *element)
 	int				lft,rgt,top,bot;
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
-	gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
 
 		// the picture
 		
@@ -1017,8 +1018,6 @@ void element_draw_text_field(element_type *element,int sel_id)
 	top=(y-element->high)-1;
 	bot=y+1;
 	
-	gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
-	
 	alpha=(element->enabled?1.0f:0.5f);
 
 	gl_texture_simple_start();
@@ -1110,8 +1109,6 @@ void element_draw_checkbox(element_type *element,int sel_id)
 	rgt=lft+(element->wid-1);
 	top=(y-element->high)+1;
 	bot=y-1;
-
-	gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
 	
 	alpha=(element->enabled?1.0f:0.5f);
 
@@ -1253,8 +1250,6 @@ void element_draw_combo(element_type *element,int sel_id)
 	rgt=lft+element->wid;
 	top=(y-element->high)-1;
 	bot=y+1;
-	
-	gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
 
 	alpha=(element->enabled?1.0f:0.5f);
 
@@ -1329,8 +1324,6 @@ void element_draw_combo_open(element_type *element)
 		rgt=lft+element->wid;
 		top=(y-element->high)-1;
 		bot=y+1;
-
-		gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
 
 		gl_texture_simple_start();
 
@@ -1444,9 +1437,6 @@ void element_draw_slider(element_type *element,int sel_id)
 	bot=y-1;
 	
 	mid=lft+(int)(((float)element->wid)*element->setup.slider.value);
-	
-	gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
-	gl_scale_2D_x_coordinate(&mid);
 
 	alpha=(element->enabled?1.0f:0.5f);
 
@@ -1617,10 +1607,6 @@ void element_draw_table_line_lines(element_type *element,int x,int y,int wid,int
 		ty=y-(high+1);
 		by=y;
 		
-		gl_scale_2D_x_coordinate(&lx);
-		gl_scale_2D_y_coordinate(&ty);
-		gl_scale_2D_y_coordinate(&by);
-		
 		glBegin(GL_LINES);
 		glVertex2i(lx,ty);
 		glVertex2i(lx,by);
@@ -1696,9 +1682,6 @@ void element_draw_table(element_type *element,int sel_id)
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	
-	gl_scale_2D_point(&lft,&top);
-	gl_scale_2D_point(&rgt,&bot);
-	
 	glBegin(GL_LINE_LOOP);
 	glVertex2i(lft,top);
 	glVertex2i(rgt,top);
@@ -1709,9 +1692,6 @@ void element_draw_table(element_type *element,int sel_id)
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	top+=(high+4);
 	
-	gl_scale_2D_point(&lft,&top);
-	gl_scale_2D_point(&rgt,&bot);
-	
 	glBegin(GL_LINES);
 	glVertex2i(lft,top);
 	glVertex2i(rgt,top);
@@ -1721,9 +1701,6 @@ void element_draw_table(element_type *element,int sel_id)
 		
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	lft=rgt-24;
-
-	gl_scale_2D_point(&lft,&top);
-	gl_scale_2D_point(&rgt,&bot);
 	
 	glBegin(GL_LINES);
 	glVertex2i(lft,top);
@@ -1733,9 +1710,6 @@ void element_draw_table(element_type *element,int sel_id)
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	lft=rgt-24;
 	top+=(high+28);
-
-	gl_scale_2D_point(&lft,&top);
-	gl_scale_2D_point(&rgt,&bot);
 	
 	glBegin(GL_LINES);
 	glVertex2i(lft,top);
@@ -1745,9 +1719,6 @@ void element_draw_table(element_type *element,int sel_id)
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	lft=rgt-24;
 	bot-=24;
-
-	gl_scale_2D_point(&lft,&top);
-	gl_scale_2D_point(&rgt,&bot);
 	
 	glBegin(GL_LINES);
 	glVertex2i(lft,bot);
@@ -1775,8 +1746,6 @@ void element_draw_table(element_type *element,int sel_id)
 		top+=2;
 		bot=top+high;
 		
-		gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
-		
 		gl_texture_simple_set(element_busy.gl_id,TRUE,1,1,1,1.0f);
 		
 		k=(time_get()>>8)&0x3;
@@ -1803,8 +1772,6 @@ void element_draw_table(element_type *element,int sel_id)
 	top+=(high+8);
 	bot=top+16;
 	
-	gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
-	
 	gl_texture_simple_set(element_scroll_up.gl_id,TRUE,1,1,1,(up_ok?1.0f:0.5f));
 	
 	glBegin(GL_QUADS);
@@ -1825,8 +1792,6 @@ void element_draw_table(element_type *element,int sel_id)
 	rgt=lft+16;
 	bot-=4;
 	top=bot-16;
-
-	gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
 	
 	gl_texture_simple_set(element_scroll_down.gl_id,TRUE,1,1,1,(down_ok?1.0f:0.5f));
 	
@@ -1891,9 +1856,6 @@ void element_draw_table(element_type *element,int sel_id)
 		rgt-=26;
 		top=(y-high)+1;
 		bot=y+2;
-		
-		gl_scale_2D_point(&lft,&top);
-		gl_scale_2D_point(&rgt,&bot);
 		
 		glBegin(GL_QUADS);
 		glVertex2i(lft,top);
@@ -1980,16 +1942,11 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 
 	lx=lft;
 	rx=rgt;
-	
-	gl_scale_2D_x_coordinate(&lx);
-	gl_scale_2D_x_coordinate(&rx);
 
 	klft=0;
 	krgt=xadd;
 	ktop=top;
 	ky=bot;
-
-	gl_scale_2D_aspect_box(&klft,&krgt,&ktop,&ky);		// need to use aspect box to get tab size
 
 	gl_texture_simple_set(element_tab_border.gl_id,FALSE,1,1,1,1);
 	
@@ -2005,7 +1962,6 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 	glEnd();
 
 	ky=top+element->ext_high;
-	gl_scale_2D_y_coordinate(&ky);
 
 	glBegin(GL_QUADS);
 	glTexCoord2f(0,0);
@@ -2034,8 +1990,6 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 		else {
 			gl_texture_simple_set(element->setup.tab.bitmap[n].gl_id,TRUE,1,1,1,1);
 		}
-		
-		gl_scale_2D_aspect_box(&lx,&rx,&ty,&by);
 
 		glBegin(GL_QUADS);
 		glTexCoord2f(0,0);
@@ -2083,8 +2037,6 @@ void element_draw_lock(bool cursor_hilite)
 			}
 			else {
 				input_gui_get_mouse_position(&x,&y);
-				gl_unscale_2D_point(&x,&y);
-				
 				id=element_find_for_xy(x,y);
 			}
 		}
@@ -2183,10 +2135,6 @@ void element_click_down_lock(int x,int y)
 {
 	element_type		*element;
 
-		// scale point
-		
-	gl_unscale_2D_point(&x,&y);
-
 		// already in a down click, if so,
 		// check if we are in a slider
 
@@ -2231,10 +2179,6 @@ int element_click_up_lock(int x,int y)
 		
 	if (element_click_down_id==-1) return(-1);
 	
-		// scale point from screen
-		
-	gl_unscale_2D_point(&x,&y);
-
 		// in open combo?
 		
 	if (element_open_combo_id!=-1) {
@@ -2386,7 +2330,6 @@ int element_get_selected(void)
 	if (element_open_combo_id!=-1) return(element_open_combo_id);
 
 	input_gui_get_mouse_position(&x,&y);
-	gl_unscale_2D_point(&x,&y);
 				
 	return(element_find_for_xy(x,y));
 }

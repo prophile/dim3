@@ -74,7 +74,7 @@ void fade_screen_draw(int tick)
 		// draw
 		
 	gl_setup_viewport(console_y_offset());
-	gl_2D_view();
+	gl_2D_view_screen();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -125,12 +125,11 @@ void fade_object_draw(int tick,obj_type *obj)
 
 	x=fade->center_x;
 	y=fade->center_y;
-	gl_scale_2D_point(&x,&y);
 
 		// draw fade
 
 	gl_setup_viewport(console_y_offset());
-	gl_2D_view();
+	gl_2D_view_screen();
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);

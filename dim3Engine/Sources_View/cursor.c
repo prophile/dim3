@@ -68,14 +68,11 @@ void cursor_draw(void)
 		// get cursor position
 		
 	input_gui_get_mouse_position(&x,&y);
-	gl_unscale_2D_point(&x,&y);
 		
 	lft=x;
 	rgt=lft+cursor_bitmap.wid;
 	top=y;
 	bot=top+cursor_bitmap.high;
-
-	gl_scale_2D_aspect_box(&lft,&rgt,&top,&bot);
 
 		// draw mouse
 		

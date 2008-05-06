@@ -392,7 +392,7 @@ void crosshair_draw(obj_type *obj,weapon_type *weap)
 		// draw the crosshair
 		
 	gl_setup_viewport(console_y_offset());
-	gl_2D_view();
+	gl_2D_view_screen();
 	
 	half_sz=crosshair_draw->sz>>1;
 	

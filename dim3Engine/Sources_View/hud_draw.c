@@ -191,7 +191,6 @@ void hud_bitmaps_draw(int tick)
 
 		rx=sx+wid;
 		ry=sy+high;
-		gl_scale_2D_aspect_box(&sx,&rx,&sy,&ry);
 
 		px[0]=px[3]=sx;
 		px[1]=px[2]=rx;
@@ -203,8 +202,6 @@ void hud_bitmaps_draw(int tick)
 
 		rx=bitmap->repeat.x_add;
 		ry=bitmap->repeat.y_add;
-
-		gl_scale_2D_point(&rx,&ry);
 
 			// draw bitmaps
 
@@ -438,9 +435,6 @@ void hud_bars_draw(void)
 		rx=lx+wid;
 		by=bar->y+bar->y_size;
 		ty=by-high;
-		
-		gl_scale_2D_point(&lx,&ty);
-		gl_scale_2D_point(&rx,&by);
 			
 		glBegin(GL_QUADS);
 		
@@ -471,9 +465,6 @@ void hud_bars_draw(void)
 			rx=lx+bar->x_size;
 			ty=bar->y;
 			by=ty+bar->y_size;
-			
-			gl_scale_2D_point(&lx,&ty);
-			gl_scale_2D_point(&rx,&by);
 			
 			glColor4f(bar->outline_color.r,bar->outline_color.g,bar->outline_color.b,bar->outline_alpha);
 			
@@ -515,7 +506,7 @@ void hud_draw(int tick)
 		// set up view
 		
 	gl_setup_viewport(console_y_offset());
-	gl_2D_view();
+	gl_2D_view_interface();
 	
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);

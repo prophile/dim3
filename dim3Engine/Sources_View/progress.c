@@ -102,7 +102,7 @@ void progress_draw(float percentage)
 	
 		// setup draw
 		
-	gl_2D_view();
+	gl_2D_view_interface();
 	
 		// draw background
 		
@@ -118,11 +118,11 @@ void progress_draw(float percentage)
 	glTexCoord2f(0,0);
 	glVertex2i(0,0);
 	glTexCoord2f(1,0);
-	glVertex2i(setup.screen.x_sz,0);
+	glVertex2i(setup.screen.x_scale,0);
 	glTexCoord2f(1,1);
-	glVertex2i(setup.screen.x_sz,setup.screen.y_sz);
+	glVertex2i(setup.screen.x_scale,setup.screen.y_scale);
 	glTexCoord2f(0,1);
-	glVertex2i(0,setup.screen.y_sz);
+	glVertex2i(0,setup.screen.y_scale);
     glEnd();
     
 	gl_texture_simple_end();
@@ -133,9 +133,6 @@ void progress_draw(float percentage)
 	rgt=hud.progress.rx;
 	top=hud.progress.ty;
 	bot=hud.progress.by;
-	
-	gl_scale_2D_point(&lft,&top);
-	gl_scale_2D_point(&rgt,&bot);
 
 	mid=(top+bot)>>1;
 	

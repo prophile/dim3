@@ -58,7 +58,7 @@ void view_draw_liquid_tint(liquid_pointer_type *liq_ptr)
 	glColor4f(liq->col.r,liq->col.g,liq->col.b,liq->tint_alpha);
 		
 	gl_setup_viewport(console_y_offset());
-	gl_2D_view();
+	gl_2D_view_screen();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -112,7 +112,7 @@ void view_draw_effect_tint(int tick,obj_type *obj)
 		// draw
 		
 	gl_setup_viewport(console_y_offset());
-	gl_2D_view();
+	gl_2D_view_screen();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);

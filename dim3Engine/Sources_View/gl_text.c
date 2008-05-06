@@ -31,6 +31,10 @@ and can be sold or given away.
 
 #include "video.h"
 
+#define text_small_factor				0.02f
+#define text_large_factor				0.038f
+#define text_height_factor				1.2f
+
 extern setup_type			setup;
 
 bool						font_small;
@@ -80,12 +84,13 @@ void gl_text_shutdown(void)
 
 inline int gl_text_get_char_width(bool small_text)
 {
-	return(small_text?12:24);
+	if (small_text) return((int)(((float)setup.screen.x_scale)*text_small_factor));
+	return((int)(((float)setup.screen.x_scale)*text_large_factor));
 }
 
 inline int gl_text_get_char_height(bool small_text)
 {
-	return(small_text?14:28);
+	return((int)(((float)gl_text_get_char_width(small_text))*text_height_factor));
 }
 
 int gl_text_get_string_width(char *str,bool small_text)
@@ -94,7 +99,6 @@ int gl_text_get_string_width(char *str,bool small_text)
 	char		*c;
 	
 	wid=gl_text_get_char_width(small_text);
-	gl_scale_2D_x_coordinate(&wid);
 	
 	c=str;
 	len=strlen(str);
@@ -112,8 +116,6 @@ int gl_text_get_string_width(char *str,bool small_text)
 			x+=(wid/3);
 		}
 	}
-	
-	gl_unscale_2D_x_coordinate(&x);
 	
 	return(x);
 }
@@ -197,13 +199,10 @@ void gl_text_draw_line(int x,int y,char *txt,int txtlen,bool vcenter)
 	float		gx_lft,gx_rgt,gy_top,gy_bot;
 	char		*c;
     
-		// scale values before drawing
+		// get width and height
 		
 	wid=gl_text_get_char_width(font_small);
 	high=gl_text_get_char_height(font_small);
-		
-	gl_scale_2D_point(&x,&y);
-	gl_scale_2D_aspect_size(&wid,&high);
 	
 		// draw text
 	

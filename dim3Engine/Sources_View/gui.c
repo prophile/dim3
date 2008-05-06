@@ -113,8 +113,8 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view,bool 
 	
 		// start mouse in middle of screen
 		
-	x=setup.screen.x_sz>>1;
-	y=setup.screen.y_sz>>1;
+	x=setup.screen.x_scale>>1;
+	y=setup.screen.y_scale>>1;
 	input_gui_set_mouse(x,y);
 
 		// no last keypress
@@ -169,7 +169,7 @@ void gui_draw_background(float alpha)
 
 		// 2D draw setup
 
-	gl_2D_view();
+	gl_2D_view_interface();
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
@@ -184,9 +184,9 @@ void gui_draw_background(float alpha)
 	if (gui_background_bitmap.gl_id==-1) {
 		glBegin(GL_QUADS);
 		glVertex2i(0,0);
-		glVertex2i(setup.screen.x_sz,0);
-		glVertex2i(setup.screen.x_sz,setup.screen.y_sz);
-		glVertex2i(0,setup.screen.y_sz);
+		glVertex2i(setup.screen.x_scale,0);
+		glVertex2i(setup.screen.x_scale,setup.screen.y_scale);
+		glVertex2i(0,setup.screen.y_scale);
 		glEnd();
 		return;
 	}
@@ -201,11 +201,11 @@ void gui_draw_background(float alpha)
 	glTexCoord2f(0,0);
 	glVertex2i(0,0);
 	glTexCoord2f(1,0);
-	glVertex2i(setup.screen.x_sz,0);
+	glVertex2i(setup.screen.x_scale,0);
 	glTexCoord2f(1,1);
-	glVertex2i(setup.screen.x_sz,setup.screen.y_sz);
+	glVertex2i(setup.screen.x_scale,setup.screen.y_scale);
 	glTexCoord2f(0,1);
-	glVertex2i(0,setup.screen.y_sz);
+	glVertex2i(0,setup.screen.y_scale);
     glEnd();
     
 	gl_texture_simple_end();
@@ -217,7 +217,7 @@ void gui_draw_dialog(void)
 
 	if (!gui_show_dialog) return;
 
-	gl_2D_view();
+	gl_2D_view_interface();
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
@@ -228,8 +228,6 @@ void gui_draw_dialog(void)
 	glDisable(GL_DEPTH_TEST);
 
 	element_get_dialog_size(&lft,&top,&rgt,&bot);
-	gl_scale_2D_point(&lft,&top);
-	gl_scale_2D_point(&rgt,&bot);
 
 		// darken
 
@@ -284,7 +282,7 @@ void gui_draw(float background_alpha,bool cursor)
 
 		// elements
 
-	gl_2D_view();
+	gl_2D_view_interface();
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
@@ -316,7 +314,7 @@ void gui_draw_message(char *txt)
 
 		// messages
 
-	gl_2D_view();
+	gl_2D_view_interface();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -336,9 +334,6 @@ void gui_draw_message(char *txt)
 	
 	lx=0;
 	rx=setup.screen.x_scale;
-	
-	gl_scale_2D_point(&lx,&ty);
-	gl_scale_2D_point(&rx,&by);
 	
 		// draw the blue band
 		
