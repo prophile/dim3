@@ -39,8 +39,9 @@ extern modelutility_settings_type		modelutility_settings;
 
 bool read_pose_xml(model_type *model)
 {
-	int						i,k,t,cnt,tag,model_head,bone_tag,poses_tag,pose_tag;
+	int						i,k,t,cnt,tag,model_head,bone_tag,poses_tag,pose_tag,constraint_bone_idx;
 	char					sub_path[1024],path[1024];
+	model_tag				constraint_bone_tag;
     model_bone_move_type	*bone_move;
 	model_pose_type			*pose;
 	
@@ -68,8 +69,12 @@ bool read_pose_xml(model_type *model)
         
         bone_move=pose->bone_moves;
         for (k=0;k!=model->nbone;k++) {
-            bone_move->rot.x=bone_move->rot.z=bone_move->rot.y=0;
-            bone_move->mov.x=bone_move->mov.z=bone_move->mov.y=1;
+            bone_move->rot.x=bone_move->rot.z=bone_move->rot.y=0.0f;
+            bone_move->mov.x=bone_move->mov.z=bone_move->mov.y=1.0f;
+			bone_move->acceleration=0;
+			bone_move->skip_blended=FALSE;
+			bone_move->constraint.bone_idx=-1;
+			bone_move->constraint.offset.x=bone_move->constraint.offset.y=bone_move->constraint.offset.z=0;
 			bone_move++;
         }
             
@@ -79,14 +84,29 @@ bool read_pose_xml(model_type *model)
 		tag=xml_findfirstchild("Bone",bone_tag);
         
         for (k=0;k!=cnt;k++) {
+		
             t=model_find_bone(model,xml_get_attribute_model_tag(tag,"tag"));
             if (t!=-1) {
                 bone_move=&pose->bone_moves[t];
                 xml_get_attribute_3_coord_float(tag,"rot",&bone_move->rot.x,&bone_move->rot.y,&bone_move->rot.z);
 				xml_get_attribute_3_coord_float(tag,"move",&bone_move->mov.x,&bone_move->mov.y,&bone_move->mov.z);
+				
 				bone_move->acceleration=xml_get_attribute_float(tag,"acceleration");
 				bone_move->skip_blended=xml_get_attribute_boolean(tag,"skip_blended");
-            }
+				
+				bone_move->constraint.bone_idx=-1;
+				bone_move->constraint.offset.x=bone_move->constraint.offset.y=bone_move->constraint.offset.z=0.0f;
+				
+				constraint_bone_tag=xml_get_attribute_model_tag(tag,"constraint_bone");
+				if (constraint_bone_tag!=model_null_tag) {
+					constraint_bone_idx=model_find_bone(model,constraint_bone_tag);
+					if (constraint_bone_idx!=-1) {
+						bone_move->constraint.bone_idx=constraint_bone_idx;
+						xml_get_attribute_3_coord_int(tag,"constraint_offset",&bone_move->constraint.offset.x,&bone_move->constraint.offset.y,&bone_move->constraint.offset.z);
+					}
+				}
+			}
+		  
 			tag=xml_findnextchild(tag);
         }
     
@@ -159,9 +179,16 @@ bool write_pose_xml(model_type *model)
                 xml_add_attribute_model_tag("tag",model->bones[k].tag);
                 xml_add_attribute_3_coord_float("rot",bone_move->rot.x,bone_move->rot.y,bone_move->rot.z);
                 xml_add_attribute_3_coord_float("move",bone_move->mov.x,bone_move->mov.y,bone_move->mov.z);
+				
 				xml_add_attribute_float("acceleration",bone_move->acceleration);
 				xml_add_attribute_boolean("skip_blended",bone_move->skip_blended);
-                xml_add_tagend(TRUE);
+				
+				if (bone_move->constraint.bone_idx!=-1) {
+					xml_add_attribute_model_tag("constraint_bone",model->bones[bone_move->constraint.bone_idx].tag);
+					xml_add_attribute_3_coord_float("constraint_offset",bone_move->constraint.offset.x,bone_move->constraint.offset.y,bone_move->constraint.offset.z);
+				}
+				
+				xml_add_tagend(TRUE);
             }
             
             bone_move++;

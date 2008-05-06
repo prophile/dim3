@@ -351,12 +351,47 @@ void model_move_draw_bones(model_type *model,model_draw_bone_type *draw_bones)
 	int						n,nbone;
 	model_draw_bone_type	*draw_bone;
 	
-	draw_bone=draw_bones;
-	
 	nbone=model->nbone;
+	draw_bone=draw_bones;
 	
 	for (n=0;n!=nbone;n++) {
 		model_move_single_draw_bone(model,draw_bones,draw_bone);
+		draw_bone++;
+	}
+}
+
+/* =======================================================
+
+      Constrained Drawing Bones
+      
+======================================================= */
+
+void model_fix_constrained_bones(model_type *model,int pose_idx,model_draw_bone_type *draw_bones)
+{
+	int						n,nbone,bone_idx;
+	model_pose_type			*pose;
+	model_draw_bone_type	*draw_bone,*constrained_draw_bone;
+
+		// get pose
+		
+	pose=&model->poses[pose_idx];
+	
+		// fix any constrained bones
+		
+	nbone=model->nbone;
+	draw_bone=draw_bones;
+	
+	for (n=0;n!=nbone;n++) {
+	
+		bone_idx=pose->bone_moves[n].constraint.bone_idx;
+		if (bone_idx!=-1) {
+		
+			constrained_draw_bone=&draw_bones[bone_idx];
+			draw_bone->fpnt.x=constrained_draw_bone->fpnt.x+pose->bone_moves[n].constraint.offset.x;
+			draw_bone->fpnt.y=constrained_draw_bone->fpnt.y+pose->bone_moves[n].constraint.offset.y;
+			draw_bone->fpnt.z=constrained_draw_bone->fpnt.z+pose->bone_moves[n].constraint.offset.z;
+		}
+		
 		draw_bone++;
 	}
 }
@@ -403,7 +438,7 @@ void model_create_draw_bones_single(model_type *model,model_draw_setup *draw_set
 		// combine rotations and create matrixes
 		// based on deform mode
 
-	switch(model->deform_mode) {
+	switch (model->deform_mode) {
 	
 		case deform_mode_single_rotate:
 			model_combine_draw_bone_rotations(model,bones);
@@ -414,6 +449,15 @@ void model_create_draw_bones_single(model_type *model,model_draw_setup *draw_set
 			model_comulative_combine_draw_bone_rotations(model,bones);
 			model_move_draw_bones(model,bones);
 			break;
+	}
+	
+		// fix any constrained bones
+		
+	if (pose_2==-1) {
+		model_fix_constrained_bones(model,pose_1,bones);
+	}
+	else {
+		model_fix_constrained_bones(model,pose_2,bones);
 	}
 }
 

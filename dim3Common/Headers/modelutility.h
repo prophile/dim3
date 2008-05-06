@@ -164,10 +164,16 @@ typedef struct		{
 //
 
 typedef struct		{
+						int								bone_idx;
+						d3pnt							offset;
+					} model_bone_move_constraint_type;
+
+typedef struct		{
 						float							acceleration;
 						bool							skip_blended;
 						d3vct							rot;
 						d3vct							mov;
+						model_bone_move_constraint_type	constraint;
 					} model_bone_move_type;
 					
 typedef struct		{

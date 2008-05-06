@@ -32,11 +32,18 @@ extern model_type		model;
 #define kBoneMoveRotX						FOUR_CHAR_CODE('rotx')
 #define kBoneMoveRotY						FOUR_CHAR_CODE('roty')
 #define kBoneMoveRotZ						FOUR_CHAR_CODE('rotz')
+
 #define kBoneMoveMoveX						FOUR_CHAR_CODE('movx')
 #define kBoneMoveMoveY						FOUR_CHAR_CODE('movy')
 #define kBoneMoveMoveZ						FOUR_CHAR_CODE('movz')
+
 #define kBoneMoveAcceleration				FOUR_CHAR_CODE('accl')
 #define kBoneMoveSkipBlended				FOUR_CHAR_CODE('sbld')
+
+#define kBoneMoveConstraintBone				FOUR_CHAR_CODE('cbne')
+#define kBoneMoveConstraintOffsetX			FOUR_CHAR_CODE('cofx')
+#define kBoneMoveConstraintOffsetY			FOUR_CHAR_CODE('cofy')
+#define kBoneMoveConstraintOffsetZ			FOUR_CHAR_CODE('cofz')
 
 bool						dialog_bone_move_settings_cancel;
 WindowRef					dialog_bone_move_settings_wind;
@@ -57,7 +64,7 @@ static pascal OSStatus bone_move_settings_event_proc(EventHandlerCallRef handler
 			GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
 			
 			switch (cmd.commandID) {
-				
+					
 				case kHICommandCancel:
 					dialog_bone_move_settings_cancel=TRUE;
 					QuitAppModalLoopForWindow(dialog_bone_move_settings_wind);
@@ -96,11 +103,18 @@ bool dialog_bone_move_settings_run(model_bone_move_type *bone_move)
 	dialog_set_float(dialog_bone_move_settings_wind,kBoneMoveRotX,0,bone_move->rot.x);
 	dialog_set_float(dialog_bone_move_settings_wind,kBoneMoveRotY,0,bone_move->rot.y);
 	dialog_set_float(dialog_bone_move_settings_wind,kBoneMoveRotZ,0,bone_move->rot.z);
+	
 	dialog_set_float(dialog_bone_move_settings_wind,kBoneMoveMoveX,0,bone_move->mov.x);
 	dialog_set_float(dialog_bone_move_settings_wind,kBoneMoveMoveY,0,bone_move->mov.y);
 	dialog_set_float(dialog_bone_move_settings_wind,kBoneMoveMoveZ,0,bone_move->mov.z);
+	
 	dialog_set_float(dialog_bone_move_settings_wind,kBoneMoveAcceleration,0,bone_move->acceleration);
 	dialog_set_boolean(dialog_bone_move_settings_wind,kBoneMoveSkipBlended,0,bone_move->skip_blended);
+	
+	dialog_set_bone_combo(dialog_bone_move_settings_wind,kBoneMoveConstraintBone,0,bone_move->constraint.bone_idx);
+	dialog_set_int(dialog_bone_move_settings_wind,kBoneMoveConstraintOffsetX,0,bone_move->constraint.offset.x);
+	dialog_set_int(dialog_bone_move_settings_wind,kBoneMoveConstraintOffsetY,0,bone_move->constraint.offset.y);
+	dialog_set_int(dialog_bone_move_settings_wind,kBoneMoveConstraintOffsetZ,0,bone_move->constraint.offset.z);
 	
 		// show window
 	
@@ -122,11 +136,18 @@ bool dialog_bone_move_settings_run(model_bone_move_type *bone_move)
 		bone_move->rot.x=dialog_get_float(dialog_bone_move_settings_wind,kBoneMoveRotX,0);
 		bone_move->rot.y=dialog_get_float(dialog_bone_move_settings_wind,kBoneMoveRotY,0);
 		bone_move->rot.z=dialog_get_float(dialog_bone_move_settings_wind,kBoneMoveRotZ,0);
+		
 		bone_move->mov.x=dialog_get_float(dialog_bone_move_settings_wind,kBoneMoveMoveX,0);
 		bone_move->mov.y=dialog_get_float(dialog_bone_move_settings_wind,kBoneMoveMoveY,0);
 		bone_move->mov.z=dialog_get_float(dialog_bone_move_settings_wind,kBoneMoveMoveZ,0);
+		
 		bone_move->acceleration=dialog_get_float(dialog_bone_move_settings_wind,kBoneMoveAcceleration,0);
 		bone_move->skip_blended=dialog_get_boolean(dialog_bone_move_settings_wind,kBoneMoveSkipBlended,0);
+		
+		bone_move->constraint.bone_idx=dialog_get_bone_combo(dialog_bone_move_settings_wind,kBoneMoveConstraintBone,0);
+		bone_move->constraint.offset.x=dialog_get_int(dialog_bone_move_settings_wind,kBoneMoveConstraintOffsetX,0);
+		bone_move->constraint.offset.y=dialog_get_int(dialog_bone_move_settings_wind,kBoneMoveConstraintOffsetY,0);
+		bone_move->constraint.offset.z=dialog_get_int(dialog_bone_move_settings_wind,kBoneMoveConstraintOffsetZ,0);
 	}
 
 		// close window

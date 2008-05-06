@@ -48,15 +48,17 @@ int model_pose_add(model_type *model)
 	strcpy(model->poses[npose].name,"New Pose");
 	
 	bone_move=model->poses[npose].bone_moves;
+	
 	for (n=0;n<model->nbone;n++) {
-		bone_move->rot.x=0;
-		bone_move->rot.z=0;
-		bone_move->rot.y=0;
-		bone_move->mov.x=1;
-		bone_move->mov.z=1;
-		bone_move->mov.y=1;
 		bone_move->acceleration=0;
 		bone_move->skip_blended=FALSE;
+		
+		bone_move->rot.x=bone_move->rot.y=bone_move->rot.z=0.0f;
+		bone_move->mov.x=bone_move->mov.y=bone_move->mov.z=1.0f;
+		
+		bone_move->constraint.bone_idx=-1;
+		bone_move->constraint.offset.x=bone_move->constraint.offset.y=bone_move->constraint.offset.z=0;
+		
 		bone_move++;
 	}
 	
@@ -129,15 +131,15 @@ void model_pose_clear(model_type *model,int pose_idx)
 	bone_move=model->poses[pose_idx].bone_moves;
 	
 	for (n=0;n!=nbone;n++) {
-		bone_move->rot.x=0;
-		bone_move->rot.z=0;
-		bone_move->rot.y=0;
-		bone_move->mov.x=1;
-		bone_move->mov.z=1;
-		bone_move->mov.y=1;
 		bone_move->acceleration=0;
 		bone_move->skip_blended=FALSE;
 		
+		bone_move->rot.x=bone_move->rot.y=bone_move->rot.z=0.0f;
+		bone_move->mov.x=bone_move->mov.y=bone_move->mov.z=1.0f;
+		
+		bone_move->constraint.bone_idx=-1;
+		bone_move->constraint.offset.x=bone_move->constraint.offset.y=bone_move->constraint.offset.z=0;
+				
 		bone_move++;
 	}
 }
