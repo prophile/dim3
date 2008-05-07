@@ -35,6 +35,9 @@ and can be sold or given away.
 #define element_control_high_factor				1.5f
 #define element_control_separator_factor		0.6f
 
+#define element_control_draw_height				0.025f
+#define element_control_draw_long_width			0.4f
+
 extern hud_type				hud;
 extern setup_type			setup;
 
@@ -444,8 +447,8 @@ void element_text_field_add(char *str,char *value_str,int max_value_str_sz,int i
 	element->x=x;
 	element->y=y;
 
-	element->wid=256;
-	element->high=16;
+	element->wid=(int)(((float)setup.screen.x_scale)*element_control_draw_long_width);
+	element->high=(int)(((float)setup.screen.x_scale)*element_control_draw_height);
 	
 	element->selectable=selectable;
 	element->enabled=TRUE;
@@ -479,7 +482,8 @@ void element_checkbox_add(char *str,int value,int id,int x,int y,bool selectable
 	element->enabled=TRUE;
 	element->hidden=FALSE;
 
-	element->wid=element->high=16;
+	element->wid=(int)(((float)setup.screen.x_scale)*element_control_draw_height);
+	element->high=(int)(((float)setup.screen.x_scale)*element_control_draw_height);
 	
 	strcpy(element->str,str);
 	
@@ -507,8 +511,8 @@ void element_combo_add(char *str,char *combo_data,int value,int id,int x,int y,b
 	element->enabled=TRUE;
 	element->hidden=FALSE;
 
-	element->wid=256;
-	element->high=16;
+	element->wid=(int)(((float)setup.screen.x_scale)*element_control_draw_long_width);
+	element->high=(int)(((float)setup.screen.x_scale)*element_control_draw_height);
 	
 	strcpy(element->str,str);
 	
@@ -537,8 +541,8 @@ void element_slider_add(char *str,float value,float value_min,float value_max,in
 	element->enabled=TRUE;
 	element->hidden=FALSE;
 
-	element->wid=256;
-	element->high=16;
+	element->wid=(int)(((float)setup.screen.x_scale)*element_control_draw_long_width);
+	element->high=(int)(((float)setup.screen.x_scale)*element_control_draw_height);
 
 	strcpy(element->str,str);
 	

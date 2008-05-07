@@ -118,7 +118,7 @@ extern bool main_wind_command_down(void);
 extern bool main_wind_shift_down(void);
 extern void main_wind_key_cursor(void);
 extern void main_wind_key_down(char ch);
-extern void main_wind_scroll_wheel(int delta);
+extern void main_wind_scroll_wheel(d3pnt *pt,int delta);
 extern void main_wind_tool_reset(void);
 extern void main_wind_tool_fill_group_combo(void);
 extern void main_wind_tool_default(void);

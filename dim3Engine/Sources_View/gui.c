@@ -43,6 +43,8 @@ bool						gui_has_background,gui_show_view,gui_show_dialog;
 char						gui_last_key;
 bitmap_type					gui_background_bitmap;
 
+bool		gui_test=0;		// supergumba -- testing
+
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
 extern void map_restart_ambient(void);
@@ -108,8 +110,30 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view,bool 
 	gui_save_x_scale=setup.screen.x_scale;
 	gui_save_y_scale=setup.screen.y_scale;
 	
-	setup.screen.x_scale=hud.scale_x;
-	setup.screen.y_scale=hud.scale_y;
+	// supergumba -- testing
+//	setup.screen.x_scale=hud.scale_x;
+//	setup.screen.y_scale=hud.scale_y;
+
+	
+	if (strcmp(bitmap_name,"setup")!=0) {
+		setup.screen.x_scale=hud.scale_x;
+		setup.screen.y_scale=hud.scale_y;
+	}
+	else {
+		if (gui_test) {
+			setup.screen.x_scale=640;
+			setup.screen.y_scale=480;
+		}
+		else {
+			setup.screen.x_scale=1000;
+			setup.screen.y_scale=750;
+		}
+		gui_test=!gui_test;
+	}
+	
+	
+	
+	
 	
 		// start mouse in middle of screen
 		

@@ -229,7 +229,7 @@ void piece_create_light(void)
 	lit->pos.y=y;
 	lit->type=lt_normal;
 	lit->col.r=lit->col.g=lit->col.b=1;
-	lit->intensity=100;
+	lit->intensity=10000;
 	lit->on=TRUE;
 	
 		// select light

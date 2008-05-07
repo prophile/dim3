@@ -451,10 +451,17 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 			switch (GetEventKind(event)) {
 			
 				case kEventMouseWheelMoved:
+					GetEventParameter(event,kEventParamMouseLocation,typeQDPoint,NULL,sizeof(Point),NULL,&pt);
+					SetPort(GetWindowPort(mainwind));
+                    GlobalToLocal(&pt);
+					
+					dpt.x=pt.h;
+					dpt.y=pt.v;
+					
 					GetEventParameter(event,kEventParamMouseWheelAxis,typeMouseWheelAxis,NULL,sizeof(EventMouseWheelAxis),NULL,&axis);
 					if (axis==kEventMouseWheelAxisY) {
 						GetEventParameter(event,kEventParamMouseWheelDelta,typeLongInteger,NULL,sizeof(long),NULL,&delta);
-						main_wind_scroll_wheel(delta);
+						main_wind_scroll_wheel(&dpt,delta);
 					}
 					return(noErr);
 					
@@ -1529,9 +1536,64 @@ void main_wind_key_down(char ch)
       
 ======================================================= */
 
-void main_wind_scroll_wheel(int delta)
+void main_wind_scroll_wheel(d3pnt *pt,int delta)
 {
 	editor_3D_view_setup		view_setup;
+	
+		// check if over a panel and switch
+		// to that panel
+		
+	switch (main_wind_view) {
+	
+		case vw_3_panel:
+			main_wind_setup_panel_forward(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) {
+				main_wind_set_focus(kf_panel_forward);
+				break;
+			}
+			
+			main_wind_setup_panel_side(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) {
+				main_wind_set_focus(kf_panel_side);
+				break;
+			}
+			
+			main_wind_setup_panel_top(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) {
+				main_wind_set_focus(kf_panel_top);
+				break;
+			}
+			break;
+			
+		case vw_4_panel:
+			main_wind_setup_panel_forward_frame(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) {
+				main_wind_set_focus(kf_panel_forward);
+				break;
+			}
+			
+			main_wind_setup_panel_side_frame(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) {
+				main_wind_set_focus(kf_panel_side);
+				break;
+			}
+			
+			main_wind_setup_panel_top_frame(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) {
+				main_wind_set_focus(kf_panel_top);
+				break;
+			}
+			
+			main_wind_setup_panel_walk(&view_setup);
+			if (main_wind_click_check_box(pt,&view_setup.box)) {
+				main_wind_set_focus(kf_panel_walk);
+				break;
+			}
+			break;
+			
+	}
+
+		// run wheel change
 	
 	switch (main_wind_view) {
 	

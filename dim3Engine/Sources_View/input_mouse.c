@@ -223,6 +223,13 @@ void input_clear_mouse_wheel_state(void)
 
 void input_gui_set_mouse(int x,int y)
 {
+		// scale from window to screen
+
+	x=(x*setup.screen.x_sz)/setup.screen.x_scale;
+	y=(y*setup.screen.y_sz)/setup.screen.y_scale;
+
+		// set mouse
+		
 	SDL_WarpMouse((unsigned short)x,(unsigned short)y);
 }
 
