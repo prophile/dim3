@@ -2,7 +2,7 @@
 
 Module: dim3 Server
 Author: Brian Barnes
- Usage: Network Host Code
+ Usage: Main Host Code
 
 ***************************** License ********************************
 
@@ -28,6 +28,8 @@ and can be sold or given away.
 #ifdef D3_PCH
 	#include "dim3engine.h"
 #endif
+
+#include "network.h"
 
 extern network_setup_type	net_setup;
 
@@ -137,7 +139,7 @@ void* net_host_thread(void *arg)
 		
 	host_complete=TRUE;
 	
-		// begin accepting
+		// begin accepting clients
 		
 	addr_len=sizeof(struct sockaddr);
 	
@@ -149,7 +151,7 @@ void* net_host_thread(void *arg)
 			
 		network_socket_blocking(sock,FALSE);
 		
-		if (pthread_create(&message_thread,NULL,net_host_client_thread,(void*)sock)!=0) {
+		if (pthread_create(&message_thread,NULL,net_host_client_handler_thread,(void*)sock)!=0) {
 			network_close_socket(&sock);
 		}
 	}

@@ -2,7 +2,7 @@
 
 Module: dim3 Server
 Author: Brian Barnes
- Usage: Network Host Broadcast Listener Code
+ Usage: Host Broadcast Listener Code
 
 ***************************** License ********************************
 
@@ -28,6 +28,8 @@ and can be sold or given away.
 #ifdef D3_PCH
 	#include "dim3engine.h"
 #endif
+
+#include "network.h"
 
 extern network_setup_type	net_setup;
 

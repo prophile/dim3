@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "client.h"
+#include "network.h"
 #include "consoles.h"
 #include "interfaces.h"
 
@@ -99,8 +99,17 @@ void game_end(void)
 	
 		// close any network joins or hosting
 	
-	if (net_setup.client.joined) net_join_client_leave_host(net_setup.client.remote_uid);
-	if (net_setup.host.hosting) net_host_game_end();
+	if (net_setup.client.joined) {
+		if (!net_setup.host.hosting) {
+			net_client_send_leave_host(net_setup.client.remote_uid);
+			net_client_end_message_queue();
+			net_client_join_host_end();
+		}
+		else {
+			net_host_game_end();
+			net_client_end_message_queue_local();
+		}
+	}
 	
 		// stop view
 		

@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "client.h"
+#include "network.h"
 #include "objects.h"
 #include "remotes.h"
 #include "weapons.h"
@@ -280,7 +280,7 @@ void remote_host_reset(void)
 		
 		// attempt to join to new game
 
-	if (!net_join_client_join_host(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,deny_reason,&remote_count,remotes)) {
+	if (!net_client_join_host_start(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,deny_reason,&remote_count,remotes)) {
 		error_open("Unable to rejoin server after game reset","Network Game Canceled");
 		return;
 	}
@@ -299,7 +299,9 @@ void remote_host_reset(void)
 		// start the new game
 	
 	if (!game_start(skill_medium,remote_count,remotes,err_str)) {
-		net_join_client_leave_host(net_setup.client.remote_uid);
+		net_client_send_leave_host(net_setup.client.remote_uid);
+		net_client_end_message_queue();
+		net_client_join_host_end();
 		error_open(err_str,"Network Game Canceled");
 		return;	
 	}
@@ -307,7 +309,9 @@ void remote_host_reset(void)
 		// start the map
 		
 	if (!map_start(FALSE,err_str)) {
-		net_join_client_leave_host(net_setup.client.remote_uid);
+		net_client_send_leave_host(net_setup.client.remote_uid);
+		net_client_end_message_queue();
+		net_client_join_host_end();
 		error_open(err_str,"Network Game Canceled");
 		return;	
 	}
@@ -483,11 +487,11 @@ void remote_telefrag(int remote_uid,network_request_remote_telefrag *telefrag)
 
 /* =======================================================
 
-      Remote Messages and Sounds
+      Remote Chats and Sounds
       
 ======================================================= */
 
-void remote_message(int remote_uid,network_request_remote_message *message)
+void remote_chat(int remote_uid,network_request_remote_chat *chat)
 {
 	d3col				col;
 	obj_type			*obj;
@@ -498,7 +502,7 @@ void remote_message(int remote_uid,network_request_remote_message *message)
 		// update chat
 
 	remote_get_ui_color(obj,&col);
-	chat_add_message(game_time_get(),obj->name,message->str,&col);
+	chat_add_message(game_time_get(),obj->name,chat->str,&col);
 }
 
 void remote_sound(int remote_uid,network_request_remote_sound *sound)
@@ -628,7 +632,7 @@ bool remote_network_get_updates(int tick)
 	
 			// check for messages
 
-		if (!net_join_client_check_message(&action,&from_remote_uid,data)) return(TRUE);
+		if (!net_client_check_message_queue(&action,&from_remote_uid,data)) return(TRUE);
 		
 			// run message
 		
@@ -662,8 +666,8 @@ bool remote_network_get_updates(int tick)
 				remote_telefrag(from_remote_uid,(network_request_remote_telefrag*)data);
 				break;
 				
-			case net_action_request_remote_message:
-				remote_message(from_remote_uid,(network_request_remote_message*)data);
+			case net_action_request_remote_chat:
+				remote_chat(from_remote_uid,(network_request_remote_chat*)data);
 				break;
 				
 			case net_action_request_remote_sound:
@@ -707,7 +711,7 @@ void remote_network_send_updates(int tick)
 	obj_type			*obj;
     
 	obj=object_find_uid(server.player_obj_uid);
-	net_join_client_send_remote_update(tick,net_setup.client.remote_uid,obj,hud.chat.type_on);
+	net_client_send_remote_update(tick,net_setup.client.remote_uid,obj,hud.chat.type_on);
 }
 
 /* =======================================================
@@ -719,6 +723,6 @@ void remote_network_send_updates(int tick)
 void remote_network_send_latency_ping(int tick)
 {
 	net_setup.client.latency_ping_tick=tick;
-	net_join_client_latency_ping_host(net_setup.client.remote_uid);
+	net_client_send_latency_ping(net_setup.client.remote_uid);
 }
 

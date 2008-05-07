@@ -2,7 +2,7 @@
 
 Module: dim3 Server
 Author: Brian Barnes
- Usage: Network Host Player Code
+ Usage: Host Player Lists
 
 ***************************** License ********************************
 
@@ -326,7 +326,7 @@ void net_host_player_update(int remote_uid,network_request_remote_update *update
 	pthread_mutex_unlock(&net_host_player_lock);
 }
 
-void net_host_player_message(int remote_uid,network_request_remote_message *message)
+void net_host_player_chat(int remote_uid,network_request_remote_chat *chat)
 {
 	// supergumba -- deal with this
 }
@@ -396,7 +396,7 @@ void net_host_player_send_others_packet(int player_remote_uid,int action,int que
 	player=net_host_players;
 	
 	for (n=0;n!=net_host_player_count;n++) {
-		if ((player->remote_uid!=player_remote_uid) && (player->ready)) socks[nsock++]=player->sock;
+		if ((player->remote_uid!=player_remote_uid) && (player->ready) && (player->sock!=(d3socket)NULL)) socks[nsock++]=player->sock;
 		player++;
 	}
 	

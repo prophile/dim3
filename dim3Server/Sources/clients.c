@@ -205,8 +205,8 @@ void* client_thread(void *arg)
 				server_player_send_others_packet(client_remote_uid,action,queue_mode,data,len,FALSE);
 				break;
 				
-			case net_action_request_remote_message:
-				server_player_message(client_remote_uid,(network_request_remote_message*)data);
+			case net_action_request_remote_chat:
+				server_player_message(client_remote_uid,(network_request_remote_chat*)data);
 				server_player_send_others_packet(client_remote_uid,action,queue_mode,data,len,FALSE);
 				break;
 				

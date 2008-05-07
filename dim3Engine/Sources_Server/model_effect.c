@@ -33,7 +33,7 @@ and can be sold or given away.
 #include "models.h"
 #include "effects.h"
 #include "sounds.h"
-#include "client.h"
+#include "network.h"
 #include "consoles.h"
 #include "video.h"
 
@@ -212,7 +212,7 @@ void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx
 		al_play_source(pose_move->sound.buffer_idx,pt.x,pt.y,pt.z,pose_move->sound.pitch,FALSE,FALSE,FALSE,draw->player);
 		object_watch_sound_alert(pt.x,pt.y,pt.z,draw->connect.obj_uid,pose_move->sound.name);	// sound watches
 
-		if ((net_setup.client.joined) && (draw->connect.net_sound)) net_join_client_send_sound(net_setup.client.remote_uid,pt.x,pt.y,pt.z,pose_move->sound.pitch,pose_move->sound.name);
+		if ((net_setup.client.joined) && (draw->connect.net_sound)) net_client_send_sound(net_setup.client.remote_uid,pt.x,pt.y,pt.z,pose_move->sound.pitch,pose_move->sound.name);
 	}
 	
 		// particles

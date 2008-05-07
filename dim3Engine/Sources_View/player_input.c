@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "client.h"
+#include "network.h"
 #include "scripts.h"
 #include "objects.h"
 #include "remotes.h"
@@ -729,7 +729,7 @@ bool player_message_input(int tick,obj_type *obj)
 			hud.chat.type_on=FALSE;
 			if (len>1) {
 				msg[len-1]=0x0;
-				net_join_client_send_message(net_setup.client.remote_uid,msg);
+				net_client_send_chat(net_setup.client.remote_uid,msg);
 				player_get_ui_color(&col);
 				chat_add_message(tick,obj->name,msg,&col);
 			}
@@ -766,7 +766,7 @@ bool player_message_input(int tick,obj_type *obj)
 			}
 			
 			msg[len-1]=0x0;
-			net_join_client_send_message(net_setup.client.remote_uid,msg);
+			net_client_send_chat(net_setup.client.remote_uid,msg);
 			player_get_ui_color(&col);
 			chat_add_message(tick,obj->name,msg,&col);
 			

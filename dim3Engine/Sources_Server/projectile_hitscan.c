@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "client.h"
+#include "network.h"
 #include "scripts.h"
 #include "objects.h"
 #include "remotes.h"
@@ -70,7 +70,7 @@ void projectile_hitscan(int tick,obj_type *obj,weapon_type *weap,proj_setup_type
 		
 	if (net_setup.client.joined) {
 		if (obj->uid==server.player_obj_uid) {
-			net_join_client_send_hitscan_add(net_setup.client.remote_uid,weap->name,proj_setup->name,pt,ang);
+			net_client_send_hitscan_add(net_setup.client.remote_uid,weap->name,proj_setup->name,pt,ang);
 		}
 	}
 	

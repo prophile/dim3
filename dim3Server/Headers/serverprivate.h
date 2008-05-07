@@ -108,7 +108,7 @@ extern void server_player_update_team(int remote_uid,network_request_team *team)
 extern void server_player_update(int remote_uid,network_request_remote_update *update);
 extern void server_player_death(int remote_uid);
 extern void server_player_telefrag(int remote_uid);
-extern void server_player_message(int remote_uid,network_request_remote_message *message);
+extern void server_player_message(int remote_uid,network_request_remote_chat *chat);
 
 //
 // status functions

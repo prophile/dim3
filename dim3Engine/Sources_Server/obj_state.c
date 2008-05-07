@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "client.h"
+#include "network.h"
 #include "scripts.h"
 #include "objects.h"
 #include "remotes.h"
@@ -148,7 +148,7 @@ void object_death(obj_type *obj)
 	
 		// send death if joined and is player
 		
-	if ((net_setup.client.joined) && (obj->uid==server.player_obj_uid)) net_join_client_send_death(net_setup.client.remote_uid,obj->damage_obj_uid);
+	if ((net_setup.client.joined) && (obj->uid==server.player_obj_uid)) net_client_send_death(net_setup.client.remote_uid,obj->damage_obj_uid);
 }
 
 /* =======================================================
@@ -199,7 +199,7 @@ void object_telefrag_check(obj_type *obj)
 
 		// send network message to telefrag
 
-	if (net_setup.client.joined) net_join_client_send_telefrag(net_setup.client.remote_uid,hit_obj->uid);
+	if (net_setup.client.joined) net_client_send_telefrag(net_setup.client.remote_uid,hit_obj->uid);
 }
 
 /* =======================================================

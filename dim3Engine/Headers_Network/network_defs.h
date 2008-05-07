@@ -26,7 +26,7 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// players
+// player list
 //
 
 typedef struct		{
@@ -43,40 +43,3 @@ typedef struct		{
 
 #define server_no_data_u_wait						25
 #define server_max_network_error_reject				10
-
-//
-// host functions
-//
-
-extern bool net_host_initialize(char *err_str);
-extern void net_host_shutdown(void);
-extern void* net_host_thread(void *arg);
-
-extern bool net_host_broadcast_initialize(char *err_str);
-extern void net_host_broadcast_shutdown(void);
-extern void* net_host_broadcast_thread(void *arg);
-
-extern void* net_host_client_thread(void *arg);
-
-//
-// player functions
-//
-
-extern void net_host_player_initialize(void);
-extern void net_host_player_shutdown(void);
-
-extern int net_host_player_find(int remote_uid);
-
-extern int net_host_player_join(d3socket sock,char *name,char *deny_reason);
-extern void net_host_player_ready(int remote_uid,bool ready);
-extern void net_host_player_leave(int remote_uid);
-extern int net_host_player_create_remote_add_list(int player_remote_uid,network_request_remote_add *remotes);
-extern void net_host_player_send_others_packet(int player_remote_uid,int action,int queue_mode,unsigned char *data,int len,bool skip_flooded);
-extern void net_host_player_send_all_packet(int action,int queue_mode,unsigned char *data,int len,bool skip_flooded);
-
-extern void net_host_player_update_team(int remote_uid,network_request_team *team);
-extern void net_host_player_update(int remote_uid,network_request_remote_update *update);
-extern void net_host_player_death(int remote_uid);
-extern void net_host_player_telefrag(int remote_uid);
-extern void net_host_player_message(int remote_uid,network_request_remote_message *message);
-

@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: Network Joined Client Code
+ Usage: Client Send Message to Host
 
 ***************************** License ********************************
 
@@ -32,24 +32,27 @@ and can be sold or given away.
 #include "objects.h"
 #include "interfaces.h"
 
-extern map_type				map;
-extern server_type			server;
-extern js_type				js;
-extern setup_type			setup;
+extern map_type					map;
+extern server_type				server;
+extern js_type					js;
+extern setup_type				setup;
 
 extern d3socket					client_socket;
 
 extern network_setup_type		net_setup;
 
-extern void net_join_client_end_message_handler(void);
-
 /* =======================================================
 
-      Team and Host Messages
+      Host Messages
       
 ======================================================= */
 
-void net_join_client_set_team(int remote_uid,int team_idx)
+void net_client_send_ready(int remote_uid)
+{
+	network_send_packet(client_socket,net_action_request_ready,net_queue_mode_normal,remote_uid,NULL,0);
+}
+
+void net_client_send_set_team(int remote_uid,int team_idx)
 {
 	network_request_team	team;
 	
@@ -57,33 +60,23 @@ void net_join_client_set_team(int remote_uid,int team_idx)
 	network_send_packet(client_socket,net_action_request_team,net_queue_mode_normal,remote_uid,(unsigned char*)&team,sizeof(network_request_team));
 }
 
-void net_join_client_leave_host(int remote_uid)
+void net_client_send_leave_host(int remote_uid)
 {
-		// send the leave message
-	
 	network_send_packet(client_socket,net_action_request_leave,net_queue_mode_normal,remote_uid,NULL,0);
-	
-		// end message handler
-		
-	net_join_client_end_message_handler();
-
-		// shutdown the network
-		
-	network_close_socket(&client_socket);
 }
 
-void net_join_client_latency_ping_host(int remote_uid)
+void net_client_send_latency_ping(int remote_uid)
 {
 	network_send_packet(client_socket,net_action_request_latency_ping,net_queue_mode_normal,remote_uid,NULL,0);
 }	
 
 /* =======================================================
 
-      Object Updates
+      Object Update Messages
       
 ======================================================= */
 
-void net_join_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool chat_on)
+void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool chat_on)
 {
 	int								n,flags;
 	model_draw						*draw;
@@ -161,7 +154,7 @@ void net_join_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bo
 	network_send_packet(client_socket,net_action_request_remote_update,net_queue_mode_replace,remote_uid,(unsigned char*)&update,sizeof(network_request_remote_update));
 }
 
-void net_join_client_send_death(int remote_uid,int kill_uid)
+void net_client_send_death(int remote_uid,int kill_uid)
 {
 	int								send_kill_uid;
 	obj_type						*obj;
@@ -188,7 +181,7 @@ void net_join_client_send_death(int remote_uid,int kill_uid)
 	network_send_packet(client_socket,net_action_request_remote_death,net_queue_mode_normal,remote_uid,(unsigned char*)&net_death,sizeof(network_request_remote_death));
 }
 
-void net_join_client_send_telefrag(int remote_uid,int telefrag_uid)
+void net_client_send_telefrag(int remote_uid,int telefrag_uid)
 {
 	int								send_telefrag_uid;
 	obj_type						*obj;
@@ -209,19 +202,19 @@ void net_join_client_send_telefrag(int remote_uid,int telefrag_uid)
 
 /* =======================================================
 
-      Host Messages and Sounds
+      Chats and Sound Messages
 	        
 ======================================================= */
 
-void net_join_client_send_message(int remote_uid,char *str)
+void net_client_send_chat(int remote_uid,char *str)
 {
-	network_request_remote_message	message;
+	network_request_remote_chat		chat;
 	
-	strcpy(message.str,str);
-	network_send_packet(client_socket,net_action_request_remote_message,net_queue_mode_normal,remote_uid,(unsigned char*)&message,sizeof(network_request_remote_message));
+	strcpy(chat.str,str);
+	network_send_packet(client_socket,net_action_request_remote_chat,net_queue_mode_normal,remote_uid,(unsigned char*)&chat,sizeof(network_request_remote_chat));
 }
 
-void net_join_client_send_sound(int remote_uid,int x,int y,int z,float pitch,char *name)
+void net_client_send_sound(int remote_uid,int x,int y,int z,float pitch,char *name)
 {
 	network_request_remote_sound	sound;
 	
@@ -238,11 +231,11 @@ void net_join_client_send_sound(int remote_uid,int x,int y,int z,float pitch,cha
 
 /* =======================================================
 
-      Host Weapon Sends
+      Weapon Messages
 	        
 ======================================================= */
 
-void net_join_client_send_projectile_add(int remote_uid,char *weap_name,char *proj_setup_name,d3pnt *pt,d3ang *ang)
+void net_client_send_projectile_add(int remote_uid,char *weap_name,char *proj_setup_name,d3pnt *pt,d3ang *ang)
 {
 	network_request_projectile_add	proj_add;
 	
@@ -260,7 +253,7 @@ void net_join_client_send_projectile_add(int remote_uid,char *weap_name,char *pr
 	network_send_packet(client_socket,net_action_request_projectile_add,net_queue_mode_normal,remote_uid,(unsigned char*)&proj_add,sizeof(network_request_projectile_add));
 }
 
-void net_join_client_send_hitscan_add(int remote_uid,char *weap_name,char *proj_setup_name,d3pnt *pt,d3ang *ang)
+void net_client_send_hitscan_add(int remote_uid,char *weap_name,char *proj_setup_name,d3pnt *pt,d3ang *ang)
 {
 	network_request_hitscan_add	hitscan_add;
 	
@@ -278,7 +271,7 @@ void net_join_client_send_hitscan_add(int remote_uid,char *weap_name,char *proj_
 	network_send_packet(client_socket,net_action_request_hitscan_add,net_queue_mode_normal,remote_uid,(unsigned char*)&hitscan_add,sizeof(network_request_hitscan_add));
 }
 
-void net_join_client_send_melee_add(int remote_uid,char *weap_name,int radius,int distance,int damage,int force,d3pnt *pt,d3ang *ang)
+void net_client_send_melee_add(int remote_uid,char *weap_name,int radius,int distance,int damage,int force,d3pnt *pt,d3ang *ang)
 {
 	network_request_melee_add	melee_add;
 	

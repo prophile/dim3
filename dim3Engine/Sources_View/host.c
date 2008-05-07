@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "client.h"
+#include "network.h"
 #include "remotes.h"
 #include "interfaces.h"
 #include "video.h"
@@ -42,6 +42,7 @@ and can be sold or given away.
 
 extern void intro_open(void);
 extern bool net_host_game_start(char *err_str);
+extern void net_host_game_end(void);
 extern bool game_start(int skill,int remote_count,network_request_remote_add *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
 
@@ -178,10 +179,9 @@ void host_game_setup(void)
 
 void host_game(void)
 {
-	int							remote_uid,remote_count;
-	char						game_name[name_str_len],map_name[name_str_len],
-								deny_reason[64],err_str[256];
-	network_request_remote_add	remotes[net_max_remote_count];
+	int						remote_uid;
+	char					err_str[256];
+	network_request_join	request_join;
 	
 		// start hosting
 		
@@ -191,62 +191,64 @@ void host_game(void)
 		return;
 	}
 	
-	net_setup.host.hosting=TRUE;
-	
-	host_close();		// supergumba -- testing
-	intro_open();
-	return;
-		
-		// get game to join
-		
-	strcpy(net_setup.client.joined_ip,"192.168.0.2");	// supergumba -- all temporary, do in place
-							
-		// attempt to join
+		// attempt to connect to local server
 
-	if (!net_join_client_join_host(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,deny_reason,&remote_count,remotes)) {
+	strcpy(request_join.name,setup.network.name);
+	strcpy(request_join.vers,dim3_version);
+
+	remote_uid=net_host_client_handle_local_join(&request_join,err_str);
+	if (remote_uid==-1) {
 		host_close();
-		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
-		error_open(err_str,"Network Game Canceled");
+		net_host_game_end();
+		error_open(err_str,"Hosting Game Canceled");
 		return;
 	}
 
-		// mark remote and joined
-		
+		// connected
+
+	net_setup.host.hosting=TRUE;
 	net_setup.client.joined=TRUE;
 	net_setup.client.remote_uid=remote_uid;
 	net_setup.client.latency=0;
+	strcpy(net_setup.client.joined_ip,"127.0.0.1");
 
-	strcpy(net_setup.client.game_name,game_name);
+		// setup game from host
+		
+	strcpy(net_setup.client.game_name,net_setup.host.game_name);
 	
 	map.info.name[0]=0x0;
-	strcpy(map.info.host_name,map_name);
+	strcpy(map.info.host_name,net_setup.host.map_name);
 	
 		// start game
 	
 	host_close();
 	
-	if (!game_start(skill_medium,remote_count,remotes,err_str)) {
-		net_join_client_leave_host(net_setup.client.remote_uid);
-		error_open(err_str,"Network Game Canceled");
+	if (!game_start(skill_medium,0,NULL,err_str)) {
+		net_host_game_end();
+		error_open(err_str,"Hosting Game Canceled");
 		return;
 	}
 	
 		// start the map
 		
 	if (!map_start(FALSE,err_str)) {
-		net_join_client_leave_host(net_setup.client.remote_uid);
-		error_open(err_str,"Network Game Canceled");
+		net_host_game_end();
+		error_open(err_str,"Hosting Game Canceled");
 		return;
 	}
-	
-		// start client network thread
+
+		// start local client network queue
 		
-	if (!net_join_client_ready_host(remote_uid,err_str)) {
-		net_join_client_leave_host(net_setup.client.remote_uid);
-		error_open(err_str,"Network Game Canceled");
+	if (!net_client_start_message_queue_local(err_str)) {
+		net_host_game_end();
+		error_open(err_str,"Hosting Game Canceled");
 		return;
 	}
-	
+
+		// mark as ready to receive data from host
+		
+	net_client_send_ready(remote_uid);
+
 		// game is running
 	
 	server.state=gs_running;

@@ -2,7 +2,7 @@
 
 Module: dim3 Server
 Author: Brian Barnes
- Usage: Network Host Client Threads
+ Usage: Host Client Message Handler Threads
 
 ***************************** License ********************************
 
@@ -32,6 +32,8 @@ and can be sold or given away.
 #ifdef D3_OS_MAC
 	#include <ifaddrs.h>
 #endif
+
+#include "network.h"
 
 extern int					net_host_player_count;
 extern network_setup_type	net_setup;
@@ -104,6 +106,28 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 	return(remote_uid);
 }
 
+int net_host_client_handle_local_join(network_request_join *request_join,char *err_str)
+{
+	int							remote_uid;
+	network_request_remote_add	remote_add;
+
+		// join directly to host
+
+	remote_uid=net_host_player_join((d3socket)NULL,request_join->name,err_str);
+	if (remote_uid==-1) return(-1);
+
+		// send all other players on host the new player for remote add
+		
+	strncpy(remote_add.name,request_join->name,name_str_len);
+	remote_add.name[name_str_len-1]=0x0;
+	remote_add.team_idx=htons((short)net_team_none);
+	remote_add.score=0;
+	remote_add.pos_rn=remote_add.pos_x=remote_add.pos_y=remote_add.pos_z=0;
+	net_host_player_send_others_packet(remote_uid,net_action_request_remote_add,net_queue_mode_normal,(unsigned char*)&remote_add,sizeof(network_request_remote_add),FALSE);
+
+	return(remote_uid);
+}
+
 void net_host_client_handle_leave(int remote_uid)
 {
 		// leave the host
@@ -121,7 +145,7 @@ void net_host_client_handle_leave(int remote_uid)
       
 ======================================================= */
 
-void* net_host_client_thread(void *arg)
+void* net_host_client_handler_thread(void *arg)
 {
 	d3socket						sock;
 	int								client_remote_uid,action,queue_mode,from_remote_uid,len,
@@ -206,8 +230,8 @@ void* net_host_client_thread(void *arg)
 				net_host_player_send_others_packet(client_remote_uid,action,queue_mode,data,len,FALSE);
 				break;
 				
-			case net_action_request_remote_message:
-				net_host_player_message(client_remote_uid,(network_request_remote_message*)data);
+			case net_action_request_remote_chat:
+				net_host_player_chat(client_remote_uid,(network_request_remote_chat*)data);
 				net_host_player_send_others_packet(client_remote_uid,action,queue_mode,data,len,FALSE);
 				break;
 				

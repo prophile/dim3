@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "client.h"
+#include "network.h"
 #include "scripts.h"
 #include "objects.h"
 #include "remotes.h"
@@ -142,7 +142,7 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 		if (obj->uid==server.player_obj_uid) {
 			weap_name[0]=0x0;
 			if (weap!=NULL) strcpy(weap_name,weap->name);
-			net_join_client_send_melee_add(net_setup.client.remote_uid,weap_name,melee->radius,melee->distance,melee->damage,melee->force,pt,ang);
+			net_client_send_melee_add(net_setup.client.remote_uid,weap_name,melee->radius,melee->distance,melee->damage,melee->force,pt,ang);
 		}
 	}
 

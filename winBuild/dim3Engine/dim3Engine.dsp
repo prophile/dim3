@@ -1511,12 +1511,28 @@ SOURCE=..\..\dim3Engine\Sources_View\zoom_draw.c
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\dim3Engine\Headers_Network\network.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Engine\Headers_Network\network_defs.h
 # End Source File
 # End Group
 # Begin Group "Network Sources"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Network\net_client_join_host.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Network\net_client_receive.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Network\net_client_send.c
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_Network\net_host.c
@@ -1527,19 +1543,11 @@ SOURCE=..\..\dim3Engine\Sources_Network\net_host_broadcast.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_Network\net_host_clients.c
+SOURCE=..\..\dim3Engine\Sources_Network\net_host_client_handler.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_Network\net_host_players.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Network\net_join_client.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Network\net_join_client_message.c
 # End Source File
 # End Group
 # End Group

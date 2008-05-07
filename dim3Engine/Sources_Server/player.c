@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "client.h"
+#include "network.h"
 #include "scripts.h"
 #include "objects.h"
 #include "remotes.h"
@@ -83,7 +83,7 @@ bool player_start_object(char *err_str)
 		scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_join,0);
 		game_obj_rule_uid=-1;
 
-		net_join_client_set_team(net_setup.client.remote_uid,obj->team_idx);
+		net_client_send_set_team(net_setup.client.remote_uid,obj->team_idx);
 	}
 	
 		// default player settings

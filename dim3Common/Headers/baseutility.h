@@ -626,7 +626,7 @@ extern void shader_delete(shader_type *shader);
 #define net_action_request_remote_update			11
 #define net_action_request_remote_death				12
 #define net_action_request_remote_telefrag			13
-#define net_action_request_remote_message			14
+#define net_action_request_remote_chat				14
 #define net_action_request_remote_sound				15
 #define net_action_request_projectile_add			16
 #define net_action_request_hitscan_add				17
@@ -789,7 +789,7 @@ typedef struct		{
 					
 typedef struct		{
 						char						str[64];
-					} network_request_remote_message;
+					} network_request_remote_chat;
 					
 typedef struct		{
 						int							pos_x,pos_y,pos_z,fp_pitch;
