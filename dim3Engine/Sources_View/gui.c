@@ -115,22 +115,27 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view,bool 
 //	setup.screen.y_scale=hud.scale_y;
 
 	
-	if (strcmp(bitmap_name,"setup")!=0) {
+	if (bitmap_name==NULL) {
 		setup.screen.x_scale=hud.scale_x;
 		setup.screen.y_scale=hud.scale_y;
 	}
 	else {
-		if (gui_test) {
-			setup.screen.x_scale=640;
-			setup.screen.y_scale=480;
+		if (strcmp(bitmap_name,"setup")!=0) {
+			setup.screen.x_scale=hud.scale_x;
+			setup.screen.y_scale=hud.scale_y;
 		}
 		else {
-			setup.screen.x_scale=1000;
-			setup.screen.y_scale=750;
+			if (gui_test) {
+				setup.screen.x_scale=640;
+				setup.screen.y_scale=480;
+			}
+			else {
+				setup.screen.x_scale=1000;
+				setup.screen.y_scale=750;
+			}
+			gui_test=!gui_test;
 		}
-		gui_test=!gui_test;
 	}
-	
 	
 	
 	

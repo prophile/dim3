@@ -271,7 +271,7 @@ void piece_delete(void)
 	int				n,i,k,nsel_count,
 					type,portal_idx,main_idx,sub_idx;
 	
-	undo_clear();
+	undo_save();
 	
 		// sort segment so higher indexes are deleted first
 		
@@ -375,6 +375,8 @@ void piece_delete_face(void)
 	select_get(0,&type,&portal_idx,&main_idx,&sub_idx);
 	if (type!=mesh_piece) return;
 	if (sub_idx==-1) return;
+	
+	undo_save();
 	
 	map_portal_mesh_delete_poly(&map,portal_idx,main_idx,sub_idx);
 	

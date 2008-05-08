@@ -60,7 +60,7 @@ extern void menu_save_changes_dialog(void);
 extern OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,void *userdata);
 
 extern void undo_clear(void);
-extern void undo_set_segment_move(void);
+extern void undo_save(void);
 extern void undo_run(void);
 
 //

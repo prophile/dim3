@@ -28,12 +28,11 @@ and can be sold or given away.
 #include "common_view.h"
 #include "interface.h"
 
-#define undo_type_segment_move		0
-
+extern int							cr;
 extern map_type						map;
 
-int									undo_type;
-//segment_type						*undo_segments=NULL;
+int									undo_type,undo_nmesh;
+map_mesh_type						*undo_meshes=NULL;
 
 /* =======================================================
 
@@ -43,83 +42,69 @@ int									undo_type;
 
 void undo_clear(void)
 {
-/*
 	DisableMenuItem(GetMenuRef(app_menu_edit),1);
 	
-	if (undo_segments!=NULL) {
-		free(undo_segments);
-		undo_segments=NULL;
+	if (undo_meshes!=NULL) {
+		free(undo_meshes);
+		undo_meshes=NULL;
 	}
-	*/
 }
 
-void undo_set_segment_move(void)
+void undo_save(void)
 {
-/* supergumba
-	int				n,k,primitive_uid,
-					sel_count,type,index,cnt;
-	segment_type	*seg;
+	int				n,nmesh;
+	portal_type		*portal;
+	map_mesh_type	*org_mesh,*mesh;
 	
-		// count segments
+	undo_clear();
+	
+		// save all meshes in portal
 		
-	cnt=0;
-	sel_count=select_count();
+	portal=&map.portals[cr];
+		
+	nmesh=portal->mesh.nmesh;
+	if (nmesh==0) return;
 	
-	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&index);
-
-		switch (type) {
-			case segment_piece:
-				cnt++;
-				break;
-			case primitive_piece:
-				cnt+=primitive_count_segments(map.segments[index].primitive_uid[0]);
-				break;
+	undo_meshes=(map_mesh_type*)valloc(nmesh*sizeof(map_mesh_type));
+	if (undo_meshes==NULL) return;
+	
+	undo_nmesh=nmesh;
+		
+	org_mesh=portal->mesh.meshes;
+	mesh=undo_meshes;
+	
+	for (n=0;n!=nmesh;n++) {
+	
+		memmove(mesh,org_mesh,sizeof(map_mesh_type));
+		
+			// need to dup the vertexes and polygons
+			
+		mesh->vertexes=(d3pnt*)valloc(org_mesh->nvertex*sizeof(d3pnt));
+		if (mesh->vertexes==NULL) {
+			free(undo_meshes);
+			undo_meshes=NULL;
 		}
-	}
-	
-	if (cnt==0) return;
-	
-		// create segment undos
 		
-	if (undo_segments!=NULL) free(undo_segments);
-	
-	undo_segments=(segment_type*)valloc(cnt*sizeof(segment_type));
-	if (undo_segments==NULL) return;
-	
-		// move in the segments
+		memmove(mesh->vertexes,org_mesh->vertexes,(org_mesh->nvertex*sizeof(d3pnt)));
 		
-	seg=undo_segments;
-	
-	sel_count=select_count();
-	
-	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&index);
-
-		switch (type) {
-			case segment_piece:
-				memmove(seg,&map.segments[index],sizeof(segment_type));
-				seg++;
-				break;
-			case primitive_piece:
-				primitive_uid=map.segments[index].primitive_uid[0];
-				for (k=0;k!=map.nsegment;k++) {
-					if (map.segments[k].primitive_uid[0]==primitive_uid) {
-						memmove(seg,&map.segments[k],sizeof(segment_type));
-						seg++;
-					}
-				}
-				break;
+		mesh->polys=(map_mesh_poly_type*)valloc(org_mesh->npoly*sizeof(map_mesh_poly_type));
+		if (mesh->polys==NULL) {
+			free(undo_meshes);
+			undo_meshes=NULL;
 		}
+		
+		memmove(mesh->polys,org_mesh->polys,(org_mesh->npoly*sizeof(map_mesh_poly_type)));
+					
+		org_mesh++;
+		mesh++;
 	}
 
-	undo_type=undo_type_segment_move;
-
+		// enable undo
+		
 	EnableMenuItem(GetMenuRef(app_menu_edit),1);
-	*/
 }
 
-void undo_get_segment_move(void)
+void undo_restore(void)
 {
 /* supergumba
 	int				n,k,primitive_uid,
@@ -156,17 +141,9 @@ void undo_get_segment_move(void)
 
 void undo_run(void)
 {
-/*
-	switch (undo_type) {
-	
-		case undo_type_segment_move:
-			undo_get_segment_move();
-			main_wind_draw();
-			break;
-			
-	}
-	
+	undo_restore();
 	undo_clear();
-	*/
+
+	main_wind_draw();
 }
 

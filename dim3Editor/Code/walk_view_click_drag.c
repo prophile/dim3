@@ -145,6 +145,8 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 		
     if (!Button()) return(FALSE);
 	
+	undo_save();
+	
 		// backup all the vertexes
 		
 	old_dpt=valloc(mesh->nvertex*sizeof(d3pnt));
@@ -283,6 +285,8 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 		// drag
 		
     if (!Button()) return(FALSE);
+	
+	undo_save();
 			
 	first_drag=TRUE;
 	
@@ -412,6 +416,8 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 		// drag
 		
     if (!Button()) return(FALSE);
+	
+	undo_save();
 			
 	first_drag=TRUE;
 	
@@ -554,6 +560,8 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		// drag mesh
 	
     if (!Button()) return(FALSE);
+	
+	undo_save();
 
 	first_drag=TRUE;
 	
@@ -681,6 +689,8 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 		// drag liquid vertex
 	
     if (!Button()) return(FALSE);
+	
+	undo_save();
 
 	first_drag=TRUE;
 	
@@ -928,6 +938,8 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		// drag item
 	
     if (!Button()) return(FALSE);
+	
+	undo_save();
 
 	first_drag=TRUE;
 	
