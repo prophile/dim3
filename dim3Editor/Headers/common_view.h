@@ -94,8 +94,8 @@ extern void group_set(int group_idx);
 
 extern void piece_move_to_portal(int rn);
 extern void piece_duplicate(void);
-extern void piece_delete(void);
 extern void piece_delete_face(void);
+extern void piece_delete(void);
 extern void piece_tesselate(void);
 extern void piece_flip(bool flip_x,bool flip_y,bool flip_z);
 extern void piece_rotate(float rot_x,float rot_y,float rot_z);

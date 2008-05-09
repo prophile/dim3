@@ -42,12 +42,28 @@ map_mesh_type						*undo_meshes=NULL;
 
 void undo_clear(void)
 {
+	int				n;
+	map_mesh_type	*mesh;
+	
+		// disable menu item
+		
 	DisableMenuItem(GetMenuRef(app_menu_edit),1);
 	
-	if (undo_meshes!=NULL) {
-		free(undo_meshes);
-		undo_meshes=NULL;
+		// clear old backup
+	
+	if (undo_meshes==NULL) return;
+	
+	mesh=undo_meshes;
+	
+	for (n=0;n!=undo_nmesh;n++) {
+		if (mesh->vertexes!=NULL) free(mesh->vertexes);
+		if (mesh->polys!=NULL) free(mesh->polys);
+		
+		mesh++;
 	}
+	
+	free(undo_meshes);
+	undo_meshes=NULL;
 }
 
 void undo_save(void)
@@ -68,8 +84,6 @@ void undo_save(void)
 	undo_meshes=(map_mesh_type*)valloc(nmesh*sizeof(map_mesh_type));
 	if (undo_meshes==NULL) return;
 	
-	undo_nmesh=nmesh;
-		
 	org_mesh=portal->mesh.meshes;
 	mesh=undo_meshes;
 	
@@ -98,6 +112,8 @@ void undo_save(void)
 		org_mesh++;
 		mesh++;
 	}
+	
+	undo_nmesh=nmesh;
 
 		// enable undo
 		
@@ -106,44 +122,43 @@ void undo_save(void)
 
 void undo_restore(void)
 {
-/* supergumba
-	int				n,k,primitive_uid,
-					sel_count,type,index;
-	segment_type	*seg;
+	int				n;
+	portal_type		*portal;
+	map_mesh_type	*org_mesh,*mesh;
 	
-		// move in the segments
+		// restore all meshes in portal
 		
-	seg=undo_segments;
+	if (undo_nmesh==0) return;
 	
-	sel_count=select_count();
+	portal=&map.portals[cr];
+		
+	mesh=portal->mesh.meshes;
+	org_mesh=undo_meshes;
 	
-	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&index);
+	for (n=0;n!=undo_nmesh;n++) {
+	
+			// just copy over from backup mesh
+			// and then null out the pointers
+			
+		memmove(mesh,org_mesh,sizeof(map_mesh_type));
 
-		switch (type) {
-			case segment_piece:
-				memmove(&map.segments[index],seg,sizeof(segment_type));
-				seg++;
-				break;
-			case primitive_piece:
-				primitive_uid=map.segments[index].primitive_uid[0];
-				for (k=0;k!=map.nsegment;k++) {
-					if (map.segments[k].primitive_uid[0]==primitive_uid) {
-						memmove(&map.segments[k],seg,sizeof(segment_type));
-						seg++;
-					}
-				}
-				break;
-		}
+		org_mesh->vertexes=NULL;
+		org_mesh->polys=NULL;
+					
+		org_mesh++;
+		mesh++;
 	}
-	*/
+	
+	portal->mesh.nmesh=undo_nmesh;
+
+		// clear undo
+		
+	undo_clear();
 }
 
 void undo_run(void)
 {
 	undo_restore();
-	undo_clear();
-
 	main_wind_draw();
 }
 

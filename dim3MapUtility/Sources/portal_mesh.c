@@ -428,7 +428,7 @@ bool map_portal_mesh_delete_poly(map_type *map,int portal_idx,int mesh_idx,int p
 
 		v_idx=del_idx[k];
 
-			// fix all vertexe indexes
+			// fix all vertex indexes
 
 		chk_poly=mesh->polys;
 
@@ -437,6 +437,14 @@ bool map_portal_mesh_delete_poly(map_type *map,int portal_idx,int mesh_idx,int p
 				if (chk_poly->v[t]>v_idx) chk_poly->v[t]--;
 			}
 			chk_poly++;
+		}
+		
+			// fix other deleted vertexes
+			
+		for (n=(k+1);n<ptsz;n++) {
+			if (del_ok[n]) {
+				if (del_idx[n]>v_idx) del_idx[n]--;
+			}
 		}
 
 			// delete vertex

@@ -93,9 +93,9 @@
 	};
 	F55255250CE57DFA0045350D /* portal_mesh.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 8400}}";
-			sepNavSelRange = "{3577, 38}";
-			sepNavVisRange = "{3209, 1099}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 8624}}";
+			sepNavSelRange = "{9687, 0}";
+			sepNavVisRange = "{8822, 983}";
 			sepNavWindowFrame = "{{325, 151}, {1041, 747}}";
 		};
 	};
@@ -202,8 +202,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 231908705;
-			PBXWorkspaceStateSaveDate = 231908705;
+			PBXPerProjectTemplateStateSaveDate = 231991711;
+			PBXWorkspaceStateSaveDate = 231991711;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {

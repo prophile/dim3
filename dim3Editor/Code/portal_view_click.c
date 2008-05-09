@@ -29,7 +29,7 @@ and can be sold or given away.
 #include "portal_view.h"
 #include "walk_view.h"
 
-extern int					cr,cx,cz,vertex_mode;
+extern int					cr,cx,cz,vertex_mode,grid_mode;
 extern float				walk_view_y_angle;
 extern CCrsrHandle			dragcur,resizecur;
 extern WindowRef			mainwind;
@@ -311,45 +311,75 @@ bool portal_view_portal_resize(d3pnt *pt)
 
 void portal_snap(int rn,d3pnt *pt)
 {
-	int					n,nx,nz;
+	int					n,x,z,ex,ez,xsz,zsz,snap_sz;
 	portal_type			*portal;
 	
-	nx=pt->x;
-	nz=pt->z;
+	x=pt->x;
+	z=pt->z;
+	
+	portal=&map.portals[rn];
+	xsz=portal->ex-portal->x;
+	zsz=portal->ez-portal->z;
+
+	ex=x+xsz;
+	ez=z+zsz;
+	
+	snap_sz=map_enlarge*10;
+	if (grid_mode==grid_mode_large) snap_sz*=2;
 	
 	for (n=0;n!=map.nportal;n++) {
 		if (n==rn) continue;
 		
 		portal=&map.portals[n];
 		
-			// top-left
+			// left size
 			
-		if ((abs(portal->x-nx)<=10) && (abs(portal->z-nz<=10))) {
-			pt->x=portal->x;
+		if ((abs(portal->x-ex)<=snap_sz) && (abs(portal->z-z)<=snap_sz)) {
+			pt->x=portal->x-xsz;
 			pt->z=portal->z;
 			return;
 		}
+		if ((abs(portal->x-ex)<=snap_sz) && (abs(portal->ez-ez)<=snap_sz)) {
+			pt->x=portal->x-xsz;
+			pt->z=portal->ez-zsz;
+			return;
+		}
 		
-			// top-right
+			// right side
 			
-		if ((abs(portal->ex-nx)<=10) && (abs(portal->z-nz<=10))) {
+		if ((abs(portal->ex-x)<=snap_sz) && (abs(portal->z-z)<=snap_sz)) {
 			pt->x=portal->ex;
 			pt->z=portal->z;
 			return;
 		}
+		if ((abs(portal->ex-x)<=snap_sz) && (abs(portal->ez-ez)<=snap_sz)) {
+			pt->x=portal->ex;
+			pt->z=portal->ez-zsz;
+			return;
+		}
 
-			// bottom-left
+			// top side
 			
-		if ((abs(portal->x-nx)<=10) && (abs(portal->ez-nz<=10))) {
+		if ((abs(portal->x-x)<=snap_sz) && (abs(portal->z-ez)<=snap_sz)) {
+			pt->x=portal->x;
+			pt->z=portal->z-zsz;
+			return;
+		}
+		if ((abs(portal->ex-ex)<=snap_sz) && (abs(portal->z-ez)<=snap_sz)) {
+			pt->x=portal->ex-xsz;
+			pt->z=portal->z-zsz;
+			return;
+		}
+
+			// bottom side
+			
+		if ((abs(portal->x-x)<=snap_sz) && (abs(portal->ez-z)<=snap_sz)) {
 			pt->x=portal->x;
 			pt->z=portal->ez;
 			return;
 		}
-
-			// bottom-right
-			
-		if ((abs(portal->ex-nx)<=10) && (abs(portal->ez-nz<=10))) {
-			pt->x=portal->ex;
+		if ((abs(portal->ex-ex)<=snap_sz) && (abs(portal->ez-z)<=snap_sz)) {
+			pt->x=portal->ex-xsz;
 			pt->z=portal->ez;
 			return;
 		}
@@ -400,7 +430,8 @@ void portal_view_portal_drag(d3pnt *pt)
 		ex=portal->ex;
 		ez=portal->ez;
 		
-		if (vertex_mode==vertex_mode_snap) portal_snap(cr,&to_pt);
+		walk_view_click_grid(&to_pt);
+		portal_snap(cr,&to_pt);
 		
 		orgx=x;
 		orgz=z;

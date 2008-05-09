@@ -110,7 +110,7 @@ void piece_move_to_portal(int rn)
 
 /* =======================================================
 
-      Duplicate and Delete Piece
+      Duplicate Piece
       
 ======================================================= */
 
@@ -266,6 +266,37 @@ void piece_duplicate(void)
 	main_wind_draw();
 }
 
+/* =======================================================
+
+      Delete Piece
+      
+======================================================= */
+
+void piece_delete_face(void)
+{
+	int				type,portal_idx,main_idx,sub_idx;
+	
+	undo_clear();
+	
+		// only delete in polygon mode
+		
+	if (drag_mode!=drag_mode_polygon) return;
+	
+		// is a face selected?
+		
+	select_get(0,&type,&portal_idx,&main_idx,&sub_idx);
+	if (type!=mesh_piece) return;
+	if (sub_idx==-1) return;
+	
+	undo_save();
+	
+	map_portal_mesh_delete_poly(&map,portal_idx,main_idx,sub_idx);
+	
+	select_switch(0,mesh_piece,portal_idx,main_idx,0);
+	
+	main_wind_draw();
+}
+
 void piece_delete(void)
 {
 	int				n,i,k,nsel_count,
@@ -287,7 +318,14 @@ void piece_delete(void)
 		switch (type) {
 			
 			case mesh_piece:
-				map_portal_mesh_delete(&map,portal_idx,main_idx);
+				if (drag_mode==drag_mode_polygon) {
+					map_portal_mesh_delete_poly(&map,portal_idx,main_idx,sub_idx);
+					break;
+				}
+				if (drag_mode==drag_mode_mesh) {
+					map_portal_mesh_delete(&map,portal_idx,main_idx);
+					break;
+				}
 				break;
 				
 			case liquid_piece:
@@ -351,37 +389,6 @@ void piece_delete(void)
 	
 	select_clear();
     
-	main_wind_draw();
-}
-
-/* =======================================================
-
-      Piece Delete Face
-      
-======================================================= */
-
-void piece_delete_face(void)
-{
-	int				type,portal_idx,main_idx,sub_idx;
-	
-	undo_clear();
-	
-		// only delete in polygon mode
-		
-	if (drag_mode!=drag_mode_polygon) return;
-	
-		// is a face selected?
-		
-	select_get(0,&type,&portal_idx,&main_idx,&sub_idx);
-	if (type!=mesh_piece) return;
-	if (sub_idx==-1) return;
-	
-	undo_save();
-	
-	map_portal_mesh_delete_poly(&map,portal_idx,main_idx,sub_idx);
-	
-	select_switch(0,mesh_piece,portal_idx,main_idx,0);
-	
 	main_wind_draw();
 }
 

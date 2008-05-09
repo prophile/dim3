@@ -115,25 +115,29 @@ void menu_fix_enable(void)
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),2);
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),3);
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),5);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),6);
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),7);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),9);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),11);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),12);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),14);
 		}
 		else {
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),1);
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),2);
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),3);
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),5);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),6);
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),7);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),9);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),11);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),12);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),14);
 		}
+		
+		if (select_count()!=0) {
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),9);
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),10);
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),12);
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),13);
+		}
+		else {
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),9);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),10);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),12);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),13);
+		}
+		
 	}
 	
 	DrawMenuBar();
