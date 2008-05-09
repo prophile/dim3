@@ -31,10 +31,6 @@ and can be sold or given away.
 
 #include "video.h"
 
-#define text_small_factor				0.02f
-#define text_large_factor				0.038f
-#define text_height_factor				1.2f
-
 extern setup_type			setup;
 
 bool						font_small;

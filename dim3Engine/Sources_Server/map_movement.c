@@ -39,6 +39,10 @@ extern server_type		server;
 extern camera_type		camera;
 extern js_type			js;
 
+extern bool group_move_start(int group_idx,int movement_idx,d3pnt *mov,d3ang *rot,int count,int user_id);
+extern void group_move_freeze(int group_idx,bool freeze);
+extern bool group_move_frozen(int group_idx);
+
 /* =======================================================
 
       Calculate Movement Centers
@@ -107,12 +111,12 @@ void map_movements_start(int movement_idx,int move_idx,attach_type *attach)
 	msec=move->msec/10;
 	
 	if (!movement->reverse) {
-		script_move_add(movement->group_idx,movement_idx,&move->mov,&move->rot,msec,move->user_id);
-		if (movement->reverse_group_idx!=-1) script_move_add(movement->reverse_group_idx,movement_idx,&rev_mov,&rev_rot,msec,move->user_id);
+		group_move_start(movement->group_idx,movement_idx,&move->mov,&move->rot,msec,move->user_id);
+		if (movement->reverse_group_idx!=-1) group_move_start(movement->reverse_group_idx,movement_idx,&rev_mov,&rev_rot,msec,move->user_id);
 	}
 	else {
-		script_move_add(movement->group_idx,movement_idx,&rev_mov,&rev_rot,msec,move->user_id);
-		if (movement->reverse_group_idx!=-1) script_move_add(movement->reverse_group_idx,movement_idx,&move->mov,&move->rot,msec,move->user_id);
+		group_move_start(movement->group_idx,movement_idx,&rev_mov,&rev_rot,msec,move->user_id);
+		if (movement->reverse_group_idx!=-1) group_move_start(movement->reverse_group_idx,movement_idx,&move->mov,&move->rot,msec,move->user_id);
 	}
 	
 		// restore old attach
@@ -201,8 +205,8 @@ void map_movements_script_freeze(int movement_idx)
 	
 	movement=&map.movements[movement_idx];
 	
-	script_move_freeze(movement->group_idx,TRUE);
-	if (movement->reverse_group_idx!=-1) script_move_freeze(movement->reverse_group_idx,TRUE);
+	group_move_freeze(movement->group_idx,TRUE);
+	if (movement->reverse_group_idx!=-1) group_move_freeze(movement->reverse_group_idx,TRUE);
 }
 
 void map_movements_script_thaw(int movement_idx)
@@ -211,8 +215,8 @@ void map_movements_script_thaw(int movement_idx)
 	
 	movement=&map.movements[movement_idx];
 	
-	script_move_freeze(movement->group_idx,FALSE);
-	if (movement->reverse_group_idx!=-1) script_move_freeze(movement->reverse_group_idx,FALSE);
+	group_move_freeze(movement->group_idx,FALSE);
+	if (movement->reverse_group_idx!=-1) group_move_freeze(movement->reverse_group_idx,FALSE);
 }
 
 void map_movements_script_start_or_thaw(int movement_idx)
@@ -224,8 +228,8 @@ void map_movements_script_start_or_thaw(int movement_idx)
 		// is movement started?
 		
 	if (movement->started) {
-		if (script_move_frozen(movement->group_idx)) {
-			script_move_freeze(movement->group_idx,FALSE);		// if frozen, then thaw
+		if (group_move_frozen(movement->group_idx)) {
+			group_move_freeze(movement->group_idx,FALSE);		// if frozen, then thaw
 		}
 	}
 	else {

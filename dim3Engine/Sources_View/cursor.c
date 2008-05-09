@@ -63,16 +63,18 @@ void cursor_shutdown(void)
 
 void cursor_draw(void)
 {
-	int				x,y,lft,top,rgt,bot;
+	int				x,y,sz,lft,top,rgt,bot;
 	
 		// get cursor position
 		
 	input_gui_get_mouse_position(&x,&y);
+
+	sz=(int)(((float)setup.screen.x_scale)*cursor_size_factor);
 		
 	lft=x;
-	rgt=lft+cursor_bitmap.wid;
+	rgt=lft+sz;
 	top=y;
-	bot=top+cursor_bitmap.high;
+	bot=top+sz;
 
 		// draw mouse
 		

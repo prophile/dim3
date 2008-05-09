@@ -75,7 +75,6 @@ bool server_memory_allocate(void)
 	
 	js.scripts=NULL;
 	js.timers=NULL;
-	js.moves=NULL;
 	js.globals=NULL;
 	
 	hud.bitmaps=NULL;
@@ -131,9 +130,6 @@ bool server_memory_allocate(void)
 	js.timers=(timer_type*)valloc(max_timers*sizeof(timer_type));
 	if (js.timers==NULL) return(FALSE);
 	
-	js.moves=(move_type*)valloc(max_moves*sizeof(move_type));
-	if (js.moves==NULL) return(FALSE);
-	
 	js.globals=(global_type*)valloc(max_globals*sizeof(global_type));
 	if (js.globals==NULL) return(FALSE);
 	
@@ -173,7 +169,6 @@ bool server_memory_allocate(void)
 	bzero(server.crosshairs,(max_crosshair*sizeof(crosshair_type)));
 	bzero(js.scripts,(max_scripts*sizeof(script_type)));
 	bzero(js.timers,(max_timers*sizeof(timer_type)));
-	bzero(js.moves,(max_moves*sizeof(move_type)));
 	bzero(js.globals,(max_globals*sizeof(global_type)));
 	bzero(hud.bitmaps,(max_hud_bitmap*sizeof(hud_bitmap_type)));
 	bzero(hud.texts,(max_hud_text*sizeof(hud_text_type)));
@@ -206,7 +201,6 @@ void server_memory_release(void)
 		
 	if (js.scripts!=NULL) free(js.scripts);
 	if (js.timers!=NULL) free(js.timers);
-	if (js.moves!=NULL) free(js.moves);
 	if (js.globals!=NULL) free(js.globals);
 	
 		// hud pointers

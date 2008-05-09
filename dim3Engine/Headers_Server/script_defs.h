@@ -973,18 +973,6 @@ typedef struct		{
 					} script_type;
 
 //
-// move over time structures
-//
-
-typedef struct		{
-						int					count,group_idx,movement_idx,user_id;
-						d3fpnt				cur_mov;
-						d3vct				mov_add,rot_add;
-						bool				freeze,has_mov,has_rot;
-						attach_type			attach;
-					} move_type;
- 
-//
 // global structures
 //
  
@@ -1006,7 +994,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int					timer,move,global;
+						int					timer,global;
 					} script_count_type;
 					
 typedef struct		{
@@ -1035,7 +1023,6 @@ typedef struct		{
 						
 						script_type			*scripts;
 						timer_type			*timers;
-						move_type			*moves;
 						global_type			*globals;
 						
 					} js_type;

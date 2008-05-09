@@ -64,7 +64,7 @@ extern void element_checkbox_add(char *str,int value,int id,int x,int y,bool sel
 extern void element_combo_add(char *str,char *combo_data,int value,int id,int x,int y,bool selectable);
 extern void element_slider_add(char *str,float value,float value_min,float value_max,int id,int x,int y,bool selectable);
 extern void element_table_add(element_column_type* cols,char *row_data,int id,int ncolumn,int x,int y,int wid,int high);
-extern void element_tab_add(char *path_list,char *path2_list,int value,int id,int ntab,int x,int y,int wid,int high,int ext_high);
+extern void element_tab_add(char *path_list,char *path2_list,int value,int id,int ntab,int x,int y,int wid,int high,int list_wid,int ext_high);
 
 extern int element_get_selected(void);
 

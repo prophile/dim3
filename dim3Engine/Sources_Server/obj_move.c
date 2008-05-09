@@ -1276,7 +1276,7 @@ void object_move_stop(obj_type *obj)
 
 /* =======================================================
 
-      Objects Moving with Meshes/Objects
+      Objects External Movement
       
 ======================================================= */
 
@@ -1286,6 +1286,7 @@ inline bool object_move_with_move(obj_type *obj,int xmove,int zmove)
 
 	if (obj->lock.x) xmove=0;
 	if (obj->lock.z) zmove=0;
+	ymove=0;
 	
 	if (!object_move_xz(obj,&xmove,&ymove,&zmove)) return(TRUE);
 
@@ -1295,6 +1296,31 @@ inline bool object_move_with_move(obj_type *obj,int xmove,int zmove)
 
 	return(FALSE);
 }
+
+inline void object_turn_with_turn(obj_type *obj,d3pnt *mpt,float rot_y)
+{
+	int			x,z;
+
+		// get change
+
+	x=obj->pos.x;
+	z=obj->pos.z;
+	rotate_2D_point(&x,&z,mpt->x,mpt->z,rot_y);
+
+		// move
+
+	object_move_with_move(obj,(x-obj->pos.x),(z-obj->pos.z));
+
+		// rotate player
+
+	obj->ang.y=angle_add(obj->ang.y,rot_y);
+}
+
+/* =======================================================
+
+      Objects Moving by Meshes
+      
+======================================================= */
 
 // supergumba -- this all needs work
 bool object_move_with_wall_segment_check_wall(d3box *box,int seg_idx,int xmove,int zmove)
@@ -1354,24 +1380,48 @@ void object_move_with_wall_segment(int seg_idx,int xmove,int zmove)
 
 void object_move_with_standing_mesh(int portal_idx,int mesh_idx,int xmove,int zmove)
 {
-	int			i;
+	int			n;
 	obj_type	*obj;
 	
 	obj=server.objs;
 	
-	for (i=0;i!=server.count.obj;i++) {
-
-		if (!obj->remote.on) {
-
-				// are we standing on this mesh?
-
-			if ((obj->contact.stand_poly.portal_idx==portal_idx) && (obj->contact.stand_poly.mesh_idx==mesh_idx)) object_move_with_move(obj,xmove,zmove);
-
-		}
-
+	for (n=0;n!=server.count.obj;n++) {
+		if ((obj->contact.stand_poly.portal_idx==portal_idx) && (obj->contact.stand_poly.mesh_idx==mesh_idx)) object_move_with_move(obj,xmove,zmove);
 		obj++;
 	}
 }
+
+void object_rotate_with_standing_mesh(int portal_idx,int mesh_idx,float y)
+{
+	int				n;
+	d3pnt			mpt;
+	map_mesh_type	*mesh;
+	obj_type		*obj;
+
+		// get center point for mesh
+
+	mesh=&map.portals[portal_idx].mesh.meshes[mesh_idx];
+
+	map_portal_mesh_calculate_center(&map,portal_idx,mesh_idx,&mpt);
+	mpt.x+=mesh->rot_off.x;
+	mpt.y+=mesh->rot_off.y;
+	mpt.z+=mesh->rot_off.z;
+
+		// turn anything standing on it
+	
+	obj=server.objs;
+	
+	for (n=0;n!=server.count.obj;n++) {
+		if ((obj->contact.stand_poly.portal_idx==portal_idx) && (obj->contact.stand_poly.mesh_idx==mesh_idx)) object_turn_with_turn(obj,&mpt,y);
+		obj++;
+	}
+}
+
+/* =======================================================
+
+      Objects Moving by Other Objects
+      
+======================================================= */
 
 void object_move_with_object(obj_type *obj,int xmove,int zmove)
 {

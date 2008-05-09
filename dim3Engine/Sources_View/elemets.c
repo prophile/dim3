@@ -32,12 +32,6 @@ and can be sold or given away.
 #include "video.h"
 #include "inputs.h"
 
-#define element_control_high_factor				1.5f
-#define element_control_separator_factor		0.6f
-
-#define element_control_draw_height				0.025f
-#define element_control_draw_long_width			0.4f
-
 extern hud_type				hud;
 extern setup_type			setup;
 
@@ -612,7 +606,7 @@ void element_table_add(element_column_type* cols,char *row_data,int id,int ncolu
 	pthread_mutex_unlock(&element_thread_lock);
 }
 
-void element_tab_add(char *path_list,char *path2_list,int value,int id,int ntab,int x,int y,int wid,int high,int ext_high)
+void element_tab_add(char *path_list,char *path2_list,int value,int id,int ntab,int x,int y,int wid,int high,int list_wid,int ext_high)
 {
 	int				n;
 	element_type	*element;
@@ -629,7 +623,8 @@ void element_tab_add(char *path_list,char *path2_list,int value,int id,int ntab,
 	element->y=y;
 	element->wid=wid;
 	element->high=high;
-	element->ext_high=ext_high;
+	element->setup.tab.list_wid=list_wid;
+	element->setup.tab.ext_high=ext_high;
 	
 	element->selectable=TRUE;
 	element->enabled=TRUE;
@@ -1886,19 +1881,21 @@ void element_draw_table(element_type *element,int sel_id)
 
 int element_mouse_over_tab(element_type *element,int x)
 {
-	int				lft,rgt,xadd;
+	int				lft,rgt,max_sz,xadd;
 	
 		// within tab box?
 		
-	lft=element->x+15;
-	rgt=(element->x+element->wid)-15;
+	lft=element->x+(int)(((float)setup.screen.x_scale)*0.02f);
+	rgt=lft+element->setup.tab.list_wid;
 	
 	if ((x<lft) || (x>rgt)) return(-1);
 	
 		// select value
 		
-	xadd=(rgt-lft)/element->setup.tab.ntab;
-	if (xadd>128) xadd=128;
+	xadd=element->setup.tab.list_wid/element->setup.tab.ntab;
+
+	max_sz=(int)(((float)setup.screen.x_scale)*0.2f);
+	if (xadd>max_sz) xadd=max_sz;
 
 	return((x-lft)/xadd);
 }
@@ -1917,7 +1914,7 @@ bool element_click_tab(element_type *element,int x)
 
 void element_draw_tab(element_type *element,int sel_id,int x)
 {
-	int				n,ky,xstart,xadd,high,
+	int				n,ky,xstart,xadd,high,max_sz,
 					lft,rgt,top,bot,lx,rx,ty,by,
 					klft,krgt,ktop;
 	
@@ -1927,8 +1924,10 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
 
-	xadd=((rgt-lft)-30)/element->setup.tab.ntab;
-	if (xadd>128) xadd=128;
+	xadd=element->setup.tab.list_wid/element->setup.tab.ntab;
+
+	max_sz=(int)(((float)setup.screen.x_scale)*0.2f);
+	if (xadd>max_sz) xadd=max_sz;
 
 		// bitmap drawing
 		
@@ -1965,7 +1964,7 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 	glVertex2i(lx,(ky+4));
 	glEnd();
 
-	ky=top+element->ext_high;
+	ky=top+element->setup.tab.ext_high;
 
 	glBegin(GL_QUADS);
 	glTexCoord2f(0,0);
@@ -1980,7 +1979,7 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 
 		// tabs
 		
-	xstart=lft+15;
+	xstart=lft+(int)(((float)setup.screen.x_scale)*0.02f);
 		
 	for (n=0;n!=element->setup.tab.ntab;n++) {
 		lx=xstart+(xadd*n);

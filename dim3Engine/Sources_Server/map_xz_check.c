@@ -373,20 +373,12 @@ bool map_spot_empty_sphere(int sx,int sy,int sz,int radius,int ignore_obj_uid,in
 
 bool map_spot_empty_object(obj_type *obj)
 {
-	/* supergumba
 	d3box			box;
-	
-	obj->contact.wall_seg_idx=-1;
-	obj->contact.obj_uid=-1;
 	
 	box_create_from_object(&box,obj);
 	if (!box_in_map(&box)) return(TRUE);
 
-	obj->contact.wall_seg_idx=move_check_xz_portals(&box);
-	if (obj->contact.wall_seg_idx!=-1) return(TRUE);
+	if (move_check_xz_portals(&box)!=-1) return(TRUE);
 	
-	obj->contact.obj_uid=collide_find_object_for_object(obj);
-	return(obj->contact.obj_uid!=-1);
-	*/
-	return(TRUE);
+	return(collide_find_object_for_object(obj)!=-1);
 }

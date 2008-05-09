@@ -65,7 +65,7 @@ extern void mesh_normal_smooth_init(void);
 extern void fade_screen_start(int tick);
 extern bool liquid_create_memory(void);
 extern void liquid_free_memory(void);
-
+extern void group_move_clear_all(void);
 
 /* =======================================================
 
@@ -287,7 +287,7 @@ bool map_start(bool skip_media,char *err_str)
 	effect_start();
 	particle_map_initialize();
 	decal_clear();
-	script_move_clear_all();
+	group_move_clear_all();
 	
 		// reset rain
 		

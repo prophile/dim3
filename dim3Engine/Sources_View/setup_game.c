@@ -286,9 +286,10 @@ void setup_game_action_pane(void)
 	element_column_type	cols[2];
 	
 	x=60;
-	y=54;
+	y=(int)(((float)setup.screen.y_scale)*0.12f);
+
 	wid=(setup.screen.x_scale-60)-x;
-	high=(setup.screen.y_scale-118)-y;
+	high=(int)(((float)setup.screen.y_scale)*0.75f)-y;
 	
 		// setup action list
 		
@@ -351,7 +352,7 @@ void setup_game_action_pane(void)
 
 void setup_game_create_pane(void)
 {
-	int			x,y,n,high,ntab,stab,pane;
+	int			x,y,n,wid,high,tab_list_wid,tab_pane_high,ntab,stab,pane;
 	char		path[1024],path2[1024],
 				tab_path[6][1024],tab_path2[6][1024];
 	char		tab_list[][32]={"tab_display","tab_graphics","tab_audio","tab_mouse","tab_actions"},
@@ -375,12 +376,14 @@ void setup_game_create_pane(void)
 		file_paths_data(&setup.file_path_setup,tab_path2[n],"Bitmaps/UI_Elements",tab_selected_list[n+stab],"png");
 	}
 	
-	x=setup.screen.x_scale/ntab;
-	if (x>128) x=128;
-	high=x/4;
-	y=41-high;
+	wid=setup.screen.x_scale;
+	high=(int)(((float)setup.screen.y_scale)*0.08f);
+	tab_list_wid=(int)(((float)setup.screen.x_scale)*0.85f);
+	tab_pane_high=(int)(((float)setup.screen.y_scale)*0.86f);
+
+	y=(int)(((float)high)*0.15f);
 	
-	element_tab_add((char*)tab_path,(char*)tab_path2,setup_tab_value,ctrl_tab_id,ntab,0,y,setup.screen.x_scale,high,(setup.screen.y_scale-(60+y)));
+	element_tab_add((char*)tab_path,(char*)tab_path2,setup_tab_value,ctrl_tab_id,ntab,0,y,wid,high,tab_list_wid,tab_pane_high);
 	
 		// buttons
 	

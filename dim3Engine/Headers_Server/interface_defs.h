@@ -61,6 +61,22 @@ and can be sold or given away.
 #define element_pos_right			1
 
 //
+// GUI scaling factors
+//
+
+#define cursor_size_factor						0.05f
+
+#define text_small_factor						0.02f
+#define text_large_factor						0.038f
+#define text_height_factor						1.2f
+
+#define element_control_high_factor				1.5f
+#define element_control_separator_factor		0.6f
+
+#define element_control_draw_height				0.025f
+#define element_control_draw_long_width			0.4f
+
+//
 // GUI element structures
 //
 
@@ -89,7 +105,7 @@ typedef struct		{
 					} element_table_type;
 
 typedef struct		{
-						int						ntab;
+						int						ntab,list_wid,ext_high;
 						bitmap_type				bitmap[max_element_tab],bitmap_select[max_element_tab];
 					} element_tab_type;
 
@@ -102,7 +118,7 @@ typedef union		{
 					} element_setup_type;
 
 typedef struct		{
-						int						id,type,x,y,wid,high,ext_high,
+						int						id,type,x,y,wid,high,
 												value,offset,max_value_str_sz;
 						bool					selectable,enabled,hidden,framed;
 						char					str[max_element_str_len],

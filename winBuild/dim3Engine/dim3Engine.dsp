@@ -435,6 +435,10 @@ SOURCE=..\..\dim3Engine\Sources_Server\group_change.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3Engine\Sources_Server\group_move.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Engine\Sources_Server\halos.c
 # End Source File
 # Begin Source File
@@ -1084,10 +1088,6 @@ SOURCE=..\..\dim3Engine\Sources_Server\scripts_file.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_Server\scripts_lookup.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\scripts_move.c
 # End Source File
 # Begin Source File
 

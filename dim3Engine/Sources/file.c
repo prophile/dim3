@@ -373,7 +373,6 @@ bool game_file_save(char *err_str)
 	game_file_add_chunk(&js.time,sizeof(script_time_type));
 		
 	game_file_add_chunk(js.timers,(js.count.timer*sizeof(timer_type)));
-	game_file_add_chunk(js.moves,(js.count.move*sizeof(move_type)));
 	game_file_add_chunk(js.globals,(js.count.global*sizeof(global_type)));
 
 		// compress and save
@@ -537,7 +536,6 @@ bool game_file_load(char *file_name,char *err_str)
 	game_file_get_chunk(&js.time);
 	
 	game_file_get_chunk(js.timers);
-	game_file_get_chunk(js.moves);
 	game_file_get_chunk(js.globals);
 
 		// reset model UIDs
