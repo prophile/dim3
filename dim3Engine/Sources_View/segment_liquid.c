@@ -381,7 +381,6 @@ void liquid_render_portal_liquid(int tick,portal_type *portal,map_liquid_type *l
 	float					normal[3];
 	d3pnt					mid;
 	texture_type			*texture;
-	light_spot_type			*lspot;
 
 		// setup liquid for drawing
 
@@ -417,8 +416,7 @@ void liquid_render_portal_liquid(int tick,portal_type *portal,map_liquid_type *l
 		mid.y=liq->y;
 		mid.z=(liq->top+liq->bot)>>1;
 
-		lspot=map_portal_find_closest_light(portal,(double)mid.x,(double)mid.y,(double)mid.z,NULL);
-		gl_shader_set_variables(texture->shader.program_obj,&mid,texture,lspot);
+		gl_shader_set_variables(texture->shader.program_obj,&mid,texture);
 
 		map_portal_calculate_normal_vector(portal,(double)mid.x,(double)mid.y,(double)mid.z,normal);
 		glNormal3f(normal[0],normal[1],normal[2]);

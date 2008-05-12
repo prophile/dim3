@@ -207,25 +207,76 @@ void light_add(d3pos *pos,int light_type,int intensity,bool confine_to_portal,d3
       
 ======================================================= */
 
-int light_create_glsl_array(float *light_pos,float *light_col)
+int light_create_glsl_array(d3pnt *pnt,float *light_pos,float *light_col,float *light_normal)
 {
-	int						n;
-	float					*pos,*col;
+	int						n,cnt,idx,light_idx[max_light_spot];
+	float					*pos,*col,*normal;
+	double					dx,dy,dz,d,dist[max_light_spot];
+	d3vct					vct;
 	light_spot_type			*lspot;
-
 
 		// clear all lights
 
 	memset(light_pos,0x0,((sizeof(float)*3)*max_light_spot));
 	memset(light_col,0x0,((sizeof(float)*4)*max_light_spot));
+	memset(light_normal,0x0,((sizeof(float)*3)*max_light_spot));
+
+	if (nlight==0) return(0);
+
+		// need to sort the list
+
+	lspot=lspot_cache;
+
+	for (n=0;n!=nlight;n++) {
+		dx=lspot->pnt.x-pnt->x;
+		dy=lspot->pnt.y-pnt->y;
+		dz=lspot->pnt.z-pnt->z;
+		dist[n]=(dx*dx)+(dy*dy)+(dz*dz);
+
+		lspot++;
+	}
+
+	cnt=0;
+
+	while (TRUE) {
+
+		d=-1.0;
+		idx=-1;
+
+		for (n=0;n!=nlight;n++) {
+			if (dist[n]==-1) continue;
+			if (d==-1.0) {
+				idx=n;
+				d=dist[n];
+			}
+			else {
+				if (dist[n]<d) {
+					idx=n;
+					d=dist[n];
+				}
+			}
+		}
+
+		if (idx==-1) break;
+
+		light_idx[cnt]=idx;
+
+		dist[idx]=-1;
+
+		cnt++;
+		if (cnt==nlight) break;
+	}
+
 
 		// set the lights
 
-	lspot=lspot_cache;
 	pos=light_pos;
 	col=light_col;
+	normal=light_normal;
 
 	for (n=0;n!=nlight;n++) {
+		lspot=&lspot_cache[light_idx[n]];
+
 		*pos=(float)lspot->pnt.x;
 		pos++;
 		*pos=(float)lspot->pnt.y;
@@ -241,6 +292,15 @@ int light_create_glsl_array(float *light_pos,float *light_col)
 		col++;
 		*col=(float)lspot->intensity;
 		col++;
+
+		vector_create(&vct,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,pnt->x,pnt->y,pnt->z);
+		
+		*normal=vct.x;
+		normal++;
+		*normal=vct.y;
+		normal++;
+		*normal=vct.z;
+		normal++;
 	}
 
 	return(nlight);

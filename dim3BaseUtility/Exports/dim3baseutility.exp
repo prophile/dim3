@@ -55,6 +55,7 @@ _line_2D_get_intersect
 _line_2D_test_intersect
 _line_2D_find_angle_hit
 _line_2D_find_inside_infinite
+_line_2D_all_points_in_line
 
 _polygon_get_box
 _polygon_find_center

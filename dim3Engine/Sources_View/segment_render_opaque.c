@@ -529,7 +529,6 @@ void segment_render_opaque_portal_shader_mesh(portal_type *portal)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*mesh_poly;
 	texture_type		*texture;
-	light_spot_type		*lspot;
 
 	gl_shader_start();
 	gl_texture_shader_start();
@@ -565,8 +564,7 @@ void segment_render_opaque_portal_shader_mesh(portal_type *portal)
 			gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
 			gl_shader_set_program(texture->shader.program_obj);
 			
-			lspot=map_portal_find_closest_light(portal,(double)mesh_poly->box.mid.x,(double)mesh_poly->box.mid.y,(double)mesh_poly->box.mid.z,NULL);
-			gl_shader_set_variables(texture->shader.program_obj,&mesh_poly->box.mid,texture,lspot);
+			gl_shader_set_variables(texture->shader.program_obj,&mesh_poly->box.mid,texture);
 			
 			glNormal3f(mesh_poly->draw.normal[0],mesh_poly->draw.normal[1],mesh_poly->draw.normal[2]);
 

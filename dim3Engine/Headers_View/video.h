@@ -70,7 +70,7 @@ extern void gl_render_array_stop(void);
 extern void gl_shader_start(void);
 extern void gl_shader_end(void);
 extern void gl_shader_set_program(GLhandleARB shader_prog_obj);
-extern void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type *texture,light_spot_type *lspot);
+extern void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type *texture);
 
 	// shadows
 	

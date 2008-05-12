@@ -37,7 +37,7 @@ and can be sold or given away.
 
 void map_prepare_set_mesh_poly_box(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
 {
-	int				n,k,ptsz,y;
+	int				n,k,ptsz,y,px[8],pz[8];
 	bool			flat,common_xz;
 	d3pnt			min,max,mid;
 	d3pnt			*pt,*chk_pt;
@@ -116,7 +116,32 @@ void map_prepare_set_mesh_poly_box(map_mesh_type *mesh,map_mesh_poly_type *mesh_
 	mesh_poly->box.wall_like=FALSE;
 	
 	if (!mesh_poly->box.flat) {
+
+			// quick checks
+
 		mesh_poly->box.wall_like=(common_xz) || (((mesh_poly->box.max.x-mesh_poly->box.min.x)+(mesh_poly->box.max.z-mesh_poly->box.min.z))<(mesh_poly->box.max.y-mesh_poly->box.min.y));
+
+			// otherwise determine if all points are close to a line
+
+		if (!mesh_poly->box.wall_like) {
+
+			for (n=0;n!=ptsz;n++) {
+				pt=&mesh->vertexes[mesh_poly->v[n]];
+				px[n]=pt->x;
+				pz[n]=pt->z;
+			}
+
+			mesh_poly->box.wall_like=line_2D_all_points_in_line(ptsz,px,pz,0.0f);
+		}
+	}
+
+		// supergumba -- testing
+
+	if (mesh_poly->box.wall_like) {
+		mesh_poly->txt_idx=0;
+	}
+	else {
+		mesh_poly->txt_idx=1;
 	}
 }
 

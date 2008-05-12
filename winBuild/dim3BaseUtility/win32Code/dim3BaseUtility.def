@@ -58,6 +58,7 @@ EXPORTS
 	line_2D_test_intersect						@182
 	line_2D_find_angle_hit						@183
 	line_2D_find_inside_infinite				@184
+	line_2D_all_points_in_line					@185
 
 	polygon_get_box								@190
 	polygon_find_center							@191

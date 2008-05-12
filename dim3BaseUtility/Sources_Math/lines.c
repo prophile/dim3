@@ -219,3 +219,72 @@ void line_2D_find_inside_infinite(int x,int z,int wid,int lx,int lz,int rx,int r
 	*krz=z+zadd;
 }
 
+/* =======================================================
+
+      Check if Points are on a Single Line
+      
+======================================================= */
+
+bool line_2D_all_points_in_line(int ptsz,int *px,int *pz,float slop)
+{
+	int				n,x,z;
+	float			slopes[8];
+	bool			same_x,same_z,horz,vert;
+
+		// only two points, must be in line
+
+	if (ptsz<=2) return(TRUE);
+
+		// quick check for same x or z coordinates
+
+	same_x=same_z=TRUE;
+
+	for (n=1;n<ptsz;n++) {
+		same_x=same_x&&(px[0]==px[n]);
+		same_z=same_z&&(pz[0]==pz[n]);
+	}
+
+	if ((same_x) || (same_z)) return(TRUE);
+
+		// get the average slopes
+
+	horz=vert=FALSE;
+
+	for (n=1;n<ptsz;n++) {
+
+		x=px[0]-px[n];
+		z=pz[0]-pz[n];
+
+			// special check for horz or vertical lines
+			// note vertical lines have undefined slope, so
+			// we are setting it to zero and checking for
+			// the special case where there are both horz
+			// and vertical slopes (now both equal to 0)
+
+		if (x==0) {
+			horz=TRUE;
+			slopes[n-1]=0.0f;
+		}
+		else {
+			if (z==0) {
+				vert=TRUE;
+				slopes[n-1]=0.0f;
+			}
+			else {
+				slopes[n-1]=((float)x)/((float)z);
+			}
+		}
+	}
+
+		// if both horz and vertical, then not in line
+
+	if ((horz) && (vert)) return(FALSE);
+
+		// get the average difference
+
+	for (n=1;n<(ptsz-2);n++) {
+		if (fabs(slopes[0]-slopes[n])>slop) return(FALSE);
+	}
+	
+	return(TRUE);
+}

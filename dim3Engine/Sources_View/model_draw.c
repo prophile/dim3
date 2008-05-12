@@ -405,7 +405,6 @@ void model_draw_material_shader(model_type *mdl,model_draw *draw,model_mesh_type
 {
 	int					frame,trig_count;
 	d3pnt				pnt;
-	light_spot_type		*lspot;
 	
 	trig_count=material->trig_count;
 	if (trig_count==0) return;
@@ -421,8 +420,7 @@ void model_draw_material_shader(model_type *mdl,model_draw *draw,model_mesh_type
 	pnt.y=draw->pos.y;
 	pnt.z=draw->pos.z;
 	
-	lspot=model_find_closest_light(mdl,(double)pnt.x,(double)pnt.y,(double)pnt.z,NULL);
-	gl_shader_set_variables(texture->shader.program_obj,&pnt,texture,lspot);
+	gl_shader_set_variables(texture->shader.program_obj,&pnt,texture);
 	
 		// draw the triangles
 		

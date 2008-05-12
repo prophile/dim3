@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "consoles.h"
 #include "video.h"
 
+extern map_type				map;
 extern camera_type			camera;
 
 GLhandleARB					gl_shader_current_prog_obj;
@@ -76,11 +77,12 @@ void gl_shader_set_program(GLhandleARB shader_prog_obj)
 	gl_shader_current_prog_obj=shader_prog_obj;
 }
 
-void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type *texture,light_spot_type *lspot)
+void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type *texture)
 {
 	int						n,nlight;
-	float					light_pos[max_light_spot*3],light_col[max_light_spot*4];
-	d3vct					vct;
+	float					light_pos[max_light_spot*3],
+							light_col[max_light_spot*4],
+							light_normal[max_light_spot*3];
 	GLint					var;
 	shader_custom_var_type	*cvar;
 
@@ -101,10 +103,15 @@ void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type
 	
 	var=glGetUniformLocationARB(shader_prog_obj,"dim3RenderPosition");
 	if (var!=-1) glUniform3fARB(var,(float)pnt->x,(float)pnt->y,(float)pnt->z);
+
+		// ambient light
+
+	var=glGetUniformLocationARB(shader_prog_obj,"dim3AmbientLightColor");
+	glUniform3fARB(var,map.ambient.light_color.r,map.ambient.light_color.g,map.ambient.light_color.b);
 	
 		// light array
 
-	nlight=light_create_glsl_array(light_pos,light_col);
+	nlight=light_create_glsl_array(pnt,light_pos,light_col,light_normal);
 
 	var=glGetUniformLocationARB(shader_prog_obj,"dim3lightCount");
 	if (var!=-1) glUniform1iARB(var,nlight);
@@ -112,45 +119,41 @@ void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type
 	var=glGetUniformLocationARB(shader_prog_obj,"dim3LightPositions");
 	if (var!=-1) glUniform3fvARB(var,max_light_spot,light_pos);
 
+	var=glGetUniformLocationARB(shader_prog_obj,"dim3LightNormals");
+	if (var!=-1) glUniform3fvARB(var,max_light_spot,light_normal);
+
 	var=glGetUniformLocationARB(shader_prog_obj,"dim3LightColors");
 	if (var!=-1) glUniform4fvARB(var,max_light_spot,light_col);
 	
-		// closest lights
+		// closest light
 
-	var=glGetUniformLocationARB(shader_prog_obj,"dim3HasClosestLight");
-	if (var!=-1) glUniform1iARB(var,((lspot==NULL)?0:1));
+	if (nlight==0) {
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3HasClosestLight");
+		if (var!=-1) glUniform1iARB(var,0);
 
-	var=glGetUniformLocationARB(shader_prog_obj,"dim3ClosestLightPosition");
-	if (var!=-1) {
-		if (lspot==NULL) {
-			glUniform3fARB(var,0.0f,0.0f,0.0f);
-		}
-		else {
-			glUniform3fARB(var,(float)lspot->pnt.x,(float)lspot->pnt.y,(float)lspot->pnt.z);
-		}
-	}
-	
-	var=glGetUniformLocationARB(shader_prog_obj,"dim3ClosestLightNormal");
-	if (var!=-1) {
-		if (lspot==NULL) {
-			glUniform3fARB(var,0.0f,0.0f,0.0f);
-		}
-		else {
-			vector_create(&vct,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,pnt->x,pnt->y,pnt->z);
-			glUniform3fARB(var,(float)vct.x,(float)vct.y,(float)vct.z);
-		}
-	}
-	
-	var=glGetUniformLocationARB(shader_prog_obj,"dim3ClosestLightColor");
-	if (var!=-1) {
-		if (lspot==NULL) {
-			glUniform4fARB(var,0.0f,0.0f,0.0f,0.0f);
-		}
-		else {
-			glUniform4fARB(var,lspot->col.r,lspot->col.g,lspot->col.b,(float)lspot->intensity);
-		}
-	}
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3ClosestLightPosition");
+		if (var!=-1) glUniform3fARB(var,0.0f,0.0f,0.0f);
 		
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3ClosestLightNormal");
+		if (var!=-1) glUniform3fARB(var,0.0f,0.0f,0.0f);
+		
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3ClosestLightColor");
+		if (var!=-1) glUniform4fARB(var,0.0f,0.0f,0.0f,0.0f);
+	}
+	else {
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3HasClosestLight");
+		if (var!=-1) glUniform1iARB(var,1);
+
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3ClosestLightPosition");
+		if (var!=-1) glUniform3fARB(var,light_pos[0],light_pos[1],light_pos[2]);
+		
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3ClosestLightNormal");
+		if (var!=-1) glUniform3fARB(var,light_normal[0],light_normal[1],light_normal[2]);
+		
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3ClosestLightColor");
+		if (var!=-1) glUniform4fARB(var,light_col[0],light_col[1],light_col[2],light_col[3]);
+	}
+
 		// textures
 		
 	var=glGetUniformLocationARB(shader_prog_obj,"dim3Tex");
