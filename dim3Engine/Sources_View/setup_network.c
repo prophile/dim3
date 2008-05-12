@@ -86,7 +86,7 @@ void setup_network_create_host_list(void)
 
 void setup_network_open(void)
 {
-	int							x,y,wid,high,control_y_add,separate_y_add;
+	int							x,y,wid,high,padding,control_y_add,separate_y_add;
 	char						path[1024],path2[1024];
 	element_column_type			cols[1];
 	
@@ -95,6 +95,10 @@ void setup_network_open(void)
 	gui_initialize("Bitmaps/Backgrounds","setup",FALSE,FALSE);
 	
 	element_clear();
+	
+		// padding
+		
+	padding=(int)(((float)setup.screen.x_scale)*0.025f);
 
 		// name and timeout
 		
@@ -152,18 +156,21 @@ void setup_network_open(void)
 	
 		// buttons
 	
-	x=setup.screen.x_scale-10;
-	y=setup.screen.y_scale-30;
+	x=setup.screen.x_scale-padding;
+	y=setup.screen.y_scale-padding;
+	
+	wid=(int)(((float)setup.screen.x_scale)*0.1f);
+	high=(int)(((float)setup.screen.x_scale)*0.05f);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_ok","png");
 	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_ok_selected","png");
-	element_button_add(path,path2,setup_network_ok_button,x,y,-1,-1,element_pos_right,element_pos_center);
+	element_button_add(path,path2,setup_network_ok_button,x,y,-1,-1,element_pos_right,element_pos_bottom);
 
 	x=element_get_x_position(setup_network_ok_button)-10;
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_cancel","png");
 	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_cancel_selected","png");
-	element_button_add(path,path2,setup_network_cancel_button,x,y,-1,-1,element_pos_right,element_pos_center);
+	element_button_add(path,path2,setup_network_cancel_button,x,y,-1,-1,element_pos_right,element_pos_bottom);
 
 		// save setup
 		

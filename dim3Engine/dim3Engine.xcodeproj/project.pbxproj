@@ -18,6 +18,7 @@
 		268CBC940DD2AA7D00CF0256 /* net_host_client_handler.c in Sources */ = {isa = PBXBuildFile; fileRef = 268CBC900DD2AA7D00CF0256 /* net_host_client_handler.c */; };
 		26A4B6440DAF028100E40F35 /* net_host_broadcast.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A4B6430DAF028100E40F35 /* net_host_broadcast.c */; };
 		26D109610DAC797D006666F2 /* host.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D109600DAC797D006666F2 /* host.c */; };
+		26DAED300DD55C28000EBB48 /* group_move.c in Sources */ = {isa = PBXBuildFile; fileRef = 26DAED2F0DD55C28000EBB48 /* group_move.c */; };
 		26F08CA20DAC7DB50097E249 /* net_host.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F08C9E0DAC7DB50097E249 /* net_host.c */; };
 		26F08CA40DAC7DB50097E249 /* net_host_players.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F08CA00DAC7DB50097E249 /* net_host_players.c */; };
 		26F08CBA0DAC7E990097E249 /* network_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26F08CB90DAC7E990097E249 /* network_defs.h */; };
@@ -262,7 +263,6 @@
 		F5DD1A0A090831D600721649 /* scripts_convert.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD19FF090831D600721649 /* scripts_convert.c */; };
 		F5DD1A0B090831D600721649 /* scripts.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A00090831D600721649 /* scripts.c */; };
 		F5DD1A0C090831D600721649 /* scripts_objects.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A01090831D600721649 /* scripts_objects.c */; };
-		F5DD1A0D090831D600721649 /* scripts_move.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A02090831D600721649 /* scripts_move.c */; };
 		F5DD1A0E090831D600721649 /* scripts_lookup.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A03090831D600721649 /* scripts_lookup.c */; };
 		F5DD1A0F090831D600721649 /* scripts_file.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A04090831D600721649 /* scripts_file.c */; };
 		F5DD1A10090831D600721649 /* scripts_run.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A05090831D600721649 /* scripts_run.c */; };
@@ -401,6 +401,7 @@
 		268CBC900DD2AA7D00CF0256 /* net_host_client_handler.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host_client_handler.c; path = Sources_Network/net_host_client_handler.c; sourceTree = "<group>"; };
 		26A4B6430DAF028100E40F35 /* net_host_broadcast.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host_broadcast.c; path = Sources_Network/net_host_broadcast.c; sourceTree = "<group>"; };
 		26D109600DAC797D006666F2 /* host.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = host.c; path = Sources_View/host.c; sourceTree = "<group>"; };
+		26DAED2F0DD55C28000EBB48 /* group_move.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = group_move.c; path = Sources_Server/group_move.c; sourceTree = "<group>"; };
 		26F08C9E0DAC7DB50097E249 /* net_host.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host.c; path = Sources_Network/net_host.c; sourceTree = "<group>"; };
 		26F08CA00DAC7DB50097E249 /* net_host_players.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host_players.c; path = Sources_Network/net_host_players.c; sourceTree = "<group>"; };
 		26F08CB90DAC7E990097E249 /* network_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = network_defs.h; path = Headers_Network/network_defs.h; sourceTree = "<group>"; };
@@ -639,7 +640,6 @@
 		F5DD19FF090831D600721649 /* scripts_convert.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = scripts_convert.c; path = Sources_Server/scripts_convert.c; sourceTree = "<group>"; };
 		F5DD1A00090831D600721649 /* scripts.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = scripts.c; path = Sources_Server/scripts.c; sourceTree = "<group>"; };
 		F5DD1A01090831D600721649 /* scripts_objects.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = scripts_objects.c; path = Sources_Server/scripts_objects.c; sourceTree = "<group>"; };
-		F5DD1A02090831D600721649 /* scripts_move.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = scripts_move.c; path = Sources_Server/scripts_move.c; sourceTree = "<group>"; };
 		F5DD1A03090831D600721649 /* scripts_lookup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = scripts_lookup.c; path = Sources_Server/scripts_lookup.c; sourceTree = "<group>"; };
 		F5DD1A04090831D600721649 /* scripts_file.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = scripts_file.c; path = Sources_Server/scripts_file.c; sourceTree = "<group>"; };
 		F5DD1A05090831D600721649 /* scripts_run.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = scripts_run.c; path = Sources_Server/scripts_run.c; sourceTree = "<group>"; };
@@ -1059,6 +1059,7 @@
 				F57346D60A1C270600378534 /* map_ray_trace.c */,
 				F5BC90FA0C1A139B00B9261B /* map_light_trace.c */,
 				265B377C0D7F8D3A004AE124 /* group_change.c */,
+				26DAED2F0DD55C28000EBB48 /* group_move.c */,
 				F5DD634709BAA787004A32DA /* map_movement.c */,
 			);
 			name = Map;
@@ -1105,7 +1106,6 @@
 				F5DD1A03090831D600721649 /* scripts_lookup.c */,
 				F5DD19FD090831D600721649 /* scripts_events.c */,
 				F5DD1A01090831D600721649 /* scripts_objects.c */,
-				F5DD1A02090831D600721649 /* scripts_move.c */,
 				F5DD19FC090831D600721649 /* scripts_state.c */,
 				F5DD19FB090831D600721649 /* script_timers.c */,
 			);
@@ -1678,7 +1678,6 @@
 				F5DD1A0A090831D600721649 /* scripts_convert.c in Sources */,
 				F5DD1A0B090831D600721649 /* scripts.c in Sources */,
 				F5DD1A0C090831D600721649 /* scripts_objects.c in Sources */,
-				F5DD1A0D090831D600721649 /* scripts_move.c in Sources */,
 				F5DD1A0E090831D600721649 /* scripts_lookup.c in Sources */,
 				F5DD1A0F090831D600721649 /* scripts_file.c in Sources */,
 				F5DD1A10090831D600721649 /* scripts_run.c in Sources */,
@@ -1941,6 +1940,7 @@
 				268CBC920DD2AA7D00CF0256 /* net_client_receive.c in Sources */,
 				268CBC930DD2AA7D00CF0256 /* net_client_send.c in Sources */,
 				268CBC940DD2AA7D00CF0256 /* net_host_client_handler.c in Sources */,
+				26DAED300DD55C28000EBB48 /* group_move.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1961,8 +1961,7 @@
 		F5DB0BF1085671A9005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

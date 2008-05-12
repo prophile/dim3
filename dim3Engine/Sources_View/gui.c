@@ -111,10 +111,11 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view,bool 
 	gui_save_y_scale=setup.screen.y_scale;
 	
 	// supergumba -- testing
-//	setup.screen.x_scale=hud.scale_x;
-//	setup.screen.y_scale=hud.scale_y;
 
-	
+	setup.screen.x_scale=hud.scale_x;
+	setup.screen.y_scale=hud.scale_y;
+
+	/*
 	if (bitmap_name==NULL) {
 		setup.screen.x_scale=hud.scale_x;
 		setup.screen.y_scale=hud.scale_y;
@@ -136,7 +137,7 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view,bool 
 			gui_test=!gui_test;
 		}
 	}
-	
+	*/
 	
 	
 	

@@ -72,6 +72,7 @@ and can be sold or given away.
 
 #define element_control_high_factor				1.5f
 #define element_control_separator_factor		0.6f
+#define element_control_padding_factor			0.025f
 
 #define element_control_draw_height				0.025f
 #define element_control_draw_long_width			0.4f

@@ -45,7 +45,7 @@ extern map_type					map;
       
 ======================================================= */
 
-int piece_import_mesh(char *name,int mx,int my,int mz)
+int piece_import_library_mesh(char *name,int mx,int my,int mz)
 {
 	int					n,k,nline,nvertex,npoly,npt,vt_start_idx,uv_idx,
 						mesh_idx,x,y,z,sz,
@@ -254,6 +254,120 @@ int piece_import_mesh(char *name,int mx,int my,int mz)
 	textdecode_close();
 	
 	return(mesh_idx);
+}
+
+
+/* =======================================================
+
+      Auto Generate Mesh
+      
+======================================================= */
+
+int piece_create_ag_mesh(char *name,int mx,int my,int mz)
+{
+	int				mesh_idx,xdiv,ydiv,zdiv,
+					x,y,z,sz,txt_idx,
+					px[4],py[4],pz[4];
+	float			gx[4],gy[4];
+	char			str[32];
+	
+		// get mesh divisions
+		
+	strcpy(str,(char*)&name[4]);
+	str[3]=0x0;
+	xdiv=atoi(str);
+	
+	strcpy(str,(char*)&name[8]);
+	str[3]=0x0;
+	ydiv=atoi(str);
+
+	strcpy(str,(char*)&name[12]);
+	str[3]=0x0;
+	zdiv=atoi(str);
+	
+		// texture and size
+		
+	txt_idx=texture_palette_get_selected_texture();
+	
+	sz=100;
+	mx-=((xdiv*sz)/2);
+	my-=((ydiv*sz)/2);
+	mz-=((zdiv*sz)/2);
+
+		// create mesh
+		
+	mesh_idx=map_portal_mesh_add(&map,cr);
+	if (mesh_idx==-1) return(-1);
+	
+		// default UVs
+		
+	gx[0]=gx[3]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[1]=0.0f;
+	gy[2]=gy[3]=1.0f;
+	
+		// add top and bottom polys
+		
+	for (z=0;z!=zdiv;z++) {
+		for (x=0;x!=xdiv;x++) {
+			px[0]=px[3]=(x*sz)+mx;
+			px[1]=px[2]=((x+1)*sz)+mx;
+			pz[0]=pz[1]=(z*sz)+mz;
+			pz[2]=pz[3]=((z+1)*sz)+mz;
+
+			py[0]=py[1]=py[2]=py[3]=my;
+			map_portal_mesh_add_poly(&map,cr,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			
+			py[0]=py[1]=py[2]=py[3]=(ydiv*sz)+my;
+			map_portal_mesh_add_poly(&map,cr,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+		}
+	}
+	
+		// sides
+		
+	for (x=0;x!=xdiv;x++) {
+		for (y=0;y!=ydiv;y++) {
+			px[0]=px[3]=(x*sz)+mx;
+			px[1]=px[2]=((x+1)*sz)+mx;
+			py[0]=py[1]=(y*sz)+my;
+			py[2]=py[3]=((y+1)*sz)+my;
+			
+			pz[0]=pz[1]=pz[2]=pz[3]=mz;
+			map_portal_mesh_add_poly(&map,cr,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			
+			pz[0]=pz[1]=pz[2]=pz[3]=(zdiv*sz)+mz;
+			map_portal_mesh_add_poly(&map,cr,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+		}
+	}
+	
+	for (z=0;z!=zdiv;z++) {
+		for (y=0;y!=ydiv;y++) {
+			pz[0]=pz[1]=(z*sz)+mz;
+			pz[2]=pz[3]=((z+1)*sz)+mz;
+			py[0]=py[3]=(y*sz)+my;
+			py[1]=py[2]=((y+1)*sz)+my;
+			
+			px[0]=px[1]=px[2]=px[3]=mx;
+			map_portal_mesh_add_poly(&map,cr,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			
+			px[0]=px[1]=px[2]=px[3]=(xdiv*sz)+mx;
+			map_portal_mesh_add_poly(&map,cr,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+		}
+	}
+	
+	return(mesh_idx);
+}
+
+/* =======================================================
+
+      Run Mesh Pick
+      
+======================================================= */
+
+int piece_import_mesh(char *name,int mx,int my,int mz)
+{
+	if (memcmp(name,"AGM ",4)!=0) return(piece_import_library_mesh(name,mx,my,mz));
+	return(piece_create_ag_mesh(name,mx,my,mz));
 }
 
 int piece_import_mesh_pick(int mx,int my,int mz)

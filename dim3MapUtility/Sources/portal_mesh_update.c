@@ -711,7 +711,10 @@ void map_portal_mesh_get_poly_uv_as_box(map_type *map,int portal_idx,int mesh_id
 	*y_txtoff=gy_min;
 
 	*x_txtfact=(gx_max-gx_min);
+	if ((*x_txtfact)<0.01f) *x_txtfact=0.01f;
+	
 	*y_txtfact=(gy_max-gy_min);
+	if ((*y_txtfact)<0.01f) *y_txtfact=0.01f;
 }
 
 void map_portal_mesh_set_poly_uv_as_box(map_type *map,int portal_idx,int mesh_idx,int poly_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact)
@@ -739,20 +742,30 @@ void map_portal_mesh_set_poly_uv_as_box(map_type *map,int portal_idx,int mesh_id
 			poly->gx[n]=x_txtoff;
 		}
 		else {
-			gx=poly->gx[n]-org_x_txtoff;
-			gx/=org_x_txtfact;
-			gx*=x_txtfact;
-			poly->gx[n]=x_txtoff+gx;
+			if (poly->gx[n]==(org_x_txtoff+org_x_txtfact)) {
+				poly->gx[n]=x_txtoff+x_txtfact;
+			}
+			else {
+				gx=poly->gx[n]-org_x_txtoff;
+				gx/=org_x_txtfact;
+				gx*=x_txtfact;
+				poly->gx[n]=x_txtoff+gx;
+			}
 		}
 		
 		if (poly->gy[n]==org_y_txtoff) {
 			poly->gy[n]=y_txtoff;
 		}
 		else {
-			gy=poly->gy[n]-org_y_txtoff;
-			gy/=org_y_txtfact;
-			gy*=y_txtfact;
-			poly->gy[n]=y_txtoff+gy;
+			if (poly->gy[n]==(org_y_txtoff+org_y_txtfact)) {
+				poly->gy[n]=y_txtoff+y_txtfact;
+			}
+			else {
+				gy=poly->gy[n]-org_y_txtoff;
+				gy/=org_y_txtfact;
+				gy*=y_txtfact;
+				poly->gy[n]=y_txtoff+gy;
+			}
 		}
 	}
 }

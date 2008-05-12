@@ -261,6 +261,11 @@ inline int element_get_separator_high(void)
 	return((int)(((float)gl_text_get_char_height(TRUE))*element_control_separator_factor));
 }
 
+inline int element_get_padding(void)
+{
+	return((int)(((float)setup.screen.x_scale)*element_control_padding_factor));
+}
+
 /* =======================================================
 
       Add Elements

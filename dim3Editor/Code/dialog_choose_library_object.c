@@ -30,12 +30,16 @@ and can be sold or given away.
 #define kLibObjectList					FOUR_CHAR_CODE('list')
 #define kLibObjectListNameColumn		FOUR_CHAR_CODE('pnme')
 
-int								dialog_choose_lib_object_count,dialog_choose_lib_object_idx;
-char							*dialog_choose_lib_object_data;
-bool							dialog_choose_lib_object_cancel;
-WindowRef						dialog_choose_lib_object_wind;
+#define kLibObjectXDivision				FOUR_CHAR_CODE('xdiv')
+#define kLibObjectYDivision				FOUR_CHAR_CODE('ydiv')
+#define kLibObjectZDivision				FOUR_CHAR_CODE('zdiv')
 
-extern file_path_setup_type		file_path_setup;
+int										dialog_choose_lib_object_count,dialog_choose_lib_object_idx;
+char									*dialog_choose_lib_object_data;
+bool									dialog_choose_lib_object_cancel;
+WindowRef								dialog_choose_lib_object_wind;
+
+extern file_path_setup_type				file_path_setup;
 
 /* =======================================================
 
@@ -54,7 +58,7 @@ static pascal OSStatus choose_lib_object_event_proc(EventHandlerCallRef handler,
 			
 			switch (cmd.commandID) {
 			
-				case kHICommandOpen:
+				case kHICommandNew:
 					QuitAppModalLoopForWindow(dialog_choose_lib_object_wind);
 					return(noErr);
 					
@@ -69,23 +73,6 @@ static pascal OSStatus choose_lib_object_event_proc(EventHandlerCallRef handler,
 	}
 	
 	return(eventNotHandledErr);
-}
-
-void choose_lib_object_enable_open_button(bool enable)
-{
-	ControlRef						ctrl;
-	ControlID						ctrl_id;
-
-	ctrl_id.signature=FOUR_CHAR_CODE('d3ET');
-	ctrl_id.id=1;
-	GetControlByID(dialog_choose_lib_object_wind,&ctrl_id,&ctrl);
-	
-	if (enable) {
-		EnableControl(ctrl);
-	}
-	else {
-		DisableControl(ctrl);
-	}
 }
 
 /* =======================================================
@@ -134,7 +121,6 @@ static pascal void choose_lib_object_list_notify_proc(ControlRef ctrl,DataBrowse
 	}
 
 	GetDataBrowserItemCount(ctrl,kDataBrowserNoItem,FALSE,kDataBrowserItemIsSelected,&count);
-	choose_lib_object_enable_open_button(count!=0);
 }
 
 /* =======================================================
@@ -186,6 +172,7 @@ void choose_lib_object_close_list(void)
 
 bool dialog_choose_library_object_run(char *name)
 {
+	int								xdiv,ydiv,zdiv;
 	ControlRef						ctrl;
 	ControlID						ctrl_id;
 	DataBrowserCallbacks			dbcall;
@@ -198,22 +185,22 @@ bool dialog_choose_library_object_run(char *name)
 		
 	dialog_open(&dialog_choose_lib_object_wind,"ChooseLibraryObject");
 	
-		// disable open
-		
-	choose_lib_object_enable_open_button(false);
-		
-		// show window
-	
-	ShowWindow(dialog_choose_lib_object_wind);
-	
 		// install event handler
 		
 	event_upp=NewEventHandlerUPP(choose_lib_object_event_proc);
 	InstallWindowEventHandler(dialog_choose_lib_object_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
 	
-		// create primitive list
+		// setup controls
 		
 	choose_lib_object_create_list();
+	
+	dialog_set_int(dialog_choose_lib_object_wind,kLibObjectXDivision,0,10);
+	dialog_set_int(dialog_choose_lib_object_wind,kLibObjectYDivision,0,2);
+	dialog_set_int(dialog_choose_lib_object_wind,kLibObjectZDivision,0,10);
+		
+		// show window
+	
+	ShowWindow(dialog_choose_lib_object_wind);
 	
 		// setup the list
 		
@@ -237,22 +224,32 @@ bool dialog_choose_library_object_run(char *name)
 	
 		// modal window
 		
+	dialog_choose_lib_object_idx=-1;
 	dialog_choose_lib_object_cancel=FALSE;
 	
 	RunAppModalLoopForWindow(dialog_choose_lib_object_wind);
+	
+		// get object name
+		
+	if (!dialog_choose_lib_object_cancel) {
+	
+		if (dialog_choose_lib_object_idx!=-1) {
+			strncpy(name,(char*)&dialog_choose_lib_object_data[dialog_choose_lib_object_idx*file_str_len],file_str_len);
+			name[file_str_len-1]=0x0;
+		}
+		else {
+			xdiv=dialog_get_int(dialog_choose_lib_object_wind,kLibObjectXDivision,0);
+			ydiv=dialog_get_int(dialog_choose_lib_object_wind,kLibObjectYDivision,0);
+			zdiv=dialog_get_int(dialog_choose_lib_object_wind,kLibObjectZDivision,0);
+			sprintf(name,"AGM %.3dx%.3dx%.3d",xdiv,ydiv,zdiv);
+		}
+	}
 	
 		// close window
 		
 	DisposeDataBrowserItemDataUPP(list_item_upp);
 	DisposeDataBrowserItemNotificationUPP(list_notify_upp);
 	DisposeWindow(dialog_choose_lib_object_wind);
-	
-		// get object name
-		
-	if (!dialog_choose_lib_object_cancel) {
-		strncpy(name,(char*)&dialog_choose_lib_object_data[dialog_choose_lib_object_idx*file_str_len],file_str_len);
-		name[file_str_len-1]=0x0;
-	}
 	
 		// clear up memory
 		
