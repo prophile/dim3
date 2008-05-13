@@ -236,6 +236,9 @@ bool collide_object_to_map(obj_type *obj,int hit_fudge,int *xadd,int *yadd,int *
 		memmove(&obj->contact.hit_poly,&contact[idx].poly,sizeof(poly_pointer_type));
 	}
 
+	if (contact[idx].obj_uid!=-1) obj->contact.obj_uid=contact[idx].obj_uid;
+	if (contact[idx].proj_uid!=-1) obj->contact.proj_uid=contact[idx].proj_uid;
+
 	return(TRUE);
 }
 

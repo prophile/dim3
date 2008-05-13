@@ -104,7 +104,7 @@ extern void object_alter_gravity(obj_type *obj,float alt_gravity);
 extern bool object_bump_up(obj_type *obj,int xmove,int zmove);
 extern void object_fix_bump_smooth(obj_type *obj);
 extern void object_move_xz_bounce(obj_type *obj);
-extern void object_to_object_push(obj_type *obj,float xmove,float zmove);
+extern bool object_to_object_push(obj_type *obj,float xmove,float zmove);
 extern void object_motion_slope_alter_movement_single(float *mv,float slope_y,float slope_mv);
 extern void object_motion_slope_alter_movement(obj_type *obj,float *xmove,float *zmove);
 extern void object_motion_lock(obj_type *obj,float *xmove,float *ymove,float *zmove);
@@ -114,7 +114,6 @@ extern void object_move_y_fall(obj_type *obj);
 extern void object_move_y_down(obj_type *obj,int ymove);
 extern void object_move_y(obj_type *obj,int ymove);
 extern void object_move_y_fly(obj_type *obj,int ymove);
-extern bool object_move_xz(obj_type *obj,int *xadd,int *yadd,int *zadd);
 extern bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int lx,int rx,int lz,int rz);
 extern bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd);
 extern void object_move_fly(obj_type *obj);
@@ -133,7 +132,6 @@ extern void object_move_with_object(obj_type *obj,int xmove,int zmove);
 
 extern float object_liquid_alter_speed(obj_type *obj);
 extern void object_liquid(int tick,obj_type *obj);
-extern void object_to_object_push(obj_type *obj,float xmove,float zmove);
 
 extern void object_rigid_body_reset_angle(obj_type *obj);
 extern void object_fly_reset_angle(obj_type *obj);

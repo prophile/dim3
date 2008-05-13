@@ -419,25 +419,25 @@ void object_move_xz_bounce(obj_type *obj)
 	obj->force.vct.z-=(obj->motion.vct.z*obj->bounce.factor);
 }
 
-void object_to_object_push(obj_type *obj,float xmove,float zmove)
+bool object_to_object_push(obj_type *obj,float xmove,float zmove)
 {
 	int				weight_dif;
 	float			f;
 	obj_type		*pushed_obj;
 	
-	if (obj->contact.obj_uid==-1) return;
+	if (obj->contact.obj_uid==-1) return(TRUE);
 	
 		// get object to push
 
 	pushed_obj=object_find_uid(obj->contact.obj_uid);
-	if (pushed_obj==NULL) return;
+	if (pushed_obj==NULL) return(TRUE);
 
-	if (!pushed_obj->contact.pushable) return;
+	if (!pushed_obj->contact.pushable) return(TRUE);
 
 		// compare weights
 
 	weight_dif=obj->size.weight-pushed_obj->size.weight;
-	if (weight_dif<0) return;
+	if (weight_dif<0) return(TRUE);
 
 		// reduce movement for weight
 
@@ -446,9 +446,16 @@ void object_to_object_push(obj_type *obj,float xmove,float zmove)
 	f=1.0f+(((float)weight_dif)/1000.0f);
 	
 		// add in vector
+
+	xmove*=f;
+	zmove*=f;
 	
-	pushed_obj->force.vct.x=xmove*f;
-	pushed_obj->force.vct.z=zmove*f;
+	pushed_obj->force.vct.x=xmove;
+	pushed_obj->force.vct.z=zmove;
+
+		// movement
+
+	return(object_move_with_move(pushed_obj,(int)xmove,(int)zmove));
 }
 
 /* =======================================================
@@ -743,17 +750,6 @@ void object_move_y_fly(obj_type *obj,int ymove)
       
 ======================================================= */
 
-bool object_move_xz(obj_type *obj,int *xadd,int *yadd,int *zadd)
-{
-		// map mesh collisions
-
-	if (collide_object_to_map(obj,obj_hit_fudge,xadd,yadd,zadd)) return(FALSE);
-
-		// supergumba -- need object collisions here
-
-	return(TRUE);
-}
-
 bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int lx,int rx,int lz,int rz)
 {
 	int					n,xadd2,zadd2,mx,mz;
@@ -765,14 +761,14 @@ bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int l
 
 	if (lx==rx) {
 		xadd2=zadd2=0;
-		if (!object_move_xz(obj,&xadd2,yadd,zadd)) return(FALSE);
-		return(object_move_xz(obj,xadd,yadd,zadd));
+		if (!collide_object_to_map(obj,obj_hit_fudge,&xadd2,yadd,zadd)) return(FALSE);
+		return(collide_object_to_map(obj,obj_hit_fudge,xadd,yadd,zadd));
 	}
 	
 	if (lz==rz) {
 		xadd2=zadd2=0;
-		if (!object_move_xz(obj,xadd,yadd,&zadd2)) return(FALSE);
-		return(object_move_xz(obj,&xadd2,yadd,zadd));
+		if (!collide_object_to_map(obj,obj_hit_fudge,xadd,yadd,&zadd2)) return(FALSE);
+		return(collide_object_to_map(obj,obj_hit_fudge,&xadd2,yadd,zadd));
 	}
 	
 		// get angle between the line and the object movement
@@ -822,11 +818,11 @@ bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int l
 		xadd2=0;
 		zadd2=mz;
 
-		if (!object_move_xz(obj,&xadd2,yadd,&zadd2)) {
+		if (collide_object_to_map(obj,obj_hit_fudge,&xadd2,yadd,&zadd2)) {
 
 			xadd2=mx;
 			zadd2=0;
-			object_move_xz(obj,&xadd2,yadd,&zadd2);
+			collide_object_to_map(obj,obj_hit_fudge,&xadd2,yadd,&zadd2);
 
 		}
 		else {
@@ -834,11 +830,11 @@ bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int l
 			xadd2=mx;
 			zadd2=0;
 
-			if (!object_move_xz(obj,&xadd2,yadd,&zadd2)) {
+			if (collide_object_to_map(obj,obj_hit_fudge,&xadd2,yadd,&zadd2)) {
 
 				xadd2=0;
 				zadd2=mz;
-				object_move_xz(obj,&xadd2,yadd,&zadd2);
+				collide_object_to_map(obj,obj_hit_fudge,&xadd2,yadd,&zadd2);
 			}
 		}
 	}
@@ -853,6 +849,8 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	obj_type			*cnt_obj;
 	model_draw			*draw;
 	model_type			*model;
+	poly_pointer_type	*poly_ptr;
+	map_mesh_poly_type	*poly;
 
 		// attempt to move cleanly
 
@@ -860,35 +858,34 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	yadd2=*yadd;
 	zadd2=*zadd;
 
-	if (!object_move_xz(obj,&xadd2,&yadd2,&zadd2)) {
+	if (!collide_object_to_map(obj,obj_hit_fudge,&xadd2,&yadd2,&zadd2)) {
 		*xadd=xadd2;
 		*yadd=yadd2;
 		*zadd=zadd2;
 		return(FALSE);
 	}
 
-		// if wall hit, then find vector for wall
-		// that was hit and attempt to slide across
-		// the wall
+		// if the hit poly was wall-like, then find vector for wall
+		// and attempt to slide across it
 	
-	if (obj->contact.hit_poly.portal_idx!=-1) {
+	poly_ptr=&obj->contact.hit_poly;
 
-		/* supergumba
-		wall=&map.segments[obj->contact.wall_seg_idx].data.wall;
+	if (poly_ptr->portal_idx!=-1) {
 
-			// don't slide on walls that are bump up candidates
+		poly=&map.portals[poly_ptr->portal_idx].mesh.meshes[poly_ptr->mesh_idx].polys[poly_ptr->poly_idx];
+		if (poly->box.wall_like) {
 
-		if (obj->bump.on) {
-			bump_y=obj->pos.y-wall->ty;
-			if ((bump_y>0) && (bump_y<=obj->bump.high)) return(TRUE);
-		}
+				// don't slide on polys that are bump up candidates
+
+			if (obj->bump.on) {
+				bump_y=obj->pos.y-poly->box.min.y;
+				if ((bump_y>0) && (bump_y<=obj->bump.high)) return(TRUE);
+			}
 		
-			// slide against the angle of the wall
+				// slide against the angle of the wall
 			
-		return(object_move_xz_slide_line(obj,xadd,yadd,zadd,wall->lx,wall->rx,wall->lz,wall->rz));
-		*/
-
-		return(FALSE);
+			return(object_move_xz_slide_line(obj,xadd,yadd,zadd,poly->box.min.x,poly->box.max.x,poly->box.min.z,poly->box.max.z));
+		}
 	}
 
 		// if object hit, find the collision lines
@@ -952,8 +949,8 @@ void object_move_fly(obj_type *obj)
 	i_xmove=(int)xmove;
 	i_ymove=(int)ymove;
 	i_zmove=(int)zmove;
-		
-	if (object_move_xz(obj,&i_xmove,&i_ymove,&i_zmove)) {
+	
+	if (collide_object_to_map(obj,obj_hit_fudge,&i_xmove,&i_ymove,&i_zmove)) {
 		object_to_object_push(obj,xmove,zmove);
 	}
 	
@@ -1009,7 +1006,7 @@ void object_move_swim(obj_type *obj)
 	i_ymove=(int)ymove;
 	i_zmove=(int)zmove;
 
-	if (object_move_xz(obj,&i_xmove,&i_ymove,&i_zmove)) {
+	if (collide_object_to_map(obj,obj_hit_fudge,&i_xmove,&i_ymove,&i_zmove)) {
 		object_to_object_push(obj,xmove,zmove);
 	}
 	
@@ -1111,38 +1108,47 @@ void object_move_normal(obj_type *obj)
 		// land features that could hold up the
 		// object
 
-	while (TRUE) {
-		object_move_xz_slide(obj,&xadd,&yadd,&zadd);
+	if ((xadd!=0) || (zadd!=0)) {
 
-		obj->pos.x+=xadd;
-		obj->pos.z+=zadd;
-
-		if (!map_find_portal_by_pos(&map,&obj->pos)) {
-			xadd=zadd=0;
-			memmove(&obj->pos,&old_pos,sizeof(d3pos));
-		}
-
-			// objects pushing other objects
-		
-		object_to_object_push(obj,xmove,zmove);
-
-			// moving objects standing on object
-
-		if ((xadd!=0) || (zadd!=0)) object_move_with_object(obj,xadd,zadd);
+		while (TRUE) {
 			
-			// if bumped up, move again
+				// move
 
-		if (object_bump_up(obj,xadd,zadd)) {
-			yadd=0;
-			continue;	
+			if (object_move_xz_slide(obj,&xadd,&yadd,&zadd)) {
+				
+					// we hit something
+
+					// objects pushing other objects
+					// or moving objects standing on them
+
+				object_to_object_push(obj,xmove,zmove);
+				object_move_with_object(obj,xadd,zadd);
+
+					// if bumped up, move again
+
+				if (object_bump_up(obj,xadd,zadd)) {
+					yadd=0;
+					continue;	
+				}
+
+				break;
+			}
+
+			obj->pos.x+=xadd;
+			obj->pos.z+=zadd;
+
+			if (!map_find_portal_by_pos(&map,&obj->pos)) {
+				xadd=zadd=0;
+				memmove(&obj->pos,&old_pos,sizeof(d3pos));
+			}
+
+			break;
 		}
 
-		break;
+			// objects with automatic bouncing
+
+		object_move_xz_bounce(obj);
 	}
-
-		// objects with automatic bouncing
-
-	object_move_xz_bounce(obj);
 	
 		// check for objects that have finished falling
 		//
@@ -1250,7 +1256,7 @@ void object_move_remote(obj_type *obj)
 	i_ymove=(int)obj->motion.vct.y;
 	i_zmove=(int)obj->motion.vct.z;
 
-	object_move_xz(obj,&i_xmove,&i_ymove,&i_zmove);
+	collide_object_to_map(obj,obj_hit_fudge,&i_xmove,&i_ymove,&i_zmove);
 	object_move_y(obj,i_ymove);
 }
 
@@ -1288,7 +1294,7 @@ inline bool object_move_with_move(obj_type *obj,int xmove,int zmove)
 	if (obj->lock.z) zmove=0;
 	ymove=0;
 	
-	if (!object_move_xz(obj,&xmove,&ymove,&zmove)) return(TRUE);
+	if (collide_object_to_map(obj,obj_hit_fudge,&xmove,&ymove,&zmove)) return(TRUE);
 
 	obj->pos.x+=xmove;
 	obj->pos.y+=ymove;

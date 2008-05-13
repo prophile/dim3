@@ -348,9 +348,28 @@ void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min
 	pt=mesh->vertexes;
 
 	for (n=0;n!=nvertex;n++) {
-		pt->x=(((pt->x-org_min.x)*dif.x)/org_dif.x)+min->x;
-		pt->y=(((pt->y-org_min.y)*dif.y)/org_dif.y)+min->y;
-		pt->z=(((pt->z-org_min.z)*dif.z)/org_dif.z)+min->z;
+
+		if (org_dif.x!=0) {
+			pt->x=(((pt->x-org_min.x)*dif.x)/org_dif.x)+min->x;
+		}
+		else {
+			pt->x=min->x;
+		}
+
+		if (org_dif.y!=0) {
+			pt->y=(((pt->y-org_min.y)*dif.y)/org_dif.y)+min->y;
+		}
+		else {
+			pt->y=min->y;
+		}
+
+		if (org_dif.z!=0) {
+			pt->z=(((pt->z-org_min.z)*dif.z)/org_dif.z)+min->z;
+		}
+		else {
+			pt->z=min->z;
+		}
+
 		pt++;
 	}
 }
