@@ -84,6 +84,7 @@ extern void portal_y_change(int yadd);
 extern void portal_all_y_change(int yadd);
 extern void portal_resize(void);
 extern void portal_reset_uvs(void);
+extern void portal_all_reset_uvs(void);
 extern void portal_split(int rn,bool vertical);
 
 

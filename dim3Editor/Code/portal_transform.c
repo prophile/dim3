@@ -626,7 +626,22 @@ void portal_reset_uvs(void)
  	portal=&map.portals[cr];
 	
 	for (n=0;n!=portal->mesh.nmesh;n++) {
-		if (!map.portals[cr].mesh.meshes[n].flag.lock_uv) map_portal_mesh_reset_uv(&map,cr,n);
+		if (!portal->mesh.meshes[n].flag.lock_uv) map_portal_mesh_reset_uv(&map,cr,n);
+	}
+}
+
+void portal_all_reset_uvs(void)
+{
+    int				n,k;
+	portal_type		*portal;
+    
+ 	portal=map.portals;
+	
+	for (n=0;n!=map.nportal;n++) {
+		for (k=0;k!=portal->mesh.nmesh;k++) {
+			if (!portal->mesh.meshes[k].flag.lock_uv) map_portal_mesh_reset_uv(&map,n,k);
+		}
+		portal++;
 	}
 }
 

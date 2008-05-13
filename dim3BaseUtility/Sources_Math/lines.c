@@ -282,7 +282,7 @@ bool line_2D_all_points_in_line(int ptsz,int *px,int *pz,float slop)
 
 		// get the average difference
 
-	for (n=1;n<(ptsz-2);n++) {
+	for (n=1;n<(ptsz-1);n++) {
 		if (fabs(slopes[0]-slopes[n])>slop) return(FALSE);
 	}
 	

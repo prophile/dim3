@@ -111,6 +111,7 @@ and can be sold or given away.
 
 #define kCommandMapRaiseY					FOUR_CHAR_CODE('mrsy')
 #define kCommandMapLowerY					FOUR_CHAR_CODE('mlwy')
+#define kCommandMapResetUV					FOUR_CHAR_CODE('mpuv')
 
 #define kCommandPortalResize				FOUR_CHAR_CODE('rsiz')
 #define kCommandPortalFlipHorizontal		FOUR_CHAR_CODE('flph')

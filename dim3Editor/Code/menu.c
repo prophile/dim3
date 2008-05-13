@@ -435,6 +435,12 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			main_wind_draw();
 			return(noErr);
 			
+		case kCommandMapResetUV:
+			portal_all_reset_uvs();
+			main_wind_draw();
+			undo_clear();
+			return(noErr);
+			
 		case kCommandRun:
 			launch_engine();
 			return(noErr);

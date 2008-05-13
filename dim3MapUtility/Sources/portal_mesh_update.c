@@ -681,6 +681,22 @@ void map_portal_mesh_shift_portal_vertex_list(map_type *map,int portal_idx,int t
       
 ======================================================= */
 
+float map_get_texture_reduce_coord(float f)
+{
+	int			i;
+
+	i=(int)f;
+	return(f-(float)i);
+}
+
+float map_get_texture_round_coord(float f)
+{
+	int			i;
+
+	i=(int)(f*100);
+	return(((float)i)/100);
+}
+
 void map_portal_mesh_get_poly_uv_as_box(map_type *map,int portal_idx,int mesh_idx,int poly_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact)
 {
 	int						n;
@@ -707,14 +723,11 @@ void map_portal_mesh_get_poly_uv_as_box(map_type *map,int portal_idx,int mesh_id
 
 		// create boxed coordinates
 
-	*x_txtoff=gx_min;
-	*y_txtoff=gy_min;
+	*x_txtoff=map_get_texture_round_coord(gx_min);
+	*y_txtoff=map_get_texture_round_coord(gy_min);
 
-	*x_txtfact=(gx_max-gx_min);
-	if ((*x_txtfact)<0.01f) *x_txtfact=0.01f;
-	
-	*y_txtfact=(gy_max-gy_min);
-	if ((*y_txtfact)<0.01f) *y_txtfact=0.01f;
+	*x_txtfact=map_get_texture_round_coord(gx_max-gx_min);
+	*y_txtfact=map_get_texture_round_coord(gy_max-gy_min);
 }
 
 void map_portal_mesh_set_poly_uv_as_box(map_type *map,int portal_idx,int mesh_idx,int poly_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact)
@@ -789,22 +802,6 @@ void map_get_texture_uv_get_scale(map_type *map,int txt_idx,float *txt_scale_x,f
 	
 	*txt_scale_x=texture->scale.x/(float)map_enlarge;
 	*txt_scale_y=texture->scale.y/(float)map_enlarge;
-}
-
-float map_get_texture_reduce_coord(float f)
-{
-	int			i;
-
-	i=(int)f;
-	return(f-(float)i);
-}
-
-float map_get_texture_round_coord(float f)
-{
-	int			i;
-
-	i=(int)(f*100);
-	return(((float)i)/100);
 }
 
 void map_portal_mesh_reset_poly_uv(map_type *map,int portal_idx,int mesh_idx,int poly_idx)
