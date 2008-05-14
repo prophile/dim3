@@ -858,12 +858,13 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	yadd2=*yadd;
 	zadd2=*zadd;
 
-	if (!collide_object_to_map(obj,obj_hit_fudge,&xadd2,&yadd2,&zadd2)) {
+	if (!collide_object_to_map(obj,obj_hit_fudge,&xadd2,&yadd2,&zadd2)) return(FALSE);
+
 		*xadd=xadd2;
 		*yadd=yadd2;
 		*zadd=zadd2;
-		return(FALSE);
-	}
+
+	return(TRUE);		// supergumba -- testing
 
 		// if the hit poly was wall-like, then find vector for wall
 		// and attempt to slide across it
@@ -1121,8 +1122,8 @@ void object_move_normal(obj_type *obj)
 					// objects pushing other objects
 					// or moving objects standing on them
 
-				object_to_object_push(obj,xmove,zmove);
-				object_move_with_object(obj,xadd,zadd);
+			//	object_to_object_push(obj,xmove,zmove);
+			//	object_move_with_object(obj,xadd,zadd);
 
 					// if bumped up, move again
 
@@ -1130,8 +1131,6 @@ void object_move_normal(obj_type *obj)
 					yadd=0;
 					continue;	
 				}
-
-				break;
 			}
 
 			obj->pos.x+=xadd;

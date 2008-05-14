@@ -59,6 +59,8 @@ int find_poly_for_upward_point(int x,int y,int z,int ydist,poly_pointer_type *po
 	contact.obj_on=FALSE;
 	contact.proj_on=FALSE;		// supergumba -- rewrite ALL of this
 
+	contact.wall_like_only=FALSE;
+
 	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
 		memmove(poly,&contact.poly,sizeof(poly_pointer_type));
 		return(hpt.y);
@@ -84,6 +86,8 @@ int find_poly_for_downward_point(int x,int y,int z,int ydist,poly_pointer_type *
 
 	contact.obj_on=FALSE;
 	contact.proj_on=FALSE;		// supergumba -- rewrite ALL of this
+
+	contact.wall_like_only=FASLE;
 
 	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
 		memmove(poly,&contact.poly,sizeof(poly_pointer_type));
@@ -117,6 +121,8 @@ int find_poly_nearest_stand(int x,int y,int z,int ydist,bool ignore_higher)
 
 	contact.obj_on=FALSE;
 	contact.proj_on=FALSE;
+
+	contact.wall_like_only=FALSE;
 
 	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) return(hpt.y);
 

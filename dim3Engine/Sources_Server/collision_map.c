@@ -152,16 +152,41 @@ void collide_object_ray_trace_points(obj_type *obj,int x_add,int z_add,int *px,i
 	py[12]=py[13]=py[14]=obj->pos.y-(map_enlarge>>1);
 }
 
+
+// supergumba -- check only wall like objects here
+// change some of the parameters
+
 bool collide_object_to_map(obj_type *obj,int hit_fudge,int *xadd,int *yadd,int *zadd)
 {
-	int						n,x,z,idx,px[15],py[15],pz[15],
+	int						n,x,z,idx,xadd2,zadd2,radius,
+							px[15],py[15],pz[15],
 							d,dist;
+	float					ang;
 	d3pnt					spt,ept,hpt[15];
 	ray_trace_contact_type	contact[15];
 
 		// get collision points
 
 	collide_object_ray_trace_points(obj,*xadd,*zadd,px,py,pz);
+
+		// need to increase ray check distance
+		// to avoid objects getting close to polygons
+		// and then turning their corner into them
+
+	radius=obj->size.radius;
+
+	x=*xadd;
+	z=*zadd;
+	d=(int)(sqrt((double)(x*x)+(double)(z*z)));
+
+	if (radius>d) {
+		ang=angle_find(0,0,x,z);
+		angle_get_movement(ang,radius,&xadd2,&zadd2);
+	}
+	else {
+		xadd2=x;
+		zadd2=z;
+	}
 
 		// run rays on all points
 		// find the one that moves the leasts
@@ -178,15 +203,17 @@ bool collide_object_to_map(obj_type *obj,int hit_fudge,int *xadd,int *yadd,int *
 		spt.y=py[n];
 		spt.z=pz[n];
 
-		ept.x=spt.x+(*xadd);
+		ept.x=spt.x+xadd2;
 		ept.y=spt.y+(*yadd);
-		ept.z=spt.z+(*zadd);
+		ept.z=spt.z+zadd2;
 
 		contact[n].obj_on=TRUE;
 		contact[n].obj_ignore_uid=obj->uid;
 
 		contact[n].proj_on=FALSE;
 		contact[n].proj_ignore_uid=-1;
+
+		contact[n].wall_like_only=TRUE;
 	
 			// run trace
 
@@ -203,28 +230,20 @@ bool collide_object_to_map(obj_type *obj,int hit_fudge,int *xadd,int *yadd,int *
 
 	if (idx==-1) return(FALSE);
 	
-		// recalculate the add factors to get to
-		// the hit point and use the fudge factor
-		// to make sure the distance is always
-		// at least fudge away from the polygon
+		// check the distance to the hit point
+		// to make sure that it remains at least
+		// the radius away from polygons
 
 	x=hpt[idx].x-px[idx];
 	z=hpt[idx].z-pz[idx];
 
 	d=(int)(sqrt((double)(x*x)+(double)(z*z)));
 
-	if ((d==hit_fudge) || (d==0)) {
-		x=z=0;
-	}
-	else {
-		if (d<hit_fudge) {
-			x=-((x*hit_fudge)/d);
-			z=-((z*hit_fudge)/d);
-		}
-		else {
-			x=(x*(d-hit_fudge))/d;
-			z=(z*(d-hit_fudge))/d;
-		}
+	if (d<radius) {
+		ang=angle_find(0,0,x,z);
+		angle_get_movement(ang,(radius-d),&x,&z);
+		x=-x;
+		z=-z;
 	}
 
 	*xadd=x;
@@ -275,6 +294,8 @@ bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
 	proj_setup=proj_setups_find_uid(proj->proj_setup_uid);
 	contact.proj_on=proj_setup->collision;
 	contact.proj_ignore_uid=proj->uid;
+
+	contact.wall_like_only=FALSE;
 
 		// run trace
 

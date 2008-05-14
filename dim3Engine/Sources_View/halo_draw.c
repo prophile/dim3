@@ -156,6 +156,7 @@ void halo_draw_setup(void)
 
 	contact.proj_on=FALSE;
 	contact.proj_ignore_uid=-1;
+	contact.wall_like_only=FALSE;
 
 	for (i=0;i<view.count.halo_draw;i++) {
 		halo_draw=&view.halo_draws[i];
