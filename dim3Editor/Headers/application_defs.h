@@ -101,8 +101,8 @@ and can be sold or given away.
 #define kCommandPieceSnapToGrid				FOUR_CHAR_CODE('msnp')
 #define kCommandPieceResetUV				FOUR_CHAR_CODE('mruv')
 
-#define kCommandFaceDelete					FOUR_CHAR_CODE('fdel')
-#define kCommandFaceHole1					FOUR_CHAR_CODE('fhl1')
+#define kCommandPolygonHole1				FOUR_CHAR_CODE('fhl1')
+#define kCommandPolygonResetUV				FOUR_CHAR_CODE('pyuv')
 
 #define kCommandGroupAdd					FOUR_CHAR_CODE('gadd')
 #define kCommandGroupDelete					FOUR_CHAR_CODE('gdel')

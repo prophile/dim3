@@ -38,18 +38,31 @@ int						link_dist[max_node][max_node_link];
       
 ======================================================= */
 
-int node_link_find_node_by_point(Point pt)
+int node_link_find_node_by_point(editor_3D_view_setup *view_setup,d3pnt *click_pt)
 {
-/* supergumba -- need to work on connecting nodes
-    int			i;
-    Rect		box;
+	int				n,px[4],pz[4],ty,by,fz,hit_z,node_idx;
+	portal_type		*portal;
+	node_type		*node;
+	
+	node_idx=-1;
+	hit_z=100000;
 
-	for (i=0;i!=map.nnode;i++) {
-		top_view_make_rect_by_pos(&map.nodes[i].pos,5,&box);
-		if (PtInRect(pt,&box)) return(i);
+	for (n=0;n!=map.nnode;n++) {
+	
+		node=&map.nodes[n];
+		walk_view_sprite_select_size(&view_setup->cpt,&node->pos,px,pz,&ty,&by);
+		
+		portal=&map.portals[node->pos.rn];
+		
+		if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&fz)) {
+			if (fz<hit_z) {
+				hit_z=fz;
+				node_idx=n;
+			}
+		}
 	}
-	*/
-    return(-1);
+	
+	return(node_idx);
 }
 
 int node_link_is_node_link_selected(void)
@@ -70,65 +83,73 @@ int node_link_is_node_link_selected(void)
       
 ======================================================= */
 
-int node_link_get_free_link(int k)
+int node_link_get_free_link(int node_idx)
 {
-	int			i;
+	int			n;
 	
-	for (i=0;i!=max_node_link;i++) {
-		if (map.nodes[k].link[i]==-1) return(i);
+	for (n=0;n!=max_node_link;n++) {
+		if (map.nodes[node_idx].link[n]==-1) return(n);
 	}
 	
 	return(-1);
 }
 
-bool node_link_has_link(int k,int lnk)
+bool node_link_has_link(int node_idx,int link_node_idx)
 {
-	int			i;
+	int			n;
 	
-	for (i=0;i!=max_node_link;i++) {
-		if (map.nodes[k].link[i]==lnk) return(TRUE);
+	for (n=0;n!=max_node_link;n++) {
+		if (map.nodes[node_idx].link[n]==link_node_idx) return(TRUE);
 	}
 	
 	return(FALSE);
 }
 
-void node_link_add(Point pt)
+bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *click_pt)
 {
-	int			cur_index,new_index,k1,k2;
-
-    cur_index=node_link_is_node_link_selected();
-	if (cur_index==-1) return;
-    
-    new_index=node_link_find_node_by_point(pt);
-    if ((new_index==cur_index) || (new_index==-1)) return;
-
-    k1=node_link_get_free_link(cur_index);
-    k2=node_link_get_free_link(new_index);
-    
-    if ((k1==-1) || (k2==-1)) return;
-    
-	if (!node_link_has_link(cur_index,new_index)) map.nodes[cur_index].link[k1]=new_index;
-	if (!node_link_has_link(new_index,cur_index)) map.nodes[new_index].link[k2]=cur_index;
-    
+	int			n,node_idx,next_idx,k1,k2;
+	
+		// is a node selected?
+		
+	node_idx=node_link_is_node_link_selected();
+	if (node_idx==-1) return(FALSE);
+	
+		// are we clicking on a new node?
+		
+	next_idx=node_link_find_node_by_point(view_setup,click_pt);
+    if ((next_idx==node_idx) || (next_idx==-1)) return(FALSE);
+	
+		// are they connected?
+		
+	if (node_link_has_link(node_idx,next_idx)) {
+	
+			// delete connection
+			
+		for (n=0;n!=max_node_link;n++) {
+			if (map.nodes[node_idx].link[n]==next_idx) map.nodes[node_idx].link[n]=-1;
+			if (map.nodes[next_idx].link[n]==node_idx) map.nodes[next_idx].link[n]=-1;
+		}
+		
+	}
+	else {
+	
+			// add connection
+		
+		k1=node_link_get_free_link(node_idx);
+		k2=node_link_get_free_link(next_idx);
+		
+		if ((k1==-1) || (k2==-1)) {
+			StandardAlert(kAlertCautionAlert,"\pCan not connect nodes","\pYou've reached the maximum number of connected nodes for this node.",NULL,NULL);
+			return(TRUE);
+		}
+		
+		if (!node_link_has_link(node_idx,next_idx)) map.nodes[node_idx].link[k1]=next_idx;
+		if (!node_link_has_link(next_idx,node_idx)) map.nodes[next_idx].link[k2]=node_idx;
+	}
+	
 	main_wind_draw();
-}
-
-void node_link_cut(Point pt)
-{
-    int			cur_index,new_index,k;
-    
-    cur_index=node_link_is_node_link_selected();
-	if (cur_index==-1) return;
-    
-    new_index=node_link_find_node_by_point(pt);
-    if ((new_index==cur_index) || (new_index==-1)) return;
-
-    for (k=0;k!=max_node_link;k++) {
-        if (map.nodes[cur_index].link[k]==new_index) map.nodes[cur_index].link[k]=-1;
-        if (map.nodes[new_index].link[k]==cur_index) map.nodes[new_index].link[k]=-1;
-    }
-    
-	main_wind_draw();
+	
+	return(TRUE);
 }
 
 /* =======================================================

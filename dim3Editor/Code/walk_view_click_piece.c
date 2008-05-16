@@ -690,6 +690,10 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 	pt->x-=view_setup->box.left;
 	pt->y-=view_setup->box.top;
 	
+		// node connection changes
+		
+	if (node_link_click(view_setup,pt)) return;
+	
 		// liquid vertex drags
 		
 	if (walk_view_click_drag_liquid_vertex(view_setup,pt,view_move_dir)) return;

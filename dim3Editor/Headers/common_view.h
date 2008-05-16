@@ -101,7 +101,7 @@ extern void piece_flip(bool flip_x,bool flip_y,bool flip_z);
 extern void piece_rotate(float rot_x,float rot_y,float rot_z);
 extern void piece_free_rotate(void);
 extern void piece_snap_to_grid(void);
-extern void piece_reset_uvs(void);
+extern void piece_reset_uvs(bool poly_only);
 extern void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch);
 
 //
@@ -136,12 +136,5 @@ extern void clipboard_clear(void);
 // node routines
 //
 
-extern int node_link_find_node_by_point(Point pt);
-extern int node_link_is_node_link_selected(void);
-extern int node_link_get_free_link(int k);
-extern bool node_link_has_link(int k,int lnk);
-extern void node_link_add(Point pt);
-extern void node_link_cut(Point pt);
-extern int node_path_node_in_path(int from_node,int to_node,unsigned char *node_hits,int curdist,int windist);
-extern int node_path_find_next_node_to_node(int from_node,int to_node);
+extern bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *click_pt);
 extern void node_path_rebuild(void);

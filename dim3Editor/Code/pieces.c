@@ -494,7 +494,7 @@ void piece_snap_to_grid(void)
       
 ======================================================= */
 
-void piece_reset_uvs(void)
+void piece_reset_uvs(bool poly_only)
 {
 	int						n,sel_count,
 							type,portal_idx,mesh_idx,poly_idx;
@@ -504,8 +504,14 @@ void piece_reset_uvs(void)
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
 		if (type!=mesh_piece) continue;
+		if (map.portals[portal_idx].mesh.meshes[mesh_idx].flag.lock_uv) continue;
 		
-		if (!map.portals[portal_idx].mesh.meshes[mesh_idx].flag.lock_uv) map_portal_mesh_reset_uv(&map,portal_idx,mesh_idx);
+		if (poly_only) {
+			map_portal_mesh_reset_poly_uv(&map,portal_idx,mesh_idx,poly_idx);
+		}
+		else {
+			map_portal_mesh_reset_uv(&map,portal_idx,mesh_idx);
+		}
 	}
 }
 

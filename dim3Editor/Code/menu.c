@@ -628,18 +628,19 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			return(noErr);
 			
 		case kCommandPieceResetUV:
-			piece_reset_uvs();
+			piece_reset_uvs(FALSE);
 			main_wind_draw();
 			return(noErr);
 			
-			// face menu
+			// polygon menu
 			
-		case kCommandFaceDelete:
-			piece_delete_face();
+		case kCommandPolygonHole1:
 			return(noErr);
 			
-		case kCommandFaceHole1:
+		case kCommandPolygonResetUV:
+			piece_reset_uvs(TRUE);
 			return(noErr);
+			
 
 	}
 	

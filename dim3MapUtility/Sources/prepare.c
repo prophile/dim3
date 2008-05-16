@@ -134,6 +134,15 @@ void map_prepare_set_mesh_poly_box(map_mesh_type *mesh,map_mesh_poly_type *mesh_
 			mesh_poly->box.wall_like=line_2D_all_points_in_line(ptsz,px,pz,0.0f);
 		}
 	}
+
+/* supergumba -- tester	
+	if (mesh_poly->box.wall_like) {
+		mesh_poly->txt_idx=0;
+	}
+	else {
+		mesh_poly->txt_idx=1;
+	}
+	*/
 }
 
 /* =======================================================
