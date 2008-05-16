@@ -227,7 +227,7 @@ void remote_draw_names_setup(void)
 
 	contact.proj_on=FALSE;
 	contact.proj_ignore_uid=-1;
-	contact.wall_like_only=FALSE;
+	contact.poly_ignore_non_wall=FALSE;
 
 	for (n=0;n!=server.count.obj;n++) {
 		obj=&server.objs[n];

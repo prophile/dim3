@@ -560,6 +560,12 @@ void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *
 
 			mesh_poly=&mesh->polys[k];
 
+				// poly ignores
+
+			if (contact->poly_ignore_non_wall) {
+				if (!mesh_poly->box.wall_like) continue;
+			}
+
 				// rough bounds check
 
 			if ((spt->y<mesh_poly->box.min.y) && (ept->y<mesh_poly->box.min.y)) continue;

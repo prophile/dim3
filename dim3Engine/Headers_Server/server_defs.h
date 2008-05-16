@@ -897,7 +897,8 @@ typedef struct		{
 typedef struct		{
 						int						obj_uid,proj_uid,
 												obj_ignore_uid,proj_ignore_uid;
-						bool					obj_on,proj_on,wall_like_only;
+						bool					obj_on,proj_on,
+												poly_ignore_non_wall;
 						poly_pointer_type		poly;
 					} ray_trace_contact_type;
 
