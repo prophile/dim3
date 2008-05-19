@@ -1080,8 +1080,8 @@ void object_move_normal(obj_type *obj)
 					// objects pushing other objects
 					// or moving objects standing on them
 
-			//	object_push_with_object(obj,xmove,zmove);
-			//	object_move_with_standing_object(obj,xadd,zadd);
+				object_push_with_object(obj,xmove,zmove);
+				object_move_with_standing_object(obj,xadd,zadd);
 
 					// if bumped up, move again
 

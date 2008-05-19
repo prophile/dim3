@@ -74,6 +74,7 @@ int map_portal_mesh_add(map_type *map,int portal_idx)
 	mesh->flag.pass_through=FALSE;
 	mesh->flag.moveable=FALSE;
 	mesh->flag.climbable=FALSE;
+	mesh->flag.hilite=FALSE;
 	mesh->flag.touched=FALSE;
 	mesh->flag.lock_uv=FALSE;
 

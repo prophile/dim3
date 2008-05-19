@@ -507,6 +507,10 @@ SOURCE=..\..\dim3Engine\Sources_Server\obj_auto_walk.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3Engine\Sources_Server\obj_ext_move.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Engine\Sources_Server\obj_find.c
 # End Source File
 # Begin Source File

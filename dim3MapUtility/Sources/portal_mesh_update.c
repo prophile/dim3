@@ -602,6 +602,114 @@ bool map_portal_mesh_tesselate(map_type *map,int portal_idx,int mesh_idx)
 
 /* =======================================================
 
+      Tesselate Mesh
+      
+======================================================= */
+
+bool map_portal_mesh_poly_punch_hole(map_type *map,int portal_idx,int mesh_idx,int poly_idx,int hole_type)
+{
+	int						n,ptsz,mx,my,mz,
+							px[8],py[8],pz[8],
+							k,kx[4],ky[4],kz[4];
+	float					gx[8],gy[8],mgx,mgy,
+							k_gx[4],k_gy[4];
+	d3pnt					*pt;
+	portal_type				*portal;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+
+	portal=&map->portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+
+	ptsz=poly->ptsz;
+
+		// new hole vertexes
+
+	mx=my=mz=0;
+	mgx=mgy=0.0f;
+
+	for (n=0;n!=ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+
+		px[n]=pt->x;
+		py[n]=pt->y;
+		pz[n]=pt->z;
+
+		gx[n]=poly->gx[n];
+		gy[n]=poly->gy[n];
+
+		mx+=pt->x;
+		my+=pt->y;
+		mz+=pt->z;
+
+		mgx+=gx[n];
+		mgy+=gy[n];
+	}
+
+	mx/=ptsz;
+	my/=ptsz;
+	mz/=ptsz;
+
+	mgx=mgx/(float)ptsz;
+	mgy=mgy/(float)ptsz;
+
+	for (n=0;n!=ptsz;n++) {
+		px[n]=((px[n]-mx)/2)+mx;
+		py[n]=((py[n]-my)/2)+my;
+		pz[n]=((pz[n]-mz)/2)+mz;
+
+		gx[n]=((gx[n]-mgx)/2.0f)+mgx;
+		gy[n]=((gy[n]-mgy)/2.0f)+mgy;
+	}
+
+		// new polygon for each vertex
+
+	for (n=0;n!=ptsz;n++) {
+
+		poly=&mesh->polys[poly_idx];			// add might force memory move, need to always rebuild pointer
+		k=(n+1)&0x7;
+
+		pt=&mesh->vertexes[poly->v[n]];
+		kx[0]=pt->x;
+		ky[0]=pt->y;
+		kz[0]=pt->z;
+
+		pt=&mesh->vertexes[poly->v[k]];
+		kx[1]=pt->x;
+		ky[1]=pt->y;
+		kz[1]=pt->z;
+
+		kx[2]=px[k];
+		ky[2]=py[k];
+		kz[2]=pz[k];
+
+		kx[3]=px[n];
+		ky[3]=py[n];
+		kz[3]=pz[n];
+
+		k_gx[0]=poly->gx[n];
+		k_gy[0]=poly->gy[n];
+
+		k_gx[1]=poly->gx[k];
+		k_gy[1]=poly->gy[k];
+
+		k_gx[2]=gx[k];
+		k_gy[2]=gy[k];
+
+		k_gx[3]=gx[n];
+		k_gy[3]=gy[n];
+
+		if (map_portal_mesh_add_poly(map,portal_idx,mesh_idx,4,kx,ky,kz,k_gx,k_gy,poly->txt_idx)==-1) return(FALSE);
+	}
+
+		// finish by deleting original polygon
+
+	return(map_portal_mesh_delete_poly(map,portal_idx,mesh_idx,poly_idx));
+}
+
+/* =======================================================
+
       Update Meshes for Texture Shifting
       
 ======================================================= */

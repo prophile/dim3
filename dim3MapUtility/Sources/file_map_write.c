@@ -386,6 +386,7 @@ void write_single_mesh(map_mesh_type *mesh)
 	xml_add_attribute_boolean("pass",mesh->flag.pass_through);
 	xml_add_attribute_boolean("moveable",mesh->flag.moveable);
 	xml_add_attribute_boolean("climbable",mesh->flag.climbable);
+	xml_add_attribute_boolean("hilite",mesh->flag.hilite);
 	xml_add_attribute_boolean("lock_uv",mesh->flag.lock_uv);
 	
 	xml_add_attribute_3_coord_int("rot_off",mesh->rot_off.x,mesh->rot_off.y,mesh->rot_off.z);

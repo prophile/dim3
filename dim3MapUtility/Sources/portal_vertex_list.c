@@ -553,7 +553,7 @@ int map_portal_add_light_single_vertex_list(portal_vertex_list_type *vl,int vl_c
 	
 		// simple light tessels
 
-	if ((mesh_poly->draw.simple_tessel) || (mesh_poly->ptsz==3) || (!high_quality_lighting)) return(map_portal_add_light_simple_vertex_list(vl,vl_cnt,mesh,mesh_poly));
+	if ((mesh_poly->draw.simple_tessel) || (mesh->flag.hilite) || (mesh_poly->ptsz==3) || (!high_quality_lighting)) return(map_portal_add_light_simple_vertex_list(vl,vl_cnt,mesh,mesh_poly));
 
 		// tessel depending on shape of polygon
 		// first, automatically tessel on the other two

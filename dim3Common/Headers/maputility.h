@@ -156,9 +156,11 @@ extern char light_type_str[][32];
 #define map_mesh_poly_draw_stencil_bump				1
 #define map_mesh_poly_draw_simple_normal			2
 #define map_mesh_poly_draw_simple_bump				3
-#define map_mesh_poly_draw_transparent				4
-#define map_mesh_poly_draw_opaque_shader			5
-#define map_mesh_poly_draw_transparent_shader		6
+#define map_mesh_poly_draw_hilite_normal			4
+#define map_mesh_poly_draw_hilite_bump				5
+#define map_mesh_poly_draw_transparent				6
+#define map_mesh_poly_draw_opaque_shader			7
+#define map_mesh_poly_draw_transparent_shader		8
 
 //
 // group types
@@ -246,7 +248,7 @@ typedef struct		{
 
 typedef struct		{
 						bool						on,pass_through,moveable,
-													climbable,shiftable,
+													hilite,climbable,shiftable,
 													lock_uv,touched;
 					} map_mesh_flag_type;
 
@@ -254,6 +256,7 @@ typedef struct		{
 						int							stencil_pass_start,stencil_pass_end;
 						bool						has_stencil_normal,has_stencil_bump,
 													has_simple_normal,has_simple_bump,
+													has_hilite_normal,has_hilite_bump,
 													has_transparent,has_specular,has_glow,
 													has_opaque_shader,has_transparent_shader;
 					} map_mesh_draw_type;
@@ -343,6 +346,7 @@ typedef struct		{
 						int							sort_cnt;
 						bool						has_stencil_normal,has_stencil_bump,has_stencil_lighting,
 													has_simple_normal,has_simple_bump,has_simple_lighting,
+													has_hilite_normal,has_hilite_bump,
 													has_transparent,has_glow,has_specular,
 													has_opaque_shader,has_transparent_shader;
 						map_mesh_poly_sort_type		*sort_list;
@@ -671,6 +675,7 @@ extern void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3p
 extern void map_portal_mesh_flip(map_type *map,int portal_idx,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);
 extern void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,bool do_portal_vertex_list,float rot_x,float rot_y,float rot_z);
 extern bool map_portal_mesh_tesselate(map_type *map,int portal_idx,int mesh_idx);
+extern bool map_portal_mesh_poly_punch_hole(map_type *map,int portal_idx,int mesh_idx,int poly_idx,int hole_type);
 extern void map_portal_mesh_shift_portal_vertex_list(map_type *map,int portal_idx,int tick);
 extern void map_portal_mesh_get_poly_uv_as_box(map_type *map,int portal_idx,int mesh_idx,int poly_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact);
 extern void map_portal_mesh_set_poly_uv_as_box(map_type *map,int portal_idx,int mesh_idx,int poly_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact);

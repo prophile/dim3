@@ -183,35 +183,52 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 							// is bump?
 
 						if ((setup.bump_mapping) && (lod_dist<map.optimizations.lod_bump_distance) && (texture->bumpmaps[frame].gl_id!=-1)) {
-							if (!mesh_poly->draw.is_simple_lighting) {
-								mesh_poly->draw.draw_type=map_mesh_poly_draw_stencil_bump;
-								mesh->draw.has_stencil_bump=TRUE;
-								portal->mesh.draw.has_stencil_bump=TRUE;
-								portal->mesh.draw.has_stencil_lighting=TRUE;
+
+							if (!mesh->flag.hilite) {
+								if (!mesh_poly->draw.is_simple_lighting) {
+									mesh_poly->draw.draw_type=map_mesh_poly_draw_stencil_bump;
+									mesh->draw.has_stencil_bump=TRUE;
+									portal->mesh.draw.has_stencil_bump=TRUE;
+									portal->mesh.draw.has_stencil_lighting=TRUE;
+								}
+								else {
+									mesh_poly->draw.draw_type=map_mesh_poly_draw_simple_bump;
+									mesh->draw.has_simple_bump=TRUE;
+									portal->mesh.draw.has_simple_bump=TRUE;
+									portal->mesh.draw.has_simple_lighting=TRUE;
+								}
 							}
 							else {
-								mesh_poly->draw.draw_type=map_mesh_poly_draw_simple_bump;
-								mesh->draw.has_simple_bump=TRUE;
-								portal->mesh.draw.has_simple_bump=TRUE;
-								portal->mesh.draw.has_simple_lighting=TRUE;
+								mesh_poly->draw.draw_type=map_mesh_poly_draw_hilite_bump;
+								mesh->draw.has_hilite_bump=TRUE;
+								portal->mesh.draw.has_hilite_bump=TRUE;
 							}
+
 							if ((!light_changed) || (mesh->flag.moveable)) map_portal_calculate_normal_vector_smooth(portal,(double)mesh_poly->box.mid.x,(double)mesh_poly->box.mid.y,(double)mesh_poly->box.mid.z,mesh_poly->draw.normal);
 						}
 
 							// is normal?
 
 						else {
-							if (!mesh_poly->draw.is_simple_lighting) {
-								mesh_poly->draw.draw_type=map_mesh_poly_draw_stencil_normal;
-								mesh->draw.has_stencil_normal=TRUE;
-								portal->mesh.draw.has_stencil_normal=TRUE;
-								portal->mesh.draw.has_stencil_lighting=TRUE;
+
+							if (!mesh->flag.hilite) {
+								if (!mesh_poly->draw.is_simple_lighting) {
+									mesh_poly->draw.draw_type=map_mesh_poly_draw_stencil_normal;
+									mesh->draw.has_stencil_normal=TRUE;
+									portal->mesh.draw.has_stencil_normal=TRUE;
+									portal->mesh.draw.has_stencil_lighting=TRUE;
+								}
+								else {
+									mesh_poly->draw.draw_type=map_mesh_poly_draw_simple_normal;
+									mesh->draw.has_simple_normal=TRUE;
+									portal->mesh.draw.has_simple_normal=TRUE;
+									portal->mesh.draw.has_simple_lighting=TRUE;
+								}
 							}
 							else {
-								mesh_poly->draw.draw_type=map_mesh_poly_draw_simple_normal;
-								mesh->draw.has_simple_normal=TRUE;
-								portal->mesh.draw.has_simple_normal=TRUE;
-								portal->mesh.draw.has_simple_lighting=TRUE;
+								mesh_poly->draw.draw_type=map_mesh_poly_draw_hilite_normal;
+								mesh->draw.has_hilite_normal=TRUE;
+								portal->mesh.draw.has_hilite_normal=TRUE;
 							}
 						}
 					}
