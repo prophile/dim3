@@ -37,7 +37,7 @@ extern file_path_setup_type		file_path_setup;
 extern map_type					map;
 
 extern WindowRef				mainwind;
-extern CCrsrHandle				handcur,rotatecur,forwardcur,towardcur;
+extern CCrsrHandle				handcur,rotatecur,forwardcur,towardcur,cutcur,addcur;
 
 int								cx,cz,cy,walk_view_last_rn;
 int								magnify_factor=magnify_size;
@@ -117,7 +117,13 @@ int walk_view_find_start_portal(void)
 
 void walk_view_click(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool rot_ok,bool dblclick)
 {
-        // cmd-view scrolling
+		// node connection changes
+		// override some scrolling keys so we
+		// need to check them first
+		
+	if (node_link_click(view_setup,pt)) return;
+
+       // scrolling and movement keys
         
     if (main_wind_space_down()) {
         walk_view_mouse_xy_movement(view_setup,pt,view_move_dir);
@@ -147,6 +153,23 @@ void walk_view_click(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_di
 
 void walk_view_cursor(bool rot_ok)
 {
+		// special check for nodes link changes
+		
+	if ((select_count()==1) && (select_has_type(node_piece))) {
+	
+		if (main_wind_option_down()) {
+			SetCCursor(cutcur);
+			return;
+		}
+		
+		if (main_wind_control_down()) {
+			SetCCursor(addcur);
+			return;
+		}
+	}
+	
+		// normal cursors
+
     if (main_wind_space_down()) {
         SetCCursor(handcur);
         return;

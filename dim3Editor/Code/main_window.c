@@ -1323,6 +1323,43 @@ bool main_wind_click(d3pnt *pt,bool dblclick)
 
 /* =======================================================
 
+      Key Presses
+      
+======================================================= */
+
+bool main_wind_space_down(void)
+{
+	KeyMap			map;
+	unsigned char	*c;
+	
+	GetKeys(map);
+	c=(unsigned char*)map;
+	
+	return((c[6]&0x02)!=0);
+}
+
+bool main_wind_option_down(void)
+{
+	return((GetCurrentKeyModifiers()&optionKey)!=0);
+}
+
+bool main_wind_control_down(void)
+{
+	return((GetCurrentKeyModifiers()&controlKey)!=0);
+}
+
+bool main_wind_command_down(void)
+{
+	return((GetCurrentKeyModifiers()&cmdKey)!=0);
+}
+
+bool main_wind_shift_down(void)
+{
+	return((GetCurrentKeyModifiers()&shiftKey)!=0);
+}
+
+/* =======================================================
+
       Cursors
       
 ======================================================= */
@@ -1376,43 +1413,6 @@ void main_wind_cursor(d3pnt *pt)
 			if (main_wind_click_check_box(pt,&view_setup.box)) walk_view_cursor(TRUE);
 			break;
 	}
-}
-
-/* =======================================================
-
-      Key Presses
-      
-======================================================= */
-
-bool main_wind_space_down(void)
-{
-	KeyMap			map;
-	unsigned char	*c;
-	
-	GetKeys(map);
-	c=(unsigned char*)map;
-	
-	return((c[6]&0x02)!=0);
-}
-
-bool main_wind_option_down(void)
-{
-	return((GetCurrentKeyModifiers()&optionKey)!=0);
-}
-
-bool main_wind_control_down(void)
-{
-	return((GetCurrentKeyModifiers()&controlKey)!=0);
-}
-
-bool main_wind_command_down(void)
-{
-	return((GetCurrentKeyModifiers()&cmdKey)!=0);
-}
-
-bool main_wind_shift_down(void)
-{
-	return((GetCurrentKeyModifiers()&shiftKey)!=0);
 }
 
 /* =======================================================

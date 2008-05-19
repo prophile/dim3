@@ -102,59 +102,6 @@ bool select_check(int type,int portal_idx,int main_idx,int sub_idx)
 	return(select_find(type,portal_idx,main_idx,sub_idx)!=-1);
 }
 
-bool select_check_segment(int index)
-{
-/* supergumba
-	int					n,primitive_uid;
-	select_item_type	*select_item;
-	
-	select_item=select_items;
-	
-	for (n=0;n!=nselect_item;n++) {
-	
-		switch (select_item->type) {
-		
-			case segment_piece:
-				if (select_item->index==index) return(TRUE);
-				break;
-			
-			case primitive_piece:
-				primitive_uid=map.segments[select_item->index].primitive_uid[0];
-				if (map.segments[index].primitive_uid[0]==primitive_uid) return(TRUE);
-				break;
-		}
-		
-		select_item++;
-	}
-	*/
-	return(FALSE);
-}	
-
-int select_check_primitive_find_index(int primitive_uid)
-{
-/* supergumba
-	int					n;
-	select_item_type	*select_item;
-	
-	select_item=select_items;
-	
-	for (n=0;n!=nselect_item;n++) {
-	
-		switch (select_item->type) {
-		
-			case segment_piece:
-			case primitive_piece:
-				if (map.segments[select_item->index].primitive_uid[0]==primitive_uid) return(select_item->index);
-				break;
-				
-		}
-		
-		select_item++;
-	}
-*/	
-	return(-1);
-}	
-
 bool select_has_type(int type)
 {
 	return(select_find(type,-1,-1,-1)!=-1);

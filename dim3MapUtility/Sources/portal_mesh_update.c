@@ -29,8 +29,7 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-extern void map_prepare_set_mesh_poly_box(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly);
-extern void map_prepare_set_mesh_poly_slope(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly);
+extern void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly);
 
 /* =======================================================
 
@@ -843,11 +842,10 @@ void map_portal_mesh_reset_poly_uv(map_type *map,int portal_idx,int mesh_idx,int
 
 	map_get_texture_uv_get_scale(map,poly->txt_idx,&txt_scale_x,&txt_scale_y);
 	
-		// setup slope and box
+		// setup box and slope
 		// needed for texture calculations
 
-	map_prepare_set_mesh_poly_box(mesh,poly);
-	map_prepare_set_mesh_poly_slope(mesh,poly);
+	map_prepare_mesh_poly(mesh,poly);
 
 		// walls-like polygons
 		

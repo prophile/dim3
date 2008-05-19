@@ -104,7 +104,6 @@ extern void object_alter_gravity(obj_type *obj,float alt_gravity);
 extern bool object_bump_up(obj_type *obj,int xmove,int zmove);
 extern void object_fix_bump_smooth(obj_type *obj);
 extern void object_move_xz_bounce(obj_type *obj);
-extern bool object_to_object_push(obj_type *obj,float xmove,float zmove);
 extern void object_motion_slope_alter_movement_single(float *mv,float slope_y,float slope_mv);
 extern void object_motion_slope_alter_movement(obj_type *obj,float *xmove,float *zmove);
 extern void object_motion_lock(obj_type *obj,float *xmove,float *ymove,float *zmove);
@@ -123,12 +122,11 @@ extern void object_move(obj_type *obj);
 extern void object_move_remote(obj_type *obj);
 extern void object_move_start(obj_type *obj);
 extern void object_move_stop(obj_type *obj);
-extern bool object_move_with_move(obj_type *obj,int xmove,int zmove);
-extern bool object_move_with_wall_segment_check_wall(d3box *box,int seg_idx,int xmove,int zmove);
-extern void object_move_with_wall_segment(int seg_idx,int xmove,int zmove);
+
 extern void object_move_with_standing_mesh(int portal_idx,int mesh_idx,int xmove,int zmove);
 extern void object_rotate_with_standing_mesh(int portal_idx,int mesh_idx,float y);
-extern void object_move_with_object(obj_type *obj,int xmove,int zmove);
+extern bool object_push_with_object(obj_type *obj,float xmove,float zmove);
+extern void object_move_with_standing_object(obj_type *obj,int xmove,int zmove);
 
 extern float object_liquid_alter_speed(obj_type *obj);
 extern void object_liquid(int tick,obj_type *obj);

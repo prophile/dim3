@@ -63,8 +63,6 @@ extern void select_get(int sel_idx,int *type,int *portal_idx,int *main_idx,int *
 extern void select_switch(int sel_idx,int type,int portal_idx,int main_idx,int sub_idx);
 extern int select_find(int type,int portal_idx,int main_idx,int sub_idx);
 extern bool select_check(int type,int portal_idx,int main_idx,int sub_idx);
-extern bool select_check_segment(int index);
-extern int select_check_primitive_find_index(int primitive_uid);
 extern bool select_has_type(int type);
 extern void select_flip(int type,int portal_idx,int main_idx,int sub_idx);
 extern void select_sort(void);
@@ -97,6 +95,7 @@ extern void piece_duplicate(void);
 extern void piece_delete_face(void);
 extern void piece_delete(void);
 extern void piece_tesselate(void);
+extern void piece_resize(void);
 extern void piece_flip(bool flip_x,bool flip_y,bool flip_z);
 extern void piece_rotate(float rot_x,float rot_y,float rot_z);
 extern void piece_free_rotate(void);
@@ -136,5 +135,5 @@ extern void clipboard_clear(void);
 // node routines
 //
 
-extern bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *click_pt);
+extern bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *pt);
 extern void node_path_rebuild(void);

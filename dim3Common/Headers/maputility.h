@@ -208,7 +208,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						bool						flat,common_xz,wall_like;
+						bool						flat,wall_like;
 						d3pnt						min,max,mid;
 					} map_mesh_poly_box_type;
 

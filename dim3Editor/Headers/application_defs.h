@@ -89,6 +89,8 @@ and can be sold or given away.
 #define kCommandPieceDelete					FOUR_CHAR_CODE('pdel')
 #define kCommandPieceMove					FOUR_CHAR_CODE('pmov')
 #define kCommandPieceDuplicateMove			FOUR_CHAR_CODE('pdmv')
+
+#define kCommandPieceResize					FOUR_CHAR_CODE('mrsz')
 #define kCommandPieceFlipX					FOUR_CHAR_CODE('pfpx')
 #define kCommandPieceFlipY					FOUR_CHAR_CODE('pfpy')
 #define kCommandPieceFlipZ					FOUR_CHAR_CODE('pfpz')

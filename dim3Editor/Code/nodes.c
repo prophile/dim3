@@ -105,9 +105,10 @@ bool node_link_has_link(int node_idx,int link_node_idx)
 	return(FALSE);
 }
 
-bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *click_pt)
+bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 {
 	int			n,node_idx,next_idx,k1,k2;
+	d3pnt		click_pt;
 	
 		// is a node selected?
 		
@@ -116,24 +117,29 @@ bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *click_pt)
 	
 		// are we clicking on a new node?
 		
-	next_idx=node_link_find_node_by_point(view_setup,click_pt);
+	click_pt.x=pt->x-view_setup->box.left;
+	click_pt.y=pt->y-view_setup->box.top;
+		
+	next_idx=node_link_find_node_by_point(view_setup,&click_pt);
     if ((next_idx==node_idx) || (next_idx==-1)) return(FALSE);
 	
-		// are they connected?
+		// delete link with option key
 		
-	if (node_link_has_link(node_idx,next_idx)) {
-	
-			// delete connection
+	if (main_wind_option_down()) {
 			
 		for (n=0;n!=max_node_link;n++) {
 			if (map.nodes[node_idx].link[n]==next_idx) map.nodes[node_idx].link[n]=-1;
 			if (map.nodes[next_idx].link[n]==node_idx) map.nodes[next_idx].link[n]=-1;
 		}
 		
+		main_wind_draw();
+		
+		return(TRUE);
 	}
-	else {
 	
-			// add connection
+		// add link with control
+		
+	if (main_wind_control_down()) {
 		
 		k1=node_link_get_free_link(node_idx);
 		k2=node_link_get_free_link(next_idx);
@@ -145,11 +151,13 @@ bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *click_pt)
 		
 		if (!node_link_has_link(node_idx,next_idx)) map.nodes[node_idx].link[k1]=next_idx;
 		if (!node_link_has_link(next_idx,node_idx)) map.nodes[next_idx].link[k2]=node_idx;
+		
+		main_wind_draw();
+		
+		return(TRUE);
 	}
 	
-	main_wind_draw();
-	
-	return(TRUE);
+	return(FALSE);
 }
 
 /* =======================================================

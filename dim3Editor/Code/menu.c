@@ -584,6 +584,10 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			            
 			// piece transform menu
 
+		case kCommandPieceResize:
+			piece_resize();
+			return(noErr);
+			
 		case kCommandPieceFlipX:
 			piece_flip(TRUE,FALSE,TRUE);
 			return(noErr);

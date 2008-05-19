@@ -152,13 +152,9 @@ void collide_object_ray_trace_points(obj_type *obj,int x_add,int z_add,int *px,i
 	py[12]=py[13]=py[14]=obj->pos.y-(map_enlarge>>1);
 }
 
-
-// supergumba -- check only wall like objects here
-// change some of the parameters
-
-bool collide_object_to_map(obj_type *obj,int hit_fudge,int *xadd,int *yadd,int *zadd)
+bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 {
-	int						n,x,z,idx,xadd2,zadd2,radius,
+	int						n,x,z,idx,xadd2,yadd2,zadd2,radius,
 							px[15],py[15],pz[15],
 							d,dist;
 	float					ang;
@@ -182,10 +178,14 @@ bool collide_object_to_map(obj_type *obj,int hit_fudge,int *xadd,int *yadd,int *
 	if (radius>d) {
 		ang=angle_find(0,0,x,z);
 		angle_get_movement(ang,radius,&xadd2,&zadd2);
+		
+		yadd2=*yadd;
+		if (d!=0) yadd2=((*yadd)*radius)/d;
 	}
 	else {
 		xadd2=x;
 		zadd2=z;
+		yadd2=*yadd;
 	}
 
 		// run rays on all points
@@ -204,7 +204,7 @@ bool collide_object_to_map(obj_type *obj,int hit_fudge,int *xadd,int *yadd,int *
 		spt.z=pz[n];
 
 		ept.x=spt.x+xadd2;
-		ept.y=spt.y+(*yadd);
+		ept.y=spt.y+yadd2;
 		ept.z=spt.z+zadd2;
 
 		contact[n].obj_on=TRUE;

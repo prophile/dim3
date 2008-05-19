@@ -121,6 +121,7 @@ extern bool dialog_map_particle_settings_run(map_particle_type *particle);
 extern bool dialog_spot_setting_run(spot_type *spot);
 extern bool dialog_scenery_setting_run(map_scenery_type *scenery);
 extern int dialog_piece_move_to_portal_run(void);
+extern bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z);
 extern bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z);
 
 //

@@ -414,6 +414,54 @@ void piece_tesselate(void)
 
 /* =======================================================
 
+      Piece Resize
+      
+======================================================= */
+
+void piece_resize(void)
+{
+	int				n,sel_count,type,portal_idx,mesh_idx,poly_idx;
+	float			fct_x,fct_y,fct_z;
+	d3pnt			min,max,mpt;
+	
+		// get the resize factor
+		
+    dialog_resize_run(&fct_x,&fct_y,&fct_z);
+	
+	fct_x=fct_x/100.0f;
+	fct_y=fct_y/100.0f;
+	fct_z=fct_z/100.0f;
+	
+	if ((fct_x<=0.0f) || (fct_y<=0.0f) || (fct_z<=0.0f)) return;
+	
+		// resize meshes
+		
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		
+		if (type==mesh_piece) {
+			map_portal_mesh_calculate_extent(&map,portal_idx,mesh_idx,&min,&max);
+			map_portal_mesh_calculate_center(&map,portal_idx,mesh_idx,&mpt);
+						
+			min.x=((min.x-mpt.x)*fct_x)+mpt.x;
+			min.y=((min.y-mpt.y)*fct_y)+mpt.y;
+			min.z=((min.z-mpt.z)*fct_z)+mpt.z;
+			
+			max.x=((max.x-mpt.x)*fct_x)+mpt.x;
+			max.y=((max.y-mpt.y)*fct_y)+mpt.y;
+			max.z=((max.z-mpt.z)*fct_z)+mpt.z;
+
+			map_portal_mesh_resize(&map,portal_idx,mesh_idx,&min,&max);
+		}
+	}
+	
+	main_wind_draw();
+}
+
+/* =======================================================
+
       Piece Transforms
       
 ======================================================= */

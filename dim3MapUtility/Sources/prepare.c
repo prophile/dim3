@@ -31,16 +31,64 @@ and can be sold or given away.
 
 /* =======================================================
 
-      Get Enclosing Square for Polygon
+      Prepare Single Polygon for Rendering
       
 ======================================================= */
 
-void map_prepare_set_mesh_poly_box(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
+void map_prepare_mesh_poly_determine_wall_like(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
 {
-	int				n,k,ptsz,y,px[8],pz[8];
-	bool			flat,common_xz;
-	d3pnt			min,max,mid;
+	int				n,k,ptsz,px[8],pz[8];
 	d3pnt			*pt,*chk_pt;
+	
+	mesh_poly->box.wall_like=FALSE;
+	
+		// flat polygons are not wall-like
+		
+	if (mesh_poly->box.flat) return;
+	
+		// check for common xz points
+		// and assume wall type if they exist
+		
+	ptsz=mesh_poly->ptsz;
+	
+	for (n=0;n!=ptsz;n++) {
+		pt=&mesh->vertexes[mesh_poly->v[n]];
+
+		for (k=0;k!=ptsz;k++) {
+			if (k==n) continue;
+			
+			chk_pt=&mesh->vertexes[mesh_poly->v[k]];
+			if ((pt->x==chk_pt->x) && (pt->z==chk_pt->z)) {
+				mesh_poly->box.wall_like=TRUE;
+				return;
+			}
+		}
+	}
+	
+		// over a certain slope means wall like
+
+	if (mesh_poly->slope.y>1.5f) {
+		mesh_poly->box.wall_like=TRUE;
+		return;
+	}
+
+		// otherwise determine if all points are in a line
+
+	for (n=0;n!=ptsz;n++) {
+		pt=&mesh->vertexes[mesh_poly->v[n]];
+		px[n]=pt->x;
+		pz[n]=pt->z;
+	}
+
+	mesh_poly->box.wall_like=line_2D_all_points_in_line(ptsz,px,pz,0.0f);
+}
+
+void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
+{
+	int				n,ptsz,y,px[8],py[8],pz[8];
+	bool			flat;
+	d3pnt			min,max,mid;
+	d3pnt			*pt;
 
 		// find enclosing square
 		// and middle and if polygon is flat
@@ -87,84 +135,21 @@ void map_prepare_set_mesh_poly_box(map_mesh_type *mesh,map_mesh_poly_type *mesh_
 	
 	mesh_poly->box.flat=flat;
 
-		// check for common xz points
-		// this helps determine this
-		// polygon's type
+		// setup slopes
 		
-	common_xz=FALSE;
-
-	for (n=0;n!=ptsz;n++) {
+	for (n=0;n!=mesh_poly->ptsz;n++) {
 		pt=&mesh->vertexes[mesh_poly->v[n]];
-
-		for (k=0;k!=ptsz;k++) {
-			if (k==n) continue;
-			
-			chk_pt=&mesh->vertexes[mesh_poly->v[k]];
-			if ((pt->x==chk_pt->x) && (pt->z==chk_pt->z)) {
-				common_xz=TRUE;
-				break;
-			}
-		}
-
-		if (common_xz) break;
+		px[n]=pt->x;
+		py[n]=pt->y;
+		pz[n]=pt->z;
 	}
 
-	mesh_poly->box.common_xz=common_xz;
+	mesh_poly->slope.y=polygon_get_slope_y(mesh_poly->ptsz,px,py,pz,&mesh_poly->slope.ang_y);
+	angle_get_movement_float(mesh_poly->slope.ang_y,(gravity_slope_factor*mesh_poly->slope.y),&mesh_poly->slope.move_x,&mesh_poly->slope.move_z);
 	
 		// determine if wall like
 		
-	mesh_poly->box.wall_like=FALSE;
-	
-	if (!mesh_poly->box.flat) {
-
-			// quick checks
-
-		mesh_poly->box.wall_like=(common_xz) || (((mesh_poly->box.max.x-mesh_poly->box.min.x)+(mesh_poly->box.max.z-mesh_poly->box.min.z))<(mesh_poly->box.max.y-mesh_poly->box.min.y));
-
-			// otherwise determine if all points are close to a line
-
-		if (!mesh_poly->box.wall_like) {
-
-			for (n=0;n!=ptsz;n++) {
-				pt=&mesh->vertexes[mesh_poly->v[n]];
-				px[n]=pt->x;
-				pz[n]=pt->z;
-			}
-
-			mesh_poly->box.wall_like=line_2D_all_points_in_line(ptsz,px,pz,0.0f);
-		}
-	}
-
-/* supergumba -- tester	
-	if (mesh_poly->box.wall_like) {
-		mesh_poly->txt_idx=0;
-	}
-	else {
-		mesh_poly->txt_idx=1;
-	}
-	*/
-}
-
-/* =======================================================
-
-      Create Slopes Data
-      
-======================================================= */
-
-void map_prepare_set_mesh_poly_slope(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
-{
-	int				n,x[8],y[8],z[8];
-	d3pnt			*pt;
-	
-	for (n=0;n!=mesh_poly->ptsz;n++) {
-		pt=&mesh->vertexes[mesh_poly->v[n]];
-		x[n]=pt->x;
-		y[n]=pt->y;
-		z[n]=pt->z;
-	}
-
-	mesh_poly->slope.y=polygon_get_slope_y(mesh_poly->ptsz,x,y,z,&mesh_poly->slope.ang_y);
-	angle_get_movement_float(mesh_poly->slope.ang_y,(gravity_slope_factor*mesh_poly->slope.y),&mesh_poly->slope.move_x,&mesh_poly->slope.move_z);
+	map_prepare_mesh_poly_determine_wall_like(mesh,mesh_poly);
 }
 
 /* =======================================================
@@ -260,8 +245,7 @@ void map_prepare(map_type *map)
 				
 					// setup box and slope
 
-				map_prepare_set_mesh_poly_box(mesh,mesh_poly);
-				map_prepare_set_mesh_poly_slope(mesh,mesh_poly);
+				map_prepare_mesh_poly(mesh,mesh_poly);
 
 					// detect simple tessel segments
 					// triangles are automatically simple tessels
