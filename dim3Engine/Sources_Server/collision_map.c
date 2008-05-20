@@ -156,8 +156,8 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 {
 	int						n,x,z,idx,xadd2,yadd2,zadd2,radius,
 							px[15],py[15],pz[15],
-							d,dist;
-	float					ang;
+							d,dist,mv_dist;
+	float					mv_ang;
 	d3pnt					spt,ept,hpt[15];
 	ray_trace_contact_type	contact[15];
 
@@ -173,14 +173,15 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 
 	x=*xadd;
 	z=*zadd;
-	d=(int)(sqrt((double)(x*x)+(double)(z*z)));
 
-	if (radius>d) {
-		ang=angle_find(0,0,x,z);
-		angle_get_movement(ang,radius,&xadd2,&zadd2);
+	mv_dist=(int)(sqrt((double)(x*x)+(double)(z*z)));
+	mv_ang=angle_find(0,0,x,z);
+
+	if (radius>mv_dist) {
+		angle_get_movement(mv_ang,radius,&xadd2,&zadd2);
 		
 		yadd2=*yadd;
-		if (d!=0) yadd2=((*yadd)*radius)/d;
+		if (mv_dist!=0) yadd2=((*yadd)*radius)/mv_dist;
 	}
 	else {
 		xadd2=x;
@@ -230,24 +231,17 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 
 	if (idx==-1) return(FALSE);
 	
-		// check the distance to the hit point
-		// to make sure that it remains at least
-		// the radius away from polygons
+		// make sure distance stays within
+		// object radius
 
 	x=hpt[idx].x-px[idx];
 	z=hpt[idx].z-pz[idx];
 
 	d=(int)(sqrt((double)(x*x)+(double)(z*z)));
 
-	if (d<radius) {
-		ang=angle_find(0,0,x,z);
-		angle_get_movement(ang,(radius-d),&x,&z);
-		x=-x;
-		z=-z;
-	}
-
-	*xadd=x;
-	*zadd=z;
+	angle_get_movement(mv_ang,(radius-d),&xadd2,&zadd2);
+	*xadd=(*xadd)-xadd2;
+	*zadd=(*zadd)-zadd2;
 
 		// setup the hits
 

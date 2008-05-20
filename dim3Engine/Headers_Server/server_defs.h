@@ -186,7 +186,6 @@ and can be sold or given away.
 #define ws_step_factor				4					// how much to reduce movement when wall sliding
 #define pd_parent_grace				100					// how long till projectile can strike parent again
 #define ci_object_click_angle		20.0f				// angle at which you can click an object
-#define ky_turn_speed				1.8f				// speed for keyboard turning, should eventually be a setting
 
 //
 // models
@@ -429,7 +428,8 @@ typedef struct		{
 						float				walk_speed,walk_motion_speed,
 											run_speed,run_motion_speed,
 											crawl_speed,crawl_motion_speed,
-											air_speed,air_motion_speed;
+											air_speed,air_motion_speed,
+											key_speed;
 						bool				ignore_mouse,only_when_moving,restrict_player_turning;
 						d3ang				ang_add,ang_to,fix_ang_add;
 					} obj_turn;

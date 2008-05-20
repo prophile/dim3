@@ -494,6 +494,7 @@ obj_type* object_create(int bind)
 	obj->turn.ang_to.y=0;
 	obj->turn.walk_speed=obj->turn.run_speed=obj->turn.crawl_speed=obj->turn.air_speed=1;
 	obj->turn.walk_motion_speed=obj->turn.run_motion_speed=obj->turn.crawl_motion_speed=obj->turn.air_motion_speed=1;
+	obj->turn.key_speed=1.8f;
 
 	obj->air_mode=am_ground;
     obj->liquid_mode=lm_out;

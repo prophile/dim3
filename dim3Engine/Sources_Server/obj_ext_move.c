@@ -172,7 +172,7 @@ void object_rotate_with_standing_mesh(int portal_idx,int mesh_idx,float y)
 	mpt.y+=mesh->rot_off.y;
 	mpt.z+=mesh->rot_off.z;
 
-		// turn anything standing on it
+		// turn any object standing on it
 	
 	obj=server.objs;
 	
@@ -188,10 +188,10 @@ void object_rotate_with_standing_mesh(int portal_idx,int mesh_idx,float y)
       
 ======================================================= */
 
-bool object_push_with_object(obj_type *obj,float xmove,float zmove)
+bool object_push_with_object(obj_type *obj,int xmove,int zmove)
 {
 	int				weight_dif;
-	float			f;
+	float			f,f_xmove,f_zmove;
 	obj_type		*pushed_obj;
 	
 	if (obj->contact.obj_uid==-1) return(TRUE);
@@ -216,32 +216,60 @@ bool object_push_with_object(obj_type *obj,float xmove,float zmove)
 	
 		// add in vector
 
-	xmove*=f;
-	zmove*=f;
+	f_xmove=((float)xmove)*f;
+	f_zmove=((float)zmove)*f;
 	
-	pushed_obj->force.vct.x=xmove;
-	pushed_obj->force.vct.z=zmove;
+	pushed_obj->force.vct.x=f_xmove;
+	pushed_obj->force.vct.z=f_zmove;
 
 		// movement
 
-	return(object_move_with_move(pushed_obj,(int)xmove,(int)zmove));
+	return(object_move_with_move(pushed_obj,(int)f_xmove,(int)f_zmove));
 }
-
 
 void object_move_with_standing_object(obj_type *obj,int xmove,int zmove)
 {
-	int			i;
+	int			n;
 	obj_type	*obj_check;
-	
+
 	obj_check=server.objs;
 	
-	for (i=0;i!=server.count.obj;i++) {
+	for (n=0;n!=server.count.obj;n++) {
+
 		if (!obj_check->remote.on) {
 			if (obj_check->stand_obj_uid==obj->uid) {
 				if (!obj_check->suspend) object_move_with_move(obj_check,xmove,zmove);
 			}
-			obj_check++;
 		}
+
+		obj_check++;
 	}
 }
 
+void object_rotate_with_standing_object(obj_type *obj,float y)
+{
+	int				n;
+	d3pnt			mpt;
+	obj_type		*obj_check;
+
+		// get center point for object
+
+	mpt.x=obj->pos.x;
+	mpt.y=obj->pos.y;
+	mpt.z=obj->pos.z;
+
+		// turn any object standing on it
+	
+	obj_check=server.objs;
+	
+	for (n=0;n!=server.count.obj;n++) {
+
+		if (!obj_check->remote.on) {
+			if (obj_check->stand_obj_uid==obj->uid) {
+				if (!obj_check->suspend) object_turn_with_turn(obj_check,&mpt,y);
+			}
+		}
+
+		obj_check++;
+	}
+}

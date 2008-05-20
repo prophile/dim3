@@ -934,7 +934,7 @@ void map_get_texture_uv_get_scale(map_type *map,int txt_idx,float *txt_scale_x,f
 
 void map_portal_mesh_reset_poly_uv(map_type *map,int portal_idx,int mesh_idx,int poly_idx)
 {
-	int						n,kx,ky,kz,lx,lz,rx,rz;
+	int						n,kx,ky,kz;
 	float					fx,fy,fz,ltxtx,rtxtx,ltxty,rtxty,ltxtz,rtxtz,
 							x_txtoff,y_txtoff,x_txtfact,y_txtfact,x_txtfact_2,
 							f_dist_1,f_dist_2,txt_scale_x,txt_scale_y;
@@ -993,38 +993,18 @@ void map_portal_mesh_reset_poly_uv(map_type *map,int portal_idx,int mesh_idx,int
 			x_txtoff=0.0f;
 			y_txtoff=0.0f;
 		}
-		
-			// get line for polygon
-			
-		lx=poly->box.min.x;
-		rx=poly->box.max.x;
-		lz=poly->box.min.z;
-		rz=poly->box.max.z;
-		
-		for (n=0;n!=poly->ptsz;n++) {
-			pt=&mesh->vertexes[poly->v[n]];
-			
-			if ((rx-lx)>(rz-lz)) {
-				if (pt->x==lx) lz=pt->z;
-				if (pt->x==rx) rz=pt->z;
-			}
-			else {
-				if (pt->z==lz) lx=pt->x;
-				if (pt->z==rz) rx=pt->x;
-			}
-		}
-		
+				
 			// create the polygons UVs across the line
 			
-		dx=(double)(rx-lx);
-		dz=(double)(rz-lz);
+		dx=(double)(poly->line.rx-poly->line.lx);
+		dz=(double)(poly->line.rz-poly->line.lz);
 		f_dist_2=(float)sqrt((dx*dx)+(dz*dz));
 			
 		for (n=0;n!=poly->ptsz;n++) {
 			pt=&mesh->vertexes[poly->v[n]];
 
-			dx=(double)(pt->x-lx);
-			dz=(double)(pt->z-lz);
+			dx=(double)(pt->x-poly->line.lx);
+			dz=(double)(pt->z-poly->line.lz);
 			f_dist_1=(float)sqrt((dx*dx)+(dz*dz));
 			
 			ky=pt->y-poly->box.min.y;

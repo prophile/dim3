@@ -112,7 +112,13 @@ void object_turn(obj_type *obj)
 		}
 	}
 	
+		// turn object
+
 	obj->ang.y=angle_add(ang,turn_add);
+
+		// turn any standing objects
+
+	object_rotate_with_standing_object(obj,turn_add);
 }
 
 void object_turn_stop(obj_type *obj)
@@ -202,6 +208,10 @@ void object_player_turn(obj_type *obj)
 		
     obj->ang.y=angle_add(obj->ang.y,turn_add);
 	obj->turn.fix_ang_add.y=turn_add;
+
+		// turn any standing objects
+
+	object_rotate_with_standing_object(obj,turn_add);
 }
 
 void object_player_turn_direct(obj_type *obj,float ang)

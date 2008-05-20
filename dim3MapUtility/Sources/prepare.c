@@ -85,7 +85,8 @@ void map_prepare_mesh_poly_determine_wall_like(map_mesh_type *mesh,map_mesh_poly
 
 void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
 {
-	int				n,ptsz,y,px[8],py[8],pz[8];
+	int				n,ptsz,y,lx,rx,lz,rz,
+					px[8],py[8],pz[8];
 	bool			flat;
 	d3pnt			min,max,mid;
 	d3pnt			*pt;
@@ -150,6 +151,34 @@ void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
 		// determine if wall like
 		
 	map_prepare_mesh_poly_determine_wall_like(mesh,mesh_poly);
+
+		// create wall "line" for wall like polygons
+
+	if (mesh_poly->box.wall_like) {
+			
+		lx=mesh_poly->box.min.x;
+		rx=mesh_poly->box.max.x;
+		lz=mesh_poly->box.min.z;
+		rz=mesh_poly->box.max.z;
+		
+		for (n=0;n!=mesh_poly->ptsz;n++) {
+			pt=&mesh->vertexes[mesh_poly->v[n]];
+			
+			if ((rx-lx)>(rz-lz)) {
+				if (pt->x==lx) lz=pt->z;
+				if (pt->x==rx) rz=pt->z;
+			}
+			else {
+				if (pt->z==lz) lx=pt->x;
+				if (pt->z==rz) rx=pt->x;
+			}
+		}
+
+		mesh_poly->line.lx=lx;
+		mesh_poly->line.rx=rx;
+		mesh_poly->line.lz=lz;
+		mesh_poly->line.rz=rz;
+	}
 }
 
 /* =======================================================

@@ -215,6 +215,10 @@ typedef struct		{
 					} map_mesh_poly_box_type;
 
 typedef struct		{
+						int							lx,rx,lz,rz;
+					} map_mesh_poly_line_type;
+
+typedef struct		{
 						float						y,ang_y,move_x,move_z;
 					} map_mesh_poly_slope_type;
 
@@ -237,6 +241,7 @@ typedef struct		{
 						float						gx[8],gy[8],x_shift,y_shift,
 													dark_factor,alpha;
 						map_mesh_poly_box_type		box;
+						map_mesh_poly_line_type		line;
 						map_mesh_poly_slope_type	slope;
 						map_mesh_poly_light_type	light;
 						map_mesh_poly_draw_type		draw;

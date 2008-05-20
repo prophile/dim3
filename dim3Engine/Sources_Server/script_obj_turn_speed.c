@@ -51,6 +51,7 @@ JSPropertySpec	obj_turn_speed_props[]={
 							{"motionCrawl",				obj_turn_speed_prop_motion_crawl,		JSPROP_PERMANENT|JSPROP_SHARED},
 							{"facingAir",				obj_turn_speed_prop_facing_air,			JSPROP_PERMANENT|JSPROP_SHARED},
 							{"motionAir",				obj_turn_speed_prop_motion_air,			JSPROP_PERMANENT|JSPROP_SHARED},
+							{"key",						obj_turn_speed_prop_key,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 
 /* =======================================================
@@ -107,6 +108,9 @@ JSBool js_get_obj_turn_speed_property(JSContext *cx,JSObject *j_obj,jsval id,jsv
 		case obj_turn_speed_prop_motion_air:
             *vp=script_float_to_value(obj->turn.air_motion_speed);
             break;
+		case obj_turn_speed_prop_key:
+            *vp=script_float_to_value(obj->turn.key_speed);
+            break;
 			
 	}
 	
@@ -146,6 +150,9 @@ JSBool js_set_obj_turn_speed_property(JSContext *cx,JSObject *j_obj,jsval id,jsv
             break;
 		case obj_turn_speed_prop_motion_air:
             obj->turn.air_motion_speed=fabsf(script_value_to_float(*vp));
+            break;
+		case obj_turn_speed_prop_key:
+            obj->turn.key_speed=fabsf(script_value_to_float(*vp));
             break;
 
 	}

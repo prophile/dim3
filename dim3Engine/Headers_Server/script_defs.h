@@ -379,6 +379,7 @@ and can be sold or given away.
 #define obj_turn_speed_prop_motion_crawl			5
 #define obj_turn_speed_prop_facing_air				6
 #define obj_turn_speed_prop_motion_air				7
+#define obj_turn_speed_prop_key						8
 
 #define obj_object_speed_prop_jump_height			0
 #define obj_object_speed_prop_duck_add				1

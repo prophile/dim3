@@ -910,7 +910,7 @@ void object_move_fly(obj_type *obj)
 	i_zmove=(int)zmove;
 	
 	if (collide_object_to_map(obj,&i_xmove,&i_ymove,&i_zmove)) {
-		object_push_with_object(obj,xmove,zmove);
+		object_push_with_object(obj,i_xmove,i_zmove);
 	}
 	
 		// force move other objects
@@ -918,9 +918,7 @@ void object_move_fly(obj_type *obj)
 	xchg=obj->pos.x-xchg;
 	zchg=obj->pos.z-zchg;
 	
-	if ((xchg!=0) || (zchg!=0)) {
-		object_move_with_standing_object(obj,xchg,zchg);
-	}
+	if ((xchg!=0) || (zchg!=0)) object_move_with_standing_object(obj,xchg,zchg);
 	
 		// bounces
 		
@@ -966,8 +964,12 @@ void object_move_swim(obj_type *obj)
 	i_zmove=(int)zmove;
 
 	if (collide_object_to_map(obj,&i_xmove,&i_ymove,&i_zmove)) {
-		object_push_with_object(obj,xmove,zmove);
+		object_push_with_object(obj,i_xmove,i_zmove);
 	}
+
+		// move standing objects
+
+	if ((i_xmove!=0) || (i_zmove!=0)) object_move_with_standing_object(obj,i_xmove,i_zmove);
 	
 		// bounces
 		
@@ -1071,17 +1073,13 @@ void object_move_normal(obj_type *obj)
 
 		while (TRUE) {
 			
-				// move
+				// attempt to move
 
 			if (object_move_xz_slide(obj,&xadd,&yadd,&zadd)) {
 				
-					// we hit something
+					// push object is we hit it
 
-					// objects pushing other objects
-					// or moving objects standing on them
-
-				object_push_with_object(obj,xmove,zmove);
-				object_move_with_standing_object(obj,xadd,zadd);
+				object_push_with_object(obj,xadd,zadd);
 
 					// if bumped up, move again
 
@@ -1090,6 +1088,12 @@ void object_move_normal(obj_type *obj)
 					continue;	
 				}
 			}
+
+				// move objects standing on object
+
+			object_move_with_standing_object(obj,xadd,zadd);
+
+				// move object itself
 
 			obj->pos.x+=xadd;
 			obj->pos.z+=zadd;
