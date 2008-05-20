@@ -668,7 +668,9 @@ bool map_portal_mesh_poly_punch_hole(map_type *map,int portal_idx,int mesh_idx,i
 	for (n=0;n!=ptsz;n++) {
 
 		poly=&mesh->polys[poly_idx];			// add might force memory move, need to always rebuild pointer
-		k=(n+1)&0x7;
+
+		k=n+1;
+		if (k==ptsz) k=0;
 
 		pt=&mesh->vertexes[poly->v[n]];
 		kx[0]=pt->x;

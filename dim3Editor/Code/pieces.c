@@ -565,6 +565,28 @@ void piece_reset_uvs(bool poly_only)
 
 /* =======================================================
 
+      Piece Holes
+      
+======================================================= */
+
+void piece_poly_hole(int hole_type)
+{
+	int				n,sel_count,type,portal_idx,mesh_idx,poly_idx;
+	
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		if (type==mesh_piece) map_portal_mesh_poly_punch_hole(&map,portal_idx,mesh_idx,poly_idx,hole_type);
+	}
+	
+	select_clear();
+	
+	main_wind_draw();
+}
+
+/* =======================================================
+
       Piece Keys
       
 ======================================================= */

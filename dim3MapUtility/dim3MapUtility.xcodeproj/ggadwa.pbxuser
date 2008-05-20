@@ -45,10 +45,10 @@
 	};
 	26AFB4310D95B6230004805A /* portal_mesh_update.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 13230}}";
-			sepNavSelRange = "{18258, 0}";
-			sepNavVisRange = "{17249, 1397}";
-			sepNavWindowFrame = "{{626, 129}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 15162}}";
+			sepNavSelRange = "{12838, 31}";
+			sepNavVisRange = "{12766, 860}";
+			sepNavWindowFrame = "{{472, 123}, {1041, 747}}";
 		};
 	};
 	26BF8BBA0DBA5B900071D014 /* file_map_read_v1_curves.c */ = {
@@ -210,8 +210,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 232676646;
-			PBXWorkspaceStateSaveDate = 232676646;
+			PBXPerProjectTemplateStateSaveDate = 232934493;
+			PBXWorkspaceStateSaveDate = 232934493;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -268,8 +268,8 @@
 	F5DD16E00907328000721649 /* prepare.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 5642}}";
-			sepNavSelRange = "{3692, 0}";
-			sepNavVisRange = "{3088, 1304}";
+			sepNavSelRange = "{2337, 0}";
+			sepNavVisRange = "{1945, 981}";
 			sepNavWindowFrame = "{{365, 154}, {1041, 747}}";
 		};
 	};

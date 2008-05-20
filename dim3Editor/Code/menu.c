@@ -639,6 +639,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			// polygon menu
 			
 		case kCommandPolygonHole1:
+			piece_poly_hole(0);
 			return(noErr);
 			
 		case kCommandPolygonResetUV:
