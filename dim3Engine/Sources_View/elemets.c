@@ -198,6 +198,12 @@ void element_release_control_memory(void)
 				
 			case element_type_table:
 				if (element->data!=NULL) free(element->data);
+				if (element->setup.table.bitmap!=NULL) {
+					for (k=0;k!=element->setup.table.nbitmap;k++) {
+						bitmap_close(&element->setup.table.bitmap[k]);
+					}
+					free(element->setup.table.bitmap);
+				}
 				break;
 		
 			case element_type_tab:
@@ -569,7 +575,7 @@ int element_table_add_get_data_size(char *row_data)
 	return((count+1)*128);
 }
 
-void element_table_add(element_column_type* cols,char *row_data,int id,int ncolumn,int x,int y,int wid,int high)
+void element_table_add(element_column_type* cols,char *row_data,int id,int ncolumn,int x,int y,int wid,int high,int bitmap_mode)
 {
 	int				sz;
 	element_type	*element;
@@ -607,6 +613,10 @@ void element_table_add(element_column_type* cols,char *row_data,int id,int ncolu
 		element->data=valloc(sz);
 		memmove(element->data,row_data,sz);
 	}
+
+	element->setup.table.bitmap_mode=bitmap_mode;
+	element->setup.table.nbitmap=0;
+	element->setup.table.bitmap=NULL;
 	
 	pthread_mutex_unlock(&element_thread_lock);
 }
@@ -819,7 +829,7 @@ void element_draw_button(element_type *element,int sel_id)
 
 	if (element->enabled) {
 		if (element->id==sel_id) {
-			gl_texture_simple_set(element->setup.button.bitmap_select.gl_id,TRUE,1.0f,1.0f,1.0f,1.0);
+			gl_texture_simple_set(element->setup.button.bitmap_select.gl_id,TRUE,1.0f,1.0f,1.0f,1.0f);
 		}
 		else {
 			gl_texture_simple_set(element->setup.button.bitmap.gl_id,TRUE,1.0f,1.0f,1.0f,1.0f);
@@ -1546,6 +1556,13 @@ int element_get_table_row_count(element_type *element)
 	return(0);
 }
 
+inline int element_get_table_row_high(element_type *element)
+{
+	if (element->setup.table.bitmap_mode==element_table_bitmap_none) return(gl_text_get_char_height(TRUE)+2);
+
+	return(element_table_bitmap_size+2);
+}
+
 bool element_click_table(element_type *element,int x,int y)
 {
 	int				high,row_cnt,cnt;
@@ -1586,7 +1603,7 @@ bool element_click_table(element_type *element,int x,int y)
 		// select cliked on element
 		
 	y-=((element->y+4)+(high+2));
-	element->value=element->offset+(y/high);
+	element->value=element->offset+(y/element_get_table_row_high(element));
 	
 	if ((element->value<0) || (element->value>=row_cnt)) {
 		element->value=-1;
@@ -1596,7 +1613,7 @@ bool element_click_table(element_type *element,int x,int y)
 	return(TRUE);
 }
 
-void element_draw_table_line_lines(element_type *element,int x,int y,int wid,int high,d3col *line_col)
+void element_draw_table_line_lines(element_type *element,int x,int y,int wid,int row_high,d3col *line_col)
 {
 	int			n,cx,lx,ty,by;
 	
@@ -1608,8 +1625,8 @@ void element_draw_table_line_lines(element_type *element,int x,int y,int wid,int
 		cx+=(int)(element->setup.table.cols[n-1].percent_size*(float)wid);
 	
 		lx=cx;
-		ty=y-(high+1);
-		by=y;
+		ty=y;
+		by=y+row_high;
 		
 		glBegin(GL_LINES);
 		glVertex2i(lx,ty);
@@ -1618,23 +1635,28 @@ void element_draw_table_line_lines(element_type *element,int x,int y,int wid,int
 	}
 }
 
-void element_draw_table_line_header(element_type *element,int x,int y,int wid,int high)
+void element_draw_table_line_header(element_type *element,int x,int y,int wid,int row_high)
 {
 	int			n;
+
+	y+=(row_high>>1);
 	
 	for (n=0;n!=element->setup.table.ncolumn;n++) {
 		gl_text_start(TRUE);
-		gl_text_draw((x+4),y,element->setup.table.cols[n].name,tx_left,FALSE,&hud.color.header,1.0f);
+		gl_text_draw((x+4),y,element->setup.table.cols[n].name,tx_left,TRUE,&hud.color.header,1.0f);
 		gl_text_end();
 		
 		x+=(int)(element->setup.table.cols[n].percent_size*(float)wid);
 	}
 }
 
-void element_draw_table_line_data(element_type *element,int x,int y,int wid,int high,d3col *txt_col,char *data)
+void element_draw_table_line_data(element_type *element,int x,int y,int row,int wid,int row_high,d3col *txt_col,char *data)
 {
-	int			n;
-	char		*c,*c2,txt[256];
+	int				n,dx,dy;
+	unsigned long	gl_id;
+	char			*c,*c2,txt[256];
+
+	dy=y+(row_high>>1);
 	
 	c=data;
 	
@@ -1646,11 +1668,78 @@ void element_draw_table_line_data(element_type *element,int x,int y,int wid,int 
 		txt[255]=0x0;
 		c2=strchr(txt,'\t');
 		if (c2!=NULL) *c2=0x0;
+
+			// draw any bitmaps
+
+		dx=x+4;
+
+		if ((element->setup.table.bitmap_mode!=element_table_bitmap_none) && (n==0)) {
+
+				// draw bitmap
+
+			gl_id=element->setup.table.bitmap[row+n].gl_id;
+
+			if (gl_id!=-1) {
+
+				gl_texture_simple_start();
+				gl_texture_simple_set(gl_id,TRUE,1.0f,1.0f,1.0f,1.0f);
+
+				glDisable(GL_BLEND);
+				glDisable(GL_ALPHA_TEST);
+				glDisable(GL_DEPTH_TEST);
 		
-			// draw
+				glBegin(GL_QUADS);
+				glTexCoord2f(0,0);
+				glVertex2i(dx,(y+1));
+				glTexCoord2f(1,0);
+				glVertex2i((dx+element_table_bitmap_size),(y+1));
+				glTexCoord2f(1,1);
+				glVertex2i((dx+element_table_bitmap_size),((y+1)+element_table_bitmap_size));
+				glTexCoord2f(0,1);
+				glVertex2i(dx,((y+1)+element_table_bitmap_size));
+				glEnd();
+
+				gl_texture_simple_end();
+
+			}
+
+				// missing graphic
+
+			else {
+				glColor4f(1.0f,0.0f,0.0f,1.0f);
+				glBegin(GL_LINES);
+				glVertex2i(dx,(y+1));
+				glVertex2i((dx+element_table_bitmap_size),((y+1)+element_table_bitmap_size));
+				glVertex2i((dx+element_table_bitmap_size),(y+1));
+				glVertex2i(dx,((y+1)+element_table_bitmap_size));
+				glEnd();
+
+				glColor4f(1.0f,1.0f,1.0f,1.0f);
+				glBegin(GL_LINE_LOOP);
+				glVertex2i(dx,(y+1));
+				glVertex2i((dx+element_table_bitmap_size),(y+1));
+				glVertex2i((dx+element_table_bitmap_size),((y+1)+element_table_bitmap_size));
+				glVertex2i(dx,((y+1)+element_table_bitmap_size));
+				glEnd();
+			}
+
+				// get to correct text
+
+			c2=strchr(txt,';');
+			if (c2!=NULL) {
+				c2=strchr((c2+1),';');
+				if (c2!=NULL) {
+					strcpy(txt,(c2+1));
+				}
+			}
+
+			dx+=(element_table_bitmap_size+4);
+		}
+		
+			// draw text
 			
 		gl_text_start(TRUE);
-		gl_text_draw((x+4),y,txt,tx_left,TRUE,txt_col,1.0f);
+		gl_text_draw(dx,dy,txt,tx_left,TRUE,txt_col,1.0f);
 		gl_text_end();
 		
 			// get next data
@@ -1663,20 +1752,74 @@ void element_draw_table_line_data(element_type *element,int x,int y,int wid,int 
 	}
 }
 
+void element_table_load_row_bitmaps(element_type *element)
+{
+	int				n,nrow;
+	char			*c,*c2,subdir[256],filename[256],path[1024];
+
+	if (element->setup.table.bitmap_mode==element_table_bitmap_none) return;
+	if (element->setup.table.bitmap!=NULL) return;
+
+	nrow=element_get_table_row_count(element);
+	element->setup.table.nbitmap=nrow;
+
+		// memory for bitmaps
+
+	element->setup.table.bitmap=(bitmap_type*)valloc(nrow*sizeof(bitmap_type));
+	if (element->setup.table.bitmap==NULL) {
+		element->setup.table.bitmap_mode=element_table_bitmap_none;
+		return;
+	}
+
+		// load bitmaps
+
+	for (n=0;n!=nrow;n++) {
+		c=element->data+(n*128);
+	
+		strcpy(subdir,c);
+		c2=strchr(subdir,';');
+		if (c2==NULL) continue;
+
+		*c2=0x0;
+		strcpy(filename,(c2+1));
+
+		c2=strchr(filename,';');
+		if (c2==NULL) continue;
+
+		*c2=0x0;
+
+		if (element->setup.table.bitmap_mode==element_table_bitmap_data) {
+			file_paths_data(&setup.file_path_setup,path,subdir,filename,"png");
+		}
+		else {
+			file_paths_documents(&setup.file_path_setup,path,subdir,filename,"png");
+		}
+
+		bitmap_open(&element->setup.table.bitmap[n],path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
+	}
+}
+
 void element_draw_table(element_type *element,int sel_id)
 {
-	int				n,k,x,y,wid,high,cnt,lft,rgt,top,bot;
+	int				n,k,x,y,wid,high,cnt,lft,rgt,top,bot,row_high;
 	float			gx,gy;
 	char			*c;
 	bool			up_ok,down_ok;
 	d3col			line_col;
+
+		// load row bitmaps if needed
+
+	element_table_load_row_bitmaps(element);
+
+		// sizes
 	
 	wid=element->wid-30;
 	high=gl_text_get_char_height(TRUE)+2;
+	row_high=element_get_table_row_high(element);
 	
 		// get element counts
 		
-	cnt=((element->high-(high+4))/high)-1;
+	cnt=((element->high-(high+4))/row_high)-1;
 	up_ok=(element->offset!=0);
 	down_ok=((element->offset+cnt)<element_get_table_row_count(element));
 		
@@ -1818,23 +1961,23 @@ void element_draw_table(element_type *element,int sel_id)
 		// text positions
 		
 	x=element->x;
-	y=(element->y+3)+high;
+	y=element->y+3;
 	
 		// header
 		
 	line_col.r=line_col.g=line_col.b=0.8f;
-	element_draw_table_line_lines(element,x,y,wid,(high+1),&line_col);
-	element_draw_table_line_header(element,x,y,wid,(high+1));
+	element_draw_table_line_lines(element,x,y,wid,high,&line_col);
+	element_draw_table_line_header(element,x,y,wid,high);
 	
 		// items
 		
 	if (element->data==NULL) return;
 	
-	y=((element->y+4)+(high+2)+high)-1;
+	y=(element->y+4)+(high+2);
 	
 	c=element->data+(element->offset*128);
 	
-	for (n=0;n<cnt;n++) {
+	for (n=0;n<=cnt;n++) {
 		if (*c==0x0) break;
 		
 			// selection or background
@@ -1858,8 +2001,8 @@ void element_draw_table(element_type *element,int sel_id)
 		
 		lft+=2;
 		rgt-=26;
-		top=(y-high)+1;
-		bot=y+2;
+		top=y;
+		bot=y+row_high;
 		
 		glBegin(GL_QUADS);
 		glVertex2i(lft,top);
@@ -1870,11 +2013,11 @@ void element_draw_table(element_type *element,int sel_id)
 		
 			// table line
 			
-		element_draw_table_line_lines(element,x,y,wid,high,&line_col);
-		element_draw_table_line_data(element,x,(y-(high>>1)),wid,high,&hud.color.base,c);
+		element_draw_table_line_lines(element,x,y,wid,row_high,&line_col);
+		element_draw_table_line_data(element,x,y,(element->offset+n),wid,row_high,&hud.color.base,c);
 		
 		c+=128;
-		y+=high;
+		y+=row_high;
 	}
 }
 

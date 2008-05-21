@@ -40,7 +40,6 @@ and can be sold or given away.
 #define file_button_delete_id			2
 #define file_button_cancel_id			3
 #define file_directory_id				4
-#define file_save_pict_id				5
 
 extern bool game_file_save(char *err_str);
 extern bool game_file_quick_save(char *err_str);
@@ -165,7 +164,7 @@ void file_build_list(void)
 		file_dir_name_to_elapsed(fpd->files[n].file_name,elapse_str);
 		
 		c=file_table_data+(128*n);
-		sprintf(c,"%s\t%s\t%s",name_str,time_str,elapse_str);
+		sprintf(c,"Saved Games;%s;%s\t%s\t%s",fpd->files[n].file_name,name_str,time_str,elapse_str);
 	}
 
 	file_paths_close_directory(fpd);
@@ -186,7 +185,6 @@ void file_close_list(void)
 void file_save_selected(void)
 {
 	int				idx;
-	char			*c,file_name[128],path[1024];
 	
 	idx=element_get_value(file_directory_id);
 	
@@ -205,7 +203,6 @@ void file_save_selected(void)
 		}
 
 		element_enable(file_button_delete_id,FALSE);
-		element_set_bitmap(file_save_pict_id,NULL);
 		return;
 	}
 	
@@ -215,14 +212,6 @@ void file_save_selected(void)
 	element_hide(file_button_load_id,FALSE);
 	element_enable(file_button_load_id,TRUE);
 	element_enable(file_button_delete_id,TRUE);
-	
-	strcpy(file_name,(char*)(file_name_data+(128*idx)));
-	
-	c=strrchr(file_name,'.');		// get rid of .sav
-	if (c!=NULL) *c=0x0;
-	
-	file_paths_documents(&setup.file_path_setup,path,"Saved Games",file_name,"png");
-	element_set_bitmap(file_save_pict_id,path);
 }
 
 /* =======================================================
@@ -273,7 +262,7 @@ void file_open(void)
 {
 	int					x,y,high,list_wid,list_high;
 	char				path[1024],path2[1024];
-	element_column_type	cols[3];
+	element_column_type	cols[4];
 	
 		// setup gui
 		
@@ -287,7 +276,7 @@ void file_open(void)
 		
 	high=gl_text_get_char_height(FALSE);
 		
-	list_wid=setup.screen.x_scale-143;
+	list_wid=setup.screen.x_scale-10;
 	list_high=setup.screen.y_scale-(high+95);
 		
 		// buttons
@@ -330,11 +319,7 @@ void file_open(void)
 	strcpy(cols[2].name,"Elapsed Time");
 	cols[2].percent_size=0.18f;
 
-	element_table_add(cols,file_table_data,file_directory_id,3,5,y,list_wid,list_high);
-	
-		// save picture
-		
-	element_bitmap_add(NULL,file_save_pict_id,(setup.screen.x_scale-(128+5)),y,128,96,TRUE);
+	element_table_add(cols,file_table_data,file_directory_id,3,5,y,list_wid,list_high,element_table_bitmap_document);
 	
 	server.state=gs_file;
 }

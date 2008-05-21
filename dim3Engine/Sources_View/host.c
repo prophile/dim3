@@ -117,7 +117,7 @@ void host_open(void)
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=1.0f;
 
-	element_table_add(cols,NULL,host_table_id,1,15,y,list_wid,list_high);
+	element_table_add(cols,NULL,host_table_id,1,15,y,list_wid,list_high,element_table_bitmap_none);
 	
 		// fill table with maps
 

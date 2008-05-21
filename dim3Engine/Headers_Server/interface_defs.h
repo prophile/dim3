@@ -61,6 +61,14 @@ and can be sold or given away.
 #define element_pos_right			1
 
 //
+// GUI table bitmap mode
+//
+
+#define element_table_bitmap_none		0
+#define element_table_bitmap_data		1
+#define element_table_bitmap_document	2
+
+//
 // GUI scaling factors
 //
 
@@ -76,6 +84,8 @@ and can be sold or given away.
 
 #define element_control_draw_height				0.025f
 #define element_control_draw_long_width			0.4f
+
+#define element_table_bitmap_size				64
 
 //
 // GUI element structures
@@ -100,9 +110,10 @@ typedef struct		{
 					} element_column_type;
 
 typedef struct		{
-						int						ncolumn;
+						int						ncolumn,nbitmap,bitmap_mode;
 						bool					busy;
 						element_column_type		cols[max_element_column];
+						bitmap_type				*bitmap;
 					} element_table_type;
 
 typedef struct		{

@@ -126,7 +126,7 @@ void setup_network_open(void)
 	strcpy(cols[0].name,"Network Hosts");
 	cols[0].percent_size=1.0f;
 	
-	element_table_add(cols,(char*)setup_host_list,ctrl_network_host_id,1,x,y,wid,high);
+	element_table_add(cols,(char*)setup_host_list,ctrl_network_host_id,1,x,y,wid,high,element_table_bitmap_none);
 
 		// host editing
 

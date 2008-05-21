@@ -332,7 +332,7 @@ void setup_game_action_pane(void)
 	strcpy(cols[1].name,"Keys");
 	cols[1].percent_size=0.50f;
 
-	element_table_add(cols,(char*)setup_action_list,ctrl_action_id,2,x,y,wid,high);
+	element_table_add(cols,(char*)setup_action_list,ctrl_action_id,2,x,y,wid,high,element_table_bitmap_none);
 	
 		// action buttons
 		

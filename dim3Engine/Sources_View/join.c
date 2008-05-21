@@ -441,7 +441,7 @@ void join_open(void)
 	strcpy(cols[3].name,"Ping");
 	cols[3].percent_size=0.8f;
 
-	element_table_add(cols,NULL,join_table_id,4,15,y,list_wid,list_high);
+	element_table_add(cols,NULL,join_table_id,4,15,y,list_wid,list_high,element_table_bitmap_none);
 	element_table_busy(join_table_id,TRUE);
 	
 		// status
