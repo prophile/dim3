@@ -281,16 +281,6 @@ void net_host_player_update_team(int remote_uid,network_request_team *team)
 	pthread_mutex_unlock(&net_host_player_lock);
 }
 
-void net_host_player_death(int remote_uid)
-{
-	// supergumba -- send chat message to all players here?
-}
-
-void net_host_player_telefrag(int remote_uid)
-{
-	// supergumba -- send chat message to all players here?
-}
-
 void net_host_player_update(int remote_uid,network_request_remote_update *update)
 {
 	int							idx,score;
@@ -324,11 +314,6 @@ void net_host_player_update(int remote_uid,network_request_remote_update *update
 	player->score=score;
 	
 	pthread_mutex_unlock(&net_host_player_lock);
-}
-
-void net_host_player_chat(int remote_uid,network_request_remote_chat *chat)
-{
-	// supergumba -- deal with this
 }
 
 /* =======================================================

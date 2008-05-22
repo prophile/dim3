@@ -139,6 +139,18 @@ void net_host_client_handle_leave(int remote_uid)
 	net_host_player_send_others_packet(remote_uid,net_action_request_remote_remove,net_queue_mode_normal,NULL,0,FALSE);
 }
 
+void net_host_client_handle_set_team(int remote_uid,network_request_team *team)
+{
+	net_host_player_update_team(remote_uid,team);
+	net_host_player_send_others_packet(remote_uid,net_action_request_team,net_queue_mode_normal,(unsigned char*)team,sizeof(network_request_team),FALSE);
+}
+
+void net_host_client_handle_update(int remote_uid,network_request_remote_update *update)
+{
+	net_host_player_update(remote_uid,update);
+	net_host_player_send_others_packet(remote_uid,net_action_request_remote_update,net_queue_mode_replace,(unsigned char*)update,sizeof(network_request_remote_update),TRUE);
+}
+
 /* =======================================================
 
       Host Client Networking Message Thread
@@ -147,10 +159,10 @@ void net_host_client_handle_leave(int remote_uid)
 
 void* net_host_client_handler_thread(void *arg)
 {
-	d3socket						sock;
-	int								client_remote_uid,action,queue_mode,from_remote_uid,len,
-									net_error_count;
-	unsigned char					data[net_max_msg_size];
+	d3socket				sock;
+	int						client_remote_uid,action,queue_mode,from_remote_uid,len,
+							net_error_count;
+	unsigned char			data[net_max_msg_size];
 	
 		// get sock from argument
 		
@@ -189,8 +201,8 @@ void* net_host_client_handler_thread(void *arg)
 
 		net_error_count=0;
 		
-			// deal with message type
-			
+			// route messages
+
 		switch (action) {
 		
 			case net_action_request_info:
@@ -206,8 +218,7 @@ void* net_host_client_handler_thread(void *arg)
 				break;
 				
 			case net_action_request_team:
-				net_host_player_update_team(client_remote_uid,(network_request_team*)data);
-				net_host_player_send_others_packet(client_remote_uid,action,net_queue_mode_normal,data,len,FALSE);
+				net_host_client_handle_set_team(client_remote_uid,(network_request_team*)data);
 				break;
 				
 			case net_action_request_leave:
@@ -221,32 +232,14 @@ void* net_host_client_handler_thread(void *arg)
 				break;
 				
 			case net_action_request_remote_death:
-				net_host_player_death(client_remote_uid);
-				net_host_player_send_others_packet(client_remote_uid,action,queue_mode,data,len,FALSE);
-				break;
-				
-			case net_action_request_remote_telefrag:
-				net_host_player_telefrag(client_remote_uid);
-				net_host_player_send_others_packet(client_remote_uid,action,queue_mode,data,len,FALSE);
-				break;
-				
 			case net_action_request_remote_chat:
-				net_host_player_chat(client_remote_uid,(network_request_remote_chat*)data);
-				net_host_player_send_others_packet(client_remote_uid,action,queue_mode,data,len,FALSE);
-				break;
-				
 			case net_action_request_remote_sound:
-				net_host_player_send_others_packet(client_remote_uid,action,queue_mode,data,len,FALSE);
-				break;
-
-			case net_action_request_projectile_add:
-			case net_action_request_hitscan_add:
-			case net_action_request_melee_add:
-				net_host_player_send_others_packet(client_remote_uid,action,queue_mode,data,len,FALSE);
+			case net_action_request_remote_fire:
+				net_host_player_send_others_packet(client_remote_uid,action,net_queue_mode_normal,data,len,FALSE);
 				break;
 
 			case net_action_request_latency_ping:
-				network_send_packet(sock,net_action_reply_latency_ping,net_queue_mode_normal,net_remote_uid_host,NULL,0);
+				network_send_packet(sock,action,net_queue_mode_normal,net_remote_uid_host,NULL,0);
 				break;
 				
 		}

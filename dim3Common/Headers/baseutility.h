@@ -629,12 +629,18 @@ extern void shader_delete(shader_type *shader);
 #define net_action_request_remote_telefrag			13
 #define net_action_request_remote_chat				14
 #define net_action_request_remote_sound				15
-#define net_action_request_projectile_add			16
-#define net_action_request_hitscan_add				17
-#define net_action_request_melee_add				18
-#define net_action_request_latency_ping				19
-#define net_action_reply_latency_ping				20
-#define net_action_request_host_exit				21
+#define net_action_request_remote_fire				16
+#define net_action_request_latency_ping				17
+#define net_action_reply_latency_ping				18
+#define net_action_request_host_exit				19
+
+//
+// remote fire types
+//
+
+#define net_remote_fire_type_projectile				0
+#define net_remote_fire_type_hit_scan				1
+#define net_remote_fire_type_melee					2
 
 //
 // team definitions
@@ -782,11 +788,8 @@ typedef struct		{
 
 typedef struct		{
 						short						kill_remote_uid;
+						char						telefrag;
 					} network_request_remote_death;
-					
-typedef struct		{
-						short						telefrag_remote_uid;
-					} network_request_remote_telefrag;
 					
 typedef struct		{
 						char						str[64];
@@ -800,21 +803,9 @@ typedef struct		{
 typedef struct		{
 						int							pt_x,pt_y,pt_z,
 													fp_ang_x,fp_ang_y,fp_ang_z;
+						short						fire_type,radius,distance,damage,force;
 						char						weap_name[name_str_len],proj_setup_name[name_str_len];
-					} network_request_projectile_add;
-					
-typedef struct		{
-						int							pt_x,pt_y,pt_z,
-													fp_ang_x,fp_ang_y,fp_ang_z;
-						char						weap_name[name_str_len],proj_setup_name[name_str_len];
-					} network_request_hitscan_add;
-					
-typedef struct		{
-						int							pt_x,pt_y,pt_z,
-													fp_ang_x,fp_ang_y,fp_ang_z;
-						short						radius,distance,damage,force;
-						char						weap_name[name_str_len];
-					} network_request_melee_add;
+					} network_request_remote_fire;
 
 //
 // queue structures

@@ -117,7 +117,7 @@ void host_open(void)
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=1.0f;
 
-	element_table_add(cols,NULL,host_table_id,1,15,y,list_wid,list_high,element_table_bitmap_none);
+	element_table_add(cols,NULL,host_table_id,1,15,y,list_wid,list_high,element_table_bitmap_data);
 	
 		// fill table with maps
 
@@ -134,7 +134,7 @@ void host_open(void)
 		c=net_host_file_list;
 		
 		for (n=0;n!=nfile;n++) {
-			strcpy(c,map_pick_fpd->files[n].file_name);
+			sprintf(c,"Maps;%s;%s",map_pick_fpd->files[n].file_name,map_pick_fpd->files[n].file_name);
 			c+=128;
 		}
 		

@@ -433,30 +433,46 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 
 void remote_death(int remote_uid,network_request_remote_death *death)
 {
-	int					kill_remote_uid;
-	obj_type			*obj,*kill_obj;
+	int					kill_remote_uid,telefrag_remote_uid;
+	obj_type			*obj,*kill_obj,*telefrag_obj;
 	
 	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
-	
-		// get killing remote uid
+
+		// normal death
+
+	if (death->telefrag==0x0) {
 		
-	kill_remote_uid=(signed short)ntohs(death->kill_remote_uid);
-	
-		// find kill object
+			// get killing remote uid
+			
+		kill_remote_uid=(signed short)ntohs(death->kill_remote_uid);
 		
-	obj->damage_obj_uid=-1;
-	
-	if (kill_remote_uid!=-1) {
-		if (kill_remote_uid==net_setup.client.remote_uid) {
-			obj->damage_obj_uid=server.player_obj_uid;			// killed by player
-		}
-		else {
-			kill_obj=object_find_remote_uid(kill_remote_uid);
-			if (kill_obj!=NULL) obj->damage_obj_uid=kill_obj->uid;
+			// find kill object
+			
+		obj->damage_obj_uid=-1;
+		
+		if (kill_remote_uid!=-1) {
+			if (kill_remote_uid==net_setup.client.remote_uid) {
+				obj->damage_obj_uid=server.player_obj_uid;			// killed by player
+			}
+			else {
+				kill_obj=object_find_remote_uid(kill_remote_uid);
+				if (kill_obj!=NULL) obj->damage_obj_uid=kill_obj->uid;
+			}
 		}
 	}
-	
+
+		// telefrag death
+
+	else {
+		telefrag_remote_uid=(signed short)ntohs(death->kill_remote_uid);
+
+		if (telefrag_remote_uid==net_setup.client.remote_uid) {
+			telefrag_obj=object_find_uid(server.player_obj_uid);
+			object_telefrag(telefrag_obj,obj);
+		}
+	}
+		
 		// change the score
 		
 	object_score_death(obj);
@@ -464,25 +480,6 @@ void remote_death(int remote_uid,network_request_remote_death *death)
 		// send alert to all objects with watches on
 
 	object_watch_death_alert(obj);
-}
-
-void remote_telefrag(int remote_uid,network_request_remote_telefrag *telefrag)
-{
-	int					telefrag_remote_uid;
-	obj_type			*obj,*telefrag_obj;
-	
-	obj=object_find_remote_uid(remote_uid);
-	if (obj==NULL) return;
-	
-		// is telefrag object you?
-		
-	telefrag_remote_uid=(signed short)ntohs(telefrag->telefrag_remote_uid);
-	if (telefrag_remote_uid!=net_setup.client.remote_uid) return;
-	
-		// run telefrag
-		
-	telefrag_obj=object_find_uid(server.player_obj_uid);
-	object_telefrag(telefrag_obj,obj);
 }
 
 /* =======================================================
@@ -530,7 +527,7 @@ void remote_sound(int remote_uid,network_request_remote_sound *sound)
       
 ======================================================= */
 
-void remote_projectile_add(int remote_uid,network_request_projectile_add *proj_add)
+void remote_projectile_add(int remote_uid,network_request_remote_fire *proj_add)
 {
 	d3pnt				pt;
 	d3ang				ang;
@@ -558,7 +555,7 @@ void remote_projectile_add(int remote_uid,network_request_projectile_add *proj_a
 	weapon_add_projectile(game_time_get(),obj,weap,proj_setup,&pt,&ang);
 }
 
-void remote_hitscan_add(int remote_uid,network_request_hitscan_add *hitscan_add)
+void remote_hit_scan_add(int remote_uid,network_request_remote_fire *hitscan_add)
 {
 	d3pnt				pt;
 	d3ang				ang;
@@ -586,7 +583,7 @@ void remote_hitscan_add(int remote_uid,network_request_hitscan_add *hitscan_add)
 	projectile_hitscan(game_time_get(),obj,weap,proj_setup,&pt,&ang);
 }
 
-void remote_melee_add(int remote_uid,network_request_melee_add *rem_melee)
+void remote_melee_add(int remote_uid,network_request_remote_fire *rem_melee)
 {
 	d3pnt				pt;
 	d3ang				ang;
@@ -613,6 +610,24 @@ void remote_melee_add(int remote_uid,network_request_melee_add *rem_melee)
 	melee.force=(signed short)ntohs(rem_melee->force);
 	
 	melee_add(obj,weap,&pt,&ang,&melee,obj->uid);
+}
+
+void remote_fire(int remote_uid,network_request_remote_fire *fire)
+{
+	switch (fire->fire_type) {
+
+		case net_remote_fire_type_projectile:
+			remote_projectile_add(remote_uid,fire);
+			break;
+
+		case net_remote_fire_type_hit_scan:
+			remote_hit_scan_add(remote_uid,fire);
+			break;
+
+		case net_remote_fire_type_melee:
+			remote_melee_add(remote_uid,fire);
+			break;
+	}
 }
 
 /* =======================================================
@@ -662,10 +677,6 @@ bool remote_network_get_updates(int tick)
 				remote_death(from_remote_uid,(network_request_remote_death*)data);
 				break;
 				
-			case net_action_request_remote_telefrag:
-				remote_telefrag(from_remote_uid,(network_request_remote_telefrag*)data);
-				break;
-				
 			case net_action_request_remote_chat:
 				remote_chat(from_remote_uid,(network_request_remote_chat*)data);
 				break;
@@ -674,16 +685,8 @@ bool remote_network_get_updates(int tick)
 				remote_sound(from_remote_uid,(network_request_remote_sound*)data);
 				break;
 
-			case net_action_request_projectile_add:
-				remote_projectile_add(from_remote_uid,(network_request_projectile_add*)data);
-				break;
-				
-			case net_action_request_hitscan_add:
-				remote_hitscan_add(from_remote_uid,(network_request_hitscan_add*)data);
-				break;
-				
-			case net_action_request_melee_add:
-				remote_melee_add(from_remote_uid,(network_request_melee_add*)data);
+			case net_action_request_remote_fire:
+				remote_fire(from_remote_uid,(network_request_remote_fire*)data);
 				break;
 
 			case net_action_reply_latency_ping:

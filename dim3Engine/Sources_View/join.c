@@ -87,10 +87,10 @@ char* join_create_list(void)
 	for (n=0;n!=join_count;n++) {
 	
 		if (info->local) {
-			snprintf(c,128,"%s (local)\t%s @ %s\t%d/%d\t%dms",info->name,info->game_name,info->map_name,info->player_count,info->player_max_count,info->ping_msec);
+			snprintf(c,128,"Maps;%s;%s (local)\t%s @ %s\t%d/%d\t%dms",info->name,info->name,info->game_name,info->map_name,info->player_count,info->player_max_count,info->ping_msec);
 		}
 		else {
-			snprintf(c,128,"%s (net)\t%s @ %s\t%d/%d\t%dms",info->name,info->game_name,info->map_name,info->player_count,info->player_max_count,info->ping_msec);
+			snprintf(c,128,"Maps;%s;%s (net)\t%s @ %s\t%d/%d\t%dms",info->name,info->name,info->game_name,info->map_name,info->player_count,info->player_max_count,info->ping_msec);
 		}
 		
 		c[127]=0x0;
@@ -433,15 +433,15 @@ void join_open(void)
 	y=high+30;
 
 	strcpy(cols[0].name,"Name");
-	cols[0].percent_size=0.42f;
+	cols[0].percent_size=0.45f;
 	strcpy(cols[1].name,"Game");
-	cols[1].percent_size=0.40f;
+	cols[1].percent_size=0.37f;
 	strcpy(cols[2].name,"Players");
 	cols[2].percent_size=0.10f;
 	strcpy(cols[3].name,"Ping");
 	cols[3].percent_size=0.8f;
 
-	element_table_add(cols,NULL,join_table_id,4,15,y,list_wid,list_high,element_table_bitmap_none);
+	element_table_add(cols,NULL,join_table_id,4,15,y,list_wid,list_high,element_table_bitmap_data);
 	element_table_busy(join_table_id,TRUE);
 	
 		// status

@@ -64,9 +64,6 @@ extern void net_host_player_send_all_packet(int action,int queue_mode,unsigned c
 
 extern void net_host_player_update_team(int remote_uid,network_request_team *team);
 extern void net_host_player_update(int remote_uid,network_request_remote_update *update);
-extern void net_host_player_death(int remote_uid);
-extern void net_host_player_telefrag(int remote_uid);
-extern void net_host_player_chat(int remote_uid,network_request_remote_chat *chat);
 
 //
 // client host pinging and joining
@@ -95,8 +92,7 @@ extern void net_client_send_set_team(int remote_uid,int team_idx);
 extern void net_client_send_leave_host(int remote_uid);
 extern void net_client_send_latency_ping(int remote_uid);
 extern void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool chat_on);
-extern void net_client_send_death(int remote_uid,int kill_uid);
-extern void net_client_send_telefrag(int remote_uid,int telefrag_uid);
+extern void net_client_send_death(int remote_uid,int kill_uid,bool telefrag);
 extern void net_client_send_chat(int remote_uid,char *str);
 extern void net_client_send_sound(int remote_uid,int x,int y,int z,float pitch,char *name);
 extern void net_client_send_projectile_add(int remote_uid,char *weap_name,char *proj_setup_name,d3pnt *pt,d3ang *ang);
