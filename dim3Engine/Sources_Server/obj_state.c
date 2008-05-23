@@ -574,7 +574,7 @@ void object_shove_direct(obj_type *obj,d3vct *vct)
       
 ======================================================= */
 
-void object_set_radar_icon(obj_type *obj)
+bool object_set_radar_icon(obj_type *obj)
 {
 	int				n,nicon;
 	
@@ -582,7 +582,7 @@ void object_set_radar_icon(obj_type *obj)
 	
 		// radar off, no icon
 		
-	if (!hud.radar.on) return;
+	if (!hud.radar.on) return(TRUE);
 	
 		// find radar icon
 		
@@ -591,9 +591,14 @@ void object_set_radar_icon(obj_type *obj)
 	for (n=0;n!=nicon;n++) {
 		if (strcasecmp(hud.radar.icons[n].name,obj->radar.icon)==0) {
 			obj->radar.icon_idx=n;
-			return;
+			return(TRUE);
 		}
 	}
+
+		// unknown radar icon
+
+	JS_ReportError(js.cx,"No radar icon exists with this name: %s",obj->radar.icon);
+	return(FALSE);
 }
 
 /* =======================================================

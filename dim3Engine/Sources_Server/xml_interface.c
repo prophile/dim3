@@ -461,6 +461,11 @@ void read_settings_interface_radar(int radar_tag)
 
 		// read settings
 
+	tag=xml_findfirstchild("Setting",radar_tag);
+	if (tag!=-1) {
+		hud.radar.on=xml_get_attribute_boolean(tag,"on");		// only use on switch if it exists
+	}
+
 	tag=xml_findfirstchild("Position",radar_tag);
 	if (tag!=-1) {
 		hud.radar.x=xml_get_attribute_int(tag,"x");

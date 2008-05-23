@@ -88,7 +88,7 @@ extern void object_input_freeze(obj_type *obj,bool freeze);
 extern void object_push(obj_type *obj,d3ang *ang,int force);
 extern void object_shove(obj_type *obj,d3ang *ang,float speed);
 extern void object_shove_direct(obj_type *obj,d3vct *vct);
-extern void object_set_radar_icon(obj_type *obj);
+extern bool object_set_radar_icon(obj_type *obj);
 
 extern void object_fs_tint_start(int tick,obj_type *obj,float r,float g,float b,float alpha,int fade_in_msec,int life_msec,int fade_out_msec);
 extern void object_fs_effect_run(int tick,obj_type *obj);

@@ -108,9 +108,9 @@ void radar_draw(void)
 	
 	for (n=0;n!=server.count.obj;n++) {
 		obj=&server.objs[n];
-		
+
 		if ((obj->hidden) || (!obj->radar.on) || (obj->radar.icon_idx==-1)) continue;
-		
+
 			// motion only?
 			
 		if (obj->radar.motion_only) {

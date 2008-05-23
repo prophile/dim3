@@ -117,7 +117,7 @@ JSBool js_set_obj_radar_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	
 		case obj_radar_prop_icon:
 			script_value_to_string(*vp,obj->radar.icon,name_str_len);
-			object_set_radar_icon(obj);
+			if (!object_set_radar_icon(obj)) return(JS_FALSE);
 			break;
 			
 		case obj_radar_prop_motion_only:
