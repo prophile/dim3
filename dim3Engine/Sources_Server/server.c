@@ -150,7 +150,7 @@ bool server_memory_allocate(void)
 	hud.choosers=(chooser_type*)valloc(max_chooser*sizeof(chooser_type));
 	if (hud.choosers==NULL) return(FALSE);
 	
-	hud.chat.lines=(chat_line_type*)valloc(max_chat_lines*sizeof(chat_line_type));
+	hud.chat.lines=(hud_chat_line_type*)valloc(max_chat_lines*sizeof(hud_chat_line_type));
 	if (hud.chat.lines==NULL) return(FALSE);
 	
 		// zero memory
@@ -175,7 +175,7 @@ bool server_memory_allocate(void)
 	bzero(hud.bars,(max_hud_bar*sizeof(hud_bar_type)));
 	bzero(hud.menus,(max_menu*sizeof(menu_type)));
 	bzero(hud.choosers,(max_chooser*sizeof(chooser_type)));
-	bzero(hud.chat.lines,(max_chat_lines*sizeof(chat_line_type)));
+	bzero(hud.chat.lines,(max_chat_lines*sizeof(hud_chat_line_type)));
 
 	return(TRUE);
 }

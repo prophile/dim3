@@ -168,6 +168,11 @@ void net_client_end_message_queue_local(void)
 	network_queue_shutdown(&client_queue);
 }
 
+inline void net_client_push_queue_local(int action,int queue_mode,int remote_uid,unsigned char *data,int len)
+{
+	network_queue_add_message(&client_queue,action,queue_mode,remote_uid,data,len);
+}
+
 /* =======================================================
 
       Check Message Queue

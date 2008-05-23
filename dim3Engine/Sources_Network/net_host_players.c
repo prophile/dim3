@@ -37,6 +37,8 @@ net_host_player_type	net_host_players[net_max_remote_count];
 
 pthread_mutex_t			net_host_player_lock;
 
+extern void net_client_push_queue_local(int action,int queue_mode,int remote_uid,unsigned char *data,int len);
+
 /* =======================================================
 
       Initialize Players
@@ -390,7 +392,18 @@ void net_host_player_send_others_packet(int player_remote_uid,int action,int que
 		// send to all other players
 	
 	for (n=0;n!=nsock;n++) {
-		if (network_send_ready(socks[n])) network_send_packet(socks[n],action,queue_mode,player_remote_uid,data,len);
+	
+			// local (hosting) player
+			
+		if (socks[n]==(d3socket)NULL) {
+			net_client_push_queue_local(action,queue_mode,player_remote_uid,data,len);
+		}
+		
+			// remote joined players
+			
+		else {
+			if (network_send_ready(socks[n])) network_send_packet(socks[n],action,queue_mode,player_remote_uid,data,len);
+		}
 	}
 }
 

@@ -286,6 +286,7 @@ void walk_view_draw_portal_meshes_texture(int rn,d3pnt *cpt,int clip_y,bool opaq
 {
 	int					n,k,t,x,y,z;
 	unsigned long		old_gl_id;
+	float				dark_factor;
 	bool				clip_ok;
 	d3pnt				*pt;
 	portal_type			*portal;
@@ -308,6 +309,7 @@ void walk_view_draw_portal_meshes_texture(int rn,d3pnt *cpt,int clip_y,bool opaq
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	
 	old_gl_id=-1;
+	dark_factor=1.0f;
 
 		// draw portal meshes
 		
@@ -352,6 +354,13 @@ void walk_view_draw_portal_meshes_texture(int rn,d3pnt *cpt,int clip_y,bool opaq
 			if (texture->bitmaps[0].gl_id!=old_gl_id) {
 				old_gl_id=texture->bitmaps[0].gl_id;
 				glBindTexture(GL_TEXTURE_2D,old_gl_id);
+			}
+			
+				// darking
+				
+			if (mesh_poly->dark_factor!=dark_factor) {
+				dark_factor=mesh_poly->dark_factor;
+				glColor4f(dark_factor,dark_factor,dark_factor,1.0f);
 			}
 		
 				// draw polygon

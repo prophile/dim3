@@ -315,11 +315,14 @@ void network_score_draw(void)
 {
 	obj_type		*player_obj;
 
-		// only draw if player is dead
+		// only draw if player is dead or
+		// score set to show
 		
-	player_obj=object_find_uid(server.player_obj_uid);
-	if (player_obj->status.health!=0) return;
-
+	if (!hud.score.on) {
+		player_obj=object_find_uid(server.player_obj_uid);
+		if (player_obj->status.health!=0) return;
+	}
+	
 		// draw player and team scores
 
 	network_score_players_draw();
@@ -334,9 +337,9 @@ void network_score_draw(void)
 
 void network_chat_draw(int tick)
 {
-	int				n,x,y,yadd,ntop;
-	char			txt[chat_str_len+name_str_len+4];
-	chat_line_type	*line;
+	int					n,x,y,yadd,ntop;
+	char				txt[chat_str_len+name_str_len+4];
+	hud_chat_line_type	*line;
 	d3col			col;
 
 		// draw position

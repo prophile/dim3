@@ -1565,12 +1565,13 @@ inline int element_get_table_row_high(element_type *element)
 
 bool element_click_table(element_type *element,int x,int y)
 {
-	int				high,row_cnt,cnt;
+	int				high,row_high,row_cnt,cnt;
 	bool			up_ok,down_ok;
 	
 		// get text sizes
 		
 	high=gl_text_get_char_height(TRUE)+2;
+	row_high=element_get_table_row_high(element);
 	
 	row_cnt=element_get_table_row_count(element);
 	
@@ -1581,7 +1582,7 @@ bool element_click_table(element_type *element,int x,int y)
 		
 			// get scrolling sizes
 			
-		cnt=((element->high-4)/high)-1;
+		cnt=((element->high-(high+4))/row_high)-1;
 		up_ok=(element->offset!=0);
 		down_ok=((element->offset+cnt)<row_cnt);
 		
@@ -1706,21 +1707,25 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 				// missing graphic
 
 			else {
+			
 				glColor4f(1.0f,0.0f,0.0f,1.0f);
+				glLineWidth(2.0f);
+				
 				glBegin(GL_LINES);
-				glVertex2i(dx,(y+1));
-				glVertex2i((dx+element_table_bitmap_size),((y+1)+element_table_bitmap_size));
-				glVertex2i((dx+element_table_bitmap_size),(y+1));
-				glVertex2i(dx,((y+1)+element_table_bitmap_size));
+				glVertex2i((dx+4),(y+4));
+				glVertex2i(((dx-4)+element_table_bitmap_size),((y-4)+element_table_bitmap_size));
+				glVertex2i(((dx-4)+element_table_bitmap_size),(y+4));
+				glVertex2i((dx+4),((y-4)+element_table_bitmap_size));
 				glEnd();
 
-				glColor4f(1.0f,1.0f,1.0f,1.0f);
 				glBegin(GL_LINE_LOOP);
-				glVertex2i(dx,(y+1));
-				glVertex2i((dx+element_table_bitmap_size),(y+1));
-				glVertex2i((dx+element_table_bitmap_size),((y+1)+element_table_bitmap_size));
-				glVertex2i(dx,((y+1)+element_table_bitmap_size));
+				glVertex2i((dx+4),(y+4));
+				glVertex2i(((dx-4)+element_table_bitmap_size),(y+4));
+				glVertex2i(((dx-4)+element_table_bitmap_size),((y-4)+element_table_bitmap_size));
+				glVertex2i((dx+4),((y-4)+element_table_bitmap_size));
 				glEnd();
+				
+				glLineWidth(1.0f);
 			}
 
 				// get to correct text
@@ -1919,7 +1924,7 @@ void element_draw_table(element_type *element,int sel_id)
 	top+=(high+8);
 	bot=top+16;
 	
-	gl_texture_simple_set(element_scroll_up.gl_id,TRUE,1,1,1,(up_ok?1.0f:0.5f));
+	gl_texture_simple_set(element_scroll_up.gl_id,TRUE,1,1,1,(up_ok?1.0f:0.1f));
 	
 	glBegin(GL_QUADS);
 	glTexCoord2f(0,0);
@@ -1940,7 +1945,7 @@ void element_draw_table(element_type *element,int sel_id)
 	bot-=4;
 	top=bot-16;
 	
-	gl_texture_simple_set(element_scroll_down.gl_id,TRUE,1,1,1,(down_ok?1.0f:0.5f));
+	gl_texture_simple_set(element_scroll_down.gl_id,TRUE,1,1,1,(down_ok?1.0f:0.1f));
 	
 	glBegin(GL_QUADS);
 	glTexCoord2f(0,0);

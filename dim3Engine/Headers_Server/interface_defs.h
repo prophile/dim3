@@ -335,13 +335,13 @@ typedef struct		{
 					} hud_fade_type;
 
 //
-// chat structures
+// network structures
 //
 
 typedef struct		{
 						char					name[name_str_len],str[chat_str_len];
 						d3col					col;
-					} chat_line_type;
+					} hud_chat_line_type;
 
 typedef struct		{
 						int						nline,x,y,
@@ -349,9 +349,13 @@ typedef struct		{
 												remove_tick;
 						char					type_str[chat_str_len];
 						bool					type_on;
-						chat_line_type			*lines;
-					} chat_type;
+						hud_chat_line_type		*lines;
+					} hud_chat_type;
 
+typedef struct		{
+						bool					on;
+					} hud_score_type;
+					
 //
 // HUD counts
 //
@@ -379,7 +383,8 @@ typedef struct		{
 						menu_type				*menus;
 						chooser_type			*choosers;
 						hud_radar_type			radar;
-						chat_type				chat;
+						hud_chat_type			chat;
+						hud_score_type			score;
 					} hud_type;
 					
 

@@ -47,7 +47,8 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 
 int							mouse_last_read_tick;
-bool						weapon_change_key_down,weapon_zoom_key_down,enter_exit_key_down,toggle_run_state,
+bool						weapon_change_key_down,weapon_zoom_key_down,enter_exit_key_down,
+							network_score_key_down,toggle_run_state,
 							fire_key_down[4],command_key_down[20],player_key_down[20];
 
 extern void chat_add_message(int tick,char *name,char *str,d3col *col);
@@ -67,6 +68,7 @@ void player_clear_input(void)
 	weapon_change_key_down=FALSE;
 	weapon_zoom_key_down=FALSE;
 	enter_exit_key_down=FALSE;
+	network_score_key_down=FALSE;
 	toggle_run_state=FALSE;
 	
 	for (i=0;i!=4;i++) {
@@ -701,6 +703,20 @@ bool player_message_input(int tick,obj_type *obj)
 	d3col			col;
 	
 	if (!net_setup.client.joined) return(TRUE);
+	
+		// scores
+		
+	if (input_action_get_state(nc_score)) {
+		if (!network_score_key_down) {
+			hud.score.on=!hud.score.on;
+			network_score_key_down=TRUE;
+		}
+	}
+	else {
+		network_score_key_down=FALSE;
+	}
+		
+		// chatting
 
 	if (hud.chat.type_on) {
 	

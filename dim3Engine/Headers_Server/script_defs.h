@@ -558,14 +558,15 @@ and can be sold or given away.
 #define weap_recoil_prop_reset_look					9
 #define weap_recoil_prop_reset_turn					10
 
-#define weap_ammo_prop_clip							0
-#define weap_ammo_prop_count						1
-#define weap_ammo_prop_init_count					2
-#define weap_ammo_prop_max_count					3
-#define weap_ammo_prop_clip_count					4
-#define weap_ammo_prop_init_clip_count				5
-#define weap_ammo_prop_max_clip_count				6
-#define weap_ammo_prop_last_reload_tick				7
+#define weap_ammo_prop_ammo							0
+#define weap_ammo_prop_clip							1
+#define weap_ammo_prop_count						2
+#define weap_ammo_prop_init_count					3
+#define weap_ammo_prop_max_count					4
+#define weap_ammo_prop_clip_count					5
+#define weap_ammo_prop_init_clip_count				6
+#define weap_ammo_prop_max_clip_count				7
+#define weap_ammo_prop_last_reload_tick				8
 
 #define weap_alt_ammo_prop_clip						0
 #define weap_alt_ammo_prop_count					1
@@ -669,10 +670,12 @@ and can be sold or given away.
 
 #define sd_proj_hit_type_none							1000
 #define sd_proj_hit_type_object							1001
-#define sd_proj_hit_type_mesh							1002
-#define sd_proj_hit_type_projectile						1003
-#define sd_proj_hit_type_melee							1004
-#define sd_proj_hit_type_auto							1005
+#define sd_proj_hit_type_wall							1002
+#define sd_proj_hit_type_floor							1003
+#define sd_proj_hit_type_ceiling						1004
+#define sd_proj_hit_type_projectile						1005
+#define sd_proj_hit_type_melee							1006
+#define sd_proj_hit_type_auto							1007
 
 //
 // crosshair constants

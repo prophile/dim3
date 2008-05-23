@@ -75,6 +75,7 @@ void script_add_proj_hit_object(JSObject *parent_obj)
 int js_get_proj_hit_type(proj_type *proj)
 {
 	int					portal_idx;
+	map_mesh_poly_type	*poly;
 
 		// check auto hits
 		
@@ -89,14 +90,19 @@ int js_get_proj_hit_type(proj_type *proj)
 	if (proj->contact.melee) return(sd_proj_hit_type_melee);
 
 		// map hits
-		// we could polygons with common x/z as
-		// wall type hits.  We determine floor/ceiling
+		// we use wall like flag to determine if
+		// it's a wall hit, and floor/ceiling
 		// hits by proximity to projectile Y
 
 	portal_idx=proj->contact.hit_poly.portal_idx;
 	if (portal_idx==-1) return(sd_proj_hit_type_none);
+	
+	poly=&map.portals[portal_idx].mesh.meshes[proj->contact.hit_poly.mesh_idx].polys[proj->contact.hit_poly.poly_idx];
+	if (poly->box.wall_like) return(sd_proj_hit_type_wall);
+	
+	if (proj->pos.y>poly->box.mid.y) return(sd_proj_hit_type_ceiling);
 
-	return(sd_proj_hit_type_mesh);
+	return(sd_proj_hit_type_floor);
 }
 
 void js_get_proj_hit_name(proj_type *proj,int hit_type,char *name)

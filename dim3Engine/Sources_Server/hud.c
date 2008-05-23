@@ -48,6 +48,8 @@ void hud_initialize(void)
 	hud.chat.nline=0;
 	hud.chat.type_on=FALSE;
 	hud.chat.type_str[0]=0x0;
+	
+	hud.score.on=FALSE;
 }
 
 /* =======================================================
@@ -171,13 +173,13 @@ void chat_clear_messages(void)
 
 void chat_add_message(int tick,char *name,char *str,d3col *col)
 {
-	int				idx;
-	chat_line_type	*line;
+	int					idx;
+	hud_chat_line_type	*line;
 	
 		// need to remove a line?
 		
 	if (hud.chat.nline>=max_chat_lines) {
-		memmove(&hud.chat.lines[0],&hud.chat.lines[1],(sizeof(chat_line_type)*(max_chat_lines-1)));
+		memmove(&hud.chat.lines[0],&hud.chat.lines[1],(sizeof(hud_chat_line_type)*(max_chat_lines-1)));
 		idx=hud.chat.nline-1;
 	}
 	else {
@@ -202,7 +204,7 @@ void chat_time_out(int tick)
 {
 	if ((hud.chat.nline==0) || (hud.chat.remove_tick>tick)) return;
 	
-	memmove(&hud.chat.lines[0],&hud.chat.lines[1],(sizeof(chat_line_type)*(max_chat_lines-1)));
+	memmove(&hud.chat.lines[0],&hud.chat.lines[1],(sizeof(hud_chat_line_type)*(max_chat_lines-1)));
 	hud.chat.nline--;
 	
 	hud.chat.remove_tick=tick+(hud.chat.next_life_sec*1000);

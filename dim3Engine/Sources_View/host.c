@@ -169,12 +169,26 @@ void host_close(void)
 void host_game_setup(void)
 {
 	int				idx;
+	char			*c;
 	
 	idx=element_get_value(host_game_type_id);
 	strcpy(net_setup.host.game_name,net_setup.games[idx].name);
 	
+	net_setup.host.map_name[0]=0x0;
+	
 	idx=element_get_value(host_table_id);
-	strcpy(net_setup.host.map_name,(net_host_file_list+(idx*128)));
+	
+		// need to remove graphic name
+				
+	c=net_host_file_list+(idx*128);
+	
+	c=strchr(c,';');
+	if (c!=NULL) {
+		c=strchr((c+1),';');
+		if (c!=NULL) {
+			strcpy(net_setup.host.map_name,(c+1));
+		}
+	}
 }
 
 void host_game(void)
@@ -186,7 +200,6 @@ void host_game(void)
 		// start hosting
 		
 	if (!net_host_game_start(err_str)) {
-		host_close();
 		error_open(err_str,"Hosting Game Canceled");
 		return;
 	}
@@ -198,7 +211,6 @@ void host_game(void)
 
 	remote_uid=net_host_client_handle_local_join(&request_join,err_str);
 	if (remote_uid==-1) {
-		host_close();
 		net_host_game_end();
 		error_open(err_str,"Hosting Game Canceled");
 		return;
@@ -220,8 +232,6 @@ void host_game(void)
 	strcpy(map.info.host_name,net_setup.host.map_name);
 	
 		// start game
-	
-	host_close();
 	
 	if (!game_start(skill_medium,0,NULL,err_str)) {
 		net_host_game_end();

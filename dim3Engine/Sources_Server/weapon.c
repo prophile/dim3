@@ -156,6 +156,7 @@ bool weapon_create(obj_type *obj,char *name)
 	strcpy(weap->name,name);
 	weap->ammo.reset=TRUE;
 
+	weap->ammo.use_ammo=TRUE;
 	weap->ammo.use_clips=FALSE;
 	weap->ammo.init_count=10;
 	weap->ammo.max_count=100;

@@ -47,6 +47,7 @@ JSClass			weap_ammo_class={"weap_ammo_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 JSPropertySpec	weap_ammo_props[]={
+							{"ammo",				weap_ammo_prop_ammo,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{"clip",				weap_ammo_prop_clip,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{"count",				weap_ammo_prop_count,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{"initCount",			weap_ammo_prop_init_count,			JSPROP_PERMANENT|JSPROP_SHARED},
@@ -94,26 +95,59 @@ JSBool js_get_weap_ammo_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	
 	switch (JSVAL_TO_INT(id)) {
 	
+		case weap_ammo_prop_ammo:
+			*vp=BOOLEAN_TO_JSVAL(weap->ammo.use_ammo);
+			break;
 		case weap_ammo_prop_clip:
 			*vp=BOOLEAN_TO_JSVAL(weap->ammo.use_clips);
 			break;
 		case weap_ammo_prop_count:
-			*vp=INT_TO_JSVAL(weap->ammo.count);
+			if (weap->ammo.use_ammo) {
+				*vp=INT_TO_JSVAL(weap->ammo.count);
+			}
+			else {
+				*vp=INT_TO_JSVAL(0);
+			}
 			break;
 		case weap_ammo_prop_init_count:
-			*vp=INT_TO_JSVAL(weap->ammo.init_count);
+			if (weap->ammo.use_ammo) {
+				*vp=INT_TO_JSVAL(weap->ammo.init_count);
+			}
+			else {
+				*vp=INT_TO_JSVAL(0);
+			}
 			break;
 		case weap_ammo_prop_max_count:
-			*vp=INT_TO_JSVAL(weap->ammo.max_count);
+			if (weap->ammo.use_ammo) {
+				*vp=INT_TO_JSVAL(weap->ammo.max_count);
+			}
+			else {
+				*vp=INT_TO_JSVAL(0);
+			}
 			break;
 		case weap_ammo_prop_clip_count:
-			*vp=INT_TO_JSVAL(weap->ammo.clip_count);
+			if ((weap->ammo.use_ammo) && (weap->ammo.use_clips)) {
+				*vp=INT_TO_JSVAL(weap->ammo.clip_count);
+			}
+			else {
+				*vp=INT_TO_JSVAL(0);
+			}
 			break;
 		case weap_ammo_prop_init_clip_count:
-			*vp=INT_TO_JSVAL(weap->ammo.init_clip_count);
+			if ((weap->ammo.use_ammo) && (weap->ammo.use_clips)) {
+				*vp=INT_TO_JSVAL(weap->ammo.init_clip_count);
+			}
+			else {
+				*vp=INT_TO_JSVAL(0);
+			}
 			break;
 		case weap_ammo_prop_max_clip_count:
-			*vp=INT_TO_JSVAL(weap->ammo.max_clip_count);
+			if ((weap->ammo.use_ammo) && (weap->ammo.use_clips)) {
+				*vp=INT_TO_JSVAL(weap->ammo.max_clip_count);
+			}
+			else {
+				*vp=INT_TO_JSVAL(0);
+			}
 			break;
 		case weap_ammo_prop_last_reload_tick:
 			*vp=INT_TO_JSVAL(weap->ammo.last_reload_tick);
@@ -134,6 +168,9 @@ JSBool js_set_weap_ammo_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	
 	switch (JSVAL_TO_INT(id)) {
 	
+		case weap_ammo_prop_ammo:
+			weap->ammo.use_ammo=JSVAL_TO_BOOLEAN(*vp);
+			break;
 		case weap_ammo_prop_clip:
 			weap->ammo.use_clips=JSVAL_TO_BOOLEAN(*vp);
 			break;

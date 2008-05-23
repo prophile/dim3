@@ -40,7 +40,9 @@ script_define_type			script_dim3_defines[]={
 									
 								{sd_proj_hit_type_none,							"",		"DIM3_PROJ_HIT_TYPE_NONE"},
 								{sd_proj_hit_type_object,						"",		"DIM3_PROJ_HIT_TYPE_OBJECT"},
-								{sd_proj_hit_type_mesh,							"",		"DIM3_PROJ_HIT_TYPE_MESH"},
+								{sd_proj_hit_type_wall,							"",		"DIM3_PROJ_HIT_TYPE_WALL"},
+								{sd_proj_hit_type_floor,						"",		"DIM3_PROJ_HIT_TYPE_FLOOR"},
+								{sd_proj_hit_type_ceiling,						"",		"DIM3_PROJ_HIT_TYPE_CEILING"},
 								{sd_proj_hit_type_projectile,					"",		"DIM3_PROJ_HIT_TYPE_PROJECTILE"},
 								{sd_proj_hit_type_melee,						"",		"DIM3_PROJ_HIT_TYPE_MELEE"},
 								{sd_proj_hit_type_auto,							"",		"DIM3_PROJ_HIT_TYPE_AUTO"},
