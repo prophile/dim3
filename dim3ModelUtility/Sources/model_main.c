@@ -158,15 +158,13 @@ bool model_new(model_type *model,char *name)
       
 ======================================================= */
 
-bool model_open(model_type *model,char *name,int bind,bool load_bitmaps,bool setup_glowmaps,bool load_shaders)
+bool model_open(model_type *model,char *name,bool load_bitmaps,bool setup_glowmaps,bool load_shaders)
 {
 	char			sub_path[1024];
 	
 		// create model
 		
 	if (!model_new(model,name)) return(FALSE);
-	
-	model->bind=bind;
 	
 		// load base path is location of mesh.xml
 		

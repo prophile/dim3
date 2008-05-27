@@ -46,14 +46,13 @@ extern proj_setup_type* proj_setups_find_uid(int uid);
 extern proj_setup_type* find_proj_setups(weapon_type *weap,char *name);
 
 extern bool proj_setup_add(obj_type *obj,weapon_type *weap,char *name);
+extern void proj_setup_start(proj_setup_type *proj_setup,int bind);
+extern void proj_setup_dispose(int idx);
 
 extern void proj_setup_set_radius(proj_setup_type *proj_setup);
 extern void proj_setup_attach_mark(proj_setup_type *proj_setup);
 extern proj_setup_type* proj_setup_get_attach(void);
 extern proj_type* proj_get_attach(void);
-
-extern void proj_setup_start_bind(int bind);
-extern void proj_setup_dispose(int bind);
 
 extern void projectile_gravity(proj_type *proj);
 extern void projectile_speed(proj_type *proj);

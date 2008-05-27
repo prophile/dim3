@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 #include "projectiles.h"
+#include "models.h"
 #include "effects.h"
 
 extern server_type			server;
@@ -107,8 +108,6 @@ bool proj_setup_add(obj_type *obj,weapon_type *weap,char *name)
 	
 	proj_setup->uid=server.uid.proj_setup;
 	server.uid.proj_setup++;
-		
-	proj_setup->bind=weap->bind;
 	
 	proj_setup->weap_uid=weap->uid;
 	proj_setup->obj_uid=obj->uid;
@@ -218,63 +217,34 @@ proj_type* proj_get_attach(void)
 
 /* =======================================================
 
-      Start Projectile Setup by Bind Type
+      Start/Dispose Projectile Setups
       
 ======================================================= */
 
-void proj_setup_start_bind(int bind)
+void proj_setup_start(proj_setup_type *proj_setup,int bind)
 {
-    int					i;
-	char				err_str[256];
-	proj_setup_type		*proj_setup;
-	
-		// start projectile setups scripts of a certain bind type
-		// that haven't already been started
-		
-	proj_setup=server.proj_setups;
+	char			err_str[256];
 
-	for (i=0;i!=server.count.proj_setup;i++) {
-		if (proj_setup->bind==bind) {
-			if (proj_setup->attach.script_uid==-1) {
-				proj_setup->attach.thing_type=thing_type_projectile_setup;
-				proj_setup->attach.thing_uid=proj_setup->uid;
-				scripts_add_console(&proj_setup->attach,"Projectiles",proj_setup->name,NULL,bind,err_str);
-			}
-		}
-		
-		proj_setup++;
-    }
+	proj_setup->attach.thing_type=thing_type_projectile_setup;
+	proj_setup->attach.thing_uid=proj_setup->uid;
+
+	scripts_add_console(&proj_setup->attach,"Projectiles",proj_setup->name,NULL,bind,err_str);
+	model_load_and_init(&proj_setup->draw);
 }
 
-/* =======================================================
-
-      Dispose Projectile Setups
-      
-======================================================= */
-
-void proj_setup_dispose(int bind)
+void proj_setup_dispose(int idx)
 {
-	int				i;
 	proj_setup_type	*proj_setup;
-	
-		// delete all bound projectile setups
 
-	i=0;
-	
-	while (i<server.count.proj_setup) {
-		proj_setup=&server.proj_setups[i];
-		if (proj_setup->bind!=bind) {
-			i++;
-			continue;
-		}
+	proj_setup=&server.proj_setups[idx];
 
-		if (i<(server.count.proj_setup-1)) {
-			memmove(&server.proj_setups[i],&server.proj_setups[i+1],(sizeof(proj_setup_type)*((server.count.proj_setup-i)-1)));
-		}
-		
-		server.count.proj_setup--;
-		if (server.count.proj_setup==0) break;
+	scripts_dispose(proj_setup->attach.script_uid);
+	models_dispose(proj_setup->draw.uid);
+
+	if (idx<(server.count.proj_setup-1)) {
+		memmove(&server.proj_setups[idx],&server.proj_setups[idx+1],(sizeof(proj_setup_type)*((server.count.proj_setup-idx)-1)));
 	}
+		
+	server.count.proj_setup--;
 }
-
 

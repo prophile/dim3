@@ -29,14 +29,23 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "network.h"
 #include "scripts.h"
 #include "objects.h"
+#include "weapons.h"
+#include "projectiles.h"
+#include "models.h"
 #include "interfaces.h"
 
 extern int					current_map_spawn_idx;
 
 extern map_type				map;
 extern server_type			server;
+extern setup_type			setup;
+extern network_setup_type	net_setup;
+extern js_type				js;
+
+int							game_obj_rule_uid=-1;
 
 /* =======================================================
 
@@ -585,12 +594,155 @@ void object_attach_click_crosshair_down(obj_type *obj)
 
 /* =======================================================
 
+      Start Objects
+      
+======================================================= */
+
+bool object_start(spot_type *spot,bool player,int bind,char *err_str)
+{
+	int					n;
+	bool				ok;
+	obj_type			*obj;
+	weapon_type			*weap;
+	proj_setup_type		*proj_setup;
+	
+		// create object
+		
+	obj=object_create(bind);
+	if (obj==NULL) {
+		strcpy(err_str,"Out of memory");
+		return(FALSE);
+	}
+		
+			// player default setup
+		
+	if (player) {
+		strcpy(obj->name,setup.network.name);
+		obj->team_idx=setup.network.team_idx;
+		obj->spawn_spot_name[0]=0x0;
+		
+		obj->player=TRUE;
+		obj->hidden=FALSE;
+
+		server.player_obj_uid=obj->uid;
+	}
+
+		// regular object setup
+
+	else {
+		strcpy(obj->name,spot->attach_name);
+		strcpy(obj->type,spot->attach_type);
+
+			// if there's an editor display model, then
+			// default model to it
+			
+		if (spot->display_model[0]!=0x0) {
+			obj->draw.on=TRUE;
+			strcpy(obj->draw.name,spot->display_model);
+		}
+
+			// attach object to spot
+
+		object_set_position(obj,spot->pos.x,spot->pos.z,spot->pos.y,spot->ang.y,0);
+		obj->turn.ang_to.y=spot->ang.y;
+		
+		object_reset_prepare(obj);
+	}
+
+		// if networked player, run rules
+		// and send choosen team to other clients
+	
+	if ((player) && (net_setup.client.joined)) {
+		game_obj_rule_uid=obj->uid;
+		scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_join,0);
+		game_obj_rule_uid=-1;
+
+		net_client_send_set_team(net_setup.client.remote_uid,obj->team_idx);
+	}
+		
+		// start script
+		
+	if (player) {
+		ok=object_start_script(obj,"Player",NULL,bind,err_str);
+	}
+	else {
+		ok=object_start_script(obj,spot->attach_script,spot->attach_params,bind,err_str);
+	}
+
+	if (!ok) return(FALSE);
+
+		// load object model
+
+	model_load_and_init(&obj->draw);
+
+		// start weapons
+
+	weap=server.weapons;
+
+    for (n=0;n!=server.count.weapon;n++) {
+		if (weap->obj_uid==obj->uid) weapon_start(weap,bind);
+		weap++;
+    }
+
+		// start projectiles
+
+	proj_setup=server.proj_setups;
+
+	for (n=0;n!=server.count.proj_setup;n++) {
+		if (proj_setup->obj_uid==obj->uid) proj_setup_start(proj_setup,bind);
+		proj_setup++;
+    }
+
+		// setup held weapon
+
+	if (obj->held_weapon.current_uid!=-1) {
+		weap=weapon_find_uid(obj->held_weapon.current_uid);
+		weapon_set(obj,weap);
+	}
+
+	return(TRUE);
+}
+
+/* =======================================================
+
       Dispose Objects
       
 ======================================================= */
 
 void object_dispose_single(int idx)
 {
+	int					n;
+	obj_type			*obj;
+	weapon_type			*weap;
+	proj_setup_type		*proj_setup;
+
+	obj=&server.objs[idx];
+
+		// dispose projectiles
+
+	proj_setup=server.proj_setups;
+	
+    for (n=0;n!=server.count.proj_setup;n++) {
+		if (proj_setup->obj_uid==obj->uid) proj_setup_dispose(n);
+		proj_setup++;
+	}
+
+		// dispose weapons
+
+	weap=server.weapons;
+	
+	for (n=0;n!=server.count.weapon;n++) {
+		if (weap->obj_uid==obj->uid) weapon_dispose(n);
+		weap++;
+	}
+
+		// dispose object
+
+	scripts_dispose(obj->attach.script_uid);
+	models_dispose(obj->draw.uid);
+
+		// remove from list
+
 	if (idx<(server.count.obj-1)) {
 		memmove(&server.objs[idx],&server.objs[idx+1],(sizeof(obj_type)*((server.count.obj-idx)-1)));
 	}
@@ -621,4 +773,56 @@ void object_dispose_2(int bind)
 	}
 }
 
+/* =======================================================
 
+      Script Object Spawn/Remove
+      
+======================================================= */
+
+void object_script_spawn()
+{
+	/*
+	obj_type		*obj;
+	char			err_str[256];
+	
+		// create object
+		
+	obj=object_create(bt_map);
+	if (obj==NULL) return;
+		
+	strcpy(obj->name,spot->attach_name);
+	strcpy(obj->type,spot->attach_type);
+	
+		// if there's an editor display model, then
+		// default model to it
+		
+	if (spot->display_model[0]!=0x0) {
+		obj->draw.on=TRUE;
+		strcpy(obj->draw.name,spot->display_model);
+	}
+
+		// attach object to spot
+		
+	object_set_position(obj,spot->pos.x,spot->pos.z,spot->pos.y,spot->ang.y,0);
+	obj->turn.ang_to.y=spot->ang.y;
+	
+	object_reset_prepare(obj);
+		
+		// start scripts
+		
+	object_start_script(obj,spot->attach_script,spot->attach_params,bt_map,err_str);
+
+
+
+		
+	
+
+
+
+	*/
+}
+
+void object_script_remove()
+{
+
+}

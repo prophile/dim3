@@ -34,11 +34,15 @@ and can be sold or given away.
 extern map_type					map;
 extern server_type				server;
 
+// supergumba -- might delete this whole file
+
 /* =======================================================
 
       Start Attaches
       
 ======================================================= */
+
+/* supergumba -- delete me
 
 void spot_start_object(spot_type *spot)
 {
@@ -72,10 +76,12 @@ void spot_start_object(spot_type *spot)
 		
 	object_start_script(obj,spot->attach_script,spot->attach_params,bt_map,err_str);
 }
+*/
 
 void spot_start_attach(void)
 {
 	int					i;
+	char				err_str[256];
 	spot_type			*spot;
 	
 		// check if a spot was attached by a
@@ -85,7 +91,7 @@ void spot_start_attach(void)
 	spot=map.spots;
 	
 	for (i=0;i!=map.nspot;i++) {
-		if ((spot->attach) && (spot->skill<=server.skill)) spot_start_object(spot);
+		if ((spot->attach) && (spot->skill<=server.skill)) object_start(spot,FALSE,bt_map,err_str);
 		spot++;
 	}
 }

@@ -637,8 +637,7 @@ typedef struct		{
 					} proj_setup_mark_type;
 			
 typedef struct		{
-						int						uid,bind,
-												weap_uid,obj_uid,script_uid,
+						int						uid,weap_uid,obj_uid,script_uid,
 												damage,decel_grace;
 						char					name[name_str_len];
 						float					speed,decel_speed,decel_min_speed;
@@ -712,7 +711,7 @@ typedef struct		{
 					} weap_proj_type;
 					
 typedef struct		{
-						int					uid,bind,obj_uid;
+						int					uid,obj_uid;
 						char				name[name_str_len];
 						bool				hidden,fail_in_liquid;
 						model_draw			draw;

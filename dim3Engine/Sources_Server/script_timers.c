@@ -149,11 +149,11 @@ void timers_clear(attach_type *attach,int mode)
 
 /* =======================================================
 
-      Dispose of Bound Timers
+      Dispose of Script Timers
       
 ======================================================= */
 
-void timers_dispose(int bind)
+void timers_script_dispose(int script_uid)
 {
 	int				i;
 	
@@ -161,7 +161,7 @@ void timers_dispose(int bind)
 	
 	while (i<js.count.timer) {
 	
-		if (js.timers[i].bind==bind) {
+		if (js.timers[i].attach.script_uid==script_uid) {
 			timers_remove(i);
 			if (js.count.timer==0) break;
 		}

@@ -28,6 +28,7 @@ and can be sold or given away.
 extern void object_initialize_list(void);
 
 extern obj_type* object_create(int bind);
+extern bool object_start(spot_type *spot,bool player,int bind,char *err_str);
 extern void object_dispose_single(int idx);
 extern void object_dispose_2(int bind);
 

@@ -313,28 +313,11 @@ bool map_start(bool skip_media,char *err_str)
 		
 	spot_start_attach();
 	progress_draw(40);
-   
-        // start map bound weapons and projectiles
-		
-	weapon_start_bind(bt_map);
-	progress_draw(45);
-	
-	proj_setup_start_bind(bt_map);
-	progress_draw(50);
-
-	weapon_reset_ammo_bind(bt_map);
-	weapon_set_default_bind(bt_map);
-	progress_draw(55);
 
 		// create scenery
 
 	scenery_create();
 	progress_draw(60);
-	
-		// load models
-
-	models_load(bt_map,load_shaders);
-	progress_draw(70);
 	
 		// start scenery
 
@@ -450,28 +433,13 @@ void map_end(void)
 	
 	projectile_dispose_all();
 	progress_draw(15);
-    
+
         // end script
 		
-	timers_dispose(bt_map);
-	progress_draw(20);
-	
-	scripts_dispose(bt_map);
-	progress_draw(30);
+	scripts_dispose(js.course_attach.script_uid);
 
-		// free map-bound models
-
-	models_dispose(bt_map);
-	progress_draw(50);
-	
 		// free map bound items
 		
-	proj_setup_dispose(bt_map);
-	progress_draw(65);
-	
-	weapon_dispose(bt_map);
-	progress_draw(75);
-	
 	object_dispose_2(bt_map);
 	progress_draw(90);
 	

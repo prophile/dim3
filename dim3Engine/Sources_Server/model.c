@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "projectiles.h"
 #include "models.h"
 #include "consoles.h"
+#include "video.h"
 
 extern server_type		server;
 extern setup_type		setup;
@@ -53,6 +54,21 @@ void model_initialize(void)
       Find Models
       
 ======================================================= */
+
+int model_find_uid_index(int uid)
+{
+	int				i;
+	model_type		*mdl;
+
+	mdl=server.models;
+	
+	for (i=0;i!=server.count.model;i++) {
+		if (mdl->uid==uid) return(i);
+		mdl++;
+	}
+	
+	return(-1);
+}
 
 model_type* model_find_uid(int uid)
 {
@@ -84,21 +100,6 @@ model_type* model_find(char *name)
 	return(NULL);
 }
 
-model_type* model_bind_find(char *name,int bind)
-{
-	int				i;
-	model_type		*mdl;
-
-	mdl=server.models;
-	
-	for (i=0;i!=server.count.model;i++) {
-		if ((strcasecmp(mdl->name,name)==0) && (mdl->bind==bind)) return(mdl);
-		mdl++;
-	}
-	
-	return(NULL);
-}
-
 /* =======================================================
 
       Write Model Shader Errors to Console
@@ -124,16 +125,19 @@ void model_shader_errors_write_console(model_type *model)
       
 ======================================================= */
 
-model_type* model_load_single(char *name,int bind,bool load_shaders)
+model_type* model_load_single(char *name)
 {
 	int					n;
+	bool				load_shaders;
 	model_type			*mdl;
 	
 		// has model been already loaded?
+		// if so, return model and increment reference count
 	
 	mdl=model_find(name);
 	if (mdl!=NULL) {
-		if (mdl->bind==bind) return(mdl);
+		mdl->reference_count++;
+		return(mdl);
 	}
 	
 		// new model
@@ -143,9 +147,11 @@ model_type* model_load_single(char *name,int bind,bool load_shaders)
 	mdl=&server.models[server.count.model];
 	
 		// load model
+
+	load_shaders=gl_check_shader_ok();
 	
 	model_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.texture_quality_mode,setup.mipmap_mode,setup.mipmap_card_generated,setup.texture_compression);
-	if (!model_open(mdl,name,bind,TRUE,TRUE,load_shaders)) return(NULL);
+	if (!model_open(mdl,name,TRUE,TRUE,load_shaders)) return(NULL);
 
 		// deal with shader errors or shaders turned off
 
@@ -161,6 +167,10 @@ model_type* model_load_single(char *name,int bind,bool load_shaders)
 		// setup some animation indexes to avoid name lookups
 
 	model_animation_effect_setup(mdl);
+
+		// start reference count at 1
+
+	mdl->reference_count=1;
 	
 		// new unique ID
 		
@@ -172,7 +182,7 @@ model_type* model_load_single(char *name,int bind,bool load_shaders)
 	return(mdl);
 }
 
-void model_load_and_init_single(model_draw *draw,int bind,bool load_shaders)
+void model_load_and_init(model_draw *draw)
 {
 	char				err_str[256];
 	model_type			*mdl;
@@ -182,7 +192,7 @@ void model_load_and_init_single(model_draw *draw,int bind,bool load_shaders)
 	draw->size.x=draw->size.y=draw->size.z=0;
 	
 	if (draw->name[0]!=0x0) {
-		mdl=model_load_single(draw->name,bind,load_shaders);
+		mdl=model_load_single(draw->name);
 		if (mdl!=NULL) {
 			draw->uid=mdl->uid;
 			model_get_size(mdl,&draw->size.x,&draw->size.y,&draw->size.z);
@@ -202,64 +212,38 @@ void model_load_and_init_single(model_draw *draw,int bind,bool load_shaders)
 	model_fade_clear(draw);
 }
 
-void models_load(int bind,bool load_shaders)
-{
-	int					i;
-	obj_type			*obj;
-	weapon_type			*weap;
-	proj_setup_type		*proj_setup;
-	
-	obj=server.objs;
-	
-	for (i=0;i!=server.count.obj;i++) {
-		if (obj->bind==bind) model_load_and_init_single(&obj->draw,bind,load_shaders);
-		obj++;
-	}
-
-	weap=server.weapons;
-	
-	for (i=0;i!=server.count.weapon;i++) {
-		if (weap->bind==bind) model_load_and_init_single(&weap->draw,bind,load_shaders);
-		weap++;
-	}
-
-	proj_setup=server.proj_setups;
-	
-    for (i=0;i!=server.count.proj_setup;i++) {
-		if (proj_setup->bind==bind) model_load_and_init_single(&proj_setup->draw,bind,load_shaders);
-		proj_setup++;
-	}
-}
-
 /* =======================================================
 
       Dispose Models
       
 ======================================================= */
 
-void models_dispose(int bind)
+void models_dispose(int uid)
 {
-	int					i;
+	int					idx;
 	model_type			*model;
-	
-	i=0;
-	
-	while (i<server.count.model) {
-		model=&server.models[i];
-		if (model->bind!=bind) {
-			i++;
-			continue;
-		}
+
+		// find model index
+
+	idx=model_find_uid_index(uid);
+	if (idx==-1) return;
+
+		// decrement reference count
+
+	model=&server.models[idx];
 		
-		model_close(model);
+	model->reference_count--;
+	if (model->reference_count>0) return;
+
+		// dispose
+
+	model_close(model);
 	
-		if (i<(server.count.model-1)) {
-			memmove(&server.models[i],&server.models[i+1],(sizeof(model_type)*((server.count.model-i)-1)));
-		}
-		
-		server.count.model--;
-		if (server.count.model==0) break;
+	if (idx<(server.count.model-1)) {
+		memmove(&server.models[idx],&server.models[idx+1],(sizeof(model_type)*((server.count.model-idx)-1)));
 	}
+		
+	server.count.model--;
 }
 
 /* =======================================================
@@ -268,11 +252,11 @@ void models_dispose(int bind)
       
 ======================================================= */
 
-void models_reset_uid_single(model_draw *draw,int bind)
+void models_reset_uid_single(model_draw *draw)
 {
 	model_type			*mdl;
 
-	mdl=model_bind_find(draw->name,bind);
+	mdl=model_find(draw->name);
 	if (mdl==NULL) {
 		draw->on=FALSE;
 		return;
@@ -292,29 +276,28 @@ void models_reset_uid(void)
 	obj=server.objs;
 	
 	for (i=0;i!=server.count.obj;i++) {
-		models_reset_uid_single(&obj->draw,obj->bind);
+		models_reset_uid_single(&obj->draw);
 		obj++;
 	}
 
 	weap=server.weapons;
 	
 	for (i=0;i!=server.count.weapon;i++) {
-		models_reset_uid_single(&weap->draw,weap->bind);
+		models_reset_uid_single(&weap->draw);
 		weap++;
 	}
 
 	proj_setup=server.proj_setups;
 	
     for (i=0;i!=server.count.proj_setup;i++) {
-		models_reset_uid_single(&proj_setup->draw,proj_setup->bind);
+		models_reset_uid_single(&proj_setup->draw);
 		proj_setup++;
 	}
 
 	proj=server.projs;
 	
     for (i=0;i!=server.count.proj;i++) {
-		proj_setup=proj_setups_find_uid(proj->proj_setup_uid);
-		models_reset_uid_single(&proj->draw,proj_setup->bind);
+		models_reset_uid_single(&proj->draw);
 		proj++;
 	}
 }

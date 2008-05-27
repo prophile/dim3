@@ -201,25 +201,25 @@ void debug_dump(void)
 		
 	debug_header("Objects",server.count.obj);
 	
-	debug_space("Name",20);
-	debug_space("Script",20);
+	debug_space("Name",25);
+	debug_space("Script",25);
 	debug_space("Binding",10);
 	debug_return();
-	debug_space("-------------------",20);
-	debug_space("-------------------",20);
+	debug_space("------------------------",25);
+	debug_space("------------------------",25);
 	debug_space("---------",10);
 	debug_return();
 	
 	obj=server.objs;
 	
 	for ((i=0);(i!=server.count.obj);i++) {
-		debug_space(obj->name,20);
+		debug_space(obj->name,25);
 		if (!obj->scenery.on) {
 			idx=scripts_find_uid(obj->attach.script_uid);
-			debug_space(js.scripts[idx].name,20);
+			debug_space(js.scripts[idx].name,25);
 		}
 		else {
-			debug_space("*",20);
+			debug_space("*",25);
 		}
 		debug_space(bind_type_str[obj->bind],10);
 		debug_return();
@@ -285,11 +285,9 @@ void debug_dump(void)
 	
 	debug_space("Name",20);
 	debug_space("Object",20);
-	debug_space("Binding",10);
 	debug_return();
 	debug_space("-------------------",20);
 	debug_space("-------------------",20);
-	debug_space("---------",10);
 	debug_return();
 	
 	weap=server.weapons;
@@ -299,7 +297,6 @@ void debug_dump(void)
 		
 		debug_space(weap->name,20);
 		debug_space(obj->name,20);
-		debug_space(bind_type_str[weap->bind],10);
 		debug_return();
 		weap++;
 	}
@@ -313,12 +310,10 @@ void debug_dump(void)
 	debug_space("Name",20);
 	debug_space("Object",20);
 	debug_space("Weapon",20);
-	debug_space("Binding",10);
 	debug_return();
 	debug_space("-------------------",20);
 	debug_space("-------------------",20);
 	debug_space("-------------------",20);
-	debug_space("---------",10);
 	debug_return();
 	
 	proj_setup=server.proj_setups;
@@ -330,7 +325,6 @@ void debug_dump(void)
 		debug_space(proj_setup->name,20);
 		debug_space(obj->name,20);
 		debug_space(weap->name,20);
-		debug_space(bind_type_str[proj_setup->bind],10);
 		debug_return();
 		proj_setup++;
 	}
@@ -343,9 +337,11 @@ void debug_dump(void)
 	
 	debug_space("Name",32);
 	debug_space("Vertexes",10);
-	debug_space("Binding",10);
+	debug_space("Trigs",10);
+	debug_space("Ref Count",10);
 	debug_return();
 	debug_space("------------------------------",32);
+	debug_space("---------",10);
 	debug_space("---------",10);
 	debug_space("---------",10);
 	debug_return();
@@ -355,7 +351,8 @@ void debug_dump(void)
 	for ((i=0);(i!=server.count.model);i++) {
 		debug_space(mdl->name,32);
 		debug_int_space(mdl->meshes[0].nvertex,10);
-		debug_space(bind_type_str[mdl->bind],10);
+		debug_int_space(mdl->meshes[0].ntrig,10);
+		debug_int_space(mdl->reference_count,10);
 		debug_return();
 		mdl++;
 	}

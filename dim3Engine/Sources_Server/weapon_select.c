@@ -52,18 +52,6 @@ void weapon_reset_ammo(weapon_type *weap)
 	weap->alt_ammo.clip_count=weap->alt_ammo.init_clip_count;
 }	
 
-void weapon_reset_ammo_bind(int bind)
-{
-    int					n;
-	weapon_type			*weap;
-    
-    weap=server.weapons;
-    
-    for (n=0;n!=server.count.weapon;n++) {
-		if (weap->bind==bind) weapon_reset_ammo(weap);
-        weap++;
-    }
-}
 
 void weapon_reset_ammo_object(obj_type *obj)
 {
@@ -111,25 +99,6 @@ void weapon_set(obj_type *obj,weapon_type *weap)
 	
 	scripts_post_event_console(&weap->attach,sd_event_weapon_select,0,0);
 	scripts_post_event_console(&obj->attach,sd_event_weapon_select,0,0);
-}
-
-void weapon_set_default_bind(int bind)
-{
-    int				n;
-	obj_type		*obj;
-	weapon_type		*weap;
-    
-    obj=server.objs;
-    
-    for (n=0;n!=server.count.obj;n++) {
-		if (obj->bind==bind) {
-			if (obj->held_weapon.current_uid!=-1) {
-				weap=weapon_find_uid(obj->held_weapon.current_uid);
-				weapon_set(obj,weap);
-			}
-		}
-		obj++;
-    }
 }
 
 /* =======================================================

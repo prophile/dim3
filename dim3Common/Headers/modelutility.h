@@ -263,7 +263,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								uid,bind,
+						int								uid,reference_count,
 														nmesh,nbone,npose,nanimate,nhit_box,
 														deform_mode,shadow_fudge;
 						char							name[name_str_len],load_base_path[1024];
@@ -398,7 +398,7 @@ extern void model_set_sel_mask_material(model_type *model,int mesh_idx,int mater
 
 extern void model_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int texture_quality_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression);
 extern bool model_new(model_type *model,char *name);
-extern bool model_open(model_type *model,char *name,int bind,bool load_bitmaps,bool setup_glowmaps,bool load_shaders);
+extern bool model_open(model_type *model,char *name,bool load_bitmaps,bool setup_glowmaps,bool load_shaders);
 extern bool model_save(model_type *model,bool save_bitmaps);
 extern void model_close(model_type *model);
 

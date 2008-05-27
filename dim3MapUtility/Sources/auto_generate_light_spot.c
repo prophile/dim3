@@ -143,7 +143,6 @@ void map_auto_generate_lights(map_type *map)
 
 void map_auto_generate_spots(map_type *map)
 {
-#pragma unused(map)				// supergumba -- need to fix this up
 /* supergumba -- fix this!
 
 	int				n,k,x,y,z,idx;

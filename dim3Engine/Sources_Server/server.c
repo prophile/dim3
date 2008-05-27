@@ -288,7 +288,6 @@ void server_shutdown(void)
 bool server_game_start(char *game_script_name,int skill,int remote_count,network_request_remote_add *remotes,char *err_str)
 {
 	int							n;
-	bool						load_shaders;
 	network_request_remote_add	*remote;
 	
 		// initialize lists
@@ -337,24 +336,10 @@ bool server_game_start(char *game_script_name,int skill,int remote_count,network
 		// start player object
 	
 	if (!player_start_object(err_str)) {
-		scripts_dispose(bt_game);
+		scripts_dispose(js.game_attach.script_uid);
 		return(FALSE);
 	}
-	
-		// start game bound weapons and projectiles
-		
-	weapon_start_bind(bt_game);
-	proj_setup_start_bind(bt_game);
-	
-	weapon_reset_ammo_bind(bt_game);
-	weapon_set_default_bind(bt_game);
-	
-		// load game bound models
-		
-	load_shaders=gl_check_shader_ok();
-	
-    models_load(bt_game,load_shaders);
-	
+			
 		// force player to auto-spawn
 		// spawing of player needs to happen before map_start events
 		
@@ -377,23 +362,15 @@ bool server_game_start(char *game_script_name,int skill,int remote_count,network
 
 void server_game_stop(void)
 {
-		// dispose remote bounds (if any)
+		// dispose remote and game
+		// bound objects
 
-	models_dispose(bt_remote);
-	proj_setup_dispose(bt_remote);
-	weapon_dispose(bt_remote);
 	object_dispose_2(bt_remote);
-	timers_dispose(bt_remote);
-	scripts_dispose(bt_remote);
-	
-		// dispose game bound
-
-	models_dispose(bt_game);
-	proj_setup_dispose(bt_game);
-	weapon_dispose(bt_game);
 	object_dispose_2(bt_game);
-	timers_dispose(bt_game);
-	scripts_dispose(bt_game);
+
+		// dispose game script
+
+	scripts_dispose(js.game_attach.script_uid);
 }
 
 /* =======================================================

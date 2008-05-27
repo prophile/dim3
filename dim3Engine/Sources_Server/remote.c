@@ -98,13 +98,13 @@ bool remote_add(int remote_uid,network_request_remote_add *add)
 		// start remote scripts
 		
 	object_start_script(obj,"Player",NULL,bt_remote,err_str);
-	weapon_start_bind(bt_remote);
-	proj_setup_start_bind(bt_remote);
 
 		// remote objects just try to uses models
 		// loaded by the games other objects (as you'd
 		// expect the scripts to be the same and model
 		// loading is to heavy to do on the fly)
+
+	// supergumba -- redo all this, loading on the fly is possible after the rework
 
 	player_obj=object_find_uid(server.player_obj_uid);
 	if (player_obj!=NULL) {

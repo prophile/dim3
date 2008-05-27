@@ -34,18 +34,15 @@ extern weapon_type* weapon_find_current(obj_type *obj);
 extern weapon_type* weapon_find_offset(obj_type *obj,int offset);
 
 extern bool weapon_create(obj_type *obj,char *name);
+extern void weapon_start(weapon_type *weap,int bind);
+extern void weapon_dispose(int idx);
 
 extern void weapon_attach_fire_crosshair(weapon_type *weap);
 extern void weapon_attach_zoom_mask(weapon_type *weap);
 
-extern void weapon_start_bind(int bind);
-extern void weapon_dispose(int bind);
-
 extern void weapon_reset_ammo(weapon_type *weap);
-extern void weapon_reset_ammo_bind(int bind);
 extern void weapon_reset_ammo_object(obj_type *obj);
 extern void weapon_set(obj_type *obj,weapon_type *weap);
-extern void weapon_set_default_bind(int bind);
 
 extern void weapon_lower(int tick,obj_type *obj);
 extern void weapon_raise(int tick,obj_type *obj);

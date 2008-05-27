@@ -46,7 +46,7 @@ extern bool scripts_execute(attach_type *attach,script_type *script,char *err_st
 
 extern bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,int bind,char *err_str);
 extern bool scripts_add_console(attach_type *attach,char *sub_dir,char *name,char *params,int bind,char *err_str);
-extern void scripts_dispose(int bind);
+extern void scripts_dispose(int uid);
 
 extern void scripts_run(int tick);
 
@@ -182,5 +182,5 @@ extern int timers_find(attach_type *attach,int mode);
 extern bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,int mode);
 extern void timers_remove(int idx);
 extern void timers_clear(attach_type *attach,int mode);
-extern void timers_dispose(int bind);
+extern void timers_script_dispose(int script_uid);
 extern void timers_run(void);

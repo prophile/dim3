@@ -433,22 +433,26 @@ bool scripts_add_console(attach_type *attach,char *sub_dir,char *name,char *para
       
 ======================================================= */
 
-void scripts_dispose(int bind)
+void scripts_dispose(int uid)
 {
-	int			n;
+	int			idx;
 	script_type	*script;
 	
-		// remove roots for bound scripts
-		
-	script=js.scripts;
+		// find script
+
+	idx=scripts_find_uid(uid);
+	if (idx==-1) return;
+
+		// dispose all script timers
+
+	timers_script_dispose(uid);
+
+		// dispose
+
+	script=&js.scripts[idx];
 	
-	for (n=0;n!=max_scripts;n++) {
-		if (script->bind==bind) {
-			script_remove_roots(script);
-			script->used=FALSE;
-		}
-		script++;
-	}
+	script_remove_roots(script);
+	script->used=FALSE;
 	
 		// force clean-up of removed scripts
 	

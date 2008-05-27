@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 #include "weapons.h"
+#include "models.h"
 #include "interfaces.h"
 
 extern server_type			server;
@@ -145,8 +146,6 @@ bool weapon_create(obj_type *obj,char *name)
 	
 	weap->uid=server.uid.weapon;
 	server.uid.weapon++;
-	
-	weap->bind=obj->bind;
 	
 	weap->obj_uid=obj->uid;
 	
@@ -266,64 +265,35 @@ void weapon_attach_zoom_mask(weapon_type *weap)
 
 /* =======================================================
 
-      Start Weapons by Bind Type
+      Start/Dispose Weapons
       
 ======================================================= */
 
-void weapon_start_bind(int bind)
+void weapon_start(weapon_type *weap,int bind)
 {
-	int				i;
-	char			err_str[256];
-	weapon_type		*weap;
+	char		err_str[256];
+
+	weap->attach.thing_type=thing_type_weapon;
+	weap->attach.thing_uid=weap->uid;
 	
-		// start weapon scripts of a certain bind type
-		// that haven't already been started
-    
-    weap=server.weapons;
-    
-    for (i=0;i!=server.count.weapon;i++) {
-		if (weap->bind==bind) {
-			if (weap->attach.script_uid==-1) {
-				weap->attach.thing_type=thing_type_weapon;
-				weap->attach.thing_uid=weap->uid;
-				scripts_add_console(&weap->attach,"Weapons",weap->name,NULL,bind,err_str);
-			}
-		}
-		
-		weap++;
-    }
+	scripts_add_console(&weap->attach,"Weapons",weap->name,NULL,bind,err_str);
+	model_load_and_init(&weap->draw);
+	
+	weapon_reset_ammo(weap);
 }
 
-/* =======================================================
-
-      Dispose Weapons
-      
-======================================================= */
-
-void weapon_dispose(int bind)
+void weapon_dispose(int idx)
 {
-	int				i;
 	weapon_type		*weap;
-	
-		// delete all bound weapons
-	
-	i=0;
-	
-	while (i<server.count.weapon) {
-		weap=&server.weapons[i];
-		if (weap->bind!=bind) {
-			i++;
-			continue;
-		}
-		
-			// remove weapon
-	
-		if (i<(server.count.weapon-1)) {
-			memmove(&server.weapons[i],&server.weapons[i+1],(sizeof(weapon_type)*((server.count.weapon-i)-1)));
-		}
-		
-		server.count.weapon--;
-		if (server.count.weapon==0) break;
+
+	weap=&server.weapons[idx];
+
+	scripts_dispose(weap->attach.script_uid);
+	models_dispose(weap->draw.uid);
+
+	if (idx<(server.count.weapon-1)) {
+		memmove(&server.weapons[idx],&server.weapons[idx+1],(sizeof(weapon_type)*((server.count.weapon-idx)-1)));
 	}
+	
+	server.count.weapon--;
 }
-

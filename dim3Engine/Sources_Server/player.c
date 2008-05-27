@@ -45,8 +45,6 @@ extern network_setup_type	net_setup;
 extern float				team_color_tint[net_team_count][3];
 extern char					setup_team_color_list[][32];
 
-int							game_obj_rule_uid=-1;
-
 extern void portal_triggers(obj_type *obj,int old_rn,int rn);
 
 /* =======================================================
@@ -57,45 +55,8 @@ extern void portal_triggers(obj_type *obj,int old_rn,int rn);
 
 bool player_start_object(char *err_str)
 {
-	obj_type			*obj;
-    
-		// create player object
-		
 	server.player_obj_uid=-1;
-
-	obj=object_create(bt_game);
-    if (obj==NULL) {
-		strcpy(err_str,"Player: Not enough memory to create player object");
-		return(FALSE);
-	}
-	
-		// player default setup
-		
-	strcpy(obj->name,setup.network.name);
-	obj->team_idx=setup.network.team_idx;
-	obj->spawn_spot_name[0]=0x0;
-
-		// if joined then run game join rule
-		// and send choosen team to other clients
-	
-	if (net_setup.client.joined) {
-		game_obj_rule_uid=obj->uid;
-		scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_join,0);
-		game_obj_rule_uid=-1;
-
-		net_client_send_set_team(net_setup.client.remote_uid,obj->team_idx);
-	}
-	
-		// default player settings
-		
-	obj->player=TRUE;
-	obj->hidden=FALSE;
-	
-	server.player_obj_uid=obj->uid;
-	
-		// create player script
-		
-	return(object_start_script(obj,"Player",NULL,bt_game,err_str));
+	return(object_start(NULL,TRUE,bt_game,err_str));
 }
 
 /* =======================================================
