@@ -49,16 +49,20 @@ extern render_info_type		render_info;
 
 void radar_draw(void)
 {
-	int						n,x,y,lx,rx,ty,by,
+	int						n,x,y,lx,rx,ty,by,px[4],py[4],
 							dist,max_dist,fade_dist,radar_sz;
 	unsigned long			cur_gl_id,gl_id;
 	float					alpha,cur_alpha;
-	obj_type				*obj;
+	obj_type				*obj,*player_obj;
 	hud_radar_icon_type		*icon;
 	
 		// radar on?
 		
 	if (!hud.radar.on) return;
+	
+		// get player object (center of radar)
+		
+	player_obj=object_find_uid(server.player_obj_uid);
 
 		// set up view
 		
@@ -119,15 +123,15 @@ void radar_draw(void)
 			
 			// get distance
 			
-		dist=distance_2D_get(obj->pos.x,obj->pos.z,view.camera.pos.x,view.camera.pos.z);
+		dist=distance_2D_get(obj->pos.x,obj->pos.z,player_obj->pos.x,player_obj->pos.z);
 		if ((!obj->radar.always_visible) && (dist>max_dist)) continue;
 
 			// get the position
 
-		x=obj->pos.x-view.camera.pos.x;
-		y=-(obj->pos.z-view.camera.pos.z);
+		x=obj->pos.x-player_obj->pos.x;
+		y=-(obj->pos.z-player_obj->pos.z);
 			
-		rotate_2D_point_center(&x,&y,view.camera.ang.y);
+		if (hud.radar.rot) rotate_2D_point_center(&x,&y,player_obj->ang.y);
 
 			// if outside max, stick to edge
 
@@ -158,20 +162,22 @@ void radar_draw(void)
 			gl_texture_simple_set(gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
 		}
 
-		lx=x-icon->size;
-		rx=x+icon->size;
-		ty=y-icon->size;
-		by=y+icon->size;
-		
+		px[0]=px[3]=x-icon->size;
+		px[1]=px[2]=x+icon->size;
+		py[0]=py[1]=y-icon->size;
+		py[2]=py[3]=y+icon->size;
+
+		if (icon->rot) rotate_2D_polygon(4,px,py,x,y,obj->ang.y);
+	
 		glBegin(GL_QUADS);
 		glTexCoord2f(0.0f,0.0f);
-		glVertex2i(lx,ty);
+		glVertex2i(px[0],py[0]);
 		glTexCoord2f(1.0f,0.0f);
-		glVertex2i(rx,ty);
+		glVertex2i(px[1],py[1]);
 		glTexCoord2f(1.0f,1.0f);
-		glVertex2i(rx,by);
+		glVertex2i(px[2],py[2]);
 		glTexCoord2f(0.0f,1.0f);
-		glVertex2i(lx,by);
+		glVertex2i(px[3],py[3]);
 		glEnd();
 
 		obj++;

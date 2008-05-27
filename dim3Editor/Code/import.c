@@ -102,7 +102,6 @@ void import_obj(void)
 
 void import_height_map(void)
 {
-/* supergumba
 		// the dialog
 		
 	if (!dialog_map_height_import_setting_run(&hmi_settings,hmi_first)) return;
@@ -117,7 +116,6 @@ void import_height_map(void)
 		// redraw the map
 		
 	import_redraw();
-	*/
 }
 
 /* =======================================================
@@ -136,9 +134,7 @@ void import_auto_generate(void)
 		// run the auto-generate
 		
 	SetCursor(*GetCursor(watchCursor));
-
 	map_auto_generate(&map,&ag_settings);
-
 	InitCursor();
 	
 		// redraw the map

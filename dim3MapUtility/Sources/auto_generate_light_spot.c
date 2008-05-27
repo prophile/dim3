@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit ÒCreated with dim3 TechnologyÓ is given on a single
+2. This credit â€œCreated with dim3 Technologyâ€ is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -43,13 +43,13 @@ extern auto_generate_settings_type	ag_settings;
 
 void map_auto_generate_lights(map_type *map)
 {
-	int					n,k,x,z,y,intensity,lt_type;
+	int					n,x,z,y,intensity,lt_type;
 	float				r,g,b;
 	double				dx,dz;
 	portal_type			*portal;
 	map_light_type		*lit;
 	
-	if (!ag_settings.lights) return;
+	if (ag_settings.light_type_on[ag_light_type_include]==0) return;
 
 	portal=map->portals;
 	
@@ -63,61 +63,54 @@ void map_auto_generate_lights(map_type *map)
 		z=(portal->ez-portal->z)/2;
 		y=portal->ty+((portal->by-portal->ty)/2);
 		
-			// add in the fudge
-			
-		if (ag_settings.light_fudge_factor>=2) {
-			x+=(map_auto_generate_random_int(ag_settings.light_fudge_factor/2)-ag_settings.light_fudge_factor);
-			z+=(map_auto_generate_random_int(ag_settings.light_fudge_factor/2)-ag_settings.light_fudge_factor);
-		}
-		
 			// get intensity
 			
 		dx=(portal->ex-portal->x);
 		dz=(portal->ez-portal->z);
-		intensity=(int)sqrt((dx*dx)+(dz*dz));
-		
-		intensity=(intensity*ag_settings.light_fill_percentage)/200;			// radius, so use half
+		intensity=((int)sqrt((dx*dx)+(dz*dz)))>>1;			// radius, so use half
 		if (intensity<100) intensity=100;
 		
 			// get the color
 			
 		r=g=b=1.0f;
 		
-		if (ag_settings.light_color_percentage!=100) {
+			// tinting
+			// tinted lights on in portals
 			
-			k=ag_settings.light_color_percentage+map_auto_generate_random_int(100-ag_settings.light_color_percentage);
+		if ((ag_settings.light_type_on[ag_light_type_tint]!=0) && (corridor_flags[n]==ag_corridor_flag_portal)) {
 			
-			switch (map_auto_generate_random_int(3)) {
+			switch (map_auto_generate_random_int(4)) {
 				case 0:
-					g=(g*((float)k))/100.0f;
-					b=(b*((float)k))/100.0f;
+					g=b=0.4f;
 					break;
 				case 1:
-					r=(r*((float)k))/100.0f;
-					b=(b*((float)k))/100.0f;
+					r=b=0.4f;
 					break;
 				case 2:
-					r=(r*((float)k))/100.0f;
-					g=(g*((float)k))/100.0f;
+					r=g=0.4f;
 					break;
 			}
 		}
 		
 			// get the type
+			// animated lights on in rooms
 			
 		lt_type=lt_normal;
 		
-		if (ag_settings.light_flicker_percentage>map_auto_generate_random_int(100)) {
-			switch (map_auto_generate_random_int(3)) {
-				case 0:
-					lt_type=lt_glow;
-					break;
-				case 1:
-					lt_type=lt_pulse;
-					break;
-				case 2:
-					lt_type=lt_flicker;
-					break;
+		if ((ag_settings.light_type_on[ag_light_type_animated]!=0) && (corridor_flags[n]==ag_corridor_flag_portal)) {
+		
+			if (map_auto_generate_random_int(100)<(int)(ag_constant_light_animate_percentage*100.0f)) {
+				switch (map_auto_generate_random_int(3)) {
+					case 0:
+						lt_type=lt_glow;
+						break;
+					case 1:
+						lt_type=lt_pulse;
+						break;
+					case 2:
+						lt_type=lt_flicker;
+						break;
+				}
 			}
 		}
 		
@@ -150,6 +143,7 @@ void map_auto_generate_lights(map_type *map)
 
 void map_auto_generate_spots(map_type *map)
 {
+#pragma unused(map)				// supergumba -- need to fix this up
 /* supergumba -- fix this!
 
 	int				n,k,x,y,z,idx;

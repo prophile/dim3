@@ -40,16 +40,11 @@ typedef struct	{
 // height map import settings
 //
 
-#define hm_import_quads								0
-#define hm_import_triangles							1
-
 typedef struct	{
-					int								import_type,
-													portal_x_sz,portal_z_sz,portal_x_cnt,portal_z_cnt,
-													portal_ty,portal_by,wall_high,
+					int								portal_sz,portal_cnt,portal_high,
 													texture_portal_wall,texture_portal_high_floor,
 													texture_portal_mid_floor,texture_portal_low_floor;
-					bool							wall,lights,sight_path,sight_path_all;
+					bool							wall,lights;
 					char							path[1024];
 				} import_height_map_settings_type;
 
@@ -155,6 +150,16 @@ typedef struct	{
 #define ag_door_type_swing							2
 
 //
+// auto-generate lights
+//
+
+#define ag_light_type_count							3
+
+#define ag_light_type_include						0
+#define ag_light_type_tint							1
+#define ag_light_type_animated						2
+
+//
 // auto-generate blockings
 //
 
@@ -255,8 +260,11 @@ typedef struct	{
 #define ag_constant_corridor_size_percent			0.25f
 #define ag_constant_corridor_random_percent			0.4f
 
+#define ag_constant_door_percentage					0.5f
 #define ag_constant_door_width						(2*map_enlarge)
 #define ag_constant_door_open_millisec				1000
+
+#define ag_constant_light_animate_percentage		0.1f
 
 #define ag_constant_step_high						(2*map_enlarge)
 #define ag_constant_step_corridor_size				(8*map_enlarge)
@@ -281,16 +289,13 @@ typedef struct	{
 				} auto_generate_setting_texture_type;
 
 typedef struct	{
-					int										seed,block,door_percentage,
-															light_fudge_factor,light_fill_percentage,
-															light_color_percentage,light_flicker_percentage,
-															spot_count;
+					int										seed,block;
 					char									door_sound[name_str_len];
-					bool									doors,lights,spots;
 					unsigned char							floor_type_on[ag_floor_type_count],
 															ceiling_type_on[ag_ceiling_type_count],
 															corridor_type_on[ag_corridor_type_count],
-															door_type_on[ag_door_type_count];
+															door_type_on[ag_door_type_count],
+															light_type_on[ag_light_type_count];
 					auto_generate_setting_map_type			map;
 					auto_generate_setting_texture_type		texture;
 				} auto_generate_settings_type;
@@ -302,6 +307,7 @@ typedef struct	{
 extern void map_auto_generate_clear(map_type *map);
 extern void map_auto_generate_add_simple_lights(map_type *map);
 extern void map_auto_generate_add_player_spot(map_type *map);
+extern void map_auto_generate_reset_UVs(map_type *map);
 
 extern void map_auto_generate(map_type *map,auto_generate_settings_type *ags);
 extern bool map_auto_generate_test(map_type *map,bool load_shaders);

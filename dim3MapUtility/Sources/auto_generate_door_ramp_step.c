@@ -40,6 +40,7 @@ extern void map_auto_generate_poly_from_square_floor(int lx,int lz,int rx,int rz
 extern void map_auto_generate_poly_from_square_floor_slant(int lx,int lz,int rx,int rz,int fy,int yadd,int lower_mode,bool reverse_slant,int *x,int *y,int *z,float *gx,float *gy);
 
 extern int map_auto_generate_get_door_type(auto_generate_settings_type *ags);
+extern bool map_auto_generate_has_door_type(auto_generate_settings_type *ags);
 
 extern unsigned char					corridor_flags[max_portal];
 
@@ -591,7 +592,7 @@ void map_auto_generate_doors(map_type *map)
 	movement_type			*movement;
 	movement_move_type		*move;
 	
-	if (!ag_settings.doors) return;
+	if (!map_auto_generate_has_door_type(&ag_settings)) return;
 	
 		// run through corridors
 		
@@ -607,7 +608,7 @@ void map_auto_generate_doors(map_type *map)
 			
 			// percentage correct?
 				
-		if (map_auto_generate_random_int(100)>ag_settings.door_percentage) continue;
+		if (map_auto_generate_random_int(100)>(int)(ag_constant_door_percentage*100.0f)) continue;
 		
 			// door type
 

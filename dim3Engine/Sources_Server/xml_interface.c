@@ -452,6 +452,7 @@ void read_settings_interface_radar(int radar_tag)
 		// defaults
 
 	hud.radar.on=TRUE;
+	hud.radar.rot=TRUE;
 	
 	hud.radar.x=hud.radar.y=0;
 	hud.radar.display_radius=32;
@@ -464,6 +465,7 @@ void read_settings_interface_radar(int radar_tag)
 	tag=xml_findfirstchild("Setting",radar_tag);
 	if (tag!=-1) {
 		hud.radar.on=xml_get_attribute_boolean(tag,"on");		// only use on switch if it exists
+		hud.radar.rot=!xml_get_attribute_boolean(tag,"no_rot");
 	}
 
 	tag=xml_findfirstchild("Position",radar_tag);
@@ -494,6 +496,7 @@ void read_settings_interface_radar(int radar_tag)
 		xml_get_attribute_text(icon_tag,"name",hud.radar.icons[hud.radar.nicon].name,name_str_len);
 		xml_get_attribute_text(icon_tag,"file",hud.radar.icons[hud.radar.nicon].bitmap_name,name_str_len);
 		hud.radar.icons[hud.radar.nicon].size=xml_get_attribute_int(icon_tag,"size");
+		hud.radar.icons[hud.radar.nicon].rot=xml_get_attribute_boolean(icon_tag,"rot");
 		hud.radar.nicon++;
 
 		icon_tag=xml_findnextchild(icon_tag);

@@ -54,7 +54,7 @@ extern void textdecode_get_piece(int i,int k,char *txt);
 // import height map
 //
 
-extern float import_height_map_get_height(bitmap_type *bitmap,int portal_x_start,int portal_z_start,int portal_total_x_sz,int portal_total_z_sz,portal_type *portal,int seg_x,int seg_z);
+extern float import_height_map_get_height(bitmap_type *bitmap,int portal_start,int portal_total_sz,portal_type *portal,int seg_x,int seg_z);
 extern void import_height_map(void);
 
 //

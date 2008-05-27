@@ -1634,6 +1634,10 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 	map_auto_generate_ramps(map);
 	map_auto_generate_corridor_to_portal_steps(map);
 	map_auto_generate_doors(map);
+		
+		// rebuild the UVs
+		
+	map_auto_generate_reset_UVs(map);
 	
 		// add sight paths
 		
@@ -1701,13 +1705,17 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 	for (n=0;n!=ag_ceiling_type_count;n++) {
 		ags.ceiling_type_on[n]=TRUE;
 	}
+	
+	for (n=0;n!=ag_corridor_type_count;n++) {
+		ags.corridor_type_on[n]=TRUE;
+	}
 
 	for (n=0;n!=ag_door_type_count;n++) {
 		ags.door_type_on[n]=TRUE;
 	}
 	
-	for (n=0;n!=ag_corridor_type_count;n++) {
-		ags.corridor_type_on[n]=TRUE;
+	for (n=0;n!=ag_light_type_count;n++) {
+		ags.light_type_on[n]=TRUE;
 	}
 	
 	ags.texture.portal_wall=0;
@@ -1721,17 +1729,7 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 	ags.texture.door=3;
 	ags.texture.second_story=6;
 	
-	ags.doors=TRUE;
-	ags.door_percentage=50;
 	strcpy(ags.door_sound,"Door");
-
-	ags.lights=TRUE;
-	ags.light_fudge_factor=10;
-	ags.light_fill_percentage=90;
-	ags.light_color_percentage=90;
-	ags.light_flicker_percentage=10;
-	ags.spots=TRUE;
-	ags.spot_count=20;
 
 		// create the map
 

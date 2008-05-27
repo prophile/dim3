@@ -296,9 +296,9 @@ bool map_auto_generate_portal_touching_any(map_type *map,int portal_idx,unsigned
       
 ======================================================= */
 
-int map_auto_generate_get_generic_type(int type_count,unsigned char *type_on)
+int map_auto_generate_count_generic_type(int type_count,unsigned char *type_on)
 {
-	int			n,idx,count;
+	int			n,count;
 
 		// count types
 
@@ -308,7 +308,15 @@ int map_auto_generate_get_generic_type(int type_count,unsigned char *type_on)
 		if (type_on[n]) count++;
 	}
 
-	if (count==0) return(0);
+	return(count);
+}
+
+int map_auto_generate_get_generic_type(int type_count,unsigned char *type_on)
+{
+	int				n,idx,count;
+	
+	count=map_auto_generate_count_generic_type(type_count,type_on);
+	if (count==0) return(count);
 
 		// get random type
 
@@ -342,6 +350,11 @@ int map_auto_generate_get_corridor_type(auto_generate_settings_type *ags)
 int map_auto_generate_get_door_type(auto_generate_settings_type *ags)
 {
 	return(map_auto_generate_get_generic_type(ag_door_type_count,ags->door_type_on));
+}
+
+bool map_auto_generate_has_door_type(auto_generate_settings_type *ags)
+{
+	return(map_auto_generate_count_generic_type(ag_door_type_count,ags->door_type_on)!=0);
 }
 
 /* =======================================================
@@ -419,9 +432,6 @@ float map_auto_generate_poly_reduce_coord(float f)
 
 void map_auto_generate_poly_from_square_wall(int lx,int lz,int rx,int rz,int ty,int by,int *x,int *y,int *z,float *gx,float *gy)
 {
-	float			x_txtoff,x_txtfact,
-					y_txtoff,y_txtfact;
-
 	x[0]=x[3]=lx;
 	x[1]=x[2]=rx;
 	z[0]=z[3]=lz;
@@ -429,26 +439,13 @@ void map_auto_generate_poly_from_square_wall(int lx,int lz,int rx,int rz,int ty,
 
 	y[0]=y[1]=ty;
 	y[2]=y[3]=by;
-
-	x_txtoff=map_auto_generate_poly_reduce_coord(((float)(lx+lz))*0.0001f);
-	rx-=lx;
-	rz-=lz;
-	x_txtfact=((float)sqrt((rx*rx)+(rz*rz)))*0.0001f;
-
-	y_txtoff=map_auto_generate_poly_reduce_coord(((float)ty)*0.0001f);
-	y_txtfact=((float)abs(by-ty))*0.0001f;
-
-	gx[0]=gx[3]=x_txtoff;
-	gx[1]=gx[2]=x_txtoff+x_txtfact;
-	gy[0]=gy[1]=y_txtoff;
-	gy[2]=gy[3]=y_txtoff+y_txtfact;
+	
+	gx[0]=gx[1]=gx[2]=gx[3]=0.0f;
+	gy[0]=gy[1]=gy[2]=gy[3]=0.0f;
 }
 
 void map_auto_generate_poly_from_top_trig_wall(int lx,int lz,int rx,int rz,int ty,int by,int *x,int *y,int *z,float *gx,float *gy)
 {
-	float			x_txtoff,x_txtfact,
-					y_txtoff,y_txtfact;
-
 	x[0]=x[2]=lx;
 	x[1]=rx;
 	z[0]=z[2]=lz;
@@ -457,25 +454,12 @@ void map_auto_generate_poly_from_top_trig_wall(int lx,int lz,int rx,int rz,int t
 	y[0]=ty;
 	y[1]=y[2]=by;
 
-	x_txtoff=map_auto_generate_poly_reduce_coord(((float)(lx+lz))*0.0001f);
-	rx-=lx;
-	rz-=lz;
-	x_txtfact=((float)sqrt((rx*rx)+(rz*rz)))*0.0001f;
-
-	y_txtoff=map_auto_generate_poly_reduce_coord(((float)ty)*0.0001f);
-	y_txtfact=((float)abs(by-ty))*0.0001f;
-
-	gx[0]=gx[2]=x_txtoff;
-	gx[1]=x_txtoff+x_txtfact;
-	gy[0]=y_txtoff;
-	gy[1]=gy[2]=y_txtoff+y_txtfact;
+	gx[0]=gx[1]=gx[2]=0.0f;
+	gy[0]=gy[1]=gy[2]=0.0f;
 }
 
 void map_auto_generate_poly_from_bot_trig_wall(int lx,int lz,int rx,int rz,int ty,int by,int *x,int *y,int *z,float *gx,float *gy)
 {
-	float			x_txtoff,x_txtfact,
-					y_txtoff,y_txtfact;
-
 	x[0]=x[2]=lx;
 	x[1]=rx;
 	z[0]=z[2]=lz;
@@ -484,25 +468,12 @@ void map_auto_generate_poly_from_bot_trig_wall(int lx,int lz,int rx,int rz,int t
 	y[0]=by;
 	y[1]=y[2]=ty;
 
-	x_txtoff=map_auto_generate_poly_reduce_coord(((float)(lx+lz))*0.0001f);
-	rx-=lx;
-	rz-=lz;
-	x_txtfact=((float)sqrt((rx*rx)+(rz*rz)))*0.0001f;
-
-	y_txtoff=map_auto_generate_poly_reduce_coord(((float)ty)*0.0001f);
-	y_txtfact=((float)abs(by-ty))*0.0001f;
-
-	gx[0]=gx[2]=x_txtoff;
-	gx[1]=x_txtoff+x_txtfact;
-	gy[0]=y_txtoff;
-	gy[1]=gy[2]=y_txtoff+y_txtfact;
+	gx[0]=gx[1]=gx[2]=0.0f;
+	gy[0]=gy[1]=gy[2]=0.0f;
 }
 
 void map_auto_generate_poly_from_square_floor(int lx,int lz,int rx,int rz,int fy,int *x,int *y,int *z,float *gx,float *gy)
 {
-	float			x_txtoff,x_txtfact,
-					y_txtoff,y_txtfact;
-
 	x[0]=x[3]=lx;
 	x[1]=x[2]=rx;
 	z[0]=z[1]=lz;
@@ -510,16 +481,8 @@ void map_auto_generate_poly_from_square_floor(int lx,int lz,int rx,int rz,int fy
 		
 	y[0]=y[1]=y[2]=y[3]=fy;
 
-	x_txtoff=map_auto_generate_poly_reduce_coord(((float)lx)*0.0001f);
-	x_txtfact=((float)abs(rx-lx))*0.0001f;
-
-	y_txtoff=map_auto_generate_poly_reduce_coord(((float)lz)*0.0001f);
-	y_txtfact=((float)abs(rz-lz))*0.0001f;
-
-	gx[0]=gx[3]=x_txtoff;
-	gx[1]=gx[2]=x_txtoff+x_txtfact;
-	gy[0]=gy[1]=y_txtoff;
-	gy[2]=gy[3]=y_txtoff+y_txtfact;
+	gx[0]=gx[1]=gx[2]=gx[3]=0.0f;
+	gy[0]=gy[1]=gy[2]=gy[3]=0.0f;
 }
 
 void map_auto_generate_poly_from_square_floor_slant(int lx,int lz,int rx,int rz,int fy,int yadd,int lower_mode,bool reverse_slant,int *x,int *y,int *z,float *gx,float *gy)
@@ -698,5 +661,26 @@ void map_auto_generate_add_player_spot(map_type *map)
 	strcpy(spot->script,"Player");
 	spot->display_model[0]=0x0;
 	spot->params[0]=0x0;
+}
+
+/* =======================================================
+
+      Rebuild All UVs
+      
+======================================================= */
+
+void map_auto_generate_reset_UVs(map_type *map)
+{
+    int				n,k;
+	portal_type		*portal;
+    
+ 	portal=map->portals;
+	
+	for (n=0;n!=map->nportal;n++) {
+		for (k=0;k!=portal->mesh.nmesh;k++) {
+			if (!portal->mesh.meshes[k].flag.lock_uv) map_portal_mesh_reset_uv(map,n,k);
+		}
+		portal++;
+	}
 }
 

@@ -316,16 +316,18 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			undo_clear();
 			return(noErr);
 			
-		case kCommandImportOBJ:				// supergumba
+/* currently unused
+		case kCommandImportOBJ:
 		//	select_clear();
 		//	import_obj();
 		//	undo_clear();
 			return(noErr);
-			
+*/
+
 		case kCommandImportHeightMap:		// supergumba
-		//	select_clear();
-		//	import_height_map();
-		//	undo_clear();
+			select_clear();
+			import_height_map();
+			undo_clear();
 			return(noErr);
 			
 		case kCommandAutoGenerateMap:

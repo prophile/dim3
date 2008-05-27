@@ -94,9 +94,9 @@ void walk_view_sight_path_mark(int rn)
       
 ======================================================= */
 
-void walk_view_draw_sprite(d3pnt *cpt,d3pos *pos,unsigned long gl_id)
+void walk_view_draw_sprite(d3pnt *cpt,d3pos *pos,float ang_y,unsigned long gl_id)
 {
-    int			x,y,z,wid,high;
+    int			x,y,z,px[4],pz[4],wid,high;
 	portal_type	*portal;
 	
 	portal=&map.portals[pos->rn];
@@ -107,6 +107,13 @@ void walk_view_draw_sprite(d3pnt *cpt,d3pos *pos,unsigned long gl_id)
     
     wid=map_enlarge*3;
     high=map_enlarge*4;
+	
+	px[0]=px[3]=x-wid;
+	px[1]=px[2]=x+wid;
+	pz[0]=pz[1]=z-wid;
+	pz[2]=pz[3]=z+wid;
+	
+	rotate_2D_polygon(4,px,pz,x,z,ang_y);
     
 	glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D,gl_id);
@@ -114,60 +121,60 @@ void walk_view_draw_sprite(d3pnt *cpt,d3pos *pos,unsigned long gl_id)
 	glColor4f(1,1,1,1);
 	
 	glBegin(GL_QUADS);
-	
-    glTexCoord2f(0,0);
-	glVertex3i((x-wid),(y-high),-(z-wid));
-    glTexCoord2f(1,0);
-	glVertex3i((x+wid),(y-high),-(z-wid));
-    glTexCoord2f(1,1);
-	glVertex3i((x+wid),y,-(z-wid));
-    glTexCoord2f(0,1);
-	glVertex3i((x-wid),y,-(z-wid));
 
     glTexCoord2f(0,0);
-	glVertex3i((x-wid),(y-high),-(z+wid));
+	glVertex3i(px[0],(y-high),-pz[0]);
     glTexCoord2f(1,0);
-	glVertex3i((x+wid),(y-high),-(z+wid));
+	glVertex3i(px[1],(y-high),-pz[1]);
     glTexCoord2f(1,1);
-	glVertex3i((x+wid),y,-(z+wid));
+	glVertex3i(px[1],y,-pz[1]);
     glTexCoord2f(0,1);
-	glVertex3i((x-wid),y,-(z+wid));
+	glVertex3i(px[0],y,-pz[0]);
 
     glTexCoord2f(0,0);
-	glVertex3i((x-wid),(y-high),-(z-wid));
+	glVertex3i(px[3],(y-high),-pz[3]);
     glTexCoord2f(1,0);
-	glVertex3i((x-wid),(y-high),-(z+wid));
+	glVertex3i(px[2],(y-high),-pz[2]);
     glTexCoord2f(1,1);
-	glVertex3i((x-wid),y,-(z+wid));
+	glVertex3i(px[2],y,-pz[2]);
     glTexCoord2f(0,1);
-	glVertex3i((x-wid),y,-(z-wid));
+	glVertex3i(px[3],y,-pz[3]);
 
     glTexCoord2f(0,0);
-	glVertex3i((x+wid),(y-high),-(z-wid));
+	glVertex3i(px[0],(y-high),-pz[0]);
     glTexCoord2f(1,0);
-	glVertex3i((x+wid),(y-high),-(z+wid));
+	glVertex3i(px[3],(y-high),-pz[3]);
     glTexCoord2f(1,1);
-	glVertex3i((x+wid),y,-(z+wid));
+	glVertex3i(px[3],y,-pz[3]);
     glTexCoord2f(0,1);
-	glVertex3i((x+wid),y,-(z-wid));
+	glVertex3i(px[0],y,-pz[0]);
 
     glTexCoord2f(0,0);
-	glVertex3i((x-wid),(y-high),-(z-wid));
+	glVertex3i(px[1],(y-high),-pz[1]);
     glTexCoord2f(1,0);
-	glVertex3i((x-wid),(y-high),-(z+wid));
+	glVertex3i(px[2],(y-high),-pz[2]);
     glTexCoord2f(1,1);
-	glVertex3i((x+wid),(y-high),-(z+wid));
+	glVertex3i(px[2],y,-pz[2]);
     glTexCoord2f(0,1);
-	glVertex3i((x+wid),(y-high),-(z-wid));
+	glVertex3i(px[1],y,-pz[1]);
 
     glTexCoord2f(0,0);
-	glVertex3i((x-wid),y,-(z-wid));
+	glVertex3i(px[0],(y-high),-pz[0]);
     glTexCoord2f(1,0);
-	glVertex3i((x-wid),y,-(z+wid));
+	glVertex3i(px[1],(y-high),-pz[1]);
     glTexCoord2f(1,1);
-	glVertex3i((x+wid),y,-(z+wid));
+	glVertex3i(px[2],(y-high),-pz[2]);
     glTexCoord2f(0,1);
-	glVertex3i((x+wid),y,-(z-wid));
+	glVertex3i(px[3],(y-high),-pz[3]);
+
+    glTexCoord2f(0,0);
+	glVertex3i(px[0],y,-pz[0]);
+    glTexCoord2f(1,0);
+	glVertex3i(px[1],y,-pz[1]);
+    glTexCoord2f(1,1);
+	glVertex3i(px[2],y,-pz[2]);
+    glTexCoord2f(0,1);
+	glVertex3i(px[3],y,-pz[3]);
 	
 	glEnd();
 	
@@ -576,7 +583,7 @@ void walk_view_draw_portal_nodes(int rn,d3pnt *cpt)
 	for (n=0;n!=map.nnode;n++) {
 	
 		if (node->pos.rn==rn) {
-			walk_view_draw_sprite(cpt,&node->pos,node_bitmap.gl_id);
+			walk_view_draw_sprite(cpt,&node->pos,0.0f,node_bitmap.gl_id);
 		}
 		
 		node++;
@@ -592,7 +599,7 @@ void walk_view_draw_portal_spots_scenery(int rn,d3pnt *cpt)
 	for (n=0;n!=map.nspot;n++) {
 		if (map.spots[n].pos.rn==rn) {
 			if (!walk_view_model_draw(cpt,&map.spots[n].pos,&map.spots[n].ang,map.spots[n].display_model)) {
-				walk_view_draw_sprite(cpt,&map.spots[n].pos,spot_bitmap.gl_id);
+				walk_view_draw_sprite(cpt,&map.spots[n].pos,map.spots[n].ang.y,spot_bitmap.gl_id);
 			}
 		}
 	}		
@@ -600,7 +607,7 @@ void walk_view_draw_portal_spots_scenery(int rn,d3pnt *cpt)
 	for (n=0;n!=map.nscenery;n++) {
 		if (map.sceneries[n].pos.rn==rn) {
 			if (!walk_view_model_draw(cpt,&map.sceneries[n].pos,&map.sceneries[n].ang,map.sceneries[n].model_name)) {
-				walk_view_draw_sprite(cpt,&map.sceneries[n].pos,scenery_bitmap.gl_id);
+				walk_view_draw_sprite(cpt,&map.sceneries[n].pos,map.sceneries[n].ang.y,scenery_bitmap.gl_id);
 			}
 		}
 	}		
@@ -614,19 +621,19 @@ void walk_view_draw_portal_lights_sounds_particles(int rn,d3pnt *cpt)
 	
 	for (n=0;n!=map.nlight;n++) {
 		if (map.lights[n].pos.rn==rn) {
-			walk_view_draw_sprite(cpt,&map.lights[n].pos,light_bitmap.gl_id);
+			walk_view_draw_sprite(cpt,&map.lights[n].pos,0.0f,light_bitmap.gl_id);
 		}
 	}
 	
 	for (n=0;n!=map.nsound;n++) {
 		if (map.sounds[n].pos.rn==rn) {
-			walk_view_draw_sprite(cpt,&map.sounds[n].pos,sound_bitmap.gl_id);
+			walk_view_draw_sprite(cpt,&map.sounds[n].pos,0.0f,sound_bitmap.gl_id);
 		}
 	}
 	
 	for (n=0;n!=map.nparticle;n++) {
 		if (map.particles[n].pos.rn==rn) {
-			walk_view_draw_sprite(cpt,&map.particles[n].pos,particle_bitmap.gl_id);
+			walk_view_draw_sprite(cpt,&map.particles[n].pos,0.0f,particle_bitmap.gl_id);
 		}
 	}
 }

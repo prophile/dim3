@@ -29,7 +29,7 @@ and can be sold or given away.
 #include "dialog.h"
 #include "import.h"
 
-#define kMapGenerateTabCount						4
+#define kMapGenerateTabCount						3
 
 #define kMapGenerateTab								FOUR_CHAR_CODE('tabb')
 
@@ -43,6 +43,7 @@ and can be sold or given away.
 #define kMapGenerateCeilingType						FOUR_CHAR_CODE('clgt')
 #define kMapGenerateCorridorType					FOUR_CHAR_CODE('cort')
 #define kMapGenerateDoorType						FOUR_CHAR_CODE('dort')
+#define kMapGenerateLightType						FOUR_CHAR_CODE('litt')
 
 #define kMapGenerateStepSize						FOUR_CHAR_CODE('stsz')
 #define kMapGenerateStepHigh						FOUR_CHAR_CODE('sthg')
@@ -59,18 +60,7 @@ and can be sold or given away.
 #define kMapGenerateTextureStep						FOUR_CHAR_CODE('sttx')
 #define kMapGenerateTextureRamp						FOUR_CHAR_CODE('rmtx')
 
-#define kMapGenerateIncludeDoors					FOUR_CHAR_CODE('idor')
-#define kMapGenerateDoorPercentage					FOUR_CHAR_CODE('dprc')
 #define kMapGenerateDoorSound						FOUR_CHAR_CODE('dsnd')
-
-#define kMapGenerateIncludeLights					FOUR_CHAR_CODE('ilgt')
-#define kMapGenerateLightFudgeFactor				FOUR_CHAR_CODE('lfdg')
-#define kMapGenerateLightFillPercentage				FOUR_CHAR_CODE('lfpr')
-#define kMapGenerateLightColorPercentage			FOUR_CHAR_CODE('lcol')
-#define kMapGenerateLightFlickerPercentage			FOUR_CHAR_CODE('lflk')
-
-#define kMapGenerateIncludeSpots					FOUR_CHAR_CODE('ispt')
-#define kMapGenerateSpotCount						FOUR_CHAR_CODE('cspt')
 
 extern auto_generate_settings_type			ag_settings;
 
@@ -174,6 +164,12 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		for (n=0;n!=ag_door_type_count;n++) {
 			dialog_set_boolean(dialog_map_generate_wind,kMapGenerateDoorType,n,ag_settings.door_type_on[n]);
 		}
+		
+		for (n=0;n!=ag_light_type_count;n++) {
+			dialog_set_boolean(dialog_map_generate_wind,kMapGenerateLightType,n,ag_settings.light_type_on[n]);
+		}
+		
+		dialog_set_text(dialog_map_generate_wind,kMapGenerateDoorSound,0,ag_settings.door_sound);
 	
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalWall,0,FALSE,ag_settings.texture.portal_wall);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalFloor,0,FALSE,ag_settings.texture.portal_floor);
@@ -185,18 +181,6 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureDoor,0,FALSE,ag_settings.texture.door);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureStep,0,FALSE,ag_settings.texture.steps);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE,ag_settings.texture.ramp);
-		
-		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateIncludeDoors,0,ag_settings.doors);
-		dialog_set_value(dialog_map_generate_wind,kMapGenerateDoorPercentage,0,ag_settings.door_percentage);
-		dialog_set_text(dialog_map_generate_wind,kMapGenerateDoorSound,0,ag_settings.door_sound);
-		
-		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateIncludeLights,0,ag_settings.lights);
-		dialog_set_value(dialog_map_generate_wind,kMapGenerateLightFudgeFactor,0,ag_settings.light_fudge_factor);
-		dialog_set_value(dialog_map_generate_wind,kMapGenerateLightFillPercentage,0,ag_settings.light_fill_percentage);
-		dialog_set_value(dialog_map_generate_wind,kMapGenerateLightColorPercentage,0,ag_settings.light_color_percentage);
-		dialog_set_value(dialog_map_generate_wind,kMapGenerateLightFlickerPercentage,0,ag_settings.light_flicker_percentage);
-		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateIncludeSpots,0,ag_settings.spots);
-		dialog_set_value(dialog_map_generate_wind,kMapGenerateSpotCount,0,ag_settings.spot_count);
 	}
 	else {
 	
@@ -252,6 +236,12 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		ag_settings.door_type_on[n]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateDoorType,n);
 	}
 	
+	for (n=0;n!=ag_light_type_count;n++) {
+		ag_settings.light_type_on[n]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateLightType,n);
+	}
+	
+	dialog_get_text(dialog_map_generate_wind,kMapGenerateDoorSound,0,ag_settings.door_sound,name_str_len);
+	
 	ag_settings.texture.portal_wall=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalWall,0,FALSE);
 	ag_settings.texture.portal_floor=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalFloor,0,FALSE);
 	ag_settings.texture.portal_ceiling=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalCeiling,0,FALSE);
@@ -262,18 +252,6 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	ag_settings.texture.door=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureDoor,0,FALSE);
 	ag_settings.texture.steps=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureStep,0,FALSE);
 	ag_settings.texture.ramp=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE);
-	
-	ag_settings.doors=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateIncludeDoors,0);
-	ag_settings.door_percentage=dialog_get_value(dialog_map_generate_wind,kMapGenerateDoorPercentage,0);
-	dialog_get_text(dialog_map_generate_wind,kMapGenerateDoorSound,0,ag_settings.door_sound,name_str_len);
-
-	ag_settings.lights=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateIncludeLights,0);
-	ag_settings.light_fudge_factor=dialog_get_value(dialog_map_generate_wind,kMapGenerateLightFudgeFactor,0);
-	ag_settings.light_fill_percentage=dialog_get_value(dialog_map_generate_wind,kMapGenerateLightFillPercentage,0);
-	ag_settings.light_color_percentage=dialog_get_value(dialog_map_generate_wind,kMapGenerateLightColorPercentage,0);
-	ag_settings.light_flicker_percentage=dialog_get_value(dialog_map_generate_wind,kMapGenerateLightFlickerPercentage,0);
-	ag_settings.spots=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateIncludeSpots,0);
-	ag_settings.spot_count=dialog_get_value(dialog_map_generate_wind,kMapGenerateSpotCount,0);
 	
 		// close window
 		

@@ -222,11 +222,29 @@ void walk_view_click_snap(int portal_idx,int mesh_idx,int vertex_idx,d3pnt *pt,d
 bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,portal_type *portal,map_mesh_type *mesh,int poly_idx,int *hit_z)
 {
 	int					t,fz,px[8],py[8],pz[8];
-	bool				off_left,off_right,off_top,off_bottom;
+	bool				clip_ok,   off_left,off_right,off_top,off_bottom;
 	d3pnt				*pt;
 	map_mesh_poly_type	*mesh_poly;
-
+	
 	mesh_poly=&mesh->polys[poly_idx];
+
+		// check Y clipping
+		
+	if (view_setup->clip_on) {
+		
+		clip_ok=TRUE;
+		
+		for (t=0;t!=mesh_poly->ptsz;t++) {
+			if (mesh->vertexes[mesh_poly->v[t]].y>=view_setup->clip_y) {
+				clip_ok=FALSE;
+				break;
+			}
+		}
+		
+		if (clip_ok) return(FALSE);
+	}
+		
+		// translate the points
 
 	fz=0;
 

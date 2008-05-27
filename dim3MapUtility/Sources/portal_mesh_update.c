@@ -608,6 +608,8 @@ bool map_portal_mesh_tesselate(map_type *map,int portal_idx,int mesh_idx)
 
 bool map_portal_mesh_poly_punch_hole(map_type *map,int portal_idx,int mesh_idx,int poly_idx,int hole_type)
 {
+	#pragma unused(hole_type)				// supergumba -- temporary
+	
 	int						n,ptsz,mx,my,mz,
 							px[8],py[8],pz[8],
 							k,kx[4],ky[4],kz[4];

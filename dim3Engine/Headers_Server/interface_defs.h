@@ -247,12 +247,13 @@ typedef struct		{
 typedef struct		{
 						int						size,image_idx;
 						char					name[name_str_len],bitmap_name[name_str_len];
+						bool					rot;
 					} hud_radar_icon_type;
 
 typedef struct		{
 						int						x,y,display_radius,view_radius,
 												background_image_idx,nicon;
-						bool					on;
+						bool					on,rot;
 						char					background_bitmap_name[name_str_len];
 						hud_radar_icon_type		icons[max_radar_icon];
 					} hud_radar_type;
