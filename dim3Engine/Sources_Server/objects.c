@@ -776,54 +776,81 @@ void object_dispose_2(int bind)
 
 /* =======================================================
 
+      Spot Spawning
+      
+======================================================= */
+
+void spot_start_attach(void)
+{
+	int					i;
+	char				err_str[256];
+	spot_type			*spot;
+	
+		// check if a spot was attached by a
+		// script.  If it was, and the skill levels
+		// are OK, spawn this object into the map
+		
+	spot=map.spots;
+	
+	for (i=0;i!=map.nspot;i++) {
+		if ((spot->attach) && (spot->skill<=server.skill)) object_start(spot,FALSE,bt_map,err_str);
+		spot++;
+	}
+}
+
+/* =======================================================
+
       Script Object Spawn/Remove
       
 ======================================================= */
 
-void object_script_spawn()
+bool object_script_spawn(char *name,char *type,char *script,char *params,d3pos *pos,d3ang *ang)
 {
-	/*
-	obj_type		*obj;
-	char			err_str[256];
-	
-		// create object
-		
-	obj=object_create(bt_map);
-	if (obj==NULL) return;
-		
-	strcpy(obj->name,spot->attach_name);
-	strcpy(obj->type,spot->attach_type);
-	
-		// if there's an editor display model, then
-		// default model to it
-		
-	if (spot->display_model[0]!=0x0) {
-		obj->draw.on=TRUE;
-		strcpy(obj->draw.name,spot->display_model);
+	char				err_str[256];
+	spot_type			spot;
+
+		// create fake spot
+
+	bzero(&spot,sizeof(spot_type));
+
+	strcpy(spot.attach_name,name);
+	strcpy(spot.attach_type,type);
+	strcpy(spot.attach_script,script);
+	strcpy(spot.attach_params,params);
+
+	memmove(&spot.pos,pos,sizeof(d3pos));
+	memmove(&spot.ang,ang,sizeof(d3ang));
+
+		// start object
+
+	if (!object_start(&spot,FALSE,bt_map,err_str)) {
+		JS_ReportError(js.cx,"Object Spawn Failed: %s",err_str);
+		return(FALSE);
 	}
 
-		// attach object to spot
-		
-	object_set_position(obj,spot->pos.x,spot->pos.z,spot->pos.y,spot->ang.y,0);
-	obj->turn.ang_to.y=spot->ang.y;
-	
-	object_reset_prepare(obj);
-		
-		// start scripts
-		
-	object_start_script(obj,spot->attach_script,spot->attach_params,err_str);
-
-
-
-		
-	
-
-
-
-	*/
+	return(TRUE);
 }
 
-void object_script_remove()
+bool object_script_remove(int uid)
 {
+	int				idx;
 
+		// can not dispose player object
+
+	if (uid==server.player_obj_uid) {
+		JS_ReportError(js.cx,"Can not dispose player object");
+		return(FALSE);
+	}
+
+		// dispose
+
+	idx=object_find_index_uid(uid);
+	if (idx==-1) {
+		JS_ReportError(js.cx,"No object exists with ID: %d",uid);
+		return(FALSE);
+	}
+		
+	object_dispose_single(idx);
+
+	return(TRUE);
 }

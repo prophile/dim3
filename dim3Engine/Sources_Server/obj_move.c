@@ -818,9 +818,9 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 
 	if (!collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) return(FALSE);
 
-		*xadd=xadd2;
-		*yadd=yadd2;
-		*zadd=zadd2;
+	*xadd=xadd2;
+	*yadd=yadd2;
+	*zadd=zadd2;
 
 	return(TRUE);		// supergumba -- testing
 
@@ -843,8 +843,16 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		
 				// slide against the angle of the wall
 			
-			return(object_move_xz_slide_line(obj,xadd,yadd,zadd,poly->box.min.x,poly->box.max.x,poly->box.min.z,poly->box.max.z));
+			return(object_move_xz_slide_line(obj,xadd,yadd,zadd,poly->line.lx,poly->line.rx,poly->line.lz,poly->line.rz));
 		}
+
+			// skipped out on wall, so return hit
+
+		*xadd=xadd2;
+		*yadd=yadd2;
+		*zadd=zadd2;
+
+		return(TRUE);
 	}
 
 		// if object hit, find the collision lines
@@ -1077,7 +1085,7 @@ void object_move_normal(obj_type *obj)
 
 			if (object_move_xz_slide(obj,&xadd,&yadd,&zadd)) {
 				
-					// push object is we hit it
+					// push objects
 
 				object_push_with_object(obj,xadd,zadd);
 

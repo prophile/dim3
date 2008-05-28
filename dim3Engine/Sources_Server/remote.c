@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "remotes.h"
 #include "weapons.h"
 #include "projectiles.h"
+#include "models.h"
 #include "physics.h"
 #include "sounds.h"
 #include "interfaces.h"

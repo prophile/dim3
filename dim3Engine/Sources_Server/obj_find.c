@@ -42,12 +42,12 @@ extern server_type			server;
 
 obj_type* object_find_uid(int uid)
 {
-	int				i;
+	int				n;
 	obj_type		*obj;
 	
 	obj=server.objs;
 	
-	for ((i=0);(i!=server.count.obj);i++) {
+	for (n=0;n!=server.count.obj;n++) {
 		if (obj->uid==uid) return(obj);
 		obj++;
 	}
@@ -55,14 +55,29 @@ obj_type* object_find_uid(int uid)
 	return(NULL);
 }
 
-obj_type* object_find_remote_uid(int uid)
+int object_find_index_uid(int uid)
 {
-	int				i;
+	int				n;
 	obj_type		*obj;
 	
 	obj=server.objs;
 	
-	for ((i=0);(i!=server.count.obj);i++) {
+	for (n=0;n!=server.count.obj;n++) {
+		if (obj->uid==uid) return(n);
+		obj++;
+	}
+	
+	return(-1);
+}
+
+obj_type* object_find_remote_uid(int uid)
+{
+	int				n;
+	obj_type		*obj;
+	
+	obj=server.objs;
+	
+	for (n=0;n!=server.count.obj;n++) {
 		if (obj->remote.on) {
 			if (obj->remote.uid==uid) return(obj);
 		}
@@ -74,14 +89,14 @@ obj_type* object_find_remote_uid(int uid)
 
 int object_find_index_remote_uid(int uid)
 {
-	int				i;
+	int				n;
 	obj_type		*obj;
 	
 	obj=server.objs;
 	
-	for ((i=0);(i!=server.count.obj);i++) {
+	for (n=0;n!=server.count.obj;n++) {
 		if (obj->remote.on) {
-			if (obj->remote.uid==uid) return(i);
+			if (obj->remote.uid==uid) return(n);
 		}
 		obj++;
 	}

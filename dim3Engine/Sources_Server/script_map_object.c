@@ -56,6 +56,8 @@ JSBool js_map_object_is_contact_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 JSBool js_map_object_shove_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_shove_direct_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_add_goal_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_object_spawn_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_object_remove_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			map_object_class={"map_object_class",0,
 							script_add_property,JS_PropertyStub,
@@ -84,6 +86,8 @@ JSFunctionSpec	map_object_functions[]={
 							{"shove",				js_map_object_shove_func,					5},
 							{"shoveDirect",			js_map_object_shove_direct_func,			4},
 							{"addGoal",				js_map_object_add_goal_func,				1},
+							{"spawn",				js_map_object_spawn_func,					10},
+							{"remove",				js_map_object_remove_func,					1},
 							{0}};
 
 /* =======================================================
@@ -590,8 +594,6 @@ JSBool js_map_object_add_goal_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 {
 	obj_type		*obj;
 	
-		// uid
-	
 	obj=script_find_obj_from_uid_arg(argv[0]);
 	if (obj==NULL) return(JS_FALSE);
 
@@ -599,3 +601,59 @@ JSBool js_map_object_add_goal_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 
 	return(JS_TRUE);
 }
+
+/* =======================================================
+
+      Spawning and Removing
+      
+======================================================= */
+
+JSBool js_map_object_spawn_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int				uid;
+	char			name[name_str_len],type[name_str_len],
+					script[name_str_len],params[256];
+	d3pos			pos;
+	d3ang			ang;
+
+		// spawn values
+
+	script_value_to_string(argv[0],name,name_str_len);
+	script_value_to_string(argv[1],type,name_str_len);
+	script_value_to_string(argv[2],script,name_str_len);
+	script_value_to_string(argv[3],params,256);
+
+	pos.x=JSVAL_TO_INT(argv[4]);
+	pos.z=JSVAL_TO_INT(argv[5]);
+	pos.y=JSVAL_TO_INT(argv[6]);
+
+	ang.x=script_value_to_float(argv[7]);
+	ang.z=script_value_to_float(argv[8]);
+	ang.y=script_value_to_float(argv[9]);
+
+		// spawn
+
+	uid=object_script_spawn(name,type,script,params,&pos,&ang);
+	if (uid==-1) return(JS_FALSE);
+
+		// return UID
+
+	*rval=INT_TO_JSVAL(uid);
+
+	return(JS_TRUE);
+}
+
+JSBool js_map_object_remove_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int				uid;
+	obj_type		*obj;
+
+	obj=script_find_obj_from_uid_arg(argv[0]);
+	if (obj==NULL) return(JS_FALSE);
+
+	uid=obj->uid;
+
+	if (!object_script_remove(uid)) return(JS_FALSE);
+	return(JS_TRUE);
+}
+

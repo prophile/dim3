@@ -32,6 +32,9 @@ extern bool object_start(spot_type *spot,bool player,int bind,char *err_str);
 extern void object_dispose_single(int idx);
 extern void object_dispose_2(int bind);
 
+extern bool object_script_spawn(char *name,char *type,char *script,char *params,d3pos *pos,d3ang *ang);
+extern bool object_script_remove(int uid);
+
 extern void object_set_radius(obj_type *obj);
 extern void object_set_position(obj_type *obj,int x,int z,int y,float ang_y,float ymove);
 extern void object_stop(obj_type *obj);
@@ -56,6 +59,7 @@ extern void object_reset_prepare(obj_type *obj);
 extern void object_reset(obj_type *obj);
 
 extern obj_type* object_find_uid(int uid);
+extern int object_find_index_uid(int uid);
 extern obj_type* object_find_remote_uid(int uid);
 extern int object_find_index_remote_uid(int uid);
 extern obj_type* object_find_spawn_idx(int spawn_idx);

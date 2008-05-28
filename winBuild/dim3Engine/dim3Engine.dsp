@@ -1115,10 +1115,6 @@ SOURCE=..\..\dim3Engine\Sources_Server\server_run.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_Server\spots_attach.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3Engine\Sources_Server\weapon.c
 # End Source File
 # Begin Source File
