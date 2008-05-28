@@ -100,8 +100,7 @@ bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,i
 	timer=&js.timers[js.count.timer];
 	
 	memmove(&timer->attach,attach,sizeof(attach_type));
-	timer->bind=script->bind;
-	
+
 	timer->mode=mode;
 	
     timer->freq=freq;

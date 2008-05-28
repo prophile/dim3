@@ -326,7 +326,7 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
       
 ======================================================= */
 	
-bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,int bind,char *err_str)
+bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char *err_str)
 {
 	int						idx;
 	bool					ok;
@@ -408,17 +408,13 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,int b
 		// root the objects
 		
 	script_add_roots(script);
-	
-		// finish up
-	
-	script->bind=bind;
 		
 	return(TRUE);
 }
 
-bool scripts_add_console(attach_type *attach,char *sub_dir,char *name,char *params,int bind,char *err_str)
+bool scripts_add_console(attach_type *attach,char *sub_dir,char *name,char *params,char *err_str)
 {
-	if (!scripts_add(attach,sub_dir,name,params,bind,err_str)) {
+	if (!scripts_add(attach,sub_dir,name,params,err_str)) {
 		console_add_error(err_str);
 		if (setup.debug_console) console_show();
 		return(FALSE);
@@ -429,7 +425,7 @@ bool scripts_add_console(attach_type *attach,char *sub_dir,char *name,char *para
 
 /* =======================================================
 
-      Dispose Bound Scripts
+      Dispose Scripts
       
 ======================================================= */
 
@@ -437,6 +433,10 @@ void scripts_dispose(int uid)
 {
 	int			idx;
 	script_type	*script;
+	
+		// no script loaded
+		
+	if (uid==-1) return;
 	
 		// find script
 

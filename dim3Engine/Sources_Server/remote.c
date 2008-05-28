@@ -66,11 +66,11 @@ extern void map_end(void);
 
 bool remote_add(int remote_uid,network_request_remote_add *add)
 {
-	int					n,k;
+	int					n;
 	char				err_str[256];
-	obj_type			*obj,*player_obj;
-	weapon_type			*weap,*player_weap;
-	proj_setup_type		*proj_setup,*player_proj_setup;
+	obj_type			*obj;
+	weapon_type			*weap;
+	proj_setup_type		*proj_setup;
     
 		// create new object
 		
@@ -97,48 +97,24 @@ bool remote_add(int remote_uid,network_request_remote_add *add)
 	
 		// start remote scripts
 		
-	object_start_script(obj,"Player",NULL,bt_remote,err_str);
+	object_start_script(obj,"Player",NULL,err_str);
 
-		// remote objects just try to uses models
-		// loaded by the games other objects (as you'd
-		// expect the scripts to be the same and model
-		// loading is to heavy to do on the fly)
-
-	// supergumba -- redo all this, loading on the fly is possible after the rework
-
-	player_obj=object_find_uid(server.player_obj_uid);
-	if (player_obj!=NULL) {
-	
-		obj->draw.uid=player_obj->draw.uid;
-	
-		weap=server.weapons;
+		// load models
 		
-		for (n=0;n!=server.count.weapon;n++) {
-			if (weap->obj_uid==obj->uid) {
+	model_load_and_init(&obj->draw);
 
-					// weapon model
-
-				player_weap=weapon_find_name(player_obj,weap->name);
-				if (player_weap!=NULL) {
+	weap=server.weapons;
+		
+	for (n=0;n!=server.count.weapon;n++) {
+		if (weap->obj_uid==obj->uid) model_load_and_init(&weap->draw);
+		weap++;
+	}
 				
-					weap->draw.uid=player_weap->draw.uid;
-
-						// projectiles for this weapon
-				
-					proj_setup=server.proj_setups;
-					
-					for (k=0;k!=server.count.proj_setup;k++) {
-						if (proj_setup->weap_uid==weap->uid) {
-							player_proj_setup=find_proj_setups(player_weap,proj_setup->name);
-							if (player_proj_setup!=NULL) proj_setup->draw.uid=player_proj_setup->draw.uid;
-						}
-						proj_setup++;
-					}
-				}
-			}
-
-			weap++;
-		}
+	proj_setup=server.proj_setups;
+	
+	for (n=0;n!=server.count.proj_setup;n++) {
+		if (proj_setup->obj_uid==obj->uid) model_load_and_init(&proj_setup->draw);
+		proj_setup++;
 	}
 	
 		// initial score

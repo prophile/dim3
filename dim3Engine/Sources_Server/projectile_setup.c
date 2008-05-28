@@ -221,14 +221,14 @@ proj_type* proj_get_attach(void)
       
 ======================================================= */
 
-void proj_setup_start(proj_setup_type *proj_setup,int bind)
+void proj_setup_start(proj_setup_type *proj_setup)
 {
 	char			err_str[256];
 
 	proj_setup->attach.thing_type=thing_type_projectile_setup;
 	proj_setup->attach.thing_uid=proj_setup->uid;
 
-	scripts_add_console(&proj_setup->attach,"Projectiles",proj_setup->name,NULL,bind,err_str);
+	scripts_add_console(&proj_setup->attach,"Projectiles",proj_setup->name,NULL,err_str);
 	model_load_and_init(&proj_setup->draw);
 }
 

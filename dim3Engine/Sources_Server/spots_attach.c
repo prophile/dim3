@@ -74,7 +74,7 @@ void spot_start_object(spot_type *spot)
 		
 		// start scripts
 		
-	object_start_script(obj,spot->attach_script,spot->attach_params,bt_map,err_str);
+	object_start_script(obj,spot->attach_script,spot->attach_params,err_str);
 }
 */
 

@@ -962,13 +962,13 @@ typedef struct		{
 					} attach_type;
  
 typedef struct		{
-						int					bind,mode,count,freq,user_id;
+						int					mode,count,freq,user_id;
 						char				chain_func_name[64];
 						attach_type			attach;
 					} timer_type;
 					
 typedef struct		{
-						int					uid,data_len,bind;
+						int					uid,data_len;
 						char				name[file_str_len],params[param_str_len];
 						char				*data;
 						bool				used;

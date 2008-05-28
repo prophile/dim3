@@ -68,7 +68,8 @@ int object_held_add(obj_type *obj,char *name,char *type,char *script,char *param
 		
 		// start script
 		
-	if (!object_start_script(held_obj,script,params,bt_map,err_str)) return(-1);
+	if (!object_start_script(held_obj,script,params,err_str)) return(-1);
+	model_load_and_init(&held_obj->draw);
 	
 		// restore old attach
 		

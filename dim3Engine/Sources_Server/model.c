@@ -200,6 +200,7 @@ void model_load_and_init(model_draw *draw)
 		}
 		else {
 			draw->on=FALSE;
+			draw->uid=-1;
 			sprintf(err_str,"Unable to load model named %s",draw->name);
 			console_add_error(err_str);
 		}
@@ -222,6 +223,10 @@ void models_dispose(int uid)
 {
 	int					idx;
 	model_type			*model;
+	
+		// was model loaded?
+		
+	if (uid==-1) return;
 
 		// find model index
 

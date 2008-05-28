@@ -318,7 +318,7 @@ bool server_game_start(char *game_script_name,int skill,int remote_count,network
 	js.game_attach.thing_type=thing_type_game;
 	js.game_attach.thing_uid=-1;
 	
-	if (!scripts_add(&js.game_attach,"Game",game_script_name,NULL,bt_game,err_str)) return(FALSE);
+	if (!scripts_add(&js.game_attach,"Game",game_script_name,NULL,err_str)) return(FALSE);
 	
 		// editor map override?
 		

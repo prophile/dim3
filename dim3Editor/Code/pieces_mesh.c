@@ -47,12 +47,12 @@ extern map_type					map;
 
 int piece_import_library_mesh(char *name,int mx,int my,int mz)
 {
-	int					n,k,nline,nvertex,npoly,npt,vt_start_idx,uv_idx,
+	int					n,k,nline,nvertex,npoly,nuv,npt,uv_idx,
 						mesh_idx,x,y,z,sz,
 						min_x,max_x,min_y,max_y,min_z,max_z;
 	char				path[1024],
 						*c,txt[256],vstr[256],uvstr[256];
-	float				scale;
+	float				scale,*uvs,*uv;
 	bool				mesh_ok,mesh_delete;
 	d3pnt				*dpt;
 	portal_type			*portal;
@@ -75,11 +75,10 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 		
 	nvertex=0;
 	npoly=0;
+	nuv=0;
 	
 	min_x=min_y=min_z=0;
 	max_x=max_y=max_z=0;
-	
-	vt_start_idx=-1;
 	
     for (n=0;n!=nline;n++) {
         textdecode_get_piece(n,0,txt);
@@ -107,7 +106,7 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 			}
 			else {
 				if (strcmp(txt,"vt")==0) {
-					if (vt_start_idx==-1) vt_start_idx=n;
+					nuv++;
 				}
 			}
 		}
@@ -125,7 +124,7 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 		StandardAlert(kAlertStopAlert,"\pImport Failed","\pNo faces in OBJ.",NULL,NULL);
 		return(-1);
     }
-	if (vt_start_idx==-1) {
+	if (nuv==0) {
 		textdecode_close();
 		StandardAlert(kAlertStopAlert,"\pImport Failed","\pNo UV coordinates in OBJ.",NULL,NULL);
 		return(-1);
@@ -191,6 +190,28 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
         
 		dpt++;
     }
+	
+		// get the UVs
+		
+	uvs=(float*)valloc(sizeof(float)*(2*nuv));
+	if (uvs==NULL) {
+		map_portal_mesh_delete(&map,cr,mesh_idx);
+		textdecode_close();
+		StandardAlert(kAlertStopAlert,"\pImport Failed","\pOut of Memory.",NULL,NULL);
+		return(-1);
+    }
+
+ 	uv=uvs;
+
+    for (n=0;n!=nline;n++) {
+        textdecode_get_piece(n,0,txt);
+		if (strcmp(txt,"vt")!=0) continue;
+                
+		textdecode_get_piece(n,1,uvstr);
+		*uv++=strtod(uvstr,NULL);
+		textdecode_get_piece(n,2,uvstr);
+		*uv++=1.0f-strtod(uvstr,NULL);
+    }
 
 		// get the polys
 
@@ -237,10 +258,9 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 			else {
 				uv_idx=atoi(uvstr)-1;
 				
-				textdecode_get_piece((vt_start_idx+uv_idx),1,uvstr);
-                poly->gx[npt]=strtod(uvstr,NULL);
-                textdecode_get_piece((vt_start_idx+uv_idx),2,uvstr);
-                poly->gy[npt]=1.0f-strtod(uvstr,NULL);
+				uv=uvs+(uv_idx*2);
+                poly->gx[npt]=*uv++;
+                poly->gy[npt]=*uv;
             }
 			
             npt++;
@@ -250,6 +270,8 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 		
 		poly++;
 	}
+	
+	free(uvs);
 	
 	textdecode_close();
 	

@@ -576,7 +576,7 @@ void portal_resize(void)
     for (n=0;n!=map.nspot;n++) {
         if (map.spots[n].pos.rn==cr) {
 			map.spots[n].pos.x=(map.spots[n].pos.x*fct)/100;
-			map.spots[n].pos.y=((map.spots[n].pos.y-by)*fct)/100)+by;
+			map.spots[n].pos.y=(((map.spots[n].pos.y-by)*fct)/100)+by;
 			map.spots[n].pos.z=(map.spots[n].pos.z*fct)/100;
         }
     }
@@ -584,7 +584,7 @@ void portal_resize(void)
     for (n=0;n!=map.nnode;n++) {
         if (map.nodes[n].pos.rn==cr) {
 			map.nodes[n].pos.x=(map.nodes[n].pos.x*fct)/100;
-			map.nodes[n].pos.y=((map.nodes[n].pos.y-by)*fct)/100)+by;
+			map.nodes[n].pos.y=(((map.nodes[n].pos.y-by)*fct)/100)+by;
 			map.nodes[n].pos.z=(map.nodes[n].pos.z*fct)/100;
         }
     }
@@ -592,7 +592,7 @@ void portal_resize(void)
     for (n=0;n!=map.nsound;n++) {
         if (map.sounds[n].pos.rn==cr) {
 			map.sounds[n].pos.x=(map.sounds[n].pos.x*fct)/100;
-			map.sounds[n].pos.y=((map.sounds[n].pos.y-by)*fct)/100)+by;
+			map.sounds[n].pos.y=(((map.sounds[n].pos.y-by)*fct)/100)+by;
 			map.sounds[n].pos.z=(map.sounds[n].pos.z*fct)/100;
         }
     }
@@ -600,7 +600,7 @@ void portal_resize(void)
     for (n=0;n!=map.nlight;n++) {
         if (map.lights[n].pos.rn==cr) {
 			map.lights[n].pos.x=(map.lights[n].pos.x*fct)/100;
-			map.lights[n].pos.y=((map.lights[n].pos.y-by)*fct)/100)+by;
+			map.lights[n].pos.y=(((map.lights[n].pos.y-by)*fct)/100)+by;
 			map.lights[n].pos.z=(map.lights[n].pos.z*fct)/100;
         }
     }
@@ -608,7 +608,7 @@ void portal_resize(void)
     for (n=0;n!=map.nparticle;n++) {
         if (map.particles[n].pos.rn==cr) {
  			map.particles[n].pos.x=(map.particles[n].pos.x*fct)/100;
-			map.particles[n].pos.y=((map.particles[n].pos.y-by)*fct)/100)+by;
+			map.particles[n].pos.y=(((map.particles[n].pos.y-by)*fct)/100)+by;
 			map.particles[n].pos.z=(map.particles[n].pos.z*fct)/100;
         }
     }
@@ -616,7 +616,7 @@ void portal_resize(void)
     for (n=0;n!=map.nscenery;n++) {
         if (map.sceneries[n].pos.rn==cr) {
 			map.sceneries[n].pos.x=(map.sceneries[n].pos.x*fct)/100;
-			map.sceneries[n].pos.y=((map.sceneries[n].pos.y-by)*fct)/100)+by;
+			map.sceneries[n].pos.y=(((map.sceneries[n].pos.y-by)*fct)/100)+by;
 			map.sceneries[n].pos.z=(map.sceneries[n].pos.z*fct)/100;
         }
     }

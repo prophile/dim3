@@ -372,10 +372,8 @@ void debug_dump(void)
 	debug_header("Scripts",cnt);
 	
 	debug_space("Name",32);
-	debug_space("Binding",10);
 	debug_return();
 	debug_space("-------------------------------",32);
-	debug_space("---------",10);
 	debug_return();
 	
 	script=js.scripts;
@@ -383,7 +381,6 @@ void debug_dump(void)
 	for ((i=0);(i!=max_scripts);i++) {
 		if (script->used) {
 			debug_space(script->name,32);
-			debug_space(bind_type_str[script->bind],10);
 			debug_return();
 		}
 		script++;

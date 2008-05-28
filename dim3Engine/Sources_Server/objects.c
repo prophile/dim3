@@ -176,6 +176,7 @@ void object_clear_draw(model_draw *draw)
 		// model draw
 		
 	draw->on=FALSE;
+	draw->uid=-1;
 	draw->name[0]=0x0;
 	draw->lit_type=ml_flat;
 	draw->bounce=FALSE;
@@ -542,12 +543,12 @@ obj_type* object_create(int bind)
       
 ======================================================= */
 
-bool object_start_script(obj_type *obj,char *name,char *params,int bind,char *err_str)
+bool object_start_script(obj_type *obj,char *name,char *params,char *err_str)
 {
 	obj->attach.thing_type=thing_type_object;
 	obj->attach.thing_uid=obj->uid;
 
-	if (!scripts_add_console(&obj->attach,"Objects",name,params,bind,err_str)) {
+	if (!scripts_add_console(&obj->attach,"Objects",name,params,err_str)) {
 		obj->hidden=TRUE;			// hide objects if scripts fail to compile
 		return(FALSE);
 	}
@@ -663,10 +664,10 @@ bool object_start(spot_type *spot,bool player,int bind,char *err_str)
 		// start script
 		
 	if (player) {
-		ok=object_start_script(obj,"Player",NULL,bind,err_str);
+		ok=object_start_script(obj,"Player",NULL,err_str);
 	}
 	else {
-		ok=object_start_script(obj,spot->attach_script,spot->attach_params,bind,err_str);
+		ok=object_start_script(obj,spot->attach_script,spot->attach_params,err_str);
 	}
 
 	if (!ok) return(FALSE);
@@ -680,7 +681,7 @@ bool object_start(spot_type *spot,bool player,int bind,char *err_str)
 	weap=server.weapons;
 
     for (n=0;n!=server.count.weapon;n++) {
-		if (weap->obj_uid==obj->uid) weapon_start(weap,bind);
+		if (weap->obj_uid==obj->uid) weapon_start(weap);
 		weap++;
     }
 
@@ -689,7 +690,7 @@ bool object_start(spot_type *spot,bool player,int bind,char *err_str)
 	proj_setup=server.proj_setups;
 
 	for (n=0;n!=server.count.proj_setup;n++) {
-		if (proj_setup->obj_uid==obj->uid) proj_setup_start(proj_setup,bind);
+		if (proj_setup->obj_uid==obj->uid) proj_setup_start(proj_setup);
 		proj_setup++;
     }
 
@@ -810,7 +811,7 @@ void object_script_spawn()
 		
 		// start scripts
 		
-	object_start_script(obj,spot->attach_script,spot->attach_params,bt_map,err_str);
+	object_start_script(obj,spot->attach_script,spot->attach_params,err_str);
 
 
 

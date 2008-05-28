@@ -83,6 +83,10 @@ void scenery_create(void)
 		obj->draw.face_forward=map_scenery->face_forward;
 		obj->draw.shadow.on=map_scenery->shadow;
 		obj->draw.shadow.always_in_air=map_scenery->shadow_cast_down;
+		
+			// load the model
+			
+		model_load_and_init(&obj->draw);
 
 		map_scenery++;
 	}

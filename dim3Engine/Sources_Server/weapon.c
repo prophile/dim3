@@ -269,14 +269,14 @@ void weapon_attach_zoom_mask(weapon_type *weap)
       
 ======================================================= */
 
-void weapon_start(weapon_type *weap,int bind)
+void weapon_start(weapon_type *weap)
 {
 	char		err_str[256];
 
 	weap->attach.thing_type=thing_type_weapon;
 	weap->attach.thing_uid=weap->uid;
 	
-	scripts_add_console(&weap->attach,"Weapons",weap->name,NULL,bind,err_str);
+	scripts_add_console(&weap->attach,"Weapons",weap->name,NULL,err_str);
 	model_load_and_init(&weap->draw);
 	
 	weapon_reset_ammo(weap);

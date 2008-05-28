@@ -34,7 +34,7 @@ extern weapon_type* weapon_find_current(obj_type *obj);
 extern weapon_type* weapon_find_offset(obj_type *obj,int offset);
 
 extern bool weapon_create(obj_type *obj,char *name);
-extern void weapon_start(weapon_type *weap,int bind);
+extern void weapon_start(weapon_type *weap);
 extern void weapon_dispose(int idx);
 
 extern void weapon_attach_fire_crosshair(weapon_type *weap);

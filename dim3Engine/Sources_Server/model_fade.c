@@ -118,6 +118,7 @@ void model_mesh_fade_run(int tick,model_draw *draw)
 	if (draw->uid==-1) return;
 
 	mdl=model_find_uid(draw->uid);
+	if (mdl==NULL) return;
 
 	nmesh=mdl->nmesh;
 	mesh_fade=draw->mesh_fades;

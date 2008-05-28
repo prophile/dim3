@@ -159,7 +159,7 @@ void walk_view_models_reset(void)
 			idx=walk_view_models_find_model(spot->display_model);
 			
 			if ((idx==-1) && (nmodel<max_model)) {
-				if (model_open(&models[nmodel],spot->display_model,0,TRUE,FALSE,FALSE)) nmodel++;
+				if (model_open(&models[nmodel],spot->display_model,TRUE,FALSE,FALSE)) nmodel++;
 			}
 		}
 		
@@ -175,7 +175,7 @@ void walk_view_models_reset(void)
 			idx=walk_view_models_find_model(scenery->model_name);
 			
 			if ((idx==-1) && (nmodel<max_model)) {
-				if (model_open(&models[nmodel],scenery->model_name,0,TRUE,FALSE,FALSE)) nmodel++;
+				if (model_open(&models[nmodel],scenery->model_name,TRUE,FALSE,FALSE)) nmodel++;
 			}
 		}
 		

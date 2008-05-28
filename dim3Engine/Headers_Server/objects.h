@@ -36,7 +36,7 @@ extern void object_set_radius(obj_type *obj);
 extern void object_set_position(obj_type *obj,int x,int z,int y,float ang_y,float ymove);
 extern void object_stop(obj_type *obj);
 
-extern bool object_start_script(obj_type *obj,char *name,char *params,int bind,char *err_str);
+extern bool object_start_script(obj_type *obj,char *name,char *params,char *err_str);
 
 extern void object_clear_size(obj_size *size);
 extern void object_clear_position(d3pos *pos);

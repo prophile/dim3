@@ -282,7 +282,6 @@ void run_objects_no_slice(int tick)
 	obj_type		*obj;
 	weapon_type		*weap;
 
-
 	obj=server.objs;
 
 	for (n=0;n!=server.count.obj;n++) {
@@ -306,8 +305,9 @@ void run_objects_no_slice(int tick)
 					weapon_run_hand(obj,tick);
 				}
 			}
+
 		}
-			
+
 		obj++;
 	}
 }
