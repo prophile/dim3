@@ -558,9 +558,9 @@ void view_draw_setup(int tick)
 		
 	if (obj->bump.on) view.camera.pos.y+=obj->bump.smooth_offset;		
 	
-		// y for forward facing models
+		// ang for forward facing models
 		
-	view.draw_forward_ang_y=view.camera.ang.y;
+	memmove(&view.draw_forward_ang,&view.camera.ang,sizeof(d3ang));
 	
 		// setup viewport
 	

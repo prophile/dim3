@@ -28,11 +28,11 @@ and can be sold or given away.
 extern void object_initialize_list(void);
 
 extern obj_type* object_create(int bind);
-extern bool object_start(spot_type *spot,bool player,int bind,char *err_str);
+extern int object_start(spot_type *spot,bool player,int bind,char *err_str);
 extern void object_dispose_single(int idx);
 extern void object_dispose_2(int bind);
 
-extern bool object_script_spawn(char *name,char *type,char *script,char *params,d3pos *pos,d3ang *ang);
+extern int object_script_spawn(char *name,char *type,char *script,char *params,d3pos *pos,d3ang *ang);
 extern bool object_script_remove(int uid);
 
 extern void object_set_radius(obj_type *obj);
@@ -197,7 +197,6 @@ extern void item_add_alt_clip(obj_type *obj,weapon_type *weap,int add_count);
 extern void item_add_health(obj_type *obj,int add_count);
 extern void item_add_custom(obj_type *obj,int custom_id);
 
-extern bool player_start_object(char *err_str);
 extern bool player_attach_object(void);
 extern void player_detach_object(void);
 extern void player_get_ui_color(d3col *col);

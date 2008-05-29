@@ -171,7 +171,7 @@ typedef struct		{
 //
  
 typedef struct		{
-						float					draw_forward_ang_y;
+						d3ang					draw_forward_ang;
 						view_count_type			count;
 						view_camera_type		camera;
 						view_time_type			time;

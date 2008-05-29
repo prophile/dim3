@@ -335,7 +335,8 @@ bool server_game_start(char *game_script_name,int skill,int remote_count,network
 	
 		// start player object
 	
-	if (!player_start_object(err_str)) {
+	server.player_obj_uid=object_start(NULL,TRUE,bt_game,err_str);
+	if (server.player_obj_uid==-1) {
 		scripts_dispose(js.game_attach.script_uid);
 		return(FALSE);
 	}

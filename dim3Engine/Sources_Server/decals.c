@@ -98,9 +98,9 @@ decal_type* decal_find_free(void)
       
 ======================================================= */
 
-bool decal_segment_ok(map_mesh_poly_type *mesh_poly,int mark_idx)
+bool decal_segment_ok(map_mesh_poly_type *poly,int mark_idx)
 {
-	if ((mesh_poly->alpha==1.0f) && (map.textures[mesh_poly->txt_idx].bitmaps[0].alpha_mode!=alpha_mode_transparent)) {
+	if ((poly->alpha==1.0f) && (map.textures[poly->txt_idx].bitmaps[0].alpha_mode!=alpha_mode_transparent)) {
 		return(!server.marks[mark_idx].no_opaque);
 	}
 
@@ -134,40 +134,14 @@ void decal_move_for_mesh(int portal_idx,int mesh_idx,int xmove,int ymove,int zmo
 
 /* =======================================================
 
-      Add Decal to Wall
+      Specific Poly Types
       
 ======================================================= */
 
-/* supergumba -- delete
-void decal_add_wall(int x,int y,int z,float ang,int mark_idx,int seg_idx,int sz,float alpha)
+void decal_add_wall_like(d3pos *pos,decal_type *decal,map_mesh_poly_type *poly,int mark_idx,int sz)
 {
-	int					idx,kx,kz,lx,rx,lz,rz;
-	segment_type		*seg;
-	decal_type			*decal;
+	int				idx,lx,rx,lz,rz;
     
-    if (!setup.mark) return;
-	if ((mark_idx==-1) || (seg_idx==-1)) return;
-	if (server.count.decal>=max_decal) return;
-
-	if (!decal_segment_ok(seg_idx,mark_idx)) return;
-	
-        // find segment contact point
-        
-	seg=&map.segments[seg_idx];
-	lx=seg->data.wall.lx;
-	lz=seg->data.wall.lz;
-	rx=seg->data.wall.rx;
-	rz=seg->data.wall.rz;
-	
-	line_2D_find_angle_hit(x,z,ang,lx,lz,rx,rz,&kx,&kz);
-	
-        // find a decal spot
-        
-    decal=&server.decals[server.count.decal];
-	server.count.decal++;
-	
-	decal->start_tick=game_time_get();
-
 		// decal rotation
 
 	idx=0;
@@ -175,30 +149,59 @@ void decal_add_wall(int x,int y,int z,float ang,int mark_idx,int seg_idx,int sz,
 
         // setup decal
         
-    line_2D_find_inside_infinite(kx,kz,sz,lx,lz,rx,rz,&lx,&lz,&rx,&rz);
+    line_2D_find_inside_infinite(pos->x,pos->z,sz,poly->line.lx,poly->line.lz,poly->line.rx,poly->line.rz,&lx,&lz,&rx,&rz);
         
 	decal->x[idx]=decal->x[((idx+3)&0x3)]=lx;
 	decal->x[((idx+1)&0x3)]=decal->x[((idx+2)&0x3)]=rx;
 	decal->z[idx]=decal->z[((idx+3)&0x3)]=lz;
 	decal->z[((idx+1)&0x3)]=decal->z[((idx+2)&0x3)]=rz;
 
-	decal->y[idx]=y-sz;
-	decal->y[((idx+1)&0x3)]=y-sz;
-	decal->y[((idx+2)&0x3)]=y+sz;
-	decal->y[((idx+3)&0x3)]=y+sz;
-    
-    decal->seg_idx=seg_idx;
-	decal->rn=seg->rn;
-    
-    decal->mark_idx=mark_idx;
-    decal->alpha=alpha;
-	
-		// change portal/segment decal count
-		
-	map.segments[seg_idx].decal_count++;
-	map.portals[seg->rn].decal_count++;
+	decal->y[idx]=pos->y-sz;
+	decal->y[((idx+1)&0x3)]=pos->y-sz;
+	decal->y[((idx+2)&0x3)]=pos->y+sz;
+	decal->y[((idx+3)&0x3)]=pos->y+sz;
 }
-*/
+
+void decal_add_floor_like(d3pos *pos,decal_type *decal,map_mesh_type *mesh,map_mesh_poly_type *poly,int mark_idx,int sz)
+{
+	int				n,ptsz,px[8],py[8],pz[8];
+	d3pnt			*pt;
+
+	decal->x[0]=decal->x[3]=decal->z[0]=decal->z[1]=-sz;
+	decal->x[1]=decal->x[2]=decal->z[2]=decal->z[3]=sz;
+	decal->y[0]=decal->y[1]=decal->y[2]=decal->y[3]=0;
+
+	if (!server.marks[mark_idx].no_rotate) rotate_polygon_center(4,decal->x,decal->y,decal->z,0,random_float(359),0);
+	
+		// if poly not flat, need array of
+		// coordinates to calculate y position
+
+	if (!poly->box.flat) {
+
+		ptsz=poly->ptsz;
+
+		for (n=0;n!=ptsz;n++) {
+			pt=&mesh->vertexes[poly->v[n]];
+			px[n]=pt->x;
+			py[n]=pt->y;
+			pz[n]=pt->z;
+		}
+
+	}
+
+	for (n=0;n!=4;n++) {
+		decal->x[n]=decal->x[n]+pos->x;
+		decal->z[n]=decal->z[n]+pos->z;
+
+		if (poly->box.flat) {
+			decal->y[n]=poly->box.mid.y;
+		}
+		else {
+			decal->y[n]=polygon_find_y(ptsz,px,py,pz,decal->x[n],decal->z[n]);
+			if (decal->y[n]==-1) decal->y[n]=poly->box.mid.y;
+		}
+	}
+}
 
 /* =======================================================
 
@@ -206,20 +209,24 @@ void decal_add_wall(int x,int y,int z,float ang,int mark_idx,int seg_idx,int sz,
       
 ======================================================= */
 
-void decal_add_poly(d3pos *pos,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha)
+void decal_add(d3pos *pos,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha)
 {
-	int					i,rn;
+	int					rn;
 	decal_type			*decal;
-	map_mesh_poly_type	*mesh_poly;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
     
+		// any more decals?
+
 	if (server.count.decal>=max_decal) return;
 
 		// can decal this poly?
 
 	rn=poly_ptr->portal_idx;
-	mesh_poly=&map.portals[rn].mesh.meshes[poly_ptr->mesh_idx].polys[poly_ptr->poly_idx];
+	mesh=&map.portals[rn].mesh.meshes[poly_ptr->mesh_idx];
+	poly=&mesh->polys[poly_ptr->poly_idx];
 	
-	if (!decal_segment_ok(mesh_poly,mark_idx)) return;
+	if (!decal_segment_ok(poly,mark_idx)) return;
     
         // find a decal spot
         
@@ -230,41 +237,14 @@ void decal_add_poly(d3pos *pos,poly_pointer_type *poly_ptr,int mark_idx,int sz,f
 	
         // wall-like decals
 
-	if (mesh_poly->box.wall_like) {
-
-		decal->x[0]=decal->x[3]=pos->x-sz;
-		decal->x[1]=decal->x[2]=pos->x+sz;
-		decal->z[0]=decal->z[3]=pos->z-sz;
-		decal->z[1]=decal->z[2]=pos->z+sz;
-		decal->z[0]=decal->z[1]=pos->y-sz;
-		decal->z[2]=decal->z[3]=pos->y+sz;
+	if (poly->box.wall_like) {
+		decal_add_wall_like(pos,decal,poly,mark_idx,sz);
 	}
 
 		// floor-like decals
 
 	else {
-        
-		decal->x[0]=decal->x[3]=decal->z[0]=decal->z[1]=-sz;
-		decal->x[1]=decal->x[2]=decal->z[2]=decal->z[3]=sz;
-		decal->y[0]=decal->y[1]=decal->y[2]=decal->y[3]=pos->y;
-
-		if (!server.marks[mark_idx].no_rotate) rotate_polygon_center(4,decal->x,decal->y,decal->z,0,random_float(359),0);
-		
-		for (i=0;i!=4;i++) {
-			decal->x[i]=decal->x[i]+pos->x;
-			decal->z[i]=decal->z[i]+pos->z;
-			decal->y[i]=pos->y;
-
-			/* supergumba -- work on this!
-			if (mesh_poly->box.flat) {
-				decal->y[i]=mesh_poly->y[0];
-			}
-			else {
-				decal->y[i]=polygon_find_y(fc->ptsz,fc->x,fc->y,fc->z,decal->x[i],decal->z[i]);
-				if (decal->y[i]==-1) decal->y[i]=fc->y[0];
-			}
-			*/
-		}
+		decal_add_floor_like(pos,decal,mesh,poly,mark_idx,sz);
 	}
 
 		// finish decal setup

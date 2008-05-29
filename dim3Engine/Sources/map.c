@@ -235,7 +235,7 @@ bool map_start(bool skip_media,char *err_str)
 	
 		// create group lists
 	
-	progress_draw(17);
+	progress_draw(20);
 	if (!map_group_create_unit_list(&map)) {
 		progress_shutdown();
 		strcpy(err_str,"Out of memory");
@@ -244,7 +244,7 @@ bool map_start(bool skip_media,char *err_str)
 
 		// segment, vertex, and light lists for portals
 
-	progress_draw(20);
+	progress_draw(25);
 
 	if (!map_portal_mesh_create_transparent_sort_lists(&map)) {
 		progress_shutdown();
@@ -252,13 +252,15 @@ bool map_start(bool skip_media,char *err_str)
 		return(FALSE);
 	}
 
+	progress_draw(30);
+
 	if (!liquid_create_memory()) {
 		progress_shutdown();
 		strcpy(err_str,"Out of memory");
 		return(FALSE);
 	}
 	
-	progress_draw(23);
+	progress_draw(35);
 
 	if (!map_portal_create_vertex_lists(&map,setup.high_quality_lighting)) {
 		progress_shutdown();
@@ -266,41 +268,48 @@ bool map_start(bool skip_media,char *err_str)
 		return(FALSE);
 	}
 
-	progress_draw(26);
+	progress_draw(40);
 
 	if (!map_portal_create_light_spots(&map)) {
 		progress_shutdown();
 		strcpy(err_str,"Out of memory");
 		return(FALSE);
 	}
-
-	progress_draw(30);
 	
 		// start map ambients
 		
+	progress_draw(45);
+
 	map_start_ambient();
 	if (map.ambient.sound_name[0]!=0x0) map_set_ambient(map.ambient.sound_name,map.ambient.sound_pitch);
 
 		// clear projectile, effects, and marks
 		
+	progress_draw(50);
+
 	projectile_start();
 	effect_start();
 	particle_map_initialize();
+
+	progress_draw(55);
+
 	decal_clear();
 	group_move_clear_all();
 	
 		// reset rain
 		
 	map.rain.reset=TRUE;
-	
-	progress_draw(35);
 
 		// clear spot attachements
+	
+	progress_draw(60);
 		
 	map_spot_clear_attach(&map);
  
         // run the course script
 
+	progress_draw(65);
+		
 	js.course_attach.thing_type=thing_type_course;
 	js.course_attach.thing_uid=-1;
 	
@@ -310,21 +319,20 @@ bool map_start(bool skip_media,char *err_str)
 	}
 	
 		// create the attached objects
+		// and scenery
 		
-	spot_start_attach();
-	progress_draw(40);
+	progress_draw(70);
 
-		// create scenery
+	spot_start_attach();
+
+	progress_draw(75);
 
 	scenery_create();
-	progress_draw(60);
-	
-		// start scenery
-
 	scenery_start();
-	progress_draw(80);
 	
 		// attach player to map
+
+	progress_draw(80);
 
 	if (!player_attach_object()) {
 		progress_shutdown();
@@ -334,24 +342,24 @@ bool map_start(bool skip_media,char *err_str)
 
 	player_clear_input();
 	
-	progress_draw(90);
-	
 		// connect camera to player
 		
+	progress_draw(85);
+
 	obj=object_find_uid(server.player_obj_uid);
 	camera_connect(obj);
 	
-	progress_draw(93);
-	
 		// map start event
 		
+	progress_draw(90);
+
 	scripts_post_event_console(&js.game_attach,sd_event_map,sd_event_map_open,0);
 	scripts_post_event_console(&js.course_attach,sd_event_map,sd_event_map_open,0);
 	scripts_post_event_console(&obj->attach,sd_event_map,sd_event_map_open,0);
-	
-	progress_draw(97);
 
 		// initialize movements and lookups
+	
+	progress_draw(95);
 		
 	map_movements_initialize();
 	map_lookups_setup();
@@ -422,41 +430,49 @@ void map_end(void)
 	scripts_post_event_console(&js.course_attach,sd_event_map,sd_event_map_close,0);
 	scripts_post_event_console(&obj->attach,sd_event_map,sd_event_map_close,0);
 	
-	progress_draw(10);
-	
 		// stop sounds
 			
+	progress_draw(15);
+
 	map_end_ambient();
 	al_stop_all_sources();
 
 		// end all projectiles
 	
+	progress_draw(25);
+
 	projectile_dispose_all();
-	progress_draw(15);
 
         // end script
 		
+	progress_draw(35);
+
 	scripts_dispose(js.course_attach.script_uid);
 
 		// free map bound items
 		
+	progress_draw(45);
+
 	object_dispose_2(bt_map);
-	progress_draw(90);
 	
 		// free group, portal segment, vertex and light lists
 		
+	progress_draw(65);
+
 	map_portal_dispose_light_spots(&map);
 	map_portal_dispose_vertex_lists(&map);
 	liquid_free_memory();
 	map_portal_mesh_dispose_transparent_sort_lists(&map);
 	map_group_dispose_unit_list(&map);
 	
-	progress_draw(95);
-	
 		// close map
 	
+	progress_draw(85);
+
 	map_close(&map);
 	
+		// finish
+
 	progress_draw(100);
 	
 	progress_shutdown();

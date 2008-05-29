@@ -1656,6 +1656,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 	int				n,dx,dy;
 	unsigned long	gl_id;
 	char			*c,*c2,txt[256];
+	d3col			col;
 
 	dy=y+(row_high>>1);
 	
@@ -1707,25 +1708,33 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 				// missing graphic
 
 			else {
+
+				glColor4f(0.75f,0.75f,0.75f,1.0f);
+
+				glBegin(GL_QUADS);
+				glVertex2i((dx+2),(y+2));
+				glVertex2i(((dx-2)+element_table_bitmap_size),(y+2));
+				glVertex2i(((dx-2)+element_table_bitmap_size),((y-2)+element_table_bitmap_size));
+				glVertex2i((dx+2),((y-2)+element_table_bitmap_size));
+				glEnd();
 			
-				glColor4f(1.0f,0.0f,0.0f,1.0f);
+				glColor4f(1.0f,1.0f,1.0f,1.0f);
 				glLineWidth(2.0f);
 				
-				glBegin(GL_LINES);
-				glVertex2i((dx+4),(y+4));
-				glVertex2i(((dx-4)+element_table_bitmap_size),((y-4)+element_table_bitmap_size));
-				glVertex2i(((dx-4)+element_table_bitmap_size),(y+4));
-				glVertex2i((dx+4),((y-4)+element_table_bitmap_size));
-				glEnd();
-
 				glBegin(GL_LINE_LOOP);
-				glVertex2i((dx+4),(y+4));
-				glVertex2i(((dx-4)+element_table_bitmap_size),(y+4));
-				glVertex2i(((dx-4)+element_table_bitmap_size),((y-4)+element_table_bitmap_size));
-				glVertex2i((dx+4),((y-4)+element_table_bitmap_size));
+				glVertex2i((dx+2),(y+2));
+				glVertex2i(((dx-2)+element_table_bitmap_size),(y+2));
+				glVertex2i(((dx-2)+element_table_bitmap_size),((y-2)+element_table_bitmap_size));
+				glVertex2i((dx+2),((y-2)+element_table_bitmap_size));
 				glEnd();
 				
 				glLineWidth(1.0f);
+
+				col.r=col.g=col.b=1.0f;
+
+				gl_text_start(FALSE);
+				gl_text_draw((dx+(element_table_bitmap_size>>1)),(y+(element_table_bitmap_size>>1)),"?",tx_center,TRUE,&col,1.0f);
+				gl_text_end();
 			}
 
 				// get to correct text

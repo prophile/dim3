@@ -107,7 +107,7 @@ void projectile_decals(proj_type *proj,proj_setup_type *proj_setup)
 	size=proj_setup->mark.size;
 	alpha=proj_setup->mark.alpha;
 	
-	decal_add_poly(&proj->pos,&proj->contact.hit_poly,mark_idx,size,alpha);
+	decal_add(&proj->pos,&proj->contact.hit_poly,mark_idx,size,alpha);
 }
 
 /* =======================================================

@@ -49,18 +49,6 @@ extern void portal_triggers(obj_type *obj,int old_rn,int rn);
 
 /* =======================================================
 
-      Setup Player Object
-      
-======================================================= */
-
-bool player_start_object(char *err_str)
-{
-	server.player_obj_uid=-1;
-	return(object_start(NULL,TRUE,bt_game,err_str));
-}
-
-/* =======================================================
-
       Attach/Detach Player Object To Spot
       
 ======================================================= */

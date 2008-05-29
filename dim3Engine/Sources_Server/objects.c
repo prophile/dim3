@@ -599,7 +599,7 @@ void object_attach_click_crosshair_down(obj_type *obj)
       
 ======================================================= */
 
-bool object_start(spot_type *spot,bool player,int bind,char *err_str)
+int object_start(spot_type *spot,bool player,int bind,char *err_str)
 {
 	int					n;
 	bool				ok;
@@ -612,7 +612,7 @@ bool object_start(spot_type *spot,bool player,int bind,char *err_str)
 	obj=object_create(bind);
 	if (obj==NULL) {
 		strcpy(err_str,"Out of memory");
-		return(FALSE);
+		return(-1);
 	}
 		
 			// player default setup
@@ -670,7 +670,7 @@ bool object_start(spot_type *spot,bool player,int bind,char *err_str)
 		ok=object_start_script(obj,spot->attach_script,spot->attach_params,err_str);
 	}
 
-	if (!ok) return(FALSE);
+	if (!ok) return(-1);
 
 		// load object model
 
@@ -701,7 +701,7 @@ bool object_start(spot_type *spot,bool player,int bind,char *err_str)
 		weapon_set(obj,weap);
 	}
 
-	return(TRUE);
+	return(obj->uid);
 }
 
 /* =======================================================
@@ -822,8 +822,9 @@ void spot_start_attach(void)
       
 ======================================================= */
 
-bool object_script_spawn(char *name,char *type,char *script,char *params,d3pos *pos,d3ang *ang)
+int object_script_spawn(char *name,char *type,char *script,char *params,d3pos *pos,d3ang *ang)
 {
+	int					uid;
 	char				err_str[256];
 	spot_type			spot;
 
@@ -841,12 +842,13 @@ bool object_script_spawn(char *name,char *type,char *script,char *params,d3pos *
 
 		// start object
 
-	if (!object_start(&spot,FALSE,bt_map,err_str)) {
+	uid=object_start(&spot,FALSE,bt_map,err_str);
+	if (uid==-1) {
 		JS_ReportError(js.cx,"Object Spawn Failed: %s",err_str);
 		return(FALSE);
 	}
 
-	return(TRUE);
+	return(uid);
 }
 
 bool object_script_remove(int uid)

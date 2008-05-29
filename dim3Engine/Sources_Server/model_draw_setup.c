@@ -101,8 +101,7 @@ void model_draw_setup_object(int tick,obj_type *obj)
 		// angles
 		
 	if (draw->face_forward) {
-		setup->ang.x=setup->ang.z=0;
-		setup->ang.y=view.draw_forward_ang_y;
+		memmove(&setup->ang,&view.draw_forward_ang,sizeof(d3ang));
 	}
 	else {
 		setup->ang.x=angle_add(obj->ang.x,draw->rot.x);
@@ -181,8 +180,7 @@ void model_draw_setup_projectile(int tick,proj_type *proj)
 		// angles
 		
 	if (draw->face_forward) {
-		setup->ang.x=setup->ang.z=0;
-		setup->ang.y=view.draw_forward_ang_y;
+		memmove(&setup->ang,&view.draw_forward_ang,sizeof(d3ang));
 	}
 	else {
 		setup->ang.x=angle_add(proj->ang.x,draw->rot.x);
