@@ -80,8 +80,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 233640259;
-			PBXWorkspaceStateSaveDate = 233640259;
+			PBXPerProjectTemplateStateSaveDate = 233719203;
+			PBXWorkspaceStateSaveDate = 233719203;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -638,17 +638,17 @@
 	};
 	F5C5EB0F0913264E00F94729 /* game.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1652}}";
-			sepNavSelRange = "{2477, 0}";
-			sepNavVisRange = "{1827, 791}";
-			sepNavWindowFrame = "{{288, 205}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1778}}";
+			sepNavSelRange = "{2414, 0}";
+			sepNavVisRange = "{2094, 743}";
+			sepNavWindowFrame = "{{319, 196}, {1041, 747}}";
 		};
 	};
 	F5C5EB100913264E00F94729 /* map.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6986}}";
-			sepNavSelRange = "{7015, 0}";
-			sepNavVisRange = "{6770, 881}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7280}}";
+			sepNavSelRange = "{8703, 0}";
+			sepNavVisRange = "{8411, 860}";
 			sepNavWindowFrame = "{{286, 195}, {1041, 747}}";
 		};
 	};
@@ -716,10 +716,10 @@
 	};
 	F5DD19D7090830C800721649 /* server.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 5810}}";
-			sepNavSelRange = "{8820, 0}";
-			sepNavVisRange = "{7970, 1131}";
-			sepNavWindowFrame = "{{199, 108}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5992}}";
+			sepNavSelRange = "{9702, 16}";
+			sepNavVisRange = "{9251, 768}";
+			sepNavWindowFrame = "{{492, 125}, {1041, 747}}";
 		};
 	};
 	F5DD19D9090830C800721649 /* server_run.c */ = {
@@ -812,18 +812,10 @@
 	};
 	F5DD1A190908580100721649 /* objects.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 11340}}";
-			sepNavSelRange = "{15453, 0}";
-			sepNavVisRange = "{15069, 945}";
-			sepNavWindowFrame = "{{621, 141}, {1041, 747}}";
-		};
-	};
-	F5DD1A1A0908580100721649 /* spots_attach.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1386}}";
-			sepNavSelRange = "{1972, 0}";
-			sepNavVisRange = "{1293, 1064}";
-			sepNavWindowFrame = "{{176, 129}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 12250}}";
+			sepNavSelRange = "{16100, 0}";
+			sepNavVisRange = "{16419, 708}";
+			sepNavWindowFrame = "{{412, 106}, {1041, 747}}";
 		};
 	};
 	F5DD1A260908583D00721649 /* remote.c */ = {

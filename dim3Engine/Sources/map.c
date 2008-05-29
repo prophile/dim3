@@ -400,7 +400,7 @@ bool map_start(bool skip_media,char *err_str)
 void map_end(void)
 {
 	obj_type		*obj;
-
+	
 	game_time_pause_start();
 	
 		// detach player

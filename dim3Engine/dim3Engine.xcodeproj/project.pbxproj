@@ -276,7 +276,6 @@
 		F5DD1A210908580100721649 /* obj_turn.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A170908580100721649 /* obj_turn.c */; };
 		F5DD1A220908580100721649 /* obj_watch.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A180908580100721649 /* obj_watch.c */; };
 		F5DD1A230908580100721649 /* objects.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A190908580100721649 /* objects.c */; };
-		F5DD1A240908580100721649 /* spots_attach.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A1A0908580100721649 /* spots_attach.c */; };
 		F5DD1A280908583D00721649 /* remote.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A260908583D00721649 /* remote.c */; };
 		F5DD1A2C0908588500721649 /* weapon_select.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A290908588500721649 /* weapon_select.c */; };
 		F5DD1A2D0908588500721649 /* weapon_projectile.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A2A0908588500721649 /* weapon_projectile.c */; };
@@ -654,7 +653,6 @@
 		F5DD1A170908580100721649 /* obj_turn.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = obj_turn.c; path = Sources_Server/obj_turn.c; sourceTree = "<group>"; };
 		F5DD1A180908580100721649 /* obj_watch.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = obj_watch.c; path = Sources_Server/obj_watch.c; sourceTree = "<group>"; };
 		F5DD1A190908580100721649 /* objects.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = objects.c; path = Sources_Server/objects.c; sourceTree = "<group>"; };
-		F5DD1A1A0908580100721649 /* spots_attach.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = spots_attach.c; path = Sources_Server/spots_attach.c; sourceTree = "<group>"; };
 		F5DD1A260908583D00721649 /* remote.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = remote.c; path = Sources_Server/remote.c; sourceTree = "<group>"; };
 		F5DD1A290908588500721649 /* weapon_select.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = weapon_select.c; path = Sources_Server/weapon_select.c; sourceTree = "<group>"; };
 		F5DD1A2A0908588500721649 /* weapon_projectile.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = weapon_projectile.c; path = Sources_Server/weapon_projectile.c; sourceTree = "<group>"; };
@@ -786,7 +784,6 @@
 				F5A60CEE0B279D5A003002D4 /* obj_held.c */,
 				F5DD1A180908580100721649 /* obj_watch.c */,
 				F5DD1A130908580100721649 /* obj_auto_walk.c */,
-				F5DD1A1A0908580100721649 /* spots_attach.c */,
 				F5DD1A110908580100721649 /* item.c */,
 				F5F0AC570AD35F1800C50A21 /* scenery.c */,
 			);
@@ -1693,7 +1690,6 @@
 				F5DD1A210908580100721649 /* obj_turn.c in Sources */,
 				F5DD1A220908580100721649 /* obj_watch.c in Sources */,
 				F5DD1A230908580100721649 /* objects.c in Sources */,
-				F5DD1A240908580100721649 /* spots_attach.c in Sources */,
 				F5DD1A280908583D00721649 /* remote.c in Sources */,
 				F5DD1A2C0908588500721649 /* weapon_select.c in Sources */,
 				F5DD1A2D0908588500721649 /* weapon_projectile.c in Sources */,

@@ -721,20 +721,38 @@ void object_dispose_single(int idx)
 
 		// dispose projectiles
 
-	proj_setup=server.proj_setups;
+	n=0;
 	
-    for (n=0;n!=server.count.proj_setup;n++) {
-		if (proj_setup->obj_uid==obj->uid) proj_setup_dispose(n);
-		proj_setup++;
+	while (n<server.count.proj_setup) {
+		proj_setup=&server.proj_setups[n];
+		
+ 		if (proj_setup->obj_uid==obj->uid) {
+			proj_setup_dispose(n);
+		}
+		else {
+			n++;
+		}
+		
+		if (server.count.proj_setup==0) break;
 	}
 
 		// dispose weapons
 
 	weap=server.weapons;
 	
-	for (n=0;n!=server.count.weapon;n++) {
-		if (weap->obj_uid==obj->uid) weapon_dispose(n);
-		weap++;
+	n=0;
+	
+	while (n<server.count.weapon) {
+		weap=&server.weapons[n];
+
+		if (weap->obj_uid==obj->uid) {
+			weapon_dispose(n);
+		}
+		else {
+			n++;
+		}
+
+		if (server.count.weapon==0) break;
 	}
 
 		// dispose object
