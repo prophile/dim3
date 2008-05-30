@@ -80,8 +80,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 233719203;
-			PBXWorkspaceStateSaveDate = 233719203;
+			PBXPerProjectTemplateStateSaveDate = 233812085;
+			PBXWorkspaceStateSaveDate = 233812085;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -542,8 +542,8 @@
 	};
 	F5AD54760BBE2121001C7C04 /* baseutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1134, 12180}}";
-			sepNavSelRange = "{5537, 17}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 11480}}";
+			sepNavSelRange = "{4727, 10}";
 			sepNavVisRange = "{4048, 3438}";
 			sepNavWindowFrame = "{{345, 161}, {1041, 747}}";
 		};
@@ -578,6 +578,14 @@
 			sepNavSelRange = "{5988, 0}";
 			sepNavVisRange = "{5201, 1587}";
 			sepNavWindowFrame = "{{107, 192}, {1041, 747}}";
+		};
+	};
+	F5C1BF7F0A085110002D02AB /* model_draw_setup.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4634}}";
+			sepNavSelRange = "{1490, 0}";
+			sepNavVisRange = "{986, 1039}";
+			sepNavWindowFrame = "{{186, 198}, {1041, 747}}";
 		};
 	};
 	F5C5E69E090D910F00F94729 /* halos.c */ = {
@@ -744,6 +752,14 @@
 			sepNavSelRange = "{3562, 0}";
 			sepNavVisRange = "{2781, 1205}";
 			sepNavWindowFrame = "{{222, 201}, {1041, 747}}";
+		};
+	};
+	F5DD19E00908310200721649 /* view_setup.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 8302}}";
+			sepNavSelRange = "{12529, 16}";
+			sepNavVisRange = "{11441, 1315}";
+			sepNavWindowFrame = "{{38, 255}, {1041, 747}}";
 		};
 	};
 	F5DD19EB0908315E00721649 /* sky.c */ = {
@@ -1020,9 +1036,9 @@
 	};
 	F5DD1AEC0908624300721649 /* model_draw.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 13426}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 12852}}";
 			sepNavSelRange = "{3909, 14}";
-			sepNavVisRange = "{3230, 1236}";
+			sepNavVisRange = "{8147, 1459}";
 			sepNavWindowFrame = "{{380, 260}, {1041, 747}}";
 		};
 	};
