@@ -90,7 +90,7 @@ void model_animate_delete(model_type *model,int animate_idx)
 
 int model_animate_pose_insert(model_type *model,int animate_idx,int animate_pose_idx,int pose_idx)
 {
-	int					k,npose,sz;
+	int					k,t,npose,sz;
 	model_animate_type	*animate;
 	
 	animate=&model->animates[animate_idx];
@@ -120,19 +120,9 @@ int model_animate_pose_insert(model_type *model,int animate_idx,int animate_pose
 	animate->pose_moves[k].mov.z=0;
 	animate->pose_moves[k].mov.x=0;
 	animate->pose_moves[k].mov.y=0;
-	
-	animate->pose_moves[k].effect_bone_idx=-1;
  	
 	animate->pose_moves[k].sound.name[0]=0x0;
 	animate->pose_moves[k].sound.pitch=1.0f;
-	
-	animate->pose_moves[k].particle.name[0]=0x0;
-	animate->pose_moves[k].particle.motion=FALSE;
-	animate->pose_moves[k].particle.motion_factor=1.0f;
-	animate->pose_moves[k].particle.stick=FALSE;
-	animate->pose_moves[k].particle.slop.x=0;
-	animate->pose_moves[k].particle.slop.y=0;
-	animate->pose_moves[k].particle.slop.z=0;
 	
  	animate->pose_moves[k].flash.intensity=0;
  	animate->pose_moves[k].flash.flash_msec=0;
@@ -145,7 +135,31 @@ int model_animate_pose_insert(model_type *model,int animate_idx,int animate_pose
 	animate->pose_moves[k].shake.distance=0;
 	animate->pose_moves[k].shake.size=0;
 	animate->pose_moves[k].shake.life_msec=0;
-  
+
+  	animate->pose_moves[k].particle.count=0;
+
+	for (t=0;t!=max_model_animate_particle;t++) {
+		animate->pose_moves[k].particle.particles[t].bone_idx=-1;
+		animate->pose_moves[k].particle.particles[t].name[0]=0x0;
+		animate->pose_moves[k].particle.particles[t].motion=FALSE;
+		animate->pose_moves[k].particle.particles[t].motion_factor=1.0f;
+		animate->pose_moves[k].particle.particles[t].stick=FALSE;
+		animate->pose_moves[k].particle.particles[t].slop.x=0;
+		animate->pose_moves[k].particle.particles[t].slop.y=0;
+		animate->pose_moves[k].particle.particles[t].slop.z=0;
+	}
+
+  	animate->pose_moves[k].ring.count=0;
+
+	for (t=0;t!=max_model_animate_ring;t++) {
+		animate->pose_moves[k].ring.rings[t].bone_idx=-1;
+		animate->pose_moves[k].ring.rings[t].name[0]=0x0;
+		animate->pose_moves[k].ring.rings[t].angle=FALSE;
+		animate->pose_moves[k].ring.rings[t].slop.x=0;
+		animate->pose_moves[k].ring.rings[t].slop.y=0;
+		animate->pose_moves[k].ring.rings[t].slop.z=0;
+	}
+
 	animate->npose_move++;
 	
 	return(k);

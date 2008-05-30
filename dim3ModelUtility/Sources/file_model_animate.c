@@ -39,11 +39,13 @@ extern modelutility_settings_type		modelutility_settings;
 
 bool read_animate_xml(model_type *model)
 {
-	int						i,k,tag,model_head,poses_tag,animations_tag,animation_tag;
+	int						i,k,t,tag,model_head,poses_tag,animations_tag,animation_tag,
+							particles_head,particle_tag,rings_head,ring_tag;
     char					sub_path[1024],path[1024],posename[256];
+	bool					old_particle_def,old_ring_def;
     model_pose_move_type	*pose_move;
 	model_animate_type		*animate;
-	
+
         // load the animate xml
         
 	sprintf(sub_path,"Models/%s",model->name);
@@ -71,6 +73,8 @@ bool read_animate_xml(model_type *model)
         animate->loop_start=xml_get_attribute_int(tag,"start");
         animate->loop_end=xml_get_attribute_int(tag,"end");
         
+			// pose moves
+
         poses_tag=xml_findfirstchild("Poses",animation_tag);
         
         animate->npose_move=xml_countchildren(poses_tag);
@@ -88,22 +92,9 @@ bool read_animate_xml(model_type *model)
 
             pose_move->acceleration=xml_get_attribute_float_default(tag,"acceleration",0.0f);
 
-            pose_move->effect_bone_idx=model_find_bone(model,xml_get_attribute_model_tag(tag,"effect_bone"));
-
 			xml_get_attribute_text(tag,"sound",pose_move->sound.name,name_str_len);
 			pose_move->sound.pitch=xml_get_attribute_float_default(tag,"sound_pitch",1.0f);
          
-			xml_get_attribute_text(tag,"particle",pose_move->particle.name,name_str_len);
-			pose_move->particle.rotate=xml_get_attribute_boolean(tag,"particle_rotate");
-			pose_move->particle.motion=xml_get_attribute_boolean(tag,"particle_motion");
-			pose_move->particle.motion_factor=xml_get_attribute_float_default(tag,"particle_motion_factor",1.0f);
-			pose_move->particle.stick=xml_get_attribute_boolean(tag,"particle_stick");
-			xml_get_attribute_3_coord_int(tag,"particle_slop",&pose_move->particle.slop.x,&pose_move->particle.slop.y,&pose_move->particle.slop.z);
-
-			xml_get_attribute_text(tag,"ring",pose_move->ring.name,name_str_len);
-			pose_move->ring.angle=xml_get_attribute_boolean(tag,"ring_angle");
-			xml_get_attribute_3_coord_int(tag,"ring_slop",&pose_move->ring.slop.x,&pose_move->ring.slop.y,&pose_move->ring.slop.z);
-
 			xml_get_attribute_text(tag,"mesh_fade",pose_move->mesh_fade.name,name_str_len);
 			pose_move->mesh_fade.fade_in_msec=xml_get_attribute_int(tag,"mesh_fade_in_time");
 			pose_move->mesh_fade.fade_out_msec=xml_get_attribute_int(tag,"mesh_fade_out_time");
@@ -117,6 +108,76 @@ bool read_animate_xml(model_type *model)
 			pose_move->shake.distance=xml_get_attribute_int(tag,"shake_distance");
 			pose_move->shake.size=xml_get_attribute_int(tag,"shake_size");
 			pose_move->shake.life_msec=xml_get_attribute_int(tag,"shake_time");
+
+				// old particle defines
+
+			old_particle_def=xml_get_attribute_text(tag,"particle",pose_move->particle.particles[0].name,name_str_len);
+			if (old_particle_def) {
+				pose_move->particle.count=1;
+
+				pose_move->particle.particles[0].bone_idx=model_find_bone(model,xml_get_attribute_model_tag(tag,"effect_bone"));
+				pose_move->particle.particles[0].rotate=xml_get_attribute_boolean(tag,"particle_rotate");
+				pose_move->particle.particles[0].motion=xml_get_attribute_boolean(tag,"particle_motion");
+				pose_move->particle.particles[0].motion_factor=xml_get_attribute_float_default(tag,"particle_motion_factor",1.0f);
+				pose_move->particle.particles[0].stick=xml_get_attribute_boolean(tag,"particle_stick");
+				xml_get_attribute_3_coord_int(tag,"particle_slop",&pose_move->particle.particles[0].slop.x,&pose_move->particle.particles[0].slop.y,&pose_move->particle.particles[0].slop.z);
+			}
+
+				// new particle defines
+
+			else {
+				particles_head=xml_findfirstchild("Particles",tag);
+				pose_move->particle.count=0;
+        
+				if (particles_head!=-1) {
+					pose_move->particle.count=xml_countchildren(particles_head);
+					particle_tag=xml_findfirstchild("Particle",particles_head);
+        
+					for (t=0;t!=pose_move->particle.count;t++) {
+						pose_move->particle.particles[t].bone_idx=model_find_bone(model,xml_get_attribute_model_tag(particle_tag,"bone"));
+						xml_get_attribute_text(particle_tag,"particle",pose_move->particle.particles[t].name,name_str_len);
+						pose_move->particle.particles[t].rotate=xml_get_attribute_boolean(particle_tag,"particle_rotate");
+						pose_move->particle.particles[t].motion=xml_get_attribute_boolean(particle_tag,"particle_motion");
+						pose_move->particle.particles[t].motion_factor=xml_get_attribute_float_default(particle_tag,"particle_motion_factor",1.0f);
+						pose_move->particle.particles[t].stick=xml_get_attribute_boolean(particle_tag,"particle_stick");
+						xml_get_attribute_3_coord_int(particle_tag,"particle_slop",&pose_move->particle.particles[t].slop.x,&pose_move->particle.particles[t].slop.y,&pose_move->particle.particles[t].slop.z);
+
+						particle_tag=xml_findnextchild(particle_tag);
+					}
+				}
+			}
+
+				// old ring defines
+
+			old_ring_def=xml_get_attribute_text(tag,"ring",pose_move->ring.rings[0].name,name_str_len);
+			if (old_ring_def) {
+				pose_move->ring.count=1;
+
+				pose_move->ring.rings[0].bone_idx=model_find_bone(model,xml_get_attribute_model_tag(tag,"effect_bone"));
+				pose_move->ring.rings[0].angle=xml_get_attribute_boolean(tag,"ring_angle");
+				xml_get_attribute_3_coord_int(tag,"ring_slop",&pose_move->ring.rings[0].slop.x,&pose_move->ring.rings[0].slop.y,&pose_move->ring.rings[0].slop.z);
+			}
+
+				// new ring defines
+
+			else {
+				rings_head=xml_findfirstchild("Rings",tag);
+				pose_move->ring.count=0;
+        
+				if (rings_head!=-1) {
+					pose_move->ring.count=xml_countchildren(rings_head);
+					ring_tag=xml_findfirstchild("Ring",rings_head);
+        
+					for (t=0;t!=pose_move->ring.count;t++) {
+						pose_move->ring.rings[t].bone_idx=model_find_bone(model,xml_get_attribute_model_tag(ring_tag,"bone"));
+						xml_get_attribute_text(ring_tag,"ring",pose_move->ring.rings[t].name,name_str_len);
+						pose_move->ring.rings[t].angle=xml_get_attribute_boolean(ring_tag,"ring_angle");
+						xml_get_attribute_3_coord_int(ring_tag,"ring_slop",&pose_move->ring.rings[t].slop.x,&pose_move->ring.rings[t].slop.y,&pose_move->ring.rings[t].slop.z);
+
+						ring_tag=xml_findnextchild(ring_tag);
+					}
+				}
+			}
 
             pose_move++;
 			tag=xml_findnextchild(tag);
@@ -143,7 +204,7 @@ bool read_animate_xml(model_type *model)
 
 bool write_animate_xml(model_type *model)
 {
-	int						i,k;
+	int						i,k,t;
 	char					path[1024];
 	bool					ok;
     model_pose_move_type	*pose_move;
@@ -180,6 +241,8 @@ bool write_animate_xml(model_type *model)
         xml_add_attribute_int("end",animate->loop_end);
         xml_add_tagend(TRUE);
         
+			// pose moves
+
         xml_add_tagstart("Poses");
         xml_add_tagend(FALSE);
         
@@ -197,27 +260,9 @@ bool write_animate_xml(model_type *model)
  
 			xml_add_attribute_float("acceleration",pose_move->acceleration);
 			
-			if (pose_move->effect_bone_idx==-1) {
-				xml_add_attribute_model_tag("effect_bone",model_null_tag);
-			}
-			else {
-				xml_add_attribute_model_tag("effect_bone",model->bones[pose_move->effect_bone_idx].tag);
-			}
-			
             xml_add_attribute_text("sound",pose_move->sound.name);
             xml_add_attribute_float("sound_pitch",pose_move->sound.pitch);
 			
-			xml_add_attribute_text("particle",pose_move->particle.name);
-			xml_add_attribute_boolean("particle_rotate",pose_move->particle.rotate);
-			xml_add_attribute_boolean("particle_motion",pose_move->particle.motion);
-			xml_add_attribute_float("particle_motion_factor",pose_move->particle.motion_factor);
-			xml_add_attribute_boolean("particle_stick",pose_move->particle.stick);
-			xml_add_attribute_3_coord_int("particle_slop",pose_move->particle.slop.x,pose_move->particle.slop.y,pose_move->particle.slop.z);
-
-			xml_add_attribute_text("ring",pose_move->ring.name);
-			xml_add_attribute_boolean("ring_angle",pose_move->ring.angle);
-			xml_add_attribute_3_coord_int("ring_slop",pose_move->ring.slop.x,pose_move->ring.slop.y,pose_move->ring.slop.z);
-
 			xml_add_attribute_text("mesh_fade",pose_move->mesh_fade.name);
 			xml_add_attribute_int("mesh_fade_in_time",pose_move->mesh_fade.fade_in_msec);
 			xml_add_attribute_int("mesh_fade_out_time",pose_move->mesh_fade.fade_out_msec);
@@ -231,7 +276,50 @@ bool write_animate_xml(model_type *model)
 			xml_add_attribute_int("shake_size",pose_move->shake.size);
 			xml_add_attribute_int("shake_time",pose_move->shake.life_msec);
 			
-            xml_add_tagend(TRUE);
+			xml_add_tagend(FALSE);
+
+				// particles
+
+			xml_add_tagstart("Particles");
+			xml_add_tagend(FALSE);
+
+			for (t=0;t!=pose_move->particle.count;t++) {
+				if (pose_move->particle.particles[t].bone_idx==-1) {
+					xml_add_attribute_model_tag("bone",model_null_tag);
+				}
+				else {
+					xml_add_attribute_model_tag("bone",model->bones[pose_move->particle.particles[t].bone_idx].tag);
+				}
+				xml_add_attribute_text("particle",pose_move->particle.particles[t].name);
+				xml_add_attribute_boolean("particle_rotate",pose_move->particle.particles[t].rotate);
+				xml_add_attribute_boolean("particle_motion",pose_move->particle.particles[t].motion);
+				xml_add_attribute_float("particle_motion_factor",pose_move->particle.particles[t].motion_factor);
+				xml_add_attribute_boolean("particle_stick",pose_move->particle.particles[t].stick);
+				xml_add_attribute_3_coord_int("particle_slop",pose_move->particle.particles[t].slop.x,pose_move->particle.particles[t].slop.y,pose_move->particle.particles[t].slop.z);
+			}
+
+			xml_add_tagclose("Particles");
+
+				// rings
+
+			xml_add_tagstart("Rings");
+			xml_add_tagend(FALSE);
+
+			for (t=0;t!=pose_move->ring.count;t++) {
+				if (pose_move->ring.rings[t].bone_idx==-1) {
+					xml_add_attribute_model_tag("bone",model_null_tag);
+				}
+				else {
+					xml_add_attribute_model_tag("bone",model->bones[pose_move->ring.rings[t].bone_idx].tag);
+				}
+				xml_add_attribute_text("ring",pose_move->ring.rings[t].name);
+				xml_add_attribute_boolean("ring_angle",pose_move->ring.rings[t].angle);
+				xml_add_attribute_3_coord_int("ring_slop",pose_move->ring.rings[t].slop.x,pose_move->ring.rings[t].slop.y,pose_move->ring.rings[t].slop.z);
+			}
+
+			xml_add_tagclose("Rings");
+			
+			xml_add_tagclose("Pose");
             
             pose_move++;
         }

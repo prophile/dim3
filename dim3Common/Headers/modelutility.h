@@ -47,6 +47,9 @@ and can be sold or given away.
 #define max_model_light							8			// maximum number of lights in a model
 #define max_model_halo							8			// maximum number of halos in a model
 
+#define max_model_animate_particle				8			// maximum number of particles for animation
+#define max_model_animate_ring					8			// maximum number of rings for animation
+
 #define max_model_hit_box						16			// maximum number of hit boxes
 
 #define max_model_light_spot					8			// maximum number of lighting objects shining on model
@@ -188,18 +191,28 @@ typedef struct		{
 					} model_pose_move_sound_type;
 					
 typedef struct		{
-						int								particle_idx;
+						int								particle_idx,bone_idx;
 						float							motion_factor;
 						char							name[name_str_len];
 						bool							rotate,motion,stick;
 						d3pnt							slop;
+					} model_particle_type;
+
+typedef struct		{
+						int								count;
+						model_particle_type				particles[max_model_animate_particle];
 					} model_pose_move_particle_type;
 
 typedef struct		{
-						int								ring_idx;
+						int								ring_idx,bone_idx;
 						char							name[name_str_len];
 						bool							angle;
 						d3pnt							slop;
+					} model_ring_type;
+
+typedef struct		{
+						int								count;
+						model_ring_type					rings[max_model_animate_ring];
 					} model_pose_move_ring_type;
 
 typedef struct		{
@@ -217,16 +230,16 @@ typedef struct		{
 					} model_pose_move_shake_type;
 					
 typedef struct		{
-						int								pose_idx,effect_bone_idx,msec;
+						int								pose_idx,msec;
 						float							acceleration;
 						d3vct							mov;
 						d3vct							sway;
 						model_pose_move_sound_type		sound;
-						model_pose_move_particle_type	particle;
-						model_pose_move_ring_type		ring;
 						model_pose_move_mesh_fade_type	mesh_fade;
 						model_pose_move_flash_type		flash;
 						model_pose_move_shake_type		shake;
+						model_pose_move_particle_type	particle;
+						model_pose_move_ring_type		ring;
  					} model_pose_move_type;
 					
 typedef struct		{

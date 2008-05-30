@@ -319,6 +319,7 @@ void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min
 {
 	int						n,nvertex;
 	d3pnt					*pt,org_min,org_max,dif,org_dif;
+	d3vct					fct;
 	portal_type				*portal;
 	map_mesh_type			*mesh;
 
@@ -335,6 +336,12 @@ void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min
 	org_dif.x=org_max.x-org_min.x;
 	org_dif.y=org_max.y-org_min.y;
 	org_dif.z=org_max.z-org_min.z;
+
+	fct.x=fct.y=fct.z=0.0f;
+
+	if (org_dif.x!=0) fct.x=(float)dif.x/(float)org_dif.x;
+	if (org_dif.y!=0) fct.y=(float)dif.y/(float)org_dif.y;
+	if (org_dif.z!=0) fct.z=(float)dif.z/(float)org_dif.z;
 	
 		// resize vertexes
 
@@ -348,26 +355,9 @@ void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min
 
 	for (n=0;n!=nvertex;n++) {
 
-		if (org_dif.x!=0) {
-			pt->x=(((pt->x-org_min.x)*dif.x)/org_dif.x)+min->x;
-		}
-		else {
-			pt->x=min->x;
-		}
-
-		if (org_dif.y!=0) {
-			pt->y=(((pt->y-org_min.y)*dif.y)/org_dif.y)+min->y;
-		}
-		else {
-			pt->y=min->y;
-		}
-
-		if (org_dif.z!=0) {
-			pt->z=(((pt->z-org_min.z)*dif.z)/org_dif.z)+min->z;
-		}
-		else {
-			pt->z=min->z;
-		}
+		pt->x=(int)((float)(pt->x-org_min.x)*fct.x)+min->x;
+		pt->y=(int)((float)(pt->y-org_min.y)*fct.y)+min->y;
+		pt->z=(int)((float)(pt->z-org_min.z)*fct.z)+min->z;
 
 		pt++;
 	}
