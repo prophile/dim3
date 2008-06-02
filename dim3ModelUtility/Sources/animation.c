@@ -215,3 +215,91 @@ void model_animate_set_loop_end(model_type *model,int animate_idx,int animate_po
 		if (animate->loop_start>animate->loop_end) animate->loop_start=animate->loop_end;
 	}
 }
+
+/* =======================================================
+
+      Particles
+      
+======================================================= */
+
+int model_animate_add_particle(model_type *model,int animate_idx,int animate_pose_idx)
+{
+	int									idx;
+	model_pose_move_particle_type		*pose_particle;
+	model_particle_type					*particle;
+	
+	pose_particle=&model->animates[animate_idx].pose_moves[animate_pose_idx].particle;
+	if (pose_particle->count>=max_model_animate_particle) return(-1);
+	
+	idx=pose_particle->count;
+	pose_particle->count++;
+	
+	particle=&pose_particle->particles[idx];
+	particle->bone_idx=-1;
+	particle->name[0]=0x0;
+	particle->motion=FALSE;
+	particle->motion_factor=1.0f;
+	particle->stick=FALSE;
+	particle->slop.x=0;
+	particle->slop.y=0;
+	particle->slop.z=0;
+	
+	return(idx);
+}
+
+void model_animate_delete_particle(model_type *model,int animate_idx,int animate_pose_idx,int idx)
+{
+	int									sz;
+	model_pose_move_particle_type		*pose_particle;
+	
+	pose_particle=&model->animates[animate_idx].pose_moves[animate_pose_idx].particle;
+	if (pose_particle->count==0) return;
+	
+	sz=((pose_particle->count-idx)-1)*sizeof(model_particle_type);
+	if (sz>0) memmove(&pose_particle->particles[idx],&pose_particle->particles[idx+1],sz);
+	
+	pose_particle->count--;
+}
+
+/* =======================================================
+
+      Rings
+      
+======================================================= */
+
+int model_animate_add_ring(model_type *model,int animate_idx,int animate_pose_idx)
+{
+	int									idx;
+	model_pose_move_ring_type			*pose_ring;
+	model_ring_type						*ring;
+	
+	pose_ring=&model->animates[animate_idx].pose_moves[animate_pose_idx].ring;
+	if (pose_ring->count>=max_model_animate_ring) return(-1);
+	
+	idx=pose_ring->count;
+	pose_ring->count++;
+	
+	ring=&pose_ring->rings[idx];
+	ring->bone_idx=-1;
+	ring->name[0]=0x0;
+	ring->angle=FALSE;
+	ring->slop.x=0;
+	ring->slop.y=0;
+	ring->slop.z=0;
+	
+	return(idx);
+}
+
+void model_animate_delete_ring(model_type *model,int animate_idx,int animate_pose_idx,int idx)
+{
+	int									sz;
+	model_pose_move_ring_type			*pose_ring;
+	
+	pose_ring=&model->animates[animate_idx].pose_moves[animate_pose_idx].ring;
+	if (pose_ring->count==0) return;
+	
+	sz=((pose_ring->count-idx)-1)*sizeof(model_ring_type);
+	if (sz>0) memmove(&pose_ring->rings[idx],&pose_ring->rings[idx+1],sz);
+	
+	pose_ring->count--;
+}

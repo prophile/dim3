@@ -94,7 +94,7 @@ int create_db_pose_list(int canimate,DataBrowserItemID itemID,DataBrowserItemID 
 static pascal OSStatus animate_list_item_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserPropertyID property,DataBrowserItemDataRef itemData,Boolean changeValue)
 {
 	int						k,i,n;
-	char					txt[256],str[32];
+	char					txt[1024];
 	model_pose_move_type	*pose_move;
 	CFStringRef				cfstr;
 	
@@ -156,36 +156,28 @@ static pascal OSStatus animate_list_item_proc(ControlRef ctrl,DataBrowserItemID 
 			txt[0]=0x0;
 			
 			if (pose_move->sound.name[0]!=0x0) {
-				sprintf(txt,"%s @ %.2f",pose_move->sound.name,pose_move->sound.pitch);
+				if (txt[0]!=0x0) strcat(txt,", ");
+				strcat(txt,pose_move->sound.name);
 			}
 			
-			if (pose_move->particle.name[0]!=0x0) {
-				if (txt[0]!=0x0) strcat(txt," / ");
-				strcat(txt,pose_move->particle.name);
+			for (n=0;n!=pose_move->particle.count;n++) {
+				if (txt[0]!=0x0) strcat(txt,", ");
+				strcat(txt,pose_move->particle.particles[n].name);
 			}
 			
-			if (pose_move->ring.name[0]!=0x0) {
-				if (txt[0]!=0x0) strcat(txt," / ");
-				strcat(txt,pose_move->ring.name);
+			for (n=0;n!=pose_move->ring.count;n++) {
+				if (txt[0]!=0x0) strcat(txt,", ");
+				strcat(txt,pose_move->ring.rings[n].name);
 			}
 			
 			if (pose_move->flash.intensity!=0) {
-				if (txt[0]!=0x0) strcat(txt," / ");
-				sprintf(str,"Flash @ %d",pose_move->flash.intensity);
-				strcat(txt,str);
+				if (txt[0]!=0x0) strcat(txt,", ");
+				strcat(txt,"Flash");
 			}
 			
 			if (pose_move->mesh_fade.name[0]!=0x0) {
-				if (txt[0]!=0x0) strcat(txt," / ");
-				strcat(txt,pose_move->mesh_fade.name);
-			}
-			
-			if ((txt[0]!=0x0) && (pose_move->effect_bone_idx!=-1)) {
-				memmove(str,&model.bones[pose_move->effect_bone_idx].tag,4);
-				str[4]=0x0;
-				strcat(txt," [");
-				strcat(txt,str);
-				strcat(txt,"]");
+				if (txt[0]!=0x0) strcat(txt,", ");
+				strcat(txt,"Fade");
 			}
 
 			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,txt,kCFStringEncodingMacRoman);
@@ -323,7 +315,7 @@ void start_animate_controls(WindowRef wind,Rect *box)
 
 	add_db_column(animate_list,"Name",kAnimateNameDBColumn,kDataBrowserTextType,100,0);
 	add_db_column(animate_list,"Pose",kAnimatePoseDBColumn,kDataBrowserTextType,150,1);
-	add_db_column(animate_list,"Sway & Move",kAnimateSwayMoveDBColumn,kDataBrowserTextType,170,2);
+	add_db_column(animate_list,"Sway & Move",kAnimateSwayMoveDBColumn,kDataBrowserTextType,190,2);
 	add_db_column(animate_list,"Other",kAnimateOtherDBColumn,kDataBrowserTextType,300,3);
 
 	SetDataBrowserListViewDisclosureColumn(animate_list,kAnimateNameDBColumn,FALSE);

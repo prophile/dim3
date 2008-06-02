@@ -30,9 +30,13 @@ EXPORTS
 	model_animate_pose_delete				@144
 	model_animate_set_loop_start			@145
 	model_animate_set_loop_end				@146
+	model_animate_add_particle				@147
+	model_animate_delete_particle			@148
+	model_animate_add_ring					@149
+	model_animate_delete_ring				@150
 
-	model_hit_box_add						@150
-	model_hit_box_delete					@151
+	model_hit_box_add						@155
+	model_hit_box_delete					@156
 
 	model_find_mesh							@160
 	model_find_bone							@161

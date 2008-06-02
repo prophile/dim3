@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		26AA925C0DF2457E004A03AE /* dialog_particle_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AA925B0DF2457E004A03AE /* dialog_particle_settings.c */; };
+		26AA925E0DF24582004A03AE /* dialog_ring_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AA925D0DF24582004A03AE /* dialog_ring_settings.c */; };
 		F503D2570981A35B00DEDC74 /* draw_model.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D2560981A35B00DEDC74 /* draw_model.c */; };
 		F503D25F0981A3DC00DEDC74 /* draw_mesh_bone.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D25E0981A3DC00DEDC74 /* draw_mesh_bone.c */; };
 		F503D2680981A42C00DEDC74 /* draw_vertex_boxes.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D2670981A42C00DEDC74 /* draw_vertex_boxes.c */; };
@@ -125,6 +127,8 @@
 		011160A300BE30DC7F000001 /* dim3 Animator.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "dim3 Animator.icns"; path = "Resources/dim3 Animator.icns"; sourceTree = "<group>"; };
 		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		26AA925B0DF2457E004A03AE /* dialog_particle_settings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_particle_settings.c; path = Code/dialog_particle_settings.c; sourceTree = "<group>"; };
+		26AA925D0DF24582004A03AE /* dialog_ring_settings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_ring_settings.c; path = Code/dialog_ring_settings.c; sourceTree = "<group>"; };
 		F502976802E0BC0201701C02 /* bone_tab.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = bone_tab.c; path = Code/bone_tab.c; sourceTree = "<group>"; };
 		F503D2560981A35B00DEDC74 /* draw_model.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_model.c; path = Code/draw_model.c; sourceTree = "<group>"; };
 		F503D25E0981A3DC00DEDC74 /* draw_mesh_bone.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_mesh_bone.c; path = Code/draw_mesh_bone.c; sourceTree = "<group>"; };
@@ -390,6 +394,8 @@
 				F594B44609A947F800408388 /* dialog_pose_settings.c */,
 				F594B46809A9494800408388 /* dialog_pose_bone_settings.c */,
 				F5B3736A0C56807100D6AE9E /* dialog_animation_settings.c */,
+				26AA925B0DF2457E004A03AE /* dialog_particle_settings.c */,
+				26AA925D0DF24582004A03AE /* dialog_ring_settings.c */,
 				F5895D3E0C6570EC00AA2669 /* dialog_animation_time_reset.c */,
 				F594B48509A96EFB00408388 /* dialog_hit_box_settings.c */,
 				F5D1A7A30CF933E6001B5E1B /* dialog_play_blend_animation.c */,
@@ -542,6 +548,8 @@
 				F5263C1E0CC58C7E00A84EB9 /* c4d_xml_import.c in Sources */,
 				F5EA20E90CCB0B6D005A75F6 /* dialog_finish_import.c in Sources */,
 				F5D1A7A40CF933E6001B5E1B /* dialog_play_blend_animation.c in Sources */,
+				26AA925C0DF2457E004A03AE /* dialog_particle_settings.c in Sources */,
+				26AA925E0DF24582004A03AE /* dialog_ring_settings.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -562,8 +570,7 @@
 		F5DB0C230856A7FD005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

@@ -96,6 +96,8 @@ extern bool dialog_bone_nudge_run(int *x,int *z,int *y,bool *nudge_children,bool
 extern bool dialog_pose_settings_run(model_pose_type *pose);
 extern bool dialog_bone_move_settings_run(model_bone_move_type *bone_move);
 extern void dialog_animation_settings_run(int animate_idx,int pose_move_idx);
+extern bool dialog_ring_settings_run(model_ring_type *ring);
+extern bool dialog_particle_settings_run(model_particle_type *particle);
 extern bool dialog_animation_reset_time_run(int animate_idx);
 extern bool dialog_hit_box_settings_run(model_hit_box_type *hit_box);
 extern bool dialog_play_blend_animation_run(void);

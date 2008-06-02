@@ -325,6 +325,10 @@ extern int model_animate_pose_insert(model_type *model,int animate_idx,int anima
 extern void model_animate_pose_delete(model_type *model,int animate_idx,int animate_pose_idx);
 extern void model_animate_set_loop_start(model_type *model,int animate_idx,int animate_pose_idx);
 extern void model_animate_set_loop_end(model_type *model,int animate_idx,int animate_pose_idx);
+extern int model_animate_add_particle(model_type *model,int animate_idx,int animate_pose_idx);
+extern void model_animate_delete_particle(model_type *model,int animate_idx,int animate_pose_idx,int idx);
+extern int model_animate_add_ring(model_type *model,int animate_idx,int animate_pose_idx);
+extern void model_animate_delete_ring(model_type *model,int animate_idx,int animate_pose_idx,int idx);
 
 extern int model_hit_box_add(model_type *model);
 extern void model_hit_box_delete(model_type *model,int hit_box_idx);

@@ -27,6 +27,10 @@ _model_animate_pose_insert
 _model_animate_pose_delete
 _model_animate_set_loop_start
 _model_animate_set_loop_end
+_model_animate_add_particle
+_model_animate_delete_particle
+_model_animate_add_ring
+_model_animate_delete_ring
 
 _model_hit_box_add
 _model_hit_box_delete

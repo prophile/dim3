@@ -42,7 +42,7 @@ extern model_type		model;
 #define kAnimationPoseTab					FOUR_CHAR_CODE('tabb')
 
 #define kAnimationPoseList					FOUR_CHAR_CODE('psls')
-#define kPoseListNameColumn					FOUR_CHAR_CODE('pnme')
+#define kAniamtionPostListNameColumn		FOUR_CHAR_CODE('pnme')
 
 #define kAnimationPoseAdd					FOUR_CHAR_CODE('addp')
 #define kAnimationPoseSub					FOUR_CHAR_CODE('subp')
@@ -64,20 +64,17 @@ extern model_type		model;
 #define kAnimationSoundName					FOUR_CHAR_CODE('sndn')
 #define kAnimationSoundPitch				FOUR_CHAR_CODE('sndp')
 
-#define kAnimationParticleName				FOUR_CHAR_CODE('prtn')
-#define kAnimationParticleMotion			FOUR_CHAR_CODE('psim')
-#define kAnimationParticleMotionFactor		FOUR_CHAR_CODE('psmf')
-#define kAnimationParticleRotation			FOUR_CHAR_CODE('psir')
-#define kAnimationParticleStick				FOUR_CHAR_CODE('pssm')
-#define kAnimationParticleSlopX				FOUR_CHAR_CODE('pslx')
-#define kAnimationParticleSlopY				FOUR_CHAR_CODE('psly')
-#define kAnimationParticleSlopZ				FOUR_CHAR_CODE('pslz')
+#define kAnimationParticleList				FOUR_CHAR_CODE('part')
+#define kAnimationParticleListNameColumn	FOUR_CHAR_CODE('pnme')
+#define kAnimationParticleListBoneColumn	FOUR_CHAR_CODE('ebne')
+#define kAnimationParticleAdd				FOUR_CHAR_CODE('padd')
+#define kAnimationParticleSub				FOUR_CHAR_CODE('psub')
 
-#define kAnimationRingName					FOUR_CHAR_CODE('rign')
-#define kAnimationRingAngle					FOUR_CHAR_CODE('riga')
-#define kAnimationRingSlopX					FOUR_CHAR_CODE('rslx')
-#define kAnimationRingSlopY					FOUR_CHAR_CODE('rsly')
-#define kAnimationRingSlopZ					FOUR_CHAR_CODE('rslz')
+#define kAnimationRingList					FOUR_CHAR_CODE('ring')
+#define kAnimationRingListNameColumn		FOUR_CHAR_CODE('pnme')
+#define kAnimationRingListBoneColumn		FOUR_CHAR_CODE('ebne')
+#define kAnimationRingAdd					FOUR_CHAR_CODE('radd')
+#define kAnimationRingSub					FOUR_CHAR_CODE('rsub')
 
 #define kAnimationFlashIntensity			FOUR_CHAR_CODE('fint')
 #define kAnimationFlashColor				FOUR_CHAR_CODE('fcol')
@@ -95,10 +92,10 @@ extern model_type		model;
 #define kAnimationMeshFadeOutTime			FOUR_CHAR_CODE('msfo')
 
 WindowRef					dialog_animation_settings_wind;
-ControlRef					dialog_pose_move_list;
+ControlRef					dialog_pose_move_list,dialog_particle_list,dialog_ring_list;
 RGBColor					dialog_pose_move_settings_color;
 
-int							dialog_animate_idx,dialog_pose_move_idx;
+int							dialog_animate_idx,dialog_pose_move_idx,dialog_particle_idx,dialog_ring_idx;
 bool						dialog_pose_move_change_ok;
 
 /* =======================================================
@@ -127,26 +124,19 @@ void dialog_pose_move_settings_load(void)
 	dialog_set_float(dialog_animation_settings_wind,kAnimationPoseMoveX,0,pose_move->mov.x);
 	dialog_set_float(dialog_animation_settings_wind,kAnimationPoseMoveY,0,pose_move->mov.y);
 	dialog_set_float(dialog_animation_settings_wind,kAnimationPoseMoveZ,0,pose_move->mov.z);
-	
-	dialog_set_bone_combo(dialog_animation_settings_wind,kAnimationEffectBone,0,pose_move->effect_bone_idx);
 
 	dialog_special_combo_fill_sound(dialog_animation_settings_wind,kAnimationSoundName,0,pose_move->sound.name);
 	dialog_set_float(dialog_animation_settings_wind,kAnimationSoundPitch,0,pose_move->sound.pitch);
 	
-	dialog_special_combo_fill_particle(dialog_animation_settings_wind,kAnimationParticleName,0,pose_move->particle.name);
-	dialog_set_boolean(dialog_animation_settings_wind,kAnimationParticleMotion,0,pose_move->particle.motion);
-	dialog_set_float(dialog_animation_settings_wind,kAnimationParticleMotionFactor,0,pose_move->particle.motion_factor);
-	dialog_set_boolean(dialog_animation_settings_wind,kAnimationParticleRotation,0,pose_move->particle.rotate);
-	dialog_set_boolean(dialog_animation_settings_wind,kAnimationParticleStick,0,pose_move->particle.stick);
-	dialog_set_int(dialog_animation_settings_wind,kAnimationParticleSlopX,0,pose_move->particle.slop.x);
-	dialog_set_int(dialog_animation_settings_wind,kAnimationParticleSlopY,0,pose_move->particle.slop.y);
-	dialog_set_int(dialog_animation_settings_wind,kAnimationParticleSlopZ,0,pose_move->particle.slop.z);
+	dialog_particle_idx=-1;
+	
+	RemoveDataBrowserItems(dialog_particle_list,kDataBrowserNoItem,0,NULL,kDataBrowserItemNoProperty);
+	AddDataBrowserItems(dialog_particle_list,kDataBrowserNoItem,pose_move->particle.count,NULL,kDataBrowserItemNoProperty);
 
-	dialog_special_combo_fill_ring(dialog_animation_settings_wind,kAnimationRingName,0,pose_move->ring.name);
-	dialog_set_boolean(dialog_animation_settings_wind,kAnimationRingAngle,0,pose_move->ring.angle);
-	dialog_set_int(dialog_animation_settings_wind,kAnimationRingSlopX,0,pose_move->ring.slop.x);
-	dialog_set_int(dialog_animation_settings_wind,kAnimationRingSlopY,0,pose_move->ring.slop.y);
-	dialog_set_int(dialog_animation_settings_wind,kAnimationRingSlopZ,0,pose_move->ring.slop.z);
+	dialog_ring_idx=-1;
+	
+	RemoveDataBrowserItems(dialog_ring_list,kDataBrowserNoItem,0,NULL,kDataBrowserItemNoProperty);
+	AddDataBrowserItems(dialog_ring_list,kDataBrowserNoItem,pose_move->ring.count,NULL,kDataBrowserItemNoProperty);
 	
 	dialog_set_int(dialog_animation_settings_wind,kAnimationFlashIntensity,0,pose_move->flash.intensity);
 	dialog_set_int(dialog_animation_settings_wind,kAnimationFlashLiveTime,0,pose_move->flash.flash_msec);
@@ -192,26 +182,9 @@ void dialog_pose_move_settings_save(void)
 	pose_move->mov.y=dialog_get_float(dialog_animation_settings_wind,kAnimationPoseMoveY,0);
 	pose_move->mov.z=dialog_get_float(dialog_animation_settings_wind,kAnimationPoseMoveZ,0);
 	pose_move->acceleration=((float)dialog_get_value(dialog_animation_settings_wind,kAnimationPoseAccel,0))/100.0f;
-	
-	pose_move->effect_bone_idx=dialog_get_bone_combo(dialog_animation_settings_wind,kAnimationEffectBone,0);
 
 	dialog_special_combo_get_sound(dialog_animation_settings_wind,kAnimationSoundName,0,pose_move->sound.name,name_str_len);
 	pose_move->sound.pitch=dialog_get_float(dialog_animation_settings_wind,kAnimationSoundPitch,0);
-
-	dialog_special_combo_get_particle(dialog_animation_settings_wind,kAnimationParticleName,0,pose_move->particle.name,name_str_len);
-	pose_move->particle.motion=dialog_get_boolean(dialog_animation_settings_wind,kAnimationParticleMotion,0);
-	pose_move->particle.motion_factor=dialog_get_float(dialog_animation_settings_wind,kAnimationParticleMotionFactor,0);
-	pose_move->particle.rotate=dialog_get_boolean(dialog_animation_settings_wind,kAnimationParticleRotation,0);
-	pose_move->particle.stick=dialog_get_boolean(dialog_animation_settings_wind,kAnimationParticleStick,0);
-	pose_move->particle.slop.x=dialog_get_int(dialog_animation_settings_wind,kAnimationParticleSlopX,0);
-	pose_move->particle.slop.y=dialog_get_int(dialog_animation_settings_wind,kAnimationParticleSlopY,0);
-	pose_move->particle.slop.z=dialog_get_int(dialog_animation_settings_wind,kAnimationParticleSlopZ,0);
-
-	dialog_special_combo_get_ring(dialog_animation_settings_wind,kAnimationRingName,0,pose_move->ring.name,name_str_len);
-	pose_move->ring.angle=dialog_get_boolean(dialog_animation_settings_wind,kAnimationRingAngle,0);
-	pose_move->ring.slop.x=dialog_get_int(dialog_animation_settings_wind,kAnimationRingSlopX,0);
-	pose_move->ring.slop.y=dialog_get_int(dialog_animation_settings_wind,kAnimationRingSlopY,0);
-	pose_move->ring.slop.z=dialog_get_int(dialog_animation_settings_wind,kAnimationRingSlopZ,0);
 	
 	pose_move->flash.intensity=dialog_get_int(dialog_animation_settings_wind,kAnimationFlashIntensity,0);
 	pose_move->flash.flash_msec=dialog_get_int(dialog_animation_settings_wind,kAnimationFlashLiveTime,0);
@@ -255,8 +228,29 @@ void dialog_pose_list_reset(void)
 	Draw1Control(dialog_pose_move_list);
 }
 
+void dialog_particle_list_reset(void)
+{
+	dialog_particle_idx=-1;
+	
+	RemoveDataBrowserItems(dialog_particle_list,kDataBrowserNoItem,0,NULL,kDataBrowserItemNoProperty);
+	AddDataBrowserItems(dialog_particle_list,kDataBrowserNoItem,model.animates[dialog_animate_idx].pose_moves[dialog_pose_move_idx].particle.count,NULL,kDataBrowserItemNoProperty);
+
+	Draw1Control(dialog_particle_list);
+}
+
+void dialog_ring_list_reset(void)
+{
+	dialog_ring_idx=-1;
+	
+	RemoveDataBrowserItems(dialog_ring_list,kDataBrowserNoItem,0,NULL,kDataBrowserItemNoProperty);
+	AddDataBrowserItems(dialog_ring_list,kDataBrowserNoItem,model.animates[dialog_animate_idx].pose_moves[dialog_pose_move_idx].ring.count,NULL,kDataBrowserItemNoProperty);
+
+	Draw1Control(dialog_ring_list);
+}
+
 static pascal OSStatus animation_settings_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
+	int				idx;
 	HICommand		cmd;
 	
 	switch (GetEventKind(event)) {
@@ -266,6 +260,8 @@ static pascal OSStatus animation_settings_event_proc(EventHandlerCallRef handler
 			
 			switch (cmd.commandID) {
 			
+					// pose list buttons
+					
 				case kAnimationPoseAdd:
 					dialog_pose_move_idx=model_animate_pose_insert(&model,dialog_animate_idx,dialog_pose_move_idx,0);
 					dialog_pose_move_settings_load();
@@ -289,6 +285,44 @@ static pascal OSStatus animation_settings_event_proc(EventHandlerCallRef handler
 					model_animate_set_loop_end(&model,dialog_animate_idx,dialog_pose_move_idx);
 					dialog_pose_list_reset();
 					return(noErr);
+					
+					// particle list buttons
+					
+				case kAnimationParticleAdd:
+					idx=model_animate_add_particle(&model,dialog_animate_idx,dialog_pose_move_idx);
+					if (idx==-1) return(noErr);
+				
+					if (!dialog_particle_settings_run(&model.animates[dialog_animate_idx].pose_moves[dialog_pose_move_idx].particle.particles[idx])) {
+						model_animate_delete_particle(&model,dialog_animate_idx,dialog_pose_move_idx,idx);
+					}
+					
+					dialog_particle_list_reset();
+					return(noErr);
+					
+				case kAnimationParticleSub:
+					if (dialog_particle_idx!=-1) model_animate_delete_particle(&model,dialog_animate_idx,dialog_pose_move_idx,dialog_particle_idx);
+					dialog_particle_list_reset();
+					return(noErr);
+					
+					// ring list buttons
+					
+				case kAnimationRingAdd:
+					idx=model_animate_add_ring(&model,dialog_animate_idx,dialog_pose_move_idx);
+					if (idx==-1) return(noErr);
+				
+					if (!dialog_ring_settings_run(&model.animates[dialog_animate_idx].pose_moves[dialog_pose_move_idx].ring.rings[idx])) {
+						model_animate_delete_ring(&model,dialog_animate_idx,dialog_pose_move_idx,idx);
+					}
+					
+					dialog_ring_list_reset();
+					return(noErr);
+					
+				case kAnimationRingSub:
+					if (dialog_ring_idx!=-1) model_animate_delete_ring(&model,dialog_animate_idx,dialog_pose_move_idx,dialog_ring_idx);
+					dialog_ring_list_reset();
+					return(noErr);
+					
+					// dialog buttons
 			
 				case kAnimationPosePlay:
 					model_wind_play(!play_animate,FALSE);
@@ -369,7 +403,7 @@ static pascal OSStatus pose_list_item_proc(ControlRef ctrl,DataBrowserItemID ite
 	
 	switch (property) {
 	
-		case kPoseListNameColumn:
+		case kAniamtionPostListNameColumn:
 			idx=itemID-1;
 			
 			pose_idx=model.animates[dialog_animate_idx].pose_moves[idx].pose_idx;
@@ -408,6 +442,110 @@ static pascal void pose_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemI
 
 /* =======================================================
 
+      Particle List Event Handlers
+      
+======================================================= */
+
+static pascal OSStatus particle_list_item_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserPropertyID property,DataBrowserItemDataRef itemData,Boolean changeValue)
+{
+	int						idx;
+	CFStringRef				cfstr;
+	model_particle_type		*particle;
+
+	idx=itemID-1;
+	particle=&model.animates[dialog_animate_idx].pose_moves[dialog_pose_move_idx].particle.particles[idx];
+
+	switch (property) {
+	
+		case kAnimationParticleListNameColumn:
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,particle->name,kCFStringEncodingMacRoman);
+			SetDataBrowserItemDataText(itemData,cfstr);
+			CFRelease(cfstr);
+			return(noErr);
+			
+		case kAnimationParticleListBoneColumn:
+			if (particle->bone_idx==-1) return(noErr);
+			
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,model.bones[particle->bone_idx].name,kCFStringEncodingMacRoman);
+			SetDataBrowserItemDataText(itemData,cfstr);
+			CFRelease(cfstr);
+			return(noErr);			
+
+	}
+
+	return(errDataBrowserPropertyNotSupported);
+}
+
+static pascal void particle_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserItemNotification message)
+{
+	switch (message) {
+
+		case kDataBrowserItemSelected:
+			dialog_particle_idx=itemID-1;
+			break;
+
+		case kDataBrowserItemDoubleClicked:
+			dialog_particle_idx=itemID-1;
+			dialog_particle_settings_run(&model.animates[dialog_animate_idx].pose_moves[dialog_pose_move_idx].particle.particles[dialog_particle_idx]);
+			break;
+
+	}
+}
+
+/* =======================================================
+
+      Ring List Event Handlers
+      
+======================================================= */
+
+static pascal OSStatus ring_list_item_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserPropertyID property,DataBrowserItemDataRef itemData,Boolean changeValue)
+{
+	int						idx;
+	CFStringRef				cfstr;
+	model_ring_type			*ring;
+	
+	idx=itemID-1;
+	ring=&model.animates[dialog_animate_idx].pose_moves[dialog_pose_move_idx].ring.rings[idx];
+
+	switch (property) {
+	
+		case kAnimationRingListNameColumn:
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,ring->name,kCFStringEncodingMacRoman);
+			SetDataBrowserItemDataText(itemData,cfstr);
+			CFRelease(cfstr);
+			return(noErr);
+			
+		case kAnimationRingListBoneColumn:
+			if (ring->bone_idx==-1) return(noErr);
+			
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,model.bones[ring->bone_idx].name,kCFStringEncodingMacRoman);
+			SetDataBrowserItemDataText(itemData,cfstr);
+			CFRelease(cfstr);
+			return(noErr);			
+
+	}
+
+	return(errDataBrowserPropertyNotSupported);
+}
+
+static pascal void ring_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserItemNotification message)
+{
+	switch (message) {
+
+		case kDataBrowserItemSelected:
+			dialog_ring_idx=itemID-1;
+			break;
+
+		case kDataBrowserItemDoubleClicked:
+			dialog_ring_idx=itemID-1;
+			dialog_ring_settings_run(&model.animates[dialog_animate_idx].pose_moves[dialog_pose_move_idx].ring.rings[dialog_ring_idx]);
+			break;
+
+	}
+}
+
+/* =======================================================
+
       Run Pose Move Setting
       
 ======================================================= */
@@ -419,8 +557,8 @@ void dialog_animation_settings_run(int animate_idx,int pose_move_idx)
 	ControlID						ctrl_id;
 	DataBrowserItemID				itemID;
 	DataBrowserCallbacks			dbcall;
-	DataBrowserItemDataUPP			list_item_upp;
-	DataBrowserItemNotificationUPP	list_notify_upp;
+	DataBrowserItemDataUPP			pose_list_item_upp,particle_list_item_upp,ring_list_item_upp;
+	DataBrowserItemNotificationUPP	pose_list_notify_upp,particle_list_notify_upp,ring_list_notify_upp;
 	EventHandlerUPP					event_upp,tab_event_upp,button_event_upp;
 	EventLoopTimerRef				timer_event;
 	EventLoopTimerUPP				timer_upp;
@@ -474,11 +612,11 @@ void dialog_animation_settings_run(int animate_idx,int pose_move_idx)
 	dbcall.version=kDataBrowserLatestCallbacks;
 	InitDataBrowserCallbacks(&dbcall);
 	
-	list_item_upp=NewDataBrowserItemDataUPP(&pose_list_item_proc);
-	dbcall.u.v1.itemDataCallback=list_item_upp;
+	pose_list_item_upp=NewDataBrowserItemDataUPP(&pose_list_item_proc);
+	dbcall.u.v1.itemDataCallback=pose_list_item_upp;
 
-	list_notify_upp=NewDataBrowserItemNotificationUPP(&pose_list_notify_proc);
-	dbcall.u.v1.itemNotificationCallback=list_notify_upp;
+	pose_list_notify_upp=NewDataBrowserItemNotificationUPP(&pose_list_notify_proc);
+	dbcall.u.v1.itemNotificationCallback=pose_list_notify_upp;
 	
 	SetDataBrowserCallbacks(dialog_pose_move_list,&dbcall);
 	
@@ -490,6 +628,40 @@ void dialog_animation_settings_run(int animate_idx,int pose_move_idx)
 	SetDataBrowserSelectedItems(dialog_pose_move_list,1,&itemID,kDataBrowserItemsAssign);
 	
 	dialog_pose_move_change_ok=TRUE;
+	
+		// setup particle list
+
+	ctrl_id.signature=kAnimationParticleList;
+	ctrl_id.id=0;
+	GetControlByID(dialog_animation_settings_wind,&ctrl_id,&dialog_particle_list);
+	
+	dbcall.version=kDataBrowserLatestCallbacks;
+	InitDataBrowserCallbacks(&dbcall);
+	
+	particle_list_item_upp=NewDataBrowserItemDataUPP(&particle_list_item_proc);
+	dbcall.u.v1.itemDataCallback=particle_list_item_upp;
+
+	particle_list_notify_upp=NewDataBrowserItemNotificationUPP(&particle_list_notify_proc);
+	dbcall.u.v1.itemNotificationCallback=particle_list_notify_upp;
+	
+	SetDataBrowserCallbacks(dialog_particle_list,&dbcall);
+	
+		// setup ring list
+		
+	ctrl_id.signature=kAnimationRingList;
+	ctrl_id.id=0;
+	GetControlByID(dialog_animation_settings_wind,&ctrl_id,&dialog_ring_list);
+	
+	dbcall.version=kDataBrowserLatestCallbacks;
+	InitDataBrowserCallbacks(&dbcall);
+	
+	ring_list_item_upp=NewDataBrowserItemDataUPP(&ring_list_item_proc);
+	dbcall.u.v1.itemDataCallback=ring_list_item_upp;
+
+	ring_list_notify_upp=NewDataBrowserItemNotificationUPP(&ring_list_notify_proc);
+	dbcall.u.v1.itemNotificationCallback=ring_list_notify_upp;
+	
+	SetDataBrowserCallbacks(dialog_ring_list,&dbcall);
 
 		// fill pose combo
 
@@ -545,8 +717,15 @@ void dialog_animation_settings_run(int animate_idx,int pose_move_idx)
 
 		// close window
 		
-	DisposeDataBrowserItemDataUPP(list_item_upp);
-	DisposeDataBrowserItemNotificationUPP(list_notify_upp);
+	DisposeDataBrowserItemDataUPP(pose_list_item_upp);
+	DisposeDataBrowserItemNotificationUPP(pose_list_notify_upp);
+	
+	DisposeDataBrowserItemDataUPP(particle_list_item_upp);
+	DisposeDataBrowserItemNotificationUPP(particle_list_notify_upp);
+	
+	DisposeDataBrowserItemDataUPP(ring_list_item_upp);
+	DisposeDataBrowserItemNotificationUPP(ring_list_notify_upp);
+	
 	DisposeWindow(dialog_animation_settings_wind);
 }
 

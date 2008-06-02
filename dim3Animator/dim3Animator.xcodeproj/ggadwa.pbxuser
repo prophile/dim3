@@ -29,6 +29,9 @@
 		activeBuildConfigurationName = Release;
 		activeExecutable = 260AFF750D406EF900F6C42F /* dim3 Animator in dim3 */;
 		activeTarget = F5A42D7F0555EC87002DF965 /* dim3 Animator */;
+		addToTargets = (
+			F5A42D7F0555EC87002DF965 /* dim3 Animator */,
+		);
 		codeSenseManager = 260AFEF00D40506700F6C42F /* Code sense */;
 		executables = (
 			260AFEE30D40504C00F6C42F /* dim3 Animator */,
@@ -93,8 +96,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 233811888;
-			PBXWorkspaceStateSaveDate = 233811888;
+			PBXPerProjectTemplateStateSaveDate = 233904508;
+			PBXWorkspaceStateSaveDate = 233904508;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -199,11 +202,27 @@
 		path = "../../dim3/dim3 Animator.app";
 		sourceTree = SOURCE_ROOT;
 	};
+	26AA925B0DF2457E004A03AE /* dialog_particle_settings.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1988}}";
+			sepNavSelRange = "{5269, 0}";
+			sepNavVisRange = "{2828, 2444}";
+			sepNavWindowFrame = "{{394, 163}, {1041, 747}}";
+		};
+	};
+	26AA925D0DF24582004A03AE /* dialog_ring_settings.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1862}}";
+			sepNavSelRange = "{4232, 0}";
+			sepNavVisRange = "{2399, 1836}";
+			sepNavWindowFrame = "{{247, 201}, {1041, 747}}";
+		};
+	};
 	F502976802E0BC0201701C02 /* bone_tab.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {536, 6020}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5978}}";
 			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 501}";
+			sepNavVisRange = "{2309, 1111}";
 			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
 		};
 	};
@@ -237,6 +256,14 @@
 			sepNavSelRange = "{1634, 0}";
 			sepNavVisRange = "{949, 1176}";
 			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
+		};
+	};
+	F5941294097878F300223F2A /* dialog_mesh_info.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1596}}";
+			sepNavSelRange = "{1114, 24}";
+			sepNavVisRange = "{71, 1545}";
+			sepNavWindowFrame = "{{84, 213}, {1041, 747}}";
 		};
 	};
 	F594B44609A947F800408388 /* dialog_pose_settings.c */ = {
@@ -279,10 +306,10 @@
 	};
 	F5B3736A0C56807100D6AE9E /* dialog_animation_settings.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7070}}";
-			sepNavSelRange = "{1026, 0}";
-			sepNavVisRange = "{343, 1758}";
-			sepNavWindowFrame = "{{61, 234}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1092, 9646}}";
+			sepNavSelRange = "{13815, 0}";
+			sepNavVisRange = "{12132, 1780}";
+			sepNavWindowFrame = "{{295, 187}, {1041, 747}}";
 		};
 	};
 	F5B4082707104E7700600D33 /* click_window.c */ = {
@@ -291,6 +318,14 @@
 			sepNavSelRange = "{7652, 0}";
 			sepNavVisRange = "{7064, 1084}";
 			sepNavWindowFrame = "{{739, 133}, {1041, 747}}";
+		};
+	};
+	F5C01E8301EABB0C01A091D9 /* animation_tab.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1032, 5068}}";
+			sepNavSelRange = "{4591, 0}";
+			sepNavVisRange = "{4307, 1279}";
+			sepNavWindowFrame = "{{228, 194}, {1041, 747}}";
 		};
 	};
 	F5C01E8401EABB0C01A091D9 /* pose_tab.c */ = {
@@ -320,17 +355,33 @@
 	F5C5354609267C6D00663E36 /* dialog.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 1526}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{530, 2692}";
+			sepNavSelRange = "{3889, 0}";
+			sepNavVisRange = "{2814, 2882}";
 			sepNavWindowFrame = "{{38, 255}, {1041, 747}}";
+		};
+	};
+	F5C6C64A09D659BB005DFE3D /* dialog_model_settings.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2338}}";
+			sepNavSelRange = "{4565, 38}";
+			sepNavVisRange = "{2504, 1716}";
+			sepNavWindowFrame = "{{107, 192}, {1041, 747}}";
 		};
 	};
 	F5CA4EF7051010AD0055C8B8 /* modelutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 5964}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6790}}";
 			sepNavSelRange = "{2347, 14}";
-			sepNavVisRange = "{949, 1455}";
+			sepNavVisRange = "{4631, 1280}";
 			sepNavWindowFrame = "{{84, 213}, {1041, 747}}";
+		};
+	};
+	F5F2FF1409AAC18600F88975 /* dialog_vertex_setting.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2856}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1691}";
+			sepNavWindowFrame = "{{130, 171}, {1041, 747}}";
 		};
 	};
 }
