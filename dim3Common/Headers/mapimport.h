@@ -268,7 +268,7 @@ typedef struct	{
 
 #define ag_constant_step_high						(2*map_enlarge)
 #define ag_constant_step_corridor_size				(8*map_enlarge)
-#define ag_constant_step_story_size					500
+#define ag_constant_step_story_size					800
 
 #define ag_constant_ramp_min_high					(4*map_enlarge)
 #define ag_constant_ramp_size_percent				4.0f

@@ -562,8 +562,13 @@ void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *
 
 				// poly ignores
 
-			if (contact->poly_ignore_non_wall) {
-				if (!mesh_poly->box.wall_like) continue;
+			if (contact->hit_mode!=poly_ray_trace_hit_mode_all) {
+				if (mesh_poly->box.wall_like) {
+					if (contact->hit_mode==poly_ray_trace_hit_mode_floor_only) continue;
+				}
+				else {
+					if (contact->hit_mode==poly_ray_trace_hit_mode_wall_only) continue;
+				}
 			}
 
 				// rough bounds check

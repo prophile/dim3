@@ -214,7 +214,7 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		contact[n].proj_on=FALSE;
 		contact[n].proj_ignore_uid=-1;
 
-		contact[n].poly_ignore_non_wall=TRUE;
+		contact[n].hit_mode=poly_ray_trace_hit_mode_wall_only;
 	
 			// run trace
 
@@ -289,7 +289,7 @@ bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
 	contact.proj_on=proj_setup->collision;
 	contact.proj_ignore_uid=proj->uid;
 
-	contact.poly_ignore_non_wall=FALSE;
+	contact.hit_mode=poly_ray_trace_hit_mode_all;
 
 		// run trace
 

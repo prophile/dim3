@@ -156,7 +156,7 @@ void halo_draw_setup(void)
 
 	contact.proj_on=FALSE;
 	contact.proj_ignore_uid=-1;
-	contact.poly_ignore_non_wall=FALSE;
+	contact.hit_mode=poly_ray_trace_hit_mode_all;
 
 	for (i=0;i<view.count.halo_draw;i++) {
 		halo_draw=&view.halo_draws[i];

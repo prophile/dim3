@@ -336,7 +336,7 @@ void object_alter_gravity(obj_type *obj,float alt_gravity)
       
 ======================================================= */
 
-bool object_bump_up(obj_type *obj,int xmove,int zmove)
+bool object_bump_up(obj_type *obj)
 {
 	int					uid,ydif,ymove;
     obj_type			*hit_obj;
@@ -371,15 +371,11 @@ bool object_bump_up(obj_type *obj,int xmove,int zmove)
 
 	ymove=pin_upward_movement_obj(obj,-ydif);
 	
-		// check if bump will be OK
-// supergumba -- need to rewrite this		
-//	if (!move_obj_check_bump(obj,xmove,zmove,ymove)) return(FALSE);
-	
 		// do bump
 	
 	obj->pos.y+=ymove;
 	obj->bump.smooth_offset+=abs(ymove);					// bump moves player up, but offset pushes them down and smoothes out the bump
-	
+
 	return(obj->contact.head_poly.portal_idx==-1);
 }
 
@@ -1046,8 +1042,8 @@ void object_move_normal(obj_type *obj)
 		object_move_y_down(obj,yadd);
 	}
 
-	obj->pos.x-=xadd;
-	obj->pos.z-=zadd;
+	obj->pos.x=old_pos.x;
+	obj->pos.z=old_pos.z;
 
 		// add in the last y change. we use this
 		// information in the next move to help
@@ -1084,17 +1080,25 @@ void object_move_normal(obj_type *obj)
 				// attempt to move
 
 			if (object_move_xz_slide(obj,&xadd,&yadd,&zadd)) {
+
+					// if bumped up, reset x and z
+					// (not y, as it was bumped), remove
+					// any external y movement, and
+					// try to move again
+
+				if (object_bump_up(obj)) {
+					obj->pos.x=old_pos.x;
+					obj->pos.z=old_pos.z;
+					xadd=(int)xmove;
+					yadd=0;
+					zadd=(int)zmove;
+					obj->contact.hit_poly.portal_idx=-1;
+					continue;
+				}
 				
 					// push objects
 
 				object_push_with_object(obj,xadd,zadd);
-
-					// if bumped up, move again
-
-				if (object_bump_up(obj,xadd,zadd)) {
-					yadd=0;
-					continue;	
-				}
 			}
 
 				// move objects standing on object

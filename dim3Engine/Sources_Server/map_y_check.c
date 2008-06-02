@@ -30,6 +30,10 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+
+// supergumba -- move to physics
+#define object_box_check_point_division		100
+
 #include "scripts.h"
 #include "objects.h"
 #include "physics.h"
@@ -57,9 +61,9 @@ int find_poly_for_upward_point(int x,int y,int z,int ydist,poly_pointer_type *po
 	ept.z=z;
 
 	contact.obj_on=FALSE;
-	contact.proj_on=FALSE;		// supergumba -- rewrite ALL of this
+	contact.proj_on=FALSE;
 
-	contact.poly_ignore_non_wall=FALSE;
+	contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
 
 	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
 		memmove(poly,&contact.poly,sizeof(poly_pointer_type));
@@ -85,9 +89,9 @@ int find_poly_for_downward_point(int x,int y,int z,int ydist,poly_pointer_type *
 	ept.z=z;
 
 	contact.obj_on=FALSE;
-	contact.proj_on=FALSE;		// supergumba -- rewrite ALL of this
+	contact.proj_on=FALSE;
 
-	contact.poly_ignore_non_wall=FALSE;
+	contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
 
 	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
 		memmove(poly,&contact.poly,sizeof(poly_pointer_type));
@@ -122,7 +126,7 @@ int find_poly_nearest_stand(int x,int y,int z,int ydist,bool ignore_higher)
 	contact.obj_on=FALSE;
 	contact.proj_on=FALSE;
 
-	contact.poly_ignore_non_wall=FALSE;
+	contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
 
 	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) return(hpt.y);
 
@@ -135,6 +139,71 @@ int find_poly_nearest_stand(int x,int y,int z,int ydist,bool ignore_higher)
       
 ======================================================= */
 
+
+
+// supergumba -- testing
+int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly)
+{
+	int					x,y,z,cy,fy,
+						xdiv,zdiv,xsz,zsz;
+	poly_pointer_type	poly;
+
+		// get check division
+
+	xsz=(box->max_x-box->min_x)/object_box_check_point_division;
+	if (xsz<=0) xsz=1;
+
+	zsz=(box->max_z-box->min_z)/object_box_check_point_division;
+	if (zsz<=0) zsz=1;
+
+		// find the highest point
+		
+	stand_poly->portal_idx=-1;
+	cy=-1;
+
+	y=box->max_y;
+	
+	for (zdiv=0;zdiv<=zsz;zdiv++) {
+
+		if (zdiv==zsz) {
+			z=box->max_z;
+		}
+		else {
+			z=box->min_z+(zdiv*object_box_check_point_division);
+		}
+
+		for (xdiv=0;xdiv<=xsz;xdiv++) {
+
+			if (xdiv==xsz) {
+				x=box->max_x;
+			}
+			else {
+				x=box->min_x+(xdiv*object_box_check_point_division);
+			}
+		
+				// check poly collisions
+				
+			fy=find_poly_for_downward_point(x,y,z,ydist,&poly);
+			if (poly.portal_idx!=-1) {
+				if (stand_poly->portal_idx==-1) {
+					memmove(stand_poly,&poly,sizeof(poly_pointer_type));
+					cy=fy;
+				}
+				else {
+					if (fy<cy) {
+						memmove(stand_poly,&poly,sizeof(poly_pointer_type));
+						cy=fy;
+					}
+				}
+			}
+		}
+	}
+	
+	return(cy);
+}
+
+
+/*
 int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly)
 {
 	int					i,x,y,z,cy,fy,px[5],pz[5];
@@ -179,7 +248,7 @@ int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly
 	
 	return(cy);
 }
-
+*/
 /* =======================================================
 
       Pin Upward Box Movements

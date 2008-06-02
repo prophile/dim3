@@ -106,7 +106,7 @@ extern void object_gravity(obj_type *obj);
 extern void object_fix_force(obj_type *obj);
 extern void object_alter_speed(obj_type *obj,float alt_speed);
 extern void object_alter_gravity(obj_type *obj,float alt_gravity);
-extern bool object_bump_up(obj_type *obj,int xmove,int zmove);
+extern bool object_bump_up(obj_type *obj);
 extern void object_fix_bump_smooth(obj_type *obj);
 extern void object_move_xz_bounce(obj_type *obj);
 extern void object_motion_slope_alter_movement_single(float *mv,float slope_y,float slope_mv);

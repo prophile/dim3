@@ -893,11 +893,14 @@ typedef struct		{
 // ray trace structures
 //
 
+#define poly_ray_trace_hit_mode_all				0
+#define poly_ray_trace_hit_mode_wall_only		1
+#define poly_ray_trace_hit_mode_floor_only		2
+
 typedef struct		{
-						int						obj_uid,proj_uid,
+						int						obj_uid,proj_uid,hit_mode,
 												obj_ignore_uid,proj_ignore_uid;
-						bool					obj_on,proj_on,
-												poly_ignore_non_wall;
+						bool					obj_on,proj_on;
 						poly_pointer_type		poly;
 					} ray_trace_contact_type;
 
