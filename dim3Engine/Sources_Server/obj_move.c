@@ -986,10 +986,10 @@ void object_move_swim(obj_type *obj)
 
 void object_move_normal(obj_type *obj)
 {
-	int				rn,x,z,xadd,yadd,zadd,
-					start_y,fall_damage;
+	int				rn,x,z,xadd,yadd,zadd,bump_cnt,
+					start_y,fall_damage,hit_obj_uid;
     float			xmove,zmove,ymove;
-	bool			old_falling,did_bump;
+	bool			old_falling;
 	d3pos			old_pos;
 
 		// get object motion
@@ -1075,36 +1075,53 @@ void object_move_normal(obj_type *obj)
 
 	if ((xadd!=0) || (zadd!=0)) {
 	
-		did_bump=FALSE;
+			// attempt to move
 
-		while (TRUE) {
-			
-				// attempt to move
+		if (object_move_xz_slide(obj,&xadd,&yadd,&zadd)) {
 
-			if (object_move_xz_slide(obj,&xadd,&yadd,&zadd)) {
+				// run any bump up, then
+				// try the movement again
+				// do this a couple time to
+				// get up very steep stairs
 
-					// if bumped up, reset x and z
-					// (not y, as it was bumped), remove
-					// any external y movement, and
-					// try to move again
+			bump_cnt=0;
 
-				if (!did_bump) {
-					if (object_bump_up(obj)) {
-						obj->pos.x=old_pos.x;
-						obj->pos.z=old_pos.z;
-						xadd=(int)xmove;
-						yadd=0;
-						zadd=(int)zmove;
-						obj->contact.hit_poly.portal_idx=-1;
-						did_bump=TRUE;
-						continue;
-					}
+			while (TRUE) {
+
+				if (object_bump_up(obj)) {
+					xadd=(int)xmove;
+					yadd=0;
+					zadd=(int)zmove;
+					
+					obj->contact.hit_poly.portal_idx=-1;
+					if (!object_move_xz_slide(obj,&xadd,&yadd,&zadd)) break;
+
+					bump_cnt++;
+					if (bump_cnt>2) break;
+
+					continue;
 				}
 				
-					// push objects
-
-				object_push_with_object(obj,xadd,zadd);
+				break;
 			}
+					
+				// push objects, then
+				// try the movement again
+				// save the hit object uid so
+				// the hit still registers
+
+			if (!object_push_with_object(obj,xadd,zadd)) {
+				xadd=(int)xmove;
+				yadd=(int)ymove;
+				zadd=(int)zmove;
+
+				hit_obj_uid=obj->contact.obj_uid;
+				object_move_xz_slide(obj,&xadd,&yadd,&zadd);
+				obj->contact.obj_uid=hit_obj_uid;
+			}
+		}
+
+		if ((xadd!=0) || (zadd!=0)) {
 
 				// move objects standing on object
 
@@ -1120,12 +1137,10 @@ void object_move_normal(obj_type *obj)
 				memmove(&obj->pos,&old_pos,sizeof(d3pos));
 			}
 
-			break;
+				// objects with automatic bouncing
+
+			object_move_xz_bounce(obj);
 		}
-
-			// objects with automatic bouncing
-
-		object_move_xz_bounce(obj);
 	}
 	
 		// check for objects that have finished falling

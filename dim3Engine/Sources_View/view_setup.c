@@ -558,10 +558,6 @@ void view_draw_setup(int tick)
 		
 	if (obj->bump.on) view.camera.pos.y+=obj->bump.smooth_offset;		
 	
-		// ang for forward facing models
-		
-	memmove(&view.draw_forward_ang,&view.camera.ang,sizeof(d3ang));
-	
 		// setup viewport
 	
 	gl_setup_viewport(console_y_offset());

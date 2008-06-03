@@ -434,7 +434,7 @@ obj_type* object_create(int bind)
 	obj->rigid_body.smooth_factor_z=0.2f;
 	
     obj->bump.on=TRUE;
-    obj->bump.high=map_enlarge;
+    obj->bump.high=map_enlarge*3;
 	obj->bump.smooth_factor=0.1f;
 	obj->bump.smooth_offset=0;
 

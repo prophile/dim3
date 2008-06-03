@@ -66,7 +66,7 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 	x_sz=map_enlarge<<1;
 	y_sz=map_enlarge<<2;
 	z_sz=0;
-	rotate_2D_point_center(&x_sz,&z_sz,view.draw_forward_ang.y);
+	rotate_2D_point_center(&x_sz,&z_sz,view.camera.ang.y);
 
 		// draw the bitmap
 		

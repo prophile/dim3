@@ -243,7 +243,7 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		bump=((obj->pos.y-poly->box.min.y)<=obj->bump.high);
 	}
 	else {
-		bump=false;
+		bump=FALSE;
 	}
 	
 		// make sure distance stays within

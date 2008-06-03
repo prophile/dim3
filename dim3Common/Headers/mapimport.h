@@ -254,7 +254,7 @@ typedef struct	{
 #define ag_constant_portal_rough_floor_percent		0.025f
 #define ag_constant_portal_ceiling_slant_percent	0.40f
 
-#define ag_constant_portal_story_high				(4*map_enlarge)
+#define ag_constant_portal_story_high				(5*map_enlarge)
 #define ag_constant_story_steps_split_factor		1
 
 #define ag_constant_corridor_size_percent			0.25f
@@ -266,9 +266,9 @@ typedef struct	{
 
 #define ag_constant_light_animate_percentage		0.1f
 
-#define ag_constant_step_high						(2*map_enlarge)
+#define ag_constant_step_high						(3*map_enlarge)
 #define ag_constant_step_corridor_size				(8*map_enlarge)
-#define ag_constant_step_story_size					500
+#define ag_constant_step_story_size					800
 
 #define ag_constant_ramp_min_high					(4*map_enlarge)
 #define ag_constant_ramp_size_percent				4.0f
