@@ -139,9 +139,9 @@ int find_poly_nearest_stand(int x,int y,int z,int ydist,bool ignore_higher)
       
 ======================================================= */
 
-
-
 // supergumba -- testing
+
+/*
 int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly)
 {
 	int					x,y,z,cy,fy,
@@ -201,9 +201,8 @@ int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly
 	
 	return(cy);
 }
+*/
 
-
-/*
 int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly)
 {
 	int					i,x,y,z,cy,fy,px[5],pz[5];
@@ -248,7 +247,7 @@ int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly
 	
 	return(cy);
 }
-*/
+
 /* =======================================================
 
       Pin Upward Box Movements

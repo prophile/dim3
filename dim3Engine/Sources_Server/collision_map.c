@@ -158,7 +158,9 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 							px[15],py[15],pz[15],
 							d,dist,mv_dist;
 	float					mv_ang;
+	bool					bump;
 	d3pnt					spt,ept,hpt[15];
+	map_mesh_poly_type		*poly;
 	ray_trace_contact_type	contact[15];
 
 		// get collision points
@@ -231,18 +233,37 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 
 	if (idx==-1) return(FALSE);
 	
+		// determine if hit poly is bump-capable
+		// we ignore object radius calculations
+		// for bump-capable segments as it pushes
+		// the object around on stairs
+		
+	if (obj->bump.on) {
+		poly=&map.portals[contact[idx].poly.portal_idx].mesh.meshes[contact[idx].poly.mesh_idx].polys[contact[idx].poly.poly_idx];
+		bump=((obj->pos.y-poly->box.min.y)<=obj->bump.high);
+	}
+	else {
+		bump=false;
+	}
+	
 		// make sure distance stays within
 		// object radius
 
-	x=hpt[idx].x-px[idx];
-	z=hpt[idx].z-pz[idx];
+	if (!bump) {
+		x=hpt[idx].x-px[idx];
+		z=hpt[idx].z-pz[idx];
 
-	d=(int)(sqrt((double)(x*x)+(double)(z*z)));
+		d=(int)(sqrt((double)(x*x)+(double)(z*z)));
 
-	angle_get_movement(mv_ang,(radius-d),&xadd2,&zadd2);
-	*xadd=(*xadd)-xadd2;
-	*zadd=(*zadd)-zadd2;
-
+		angle_get_movement(mv_ang,(radius-d),&xadd2,&zadd2);
+		*xadd=(*xadd)-xadd2;
+		*zadd=(*zadd)-zadd2;
+	}
+	else {
+		*xadd=hpt[idx].x-px[idx];
+		*zadd=hpt[idx].z-pz[idx];
+	}
+	
 		// setup the hits
 
 	if (contact[idx].poly.portal_idx!=-1) {

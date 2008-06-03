@@ -80,8 +80,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 233812085;
-			PBXWorkspaceStateSaveDate = 233812085;
+			PBXPerProjectTemplateStateSaveDate = 234149503;
+			PBXWorkspaceStateSaveDate = 234149503;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -494,9 +494,9 @@
 	};
 	F5A582BD090C98D500BE7C36 /* server_defs.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 15106}}";
-			sepNavSelRange = "{14001, 0}";
-			sepNavVisRange = "{13505, 1211}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 13972}}";
+			sepNavSelRange = "{9984, 8}";
+			sepNavVisRange = "{9341, 1075}";
 			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
 		};
 	};
@@ -654,9 +654,9 @@
 	};
 	F5C5EB100913264E00F94729 /* map.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7280}}";
-			sepNavSelRange = "{8703, 0}";
-			sepNavVisRange = "{8411, 860}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7168}}";
+			sepNavSelRange = "{5266, 0}";
+			sepNavVisRange = "{4512, 1083}";
 			sepNavWindowFrame = "{{286, 195}, {1041, 747}}";
 		};
 	};
@@ -812,9 +812,9 @@
 	};
 	F5DD1A150908580100721649 /* obj_move.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 17444}}";
-			sepNavSelRange = "{23517, 0}";
-			sepNavVisRange = "{23294, 897}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 17458}}";
+			sepNavSelRange = "{24145, 0}";
+			sepNavVisRange = "{23576, 951}";
 			sepNavWindowFrame = "{{331, 218}, {1041, 747}}";
 		};
 	};
@@ -904,6 +904,14 @@
 			sepNavSelRange = "{1790, 0}";
 			sepNavVisRange = "{1137, 963}";
 			sepNavWindowFrame = "{{199, 108}, {1041, 747}}";
+		};
+	};
+	F5DD1A4A0908598900721649 /* map_y_check.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5880}}";
+			sepNavSelRange = "{3313, 0}";
+			sepNavVisRange = "{3063, 968}";
+			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
 		};
 	};
 	F5DD1A5609085AA200721649 /* segment_liquid.c */ = {
@@ -1044,9 +1052,9 @@
 	};
 	F5DD2C8E0CEABBA20028796D /* collision_map.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4368}}";
-			sepNavSelRange = "{5024, 0}";
-			sepNavVisRange = "{4312, 1015}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4662}}";
+			sepNavSelRange = "{6040, 0}";
+			sepNavVisRange = "{5721, 1297}";
 			sepNavWindowFrame = "{{148, 260}, {1041, 747}}";
 		};
 	};

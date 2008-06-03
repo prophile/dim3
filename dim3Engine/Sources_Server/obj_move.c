@@ -989,7 +989,7 @@ void object_move_normal(obj_type *obj)
 	int				rn,x,z,xadd,yadd,zadd,
 					start_y,fall_damage;
     float			xmove,zmove,ymove;
-	bool			old_falling;
+	bool			old_falling,did_bump;
 	d3pos			old_pos;
 
 		// get object motion
@@ -1074,6 +1074,8 @@ void object_move_normal(obj_type *obj)
 		// object
 
 	if ((xadd!=0) || (zadd!=0)) {
+	
+		did_bump=FALSE;
 
 		while (TRUE) {
 			
@@ -1086,14 +1088,17 @@ void object_move_normal(obj_type *obj)
 					// any external y movement, and
 					// try to move again
 
-				if (object_bump_up(obj)) {
-					obj->pos.x=old_pos.x;
-					obj->pos.z=old_pos.z;
-					xadd=(int)xmove;
-					yadd=0;
-					zadd=(int)zmove;
-					obj->contact.hit_poly.portal_idx=-1;
-					continue;
+				if (!did_bump) {
+					if (object_bump_up(obj)) {
+						obj->pos.x=old_pos.x;
+						obj->pos.z=old_pos.z;
+						xadd=(int)xmove;
+						yadd=0;
+						zadd=(int)zmove;
+						obj->contact.hit_poly.portal_idx=-1;
+						did_bump=TRUE;
+						continue;
+					}
 				}
 				
 					// push objects

@@ -250,9 +250,8 @@ void dialog_ring_list_reset(void)
 
 static pascal OSStatus animation_settings_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
-	int				idx;
 	HICommand		cmd;
-	
+		
 	switch (GetEventKind(event)) {
 	
 		case kEventProcessCommand:
@@ -285,43 +284,7 @@ static pascal OSStatus animation_settings_event_proc(EventHandlerCallRef handler
 					model_animate_set_loop_end(&model,dialog_animate_idx,dialog_pose_move_idx);
 					dialog_pose_list_reset();
 					return(noErr);
-					
-					// particle list buttons
-					
-				case kAnimationParticleAdd:
-					idx=model_animate_add_particle(&model,dialog_animate_idx,dialog_pose_move_idx);
-					if (idx==-1) return(noErr);
-				
-					if (!dialog_particle_settings_run(&model.animates[dialog_animate_idx].pose_moves[dialog_pose_move_idx].particle.particles[idx])) {
-						model_animate_delete_particle(&model,dialog_animate_idx,dialog_pose_move_idx,idx);
-					}
-					
-					dialog_particle_list_reset();
-					return(noErr);
-					
-				case kAnimationParticleSub:
-					if (dialog_particle_idx!=-1) model_animate_delete_particle(&model,dialog_animate_idx,dialog_pose_move_idx,dialog_particle_idx);
-					dialog_particle_list_reset();
-					return(noErr);
-					
-					// ring list buttons
-					
-				case kAnimationRingAdd:
-					idx=model_animate_add_ring(&model,dialog_animate_idx,dialog_pose_move_idx);
-					if (idx==-1) return(noErr);
-				
-					if (!dialog_ring_settings_run(&model.animates[dialog_animate_idx].pose_moves[dialog_pose_move_idx].ring.rings[idx])) {
-						model_animate_delete_ring(&model,dialog_animate_idx,dialog_pose_move_idx,idx);
-					}
-					
-					dialog_ring_list_reset();
-					return(noErr);
-					
-				case kAnimationRingSub:
-					if (dialog_ring_idx!=-1) model_animate_delete_ring(&model,dialog_animate_idx,dialog_pose_move_idx,dialog_ring_idx);
-					dialog_ring_list_reset();
-					return(noErr);
-					
+
 					// dialog buttons
 			
 				case kAnimationPosePlay:
@@ -343,15 +306,70 @@ static pascal OSStatus animation_settings_event_proc(EventHandlerCallRef handler
 
 static pascal OSStatus pose_move_setting_tab_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
-	dialog_switch_tab(dialog_animation_settings_wind,kAnimationPoseTab,0,kAnimationPoseTabCount);
-
-		// draw color
-
-	if (dialog_get_value(dialog_animation_settings_wind,kAnimationPoseTab,0)==5) {
-		dialog_draw_color(dialog_animation_settings_wind,kAnimationFlashColor,0,&dialog_pose_move_settings_color);
+	int				idx,event_class,event_kind;
+	HICommand		cmd;
+	
+	event_class=GetEventClass(event);
+	event_kind=GetEventKind(event);
+	
+	if ((event_class==kEventClassCommand) && (event_kind==kEventProcessCommand)) {
+			
+		GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
+		
+		switch (cmd.commandID) {
+				
+				// particle list buttons
+				
+			case kAnimationParticleAdd:
+				idx=model_animate_add_particle(&model,dialog_animate_idx,dialog_pose_move_idx);
+				if (idx==-1) return(noErr);
+			
+				if (!dialog_particle_settings_run(&model.animates[dialog_animate_idx].pose_moves[dialog_pose_move_idx].particle.particles[idx])) {
+					model_animate_delete_particle(&model,dialog_animate_idx,dialog_pose_move_idx,idx);
+				}
+				
+				dialog_particle_list_reset();
+				return(noErr);
+				
+			case kAnimationParticleSub:
+				if (dialog_particle_idx!=-1) model_animate_delete_particle(&model,dialog_animate_idx,dialog_pose_move_idx,dialog_particle_idx);
+				dialog_particle_list_reset();
+				return(noErr);
+				
+				// ring list buttons
+				
+			case kAnimationRingAdd:
+				idx=model_animate_add_ring(&model,dialog_animate_idx,dialog_pose_move_idx);
+				if (idx==-1) return(noErr);
+			
+				if (!dialog_ring_settings_run(&model.animates[dialog_animate_idx].pose_moves[dialog_pose_move_idx].ring.rings[idx])) {
+					model_animate_delete_ring(&model,dialog_animate_idx,dialog_pose_move_idx,idx);
+				}
+				
+				dialog_ring_list_reset();
+				return(noErr);
+				
+			case kAnimationRingSub:
+				if (dialog_ring_idx!=-1) model_animate_delete_ring(&model,dialog_animate_idx,dialog_pose_move_idx,dialog_ring_idx);
+				dialog_ring_list_reset();
+				return(noErr);
+				
+		}
+			
+		return(noErr);
 	}
 	
-	return(noErr);
+	if ((event_class=kEventClassControl) && (event_kind==kEventControlHit)) {
+		dialog_switch_tab(dialog_animation_settings_wind,kAnimationPoseTab,0,kAnimationPoseTabCount);
+
+			// draw color
+
+		if (dialog_get_value(dialog_animation_settings_wind,kAnimationPoseTab,0)==5) {
+			dialog_draw_color(dialog_animation_settings_wind,kAnimationFlashColor,0,&dialog_pose_move_settings_color);
+		}
+	}
+	
+	return(eventNotHandledErr);
 }
 
 static pascal OSStatus pose_move_setting_button_proc(EventHandlerCallRef handler,EventRef event,void *data)
@@ -563,7 +581,8 @@ void dialog_animation_settings_run(int animate_idx,int pose_move_idx)
 	EventLoopTimerRef				timer_event;
 	EventLoopTimerUPP				timer_upp;
 	EventTypeSpec					event_list[]={{kEventClassCommand,kEventProcessCommand}},
-									tab_event_list[]={{kEventClassControl,kEventControlHit}},
+									tab_event_list[]={{kEventClassCommand,kEventProcessCommand},
+													  {kEventClassControl,kEventControlHit}},
 									button_event_list[]={{kEventClassControl,kEventControlHit}};
 	
 		// if there is no pose moves or new animation,

@@ -290,6 +290,9 @@ bool write_animate_xml(model_type *model)
 			xml_add_tagend(FALSE);
 
 			for (t=0;t!=pose_move->particle.count;t++) {
+			
+				xml_add_tagstart("Particle");
+				
 				if (pose_move->particle.particles[t].bone_idx==-1) {
 					xml_add_attribute_model_tag("bone",model_null_tag);
 				}
@@ -302,6 +305,8 @@ bool write_animate_xml(model_type *model)
 				xml_add_attribute_float("particle_motion_factor",pose_move->particle.particles[t].motion_factor);
 				xml_add_attribute_boolean("particle_stick",pose_move->particle.particles[t].stick);
 				xml_add_attribute_3_coord_int("particle_slop",pose_move->particle.particles[t].slop.x,pose_move->particle.particles[t].slop.y,pose_move->particle.particles[t].slop.z);
+				
+				xml_add_tagend(TRUE);
 			}
 
 			xml_add_tagclose("Particles");
@@ -312,6 +317,9 @@ bool write_animate_xml(model_type *model)
 			xml_add_tagend(FALSE);
 
 			for (t=0;t!=pose_move->ring.count;t++) {
+			
+				xml_add_tagstart("Ring");
+				
 				if (pose_move->ring.rings[t].bone_idx==-1) {
 					xml_add_attribute_model_tag("bone",model_null_tag);
 				}
@@ -321,6 +329,8 @@ bool write_animate_xml(model_type *model)
 				xml_add_attribute_text("ring",pose_move->ring.rings[t].name);
 				xml_add_attribute_boolean("ring_angle",pose_move->ring.rings[t].angle);
 				xml_add_attribute_3_coord_int("ring_slop",pose_move->ring.rings[t].slop.x,pose_move->ring.rings[t].slop.y,pose_move->ring.rings[t].slop.z);
+				
+				xml_add_tagend(TRUE);
 			}
 
 			xml_add_tagclose("Rings");
