@@ -1614,6 +1614,66 @@ bool element_click_table(element_type *element,int x,int y)
 	return(TRUE);
 }
 
+void element_draw_table_background_fills(element_type *element,int row_high)
+{
+	int				lft,rgt,top,bot,x,y;
+	
+		// header
+		
+	element_get_box(element,&lft,&rgt,&top,&bot);
+	
+	rgt-=24;
+	bot=(top+row_high)+4;
+	
+	y=(top+bot)>>1;
+		
+	glBegin(GL_QUADS);
+	
+	glColor4f(hud.color.header.r,hud.color.header.g,hud.color.header.b,1.0f);
+	glVertex2i(lft,top);
+	glVertex2i(rgt,top);
+	glColor4f((hud.color.header.r/2.0f),(hud.color.header.g/2.0f),(hud.color.header.b/2.0f),1.0f);
+	glVertex2i(rgt,y);
+	glVertex2i(lft,y);
+	
+	glColor4f((hud.color.header.r/2.0f),(hud.color.header.g/2.0f),(hud.color.header.b/2.0f),1.0f);
+	glVertex2i(lft,y);
+	glVertex2i(rgt,y);
+	glColor4f(hud.color.header.r,hud.color.header.g,hud.color.header.b,1.0f);
+	glVertex2i(rgt,bot);
+	glVertex2i(lft,bot);
+	
+	glEnd();
+	
+		// scroll bar
+		
+	element_get_box(element,&lft,&rgt,&top,&bot);
+	
+	lft=rgt-24;
+	top+=(24+(row_high+4));
+	bot-=24;
+	
+	x=(lft+rgt)>>1;
+		
+	glBegin(GL_QUADS);
+	
+	glColor4f(0.5f,0.5f,0.5f,1.0f);
+	glVertex2i(lft,bot);
+	glVertex2i(lft,top);
+	glColor4f(0.3f,0.3f,0.3f,1.0f);
+	glVertex2i(x,top);
+	glVertex2i(x,bot);
+	
+	glColor4f(0.3f,0.3f,0.3f,1.0f);
+	glVertex2i(x,bot);
+	glVertex2i(x,top);
+	glColor4f(0.5f,0.5f,0.5f,1.0f);
+	glVertex2i(rgt,top);
+	glVertex2i(rgt,bot);
+	
+	glEnd();
+}
+
 void element_draw_table_line_lines(element_type *element,int x,int y,int wid,int row_high,d3col *line_col)
 {
 	int			n,cx,lx,ty,by;
@@ -1639,12 +1699,15 @@ void element_draw_table_line_lines(element_type *element,int x,int y,int wid,int
 void element_draw_table_line_header(element_type *element,int x,int y,int wid,int row_high)
 {
 	int			n;
+	d3col		col;
+	
+	col.r=col.g=col.b=0.0f;
 
 	y+=(row_high>>1);
 	
 	for (n=0;n!=element->setup.table.ncolumn;n++) {
 		gl_text_start(TRUE);
-		gl_text_draw((x+4),y,element->setup.table.cols[n].name,tx_left,TRUE,&hud.color.header,1.0f);
+		gl_text_draw((x+4),y,element->setup.table.cols[n].name,tx_left,TRUE,&col,1.0f);
 		gl_text_end();
 		
 		x+=(int)(element->setup.table.cols[n].percent_size*(float)wid);
@@ -1702,19 +1765,27 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 				glEnd();
 
 				gl_texture_simple_end();
-
+				
+				glColor4f(1.0f,1.0f,1.0f,1.0f);
+				
+				glBegin(GL_LINE_LOOP);
+				glVertex2i(dx,(y+1));
+				glVertex2i((dx+element_table_bitmap_size),(y+1));
+				glVertex2i((dx+element_table_bitmap_size),((y+1)+element_table_bitmap_size));
+				glVertex2i(dx,((y+1)+element_table_bitmap_size));
+				glEnd();
 			}
 
 				// missing graphic
 
 			else {
 
-				glColor4f(0.75f,0.75f,0.75f,1.0f);
-
 				glBegin(GL_QUADS);
-				glVertex2i((dx+2),(y+2));
-				glVertex2i(((dx-2)+element_table_bitmap_size),(y+2));
-				glVertex2i(((dx-2)+element_table_bitmap_size),((y-2)+element_table_bitmap_size));
+				glColor4f(0.6f,0.6f,0.6f,1.0f);
+				glVertex2i((dx+2),(y+4));
+				glVertex2i(((dx-4)+element_table_bitmap_size),(y+4));
+				glColor4f(0.4f,0.4f,0.4f,1.0f);
+				glVertex2i(((dx-4)+element_table_bitmap_size),((y-2)+element_table_bitmap_size));
 				glVertex2i((dx+2),((y-2)+element_table_bitmap_size));
 				glEnd();
 			
@@ -1722,9 +1793,9 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 				glLineWidth(2.0f);
 				
 				glBegin(GL_LINE_LOOP);
-				glVertex2i((dx+2),(y+2));
-				glVertex2i(((dx-2)+element_table_bitmap_size),(y+2));
-				glVertex2i(((dx-2)+element_table_bitmap_size),((y-2)+element_table_bitmap_size));
+				glVertex2i((dx+2),(y+4));
+				glVertex2i(((dx-4)+element_table_bitmap_size),(y+4));
+				glVertex2i(((dx-4)+element_table_bitmap_size),((y-2)+element_table_bitmap_size));
 				glVertex2i((dx+2),((y-2)+element_table_bitmap_size));
 				glEnd();
 				
@@ -1836,6 +1907,10 @@ void element_draw_table(element_type *element,int sel_id)
 	cnt=((element->high-(high+4))/row_high)-1;
 	up_ok=(element->offset!=0);
 	down_ok=((element->offset+cnt)<element_get_table_row_count(element));
+	
+		// header and scroll bar fill
+		
+	element_draw_table_background_fills(element,high);
 		
 		// outline
 		

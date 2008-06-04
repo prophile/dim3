@@ -892,9 +892,9 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 
 void object_move_fly(obj_type *obj)
 {
-	int				i_xmove,i_ymove,i_zmove,
-					xchg,zchg;
+	int				i_xmove,i_ymove,i_zmove,hit_obj_uid;
     float			xmove,zmove,ymove;
+	d3pos			old_pos;
 
 		// get object motion
 		
@@ -902,27 +902,37 @@ void object_move_fly(obj_type *obj)
 	object_motion_lock(obj,&xmove,&ymove,&zmove);
 	object_motion_set_script_property(obj,xmove,ymove,zmove);
     
-		// get exact movement
-		
-	xchg=obj->pos.x;
-	zchg=obj->pos.z;
-	
         // moving x/z
 
 	i_xmove=(int)xmove;
 	i_ymove=(int)ymove;
 	i_zmove=(int)zmove;
 	
-	if (collide_object_to_map(obj,&i_xmove,&i_ymove,&i_zmove)) {
-		object_push_with_object(obj,i_xmove,i_zmove);
+	memmove(&old_pos,&obj->pos,sizeof(d3pos));
+	
+	if (object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) {
+	
+			// pushing objects
+			
+		if (!object_push_with_object(obj,i_xmove,i_zmove)) {
+			memmove(&obj->pos,&old_pos,sizeof(d3pos));
+			
+			i_xmove=(int)xmove;
+			i_ymove=(int)ymove;
+			i_zmove=(int)zmove;
+
+			hit_obj_uid=obj->contact.obj_uid;
+			object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove);
+			obj->contact.obj_uid=hit_obj_uid;
+		}
 	}
 	
-		// force move other objects
-		
-	xchg=obj->pos.x-xchg;
-	zchg=obj->pos.z-zchg;
+	obj->pos.x+=i_xmove;
+	obj->pos.z+=i_zmove;
 	
-	if ((xchg!=0) || (zchg!=0)) object_move_with_standing_object(obj,xchg,zchg);
+		// force move other objects
+	
+	if ((i_xmove!=0) || (i_zmove!=0)) object_move_with_standing_object(obj,i_xmove,i_zmove);
 	
 		// bounces
 		
@@ -935,8 +945,9 @@ void object_move_fly(obj_type *obj)
 
 void object_move_swim(obj_type *obj)
 {
-	int				i_xmove,i_ymove,i_zmove;
+	int				i_xmove,i_ymove,i_zmove,hit_obj_uid;
     float			xmove,ymove,zmove,liq_speed_alter;
+	d3pos			old_pos;
 
 		// get object motion
 		
@@ -966,10 +977,28 @@ void object_move_swim(obj_type *obj)
 	i_xmove=(int)xmove;
 	i_ymove=(int)ymove;
 	i_zmove=(int)zmove;
+	
+	memmove(&old_pos,&obj->pos,sizeof(d3pos));
+	
+	if (object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) {
+	
+			// pushing objects
+			
+		if (!object_push_with_object(obj,i_xmove,i_zmove)) {
+			memmove(&obj->pos,&old_pos,sizeof(d3pos));
+			
+			i_xmove=(int)xmove;
+			i_ymove=(int)ymove;
+			i_zmove=(int)zmove;
 
-	if (collide_object_to_map(obj,&i_xmove,&i_ymove,&i_zmove)) {
-		object_push_with_object(obj,i_xmove,i_zmove);
+			hit_obj_uid=obj->contact.obj_uid;
+			object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove);
+			obj->contact.obj_uid=hit_obj_uid;
+		}
 	}
+	
+	obj->pos.x+=i_xmove;
+	obj->pos.z+=i_zmove;
 
 		// move standing objects
 
@@ -1079,16 +1108,19 @@ void object_move_normal(obj_type *obj)
 
 		if (object_move_xz_slide(obj,&xadd,&yadd,&zadd)) {
 
-				// run any bump up, then
-				// try the movement again
-				// do this a couple time to
-				// get up very steep stairs
-
+				// run any bump up, reset x/z and
+				// then try the movement again
+				// do this a couple time in case you
+				// are going up a series of steep bumps
+				
 			bump_cnt=0;
 
 			while (TRUE) {
 
 				if (object_bump_up(obj)) {
+					obj->pos.x=old_pos.x;
+					obj->pos.z=old_pos.z;
+					
 					xadd=(int)xmove;
 					yadd=0;
 					zadd=(int)zmove;
@@ -1104,13 +1136,15 @@ void object_move_normal(obj_type *obj)
 				
 				break;
 			}
-					
+				
 				// push objects, then
 				// try the movement again
 				// save the hit object uid so
 				// the hit still registers
 
 			if (!object_push_with_object(obj,xadd,zadd)) {
+				memmove(&obj->pos,&old_pos,sizeof(d3pos));
+				
 				xadd=(int)xmove;
 				yadd=(int)ymove;
 				zadd=(int)zmove;

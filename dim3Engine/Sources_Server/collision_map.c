@@ -238,12 +238,16 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		// for bump-capable segments as it pushes
 		// the object around on stairs
 		
-	if (obj->bump.on) {
-		poly=&map.portals[contact[idx].poly.portal_idx].mesh.meshes[contact[idx].poly.mesh_idx].polys[contact[idx].poly.poly_idx];
-		bump=((obj->pos.y-poly->box.min.y)<=obj->bump.high);
-	}
-	else {
-		bump=FALSE;
+	if (contact[idx].poly.portal_idx!=-1) {
+	
+		if (obj->bump.on) {
+			poly=&map.portals[contact[idx].poly.portal_idx].mesh.meshes[contact[idx].poly.mesh_idx].polys[contact[idx].poly.poly_idx];
+			bump=((obj->pos.y-poly->box.min.y)<=obj->bump.high);
+		}
+		else {
+			bump=FALSE;
+		}
+		
 	}
 	
 		// make sure distance stays within
