@@ -708,21 +708,37 @@ bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int l
 {
 	int					n,xadd2,zadd2,mx,mz;
 	float				f,ang,rang;
-	bool				cwise;
+	bool				hit,cwise;
 	d3vct				line_vct,obj_vct;
 	
 		// special check for horizontal/vertical walls
 
 	if (lx==rx) {
-		xadd2=zadd2=0;
-		if (!collide_object_to_map(obj,&xadd2,yadd,zadd)) return(FALSE);
-		return(collide_object_to_map(obj,xadd,yadd,zadd));
+
+		xadd2=0;
+		hit=collide_object_to_map(obj,&xadd2,yadd,zadd);
+		obj->pos.z+=(*zadd);
+		if (!hit) return(FALSE);
+
+		zadd2=0;
+		hit=collide_object_to_map(obj,xadd,yadd,&zadd2);
+		obj->pos.x+=(*xadd);
+
+		return(hit);
 	}
 	
 	if (lz==rz) {
-		xadd2=zadd2=0;
-		if (!collide_object_to_map(obj,xadd,yadd,&zadd2)) return(FALSE);
-		return(collide_object_to_map(obj,&xadd2,yadd,zadd));
+
+		zadd2=0;
+		hit=collide_object_to_map(obj,xadd,yadd,&zadd2);
+		obj->pos.x+=(*xadd);
+		if (!hit) return(FALSE);
+
+		xadd2=0;
+		hit=collide_object_to_map(obj,&xadd2,yadd,zadd);
+		obj->pos.z+=(*zadd);
+
+		return(hit);
 	}
 	
 		// get angle between the line and the object movement
@@ -772,23 +788,28 @@ bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int l
 		xadd2=0;
 		zadd2=mz;
 
-		if (collide_object_to_map(obj,&xadd2,yadd,&zadd2)) {
+		hit=collide_object_to_map(obj,&xadd2,yadd,&zadd2);
+		obj->pos.z+=zadd2;
 
+		if (hit) {
 			xadd2=mx;
 			zadd2=0;
 			collide_object_to_map(obj,&xadd2,yadd,&zadd2);
-
+			obj->pos.x+=xadd2;
 		}
 		else {
 
 			xadd2=mx;
 			zadd2=0;
 
-			if (collide_object_to_map(obj,&xadd2,yadd,&zadd2)) {
+			hit=collide_object_to_map(obj,&xadd2,yadd,&zadd2);
+			obj->pos.x+=xadd2;
 
+			if (hit) {
 				xadd2=0;
 				zadd2=mz;
 				collide_object_to_map(obj,&xadd2,yadd,&zadd2);
+				obj->pos.z+=zadd2;
 			}
 		}
 	}
@@ -812,13 +833,11 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	yadd2=*yadd;
 	zadd2=*zadd;
 
-	if (!collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) return(FALSE);
-
-	*xadd=xadd2;
-	*yadd=yadd2;
-	*zadd=zadd2;
-
-	return(TRUE);		// supergumba -- testing
+	if (!collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) {
+		obj->pos.x+=xadd2;
+		obj->pos.z+=zadd2;
+		return(FALSE);
+	}
 
 		// if the hit poly was wall-like, then find vector for wall
 		// and attempt to slide across it
@@ -926,9 +945,13 @@ void object_move_fly(obj_type *obj)
 			obj->contact.obj_uid=hit_obj_uid;
 		}
 	}
-	
-	obj->pos.x+=i_xmove;
-	obj->pos.z+=i_zmove;
+
+		// make sure object remains in map
+
+	if (!map_find_portal_by_pos(&map,&obj->pos)) {
+		i_xmove=i_zmove=0;
+		memmove(&obj->pos,&old_pos,sizeof(d3pos));
+	}
 	
 		// force move other objects
 	
@@ -996,9 +1019,13 @@ void object_move_swim(obj_type *obj)
 			obj->contact.obj_uid=hit_obj_uid;
 		}
 	}
-	
-	obj->pos.x+=i_xmove;
-	obj->pos.z+=i_zmove;
+
+		// make sure object remains in map
+
+	if (!map_find_portal_by_pos(&map,&obj->pos)) {
+		i_xmove=i_zmove=0;
+		memmove(&obj->pos,&old_pos,sizeof(d3pos));
+	}
 
 		// move standing objects
 
@@ -1015,7 +1042,7 @@ void object_move_swim(obj_type *obj)
 
 void object_move_normal(obj_type *obj)
 {
-	int				rn,x,z,xadd,yadd,zadd,bump_cnt,
+	int				rn,x,z,i_xmove,i_ymove,i_zmove,bump_cnt,
 					start_y,fall_damage,hit_obj_uid;
     float			xmove,zmove,ymove;
 	bool			old_falling;
@@ -1035,8 +1062,8 @@ void object_move_normal(obj_type *obj)
 
 		// get int version of movement
 
-	xadd=(int)xmove;
-	zadd=(int)zmove;
+	i_xmove=(int)xmove;
+	i_zmove=(int)zmove;
 
 		// move the object in y space at the projected
 		// x/z position
@@ -1050,8 +1077,8 @@ void object_move_normal(obj_type *obj)
 		// to avoid land features that might block foward
 		// movement
 
-	x=obj->pos.x+xadd;
-	z=obj->pos.z+zadd;
+	x=obj->pos.x+i_xmove;
+	z=obj->pos.z+i_zmove;
 
 	start_y=obj->pos.y;
 
@@ -1061,14 +1088,14 @@ void object_move_normal(obj_type *obj)
 	obj->pos.x=x;
 	obj->pos.z=z;
 
-	yadd=(int)ymove;
+	i_ymove=(int)ymove;
 
-	if (yadd<0) {
-		object_move_y_up(obj,yadd);
+	if (i_ymove<0) {
+		object_move_y_up(obj,i_ymove);
 	}
 	else {
 		object_move_y_fall(obj);
-		object_move_y_down(obj,yadd);
+		object_move_y_down(obj,i_ymove);
 	}
 
 	obj->pos.x=old_pos.x;
@@ -1082,8 +1109,8 @@ void object_move_normal(obj_type *obj)
 		// we only use the y change in x/z movement
 		// if we are going up
 
-	yadd=(obj->pos.y-start_y)+obj->motion.last_y_change;
-	if (yadd>0) yadd=0;
+	i_ymove=(obj->pos.y-start_y)+obj->motion.last_y_change;
+	if (i_ymove>0) i_ymove=0;
 
 	obj->motion.last_y_change=obj->pos.y-start_y;
 
@@ -1102,11 +1129,11 @@ void object_move_normal(obj_type *obj)
 		// land features that could hold up the
 		// object
 
-	if ((xadd!=0) || (zadd!=0)) {
+	if ((i_xmove!=0) || (i_zmove!=0)) {
 	
 			// attempt to move
 
-		if (object_move_xz_slide(obj,&xadd,&yadd,&zadd)) {
+		if (object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) {
 
 				// run any bump up, reset x/z and
 				// then try the movement again
@@ -1121,12 +1148,12 @@ void object_move_normal(obj_type *obj)
 					obj->pos.x=old_pos.x;
 					obj->pos.z=old_pos.z;
 					
-					xadd=(int)xmove;
-					yadd=0;
-					zadd=(int)zmove;
+					i_xmove=(int)xmove;
+					i_ymove=0;
+					i_zmove=(int)zmove;
 					
 					obj->contact.hit_poly.portal_idx=-1;
-					if (!object_move_xz_slide(obj,&xadd,&yadd,&zadd)) break;
+					if (!object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) break;
 
 					bump_cnt++;
 					if (bump_cnt>2) break;
@@ -1142,34 +1169,31 @@ void object_move_normal(obj_type *obj)
 				// save the hit object uid so
 				// the hit still registers
 
-			if (!object_push_with_object(obj,xadd,zadd)) {
+			if (!object_push_with_object(obj,i_xmove,i_zmove)) {
 				memmove(&obj->pos,&old_pos,sizeof(d3pos));
 				
-				xadd=(int)xmove;
-				yadd=(int)ymove;
-				zadd=(int)zmove;
+				i_xmove=(int)xmove;
+				i_ymove=(int)ymove;
+				i_zmove=(int)zmove;
 
 				hit_obj_uid=obj->contact.obj_uid;
-				object_move_xz_slide(obj,&xadd,&yadd,&zadd);
+				object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove);
 				obj->contact.obj_uid=hit_obj_uid;
 			}
 		}
 
-		if ((xadd!=0) || (zadd!=0)) {
+		if ((i_xmove!=0) || (i_zmove!=0)) {
+
+				// make sure object remains in map
+
+			if (!map_find_portal_by_pos(&map,&obj->pos)) {
+				i_xmove=i_zmove=0;
+				memmove(&obj->pos,&old_pos,sizeof(d3pos));
+			}
 
 				// move objects standing on object
 
-			object_move_with_standing_object(obj,xadd,zadd);
-
-				// move object itself
-
-			obj->pos.x+=xadd;
-			obj->pos.z+=zadd;
-
-			if (!map_find_portal_by_pos(&map,&obj->pos)) {
-				xadd=zadd=0;
-				memmove(&obj->pos,&old_pos,sizeof(d3pos));
-			}
+			object_move_with_standing_object(obj,i_xmove,i_zmove);
 
 				// objects with automatic bouncing
 
