@@ -6,6 +6,8 @@ EXPORTS
 	map_count_texture_frames						@110
 	map_setup_animated_textures						@111
 
+	map_check_game_type								@115
+
 	map_portal_create								@120
 	map_find_portal									@121
 	map_find_portal_hint							@122

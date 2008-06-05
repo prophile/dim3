@@ -507,6 +507,7 @@ typedef struct		{
 						float						gravity,gravity_max_power,gravity_max_speed,
 													resistance,txt_scale_x,txt_scale_y;
 						bool						speculars_hilite,editor_link_always_start;
+						char						network_game_list[256];
 					} map_settings_type;
 					
 typedef struct		{
@@ -612,6 +613,8 @@ extern void map_prepare(map_type *map);
 
 extern int map_count_texture_frames(map_type *map,int txt);
 extern void map_setup_animated_textures(map_type *map,int tick);
+
+extern bool map_check_game_type(char *game_type,char *map_name);
 
 extern int map_portal_create(map_type *map,int x,int z,int ex,int ez);
 extern int map_find_portal(map_type *map,int x,int y,int z);

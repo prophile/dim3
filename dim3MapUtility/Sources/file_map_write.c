@@ -166,6 +166,7 @@ void write_map_settings_xml(map_type *map)
 	xml_add_attribute_float("txt_scale_y",map->settings.txt_scale_y);
 	xml_add_attribute_boolean("speculars_hilite",map->settings.speculars_hilite);
 	xml_add_attribute_boolean("editor_link_always_start",map->settings.editor_link_always_start);
+	xml_add_attribute_text("network_game_list",map->settings.network_game_list);
     xml_add_tagend(TRUE);
 	
     xml_add_tagstart("Optimizations");

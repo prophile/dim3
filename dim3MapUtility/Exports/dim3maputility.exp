@@ -3,6 +3,8 @@ _light_type_str
 _map_count_texture_frames
 _map_setup_animated_textures
 
+_map_check_game_type
+
 _map_portal_create
 _map_find_portal
 _map_find_portal_hint

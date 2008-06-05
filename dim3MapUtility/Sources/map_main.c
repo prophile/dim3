@@ -77,6 +77,7 @@ bool map_new(map_type *map,char *name)
 	map->settings.txt_scale_y=0.04f;
 	map->settings.speculars_hilite=FALSE;
 	map->settings.editor_link_always_start=FALSE;
+	map->settings.network_game_list[0]=0x0;
 	
 		// optimizations
 		

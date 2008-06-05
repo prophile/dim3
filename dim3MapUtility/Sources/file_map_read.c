@@ -73,6 +73,7 @@ void decode_map_settings_xml(map_type *map,int map_head)
 		map->settings.txt_scale_y=xml_get_attribute_float_default(tag,"txt_scale_y",0.04f);
 		map->settings.speculars_hilite=xml_get_attribute_boolean(tag,"speculars_hilite");
 		map->settings.editor_link_always_start=xml_get_attribute_boolean(tag,"editor_link_always_start");
+        xml_get_attribute_text(tag,"network_game_list",map->settings.network_game_list,256);
 	}
 	
     tag=xml_findfirstchild("Optimizations",map_head);
@@ -261,7 +262,86 @@ void decode_map_movements_xml(map_type *map,int map_head)
 		movement_tag=xml_findnextchild(movement_tag);
 		movement++;
 	}
-}    
+}
+
+/* =======================================================
+
+      Check Map Network Game Types
+      
+======================================================= */
+    
+bool map_check_game_type(char *game_type,char *map_name)
+{
+	int				map_head,tag,idx;
+	char			*c,*c2,game_token[256],
+					game_list[256],path[1024];
+
+	file_paths_data(&maputility_settings.file_path_setup,path,"Maps",map_name,"xml");
+
+		// get game type list
+
+	if (!xml_open_file(path)) return(FALSE);
+
+    map_head=xml_findrootchild("Map");
+    if (map_head==-1) {
+		xml_close_file();
+		return(FALSE);
+    }
+
+	game_list[0]=0x0;
+
+    tag=xml_findfirstchild("Settings",map_head);
+    if (tag!=-1) {
+        xml_get_attribute_text(tag,"network_game_list",game_list,256);
+	}
+
+	xml_close_file();
+
+	if (game_list[0]==0x0) return(FALSE);
+
+		// search game list
+
+	c=game_list;
+
+	while (TRUE) {
+
+		if (*c==0x0) break;
+
+			// check next token
+
+		strcpy(game_token,c);
+		c2=strchr(game_token,',');
+		if (c2!=NULL) *c2=0x0;
+
+			// remove white space
+
+		if (game_token[0]!=0x0) {
+			while (game_token[0]==' ') {
+				strcpy((char*)&game_token[0],(char*)&game_token[1]);
+			}
+			while (TRUE) {
+				idx=strlen(game_token);
+				if (idx==0) break;
+				if (game_token[idx-1]!=' ') break;
+				
+				game_token[idx-1]=0x0;
+			}
+		}
+
+			// compare
+
+		if (strcasecmp(game_type,game_token)==0) return(TRUE);
+
+			// get next token
+
+		c2=strchr(c,',');
+		if (c2==NULL) break;
+
+		c=c2+1;
+	}
+
+	return(FALSE);
+}
 
 /* =======================================================
 

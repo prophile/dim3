@@ -51,6 +51,7 @@ extern server_type			server;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
+int							net_game_current_game_type_index;
 char						*net_host_file_list;
 char						net_game_types[network_setup_max_game+1][32];
 
@@ -60,14 +61,51 @@ char						net_game_types[network_setup_max_game+1][32];
       
 ======================================================= */
 
+void host_fill_map_table(char *game_type)
+{
+	int							n,nfile,sz;
+	char						*c;
+	file_path_directory_type	*map_pick_fpd;
+
+		// need to make sure map paths are correct
+
+	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.texture_quality_mode,setup.mipmap_mode,setup.mipmap_card_generated,setup.texture_compression);
+
+		// load in all maps with the correct game type
+
+	map_pick_fpd=file_paths_read_directory(&setup.file_path_setup,"Maps","xml",FALSE);
+
+	nfile=map_pick_fpd->nfile;
+
+	if (nfile>0) {
+		sz=(nfile+1)*128;
+		
+		net_host_file_list=valloc(sz);
+		bzero(net_host_file_list,sz);
+
+		c=net_host_file_list;
+		
+		for (n=0;n!=nfile;n++) {
+			if (map_check_game_type(game_type,map_pick_fpd->files[n].file_name)) {
+				sprintf(c,"Maps;%s;%s",map_pick_fpd->files[n].file_name,map_pick_fpd->files[n].file_name);
+				c+=128;
+			}
+		}
+		
+		element_set_table_data(host_table_id,net_host_file_list);
+	}
+	else {
+		net_host_file_list=NULL;
+	}
+
+	file_paths_close_directory(map_pick_fpd);
+}
+
 void host_open(void)
 {
-	int							x,y,high,list_wid,list_high,control_y_add,separate_y_add,
-								n,nfile,sz;
+	int							n,x,y,high,list_wid,list_high,control_y_add,separate_y_add;
 	char						path[1024],path2[1024];
-	char						*c;
 	element_column_type			cols[1];
-	file_path_directory_type	*map_pick_fpd;
 	
 		// setup gui
 		
@@ -121,30 +159,8 @@ void host_open(void)
 	
 		// fill table with maps
 
-	map_pick_fpd=file_paths_read_directory(&setup.file_path_setup,"Maps","xml",FALSE);
-
-	nfile=map_pick_fpd->nfile;
-
-	if (nfile>0) {
-		sz=(nfile+1)*128;
-		
-		net_host_file_list=valloc(sz);
-		bzero(net_host_file_list,sz);
-
-		c=net_host_file_list;
-		
-		for (n=0;n!=nfile;n++) {
-			sprintf(c,"Maps;%s;%s",map_pick_fpd->files[n].file_name,map_pick_fpd->files[n].file_name);
-			c+=128;
-		}
-		
-		element_set_table_data(host_table_id,net_host_file_list);
-	}
-	else {
-		net_host_file_list=NULL;
-	}
-
-	file_paths_close_directory(map_pick_fpd);
+	net_game_current_game_type_index=0;
+	host_fill_map_table(net_setup.games[0].name);
 	
 		// status
 		
@@ -272,7 +288,7 @@ void host_game(void)
 
 void host_click(void)
 {
-	int			id;
+	int			id,idx;
 	bool		enable;
 	
 		// is element being clicked
@@ -285,7 +301,17 @@ void host_click(void)
 		// run selection
 
 	switch (id) {
-	
+
+		case host_game_type_id:
+			idx=element_get_value(host_game_type_id);
+			if (idx!=net_game_current_game_type_index) {
+				net_game_current_game_type_index=idx;
+				host_fill_map_table(net_setup.games[idx].name);
+				element_set_value(host_table_id,-1);
+				element_enable(host_button_host_id,FALSE);
+			}
+			break;
+
 		case host_button_host_id:
 			host_game_setup();
 			host_close();
