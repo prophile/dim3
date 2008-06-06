@@ -509,30 +509,35 @@ void piece_free_rotate(void)
       
 ======================================================= */
 
-void piece_snap_to_grid(void)
+void mesh_snap_to_grid(int portal_idx,int mesh_idx)
 {
-	int						n,k,sel_count,
-							type,portal_idx,mesh_idx,poly_idx,nvertex;
+	int						n,nvertex;
 	d3pnt					*pt;
 	portal_type				*portal;
 	map_mesh_type			*mesh;
+
+	portal=&map.portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+
+	nvertex=mesh->nvertex;
+	pt=mesh->vertexes;
+
+	for (n=0;n!=nvertex;n++) {
+		walk_view_click_grid(pt);
+		pt++;
+	}
+}
+void piece_snap_to_grid(void)
+{
+	int						n,sel_count,type,portal_idx,mesh_idx,poly_idx;
 
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
 		if (type!=mesh_piece) continue;
-
-		portal=&map.portals[portal_idx];
-		mesh=&portal->mesh.meshes[mesh_idx];
-
-		nvertex=mesh->nvertex;
-		pt=mesh->vertexes;
-
-		for (k=0;k!=nvertex;k++) {
-			walk_view_click_grid(pt);
-			pt++;
-		}
+		
+		mesh_snap_to_grid(portal_idx,mesh_idx);
 	}
 }
 

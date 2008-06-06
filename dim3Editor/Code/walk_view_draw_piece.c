@@ -203,8 +203,13 @@ void walk_view_draw_portal_block(int rn,d3pnt *cpt,int y)
 	
 	map_portal_calculate_y_extent(&map,rn,&ty,&by);
 
-	ty-=cpt->y;
-	by-=cpt->y;
+	if ((ty==0) && (by==0)) {
+		ty=by=y-cpt->y;			// portal with no Y
+	}
+	else {
+		ty-=cpt->y;
+		by-=cpt->y;
+	}
 	
 	glDisable(GL_DEPTH_TEST);
 	

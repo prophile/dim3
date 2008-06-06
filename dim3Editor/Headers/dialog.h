@@ -125,10 +125,11 @@ extern bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z);
 extern bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z);
 
 //
-// segment dialogs
+// library dialogs
 //
 
 extern bool dialog_choose_library_object_run(char *name);
+extern void dialog_mesh_scale_run(float *scale);
 
 //
 // texture dialogs

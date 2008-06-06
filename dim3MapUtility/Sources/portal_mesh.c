@@ -479,6 +479,89 @@ bool map_portal_mesh_delete_poly(map_type *map,int portal_idx,int mesh_idx,int p
 
 /* =======================================================
 
+      Delete Unused Vertexes
+      
+======================================================= */
+
+bool map_portal_mesh_delete_unused_vertexes(map_type *map,int portal_idx,int mesh_idx)
+{
+	int					n,k,t,sz;
+	bool				attach;
+	d3pnt				*nvertex_ptr;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+	portal=&map->portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+	
+		// find all unconnected vertexes
+		
+	n=0;
+	
+	while (n<mesh->nvertex) {
+	
+			// attached to any polygon?
+			
+		attach=FALSE;
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+			
+			for (t=0;t!=poly->ptsz;t++) {
+				if (n==poly->v[t]) {
+					attach=TRUE;
+					break;
+				}
+			}
+			
+			if (attach) break;
+			
+			poly++;
+		}
+		
+		if (attach) {
+			n++;
+			continue;
+		}
+		
+			// change poly indexes
+		
+		poly=mesh->polys;
+
+		for (k=0;k!=mesh->npoly;k++) {
+			
+			for (t=0;t!=poly->ptsz;t++) {
+				if (n<poly->v[t]) poly->v[t]--;
+			}
+			
+			poly++;
+		}
+		
+			// move vertexes
+		
+		nvertex_ptr=(d3pnt*)valloc((mesh->nvertex-1)*sizeof(d3pnt));
+		if (nvertex_ptr==NULL) return(FALSE);
+
+		if (n>0) {
+			sz=n*sizeof(d3pnt);
+			memmove(nvertex_ptr,mesh->vertexes,sz);
+		}
+
+		sz=((mesh->nvertex-n)-1)*sizeof(d3pnt);
+		if (sz>0) memmove(&nvertex_ptr[n],&mesh->vertexes[n+1],sz);
+
+		free(mesh->vertexes);
+
+		mesh->vertexes=nvertex_ptr;
+		mesh->nvertex--;
+	}
+	
+	return(TRUE);
+}
+
+/* =======================================================
+
       Mesh Transparency Sorting Lists
       
 ======================================================= */

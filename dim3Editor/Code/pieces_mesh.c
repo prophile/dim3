@@ -31,7 +31,7 @@ and can be sold or given away.
 #include "portal_view.h"
 
 #define import_obj_float_to_int			1000.0f
-#define import_obj_max_dimension		(map_enlarge*20)
+#define import_obj_max_dimension		10000
 
 extern int						cr,cy,drag_mode;
 extern bool						dp_object,dp_node,dp_lightsoundparticle,dp_auto_texture;
@@ -164,8 +164,9 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 	if ((max_z-min_z)>sz) sz=max_z-min_z;
 	
 	scale=1.0f;
-	
 	if (sz>import_obj_max_dimension) scale=(float)import_obj_max_dimension/(float)sz;
+
+	dialog_mesh_scale_run(&scale);
 	
 		// get the vertexes
 
@@ -274,6 +275,14 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 	free(uvs);
 	
 	textdecode_close();
+	
+		// delete any unused vertexes
+		
+	map_portal_mesh_delete_unused_vertexes(&map,cr,mesh_idx);
+	
+		// push to grid
+		
+	mesh_snap_to_grid(cr,mesh_idx);
 	
 	return(mesh_idx);
 }

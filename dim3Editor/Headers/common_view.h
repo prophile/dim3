@@ -99,6 +99,7 @@ extern void piece_resize(void);
 extern void piece_flip(bool flip_x,bool flip_y,bool flip_z);
 extern void piece_rotate(float rot_x,float rot_y,float rot_z);
 extern void piece_free_rotate(void);
+extern void mesh_snap_to_grid(int portal_idx,int mesh_idx);
 extern void piece_snap_to_grid(void);
 extern void piece_reset_uvs(bool poly_only);
 extern void piece_poly_hole(int hole_type);

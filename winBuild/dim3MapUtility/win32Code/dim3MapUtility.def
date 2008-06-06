@@ -62,25 +62,26 @@ EXPORTS
 	map_portal_mesh_count_total_poly				@225
 	map_portal_mesh_add_poly						@226
 	map_portal_mesh_delete_poly						@227
-	map_portal_mesh_create_transparent_sort_lists	@228
-	map_portal_mesh_dispose_transparent_sort_lists	@229
-	map_portal_mesh_calculate_extent				@230
-	map_portal_mesh_calculate_center				@231
-	map_portal_mesh_calculate_uv_center				@232
+	map_portal_mesh_delete_unused_vertexes			@228
+	map_portal_mesh_create_transparent_sort_lists	@229
+	map_portal_mesh_dispose_transparent_sort_lists	@230
+	map_portal_mesh_calculate_extent				@231
+	map_portal_mesh_calculate_center				@232
+	map_portal_mesh_calculate_uv_center				@233
 	
-	map_portal_mesh_combine							@233
-	map_portal_mesh_switch_portal					@234
-	map_portal_mesh_move							@235
-	map_portal_mesh_resize							@236
-	map_portal_mesh_flip							@237
-	map_portal_mesh_rotate							@238
-	map_portal_mesh_tesselate						@239
-	map_portal_mesh_poly_punch_hole					@240
-	map_portal_mesh_shift_portal_vertex_list		@241
-	map_portal_mesh_get_poly_uv_as_box				@242
-	map_portal_mesh_set_poly_uv_as_box				@243
-	map_portal_mesh_reset_poly_uv					@244
-	map_portal_mesh_reset_uv						@245
+	map_portal_mesh_combine							@234
+	map_portal_mesh_switch_portal					@235
+	map_portal_mesh_move							@236
+	map_portal_mesh_resize							@237
+	map_portal_mesh_flip							@238
+	map_portal_mesh_rotate							@239
+	map_portal_mesh_tesselate						@240
+	map_portal_mesh_poly_punch_hole					@241
+	map_portal_mesh_shift_portal_vertex_list		@242
+	map_portal_mesh_get_poly_uv_as_box				@243
+	map_portal_mesh_set_poly_uv_as_box				@244
+	map_portal_mesh_reset_poly_uv					@245
+	map_portal_mesh_reset_uv						@246
 
 	map_portal_liquid_add							@250
 	map_portal_liquid_delete						@251

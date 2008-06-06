@@ -670,6 +670,7 @@ extern int map_portal_mesh_duplicate(map_type *map,int portal_idx,int mesh_idx);
 extern int map_portal_mesh_count_total_poly(map_type *map,int portal_idx);
 extern int map_portal_mesh_add_poly(map_type *map,int portal_idx,int mesh_idx,int ptsz,int *x,int *y,int *z,float *gx,float *gy,int txt_idx);
 extern bool map_portal_mesh_delete_poly(map_type *map,int portal_idx,int mesh_idx,int poly_idx);
+extern bool map_portal_mesh_delete_unused_vertexes(map_type *map,int portal_idx,int mesh_idx);
 extern bool map_portal_mesh_create_transparent_sort_lists(map_type *map);
 extern void map_portal_mesh_dispose_transparent_sort_lists(map_type *map);
 extern void map_portal_mesh_calculate_extent(map_type *map,int portal_idx,int mesh_idx,d3pnt *min,d3pnt *max);

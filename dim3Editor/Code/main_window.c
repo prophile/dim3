@@ -240,7 +240,6 @@ void main_wind_control_piece(int piece_idx)
 			portal_new();
 			break;
 		case 1:
-			main_wind_set_view_piece_segment();
 			piece_create_spot();
 			break;
 		case 2:
@@ -253,23 +252,18 @@ void main_wind_control_piece(int piece_idx)
 			piece_create_particle();
 			break;
 		case 5:
-			main_wind_set_view_piece_segment();
 			piece_create_scenery();
 			break;
 		case 6:
-			main_wind_set_view_piece_segment();
 			piece_create_node();
 			break;
 		case 7:
-			main_wind_set_view_piece_segment();
 			piece_add_library_mesh();
 			break;
 		case 8:
-			main_wind_set_view_piece_segment();
 			piece_replace_library_mesh();
 			break;
 		case 9:
-			main_wind_set_view_piece_segment();
 			piece_create_liquid();
 			break;
 	}
@@ -830,16 +824,6 @@ void main_wind_set_perspective(int perspective)
 void main_wind_set_view_piece_portal(void)
 {
 	main_wind_set_view(vw_portal_only);
-}
-
-void main_wind_set_view_piece_segment(void)
-{
-/* supergumba
-	if ((main_wind_view==vw_portal_only) || (main_wind_view==vw_site_path_only)) {
-		main_wind_set_view(vw_3_panel);
-		return;
-	}
-	*/
 }
 
 /* =======================================================

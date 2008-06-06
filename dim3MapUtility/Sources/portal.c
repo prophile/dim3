@@ -160,8 +160,9 @@ void map_portal_calculate_y_extent(map_type *map,int rn,int *p_ty,int *p_by)
 	
 		// corrections if no hits
 		
-	if (ty==1000000) ty=0;
-	if (by==-1000000) by=0;
+	if (ty==1000000) {
+		ty=by=0;
+	}
 	
 	*p_ty=ty;
 	*p_by=by;
