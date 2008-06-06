@@ -116,7 +116,7 @@ bool object_move_with_wall_segment_check_wall(d3box *box,int seg_idx,int xmove,i
 
 void object_move_with_wall_segment(int seg_idx,int xmove,int zmove)
 {
-/* supergumba -- work on this
+/* supergumba -- work on this -- move it to object_move_with_mesh
 	int			i;
 	d3box		box;
 	obj_type	*obj;
@@ -143,7 +143,7 @@ void object_move_with_wall_segment(int seg_idx,int xmove,int zmove)
 	*/
 }
 
-void object_move_with_standing_mesh(int portal_idx,int mesh_idx,int xmove,int zmove)
+void object_move_with_mesh(int portal_idx,int mesh_idx,int xmove,int zmove)
 {
 	int			n;
 	obj_type	*obj;
@@ -151,12 +151,14 @@ void object_move_with_standing_mesh(int portal_idx,int mesh_idx,int xmove,int zm
 	obj=server.objs;
 	
 	for (n=0;n!=server.count.obj;n++) {
-		if ((obj->contact.stand_poly.portal_idx==portal_idx) && (obj->contact.stand_poly.mesh_idx==mesh_idx)) object_move_with_move(obj,xmove,zmove);
+		if ((!obj->remote.on) && (obj->contact.stand_poly.portal_idx==portal_idx) && (obj->contact.stand_poly.mesh_idx==mesh_idx)) {
+			object_move_with_move(obj,xmove,zmove);
+		}
 		obj++;
 	}
 }
 
-void object_rotate_with_standing_mesh(int portal_idx,int mesh_idx,float y)
+void object_rotate_with_mesh(int portal_idx,int mesh_idx,float y)
 {
 	int				n;
 	d3pnt			mpt;

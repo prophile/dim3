@@ -128,8 +128,8 @@ extern void object_move_remote(obj_type *obj);
 extern void object_move_start(obj_type *obj);
 extern void object_move_stop(obj_type *obj);
 
-extern void object_move_with_standing_mesh(int portal_idx,int mesh_idx,int xmove,int zmove);
-extern void object_rotate_with_standing_mesh(int portal_idx,int mesh_idx,float y);
+extern void object_move_with_mesh(int portal_idx,int mesh_idx,int xmove,int zmove);
+extern void object_rotate_with_mesh(int portal_idx,int mesh_idx,float y);
 extern bool object_push_with_object(obj_type *obj,int xmove,int zmove);
 extern void object_move_with_standing_object(obj_type *obj,int xmove,int zmove);
 extern void object_rotate_with_standing_object(obj_type *obj,float y);

@@ -122,7 +122,7 @@ bool group_move_frozen(int group_idx)
       
 ======================================================= */
 
-void group_move(int group_idx,int xmove,int zmove,int ymove)
+void group_move(int group_idx,int xmove,int ymove,int zmove)
 {
 	int					n,unit_cnt;
 	bool				move_objs;
@@ -162,17 +162,10 @@ void group_move(int group_idx,int xmove,int zmove,int ymove)
 				map_portal_mesh_move(&map,unit_list->portal_idx,unit_list->idx,TRUE,xmove,ymove,zmove);
 				mesh->flag.touched=TRUE;
 
-					// move objects on segment
-					// supergumba
-				
-				if (move_objs) {
-					//		object_move_with_wall_segment((int)(*seg_list),xmove,zmove);
-					object_move_with_standing_mesh(unit_list->portal_idx,unit_list->idx,xmove,zmove);
-				}
+					// move objects and decals with mesh
 
-					// move decals with segments!
-
-				decal_move_for_mesh(unit_list->portal_idx,unit_list->idx,xmove,ymove,zmove);
+				if (move_objs) object_move_with_mesh(unit_list->portal_idx,unit_list->idx,xmove,zmove);
+				decal_move_with_mesh(unit_list->portal_idx,unit_list->idx,xmove,ymove,zmove);
 
 					// force a lighting recalc if mesh moved in a portal
 
@@ -240,17 +233,10 @@ void group_rotate(int group_idx,float x,float y,float z)
 			map_portal_mesh_rotate(&map,unit_list->portal_idx,unit_list->idx,TRUE,x,y,z);
 			mesh->flag.touched=TRUE;
 
-				// move objects on segment
-				// supergumba
+				// rotate objects and decals with mesh
 			
-			if (move_objs) {
-				//		object_move_with_wall_segment((int)(*seg_list),xmove,zmove);
-				object_rotate_with_standing_mesh(unit_list->portal_idx,unit_list->idx,y);
-			}
-
-				// move decals with segments!
-
-		//	decal_move_for_mesh(unit_list->portal_idx,unit_list->idx,xmove,ymove,zmove);
+			if (move_objs) object_rotate_with_mesh(unit_list->portal_idx,unit_list->idx,y);
+			decal_rotate_with_mesh(unit_list->portal_idx,unit_list->idx,y);
 
 				// force a lighting recalc if mesh moved in a portal
 
@@ -294,7 +280,7 @@ void group_moves_run(void)
 			move->cur_mov.y-=(float)y;
 			move->cur_mov.z-=(float)z;
 
-			group_move(n,x,z,y);
+			group_move(n,x,y,z);
 		}
 		
 			// rotations

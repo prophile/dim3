@@ -55,7 +55,6 @@ JSFunctionSpec	map_group_functions[]={
 							{"setTextureAlpha",		js_map_group_set_texture_alpha_func,	2},
 							{0}};
 
-extern void group_move(int group_idx,int xmove,int zmove,int ymove);
 extern void group_show(int group_idx,bool show);
 extern void group_solid(int group_idx,bool solid);
 extern void group_texture(int group_idx,int index);

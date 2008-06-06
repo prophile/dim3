@@ -113,7 +113,7 @@ bool decal_segment_ok(map_mesh_poly_type *poly,int mark_idx)
       
 ======================================================= */
 
-void decal_move_for_mesh(int portal_idx,int mesh_idx,int xmove,int ymove,int zmove)
+void decal_move_with_mesh(int portal_idx,int mesh_idx,int xmove,int ymove,int zmove)
 {
 	int			n,i;
 	decal_type	*decal;
@@ -124,9 +124,37 @@ void decal_move_for_mesh(int portal_idx,int mesh_idx,int xmove,int ymove,int zmo
 		if ((decal->rn==portal_idx) && (decal->mesh_idx==mesh_idx)) {
 			for (i=0;i!=4;i++) {
 				decal->x[i]+=xmove;
-				decal->z[i]+=zmove;
 				decal->y[i]+=ymove;
+				decal->z[i]+=zmove;
 			}
+		}
+		decal++;
+	}
+}
+
+void decal_rotate_with_mesh(int portal_idx,int mesh_idx,float y)
+{
+	int				n;
+	d3pnt			mpt;
+	decal_type		*decal;
+	map_mesh_type	*mesh;
+
+		// get center point for mesh
+
+	mesh=&map.portals[portal_idx].mesh.meshes[mesh_idx];
+
+	map_portal_mesh_calculate_center(&map,portal_idx,mesh_idx,&mpt);
+	mpt.x+=mesh->rot_off.x;
+	mpt.y+=mesh->rot_off.y;
+	mpt.z+=mesh->rot_off.z;
+
+		// rotate any decals on it
+
+	decal=server.decals;
+
+	for (n=0;n!=server.count.decal;n++) {
+		if ((decal->rn==portal_idx) && (decal->mesh_idx==mesh_idx)) {
+			rotate_2D_polygon(4,decal->x,decal->z,mpt.x,mpt.z,y);
 		}
 		decal++;
 	}
