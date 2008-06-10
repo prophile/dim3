@@ -213,7 +213,7 @@ void model_animation_effect_launch_ring(model_ring_type *ring,d3pnt *pt,d3ang *a
 
 void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx)
 {
-	int						t,y;
+	int						t;
 	d3pnt					pt;
 	model_type				*mdl;
 	model_draw_setup		*setup;
@@ -233,12 +233,12 @@ void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx
 		// sounds
 		
 	if (pose_move->sound.buffer_idx!=-1) {
-		y=draw->pos.y-(mdl->view_box.size.y>>1);
+		model_animation_effect_launch_bone_position(draw,animate_idx,pose_idx,pose_move->sound.bone_idx,&pt);
 
-		al_play_source(pose_move->sound.buffer_idx,draw->pos.x,y,draw->pos.z,pose_move->sound.pitch,FALSE,FALSE,FALSE,draw->player);
-		object_watch_sound_alert(draw->pos.x,y,draw->pos.z,draw->connect.obj_uid,pose_move->sound.name);	// sound watches
+		al_play_source(pose_move->sound.buffer_idx,pt.x,pt.y,pt.z,pose_move->sound.pitch,FALSE,FALSE,FALSE,draw->player);
+		object_watch_sound_alert(pt.x,pt.y,pt.z,draw->connect.obj_uid,pose_move->sound.name);	// sound watches
 
-		if ((net_setup.client.joined) && (draw->connect.net_sound)) net_client_send_sound(net_setup.client.remote_uid,draw->pos.x,draw->pos.y,draw->pos.z,pose_move->sound.pitch,pose_move->sound.name);
+		if ((net_setup.client.joined) && (draw->connect.net_sound)) net_client_send_sound(net_setup.client.remote_uid,pt.x,pt.y,pt.z,pose_move->sound.pitch,pose_move->sound.name);
 	}
 
 		// mesh fades
@@ -250,9 +250,7 @@ void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx
 		// flash
 		
 	if (pose_move->flash.intensity!=0) {
-		pt.x=draw->pos.x;
-		pt.y=draw->pos.y-(mdl->view_box.size.y>>1);
-		pt.z=draw->pos.z;
+		model_animation_effect_launch_bone_position(draw,animate_idx,pose_idx,pose_move->flash.bone_idx,&pt);
 		effect_spawn_flash(&pt,&pose_move->flash.col,pose_move->flash.intensity,pose_move->flash.flash_msec,pose_move->flash.fade_msec);
 	}
 	

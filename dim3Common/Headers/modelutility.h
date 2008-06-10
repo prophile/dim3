@@ -185,7 +185,7 @@ typedef struct		{
 					} model_pose_type;
 
 typedef struct		{
-						int								buffer_idx;
+						int								bone_idx,buffer_idx;
 						float							pitch;
 						char							name[name_str_len];
 					} model_pose_move_sound_type;
@@ -221,7 +221,7 @@ typedef struct		{
 					} model_pose_move_mesh_fade_type;
 					
 typedef struct		{
-						int								intensity,flash_msec,fade_msec;
+						int								bone_idx,intensity,flash_msec,fade_msec;
 						d3col							col;
 					} model_pose_move_flash_type;
 					

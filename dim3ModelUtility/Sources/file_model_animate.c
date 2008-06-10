@@ -41,7 +41,7 @@ bool read_animate_xml(model_type *model)
 {
 	int						i,k,t,tag,model_head,poses_tag,animations_tag,animation_tag,
 							particles_head,particle_tag,rings_head,ring_tag;
-    char					sub_path[1024],path[1024],posename[256];
+    char					sub_path[1024],path[1024],posename[256],str[256];
 	bool					old_particle_def,old_ring_def;
     model_pose_move_type	*pose_move;
 	model_animate_type		*animate;
@@ -93,6 +93,7 @@ bool read_animate_xml(model_type *model)
             pose_move->acceleration=xml_get_attribute_float_default(tag,"acceleration",0.0f);
 
 			xml_get_attribute_text(tag,"sound",pose_move->sound.name,name_str_len);
+			pose_move->sound.bone_idx=model_find_bone(model,xml_get_attribute_model_tag(tag,"sound_bone"));
 			pose_move->sound.pitch=xml_get_attribute_float_default(tag,"sound_pitch",1.0f);
          
 			xml_get_attribute_text(tag,"mesh_fade",pose_move->mesh_fade.name,name_str_len);
@@ -100,11 +101,16 @@ bool read_animate_xml(model_type *model)
 			pose_move->mesh_fade.fade_out_msec=xml_get_attribute_int(tag,"mesh_fade_out_time");
 			pose_move->mesh_fade.mesh_idx=model_find_mesh(model,pose_move->mesh_fade.name);
 
+			pose_move->flash.bone_idx=model_find_bone(model,xml_get_attribute_model_tag(tag,"flash_bone"));
 			pose_move->flash.intensity=xml_get_attribute_int(tag,"flash_intensity");
 			pose_move->flash.flash_msec=xml_get_attribute_int(tag,"flash_time");
 			pose_move->flash.fade_msec=xml_get_attribute_int(tag,"flash_fade_time");
 			xml_get_attribute_color(tag,"flash_color",&pose_move->flash.col);
 			
+			if (!xml_get_attribute_text(tag,"flash_bone",str,256)) {	// check for older flash defs and increase intensity
+				pose_move->flash.intensity*=144;		// old map enlarge value
+			}
+
 			pose_move->shake.distance=xml_get_attribute_int(tag,"shake_distance");
 			pose_move->shake.size=xml_get_attribute_int(tag,"shake_size");
 			pose_move->shake.life_msec=xml_get_attribute_int(tag,"shake_time");
@@ -267,12 +273,14 @@ bool write_animate_xml(model_type *model)
 			xml_add_attribute_float("acceleration",pose_move->acceleration);
 			
             xml_add_attribute_text("sound",pose_move->sound.name);
-            xml_add_attribute_float("sound_pitch",pose_move->sound.pitch);
+ 			xml_add_attribute_model_tag("sound_bone",model->bones[pose_move->sound.bone_idx].tag);
+			xml_add_attribute_float("sound_pitch",pose_move->sound.pitch);
 			
 			xml_add_attribute_text("mesh_fade",pose_move->mesh_fade.name);
 			xml_add_attribute_int("mesh_fade_in_time",pose_move->mesh_fade.fade_in_msec);
 			xml_add_attribute_int("mesh_fade_out_time",pose_move->mesh_fade.fade_out_msec);
 
+ 			xml_add_attribute_model_tag("flash_bone",model->bones[pose_move->flash.bone_idx].tag);
 			xml_add_attribute_int("flash_intensity",pose_move->flash.intensity);
 			xml_add_attribute_int("flash_time",pose_move->flash.flash_msec);
 			xml_add_attribute_int("flash_fade_time",pose_move->flash.fade_msec);

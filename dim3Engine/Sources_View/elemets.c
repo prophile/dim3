@@ -1622,9 +1622,7 @@ void element_draw_table_background_fills(element_type *element,int row_high)
 		
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	
-	rgt-=24;
 	bot=(top+row_high)+4;
-	
 	y=(top+bot)>>1;
 		
 	glBegin(GL_QUADS);
@@ -1650,8 +1648,7 @@ void element_draw_table_background_fills(element_type *element,int row_high)
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	
 	lft=rgt-24;
-	top+=(24+(row_high+4));
-	bot-=24;
+	top+=(row_high+4);
 	
 	x=(lft+rgt)>>1;
 		
