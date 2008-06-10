@@ -80,8 +80,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 234417763;
-			PBXWorkspaceStateSaveDate = 234417763;
+			PBXPerProjectTemplateStateSaveDate = 234759205;
+			PBXWorkspaceStateSaveDate = 234759205;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -334,9 +334,9 @@
 	};
 	F5A17A5F0CC14D340083AF08 /* segment_render_opaque.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1200, 9184}}";
-			sepNavSelRange = "{4658, 0}";
-			sepNavVisRange = "{3659, 1178}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 11564}}";
+			sepNavSelRange = "{12770, 0}";
+			sepNavVisRange = "{12300, 1032}";
 			sepNavWindowFrame = "{{464, 141}, {1041, 747}}";
 		};
 	};
@@ -1012,9 +1012,9 @@
 	};
 	F5DD1A9709085CAA00721649 /* gl_texture.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 18634}}";
-			sepNavSelRange = "{7565, 37}";
-			sepNavVisRange = "{7388, 1569}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 16884}}";
+			sepNavSelRange = "{23766, 0}";
+			sepNavVisRange = "{23015, 1147}";
 			sepNavWindowFrame = "{{84, 213}, {1041, 747}}";
 		};
 	};

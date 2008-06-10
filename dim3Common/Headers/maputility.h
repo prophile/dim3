@@ -506,7 +506,7 @@ typedef struct		{
 typedef struct		{
 						float						gravity,gravity_max_power,gravity_max_speed,
 													resistance,txt_scale_x,txt_scale_y;
-						bool						speculars_hilite,editor_link_always_start;
+						bool						editor_link_always_start;
 						char						network_game_list[256];
 					} map_settings_type;
 					

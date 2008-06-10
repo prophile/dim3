@@ -71,7 +71,6 @@ void decode_map_settings_xml(map_type *map,int map_head)
 		map->settings.resistance=xml_get_attribute_float_default(tag,"resistance",1);
 		map->settings.txt_scale_x=xml_get_attribute_float_default(tag,"txt_scale_x",0.04f);
 		map->settings.txt_scale_y=xml_get_attribute_float_default(tag,"txt_scale_y",0.04f);
-		map->settings.speculars_hilite=xml_get_attribute_boolean(tag,"speculars_hilite");
 		map->settings.editor_link_always_start=xml_get_attribute_boolean(tag,"editor_link_always_start");
         xml_get_attribute_text(tag,"network_game_list",map->settings.network_game_list,256);
 	}

@@ -445,57 +445,6 @@ inline void gl_texture_tesseled_lighting_factor(float dark_factor)
 
 void gl_texture_opaque_specular_start(void)
 {
-		//
-		// hilite version of speculars
-		//
-
-	if (map.settings.speculars_hilite) {
-
-			// texture unit 0
-			// the lighting combined with specular factor
-			
-		glActiveTexture(GL_TEXTURE0);
-		glEnable(GL_TEXTURE_2D);
-		
-		glBindTexture(GL_TEXTURE_2D,null_bitmap.gl_id);				// texture is not used in this unit
-		
-		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-
-		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_ADD_SIGNED);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_CONSTANT);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_PRIMARY_COLOR);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
-
-		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_CONSTANT);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-			
-			// texture unit 1
-			// the specular texture combined with the modulated lighting
-
-		glActiveTexture(GL_TEXTURE1);
-		glEnable(GL_TEXTURE_2D);
-
-		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-
-		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PREVIOUS);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_TEXTURE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
-
-		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-
-		return;
-	}
-
-		//
-		// lighted version of speculars
-		//
-
 		// texture unit 0
 		// the lighting multiplied by lighting to
 		// get exponitial drop off
@@ -558,10 +507,8 @@ void gl_texture_opaque_specular_start(void)
 
 void gl_texture_opaque_specular_end(void)
 {
-	if (!map.settings.speculars_hilite) {
-		glActiveTexture(GL_TEXTURE2);
-		glDisable(GL_TEXTURE_2D);
-	}
+	glActiveTexture(GL_TEXTURE2);
+	glDisable(GL_TEXTURE_2D);
 
 	glActiveTexture(GL_TEXTURE1);
 	glDisable(GL_TEXTURE_2D);
@@ -572,13 +519,7 @@ void gl_texture_opaque_specular_end(void)
 
 inline void gl_texture_opaque_specular_set(int specular_id)
 {
-	if (map.settings.speculars_hilite) {
-		glActiveTexture(GL_TEXTURE1);
-	}
-	else {
-		glActiveTexture(GL_TEXTURE2);
-	}
-
+	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D,specular_id);
 }
 
@@ -586,12 +527,7 @@ inline void gl_texture_opaque_specular_factor(float specular_factor)
 {
 	GLfloat		fct[4];
 
-	if (map.settings.speculars_hilite) {
-		glActiveTexture(GL_TEXTURE0);
-	}
-	else {
-		glActiveTexture(GL_TEXTURE1);
-	}
+	glActiveTexture(GL_TEXTURE1);
 	
 	fct[0]=fct[1]=fct[2]=specular_factor;
 	fct[3]=1.0f;
@@ -812,59 +748,6 @@ inline void gl_texture_transparent_set(int txt_id,float alpha)
 
 void gl_texture_transparent_specular_start(void)
 {
-		//
-		// hilite version of speculars
-		//
-
-	if (map.settings.speculars_hilite) {
-
-			// texture unit 0
-			// the lighting combined with specular factor
-			
-		glActiveTexture(GL_TEXTURE0);
-		glEnable(GL_TEXTURE_2D);
-		
-		glBindTexture(GL_TEXTURE_2D,null_bitmap.gl_id);				// texture is not used in this unit
-		
-		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-
-		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_ADD_SIGNED);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_CONSTANT);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_PRIMARY_COLOR);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
-
-		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_CONSTANT);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-			
-			// texture unit 1
-			// the specular texture combined with the modulated lighting
-
-		glActiveTexture(GL_TEXTURE1);
-		glEnable(GL_TEXTURE_2D);
-
-		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-
-		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PREVIOUS);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_TEXTURE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
-
-		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_MODULATE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_ALPHA,GL_CONSTANT);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_ALPHA,GL_SRC_ALPHA);
-
-		return;
-	}
-
-		//
-		// lighted version of speculars
-		//
-
 		// texture unit 0
 		// the lighting multiplied by lighting to
 		// get exponitial drop off
@@ -929,10 +812,8 @@ void gl_texture_transparent_specular_start(void)
 
 void gl_texture_transparent_specular_end(void)
 {
-	if (!map.settings.speculars_hilite) {
-		glActiveTexture(GL_TEXTURE2);
-		glDisable(GL_TEXTURE_2D);
-	}
+	glActiveTexture(GL_TEXTURE2);
+	glDisable(GL_TEXTURE_2D);
 
 	glActiveTexture(GL_TEXTURE1);
 	glDisable(GL_TEXTURE_2D);
@@ -945,13 +826,7 @@ inline void gl_texture_transparent_specular_set(int specular_id,float alpha)
 {
 	GLfloat		col4[4];
 
-	if (map.settings.speculars_hilite) {
-		glActiveTexture(GL_TEXTURE1);
-	}
-	else {
-		glActiveTexture(GL_TEXTURE2);
-	}
-
+	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D,specular_id);
 
 	col4[0]=col4[1]=col4[2]=1;
@@ -963,12 +838,7 @@ inline void gl_texture_transparent_specular_factor(float specular_factor)
 {
 	GLfloat		col4[4];
 
-	if (map.settings.speculars_hilite) {
-		glActiveTexture(GL_TEXTURE0);
-	}
-	else {
-		glActiveTexture(GL_TEXTURE1);
-	}
+	glActiveTexture(GL_TEXTURE1);
 
 	col4[0]=col4[1]=col4[2]=specular_factor;
 	col4[3]=1.0f;

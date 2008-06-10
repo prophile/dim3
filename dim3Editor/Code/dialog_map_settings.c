@@ -112,7 +112,6 @@ bool dialog_map_settings_run(void)
 	
 	dialog_set_text(dialog_map_settings_wind,kMapGameTypeList,0,map.settings.network_game_list);
 	
-	dialog_set_boolean(dialog_map_settings_wind,kMapSpecularsHilite,0,map.settings.speculars_hilite);
 	dialog_set_boolean(dialog_map_settings_wind,kMapEditorLinkStartAlways,0,map.settings.editor_link_always_start);
 	
 		// show window
@@ -144,7 +143,6 @@ bool dialog_map_settings_run(void)
 		
 		dialog_get_text(dialog_map_settings_wind,kMapGameTypeList,0,map.settings.network_game_list,256);
 		
-		map.settings.speculars_hilite=dialog_get_boolean(dialog_map_settings_wind,kMapSpecularsHilite,0);
 		map.settings.editor_link_always_start=dialog_get_boolean(dialog_map_settings_wind,kMapEditorLinkStartAlways,0);
 	}
 
