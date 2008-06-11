@@ -61,6 +61,7 @@ extern model_type		model;
 #define kAnimationPoseMoveZ					FOUR_CHAR_CODE('movz')
 #define kAnimationEffectBone				FOUR_CHAR_CODE('eftb')
 
+#define kAnimationSoundBone					FOUR_CHAR_CODE('sbne')
 #define kAnimationSoundName					FOUR_CHAR_CODE('sndn')
 #define kAnimationSoundPitch				FOUR_CHAR_CODE('sndp')
 
@@ -76,6 +77,7 @@ extern model_type		model;
 #define kAnimationRingAdd					FOUR_CHAR_CODE('radd')
 #define kAnimationRingSub					FOUR_CHAR_CODE('rsub')
 
+#define kAnimationFlashBone					FOUR_CHAR_CODE('fbne')
 #define kAnimationFlashIntensity			FOUR_CHAR_CODE('fint')
 #define kAnimationFlashColor				FOUR_CHAR_CODE('fcol')
 #define kAnimationFlashColorEdit			FOUR_CHAR_CODE('colb')
@@ -125,6 +127,7 @@ void dialog_pose_move_settings_load(void)
 	dialog_set_float(dialog_animation_settings_wind,kAnimationPoseMoveY,0,pose_move->mov.y);
 	dialog_set_float(dialog_animation_settings_wind,kAnimationPoseMoveZ,0,pose_move->mov.z);
 
+	dialog_set_bone_combo(dialog_animation_settings_wind,kAnimationSoundBone,0,pose_move->sound.bone_idx);
 	dialog_special_combo_fill_sound(dialog_animation_settings_wind,kAnimationSoundName,0,pose_move->sound.name);
 	dialog_set_float(dialog_animation_settings_wind,kAnimationSoundPitch,0,pose_move->sound.pitch);
 	
@@ -138,6 +141,7 @@ void dialog_pose_move_settings_load(void)
 	RemoveDataBrowserItems(dialog_ring_list,kDataBrowserNoItem,0,NULL,kDataBrowserItemNoProperty);
 	AddDataBrowserItems(dialog_ring_list,kDataBrowserNoItem,pose_move->ring.count,NULL,kDataBrowserItemNoProperty);
 	
+	dialog_set_bone_combo(dialog_animation_settings_wind,kAnimationFlashBone,0,pose_move->flash.bone_idx);
 	dialog_set_int(dialog_animation_settings_wind,kAnimationFlashIntensity,0,pose_move->flash.intensity);
 	dialog_set_int(dialog_animation_settings_wind,kAnimationFlashLiveTime,0,pose_move->flash.flash_msec);
 	dialog_set_int(dialog_animation_settings_wind,kAnimationFlashFadeTime,0,pose_move->flash.fade_msec);
@@ -183,6 +187,7 @@ void dialog_pose_move_settings_save(void)
 	pose_move->mov.z=dialog_get_float(dialog_animation_settings_wind,kAnimationPoseMoveZ,0);
 	pose_move->acceleration=((float)dialog_get_value(dialog_animation_settings_wind,kAnimationPoseAccel,0))/100.0f;
 
+	pose_move->sound.bone_idx=dialog_get_bone_combo(dialog_animation_settings_wind,kAnimationSoundBone,0);
 	dialog_special_combo_get_sound(dialog_animation_settings_wind,kAnimationSoundName,0,pose_move->sound.name,name_str_len);
 	pose_move->sound.pitch=dialog_get_float(dialog_animation_settings_wind,kAnimationSoundPitch,0);
 	
@@ -190,6 +195,7 @@ void dialog_pose_move_settings_save(void)
 	pose_move->flash.flash_msec=dialog_get_int(dialog_animation_settings_wind,kAnimationFlashLiveTime,0);
 	pose_move->flash.fade_msec=dialog_get_int(dialog_animation_settings_wind,kAnimationFlashFadeTime,0);
 	
+	pose_move->flash.bone_idx=dialog_get_bone_combo(dialog_animation_settings_wind,kAnimationFlashBone,0);
 	pose_move->flash.col.r=((float)dialog_pose_move_settings_color.red/(float)0xFFFF);
 	pose_move->flash.col.g=((float)dialog_pose_move_settings_color.green/(float)0xFFFF);
 	pose_move->flash.col.b=((float)dialog_pose_move_settings_color.blue/(float)0xFFFF);
@@ -356,7 +362,7 @@ static pascal OSStatus pose_move_setting_tab_proc(EventHandlerCallRef handler,Ev
 				
 		}
 			
-		return(noErr);
+		return(eventNotHandledErr);
 	}
 	
 	if ((event_class=kEventClassControl) && (event_kind==kEventControlHit)) {

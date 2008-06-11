@@ -480,16 +480,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
             
 			// piece menu
 
-		case kCommandPieceCombineMeshes:
-			piece_combine_mesh(cr);
-			main_wind_draw();
-			return(noErr);
-			
-		case kCommandPieceTesselatePolygon:
-			piece_tesselate();
-			return(noErr);
-			
-		case kCommandPieceAddLibrary:
+		case kCommandMeshAddLibrary:
 		//	primitive_save();
 			return(noErr);
 			
@@ -584,56 +575,65 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
  			undo_clear();
 			return(noErr);
 			            
-			// piece transform menu
+			// mesh transform menu
 
-		case kCommandPieceResize:
+		case kCommandMeshCombine:
+			piece_combine_mesh(cr);
+			main_wind_draw();
+			return(noErr);
+			
+		case kCommandMeshTesselate:
+			piece_tesselate();
+			return(noErr);
+			
+		case kCommandMeshResize:
 			piece_resize();
 			return(noErr);
 			
-		case kCommandPieceFlipX:
+		case kCommandMeshFlipX:
 			piece_flip(TRUE,FALSE,TRUE);
 			return(noErr);
 			
-		case kCommandPieceFlipY:
+		case kCommandMeshFlipY:
 			piece_flip(FALSE,TRUE,FALSE);
 			return(noErr);
 			
-		case kCommandPieceFlipZ:
+		case kCommandMeshFlipZ:
 			piece_flip(FALSE,FALSE,TRUE);
 			return(noErr);
 			
-		case kCommandPieceRotateX:
+		case kCommandMeshRotateX:
 			piece_rotate(90.0f,0.0f,0.0f);
 			return(noErr);
 			
-		case kCommandPieceRotateY:
+		case kCommandMeshRotateY:
 			piece_rotate(0.0f,90.0f,0.0f);
 			return(noErr);
 			
-		case kCommandPieceRotateZ:
+		case kCommandMeshRotateZ:
 			piece_rotate(0.0f,0.0f,90.0f);
 			return(noErr);
 
-		case kCommandPieceFreeRotate:
+		case kCommandMeshFreeRotate:
 			piece_free_rotate();
 			return(noErr);
 
-		case kCommandPieceRaiseY:
+		case kCommandMeshRaiseY:
 			select_move(cr,0,0,map_enlarge);
 			main_wind_draw();
 			return(noErr);
             
-		case kCommandPieceLowerY:
+		case kCommandMeshLowerY:
 			select_move(cr,0,0,-map_enlarge);
             main_wind_draw();
  			return(noErr);
 			
-		case kCommandPieceSnapToGrid:
-			piece_snap_to_grid();
+		case kCommandMeshSnapToGrid:
+			piece_mesh_snap_to_grid();
 			main_wind_draw();
 			return(noErr);
 			
-		case kCommandPieceResetUV:
+		case kCommandMeshResetUV:
 			piece_reset_uvs(FALSE);
 			main_wind_draw();
 			return(noErr);
@@ -644,10 +644,21 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			piece_poly_hole(0);
 			return(noErr);
 			
+		case kCommandPolygonSnapToGrid:
+			piece_mesh_poly_snap_to_grid();
+			main_wind_draw();
+			return(noErr);
+			
 		case kCommandPolygonResetUV:
 			piece_reset_uvs(TRUE);
 			return(noErr);
 			
+			// vertex menu
+			
+		case kCommandVertexSnapToGrid:
+			piece_mesh_vertexes_snap_to_grid();
+			main_wind_draw();
+			return(noErr);
 
 	}
 	

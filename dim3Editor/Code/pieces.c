@@ -511,6 +511,54 @@ void piece_free_rotate(void)
 
 void mesh_snap_to_grid(int portal_idx,int mesh_idx)
 {
+	int						n,nvertex,x,y,z;
+	d3pnt					mpt,mpt2;
+	d3pnt					*pt;
+	portal_type				*portal;
+	map_mesh_type			*mesh;
+
+	portal=&map.portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+
+	map_portal_mesh_calculate_center(&map,portal_idx,mesh_idx,&mpt);
+	memmove(&mpt2,&mpt,sizeof(d3pnt));
+	walk_view_click_grid(&mpt2);
+	
+	x=mpt2.x-mpt.x;
+	y=mpt2.y-mpt.y;
+	z=mpt2.z-mpt.z;
+	
+	nvertex=mesh->nvertex;
+	pt=mesh->vertexes;
+
+	for (n=0;n!=nvertex;n++) {
+		pt->x+=x;
+		pt->y+=y;
+		pt->z+=z;
+		pt++;
+	}
+}
+
+void mesh_poly_snap_to_grid(int portal_idx,int mesh_idx,int poly_idx)
+{
+	int						n;
+	d3pnt					*pt;
+	portal_type				*portal;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+
+	portal=&map.portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+	
+	for (n=0;n!=poly->ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+		walk_view_click_grid(pt);
+	}
+}
+
+void mesh_vertexes_snap_to_grid(int portal_idx,int mesh_idx)
+{
 	int						n,nvertex;
 	d3pnt					*pt;
 	portal_type				*portal;
@@ -527,7 +575,8 @@ void mesh_snap_to_grid(int portal_idx,int mesh_idx)
 		pt++;
 	}
 }
-void piece_snap_to_grid(void)
+
+void piece_mesh_snap_to_grid(void)
 {
 	int						n,sel_count,type,portal_idx,mesh_idx,poly_idx;
 
@@ -538,6 +587,34 @@ void piece_snap_to_grid(void)
 		if (type!=mesh_piece) continue;
 		
 		mesh_snap_to_grid(portal_idx,mesh_idx);
+	}
+}
+
+void piece_mesh_poly_snap_to_grid(void)
+{
+	int						n,sel_count,type,portal_idx,mesh_idx,poly_idx;
+
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
+		
+		mesh_poly_snap_to_grid(portal_idx,mesh_idx,poly_idx);
+	}
+}
+
+void piece_mesh_vertexes_snap_to_grid(void)
+{
+	int						n,sel_count,type,portal_idx,mesh_idx,poly_idx;
+
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
+		
+		mesh_vertexes_snap_to_grid(portal_idx,mesh_idx);
 	}
 }
 
