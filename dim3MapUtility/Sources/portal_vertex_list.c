@@ -100,68 +100,6 @@ int map_portal_add_single_vertex_list(portal_vertex_list_type *vl,int vl_cnt,int
 	return(vl_cnt+1);
 }
 
-int map_portal_add_single_light_vertex_list(portal_vertex_list_type *vl,int vl_cnt,int x,int y,int z,bool moveable,int *idx)
-{
-	int							i,vl_start;
-	float						fx,fy,fz;
-	portal_vertex_list_type		*v;
-
-	fx=(float)x;
-	fy=(float)y;
-	fz=(float)z;
-	
-		// moveable segments have non-combined vertexes
-
-	if (moveable) {
-		v=vl+vl_cnt;
-		
-		v->x=fx;
-		v->y=fy;
-		v->z=fz;
-		v->gx=0.0f;
-		v->gy=0.0f;
-		v->flags=flag_pvl_moveable;
-		
-		*idx=vl_cnt;
-		
-		return(vl_cnt+1);
-	}	
-
-		// check for combined vertexes
-		// go backwards for better chance of early hit
-
-	if (vl_cnt!=0) {
-	
-		vl_start=vl_cnt-1;
-		v=vl+vl_start;
-	
-		for (i=vl_start;i!=0;i--) {
-			if ((v->flags&flag_pvl_moveable)==0) {
-				if ((v->x==fx) && (v->y==fy) && (v->z==fz)) {
-					*idx=i;
-					return(vl_cnt);
-				}
-			}
-			v--;
-		}
-	}
-
-		// need a new vertex
-		
-	v=vl+vl_cnt;
-	
-	v->x=fx;
-	v->y=fy;
-	v->z=fz;
-	v->gx=0.0f;
-	v->gy=0.0f;
-	v->flags=flag_pvl_none;
-	
-	*idx=vl_cnt;
-	
-	return(vl_cnt+1);
-}
-
 /* =======================================================
 
       Build Portal Vertex List for Mesh Poly
@@ -183,6 +121,72 @@ int map_portal_add_mesh_poly_single_vertex_list(portal_vertex_list_type *vl,int 
 
 /* =======================================================
 
+      Find UV within Vertex List
+      
+======================================================= */
+
+void map_portal_vertex_list_find_uv(int ptsz,int *x,int *y,float *gx,float *gy,int kx,int ky,float *p_gx,float *p_gy)
+{
+	int			n,lft_idx,rgt_idx,top_idx,bot_idx;
+	float		f,kgx,kgy,div;
+
+		// find vertexes on opposite sides of point
+
+	lft_idx=rgt_idx=top_idx=bot_idx=-1;
+
+	for (n=0;n!=ptsz;n++) {
+		if (x[n]<=kx) {
+			if ((lft_idx==-1) || (x[lft_idx]<x[n])) lft_idx=n;
+		}
+		if (x[n]>kx) {
+			if ((rgt_idx==-1) || (x[rgt_idx]>x[n])) rgt_idx=n;
+		}
+		if (y[n]<=ky) {
+			if ((top_idx==-1) || (y[top_idx]<y[n])) top_idx=n;
+		}
+		if (y[n]>ky) {
+			if ((bot_idx==-1) || (y[bot_idx]>y[n])) bot_idx=n;
+		}
+	}
+
+		// average them out
+
+	kgx=kgy=0.0f;
+	div=0.0f;
+
+	if ((lft_idx!=-1) && (rgt_idx!=-1)) {
+
+		f=(float)(x[rgt_idx]-x[lft_idx]);
+		if (f!=0.0f) kgx+=(((gx[rgt_idx]-gx[lft_idx])*(float)(kx-x[lft_idx]))/f);
+
+		f=(float)(y[rgt_idx]-y[lft_idx]);
+		if (f!=0.0f) kgy+=(((gy[rgt_idx]-gy[lft_idx])*(float)(ky-y[lft_idx]))/f);
+
+		div+=1.0f;
+	}
+
+	if ((top_idx!=-1) && (bot_idx!=-1)) {
+
+		f=(float)(x[bot_idx]-x[top_idx]);
+		if (f!=0.0f) kgx+=(((gx[bot_idx]-gx[top_idx])*(float)(kx-x[top_idx]))/f);
+
+		f=(float)(y[bot_idx]-y[top_idx]);
+		if (f!=0.0f) kgy+=(((gy[bot_idx]-gy[top_idx])*(float)(ky-y[top_idx]))/f);
+
+		div+=1.0f;
+	}
+
+	if (div!=0.0f) {
+		kgx/=div;
+		kgy/=div;
+	}
+
+	*p_gx=kgx;
+	*p_gy=kgy;
+}
+
+/* =======================================================
+
       Build Portal Vertex List for Light Tessel
       
 ======================================================= */
@@ -194,6 +198,7 @@ int map_portal_add_light_xy_tessel_vertex_list(portal_vertex_list_type *vl,int v
 	int							grid_x[light_tessel_grid_sz+1],
 								grid_y[light_tessel_grid_sz+1],
 								idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
+	float						p_gx,p_gy;
 	d3pnt						*pt;
 	map_mesh_poly_light_type	*light;
 
@@ -246,9 +251,13 @@ int map_portal_add_light_xy_tessel_vertex_list(portal_vertex_list_type *vl,int v
 
 	for (y=0;y<=ytot;y++) {
 		for (x=0;x<=xtot;x++) {
+
 			z=polygon_find_y(ptsz,px,pz,py,grid_x[x],grid_y[y]);
 			if (z==-1) z=polygon_infinite_find_y(ptsz,px,pz,py,grid_x[x],grid_y[y]);
-			vl_cnt=map_portal_add_single_light_vertex_list(vl,vl_cnt,grid_x[x],grid_y[y],z,mesh->flag.moveable,&idx[x][y]);
+
+			map_portal_vertex_list_find_uv(ptsz,px,py,mesh_poly->gx,mesh_poly->gy,grid_x[x],grid_y[y],&p_gx,&p_gy);
+
+			vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,grid_x[x],grid_y[y],z,p_gx,p_gy,mesh->flag.moveable,FALSE,&idx[x][y]);
 		}
 	}
 
@@ -300,6 +309,7 @@ int map_portal_add_light_xz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 	int							grid_x[light_tessel_grid_sz+1],
 								grid_z[light_tessel_grid_sz+1],
 								idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
+	float						p_gx,p_gy;
 	d3pnt						*pt;
 	map_mesh_poly_light_type	*light;
 
@@ -352,9 +362,13 @@ int map_portal_add_light_xz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 
 	for (z=0;z<=ztot;z++) {
 		for (x=0;x<=xtot;x++) {
+
 			y=polygon_find_y(ptsz,px,py,pz,grid_x[x],grid_z[z]);
 			if (y==-1) y=polygon_infinite_find_y(ptsz,px,py,pz,grid_x[x],grid_z[z]);
-			vl_cnt=map_portal_add_single_light_vertex_list(vl,vl_cnt,grid_x[x],y,grid_z[z],mesh->flag.moveable,&idx[x][z]);
+
+			map_portal_vertex_list_find_uv(ptsz,px,pz,mesh_poly->gx,mesh_poly->gy,grid_x[x],grid_z[z],&p_gx,&p_gy);
+
+			vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,grid_x[x],y,grid_z[z],p_gx,p_gy,mesh->flag.moveable,FALSE,&idx[x][z]);
 		}
 	}
 
@@ -406,6 +420,7 @@ int map_portal_add_light_yz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 	int							grid_z[light_tessel_grid_sz+1],
 								grid_y[light_tessel_grid_sz+1],
 								idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
+	float						p_gx,p_gy;
 	d3pnt						*pt;
 	map_mesh_poly_light_type	*light;
 
@@ -458,9 +473,13 @@ int map_portal_add_light_yz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 
 	for (y=0;y<=ytot;y++) {
 		for (z=0;z<=ztot;z++) {
+
 			x=polygon_find_y(ptsz,pz,px,py,grid_z[z],grid_y[y]);
 			if (x==-1) x=polygon_infinite_find_y(ptsz,pz,px,py,grid_z[z],grid_y[y]);
-			vl_cnt=map_portal_add_single_light_vertex_list(vl,vl_cnt,x,grid_y[y],grid_z[z],mesh->flag.moveable,&idx[z][y]);
+
+			map_portal_vertex_list_find_uv(ptsz,py,pz,mesh_poly->gx,mesh_poly->gy,grid_y[y],grid_z[z],&p_gx,&p_gy);
+
+			vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,x,grid_y[y],grid_z[z],p_gx,p_gy,mesh->flag.moveable,FALSE,&idx[z][y]);
 		}
 	}
 
@@ -508,6 +527,7 @@ int map_portal_add_light_yz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 int map_portal_add_light_simple_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
 {
 	int							n,k,ntrig,tx[3],ty[3],tz[3];
+	float						gx[3],gy[3];
 	d3pnt						*pt;
 	map_mesh_poly_light_type	*light;
 
@@ -525,20 +545,26 @@ int map_portal_add_light_simple_vertex_list(portal_vertex_list_type *vl,int vl_c
 	tx[0]=pt->x;
 	ty[0]=pt->y;
 	tz[0]=pt->z;
+	gx[0]=mesh_poly->gx[0];
+	gy[0]=mesh_poly->gy[0];
 	
 	for (n=0;n<=ntrig;n++) {
 		pt=&mesh->vertexes[mesh_poly->v[n+1]];
 		tx[1]=pt->x;
 		ty[1]=pt->y;
 		tz[1]=pt->z;
+		gx[1]=mesh_poly->gx[n+1];
+		gy[1]=mesh_poly->gy[n+1];
 
 		pt=&mesh->vertexes[mesh_poly->v[n+2]];
 		tx[2]=pt->x;
 		ty[2]=pt->y;
 		tz[2]=pt->z;
+		gx[2]=mesh_poly->gx[n+2];
+		gy[2]=mesh_poly->gy[n+2];
 
 		for (k=0;k!=3;k++) {
-			vl_cnt=map_portal_add_single_light_vertex_list(vl,vl_cnt,tx[k],ty[k],tz[k],mesh->flag.moveable,&light->trig_vertex_idx[(n*3)+k]);
+			vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,tx[k],ty[k],tz[k],gx[k],gy[k],mesh->flag.moveable,FALSE,&light->trig_vertex_idx[(n*3)+k]);
 		}
 
 		light->trig_count++;
