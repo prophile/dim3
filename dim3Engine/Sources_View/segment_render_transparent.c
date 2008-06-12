@@ -150,7 +150,7 @@ void segment_render_transparent_sort(int rn,int cx,int cy,int cz)
 
 void segment_render_transparent_portal_mesh(portal_type *portal)
 {
-	int						n,sort_cnt,frame;
+	int						n,ntrig,sort_cnt,frame;
 	unsigned long			txt_id;
 	float					alpha;
 	bool					txt_setup_reset;
@@ -230,7 +230,7 @@ void segment_render_transparent_portal_mesh(portal_type *portal)
 		glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
 
 			// draw any specular on the transparent segment
-
+/* supergumba -- might need to redo all of this
 		if (mesh_poly->draw.is_specular) {
 			
 				// end transparencies drawing and start specular
@@ -252,7 +252,15 @@ void segment_render_transparent_portal_mesh(portal_type *portal)
 
 			gl_texture_transparent_specular_set(texture->specularmaps[frame].gl_id,mesh_poly->alpha);
 
-			glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+				// use lighting mesh as specular is dependant upon the light
+
+			if (mesh_poly->draw.is_simple_lighting) {
+				glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+			}
+			else {
+				ntrig=mesh_poly->light.trig_count;
+				glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)mesh_poly->light.trig_vertex_idx);
+			}
 
 				// end specular drawing and force a transparencies reset
 
@@ -260,7 +268,7 @@ void segment_render_transparent_portal_mesh(portal_type *portal)
 			txt_setup_reset=TRUE;
 
 		}
-
+*/
 			// draw any glow on the transparent segment
 
 		if (mesh_poly->draw.is_glow) {

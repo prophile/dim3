@@ -467,29 +467,9 @@ void gl_texture_opaque_specular_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
 
 		// texture unit 1
-		// lighting added to specular factor
-
-	glActiveTexture(GL_TEXTURE1);
-	glEnable(GL_TEXTURE_2D);
-	
-	glBindTexture(GL_TEXTURE_2D,null_bitmap.gl_id);				// texture is not used in this unit
-	
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_ADD);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PREVIOUS);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_CONSTANT);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
-
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_CONSTANT);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-		
-		// texture unit 2
 		// the specular texture combined with the modulated lighting
 
-	glActiveTexture(GL_TEXTURE2);
+	glActiveTexture(GL_TEXTURE1);
 	glEnable(GL_TEXTURE_2D);
 
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
@@ -507,9 +487,6 @@ void gl_texture_opaque_specular_start(void)
 
 void gl_texture_opaque_specular_end(void)
 {
-	glActiveTexture(GL_TEXTURE2);
-	glDisable(GL_TEXTURE_2D);
-
 	glActiveTexture(GL_TEXTURE1);
 	glDisable(GL_TEXTURE_2D);
 	
@@ -519,19 +496,8 @@ void gl_texture_opaque_specular_end(void)
 
 inline void gl_texture_opaque_specular_set(int specular_id)
 {
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D,specular_id);
-}
-
-inline void gl_texture_opaque_specular_factor(float specular_factor)
-{
-	GLfloat		fct[4];
-
 	glActiveTexture(GL_TEXTURE1);
-	
-	fct[0]=fct[1]=fct[2]=specular_factor;
-	fct[3]=1.0f;
-	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,fct);
+	glBindTexture(GL_TEXTURE_2D,specular_id);
 }
 
 /* =======================================================
@@ -770,29 +736,9 @@ void gl_texture_transparent_specular_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
 	
 		// texture unit 1
-		// lighting added to specular factor
-		
-	glActiveTexture(GL_TEXTURE1);
-	glEnable(GL_TEXTURE_2D);
-	
-	glBindTexture(GL_TEXTURE_2D,null_bitmap.gl_id);				// texture is not used in this unit
-	
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_ADD);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PREVIOUS);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_CONSTANT);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
-
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_PREVIOUS);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-		
-		// texture unit 2
 		// the specular texture combined with the modulated lighting
 
-	glActiveTexture(GL_TEXTURE2);
+	glActiveTexture(GL_TEXTURE1);
 	glEnable(GL_TEXTURE_2D);
 
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
@@ -812,9 +758,6 @@ void gl_texture_transparent_specular_start(void)
 
 void gl_texture_transparent_specular_end(void)
 {
-	glActiveTexture(GL_TEXTURE2);
-	glDisable(GL_TEXTURE_2D);
-
 	glActiveTexture(GL_TEXTURE1);
 	glDisable(GL_TEXTURE_2D);
 	
@@ -826,22 +769,11 @@ inline void gl_texture_transparent_specular_set(int specular_id,float alpha)
 {
 	GLfloat		col4[4];
 
-	glActiveTexture(GL_TEXTURE2);
+	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D,specular_id);
 
 	col4[0]=col4[1]=col4[2]=1;
 	col4[3]=alpha;
-	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
-}
-
-inline void gl_texture_transparent_specular_factor(float specular_factor)
-{
-	GLfloat		col4[4];
-
-	glActiveTexture(GL_TEXTURE1);
-
-	col4[0]=col4[1]=col4[2]=specular_factor;
-	col4[3]=1.0f;
 	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
 }
 

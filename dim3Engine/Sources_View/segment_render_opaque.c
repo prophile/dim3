@@ -528,7 +528,7 @@ void segment_render_opaque_hilite_portal_bump_mesh(portal_type *portal)
 
 void segment_render_opaque_portal_specular_mesh(portal_type *portal)
 {
-	int					n,k,frame;
+	int					n,k,ntrig,frame;
 	unsigned long		specular_id;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*mesh_poly;
@@ -542,7 +542,7 @@ void segment_render_opaque_portal_specular_mesh(portal_type *portal)
 	glDisable(GL_ALPHA_TEST);
 
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_EQUAL);
+	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 
   	specular_id=-1;
@@ -572,10 +572,16 @@ void segment_render_opaque_portal_specular_mesh(portal_type *portal)
 				specular_id=texture->specularmaps[frame].gl_id;
 				gl_texture_opaque_specular_set(specular_id);
 			}
-			
-			gl_texture_opaque_specular_factor(texture->specular.factor);
 
-			glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+				// use lighting mesh as specular is dependant upon the light
+
+			if (mesh_poly->draw.is_simple_lighting) {
+				glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+			}
+			else {
+				ntrig=mesh_poly->light.trig_count;
+				glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)mesh_poly->light.trig_vertex_idx);
+			}
 		
 			mesh_poly++;
 		}
@@ -760,7 +766,8 @@ int segment_render_opaque_portal(int rn,int pass_last)
 
 		// specular, glows, and shaders
 
-	if (portal->mesh.draw.has_specular) segment_render_opaque_portal_specular_mesh(portal);
+// supergumba -- might need to redo all this
+//	if (portal->mesh.draw.has_specular) segment_render_opaque_portal_specular_mesh(portal);
 	if (portal->mesh.draw.has_glow) segment_render_opaque_portal_glow_mesh(portal);
 	if (portal->mesh.draw.has_opaque_shader) segment_render_opaque_portal_shader_mesh(portal);
 

@@ -327,7 +327,6 @@ inline void model_draw_material_opaque_specular(texture_type *texture,model_mate
 		// get the textures for this material
 		
 	gl_texture_opaque_specular_set(texture->specularmaps[texture->animate.current_frame].gl_id);
-	gl_texture_opaque_specular_factor(texture->specular.factor);
 	
 		// draw the triangles
 
@@ -377,7 +376,6 @@ inline void model_draw_material_transparent_specular(texture_type *texture,model
 		// get the textures for this material
 		
 	gl_texture_transparent_specular_set(texture->specularmaps[texture->animate.current_frame].gl_id,alpha);
-	gl_texture_transparent_specular_factor(texture->specular.factor);
 	
 		// draw the triangles
 		

@@ -453,14 +453,6 @@ typedef struct		{
 					} shader_type;
 
 //
-// specular structure
-//
-
-typedef struct		{
-						float					factor;
-					} specular_type;
-
-//
 // glow structure
 //
 
@@ -505,7 +497,6 @@ typedef struct		{
 												glowmaps[max_texture_frame];
 						texture_animate_type	animate;
 						shader_type				shader;
-						specular_type			specular;
 						glow_type				glow;
 						texture_scale_type		scale;
 					} texture_type;
