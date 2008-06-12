@@ -31,7 +31,7 @@ and can be sold or given away.
 #include "portal_view.h"
 
 #define import_obj_float_to_int			1000.0f
-#define import_obj_max_dimension		10000
+#define import_obj_max_dimension		5000
 
 extern int						cr,cy,drag_mode;
 extern bool						dp_object,dp_node,dp_lightsoundparticle,dp_auto_texture;
@@ -48,13 +48,14 @@ extern map_type					map;
 int piece_import_library_mesh(char *name,int mx,int my,int mz)
 {
 	int					n,k,nline,nvertex,npoly,nuv,npt,uv_idx,
-						mesh_idx,x,y,z,sz,
-						min_x,max_x,min_y,max_y,min_z,max_z;
+						mesh_idx,x,y,z;
 	char				path[1024],
 						*c,txt[256],vstr[256],uvstr[256];
-	float				scale,*uvs,*uv;
+	float				scale,fx,fy,fz,fsz;
+	float				*uvs,*uv;
 	bool				mesh_ok,mesh_delete;
 	d3pnt				*dpt;
+	d3fpnt				min,max;
 	portal_type			*portal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
@@ -71,14 +72,14 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
     nline=textdecode_count();
 	
 		// count vertexes and faces
-		// also determine the vertex extents
+		// also determine the vertex extents for initial scaling size
 		
 	nvertex=0;
 	npoly=0;
 	nuv=0;
 	
-	min_x=min_y=min_z=0;
-	max_x=max_y=max_z=0;
+	min.x=min.y=min.z=0.0f;
+	max.x=max.y=max.z=0.0f;
 	
     for (n=0;n!=nline;n++) {
         textdecode_get_piece(n,0,txt);
@@ -87,18 +88,18 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 			nvertex++;
 			
 			textdecode_get_piece(n,1,txt);
-			x=(int)(strtod(txt,NULL)*import_obj_float_to_int);
+			fx=strtod(txt,NULL);
 			textdecode_get_piece(n,2,txt);
-			y=(int)(strtod(txt,NULL)*import_obj_float_to_int);
+			fy=strtod(txt,NULL);
 			textdecode_get_piece(n,3,txt);
-			z=(int)(strtod(txt,NULL)*import_obj_float_to_int);
+			fz=strtod(txt,NULL);
 			
-			if (x<min_x) min_x=x;
-			if (x>max_x) max_x=x;
-			if (y<min_y) min_y=y;
-			if (y>max_y) max_y=y;
-			if (z<min_z) min_z=z;
-			if (z>max_z) max_z=z;
+			if (fx<min.x) min.x=fx;
+			if (fx>max.x) max.x=fx;
+			if (fy<min.y) min.y=fy;
+			if (fy>max.y) max.y=fy;
+			if (fz<min.z) min.z=fz;
+			if (fz>max.z) max.z=fz;
 		}
 		else {
 			if (strcmp(txt,"f")==0) {
@@ -159,12 +160,13 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 	
 		// scale the import
 		
-	sz=max_x-min_x;
-	if ((max_y-min_y)>sz) sz=max_y-min_y;
-	if ((max_z-min_z)>sz) sz=max_z-min_z;
+	fsz=max.x-min.x;
+	if ((max.y-min.y)>fsz) fsz=max.y-min.y;
+	if ((max.z-min.z)>fsz) fsz=max.z-min.z;
 	
-	scale=1.0f;
-	if (sz>import_obj_max_dimension) scale=(float)import_obj_max_dimension/(float)sz;
+	scale=import_obj_max_dimension/fsz;
+	k=(int)(scale*100.0f);
+	scale=((float)k)/100.0f;
 
 	dialog_mesh_scale_run(&scale);
 	
@@ -178,19 +180,42 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 		if (strcmp(txt,"v")!=0) continue;
                 
 		textdecode_get_piece(n,1,txt);
-		dpt->x=((int)(strtod(txt,NULL)*import_obj_float_to_int)-min_x);
-		dpt->x=(int)((float)dpt->x*scale)+mx;
+		dpt->x=(int)(strtod(txt,NULL)*scale);
 		
 		textdecode_get_piece(n,2,txt);
-		dpt->y=-((int)(strtod(txt,NULL)*import_obj_float_to_int)-min_y);
-		dpt->y=(int)((float)dpt->y*scale)+my;
+		dpt->y=-(int)(strtod(txt,NULL)*scale);
 		
 		textdecode_get_piece(n,3,txt);
-		dpt->z=-((int)(strtod(txt,NULL)*import_obj_float_to_int)-min_z);
-		dpt->z=(int)((float)dpt->z*scale)+mz;
+		dpt->z=-(int)(strtod(txt,NULL)*scale);
         
 		dpt++;
     }
+	
+		// recenter the vertexes
+		
+	x=y=z=0;
+	
+ 	dpt=mesh->vertexes;
+	
+	for (n=0;n!=nvertex;n++) {
+		x+=dpt->x;
+		y+=dpt->y;
+		z+=dpt->z;
+		dpt++;
+	}
+	
+	x/=nvertex;
+	y/=nvertex;
+	z/=nvertex;
+		
+ 	dpt=mesh->vertexes;
+	
+	for (n=0;n!=nvertex;n++) {
+		dpt->x=(dpt->x-x)+mx;
+		dpt->y=(dpt->y-y)+my;
+		dpt->z=(dpt->z-z)+mz;
+		dpt++;
+	}
 	
 		// get the UVs
 		
