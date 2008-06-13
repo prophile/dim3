@@ -101,6 +101,7 @@ and can be sold or given away.
 #define kCommandMeshRaiseY					FOUR_CHAR_CODE('prsy')
 #define kCommandMeshLowerY					FOUR_CHAR_CODE('plry')
 #define kCommandMeshSnapToGrid				FOUR_CHAR_CODE('msnp')
+#define kCommandMeshSnapClosestVertex		FOUR_CHAR_CODE('mscv')
 #define kCommandMeshResetUV					FOUR_CHAR_CODE('mruv')
 
 #define kCommandPolygonHole1				FOUR_CHAR_CODE('fhl1')

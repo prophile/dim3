@@ -633,6 +633,11 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			main_wind_draw();
 			return(noErr);
 			
+		case kCommandMeshSnapClosestVertex:
+			piece_mesh_snap_closest_vertex();
+			main_wind_draw();
+			return(noErr);
+			
 		case kCommandMeshResetUV:
 			piece_reset_uvs(FALSE);
 			main_wind_draw();

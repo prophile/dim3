@@ -578,7 +578,7 @@ void mesh_vertexes_snap_to_grid(int portal_idx,int mesh_idx)
 
 void piece_mesh_snap_to_grid(void)
 {
-	int						n,sel_count,type,portal_idx,mesh_idx,poly_idx;
+	int			n,sel_count,type,portal_idx,mesh_idx,poly_idx;
 
 	sel_count=select_count();
 	
@@ -590,9 +590,118 @@ void piece_mesh_snap_to_grid(void)
 	}
 }
 
+void piece_mesh_snap_closest_vertex(void)
+{
+	int					n,k,sel_count,type,portal_idx,mesh_idx,poly_idx,
+						portal_1_idx,mesh_1_idx,poly_1_idx,
+						portal_2_idx,mesh_2_idx,poly_2_idx,
+						d,dist,x,y,z;
+	d3pnt				*pt_1,*pt_2;
+	map_mesh_type		*mesh_1,*mesh_2;
+	map_mesh_poly_type	*poly_1,*poly_2;
+
+		// find two portals to snap together
+		
+	portal_1_idx=portal_2_idx=-1;
+	
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
+		
+		if (portal_1_idx==-1) {
+			portal_1_idx=portal_idx;
+			mesh_1_idx=mesh_idx;
+			poly_1_idx=poly_idx;
+		}
+		else {
+			portal_2_idx=portal_idx;
+			mesh_2_idx=mesh_idx;
+			poly_2_idx=poly_idx;
+			break;
+		}
+	}
+	
+		// two meshes?
+		
+	if (portal_2_idx==-1) return;
+	
+		// find closest vertexes
+	
+	x=y=z=0;	
+	dist=-1;
+	
+	mesh_1=&map.portals[portal_1_idx].mesh.meshes[mesh_1_idx];
+	mesh_2=&map.portals[portal_2_idx].mesh.meshes[mesh_2_idx];
+	
+		// find out of all vertexes
+		
+	if (poly_1_idx==-1) {
+	
+		pt_1=mesh_1->vertexes;
+	
+		for (n=0;n!=mesh_1->nvertex;n++) {
+
+			pt_2=mesh_2->vertexes;
+		
+			for (k=0;k!=mesh_2->nvertex;k++) {
+				d=distance_get(pt_1->x,pt_1->y,pt_1->z,pt_2->x,pt_2->y,pt_2->z);
+				if ((d<dist) || (dist==-1)) {
+					x=pt_2->x-pt_1->x;
+					y=pt_2->y-pt_1->y;
+					z=pt_2->z-pt_1->z;
+					dist=d;
+				}
+				pt_2++;
+			}
+			
+			pt_1++;
+		}
+		
+	}
+	
+		// find out of poly vertexes only
+		
+	else {
+	
+		poly_1=&mesh_1->polys[poly_1_idx];
+		poly_2=&mesh_2->polys[poly_2_idx];
+	
+		for (n=0;n!=poly_1->ptsz;n++) {
+
+			pt_1=&mesh_1->vertexes[poly_1->v[n]];
+		
+			for (k=0;k!=poly_2->ptsz;k++) {
+				pt_2=&mesh_2->vertexes[poly_2->v[k]];
+				
+				d=distance_get(pt_1->x,pt_1->y,pt_1->z,pt_2->x,pt_2->y,pt_2->z);
+				if ((d<dist) || (dist==-1)) {
+					x=pt_2->x-pt_1->x;
+					y=pt_2->y-pt_1->y;
+					z=pt_2->z-pt_1->z;
+					dist=d;
+				}
+			}
+		}
+	
+	}
+	
+		// move together
+		
+	pt_1=mesh_1->vertexes;
+	
+	for (n=0;n!=mesh_1->nvertex;n++) {
+		pt_1->x+=x;
+		pt_1->y+=y;
+		pt_1->z+=z;
+		pt_1++;
+	}
+}
+
 void piece_mesh_poly_snap_to_grid(void)
 {
-	int						n,sel_count,type,portal_idx,mesh_idx,poly_idx;
+	int			n,sel_count,type,portal_idx,mesh_idx,poly_idx;
 
 	sel_count=select_count();
 	
@@ -606,7 +715,7 @@ void piece_mesh_poly_snap_to_grid(void)
 
 void piece_mesh_vertexes_snap_to_grid(void)
 {
-	int						n,sel_count,type,portal_idx,mesh_idx,poly_idx;
+	int			n,sel_count,type,portal_idx,mesh_idx,poly_idx;
 
 	sel_count=select_count();
 	

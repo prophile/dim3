@@ -103,6 +103,7 @@ extern void mesh_snap_to_grid(int portal_idx,int mesh_idx);
 extern void mesh_poly_snap_to_grid(int portal_idx,int mesh_idx,int poly_idx);
 extern void mesh_vertexes_snap_to_grid(int portal_idx,int mesh_idx);
 extern void piece_mesh_snap_to_grid(void);
+extern void piece_mesh_snap_closest_vertex(void);
 extern void piece_mesh_poly_snap_to_grid(void);
 extern void piece_mesh_vertexes_snap_to_grid(void);
 extern void piece_reset_uvs(bool poly_only);

@@ -186,7 +186,7 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 		dpt->y=-(int)(strtod(txt,NULL)*scale);
 		
 		textdecode_get_piece(n,3,txt);
-		dpt->z=-(int)(strtod(txt,NULL)*scale);
+		dpt->z=(int)(strtod(txt,NULL)*scale);
         
 		dpt++;
     }

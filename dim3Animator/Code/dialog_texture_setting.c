@@ -45,7 +45,6 @@ and can be sold or given away.
 #define kTextureSettingBumpMode						FOUR_CHAR_CODE('bmmd')
 #define kTextureSettingAnimate						FOUR_CHAR_CODE('anmt')
 #define kTextureSettingAlphaAdditive				FOUR_CHAR_CODE('addv')
-#define kTextureSettingSpecularFactor				FOUR_CHAR_CODE('spft')
 #define kTextureSettingGlowRate						FOUR_CHAR_CODE('grtm')
 #define kTextureSettingGlowMin						FOUR_CHAR_CODE('grmn')
 #define kTextureSettingGlowMax						FOUR_CHAR_CODE('grmx')
@@ -541,7 +540,6 @@ void dialog_texture_setting_run(int txt)
 	dialog_set_value(dialog_texture_wind,kTextureSettingBumpMode,0,(texture->bump_mode+1));
 	dialog_set_boolean(dialog_texture_wind,kTextureSettingAnimate,0,texture->animate.on);
 	dialog_set_boolean(dialog_texture_wind,kTextureSettingAlphaAdditive,0,texture->additive);
-	dialog_set_float(dialog_texture_wind,kTextureSettingSpecularFactor,0,texture->specular.factor);
 	dialog_set_int(dialog_texture_wind,kTextureSettingGlowRate,0,texture->glow.rate);
 	dialog_set_float(dialog_texture_wind,kTextureSettingGlowMin,0,texture->glow.min);
 	dialog_set_float(dialog_texture_wind,kTextureSettingGlowMax,0,texture->glow.max);
@@ -572,7 +570,6 @@ void dialog_texture_setting_run(int txt)
 	texture->bump_mode=dialog_get_value(dialog_texture_wind,kTextureSettingBumpMode,0)-1;
 	texture->animate.on=dialog_get_boolean(dialog_texture_wind,kTextureSettingAnimate,0);
 	texture->additive=dialog_get_boolean(dialog_texture_wind,kTextureSettingAlphaAdditive,0);
-	texture->specular.factor=dialog_get_float(dialog_texture_wind,kTextureSettingSpecularFactor,0);
 	texture->glow.rate=dialog_get_int(dialog_texture_wind,kTextureSettingGlowRate,0);
 	texture->glow.min=dialog_get_float(dialog_texture_wind,kTextureSettingGlowMin,0);
 	texture->glow.max=dialog_get_float(dialog_texture_wind,kTextureSettingGlowMax,0);
