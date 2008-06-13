@@ -717,6 +717,9 @@ void segment_render_opaque_portal_shader_mesh(portal_type *portal)
       
 ======================================================= */
 
+
+/* supergumba -- old version
+
 int segment_render_opaque_portal(int rn,int pass_last)
 {
 	int							stencil_pass,
@@ -796,6 +799,210 @@ void segment_render_opaque(int portal_cnt,int *portal_list)
 		
 	for (i=(portal_cnt-1);i>=0;i--) {
 		pass_last=segment_render_opaque_portal(portal_list[i],pass_last);
+	}
+
+		// dettach any attached lists
+
+	portal_compile_gl_list_dettach();
+}
+
+*/
+
+
+bool segment_render_opaque_poly(map_mesh_poly_type *poly,int stencil_idx)
+{
+	int					frame,ntrig;
+	unsigned long		txt_id,bump_id;
+	float				dark_factor;
+	bool				is_bump,is_hilite,is_stencil;
+	texture_type		*texture;
+
+	// supergumba -- to do:
+	// redo how all stencils work, then get rid of stencil setting from struct
+	// return if stencil is used or not
+	// do marks at this pass, also
+
+	/* supergumba -- reduce and combine these
+map_mesh_poly_draw_stencil_bump
+map_mesh_poly_draw_simple_bump
+map_mesh_poly_draw_hilite_bump
+map_mesh_poly_draw_stencil_normal
+map_mesh_poly_draw_simple_normal
+map_mesh_poly_draw_hilite_normal
+*/
+
+		// setup
+
+	texture=&map.textures[poly->txt_idx];
+	frame=poly->draw.cur_frame;
+
+	is_bump=(poly->draw.draw_type==map_mesh_poly_draw_stencil_bump) || (poly->draw.draw_type==map_mesh_poly_draw_simple_bump) || (poly->draw.draw_type==map_mesh_poly_draw_hilite_bump);
+	is_hilite=(hilite_on) || (poly->draw.draw_type==map_mesh_poly_draw_hilite_normal) || (poly->draw.draw_type==map_mesh_poly_draw_hilite_bump);
+	is_stencil=(!is_hilite) || (poly->draw.is_specular);
+
+		// stenciling
+
+	if (is_stencil) {
+		glEnable(GL_STENCIL_TEST);
+	}
+
+		// normal or bump texture
+
+	if (!is_bump) {
+		gl_texture_opaque_start();
+
+		glDisable(GL_BLEND);
+		
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_NOTEQUAL,0);
+
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
+		glDepthMask(GL_TRUE);
+
+		txt_id=texture->bitmaps[frame].gl_id;
+		gl_texture_opaque_set(txt_id);
+
+		glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
+		glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
+
+		glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
+
+		gl_texture_opaque_end();
+	}
+
+	else {
+
+		gl_texture_opaque_bump_start();
+
+		glDisable(GL_BLEND);
+		
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_NOTEQUAL,0);
+
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
+		glDepthMask(GL_TRUE);
+
+		txt_id=texture->bitmaps[frame].gl_id;
+		bump_id=texture->bumpmaps[frame].gl_id;
+		gl_texture_opaque_bump_set(txt_id,bump_id);
+		
+		gl_texture_opaque_bump_factor(poly->draw.normal);
+			
+		glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
+		glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
+
+		glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
+
+		gl_texture_opaque_bump_end();
+	}
+
+		// lighting
+
+	if (!is_hilite) {
+		gl_texture_tesseled_lighting_start();
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ZERO,GL_SRC_COLOR);
+
+		glDisable(GL_ALPHA_TEST);
+		glDisable(GL_DEPTH_TEST);
+			
+		glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
+		glStencilFunc(GL_EQUAL,stencil_idx,0xFF);
+
+		dark_factor=poly->dark_factor;
+		gl_texture_tesseled_lighting_factor(dark_factor);
+			
+		if (poly->draw.is_simple_lighting) {
+			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
+		}
+		else {
+			ntrig=poly->light.trig_count;
+			glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_idx);
+			if ((poly->ptsz-2)!=ntrig) glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
+		}
+
+		gl_texture_tesseled_lighting_end();
+	}
+
+
+
+		// shutdown
+
+	if (is_stencil) {
+		glDisable(GL_STENCIL_TEST);
+	}
+
+	return(is_stencil);
+}
+
+int segment_render_opaque_portal(int rn,int stencil_idx)
+{
+	int					n,k;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+	portal=&map.portals[rn];
+
+		// attach compiled vertex lists
+
+	portal_compile_gl_list_attach(rn);
+
+		// run through meshes
+
+	mesh=portal->mesh.meshes;
+	
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+	
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+
+			if (segment_render_opaque_poly(poly,stencil_idx)) {
+				stencil_idx++;
+				if (stencil_idx==stencil_segment_end) {
+					stencil_idx=stencil_segment_start;
+					glClear(GL_STENCIL_BUFFER_BIT);
+				}
+			}
+		
+			poly++;
+		}
+	
+		mesh++;
+	}
+
+	return(stencil_idx);
+}
+
+
+
+
+void segment_render_opaque(int portal_cnt,int *portal_list)
+{
+	int				n,stencil_idx;
+
+		// setup view
+
+	gl_setup_viewport(console_y_offset());
+	gl_3D_view(&view.camera);
+	gl_3D_rotate(&view.camera.ang);
+	gl_setup_project();
+		
+		// run through portals
+		// we want to go from closest to furthest to
+		// catch as much z-buffer eliminates as possible
+		
+		// remember the last stencil so we
+		// only clear the stencil when necessary
+
+	stencil_idx=stencil_segment_start;
+		
+	for (n=(portal_cnt-1);n>=0;n--) {
+		stencil_idx=segment_render_opaque_portal(portal_list[n],stencil_idx);
 	}
 
 		// dettach any attached lists
