@@ -132,7 +132,7 @@ float ray_trace_triangle(d3pnt *spt,d3vct *vct,d3pnt *hpt,int *x,int *y,int *z)
 	return(t);
 }
 
-float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
+float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int			n,trig_count;
 	int			px[3],py[3],pz[3];
@@ -143,7 +143,7 @@ float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mes
 	
 		// first vertex is always 0
 
-	m_pt=&mesh->vertexes[mesh_poly->v[0]];
+	m_pt=&mesh->vertexes[poly->v[0]];
 		
 	px[0]=m_pt->x;
 	py[0]=m_pt->y;
@@ -151,15 +151,15 @@ float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mes
 	
 		// run through all the triangles of the polygon
 		
-	trig_count=mesh_poly->ptsz-2;
+	trig_count=poly->ptsz-2;
 	
 	for (n=0;n<trig_count;n++) {
-		m_pt=&mesh->vertexes[mesh_poly->v[n+1]];
+		m_pt=&mesh->vertexes[poly->v[n+1]];
 		px[1]=m_pt->x;
 		py[1]=m_pt->y;
 		pz[1]=m_pt->z;
 
-		m_pt=&mesh->vertexes[mesh_poly->v[n+2]];
+		m_pt=&mesh->vertexes[poly->v[n+2]];
 		px[2]=m_pt->x;
 		py[2]=m_pt->y;
 		pz[2]=m_pt->z;
@@ -488,7 +488,7 @@ void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *
 	proj_type			*proj;
 	portal_type			*portal;
 	map_mesh_type		*mesh;
-	map_mesh_poly_type	*mesh_poly;
+	map_mesh_poly_type	*poly;
 	
 	portal=&map.portals[rn];
 	pt.x=pt.y=pt.z=0;
@@ -550,39 +550,38 @@ void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *
 
 		// check the meshes
 
-	mesh=portal->mesh.meshes;
-	
 	for (n=0;n!=portal->mesh.nmesh;n++) {
 		
+		mesh=&portal->mesh.meshes[n];
 		if (mesh->flag.pass_through) continue;
 
 		for (k=0;k!=mesh->npoly;k++) {
 
-			mesh_poly=&mesh->polys[k];
+			poly=&mesh->polys[k];
 
 				// poly ignores
 
 			if (contact->hit_mode!=poly_ray_trace_hit_mode_all) {
-				if (mesh_poly->box.wall_like) {
+				if (poly->box.wall_like) {
 					if (contact->hit_mode==poly_ray_trace_hit_mode_floor_only) continue;
 				}
 				else {
 					if (contact->hit_mode==poly_ray_trace_hit_mode_wall_only) continue;
 				}
 			}
-
+			
 				// rough bounds check
 
-			if ((spt->y<mesh_poly->box.min.y) && (ept->y<mesh_poly->box.min.y)) continue;
-			if ((spt->y>mesh_poly->box.max.y) && (ept->y>mesh_poly->box.max.y)) continue;
-			if ((spt->x<mesh_poly->box.min.x) && (ept->x<mesh_poly->box.min.x)) continue;
-			if ((spt->x>mesh_poly->box.max.x) && (ept->x>mesh_poly->box.max.x)) continue;
-			if ((spt->z<mesh_poly->box.min.z) && (ept->z<mesh_poly->box.min.z)) continue;
-			if ((spt->z>mesh_poly->box.max.z) && (ept->z>mesh_poly->box.max.z)) continue;
+			if ((spt->y<poly->box.min.y) && (ept->y<poly->box.min.y)) continue;
+			if ((spt->y>poly->box.max.y) && (ept->y>poly->box.max.y)) continue;
+			if ((spt->x<poly->box.min.x) && (ept->x<poly->box.min.x)) continue;
+			if ((spt->x>poly->box.max.x) && (ept->x>poly->box.max.x)) continue;
+			if ((spt->z<poly->box.min.z) && (ept->z<poly->box.min.z)) continue;
+			if ((spt->z>poly->box.max.z) && (ept->z>poly->box.max.z)) continue;
 
 				// ray trace
 				
-			t=ray_trace_mesh_polygon(spt,vct,&pt,mesh,mesh_poly);
+			t=ray_trace_mesh_polygon(spt,vct,&pt,mesh,poly);
 			if (t==-1.0f) continue;
 				
 				// closer hit?
@@ -599,8 +598,6 @@ void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *
 			contact->poly.mesh_idx=n;
 			contact->poly.poly_idx=k;
 		}
-	
-		mesh++;
 	}
 
 }

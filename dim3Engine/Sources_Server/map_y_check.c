@@ -87,7 +87,7 @@ int find_poly_for_downward_point(int x,int y,int z,int ydist,poly_pointer_type *
 	ept.x=x;
 	ept.y=y+ydist;
 	ept.z=z;
-
+	
 	contact.obj_on=FALSE;
 	contact.proj_on=FALSE;
 
@@ -314,7 +314,7 @@ int pin_downward_movement_obj(obj_type *obj,int my)
 	y=pin_downward_movement_box(&box,my,&obj->contact.stand_poly);
 
 	if (y==-1) return(my);
-
+	
 	return(y-box.max_y);
 }
 

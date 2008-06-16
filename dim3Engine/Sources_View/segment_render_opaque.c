@@ -718,8 +718,6 @@ void segment_render_opaque_portal_shader_mesh(portal_type *portal)
 ======================================================= */
 
 
-/* supergumba -- old version
-
 int segment_render_opaque_portal(int rn,int pass_last)
 {
 	int							stencil_pass,
@@ -806,7 +804,10 @@ void segment_render_opaque(int portal_cnt,int *portal_list)
 	portal_compile_gl_list_dettach();
 }
 
-*/
+
+
+
+/* supergumba -- new version
 
 
 bool segment_render_opaque_poly(map_mesh_poly_type *poly,int stencil_idx)
@@ -822,14 +823,14 @@ bool segment_render_opaque_poly(map_mesh_poly_type *poly,int stencil_idx)
 	// return if stencil is used or not
 	// do marks at this pass, also
 
-	/* supergumba -- reduce and combine these
-map_mesh_poly_draw_stencil_bump
-map_mesh_poly_draw_simple_bump
-map_mesh_poly_draw_hilite_bump
-map_mesh_poly_draw_stencil_normal
-map_mesh_poly_draw_simple_normal
-map_mesh_poly_draw_hilite_normal
-*/
+// supergumba -- reduce and combine these
+//map_mesh_poly_draw_stencil_bump
+//map_mesh_poly_draw_simple_bump
+//map_mesh_poly_draw_hilite_bump
+//map_mesh_poly_draw_stencil_normal
+//map_mesh_poly_draw_simple_normal
+//map_mesh_poly_draw_hilite_normal
+
 
 		// setup
 
@@ -978,9 +979,6 @@ int segment_render_opaque_portal(int rn,int stencil_idx)
 	return(stencil_idx);
 }
 
-
-
-
 void segment_render_opaque(int portal_cnt,int *portal_list)
 {
 	int				n,stencil_idx;
@@ -1009,3 +1007,4 @@ void segment_render_opaque(int portal_cnt,int *portal_list)
 
 	portal_compile_gl_list_dettach();
 }
+*/

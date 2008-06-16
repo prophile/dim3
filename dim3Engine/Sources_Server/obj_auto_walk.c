@@ -107,6 +107,27 @@ bool object_auto_walk_player_setup(obj_type *obj,bool turn_only)
 	return(object_auto_walk_object_setup(obj,server.player_obj_uid,turn_only));
 }
 
+bool object_auto_walk_position_setup(obj_type *obj,d3pos *pos,int slop)
+{
+		// setup walk to position
+		
+	obj->auto_walk.mode=aw_position;
+	memmove(&obj->auto_walk.pos,pos,sizeof(d3pos));
+	
+		// add in slop
+		
+	if (slop!=0) {
+		obj->auto_walk.pos.x+=(slop-random_int(slop>>1));
+		obj->auto_walk.pos.z+=(slop-random_int(slop>>1));
+	}
+
+		// start walking
+		
+	obj->forward_move.moving=TRUE;
+
+	return(TRUE);
+}
+
 bool object_auto_walk_node_resume(obj_type *obj)
 {
 		// is there something to resume?
@@ -244,6 +265,30 @@ void object_auto_walk_object(obj_type *obj)
 	object_auto_walk_set_vertical_move(obj,(seek_obj->pos.y-(seek_obj->size.y>>1)),seek_obj->pos.z);
 }
 
+void object_auto_walk_position(obj_type *obj)
+{
+	float			ang_y;
+	bool			cwise;
+
+		// turn towards position on y
+		
+	ang_y=angle_find(obj->pos.x,obj->pos.z,obj->auto_walk.pos.x,obj->auto_walk.pos.z);
+	angle_dif(ang_y,obj->ang.y,&cwise);
+	
+	obj->turn.ang_to.y=ang_y;
+	
+	if (cwise) {
+		obj->turn.ang_add.y=-object_get_turn_speed(obj);
+	}
+	else {
+		obj->turn.ang_add.y=object_get_turn_speed(obj);
+	}
+	
+		// if flying, put in a seek angle
+		
+	object_auto_walk_set_vertical_move(obj,obj->auto_walk.pos.y,obj->auto_walk.pos.z);
+}
+
 void object_auto_walk(obj_type *obj)
 {
 	switch (obj->auto_walk.mode) {
@@ -254,6 +299,9 @@ void object_auto_walk(obj_type *obj)
 		case aw_object_turn_only:
 			object_auto_walk_object(obj);
 			return;
+		case aw_position:
+			object_auto_walk_position(obj);
+			break;
 	}
 }
 

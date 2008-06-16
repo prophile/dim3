@@ -170,6 +170,7 @@ extern bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *e
 extern bool object_auto_walk_node_setup(obj_type *obj,char *start_node,char *end_node,int event_id);
 extern bool object_auto_walk_object_setup(obj_type *obj,int uid,bool turn_only);
 extern bool object_auto_walk_player_setup(obj_type *obj,bool turn_only);
+extern bool object_auto_walk_position_setup(obj_type *obj,d3pos *pos,int slop);
 extern bool object_auto_walk_node_resume(obj_type *obj);
 extern void object_auto_walk_stop(obj_type *obj);
 extern void object_auto_walk(obj_type *obj);

@@ -45,6 +45,8 @@ JSBool js_obj_motion_vector_walk_to_node_func(JSContext *cx,JSObject *j_obj,uint
 JSBool js_obj_motion_vector_walk_to_node_resume_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_motion_vector_walk_to_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_motion_vector_walk_to_player_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_obj_motion_vector_walk_to_position_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_obj_motion_vector_walk_to_position_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_motion_vector_turn_to_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_motion_vector_turn_to_player_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
@@ -61,17 +63,19 @@ JSPropertySpec	obj_motion_vector_props[]={
 							{0}};
 							
 JSFunctionSpec	obj_motion_vector_functions[]={
-							{"go",					js_obj_motion_vector_go_func,					0},
-							{"stop",				js_obj_motion_vector_stop_func,					0},
-							{"jump",				js_obj_motion_vector_jump_func,					0},
-							{"alterSpeed",			js_obj_motion_vector_alter_speed_func,			1},
-							{"alterGravity",		js_obj_motion_vector_alter_gravity_func,		1},
-							{"walkToNode",			js_obj_motion_vector_walk_to_node_func,			3},
-							{"walkToNodeResume",	js_obj_motion_vector_walk_to_node_resume_func,	0},
-							{"walkToObject",		js_obj_motion_vector_walk_to_object_func,		1},
-							{"walkToPlayer",		js_obj_motion_vector_walk_to_player_func,		0},
-							{"turnToObject",		js_obj_motion_vector_turn_to_object_func,		1},
-							{"turnToPlayer",		js_obj_motion_vector_turn_to_player_func,		0},
+							{"go",					js_obj_motion_vector_go_func,						0},
+							{"stop",				js_obj_motion_vector_stop_func,						0},
+							{"jump",				js_obj_motion_vector_jump_func,						0},
+							{"alterSpeed",			js_obj_motion_vector_alter_speed_func,				1},
+							{"alterGravity",		js_obj_motion_vector_alter_gravity_func,			1},
+							{"walkToNode",			js_obj_motion_vector_walk_to_node_func,				3},
+							{"walkToNodeResume",	js_obj_motion_vector_walk_to_node_resume_func,		0},
+							{"walkToObject",		js_obj_motion_vector_walk_to_object_func,			1},
+							{"walkToPlayer",		js_obj_motion_vector_walk_to_player_func,			0},
+							{"walkToPosition",		js_obj_motion_vector_walk_to_position_func,			3},
+							{"walkToPositionSlop",	js_obj_motion_vector_walk_to_position_slop_func,	4},
+							{"turnToObject",		js_obj_motion_vector_turn_to_object_func,			1},
+							{"turnToPlayer",		js_obj_motion_vector_turn_to_player_func,			0},
 							{0}};
 	
 /* =======================================================
@@ -255,6 +259,42 @@ JSBool js_obj_motion_vector_walk_to_player_func(JSContext *cx,JSObject *j_obj,ui
 	
 	return(JS_TRUE);
 }
+
+JSBool js_obj_motion_vector_walk_to_position_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	d3pos			pos;
+	obj_type		*obj;
+	
+	pos.x=JSVAL_TO_INT(argv[0]);
+	pos.z=JSVAL_TO_INT(argv[1]);
+	pos.y=JSVAL_TO_INT(argv[2]);
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	if (!object_auto_walk_position_setup(obj,&pos,0)) return(JS_FALSE);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_motion_vector_walk_to_position_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	d3pos			pos;
+	obj_type		*obj;
+	
+	pos.x=JSVAL_TO_INT(argv[0]);
+	pos.z=JSVAL_TO_INT(argv[1]);
+	pos.y=JSVAL_TO_INT(argv[2]);
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	if (!object_auto_walk_position_setup(obj,&pos,JSVAL_TO_INT(argv[3]))) return(JS_FALSE);
+	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Turn To
+      
+======================================================= */
 
 JSBool js_obj_motion_vector_turn_to_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {

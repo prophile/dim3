@@ -46,17 +46,52 @@ extern bool map_movement_next_move(int movement_idx,attach_type *attach);
 
 bool group_move_start(int group_idx,int movement_idx,d3pnt *mov,d3ang *rot,int count,int user_id)
 {
-	float			f_count;
-	group_move_type	*move;
+	int					n,unit_cnt;
+	float				f_count;
+	char				err_str[256];
+	group_type			*group;
+	group_move_type		*move;
+	group_unit_type		*unit_list;
 	
+	group=&map.groups[group_idx];
+
 		// no negative move counts
 		
-	if (count<=0) return(FALSE);
+	if (count<=0) {
+		sprintf(err_str,"Attemping to move group '%s' with negative time count",group->name);
+		console_add_error(err_str);
+		return(FALSE);
+	}
 	
-		// setup the move over time
+		// check for certain error states
+		// this check is a little bit heavy but these are
+		// common errors with users that are hard to track down
 
-	move=&map.groups[group_idx].move;
+	unit_cnt=group->unit_count;
+
+	if (unit_cnt==0) {
+		sprintf(err_str,"Attemping to move group '%s' which has no meshes attached to it",group->name);
+		console_add_error(err_str);
+		return(FALSE);
+	}
 	
+	unit_list=group->unit_list;
+	
+	for (n=0;n!=unit_cnt;n++) {
+		if (unit_list->type==group_type_mesh) {
+			if (!map.portals[unit_list->portal_idx].mesh.meshes[unit_list->idx].flag.moveable) {
+				sprintf(err_str,"Attemping to move a mesh in group '%s' which does not have the moveable flag set",group->name);
+				console_add_error(err_str);
+				return(FALSE);
+			}
+		}
+		unit_list++;
+	}
+	
+		// setup move over time
+		
+	move=&group->move;
+
 	move->count=count;
 	
 	f_count=(float)move->count;

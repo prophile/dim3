@@ -160,6 +160,7 @@ and can be sold or given away.
 #define aw_node						1
 #define aw_object					2
 #define aw_object_turn_only			3
+#define aw_position					4
 
 //
 // model lighting
@@ -483,6 +484,7 @@ typedef struct		{
 						int					mode,obj_uid,
 											node_seek_idx,node_dest_idx,node_event_id,
 											node_slop;
+						d3pos				pos;
 					} obj_auto_walk;
 					
 typedef struct		{
