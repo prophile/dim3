@@ -122,6 +122,7 @@ extern void gl_project_fix_rotation(view_camera_type *camera,int y_off,int *x,in
 	
 extern void gl_texture_initialize(void);
 extern void gl_texture_shutdown(void);
+extern void gl_texture_bind_start(void);
 extern void gl_texture_opaque_start(void);
 extern void gl_texture_opaque_end(void);
 extern void gl_texture_opaque_set(int txt_id);
@@ -140,6 +141,9 @@ extern void gl_texture_opaque_bump_lighting_factor(float *normal);
 extern void gl_texture_tesseled_lighting_start(void);
 extern void gl_texture_tesseled_lighting_end(void);
 extern void gl_texture_tesseled_lighting_factor(float dark_factor);
+extern void gl_texture_tesseled_specular_lighting_start(void);
+extern void gl_texture_tesseled_specular_lighting_end(void);
+extern void gl_texture_tesseled_specular_lighting_set(int specular_id,float dark_factor);
 extern void gl_texture_opaque_specular_start(void);
 extern void gl_texture_opaque_specular_end(void);
 extern void gl_texture_opaque_specular_set(int specular_id);

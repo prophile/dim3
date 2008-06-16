@@ -153,10 +153,10 @@ extern char light_type_str[][32];
 //
 
 #define map_mesh_poly_draw_stencil_normal			0
-#define map_mesh_poly_draw_stencil_bump				1
-#define map_mesh_poly_draw_simple_normal			2
-#define map_mesh_poly_draw_simple_bump				3
-#define map_mesh_poly_draw_hilite_normal			4
+#define map_mesh_poly_draw_stencil_specular_normal	1
+#define map_mesh_poly_draw_hilite_normal			2
+#define map_mesh_poly_draw_stencil_bump				3
+#define map_mesh_poly_draw_stencil_specular_bump	4
 #define map_mesh_poly_draw_hilite_bump				5
 #define map_mesh_poly_draw_transparent				6
 #define map_mesh_poly_draw_opaque_shader			7
@@ -233,7 +233,7 @@ typedef struct		{
 													stencil_pass,stencil_idx;
 						float						normal[3];
 						bool						simple_tessel,shift_on,
-													is_simple_lighting,is_glow,is_specular;
+													is_simple_lighting,is_glow;
 					} map_mesh_poly_draw_type;
 
 typedef struct		{
@@ -259,10 +259,9 @@ typedef struct		{
 
 typedef struct		{
 						int							stencil_pass_start,stencil_pass_end;
-						bool						has_stencil_normal,has_stencil_bump,
-													has_simple_normal,has_simple_bump,
-													has_hilite_normal,has_hilite_bump,
-													has_transparent,has_specular,has_glow,
+						bool						has_stencil_normal,has_stencil_specular_normal,has_hilite_normal,
+													has_stencil_bump,has_stencil_specular_bump,has_hilite_bump,
+													has_transparent,has_glow,
 													has_opaque_shader,has_transparent_shader;
 					} map_mesh_draw_type;
 
@@ -349,10 +348,9 @@ typedef struct		{
 
 typedef struct		{
 						int							sort_cnt;
-						bool						has_stencil_normal,has_stencil_bump,has_stencil_lighting,
-													has_simple_normal,has_simple_bump,has_simple_lighting,
-													has_hilite_normal,has_hilite_bump,
-													has_transparent,has_glow,has_specular,
+						bool						has_stencil_normal,has_stencil_specular_normal,has_hilite_normal,
+													has_stencil_bump,has_stencil_specular_bump,has_hilite_bump,
+													has_transparent,has_glow,
 													has_opaque_shader,has_transparent_shader;
 						map_mesh_poly_sort_type		*sort_list;
 					} portal_mesh_draw_type;

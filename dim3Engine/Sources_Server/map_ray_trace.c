@@ -550,10 +550,14 @@ void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *
 
 		// check the meshes
 
+	mesh=portal->mesh.meshes;
+
 	for (n=0;n!=portal->mesh.nmesh;n++) {
 		
-		mesh=&portal->mesh.meshes[n];
-		if (mesh->flag.pass_through) continue;
+		if (mesh->flag.pass_through) {
+			mesh++;
+			continue;
+		}
 
 		for (k=0;k!=mesh->npoly;k++) {
 
@@ -598,8 +602,9 @@ void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *
 			contact->poly.mesh_idx=n;
 			contact->poly.poly_idx=k;
 		}
-	}
 
+		mesh++;
+	}
 }
 
 /* =======================================================

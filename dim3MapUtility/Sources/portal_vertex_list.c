@@ -106,14 +106,14 @@ int map_portal_add_single_vertex_list(portal_vertex_list_type *vl,int vl_cnt,int
       
 ======================================================= */
 
-int map_portal_add_mesh_poly_single_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
+int map_portal_add_mesh_poly_single_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int				n;
 	d3pnt			*pt;
 
-	for (n=0;n!=mesh_poly->ptsz;n++) {
-		pt=&mesh->vertexes[mesh_poly->v[n]];
-		vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,pt->x,pt->y,pt->z,mesh_poly->gx[n],mesh_poly->gy[n],mesh->flag.moveable,mesh_poly->draw.shift_on,&mesh_poly->draw.portal_v[n]);
+	for (n=0;n!=poly->ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+		vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,pt->x,pt->y,pt->z,poly->gx[n],poly->gy[n],mesh->flag.moveable,poly->draw.shift_on,&poly->draw.portal_v[n]);
 	}
 
 	return(vl_cnt);
@@ -191,7 +191,7 @@ void map_portal_vertex_list_find_uv(int ptsz,int *x,int *y,float *gx,float *gy,i
       
 ======================================================= */
 
-int map_portal_add_light_xy_tessel_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
+int map_portal_add_light_xy_tessel_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int							n,x,y,z,ptsz,px[8],py[8],pz[8],
 								xdist,ydist,xtot,ytot,xskip,yskip,ntrig;
@@ -204,8 +204,8 @@ int map_portal_add_light_xy_tessel_vertex_list(portal_vertex_list_type *vl,int v
 
 		// get tessel size, possible total of 64 triangles, 8 grid spots (max)
 
-	xdist=mesh_poly->box.max.x-mesh_poly->box.min.x;
-	ydist=mesh_poly->box.max.y-mesh_poly->box.min.y;
+	xdist=poly->box.max.x-poly->box.min.x;
+	ydist=poly->box.max.y-poly->box.min.y;
 
 	xtot=(xdist*light_tessel_grid_sz)/light_tessel_max_size;
 	if (xtot>light_tessel_grid_sz) xtot=light_tessel_grid_sz;
@@ -222,28 +222,28 @@ int map_portal_add_light_xy_tessel_vertex_list(portal_vertex_list_type *vl,int v
 
 	for (x=0;x<=xtot;x++) {
 		if (x==xtot) {
-			grid_x[x]=mesh_poly->box.max.x;
+			grid_x[x]=poly->box.max.x;
 		}
 		else {
-			grid_x[x]=mesh_poly->box.min.x+(x*xskip);
+			grid_x[x]=poly->box.min.x+(x*xskip);
 		}
 	}
 
 	for (y=0;y<=ytot;y++) {
 		if (y==ytot) {
-			grid_y[y]=mesh_poly->box.max.y;
+			grid_y[y]=poly->box.max.y;
 		}
 		else {
-			grid_y[y]=mesh_poly->box.min.y+(y*yskip);
+			grid_y[y]=poly->box.min.y+(y*yskip);
 		}
 	}
 
 		// get vertexes for grid
 
-	ptsz=mesh_poly->ptsz;
+	ptsz=poly->ptsz;
 
 	for (n=0;n!=ptsz;n++) {
-		pt=&mesh->vertexes[mesh_poly->v[n]];
+		pt=&mesh->vertexes[poly->v[n]];
 		px[n]=pt->x;
 		py[n]=pt->y;
 		pz[n]=pt->z;
@@ -255,7 +255,7 @@ int map_portal_add_light_xy_tessel_vertex_list(portal_vertex_list_type *vl,int v
 			z=polygon_find_y(ptsz,px,pz,py,grid_x[x],grid_y[y]);
 			if (z==-1) z=polygon_infinite_find_y(ptsz,px,pz,py,grid_x[x],grid_y[y]);
 
-			map_portal_vertex_list_find_uv(ptsz,px,py,mesh_poly->gx,mesh_poly->gy,grid_x[x],grid_y[y],&p_gx,&p_gy);
+			map_portal_vertex_list_find_uv(ptsz,px,py,poly->gx,poly->gy,grid_x[x],grid_y[y],&p_gx,&p_gy);
 
 			vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,grid_x[x],grid_y[y],z,p_gx,p_gy,mesh->flag.moveable,FALSE,&idx[x][y]);
 		}
@@ -263,7 +263,7 @@ int map_portal_add_light_xy_tessel_vertex_list(portal_vertex_list_type *vl,int v
 
 		// tesselate grid into triangles
 
-	light=&mesh_poly->light;
+	light=&poly->light;
 
 	ntrig=0;
 
@@ -302,7 +302,7 @@ int map_portal_add_light_xy_tessel_vertex_list(portal_vertex_list_type *vl,int v
 	return(vl_cnt);
 }
 
-int map_portal_add_light_xz_tessel_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
+int map_portal_add_light_xz_tessel_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int							n,x,y,z,ptsz,px[8],py[8],pz[8],
 								xdist,zdist,xtot,ztot,xskip,zskip,ntrig;
@@ -315,8 +315,8 @@ int map_portal_add_light_xz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 
 		// get tessel size, possible total of 64 triangles, 8 grid spots (max)
 
-	xdist=mesh_poly->box.max.x-mesh_poly->box.min.x;
-	zdist=mesh_poly->box.max.z-mesh_poly->box.min.z;
+	xdist=poly->box.max.x-poly->box.min.x;
+	zdist=poly->box.max.z-poly->box.min.z;
 
 	xtot=(xdist*light_tessel_grid_sz)/light_tessel_max_size;
 	if (xtot>light_tessel_grid_sz) xtot=light_tessel_grid_sz;
@@ -333,28 +333,28 @@ int map_portal_add_light_xz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 
 	for (x=0;x<=xtot;x++) {
 		if (x==xtot) {
-			grid_x[x]=mesh_poly->box.max.x;
+			grid_x[x]=poly->box.max.x;
 		}
 		else {
-			grid_x[x]=mesh_poly->box.min.x+(x*xskip);
+			grid_x[x]=poly->box.min.x+(x*xskip);
 		}
 	}
 
 	for (z=0;z<=ztot;z++) {
 		if (z==ztot) {
-			grid_z[z]=mesh_poly->box.max.z;
+			grid_z[z]=poly->box.max.z;
 		}
 		else {
-			grid_z[z]=mesh_poly->box.min.z+(z*zskip);
+			grid_z[z]=poly->box.min.z+(z*zskip);
 		}
 	}
 
 		// get vertexes for grid
 
-	ptsz=mesh_poly->ptsz;
+	ptsz=poly->ptsz;
 
 	for (n=0;n!=ptsz;n++) {
-		pt=&mesh->vertexes[mesh_poly->v[n]];
+		pt=&mesh->vertexes[poly->v[n]];
 		px[n]=pt->x;
 		py[n]=pt->y;
 		pz[n]=pt->z;
@@ -366,7 +366,7 @@ int map_portal_add_light_xz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 			y=polygon_find_y(ptsz,px,py,pz,grid_x[x],grid_z[z]);
 			if (y==-1) y=polygon_infinite_find_y(ptsz,px,py,pz,grid_x[x],grid_z[z]);
 
-			map_portal_vertex_list_find_uv(ptsz,px,pz,mesh_poly->gx,mesh_poly->gy,grid_x[x],grid_z[z],&p_gx,&p_gy);
+			map_portal_vertex_list_find_uv(ptsz,px,pz,poly->gx,poly->gy,grid_x[x],grid_z[z],&p_gx,&p_gy);
 
 			vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,grid_x[x],y,grid_z[z],p_gx,p_gy,mesh->flag.moveable,FALSE,&idx[x][z]);
 		}
@@ -374,7 +374,7 @@ int map_portal_add_light_xz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 
 		// tesselate grid into triangles
 
-	light=&mesh_poly->light;
+	light=&poly->light;
 
 	ntrig=0;
 
@@ -413,7 +413,7 @@ int map_portal_add_light_xz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 	return(vl_cnt);
 }
 
-int map_portal_add_light_yz_tessel_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
+int map_portal_add_light_yz_tessel_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int							n,x,y,z,ptsz,px[8],py[8],pz[8],
 								zdist,ydist,ztot,ytot,zskip,yskip,ntrig;
@@ -426,8 +426,8 @@ int map_portal_add_light_yz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 
 		// get tessel size, possible total of 64 triangles, 8 grid spots (max)
 
-	zdist=mesh_poly->box.max.z-mesh_poly->box.min.z;
-	ydist=mesh_poly->box.max.y-mesh_poly->box.min.y;
+	zdist=poly->box.max.z-poly->box.min.z;
+	ydist=poly->box.max.y-poly->box.min.y;
 
 	ztot=(zdist*light_tessel_grid_sz)/light_tessel_max_size;
 	if (ztot>light_tessel_grid_sz) ztot=light_tessel_grid_sz;
@@ -444,28 +444,28 @@ int map_portal_add_light_yz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 
 	for (z=0;z<=ztot;z++) {
 		if (z==ztot) {
-			grid_z[z]=mesh_poly->box.max.z;
+			grid_z[z]=poly->box.max.z;
 		}
 		else {
-			grid_z[z]=mesh_poly->box.min.z+(z*zskip);
+			grid_z[z]=poly->box.min.z+(z*zskip);
 		}
 	}
 
 	for (y=0;y<=ytot;y++) {
 		if (y==ytot) {
-			grid_y[y]=mesh_poly->box.max.y;
+			grid_y[y]=poly->box.max.y;
 		}
 		else {
-			grid_y[y]=mesh_poly->box.min.y+(y*yskip);
+			grid_y[y]=poly->box.min.y+(y*yskip);
 		}
 	}
 
 		// get vertexes for grid
 
-	ptsz=mesh_poly->ptsz;
+	ptsz=poly->ptsz;
 
 	for (n=0;n!=ptsz;n++) {
-		pt=&mesh->vertexes[mesh_poly->v[n]];
+		pt=&mesh->vertexes[poly->v[n]];
 		px[n]=pt->x;
 		py[n]=pt->y;
 		pz[n]=pt->z;
@@ -477,7 +477,7 @@ int map_portal_add_light_yz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 			x=polygon_find_y(ptsz,pz,px,py,grid_z[z],grid_y[y]);
 			if (x==-1) x=polygon_infinite_find_y(ptsz,pz,px,py,grid_z[z],grid_y[y]);
 
-			map_portal_vertex_list_find_uv(ptsz,py,pz,mesh_poly->gx,mesh_poly->gy,grid_y[y],grid_z[z],&p_gx,&p_gy);
+			map_portal_vertex_list_find_uv(ptsz,py,pz,poly->gx,poly->gy,grid_y[y],grid_z[z],&p_gx,&p_gy);
 
 			vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,x,grid_y[y],grid_z[z],p_gx,p_gy,mesh->flag.moveable,FALSE,&idx[z][y]);
 		}
@@ -485,7 +485,7 @@ int map_portal_add_light_yz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 
 		// tesselate grid into triangles
 
-	light=&mesh_poly->light;
+	light=&poly->light;
 
 	ntrig=0;
 
@@ -524,14 +524,14 @@ int map_portal_add_light_yz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 	return(vl_cnt);
 }
 
-int map_portal_add_light_simple_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
+int map_portal_add_light_simple_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int							n,k,ntrig,tx[3],ty[3],tz[3];
 	float						gx[3],gy[3];
 	d3pnt						*pt;
 	map_mesh_poly_light_type	*light;
 
-	light=&mesh_poly->light;
+	light=&poly->light;
 
 	light->trig_count=0;
 
@@ -539,29 +539,29 @@ int map_portal_add_light_simple_vertex_list(portal_vertex_list_type *vl,int vl_c
 		// but no tesselation of triangles
 		// this is used for simple lighting
 		
-	ntrig=mesh_poly->ptsz-3;
+	ntrig=poly->ptsz-3;
 
-	pt=&mesh->vertexes[mesh_poly->v[0]];
+	pt=&mesh->vertexes[poly->v[0]];
 	tx[0]=pt->x;
 	ty[0]=pt->y;
 	tz[0]=pt->z;
-	gx[0]=mesh_poly->gx[0];
-	gy[0]=mesh_poly->gy[0];
+	gx[0]=poly->gx[0];
+	gy[0]=poly->gy[0];
 	
 	for (n=0;n<=ntrig;n++) {
-		pt=&mesh->vertexes[mesh_poly->v[n+1]];
+		pt=&mesh->vertexes[poly->v[n+1]];
 		tx[1]=pt->x;
 		ty[1]=pt->y;
 		tz[1]=pt->z;
-		gx[1]=mesh_poly->gx[n+1];
-		gy[1]=mesh_poly->gy[n+1];
+		gx[1]=poly->gx[n+1];
+		gy[1]=poly->gy[n+1];
 
-		pt=&mesh->vertexes[mesh_poly->v[n+2]];
+		pt=&mesh->vertexes[poly->v[n+2]];
 		tx[2]=pt->x;
 		ty[2]=pt->y;
 		tz[2]=pt->z;
-		gx[2]=mesh_poly->gx[n+2];
-		gy[2]=mesh_poly->gy[n+2];
+		gx[2]=poly->gx[n+2];
+		gy[2]=poly->gy[n+2];
 
 		for (k=0;k!=3;k++) {
 			vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,tx[k],ty[k],tz[k],gx[k],gy[k],mesh->flag.moveable,FALSE,&light->trig_vertex_idx[(n*3)+k]);
@@ -573,37 +573,37 @@ int map_portal_add_light_simple_vertex_list(portal_vertex_list_type *vl,int vl_c
 	return(vl_cnt);
 }
 
-int map_portal_add_light_single_vertex_list(portal_vertex_list_type *vl,int vl_cnt,bool high_quality_lighting,map_mesh_type *mesh,map_mesh_poly_type *mesh_poly)
+int map_portal_add_light_single_vertex_list(portal_vertex_list_type *vl,int vl_cnt,bool high_quality_lighting,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int			xsz,ysz,zsz;
 	
 		// simple light tessels
 
-	if ((mesh_poly->draw.simple_tessel) || (mesh->flag.hilite) || (mesh_poly->ptsz==3) || (!high_quality_lighting)) return(map_portal_add_light_simple_vertex_list(vl,vl_cnt,mesh,mesh_poly));
+	if ((poly->draw.simple_tessel) || (mesh->flag.hilite) || (!high_quality_lighting)) return(map_portal_add_light_simple_vertex_list(vl,vl_cnt,mesh,poly));
 
 		// tessel depending on shape of polygon
 		// first, automatically tessel on the other two
 		// axises if any axies' length is 0
 
-	xsz=mesh_poly->box.max.x-mesh_poly->box.min.x;
-	if (xsz==0) return(map_portal_add_light_yz_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
+	xsz=poly->box.max.x-poly->box.min.x;
+	if (xsz==0) return(map_portal_add_light_yz_tessel_vertex_list(vl,vl_cnt,mesh,poly));
 
-	ysz=mesh_poly->box.max.y-mesh_poly->box.min.y;
-	if (ysz==0) return(map_portal_add_light_xz_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
+	ysz=poly->box.max.y-poly->box.min.y;
+	if (ysz==0) return(map_portal_add_light_xz_tessel_vertex_list(vl,vl_cnt,mesh,poly));
 
-	zsz=mesh_poly->box.max.z-mesh_poly->box.min.z;
-	if (zsz==0) return(map_portal_add_light_xy_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
+	zsz=poly->box.max.z-poly->box.min.z;
+	if (zsz==0) return(map_portal_add_light_xy_tessel_vertex_list(vl,vl_cnt,mesh,poly));
 
 		// last ditch wall type checks
 
-	if (mesh_poly->box.wall_like) {
-		if (xsz>zsz) return(map_portal_add_light_xy_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
-		return(map_portal_add_light_yz_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
+	if (poly->box.wall_like) {
+		if (xsz>zsz) return(map_portal_add_light_xy_tessel_vertex_list(vl,vl_cnt,mesh,poly));
+		return(map_portal_add_light_yz_tessel_vertex_list(vl,vl_cnt,mesh,poly));
 	}
 
 		// else treat as floor like polygon
 
-	return(map_portal_add_light_xz_tessel_vertex_list(vl,vl_cnt,mesh,mesh_poly));
+	return(map_portal_add_light_xz_tessel_vertex_list(vl,vl_cnt,mesh,poly));
 }
 
 /* =======================================================
@@ -618,7 +618,7 @@ bool map_portal_build_single_vertex_list(map_type *map,int rn,bool high_quality_
 	portal_vertex_list_type		*vl;
 	portal_type					*portal;
 	map_mesh_type				*mesh;
-	map_mesh_poly_type			*mesh_poly;
+	map_mesh_poly_type			*poly;
 	
 	portal=&map->portals[rn];
 	
@@ -631,12 +631,12 @@ bool map_portal_build_single_vertex_list(map_type *map,int rn,bool high_quality_
 	
 	for (n=0;n!=portal->mesh.nmesh;n++) {
 	
-		mesh_poly=mesh->polys;
+		poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {
-			vl_cnt=map_portal_add_mesh_poly_single_vertex_list(vl,vl_cnt,mesh,mesh_poly);
-			vl_cnt=map_portal_add_light_single_vertex_list(vl,vl_cnt,high_quality_lighting,mesh,mesh_poly);
-			mesh_poly++;
+			vl_cnt=map_portal_add_mesh_poly_single_vertex_list(vl,vl_cnt,mesh,poly);
+			vl_cnt=map_portal_add_light_single_vertex_list(vl,vl_cnt,high_quality_lighting,mesh,poly);
+			poly++;
 		}
 	
 		mesh++;
@@ -661,7 +661,7 @@ bool map_portal_create_single_vertex_list(map_type *map,int rn,bool high_quality
 	portal_vertex_list_type		*nvl;
 	portal_type					*portal;
 	map_mesh_type				*mesh;
-	map_mesh_poly_type			*mesh_poly;
+	map_mesh_poly_type			*poly;
 	
 	portal=&map->portals[rn];
 
@@ -673,12 +673,12 @@ bool map_portal_create_single_vertex_list(map_type *map,int rn,bool high_quality
 	
 	for (n=0;n!=portal->mesh.nmesh;n++) {
 	
-		mesh_poly=mesh->polys;
+		poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {
-			nvlist+=mesh_poly->ptsz;
+			nvlist+=poly->ptsz;
 			nvlist+=light_tessel_max_vertex;			// maximum number of lighting elements in list
-			mesh_poly++;
+			poly++;
 		}
 	
 		mesh++;

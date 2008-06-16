@@ -91,11 +91,12 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 {
 	int							n,k,i,rn,frame,
 								lod_dist,stencil_pass,stencil_idx;
-	bool						is_transparent,light_changed,global_light_simple;
+	bool						is_transparent,is_specular,
+								light_changed,global_light_simple;
 	portal_type					*portal;
 	texture_type				*texture;
 	map_mesh_type				*mesh;
-	map_mesh_poly_type			*mesh_poly;
+	map_mesh_poly_type			*poly;
 	
 		// setup portal and mesh drawing
 		// compile gl lists for portal and per mesh and
@@ -119,9 +120,14 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 
 			// per-portal flags
 
+		portal->mesh.draw.has_stencil_normal=FALSE;
+		portal->mesh.draw.has_stencil_specular_normal=FALSE;
+		portal->mesh.draw.has_hilite_normal=FALSE;
+		portal->mesh.draw.has_stencil_bump=FALSE;
+		portal->mesh.draw.has_stencil_specular_bump=FALSE;
+		portal->mesh.draw.has_hilite_bump=FALSE;
 		portal->mesh.draw.has_transparent=FALSE;
 		portal->mesh.draw.has_glow=FALSE;
-		portal->mesh.draw.has_specular=FALSE;
 		portal->mesh.draw.has_opaque_shader=FALSE;
 		portal->mesh.draw.has_transparent_shader=FALSE;
 
@@ -130,41 +136,44 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 		mesh=portal->mesh.meshes;
 
 		for (n=0;n!=portal->mesh.nmesh;n++) {
-		
+
 			mesh->draw.has_stencil_normal=FALSE;
+			mesh->draw.has_stencil_specular_normal=FALSE;
+			mesh->draw.has_hilite_normal=FALSE;
 			mesh->draw.has_stencil_bump=FALSE;
+			mesh->draw.has_stencil_specular_bump=FALSE;
+			mesh->draw.has_hilite_bump=FALSE;
 			mesh->draw.has_transparent=FALSE;
 			mesh->draw.has_glow=FALSE;
-			mesh->draw.has_specular=FALSE;
 			mesh->draw.has_opaque_shader=FALSE;
 			mesh->draw.has_transparent_shader=FALSE;
 			
-			mesh_poly=mesh->polys;
+			poly=mesh->polys;
 			
 			for (k=0;k!=mesh->npoly;k++) {
 				
-				lod_dist=abs(mesh_poly->box.mid.x-view.camera.pos.x)+abs(mesh_poly->box.mid.y-view.camera.pos.y)+abs(mesh_poly->box.mid.z-view.camera.pos.z);
+				lod_dist=abs(poly->box.mid.x-view.camera.pos.x)+abs(poly->box.mid.y-view.camera.pos.y)+abs(poly->box.mid.z-view.camera.pos.z);
 
-				texture=&map.textures[mesh_poly->txt_idx];
-				frame=(texture->animate.current_frame+mesh_poly->draw.txt_frame_offset)&max_texture_frame_mask;
+				texture=&map.textures[poly->txt_idx];
+				frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
-				mesh_poly->draw.is_simple_lighting=(global_light_simple) || (lod_dist>map.optimizations.lod_light_distance) || (mesh_poly->draw.simple_tessel);
+				poly->draw.is_simple_lighting=(global_light_simple) || (lod_dist>map.optimizations.lod_light_distance) || (poly->draw.simple_tessel);
 
 					// is texture transparent?
 
-				is_transparent=(mesh_poly->alpha!=1.0f) || (texture->bitmaps[frame].alpha_mode==alpha_mode_transparent);
+				is_transparent=(poly->alpha!=1.0f) || (texture->bitmaps[frame].alpha_mode==alpha_mode_transparent);
 
 					// is shader
 
 				if (texture->shader.on) {
 				
 					if (is_transparent) {
-						mesh_poly->draw.draw_type=map_mesh_poly_draw_transparent_shader;
+						poly->draw.draw_type=map_mesh_poly_draw_transparent_shader;
 						mesh->draw.has_transparent_shader=TRUE;
 						portal->mesh.draw.has_transparent_shader=TRUE;
 					}
 					else {
-						mesh_poly->draw.draw_type=map_mesh_poly_draw_opaque_shader;
+						poly->draw.draw_type=map_mesh_poly_draw_opaque_shader;
 						mesh->draw.has_opaque_shader=TRUE;
 						portal->mesh.draw.has_opaque_shader=TRUE;
 					}
@@ -175,36 +184,38 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 				
 					if (is_transparent) {
 						mesh->draw.has_transparent=TRUE;
-						mesh_poly->draw.draw_type=map_mesh_poly_draw_transparent;
+						poly->draw.draw_type=map_mesh_poly_draw_transparent;
 						portal->mesh.draw.has_transparent=TRUE;
 					}
 					else {
+
+							// specular flag
+
+						is_specular=((setup.specular_mapping) && (lod_dist<map.optimizations.lod_specular_distance) && (texture->specularmaps[frame].gl_id!=-1));
 
 							// is bump?
 
 						if ((setup.bump_mapping) && (lod_dist<map.optimizations.lod_bump_distance) && (texture->bumpmaps[frame].gl_id!=-1)) {
 
 							if (!mesh->flag.hilite) {
-								if (!mesh_poly->draw.is_simple_lighting) {
-									mesh_poly->draw.draw_type=map_mesh_poly_draw_stencil_bump;
-									mesh->draw.has_stencil_bump=TRUE;
-									portal->mesh.draw.has_stencil_bump=TRUE;
-									portal->mesh.draw.has_stencil_lighting=TRUE;
+								if (is_specular) {
+									poly->draw.draw_type=map_mesh_poly_draw_stencil_specular_bump;
+									mesh->draw.has_stencil_specular_bump=TRUE;
+									portal->mesh.draw.has_stencil_specular_bump=TRUE;
 								}
 								else {
-									mesh_poly->draw.draw_type=map_mesh_poly_draw_simple_bump;
-									mesh->draw.has_simple_bump=TRUE;
-									portal->mesh.draw.has_simple_bump=TRUE;
-									portal->mesh.draw.has_simple_lighting=TRUE;
+									poly->draw.draw_type=map_mesh_poly_draw_stencil_bump;
+									mesh->draw.has_stencil_bump=TRUE;
+									portal->mesh.draw.has_stencil_bump=TRUE;
 								}
 							}
 							else {
-								mesh_poly->draw.draw_type=map_mesh_poly_draw_hilite_bump;
+								poly->draw.draw_type=map_mesh_poly_draw_hilite_bump;
 								mesh->draw.has_hilite_bump=TRUE;
 								portal->mesh.draw.has_hilite_bump=TRUE;
 							}
 
-							if ((!light_changed) || (mesh->flag.moveable)) map_portal_calculate_normal_vector_smooth(portal,(double)mesh_poly->box.mid.x,(double)mesh_poly->box.mid.y,(double)mesh_poly->box.mid.z,mesh_poly->draw.normal);
+							if ((!light_changed) || (mesh->flag.moveable)) map_portal_calculate_normal_vector_smooth(portal,(double)poly->box.mid.x,(double)poly->box.mid.y,(double)poly->box.mid.z,poly->draw.normal);
 						}
 
 							// is normal?
@@ -212,42 +223,37 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 						else {
 
 							if (!mesh->flag.hilite) {
-								if (!mesh_poly->draw.is_simple_lighting) {
-									mesh_poly->draw.draw_type=map_mesh_poly_draw_stencil_normal;
-									mesh->draw.has_stencil_normal=TRUE;
-									portal->mesh.draw.has_stencil_normal=TRUE;
-									portal->mesh.draw.has_stencil_lighting=TRUE;
+								if (is_specular) {
+									poly->draw.draw_type=map_mesh_poly_draw_stencil_specular_normal;
+									mesh->draw.has_stencil_specular_normal=TRUE;
+									portal->mesh.draw.has_stencil_specular_normal=TRUE;
 								}
 								else {
-									mesh_poly->draw.draw_type=map_mesh_poly_draw_simple_normal;
-									mesh->draw.has_simple_normal=TRUE;
-									portal->mesh.draw.has_simple_normal=TRUE;
-									portal->mesh.draw.has_simple_lighting=TRUE;
+									poly->draw.draw_type=map_mesh_poly_draw_stencil_normal;
+									mesh->draw.has_stencil_normal=TRUE;
+									portal->mesh.draw.has_stencil_normal=TRUE;
 								}
 							}
 							else {
-								mesh_poly->draw.draw_type=map_mesh_poly_draw_hilite_normal;
+								poly->draw.draw_type=map_mesh_poly_draw_hilite_normal;
 								mesh->draw.has_hilite_normal=TRUE;
 								portal->mesh.draw.has_hilite_normal=TRUE;
 							}
+
 						}
 					}
 
-						// check for glow and specular
+						// check for glow
 
-					mesh_poly->draw.is_glow=((setup.glow_mapping) && (lod_dist<map.optimizations.lod_glow_distance) && (texture->glowmaps[frame].gl_id!=-1));
-					mesh_poly->draw.is_specular=((setup.specular_mapping) && (lod_dist<map.optimizations.lod_specular_distance) && (texture->specularmaps[frame].gl_id!=-1));
+					poly->draw.is_glow=((setup.glow_mapping) && (lod_dist<map.optimizations.lod_glow_distance) && (texture->glowmaps[frame].gl_id!=-1));
 
-					mesh->draw.has_glow|=mesh_poly->draw.is_glow;
-					portal->mesh.draw.has_glow|=mesh_poly->draw.is_glow;
-
-					mesh->draw.has_specular|=mesh_poly->draw.is_specular;
-					portal->mesh.draw.has_specular|=mesh_poly->draw.is_specular;
+					mesh->draw.has_glow|=poly->draw.is_glow;
+					portal->mesh.draw.has_glow|=poly->draw.is_glow;
 				}
 
-				mesh_poly->draw.cur_frame=frame;
+				poly->draw.cur_frame=frame;
 
-				mesh_poly++;
+				poly++;
 			}
 
 			mesh++;
@@ -282,13 +288,13 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 				
 				mesh->draw.stencil_pass_start=stencil_pass;
 
-				mesh_poly=mesh->polys;
+				poly=mesh->polys;
 				
 				for (k=0;k!=mesh->npoly;k++) {
 
-					if ((mesh_poly->draw.draw_type!=map_mesh_poly_draw_stencil_normal) || (mesh_poly->draw.draw_type!=map_mesh_poly_draw_stencil_bump)) {
-						mesh_poly->draw.stencil_pass=stencil_pass;
-						mesh_poly->draw.stencil_idx=stencil_idx;
+					if ((poly->draw.draw_type!=map_mesh_poly_draw_stencil_normal) || (poly->draw.draw_type!=map_mesh_poly_draw_stencil_bump)) {
+						poly->draw.stencil_pass=stencil_pass;
+						poly->draw.stencil_idx=stencil_idx;
 						
 						stencil_idx++;
 						if (stencil_idx>stencil_segment_end) {
@@ -297,13 +303,12 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 						}
 					}
 				
-					mesh_poly++;
+					poly++;
 				}
 				
 				mesh->draw.stencil_pass_end=stencil_pass;
 			}
 
-		
 			mesh++;
 		}
 

@@ -58,7 +58,6 @@ void setup_xml_default(void)
 	setup.bump_mapping=TRUE;
 	setup.specular_mapping=TRUE;
 	setup.glow_mapping=TRUE;
-	setup.segment_darken=TRUE;
 	setup.halo=TRUE;
 	
 	setup.fsaa_mode=fsaa_mode_none;
@@ -209,7 +208,6 @@ bool setup_xml_read_path(char *path)
 	setup_xml_read_key_boolean(setup_tag,"Bump_Mapping",&setup.bump_mapping);
 	setup_xml_read_key_boolean(setup_tag,"Specular_Mapping",&setup.specular_mapping);
 	setup_xml_read_key_boolean(setup_tag,"Glow_Mapping",&setup.glow_mapping);
-	setup_xml_read_key_boolean(setup_tag,"Segment_Darken",&setup.segment_darken);
 	setup_xml_read_key_boolean(setup_tag,"Halo",&setup.halo);
 	setup_xml_read_key_boolean(setup_tag,"High_Quality_Lighting",&setup.high_quality_lighting);
 	setup_xml_read_key_boolean(setup_tag,"Diffuse_Lighting",&setup.diffuse_lighting);
@@ -400,7 +398,6 @@ bool setup_xml_write(void)
 	setup_xml_write_key_boolean("Bump_Mapping",setup.bump_mapping);
 	setup_xml_write_key_boolean("Specular_Mapping",setup.specular_mapping);
 	setup_xml_write_key_boolean("Glow_Mapping",setup.glow_mapping);
-	setup_xml_write_key_boolean("Segment_Darken",setup.segment_darken);
 	setup_xml_write_key_boolean("Halo",setup.halo);
 	setup_xml_write_key_boolean("High_Quality_Lighting",setup.high_quality_lighting);
 	setup_xml_write_key_boolean("Diffuse_Lighting",setup.diffuse_lighting);
@@ -530,7 +527,6 @@ void setup_restore(void)
 	setup.bump_mapping=FALSE;
 	setup.specular_mapping=FALSE;
 	setup.glow_mapping=FALSE;
-	setup.segment_darken=FALSE;
 	setup.halo=FALSE;
 	
 	setup.fsaa_mode=fsaa_mode_none;

@@ -36,10 +36,12 @@ extern server_type			server;
 extern setup_type			setup;
 extern render_info_type		render_info;
 
-int							cur_txt_id,cur_bump_id,cur_specular_id,cur_glow_id;
+int							cur_bind_txt_id[8];
 float						cur_alpha,cur_dark_factor;
 GLfloat						cur_decal_alpha[4];
 bitmap_type					null_bitmap;
+
+// supergumba -- will need to search this for deletes on unused stuff (note vars above, also)
 
 /* =======================================================
 
@@ -58,6 +60,38 @@ void gl_texture_initialize(void)
 void gl_texture_shutdown(void)
 {
 	bitmap_close(&null_bitmap);
+}
+
+/* =======================================================
+
+      Texture Binding
+      
+======================================================= */
+
+void gl_texture_bind_start(void)
+{
+	int					n;
+
+		// remember each texture bind so we don't re-bind if already set
+
+	for (n=0;n!=8;n++) {
+		cur_bind_txt_id[n]=-1;
+	}
+}
+
+inline void gl_texture_bind(int unit,int txt_id)
+{
+		// NOP if texture is already bound to this unit
+
+	if (cur_bind_txt_id[unit]==txt_id) return;
+
+		// bind to unit
+		// GL_TEXTURE0+unit works for the OpenGL header values
+
+	glActiveTexture(GL_TEXTURE0+unit);
+	glBindTexture(GL_TEXTURE_2D,txt_id);
+
+	cur_bind_txt_id[unit]=txt_id;
 }
 
 /* =======================================================
@@ -93,7 +127,7 @@ void gl_texture_opaque_end(void)
 
 inline void gl_texture_opaque_set(int txt_id)
 {
-	glBindTexture(GL_TEXTURE_2D,txt_id);
+	gl_texture_bind(0,txt_id);
 }
 
 /* =======================================================
@@ -131,12 +165,12 @@ void gl_texture_opaque_lighting_start(void)
 		// this step is ignored for simplified rendering as older
 		// renderers seem to have a problem with constant colors
 
-	if ((setup.segment_darken) && (!setup.ray_trace_lighting)) {
+	if (!setup.ray_trace_lighting) {
 
 		glActiveTexture(GL_TEXTURE1);
 		glEnable(GL_TEXTURE_2D);
 
-		glBindTexture(GL_TEXTURE_2D,null_bitmap.gl_id);				// texture is not used in this unit
+		gl_texture_bind(1,null_bitmap.gl_id);				// texture is not used in this unit
 
 		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 
@@ -160,7 +194,7 @@ void gl_texture_opaque_lighting_start(void)
 
 void gl_texture_opaque_lighting_end(void)
 {
-	if ((setup.segment_darken) && (!setup.ray_trace_lighting)) {
+	if (!setup.ray_trace_lighting) {
 		glActiveTexture(GL_TEXTURE1);
 		glDisable(GL_TEXTURE_2D);
 	}
@@ -171,15 +205,14 @@ void gl_texture_opaque_lighting_end(void)
 
 inline void gl_texture_opaque_lighting_set(int txt_id)
 {
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,txt_id);
+	gl_texture_bind(0,txt_id);
 }
 
 inline void gl_texture_opaque_lighting_factor(float dark_factor)
 {
 	GLfloat				dark_fct[4];
 
-	if (!((setup.segment_darken) && (!setup.ray_trace_lighting))) return;
+	if (setup.ray_trace_lighting) return;
 
 	dark_fct[0]=dark_fct[1]=dark_fct[2]=dark_factor;
 	dark_fct[3]=1.0f;
@@ -246,13 +279,11 @@ inline void gl_texture_opaque_bump_set(int txt_id,int bump_id)
 {
 		// the bump
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,bump_id);
+	gl_texture_bind(0,bump_id);
 
 		// the texture
 
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D,txt_id);
+	gl_texture_bind(1,txt_id);
 }
 
 inline void gl_texture_opaque_bump_factor(float *normal)
@@ -320,7 +351,7 @@ void gl_texture_opaque_bump_lighting_start(void)
 	glActiveTexture(GL_TEXTURE2);
 	glEnable(GL_TEXTURE_2D);
 
-	glBindTexture(GL_TEXTURE_2D,null_bitmap.gl_id);				// texture is not used in this unit
+	gl_texture_bind(2,null_bitmap.gl_id);				// texture is not used in this unit
 
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 
@@ -351,13 +382,11 @@ inline void gl_texture_opaque_bump_lighting_set(int txt_id,int bump_id)
 {
 		// the bump
 		
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,bump_id);
+	gl_texture_bind(0,bump_id);
 
 		// the texture
 
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D,txt_id);
+	gl_texture_bind(1,txt_id);
 }
 
 inline void gl_texture_opaque_bump_lighting_factor(float *normal)
@@ -386,17 +415,13 @@ void gl_texture_tesseled_lighting_start(void)
 		// texture unit 0
 		// this contains the lighting color modulated
 		// with the darkness factor.
-		//
-		// this step is skipped if simplified rendering
-		// as simplified renders seem to have a problem with
-		// the constant color
 
-	if (!((setup.segment_darken) && (!setup.ray_trace_lighting))) return;
+	if (setup.ray_trace_lighting) return;
 
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
 	
-	glBindTexture(GL_TEXTURE_2D,null_bitmap.gl_id);				// texture is not used in this unit
+	gl_texture_bind(0,null_bitmap.gl_id);				// texture is not used in this unit
 	
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 
@@ -419,7 +444,7 @@ void gl_texture_tesseled_lighting_start(void)
 
 void gl_texture_tesseled_lighting_end(void)
 {
-	if (!((setup.segment_darken) && (!setup.ray_trace_lighting))) return;
+	if (setup.ray_trace_lighting) return;
 
 	glActiveTexture(GL_TEXTURE0);
 	glDisable(GL_TEXTURE_2D);
@@ -429,12 +454,140 @@ inline void gl_texture_tesseled_lighting_factor(float dark_factor)
 {
 	GLfloat			dark_fct[4];
 
-	if (!((setup.segment_darken) && (!setup.ray_trace_lighting))) return;
+	if (setup.ray_trace_lighting) return;
 
 	dark_fct[0]=dark_fct[1]=dark_fct[2]=dark_factor;
 	dark_fct[3]=1.0f;
 
 	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,dark_fct);
+}
+
+/* =======================================================
+
+      Tesseled Specular Lighting Drawing
+      
+======================================================= */
+
+void gl_texture_tesseled_specular_lighting_start(void)
+{
+	GLfloat			dark_fct[4];
+
+		// texture unit 0
+		// the lighting multiplied by lighting to
+		// get exponitial drop off
+		
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	
+	gl_texture_bind(0,null_bitmap.gl_id);				// texture is not used in this unit
+	
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PRIMARY_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_PRIMARY_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+
+		// texture unit 1
+		// the specular texture combined with the modulated lighting
+
+	glActiveTexture(GL_TEXTURE1);
+	glEnable(GL_TEXTURE_2D);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PREVIOUS);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_PREVIOUS);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+
+		// texture unit 2
+		// add in the lighting color
+
+	glActiveTexture(GL_TEXTURE2);
+	glEnable(GL_TEXTURE_2D);
+	
+	gl_texture_bind(0,null_bitmap.gl_id);				// texture is not used in this unit
+	
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_ADD);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PREVIOUS);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_PRIMARY_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_CONSTANT);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+
+		// texture unit 3
+		// modulate by the dark factor
+
+	glActiveTexture(GL_TEXTURE3);
+	glEnable(GL_TEXTURE_2D);
+	
+	gl_texture_bind(0,null_bitmap.gl_id);				// texture is not used in this unit
+	
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PREVIOUS);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_CONSTANT);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_CONSTANT);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+
+		// default dark factor
+			
+	dark_fct[0]=dark_fct[1]=dark_fct[2]=dark_fct[3]=1.0f;
+	
+	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,dark_fct);
+}
+
+void gl_texture_tesseled_specular_lighting_end(void)
+{
+	glActiveTexture(GL_TEXTURE3);
+	glDisable(GL_TEXTURE_2D);
+
+	glActiveTexture(GL_TEXTURE2);
+	glDisable(GL_TEXTURE_2D);
+
+	glActiveTexture(GL_TEXTURE1);
+	glDisable(GL_TEXTURE_2D);
+
+	glActiveTexture(GL_TEXTURE0);
+	glDisable(GL_TEXTURE_2D);
+}
+
+inline void gl_texture_tesseled_specular_lighting_set(int specular_id,float dark_factor)
+{
+	GLfloat			dark_fct[4];
+
+	gl_texture_bind(1,specular_id);
+
+		// don't set darkness factor if ray tracing is on
+
+	if (!setup.ray_trace_lighting) {
+		dark_fct[0]=dark_fct[1]=dark_fct[2]=dark_factor;
+		dark_fct[3]=1.0f;
+
+		glActiveTexture(GL_TEXTURE3);
+		glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,dark_fct);
+	}
 }
 
 /* =======================================================
@@ -452,7 +605,7 @@ void gl_texture_opaque_specular_start(void)
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
 	
-	glBindTexture(GL_TEXTURE_2D,null_bitmap.gl_id);				// texture is not used in this unit
+	gl_texture_bind(0,null_bitmap.gl_id);				// texture is not used in this unit
 	
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 
@@ -496,8 +649,7 @@ void gl_texture_opaque_specular_end(void)
 
 inline void gl_texture_opaque_specular_set(int specular_id)
 {
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D,specular_id);
+	gl_texture_bind(1,specular_id);
 }
 
 /* =======================================================
@@ -532,7 +684,7 @@ void gl_texture_opaque_glow_start(void)
 	glActiveTexture(GL_TEXTURE1);
 	glEnable(GL_TEXTURE_2D);
 	
-	glBindTexture(GL_TEXTURE_2D,null_bitmap.gl_id);				// texture is not used in this unit
+	gl_texture_bind(1,null_bitmap.gl_id);				// texture is not used in this unit
 
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 
@@ -581,13 +733,11 @@ inline void gl_texture_opaque_glow_set(int txt_id,int glow_id)
 
 		// the glow texture
 		
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,glow_id);
+	gl_texture_bind(0,glow_id);
 	
 		// the original texture
 		
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D,txt_id);
+	gl_texture_bind(2,txt_id);
 }
 
 inline void gl_texture_opaque_glow_color(float glow_color)
@@ -609,7 +759,6 @@ inline void gl_texture_opaque_glow_color(float glow_color)
 
 void gl_texture_decal_start(void)
 {
-	cur_txt_id=-1;
 	cur_alpha=-1.0f;
 
 		// texture unit 0
@@ -640,12 +789,9 @@ inline void gl_texture_decal_set(int txt_id,float alpha)
 {
 	GLfloat			alpha_fct[4];
 
-		// texture already set?
-		
-	if (cur_txt_id!=txt_id) {
-		cur_txt_id=txt_id;
-		glBindTexture(GL_TEXTURE_2D,txt_id);
-	}
+		// texture
+	
+	gl_texture_bind(0,txt_id);
 	
 		// alpha already set?
 	 
@@ -699,7 +845,7 @@ inline void gl_texture_transparent_set(int txt_id,float alpha)
 	
 		// set texture and alpha
 
-	glBindTexture(GL_TEXTURE_2D,txt_id);
+	gl_texture_bind(0,txt_id);
 	
 	col4[0]=col4[1]=col4[2]=1;
 	col4[3]=alpha;
@@ -721,7 +867,7 @@ void gl_texture_transparent_specular_start(void)
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
 	
-	glBindTexture(GL_TEXTURE_2D,null_bitmap.gl_id);				// texture is not used in this unit
+	gl_texture_bind(0,null_bitmap.gl_id);				// texture is not used in this unit
 	
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 
@@ -769,8 +915,7 @@ inline void gl_texture_transparent_specular_set(int specular_id,float alpha)
 {
 	GLfloat		col4[4];
 
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D,specular_id);
+	gl_texture_bind(1,specular_id);
 
 	col4[0]=col4[1]=col4[2]=1;
 	col4[3]=alpha;
@@ -809,7 +954,7 @@ void gl_texture_transparent_glow_start(void)
 	glActiveTexture(GL_TEXTURE1);
 	glEnable(GL_TEXTURE_2D);
 	
-	glBindTexture(GL_TEXTURE_2D,null_bitmap.gl_id);				// texture is not used in this unit
+	gl_texture_bind(1,null_bitmap.gl_id);				// texture is not used in this unit
 
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 
@@ -861,8 +1006,7 @@ inline void gl_texture_transparent_glow_set(int txt_id,int glow_id,float alpha)
 
 		// the glow texture
 		
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,glow_id);
+	gl_texture_bind(0,glow_id);
 
 		// the alpha
 
@@ -874,8 +1018,7 @@ inline void gl_texture_transparent_glow_set(int txt_id,int glow_id,float alpha)
 	
 		// the original texture
 		
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D,txt_id);
+	gl_texture_bind(2,txt_id);
 }
 
 inline void gl_texture_transparent_glow_color(float glow_color)
@@ -897,10 +1040,6 @@ inline void gl_texture_transparent_glow_color(float glow_color)
 
 void gl_texture_shader_start(void)
 {
-	cur_txt_id=-1;
-	cur_bump_id=-1;
-	cur_specular_id=-1;
-	cur_glow_id=-1;
 }
 
 void gl_texture_shader_end(void)
@@ -926,24 +1065,15 @@ void gl_texture_shader_end(void)
 
 void gl_texture_shader_set(int txt_id,int bump_id,int specular_id,int glow_id)
 {
-		// already set?
-		
-	if ((cur_txt_id==txt_id) && (cur_bump_id==bump_id) && (cur_specular_id==specular_id) && (cur_glow_id==glow_id)) return;
-	
-	cur_txt_id=txt_id;
-	cur_bump_id=bump_id;
-	cur_specular_id=specular_id;
-	cur_glow_id=glow_id;
-
 		// set textures to all replace
 		
 	if (render_info.texture_unit_count>=4) {
 	
 		glActiveTexture(GL_TEXTURE3);
 		
-		if (glow_id!=-1) {	
+		if (glow_id!=-1) {
 			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D,glow_id);
+			gl_texture_bind(3,glow_id);
 			
 			glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 			
@@ -964,9 +1094,9 @@ void gl_texture_shader_set(int txt_id,int bump_id,int specular_id,int glow_id)
 	
 		glActiveTexture(GL_TEXTURE2);
 		
-		if (specular_id!=-1) {	
+		if (specular_id!=-1) {
 			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D,specular_id);
+			gl_texture_bind(2,specular_id);
 			
 			glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 			
@@ -989,7 +1119,7 @@ void gl_texture_shader_set(int txt_id,int bump_id,int specular_id,int glow_id)
 		
 		if (bump_id!=-1) {
 			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D,bump_id);
+			gl_texture_bind(1,bump_id);
 			
 			glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 			
@@ -1010,7 +1140,7 @@ void gl_texture_shader_set(int txt_id,int bump_id,int specular_id,int glow_id)
 		
 	if (txt_id!=-1) {
 		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D,txt_id);
+		gl_texture_bind(0,txt_id);
 		
 		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 		

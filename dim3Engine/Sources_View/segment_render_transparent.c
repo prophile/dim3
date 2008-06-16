@@ -150,7 +150,7 @@ void segment_render_transparent_sort(int rn,int cx,int cy,int cz)
 
 void segment_render_transparent_portal_mesh(portal_type *portal)
 {
-	int						n,ntrig,sort_cnt,frame;
+	int						n,sort_cnt,frame;
 	unsigned long			txt_id;
 	float					alpha;
 	bool					txt_setup_reset;
@@ -400,6 +400,10 @@ void segment_render_transparent(int portal_cnt,int *portal_list)
 	gl_3D_view(&view.camera);
 	gl_3D_rotate(&view.camera.ang);
 	gl_setup_project();
+
+		// texture binding optimization
+
+	gl_texture_bind_start();
 	
 		// run through portals
 		// we want to go from furthest away to closest

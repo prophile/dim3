@@ -58,11 +58,10 @@ and can be sold or given away.
 #define ctrl_raytracelighting_id			14
 #define ctrl_specularmapping_id				15
 #define ctrl_glowmapping_id					16
-#define ctrl_segmentdarken_id				17
-#define ctrl_halo_id						18
-#define ctrl_fog_id							19
-#define ctrl_mark_id						20
-#define ctrl_shadow_id						21
+#define ctrl_halo_id						17
+#define ctrl_fog_id							18
+#define ctrl_mark_id						19
+#define ctrl_shadow_id						20
 
 #define ctrl_sound_volume_id				30
 #define ctrl_music_on_id					31
@@ -185,7 +184,7 @@ void setup_game_graphics_pane(void)
 	
 	control_y_add=element_get_control_high();
 	separate_y_add=element_get_separator_high();
-	control_y_sz=(control_y_add*11)+(2*separate_y_add);
+	control_y_sz=(control_y_add*10)+(2*separate_y_add);
 	
 	x=(int)(((float)setup.screen.x_scale)*0.4f);
 	y=(setup.screen.y_scale>>1)-(control_y_sz>>1);
@@ -208,8 +207,6 @@ void setup_game_graphics_pane(void)
 	y+=control_y_add;
 	element_checkbox_add("Glow Mapping",setup.glow_mapping,ctrl_glowmapping_id,x,y,TRUE);
 	element_enable(ctrl_glowmapping_id,gl_check_glow_ok());
-	y+=control_y_add;
-	element_checkbox_add("Segment Darkening",setup.segment_darken,ctrl_segmentdarken_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Halos",setup.halo,ctrl_halo_id,x,y,TRUE);
 	y+=control_y_add;
@@ -812,10 +809,6 @@ void setup_game_handle_click(int id)
 			setup.glow_mapping=element_get_value(ctrl_glowmapping_id);
 			break;
 			
-		case ctrl_segmentdarken_id:
-			setup.segment_darken=element_get_value(ctrl_segmentdarken_id);
-			break;
-
 		case ctrl_halo_id:
 			setup.halo=element_get_value(ctrl_halo_id);
 			break;

@@ -804,6 +804,10 @@ void model_render(int tick,model_draw *draw)
 		model_translate_draw_vertex(mdl,n,tx,ty,tz);
 	}
 
+		// texture binding optimization
+
+	gl_texture_bind_start();
+
 		// draw opaque materials
 
 	for (n=0;n!=mdl->nmesh;n++) {
