@@ -296,8 +296,7 @@ void segment_render_transparent_portal_mesh(portal_type *portal)
 		
 				// draw glow
 
-			gl_texture_transparent_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,mesh_poly->alpha);
-			gl_texture_transparent_glow_color(texture->glow.current_color);
+			gl_texture_transparent_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,mesh_poly->alpha,texture->glow.current_color);
 
 			glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
 

@@ -127,102 +127,53 @@ int map_portal_add_mesh_poly_single_vertex_list(portal_vertex_list_type *vl,int 
 
 void map_portal_vertex_list_find_uv(int ptsz,int *x,int *y,float *gx,float *gy,int kx,int ky,float *p_gx,float *p_gy)
 {
+	int				n,lx,rx,ty,by;
+	float			lgx,rgx,tgy,bgy;
 
+		// find UV extents
+
+	lx=rx=x[0];
+	lgx=rgx=gx[0];
+	ty=by=y[0];
+	tgy=bgy=gy[0];
+
+	for (n=1;n<ptsz;n++) {
+		if (x[n]<lx) {
+			lx=x[n];
+			lgx=gx[n];
+		}
+		if (x[n]>rx) {
+			rx=x[n];
+			rgx=gx[n];
+		}
+		if (y[n]<ty) {
+			ty=y[n];
+			tgy=gy[n];
+		}
+		if (y[n]>by) {
+			by=y[n];
+			bgy=gy[n];
+		}
+	}
+
+		// find new UV
+
+	if (rx==lx) {
+		*p_gx=0.0f;
+	}
+	else {
+		*p_gx=lgx+((rgx-lgx)*((float)(kx-lx)/(float)(rx-lx)));
+	}
+
+	if (by==ty) {
+		*p_gy=0.0f;
+	}
+	else {
+		*p_gy=tgy+((bgy-tgy)*((float)(ky-ty)/(float)(by-ty)));
+	}
 
 }
 
-/*
-void map_portal_vertex_list_find_uv(int ptsz,int *x,int *y,float *gx,float *gy,int kx,int ky,float *p_gx,float *p_gy)
-{
-	int			n,lft_idx,rgt_idx,top_idx,bot_idx;
-	float		f,kgx,kgy,div;
-
-		// find vertexes on opposite sides of point
-
-	lft_idx=rgt_idx=top_idx=bot_idx=-1;
-
-	for (n=0;n!=ptsz;n++) {
-	
-			// on vertex
-			
-		if ((x[n]==kx) && (y[n]==ky)) {
-			*p_gx=gx[n];
-			*p_gy=gy[n];
-			return;
-		}
-			
-			// find surrounding vertexes
-			
-		if (x[n]<=kx) {
-			if (lft_idx==-1) {
-				lft_idx=n;
-			}
-			else {
-				if (x[lft_idx]>x[n]) lft_idx=n;
-			}
-		}
-		if (x[n]>kx) {
-			if (rgt_idx==-1) {
-				rgt_idx=n;
-			}
-			else {
-				if (x[rgt_idx]<x[n]) rgt_idx=n;
-			}
-		}
-		if (y[n]<=ky) {
-			if (top_idx==-1) {
-				top_idx=n;
-			}
-			else {
-				if (y[top_idx]>y[n]) top_idx=n;
-			}
-		}
-		if (y[n]>ky) {
-			if (bot_idx==-1) {
-				bot_idx=n;
-			}
-			else {
-				if (y[bot_idx]<y[n]) bot_idx=n;
-			}
-		}
-	}
-
-		// average them out
-
-	kgx=kgy=0.0f;
-	div=0.0f;
-
-	if ((lft_idx!=-1) && (rgt_idx!=-1)) {
-
-		f=(float)(x[rgt_idx]-x[lft_idx]);
-		if (f!=0.0f) kgx+=(((gx[rgt_idx]-gx[lft_idx])*(float)(kx-x[lft_idx]))/f);
-
-		f=(float)(y[rgt_idx]-y[lft_idx]);
-		if (f!=0.0f) kgy+=(((gy[rgt_idx]-gy[lft_idx])*(float)(ky-y[lft_idx]))/f);
-
-		div+=1.0f;
-	}
-
-	if ((top_idx!=-1) && (bot_idx!=-1)) {
-
-		f=(float)(x[bot_idx]-x[top_idx]);
-		if (f!=0.0f) kgx+=(((gx[bot_idx]-gx[top_idx])*(float)(kx-x[top_idx]))/f);
-
-		f=(float)(y[bot_idx]-y[top_idx]);
-		if (f!=0.0f) kgy+=(((gy[bot_idx]-gy[top_idx])*(float)(ky-y[top_idx]))/f);
-
-		div+=1.0f;
-	}
-
-	if (div!=0.0f) {
-		kgx/=div;
-		kgy/=div;
-	}
-
-	*p_gx=kgx;
-	*p_gy=kgy;
-}
-*/
 /* =======================================================
 
       Build Portal Vertex List for Light Tessel

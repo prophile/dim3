@@ -255,11 +255,28 @@ void gl_texture_opaque_bump_start(void)
 
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 
+	/*
 	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PREVIOUS);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_TEXTURE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
+*/
+/*
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PREVIOUS);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_ONE_MINUS_SRC_COLOR);
+*/
+// supergumba -- bump testing
+
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_SUBTRACT);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_PREVIOUS);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_ONE_MINUS_SRC_COLOR);
+
+
 	
 	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
@@ -275,20 +292,14 @@ void gl_texture_opaque_bump_end(void)
 	glDisable(GL_TEXTURE_2D);
 }
 
-inline void gl_texture_opaque_bump_set(int txt_id,int bump_id)
-{
-		// the bump
-
-	gl_texture_bind(0,bump_id);
-
-		// the texture
-
-	gl_texture_bind(1,txt_id);
-}
-
-inline void gl_texture_opaque_bump_factor(float *normal)
+inline void gl_texture_opaque_bump_set(int txt_id,int bump_id,float *normal)
 {
 	GLfloat				dot3[4];
+
+		// textures
+
+	gl_texture_bind(0,bump_id);
+	gl_texture_bind(1,txt_id);
 
 		// bump normal
 
@@ -432,7 +443,7 @@ void gl_texture_tesseled_lighting_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
 
 	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_CONSTANT);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
 		
 		// default dark factor
@@ -450,16 +461,24 @@ void gl_texture_tesseled_lighting_end(void)
 	glDisable(GL_TEXTURE_2D);
 }
 
-inline void gl_texture_tesseled_lighting_factor(float dark_factor)
+inline void gl_texture_tesseled_lighting_set(int alpha_mask_id,float dark_factor)
 {
 	GLfloat			dark_fct[4];
 
-	if (setup.ray_trace_lighting) return;
+		// using an alpha mask?
 
-	dark_fct[0]=dark_fct[1]=dark_fct[2]=dark_factor;
-	dark_fct[3]=1.0f;
+	if (alpha_mask_id!=-1) gl_texture_bind(0,alpha_mask_id);
 
-	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,dark_fct);
+		// darkness factor
+		// ignore if ray tracing is on
+
+	if (!setup.ray_trace_lighting) {
+
+		dark_fct[0]=dark_fct[1]=dark_fct[2]=dark_factor;
+		dark_fct[3]=1.0f;
+
+		glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,dark_fct);
+	}
 }
 
 /* =======================================================
@@ -558,7 +577,7 @@ void gl_texture_tesseled_specular_lighting_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
 
 	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_CONSTANT);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
 
 		// default dark factor
@@ -583,13 +602,20 @@ void gl_texture_tesseled_specular_lighting_end(void)
 	glDisable(GL_TEXTURE_2D);
 }
 
-inline void gl_texture_tesseled_specular_lighting_set(int specular_id,float dark_factor)
+inline void gl_texture_tesseled_specular_lighting_set(int alpha_mask_id,int specular_id,float dark_factor)
 {
 	GLfloat			dark_fct[4];
 
+		// using an alpha mask?
+
+	if (alpha_mask_id!=-1) gl_texture_bind(3,alpha_mask_id);
+
+		// specular
+
 	gl_texture_bind(1,specular_id);
 
-		// don't set darkness factor if ray tracing is on
+		// darkness factor
+		// ignore if ray tracing is on
 
 	if (!setup.ray_trace_lighting) {
 		dark_fct[0]=dark_fct[1]=dark_fct[2]=dark_factor;
@@ -606,8 +632,6 @@ inline void gl_texture_tesseled_specular_lighting_set(int specular_id,float dark
       
 ======================================================= */
 
-
-// supergumba -- can delete this
 void gl_texture_opaque_specular_start(void)
 {
 		// texture unit 0
@@ -740,21 +764,16 @@ void gl_texture_opaque_glow_end(void)
 	glDisable(GL_TEXTURE_2D);
 }
 
-inline void gl_texture_opaque_glow_set(int txt_id,int glow_id)
-{
-
-		// the glow texture
-		
-	gl_texture_bind(0,glow_id);
-	
-		// the original texture
-		
-	gl_texture_bind(2,txt_id);
-}
-
-inline void gl_texture_opaque_glow_color(float glow_color)
+inline void gl_texture_opaque_glow_set(int txt_id,int glow_id,float glow_color)
 {
 	GLfloat			col4[4];
+
+	// glow texture
+
+	gl_texture_bind(0,glow_id);
+	gl_texture_bind(2,txt_id);
+
+		// glow color
 
 	glActiveTexture(GL_TEXTURE0);
 
@@ -1012,13 +1031,19 @@ void gl_texture_transparent_glow_end(void)
 	glDisable(GL_TEXTURE_2D);
 }
 
-inline void gl_texture_transparent_glow_set(int txt_id,int glow_id,float alpha)
+inline void gl_texture_transparent_glow_set(int txt_id,int glow_id,float alpha,float glow_color)
 {
 	GLfloat			col4[4];
 
-		// the glow texture
+		// the glow texture and color
 		
 	gl_texture_bind(0,glow_id);
+
+	glActiveTexture(GL_TEXTURE0);
+		
+	col4[0]=col4[1]=col4[2]=glow_color;
+	col4[3]=1.0f;
+	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
 
 		// the alpha
 
@@ -1031,17 +1056,6 @@ inline void gl_texture_transparent_glow_set(int txt_id,int glow_id,float alpha)
 		// the original texture
 		
 	gl_texture_bind(2,txt_id);
-}
-
-inline void gl_texture_transparent_glow_color(float glow_color)
-{
-	GLfloat			col4[4];
-
-	glActiveTexture(GL_TEXTURE0);
-		
-	col4[0]=col4[1]=col4[2]=glow_color;
-	col4[3]=1.0f;
-	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
 }
 
 /* =======================================================

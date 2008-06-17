@@ -686,6 +686,7 @@ extern bool map_portal_mesh_poly_punch_hole(map_type *map,int portal_idx,int mes
 extern void map_portal_mesh_shift_portal_vertex_list(map_type *map,int portal_idx,int tick);
 extern void map_portal_mesh_get_poly_uv_as_box(map_type *map,int portal_idx,int mesh_idx,int poly_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact);
 extern void map_portal_mesh_set_poly_uv_as_box(map_type *map,int portal_idx,int mesh_idx,int poly_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact);
+extern void map_portal_mesh_rotate_poly_uv(map_type *map,int portal_idx,int mesh_idx,int poly_idx,int rot_ang);
 extern void map_portal_mesh_reset_poly_uv(map_type *map,int portal_idx,int mesh_idx,int poly_idx);
 extern void map_portal_mesh_reset_uv(map_type *map,int portal_idx,int mesh_idx);
 

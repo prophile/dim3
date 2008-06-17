@@ -55,7 +55,6 @@ extern void portal_compile_gl_list_dettach(void);
 void segment_render_opaque_stencil_portal_normal_mesh(portal_type *portal,int stencil_pass)
 {
 	int					n,k,frame;
-	unsigned long		txt_id;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
@@ -74,8 +73,6 @@ void segment_render_opaque_stencil_portal_normal_mesh(portal_type *portal,int st
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
 	
-	txt_id=-1;
-
 	for (n=0;n!=portal->mesh.nmesh;n++) {
 	
 		mesh=&portal->mesh.meshes[n];
@@ -93,11 +90,7 @@ void segment_render_opaque_stencil_portal_normal_mesh(portal_type *portal,int st
 
 			texture=&map.textures[poly->txt_idx];
 			frame=poly->draw.cur_frame;
-
-			if (texture->bitmaps[frame].gl_id!=txt_id) {
-				txt_id=texture->bitmaps[frame].gl_id;
-				gl_texture_opaque_set(txt_id);
-			}
+			gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
 			
 			glStencilFunc(GL_ALWAYS,poly->draw.stencil_idx,0xFF);
 
@@ -115,7 +108,6 @@ void segment_render_opaque_stencil_portal_normal_mesh(portal_type *portal,int st
 void segment_render_opaque_stencil_portal_bump_mesh(portal_type *portal,int stencil_pass)
 {
 	int					n,k,frame;
-	unsigned long		txt_id,bump_id;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
@@ -134,8 +126,6 @@ void segment_render_opaque_stencil_portal_bump_mesh(portal_type *portal,int sten
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
 
-	txt_id=bump_id=-1;
-
 	for (n=0;n!=portal->mesh.nmesh;n++) {
 	
 		mesh=&portal->mesh.meshes[n];
@@ -153,14 +143,7 @@ void segment_render_opaque_stencil_portal_bump_mesh(portal_type *portal,int sten
 
 			texture=&map.textures[poly->txt_idx];
 			frame=poly->draw.cur_frame;
-
-			if ((texture->bitmaps[frame].gl_id!=txt_id) || (texture->bumpmaps[frame].gl_id!=bump_id)) {
-				txt_id=texture->bitmaps[frame].gl_id;
-				bump_id=texture->bumpmaps[frame].gl_id;
-				gl_texture_opaque_bump_set(txt_id,bump_id);
-			}
-		
-			gl_texture_opaque_bump_factor(poly->draw.normal);
+			gl_texture_opaque_bump_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,poly->draw.normal);
 			
 			glStencilFunc(GL_ALWAYS,poly->draw.stencil_idx,0xFF);
 
@@ -220,7 +203,7 @@ void segment_render_opaque_stencil_portal_lighting_mesh(portal_type *portal,int 
 
 			if (dark_factor!=poly->dark_factor) {
 				dark_factor=poly->dark_factor;
-				gl_texture_tesseled_lighting_factor(dark_factor);
+				gl_texture_tesseled_lighting_set(-1,dark_factor);
 			}
 
 			// supergumba -- testing
@@ -295,7 +278,7 @@ void segment_render_opaque_stencil_portal_specular_lighting_mesh(portal_type *po
 			glStencilFunc(GL_EQUAL,poly->draw.stencil_idx,0xFF);
 
 			texture=&map.textures[poly->txt_idx];
-			gl_texture_tesseled_specular_lighting_set(texture->specularmaps[poly->draw.cur_frame].gl_id,poly->dark_factor);
+			gl_texture_tesseled_specular_lighting_set(-1,texture->specularmaps[poly->draw.cur_frame].gl_id,poly->dark_factor);
 
 			if (poly->draw.is_simple_lighting) {
 				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
@@ -324,7 +307,6 @@ void segment_render_opaque_stencil_portal_specular_lighting_mesh(portal_type *po
 void segment_render_opaque_hilite_portal_normal_mesh(portal_type *portal)
 {
 	int					n,k,frame;
-	unsigned long		txt_id;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
@@ -339,8 +321,6 @@ void segment_render_opaque_hilite_portal_normal_mesh(portal_type *portal)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
-	
-	txt_id=-1;
 
 	mesh=portal->mesh.meshes;
 	
@@ -362,11 +342,7 @@ void segment_render_opaque_hilite_portal_normal_mesh(portal_type *portal)
 
 			texture=&map.textures[poly->txt_idx];
 			frame=poly->draw.cur_frame;
-
-			if (texture->bitmaps[frame].gl_id!=txt_id) {
-				txt_id=texture->bitmaps[frame].gl_id;
-				gl_texture_opaque_set(txt_id);
-			}
+			gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
 
 			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 		
@@ -382,7 +358,6 @@ void segment_render_opaque_hilite_portal_normal_mesh(portal_type *portal)
 void segment_render_opaque_hilite_portal_bump_mesh(portal_type *portal)
 {
 	int					n,k,frame;
-	unsigned long		txt_id,bump_id;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
@@ -397,8 +372,6 @@ void segment_render_opaque_hilite_portal_bump_mesh(portal_type *portal)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
-
-	txt_id=bump_id=-1;
 
 	mesh=portal->mesh.meshes;
 	
@@ -420,14 +393,7 @@ void segment_render_opaque_hilite_portal_bump_mesh(portal_type *portal)
 
 			texture=&map.textures[poly->txt_idx];
 			frame=poly->draw.cur_frame;
-
-			if ((texture->bitmaps[frame].gl_id!=txt_id) || (texture->bumpmaps[frame].gl_id!=bump_id)) {
-				txt_id=texture->bitmaps[frame].gl_id;
-				bump_id=texture->bumpmaps[frame].gl_id;
-				gl_texture_opaque_bump_set(txt_id,bump_id);
-			}
-		
-			gl_texture_opaque_bump_factor(poly->draw.normal);
+			gl_texture_opaque_bump_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,poly->draw.normal);
 
 			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 		
@@ -449,7 +415,6 @@ void segment_render_opaque_hilite_portal_bump_mesh(portal_type *portal)
 void segment_render_opaque_portal_glow_mesh(portal_type *portal)
 {
 	int					n,k,frame;
-	unsigned long		txt_id,glow_id;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
@@ -464,9 +429,6 @@ void segment_render_opaque_portal_glow_mesh(portal_type *portal)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_EQUAL);
 	glDepthMask(GL_FALSE);
-
-	txt_id=-1;
-	glow_id=-1;
 
 	mesh=portal->mesh.meshes;
 	
@@ -488,14 +450,7 @@ void segment_render_opaque_portal_glow_mesh(portal_type *portal)
 
 			texture=&map.textures[poly->txt_idx];
 			frame=poly->draw.cur_frame;
-
-			if ((txt_id!=texture->bitmaps[frame].gl_id) || (glow_id!=texture->glowmaps[frame].gl_id)) {
-				txt_id=texture->bitmaps[frame].gl_id;
-				glow_id=texture->glowmaps[frame].gl_id;
-				gl_texture_opaque_glow_set(txt_id,glow_id);
-			}
-
-			gl_texture_opaque_glow_color(texture->glow.current_color);
+			gl_texture_opaque_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,texture->glow.current_color);
 
 			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 		

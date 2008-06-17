@@ -903,6 +903,51 @@ void map_portal_mesh_set_poly_uv_as_box(map_type *map,int portal_idx,int mesh_id
 
 /* =======================================================
 
+      Rotate UVs
+      
+======================================================= */
+
+void map_portal_mesh_rotate_poly_uv(map_type *map,int portal_idx,int mesh_idx,int poly_idx,int rot_ang)
+{
+	int						n;
+	float					g;
+	portal_type				*portal;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	
+	if (rot_ang==ta_0) return;
+
+	portal=&map->portals[portal_idx];
+	mesh=&portal->mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+	
+	for (n=0;n!=poly->ptsz;n++) {
+	
+		switch (rot_ang) {
+		
+			case 90:
+				g=poly->gx[n];
+				poly->gx[n]=poly->gy[n];
+				poly->gy[n]=-g;
+				break;
+				
+			case 180:
+				poly->gx[n]=-poly->gx[n];
+				poly->gy[n]=-poly->gy[n];
+				break;
+				
+			case 270:
+				g=poly->gx[n];
+				poly->gx[n]=-poly->gy[n];
+				poly->gy[n]=g;
+				break;
+		
+		}
+	}
+}
+
+/* =======================================================
+
       Recalculate UVs
       
 ======================================================= */
@@ -1061,5 +1106,4 @@ void map_portal_mesh_reset_uv(map_type *map,int portal_idx,int mesh_idx)
 		map_portal_mesh_reset_poly_uv(map,portal_idx,mesh_idx,n);
 	}
 }
-
 
