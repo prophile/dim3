@@ -284,7 +284,7 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 	
 		for (n=0;n!=portal->mesh.nmesh;n++) {
 		
-			if ((mesh->draw.has_stencil_normal) || (mesh->draw.has_stencil_bump)) {
+			if ((mesh->draw.has_stencil_normal) || (mesh->draw.has_stencil_specular_normal) || (mesh->draw.has_stencil_bump) || (mesh->draw.has_stencil_specular_bump)) {
 				
 				mesh->draw.stencil_pass_start=stencil_pass;
 

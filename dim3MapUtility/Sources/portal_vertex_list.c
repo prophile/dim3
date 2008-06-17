@@ -127,6 +127,13 @@ int map_portal_add_mesh_poly_single_vertex_list(portal_vertex_list_type *vl,int 
 
 void map_portal_vertex_list_find_uv(int ptsz,int *x,int *y,float *gx,float *gy,int kx,int ky,float *p_gx,float *p_gy)
 {
+
+
+}
+
+/*
+void map_portal_vertex_list_find_uv(int ptsz,int *x,int *y,float *gx,float *gy,int kx,int ky,float *p_gx,float *p_gy)
+{
 	int			n,lft_idx,rgt_idx,top_idx,bot_idx;
 	float		f,kgx,kgy,div;
 
@@ -135,17 +142,48 @@ void map_portal_vertex_list_find_uv(int ptsz,int *x,int *y,float *gx,float *gy,i
 	lft_idx=rgt_idx=top_idx=bot_idx=-1;
 
 	for (n=0;n!=ptsz;n++) {
+	
+			// on vertex
+			
+		if ((x[n]==kx) && (y[n]==ky)) {
+			*p_gx=gx[n];
+			*p_gy=gy[n];
+			return;
+		}
+			
+			// find surrounding vertexes
+			
 		if (x[n]<=kx) {
-			if ((lft_idx==-1) || (x[lft_idx]<x[n])) lft_idx=n;
+			if (lft_idx==-1) {
+				lft_idx=n;
+			}
+			else {
+				if (x[lft_idx]>x[n]) lft_idx=n;
+			}
 		}
 		if (x[n]>kx) {
-			if ((rgt_idx==-1) || (x[rgt_idx]>x[n])) rgt_idx=n;
+			if (rgt_idx==-1) {
+				rgt_idx=n;
+			}
+			else {
+				if (x[rgt_idx]<x[n]) rgt_idx=n;
+			}
 		}
 		if (y[n]<=ky) {
-			if ((top_idx==-1) || (y[top_idx]<y[n])) top_idx=n;
+			if (top_idx==-1) {
+				top_idx=n;
+			}
+			else {
+				if (y[top_idx]>y[n]) top_idx=n;
+			}
 		}
 		if (y[n]>ky) {
-			if ((bot_idx==-1) || (y[bot_idx]>y[n])) bot_idx=n;
+			if (bot_idx==-1) {
+				bot_idx=n;
+			}
+			else {
+				if (y[bot_idx]<y[n]) bot_idx=n;
+			}
 		}
 	}
 
@@ -184,7 +222,7 @@ void map_portal_vertex_list_find_uv(int ptsz,int *x,int *y,float *gx,float *gy,i
 	*p_gx=kgx;
 	*p_gy=kgy;
 }
-
+*/
 /* =======================================================
 
       Build Portal Vertex List for Light Tessel
@@ -523,6 +561,9 @@ int map_portal_add_light_yz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 
 	return(vl_cnt);
 }
+
+
+// supergumba -- this might not be necessary
 
 int map_portal_add_light_simple_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {

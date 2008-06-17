@@ -507,9 +507,19 @@ void gl_texture_tesseled_specular_lighting_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_TEXTURE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
 
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+	// supergumba -- testing
+
+
+
 	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_PREVIOUS);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+	
+	return;
 
 		// texture unit 2
 		// add in the lighting color
@@ -517,7 +527,7 @@ void gl_texture_tesseled_specular_lighting_start(void)
 	glActiveTexture(GL_TEXTURE2);
 	glEnable(GL_TEXTURE_2D);
 	
-	gl_texture_bind(0,null_bitmap.gl_id);				// texture is not used in this unit
+	gl_texture_bind(2,null_bitmap.gl_id);				// texture is not used in this unit
 	
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 
@@ -537,7 +547,7 @@ void gl_texture_tesseled_specular_lighting_start(void)
 	glActiveTexture(GL_TEXTURE3);
 	glEnable(GL_TEXTURE_2D);
 	
-	gl_texture_bind(0,null_bitmap.gl_id);				// texture is not used in this unit
+	gl_texture_bind(3,null_bitmap.gl_id);				// texture is not used in this unit
 	
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 
@@ -596,6 +606,8 @@ inline void gl_texture_tesseled_specular_lighting_set(int specular_id,float dark
       
 ======================================================= */
 
+
+// supergumba -- can delete this
 void gl_texture_opaque_specular_start(void)
 {
 		// texture unit 0

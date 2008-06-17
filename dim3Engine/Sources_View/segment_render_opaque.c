@@ -76,14 +76,11 @@ void segment_render_opaque_stencil_portal_normal_mesh(portal_type *portal,int st
 	
 	txt_id=-1;
 
-	mesh=portal->mesh.meshes;
-	
 	for (n=0;n!=portal->mesh.nmesh;n++) {
 	
-		if ((!mesh->draw.has_stencil_normal) || (mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) {
-			mesh++;
-			continue;
-		}
+		mesh=&portal->mesh.meshes[n];
+		if ((!mesh->draw.has_stencil_normal) && (!mesh->draw.has_stencil_specular_normal)) continue;
+		if ((mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) continue;
 		
 		poly=mesh->polys;
 		
@@ -108,8 +105,6 @@ void segment_render_opaque_stencil_portal_normal_mesh(portal_type *portal,int st
 		
 			poly++;
 		}
-	
-		mesh++;
 	}
 
 	glDisable(GL_STENCIL_TEST);
@@ -141,14 +136,11 @@ void segment_render_opaque_stencil_portal_bump_mesh(portal_type *portal,int sten
 
 	txt_id=bump_id=-1;
 
-	mesh=portal->mesh.meshes;
-	
 	for (n=0;n!=portal->mesh.nmesh;n++) {
 	
-		if ((!mesh->draw.has_stencil_bump) || (mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) {
-			mesh++;
-			continue;
-		}
+		mesh=&portal->mesh.meshes[n];
+		if ((!mesh->draw.has_stencil_bump) && (!mesh->draw.has_stencil_specular_bump)) continue;
+		if ((mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) continue;
 		
 		poly=mesh->polys;
 		
@@ -176,8 +168,6 @@ void segment_render_opaque_stencil_portal_bump_mesh(portal_type *portal,int sten
 		
 			poly++;
 		}
-	
-		mesh++;
 	}
 
 	glDisable(GL_STENCIL_TEST);
@@ -211,14 +201,11 @@ void segment_render_opaque_stencil_portal_lighting_mesh(portal_type *portal,int 
 
 	dark_factor=1.0f;
 
-	mesh=portal->mesh.meshes;
-	
 	for (n=0;n!=portal->mesh.nmesh;n++) {
 
-		if (((!mesh->draw.has_stencil_normal) && (!mesh->draw.has_stencil_bump)) || (mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) {
-			mesh++;
-			continue;
-		}
+		mesh=&portal->mesh.meshes[n];
+		if ((!mesh->draw.has_stencil_normal) && (!mesh->draw.has_stencil_bump)) continue;
+		if ((mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) continue;
 	
 		poly=mesh->polys;
 		
@@ -258,8 +245,6 @@ void segment_render_opaque_stencil_portal_lighting_mesh(portal_type *portal,int 
 			
 			poly++;
 		}
-	
-		mesh++;
 	}
 
 	glDisable(GL_STENCIL_TEST);
@@ -273,11 +258,14 @@ void segment_render_opaque_stencil_portal_specular_lighting_mesh(portal_type *po
 	float				dark_factor;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
+	texture_type		*texture;
 	
 	gl_texture_tesseled_specular_lighting_start();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ZERO,GL_SRC_COLOR);
+	
+	glDisable(GL_BLEND);	// supergumba -- testing
 
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
@@ -291,10 +279,9 @@ void segment_render_opaque_stencil_portal_specular_lighting_mesh(portal_type *po
 	
 	for (n=0;n!=portal->mesh.nmesh;n++) {
 
-		if (((!mesh->draw.has_stencil_specular_normal) && (!mesh->draw.has_stencil_specular_bump)) || (mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) {
-			mesh++;
-			continue;
-		}
+		mesh=&portal->mesh.meshes[n];
+		if ((!mesh->draw.has_stencil_specular_normal) && (!mesh->draw.has_stencil_specular_bump)) continue;
+		if ((mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) continue;
 	
 		poly=mesh->polys;
 		
@@ -307,10 +294,8 @@ void segment_render_opaque_stencil_portal_specular_lighting_mesh(portal_type *po
 
 			glStencilFunc(GL_EQUAL,poly->draw.stencil_idx,0xFF);
 
-			if (dark_factor!=poly->dark_factor) {
-				dark_factor=poly->dark_factor;
-				gl_texture_tesseled_specular_lighting_set(-1,dark_factor);
-			}
+			texture=&map.textures[poly->txt_idx];
+			gl_texture_tesseled_specular_lighting_set(texture->specularmaps[poly->draw.cur_frame].gl_id,poly->dark_factor);
 
 			if (poly->draw.is_simple_lighting) {
 				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
@@ -323,8 +308,6 @@ void segment_render_opaque_stencil_portal_specular_lighting_mesh(portal_type *po
 			
 			poly++;
 		}
-	
-		mesh++;
 	}
 
 	glDisable(GL_STENCIL_TEST);

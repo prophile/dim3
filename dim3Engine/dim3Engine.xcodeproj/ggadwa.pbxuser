@@ -80,8 +80,14 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 235267171;
-			PBXWorkspaceStateSaveDate = 235267171;
+			PBXPerProjectTemplateStateSaveDate = 235363828;
+			PBXWorkspaceStateSaveDate = 235363828;
+		};
+		perUserProjectItems = {
+			269EDB660E076CB900C1C1D2 /* PBXTextBookmark */ = 269EDB660E076CB900C1C1D2 /* PBXTextBookmark */;
+			269EDB6B0E076D2800C1C1D2 /* PBXTextBookmark */ = 269EDB6B0E076D2800C1C1D2 /* PBXTextBookmark */;
+			269EDBC10E0778A700C1C1D2 /* PBXTextBookmark */ = 269EDBC10E0778A700C1C1D2 /* PBXTextBookmark */;
+			269EDBC20E0778A700C1C1D2 /* PBXTextBookmark */ = 269EDBC20E0778A700C1C1D2 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -244,6 +250,41 @@
 			sepNavWindowFrame = "{{84, 213}, {1041, 747}}";
 		};
 	};
+	269EDB660E076CB900C1C1D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: 'struct <anonymous>' has no member named 'specularmap'";
+		fRef = F5A17A5F0CC14D340083AF08 /* segment_render_opaque.c */;
+		rLen = 1;
+		rLoc = 297;
+		rType = 1;
+	};
+	269EDB6B0E076D2800C1C1D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DD1A9709085CAA00721649 /* gl_texture.c */;
+		rLen = 41;
+		rLoc = 16228;
+		rType = 0;
+	};
+	269EDBC10E0778A700C1C1D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DD1A9709085CAA00721649 /* gl_texture.c */;
+		name = "gl_texture.c: 522";
+		rLen = 0;
+		rLoc = 14303;
+		rType = 0;
+		vrLen = 1656;
+		vrLoc = 13426;
+	};
+	269EDBC20E0778A700C1C1D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5A17A5F0CC14D340083AF08 /* segment_render_opaque.c */;
+		name = "segment_render_opaque.c: 268";
+		rLen = 0;
+		rLoc = 7087;
+		rType = 0;
+		vrLen = 1289;
+		vrLoc = 6624;
+	};
 	26A4B6430DAF028100E40F35 /* net_host_broadcast.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 2100}}";
@@ -342,18 +383,18 @@
 	};
 	F5A17A5F0CC14D340083AF08 /* segment_render_opaque.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 14392}}";
-			sepNavSelRange = "{23396, 0}";
-			sepNavVisRange = "{22438, 958}";
-			sepNavWindowFrame = "{{464, 141}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1200, 9086}}";
+			sepNavSelRange = "{7087, 0}";
+			sepNavVisRange = "{6624, 1289}";
+			sepNavWindowFrame = "{{291, 245}, {1041, 747}}";
 		};
 	};
 	F5A17A600CC14D340083AF08 /* segment_render_setup.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1422, 4228}}";
-			sepNavSelRange = "{7584, 0}";
-			sepNavVisRange = "{6964, 1287}";
-			sepNavWindowFrame = "{{589, 126}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1302, 4312}}";
+			sepNavSelRange = "{8195, 0}";
+			sepNavVisRange = "{7390, 1312}";
+			sepNavWindowFrame = "{{364, 127}, {1041, 747}}";
 		};
 	};
 	F5A17A610CC14D340083AF08 /* segment_render_transparent.c */ = {
@@ -558,9 +599,9 @@
 	};
 	F5AD54760BBE2121001C7C04 /* baseutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 11704}}";
-			sepNavSelRange = "{2872, 10}";
-			sepNavVisRange = "{2476, 1769}";
+			sepNavIntBoundsRect = "{{0, 0}, {1134, 11522}}";
+			sepNavSelRange = "{17164, 12}";
+			sepNavVisRange = "{16604, 1654}";
 			sepNavWindowFrame = "{{345, 161}, {1041, 747}}";
 		};
 	};
@@ -1044,9 +1085,9 @@
 	};
 	F5DD1A9709085CAA00721649 /* gl_texture.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 16884}}";
-			sepNavSelRange = "{23766, 0}";
-			sepNavVisRange = "{23015, 1147}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 17570}}";
+			sepNavSelRange = "{14303, 0}";
+			sepNavVisRange = "{13426, 1656}";
 			sepNavWindowFrame = "{{84, 213}, {1041, 747}}";
 		};
 	};
