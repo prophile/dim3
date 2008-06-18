@@ -246,48 +246,7 @@
 		</dict>
 	</array>
 	<key>OpenEditors</key>
-	<array>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
-				<string>269EDBBE0E0778A700C1C1D2</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>portal_vertex_list.c</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>269EDBBF0E0778A700C1C1D2</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>portal_vertex_list.c</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>269EDBC00E0778A700C1C1D2</string>
-						<key>history</key>
-						<array>
-							<string>269EDBB10E07732700C1C1D2</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<true/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, 20}, {1041, 706}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<false/>
-				<key>RubberWindowFrame</key>
-				<string>432 219 1041 747 0 0 1680 1028 </string>
-			</dict>
-		</dict>
-	</array>
+	<array/>
 	<key>PerspectiveWidths</key>
 	<array>
 		<integer>-1</integer>
@@ -369,7 +328,7 @@
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 23}, {284, 692}}</string>
+							<string>{{0, 0}, {284, 692}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -469,9 +428,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>269EDB260E075DCA00C1C1D2</string>
+				<string>269AA8250E088716001E29B1</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>269EDB270E075DCA00C1C1D2</string>
+				<string>269AA8260E088716001E29B1</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -590,7 +549,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>235370663.608522</real>
+	<real>235457612.585628</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -606,8 +565,8 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>260AFEBC0D404E7500F6C42F</string>
-		<string>/Users/ggadwa/dim3Code/dim3MapUtility/dim3MapUtility.xcodeproj</string>
 		<string>269EDBBE0E0778A700C1C1D2</string>
+		<string>/Users/ggadwa/dim3Code/dim3MapUtility/dim3MapUtility.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>1124 268 306 751 0 0 1680 1028 </string>
@@ -689,7 +648,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEBC0D404E7500F6C42F</string>
-				<string>269EDB240E075DC700C1C1D2</string>
+				<string>269AA81F0E088710001E29B1</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

@@ -43,20 +43,6 @@
 			sepNavWindowFrame = "{{176, 129}, {1041, 747}}";
 		};
 	};
-	269EDBB10E07732700C1C1D2 /* PBXBookmark */ = {
-		isa = PBXBookmark;
-		fRef = F5DD178809074E5000721649 /* portal_vertex_list.c */;
-	};
-	269EDBC00E0778A700C1C1D2 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5DD178809074E5000721649 /* portal_vertex_list.c */;
-		name = "portal_vertex_list.c: 128";
-		rLen = 30;
-		rLoc = 3029;
-		rType = 0;
-		vrLen = 1080;
-		vrLoc = 2580;
-	};
 	26AFB4310D95B6230004805A /* portal_mesh_update.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 15106}}";
@@ -224,12 +210,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 235363776;
-			PBXWorkspaceStateSaveDate = 235363776;
-		};
-		perUserProjectItems = {
-			269EDBB10E07732700C1C1D2 /* PBXBookmark */ = 269EDBB10E07732700C1C1D2 /* PBXBookmark */;
-			269EDBC00E0778A700C1C1D2 /* PBXTextBookmark */ = 269EDBC00E0778A700C1C1D2 /* PBXTextBookmark */;
+			PBXPerProjectTemplateStateSaveDate = 235439879;
+			PBXWorkspaceStateSaveDate = 235439879;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -301,10 +283,10 @@
 	};
 	F5DD178809074E5000721649 /* portal_vertex_list.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 11662}}";
-			sepNavSelRange = "{3029, 30}";
-			sepNavVisRange = "{2580, 1080}";
-			sepNavWindowFrame = "{{432, 219}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 11172}}";
+			sepNavSelRange = "{10973, 0}";
+			sepNavVisRange = "{3017, 733}";
+			sepNavWindowFrame = "{{334, 185}, {1041, 747}}";
 		};
 	};
 	F5DD18B80907FD6700721649 /* portal_light_spot.c */ = {

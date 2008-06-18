@@ -466,7 +466,7 @@ int map_portal_add_light_yz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 			x=polygon_find_y(ptsz,pz,px,py,grid_z[z],grid_y[y]);
 			if (x==-1) x=polygon_infinite_find_y(ptsz,pz,px,py,grid_z[z],grid_y[y]);
 
-			map_portal_vertex_list_find_uv(ptsz,py,pz,poly->gx,poly->gy,grid_y[y],grid_z[z],&p_gx,&p_gy);
+			map_portal_vertex_list_find_uv(ptsz,pz,py,poly->gx,poly->gy,grid_z[z],grid_y[y],&p_gx,&p_gy);
 
 			vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,x,grid_y[y],grid_z[z],p_gx,p_gy,mesh->flag.moveable,FALSE,&idx[z][y]);
 		}
