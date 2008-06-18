@@ -286,83 +286,7 @@ void model_draw_stop_mesh_shadow_array(void)
 ======================================================= */
 
 // supergumba -- most can just be in line
-inline void model_draw_material_opaque(texture_type *texture,model_material_type *material)
-{
-	int				trig_count;
-	
-	trig_count=material->trig_count;
-	if (trig_count==0) return;
-        
-		// get the textures for this material
-		
-	gl_texture_opaque_lighting_set(texture->bitmaps[texture->animate.current_frame].gl_id);
-	gl_texture_opaque_lighting_factor(1.0f);
-	
-		// draw the triangles
 
-	glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
-}
-
-inline void model_draw_material_opaque_bump(texture_type *texture,model_material_type *material,float *normal)
-{
-	int					trig_count;
-	
-	trig_count=material->trig_count;
-	if (trig_count==0) return;
-        
-		// get the textures for this material
-		
-	gl_texture_opaque_bump_lighting_set(texture->bitmaps[texture->animate.current_frame].gl_id,texture->bumpmaps[texture->animate.current_frame].gl_id);
-	gl_texture_opaque_bump_lighting_factor(normal);
-		
-		// draw the triangles
-
-	glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
-}
-
-inline void model_draw_material_tesseled_lighting(texture_type *texture,model_material_type *material)
-{
-	int				trig_count;
-	
-	trig_count=material->trig_count;
-	if (trig_count==0) return;
-	
-		// draw the triangles
-
-	glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
-}
-
-inline void model_draw_material_opaque_specular(texture_type *texture,model_material_type *material)
-{
-	int					trig_count;
-	
-	trig_count=material->trig_count;
-	if (trig_count==0) return;
-        
-		// get the textures for this material
-		
-	gl_texture_opaque_specular_set(texture->specularmaps[texture->animate.current_frame].gl_id);
-	
-		// draw the triangles
-
-	glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
-}
-
-inline void model_draw_material_opaque_glow(texture_type *texture,model_material_type *material)
-{
-	int					trig_count;
-	
-	trig_count=material->trig_count;
-	if (trig_count==0) return;
-	
-		// get the textures for this material (needed for alpha knock-out)
-		
-	gl_texture_opaque_glow_set(texture->bitmaps[texture->animate.current_frame].gl_id,texture->glowmaps[texture->animate.current_frame].gl_id,texture->glow.current_color);
-
-		// draw the triangles
-
-	glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
-}
 
 inline void model_draw_material_transparent(texture_type *texture,model_material_type *material,float alpha)
 {
@@ -444,7 +368,7 @@ void model_draw_material_shader(model_type *mdl,model_draw *draw,model_mesh_type
       
 ======================================================= */
 
-void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw,float *normal)
+void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int						i,frame,trig_count;
 	float					alpha;
@@ -536,14 +460,13 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw,float
 			glDepthFunc(GL_LEQUAL);
 			glDepthMask(GL_TRUE);
 
-			gl_texture_opaque_bump_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,normal);
+			gl_texture_opaque_bump_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,draw->normal,draw->normal_dist_factor);
 			glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
 			
 			gl_texture_opaque_bump_end();
 		}
 
 			// tesseled lighting
-			// supergumba -- will need ALPHA version of this
 
 		if (!hilite_on) {
 			gl_texture_tesseled_lighting_start();
@@ -564,25 +487,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw,float
 			gl_texture_tesseled_lighting_end();
 		}
 
-			// specular mapped textures
-/* supergumba -- delete!
-		if (specular_on) {
-			gl_texture_opaque_specular_start();
-			
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_DST_COLOR,GL_ONE);
 
-			glDisable(GL_ALPHA_TEST);
-			
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_EQUAL);
-			glDepthMask(GL_FALSE);
-			
-			model_draw_material_opaque_specular(texture,material);
-			
-			gl_texture_opaque_specular_end();
-		}
-*/
 			// glow mapped textures
 
 		if (glow_on) {
@@ -596,8 +501,9 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw,float
 			glEnable(GL_DEPTH_TEST);
 			glDepthFunc(GL_EQUAL);
 			glDepthMask(GL_FALSE);
-			
-			model_draw_material_opaque_glow(texture,material);
+
+			gl_texture_opaque_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,texture->glow.current_color);
+			glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
 			
 			gl_texture_opaque_glow_end();
 		}
@@ -809,7 +715,7 @@ void model_render(int tick,model_draw *draw)
 		// create light list for model and single drawing normal
 		
 	model_build_color_setup_lights(mdl,draw);
-	map_portal_calculate_normal_vector_smooth(&map.portals[draw->pos.rn],(double)draw->pos.x,(double)draw->pos.y,(double)draw->pos.z,draw->normal);
+	map_portal_calculate_normal_vector_smooth(&map.portals[draw->pos.rn],(double)draw->pos.x,(double)draw->pos.y,(double)draw->pos.z,draw->normal,&draw->normal_dist_factor);
 
 		// get the meshes to be drawn
 
@@ -858,7 +764,7 @@ void model_render(int tick,model_draw *draw)
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))!=0) {
-			model_draw_opaque_trigs(mdl,n,draw,draw->normal);
+			model_draw_opaque_trigs(mdl,n,draw);
 			model_draw_shader_trigs(mdl,n,draw);
 		}
 	}

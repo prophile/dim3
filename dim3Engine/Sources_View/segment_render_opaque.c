@@ -143,7 +143,7 @@ void segment_render_opaque_stencil_portal_bump_mesh(portal_type *portal,int sten
 
 			texture=&map.textures[poly->txt_idx];
 			frame=poly->draw.cur_frame;
-			gl_texture_opaque_bump_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,poly->draw.normal);
+			gl_texture_opaque_bump_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,poly->draw.normal,poly->draw.normal_dist_factor);
 			
 			glStencilFunc(GL_ALWAYS,poly->draw.stencil_idx,0xFF);
 
@@ -393,7 +393,7 @@ void segment_render_opaque_hilite_portal_bump_mesh(portal_type *portal)
 
 			texture=&map.textures[poly->txt_idx];
 			frame=poly->draw.cur_frame;
-			gl_texture_opaque_bump_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,poly->draw.normal);
+			gl_texture_opaque_bump_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,poly->draw.normal,poly->draw.normal_dist_factor);
 
 			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 		

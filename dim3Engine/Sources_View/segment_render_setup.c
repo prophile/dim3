@@ -54,7 +54,7 @@ void mesh_normal_smooth_init(void)
 	int						i,n,k;
 	portal_type				*portal;
 	map_mesh_type			*mesh;
-	map_mesh_poly_type		*mesh_poly;
+	map_mesh_poly_type		*poly;
 
 	portal=map.portals;
 
@@ -64,14 +64,15 @@ void mesh_normal_smooth_init(void)
 
 		for (n=0;n!=portal->mesh.nmesh;n++) {
 			
-			mesh_poly=mesh->polys;
+			poly=mesh->polys;
 			
 			for (k=0;k!=mesh->npoly;k++) {
-				mesh_poly->draw.normal[0]=0.5f;
-				mesh_poly->draw.normal[1]=0.5f;
-				mesh_poly->draw.normal[2]=1.0f;
+				poly->draw.normal[0]=0.5f;
+				poly->draw.normal[1]=0.5f;
+				poly->draw.normal[2]=1.0f;
+				poly->draw.normal_dist_factor=0.0f;
 				
-				mesh_poly++;
+				poly++;
 			}
 		
 			mesh++;
@@ -215,7 +216,7 @@ void mesh_render_setup(int tick,int portal_cnt,int *portal_list)
 								portal->mesh.draw.has_hilite_bump=TRUE;
 							}
 
-							if ((!light_changed) || (mesh->flag.moveable)) map_portal_calculate_normal_vector_smooth(portal,(double)poly->box.mid.x,(double)poly->box.mid.y,(double)poly->box.mid.z,poly->draw.normal);
+							if ((!light_changed) || (mesh->flag.moveable)) map_portal_calculate_normal_vector_smooth(portal,(double)poly->box.mid.x,(double)poly->box.mid.y,(double)poly->box.mid.z,poly->draw.normal,&poly->draw.normal_dist_factor);
 						}
 
 							// is normal?

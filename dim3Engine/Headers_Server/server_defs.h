@@ -258,7 +258,7 @@ typedef struct		{
 												mesh_mask,lod_dist,script_animation_idx,
 												script_light_idx,script_halo_idx;
 						char					name[name_str_len];
-						float					alpha,resize,normal[3];
+						float					alpha,resize,normal[3],normal_dist_factor;
 						bool					on,in_view,all_lights_in_view,
 												bounce,face_forward,player;
 						unsigned char			cur_texture_frame[max_model_texture];
