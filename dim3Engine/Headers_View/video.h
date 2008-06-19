@@ -67,8 +67,8 @@ extern void gl_render_array_stop(void);
 
 	// shaders
 	
-extern void gl_shader_start(void);
-extern void gl_shader_end(void);
+extern void gl_shader_program_start(void);
+extern void gl_shader_program_end(void);
 extern void gl_shader_set_program(GLhandleARB shader_prog_obj);
 extern void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type *texture);
 
@@ -132,9 +132,9 @@ extern void gl_texture_opaque_bump_set(int txt_id,int bump_id,float *normal,floa
 extern void gl_texture_tesseled_lighting_start(void);
 extern void gl_texture_tesseled_lighting_end(void);
 extern void gl_texture_tesseled_lighting_set(int alpha_mask_id,float dark_factor);
-extern void gl_texture_tesseled_specular_lighting_start(void);
-extern void gl_texture_tesseled_specular_lighting_end(void);
-extern void gl_texture_tesseled_specular_lighting_set(int alpha_mask_id,int specular_id,float dark_factor);
+extern void gl_texture_tesseled_specular_start(void);
+extern void gl_texture_tesseled_specular_end(void);
+extern void gl_texture_tesseled_specular_set(int specular_id);
 extern void gl_texture_opaque_glow_start(void);
 extern void gl_texture_opaque_glow_end(void);
 extern void gl_texture_opaque_glow_set(int txt_id,int glow_id,float glow_color);

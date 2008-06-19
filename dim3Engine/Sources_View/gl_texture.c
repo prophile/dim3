@@ -312,14 +312,12 @@ inline void gl_texture_tesseled_lighting_set(int alpha_mask_id,float dark_factor
 
 /* =======================================================
 
-      Tesseled Specular Lighting Drawing
+      Tesseled Specular Drawing
       
 ======================================================= */
 
-void gl_texture_tesseled_specular_lighting_start(void)
+void gl_texture_tesseled_specular_start(void)
 {
-	GLfloat			dark_fct[4];
-
 		// texture unit 0
 		// the lighting multiplied by lighting to
 		// get exponitial drop off
@@ -358,62 +356,10 @@ void gl_texture_tesseled_specular_lighting_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_PREVIOUS);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-
-		// texture unit 2
-		// add in the lighting color
-
-	glActiveTexture(GL_TEXTURE2);
-	glEnable(GL_TEXTURE_2D);
-	
-	gl_texture_bind(2,null_bitmap.gl_id);				// texture is not used in this unit
-	
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_ADD);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PREVIOUS);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_PRIMARY_COLOR);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
-
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_CONSTANT);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-
-		// texture unit 3
-		// modulate by the dark factor
-
-	glActiveTexture(GL_TEXTURE3);
-	glEnable(GL_TEXTURE_2D);
-	
-	gl_texture_bind(3,null_bitmap.gl_id);				// texture is not used in this unit
-	
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PREVIOUS);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_CONSTANT);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
-
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-
-		// default dark factor
-			
-	dark_fct[0]=dark_fct[1]=dark_fct[2]=dark_fct[3]=1.0f;
-	
-	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,dark_fct);
 }
 
-void gl_texture_tesseled_specular_lighting_end(void)
+void gl_texture_tesseled_specular_end(void)
 {
-	glActiveTexture(GL_TEXTURE3);
-	glDisable(GL_TEXTURE_2D);
-
-	glActiveTexture(GL_TEXTURE2);
-	glDisable(GL_TEXTURE_2D);
-
 	glActiveTexture(GL_TEXTURE1);
 	glDisable(GL_TEXTURE_2D);
 
@@ -421,28 +367,9 @@ void gl_texture_tesseled_specular_lighting_end(void)
 	glDisable(GL_TEXTURE_2D);
 }
 
-inline void gl_texture_tesseled_specular_lighting_set(int alpha_mask_id,int specular_id,float dark_factor)
+inline void gl_texture_tesseled_specular_set(int specular_id)
 {
-	GLfloat			dark_fct[4];
-
-		// using an alpha mask?
-
-	if (alpha_mask_id!=-1) gl_texture_bind(3,alpha_mask_id);
-
-		// specular
-
 	gl_texture_bind(1,specular_id);
-
-		// darkness factor
-		// ignore if ray tracing is on
-
-	if (!setup.ray_trace_lighting) {
-		dark_fct[0]=dark_fct[1]=dark_fct[2]=dark_factor;
-		dark_fct[3]=1.0f;
-
-		glActiveTexture(GL_TEXTURE3);
-		glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,dark_fct);
-	}
 }
 
 /* =======================================================

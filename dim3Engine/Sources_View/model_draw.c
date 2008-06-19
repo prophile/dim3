@@ -547,7 +547,7 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 		
 			// run the shader
 			
-		gl_shader_start();
+		gl_shader_program_start();
 		gl_texture_shader_start();
 		
 		glDisable(GL_BLEND);
@@ -560,7 +560,7 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 		model_draw_material_shader(mdl,draw,mesh,texture,material);
 			
 		gl_texture_shader_end();
-		gl_shader_end();
+		gl_shader_program_end();
 
 			// stop drawing arrays
 

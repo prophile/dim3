@@ -48,12 +48,12 @@ extern float game_time_fequency_second_get(void);
       
 ======================================================= */
 
-void gl_shader_start(void)
+void gl_shader_program_start(void)
 {
 	gl_shader_current_prog_obj=0;
 }
 
-void gl_shader_end(void)
+void gl_shader_program_end(void)
 {
 	if (gl_shader_current_prog_obj!=0) glUseProgramObjectARB(0);
 }

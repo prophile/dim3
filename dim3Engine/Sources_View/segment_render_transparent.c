@@ -318,7 +318,7 @@ void segment_render_transparent_portal_shader(portal_type *portal)
 	map_mesh_poly_sort_type	*sort_list;
 	texture_type			*texture;
 
-	gl_shader_start();
+	gl_shader_program_start();
 	gl_texture_shader_start();
 
 	glEnable(GL_BLEND);
@@ -356,7 +356,7 @@ void segment_render_transparent_portal_shader(portal_type *portal)
 	}
 
 	gl_texture_shader_end();
-	gl_shader_end();
+	gl_shader_program_end();
 }
 
 void segment_render_transparent_portal(int rn)

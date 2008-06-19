@@ -406,7 +406,7 @@ void liquid_render_portal_liquid(int tick,portal_type *portal,map_liquid_type *l
 		// start shader or regular texture
 
 	if (texture->shader.on) {
-		gl_shader_start();
+		gl_shader_program_start();
 		gl_texture_shader_start();
 
 		gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
@@ -434,7 +434,7 @@ void liquid_render_portal_liquid(int tick,portal_type *portal,map_liquid_type *l
 
 	if (texture->shader.on) {
 		gl_texture_shader_end();
-		gl_shader_end();
+		gl_shader_program_end();
 	}
 	else {
 		gl_texture_transparent_end();
