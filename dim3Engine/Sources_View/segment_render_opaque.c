@@ -247,8 +247,6 @@ void segment_render_opaque_stencil_portal_specular_lighting_mesh(portal_type *po
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ZERO,GL_SRC_COLOR);
-	
-	glDisable(GL_BLEND);	// supergumba -- testing
 
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
