@@ -574,6 +574,7 @@ void segment_render_opaque_portal_shader_mesh(portal_type *portal)
 ======================================================= */
 
 // supergumba -- more attempts at different rendering paths
+// can eventually delete (and rename) a lot of this
 
 
 /*
@@ -684,7 +685,7 @@ void segment_render_opaque(int portal_cnt,int *portal_list)
 void segment_render_opaque_portal_mesh_poly(portal_type *portal,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int					frame,ntrig;
-	bool				is_hilite;
+	bool				is_hilite,is_specular;
 	texture_type		*texture;
 
 		// get the texture and setup
@@ -766,6 +767,10 @@ void segment_render_opaque_portal_mesh_poly(portal_type *portal,map_mesh_type *m
 		// lighting
 
 	if (!is_hilite) {
+	
+			// specular?
+			
+		is_specular=(setup.specular_mapping) && (texture->specularmaps[frame].gl_id!=-1);
 
 			// tesseled lighting mesh
 
@@ -777,7 +782,13 @@ void segment_render_opaque_portal_mesh_poly(portal_type *portal,map_mesh_type *m
 		glDisable(GL_ALPHA_TEST);
 		glDisable(GL_DEPTH_TEST);
 		
-		glStencilOp(GL_KEEP,GL_KEEP,GL_INCR);
+		if (!is_specular) {
+			glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);			// if no specular, clear the stencil now
+		}
+		else {
+			glStencilOp(GL_KEEP,GL_KEEP,GL_INCR);
+		}
+		
 		glStencilFunc(GL_EQUAL,0x55,0xFF);
 
 		gl_texture_tesseled_lighting_set(-1,poly->dark_factor);
@@ -795,7 +806,7 @@ void segment_render_opaque_portal_mesh_poly(portal_type *portal,map_mesh_type *m
 
 			// speculars hilights
 
-		if ((setup.specular_mapping) && (texture->specularmaps[frame].gl_id!=-1)) {
+		if (is_specular) {
 
 			gl_texture_tesseled_specular_start();
 
@@ -823,6 +834,8 @@ void segment_render_opaque_portal_mesh_poly(portal_type *portal,map_mesh_type *m
 
 	if ((setup.glow_mapping) && (texture->glowmaps[frame].gl_id!=-1)) {
 
+		glDisable(GL_STENCIL_TEST);
+		
 		gl_texture_opaque_glow_start();
 
 		glDisable(GL_BLEND);
