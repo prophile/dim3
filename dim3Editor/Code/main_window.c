@@ -51,7 +51,8 @@ WindowRef				mainwind;
 EventHandlerRef			main_wind_event;
 EventHandlerUPP			main_wind_upp;
 ControlRef				tool_ctrl[tool_count],piece_ctrl[piece_count],
-						group_combo;
+						group_combo,magnify_slider;
+ControlActionUPP		magnify_proc;
 IconSuiteRef			tool_icon[tool_count],piece_icon[piece_count];
 MenuRef					group_menu;
 Rect					group_box;
@@ -328,6 +329,23 @@ void main_wind_control(ControlRef ctrl)
 
 /* =======================================================
 
+      Magnify Slider Action
+      
+======================================================= */
+
+void main_wind_magnify_action(ControlRef ctrl,ControlPartCode code)
+{
+	int				s;
+	
+	s=GetControlValue(ctrl);
+	if (s==magnify_factor) return;
+	
+	magnify_factor=s;
+    main_wind_draw();
+}
+
+/* =======================================================
+
       World Window Events
       
 ======================================================= */
@@ -483,6 +501,8 @@ void main_wind_magnify_scroll(int delta)
 	magnify_factor-=delta;
 	if (magnify_factor<magnify_factor_min) magnify_factor=magnify_factor_min;
 	if (magnify_factor>magnify_factor_max) magnify_factor=magnify_factor_max;
+	
+	SetControlValue(magnify_slider,magnify_factor);
 	
     main_wind_draw();
 }
@@ -642,6 +662,19 @@ void main_wind_open(void)
 		
 		OffsetRect(&box,0,piece_button_size);
     }
+	
+		// magnify slider
+		// this needs to be fixed, a texture size is hard coded
+
+	box.left=wbox.right-(piece_button_size+3);
+	box.right=box.left+piece_button_size;
+	box.left+=8;
+	box.right-=8;
+	box.top=(toolbar_high+5)+(piece_button_size*piece_count);
+	box.bottom=wbox.bottom-(115+info_high);
+	
+	magnify_proc=NewControlActionUPP(main_wind_magnify_action);
+	CreateSliderControl(mainwind,&box,72,magnify_factor_min,magnify_factor_max,kControlSliderDoesNotPoint,0,TRUE,magnify_proc,&magnify_slider);
 
 		// show window before additional setup
 		
@@ -721,6 +754,9 @@ void main_wind_close(void)
 		DisposeControl(piece_ctrl[n]);
 		DisposeIconSuite(piece_icon[n],TRUE);
 	}
+	
+	DisposeControl(magnify_slider);
+	DisposeControlActionUPP(magnify_proc);
 
         // dispose of events and window
         
@@ -751,7 +787,7 @@ void main_wind_set_title(char *file_name)
 void main_wind_resize_buttons(void)
 {
 	int				n,x,y;
-	Rect			wbox,group_box;
+	Rect			wbox,box,group_box;
 	
 	GetWindowPortBounds(mainwind,&wbox);
 	
@@ -762,8 +798,7 @@ void main_wind_resize_buttons(void)
 	group_box.left=wbox.right-205;
 	group_box.right=wbox.right-5;
 	
-	MoveControl(group_combo,group_box.left,group_box.top);
-	SizeControl(group_combo,(group_box.right-group_box.left),(group_box.bottom-group_box.top));
+	SetControlBounds(group_combo,&group_box);
 	
 		// pieces
 	
@@ -774,6 +809,17 @@ void main_wind_resize_buttons(void)
 		MoveControl(piece_ctrl[n],x,y);
 		y+=piece_button_size;
 	}
+	
+		// magnify control
+		
+	box.left=wbox.right-(piece_button_size+3);
+	box.right=box.left+piece_button_size;
+	box.left+=8;
+	box.right-=8;
+	box.top=(toolbar_high+5)+(piece_button_size*piece_count);
+	box.bottom=wbox.bottom-(txt_palette_high+info_high+5);
+	
+	SetControlBounds(magnify_slider,&box);
 }
 
 void main_wind_resize(void)

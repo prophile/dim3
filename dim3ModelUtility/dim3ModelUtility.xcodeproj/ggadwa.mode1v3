@@ -315,19 +315,19 @@
 								<string>F51B260E055E0217000B696C</string>
 								<string>F51B2611055E021D000B696C</string>
 								<string>F594131F0978BC4000223F2A</string>
+								<string>F51B2614055E0226000B696C</string>
 								<string>1C37FBAC04509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>15</integer>
-									<integer>10</integer>
-									<integer>9</integer>
+									<integer>5</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {267, 696}}</string>
+							<string>{{0, 40}, {267, 696}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -427,9 +427,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26E032710E02163D00490249</string>
+				<string>266E1F050E0F178F003DFDB5</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26E032720E02163D00490249</string>
+				<string>266E1F060E0F178F003DFDB5</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -548,7 +548,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>235017808.78527001</real>
+	<real>235871974.213222</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -563,7 +563,9 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>266E1F2E0E0F1ED1003DFDB5</string>
 		<string>260AFED80D404F3200F6C42F</string>
+		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>/Users/ggadwa/dim3Code/dim3ModelUtility/dim3ModelUtility.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -605,6 +607,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -644,7 +648,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFED80D404F3200F6C42F</string>
-				<string>26E0326F0E02163900490249</string>
+				<string>266E1F0F0E0F17B6003DFDB5</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -838,8 +842,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>265B91DE0DD0039500FADB70</string>
-				<string>265B91DF0DD0039500FADB70</string>
+				<string>266E1F0A0E0F178F003DFDB5</string>
+				<string>266E1F0B0E0F178F003DFDB5</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>

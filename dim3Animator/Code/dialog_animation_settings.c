@@ -98,7 +98,9 @@ ControlRef					dialog_pose_move_list,dialog_particle_list,dialog_ring_list;
 RGBColor					dialog_pose_move_settings_color;
 
 int							dialog_animate_idx,dialog_pose_move_idx,dialog_particle_idx,dialog_ring_idx;
-bool						dialog_pose_move_change_ok;
+bool						dialog_pose_move_change_ok,dialog_animation_settings_cancel;
+
+model_animate_type			animate_backup;
 
 /* =======================================================
 
@@ -297,6 +299,11 @@ static pascal OSStatus animation_settings_event_proc(EventHandlerCallRef handler
 					model_wind_play(!play_animate,FALSE);
 					return(noErr);
 					
+				case kHICommandCancel:
+					dialog_animation_settings_cancel=TRUE;
+					QuitAppModalLoopForWindow(dialog_animation_settings_wind);
+					return(noErr);
+
 				case kHICommandOK:
 					QuitAppModalLoopForWindow(dialog_animation_settings_wind);
 					return(noErr);
@@ -574,7 +581,7 @@ static pascal void ring_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemI
       
 ======================================================= */
 
-void dialog_animation_settings_run(int animate_idx,int pose_move_idx)
+bool dialog_animation_settings_run(int animate_idx,int pose_move_idx)
 {
 	int								i;
 	ControlRef						ctrl;
@@ -590,6 +597,10 @@ void dialog_animation_settings_run(int animate_idx,int pose_move_idx)
 									tab_event_list[]={{kEventClassCommand,kEventProcessCommand},
 													  {kEventClassControl,kEventControlHit}},
 									button_event_list[]={{kEventClassControl,kEventControlHit}};
+	
+		// backup animation for cancel
+		
+	memmove(&animate_backup,&model.animates[animate_idx],sizeof(model_animate_type));
 	
 		// if there is no pose moves or new animation,
 		// then we need to add a default pose
@@ -711,6 +722,8 @@ void dialog_animation_settings_run(int animate_idx,int pose_move_idx)
 		// load pose move data
 		
 	dialog_pose_move_settings_load();
+	
+	dialog_animation_settings_cancel=FALSE;
 
 		// show window
 	
@@ -737,8 +750,6 @@ void dialog_animation_settings_run(int animate_idx,int pose_move_idx)
 	model.animates[animate_idx].loop=dialog_get_boolean(dialog_animation_settings_wind,kAnimationLoop,0);
 	
 	dialog_pose_move_settings_save();
-	
-	reset_animate_tab(dialog_animate_idx,dialog_pose_move_idx);
 
 		// close window
 		
@@ -752,5 +763,15 @@ void dialog_animation_settings_run(int animate_idx,int pose_move_idx)
 	DisposeDataBrowserItemNotificationUPP(ring_list_notify_upp);
 	
 	DisposeWindow(dialog_animation_settings_wind);
+	
+		// if cancel, reset animation
+		
+	if (dialog_animation_settings_cancel) {
+		memmove(&model.animates[animate_idx],&animate_backup,sizeof(model_animate_type));
+	}
+		
+	reset_animate_tab(dialog_animate_idx,dialog_pose_move_idx);
+	
+	return(!dialog_animation_settings_cancel);
 }
 

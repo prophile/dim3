@@ -21,9 +21,9 @@
 	};
 	F51B2619055E0251000B696C /* draw_bones.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 8358}}";
-			sepNavSelRange = "{10022, 0}";
-			sepNavVisRange = "{9710, 1286}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 8344}}";
+			sepNavSelRange = "{12175, 23}";
+			sepNavVisRange = "{12332, 1253}";
 			sepNavWindowFrame = "{{221, 131}, {1041, 747}}";
 		};
 	};
@@ -45,10 +45,10 @@
 	};
 	F55ACEE3097D724C00F4AE50 /* bone.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4102}}";
-			sepNavSelRange = "{2335, 0}";
-			sepNavVisRange = "{1625, 928}";
-			sepNavWindowFrame = "{{84, 213}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4144}}";
+			sepNavSelRange = "{2570, 0}";
+			sepNavVisRange = "{1654, 1134}";
+			sepNavWindowFrame = "{{504, 105}, {1041, 747}}";
 		};
 	};
 	F55ACF3E097D805A00F4AE50 /* pose.c */ = {
@@ -129,8 +129,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 235017782;
-			PBXWorkspaceStateSaveDate = 235017782;
+			PBXPerProjectTemplateStateSaveDate = 235869890;
+			PBXWorkspaceStateSaveDate = 235869890;
 		};
 		sourceControlManager = 260AFEDB0D404F5000F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -160,6 +160,14 @@
 			sepNavWindowFrame = "{{130, 171}, {1041, 747}}";
 		};
 	};
+	F56D96EA0502F83C00143299 /* model_main.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1032, 3514}}";
+			sepNavSelRange = "{6557, 31}";
+			sepNavVisRange = "{5851, 1099}";
+			sepNavWindowFrame = "{{38, 255}, {1041, 747}}";
+		};
+	};
 	F594147B0979776300223F2A /* draw_normals.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 2240}}";
@@ -178,17 +186,17 @@
 	};
 	F5941503097A003000223F2A /* file_model_mesh_v2.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7378}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 8036}}";
 			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{8589, 1645}";
+			sepNavVisRange = "{13659, 911}";
 			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
 		};
 	};
 	F5CA4EF305100FB60055C8B8 /* modelutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 5656}}";
-			sepNavSelRange = "{10008, 29}";
-			sepNavVisRange = "{9090, 3423}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6538}}";
+			sepNavSelRange = "{10120, 0}";
+			sepNavVisRange = "{4480, 1221}";
 			sepNavWindowFrame = "{{260, 281}, {1041, 747}}";
 		};
 	};

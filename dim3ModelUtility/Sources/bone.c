@@ -77,8 +77,8 @@ int model_bone_add(model_type *model,int mesh_idx)
 	bone->tag=model_null_tag;
 	bone->parent_idx=-1;
 	bone->pnt.x=x;
-	bone->pnt.z=z;
 	bone->pnt.y=y;
+	bone->pnt.z=z;
 	
 	model->nbone++;
 	
@@ -93,6 +93,10 @@ int model_bone_add(model_type *model,int mesh_idx)
 		model->poses[i].bone_moves[nbone].mov.z=1;
 		model->poses[i].bone_moves[nbone].acceleration=0;
 		model->poses[i].bone_moves[nbone].skip_blended=FALSE;
+		model->poses[i].bone_moves[nbone].constraint.bone_idx=-1;
+		model->poses[i].bone_moves[nbone].constraint.offset.x=0;
+		model->poses[i].bone_moves[nbone].constraint.offset.y=0;
+		model->poses[i].bone_moves[nbone].constraint.offset.z=0;
 	}
 	
 	model_calculate_parents(model);

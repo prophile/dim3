@@ -415,10 +415,10 @@ void map_portal_calculate_normal_vector(portal_type *portal,double x,double y,do
 	
 		// convert to needed format
 		// x (1 = right [light from left], 0 = left [light from right])
-		// y (0 = top [light from bottom], 1 = bottom [light from top])
+		// y (1 = top [light from bottom], 0 = bottom [light from top])
 		
 	*nf++=(float)((nx*0.5)+0.5);
-	*nf++=(float)((ny*0.5)+0.5);
+	*nf++=1.0f-(float)((ny*0.5)+0.5);
 	*nf=1.0f;
 
 		// return the distance factor

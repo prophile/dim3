@@ -115,27 +115,25 @@ void menu_fix_enable(void)
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),2);
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),3);
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),5);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),7);
 		}
 		else {
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),1);
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),2);
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),3);
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),5);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),7);
 		}
 		
 		if (select_count()!=0) {
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),9);
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),7);
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),8);
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),10);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),12);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),13);
+			EnableMenuItem(GetMenuHandle(app_menu_pieces),11);
 		}
 		else {
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),9);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),7);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),8);
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),10);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),12);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),13);
+			DisableMenuItem(GetMenuHandle(app_menu_pieces),11);
 		}
 		
 	}
@@ -654,8 +652,14 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			main_wind_draw();
 			return(noErr);
 			
+		case kCommandPolygonRotateUV:
+			piece_rotate_uvs();
+			main_wind_draw();
+			return(noErr);
+
 		case kCommandPolygonResetUV:
 			piece_reset_uvs(TRUE);
+			main_wind_draw();
 			return(noErr);
 			
 			// vertex menu

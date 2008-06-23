@@ -118,8 +118,8 @@
 	F58F950F09B7E260004DD122 /* movements.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 1806}}";
-			sepNavSelRange = "{2826, 0}";
-			sepNavVisRange = "{1555, 1173}";
+			sepNavSelRange = "{2744, 0}";
+			sepNavVisRange = "{1930, 1149}";
 			sepNavWindowFrame = "{{61, 234}, {1041, 747}}";
 		};
 	};
@@ -210,8 +210,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 235610809;
-			PBXWorkspaceStateSaveDate = 235610809;
+			PBXPerProjectTemplateStateSaveDate = 235888116;
+			PBXWorkspaceStateSaveDate = 235888116;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -292,8 +292,8 @@
 	F5DD18B80907FD6700721649 /* portal_light_spot.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 6944}}";
-			sepNavSelRange = "{8615, 0}";
-			sepNavVisRange = "{8475, 800}";
+			sepNavSelRange = "{9172, 0}";
+			sepNavVisRange = "{8710, 1211}";
 			sepNavWindowFrame = "{{354, 165}, {1041, 747}}";
 		};
 	};

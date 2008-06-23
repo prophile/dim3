@@ -105,7 +105,7 @@ int map_movement_move_add(map_type *map,int movement_idx)
 	move=&movement->moves[movement->nmove];
 	movement->nmove++;
 	
-	move->msec=100;
+	move->msec=1000;
 	move->mov.x=move->mov.y=move->mov.z=0;
 	move->rot.x=move->rot.y=move->rot.z=0.0f;
 	move->user_id=0;

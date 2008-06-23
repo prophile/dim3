@@ -56,6 +56,11 @@ JSBool js_map_object_is_contact_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 JSBool js_map_object_shove_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_shove_direct_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_add_goal_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_object_set_contact_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_object_set_hidden_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_object_set_model_light_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_object_set_model_halo_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_object_set_model_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_spawn_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_remove_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
@@ -86,6 +91,11 @@ JSFunctionSpec	map_object_functions[]={
 							{"shove",				js_map_object_shove_func,					5},
 							{"shoveDirect",			js_map_object_shove_direct_func,			4},
 							{"addGoal",				js_map_object_add_goal_func,				1},
+							{"setContact",			js_map_object_set_contact_func,				2},
+							{"setHidden",			js_map_object_set_hidden_func,				2},
+							{"setModelLight",		js_map_object_set_model_light_func,			3},
+							{"setModelHalo",		js_map_object_set_model_halo_func,			3},
+							{"setModelMesh",		js_map_object_set_model_mesh_func,			3},
 							{"spawn",				js_map_object_spawn_func,					10},
 							{"remove",				js_map_object_remove_func,					1},
 							{0}};
@@ -598,6 +608,87 @@ JSBool js_map_object_add_goal_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 	if (obj==NULL) return(JS_FALSE);
 
 	object_score_goal(obj);
+
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Object Setting
+      
+======================================================= */
+
+JSBool js_map_object_set_contact_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	obj_type		*obj;
+	
+	obj=script_find_obj_from_uid_arg(argv[0]);
+	if (obj==NULL) return(JS_FALSE);
+
+	obj->contact.on=JSVAL_TO_BOOLEAN(argv[1]);
+
+	return(JS_TRUE);
+}
+
+JSBool js_map_object_set_hidden_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	obj_type		*obj;
+	
+	obj=script_find_obj_from_uid_arg(argv[0]);
+	if (obj==NULL) return(JS_FALSE);
+
+	obj->hidden=JSVAL_TO_BOOLEAN(argv[1]);
+
+	return(JS_TRUE);
+}
+
+JSBool js_map_object_set_model_light_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int					idx;
+	obj_type			*obj;
+	
+	obj=script_find_obj_from_uid_arg(argv[0]);
+	if (obj==NULL) return(JS_FALSE);
+	
+	idx=JSVAL_TO_INT(argv[1]);
+	if ((idx>=0) && (idx<max_model_light)) obj->draw.lights[idx].on=JSVAL_TO_BOOLEAN(argv[2]);
+
+	return(JS_TRUE);
+}
+
+JSBool js_map_object_set_model_halo_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int					idx;
+	obj_type			*obj;
+	
+	obj=script_find_obj_from_uid_arg(argv[0]);
+	if (obj==NULL) return(JS_FALSE);
+	
+	idx=JSVAL_TO_INT(argv[1]);
+	if ((idx>=0) && (idx<max_model_halo)) obj->draw.halos[idx].on=JSVAL_TO_BOOLEAN(argv[2]);
+
+	return(JS_TRUE);
+}
+
+JSBool js_map_object_set_model_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int					idx;
+	char				name[name_str_len];
+	obj_type			*obj;
+	
+	obj=script_find_obj_from_uid_arg(argv[0]);
+	if (obj==NULL) return(JS_FALSE);
+	
+	script_value_to_string(argv[1],name,name_str_len);
+	idx=model_find_mesh_from_draw(&obj->draw,name);
+	if (idx==-1) return(JS_FALSE);
+
+	if (JSVAL_TO_BOOLEAN(argv[2])) {
+		obj->draw.mesh_mask|=(0x1<<idx);
+	}
+	else {
+		obj->draw.mesh_mask&=((0x1<<idx)^0xFF);
+	}
 
 	return(JS_TRUE);
 }

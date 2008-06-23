@@ -729,7 +729,7 @@ void piece_mesh_vertexes_snap_to_grid(void)
 
 /* =======================================================
 
-      Reset Mesh UVs
+      Reset/Rotate Mesh UVs
       
 ======================================================= */
 
@@ -751,6 +751,21 @@ void piece_reset_uvs(bool poly_only)
 		else {
 			map_portal_mesh_reset_uv(&map,portal_idx,mesh_idx);
 		}
+	}
+}
+
+void piece_rotate_uvs(void)
+{
+	int						n,sel_count,
+							type,portal_idx,mesh_idx,poly_idx;
+
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
+
+		map_portal_mesh_rotate_poly_uv(&map,portal_idx,mesh_idx,poly_idx,90.0f);
 	}
 }
 

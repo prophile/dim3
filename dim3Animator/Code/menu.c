@@ -1148,7 +1148,10 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			idx=model_animate_add(&model);
 			if (idx!=-1) {
 				cur_animate=idx;
-				dialog_animation_settings_run(idx,-1);
+				if (!dialog_animation_settings_run(idx,-1)) {
+					cur_animate=-1;
+					model_animate_delete(&model,idx);
+				}
 			}
 			reset_animate_tab(cur_animate,-1);
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
@@ -1161,8 +1164,11 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			idx=model_animate_duplicate(&model,cur_animate);
 			if (idx!=-1) {
 				cur_animate=idx;
-				dialog_animation_settings_run(idx,0);
-			}
+				if (!dialog_animation_settings_run(idx,0)) {
+					cur_animate=-1;
+					model_animate_delete(&model,idx);
+				}
+		}
 			reset_animate_tab(cur_animate,-1);
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);

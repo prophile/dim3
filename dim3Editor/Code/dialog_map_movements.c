@@ -44,6 +44,7 @@ extern map_type				map;
 
 int							dialog_map_movements_current_idx,
 							dialog_map_movements_move_current_idx;
+bool						dialog_map_movements_ignore_deselect;
 WindowRef					dialog_map_movements_wind;
 
 /* =======================================================
@@ -76,7 +77,9 @@ void map_movements_reset_list(int movement_idx,int move_idx)
 
 		// delete old items
 		
+	dialog_map_movements_ignore_deselect=TRUE;
 	RemoveDataBrowserItems(ctrl,kDataBrowserNoItem,0,NULL,kDataBrowserItemNoProperty);
+	dialog_map_movements_ignore_deselect=FALSE;
 	
 		// add items
 	
@@ -375,7 +378,9 @@ static pascal void map_movements_list_notify_proc(ControlRef ctrl,DataBrowserIte
 			break;
 
 		case kDataBrowserItemDeselected:
-			GetDataBrowserItemCount(ctrl,kDataBrowserNoItem,FALSE,kDataBrowserItemIsSelected,&count);
+			if (dialog_map_movements_ignore_deselect) break;
+			
+			GetDataBrowserItemCount(ctrl,kDataBrowserNoItem,TRUE,kDataBrowserItemIsSelected,&count);
 			if (count!=0) break;
 			
 			dialog_map_movements_current_idx=-1;

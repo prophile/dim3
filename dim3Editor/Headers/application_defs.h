@@ -106,6 +106,7 @@ and can be sold or given away.
 
 #define kCommandPolygonHole1				FOUR_CHAR_CODE('fhl1')
 #define kCommandPolygonSnapToGrid			FOUR_CHAR_CODE('psnp')
+#define kCommandPolygonRotateUV				FOUR_CHAR_CODE('pyru')
 #define kCommandPolygonResetUV				FOUR_CHAR_CODE('pyuv')
 
 #define kCommandVertexSnapToGrid			FOUR_CHAR_CODE('vsnp')
