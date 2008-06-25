@@ -160,6 +160,7 @@ typedef struct		{
 #define max_chooser					32
 #define max_chooser_text			32
 #define max_chooser_item			32
+#define max_choose_frame_text_sz	64
 #define max_chooser_text_data_sz	256
 
 #define max_chooser_sub_txt			16
@@ -285,14 +286,26 @@ typedef struct		{
 					} chooser_text_type;
 
 typedef struct		{
-						int						x,y,item_id;
+						int						x,y,wid,high,item_id;
 						char					file[file_str_len];
 						bool					clickable;
 					} chooser_item_type;
 					
 typedef struct		{
+						int						x,y,wid,high;
+						char					title[max_choose_frame_text_sz];
+						bool					on;
+					} chooser_frame_type;
+					
+typedef struct		{
+						int						ok_id,cancel_id;
+					} chooser_key_type;
+					
+typedef struct		{
 						int						ntext,nitem;
 						char					name[name_str_len];
+						chooser_frame_type		frame;
+						chooser_key_type		key;
 						chooser_text_type		texts[max_chooser_text];
 						chooser_item_type		items[max_chooser_item];
 					} chooser_type;

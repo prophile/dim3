@@ -29,8 +29,9 @@ and can be sold or given away.
 // gui
 //
 
-extern void gui_initialize(char *background_path,char *bitmap_name,bool show_view,bool show_dialog);
+extern void gui_initialize(char *background_path,char *bitmap_name,bool show_view);
 extern void gui_shutdown(void);
+extern void gui_set_frame(chooser_frame_type *frame);
 extern void gui_draw(float background_alpha,bool cursor);
 extern void gui_draw_message(char *txt);
 extern int gui_click(void);
@@ -68,8 +69,6 @@ extern void element_table_add(element_column_type* cols,char *row_data,int id,in
 extern void element_tab_add(char *path_list,char *path2_list,int value,int id,int ntab,int x,int y,int wid,int high,int list_wid,int ext_high);
 
 extern int element_get_selected(void);
-
-extern void element_get_dialog_size(int *p_lft,int *p_top,int *p_rgt,int *p_bot);
 
 extern int element_get_value(int id);
 extern float element_get_slider_value(int id);

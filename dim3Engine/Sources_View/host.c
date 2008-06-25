@@ -109,7 +109,7 @@ void host_open(void)
 	
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","host",FALSE,FALSE);
+	gui_initialize("Bitmaps/Backgrounds","host",FALSE);
 	
 		// controls
 							

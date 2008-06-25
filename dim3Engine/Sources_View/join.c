@@ -397,7 +397,7 @@ void join_open(void)
 	
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","join",FALSE,FALSE);
+	gui_initialize("Bitmaps/Backgrounds","join",FALSE);
 	
 		// empty join list
 		

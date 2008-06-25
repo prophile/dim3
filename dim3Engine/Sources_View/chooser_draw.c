@@ -58,11 +58,12 @@ void chooser_open(void)
 	chooser_text_type	*text;
 	chooser_item_type	*item;
 	
-	gui_initialize(NULL,NULL,TRUE,TRUE);
+	gui_initialize(NULL,NULL,TRUE);
 	
 		// setup elements
 		
 	chooser=&hud.choosers[chooser_idx];
+	gui_set_frame(&chooser->frame);
 		
 		// text
 
@@ -103,7 +104,7 @@ void chooser_open(void)
 		if (item->clickable) {
 			sprintf(fname,"%s_selected",item->file);
 			file_paths_data(&setup.file_path_setup,path2,"Chooser",fname,"png");
-			element_button_add(path,path2,item->item_id,item->x,item->y,-1,-1,element_pos_left,element_pos_top);
+			element_button_add(path,path2,item->item_id,item->x,item->y,item->wid,item->high,element_pos_left,element_pos_top);
 		}
 		else {
 			element_bitmap_add(path,0,item->x,item->y,-1,-1,FALSE);
@@ -111,6 +112,8 @@ void chooser_open(void)
 		
 		item++;
 	}
+	
+		// clear raw key
 	
 	server.state=gs_chooser;
 }
@@ -166,11 +169,31 @@ void chooser_trigger_set(char *name,char *sub_txt)
 
 void chooser_click(void)
 {
-	int					id;
-		
-	id=gui_click();
-	if (id==-1) return;
+	int					id,ch;
 	
+	id=-1;
+	
+		// check for ok/cancel keys
+		
+	ch=input_gui_get_keyboard_key(FALSE);
+	if (ch!=0x0) {
+		if (ch==0x1B) id=hud.choosers[chooser_idx].key.cancel_id;
+		if (ch==0xD) id=hud.choosers[chooser_idx].key.ok_id;
+	}
+	
+	if (id!=-1) {			// wait for key up
+		while (input_gui_get_keyboard_key(FALSE)==ch) {}
+	}
+
+		// if no key check clicking
+		
+	if (id==-1) {
+		id=gui_click();
+		if (id==-1) return;
+	}
+	
+		// run click
+		
 	hud_click();
 	
 	chooser_close();

@@ -61,7 +61,7 @@ extern bool input_get_keyboard_key(int key_idx);
 extern void input_clear_last_raw_key(void);
 extern void input_clear_all_last_raw_key(void);
 extern char input_get_last_raw_key(void);
-extern char input_gui_get_keyboard_key(void);
+extern char input_gui_get_keyboard_key(bool filter_esc);
 
 extern bool input_joystick_initialize(void);
 extern void input_joystick_shutdown(void);

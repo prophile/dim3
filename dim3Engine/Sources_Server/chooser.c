@@ -76,7 +76,7 @@ void chooser_add_text(int chooser_idx,int text_id,char *data,int x,int y,bool la
 }
 
 
-void chooser_add_item(int chooser_idx,int item_id,char *file,int x,int y,bool clickable)
+void chooser_add_item(int chooser_idx,int item_id,char *file,int x,int y,int wid,int high,bool clickable)
 {
 	chooser_type		*chooser;
 	chooser_item_type	*item;
@@ -92,6 +92,8 @@ void chooser_add_item(int chooser_idx,int item_id,char *file,int x,int y,bool cl
 	strcpy(item->file,file);
 	item->x=x;
 	item->y=y;
+	item->wid=wid;
+	item->high=high;
 	item->clickable=clickable;
 }
 

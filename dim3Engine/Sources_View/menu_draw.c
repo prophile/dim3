@@ -136,7 +136,7 @@ void menu_setup_control(void)
 
 void menu_open(void)
 {
-	gui_initialize(NULL,NULL,TRUE,FALSE);
+	gui_initialize(NULL,NULL,TRUE);
 
 	menu_idx=0;
 	menu_setup_control();

@@ -96,7 +96,7 @@ void intro_open(void)
 	
 		// intro UI
 		
-	gui_initialize("Bitmaps/Backgrounds","main",FALSE,FALSE);
+	gui_initialize("Bitmaps/Backgrounds","main",FALSE);
 
 	intro_open_add_button(&hud.intro.button_game,"button_game",intro_button_game_id,FALSE);
 	intro_open_add_button(&hud.intro.button_game_new,"button_game_new",intro_button_game_new_id,TRUE);

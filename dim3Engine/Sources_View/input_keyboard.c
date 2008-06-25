@@ -179,7 +179,7 @@ char input_get_last_raw_key(void)
       
 ======================================================= */
 
-char input_gui_get_keyboard_key(void)
+char input_gui_get_keyboard_key(bool filter_esc)
 {
 	int				n,mod;
 	bool			shifted;
@@ -195,6 +195,11 @@ char input_gui_get_keyboard_key(void)
 	if (keystate[SDLK_BACKSPACE]) return(0x8);
 	if (keystate[SDLK_TAB]) return(0x9);
 	if ((keystate[SDLK_RETURN]) || (keystate[SDLK_KP_ENTER])) return(0xD);
+	
+	if (keystate[SDLK_ESCAPE]) {
+		if (filter_esc) return(0x0);
+		return(0x1B);
+	}
 
 		// numbers
 

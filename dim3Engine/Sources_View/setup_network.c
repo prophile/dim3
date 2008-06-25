@@ -92,7 +92,7 @@ void setup_network_open(void)
 	
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","setup",FALSE,FALSE);
+	gui_initialize("Bitmaps/Backgrounds","setup",FALSE);
 	
 	element_clear();
 	

@@ -42,7 +42,7 @@ extern int menu_add(char *name);
 extern void menu_add_item(int menu_idx,int item_id,char *data,char *sub_menu,bool multiplayer_disable,bool quit);
 extern int chooser_add(char *name);
 extern void chooser_add_text(int chooser_idx,int text_id,char *data,int x,int y,bool large,int just,bool clickable);
-extern void chooser_add_item(int chooser_idx,int item_id,char *file,int x,int y,bool clickable);
+extern void chooser_add_item(int chooser_idx,int item_id,char *file,int x,int y,int wid,int high,bool clickable);
 
 /* =======================================================
 
@@ -547,8 +547,8 @@ void read_settings_interface_menu(int menu_tag)
 
 void read_settings_interface_chooser(int chooser_tag)
 {
-	int				idx,just,texts_head_tag,text_tag,
-					items_head_tag,item_tag,x,y,id;
+	int				idx,just,tag,texts_head_tag,text_tag,
+					items_head_tag,item_tag,x,y,wid,high,id;
 	char			name[name_str_len],file[file_str_len],
 					data[max_chooser_text_data_sz];
 	bool			clickable,large;
@@ -581,6 +581,31 @@ void read_settings_interface_chooser(int chooser_tag)
 
 		text_tag=xml_findnextchild(text_tag);
 	}
+	
+		// frames and keys
+		
+	tag=xml_findfirstchild("Frame",chooser_tag);
+	if (tag!=-1) {
+		hud.choosers[idx].frame.on=xml_get_attribute_boolean(tag,"on");
+		xml_get_attribute_text(tag,"title",hud.choosers[idx].frame.title,max_choose_frame_text_sz);
+		hud.choosers[idx].frame.x=xml_get_attribute_int(tag,"x");
+		hud.choosers[idx].frame.y=xml_get_attribute_int(tag,"y");
+		hud.choosers[idx].frame.wid=xml_get_attribute_int(tag,"width");
+		hud.choosers[idx].frame.high=xml_get_attribute_int(tag,"height");
+	}
+	else {
+		hud.choosers[idx].frame.on=FALSE;
+	}
+	
+	tag=xml_findfirstchild("Key",chooser_tag);
+	if (tag!=-1) {
+		hud.choosers[idx].key.ok_id=xml_get_attribute_int(tag,"ok_id");
+		hud.choosers[idx].key.cancel_id=xml_get_attribute_int(tag,"cancel_id");
+	}
+	else {
+		hud.choosers[idx].key.ok_id=-1;
+		hud.choosers[idx].key.cancel_id=-1;
+	}
 
 		// items
 	
@@ -594,9 +619,11 @@ void read_settings_interface_chooser(int chooser_tag)
 		xml_get_attribute_text(item_tag,"file",file,file_str_len);
 		x=xml_get_attribute_int(item_tag,"x");
 		y=xml_get_attribute_int(item_tag,"y");
+		wid=xml_get_attribute_int_default(item_tag,"width",-1);
+		high=xml_get_attribute_int_default(item_tag,"height",-1);
 		clickable=xml_get_attribute_boolean(item_tag,"clickable");
 		
-		chooser_add_item(idx,id,file,x,y,clickable);
+		chooser_add_item(idx,id,file,x,y,wid,high,clickable);
 		
 		item_tag=xml_findnextchild(item_tag);
 	}

@@ -57,7 +57,7 @@ void error_open(char *err_str,char *err_str_2)
 	
 		// setup
 		
-	gui_initialize("Bitmaps/Backgrounds","error",FALSE,FALSE);
+	gui_initialize("Bitmaps/Backgrounds","error",FALSE);
 	
 	x=setup.screen.x_scale/2;
 	

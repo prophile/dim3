@@ -39,9 +39,10 @@ extern hud_type				hud;
 extern setup_type			setup;
 
 int							gui_save_x_scale,gui_save_y_scale;
-bool						gui_has_background,gui_show_view,gui_show_dialog;
+bool						gui_has_background,gui_show_view;
 char						gui_last_key;
 bitmap_type					gui_background_bitmap;
+chooser_frame_type			gui_frame;
 
 bool		gui_test=0;		// supergumba -- testing
 
@@ -56,7 +57,7 @@ extern void view_gui_draw(void);
       
 ======================================================= */
 
-void gui_initialize(char *background_path,char *bitmap_name,bool show_view,bool show_dialog)
+void gui_initialize(char *background_path,char *bitmap_name,bool show_view)
 {
 	int			x,y;
 	char		name[256],path[1024];
@@ -86,7 +87,8 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view,bool 
 		
 	gui_has_background=FALSE;
 	gui_show_view=show_view;
-	gui_show_dialog=show_dialog;
+	
+	gui_frame.on=FALSE;
 	
 	if (bitmap_name!=NULL) {
 		gui_has_background=TRUE;
@@ -241,11 +243,30 @@ void gui_draw_background(float alpha)
 	gl_texture_simple_end();
 }
 
+/* =======================================================
+
+      GUI Frames
+      
+======================================================= */
+
+void gui_set_frame(chooser_frame_type *frame)
+{
+	memmove(&gui_frame,frame,sizeof(chooser_frame_type));
+}
+
 void gui_draw_dialog(void)
 {
-	int			lft,rgt,top,bot;
-
-	if (!gui_show_dialog) return;
+	int			lft,rgt,top,bot,high,head_top,y;
+	bool		is_header;
+	d3col		col;
+	
+	if (!gui_frame.on) return;
+	
+		// header?
+		
+	is_header=gui_frame.title[0]!=0x0;
+	
+		// setup draw
 
 	gl_2D_view_interface();
 
@@ -256,8 +277,11 @@ void gui_draw_dialog(void)
 
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
-
-	element_get_dialog_size(&lft,&top,&rgt,&bot);
+	
+	lft=gui_frame.x;
+	rgt=lft+gui_frame.wid;
+	top=gui_frame.y;
+	bot=top+gui_frame.high;
 
 		// darken
 
@@ -269,7 +293,40 @@ void gui_draw_dialog(void)
 	glVertex2i(rgt,bot);
 	glVertex2i(lft,bot);
 	glEnd();
-
+	
+		// header
+		
+	if (is_header) {
+		high=gl_text_get_char_height(TRUE);
+		head_top=top-(high+(high/2));
+		
+		y=(head_top+top)>>1;
+			
+		glBegin(GL_QUADS);
+		
+		glColor4f(0.75f,0.75f,0.75f,1.0f);
+		glVertex2i(lft,head_top);
+		glVertex2i(rgt,head_top);
+		glColor4f(0.3f,0.3f,0.3f,1.0f);
+		glVertex2i(rgt,y);
+		glVertex2i(lft,y);
+		
+		glColor4f(0.3f,0.3f,0.3f,1.0f);
+		glVertex2i(lft,y);
+		glVertex2i(rgt,y);
+		glColor4f(0.75f,0.75f,0.75f,1.0f);
+		glVertex2i(rgt,top);
+		glVertex2i(lft,top);
+		
+		glEnd();
+		
+		col.r=col.g=col.b=0.0f;
+		
+		gl_text_start(TRUE);
+		gl_text_draw(((lft+rgt)/2),y,gui_frame.title,tx_center,TRUE,&col,1.0f);
+		gl_text_end();
+	}
+	
 		// outline
 
 	glLineWidth(4.0f);
@@ -281,7 +338,16 @@ void gui_draw_dialog(void)
 	glVertex2i(rgt,bot);
 	glVertex2i(lft,bot);
 	glEnd();
-
+	
+	if (is_header) {
+		glBegin(GL_LINE_LOOP);
+		glVertex2i(lft,head_top);
+		glVertex2i(rgt,head_top);
+		glVertex2i(rgt,top);
+		glVertex2i(lft,top);
+		glEnd();
+	}
+	
 	glLineWidth(2.0f);
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 
@@ -291,7 +357,16 @@ void gui_draw_dialog(void)
 	glVertex2i(rgt,bot);
 	glVertex2i(lft,bot);
 	glEnd();
-
+	
+	if (is_header) {
+		glBegin(GL_LINE_LOOP);
+		glVertex2i(lft,head_top);
+		glVertex2i(rgt,head_top);
+		glVertex2i(rgt,top);
+		glVertex2i(lft,top);
+		glEnd();
+	}
+	
 	glLineWidth(1.0f);
 }
 
@@ -426,7 +501,7 @@ int gui_keyboard(void)
 
 		// key press?
 
-	ch=input_gui_get_keyboard_key();
+	ch=input_gui_get_keyboard_key(TRUE);
 	if (ch==0x0) {
 		gui_last_key=0x0;
 		return(-1);
