@@ -343,7 +343,8 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 					xml_get_attribute_text(obj_tag,"animation_name",scenery->animation_name,name_str_len);
 					xml_get_attribute_3_coord_float(obj_tag,"angle",&scenery->ang.x,&scenery->ang.y,&scenery->ang.z);
 					scenery->lighting_mode=xml_get_attribute_list(obj_tag,"lighting_mode",(char*)lighting_mode_str);
-					scenery->contact=xml_get_attribute_boolean(obj_tag,"contact");
+					scenery->contact_object_on=xml_get_attribute_boolean(obj_tag,"contact");
+					scenery->contact_projectile_on=xml_get_attribute_boolean(obj_tag,"contact_projectile");
 					scenery->contact_hit_box=xml_get_attribute_boolean(obj_tag,"contact_hit_box");
 					scenery->face_forward=xml_get_attribute_boolean(obj_tag,"face_forward");
 					scenery->shadow=xml_get_attribute_boolean(obj_tag,"shadow");

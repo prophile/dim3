@@ -119,7 +119,9 @@ void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool ch
 	flags=0;
 	
 	if (obj->hidden) flags|=net_update_flag_hidden;
-	if (!obj->contact.on) flags|=net_update_flag_no_contact;
+	if (!obj->contact.object_on) flags|=net_update_flag_no_contact_object;
+	if (!obj->contact.projectile_on) flags|=net_update_flag_no_contact_object;
+	if (!obj->contact.force_on) flags|=net_update_flag_no_contact_object;
 	if (chat_on) flags|=net_update_flag_talking;
 	
 	update.flags=htonl(flags);

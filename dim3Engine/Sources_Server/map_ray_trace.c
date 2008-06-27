@@ -500,8 +500,10 @@ void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *
 		for (n=0;n!=server.count.obj;n++) {
 			obj=&server.objs[n];
 			if (obj->pos.rn!=rn) continue;
-			if ((obj->hidden) || (!obj->contact.on) || (obj->pickup.on)) continue;
+			if ((obj->hidden) || (obj->pickup.on)) continue;
 			if (obj->uid==contact->obj_ignore_uid) continue;
+			if ((contact->origin=poly_ray_trace_origin_object) && (!obj->contact.object_on)) continue;
+			if ((contact->origin=poly_ray_trace_origin_projectile) && (!obj->contact.projectile_on)) continue;
 			
 			t=ray_trace_object(spt,ept,vct,&pt,obj);
 			if (t==-1.0f) continue;

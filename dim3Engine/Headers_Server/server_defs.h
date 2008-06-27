@@ -343,7 +343,8 @@ typedef struct		{
 			
 typedef struct		{
 						int					obj_uid,proj_uid,hit_box_idx;
-						bool				on,melee,pushable;
+						bool				object_on,projectile_on,force_on,
+											melee,pushable;
 						poly_pointer_type	hit_poly,stand_poly,head_poly;
 						liquid_pointer_type	liquid;
 					} obj_contact;
@@ -390,14 +391,6 @@ typedef struct		{
 						char				name[name_str_len];
 					} obj_weapon_fire;
 					
-//
-// server running pre-calcs
-//
-
-typedef struct		{
-						bool				stand_ok,collision_ok,push_ok,pickup_ok,melee_ok;
-					} obj_run_setup;
-
 //
 // object sighting
 //
@@ -786,7 +779,6 @@ typedef struct		{
 						obj_remote			remote;
 						obj_score			score;
 						obj_scenery			scenery;
-						obj_run_setup		run_setup;
 					} obj_type;
 
 //
@@ -899,8 +891,12 @@ typedef struct		{
 #define poly_ray_trace_hit_mode_wall_only		1
 #define poly_ray_trace_hit_mode_floor_only		2
 
+#define poly_ray_trace_origin_unknown			0
+#define poly_ray_trace_origin_object			1
+#define poly_ray_trace_origin_projectile		2
+
 typedef struct		{
-						int						obj_uid,proj_uid,hit_mode,
+						int						obj_uid,proj_uid,hit_mode,origin,
 												obj_ignore_uid,proj_ignore_uid;
 						bool					obj_on,proj_on;
 						poly_pointer_type		poly;

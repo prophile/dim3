@@ -79,7 +79,9 @@ int object_held_add(obj_type *obj,char *name,char *type,char *script,char *param
 		// hide object
 
 	held_obj->hidden=TRUE;
-	held_obj->contact.on=FALSE;
+	held_obj->contact.object_on=FALSE;
+	held_obj->contact.projectile_on=FALSE;
+	held_obj->contact.force_on=FALSE;
 
 	return(held_obj->uid);
 }
@@ -108,7 +110,7 @@ bool object_held_drop(obj_type *obj,int uid,float y_ang,int y_change,char *err_s
 	held_obj->turn.ang_to.y=y_ang;
 
 	held_obj->hidden=FALSE;
-	held_obj->contact.on=TRUE;
+	held_obj->contact.object_on=TRUE;
 
 	return(TRUE);
 }

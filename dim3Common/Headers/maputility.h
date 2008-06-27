@@ -149,20 +149,6 @@ extern char light_type_str[][32];
 #define flag_pvl_shiftable							0x02
 
 //
-// mesh poly draw flag
-//
-
-#define map_mesh_poly_draw_stencil_normal			0
-#define map_mesh_poly_draw_stencil_specular_normal	1
-#define map_mesh_poly_draw_hilite_normal			2
-#define map_mesh_poly_draw_stencil_bump				3
-#define map_mesh_poly_draw_stencil_specular_bump	4
-#define map_mesh_poly_draw_hilite_bump				5
-#define map_mesh_poly_draw_transparent				6
-#define map_mesh_poly_draw_opaque_shader			7
-#define map_mesh_poly_draw_transparent_shader		8
-
-//
 // group types
 //
 
@@ -228,12 +214,10 @@ typedef struct		{
 					} map_mesh_poly_light_type;
 
 typedef struct		{
-						int							portal_v[8],draw_type,
-													cur_frame,txt_frame_offset,
-													stencil_pass,stencil_idx;
+						int							portal_v[8],
+													txt_frame_offset,decal_stencil_idx;
 						float						normal[3],normal_dist_factor;
-						bool						simple_tessel,shift_on,
-													is_simple_lighting,is_glow;
+						bool						simple_tessel,shift_on;
 					} map_mesh_poly_draw_type;
 
 typedef struct		{
@@ -258,21 +242,12 @@ typedef struct		{
 					} map_mesh_flag_type;
 
 typedef struct		{
-						int							stencil_pass_start,stencil_pass_end;
-						bool						has_stencil_normal,has_stencil_specular_normal,has_hilite_normal,
-													has_stencil_bump,has_stencil_specular_bump,has_hilite_bump,
-													has_transparent,has_glow,
-													has_opaque_shader,has_transparent_shader;
-					} map_mesh_draw_type;
-
-typedef struct		{
 						int							nvertex,npoly,group_idx;
 						d3pnt						rot_off;
 						d3pnt						*vertexes;
 						map_mesh_poly_type			*polys;
 						map_mesh_box_type			box;
 						map_mesh_flag_type			flag;
-						map_mesh_draw_type			draw;
 					} map_mesh_type;
 
 //
@@ -348,10 +323,6 @@ typedef struct		{
 
 typedef struct		{
 						int							sort_cnt;
-						bool						has_stencil_normal,has_stencil_specular_normal,has_hilite_normal,
-													has_stencil_bump,has_stencil_specular_bump,has_hilite_bump,
-													has_transparent,has_glow,
-													has_opaque_shader,has_transparent_shader;
 						map_mesh_poly_sort_type		*sort_list;
 					} portal_mesh_draw_type;
 
@@ -368,8 +339,6 @@ typedef struct		{
 
 typedef struct		{
 						int							x,z,ex,ez,mx,mz,ty,by,
-													opaque_stencil_pass_start,
-													opaque_stencil_pass_end,
 													decal_count;
 						bool						in_path;
 						char						name[name_str_len];
@@ -390,7 +359,8 @@ typedef struct		{
 						int							lighting_mode;
 						char						model_name[name_str_len],
 													animation_name[name_str_len];
-						bool						contact,contact_hit_box,face_forward,
+						bool						contact_object_on,contact_projectile_on,
+													contact_hit_box,face_forward,
 													shadow,shadow_cast_down,override_size;
 						d3pos						pos;
 						d3ang						ang;

@@ -55,6 +55,9 @@ JSPropertySpec	obj_setting_props[]={
 							{"fly",					obj_setting_prop_fly,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{"find",				obj_setting_prop_find,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{"contact",				obj_setting_prop_contact,			JSPROP_PERMANENT|JSPROP_SHARED},
+							{"contactObject",		obj_setting_prop_contact_object,	JSPROP_PERMANENT|JSPROP_SHARED},
+							{"contactProjectile",	obj_setting_prop_contact_projectile,JSPROP_PERMANENT|JSPROP_SHARED},
+							{"contactForce",		obj_setting_prop_contact_force,		JSPROP_PERMANENT|JSPROP_SHARED},
 							{"hitBox",				obj_setting_prop_hit_box,			JSPROP_PERMANENT|JSPROP_SHARED},
 							{"damage",				obj_setting_prop_damage,			JSPROP_PERMANENT|JSPROP_SHARED},
 							{"crushable",			obj_setting_prop_crushable,			JSPROP_PERMANENT|JSPROP_SHARED},
@@ -138,7 +141,16 @@ JSBool js_get_obj_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 			*vp=BOOLEAN_TO_JSVAL(obj->find_on);
 			break;
 		case obj_setting_prop_contact:
-			*vp=BOOLEAN_TO_JSVAL(obj->contact.on);
+			*vp=BOOLEAN_TO_JSVAL((obj->contact.object_on) || (obj->contact.projectile_on) || (obj->contact.force_on));
+			break;
+		case obj_setting_prop_contact_object:
+			*vp=BOOLEAN_TO_JSVAL(obj->contact.object_on);
+			break;
+		case obj_setting_prop_contact_projectile:
+			*vp=BOOLEAN_TO_JSVAL(obj->contact.projectile_on);
+			break;
+		case obj_setting_prop_contact_force:
+			*vp=BOOLEAN_TO_JSVAL(obj->contact.force_on);
 			break;
 		case obj_setting_prop_hit_box:
 			*vp=BOOLEAN_TO_JSVAL(obj->hit_box.on);
@@ -211,6 +223,7 @@ JSBool js_get_obj_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 
 JSBool js_set_obj_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
+	bool			on;
 	obj_type		*obj;
 	
 	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
@@ -235,7 +248,19 @@ JSBool js_set_obj_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 			obj->find_on=JSVAL_TO_BOOLEAN(*vp);
 			break;
 		case obj_setting_prop_contact:
-			obj->contact.on=JSVAL_TO_BOOLEAN(*vp);
+			on=JSVAL_TO_BOOLEAN(*vp);
+			obj->contact.object_on=on;
+			obj->contact.projectile_on=on;
+			obj->contact.force_on=on;
+			break;
+		case obj_setting_prop_contact_object:
+			obj->contact.object_on=JSVAL_TO_BOOLEAN(*vp);
+			break;
+		case obj_setting_prop_contact_projectile:
+			obj->contact.projectile_on=JSVAL_TO_BOOLEAN(*vp);
+			break;
+		case obj_setting_prop_contact_force:
+			obj->contact.force_on=JSVAL_TO_BOOLEAN(*vp);
 			break;
 		case obj_setting_prop_hit_box:
 			obj->hit_box.on=JSVAL_TO_BOOLEAN(*vp);

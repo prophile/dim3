@@ -90,7 +90,7 @@ extern void object_health_recover(obj_type *obj);
 extern void object_crush(obj_type *obj,bool auto_crush);
 extern void object_hide(obj_type *obj,bool hide);
 extern void object_input_freeze(obj_type *obj,bool freeze);
-extern void object_push(obj_type *obj,d3ang *ang,int force);
+extern void object_push(obj_type *obj,d3ang *ang,int force,bool external_force);
 extern void object_shove(obj_type *obj,d3ang *ang,float speed);
 extern void object_shove_direct(obj_type *obj,d3vct *vct);
 extern bool object_set_radar_icon(obj_type *obj);

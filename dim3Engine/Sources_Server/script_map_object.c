@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "scripts.h"
 #include "objects.h"
+#include "models.h"
 
 extern server_type		server;
 extern js_type			js;
@@ -537,7 +538,7 @@ JSBool js_map_object_is_contact_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	
 		// get size
 		
-	*rval=INT_TO_JSVAL(obj->contact.on);
+	*rval=INT_TO_JSVAL((obj->contact.object_on) || (obj->contact.projectile_on) || (obj->contact.force_on));
 	return(JS_TRUE);
 }
 
@@ -620,12 +621,17 @@ JSBool js_map_object_add_goal_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 
 JSBool js_map_object_set_contact_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
+	bool			on;
 	obj_type		*obj;
 	
 	obj=script_find_obj_from_uid_arg(argv[0]);
 	if (obj==NULL) return(JS_FALSE);
 
-	obj->contact.on=JSVAL_TO_BOOLEAN(argv[1]);
+	on=JSVAL_TO_BOOLEAN(argv[1]);
+
+	obj->contact.object_on=on;
+	obj->contact.projectile_on=on;
+	obj->contact.force_on=on;
 
 	return(JS_TRUE);
 }

@@ -92,7 +92,7 @@ int collide_find_object_for_object_move(obj_type *obj,int x,int z)
 	
 	for (n=0;n!=server.count.obj;n++) {
 	
-		if ((check_obj->uid==ignore_obj_uid) || (!check_obj->run_setup.collision_ok)) {
+		if ((obj->hidden) || (!obj->contact.object_on) || (obj->pickup.on) || (check_obj->uid==ignore_obj_uid)) {
 			check_obj++;
 			continue;
 		}
@@ -135,7 +135,7 @@ int collide_find_object_for_standing_object(obj_type *obj)
 	
 	for (n=0;n!=server.count.obj;n++) {
 	
-		if ((stand_obj->uid==ignore_obj_uid) || (obj->hidden) || (!obj->contact.on) || (obj->pickup.on)) {
+		if ((stand_obj->uid==ignore_obj_uid) || (obj->hidden) || (!obj->contact.object_on) || (obj->pickup.on)) {
 			stand_obj++;
 			continue;
 		}
@@ -231,7 +231,7 @@ int collide_find_object_for_projectile_hit(proj_type *proj,int ignore_obj_uid)
 	
 	for (n=0;n!=server.count.obj;n++) {
 
-		if ((obj->uid==ignore_obj_uid) || (!obj->run_setup.collision_ok)) {
+		if ((obj->hidden) || (!obj->contact.projectile_on) || (obj->pickup.on) || (obj->uid==ignore_obj_uid)) {
 			obj++;
 			continue;
 		}
@@ -263,7 +263,7 @@ int collide_find_object_for_projectile(proj_type *proj,int ignore_obj_uid)
 	
 	for (n=0;n!=server.count.obj;n++) {
 
-		if ((obj->uid==ignore_obj_uid) || (!obj->run_setup.collision_ok)) {
+		if ((obj->hidden) || (!obj->contact.projectile_on) || (obj->pickup.on) || (obj->uid==ignore_obj_uid)) {
 			obj++;
 			continue;
 		}
@@ -385,7 +385,7 @@ int collide_find_object_for_sphere_hit(int sx,int sy,int sz,int radius,int ignor
 	
 	for (n=0;n!=server.count.obj;n++) {
 
-		if ((obj->uid==ignore_obj_uid) || (!obj->run_setup.collision_ok)) {
+		if ((obj->hidden) || (!obj->contact.object_on) || (obj->pickup.on) || (obj->uid==ignore_obj_uid)) {
 			obj++;
 			continue;
 		}
@@ -417,7 +417,7 @@ int collide_find_object_for_sphere(int sx,int sy,int sz,int radius,int ignore_ob
 	
 	for (n=0;n!=server.count.obj;n++) {
 
-		if ((obj->uid==ignore_obj_uid) || (!obj->run_setup.collision_ok)) {
+		if ((obj->hidden) || (!obj->contact.object_on) || (obj->pickup.on) || (obj->uid==ignore_obj_uid)) {
 			obj++;
 			continue;
 		}
@@ -450,7 +450,7 @@ void collide_push_objects(int sx,int sz,int sy,int radius,int force)
 	
 	for (n=0;n!=server.count.obj;n++) {
 
-		if (!obj->run_setup.push_ok) {
+		if ((obj->hidden) || (obj->suspend) || (!obj->contact.object_on)) {
 			obj++;
 			continue;
 		}
@@ -470,7 +470,7 @@ void collide_push_objects(int sx,int sz,int sy,int radius,int force)
 		ang.y=angle_find(sx,sz,obj->pos.x,obj->pos.z);
 		ang.z=0;
 		
-		object_push(obj,&ang,force);
+		object_push(obj,&ang,force,FALSE);
 		
 		obj++;
 	}

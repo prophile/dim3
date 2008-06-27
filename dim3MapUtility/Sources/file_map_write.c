@@ -640,7 +640,8 @@ bool write_map_xml(map_type *map)
 				xml_add_attribute_text("animation_name",scenery->animation_name);
 				xml_add_attribute_3_coord_float("angle",scenery->ang.x,scenery->ang.y,scenery->ang.z);
 				xml_add_attribute_list("lighting_mode",(char*)lighting_mode_str,scenery->lighting_mode);
-				xml_add_attribute_boolean("contact",scenery->contact);
+				xml_add_attribute_boolean("contact",scenery->contact_object_on);
+				xml_add_attribute_boolean("contact_projectile",scenery->contact_projectile_on);
 				xml_add_attribute_boolean("contact_hit_box",scenery->contact_hit_box);
 				xml_add_attribute_boolean("face_forward",scenery->face_forward);
 				xml_add_attribute_boolean("shadow",scenery->shadow);

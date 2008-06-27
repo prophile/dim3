@@ -47,7 +47,7 @@ extern void portal_compile_gl_list_dettach(void);
       
 ======================================================= */
 
-float segment_render_transparent_segments_far_z(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly,int cx,int cy,int cz)
+float segment_render_transparent_segments_far_z(map_mesh_type *mesh,map_mesh_poly_type *poly,int cx,int cy,int cz)
 {
 	int				n,kx,ky,kz;
 	float			d,dist;
@@ -58,8 +58,8 @@ float segment_render_transparent_segments_far_z(map_mesh_type *mesh,map_mesh_pol
 
 	dist=0.0f;
 
-	for (n=0;n!=mesh_poly->ptsz;n++) {
-		pt=&mesh->vertexes[mesh_poly->v[n]];
+	for (n=0;n!=poly->ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
 		kx=pt->x-cx;
 		ky=pt->y-cy;
 		kz=pt->z-cz;
@@ -78,7 +78,7 @@ void segment_render_transparent_sort(int rn,int cx,int cy,int cz)
 	float						dist;
 	portal_type					*portal;
 	map_mesh_type				*mesh;
-	map_mesh_poly_type			*mesh_poly;
+	map_mesh_poly_type			*poly;
 	map_mesh_poly_sort_type		*sort_list;
 
 	portal=&map.portals[rn];
@@ -87,28 +87,23 @@ void segment_render_transparent_sort(int rn,int cx,int cy,int cz)
 		// create sort list
 
 	sort_cnt=0;
-
+/* supergumba -- redo
 	mesh=portal->mesh.meshes;
 		
 	for (n=0;n!=portal->mesh.nmesh;n++) {
 	
-		if (!mesh->draw.has_transparent) {
-			mesh++;
-			continue;
-		}
-		
-		mesh_poly=mesh->polys;
+		poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {
 
-			if (mesh_poly->draw.draw_type!=map_mesh_poly_draw_transparent) {
-				mesh_poly++;
+			if (poly->draw.draw_type!=map_mesh_poly_draw_transparent) {
+				poly++;
 				continue;
 			}
 
 				// find distance from camera
 
-			dist=segment_render_transparent_segments_far_z(mesh,mesh_poly,cx,cy,cz);
+			dist=segment_render_transparent_segments_far_z(mesh,poly,cx,cy,cz);
 
 				// find position in sort list
 
@@ -133,12 +128,12 @@ void segment_render_transparent_sort(int rn,int cx,int cy,int cz)
 
 			sort_cnt++;
 
-			mesh_poly++;
+			poly++;
 		}
 	
 		mesh++;
 	}
-
+*/
 	portal->mesh.draw.sort_cnt=sort_cnt;
 }
 
@@ -155,7 +150,7 @@ void segment_render_transparent_portal_mesh(portal_type *portal)
 	float					alpha;
 	bool					txt_setup_reset;
 	map_mesh_type			*mesh;
-	map_mesh_poly_type		*mesh_poly;
+	map_mesh_poly_type		*poly;
 	map_mesh_poly_sort_type	*sort_list;
 	texture_type			*texture;
 
@@ -182,10 +177,10 @@ void segment_render_transparent_portal_mesh(portal_type *portal)
 
 	for (n=0;n!=sort_cnt;n++) {
 		mesh=&portal->mesh.meshes[sort_list[n].mesh_idx];
-		mesh_poly=&mesh->polys[sort_list[n].poly_idx];
+		poly=&mesh->polys[sort_list[n].poly_idx];
 
-		texture=&map.textures[mesh_poly->txt_idx];
-		frame=mesh_poly->draw.cur_frame;
+		texture=&map.textures[poly->txt_idx];
+		frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
 			// do we need to get back to rendering for transparencies?
 			// this happens when a specular or glow interrupt the normal
@@ -213,10 +208,10 @@ void segment_render_transparent_portal_mesh(portal_type *portal)
 
 			// draw the transparent texture
 
-		if ((texture->bitmaps[frame].gl_id!=txt_id) || (mesh_poly->alpha!=alpha)) {
+		if ((texture->bitmaps[frame].gl_id!=txt_id) || (poly->alpha!=alpha)) {
 		
 			txt_id=texture->bitmaps[frame].gl_id;
-			alpha=mesh_poly->alpha;
+			alpha=poly->alpha;
 			gl_texture_transparent_set(txt_id,alpha);
 			
 			if (texture->additive) {
@@ -227,11 +222,11 @@ void segment_render_transparent_portal_mesh(portal_type *portal)
 			}
 		}
 
-		glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+		glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 
 			// draw any specular on the transparent segment
 /* supergumba -- might need to redo all of this
-		if (mesh_poly->draw.is_specular) {
+		if (poly->draw.is_specular) {
 			
 				// end transparencies drawing and start specular
 
@@ -250,16 +245,16 @@ void segment_render_transparent_portal_mesh(portal_type *portal)
 
 				// draw specular
 
-			gl_texture_transparent_specular_set(texture->specularmaps[frame].gl_id,mesh_poly->alpha);
+			gl_texture_transparent_specular_set(texture->specularmaps[frame].gl_id,poly->alpha);
 
 				// use lighting mesh as specular is dependant upon the light
 
-			if (mesh_poly->draw.is_simple_lighting) {
-				glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+			if (poly->draw.is_simple_lighting) {
+				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 			}
 			else {
-				ntrig=mesh_poly->light.trig_count;
-				glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)mesh_poly->light.trig_vertex_idx);
+				ntrig=poly->light.trig_count;
+				glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_idx);
 			}
 
 				// end specular drawing and force a transparencies reset
@@ -270,8 +265,8 @@ void segment_render_transparent_portal_mesh(portal_type *portal)
 		}
 */
 			// draw any glow on the transparent segment
-
-		if (mesh_poly->draw.is_glow) {
+/*
+		if (poly->draw.is_glow) {
 
 				// end transparencies drawing and start glow
 
@@ -296,15 +291,16 @@ void segment_render_transparent_portal_mesh(portal_type *portal)
 		
 				// draw glow
 
-			gl_texture_transparent_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,mesh_poly->alpha,texture->glow.current_color);
+			gl_texture_transparent_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,poly->alpha,texture->glow.current_color);
 
-			glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 
 				// end glow drawing and force a transparencies reset
 
 			gl_texture_transparent_glow_end();
 			txt_setup_reset=TRUE;
 		}
+		*/
 	}
 
 	gl_texture_transparent_end();
@@ -312,9 +308,10 @@ void segment_render_transparent_portal_mesh(portal_type *portal)
 
 void segment_render_transparent_portal_shader(portal_type *portal)
 {
+	/*
 	int						n,sort_cnt,frame;
 	map_mesh_type			*mesh;
-	map_mesh_poly_type		*mesh_poly;
+	map_mesh_poly_type		*poly;
 	map_mesh_poly_sort_type	*sort_list;
 	texture_type			*texture;
 
@@ -339,28 +336,30 @@ void segment_render_transparent_portal_shader(portal_type *portal)
 	
 		if (!mesh->draw.has_transparent_shader) continue;
 		
-		mesh_poly=&mesh->polys[sort_list[n].poly_idx];
-		if (mesh_poly->draw.draw_type!=map_mesh_poly_draw_transparent_shader) continue;
+		poly=&mesh->polys[sort_list[n].poly_idx];
+		if (poly->draw.draw_type!=map_mesh_poly_draw_transparent_shader) continue;
 
-		texture=&map.textures[mesh_poly->txt_idx];
-		frame=mesh_poly->draw.cur_frame;
+		texture=&map.textures[poly->txt_idx];
+		frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
 		gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
 		gl_shader_set_program(texture->shader.program_obj);
 		
-		gl_shader_set_variables(texture->shader.program_obj,&mesh_poly->box.mid,texture);
+		gl_shader_set_variables(texture->shader.program_obj,&poly->box.mid,texture);
 		
-		glNormal3f(mesh_poly->draw.normal[0],mesh_poly->draw.normal[1],mesh_poly->draw.normal[2]);
+		glNormal3f(poly->draw.normal[0],poly->draw.normal[1],poly->draw.normal[2]);
 
-		glDrawElements(GL_POLYGON,mesh_poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)mesh_poly->draw.portal_v);
+		glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 	}
 
 	gl_texture_shader_end();
 	gl_shader_program_end();
+	*/
 }
 
 void segment_render_transparent_portal(int rn)
 {
+	/*
 	portal_type			*portal;
 
 	portal=&map.portals[rn];
@@ -381,6 +380,7 @@ void segment_render_transparent_portal(int rn)
 
 	segment_render_transparent_portal_mesh(portal);
 	if (portal->mesh.draw.has_transparent_shader) segment_render_transparent_portal_shader(portal);
+	*/
 }
 
 /* =======================================================
@@ -409,7 +409,7 @@ void segment_render_transparent(int portal_cnt,int *portal_list)
 		// for the transparency sorting
 		
 	for (n=0;n<portal_cnt;n++) {
-		segment_render_transparent_portal(portal_list[n]);
+	//	segment_render_transparent_portal(portal_list[n]);
 	}
 
 		// dettach any attached lists

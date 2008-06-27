@@ -78,9 +78,11 @@ bool crosshair_get_location(int tick,obj_type *obj,weapon_type *weap,int *kx,int
 		// trace
 
 	contact.obj_on=TRUE;
-	contact.proj_on=FALSE;
 	contact.obj_ignore_uid=obj->uid;
+	contact.proj_on=FALSE;
+
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
+	contact.origin=poly_ray_trace_origin_object;
 
 	ray_trace_map_by_angle(&fpt,&ang,(map_enlarge*400),&hpt,&contact);
 	

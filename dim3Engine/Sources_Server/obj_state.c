@@ -488,14 +488,20 @@ void object_input_freeze(obj_type *obj,bool freeze)
       
 ======================================================= */
 
-void object_push(obj_type *obj,d3ang *ang,int force)
+void object_push(obj_type *obj,d3ang *ang,int force,bool external_force)
 {
 	int				weight;
 	float			speed,xmove,zmove,ymove,temp_z;
 	
 		// can't push hidden, suspended, or no-contact objects
 	
-	if ((obj->hidden) || (obj->suspend) || (!obj->contact.on)) return;
+	if ((obj->hidden) || (obj->suspend)) return;
+	if (external_force) {
+		if (!obj->contact.force_on) return;
+	}
+	else {
+		if (!obj->contact.object_on) return;
+	}
 	
 		// push power
 	
@@ -525,7 +531,7 @@ void object_shove(obj_type *obj,d3ang *ang,float speed)
 	
 		// can't push hidden, suspended, or no-contact objects
 	
-	if ((obj->hidden) || (obj->suspend) || (!obj->contact.on)) return;
+	if ((obj->hidden) || (obj->suspend) || (!obj->contact.force_on)) return;
 	
 		// shove vector
 		
@@ -550,7 +556,7 @@ void object_shove_direct(obj_type *obj,d3vct *vct)
 {
 		// can't push hidden, suspended, or no-contact objects
 	
-	if ((obj->hidden) || (obj->suspend) || (!obj->contact.on)) return;
+	if ((obj->hidden) || (obj->suspend) || (!obj->contact.force_on)) return;
 	
 		// shove vector
 		

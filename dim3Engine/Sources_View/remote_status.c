@@ -224,10 +224,10 @@ void remote_draw_names_setup(void)
 	ept.z=view.camera.pos.z;
 
 	contact.obj_on=TRUE;
-
 	contact.proj_on=FALSE;
-	contact.proj_ignore_uid=-1;
+
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
+	contact.origin=poly_ray_trace_origin_object;
 
 	for (n=0;n!=server.count.obj;n++) {
 		obj=&server.objs[n];

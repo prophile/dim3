@@ -336,7 +336,9 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 			// hide original object
 			
 		obj->hidden=TRUE;
-		obj->contact.on=FALSE;
+		obj->contact.object_on=FALSE;
+		obj->contact.projectile_on=FALSE;
+		obj->contact.force_on=FALSE;
 		
 			// switch to vehicle
 			
@@ -395,7 +397,9 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 	flags=ntohl(update->flags);
 		
 	obj->hidden=((flags&net_update_flag_hidden)!=0);
-	obj->contact.on=!((flags&net_update_flag_no_contact)!=0);
+	obj->contact.object_on=!((flags&net_update_flag_no_contact_object)!=0);
+	obj->contact.projectile_on=!((flags&net_update_flag_no_contact_projectile)!=0);
+	obj->contact.force_on=!((flags&net_update_flag_no_contact_force)!=0);
 	obj->remote.talking=((flags&net_update_flag_talking)!=0);
 	
 		// update status

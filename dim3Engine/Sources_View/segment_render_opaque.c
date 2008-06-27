@@ -42,638 +42,15 @@ extern camera_type		camera;
 extern view_type		view;
 
 extern int game_time_get(void);
-
+extern bool fog_solid_on(void);
 extern void portal_compile_gl_list_attach(int rn);
 extern void portal_compile_gl_list_dettach(void);
-
-/* =======================================================
-
-      Opaque Stencil Normal/Bump Drawing
-      
-======================================================= */
-
-void segment_render_opaque_stencil_portal_normal_mesh(portal_type *portal,int stencil_pass)
-{
-	int					n,k,frame;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	texture_type		*texture;
-
-	gl_texture_opaque_start();
-
-	glDisable(GL_BLEND);
-	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_TRUE);
-
-	glEnable(GL_STENCIL_TEST);
-	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
-	
-	for (n=0;n!=portal->mesh.nmesh;n++) {
-	
-		mesh=&portal->mesh.meshes[n];
-		if ((!mesh->draw.has_stencil_normal) && (!mesh->draw.has_stencil_specular_normal)) continue;
-		if ((mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) continue;
-		
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-
-			if (((poly->draw.draw_type!=map_mesh_poly_draw_stencil_normal) && (poly->draw.draw_type!=map_mesh_poly_draw_stencil_specular_normal)) || (poly->draw.stencil_pass!=stencil_pass)) {
-				poly++;
-				continue;
-			}
-
-			texture=&map.textures[poly->txt_idx];
-			frame=poly->draw.cur_frame;
-			gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
-			
-			glStencilFunc(GL_ALWAYS,poly->draw.stencil_idx,0xFF);
-
-			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
-		
-			poly++;
-		}
-	}
-
-	glDisable(GL_STENCIL_TEST);
-
-	gl_texture_opaque_end();
-}
-
-void segment_render_opaque_stencil_portal_bump_mesh(portal_type *portal,int stencil_pass)
-{
-	int					n,k,frame;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	texture_type		*texture;
-
-	gl_texture_opaque_bump_start();
-
-	glDisable(GL_BLEND);
-	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_TRUE);
-
-	glEnable(GL_STENCIL_TEST);
-	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
-
-	for (n=0;n!=portal->mesh.nmesh;n++) {
-	
-		mesh=&portal->mesh.meshes[n];
-		if ((!mesh->draw.has_stencil_bump) && (!mesh->draw.has_stencil_specular_bump)) continue;
-		if ((mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) continue;
-		
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-		
-			if (((poly->draw.draw_type!=map_mesh_poly_draw_stencil_bump) && (poly->draw.draw_type!=map_mesh_poly_draw_stencil_specular_bump)) || (poly->draw.stencil_pass!=stencil_pass)) {
-				poly++;
-				continue;
-			}
-
-			texture=&map.textures[poly->txt_idx];
-			frame=poly->draw.cur_frame;
-			gl_texture_opaque_bump_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,poly->draw.normal,poly->draw.normal_dist_factor);
-			
-			glStencilFunc(GL_ALWAYS,poly->draw.stencil_idx,0xFF);
-
-			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
-		
-			poly++;
-		}
-	}
-
-	glDisable(GL_STENCIL_TEST);
-
-	gl_texture_opaque_bump_end();
-}
-
-/* =======================================================
-
-      Opaque Stencil Lighting Drawing
-      
-======================================================= */
-
-void segment_render_opaque_stencil_portal_lighting_mesh(portal_type *portal,int stencil_pass)
-{
-	int					n,k,ntrig;
-	float				dark_factor;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	
-	gl_texture_tesseled_lighting_start();
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ZERO,GL_SRC_COLOR);
-
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_DEPTH_TEST);
-			
-	glEnable(GL_STENCIL_TEST);
-	glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
-
-	dark_factor=1.0f;
-
-	for (n=0;n!=portal->mesh.nmesh;n++) {
-
-		mesh=&portal->mesh.meshes[n];
-		if ((!mesh->draw.has_stencil_normal) && (!mesh->draw.has_stencil_bump)) continue;
-		if ((mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) continue;
-	
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-		
-			if (((poly->draw.draw_type!=map_mesh_poly_draw_stencil_normal) && (poly->draw.draw_type!=map_mesh_poly_draw_stencil_bump)) || (poly->draw.stencil_pass!=stencil_pass)) {
-				poly++;
-				continue;
-			}
-
-			glStencilFunc(GL_EQUAL,poly->draw.stencil_idx,0xFF);
-
-			if (dark_factor!=poly->dark_factor) {
-				dark_factor=poly->dark_factor;
-				gl_texture_tesseled_lighting_set(-1,dark_factor);
-			}
-
-			if (poly->draw.is_simple_lighting) {
-				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
-			}
-			else {
-				ntrig=poly->light.trig_count;
-				glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_idx);
-				if ((poly->ptsz-2)!=ntrig) glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
-			}
-			
-			poly++;
-		}
-	}
-
-	glDisable(GL_STENCIL_TEST);
-
-	gl_texture_tesseled_lighting_end();
-}
-
-void segment_render_opaque_stencil_portal_lighting_block_mesh(portal_type *portal,int stencil_pass)
-{
-	int					n,k;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-
-		// this runs through and blocks
-		// out all the stencils.  We have to do it
-		// this way so speculars work and we
-		// don't have to do the heavy operation of clearing
-		// the stencil buffer between passes
-	
-	glDisable(GL_BLEND);
-	glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
-
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_DEPTH_TEST);
-			
-	glEnable(GL_STENCIL_TEST);
-	glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
-
-	for (n=0;n!=portal->mesh.nmesh;n++) {
-
-		mesh=&portal->mesh.meshes[n];
-		if ((!mesh->draw.has_stencil_normal) && (!mesh->draw.has_stencil_bump)) continue;
-		if ((mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) continue;
-	
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-		
-			if (((poly->draw.draw_type!=map_mesh_poly_draw_stencil_normal) && (poly->draw.draw_type!=map_mesh_poly_draw_stencil_bump)) || (poly->draw.stencil_pass!=stencil_pass)) {
-				poly++;
-				continue;
-			}
-
-			glStencilFunc(GL_EQUAL,poly->draw.stencil_idx,0xFF);
-			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
-			
-			poly++;
-		}
-	}
-
-	glDisable(GL_STENCIL_TEST);
-
-	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
-}
-
-/* =======================================================
-
-      Opaque Stencil Specular Drawing
-      
-======================================================= */
-
-void segment_render_opaque_stencil_portal_specular_mesh(portal_type *portal,int stencil_pass)
-{
-	int					n,k,ntrig;
-	float				dark_factor;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	texture_type		*texture;
-	
-	gl_texture_tesseled_specular_start();
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE,GL_ONE);
-
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_DEPTH_TEST);
-			
-	glEnable(GL_STENCIL_TEST);
-	glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
-
-	dark_factor=1.0f;
-
-	mesh=portal->mesh.meshes;
-	
-	for (n=0;n!=portal->mesh.nmesh;n++) {
-
-		mesh=&portal->mesh.meshes[n];
-		if ((!mesh->draw.has_stencil_specular_normal) && (!mesh->draw.has_stencil_specular_bump)) continue;
-		if ((mesh->draw.stencil_pass_start>stencil_pass) || (mesh->draw.stencil_pass_end<stencil_pass)) continue;
-	
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-		
-			if (((poly->draw.draw_type!=map_mesh_poly_draw_stencil_specular_normal) && (poly->draw.draw_type!=map_mesh_poly_draw_stencil_specular_bump)) || (poly->draw.stencil_pass!=stencil_pass)) {
-				poly++;
-				continue;
-			}
-
-			glStencilFunc(GL_EQUAL,poly->draw.stencil_idx,0xFF);
-
-			texture=&map.textures[poly->txt_idx];
-			gl_texture_tesseled_specular_set(texture->specularmaps[poly->draw.cur_frame].gl_id);
-
-			if (poly->draw.is_simple_lighting) {
-				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
-			}
-			else {
-				ntrig=poly->light.trig_count;
-				glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_idx);
-				if ((poly->ptsz-2)!=ntrig) glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
-			}
-			
-			poly++;
-		}
-	}
-
-	glDisable(GL_STENCIL_TEST);
-
-	gl_texture_tesseled_specular_end();
-}
-
-/* =======================================================
-
-      Opaque Hilite Non-Stencil Pass Pieces Drawing
-      
-======================================================= */
-
-void segment_render_opaque_hilite_portal_normal_mesh(portal_type *portal)
-{
-	int					n,k,frame;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	texture_type		*texture;
-
-	gl_texture_opaque_start();
-
-	glDisable(GL_BLEND);
-	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_TRUE);
-
-	mesh=portal->mesh.meshes;
-	
-	for (n=0;n!=portal->mesh.nmesh;n++) {
-	
-		if (!mesh->draw.has_hilite_normal) {
-			mesh++;
-			continue;
-		}
-		
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-
-			if (poly->draw.draw_type!=map_mesh_poly_draw_hilite_normal) {
-				poly++;
-				continue;
-			}
-
-			texture=&map.textures[poly->txt_idx];
-			frame=poly->draw.cur_frame;
-			gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
-
-			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
-		
-			poly++;
-		}
-	
-		mesh++;
-	}
-
-	gl_texture_opaque_end();
-}
-
-void segment_render_opaque_hilite_portal_bump_mesh(portal_type *portal)
-{
-	int					n,k,frame;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	texture_type		*texture;
-
-	gl_texture_opaque_bump_start();
-
-	glDisable(GL_BLEND);
-	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_TRUE);
-
-	mesh=portal->mesh.meshes;
-	
-	for (n=0;n!=portal->mesh.nmesh;n++) {
-	
-		if (!mesh->draw.has_hilite_bump) {
-			mesh++;
-			continue;
-		}
-		
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-		
-			if (poly->draw.draw_type!=map_mesh_poly_draw_hilite_bump) {
-				poly++;
-				continue;
-			}
-
-			texture=&map.textures[poly->txt_idx];
-			frame=poly->draw.cur_frame;
-			gl_texture_opaque_bump_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,poly->draw.normal,poly->draw.normal_dist_factor);
-
-			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
-		
-			poly++;
-		}
-	
-		mesh++;
-	}
-
-	gl_texture_opaque_bump_end();
-}
-
-/* =======================================================
-
-      Glow Pass Pieces Drawing
-      
-======================================================= */
-
-void segment_render_opaque_portal_glow_mesh(portal_type *portal)
-{
-	int					n,k,frame;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	texture_type		*texture;
-
-	gl_texture_opaque_glow_start();
-	
-	glDisable(GL_BLEND);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_EQUAL);
-	glDepthMask(GL_FALSE);
-
-	mesh=portal->mesh.meshes;
-	
-	for (n=0;n!=portal->mesh.nmesh;n++) {
-	
-		if (!mesh->draw.has_glow) {
-			mesh++;
-			continue;
-		}
-		
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-
-			if (!poly->draw.is_glow) {
-				poly++;
-				continue;
-			}
-
-			texture=&map.textures[poly->txt_idx];
-			frame=poly->draw.cur_frame;
-			gl_texture_opaque_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,texture->glow.current_color);
-
-			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
-		
-			poly++;
-		}
-	
-		mesh++;
-	}
-
-	gl_texture_opaque_glow_end();
-}
-
-/* =======================================================
-
-      Shader Pieces Drawing
-      
-======================================================= */
-
-void segment_render_opaque_portal_shader_mesh(portal_type *portal)
-{
-	int					n,k,frame;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	texture_type		*texture;
-
-	gl_shader_program_start();
-	gl_texture_shader_start();
-
-	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
-		
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_TRUE);
-		
-	mesh=portal->mesh.meshes;
-	
-	for (n=0;n!=portal->mesh.nmesh;n++) {
-	
-		if (!mesh->draw.has_opaque_shader) {
-			mesh++;
-			continue;
-		}
-		
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-
-			if (poly->draw.draw_type!=map_mesh_poly_draw_opaque_shader) {
-				poly++;
-				continue;
-			}
-
-			texture=&map.textures[poly->txt_idx];
-			frame=poly->draw.cur_frame;
-
-			gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
-			gl_shader_set_program(texture->shader.program_obj);
-			
-			gl_shader_set_variables(texture->shader.program_obj,&poly->box.mid,texture);
-			
-			glNormal3f(poly->draw.normal[0],poly->draw.normal[1],poly->draw.normal[2]);
-
-			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
-		
-			poly++;
-		}
-	
-		mesh++;
-	}
-
-	gl_texture_shader_end();
-	gl_shader_program_end();
-}
 
 /* =======================================================
 
       Opaque Segment Drawing
       
 ======================================================= */
-
-// supergumba -- more attempts at different rendering paths
-// can eventually delete (and rename) a lot of this
-
-
-/*
-int segment_render_opaque_portal(int rn,int pass_last)
-{
-	int							stencil_pass,
-								pass_start,pass_end;
-	portal_type					*portal;
-
-	portal=&map.portals[rn];
-
-		// attach compiled vertex lists
-
-	portal_compile_gl_list_attach(rn);
-
-		// meshes that use stencil-based lighting
-
-		// need to potentially run multiple passes
-		// so 8-bit stencil buffer can be used for more
-		// than 256 polygons in a portal.
-	
-		// The stencil buffer is used to mask the
-		// tesseled lighting passes
-
-	pass_start=portal->opaque_stencil_pass_start;
-	pass_end=portal->opaque_stencil_pass_end;
-
-	for (stencil_pass=pass_start;stencil_pass<=pass_end;stencil_pass++) {
-	
-			// clear stencil buffer when passes change
-
-		if (stencil_pass!=pass_last) {
-			glClear(GL_STENCIL_BUFFER_BIT);
-			pass_last=stencil_pass;
-		}
-
-			// stencilled normal and bump textures
-
-		if ((portal->mesh.draw.has_stencil_normal) || (portal->mesh.draw.has_stencil_specular_normal)) segment_render_opaque_stencil_portal_normal_mesh(portal,stencil_pass);
-		if ((portal->mesh.draw.has_stencil_bump) || (portal->mesh.draw.has_stencil_specular_bump)) segment_render_opaque_stencil_portal_bump_mesh(portal,stencil_pass);
-
-			// stencilled lighting
-
-		if (!hilite_on) {
-			if ((portal->mesh.draw.has_stencil_normal) || (portal->mesh.draw.has_stencil_bump)) segment_render_opaque_stencil_portal_lighting_mesh(portal,stencil_pass);
-			if ((portal->mesh.draw.has_stencil_specular_normal) || (portal->mesh.draw.has_stencil_specular_bump)) segment_render_opaque_stencil_portal_specular_mesh(portal,stencil_pass);
-			if ((portal->mesh.draw.has_stencil_normal) || (portal->mesh.draw.has_stencil_bump)) segment_render_opaque_stencil_portal_lighting_block_mesh(portal,stencil_pass);
-		}
-	}
-
-		// meshes that do not use stencil based lighting
-
-	if (portal->mesh.draw.has_hilite_normal) segment_render_opaque_hilite_portal_normal_mesh(portal);
-	if (portal->mesh.draw.has_hilite_bump) segment_render_opaque_hilite_portal_bump_mesh(portal);
-
-		// glows and shaders
-
-	if (portal->mesh.draw.has_glow) segment_render_opaque_portal_glow_mesh(portal);
-	if (portal->mesh.draw.has_opaque_shader) segment_render_opaque_portal_shader_mesh(portal);
-
-	return(pass_last);
-}
-
-void segment_render_opaque(int portal_cnt,int *portal_list)
-{
-	int							i,pass_last;
-
-		// setup view
-
-	gl_setup_viewport(console_y_offset());
-	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.ang);
-	gl_setup_project();
-
-		// texture binding optimization
-
-	gl_texture_bind_start();
-		
-		// run through portals
-		// we want to go from closest to furthest to
-		// catch as much z-buffer eliminates as possible
-		
-		// remember the last stencil pass set so we
-		// only clear the stencil when necessary
-
-	pass_last=0;
-		
-	for (i=(portal_cnt-1);i>=0;i--) {
-		pass_last=segment_render_opaque_portal(portal_list[i],pass_last);
-	}
-
-		// dettach any attached lists
-
-	portal_compile_gl_list_dettach();
-}
-
-*/
-
-
 
 
 // supergumba -- should rename all these
@@ -685,13 +62,14 @@ void segment_render_opaque(int portal_cnt,int *portal_list)
 void segment_render_opaque_portal_mesh_poly(portal_type *portal,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int					frame,ntrig;
-	bool				is_hilite,is_specular;
+	bool				recalc_normal,is_hilite,is_specular,
+						is_simple_lighting,is_poly_simple_lighting;
 	texture_type		*texture;
 
 		// get the texture and setup
 
 	texture=&map.textures[poly->txt_idx];
-	frame=poly->draw.cur_frame;
+	frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
 		// shaders
 
@@ -725,6 +103,10 @@ void segment_render_opaque_portal_mesh_poly(portal_type *portal,map_mesh_type *m
 
 		// non-shader regular drawing
 
+		// detect if bump normal need to be recalculated
+
+	recalc_normal=map_portal_light_check_changes(portal) || (mesh->flag.moveable);
+
 		// if no hilite, then need to turn on
 		// stenciling for the lighting and specular
 		// passes
@@ -739,6 +121,10 @@ void segment_render_opaque_portal_mesh_poly(portal_type *portal,map_mesh_type *m
 	else {
 		glDisable(GL_STENCIL_TEST);
 	}
+
+		// detect simple lighting
+
+	is_simple_lighting=(!setup.high_quality_lighting) || (fog_solid_on());
 
 		// draw the texture
 
@@ -758,6 +144,8 @@ void segment_render_opaque_portal_mesh_poly(portal_type *portal,map_mesh_type *m
 		gl_texture_opaque_end();
 	}
 	else {
+		if (recalc_normal) map_portal_calculate_normal_vector_smooth(portal,(double)poly->box.mid.x,(double)poly->box.mid.y,(double)poly->box.mid.z,poly->draw.normal,&poly->draw.normal_dist_factor);
+
 		gl_texture_opaque_bump_start();
 		gl_texture_opaque_bump_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,poly->draw.normal,poly->draw.normal_dist_factor);
 		glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
@@ -767,6 +155,10 @@ void segment_render_opaque_portal_mesh_poly(portal_type *portal,map_mesh_type *m
 		// lighting
 
 	if (!is_hilite) {
+
+			// simple lighting
+
+		is_poly_simple_lighting=(is_simple_lighting) || (poly->draw.simple_tessel);
 	
 			// specular?
 			
@@ -793,7 +185,7 @@ void segment_render_opaque_portal_mesh_poly(portal_type *portal,map_mesh_type *m
 
 		gl_texture_tesseled_lighting_set(-1,poly->dark_factor);
 
-		if (poly->draw.is_simple_lighting) {
+		if (is_poly_simple_lighting) {
 			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 		}
 		else {
@@ -815,9 +207,9 @@ void segment_render_opaque_portal_mesh_poly(portal_type *portal,map_mesh_type *m
 			glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
 			glStencilFunc(GL_EQUAL,0x56,0xFF);
 
-			gl_texture_tesseled_specular_set(texture->specularmaps[poly->draw.cur_frame].gl_id);
+			gl_texture_tesseled_specular_set(texture->specularmaps[frame].gl_id);
 
-			if (poly->draw.is_simple_lighting) {
+			if (is_poly_simple_lighting) {
 				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 			}
 			else {

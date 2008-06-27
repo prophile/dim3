@@ -686,12 +686,12 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 		memmove(&orig_obj->pos,&vehicle_obj->pos,sizeof(d3pos));
 	}
 	
-	old_ok=vehicle_obj->run_setup.collision_ok;				// don't collide with vehicle
-	vehicle_obj->run_setup.collision_ok=FALSE;
+	old_ok=vehicle_obj->contact.object_on;				// don't collide with vehicle
+	vehicle_obj->contact.object_on=FALSE;
 	
 	empty=!map_spot_empty_object(orig_obj);
 	
-	vehicle_obj->run_setup.collision_ok=old_ok;
+	vehicle_obj->contact.object_on=old_ok;
 	
 	if ((!empty) && (!ignore_errors)) {
 		if (err_str!=NULL) strcpy(err_str,"No space in map to exit");

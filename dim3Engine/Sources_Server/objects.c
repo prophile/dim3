@@ -377,7 +377,9 @@ obj_type* object_create(int bind)
 	obj->input_freeze=FALSE;
 	obj->hide_all_weapons=FALSE;
 	obj->find_on=TRUE;
-	obj->contact.on=TRUE;
+	obj->contact.object_on=TRUE;
+	obj->contact.projectile_on=TRUE;
+	obj->contact.force_on=TRUE;
 	obj->contact.pushable=FALSE;
 	obj->hit_box.on=FALSE;
 	obj->pickup.on=FALSE;

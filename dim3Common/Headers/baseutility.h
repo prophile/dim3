@@ -655,8 +655,10 @@ extern void shader_delete(shader_type *shader);
 //
 
 #define net_update_flag_hidden						0x00000001
-#define net_update_flag_no_contact					0x00000002
-#define net_update_flag_talking						0x00000004
+#define net_update_flag_no_contact_object			0x00000002
+#define net_update_flag_no_contact_projectile		0x00000004
+#define net_update_flag_no_contact_force			0x00000008
+#define net_update_flag_talking						0x00000010
 
 //
 // message sizes

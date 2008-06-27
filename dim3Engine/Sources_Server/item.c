@@ -46,24 +46,23 @@ extern bool collide_object_to_item(obj_type *obj1,obj_type *obj2);
 
 void item_pickup_check(obj_type *obj)
 {
-	int				n,rn,ignore_uid;
+	int				n,ignore_uid;
 	obj_type		*item_obj;
 	
 	if (obj->hidden) return;
-	if (!obj->contact.on) return;
+	if (!obj->contact.object_on) return;
 	if (obj->pickup.on) return;			// pickup objects can't pickup themselves
 	if (obj->pickup.ignore) return;		// this object can't pick anything up
 
 	if ((obj->player) && (obj->status.health==0)) return;		// dead players can't pickup
 	
-	rn=obj->pos.rn;
 	ignore_uid=obj->uid;
 	
 	item_obj=server.objs;
     
 	for (n=0;n!=server.count.obj;n++) {
     
-		if ((!item_obj->run_setup.pickup_ok) || (item_obj->uid==ignore_uid) || (item_obj->pos.rn!=rn)) {
+		if ((item_obj->hidden) || (!item_obj->pickup.on) || (!item_obj->contact.object_on) || (item_obj->uid==ignore_uid)) {
 			item_obj++;
 			continue;
 		}

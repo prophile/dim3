@@ -64,6 +64,7 @@ int find_poly_for_upward_point(int x,int y,int z,int ydist,poly_pointer_type *po
 	contact.proj_on=FALSE;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
+	contact.origin=poly_ray_trace_origin_unknown;
 
 	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
 		memmove(poly,&contact.poly,sizeof(poly_pointer_type));
@@ -92,6 +93,7 @@ int find_poly_for_downward_point(int x,int y,int z,int ydist,poly_pointer_type *
 	contact.proj_on=FALSE;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
+	contact.origin=poly_ray_trace_origin_unknown;
 
 	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
 		memmove(poly,&contact.poly,sizeof(poly_pointer_type));
@@ -127,6 +129,7 @@ int find_poly_nearest_stand(int x,int y,int z,int ydist,bool ignore_higher)
 	contact.proj_on=FALSE;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
+	contact.origin=poly_ray_trace_origin_unknown;
 
 	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) return(hpt.y);
 

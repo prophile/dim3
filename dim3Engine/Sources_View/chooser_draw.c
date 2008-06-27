@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "scripts.h"
 #include "interfaces.h"
+#include "inputs.h"
 
 extern server_type			server;
 extern js_type				js;

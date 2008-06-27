@@ -173,9 +173,7 @@ bool projectile_hit(int tick,proj_type *proj,bool hit_scan)
 		
 			// push object
 			
-		if (proj_setup->push.on) {
-			object_push(hurt_obj,&proj->ang,proj_setup->push.force);
-		}
+		if (proj_setup->push.on) object_push(hurt_obj,&proj->ang,proj_setup->push.force,TRUE);
     }
 	
 		// decals

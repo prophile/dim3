@@ -155,8 +155,9 @@ void halo_draw_setup(void)
 	ept.z=view.camera.pos.z;
 
 	contact.proj_on=FALSE;
-	contact.proj_ignore_uid=-1;
+
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
+	contact.origin=poly_ray_trace_origin_object;
 
 	for (i=0;i<view.count.halo_draw;i++) {
 		halo_draw=&view.halo_draws[i];

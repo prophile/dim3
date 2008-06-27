@@ -111,42 +111,6 @@ void portal_triggers(obj_type *obj,int old_rn,int rn)
 
 /* =======================================================
 
-      Setup Objects
-  
-======================================================= */
-
-void setup_objects(void)
-{
-	int			n;
-	obj_type	*obj;
-
-	// supergumba -- is this necessary?
-
-	obj=server.objs;
-
-	for (n=0;n!=server.count.obj;n++) {
-
-		if (obj->scenery.on) {
-			obj->run_setup.stand_ok=obj->contact.on;
-			obj->run_setup.collision_ok=obj->contact.on;
-			obj->run_setup.push_ok=FALSE;
-			obj->run_setup.pickup_ok=FALSE;
-			obj->run_setup.melee_ok=FALSE;
-		}
-		else {
-			obj->run_setup.stand_ok=(!obj->hidden)&&(obj->contact.on)&&(!obj->pickup.on);
-			obj->run_setup.collision_ok=(!obj->hidden)&&(obj->contact.on)&&(!obj->pickup.on);
-			obj->run_setup.push_ok=(!obj->hidden)&&(!obj->suspend)&&(obj->contact.on);
-			obj->run_setup.pickup_ok=(!obj->hidden)&&(obj->pickup.on)&&(obj->contact.on);
-			obj->run_setup.melee_ok=(!obj->hidden)&&(obj->contact.on);
-		}
-
-		obj++;
-	}
-}
-
-/* =======================================================
-
       Run Specific Objects
   
 ======================================================= */
@@ -404,7 +368,6 @@ void server_run(int tick)
 
 			group_moves_run();
 			
-			setup_objects();
 			run_objects_slice(tick);
 			
 			run_projectiles_slice(tick);

@@ -51,9 +51,9 @@ void decal_render_stencil(int stencil_idx,map_mesh_type *mesh,map_mesh_poly_type
 	int			n;
 	d3pnt		*pt;
 
-		// already stenciled?
+		// already stenciled for decal?
 
-	if (mesh_poly->draw.stencil_idx!=0) return;
+	if (mesh_poly->draw.decal_stencil_idx!=0) return;
 
 		// stencil
 
@@ -70,7 +70,7 @@ void decal_render_stencil(int stencil_idx,map_mesh_type *mesh,map_mesh_poly_type
 
 		// remember stencil
 
-	mesh_poly->draw.stencil_idx=stencil_idx;
+	mesh_poly->draw.decal_stencil_idx=stencil_idx;
 }
 
 void decal_render_mark(int stencil_idx,decal_type *decal)
@@ -142,7 +142,7 @@ void decal_render(void)
 
 	for (n=0;n!=server.count.decal;n++) {
 		mesh_poly=&map.portals[decal->rn].mesh.meshes[decal->mesh_idx].polys[decal->poly_idx];
-		mesh_poly->draw.stencil_idx=0;
+		mesh_poly->draw.decal_stencil_idx=0;
 		decal++;
 	}
 
@@ -203,7 +203,7 @@ void decal_render(void)
 
 		if (map.portals[decal->rn].in_path) {
 			mesh_poly=&map.portals[decal->rn].mesh.meshes[decal->mesh_idx].polys[decal->poly_idx];
-			decal_render_mark(mesh_poly->draw.stencil_idx,decal);
+			decal_render_mark(mesh_poly->draw.decal_stencil_idx,decal);
 		}
 
 		decal++;

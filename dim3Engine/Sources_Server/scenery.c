@@ -66,13 +66,16 @@ void scenery_create(void)
 		obj->scenery.idx=n;
 
 		obj->suspend=TRUE;
+		obj->hidden=FALSE;
 
 			// run the setup
 
 		memmove(&obj->pos,&map_scenery->pos,sizeof(d3pos));
 		memmove(&obj->ang,&map_scenery->ang,sizeof(d3ang));
 
-		obj->contact.on=map_scenery->contact;
+		obj->contact.object_on=map_scenery->contact_object_on;
+		obj->contact.projectile_on=map_scenery->contact_projectile_on;
+		obj->contact.force_on=FALSE;
 		obj->hit_box.on=map_scenery->contact_hit_box;
 
 		strcpy(obj->name,map_scenery->model_name);
