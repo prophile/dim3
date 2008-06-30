@@ -316,7 +316,7 @@ typedef struct		{
 
 typedef struct		{
 						int							nvlist;
-						float						*pvert,*pcoord,*pcolor;
+						float						*pvert,*pcoord,*pcolor,*pnormal;
 						unsigned char				*phit;
 						portal_vertex_list_type		*vertex_list;
 					} portal_vertex_type;

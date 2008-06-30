@@ -35,6 +35,7 @@ and can be sold or given away.
 #include "sounds.h"
 #include "inputs.h"
 
+extern server_type			server;
 extern hud_type				hud;
 extern setup_type			setup;
 
@@ -42,8 +43,6 @@ bool						gui_has_background,gui_show_view;
 char						gui_last_key;
 bitmap_type					gui_background_bitmap;
 chooser_frame_type			gui_frame;
-
-bool		gui_test=0;		// supergumba -- testing
 
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
@@ -134,7 +133,7 @@ void gui_shutdown(void)
 	
 		// restart any map ambients
 		
-	map_restart_ambient();
+	if (server.map_open) map_restart_ambient();
 	
 		// unpause game
 		

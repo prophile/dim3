@@ -45,11 +45,14 @@ void portal_compile_gl_lists(int tick,int rn)
 {
 	int						n,k,nvlist,nmesh,npoly;
 	float					fx,fy,fz;
-	float					*pv,*pp,*pc;
+	float					*pv,*pp,*pc,*pn;
 	portal_type				*portal;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	portal_vertex_list_type	*vl;
+
+	float	ftemp;		// supergumba -- testing
+
 	
 	portal=&map.portals[rn];
 
@@ -61,6 +64,7 @@ void portal_compile_gl_lists(int tick,int rn)
 	pv=(float*)portal->vertexes.pvert;
 	pp=(float*)portal->vertexes.pcoord;
 	pc=(float*)portal->vertexes.pcolor;
+	pn=(float*)portal->vertexes.pnormal;
 
 		// the eye offset
 
@@ -73,6 +77,8 @@ void portal_compile_gl_lists(int tick,int rn)
 		// instead of recreating the lights
 
 	if (!map_portal_light_check_changes(portal)) {
+
+		vl=portal->vertexes.vertex_list;
 
 		for (n=0;n!=nvlist;n++) {
 			*pv++=(vl->x-fx);
@@ -88,6 +94,7 @@ void portal_compile_gl_lists(int tick,int rn)
 	}
 	
 		// recalc polygon normals
+		// supergumba -- can delete all this, and factor can probably go away
 		
 	if (setup.bump_mapping) {
 	
@@ -108,10 +115,22 @@ void portal_compile_gl_lists(int tick,int rn)
 		}
 	}
 
+
+	vl=portal->vertexes.vertex_list;
+
+	for (n=0;n!=nvlist;n++) {
+		map_portal_calculate_normal_vector(portal,vl->x,vl->y,vl->z,pn,&ftemp);
+		pn+=3;
+
+		vl++;
+	}
+
 		// run ray-traced lighting if option is
 		// turned on
 		
 	if (setup.ray_trace_lighting) {
+
+		vl=portal->vertexes.vertex_list;
 
 		for (n=0;n!=nvlist;n++) {
 			light_trace_calculate_light_color(portal,vl->x,vl->y,vl->z,pc);
@@ -130,6 +149,8 @@ void portal_compile_gl_lists(int tick,int rn)
 	}
 
 		// run regular lighting
+
+	vl=portal->vertexes.vertex_list;
 
 	for (n=0;n!=nvlist;n++) {
 		map_portal_calculate_light_color(portal,(double)vl->x,(double)vl->y,(double)vl->z,pc);

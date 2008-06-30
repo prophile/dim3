@@ -136,6 +136,8 @@ inline void gl_texture_opaque_set(int txt_id)
       
 ======================================================= */
 
+
+// supergumba -- can probably delete a lot of this
 void gl_texture_opaque_bump_start(void)
 {
 		// texture unit 0
@@ -241,6 +243,119 @@ inline void gl_texture_opaque_bump_set(int txt_id,int bump_id,float *normal,floa
 	glActiveTexture(GL_TEXTURE1);
 	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
 }
+
+
+
+
+
+
+
+void gl_texture_opaque_tesseled_bump_start(void)
+{
+		// texture unit 0
+		// dot3 product between normals and bump map
+	
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+	
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_DOT3_RGB);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PRIMARY_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+
+		// texture unit 1
+		// add dot3 product with normal distance factor
+		// for hardness boost
+	
+	glActiveTexture(GL_TEXTURE1);
+	glEnable(GL_TEXTURE_2D);
+
+	gl_texture_bind(1,null_bitmap.gl_id);				// texture is not used in this unit
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+	
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_ADD);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PREVIOUS);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_CONSTANT);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+
+		// texture unit 2
+		// flip dot product so add acts as a subtract
+		
+	glActiveTexture(GL_TEXTURE2);
+	glEnable(GL_TEXTURE_2D);
+
+	gl_texture_bind(2,null_bitmap.gl_id);				// texture is not used in this unit
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PREVIOUS);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_ONE_MINUS_SRC_COLOR);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+}
+
+void gl_texture_opaque_tesseled_bump_end(void)
+{
+	glActiveTexture(GL_TEXTURE2);
+	glDisable(GL_TEXTURE_2D);
+
+	glActiveTexture(GL_TEXTURE1);
+	glDisable(GL_TEXTURE_2D);
+
+	glActiveTexture(GL_TEXTURE0);
+	glDisable(GL_TEXTURE_2D);
+}
+
+inline void gl_texture_opaque_tesseled_bump_set(int bump_id,float *normal,float normal_dist_factor)
+{
+	GLfloat				col4[4];
+
+		// textures
+
+	gl_texture_bind(0,bump_id);
+
+		// bump normal
+		// supergumba -- get rid of this
+
+	col4[0]=normal[0];
+	col4[1]=normal[1];
+	col4[2]=normal[2];
+	col4[3]=1.0f;
+
+	glActiveTexture(GL_TEXTURE0);
+	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
+
+		// bump distance modulation
+		// switch so the farther away the lights, the less bumping
+		// and the closer the more extreme shadows
+		
+		// we want values from 0.0f (hardest bumping) to 0.3f
+		// (softest bumping)
+		
+	col4[0]=col4[1]=col4[2]=((1.0f-normal_dist_factor)*0.3f);
+	col4[3]=1.0f;
+
+	glActiveTexture(GL_TEXTURE1);
+	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
+}
+
+
 
 /* =======================================================
 
