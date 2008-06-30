@@ -178,7 +178,9 @@ void piece_create_scenery(void)
 	scenery->model_name[0]=0x0;
 	scenery->animation_name[0]=0x0;
 	scenery->lighting_mode=3;			// this is vertex lighting
-	scenery->contact=TRUE;
+	scenery->contact_object_on=TRUE;
+	scenery->contact_projectile_on=TRUE;
+	scenery->contact_hit_box=TRUE;
 	scenery->face_forward=FALSE;
 	scenery->shadow=FALSE;
 	scenery->override_size=FALSE;

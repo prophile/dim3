@@ -37,7 +37,8 @@ extern map_type				map;
 #define kSceneryAngleX								FOUR_CHAR_CODE('angx')
 #define kSceneryAngleY								FOUR_CHAR_CODE('angy')
 #define kSceneryAngleZ								FOUR_CHAR_CODE('angz')
-#define kSceneryContact								FOUR_CHAR_CODE('cnct')
+#define kSceneryContactObject						FOUR_CHAR_CODE('cnct')
+#define kSceneryContactProjectile					FOUR_CHAR_CODE('cnpj')
 #define kSceneryContactHitBox						FOUR_CHAR_CODE('hbox')
 #define kSceneryFaceFront							FOUR_CHAR_CODE('afft')
 #define kSceneryShadow								FOUR_CHAR_CODE('shdw')
@@ -108,7 +109,8 @@ bool dialog_scenery_setting_run(map_scenery_type *scenery)
 	dialog_set_float(dialog_scenery_setting_wind,kSceneryAngleX,0,scenery->ang.x);
 	dialog_set_float(dialog_scenery_setting_wind,kSceneryAngleY,0,scenery->ang.y);
 	dialog_set_float(dialog_scenery_setting_wind,kSceneryAngleZ,0,scenery->ang.z);
-	dialog_set_boolean(dialog_scenery_setting_wind,kSceneryContact,0,scenery->contact);
+	dialog_set_boolean(dialog_scenery_setting_wind,kSceneryContactObject,0,scenery->contact_object_on);
+	dialog_set_boolean(dialog_scenery_setting_wind,kSceneryContactProjectile,0,scenery->contact_projectile_on);
 	dialog_set_boolean(dialog_scenery_setting_wind,kSceneryContactHitBox,0,scenery->contact_hit_box);
 	dialog_set_boolean(dialog_scenery_setting_wind,kSceneryFaceFront,0,scenery->face_forward);
 	dialog_set_boolean(dialog_scenery_setting_wind,kSceneryShadow,0,scenery->shadow);
@@ -141,7 +143,8 @@ bool dialog_scenery_setting_run(map_scenery_type *scenery)
 		scenery->ang.x=dialog_get_float(dialog_scenery_setting_wind,kSceneryAngleX,0);
 		scenery->ang.y=dialog_get_float(dialog_scenery_setting_wind,kSceneryAngleY,0);
 		scenery->ang.z=dialog_get_float(dialog_scenery_setting_wind,kSceneryAngleZ,0);
-		scenery->contact=dialog_get_boolean(dialog_scenery_setting_wind,kSceneryContact,0);
+		scenery->contact_object_on=dialog_get_boolean(dialog_scenery_setting_wind,kSceneryContactObject,0);
+		scenery->contact_projectile_on=dialog_get_boolean(dialog_scenery_setting_wind,kSceneryContactProjectile,0);
 		scenery->contact_hit_box=dialog_get_boolean(dialog_scenery_setting_wind,kSceneryContactHitBox,0);
 		scenery->face_forward=dialog_get_boolean(dialog_scenery_setting_wind,kSceneryFaceFront,0);
 		scenery->shadow=dialog_get_boolean(dialog_scenery_setting_wind,kSceneryShadow,0);

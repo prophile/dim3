@@ -239,7 +239,7 @@ typedef struct		{
 						d3pnt					cpt;
 						d3ang					ang;
 						float					fov;
-						bool					mesh_only,draw_portal,ignore_site_path,
+						bool					mesh_only,draw_portal,ignore_site_path,draw_light_circle,
 												swap_on,clip_on;
 					} editor_3D_view_setup;
 

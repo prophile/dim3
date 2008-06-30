@@ -38,6 +38,7 @@ and can be sold or given away.
 extern map_type				map;
 extern view_type			view;
 extern camera_type			camera;
+extern hud_type				hud;
 extern server_type			server;
 extern js_type				js;
 extern setup_type			setup;
@@ -291,8 +292,8 @@ void remote_draw_names_render(void)
 
 				// covert to interface resolution
 
-			x=(x*setup.screen.x_scale)/setup.screen.x_sz;
-			y=(y*setup.screen.y_scale)/setup.screen.y_sz;
+			x=(x*hud.scale_x)/setup.screen.x_sz;
+			y=(y*hud.scale_y)/setup.screen.y_sz;
 
 				// draw text
 

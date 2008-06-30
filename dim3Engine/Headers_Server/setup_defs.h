@@ -94,7 +94,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							x_sz,y_sz,x_scale,y_scale;
+						int							x_sz,y_sz;
 					} setup_screen_type;
 
 //

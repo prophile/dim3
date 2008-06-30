@@ -37,6 +37,7 @@ and can be sold or given away.
 #define story_icon_forward_id		2
 
 extern server_type			server;
+extern hud_type				hud;
 extern setup_type			setup;
 extern js_type				js;
 
@@ -76,14 +77,14 @@ void story_setup_control(void)
 		
 		// sizes
 		
-	page_sz=setup.screen.y_scale-((15+32)+(15+32));
+	page_sz=hud.scale_y-((15+32)+(15+32));
 	
 		// controls
 		
-	lx=(setup.screen.x_scale-page_sz)>>1;
-	rx=setup.screen.x_scale-lx;
-	ty=(setup.screen.y_scale-page_sz)>>1;
-	by=setup.screen.y_scale-ty;
+	lx=(hud.scale_x-page_sz)>>1;
+	rx=hud.scale_x-lx;
+	ty=(hud.scale_y-page_sz)>>1;
+	by=hud.scale_y-ty;
 
 	ty-=5;
 	by+=5;
@@ -107,7 +108,7 @@ void story_setup_control(void)
 	sprintf(page_name,"%.2d",(story_page+1));
 	file_paths_data(&setup.file_path_setup,path,sub_path,page_name,"png");
 	
-	x=(setup.screen.x_scale-page_sz)>>1;
+	x=(hud.scale_x-page_sz)>>1;
 	y=15+32;
 		
 	element_bitmap_add(path,-1,x,y,page_sz,page_sz,FALSE);

@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "inputs.h"
 
+extern hud_type				hud;
 extern setup_type			setup;
 
 int							mouse_tick,mouse_motion_x,mouse_motion_y,
@@ -225,8 +226,8 @@ void input_gui_set_mouse(int x,int y)
 {
 		// scale from window to screen
 
-	x=(x*setup.screen.x_sz)/setup.screen.x_scale;
-	y=(y*setup.screen.y_sz)/setup.screen.y_scale;
+	x=(x*setup.screen.x_sz)/hud.scale_x;
+	y=(y*setup.screen.y_sz)/hud.scale_y;
 
 		// set mouse
 		
@@ -242,8 +243,8 @@ void input_gui_get_mouse_position(int *x,int *y)
 
 		// scale from window to screen
 
-	*x=((*x)*setup.screen.x_scale)/setup.screen.x_sz;
-	*y=((*y)*setup.screen.y_scale)/setup.screen.y_sz;
+	*x=((*x)*hud.scale_x)/setup.screen.x_sz;
+	*y=((*y)*hud.scale_y)/setup.screen.y_sz;
 }
 
 bool input_gui_get_mouse_left_button_down(void)

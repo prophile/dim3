@@ -38,6 +38,7 @@ and can be sold or given away.
 
 extern map_type				map;
 extern server_type			server;
+extern hud_type				hud;
 extern setup_type			setup;
 
 bool						map_pick_start_trigger;
@@ -63,10 +64,10 @@ void map_pick_setup_control(void)
 	
 	high=gl_text_get_char_height(TRUE);
 	
-	xadd=setup.screen.x_scale/3;
+	xadd=hud.scale_x/3;
 	
 	x=xadd>>1;
-	y=y_start=(setup.screen.y_scale-((high+1)*15))>>1;
+	y=y_start=(hud.scale_y-((high+1)*15))>>1;
 	
 	for (n=0;n!=nfile;n++) {
 		element_text_add(map_pick_fpd->files[n].file_name,n,x,y,tx_center,TRUE,TRUE,FALSE);
@@ -79,7 +80,7 @@ void map_pick_setup_control(void)
 		}
 	}
 	
-	element_text_add("Exit",map_pick_close_id,(setup.screen.x_scale-10),(setup.screen.y_scale-(high+1)),tx_right,TRUE,TRUE,FALSE);
+	element_text_add("Exit",map_pick_close_id,(hud.scale_x-10),(hud.scale_y-(high+1)),tx_right,TRUE,TRUE,FALSE);
 }
 
 /* =======================================================

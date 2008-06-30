@@ -59,9 +59,9 @@ void error_open(char *err_str,char *err_str_2)
 		
 	gui_initialize("Bitmaps/Backgrounds","error",FALSE);
 	
-	x=setup.screen.x_scale/2;
+	x=hud.scale_x/2;
 	
-	y=(setup.screen.y_scale/2)-5;
+	y=(hud.scale_y/2)-5;
 	element_text_add("[Error]",-1,x,y,tx_center,FALSE,FALSE,TRUE);
 
 	y+=gl_text_get_char_height(TRUE)+5;

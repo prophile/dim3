@@ -138,8 +138,8 @@ void setup_game_display_pane(void)
 	separate_y_add=element_get_separator_high();
 	control_y_sz=(control_y_add*7)+separate_y_add;
 	
-	x=(int)(((float)setup.screen.x_scale)*0.4f);
-	y=(setup.screen.y_scale>>1)-(control_y_sz>>1);
+	x=(int)(((float)hud.scale_x)*0.4f);
+	y=(hud.scale_y>>1)-(control_y_sz>>1);
 	
 		// setup screen size list
 		
@@ -186,8 +186,8 @@ void setup_game_graphics_pane(void)
 	separate_y_add=element_get_separator_high();
 	control_y_sz=(control_y_add*10)+(2*separate_y_add);
 	
-	x=(int)(((float)setup.screen.x_scale)*0.4f);
-	y=(setup.screen.y_scale>>1)-(control_y_sz>>1);
+	x=(int)(((float)hud.scale_x)*0.4f);
+	y=(hud.scale_y>>1)-(control_y_sz>>1);
 	
 	element_checkbox_add("High Quality Lighting",setup.high_quality_lighting,ctrl_high_quality_lighting_id,x,y,TRUE);
 	element_enable(ctrl_high_quality_lighting_id,(!setup_in_game));
@@ -227,8 +227,8 @@ void setup_game_audio_pane(void)
 	separate_y_add=element_get_separator_high();
 	control_y_sz=(control_y_add*2)+separate_y_add;
 	
-	x=(int)(((float)setup.screen.x_scale)*0.4f);
-	y=(setup.screen.y_scale>>1)-(control_y_sz>>1);
+	x=(int)(((float)hud.scale_x)*0.4f);
+	y=(hud.scale_y>>1)-(control_y_sz>>1);
 	
 	element_slider_add("Sound Volume",setup.sound_volume,0.0f,1.0f,ctrl_sound_volume_id,x,y,TRUE);
 	y+=control_y_add+separate_y_add;
@@ -246,8 +246,8 @@ void setup_game_mouse_pane(void)
 	separate_y_add=element_get_separator_high();
 	control_y_sz=(10*control_y_add)+(3*separate_y_add);
 	
-	x=(int)(((float)setup.screen.x_scale)*0.4f);
-	y=(setup.screen.y_scale>>1)-(control_y_sz>>1);
+	x=(int)(((float)hud.scale_x)*0.4f);
+	y=(hud.scale_y>>1)-(control_y_sz>>1);
 	
 	element_checkbox_add("Always Run",setup.always_run,ctrl_always_run_id,x,y,TRUE);
 	y+=control_y_add;
@@ -282,11 +282,11 @@ void setup_game_action_pane(void)
 	char				path[1024],path2[1024];
 	element_column_type	cols[2];
 	
-	x=(int)(((float)setup.screen.x_scale)*0.03f);
-	y=(int)(((float)setup.screen.y_scale)*0.15f);
+	x=(int)(((float)hud.scale_x)*0.03f);
+	y=(int)(((float)hud.scale_y)*0.15f);
 
-	wid=setup.screen.x_scale-(x*2);
-	high=(int)(((float)setup.screen.y_scale)*0.75f)-y;
+	wid=hud.scale_x-(x*2);
+	high=(int)(((float)hud.scale_y)*0.75f)-y;
 	
 		// setup action list
 		
@@ -335,11 +335,11 @@ void setup_game_action_pane(void)
 		
 	padding=element_get_padding();
 
-	x=setup.screen.x_scale>>1;
+	x=hud.scale_x>>1;
 	y+=high;
 	
-	wid=(int)(((float)setup.screen.x_scale)*0.2f);
-	high=(int)(((float)setup.screen.x_scale)*0.05f);
+	wid=(int)(((float)hud.scale_x)*0.2f);
+	high=(int)(((float)hud.scale_x)*0.05f);
 	
 	y+=(padding+(high/2));
 	
@@ -383,27 +383,27 @@ void setup_game_create_pane(void)
 	
 	padding=element_get_padding();;
 	
-	wid=setup.screen.x_scale;
-	high=(int)(((float)setup.screen.y_scale)*0.075f);
-	tab_list_wid=(int)(((float)setup.screen.x_scale)*0.85f);
-	tab_pane_high=(int)(((float)setup.screen.y_scale)*0.84f);
+	wid=hud.scale_x;
+	high=(int)(((float)hud.scale_y)*0.075f);
+	tab_list_wid=(int)(((float)hud.scale_x)*0.85f);
+	tab_pane_high=(int)(((float)hud.scale_y)*0.84f);
 	
 	element_tab_add((char*)tab_path,(char*)tab_path2,setup_tab_value,ctrl_tab_id,ntab,0,padding,wid,high,tab_list_wid,tab_pane_high);
 	
 		// buttons
 		
-	wid=(int)(((float)setup.screen.x_scale)*0.2f);
-	high=(int)(((float)setup.screen.x_scale)*0.05f);
+	wid=(int)(((float)hud.scale_x)*0.2f);
+	high=(int)(((float)hud.scale_x)*0.05f);
 	
 	x=padding;
-	y=setup.screen.y_scale-padding;
+	y=hud.scale_y-padding;
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_default","png");
 	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_default_selected","png");
 	element_button_add(path,path2,setup_game_default_button,x,y,wid,high,element_pos_left,element_pos_bottom);
 
-	wid=(int)(((float)setup.screen.x_scale)*0.1f);
-	x=setup.screen.x_scale-padding;
+	wid=(int)(((float)hud.scale_x)*0.1f);
+	x=hud.scale_x-padding;
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_ok","png");
 	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_ok_selected","png");

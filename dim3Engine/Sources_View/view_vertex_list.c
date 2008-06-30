@@ -43,10 +43,12 @@ extern setup_type		setup;
 
 void portal_compile_gl_lists(int tick,int rn)
 {
-	int						n,nvlist;
+	int						n,k,nvlist,nmesh,npoly;
 	float					fx,fy,fz;
 	float					*pv,*pp,*pc;
 	portal_type				*portal;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
 	portal_vertex_list_type	*vl;
 	
 	portal=&map.portals[rn];
@@ -83,6 +85,27 @@ void portal_compile_gl_lists(int tick,int rn)
 		}
 		
 		return;
+	}
+	
+		// recalc polygon normals
+		
+	if (setup.bump_mapping) {
+	
+		nmesh=portal->mesh.nmesh;
+		mesh=portal->mesh.meshes;
+		
+		for (n=0;n!=nmesh;n++) {
+		
+			npoly=mesh->npoly;
+			poly=mesh->polys;
+			
+			for (k=0;k!=npoly;k++) {
+				map_portal_calculate_normal_vector_smooth(portal,(double)poly->box.mid.x,(double)poly->box.mid.y,(double)poly->box.mid.z,poly->draw.normal,&poly->draw.normal_dist_factor);
+				poly++;
+			}
+			
+			mesh++;
+		}
 	}
 
 		// run ray-traced lighting if option is

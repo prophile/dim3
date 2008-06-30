@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "video.h"
 #include "inputs.h"
 
+extern hud_type				hud;
 extern setup_type			setup;
 
 bitmap_type					cursor_bitmap;
@@ -69,7 +70,7 @@ void cursor_draw(void)
 		
 	input_gui_get_mouse_position(&x,&y);
 
-	sz=(int)(((float)setup.screen.x_scale)*cursor_size_factor);
+	sz=(int)(((float)hud.scale_x)*cursor_size_factor);
 		
 	lft=x;
 	rgt=lft+sz;

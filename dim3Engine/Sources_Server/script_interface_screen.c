@@ -35,11 +35,10 @@ extern js_type			js;
 extern setup_type		setup;
 
 JSBool js_get_interface_screen_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_interface_screen_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			interface_screen_class={"interface_screen_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_interface_screen_property,js_set_interface_screen_property,
+							js_get_interface_screen_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 JSPropertySpec	interface_screen_props[]={
@@ -48,6 +47,8 @@ JSPropertySpec	interface_screen_props[]={
 							{"widthScale",			interface_screen_prop_width_scale,	JSPROP_PERMANENT|JSPROP_SHARED},
 							{"heightScale",			interface_screen_prop_height_scale,	JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
+
+// supergumba -- widthScale and heightScale are depreciated
 
 /* =======================================================
 
@@ -81,31 +82,7 @@ JSBool js_get_interface_screen_property(JSContext *cx,JSObject *j_obj,jsval id,j
 		case interface_screen_prop_height:
 			*vp=INT_TO_JSVAL(setup.screen.y_sz);
 			break;
-		case interface_screen_prop_width_scale:
-			*vp=INT_TO_JSVAL(setup.screen.x_scale);
-			break;
-		case interface_screen_prop_height_scale:
-			*vp=INT_TO_JSVAL(setup.screen.y_scale);
-			break;
 	}
 
 	return(JS_TRUE);
 }
-
-JSBool js_set_interface_screen_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
-{
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
-	switch (JSVAL_TO_INT(id)) {
-	
-		case interface_screen_prop_width_scale:
-			setup.screen.x_scale=JSVAL_TO_INT(*vp);
-			break;
-		case interface_screen_prop_height_scale:
-			setup.screen.y_scale=JSVAL_TO_INT(*vp);
-			break;
-	}
-	
-	return(JS_TRUE);
-}
-

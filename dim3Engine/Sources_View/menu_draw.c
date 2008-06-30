@@ -80,8 +80,8 @@ void menu_setup_control_interface(void)
 		
 	high=gl_text_get_char_height(FALSE);
 	
-	x=setup.screen.x_scale>>1;
-	y=((setup.screen.y_scale-((high+5)*nitem))>>1)+(high+5);
+	x=hud.scale_x>>1;
+	y=((hud.scale_y-((high+5)*nitem))>>1)+(high+5);
 	
 	for (n=0;n!=nitem;n++) {
 		element_text_add(item->data,n,x,y,tx_center,FALSE,TRUE,FALSE);
@@ -97,8 +97,8 @@ void menu_setup_control_editor(void)
 		
 	high=gl_text_get_char_height(FALSE);
 	
-	x=setup.screen.x_scale>>1;
-	y=((setup.screen.y_scale-((high+5)*4))>>1)+(high+5);
+	x=hud.scale_x>>1;
+	y=((hud.scale_y-((high+5)*4))>>1)+(high+5);
 
 	element_text_add("Continue",menu_editor_continue_id,x,y,tx_center,FALSE,TRUE,FALSE);
 	y+=(high+5);

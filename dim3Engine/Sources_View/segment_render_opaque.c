@@ -62,7 +62,7 @@ extern void portal_compile_gl_list_dettach(void);
 void segment_render_opaque_portal_mesh_poly(portal_type *portal,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int					frame,ntrig;
-	bool				recalc_normal,is_hilite,is_specular,
+	bool				is_hilite,is_specular,
 						is_simple_lighting,is_poly_simple_lighting;
 	texture_type		*texture;
 
@@ -103,10 +103,6 @@ void segment_render_opaque_portal_mesh_poly(portal_type *portal,map_mesh_type *m
 
 		// non-shader regular drawing
 
-		// detect if bump normal need to be recalculated
-
-	recalc_normal=map_portal_light_check_changes(portal) || (mesh->flag.moveable);
-
 		// if no hilite, then need to turn on
 		// stenciling for the lighting and specular
 		// passes
@@ -144,8 +140,6 @@ void segment_render_opaque_portal_mesh_poly(portal_type *portal,map_mesh_type *m
 		gl_texture_opaque_end();
 	}
 	else {
-		if (recalc_normal) map_portal_calculate_normal_vector_smooth(portal,(double)poly->box.mid.x,(double)poly->box.mid.y,(double)poly->box.mid.z,poly->draw.normal,&poly->draw.normal_dist_factor);
-
 		gl_texture_opaque_bump_start();
 		gl_texture_opaque_bump_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,poly->draw.normal,poly->draw.normal_dist_factor);
 		glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
@@ -256,7 +250,7 @@ void segment_render_opaque_portal(int portal_idx)
 		// attach compiled vertex lists
 
 	portal_compile_gl_list_attach(portal_idx);
-
+	
 		// run through the portal meshes
 
 	portal=&map.portals[portal_idx];

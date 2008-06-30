@@ -48,6 +48,7 @@ extern bool map_start(bool skip_media,char *err_str);
 
 extern map_type				map;
 extern server_type			server;
+extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
@@ -119,8 +120,8 @@ void host_open(void)
 		
 	high=gl_text_get_char_height(FALSE);
 		
-	x=setup.screen.x_scale-10;
-	y=setup.screen.y_scale-30;
+	x=hud.scale_x-10;
+	y=hud.scale_y-30;
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_cancel","png");
 	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_cancel_selected","png");
@@ -149,8 +150,8 @@ void host_open(void)
 
 		// hosts table
 		
-	list_wid=setup.screen.x_scale-30;
-	list_high=setup.screen.y_scale-(high+125);
+	list_wid=hud.scale_x-30;
+	list_high=hud.scale_y-(high+125);
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=1.0f;
@@ -164,7 +165,7 @@ void host_open(void)
 	
 		// status
 		
-	y=setup.screen.y_scale-24;
+	y=hud.scale_y-24;
 	element_text_add("",host_status_id,15,y,tx_left,TRUE,FALSE,FALSE);
 	
 	server.state=gs_host;

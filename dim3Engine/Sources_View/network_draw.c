@@ -142,12 +142,12 @@ void network_score_players_draw(void)
 
 		// sizes
 
-	lx=setup.screen.x_scale>>4;
-	rx=(setup.screen.x_scale>>1)-(setup.screen.x_scale>>5);
+	lx=hud.scale_x>>4;
+	rx=(hud.scale_x>>1)-(hud.scale_x>>5);
 		
 	yadd=gl_text_get_char_height(FALSE);
 	high=(yadd+3)*nscore;
-	y=((setup.screen.y_scale-high)>>1)+(yadd+3);
+	y=((hud.scale_y-high)>>1)+(yadd+3);
 
 		// header
 
@@ -266,12 +266,12 @@ void network_score_teams_draw(void)
 
 		// sizes
 
-	lx=(setup.screen.x_scale>>1)+(setup.screen.x_scale>>5);
-	rx=setup.screen.x_scale-(setup.screen.x_scale>>4);
+	lx=(hud.scale_x>>1)+(hud.scale_x>>5);
+	rx=hud.scale_x-(hud.scale_x>>4);
 		
 	yadd=gl_text_get_char_height(FALSE);
 	high=(yadd+3)*nplayer;
-	y=((setup.screen.y_scale-high)>>1)+(yadd+3);
+	y=((hud.scale_y-high)>>1)+(yadd+3);
 
 		// header
 

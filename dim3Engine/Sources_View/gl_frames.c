@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+extern hud_type				hud;
 extern setup_type			setup;
 extern render_info_type		render_info;
 extern server_type			server;
@@ -138,7 +139,7 @@ void gl_2D_view_interface(void)
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(0,(GLdouble)setup.screen.x_scale,(GLdouble)setup.screen.y_scale,0);
+	gluOrtho2D(0,(GLdouble)hud.scale_x,(GLdouble)hud.scale_y,0);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

@@ -269,7 +269,7 @@ inline int element_get_separator_high(void)
 
 inline int element_get_padding(void)
 {
-	return((int)(((float)setup.screen.x_scale)*element_control_padding_factor));
+	return((int)(((float)hud.scale_x)*element_control_padding_factor));
 }
 
 /* =======================================================
@@ -452,8 +452,8 @@ void element_text_field_add(char *str,char *value_str,int max_value_str_sz,int i
 	element->x=x;
 	element->y=y;
 
-	element->wid=(int)(((float)setup.screen.x_scale)*element_control_draw_long_width);
-	element->high=(int)(((float)setup.screen.x_scale)*element_control_draw_height);
+	element->wid=(int)(((float)hud.scale_x)*element_control_draw_long_width);
+	element->high=(int)(((float)hud.scale_x)*element_control_draw_height);
 	
 	element->selectable=selectable;
 	element->enabled=TRUE;
@@ -487,8 +487,8 @@ void element_checkbox_add(char *str,int value,int id,int x,int y,bool selectable
 	element->enabled=TRUE;
 	element->hidden=FALSE;
 
-	element->wid=(int)(((float)setup.screen.x_scale)*element_control_draw_height);
-	element->high=(int)(((float)setup.screen.x_scale)*element_control_draw_height);
+	element->wid=(int)(((float)hud.scale_x)*element_control_draw_height);
+	element->high=(int)(((float)hud.scale_x)*element_control_draw_height);
 	
 	strcpy(element->str,str);
 	
@@ -516,8 +516,8 @@ void element_combo_add(char *str,char *combo_data,int value,int id,int x,int y,b
 	element->enabled=TRUE;
 	element->hidden=FALSE;
 
-	element->wid=(int)(((float)setup.screen.x_scale)*element_control_draw_long_width);
-	element->high=(int)(((float)setup.screen.x_scale)*element_control_draw_height);
+	element->wid=(int)(((float)hud.scale_x)*element_control_draw_long_width);
+	element->high=(int)(((float)hud.scale_x)*element_control_draw_height);
 	
 	strcpy(element->str,str);
 	
@@ -546,8 +546,8 @@ void element_slider_add(char *str,float value,float value_min,float value_max,in
 	element->enabled=TRUE;
 	element->hidden=FALSE;
 
-	element->wid=(int)(((float)setup.screen.x_scale)*element_control_draw_long_width);
-	element->high=(int)(((float)setup.screen.x_scale)*element_control_draw_height);
+	element->wid=(int)(((float)hud.scale_x)*element_control_draw_long_width);
+	element->high=(int)(((float)hud.scale_x)*element_control_draw_height);
 
 	strcpy(element->str,str);
 	
@@ -2119,7 +2119,7 @@ int element_mouse_over_tab(element_type *element,int x)
 	
 		// within tab box?
 		
-	lft=element->x+(int)(((float)setup.screen.x_scale)*0.02f);
+	lft=element->x+(int)(((float)hud.scale_x)*0.02f);
 	rgt=lft+element->setup.tab.list_wid;
 	
 	if ((x<lft) || (x>rgt)) return(-1);
@@ -2128,7 +2128,7 @@ int element_mouse_over_tab(element_type *element,int x)
 		
 	xadd=element->setup.tab.list_wid/element->setup.tab.ntab;
 
-	max_sz=(int)(((float)setup.screen.x_scale)*0.2f);
+	max_sz=(int)(((float)hud.scale_x)*0.2f);
 	if (xadd>max_sz) xadd=max_sz;
 
 	return((x-lft)/xadd);
@@ -2160,7 +2160,7 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 
 	xadd=element->setup.tab.list_wid/element->setup.tab.ntab;
 
-	max_sz=(int)(((float)setup.screen.x_scale)*0.2f);
+	max_sz=(int)(((float)hud.scale_x)*0.2f);
 	if (xadd>max_sz) xadd=max_sz;
 
 		// bitmap drawing
@@ -2213,7 +2213,7 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 
 		// tabs
 		
-	xstart=lft+(int)(((float)setup.screen.x_scale)*0.02f);
+	xstart=lft+(int)(((float)hud.scale_x)*0.02f);
 		
 	for (n=0;n!=element->setup.tab.ntab;n++) {
 		lx=xstart+(xadd*n);

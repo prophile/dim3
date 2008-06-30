@@ -71,9 +71,6 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
         
 	setup.screen.x_sz=screen_wid;
 	setup.screen.y_sz=screen_high;
-
-    setup.screen.x_scale=setup.screen.x_sz;
-    setup.screen.y_scale=setup.screen.y_sz;
 	
 		// normal attributes
 		

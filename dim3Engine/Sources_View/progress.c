@@ -75,22 +75,13 @@ void progress_shutdown(void)
 
 void progress_draw(float percentage)
 {
-	int					lft,rgt,top,bot,mid,rgt2,x,y,sz,
-						save_x_scale,save_y_scale;
+	int					lft,rgt,top,bot,mid,rgt2,x,y,sz;
 
 		// any change?
 		
 	if (progress_current==percentage) return;
 	
 	progress_current=percentage;
-	
-		// progress UI is always in 640x480 scaling
-		
-	save_x_scale=setup.screen.x_scale;
-	save_y_scale=setup.screen.y_scale;
-	
-	setup.screen.x_scale=640;
-	setup.screen.y_scale=480;
 	
 		// position and sizes of progress pieces
 		
@@ -118,11 +109,11 @@ void progress_draw(float percentage)
 	glTexCoord2f(0,0);
 	glVertex2i(0,0);
 	glTexCoord2f(1,0);
-	glVertex2i(setup.screen.x_scale,0);
+	glVertex2i(hud.scale_x,0);
 	glTexCoord2f(1,1);
-	glVertex2i(setup.screen.x_scale,setup.screen.y_scale);
+	glVertex2i(hud.scale_x,hud.scale_y);
 	glTexCoord2f(0,1);
-	glVertex2i(0,setup.screen.y_scale);
+	glVertex2i(0,hud.scale_y);
     glEnd();
     
 	gl_texture_simple_end();
@@ -188,10 +179,5 @@ void progress_draw(float percentage)
 	gl_text_end();
 
 	gl_frame_end();
-	
-		// reset scaling
-	
-	setup.screen.x_scale=save_x_scale;
-	setup.screen.y_scale=save_y_scale;
 }
 

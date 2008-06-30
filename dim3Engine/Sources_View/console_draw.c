@@ -39,6 +39,7 @@ extern console_line_type		console_line[max_console_line];
 
 extern view_type				view;
 extern server_type				server;
+extern hud_type					hud;
 extern setup_type				setup;
 extern network_setup_type		net_setup;
 extern render_info_type			render_info;
@@ -60,11 +61,12 @@ int console_y_offset(void)
 			
 		case console_mode_fps:
 			y=gl_text_get_char_height(TRUE);
-			return(y);
+			return((y*setup.screen.y_sz)/hud.scale_y);
 			
 		case console_mode_open:
 			y=gl_text_get_char_height(TRUE);
-			return((max_console_line*y)+2);
+			y=(max_console_line*y)+2;
+			return((y*setup.screen.y_sz)/hud.scale_y);
 		
 	}
 	
@@ -106,9 +108,9 @@ void console_draw_fps(void)
 		// background
 
 	lx=0;
-	rx=setup.screen.x_scale;
-	ty=setup.screen.y_scale-y_add;
-	by=setup.screen.y_scale;
+	rx=hud.scale_x;
+	ty=hud.scale_y-y_add;
+	by=hud.scale_y;
 
 	y=ty+(y_add+1);
 		
@@ -121,9 +123,14 @@ void console_draw_fps(void)
 	glVertex2i(lx,by);
 	glEnd();
 	
-		// fps & latency
-		
 	gl_text_start(TRUE);
+	col.r=col.g=col.b=0.0f;
+	
+		// version
+		
+	gl_text_draw(5,y,dim3_version,tx_left,FALSE,&col,1.0f);
+	
+		// fps & latency
 	
 	if (view.fps.total==0) {
 		strcpy(fps_txt,"--.--");
@@ -147,8 +154,7 @@ void console_draw_fps(void)
 		}
 	}
 
-	col.r=col.g=col.b=0.0f;
-	gl_text_draw((setup.screen.x_scale-5),y,fps_txt,tx_right,FALSE,&col,1.0f);
+	gl_text_draw((hud.scale_x-5),y,fps_txt,tx_right,FALSE,&col,1.0f);
 
 	gl_text_end();
 }
@@ -170,10 +176,10 @@ void console_draw_open(void)
 		// console background
 		
 	lx=0;
-	rx=setup.screen.x_scale;
-	ty=setup.screen.y_scale-((max_console_line*y_add)+2);
+	rx=hud.scale_x;
+	ty=hud.scale_y-((max_console_line*y_add)+2);
 	ty2=ty+2;
-	by=setup.screen.y_scale;
+	by=hud.scale_y;
 	
 	y=ty2+1;
 	

@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "video.h"
 
+extern hud_type				hud;
 extern setup_type			setup;
 
 bool						font_small;
@@ -80,8 +81,8 @@ void gl_text_shutdown(void)
 
 inline int gl_text_get_char_width(bool small_text)
 {
-	if (small_text) return((int)(((float)setup.screen.x_scale)*text_small_factor));
-	return((int)(((float)setup.screen.x_scale)*text_large_factor));
+	if (small_text) return((int)(((float)hud.scale_x)*text_small_factor));
+	return((int)(((float)hud.scale_x)*text_large_factor));
 }
 
 inline int gl_text_get_char_height(bool small_text)

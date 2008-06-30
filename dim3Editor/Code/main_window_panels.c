@@ -73,6 +73,7 @@ void main_wind_setup_panel_forward(editor_3D_view_setup *view_setup)
 	view_setup->mesh_only=FALSE;
 	view_setup->draw_portal=FALSE;
 	view_setup->ignore_site_path=FALSE;
+	view_setup->draw_light_circle=FALSE;
 	
 	view_setup->swap_on=swap_panel_forward;
 	view_setup->clip_on=FALSE;
@@ -102,6 +103,7 @@ void main_wind_setup_panel_forward_frame(editor_3D_view_setup *view_setup)
 	view_setup->mesh_only=TRUE;
 	view_setup->draw_portal=FALSE;
 	view_setup->ignore_site_path=FALSE;
+	view_setup->draw_light_circle=FALSE;
 
 	view_setup->swap_on=swap_panel_forward;
 	view_setup->clip_on=FALSE;
@@ -132,6 +134,7 @@ void main_wind_setup_panel_forward_full(editor_3D_view_setup *view_setup)
 	view_setup->mesh_only=FALSE;
 	view_setup->draw_portal=FALSE;
 	view_setup->ignore_site_path=FALSE;
+	view_setup->draw_light_circle=FALSE;
 
 	view_setup->swap_on=FALSE;
 	view_setup->clip_on=FALSE;
@@ -167,6 +170,7 @@ void main_wind_setup_panel_side(editor_3D_view_setup *view_setup)
 	view_setup->mesh_only=FALSE;
 	view_setup->draw_portal=FALSE;
 	view_setup->ignore_site_path=FALSE;
+	view_setup->draw_light_circle=FALSE;
 
 	view_setup->swap_on=swap_panel_side;
 	view_setup->clip_on=FALSE;
@@ -196,6 +200,7 @@ void main_wind_setup_panel_side_frame(editor_3D_view_setup *view_setup)
 	view_setup->mesh_only=TRUE;
 	view_setup->draw_portal=FALSE;
 	view_setup->ignore_site_path=FALSE;
+	view_setup->draw_light_circle=FALSE;
 	
 	view_setup->swap_on=swap_panel_side;
 	view_setup->clip_on=FALSE;
@@ -237,6 +242,7 @@ void main_wind_setup_panel_top(editor_3D_view_setup *view_setup)
 	view_setup->mesh_only=FALSE;
 	view_setup->draw_portal=TRUE;
 	view_setup->ignore_site_path=TRUE;
+	view_setup->draw_light_circle=TRUE;
 	
 	view_setup->swap_on=swap_panel_top;
 	view_setup->clip_on=TRUE;
@@ -272,6 +278,7 @@ void main_wind_setup_panel_top_frame(editor_3D_view_setup *view_setup)
 	view_setup->mesh_only=TRUE;
 	view_setup->draw_portal=TRUE;
 	view_setup->ignore_site_path=TRUE;
+	view_setup->draw_light_circle=TRUE;
 	
 	view_setup->swap_on=swap_panel_top;
 	view_setup->clip_on=FALSE;
@@ -308,6 +315,7 @@ void main_wind_setup_panel_top_full(editor_3D_view_setup *view_setup)
 	view_setup->mesh_only=FALSE;
 	view_setup->draw_portal=TRUE;
 	view_setup->ignore_site_path=TRUE;
+	view_setup->draw_light_circle=TRUE;
 	
 	view_setup->swap_on=FALSE;
 	view_setup->clip_on=TRUE;
@@ -343,6 +351,7 @@ void main_wind_setup_panel_walk(editor_3D_view_setup *view_setup)
 	view_setup->mesh_only=FALSE;
 	view_setup->draw_portal=FALSE;
 	view_setup->ignore_site_path=FALSE;
+	view_setup->draw_light_circle=FALSE;
 	
 	view_setup->swap_on=FALSE;
 	view_setup->clip_on=FALSE;

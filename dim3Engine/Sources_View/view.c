@@ -318,11 +318,6 @@ bool view_initialize(char *err_str)
 	
 	input_initialize(gl_in_window_mode());
 	setup_to_input();
-
-		// default scaling
-	
-	setup.screen.x_scale=640;
-	setup.screen.y_scale=480;
 	
 		// draw timing
 		
@@ -509,8 +504,8 @@ void view_pause_draw(void)
 	col.r=col.g=col.b=1.0f;
 			
 	gl_text_start(TRUE);
-	gl_text_draw(2,(setup.screen.y_scale-2),"[paused]",tx_left,FALSE,&col,1.0f);
-	gl_text_draw((setup.screen.x_scale-2),(setup.screen.y_scale-2),"[click to resume]",tx_right,FALSE,&col,1.0f);
+	gl_text_draw(2,(setup.screen.y_sz-2),"[paused]",tx_left,FALSE,&col,1.0f);
+	gl_text_draw((setup.screen.x_sz-2),(setup.screen.y_sz-2),"[click to resume]",tx_right,FALSE,&col,1.0f);
 	gl_text_end();
 	
 	gl_render_arrays_frame_finish();

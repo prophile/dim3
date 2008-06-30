@@ -51,6 +51,7 @@ extern void game_end(void);
 extern void game_time_pause_end(void);
 
 extern server_type			server;
+extern hud_type				hud;
 extern setup_type			setup;
 
 char						*file_table_data,*file_name_data;
@@ -276,12 +277,12 @@ void file_open(void)
 		
 	high=gl_text_get_char_height(FALSE);
 		
-	list_wid=setup.screen.x_scale-10;
-	list_high=setup.screen.y_scale-(high+95);
+	list_wid=hud.scale_x-10;
+	list_high=hud.scale_y-(high+95);
 		
 		// buttons
 		
-	x=setup.screen.x_scale-10;
+	x=hud.scale_x-10;
 	y=((high+40)+list_high)+10;
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_cancel","png");

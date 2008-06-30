@@ -53,6 +53,7 @@ extern void intro_open(void);
 
 extern render_info_type		render_info;
 extern server_type			server;
+extern hud_type				hud;
 extern setup_type			setup;
 extern hud_type				hud;
 
@@ -98,7 +99,7 @@ void setup_network_open(void)
 	
 		// padding
 		
-	padding=(int)(((float)setup.screen.x_scale)*0.025f);
+	padding=(int)(((float)hud.scale_x)*0.025f);
 
 		// name and timeout
 		
@@ -116,8 +117,8 @@ void setup_network_open(void)
 	y+=control_y_add;
 
 	x=105;
-	wid=(setup.screen.x_scale-105)-x;
-	high=(setup.screen.y_scale-150)-y;
+	wid=(hud.scale_x-105)-x;
+	high=(hud.scale_y-150)-y;
 	
 		// setup host list
 		
@@ -136,7 +137,7 @@ void setup_network_open(void)
 	y+=control_y_add;
 
 	x=105;
-	y=setup.screen.y_scale-70;
+	y=hud.scale_y-70;
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_network_host_add","png");
 	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_network_host_add_selected","png");
@@ -147,7 +148,7 @@ void setup_network_open(void)
 	element_button_add(path,path2,setup_network_host_update_button,x,y,-1,-1,element_pos_left,element_pos_bottom);
 	element_hide(setup_network_host_update_button,TRUE);
 
-	x=setup.screen.x_scale-105;
+	x=hud.scale_x-105;
 	
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_network_host_delete","png");
 	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_network_host_delete_selected","png");
@@ -156,11 +157,11 @@ void setup_network_open(void)
 	
 		// buttons
 	
-	x=setup.screen.x_scale-padding;
-	y=setup.screen.y_scale-padding;
+	x=hud.scale_x-padding;
+	y=hud.scale_y-padding;
 	
-	wid=(int)(((float)setup.screen.x_scale)*0.1f);
-	high=(int)(((float)setup.screen.x_scale)*0.05f);
+	wid=(int)(((float)hud.scale_x)*0.1f);
+	high=(int)(((float)hud.scale_x)*0.05f);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_ok","png");
 	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_ok_selected","png");

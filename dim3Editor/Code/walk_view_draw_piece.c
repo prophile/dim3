@@ -181,6 +181,35 @@ void walk_view_draw_sprite(d3pnt *cpt,d3pos *pos,float ang_y,unsigned long gl_id
 	glDisable(GL_TEXTURE_2D);
 }
 
+void walk_view_draw_circle(d3pnt *cpt,d3pos *pos,d3col *col,int dist)
+{
+    int				n,x,y,z,kx,kz;
+	portal_type		*portal;
+	
+	portal=&map.portals[pos->rn];
+	
+    x=(pos->x+portal->x)-cpt->x;
+    y=(pos->y+1)-cpt->y;
+    z=(pos->z+portal->z)-cpt->z;
+	
+	glLineWidth(4.0f);
+	glColor4f(col->r,col->g,col->b,0.75f);
+	
+	glBegin(GL_LINE_LOOP);
+	
+	for (n=0;n!=360;n+=10) {
+		kx=dist;
+		kz=0;
+		rotate_2D_point_center(&kx,&kz,(float)n);
+		glVertex3i((x+kx),y,-(z+kz));
+	}
+
+	glEnd();
+	
+	glLineWidth(1.0f);
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
+}
+
 /* =======================================================
 
       Walk View Portal Block
@@ -618,7 +647,7 @@ void walk_view_draw_portal_spots_scenery(int rn,d3pnt *cpt)
 	}		
 }
 
-void walk_view_draw_portal_lights_sounds_particles(int rn,d3pnt *cpt)
+void walk_view_draw_portal_lights_sounds_particles(int rn,d3pnt *cpt,bool draw_light_circle)
 {
 	int				n;
 	
@@ -626,6 +655,7 @@ void walk_view_draw_portal_lights_sounds_particles(int rn,d3pnt *cpt)
 	
 	for (n=0;n!=map.nlight;n++) {
 		if (map.lights[n].pos.rn==rn) {
+			if (draw_light_circle) walk_view_draw_circle(cpt,&map.lights[n].pos,&map.lights[n].col,map.lights[n].intensity);
 			walk_view_draw_sprite(cpt,&map.lights[n].pos,0.0f,light_bitmap.gl_id);
 		}
 	}
@@ -757,7 +787,7 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
         if (!view_setup->mesh_only) walk_view_draw_portal_meshes_texture(rn,&view_setup->cpt,clip_y,TRUE);
  		walk_view_draw_portal_nodes(rn,&view_setup->cpt);
 		walk_view_draw_portal_spots_scenery(rn,&view_setup->cpt);
-		walk_view_draw_portal_lights_sounds_particles(rn,&view_setup->cpt);
+		walk_view_draw_portal_lights_sounds_particles(rn,&view_setup->cpt,view_setup->draw_light_circle);
 		walk_view_draw_portal_liquids(rn,&view_setup->cpt,TRUE);
     }
 	

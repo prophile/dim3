@@ -38,7 +38,6 @@ and can be sold or given away.
 extern hud_type				hud;
 extern setup_type			setup;
 
-int							gui_save_x_scale,gui_save_y_scale;
 bool						gui_has_background,gui_show_view;
 char						gui_last_key;
 bitmap_type					gui_background_bitmap;
@@ -106,47 +105,11 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view)
 			bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
 		}
 	}
-
-		// GUI scaling set by interface.xml
-		
-	gui_save_x_scale=setup.screen.x_scale;
-	gui_save_y_scale=setup.screen.y_scale;
-	
-	// supergumba -- testing
-
-	setup.screen.x_scale=hud.scale_x;
-	setup.screen.y_scale=hud.scale_y;
-
-	/*
-	if (bitmap_name==NULL) {
-		setup.screen.x_scale=hud.scale_x;
-		setup.screen.y_scale=hud.scale_y;
-	}
-	else {
-		if (strcmp(bitmap_name,"setup")!=0) {
-			setup.screen.x_scale=hud.scale_x;
-			setup.screen.y_scale=hud.scale_y;
-		}
-		else {
-			if (gui_test) {
-				setup.screen.x_scale=640;
-				setup.screen.y_scale=480;
-			}
-			else {
-				setup.screen.x_scale=1000;
-				setup.screen.y_scale=750;
-			}
-			gui_test=!gui_test;
-		}
-	}
-	*/
-	
-	
 	
 		// start mouse in middle of screen
 		
-	x=setup.screen.x_scale>>1;
-	y=setup.screen.y_scale>>1;
+	x=hud.scale_x>>1;
+	y=hud.scale_y>>1;
 	input_gui_set_mouse(x,y);
 
 		// no last keypress
@@ -164,11 +127,6 @@ void gui_shutdown(void)
 		
 	element_shutdown();
 	cursor_shutdown();
-	
-		// reset GUI scaling
-		
-	setup.screen.x_scale=gui_save_x_scale;
-	setup.screen.y_scale=gui_save_y_scale;
 	
 		// clear all movement from gui	
 			
@@ -216,9 +174,9 @@ void gui_draw_background(float alpha)
 	if (gui_background_bitmap.gl_id==-1) {
 		glBegin(GL_QUADS);
 		glVertex2i(0,0);
-		glVertex2i(setup.screen.x_scale,0);
-		glVertex2i(setup.screen.x_scale,setup.screen.y_scale);
-		glVertex2i(0,setup.screen.y_scale);
+		glVertex2i(hud.scale_x,0);
+		glVertex2i(hud.scale_x,hud.scale_y);
+		glVertex2i(0,hud.scale_y);
 		glEnd();
 		return;
 	}
@@ -233,11 +191,11 @@ void gui_draw_background(float alpha)
 	glTexCoord2f(0,0);
 	glVertex2i(0,0);
 	glTexCoord2f(1,0);
-	glVertex2i(setup.screen.x_scale,0);
+	glVertex2i(hud.scale_x,0);
 	glTexCoord2f(1,1);
-	glVertex2i(setup.screen.x_scale,setup.screen.y_scale);
+	glVertex2i(hud.scale_x,hud.scale_y);
 	glTexCoord2f(0,1);
-	glVertex2i(0,setup.screen.y_scale);
+	glVertex2i(0,hud.scale_y);
     glEnd();
     
 	gl_texture_simple_end();
@@ -433,12 +391,12 @@ void gui_draw_message(char *txt)
 		
 	high=(gl_text_get_char_height(FALSE)+10)>>1;
 	
-	y=setup.screen.y_scale>>1;
+	y=hud.scale_y>>1;
 	ty=y-high;
 	by=y+high;
 	
 	lx=0;
-	rx=setup.screen.x_scale;
+	rx=hud.scale_x;
 	
 		// draw the blue band
 		
@@ -453,8 +411,8 @@ void gui_draw_message(char *txt)
 	
 		// draw the text
 		
-	x=setup.screen.x_scale>>1;
-	y=setup.screen.y_scale>>1;
+	x=hud.scale_x>>1;
+	y=hud.scale_y>>1;
 	
 	col.r=col.g=col.b=0.0f;
 	
