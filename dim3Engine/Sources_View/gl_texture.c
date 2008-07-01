@@ -273,7 +273,7 @@ void gl_texture_opaque_tesseled_bump_start(void)
 		// texture unit 1
 		// add dot3 product with normal distance factor
 		// for hardness boost
-	
+/*	
 	glActiveTexture(GL_TEXTURE1);
 	glEnable(GL_TEXTURE_2D);
 
@@ -290,14 +290,14 @@ void gl_texture_opaque_tesseled_bump_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-
+*/
 		// texture unit 2
 		// flip dot product so add acts as a subtract
 		
-	glActiveTexture(GL_TEXTURE2);
+	glActiveTexture(GL_TEXTURE1);
 	glEnable(GL_TEXTURE_2D);
 
-	gl_texture_bind(2,null_bitmap.gl_id);				// texture is not used in this unit
+	gl_texture_bind(1,null_bitmap.gl_id);				// texture is not used in this unit
 
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 
@@ -312,8 +312,8 @@ void gl_texture_opaque_tesseled_bump_start(void)
 
 void gl_texture_opaque_tesseled_bump_end(void)
 {
-	glActiveTexture(GL_TEXTURE2);
-	glDisable(GL_TEXTURE_2D);
+//	glActiveTexture(GL_TEXTURE2);
+//	glDisable(GL_TEXTURE_2D);
 
 	glActiveTexture(GL_TEXTURE1);
 	glDisable(GL_TEXTURE_2D);
@@ -338,8 +338,8 @@ inline void gl_texture_opaque_tesseled_bump_set(int bump_id,float *normal,float 
 	col4[2]=normal[2];
 	col4[3]=1.0f;
 
-	glActiveTexture(GL_TEXTURE0);
-	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
+//	glActiveTexture(GL_TEXTURE0);
+//	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
 
 		// bump distance modulation
 		// switch so the farther away the lights, the less bumping
@@ -351,8 +351,8 @@ inline void gl_texture_opaque_tesseled_bump_set(int bump_id,float *normal,float 
 	col4[0]=col4[1]=col4[2]=((1.0f-normal_dist_factor)*0.3f);
 	col4[3]=1.0f;
 
-	glActiveTexture(GL_TEXTURE1);
-	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
+//	glActiveTexture(GL_TEXTURE1);
+//	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
 }
 
 

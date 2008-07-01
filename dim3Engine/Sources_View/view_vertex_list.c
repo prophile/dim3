@@ -119,7 +119,7 @@ void portal_compile_gl_lists(int tick,int rn)
 	vl=portal->vertexes.vertex_list;
 
 	for (n=0;n!=nvlist;n++) {
-		map_portal_calculate_normal_vector(portal,vl->x,vl->y,vl->z,pn,&ftemp);
+		map_portal_calculate_normal_vector_smooth(portal,vl->x,vl->y,vl->z,pn,&ftemp);
 		pn+=3;
 
 		vl++;
