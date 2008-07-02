@@ -75,7 +75,7 @@ void portal_compile_gl_lists(int tick,int rn)
 		// check if lights or vertex data has changed in
 		// room.  If not, only run through the vertexes
 		// instead of recreating the lights
-
+/* supergumba -- why doesn't this work?
 	if (!map_portal_light_check_changes(portal)) {
 
 		vl=portal->vertexes.vertex_list;
@@ -92,7 +92,7 @@ void portal_compile_gl_lists(int tick,int rn)
 		
 		return;
 	}
-	
+	*/
 		// recalc polygon normals
 		// supergumba -- can delete all this, and factor can probably go away
 		

@@ -573,10 +573,10 @@ void render_opaque_portal_bump(int portal_idx,bool is_simple_lighting)
 
 			render_opaque_portal_stencil_poly(poly);
 
-				// draw lighting
+				// blend in the bump
 
-			glDisable(GL_BLEND);
-			glBlendFunc(GL_ONE,GL_ZERO);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_ZERO,GL_SRC_COLOR);
 
 			glDisable(GL_DEPTH_TEST);
 			glDisable(GL_ALPHA_TEST);

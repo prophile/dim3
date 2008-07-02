@@ -293,7 +293,7 @@ void gl_texture_opaque_tesseled_bump_start(void)
 */
 		// texture unit 2
 		// flip dot product so add acts as a subtract
-		
+	/*	
 	glActiveTexture(GL_TEXTURE1);
 	glEnable(GL_TEXTURE_2D);
 
@@ -308,6 +308,7 @@ void gl_texture_opaque_tesseled_bump_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+	*/
 }
 
 void gl_texture_opaque_tesseled_bump_end(void)
@@ -315,8 +316,8 @@ void gl_texture_opaque_tesseled_bump_end(void)
 //	glActiveTexture(GL_TEXTURE2);
 //	glDisable(GL_TEXTURE_2D);
 
-	glActiveTexture(GL_TEXTURE1);
-	glDisable(GL_TEXTURE_2D);
+//	glActiveTexture(GL_TEXTURE1);
+//	glDisable(GL_TEXTURE_2D);
 
 	glActiveTexture(GL_TEXTURE0);
 	glDisable(GL_TEXTURE_2D);
