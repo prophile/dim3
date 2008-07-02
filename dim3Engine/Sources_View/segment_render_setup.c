@@ -43,44 +43,7 @@ extern view_type		view;
 extern void portal_compile_gl_lists(int tick,int rn);
 extern bool fog_solid_on(void);
 
-/* =======================================================
-
-      Normal Smoothing Init
-      
-======================================================= */
-
-void mesh_normal_smooth_init(void)
-{
-	int						i,n,k;
-	portal_type				*portal;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-
-	portal=map.portals;
-
-	for (i=0;i!=map.nportal;i++) {
-
-		mesh=portal->mesh.meshes;
-
-		for (n=0;n!=portal->mesh.nmesh;n++) {
-			
-			poly=mesh->polys;
-			
-			for (k=0;k!=mesh->npoly;k++) {
-				poly->draw.normal[0]=0.5f;
-				poly->draw.normal[1]=0.5f;
-				poly->draw.normal[2]=1.0f;
-				poly->draw.normal_dist_factor=0.0f;
-				
-				poly++;
-			}
-		
-			mesh++;
-		}
-			
-		portal++;
-	}
-}
+// supergumba -- we'll need to move this
 
 /* =======================================================
 

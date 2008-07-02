@@ -43,16 +43,11 @@ extern setup_type		setup;
 
 void portal_compile_gl_lists(int tick,int rn)
 {
-	int						n,k,nvlist,nmesh,npoly;
+	int						n,nvlist;
 	float					fx,fy,fz;
 	float					*pv,*pp,*pc,*pn;
 	portal_type				*portal;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
 	portal_vertex_list_type	*vl;
-
-	float	ftemp;		// supergumba -- testing
-
 	
 	portal=&map.portals[rn];
 
@@ -75,7 +70,7 @@ void portal_compile_gl_lists(int tick,int rn)
 		// check if lights or vertex data has changed in
 		// room.  If not, only run through the vertexes
 		// instead of recreating the lights
-/* supergumba -- why doesn't this work?
+
 	if (!map_portal_light_check_changes(portal)) {
 
 		vl=portal->vertexes.vertex_list;
@@ -92,48 +87,86 @@ void portal_compile_gl_lists(int tick,int rn)
 		
 		return;
 	}
-	*/
-		// recalc polygon normals
-		// supergumba -- can delete all this, and factor can probably go away
-		
-	if (setup.bump_mapping) {
-	
-		nmesh=portal->mesh.nmesh;
-		mesh=portal->mesh.meshes;
-		
-		for (n=0;n!=nmesh;n++) {
-		
-			npoly=mesh->npoly;
-			poly=mesh->polys;
-			
-			for (k=0;k!=npoly;k++) {
-				map_portal_calculate_normal_vector_smooth(portal,(double)poly->box.mid.x,(double)poly->box.mid.y,(double)poly->box.mid.z,poly->draw.normal,&poly->draw.normal_dist_factor);
-				poly++;
-			}
-			
-			mesh++;
-		}
-	}
 
-
-	vl=portal->vertexes.vertex_list;
-
-	for (n=0;n!=nvlist;n++) {
-		map_portal_calculate_normal_vector_smooth(portal,vl->x,vl->y,vl->z,pn,&ftemp);
-		pn+=3;
-
-		vl++;
-	}
-
-		// run ray-traced lighting if option is
-		// turned on
+		// ray-traced lighting
 		
 	if (setup.ray_trace_lighting) {
 
 		vl=portal->vertexes.vertex_list;
 
+		if (setup.bump_mapping) {
+
+				// ray traced with bump normals
+
+			for (n=0;n!=nvlist;n++) {
+				light_trace_calculate_light_color(portal,vl->x,vl->y,vl->z,pc);
+				pc+=3;
+
+				*pv++=(vl->x-fx);
+				*pv++=(vl->y-fy);
+				*pv++=(fz-vl->z);
+				*pp++=vl->gx;
+				*pp++=vl->gy;
+				
+				map_portal_calculate_light_normal(portal,vl->x,vl->y,vl->z,pn);
+				pn+=3;
+
+				vl++;
+			}
+
+		}
+
+		else {
+
+				// ray trace with no bumps
+
+			for (n=0;n!=nvlist;n++) {
+				light_trace_calculate_light_color(portal,vl->x,vl->y,vl->z,pc);
+				pc+=3;
+
+				*pv++=(vl->x-fx);
+				*pv++=(vl->y-fy);
+				*pv++=(fz-vl->z);
+				*pp++=vl->gx;
+				*pp++=vl->gy;
+
+				vl++;
+			}
+		}
+
+		return;
+	}
+
+		// regular lighting
+
+	vl=portal->vertexes.vertex_list;
+
+	if (setup.bump_mapping) {
+
+			// regular lighting with bumps
+
 		for (n=0;n!=nvlist;n++) {
-			light_trace_calculate_light_color(portal,vl->x,vl->y,vl->z,pc);
+			map_portal_calculate_light_color_normal(portal,(double)vl->x,(double)vl->y,(double)vl->z,pc,pn);
+			pc+=3;
+			pn+=3;
+
+			*pv++=(vl->x-fx);
+			*pv++=(vl->y-fy);
+			*pv++=(fz-vl->z);
+			*pp++=vl->gx;
+			*pp++=vl->gy;
+
+			vl++;
+		}
+
+	}
+
+	else {
+
+			// regular lighting with no bumps
+
+		for (n=0;n!=nvlist;n++) {
+			map_portal_calculate_light_color(portal,(double)vl->x,(double)vl->y,(double)vl->z,pc);
 			pc+=3;
 
 			*pv++=(vl->x-fx);
@@ -144,25 +177,7 @@ void portal_compile_gl_lists(int tick,int rn)
 
 			vl++;
 		}
-		
-		return;
-	}
 
-		// run regular lighting
-
-	vl=portal->vertexes.vertex_list;
-
-	for (n=0;n!=nvlist;n++) {
-		map_portal_calculate_light_color(portal,(double)vl->x,(double)vl->y,(double)vl->z,pc);
-		pc+=3;
-
-		*pv++=(vl->x-fx);
-		*pv++=(vl->y-fy);
-		*pv++=(fz-vl->z);
-		*pp++=vl->gx;
-		*pp++=vl->gy;
-
-		vl++;
 	}
 }
 

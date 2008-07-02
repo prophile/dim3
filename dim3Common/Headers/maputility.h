@@ -216,7 +216,6 @@ typedef struct		{
 typedef struct		{
 						int							portal_v[8],
 													txt_frame_offset,decal_stencil_idx;
-						float						normal[3],normal_dist_factor;
 						bool						simple_tessel,shift_on;
 					} map_mesh_poly_draw_type;
 
@@ -614,8 +613,8 @@ extern bool map_portal_light_in_view(map_type *map,int x,int y,int z,int intensi
 extern void map_portal_get_light(portal_type *portal,double x,double y,double z,d3col *col);
 extern light_spot_type* map_portal_find_closest_light(portal_type *portal,double x,double y,double z,int *p_dist);
 extern void map_portal_calculate_light_color(portal_type *portal,double x,double y,double z,float *cf);
-extern void map_portal_calculate_normal_vector(portal_type *portal,double x,double y,double z,float *nf,float *dist_factor);
-extern void map_portal_calculate_normal_vector_smooth(portal_type *portal,double x,double y,double z,float *nf,float *dist_factor);
+extern void map_portal_calculate_light_normal(portal_type *portal,double x,double y,double z,float *nf);
+extern void map_portal_calculate_light_color_normal(portal_type *portal,double x,double y,double z,float *cf,float *nf);
 extern bool map_portal_create_light_spots(map_type *map);
 extern void map_portal_dispose_light_spots(map_type *map);
 

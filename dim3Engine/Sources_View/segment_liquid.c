@@ -378,7 +378,7 @@ void liquid_render_portal_liquid_end_array(void)
 void liquid_render_portal_liquid(int tick,portal_type *portal,map_liquid_type *liq)
 {
 	int						quad_cnt,frame;
-	float					normal[3],normal_dist_factor;
+	float					normal[3];
 	d3pnt					mid;
 	texture_type			*texture;
 
@@ -418,7 +418,7 @@ void liquid_render_portal_liquid(int tick,portal_type *portal,map_liquid_type *l
 
 		gl_shader_set_variables(texture->shader.program_obj,&mid,texture);
 
-		map_portal_calculate_normal_vector(portal,(double)mid.x,(double)mid.y,(double)mid.z,normal,&normal_dist_factor);
+		map_portal_calculate_light_normal(portal,(double)mid.x,(double)mid.y,(double)mid.z,normal);
 		glNormal3f(normal[0],normal[1],normal[2]);
 	}
 	else {

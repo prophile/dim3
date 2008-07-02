@@ -38,8 +38,8 @@ EXPORTS
 	map_portal_get_light							@187
 	map_portal_find_closest_light					@188
 	map_portal_calculate_light_color				@189
-	map_portal_calculate_normal_vector				@190
-	map_portal_calculate_normal_vector_smooth		@191
+	map_portal_calculate_light_normal				@190
+	map_portal_calculate_light_color_normal			@191
 	map_portal_create_light_spots					@192
 	map_portal_dispose_light_spots					@193
 

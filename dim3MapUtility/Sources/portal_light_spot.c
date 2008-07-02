@@ -341,10 +341,10 @@ void map_portal_calculate_light_color(portal_type *portal,double x,double y,doub
 	*cf=map_light_base.b+(float)b;
 }
 
-void map_portal_calculate_normal_vector(portal_type *portal,double x,double y,double z,float *nf,float *dist_factor)
+void map_portal_calculate_light_normal(portal_type *portal,double x,double y,double z,float *nf)
 {
 	int					i,nspot,cnt;
-	double				dx,dz,dy,nx,nz,ny,d,tot_dist_factor,mult;
+	double				dx,dz,dy,nx,nz,ny,d,mult;
 	light_spot_type		*lspot;
 
 		// combine all light spot normals
@@ -353,7 +353,6 @@ void map_portal_calculate_normal_vector(portal_type *portal,double x,double y,do
 	cnt=0;
 	
 	nx=ny=nz=0;
-	tot_dist_factor=0;
 	
 	nspot=portal->light.nspot;
 	lspot=portal->light.spots;
@@ -371,8 +370,6 @@ void map_portal_calculate_normal_vector(portal_type *portal,double x,double y,do
 			ny+=(dy*mult);
 			nz+=(dz*mult);
 
-			tot_dist_factor+=mult;
-
 			cnt++;
 		}
 		
@@ -385,7 +382,6 @@ void map_portal_calculate_normal_vector(portal_type *portal,double x,double y,do
 		*nf++=0.5f;
 		*nf++=0.5f;
 		*nf=1.0f;
-		*dist_factor=0.0f;
 		return;
 	}
 	
@@ -420,23 +416,98 @@ void map_portal_calculate_normal_vector(portal_type *portal,double x,double y,do
 	*nf++=(float)((nx*0.5)+0.5);
 	*nf++=1.0f-(float)((ny*0.5)+0.5);
 	*nf=1.0f;
-
-		// return the distance factor
-		// which is used to modulate the
-		// bump effect for distance
-
-	*dist_factor=(float)(tot_dist_factor/(double)cnt);
 }
 
-void map_portal_calculate_normal_vector_smooth(portal_type *portal,double x,double y,double z,float *nf,float *dist_factor)
+void map_portal_calculate_light_color_normal(portal_type *portal,double x,double y,double z,float *cf,float *nf)
 {
-	float		normal[3];
+	int					i,nspot,cnt;
+	double				dx,dz,dy,r,g,b,nx,nz,ny,d,mult;
+	light_spot_type		*lspot;
 
-	map_portal_calculate_normal_vector(portal,x,y,z,normal,dist_factor);
+		// combine all light spot normals
+		// attenuated for distance
+		
+	cnt=0;
+	
+	r=g=b=0;
+	nx=ny=nz=0;
+	
+	nspot=portal->light.nspot;
+	lspot=portal->light.spots;
+	
+	for (i=0;i!=nspot;i++) {
+		
+		dx=lspot->d_x-x;
+		dy=lspot->d_y-y;
+		dz=lspot->d_z-z;
+		
+		d=(dx*dx)+(dz*dz)+(dy*dy);
+		if (d<=lspot->d_intensity) {
+			mult=(lspot->d_intensity-d)*lspot->d_inv_intensity;
 
-	nf[0]+=((normal[0]-nf[0])*0.2f);
-	nf[1]+=((normal[1]-nf[1])*0.2f);
-	nf[2]+=((normal[2]-nf[2])*0.2f);
+			r+=(lspot->d_col_r*mult);
+			g+=(lspot->d_col_g*mult);
+			b+=(lspot->d_col_b*mult);
+
+			nx+=(dx*mult);
+			ny+=(dy*mult);
+			nz+=(dz*mult);
+
+			cnt++;
+		}
+		
+		lspot++;
+	}
+
+		// set light value
+
+	*cf++=map_light_base.r+(float)r;
+	*cf++=map_light_base.g+(float)g;
+	*cf=map_light_base.b+(float)b;
+	
+		// no hits, then default normal
+
+	if (cnt==0) {
+		*nf++=0.5f;
+		*nf++=0.5f;
+		*nf=1.0f;
+		return;
+	}
+	
+		// average the normal vector
+		
+	d=(1.0/((double)cnt));
+	nx*=d;
+	ny*=d;
+	nz*=d;
+	
+		// combine x and z together to make x
+		// factor.  Note that this does not always
+		// give the correct results but will be close
+		// most of the time -- otherwise we're going to
+		// have to calculate polygon vectors
+		
+	nx+=nz;
+
+		// normalize normal vector
+
+	d=sqrt((nx*nx)+(ny*ny));
+	if (d!=0.0) {
+		d=1.0/d;
+		nx*=d;
+		ny*=d;
+	}
+	
+		// convert to needed format
+		// x (1 = right [light from left], 0 = left [light from right])
+		// y (1 = top [light from bottom], 0 = bottom [light from top])
+
+		// supergumba -- possible (check math) that in the future
+		// we can use the z coord for a distance hardness factor
+		
+	*nf++=(float)((nx*0.5)+0.5);
+	*nf++=1.0f-(float)((ny*0.5)+0.5);
+	*nf=1.0f;
 }
 
 /* =======================================================

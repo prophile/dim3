@@ -460,7 +460,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			glDepthFunc(GL_LEQUAL);
 			glDepthMask(GL_TRUE);
 
-			gl_texture_opaque_bump_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,draw->normal,draw->normal_dist_factor);
+			gl_texture_opaque_bump_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,draw->normal,0);
 			glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
 			
 			gl_texture_opaque_bump_end();
@@ -715,7 +715,7 @@ void model_render(int tick,model_draw *draw)
 		// create light list for model and single drawing normal
 		
 	model_build_color_setup_lights(mdl,draw);
-	map_portal_calculate_normal_vector_smooth(&map.portals[draw->pos.rn],(double)draw->pos.x,(double)draw->pos.y,(double)draw->pos.z,draw->normal,&draw->normal_dist_factor);
+	map_portal_calculate_light_normal(&map.portals[draw->pos.rn],(double)draw->pos.x,(double)draw->pos.y,(double)draw->pos.z,draw->normal);
 
 		// get the meshes to be drawn
 

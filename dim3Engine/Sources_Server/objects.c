@@ -228,12 +228,11 @@ void object_clear_draw(model_draw *draw)
 	draw->shadow.static_size=0;
 	draw->shadow.static_alpha=1.0f;
 
-		// default normal (for normal smoothing)
+		// default normal
 
 	draw->normal[0]=0.5f;
 	draw->normal[1]=0.5f;
 	draw->normal[2]=1.0f;
-	draw->normal_dist_factor=0.0f;
 	
 		// animate setup
 		
