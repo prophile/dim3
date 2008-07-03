@@ -565,13 +565,13 @@ int map_portal_add_light_simple_vertex_list(portal_vertex_list_type *vl,int vl_c
 	return(vl_cnt);
 }
 
-int map_portal_add_light_single_vertex_list(portal_vertex_list_type *vl,int vl_cnt,bool high_quality_lighting,map_mesh_type *mesh,map_mesh_poly_type *poly)
+int map_portal_add_light_single_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int			xsz,ysz,zsz;
 	
 		// simple light tessels
 
-	if ((poly->draw.simple_tessel) || (mesh->flag.hilite) || (!high_quality_lighting)) return(map_portal_add_light_simple_vertex_list(vl,vl_cnt,mesh,poly));
+	if ((poly->draw.simple_tessel) || (mesh->flag.hilite)) return(map_portal_add_light_simple_vertex_list(vl,vl_cnt,mesh,poly));
 
 		// tessel depending on shape of polygon
 		// first, automatically tessel on the other two
@@ -604,7 +604,7 @@ int map_portal_add_light_single_vertex_list(portal_vertex_list_type *vl,int vl_c
       
 ======================================================= */
 
-bool map_portal_build_single_vertex_list(map_type *map,int rn,bool high_quality_lighting)
+bool map_portal_build_single_vertex_list(map_type *map,int rn)
 {
 	int							n,k,vl_cnt;
 	portal_vertex_list_type		*vl;
@@ -627,7 +627,7 @@ bool map_portal_build_single_vertex_list(map_type *map,int rn,bool high_quality_
 		
 		for (k=0;k!=mesh->npoly;k++) {
 			vl_cnt=map_portal_add_mesh_poly_single_vertex_list(vl,vl_cnt,mesh,poly);
-			vl_cnt=map_portal_add_light_single_vertex_list(vl,vl_cnt,high_quality_lighting,mesh,poly);
+			vl_cnt=map_portal_add_light_single_vertex_list(vl,vl_cnt,mesh,poly);
 			poly++;
 		}
 	
@@ -647,7 +647,7 @@ bool map_portal_build_single_vertex_list(map_type *map,int rn,bool high_quality_
       
 ======================================================= */
 
-bool map_portal_create_single_vertex_list(map_type *map,int rn,bool high_quality_lighting)
+bool map_portal_create_single_vertex_list(map_type *map,int rn)
 {
 	int							n,k,nvlist,sz,rough_sz;
 	portal_vertex_list_type		*nvl;
@@ -686,7 +686,7 @@ bool map_portal_create_single_vertex_list(map_type *map,int rn,bool high_quality
 	
 		// build vertex list
 		
-	if (!map_portal_build_single_vertex_list(map,rn,high_quality_lighting)) {
+	if (!map_portal_build_single_vertex_list(map,rn)) {
 		free(portal->vertexes.vertex_list);
 		portal->vertexes.vertex_list=NULL;
 		return(FALSE);
@@ -763,12 +763,12 @@ void map_portal_dispose_single_vertex_list(map_type *map,int rn)
       
 ======================================================= */
 
-bool map_portal_create_vertex_lists(map_type *map,bool high_quality_lighting)
+bool map_portal_create_vertex_lists(map_type *map)
 {
 	int			n;
 	
 	for (n=0;n!=map->nportal;n++) {
-		if (!map_portal_create_single_vertex_list(map,n,high_quality_lighting)) return(FALSE);
+		if (!map_portal_create_single_vertex_list(map,n)) return(FALSE);
 	}
 	
 	return(TRUE);
@@ -783,12 +783,12 @@ void map_portal_dispose_vertex_lists(map_type *map)
 	}
 }
 
-void map_portal_rebuild_vertex_lists(map_type *map,bool high_quality_lighting)
+void map_portal_rebuild_vertex_lists(map_type *map)
 {
 	int			n;
 	
 	for (n=0;n!=map->nportal;n++) {
-		map_portal_build_single_vertex_list(map,n,high_quality_lighting);
+		map_portal_build_single_vertex_list(map,n);
 	}
 }
 

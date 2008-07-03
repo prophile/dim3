@@ -51,7 +51,6 @@ void setup_xml_default(void)
 	setup.mipmap_card_generated=TRUE;
 	setup.texture_compression=FALSE;
 
-	setup.high_quality_lighting=TRUE;
 	setup.diffuse_lighting=TRUE;
 	setup.ray_trace_lighting=FALSE;
 
@@ -209,7 +208,6 @@ bool setup_xml_read_path(char *path)
 	setup_xml_read_key_boolean(setup_tag,"Specular_Mapping",&setup.specular_mapping);
 	setup_xml_read_key_boolean(setup_tag,"Glow_Mapping",&setup.glow_mapping);
 	setup_xml_read_key_boolean(setup_tag,"Halo",&setup.halo);
-	setup_xml_read_key_boolean(setup_tag,"High_Quality_Lighting",&setup.high_quality_lighting);
 	setup_xml_read_key_boolean(setup_tag,"Diffuse_Lighting",&setup.diffuse_lighting);
 	setup_xml_read_key_boolean(setup_tag,"Ray_Trace_Lighting",&setup.ray_trace_lighting);
 	setup_xml_read_key_int(setup_tag,"FSAA_Mode",&setup.fsaa_mode);
@@ -399,7 +397,6 @@ bool setup_xml_write(void)
 	setup_xml_write_key_boolean("Specular_Mapping",setup.specular_mapping);
 	setup_xml_write_key_boolean("Glow_Mapping",setup.glow_mapping);
 	setup_xml_write_key_boolean("Halo",setup.halo);
-	setup_xml_write_key_boolean("High_Quality_Lighting",setup.high_quality_lighting);
 	setup_xml_write_key_boolean("Diffuse_Lighting",setup.diffuse_lighting);
 	setup_xml_write_key_boolean("Ray_Trace_Lighting",setup.ray_trace_lighting);
 	setup_xml_write_key_int("FSAA_Mode",setup.fsaa_mode);
@@ -520,7 +517,6 @@ void setup_restore(void)
 	setup.mipmap_card_generated=FALSE;
 	setup.texture_compression=FALSE;
 
-	setup.high_quality_lighting=FALSE;
 	setup.diffuse_lighting=FALSE;
 	setup.ray_trace_lighting=FALSE;
 

@@ -43,8 +43,8 @@ and can be sold or given away.
 
 #define stencil_none				0
 #define stencil_sky					1
-#define stencil_segment_start		2
-#define stencil_segment_end			255
+#define stencil_poly_start			2
+#define stencil_poly_end			255
 
 //
 // remote names

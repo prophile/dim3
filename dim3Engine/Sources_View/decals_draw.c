@@ -169,7 +169,7 @@ void decal_render(void)
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
-	stencil_idx=stencil_segment_start;
+	stencil_idx=stencil_poly_start;
 	decal=server.decals;
 
 	for (n=0;n!=server.count.decal;n++) {

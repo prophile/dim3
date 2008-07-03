@@ -46,7 +46,7 @@ int							shadow_stencil_idx;
 
 void shadow_render_init(void)
 {
-	shadow_stencil_idx=stencil_segment_start;
+	shadow_stencil_idx=stencil_poly_start;
 }
 
 int shadow_render_get_stencil(int offset)
@@ -54,7 +54,7 @@ int shadow_render_get_stencil(int offset)
 	int			idx;
 	
 	idx=shadow_stencil_idx+offset;
-	if (idx>=stencil_segment_end) idx=stencil_segment_start+(shadow_stencil_idx-stencil_segment_end);
+	if (idx>=stencil_poly_end) idx=stencil_poly_start+(shadow_stencil_idx-stencil_poly_end);
 
 	return(idx);
 }
@@ -62,7 +62,7 @@ int shadow_render_get_stencil(int offset)
 void shadow_render_stencil_add(int add)
 {
 	shadow_stencil_idx+=add;
-	if (shadow_stencil_idx>=stencil_segment_end) shadow_stencil_idx=stencil_segment_start+(shadow_stencil_idx-stencil_segment_end);
+	if (shadow_stencil_idx>=stencil_poly_end) shadow_stencil_idx=stencil_poly_start+(shadow_stencil_idx-stencil_poly_end);
 }
 
 /* =======================================================

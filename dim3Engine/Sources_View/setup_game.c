@@ -51,17 +51,16 @@ and can be sold or given away.
 #define ctrl_mipmap_card_id					6
 #define ctrl_compression_id					7
 
-#define ctrl_high_quality_lighting_id		10
-#define ctrl_bumpmapping_id					11
-#define ctrl_gamma_id						12
-#define ctrl_diffuselighting_id				13
-#define ctrl_raytracelighting_id			14
-#define ctrl_specularmapping_id				15
-#define ctrl_glowmapping_id					16
-#define ctrl_halo_id						17
-#define ctrl_fog_id							18
-#define ctrl_mark_id						19
-#define ctrl_shadow_id						20
+#define ctrl_bumpmapping_id					10
+#define ctrl_gamma_id						11
+#define ctrl_diffuselighting_id				12
+#define ctrl_raytracelighting_id			13
+#define ctrl_specularmapping_id				14
+#define ctrl_glowmapping_id					15
+#define ctrl_halo_id						16
+#define ctrl_fog_id							17
+#define ctrl_mark_id						18
+#define ctrl_shadow_id						19
 
 #define ctrl_sound_volume_id				30
 #define ctrl_music_on_id					31
@@ -184,14 +183,11 @@ void setup_game_graphics_pane(void)
 	
 	control_y_add=element_get_control_high();
 	separate_y_add=element_get_separator_high();
-	control_y_sz=(control_y_add*10)+(2*separate_y_add);
+	control_y_sz=(control_y_add*9)+(2*separate_y_add);
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
 	
-	element_checkbox_add("High Quality Lighting",setup.high_quality_lighting,ctrl_high_quality_lighting_id,x,y,TRUE);
-	element_enable(ctrl_high_quality_lighting_id,(!setup_in_game));
-	y+=control_y_add;
 	element_checkbox_add("Diffuse Lighting",setup.diffuse_lighting,ctrl_diffuselighting_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Ray-Trace Lighting",setup.ray_trace_lighting,ctrl_raytracelighting_id,x,y,TRUE);
@@ -781,10 +777,6 @@ void setup_game_handle_click(int id)
 			setup.fsaa_mode=element_get_value(ctrl_fsaa_id);
 			break;
 
-		case ctrl_high_quality_lighting_id:
-			setup.high_quality_lighting=element_get_value(ctrl_high_quality_lighting_id);
-			break;
-			
 		case ctrl_bumpmapping_id:
 			setup.bump_mapping=element_get_value(ctrl_bumpmapping_id);
 			break;

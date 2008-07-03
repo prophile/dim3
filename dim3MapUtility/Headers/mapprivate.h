@@ -158,7 +158,7 @@ extern bool read_map_xml(map_type *map);
 extern bool write_map_xml(map_type *map);
 extern void map_textures_new(map_type *map);
 
-extern bool map_portal_build_single_vertex_list(map_type *map,int rn,bool high_quality_lighting);
-extern bool map_portal_create_single_vertex_list(map_type *map,int rn,bool high_quality_lighting);
+extern bool map_portal_build_single_vertex_list(map_type *map,int rn);
+extern bool map_portal_create_single_vertex_list(map_type *map,int rn);
 extern void map_portal_dispose_single_vertex_list(map_type *map,int rn);
 

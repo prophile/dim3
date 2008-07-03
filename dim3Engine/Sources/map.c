@@ -259,7 +259,7 @@ bool map_start(bool skip_media,char *err_str)
 	
 	progress_draw(35);
 
-	if (!map_portal_create_vertex_lists(&map,setup.high_quality_lighting)) {
+	if (!map_portal_create_vertex_lists(&map)) {
 		progress_shutdown();
 		strcpy(err_str,"Out of memory");
 		return(FALSE);

@@ -179,9 +179,7 @@ void model_build_color(model_type *mdl,int mesh_idx,int rn,int x,int z,int y,mod
 	lit=draw->lit_type;
 		
 	if (lit==ml_vertex) {
-		if ((draw->lod_dist>map.optimizations.lod_light_distance) || (!setup.high_quality_lighting)) {
-			lit=ml_flat;
-		}
+		if (draw->lod_dist>map.optimizations.lod_light_distance) lit=ml_flat;
 	}
 	
 		// get ambient color

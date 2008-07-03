@@ -525,7 +525,7 @@ bool game_file_load(char *file_name,char *err_str)
 
 	game_file_get_chunk(map.movements);
 	
-	map_portal_rebuild_vertex_lists(&map,setup.high_quality_lighting);
+	map_portal_rebuild_vertex_lists(&map);
 	
 		// script objects
 		

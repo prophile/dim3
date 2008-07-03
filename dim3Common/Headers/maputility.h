@@ -214,8 +214,8 @@ typedef struct		{
 					} map_mesh_poly_light_type;
 
 typedef struct		{
-						int							portal_v[8],
-													txt_frame_offset,decal_stencil_idx;
+						int							portal_v[8],txt_frame_offset,
+													stencil_pass,stencil_idx,decal_stencil_idx;
 						bool						simple_tessel,shift_on;
 					} map_mesh_poly_draw_type;
 
@@ -599,9 +599,9 @@ extern void map_portal_sight_prune(map_type *map,int rn,int site_idx);
 extern void map_portal_sight_delete_adjust_path(map_type *map,int rn);
 extern void map_portal_sight_generate_paths(map_type *map,bool ignore_depth);
 
-extern bool map_portal_create_vertex_lists(map_type *map,bool high_quality_lighting);
+extern bool map_portal_create_vertex_lists(map_type *map);
 extern void map_portal_dispose_vertex_lists(map_type *map);
-extern void map_portal_rebuild_vertex_lists(map_type *map,bool high_quality_lighting);
+extern void map_portal_rebuild_vertex_lists(map_type *map);
 
 extern void map_set_light_base(d3col *col);
 extern void map_portal_clear_lights(portal_type *portal);
