@@ -1419,10 +1419,6 @@ SOURCE=..\..\dim3Engine\Sources_View\segment_render_opaque.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_View\segment_render_setup.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3Engine\Sources_View\segment_render_transparent.c
 # End Source File
 # Begin Source File

@@ -47,7 +47,7 @@ extern char light_type_str[][32];
 
 #define max_portal									256				// maximum number of portals in a map
 
-#define max_map_scenery								512				// maximum number of ambient scenery
+#define max_map_scenery								1024			// maximum number of ambient scenery
 #define max_map_light								256				// maximum number of ambient lights
 #define max_map_sound								256				// maximum number of ambient sounds
 #define max_map_particle							256				// maximum number of ambient particles

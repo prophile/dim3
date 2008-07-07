@@ -49,7 +49,7 @@ and can be sold or given away.
 // maximums
 //
 
-#define max_object					1024
+#define max_object					2048
 #define max_projectile				256
 #define max_effect					512
 #define max_decal					128

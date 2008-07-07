@@ -39,7 +39,7 @@ typedef struct		{
 // Lighting Constants
 //
 
-#define light_tessel_overlap_pixel					25
+#define light_tessel_overlap_pixel					0
 
 //
 // Old map version structures (v1)

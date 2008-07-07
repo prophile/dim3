@@ -40,8 +40,6 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "video.h"
 
-extern int					draw_portal_cnt,draw_portal_list[max_portal];
-
 extern map_type				map;
 extern camera_type			camera;
 extern view_type			view;
@@ -55,8 +53,8 @@ extern void draw_background(int cx,int cy,int cz);
 extern void draw_sky(int tick,int y);
 extern bool model_inview(model_draw *draw);
 extern void model_calc_pose_bones(model_draw *draw);
-extern void segment_render_opaque(int portal_cnt,int *portal_list);
-extern void segment_render_transparent(int portal_cnt,int *portal_list);
+extern void render_opaque_map(int portal_cnt,int *portal_list);
+extern void render_transparent_map(int portal_cnt,int *portal_list);
 extern void rain_draw(int tick);
 extern bool fog_solid_on(void);
 extern void fog_draw_textured(int tick);
@@ -72,6 +70,7 @@ extern void fade_screen_draw(int tick);
 extern void fade_object_draw(int tick,obj_type *obj);
 extern void liquid_render(int tick,int portal_cnt,int *portal_list);
 extern void decal_render(void);
+extern void portal_compile_gl_lists(int tick,int rn);
 
 /* =======================================================
 
@@ -286,6 +285,7 @@ void view_draw_models_shadow(void)
 
 void view_draw(int tick)
 {
+	int				n,draw_portal_cnt,draw_portal_list[max_portal];
 	obj_type		*obj;
 	weapon_type		*weap;
 	
@@ -320,18 +320,26 @@ void view_draw(int tick)
 		fog_solid_start();
 	}
 	
-		// draw opaque segments
+		// setup portals for drawing
+		
+	draw_portal_cnt=map_portal_draw_sort(&map,obj->pos.rn,obj->pos.x,obj->pos.y,obj->pos.z,draw_portal_list);
 
-	segment_render_opaque(draw_portal_cnt,draw_portal_list);
+	for (n=(draw_portal_cnt-1);n>=0;n--) {
+		portal_compile_gl_lists(tick,draw_portal_list[n]);
+	}
+	
+		// draw opaque polygons
+
+	render_opaque_map(draw_portal_cnt,draw_portal_list);
 
 		// draw model shadows
 
 	view_draw_models(tick);
 	view_draw_models_shadow();
 	
-		// draw tranparent segments
+		// draw tranparent polygons
 		
-	segment_render_transparent(draw_portal_cnt,draw_portal_list);
+	render_transparent_map(draw_portal_cnt,draw_portal_list);
 
 		// draw liquids
 

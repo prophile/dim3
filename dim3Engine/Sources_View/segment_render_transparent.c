@@ -38,104 +38,9 @@ extern server_type		server;
 extern view_type		view;
 extern setup_type		setup;
 
+extern bool fog_solid_on(void);
 extern void portal_compile_gl_list_attach(int rn);
 extern void portal_compile_gl_list_dettach(void);
-
-/* =======================================================
-
-      Transparent Mesh Sorting
-      
-======================================================= */
-
-float segment_render_transparent_segments_far_z(map_mesh_type *mesh,map_mesh_poly_type *poly,int cx,int cy,int cz)
-{
-	int				n,kx,ky,kz;
-	float			d,dist;
-	d3pnt			*pt;
-
-		// calculate the farest z
-		// that is on screen
-
-	dist=0.0f;
-
-	for (n=0;n!=poly->ptsz;n++) {
-		pt=&mesh->vertexes[poly->v[n]];
-		kx=pt->x-cx;
-		ky=pt->y-cy;
-		kz=pt->z-cz;
-		if (gl_rotate_point_on_screen(kx,ky,kz)) {
-			d=gl_project_point_z(kx,ky,kz);
-			if (d>dist) dist=d;
-		}
-	}
-
-	return(dist);
-}
-
-void segment_render_transparent_sort(int rn,int cx,int cy,int cz)
-{
-	int							n,k,i,sort_cnt,sort_idx;
-	float						dist;
-	portal_type					*portal;
-	map_mesh_type				*mesh;
-	map_mesh_poly_type			*poly;
-	map_mesh_poly_sort_type		*sort_list;
-
-	portal=&map.portals[rn];
-	sort_list=portal->mesh.draw.sort_list;
-
-		// create sort list
-
-	sort_cnt=0;
-/* supergumba -- redo
-	mesh=portal->mesh.meshes;
-		
-	for (n=0;n!=portal->mesh.nmesh;n++) {
-	
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-
-			if (poly->draw.draw_type!=map_mesh_poly_draw_transparent) {
-				poly++;
-				continue;
-			}
-
-				// find distance from camera
-
-			dist=segment_render_transparent_segments_far_z(mesh,poly,cx,cy,cz);
-
-				// find position in sort list
-
-			sort_idx=sort_cnt;
-
-			for (i=0;i!=sort_cnt;i++) {
-				if (dist>sort_list[i].dist) {
-					sort_idx=i;
-					break;
-				}
-			}
-
-				// add to sort list
-
-			if (sort_idx<sort_cnt) {
-				memmove(&sort_list[sort_idx+1],&sort_list[sort_idx],((sort_cnt-sort_idx)*sizeof(map_mesh_poly_sort_type)));
-			}
-
-			sort_list[sort_idx].mesh_idx=n;
-			sort_list[sort_idx].poly_idx=k;
-			sort_list[sort_idx].dist=dist;
-
-			sort_cnt++;
-
-			poly++;
-		}
-	
-		mesh++;
-	}
-*/
-	portal->mesh.draw.sort_cnt=sort_cnt;
-}
 
 /* =======================================================
 
@@ -143,9 +48,9 @@ void segment_render_transparent_sort(int rn,int cx,int cy,int cz)
       
 ======================================================= */
 
-void segment_render_transparent_portal_mesh(portal_type *portal)
+void render_transparent_portal_mesh(portal_type *portal,bool is_simple_lighting)
 {
-	int						n,sort_cnt,frame;
+	int						n,sort_cnt,frame,ntrig;
 	unsigned long			txt_id;
 	float					alpha;
 	bool					txt_setup_reset;
@@ -178,9 +83,15 @@ void segment_render_transparent_portal_mesh(portal_type *portal)
 	for (n=0;n!=sort_cnt;n++) {
 		mesh=&portal->mesh.meshes[sort_list[n].mesh_idx];
 		poly=&mesh->polys[sort_list[n].poly_idx];
+	
+			// get texture
 
 		texture=&map.textures[poly->txt_idx];
 		frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+
+			// is shader
+
+		if (texture->shader.on) continue;
 
 			// do we need to get back to rendering for transparencies?
 			// this happens when a specular or glow interrupt the normal
@@ -225,8 +136,8 @@ void segment_render_transparent_portal_mesh(portal_type *portal)
 		glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 
 			// draw any specular on the transparent segment
-/* supergumba -- might need to redo all of this
-		if (poly->draw.is_specular) {
+
+		if (texture->specularmaps[frame].gl_id!=-1) {
 			
 				// end transparencies drawing and start specular
 
@@ -249,7 +160,7 @@ void segment_render_transparent_portal_mesh(portal_type *portal)
 
 				// use lighting mesh as specular is dependant upon the light
 
-			if (poly->draw.is_simple_lighting) {
+			if (is_simple_lighting) {
 				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 			}
 			else {
@@ -263,10 +174,10 @@ void segment_render_transparent_portal_mesh(portal_type *portal)
 			txt_setup_reset=TRUE;
 
 		}
-*/
+
 			// draw any glow on the transparent segment
-/*
-		if (poly->draw.is_glow) {
+
+		if (texture->glowmaps[frame].gl_id!=-1) {
 
 				// end transparencies drawing and start glow
 
@@ -300,23 +211,18 @@ void segment_render_transparent_portal_mesh(portal_type *portal)
 			gl_texture_transparent_glow_end();
 			txt_setup_reset=TRUE;
 		}
-		*/
 	}
 
 	gl_texture_transparent_end();
 }
 
-void segment_render_transparent_portal_shader(portal_type *portal)
+void render_transparent_portal_shader(portal_type *portal)
 {
-	/*
 	int						n,sort_cnt,frame;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	map_mesh_poly_sort_type	*sort_list;
 	texture_type			*texture;
-
-	gl_shader_program_start();
-	gl_texture_shader_start();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -328,70 +234,184 @@ void segment_render_transparent_portal_shader(portal_type *portal)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 
+	gl_shader_program_start();
+	gl_texture_shader_start();
+
 	sort_cnt=portal->mesh.draw.sort_cnt;
 	sort_list=portal->mesh.draw.sort_list;
 	
 	for (n=0;n!=sort_cnt;n++) {
 		mesh=&portal->mesh.meshes[sort_list[n].mesh_idx];
-	
-		if (!mesh->draw.has_transparent_shader) continue;
-		
 		poly=&mesh->polys[sort_list[n].poly_idx];
-		if (poly->draw.draw_type!=map_mesh_poly_draw_transparent_shader) continue;
+
+			// get texture
 
 		texture=&map.textures[poly->txt_idx];
 		frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+
+			// is shader
+
+		if (!texture->shader.on) continue;
+
+			// draw shader
 
 		gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
 		gl_shader_set_program(texture->shader.program_obj);
 		
 		gl_shader_set_variables(texture->shader.program_obj,&poly->box.mid,texture);
-		
-		glNormal3f(poly->draw.normal[0],poly->draw.normal[1],poly->draw.normal[2]);
 
 		glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 	}
 
 	gl_texture_shader_end();
 	gl_shader_program_end();
-	*/
-}
-
-void segment_render_transparent_portal(int rn)
-{
-	/*
-	portal_type			*portal;
-
-	portal=&map.portals[rn];
-		
-		// if no transparent segments, then just skip
-		
-	if (!portal->mesh.draw.has_transparent) return;
-
-		// attach compiled vertex lists
-
-	portal_compile_gl_list_attach(rn);
-
-		// sort meshes
-
-	segment_render_transparent_sort(rn,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
-
-		// transparent meshes
-
-	segment_render_transparent_portal_mesh(portal);
-	if (portal->mesh.draw.has_transparent_shader) segment_render_transparent_portal_shader(portal);
-	*/
 }
 
 /* =======================================================
 
-      Transparent Drawing Mainline
+      Transparent Mesh Sorting
       
 ======================================================= */
 
-void segment_render_transparent(int portal_cnt,int *portal_list)
+float segment_render_transparent_segments_far_z(map_mesh_type *mesh,map_mesh_poly_type *poly,int cx,int cy,int cz)
+{
+	int				n,kx,ky,kz;
+	float			d,dist;
+	d3pnt			*pt;
+
+		// calculate the farest z
+		// that is on screen
+
+	dist=0.0f;
+
+	for (n=0;n!=poly->ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+		kx=pt->x-cx;
+		ky=pt->y-cy;
+		kz=pt->z-cz;
+		if (gl_rotate_point_on_screen(kx,ky,kz)) {
+			d=gl_project_point_z(kx,ky,kz);
+			if (d>dist) dist=d;
+		}
+	}
+
+	return(dist);
+}
+
+void render_transparent_sort(int rn,int cx,int cy,int cz)
+{
+	int							n,k,i,frame,sort_cnt,sort_idx;
+	float						dist;
+	portal_type					*portal;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	map_mesh_poly_sort_type		*sort_list;
+	texture_type				*texture;
+
+	portal=&map.portals[rn];
+	sort_list=portal->mesh.draw.sort_list;
+
+		// create sort list
+
+	sort_cnt=0;
+
+	mesh=portal->mesh.meshes;
+		
+	for (n=0;n!=portal->mesh.nmesh;n++) {
+	
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+
+				// get texture
+
+			texture=&map.textures[poly->txt_idx];
+			if (texture->shader.on) {
+				poly++;
+				continue;
+			}
+			
+			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+
+				// transparent?
+
+			if ((texture->bitmaps[frame].alpha_mode!=alpha_mode_transparent) && (poly->alpha==1.0f)) {
+				poly++;
+				continue;
+			}
+
+				// find distance from camera
+
+			dist=segment_render_transparent_segments_far_z(mesh,poly,cx,cy,cz);
+
+				// find position in sort list
+
+			sort_idx=sort_cnt;
+
+			for (i=0;i!=sort_cnt;i++) {
+				if (dist>sort_list[i].dist) {
+					sort_idx=i;
+					break;
+				}
+			}
+
+				// add to sort list
+
+			if (sort_idx<sort_cnt) {
+				memmove(&sort_list[sort_idx+1],&sort_list[sort_idx],((sort_cnt-sort_idx)*sizeof(map_mesh_poly_sort_type)));
+			}
+
+			sort_list[sort_idx].mesh_idx=n;
+			sort_list[sort_idx].poly_idx=k;
+			sort_list[sort_idx].dist=dist;
+
+			sort_cnt++;
+
+			poly++;
+		}
+	
+		mesh++;
+	}
+
+	portal->mesh.draw.sort_cnt=sort_cnt;
+}
+
+/* =======================================================
+
+      Transparent Portal Rendering
+      
+======================================================= */
+
+void render_transparent_portal(int portal_idx,bool is_simple_lighting)
+{
+	portal_type			*portal;
+
+	portal=&map.portals[portal_idx];
+		
+		// attach compiled vertex lists
+
+	portal_compile_gl_list_attach(portal_idx);
+
+		// sort meshes
+
+	render_transparent_sort(portal_idx,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
+
+		// transparent meshes
+
+	render_transparent_portal_mesh(portal,is_simple_lighting);
+	render_transparent_portal_shader(portal);
+}
+
+/* =======================================================
+
+      Transparent Map Rendering
+      
+======================================================= */
+
+void render_transparent_map(int portal_cnt,int *portal_list)
 {
 	int				n;
+	bool			is_simple_lighting;
 
 		// setup view
 
@@ -403,13 +423,17 @@ void segment_render_transparent(int portal_cnt,int *portal_list)
 		// texture binding optimization
 
 	gl_texture_bind_start();
+
+		// check for simple lighting
+
+	is_simple_lighting=fog_solid_on();
 	
 		// run through portals
 		// we want to go from furthest away to closest
 		// for the transparency sorting
 		
 	for (n=0;n<portal_cnt;n++) {
-	//	segment_render_transparent_portal(portal_list[n]);
+		render_transparent_portal(portal_list[n],is_simple_lighting);
 	}
 
 		// dettach any attached lists

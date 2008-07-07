@@ -336,32 +336,6 @@ inline void model_draw_material_transparent_glow(texture_type *texture,model_mat
 	glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
 }
 
-void model_draw_material_shader(model_type *mdl,model_draw *draw,model_mesh_type *mesh,texture_type *texture,model_material_type *material)
-{
-	int					frame,trig_count;
-	d3pnt				pnt;
-	
-	trig_count=material->trig_count;
-	if (trig_count==0) return;
-        
-		// set up the shader
-
-	frame=texture->animate.current_frame;
-		
-	gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
-	gl_shader_set_program(texture->shader.program_obj);
-	
-	pnt.x=draw->pos.x;
-	pnt.y=draw->pos.y;
-	pnt.z=draw->pos.z;
-	
-	gl_shader_set_variables(texture->shader.program_obj,&pnt,texture);
-	
-		// draw the triangles
-		
-	glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
-}
-
 /* =======================================================
 
       Draw Model Trigs
@@ -372,7 +346,6 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int						i,frame,trig_count;
 	float					alpha;
-	bool					bump_on,specular_on,glow_on;
 	model_mesh_type			*mesh;
     texture_type			*texture;
 	model_material_type		*material;
@@ -419,37 +392,28 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			// create and start drawing arrays
 
 		model_draw_start_mesh_material_array(mdl,mesh,material);
-		
-			// detect which textures drawings are on
 			
-		bump_on=((setup.bump_mapping) && (draw->lod_dist<map.optimizations.lod_bump_distance) && (texture->bumpmaps[frame].data!=NULL));
-		specular_on=((setup.specular_mapping) && (draw->lod_dist<map.optimizations.lod_specular_distance) && (texture->specularmaps[frame].data!=NULL));
-		glow_on=((setup.glow_mapping) && (draw->lod_dist<map.optimizations.lod_glow_distance) && (texture->glowmaps[frame].data!=NULL));
-			
-			// regular textures with lighting
+			// regular texture
 
-		if (!bump_on) {
-			gl_texture_opaque_start();
+		glDisable(GL_BLEND);
 			
-			glDisable(GL_BLEND);
-			
-			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc(GL_NOTEQUAL,0);
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_NOTEQUAL,0);
 
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_LEQUAL);
-			glDepthMask(GL_TRUE);
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
+		glDepthMask(GL_TRUE);
 
-			gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
-			glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
-			
-			gl_texture_opaque_end();
-		}
+		gl_texture_opaque_start();
+		gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
 
-			// bump mapped textures with lighting
+		glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
 			
-		else {
-			gl_texture_opaque_bump_start();
+		gl_texture_opaque_end();
+
+			// bump mapping
+			
+		if ((setup.bump_mapping) && (texture->bumpmaps[frame].gl_id!=-1)) {
 
 			glDisable(GL_BLEND);
 			
@@ -460,17 +424,18 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			glDepthFunc(GL_LEQUAL);
 			glDepthMask(GL_TRUE);
 
-			gl_texture_opaque_bump_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,draw->normal,0);
+			gl_texture_opaque_tesseled_bump_start();
+			gl_texture_opaque_tesseled_bump_set(texture->bumpmaps[frame].gl_id,0);
+
 			glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
 			
-			gl_texture_opaque_bump_end();
+			gl_texture_opaque_tesseled_bump_end();
 		}
-
-			// tesseled lighting
 
 		if (!hilite_on) {
-			gl_texture_tesseled_lighting_start();
-			
+
+				// lighting
+
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_ZERO,GL_SRC_COLOR);
 
@@ -481,17 +446,39 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			glDepthFunc(GL_LEQUAL);
 			glDepthMask(GL_FALSE);
 			
+			gl_texture_tesseled_lighting_start();
 			gl_texture_tesseled_lighting_set(texture->bitmaps[frame].gl_id,1.0f);
+
 			glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
 			
 			gl_texture_tesseled_lighting_end();
-		}
 
+				// specular
+
+			if ((setup.specular_mapping) && (texture->specularmaps[frame].gl_id!=-1)) {
+
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_ONE,GL_ONE);
+
+				glDisable(GL_ALPHA_TEST);
+				
+				glEnable(GL_DEPTH_TEST);
+				glDepthFunc(GL_EQUAL);
+				glDepthMask(GL_FALSE);
+
+				gl_texture_tesseled_specular_start();
+				gl_texture_tesseled_specular_set(texture->specularmaps[frame].gl_id);
+
+				glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
+				
+				gl_texture_tesseled_specular_end();
+
+			}
+		}
 
 			// glow mapped textures
 
-		if (glow_on) {
-			gl_texture_opaque_glow_start();
+		if ((setup.glow_mapping) && (texture->glowmaps[frame].gl_id!=-1)) {
 			
 			glDisable(GL_BLEND);
 
@@ -502,7 +489,9 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			glDepthFunc(GL_EQUAL);
 			glDepthMask(GL_FALSE);
 
+			gl_texture_opaque_glow_start();
 			gl_texture_opaque_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,texture->glow.current_color);
+
 			glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
 			
 			gl_texture_opaque_glow_end();
@@ -519,7 +508,8 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 
 void model_draw_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int						i;
+	int						n,trig_count,frame;
+	d3pnt					pnt;
 	model_mesh_type			*mesh;
     texture_type			*texture;
 	model_material_type		*material;
@@ -531,11 +521,20 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 	texture=mdl->textures;
 	material=mesh->materials;
 
-	for (i=0;i!=max_model_texture;i++) {
+	for (n=0;n!=max_model_texture;n++) {
 
 			// only shaders
 			
 		if (!texture->shader.on) {
+			texture++;
+			material++;
+			continue;
+		}
+
+			// don't draw if no trigs
+
+		trig_count=material->trig_count;
+		if (trig_count==0) {
 			texture++;
 			material++;
 			continue;
@@ -557,7 +556,18 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 		glDepthFunc(GL_LEQUAL);
 		glDepthMask(GL_TRUE);
 		
-		model_draw_material_shader(mdl,draw,mesh,texture,material);
+		frame=texture->animate.current_frame;
+		
+		gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
+		gl_shader_set_program(texture->shader.program_obj);
+	
+		pnt.x=draw->pos.x;
+		pnt.y=draw->pos.y;
+		pnt.z=draw->pos.z;
+	
+		gl_shader_set_variables(texture->shader.program_obj,&pnt,texture);
+		
+		glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
 			
 		gl_texture_shader_end();
 		gl_shader_program_end();
