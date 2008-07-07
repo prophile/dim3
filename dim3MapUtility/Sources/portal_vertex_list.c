@@ -210,20 +210,32 @@ int map_portal_add_light_xy_tessel_vertex_list(portal_vertex_list_type *vl,int v
 		// create the grid overlay
 
 	for (x=0;x<=xtot;x++) {
-		if (x==xtot) {
-			grid_x[x]=poly->box.max.x;
+	
+		if (x==0) {
+			grid_x[x]=poly->box.min.x-light_tessel_overlap_pixel;
 		}
 		else {
-			grid_x[x]=poly->box.min.x+(x*xskip);
+			if (x==xtot) {
+				grid_x[x]=poly->box.max.x+light_tessel_overlap_pixel;
+			}
+			else {
+				grid_x[x]=poly->box.min.x+(x*xskip);
+			}
 		}
 	}
 
 	for (y=0;y<=ytot;y++) {
-		if (y==ytot) {
-			grid_y[y]=poly->box.max.y;
+	
+		if (y==0) {
+			grid_y[y]=poly->box.min.y-light_tessel_overlap_pixel;
 		}
 		else {
-			grid_y[y]=poly->box.min.y+(y*yskip);
+			if (y==ytot) {
+				grid_y[y]=poly->box.max.y+light_tessel_overlap_pixel;
+			}
+			else {
+				grid_y[y]=poly->box.min.y+(y*yskip);
+			}
 		}
 	}
 
@@ -321,20 +333,31 @@ int map_portal_add_light_xz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 		// create the grid overlay
 
 	for (x=0;x<=xtot;x++) {
-		if (x==xtot) {
-			grid_x[x]=poly->box.max.x;
+	
+		if (x==0) {
+			grid_x[x]=poly->box.min.x-light_tessel_overlap_pixel;
 		}
 		else {
-			grid_x[x]=poly->box.min.x+(x*xskip);
+			if (x==xtot) {
+				grid_x[x]=poly->box.max.x+light_tessel_overlap_pixel;
+			}
+			else {
+				grid_x[x]=poly->box.min.x+(x*xskip);
+			}
 		}
 	}
 
 	for (z=0;z<=ztot;z++) {
-		if (z==ztot) {
-			grid_z[z]=poly->box.max.z;
+		if (z==0) {
+			grid_z[z]=poly->box.min.z-light_tessel_overlap_pixel;
 		}
 		else {
-			grid_z[z]=poly->box.min.z+(z*zskip);
+			if (z==ztot) {
+				grid_z[z]=poly->box.max.z+light_tessel_overlap_pixel;
+			}
+			else {
+				grid_z[z]=poly->box.min.z+(z*zskip);
+			}
 		}
 	}
 
@@ -432,20 +455,31 @@ int map_portal_add_light_yz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 		// create the grid overlay
 
 	for (z=0;z<=ztot;z++) {
-		if (z==ztot) {
-			grid_z[z]=poly->box.max.z;
+		if (z==0) {
+			grid_z[z]=poly->box.min.z-light_tessel_overlap_pixel;
 		}
 		else {
-			grid_z[z]=poly->box.min.z+(z*zskip);
+			if (z==ztot) {
+				grid_z[z]=poly->box.max.z+light_tessel_overlap_pixel;
+			}
+			else {
+				grid_z[z]=poly->box.min.z+(z*zskip);
+			}
 		}
 	}
 
 	for (y=0;y<=ytot;y++) {
-		if (y==ytot) {
-			grid_y[y]=poly->box.max.y;
+	
+		if (y==0) {
+			grid_y[y]=poly->box.min.y-light_tessel_overlap_pixel;
 		}
 		else {
-			grid_y[y]=poly->box.min.y+(y*yskip);
+			if (y==ytot) {
+				grid_y[y]=poly->box.max.y+light_tessel_overlap_pixel;
+			}
+			else {
+				grid_y[y]=poly->box.min.y+(y*yskip);
+			}
 		}
 	}
 

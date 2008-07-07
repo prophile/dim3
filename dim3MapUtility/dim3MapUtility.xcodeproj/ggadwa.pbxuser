@@ -109,9 +109,9 @@
 	};
 	F56B6200080C885A00E9D08B /* mapprivate.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2310}}";
-			sepNavSelRange = "{3967, 0}";
-			sepNavVisRange = "{3180, 1616}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2394}}";
+			sepNavSelRange = "{1237, 26}";
+			sepNavVisRange = "{547, 1214}";
 			sepNavWindowFrame = "{{153, 150}, {1041, 747}}";
 		};
 	};
@@ -210,8 +210,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 236659821;
-			PBXWorkspaceStateSaveDate = 236659821;
+			PBXPerProjectTemplateStateSaveDate = 236988683;
+			PBXWorkspaceStateSaveDate = 236988683;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -283,9 +283,9 @@
 	};
 	F5DD178809074E5000721649 /* portal_vertex_list.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 11172}}";
-			sepNavSelRange = "{10973, 0}";
-			sepNavVisRange = "{3017, 733}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 11466}}";
+			sepNavSelRange = "{5083, 0}";
+			sepNavVisRange = "{3187, 694}";
 			sepNavWindowFrame = "{{334, 185}, {1041, 747}}";
 		};
 	};

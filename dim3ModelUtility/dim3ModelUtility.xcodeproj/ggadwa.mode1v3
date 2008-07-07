@@ -327,7 +327,7 @@
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 40}, {267, 696}}</string>
+							<string>{{0, 0}, {267, 696}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -427,9 +427,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>266E1F050E0F178F003DFDB5</string>
+				<string>263F74EB0E200F40005200D2</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>266E1F060E0F178F003DFDB5</string>
+				<string>263F74EC0E200F40005200D2</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -548,7 +548,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>235871974.213222</real>
+	<real>236982080.92508</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -563,9 +563,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>266E1F2E0E0F1ED1003DFDB5</string>
 		<string>260AFED80D404F3200F6C42F</string>
-		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>/Users/ggadwa/dim3Code/dim3ModelUtility/dim3ModelUtility.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -607,8 +605,6 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -648,7 +644,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFED80D404F3200F6C42F</string>
-				<string>266E1F0F0E0F17B6003DFDB5</string>
+				<string>263F74E90E200F2F005200D2</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
