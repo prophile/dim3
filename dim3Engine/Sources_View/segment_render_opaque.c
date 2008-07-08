@@ -199,7 +199,7 @@ void render_opaque_portal_bump(portal_type *portal,int stencil_pass,bool is_simp
 			
 				// blend in the bump
 
-			gl_texture_opaque_tesseled_bump_set(texture->bumpmaps[frame].gl_id,0);
+			gl_texture_opaque_tesseled_bump_set(texture->bumpmaps[frame].gl_id);
 			glStencilFunc(GL_EQUAL,poly->draw.stencil_idx,0xFF);
 
 			if ((is_simple_lighting) || (poly->draw.simple_tessel)) {

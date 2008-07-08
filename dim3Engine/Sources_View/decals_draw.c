@@ -150,8 +150,6 @@ void decal_render(void)
 
 	glEnable(GL_STENCIL_TEST);
 
-	glClear(GL_STENCIL_BUFFER_BIT);			// supergumba -- don't need this
-
 		// stencil decal segments
 
 	glDisable(GL_BLEND);
