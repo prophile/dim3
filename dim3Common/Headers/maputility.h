@@ -478,16 +478,6 @@ typedef struct		{
 					} map_settings_type;
 					
 typedef struct		{
-						int							lod_light_distance,
-													lod_bump_distance,
-													lod_specular_distance,
-													lod_glow_distance,
-													lod_model_distance,
-													lod_shadow_distance,
-													lod_effect_distance;
-					} map_optimizations_type;
-
-typedef struct		{
 						float						sound_pitch,light_drop_off_factor;
 						char						sound_name[name_str_len];
 						d3col						light_color;
@@ -542,7 +532,6 @@ typedef struct		{
 						map_rain_type				rain;
 						
 						map_settings_type			settings;
-						map_optimizations_type		optimizations;
 						map_media_type				media;
 						map_music_type				music;
 						

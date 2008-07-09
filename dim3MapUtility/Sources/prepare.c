@@ -203,16 +203,6 @@ void map_prepare(map_type *map)
 	map_particle_type	*particle;
 	spot_type			*spot;
 	
-		// optimizations
-		
-	map->optimizations.lod_light_distance*=map_enlarge;
-	map->optimizations.lod_bump_distance*=map_enlarge;
-	map->optimizations.lod_specular_distance*=map_enlarge;
-	map->optimizations.lod_glow_distance*=map_enlarge;
-	map->optimizations.lod_model_distance*=map_enlarge;
-	map->optimizations.lod_shadow_distance*=map_enlarge;
-	map->optimizations.lod_effect_distance*=map_enlarge;
-	
 		// portals
 	
 	portal=map->portals;

@@ -932,14 +932,6 @@ bool map_convert_v1(map_type *map,int seg_cnt,segment_type *seg_list)
 	
 		// convert map settings
 		
-	map->optimizations.lod_light_distance*=map_enlarge;
-	map->optimizations.lod_bump_distance*=map_enlarge;
-	map->optimizations.lod_specular_distance*=map_enlarge;
-	map->optimizations.lod_glow_distance*=map_enlarge;
-	map->optimizations.lod_model_distance*=map_enlarge;
-	map->optimizations.lod_shadow_distance*=map_enlarge;
-	map->optimizations.lod_effect_distance*=map_enlarge;
-	
     map->sky.radius*=map_enlarge;
     map->sky.extra_height*=map_enlarge;
 	map->sky.dome_y*=map_enlarge;

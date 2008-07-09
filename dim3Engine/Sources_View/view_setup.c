@@ -115,15 +115,12 @@ void view_setup_model_in_view(model_draw *draw,bool in_air,bool is_camera)
 	draw->lod_dist=distance_to_view_center(x,y,z);
 	
 	if (!is_camera) {
-		if (draw->lod_dist<map.optimizations.lod_model_distance) {
-			draw->in_view=model_inview(draw);
-		}
+		draw->in_view=model_inview(draw);
 	}
 		
 		// is shadow in view
 		
 	if ((setup.shadow_mode==shadow_mode_none) || (!draw->shadow.on)) return;
-	if (draw->lod_dist>map.optimizations.lod_shadow_distance) return;
 	
 	if (shadow_get_volume(draw,in_air)) {
 		draw->shadow.in_view=shadow_inview(draw);

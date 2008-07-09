@@ -390,7 +390,6 @@ void effect_draw(int tick)
 			// get effect distance
 			
 		dist=distance_to_view_center(effect->pos.x,effect->pos.y,effect->pos.z);
-		if (dist>map.optimizations.lod_effect_distance) continue;
 		
 			// sort into list
 		

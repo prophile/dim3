@@ -168,16 +168,6 @@ void write_map_settings_xml(map_type *map)
 	xml_add_attribute_text("network_game_list",map->settings.network_game_list);
     xml_add_tagend(TRUE);
 	
-    xml_add_tagstart("Optimizations");
-	xml_add_attribute_int("lod_light_distance",map->optimizations.lod_light_distance);
-	xml_add_attribute_int("lod_bump_distance",map->optimizations.lod_bump_distance);
-	xml_add_attribute_int("lod_specular_distance",map->optimizations.lod_specular_distance);
-	xml_add_attribute_int("lod_glow_distance",map->optimizations.lod_glow_distance);
-	xml_add_attribute_int("lod_model_distance",map->optimizations.lod_model_distance);
-	xml_add_attribute_int("lod_shadow_distance",map->optimizations.lod_shadow_distance);
-	xml_add_attribute_int("lod_effect_distance",map->optimizations.lod_effect_distance);
-    xml_add_tagend(TRUE);
-	
     xml_add_tagstart("Media");
 	xml_add_attribute_list("type",(char*)media_type_str,map->media.type);
 	xml_add_attribute_text("name",map->media.name);

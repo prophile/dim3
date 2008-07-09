@@ -78,16 +78,6 @@ bool map_new(map_type *map,char *name)
 	map->settings.editor_link_always_start=FALSE;
 	map->settings.network_game_list[0]=0x0;
 	
-		// optimizations
-		
-	map->optimizations.lod_light_distance=1000*map_enlarge;
-	map->optimizations.lod_bump_distance=1000*map_enlarge;
-	map->optimizations.lod_specular_distance=1000*map_enlarge;
-	map->optimizations.lod_glow_distance=1000*map_enlarge;
-	map->optimizations.lod_model_distance=1000*map_enlarge;
-	map->optimizations.lod_shadow_distance=500*map_enlarge;
-	map->optimizations.lod_effect_distance=1000*map_enlarge;
-	
 		// media
 		
 	map->media.type=mi_none;

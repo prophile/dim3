@@ -75,17 +75,6 @@ void decode_map_settings_xml(map_type *map,int map_head)
         xml_get_attribute_text(tag,"network_game_list",map->settings.network_game_list,256);
 	}
 	
-    tag=xml_findfirstchild("Optimizations",map_head);
-    if (tag!=-1) {
-		map->optimizations.lod_light_distance=xml_get_attribute_int(tag,"lod_light_distance");
-		map->optimizations.lod_bump_distance=xml_get_attribute_int(tag,"lod_bump_distance");
-		map->optimizations.lod_specular_distance=xml_get_attribute_int_default(tag,"lod_specular_distance",800);
-		map->optimizations.lod_glow_distance=xml_get_attribute_int_default(tag,"lod_glow_distance",800);
-		map->optimizations.lod_model_distance=xml_get_attribute_int(tag,"lod_model_distance");
-		map->optimizations.lod_shadow_distance=xml_get_attribute_int(tag,"lod_shadow_distance");
-		map->optimizations.lod_effect_distance=xml_get_attribute_int(tag,"lod_effect_distance");
-	}
-	
     tag=xml_findfirstchild("Media",map_head);
     if (tag!=-1) {
 		map->media.type=xml_get_attribute_list(tag,"type",(char*)media_type_str);

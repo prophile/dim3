@@ -159,28 +159,19 @@ void model_build_color(model_type *mdl,int mesh_idx,int rn,int x,int z,int y,mod
 {
 	int				i,nt,lit;
 	float			col[3],normal[3],r,g,b,
-					fx,fy,fz,cx,cy,cz,nx,ny;
+					fx,fy,fz,cx,cy,cz,nx,ny,kx,ky,kz;
 	float			*pc,*pv,*pln;
 	double			dx,dy,dz;
 	d3col			light_base;
 	matrix_type		mat;
 	model_mesh_type	*mesh;
 	portal_type		*portal;
-	
-	
-	float		kx,ky,kz;
-	
+		
 	fx=(float)x;
 	fy=(float)y;
 	fz=(float)z;
-	
-		// LOD lighting calculations
 
 	lit=draw->lit_type;
-		
-	if (lit==ml_vertex) {
-		if (draw->lod_dist>map.optimizations.lod_light_distance) lit=ml_flat;
-	}
 	
 		// get ambient color
 		
