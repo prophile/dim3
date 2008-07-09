@@ -58,7 +58,6 @@
 		F58B7C080CD2B7A700CEE31F /* network_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = F58B7C070CD2B7A700CEE31F /* network_draw.c */; };
 		F59447210CEF4F1E0027E360 /* script_model_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = F59447200CEF4F1E0027E360 /* script_model_mesh.c */; };
 		F5A17A620CC14D340083AF08 /* segment_render_opaque.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A17A5F0CC14D340083AF08 /* segment_render_opaque.c */; };
-		F5A17A630CC14D340083AF08 /* segment_render_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A17A600CC14D340083AF08 /* segment_render_setup.c */; };
 		F5A17A640CC14D340083AF08 /* segment_render_transparent.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A17A610CC14D340083AF08 /* segment_render_transparent.c */; };
 		F5A57E18090AA99700BE7C36 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A57E17090AA99700BE7C36 /* QuickTime.framework */; };
 		F5A57F0D090AB08A00BE7C36 /* game_time.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A57F0C090AB08A00BE7C36 /* game_time.c */; };
@@ -442,7 +441,6 @@
 		F58B7C070CD2B7A700CEE31F /* network_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = network_draw.c; path = Sources_View/network_draw.c; sourceTree = "<group>"; };
 		F59447200CEF4F1E0027E360 /* script_model_mesh.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_model_mesh.c; path = Sources_Server/script_model_mesh.c; sourceTree = "<group>"; };
 		F5A17A5F0CC14D340083AF08 /* segment_render_opaque.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = segment_render_opaque.c; path = Sources_View/segment_render_opaque.c; sourceTree = "<group>"; };
-		F5A17A600CC14D340083AF08 /* segment_render_setup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = segment_render_setup.c; path = Sources_View/segment_render_setup.c; sourceTree = "<group>"; };
 		F5A17A610CC14D340083AF08 /* segment_render_transparent.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = segment_render_transparent.c; path = Sources_View/segment_render_transparent.c; sourceTree = "<group>"; };
 		F5A57E17090AA99700BE7C36 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		F5A57F0C090AB08A00BE7C36 /* game_time.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = game_time.c; path = Sources_Server/game_time.c; sourceTree = "<group>"; };
@@ -1511,7 +1509,6 @@
 				F5DD1A5609085AA200721649 /* segment_liquid.c */,
 				F5A17A5F0CC14D340083AF08 /* segment_render_opaque.c */,
 				F5A17A610CC14D340083AF08 /* segment_render_transparent.c */,
-				F5A17A600CC14D340083AF08 /* segment_render_setup.c */,
 			);
 			name = "Segment Render";
 			sourceTree = "<group>";
@@ -1918,7 +1915,6 @@
 				F585FED80C51D9E30003750B /* script_map_fog_color.c in Sources */,
 				F52BF9350C70E55900FDB222 /* map_pick.c in Sources */,
 				F5A17A620CC14D340083AF08 /* segment_render_opaque.c in Sources */,
-				F5A17A630CC14D340083AF08 /* segment_render_setup.c in Sources */,
 				F5A17A640CC14D340083AF08 /* segment_render_transparent.c in Sources */,
 				F53CB6A60CD1675A00781059 /* script_interface_radar.c in Sources */,
 				F58B7C080CD2B7A700CEE31F /* network_draw.c in Sources */,

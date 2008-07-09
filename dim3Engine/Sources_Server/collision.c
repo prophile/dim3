@@ -92,7 +92,7 @@ int collide_find_object_for_object_move(obj_type *obj,int x,int z)
 	
 	for (n=0;n!=server.count.obj;n++) {
 	
-		if ((obj->hidden) || (!obj->contact.object_on) || (obj->pickup.on) || (check_obj->uid==ignore_obj_uid)) {
+		if ((check_obj->hidden) || (!check_obj->contact.object_on) || (check_obj->pickup.on) || (check_obj->uid==ignore_obj_uid)) {
 			check_obj++;
 			continue;
 		}

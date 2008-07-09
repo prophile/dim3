@@ -46,6 +46,7 @@ void scenery_create(void)
 	int					n;
 	map_scenery_type	*map_scenery;
 	obj_type			*obj;
+	model_type			*model;
 
 	map_scenery=map.sceneries;
 
@@ -90,6 +91,19 @@ void scenery_create(void)
 			// load the model
 			
 		model_load_and_init(&obj->draw);
+		
+			// check if there are no hit boxes
+			// if so, turn off hit box only checking
+			
+		if (obj->hit_box.on) {
+			model=model_find_uid(obj->draw.uid);
+			if (model==NULL) {
+				obj->hit_box.on=FALSE;
+			}
+			else {
+				if (model->nhit_box==0) obj->hit_box.on=FALSE;
+			}
+		}
 
 		map_scenery++;
 	}
