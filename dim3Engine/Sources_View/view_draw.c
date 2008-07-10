@@ -72,6 +72,54 @@ extern void liquid_render(int tick,int portal_cnt,int *portal_list);
 extern void decal_render(void);
 extern void portal_compile_gl_lists(int tick,int rn);
 
+
+
+
+
+
+// supergumba -- testing out mesh elimination algorithms
+void test_me(int nportal,int *portal_list)
+{
+	/*
+	int		n,k,pcnt,mcnt,dcnt,dist;
+	bool	hit;
+	map_mesh_type	*mesh;
+
+	pcnt=mcnt=dcnt=0;
+
+	for (n=0;n!=nportal;n++) {
+		pcnt+=map.portals[portal_list[n]].mesh.nmesh;
+	}
+
+	for (n=0;n!=map.nportal;n++) {
+
+		mesh=map.portals[n].mesh.meshes;
+
+		for (k=0;k!=map.portals[n].mesh.nmesh;k++) {
+
+
+			dist=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
+			hit=boundbox_inview(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y);
+
+			if (hit) {
+
+//			fprintf(stdout,"%d -> %d\n",dist,(view.camera.far_z-view.camera.near_z));
+				if (dist<(view.camera.far_z-view.camera.near_z)) {
+					dcnt++;
+				}
+				mcnt++;
+			}
+
+			mesh++;
+		}
+	}
+
+	fprintf(stdout,"portal/mesh/mesh+dist %d/%d/%d\n",pcnt,mcnt,dcnt);
+*/
+
+}
+
+
 /* =======================================================
 
       Draw Models in Scene
@@ -327,6 +375,8 @@ void view_draw(int tick)
 	for (n=(draw_portal_cnt-1);n>=0;n--) {
 		portal_compile_gl_lists(tick,draw_portal_list[n]);
 	}
+
+	test_me(draw_portal_cnt,draw_portal_list);
 	
 		// draw opaque polygons
 

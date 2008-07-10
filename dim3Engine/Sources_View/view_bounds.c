@@ -107,8 +107,8 @@ bool complex_boundbox_inview(int *cbx,int *cby,int *cbz)
 	
 	for (n=0;n!=14;n++) {
 		x=px[n];
-		z=pz[n];
 		y=py[n];
+		z=pz[n];
 		gl_rotate_point(&x,&y,&z);
 		if (z>=0) {
 			hit=TRUE;
@@ -119,21 +119,25 @@ bool complex_boundbox_inview(int *cbx,int *cby,int *cbz)
 	if (!hit) return(FALSE);
 		
 		// project to screen
+
+	x=px[0];
+	y=py[0];
+	z=pz[n];
 		
 	gl_project_poly(14,px,py,pz);
 	
 		// off screen?
 
-	lft=rgt=top=bot=FALSE;
+	lft=rgt=top=bot=TRUE;
 
 	for (n=0;n!=14;n++) {
-		lft=lft||(px[n]>=0);
-		rgt=rgt||(px[n]<setup.screen.x_sz);
-		top=top||(py[n]>=0);
-		bot=bot||(py[n]<setup.screen.y_sz);
+		lft=lft&&(px[n]<0);
+		rgt=rgt&&(px[n]>=setup.screen.x_sz);
+		top=top&&(py[n]<0);
+		bot=bot&&(py[n]>=setup.screen.y_sz);
 	}
 
-	return(lft&&rgt&&top&&bot);
+	return(!(lft||rgt||top||bot));
 }
 
 bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by)
