@@ -26,7 +26,6 @@
 		F50EC58B09E0B9F0007A0B8A /* import.c in Sources */ = {isa = PBXBuildFile; fileRef = F50EC58A09E0B9F0007A0B8A /* import.c */; };
 		F50EC5D709E0C1C5007A0B8A /* dialog_map_height_map_import.c in Sources */ = {isa = PBXBuildFile; fileRef = F50EC5D609E0C1C5007A0B8A /* dialog_map_height_map_import.c */; };
 		F51B05240A85391500714D26 /* dialog_special_combo_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = F51B05230A85391500714D26 /* dialog_special_combo_utility.c */; };
-		F51C0DDC09A5854F00C7B54C /* dialog_map_optimizations.c in Sources */ = {isa = PBXBuildFile; fileRef = F51C0DDB09A5854F00C7B54C /* dialog_map_optimizations.c */; };
 		F51E8B6C084FE4D600C3AC6A /* dialog_file_new.c in Sources */ = {isa = PBXBuildFile; fileRef = F51E8B6B084FE4D600C3AC6A /* dialog_file_new.c */; };
 		F522DCC90BBC853C00DFF256 /* Course.js in Sources */ = {isa = PBXBuildFile; fileRef = F522DCBD0BBC853C00DFF256 /* Course.js */; };
 		F522DCD30BBC859300DFF256 /* Course.js in Copy (Defaults) */ = {isa = PBXBuildFile; fileRef = F522DCBD0BBC853C00DFF256 /* Course.js */; };
@@ -250,7 +249,6 @@
 		F51ABAD3048DAB0200B78D6A /* dim3editor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dim3editor.h; path = Headers/dim3editor.h; sourceTree = "<group>"; };
 		F51ABADA048DACFE00B78D6A /* application_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = application_defs.h; path = Headers/application_defs.h; sourceTree = "<group>"; };
 		F51B05230A85391500714D26 /* dialog_special_combo_utility.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_special_combo_utility.c; path = Code/dialog_special_combo_utility.c; sourceTree = "<group>"; };
-		F51C0DDB09A5854F00C7B54C /* dialog_map_optimizations.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_map_optimizations.c; path = Code/dialog_map_optimizations.c; sourceTree = "<group>"; };
 		F51E8B6B084FE4D600C3AC6A /* dialog_file_new.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_file_new.c; path = Code/dialog_file_new.c; sourceTree = "<group>"; };
 		F522DCBD0BBC853C00DFF256 /* Course.js */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.javascript; path = Course.js; sourceTree = "<group>"; };
 		F522DCBF0BBC853C00DFF256 /* light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = light.png; sourceTree = "<group>"; };
@@ -548,7 +546,6 @@
 				F50EC5D609E0C1C5007A0B8A /* dialog_map_height_map_import.c */,
 				F56EF37B09A69A3400F06521 /* dialog_map_settings.c */,
 				F5D3316E0C3B191200BED1CE /* dialog_map_counts.c */,
-				F51C0DDB09A5854F00C7B54C /* dialog_map_optimizations.c */,
 				F5EA6BA609B176BD00E31EE7 /* dialog_map_movements.c */,
 				F501B27C09D4B36D00742D03 /* dialog_map_media.c */,
 				F5EA6CB709B29F0E00E31EE7 /* dialog_movement_settings.c */,
@@ -766,7 +763,6 @@
 				F56425B9098C1C760008DECC /* dialog_background_sky_setting.c in Sources */,
 				F5CA0193098D8E6E00039712 /* dialog_map_auto_generate.c in Sources */,
 				F58860EB09A188F4000408ED /* dialog_spot_setting.c in Sources */,
-				F51C0DDC09A5854F00C7B54C /* dialog_map_optimizations.c in Sources */,
 				F56EF37C09A69A3400F06521 /* dialog_map_settings.c in Sources */,
 				F56EF39E09A6F08400F06521 /* dialog_portal_settings.c in Sources */,
 				F56EF3F709A6F70700F06521 /* dialog_map_light_settings.c in Sources */,

@@ -35,6 +35,8 @@ extern map_type			map;
 extern view_type		view;
 extern setup_type		setup;
 
+GLuint					vertex_vbo=-1;		// supergumba
+
 /* =======================================================
 
       Compile Portal OpenGL Lists
@@ -198,7 +200,6 @@ void portal_compile_gl_list_attach(int rn)
 	sz=(nvlist*3)*sizeof(float);
 
 		// vertexes
-		
 #ifdef D3_OS_MAC
 	glVertexArrayRangeAPPLE(sz,portal->vertexes.pvert);
 	glEnableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
@@ -229,6 +230,20 @@ void portal_compile_gl_list_attach(int rn)
 #ifdef D3_OS_MAC
 	glFlushVertexArrayRangeAPPLE(sz,portal->vertexes.pvert);
 #endif
+
+/*
+
+	if (vertex_vbo==-1) {
+		glGenBuffersARB(1,&vertex_vbo);
+	}
+	
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vertex_vbo);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,portal->vertexes.pvert,GL_STREAM_DRAW_ARB);
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3,GL_FLOAT,0,0);
+
+*/
 }
 
 void portal_compile_gl_list_dettach(void)
@@ -245,8 +260,13 @@ void portal_compile_gl_list_dettach(void)
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-
+	
 #ifdef D3_OS_MAC
 	glDisableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
 #endif
+
+/*
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+
+*/
 }

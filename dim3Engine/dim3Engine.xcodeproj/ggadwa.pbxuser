@@ -80,8 +80,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 237267884;
-			PBXWorkspaceStateSaveDate = 237267884;
+			PBXPerProjectTemplateStateSaveDate = 237345721;
+			PBXWorkspaceStateSaveDate = 237345721;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -334,9 +334,9 @@
 	};
 	F57CAC770527D9E000A68578 /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1068, 11284}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1068, 11116}}";
 			sepNavSelRange = "{14097, 0}";
-			sepNavVisRange = "{13444, 1127}";
+			sepNavVisRange = "{5261, 1296}";
 			sepNavWindowFrame = "{{84, 213}, {1041, 747}}";
 		};
 	};
@@ -630,7 +630,7 @@
 	};
 	F5BD968B0C20EF34000F74E1 /* view_vertex_light.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1540}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1330}}";
 			sepNavSelRange = "{0, 0}";
 			sepNavVisRange = "{214, 1368}";
 			sepNavWindowFrame = "{{409, 241}, {1041, 747}}";
@@ -836,10 +836,10 @@
 	};
 	F5DD19DE0908310200721649 /* view_vertex_list.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 3472}}";
-			sepNavSelRange = "{2090, 30}";
-			sepNavVisRange = "{1796, 876}";
-			sepNavWindowFrame = "{{392, 128}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 3822}}";
+			sepNavSelRange = "{5727, 0}";
+			sepNavVisRange = "{4745, 985}";
+			sepNavWindowFrame = "{{194, 182}, {1041, 747}}";
 		};
 	};
 	F5DD19E00908310200721649 /* view_setup.c */ = {

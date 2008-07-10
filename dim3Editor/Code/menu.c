@@ -397,10 +397,6 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			dialog_map_counts_run();
 			return(noErr);
 			
-		case kCommandMapOptimizations:
-			dialog_map_optimizations_run();
-			return(noErr);
-			
 		case kCommandMapMedia:
 			dialog_map_media_run();
 			return(noErr);

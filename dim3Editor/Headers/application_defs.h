@@ -65,7 +65,6 @@ and can be sold or given away.
 
 #define kCommandMapSettings					FOUR_CHAR_CODE('mset')
 #define kCommandMapCounts					FOUR_CHAR_CODE('cset')
-#define kCommandMapOptimizations			FOUR_CHAR_CODE('mopt')
 #define kCommandMapMedia					FOUR_CHAR_CODE('medi')
 #define kCommandAmbientLightSoundSettings	FOUR_CHAR_CODE('mamb')
 #define kCommandSkySettings					FOUR_CHAR_CODE('msky')
