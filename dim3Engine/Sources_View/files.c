@@ -261,7 +261,7 @@ void file_save_delete(void)
 
 void file_open(void)
 {
-	int					x,y,high,list_wid,list_high;
+	int					x,y,wid,high,padding;
 	char				path[1024],path2[1024];
 	element_column_type	cols[4];
 	
@@ -273,45 +273,13 @@ void file_open(void)
 		
 	file_build_list();
 	
-		// sizes
-		
-	high=gl_text_get_char_height(FALSE);
-		
-	list_wid=hud.scale_x-10;
-	list_high=hud.scale_y-(high+95);
-		
-		// buttons
-		
-	x=hud.scale_x-10;
-	y=((high+40)+list_high)+10;
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_cancel","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_cancel_selected","png");
-	element_button_add(path,path2,file_button_cancel_id,x,y,-1,-1,element_pos_right,element_pos_top);
-
-	x=element_get_x_position(file_button_cancel_id)-10;
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_delete","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_delete_selected","png");
-	element_button_add(path,path2,file_button_delete_id,x,y,-1,-1,element_pos_right,element_pos_top);
-	element_enable(file_button_delete_id,FALSE);
-
-	x=element_get_x_position(file_button_delete_id)-10;
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_save","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_save_selected","png");
-	element_button_add(path,path2,file_button_save_id,x,y,-1,-1,element_pos_right,element_pos_top);
-	element_hide(file_button_save_id,!server.map_open);
-	
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_load","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_load_selected","png");
-	element_button_add(path,path2,file_button_load_id,x,y,-1,-1,element_pos_right,element_pos_top);
-	element_enable(file_button_load_id,FALSE);
-	element_hide(file_button_load_id,server.map_open);
-	
 		// files
 		
-	y=high+25;
+	x=(int)(((float)hud.scale_x)*0.03f);
+	y=(int)(((float)hud.scale_y)*0.15f);
+
+	wid=hud.scale_x-(x*2);
+	high=(int)(((float)hud.scale_y)*0.83f)-y;
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=0.50f;
@@ -320,8 +288,44 @@ void file_open(void)
 	strcpy(cols[2].name,"Elapsed Time");
 	cols[2].percent_size=0.18f;
 
-	element_table_add(cols,file_table_data,file_directory_id,3,5,y,list_wid,list_high,element_table_bitmap_document);
+	element_table_add(cols,file_table_data,file_directory_id,3,x,y,wid,high,element_table_bitmap_document);
 	
+		// buttons
+		
+	padding=element_get_padding();
+	
+	wid=(int)(((float)hud.scale_x)*0.1f);
+	high=(int)(((float)hud.scale_x)*0.05f);
+	
+	x=hud.scale_x-padding;
+	y=hud.scale_y-padding;
+	
+	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_save","png");
+	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_save_selected","png");
+	element_button_add(path,path2,file_button_save_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_hide(file_button_save_id,!server.map_open);
+	
+	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_load","png");
+	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_load_selected","png");
+	element_button_add(path,path2,file_button_load_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_enable(file_button_load_id,FALSE);
+	element_hide(file_button_load_id,server.map_open);
+
+	x=element_get_x_position(file_button_load_id)-padding;
+	
+	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_delete","png");
+	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_delete_selected","png");
+	element_button_add(path,path2,file_button_delete_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_enable(file_button_delete_id,FALSE);
+	
+	x=element_get_x_position(file_button_delete_id)-padding;
+
+	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_cancel","png");
+	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_cancel_selected","png");
+	element_button_add(path,path2,file_button_cancel_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+
+		// in file chooser
+		
 	server.state=gs_file;
 }
 

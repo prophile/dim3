@@ -80,7 +80,7 @@ extern void portal_compile_gl_lists(int tick,int rn);
 // supergumba -- testing out mesh elimination algorithms
 void test_me(int nportal,int *portal_list)
 {
-	/*
+/*
 	int		n,k,pcnt,mcnt,dcnt,dist;
 	bool	hit;
 	map_mesh_type	*mesh;
@@ -103,7 +103,7 @@ void test_me(int nportal,int *portal_list)
 
 			if (hit) {
 
-//			fprintf(stdout,"%d -> %d\n",dist,(view.camera.far_z-view.camera.near_z));
+			fprintf(stdout,"%d -> %d\n",dist,(view.camera.far_z-view.camera.near_z));
 				if (dist<(view.camera.far_z-view.camera.near_z)) {
 					dcnt++;
 				}
@@ -116,7 +116,6 @@ void test_me(int nportal,int *portal_list)
 
 	fprintf(stdout,"portal/mesh/mesh+dist %d/%d/%d\n",pcnt,mcnt,dcnt);
 */
-
 }
 
 

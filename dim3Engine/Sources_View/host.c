@@ -104,7 +104,7 @@ void host_fill_map_table(char *game_type)
 
 void host_open(void)
 {
-	int							n,x,y,high,list_wid,list_high,control_y_add,separate_y_add;
+	int							n,x,y,wid,high,padding;
 	char						path[1024],path2[1024];
 	element_column_type			cols[1];
 	
@@ -116,24 +116,6 @@ void host_open(void)
 							
 	element_clear();
 	
-		// buttons
-		
-	high=gl_text_get_char_height(FALSE);
-		
-	x=hud.scale_x-10;
-	y=hud.scale_y-30;
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_cancel","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_cancel_selected","png");
-	element_button_add(path,path2,host_button_cancel_id,x,y,-1,-1,element_pos_right,element_pos_center);
-
-	x=element_get_x_position(host_button_cancel_id)-10;
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_host","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_host_selected","png");
-	element_button_add(path,path2,host_button_host_id,x,y,-1,-1,element_pos_right,element_pos_center);
-	element_enable(host_button_host_id,FALSE);
-
 		// game type
 
 	for (n=0;n!=net_setup.ngame;n++) {
@@ -141,22 +123,23 @@ void host_open(void)
 	}
 	net_game_types[net_setup.ngame][0]=0x0;
 
-	y=high+40;
-	control_y_add=element_get_control_high();
-	separate_y_add=element_get_separator_high();
+	x=(int)(((float)hud.scale_x)*0.15f);
+	y=(int)(((float)hud.scale_y)*0.17f);
 	
-	element_combo_add("Game Type",(char*)net_game_types,0,host_game_type_id,85,y,TRUE);
-	y+=separate_y_add;
+	element_combo_add("Game Type",(char*)net_game_types,0,host_game_type_id,x,y,TRUE);
+	y+=element_get_control_high();
 
 		// hosts table
 		
-	list_wid=hud.scale_x-30;
-	list_high=hud.scale_y-(high+125);
+	x=(int)(((float)hud.scale_x)*0.03f);
+
+	wid=hud.scale_x-(x*2);
+	high=(int)(((float)hud.scale_y)*0.83f)-y;
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=1.0f;
 
-	element_table_add(cols,NULL,host_table_id,1,15,y,list_wid,list_high,element_table_bitmap_data);
+	element_table_add(cols,NULL,host_table_id,1,x,y,wid,high,element_table_bitmap_data);
 	
 		// fill table with maps
 
@@ -167,6 +150,29 @@ void host_open(void)
 		
 	y=hud.scale_y-24;
 	element_text_add("",host_status_id,15,y,tx_left,TRUE,FALSE,FALSE);
+	
+		// buttons
+		
+	padding=element_get_padding();
+	
+	wid=(int)(((float)hud.scale_x)*0.1f);
+	high=(int)(((float)hud.scale_x)*0.05f);
+	
+	x=hud.scale_x-padding;
+	y=hud.scale_y-padding;
+	
+	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_host","png");
+	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_host_selected","png");
+	element_button_add(path,path2,host_button_host_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_enable(host_button_host_id,FALSE);
+
+	x=element_get_x_position(host_button_host_id)-padding;
+
+	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_cancel","png");
+	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_cancel_selected","png");
+	element_button_add(path,path2,host_button_cancel_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+
+		// in join thread
 	
 	server.state=gs_host;
 }

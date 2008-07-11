@@ -1974,10 +1974,10 @@ void element_draw_table(element_type *element,int sel_id)
 		
 	if (element->setup.table.busy) {
 		element_get_box(element,&lft,&rgt,&top,&bot);
-		lft=rgt-18;
-		rgt=lft+high;
-		top+=2;
-		bot=top+high;
+		rgt-=2;
+		lft=rgt-20;
+		top+=((high-20)/2);
+		bot=top+20;
 		
 		gl_texture_simple_set(element_busy.gl_id,TRUE,1,1,1,1.0f);
 		

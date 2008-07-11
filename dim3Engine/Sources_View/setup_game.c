@@ -377,7 +377,7 @@ void setup_game_create_pane(void)
 		file_paths_data(&setup.file_path_setup,tab_path2[n],"Bitmaps/UI_Elements",tab_selected_list[n+stab],"png");
 	}
 	
-	padding=element_get_padding();;
+	padding=element_get_padding();
 	
 	wid=hud.scale_x;
 	high=(int)(((float)hud.scale_y)*0.075f);
