@@ -153,6 +153,8 @@ void test_me(int nportal,int *portal_list)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
+	
+	return;
 
 	if (pixels==NULL) pixels=valloc(800*600);
 

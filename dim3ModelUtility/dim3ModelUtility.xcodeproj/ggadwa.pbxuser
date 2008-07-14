@@ -68,7 +68,6 @@
 		};
 	};
 	F562692104FEBC1C00EDBBA9 /* Project object */ = {
-		activeArchitecture = i386;
 		activeBuildConfigurationName = Release;
 		activeTarget = F5F494F7067BF85000E809E7 /* ModelUtility */;
 		codeSenseManager = 260AFEDC0D404F5000F6C42F /* Code sense */;
@@ -129,8 +128,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 237441260;
-			PBXWorkspaceStateSaveDate = 237441260;
+			PBXPerProjectTemplateStateSaveDate = 237618850;
+			PBXWorkspaceStateSaveDate = 237618850;
 		};
 		sourceControlManager = 260AFEDB0D404F5000F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -152,6 +151,22 @@
 			sepNavWindowFrame = "{{379, 161}, {1041, 747}}";
 		};
 	};
+	F56D96E70502F83C00143299 /* file_model_texture.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1482, 3794}}";
+			sepNavSelRange = "{5342, 0}";
+			sepNavVisRange = "{1895, 2158}";
+			sepNavWindowFrame = "{{590, 52}, {1041, 747}}";
+		};
+	};
+	F56D96E80502F83C00143299 /* file_model_mesh.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1638}}";
+			sepNavSelRange = "{2098, 18}";
+			sepNavVisRange = "{1407, 1000}";
+			sepNavWindowFrame = "{{84, 213}, {1041, 747}}";
+		};
+	};
 	F56D96E90502F83C00143299 /* file_model_pose.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1062, 2982}}";
@@ -162,10 +177,10 @@
 	};
 	F56D96EA0502F83C00143299 /* model_main.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1032, 3514}}";
-			sepNavSelRange = "{6557, 31}";
-			sepNavVisRange = "{5851, 1099}";
-			sepNavWindowFrame = "{{38, 255}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1032, 3668}}";
+			sepNavSelRange = "{6716, 0}";
+			sepNavVisRange = "{5935, 1069}";
+			sepNavWindowFrame = "{{147, 142}, {1041, 747}}";
 		};
 	};
 	F594147B0979776300223F2A /* draw_normals.c */ = {
@@ -186,10 +201,10 @@
 	};
 	F5941503097A003000223F2A /* file_model_mesh_v2.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 8036}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{13659, 911}";
-			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7546}}";
+			sepNavSelRange = "{8050, 0}";
+			sepNavVisRange = "{7467, 1034}";
+			sepNavWindowFrame = "{{678, 202}, {1041, 747}}";
 		};
 	};
 	F5CA4EF305100FB60055C8B8 /* modelutility.h */ = {
@@ -198,6 +213,14 @@
 			sepNavSelRange = "{10120, 0}";
 			sepNavVisRange = "{4480, 1221}";
 			sepNavWindowFrame = "{{260, 281}, {1041, 747}}";
+		};
+	};
+	F5E514E00542395B006E0418 /* model_frames.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {764, 1680}}";
+			sepNavSelRange = "{3144, 19}";
+			sepNavVisRange = "{0, 0}";
+			sepNavWindowFrame = "{{61, 234}, {1041, 747}}";
 		};
 	};
 	F5EBD379053A13C30076219C /* lookup.c */ = {

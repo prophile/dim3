@@ -543,13 +543,13 @@ typedef struct		{
 						map_light_type				*lights;
 						map_sound_type				*sounds;
 						map_particle_type			*particles;
-						
 						spot_type					*spots;
 						node_type					*nodes;
 						
 						movement_type				*movements;
-						
 						group_type					*groups;
+	
+						portal_vertex_type			vertexes;
 						
 					} map_type;
 

@@ -59,7 +59,6 @@
 		F5A42DBA0555EC87002DF965 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5197CF8014F1AFA0140F45C /* OpenGL.framework */; };
 		F5A42DBB0555EC87002DF965 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20286C33FDCF999611CA2CEA /* Carbon.framework */; };
 		F5A42DC10555EC87002DF965 /* dim3 Animator.rsrc in Rez */ = {isa = PBXBuildFile; fileRef = 011160A100BE2AC97F000001 /* dim3 Animator.rsrc */; };
-		F5A431F1055601EC002DF965 /* Info-dim3_Animator.plist in Resources */ = {isa = PBXBuildFile; fileRef = F5A431F0055601EC002DF965 /* Info-dim3_Animator.plist */; };
 		F5AD54300BBE1F56001C7C04 /* baseutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD542F0BBE1F56001C7C04 /* baseutility.h */; };
 		F5AD54320BBE1F6A001C7C04 /* libBaseUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD54310BBE1F6A001C7C04 /* libBaseUtility.dylib */; };
 		F5AD54330BBE1F7E001C7C04 /* libBaseUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD54310BBE1F6A001C7C04 /* libBaseUtility.dylib */; };
@@ -161,7 +160,7 @@
 		F594B4A609A9732300408388 /* dialog_bone_settings.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_bone_settings.c; path = Code/dialog_bone_settings.c; sourceTree = "<group>"; };
 		F594B4E409A97EB000408388 /* dialog_set_vertex_bone.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_set_vertex_bone.c; path = Code/dialog_set_vertex_bone.c; sourceTree = "<group>"; };
 		F5A42DC40555EC87002DF965 /* dim3 Animator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dim3 Animator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		F5A431F0055601EC002DF965 /* Info-dim3_Animator.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; name = "Info-dim3_Animator.plist"; path = "Resources/Info-dim3_Animator.plist"; sourceTree = "<group>"; };
+		F5A431F0055601EC002DF965 /* Info-dim3_Animator.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; name = "Info-dim3_Animator.plist"; path = "Resources/Info-dim3_Animator.plist"; sourceTree = "<group>"; };
 		F5AD542F0BBE1F56001C7C04 /* baseutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = baseutility.h; path = ../dim3Common/Headers/baseutility.h; sourceTree = SOURCE_ROOT; };
 		F5AD54310BBE1F6A001C7C04 /* libBaseUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBaseUtility.dylib; path = ../dim3Common/Libraries/libBaseUtility.dylib; sourceTree = SOURCE_ROOT; };
 		F5AF030009D306A0008B576A /* dialog_copy_mesh.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_copy_mesh.c; path = Code/dialog_copy_mesh.c; sourceTree = "<group>"; };
@@ -475,7 +474,6 @@
 			files = (
 				F5A42D9C0555EC87002DF965 /* InfoPlist.strings in Resources */,
 				F5A42D9D0555EC87002DF965 /* dim3 Animator.icns in Resources */,
-				F5A431F1055601EC002DF965 /* Info-dim3_Animator.plist in Resources */,
 				F5BDB6C3055A0DEA00556316 /* dim3 Animator.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

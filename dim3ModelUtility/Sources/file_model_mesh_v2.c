@@ -55,7 +55,7 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
     model_bone_type			*bone;
     model_trig_type			*trig;
     texture_type			*texture;
-	
+
         // options
     
     tag=xml_findfirstchild("Options",model_head);
@@ -227,8 +227,6 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 		
 			// materials
 			
-		bzero(mesh->materials,(max_model_texture*sizeof(model_material_type)));
-			
 		materials_tag=xml_findfirstchild("Materials",mesh_tag);
 		
 		ntrig=0;
@@ -285,10 +283,8 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 	}
 	
 	model->nmesh=nmesh;
-    
+  
         // fills
-
-	bzero(model->textures,(max_model_texture*sizeof(texture_type)));
 
     fills_tag=xml_findfirstchild("Fills",model_head);
 	nfill=xml_countchildren(fills_tag);

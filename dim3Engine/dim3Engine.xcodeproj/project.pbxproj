@@ -231,7 +231,6 @@
 		F5CD8732055771B80023AD9B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0867D6AAFE840B52C02AAC07 /* InfoPlist.strings */; };
 		F5CD8733055771B80023AD9B /* dim3 Engine.icns in Resources */ = {isa = PBXBuildFile; fileRef = 00CA825D00BF848B7F000001 /* dim3 Engine.icns */; };
 		F5CD87DC055771B80023AD9B /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20286C33FDCF999611CA2CEA /* Carbon.framework */; };
-		F5CD87F60557720F0023AD9B /* Info-dim3_Engine.plist in Resources */ = {isa = PBXBuildFile; fileRef = F5CD87F50557720F0023AD9B /* Info-dim3_Engine.plist */; };
 		F5CF599D0BFD161D007DD44C /* script_obj_radar.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CF599C0BFD161D007DD44C /* script_obj_radar.c */; };
 		F5CF599F0BFD1640007DD44C /* radar_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CF599E0BFD1640007DD44C /* radar_draw.c */; };
 		F5D299FD0AA0037A00576463 /* al_file.c in Sources */ = {isa = PBXBuildFile; fileRef = F5D299FC0AA0037A00576463 /* al_file.c */; };
@@ -1627,7 +1626,6 @@
 			files = (
 				F5CD8732055771B80023AD9B /* InfoPlist.strings in Resources */,
 				F5CD8733055771B80023AD9B /* dim3 Engine.icns in Resources */,
-				F5CD87F60557720F0023AD9B /* Info-dim3_Engine.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1957,8 +1955,7 @@
 		F5DB0BF1085671A9005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

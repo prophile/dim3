@@ -339,13 +339,23 @@ void walk_view_draw_portal_meshes_texture(int rn,d3pnt *cpt,int clip_y,bool opaq
 		
 	glEnable(GL_TEXTURE_2D);
 
-	if (opaque) glDisable(GL_BLEND);
+	if (opaque) {
+		glDisable(GL_BLEND);
+	}
+	else {
+		glEnable(GL_BLEND);
+	}
 	
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 	
 	glEnable(GL_DEPTH_TEST);
-	if (!opaque) glDepthMask(GL_FALSE);
+	if (opaque) {
+		glDepthMask(GL_TRUE);
+	}
+	else {
+		glDepthMask(GL_FALSE);
+	}
 	
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	
@@ -494,13 +504,23 @@ void walk_view_draw_portal_liquids(int rn,d3pnt *cpt,bool opaque)
 		
 	glEnable(GL_TEXTURE_2D);
 
-	if (opaque) glDisable(GL_BLEND);
+	if (opaque) {
+		glDisable(GL_BLEND);
+	}
+	else {
+		glEnable(GL_BLEND);
+	}
 	
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 	
 	glEnable(GL_DEPTH_TEST);
-	if (!opaque) glDepthMask(GL_FALSE);
+	if (opaque) {
+		glDepthMask(GL_TRUE);
+	}
+	else {
+		glDepthMask(GL_FALSE);
+	}
 	
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	

@@ -42,7 +42,7 @@ void model_textures_clear(model_type *model)
 	int						i,k;
     texture_type			*texture;
 	bitmap_type				*bitmap,*bumpmap,*specularmap,*glowmap;
-
+	
     texture=model->textures;
     
 	for (i=0;i!=max_model_texture;i++) {
@@ -81,7 +81,7 @@ void model_textures_read(model_type *model)
 	texture_type			*texture;
 	bitmap_type				*bitmap,*bumpmap,*specularmap,*glowmap,
 							height_bitmap;
-    
+   
         // load the fills
         
     texture=model->textures;
@@ -132,7 +132,7 @@ void model_textures_read(model_type *model)
 					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,specularmap->name,"png");
 					bitmap_open(specularmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.texture_quality_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression);
 				}
-				
+
 					// glow map
 
 				if (glowmap->name[0]!=0x0) {

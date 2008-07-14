@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit ÒCreated with dim3 TechnologyÓ is given on a single
+2. This credit â€œCreated with dim3 Technologyâ€ is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -465,7 +465,7 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 					xml_get_attribute_short_array(tag,"node",(short*)node->link,max_node_link);
 					
 					tag=xml_findfirstchild("Hint",node_tag);
-					xml_get_attribute_short_array(tag,"node",(short*)node->path_hint,map->nnode);
+					xml_get_attribute_short_array(tag,"node",(short*)node->path_hint,max_node);
 					
 					node_tag=xml_findnextchild(node_tag);
 				}

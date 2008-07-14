@@ -1,7 +1,6 @@
 // !$*UTF8*$!
 {
 	0867D690FE84028FC02AAC07 /* Project object */ = {
-		activeArchitecture = i386;
 		activeBuildConfigurationName = Release;
 		activeTarget = F53F280A0BC1C74800EB3C0F /* dim3BaseUtility */;
 		codeSenseManager = 26A5EABF0D404BD000BB47DE /* Code sense */;
@@ -50,12 +49,33 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 237441235;
-			PBXWorkspaceStateSaveDate = 237441235;
+			PBXPerProjectTemplateStateSaveDate = 237619595;
+			PBXWorkspaceStateSaveDate = 237619595;
+		};
+		perUserProjectItems = {
+			262F43BB0E29CA8500523EE0 /* PBXTextBookmark */ = 262F43BB0E29CA8500523EE0 /* PBXTextBookmark */;
+			262F43C80E29CB9800523EE0 /* PBXTextBookmark */ = 262F43C80E29CB9800523EE0 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 26A5EABE0D404BD000BB47DE /* Source Control */;
 		userBuildSettings = {
 		};
+	};
+	262F43BB0E29CA8500523EE0 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5AD52FD0BBE1A66001C7C04 /* textures.c */;
+		rLen = 23;
+		rLoc = 7039;
+		rType = 0;
+	};
+	262F43C80E29CB9800523EE0 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5AD52FD0BBE1A66001C7C04 /* textures.c */;
+		name = "textures.c: 271";
+		rLen = 23;
+		rLoc = 7039;
+		rType = 0;
+		vrLen = 1866;
+		vrLoc = 6599;
 	};
 	26A5EABE0D404BD000BB47DE /* Source Control */ = {
 		isa = PBXSourceControlManager;
@@ -121,18 +141,34 @@
 	};
 	F5AD52A00BBE16AC001C7C04 /* baseutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 12040}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1038, 12544}}";
 			sepNavSelRange = "{12991, 0}";
-			sepNavVisRange = "{11165, 2832}";
+			sepNavVisRange = "{15392, 1032}";
 			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
 		};
 	};
 	F5AD52F50BBE1A5D001C7C04 /* xml.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 16996}}";
-			sepNavSelRange = "{18773, 0}";
-			sepNavVisRange = "{18361, 1026}";
-			sepNavWindowFrame = "{{351, 254}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {764, 17010}}";
+			sepNavSelRange = "{10817, 29}";
+			sepNavVisRange = "{0, 0}";
+			sepNavWindowFrame = "{{370, 197}, {1041, 747}}";
+		};
+	};
+	F5AD52FC0BBE1A66001C7C04 /* bitmap_main.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2268}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{289, 1357}";
+			sepNavWindowFrame = "{{38, 255}, {1041, 747}}";
+		};
+	};
+	F5AD52FD0BBE1A66001C7C04 /* textures.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6580}}";
+			sepNavSelRange = "{7039, 23}";
+			sepNavVisRange = "{6599, 1866}";
+			sepNavWindowFrame = "{{256, 69}, {1041, 747}}";
 		};
 	};
 	F5AD53080BBE1A74001C7C04 /* socket.c */ = {

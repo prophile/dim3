@@ -186,7 +186,7 @@ bool model_open(model_type *model,char *name,bool load_bitmaps,bool setup_glowma
 	model_calculate_parents(model);
 	
 		// read bitmaps
-		
+
 	if (load_bitmaps) model_textures_read(model);
 	if (setup_glowmaps) model_textures_setup_glowmaps(model);
 	

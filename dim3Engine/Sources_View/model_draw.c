@@ -79,7 +79,7 @@ void model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 		idx=trig->v[0]*3;
 		vp=mesh->gl_vertex_array+idx;
 		cp=mesh->gl_color_array+idx;
-		np=mesh->gl_vertex_normal_array+idx;
+		np=mesh->gl_light_normal_array+idx;
 
 		*vl++=*vp++;
 		*vl++=*vp++;
@@ -101,7 +101,7 @@ void model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 		idx=trig->v[1]*3;
 		vp=mesh->gl_vertex_array+idx;
 		cp=mesh->gl_color_array+idx;
-		np=mesh->gl_vertex_normal_array+idx;
+		np=mesh->gl_light_normal_array+idx;
 
 		*vl++=*vp++;
 		*vl++=*vp++;
@@ -123,7 +123,7 @@ void model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 		idx=trig->v[2]*3;
 		vp=mesh->gl_vertex_array+idx;
 		cp=mesh->gl_color_array+idx;
-		np=mesh->gl_vertex_normal_array+idx;
+		np=mesh->gl_light_normal_array+idx;
 
 		*vl++=*vp++;
 		*vl++=*vp++;
@@ -356,19 +356,20 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 
 			// bump mapping
 			// need to switch to normal array for bumping
-			
+
 		if ((setup.bump_mapping) && (texture->bumpmaps[frame].gl_id!=-1)) {
 
 			glColorPointer(3,GL_FLOAT,0,gl_render_array_get_current_normal());
 
-			glDisable(GL_BLEND);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_ZERO,GL_SRC_COLOR);
 			
 			glEnable(GL_ALPHA_TEST);
 			glAlphaFunc(GL_NOTEQUAL,0);
 
 			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_LEQUAL);
-			glDepthMask(GL_TRUE);
+			glDepthFunc(GL_EQUAL);
+			glDepthMask(GL_FALSE);
 
 			gl_texture_opaque_tesseled_bump_start();
 			gl_texture_opaque_tesseled_bump_set(texture->bumpmaps[frame].gl_id);
@@ -391,7 +392,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			glAlphaFunc(GL_NOTEQUAL,0);
 
 			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_LEQUAL);
+			glDepthFunc(GL_EQUAL);
 			glDepthMask(GL_FALSE);
 			
 			gl_texture_tesseled_lighting_start();
@@ -402,17 +403,10 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			gl_texture_tesseled_lighting_end();
 
 				// specular
-
+			
 			if ((setup.specular_mapping) && (texture->specularmaps[frame].gl_id!=-1)) {
 
-				glEnable(GL_BLEND);
 				glBlendFunc(GL_ONE,GL_ONE);
-
-				glDisable(GL_ALPHA_TEST);
-				
-				glEnable(GL_DEPTH_TEST);
-				glDepthFunc(GL_EQUAL);
-				glDepthMask(GL_FALSE);
 
 				gl_texture_tesseled_specular_start();
 				gl_texture_tesseled_specular_set(texture->specularmaps[frame].gl_id);
@@ -420,7 +414,6 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 				glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
 				
 				gl_texture_tesseled_specular_end();
-
 			}
 		}
 

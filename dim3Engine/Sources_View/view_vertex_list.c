@@ -43,8 +43,180 @@ GLuint					vertex_vbo=-1;		// supergumba
       
 ======================================================= */
 
+
+// supergumba -- do once
+// need per mesh update?
+
+extern int						nlight;
+extern light_spot_type			lspot_cache[max_light_spot];
+
+
+void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf)
+{
+	int					i,cnt;
+	double				dx,dz,dy,r,g,b,nx,nz,ny,d,mult;
+	light_spot_type		*lspot;
+
+		// combine all light spot normals
+		// attenuated for distance
+		
+	cnt=0;
+	
+	r=g=b=0;
+	nx=ny=nz=0;
+	
+	lspot=lspot_cache;
+	
+	for (i=0;i!=nlight;i++) {
+
+
+		// calculate inverses
+
+	lspot->inv_intensity=1.0/lspot->intensity;
+	
+	lspot->d_intensity=lspot->intensity*lspot->intensity;
+	lspot->d_inv_intensity=1.0/lspot->d_intensity;
+	
+		// use this constant to get rough calculation close to better sqrt calc
+		
+	lspot->d_inv_intensity*=map.ambient.light_drop_off_factor;
+	
+		// double light values
+		
+	lspot->d_x=(double)lspot->pnt.x;
+	lspot->d_y=(double)lspot->pnt.y;
+	lspot->d_z=(double)lspot->pnt.z;
+	
+	lspot->d_col_r=(double)lspot->col.r;
+	lspot->d_col_g=(double)lspot->col.g;
+	lspot->d_col_b=(double)lspot->col.b;
+
+
+		
+		dx=lspot->d_x-x;
+		dy=lspot->d_y-y;
+		dz=lspot->d_z-z;
+		
+		d=(dx*dx)+(dz*dz)+(dy*dy);
+		if (d<=lspot->d_intensity) {
+			mult=(lspot->d_intensity-d)*lspot->d_inv_intensity;
+
+			r+=(lspot->d_col_r*mult);
+			g+=(lspot->d_col_g*mult);
+			b+=(lspot->d_col_b*mult);
+
+			nx+=(dx*mult);
+			ny+=(dy*mult);
+			nz+=(dz*mult);
+
+			cnt++;
+		}
+		
+		lspot++;
+	}
+
+		// set light value
+
+	*cf++=(map.ambient.light_color.r+setup.gamma)+(float)r;
+	*cf++=(map.ambient.light_color.g+setup.gamma)+(float)g;
+	*cf=(map.ambient.light_color.b+setup.gamma)+(float)b;
+	
+		// no hits, then default normal
+
+	if (cnt==0) {
+		*nf++=0.5f;
+		*nf++=0.5f;
+		*nf=1.0f;
+		return;
+	}
+	
+		// average the normal vector
+		
+	d=(1.0/((double)cnt));
+	nx*=d;
+	ny*=d;
+	nz*=d;
+	
+		// combine x and z together to make x
+		// factor.  Note that this does not always
+		// give the correct results but will be close
+		// most of the time -- otherwise we're going to
+		// have to calculate polygon vectors
+		
+	nx+=nz;
+
+		// normalize normal vector
+
+	d=sqrt((nx*nx)+(ny*ny));
+	if (d!=0.0) {
+		d=1.0/d;
+		nx*=d;
+		ny*=d;
+	}
+	
+		// convert to needed format
+		// x (1 = right [light from left], 0 = left [light from right])
+		// y (1 = top [light from bottom], 0 = bottom [light from top])
+
+		// supergumba -- possible (check math) that in the future
+		// we can use the z coord for a distance hardness factor
+		
+	*nf++=(float)((nx*0.5)+0.5);
+	*nf++=1.0f-(float)((ny*0.5)+0.5);
+	*nf=1.0f;
+}
+
+
+
 void portal_compile_gl_lists(int tick,int rn)
 {
+
+
+
+	int						n,nvlist;
+	float					fx,fy,fz;
+	float					*pv,*pp,*pc,*pn;
+	portal_vertex_list_type	*vl;
+
+		// the arrays
+
+	vl=map.vertexes.vertex_list;
+	nvlist=map.vertexes.nvlist;
+
+	pv=(float*)map.vertexes.pvert;
+	pp=(float*)map.vertexes.pcoord;
+	pc=(float*)map.vertexes.pcolor;
+	pn=(float*)map.vertexes.pnormal;
+
+		// the eye offset
+
+	fx=(float)view.camera.pos.x;
+	fy=(float)view.camera.pos.y;
+	fz=(float)view.camera.pos.z;
+
+		// regular lighting
+
+	vl=map.vertexes.vertex_list;
+
+	for (n=0;n!=nvlist;n++) {
+		map_calculate_light_color_normal((double)vl->x,(double)vl->y,(double)vl->z,pc,pn);
+		pc+=3;
+		pn+=3;
+
+		*pv++=(vl->x-fx);
+		*pv++=(vl->y-fy);
+		*pv++=(fz-vl->z);
+		*pp++=vl->gx;
+		*pp++=vl->gy;
+
+		vl++;
+	}
+
+
+
+
+
+/*
 	int						n,nvlist;
 	float					fx,fy,fz;
 	float					*pv,*pp,*pc,*pn;
@@ -181,6 +353,7 @@ void portal_compile_gl_lists(int tick,int rn)
 		}
 
 	}
+	*/
 }
 
 /* =======================================================
@@ -191,6 +364,49 @@ void portal_compile_gl_lists(int tick,int rn)
 
 void portal_compile_gl_list_attach(int rn)
 {
+
+	int						nvlist,sz;
+
+	nvlist=map.vertexes.nvlist;
+	
+	sz=(nvlist*3)*sizeof(float);
+
+		// vertexes
+#ifdef D3_OS_MAC
+	glVertexArrayRangeAPPLE(sz,map.vertexes.pvert);
+	glEnableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
+#endif
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3,GL_FLOAT,0,map.vertexes.pvert);
+
+		// uvs
+		
+	glClientActiveTexture(GL_TEXTURE2);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,map.vertexes.pcoord);
+
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,map.vertexes.pcoord);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,map.vertexes.pcoord);
+
+		// color array
+
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(3,GL_FLOAT,0,map.vertexes.pcolor);
+
+#ifdef D3_OS_MAC
+	glFlushVertexArrayRangeAPPLE(sz,map.vertexes.pvert);
+#endif
+
+
+
+
+/* supergumba
 	int						nvlist,sz;
 	portal_type				*portal;
 	
@@ -230,6 +446,8 @@ void portal_compile_gl_list_attach(int rn)
 #ifdef D3_OS_MAC
 	glFlushVertexArrayRangeAPPLE(sz,portal->vertexes.pvert);
 #endif
+*/
+
 
 /*
 

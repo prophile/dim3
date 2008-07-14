@@ -743,6 +743,8 @@ bool map_portal_create_single_vertex_list(map_type *map,int rn)
 		portal->vertexes.vertex_list=nvl;
 	}
 	
+	fprintf(stdout,"portal %d vertex list = %d\n",rn,portal->vertexes.nvlist);
+	
 		// compiled vertex, coord and color lists
 		
 	sz=portal->vertexes.nvlist*(sizeof(float)*3);
@@ -791,6 +793,182 @@ void map_portal_dispose_single_vertex_list(map_type *map,int rn)
 	free(portal->vertexes.phit);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// supergumba -- new map vertex list
+
+
+
+
+
+bool map_build_vertex_list(map_type *map)
+{
+	int							n,t,k,vl_cnt;
+	portal_type					*portal;
+	portal_vertex_list_type		*vl;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	
+	vl_cnt=0;
+	vl=map->vertexes.vertex_list;
+	
+		// build list of vertexes and colors
+	
+	for (t=0;t!=map->nportal;t++) {
+		
+		portal=&map->portals[t];
+		
+		mesh=portal->mesh.meshes;
+		
+		for (n=0;n!=portal->mesh.nmesh;n++) {
+			
+			poly=mesh->polys;
+			
+			for (k=0;k!=mesh->npoly;k++) {
+				vl_cnt=map_portal_add_mesh_poly_single_vertex_list(vl,vl_cnt,mesh,poly);
+				vl_cnt=map_portal_add_light_single_vertex_list(vl,vl_cnt,mesh,poly);
+				poly++;
+			}
+			
+			mesh++;
+		}
+	}
+	
+		// total number of vertexes
+	
+	map->vertexes.nvlist=vl_cnt;
+	
+	return(TRUE);
+}
+
+bool map_create_vertex_list(map_type *map)
+{
+	int							n,t,k,nvlist,sz,rough_sz;
+	portal_vertex_list_type		*nvl;
+	portal_type					*portal;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	
+		// find maximum possible number of vertexes
+	
+	nvlist=0;
+	
+	for (t=0;t!=map->nportal;t++) {
+		portal=&map->portals[t];
+	
+		mesh=portal->mesh.meshes;
+		
+		for (n=0;n!=portal->mesh.nmesh;n++) {
+			
+			poly=mesh->polys;
+			
+			for (k=0;k!=mesh->npoly;k++) {
+				nvlist+=poly->ptsz;
+				nvlist+=light_tessel_max_vertex;			// maximum number of lighting elements in list
+				poly++;
+			}
+			
+			mesh++;
+		}
+	}
+	
+		// create rough vertex list
+	
+	rough_sz=nvlist*sizeof(portal_vertex_list_type);
+	map->vertexes.vertex_list=(portal_vertex_list_type*)valloc(rough_sz);
+	if (map->vertexes.vertex_list==NULL) return(FALSE);
+	
+	bzero(map->vertexes.vertex_list,rough_sz);
+	
+		// build vertex list
+	
+	if (!map_build_vertex_list(map)) {
+		free(map->vertexes.vertex_list);
+		map->vertexes.vertex_list=NULL;
+		return(FALSE);
+	}
+	
+		// resize vertex list
+	
+	sz=map->vertexes.nvlist*sizeof(portal_vertex_list_type);
+	
+	if (sz<rough_sz) {
+		nvl=(portal_vertex_list_type*)valloc(sz);
+		if (nvl==NULL) {
+			free(map->vertexes.vertex_list);
+			map->vertexes.vertex_list=NULL;
+			return(FALSE);
+		}
+		
+		memmove(nvl,map->vertexes.vertex_list,sz);
+		free(map->vertexes.vertex_list);
+		map->vertexes.vertex_list=nvl;
+	}
+	
+	fprintf(stdout,"map vertex list = %d\n",map->vertexes.nvlist);
+	
+		// compiled vertex, coord and color lists
+	
+	sz=map->vertexes.nvlist*(sizeof(float)*3);
+	map->vertexes.pvert=(float*)valloc(sz);
+	if (map->vertexes.pvert==NULL) return(FALSE);
+	
+	bzero(map->vertexes.pvert,sz);
+	
+	sz=map->vertexes.nvlist*(sizeof(float)*2);
+	map->vertexes.pcoord=(float*)valloc(sz);
+	if (map->vertexes.pcoord==NULL) return(FALSE);
+	
+	bzero(map->vertexes.pcoord,sz);
+	
+	sz=map->vertexes.nvlist*(sizeof(float)*3);
+	map->vertexes.pcolor=(float*)valloc(sz);
+	if (map->vertexes.pcolor==NULL) return(FALSE);
+	
+	bzero(map->vertexes.pcolor,sz);
+	
+	sz=map->vertexes.nvlist*(sizeof(float)*3);
+	map->vertexes.pnormal=(float*)valloc(sz);
+	if (map->vertexes.pnormal==NULL) return(FALSE);
+	
+	bzero(map->vertexes.pnormal,sz);
+	
+		// hit list
+	
+	map->vertexes.phit=(unsigned char*)valloc(map->vertexes.nvlist);
+	if (map->vertexes.phit==NULL) return(FALSE);
+	
+	return(TRUE);
+}
+
+void map_dispose_vertex_list(map_type *map)
+{
+	free(map->vertexes.vertex_list);
+	free(map->vertexes.pvert);
+	free(map->vertexes.pcoord);
+	free(map->vertexes.pcolor);
+	free(map->vertexes.pnormal);
+	free(map->vertexes.phit);
+}
+
+
+
+
+
+
+
 /* =======================================================
 
       Create/Destroy Portal Vertex Lists
@@ -805,6 +983,8 @@ bool map_portal_create_vertex_lists(map_type *map)
 		if (!map_portal_create_single_vertex_list(map,n)) return(FALSE);
 	}
 	
+	return(map_create_vertex_list(map));			// supergumba
+	
 	return(TRUE);
 }
 
@@ -815,6 +995,8 @@ void map_portal_dispose_vertex_lists(map_type *map)
 	for (n=0;n!=map->nportal;n++) {
 		map_portal_dispose_single_vertex_list(map,n);
 	}
+	
+	map_dispose_vertex_list(map);		// supergumba
 }
 
 void map_portal_rebuild_vertex_lists(map_type *map)
@@ -824,5 +1006,7 @@ void map_portal_rebuild_vertex_lists(map_type *map)
 	for (n=0;n!=map->nportal;n++) {
 		map_portal_build_single_vertex_list(map,n);
 	}
+	
+	map_build_vertex_list(map);		// supergumba
 }
 

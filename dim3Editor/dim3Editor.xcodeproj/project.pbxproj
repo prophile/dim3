@@ -97,7 +97,6 @@
 		F5A4325A055602DF002DF965 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20286C33FDCF999611CA2CEA /* Carbon.framework */; };
 		F5A4325C055602DF002DF965 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F59E531D014DBA5801382915 /* AGL.framework */; };
 		F5A4325D055602DF002DF965 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5FE22D0014DC000015DC241 /* OpenGL.framework */; };
-		F5A43279055607CC002DF965 /* Info-dim3_Editor.plist in Resources */ = {isa = PBXBuildFile; fileRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */; };
 		F5A9881D094BF7D8005E55AE /* dialog.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A9881C094BF7D8005E55AE /* dialog.h */; };
 		F5A989A4094D0233005E55AE /* clipboard.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A989A3094D0233005E55AE /* clipboard.c */; };
 		F5AD54430BBE1FDB001C7C04 /* baseutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD54420BBE1FDB001C7C04 /* baseutility.h */; };
@@ -706,7 +705,6 @@
 			files = (
 				F5A4322B055602DF002DF965 /* InfoPlist.strings in Resources */,
 				F5A4322C055602DF002DF965 /* dim3 Editor.icns in Resources */,
-				F5A43279055607CC002DF965 /* Info-dim3_Editor.plist in Resources */,
 				F57537BA055B5F4900D42FAF /* dim3 Editor.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
