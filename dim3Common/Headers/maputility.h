@@ -45,6 +45,7 @@ extern char light_type_str[][32];
 // map maximums
 //
 
+#define max_mesh									8192			// maximum number of meshes in a map
 #define max_portal									256				// maximum number of portals in a map
 
 #define max_map_scenery								1024			// maximum number of ambient scenery

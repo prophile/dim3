@@ -68,30 +68,6 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 	lspot=lspot_cache;
 	
 	for (i=0;i!=nlight;i++) {
-
-
-		// calculate inverses
-
-	lspot->inv_intensity=1.0/lspot->intensity;
-	
-	lspot->d_intensity=lspot->intensity*lspot->intensity;
-	lspot->d_inv_intensity=1.0/lspot->d_intensity;
-	
-		// use this constant to get rough calculation close to better sqrt calc
-		
-	lspot->d_inv_intensity*=map.ambient.light_drop_off_factor;
-	
-		// double light values
-		
-	lspot->d_x=(double)lspot->pnt.x;
-	lspot->d_y=(double)lspot->pnt.y;
-	lspot->d_z=(double)lspot->pnt.z;
-	
-	lspot->d_col_r=(double)lspot->col.r;
-	lspot->d_col_g=(double)lspot->col.g;
-	lspot->d_col_b=(double)lspot->col.b;
-
-
 		
 		dx=lspot->d_x-x;
 		dy=lspot->d_y-y;
@@ -201,7 +177,12 @@ void portal_compile_gl_lists(int tick,int rn)
 	for (n=0;n!=nvlist;n++) {
 		map_calculate_light_color_normal((double)vl->x,(double)vl->y,(double)vl->z,pc,pn);
 		pc+=3;
-		pn+=3;
+	//	pn+=3;
+		
+		*pn++=0.5f;
+		*pn++=0.5f;
+		*pn=1.0f;
+
 
 		*pv++=(vl->x-fx);
 		*pv++=(vl->y-fy);

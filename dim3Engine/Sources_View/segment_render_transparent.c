@@ -48,7 +48,7 @@ extern void portal_compile_gl_list_dettach(void);
       
 ======================================================= */
 
-void render_transparent_portal_mesh(portal_type *portal,bool is_simple_lighting)
+void render_transparent_portal_mesh(int mesh_cnt,int *mesh_list,bool is_simple_lighting)
 {
 	int						n,sort_cnt,frame,ntrig;
 	unsigned long			txt_id;
@@ -216,7 +216,7 @@ void render_transparent_portal_mesh(portal_type *portal,bool is_simple_lighting)
 	gl_texture_transparent_end();
 }
 
-void render_transparent_portal_shader(portal_type *portal)
+void render_transparent_portal_shader(int mesh_cnt,int *mesh_list)
 {
 	int						n,sort_cnt,frame;
 	map_mesh_type			*mesh;
@@ -382,24 +382,12 @@ void render_transparent_sort(int rn,int cx,int cy,int cz)
       
 ======================================================= */
 
-void render_transparent_portal(int portal_idx,bool is_simple_lighting)
+void render_transparent_portal(int mesh_cnt,int *mesh_list,bool is_simple_lighting)
 {
 	portal_type			*portal;
 
 	portal=&map.portals[portal_idx];
 		
-		// attach compiled vertex lists
-
-	portal_compile_gl_list_attach(portal_idx);
-
-		// sort meshes
-
-	render_transparent_sort(portal_idx,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
-
-		// transparent meshes
-
-	render_transparent_portal_mesh(portal,is_simple_lighting);
-	render_transparent_portal_shader(portal);
 }
 
 /* =======================================================
@@ -408,7 +396,7 @@ void render_transparent_portal(int portal_idx,bool is_simple_lighting)
       
 ======================================================= */
 
-void render_transparent_map(int portal_cnt,int *portal_list)
+void render_transparent_map(int mesh_cnt,int *mesh_list)
 {
 	int				n;
 	bool			is_simple_lighting;
@@ -428,13 +416,18 @@ void render_transparent_map(int portal_cnt,int *portal_list)
 
 	is_simple_lighting=fog_solid_on();
 	
-		// run through portals
-		// we want to go from furthest away to closest
-		// for the transparency sorting
-		
-	for (n=0;n<portal_cnt;n++) {
-		render_transparent_portal(portal_list[n],is_simple_lighting);
-	}
+		// attach compiled vertex lists
+
+	portal_compile_gl_list_attach(0);		// supergumba -- change this!
+
+		// sort meshes
+
+	render_transparent_sort(portal_idx,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
+
+		// transparent meshes
+
+	render_transparent_portal_mesh(int mesh_cnt,int *mesh_list,is_simple_lighting);
+	render_transparent_portal_shader(int mesh_cnt,int *mesh_list);
 
 		// dettach any attached lists
 

@@ -53,8 +53,8 @@ extern void draw_background(int cx,int cy,int cz);
 extern void draw_sky(int tick,int y);
 extern bool model_inview(model_draw *draw);
 extern void model_calc_pose_bones(model_draw *draw);
-extern void render_opaque_map(int portal_cnt,int *portal_list);
-extern void render_transparent_map(int portal_cnt,int *portal_list);
+extern void render_opaque_map(int mesh_cnt,int *mesh_list);
+extern void render_transparent_map(int mesh_cnt,int *mesh_list);
 extern void rain_draw(int tick);
 extern bool fog_solid_on(void);
 extern void fog_draw_textured(int tick);
@@ -77,24 +77,90 @@ extern void portal_compile_gl_lists(int tick,int rn);
 
 unsigned char *pixels=NULL;
 
-
-// 1. SORT the meshes
-// 2. combine stenciling across 1..255
+int			mesh_draw_count,mesh_draw_list[max_mesh],mesh_draw_dist[max_mesh];		// supergumba -- make part of map
 
 
 
-int test_me_sort(int max_mesh,int *mesh_sort_list)
+
+
+
+
+
+
+
+
+
+
+void temp_get_mesh_draw_list(int nportal,int *portal_list)
+{
+	int					n,k,t,sz,d,idx,portal_idx;
+	portal_type			*portal;
+	map_mesh_type		*mesh;
+
+	mesh_draw_count=0;
+
+	for (n=0;n!=nportal;n++) {
+
+		portal_idx=portal_list[n];
+		portal=&map.portals[portal_idx];
+
+		for (k=0;k!=portal->mesh.nmesh;k++) {
+
+			mesh=&portal->mesh.meshes[k];
+
+			d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
+		
+				// top of list is closest items
+
+			idx=-1;
+		
+			for (t=0;t!=mesh_draw_count;t++) {
+				if (mesh_draw_dist[t]>d) {
+					idx=t;
+					break;
+				}
+			}
+		
+				// insert at end of list
+				
+			if (idx==-1) {
+				mesh_draw_dist[mesh_draw_count]=d;
+				mesh_draw_list[mesh_draw_count]=(portal_idx*1000)+k;
+				mesh_draw_count++;
+				continue;
+			}
+			
+				// insert in list
+				
+			sz=sizeof(int)*(mesh_draw_count-idx);
+			memmove(&mesh_draw_dist[idx+1],&mesh_draw_dist[idx],sz);
+			memmove(&mesh_draw_list[idx+1],&mesh_draw_list[idx],sz);
+			
+			mesh_draw_dist[idx]=d;
+			mesh_draw_list[idx]=(portal_idx*1000)+k;
+			
+			mesh_draw_count++;
+		}
+	}
+}
+
+
+
+
+
+
+
+
+int test_me_sort(int *mesh_sort_list)
 {
 	int					n,k,t,sz,d,cnt,idx;
-	int					*sptr,*dist;
+	int					*dist;
 	map_mesh_type		*mesh;
 
 
 	dist=valloc(max_mesh*sizeof(int));
 
 	cnt=0;
-
-	sptr=mesh_sort_list;
 
 	for (n=0;n!=map.nportal;n++) {
 
@@ -144,7 +210,7 @@ int test_me_sort(int max_mesh,int *mesh_sort_list)
 // supergumba -- testing out mesh elimination algorithms
 void test_me(int nportal,int *portal_list)
 {
-	int					n,k,t,stencil_idx,stencil_mesh_start_idx,idx,max_mesh,mesh_cnt,portal_idx,mesh_idx,
+	int					n,k,t,stencil_idx,stencil_mesh_start_idx,idx,mesh_cnt,portal_idx,mesh_idx,
 						portal_cnt,hide_cnt,depth_cnt,dist;
 	int					*mesh_sort_list,*mesh_hit_list;
 	bool				hit;
@@ -153,22 +219,16 @@ void test_me(int nportal,int *portal_list)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
-	
-	return;
 
+	return;
+	
 	if (pixels==NULL) pixels=valloc(800*600);
 
 		// get sort array for meshes
 
-	max_mesh=0;
-
-	for (n=0;n!=map.nportal;n++) {
-		max_mesh+=map.portals[n].mesh.nmesh;
-	}
-
 	mesh_sort_list=valloc(sizeof(int)*max_mesh);
 
-	mesh_cnt=test_me_sort(max_mesh,mesh_sort_list);
+	mesh_cnt=test_me_sort(mesh_sort_list);
 
 	mesh_hit_list=valloc(sizeof(int)*mesh_cnt);
 	bzero(mesh_hit_list,(sizeof(int)*mesh_cnt));
@@ -318,7 +378,7 @@ void test_me(int nportal,int *portal_list)
 		}
 	}
 
-	fprintf(stdout,"max/portal/view hide/zbuffer %d/%d/%d/%d\n",max_mesh,portal_cnt,hide_cnt,depth_cnt);
+	fprintf(stdout,"portal/zbuffer %d/%d\n",portal_cnt,depth_cnt);
 }
 
 
@@ -574,15 +634,17 @@ void view_draw(int tick)
 		
 	draw_portal_cnt=map_portal_draw_sort(&map,obj->pos.rn,obj->pos.x,obj->pos.y,obj->pos.z,draw_portal_list);
 
-	for (n=(draw_portal_cnt-1);n>=0;n--) {
-		portal_compile_gl_lists(tick,draw_portal_list[n]);
-	}
+//	for (n=(draw_portal_cnt-1);n>=0;n--) {
+//		portal_compile_gl_lists(tick,draw_portal_list[n]);		// supergumba -- run once
+//	}
+	portal_compile_gl_lists(tick,0);		// supergumba -- run once
 
-	test_me(draw_portal_cnt,draw_portal_list);
+//	test_me(draw_portal_cnt,draw_portal_list);	// supergumba -- all temporary
+	temp_get_mesh_draw_list(draw_portal_cnt,draw_portal_list);
 	
 		// draw opaque polygons
 
-	render_opaque_map(draw_portal_cnt,draw_portal_list);
+	render_opaque_map(mesh_draw_count,mesh_draw_list);
 
 		// draw model shadows
 
@@ -591,7 +653,7 @@ void view_draw(int tick)
 	
 		// draw tranparent polygons
 		
-	render_transparent_map(draw_portal_cnt,draw_portal_list);
+	render_transparent_map(mesh_draw_count,mesh_draw_list);
 
 		// draw liquids
 

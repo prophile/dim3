@@ -52,7 +52,7 @@ extern void portal_compile_gl_list_dettach(void);
       
 ======================================================= */
 
-void render_opaque_portal_normal(portal_type *portal,int stencil_pass)
+void render_opaque_portal_normal(int mesh_cnt,int *mesh_list,int stencil_pass)
 {
 	int					n,k,frame;
 	map_mesh_type		*mesh;
@@ -74,11 +74,11 @@ void render_opaque_portal_normal(portal_type *portal,int stencil_pass)
 
 	gl_texture_opaque_start();
 	
-		// run through the portal meshes
+		// run through the meshes
 
-	mesh=portal->mesh.meshes;
+	for (n=0;n!=mesh_cnt;n++) {
 
-	for (n=0;n!=portal->mesh.nmesh;n++) {
+		mesh=&map.portals[mesh_list[n]/1000].mesh.meshes[mesh_list[n]%1000];
 
 			// run through the polys
 
@@ -114,8 +114,6 @@ void render_opaque_portal_normal(portal_type *portal,int stencil_pass)
 			
 			poly++;
 		}
-
-		mesh++;
 	}
 
 		// end drawing
@@ -129,7 +127,7 @@ void render_opaque_portal_normal(portal_type *portal,int stencil_pass)
       
 ======================================================= */
 
-void render_opaque_portal_bump(portal_type *portal,int stencil_pass,bool is_simple_lighting)
+void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool is_simple_lighting)
 {
 	int					n,k,frame,ntrig;
 	map_mesh_type		*mesh;
@@ -138,7 +136,7 @@ void render_opaque_portal_bump(portal_type *portal,int stencil_pass,bool is_simp
 
 		// need to use normal map in color array
 
-	glColorPointer(3,GL_FLOAT,0,portal->vertexes.pnormal);
+	glColorPointer(3,GL_FLOAT,0,map.vertexes.pnormal);
 
 		// setup drawing
 
@@ -150,11 +148,11 @@ void render_opaque_portal_bump(portal_type *portal,int stencil_pass,bool is_simp
 
 	gl_texture_opaque_tesseled_bump_start();
 	
-		// run through the portal meshes
+		// run through the meshes
 
-	mesh=portal->mesh.meshes;
+	for (n=0;n!=mesh_cnt;n++) {
 
-	for (n=0;n!=portal->mesh.nmesh;n++) {
+		mesh=&map.portals[mesh_list[n]/1000].mesh.meshes[mesh_list[n]%1000];
 
 			// if hilite is on or this mesh is
 			// hilited, then we need to clear the stencil
@@ -212,8 +210,6 @@ void render_opaque_portal_bump(portal_type *portal,int stencil_pass,bool is_simp
 
 			poly++;
 		}
-
-		mesh++;
 	}
 
 		// end drawing
@@ -222,7 +218,7 @@ void render_opaque_portal_bump(portal_type *portal,int stencil_pass,bool is_simp
 
 		// restore original color array
 
-	glColorPointer(3,GL_FLOAT,0,portal->vertexes.pcolor);
+	glColorPointer(3,GL_FLOAT,0,map.vertexes.pcolor);
 }
 
 /* =======================================================
@@ -231,7 +227,7 @@ void render_opaque_portal_bump(portal_type *portal,int stencil_pass,bool is_simp
       
 ======================================================= */
 
-void render_opaque_portal_lighting(portal_type *portal,int stencil_pass,bool is_simple_lighting)
+void render_opaque_portal_lighting(int mesh_cnt,int *mesh_list,int stencil_pass,bool is_simple_lighting)
 {
 	int					n,k,frame,ntrig;
 	map_mesh_type		*mesh;
@@ -248,18 +244,15 @@ void render_opaque_portal_lighting(portal_type *portal,int stencil_pass,bool is_
 
 	gl_texture_tesseled_lighting_start();
 
-		// run through the portal meshes
+		// run through the meshes
 
-	mesh=portal->mesh.meshes;
+	for (n=0;n!=mesh_cnt;n++) {
 
-	for (n=0;n!=portal->mesh.nmesh;n++) {
+		mesh=&map.portals[mesh_list[n]/1000].mesh.meshes[mesh_list[n]%1000];
 
 			// skip hilited polygons
 
-		if (mesh->flag.hilite) {
-			mesh++;
-			continue;
-		}
+		if (mesh->flag.hilite) continue;
 
 			// run through the polys
 
@@ -308,8 +301,6 @@ void render_opaque_portal_lighting(portal_type *portal,int stencil_pass,bool is_
 
 			poly++;
 		}
-
-		mesh++;
 	}
 
 		// end drawing
@@ -317,7 +308,7 @@ void render_opaque_portal_lighting(portal_type *portal,int stencil_pass,bool is_
 	gl_texture_tesseled_lighting_end();
 }
 
-void render_opaque_portal_lighting_fix(portal_type *portal,int stencil_pass)
+void render_opaque_portal_lighting_fix(int mesh_cnt,int *mesh_list,int stencil_pass)
 {
 	int					n,k;
 	map_mesh_type		*mesh;
@@ -339,18 +330,15 @@ void render_opaque_portal_lighting_fix(portal_type *portal,int stencil_pass)
 
 	gl_texture_tesseled_lighting_start();
 
-		// run through the portal meshes
+		// run through the meshes
 
-	mesh=portal->mesh.meshes;
+	for (n=0;n!=mesh_cnt;n++) {
 
-	for (n=0;n!=portal->mesh.nmesh;n++) {
+		mesh=&map.portals[mesh_list[n]/1000].mesh.meshes[mesh_list[n]%1000];
 
 			// skip hilited polygons
 
-		if (mesh->flag.hilite) {
-			mesh++;
-			continue;
-		}
+		if (mesh->flag.hilite) continue;
 
 			// run through the polys
 
@@ -374,8 +362,6 @@ void render_opaque_portal_lighting_fix(portal_type *portal,int stencil_pass)
 
 			poly++;
 		}
-
-		mesh++;
 	}
 
 		// end drawing
@@ -383,7 +369,7 @@ void render_opaque_portal_lighting_fix(portal_type *portal,int stencil_pass)
 	gl_texture_tesseled_lighting_end();
 }
 
-void render_opaque_portal_specular(portal_type *portal,int stencil_pass,bool is_simple_lighting)
+void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass,bool is_simple_lighting)
 {
 	int					n,k,frame,ntrig;
 	map_mesh_type		*mesh;
@@ -402,18 +388,15 @@ void render_opaque_portal_specular(portal_type *portal,int stencil_pass,bool is_
 
 	gl_texture_tesseled_specular_start();
 	
-		// run through the portal meshes
+		// run through the meshes
 
-	mesh=portal->mesh.meshes;
+	for (n=0;n!=mesh_cnt;n++) {
 
-	for (n=0;n!=portal->mesh.nmesh;n++) {
+		mesh=&map.portals[mesh_list[n]/1000].mesh.meshes[mesh_list[n]%1000];
 
 			// skip hilited polygons
 
-		if (mesh->flag.hilite) {
-			mesh++;
-			continue;
-		}
+		if (mesh->flag.hilite) continue;
 
 			// run through the polys
 
@@ -460,8 +443,6 @@ void render_opaque_portal_specular(portal_type *portal,int stencil_pass,bool is_
 
 			poly++;
 		}
-		
-		mesh++;
 	}
 
 		// end drawing
@@ -475,7 +456,7 @@ void render_opaque_portal_specular(portal_type *portal,int stencil_pass,bool is_
       
 ======================================================= */
 
-void render_opaque_portal_glow(portal_type *portal)
+void render_opaque_portal_glow(int mesh_cnt,int *mesh_list)
 {
 	int					n,k,frame;
 	map_mesh_type		*mesh;
@@ -495,18 +476,15 @@ void render_opaque_portal_glow(portal_type *portal)
 
 	gl_texture_opaque_glow_start();
 	
-		// run through the portal meshes
+		// run through the meshes
 
-	mesh=portal->mesh.meshes;
+	for (n=0;n!=mesh_cnt;n++) {
 
-	for (n=0;n!=portal->mesh.nmesh;n++) {
+		mesh=&map.portals[mesh_list[n]/1000].mesh.meshes[mesh_list[n]%1000];
 
 			// skip hilited polygons
 
-		if (mesh->flag.hilite) {
-			mesh++;
-			continue;
-		}
+		if (mesh->flag.hilite) continue;
 
 			// run through the polys
 
@@ -538,8 +516,6 @@ void render_opaque_portal_glow(portal_type *portal)
 
 			poly++;
 		}
-
-		mesh++;
 	}
 
 		// end drawing
@@ -553,7 +529,7 @@ void render_opaque_portal_glow(portal_type *portal)
       
 ======================================================= */
 
-void render_opaque_portal_shader(portal_type *portal)
+void render_opaque_portal_shader(int mesh_cnt,int *mesh_list)
 {
 
 	int					n,k,frame;
@@ -575,11 +551,11 @@ void render_opaque_portal_shader(portal_type *portal)
 	gl_shader_program_start();
 	gl_texture_shader_start();
 	
-		// run through the portal meshes
+		// run through the meshes
 
-	mesh=portal->mesh.meshes;
+	for (n=0;n!=mesh_cnt;n++) {
 
-	for (n=0;n!=portal->mesh.nmesh;n++) {
+		mesh=&map.portals[mesh_list[n]/1000].mesh.meshes[mesh_list[n]%1000];
 
 			// run through the polys
 
@@ -610,8 +586,6 @@ void render_opaque_portal_shader(portal_type *portal)
 
 			poly++;
 		}
-
-		mesh++;
 	}
 
 		// end drawing
@@ -626,7 +600,7 @@ void render_opaque_portal_shader(portal_type *portal)
       
 ======================================================= */
 
-int render_opaque_portal_stencil_mark(portal_type *portal)
+int render_opaque_mesh_stencil_mark(int mesh_cnt,int *mesh_list)
 {
 	int					n,k,stencil_pass,stencil_idx;
 	map_mesh_type		*mesh;
@@ -635,9 +609,9 @@ int render_opaque_portal_stencil_mark(portal_type *portal)
 	stencil_pass=0;
 	stencil_idx=stencil_poly_start;
 
-	mesh=portal->mesh.meshes;
+	for (n=0;n!=mesh_cnt;n++) {
 
-	for (n=0;n!=portal->mesh.nmesh;n++) {
+		mesh=&map.portals[mesh_list[n]/1000].mesh.meshes[mesh_list[n]%1000];
 
 		poly=mesh->polys;
 
@@ -654,8 +628,6 @@ int render_opaque_portal_stencil_mark(portal_type *portal)
 
 			poly++;
 		}
-
-		mesh++;
 	}
 
 	return(stencil_pass);
@@ -667,11 +639,10 @@ int render_opaque_portal_stencil_mark(portal_type *portal)
       
 ======================================================= */
 
-void render_opaque_map(int portal_cnt,int *portal_list)
+void render_opaque_map(int mesh_cnt,int *mesh_list)
 {
-	int					n,portal_idx,stencil_pass,stencil_pass_cnt;
+	int					n,stencil_pass,stencil_pass_cnt;
 	bool				is_simple_lighting;
-	portal_type			*portal;
 
 		// setup view
 
@@ -687,50 +658,40 @@ void render_opaque_map(int portal_cnt,int *portal_list)
 		// detect simple lighting
 
 	is_simple_lighting=fog_solid_on();
+
+		// create stencil passes
+
+	stencil_pass_cnt=render_opaque_mesh_stencil_mark(mesh_cnt,mesh_list);
+
+			// attach map complied open gl list
+
+	portal_compile_gl_list_attach(0);
 		
-		// run through portals
-		// we want to go from closest to furthest to
-		// catch as much z-buffer eliminates as possible
+		// might need multiple passes to
+		// get under stencil resolution limit
 
-	for (n=(portal_cnt-1);n>=0;n--) {
+	glEnable(GL_STENCIL_TEST);
 
-		portal_idx=portal_list[n];
-		portal=&map.portals[portal_idx];
+	for (stencil_pass=0;stencil_pass<=stencil_pass_cnt;stencil_pass++) {
 
-			// create stencil passes
+		render_opaque_portal_normal(mesh_cnt,mesh_list,stencil_pass);
+		if (setup.bump_mapping) render_opaque_portal_bump(mesh_cnt,mesh_list,stencil_pass,is_simple_lighting);
 
-		stencil_pass_cnt=render_opaque_portal_stencil_mark(portal);
-
-			// attach proper complied open gl list
-
-		portal_compile_gl_list_attach(portal_idx);
-
-			// might need multiple passes to
-			// get under stencil resolution limit
-
-		glEnable(GL_STENCIL_TEST);
-
-		for (stencil_pass=0;stencil_pass<=stencil_pass_cnt;stencil_pass++) {
-
-			render_opaque_portal_normal(portal,stencil_pass);
-			if (setup.bump_mapping) render_opaque_portal_bump(portal,stencil_pass,is_simple_lighting);
-
-			if (!hilite_on) {
-				render_opaque_portal_lighting(portal,stencil_pass,is_simple_lighting);
-				if (setup.specular_mapping) render_opaque_portal_specular(portal,stencil_pass,is_simple_lighting);
-				render_opaque_portal_lighting_fix(portal,stencil_pass);
-			}
-
+		if (!hilite_on) {
+			render_opaque_portal_lighting(mesh_cnt,mesh_list,stencil_pass,is_simple_lighting);
+			if (setup.specular_mapping) render_opaque_portal_specular(mesh_cnt,mesh_list,stencil_pass,is_simple_lighting);
+			render_opaque_portal_lighting_fix(mesh_cnt,mesh_list,stencil_pass);
 		}
 
-		glDisable(GL_STENCIL_TEST);
-
-			// glow maps and shaders happen outside
-			// of stenciling
-
-		render_opaque_portal_glow(portal);
-		render_opaque_portal_shader(portal);
 	}
+
+	glDisable(GL_STENCIL_TEST);
+
+		// glow maps and shaders happen outside
+		// of stenciling
+
+	render_opaque_portal_glow(mesh_cnt,mesh_list);
+	render_opaque_portal_shader(mesh_cnt,mesh_list);
 
 		// dettach any attached lists
 

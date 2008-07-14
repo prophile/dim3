@@ -177,6 +177,27 @@ void light_add(d3pos *pos,int light_type,int intensity,bool confine_to_portal,d3
 	lspot->pnt.z=pos->z;
 	lspot->pnt.y=pos->y;
 	memmove(&lspot->col,col,sizeof(d3col));
+
+		// calculate inverses
+
+	lspot->inv_intensity=1.0/lspot->intensity;
+	
+	lspot->d_intensity=lspot->intensity*lspot->intensity;
+	lspot->d_inv_intensity=1.0/lspot->d_intensity;
+	
+		// use this constant to get rough calculation close to better sqrt calc
+		
+	lspot->d_inv_intensity*=map.ambient.light_drop_off_factor;
+	
+		// double light values
+		
+	lspot->d_x=(double)lspot->pnt.x;
+	lspot->d_y=(double)lspot->pnt.y;
+	lspot->d_z=(double)lspot->pnt.z;
+	
+	lspot->d_col_r=(double)lspot->col.r;
+	lspot->d_col_g=(double)lspot->col.g;
+	lspot->d_col_b=(double)lspot->col.b;
 	
 		// confined light
 		
