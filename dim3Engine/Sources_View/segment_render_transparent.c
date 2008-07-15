@@ -48,6 +48,8 @@ extern void portal_compile_gl_list_dettach(void);
       
 ======================================================= */
 
+/* supergumba -- redo!
+
 void render_transparent_portal_mesh(int mesh_cnt,int *mesh_list,bool is_simple_lighting)
 {
 	int						n,sort_cnt,frame,ntrig;
@@ -266,12 +268,15 @@ void render_transparent_portal_shader(int mesh_cnt,int *mesh_list)
 	gl_texture_shader_end();
 	gl_shader_program_end();
 }
+*/
 
 /* =======================================================
 
       Transparent Mesh Sorting
       
 ======================================================= */
+
+/* supergumba -- redo!
 
 float segment_render_transparent_segments_far_z(map_mesh_type *mesh,map_mesh_poly_type *poly,int cx,int cy,int cz)
 {
@@ -375,20 +380,7 @@ void render_transparent_sort(int rn,int cx,int cy,int cz)
 
 	portal->mesh.draw.sort_cnt=sort_cnt;
 }
-
-/* =======================================================
-
-      Transparent Portal Rendering
-      
-======================================================= */
-
-void render_transparent_portal(int mesh_cnt,int *mesh_list,bool is_simple_lighting)
-{
-	portal_type			*portal;
-
-	portal=&map.portals[portal_idx];
-		
-}
+*/
 
 /* =======================================================
 
@@ -398,6 +390,7 @@ void render_transparent_portal(int mesh_cnt,int *mesh_list,bool is_simple_lighti
 
 void render_transparent_map(int mesh_cnt,int *mesh_list)
 {
+/* supergumba -- redo!
 	int				n;
 	bool			is_simple_lighting;
 
@@ -432,5 +425,6 @@ void render_transparent_map(int mesh_cnt,int *mesh_list)
 		// dettach any attached lists
 
 	portal_compile_gl_list_dettach();
+	*/
 }
 

@@ -375,6 +375,8 @@ void liquid_render_portal_liquid_end_array(void)
       
 ======================================================= */
 
+/* supergumba -- redo
+
 void liquid_render_portal_liquid(int tick,portal_type *portal,map_liquid_type *liq)
 {
 	int						quad_cnt,frame;
@@ -477,6 +479,7 @@ void liquid_render_portal(int tick,int rn)
 		liq++;
 	}
 }
+*/
 
 /* =======================================================
 
@@ -484,8 +487,10 @@ void liquid_render_portal(int tick,int rn)
       
 ======================================================= */
 
-void liquid_render(int tick,int portal_cnt,int *portal_list)
+void liquid_render(int tick,int mesh_draw_count,int *mesh_draw_list)
 {
+/* supergumba -- redo
+
 	int					i;
 
 		// setup view
@@ -502,5 +507,6 @@ void liquid_render(int tick,int portal_cnt,int *portal_list)
 	for (i=0;i<portal_cnt;i++) {
 		liquid_render_portal(tick,portal_list[i]);
 	}
+	*/
 }
 

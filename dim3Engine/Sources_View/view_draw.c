@@ -68,7 +68,7 @@ extern void view_draw_liquid_tint(liquid_pointer_type *liq_ptr);
 extern void view_draw_effect_tint(int tick,obj_type *obj);
 extern void fade_screen_draw(int tick);
 extern void fade_object_draw(int tick,obj_type *obj);
-extern void liquid_render(int tick,int portal_cnt,int *portal_list);
+extern void liquid_render(int tick,int mesh_cnt,int *mesh_list);
 extern void decal_render(void);
 extern void portal_compile_gl_lists(int tick,int rn);
 
@@ -595,7 +595,7 @@ void view_draw_models_shadow(void)
 
 void view_draw(int tick)
 {
-	int				n,draw_portal_cnt,draw_portal_list[max_portal];
+	int				draw_portal_cnt,draw_portal_list[max_portal];
 	obj_type		*obj;
 	weapon_type		*weap;
 	
@@ -657,7 +657,7 @@ void view_draw(int tick)
 
 		// draw liquids
 
-	liquid_render(tick,draw_portal_cnt,draw_portal_list);
+	liquid_render(tick,mesh_draw_count,mesh_draw_list);
 
 		// draw decals
 

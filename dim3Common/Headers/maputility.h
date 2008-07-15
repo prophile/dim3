@@ -550,6 +550,7 @@ typedef struct		{
 						movement_type				*movements;
 						group_type					*groups;
 	
+						portal_mesh_type			mesh;
 						portal_vertex_type			vertexes;
 						
 					} map_type;
