@@ -717,3 +717,51 @@ void map_portal_mesh_calculate_uv_center(map_type *map,int portal_idx,int mesh_i
 	*gy=ky/f_cnt;
 }
 
+
+
+
+
+
+// supergumba -- temporary for now
+
+void map_make_map_meshes(map_type *map)
+{
+	int				n,k,nmesh;
+	portal_type		*portal;
+	map_mesh_type	*mesh,*mesh2;
+	
+	nmesh=0;
+	
+	for (n=0;n!=map->nportal;n++) {
+		nmesh+=map->portals[n].mesh.nmesh;
+	}
+	
+	map->mesh.nmesh=nmesh;
+	map->mesh.meshes=valloc(sizeof(map_mesh_type)*nmesh);
+	
+	portal=map->portals;
+	
+	mesh2=map->mesh.meshes;
+	
+	for (n=0;n!=map->nportal;n++) {
+		
+		mesh=portal->mesh.meshes;
+		
+		for (k=0;k!=portal->mesh.nmesh;k++) {
+		
+			memmove(mesh2,mesh,sizeof(map_mesh_type));
+		
+			mesh2->vertexes=valloc(sizeof(d3pnt)*mesh->nvertex);
+			memmove(mesh2->vertexes,mesh->vertexes,(sizeof(d3pnt)*mesh->nvertex));
+			
+			mesh2->polys=valloc(sizeof(map_mesh_poly_type)*mesh->npoly);
+			memmove(mesh2->polys,mesh->polys,(sizeof(map_mesh_poly_type)*mesh->npoly));
+		
+			mesh++;
+			mesh2++;
+		}
+	
+		portal++;
+	}
+}
+

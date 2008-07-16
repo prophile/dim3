@@ -88,7 +88,6 @@ extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *exten
 //
 
 extern bool dialog_map_settings_run(void);
-extern void dialog_map_counts_run(void);
 extern bool dialog_map_movements_run(void);
 extern bool dialog_movement_settings_run(movement_type *movement);
 extern bool dialog_movement_move_settings_run(movement_move_type *move);

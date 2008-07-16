@@ -93,54 +93,47 @@ int			mesh_draw_count,mesh_draw_list[max_mesh],mesh_draw_dist[max_mesh];		// sup
 
 void temp_get_mesh_draw_list(int nportal,int *portal_list)
 {
-	int					n,k,t,sz,d,idx,portal_idx;
-	portal_type			*portal;
+	int					k,t,sz,d,idx;
 	map_mesh_type		*mesh;
 
 	mesh_draw_count=0;
+	
+	for (k=0;k!=map.mesh.nmesh;k++) {
 
-	for (n=0;n!=nportal;n++) {
+		mesh=&map.mesh.meshes[k];
 
-		portal_idx=portal_list[n];
-		portal=&map.portals[portal_idx];
+		d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
+	
+			// top of list is closest items
 
-		for (k=0;k!=portal->mesh.nmesh;k++) {
-
-			mesh=&portal->mesh.meshes[k];
-
-			d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
-		
-				// top of list is closest items
-
-			idx=-1;
-		
-			for (t=0;t!=mesh_draw_count;t++) {
-				if (mesh_draw_dist[t]>d) {
-					idx=t;
-					break;
-				}
+		idx=-1;
+	
+		for (t=0;t!=mesh_draw_count;t++) {
+			if (mesh_draw_dist[t]>d) {
+				idx=t;
+				break;
 			}
-		
-				// insert at end of list
-				
-			if (idx==-1) {
-				mesh_draw_dist[mesh_draw_count]=d;
-				mesh_draw_list[mesh_draw_count]=(portal_idx*1000)+k;
-				mesh_draw_count++;
-				continue;
-			}
-			
-				// insert in list
-				
-			sz=sizeof(int)*(mesh_draw_count-idx);
-			memmove(&mesh_draw_dist[idx+1],&mesh_draw_dist[idx],sz);
-			memmove(&mesh_draw_list[idx+1],&mesh_draw_list[idx],sz);
-			
-			mesh_draw_dist[idx]=d;
-			mesh_draw_list[idx]=(portal_idx*1000)+k;
-			
-			mesh_draw_count++;
 		}
+	
+			// insert at end of list
+			
+		if (idx==-1) {
+			mesh_draw_dist[mesh_draw_count]=d;
+			mesh_draw_list[mesh_draw_count]=k;
+			mesh_draw_count++;
+			continue;
+		}
+		
+			// insert in list
+			
+		sz=sizeof(int)*(mesh_draw_count-idx);
+		memmove(&mesh_draw_dist[idx+1],&mesh_draw_dist[idx],sz);
+		memmove(&mesh_draw_list[idx+1],&mesh_draw_list[idx],sz);
+		
+		mesh_draw_dist[idx]=d;
+		mesh_draw_list[idx]=k;
+		
+		mesh_draw_count++;
 	}
 }
 

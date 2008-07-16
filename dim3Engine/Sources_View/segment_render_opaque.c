@@ -78,7 +78,7 @@ void render_opaque_portal_normal(int mesh_cnt,int *mesh_list,int stencil_pass)
 
 	for (n=0;n!=mesh_cnt;n++) {
 
-		mesh=&map.portals[mesh_list[n]/1000].mesh.meshes[mesh_list[n]%1000];
+		mesh=&map.mesh.meshes[mesh_list[n]];
 
 			// run through the polys
 
@@ -152,7 +152,7 @@ void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool
 
 	for (n=0;n!=mesh_cnt;n++) {
 
-		mesh=&map.portals[mesh_list[n]/1000].mesh.meshes[mesh_list[n]%1000];
+		mesh=&map.mesh.meshes[mesh_list[n]];
 
 			// if hilite is on or this mesh is
 			// hilited, then we need to clear the stencil
@@ -248,7 +248,7 @@ void render_opaque_portal_lighting(int mesh_cnt,int *mesh_list,int stencil_pass,
 
 	for (n=0;n!=mesh_cnt;n++) {
 
-		mesh=&map.portals[mesh_list[n]/1000].mesh.meshes[mesh_list[n]%1000];
+		mesh=&map.mesh.meshes[mesh_list[n]];
 
 			// skip hilited polygons
 
@@ -334,7 +334,7 @@ void render_opaque_portal_lighting_fix(int mesh_cnt,int *mesh_list,int stencil_p
 
 	for (n=0;n!=mesh_cnt;n++) {
 
-		mesh=&map.portals[mesh_list[n]/1000].mesh.meshes[mesh_list[n]%1000];
+		mesh=&map.mesh.meshes[mesh_list[n]];
 
 			// skip hilited polygons
 
@@ -392,7 +392,7 @@ void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass,
 
 	for (n=0;n!=mesh_cnt;n++) {
 
-		mesh=&map.portals[mesh_list[n]/1000].mesh.meshes[mesh_list[n]%1000];
+		mesh=&map.mesh.meshes[mesh_list[n]];
 
 			// skip hilited polygons
 
@@ -480,7 +480,7 @@ void render_opaque_portal_glow(int mesh_cnt,int *mesh_list)
 
 	for (n=0;n!=mesh_cnt;n++) {
 
-		mesh=&map.portals[mesh_list[n]/1000].mesh.meshes[mesh_list[n]%1000];
+		mesh=&map.mesh.meshes[mesh_list[n]];
 
 			// skip hilited polygons
 
@@ -555,7 +555,7 @@ void render_opaque_portal_shader(int mesh_cnt,int *mesh_list)
 
 	for (n=0;n!=mesh_cnt;n++) {
 
-		mesh=&map.portals[mesh_list[n]/1000].mesh.meshes[mesh_list[n]%1000];
+		mesh=&map.mesh.meshes[mesh_list[n]];
 
 			// run through the polys
 
@@ -611,7 +611,7 @@ int render_opaque_mesh_stencil_mark(int mesh_cnt,int *mesh_list)
 
 	for (n=0;n!=mesh_cnt;n++) {
 
-		mesh=&map.portals[mesh_list[n]/1000].mesh.meshes[mesh_list[n]%1000];
+		mesh=&map.mesh.meshes[mesh_list[n]];
 
 		poly=mesh->polys;
 
@@ -641,7 +641,7 @@ int render_opaque_mesh_stencil_mark(int mesh_cnt,int *mesh_list)
 
 void render_opaque_map(int mesh_cnt,int *mesh_list)
 {
-	int					n,stencil_pass,stencil_pass_cnt;
+	int					stencil_pass,stencil_pass_cnt;
 	bool				is_simple_lighting;
 
 		// setup view
