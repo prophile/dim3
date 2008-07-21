@@ -29,6 +29,9 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
+
+extern void map_make_map_meshes(map_type *map);		// supergumba
+
 /* =======================================================
 
       Add Vertex to Portal Vertex List
@@ -743,8 +746,6 @@ bool map_portal_create_single_vertex_list(map_type *map,int rn)
 		portal->vertexes.vertex_list=nvl;
 	}
 	
-	fprintf(stdout,"portal %d vertex list = %d\n",rn,portal->vertexes.nvlist);
-	
 		// compiled vertex, coord and color lists
 		
 	sz=portal->vertexes.nvlist*(sizeof(float)*3);
@@ -983,8 +984,9 @@ bool map_portal_create_vertex_lists(map_type *map)
 		if (!map_portal_create_single_vertex_list(map,n)) return(FALSE);
 	}
 	
-	return(map_create_vertex_list(map));			// supergumba
-	
+	map_create_vertex_list(map);			// supergumba
+	map_make_map_meshes(map);			// supergumba -- temporary
+		
 	return(TRUE);
 }
 

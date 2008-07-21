@@ -29,8 +29,6 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-extern void map_make_map_meshes(map_type *map);		// supergumba
-
 /* =======================================================
 
       Prepare Single Polygon for Rendering
@@ -409,9 +407,5 @@ void map_prepare(map_type *map)
 		spot->pos.z=spot->pos.z+portal->z;
 		spot++;
 	}
-	
-		
-	map_make_map_meshes(map);			// supergumba -- temporary
-
 }
 

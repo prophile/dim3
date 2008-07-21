@@ -81,6 +81,256 @@ int			mesh_draw_count,mesh_draw_list[max_mesh],mesh_draw_dist[max_mesh];		// sup
 
 
 
+bool		mesh_view_done=FALSE;
+
+
+
+#define mesh_view_mesh_wid			640
+#define mesh_view_mesh_high			480
+
+void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,int *mesh_sort_list)
+{
+	int						n,byte_idx,shift;
+	map_mesh_type			*mesh,*view_mesh;
+	
+	mesh=&map.mesh.meshes[mesh_idx];
+	
+		// clear bits
+		
+	bzero(mesh->mesh_visibility_flag,max_mesh_visibility_flag_sz);
+	
+		// find all other meshes visible from this one
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		if (n==mesh_idx) continue;
+		
+		view_mesh=&map.mesh.meshes[n];
+		
+		
+		
+		
+/*
+
+		// get sort array for meshes
+
+
+	mesh_cnt=test_me_sort(mesh_sort_list);
+
+	mesh_hit_list=valloc(sizeof(int)*mesh_cnt);
+	bzero(mesh_hit_list,(sizeof(int)*mesh_cnt));
+
+		// attempt to check out meshes that draw
+
+	depth_cnt=0;
+
+	gl_setup_viewport(console_y_offset());
+	gl_3D_view(&view.camera);
+	gl_3D_rotate(&view.camera.ang);
+	gl_setup_project();
+
+	gl_texture_bind_start();
+
+	glDisable(GL_BLEND);
+
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
+
+	glClear(GL_STENCIL_BUFFER_BIT);
+
+	glDisable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_TRUE);
+
+	glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
+
+		// use multiple stencils so
+		// we don't have to constantly read from stencil buffer
+
+	stencil_idx=1;
+	stencil_mesh_start_idx=0;
+
+		// run through meshes
+
+	gl_texture_opaque_start();
+
+	for (n=0;n!=mesh_cnt;n++) {
+
+		portal_idx=mesh_sort_list[n]/1000;
+		mesh_idx=mesh_sort_list[n]%1000;
+
+		mesh=&map.portals[portal_idx].mesh.meshes[mesh_idx];
+		
+			// ignore all moving meshes as they
+			// won't always obscure
+
+		if (mesh->flag.moveable) continue;
+
+			// draw polygons and use the stencil
+			// buffer to detect z-buffer changes
+
+		glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
+
+		hit=FALSE;
+
+		for (t=0;t!=mesh->npoly;t++) {
+
+			poly=&mesh->polys[t];
+
+				// ignore all transparent polygons
+
+			texture=&map.textures[poly->txt_idx];
+			if ((texture->bitmaps[0].alpha_mode==alpha_mode_transparent) || (poly->alpha!=1.0f)) continue;
+
+				// write to the stencil buffer if any part
+				// of the polygon can be seen
+
+			gl_texture_opaque_set(texture->bitmaps[0].gl_id);
+
+			glBegin(GL_POLYGON);
+
+			for (k=0;k!=poly->ptsz;k++) {
+				pt=&mesh->vertexes[poly->v[k]];
+				glTexCoord2f(poly->gx[k],poly->gy[k]);
+				glVertex3i((pt->x-view.camera.pos.x),(pt->y-view.camera.pos.y),(view.camera.pos.z-pt->z));
+			}
+
+			glEnd();
+		}
+
+			// read the stencil to look for hits
+
+		if ((stencil_idx==255) || ((n+1)==mesh_cnt)) {
+
+			glReadPixels(0,0,setup.screen.x_sz,setup.screen.y_sz,GL_STENCIL_INDEX,GL_UNSIGNED_BYTE,pixels);
+
+			sp=pixels;
+
+			for (k=0;k!=(800*600);k++) {
+				
+				idx=*sp++;
+
+				if (idx!=0) {
+					idx+=stencil_mesh_start_idx;
+					if (mesh_hit_list[idx]==0x0) {
+						depth_cnt++;
+						mesh_hit_list[idx]=0x1;
+					}
+				}
+			}
+			
+			stencil_idx=1;
+			stencil_mesh_start_idx=n+1;
+
+			if ((n+1)!=mesh_cnt) glClear(GL_STENCIL_BUFFER_BIT);
+		}
+		else {
+			stencil_idx++;
+		} 
+	}
+
+	gl_texture_opaque_end();
+
+	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
+	glClear(GL_STENCIL_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glDisable(GL_STENCIL_TEST);
+
+	free(mesh_sort_list);
+
+	portal_cnt=0;
+
+	for (n=0;n!=nportal;n++) {
+		portal_cnt+=map.portals[portal_list[n]].mesh.nmesh;
+	}
+
+	hide_cnt=0;
+
+	for (n=0;n!=map.nportal;n++) {
+
+		mesh=map.portals[n].mesh.meshes;
+
+		for (k=0;k!=map.portals[n].mesh.nmesh;k++) {
+
+
+			dist=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
+			if (dist<(view.camera.far_z-view.camera.near_z)) {
+
+				if (boundbox_inview(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y)) hide_cnt++;
+			}
+
+			mesh++;
+		}
+	}
+
+
+*/		
+		
+		
+		
+		
+		
+		
+		
+		
+	
+			// get bit for this mesh
+			
+		byte_idx=n/8;
+		shift=n%8;
+		
+			// start with it cleared
+			
+		mesh->mesh_visibility_flag[byte_idx]=mesh->mesh_visibility_flag[byte_idx]&(0xFF^(0x1>>shift));
+		
+	
+	
+	
+	
+	}
+}
+
+bool temp_mesh_view_setup(void)
+{
+	int				n;
+	int				*mesh_sort_list;
+	unsigned char	*stencil_pixels;
+	
+	if (mesh_view_done) return(TRUE);
+	
+	mesh_view_done=TRUE;
+	
+		// pixels for reading stencil buffer
+		
+	stencil_pixels=valloc(mesh_view_mesh_wid*mesh_view_mesh_high);
+	if (stencil_pixels==NULL) return(FALSE);
+	
+		// memory for sorted mesh list
+		
+	mesh_sort_list=valloc(sizeof(int)*max_mesh);
+	if (mesh_sort_list==NULL) {
+		free(stencil_pixels);
+		return(FALSE);
+	}
+	
+		// check visibility for all meshes
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		temp_mesh_visibility_mesh_setup(n,stencil_pixels,mesh_sort_list);
+	}
+	
+	free(mesh_sort_list);
+	free(stencil_pixels);
+	
+	return(TRUE);
+}
+
+
+
+
+
+
 
 
 
@@ -95,7 +345,7 @@ void temp_get_mesh_draw_list(int nportal,int *portal_list)
 {
 	int					k,t,sz,d,idx;
 	map_mesh_type		*mesh;
-
+	
 	mesh_draw_count=0;
 	
 	for (k=0;k!=map.mesh.nmesh;k++) {
@@ -103,6 +353,11 @@ void temp_get_mesh_draw_list(int nportal,int *portal_list)
 		mesh=&map.mesh.meshes[k];
 
 		d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
+		
+			// auto-eliminate meshes outside of view
+			
+		if (d>(view.camera.far_z-view.camera.near_z)) continue;
+		if (!boundbox_inview(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y)) continue;
 	
 			// top of list is closest items
 

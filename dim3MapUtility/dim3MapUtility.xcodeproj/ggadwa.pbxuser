@@ -19,26 +19,6 @@
 			sepNavWindowFrame = "{{424, 101}, {1041, 747}}";
 		};
 	};
-	265EFD2A0E2C5CE6000807C4 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5DA8623059148C40043E685 /* nodes.c */;
-		name = "nodes.c: 94";
-		rLen = 26;
-		rLoc = 2093;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
-	266E86A40E2DB9C800603F39 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5DA8623059148C40043E685 /* nodes.c */;
-		name = "nodes.c: 94";
-		rLen = 26;
-		rLoc = 2093;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
 	267568D10DBD52E1008BEDEE /* auto_generate_door_ramp_step.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1572, 9072}}";
@@ -79,6 +59,26 @@
 			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
 		};
 	};
+	26DB21290E32FCC700008211 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DA8623059148C40043E685 /* nodes.c */;
+		name = "nodes.c: 94";
+		rLen = 26;
+		rLoc = 2093;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	26DB21470E33E7CC00008211 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DA8623059148C40043E685 /* nodes.c */;
+		name = "nodes.c: 94";
+		rLen = 26;
+		rLoc = 2093;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
 	26E372E50DA5AB75009653F2 /* file_map_read_v2.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 7140}}";
@@ -113,8 +113,8 @@
 	};
 	F55255250CE57DFA0045350D /* portal_mesh.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 10808}}";
-			sepNavSelRange = "{14945, 0}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 10836}}";
+			sepNavSelRange = "{14642, 19}";
 			sepNavVisRange = "{14596, 861}";
 			sepNavWindowFrame = "{{527, 175}, {1041, 747}}";
 		};
@@ -163,7 +163,7 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 5138}}";
 			sepNavSelRange = "{997, 0}";
-			sepNavVisRange = "{0, 1743}";
+			sepNavVisRange = "{6849, 1082}";
 			sepNavWindowFrame = "{{454, 135}, {1041, 747}}";
 		};
 	};
@@ -229,12 +229,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 237875673;
-			PBXWorkspaceStateSaveDate = 237875673;
+			PBXPerProjectTemplateStateSaveDate = 238282680;
+			PBXWorkspaceStateSaveDate = 238282680;
 		};
 		perUserProjectItems = {
-			265EFD2A0E2C5CE6000807C4 /* PBXTextBookmark */ = 265EFD2A0E2C5CE6000807C4 /* PBXTextBookmark */;
-			266E86A40E2DB9C800603F39 /* PBXTextBookmark */ = 266E86A40E2DB9C800603F39 /* PBXTextBookmark */;
+			26DB21290E32FCC700008211 /* PBXTextBookmark */ = 26DB21290E32FCC700008211 /* PBXTextBookmark */;
+			26DB21470E33E7CC00008211 /* PBXTextBookmark */ = 26DB21470E33E7CC00008211 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -252,7 +252,7 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1068, 10682}}";
 			sepNavSelRange = "{14261, 0}";
-			sepNavVisRange = "{5590, 1196}";
+			sepNavVisRange = "{5282, 1198}";
 			sepNavWindowFrame = "{{148, 281}, {1041, 691}}";
 		};
 	};
@@ -290,7 +290,7 @@
 	};
 	F5DA8623059148C40043E685 /* nodes.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {12, 2100}}";
+			sepNavIntBoundsRect = "{{0, 0}, {432, 2044}}";
 			sepNavSelRange = "{2093, 26}";
 			sepNavVisRange = "{0, 0}";
 			sepNavWindowFrame = "{{208, 185}, {1041, 747}}";
@@ -298,9 +298,9 @@
 	};
 	F5DD16E00907328000721649 /* prepare.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 5852}}";
-			sepNavSelRange = "{1077, 0}";
-			sepNavVisRange = "{4691, 919}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5740}}";
+			sepNavSelRange = "{1013, 0}";
+			sepNavVisRange = "{0, 1466}";
 			sepNavWindowFrame = "{{131, 193}, {1041, 747}}";
 		};
 	};
@@ -314,9 +314,9 @@
 	};
 	F5DD178809074E5000721649 /* portal_vertex_list.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 14238}}";
-			sepNavSelRange = "{17487, 0}";
-			sepNavVisRange = "{16589, 1325}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 14308}}";
+			sepNavSelRange = "{1063, 0}";
+			sepNavVisRange = "{0, 1502}";
 			sepNavWindowFrame = "{{334, 185}, {1041, 747}}";
 		};
 	};
