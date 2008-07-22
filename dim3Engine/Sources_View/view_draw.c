@@ -75,8 +75,6 @@ extern void portal_compile_gl_lists(int tick,int rn);
 
 
 
-unsigned char *pixels=NULL;
-
 int			mesh_draw_count,mesh_draw_list[max_mesh],mesh_draw_dist[max_mesh];		// supergumba -- make part of map
 
 
@@ -269,9 +267,9 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 
 		if ((stencil_idx==255) || ((n+1)==mesh_cnt)) {
 
-			glReadPixels(0,0,mesh_view_mesh_wid,mesh_view_mesh_high,GL_STENCIL_INDEX,GL_UNSIGNED_BYTE,pixels);
+			glReadPixels(0,0,mesh_view_mesh_wid,mesh_view_mesh_high,GL_STENCIL_INDEX,GL_UNSIGNED_BYTE,stencil_pixels);
 
-			sp=pixels;
+			sp=stencil_pixels;
 
 			for (k=0;k!=(mesh_view_mesh_wid*mesh_view_mesh_high);k++) {
 				
@@ -292,7 +290,7 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 		}
 		else {
 			stencil_idx++;
-		} 
+		}
 	}
 
 	gl_texture_opaque_end();
@@ -304,7 +302,7 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 
 bool temp_mesh_view_setup(void)
 {
-	int				n;
+	int				n,t,cnt,byte_idx,shift;
 	int				*mesh_sort_list;
 	unsigned char	*stencil_pixels;
 	
@@ -329,6 +327,16 @@ bool temp_mesh_view_setup(void)
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
 		temp_mesh_visibility_mesh_setup(n,stencil_pixels,mesh_sort_list);
+
+		cnt=0;
+		for (t=0;t!=map.mesh.nmesh;t++) {
+			byte_idx=t/8;
+			shift=t%8;
+			if ((map.mesh.meshes[n].mesh_visibility_flag[byte_idx]=mesh->mesh_visibility_flag[byte_idx]&(0xFF^(0x1>>shift)))!=0x0) cnt++;
+		}
+
+		fprintf(stdout,"portal %d; count = %d\n",n,cnt);
+
 	}
 	
 	free(mesh_sort_list);
