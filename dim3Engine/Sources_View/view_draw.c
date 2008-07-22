@@ -85,57 +85,112 @@ bool		mesh_view_done=FALSE;
 
 
 
-#define mesh_view_mesh_wid			640
-#define mesh_view_mesh_high			480
+#define mesh_view_mesh_wid				640
+#define mesh_view_mesh_high				480
+#define mesh_view_mesh_aspect_ratio		1.0f
+#define mesh_view_mesh_fov				60
+#define mesh_view_mesh_near_z			(6*map_enlarge)
+#define mesh_view_mesh_far_z			(2000*map_enlarge)
+#define mesh_view_mesh_near_z_offset	-(3*map_enlarge)
+
+
+
+int test_me_sort(d3pnt *pt,int *mesh_sort_list)
+{
+	int					n,t,sz,d,cnt,idx;
+	int					*dist;
+	map_mesh_type		*mesh;
+
+
+	dist=valloc(max_mesh*sizeof(int));
+
+	cnt=0;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+
+		mesh=&map.mesh.meshes[n];
+
+		d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,pt->x,pt->y,pt->z);
+	
+		idx=-1;
+	
+		for (t=0;t!=cnt;t++) {
+			if (dist[t]>d) {
+				idx=t;
+				break;
+			}
+		}
+	
+			// insert at end of list
+			
+		if (idx==-1) {
+			dist[cnt]=d;
+			mesh_sort_list[cnt]=n;
+			cnt++;
+			continue;
+		}
+		
+			// insert in list
+			
+		sz=sizeof(int)*(cnt-idx);
+		memmove(&dist[idx+1],&dist[idx],sz);
+		memmove(&mesh_sort_list[idx+1],&mesh_sort_list[idx],sz);
+		
+		dist[idx]=d;
+		mesh_sort_list[idx]=n;
+		
+		cnt++;
+	}
+
+	free(dist);
+
+	return(cnt);
+}
+
+
+
+
 
 void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,int *mesh_sort_list)
 {
-	int						n,byte_idx,shift;
+	int						n,k,t,idx,mesh_cnt,byte_idx,shift,view_mesh_idx,stencil_idx,stencil_mesh_start_idx;
+	float					ratio;
+	unsigned char			*sp;
+	d3pnt					*pt;
 	map_mesh_type			*mesh,*view_mesh;
+	map_mesh_poly_type		*poly;
+	texture_type			*texture;
 	
 	mesh=&map.mesh.meshes[mesh_idx];
 	
-		// clear bits
+		// clear visibility bits
 		
 	bzero(mesh->mesh_visibility_flag,max_mesh_visibility_flag_sz);
 	
-		// find all other meshes visible from this one
+		// drawing setup
+		
+	glViewport(0,0,mesh_view_mesh_wid,mesh_view_mesh_high);
+		
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
 	
-	for (n=0;n!=map.mesh.nmesh;n++) {
-		if (n==mesh_idx) continue;
+	ratio=(((float)mesh_view_mesh_wid)/((float)mesh_view_mesh_high))*mesh_view_mesh_aspect_ratio;
+	gluPerspective(mesh_view_mesh_fov,ratio,mesh_view_mesh_near_z,mesh_view_mesh_far_z);
+	glScalef(-1.0f,-1.0f,1.0f);						// x and y are reversed
+	glTranslatef(0.0f,0.0f,(float)mesh_view_mesh_near_z_offset);
 		
-		view_mesh=&map.mesh.meshes[n];
-		
-		
-		
-		
-/*
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 
-		// get sort array for meshes
+	glRotatef(0.0f,1,0,0);				// x pan
+	glRotatef(0.0f,0,0,1);				// z pan
+	glRotatef(((360.0f-0.0f)+180.0f),0,1,0);	// y rotate -- need to reverse the winding
 
-
-	mesh_cnt=test_me_sort(mesh_sort_list);
-
-	mesh_hit_list=valloc(sizeof(int)*mesh_cnt);
-	bzero(mesh_hit_list,(sizeof(int)*mesh_cnt));
-
-		// attempt to check out meshes that draw
-
-	depth_cnt=0;
-
-	gl_setup_viewport(console_y_offset());
-	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.ang);
-	gl_setup_project();
+	glClear(GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
 
 	gl_texture_bind_start();
 
 	glDisable(GL_BLEND);
-
-	glEnable(GL_STENCIL_TEST);
-	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
-
-	glClear(GL_STENCIL_BUFFER_BIT);
 
 	glDisable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
@@ -146,6 +201,17 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 
 	glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
 
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
+	
+		// supergumba -- hard code this later as it won't be in game
+		
+	gl_texture_opaque_start();
+	
+		// get sort list
+		
+	mesh_cnt=test_me_sort(&mesh->box.mid,mesh_sort_list);		
+	
 		// use multiple stencils so
 		// we don't have to constantly read from stencil buffer
 
@@ -154,30 +220,29 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 
 		// run through meshes
 
-	gl_texture_opaque_start();
-
 	for (n=0;n!=mesh_cnt;n++) {
+	
+		view_mesh_idx=mesh_sort_list[n];
+		view_mesh=&map.mesh.meshes[view_mesh_idx];
 
-		portal_idx=mesh_sort_list[n]/1000;
-		mesh_idx=mesh_sort_list[n]%1000;
-
-		mesh=&map.portals[portal_idx].mesh.meshes[mesh_idx];
-		
 			// ignore all moving meshes as they
 			// won't always obscure
 
-		if (mesh->flag.moveable) continue;
+		if (view_mesh->flag.moveable) {
+			byte_idx=view_mesh_idx/8;
+			shift=view_mesh_idx%8;
+			mesh->mesh_visibility_flag[byte_idx]=mesh->mesh_visibility_flag[byte_idx]|(0x1>>shift);
+			continue;
+		}
 
 			// draw polygons and use the stencil
 			// buffer to detect z-buffer changes
 
 		glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
 
-		hit=FALSE;
+		for (t=0;t!=view_mesh->npoly;t++) {
 
-		for (t=0;t!=mesh->npoly;t++) {
-
-			poly=&mesh->polys[t];
+			poly=&view_mesh->polys[t];
 
 				// ignore all transparent polygons
 
@@ -192,9 +257,9 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 			glBegin(GL_POLYGON);
 
 			for (k=0;k!=poly->ptsz;k++) {
-				pt=&mesh->vertexes[poly->v[k]];
+				pt=&view_mesh->vertexes[poly->v[k]];
 				glTexCoord2f(poly->gx[k],poly->gy[k]);
-				glVertex3i((pt->x-view.camera.pos.x),(pt->y-view.camera.pos.y),(view.camera.pos.z-pt->z));
+				glVertex3i((pt->x-mesh->box.mid.x),(pt->y-mesh->box.mid.y),(mesh->box.mid.z-pt->z));
 			}
 
 			glEnd();
@@ -204,20 +269,19 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 
 		if ((stencil_idx==255) || ((n+1)==mesh_cnt)) {
 
-			glReadPixels(0,0,setup.screen.x_sz,setup.screen.y_sz,GL_STENCIL_INDEX,GL_UNSIGNED_BYTE,pixels);
+			glReadPixels(0,0,mesh_view_mesh_wid,mesh_view_mesh_high,GL_STENCIL_INDEX,GL_UNSIGNED_BYTE,pixels);
 
 			sp=pixels;
 
-			for (k=0;k!=(800*600);k++) {
+			for (k=0;k!=(mesh_view_mesh_wid*mesh_view_mesh_high);k++) {
 				
-				idx=*sp++;
+				idx=(int)*sp++;
 
 				if (idx!=0) {
 					idx+=stencil_mesh_start_idx;
-					if (mesh_hit_list[idx]==0x0) {
-						depth_cnt++;
-						mesh_hit_list[idx]=0x1;
-					}
+					byte_idx=idx/8;
+					shift=idx%8;
+					mesh->mesh_visibility_flag[byte_idx]=mesh->mesh_visibility_flag[byte_idx]|(0x1>>shift);
 				}
 			}
 			
@@ -236,59 +300,6 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
 	glClear(GL_STENCIL_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	glDisable(GL_STENCIL_TEST);
-
-	free(mesh_sort_list);
-
-	portal_cnt=0;
-
-	for (n=0;n!=nportal;n++) {
-		portal_cnt+=map.portals[portal_list[n]].mesh.nmesh;
-	}
-
-	hide_cnt=0;
-
-	for (n=0;n!=map.nportal;n++) {
-
-		mesh=map.portals[n].mesh.meshes;
-
-		for (k=0;k!=map.portals[n].mesh.nmesh;k++) {
-
-
-			dist=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
-			if (dist<(view.camera.far_z-view.camera.near_z)) {
-
-				if (boundbox_inview(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y)) hide_cnt++;
-			}
-
-			mesh++;
-		}
-	}
-
-
-*/		
-		
-		
-		
-		
-		
-		
-		
-		
-	
-			// get bit for this mesh
-			
-		byte_idx=n/8;
-		shift=n%8;
-		
-			// start with it cleared
-			
-		mesh->mesh_visibility_flag[byte_idx]=mesh->mesh_visibility_flag[byte_idx]&(0xFF^(0x1>>shift));
-		
-	
-	
-	
-	
-	}
 }
 
 bool temp_mesh_view_setup(void)
@@ -399,65 +410,12 @@ void temp_get_mesh_draw_list(int nportal,int *portal_list)
 
 
 
-int test_me_sort(int *mesh_sort_list)
-{
-	int					n,k,t,sz,d,cnt,idx;
-	int					*dist;
-	map_mesh_type		*mesh;
-
-
-	dist=valloc(max_mesh*sizeof(int));
-
-	cnt=0;
-
-	for (n=0;n!=map.nportal;n++) {
-
-		for (k=0;k!=map.portals[n].mesh.nmesh;k++) {
-
-			mesh=&map.portals[n].mesh.meshes[k];
-
-			d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
-		
-			idx=-1;
-		
-			for (t=0;t!=cnt;t++) {
-				if (dist[t]>d) {
-					idx=t;
-					break;
-				}
-			}
-		
-				// insert at end of list
-				
-			if (idx==-1) {
-				dist[cnt]=d;
-				mesh_sort_list[cnt]=(n*1000)+k;
-				cnt++;
-				continue;
-			}
-			
-				// insert in list
-				
-			sz=sizeof(int)*(cnt-idx);
-			memmove(&dist[idx+1],&dist[idx],sz);
-			memmove(&mesh_sort_list[idx+1],&mesh_sort_list[idx],sz);
-			
-			dist[idx]=d;
-			mesh_sort_list[idx]=(n*1000)+k;
-			
-			cnt++;
-		}
-	}
-
-	free(dist);
-
-	return(cnt);
-}
 
 
 // supergumba -- testing out mesh elimination algorithms
 void test_me(int nportal,int *portal_list)
 {
+/*
 	int					n,k,t,stencil_idx,stencil_mesh_start_idx,idx,mesh_cnt,portal_idx,mesh_idx,
 						portal_cnt,hide_cnt,depth_cnt,dist;
 	int					*mesh_sort_list,*mesh_hit_list;
@@ -627,6 +585,7 @@ void test_me(int nportal,int *portal_list)
 	}
 
 	fprintf(stdout,"portal/zbuffer %d/%d\n",portal_cnt,depth_cnt);
+	*/
 }
 
 
@@ -888,6 +847,9 @@ void view_draw(int tick)
 	portal_compile_gl_lists(tick,0);		// supergumba -- run once
 
 //	test_me(draw_portal_cnt,draw_portal_list);	// supergumba -- all temporary
+
+	temp_mesh_view_setup();
+
 	temp_get_mesh_draw_list(draw_portal_cnt,draw_portal_list);
 	
 		// draw opaque polygons

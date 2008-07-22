@@ -116,7 +116,7 @@ void gl_3D_rotate(d3ang *ang)
 	
 	glRotatef(ang->x,1,0,0);				// x pan
 	glRotatef(ang->z,0,0,1);				// z pan
-	glRotatef(((360-ang->y)+180),0,1,0);	// y rotate -- need to reverse the winding
+	glRotatef(((360.0f-ang->y)+180.0f),0,1,0);	// y rotate -- need to reverse the winding
 }
 
 /* =======================================================

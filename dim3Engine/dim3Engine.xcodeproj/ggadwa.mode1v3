@@ -265,10 +265,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>26DB215D0E34454500008211</string>
+						<string>26C983130E3599E300522531</string>
 						<key>history</key>
 						<array>
-							<string>26DB21530E34450E00008211</string>
+							<string>26C983060E35998400522531</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -430,11 +430,11 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>26DB215C0E34454500008211</string>
+										<string>26C983120E3599E300522531</string>
 										<key>history</key>
 										<array>
 											<string>262F425F0E29BEB100523EE0</string>
-											<string>266E86A30E2DB9C800603F39</string>
+											<string>26DB215C0E34454500008211</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -496,9 +496,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26DB20EE0E32EB8900008211</string>
+				<string>26C9830D0E3599AD00522531</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26DB20EF0E32EB8900008211</string>
+				<string>26C9830E0E3599AD00522531</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -617,7 +617,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>238306629.10651901</real>
+	<real>238393827.643938</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -632,9 +632,9 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C530D57069F1CE1000CFCEE</string>
-		<string>260AFF5E0D40530200F6C42F</string>
 		<string>1C78EAAD065D492600B07095</string>
+		<string>260AFF5E0D40530200F6C42F</string>
+		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>1CD10A99069EF8BA00B06720</string>
 		<string>/Users/ggadwa/dim3Code/dim3Engine/dim3Engine.xcodeproj</string>
 		<string>26DB21570E34452800008211</string>
@@ -719,7 +719,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFF5E0D40530200F6C42F</string>
-				<string>26DB20FD0E32F18900008211</string>
+				<string>26C983090E35999300522531</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -839,13 +839,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>26DB20FE0E32F18900008211</string>
+				<string>26C982EC0E35937E00522531</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>26DB20FF0E32F18900008211</string>
-				<string>26DB21000E32F18900008211</string>
-				<string>26DB21010E32F18900008211</string>
-				<string>26DB21020E32F18900008211</string>
-				<string>26DB21030E32F18900008211</string>
+				<string>26C982ED0E35937E00522531</string>
+				<string>26C982EE0E35937E00522531</string>
+				<string>26C982EF0E35937E00522531</string>
+				<string>26C982F00E35937E00522531</string>
+				<string>26C982F10E35937E00522531</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -935,8 +935,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>26DB21190E32F33900008211</string>
-				<string>26DB211A0E32F33900008211</string>
+				<string>26C982F30E35937E00522531</string>
+				<string>26C982F40E35937E00522531</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
@@ -964,8 +964,6 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -1001,7 +999,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C78EAAD065D492600B07095</string>
-				<string>26DB21040E32F18900008211</string>
+				<string>26C983100E3599AD00522531</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>ToolbarConfiguration</key>
