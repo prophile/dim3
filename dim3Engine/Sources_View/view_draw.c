@@ -332,7 +332,7 @@ bool temp_mesh_view_setup(void)
 		for (t=0;t!=map.mesh.nmesh;t++) {
 			byte_idx=t/8;
 			shift=t%8;
-			if ((map.mesh.meshes[n].mesh_visibility_flag[byte_idx]=mesh->mesh_visibility_flag[byte_idx]&(0xFF^(0x1>>shift)))!=0x0) cnt++;
+			if ((map.mesh.meshes[n].mesh_visibility_flag[byte_idx]&(0xFF^(0x1>>shift)))!=0x0) cnt++;
 		}
 
 		fprintf(stdout,"portal %d; count = %d\n",n,cnt);
