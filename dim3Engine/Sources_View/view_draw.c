@@ -151,7 +151,7 @@ int test_me_sort(d3pnt *pt,int *mesh_sort_list)
 
 void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,int *mesh_sort_list)
 {
-	int						n,k,t,idx,mesh_cnt,byte_idx,shift,view_mesh_idx,stencil_idx,stencil_mesh_start_idx;
+	int						n,k,t,idx,mesh_cnt,view_mesh_idx,stencil_idx,stencil_mesh_start_idx;
 	float					ratio;
 	unsigned char			*sp;
 	d3pnt					*pt;
@@ -163,7 +163,7 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 	
 		// clear visibility bits
 		
-	bzero(mesh->mesh_visibility_flag,max_mesh_visibility_flag_sz);
+	bzero(mesh->mesh_visibility_flag,max_mesh);
 	
 		// drawing setup
 		
@@ -227,9 +227,7 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 			// won't always obscure
 
 		if (view_mesh->flag.moveable) {
-			byte_idx=view_mesh_idx/8;
-			shift=view_mesh_idx%8;
-			mesh->mesh_visibility_flag[byte_idx]=mesh->mesh_visibility_flag[byte_idx]|(0x1>>shift);
+			mesh->mesh_visibility_flag[n]=0x1;
 			continue;
 		}
 
@@ -277,9 +275,7 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 
 				if (idx!=0) {
 					idx+=stencil_mesh_start_idx;
-					byte_idx=idx/8;
-					shift=idx%8;
-					mesh->mesh_visibility_flag[byte_idx]=mesh->mesh_visibility_flag[byte_idx]|(0x1>>shift);
+					mesh->mesh_visibility_flag[idx]=0x1;
 				}
 			}
 			
@@ -330,9 +326,7 @@ bool temp_mesh_view_setup(void)
 
 		cnt=0;
 		for (t=0;t!=map.mesh.nmesh;t++) {
-			byte_idx=t/8;
-			shift=t%8;
-			if ((map.mesh.meshes[n].mesh_visibility_flag[byte_idx]&(0xFF^(0x1>>shift)))!=0x0) cnt++;
+			if ((map.mesh.meshes[n].mesh_visibility_flag[t]!=0x0) cnt++;
 		}
 
 		fprintf(stdout,"portal %d; count = %d\n",n,cnt);
@@ -351,8 +345,55 @@ bool temp_mesh_view_setup(void)
 
 
 
+int map_find_mesh(int x,int y,int z)
+{
+	int				n,d,dist,mesh_idx;
+	map_mesh_type	*mesh;
 
+	mesh_idx=-1;
 
+		// look for meshes we are inside of
+
+	dist=map_max_size;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+
+			// are we within this mesh?
+
+		mesh=&map.mesh.meshes[n];
+		if ((x<mesh->box.min.x) || (x>mesh->box.max.x) || (y<mesh->box.min.y) || (y>mesh->box.max.y) || (z<mesh->box.min.z) || (z>mesh->box.max.z)) continue;
+
+			// might be within multiple meshes, check distances to find best mesh
+
+		d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,x,y,z);
+		if ((mesh_idx==-1) || (d<dist)) {
+			dist=d;
+			mesh_idx=n;
+		}
+	}
+
+	if (mesh_idx!=-1) return(mesh_idx);
+
+		// if inside no meshes, then closest mesh
+
+	mesh=map.mesh.meshes;
+	dist=map_max_size;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+
+		d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,x,y,z);
+		if (d<dist) {
+			dist=d;
+			mesh_idx=n;
+		}
+
+		mesh++;
+	}
+
+	if (mesh_idx==-1) return(0);
+
+	return(mesh_idx);
+}
 
 
 
@@ -362,20 +403,34 @@ bool temp_mesh_view_setup(void)
 
 void temp_get_mesh_draw_list(int nportal,int *portal_list)
 {
-	int					k,t,sz,d,idx;
-	map_mesh_type		*mesh;
+	int					n,t,sz,d,start_mesh_idx,idx,
+						byte_idx,shift;
+	map_mesh_type		*start_mesh,*mesh;
+
+		// get mesh camera is in
+
+	start_mesh_idx=map_find_mesh(view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
+	start_mesh=&map.mesh.meshes[start_mesh_idx];
+
+		// check all visibile meshes from the start mesh
 	
 	mesh_draw_count=0;
 	
-	for (k=0;k!=map.mesh.nmesh;k++) {
+	for (n=0;n!=map.mesh.nmesh;n++) {
 
-		mesh=&map.mesh.meshes[k];
+			// is this mesh visible?
+
+		if (n!=start_mesh_idx) {
+			if ((start_mesh->mesh_visibility_flag[n]==0x0) continue;
+		}
+
+			// auto-eliminate meshes outside of view
+
+		mesh=&map.mesh.meshes[n];
 
 		d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
-		
-			// auto-eliminate meshes outside of view
-			
 		if (d>(view.camera.far_z-view.camera.near_z)) continue;
+
 		if (!boundbox_inview(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y)) continue;
 	
 			// top of list is closest items
@@ -393,7 +448,7 @@ void temp_get_mesh_draw_list(int nportal,int *portal_list)
 			
 		if (idx==-1) {
 			mesh_draw_dist[mesh_draw_count]=d;
-			mesh_draw_list[mesh_draw_count]=k;
+			mesh_draw_list[mesh_draw_count]=n;
 			mesh_draw_count++;
 			continue;
 		}
@@ -405,7 +460,7 @@ void temp_get_mesh_draw_list(int nportal,int *portal_list)
 		memmove(&mesh_draw_list[idx+1],&mesh_draw_list[idx],sz);
 		
 		mesh_draw_dist[idx]=d;
-		mesh_draw_list[idx]=k;
+		mesh_draw_list[idx]=n;
 		
 		mesh_draw_count++;
 	}

@@ -46,7 +46,6 @@ extern char light_type_str[][32];
 //
 
 #define max_mesh									8192			// maximum number of meshes in a map
-#define max_mesh_visibility_flag_sz					1024			// bit flags for mesh visibility flags
 #define max_portal									256				// maximum number of portals in a map
 
 #define max_map_scenery								1024			// maximum number of ambient scenery
@@ -244,7 +243,7 @@ typedef struct		{
 
 typedef struct		{
 						int							nvertex,npoly,group_idx;
-						unsigned char				mesh_visibility_flag[max_mesh_visibility_flag_sz];
+						unsigned char				mesh_visibility_flag[max_mesh];
 						d3pnt						rot_off;
 						d3pnt						*vertexes;
 						map_mesh_poly_type			*polys;
