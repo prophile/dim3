@@ -149,9 +149,10 @@ int test_me_sort(d3pnt *pt,int *mesh_sort_list)
 
 
 
-void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,int *mesh_sort_list)
+void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,int *mesh_sort_list,float x_rot,float y_rot)
 {
-	int						n,k,t,idx,mesh_cnt,view_mesh_idx,stencil_idx,stencil_mesh_start_idx;
+	int						n,k,t,idx,mesh_cnt,view_mesh_idx,stencil_idx;
+	int						stencil_idx_to_mesh_idx[256];
 	float					ratio;
 	unsigned char			*sp;
 	d3pnt					*pt;
@@ -160,10 +161,6 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 	texture_type			*texture;
 	
 	mesh=&map.mesh.meshes[mesh_idx];
-	
-		// clear visibility bits
-		
-	bzero(mesh->mesh_visibility_flag,max_mesh);
 	
 		// drawing setup
 		
@@ -180,9 +177,9 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glRotatef(0.0f,1,0,0);				// x pan
-	glRotatef(0.0f,0,0,1);				// z pan
-	glRotatef(((360.0f-0.0f)+180.0f),0,1,0);	// y rotate -- need to reverse the winding
+	glRotatef(x_rot,1,0,0);						// x pan
+	glRotatef(0.0f,0,0,1);						// z pan
+	glRotatef(((360.0f-y_rot)+180.0f),0,1,0);	// y rotate -- need to reverse the winding
 
 	glClear(GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
 
@@ -214,7 +211,6 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 		// we don't have to constantly read from stencil buffer
 
 	stencil_idx=1;
-	stencil_mesh_start_idx=0;
 
 		// run through meshes
 
@@ -227,7 +223,7 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 			// won't always obscure
 
 		if (view_mesh->flag.moveable) {
-			mesh->mesh_visibility_flag[n]=0x1;
+			mesh->mesh_visibility_flag[view_mesh_idx]=0x1;
 			continue;
 		}
 
@@ -235,6 +231,7 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 			// buffer to detect z-buffer changes
 
 		glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
+		stencil_idx_to_mesh_idx[stencil_idx]=view_mesh_idx;
 
 		for (t=0;t!=view_mesh->npoly;t++) {
 
@@ -270,17 +267,11 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 			sp=stencil_pixels;
 
 			for (k=0;k!=(mesh_view_mesh_wid*mesh_view_mesh_high);k++) {
-				
 				idx=(int)*sp++;
-
-				if (idx!=0) {
-					idx+=stencil_mesh_start_idx;
-					mesh->mesh_visibility_flag[idx]=0x1;
-				}
+				if (idx!=0) mesh->mesh_visibility_flag[stencil_idx_to_mesh_idx[idx]]=0x1;
 			}
 			
 			stencil_idx=1;
-			stencil_mesh_start_idx=n+1;
 
 			if ((n+1)!=mesh_cnt) glClear(GL_STENCIL_BUFFER_BIT);
 		}
@@ -298,7 +289,7 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 
 bool temp_mesh_view_setup(void)
 {
-	int				n,t,cnt,byte_idx,shift;
+	int				n,t,cnt;
 	int				*mesh_sort_list;
 	unsigned char	*stencil_pixels;
 	
@@ -322,11 +313,25 @@ bool temp_mesh_view_setup(void)
 		// check visibility for all meshes
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		temp_mesh_visibility_mesh_setup(n,stencil_pixels,mesh_sort_list);
+	
+			// clear visibility bits
+		
+		bzero(map.mesh.meshes[n].mesh_visibility_flag,max_mesh);
+		
+			// build mesh list from different angles
 
+		temp_mesh_visibility_mesh_setup(n,stencil_pixels,mesh_sort_list,0.0f,0.0f);
+		temp_mesh_visibility_mesh_setup(n,stencil_pixels,mesh_sort_list,0.0f,90.0f);
+		temp_mesh_visibility_mesh_setup(n,stencil_pixels,mesh_sort_list,0.0f,180.0f);
+		temp_mesh_visibility_mesh_setup(n,stencil_pixels,mesh_sort_list,0.0f,270.0f);
+		temp_mesh_visibility_mesh_setup(n,stencil_pixels,mesh_sort_list,90.0f,0.0f);
+		temp_mesh_visibility_mesh_setup(n,stencil_pixels,mesh_sort_list,-90.0f,0.0f);
+
+			// supergumba -- mesh count
+			
 		cnt=0;
 		for (t=0;t!=map.mesh.nmesh;t++) {
-			if ((map.mesh.meshes[n].mesh_visibility_flag[t]!=0x0) cnt++;
+			if (map.mesh.meshes[n].mesh_visibility_flag[t]!=0x0) cnt++;
 		}
 
 		fprintf(stdout,"portal %d; count = %d\n",n,cnt);
@@ -403,8 +408,7 @@ int map_find_mesh(int x,int y,int z)
 
 void temp_get_mesh_draw_list(int nportal,int *portal_list)
 {
-	int					n,t,sz,d,start_mesh_idx,idx,
-						byte_idx,shift;
+	int					n,t,sz,d,start_mesh_idx,idx;
 	map_mesh_type		*start_mesh,*mesh;
 
 		// get mesh camera is in
@@ -421,7 +425,7 @@ void temp_get_mesh_draw_list(int nportal,int *portal_list)
 			// is this mesh visible?
 
 		if (n!=start_mesh_idx) {
-			if ((start_mesh->mesh_visibility_flag[n]==0x0) continue;
+			if (start_mesh->mesh_visibility_flag[n]==0x0) continue;
 		}
 
 			// auto-eliminate meshes outside of view
