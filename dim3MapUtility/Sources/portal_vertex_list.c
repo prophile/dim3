@@ -34,96 +34,6 @@ extern void map_make_map_meshes(map_type *map);		// supergumba
 
 /* =======================================================
 
-      Add Vertex to Portal Vertex List
-      
-======================================================= */
-
-int map_portal_add_single_vertex_list(portal_vertex_list_type *vl,int vl_cnt,int x,int y,int z,float gx,float gy,bool moveable,bool shiftable,int *idx)
-{
-	int							i,vl_start;
-	float						fx,fy,fz;
-	portal_vertex_list_type		*v;
-
-	fx=(float)x;
-	fy=(float)y;
-	fz=(float)z;
-	
-		// moveable or shiftable segments have non-combined vertexes
-
-	if ((moveable) || (shiftable)) {
-		v=vl+vl_cnt;
-		
-		v->x=fx;
-		v->y=fy;
-		v->z=fz;
-		v->gx=gx;
-		v->gy=gy;
-		
-		v->flags=0;
-		if (moveable) v->flags|=flag_pvl_moveable;
-		if (shiftable) v->flags|=flag_pvl_shiftable;
-		
-		*idx=vl_cnt;
-		
-		return(vl_cnt+1);
-	}	
-
-		// check for combined vertexes
-		// go backwards for better chance of early hit
-
-	if (vl_cnt!=0) {
-	
-		vl_start=vl_cnt-1;
-		v=vl+vl_start;
-	
-		for (i=vl_start;i!=0;i--) {
-			if (v->flags==flag_pvl_none) {
-				if ((v->x==fx) && (v->y==fy) && (v->z==fz) && (v->gx==gx) && (v->gy==gy)) {
-					*idx=i;
-					return(vl_cnt);
-				}
-			}
-			v--;
-		}
-	}
-
-		// need a new vertex
-		
-	v=vl+vl_cnt;
-	
-	v->x=fx;
-	v->y=fy;
-	v->z=fz;
-	v->gx=gx;
-	v->gy=gy;
-	v->flags=flag_pvl_none;
-	
-	*idx=vl_cnt;
-	
-	return(vl_cnt+1);
-}
-
-/* =======================================================
-
-      Build Portal Vertex List for Mesh Poly
-      
-======================================================= */
-
-int map_portal_add_mesh_poly_single_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *poly)
-{
-	int				n;
-	d3pnt			*pt;
-
-	for (n=0;n!=poly->ptsz;n++) {
-		pt=&mesh->vertexes[poly->v[n]];
-		vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,pt->x,pt->y,pt->z,poly->gx[n],poly->gy[n],mesh->flag.moveable,poly->draw.shift_on,&poly->draw.portal_v[n]);
-	}
-
-	return(vl_cnt);
-}
-
-/* =======================================================
-
       Find UV within Vertex List
       
 ======================================================= */
@@ -179,22 +89,24 @@ void map_portal_vertex_list_find_uv(int ptsz,int *x,int *y,float *gx,float *gy,i
 
 /* =======================================================
 
-      Build Portal Vertex List for Light Tessel
+      Build Tesseled Lighting Triangles
       
 ======================================================= */
 
-
-/*
-int map_portal_add_light_xy_tessel_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *poly)
+void map_portal_add_light_xy_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	int							n,x,y,z,ptsz,px[8],py[8],pz[8],
-								xdist,ydist,xtot,ytot,xskip,yskip,ntrig;
-	int							grid_x[light_tessel_grid_sz+1],
-								grid_y[light_tessel_grid_sz+1],
-								idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
-	float						p_gx,p_gy;
-	d3pnt						*pt;
-	map_mesh_poly_light_type	*light;
+	int									n,vl_cnt,x,y,z,ptsz,px[8],py[8],pz[8],
+										xdist,ydist,xtot,ytot,xskip,yskip,ntrig;
+	int									grid_x[light_tessel_grid_sz+1],
+										grid_y[light_tessel_grid_sz+1],
+										idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
+	float								p_gx,p_gy;
+	d3pnt								*pt;
+	map_mesh_poly_light_type			*light;
+	map_mesh_poly_tessel_vertex_type	*vl;
+
+	light=&poly->light;
+	vl=light->vertexes;
 
 		// get tessel size, possible total of 64 triangles, 8 grid spots (max)
 
@@ -255,6 +167,8 @@ int map_portal_add_light_xy_tessel_vertex_list(portal_vertex_list_type *vl,int v
 		pz[n]=pt->z;
 	}
 
+	vl_cnt=0;
+
 	for (y=0;y<=ytot;y++) {
 		for (x=0;x<=xtot;x++) {
 
@@ -263,13 +177,20 @@ int map_portal_add_light_xy_tessel_vertex_list(portal_vertex_list_type *vl,int v
 
 			map_portal_vertex_list_find_uv(ptsz,px,py,poly->gx,poly->gy,grid_x[x],grid_y[y],&p_gx,&p_gy);
 
-			vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,grid_x[x],grid_y[y],z,p_gx,p_gy,mesh->flag.moveable,FALSE,&idx[x][y]);
+			vl->x=grid_x[x];
+			vl->y=grid_y[y];
+			vl->z=z;
+			vl->gx=p_gx;
+			vl->gy=p_gy;
+
+			idx[x][y]=vl_cnt;
+
+			vl_cnt++;
+			vl++;
 		}
 	}
 
 		// tesselate grid into triangles
-
-	light=&poly->light;
 
 	ntrig=0;
 
@@ -303,21 +224,24 @@ int map_portal_add_light_xy_tessel_vertex_list(portal_vertex_list_type *vl,int v
 		}
 	}
 
-	light->trig_count=ntrig;
-
-	return(vl_cnt);
+	light->nvertex=vl_cnt;
+	light->ntrig=ntrig;
 }
 
-int map_portal_add_light_xz_tessel_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *poly)
+void map_portal_add_light_xz_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	int							n,x,y,z,ptsz,px[8],py[8],pz[8],
-								xdist,zdist,xtot,ztot,xskip,zskip,ntrig;
-	int							grid_x[light_tessel_grid_sz+1],
-								grid_z[light_tessel_grid_sz+1],
-								idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
-	float						p_gx,p_gy;
-	d3pnt						*pt;
-	map_mesh_poly_light_type	*light;
+	int									n,vl_cnt,x,y,z,ptsz,px[8],py[8],pz[8],
+										xdist,zdist,xtot,ztot,xskip,zskip,ntrig;
+	int									grid_x[light_tessel_grid_sz+1],
+										grid_z[light_tessel_grid_sz+1],
+										idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
+	float								p_gx,p_gy;
+	d3pnt								*pt;
+	map_mesh_poly_light_type			*light;
+	map_mesh_poly_tessel_vertex_type	*vl;
+
+	light=&poly->light;
+	vl=light->vertexes;
 
 		// get tessel size, possible total of 64 triangles, 8 grid spots (max)
 
@@ -377,6 +301,8 @@ int map_portal_add_light_xz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 		pz[n]=pt->z;
 	}
 
+	vl_cnt=0;
+
 	for (z=0;z<=ztot;z++) {
 		for (x=0;x<=xtot;x++) {
 
@@ -385,13 +311,20 @@ int map_portal_add_light_xz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 
 			map_portal_vertex_list_find_uv(ptsz,px,pz,poly->gx,poly->gy,grid_x[x],grid_z[z],&p_gx,&p_gy);
 
-			vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,grid_x[x],y,grid_z[z],p_gx,p_gy,mesh->flag.moveable,FALSE,&idx[x][z]);
+			vl->x=grid_x[x];
+			vl->y=y;
+			vl->z=grid_z[z];
+			vl->gx=p_gx;
+			vl->gy=p_gy;
+
+			idx[x][z]=vl_cnt;
+
+			vl_cnt++;
+			vl++;
 		}
 	}
 
 		// tesselate grid into triangles
-
-	light=&poly->light;
 
 	ntrig=0;
 
@@ -425,21 +358,24 @@ int map_portal_add_light_xz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 		}
 	}
 
-	light->trig_count=ntrig;
-
-	return(vl_cnt);
+	light->nvertex=vl_cnt;
+	light->ntrig=ntrig;
 }
 
-int map_portal_add_light_yz_tessel_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *poly)
+void map_portal_add_light_yz_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	int							n,x,y,z,ptsz,px[8],py[8],pz[8],
-								zdist,ydist,ztot,ytot,zskip,yskip,ntrig;
-	int							grid_z[light_tessel_grid_sz+1],
-								grid_y[light_tessel_grid_sz+1],
-								idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
-	float						p_gx,p_gy;
-	d3pnt						*pt;
-	map_mesh_poly_light_type	*light;
+	int									n,vl_cnt,x,y,z,ptsz,px[8],py[8],pz[8],
+										zdist,ydist,ztot,ytot,zskip,yskip,ntrig;
+	int									grid_z[light_tessel_grid_sz+1],
+										grid_y[light_tessel_grid_sz+1],
+										idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
+	float								p_gx,p_gy;
+	d3pnt								*pt;
+	map_mesh_poly_light_type			*light;
+	map_mesh_poly_tessel_vertex_type	*vl;
+
+	light=&poly->light;
+	vl=light->vertexes;
 
 		// get tessel size, possible total of 64 triangles, 8 grid spots (max)
 
@@ -499,6 +435,8 @@ int map_portal_add_light_yz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 		pz[n]=pt->z;
 	}
 
+	vl_cnt=0;
+
 	for (y=0;y<=ytot;y++) {
 		for (z=0;z<=ztot;z++) {
 
@@ -507,13 +445,20 @@ int map_portal_add_light_yz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 
 			map_portal_vertex_list_find_uv(ptsz,pz,py,poly->gx,poly->gy,grid_z[z],grid_y[y],&p_gx,&p_gy);
 
-			vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,x,grid_y[y],grid_z[z],p_gx,p_gy,mesh->flag.moveable,FALSE,&idx[z][y]);
+			vl->x=x;
+			vl->y=grid_y[y];
+			vl->z=grid_z[z];
+			vl->gx=p_gx;
+			vl->gy=p_gy;
+
+			idx[z][y]=vl_cnt;
+
+			vl_cnt++;
+			vl++;
 		}
 	}
 
 		// tesselate grid into triangles
-
-	light=&poly->light;
 
 	ntrig=0;
 
@@ -547,343 +492,135 @@ int map_portal_add_light_yz_tessel_vertex_list(portal_vertex_list_type *vl,int v
 		}
 	}
 
-	light->trig_count=ntrig;
-
-	return(vl_cnt);
+	light->nvertex=vl_cnt;
+	light->ntrig=ntrig;
 }
 
-
-// supergumba -- this might not be necessary
-
-int map_portal_add_light_simple_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *poly)
+void map_portal_add_light_simple_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	int							n,k,ntrig,tx[3],ty[3],tz[3];
-	float						gx[3],gy[3];
-	d3pnt						*pt;
-	map_mesh_poly_light_type	*light;
+	int									n,ntrig;
+	d3pnt								*pt;
+	map_mesh_poly_light_type			*light;
+	map_mesh_poly_tessel_vertex_type	*vl;
 
 	light=&poly->light;
-
-	light->trig_count=0;
+	vl=light->vertexes;
 
 		// break up polygon into triangles
 		// but no tesselation of triangles
 		// this is used for simple lighting
-		
-	ntrig=poly->ptsz-3;
 
-	pt=&mesh->vertexes[poly->v[0]];
-	tx[0]=pt->x;
-	ty[0]=pt->y;
-	tz[0]=pt->z;
-	gx[0]=poly->gx[0];
-	gy[0]=poly->gy[0];
-	
-	for (n=0;n<=ntrig;n++) {
-		pt=&mesh->vertexes[poly->v[n+1]];
-		tx[1]=pt->x;
-		ty[1]=pt->y;
-		tz[1]=pt->z;
-		gx[1]=poly->gx[n+1];
-		gy[1]=poly->gy[n+1];
+		// vertexes
 
-		pt=&mesh->vertexes[poly->v[n+2]];
-		tx[2]=pt->x;
-		ty[2]=pt->y;
-		tz[2]=pt->z;
-		gx[2]=poly->gx[n+2];
-		gy[2]=poly->gy[n+2];
+	for (n=0;n!=poly->ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
 
-		for (k=0;k!=3;k++) {
-			vl_cnt=map_portal_add_single_vertex_list(vl,vl_cnt,tx[k],ty[k],tz[k],gx[k],gy[k],mesh->flag.moveable,FALSE,&light->trig_vertex_idx[(n*3)+k]);
-		}
-
-		light->trig_count++;
+		vl->x=pt->x;
+		vl->y=pt->y;
+		vl->z=pt->z;
+		vl->gx=poly->gx[n];
+		vl->gy=poly->gy[n];
+		vl++;
 	}
-	
-	return(vl_cnt);
+
+	light->nvertex=poly->ptsz;
+
+		// polygons
+
+	ntrig=poly->ptsz-2;
+
+	for (n=0;n<ntrig;n++) {
+		light->trig_vertex_idx[n*3]=0;
+		light->trig_vertex_idx[(n*3)+1]=n+1;
+		light->trig_vertex_idx[(n*3)+2]=n+2;
+	}
+
+	light->ntrig=ntrig;
 }
 
-int map_portal_add_light_single_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *poly)
+/* =======================================================
+
+      Create/Dispose Tesseled Lighting Vertexes For Polygon
+      
+======================================================= */
+
+bool map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int			xsz,ysz,zsz;
+
+		// memory for tesseled vertexes
+
+	poly->light.trig_vertex_idx=valloc(sizeof(int)*light_tessel_max_vertex);			// supergumba -- need to error check here
+	poly->light.trig_vertex_draw_idx=valloc(sizeof(int)*light_tessel_max_vertex);
+	poly->light.vertexes=valloc(sizeof(map_mesh_poly_tessel_vertex_type)*light_tessel_max_vertex);
+
+	poly->light.ntrig=0;
+	poly->light.nvertex=0;
 	
 		// simple light tessels
 
-	if ((poly->draw.simple_tessel) || (mesh->flag.hilite)) return(map_portal_add_light_simple_vertex_list(vl,vl_cnt,mesh,poly));
+	if ((poly->draw.simple_tessel) || (mesh->flag.hilite)) {
+		map_portal_add_light_simple_vertex_list(mesh,poly);
+		return(TRUE);
+	}
 
 		// tessel depending on shape of polygon
 		// first, automatically tessel on the other two
 		// axises if any axies' length is 0
 
 	xsz=poly->box.max.x-poly->box.min.x;
-	if (xsz==0) return(map_portal_add_light_yz_tessel_vertex_list(vl,vl_cnt,mesh,poly));
+	if (xsz==0) {
+		map_portal_add_light_yz_tessel_vertex_list(mesh,poly);
+		return(TRUE);
+	}
 
 	ysz=poly->box.max.y-poly->box.min.y;
-	if (ysz==0) return(map_portal_add_light_xz_tessel_vertex_list(vl,vl_cnt,mesh,poly));
+	if (ysz==0) {
+		map_portal_add_light_xz_tessel_vertex_list(mesh,poly);
+		return(TRUE);
+	}
 
 	zsz=poly->box.max.z-poly->box.min.z;
-	if (zsz==0) return(map_portal_add_light_xy_tessel_vertex_list(vl,vl_cnt,mesh,poly));
+	if (zsz==0) {
+		map_portal_add_light_xy_tessel_vertex_list(mesh,poly);
+		return(TRUE);
+	}
 
 		// last ditch wall type checks
 
 	if (poly->box.wall_like) {
-		if (xsz>zsz) return(map_portal_add_light_xy_tessel_vertex_list(vl,vl_cnt,mesh,poly));
-		return(map_portal_add_light_yz_tessel_vertex_list(vl,vl_cnt,mesh,poly));
+		if (xsz>zsz) {
+			map_portal_add_light_xy_tessel_vertex_list(mesh,poly);
+		}
+		else {
+			map_portal_add_light_yz_tessel_vertex_list(mesh,poly);
+		}
+		return(TRUE);
 	}
 
 		// else treat as floor like polygon
 
-	return(map_portal_add_light_xz_tessel_vertex_list(vl,vl_cnt,mesh,poly));
-}
-*/
-
-/* =======================================================
-
-      Build Portal Vertex List
-      
-======================================================= */
-
-bool map_portal_build_single_vertex_list(map_type *map,int rn)
-{
-	int							n,k,vl_cnt;
-	portal_vertex_list_type		*vl;
-	portal_type					*portal;
-	map_mesh_type				*mesh;
-	map_mesh_poly_type			*poly;
-	
-	portal=&map->portals[rn];
-	
-	vl_cnt=0;
-	vl=portal->vertexes.vertex_list;
-	
-		// build list of vertexes and colors
-
-	mesh=portal->mesh.meshes;
-	
-	for (n=0;n!=portal->mesh.nmesh;n++) {
-	
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-			vl_cnt=map_portal_add_mesh_poly_single_vertex_list(vl,vl_cnt,mesh,poly);
-//			vl_cnt=map_portal_add_light_single_vertex_list(vl,vl_cnt,mesh,poly);
-			poly++;
-		}
-	
-		mesh++;
-	}
-	
-		// total number of vertexes
-		
-	portal->vertexes.nvlist=vl_cnt;
-	
+	map_portal_add_light_xz_tessel_vertex_list(mesh,poly);
 	return(TRUE);
 }
 
-/* =======================================================
 
-      Create/Destroy Portal Vertex List
-      
-======================================================= */
-
-bool map_portal_create_single_vertex_list(map_type *map,int rn)
-{
-	int							n,k,nvlist,sz,rough_sz;
-	portal_vertex_list_type		*nvl;
-	portal_type					*portal;
-	map_mesh_type				*mesh;
-	map_mesh_poly_type			*poly;
-	
-	portal=&map->portals[rn];
-
-		// find maximum possible number of vertexes
-
-	nvlist=0;
-
-	mesh=portal->mesh.meshes;
-	
-	for (n=0;n!=portal->mesh.nmesh;n++) {
-	
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-			nvlist+=poly->ptsz;
-			nvlist+=light_tessel_max_vertex;			// maximum number of lighting elements in list
-			poly++;
-		}
-	
-		mesh++;
-	}
-	
-		// create rough vertex list
-	
-	rough_sz=nvlist*sizeof(portal_vertex_list_type);
-	portal->vertexes.vertex_list=(portal_vertex_list_type*)valloc(rough_sz);
-	if (portal->vertexes.vertex_list==NULL) return(FALSE);
-	
-	bzero(portal->vertexes.vertex_list,rough_sz);
-	
-		// build vertex list
-		
-	if (!map_portal_build_single_vertex_list(map,rn)) {
-		free(portal->vertexes.vertex_list);
-		portal->vertexes.vertex_list=NULL;
-		return(FALSE);
-	}
-	
-		// resize vertex list
-		
-	sz=portal->vertexes.nvlist*sizeof(portal_vertex_list_type);
-
-	if (sz<rough_sz) {
-		nvl=(portal_vertex_list_type*)valloc(sz);
-		if (nvl==NULL) {
-			free(portal->vertexes.vertex_list);
-			portal->vertexes.vertex_list=NULL;
-			return(FALSE);
-		}
-		
-		memmove(nvl,portal->vertexes.vertex_list,sz);
-		free(portal->vertexes.vertex_list);
-		portal->vertexes.vertex_list=nvl;
-	}
-	
-		// compiled vertex, coord and color lists
-		
-	sz=portal->vertexes.nvlist*(sizeof(float)*3);
-	portal->vertexes.pvert=(float*)valloc(sz);
-	if (portal->vertexes.pvert==NULL) return(FALSE);
-
-	bzero(portal->vertexes.pvert,sz);
-
-	sz=portal->vertexes.nvlist*(sizeof(float)*2);
-	portal->vertexes.pcoord=(float*)valloc(sz);
-	if (portal->vertexes.pcoord==NULL) return(FALSE);
-
-	bzero(portal->vertexes.pcoord,sz);
-	
-	sz=portal->vertexes.nvlist*(sizeof(float)*3);
-	portal->vertexes.pcolor=(float*)valloc(sz);
-	if (portal->vertexes.pcolor==NULL) return(FALSE);
-
-	bzero(portal->vertexes.pcolor,sz);
-
-	sz=portal->vertexes.nvlist*(sizeof(float)*3);
-	portal->vertexes.pnormal=(float*)valloc(sz);
-	if (portal->vertexes.pnormal==NULL) return(FALSE);
-
-	bzero(portal->vertexes.pnormal,sz);
-
-		// hit list
-
-	portal->vertexes.phit=(unsigned char*)valloc(portal->vertexes.nvlist);
-	if (portal->vertexes.phit==NULL) return(FALSE);
-
-	return(TRUE);
-}
-
-void map_portal_dispose_single_vertex_list(map_type *map,int rn)
-{
-	portal_type			*portal;
-
-	portal=&map->portals[rn];
-	
-	free(portal->vertexes.vertex_list);
-	free(portal->vertexes.pvert);
-	free(portal->vertexes.pcoord);
-	free(portal->vertexes.pcolor);
-	free(portal->vertexes.pnormal);
-	free(portal->vertexes.phit);
-}
-
-
-
-
-
-
-
-
-
-// supergumba -- new tesseled lighting lists
-
-
-
-
-
-
-
-
-bool map_create_poly_tesseled_vertexes(map_mesh_poly_type *poly)
-{
-	poly->light.draw_vertex_idx=valloc(sizeof(int)*light_tessel_max_vertex);			// supergumba -- need to error check here
-	poly->light.vertexes=valloc(sizeof(d3pnt)*light_tessel_max_vertex);
-
-	return(TRUE);
-}
-		
 void map_dispose_poly_tesseled_vertexes(map_mesh_poly_type *poly)
 {
-	free(poly->light.draw_vertex_idx);
+	free(poly->light.trig_vertex_idx);
+	free(poly->light.trig_vertex_draw_idx);
 	free(poly->light.vertexes);
-
-
 }
 
+/* =======================================================
 
-
-
-
-// supergumba -- new map vertex list
-
-
-
-
-
-bool map_build_vertex_list(map_type *map)
-{
-	int							n,t,k,vl_cnt;
-	portal_type					*portal;
-	portal_vertex_list_type		*vl;
-	map_mesh_type				*mesh;
-	map_mesh_poly_type			*poly;
-	
-	vl_cnt=0;
-	vl=map->vertexes.vertex_list;
-	
-		// build list of vertexes and colors
-	
-	for (t=0;t!=map->nportal;t++) {
-		
-		portal=&map->portals[t];
-		
-		mesh=portal->mesh.meshes;
-		
-		for (n=0;n!=portal->mesh.nmesh;n++) {
-			
-			poly=mesh->polys;
-			
-			for (k=0;k!=mesh->npoly;k++) {
-				vl_cnt=map_portal_add_mesh_poly_single_vertex_list(vl,vl_cnt,mesh,poly);
-	//			vl_cnt=map_portal_add_light_single_vertex_list(vl,vl_cnt,mesh,poly);
-				poly++;
-			}
-			
-			mesh++;
-		}
-	}
-	
-		// total number of vertexes
-	
-	map->vertexes.nvlist=vl_cnt;
-	
-	return(TRUE);
-}
+      Create/Dispose Map Vertex Lists
+      
+======================================================= */
 
 bool map_create_vertex_list(map_type *map)
 {
-	int							n,t,k,nvlist,sz,rough_sz;
-	portal_vertex_list_type		*nvl;
+	int							n,t,k,nvlist,sz;
 	portal_type					*portal;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
@@ -911,72 +648,34 @@ bool map_create_vertex_list(map_type *map)
 		}
 	}
 	
-		// create rough vertex list
-	
-	rough_sz=nvlist*sizeof(portal_vertex_list_type);
-	map->vertexes.vertex_list=(portal_vertex_list_type*)valloc(rough_sz);
-	if (map->vertexes.vertex_list==NULL) return(FALSE);
-	
-	bzero(map->vertexes.vertex_list,rough_sz);
-	
-		// build vertex list
-	
-	if (!map_build_vertex_list(map)) {
-		free(map->vertexes.vertex_list);
-		map->vertexes.vertex_list=NULL;
-		return(FALSE);
-	}
-	
-		// resize vertex list
-	
-	sz=map->vertexes.nvlist*sizeof(portal_vertex_list_type);
-	
-	if (sz<rough_sz) {
-		nvl=(portal_vertex_list_type*)valloc(sz);
-		if (nvl==NULL) {
-			free(map->vertexes.vertex_list);
-			map->vertexes.vertex_list=NULL;
-			return(FALSE);
-		}
-		
-		memmove(nvl,map->vertexes.vertex_list,sz);
-		free(map->vertexes.vertex_list);
-		map->vertexes.vertex_list=nvl;
-	}
-	
 		// compiled vertex, coord and color lists
 	
-	sz=map->vertexes.nvlist*(sizeof(float)*3);
+	sz=nvlist*(sizeof(float)*3);
 	map->vertexes.pvert=(float*)valloc(sz);
 	if (map->vertexes.pvert==NULL) return(FALSE);
 	
 	bzero(map->vertexes.pvert,sz);
 	
-	sz=map->vertexes.nvlist*(sizeof(float)*2);
+	sz=nvlist*(sizeof(float)*2);
 	map->vertexes.pcoord=(float*)valloc(sz);
 	if (map->vertexes.pcoord==NULL) return(FALSE);
 	
 	bzero(map->vertexes.pcoord,sz);
 	
-	sz=map->vertexes.nvlist*(sizeof(float)*3);
+	sz=nvlist*(sizeof(float)*3);
 	map->vertexes.pcolor=(float*)valloc(sz);
 	if (map->vertexes.pcolor==NULL) return(FALSE);
 	
 	bzero(map->vertexes.pcolor,sz);
 	
-	sz=map->vertexes.nvlist*(sizeof(float)*3);
+	sz=nvlist*(sizeof(float)*3);
 	map->vertexes.pnormal=(float*)valloc(sz);
 	if (map->vertexes.pnormal==NULL) return(FALSE);
 	
 	bzero(map->vertexes.pnormal,sz);
 	
-		// hit list
-	
-	map->vertexes.phit=(unsigned char*)valloc(map->vertexes.nvlist);
-	if (map->vertexes.phit==NULL) return(FALSE);
-	
 		// create tesseled lighting vertexes
-		
+
 	mesh=map->mesh.meshes;
 	
 	for (n=0;n!=map->mesh.nmesh;n++) {
@@ -984,7 +683,7 @@ bool map_create_vertex_list(map_type *map)
 		poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {
-			map_create_poly_tesseled_vertexes(poly);
+			map_create_poly_tesseled_vertexes(mesh,poly);
 			poly++;
 		}
 		
@@ -1018,12 +717,10 @@ void map_dispose_vertex_list(map_type *map)
 
 		// dispose vertex lists
 		
-	free(map->vertexes.vertex_list);
 	free(map->vertexes.pvert);
 	free(map->vertexes.pcoord);
 	free(map->vertexes.pcolor);
 	free(map->vertexes.pnormal);
-	free(map->vertexes.phit);
 }
 
 
@@ -1038,39 +735,19 @@ void map_dispose_vertex_list(map_type *map)
       
 ======================================================= */
 
+
+// supergumba -- delete all these (AFTER TRANSLATION!)
+
 bool map_portal_create_vertex_lists(map_type *map)
 {
-	int			n;
-	
-	for (n=0;n!=map->nportal;n++) {
-		if (!map_portal_create_single_vertex_list(map,n)) return(FALSE);
-	}
-	
-	map_create_vertex_list(map);			// supergumba
 	map_make_map_meshes(map);			// supergumba -- temporary
+	map_create_vertex_list(map);			// supergumba
 		
 	return(TRUE);
 }
 
 void map_portal_dispose_vertex_lists(map_type *map)
 {
-	int			n;
-	
-	for (n=0;n!=map->nportal;n++) {
-		map_portal_dispose_single_vertex_list(map,n);
-	}
-	
 	map_dispose_vertex_list(map);		// supergumba
-}
-
-void map_portal_rebuild_vertex_lists(map_type *map)
-{
-	int			n;
-	
-	for (n=0;n!=map->nportal;n++) {
-		map_portal_build_single_vertex_list(map,n);
-	}
-	
-	map_build_vertex_list(map);		// supergumba
 }
 

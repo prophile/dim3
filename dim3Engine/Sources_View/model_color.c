@@ -34,7 +34,8 @@ extern server_type			server;
 extern setup_type			setup;
 extern view_type			view;
 
-extern void light_get_base_color(d3col *col);
+extern int					nlight;
+extern light_spot_type		lspot_cache[max_light_spot];
 
 /* =======================================================
 
@@ -119,7 +120,6 @@ void model_build_color_setup_lights(model_type *mdl,model_draw *draw)
 	float					fx,fy,fz;
 	d3pos					pos;
 	matrix_type				mat;
-	portal_type				*portal;
 	light_spot_type			*lspot;
 	
 	memmove(&pos,&draw->pos,sizeof(d3pos));
@@ -144,12 +144,10 @@ void model_build_color_setup_lights(model_type *mdl,model_draw *draw)
 
 		// create lighting spots for model
 
-	portal=&map.portals[pos.rn];
-
 	model_clear_lights(mdl);
-	lspot=portal->light.spots;
+	lspot=lspot_cache;
 
-	for (i=0;i!=portal->light.nspot;i++) {
+	for (i=0;i!=nlight;i++) {
 		model_add_light(mdl,&pos,lspot,map.ambient.light_drop_off_factor);
 		lspot++;
 	}
@@ -175,7 +173,9 @@ void model_build_color(model_type *mdl,int mesh_idx,int rn,int x,int z,int y,mod
 	
 		// get ambient color
 		
-	light_get_base_color(&light_base);
+	light_base.r=map.ambient.light_color.r+setup.gamma;
+	light_base.g=map.ambient.light_color.g+setup.gamma;
+	light_base.b=map.ambient.light_color.b+setup.gamma;
 	
 		// run the lighting
 		

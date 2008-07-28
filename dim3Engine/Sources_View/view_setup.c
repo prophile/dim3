@@ -78,16 +78,9 @@ void view_portal_updates(int tick)
 
 void view_clear_draw_in_view(model_draw *draw)
 {
-	int					n;
 	model_type			*mdl;
 	
 	draw->in_view=FALSE;
-
-	draw->all_lights_in_view=FALSE;
-
-	for (n=0;n!=max_model_light;n++) {
-		draw->lights[n].in_view=FALSE;
-	}
 
 	draw->shadow.in_view=FALSE;
 	draw->shadow.texture_idx=-1;
@@ -127,47 +120,10 @@ void view_setup_model_in_view(model_draw *draw,bool in_air,bool is_camera)
 	}
 }
 
-void view_setup_model_light_in_view(model_draw *draw)
-{
-	int					n,x,z,y;
-	model_type			*mdl;
-	model_draw_light	*light;
-
-		// get the model
-
-	mdl=NULL;
-	if ((draw->uid!=-1) && (draw->on)) mdl=model_find_uid(draw->uid);
-	
-		// run through the lights
-
-	for (n=0;n!=max_model_light;n++) {
-		light=&draw->lights[n];
-
-		if (!light->on) continue;
-	
-			// get light position
-			
-		x=draw->pos.x;
-		y=draw->pos.y;
-		z=draw->pos.z;
-		
-		if (mdl!=NULL) {
-			model_get_light_position(mdl,&draw->setup,n,&x,&y,&z);
-			if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&x,&y,&z);
-		}
-			
-			// light in view?
-			
-		light->in_view=map_portal_light_in_view(&map,x,y,z,light->intensity);
-
-		draw->all_lights_in_view=draw->all_lights_in_view||light->in_view;
-	}
-}
-
 void view_setup_model_animation(model_draw *draw)
 {
 	if ((draw->uid==-1) || (!draw->on)) return;
-	if ((!draw->in_view) && (!draw->shadow.in_view) && (!draw->all_lights_in_view)) return;
+	if ((!draw->in_view) && (!draw->shadow.in_view)) return;
 	
 	model_calc_animation(draw);
 	model_calc_draw_bones(draw);
@@ -209,7 +165,6 @@ void view_setup_objects(int tick)
 			// find model, shadows, and light in view
 		
 		view_setup_model_in_view(draw,is_air,is_camera);
-		view_setup_model_light_in_view(draw);
 	
 			// setup model animations for models in view
 		
@@ -228,7 +183,6 @@ void view_setup_objects(int tick)
 				view_clear_draw_in_view(draw);
 				model_draw_setup_weapon(tick,obj,weap,FALSE);
 				view_setup_model_in_view(draw,FALSE,FALSE);
-				view_setup_model_light_in_view(draw);
 			}
 		}
 	}
@@ -261,7 +215,6 @@ void view_setup_projectiles(int tick)
 			// find model and shadows in view
 			
 		view_setup_model_in_view(&proj->draw,TRUE,FALSE);
-		view_setup_model_light_in_view(&proj->draw);
 		
 			// setup model animations for models in view
 			
@@ -292,25 +245,22 @@ void view_add_model_light(model_draw *draw,int obj_uid)
 	
 		// add lights
 		
-	if (draw->all_lights_in_view) {
+	light=draw->lights;
+	
+	for (n=0;n!=max_model_light;n++) {
 
-		light=draw->lights;
-		
-		for (n=0;n!=max_model_light;n++) {
-
-			if (light->on) {
-				memmove(&pos,&draw->pos,sizeof(d3pos));
-				
-				if (mdl!=NULL) {
-					model_get_light_position(mdl,&draw->setup,n,&pos.x,&pos.y,&pos.z);
-					if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&pos.x,&pos.y,&pos.z);
-				}
-				
-				light_add(&pos,light->type,light->intensity,light->confine_to_portal,&light->col);
+		if (light->on) {
+			memmove(&pos,&draw->pos,sizeof(d3pos));
+			
+			if (mdl!=NULL) {
+				model_get_light_position(mdl,&draw->setup,n,&pos.x,&pos.y,&pos.z);
+				if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&pos.x,&pos.y,&pos.z);
 			}
-
-			light++;
+			
+			light_add(&pos,light->type,light->intensity,light->confine_to_portal,&light->col);
 		}
+
+		light++;
 	}
 	
 		// add halo
@@ -349,11 +299,7 @@ void view_add_lights(void)
 	maplight=map.lights;
 		
 	for (i=0;i!=map.nlight;i++) {
-		if (maplight->on) {
-			if (map_portal_light_in_view(&map,maplight->pos.x,maplight->pos.y,maplight->pos.z,maplight->intensity)) {
-				light_add(&maplight->pos,maplight->type,maplight->intensity,maplight->confine_to_portal,&maplight->col);
-			}
-		}
+		if (maplight->on) light_add(&maplight->pos,maplight->type,maplight->intensity,maplight->confine_to_portal,&maplight->col);
 		maplight++;
 	}	
 

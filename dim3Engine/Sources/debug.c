@@ -433,8 +433,6 @@ void debug_light(void)
 	else {
 		console_add_system("Lighting: OFF");
 	}
-	
-	map_portal_light_check_changes_reset_all(&map);
 }
 
 /* =======================================================

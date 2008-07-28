@@ -31,11 +31,13 @@ and can be sold or given away.
 
 #include "lights.h"
 
-extern map_type			map;
-extern view_type		view;
-extern setup_type		setup;
+extern map_type				map;
+extern view_type			view;
+extern setup_type			setup;
 
-GLuint					vertex_vbo=-1;		// supergumba
+GLuint						vertex_vbo=-1;		// supergumba
+
+extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf);
 
 /* =======================================================
 
@@ -43,104 +45,8 @@ GLuint					vertex_vbo=-1;		// supergumba
       
 ======================================================= */
 
+// supergumba
 
-// supergumba -- do once
-// need per mesh update?
-
-extern int						nlight;
-extern light_spot_type			lspot_cache[max_light_spot];
-
-
-void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf)
-{
-	int					i,cnt;
-	double				dx,dz,dy,r,g,b,nx,nz,ny,d,mult;
-	light_spot_type		*lspot;
-
-		// combine all light spot normals
-		// attenuated for distance
-		
-	cnt=0;
-	
-	r=g=b=0;
-	nx=ny=nz=0;
-	
-	lspot=lspot_cache;
-	
-	for (i=0;i!=nlight;i++) {
-		
-		dx=lspot->d_x-x;
-		dy=lspot->d_y-y;
-		dz=lspot->d_z-z;
-		
-		d=(dx*dx)+(dz*dz)+(dy*dy);
-		if (d<=lspot->d_intensity) {
-			mult=(lspot->d_intensity-d)*lspot->d_inv_intensity;
-
-			r+=(lspot->d_col_r*mult);
-			g+=(lspot->d_col_g*mult);
-			b+=(lspot->d_col_b*mult);
-
-			nx+=(dx*mult);
-			ny+=(dy*mult);
-			nz+=(dz*mult);
-
-			cnt++;
-		}
-		
-		lspot++;
-	}
-
-		// set light value
-
-	*cf++=(map.ambient.light_color.r+setup.gamma)+(float)r;
-	*cf++=(map.ambient.light_color.g+setup.gamma)+(float)g;
-	*cf=(map.ambient.light_color.b+setup.gamma)+(float)b;
-	
-		// no hits, then default normal
-
-	if (cnt==0) {
-		*nf++=0.5f;
-		*nf++=0.5f;
-		*nf=1.0f;
-		return;
-	}
-	
-		// average the normal vector
-		
-	d=(1.0/((double)cnt));
-	nx*=d;
-	ny*=d;
-	nz*=d;
-	
-		// combine x and z together to make x
-		// factor.  Note that this does not always
-		// give the correct results but will be close
-		// most of the time -- otherwise we're going to
-		// have to calculate polygon vectors
-		
-	nx+=nz;
-
-		// normalize normal vector
-
-	d=sqrt((nx*nx)+(ny*ny));
-	if (d!=0.0) {
-		d=1.0/d;
-		nx*=d;
-		ny*=d;
-	}
-	
-		// convert to needed format
-		// x (1 = right [light from left], 0 = left [light from right])
-		// y (1 = top [light from bottom], 0 = bottom [light from top])
-
-		// supergumba -- possible (check math) that in the future
-		// we can use the z coord for a distance hardness factor
-		
-	*nf++=(float)((nx*0.5)+0.5);
-	*nf++=1.0f-(float)((ny*0.5)+0.5);
-	*nf=1.0f;
-}
 
 
 
@@ -149,12 +55,14 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 
 
-	int						n,k,t,v_idx;
-	float					x,y,z,fx,fy,fz;
-	float					*pv,*pp,*pc,*pn;
-	d3pnt					*pnt;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
+	int									n,k,t,ntrig,
+										v_idx,v_light_start_idx;
+	float								x,y,z,fx,fy,fz;
+	float								*pv,*pp,*pc,*pn;
+	d3pnt								*pnt;
+	map_mesh_type						*mesh;
+	map_mesh_poly_type					*poly;
+	map_mesh_poly_tessel_vertex_type	*lv;
 
 		// the arrays
 
@@ -173,10 +81,6 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 	
 		// regular lighting
 		
-		
-		// supergumba -- calculate light OUTSIDE OF THIS LOOP, in a parallel array
-		// then put it all together
-		
 		// supergumba -- these arrays need to be made bigger, also, for all possible vertex/etc
 
 	for (n=0;n!=mesh_cnt;n++) {
@@ -187,6 +91,10 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 		for (k=0;k!=mesh->npoly;k++) {
 		
 				// polygon vertexes
+
+				// these vertexes are used to draw the textured
+				// polygons -- there's no normal or lighting usage on these
+				// vertexes, so we skip that step
 				
 			for (t=0;t!=poly->ptsz;t++) {
 			
@@ -196,7 +104,6 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 				y=(float)pnt->y;
 				z=(float)pnt->z;
 
-				map_calculate_light_color_normal((double)x,(double)y,(double)z,pc,pn);
 				pc+=3;
 				pn+=3;
 
@@ -213,9 +120,43 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 			}
 			
 				// polygon tesseled lighting
+
+				// these vertexes are used for tesselated effects
+				// like lighting, bump, specular, etc
+
+			v_light_start_idx=v_idx;
+
+			lv=poly->light.vertexes;
+
+			for (t=0;t!=poly->light.nvertex;t++) {
+
+				x=(float)lv->x;
+				y=(float)lv->y;
+				z=(float)lv->z;
+
+				map_calculate_light_color_normal((double)x,(double)y,(double)z,pc,pn);
+				pc+=3;
+				pn+=3;
+
+				*pv++=(x-fx);
+				*pv++=(y-fy);
+				*pv++=(fz-z);
 				
-				// supergumba -- TO DO!
-			
+				*pp++=lv->gx;
+				*pp++=lv->gy;
+				
+				lv++;
+				v_idx++;
+			}
+
+				// create draw indexes by offset
+
+			ntrig=poly->light.ntrig*3;
+
+			for (t=0;t!=ntrig;t++) {
+				poly->light.trig_vertex_draw_idx[t]=poly->light.trig_vertex_idx[t]+v_light_start_idx;
+			}
+
 			poly++;
 		}
 		
@@ -283,7 +224,7 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 				// ray traced with bump normals
 
 			for (n=0;n!=nvlist;n++) {
-				light_trace_calculate_light_color(portal,vl->x,vl->y,vl->z,pc);
+				light_trace_calculate_light_color(vl->x,vl->y,vl->z,pc);
 				pc+=3;
 
 				*pv++=(vl->x-fx);
@@ -305,7 +246,7 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 				// ray trace with no bumps
 
 			for (n=0;n!=nvlist;n++) {
-				light_trace_calculate_light_color(portal,vl->x,vl->y,vl->z,pc);
+				light_trace_calculate_light_color(vl->x,vl->y,vl->z,pc);
 				pc+=3;
 
 				*pv++=(vl->x-fx);
@@ -374,12 +315,6 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 void portal_compile_gl_list_attach(int rn)
 {
-
-	int						nvlist,sz;
-
-	nvlist=map.vertexes.nvlist;
-	
-	sz=(nvlist*3)*sizeof(float);
 
 		// vertexes
 #ifdef D3_OS_MAC

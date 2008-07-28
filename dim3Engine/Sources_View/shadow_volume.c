@@ -42,6 +42,7 @@ int							shadow_texture_count;
 
 extern bool complex_boundbox_inview(int *cbx,int *cby,int *cbz);
 extern void model_render_shadow(model_draw *draw,float draw_z,int shadow_idx);
+extern light_spot_type* map_find_closest_light(portal_type *portal,double x,double y,double z,int *p_dist);
 
 /* =======================================================
 
@@ -88,7 +89,7 @@ bool shadow_get_volume_ground(model_draw *draw)
 
 			// find closest light
 		
-		lspot=map_portal_find_closest_light(&map.portals[draw->pos.rn],(double)x,(double)y,(double)z,&dist);
+		lspot=map_find_closest_light(&map.portals[draw->pos.rn],(double)x,(double)y,(double)z,&dist);
 		if (lspot==NULL) return(FALSE);
 
 			// find angle and size

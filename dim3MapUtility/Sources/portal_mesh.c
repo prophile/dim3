@@ -562,69 +562,17 @@ bool map_portal_mesh_delete_unused_vertexes(map_type *map,int portal_idx,int mes
 
 /* =======================================================
 
-      Mesh Transparency Sorting Lists
-      
-======================================================= */
-
-bool map_portal_mesh_create_transparent_sort_lists(map_type *map)
-{
-	int				n,npoly;
-	portal_type		*portal;
-
-		// clear out pointers
-
-	portal=map->portals;
-
-	for (n=0;n!=map->nportal;n++) {
-		portal->mesh.draw.sort_cnt=0;
-		portal->mesh.draw.sort_list=NULL;
-		portal++;
-	}
-	
-		// create sort lists
-
-	portal=map->portals;
-
-	for (n=0;n!=map->nportal;n++) {
-		npoly=map_portal_mesh_count_total_poly(map,n);
-
-		portal->mesh.draw.sort_list=(map_mesh_poly_sort_type*)valloc(npoly*sizeof(map_mesh_poly_sort_type));
-		if (portal->mesh.draw.sort_list==NULL) return(FALSE);
-
-		portal++;
-	}
-	
-	return(TRUE);
-}
-
-void map_portal_mesh_dispose_transparent_sort_lists(map_type *map)
-{
-	int				n;
-	portal_type		*portal;
-	
-	portal=map->portals;
-
-	for (n=0;n!=map->nportal;n++) {
-		if (portal->mesh.draw.sort_list!=NULL) free(portal->mesh.draw.sort_list);
-		portal++;
-	}
-}
-
-/* =======================================================
-
       Get Mesh Center
       
 ======================================================= */
 
-void map_portal_mesh_calculate_extent(map_type *map,int portal_idx,int mesh_idx,d3pnt *min,d3pnt *max)
+void map_portal_mesh_calculate_extent(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max)
 {
 	int					n,nvertex;
 	d3pnt				*pt;
-	portal_type			*portal;
 	map_mesh_type		*mesh;
 
-	portal=&map->portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 	
 	nvertex=mesh->nvertex;
 	
@@ -656,15 +604,13 @@ void map_portal_mesh_calculate_extent(map_type *map,int portal_idx,int mesh_idx,
 	}
 }
 
-void map_portal_mesh_calculate_center(map_type *map,int portal_idx,int mesh_idx,d3pnt *mpt)
+void map_portal_mesh_calculate_center(map_type *map,int mesh_idx,d3pnt *mpt)
 {
 	int					n,nvertex,mx,my,mz;
 	d3pnt				*pt;
-	portal_type			*portal;
 	map_mesh_type		*mesh;
 
-	portal=&map->portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 
 	mx=my=mz=0;
 
@@ -683,16 +629,14 @@ void map_portal_mesh_calculate_center(map_type *map,int portal_idx,int mesh_idx,
 	mpt->z=mz/nvertex;
 }
 
-void map_portal_mesh_calculate_uv_center(map_type *map,int portal_idx,int mesh_idx,float *gx,float *gy)
+void map_portal_mesh_calculate_uv_center(map_type *map,int mesh_idx,float *gx,float *gy)
 {
 	int					n,k,cnt;
 	float				kx,ky,f_cnt;
-	portal_type			*portal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 
-	portal=&map->portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 
 	kx=ky=0.0f;
 	cnt=0;

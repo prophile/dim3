@@ -69,10 +69,6 @@ void effect_add_single_light(int tick,effect_type *effect)
 		}
 	}
 	
-		// is flash in portal list
-		
-	if (!map_portal_light_in_view(&map,effect->pos.x,effect->pos.y,effect->pos.z,intensity)) return;
-	
 	light_add(&effect->pos,lt_normal,intensity,FALSE,&flash->col);
 }
 

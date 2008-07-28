@@ -41,6 +41,8 @@ extern server_type			server;
 extern view_type			view;
 extern setup_type			setup;
 
+extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf);
+
 /* =======================================================
 
       Get Particle Connected Model Draw
@@ -240,7 +242,7 @@ void particle_draw(effect_type *effect,int count)
 	int						i,idx,particle_count,
 							ntrail,trail_step,mx,mz,my,
 							pixel_dif,sz;
-	float					gravity,gx,gy,g_size,pixel_sz,f,
+	float					gravity,gx,gy,g_size,pixel_sz,f,pc[3],pn[3],
 							alpha,alpha_dif,r,g,b,color_dif,f_count,f_tick;
 	float					*vertex_array;
 	d3ang					*rot_ang,rang;
@@ -259,7 +261,10 @@ void particle_draw(effect_type *effect,int count)
 	particle_draw_position(effect,count,&mx,&my,&mz);
 
 	if (particle->ambient_factor!=1.0f) {		// get ambient before position change
-		map_portal_get_light(&map.portals[effect->pos.rn],(double)mx,(double)my,(double)mz,&ambient_col);
+		map_calculate_light_color_normal((double)mx,(double)my,(double)mz,pc,pn);
+		ambient_col.r=pc[0];
+		ambient_col.g=pc[1];
+		ambient_col.b=pc[2];
 	}
 
 	mx-=view.camera.pos.x;

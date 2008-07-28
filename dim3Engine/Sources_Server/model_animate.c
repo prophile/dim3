@@ -38,6 +38,7 @@ extern view_type				view;
 extern map_type					map;
 
 extern int game_time_get(void);
+extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf);
 
 /* =======================================================
 
@@ -653,8 +654,8 @@ bool model_find_bone_position_for_current_animation(model_draw *draw,int bone_id
 
 bool model_get_bone_brightness(model_draw *draw,char *pose_name,char *bone_name,float *bright)
 {
-	int					rn,x,y,z;
-	d3col				col;
+	int				rn,x,y,z;
+	float			pc[3],pn[3];
 	
 		// get bone position
 		
@@ -668,9 +669,9 @@ bool model_get_bone_brightness(model_draw *draw,char *pose_name,char *bone_name,
 		return(TRUE);
 	}
 	
-	map_portal_get_light(&map.portals[rn],(double)x,(double)y,(double)z,&col);
+	map_calculate_light_color_normal((double)x,(double)y,(double)z,pc,pn);
 	
-	*bright=(col.r+col.g+col.b)/3.0f;
+	*bright=(pc[0]+pc[1]+pc[2])/3.0f;
 	if (*bright<0.0f) *bright=0.0f;
 	
 	return(TRUE);

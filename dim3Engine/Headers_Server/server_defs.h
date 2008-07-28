@@ -206,7 +206,7 @@ typedef struct		{
 
 typedef struct		{
 						int						type,intensity;
-						bool					on,confine_to_portal,in_view;
+						bool					on,confine_to_portal;
 						d3col					col;
 					} model_draw_light;
 
@@ -259,7 +259,7 @@ typedef struct		{
 												script_light_idx,script_halo_idx;
 						char					name[name_str_len];
 						float					alpha,resize,normal[3];
-						bool					on,in_view,all_lights_in_view,
+						bool					on,in_view,
 												bounce,face_forward,player;
 						unsigned char			cur_texture_frame[max_model_texture];
 						d3pos					pos;

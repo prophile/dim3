@@ -44,6 +44,7 @@ extern setup_type		setup;
 extern void model_build_color_setup_lights(model_type *mdl,model_draw *draw);
 extern void model_build_color(model_type *mdl,int mesh_idx,int rn,int x,int z,int y,model_draw *draw);
 extern void model_tint_team_color(model_type *mdl,int mesh_idx,model_draw *draw);
+extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf);
 
 /* =======================================================
 
@@ -659,8 +660,9 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 
 void model_render(int tick,model_draw *draw)
 {
-	int						n,rn,x,y,z,tx,ty,tz,mesh_mask;
-	model_type				*mdl;
+	int				n,rn,x,y,z,tx,ty,tz,mesh_mask;
+	float			cf[3];
+	model_type		*mdl;
 	
 		// get model
 
@@ -674,7 +676,7 @@ void model_render(int tick,model_draw *draw)
 		// create light list for model and single drawing normal
 		
 	model_build_color_setup_lights(mdl,draw);
-	map_portal_calculate_light_normal(&map.portals[draw->pos.rn],(double)draw->pos.x,(double)draw->pos.y,(double)draw->pos.z,draw->normal);
+	map_calculate_light_color_normal((double)draw->pos.x,(double)draw->pos.y,(double)draw->pos.z,cf,draw->normal);
 
 		// get the meshes to be drawn
 

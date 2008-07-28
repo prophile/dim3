@@ -31,11 +31,10 @@ and can be sold or given away.
 
 d3col					map_light_base;
 
-/* =======================================================
 
-      Set Map Light Base
-      
-======================================================= */
+// supergumba -- will more than likely be able to delete all of this
+
+/* 
 
 void map_set_light_base(d3col *col)
 {
@@ -44,11 +43,6 @@ void map_set_light_base(d3col *col)
 	map_light_base.b=col->b;
 }
 
-/* =======================================================
-
-      Check if Light Shines into Portal
-      
-======================================================= */
 
 bool map_portal_light_hit(portal_type *portal,int x,int y,int z,int intensity)
 {
@@ -64,11 +58,6 @@ bool map_portal_light_hit(portal_type *portal,int x,int y,int z,int intensity)
 	return(TRUE);
 }
 
-/* =======================================================
-
-      Add Light Spot To Portal
-      
-======================================================= */
 
 void map_portal_clear_lights(portal_type *portal)
 {
@@ -110,11 +99,6 @@ void map_portal_add_light(map_type *map,portal_type *portal,light_spot_type *lsp
 	portal->light.nspot++;
 }
 
-/* =======================================================
-
-      Check for Unchanged Lighting
-      
-======================================================= */
 
 bool map_portal_light_check_changes_single_spot(light_spot_type *lspot,light_spot_type *lspot2)
 {
@@ -184,11 +168,6 @@ void map_portal_light_check_changes_reset_all(map_type *map)
 	}
 }
 
-/* =======================================================
-
-      Will Light Be In Portal List
-      
-======================================================= */
 
 bool map_portal_light_in_view(map_type *map,int x,int y,int z,int intensity)
 {
@@ -207,11 +186,6 @@ bool map_portal_light_in_view(map_type *map,int x,int y,int z,int intensity)
 	return(FALSE);
 }
 
-/* =======================================================
-
-      Get Light At Point
-      
-======================================================= */
 
 void map_portal_get_light(portal_type *portal,double x,double y,double z,d3col *col)
 {
@@ -249,11 +223,6 @@ void map_portal_get_light(portal_type *portal,double x,double y,double z,d3col *
 	col->b=map_light_base.b+(float)b;
 }
 
-/* =======================================================
-
-      Find Closest Light Spot
-      
-======================================================= */
 
 light_spot_type* map_portal_find_closest_light(portal_type *portal,double x,double y,double z,int *p_dist)
 {
@@ -298,12 +267,6 @@ light_spot_type* map_portal_find_closest_light(portal_type *portal,double x,doub
 
 	return(&portal->light.spots[k]);
 }
-
-/* =======================================================
-
-      Calculate Light Colors and Normals for Portal
-      
-======================================================= */
 
 void map_portal_calculate_light_color(portal_type *portal,double x,double y,double z,float *cf)
 {
@@ -510,11 +473,6 @@ void map_portal_calculate_light_color_normal(portal_type *portal,double x,double
 	*nf=1.0f;
 }
 
-/* =======================================================
-
-      Create/Destroy Portal Light Spots
-      
-======================================================= */
 
 bool map_portal_create_light_spots(map_type *map)
 {
@@ -560,3 +518,4 @@ void map_portal_dispose_light_spots(map_type *map)
 	}
 }
 
+*/

@@ -37,8 +37,7 @@ and can be sold or given away.
 
 bool map_group_create_single_unit_list(map_type *map,int group_idx)
 {
-	int				n,k,unit_cnt,nmesh,nliq;
-	portal_type		*portal;
+	int				n,unit_cnt,nmesh,nliq;
 	map_mesh_type	*mesh;
 	map_liquid_type	*liq;
 	group_type		*group;
@@ -54,29 +53,21 @@ bool map_group_create_single_unit_list(map_type *map,int group_idx)
 		// count meshes and liquids
 
 	unit_cnt=0;
-	portal=map->portals;
 
-	for (n=0;n!=map->nportal;n++) {
-		
-			// meshes
+	nmesh=map->mesh.nmesh;
+	mesh=map->mesh.meshes;
 
-		nmesh=portal->mesh.nmesh;
-		mesh=portal->mesh.meshes;
+	for (n=0;n!=nmesh;n++) {
+		if (mesh->group_idx==group_idx) unit_cnt++;
+		mesh++;
+	}
 
-		for (k=0;k!=nmesh;k++) {
-			if (mesh->group_idx==group_idx) unit_cnt++;
-			mesh++;
-		}
+	nliq=map->liquid.nliquid;
+	liq=map->liquid.liquids;
 
-		nliq=portal->liquid.nliquid;
-		liq=portal->liquid.liquids;
-
-		for (k=0;k!=nliq;k++) {
-			if (liq->group_idx==group_idx) unit_cnt++;
-			liq++;
-		}
-
-		portal++;
+	for (n=0;n!=nliq;n++) {
+		if (liq->group_idx==group_idx) unit_cnt++;
+		liq++;
 	}
 			
 	if (unit_cnt==0) return(TRUE);
@@ -93,39 +84,28 @@ bool map_group_create_single_unit_list(map_type *map,int group_idx)
 
 		// fill in unit list
 	
-	portal=map->portals;
+	nmesh=map->mesh.nmesh;
+	mesh=map->mesh.meshes;
 
-	for (n=0;n!=map->nportal;n++) {
-		
-			// meshes
-
-		nmesh=portal->mesh.nmesh;
-		mesh=portal->mesh.meshes;
-
-		for (k=0;k!=nmesh;k++) {
-			if (mesh->group_idx==group_idx) {
-				unit_list->type=group_type_mesh;
-				unit_list->portal_idx=n;
-				unit_list->idx=k;
-				unit_list++;
-			}
-			mesh++;
+	for (n=0;n!=nmesh;n++) {
+		if (mesh->group_idx==group_idx) {
+			unit_list->type=group_type_mesh;
+			unit_list->idx=n;
+			unit_list++;
 		}
+		mesh++;
+	}
 
-		nliq=portal->liquid.nliquid;
-		liq=portal->liquid.liquids;
+	nliq=map->liquid.nliquid;
+	liq=map->liquid.liquids;
 
-		for (k=0;k!=nliq;k++) {
-			if (liq->group_idx==group_idx) {
-				unit_list->type=group_type_liquid;
-				unit_list->portal_idx=n;
-				unit_list->idx=k;
-				unit_list++;
-			}
-			liq++;
+	for (n=0;n!=nliq;n++) {
+		if (liq->group_idx==group_idx) {
+			unit_list->type=group_type_liquid;
+			unit_list->idx=n;
+			unit_list++;
 		}
-
-		portal++;
+		liq++;
 	}
 
 	return(TRUE);
@@ -195,14 +175,14 @@ void map_group_get_center(map_type *map,int group_idx,int *x,int *y,int *z)
 		switch (unit_list->type) {
 
 			case group_type_mesh:
-				pt=&map->portals[unit_list->portal_idx].mesh.meshes[unit_list->idx].box.mid;
+				pt=&map->mesh.meshes[unit_list->idx].box.mid;
 				mx+=pt->x;
 				my+=pt->y;
 				mz+=pt->z;
 				break;
 
 			case group_type_liquid:
-				liq=&map->portals[unit_list->portal_idx].liquid.liquids[unit_list->idx];
+				liq=&map->liquid.liquids[unit_list->idx];
 				mx+=(liq->lft+liq->rgt)>>1;
 				my+=liq->y;
 				mz+=(liq->top+liq->bot)>>1;

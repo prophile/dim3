@@ -67,7 +67,6 @@ void group_show(int group_idx,bool show)
 	int					n,unit_cnt;
 	group_type			*group;
 	group_unit_type		*unit_list;
-	portal_type			*portal;
 	map_mesh_type		*mesh;
 
 	group=&map.groups[group_idx];
@@ -82,9 +81,7 @@ void group_show(int group_idx,bool show)
 			continue;
 		}
 
-		portal=&map.portals[unit_list->portal_idx];
-		mesh=&portal->mesh.meshes[unit_list->idx];
-
+		mesh=&map.mesh.meshes[unit_list->idx];
 		mesh->flag.on=show;
 
 		unit_list++;
@@ -96,7 +93,6 @@ void group_solid(int group_idx,bool solid)
 	int					n,unit_cnt;
 	group_type			*group;
 	group_unit_type		*unit_list;
-	portal_type			*portal;
 	map_mesh_type		*mesh;
 
 	group=&map.groups[group_idx];
@@ -111,9 +107,7 @@ void group_solid(int group_idx,bool solid)
 			continue;
 		}
 
-		portal=&map.portals[unit_list->portal_idx];
-		mesh=&portal->mesh.meshes[unit_list->idx];
-
+		mesh=&map.mesh.meshes[unit_list->idx];
 		mesh->flag.pass_through=!solid;
 
 		unit_list++;
@@ -131,7 +125,6 @@ void group_texture(int group_idx,int index)
 	int					n,k,unit_cnt;
 	group_type			*group;
 	group_unit_type		*unit_list;
-	portal_type			*portal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 
@@ -147,8 +140,7 @@ void group_texture(int group_idx,int index)
 			continue;
 		}
 
-		portal=&map.portals[unit_list->portal_idx];
-		mesh=&portal->mesh.meshes[unit_list->idx];
+		mesh=&map.mesh.meshes[unit_list->idx];
 
 		poly=mesh->polys;
 
@@ -166,7 +158,6 @@ void group_texture_shift(int group_idx,float x_shift,float y_shift)
 	int					n,k,unit_cnt;
 	group_type			*group;
 	group_unit_type		*unit_list;
-	portal_type			*portal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 
@@ -182,8 +173,7 @@ void group_texture_shift(int group_idx,float x_shift,float y_shift)
 			continue;
 		}
 
-		portal=&map.portals[unit_list->portal_idx];
-		mesh=&portal->mesh.meshes[unit_list->idx];
+		mesh=&map.mesh.meshes[unit_list->idx];
 
 		poly=mesh->polys;
 
@@ -202,7 +192,6 @@ void group_texture_alpha(int group_idx,float alpha)
 	int					n,k,unit_cnt;
 	group_type			*group;
 	group_unit_type		*unit_list;
-	portal_type			*portal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 
@@ -218,8 +207,7 @@ void group_texture_alpha(int group_idx,float alpha)
 			continue;
 		}
 
-		portal=&map.portals[unit_list->portal_idx];
-		mesh=&portal->mesh.meshes[unit_list->idx];
+		mesh=&map.mesh.meshes[unit_list->idx];
 
 		poly=mesh->polys;
 

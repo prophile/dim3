@@ -80,7 +80,7 @@ bool group_move_start(int group_idx,int movement_idx,d3pnt *mov,d3ang *rot,int c
 	
 	for (n=0;n!=unit_cnt;n++) {
 		if (unit_list->type==group_type_mesh) {
-			if (!map.portals[unit_list->portal_idx].mesh.meshes[unit_list->idx].flag.moveable) {
+			if (!map.mesh.meshes[unit_list->idx].flag.moveable) {
 				sprintf(err_str,"Attemping to move a mesh in group '%s' which does not have the moveable flag set",group->name);
 				console_add_error(err_str);
 				return(FALSE);
@@ -164,7 +164,6 @@ void group_move(int group_idx,int xmove,int ymove,int zmove)
 	bool				move_objs;
 	group_type			*group;
 	group_unit_type		*unit_list;
-	portal_type			*portal;
 	map_mesh_type		*mesh;
 	map_liquid_type		*liq;
 
@@ -181,36 +180,30 @@ void group_move(int group_idx,int xmove,int ymove,int zmove)
 	
 	for (n=0;n!=unit_cnt;n++) {
 
-		portal=&map.portals[unit_list->portal_idx];
-
 		switch (unit_list->type) {
 
 			case group_type_mesh:
 
 					// is mesh moveable?
 
-				mesh=&portal->mesh.meshes[unit_list->idx];
+				mesh=&map.mesh.meshes[unit_list->idx];
 				if (!mesh->flag.moveable) break;
 
 					// move mesh and mark as
 					// touched so it can be saved with games
 
-				map_portal_mesh_move(&map,unit_list->portal_idx,unit_list->idx,TRUE,xmove,ymove,zmove);
+				map_portal_mesh_move(&map,unit_list->idx,xmove,ymove,zmove);
 				mesh->flag.touched=TRUE;
 
 					// move objects and decals with mesh
 
-				if (move_objs) object_move_with_mesh(unit_list->portal_idx,unit_list->idx,xmove,zmove);
-				decal_move_with_mesh(unit_list->portal_idx,unit_list->idx,xmove,ymove,zmove);
-
-					// force a lighting recalc if mesh moved in a portal
-
-				map_portal_light_check_changes_reset(portal);
+				if (move_objs) object_move_with_mesh(unit_list->idx,xmove,zmove);
+				decal_move_with_mesh(unit_list->idx,xmove,ymove,zmove);
 				break;
 
 			case group_type_liquid:
 
-				liq=&portal->liquid.liquids[unit_list->idx];
+				liq=&map.liquid.liquids[unit_list->idx];
 
 				liq->lft+=xmove;
 				liq->rgt+=xmove;
@@ -238,7 +231,6 @@ void group_rotate(int group_idx,float x,float y,float z)
 	bool				move_objs;
 	group_type			*group;
 	group_unit_type		*unit_list;
-	portal_type			*portal;
 	map_mesh_type		*mesh;
 
 		// can this group move objects?
@@ -254,29 +246,23 @@ void group_rotate(int group_idx,float x,float y,float z)
 	
 	for (n=0;n!=unit_cnt;n++) {
 
-		portal=&map.portals[unit_list->portal_idx];
-
 		if (unit_list->type==group_type_mesh) {
 
 				// is mesh moveable?
 
-			mesh=&portal->mesh.meshes[unit_list->idx];
+			mesh=&map.mesh.meshes[unit_list->idx];
 			if (!mesh->flag.moveable) break;
 
 				// move mesh and mark as
 				// touched so it can be saved with games
 
-			map_portal_mesh_rotate(&map,unit_list->portal_idx,unit_list->idx,TRUE,x,y,z);
+			map_portal_mesh_rotate(&map,unit_list->idx,x,y,z);
 			mesh->flag.touched=TRUE;
 
 				// rotate objects and decals with mesh
 			
-			if (move_objs) object_rotate_with_mesh(unit_list->portal_idx,unit_list->idx,y);
-			decal_rotate_with_mesh(unit_list->portal_idx,unit_list->idx,y);
-
-				// force a lighting recalc if mesh moved in a portal
-
-			map_portal_light_check_changes_reset(portal);
+			if (move_objs) object_rotate_with_mesh(unit_list->idx,y);
+			decal_rotate_with_mesh(unit_list->idx,y);
 		}
 		
 		unit_list++;

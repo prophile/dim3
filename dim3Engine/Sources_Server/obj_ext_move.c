@@ -143,7 +143,8 @@ void object_move_with_wall_segment(int seg_idx,int xmove,int zmove)
 	*/
 }
 
-void object_move_with_mesh(int portal_idx,int mesh_idx,int xmove,int zmove)
+// supergumba -- these will all need to be fixed
+void object_move_with_mesh(int mesh_idx,int xmove,int zmove)
 {
 	int			n;
 	obj_type	*obj;
@@ -151,14 +152,14 @@ void object_move_with_mesh(int portal_idx,int mesh_idx,int xmove,int zmove)
 	obj=server.objs;
 	
 	for (n=0;n!=server.count.obj;n++) {
-		if ((!obj->remote.on) && (obj->contact.stand_poly.portal_idx==portal_idx) && (obj->contact.stand_poly.mesh_idx==mesh_idx)) {
+		if ((!obj->remote.on) && (obj->contact.stand_poly.mesh_idx==mesh_idx)) {
 			object_move_with_move(obj,xmove,zmove);
 		}
 		obj++;
 	}
 }
 
-void object_rotate_with_mesh(int portal_idx,int mesh_idx,float y)
+void object_rotate_with_mesh(int mesh_idx,float y)
 {
 	int				n;
 	d3pnt			mpt;
@@ -167,9 +168,9 @@ void object_rotate_with_mesh(int portal_idx,int mesh_idx,float y)
 
 		// get center point for mesh
 
-	mesh=&map.portals[portal_idx].mesh.meshes[mesh_idx];
+	mesh=&map.mesh.meshes[mesh_idx];
 
-	map_portal_mesh_calculate_center(&map,portal_idx,mesh_idx,&mpt);
+	map_portal_mesh_calculate_center(&map,mesh_idx,&mpt);
 	mpt.x+=mesh->rot_off.x;
 	mpt.y+=mesh->rot_off.y;
 	mpt.z+=mesh->rot_off.z;
@@ -179,7 +180,7 @@ void object_rotate_with_mesh(int portal_idx,int mesh_idx,float y)
 	obj=server.objs;
 	
 	for (n=0;n!=server.count.obj;n++) {
-		if ((obj->contact.stand_poly.portal_idx==portal_idx) && (obj->contact.stand_poly.mesh_idx==mesh_idx)) object_turn_with_turn(obj,&mpt,y);
+		if (obj->contact.stand_poly.mesh_idx==mesh_idx) object_turn_with_turn(obj,&mpt,y);
 		obj++;
 	}
 }

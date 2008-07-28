@@ -167,7 +167,7 @@ void render_transparent_portal_mesh(int mesh_cnt,int *mesh_list,bool is_simple_l
 			}
 			else {
 				ntrig=poly->light.trig_count;
-				glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_idx);
+				glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_draw_idx);
 			}
 
 				// end specular drawing and force a transparencies reset

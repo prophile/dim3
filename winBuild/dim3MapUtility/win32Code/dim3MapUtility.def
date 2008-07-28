@@ -26,22 +26,6 @@ EXPORTS
 
 	map_portal_create_vertex_lists					@160
 	map_portal_dispose_vertex_lists					@161
-	map_portal_rebuild_vertex_lists					@162
-
-	map_set_light_base								@180
-	map_portal_clear_lights							@181
-	map_portal_add_light							@182
-	map_portal_light_check_changes					@183
-	map_portal_light_check_changes_reset			@184
-	map_portal_light_check_changes_reset_all		@185
-	map_portal_light_in_view						@186
-	map_portal_get_light							@187
-	map_portal_find_closest_light					@188
-	map_portal_calculate_light_color				@189
-	map_portal_calculate_light_normal				@190
-	map_portal_calculate_light_color_normal			@191
-	map_portal_create_light_spots					@192
-	map_portal_dispose_light_spots					@193
 
 	map_count_spot									@200
 	map_find_spot									@201
@@ -63,8 +47,6 @@ EXPORTS
 	map_portal_mesh_add_poly						@226
 	map_portal_mesh_delete_poly						@227
 	map_portal_mesh_delete_unused_vertexes			@228
-	map_portal_mesh_create_transparent_sort_lists	@229
-	map_portal_mesh_dispose_transparent_sort_lists	@230
 	map_portal_mesh_calculate_extent				@231
 	map_portal_mesh_calculate_center				@232
 	map_portal_mesh_calculate_uv_center				@233

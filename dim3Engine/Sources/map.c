@@ -233,21 +233,10 @@ bool map_start(bool skip_media,char *err_str)
 		// create group lists
 	
 	progress_draw(20);
-	if (!map_group_create_unit_list(&map)) {
-		progress_shutdown();
-		strcpy(err_str,"Out of memory");
-		return(FALSE);
-	}
 
 		// segment, vertex, and light lists for portals
 
 	progress_draw(25);
-
-	if (!map_portal_mesh_create_transparent_sort_lists(&map)) {
-		progress_shutdown();
-		strcpy(err_str,"Out of memory");
-		return(FALSE);
-	}
 
 	progress_draw(30);
 	
@@ -258,14 +247,14 @@ bool map_start(bool skip_media,char *err_str)
 		strcpy(err_str,"Out of memory");
 		return(FALSE);
 	}
-
-	progress_draw(40);
-
-	if (!map_portal_create_light_spots(&map)) {
+	if (!map_group_create_unit_list(&map)) {
 		progress_shutdown();
 		strcpy(err_str,"Out of memory");
 		return(FALSE);
 	}
+	// supergumba -- all this is mixed up
+
+	progress_draw(40);
 
 	if (!liquid_create_memory()) {
 		progress_shutdown();
@@ -456,10 +445,8 @@ void map_end(void)
 		
 	progress_draw(65);
 
-	map_portal_dispose_light_spots(&map);
 	map_portal_dispose_vertex_lists(&map);
 	liquid_free_memory();
-	map_portal_mesh_dispose_transparent_sort_lists(&map);
 	map_group_dispose_unit_list(&map);
 	
 		// close map

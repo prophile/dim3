@@ -59,7 +59,6 @@ double					light_flicker_value[64]={
 												};
 
 extern int game_time_get(void);
-extern void light_trace_set_base_color(d3col *col);
 
 /* =======================================================
 
@@ -67,42 +66,9 @@ extern void light_trace_set_base_color(d3col *col);
       
 ======================================================= */
 
-void light_get_base_color(d3col *col)
-{
-	if (!hilite_on) {							// F2 hilite debugging
-		col->r=map.ambient.light_color.r+setup.gamma;
-		col->g=map.ambient.light_color.g+setup.gamma;
-		col->b=map.ambient.light_color.b+setup.gamma;
-	}
-	else {
-		col->r=col->g=col->b=1;
-	}
-}
-
 void light_clear(void)
 {
-	int					i;
-	d3col				light_base;
-	portal_type			*portal;
-	
-		// no lights in map
-		
 	nlight=0;
-	
-		// clear portal light lists
-		
-	portal=map.portals;
-	
-	for ((i=0);(i!=map.nportal);i++) {
-		map_portal_clear_lights(portal);
-		portal++;
-	}
-
-		// base light
-		
-	light_get_base_color(&light_base);
-	map_set_light_base(&light_base);
-	light_trace_set_base_color(&light_base);
 }
 
 /* =======================================================
@@ -158,8 +124,6 @@ double light_get_intensity(int light_type,int intensity)
 
 void light_add(d3pos *pos,int light_type,int intensity,bool confine_to_portal,d3col *col)
 {
-	int						i;
-	portal_type				*portal;
 	light_spot_type			*lspot;
 	
 	if (nlight==max_light_spot) return;
@@ -198,24 +162,6 @@ void light_add(d3pos *pos,int light_type,int intensity,bool confine_to_portal,d3
 	lspot->d_col_r=(double)lspot->col.r;
 	lspot->d_col_g=(double)lspot->col.g;
 	lspot->d_col_b=(double)lspot->col.b;
-	
-		// confined light
-		
-	if (confine_to_portal) {
-		portal=&map.portals[pos->rn];
-		if (portal->in_path) map_portal_add_light(&map,portal,lspot);
-	}
-	
-		// light against all hit portals
-		
-	else {
-		portal=map.portals;
-		
-		for (i=0;i!=map.nportal;i++) {
-			if (portal->in_path) map_portal_add_light(&map,portal,lspot);
-			portal++;
-		}
-	}
 	
 		// count the lights
 		

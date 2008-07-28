@@ -197,18 +197,15 @@ int map_portal_mesh_switch_portal(map_type *map,int portal_idx,int mesh_idx,int 
       
 ======================================================= */
 
-void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool do_portal_vertex_list,int x,int y,int z)
+void map_portal_mesh_move(map_type *map,int mesh_idx,int x,int y,int z)
 {
-	int						n,k,idx,nvertex,npoly,nlight;
-	unsigned char			*phit;
-	d3pnt					*pt;
-	portal_type				*portal;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-	portal_vertex_list_type	*pv;
+	int									n,k,nvertex,npoly;
+	d3pnt								*pt;
+	map_mesh_type						*mesh;
+	map_mesh_poly_type					*poly;
+	map_mesh_poly_tessel_vertex_type	*pl;
 
-	portal=&map->portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 
 		// move meshes vertexes
 
@@ -221,13 +218,15 @@ void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool do_port
 		pt->z+=z;
 		pt++;
 	}
-	
+
 		// move all poly boxes
+		// and lighting vertexes
 		
 	npoly=mesh->npoly;
 	poly=mesh->polys;
 	
 	for (n=0;n!=npoly;n++) {
+
 		poly->box.min.x+=x;
 		poly->box.min.y+=y;
 		poly->box.min.z+=z;
@@ -239,6 +238,15 @@ void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool do_port
 		poly->box.mid.x+=x;
 		poly->box.mid.y+=y;
 		poly->box.mid.z+=z;
+
+		pl=poly->light.vertexes;
+
+		for (k=0;k!=poly->light.nvertex;k++) {
+			pl->x+=x;
+			pl->y+=y;
+			pl->z+=z;
+			pl++;
+		}
 	
 		poly++;
 	}
@@ -256,57 +264,6 @@ void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool do_port
 	mesh->box.mid.x+=x;
 	mesh->box.mid.y+=y;
 	mesh->box.mid.z+=z;
-
-		// move vertexes in portal compiled
-		// vertex list
-
-	if (!do_portal_vertex_list) return;
-
-		// clear the hit list so we don't
-		// move combined vertexes twice
-
-	phit=portal->vertexes.phit;
-	bzero(phit,portal->vertexes.nvlist);
-
-		// move portal vertexes
-
-	npoly=mesh->npoly;
-	poly=mesh->polys;
-
-	for (n=0;n!=npoly;n++) {
-
-			// vertexes
-
-		for (k=0;k!=poly->ptsz;k++) {
-			idx=poly->draw.portal_v[k];
-
-			if (phit[idx]==0x0) {
-				phit[idx]=0x1;
-				pv=&portal->vertexes.vertex_list[idx];
-				pv->x+=x;
-				pv->y+=y;
-				pv->z+=z;
-			}
-		}
-
-			// lighting vertexes
-/* supergumba -- fix this
-		nlight=poly->light.trig_count*3;
-
-		for (k=0;k!=nlight;k++) {
-			idx=poly->light.trig_vertex_idx[k];
-
-			if (phit[idx]==0x0) {
-				phit[idx]=0x1;
-				pv=&portal->vertexes.vertex_list[idx];
-				pv->x+=x;
-				pv->y+=y;
-				pv->z+=z;
-			}
-		}
-*/
-		poly++;
-	}
 }
 
 /* =======================================================
@@ -315,17 +272,16 @@ void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool do_port
       
 ======================================================= */
 
-void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min,d3pnt *max)
+void map_portal_mesh_resize(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max)
 {
 	int						n,nvertex;
 	d3pnt					*pt,org_min,org_max,dif,org_dif;
 	d3vct					fct;
-	portal_type				*portal;
 	map_mesh_type			*mesh;
 
 		// get original size and uv center
 		
-	map_portal_mesh_calculate_extent(map,portal_idx,mesh_idx,&org_min,&org_max);
+	map_portal_mesh_calculate_extent(map,mesh_idx,&org_min,&org_max);
 
 		// get resize factor
 		
@@ -345,8 +301,7 @@ void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min
 	
 		// resize vertexes
 
-	portal=&map->portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 
 		// resize vertexes
 
@@ -369,22 +324,20 @@ void map_portal_mesh_resize(map_type *map,int portal_idx,int mesh_idx,d3pnt *min
       
 ======================================================= */
 
-void map_portal_mesh_flip(map_type *map,int portal_idx,int mesh_idx,bool flip_x,bool flip_y,bool flip_z)
+void map_portal_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_z)
 {
 	int						n,nvertex;
 	d3pnt					mpt;
 	d3pnt					*pt;
-	portal_type				*portal;
 	map_mesh_type			*mesh;
 
 		// get center
 
-	map_portal_mesh_calculate_center(map,portal_idx,mesh_idx,&mpt);
+	map_portal_mesh_calculate_center(map,mesh_idx,&mpt);
 
 		// flip vertexes
 
-	portal=&map->portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 
 	nvertex=mesh->nvertex;
 	pt=mesh->vertexes;
@@ -403,25 +356,22 @@ void map_portal_mesh_flip(map_type *map,int portal_idx,int mesh_idx,bool flip_x,
       
 ======================================================= */
 
-void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,bool do_portal_vertex_list,float rot_x,float rot_y,float rot_z)
+void map_portal_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float rot_z)
 {
-	int						n,k,idx,nvertex,npoly,nlight;
-	float					fx,fy,fz;
-	unsigned char			*phit;
-	d3vct					f_mpt;
-	d3pnt					*pt,mpt;
-	matrix_type				mat;
-	portal_type				*portal;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-	portal_vertex_list_type	*pv;
+	int									n,k,nvertex,npoly;
+	float								fx,fy,fz;
+	d3vct								f_mpt;
+	d3pnt								*pt,mpt;
+	matrix_type							mat;
+	map_mesh_type						*mesh;
+	map_mesh_poly_type					*poly;
+	map_mesh_poly_tessel_vertex_type	*pl;
 
-	portal=&map->portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 
 		// get center
 
-	map_portal_mesh_calculate_center(map,portal_idx,mesh_idx,&mpt);
+	map_portal_mesh_calculate_center(map,mesh_idx,&mpt);
 	f_mpt.x=(float)(mpt.x+mesh->rot_off.x);
 	f_mpt.y=(float)(mpt.y+mesh->rot_off.y);
 	f_mpt.z=(float)(mpt.z+mesh->rot_off.z);
@@ -448,71 +398,34 @@ void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,bool do_po
 
 		pt++;
 	}
-	
-		// rotate vertexes in portal compiled
-		// vertex list
 
-	if (!do_portal_vertex_list) return;
-
-		// clear the hit list so we don't
-		// rotate combined vertexes twice
-
-	phit=portal->vertexes.phit;
-	bzero(phit,portal->vertexes.nvlist);
-
-		// rotate portal vertexes
+		// rotate tesseled lighting
 
 	npoly=mesh->npoly;
 	poly=mesh->polys;
-
+	
 	for (n=0;n!=npoly;n++) {
 
-			// vertexes
+		pl=poly->light.vertexes;
 
-		for (k=0;k!=poly->ptsz;k++) {
-			idx=poly->draw.portal_v[k];
+		for (k=0;k!=poly->light.nvertex;k++) {
 
-			if (phit[idx]==0x0) {
-				phit[idx]=0x1;
-				pv=&portal->vertexes.vertex_list[idx];
-				
-				fx=((float)pv->x)-f_mpt.x;
-				fy=((float)pv->y)-f_mpt.y;
-				fz=((float)pv->z)-f_mpt.z;
+			fx=((float)pl->x)-f_mpt.x;
+			fy=((float)pl->y)-f_mpt.y;
+			fz=((float)pl->z)-f_mpt.z;
 
-				matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+			matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
-				pv->x=fx+f_mpt.x;
-				pv->y=fy+f_mpt.y;
-				pv->z=fz+f_mpt.z;
-			}
+			pl->x=(int)(fx+f_mpt.x);
+			pl->y=(int)(fy+f_mpt.y);
+			pl->z=(int)(fz+f_mpt.z);
+
+			pl++;
 		}
-
-			// lighting vertexes
-/* supergumba -- fix all this
-		nlight=poly->light.trig_count*3;
-
-		for (k=0;k!=nlight;k++) {
-			idx=poly->light.trig_vertex_idx[k];
-
-			if (phit[idx]==0x0) {
-				phit[idx]=0x1;
-				pv=&portal->vertexes.vertex_list[idx];
-				
-				fx=pv->x-f_mpt.x;
-				fy=pv->y-f_mpt.y;
-				fz=pv->z-f_mpt.z;
-
-				matrix_vertex_multiply(&mat,&fx,&fy,&fz);
-
-				pv->x=fx+f_mpt.x;
-				pv->y=fy+f_mpt.y;
-				pv->z=fz+f_mpt.z;
-			}
-		}
-*/
+	
 		poly++;
 	}
+
 }
 
 /* =======================================================
@@ -718,6 +631,7 @@ inline float map_portal_mesh_shift_texture_single_coord(float f_tick,float shift
 
 void map_portal_mesh_shift_portal_vertex_list(map_type *map,int portal_idx,int tick)
 {
+	/* supergumba -- redo all this
 	int						n,k,t,nmesh,npoly,ptsz,idx;
 	float					f_tick,gx,gy,fx,fy;
 	unsigned char			*phit;
@@ -791,6 +705,7 @@ void map_portal_mesh_shift_portal_vertex_list(map_type *map,int portal_idx,int t
 
 		mesh++;
 	}
+	*/
 }
 
 /* =======================================================
