@@ -290,7 +290,7 @@ void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool do_port
 		}
 
 			// lighting vertexes
-
+/* supergumba -- fix this
 		nlight=poly->light.trig_count*3;
 
 		for (k=0;k!=nlight;k++) {
@@ -304,7 +304,7 @@ void map_portal_mesh_move(map_type *map,int portal_idx,int mesh_idx,bool do_port
 				pv->z+=z;
 			}
 		}
-
+*/
 		poly++;
 	}
 }
@@ -489,7 +489,7 @@ void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,bool do_po
 		}
 
 			// lighting vertexes
-
+/* supergumba -- fix all this
 		nlight=poly->light.trig_count*3;
 
 		for (k=0;k!=nlight;k++) {
@@ -510,7 +510,7 @@ void map_portal_mesh_rotate(map_type *map,int portal_idx,int mesh_idx,bool do_po
 				pv->z=fz+f_mpt.z;
 			}
 		}
-
+*/
 		poly++;
 	}
 }

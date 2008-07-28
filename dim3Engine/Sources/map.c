@@ -250,12 +250,6 @@ bool map_start(bool skip_media,char *err_str)
 	}
 
 	progress_draw(30);
-
-	if (!liquid_create_memory()) {
-		progress_shutdown();
-		strcpy(err_str,"Out of memory");
-		return(FALSE);
-	}
 	
 	progress_draw(35);
 
@@ -268,6 +262,12 @@ bool map_start(bool skip_media,char *err_str)
 	progress_draw(40);
 
 	if (!map_portal_create_light_spots(&map)) {
+		progress_shutdown();
+		strcpy(err_str,"Out of memory");
+		return(FALSE);
+	}
+
+	if (!liquid_create_memory()) {
 		progress_shutdown();
 		strcpy(err_str,"Out of memory");
 		return(FALSE);

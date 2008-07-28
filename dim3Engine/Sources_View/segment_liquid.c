@@ -38,6 +38,7 @@ extern view_type			view;
 extern setup_type			setup;
 
 extern void light_trace_calculate_light_color(portal_type *portal,float x,float y,float z,float *cf);
+extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf);	// supergumba -- this will be moved to map utility
 
 /* =======================================================
 
@@ -47,47 +48,39 @@ extern void light_trace_calculate_light_color(portal_type *portal,float x,float 
 
 bool liquid_create_memory(void)
 {
-	int				n,k,x_sz,z_sz,v_sz;
-	portal_type		*portal;
+	int				n,x_sz,z_sz,v_sz;
 	map_liquid_type	*liq;
 
-	portal=map.portals;
+	liq=map.liquid.liquids;
 
-	for (n=0;n!=map.nportal;n++) {
+	for (n=0;n!=map.liquid.nliquid;n++) {
 
-		liq=portal->liquid.liquids;
+		x_sz=((liq->rgt-liq->lft)/liq->tide.split)+4;		// possible extra edges on side because of griding
+		z_sz=((liq->bot-liq->top)/liq->tide.split)+4;
 
-		for (k=0;k!=portal->liquid.nliquid;k++) {
+		v_sz=x_sz*z_sz;
 
-			x_sz=((liq->rgt-liq->lft)/liq->tide.split)+4;		// possible extra edges on side because of griding
-			z_sz=((liq->bot-liq->top)/liq->tide.split)+4;
+			// vertex list
 
-			v_sz=x_sz*z_sz;
+		liq->draw.vl_list=(float*)valloc((v_sz*3)*sizeof(float));
+		if (liq->draw.vl_list==NULL) return(FALSE);
 
-				// vertex list
+			// uv list
 
-			liq->draw.vl_list=(float*)valloc((v_sz*3)*sizeof(float));
-			if (liq->draw.vl_list==NULL) return(FALSE);
+		liq->draw.uv_list=(float*)valloc((v_sz*2)*sizeof(float));
+		if (liq->draw.uv_list==NULL) return(FALSE);
+		
+			// color list
 
-				// uv list
+		liq->draw.cl_list=(float*)valloc((v_sz*3)*sizeof(float));
+		if (liq->draw.cl_list==NULL) return(FALSE);
 
-			liq->draw.uv_list=(float*)valloc((v_sz*2)*sizeof(float));
-			if (liq->draw.uv_list==NULL) return(FALSE);
-			
-				// color list
+			// element index list
 
-			liq->draw.cl_list=(float*)valloc((v_sz*3)*sizeof(float));
-			if (liq->draw.cl_list==NULL) return(FALSE);
+		liq->draw.idx_list=(int*)valloc((v_sz*4)*sizeof(int));
+		if (liq->draw.idx_list==NULL) return(FALSE);
 
-				// element index list
-
-			liq->draw.idx_list=(int*)valloc((v_sz*4)*sizeof(int));
-			if (liq->draw.idx_list==NULL) return(FALSE);
-
-			liq++;
-		}
-
-		portal++;
+		liq++;
 	}
 
 	return(TRUE);
@@ -95,25 +88,17 @@ bool liquid_create_memory(void)
 
 void liquid_free_memory(void)
 {
-	int				n,k;
-	portal_type		*portal;
+	int				n;
 	map_liquid_type	*liq;
 
-	portal=map.portals;
+	liq=map.liquid.liquids;
 
-	for (n=0;n!=map.nportal;n++) {
-
-		liq=portal->liquid.liquids;
-
-		for (k=0;k!=portal->liquid.nliquid;k++) {
-			free(liq->draw.vl_list);
-			free(liq->draw.uv_list);
-			free(liq->draw.cl_list);
-			free(liq->draw.idx_list);
-			liq++;
-		}
-
-		portal++;
+	for (n=0;n!=map.liquid.nliquid;n++) {
+		free(liq->draw.vl_list);
+		free(liq->draw.uv_list);
+		free(liq->draw.cl_list);
+		free(liq->draw.idx_list);
+		liq++;
 	}
 }
 
@@ -123,11 +108,11 @@ void liquid_free_memory(void)
       
 ======================================================= */
 
-void liquid_render_portal_liquid_create_vertex(portal_type *portal,map_liquid_type *liq)
+void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 {
 	int						x,y,z,x_add,z_add,x_sz,z_sz,
 							v_cnt,tide_split;
-	float					fy,fgx,fgy;
+	float					fy,fgx,fgy,normal[3];
 	bool					x_break,z_break;
 	float					*vl,*uv,*cl;
 	
@@ -162,11 +147,12 @@ void liquid_render_portal_liquid_create_vertex(portal_type *portal,map_liquid_ty
 		x_sz=0;
 		
 		while (TRUE) {
+
 			if (setup.ray_trace_lighting) {
-				light_trace_calculate_light_color(portal,(float)x,(float)y,(float)z,cl);
+		//		light_trace_calculate_light_color(portal,(float)x,(float)y,(float)z,cl);		// supergumba -- need to fix ray traced lighting
 			}
 			else {
-				map_portal_calculate_light_color(portal,(double)x,(double)y,(double)z,cl);
+				map_calculate_light_color_normal((double)x,(double)y,(double)z,cl,normal);
 			}
 			cl+=3;
 
@@ -213,7 +199,7 @@ void liquid_render_portal_liquid_create_vertex(portal_type *portal,map_liquid_ty
 	liq->draw.z_sz=z_sz;
 }
 
-void liquid_render_portal_liquid_alter_tide(int tick,map_liquid_type *liq)
+void liquid_render_liquid_alter_tide(int tick,map_liquid_type *liq)
 {
 	int						x,z,k,x_sz,z_sz,
 							tide_split_half,tide_high,tide_rate;
@@ -272,7 +258,7 @@ void liquid_render_portal_liquid_alter_tide(int tick,map_liquid_type *liq)
 	}
 }
 
-int liquid_render_portal_liquid_create_quads(map_liquid_type *liq)
+int liquid_render_liquid_create_quads(map_liquid_type *liq)
 {
 	int						x,z,x_sz,z_sz,quad_cnt,
 							tz,bz,tz_add,top_row,bot_row,
@@ -329,7 +315,7 @@ int liquid_render_portal_liquid_create_quads(map_liquid_type *liq)
 	return(quad_cnt);
 }
 
-void liquid_render_portal_liquid_start_array(map_liquid_type *liq)
+void liquid_render_liquid_start_array(map_liquid_type *liq)
 {
 	int				v_sz;
 
@@ -355,7 +341,7 @@ void liquid_render_portal_liquid_start_array(map_liquid_type *liq)
 	glColorPointer(3,GL_FLOAT,0,liq->draw.cl_list);
 }
 
-void liquid_render_portal_liquid_end_array(void)
+void liquid_render_liquid_end_array(void)
 {
 	glDisableClientState(GL_COLOR_ARRAY);
 
@@ -371,27 +357,25 @@ void liquid_render_portal_liquid_end_array(void)
 
 /* =======================================================
 
-      Liquid Rendering Portal
+      Liquid Rendering
       
 ======================================================= */
 
-/* supergumba -- redo
-
-void liquid_render_portal_liquid(int tick,portal_type *portal,map_liquid_type *liq)
+void liquid_render_liquid(int tick,map_liquid_type *liq)
 {
 	int						quad_cnt,frame;
-	float					normal[3];
+	float					col[3],normal[3];
 	d3pnt					mid;
 	texture_type			*texture;
 
 		// setup liquid for drawing
 
-	liquid_render_portal_liquid_create_vertex(portal,liq);
-	liquid_render_portal_liquid_alter_tide(tick,liq);
-	quad_cnt=liquid_render_portal_liquid_create_quads(liq);
+	liquid_render_liquid_create_vertex(liq);
+	liquid_render_liquid_alter_tide(tick,liq);
+	quad_cnt=liquid_render_liquid_create_quads(liq);
 	if (quad_cnt==0) return;
 	
-	liquid_render_portal_liquid_start_array(liq);
+	liquid_render_liquid_start_array(liq);
 
 		// setup texture
 
@@ -420,7 +404,7 @@ void liquid_render_portal_liquid(int tick,portal_type *portal,map_liquid_type *l
 
 		gl_shader_set_variables(texture->shader.program_obj,&mid,texture);
 
-		map_portal_calculate_light_normal(portal,(double)mid.x,(double)mid.y,(double)mid.z,normal);
+		map_calculate_light_color_normal((double)mid.x,(double)mid.y,(double)mid.z,col,normal);
 		glNormal3f(normal[0],normal[1],normal[2]);
 	}
 	else {
@@ -442,22 +426,27 @@ void liquid_render_portal_liquid(int tick,portal_type *portal,map_liquid_type *l
 		gl_texture_transparent_end();
 	}
 
-	liquid_render_portal_liquid_end_array();
+	liquid_render_liquid_end_array();
 }
 
-void liquid_render_portal(int tick,int rn)
+/* =======================================================
+
+      Liquid Rendering
+      
+======================================================= */
+
+void liquid_render(int tick)
 {
-	int							n,nliquid;
-	portal_type					*portal;
-	map_liquid_type				*liq;
+	int					n;
+	map_liquid_type		*liq;
+
+		// setup view
+
+	gl_setup_viewport(console_y_offset());
+	gl_3D_view(&view.camera);
+	gl_3D_rotate(&view.camera.ang);
+	gl_setup_project();
 	
-	portal=&map.portals[rn];
-
-		// if no liquids then skip
-
-	nliquid=portal->liquid.nliquid;
-	if (nliquid==0) return;
-
 		// setup drawing
 
 	glEnable(GL_BLEND);
@@ -469,44 +458,16 @@ void liquid_render_portal(int tick,int rn)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
+	
+		// draw liquids
+		
+		// supergumba -- need to sort, obscure, etc
+		
+	liq=map.liquid.liquids;
 
-		// run through liquids
-
-	liq=portal->liquid.liquids;
-
-	for (n=0;n!=nliquid;n++) {
-		liquid_render_portal_liquid(tick,portal,liq);
+	for (n=0;n!=map.liquid.nliquid;n++) {
+		liquid_render_liquid(tick,liq);
 		liq++;
 	}
-}
-*/
-
-/* =======================================================
-
-      Liquid Rendering
-      
-======================================================= */
-
-void liquid_render(int tick,int mesh_draw_count,int *mesh_draw_list)
-{
-/* supergumba -- redo
-
-	int					i;
-
-		// setup view
-
-	gl_setup_viewport(console_y_offset());
-	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.ang);
-	gl_setup_project();
-	
-		// run through portals
-		// we want to go from furthest away to closest
-		// for the transparency sorting
-		
-	for (i=0;i<portal_cnt;i++) {
-		liquid_render_portal(tick,portal_list[i]);
-	}
-	*/
 }
 

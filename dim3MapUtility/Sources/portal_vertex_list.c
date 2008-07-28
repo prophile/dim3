@@ -183,6 +183,8 @@ void map_portal_vertex_list_find_uv(int ptsz,int *x,int *y,float *gx,float *gy,i
       
 ======================================================= */
 
+
+/*
 int map_portal_add_light_xy_tessel_vertex_list(portal_vertex_list_type *vl,int vl_cnt,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int							n,x,y,z,ptsz,px[8],py[8],pz[8],
@@ -634,6 +636,7 @@ int map_portal_add_light_single_vertex_list(portal_vertex_list_type *vl,int vl_c
 
 	return(map_portal_add_light_xz_tessel_vertex_list(vl,vl_cnt,mesh,poly));
 }
+*/
 
 /* =======================================================
 
@@ -664,7 +667,7 @@ bool map_portal_build_single_vertex_list(map_type *map,int rn)
 		
 		for (k=0;k!=mesh->npoly;k++) {
 			vl_cnt=map_portal_add_mesh_poly_single_vertex_list(vl,vl_cnt,mesh,poly);
-			vl_cnt=map_portal_add_light_single_vertex_list(vl,vl_cnt,mesh,poly);
+//			vl_cnt=map_portal_add_light_single_vertex_list(vl,vl_cnt,mesh,poly);
 			poly++;
 		}
 	
@@ -802,7 +805,30 @@ void map_portal_dispose_single_vertex_list(map_type *map,int rn)
 
 
 
+// supergumba -- new tesseled lighting lists
 
+
+
+
+
+
+
+
+bool map_create_poly_tesseled_vertexes(map_mesh_poly_type *poly)
+{
+	poly->light.draw_vertex_idx=valloc(sizeof(int)*light_tessel_max_vertex);			// supergumba -- need to error check here
+	poly->light.vertexes=valloc(sizeof(d3pnt)*light_tessel_max_vertex);
+
+	return(TRUE);
+}
+		
+void map_dispose_poly_tesseled_vertexes(map_mesh_poly_type *poly)
+{
+	free(poly->light.draw_vertex_idx);
+	free(poly->light.vertexes);
+
+
+}
 
 
 
@@ -839,7 +865,7 @@ bool map_build_vertex_list(map_type *map)
 			
 			for (k=0;k!=mesh->npoly;k++) {
 				vl_cnt=map_portal_add_mesh_poly_single_vertex_list(vl,vl_cnt,mesh,poly);
-				vl_cnt=map_portal_add_light_single_vertex_list(vl,vl_cnt,mesh,poly);
+	//			vl_cnt=map_portal_add_light_single_vertex_list(vl,vl_cnt,mesh,poly);
 				poly++;
 			}
 			
@@ -918,8 +944,6 @@ bool map_create_vertex_list(map_type *map)
 		map->vertexes.vertex_list=nvl;
 	}
 	
-	fprintf(stdout,"map vertex list = %d\n",map->vertexes.nvlist);
-	
 		// compiled vertex, coord and color lists
 	
 	sz=map->vertexes.nvlist*(sizeof(float)*3);
@@ -951,11 +975,49 @@ bool map_create_vertex_list(map_type *map)
 	map->vertexes.phit=(unsigned char*)valloc(map->vertexes.nvlist);
 	if (map->vertexes.phit==NULL) return(FALSE);
 	
+		// create tesseled lighting vertexes
+		
+	mesh=map->mesh.meshes;
+	
+	for (n=0;n!=map->mesh.nmesh;n++) {
+	
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+			map_create_poly_tesseled_vertexes(poly);
+			poly++;
+		}
+		
+		mesh++;
+	}
+	
 	return(TRUE);
 }
 
 void map_dispose_vertex_list(map_type *map)
 {
+	int					n,k;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	
+		// create tesseled lighting vertexes
+		
+	mesh=map->mesh.meshes;
+	
+	for (n=0;n!=map->mesh.nmesh;n++) {
+	
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+			map_dispose_poly_tesseled_vertexes(poly);
+			poly++;
+		}
+		
+		mesh++;
+	}
+
+		// dispose vertex lists
+		
 	free(map->vertexes.vertex_list);
 	free(map->vertexes.pvert);
 	free(map->vertexes.pcoord);

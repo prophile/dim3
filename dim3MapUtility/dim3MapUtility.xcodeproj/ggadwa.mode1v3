@@ -246,7 +246,48 @@
 		</dict>
 	</array>
 	<key>OpenEditors</key>
-	<array/>
+	<array>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
+				<string>269E834C0E3D880300E822F7</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>portal_vertex_list.c</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>269E834D0E3D880300E822F7</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>portal_vertex_list.c</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>269E834E0E3D880300E822F7</string>
+						<key>history</key>
+						<array>
+							<string>269E83270E3D84D200E822F7</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {1041, 706}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>599 200 1041 747 0 0 1680 1028 </string>
+			</dict>
+		</dict>
+	</array>
 	<key>PerspectiveWidths</key>
 	<array>
 		<integer>-1</integer>
@@ -328,7 +369,7 @@
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {284, 692}}</string>
+							<string>{{0, 11}, {284, 692}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -375,10 +416,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>26770C820E397DD700106546</string>
+										<string>269E83490E3D880300E822F7</string>
 										<key>history</key>
 										<array>
-											<string>26DB21470E33E7CC00008211</string>
+											<string>26F198FD0E3C41FA00BE9FEC</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -436,9 +477,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26770C830E397DD700106546</string>
+				<string>269E834A0E3D880300E822F7</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26770C840E397DD700106546</string>
+				<string>269E834B0E3D880300E822F7</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -557,7 +598,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>238648791.36152801</real>
+	<real>238913539.76614001</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -574,6 +615,7 @@
 	<array>
 		<string>260AFEBC0D404E7500F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3MapUtility/dim3MapUtility.xcodeproj</string>
+		<string>269E834C0E3D880300E822F7</string>
 	</array>
 	<key>WindowString</key>
 	<string>1124 268 306 751 0 0 1680 1028 </string>
@@ -655,7 +697,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEBC0D404E7500F6C42F</string>
-				<string>26770C800E397DC300106546</string>
+				<string>269E83210E3D847D00E822F7</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

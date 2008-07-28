@@ -210,8 +210,9 @@ typedef struct		{
 					} map_mesh_poly_slope_type;
 
 typedef struct		{
-						int							trig_count,
-													trig_vertex_idx[light_tessel_max_vertex];
+						int							nvertex;
+						int							*draw_vertex_idx;
+						d3pnt						*vertexes;
 					} map_mesh_poly_light_type;
 
 typedef struct		{
@@ -553,6 +554,7 @@ typedef struct		{
 	
 						portal_mesh_type			mesh;
 						portal_vertex_type			vertexes;
+						portal_liquid_type			liquid;
 						
 					} map_type;
 

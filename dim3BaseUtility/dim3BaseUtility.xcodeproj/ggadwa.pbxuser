@@ -49,33 +49,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 237619595;
-			PBXWorkspaceStateSaveDate = 237619595;
-		};
-		perUserProjectItems = {
-			262F43BB0E29CA8500523EE0 /* PBXTextBookmark */ = 262F43BB0E29CA8500523EE0 /* PBXTextBookmark */;
-			262F43C80E29CB9800523EE0 /* PBXTextBookmark */ = 262F43C80E29CB9800523EE0 /* PBXTextBookmark */;
+			PBXPerProjectTemplateStateSaveDate = 238908859;
+			PBXWorkspaceStateSaveDate = 238908859;
 		};
 		sourceControlManager = 26A5EABE0D404BD000BB47DE /* Source Control */;
 		userBuildSettings = {
 		};
-	};
-	262F43BB0E29CA8500523EE0 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5AD52FD0BBE1A66001C7C04 /* textures.c */;
-		rLen = 23;
-		rLoc = 7039;
-		rType = 0;
-	};
-	262F43C80E29CB9800523EE0 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5AD52FD0BBE1A66001C7C04 /* textures.c */;
-		name = "textures.c: 271";
-		rLen = 23;
-		rLoc = 7039;
-		rType = 0;
-		vrLen = 1866;
-		vrLoc = 6599;
 	};
 	26A5EABE0D404BD000BB47DE /* Source Control */ = {
 		isa = PBXSourceControlManager;
@@ -165,10 +144,10 @@
 	};
 	F5AD52FD0BBE1A66001C7C04 /* textures.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6580}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6986}}";
 			sepNavSelRange = "{7039, 23}";
-			sepNavVisRange = "{6599, 1866}";
-			sepNavWindowFrame = "{{256, 69}, {1041, 747}}";
+			sepNavVisRange = "{6596, 1876}";
+			sepNavWindowFrame = "{{256, 138}, {1041, 747}}";
 		};
 	};
 	F5AD53080BBE1A74001C7C04 /* socket.c */ = {

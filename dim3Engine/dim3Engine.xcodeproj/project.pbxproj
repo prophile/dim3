@@ -1505,9 +1505,9 @@
 		F5EF6B280324091F017730E2 /* Segment Render */ = {
 			isa = PBXGroup;
 			children = (
-				F5DD1A5609085AA200721649 /* segment_liquid.c */,
 				F5A17A5F0CC14D340083AF08 /* segment_render_opaque.c */,
 				F5A17A610CC14D340083AF08 /* segment_render_transparent.c */,
+				F5DD1A5609085AA200721649 /* segment_liquid.c */,
 			);
 			name = "Segment Render";
 			sourceTree = "<group>";

@@ -68,9 +68,9 @@ extern void view_draw_liquid_tint(liquid_pointer_type *liq_ptr);
 extern void view_draw_effect_tint(int tick,obj_type *obj);
 extern void fade_screen_draw(int tick);
 extern void fade_object_draw(int tick,obj_type *obj);
-extern void liquid_render(int tick,int mesh_cnt,int *mesh_list);
+extern void liquid_render(int tick);
 extern void decal_render(void);
-extern void portal_compile_gl_lists(int tick,int rn);
+extern void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list);
 
 
 
@@ -396,6 +396,8 @@ bool temp_mesh_view_setup(void)
 	int				*mesh_sort_list;
 	unsigned char	*stencil_pixels;
 	
+	return(TRUE);
+	
 	if (mesh_view_done) return(TRUE);
 	
 	mesh_view_done=TRUE;
@@ -433,16 +435,13 @@ bool temp_mesh_view_setup(void)
 		temp_mesh_visibility_mesh_setup(n,stencil_pixels,mesh_sort_list,-90.0f,0.0f);
 
 			// supergumba -- mesh count
-	/*		
+
 		cnt=0;
 		for (t=0;t!=map.mesh.nmesh;t++) {
 			if (map.mesh.meshes[n].mesh_visibility_flag[t]!=0x0) cnt++;
 		}
 
-		fprintf(stdout,"portal %d; time = %d; count = %d\n",n,time_get()-tick,cnt);
-
-		break;
-		*/
+		fprintf(stdout,"mesh %d; time = %d; count = %d\n",n,time_get()-tick,cnt);
 	}
 	
 	free(mesh_sort_list);
@@ -513,7 +512,7 @@ int map_find_mesh(int x,int y,int z)
 
 
 
-void temp_get_mesh_draw_list(int nportal,int *portal_list)
+void temp_get_mesh_draw_list(void)
 {
 	int					n,t,sz,d,start_mesh_idx,idx;
 	map_mesh_type		*start_mesh,*mesh;
@@ -530,11 +529,11 @@ void temp_get_mesh_draw_list(int nportal,int *portal_list)
 	for (n=0;n!=map.mesh.nmesh;n++) {
 
 			// is this mesh visible?
-
+/* supergumba -- for now, draw all meshes
 		if (n!=start_mesh_idx) {
 			if (start_mesh->mesh_visibility_flag[n]==0x0) continue;
 		}
-
+*/
 			// auto-eliminate meshes outside of view
 
 		mesh=&map.mesh.meshes[n];
@@ -586,181 +585,6 @@ void temp_get_mesh_draw_list(int nportal,int *portal_list)
 
 
 
-// supergumba -- testing out mesh elimination algorithms
-void test_me(int nportal,int *portal_list)
-{
-/*
-	int					n,k,t,stencil_idx,stencil_mesh_start_idx,idx,mesh_cnt,portal_idx,mesh_idx,
-						portal_cnt,hide_cnt,depth_cnt,dist;
-	int					*mesh_sort_list,*mesh_hit_list;
-	bool				hit;
-	unsigned char		*sp;
-	d3pnt				*pt;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	texture_type		*texture;
-
-	return;
-	
-	if (pixels==NULL) pixels=valloc(800*600);
-
-		// get sort array for meshes
-
-	mesh_sort_list=valloc(sizeof(int)*max_mesh);
-
-	mesh_cnt=test_me_sort(mesh_sort_list);
-
-	mesh_hit_list=valloc(sizeof(int)*mesh_cnt);
-	bzero(mesh_hit_list,(sizeof(int)*mesh_cnt));
-
-		// attempt to check out meshes that draw
-
-	depth_cnt=0;
-
-	gl_setup_viewport(console_y_offset());
-	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.ang);
-	gl_setup_project();
-
-	gl_texture_bind_start();
-
-	glDisable(GL_BLEND);
-
-	glEnable(GL_STENCIL_TEST);
-	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
-
-	glClear(GL_STENCIL_BUFFER_BIT);
-
-	glDisable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_TRUE);
-
-	glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
-
-		// use multiple stencils so
-		// we don't have to constantly read from stencil buffer
-
-	stencil_idx=1;
-	stencil_mesh_start_idx=0;
-
-		// run through meshes
-
-	gl_texture_opaque_start();
-
-	for (n=0;n!=mesh_cnt;n++) {
-
-		portal_idx=mesh_sort_list[n]/1000;
-		mesh_idx=mesh_sort_list[n]%1000;
-
-		mesh=&map.portals[portal_idx].mesh.meshes[mesh_idx];
-		
-			// ignore all moving meshes as they
-			// won't always obscure
-
-		if (mesh->flag.moveable) continue;
-
-			// draw polygons and use the stencil
-			// buffer to detect z-buffer changes
-
-		glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
-
-		hit=FALSE;
-
-		for (t=0;t!=mesh->npoly;t++) {
-
-			poly=&mesh->polys[t];
-
-				// ignore all transparent polygons
-
-			texture=&map.textures[poly->txt_idx];
-			if ((texture->bitmaps[0].alpha_mode==alpha_mode_transparent) || (poly->alpha!=1.0f)) continue;
-
-				// write to the stencil buffer if any part
-				// of the polygon can be seen
-
-			gl_texture_opaque_set(texture->bitmaps[0].gl_id);
-
-			glBegin(GL_POLYGON);
-
-			for (k=0;k!=poly->ptsz;k++) {
-				pt=&mesh->vertexes[poly->v[k]];
-				glTexCoord2f(poly->gx[k],poly->gy[k]);
-				glVertex3i((pt->x-view.camera.pos.x),(pt->y-view.camera.pos.y),(view.camera.pos.z-pt->z));
-			}
-
-			glEnd();
-		}
-
-			// read the stencil to look for hits
-
-		if ((stencil_idx==255) || ((n+1)==mesh_cnt)) {
-
-			glReadPixels(0,0,setup.screen.x_sz,setup.screen.y_sz,GL_STENCIL_INDEX,GL_UNSIGNED_BYTE,pixels);
-
-			sp=pixels;
-
-			for (k=0;k!=(800*600);k++) {
-				
-				idx=*sp++;
-
-				if (idx!=0) {
-					idx+=stencil_mesh_start_idx;
-					if (mesh_hit_list[idx]==0x0) {
-						depth_cnt++;
-						mesh_hit_list[idx]=0x1;
-					}
-				}
-			}
-			
-			stencil_idx=1;
-			stencil_mesh_start_idx=n+1;
-
-			if ((n+1)!=mesh_cnt) glClear(GL_STENCIL_BUFFER_BIT);
-		}
-		else {
-			stencil_idx++;
-		} 
-	}
-
-	gl_texture_opaque_end();
-
-	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
-	glClear(GL_STENCIL_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	glDisable(GL_STENCIL_TEST);
-
-	free(mesh_sort_list);
-
-	portal_cnt=0;
-
-	for (n=0;n!=nportal;n++) {
-		portal_cnt+=map.portals[portal_list[n]].mesh.nmesh;
-	}
-
-	hide_cnt=0;
-
-	for (n=0;n!=map.nportal;n++) {
-
-		mesh=map.portals[n].mesh.meshes;
-
-		for (k=0;k!=map.portals[n].mesh.nmesh;k++) {
-
-
-			dist=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
-			if (dist<(view.camera.far_z-view.camera.near_z)) {
-
-				if (boundbox_inview(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y)) hide_cnt++;
-			}
-
-			mesh++;
-		}
-	}
-
-	fprintf(stdout,"portal/zbuffer %d/%d\n",portal_cnt,depth_cnt);
-	*/
-}
 
 
 /* =======================================================
@@ -976,7 +800,6 @@ void view_draw_models_shadow(void)
 
 void view_draw(int tick)
 {
-	int				draw_portal_cnt,draw_portal_list[max_portal];
 	obj_type		*obj;
 	weapon_type		*weap;
 	
@@ -1013,18 +836,11 @@ void view_draw(int tick)
 	
 		// setup portals for drawing
 		
-	draw_portal_cnt=map_portal_draw_sort(&map,obj->pos.rn,obj->pos.x,obj->pos.y,obj->pos.z,draw_portal_list);
-
-//	for (n=(draw_portal_cnt-1);n>=0;n--) {
-//		portal_compile_gl_lists(tick,draw_portal_list[n]);		// supergumba -- run once
-//	}
-	portal_compile_gl_lists(tick,0);		// supergumba -- run once
-
-//	test_me(draw_portal_cnt,draw_portal_list);	// supergumba -- all temporary
-
 	temp_mesh_view_setup();
 
-	temp_get_mesh_draw_list(draw_portal_cnt,draw_portal_list);
+	temp_get_mesh_draw_list();
+	
+	view_compile_mesh_gl_lists(tick,mesh_draw_count,mesh_draw_list);
 	
 		// draw opaque polygons
 
@@ -1036,12 +852,12 @@ void view_draw(int tick)
 	view_draw_models_shadow();
 	
 		// draw tranparent polygons
-		
-	render_transparent_map(mesh_draw_count,mesh_draw_list);
+// supergumba -- testing		
+//	render_transparent_map(mesh_draw_count,mesh_draw_list);
 
 		// draw liquids
-
-	liquid_render(tick,mesh_draw_count,mesh_draw_list);
+// supergumba -- testing
+//	liquid_render(tick);
 
 		// draw decals
 

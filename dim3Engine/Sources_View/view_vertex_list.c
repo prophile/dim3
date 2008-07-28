@@ -144,20 +144,19 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 
 
 
-void portal_compile_gl_lists(int tick,int rn)
+void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 {
 
 
 
-	int						n,nvlist;
-	float					fx,fy,fz;
+	int						n,k,t,v_idx;
+	float					x,y,z,fx,fy,fz;
 	float					*pv,*pp,*pc,*pn;
-	portal_vertex_list_type	*vl;
+	d3pnt					*pnt;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
 
 		// the arrays
-
-	vl=map.vertexes.vertex_list;
-	nvlist=map.vertexes.nvlist;
 
 	pv=(float*)map.vertexes.pvert;
 	pp=(float*)map.vertexes.pcoord;
@@ -170,27 +169,57 @@ void portal_compile_gl_lists(int tick,int rn)
 	fy=(float)view.camera.pos.y;
 	fz=(float)view.camera.pos.z;
 
+	v_idx=0;
+	
 		// regular lighting
-
-	vl=map.vertexes.vertex_list;
-
-	for (n=0;n!=nvlist;n++) {
-		map_calculate_light_color_normal((double)vl->x,(double)vl->y,(double)vl->z,pc,pn);
-		pc+=3;
-	//	pn+=3;
 		
-		*pn++=0.5f;
-		*pn++=0.5f;
-		*pn=1.0f;
+		
+		// supergumba -- calculate light OUTSIDE OF THIS LOOP, in a parallel array
+		// then put it all together
+		
+		// supergumba -- these arrays need to be made bigger, also, for all possible vertex/etc
 
+	for (n=0;n!=mesh_cnt;n++) {
+		mesh=&map.mesh.meshes[mesh_list[n]];
+		
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+		
+				// polygon vertexes
+				
+			for (t=0;t!=poly->ptsz;t++) {
+			
+				pnt=&mesh->vertexes[poly->v[t]];
+				
+				x=(float)pnt->x;
+				y=(float)pnt->y;
+				z=(float)pnt->z;
 
-		*pv++=(vl->x-fx);
-		*pv++=(vl->y-fy);
-		*pv++=(fz-vl->z);
-		*pp++=vl->gx;
-		*pp++=vl->gy;
+				map_calculate_light_color_normal((double)x,(double)y,(double)z,pc,pn);
+				pc+=3;
+				pn+=3;
 
-		vl++;
+				*pv++=(x-fx);
+				*pv++=(y-fy);
+				*pv++=(fz-z);
+				
+				*pp++=poly->gx[t];
+				*pp++=poly->gy[t];
+				
+				poly->draw.portal_v[t]=v_idx;
+				
+				v_idx++;
+			}
+			
+				// polygon tesseled lighting
+				
+				// supergumba -- TO DO!
+			
+			poly++;
+		}
+		
+		mesh++;
 	}
 
 
@@ -354,8 +383,9 @@ void portal_compile_gl_list_attach(int rn)
 
 		// vertexes
 #ifdef D3_OS_MAC
-	glVertexArrayRangeAPPLE(sz,map.vertexes.pvert);
-	glEnableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
+// supergumba -- off for now
+//	glVertexArrayRangeAPPLE(sz,map.vertexes.pvert);
+//	glEnableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
 #endif
 
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -381,7 +411,8 @@ void portal_compile_gl_list_attach(int rn)
 	glColorPointer(3,GL_FLOAT,0,map.vertexes.pcolor);
 
 #ifdef D3_OS_MAC
-	glFlushVertexArrayRangeAPPLE(sz,map.vertexes.pvert);
+// supergumba -- off for now
+//	glFlushVertexArrayRangeAPPLE(sz,map.vertexes.pvert);
 #endif
 
 

@@ -726,10 +726,13 @@ void map_portal_mesh_calculate_uv_center(map_type *map,int portal_idx,int mesh_i
 
 void map_make_map_meshes(map_type *map)
 {
-	int				n,k,nmesh;
+	int				n,k,nmesh,nliq;
 	portal_type		*portal;
 	map_mesh_type	*mesh,*mesh2;
+	map_liquid_type	*liq,*liq2;
 	
+		// meshes
+		
 	nmesh=0;
 	
 	for (n=0;n!=map->nportal;n++) {
@@ -759,6 +762,36 @@ void map_make_map_meshes(map_type *map)
 		
 			mesh++;
 			mesh2++;
+		}
+	
+		portal++;
+	}
+	
+		// liquids
+		
+	nliq=0;
+	
+	for (n=0;n!=map->nportal;n++) {
+		nliq+=map->portals[n].liquid.nliquid;
+	}
+	
+	map->liquid.nliquid=nliq;
+	map->liquid.liquids=valloc(sizeof(map_liquid_type)*nliq);
+	
+	portal=map->portals;
+	
+	liq2=map->liquid.liquids;
+	
+	for (n=0;n!=map->nportal;n++) {
+		
+		liq=portal->liquid.liquids;
+		
+		for (k=0;k!=portal->liquid.nliquid;k++) {
+		
+			memmove(liq2,liq,sizeof(map_liquid_type));
+		
+			liq++;
+			liq2++;
 		}
 	
 		portal++;

@@ -129,7 +129,7 @@ void render_opaque_portal_normal(int mesh_cnt,int *mesh_list,int stencil_pass)
 
 void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool is_simple_lighting)
 {
-	int					n,k,frame,ntrig;
+	int					n,k,frame;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
@@ -204,8 +204,7 @@ void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool
 				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 			}
 			else {
-				ntrig=poly->light.trig_count;
-				glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_idx);
+				glDrawElements(GL_TRIANGLES,poly->light.nvertex,GL_UNSIGNED_INT,(GLvoid*)poly->light.draw_vertex_idx);
 			}
 
 			poly++;
@@ -229,7 +228,7 @@ void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool
 
 void render_opaque_portal_lighting(int mesh_cnt,int *mesh_list,int stencil_pass,bool is_simple_lighting)
 {
-	int					n,k,frame,ntrig;
+	int					n,k,frame;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
@@ -295,8 +294,7 @@ void render_opaque_portal_lighting(int mesh_cnt,int *mesh_list,int stencil_pass,
 				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 			}
 			else {
-				ntrig=poly->light.trig_count;
-				glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_idx);
+				glDrawElements(GL_TRIANGLES,poly->light.nvertex,GL_UNSIGNED_INT,(GLvoid*)poly->light.draw_vertex_idx);
 			}
 
 			poly++;
@@ -371,7 +369,7 @@ void render_opaque_portal_lighting_fix(int mesh_cnt,int *mesh_list,int stencil_p
 
 void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass,bool is_simple_lighting)
 {
-	int					n,k,frame,ntrig;
+	int					n,k,frame;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
@@ -437,8 +435,7 @@ void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass,
 				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 			}
 			else {
-				ntrig=poly->light.trig_count;
-				glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_idx);
+				glDrawElements(GL_TRIANGLES,poly->light.nvertex,GL_UNSIGNED_INT,(GLvoid*)poly->light.draw_vertex_idx);
 			}
 
 			poly++;
@@ -675,12 +672,12 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 	for (stencil_pass=0;stencil_pass<=stencil_pass_cnt;stencil_pass++) {
 
 		render_opaque_portal_normal(mesh_cnt,mesh_list,stencil_pass);
-		if (setup.bump_mapping) render_opaque_portal_bump(mesh_cnt,mesh_list,stencil_pass,is_simple_lighting);
+	//	if (setup.bump_mapping) render_opaque_portal_bump(mesh_cnt,mesh_list,stencil_pass,is_simple_lighting);
 
 		if (!hilite_on) {
-			render_opaque_portal_lighting(mesh_cnt,mesh_list,stencil_pass,is_simple_lighting);
-			if (setup.specular_mapping) render_opaque_portal_specular(mesh_cnt,mesh_list,stencil_pass,is_simple_lighting);
-			render_opaque_portal_lighting_fix(mesh_cnt,mesh_list,stencil_pass);
+	//		render_opaque_portal_lighting(mesh_cnt,mesh_list,stencil_pass,is_simple_lighting);
+	//		if (setup.specular_mapping) render_opaque_portal_specular(mesh_cnt,mesh_list,stencil_pass,is_simple_lighting);
+	//		render_opaque_portal_lighting_fix(mesh_cnt,mesh_list,stencil_pass);
 		}
 
 	}
