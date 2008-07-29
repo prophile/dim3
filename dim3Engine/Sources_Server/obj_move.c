@@ -360,8 +360,8 @@ bool object_bump_up(obj_type *obj)
 	
 	poly_ptr=&obj->contact.hit_poly;
 
-	if (poly_ptr->portal_idx!=-1) {
-		mesh_poly=&map.portals[poly_ptr->portal_idx].mesh.meshes[poly_ptr->mesh_idx].polys[poly_ptr->poly_idx];
+	if (poly_ptr->mesh_idx!=-1) {
+		mesh_poly=&map.mesh.meshes[poly_ptr->mesh_idx].polys[poly_ptr->poly_idx];
         ydif=obj->pos.y-mesh_poly->box.min.y;
     }
     
@@ -376,7 +376,7 @@ bool object_bump_up(obj_type *obj)
 	obj->pos.y+=ymove;
 	obj->bump.smooth_offset+=abs(ymove);					// bump moves player up, but offset pushes them down and smoothes out the bump
 
-	return(obj->contact.head_poly.portal_idx==-1);
+	return(obj->contact.head_poly.mesh_idx==-1);
 }
 
 void object_fix_bump_smooth(obj_type *obj)
@@ -396,15 +396,15 @@ void object_fix_bump_smooth(obj_type *obj)
 
 void object_move_xz_bounce(obj_type *obj)
 {
-	if (obj->contact.hit_poly.portal_idx==-1) {
-		obj->bounce.portal_idx=-1;
+	if (obj->contact.hit_poly.mesh_idx==-1) {
+		obj->bounce.mesh_idx=-1;
 		return;
 	}
 
 		// only bounce if bounce factor != 0 and not same mesh
 		
 	if (obj->bounce.factor==0.0f) return;
-	if ((obj->bounce.portal_idx==obj->contact.hit_poly.portal_idx) && (obj->bounce.mesh_idx==obj->contact.hit_poly.mesh_idx)) return;
+	if (obj->bounce.mesh_idx==obj->contact.hit_poly.mesh_idx) return;
 	
 		// bounce
 		
@@ -471,11 +471,11 @@ void object_motion_slope_alter_movement(obj_type *obj,float *xmove,float *zmove)
 	z=obj->pos.z+(int)(*zmove);
 
 	sy=find_poly_for_downward_point(x,y,z,obj->size.y,&poly);
-	if (poly.portal_idx==-1) return;
+	if (poly.mesh_idx==-1) return;
 
 		// ignore flat polygons
 
-	mesh_poly=&map.portals[poly.portal_idx].mesh.meshes[poly.mesh_idx].polys[poly.poly_idx];
+	mesh_poly=&map.mesh.meshes[poly.mesh_idx].polys[poly.poly_idx];
 	if (mesh_poly->box.flat) return;
 
 		// if less then min slope, no gravity effects
@@ -564,7 +564,7 @@ void object_move_y_fall(obj_type *obj)
 
 		// deal with polygon contacts
 		
-	if (obj->contact.stand_poly.portal_idx!=-1) {
+	if (obj->contact.stand_poly.mesh_idx!=-1) {
 	
 		obj->stand_obj_uid=-1;
 
@@ -674,7 +674,7 @@ void object_move_y_fly(obj_type *obj,int ymove)
 		
 	if (ymove<0) {
 		obj->pos.y+=pin_upward_movement_obj(obj,ymove);
-		if (obj->contact.head_poly.portal_idx!=-1) return;
+		if (obj->contact.head_poly.mesh_idx!=-1) return;
 
 			// check for above map
 			
@@ -844,9 +844,9 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	
 	poly_ptr=&obj->contact.hit_poly;
 
-	if (poly_ptr->portal_idx!=-1) {
+	if (poly_ptr->mesh_idx!=-1) {
 
-		poly=&map.portals[poly_ptr->portal_idx].mesh.meshes[poly_ptr->mesh_idx].polys[poly_ptr->poly_idx];
+		poly=&map.mesh.meshes[poly_ptr->mesh_idx].polys[poly_ptr->poly_idx];
 		if (poly->box.wall_like) {
 
 				// don't slide on polys that are bump up candidates
@@ -1152,7 +1152,7 @@ void object_move_normal(obj_type *obj)
 					i_ymove=0;
 					i_zmove=(int)zmove;
 					
-					obj->contact.hit_poly.portal_idx=-1;
+					obj->contact.hit_poly.mesh_idx=-1;
 					if (!object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) break;
 
 					bump_cnt++;
@@ -1279,7 +1279,7 @@ void object_move(obj_type *obj)
 		// ladder contacts.  If no contacts, only turn off
 		// ladder if there was actually movement
 
-	if (obj->contact.hit_poly.portal_idx!=-1) {
+	if (obj->contact.hit_poly.mesh_idx!=-1) {
 
 			// collide events
 
@@ -1290,7 +1290,7 @@ void object_move(obj_type *obj)
 
 			// ladder check
 
-		obj->on_ladder=map.portals[obj->contact.hit_poly.portal_idx].mesh.meshes[obj->contact.hit_poly.mesh_idx].flag.climbable;
+		obj->on_ladder=map.mesh.meshes[obj->contact.hit_poly.mesh_idx].flag.climbable;
 	}
 	else {
 		obj->in_collide_event=FALSE;

@@ -239,7 +239,6 @@ void decal_add_floor_like(d3pos *pos,decal_type *decal,map_mesh_type *mesh,map_m
 
 void decal_add(d3pos *pos,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha)
 {
-	int					rn;
 	decal_type			*decal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
@@ -250,8 +249,7 @@ void decal_add(d3pos *pos,poly_pointer_type *poly_ptr,int mark_idx,int sz,float 
 
 		// can decal this poly?
 
-	rn=poly_ptr->portal_idx;
-	mesh=&map.portals[rn].mesh.meshes[poly_ptr->mesh_idx];
+	mesh=&map.mesh.meshes[poly_ptr->mesh_idx];
 	poly=&mesh->polys[poly_ptr->poly_idx];
 	
 	if (!decal_segment_ok(poly,mark_idx)) return;
@@ -277,7 +275,6 @@ void decal_add(d3pos *pos,poly_pointer_type *poly_ptr,int mark_idx,int sz,float 
 
 		// finish decal setup
 
-	decal->rn=rn;
 	decal->mesh_idx=poly_ptr->mesh_idx;
 	decal->poly_idx=poly_ptr->poly_idx;
     

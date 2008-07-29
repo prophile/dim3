@@ -607,9 +607,9 @@ bool model_find_bone_position(model_draw *draw,char *pose_name,char *bone_name,i
 {
 	if (!model_find_bone_offset(draw,pose_name,bone_name,x,y,z)) return(FALSE);
 	
-	*x=(*x)+draw->pos.x;
-	*y=(*y)+draw->pos.y;
-	*z=(*z)+draw->pos.z;
+	*x=(*x)+draw->pnt.x;
+	*y=(*y)+draw->pnt.y;
+	*z=(*z)+draw->pnt.z;
 
 	if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),x,y,z);
 	
@@ -641,9 +641,9 @@ bool model_find_bone_position_for_current_animation(model_draw *draw,int bone_id
 	model_create_draw_bones(mdl,&draw->setup);
 	model_get_draw_bone_position(&draw->setup,bone_idx,x,y,z);
 
-	*x=(*x)+draw->pos.x;
-	*y=(*y)+draw->pos.y;
-	*z=(*z)+draw->pos.z;
+	*x=(*x)+draw->pnt.x;
+	*y=(*y)+draw->pnt.y;
+	*z=(*z)+draw->pnt.z;
 
 		// fix rotation
 

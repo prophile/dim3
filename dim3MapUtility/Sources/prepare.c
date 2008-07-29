@@ -198,9 +198,6 @@ void map_prepare(map_type *map)
 	map_liquid_type		*liq;
 	node_type			*node;
 	map_scenery_type	*scenery;
-	map_light_type		*light;
-	map_sound_type		*sound;
-	map_particle_type	*particle;
 	spot_type			*spot;
 	
 		// portals
@@ -352,37 +349,6 @@ void map_prepare(map_type *map)
 		scenery->pos.x+=portal->x;
 		scenery->pos.z=scenery->pos.z+portal->z;
 		scenery++;
-	}
-		
-	light=map->lights;
-	
-	for (n=0;n!=map->nlight;n++) {
-		portal=&map->portals[light->pos.rn];
-		light->pos.x=light->pos.x+portal->x;
-		light->pos.z=light->pos.z+portal->z;
-		light++;
-	}
-	
-		// map sounds
-	
-	sound=map->sounds;
-	
-	for (n=0;n!=map->nsound;n++) {
-		portal=&map->portals[sound->pos.rn];
-		sound->pos.x=sound->pos.x+portal->x;
-		sound->pos.z=sound->pos.z+portal->z;
-		sound++;
-	}
-	
-		// map particles
-	
-	particle=map->particles;
-	
-	for (n=0;n!=map->nparticle;n++) {
-		portal=&map->portals[particle->pos.rn];
-		particle->pos.x=particle->pos.x+portal->x;
-		particle->pos.z=particle->pos.z+portal->z;
-		particle++;
 	}
 	
 		// nodes

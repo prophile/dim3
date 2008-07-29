@@ -302,9 +302,9 @@ void crosshair_draw_debug(obj_type *obj,weapon_type *weap)
 	model_draw_setup_weapon(server.time.run_tick,obj,weap,TRUE);
 	model_calc_draw_bone_position(mdl,&weap->draw.setup,pose_idx,bone_idx,&sx,&sy,&sz);
 
-	sx+=weap->draw.pos.x;
-	sy+=weap->draw.pos.y;
-	sz+=weap->draw.pos.z;
+	sx+=weap->draw.pnt.x;
+	sy+=weap->draw.pnt.y;
+	sz+=weap->draw.pnt.z;
 	
 	if (weap->draw.no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&sx,&sy,&sz);
 
@@ -317,9 +317,9 @@ void crosshair_draw_debug(obj_type *obj,weapon_type *weap)
 
 	model_get_draw_bone_position(&weap->draw.setup,bone_idx,&bx,&by,&bz);
 
-	bx+=weap->draw.pos.x;
-	by+=weap->draw.pos.y;
-	bz+=weap->draw.pos.z;
+	bx+=weap->draw.pnt.x;
+	by+=weap->draw.pnt.y;
+	bz+=weap->draw.pnt.z;
 
 	if (weap->draw.no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&bx,&by,&bz);
 	

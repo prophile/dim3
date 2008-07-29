@@ -101,9 +101,9 @@ void view_setup_model_in_view(model_draw *draw,bool in_air,bool is_camera)
 	mdl=model_find_uid(draw->uid);
 	if (mdl==NULL) return;
 
-	x=draw->pos.x;
-	y=draw->pos.y;
-	z=draw->pos.z;
+	x=draw->pnt.x;
+	y=draw->pnt.y;
+	z=draw->pnt.z;
 	
 	draw->lod_dist=distance_to_view_center(x,y,z);
 	
@@ -233,7 +233,7 @@ void view_setup_projectiles(int tick)
 void view_add_model_light(model_draw *draw,int obj_uid)
 {
 	int					n,x,z,y;
-	d3pos				pos;
+	d3pnt				pnt;
 	model_type			*mdl;
 	model_draw_light	*light;
 	model_draw_halo		*halo;
@@ -250,14 +250,14 @@ void view_add_model_light(model_draw *draw,int obj_uid)
 	for (n=0;n!=max_model_light;n++) {
 
 		if (light->on) {
-			memmove(&pos,&draw->pos,sizeof(d3pos));
+			memmove(&pnt,&draw->pnt,sizeof(d3pnt));
 			
 			if (mdl!=NULL) {
-				model_get_light_position(mdl,&draw->setup,n,&pos.x,&pos.y,&pos.z);
-				if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&pos.x,&pos.y,&pos.z);
+				model_get_light_position(mdl,&draw->setup,n,&pnt.x,&pnt.y,&pnt.z);
+				if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&pnt.x,&pnt.y,&pnt.z);
 			}
 			
-			light_add(&pos,light->type,light->intensity,light->confine_to_portal,&light->col);
+			light_add(&pnt,light->type,light->intensity,light->confine_to_portal,&light->col);
 		}
 
 		light++;
@@ -270,9 +270,9 @@ void view_add_model_light(model_draw *draw,int obj_uid)
 	for (n=0;n!=max_model_halo;n++) {
 
 		if (halo->on) {
-			x=draw->pos.x;
-			y=draw->pos.y;
-			z=draw->pos.z;
+			x=draw->pnt.x;
+			y=draw->pnt.y;
+			z=draw->pnt.z;
 			
 			if (mdl!=NULL) {
 				model_get_halo_position(mdl,&draw->setup,n,&x,&y,&z);
@@ -299,7 +299,7 @@ void view_add_lights(void)
 	maplight=map.lights;
 		
 	for (i=0;i!=map.nlight;i++) {
-		if (maplight->on) light_add(&maplight->pos,maplight->type,maplight->intensity,maplight->confine_to_portal,&maplight->col);
+		if (maplight->on) light_add(&maplight->pnt,maplight->type,maplight->intensity,maplight->confine_to_portal,&maplight->col);
 		maplight++;
 	}	
 
@@ -395,7 +395,7 @@ void view_calculate_shakes(int tick,obj_type *obj)
 	
 		if (effect->effecttype==ef_shake) {
 			
-			d=distance_get(obj->pos.x,obj->pos.y,obj->pos.z,effect->pos.x,effect->pos.y,effect->pos.z);
+			d=distance_get(obj->pos.x,obj->pos.y,obj->pos.z,effect->pnt.x,effect->pnt.y,effect->pnt.z);
 			if (d<effect->data.shake.distance) {
 				shake_sz+=effect->size;
 				shake_freq+=(0.3f-((0.3f*(float)d)/(float)effect->data.shake.distance))+0.2f;
@@ -474,7 +474,8 @@ void view_draw_setup(int tick)
 	if (view.camera.pos.rn==-1) {
 		view.camera.pos.rn=camera_obj->pos.rn;
 	}
-	camera_check_liquid(&view.camera.pos,&view.camera.under_liquid);
+
+	view.camera.under_liquid_idx=camera_check_liquid(&view.camera.pos);
 
 	view.camera.projection_type=camera.plane.type;
 	view.camera.lft=camera.plane.lft;

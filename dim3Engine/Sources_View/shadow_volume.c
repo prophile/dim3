@@ -42,7 +42,7 @@ int							shadow_texture_count;
 
 extern bool complex_boundbox_inview(int *cbx,int *cby,int *cbz);
 extern void model_render_shadow(model_draw *draw,float draw_z,int shadow_idx);
-extern light_spot_type* map_find_closest_light(portal_type *portal,double x,double y,double z,int *p_dist);
+extern light_spot_type* map_find_closest_light(double x,double y,double z,int *p_dist);
 
 /* =======================================================
 
@@ -68,9 +68,9 @@ bool shadow_get_volume_ground(model_draw *draw)
 	
 		// get position
 		
-	x=draw->pos.x;
-	y=draw->pos.y;
-	z=draw->pos.z;
+	x=draw->pnt.x;
+	y=draw->pnt.y;
+	z=draw->pnt.z;
 	
 	fx=(float)mdl->shadow_box.offset.x;
 	fy=(float)mdl->shadow_box.offset.y;
@@ -89,7 +89,7 @@ bool shadow_get_volume_ground(model_draw *draw)
 
 			// find closest light
 		
-		lspot=map_find_closest_light(&map.portals[draw->pos.rn],(double)x,(double)y,(double)z,&dist);
+		lspot=map_find_closest_light((double)x,(double)y,(double)z,&dist);
 		if (lspot==NULL) return(FALSE);
 
 			// find angle and size
@@ -119,10 +119,9 @@ bool shadow_get_volume_ground(model_draw *draw)
 
 	model_ang=angle_add(volume_ang,-draw->setup.ang.y);
 		
-	shadow->pos.rn=draw->pos.rn;
-	shadow->pos.x=x;
-	shadow->pos.z=z;
-	shadow->pos.y=draw->pos.y;
+	shadow->pnt.x=x;
+	shadow->pnt.z=z;
+	shadow->pnt.y=draw->pnt.y;
 	shadow->ang.y=model_ang;
 	shadow->ang.x=0;
 	
@@ -166,9 +165,9 @@ bool shadow_get_volume_air(model_draw *draw)
 
 		// find shadow floor
 
-	x=draw->pos.x;
-	z=draw->pos.z;
-	y=draw->pos.y;
+	x=draw->pnt.x;
+	z=draw->pnt.z;
+	y=draw->pnt.y;
 		
     fy=find_poly_nearest_stand(x,(y-draw->size.y),z,(map_enlarge*100),TRUE);
     if (fy==-1) return(FALSE);
@@ -178,10 +177,9 @@ bool shadow_get_volume_air(model_draw *draw)
 	wid=mdl->shadow_box.size.x;
 	high=mdl->shadow_box.size.z;
 
-	shadow->pos.rn=draw->pos.rn;
-	shadow->pos.x=x;
-	shadow->pos.z=z;
-	shadow->pos.y=fy;
+	shadow->pnt.x=x;
+	shadow->pnt.z=z;
+	shadow->pnt.y=fy;
 	shadow->ang.y=0;
 	shadow->ang.x=90;
 	
@@ -242,30 +240,11 @@ bool shadow_get_volume(model_draw *draw,bool in_air)
 
 bool shadow_inview(model_draw *draw)
 {
-	int					i,rn,y,px[8],py[8],pz[8];
-	bool				path_ok;
+	int					y,px[8],py[8],pz[8];
 	model_draw_shadow	*shadow;
 	
 	shadow=&draw->shadow;
-	
-		// look for shadow in path
-		
-	path_ok=FALSE;
-	
-	for ((i=0);(i!=4);i++) {
-		rn=map_find_portal(&map,shadow->px[i],shadow->pos.y,shadow->pz[i]);
-		if (rn==-1) continue;
-		if (map.portals[rn].in_path) {
-			path_ok=TRUE;
-			break;
-		}
-	}
-	
-	if (!path_ok) return(FALSE);
-		
-		// check if shadow is in view
-		
-	y=shadow->pos.y;
+	y=shadow->pnt.y;
 	
 	memmove(&px[0],shadow->px,(sizeof(int)*4));
 	memmove(&pz[0],shadow->pz,(sizeof(int)*4));

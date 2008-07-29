@@ -137,7 +137,7 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 	*nf=1.0f;
 }
 
-light_spot_type* map_find_closest_light(portal_type *portal,double x,double y,double z,int *p_dist)
+light_spot_type* map_find_closest_light(double x,double y,double z,int *p_dist)
 {
 	int					i,k;
 	double				dx,dz,dy,d,dist;

@@ -71,7 +71,7 @@ int find_poly_for_upward_point(int x,int y,int z,int ydist,poly_pointer_type *po
 		return(hpt.y);
 	}
 
-	poly->portal_idx=-1;
+	poly->mesh_idx=-1;
 
 	return(y-ydist);
 }
@@ -100,7 +100,7 @@ int find_poly_for_downward_point(int x,int y,int z,int ydist,poly_pointer_type *
 		return(hpt.y);
 	}
 
-	poly->portal_idx=-1;
+	poly->mesh_idx=-1;
 
 	return(y+ydist);
 }
@@ -224,7 +224,7 @@ int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly
 	
 		// find the highest point
 		
-	stand_poly->portal_idx=-1;
+	stand_poly->mesh_idx=-1;
 	cy=-1;
 	
 	for (i=0;i!=5;i++) {
@@ -234,8 +234,8 @@ int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly
 			// check poly collisions
 			
 		fy=find_poly_for_downward_point(x,y,z,ydist,&poly);
-		if (poly.portal_idx!=-1) {
-			if (stand_poly->portal_idx==-1) {
+		if (poly.mesh_idx!=-1) {
+			if (stand_poly->mesh_idx==-1) {
 				memmove(stand_poly,&poly,sizeof(poly_pointer_type));
 				cy=fy;
 			}
@@ -275,7 +275,7 @@ int pin_upward_movement_box(d3box *box,int ydist,poly_pointer_type *head_poly)
 	
 		// find the lowest point
 		
-	head_poly->portal_idx=-1;
+	head_poly->mesh_idx=-1;
 	cy=-1;
 	
 	for (i=0;i!=5;i++) {
@@ -285,8 +285,8 @@ int pin_upward_movement_box(d3box *box,int ydist,poly_pointer_type *head_poly)
 			// check poly collisions
 			
 		fy=find_poly_for_upward_point(x,y,z,ydist,&poly);
-		if (poly.portal_idx!=-1) {
-			if (head_poly->portal_idx==-1) {
+		if (poly.mesh_idx!=-1) {
+			if (head_poly->mesh_idx==-1) {
 				memmove(head_poly,&poly,sizeof(poly_pointer_type));
 				cy=fy;
 			}
@@ -346,7 +346,7 @@ int pin_downward_movement_point(int x,int y,int z,int my,bool *hit)
 	poly_pointer_type		poly;
 
 	sy=find_poly_for_downward_point(x,y,z,my,&poly);
-	if (poly.portal_idx==-1) {
+	if (poly.mesh_idx==-1) {
 		*hit=FALSE;
 		return(0);
 	}
@@ -361,7 +361,7 @@ int pin_upward_movement_point(int x,int y,int z,int my,bool *hit)
 	poly_pointer_type		poly;
 
 	sy=find_poly_for_upward_point(x,y,z,my,&poly);
-	if (poly.portal_idx==-1) {
+	if (poly.mesh_idx==-1) {
 		*hit=FALSE;
 		return(0);
 	}
@@ -426,6 +426,6 @@ bool map_stand_check_object(obj_type *obj)
 		// possible to move up?
 
 	pin_upward_movement_box(&box,-sy,&poly);
-	return(poly.portal_idx!=-1);
+	return(poly.mesh_idx!=-1);
 }
 

@@ -225,7 +225,7 @@ typedef struct		{
 												px[4],pz[4],static_size;
 						float					alpha,static_face_angle,static_alpha;
 						bool					on,always_in_air,static_in_air,in_view;
-						d3pos					pos;
+						d3pnt					pnt;
 						d3ang					ang;
 					} model_draw_shadow;
 
@@ -262,8 +262,7 @@ typedef struct		{
 						bool					on,in_view,
 												bounce,face_forward,player;
 						unsigned char			cur_texture_frame[max_model_texture];
-						d3pos					pos;
-						d3pnt					size,center,offset;
+						d3pnt					pnt,size,center,offset;
 						d3ang					rot,spin;
 						d3col					hilite,tint;
 						model_draw_connect		connect;
@@ -279,16 +278,12 @@ typedef struct		{
 					} model_draw;
 
 //
-// map pointer
+// map polygon pointer
 //
 
 typedef struct		{
-						int					portal_idx,mesh_idx,poly_idx;
+						int					mesh_idx,poly_idx;
 					} poly_pointer_type;
-
-typedef struct		{
-						int					portal_idx,liquid_idx;
-					} liquid_pointer_type;
 
 //
 // object sounds
@@ -342,11 +337,11 @@ typedef struct		{
 					} obj_status;
 			
 typedef struct		{
-						int					obj_uid,proj_uid,hit_box_idx;
+						int					obj_uid,proj_uid,hit_box_idx,
+											liquid_idx;
 						bool				object_on,projectile_on,force_on,
 											melee,pushable;
 						poly_pointer_type	hit_poly,stand_poly,head_poly;
-						liquid_pointer_type	liquid;
 					} obj_contact;
 					
 typedef struct		{
@@ -445,7 +440,7 @@ typedef struct		{
 					} obj_bump;
 					
 typedef struct		{
-						int					portal_idx,mesh_idx;
+						int					mesh_idx;
 						float				factor;
 					} obj_bounce;
 
@@ -869,7 +864,7 @@ typedef union		{
 typedef struct		{
 						int						effecttype,size,
 												start_tick,life_tick;
-						d3pos					pos;
+						d3pnt					pnt;
 						effect_data				data;
 					} effect_type;
 					
@@ -878,7 +873,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						rn,mark_idx,mesh_idx,poly_idx,
+						int						mark_idx,mesh_idx,poly_idx,
 												start_tick,x[4],z[4],y[4];
                         float					alpha;
 					} decal_type;

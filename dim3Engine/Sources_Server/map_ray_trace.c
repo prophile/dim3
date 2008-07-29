@@ -69,7 +69,7 @@ float ray_trace_vector_inner_product(d3vct *v1,d3vct *v2)
 
 void ray_trace_contact_clear(ray_trace_contact_type *contact)
 {
-	contact->poly.portal_idx=-1;
+	contact->poly.mesh_idx=-1;
 	contact->obj_uid=-1;
 	contact->proj_uid=-1;
 }
@@ -475,22 +475,20 @@ float ray_trace_projectile(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,proj_type
 
 /* =======================================================
 
-      Ray Trace Portals
+      Ray Trace Map
       
 ======================================================= */
 
-void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_trace_contact_type *contact)
+void ray_trace_map(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_trace_contact_type *contact)
 {
 	int					n,k;
 	float				t;
 	d3pnt				pt;
 	obj_type			*obj;
 	proj_type			*proj;
-	portal_type			*portal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
-	portal=&map.portals[rn];
 	pt.x=pt.y=pt.z=0;
 	
 		// check objects
@@ -499,7 +497,6 @@ void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *
 	
 		for (n=0;n!=server.count.obj;n++) {
 			obj=&server.objs[n];
-			if (obj->pos.rn!=rn) continue;
 			if ((obj->hidden) || (obj->pickup.on)) continue;
 			if (obj->uid==contact->obj_ignore_uid) continue;
 			if ((contact->origin==poly_ray_trace_origin_object) && (!obj->contact.object_on)) continue;
@@ -529,7 +526,6 @@ void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *
 	
 		for (n=0;n!=server.count.proj;n++) {
 			proj=&server.projs[n];
-			if (proj->pos.rn!=rn) continue;
 			if (proj->uid==contact->proj_ignore_uid) continue;
 			
 			t=ray_trace_projectile(spt,ept,vct,&pt,proj);
@@ -552,14 +548,27 @@ void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *
 
 		// check the meshes
 
-	mesh=portal->mesh.meshes;
-
-	for (n=0;n!=portal->mesh.nmesh;n++) {
+	for (n=0;n!=map.mesh.nmesh;n++) {
 		
+		mesh=&map.mesh.meshes[n];
+		
+			// skip pass through meshes
+
 		if (mesh->flag.pass_through) {
 			mesh++;
 			continue;
 		}
+
+			// rough bounds check
+
+		if ((spt->y<mesh->box.min.y) && (ept->y<mesh->box.min.y)) continue;
+		if ((spt->y>mesh->box.max.y) && (ept->y>mesh->box.max.y)) continue;
+		if ((spt->x<mesh->box.min.x) && (ept->x<mesh->box.min.x)) continue;
+		if ((spt->x>mesh->box.max.x) && (ept->x>mesh->box.max.x)) continue;
+		if ((spt->z<mesh->box.min.z) && (ept->z<mesh->box.min.z)) continue;
+		if ((spt->z>mesh->box.max.z) && (ept->z>mesh->box.max.z)) continue;
+
+			// check polygons
 
 		for (k=0;k!=mesh->npoly;k++) {
 
@@ -600,7 +609,6 @@ void ray_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *
 			hpt->z=pt.z;
 			
 			ray_trace_contact_clear(contact);
-			contact->poly.portal_idx=rn;
 			contact->poly.mesh_idx=n;
 			contact->poly.poly_idx=k;
 		}
@@ -667,12 +675,10 @@ void ray_push_to_end(d3pnt *pt,d3pnt *ept,int dist)
 
 bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_contact_type *contact)
 {
-	int					n;
 	float				hit_t;
 	d3pnt				ept;
 	d3vct				vct;
 	matrix_type			mat;
-	portal_type			*portal;
 	
 		// clear the contact
 		
@@ -713,20 +719,9 @@ bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_
 	hpt->y=ept.y;
 	hpt->z=ept.z;
 		
-		// check against all portals
+		// ray trace map
 
-	for (n=0;n!=map.nportal;n++) {
-		portal=&map.portals[n];
-		
-		if ((spt->x<portal->x) && (ept.x<portal->x)) continue;
-		if ((spt->x>portal->ex) && (ept.x>portal->ex)) continue;
-		if ((spt->z<portal->z) && (ept.z<portal->z)) continue;
-		if ((spt->z>portal->ez) && (ept.z>portal->ez)) continue;
-		if ((spt->y<portal->ty) && (ept.y<portal->ty)) continue;
-		if ((spt->y>portal->by) && (ept.y>portal->by)) continue;
-		
-		ray_trace_portal(n,spt,&ept,&vct,hpt,&hit_t,contact);
-	}
+	ray_trace_map(spt,&ept,&vct,hpt,&hit_t,contact);
 	
 	return((hit_t>=0.0f) && (hit_t<=1.0f));
 }
@@ -739,10 +734,8 @@ bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_
 
 bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_type *contact)
 {
-	int					n;
 	float				hit_t;
 	d3vct				vct;
-	portal_type			*portal;
 	
 		// clear the contact
 		
@@ -764,18 +757,7 @@ bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_t
 		
 		// check against all portals
 
-	for (n=0;n!=map.nportal;n++) {
-		portal=&map.portals[n];
-		
-		if ((spt->x<portal->x) && (ept->x<portal->x)) continue;
-		if ((spt->x>portal->ex) && (ept->x>portal->ex)) continue;
-		if ((spt->z<portal->z) && (ept->z<portal->z)) continue;
-		if ((spt->z>portal->ez) && (ept->z>portal->ez)) continue;
-		if ((spt->y<portal->ty) && (ept->y<portal->ty)) continue;
-		if ((spt->y>portal->by) && (ept->y>portal->by)) continue;
-		
-		ray_trace_portal(n,spt,ept,&vct,hpt,&hit_t,contact);
-	}
+	ray_trace_map(spt,ept,&vct,hpt,&hit_t,contact);
 	
 	return((hit_t>=0.0f) && (hit_t<=1.0f));
 }

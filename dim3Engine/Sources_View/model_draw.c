@@ -42,7 +42,7 @@ extern view_type		view;
 extern setup_type		setup;
 
 extern void model_build_color_setup_lights(model_type *mdl,model_draw *draw);
-extern void model_build_color(model_type *mdl,int mesh_idx,int rn,int x,int z,int y,model_draw *draw);
+extern void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw *draw);
 extern void model_tint_team_color(model_type *mdl,int mesh_idx,model_draw *draw);
 extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf);
 
@@ -503,9 +503,9 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 		gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
 		gl_shader_set_program(texture->shader.program_obj);
 	
-		pnt.x=draw->pos.x;
-		pnt.y=draw->pos.y;
-		pnt.z=draw->pos.z;
+		pnt.x=draw->pnt.x;
+		pnt.y=draw->pnt.y;
+		pnt.z=draw->pnt.z;
 	
 		gl_shader_set_variables(texture->shader.program_obj,&pnt,texture);
 		
@@ -660,7 +660,7 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 
 void model_render(int tick,model_draw *draw)
 {
-	int				n,rn,x,y,z,tx,ty,tz,mesh_mask;
+	int				n,x,y,z,tx,ty,tz,mesh_mask;
 	float			cf[3];
 	model_type		*mdl;
 	
@@ -676,7 +676,7 @@ void model_render(int tick,model_draw *draw)
 		// create light list for model and single drawing normal
 		
 	model_build_color_setup_lights(mdl,draw);
-	map_calculate_light_color_normal((double)draw->pos.x,(double)draw->pos.y,(double)draw->pos.z,cf,draw->normal);
+	map_calculate_light_color_normal((double)draw->pnt.x,(double)draw->pnt.y,(double)draw->pnt.z,cf,draw->normal);
 
 		// get the meshes to be drawn
 
@@ -690,10 +690,9 @@ void model_render(int tick,model_draw *draw)
 
 		// create vertex and color lists
 		
-	rn=draw->pos.rn;
-	x=draw->pos.x;
-	y=draw->pos.y;
-	z=draw->pos.z;
+	x=draw->pnt.x;
+	y=draw->pnt.y;
+	z=draw->pnt.z;
 		
 	tx=x-view.camera.pos.x;
 	ty=y-view.camera.pos.y;
@@ -709,7 +708,7 @@ void model_render(int tick,model_draw *draw)
 
 			// build color lists
 			
-		model_build_color(mdl,n,rn,x,z,y,draw);
+		model_build_color(mdl,n,x,z,y,draw);
 		model_tint_team_color(mdl,n,draw);
 
 			// translate vertex to view

@@ -48,10 +48,9 @@ void object_liquid_contact(obj_type *obj)
 						rn,y,eye_y,dy,lft,rgt,top,bot;
 	d3box				box;
 	map_liquid_type		*liq;
-	portal_type			*portal;
 	
 	obj->liquid_mode=lm_out;
-	obj->contact.liquid.portal_idx=-1;
+	obj->contact.liquid_idx=-1;
 
 	rn=obj->pos.rn;
 	box_create_from_object(&box,obj);
@@ -61,12 +60,10 @@ void object_liquid_contact(obj_type *obj)
 	top=box.min_z;
 	bot=box.max_z;
 
-	portal=&map.portals[rn];
-
-	nliquid=portal->liquid.nliquid;
+	nliquid=map.liquid.nliquid;
 	
 	for (n=0;n!=nliquid;n++) {
-		liq=&portal->liquid.liquids[n];
+		liq=&map.liquid.liquids[n];
 	
 		if (rgt<liq->lft) continue;
 		if (lft>liq->rgt) continue;
@@ -86,8 +83,7 @@ void object_liquid_contact(obj_type *obj)
 				obj->liquid_mode=lm_in;
 			}
             
-			obj->contact.liquid.portal_idx=rn;
-			obj->contact.liquid.liquid_idx=n;
+			obj->contact.liquid_idx=n;
         }
 	}
 }
@@ -100,14 +96,10 @@ void object_liquid_contact(obj_type *obj)
 
 float object_liquid_alter_speed(obj_type *obj)
 {
-	int					portal_idx;
-
 	if (obj->liquid_mode!=lm_under) return(1.0f);
+	if (obj->contact.liquid_idx==-1) return(1.0f);
 
-	portal_idx=obj->contact.liquid.portal_idx;
-	if (portal_idx==-1) return(1.0f);
-
-	return(map.portals[portal_idx].liquid.liquids[obj->contact.liquid.liquid_idx].speed_alter);
+	return(map.liquid.liquids[obj->contact.liquid_idx].speed_alter);
 }
 
 /* =======================================================
@@ -118,7 +110,7 @@ float object_liquid_alter_speed(obj_type *obj)
 
 void object_liquid(int tick,obj_type *obj)
 {
-	int					portal_idx,harm,old_liquid_mode;
+	int					harm,old_liquid_mode;
 	map_liquid_type		*liq;
 	
     old_liquid_mode=obj->liquid_mode;
@@ -127,15 +119,14 @@ void object_liquid(int tick,obj_type *obj)
     
         // leaving liquid
      
-	portal_idx=obj->contact.liquid.portal_idx;
-    if (portal_idx==-1) {
+    if (obj->contact.liquid_idx==-1) {
         if (old_liquid_mode!=lm_out) scripts_post_event_console(&obj->attach,sd_event_liquid,sd_event_liquid_out,0);
         return;
     }
     
         // entering or moving in liquid
         
-    liq=&map.portals[portal_idx].liquid.liquids[obj->contact.liquid.liquid_idx];
+    liq=&map.liquid.liquids[obj->contact.liquid_idx];
 
 	switch (obj->liquid_mode) {
 	

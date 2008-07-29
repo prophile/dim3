@@ -190,7 +190,7 @@ bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_ev
 	poly=&proj->contact.hit_poly;
 	slope_y=0.0f;
 
-	if (poly->portal_idx!=-1) slope_y=map.portals[poly->portal_idx].mesh.meshes[poly->mesh_idx].polys[poly->poly_idx].slope.y;
+	if (poly->mesh_idx!=-1) slope_y=map.mesh.meshes[poly->mesh_idx].polys[poly->poly_idx].slope.y;
 
 		// reset to last good position
 
@@ -249,8 +249,8 @@ void projectile_reflect(proj_type *proj,bool send_event)
 	mesh_poly=NULL;
 	wall_hit=FALSE;
 	
-	if (poly->portal_idx!=-1) {
-		mesh_poly=&map.portals[poly->portal_idx].mesh.meshes[poly->mesh_idx].polys[poly->poly_idx];
+	if (poly->mesh_idx!=-1) {
+		mesh_poly=&map.mesh.meshes[poly->mesh_idx].polys[poly->poly_idx];
 		wall_hit=mesh_poly->box.wall_like;
 	}
 

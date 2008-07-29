@@ -425,8 +425,8 @@ void object_start_jump(obj_type *obj)
 
 		poly_ptr=&obj->contact.stand_poly;
 
-		if (poly_ptr->portal_idx!=-1) {
-			mesh_poly=&map.portals[poly_ptr->portal_idx].mesh.meshes[poly_ptr->mesh_idx].polys[poly_ptr->poly_idx];
+		if (poly_ptr->mesh_idx!=-1) {
+			mesh_poly=&map.mesh.meshes[poly_ptr->mesh_idx].polys[poly_ptr->poly_idx];
 			if (!mesh_poly->box.flat) {
 				if (mesh_poly->slope.y>gravity_slope_max_y) return;
 			}
@@ -451,7 +451,7 @@ void object_liquid_jump(obj_type *obj)
 		// small jump if no polygon contact
 
 	jump_add=obj->jump.y_add;
-	if (obj->contact.hit_poly.portal_idx==-1) jump_add/=2;
+	if (obj->contact.hit_poly.mesh_idx==-1) jump_add/=2;
 
 		// jump out of water
 

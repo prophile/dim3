@@ -116,7 +116,7 @@ void model_get_vertex_extent_all(model_type *model,int *p_minx,int *p_maxx,int *
       
 ======================================================= */
 
-void model_get_view_complex_bounding_box(model_type *model,d3pos *pos,d3ang *ang,int *px,int *py,int *pz)
+void model_get_view_complex_bounding_box(model_type *model,d3pnt *pnt,d3ang *ang,int *px,int *py,int *pz)
 {
     int				n,sz;
 	float			fx,fy,fz;
@@ -144,9 +144,9 @@ void model_get_view_complex_bounding_box(model_type *model,d3pos *pos,d3ang *ang
 		matrix_vertex_multiply(&rot_x_mat,&fx,&fy,&fz);
 		matrix_vertex_multiply(&rot_z_mat,&fx,&fy,&fz);
 		matrix_vertex_multiply(&rot_y_mat,&fx,&fy,&fz);
-		px[n]=((int)fx)+pos->x;
-		py[n]=((int)fy)+pos->y;
-		pz[n]=((int)fz)+pos->z;
+		px[n]=((int)fx)+pnt->x;
+		py[n]=((int)fy)+pnt->y;
+		pz[n]=((int)fz)+pnt->z;
 	}
 }
 

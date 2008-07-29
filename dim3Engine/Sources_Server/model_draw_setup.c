@@ -61,10 +61,9 @@ void model_draw_setup_object(int tick,obj_type *obj)
 	
 		// position
 	
-	draw->pos.rn=obj->pos.rn;
-	draw->pos.x=obj->pos.x+draw->offset.x;
-	draw->pos.z=obj->pos.z+draw->offset.z;
-	draw->pos.y=obj->pos.y+draw->offset.y;
+	draw->pnt.x=obj->pos.x+draw->offset.x;
+	draw->pnt.z=obj->pos.z+draw->offset.z;
+	draw->pnt.y=obj->pos.y+draw->offset.y;
 
 		// regular drawing in 3D space
 
@@ -82,14 +81,14 @@ void model_draw_setup_object(int tick,obj_type *obj)
 
 		// rigid body offsets
 
-	if (obj->rigid_body.on) draw->pos.y+=obj->rigid_body.draw_offset_y;
+	if (obj->rigid_body.on) draw->pnt.y+=obj->rigid_body.draw_offset_y;
 	
 		// bounces
 
 	if (draw->bounce) {
 		model_bounce_cnt=(tick>>4)&0x3F;
 		if (model_bounce_cnt>32) model_bounce_cnt=64-model_bounce_cnt;
-		draw->pos.y-=model_bounce_cnt;
+		draw->pnt.y-=model_bounce_cnt;
 	}
 
 		// center
@@ -101,8 +100,8 @@ void model_draw_setup_object(int tick,obj_type *obj)
 		// angles
 		
 	if (draw->face_forward) {
-		setup->ang.x=angle_find(view.camera.pos.y,view.camera.pos.z,draw->pos.y,draw->pos.z);
-		setup->ang.y=angle_find(view.camera.pos.x,view.camera.pos.z,draw->pos.x,draw->pos.z);
+		setup->ang.x=angle_find(view.camera.pos.y,view.camera.pos.z,draw->pnt.y,draw->pnt.z);
+		setup->ang.y=angle_find(view.camera.pos.x,view.camera.pos.z,draw->pnt.x,draw->pnt.z);
 		setup->ang.z=0;
 	}
 	else {
@@ -146,10 +145,9 @@ void model_draw_setup_projectile(int tick,proj_type *proj)
 	
 		// position
 	
-	draw->pos.rn=proj->pos.rn;
-	draw->pos.x=proj->pos.x+draw->offset.x;
-	draw->pos.z=proj->pos.z+draw->offset.z;
-	draw->pos.y=proj->pos.y+draw->offset.y;
+	draw->pnt.x=proj->pos.x+draw->offset.x;
+	draw->pnt.z=proj->pos.z+draw->offset.z;
+	draw->pnt.y=proj->pos.y+draw->offset.y;
 
 		// regular drawing in 3D space
 
@@ -170,7 +168,7 @@ void model_draw_setup_projectile(int tick,proj_type *proj)
 	if (draw->bounce) {
 		model_bounce_cnt=(tick>>4)&0x3F;
 		if (model_bounce_cnt>32) model_bounce_cnt=64-model_bounce_cnt;
-		draw->pos.y-=model_bounce_cnt;
+		draw->pnt.y-=model_bounce_cnt;
 	}
 
 		// center
@@ -182,8 +180,8 @@ void model_draw_setup_projectile(int tick,proj_type *proj)
 		// angles
 		
 	if (draw->face_forward) {
-		setup->ang.x=angle_find(view.camera.pos.y,view.camera.pos.z,draw->pos.y,draw->pos.z);
-		setup->ang.y=angle_find(view.camera.pos.x,view.camera.pos.z,draw->pos.x,draw->pos.z);
+		setup->ang.x=angle_find(view.camera.pos.y,view.camera.pos.z,draw->pnt.y,draw->pnt.z);
+		setup->ang.y=angle_find(view.camera.pos.x,view.camera.pos.z,draw->pnt.x,draw->pnt.z);
 		setup->ang.z=0;
 	}
 	else {
@@ -262,10 +260,9 @@ void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignor
 	
 		// position
 		
-	draw->pos.rn=obj->pos.rn;
-	draw->pos.x=(int)fx+obj->pos.x;
-	draw->pos.y=(int)fy+obj->pos.y;
-	draw->pos.z=(int)fz+obj->pos.z;
+	draw->pnt.x=(int)fx+obj->pos.x;
+	draw->pnt.y=(int)fy+obj->pos.y;
+	draw->pnt.z=(int)fz+obj->pos.z;
 
 		// weapons need rotation fixes
 		// as they are rendered without rotation in fpp

@@ -122,7 +122,7 @@ double light_get_intensity(int light_type,int intensity)
       
 ======================================================= */
 
-void light_add(d3pos *pos,int light_type,int intensity,bool confine_to_portal,d3col *col)
+void light_add(d3pos *pnt,int light_type,int intensity,bool confine_to_portal,d3col *col)
 {
 	light_spot_type			*lspot;
 	
@@ -137,9 +137,7 @@ void light_add(d3pos *pos,int light_type,int intensity,bool confine_to_portal,d3
 	
 		// create light position and color
 		
-	lspot->pnt.x=pos->x;
-	lspot->pnt.z=pos->z;
-	lspot->pnt.y=pos->y;
+	memmove(&lspot->pnt,pnt,sizeof(d3pnt));
 	memmove(&lspot->col,col,sizeof(d3col));
 
 		// calculate inverses

@@ -49,51 +49,6 @@ extern maputility_settings_type		maputility_settings;
       
 ======================================================= */
 
-bool portal_has_map_light(map_type *map,int rn)
-{
-	int				n;
-	map_light_type	*light;
-	
-	light=map->lights;
-	
-	for (n=0;n!=map->nlight;n++) {
-		if (light->pos.rn==rn) return(TRUE);
-		light++;
-	}
-	
-	return(FALSE);
-}
-
-bool portal_has_map_sound(map_type *map,int rn)
-{
-	int				n;
-	map_sound_type	*sound;
-	
-	sound=map->sounds;
-	
-	for (n=0;n!=map->nsound;n++) {
-		if (sound->pos.rn==rn) return(TRUE);
-		sound++;
-	}
-	
-	return(FALSE);
-}
-
-bool portal_has_map_particle(map_type *map,int rn)
-{
-	int					n;
-	map_particle_type	*particle;
-	
-	particle=map->particles;
-	
-	for (n=0;n!=map->nparticle;n++) {
-		if (particle->pos.rn==rn) return(TRUE);
-		particle++;
-	}
-	
-	return(FALSE);
-}
-
 bool portal_has_node(map_type *map,int rn)
 {
 	int				n;
@@ -501,6 +456,8 @@ bool write_map_xml(map_type *map)
     spot_type				*spot;
 	map_scenery_type		*scenery;
 
+	return(TRUE);			// supergumba -- do not write maps yet
+
     xml_new_file();
     
     xml_add_tagstart("Map");
@@ -644,72 +601,6 @@ bool write_map_xml(map_type *map)
 			xml_add_tagclose("Sceneries");
 		}
 		
-			// lights
-        
-		if (portal_has_map_light(map,n)) {
-			xml_add_tagstart("Lights");
-			xml_add_tagend(FALSE);
-		
-			for (k=0;k!=map->nlight;k++) {
-				light=&map->lights[k];
-				if (light->pos.rn!=n) continue;
-		
-				xml_add_tagstart("Light");
-				xml_add_attribute_list("type",(char*)light_type_str,light->type);
-				xml_add_attribute_3_coord_int("c3",light->pos.x,light->pos.y,light->pos.z);
-				xml_add_attribute_int("intensity",light->intensity);
-				xml_add_attribute_color("rgb",&light->col);
-				xml_add_attribute_boolean("confine",light->confine_to_portal);
-				xml_add_attribute_boolean("off",!light->on);
-				xml_add_tagend(TRUE);
-			}
-			
-			xml_add_tagclose("Lights");
-		}
-    
-			// sounds
-			
-		if (portal_has_map_sound(map,n)) {
-			xml_add_tagstart("Sounds");
-			xml_add_tagend(FALSE);
-			
-			for (k=0;k!=map->nsound;k++) {
-				sound=&map->sounds[k];
-				if (sound->pos.rn!=n) continue;
-			
-				xml_add_tagstart("Sound");
-				xml_add_attribute_text("name",sound->name);
-				xml_add_attribute_3_coord_int("c3",sound->pos.x,sound->pos.y,sound->pos.z);
-				xml_add_attribute_float("pitch",sound->pitch);
-				xml_add_attribute_boolean("off",!sound->on);
-				xml_add_tagend(TRUE);
-			}
-			
-			xml_add_tagclose("Sounds");
-		}
-		
-			// particles
-			
-		if (portal_has_map_particle(map,n)) {
-			xml_add_tagstart("Particles");
-			xml_add_tagend(FALSE);
-			
-			for (k=0;k!=map->nparticle;k++) {
-				particle=&map->particles[k];
-				if (particle->pos.rn!=n) continue;
-			
-				xml_add_tagstart("Particle");
-				xml_add_attribute_text("name",particle->name);
-				xml_add_attribute_3_coord_int("c3",particle->pos.x,particle->pos.y,particle->pos.z);
-				xml_add_attribute_int("spawn_tick",particle->spawn_tick);
-				xml_add_attribute_int("slop_tick",particle->slop_tick);
-				xml_add_attribute_boolean("off",!particle->on);
-				xml_add_tagend(TRUE);
-			}
-			
-			xml_add_tagclose("Particles");
-		}
-		
 			// nodes
         
 		if (portal_has_node(map,n)) {
@@ -776,7 +667,67 @@ bool write_map_xml(map_type *map)
     }
             
     xml_add_tagclose("Portals");
+
+		
+		// lights
+    
+	xml_add_tagstart("Lights");
+	xml_add_tagend(FALSE);
+
+	for (k=0;k!=map->nlight;k++) {
+		light=&map->lights[k];
+
+		xml_add_tagstart("Light");
+		xml_add_attribute_list("type",(char*)light_type_str,light->type);
+		xml_add_attribute_3_coord_int("c3",light->pnt.x,light->pnt.y,light->pnt.z);
+		xml_add_attribute_int("intensity",light->intensity);
+		xml_add_attribute_color("rgb",&light->col);
+		xml_add_attribute_boolean("confine",light->confine_to_portal);
+		xml_add_attribute_boolean("off",!light->on);
+		xml_add_tagend(TRUE);
+	}
 	
+	xml_add_tagclose("Lights");
+
+		// sounds
+		
+	xml_add_tagstart("Sounds");
+	xml_add_tagend(FALSE);
+	
+	for (k=0;k!=map->nsound;k++) {
+		sound=&map->sounds[k];
+	
+		xml_add_tagstart("Sound");
+		xml_add_attribute_text("name",sound->name);
+		xml_add_attribute_3_coord_int("c3",sound->pnt.x,sound->pnt.y,sound->pnt.z);
+		xml_add_attribute_float("pitch",sound->pitch);
+		xml_add_attribute_boolean("off",!sound->on);
+		xml_add_tagend(TRUE);
+	}
+	
+	xml_add_tagclose("Sounds");
+	
+		// particles
+		
+	xml_add_tagstart("Particles");
+	xml_add_tagend(FALSE);
+	
+	for (k=0;k!=map->nparticle;k++) {
+		particle=&map->particles[k];
+	
+		xml_add_tagstart("Particle");
+		xml_add_attribute_text("name",particle->name);
+		xml_add_attribute_3_coord_int("c3",particle->pnt.x,particle->pnt.y,particle->pnt.z);
+		xml_add_attribute_int("spawn_tick",particle->spawn_tick);
+		xml_add_attribute_int("slop_tick",particle->slop_tick);
+		xml_add_attribute_boolean("off",!particle->on);
+		xml_add_tagend(TRUE);
+	}
+	
+	xml_add_tagclose("Particles");
+
+		// close map
+
     xml_add_tagclose("Map");
 
         // save the map

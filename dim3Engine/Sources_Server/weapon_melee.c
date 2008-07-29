@@ -195,9 +195,9 @@ bool melee_strike_position_weapon_model(int tick,obj_type *obj,weapon_type *weap
 	
 		// move fire point to weapon
 
-	fire_pnt->x+=weap->draw.pos.x;
-	fire_pnt->y+=weap->draw.pos.y+obj->duck.y_move;
-	fire_pnt->z+=weap->draw.pos.z;
+	fire_pnt->x+=weap->draw.pnt.x;
+	fire_pnt->y+=weap->draw.pnt.y+obj->duck.y_move;
+	fire_pnt->z+=weap->draw.pnt.z;
 
 	if (weap->draw.no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 
@@ -255,9 +255,9 @@ bool melee_strike_position_object_model(int tick,obj_type *obj,weapon_type *weap
 	
 		// move fire point to obj
 
-	fire_pnt->x+=obj->draw.pos.x;
-	fire_pnt->y+=obj->draw.pos.y+obj->duck.y_move;
-	fire_pnt->z+=obj->draw.pos.z;
+	fire_pnt->x+=obj->draw.pnt.x;
+	fire_pnt->y+=obj->draw.pnt.y+obj->duck.y_move;
+	fire_pnt->z+=obj->draw.pnt.z;
 
 	if (obj->draw.no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 
@@ -305,9 +305,9 @@ bool melee_strike_position_projectile_model(int tick,obj_type *obj,weapon_type *
 	
 		// move fire point to projectile
 
-	fire_pnt->x+=proj->draw.pos.x;
-	fire_pnt->y+=proj->draw.pos.y;
-	fire_pnt->z+=proj->draw.pos.z;
+	fire_pnt->x+=proj->draw.pnt.x;
+	fire_pnt->y+=proj->draw.pnt.y;
+	fire_pnt->z+=proj->draw.pnt.z;
 
 	if (proj->draw.no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 

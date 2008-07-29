@@ -41,17 +41,17 @@ extern setup_type			setup;
       
 ======================================================= */
 
-void view_draw_liquid_tint(liquid_pointer_type *liq_ptr)
+void view_draw_liquid_tint(int liquid_idx)
 {
 	map_liquid_type		*liq;
 	
 		// under liquid
 		
-	if (liq_ptr->portal_idx==-1) return;
+	if (liquid_idx==-1) return;
 	
 		// get the liquid
 		
-	liq=&map.portals[liq_ptr->portal_idx].liquid.liquids[liq_ptr->liquid_idx];
+	liq=&map.liquid.liquids[liquid_idx];
 	
 		// draw
 

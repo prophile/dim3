@@ -115,11 +115,11 @@ void object_clear_force(obj_force *force)
 
 void object_clear_contact(obj_contact *contact)
 {
-	contact->hit_poly.portal_idx=-1;
-	contact->stand_poly.portal_idx=-1;
-	contact->head_poly.portal_idx=-1;
+	contact->hit_poly.mesh_idx=-1;
+	contact->stand_poly.mesh_idx=-1;
+	contact->head_poly.mesh_idx=-1;
 
-	contact->liquid.portal_idx=-1;
+	contact->liquid_idx=-1;
 	
 	contact->obj_uid=-1;
 	contact->proj_uid=-1;
@@ -442,7 +442,7 @@ obj_type* object_create(int bind)
 
 	obj->slope_gravity=TRUE;
 	
-	obj->bounce.portal_idx=-1;
+	obj->bounce.mesh_idx=-1;
 	obj->bounce.factor=0.0f;
 	
 	obj->turn.ignore_mouse=FALSE;

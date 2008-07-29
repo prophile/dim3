@@ -58,9 +58,9 @@ void ring_draw_position(effect_type *effect,int count,int *x,int *y,int *z)
 
 	m_tick=((float)count)/10.0f;
 	
-	*x=effect->pos.x+(int)(ring->vct.x*m_tick);
-	*y=effect->pos.y+(int)(ring->vct.y*m_tick);
-	*z=effect->pos.z+(int)(ring->vct.z*m_tick);
+	*x=effect->pnt.x+(int)(ring->vct.x*m_tick);
+	*y=effect->pnt.y+(int)(ring->vct.y*m_tick);
+	*z=effect->pnt.z+(int)(ring->vct.z*m_tick);
 }
 
 /* =======================================================

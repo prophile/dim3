@@ -114,7 +114,7 @@ void rain_draw(int tick)
 		// is rain on and not under liquid?
 
 	if (!map.rain.on) return;
-	if (view.camera.under_liquid.portal_idx!=-1) return;
+	if (view.camera.under_liquid_idx!=-1) return;
 	
 	cx=view.camera.pos.x;
 	cy=view.camera.pos.y;

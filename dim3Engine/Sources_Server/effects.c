@@ -70,10 +70,7 @@ effect_type* effect_spawn(int effecttype,d3pnt *pt,int life_tick)
 	
 	effect->effecttype=effecttype;
 	
-	effect->pos.x=pt->x;
-	effect->pos.y=pt->y;
-	effect->pos.z=pt->z;
-	map_find_portal_by_pos(&map,&effect->pos);
+	memmove(&effect->pnt,pt,sizeof(d3pnt));
 
 	effect->start_tick=game_time_get();
 	effect->life_tick=life_tick;

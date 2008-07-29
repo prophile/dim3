@@ -48,9 +48,9 @@ bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly)
 {
 	map_mesh_poly_type		*mesh_poly;
 
-	if (hit_poly->portal_idx==-1) return(FALSE);
+	if (hit_poly->mesh_idx==-1) return(FALSE);
 
-	mesh_poly=&map.portals[hit_poly->portal_idx].mesh.meshes[hit_poly->mesh_idx].polys[hit_poly->poly_idx];
+	mesh_poly=&map.mesh.meshes[hit_poly->mesh_idx].polys[hit_poly->poly_idx];
 	return(mesh_poly->box.wall_like);
 }
 
@@ -239,10 +239,10 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		// for bump-capable segments as it pushes
 		// the object around on stairs
 		
-	if (contact[idx].poly.portal_idx!=-1) {
+	if (contact[idx].poly.mesh_idx!=-1) {
 	
 		if (obj->bump.on) {
-			poly=&map.portals[contact[idx].poly.portal_idx].mesh.meshes[contact[idx].poly.mesh_idx].polys[contact[idx].poly.poly_idx];
+			poly=&map.mesh.meshes[contact[idx].poly.mesh_idx].polys[contact[idx].poly.poly_idx];
 			bump=((obj->pos.y-poly->box.min.y)<=obj->bump.high);
 		}
 		else {
@@ -271,7 +271,7 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	
 		// setup the hits
 
-	if (contact[idx].poly.portal_idx!=-1) {
+	if (contact[idx].poly.mesh_idx!=-1) {
 		memmove(&obj->contact.hit_poly,&contact[idx].poly,sizeof(poly_pointer_type));
 	}
 

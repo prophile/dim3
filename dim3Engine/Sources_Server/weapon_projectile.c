@@ -164,9 +164,9 @@ bool weapon_get_projectile_position_angle_weapon_model(int tick,obj_type *obj,we
 
 	model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 
-	fire_pnt->x+=weap->draw.pos.x;
-	fire_pnt->y+=weap->draw.pos.y;
-	fire_pnt->z+=weap->draw.pos.z;
+	fire_pnt->x+=weap->draw.pnt.x;
+	fire_pnt->y+=weap->draw.pnt.y;
+	fire_pnt->z+=weap->draw.pnt.z;
 
 	if (weap->draw.no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 	
@@ -219,9 +219,9 @@ bool weapon_get_projectile_position_angle_weapon_barrel(int tick,obj_type *obj,w
 
 	model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 
-	fire_pnt->x+=weap->draw.pos.x;
-	fire_pnt->y+=weap->draw.pos.y;
-	fire_pnt->z+=weap->draw.pos.z;
+	fire_pnt->x+=weap->draw.pnt.x;
+	fire_pnt->y+=weap->draw.pnt.y;
+	fire_pnt->z+=weap->draw.pnt.z;
 
 	if (weap->draw.no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 
@@ -235,9 +235,9 @@ bool weapon_get_projectile_position_angle_weapon_barrel(int tick,obj_type *obj,w
 
 	model_get_draw_bone_position(setup,bone_idx,&barrel_pnt.x,&barrel_pnt.y,&barrel_pnt.z);
 	
-	barrel_pnt.x+=weap->draw.pos.x;
-	barrel_pnt.y+=weap->draw.pos.y;
-	barrel_pnt.z+=weap->draw.pos.z;
+	barrel_pnt.x+=weap->draw.pnt.x;
+	barrel_pnt.y+=weap->draw.pnt.y;
+	barrel_pnt.z+=weap->draw.pnt.z;
 
 	if (weap->draw.no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&barrel_pnt.x,&barrel_pnt.y,&barrel_pnt.z);
 
@@ -294,9 +294,9 @@ bool weapon_get_projectile_position_angle_object_model(int tick,obj_type *obj,we
 
 		// move fire point in front of obj
 
-	fire_pnt->x+=obj->draw.pos.x;
-	fire_pnt->y+=obj->draw.pos.y;
-	fire_pnt->z+=obj->draw.pos.z;
+	fire_pnt->x+=obj->draw.pnt.x;
+	fire_pnt->y+=obj->draw.pnt.y;
+	fire_pnt->z+=obj->draw.pnt.z;
 
 	if (weap->draw.no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 	

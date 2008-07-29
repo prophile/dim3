@@ -43,7 +43,7 @@ extern light_spot_type		lspot_cache[max_light_spot];
       
 ======================================================= */
 
-void model_diffuse_color(model_type *mdl,int mesh_idx,int rn,int x,int z,int y,model_draw *draw)
+void model_diffuse_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw *draw)
 {
 	int				i,nt;
 	float			f;
@@ -118,28 +118,26 @@ void model_build_color_setup_lights(model_type *mdl,model_draw *draw)
 {
 	int						i;
 	float					fx,fy,fz;
-	d3pos					pos;
+	d3pnt					pnt;
 	matrix_type				mat;
 	light_spot_type			*lspot;
 	
-	memmove(&pos,&draw->pos,sizeof(d3pos));
+	memmove(&pnt,&draw->pnt,sizeof(d3pnt));
 	
 		// need to move model if no rot on
 		
 	if (draw->no_rot.on) {
 		matrix_rotate_y(&mat,draw->no_rot.ang.y);
 
-		fx=(float)(pos.x-draw->no_rot.center.x);
-		fy=(float)(pos.y-draw->no_rot.center.y);
-		fz=(float)(pos.z-draw->no_rot.center.z);
+		fx=(float)(pnt.x-draw->no_rot.center.x);
+		fy=(float)(pnt.y-draw->no_rot.center.y);
+		fz=(float)(pnt.z-draw->no_rot.center.z);
 		
 		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 		
-		pos.x=((int)fx)+draw->no_rot.center.x;
-		pos.y=((int)fy)+draw->no_rot.center.y;
-		pos.z=((int)fz)+draw->no_rot.center.z;
-		
-		map_find_portal_by_pos(&map,&pos);
+		pnt.x=((int)fx)+draw->no_rot.center.x;
+		pnt.y=((int)fy)+draw->no_rot.center.y;
+		pnt.z=((int)fz)+draw->no_rot.center.z;
 	}
 
 		// create lighting spots for model
@@ -148,12 +146,12 @@ void model_build_color_setup_lights(model_type *mdl,model_draw *draw)
 	lspot=lspot_cache;
 
 	for (i=0;i!=nlight;i++) {
-		model_add_light(mdl,&pos,lspot,map.ambient.light_drop_off_factor);
+		model_add_light(mdl,&pnt,lspot,map.ambient.light_drop_off_factor);
 		lspot++;
 	}
 }
 
-void model_build_color(model_type *mdl,int mesh_idx,int rn,int x,int z,int y,model_draw *draw)
+void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw *draw)
 {
 	int				i,nt,lit;
 	float			col[3],normal[3],r,g,b,
@@ -163,7 +161,6 @@ void model_build_color(model_type *mdl,int mesh_idx,int rn,int x,int z,int y,mod
 	d3col			light_base;
 	matrix_type		mat;
 	model_mesh_type	*mesh;
-	portal_type		*portal;
 		
 	fx=(float)x;
 	fy=(float)y;
@@ -179,8 +176,6 @@ void model_build_color(model_type *mdl,int mesh_idx,int rn,int x,int z,int y,mod
 	
 		// run the lighting
 		
-	portal=&map.portals[rn];
-	
 	mesh=&mdl->meshes[mesh_idx];
 	nt=mesh->nvertex;
 	pc=mesh->gl_color_array;
@@ -279,7 +274,7 @@ void model_build_color(model_type *mdl,int mesh_idx,int rn,int x,int z,int y,mod
 			*pln++=1.0f;
 		}
 		
-		if ((setup.diffuse_lighting) && (lit==ml_hilite_diffuse)) model_diffuse_color(mdl,mesh_idx,rn,x,z,y,draw);
+		if ((setup.diffuse_lighting) && (lit==ml_hilite_diffuse)) model_diffuse_color(mdl,mesh_idx,x,z,y,draw);
 		
 		return;
 	}
@@ -326,7 +321,7 @@ void model_build_color(model_type *mdl,int mesh_idx,int rn,int x,int z,int y,mod
 	
 		// diffuse colors
 
-	if (setup.diffuse_lighting) model_diffuse_color(mdl,mesh_idx,rn,x,z,y,draw);
+	if (setup.diffuse_lighting) model_diffuse_color(mdl,mesh_idx,x,z,y,draw);
 }
 
 /* =======================================================

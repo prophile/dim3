@@ -356,7 +356,7 @@ extern void model_translate_draw_vertex(model_type *model,int mesh_idx,int x,int
 extern void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 
 extern void model_clear_lights(model_type *model);
-extern void model_add_light(model_type *model,d3pos *model_pos,light_spot_type *lspot,float drop_off_factor);
+extern void model_add_light(model_type *model,d3pnt *model_pos,light_spot_type *lspot,float drop_off_factor);
 extern light_spot_type* model_find_closest_light(model_type *model,double x,double y,double z,int *p_dist);
 extern void model_calculate_light_color_and_normal(model_type *model,d3col *light_base,double x,double y,double z,float *cf,float *nf);
 extern void model_calculate_normal_vector(model_type *model,double x,double y,double z,float *nf);
@@ -371,7 +371,7 @@ extern bool model_get_name_position(model_type *model,model_draw_setup *draw_set
 extern void model_get_size(model_type *model,int *x,int *y,int *z);
 extern void model_get_vertex_extent(model_type *model,int mesh_idx,int *p_minx,int *p_maxx,int *p_minz,int *p_maxz,int *p_miny,int *p_maxy);
 extern void model_get_vertex_extent_all(model_type *model,int *p_minx,int *p_maxx,int *p_minz,int *p_maxz,int *p_miny,int *p_maxy);
-extern void model_get_view_complex_bounding_box(model_type *model,d3pos *pos,d3ang *ang,int *px,int *py,int *pz);
+extern void model_get_view_complex_bounding_box(model_type *model,d3pnt *pnt,d3ang *ang,int *px,int *py,int *pz);
 extern void model_recalc_boxes(model_type *model);
 
 extern void model_recalc_normals(model_type *model,int mesh_idx);

@@ -283,11 +283,10 @@ void map_convert_enlarge(map_type *map,int seg_cnt,segment_type *seg_list)
 	light=map->lights;
 	
 	for (n=0;n!=map->nlight;n++) {
-		portal=&map->portals[light->pos.rn];
 		light->intensity*=map_enlarge;
-		light->pos.x=(light->pos.x*map_enlarge);
-		light->pos.y=(light->pos.y+1)*map_enlarge;
-		light->pos.z=(light->pos.z*map_enlarge);
+		light->pnt.x=(light->pnt.x*map_enlarge);
+		light->pnt.y=(light->pnt.y+1)*map_enlarge;
+		light->pnt.z=(light->pnt.z*map_enlarge);
 		light++;
 	}
 	
@@ -296,10 +295,9 @@ void map_convert_enlarge(map_type *map,int seg_cnt,segment_type *seg_list)
 	sound=map->sounds;
 	
 	for (n=0;n!=map->nsound;n++) {
-		portal=&map->portals[sound->pos.rn];
-		sound->pos.x=(sound->pos.x*map_enlarge);
-		sound->pos.y=(sound->pos.y+1)*map_enlarge;
-		sound->pos.z=(sound->pos.z*map_enlarge);
+		sound->pnt.x=(sound->pnt.x*map_enlarge);
+		sound->pnt.y=(sound->pnt.y+1)*map_enlarge;
+		sound->pnt.z=(sound->pnt.z*map_enlarge);
 		
 		sound++;
 	}
@@ -309,10 +307,9 @@ void map_convert_enlarge(map_type *map,int seg_cnt,segment_type *seg_list)
 	particle=map->particles;
 	
 	for (n=0;n!=map->nparticle;n++) {
-		portal=&map->portals[particle->pos.rn];
-		particle->pos.x=(particle->pos.x*map_enlarge);
-		particle->pos.y=(particle->pos.y+1)*map_enlarge;
-		particle->pos.z=(particle->pos.z*map_enlarge);
+		particle->pnt.x=(particle->pnt.x*map_enlarge);
+		particle->pnt.y=(particle->pnt.y+1)*map_enlarge;
+		particle->pnt.z=(particle->pnt.z*map_enlarge);
 		
 		particle++;
 	}
@@ -1419,9 +1416,8 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					light=&map->lights[map->nlight];
 					map->nlight++;
 					
-					light->pos.rn=i;
 					light->type=xml_get_attribute_list(light_tag,"type",(char*)light_type_str);
-					xml_get_attribute_3_coord_int(light_tag,"c3",&light->pos.x,&light->pos.y,&light->pos.z);
+					xml_get_attribute_3_coord_int(light_tag,"c3",&light->pnt.x,&light->pnt.y,&light->pnt.z);
 					light->intensity=xml_get_attribute_int(light_tag,"intensity");
 					xml_get_attribute_color(light_tag,"rgb",&light->col);
 					light->confine_to_portal=xml_get_attribute_boolean(light_tag,"confine");
@@ -1445,9 +1441,8 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					sound=&map->sounds[map->nsound];
 					map->nsound++;
 					
-					sound->pos.rn=i;
 					xml_get_attribute_text(sound_tag,"name",sound->name,file_str_len);
-					xml_get_attribute_3_coord_int(sound_tag,"c3",&sound->pos.x,&sound->pos.y,&sound->pos.z);
+					xml_get_attribute_3_coord_int(sound_tag,"c3",&sound->pnt.x,&sound->pnt.y,&sound->pnt.z);
 					sound->pitch=xml_get_attribute_float(sound_tag,"pitch");
 					sound->on=!xml_get_attribute_boolean(sound_tag,"off");
 					
@@ -1469,9 +1464,8 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					particle=&map->particles[map->nparticle];
 					map->nparticle++;
 					
-					particle->pos.rn=i;
 					xml_get_attribute_text(particle_tag,"name",particle->name,file_str_len);
-					xml_get_attribute_3_coord_int(particle_tag,"c3",&particle->pos.x,&particle->pos.y,&particle->pos.z);
+					xml_get_attribute_3_coord_int(particle_tag,"c3",&particle->pnt.x,&particle->pnt.y,&particle->pnt.z);
 					particle->spawn_tick=xml_get_attribute_int(particle_tag,"spawn_tick");
 					particle->slop_tick=xml_get_attribute_int(particle_tag,"slop_tick");
 					particle->on=!xml_get_attribute_boolean(particle_tag,"off");

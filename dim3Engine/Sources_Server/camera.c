@@ -156,31 +156,20 @@ void camera_get_angle_from(d3pnt *pt,d3ang *ang)
       
 ======================================================= */
 
-void camera_check_liquid(d3pos *pos,liquid_pointer_type *liq_ptr)
+int camera_check_liquid(d3pos *pos)
 {
-	int					n,nliquid,rn;
+	int					n,nliquid;
 	map_liquid_type		*liq;
-	portal_type			*portal;
 	
-	rn=pos->rn;
-
-	portal=&map.portals[rn];
-
-	nliquid=portal->liquid.nliquid;
-	liq=portal->liquid.liquids;
+	nliquid=map.liquid.nliquid;
+	liq=map.liquid.liquids;
 	
 	for (n=0;n!=nliquid;n++) {
-
-		if ((pos->x>=liq->lft) && (pos->x<=liq->rgt) && (pos->z>=liq->top) && (pos->z<=liq->bot) && (pos->y>=liq->y)) {
-			liq_ptr->portal_idx=rn;
-			liq_ptr->liquid_idx=n;
-			return;
-		}
-
+		if ((pos->x>=liq->lft) && (pos->x<=liq->rgt) && (pos->z>=liq->top) && (pos->z<=liq->bot) && (pos->y>=liq->y)) return(n);
 		liq++;
 	}
 
-	liq_ptr->portal_idx=-1;
+	return(-1);
 }
 
 /* =======================================================

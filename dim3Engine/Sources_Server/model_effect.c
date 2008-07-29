@@ -102,9 +102,9 @@ void model_animation_effect_launch_bone_position(model_draw *draw,int animate_id
 
 		// default to center of model
 
-	pt->x=draw->pos.x;
-	pt->y=draw->pos.y;
-	pt->z=draw->pos.z;
+	pt->x=draw->pnt.x;
+	pt->y=draw->pnt.y;
+	pt->z=draw->pnt.z;
 
 		// get model
 
@@ -118,9 +118,9 @@ void model_animation_effect_launch_bone_position(model_draw *draw,int animate_id
 
 	if (bone_idx!=-1) {
 		model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,&pt->x,&pt->y,&pt->z);
-		pt->x+=draw->pos.x;
-		pt->y+=draw->pos.y;
-		pt->z+=draw->pos.z;
+		pt->x+=draw->pnt.x;
+		pt->y+=draw->pnt.y;
+		pt->z+=draw->pnt.z;
 
 		if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&pt->x,&pt->y,&pt->z);
 	}

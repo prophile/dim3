@@ -93,9 +93,9 @@ void particle_draw_position(effect_type *effect,int count,int *x,int *y,int *z)
 
 		// position
 	
-	mx=effect->pos.x;
-	my=effect->pos.y;
-	mz=effect->pos.z;
+	mx=effect->pnt.x;
+	my=effect->pnt.y;
+	mz=effect->pnt.z;
 
 	eff_particle=&effect->data.particle;
 

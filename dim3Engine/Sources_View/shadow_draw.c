@@ -173,7 +173,8 @@ int shadow_render_stencil_portal(portal_type *portal,int y,int ty,int by,int cnt
 
 int shadow_render_stencil_map(model_draw_shadow *shadow,int *seg_idx)
 {
-	int						i,cnt,rn,ty,by,y,high;
+	/*
+	int						i,cnt,ty,by,y,high;
 	portal_type				*portal;
 	portal_sight_list_type	*sight;
 		
@@ -185,8 +186,7 @@ int shadow_render_stencil_map(model_draw_shadow *shadow,int *seg_idx)
 	
 		// find segments that intersect shadow volume
 	
-	rn=shadow->pos.rn;
-	y=shadow->pos.y;
+	y=shadow->pnt.y;
 	high=shadow->high;
 
 	high=high>>1;	
@@ -231,6 +231,9 @@ int shadow_render_stencil_map(model_draw_shadow *shadow,int *seg_idx)
 		// shadow segment count
 		
 	return(cnt);
+	*/
+
+	return(0);
 }
 
 /* =======================================================

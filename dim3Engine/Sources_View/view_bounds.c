@@ -196,12 +196,11 @@ bool model_inview(model_draw *draw)
 	model_type		*mdl;
 
 	if ((draw->uid==-1) || (!draw->on)) return(FALSE);
-	if (!map.portals[draw->pos.rn].in_path) return(FALSE);
 	
 	mdl=model_find_uid(draw->uid);
 	if (mdl==NULL) return(FALSE);
 		
-	model_get_view_complex_bounding_box(mdl,&draw->pos,&draw->setup.ang,px,py,pz);
+	model_get_view_complex_bounding_box(mdl,&draw->pnt,&draw->setup.ang,px,py,pz);
 	return(complex_boundbox_inview(px,py,pz));
 }
 
@@ -216,8 +215,6 @@ bool effect_inview(effect_type *effect,int count)
 	int				x,y,z,lx,rx,tz,bz,ty,by,gravity_y,k,size;
 	particle_type	*particle;
 	
-	if (!map.portals[effect->pos.rn].in_path) return(FALSE);
-
 	switch (effect->effecttype) {
 
 		case ef_particle:
@@ -273,11 +270,11 @@ bool effect_inview(effect_type *effect,int count)
 
 		default:
 			size=effect->size;
-			lx=effect->pos.x-(size>>1);
+			lx=effect->pnt.x-(size>>1);
 			rx=lx+size;
-			tz=effect->pos.z-(size>>1);
+			tz=effect->pnt.z-(size>>1);
 			bz=tz+size;
-			by=effect->pos.y;
+			by=effect->pnt.y;
 			ty=by-size;
 			break;
 	}

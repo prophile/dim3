@@ -219,19 +219,7 @@ void map_portal_delete(map_type *map,int rn)
 	for (n=0;n!=map->nscenery;n++) {
 		if (map->sceneries[n].pos.rn>rn) map->sceneries[n].pos.rn--;
 	}
-	
-	for (n=0;n!=map->nsound;n++) {
-		if (map->sounds[n].pos.rn>rn) map->sounds[n].pos.rn--;
-	}
-	
-	for (n=0;n!=map->nlight;n++) {
-		if (map->lights[n].pos.rn>rn) map->lights[n].pos.rn--;
-	}
-	
-	for (n=0;n!=map->nparticle;n++) {
-		if (map->particles[n].pos.rn>rn) map->particles[n].pos.rn--;
-	}
-	
+		
 		// adjust sight paths
 		
 	map_portal_sight_delete_adjust_path(map,rn);
@@ -332,36 +320,6 @@ int map_portal_duplicate(map_type *map,int rn,int x,int z)
 			memmove(&map->sceneries[map->nscenery],&map->sceneries[n],sizeof(map_scenery_type));
 			map->sceneries[map->nscenery].pos.rn=rn;
 			map->nscenery++;
-		}
-	}
-	
-	for (n=0;n!=map->nsound;n++) {
-		if (map->sounds[n].pos.rn==old_rn) {
-			if (map->nsound>=max_map_sound) break;
-
-			memmove(&map->sounds[map->nsound],&map->sounds[n],sizeof(map_sound_type));
-			map->sounds[map->nsound].pos.rn=rn;
-			map->nsound++;
-		}
-	}
-	
-	for (n=0;n!=map->nlight;n++) {
-		if (map->lights[n].pos.rn==old_rn) {
-			if (map->nlight>=max_map_light) break;
-
-			memmove(&map->lights[map->nlight],&map->lights[n],sizeof(map_light_type));
-			map->lights[map->nlight].pos.rn=rn;
-			map->nlight++;
-		}
-	}
-	
-	for (n=0;n!=map->nparticle;n++) {
-		if (map->particles[n].pos.rn==old_rn) {
-			if (map->nparticle>=max_map_particle) break;
-
-			memmove(&map->particles[map->nparticle],&map->particles[n],sizeof(map_particle_type));
-			map->particles[map->nparticle].pos.rn=rn;
-			map->nparticle++;
 		}
 	}
 	

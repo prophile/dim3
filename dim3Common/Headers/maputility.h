@@ -352,7 +352,7 @@ typedef struct		{
 						short						type;
 						int							intensity;
 						bool						on,confine_to_portal;
-						d3pos						pos;
+						d3pnt						pnt;
 						d3col						col;
 					} map_light_type;
 					
@@ -361,7 +361,7 @@ typedef struct		{
                         float						pitch;
 						char						name[name_str_len];
 						bool						on;
-						d3pos						pos;
+						d3pnt						pnt;
 					} map_sound_type;
 					
 typedef struct		{
@@ -369,7 +369,7 @@ typedef struct		{
 													particle_idx;
 						char						name[name_str_len];
 						bool						on;
-						d3pos						pos;
+						d3pnt						pnt;
 					} map_particle_type;
                     
 //

@@ -284,9 +284,9 @@ void effect_draw_globe(effect_type *effect,int count)
 	alpha=globe->end_alpha-globe->start_alpha;
 	alpha=((alpha*(float)count)/(float)life_tick)+globe->start_alpha;
 
-	x=effect->pos.x-view.camera.pos.x;
-	y=effect->pos.y-view.camera.pos.y;
-	z=view.camera.pos.z-effect->pos.z;
+	x=effect->pnt.x-view.camera.pos.x;
+	y=effect->pnt.y-view.camera.pos.y;
+	z=view.camera.pos.z-effect->pnt.z;
 
 		// draw globe
 
@@ -389,7 +389,7 @@ void effect_draw(int tick)
 		
 			// get effect distance
 			
-		dist=distance_to_view_center(effect->pos.x,effect->pos.y,effect->pos.z);
+		dist=distance_to_view_center(effect->pnt.x,effect->pnt.y,effect->pnt.z);
 		
 			// sort into list
 		

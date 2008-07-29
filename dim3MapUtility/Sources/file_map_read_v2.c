@@ -371,13 +371,15 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 					light=&map->lights[map->nlight];
 					map->nlight++;
 					
-					light->pos.rn=i;
 					light->type=xml_get_attribute_list(light_tag,"type",(char*)light_type_str);
-					xml_get_attribute_3_coord_int(light_tag,"c3",&light->pos.x,&light->pos.y,&light->pos.z);
+					xml_get_attribute_3_coord_int(light_tag,"c3",&light->pnt.x,&light->pnt.y,&light->pnt.z);
 					light->intensity=xml_get_attribute_int(light_tag,"intensity");
 					xml_get_attribute_color(light_tag,"rgb",&light->col);
 					light->confine_to_portal=xml_get_attribute_boolean(light_tag,"confine");
 					light->on=!xml_get_attribute_boolean(light_tag,"off");
+
+					light->pnt.x+=portal->x;
+					light->pnt.z+=portal->z;
 				
 					light_tag=xml_findnextchild(light_tag);
 				}
@@ -397,11 +399,13 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 					sound=&map->sounds[map->nsound];
 					map->nsound++;
 					
-					sound->pos.rn=i;
 					xml_get_attribute_text(sound_tag,"name",sound->name,file_str_len);
-					xml_get_attribute_3_coord_int(sound_tag,"c3",&sound->pos.x,&sound->pos.y,&sound->pos.z);
+					xml_get_attribute_3_coord_int(sound_tag,"c3",&sound->pnt.x,&sound->pnt.y,&sound->pnt.z);
 					sound->pitch=xml_get_attribute_float(sound_tag,"pitch");
 					sound->on=!xml_get_attribute_boolean(sound_tag,"off");
+
+					sound->pnt.x+=portal->x;
+					sound->pnt.z+=portal->z;
 					
 					sound_tag=xml_findnextchild(sound_tag);
 				}
@@ -421,12 +425,14 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 					particle=&map->particles[map->nparticle];
 					map->nparticle++;
 					
-					particle->pos.rn=i;
 					xml_get_attribute_text(particle_tag,"name",particle->name,file_str_len);
-					xml_get_attribute_3_coord_int(particle_tag,"c3",&particle->pos.x,&particle->pos.y,&particle->pos.z);
+					xml_get_attribute_3_coord_int(particle_tag,"c3",&particle->pnt.x,&particle->pnt.y,&particle->pnt.z);
 					particle->spawn_tick=xml_get_attribute_int(particle_tag,"spawn_tick");
 					particle->slop_tick=xml_get_attribute_int(particle_tag,"slop_tick");
 					particle->on=!xml_get_attribute_boolean(particle_tag,"off");
+
+					particle->pnt.x+=portal->x;
+					particle->pnt.z+=portal->z;
 					
 					particle_tag=xml_findnextchild(particle_tag);
 				}

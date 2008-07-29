@@ -362,7 +362,6 @@ void particle_map_initialize(void)
 void particle_map_run(void)
 {
 	int					n;
-	d3pnt				pt;
 	map_particle_type	*particle;
 
 	particle=map.particles;
@@ -376,12 +375,7 @@ void particle_map_run(void)
 
 		particle->next_spawn_tick-=10;
 		if (particle->next_spawn_tick<=0) {
-
-			pt.x=particle->pos.x;
-			pt.y=particle->pos.y;
-			pt.z=particle->pos.z;
-			particle_spawn(particle->particle_idx,&pt,NULL,NULL);
-
+			particle_spawn(particle->particle_idx,&particle->pnt,NULL,NULL);
 			particle_map_set_next_tick(particle);
 		}
 

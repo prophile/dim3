@@ -35,7 +35,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-bool model_light_hit(model_type *model,d3pos *model_pos,int x,int y,int z,int intensity)
+bool model_light_hit(model_type *model,d3pnt *model_pnt,int x,int y,int z,int intensity)
 {
 	int			sz,mx,my,mz;
 	double		dx,dy,dz;
@@ -51,9 +51,9 @@ bool model_light_hit(model_type *model,d3pos *model_pos,int x,int y,int z,int in
 
 		// is light in view globe?
 
-	mx=model_pos->x;
-	my=model_pos->y-(model->view_box.size.y>>1);
-	mz=model_pos->z;
+	mx=model_pnt->x;
+	my=model_pnt->y-(model->view_box.size.y>>1);
+	mz=model_pnt->z;
 
 	if ((x+intensity)<(mx-sz)) return(FALSE);
 	if ((x-intensity)>(mx+sz)) return(FALSE);
@@ -78,13 +78,13 @@ void model_clear_lights(model_type *model)
 	model->light.nspot=0;
 }
 
-void model_add_light(model_type *model,d3pos *model_pos,light_spot_type *lspot,float drop_off_factor)
+void model_add_light(model_type *model,d3pnt *model_pnt,light_spot_type *lspot,float drop_off_factor)
 {
 	if (model->light.nspot==max_model_light_spot) return;
 	
 		// check if light hits this model
 
-	if (!model_light_hit(model,model_pos,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,(int)lspot->intensity)) return;
+	if (!model_light_hit(model,model_pnt,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,(int)lspot->intensity)) return;
 
 		// calculate inverses
 

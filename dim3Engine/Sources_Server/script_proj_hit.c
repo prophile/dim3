@@ -74,7 +74,6 @@ void script_add_proj_hit_object(JSObject *parent_obj)
 
 int js_get_proj_hit_type(proj_type *proj)
 {
-	int					portal_idx;
 	map_mesh_poly_type	*poly;
 
 		// check auto hits
@@ -94,10 +93,9 @@ int js_get_proj_hit_type(proj_type *proj)
 		// it's a wall hit, and floor/ceiling
 		// hits by proximity to projectile Y
 
-	portal_idx=proj->contact.hit_poly.portal_idx;
-	if (portal_idx==-1) return(sd_proj_hit_type_none);
+	if (proj->contact.hit_poly.mesh_idx==-1) return(sd_proj_hit_type_none);
 	
-	poly=&map.portals[portal_idx].mesh.meshes[proj->contact.hit_poly.mesh_idx].polys[proj->contact.hit_poly.poly_idx];
+	poly=&map.mesh.meshes[proj->contact.hit_poly.mesh_idx].polys[proj->contact.hit_poly.poly_idx];
 	if (poly->box.wall_like) return(sd_proj_hit_type_wall);
 	
 	if (proj->pos.y>poly->box.mid.y) return(sd_proj_hit_type_ceiling);
@@ -133,22 +131,19 @@ void js_get_proj_hit_name(proj_type *proj,int hit_type,char *name)
 
 void js_get_proj_hit_material_name(proj_type *proj,int hit_type,char *name)
 {
-	int					portal_idx,mesh_idx,poly_idx;
+	int					mesh_idx;
 	map_mesh_poly_type	*mesh_poly;
 	texture_type		*texture;
 
 		// get hit poly
 
-	portal_idx=proj->contact.hit_poly.portal_idx;
-	if (portal_idx==-1) {
+	mesh_idx=proj->contact.hit_poly.mesh_idx;
+	if (mesh_idx==-1) {
 		name[0]=0x0;
 		return;
 	}
 
-	mesh_idx=proj->contact.hit_poly.mesh_idx;
-	poly_idx=proj->contact.hit_poly.poly_idx;
-
-	mesh_poly=&map.portals[portal_idx].mesh.meshes[mesh_idx].polys[poly_idx];
+	mesh_poly=&map.mesh.meshes[mesh_idx].polys[proj->contact.hit_poly.poly_idx];
 	
 		// get material name
 

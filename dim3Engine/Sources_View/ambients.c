@@ -76,7 +76,7 @@ void ambient_add_map_sounds(void)
 		
 	for (n=0;n!=map.nsound;n++) {
 		if ((mapsound->on) && (mapsound->buffer_idx!=-1)) {
-			al_ambient_list_add(mapsound->buffer_idx,mapsound->pos.x,mapsound->pos.y,mapsound->pos.z,mapsound->pitch);
+			al_ambient_list_add(mapsound->buffer_idx,mapsound->pnt.x,mapsound->pnt.y,mapsound->pnt.z,mapsound->pitch);
 		}
 		mapsound++;
 	}

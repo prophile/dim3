@@ -38,66 +38,18 @@ extern float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_ty
 
 /* =======================================================
 
-      Light Trace Portals
-      
-======================================================= */
-
-bool light_trace_portal(int rn,d3pnt *spt,d3pnt *ept,d3vct *vct)
-{
-	int					n,k;
-	float				t;
-	d3pnt				pt;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*mesh_poly;
-	portal_type			*portal;
-	
-	portal=&map.portals[rn];
-	pt.x=pt.y=pt.z=0;
-
-		// check the meshes
-
-	mesh=portal->mesh.meshes;
-	
-	for (n=0;n!=portal->mesh.nmesh;n++) {
-
-		mesh_poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-
-				// rough bounds check
-
-			if ((spt->y<mesh_poly->box.min.y) && (ept->y<mesh_poly->box.min.y)) continue;
-			if ((spt->y>mesh_poly->box.max.y) && (ept->y>mesh_poly->box.max.y)) continue;
-			if ((spt->x<mesh_poly->box.min.x) && (ept->x<mesh_poly->box.min.x)) continue;
-			if ((spt->x>mesh_poly->box.max.x) && (ept->x>mesh_poly->box.max.x)) continue;
-			if ((spt->z<mesh_poly->box.min.z) && (ept->z<mesh_poly->box.min.z)) continue;
-			if ((spt->z>mesh_poly->box.max.z) && (ept->z>mesh_poly->box.max.z)) continue;
-
-				// ray trace
-				
-			t=ray_trace_mesh_polygon(spt,vct,&pt,mesh,mesh_poly);
-			if (t!=-1.0f) return(TRUE);
-		
-			mesh_poly++;
-		}
-	
-		mesh++;
-	}
-
-	return(FALSE);
-}
-
-/* =======================================================
-
-      Light Trace MainLine
+      Light Trace Map
       
 ======================================================= */
 
 bool light_trace_map(d3pnt *spt,d3pnt *ept)
 {
-	int					n;
+	int					n,k;
+	float				t;
+	d3pnt				pt;
 	d3vct				vct;
-	portal_type			*portal;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*mesh_poly;
 	
 		// get vector
 		
@@ -111,21 +63,51 @@ bool light_trace_map(d3pnt *spt,d3pnt *ept)
 	spt->y+=(int)(vct.y*0.01);
 	spt->z+=(int)(vct.z*0.01);
 	
-		// check against all portals
+		// check against map
 
-	for (n=0;n!=map.nportal;n++) {
-		portal=&map.portals[n];
-		
-		if ((spt->x<portal->x) && (ept->x<portal->x)) continue;
-		if ((spt->x>portal->ex) && (ept->x>portal->ex)) continue;
-		if ((spt->z<portal->z) && (ept->z<portal->z)) continue;
-		if ((spt->z>portal->ez) && (ept->z>portal->ez)) continue;
-		if ((spt->y<portal->ty) && (ept->y<portal->ty)) continue;
-		if ((spt->y>portal->by) && (ept->y>portal->by)) continue;
-		
-		if (light_trace_portal(n,spt,ept,&vct)) return(TRUE);
-	}
+	pt.x=pt.y=pt.z=0;
+
+		// check the meshes
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+
+		mesh=&map.mesh.meshes[n];
+
+			// rough bounds check
+
+		if ((spt->y<mesh->box.min.y) && (ept->y<mesh->box.min.y)) continue;
+		if ((spt->y>mesh->box.max.y) && (ept->y>mesh->box.max.y)) continue;
+		if ((spt->x<mesh->box.min.x) && (ept->x<mesh->box.min.x)) continue;
+		if ((spt->x>mesh->box.max.x) && (ept->x>mesh->box.max.x)) continue;
+		if ((spt->z<mesh->box.min.z) && (ept->z<mesh->box.min.z)) continue;
+		if ((spt->z>mesh->box.max.z) && (ept->z>mesh->box.max.z)) continue;
+
+			// check polys
+
+		mesh_poly=mesh->polys;
 	
+		for (k=0;k!=mesh->npoly;k++) {
+
+				// rough bounds check
+
+			if ((spt->y<mesh_poly->box.min.y) && (ept->y<mesh_poly->box.min.y)) continue;
+			if ((spt->y>mesh_poly->box.max.y) && (ept->y>mesh_poly->box.max.y)) continue;
+			if ((spt->x<mesh_poly->box.min.x) && (ept->x<mesh_poly->box.min.x)) continue;
+			if ((spt->x>mesh_poly->box.max.x) && (ept->x>mesh_poly->box.max.x)) continue;
+			if ((spt->z<mesh_poly->box.min.z) && (ept->z<mesh_poly->box.min.z)) continue;
+			if ((spt->z>mesh_poly->box.max.z) && (ept->z>mesh_poly->box.max.z)) continue;
+
+				// ray trace
+				
+			t=ray_trace_mesh_polygon(spt,&vct,&pt,mesh,mesh_poly);
+			if (t!=-1.0f) return(TRUE);
+		
+			mesh_poly++;
+		}
+	
+		mesh++;
+	}
+
 	return(FALSE);
 }
 

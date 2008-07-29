@@ -141,7 +141,7 @@ void decal_render(void)
 	decal=server.decals;
 
 	for (n=0;n!=server.count.decal;n++) {
-		mesh_poly=&map.portals[decal->rn].mesh.meshes[decal->mesh_idx].polys[decal->poly_idx];
+		mesh_poly=&map.mesh.meshes[decal->mesh_idx].polys[decal->poly_idx];
 		mesh_poly->draw.decal_stencil_idx=0;
 		decal++;
 	}
@@ -170,14 +170,14 @@ void decal_render(void)
 	stencil_idx=stencil_poly_start;
 	decal=server.decals;
 
+	// supergumba -- need to check portals against mesh list
+
 	for (n=0;n!=server.count.decal;n++) {
 
-		if (map.portals[decal->rn].in_path) {
-			mesh=&map.portals[decal->rn].mesh.meshes[decal->mesh_idx];
-			mesh_poly=&mesh->polys[decal->poly_idx];
-			decal_render_stencil(stencil_idx,mesh,mesh_poly);
-			stencil_idx++;
-		}
+		mesh=&map.mesh.meshes[decal->mesh_idx];
+		mesh_poly=&mesh->polys[decal->poly_idx];
+		decal_render_stencil(stencil_idx,mesh,mesh_poly);
+		stencil_idx++;
 
 		decal++;
 	}
@@ -196,13 +196,12 @@ void decal_render(void)
 	glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
 
 	decal=server.decals;
+	// supergumba -- need to check portals against mesh list
 
 	for (n=0;n!=server.count.decal;n++) {
 
-		if (map.portals[decal->rn].in_path) {
-			mesh_poly=&map.portals[decal->rn].mesh.meshes[decal->mesh_idx].polys[decal->poly_idx];
-			decal_render_mark(mesh_poly->draw.decal_stencil_idx,decal);
-		}
+		mesh_poly=&map.mesh.meshes[decal->mesh_idx].polys[decal->poly_idx];
+		decal_render_mark(mesh_poly->draw.decal_stencil_idx,decal);
 
 		decal++;
 	}

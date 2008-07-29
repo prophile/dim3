@@ -99,7 +99,7 @@ void projectile_decals(proj_type *proj,proj_setup_type *proj_setup)
 	if (!setup.mark) return;
 	if (!proj_setup->mark.on) return;
 	if (proj_setup->mark.idx==-1) return;
-	if (proj->contact.hit_poly.portal_idx==-1) return;
+	if (proj->contact.hit_poly.mesh_idx==-1) return;
 	
 		// decal hit
 
@@ -134,12 +134,12 @@ bool projectile_hit(int tick,proj_type *proj,bool hit_scan)
 		// hits?
     
 	if (!hit_scan) {			// hit scans always hit
-		if ((proj->contact.hit_poly.portal_idx==-1) && (proj->contact.obj_uid==-1) && (proj->contact.proj_uid==-1) && (!proj->contact.melee) && (!auto_hit)) return(FALSE);
+		if ((proj->contact.hit_poly.mesh_idx==-1) && (proj->contact.obj_uid==-1) && (proj->contact.proj_uid==-1) && (!proj->contact.melee) && (!auto_hit)) return(FALSE);
 	}
 	
 		// auto-bounces and reflects
 		
-	if ((!auto_hit) && (!hit_scan) && (proj->contact.hit_poly.portal_idx!=-1)) {
+	if ((!auto_hit) && (!hit_scan) && (proj->contact.hit_poly.mesh_idx!=-1)) {
 		wall_hit=collide_contact_is_wall_hit(&proj->contact.hit_poly);
 
 		if ((proj->action.reflect) && (wall_hit)) {
