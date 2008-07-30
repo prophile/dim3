@@ -199,9 +199,6 @@ void map_convert_enlarge(map_type *map,int seg_cnt,segment_type *seg_list)
 	portal_type			*portal;
 	segment_type		*seg;
 	map_scenery_type	*scenery;
-	map_light_type		*light;
-	map_sound_type		*sound;
-	map_particle_type	*particle;
 	node_type			*node;
 	spot_type			*spot;
 
@@ -278,42 +275,6 @@ void map_convert_enlarge(map_type *map,int seg_cnt,segment_type *seg_list)
 		scenery++;
 	}
 		
-		// map lights
-	
-	light=map->lights;
-	
-	for (n=0;n!=map->nlight;n++) {
-		light->intensity*=map_enlarge;
-		light->pnt.x=(light->pnt.x*map_enlarge);
-		light->pnt.y=(light->pnt.y+1)*map_enlarge;
-		light->pnt.z=(light->pnt.z*map_enlarge);
-		light++;
-	}
-	
-		// map sounds
-	
-	sound=map->sounds;
-	
-	for (n=0;n!=map->nsound;n++) {
-		sound->pnt.x=(sound->pnt.x*map_enlarge);
-		sound->pnt.y=(sound->pnt.y+1)*map_enlarge;
-		sound->pnt.z=(sound->pnt.z*map_enlarge);
-		
-		sound++;
-	}
-	
-		// map particles
-	
-	particle=map->particles;
-	
-	for (n=0;n!=map->nparticle;n++) {
-		particle->pnt.x=(particle->pnt.x*map_enlarge);
-		particle->pnt.y=(particle->pnt.y+1)*map_enlarge;
-		particle->pnt.z=(particle->pnt.z*map_enlarge);
-		
-		particle++;
-	}
-	
 		// nodes
 
 	node=map->nodes;
@@ -1422,6 +1383,10 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					xml_get_attribute_color(light_tag,"rgb",&light->col);
 					light->confine_to_portal=xml_get_attribute_boolean(light_tag,"confine");
 					light->on=!xml_get_attribute_boolean(light_tag,"off");
+					
+					light->pnt.x=(light->pnt.x*map_enlarge);
+					light->pnt.y=(light->pnt.y+1)*map_enlarge;
+					light->pnt.z=(light->pnt.z*map_enlarge);
 				
 					light_tag=xml_findnextchild(light_tag);
 				}
@@ -1446,6 +1411,10 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					sound->pitch=xml_get_attribute_float(sound_tag,"pitch");
 					sound->on=!xml_get_attribute_boolean(sound_tag,"off");
 					
+					sound->pnt.x=(sound->pnt.x*map_enlarge);
+					sound->pnt.y=(sound->pnt.y+1)*map_enlarge;
+					sound->pnt.z=(sound->pnt.z*map_enlarge);
+					
 					sound_tag=xml_findnextchild(sound_tag);
 				}
 			}
@@ -1469,6 +1438,10 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					particle->spawn_tick=xml_get_attribute_int(particle_tag,"spawn_tick");
 					particle->slop_tick=xml_get_attribute_int(particle_tag,"slop_tick");
 					particle->on=!xml_get_attribute_boolean(particle_tag,"off");
+					
+					particle->pnt.x=(particle->pnt.x*map_enlarge);
+					particle->pnt.y=(particle->pnt.y+1)*map_enlarge;
+					particle->pnt.z=(particle->pnt.z*map_enlarge);
 					
 					particle_tag=xml_findnextchild(particle_tag);
 				}

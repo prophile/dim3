@@ -43,39 +43,11 @@
 			sepNavWindowFrame = "{{176, 129}, {1041, 747}}";
 		};
 	};
-	269E83270E3D84D200E822F7 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		comments = "error: 'struct <anonymous>' has no member named 'light'";
-		fRef = F5DD178809074E5000721649 /* portal_vertex_list.c */;
-		rLen = 1;
-		rLoc = 818;
-		rType = 1;
-	};
-	269E83490E3D880300E822F7 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5DA8623059148C40043E685 /* nodes.c */;
-		name = "nodes.c: 94";
-		rLen = 26;
-		rLoc = 2093;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
-	269E834E0E3D880300E822F7 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5DD178809074E5000721649 /* portal_vertex_list.c */;
-		name = "portal_vertex_list.c: 607";
-		rLen = 39;
-		rLoc = 13904;
-		rType = 0;
-		vrLen = 1440;
-		vrLoc = 13423;
-	};
 	26AFB4310D95B6230004805A /* portal_mesh_update.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 15356}}";
-			sepNavSelRange = "{11360, 0}";
-			sepNavVisRange = "{10842, 948}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 14542}}";
+			sepNavSelRange = "{13307, 85}";
+			sepNavVisRange = "{12800, 1133}";
 			sepNavWindowFrame = "{{472, 123}, {1041, 747}}";
 		};
 	};
@@ -87,15 +59,25 @@
 			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
 		};
 	};
+	26D037100E3ECDF30047A683 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DA8623059148C40043E685 /* nodes.c */;
+		name = "nodes.c: 94";
+		rLen = 26;
+		rLoc = 2093;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
 	26E372E50DA5AB75009653F2 /* file_map_read_v2.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7140}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7196}}";
 			sepNavSelRange = "{15674, 0}";
-			sepNavVisRange = "{14809, 1678}";
+			sepNavVisRange = "{13195, 1631}";
 			sepNavWindowFrame = "{{492, 146}, {1041, 747}}";
 		};
 	};
-	26F198FD0E3C41FA00BE9FEC /* PBXTextBookmark */ = {
+	26EA01420E4030630001D994 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = F5DA8623059148C40043E685 /* nodes.c */;
 		name = "nodes.c: 94";
@@ -107,10 +89,10 @@
 	};
 	26FC4AAC0DA2F87A00E6ECED /* file_map_read_v1.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1038, 22694}}";
-			sepNavSelRange = "{3988, 4}";
-			sepNavVisRange = "{13748, 1483}";
-			sepNavWindowFrame = "{{581, 116}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1218, 21448}}";
+			sepNavSelRange = "{40299, 0}";
+			sepNavVisRange = "{38767, 1712}";
+			sepNavWindowFrame = "{{349, 203}, {1041, 747}}";
 		};
 	};
 	F511664E093CDA2C00E766C3 /* groups.c */ = {
@@ -247,14 +229,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 238912145;
-			PBXWorkspaceStateSaveDate = 238912145;
+			PBXPerProjectTemplateStateSaveDate = 239082728;
+			PBXWorkspaceStateSaveDate = 239082728;
 		};
 		perUserProjectItems = {
-			269E83270E3D84D200E822F7 /* PBXTextBookmark */ = 269E83270E3D84D200E822F7 /* PBXTextBookmark */;
-			269E83490E3D880300E822F7 /* PBXTextBookmark */ = 269E83490E3D880300E822F7 /* PBXTextBookmark */;
-			269E834E0E3D880300E822F7 /* PBXTextBookmark */ = 269E834E0E3D880300E822F7 /* PBXTextBookmark */;
-			26F198FD0E3C41FA00BE9FEC /* PBXTextBookmark */ = 26F198FD0E3C41FA00BE9FEC /* PBXTextBookmark */;
+			26D037100E3ECDF30047A683 /* PBXTextBookmark */ = 26D037100E3ECDF30047A683 /* PBXTextBookmark */;
+			26EA01420E4030630001D994 /* PBXTextBookmark */ = 26EA01420E4030630001D994 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -310,7 +290,7 @@
 	};
 	F5DA8623059148C40043E685 /* nodes.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {432, 2044}}";
+			sepNavIntBoundsRect = "{{0, 0}, {12, 2100}}";
 			sepNavSelRange = "{2093, 26}";
 			sepNavVisRange = "{0, 0}";
 			sepNavWindowFrame = "{{208, 185}, {1041, 747}}";
@@ -318,9 +298,9 @@
 	};
 	F5DD16E00907328000721649 /* prepare.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 5740}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5110}}";
 			sepNavSelRange = "{1013, 0}";
-			sepNavVisRange = "{0, 1466}";
+			sepNavVisRange = "{7098, 1096}";
 			sepNavWindowFrame = "{{131, 193}, {1041, 747}}";
 		};
 	};
@@ -334,9 +314,9 @@
 	};
 	F5DD178809074E5000721649 /* portal_vertex_list.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 15358}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 10136}}";
 			sepNavSelRange = "{13904, 39}";
-			sepNavVisRange = "{13423, 1440}";
+			sepNavVisRange = "{13390, 1108}";
 			sepNavWindowFrame = "{{599, 200}, {1041, 747}}";
 		};
 	};
