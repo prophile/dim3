@@ -160,7 +160,6 @@ bool map_spot_empty_sphere(int sx,int sy,int sz,int radius,int ignore_obj_uid,in
 	*hit_obj_uid=-1;
 	
 	box_create_from_point(&box,sx,sy,sz,radius,radius);
-	if (!box_in_map(&box)) return(TRUE);
 	
 	if (move_check_xz_portals(&box)!=-1) return(TRUE);
 	
@@ -173,7 +172,6 @@ bool map_spot_empty_object(obj_type *obj)
 	d3box			box;
 	
 	box_create_from_object(&box,obj);
-	if (!box_in_map(&box)) return(TRUE);
 
 	if (move_check_xz_portals(&box)!=-1) return(TRUE);
 	

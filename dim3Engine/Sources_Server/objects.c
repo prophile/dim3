@@ -76,10 +76,9 @@ void object_clear_size(obj_size *size)
 	size->weight=200;
 }
 
-void object_clear_position(d3pos *pos)
+void object_clear_position(d3pnt *pnt)
 {
-	pos->rn=-1;
-	pos->x=pos->y=pos->z=0;
+	pnt->x=pnt->y=pnt->z=0;
 }
 
 void object_clear_angle(d3ang *ang)
@@ -196,7 +195,6 @@ void object_clear_draw(model_draw *draw)
 		draw->lights[k].on=FALSE;
 		draw->lights[k].type=lt_normal;
 		draw->lights[k].intensity=0;
-		draw->lights[k].confine_to_portal=FALSE;
 		draw->lights[k].col.r=draw->lights[k].col.g=draw->lights[k].col.b=1;
 	}
 
@@ -408,7 +406,7 @@ obj_type* object_create(int bind)
 	obj->click.crosshair_down_idx=-1;
 	
 	object_clear_size(&obj->size);
-	object_clear_position(&obj->pos);
+	object_clear_position(&obj->pnt);
 	object_clear_angle(&obj->ang);
 	object_clear_motion(&obj->motion);
 	object_clear_force(&obj->force);
@@ -646,7 +644,7 @@ int object_start(spot_type *spot,bool player,int bind,char *err_str)
 
 			// attach object to spot
 
-		object_set_position(obj,spot->pos.x,spot->pos.z,spot->pos.y,spot->ang.y,0);
+		object_set_position(obj,spot->pnt.x,spot->pnt.z,spot->pnt.y,spot->ang.y,0);
 		obj->turn.ang_to.y=spot->ang.y;
 		
 		object_reset_prepare(obj);
@@ -824,7 +822,7 @@ void spot_start_attach(void)
       
 ======================================================= */
 
-int object_script_spawn(char *name,char *type,char *script,char *params,d3pos *pos,d3ang *ang)
+int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *pnt,d3ang *ang)
 {
 	int					uid;
 	char				err_str[256];
@@ -839,7 +837,7 @@ int object_script_spawn(char *name,char *type,char *script,char *params,d3pos *p
 	strcpy(spot.attach_script,script);
 	strcpy(spot.attach_params,params);
 
-	memmove(&spot.pos,pos,sizeof(d3pos));
+	memmove(&spot.pnt,pnt,sizeof(d3pnt));
 	memmove(&spot.ang,ang,sizeof(d3ang));
 
 		// start object

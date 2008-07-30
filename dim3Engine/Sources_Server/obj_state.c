@@ -305,9 +305,9 @@ void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_weap,pr
 		}
 	}
 	else {
-		x=from_proj->pos.x;
-		z=from_proj->pos.z;
-		y=from_proj->pos.y;
+		x=from_proj->pnt.x;
+		z=from_proj->pnt.z;
+		y=from_proj->pnt.y;
 	}
 	
 	hit->pnt.x=x;

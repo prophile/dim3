@@ -97,9 +97,9 @@ int shadow_render_stencil_wall(int sptr_cnt,short *sptr,int ty,int y,int cnt,int
 		glBegin(GL_POLYGON);
 
 		for (n=0;n!=wall->ptsz;n++) {
-			sx=wall->x[n]-view.camera.pos.x;
-			sy=wall->y[n]-view.camera.pos.y;
-			sz=view.camera.pos.z-wall->z[n];
+			sx=wall->x[n]-view.camera.pnt.x;
+			sy=wall->y[n]-view.camera.pnt.y;
+			sz=view.camera.pnt.z-wall->z[n];
 			glVertex3i(sx,sy,sz);
 		}
 
@@ -138,9 +138,9 @@ int shadow_render_stencil_fc(int sptr_cnt,short *sptr,int ty,int by,int cnt,int 
 		glBegin(GL_POLYGON);
 
 		for (n=0;n!=fc->ptsz;n++) {
-			sx=fc->x[n]-view.camera.pos.x;
-			sy=fc->y[n]-view.camera.pos.y;
-			sz=view.camera.pos.z-fc->z[n];
+			sx=fc->x[n]-view.camera.pnt.x;
+			sy=fc->y[n]-view.camera.pnt.y;
+			sz=view.camera.pnt.z-fc->z[n];
 			glVertex3i(sx,sy,sz);
 		}
 
@@ -282,9 +282,9 @@ void shadow_render_draw_wall(segment_type *seg,int x,int y,int z,int *bx,int *bz
 		// draw the shadow to the stencil
 		
 	for (n=0;n!=4;n++) {
-		px[n]-=view.camera.pos.x;
-		py[n]-=view.camera.pos.y;
-		pz[n]=view.camera.pos.z-pz[n];		// switch negative here
+		px[n]-=view.camera.pnt.x;
+		py[n]-=view.camera.pnt.y;
+		pz[n]=view.camera.pnt.z-pz[n];		// switch negative here
 	}
 
 	slice_percent=1.0f/(float)shadow_pbuffer_slice_count;
@@ -329,9 +329,9 @@ void shadow_render_draw_floor(segment_type *seg,int x,int y,int z,int *bx,int *b
 		// draw shadow
 		
 	for (n=0;n!=4;n++) {
-		px[n]-=view.camera.pos.x;
-		py[n]-=view.camera.pos.y;
-		pz[n]=view.camera.pos.z-pz[n];		// switch negative here
+		px[n]-=view.camera.pnt.x;
+		py[n]-=view.camera.pnt.y;
+		pz[n]=view.camera.pnt.z-pz[n];		// switch negative here
 	}
 
 	slice_percent=1.0f/(float)shadow_pbuffer_slice_count;

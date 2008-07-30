@@ -76,9 +76,9 @@ void projectile_hitscan(int tick,obj_type *obj,weapon_type *weap,proj_setup_type
 	
 		// hitscan
 		
-	spt.x=proj->pos.x;
-	spt.y=proj->pos.y;
-	spt.z=proj->pos.z;
+	spt.x=proj->pnt.x;
+	spt.y=proj->pnt.y;
+	spt.z=proj->pnt.z;
 	
 	contact.obj_on=TRUE;
 	contact.proj_on=proj_setup->collision;
@@ -92,11 +92,9 @@ void projectile_hitscan(int tick,obj_type *obj,weapon_type *weap,proj_setup_type
 
 		// reset position and contacts
 		
-	proj->pos.x=hpt.x;
-	proj->pos.y=hpt.y;
-	proj->pos.z=hpt.z;
-	
-	map_find_portal_by_pos(&map,&proj->pos);
+	proj->pnt.x=hpt.x;
+	proj->pnt.y=hpt.y;
+	proj->pnt.z=hpt.z;
 	
 	memmove(&proj->contact.hit_poly,&contact.poly,sizeof(poly_pointer_type));
 	proj->contact.liquid_idx=-1;

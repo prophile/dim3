@@ -6,14 +6,270 @@
 --------------------Configuration: dim3Engine - Win32 Release--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP60A.tmp" with contents
+Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP788.tmp" with contents
 [
 /nologo /MD /W3 /Z7 /O2 /I "..\win32Includes\pthreads" /I "..\win32Includes\GLEW" /I "..\win32Includes\ZLib" /I "..\win32Includes\SDL" /I "..\win32Includes\OpenAL" /I "..\win32Includes\JS" /I "..\win32Includes\PNG" /I "..\..\dim3Engine\Headers_View" /I "..\..\dim3Engine\Headers_Server" /I "..\..\dim3Engine\Headers_Network" /I "..\..\dim3Engine\Headers" /I "..\..\dim3MapUtility\Headers" /I "..\..\dim3ModelUtility\Headers" /I "..\..\dim3BaseUtility\Headers" /I "..\..\dim3Common\Headers" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "D3_PCH" /D "D3_ENGINE" /Fp"Release/dim3Engine.pch" /YX"dim3Engine.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\box.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_fpp.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_static.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\item.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_movement.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_ray_trace.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_y_check.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\model_draw_setup.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_ext_move.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_held.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_liquid.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_rigid_body.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_turn.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_watch.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\objects.c"
 "C:\Gumba\dim3Code\dim3Engine\Sources_Server\particles.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\player.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_hit.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_hitscan.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_move.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_setup.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\remote.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\rings.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\scenery.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_camera.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_camera_angle.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_camera_chase.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_camera_chase_angle.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_camera_chase_offset.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_camera_chase_slop.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_camera_plane.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_camera_position.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_camera_setting.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_camera_state.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_camera_static_position.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_data.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_event.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_game_join.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_game_score.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_game_setting.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_interface.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_interface_bar.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_interface_bitmap.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_interface_console.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_interface_fade.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_interface_interaction.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_interface_radar.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_interface_screen.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_interface_text.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_map.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_map_action.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_map_fog.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_map_fog_color.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_map_group.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_map_info.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_map_light_color.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_map_movement.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_map_node.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_map_object.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_map_setting.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_map_spot.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_model.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_model_animation.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_model_bone.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_model_fill.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_model_halo.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_model_hilite_color.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_model_light.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_model_light_color.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_model_mesh.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_model_offset.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_model_rotate.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_model_shadow.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_model_spin.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_angle.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_click.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_forward_speed.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_health.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_held.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_hit.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_hit_angle.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_hit_position.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_lock.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_look.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_melee.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_motion_angle.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_object_speed.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_pickup.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_position.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_radar.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_rigid_body.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_score.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_setting.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_side_speed.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_sight.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_size.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_status.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_touch.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_touch_angle.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_touch_position.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_turn_speed.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_vehicle.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_vert_speed.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_watch.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_weapon.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_obj_weapon_fire.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_proj_action.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_proj_hit.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_proj_mark.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_proj_melee.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_proj_motion_angle.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_proj_motion_vector.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_proj_origin.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_proj_position.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_proj_push.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_proj_setting.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_proj_size.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_proj_speed.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_sound.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_spawn.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_timers.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_utility.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_utility_angle.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_utility_pack.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_utility_point.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_utility_random.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_weap_alt_ammo.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_weap_ammo.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_weap_crosshair.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_weap_crosshair_color.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_weap_crosshair_empty_color.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_weap_crosshair_pickup_color.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_weap_fire.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_weap_hand.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_weap_hand_angle.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_weap_hand_position.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_weap_kickback.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_weap_melee.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_weap_projectile.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_weap_recoil.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_weap_setting.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\script_weap_zoom.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\scripts.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\scripts_convert.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\scripts_data.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\scripts_defines.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\scripts_events.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\scripts_file.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\scripts_lookup.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\scripts_objects.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\scripts_run.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\scripts_state.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\server.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\server_run.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\weapon.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\weapon_melee.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\weapon_projectile.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\weapon_select.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\xml_crosshairs.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\xml_halos.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\xml_interface.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\xml_marks.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\xml_particles.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\xml_rings.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\xml_setup.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\al_ambient.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\al_buffer.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\al_file.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\al_music.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\al_play.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\al_setup.c"
 "C:\Gumba\dim3Code\dim3Engine\Sources_View\ambients.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\chooser_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\console_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\crosshair_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\cursor.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\decals_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\effects_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\effects_lights.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\elemets.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\error.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\fade.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\files.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\fog.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gl_arrays.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gl_check.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gl_frames.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gl_renderer.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gl_shader.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gl_shadow.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gl_shadow_frame_buffer.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gl_shadow_win32.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gl_text.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gl_texture.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gui.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\halo_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\hand.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\host.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\hud_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\input.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\input_joystick.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\input_keyboard.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\input_mouse.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\intro.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\join.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\light.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\map_pick.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\menu_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\model_color.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\model_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\movie.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\network_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\particles_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\player_input.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\progress.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\radar_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\rain.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\remote_status.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\rings_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\segment_liquid.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\segment_render_opaque.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\segment_render_transparent.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\setup_game.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\setup_network.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\shadow_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\shadow_volume.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\sky.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\story.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\tint.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\title.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\view.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\view_bounds.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\view_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\view_images.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\view_run.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\view_setup.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\view_vertex_light.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\view_vertex_list.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\xml_action.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\xml_sound.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\zoom_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Network\net_client_join_host.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Network\net_client_receive.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Network\net_client_send.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Network\net_host.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Network\net_host_broadcast.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Network\net_host_client_handler.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Network\net_host_players.c"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP60A.tmp" 
-Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP60B.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP788.tmp" 
+Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP789.tmp" with contents
 [
 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"Release/dim3 Engine.pdb" /machine:I386 /out:"..\..\..\dim3\dim3 Engine.exe" 
 .\Release\app.obj
@@ -291,7 +547,6 @@ kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32
 .\Release\view_images.obj
 .\Release\view_run.obj
 .\Release\view_setup.obj
-.\Release\view_sight_path.obj
 .\Release\view_vertex_light.obj
 .\Release\view_vertex_list.obj
 .\Release\xml_action.obj
@@ -319,18 +574,760 @@ kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32
 ..\dim3ModelUtility\Release\dim3ModelUtility.lib
 ..\dim3MapUtility\Release\dim3MapUtility.lib
 ]
-Creating command line "link.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP60B.tmp"
+Creating command line "link.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP789.tmp"
 <h3>Output Window</h3>
 Compiling...
+box.c
+camera_chase.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(146) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(147) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(148) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(152) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(152) : error C2168: 'abs' : too few actual parameters for intrinsic function
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(152) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(152) : error C2168: 'abs' : too few actual parameters for intrinsic function
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(152) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(152) : error C2168: 'abs' : too few actual parameters for intrinsic function
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(155) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(156) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(157) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(172) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(173) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(174) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(253) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(254) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(255) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(259) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(259) : error C2198: 'map_find_portal_hint' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(261) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(262) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(263) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_chase.c(264) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+camera_fpp.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_fpp.c(50) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_fpp.c(51) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_fpp.c(52) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+camera_static.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_static.c(88) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_static.c(88) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_static.c(88) : error C2198: 'angle_find' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_static.c(89) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_static.c(89) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\camera_static.c(89) : error C2198: 'angle_find' : too few actual parameters
+collision.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(128) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(143) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(143) : error C2168: 'abs' : too few actual parameters for intrinsic function
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(206) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(207) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(208) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(210) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(210) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(210) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(210) : error C2198: 'distance_get' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(292) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(299) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(360) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(361) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(362) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(467) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(469) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(469) : error C2198: 'angle_find' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(470) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(470) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision.c(470) : error C2198: 'angle_find' : too few actual parameters
+collision_map.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c(94) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c(97) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c(148) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c(149) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c(150) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c(151) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c(152) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c(246) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c(298) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c(299) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c(300) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c(324) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c(325) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c(326) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c(332) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c(333) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_map.c(334) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+collision_utility.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(48) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(54) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(69) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(70) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(99) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(99) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(100) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(100) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(108) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(110) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(146) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(146) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(147) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(147) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(154) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(156) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(249) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(255) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(275) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(275) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(276) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(276) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(283) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(285) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(308) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(310) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(339) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(343) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(352) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(356) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(365) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(367) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(375) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(375) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(376) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(376) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(397) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(409) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(420) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(428) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(429) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(445) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(461) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(466) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(471) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(472) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(494) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(506) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(517) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(525) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\collision_utility.c(526) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+item.c
+map_movement.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_movement.c(339) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_movement.c(339) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_movement.c(339) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_movement.c(339) : error C2198: 'distance_check' : too few actual parameters
+map_ray_trace.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_ray_trace.c(327) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_ray_trace.c(330) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_ray_trace.c(335) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_ray_trace.c(336) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_ray_trace.c(434) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_ray_trace.c(437) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_ray_trace.c(442) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_ray_trace.c(443) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+map_y_check.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\map_y_check.c(424) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+model_draw_setup.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\model_draw_setup.c(64) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\model_draw_setup.c(65) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\model_draw_setup.c(66) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\model_draw_setup.c(148) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\model_draw_setup.c(149) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\model_draw_setup.c(150) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\model_draw_setup.c(263) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\model_draw_setup.c(264) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\model_draw_setup.c(265) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\model_draw_setup.c(277) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\model_draw_setup.c(278) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\model_draw_setup.c(279) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+obj_action.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(602) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(602) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(603) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(603) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(604) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(604) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(671) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(671) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(672) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(672) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(673) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(673) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(675) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(675) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(675) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(675) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(675) : error C2198: 'angle_find' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(679) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(679) : error C2198: 'map_find_portal_by_pos' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(686) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(686) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(686) : warning C4022: 'memmove' : pointer mismatch for actual parameter 1
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_action.c(686) : error C2198: 'memmove' : too few actual parameters
+obj_auto_walk.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(120) : error C2039: 'pos' : is not a member of 'obj_auto_walk'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(471) : see declaration of 'obj_auto_walk'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(121) : error C2039: 'pos' : is not a member of 'obj_auto_walk'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(471) : see declaration of 'obj_auto_walk'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(172) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(178) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(178) : error C2198: 'angle_find' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(197) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(197) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(197) : error C2198: 'angle_find' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(215) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(215) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(215) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(215) : error C2198: 'distance_get' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(251) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(251) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(251) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(251) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(251) : error C2198: 'angle_find' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(265) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(265) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(265) : error C2198: 'object_auto_walk_set_vertical_move' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(275) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(275) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(275) : error C2039: 'pos' : is not a member of 'obj_auto_walk'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(471) : see declaration of 'obj_auto_walk'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(275) : error C2039: 'pos' : is not a member of 'obj_auto_walk'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(471) : see declaration of 'obj_auto_walk'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(275) : error C2198: 'angle_find' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(289) : error C2039: 'pos' : is not a member of 'obj_auto_walk'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(471) : see declaration of 'obj_auto_walk'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(289) : error C2039: 'pos' : is not a member of 'obj_auto_walk'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(471) : see declaration of 'obj_auto_walk'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_auto_walk.c(289) : error C2198: 'object_auto_walk_set_vertical_move' : too few actual parameters
+obj_ext_move.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_ext_move.c(58) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_ext_move.c(59) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_ext_move.c(60) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_ext_move.c(71) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_ext_move.c(72) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_ext_move.c(77) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_ext_move.c(77) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_ext_move.c(77) : error C2198: 'object_move_with_move' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_ext_move.c(260) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_ext_move.c(261) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_ext_move.c(262) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+obj_find.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(199) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(199) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(199) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(199) : error C2198: 'distance_get' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(206) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(206) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(206) : error C2198: 'angle_find' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(261) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(261) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(265) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(265) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(265) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(265) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(265) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(265) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(265) : error C2198: 'distance_get' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(271) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(271) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(271) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(271) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(271) : error C2198: 'angle_find' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(368) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(369) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_find.c(370) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+obj_held.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_held.c(64) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_held.c(64) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_held.c(64) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_held.c(64) : warning C4244: 'function' : conversion from 'float ' to 'int ', possible loss of data
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_held.c(64) : error C2198: 'object_set_position' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_held.c(109) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_held.c(109) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_held.c(109) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_held.c(109) : warning C4244: 'function' : conversion from 'float ' to 'int ', possible loss of data
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_held.c(109) : warning C4244: 'function' : conversion from 'float ' to 'int ', possible loss of data
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_held.c(109) : error C2198: 'object_set_position' : too few actual parameters
+obj_liquid.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_liquid.c(55) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_liquid.c(73) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+obj_move.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(356) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(356) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(365) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(376) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(469) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(470) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(471) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(527) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(535) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(545) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(546) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(560) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(575) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(585) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(598) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(598) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(640) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(646) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_move.c(646) : fatal error C1903: unable to recover from previous error(s); stopping compilation
+obj_rigid_body.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_rigid_body.c(51) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_rigid_body.c(52) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_rigid_body.c(54) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_rigid_body.c(54) : error C2198: 'map_find_portal_hint' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_rigid_body.c(111) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_rigid_body.c(118) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_rigid_body.c(118) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_rigid_body.c(118) : warning C4047: 'function' : 'int ' differs in levels of indirection from 'int *'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_rigid_body.c(118) : warning C4024: 'pin_downward_movement_point' : different types for formal and actual parameter 3
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_rigid_body.c(118) : error C2198: 'pin_downward_movement_point' : too few actual parameters
+obj_state.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(219) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(219) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(220) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(220) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(221) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(221) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(223) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(223) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(223) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(223) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(223) : error C2198: 'angle_find' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(224) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(224) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(224) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(224) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(224) : error C2198: 'angle_find' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(225) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(225) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(225) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(225) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(225) : error C2198: 'angle_find' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(296) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(296) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(297) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(297) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(298) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(298) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(302) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(303) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(304) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(308) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(309) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(310) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(317) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(317) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(317) : error C2198: 'angle_find' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(318) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(318) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(318) : error C2198: 'angle_find' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(319) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(319) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_state.c(319) : error C2198: 'angle_find' : too few actual parameters
+obj_turn.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_turn.c(126) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+obj_watch.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_watch.c(58) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_watch.c(59) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_watch.c(60) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_watch.c(75) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_watch.c(75) : error C2168: 'abs' : too few actual parameters for intrinsic function
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_watch.c(77) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_watch.c(77) : error C2168: 'abs' : too few actual parameters for intrinsic function
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_watch.c(79) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_watch.c(79) : error C2168: 'abs' : too few actual parameters for intrinsic function
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_watch.c(137) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_watch.c(145) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_watch.c(202) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_watch.c(202) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_watch.c(202) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\obj_watch.c(202) : error C2198: 'distance_get' : too few actual parameters
+objects.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\objects.c(286) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\objects.c(410) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\objects.c(410) : error C2198: 'object_clear_position' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\objects.c(568) : error C2039: 'org_pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\objects.c(568) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\objects.c(568) : warning C4022: 'memmove' : pointer mismatch for actual parameter 1
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\objects.c(568) : error C2198: 'memmove' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\objects.c(574) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\objects.c(574) : error C2039: 'org_pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\objects.c(574) : warning C4022: 'memmove' : pointer mismatch for actual parameter 1
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\objects.c(574) : error C2198: 'memmove' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\objects.c(575) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\objects.c(575) : error C2198: 'map_find_portal_by_pos' : too few actual parameters
 particles.c
-ambients.c
-Linking...
-LINK : warning LNK4089: all references to "zlib1.dll" discarded by /OPT:REF
+player.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\player.c(115) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\player.c(115) : error C2198: 'portal_triggers' : too few actual parameters
+projectile.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(78) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(78) : error C2198: 'object_clear_position' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(140) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(148) : error C2039: 'last_pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(148) : warning C4022: 'memmove' : pointer mismatch for actual parameter 2
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(148) : error C2198: 'memmove' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(168) : error C2039: 'org_pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(168) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(168) : warning C4022: 'memmove' : pointer mismatch for actual parameter 1
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(168) : error C2198: 'memmove' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(180) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(180) : error C2198: 'map_find_portal_by_pos' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(184) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(184) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(185) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(185) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(186) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(186) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(187) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile.c(187) : error C2039: 'pos' : is not a member of 'obj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(724) : see declaration of 'obj_type'
+projectile_hit.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_hit.c(110) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_hit.c(110) : warning C4133: 'function' : incompatible types - from 'struct poly_pointer_type *' to 'struct d3pos *'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_hit.c(110) : warning C4047: 'function' : 'struct poly_pointer_type *' differs in levels of indirection from 'int '
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_hit.c(110) : warning C4024: 'decal_add' : different types for formal and actual parameter 2
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_hit.c(110) : warning C4244: 'function' : conversion from 'float ' to 'int ', possible loss of data
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_hit.c(110) : error C2198: 'decal_add' : too few actual parameters
+projectile_hitscan.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_hitscan.c(79) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_hitscan.c(80) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_hitscan.c(81) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_hitscan.c(95) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_hitscan.c(96) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_hitscan.c(97) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_hitscan.c(99) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_hitscan.c(99) : error C2198: 'map_find_portal_by_pos' : too few actual parameters
+projectile_move.c
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_move.c(100) : error C2039: 'last_pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_move.c(100) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_move.c(100) : warning C4022: 'memmove' : pointer mismatch for actual parameter 1
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_move.c(100) : error C2198: 'memmove' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_move.c(108) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_move.c(108) : error C2198: 'map_find_portal_by_pos' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_move.c(109) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_move.c(109) : error C2039: 'last_pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_move.c(109) : warning C4022: 'memmove' : pointer mismatch for actual parameter 1
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_move.c(109) : error C2198: 'memmove' : too few actual parameters
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_move.c(115) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_move.c(118) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+C:\Gumba\dim3Code\dim3Engine\Sources_Server\projectile_move.c(121) : error C2039: 'pos' : is not a member of 'proj_type'
+        ..\..\dim3Engine\Headers_Server\server_defs.h(783) : see declaration of 'proj_type'
+cl.exe terminated at user request.
 
-
-
-<h3>Results</h3>
-dim3 Engine.exe - 0 error(s), 1 warning(s)
 </pre>
 </body>
 </html>

@@ -186,9 +186,9 @@ void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 		gl_3D_rotate(&view.camera.ang);
 		gl_setup_project();
 		
-		tx=x-view.camera.pos.x;
-		ty=y-view.camera.pos.y;
-		tz=z-view.camera.pos.z;
+		tx=x-view.camera.pnt.x;
+		ty=y-view.camera.pnt.y;
+		tz=z-view.camera.pnt.z;
 		
 		gl_project_point(&tx,&ty,&tz);
 		
@@ -198,7 +198,7 @@ void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 			sz=setup.screen.x_sz>>5;
 		}
 		else {
-			dist=distance_get(view.camera.pos.x,view.camera.pos.y,view.camera.pos.z,x,y,z);
+			dist=distance_get(view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z,x,y,z);
 
 			if (dist>weap->crosshair.distance) {
 				sz=weap->crosshair.min_size;
@@ -308,9 +308,9 @@ void crosshair_draw_debug(obj_type *obj,weapon_type *weap)
 	
 	if (weap->draw.no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&sx,&sy,&sz);
 
-	sx-=view.camera.pos.x;
-	sy-=view.camera.pos.y;
-	sz-=view.camera.pos.z;
+	sx-=view.camera.pnt.x;
+	sy-=view.camera.pnt.y;
+	sz-=view.camera.pnt.z;
 
 	bone_idx=model_find_bone(mdl,weap->proj.barrel_bone_tag);
 	if (bone_idx==-1) return;
@@ -323,9 +323,9 @@ void crosshair_draw_debug(obj_type *obj,weapon_type *weap)
 
 	if (weap->draw.no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&bx,&by,&bz);
 	
-	bx-=view.camera.pos.x;
-	by-=view.camera.pos.y;
-	bz-=view.camera.pos.z;
+	bx-=view.camera.pnt.x;
+	by-=view.camera.pnt.y;
+	bz-=view.camera.pnt.z;
 
 		// body line
 
@@ -349,9 +349,9 @@ void crosshair_draw_debug(obj_type *obj,weapon_type *weap)
 	
 	crosshair_get_location(0,obj,weap,&ex,&ez,&ey,&obj_uid);
 	
-	ex-=view.camera.pos.x;
-	ey-=view.camera.pos.y;
-	ez-=view.camera.pos.z;
+	ex-=view.camera.pnt.x;
+	ey-=view.camera.pnt.y;
+	ez-=view.camera.pnt.z;
 
 	glDisable(GL_DEPTH_TEST);
 

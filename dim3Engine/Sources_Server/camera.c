@@ -101,33 +101,33 @@ void camera_connect(obj_type *obj)
       
 ======================================================= */
 
-void camera_get_position(d3pos *pos,d3ang *ang,int eye_offset)
+void camera_get_position(d3pnt *pnt,d3ang *ang,int eye_offset)
 {
 	switch (camera.mode) {
 	
 		case cv_fpp:
-            camera_fpp_get_position(pos,ang,eye_offset);
+            camera_fpp_get_position(pnt,ang,eye_offset);
 			break;
 		case cv_chase:
-            camera_chase_get_position(pos,ang);
+            camera_chase_get_position(pnt,ang);
 			break;
 		case cv_static:
-            camera_static_get_position(pos,ang);
+            camera_static_get_position(pnt,ang);
 			break;
 		case cv_chase_static:
-            camera_chase_static_get_position(pos,ang);
+            camera_chase_static_get_position(pnt,ang);
 			break;
 	}
     
         // always set static camera
         
-	if (camera.mode!=cv_static) camera_static_update(pos->x,pos->z,pos->y);
+	if (camera.mode!=cv_static) camera_static_update(pnt->x,pnt->z,pnt->y);
 }
 
 void camera_get_angle_from(d3pnt *pt,d3ang *ang)
 {
 	int				dist,eye_offset;
-	d3pos			pos;
+	d3pnt			pnt;
 	d3ang			temp_ang;
 	obj_type		*camera_obj;
 
@@ -138,16 +138,16 @@ void camera_get_angle_from(d3pnt *pt,d3ang *ang)
 	camera_obj=object_find_uid(camera.obj_uid);
 	if (camera_obj!=NULL) eye_offset=camera_obj->size.eye_offset;
 		
-	camera_get_position(&pos,&temp_ang,eye_offset);
+	camera_get_position(&pnt,&temp_ang,eye_offset);
 
 		// find angle
 
-	dist=distance_2D_get(0,0,(pos.x-pt->x),(pos.z-pt->z));
-	ang->x=-angle_find(0,0,(pos.y-pt->y),dist);
+	dist=distance_2D_get(0,0,(pnt.x-pt->x),(pnt.z-pt->z));
+	ang->x=-angle_find(0,0,(pnt.y-pt->y),dist);
 
-	ang->y=angle_find(pt->x,pt->z,pos.x,pos.z);
+	ang->y=angle_find(pt->x,pt->z,pnt.x,pnt.z);
 
-	ang->z=0;
+	ang->z=0.0f;
 }
 
 /* =======================================================
@@ -156,7 +156,7 @@ void camera_get_angle_from(d3pnt *pt,d3ang *ang)
       
 ======================================================= */
 
-int camera_check_liquid(d3pos *pos)
+int camera_check_liquid(d3pnt *pnt)
 {
 	int					n,nliquid;
 	map_liquid_type		*liq;
@@ -165,7 +165,7 @@ int camera_check_liquid(d3pos *pos)
 	liq=map.liquid.liquids;
 	
 	for (n=0;n!=nliquid;n++) {
-		if ((pos->x>=liq->lft) && (pos->x<=liq->rgt) && (pos->z>=liq->top) && (pos->z<=liq->bot) && (pos->y>=liq->y)) return(n);
+		if ((pnt->x>=liq->lft) && (pnt->x<=liq->rgt) && (pnt->z>=liq->top) && (pnt->z<=liq->bot) && (pnt->y>=liq->y)) return(n);
 		liq++;
 	}
 

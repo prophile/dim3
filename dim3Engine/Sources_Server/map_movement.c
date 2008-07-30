@@ -310,7 +310,7 @@ void map_movements_auto_open(void)
 {
 	int				n,i,nmovement;
 	bool			obj_in_range;
-	d3pos			pos;
+	d3pnt			pnt;
 	movement_type	*movement;
 	obj_type		*obj;
 
@@ -347,8 +347,8 @@ void map_movements_auto_open(void)
 			// check for camera node walks
 
 		if ((camera.mode==cv_static) && (camera.auto_walk.on) && (camera.auto_walk.open_doors)) {
-			camera_static_get_position(&pos,NULL);
-			obj_in_range=distance_check(pos.x,pos.y,pos.z,movement->pnt.x,movement->pnt.y,movement->pnt.z,movement->auto_open_distance);
+			camera_static_get_position(&pnt,NULL);
+			obj_in_range=distance_check(pnt.x,pnt.y,pnt.z,movement->pnt.x,movement->pnt.y,movement->pnt.z,movement->auto_open_distance);
 		}
 		
 			// time to open or close?

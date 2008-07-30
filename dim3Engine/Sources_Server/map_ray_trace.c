@@ -431,16 +431,16 @@ float ray_trace_projectile(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,proj_type
 	
 		// rough y check
 		
-	ty=proj->pos.y-proj->size.y;
+	ty=proj->pnt.y-proj->size.y;
 	if ((spt->y<ty) && (ept->y<ty)) return(-1.0f);
 	
-	by=proj->pos.y;
+	by=proj->pnt.y;
 	if ((spt->y>by) && (ept->y>by)) return(-1.0f);
 	
 		// rough x/z checks
 		
-	x=proj->pos.x;
-	z=proj->pos.z;
+	x=proj->pnt.x;
+	z=proj->pnt.z;
 
 	radius=proj->size.radius>>1;
 	

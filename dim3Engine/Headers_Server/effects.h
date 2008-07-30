@@ -68,5 +68,5 @@ extern void decal_clear(void);
 extern decal_type* decal_find_free(void);
 extern void decal_move_with_mesh(int mesh_idx,int xmove,int ymove,int zmove);
 extern void decal_rotate_with_mesh(int mesh_idx,float y);
-extern void decal_add(d3pos *pos,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha);
+extern void decal_add(d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha);
 extern void decal_dispose(void);

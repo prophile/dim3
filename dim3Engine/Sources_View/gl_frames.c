@@ -247,9 +247,9 @@ void gl_project_fix_rotation(view_camera_type *camera,int y_off,int *x,int *y,in
 		// translate from non-rotated 3D space
 		// to rotated 3D space
 
-	dx=(double)(*x)-view.camera.pos.x;
-	dy=(double)(*y)-view.camera.pos.y;
-	dz=(double)(*z)-view.camera.pos.z;
+	dx=(double)(*x)-view.camera.pnt.x;
+	dy=(double)(*y)-view.camera.pnt.y;
+	dz=(double)(*z)-view.camera.pnt.z;
 
 	gl_3D_view(&view.camera);
 	gl_setup_project();
@@ -266,9 +266,9 @@ void gl_project_fix_rotation(view_camera_type *camera,int y_off,int *x,int *y,in
 	dy+=(double)render_info.view_y;
 	dz=-dz;
 
-	*x=((int)dx)+view.camera.pos.x;
-	*y=((int)dy)+view.camera.pos.y;
-	*z=((int)dz)+view.camera.pos.z;
+	*x=((int)dx)+view.camera.pnt.x;
+	*y=((int)dy)+view.camera.pnt.y;
+	*z=((int)dz)+view.camera.pnt.z;
 
 		// restore settings
 

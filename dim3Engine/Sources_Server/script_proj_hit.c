@@ -98,7 +98,7 @@ int js_get_proj_hit_type(proj_type *proj)
 	poly=&map.mesh.meshes[proj->contact.hit_poly.mesh_idx].polys[proj->contact.hit_poly.poly_idx];
 	if (poly->box.wall_like) return(sd_proj_hit_type_wall);
 	
-	if (proj->pos.y>poly->box.mid.y) return(sd_proj_hit_type_ceiling);
+	if (proj->pnt.y>poly->box.mid.y) return(sd_proj_hit_type_ceiling);
 
 	return(sd_proj_hit_type_floor);
 }

@@ -147,7 +147,7 @@ JSBool js_camera_static_position_move_to_spot_func(JSContext *cx,JSObject *j_obj
 	}
 	
 	spot=&map.spots[idx];
-	camera_static_update(spot->pos.x,spot->pos.z,spot->pos.y);
+	camera_static_update(spot->pnt.x,spot->pnt.z,spot->pnt.y);
 	
 	return(JS_TRUE);
 }

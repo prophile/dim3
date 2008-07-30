@@ -196,9 +196,6 @@ void map_prepare(map_type *map)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	map_liquid_type		*liq;
-	node_type			*node;
-	map_scenery_type	*scenery;
-	spot_type			*spot;
 	
 		// portals
 	
@@ -337,41 +334,6 @@ void map_prepare(map_type *map)
 		if ((portal->ty==map_max_size) || (portal->by==-map_max_size)) portal->ty=portal->by=0;
 
 		portal++;
-	}
-	
-		// translate other objects from portal
-		// to global coordinates
-	
-	scenery=map->sceneries;
-	
-	for (n=0;n!=map->nscenery;n++) {
-		portal=&map->portals[scenery->pos.rn];
-		scenery->pos.x+=portal->x;
-		scenery->pos.z=scenery->pos.z+portal->z;
-		scenery++;
-	}
-	
-		// nodes
-
-	node=map->nodes;
-	
-	for (n=0;n!=map->nnode;n++) {
-		portal=&map->portals[node->pos.rn];
-        node->idx=i;
-		node->pos.x=node->pos.x+portal->x;
-		node->pos.z=node->pos.z+portal->z;
-		node++;
-	}
-    
-		// object starts
-		
-	spot=map->spots;
-
-	for (n=0;n!=map->nspot;n++) {
-		portal=&map->portals[spot->pos.rn];
-		spot->pos.x=spot->pos.x+portal->x;
-		spot->pos.z=spot->pos.z+portal->z;
-		spot++;
 	}
 }
 

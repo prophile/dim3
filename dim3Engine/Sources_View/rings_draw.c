@@ -119,9 +119,9 @@ void ring_draw(effect_type *effect,int count)
 
 	ring_draw_position(effect,count,&px,&py,&pz);
 
-	mx=(float)(px-view.camera.pos.x);
-	my=(float)(py-view.camera.pos.y);
-	mz=(float)(view.camera.pos.z-pz);
+	mx=(float)(px-view.camera.pnt.x);
+	my=(float)(py-view.camera.pnt.y);
+	mz=(float)(view.camera.pnt.z-pz);
 
 	fx=f_count*ring->rot.x;
 	fx+=(fx*ring->rot_accel.x);

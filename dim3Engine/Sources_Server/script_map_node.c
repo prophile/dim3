@@ -180,7 +180,7 @@ JSBool js_map_node_get_distance_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	
 		// get distance
 		
-	*rval=INT_TO_JSVAL(distance_get(node->pos.x,node->pos.y,node->pos.z,x,y,z));
+	*rval=INT_TO_JSVAL(distance_get(node->pnt.x,node->pnt.y,node->pnt.z,x,y,z));
 	
 	return(JS_TRUE);
 }
@@ -204,9 +204,9 @@ JSBool js_map_node_get_angle_to_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	
 		// get angles to
 		
-	ang_x=angle_find(y,z,node->pos.y,node->pos.z);
-	ang_y=angle_find(x,z,node->pos.x,node->pos.z);
-	ang_z=angle_find(x,y,node->pos.x,node->pos.y);
+	ang_x=angle_find(y,z,node->pnt.y,node->pnt.z);
+	ang_y=angle_find(x,z,node->pnt.x,node->pnt.z);
+	ang_z=angle_find(x,y,node->pnt.x,node->pnt.y);
 		
 	*rval=script_angle_to_value(ang_x,ang_y,ang_z);
 	
@@ -230,7 +230,7 @@ JSBool js_map_node_get_position_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	
 		// get position
 		
-	*rval=script_point_to_value(node->pos.x,node->pos.y,node->pos.z);
+	*rval=script_point_to_value(node->pnt.x,node->pnt.y,node->pnt.z);
 	return(JS_TRUE);
 }
 

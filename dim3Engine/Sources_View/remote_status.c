@@ -60,9 +60,9 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 	
 		// get the position and rotation
 		
-	x=obj->pos.x-view.camera.pos.x;
-	y=((obj->pos.y-obj->size.y)-map_enlarge)-view.camera.pos.y;
-	z=obj->pos.z-view.camera.pos.z;
+	x=obj->pnt.x-view.camera.pnt.x;
+	y=((obj->pnt.y-obj->size.y)-map_enlarge)-view.camera.pnt.y;
+	z=obj->pnt.z-view.camera.pnt.z;
 	
 	x_sz=map_enlarge<<1;
 	y_sz=map_enlarge<<2;
@@ -163,31 +163,31 @@ void remote_draw_names_setup(void)
 		if ((obj->draw.uid!=-1) && (obj->draw.on)) mdl=model_find_uid(obj->draw.uid);
 
 		if (mdl!=NULL) {
-			x=obj->pos.x;
-			y=obj->pos.y;
-			z=obj->pos.z;
+			x=obj->pnt.x;
+			y=obj->pnt.y;
+			z=obj->pnt.z;
 			has_tag=model_get_name_position(mdl,&obj->draw.setup,&x,&y,&z);
 		}
 
 		if (!has_tag) {
-			x=obj->pos.x;
-			y=(obj->pos.y-obj->size.y)-map_enlarge;
-			z=obj->pos.z;
+			x=obj->pnt.x;
+			y=(obj->pnt.y-obj->size.y)-map_enlarge;
+			z=obj->pnt.z;
 		}
 		
 			// translate and rotate point
 			
 		
-		dist=distance_get(x,y,z,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
+		dist=distance_get(x,y,z,view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
 		if (dist>=remote_name_max_distance) continue;
 
 		obj->draw.remote_name.pnt.x=x;
 		obj->draw.remote_name.pnt.y=y;
 		obj->draw.remote_name.pnt.z=z;
 			
-		x-=view.camera.pos.x;
-		y-=view.camera.pos.y;
-		z-=view.camera.pos.z;
+		x-=view.camera.pnt.x;
+		y-=view.camera.pnt.y;
+		z-=view.camera.pnt.z;
 		
 			// is it behind the z?
 
@@ -220,9 +220,9 @@ void remote_draw_names_setup(void)
 		// ray trace remote name to camera's eye level
 		// to check for visibility
 
-	ept.x=view.camera.pos.x;
-	ept.y=view.camera.pos.y;
-	ept.z=view.camera.pos.z;
+	ept.x=view.camera.pnt.x;
+	ept.y=view.camera.pnt.y;
+	ept.z=view.camera.pnt.z;
 
 	contact.obj_on=TRUE;
 	contact.proj_on=FALSE;

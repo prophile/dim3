@@ -67,7 +67,7 @@ extern char light_type_str[][32];
 #define max_movement								64				// maximum number of movements
 #define max_movement_move							16				// maximum number of separate moves in a movement
 
-#define nopath										-1				// no path in sight structs
+#define nopath										-1				// no path in sight structs -- supergumba -- can delete
 
 //
 // strings
@@ -323,7 +323,7 @@ typedef struct		{
 typedef struct		{
 						int							x,z,ex,ez,mx,mz,ty,by,
 													decal_count;
-						bool						in_path;
+						bool						in_path2;
 						char						name[name_str_len];
 						portal_message_type			msg;
 						portal_sight_list_type		sight[max_sight_list];
@@ -332,7 +332,7 @@ typedef struct		{
 					} portal_type;
 
 //
-// map scenery, light, sound and particle structures
+// scenery, light, sound and particle structures
 //
 
 					
@@ -343,15 +343,14 @@ typedef struct		{
 						bool						contact_object_on,contact_projectile_on,
 													contact_hit_box,face_forward,
 													shadow,shadow_cast_down,override_size;
-						d3pos						pos;
+						d3pnt						pnt,size;
 						d3ang						ang;
-						d3pnt						size;
 					} map_scenery_type;
 
 typedef struct		{
 						short						type;
 						int							intensity;
-						bool						on,confine_to_portal;
+						bool						on;
 						d3pnt						pnt;
 						d3col						col;
 					} map_light_type;
@@ -388,7 +387,7 @@ typedef struct		{
 													attach_script[file_str_len],
 													attach_params[param_str_len];
 						bool						attach;
-						d3pos						pos;
+						d3pnt						pnt;
 						d3ang						ang;
 					} spot_type;
 
@@ -397,7 +396,7 @@ typedef struct		{
 													link[max_node_link],
 													path_hint[max_node];
 						char						name[name_str_len];
-						d3pos						pos;
+						d3pnt						pnt;
 						d3ang						ang;
 					} node_type;
 

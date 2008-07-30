@@ -73,9 +73,9 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 		// the eye offset
 
-	fx=(float)view.camera.pos.x;
-	fy=(float)view.camera.pos.y;
-	fz=(float)view.camera.pos.z;
+	fx=(float)view.camera.pnt.x;
+	fy=(float)view.camera.pnt.y;
+	fz=(float)view.camera.pnt.z;
 
 	v_idx=0;
 	
@@ -188,9 +188,9 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 		// the eye offset
 
-	fx=(float)view.camera.pos.x;
-	fy=(float)view.camera.pos.y;
-	fz=(float)view.camera.pos.z;
+	fx=(float)view.camera.pnt.x;
+	fy=(float)view.camera.pnt.y;
+	fz=(float)view.camera.pnt.z;
 
 		// check if lights or vertex data has changed in
 		// room.  If not, only run through the vertexes

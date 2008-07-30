@@ -267,9 +267,9 @@ void particle_draw(effect_type *effect,int count)
 		ambient_col.b=pc[2];
 	}
 
-	mx-=view.camera.pos.x;
-	my-=view.camera.pos.y;
-	mz-=view.camera.pos.z;
+	mx-=view.camera.pnt.x;
+	my-=view.camera.pnt.y;
+	mz-=view.camera.pnt.z;
 	
 		// particle move rotation
 		// we can have rotations from being attached to a bone of a model

@@ -92,6 +92,7 @@ bool		mesh_view_done=FALSE;
 #define mesh_view_mesh_near_z_offset	-(3*map_enlarge)
 
 
+extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
 
 int test_me_sort(d3pnt *pt,int *mesh_sort_list)
 {
@@ -519,7 +520,7 @@ void temp_get_mesh_draw_list(void)
 
 		// get mesh camera is in
 
-	start_mesh_idx=map_find_mesh(view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
+	start_mesh_idx=map_find_mesh(view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
 	start_mesh=&map.mesh.meshes[start_mesh_idx];
 
 		// check all visibile meshes from the start mesh
@@ -538,7 +539,7 @@ void temp_get_mesh_draw_list(void)
 
 		mesh=&map.mesh.meshes[n];
 
-		d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
+		d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
 		if (d>(view.camera.far_z-view.camera.near_z)) continue;
 
 		if (!boundbox_inview(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y)) continue;
@@ -608,7 +609,6 @@ void view_draw_models_setup(void)
 	
 	for (i=0;i!=server.count.obj;i++) {
 		obj=&server.objs[i];
-		if (!map.portals[obj->pos.rn].in_path) continue;
 		if ((obj->hidden) || (obj->draw.uid==-1) || (!obj->draw.on)) continue;
 		if (!((obj->draw.in_view) || (obj->draw.shadow.in_view))) continue;
 		
@@ -649,7 +649,6 @@ void view_draw_models_setup(void)
 
 	for (i=0;i!=server.count.proj;i++) {
 		proj=&server.projs[i];
-		if (!map.portals[proj->pos.rn].in_path) continue;
 		if ((proj->draw.uid==-1) || (!proj->draw.on)) continue;
 		if (!((proj->draw.in_view) || (proj->draw.shadow.in_view))) continue;
 		
@@ -827,8 +826,8 @@ void view_draw(int tick)
 		// unless obscured by fog
 	
 	if (!fog_solid_on()) {
-		draw_background(view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
-		draw_sky(tick,view.camera.pos.y);
+		draw_background(view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
+		draw_sky(tick,view.camera.pnt.y);
 	}
 	else {
 		fog_solid_start();
@@ -856,8 +855,8 @@ void view_draw(int tick)
 //	render_transparent_map(mesh_draw_count,mesh_draw_list);
 
 		// draw liquids
-// supergumba -- testing
-//	liquid_render(tick);
+
+	liquid_render(tick);
 
 		// draw decals
 

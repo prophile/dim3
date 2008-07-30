@@ -133,10 +133,9 @@ void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool ch
 	
 		// position
 		
-	update.pos_rn=htons((short)obj->pos.rn);
-	update.pos_x=htonl(obj->pos.x);
-	update.pos_y=htonl(obj->pos.y);
-	update.pos_z=htonl(obj->pos.z);
+	update.pnt_x=htonl(obj->pnt.x);
+	update.pnt_y=htonl(obj->pnt.y);
+	update.pnt_z=htonl(obj->pnt.z);
 	
 	update.fp_ang_x=htonf(obj->ang.x);
 	update.fp_ang_y=htonf(obj->ang.y);
@@ -266,9 +265,9 @@ void net_client_send_sound(int remote_uid,int x,int y,int z,float pitch,char *na
 {
 	network_request_remote_sound	sound;
 	
-	sound.pos_x=htonl(x);
-	sound.pos_y=htonl(y);
-	sound.pos_z=htonl(z);
+	sound.pnt_x=htonl(x);
+	sound.pnt_y=htonl(y);
+	sound.pnt_z=htonl(z);
 	
 	sound.fp_pitch=htonf(pitch);
 	

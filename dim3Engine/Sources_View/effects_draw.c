@@ -88,13 +88,13 @@ void effect_draw_lightning(int tick,effect_type *effect)
 	
         // get line start and end
         
-	sx=lightning->start_pnt.x-view.camera.pos.x;
-	sy=lightning->start_pnt.y-view.camera.pos.y;
-	sz=view.camera.pos.z-lightning->start_pnt.z;
+	sx=lightning->start_pnt.x-view.camera.pnt.x;
+	sy=lightning->start_pnt.y-view.camera.pnt.y;
+	sz=view.camera.pnt.z-lightning->start_pnt.z;
 
-	ex=lightning->end_pnt.x-view.camera.pos.x;
-	ey=lightning->end_pnt.y-view.camera.pos.y;
-	ez=view.camera.pos.z-lightning->end_pnt.z;
+	ex=lightning->end_pnt.x-view.camera.pnt.x;
+	ey=lightning->end_pnt.y-view.camera.pnt.y;
+	ez=view.camera.pnt.z-lightning->end_pnt.z;
 	
         // find number of lines
 
@@ -180,13 +180,13 @@ void effect_draw_ray(effect_type *effect,int count)
 	
         // find line
         
-	sx=ray->start_pnt.x-view.camera.pos.x;
-	sy=ray->start_pnt.y-view.camera.pos.y;
-	sz=view.camera.pos.z-ray->start_pnt.z;
+	sx=ray->start_pnt.x-view.camera.pnt.x;
+	sy=ray->start_pnt.y-view.camera.pnt.y;
+	sz=view.camera.pnt.z-ray->start_pnt.z;
 
-	ex=ray->end_pnt.x-view.camera.pos.x;
-	ey=ray->end_pnt.y-view.camera.pos.y;
-	ez=view.camera.pos.z-ray->end_pnt.z;
+	ex=ray->end_pnt.x-view.camera.pnt.x;
+	ey=ray->end_pnt.y-view.camera.pnt.y;
+	ez=view.camera.pnt.z-ray->end_pnt.z;
 	
 		// build line for count
 	
@@ -284,9 +284,9 @@ void effect_draw_globe(effect_type *effect,int count)
 	alpha=globe->end_alpha-globe->start_alpha;
 	alpha=((alpha*(float)count)/(float)life_tick)+globe->start_alpha;
 
-	x=effect->pnt.x-view.camera.pos.x;
-	y=effect->pnt.y-view.camera.pos.y;
-	z=view.camera.pos.z-effect->pnt.z;
+	x=effect->pnt.x-view.camera.pnt.x;
+	y=effect->pnt.y-view.camera.pnt.y;
+	z=view.camera.pnt.z-effect->pnt.z;
 
 		// draw globe
 

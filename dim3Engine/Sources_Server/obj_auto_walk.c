@@ -107,12 +107,12 @@ bool object_auto_walk_player_setup(obj_type *obj,bool turn_only)
 	return(object_auto_walk_object_setup(obj,server.player_obj_uid,turn_only));
 }
 
-bool object_auto_walk_position_setup(obj_type *obj,d3pos *pos,int slop)
+bool object_auto_walk_position_setup(obj_type *obj,d3pnt *pnt,int slop)
 {
 		// setup walk to position
 		
 	obj->auto_walk.mode=aw_position;
-	memmove(&obj->auto_walk.pos,pos,sizeof(d3pos));
+	memmove(&obj->auto_walk.pnt,pnt,sizeof(d3pnt));
 	
 		// add in slop
 		
@@ -194,7 +194,7 @@ void object_auto_walk_node(obj_type *obj)
 		
 	node=&map.nodes[seek_idx];
 	
-	ang_y=angle_find(obj->pos.x,obj->pos.z,node->pos.x,node->pos.z);
+	ang_y=angle_find(obj->pos.x,obj->pos.z,node->pnt.x,node->pnt.z);
 	angle_dif(ang_y,obj->ang.y,&cwise);
 	
 	obj->turn.ang_to.y=ang_y;
@@ -208,11 +208,11 @@ void object_auto_walk_node(obj_type *obj)
 	
 		// if flying, put in a seek angle
 		
-	object_auto_walk_set_vertical_move(obj,node->pos.y,node->pos.z);
+	object_auto_walk_set_vertical_move(obj,node->pnt.y,node->pnt.z);
 	
 		// near node?
 		
-	dist=distance_get(node->pos.x,node->pos.y,node->pos.z,obj->pos.x,obj->pos.y,obj->pos.z);
+	dist=distance_get(node->pnt.x,node->pnt.y,node->pnt.z,obj->pos.x,obj->pos.y,obj->pos.z);
 	if (dist>obj->auto_walk.node_slop) return;	
 	
 		// move on to last node

@@ -206,20 +206,6 @@ void map_portal_delete(map_type *map,int rn)
 		if (!map_portal_liquid_delete(map,rn,(portal->liquid.nliquid-1))) break;
 	}
 
-		// fix all map portal indexes
-		
-	for (n=0;n!=map->nnode;n++) {
-		if (map->nodes[n].pos.rn>rn) map->nodes[n].pos.rn--;
-	}
-	
-	for (n=0;n!=map->nspot;n++) {
-		if (map->spots[n].pos.rn>rn) map->spots[n].pos.rn--;
-	}
-	
-	for (n=0;n!=map->nscenery;n++) {
-		if (map->sceneries[n].pos.rn>rn) map->sceneries[n].pos.rn--;
-	}
-		
 		// adjust sight paths
 		
 	map_portal_sight_delete_adjust_path(map,rn);
@@ -299,29 +285,6 @@ int map_portal_duplicate(map_type *map,int rn,int x,int z)
 	
 		memmove(liq,old_liq,sizeof(map_liquid_type));
 	}
-		
-		// duplicate the other items
-		// except for nodes
-		
-	for (n=0;n!=map->nspot;n++) {
-		if (map->spots[n].pos.rn==old_rn) {
-			if (map->nspot>=max_spot) break;
-
-			memmove(&map->spots[map->nspot],&map->spots[n],sizeof(spot_type));
-			map->spots[map->nspot].pos.rn=rn;
-			map->nspot++;
-		}
-	}
-	
-	for (n=0;n!=map->nscenery;n++) {
-		if (map->sceneries[n].pos.rn==old_rn) {
-			if (map->nscenery>=max_map_scenery) break;
-
-			memmove(&map->sceneries[map->nscenery],&map->sceneries[n],sizeof(map_scenery_type));
-			map->sceneries[map->nscenery].pos.rn=rn;
-			map->nscenery++;
-		}
-	}
 	
 	return(rn);
 }
@@ -363,6 +326,7 @@ bool map_portal_touching_portal(map_type *map,int base_rn,int rn)
 
 int map_portal_draw_sort(map_type *map,int rn,int cx,int cy,int cz,int *portal_list)
 {
+	/* supergumba -- delete
 	int						n,k,d,idx,sz,cnt,
 							dist[max_portal];
 	portal_type				*portal;
@@ -410,6 +374,9 @@ int map_portal_draw_sort(map_type *map,int rn,int cx,int cy,int cz,int *portal_l
 	portal_list[cnt]=rn;
 	
 	return(cnt+1);
+	*/
+
+	return(0);
 }
 
 

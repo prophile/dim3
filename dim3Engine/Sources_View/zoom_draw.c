@@ -95,9 +95,9 @@ void zoom_setup(int tick,obj_type *obj,weapon_type *weap)
 		gl_3D_rotate(&view.camera.ang);
 		gl_setup_project();
 		
-		tx=x-view.camera.pos.x;
-		ty=y-view.camera.pos.y;
-		tz=z-view.camera.pos.z;
+		tx=x-view.camera.pnt.x;
+		ty=y-view.camera.pnt.y;
+		tz=z-view.camera.pnt.z;
 
 		gl_project_point(&tx,&ty,&tz);
 	}

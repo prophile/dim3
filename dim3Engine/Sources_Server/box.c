@@ -42,10 +42,6 @@ extern server_type		server;
 
 void box_create_from_point(d3box *box,int x,int y,int z,int wid,int high)
 {
-		// no hint
-		
-	box->hint_rn=-1;
-	
 		// box middle
 		
 	box->x=x;
@@ -69,15 +65,11 @@ void box_create_from_object(d3box *box,obj_type *obj)
 {
 	int		x,z,y,x_size,z_size,y_size;
 
-		// portal hint
-		
-	box->hint_rn=obj->pos.rn;
-	
 		// box middle
 		
-	box->x=x=obj->pos.x;
-	box->z=z=obj->pos.z;
-	box->y=y=obj->pos.y;
+	box->x=x=obj->pnt.x;
+	box->z=z=obj->pnt.z;
+	box->y=y=obj->pnt.y;
 
 		// box points
 		
@@ -100,15 +92,11 @@ void box_create_from_projectile(d3box *box,proj_type *proj)
 {
 	int		x,z,y,x_size,z_size;
 
-		// portal hint
-		
-	box->hint_rn=proj->pos.rn;
-
 		// box middle
 		
-	box->x=x=proj->pos.x;
-	box->z=z=proj->pos.z;
-	box->y=y=proj->pos.y;
+	box->x=x=proj->pnt.x;
+	box->z=z=proj->pnt.z;
+	box->y=y=proj->pnt.y;
 
 		// box points
 		
@@ -148,28 +136,6 @@ void box_add_movement(d3box *box,int mx,int mz)
 	
 	box->x=(box->min_x+box->max_x)>>1;
 	box->z=(box->min_z+box->max_z)>>1;
-}
-
-/* =======================================================
-
-      Boxes in Maps and Portals
-      
-======================================================= */
-
-bool box_in_map(d3box *box)
-{
-	if (map_find_portal_hint(&map,box->hint_rn,box->min_x,box->max_y,box->min_z)!=-1) return(TRUE);
-	if (map_find_portal_hint(&map,box->hint_rn,box->min_x,box->max_y,box->max_z)!=-1) return(TRUE);
-	if (map_find_portal_hint(&map,box->hint_rn,box->max_x,box->max_y,box->min_z)!=-1) return(TRUE);
-	return(map_find_portal_hint(&map,box->hint_rn,box->max_x,box->max_y,box->max_z)!=-1);
-}
-
-bool box_in_portal(d3box *box,portal_type *portal)
-{
-	if (portal->ex<box->min_x) return(FALSE);
-	if (portal->x>box->max_x) return(FALSE);
-	if (portal->ez<box->min_z) return(FALSE);
-	return(!(portal->z>box->max_z));
 }
 
 /* =======================================================

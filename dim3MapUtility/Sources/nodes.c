@@ -73,14 +73,14 @@ int map_find_nearest_node(map_type *map,int x,int y,int z,int user_value,float a
 	
 			// check distance
 			
-		d=distance_get(x,y,z,node->pos.x,node->pos.y,node->pos.z);
+		d=distance_get(x,y,z,node->pnt.x,node->pnt.y,node->pnt.z);
 		if (d<min_dist) continue;
 		if (d>dist) continue;
 		
 			// check angle
 			
 		if (ang!=-1) {
-			fang=angle_find(x,z,node->pos.x,node->pos.z);
+			fang=angle_find(x,z,node->pnt.x,node->pnt.z);
 			if (angle_dif(fang,ang,NULL)>ang_sweep) continue;
 		}
 			
@@ -116,9 +116,9 @@ int map_node_to_node_distance(map_type *map,int from_idx,int to_idx)
 
 	node=&map->nodes[from_idx];
 
-	x=node->pos.x;
-	y=node->pos.y;
-	z=node->pos.z;
+	x=node->pnt.x;
+	y=node->pnt.y;
+	z=node->pnt.z;
 
 	idx=from_idx;
 	dist=0;
@@ -131,11 +131,11 @@ int map_node_to_node_distance(map_type *map,int from_idx,int to_idx)
 		if (idx==from_idx) return(0);			// circular, get out
 
 		node=&map->nodes[idx];
-		dist+=distance_get(x,y,z,node->pos.x,node->pos.y,node->pos.z);
+		dist+=distance_get(x,y,z,node->pnt.x,node->pnt.y,node->pnt.z);
 
-		x=node->pos.x;
-		y=node->pos.y;
-		z=node->pos.z;
+		x=node->pnt.x;
+		y=node->pnt.y;
+		z=node->pnt.z;
 
 		if (idx==to_idx) break;
 	}

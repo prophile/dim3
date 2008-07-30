@@ -209,7 +209,7 @@ void run_object_normal(obj_type *obj,int tick)
 
 void run_objects_slice(int tick)
 {
-	int				n,old_rn;
+	int				n;
 	obj_type		*obj;
 
 	obj=server.objs;
@@ -220,7 +220,8 @@ void run_objects_slice(int tick)
 		
 				// remember current portal
 
-			old_rn=obj->pos.rn;
+//			old_rn=obj->pos.rn;
+			// supergumba -- REDO PORTAL TRIGGERS HERE
 
 				// run object
 
@@ -233,7 +234,7 @@ void run_objects_slice(int tick)
 
 				// trigger any portal changes
 			
-			if (old_rn!=obj->pos.rn) portal_triggers(obj,old_rn,obj->pos.rn);
+//			if (old_rn!=obj->pos.rn) portal_triggers(obj,old_rn,obj->pos.rn);
 		}
 		
 		obj++;

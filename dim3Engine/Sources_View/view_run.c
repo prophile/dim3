@@ -74,7 +74,7 @@ void view_run(int tick)
 
 			// listener position
 			
-		al_set_listener(obj->pos.x,obj->pos.y,obj->pos.z,obj->view_ang.y);
+		al_set_listener(obj->pnt.x,obj->pnt.y,obj->pnt.z,obj->view_ang.y);
 	}
 	
 		// ambients and music

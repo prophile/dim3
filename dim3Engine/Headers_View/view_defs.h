@@ -144,7 +144,7 @@ typedef struct		{
 												near_z,far_z,near_z_offset,
 												under_liquid_idx;
 						float					fov,aspect_ratio;
-						d3pos					pos;
+						d3pnt					pnt;
 						d3ang					ang;
 					} view_camera_type;
 

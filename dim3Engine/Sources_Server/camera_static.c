@@ -38,7 +38,7 @@ extern map_type			map;
 extern camera_type		camera;
 extern js_type			js;
 
-d3pos					camera_static_pos;
+d3pos					camera_static_pnt;
 d3ang					camera_static_walk_ang;
 
 /* =======================================================
@@ -49,8 +49,6 @@ d3ang					camera_static_walk_ang;
 
 void camera_static_connect(void)
 {
-	camera_static_pos.rn=map_find_portal(&map,camera_static_pos.x,camera_static_pos.y,camera_static_pos.z);
-
 	camera.auto_walk.on=FALSE;
 }
 
@@ -62,11 +60,9 @@ void camera_static_connect(void)
 
 void camera_static_update(int x,int z,int y)
 {
-    camera_static_pos.x=x;
-    camera_static_pos.z=z;
-    camera_static_pos.y=y;
-    
-	camera_static_pos.rn=map_find_portal_by_pos(&map,&camera_static_pos);
+    camera_static_pnt.x=x;
+    camera_static_pnt.z=z;
+    camera_static_pnt.y=y;
 }
 
 /* =======================================================
@@ -75,13 +71,13 @@ void camera_static_update(int x,int z,int y)
       
 ======================================================= */
 
-void camera_static_get_position(d3pos *pos,d3ang *ang)
+void camera_static_get_position(d3pnt *pnt,d3ang *ang)
 {
 	obj_type		*obj;
     
 		// get position
 
-	memmove(pos,&camera_static_pos,sizeof(d3pos));
+	memmove(pnt,&camera_static_pnt,sizeof(d3pnt));
 
 	if (ang==NULL) return;
 	
@@ -89,8 +85,8 @@ void camera_static_get_position(d3pos *pos,d3ang *ang)
 
     if (camera.static_follow) {
 		obj=object_find_uid(camera.obj_uid);
-        ang->y=angle_find(camera_static_pos.x,camera_static_pos.z,obj->pos.x,obj->pos.z);
-		ang->x=-(180.0f-angle_find(camera_static_pos.y,camera_static_pos.z,obj->pos.y,obj->pos.z));
+        ang->y=angle_find(camera_static_pnt.x,camera_static_pnt.z,obj->pos.x,obj->pos.z);
+		ang->x=-(180.0f-angle_find(camera_static_pnt.y,camera_static_pnt.z,obj->pos.y,obj->pos.z));
  		ang->z=camera.ang.z;
 		return;
 	}
@@ -162,7 +158,7 @@ bool camera_walk_to_node_setup(char *start_node,char *end_node,int msec,int even
 	
 		// start at the start node and seek to the next node
 		
-	memmove(&camera_static_pos,&map.nodes[from_idx].pos,sizeof(d3pos));
+	memmove(&camera_static_pnt,&map.nodes[from_idx].pnt,sizeof(d3pnt));
 	memmove(&camera_static_walk_ang,&map.nodes[from_idx].ang,sizeof(d3ang));
 
 	from_idx=map_find_next_node_in_path(&map,from_idx,to_idx);
@@ -217,9 +213,9 @@ void camera_static_run(void)
 		// get percentage of each different and use that
 		// to adjust the speed
 
-	sx=(float)abs(node->pos.x-camera_static_pos.x);
-	sy=(float)abs(node->pos.y-camera_static_pos.y);
-	sz=(float)abs(node->pos.z-camera_static_pos.z);
+	sx=(float)abs(node->pnt.x-camera_static_pnt.x);
+	sy=(float)abs(node->pnt.y-camera_static_pnt.y);
+	sz=(float)abs(node->pnt.z-camera_static_pnt.z);
 	tot=sx+sy+sz;
 
 	sx=sx/tot;
@@ -227,23 +223,21 @@ void camera_static_run(void)
 	sz=sz/tot;
 
 	sx*=camera.auto_walk.speed;
-	if (node->pos.x<camera_static_pos.x) sx=-sx;
+	if (node->pnt.x<camera_static_pnt.x) sx=-sx;
 	
 	sy*=camera.auto_walk.speed;
-	if (node->pos.y<camera_static_pos.y) sy=-sy;
+	if (node->pnt.y<camera_static_pnt.y) sy=-sy;
 	
 	sz*=camera.auto_walk.speed;
-	if (node->pos.z<camera_static_pos.z) sz=-sz;
+	if (node->pnt.z<camera_static_pnt.z) sz=-sz;
 
-	camera_static_pos.x+=(int)sx;
-	camera_static_pos.y+=(int)sy;
-	camera_static_pos.z+=(int)sz;
-	
-	map_find_portal_by_pos(&map,&camera_static_pos);
+	camera_static_pnt.x+=(int)sx;
+	camera_static_pnt.y+=(int)sy;
+	camera_static_pnt.z+=(int)sz;
 
 		// distance to seek node
 
-	dist=distance_get(node->pos.x,node->pos.y,node->pos.z,camera_static_pos.x,camera_static_pos.y,camera_static_pos.z);
+	dist=distance_get(node->pnt.x,node->pnt.y,node->pnt.z,camera_static_pnt.x,camera_static_pnt.y,camera_static_pnt.z);
 
 		// get the look angle if not following
 

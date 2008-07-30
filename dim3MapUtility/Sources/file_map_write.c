@@ -45,57 +45,6 @@ extern maputility_settings_type		maputility_settings;
 
 /* =======================================================
 
-      Check for Items in Portals
-      
-======================================================= */
-
-bool portal_has_node(map_type *map,int rn)
-{
-	int				n;
-	node_type		*node;
-	
-	node=map->nodes;
-	
-	for (n=0;n!=map->nnode;n++) {
-		if (node->pos.rn==rn) return(TRUE);
-		node++;
-	}
-	
-	return(FALSE);
-}
-
-bool portal_has_spot(map_type *map,int rn)
-{
-	int				n;
-	spot_type		*spot;
-	
-	spot=map->spots;
-	
-	for (n=0;n!=map->nspot;n++) {
-		if (spot->pos.rn==rn) return(TRUE);
-		spot++;
-	}
-	
-	return(FALSE);
-}
-
-bool portal_has_scenery(map_type *map,int rn)
-{
-	int					n;
-	map_scenery_type	*scenery;
-	
-	scenery=map->sceneries;
-	
-	for (n=0;n!=map->nscenery;n++) {
-		if (scenery->pos.rn==rn) return(TRUE);
-		scenery++;
-	}
-	
-	return(FALSE);
-}
-
-/* =======================================================
-
       Write Settings
       
 ======================================================= */
@@ -570,95 +519,7 @@ bool write_map_xml(map_type *map)
 		}
 
         xml_add_tagclose("Liquids");
-		
-			// scenery
-
-		if (portal_has_scenery(map,n)) {
-			xml_add_tagstart("Sceneries");
-			xml_add_tagend(FALSE);
-			
-			for (k=0;k!=map->nscenery;k++) {
-				scenery=&map->sceneries[k];
-				if (scenery->pos.rn!=n) continue;
-				
-				xml_add_tagstart("Scenery");
-				xml_add_attribute_3_coord_int("c3",scenery->pos.x,scenery->pos.y,scenery->pos.z);
-				xml_add_attribute_text("model_name",scenery->model_name);
-				xml_add_attribute_text("animation_name",scenery->animation_name);
-				xml_add_attribute_3_coord_float("angle",scenery->ang.x,scenery->ang.y,scenery->ang.z);
-				xml_add_attribute_list("lighting_mode",(char*)lighting_mode_str,scenery->lighting_mode);
-				xml_add_attribute_boolean("contact",scenery->contact_object_on);
-				xml_add_attribute_boolean("contact_projectile",scenery->contact_projectile_on);
-				xml_add_attribute_boolean("contact_hit_box",scenery->contact_hit_box);
-				xml_add_attribute_boolean("face_forward",scenery->face_forward);
-				xml_add_attribute_boolean("shadow",scenery->shadow);
-				xml_add_attribute_boolean("shadow_cast_down",scenery->shadow_cast_down);
-				xml_add_attribute_boolean("override_size",scenery->override_size);
-				xml_add_attribute_3_coord_int("size",scenery->size.x,scenery->size.y,scenery->size.z);
-				xml_add_tagend(TRUE);
-			}
-			
-			xml_add_tagclose("Sceneries");
-		}
-		
-			// nodes
-        
-		if (portal_has_node(map,n)) {
-			xml_add_tagstart("Nodes");
-			xml_add_tagend(FALSE);
-		
-			for (k=0;k!=map->nnode;k++) {
-				node=&map->nodes[k];
-				if (node->pos.rn!=n) continue;
-			
-				xml_add_tagstart("Node");
-				xml_add_attribute_int("id",k);
-				xml_add_attribute_3_coord_int("c3",node->pos.x,node->pos.y,node->pos.z);
-				xml_add_attribute_3_coord_float("angle",node->ang.x,node->ang.y,node->ang.z);
-				xml_add_attribute_text("name",node->name);
-				if (node->user_value!=0) xml_add_attribute_int("user",node->user_value);
-				xml_add_tagend(FALSE);
-			
-				xml_add_tagstart("Link");
-				xml_add_attribute_short_array("node",(short*)node->link,max_node_link,TRUE);
-				xml_add_tagend(TRUE);
-			
-				xml_add_tagstart("Hint");
-				xml_add_attribute_short_array("node",(short*)node->path_hint,map->nnode,FALSE);
-				xml_add_tagend(TRUE);
-			
-				xml_add_tagclose("Node");
-			}
-		
-			xml_add_tagclose("Nodes");
-		}
-			
-			// spots
-
-		if (portal_has_spot(map,n)) {
-			xml_add_tagstart("Spots");
-			xml_add_tagend(FALSE);
-			
-			for (k=0;k!=map->nspot;k++) {
-				spot=&map->spots[k];
-				if (spot->pos.rn!=n) continue;
-				
-				xml_add_tagstart("Spot");
-				xml_add_attribute_int("id",k);
-				xml_add_attribute_3_coord_int("c3",spot->pos.x,spot->pos.y,spot->pos.z);
-				xml_add_attribute_text("name",spot->name);
-				xml_add_attribute_text("type",spot->type);
-				xml_add_attribute_text("script",spot->script);
-				xml_add_attribute_text("display_model",spot->display_model);
-				xml_add_attribute_text("params",spot->params);
-				xml_add_attribute_float("angle",spot->ang.y);
-				xml_add_attribute_int("skill",spot->skill);
-				xml_add_tagend(TRUE);
-			}
-			
-			xml_add_tagclose("Spots");
-		}
-  
+		  
             // end portal
             
         xml_add_tagclose("Portal");
@@ -668,6 +529,32 @@ bool write_map_xml(map_type *map)
             
     xml_add_tagclose("Portals");
 
+		// scenery
+
+	xml_add_tagstart("Sceneries");
+	xml_add_tagend(FALSE);
+	
+	for (k=0;k!=map->nscenery;k++) {
+		scenery=&map->sceneries[k];
+		
+		xml_add_tagstart("Scenery");
+		xml_add_attribute_3_coord_int("c3",scenery->pnt.x,scenery->pnt.y,scenery->pnt.z);
+		xml_add_attribute_text("model_name",scenery->model_name);
+		xml_add_attribute_text("animation_name",scenery->animation_name);
+		xml_add_attribute_3_coord_float("angle",scenery->ang.x,scenery->ang.y,scenery->ang.z);
+		xml_add_attribute_list("lighting_mode",(char*)lighting_mode_str,scenery->lighting_mode);
+		xml_add_attribute_boolean("contact",scenery->contact_object_on);
+		xml_add_attribute_boolean("contact_projectile",scenery->contact_projectile_on);
+		xml_add_attribute_boolean("contact_hit_box",scenery->contact_hit_box);
+		xml_add_attribute_boolean("face_forward",scenery->face_forward);
+		xml_add_attribute_boolean("shadow",scenery->shadow);
+		xml_add_attribute_boolean("shadow_cast_down",scenery->shadow_cast_down);
+		xml_add_attribute_boolean("override_size",scenery->override_size);
+		xml_add_attribute_3_coord_int("size",scenery->size.x,scenery->size.y,scenery->size.z);
+		xml_add_tagend(TRUE);
+	}
+	
+	xml_add_tagclose("Sceneries");
 		
 		// lights
     
@@ -682,7 +569,6 @@ bool write_map_xml(map_type *map)
 		xml_add_attribute_3_coord_int("c3",light->pnt.x,light->pnt.y,light->pnt.z);
 		xml_add_attribute_int("intensity",light->intensity);
 		xml_add_attribute_color("rgb",&light->col);
-		xml_add_attribute_boolean("confine",light->confine_to_portal);
 		xml_add_attribute_boolean("off",!light->on);
 		xml_add_tagend(TRUE);
 	}
@@ -725,6 +611,58 @@ bool write_map_xml(map_type *map)
 	}
 	
 	xml_add_tagclose("Particles");
+		
+		// nodes
+    
+	xml_add_tagstart("Nodes");
+	xml_add_tagend(FALSE);
+
+	for (k=0;k!=map->nnode;k++) {
+		node=&map->nodes[k];
+	
+		xml_add_tagstart("Node");
+		xml_add_attribute_int("id",k);
+		xml_add_attribute_3_coord_int("c3",node->pnt.x,node->pnt.y,node->pnt.z);
+		xml_add_attribute_3_coord_float("angle",node->ang.x,node->ang.y,node->ang.z);
+		xml_add_attribute_text("name",node->name);
+		if (node->user_value!=0) xml_add_attribute_int("user",node->user_value);
+		xml_add_tagend(FALSE);
+	
+		xml_add_tagstart("Link");
+		xml_add_attribute_short_array("node",(short*)node->link,max_node_link,TRUE);
+		xml_add_tagend(TRUE);
+	
+		xml_add_tagstart("Hint");
+		xml_add_attribute_short_array("node",(short*)node->path_hint,map->nnode,FALSE);
+		xml_add_tagend(TRUE);
+	
+		xml_add_tagclose("Node");
+	}
+
+	xml_add_tagclose("Nodes");
+		
+		// spots
+
+	xml_add_tagstart("Spots");
+	xml_add_tagend(FALSE);
+	
+	for (k=0;k!=map->nspot;k++) {
+		spot=&map->spots[k];
+		
+		xml_add_tagstart("Spot");
+		xml_add_attribute_int("id",k);
+		xml_add_attribute_3_coord_int("c3",spot->pnt.x,spot->pnt.y,spot->pnt.z);
+		xml_add_attribute_text("name",spot->name);
+		xml_add_attribute_text("type",spot->type);
+		xml_add_attribute_text("script",spot->script);
+		xml_add_attribute_text("display_model",spot->display_model);
+		xml_add_attribute_text("params",spot->params);
+		xml_add_attribute_float("angle",spot->ang.y);
+		xml_add_attribute_int("skill",spot->skill);
+		xml_add_tagend(TRUE);
+	}
+	
+	xml_add_tagclose("Spots");
 
 		// close map
 

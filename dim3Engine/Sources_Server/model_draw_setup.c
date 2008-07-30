@@ -100,8 +100,8 @@ void model_draw_setup_object(int tick,obj_type *obj)
 		// angles
 		
 	if (draw->face_forward) {
-		setup->ang.x=angle_find(view.camera.pos.y,view.camera.pos.z,draw->pnt.y,draw->pnt.z);
-		setup->ang.y=angle_find(view.camera.pos.x,view.camera.pos.z,draw->pnt.x,draw->pnt.z);
+		setup->ang.x=angle_find(view.camera.pnt.y,view.camera.pnt.z,draw->pnt.y,draw->pnt.z);
+		setup->ang.y=angle_find(view.camera.pnt.x,view.camera.pnt.z,draw->pnt.x,draw->pnt.z);
 		setup->ang.z=0;
 	}
 	else {
@@ -145,9 +145,9 @@ void model_draw_setup_projectile(int tick,proj_type *proj)
 	
 		// position
 	
-	draw->pnt.x=proj->pos.x+draw->offset.x;
-	draw->pnt.z=proj->pos.z+draw->offset.z;
-	draw->pnt.y=proj->pos.y+draw->offset.y;
+	draw->pnt.x=proj->pnt.x+draw->offset.x;
+	draw->pnt.z=proj->pnt.z+draw->offset.z;
+	draw->pnt.y=proj->pnt.y+draw->offset.y;
 
 		// regular drawing in 3D space
 
@@ -180,8 +180,8 @@ void model_draw_setup_projectile(int tick,proj_type *proj)
 		// angles
 		
 	if (draw->face_forward) {
-		setup->ang.x=angle_find(view.camera.pos.y,view.camera.pos.z,draw->pnt.y,draw->pnt.z);
-		setup->ang.y=angle_find(view.camera.pos.x,view.camera.pos.z,draw->pnt.x,draw->pnt.z);
+		setup->ang.x=angle_find(view.camera.pnt.y,view.camera.pnt.z,draw->pnt.y,draw->pnt.z);
+		setup->ang.y=angle_find(view.camera.pnt.x,view.camera.pnt.z,draw->pnt.x,draw->pnt.z);
 		setup->ang.z=0;
 	}
 	else {

@@ -79,13 +79,13 @@ JSBool js_get_proj_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsva
 	switch (JSVAL_TO_INT(id)) {
 	
 		case proj_position_prop_x:
-			*vp=INT_TO_JSVAL(proj->pos.x);
+			*vp=INT_TO_JSVAL(proj->pnt.x);
 			break;
 		case proj_position_prop_z:
-			*vp=INT_TO_JSVAL(proj->pos.z);
+			*vp=INT_TO_JSVAL(proj->pnt.z);
 			break;
 		case proj_position_prop_y:
-			*vp=INT_TO_JSVAL(proj->pos.y);
+			*vp=INT_TO_JSVAL(proj->pnt.y);
 			break;
 			
 	}

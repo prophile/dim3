@@ -175,7 +175,7 @@ JSBool js_obj_position_place_random_spot_func(JSContext *cx,JSObject *j_obj,uint
 	
 		// move player
 	
-	object_set_position(obj,spot->pos.x,spot->pos.z,spot->pos.y,spot->ang.y,0);
+	object_set_position(obj,spot->pnt.x,spot->pnt.z,spot->pnt.y,spot->ang.y,0);
 	obj->turn.ang_to.y=spot->ang.y;
 	
  	object_telefrag_check(obj);
@@ -216,7 +216,7 @@ JSBool js_obj_position_place_network_spot_func(JSContext *cx,JSObject *j_obj,uin
 	
 		// move player
 	
-	object_set_position(obj,spot->pos.x,spot->pos.z,spot->pos.y,spot->ang.y,0);
+	object_set_position(obj,spot->pnt.x,spot->pnt.z,spot->pnt.y,spot->ang.y,0);
 	obj->turn.ang_to.y=spot->ang.y;
  
 	object_telefrag_check(obj);

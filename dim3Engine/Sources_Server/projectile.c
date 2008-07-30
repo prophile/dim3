@@ -75,7 +75,7 @@ proj_type* projectile_create(int tick,obj_type *obj,weapon_type *weap,proj_setup
 
 	proj->start_tick=tick;
 	
-	object_clear_position(&proj->pos);
+	object_clear_position(&proj->pnt);
 	object_clear_angle(&proj->ang);
 	object_clear_motion(&proj->motion);
 	object_clear_force(&proj->force);
@@ -133,19 +133,17 @@ proj_type* projectile_find_uid(int uid)
 
 void projectile_set_position(proj_type *proj,d3pnt *pt,d3ang *ang)
 {
-	d3pos			*pos;
+	d3pnt			*pnt;
 	
 		// position
 		
-	pos=&proj->pos;
+	pnt=&proj->pnt;
 	
-	pos->x=pt->x;
-	pos->y=pt->y;
-	pos->z=pt->z;
-	
-	map_find_portal_by_pos(&map,pos);
+	pnt->x=pt->x;
+	pnt->y=pt->y;
+	pnt->z=pt->z;
 
-	memmove(&proj->last_pos,pos,sizeof(d3pos));
+	memmove(&proj->last_pnt,pnt,sizeof(d3pnt));
 
 		// angles
 		
@@ -165,7 +163,7 @@ void projectile_set_position(proj_type *proj,d3pnt *pt,d3ang *ang)
 
 void projectile_set_origin(proj_type *proj)
 {
-	memmove(&proj->org_pos,&proj->pos,sizeof(d3pos));
+	memmove(&proj->org_pnt,&proj->pnt,sizeof(d3pnt));
 }
 
 bool projectile_spawn_position(proj_type *proj,d3pnt *pt,d3ang *ang,obj_type *parentobj)
@@ -175,16 +173,11 @@ bool projectile_spawn_position(proj_type *proj,d3pnt *pt,d3ang *ang,obj_type *pa
 	
 	proj->contact.obj_uid=-1;
 
-		// check for spawning outside map
-	
-	if (map_find_portal_by_pos(&map,&proj->pos)) return(FALSE);
-		
 		// reset projectile to explode on parent object
 
-	proj->pos.x=parentobj->pos.x;
-	proj->pos.z=parentobj->pos.z;
-	proj->pos.y=parentobj->pos.y-(parentobj->size.y>>1);
-	proj->pos.rn=parentobj->pos.rn;
+	proj->pnt.x=parentobj->pnt.x;
+	proj->pnt.z=parentobj->pnt.z;
+	proj->pnt.y=parentobj->pnt.y-(parentobj->size.y>>1);
 	
 	proj->contact.obj_uid=parentobj->uid;
 	

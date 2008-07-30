@@ -46,7 +46,6 @@ JSPropertySpec	model_light_props[]={
 							{"on",					model_light_prop_on,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{"type",				model_light_prop_type,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{"intensity",			model_light_prop_intensity,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"confineToPortal",		model_light_prop_confine_to_portal,	JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 							
 int				light_type_to_jsval[]={sd_light_type_normal,sd_light_type_blink,sd_light_type_glow,sd_light_type_pulse,sd_light_type_flicker,sd_light_type_failing},
@@ -100,9 +99,6 @@ JSBool js_get_model_light_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 		case model_light_prop_intensity:
 			*vp=INT_TO_JSVAL(light->intensity);
 			break;
-		case model_light_prop_confine_to_portal:
-			*vp=BOOLEAN_TO_JSVAL(light->confine_to_portal);
-			break;
 	}
 
 	return(JS_TRUE);
@@ -134,9 +130,6 @@ JSBool js_set_model_light_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 			break;
 		case model_light_prop_intensity:
 			light->intensity=JSVAL_TO_INT(*vp);
-			break;
-		case model_light_prop_confine_to_portal:
-			light->confine_to_portal=JSVAL_TO_BOOLEAN(*vp);
 			break;
 	}
 

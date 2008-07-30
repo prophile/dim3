@@ -84,9 +84,9 @@ bool player_attach_object(void)
 		
 		spot=&map.spots[spot_idx];
 
-		x=spot->pos.x;
-		y=spot->pos.y;
-		z=spot->pos.z;
+		x=spot->pnt.x;
+		y=spot->pnt.y;
+		z=spot->pnt.z;
 
 		ang_y=spot->ang.y;
 

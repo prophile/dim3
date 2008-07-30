@@ -47,7 +47,6 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
-extern void view_portal_create_sight_path(d3pos *pos);
 extern bool model_inview(model_draw *draw);
 extern int distance_to_view_center(int x,int y,int z);
 
@@ -59,6 +58,8 @@ extern int distance_to_view_center(int x,int y,int z);
 
 void view_portal_updates(int tick)
 {
+	/* supergumba -- fix this
+
 	int				i;
 	portal_type		*portal;
 	
@@ -68,6 +69,7 @@ void view_portal_updates(int tick)
 		if (portal->in_path) map_portal_mesh_shift_portal_vertex_list(&map,i,tick);
 		portal++;
 	}
+	*/
 }
 
 /* =======================================================
@@ -257,7 +259,7 @@ void view_add_model_light(model_draw *draw,int obj_uid)
 				if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&pnt.x,&pnt.y,&pnt.z);
 			}
 			
-			light_add(&pnt,light->type,light->intensity,light->confine_to_portal,&light->col);
+			light_add(&pnt,light->type,light->intensity,&light->col);
 		}
 
 		light++;
@@ -299,7 +301,7 @@ void view_add_lights(void)
 	maplight=map.lights;
 		
 	for (i=0;i!=map.nlight;i++) {
-		if (maplight->on) light_add(&maplight->pnt,maplight->type,maplight->intensity,maplight->confine_to_portal,&maplight->col);
+		if (maplight->on) light_add(&maplight->pnt,maplight->type,maplight->intensity,&maplight->col);
 		maplight++;
 	}	
 
@@ -395,7 +397,7 @@ void view_calculate_shakes(int tick,obj_type *obj)
 	
 		if (effect->effecttype==ef_shake) {
 			
-			d=distance_get(obj->pos.x,obj->pos.y,obj->pos.z,effect->pnt.x,effect->pnt.y,effect->pnt.z);
+			d=distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,effect->pnt.x,effect->pnt.y,effect->pnt.z);
 			if (d<effect->data.shake.distance) {
 				shake_sz+=effect->size;
 				shake_freq+=(0.3f-((0.3f*(float)d)/(float)effect->data.shake.distance))+0.2f;
@@ -470,12 +472,9 @@ void view_draw_setup(int tick)
 		// set view camera
 	
 	camera_obj=object_find_uid(camera.obj_uid);
-	camera_get_position(&view.camera.pos,&view.camera.ang,camera_obj->size.eye_offset);
-	if (view.camera.pos.rn==-1) {
-		view.camera.pos.rn=camera_obj->pos.rn;
-	}
+	camera_get_position(&view.camera.pnt,&view.camera.ang,camera_obj->size.eye_offset);
 
-	view.camera.under_liquid_idx=camera_check_liquid(&view.camera.pos);
+	view.camera.under_liquid_idx=camera_check_liquid(&view.camera.pnt);
 
 	view.camera.projection_type=camera.plane.type;
 	view.camera.lft=camera.plane.lft;
@@ -497,7 +496,7 @@ void view_draw_setup(int tick)
 	
 		// bump smoothing
 		
-	if (obj->bump.on) view.camera.pos.y+=obj->bump.smooth_offset;		
+	if (obj->bump.on) view.camera.pnt.y+=obj->bump.smooth_offset;		
 	
 		// setup viewport
 	
@@ -509,10 +508,6 @@ void view_draw_setup(int tick)
 		// do texture animations
 		
 	map_setup_animated_textures(&map,tick);
-
-		// get sight path
-
-	view_portal_create_sight_path(&view.camera.pos);
 	
 		// any portal updates
 		

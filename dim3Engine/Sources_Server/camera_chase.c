@@ -52,7 +52,7 @@ void camera_chase_connect(void)
 
 	obj=object_find_uid(camera.obj_uid);
 	
-	memmove(&camera.pos,&obj->pos,sizeof(d3pos));
+	memmove(&camera.pnt,&obj->pnt,sizeof(d3pnt));
 	
 		// current chasing angle
 	
@@ -120,7 +120,7 @@ int camera_chase_get_division(int x,int z,int y)
       
 ======================================================= */
 
-void camera_chase_get_position(d3pos *pos,d3ang *ang)
+void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
 {
 	int				n,xadd,yadd,zadd,radius,div,
 					crn,cx,cz,cy,nx,nz,old_crn,ychng,hit_obj_uid;
@@ -143,18 +143,18 @@ void camera_chase_get_position(d3pos *pos,d3ang *ang)
 	matrix_rotate_zyx(&mat,fang,camera.cur_chase_ang.y,camera.cur_chase_ang.z);
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 	
-	cx=(int)fx+obj->pos.x;
-	cy=(int)fy+obj->pos.y;
-	cz=(int)fz+obj->pos.z;
+	cx=(int)fx+obj->pnt.x;
+	cy=(int)fy+obj->pnt.y;
+	cz=(int)fz+obj->pnt.z;
     
         // get camera movement
         
-	div=camera_chase_get_division(abs(cx-obj->pos.x),abs(cz-obj->pos.z),abs(cy-obj->pos.y));
+	div=camera_chase_get_division(abs(cx-obj->pnt.x),abs(cz-obj->pnt.z),abs(cy-obj->pnt.y));
 	if (div==0) div=1;
 	
-	xadd=(cx-obj->pos.x)/div;
-	yadd=(cy-obj->pos.y)/div;
-	zadd=(cz-obj->pos.z)/div;
+	xadd=(cx-obj->pnt.x)/div;
+	yadd=(cy-obj->pnt.y)/div;
+	zadd=(cz-obj->pnt.z)/div;
 	
 		// get camera starting position
 	
@@ -169,9 +169,9 @@ void camera_chase_get_position(d3pos *pos,d3ang *ang)
 	matrix_rotate_zyx(&mat,fang,camera.cur_chase_ang.y,camera.cur_chase_ang.z);
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 	
-	cx=(int)fx+obj->pos.x;
-	cz=(int)fz+obj->pos.z;
-	cy=(int)fy+(obj->pos.y-obj->size.y);
+	cx=(int)fx+obj->pnt.x;
+	cz=(int)fz+obj->pnt.z;
+	cy=(int)fy+(obj->pnt.y-obj->size.y);
 		
 		// move camera
 		
@@ -207,17 +207,13 @@ void camera_chase_get_position(d3pos *pos,d3ang *ang)
 	
         // new camera position
 
-	camera.pos.rn=crn;
-	camera.pos.x=cx;
-	camera.pos.y=cy;
-	camera.pos.z=cz;
+	camera.pnt.x=cx;
+	camera.pnt.y=cy;
+	camera.pnt.z=cz;
 	
 		// return values
 		
-    pos->rn=camera.pos.rn;
-    pos->x=camera.pos.x;
-    pos->y=camera.pos.y;
-    pos->z=camera.pos.z;
+    memmove(pnt,&camera.pnt,sizeof(d3pnt));
 	
 		// looking angles
 	
@@ -236,7 +232,7 @@ void camera_chase_get_position(d3pos *pos,d3ang *ang)
       
 ======================================================= */
 
-void camera_chase_static_get_position(d3pos *pos,d3ang *ang)
+void camera_chase_static_get_position(d3pnt *pnt,d3ang *ang)
 {
 	int				prn,cx,cz,cy;
 	float			fx,fy,fz;
@@ -254,26 +250,15 @@ void camera_chase_static_get_position(d3pos *pos,d3ang *ang)
 	matrix_rotate_zyx(&mat,camera.cur_chase_ang.x,camera.cur_chase_ang.y,camera.cur_chase_ang.z);
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 	
-	cx=(int)fx+obj->pos.x;
-	cy=(int)fy+obj->pos.y-obj->size.y;
-	cz=(int)fz+obj->pos.z;
-	
-		// in a room?
-		
-	prn=map_find_portal_hint(&map,obj->pos.rn,cx,cy,cz);
-	if (prn==-1) {
-		prn=obj->pos.rn;
-		cx=obj->pos.x;
-		cy=obj->pos.y;
-		cz=obj->pos.z;
-	}
+	cx=(int)fx+obj->pnt.x;
+	cy=(int)fy+obj->pnt.y-obj->size.y;
+	cz=(int)fz+obj->pnt.z;
 	
         // new camera position
 
-	pos->rn=camera.pos.rn=prn;
-	pos->x=camera.pos.x=cx+camera.chase_offset.x;
-	pos->y=camera.pos.y=cy+camera.chase_offset.y;
-	pos->z=camera.pos.z=cz+camera.chase_offset.z;
+	pnt->x=camera.pnt.x=cx+camera.chase_offset.x;
+	pnt->y=camera.pnt.y=cy+camera.chase_offset.y;
+	pnt->z=camera.pnt.z=cz+camera.chase_offset.z;
 	
 		// looking angles
 	

@@ -97,30 +97,11 @@ bool projectile_move(proj_type *proj)
 		
 		// save old position
 
-	memmove(&proj->last_pos,&proj->pos,sizeof(d3pos));
+	memmove(&proj->last_pnt,&proj->pnt,sizeof(d3pnt));
 	
         // move
 
 	collide_projectile_to_map(proj,xmove,ymove,zmove);
-
-		// check for moving into a new portal
-
-	if (!map_find_portal_by_pos(&map,&proj->pos)) {
-		memmove(&proj->pos,&proj->last_pos,sizeof(d3pos));
-		return(TRUE);
-    }
-    
-        // check for above or below portal
-		
-	rn=proj->pos.rn;
-	portal=&map.portals[rn];
-           
-	y=proj->pos.y;
-
-    if (y>portal->by) {
-		proj->pos.y=portal->by;
-		return(TRUE);
-	}
 	
 	return(FALSE);
 }
@@ -135,7 +116,7 @@ void projectile_turn_xz_towards(proj_type *proj,obj_type *to_obj,float turn_add)
 {
 	float			ang;
 	
-	ang=angle_find(proj->pos.x,proj->pos.z,to_obj->pos.x,to_obj->pos.z);
+	ang=angle_find(proj->pnt.x,proj->pnt.z,to_obj->pnt.x,to_obj->pnt.z);
 	proj->ang.y=proj->motion.ang.y=angle_turn_toward(proj->ang.y,ang,turn_add);
 }
 
@@ -146,8 +127,8 @@ void projectile_thrust_y_towards(proj_type *proj,obj_type *to_obj,float thrust_a
 	
 		// find new thrust
 
-	py=proj->pos.y-(proj->size.y>>1);
-	oy=to_obj->pos.y-(to_obj->size.y>>1);
+	py=proj->pnt.y-(proj->size.y>>1);
+	oy=to_obj->pnt.y-(to_obj->size.y>>1);
 	
 	ymove=0;
 
@@ -194,7 +175,7 @@ bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_ev
 
 		// reset to last good position
 
-	memmove(&proj->pos,&proj->last_pos,sizeof(d3pos));
+	memmove(&proj->pnt,&proj->last_pnt,sizeof(d3pnt));
 
 		// if floor is over a certain slope, just reflect instead
 
@@ -256,7 +237,7 @@ void projectile_reflect(proj_type *proj,bool send_event)
 
 		// reset to last good position
 
-	memmove(&proj->pos,&proj->last_pos,sizeof(d3pos));
+	memmove(&proj->pnt,&proj->last_pnt,sizeof(d3pnt));
 	
 		// if not wall-like, then just reverse
 		

@@ -41,16 +41,15 @@ extern setup_type			setup;
       
 ======================================================= */
 
-void camera_fpp_get_position(d3pos *pos,d3ang *ang,int eye_offset)
+void camera_fpp_get_position(d3pnt *pnt,d3ang *ang,int eye_offset)
 {
 	obj_type		*obj;
 
 	obj=object_find_uid(camera.obj_uid);
 	
-    pos->rn=obj->pos.rn;
-    pos->x=obj->pos.x;
-    pos->y=(obj->pos.y+obj->duck.y_move)+eye_offset;						// add in ducking
-    pos->z=obj->pos.z;
+    pnt->x=obj->pos.x;
+    pnt->y=(obj->pos.y+obj->duck.y_move)+eye_offset;						// add in ducking
+    pnt->z=obj->pos.z;
 
 	ang->x=camera.ang.x-obj->view_ang.x;
 	ang->y=angle_add(obj->ang.y,camera.ang.y);

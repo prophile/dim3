@@ -63,7 +63,7 @@ void decal_render_stencil(int stencil_idx,map_mesh_type *mesh,map_mesh_poly_type
 
 	for (n=0;n!=mesh_poly->ptsz;n++) {
 		pt=&mesh->vertexes[mesh_poly->v[n]];
-		glVertex3i((pt->x-view.camera.pos.x),(pt->y-view.camera.pos.y),(view.camera.pos.z-pt->z));
+		glVertex3i((pt->x-view.camera.pnt.x),(pt->y-view.camera.pnt.y),(view.camera.pnt.z-pt->z));
 	}
 	
 	glEnd();
@@ -105,9 +105,9 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 		// setup to draw
 		
 	for (n=0;n!=4;n++) {
-		x[n]=decal->x[n]-view.camera.pos.x;
-		y[n]=decal->y[n]-view.camera.pos.y;
-		z[n]=view.camera.pos.z-decal->z[n];		// switch negative here
+		x[n]=decal->x[n]-view.camera.pnt.x;
+		y[n]=decal->y[n]-view.camera.pnt.y;
+		z[n]=view.camera.pnt.z-decal->z[n];		// switch negative here
 	}
 	
          // draw the polygon

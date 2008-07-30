@@ -37,6 +37,7 @@ extern server_type			server;
 extern view_type			view;
 extern setup_type			setup;
 
+extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
 extern void light_trace_calculate_light_color(float x,float y,float z,float *cf);
 extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf);	// supergumba -- this will be moved to map utility
 
@@ -117,7 +118,7 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 	float					*vl,*uv,*cl;
 	
 	y=liq->y;
-	fy=(float)(y-view.camera.pos.y);
+	fy=(float)(y-view.camera.pnt.y);
 
 	vl=liq->draw.vl_list;
 	uv=liq->draw.uv_list;
@@ -156,9 +157,9 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 			}
 			cl+=3;
 
-			*vl++=(float)(x-view.camera.pos.x);
+			*vl++=(float)(x-view.camera.pnt.x);
 			*vl++=fy;
-			*vl++=(float)(view.camera.pos.z-z);
+			*vl++=(float)(view.camera.pnt.z-z);
 
 			*uv++=liq->x_txtoff+((liq->x_txtfact*(float)(x-liq->lft))/fgx);
 			*uv++=liq->y_txtoff+((liq->y_txtfact*(float)(z-liq->top))/fgy);
@@ -219,7 +220,7 @@ void liquid_render_liquid_alter_tide(int tick,map_liquid_type *liq)
 	x_sz=liq->draw.x_sz;
 	z_sz=liq->draw.z_sz;
 
-	fy=(float)(liq->y-view.camera.pos.y);
+	fy=(float)(liq->y-view.camera.pnt.y);
 
 	tide_split_half=liq->tide.split<<2;
 	f_tide_split_half=(float)tide_split_half;
@@ -239,10 +240,10 @@ void liquid_render_liquid_alter_tide(int tick,map_liquid_type *liq)
 				// get tide breaking into 0...1
 				
 			if (liq->tide.direction==ld_vertical) {
-				k=((int)*(vl+2))-view.camera.pos.z;
+				k=((int)*(vl+2))-view.camera.pnt.z;
 			}
 			else {
-				k=((int)*vl)+view.camera.pos.x;
+				k=((int)*vl)+view.camera.pnt.x;
 			}
 				
 			f_break=(float)(k%tide_split_half);
@@ -367,6 +368,10 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 	float					col[3],normal[3];
 	d3pnt					mid;
 	texture_type			*texture;
+
+		// liquid in view?
+
+	if (!boundbox_inview(liq->lft,liq->top,liq->rgt,liq->bot,liq->y,liq->y)) return;
 
 		// setup liquid for drawing
 

@@ -127,7 +127,6 @@ void map_auto_generate_lights(map_type *map)
 		lit->col.g=g;
 		lit->col.b=b;
 		lit->intensity=intensity;
-		lit->confine_to_portal=(corridor_flags[n]!=ag_corridor_flag_portal);
 		lit->on=TRUE;
 
 		portal++;

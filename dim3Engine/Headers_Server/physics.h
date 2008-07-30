@@ -29,8 +29,6 @@ extern void box_create_from_point(d3box *box,int x,int y,int z,int wid,int high)
 extern void box_create_from_object(d3box *box,obj_type *obj);
 extern void box_create_from_projectile(d3box *box,proj_type *proj);
 extern void box_add_movement(d3box *box,int mx,int mz);
-extern bool box_in_map(d3box *box);
-extern bool box_in_portal(d3box *box,portal_type *portal);
 extern bool box_collide_2D_line(d3box *box,int lx,int rx,int lz,int rz);
 
 extern void collide_object_polygon(obj_type *obj,int x_add,int z_add,int *px,int *pz);

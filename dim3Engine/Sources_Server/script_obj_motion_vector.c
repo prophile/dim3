@@ -262,30 +262,30 @@ JSBool js_obj_motion_vector_walk_to_player_func(JSContext *cx,JSObject *j_obj,ui
 
 JSBool js_obj_motion_vector_walk_to_position_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	d3pos			pos;
+	d3pnt			pnt;
 	obj_type		*obj;
 	
-	pos.x=JSVAL_TO_INT(argv[0]);
-	pos.z=JSVAL_TO_INT(argv[1]);
-	pos.y=JSVAL_TO_INT(argv[2]);
+	pnt.x=JSVAL_TO_INT(argv[0]);
+	pnt.z=JSVAL_TO_INT(argv[1]);
+	pnt.y=JSVAL_TO_INT(argv[2]);
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	if (!object_auto_walk_position_setup(obj,&pos,0)) return(JS_FALSE);
+	if (!object_auto_walk_position_setup(obj,&pnt,0)) return(JS_FALSE);
 	
 	return(JS_TRUE);
 }
 
 JSBool js_obj_motion_vector_walk_to_position_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	d3pos			pos;
+	d3pnt			pnt;
 	obj_type		*obj;
 	
-	pos.x=JSVAL_TO_INT(argv[0]);
-	pos.z=JSVAL_TO_INT(argv[1]);
-	pos.y=JSVAL_TO_INT(argv[2]);
+	pnt.x=JSVAL_TO_INT(argv[0]);
+	pnt.z=JSVAL_TO_INT(argv[1]);
+	pnt.y=JSVAL_TO_INT(argv[2]);
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	if (!object_auto_walk_position_setup(obj,&pos,JSVAL_TO_INT(argv[3]))) return(JS_FALSE);
+	if (!object_auto_walk_position_setup(obj,&pnt,JSVAL_TO_INT(argv[3]))) return(JS_FALSE);
 	
 	return(JS_TRUE);
 }

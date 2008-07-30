@@ -123,13 +123,13 @@ void radar_draw(void)
 			
 			// get distance
 			
-		dist=distance_2D_get(obj->pos.x,obj->pos.z,player_obj->pos.x,player_obj->pos.z);
+		dist=distance_2D_get(obj->pnt.x,obj->pnt.z,player_obj->pnt.x,player_obj->pnt.z);
 		if ((!obj->radar.always_visible) && (dist>max_dist)) continue;
 
 			// get the position
 
-		x=obj->pos.x-player_obj->pos.x;
-		y=-(obj->pos.z-player_obj->pos.z);
+		x=obj->pnt.x-player_obj->pnt.x;
+		y=-(obj->pnt.z-player_obj->pnt.z);
 			
 		if (hud.radar.rot) rotate_2D_point_center(&x,&y,player_obj->ang.y);
 

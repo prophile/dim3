@@ -1479,10 +1479,6 @@ SOURCE=..\..\dim3Engine\Sources_View\view_setup.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_View\view_sight_path.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3Engine\Sources_View\view_vertex_light.c
 # End Source File
 # Begin Source File

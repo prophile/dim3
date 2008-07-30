@@ -96,9 +96,9 @@ bool complex_boundbox_inview(int *cbx,int *cby,int *cbz)
 		// transform points
 		
 	for (n=0;n!=14;n++) {
-		px[n]-=view.camera.pos.x;
-		py[n]-=view.camera.pos.y;
-		pz[n]-=view.camera.pos.z;
+		px[n]-=view.camera.pnt.x;
+		py[n]-=view.camera.pnt.y;
+		pz[n]-=view.camera.pnt.z;
 	}
 	
 		// check if points are behind z
@@ -308,9 +308,9 @@ int distance_to_view_center(int x,int y,int z)
 {
 	double			dx,dz,dy;
 	
-	dx=(double)(x-view.camera.pos.x);
-	dy=(double)(y-view.camera.pos.y);
-	dz=(double)(z-view.camera.pos.z);
+	dx=(double)(x-view.camera.pnt.x);
+	dy=(double)(y-view.camera.pnt.y);
+	dz=(double)(z-view.camera.pnt.z);
 	return((int)sqrt((dx*dx)+(dy*dy)+(dz*dz)));
 }
 

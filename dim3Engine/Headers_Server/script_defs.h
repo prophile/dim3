@@ -249,7 +249,6 @@ and can be sold or given away.
 #define model_light_prop_on							1
 #define model_light_prop_type						2
 #define model_light_prop_intensity					3
-#define model_light_prop_confine_to_portal			4
 
 #define model_light_color_prop_red					0
 #define model_light_color_prop_green				1

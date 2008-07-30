@@ -295,9 +295,9 @@ bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
 
 		// setup ray trace
 
-	spt.x=proj->pos.x;
-	spt.y=proj->pos.y;
-	spt.z=proj->pos.z;
+	spt.x=proj->pnt.x;
+	spt.y=proj->pnt.y;
+	spt.z=proj->pnt.z;
 
 	ept.x=spt.x+xadd;
 	ept.y=spt.y+yadd;
@@ -321,17 +321,17 @@ bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
 		// run trace
 
 	if (!ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
-		proj->pos.x=ept.x;
-		proj->pos.y=ept.y;
-		proj->pos.z=ept.z;
+		proj->pnt.x=ept.x;
+		proj->pnt.y=ept.y;
+		proj->pnt.z=ept.z;
 		return(FALSE);
 	}
 
 		// move to hit point
 
-	proj->pos.x=hpt.x;
-	proj->pos.y=hpt.y;
-	proj->pos.z=hpt.z;
+	proj->pnt.x=hpt.x;
+	proj->pnt.y=hpt.y;
+	proj->pnt.z=hpt.z;
 
 		// setup hits
 

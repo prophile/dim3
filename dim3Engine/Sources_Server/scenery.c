@@ -71,7 +71,7 @@ void scenery_create(void)
 
 			// run the setup
 
-		memmove(&obj->pos,&map_scenery->pos,sizeof(d3pos));
+		memmove(&obj->pnt,&map_scenery->pnt,sizeof(d3pnt));
 		memmove(&obj->ang,&map_scenery->ang,sizeof(d3ang));
 
 		obj->contact.object_on=map_scenery->contact_object_on;

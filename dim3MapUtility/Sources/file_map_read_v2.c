@@ -336,8 +336,7 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 					scenery=&map->sceneries[map->nscenery];
 					map->nscenery++;
 					
-					scenery->pos.rn=i;
-					xml_get_attribute_3_coord_int(obj_tag,"c3",&scenery->pos.x,&scenery->pos.y,&scenery->pos.z);
+					xml_get_attribute_3_coord_int(obj_tag,"c3",&scenery->pnt.x,&scenery->pnt.y,&scenery->pnt.z);
 					
 					xml_get_attribute_text(obj_tag,"model_name",scenery->model_name,name_str_len);
 					xml_get_attribute_text(obj_tag,"animation_name",scenery->animation_name,name_str_len);
@@ -352,6 +351,9 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 					
 					scenery->override_size=xml_get_attribute_boolean(obj_tag,"override_size");
 					xml_get_attribute_3_coord_int(obj_tag,"size",&scenery->size.x,&scenery->size.y,&scenery->size.z);
+
+					scenery->pnt.x+=portal->x;
+					scenery->pnt.z+=portal->z;
 					
 					obj_tag=xml_findnextchild(obj_tag);
 				}
@@ -375,7 +377,6 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 					xml_get_attribute_3_coord_int(light_tag,"c3",&light->pnt.x,&light->pnt.y,&light->pnt.z);
 					light->intensity=xml_get_attribute_int(light_tag,"intensity");
 					xml_get_attribute_color(light_tag,"rgb",&light->col);
-					light->confine_to_portal=xml_get_attribute_boolean(light_tag,"confine");
 					light->on=!xml_get_attribute_boolean(light_tag,"off");
 
 					light->pnt.x+=portal->x;
@@ -451,6 +452,8 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 					idx=xml_get_attribute_int(node_tag,"id");
 					node=&map->nodes[idx];
 					if (idx>=map->nnode) map->nnode=idx+1;
+
+					node->idx=idx;
 					
 					for (j=0;j!=max_node_link;j++) {
 						node->link[j]=-1;
@@ -459,8 +462,7 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 						node->path_hint[j]=-1;
 					}
 					
-					node->pos.rn=i;
-					xml_get_attribute_3_coord_int(node_tag,"c3",&node->pos.x,&node->pos.y,&node->pos.z);
+					xml_get_attribute_3_coord_int(node_tag,"c3",&node->pnt.x,&node->pnt.y,&node->pnt.z);
 
 					xml_get_attribute_3_coord_float(node_tag,"angle",&node->ang.x,&node->ang.y,&node->ang.z);
 
@@ -472,6 +474,9 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 					
 					tag=xml_findfirstchild("Hint",node_tag);
 					xml_get_attribute_short_array(tag,"node",(short*)node->path_hint,max_node);
+
+					node->pnt.x+=portal->x;
+					node->pnt.z+=portal->z;
 					
 					node_tag=xml_findnextchild(node_tag);
 				}
@@ -491,8 +496,7 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 					spot=&map->spots[idx];
 					if (idx>=map->nspot) map->nspot=idx+1;
 					
-					spot->pos.rn=i;
-					xml_get_attribute_3_coord_int(obj_tag,"c3",&spot->pos.x,&spot->pos.y,&spot->pos.z);
+					xml_get_attribute_3_coord_int(obj_tag,"c3",&spot->pnt.x,&spot->pnt.y,&spot->pnt.z);
 					
 					xml_get_attribute_text(obj_tag,"name",spot->name,name_str_len);
 					xml_get_attribute_text(obj_tag,"type",spot->type,name_str_len);
@@ -504,6 +508,9 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 					spot->ang.y=xml_get_attribute_float(obj_tag,"angle");
 					
 					spot->skill=xml_get_attribute_int(obj_tag,"skill");
+
+					spot->pnt.x+=portal->x;
+					spot->pnt.z+=portal->z;
 					
 					obj_tag=xml_findnextchild(obj_tag);
 				}

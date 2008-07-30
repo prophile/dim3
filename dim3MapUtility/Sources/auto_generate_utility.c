@@ -650,10 +650,9 @@ void map_auto_generate_add_player_spot(map_type *map)
 	spot=&map->spots[0];
 	map->nspot=1;
 	
-	spot->pos.rn=0;
-	spot->pos.x=x;
-	spot->pos.z=z;
-	spot->pos.y=y;
+	spot->pnt.x=x;
+	spot->pnt.y=y;
+	spot->pnt.z=z;
 	spot->ang.y=135;
 	strcpy(spot->name,"Start");
 	strcpy(spot->type,"Player");

@@ -122,7 +122,7 @@ double light_get_intensity(int light_type,int intensity)
       
 ======================================================= */
 
-void light_add(d3pos *pnt,int light_type,int intensity,bool confine_to_portal,d3col *col)
+void light_add(d3pos *pnt,int light_type,int intensity,d3col *col)
 {
 	light_spot_type			*lspot;
 	

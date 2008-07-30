@@ -166,7 +166,7 @@ void decal_rotate_with_mesh(int mesh_idx,float y)
       
 ======================================================= */
 
-void decal_add_wall_like(d3pos *pos,decal_type *decal,map_mesh_poly_type *poly,int mark_idx,int sz)
+void decal_add_wall_like(d3pnt *pnt,decal_type *decal,map_mesh_poly_type *poly,int mark_idx,int sz)
 {
 	int				idx,lx,rx,lz,rz;
     
@@ -177,7 +177,7 @@ void decal_add_wall_like(d3pos *pos,decal_type *decal,map_mesh_poly_type *poly,i
 
         // setup decal
         
-    line_2D_find_inside_infinite(pos->x,pos->z,sz,poly->line.lx,poly->line.lz,poly->line.rx,poly->line.rz,&lx,&lz,&rx,&rz);
+    line_2D_find_inside_infinite(pnt->x,pnt->z,sz,poly->line.lx,poly->line.lz,poly->line.rx,poly->line.rz,&lx,&lz,&rx,&rz);
         
 	decal->x[idx]=decal->x[((idx+3)&0x3)]=lx;
 	decal->x[((idx+1)&0x3)]=decal->x[((idx+2)&0x3)]=rx;
@@ -190,7 +190,7 @@ void decal_add_wall_like(d3pos *pos,decal_type *decal,map_mesh_poly_type *poly,i
 	decal->y[((idx+3)&0x3)]=pos->y+sz;
 }
 
-void decal_add_floor_like(d3pos *pos,decal_type *decal,map_mesh_type *mesh,map_mesh_poly_type *poly,int mark_idx,int sz)
+void decal_add_floor_like(d3pnt *pnt,decal_type *decal,map_mesh_type *mesh,map_mesh_poly_type *poly,int mark_idx,int sz)
 {
 	int				n,ptsz,px[8],py[8],pz[8];
 	d3pnt			*pt;
@@ -218,8 +218,8 @@ void decal_add_floor_like(d3pos *pos,decal_type *decal,map_mesh_type *mesh,map_m
 	}
 
 	for (n=0;n!=4;n++) {
-		decal->x[n]=decal->x[n]+pos->x;
-		decal->z[n]=decal->z[n]+pos->z;
+		decal->x[n]=decal->x[n]+pnt->x;
+		decal->z[n]=decal->z[n]+pnt->z;
 
 		if (poly->box.flat) {
 			decal->y[n]=poly->box.mid.y;
@@ -237,7 +237,7 @@ void decal_add_floor_like(d3pos *pos,decal_type *decal,map_mesh_type *mesh,map_m
       
 ======================================================= */
 
-void decal_add(d3pos *pos,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha)
+void decal_add(d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha)
 {
 	decal_type			*decal;
 	map_mesh_type		*mesh;
@@ -264,13 +264,13 @@ void decal_add(d3pos *pos,poly_pointer_type *poly_ptr,int mark_idx,int sz,float 
         // wall-like decals
 
 	if (poly->box.wall_like) {
-		decal_add_wall_like(pos,decal,poly,mark_idx,sz);
+		decal_add_wall_like(pnt,decal,poly,mark_idx,sz);
 	}
 
 		// floor-like decals
 
 	else {
-		decal_add_floor_like(pos,decal,mesh,poly,mark_idx,sz);
+		decal_add_floor_like(pnt,decal,mesh,poly,mark_idx,sz);
 	}
 
 		// finish decal setup

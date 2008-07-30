@@ -207,7 +207,7 @@ bool collide_set_object_hit_box_for_projectile_hit(proj_type *proj,obj_type *obj
 		y=obj->pos.y+draw->offset.y+hit_box->box.offset.y;
 		z=obj->pos.z+draw->offset.z+hit_box->box.offset.z;
 	
-		d=distance_get(proj->pos.x,proj->pos.y,proj->pos.z,x,y,z);
+		d=distance_get(proj->pnt.x,proj->pnt.y,proj->pnt.z,x,y,z);
 				
 		if ((d<dist) || (dist==-1)) {
 			dist=d;
@@ -286,17 +286,16 @@ int collide_find_object_for_projectile(proj_type *proj,int ignore_obj_uid)
 
 int collide_find_projectile_for_projectile(proj_type *proj)
 {
-	int			n,rn,ignore_proj_uid;
-	proj_type	 *check_proj;
+	int				n,ignore_proj_uid;
+	proj_type		*check_proj;
 	
-	rn=proj->pos.rn;
 	ignore_proj_uid=proj->uid;
 	
 	check_proj=server.projs;
 	
 	for (n=0;n!=server.count.proj;n++) {
 
-		if ((check_proj->uid==ignore_proj_uid) || (check_proj->pos.rn!=rn)) {
+		if (check_proj->uid==ignore_proj_uid) {
 			proj++;
 			continue;
 		}

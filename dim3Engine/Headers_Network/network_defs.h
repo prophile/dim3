@@ -34,7 +34,7 @@ typedef struct		{
 						int							remote_uid,team_idx,score;
 						char						name[name_str_len];
 						bool						ready;
-						d3pos						pos;
+						d3pnt						pnt;
 					} net_host_player_type;
 
 //

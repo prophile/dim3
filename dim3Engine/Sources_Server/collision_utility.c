@@ -246,13 +246,13 @@ void collide_projectile_polygon(proj_type *proj,int *px,int *pz)
 	int			x,z,sz;
 	float		rang;
 
-	x=proj->pos.x;
+	x=proj->pnt.x;
 	sz=proj->size.x>>1;
 
 	px[0]=px[3]=x-sz;
 	px[1]=px[2]=x+sz;
 	
-	z=proj->pos.z;
+	z=proj->pnt.z;
 	sz=proj->size.z>>1;
 
 	pz[0]=pz[1]=z-sz;
@@ -272,17 +272,17 @@ bool collide_projectile_to_object(proj_type *proj,obj_type *obj)
 	radius=obj->size.x;
 	if (obj->size.z>radius) radius=obj->size.z;
 
-	x=obj->pos.x-proj->pos.x;
-	z=obj->pos.z-proj->pos.z;
+	x=obj->pnt.x-proj->pnt.x;
+	z=obj->pnt.z-proj->pnt.z;
 	
 	d=(int)sqrtf((float)((x*x)+(z*z)));
 	if (d>(radius+proj->size.radius)) return(FALSE);
 	
 		// check y
 		
-	ms1=proj->pos.y;
+	ms1=proj->pnt.y;
 	ls1=ms1-proj->size.y;
-	ms2=obj->pos.y;
+	ms2=obj->pnt.y;
 	ls2=ms2-obj->size.y;
 	
 	if (ms1<=ls2) return(FALSE);
@@ -305,7 +305,7 @@ bool collide_projectile_to_object_hit_box(proj_type *proj,obj_type *obj,model_hi
 	
 		// check y
 		
-	ms1=proj->pos.y;
+	ms1=proj->pnt.y;
 	ls1=ms1-proj->size.y;
 	ms2=obj->pos.y+obj->draw.offset.y+hit_box->box.offset.y;
 	ls2=ms2-hit_box->box.size.y;
@@ -491,7 +491,7 @@ bool collide_sphere_to_projectile(int sx,int sy,int sz,int radius,proj_type *pro
 	ls1=sx-radius;
 	ms1=sx+radius;
 	
-	x=proj->pos.x;
+	x=proj->pnt.x;
 	ls2=x-proj->size.radius;
 	ms2=x+proj->size.radius;
 		
@@ -503,7 +503,7 @@ bool collide_sphere_to_projectile(int sx,int sy,int sz,int radius,proj_type *pro
 	ls1=sz-radius;
 	ms1=sz+radius;
 	
-	z=proj->pos.z;
+	z=proj->pnt.z;
 	ls2=z-proj->size.radius;
 	ms2=z+proj->size.radius;
 		
@@ -514,7 +514,7 @@ bool collide_sphere_to_projectile(int sx,int sy,int sz,int radius,proj_type *pro
 		
 	ls1=sy-radius;
 	ms1=sy+radius;
-	ms2=proj->pos.y;
+	ms2=proj->pnt.y;
 	ls2=ms2-proj->size.y;
 	
 	if (ms1<=ls2) return(FALSE);
@@ -522,8 +522,8 @@ bool collide_sphere_to_projectile(int sx,int sy,int sz,int radius,proj_type *pro
 	
 		// check radius
 		
-	x=sx-proj->pos.x;
-	z=sz-proj->pos.z;
+	x=sx-proj->pnt.x;
+	z=sz-proj->pnt.z;
 	
 	d=(int)sqrtf((float)((x*x)+(z*z)));
 	return(d<=(radius+proj->size.radius));

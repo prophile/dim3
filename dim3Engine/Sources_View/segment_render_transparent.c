@@ -415,7 +415,7 @@ void render_transparent_map(int mesh_cnt,int *mesh_list)
 
 		// sort meshes
 
-	render_transparent_sort(portal_idx,view.camera.pos.x,view.camera.pos.y,view.camera.pos.z);
+	render_transparent_sort(portal_idx,view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
 
 		// transparent meshes
 

@@ -64,7 +64,7 @@ typedef struct		{
 												obj_uid;
 						float					chase_track_speed;
 						bool					static_follow;
-						d3pos					pos,chase_offset;
+						d3pnt					pnt,chase_offset;
 						d3ang					ang,chase_ang,chase_slop,cur_chase_ang;
 						camera_auto_walk		auto_walk;
 						camera_plane			plane;

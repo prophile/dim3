@@ -198,9 +198,6 @@ void map_convert_enlarge(map_type *map,int seg_cnt,segment_type *seg_list)
 	int					n,t;
 	portal_type			*portal;
 	segment_type		*seg;
-	map_scenery_type	*scenery;
-	node_type			*node;
-	spot_type			*spot;
 
 		// enlarge portals
 
@@ -262,43 +259,6 @@ void map_convert_enlarge(map_type *map,int seg_cnt,segment_type *seg_list)
 
 		seg++;
 	}
-
-		// scenery
-
-	scenery=map->sceneries;
-	
-	for (n=0;n!=map->nscenery;n++) {
-		portal=&map->portals[scenery->pos.rn];
-		scenery->pos.x=(scenery->pos.x*map_enlarge);
-		scenery->pos.y=(scenery->pos.y+1)*map_enlarge;
-		scenery->pos.z=(scenery->pos.z*map_enlarge);
-		scenery++;
-	}
-		
-		// nodes
-
-	node=map->nodes;
-	
-	for (n=0;n!=map->nnode;n++) {
-        node->idx=n;
-		portal=&map->portals[node->pos.rn];
-		node->pos.x=(node->pos.x*map_enlarge);
-		node->pos.y=(node->pos.y+1)*map_enlarge;
-		node->pos.z=(node->pos.z*map_enlarge);
-		node++;
-	}
-    
-		// object starts
-		
-	spot=map->spots;
-
-	for (n=0;n!=map->nspot;n++) {
-		portal=&map->portals[spot->pos.rn];
-		spot->pos.x=(spot->pos.x*map_enlarge);
-		spot->pos.y=(spot->pos.y+1)*map_enlarge;
-		spot->pos.z=(spot->pos.z*map_enlarge);
-		spot++;
-	}
 }
 
 /* =======================================================
@@ -309,6 +269,12 @@ void map_convert_enlarge(map_type *map,int seg_cnt,segment_type *seg_list)
 
 void map_convert_center_map(map_type *map)
 {
+	/* supergumba -- throws everything off
+	will need a version that centers all parts of the map
+	to run after all translations are done
+	*/
+
+	/*
 	int				n,lx,rx,tz,bz,mx,mz;
 	portal_type		*portal;
 	
@@ -350,6 +316,7 @@ void map_convert_center_map(map_type *map)
 		portal->ez+=mz;
 		portal++;
 	}
+	*/
 }
 
 /* =======================================================
@@ -1342,8 +1309,7 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					scenery=&map->sceneries[map->nscenery];
 					map->nscenery++;
 					
-					scenery->pos.rn=i;
-					xml_get_attribute_3_coord_int(obj_tag,"c3",&scenery->pos.x,&scenery->pos.y,&scenery->pos.z);
+					xml_get_attribute_3_coord_int(obj_tag,"c3",&scenery->pnt.x,&scenery->pnt.y,&scenery->pnt.z);
 					
 					xml_get_attribute_text(obj_tag,"model_name",scenery->model_name,name_str_len);
 					xml_get_attribute_text(obj_tag,"animation_name",scenery->animation_name,name_str_len);
@@ -1358,6 +1324,10 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					
 					scenery->override_size=xml_get_attribute_boolean(obj_tag,"override_size");
 					xml_get_attribute_3_coord_int(obj_tag,"size",&scenery->size.x,&scenery->size.y,&scenery->size.z);
+
+					scenery->pnt.x=(scenery->pnt.x*map_enlarge)+(portal->x*map_enlarge);
+					scenery->pnt.y=(scenery->pnt.y+1)*map_enlarge;
+					scenery->pnt.z=(scenery->pnt.z*map_enlarge)+(portal->z*map_enlarge);
 					
 					obj_tag=xml_findnextchild(obj_tag);
 				}
@@ -1381,12 +1351,13 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					xml_get_attribute_3_coord_int(light_tag,"c3",&light->pnt.x,&light->pnt.y,&light->pnt.z);
 					light->intensity=xml_get_attribute_int(light_tag,"intensity");
 					xml_get_attribute_color(light_tag,"rgb",&light->col);
-					light->confine_to_portal=xml_get_attribute_boolean(light_tag,"confine");
 					light->on=!xml_get_attribute_boolean(light_tag,"off");
 					
-					light->pnt.x=(light->pnt.x*map_enlarge);
+					light->pnt.x=(light->pnt.x*map_enlarge)+(portal->x*map_enlarge);
 					light->pnt.y=(light->pnt.y+1)*map_enlarge;
-					light->pnt.z=(light->pnt.z*map_enlarge);
+					light->pnt.z=(light->pnt.z*map_enlarge)+(portal->z*map_enlarge);
+
+					light->intensity*=map_enlarge;
 				
 					light_tag=xml_findnextchild(light_tag);
 				}
@@ -1411,9 +1382,9 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					sound->pitch=xml_get_attribute_float(sound_tag,"pitch");
 					sound->on=!xml_get_attribute_boolean(sound_tag,"off");
 					
-					sound->pnt.x=(sound->pnt.x*map_enlarge);
+					sound->pnt.x=(sound->pnt.x*map_enlarge)+(portal->x*map_enlarge);
 					sound->pnt.y=(sound->pnt.y+1)*map_enlarge;
-					sound->pnt.z=(sound->pnt.z*map_enlarge);
+					sound->pnt.z=(sound->pnt.z*map_enlarge)+(portal->z*map_enlarge);
 					
 					sound_tag=xml_findnextchild(sound_tag);
 				}
@@ -1439,9 +1410,9 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					particle->slop_tick=xml_get_attribute_int(particle_tag,"slop_tick");
 					particle->on=!xml_get_attribute_boolean(particle_tag,"off");
 					
-					particle->pnt.x=(particle->pnt.x*map_enlarge);
+					particle->pnt.x=(particle->pnt.x*map_enlarge)+(portal->x*map_enlarge);
 					particle->pnt.y=(particle->pnt.y+1)*map_enlarge;
-					particle->pnt.z=(particle->pnt.z*map_enlarge);
+					particle->pnt.z=(particle->pnt.z*map_enlarge)+(portal->z*map_enlarge);
 					
 					particle_tag=xml_findnextchild(particle_tag);
 				}
@@ -1460,7 +1431,9 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					idx=xml_get_attribute_int(node_tag,"id");
 					node=&map->nodes[idx];
 					if (idx>=map->nnode) map->nnode=idx+1;
-					
+
+					node->idx=idx;
+
 					for (j=0;j!=max_node_link;j++) {
 						node->link[j]=-1;
 					}
@@ -1468,8 +1441,7 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 						node->path_hint[j]=-1;
 					}
 					
-					node->pos.rn=i;
-					xml_get_attribute_3_coord_int(node_tag,"c3",&node->pos.x,&node->pos.y,&node->pos.z);
+					xml_get_attribute_3_coord_int(node_tag,"c3",&node->pnt.x,&node->pnt.y,&node->pnt.z);
 
 					xml_get_attribute_3_coord_float(node_tag,"angle",&node->ang.x,&node->ang.y,&node->ang.z);
 
@@ -1481,6 +1453,10 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					
 					tag=xml_findfirstchild("Hint",node_tag);
 					xml_get_attribute_short_array(tag,"node",(short*)node->path_hint,map->nnode);
+
+					node->pnt.x=(node->pnt.x*map_enlarge)+(portal->x*map_enlarge);
+					node->pnt.y=(node->pnt.y+1)*map_enlarge;
+					node->pnt.z=(node->pnt.z*map_enlarge)+(portal->z*map_enlarge);
 					
 					node_tag=xml_findnextchild(node_tag);
 				}
@@ -1500,8 +1476,7 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					spot=&map->spots[idx];
 					if (idx>=map->nspot) map->nspot=idx+1;
 					
-					spot->pos.rn=i;
-					xml_get_attribute_3_coord_int(obj_tag,"c3",&spot->pos.x,&spot->pos.y,&spot->pos.z);
+					xml_get_attribute_3_coord_int(obj_tag,"c3",&spot->pnt.x,&spot->pnt.y,&spot->pnt.z);
 					
 					xml_get_attribute_text(obj_tag,"name",spot->name,name_str_len);
 					xml_get_attribute_text(obj_tag,"type",spot->type,name_str_len);
@@ -1513,6 +1488,10 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					spot->ang.y=xml_get_attribute_float(obj_tag,"angle");
 					
 					spot->skill=skill_easy;
+
+					spot->pnt.x=(spot->pnt.x*map_enlarge)+(portal->x*map_enlarge);
+					spot->pnt.y=(spot->pnt.y+1)*map_enlarge;
+					spot->pnt.z=(spot->pnt.z*map_enlarge)+(portal->z*map_enlarge);
 					
 					obj_tag=xml_findnextchild(obj_tag);
 				}

@@ -206,7 +206,7 @@ typedef struct		{
 
 typedef struct		{
 						int						type,intensity;
-						bool					on,confine_to_portal;
+						bool					on;
 						d3col					col;
 					} model_draw_light;
 
@@ -472,7 +472,7 @@ typedef struct		{
 						int					mode,obj_uid,
 											node_seek_idx,node_dest_idx,node_event_id,
 											node_slop;
-						d3pos				pos;
+						d3pnt				pnt;
 					} obj_auto_walk;
 					
 typedef struct		{
@@ -687,7 +687,7 @@ typedef struct		{
 					
 typedef struct		{
 						int					raise_tick,lower_tick,select_shift;
-						d3pos				shift;
+						d3pnt				shift;
 						d3ang				ang;
 					} weap_hand_type;
 
@@ -732,7 +732,7 @@ typedef struct		{
 											open_doors,input_freeze,hide_all_weapons,
 											find_on,in_collide_event,on_ladder,
 											quick_reverse,death_trigger;
-						d3pos				pos,org_pos;
+						d3pnt				pnt,org_pnt;
 						d3ang				ang,view_ang,org_ang;
 						obj_motion			motion;
                         obj_movement		forward_move,side_move,vert_move;
@@ -786,7 +786,7 @@ typedef struct		{
 												start_tick;
 						float					speed,decel_speed,decel_min_speed;
 						bool					dispose,stick,reset_angle,flag_melee_hit;
-						d3pos					pos,org_pos,last_pos;
+						d3pnt					pnt,org_pnt,last_pnt;
 						d3ang					ang;
 						obj_size				size;
 						obj_motion				motion;

@@ -116,9 +116,9 @@ void rain_draw(int tick)
 	if (!map.rain.on) return;
 	if (view.camera.under_liquid_idx!=-1) return;
 	
-	cx=view.camera.pos.x;
-	cy=view.camera.pos.y;
-	cz=view.camera.pos.z;
+	cx=view.camera.pnt.x;
+	cy=view.camera.pnt.y;
+	cz=view.camera.pnt.z;
 	
 		// reset on?
 		
@@ -204,16 +204,16 @@ void rain_draw(int tick)
 
 			// draw rain
 
-		x=rain_draw->x-view.camera.pos.x;
-		y=rain_draw->y-view.camera.pos.y;
-		z=view.camera.pos.z-rain_draw->z;
+		x=rain_draw->x-view.camera.pnt.x;
+		y=rain_draw->y-view.camera.pnt.y;
+		z=view.camera.pnt.z-rain_draw->z;
 
 		glColor4f(map.rain.start_color.r,map.rain.start_color.g,map.rain.start_color.b,map.rain.alpha);
 		glVertex3i(x,y,z);
 
-		x=(rain_draw->x-view.camera.pos.x)+xadd;
-		y=(rain_draw->y+map.rain.line_length)-view.camera.pos.y;
-		z=(view.camera.pos.z-rain_draw->z)+zadd;
+		x=(rain_draw->x-view.camera.pnt.x)+xadd;
+		y=(rain_draw->y+map.rain.line_length)-view.camera.pnt.y;
+		z=(view.camera.pnt.z-rain_draw->z)+zadd;
 
 		glColor4f(map.rain.end_color.r,map.rain.end_color.g,map.rain.end_color.b,map.rain.alpha);
 		glVertex3i(x,y,z);

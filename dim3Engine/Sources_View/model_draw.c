@@ -694,9 +694,9 @@ void model_render(int tick,model_draw *draw)
 	y=draw->pnt.y;
 	z=draw->pnt.z;
 		
-	tx=x-view.camera.pos.x;
-	ty=y-view.camera.pos.y;
-	tz=z-view.camera.pos.z;
+	tx=x-view.camera.pnt.x;
+	ty=y-view.camera.pnt.y;
+	tz=z-view.camera.pnt.z;
 	
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))==0) continue;

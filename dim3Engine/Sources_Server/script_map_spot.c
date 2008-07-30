@@ -205,7 +205,7 @@ JSBool js_map_spot_get_position_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	
 		// get position
 		
-	*rval=script_point_to_value(spot->pos.x,spot->pos.y,spot->pos.z);
+	*rval=script_point_to_value(spot->pnt.x,spot->pnt.y,spot->pnt.z);
 	return(JS_TRUE);
 }
 

@@ -710,7 +710,7 @@ JSBool js_map_object_spawn_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *
 	int				uid;
 	char			name[name_str_len],type[name_str_len],
 					script[name_str_len],params[256];
-	d3pos			pos;
+	d3pnt			pnt;
 	d3ang			ang;
 
 		// spawn values
@@ -720,9 +720,9 @@ JSBool js_map_object_spawn_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *
 	script_value_to_string(argv[2],script,name_str_len);
 	script_value_to_string(argv[3],params,256);
 
-	pos.x=JSVAL_TO_INT(argv[4]);
-	pos.z=JSVAL_TO_INT(argv[5]);
-	pos.y=JSVAL_TO_INT(argv[6]);
+	pnt.x=JSVAL_TO_INT(argv[4]);
+	pnt.z=JSVAL_TO_INT(argv[5]);
+	pnt.y=JSVAL_TO_INT(argv[6]);
 
 	ang.x=script_value_to_float(argv[7]);
 	ang.z=script_value_to_float(argv[8]);
@@ -730,7 +730,7 @@ JSBool js_map_object_spawn_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *
 
 		// spawn
 
-	uid=object_script_spawn(name,type,script,params,&pos,&ang);
+	uid=object_script_spawn(name,type,script,params,&pnt,&ang);
 	if (uid==-1) return(JS_FALSE);
 
 		// return UID

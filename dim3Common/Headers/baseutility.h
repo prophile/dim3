@@ -75,8 +75,7 @@ typedef struct		{
 					} d3ang;
 					
 typedef struct		{
-						int				hint_rn,
-										x,z,y,
+						int				x,z,y,
 										min_x,max_x,min_z,max_z,min_y,max_y;
 					} d3box;
 					
@@ -733,8 +732,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							pos_x,pos_y,pos_z;
-						short						uid,pos_rn,score,team_idx;
+						int							pnt_x,pnt_y,pnt_z;
+						short						uid,score,team_idx;
 						char						name[name_str_len];
 					} network_request_remote_add;
 
@@ -770,10 +769,10 @@ typedef struct		{
 					} network_request_animation;			// used as part of network_request_update
 
 typedef struct		{
-						int							flags,pos_x,pos_y,pos_z,
+						int							flags,pnt_x,pnt_y,pnt_z,
 													fp_ang_x,fp_ang_y,fp_ang_z,fp_turn_ang_add_y,
 													fp_move_vct_x,fp_move_vct_y,fp_move_vct_z;
-						short						pos_rn,vehicle_map_spawn_idx,
+						short						vehicle_map_spawn_idx,
 													score,health,model_mesh_mask;
 						unsigned char				model_cur_texture_frame[net_max_model_texture];
 						network_request_animation	animation[net_max_model_blend_animation];
@@ -789,7 +788,7 @@ typedef struct		{
 					} network_request_remote_chat;
 					
 typedef struct		{
-						int							pos_x,pos_y,pos_z,fp_pitch;
+						int							pnt_x,pnt_y,pnt_z,fp_pitch;
 						char						name[name_str_len];
 					} network_request_remote_sound;
 

@@ -99,7 +99,7 @@ void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type
 		// camera and render position
 		
 	var=glGetUniformLocationARB(shader_prog_obj,"dim3CameraPosition");
-	if (var!=-1) glUniform3fARB(var,(float)camera.pos.x,(float)camera.pos.y,(float)camera.pos.z);
+	if (var!=-1) glUniform3fARB(var,(float)camera.pnt.x,(float)camera.pnt.y,(float)camera.pnt.z);
 	
 	var=glGetUniformLocationARB(shader_prog_obj,"dim3RenderPosition");
 	if (var!=-1) glUniform3fARB(var,(float)pnt->x,(float)pnt->y,(float)pnt->z);

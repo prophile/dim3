@@ -123,9 +123,9 @@ void halo_draw_setup(void)
 		
 			// translate and rotate point
 			
-		x=halo_draw->pnt.x-view.camera.pos.x;
-		y=halo_draw->pnt.y-view.camera.pos.y;
-		z=halo_draw->pnt.z-view.camera.pos.z;
+		x=halo_draw->pnt.x-view.camera.pnt.x;
+		y=halo_draw->pnt.y-view.camera.pnt.y;
+		z=halo_draw->pnt.z-view.camera.pnt.z;
 		
 			// is it behind the z?
 
@@ -150,9 +150,9 @@ void halo_draw_setup(void)
 		// ray trace halos to camera's eye level
 		// to check for visibility
 
-	ept.x=view.camera.pos.x;
-	ept.y=view.camera.pos.y;
-	ept.z=view.camera.pos.z;
+	ept.x=view.camera.pnt.x;
+	ept.y=view.camera.pnt.y;
+	ept.z=view.camera.pnt.z;
 
 	contact.proj_on=FALSE;
 

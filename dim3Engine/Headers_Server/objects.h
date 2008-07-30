@@ -32,7 +32,7 @@ extern int object_start(spot_type *spot,bool player,int bind,char *err_str);
 extern void object_dispose_single(int idx);
 extern void object_dispose_2(int bind);
 
-extern int object_script_spawn(char *name,char *type,char *script,char *params,d3pos *pos,d3ang *ang);
+extern int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *pnt,d3ang *ang);
 extern bool object_script_remove(int uid);
 
 extern void object_set_radius(obj_type *obj);
@@ -42,7 +42,7 @@ extern void object_stop(obj_type *obj);
 extern bool object_start_script(obj_type *obj,char *name,char *params,char *err_str);
 
 extern void object_clear_size(obj_size *size);
-extern void object_clear_position(d3pos *pos);
+extern void object_clear_position(d3pnt *pnt);
 extern void object_clear_angle(d3ang *ang);
 extern void object_clear_motion(obj_motion *motion);
 extern void object_clear_movement(obj_movement *move);
@@ -170,7 +170,7 @@ extern bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *e
 extern bool object_auto_walk_node_setup(obj_type *obj,char *start_node,char *end_node,int event_id);
 extern bool object_auto_walk_object_setup(obj_type *obj,int uid,bool turn_only);
 extern bool object_auto_walk_player_setup(obj_type *obj,bool turn_only);
-extern bool object_auto_walk_position_setup(obj_type *obj,d3pos *pos,int slop);
+extern bool object_auto_walk_position_setup(obj_type *obj,d3pnt *pnt,int slop);
 extern bool object_auto_walk_node_resume(obj_type *obj);
 extern void object_auto_walk_stop(obj_type *obj);
 extern void object_auto_walk(obj_type *obj);
