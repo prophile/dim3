@@ -61,9 +61,9 @@ void model_draw_setup_object(int tick,obj_type *obj)
 	
 		// position
 	
-	draw->pnt.x=obj->pos.x+draw->offset.x;
-	draw->pnt.z=obj->pos.z+draw->offset.z;
-	draw->pnt.y=obj->pos.y+draw->offset.y;
+	draw->pnt.x=obj->pnt.x+draw->offset.x;
+	draw->pnt.z=obj->pnt.z+draw->offset.z;
+	draw->pnt.y=obj->pnt.y+draw->offset.y;
 
 		// regular drawing in 3D space
 
@@ -260,9 +260,9 @@ void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignor
 	
 		// position
 		
-	draw->pnt.x=(int)fx+obj->pos.x;
-	draw->pnt.y=(int)fy+obj->pos.y;
-	draw->pnt.z=(int)fz+obj->pos.z;
+	draw->pnt.x=(int)fx+obj->pnt.x;
+	draw->pnt.y=(int)fy+obj->pnt.y;
+	draw->pnt.z=(int)fz+obj->pnt.z;
 
 		// weapons need rotation fixes
 		// as they are rendered without rotation in fpp
@@ -274,9 +274,9 @@ void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignor
 	draw->no_rot.on=((camera.mode==cv_fpp) && (obj->uid==camera.obj_uid));
 
 	if (draw->no_rot.on) {
-		draw->no_rot.center.x=obj->pos.x;
-		draw->no_rot.center.y=(obj->pos.y+obj->duck.y_move)+obj->size.eye_offset;
-		draw->no_rot.center.z=obj->pos.z;
+		draw->no_rot.center.x=obj->pnt.x;
+		draw->no_rot.center.y=(obj->pnt.y+obj->duck.y_move)+obj->size.eye_offset;
+		draw->no_rot.center.z=obj->pnt.z;
 		draw->no_rot.ang.x=angle_add(weap->hand.ang.x,obj->ang.x);
 		draw->no_rot.ang.y=angle_add(angle_add(weap->hand.ang.y,obj->ang.y),180.0f);
 		draw->no_rot.ang.z=angle_add(weap->hand.ang.z,obj->ang.z);

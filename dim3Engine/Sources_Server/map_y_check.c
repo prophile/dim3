@@ -421,7 +421,7 @@ bool map_stand_check_object(obj_type *obj)
 		// get movement box
 
 	box_create_from_object(&box,obj);
-	box.min_y=(obj->pos.y-obj->size.y)+sy;
+	box.min_y=(obj->pnt.y-obj->size.y)+sy;
 
 		// possible to move up?
 

@@ -117,8 +117,8 @@ bool object_auto_walk_position_setup(obj_type *obj,d3pnt *pnt,int slop)
 		// add in slop
 		
 	if (slop!=0) {
-		obj->auto_walk.pos.x+=(slop-random_int(slop>>1));
-		obj->auto_walk.pos.z+=(slop-random_int(slop>>1));
+		obj->auto_walk.pnt.x+=(slop-random_int(slop>>1));
+		obj->auto_walk.pnt.z+=(slop-random_int(slop>>1));
 	}
 
 		// start walking
@@ -169,13 +169,13 @@ void object_auto_walk_set_vertical_move(obj_type *obj,int to_y,int to_z)
 	
 		// under slop?
 		
-	y=obj->pos.y-(obj->size.y>>1);
+	y=obj->pnt.y-(obj->size.y>>1);
 	if (abs(to_y-y)<obj->vert_move.slop) return;
 	
 		// get seek angle
 		
 	obj->vert_move.seeking=TRUE;
-	obj->vert_move.seek_ang=angle_find(y,obj->pos.z,to_y,to_z);
+	obj->vert_move.seek_ang=angle_find(y,obj->pnt.z,to_y,to_z);
 }
 
 void object_auto_walk_node(obj_type *obj)
@@ -194,7 +194,7 @@ void object_auto_walk_node(obj_type *obj)
 		
 	node=&map.nodes[seek_idx];
 	
-	ang_y=angle_find(obj->pos.x,obj->pos.z,node->pnt.x,node->pnt.z);
+	ang_y=angle_find(obj->pnt.x,obj->pnt.z,node->pnt.x,node->pnt.z);
 	angle_dif(ang_y,obj->ang.y,&cwise);
 	
 	obj->turn.ang_to.y=ang_y;
@@ -212,7 +212,7 @@ void object_auto_walk_node(obj_type *obj)
 	
 		// near node?
 		
-	dist=distance_get(node->pnt.x,node->pnt.y,node->pnt.z,obj->pos.x,obj->pos.y,obj->pos.z);
+	dist=distance_get(node->pnt.x,node->pnt.y,node->pnt.z,obj->pnt.x,obj->pnt.y,obj->pnt.z);
 	if (dist>obj->auto_walk.node_slop) return;	
 	
 		// move on to last node
@@ -248,7 +248,7 @@ void object_auto_walk_object(obj_type *obj)
 	
 		// turn towards object on y
 		
-	ang_y=angle_find(obj->pos.x,obj->pos.z,seek_obj->pos.x,seek_obj->pos.z);
+	ang_y=angle_find(obj->pnt.x,obj->pnt.z,seek_obj->pnt.x,seek_obj->pnt.z);
 	angle_dif(ang_y,obj->ang.y,&cwise);
 	
 	obj->turn.ang_to.y=ang_y;
@@ -262,7 +262,7 @@ void object_auto_walk_object(obj_type *obj)
 	
 		// if flying, put in a seek angle
 		
-	object_auto_walk_set_vertical_move(obj,(seek_obj->pos.y-(seek_obj->size.y>>1)),seek_obj->pos.z);
+	object_auto_walk_set_vertical_move(obj,(seek_obj->pnt.y-(seek_obj->size.y>>1)),seek_obj->pnt.z);
 }
 
 void object_auto_walk_position(obj_type *obj)
@@ -272,7 +272,7 @@ void object_auto_walk_position(obj_type *obj)
 
 		// turn towards position on y
 		
-	ang_y=angle_find(obj->pos.x,obj->pos.z,obj->auto_walk.pos.x,obj->auto_walk.pos.z);
+	ang_y=angle_find(obj->pnt.x,obj->pnt.z,obj->auto_walk.pnt.x,obj->auto_walk.pnt.z);
 	angle_dif(ang_y,obj->ang.y,&cwise);
 	
 	obj->turn.ang_to.y=ang_y;
@@ -286,7 +286,7 @@ void object_auto_walk_position(obj_type *obj)
 	
 		// if flying, put in a seek angle
 		
-	object_auto_walk_set_vertical_move(obj,obj->auto_walk.pos.y,obj->auto_walk.pos.z);
+	object_auto_walk_set_vertical_move(obj,obj->auto_walk.pnt.y,obj->auto_walk.pnt.z);
 }
 
 void object_auto_walk(obj_type *obj)

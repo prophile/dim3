@@ -79,13 +79,13 @@ JSBool js_get_proj_origin_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	switch (JSVAL_TO_INT(id)) {
 	
 		case proj_origin_prop_x:
-			*vp=INT_TO_JSVAL(proj->org_pos.x);
+			*vp=INT_TO_JSVAL(proj->org_pnt.x);
 			break;
 		case proj_origin_prop_z:
-			*vp=INT_TO_JSVAL(proj->org_pos.z);
+			*vp=INT_TO_JSVAL(proj->org_pnt.z);
 			break;
 		case proj_origin_prop_y:
-			*vp=INT_TO_JSVAL(proj->org_pos.y);
+			*vp=INT_TO_JSVAL(proj->org_pnt.y);
 			break;
 			
 	}

@@ -378,13 +378,13 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>26F198EB0E3C3A6400BE9FEC</string>
+										<string>2693281E0E41633F00FE6996</string>
 										<key>history</key>
 										<array>
 											<string>262F42480E29B72E00523EE0</string>
 											<string>262F42490E29B72E00523EE0</string>
 											<string>262F42B70E29C09A00523EE0</string>
-											<string>26F198AC0E3C36DA00BE9FEC</string>
+											<string>26F198EB0E3C3A6400BE9FEC</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -448,9 +448,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26F198DD0E3C39E200BE9FEC</string>
+				<string>2693281F0E41633F00FE6996</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26F198DE0E3C39E200BE9FEC</string>
+				<string>269328200E41633F00FE6996</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -569,7 +569,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>238828132.91310799</real>
+	<real>239166271.21686101</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -584,10 +584,8 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C78EAAD065D492600B07095</string>
-		<string>1CD10A99069EF8BA00B06720</string>
-		<string>260AFEFF0D4050AF00F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3Editor/dim3Editor.xcodeproj</string>
+		<string>260AFEFF0D4050AF00F6C42F</string>
 	</array>
 	<key>WindowString</key>
 	<string>11 198 303 820 0 0 1680 1028 </string>
@@ -628,6 +626,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -667,7 +667,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEFF0D4050AF00F6C42F</string>
-				<string>26F198DA0E3C39E000BE9FEC</string>
+				<string>269328150E4162AF00FE6996</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -678,7 +678,7 @@
 			<key>WindowToolGUID</key>
 			<string>260AFEFF0D4050AF00F6C42F</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>

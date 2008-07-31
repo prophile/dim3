@@ -278,17 +278,15 @@ void object_set_radius(obj_type *obj)
 
 void object_set_position(obj_type *obj,int x,int z,int y,float ang_y,float ymove)
 {
-	d3pos				*pos;
+	d3pnt				*pnt;
 	d3ang				*ang;
 	obj_motion			*motion;
 	
-	pos=&obj->pos;
+	pnt=&obj->pnt;
 	
-	pos->x=x;
-	pos->z=z;
-	pos->y=y;
-	
-	map_find_portal_by_pos(&map,pos);
+	pnt->x=x;
+	pnt->z=z;
+	pnt->y=y;
 	
 	ang=&obj->ang;
 	ang->x=0;
@@ -564,15 +562,13 @@ bool object_start_script(obj_type *obj,char *name,char *params,char *err_str)
 
 void object_reset_prepare(obj_type *obj)
 {
-	memmove(&obj->org_pos,&obj->pos,sizeof(d3pos));
+	memmove(&obj->org_pnt,&obj->pnt,sizeof(d3pnt));
 	memmove(&obj->org_ang,&obj->ang,sizeof(d3ang));
 }
 
 void object_reset(obj_type *obj)
 {
-	memmove(&obj->pos,&obj->org_pos,sizeof(d3pos));
-	map_find_portal_by_pos(&map,&obj->pos);
-	
+	memmove(&obj->pnt,&obj->org_pnt,sizeof(d3pnt));	
 	memmove(&obj->ang,&obj->org_ang,sizeof(d3ang));
 	obj->motion.ang.y=obj->turn.ang_to.y=obj->ang.y;
 }

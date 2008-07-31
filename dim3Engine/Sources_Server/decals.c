@@ -184,10 +184,10 @@ void decal_add_wall_like(d3pnt *pnt,decal_type *decal,map_mesh_poly_type *poly,i
 	decal->z[idx]=decal->z[((idx+3)&0x3)]=lz;
 	decal->z[((idx+1)&0x3)]=decal->z[((idx+2)&0x3)]=rz;
 
-	decal->y[idx]=pos->y-sz;
-	decal->y[((idx+1)&0x3)]=pos->y-sz;
-	decal->y[((idx+2)&0x3)]=pos->y+sz;
-	decal->y[((idx+3)&0x3)]=pos->y+sz;
+	decal->y[idx]=pnt->y-sz;
+	decal->y[((idx+1)&0x3)]=pnt->y-sz;
+	decal->y[((idx+2)&0x3)]=pnt->y+sz;
+	decal->y[((idx+3)&0x3)]=pnt->y+sz;
 }
 
 void decal_add_floor_like(d3pnt *pnt,decal_type *decal,map_mesh_type *mesh,map_mesh_poly_type *poly,int mark_idx,int sz)

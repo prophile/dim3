@@ -91,10 +91,10 @@ void collide_object_ray_trace_points(obj_type *obj,int x_add,int z_add,int *px,i
 
 		// polygon size
 
-	x=obj->pos.x;
+	x=obj->pnt.x;
 	x_sz=obj->size.x;
 
-	z=obj->pos.z;
+	z=obj->pnt.z;
 	z_sz=obj->size.z;
 
 		// get points for that poly face
@@ -145,11 +145,11 @@ void collide_object_ray_trace_points(obj_type *obj,int x_add,int z_add,int *px,i
 
 		// setup Ys
 
-	py[0]=py[1]=py[2]=(obj->pos.y-obj->size.y)+(map_enlarge>>1);
-	py[3]=py[4]=py[5]=(obj->pos.y-obj->size.y)+(obj->size.y>>2);
-	py[6]=py[7]=py[8]=obj->pos.y-(obj->size.y>>1);
-	py[9]=py[10]=py[11]=obj->pos.y-(obj->size.y>>2);
-	py[12]=py[13]=py[14]=obj->pos.y-(map_enlarge>>1);
+	py[0]=py[1]=py[2]=(obj->pnt.y-obj->size.y)+(map_enlarge>>1);
+	py[3]=py[4]=py[5]=(obj->pnt.y-obj->size.y)+(obj->size.y>>2);
+	py[6]=py[7]=py[8]=obj->pnt.y-(obj->size.y>>1);
+	py[9]=py[10]=py[11]=obj->pnt.y-(obj->size.y>>2);
+	py[12]=py[13]=py[14]=obj->pnt.y-(map_enlarge>>1);
 }
 
 bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
@@ -243,7 +243,7 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	
 		if (obj->bump.on) {
 			poly=&map.mesh.meshes[contact[idx].poly.mesh_idx].polys[contact[idx].poly.poly_idx];
-			bump=((obj->pos.y-poly->box.min.y)<=obj->bump.high);
+			bump=((obj->pnt.y-poly->box.min.y)<=obj->bump.high);
 		}
 		else {
 			bump=FALSE;

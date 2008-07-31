@@ -43,6 +43,16 @@
 			sepNavWindowFrame = "{{176, 129}, {1041, 747}}";
 		};
 	};
+	269328210E41634500FE6996 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DA8623059148C40043E685 /* nodes.c */;
+		name = "nodes.c: 94";
+		rLen = 26;
+		rLoc = 2093;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
 	26AFB4310D95B6230004805A /* portal_mesh_update.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 14542}}";
@@ -59,21 +69,11 @@
 			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
 		};
 	};
-	26D037100E3ECDF30047A683 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5DA8623059148C40043E685 /* nodes.c */;
-		name = "nodes.c: 94";
-		rLen = 26;
-		rLoc = 2093;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
 	26E372E50DA5AB75009653F2 /* file_map_read_v2.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7196}}";
-			sepNavSelRange = "{15674, 0}";
-			sepNavVisRange = "{13195, 1631}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7378}}";
+			sepNavSelRange = "{5609, 17}";
+			sepNavVisRange = "{4288, 1710}";
 			sepNavWindowFrame = "{{492, 146}, {1041, 747}}";
 		};
 	};
@@ -145,9 +145,9 @@
 	};
 	F5A8B1AF05229DA4008D4331 /* file_map_read.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 5012}}";
-			sepNavSelRange = "{2873, 0}";
-			sepNavVisRange = "{2027, 2591}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5768}}";
+			sepNavSelRange = "{13136, 17}";
+			sepNavVisRange = "{12339, 893}";
 			sepNavWindowFrame = "{{327, 207}, {1041, 747}}";
 		};
 	};
@@ -229,11 +229,11 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 239082728;
-			PBXWorkspaceStateSaveDate = 239082728;
+			PBXPerProjectTemplateStateSaveDate = 239164967;
+			PBXWorkspaceStateSaveDate = 239164967;
 		};
 		perUserProjectItems = {
-			26D037100E3ECDF30047A683 /* PBXTextBookmark */ = 26D037100E3ECDF30047A683 /* PBXTextBookmark */;
+			269328210E41634500FE6996 /* PBXTextBookmark */ = 269328210E41634500FE6996 /* PBXTextBookmark */;
 			26EA01420E4030630001D994 /* PBXTextBookmark */ = 26EA01420E4030630001D994 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;

@@ -216,13 +216,13 @@ void object_setup_touch(obj_type *obj,obj_type *source_obj,bool stand)
 	
 	touch->obj_uid=source_obj->uid;
 	
-	touch->pnt.x=(obj->pos.x+source_obj->pos.x)>>1;
-	touch->pnt.y=(obj->pos.y+source_obj->pos.y)>>1;
-	touch->pnt.z=(obj->pos.z+source_obj->pos.z)>>1;
+	touch->pnt.x=(obj->pnt.x+source_obj->pnt.x)>>1;
+	touch->pnt.y=(obj->pnt.y+source_obj->pnt.y)>>1;
+	touch->pnt.z=(obj->pnt.z+source_obj->pnt.z)>>1;
 	
-	touch->ang.x=angle_find(source_obj->pos.y,source_obj->pos.z,obj->pos.y,obj->pos.z);
-	touch->ang.y=angle_find(source_obj->pos.x,source_obj->pos.z,obj->pos.x,obj->pos.z);
-	touch->ang.z=angle_find(source_obj->pos.x,source_obj->pos.y,obj->pos.x,obj->pos.y);
+	touch->ang.x=angle_find(source_obj->pnt.y,source_obj->pnt.z,obj->pnt.y,obj->pnt.z);
+	touch->ang.y=angle_find(source_obj->pnt.x,source_obj->pnt.z,obj->pnt.x,obj->pnt.z);
+	touch->ang.z=angle_find(source_obj->pnt.x,source_obj->pnt.y,obj->pnt.x,obj->pnt.y);
 	
 	touch->stand=stand;
 }
@@ -293,15 +293,15 @@ void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_weap,pr
 				z=melee_hit_pt->z;
 			}
 			else {
-				x=(from_obj->pos.x+obj->pos.x)>>1;
-				z=(from_obj->pos.z+obj->pos.z)>>1;
-				y=(from_obj->pos.y+obj->pos.y)>>1;
+				x=(from_obj->pnt.x+obj->pnt.x)>>1;
+				z=(from_obj->pnt.z+obj->pnt.z)>>1;
+				y=(from_obj->pnt.y+obj->pnt.y)>>1;
 			}
 		}
 		else {
-			x=obj->pos.x;
-			z=obj->pos.z;
-			y=obj->pos.y;
+			x=obj->pnt.x;
+			z=obj->pnt.z;
+			y=obj->pnt.y;
 		}
 	}
 	else {
@@ -314,9 +314,9 @@ void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_weap,pr
 	hit->pnt.y=y;
 	hit->pnt.z=z;
 		
-	hit->ang.x=angle_find(obj->pos.y,obj->pos.z,y,z);
-	hit->ang.y=angle_find(obj->pos.x,obj->pos.z,x,z);
-	hit->ang.z=angle_find(obj->pos.x,obj->pos.y,x,y);
+	hit->ang.x=angle_find(obj->pnt.y,obj->pnt.z,y,z);
+	hit->ang.y=angle_find(obj->pnt.x,obj->pnt.z,x,z);
+	hit->ang.z=angle_find(obj->pnt.x,obj->pnt.y,x,y);
 	
 		// find the hit boxes
 		

@@ -87,8 +87,7 @@ void projectile_speed(proj_type *proj)
 
 bool projectile_move(proj_type *proj)
 {
-	int				rn,y,xmove,zmove,ymove;
-	portal_type		*portal;
+	int				xmove,zmove,ymove;
 
 		// project movement
 		

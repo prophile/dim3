@@ -248,7 +248,6 @@
 		F5DD19DC090830C800721649 /* server_run.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD19D9090830C800721649 /* server_run.c */; };
 		F5DD19E30908310200721649 /* view.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD19DD0908310200721649 /* view.c */; };
 		F5DD19E40908310200721649 /* view_vertex_list.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD19DE0908310200721649 /* view_vertex_list.c */; };
-		F5DD19E50908310200721649 /* view_sight_path.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD19DF0908310200721649 /* view_sight_path.c */; };
 		F5DD19E60908310200721649 /* view_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD19E00908310200721649 /* view_setup.c */; };
 		F5DD19E70908310200721649 /* view_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD19E10908310200721649 /* view_draw.c */; };
 		F5DD19E80908310200721649 /* view_run.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD19E20908310200721649 /* view_run.c */; };
@@ -624,7 +623,6 @@
 		F5DD19D9090830C800721649 /* server_run.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = server_run.c; path = Sources_Server/server_run.c; sourceTree = "<group>"; };
 		F5DD19DD0908310200721649 /* view.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = view.c; path = Sources_View/view.c; sourceTree = "<group>"; };
 		F5DD19DE0908310200721649 /* view_vertex_list.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = view_vertex_list.c; path = Sources_View/view_vertex_list.c; sourceTree = "<group>"; };
-		F5DD19DF0908310200721649 /* view_sight_path.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = view_sight_path.c; path = Sources_View/view_sight_path.c; sourceTree = "<group>"; };
 		F5DD19E00908310200721649 /* view_setup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = view_setup.c; path = Sources_View/view_setup.c; sourceTree = "<group>"; };
 		F5DD19E10908310200721649 /* view_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = view_draw.c; path = Sources_View/view_draw.c; sourceTree = "<group>"; };
 		F5DD19E20908310200721649 /* view_run.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = view_run.c; path = Sources_View/view_run.c; sourceTree = "<group>"; };
@@ -1212,7 +1210,6 @@
 				F5DD19E00908310200721649 /* view_setup.c */,
 				F5DD19DE0908310200721649 /* view_vertex_list.c */,
 				F5BD968B0C20EF34000F74E1 /* view_vertex_light.c */,
-				F5DD19DF0908310200721649 /* view_sight_path.c */,
 				F5DD19E10908310200721649 /* view_draw.c */,
 				F5DD19A70908101700721649 /* player_input.c */,
 			);
@@ -1659,7 +1656,6 @@
 				F5DD19DC090830C800721649 /* server_run.c in Sources */,
 				F5DD19E30908310200721649 /* view.c in Sources */,
 				F5DD19E40908310200721649 /* view_vertex_list.c in Sources */,
-				F5DD19E50908310200721649 /* view_sight_path.c in Sources */,
 				F5DD19E60908310200721649 /* view_setup.c in Sources */,
 				F5DD19E70908310200721649 /* view_draw.c in Sources */,
 				F5DD19E80908310200721649 /* view_run.c in Sources */,

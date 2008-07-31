@@ -123,7 +123,7 @@ void object_turn(obj_type *obj)
 
 void object_turn_stop(obj_type *obj)
 {
-	obj->turn.ang_to.y=(float)obj->pos.y;
+	obj->turn.ang_to.y=(float)obj->pnt.y;
 	obj->turn.ang_add.y=0.0f;
 
 	object_auto_walk_stop(obj);

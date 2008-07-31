@@ -55,9 +55,9 @@ void object_watch(obj_type *obj)
 	
 		// object check properties
 		
-	x=obj->pos.x;
-	z=obj->pos.z;
-	y=obj->pos.y;
+	x=obj->pnt.x;
+	z=obj->pnt.z;
+	y=obj->pnt.y;
 	dist=obj->watch.dist;
 	if (dist==0) return;		// a distance of 0 ignores distance checks (just watches for deaths)
 
@@ -72,11 +72,11 @@ void object_watch(obj_type *obj)
 			
 		is_near=FALSE;
 			
-		kx=abs(x-watch_obj->pos.x);
+		kx=abs(x-watch_obj->pnt.x);
 		if (kx<=dist) {
-			kz=abs(z-watch_obj->pos.z);
+			kz=abs(z-watch_obj->pnt.z);
 			if (kz<=dist) {
-				ky=abs(y-watch_obj->pos.y);
+				ky=abs(y-watch_obj->pnt.y);
 				if (ky<=dist) {
 					dx=(double)(kx*kx);
 					dz=(double)(kz*kz);
@@ -131,6 +131,8 @@ void object_watch_death_alert(obj_type *dead_obj)
 
 void object_watch_portal_alert(obj_type *portal_obj,bool entry)
 {
+/* supergumba -- need to rewrite this
+
 	int				n,rn;
 	obj_type		*obj;
 	
@@ -154,6 +156,7 @@ void object_watch_portal_alert(obj_type *portal_obj,bool entry)
 		}
 		obj++;
 	}
+	*/
 }
 
 void object_watch_base_alert(portal_type *portal,obj_type *enter_obj,bool entry)
@@ -199,7 +202,7 @@ void object_watch_sound_alert(int x,int y,int z,int sound_obj_uid,char *sound_na
 
 		if ((obj->watch.on) && (obj->watch.dist!=0)) {
 
-			if (distance_get(x,y,z,obj->pos.x,obj->pos.y,obj->pos.z)<=obj->watch.dist) {
+			if (distance_get(x,y,z,obj->pnt.x,obj->pnt.y,obj->pnt.z)<=obj->watch.dist) {
 				obj->watch.obj_uid=sound_obj_uid;
 				strcpy(obj->watch.sound_name,sound_name);
 				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_sound,0);

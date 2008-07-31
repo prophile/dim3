@@ -196,14 +196,14 @@ obj_type* object_find_nearest(int x,int z,int y,char *name,char *type,int team_i
 		
 			// check distance
 			
-		d=distance_get(x,y,z,obj->pos.x,obj->pos.y,obj->pos.z);
+		d=distance_get(x,y,z,obj->pnt.x,obj->pnt.y,obj->pnt.z);
 		if (d<min_dist) continue;
 		if (d>dist) continue;
 		
 			// check angle
 			
 		if (ang!=-1) {
-			fang=angle_find(x,z,obj->pos.x,obj->pos.z);
+			fang=angle_find(x,z,obj->pnt.x,obj->pnt.z);
 			if (angle_dif(fang,ang,NULL)>ang_sweep) continue;
 		}
 		
@@ -258,17 +258,16 @@ int object_find_uid_click_object(obj_type *obj)
 		
 		if (click_obj->hidden) continue;
 		if (!click_obj->click.on) continue;
-		if (click_obj->pos.rn!=obj->pos.rn) continue;
 		
 			// check distance
 			
-		d=distance_get(obj->pos.x,obj->pos.y,obj->pos.z,click_obj->pos.x,click_obj->pos.y,click_obj->pos.z);
+		d=distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,click_obj->pnt.x,click_obj->pnt.y,click_obj->pnt.z);
 		if (d>click_obj->click.distance) continue;
 		if ((uid!=-1) && (d>dist)) continue;
 		
 			// check angle
 			
-		fang=angle_find(obj->pos.x,obj->pos.z,click_obj->pos.x,click_obj->pos.z);
+		fang=angle_find(obj->pnt.x,obj->pnt.z,click_obj->pnt.x,click_obj->pnt.z);
 		if (angle_dif(fang,obj->ang.y,NULL)>ci_object_click_angle) continue;
 		
 		uid=click_obj->uid;
@@ -365,9 +364,9 @@ bool object_sight_test_object(obj_type *obj,int test_obj_uid)
 
 				// get starting position
 
-			spt.x=obj->pos.x;
-			spt.y=obj->pos.y-obj->size.eye_offset;
-			spt.z=obj->pos.z;
+			spt.x=obj->pnt.x;
+			spt.y=obj->pnt.y-obj->size.eye_offset;
+			spt.z=obj->pnt.z;
 
 			ray_push(&spt,&ang,obj->size.radius);
 

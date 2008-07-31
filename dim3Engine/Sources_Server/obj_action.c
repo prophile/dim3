@@ -599,9 +599,9 @@ bool object_enter_vehicle(obj_type *obj,char *err_str)
 
 		// get enter offset
 
-	x=vehicle_obj->pos.x-obj->pos.x;
-	z=vehicle_obj->pos.z-obj->pos.z;
-	y=vehicle_obj->pos.y-obj->pos.y;
+	x=vehicle_obj->pnt.x-obj->pnt.x;
+	z=vehicle_obj->pnt.z-obj->pnt.z;
+	y=vehicle_obj->pnt.y-obj->pnt.y;
 		
 	rotate_2D_point_center(&x,&z,-vehicle_obj->ang.y);
 		
@@ -668,23 +668,13 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 	
 	rotate_2D_point_center(&x,&z,vehicle_obj->ang.y);
 	
-	orig_obj->pos.x=vehicle_obj->pos.x-x;
-	orig_obj->pos.z=vehicle_obj->pos.z-z;
-	orig_obj->pos.y=vehicle_obj->pos.y-y;
+	orig_obj->pnt.x=vehicle_obj->pnt.x-x;
+	orig_obj->pnt.z=vehicle_obj->pnt.z-z;
+	orig_obj->pnt.y=vehicle_obj->pnt.y-y;
 
-	orig_obj->ang.y=angle_find(orig_obj->pos.x,orig_obj->pos.z,vehicle_obj->pos.x,vehicle_obj->pos.z);
+	orig_obj->ang.y=angle_find(orig_obj->pnt.x,orig_obj->pnt.z,vehicle_obj->pnt.x,vehicle_obj->pnt.z);
 	
 		// can we exit?
-		
-	if (!map_find_portal_by_pos(&map,&orig_obj->pos)) {
-	
-		if (!ignore_errors) {
-			if (err_str!=NULL) strcpy(err_str,"No space in map to exit");
-			return(FALSE);
-		}
-		
-		memmove(&orig_obj->pos,&vehicle_obj->pos,sizeof(d3pos));
-	}
 	
 	old_ok=vehicle_obj->contact.object_on;				// don't collide with vehicle
 	vehicle_obj->contact.object_on=FALSE;

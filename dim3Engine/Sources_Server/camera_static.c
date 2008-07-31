@@ -85,8 +85,8 @@ void camera_static_get_position(d3pnt *pnt,d3ang *ang)
 
     if (camera.static_follow) {
 		obj=object_find_uid(camera.obj_uid);
-        ang->y=angle_find(camera_static_pnt.x,camera_static_pnt.z,obj->pos.x,obj->pos.z);
-		ang->x=-(180.0f-angle_find(camera_static_pnt.y,camera_static_pnt.z,obj->pos.y,obj->pos.z));
+        ang->y=angle_find(camera_static_pnt.x,camera_static_pnt.z,obj->pnt.x,obj->pnt.z);
+		ang->x=-(180.0f-angle_find(camera_static_pnt.y,camera_static_pnt.z,obj->pnt.y,obj->pnt.z));
  		ang->z=camera.ang.z;
 		return;
 	}

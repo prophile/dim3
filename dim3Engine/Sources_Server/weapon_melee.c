@@ -73,7 +73,6 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 	pos.x=pt->x;
 	pos.y=pt->y;
 	pos.z=pt->z;
-	map_find_portal_by_pos(&map,&pos);
     
 		// move melee ahead for distance
 		

@@ -654,7 +654,7 @@ bool model_find_bone_position_for_current_animation(model_draw *draw,int bone_id
 
 bool model_get_bone_brightness(model_draw *draw,char *pose_name,char *bone_name,float *bright)
 {
-	int				rn,x,y,z;
+	int				x,y,z;
 	float			pc[3],pn[3];
 	
 		// get bone position
@@ -662,13 +662,7 @@ bool model_get_bone_brightness(model_draw *draw,char *pose_name,char *bone_name,
 	if (!model_find_bone_position(draw,pose_name,bone_name,&x,&y,&z)) return(FALSE);
 	
 		// light at position
-		
-	rn=map_find_portal(&map,x,y,z);
-	if (rn==-1) {
-		*bright=0.0f;
-		return(TRUE);
-	}
-	
+
 	map_calculate_light_color_normal((double)x,(double)y,(double)z,pc,pn);
 	
 	*bright=(pc[0]+pc[1]+pc[2])/3.0f;

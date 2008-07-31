@@ -61,7 +61,7 @@ int object_held_add(obj_type *obj,char *name,char *type,char *script,char *param
 	strcpy(held_obj->name,name);
 	strcpy(held_obj->type,type);
 		
-	object_set_position(held_obj,obj->pos.x,obj->pos.z,obj->pos.y,obj->ang.y,0);
+	object_set_position(held_obj,obj->pnt.x,obj->pnt.z,obj->pnt.y,obj->ang.y,0);
 	
 		// save current attach
 		
@@ -106,7 +106,7 @@ bool object_held_drop(obj_type *obj,int uid,float y_ang,int y_change,char *err_s
 
 		// drop object
 
-	object_set_position(held_obj,obj->pos.x,obj->pos.z,(obj->pos.y+y_change),obj->ang.y,y_ang);
+	object_set_position(held_obj,obj->pnt.x,obj->pnt.z,(obj->pnt.y+y_change),obj->ang.y,y_ang);
 	held_obj->turn.ang_to.y=y_ang;
 
 	held_obj->hidden=FALSE;

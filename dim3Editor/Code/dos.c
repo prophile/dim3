@@ -178,10 +178,9 @@ bool create_first_portal(void)
 	spot=&map.spots[0];
 	map.nspot=1;
     
-	spot->pos.rn=0;
-	spot->pos.x=x;
-	spot->pos.z=z;
-	spot->pos.y=y;
+	spot->pnt.x=x;
+	spot->pnt.y=y;
+	spot->pnt.z=z;
 	spot->ang.y=0;
 	strcpy(spot->name,"Start");
 	strcpy(spot->type,"Player");
@@ -194,10 +193,9 @@ bool create_first_portal(void)
 	lit=&map.lights[0];
 	map.nlight=1;
 	
-	lit->pos.rn=0;
-	lit->pos.x=x;
-	lit->pos.z=z+4;
-	lit->pos.y=y-10;
+	lit->pnt.x=x;
+	lit->pnt.z=z+4;
+	lit->pnt.y=y-10;
 	lit->type=lt_normal;
 	lit->col.r=lit->col.g=lit->col.b=1;
 	lit->intensity=100;

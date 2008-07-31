@@ -45,14 +45,13 @@ extern server_type			server;
 void object_liquid_contact(obj_type *obj)
 {
 	int					n,nliquid,
-						rn,y,eye_y,dy,lft,rgt,top,bot;
+						y,eye_y,dy,lft,rgt,top,bot;
 	d3box				box;
 	map_liquid_type		*liq;
 	
 	obj->liquid_mode=lm_out;
 	obj->contact.liquid_idx=-1;
 
-	rn=obj->pos.rn;
 	box_create_from_object(&box,obj);
 	
 	lft=box.min_x;
@@ -70,7 +69,7 @@ void object_liquid_contact(obj_type *obj)
 		if (bot<liq->top) continue;
 		if (top>liq->bot) continue;
 
-		y=obj->pos.y;
+		y=obj->pnt.y;
 		dy=liq->y;
 		
 		if (y>=dy) {

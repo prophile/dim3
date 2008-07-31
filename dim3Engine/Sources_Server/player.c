@@ -55,7 +55,7 @@ extern void portal_triggers(obj_type *obj,int old_rn,int rn);
 
 bool player_attach_object(void)
 {
-	int					spot_idx,x,y,z,rn;
+	int					spot_idx,x,y,z;
 	float				ang_y;
 	spot_type			*spot;
 	obj_type			*obj;
@@ -94,13 +94,10 @@ bool player_attach_object(void)
 			// cursor position
 
 		if ((setup.editor_override.on) && (!map.settings.editor_link_always_start)) {
-			rn=map_find_portal(&map,setup.editor_override.pt.x,setup.editor_override.pt.y,setup.editor_override.pt.z);
-			if (rn!=-1) {
-				x=setup.editor_override.pt.x;
-				y=setup.editor_override.pt.y-obj->size.eye_offset;
-				z=setup.editor_override.pt.z;
-				ang_y=setup.editor_override.ang.y;
-			}
+			x=setup.editor_override.pt.x;
+			y=setup.editor_override.pt.y-obj->size.eye_offset;
+			z=setup.editor_override.pt.z;
+			ang_y=setup.editor_override.ang.y;
 		}
 
 			// spawn player to spot
@@ -111,8 +108,8 @@ bool player_attach_object(void)
 		obj->turn.ang_to.y=ang_y;
 		
 			// spot messages
-			
-		portal_triggers(obj,-1,obj->pos.rn);
+// supergumba -- redo triggers!			
+//		portal_triggers(obj,-1,obj->pos.rn);
 
 			// check for telefrag
 

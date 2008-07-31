@@ -55,7 +55,7 @@ void ambient_add_objects(void)
 	for (n=0;n!=server.count.obj;n++) {
 		ambient=&obj->ambient;
 		if ((ambient->on) && (ambient->buffer_idx!=-1)) {
-			al_ambient_list_add(ambient->buffer_idx,obj->pos.x,obj->pos.y,obj->pos.z,ambient->pitch);
+			al_ambient_list_add(ambient->buffer_idx,obj->pnt.x,obj->pnt.y,obj->pnt.z,ambient->pitch);
 		}
 		obj++;
 	}

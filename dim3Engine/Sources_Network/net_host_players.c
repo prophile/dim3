@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit ÒCreated with dim3 TechnologyÓ is given on a single
+2. This credit â€œCreated with dim3 Technologyâ€ is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -168,8 +168,7 @@ int net_host_player_join(d3socket sock,char *name,char *deny_reason)
 	strcpy(player->name,name);
 	player->team_idx=net_team_none;
 	
-	player->pos.rn=0;
-	player->pos.x=player->pos.y=player->pos.z=0;
+	player->pnt.x=player->pnt.y=player->pnt.z=0;
 	
 	player->ready=FALSE;
 	
@@ -305,10 +304,9 @@ void net_host_player_update(int remote_uid,network_request_remote_update *update
 	
 		// position
 		
-	player->pos.rn=(int)ntohs(update->pos_rn);
-	player->pos.x=ntohl(update->pos_x);
-	player->pos.y=ntohl(update->pos_y);
-	player->pos.z=ntohl(update->pos_z);
+	player->pnt.x=ntohl(update->pnt_x);
+	player->pnt.y=ntohl(update->pnt_y);
+	player->pnt.z=ntohl(update->pnt_z);
 		
 		// score
 	
@@ -343,10 +341,9 @@ int net_host_player_create_remote_add_list(int player_remote_uid,network_request
 			strcpy(remotes[cnt].name,player->name);
 			remotes[cnt].team_idx=player->team_idx;
 			remotes[cnt].score=player->score;
-			remotes[cnt].pos_rn=htons((short)player->pos.rn);
-			remotes[cnt].pos_x=htonl(player->pos.x);
-			remotes[cnt].pos_y=htonl(player->pos.y);
-			remotes[cnt].pos_z=htonl(player->pos.z);
+			remotes[cnt].pnt_x=htonl(player->pnt.x);
+			remotes[cnt].pnt_y=htonl(player->pnt.y);
+			remotes[cnt].pnt_z=htonl(player->pnt.z);
 			cnt++;
 		}
 		

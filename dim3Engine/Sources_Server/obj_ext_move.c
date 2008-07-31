@@ -55,9 +55,9 @@ inline bool object_move_with_move(obj_type *obj,int xmove,int zmove)
 	
 	if (collide_object_to_map(obj,&xmove,&ymove,&zmove)) return(TRUE);
 
-	obj->pos.x+=xmove;
-	obj->pos.y+=ymove;
-	obj->pos.z+=zmove;
+	obj->pnt.x+=xmove;
+	obj->pnt.y+=ymove;
+	obj->pnt.z+=zmove;
 
 	return(FALSE);
 }
@@ -68,13 +68,13 @@ inline void object_turn_with_turn(obj_type *obj,d3pnt *mpt,float rot_y)
 
 		// get change
 
-	x=obj->pos.x;
-	z=obj->pos.z;
+	x=obj->pnt.x;
+	z=obj->pnt.z;
 	rotate_2D_point(&x,&z,mpt->x,mpt->z,rot_y);
 
 		// move
 
-	object_move_with_move(obj,(x-obj->pos.x),(z-obj->pos.z));
+	object_move_with_move(obj,(x-obj->pnt.x),(z-obj->pnt.z));
 
 		// rotate player
 
@@ -257,9 +257,9 @@ void object_rotate_with_standing_object(obj_type *obj,float y)
 
 		// get center point for object
 
-	mpt.x=obj->pos.x;
-	mpt.y=obj->pos.y;
-	mpt.z=obj->pos.z;
+	mpt.x=obj->pnt.x;
+	mpt.y=obj->pnt.y;
+	mpt.z=obj->pnt.z;
 
 		// turn any object standing on it
 	

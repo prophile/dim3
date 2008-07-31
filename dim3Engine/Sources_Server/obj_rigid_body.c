@@ -44,15 +44,12 @@ extern server_type			server;
 
 int object_rigid_body_get_point_y(obj_type *obj,int x_off,int z_off,int y)
 {
-	int			rn,x,z;
+	int			x,z;
 	
 	rotate_2D_point_center(&x_off,&z_off,obj->ang.y);
 
-	x=obj->pos.x+x_off;
-	z=obj->pos.z+z_off;
-
-	rn=map_find_portal_hint(&map,obj->pos.rn,x,y,z);
-	if (rn==-1) return(-1);
+	x=obj->pnt.x+x_off;
+	z=obj->pnt.z+z_off;
 	
 	return(find_poly_nearest_stand(x,y,z,obj->rigid_body.max_drop_y,FALSE));
 }
@@ -108,14 +105,14 @@ void object_rigid_body_reset_angle(obj_type *obj)
 
 		// move middle of object to closest ground
 
-	y=obj->pos.y;
+	y=obj->pnt.y;
 
 	if (obj->stand_obj_uid!=-1) {
 		object_rigid_body_offset_reset_y(obj);			// no movement if standing on object
 	}
 	else {
 
-		ky=pin_downward_movement_point(obj->pos.x,y,obj->pos.z,obj->rigid_body.max_drop_y,&hit);
+		ky=pin_downward_movement_point(obj->pnt.x,y,obj->pnt.z,obj->rigid_body.max_drop_y,&hit);
 		if (hit) {
 			ky+=y;
 

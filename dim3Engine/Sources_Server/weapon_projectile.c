@@ -432,9 +432,9 @@ bool weapon_script_projectile_spawn_center(int tick,obj_type *obj,weapon_type *w
 	d3pnt			pt;
 	d3ang			ang;
 
-	pt.x=obj->pos.x;
-	pt.z=obj->pos.z;
-	pt.y=(obj->pos.y+obj->duck.y_move)+obj->size.eye_offset;
+	pt.x=obj->pnt.x;
+	pt.z=obj->pnt.z;
+	pt.y=(obj->pnt.y+obj->duck.y_move)+obj->size.eye_offset;
 
 	ang.x=-obj->view_ang.x;
 	ang.y=obj->ang.y;

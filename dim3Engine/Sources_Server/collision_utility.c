@@ -45,13 +45,13 @@ void collide_object_polygon(obj_type *obj,int x_add,int z_add,int *px,int *pz)
 	int			x,z,sz;
 	float		rang;
 
-	x=obj->pos.x+x_add;
+	x=obj->pnt.x+x_add;
 	sz=obj->size.x>>1;
 
 	px[0]=px[3]=x-sz;
 	px[1]=px[2]=x+sz;
 	
-	z=obj->pos.z+z_add;
+	z=obj->pnt.z+z_add;
 	sz=obj->size.z>>1;
 
 	pz[0]=pz[1]=z-sz;
@@ -66,8 +66,8 @@ void collide_object_hit_box_polygon(obj_type *obj,model_hit_box_type *hit_box,in
 	int				x,z,x2,z2,wid;
 	float			rang;
 
-	x=obj->pos.x+obj->draw.offset.x;
-	z=obj->pos.z+obj->draw.offset.z;
+	x=obj->pnt.x+obj->draw.offset.x;
+	z=obj->pnt.z+obj->draw.offset.z;
 
 	x2=x+hit_box->box.offset.x;
 	wid=hit_box->box.size.x>>1;
@@ -96,8 +96,8 @@ bool collide_object_to_object(obj_type *obj1,int x_add,int z_add,obj_type *obj2,
 	radius_2=obj2->size.x;
 	if (obj2->size.z>radius_2) radius_2=obj2->size.z;
 
-	x=(obj1->pos.x+x_add)-obj2->pos.x;
-	z=(obj1->pos.z+z_add)-obj2->pos.z;
+	x=(obj1->pnt.x+x_add)-obj2->pnt.x;
+	z=(obj1->pnt.z+z_add)-obj2->pnt.z;
 	
 	d=(int)sqrtf((float)((x*x)+(z*z)));
 	if (d>(radius_1+radius_2)) return(FALSE);
@@ -105,9 +105,9 @@ bool collide_object_to_object(obj_type *obj1,int x_add,int z_add,obj_type *obj2,
 		// check y
 		
 	if (include_y) {
-		ms1=obj1->pos.y;
+		ms1=obj1->pnt.y;
 		ls1=ms1-obj1->size.y;
-		ms2=obj2->pos.y;
+		ms2=obj2->pnt.y;
 		ls2=ms2-obj2->size.y;
 		
 		if (!include_stand) {
@@ -143,17 +143,17 @@ bool collide_object_to_object_hit_box(obj_type *obj1,int x_add,int z_add,obj_typ
 	radius_2=hit_box->box.size.x;
 	if (hit_box->box.size.z>radius_2) radius_2=hit_box->box.size.z;
 
-	x=(obj1->pos.x+x_add)-(obj2->pos.x+obj2->draw.offset.x+hit_box->box.offset.x);
-	z=(obj1->pos.z+z_add)-(obj2->pos.z+obj2->draw.offset.z+hit_box->box.offset.z);
+	x=(obj1->pnt.x+x_add)-(obj2->pnt.x+obj2->draw.offset.x+hit_box->box.offset.x);
+	z=(obj1->pnt.z+z_add)-(obj2->pnt.z+obj2->draw.offset.z+hit_box->box.offset.z);
 	
 	d=(int)sqrtf((float)((x*x)+(z*z)));
 	if (d>(radius_1+radius_2)) return(FALSE);
 
 		// check y
 		
-	ms1=obj1->pos.y;
+	ms1=obj1->pnt.y;
 	ls1=ms1-obj1->size.y;
-	ms2=obj2->pos.y+obj2->draw.offset.y+hit_box->box.offset.y;
+	ms2=obj2->pnt.y+obj2->draw.offset.y+hit_box->box.offset.y;
 	ls2=ms2-hit_box->box.size.y;
 		
 	if (ms1<=ls2) return(FALSE);
@@ -307,7 +307,7 @@ bool collide_projectile_to_object_hit_box(proj_type *proj,obj_type *obj,model_hi
 		
 	ms1=proj->pnt.y;
 	ls1=ms1-proj->size.y;
-	ms2=obj->pos.y+obj->draw.offset.y+hit_box->box.offset.y;
+	ms2=obj->pnt.y+obj->draw.offset.y+hit_box->box.offset.y;
 	ls2=ms2-hit_box->box.size.y;
 	
 	if (ms1<=ls2) return(FALSE);
@@ -336,11 +336,11 @@ bool collide_projectile_to_projectile(proj_type *proj1,proj_type *proj2)
 	
 		// check x
 		
-	x=proj1->pos.x;
+	x=proj1->pnt.x;
 	ls1=x-proj1->size.radius;
 	ms1=x+proj1->size.radius;
 	
-	x=proj2->pos.x;
+	x=proj2->pnt.x;
 	ls2=x-proj2->size.radius;
 	ms2=x+proj2->size.radius;
 		
@@ -349,11 +349,11 @@ bool collide_projectile_to_projectile(proj_type *proj1,proj_type *proj2)
 	
 		// check z
 		
-	z=proj1->pos.z;
+	z=proj1->pnt.z;
 	ls1=z-proj1->size.radius;
 	ms1=z+proj1->size.radius;
 	
-	z=proj2->pos.z;
+	z=proj2->pnt.z;
 	ls2=z-proj2->size.radius;
 	ms2=z+proj2->size.radius;
 		
@@ -362,9 +362,9 @@ bool collide_projectile_to_projectile(proj_type *proj1,proj_type *proj2)
 	
 		// check y
 		
-	ms1=proj1->pos.y;
+	ms1=proj1->pnt.y;
 	ls1=ms1-proj1->size.y;
-	ms2=proj2->pos.y;
+	ms2=proj2->pnt.y;
 	ls2=ms2-proj2->size.y;
 	
 	if (ms1<=ls2) return(FALSE);
@@ -372,8 +372,8 @@ bool collide_projectile_to_projectile(proj_type *proj1,proj_type *proj2)
 	
 		// check radius
 		
-	x=proj1->pos.x-proj2->pos.x;
-	z=proj1->pos.z-proj2->pos.z;
+	x=proj1->pnt.x-proj2->pnt.x;
+	z=proj1->pnt.z-proj2->pnt.z;
 	
 	d=(int)sqrtf((float)((x*x)+(z*z)));
 	return(d<=(proj1->size.radius+proj2->size.radius));
@@ -394,7 +394,7 @@ bool collide_sphere_to_object(int sx,int sy,int sz,int radius,obj_type *obj)
 	ls1=sx-radius;
 	ms1=sx+radius;
 	
-	x=obj->pos.x;
+	x=obj->pnt.x;
 	ls2=x-obj->size.radius;
 	ms2=x+obj->size.radius;
 		
@@ -406,7 +406,7 @@ bool collide_sphere_to_object(int sx,int sy,int sz,int radius,obj_type *obj)
 	ls1=sz-radius;
 	ms1=sz+radius;
 	
-	z=obj->pos.z;
+	z=obj->pnt.z;
 	ls2=z-obj->size.radius;
 	ms2=z+obj->size.radius;
 		
@@ -417,7 +417,7 @@ bool collide_sphere_to_object(int sx,int sy,int sz,int radius,obj_type *obj)
 		
 	ls1=sy-radius;
 	ms1=sy+radius;
-	ms2=obj->pos.y;
+	ms2=obj->pnt.y;
 	ls2=ms2-obj->size.y;
 	
 	if (ms1<=ls2) return(FALSE);
@@ -425,8 +425,8 @@ bool collide_sphere_to_object(int sx,int sy,int sz,int radius,obj_type *obj)
 	
 		// check radius
 		
-	x=sx-obj->pos.x;
-	z=sz-obj->pos.z;
+	x=sx-obj->pnt.x;
+	z=sz-obj->pnt.z;
 	
 	d=(int)sqrtf((float)((x*x)+(z*z)));
 	return(d<=(radius+obj->size.radius));
@@ -442,7 +442,7 @@ bool collide_sphere_to_object_hit_box(int sx,int sy,int sz,int radius,obj_type *
 		
 	ls1=sy-radius;
 	ms1=sy+radius;
-	ms2=obj->pos.y+obj->draw.offset.y+hit_box->box.offset.y;
+	ms2=obj->pnt.y+obj->draw.offset.y+hit_box->box.offset.y;
 	ls2=ms2-hit_box->box.size.y;
 	
 	if (ms1<=ls2) return(FALSE);
@@ -458,18 +458,18 @@ bool collide_sphere_to_object_hit_box(int sx,int sy,int sz,int radius,obj_type *
 	
 	polygon_2D_collision_setup(4,px,pz);
 	
-	x=obj->pos.x+obj->draw.offset.x+hit_box->box.offset.x;
+	x=obj->pnt.x+obj->draw.offset.x+hit_box->box.offset.x;
 	wid=hit_box->box.size.x>>1;
 	px[0]=px[3]=x-wid;
 	px[1]=px[2]=x+wid;
 	
-	z=obj->pos.z+obj->draw.offset.z+hit_box->box.offset.z;
+	z=obj->pnt.z+obj->draw.offset.z+hit_box->box.offset.z;
 	wid=hit_box->box.size.z>>1;
 	pz[0]=pz[1]=z-wid;
 	pz[2]=pz[3]=z+wid;
 	
-	x=obj->pos.x+obj->draw.offset.x;
-	z=obj->pos.z+obj->draw.offset.z;
+	x=obj->pnt.x+obj->draw.offset.x;
+	z=obj->pnt.z+obj->draw.offset.z;
 	rang=angle_add(obj->ang.y,obj->draw.rot.y);
 	
 	rotate_2D_polygon(4,px,pz,x,z,rang);

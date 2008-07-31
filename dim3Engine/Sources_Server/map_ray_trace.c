@@ -324,16 +324,16 @@ float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,obj_type *obj
 	
 		// rough y check
 		
-	ty=obj->pos.y-obj->size.y;
+	ty=obj->pnt.y-obj->size.y;
 	if ((spt->y<ty) && (ept->y<ty)) return(-1.0f);
 	
-	y=by=obj->pos.y;
+	y=by=obj->pnt.y;
 	if ((spt->y>by) && (ept->y>by)) return(-1.0f);
 	
 		// rough x/z checks
 		
-	x=obj->pos.x;
-	z=obj->pos.z;
+	x=obj->pnt.x;
+	z=obj->pnt.z;
 
 	radius=obj->size.x;
 	if (obj->size.z>radius) radius=obj->size.z;

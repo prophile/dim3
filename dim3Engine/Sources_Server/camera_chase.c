@@ -123,7 +123,7 @@ int camera_chase_get_division(int x,int z,int y)
 void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
 {
 	int				n,xadd,yadd,zadd,radius,div,
-					crn,cx,cz,cy,nx,nz,old_crn,ychng,hit_obj_uid;
+					cx,cz,cy,nx,nz,ychng,hit_obj_uid;
 	float			fang,fx,fy,fz;
 	bool			hit;
 	matrix_type		mat;
@@ -175,9 +175,6 @@ void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
 		
 		// move camera
 		
-	crn=map_find_portal(&map,cx,cy,cz);
-	if (crn==-1) return;
-
 	for (n=0;n!=div;n++) {
 		
 			// xz movement
@@ -186,17 +183,8 @@ void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
 		nz=cz+zadd;
 		
 		if (!map_spot_empty_sphere(nx,cy,nz,radius,obj->uid,&hit_obj_uid)) {		// box has hit some walls
-		
-			old_crn=crn;
-			
-			crn=map_find_portal_hint(&map,crn,nx,cy,nz);
-			if (crn!=-1) {
-				cx=nx;
-				cz=nz;
-			}
-			else {
-				crn=old_crn;
-			}
+			cx=nx;
+			cz=nz;
 		}
 		
 			// y movement
@@ -234,7 +222,7 @@ void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
 
 void camera_chase_static_get_position(d3pnt *pnt,d3ang *ang)
 {
-	int				prn,cx,cz,cy;
+	int				cx,cz,cy;
 	float			fx,fy,fz;
 	matrix_type		mat;
 	obj_type		*obj;

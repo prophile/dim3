@@ -125,7 +125,7 @@ int collide_find_object_for_standing_object(obj_type *obj)
 	int			n,uid,y,ty,ydist,ignore_obj_uid;
 	obj_type	*stand_obj;
 	
-	y=obj->pos.y;
+	y=obj->pnt.y;
 	ydist=floor_slop;
 	uid=-1;
 	
@@ -140,7 +140,7 @@ int collide_find_object_for_standing_object(obj_type *obj)
 			continue;
 		}
 		
-		ty=abs(y-(stand_obj->pos.y-stand_obj->size.y));
+		ty=abs(y-(stand_obj->pnt.y-stand_obj->size.y));
 		if (ty>ydist) {
 			stand_obj++;
 			continue;
@@ -203,9 +203,9 @@ bool collide_set_object_hit_box_for_projectile_hit(proj_type *proj,obj_type *obj
 		
 			// get the distance
 	
-		x=obj->pos.x+draw->offset.x+hit_box->box.offset.x;
-		y=obj->pos.y+draw->offset.y+hit_box->box.offset.y;
-		z=obj->pos.z+draw->offset.z+hit_box->box.offset.z;
+		x=obj->pnt.x+draw->offset.x+hit_box->box.offset.x;
+		y=obj->pnt.y+draw->offset.y+hit_box->box.offset.y;
+		z=obj->pnt.z+draw->offset.z+hit_box->box.offset.z;
 	
 		d=distance_get(proj->pnt.x,proj->pnt.y,proj->pnt.z,x,y,z);
 				
@@ -356,9 +356,9 @@ bool collide_set_object_hit_box_for_sphere_hit(int sx,int sy,int sz,int radius,o
 		
 			// get the distance
 	
-		x=obj->pos.x+draw->offset.x+hit_box->box.offset.x;
-		y=obj->pos.y+draw->offset.y+hit_box->box.offset.y;
-		z=obj->pos.z+draw->offset.z+hit_box->box.offset.z;
+		x=obj->pnt.x+draw->offset.x+hit_box->box.offset.x;
+		y=obj->pnt.y+draw->offset.y+hit_box->box.offset.y;
+		z=obj->pnt.z+draw->offset.z+hit_box->box.offset.z;
 	
 		d=distance_get(sx,sy,sz,x,y,z);
 				
@@ -463,10 +463,10 @@ void collide_push_objects(int sx,int sz,int sy,int radius,int force)
 		
 			// add push
 				
-		yhit=obj->pos.y-(obj->size.y/2);
+		yhit=obj->pnt.y-(obj->size.y/2);
 		
-		ang.x=angle_find(sy,sz,yhit,obj->pos.z);
-		ang.y=angle_find(sx,sz,obj->pos.x,obj->pos.z);
+		ang.x=angle_find(sy,sz,yhit,obj->pnt.z);
+		ang.y=angle_find(sx,sz,obj->pnt.x,obj->pnt.z);
 		ang.z=0;
 		
 		object_push(obj,&ang,force,FALSE);

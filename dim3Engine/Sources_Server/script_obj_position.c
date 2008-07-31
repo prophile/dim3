@@ -103,13 +103,13 @@ JSBool js_get_obj_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	switch (JSVAL_TO_INT(id)) {
 	
 		case obj_position_prop_x:
-			*vp=INT_TO_JSVAL(obj->pos.x);
+			*vp=INT_TO_JSVAL(obj->pnt.x);
 			break;
 		case obj_position_prop_y:
-			*vp=INT_TO_JSVAL(obj->pos.y);
+			*vp=INT_TO_JSVAL(obj->pnt.y);
 			break;
 		case obj_position_prop_z:
-			*vp=INT_TO_JSVAL(obj->pos.z);
+			*vp=INT_TO_JSVAL(obj->pnt.z);
 			break;
 			
 	}
@@ -126,21 +126,12 @@ JSBool js_get_obj_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
 JSBool js_obj_position_place_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
 	obj_type		*obj;
-	d3pos			old_pos;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 
-	memmove(&old_pos,&obj->pos,sizeof(d3pos));
-	
-	obj->pos.x=JSVAL_TO_INT(argv[0]);
-	obj->pos.z=JSVAL_TO_INT(argv[1]);
-	obj->pos.y=JSVAL_TO_INT(argv[2]);
-
-	if (!map_find_portal_by_pos(&map,&obj->pos)) {
-		memmove(&obj->pos,&old_pos,sizeof(d3pos));
-		*rval=JSVAL_FALSE;
-        return(JS_TRUE);
-    }
+	obj->pnt.x=JSVAL_TO_INT(argv[0]);
+	obj->pnt.z=JSVAL_TO_INT(argv[1]);
+	obj->pnt.y=JSVAL_TO_INT(argv[2]);
     
     obj->ang.y=obj->motion.ang.y=script_value_to_float(argv[3]);
 	
@@ -230,25 +221,16 @@ JSBool js_obj_position_move_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 {
 	int				xadd,zadd,yadd;
 	obj_type		*obj;
-	d3pos			old_pos;
 	
 	obj=object_find_uid(js.attach.thing_uid);
-
-	memmove(&old_pos,&obj->pos,sizeof(d3pos));
 	
 	xadd=JSVAL_TO_INT(argv[0]);
 	zadd=JSVAL_TO_INT(argv[1]);
 	yadd=JSVAL_TO_INT(argv[2]);
 	
-	obj->pos.x=obj->pos.x+xadd;
-	obj->pos.z=obj->pos.z+zadd;
-	obj->pos.y=obj->pos.y+yadd;
-	
-	if (!map_find_portal_by_pos(&map,&obj->pos)) {
-		memmove(&obj->pos,&old_pos,sizeof(d3pos));
-		*rval=JSVAL_FALSE;
-		return(JS_TRUE);
-	}
+	obj->pnt.x+=xadd;
+	obj->pnt.z+=zadd;
+	obj->pnt.y+=yadd;
 	
 	object_telefrag_check(obj);
 
@@ -275,7 +257,7 @@ JSBool js_obj_position_distance_to_player_func(JSContext *cx,JSObject *j_obj,uin
 	obj=object_find_uid(js.attach.thing_uid);
 	player_obj=object_find_uid(server.player_obj_uid);
 
-	*rval=INT_TO_JSVAL(distance_get(obj->pos.x,obj->pos.y,obj->pos.z,player_obj->pos.x,player_obj->pos.y,player_obj->pos.z));
+	*rval=INT_TO_JSVAL(distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,player_obj->pnt.x,player_obj->pnt.y,player_obj->pnt.z));
 	
 	return(JS_TRUE);
 }
@@ -289,7 +271,7 @@ JSBool js_obj_position_distance_to_object_func(JSContext *cx,JSObject *j_obj,uin
 	dist_obj=object_find_uid(JSVAL_TO_INT(argv[0]));
 	if (dist_obj==NULL) return(JS_FALSE);
 
-	*rval=INT_TO_JSVAL(distance_get(obj->pos.x,obj->pos.y,obj->pos.z,dist_obj->pos.x,dist_obj->pos.y,dist_obj->pos.z));
+	*rval=INT_TO_JSVAL(distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,dist_obj->pnt.x,dist_obj->pnt.y,dist_obj->pnt.z));
 	
 	return(JS_TRUE);
 }

@@ -84,10 +84,9 @@ bool remote_add(int remote_uid,network_request_remote_add *add)
 	obj->team_idx=(signed short)ntohs(add->team_idx);
 	obj->player=TRUE;
 	
-	obj->pos.rn=(signed short)ntohs(add->pos_rn);
-	obj->pos.x=ntohl(add->pos_x);
-	obj->pos.y=ntohl(add->pos_y);
-	obj->pos.z=ntohl(add->pos_z);
+	obj->pnt.x=ntohl(add->pnt_x);
+	obj->pnt.y=ntohl(add->pnt_y);
+	obj->pnt.z=ntohl(add->pnt_z);
 
 	obj->remote.on=TRUE;
 	obj->remote.uid=remote_uid;
@@ -319,7 +318,7 @@ void remote_host_exit(void)
 void remote_update(int remote_uid,network_request_remote_update *update)
 {
 	int							n,flags,map_spawn_idx;
-	d3pos						org_pos;
+	d3pnt						org_pnt;
 	obj_type					*obj;
 	model_draw					*draw;
 	model_draw_animation		*animation;
@@ -348,19 +347,18 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 	
 		// update position
 
-	memmove(&org_pos,&obj->pos,sizeof(d3pos));
+	memmove(&org_pnt,&obj->pnt,sizeof(d3pnt));
 	
-	obj->pos.rn=(signed short)ntohs(update->pos_rn);
-	obj->pos.x=ntohl(update->pos_x);
-	obj->pos.y=ntohl(update->pos_y);
-	obj->pos.z=ntohl(update->pos_z);
+	obj->pnt.x=ntohl(update->pnt_x);
+	obj->pnt.y=ntohl(update->pnt_y);
+	obj->pnt.z=ntohl(update->pnt_z);
 				
 	obj->ang.x=ntohf(update->fp_ang_x);
 	obj->ang.y=ntohf(update->fp_ang_y);
 	obj->ang.z=ntohf(update->fp_ang_z);
 
 	if (map_spot_empty_object(obj)) {
-		memmove(&obj->pos,&org_pos,sizeof(d3pos));		// spot not empty, don't move there
+		memmove(&obj->pnt,&org_pnt,sizeof(d3pnt));		// spot not empty, don't move there
 	}
 	
 		// update predicition values
@@ -492,9 +490,9 @@ void remote_sound(int remote_uid,network_request_remote_sound *sound)
 	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
 	
-	x=ntohl(sound->pos_x);
-	y=ntohl(sound->pos_y);
-	z=ntohl(sound->pos_z);
+	x=ntohl(sound->pnt_x);
+	y=ntohl(sound->pnt_y);
+	z=ntohl(sound->pnt_z);
 	
 	pitch=ntohf(sound->fp_pitch);
 	

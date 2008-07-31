@@ -336,7 +336,7 @@ void map_movements_auto_open(void)
 
 		for (i=0;i!=server.count.obj;i++) {
 			if ((obj->player) || (obj->open_doors)) {
-				if (distance_check(obj->pos.x,(obj->pos.y-(obj->size.y>>1)),obj->pos.z,movement->pnt.x,movement->pnt.y,movement->pnt.z,movement->auto_open_distance)) {
+				if (distance_check(obj->pnt.x,(obj->pnt.y-(obj->size.y>>1)),obj->pnt.z,movement->pnt.x,movement->pnt.y,movement->pnt.z,movement->auto_open_distance)) {
 					obj_in_range=TRUE;
 					break;
 				}
