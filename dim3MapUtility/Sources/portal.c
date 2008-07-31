@@ -125,66 +125,6 @@ bool map_find_portal_by_pos(map_type *map,d3pos *pos)
 
 /* =======================================================
 
-      Calculate Centers for Portals
-      
-======================================================= */
-
-void map_portal_calculate_y_extent(map_type *map,int rn,int *p_ty,int *p_by)
-{
-	int					n,k,ty,by;
-	d3pnt				*pt;
-	portal_type			*portal;
-	map_mesh_type		*mesh;
-	
-	portal=&map->portals[rn];
-	
-	ty=1000000;
-	by=-1000000;
-	
-		// run through all the vertexes
-	
-	mesh=portal->mesh.meshes;
-	
-	for (n=0;n!=portal->mesh.nmesh;n++) {
-	
-		pt=mesh->vertexes;
-		
-		for (k=0;k!=mesh->nvertex;k++) {
-			if (pt->y>by) by=pt->y;
-			if (pt->y<ty) ty=pt->y;
-			pt++;
-		}
-	
-		mesh++;
-	}
-	
-		// corrections if no hits
-		
-	if (ty==1000000) {
-		ty=by=0;
-	}
-	
-	*p_ty=ty;
-	*p_by=by;
-}
-
-void map_portal_calculate_center(map_type *map,int rn,int *x,int *y,int *z)
-{
-	int				ty,by;
-	portal_type		*portal;
-	
-	portal=&map->portals[rn];
-	
-	*x=((portal->x+portal->ex)/2)-portal->x;
-	*z=((portal->z+portal->ez)/2)-portal->z;
-	
-	map_portal_calculate_y_extent(map,rn,&ty,&by);
-	
-	*y=(ty+by)/2;
-}
-
-/* =======================================================
-
       Delete Portal
       
 ======================================================= */
@@ -199,11 +139,11 @@ void map_portal_delete(map_type *map,int rn)
 	portal=&map->portals[rn];
 		
 	while (portal->mesh.nmesh>0) {
-		if (!map_portal_mesh_delete(map,rn,(portal->mesh.nmesh-1))) break;
+		if (!map_mesh_delete(map,(portal->mesh.nmesh-1))) break;
 	}
 	
 	while (portal->liquid.nliquid>0) {
-		if (!map_portal_liquid_delete(map,rn,(portal->liquid.nliquid-1))) break;
+		if (!map_liquid_delete(map,(portal->liquid.nliquid-1))) break;
 	}
 
 		// adjust sight paths
@@ -255,14 +195,14 @@ int map_portal_duplicate(map_type *map,int rn,int x,int z)
 	portal->mesh.meshes=NULL;
 	
 	for (n=0;n!=old_portal->mesh.nmesh;n++) {
-		mesh_idx=map_portal_mesh_add(map,rn);
+		mesh_idx=map_mesh_add(map);
 		if (mesh_idx==-1) break;
 	
 		old_mesh=&old_portal->mesh.meshes[n];
 		mesh=&portal->mesh.meshes[mesh_idx];
 	
-		if (!map_portal_mesh_set_vertex_count(map,rn,mesh_idx,old_mesh->nvertex)) break;		
-		if (!map_portal_mesh_set_poly_count(map,rn,mesh_idx,old_mesh->npoly)) break;
+		if (!map_mesh_set_vertex_count(map,mesh_idx,old_mesh->nvertex)) break;		
+		if (!map_mesh_set_poly_count(map,mesh_idx,old_mesh->npoly)) break;
 					
 		mesh->group_idx=old_mesh->group_idx;
 		memmove(&mesh->flag,&old_mesh->flag,sizeof(map_mesh_flag_type));
@@ -277,7 +217,7 @@ int map_portal_duplicate(map_type *map,int rn,int x,int z)
 	portal->liquid.liquids=NULL;
 	
 	for (n=0;n!=old_portal->liquid.nliquid;n++) {
-		liq_idx=map_portal_liquid_add(map,rn);
+		liq_idx=map_liquid_add(map);
 		if (liq_idx==-1) break;
 	
 		old_liq=&old_portal->liquid.liquids[n];

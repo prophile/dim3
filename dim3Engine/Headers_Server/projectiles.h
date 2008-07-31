@@ -34,7 +34,7 @@ extern proj_type* projectile_find_uid(int uid);
 extern void projectile_set_position(proj_type *proj,d3pnt *pt,d3ang *ang);
 extern void projectile_set_origin(proj_type *proj);
 extern void projectile_set_motion(proj_type *proj,float speed,float ang_y,float ang_x,int *x,int *y,int *z);
-extern bool projectile_spawn_position(proj_type *proj,d3pnt *pt,d3ang *ang,obj_type *parentobj);
+extern void projectile_spawn_position(proj_type *proj,d3pnt *pt,d3ang *ang,obj_type *parentobj);
 
 extern void projectile_mark_dispose(proj_type *proj);
 extern void projectile_dispose(void);

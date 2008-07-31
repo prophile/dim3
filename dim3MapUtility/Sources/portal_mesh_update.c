@@ -37,7 +37,7 @@ extern void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *mesh_p
       
 ======================================================= */
 
-void map_portal_mesh_combine_single_mesh(map_mesh_type *mesh,map_mesh_type *mesh_copy)
+void map_mesh_combine_single_mesh(map_mesh_type *mesh,map_mesh_type *mesh_copy)
 {
 	int					n,t,k,v_idx;
 	d3pnt				*d3pt,*chk_d3pt;
@@ -93,102 +93,62 @@ void map_portal_mesh_combine_single_mesh(map_mesh_type *mesh,map_mesh_type *mesh
 	}
 }
 
-int map_portal_mesh_combine(map_type *map,int portal_idx,int mesh_1_idx,int mesh_2_idx)
+int map_mesh_combine(map_type *map,int mesh_1_idx,int mesh_2_idx)
 {
 	int					mesh_idx;
-	portal_type			*portal;
 	map_mesh_type		*mesh,*mesh_1,*mesh_2;
-	
-		// get mesh portal
-		
-	portal=&map->portals[portal_idx];
 	
 		// create new combined mesh
 		
-	mesh_idx=map_portal_mesh_add(map,portal_idx);
+	mesh_idx=map_mesh_add(map);
 	if (mesh_idx==-1) return(-1);
 
 		// get combined meshes
 		// need to get after mesh add as mesh add can change mesh pointers
 		
-	mesh_1=&portal->mesh.meshes[mesh_1_idx];
-	mesh_2=&portal->mesh.meshes[mesh_2_idx];
+	mesh_1=&map->mesh.meshes[mesh_1_idx];
+	mesh_2=&map->mesh.meshes[mesh_2_idx];
 	
 		// setup enough vertexes and polys for new mesh
 		
-	if (!map_portal_mesh_set_vertex_count(map,portal_idx,mesh_idx,(mesh_1->nvertex+mesh_2->nvertex))) {
-		map_portal_mesh_delete(map,portal_idx,mesh_idx);
+	if (!map_mesh_set_vertex_count(map,mesh_idx,(mesh_1->nvertex+mesh_2->nvertex))) {
+		map_mesh_delete(map,mesh_idx);
 		return(-1);
 	}
 	
-	if (!map_portal_mesh_set_poly_count(map,portal_idx,mesh_idx,(mesh_1->npoly+mesh_2->npoly))) {
-		map_portal_mesh_delete(map,portal_idx,mesh_idx);
+	if (!map_mesh_set_poly_count(map,mesh_idx,(mesh_1->npoly+mesh_2->npoly))) {
+		map_mesh_delete(map,mesh_idx);
 		return(-1);
 	}
 
 		// combined meshes
 		
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 
 	mesh->npoly=0;
 	mesh->nvertex=0;
 		
-	map_portal_mesh_combine_single_mesh(mesh,mesh_1);
-	map_portal_mesh_combine_single_mesh(mesh,mesh_2);
+	map_mesh_combine_single_mesh(mesh,mesh_1);
+	map_mesh_combine_single_mesh(mesh,mesh_2);
 	
 		// get back to correct size
 		// ignore failures as it's just a waste of space that
 		// will be reclaimed later
 		
-	map_portal_mesh_set_vertex_count(map,portal_idx,mesh_idx,mesh->nvertex);
-	map_portal_mesh_set_poly_count(map,portal_idx,mesh_idx,mesh->npoly);
+	map_mesh_set_vertex_count(map,mesh_idx,mesh->nvertex);
+	map_mesh_set_poly_count(map,mesh_idx,mesh->npoly);
 	
 		// delete original meshes, making sure to
 		// change delete index depending on first delete
 		// and return mesh index minus the two
 		// deleted meshes
 		
-	map_portal_mesh_delete(map,portal_idx,mesh_1_idx);
+	map_mesh_delete(map,mesh_1_idx);
 	
 	if (mesh_1_idx<mesh_2_idx) mesh_2_idx--;
-	map_portal_mesh_delete(map,portal_idx,mesh_2_idx);	
+	map_mesh_delete(map,mesh_2_idx);	
 
 	return(mesh_idx-2);
-}
-
-/* =======================================================
-
-      Move Mesh To Different Portal
-      
-======================================================= */
-
-int map_portal_mesh_switch_portal(map_type *map,int portal_idx,int mesh_idx,int new_portal_idx)
-{
-	int						new_mesh_idx;
-	map_mesh_type			*org_mesh,*new_mesh;
-	
-		// create new mesh
-		
-	new_mesh_idx=map_portal_mesh_add(map,new_portal_idx);
-	if (new_mesh_idx==-1) return(-1);
-	
-		// switch meshes
-		
-	org_mesh=&map->portals[portal_idx].mesh.meshes[mesh_idx];
-	new_mesh=&map->portals[new_portal_idx].mesh.meshes[new_mesh_idx];
-	
-	memmove(new_mesh,org_mesh,sizeof(map_mesh_type));
-	
-		// set old mesh ptrs to null so they
-		// aren't freed as they now belong to new mesh
-		// then delete
-		
-	org_mesh->vertexes=NULL;
-	org_mesh->polys=NULL;
-	
-	map_portal_mesh_delete(map,portal_idx,mesh_idx);
-	
-	return(new_mesh_idx);
 }
 
 /* =======================================================
@@ -197,7 +157,7 @@ int map_portal_mesh_switch_portal(map_type *map,int portal_idx,int mesh_idx,int 
       
 ======================================================= */
 
-void map_portal_mesh_move(map_type *map,int mesh_idx,int x,int y,int z)
+void map_mesh_move(map_type *map,int mesh_idx,int x,int y,int z)
 {
 	int									n,k,nvertex,npoly;
 	d3pnt								*pt;
@@ -272,7 +232,7 @@ void map_portal_mesh_move(map_type *map,int mesh_idx,int x,int y,int z)
       
 ======================================================= */
 
-void map_portal_mesh_resize(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max)
+void map_mesh_resize(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max)
 {
 	int						n,nvertex;
 	d3pnt					*pt,org_min,org_max,dif,org_dif;
@@ -281,7 +241,7 @@ void map_portal_mesh_resize(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max)
 
 		// get original size and uv center
 		
-	map_portal_mesh_calculate_extent(map,mesh_idx,&org_min,&org_max);
+	map_mesh_calculate_extent(map,mesh_idx,&org_min,&org_max);
 
 		// get resize factor
 		
@@ -324,7 +284,7 @@ void map_portal_mesh_resize(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max)
       
 ======================================================= */
 
-void map_portal_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_z)
+void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_z)
 {
 	int						n,nvertex;
 	d3pnt					mpt;
@@ -333,7 +293,7 @@ void map_portal_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,boo
 
 		// get center
 
-	map_portal_mesh_calculate_center(map,mesh_idx,&mpt);
+	map_mesh_calculate_center(map,mesh_idx,&mpt);
 
 		// flip vertexes
 
@@ -356,7 +316,7 @@ void map_portal_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,boo
       
 ======================================================= */
 
-void map_portal_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float rot_z)
+void map_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float rot_z)
 {
 	int									n,k,nvertex,npoly;
 	float								fx,fy,fz;
@@ -371,7 +331,7 @@ void map_portal_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,f
 
 		// get center
 
-	map_portal_mesh_calculate_center(map,mesh_idx,&mpt);
+	map_mesh_calculate_center(map,mesh_idx,&mpt);
 	f_mpt.x=(float)(mpt.x+mesh->rot_off.x);
 	f_mpt.y=(float)(mpt.y+mesh->rot_off.y);
 	f_mpt.z=(float)(mpt.z+mesh->rot_off.z);
@@ -399,12 +359,46 @@ void map_portal_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,f
 		pt++;
 	}
 
-		// rotate tesseled lighting
+		// rotate boxes
+
+	fx=((float)mesh->box.min.x)-f_mpt.x;
+	fy=((float)mesh->box.min.y)-f_mpt.y;
+	fz=((float)mesh->box.min.z)-f_mpt.z;
+
+	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+
+	mesh->box.min.x=(int)(fx+f_mpt.x);
+	mesh->box.min.y=(int)(fy+f_mpt.y);
+	mesh->box.min.z=(int)(fz+f_mpt.z);
+
+	fx=((float)mesh->box.max.x)-f_mpt.x;
+	fy=((float)mesh->box.max.y)-f_mpt.y;
+	fz=((float)mesh->box.max.z)-f_mpt.z;
+
+	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+
+	mesh->box.max.x=(int)(fx+f_mpt.x);
+	mesh->box.max.y=(int)(fy+f_mpt.y);
+	mesh->box.max.z=(int)(fz+f_mpt.z);
+
+	fx=((float)mesh->box.mid.x)-f_mpt.x;
+	fy=((float)mesh->box.mid.y)-f_mpt.y;
+	fz=((float)mesh->box.mid.z)-f_mpt.z;
+
+	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+
+	mesh->box.mid.x=(int)(fx+f_mpt.x);
+	mesh->box.mid.y=(int)(fy+f_mpt.y);
+	mesh->box.mid.z=(int)(fz+f_mpt.z);
+
+		// rotate polygons
 
 	npoly=mesh->npoly;
 	poly=mesh->polys;
 	
 	for (n=0;n!=npoly;n++) {
+
+			// light vertexes
 
 		pl=poly->light.vertexes;
 
@@ -422,6 +416,38 @@ void map_portal_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,f
 
 			pl++;
 		}
+
+			// poly boxes
+
+		fx=((float)poly->box.min.x)-f_mpt.x;
+		fy=((float)poly->box.min.y)-f_mpt.y;
+		fz=((float)poly->box.min.z)-f_mpt.z;
+
+		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+
+		poly->box.min.x=(int)(fx+f_mpt.x);
+		poly->box.min.y=(int)(fy+f_mpt.y);
+		poly->box.min.z=(int)(fz+f_mpt.z);
+
+		fx=((float)poly->box.max.x)-f_mpt.x;
+		fy=((float)poly->box.max.y)-f_mpt.y;
+		fz=((float)poly->box.max.z)-f_mpt.z;
+
+		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+
+		poly->box.max.x=(int)(fx+f_mpt.x);
+		poly->box.max.y=(int)(fy+f_mpt.y);
+		poly->box.max.z=(int)(fz+f_mpt.z);
+
+		fx=((float)poly->box.mid.x)-f_mpt.x;
+		fy=((float)poly->box.mid.y)-f_mpt.y;
+		fz=((float)poly->box.mid.z)-f_mpt.z;
+
+		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+
+		poly->box.mid.x=(int)(fx+f_mpt.x);
+		poly->box.mid.y=(int)(fy+f_mpt.y);
+		poly->box.mid.z=(int)(fz+f_mpt.z);
 	
 		poly++;
 	}
@@ -434,15 +460,13 @@ void map_portal_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,f
       
 ======================================================= */
 
-bool map_portal_mesh_tesselate(map_type *map,int portal_idx,int mesh_idx)
+bool map_mesh_tesselate(map_type *map,int mesh_idx)
 {
 	int						n,k,cnt,ntrig,npoly;
-	portal_type				*portal;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly,*trig_polys,*trig_poly;
 
-	portal=&map->portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 
 	if (mesh->npoly==0) return(TRUE);
 
@@ -509,7 +533,7 @@ bool map_portal_mesh_tesselate(map_type *map,int portal_idx,int mesh_idx)
       
 ======================================================= */
 
-bool map_portal_mesh_poly_punch_hole(map_type *map,int portal_idx,int mesh_idx,int poly_idx,int hole_type)
+bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,int hole_type)
 {
 	int						n,ptsz,mx,my,mz,
 							px[8],py[8],pz[8],
@@ -517,12 +541,10 @@ bool map_portal_mesh_poly_punch_hole(map_type *map,int portal_idx,int mesh_idx,i
 	float					gx[8],gy[8],mgx,mgy,
 							k_gx[4],k_gy[4];
 	d3pnt					*pt;
-	portal_type				*portal;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 
-	portal=&map->portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 	poly=&mesh->polys[poly_idx];
 
 	ptsz=poly->ptsz;
@@ -605,12 +627,12 @@ bool map_portal_mesh_poly_punch_hole(map_type *map,int portal_idx,int mesh_idx,i
 		k_gx[3]=gx[n];
 		k_gy[3]=gy[n];
 
-		if (map_portal_mesh_add_poly(map,portal_idx,mesh_idx,4,kx,ky,kz,k_gx,k_gy,poly->txt_idx)==-1) return(FALSE);
+		if (map_mesh_add_poly(map,mesh_idx,4,kx,ky,kz,k_gx,k_gy,poly->txt_idx)==-1) return(FALSE);
 	}
 
 		// finish by deleting original polygon
 
-	return(map_portal_mesh_delete_poly(map,portal_idx,mesh_idx,poly_idx));
+	return(map_mesh_delete_poly(map,mesh_idx,poly_idx));
 }
 
 /* =======================================================
@@ -619,7 +641,7 @@ bool map_portal_mesh_poly_punch_hole(map_type *map,int portal_idx,int mesh_idx,i
       
 ======================================================= */
 
-inline float map_portal_mesh_shift_texture_single_coord(float f_tick,float shift)
+inline float map_mesh_shift_texture_single_coord(float f_tick,float shift)
 {
 	int				i_add;
 	float			f_add;
@@ -629,7 +651,7 @@ inline float map_portal_mesh_shift_texture_single_coord(float f_tick,float shift
 	return(f_add-((float)i_add));
 }
 
-void map_portal_mesh_shift_portal_vertex_list(map_type *map,int portal_idx,int tick)
+void map_mesh_shift_portal_vertex_list(map_type *map,int tick)
 {
 	/* supergumba -- redo all this
 	int						n,k,t,nmesh,npoly,ptsz,idx;
@@ -682,8 +704,8 @@ void map_portal_mesh_shift_portal_vertex_list(map_type *map,int portal_idx,int t
 
 			ptsz=poly->ptsz;
 
-			fx=map_portal_mesh_shift_texture_single_coord(f_tick,poly->x_shift);
-			fy=map_portal_mesh_shift_texture_single_coord(f_tick,poly->y_shift);
+			fx=map_mesh_shift_texture_single_coord(f_tick,poly->x_shift);
+			fy=map_mesh_shift_texture_single_coord(f_tick,poly->y_shift);
 
 			for (t=0;t!=ptsz;t++) {
 
@@ -730,16 +752,14 @@ float map_get_texture_round_coord(float f)
 	return(((float)i)/100);
 }
 
-void map_portal_mesh_get_poly_uv_as_box(map_type *map,int portal_idx,int mesh_idx,int poly_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact)
+void map_mesh_get_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact)
 {
 	int						n;
 	float					gx_min,gx_max,gy_min,gy_max;
-	portal_type				*portal;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 
-	portal=&map->portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 	poly=&mesh->polys[poly_idx];
 
 		// get UV extends
@@ -763,22 +783,20 @@ void map_portal_mesh_get_poly_uv_as_box(map_type *map,int portal_idx,int mesh_id
 	*y_txtfact=map_get_texture_round_coord(gy_max-gy_min);
 }
 
-void map_portal_mesh_set_poly_uv_as_box(map_type *map,int portal_idx,int mesh_idx,int poly_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact)
+void map_mesh_set_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact)
 {
 	int						n;
 	float					gx,gy,
 							org_x_txtoff,org_y_txtoff,org_x_txtfact,org_y_txtfact;
-	portal_type				*portal;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 
-	portal=&map->portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 	poly=&mesh->polys[poly_idx];
 
 		// get current box coordinates
 
-	map_portal_mesh_get_poly_uv_as_box(map,portal_idx,mesh_idx,poly_idx,&org_x_txtoff,&org_y_txtoff,&org_x_txtfact,&org_y_txtfact);
+	map_mesh_get_poly_uv_as_box(map,mesh_idx,poly_idx,&org_x_txtoff,&org_y_txtoff,&org_x_txtfact,&org_y_txtfact);
 
 		// reset to new coordinates
 
@@ -822,18 +840,16 @@ void map_portal_mesh_set_poly_uv_as_box(map_type *map,int portal_idx,int mesh_id
       
 ======================================================= */
 
-void map_portal_mesh_rotate_poly_uv(map_type *map,int portal_idx,int mesh_idx,int poly_idx,int rot_ang)
+void map_mesh_rotate_poly_uv(map_type *map,int mesh_idx,int poly_idx,int rot_ang)
 {
 	int						n;
 	float					g;
-	portal_type				*portal;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	
 	if (rot_ang==ta_0) return;
 
-	portal=&map->portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 	poly=&mesh->polys[poly_idx];
 	
 	for (n=0;n!=poly->ptsz;n++) {
@@ -882,7 +898,7 @@ void map_get_texture_uv_get_scale(map_type *map,int txt_idx,float *txt_scale_x,f
 	*txt_scale_y=texture->scale.y/(float)map_enlarge;
 }
 
-void map_portal_mesh_reset_poly_uv(map_type *map,int portal_idx,int mesh_idx,int poly_idx)
+void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 {
 	int						n,kx,ky,kz;
 	float					fx,fy,fz,ltxtx,rtxtx,ltxty,rtxty,ltxtz,rtxtz,
@@ -890,12 +906,10 @@ void map_portal_mesh_reset_poly_uv(map_type *map,int portal_idx,int mesh_idx,int
 							f_dist_1,f_dist_2,txt_scale_x,txt_scale_y;
 	double					dx,dz,d;
 	d3pnt					*pt;
-	portal_type				*portal;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 
-	portal=&map->portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 	poly=&mesh->polys[poly_idx];
 	
 		// get scale
@@ -911,8 +925,8 @@ void map_portal_mesh_reset_poly_uv(map_type *map,int portal_idx,int mesh_idx,int
 		
 	if (poly->box.wall_like) {
 		
-		ltxtx=(float)((poly->box.min.x+portal->x)+(poly->box.min.z+portal->z))*txt_scale_x;
-		rtxtx=(float)((poly->box.max.x+portal->x)+(poly->box.max.z+portal->z))*txt_scale_x;
+		ltxtx=(float)(poly->box.min.x+poly->box.min.z)*txt_scale_x;
+		rtxtx=(float)(poly->box.max.x+poly->box.max.z)*txt_scale_x;
 			
 			// get point texture factor
 				
@@ -971,11 +985,11 @@ void map_portal_mesh_reset_poly_uv(map_type *map,int portal_idx,int mesh_idx,int
 			
 		// floor-like polygon
 
-	ltxtx=((float)(poly->box.min.x+portal->x))*txt_scale_x;
-	rtxtx=((float)(poly->box.max.x+portal->x))*txt_scale_x;
+	ltxtx=((float)poly->box.min.x)*txt_scale_x;
+	rtxtx=((float)poly->box.max.x)*txt_scale_x;
 
-	ltxtz=((float)(poly->box.min.z+portal->z))*txt_scale_y;
-	rtxtz=((float)(poly->box.max.z+portal->z))*txt_scale_y;
+	ltxtz=((float)poly->box.min.z)*txt_scale_y;
+	rtxtz=((float)poly->box.max.z)*txt_scale_y;
 
 	x_txtoff=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtx));
 	x_txtfact=map_get_texture_round_coord(rtxtx-ltxtx);
@@ -1006,19 +1020,17 @@ void map_portal_mesh_reset_poly_uv(map_type *map,int portal_idx,int mesh_idx,int
 	}
 }
 
-void map_portal_mesh_reset_uv(map_type *map,int portal_idx,int mesh_idx)
+void map_mesh_reset_uv(map_type *map,int mesh_idx)
 {
 	int						n,npoly;
-	portal_type				*portal;
 	map_mesh_type			*mesh;
 
-	portal=&map->portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 
 	npoly=mesh->npoly;
 
 	for (n=0;n!=npoly;n++) {
-		map_portal_mesh_reset_poly_uv(map,portal_idx,mesh_idx,n);
+		map_mesh_reset_poly_uv(map,mesh_idx,n);
 	}
 }
 

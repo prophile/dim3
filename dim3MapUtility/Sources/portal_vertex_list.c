@@ -29,9 +29,6 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-
-extern void map_make_map_meshes(map_type *map);		// supergumba
-
 /* =======================================================
 
       Find UV within Vertex List
@@ -620,32 +617,23 @@ void map_dispose_poly_tesseled_vertexes(map_mesh_poly_type *poly)
 
 bool map_create_vertex_list(map_type *map)
 {
-	int							n,t,k,nvlist,sz;
-	portal_type					*portal;
+	int							n,k,nvlist,sz;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	
 		// find maximum possible number of vertexes
+		// that could be drawn in a scene
 	
 	nvlist=0;
 	
-	for (t=0;t!=map->nportal;t++) {
-		portal=&map->portals[t];
-	
-		mesh=portal->mesh.meshes;
+	mesh=map->mesh.meshes;
 		
-		for (n=0;n!=portal->mesh.nmesh;n++) {
-			
-			poly=mesh->polys;
-			
-			for (k=0;k!=mesh->npoly;k++) {
-				nvlist+=poly->ptsz;
-				nvlist+=light_tessel_max_vertex;			// maximum number of lighting elements in list
-				poly++;
-			}
-			
-			mesh++;
-		}
+	for (n=0;n!=map->mesh.nmesh;n++) {
+
+		nvlist+=mesh->nvertex;
+		nvlist+=(mesh->npoly*light_tessel_max_vertex);
+		
+		mesh++;
 	}
 	
 		// compiled vertex, coord and color lists
@@ -673,6 +661,11 @@ bool map_create_vertex_list(map_type *map)
 	if (map->vertexes.pnormal==NULL) return(FALSE);
 	
 	bzero(map->vertexes.pnormal,sz);
+
+		// remember total
+
+	map->vertexes.max_vertex_count=nvlist;
+	map->vertexes.draw_vertex_count=0;
 	
 		// create tesseled lighting vertexes
 
@@ -740,7 +733,6 @@ void map_dispose_vertex_list(map_type *map)
 
 bool map_portal_create_vertex_lists(map_type *map)
 {
-	map_make_map_meshes(map);			// supergumba -- temporary
 	map_create_vertex_list(map);			// supergumba
 		
 	return(TRUE);

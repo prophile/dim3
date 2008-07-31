@@ -51,5 +51,5 @@ extern bool shadow_texture_init(void);
 extern void shadow_texture_finish(void);
 extern void shadow_texture_create(model_draw *draw);
 
-extern void light_trace_calculate_light_color(float x,float y,float z,float *cf);
+extern void map_calculate_ray_trace_light_color_normal(double x,double y,double z,float *cf,float *nf);
 

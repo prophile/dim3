@@ -38,7 +38,7 @@ extern map_type			map;
 extern camera_type		camera;
 extern js_type			js;
 
-d3pos					camera_static_pnt;
+d3pnt					camera_static_pnt;
 d3ang					camera_static_walk_ang;
 
 /* =======================================================

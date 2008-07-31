@@ -43,8 +43,8 @@ extern view_type		view;
 
 extern int game_time_get(void);
 extern bool fog_solid_on(void);
-extern void portal_compile_gl_list_attach(int rn);
-extern void portal_compile_gl_list_dettach(void);
+extern void view_compile_gl_list_attach(void);
+extern void view_compile_gl_list_dettach(void);
 
 /* =======================================================
 
@@ -647,7 +647,7 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 
 			// attach map complied open gl list
 
-	portal_compile_gl_list_attach(0);
+	view_compile_gl_list_attach();
 		
 		// might need multiple passes to
 		// get under stencil resolution limit
@@ -677,6 +677,6 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 
 		// dettach any attached lists
 
-	portal_compile_gl_list_dettach();
+	view_compile_gl_list_dettach();
 }
 

@@ -39,8 +39,8 @@ extern view_type		view;
 extern setup_type		setup;
 
 extern bool fog_solid_on(void);
-extern void portal_compile_gl_list_attach(int rn);
-extern void portal_compile_gl_list_dettach(void);
+extern void view_compile_gl_list_attach(void);
+extern void view_compile_gl_list_dettach(void);
 
 /* =======================================================
 
@@ -411,7 +411,7 @@ void render_transparent_map(int mesh_cnt,int *mesh_list)
 	
 		// attach compiled vertex lists
 
-	portal_compile_gl_list_attach(0);		// supergumba -- change this!
+	view_compile_gl_list_attach();		// supergumba -- change this!
 
 		// sort meshes
 
@@ -424,7 +424,7 @@ void render_transparent_map(int mesh_cnt,int *mesh_list)
 
 		// dettach any attached lists
 
-	portal_compile_gl_list_dettach();
+	view_compile_gl_list_dettach();
 	*/
 }
 

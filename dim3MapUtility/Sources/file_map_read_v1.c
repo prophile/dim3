@@ -149,17 +149,18 @@ void map_convert_liquid(map_type *map,int rn,segment_type *seg)
 	portal_type		*portal;
 	map_liquid_type	*liquid;
 
-	liq_idx=map_portal_liquid_add(map,rn);
+	liq_idx=map_liquid_add(map);
 	if (liq_idx==-1) return;
 
+	liquid=&map->liquid.liquids[liq_idx];
+
 	portal=&map->portals[rn];
-	liquid=&portal->liquid.liquids[liq_idx];
 
 	liquid->y=(seg->data.liquid.y+1)*map_enlarge;
-	liquid->lft=seg->data.liquid.lft*map_enlarge;
-	liquid->rgt=seg->data.liquid.rgt*map_enlarge;
-	liquid->top=seg->data.liquid.top*map_enlarge;
-	liquid->bot=seg->data.liquid.bot*map_enlarge;
+	liquid->lft=(seg->data.liquid.lft*map_enlarge)+portal->x;
+	liquid->rgt=(seg->data.liquid.rgt*map_enlarge)+portal->x;
+	liquid->top=(seg->data.liquid.top*map_enlarge)+portal->z;
+	liquid->bot=(seg->data.liquid.bot*map_enlarge)+portal->z;
 
 	liquid->alpha=seg->alpha;
 	liquid->speed_alter=seg->data.liquid.speed_alter;
@@ -218,13 +219,15 @@ void map_convert_enlarge(map_type *map,int seg_cnt,segment_type *seg_list)
 
 	for (n=0;n!=seg_cnt;n++) {
 
+		portal=&map->portals[seg->rn];
+
 		switch (seg->type) {
 
 			case sg_wall:
-				seg->data.wall.lx*=map_enlarge;
-				seg->data.wall.rx*=map_enlarge;
-				seg->data.wall.lz*=map_enlarge;
-				seg->data.wall.rz*=map_enlarge;
+				seg->data.wall.lx=(seg->data.wall.lx*map_enlarge)+portal->x;
+				seg->data.wall.rx=(seg->data.wall.rx*map_enlarge)+portal->x;
+				seg->data.wall.lz=(seg->data.wall.lz*map_enlarge)+portal->z;
+				seg->data.wall.rz=(seg->data.wall.rz*map_enlarge)+portal->z;
 				seg->data.wall.ty*=map_enlarge;
 				seg->data.wall.by=(seg->data.wall.by+1)*map_enlarge;
  				break;
@@ -232,26 +235,26 @@ void map_convert_enlarge(map_type *map,int seg_cnt,segment_type *seg_list)
 			case sg_floor:
             case sg_ceiling:
 				for (t=0;t!=seg->data.fc.ptsz;t++) {
-					seg->data.fc.x[t]*=map_enlarge;
+					seg->data.fc.x[t]=(seg->data.fc.x[t]*map_enlarge)+portal->x;
                     seg->data.fc.y[t]*=map_enlarge;
-					seg->data.fc.z[t]*=map_enlarge;
+					seg->data.fc.z[t]=(seg->data.fc.z[t]*map_enlarge)+portal->z;
 				}
 				break;
 
 			case sg_ambient_wall:
-				seg->data.ambient_wall.lx*=map_enlarge;
-				seg->data.ambient_wall.rx*=map_enlarge;
-				seg->data.ambient_wall.lz*=map_enlarge;
-				seg->data.ambient_wall.rz*=map_enlarge;
+				seg->data.ambient_wall.lx=(seg->data.ambient_wall.lx*map_enlarge)+portal->x;
+				seg->data.ambient_wall.rx=(seg->data.ambient_wall.rx*map_enlarge)+portal->x;
+				seg->data.ambient_wall.lz=(seg->data.ambient_wall.lz*map_enlarge)+portal->x;
+				seg->data.ambient_wall.rz=(seg->data.ambient_wall.rz*map_enlarge)+portal->z;
 				seg->data.ambient_wall.ty*=map_enlarge;
 				seg->data.ambient_wall.by=(seg->data.ambient_wall.by+1)*map_enlarge;
 				break;
 				
 			case sg_ambient_fc:
 				for (t=0;t!=seg->data.ambient_fc.ptsz;t++) {
-					seg->data.ambient_fc.x[t]*=map_enlarge;
+					seg->data.ambient_fc.x[t]=(seg->data.ambient_fc.x[t]*map_enlarge)+portal->x;
                     seg->data.ambient_fc.y[t]*=map_enlarge;
-					seg->data.ambient_fc.z[t]*=map_enlarge;
+					seg->data.ambient_fc.z[t]=(seg->data.ambient_fc.z[t]*map_enlarge)+portal->z;
 				}
 				break;
 
@@ -730,11 +733,8 @@ int map_convert_get_primitive_group_list(int seg_cnt,segment_type *seg_list,int 
 bool map_convert_segment_section_to_mesh(map_type *map,int seg_cnt,segment_type *seg_list,int rn,int primitive_uid,int seg_type,d3pnt *vlist,int vlist_sz)
 {
 	int					n,nvertex,npoly,mesh_idx;
-	portal_type			*portal;
 	segment_type		*seg;
 	map_mesh_type		*map_mesh;
-
-	portal=&map->portals[rn];
 
 		// clear vertex list
 
@@ -781,20 +781,20 @@ bool map_convert_segment_section_to_mesh(map_type *map,int seg_cnt,segment_type 
 
 		// create new mesh
 
-	mesh_idx=map_portal_mesh_add(map,rn);
+	mesh_idx=map_mesh_add(map);
 	if (mesh_idx==-1) return(FALSE);
 
-	if (!map_portal_mesh_set_vertex_count(map,rn,mesh_idx,nvertex)) {
-		map_portal_mesh_delete(map,rn,mesh_idx);
+	if (!map_mesh_set_vertex_count(map,mesh_idx,nvertex)) {
+		map_mesh_delete(map,mesh_idx);
 		return(FALSE);
 	}
 
-	if (!map_portal_mesh_set_poly_count(map,rn,mesh_idx,npoly)) {
-		map_portal_mesh_delete(map,rn,mesh_idx);
+	if (!map_mesh_set_poly_count(map,mesh_idx,npoly)) {
+		map_mesh_delete(map,mesh_idx);
 		return(FALSE);
 	}
 
-	map_mesh=&portal->mesh.meshes[mesh_idx];
+	map_mesh=&map->mesh.meshes[mesh_idx];
 
 		// move over vertexes
 
@@ -898,13 +898,14 @@ bool map_convert_v1(map_type *map,int seg_cnt,segment_type *seg_list)
 
 	seg_cnt=map_convert_tesselate_curves_clips(seg_cnt,seg_list);
 
-		// create a mesh out of all segments in a portal
+		// create a mesh out of all segmentss
+
+	map->mesh.nmesh=0;
+	map->mesh.meshes=NULL;
 
 	for (n=0;n!=map->nportal;n++) {
 	
 		portal=&map->portals[n];
-	
-		portal->mesh.nmesh=0;
 
 			// create meshes from all primitives
 			// and groups
@@ -958,12 +959,13 @@ bool map_convert_v1(map_type *map,int seg_cnt,segment_type *seg_list)
 	free(plist);
 
 		// convert liquids
+
+	map->liquid.nliquid=0;
+	map->liquid.liquids=NULL;
 		
 	portal=map->portals;
 
 	for (n=0;n!=map->nportal;n++) {
-	
-		portal->liquid.nliquid=0;
 
 		seg=seg_list;
 
@@ -1122,11 +1124,6 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					xml_get_attribute_text(tag,"spot_type", portal->msg.map_spot_type,name_str_len);
                 }
             }
-
-				// default some items
-
-			portal->mesh.nmesh=0;
-			portal->mesh.meshes=NULL;
         
                 // paths
                 

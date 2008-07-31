@@ -192,7 +192,7 @@ void group_move(int group_idx,int xmove,int ymove,int zmove)
 					// move mesh and mark as
 					// touched so it can be saved with games
 
-				map_portal_mesh_move(&map,unit_list->idx,xmove,ymove,zmove);
+				map_mesh_move(&map,unit_list->idx,xmove,ymove,zmove);
 				mesh->flag.touched=TRUE;
 
 					// move objects and decals with mesh
@@ -256,7 +256,7 @@ void group_rotate(int group_idx,float x,float y,float z)
 				// move mesh and mark as
 				// touched so it can be saved with games
 
-			map_portal_mesh_rotate(&map,unit_list->idx,x,y,z);
+			map_mesh_rotate(&map,unit_list->idx,x,y,z);
 			mesh->flag.touched=TRUE;
 
 				// rotate objects and decals with mesh

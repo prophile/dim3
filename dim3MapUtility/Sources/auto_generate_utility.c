@@ -42,21 +42,6 @@ bool				map_ag_seg_moveable;
 
 void map_auto_generate_clear(map_type *map)
 {
-	int				n;
-	portal_type		*portal;
-	
-		// if map already has portals, clear any memory
-	
-	portal=map->portals;
-	
-	for (n=0;n!=map->nportal;n++) {
-		if (portal->mesh.meshes!=NULL) free(portal->mesh.meshes);
-		if (portal->liquid.liquids!=NULL) free(portal->liquid.liquids);
-		portal++;
-	}
-	
-		// clear all other settings
-		
 	map->nportal=0;
 	map->nspot=0;
 	map->nnode=0;
@@ -66,6 +51,8 @@ void map_auto_generate_clear(map_type *map)
 	map->nparticle=0;
 	map->nmovement=0;
 	map->ngroup=0;
+	map->mesh.nmesh=0;
+	map->liquid.nliquid=0;
 }
 
 /* =======================================================
@@ -552,11 +539,11 @@ bool map_auto_generate_mesh_start(map_type *map,int portal_idx,int group_idx,int
 
 		// need a new mesh?
 
-	if ((new_mesh) || (map->portals[portal_idx].mesh.nmesh==0)) {
-		map_ag_mesh_idx=map_portal_mesh_add(map,portal_idx);
+	if ((new_mesh) || (map->mesh.nmesh==0)) {
+		map_ag_mesh_idx=map_mesh_add(map);
 		if (map_ag_mesh_idx==-1) return(FALSE);
 
-		mesh=&map->portals[portal_idx].mesh.meshes[map_ag_mesh_idx];
+		mesh=&map->mesh.meshes[map_ag_mesh_idx];
 		mesh->group_idx=group_idx;
 		mesh->flag.moveable=moveable;
 	}
@@ -571,7 +558,7 @@ void map_auto_generate_mesh_change_texture(int txt_idx)
 
 bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z,float *gx,float *gy)
 {
-	return(map_portal_mesh_add_poly(map,map_ag_portal_idx,map_ag_mesh_idx,ptsz,x,y,z,gx,gy,map_ag_poly_txt_idx)!=-1);
+	return(map_mesh_add_poly(map,map_ag_mesh_idx,ptsz,x,y,z,gx,gy,map_ag_poly_txt_idx)!=-1);
 }
 
 /* =======================================================
@@ -595,7 +582,7 @@ void map_auto_generate_add_simple_lights(map_type *map)
 	
 			// find light position
 			
-		map_portal_calculate_center(map,n,&x,&y,&z);
+//		map_portal_calculate_center(map,n,&x,&y,&z);
 		
 			// get intensity
 			
@@ -638,8 +625,8 @@ void map_auto_generate_add_player_spot(map_type *map)
 		
 		// spot place
 	
-	map_portal_calculate_center(map,0,&x,&y,&z);
-	map_portal_calculate_y_extent(map,0,&ty,&y);
+//	map_portal_calculate_center(map,0,&x,&y,&z);
+//	map_portal_calculate_y_extent(map,&ty,&y);
 	
 		// supergumba -- temp fix for rough floors
 		
@@ -669,16 +656,14 @@ void map_auto_generate_add_player_spot(map_type *map)
 
 void map_auto_generate_reset_UVs(map_type *map)
 {
-    int				n,k;
-	portal_type		*portal;
+    int				n;
+	map_mesh_type	*mesh;
     
- 	portal=map->portals;
+ 	mesh=map->mesh.meshes;
 	
-	for (n=0;n!=map->nportal;n++) {
-		for (k=0;k!=portal->mesh.nmesh;k++) {
-			if (!portal->mesh.meshes[k].flag.lock_uv) map_portal_mesh_reset_uv(map,n,k);
-		}
-		portal++;
+	for (n=0;n!=map->mesh.nmesh;n++) {
+		if (!mesh->flag.lock_uv) map_mesh_reset_uv(map,n);
+		mesh++;
 	}
 }
 

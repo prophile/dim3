@@ -291,6 +291,7 @@ typedef struct		{
 //
 
 typedef struct		{
+						int							max_vertex_count,draw_vertex_count;
 						float						*pvert,*pcoord,*pcolor,*pnormal;
 					} map_vertex_type;
 
@@ -531,8 +532,9 @@ typedef struct		{
 						group_type					*groups;
 	
 						portal_mesh_type			mesh;
-						map_vertex_type				vertexes;
 						portal_liquid_type			liquid;
+
+						map_vertex_type				vertexes;
 						
 					} map_type;
 
@@ -559,8 +561,6 @@ extern int map_portal_create(map_type *map,int x,int z,int ex,int ez);
 extern int map_find_portal(map_type *map,int x,int y,int z);
 extern int map_find_portal_hint(map_type *map,int hint_rn,int x,int y,int z);
 extern bool map_find_portal_by_pos(map_type *map,d3pos *pos);
-extern void map_portal_calculate_y_extent(map_type *map,int rn,int *p_ty,int *p_by);
-extern void map_portal_calculate_center(map_type *map,int rn,int *x,int *y,int *z);
 extern void map_portal_delete(map_type *map,int rn);
 extern int map_portal_duplicate(map_type *map,int rn,int x,int z);
 extern bool map_portal_touching_portal(map_type *map,int base_rn,int rn);
@@ -585,41 +585,39 @@ extern int map_find_nearest_node(map_type *map,int x,int y,int z,int user_value,
 extern int map_find_next_node_in_path(map_type *map,int from_idx,int to_idx);
 extern int map_node_to_node_distance(map_type *map,int from_idx,int to_idx);
 
-extern int map_portal_mesh_add(map_type *map,int portal_idx);
-extern bool map_portal_mesh_delete(map_type *map,int portal_idx,int mesh_idx);
-extern bool map_portal_mesh_set_vertex_count(map_type *map,int portal_idx,int mesh_idx,int nvertex);
-extern bool map_portal_mesh_set_poly_count(map_type *map,int portal_idx,int mesh_idx,int npoly);
-extern int map_portal_mesh_duplicate(map_type *map,int portal_idx,int mesh_idx);
-extern int map_portal_mesh_count_total_poly(map_type *map,int portal_idx);
-extern int map_portal_mesh_add_poly(map_type *map,int portal_idx,int mesh_idx,int ptsz,int *x,int *y,int *z,float *gx,float *gy,int txt_idx);
-extern bool map_portal_mesh_delete_poly(map_type *map,int portal_idx,int mesh_idx,int poly_idx);
-extern bool map_portal_mesh_delete_unused_vertexes(map_type *map,int portal_idx,int mesh_idx);
-extern void map_portal_mesh_calculate_extent(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max);
-extern void map_portal_mesh_calculate_center(map_type *map,int mesh_idx,d3pnt *mpt);
-extern void map_portal_mesh_calculate_uv_center(map_type *map,int mesh_idx,float *gx,float *gy);
+extern int map_mesh_add(map_type *map);
+extern bool map_mesh_delete(map_type *map,int mesh_idx);
+extern bool map_mesh_set_vertex_count(map_type *map,int mesh_idx,int nvertex);
+extern bool map_mesh_set_poly_count(map_type *map,int mesh_idx,int npoly);
+extern int map_mesh_duplicate(map_type *map,int mesh_idx);
+extern int map_mesh_count_total_poly(map_type *map);
+extern int map_mesh_add_poly(map_type *map,int mesh_idx,int ptsz,int *x,int *y,int *z,float *gx,float *gy,int txt_idx);
+extern bool map_mesh_delete_poly(map_type *map,int mesh_idx,int poly_idx);
+extern bool map_mesh_delete_unused_vertexes(map_type *map,int mesh_idx);
+extern void map_mesh_calculate_extent(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max);
+extern void map_mesh_calculate_center(map_type *map,int mesh_idx,d3pnt *mpt);
+extern void map_mesh_calculate_uv_center(map_type *map,int mesh_idx,float *gx,float *gy);
 
-extern int map_portal_mesh_combine(map_type *map,int portal_idx,int mesh_1_idx,int mesh_2_idx);
-extern int map_portal_mesh_switch_portal(map_type *map,int portal_idx,int mesh_idx,int new_portal_idx);
-extern void map_portal_mesh_move(map_type *map,int mesh_idx,int x,int y,int z);
-extern void map_portal_mesh_resize(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max);
-extern void map_portal_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);
-extern void map_portal_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float rot_z);
-extern bool map_portal_mesh_tesselate(map_type *map,int portal_idx,int mesh_idx);
-extern bool map_portal_mesh_poly_punch_hole(map_type *map,int portal_idx,int mesh_idx,int poly_idx,int hole_type);
-extern void map_portal_mesh_shift_portal_vertex_list(map_type *map,int portal_idx,int tick);
-extern void map_portal_mesh_get_poly_uv_as_box(map_type *map,int portal_idx,int mesh_idx,int poly_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact);
-extern void map_portal_mesh_set_poly_uv_as_box(map_type *map,int portal_idx,int mesh_idx,int poly_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact);
-extern void map_portal_mesh_rotate_poly_uv(map_type *map,int portal_idx,int mesh_idx,int poly_idx,int rot_ang);
-extern void map_portal_mesh_reset_poly_uv(map_type *map,int portal_idx,int mesh_idx,int poly_idx);
-extern void map_portal_mesh_reset_uv(map_type *map,int portal_idx,int mesh_idx);
+extern int map_mesh_combine(map_type *map,int mesh_1_idx,int mesh_2_idx);
+extern void map_mesh_move(map_type *map,int mesh_idx,int x,int y,int z);
+extern void map_mesh_resize(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max);
+extern void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);
+extern void map_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float rot_z);
+extern bool map_mesh_tesselate(map_type *map,int mesh_idx);
+extern bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,int hole_type);
+extern void map_mesh_shift_portal_vertex_list(map_type *map,int tick);
+extern void map_mesh_get_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact);
+extern void map_mesh_set_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact);
+extern void map_mesh_rotate_poly_uv(map_type *map,int mesh_idx,int poly_idx,int rot_ang);
+extern void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx);
+extern void map_mesh_reset_uv(map_type *map,int mesh_idx);
 
-extern int map_portal_liquid_add(map_type *map,int portal_idx);
-extern bool map_portal_liquid_delete(map_type *map,int portal_idx,int liquid_idx);
-extern int map_portal_liquid_duplicate(map_type *map,int portal_idx,int liquid_idx);
-extern void map_portal_liquid_calculate_center(map_type *map,int portal_idx,int liquid_idx,d3pnt *pt);
+extern int map_liquid_add(map_type *map);
+extern bool map_liquid_delete(map_type *map,int liquid_idx);
+extern int map_liquid_duplicate(map_type *map,int liquid_idx);
+extern void map_liquid_calculate_center(map_type *map,int liquid_idx,d3pnt *pt);
 
-extern int map_portal_liquid_switch_portal(map_type *map,int portal_idx,int liquid_idx,int new_portal_idx);
-extern void map_portal_liquid_move(map_type *map,int portal_idx,int liquid_idx,int x,int y,int z);
+extern void map_liquid_move(map_type *map,int liquid_idx,int x,int y,int z);
 
 extern bool map_group_create_unit_list(map_type *map);
 extern void map_group_dispose_unit_list(map_type *map);

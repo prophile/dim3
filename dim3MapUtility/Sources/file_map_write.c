@@ -407,6 +407,8 @@ bool write_map_xml(map_type *map)
 
 	return(TRUE);			// supergumba -- do not write maps yet
 
+	/*
+
     xml_new_file();
     
     xml_add_tagstart("Map");
@@ -674,5 +676,6 @@ bool write_map_xml(map_type *map)
     xml_close_file();
 	
 	return(ok);
+	*/
 }
 

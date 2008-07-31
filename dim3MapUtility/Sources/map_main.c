@@ -55,10 +55,6 @@ void map_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int te
 
 bool map_new(map_type *map,char *name)
 {
-	int						i,k,t;
-    portal_type				*portal;
-    portal_sight_list_type	*sight;
-	
 		// info
 		
 	strcpy(map->info.name,name);
@@ -166,6 +162,14 @@ bool map_new(map_type *map,char *name)
 	map->nsound=0;
 	map->nparticle=0;
 	map->ngroup=0;
+
+		// meshes and liquids
+
+	map->mesh.nmesh=0;
+	map->mesh.meshes=NULL;
+
+	map->liquid.nliquid=0;
+	map->liquid.liquids=NULL;
 	
 		// memory
 		
@@ -211,38 +215,6 @@ bool map_new(map_type *map,char *name)
 	bzero(map->sounds,(max_map_sound*sizeof(map_sound_type)));
 	bzero(map->particles,(max_map_particle*sizeof(map_particle_type)));
 	bzero(map->groups,(max_group*sizeof(group_type)));
-
-		// portals
-		
-	portal=map->portals;
-	
-	for (i=0;i!=max_portal;i++) {
-
-			// clear meshes
-			
-		portal->mesh.nmesh=0;
-		portal->mesh.meshes=NULL;
-		
-			// clear liquids
-			
-		portal->liquid.nliquid=0;
-		portal->liquid.liquids=NULL;
-
-			// clear sight paths
-
-		sight=portal->sight;
-            
-		for (k=0;k!=max_sight_list;k++) {
-			sight->rn=-1;
-			sight->root=FALSE;
-			for (t=0;t!=max_sight_link;t++) {
-				sight->link[t]=-1;
-			}
-			sight++;
-		}
-		
-		portal++;
-	}
 	
 		// bitmaps
 		
@@ -310,33 +282,23 @@ bool map_save(map_type *map)
 
 void map_close(map_type *map)
 {
-	int				n;
-	portal_type		*portal;
-
 		// shaders and bitmaps
 		
 	map_shaders_close(map);
 	map_textures_close(map);
 
-		// portals and liquids
+		// meshes and liquids
 
-	portal=map->portals;
-
-	for (n=0;n!=map->nportal;n++) {
-		if (portal->mesh.meshes!=NULL) {
-			free(portal->mesh.meshes);
-			portal->mesh.nmesh=0;
-			portal->mesh.meshes=NULL;
-		}
-		if (portal->liquid.liquids!=NULL) {
-			free(portal->liquid.liquids);
-			portal->liquid.nliquid=0;
-			portal->liquid.liquids=NULL;
-		}
-		portal++;
+	if (map->mesh.meshes!=NULL) {
+		free(map->mesh.meshes);
+		map->mesh.nmesh=0;
+		map->mesh.meshes=NULL;
 	}
-
-	map->nportal=0;
+	if (map->liquid.liquids!=NULL) {
+		free(map->liquid.liquids);
+		map->liquid.nliquid=0;
+		map->liquid.liquids=NULL;
+	}
 	
 		// memory
 		

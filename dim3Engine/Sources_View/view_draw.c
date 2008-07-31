@@ -224,9 +224,6 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 	double					mod_matrix[16],proj_matrix[16];
 	
 	mesh=&map.mesh.meshes[mesh_idx];
-
-// supergumba
-//	fprintf(stdout,"visibility for %d\n",mesh_idx);
 	
 		// drawing setup
 		
@@ -515,13 +512,24 @@ int map_find_mesh(int x,int y,int z)
 
 void temp_get_mesh_draw_list(void)
 {
-	int					n,t,sz,d,start_mesh_idx,idx;
+	int					n,t,sz,d,start_mesh_idx,idx,obscure_dist;
 	map_mesh_type		*start_mesh,*mesh;
 
 		// get mesh camera is in
 
 	start_mesh_idx=map_find_mesh(view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
 	start_mesh=&map.mesh.meshes[start_mesh_idx];
+
+		// obscure distance -- normally is the opengl projection
+		// distance but can be the fog distance if fog is on
+
+
+	if (!fog_solid_on()) {
+		obscure_dist=view.camera.far_z-view.camera.near_z;
+	}
+	else {
+		obscure_dist=(map.fog.outer_radius>>1)*3;
+	}
 
 		// check all visibile meshes from the start mesh
 	
@@ -540,7 +548,7 @@ void temp_get_mesh_draw_list(void)
 		mesh=&map.mesh.meshes[n];
 
 		d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
-		if (d>(view.camera.far_z-view.camera.near_z)) continue;
+		if (d>obscure_dist) continue;
 
 		if (!boundbox_inview(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y)) continue;
 	

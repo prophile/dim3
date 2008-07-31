@@ -170,7 +170,7 @@ void object_rotate_with_mesh(int mesh_idx,float y)
 
 	mesh=&map.mesh.meshes[mesh_idx];
 
-	map_portal_mesh_calculate_center(&map,mesh_idx,&mpt);
+	map_mesh_calculate_center(&map,mesh_idx,&mpt);
 	mpt.x+=mesh->rot_off.x;
 	mpt.y+=mesh->rot_off.y;
 	mpt.z+=mesh->rot_off.z;

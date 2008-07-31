@@ -45,16 +45,8 @@ extern void map_calculate_light_color_normal(double x,double y,double z,float *c
       
 ======================================================= */
 
-// supergumba
-
-
-
-
 void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 {
-
-
-
 	int									n,k,t,ntrig,
 										v_idx,v_light_start_idx;
 	float								x,y,z,fx,fy,fz;
@@ -79,9 +71,7 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 	v_idx=0;
 	
-		// regular lighting
-		
-		// supergumba -- these arrays need to be made bigger, also, for all possible vertex/etc
+		// run throught the vertexes
 
 	for (n=0;n!=mesh_cnt;n++) {
 		mesh=&map.mesh.meshes[mesh_list[n]];
@@ -128,25 +118,59 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 			lv=poly->light.vertexes;
 
-			for (t=0;t!=poly->light.nvertex;t++) {
+				// ray traced version
 
-				x=(float)lv->x;
-				y=(float)lv->y;
-				z=(float)lv->z;
+			if (setup.ray_trace_lighting) {
 
-				map_calculate_light_color_normal((double)x,(double)y,(double)z,pc,pn);
-				pc+=3;
-				pn+=3;
+				for (t=0;t!=poly->light.nvertex;t++) {
 
-				*pv++=(x-fx);
-				*pv++=(y-fy);
-				*pv++=(fz-z);
-				
-				*pp++=lv->gx;
-				*pp++=lv->gy;
-				
-				lv++;
-				v_idx++;
+					x=(float)lv->x;
+					y=(float)lv->y;
+					z=(float)lv->z;
+
+					map_calculate_ray_trace_light_color_normal((double)x,(double)y,(double)z,pc,pn);
+					pc+=3;
+					pn+=3;
+
+					*pv++=(x-fx);
+					*pv++=(y-fy);
+					*pv++=(fz-z);
+					
+					*pp++=lv->gx;
+					*pp++=lv->gy;
+					
+					lv++;
+					v_idx++;
+				}
+
+
+			}
+
+				// regular lighting
+
+			else {
+
+				for (t=0;t!=poly->light.nvertex;t++) {
+
+					x=(float)lv->x;
+					y=(float)lv->y;
+					z=(float)lv->z;
+
+					map_calculate_light_color_normal((double)x,(double)y,(double)z,pc,pn);
+					pc+=3;
+					pn+=3;
+
+					*pv++=(x-fx);
+					*pv++=(y-fy);
+					*pv++=(fz-z);
+					
+					*pp++=lv->gx;
+					*pp++=lv->gy;
+					
+					lv++;
+					v_idx++;
+				}
+
 			}
 
 				// create draw indexes by offset
@@ -163,168 +187,46 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 		mesh++;
 	}
 
-
-
-
-
-/*
-	int						n,nvlist;
-	float					fx,fy,fz;
-	float					*pv,*pp,*pc,*pn;
-	portal_type				*portal;
-	portal_vertex_list_type	*vl;
-	
-	portal=&map.portals[rn];
-
-		// the arrays
-
-	vl=portal->vertexes.vertex_list;
-	nvlist=portal->vertexes.nvlist;
-
-	pv=(float*)portal->vertexes.pvert;
-	pp=(float*)portal->vertexes.pcoord;
-	pc=(float*)portal->vertexes.pcolor;
-	pn=(float*)portal->vertexes.pnormal;
-
-		// the eye offset
-
-	fx=(float)view.camera.pnt.x;
-	fy=(float)view.camera.pnt.y;
-	fz=(float)view.camera.pnt.z;
-
-		// check if lights or vertex data has changed in
-		// room.  If not, only run through the vertexes
-		// instead of recreating the lights
-
-	if (!map_portal_light_check_changes(portal)) {
-
-		vl=portal->vertexes.vertex_list;
-
-		for (n=0;n!=nvlist;n++) {
-			*pv++=(vl->x-fx);
-			*pv++=(vl->y-fy);
-			*pv++=(fz-vl->z);
-			*pp++=vl->gx;
-			*pp++=vl->gy;
-
-			vl++;
-		}
-		
-		return;
-	}
-
-		// ray-traced lighting
-		
-	if (setup.ray_trace_lighting) {
-
-		vl=portal->vertexes.vertex_list;
-
-		if (setup.bump_mapping) {
-
-				// ray traced with bump normals
-
-			for (n=0;n!=nvlist;n++) {
-				light_trace_calculate_light_color(vl->x,vl->y,vl->z,pc);
-				pc+=3;
-
-				*pv++=(vl->x-fx);
-				*pv++=(vl->y-fy);
-				*pv++=(fz-vl->z);
-				*pp++=vl->gx;
-				*pp++=vl->gy;
-				
-				map_portal_calculate_light_normal(portal,vl->x,vl->y,vl->z,pn);
-				pn+=3;
-
-				vl++;
-			}
-
-		}
-
-		else {
-
-				// ray trace with no bumps
-
-			for (n=0;n!=nvlist;n++) {
-				light_trace_calculate_light_color(vl->x,vl->y,vl->z,pc);
-				pc+=3;
-
-				*pv++=(vl->x-fx);
-				*pv++=(vl->y-fy);
-				*pv++=(fz-vl->z);
-				*pp++=vl->gx;
-				*pp++=vl->gy;
-
-				vl++;
-			}
-		}
-
-		return;
-	}
-
-		// regular lighting
-
-	vl=portal->vertexes.vertex_list;
-
-	if (setup.bump_mapping) {
-
-			// regular lighting with bumps
-
-		for (n=0;n!=nvlist;n++) {
-			map_portal_calculate_light_color_normal(portal,(double)vl->x,(double)vl->y,(double)vl->z,pc,pn);
-			pc+=3;
-			pn+=3;
-
-			*pv++=(vl->x-fx);
-			*pv++=(vl->y-fy);
-			*pv++=(fz-vl->z);
-			*pp++=vl->gx;
-			*pp++=vl->gy;
-
-			vl++;
-		}
-
-	}
-
-	else {
-
-			// regular lighting with no bumps
-
-		for (n=0;n!=nvlist;n++) {
-			map_portal_calculate_light_color(portal,(double)vl->x,(double)vl->y,(double)vl->z,pc);
-			pc+=3;
-
-			*pv++=(vl->x-fx);
-			*pv++=(vl->y-fy);
-			*pv++=(fz-vl->z);
-			*pp++=vl->gx;
-			*pp++=vl->gy;
-
-			vl++;
-		}
-
-	}
-	*/
+	map.vertexes.draw_vertex_count=v_idx;
 }
 
 /* =======================================================
 
-      Use Portal OpenGL Lists
+      Use Map OpenGL Lists
       
 ======================================================= */
 
-void portal_compile_gl_list_attach(int rn)
+void view_compile_gl_list_attach(void)
 {
 
-		// vertexes
+	// supergumba -- we'll want to map this data in client space
+
+
 #ifdef D3_OS_MAC
-// supergumba -- off for now
-//	glVertexArrayRangeAPPLE(sz,map.vertexes.pvert);
-//	glEnableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
+	glVertexArrayRangeAPPLE(sz,map.vertexes.pvert);
+	glEnableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
 #endif
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,map.vertexes.pvert);
+
+
+#ifdef D3_OS_MAC
+	glFlushVertexArrayRangeAPPLE(sz,map.vertexes.pvert);
+#endif
+
+/*
+	if (vertex_vbo==-1) {
+		glGenBuffersARB(1,&vertex_vbo);
+	}
+	
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vertex_vbo);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,((map.vertexes.draw_vertex_count*3)sizeof(float)),map.vertexes.pvert,GL_STREAM_DRAW_ARB);
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3,GL_FLOAT,0,0);
+*/
+
 
 		// uvs
 		
@@ -344,74 +246,9 @@ void portal_compile_gl_list_attach(int rn)
 
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(3,GL_FLOAT,0,map.vertexes.pcolor);
-
-#ifdef D3_OS_MAC
-// supergumba -- off for now
-//	glFlushVertexArrayRangeAPPLE(sz,map.vertexes.pvert);
-#endif
-
-
-
-
-/* supergumba
-	int						nvlist,sz;
-	portal_type				*portal;
-	
-	portal=&map.portals[rn];
-	nvlist=portal->vertexes.nvlist;
-	
-	sz=(nvlist*3)*sizeof(float);
-
-		// vertexes
-#ifdef D3_OS_MAC
-	glVertexArrayRangeAPPLE(sz,portal->vertexes.pvert);
-	glEnableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
-#endif
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,portal->vertexes.pvert);
-
-		// uvs
-		
-	glClientActiveTexture(GL_TEXTURE2);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,portal->vertexes.pcoord);
-
-	glClientActiveTexture(GL_TEXTURE1);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,portal->vertexes.pcoord);
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,portal->vertexes.pcoord);
-
-		// color array
-
-	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(3,GL_FLOAT,0,portal->vertexes.pcolor);
-
-#ifdef D3_OS_MAC
-	glFlushVertexArrayRangeAPPLE(sz,portal->vertexes.pvert);
-#endif
-*/
-
-
-/*
-
-	if (vertex_vbo==-1) {
-		glGenBuffersARB(1,&vertex_vbo);
-	}
-	
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vertex_vbo);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,portal->vertexes.pvert,GL_STREAM_DRAW_ARB);
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,0);
-
-*/
 }
 
-void portal_compile_gl_list_dettach(void)
+void view_compile_gl_list_dettach(void)
 {
 	glDisableClientState(GL_COLOR_ARRAY);
 
@@ -425,13 +262,11 @@ void portal_compile_gl_list_dettach(void)
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-	
+
 #ifdef D3_OS_MAC
 	glDisableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
 #endif
 
-/*
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+//	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 
-*/
 }

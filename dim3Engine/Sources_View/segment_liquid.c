@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "consoles.h"
 #include "video.h"
+#include "lights.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -38,7 +39,6 @@ extern view_type			view;
 extern setup_type			setup;
 
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
-extern void light_trace_calculate_light_color(float x,float y,float z,float *cf);
 extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf);	// supergumba -- this will be moved to map utility
 
 /* =======================================================
@@ -150,7 +150,7 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 		while (TRUE) {
 
 			if (setup.ray_trace_lighting) {
-				light_trace_calculate_light_color((float)x,(float)y,(float)z,cl);		// supergumba -- need to fix ray traced lighting
+				map_calculate_ray_trace_light_color_normal((double)x,(double)y,(double)z,cl,normal);
 			}
 			else {
 				map_calculate_light_color_normal((double)x,(double)y,(double)z,cl,normal);

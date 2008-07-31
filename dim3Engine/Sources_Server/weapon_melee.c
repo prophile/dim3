@@ -58,7 +58,7 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 	int				n,x,y,z,xadd,zadd;
 	bool			hit;
 	char			weap_name[name_str_len];
-	d3pos			pos;
+	d3pnt			pnt;
 	obj_type		*hurt_obj;
 	proj_type		*proj;
 
@@ -70,9 +70,9 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 	
 		// original position for network melees
 		
-	pos.x=pt->x;
-	pos.y=pt->y;
-	pos.z=pt->z;
+	pnt.x=pt->x;
+	pnt.y=pt->y;
+	pnt.z=pt->z;
     
 		// move melee ahead for distance
 		

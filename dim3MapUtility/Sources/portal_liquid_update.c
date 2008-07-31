@@ -31,45 +31,15 @@ and can be sold or given away.
 
 /* =======================================================
 
-      Move Liquid To Different Portal
-      
-======================================================= */
-
-int map_portal_liquid_switch_portal(map_type *map,int portal_idx,int liquid_idx,int new_portal_idx)
-{
-	int						new_liquid_idx;
-	map_liquid_type			*org_liq,*new_liq;
-	
-		// create new liquid
-		
-	new_liquid_idx=map_portal_liquid_add(map,new_portal_idx);
-	if (new_liquid_idx==-1) return(-1);
-	
-		// switch liquids
-		
-	org_liq=&map->portals[portal_idx].liquid.liquids[liquid_idx];
-	new_liq=&map->portals[new_portal_idx].liquid.liquids[new_liquid_idx];
-	
-	memmove(new_liq,org_liq,sizeof(map_liquid_type));
-	
-		// delete original liquid
-		
-	map_portal_liquid_delete(map,portal_idx,liquid_idx);
-	
-	return(new_liquid_idx);
-}
-
-/* =======================================================
-
       Move Liquid
       
 ======================================================= */
 
-void map_portal_liquid_move(map_type *map,int portal_idx,int liquid_idx,int x,int y,int z)
+void map_liquid_move(map_type *map,int liquid_idx,int x,int y,int z)
 {
 	map_liquid_type			*liq;
 	
-	liq=&map->portals[portal_idx].liquid.liquids[liquid_idx];
+	liq=&map->liquid.liquids[liquid_idx];
 	
 	liq->lft+=x;
 	liq->rgt+=x;

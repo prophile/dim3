@@ -83,17 +83,14 @@ void weapon_setup_fire(weapon_type *weap,int method)
 
 bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,d3pnt *pt,d3ang *ang)
 {
-	bool				hit;
 	proj_type			*proj;
 	
 		// create new projectile
 		
 	proj=projectile_create(tick,obj,weap,proj_setup);
 	if (proj==NULL) return(FALSE);
-	
-		// hit on initial creation?
 
-	hit=projectile_spawn_position(proj,pt,ang,obj);
+	projectile_spawn_position(proj,pt,ang,obj);
 	projectile_set_origin(proj);
 	
 		// call spawn
@@ -106,14 +103,6 @@ bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_t
 		if (obj->uid==server.player_obj_uid) {
 			net_client_send_projectile_add(net_setup.client.remote_uid,weap->name,proj_setup->name,pt,ang);
 		}
-	}
-	
-		// destroy projectile if initial hit
-
-	if (hit) {
-		projectile_hit(tick,proj,FALSE);
-		projectile_mark_dispose(proj);
-		projectile_dispose();
 	}
 
 	return(TRUE);

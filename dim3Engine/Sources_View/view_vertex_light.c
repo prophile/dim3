@@ -48,7 +48,7 @@ extern bool light_trace_map(d3pnt *spt,d3pnt *ept);
 
 void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf)
 {
-	int					i,cnt;
+	int					n,cnt;
 	double				dx,dz,dy,r,g,b,nx,nz,ny,d,mult;
 	light_spot_type		*lspot;
 
@@ -57,18 +57,19 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 		
 	cnt=0;
 	
-	r=g=b=0;
-	nx=ny=nz=0;
+	r=g=b=0.0f;
+	nx=ny=nz=0.0f;
 	
 	lspot=lspot_cache;
 	
-	for (i=0;i!=nlight;i++) {
+	for (n=0;n!=nlight;n++) {
 		
 		dx=lspot->d_x-x;
 		dy=lspot->d_y-y;
 		dz=lspot->d_z-z;
 		
 		d=(dx*dx)+(dz*dz)+(dy*dy);
+
 		if (d<=lspot->d_intensity) {
 			mult=(lspot->d_intensity-d)*lspot->d_inv_intensity;
 
@@ -139,7 +140,7 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 
 light_spot_type* map_find_closest_light(double x,double y,double z,int *p_dist)
 {
-	int					i,k;
+	int					n,k;
 	double				dx,dz,dy,d,dist;
 	light_spot_type		*lspot;
 	
@@ -148,7 +149,7 @@ light_spot_type* map_find_closest_light(double x,double y,double z,int *p_dist)
 	
 	lspot=lspot_cache;
 	
-	for (i=0;i!=nlight;i++) {
+	for (n=0;n!=nlight;n++) {
 		
 			// get distance to light spot
 			
@@ -166,7 +167,7 @@ light_spot_type* map_find_closest_light(double x,double y,double z,int *p_dist)
 		
 			if ((d<dist) || (dist==-1)) {
 				dist=d;
-				k=i;
+				k=n;
 			}
 		}
 		
@@ -186,11 +187,11 @@ light_spot_type* map_find_closest_light(double x,double y,double z,int *p_dist)
       
 ======================================================= */
 
-void light_trace_calculate_light_color(float x,float y,float z,float *cf)
+void map_calculate_ray_trace_light_color_normal(double x,double y,double z,float *cf,float *nf)
 {
-	int					n;
+	int					n,cnt;
 	d3pnt				spt,ept;
-	double				mult,r,g,b,dx,dz,dy,d;
+	double				mult,r,g,b,dx,dz,dy,nx,ny,nz,d;
 	light_spot_type		*lspot;
 
 	spt.x=(int)x;
@@ -201,8 +202,11 @@ void light_trace_calculate_light_color(float x,float y,float z,float *cf)
 		// attenuated for distance
 		
 	lspot=lspot_cache;
+
+	cnt=0;
 	
 	r=g=b=0.0f;
+	nx=ny=nz=0.0f;
 	
 	for (n=0;n!=nlight;n++) {
 
@@ -220,19 +224,73 @@ void light_trace_calculate_light_color(float x,float y,float z,float *cf)
 		dz=lspot->d_z-z;
 		
 		d=(dx*dx)+(dz*dz)+(dy*dy);
+
 		if (d<=lspot->d_intensity) {
 			mult=(lspot->d_intensity-d)*lspot->d_inv_intensity;
+
 			r+=(lspot->d_col_r*mult);
 			g+=(lspot->d_col_g*mult);
 			b+=(lspot->d_col_b*mult);
+
+			nx+=(dx*mult);
+			ny+=(dy*mult);
+			nz+=(dz*mult);
+
+			cnt++;
 		}
 		
 		lspot++;
 	}
 
+		// set light value
+
 	*cf++=(map.ambient.light_color.r+setup.gamma)+(float)r;
 	*cf++=(map.ambient.light_color.g+setup.gamma)+(float)g;
 	*cf=(map.ambient.light_color.b+setup.gamma)+(float)b;
+
+		// no hits, then default normal
+
+	if (cnt==0) {
+		*nf++=0.5f;
+		*nf++=0.5f;
+		*nf=1.0f;
+		return;
+	}
+
+		// average the normal vector
+		
+	d=(1.0/((double)cnt));
+	nx*=d;
+	ny*=d;
+	nz*=d;
+	
+		// combine x and z together to make x
+		// factor.  Note that this does not always
+		// give the correct results but will be close
+		// most of the time -- otherwise we're going to
+		// have to calculate polygon vectors
+		
+	nx+=nz;
+
+		// normalize normal vector
+
+	d=sqrt((nx*nx)+(ny*ny));
+	if (d!=0.0) {
+		d=1.0/d;
+		nx*=d;
+		ny*=d;
+	}
+	
+		// convert to needed format
+		// x (1 = right [light from left], 0 = left [light from right])
+		// y (1 = top [light from bottom], 0 = bottom [light from top])
+
+		// supergumba -- possible (check math) that in the future
+		// we can use the z coord for a distance hardness factor
+		
+	*nf++=(float)((nx*0.5)+0.5);
+	*nf++=1.0f-(float)((ny*0.5)+0.5);
+	*nf=1.0f;
 }
 
 

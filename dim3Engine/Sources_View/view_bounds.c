@@ -158,34 +158,6 @@ bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by)
 
 /* =======================================================
 
-      OutSide of Fog Cut-off
-      
-======================================================= */
-
-bool portal_outside_fog(d3pos *pos,portal_type *portal)
-{
-	int				dist;
-	
-		// is fog on?
-		
-	if (!fog_solid_on()) return(FALSE);
-	
-		// outside of solid fog view?
-		// use a little greater than fog radius as z
-		// projection can be a bit sloppy
-		
-	dist=(map.fog.outer_radius>>1)*3;
-		
-	if (distance_2D_get(portal->x,portal->z,pos->x,pos->z)<dist) return(FALSE);
-	if (distance_2D_get(portal->x,portal->ez,pos->x,pos->z)<dist) return(FALSE);
-	if (distance_2D_get(portal->ex,portal->z,pos->x,pos->z)<dist) return(FALSE);
-	if (distance_2D_get(portal->ex,portal->ez,pos->x,pos->z)<dist) return(FALSE);
-
-	return(TRUE);
-}
-
-/* =======================================================
-
       Models in View
       
 ======================================================= */

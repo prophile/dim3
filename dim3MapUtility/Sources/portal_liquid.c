@@ -31,70 +31,70 @@ and can be sold or given away.
 
 /* =======================================================
 
-      Add Liquid to Portals
+      Add Liquid to Map
       
 ======================================================= */
 
-int map_portal_liquid_add(map_type *map,int portal_idx)
+int map_liquid_add(map_type *map)
 {
 	int					liquid_idx;
-	portal_liquid_type	*portal_liquid;
+	portal_liquid_type	*map_liquid;
 	map_liquid_type		*nptr;
 	
-	portal_liquid=&map->portals[portal_idx].liquid;
+	map_liquid=&map->liquid;
 	
-	liquid_idx=portal_liquid->nliquid;
+	liquid_idx=map_liquid->nliquid;
 
 		// create new memory
 
-	if (portal_liquid->nliquid==0) {
-		portal_liquid->liquids=(map_liquid_type*)valloc(sizeof(map_liquid_type));
-		if (portal_liquid->liquids==NULL) return(-1);
+	if (map_liquid->nliquid==0) {
+		map_liquid->liquids=(map_liquid_type*)valloc(sizeof(map_liquid_type));
+		if (map_liquid->liquids==NULL) return(-1);
 	}
 	else {
-		nptr=(map_liquid_type*)valloc((portal_liquid->nliquid+1)*sizeof(map_liquid_type));
+		nptr=(map_liquid_type*)valloc((map_liquid->nliquid+1)*sizeof(map_liquid_type));
 		if (nptr==NULL) return(-1);
 
-		memmove(nptr,portal_liquid->liquids,(portal_liquid->nliquid*sizeof(map_liquid_type)));
-		free(portal_liquid->liquids);
+		memmove(nptr,map_liquid->liquids,(map_liquid->nliquid*sizeof(map_liquid_type)));
+		free(map_liquid->liquids);
 
-		portal_liquid->liquids=nptr;
+		map_liquid->liquids=nptr;
 	}
 	
-	portal_liquid->nliquid++;
+	map_liquid->nliquid++;
 
 	return(liquid_idx);
 }
 
-bool map_portal_liquid_delete(map_type *map,int portal_idx,int liquid_idx)
+bool map_liquid_delete(map_type *map,int liquid_idx)
 {
 	int					sz;
-	portal_liquid_type	*portal_liquid;
+	portal_liquid_type	*map_liquid;
 	map_liquid_type		*nptr;
 	
-	portal_liquid=&map->portals[portal_idx].liquid;
+	map_liquid=&map->liquid;
 
-	if (portal_liquid->nliquid<=1) {
-		portal_liquid->nliquid=0;
-		free(portal_liquid->liquids);
+	if (map_liquid->nliquid<=1) {
+		map_liquid->nliquid=0;
+		free(map_liquid->liquids);
 		return(TRUE);
 	}
 
-	nptr=(map_liquid_type*)valloc((portal_liquid->nliquid-1)*sizeof(map_liquid_type));
+	nptr=(map_liquid_type*)valloc((map_liquid->nliquid-1)*sizeof(map_liquid_type));
 	if (nptr==NULL) return(FALSE);
 
 	if (liquid_idx>0) {
 		sz=(liquid_idx+1)*sizeof(map_liquid_type);
-		memmove(nptr,portal_liquid->liquids,sz);
+		memmove(nptr,map_liquid->liquids,sz);
 	}
 
-	sz=(portal_liquid->nliquid-liquid_idx)*sizeof(map_liquid_type);
-	if (sz>0) memmove(&nptr[liquid_idx],&portal_liquid->liquids[liquid_idx+1],sz);
+	sz=(map_liquid->nliquid-liquid_idx)*sizeof(map_liquid_type);
+	if (sz>0) memmove(&nptr[liquid_idx],&map_liquid->liquids[liquid_idx+1],sz);
 
-	free(portal_liquid->liquids);
+	free(map_liquid->liquids);
 
-	portal_liquid->liquids=nptr;
-	portal_liquid->nliquid--;
+	map_liquid->liquids=nptr;
+	map_liquid->nliquid--;
 
 	return(TRUE);
 }
@@ -105,16 +105,16 @@ bool map_portal_liquid_delete(map_type *map,int portal_idx,int liquid_idx)
       
 ======================================================= */
 
-int map_portal_liquid_duplicate(map_type *map,int portal_idx,int liquid_idx)
+int map_liquid_duplicate(map_type *map,int liquid_idx)
 {
 	int					new_liquid_idx;
 	map_liquid_type		*liq,*liq2;
 	
-	new_liquid_idx=map_portal_liquid_add(map,portal_idx);
+	new_liquid_idx=map_liquid_add(map);
 	if (new_liquid_idx==-1) return(-1);
 	
-	liq=&map->portals[portal_idx].liquid.liquids[liquid_idx];
-	liq2=&map->portals[portal_idx].liquid.liquids[new_liquid_idx];
+	liq=&map->liquid.liquids[liquid_idx];
+	liq2=&map->liquid.liquids[new_liquid_idx];
 	memmove(liq2,liq,sizeof(map_liquid_type));
 
 	return(new_liquid_idx);
@@ -126,11 +126,11 @@ int map_portal_liquid_duplicate(map_type *map,int portal_idx,int liquid_idx)
       
 ======================================================= */
 
-void map_portal_liquid_calculate_center(map_type *map,int portal_idx,int liquid_idx,d3pnt *pt)
+void map_liquid_calculate_center(map_type *map,int liquid_idx,d3pnt *pt)
 {
 	map_liquid_type			*liq;
 	
-	liq=&map->portals[portal_idx].liquid.liquids[liquid_idx];
+	liq=&map->liquid.liquids[liquid_idx];
 
 	pt->x=(liq->lft+liq->rgt)>>1;
 	pt->y=liq->y;

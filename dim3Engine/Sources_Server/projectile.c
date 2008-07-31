@@ -166,22 +166,12 @@ void projectile_set_origin(proj_type *proj)
 	memmove(&proj->org_pnt,&proj->pnt,sizeof(d3pnt));
 }
 
-bool projectile_spawn_position(proj_type *proj,d3pnt *pt,d3ang *ang,obj_type *parentobj)
+void projectile_spawn_position(proj_type *proj,d3pnt *pt,d3ang *ang,obj_type *parentobj)
 {
 	projectile_set_position(proj,pt,ang);
 	projectile_set_origin(proj);
 	
 	proj->contact.obj_uid=-1;
-
-		// reset projectile to explode on parent object
-
-	proj->pnt.x=parentobj->pnt.x;
-	proj->pnt.z=parentobj->pnt.z;
-	proj->pnt.y=parentobj->pnt.y-(parentobj->size.y>>1);
-	
-	proj->contact.obj_uid=parentobj->uid;
-	
-	return(TRUE);
 }
 
 /* =======================================================

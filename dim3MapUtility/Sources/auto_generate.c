@@ -168,7 +168,7 @@ void map_auto_generate_initial_portals(map_type *map)
 
 			// create initial mesh
 
-		if (map_portal_mesh_add(map,rn)==-1) break;
+		if (map_mesh_add(map)==-1) break;
 	}
 }
 

@@ -45,7 +45,7 @@ extern char				media_type_str[][32],
       
 ======================================================= */
 
-bool read_single_mesh(map_type *map,int portal_idx,int mesh_idx,int mesh_tag)
+bool read_single_mesh_v2(map_type *map,int mesh_idx,int mesh_tag)
 {
 	int					n,nvertex,npoly,
 						main_vertex_tag,vertex_tag,main_poly_tag,poly_tag;
@@ -53,7 +53,7 @@ bool read_single_mesh(map_type *map,int portal_idx,int mesh_idx,int mesh_tag)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 
-	mesh=&map->portals[portal_idx].mesh.meshes[mesh_idx];
+	mesh=&map->mesh.meshes[mesh_idx];
 
 		// mesh settings
 
@@ -76,7 +76,7 @@ bool read_single_mesh(map_type *map,int portal_idx,int mesh_idx,int mesh_tag)
         nvertex=xml_countchildren(main_vertex_tag);
 		vertex_tag=xml_findfirstchild("v",main_vertex_tag);
 
-		if (!map_portal_mesh_set_vertex_count(map,portal_idx,mesh_idx,nvertex)) return(FALSE);
+		if (!map_mesh_set_vertex_count(map,mesh_idx,nvertex)) return(FALSE);
 
 		pt=mesh->vertexes;
 
@@ -95,7 +95,7 @@ bool read_single_mesh(map_type *map,int portal_idx,int mesh_idx,int mesh_tag)
         npoly=xml_countchildren(main_poly_tag);
 		poly_tag=xml_findfirstchild("p",main_poly_tag);
 
-		if (!map_portal_mesh_set_poly_count(map,portal_idx,mesh_idx,npoly)) return(FALSE);
+		if (!map_mesh_set_poly_count(map,mesh_idx,npoly)) return(FALSE);
 
 		poly=mesh->polys;
 
@@ -118,12 +118,12 @@ bool read_single_mesh(map_type *map,int portal_idx,int mesh_idx,int mesh_tag)
 	return(TRUE);
 }
 
-void read_single_liquid(map_type *map,int portal_idx,int liquid_idx,int liquid_tag)
+void read_single_liquid_v2(map_type *map,int liquid_idx,int liquid_tag)
 {
 	int					tag;
 	map_liquid_type		*liq;
 
-	liq=&map->portals[portal_idx].liquid.liquids[liquid_idx];
+	liq=&map->liquid.liquids[liquid_idx];
 
 		// liquid settings
 
@@ -193,6 +193,14 @@ bool decode_map_v2_xml(map_type *map,int map_head)
     node_type				*node;
     spot_type				*spot;
 	map_scenery_type		*scenery;
+
+		// clear maps and meshes
+
+	map->mesh.nmesh=0;
+	map->mesh.meshes=NULL;
+
+	map->liquid.nliquid=0;
+	map->liquid.liquids=NULL;
 	        
         // portals
 
@@ -242,14 +250,6 @@ bool decode_map_v2_xml(map_type *map,int map_head)
                 }
             }
 
-				// default some ptrs
-
-			portal->mesh.nmesh=0;
-			portal->mesh.meshes=NULL;
-
-			portal->liquid.nliquid=0;
-			portal->liquid.liquids=NULL;
-        
                 // paths
                 
             main_path_tag=xml_findfirstchild("Paths",portal_tag);
@@ -284,12 +284,12 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 
 							// create new mesh
 
-						mesh_idx=map_portal_mesh_add(map,i);
+						mesh_idx=map_mesh_add(map);
 						if (mesh_idx==-1) return(FALSE);
 
 							// read mesh
 
-						if (!read_single_mesh(map,i,mesh_idx,mesh_tag)) return(FALSE);
+						if (!read_single_mesh_v2(map,mesh_idx,mesh_tag)) return(FALSE);
 						
 						mesh_tag=xml_findnextchild(mesh_tag);
 					}
@@ -310,12 +310,12 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 
 							// create new liquid
 
-						liquid_idx=map_portal_liquid_add(map,i);
+						liquid_idx=map_liquid_add(map);
 						if (liquid_idx==-1) return(FALSE);
 
 							// read liquid
 
-						read_single_liquid(map,i,liquid_idx,liquid_tag);
+						read_single_liquid_v2(map,liquid_idx,liquid_tag);
 						
 						liquid_tag=xml_findnextchild(liquid_tag);
 					}

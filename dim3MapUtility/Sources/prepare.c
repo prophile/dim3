@@ -189,151 +189,91 @@ void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 
 void map_prepare(map_type *map)
 {
-	int					i,n,k,t,simple_cnt;
+	int					n,k,simple_cnt;
 	d3pnt				mesh_min,mesh_max,mesh_mid;
-	d3pnt				*pt;
-	portal_type			*portal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
-	map_liquid_type		*liq;
 	
-		// portals
-	
-	portal=map->portals;
-	
-	for (i=0;i!=map->nportal;i++) {
+		// prepare meshes
 
-			// portal middle
-
-		portal->mx=(portal->x+portal->ex)>>1;
-		portal->mz=(portal->z+portal->ez)>>1;
-
-			// search for y size when
-			// preparing meshes
+	mesh=map->mesh.meshes;
 		
-		portal->ty=map_max_size;
-		portal->by=-map_max_size;
+	for (n=0;n!=map->mesh.nmesh;n++) {
+
+			// default some flags
+
+		mesh->flag.touched=FALSE;
+		mesh->flag.shiftable=FALSE;
 		
-			// prepare meshes
-
-		mesh=portal->mesh.meshes;
-		
-		for (n=0;n!=portal->mesh.nmesh;n++) {
-
-				// default some flags
-
-			mesh->flag.touched=FALSE;
-			mesh->flag.shiftable=FALSE;
-				
-				// translate vertexes from portal to global
-					
-			pt=mesh->vertexes;
+			// start mesh min/max/mid
 			
-			for (k=0;k!=mesh->nvertex;k++) {
-				pt->x+=portal->x;
-				pt->z+=portal->z;
-				pt++;
+		mesh_min.x=mesh_min.y=mesh_min.z=0;
+		mesh_max.x=mesh_max.y=mesh_max.z=0;
+		mesh_mid.x=mesh_mid.y=mesh_mid.z=0;
+		
+			// run through the mesh polygons
+
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+			
+				// setup box and slope
+
+			map_prepare_mesh_poly(mesh,poly);
+
+				// detect simple tessel segments
+				// if two of the axises are under simple
+				// tessel size, then entire polygon is simple tessel
+
+			simple_cnt=0;
+
+			if ((poly->box.max.x-poly->box.min.x)<map_simple_tessel_size) simple_cnt++;
+			if ((poly->box.max.z-poly->box.min.z)<map_simple_tessel_size) simple_cnt++;
+			if ((poly->box.max.y-poly->box.min.y)<map_simple_tessel_size) simple_cnt++;
+		
+			poly->draw.simple_tessel=(simple_cnt>=2);
+
+				// setup texture and shifting flags
+
+			poly->draw.txt_frame_offset=0;
+			poly->draw.shift_on=((poly->x_shift!=0.0f) || (poly->y_shift!=0.0f));
+
+			mesh->flag.shiftable|=poly->draw.shift_on;
+			
+				// setup mesh min, max, mid
+				
+			if (k==0) {
+				memmove(&mesh_min,&poly->box.min,sizeof(d3pnt));
+				memmove(&mesh_max,&poly->box.max,sizeof(d3pnt));
+				memmove(&mesh_mid,&poly->box.mid,sizeof(d3pnt));
 			}
+			else {
+				if (poly->box.min.x<mesh_min.x) mesh_min.x=poly->box.min.x;
+				if (poly->box.min.y<mesh_min.y) mesh_min.y=poly->box.min.y;
+				if (poly->box.min.z<mesh_min.z) mesh_min.z=poly->box.min.z;
 			
-				// start mesh min/max/mid
+				if (poly->box.max.x>mesh_max.x) mesh_max.x=poly->box.max.x;
+				if (poly->box.max.y>mesh_max.y) mesh_max.y=poly->box.max.y;
+				if (poly->box.max.z>mesh_max.z) mesh_max.z=poly->box.max.z;
 				
-			mesh_min.x=mesh_min.y=mesh_min.z=0;
-			mesh_max.x=mesh_max.y=mesh_max.z=0;
-			mesh_mid.x=mesh_mid.y=mesh_mid.z=0;
-			
-				// run through the mesh polygons
-
-			poly=mesh->polys;
-			
-			for (k=0;k!=mesh->npoly;k++) {
-			
-					// find lowest and highest Y for portal
-
-				for (t=0;t!=poly->ptsz;t++) {
-					pt=&mesh->vertexes[poly->v[t]];
-
-					if (pt->y<portal->ty) portal->ty=pt->y;
-					if (pt->y>portal->by) portal->by=pt->y;
-				}
-				
-					// setup box and slope
-
-				map_prepare_mesh_poly(mesh,poly);
-
-					// detect simple tessel segments
-					// if two of the axises are under simple
-					// tessel size, then entire polygon is simple tessel
-
-				simple_cnt=0;
-
-				if ((poly->box.max.x-poly->box.min.x)<map_simple_tessel_size) simple_cnt++;
-				if ((poly->box.max.z-poly->box.min.z)<map_simple_tessel_size) simple_cnt++;
-				if ((poly->box.max.y-poly->box.min.y)<map_simple_tessel_size) simple_cnt++;
-			
-				poly->draw.simple_tessel=(simple_cnt>=2);
-
-					// setup texture and shifting flags
-
-				poly->draw.txt_frame_offset=0;
-				poly->draw.shift_on=((poly->x_shift!=0.0f) || (poly->y_shift!=0.0f));
-
-				mesh->flag.shiftable|=poly->draw.shift_on;
-				
-					// setup mesh min, max, mid
-					
-				if (k==0) {
-					memmove(&mesh_min,&poly->box.min,sizeof(d3pnt));
-					memmove(&mesh_max,&poly->box.max,sizeof(d3pnt));
-					memmove(&mesh_mid,&poly->box.mid,sizeof(d3pnt));
-				}
-				else {
-					if (poly->box.min.x<mesh_min.x) mesh_min.x=poly->box.min.x;
-					if (poly->box.min.y<mesh_min.y) mesh_min.y=poly->box.min.y;
-					if (poly->box.min.z<mesh_min.z) mesh_min.z=poly->box.min.z;
-				
-					if (poly->box.max.x>mesh_max.x) mesh_max.x=poly->box.max.x;
-					if (poly->box.max.y>mesh_max.y) mesh_max.y=poly->box.max.y;
-					if (poly->box.max.z>mesh_max.z) mesh_max.z=poly->box.max.z;
-					
-					mesh_mid.x+=poly->box.mid.x;
-					mesh_mid.y+=poly->box.mid.y;
-					mesh_mid.z+=poly->box.mid.z;
-				}
-			
-				poly++;
+				mesh_mid.x+=poly->box.mid.x;
+				mesh_mid.y+=poly->box.mid.y;
+				mesh_mid.z+=poly->box.mid.z;
 			}
-			
-				// setup mesh box
-				
-			memmove(&mesh->box.min,&mesh_min,sizeof(d3pnt));
-			memmove(&mesh->box.max,&mesh_max,sizeof(d3pnt));
-			
-			mesh->box.mid.x=mesh_mid.x/mesh->npoly;
-			mesh->box.mid.y=mesh_mid.y/mesh->npoly;
-			mesh->box.mid.z=mesh_mid.z/mesh->npoly;
 		
-			mesh++;
+			poly++;
 		}
 		
-			// liquids
-
-		liq=portal->liquid.liquids;
+			// setup mesh box
+			
+		memmove(&mesh->box.min,&mesh_min,sizeof(d3pnt));
+		memmove(&mesh->box.max,&mesh_max,sizeof(d3pnt));
 		
-		for (n=0;n!=portal->liquid.nliquid;n++) {
-			liq->lft+=portal->x;
-			liq->rgt+=portal->x;
-			liq->top+=portal->z;
-			liq->bot+=portal->z;
-			liq++;
-		}
-		
-			// fix portal heights
-
-		if ((portal->ty==map_max_size) && (portal->by!=-map_max_size)) portal->ty=portal->by;
-		if ((portal->by==-map_max_size) && (portal->ty!=map_max_size)) portal->by=portal->ty;
-		if ((portal->ty==map_max_size) || (portal->by==-map_max_size)) portal->ty=portal->by=0;
-
-		portal++;
+		mesh->box.mid.x=mesh_mid.x/mesh->npoly;
+		mesh->box.mid.y=mesh_mid.y/mesh->npoly;
+		mesh->box.mid.z=mesh_mid.z/mesh->npoly;
+	
+		mesh++;
 	}
 }
 
