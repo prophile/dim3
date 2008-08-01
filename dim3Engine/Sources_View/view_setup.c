@@ -52,28 +52,6 @@ extern int distance_to_view_center(int x,int y,int z);
 
 /* =======================================================
 
-      Portal Updates
-      
-======================================================= */
-
-void view_portal_updates(int tick)
-{
-	/* supergumba -- fix this
-
-	int				i;
-	portal_type		*portal;
-	
-	portal=map.portals;
-
-	for (i=0;i!=map.nportal;i++) {
-		if (portal->in_path) map_portal_mesh_shift_portal_vertex_list(&map,i,tick);
-		portal++;
-	}
-	*/
-}
-
-/* =======================================================
-
       Model Setup
       
 ======================================================= */
@@ -511,7 +489,7 @@ void view_draw_setup(int tick)
 	
 		// any portal updates
 		
-	view_portal_updates(tick);
+	map_mesh_shift_portal_vertex_list(&map,tick);
 	
 		// setup objects, projectiles, and scenery in path
 		

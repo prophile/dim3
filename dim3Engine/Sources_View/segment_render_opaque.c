@@ -44,6 +44,8 @@ extern view_type		view;
 extern int game_time_get(void);
 extern bool fog_solid_on(void);
 extern void view_compile_gl_list_attach(void);
+extern void view_compile_gl_list_switch_to_color(void);
+extern void view_compile_gl_list_switch_to_normal(void);
 extern void view_compile_gl_list_dettach(void);
 
 /* =======================================================
@@ -136,7 +138,7 @@ void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool
 
 		// need to use normal map in color array
 
-	glColorPointer(3,GL_FLOAT,0,map.vertexes.pnormal);
+	view_compile_gl_list_switch_to_normal();
 
 		// setup drawing
 
@@ -212,7 +214,7 @@ void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool
 
 		// restore original color array
 
-	glColorPointer(3,GL_FLOAT,0,map.vertexes.pcolor);
+	view_compile_gl_list_switch_to_color();
 }
 
 /* =======================================================

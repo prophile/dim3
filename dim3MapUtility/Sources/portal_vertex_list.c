@@ -615,7 +615,7 @@ void map_dispose_poly_tesseled_vertexes(map_mesh_poly_type *poly)
       
 ======================================================= */
 
-bool map_create_vertex_list(map_type *map)
+bool map_create_vertex_lists(map_type *map)
 {
 	int							n,k,nvlist,sz;
 	map_mesh_type				*mesh;
@@ -638,29 +638,11 @@ bool map_create_vertex_list(map_type *map)
 	
 		// compiled vertex, coord and color lists
 	
-	sz=nvlist*(sizeof(float)*3);
-	map->vertexes.pvert=(float*)valloc(sz);
-	if (map->vertexes.pvert==NULL) return(FALSE);
+	sz=nvlist*(sizeof(float)*(3+2+3+3));
+	map->vertexes.ptr=(float*)valloc(sz);
+	if (map->vertexes.ptr==NULL) return(FALSE);
 	
-	bzero(map->vertexes.pvert,sz);
-	
-	sz=nvlist*(sizeof(float)*2);
-	map->vertexes.pcoord=(float*)valloc(sz);
-	if (map->vertexes.pcoord==NULL) return(FALSE);
-	
-	bzero(map->vertexes.pcoord,sz);
-	
-	sz=nvlist*(sizeof(float)*3);
-	map->vertexes.pcolor=(float*)valloc(sz);
-	if (map->vertexes.pcolor==NULL) return(FALSE);
-	
-	bzero(map->vertexes.pcolor,sz);
-	
-	sz=nvlist*(sizeof(float)*3);
-	map->vertexes.pnormal=(float*)valloc(sz);
-	if (map->vertexes.pnormal==NULL) return(FALSE);
-	
-	bzero(map->vertexes.pnormal,sz);
+	bzero(map->vertexes.ptr,sz);
 
 		// remember total
 
@@ -686,7 +668,7 @@ bool map_create_vertex_list(map_type *map)
 	return(TRUE);
 }
 
-void map_dispose_vertex_list(map_type *map)
+void map_dispose_vertex_lists(map_type *map)
 {
 	int					n,k;
 	map_mesh_type		*mesh;
@@ -708,38 +690,7 @@ void map_dispose_vertex_list(map_type *map)
 		mesh++;
 	}
 
-		// dispose vertex lists
+		// dispose lists
 		
-	free(map->vertexes.pvert);
-	free(map->vertexes.pcoord);
-	free(map->vertexes.pcolor);
-	free(map->vertexes.pnormal);
+	free(map->vertexes.ptr);
 }
-
-
-
-
-
-
-
-/* =======================================================
-
-      Create/Destroy Portal Vertex Lists
-      
-======================================================= */
-
-
-// supergumba -- delete all these (AFTER TRANSLATION!)
-
-bool map_portal_create_vertex_lists(map_type *map)
-{
-	map_create_vertex_list(map);			// supergumba
-		
-	return(TRUE);
-}
-
-void map_portal_dispose_vertex_lists(map_type *map)
-{
-	map_dispose_vertex_list(map);		// supergumba
-}
-

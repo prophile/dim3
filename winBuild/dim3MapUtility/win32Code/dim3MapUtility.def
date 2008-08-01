@@ -17,13 +17,8 @@ EXPORTS
 	map_portal_touching_portal						@128
 	map_portal_draw_sort							@129
 
-	map_portal_sight_clear							@140
-	map_portal_sight_prune							@141
-	map_portal_sight_delete_adjust_path				@142
-	map_portal_sight_generate_paths					@143
-
-	map_portal_create_vertex_lists					@160
-	map_portal_dispose_vertex_lists					@161
+	map_create_vertex_lists							@160
+	map_dispose_vertex_lists						@161
 
 	map_count_spot									@200
 	map_find_spot									@201

@@ -569,6 +569,8 @@ bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z
 
 void map_auto_generate_add_simple_lights(map_type *map)
 {
+	/* supergumba -- work on all of this
+
 	int					n,x,z,y,intensity;
 	double				dx,dz;
 	portal_type			*portal;
@@ -608,6 +610,7 @@ void map_auto_generate_add_simple_lights(map_type *map)
 
 		portal++;
 	}
+	*/
 }
 
 /* =======================================================
@@ -618,7 +621,8 @@ void map_auto_generate_add_simple_lights(map_type *map)
 
 void map_auto_generate_add_player_spot(map_type *map)
 {
-	int					x,y,z,ty;
+	/* supergumba -- fix all of this
+	int					x,y,z;
 	spot_type			*spot;
 	
 	if (map->nportal==0) return;
@@ -646,6 +650,7 @@ void map_auto_generate_add_player_spot(map_type *map)
 	strcpy(spot->script,"Player");
 	spot->display_model[0]=0x0;
 	spot->params[0]=0x0;
+	*/
 }
 
 /* =======================================================

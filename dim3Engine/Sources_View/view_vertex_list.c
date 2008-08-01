@@ -48,7 +48,7 @@ extern void map_calculate_light_color_normal(double x,double y,double z,float *c
 void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 {
 	int									n,k,t,ntrig,
-										v_idx,v_light_start_idx;
+										v_count,v_idx,v_light_start_idx;
 	float								x,y,z,fx,fy,fz;
 	float								*pv,*pp,*pc,*pn;
 	d3pnt								*pnt;
@@ -56,12 +56,63 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 	map_mesh_poly_type					*poly;
 	map_mesh_poly_tessel_vertex_type	*lv;
 
-		// the arrays
+		// find total number of vertexes in
+		// this seen
 
-	pv=(float*)map.vertexes.pvert;
-	pp=(float*)map.vertexes.pcoord;
-	pc=(float*)map.vertexes.pcolor;
-	pn=(float*)map.vertexes.pnormal;
+	v_count=0;
+
+	for (n=0;n!=mesh_cnt;n++) {
+		mesh=&map.mesh.meshes[mesh_list[n]];
+		
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+			v_count+=poly->ptsz;
+			v_count+=poly->light.nvertex;
+			poly++;
+		}
+		
+		mesh++;
+	}
+
+	map.vertexes.draw_vertex_count=v_count;
+
+
+
+	
+/* supergumba
+
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vertex_vbo);
+		sz=(map.vertexes.draw_vertex_count*(3+2+3+3))*sizeof(float);
+		glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+	}
+
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vertex_vbo);
+	ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+*/
+
+
+		// arrays and offsets
+
+	map.vertexes.vert.sz=(v_count*3)*sizeof(float);
+	map.vertexes.vert.offset=0;
+
+	pv=(float*)map.vertexes.ptr;
+
+	map.vertexes.uv.sz=(v_count*2)*sizeof(float);
+	map.vertexes.uv.offset=map.vertexes.vert.offset+map.vertexes.vert.sz;
+
+	pp=pv+(v_count*3);
+
+	map.vertexes.color.sz=(v_count*3)*sizeof(float);
+	map.vertexes.color.offset=map.vertexes.uv.offset+map.vertexes.uv.sz;
+
+	pc=pp+(v_count*2);
+
+	map.vertexes.normal.sz=(v_count*3)*sizeof(float);
+	map.vertexes.normal.offset=map.vertexes.color.offset+map.vertexes.color.sz;
+
+	pn=pc+(v_count*3);
 
 		// the eye offset
 
@@ -187,7 +238,11 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 		mesh++;
 	}
 
-	map.vertexes.draw_vertex_count=v_idx;
+
+	/* supergumba
+	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+	*/
 }
 
 /* =======================================================
@@ -198,57 +253,56 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 void view_compile_gl_list_attach(void)
 {
-
-	// supergumba -- we'll want to map this data in client space
-
-	
-#ifdef D3_OS_MAC
-	int			sz;
-	
-	sz=(map.vertexes.draw_vertex_count*3)*sizeof(float);
-	glVertexArrayRangeAPPLE(sz,map.vertexes.pvert);
-	glEnableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
-#endif
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,map.vertexes.pvert);
+	int					sz;
 
 
-#ifdef D3_OS_MAC
-	glFlushVertexArrayRangeAPPLE(sz,map.vertexes.pvert);
-#endif
-
-/*
+				// supergumba -- do this some other time
 	if (vertex_vbo==-1) {
 		glGenBuffersARB(1,&vertex_vbo);
 	}
-	
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vertex_vbo);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB,((map.vertexes.draw_vertex_count*3)*sizeof(float)),map.vertexes.pvert,GL_STREAM_DRAW_ARB);
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,0);
-*/
 
+
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vertex_vbo);
+
+		// data
+
+	sz=(map.vertexes.draw_vertex_count*(3+2+3+3))*sizeof(float);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,(void*)map.vertexes.ptr,GL_STREAM_DRAW_ARB);
+
+		// vertexes
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3,GL_FLOAT,0,(void*)map.vertexes.vert.offset);
 
 		// uvs
 		
 	glClientActiveTexture(GL_TEXTURE2);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,map.vertexes.pcoord);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)map.vertexes.uv.offset);
 
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,map.vertexes.pcoord);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)map.vertexes.uv.offset);
 	
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,map.vertexes.pcoord);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)map.vertexes.uv.offset);
 
 		// color array
 
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(3,GL_FLOAT,0,map.vertexes.pcolor);
+	glColorPointer(3,GL_FLOAT,0,(void*)map.vertexes.color.offset);
+}
+
+
+void view_compile_gl_list_switch_to_color(void)
+{
+	glColorPointer(3,GL_FLOAT,0,(void*)map.vertexes.color.offset);
+}
+
+void view_compile_gl_list_switch_to_normal(void)
+{
+	glColorPointer(3,GL_FLOAT,0,(void*)map.vertexes.normal.offset);
 }
 
 void view_compile_gl_list_dettach(void)
@@ -266,10 +320,5 @@ void view_compile_gl_list_dettach(void)
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
-#ifdef D3_OS_MAC
-	glDisableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
-#endif
-
-//	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
-
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 }

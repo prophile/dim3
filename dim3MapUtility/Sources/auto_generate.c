@@ -1639,10 +1639,6 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 		
 	map_auto_generate_reset_UVs(map);
 	
-		// add sight paths
-		
-	map_portal_sight_generate_paths(map,FALSE);
-	
 		// create player spot
 		
 	map_auto_generate_add_player_spot(map);

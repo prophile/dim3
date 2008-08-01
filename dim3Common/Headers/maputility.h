@@ -53,9 +53,6 @@ extern char light_type_str[][32];
 #define max_map_sound								256				// maximum number of ambient sounds
 #define max_map_particle							256				// maximum number of ambient particles
 
-#define max_sight_list								64				// maximum number of portals that can be seen from current portal
-#define max_sight_link								8				// maximum number of sight links from a single portal
-
 #define max_group									128				// maximum number of mesh groups
 
 #define max_map_texture								128				// maximum number of textures in a map
@@ -169,27 +166,27 @@ extern char light_type_str[][32];
 //
 
 typedef struct		{
-						short						type,idx;
+						short								type,idx;
 					} group_unit_type;
 
 typedef struct		{
-						int							thing_type,thing_uid,
-													script_uid;
+						int									thing_type,thing_uid,
+															script_uid;
 					} group_script_attach_type;
 
 typedef struct		{
-						int							count,movement_idx,user_id;
-						bool						on,freeze,has_mov,has_rot;
-						d3fpnt						cur_mov;
-						d3vct						mov_add,rot_add;
-						group_script_attach_type	attach;
+						int									count,movement_idx,user_id;
+						bool								on,freeze,has_mov,has_rot;
+						d3fpnt								cur_mov;
+						d3vct								mov_add,rot_add;
+						group_script_attach_type			attach;
 					} group_move_type;
 
 typedef struct		{
-						int							unit_count;
-						char						name[name_str_len];
-						group_move_type				move;
-						group_unit_type				*unit_list;
+						int									unit_count;
+						char								name[name_str_len];
+						group_move_type						move;
+						group_unit_type						*unit_list;
 					} group_type;
 
 //
@@ -248,6 +245,13 @@ typedef struct		{
 					} map_mesh_flag_type;
 
 typedef struct		{
+						int									entry_id,exit_id,base_team;
+						bool								entry_on,exit_on,base_on,map_change_on;
+						char								map_name[name_str_len],
+															map_spot_name[name_str_len],map_spot_type[name_str_len];
+					} map_mesh_message_type;
+
+typedef struct		{
 						int									nvertex,npoly,group_idx;
 						unsigned char						mesh_visibility_flag[max_mesh];
 						d3pnt								rot_off;
@@ -255,6 +259,7 @@ typedef struct		{
 						map_mesh_poly_type					*polys;
 						map_mesh_box_type					box;
 						map_mesh_flag_type					flag;
+						map_mesh_message_type				msg;
 					} map_mesh_type;
 
 //
@@ -262,28 +267,28 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							in_harm,drown_harm,drown_tick;
+						int									in_harm,drown_harm,drown_tick;
 					} map_liquid_harm_type;
 
 typedef struct		{
-						int							rate,high,direction,split;
+						int									rate,high,direction,split;
 					} map_liquid_tide_type;
 
 typedef struct		{
-						int							v_cnt,x_sz,z_sz;
-						int							*idx_list;
-						float						*vl_list,*uv_list,*cl_list;
+						int									v_cnt,x_sz,z_sz;
+						int									*idx_list;
+						float								*vl_list,*uv_list,*cl_list;
 					} map_liquid_draw_type;
 
 typedef struct		{
-						int							y,lft,rgt,top,bot,txt_idx,group_idx;
-						float						alpha,speed_alter,tint_alpha,
-													x_txtfact,y_txtfact,x_txtoff,y_txtoff,
-													x_shift,y_shift;
-						d3col						col;
-						map_liquid_harm_type		harm;
-						map_liquid_tide_type		tide;
-						map_liquid_draw_type		draw;
+						int									y,lft,rgt,top,bot,txt_idx,group_idx;
+						float								alpha,speed_alter,tint_alpha,
+															x_txtfact,y_txtfact,x_txtoff,y_txtoff,
+															x_shift,y_shift;
+						d3col								col;
+						map_liquid_harm_type				harm;
+						map_liquid_tide_type				tide;
+						map_liquid_draw_type				draw;
 					} map_liquid_type;
 
 //
@@ -291,25 +296,18 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							max_vertex_count,draw_vertex_count;
-						float						*pvert,*pcoord,*pcolor,*pnormal;
+						int									sz,offset;
+					} map_vertex_array_type;
+
+typedef struct		{
+						int									max_vertex_count,draw_vertex_count;
+						float								*ptr;
+						map_vertex_array_type				vert,uv,color,normal;
 					} map_vertex_type;
 
 //
 // portal structures
 //
-
-typedef struct		{
-						short						rn,link[max_sight_link];
-                        bool						root;
-					} portal_sight_list_type;
-
-typedef struct		{
-						int							entry_id,exit_id,base_team;
-						bool						entry_on,exit_on,base_on,map_change_on;
-						char						map_name[name_str_len],
-													map_spot_name[name_str_len],map_spot_type[name_str_len];
-					} portal_message_type;
 
 typedef struct		{
 						int							nmesh;
@@ -322,14 +320,9 @@ typedef struct		{
 					} portal_liquid_type;
 
 typedef struct		{
-						int							x,z,ex,ez,mx,mz,ty,by,
-													decal_count;
-						bool						in_path2;
+						int							x,z,ex,ez,mx,mz,ty,by;
 						char						name[name_str_len];
-						portal_message_type			msg;
-						portal_sight_list_type		sight[max_sight_list];
-						portal_mesh_type			mesh;
-						portal_liquid_type			liquid;
+						map_mesh_message_type		msg;
 					} portal_type;
 
 //
@@ -566,13 +559,8 @@ extern int map_portal_duplicate(map_type *map,int rn,int x,int z);
 extern bool map_portal_touching_portal(map_type *map,int base_rn,int rn);
 extern int map_portal_draw_sort(map_type *map,int rn,int cx,int cy,int cz,int *portal_list);
 
-extern void map_portal_sight_clear(map_type *map,int rn);
-extern void map_portal_sight_prune(map_type *map,int rn,int site_idx);
-extern void map_portal_sight_delete_adjust_path(map_type *map,int rn);
-extern void map_portal_sight_generate_paths(map_type *map,bool ignore_depth);
-
-extern bool map_portal_create_vertex_lists(map_type *map);
-extern void map_portal_dispose_vertex_lists(map_type *map);
+extern bool map_create_vertex_lists(map_type *map);
+extern void map_dispose_vertex_lists(map_type *map);
 
 extern int map_count_spot(map_type *map,char *name,char *type);
 extern int map_find_spot(map_type *map,char *name,char *type);

@@ -14,13 +14,8 @@ _map_portal_duplicate
 _map_portal_touching_portal
 _map_portal_draw_sort
 
-_map_portal_sight_clear
-_map_portal_sight_prune
-_map_portal_sight_delete_adjust_path
-_map_portal_sight_generate_paths
-
-_map_portal_create_vertex_lists
-_map_portal_dispose_vertex_lists
+_map_create_vertex_lists
+_map_dispose_vertex_lists
 
 _map_count_spot
 _map_find_spot

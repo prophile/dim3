@@ -61,13 +61,13 @@ int map_portal_create(map_type *map,int x,int z,int ex,int ez)
 	strcpy(portal->msg.map_spot_name,"Start");
 	strcpy(portal->msg.map_spot_type,"Player");
 
-	portal->mesh.nmesh=0;
-	portal->mesh.meshes=NULL;
+//	portal->mesh.nmesh=0;
+//	portal->mesh.meshes=NULL;
 	
-	portal->liquid.nliquid=0;
-	portal->liquid.liquids=NULL;
+//	portal->liquid.nliquid=0;
+//	portal->liquid.liquids=NULL;
     
-	map_portal_sight_clear(map,rn);
+//	map_portal_sight_clear(map,rn);
 
 	return(rn);
 }
@@ -131,6 +131,7 @@ bool map_find_portal_by_pos(map_type *map,d3pos *pos)
 
 void map_portal_delete(map_type *map,int rn)
 {
+	/*
 	int				n;
 	portal_type		*portal;
 	
@@ -157,6 +158,7 @@ void map_portal_delete(map_type *map,int rn)
 	}
 	
 	map->nportal--;
+	*/
 }
 
 /* =======================================================
@@ -167,6 +169,7 @@ void map_portal_delete(map_type *map,int rn)
 
 int map_portal_duplicate(map_type *map,int rn,int x,int z)
 {
+	/*
 	int				n,old_rn,mesh_idx,liq_idx;
 	portal_type		*portal,*old_portal;
 	map_mesh_type	*mesh,*old_mesh;
@@ -225,7 +228,7 @@ int map_portal_duplicate(map_type *map,int rn,int x,int z)
 	
 		memmove(liq,old_liq,sizeof(map_liquid_type));
 	}
-	
+	*/
 	return(rn);
 }
 
@@ -237,6 +240,7 @@ int map_portal_duplicate(map_type *map,int rn,int x,int z)
 
 bool map_portal_touching_portal(map_type *map,int base_rn,int rn)
 {
+	/*
 	int							i;
 	portal_sight_list_type		*sight;
 
@@ -254,7 +258,7 @@ bool map_portal_touching_portal(map_type *map,int base_rn,int rn)
 		}
 		sight++;
 	}
-	
+	*/
 	return(FALSE);
 }
 

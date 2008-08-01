@@ -653,7 +653,8 @@ inline float map_mesh_shift_texture_single_coord(float f_tick,float shift)
 
 void map_mesh_shift_portal_vertex_list(map_type *map,int tick)
 {
-	/* supergumba -- redo all this
+	/* supergumba
+
 	int						n,k,t,nmesh,npoly,ptsz,idx;
 	float					f_tick,gx,gy,fx,fy;
 	unsigned char			*phit;
@@ -661,8 +662,6 @@ void map_mesh_shift_portal_vertex_list(map_type *map,int tick)
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	portal_vertex_list_type	*pv;
-	
-	portal=&map->portals[portal_idx];
 	
 	f_tick=(float)tick;
 

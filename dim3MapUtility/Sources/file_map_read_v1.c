@@ -849,7 +849,7 @@ bool map_convert_segment_section_to_mesh(map_type *map,int seg_cnt,segment_type 
 
 bool map_convert_v1(map_type *map,int seg_cnt,segment_type *seg_list)
 {
-	int					n,i,p,vlist_sz,plist_sz;
+	int					n,i,p,vlist_sz,plist_sz,first_mesh_idx;
 	int					*plist;
 	d3pnt				*vlist;
 	portal_type			*portal;
@@ -907,6 +907,8 @@ bool map_convert_v1(map_type *map,int seg_cnt,segment_type *seg_list)
 	
 		portal=&map->portals[n];
 
+		first_mesh_idx=map->mesh.nmesh;
+
 			// create meshes from all primitives
 			// and groups
 
@@ -953,6 +955,9 @@ bool map_convert_v1(map_type *map,int seg_cnt,segment_type *seg_list)
 			return(FALSE);
 		}
 
+			// convert messages to first mesh
+
+		if (map->mesh.nmesh!=0) memmove(&map->mesh.meshes[first_mesh_idx].msg,&portal->msg,sizeof(map_mesh_message_type));
 	}
 	
 	free(vlist);
@@ -1055,13 +1060,12 @@ void read_single_segment(int tag,segment_type *seg,int rn,int seg_type)
 bool decode_map_v1_xml(map_type *map,int map_head)
 {
 	int						i,k,j,y,idx,seg_cnt,
-							main_portal_tag,portal_tag,msg_tag,main_path_tag,path_tag,
+							main_portal_tag,portal_tag,msg_tag,
 							main_seg_tag,seg_tag,main_light_tag,light_tag,main_sound_tag,sound_tag,
 							main_particle_tag,particle_tag,main_node_tag,node_tag,
-							main_obj_tag,obj_tag,tag,id,cnt;
+							main_obj_tag,obj_tag,tag,cnt;
 	bool					convert_ok;
     portal_type				*portal;
-	portal_sight_list_type	*sight;
     segment_type			*seg_list,*seg;
     map_light_type			*light;
     map_sound_type			*sound;
@@ -1124,26 +1128,6 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					xml_get_attribute_text(tag,"spot_type", portal->msg.map_spot_type,name_str_len);
                 }
             }
-        
-                // paths
-                
-            main_path_tag=xml_findfirstchild("Paths",portal_tag);
-            if (main_path_tag!=-1) {
-                
-                cnt=xml_countchildren(main_path_tag);
-				path_tag=xml_findfirstchild("Path",main_path_tag);
-                
-                for (k=0;k!=cnt;k++) {
-					id=xml_get_attribute_int(path_tag,"id");
-					sight=&portal->sight[id];
-					
-					sight->rn=xml_get_attribute_int(path_tag,"portal");
-					xml_get_attribute_short_array(path_tag,"link",(short*)sight->link,max_sight_link);
-					sight->root=xml_get_attribute_boolean(path_tag,"root");
-                    
-					path_tag=xml_findnextchild(path_tag);
-                }
-             }
 
 				// walls
 				

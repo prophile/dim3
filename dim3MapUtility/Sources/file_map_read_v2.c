@@ -45,7 +45,7 @@ extern char				media_type_str[][32],
       
 ======================================================= */
 
-bool read_single_mesh_v2(map_type *map,int mesh_idx,int mesh_tag)
+bool read_single_mesh_v2(map_type *map,portal_type *portal,int mesh_idx,int mesh_tag,bool set_msg)
 {
 	int					n,nvertex,npoly,
 						main_vertex_tag,vertex_tag,main_poly_tag,poly_tag;
@@ -82,6 +82,8 @@ bool read_single_mesh_v2(map_type *map,int mesh_idx,int mesh_tag)
 
 		for (n=0;n!=nvertex;n++) {
 			xml_get_attribute_3_coord_int(vertex_tag,"c3",&pt->x,&pt->y,&pt->z);
+			pt->x+=portal->x;
+			pt->z+=portal->z;
 			pt++;
 			vertex_tag=xml_findnextchild(vertex_tag);
 		}
@@ -115,10 +117,14 @@ bool read_single_mesh_v2(map_type *map,int mesh_idx,int mesh_tag)
 		}
 	}
 
+		// portal messages to map messages
+
+	if (set_msg) memmove(&mesh->msg,&portal->msg,sizeof(map_mesh_message_type));
+
 	return(TRUE);
 }
 
-void read_single_liquid_v2(map_type *map,int liquid_idx,int liquid_tag)
+void read_single_liquid_v2(map_type *map,portal_type *portal,int liquid_idx,int liquid_tag)
 {
 	int					tag;
 	map_liquid_type		*liq;
@@ -143,6 +149,11 @@ void read_single_liquid_v2(map_type *map,int liquid_idx,int liquid_tag)
 		liq->tint_alpha=xml_get_attribute_float(tag,"tint_alpha");
 		xml_get_attribute_2_coord_float(tag,"shift",&liq->x_shift,&liq->y_shift);
 	}
+
+	liq->lft+=portal->x;
+	liq->rgt+=portal->x;
+	liq->top+=portal->z;
+	liq->bot+=portal->z;
 
 		// physics
 
@@ -180,13 +191,12 @@ void read_single_liquid_v2(map_type *map,int liquid_idx,int liquid_tag)
 bool decode_map_v2_xml(map_type *map,int map_head)
 {
 	int						i,k,j,y,idx,nmesh,mesh_idx,nliquid,liquid_idx,
-							main_portal_tag,portal_tag,msg_tag,main_path_tag,path_tag,
+							main_portal_tag,portal_tag,msg_tag,
 							main_mesh_tag,mesh_tag,main_liquid_tag,liquid_tag,
 							main_light_tag,light_tag,main_sound_tag,sound_tag,
 							main_particle_tag,particle_tag,main_node_tag,node_tag,
-							main_obj_tag,obj_tag,tag,id,cnt;
+							main_obj_tag,obj_tag,tag,cnt;
     portal_type				*portal;
-	portal_sight_list_type	*sight;
     map_light_type			*light;
     map_sound_type			*sound;
 	map_particle_type		*particle;
@@ -250,26 +260,6 @@ bool decode_map_v2_xml(map_type *map,int map_head)
                 }
             }
 
-                // paths
-                
-            main_path_tag=xml_findfirstchild("Paths",portal_tag);
-            if (main_path_tag!=-1) {
-                
-                cnt=xml_countchildren(main_path_tag);
-				path_tag=xml_findfirstchild("Path",main_path_tag);
-                
-                for (k=0;k!=cnt;k++) {
-					id=xml_get_attribute_int(path_tag,"id");
-					sight=&portal->sight[id];
-					
-					sight->rn=xml_get_attribute_int(path_tag,"portal");
-					xml_get_attribute_short_array(path_tag,"link",(short*)sight->link,max_sight_link);
-					sight->root=xml_get_attribute_boolean(path_tag,"root");
-                    
-					path_tag=xml_findnextchild(path_tag);
-                }
-             }
-
 				// mesh
 
 			main_mesh_tag=xml_findfirstchild("Meshes",portal_tag);
@@ -289,7 +279,7 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 
 							// read mesh
 
-						if (!read_single_mesh_v2(map,mesh_idx,mesh_tag)) return(FALSE);
+						if (!read_single_mesh_v2(map,portal,mesh_idx,mesh_tag,(k==0))) return(FALSE);
 						
 						mesh_tag=xml_findnextchild(mesh_tag);
 					}
@@ -315,7 +305,7 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 
 							// read liquid
 
-						read_single_liquid_v2(map,liquid_idx,liquid_tag);
+						read_single_liquid_v2(map,portal,liquid_idx,liquid_tag);
 						
 						liquid_tag=xml_findnextchild(liquid_tag);
 					}

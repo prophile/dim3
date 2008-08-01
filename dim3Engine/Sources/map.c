@@ -242,7 +242,7 @@ bool map_start(bool skip_media,char *err_str)
 	
 	progress_draw(35);
 
-	if (!map_portal_create_vertex_lists(&map)) {
+	if (!map_create_vertex_lists(&map)) {
 		progress_shutdown();
 		strcpy(err_str,"Out of memory");
 		return(FALSE);
@@ -445,7 +445,7 @@ void map_end(void)
 		
 	progress_draw(65);
 
-	map_portal_dispose_vertex_lists(&map);
+	map_dispose_vertex_lists(&map);
 	liquid_free_memory();
 	map_group_dispose_unit_list(&map);
 	

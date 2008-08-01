@@ -287,6 +287,37 @@ void write_single_mesh(map_mesh_type *mesh)
 
 	xml_add_tagend(FALSE);
 
+		// messages
+
+    if ((mesh->msg.entry_on) || (mesh->msg.exit_on) || (mesh->msg.base_on) || (mesh->msg.map_change_on)) {
+        xml_add_tagstart("Messages");
+        xml_add_tagend(FALSE);
+        
+        xml_add_tagstart("Entry");
+        xml_add_attribute_boolean("on",mesh->msg.entry_on);
+        xml_add_attribute_int("id",mesh->msg.entry_id);
+        xml_add_tagend(TRUE);
+        
+        xml_add_tagstart("Exit");
+        xml_add_attribute_boolean("on",mesh->msg.exit_on);
+        xml_add_attribute_int("id",mesh->msg.exit_id);
+        xml_add_tagend(TRUE);
+		
+        xml_add_tagstart("Base");
+        xml_add_attribute_boolean("on",mesh->msg.base_on);
+        xml_add_attribute_int("team",mesh->msg.base_team);
+        xml_add_tagend(TRUE);
+		
+        xml_add_tagstart("Map");
+        xml_add_attribute_boolean("on",mesh->msg.map_change_on);
+		xml_add_attribute_text("name",mesh->msg.map_name);
+		xml_add_attribute_text("spot_name",mesh->msg.map_spot_name);
+		xml_add_attribute_text("spot_type",mesh->msg.map_spot_type);
+		xml_add_tagend(TRUE);
+
+        xml_add_tagclose("Messages");
+    }
+
 		// vertexes
 
     xml_add_tagstart("Vertexes");
@@ -395,7 +426,6 @@ bool write_map_xml(map_type *map)
     int						n,k,nmesh,nliq;
 	bool					ok;
     portal_type				*portal;
-    portal_sight_list_type	*sight;
     map_mesh_type			*mesh;
 	map_liquid_type			*liq;
     map_light_type			*light;
