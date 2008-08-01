@@ -27,8 +27,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "common_view.h"
-#include "portal_view.h"
-#include "site_path_view.h"
 #include "walk_view.h"
 
 extern int				cr,cx,cz,cy,vertex_mode,magnify_factor,
@@ -237,8 +235,6 @@ void main_wind_control_piece(int piece_idx)
 {
 	switch (piece_idx) {
 		case 0:
-			main_wind_set_view_piece_portal();
-			portal_new();
 			break;
 		case 1:
 			piece_create_spot();
@@ -867,11 +863,6 @@ void main_wind_set_perspective(int perspective)
 	menu_set_perspective_check(perspective);
 }
 
-void main_wind_set_view_piece_portal(void)
-{
-	main_wind_set_view(vw_portal_only);
-}
-
 /* =======================================================
 
       Viewport and Projection Setup
@@ -1159,14 +1150,6 @@ void main_wind_draw(void)
 			main_wind_draw_4_panel_dividers();
 			break;
 			
-		case vw_portal_only:
-			portal_view_draw();
-			break;
-			
-		case vw_site_path_only:
-			site_path_view_draw();
-			break;
-			
 		case vw_top_only:
 			main_wind_setup_panel_top_full(&view_setup);
 			walk_view_draw(&view_setup,TRUE);
@@ -1248,7 +1231,6 @@ bool main_wind_click_check_box(d3pnt *pt,Rect *box)
 
 bool main_wind_click(d3pnt *pt,bool dblclick)
 {
-	Rect					box;
 	editor_3D_view_setup	view_setup;
 
 	switch (main_wind_view) {
@@ -1308,22 +1290,6 @@ bool main_wind_click(d3pnt *pt,bool dblclick)
 				if (!walk_view_compass_click(&view_setup,pt)) {
 					walk_view_click(&view_setup,pt,vm_dir_forward,FALSE,dblclick);
 				}
-				return(TRUE);
-			}
-			break;
-			
-		case vw_portal_only:
-			main_wind_setup_full_screen_box(&box);
-			if (main_wind_click_check_box(pt,&box)) {
-				portal_view_click(pt,dblclick);
-				return(TRUE);
-			}
-			break;
-			
-		case vw_site_path_only:
-			main_wind_setup_full_screen_box(&box);
-			if (main_wind_click_check_box(pt,&box)) {
-				site_path_view_click(pt,dblclick);
 				return(TRUE);
 			}
 			break;
@@ -1396,7 +1362,6 @@ bool main_wind_shift_down(void)
 
 void main_wind_cursor(d3pnt *pt)
 {
-	Rect					box;
 	editor_3D_view_setup	view_setup;
 
 	switch (main_wind_view) {
@@ -1421,16 +1386,6 @@ void main_wind_cursor(d3pnt *pt)
 			
 			main_wind_setup_panel_top_frame(&view_setup);
 			if (main_wind_click_check_box(pt,&view_setup.box)) walk_view_cursor(FALSE);
-			break;
-			
-		case vw_portal_only:
-			main_wind_setup_full_screen_box(&box);
-			if (main_wind_click_check_box(pt,&box)) portal_view_cursor();
-			break;
-			
-		case vw_site_path_only:
-			main_wind_setup_full_screen_box(&box);
-			if (main_wind_click_check_box(pt,&box)) site_path_view_cursor();
 			break;
 			
 		case vw_top_only:
@@ -1540,14 +1495,6 @@ void main_wind_key_down(char ch)
 			
 			break;
 			
-		case vw_portal_only:
-			portal_view_key(ch);
-			break;
-			
-		case vw_site_path_only:
-			site_path_view_key(ch);
-			break;
-			
 		case vw_top_only:
 			main_wind_setup_panel_top_full(&view_setup);
 			walk_view_key(&view_setup,vm_dir_top,ch);
@@ -1653,8 +1600,6 @@ void main_wind_scroll_wheel(d3pnt *pt,int delta)
 			
 			break;
 			
-		case vw_portal_only:
-		case vw_site_path_only:
 		case vw_top_only:
 			main_wind_magnify_scroll(delta);
 			break;
@@ -1781,21 +1726,21 @@ void main_wind_tool_default(void)
 
 void main_wind_tool_fix_enable(void)
 {
-	int			group_idx,type,portal_idx,main_idx,sub_idx;
+	int			group_idx,type,main_idx,sub_idx;
 	
 		// group combo
 		
 	group_idx=-1;
 	
 	if (select_count()==1) {
-		select_get(0,&type,&portal_idx,&main_idx,&sub_idx);
+		select_get(0,&type,&main_idx,&sub_idx);
 		
 		switch (type) {
 			case mesh_piece:
-				group_idx=map.portals[portal_idx].mesh.meshes[main_idx].group_idx;
+				group_idx=map.mesh.meshes[main_idx].group_idx;
 				break;
 			case liquid_piece:
-				group_idx=map.portals[portal_idx].liquid.liquids[main_idx].group_idx;
+				group_idx=map.liquid.liquids[main_idx].group_idx;
 				break;
 		}
 	}

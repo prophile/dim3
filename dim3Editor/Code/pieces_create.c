@@ -28,7 +28,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "dialog.h"
 #include "common_view.h"
-#include "portal_view.h"
 
 extern int						cr,cy,drag_mode;
 extern bool						dp_object,dp_node,dp_lightsoundparticle,dp_liquid;
@@ -137,7 +136,7 @@ void piece_create_spot(void)
     dp_object=TRUE;
 	
 	select_clear();
-	select_add(spot_piece,rn,index,-1);
+	select_add(spot_piece,index,-1);
 	
 	main_wind_draw();
 	main_wind_tool_reset();
@@ -191,7 +190,7 @@ void piece_create_scenery(void)
     dp_object=TRUE;
 	
 	select_clear();
-	select_add(scenery_piece,rn,index,-1);
+	select_add(scenery_piece,index,-1);
 	
 	main_wind_draw();
 	main_wind_tool_reset();
@@ -239,7 +238,7 @@ void piece_create_light(void)
 	dp_lightsoundparticle=TRUE;
 	
 	select_clear();
-	select_add(light_piece,rn,index,-1);
+	select_add(light_piece,index,-1);
 	
 	main_wind_draw();
 	dialog_map_light_settings_run(lit);
@@ -283,7 +282,7 @@ void piece_create_sound(void)
     dp_lightsoundparticle=TRUE;
 	
 	select_clear();
-	select_add(sound_piece,rn,index,-1);
+	select_add(sound_piece,index,-1);
 	
 	main_wind_draw();
 	dialog_map_sound_settings_run(snd);
@@ -328,7 +327,7 @@ void piece_create_particle(void)
     dp_lightsoundparticle=TRUE;
 	
 	select_clear();
-	select_add(particle_piece,rn,index,-1);
+	select_add(particle_piece,index,-1);
 	
 	main_wind_draw();
 	dialog_map_particle_settings_run(prt);
@@ -377,7 +376,7 @@ void piece_create_node(void)
 	dp_node=TRUE;
 	
 	select_clear();
-	select_add(node_piece,rn,index,-1);
+	select_add(node_piece,index,-1);
 	
 	main_wind_draw();
 	main_wind_tool_reset();
@@ -442,7 +441,7 @@ void piece_create_liquid(void)
 		
 	dp_liquid=TRUE;
 	select_clear();
-	select_add(liquid_piece,rn,index,-1);
+	select_add(liquid_piece,index,-1);
 
 	main_wind_draw();
 	main_wind_tool_reset();

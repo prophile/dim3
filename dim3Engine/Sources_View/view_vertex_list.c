@@ -201,8 +201,11 @@ void view_compile_gl_list_attach(void)
 
 	// supergumba -- we'll want to map this data in client space
 
-
+	
 #ifdef D3_OS_MAC
+	int			sz;
+	
+	sz=(map.vertexes.draw_vertex_count*3)*sizeof(float);
 	glVertexArrayRangeAPPLE(sz,map.vertexes.pvert);
 	glEnableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
 #endif
@@ -221,7 +224,7 @@ void view_compile_gl_list_attach(void)
 	}
 	
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vertex_vbo);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB,((map.vertexes.draw_vertex_count*3)sizeof(float)),map.vertexes.pvert,GL_STREAM_DRAW_ARB);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,((map.vertexes.draw_vertex_count*3)*sizeof(float)),map.vertexes.pvert,GL_STREAM_DRAW_ARB);
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,0);

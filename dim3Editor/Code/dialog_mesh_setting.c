@@ -96,7 +96,7 @@ static pascal OSStatus mesh_setting_event_proc(EventHandlerCallRef handler,Event
       
 ======================================================= */
 
-bool dialog_mesh_setting_run(int portal_idx,int mesh_idx,int poly_idx)
+bool dialog_mesh_setting_run(int mesh_idx,int poly_idx)
 {
 	float					x_txtoff,y_txtoff,x_txtfact,y_txtfact;
 	map_mesh_type			*mesh;
@@ -110,7 +110,7 @@ bool dialog_mesh_setting_run(int portal_idx,int mesh_idx,int poly_idx)
 
 		// set controls
 	
-	mesh=&map.portals[portal_idx].mesh.meshes[mesh_idx];
+	mesh=&map.mesh.meshes[mesh_idx];
 		
 	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSettingOn,0,mesh->flag.on);
 	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSettingPassThrough,0,mesh->flag.pass_through);
@@ -125,7 +125,7 @@ bool dialog_mesh_setting_run(int portal_idx,int mesh_idx,int poly_idx)
 	
 	mesh_poly=&mesh->polys[poly_idx];
 	
-	map_portal_mesh_get_poly_uv_as_box(&map,portal_idx,mesh_idx,poly_idx,&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
+	map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
 	
 	dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingOffX,0,x_txtoff);
 	dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingOffY,0,y_txtoff);
@@ -170,7 +170,7 @@ bool dialog_mesh_setting_run(int portal_idx,int mesh_idx,int poly_idx)
 		x_txtfact=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingSizeX,0);
 		y_txtfact=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingSizeY,0);
 
-		map_portal_mesh_set_poly_uv_as_box(&map,portal_idx,mesh_idx,poly_idx,x_txtoff,y_txtoff,x_txtfact,y_txtfact);
+		map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,x_txtoff,y_txtoff,x_txtfact,y_txtfact);
 
 		mesh_poly->dark_factor=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingDark,0);
 		mesh_poly->alpha=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingAlpha,0);

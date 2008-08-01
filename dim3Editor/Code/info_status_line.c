@@ -43,7 +43,7 @@ extern WindowRef		mainwind;
 
 void info_status_line_draw_selection(Rect *box)
 {
-	int				type,portal_idx,main_idx,sub_idx,len;
+	int				type,main_idx,sub_idx,len;
 	char			txt[256];
 	portal_type		*portal;
 	
@@ -72,34 +72,34 @@ void info_status_line_draw_selection(Rect *box)
 	}
 	else {
 	
-		select_get(0,&type,&portal_idx,&main_idx,&sub_idx);
+		select_get(0,&type,&main_idx,&sub_idx);
 
 		switch (type) {
 		
 		// supergumba -- need work here
 		
 			case node_piece:
-				sprintf(txt,"Node: %s (%d,%d,%d)",map.nodes[main_idx].name,map.nodes[main_idx].pos.x,map.nodes[main_idx].pos.y,map.nodes[main_idx].pos.z);
+				sprintf(txt,"Node: %s (%d,%d,%d)",map.nodes[main_idx].name,map.nodes[main_idx].pnt.x,map.nodes[main_idx].pnt.y,map.nodes[main_idx].pnt.z);
 				break;
 				
 			case spot_piece:
-				sprintf(txt,"Spot: %s (%d,%d,%d)",map.spots[main_idx].name,map.spots[main_idx].pos.x,map.spots[main_idx].pos.y,map.spots[main_idx].pos.z);
+				sprintf(txt,"Spot: %s (%d,%d,%d)",map.spots[main_idx].name,map.spots[main_idx].pnt.x,map.spots[main_idx].pnt.y,map.spots[main_idx].pnt.z);
 				break;
 				
 			case scenery_piece:
-				sprintf(txt,"Scenery: %s (%d,%d,%d)",map.sceneries[main_idx].model_name,map.sceneries[main_idx].pos.x,map.sceneries[main_idx].pos.y,map.sceneries[main_idx].pos.z);
+				sprintf(txt,"Scenery: %s (%d,%d,%d)",map.sceneries[main_idx].model_name,map.sceneries[main_idx].pnt.x,map.sceneries[main_idx].pnt.y,map.sceneries[main_idx].pnt.z);
 				break;
 				
 			case light_piece:
-				sprintf(txt,"Light: (%d,%d,%d)",map.lights[main_idx].pos.x,map.lights[main_idx].pos.y,map.lights[main_idx].pos.z);
+				sprintf(txt,"Light: (%d,%d,%d)",map.lights[main_idx].pnt.x,map.lights[main_idx].pnt.y,map.lights[main_idx].pnt.z);
 				break;
 				
 			case sound_piece:
-				sprintf(txt,"Sound: %s (%d,%d,%d)",map.sounds[main_idx].name,map.sounds[main_idx].pos.x,map.sounds[main_idx].pos.y,map.sounds[main_idx].pos.z);
+				sprintf(txt,"Sound: %s (%d,%d,%d)",map.sounds[main_idx].name,map.sounds[main_idx].pnt.x,map.sounds[main_idx].pnt.y,map.sounds[main_idx].pnt.z);
 				break;
 				
 			case particle_piece:
-				sprintf(txt,"Particle: %s (%d,%d,%d)",map.particles[main_idx].name,map.particles[main_idx].pos.x,map.particles[main_idx].pos.y,map.particles[main_idx].pos.z);
+				sprintf(txt,"Particle: %s (%d,%d,%d)",map.particles[main_idx].name,map.particles[main_idx].pnt.x,map.particles[main_idx].pnt.y,map.particles[main_idx].pnt.z);
 				break;
 		}
 	}

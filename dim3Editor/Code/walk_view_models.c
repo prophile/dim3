@@ -325,18 +325,16 @@ bool walk_view_model_draw(d3pnt *cpt,d3pos *pos,d3ang *ang,char *name)
       
 ======================================================= */
 
-bool walk_view_model_click_select_size(d3pnt *cpt,char *name,d3pos *pos,d3ang *ang,int *px,int *pz,int *ty,int *by)
+bool walk_view_model_click_select_size(d3pnt *cpt,char *name,d3pnt *pnt,d3ang *ang,int *px,int *pz,int *ty,int *by)
 {
-	int						idx,rn,x,y,z,wid_x,wid_z,high;
+	int						idx,x,y,z,wid_x,wid_z,high;
 	model_type				*model;
 	
 		// get position
 		
-	rn=pos->rn;
-	
-	x=(pos->x+map.portals[rn].x)-cpt->x;
-	y=(pos->y+1)-cpt->y;
-	z=cpt->z-(pos->z+map.portals[rn].z);
+	x=pnt->x-cpt->x;
+	y=(pnt->y+1)-cpt->y;
+	z=cpt->z-pnt->z;
 
 		// default size
 		
@@ -382,13 +380,13 @@ bool walk_view_model_click_select_size(d3pnt *cpt,char *name,d3pos *pos,d3ang *a
       
 ======================================================= */
 
-bool walk_view_model_draw_select(d3pnt *cpt,d3pos *pos,d3ang *ang,char *name)
+bool walk_view_model_draw_select(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name)
 {
 	int				px[4],pz[4],ty,by;
 	
 		// get polygons
 		
-	if (!walk_view_model_click_select_size(cpt,name,pos,ang,px,pz,&ty,&by)) return(FALSE);
+	if (!walk_view_model_click_select_size(cpt,name,pnt,ang,px,pz,&ty,&by)) return(FALSE);
 
 		// draw selection
 		

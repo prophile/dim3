@@ -43,14 +43,13 @@ void select_clear(void)
 	nselect_item=0;
 }
 
-void select_add(int type,int portal_idx,int main_idx,int sub_idx)
+void select_add(int type,int main_idx,int sub_idx)
 {
 	if (nselect_item==select_max_item) return;
 		
 		// add to selection list
 	
 	select_items[nselect_item].type=type;
-	select_items[nselect_item].portal_idx=portal_idx;
 	select_items[nselect_item].main_idx=main_idx;
 	select_items[nselect_item].sub_idx=sub_idx;
 	nselect_item++;
@@ -61,23 +60,21 @@ int select_count(void)
 	return(nselect_item);
 }
 
-void select_get(int sel_idx,int *type,int *portal_idx,int *main_idx,int *sub_idx)
+void select_get(int sel_idx,int *type,int *main_idx,int *sub_idx)
 {
 	*type=select_items[sel_idx].type;
-	*portal_idx=select_items[sel_idx].portal_idx;
 	*main_idx=select_items[sel_idx].main_idx;
 	*sub_idx=select_items[sel_idx].sub_idx;
 }
 
-void select_switch(int sel_idx,int type,int portal_idx,int main_idx,int sub_idx)
+void select_switch(int sel_idx,int type,int main_idx,int sub_idx)
 {
 	select_items[sel_idx].type=type;
-	select_items[sel_idx].portal_idx=portal_idx;
 	select_items[sel_idx].main_idx=main_idx;
 	select_items[sel_idx].sub_idx=sub_idx;
 }
 
-int select_find(int type,int portal_idx,int main_idx,int sub_idx)
+int select_find(int type,int main_idx,int sub_idx)
 {
 	int					n;
 	select_item_type	*select_item;
@@ -89,7 +86,7 @@ int select_find(int type,int portal_idx,int main_idx,int sub_idx)
 			if (select_item->type==type) return(n);
 		}
 		else {
-			if ((select_item->type==type) && (select_item->portal_idx==portal_idx) && (select_item->main_idx==main_idx) && (select_item->sub_idx==sub_idx)) return(n);
+			if ((select_item->type==type) && (select_item->main_idx==main_idx) && (select_item->sub_idx==sub_idx)) return(n);
 		}
 		select_item++;
 	}
@@ -97,24 +94,24 @@ int select_find(int type,int portal_idx,int main_idx,int sub_idx)
 	return(-1);
 }
 
-bool select_check(int type,int portal_idx,int main_idx,int sub_idx)
+bool select_check(int type,int main_idx,int sub_idx)
 {
-	return(select_find(type,portal_idx,main_idx,sub_idx)!=-1);
+	return(select_find(type,main_idx,sub_idx)!=-1);
 }
 
 bool select_has_type(int type)
 {
-	return(select_find(type,-1,-1,-1)!=-1);
+	return(select_find(type,-1,-1)!=-1);
 }
 
-void select_flip(int type,int portal_idx,int main_idx,int sub_idx)
+void select_flip(int type,int main_idx,int sub_idx)
 {
 	int				n,sel_idx;
 	
-	sel_idx=select_find(type,portal_idx,main_idx,sub_idx);
+	sel_idx=select_find(type,main_idx,sub_idx);
 		
 	if (sel_idx==-1) {
-		select_add(type,portal_idx,main_idx,sub_idx);
+		select_add(type,main_idx,sub_idx);
 		return;
 	}
 	
@@ -144,13 +141,11 @@ void select_sort(void)
 		switch_item=FALSE;
 		
 		for (n=0;n<(nselect_item-1);n++) {
-			if (select_items[n].portal_idx==select_items[n+1].portal_idx) {
-				if (select_items[n].main_idx<select_items[n+1].main_idx) {
-					memmove(&temp_item,&select_items[n],sizeof(select_item_type));
-					memmove(&select_items[n],&select_items[n+1],sizeof(select_item_type));
-					memmove(&select_items[n+1],&temp_item,sizeof(select_item_type));
-					switch_item=TRUE;
-				}
+			if (select_items[n].main_idx<select_items[n+1].main_idx) {
+				memmove(&temp_item,&select_items[n],sizeof(select_item_type));
+				memmove(&select_items[n],&select_items[n+1],sizeof(select_item_type));
+				memmove(&select_items[n+1],&temp_item,sizeof(select_item_type));
+				switch_item=TRUE;
 			}
 		}
 	}
@@ -167,12 +162,11 @@ void select_duplicate_clear(void)
 	nselect_duplicate_item=0;
 }
 
-void select_duplicate_add(int type,int portal_idx,int main_idx,int sub_idx)
+void select_duplicate_add(int type,int main_idx,int sub_idx)
 {
 	if (nselect_duplicate_item==select_max_item) return;
 	
 	select_duplicate_items[nselect_duplicate_item].type=type;
-	select_duplicate_items[nselect_duplicate_item].portal_idx=portal_idx;
 	select_duplicate_items[nselect_duplicate_item].main_idx=main_idx;
 	select_duplicate_items[nselect_duplicate_item].sub_idx=sub_idx;
 	nselect_duplicate_item++;
@@ -193,7 +187,7 @@ void select_duplicate_copy(void)
 void select_get_extent(d3pnt *min,d3pnt *max)
 {
 	int				n,sel_count,
-					type,portal_idx,main_idx,sub_idx;
+					type,main_idx,sub_idx;
 	d3pnt			t_min,t_max;
 	
 	min->x=min->z=min->y=map_max_size;
@@ -202,56 +196,56 @@ void select_get_extent(d3pnt *min,d3pnt *max)
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&portal_idx,&main_idx,&sub_idx);
+		select_get(n,&type,&main_idx,&sub_idx);
 		
 		switch (type) {
 		
 			case mesh_piece:
-				map_portal_mesh_calculate_extent(&map,portal_idx,main_idx,&t_min,&t_max);
+				map_mesh_calculate_extent(&map,main_idx,&t_min,&t_max);
 				break;
 				
 			case liquid_piece:
-				t_min.x=map.portals[portal_idx].liquid.liquids[main_idx].lft;
-				t_max.x=map.portals[portal_idx].liquid.liquids[main_idx].rgt;
-				t_min.z=map.portals[portal_idx].liquid.liquids[main_idx].top;
-				t_max.z=map.portals[portal_idx].liquid.liquids[main_idx].bot;
-				t_min.y=t_max.y=map.portals[portal_idx].liquid.liquids[main_idx].y;
+				t_min.x=map.liquid.liquids[main_idx].lft;
+				t_max.x=map.liquid.liquids[main_idx].rgt;
+				t_min.z=map.liquid.liquids[main_idx].top;
+				t_max.z=map.liquid.liquids[main_idx].bot;
+				t_min.y=t_max.y=map.liquid.liquids[main_idx].y;
 				break;
 				
 			case node_piece:
-				t_min.x=t_max.x=map.nodes[main_idx].pos.x;
-				t_min.y=t_max.y=map.nodes[main_idx].pos.y;
-				t_min.z=t_max.z=map.nodes[main_idx].pos.z;
+				t_min.x=t_max.x=map.nodes[main_idx].pnt.x;
+				t_min.y=t_max.y=map.nodes[main_idx].pnt.y;
+				t_min.z=t_max.z=map.nodes[main_idx].pnt.z;
 				break;
 				
 			case spot_piece:
-				t_min.x=t_max.x=map.spots[main_idx].pos.x;
-				t_min.y=t_max.y=map.spots[main_idx].pos.y;
-				t_min.z=t_max.z=map.spots[main_idx].pos.z;
+				t_min.x=t_max.x=map.spots[main_idx].pnt.x;
+				t_min.y=t_max.y=map.spots[main_idx].pnt.y;
+				t_min.z=t_max.z=map.spots[main_idx].pnt.z;
 				break;
 				
 			case scenery_piece:
-				t_min.x=t_max.x=map.sceneries[main_idx].pos.x;
-				t_min.y=t_max.y=map.sceneries[main_idx].pos.y;
-				t_min.z=t_max.z=map.sceneries[main_idx].pos.z;
+				t_min.x=t_max.x=map.sceneries[main_idx].pnt.x;
+				t_min.y=t_max.y=map.sceneries[main_idx].pnt.y;
+				t_min.z=t_max.z=map.sceneries[main_idx].pnt.z;
 				break;
 				
 			case light_piece:
-				t_min.x=t_max.x=map.lights[main_idx].pos.x;
-				t_min.y=t_max.y=map.lights[main_idx].pos.y;
-				t_min.z=t_max.z=map.lights[main_idx].pos.z;
+				t_min.x=t_max.x=map.lights[main_idx].pnt.x;
+				t_min.y=t_max.y=map.lights[main_idx].pnt.y;
+				t_min.z=t_max.z=map.lights[main_idx].pnt.z;
 				break;
 				
 			case sound_piece:
-				t_min.x=t_max.x=map.sounds[main_idx].pos.x;
-				t_min.y=t_max.y=map.sounds[main_idx].pos.y;
-				t_min.z=t_max.z=map.sounds[main_idx].pos.z;
+				t_min.x=t_max.x=map.sounds[main_idx].pnt.x;
+				t_min.y=t_max.y=map.sounds[main_idx].pnt.y;
+				t_min.z=t_max.z=map.sounds[main_idx].pnt.z;
 				break;
 				
 			case particle_piece:
-				t_min.x=t_max.x=map.particles[main_idx].pos.x;
-				t_min.y=t_max.y=map.particles[main_idx].pos.y;
-				t_min.z=t_max.z=map.particles[main_idx].pos.z;
+				t_min.x=t_max.x=map.particles[main_idx].pnt.x;
+				t_min.y=t_max.y=map.particles[main_idx].pnt.y;
+				t_min.z=t_max.z=map.particles[main_idx].pnt.z;
 				break;
 				
 		}

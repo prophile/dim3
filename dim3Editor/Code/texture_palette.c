@@ -77,21 +77,21 @@ void texture_palette_setup(void)
 
 int texture_palette_get_selected_texture(void)
 {
-	int				type,portal_idx,main_idx,poly_idx;
+	int				type,main_idx,poly_idx;
 	
 	if (select_count()!=1) return(-1);
 	
-	select_get(0,&type,&portal_idx,&main_idx,&poly_idx);
+	select_get(0,&type,&main_idx,&poly_idx);
 	
-	if (type==liquid_piece) return(map.portals[portal_idx].liquid.liquids[main_idx].txt_idx);
-	if (type==mesh_piece) return(map.portals[portal_idx].mesh.meshes[main_idx].polys[poly_idx].txt_idx);
+	if (type==liquid_piece) return(map.liquid.liquids[main_idx].txt_idx);
+	if (type==mesh_piece) return(map.mesh.meshes[main_idx].polys[poly_idx].txt_idx);
 	
 	return(-1);
 }
 
 void texture_palette_put_selected_texture(int txt_idx)
 {
-	int					n,k,sel_count,type,portal_idx,main_idx,poly_idx;
+	int					n,k,sel_count,type,main_idx,poly_idx;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
@@ -99,12 +99,12 @@ void texture_palette_put_selected_texture(int txt_idx)
 	
 	for (n=0;n!=sel_count;n++) {
 	
-		select_get(n,&type,&portal_idx,&main_idx,&poly_idx);
+		select_get(n,&type,&main_idx,&poly_idx);
 		
 			// liquids
 			
 		if (type==liquid_piece) {
-			map.portals[portal_idx].liquid.liquids[main_idx].txt_idx=txt_idx;
+			map.liquid.liquids[main_idx].txt_idx=txt_idx;
 			continue;
 		}
 		
@@ -112,7 +112,7 @@ void texture_palette_put_selected_texture(int txt_idx)
 			
 		if (type!=mesh_piece) continue;
 		
-		mesh=&map.portals[portal_idx].mesh.meshes[main_idx];
+		mesh=&map.mesh.meshes[main_idx];
 		
 			// only set polygon
 			

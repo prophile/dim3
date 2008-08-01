@@ -244,7 +244,7 @@ void map_convert_enlarge(map_type *map,int seg_cnt,segment_type *seg_list)
 			case sg_ambient_wall:
 				seg->data.ambient_wall.lx=(seg->data.ambient_wall.lx*map_enlarge)+portal->x;
 				seg->data.ambient_wall.rx=(seg->data.ambient_wall.rx*map_enlarge)+portal->x;
-				seg->data.ambient_wall.lz=(seg->data.ambient_wall.lz*map_enlarge)+portal->x;
+				seg->data.ambient_wall.lz=(seg->data.ambient_wall.lz*map_enlarge)+portal->z;
 				seg->data.ambient_wall.rz=(seg->data.ambient_wall.rz*map_enlarge)+portal->z;
 				seg->data.ambient_wall.ty*=map_enlarge;
 				seg->data.ambient_wall.by=(seg->data.ambient_wall.by+1)*map_enlarge;

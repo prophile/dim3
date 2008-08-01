@@ -41,7 +41,6 @@ int						link_dist[max_node][max_node_link];
 int node_link_find_node_by_point(editor_3D_view_setup *view_setup,d3pnt *click_pt)
 {
 	int				n,px[4],pz[4],ty,by,fz,hit_z,node_idx;
-	portal_type		*portal;
 	node_type		*node;
 	
 	node_idx=-1;
@@ -50,11 +49,9 @@ int node_link_find_node_by_point(editor_3D_view_setup *view_setup,d3pnt *click_p
 	for (n=0;n!=map.nnode;n++) {
 	
 		node=&map.nodes[n];
-		walk_view_sprite_select_size(&view_setup->cpt,&node->pos,px,pz,&ty,&by);
+		walk_view_sprite_select_size(&view_setup->cpt,&node->pnt,px,pz,&ty,&by);
 		
-		portal=&map.portals[node->pos.rn];
-		
-		if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&fz)) {
+		if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
 			if (fz<hit_z) {
 				hit_z=fz;
 				node_idx=n;
@@ -67,11 +64,11 @@ int node_link_find_node_by_point(editor_3D_view_setup *view_setup,d3pnt *click_p
 
 int node_link_is_node_link_selected(void)
 {
-	int			type,portal_idx,main_idx,sub_idx;
+	int			type,main_idx,sub_idx;
 	
 	if (select_count()!=1) return(-1);
 	
-	select_get(0,&type,&portal_idx,&main_idx,&sub_idx);
+	select_get(0,&type,&main_idx,&sub_idx);
 	if (type!=node_piece) return(-1);
 	
 	return(main_idx);
@@ -266,8 +263,8 @@ void node_path_rebuild(void)
 		
     for (i=0;i!=map.nnode;i++) {
     
-        x=node->pos.x;
-        z=node->pos.z;
+        x=node->pnt.x;
+        z=node->pnt.z;
 		
 		to_node=map.nodes;
     
@@ -277,7 +274,7 @@ void node_path_rebuild(void)
                 link_dist[i][k]=0;
             }
             else {
-            	link_dist[i][k]=distance_2D_get(x,z,to_node->pos.x,to_node->pos.z);
+            	link_dist[i][k]=distance_2D_get(x,z,to_node->pnt.x,to_node->pnt.z);
             }
 			
 			to_node++;

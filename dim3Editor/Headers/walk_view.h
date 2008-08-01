@@ -40,7 +40,7 @@ extern void walk_view_key(editor_3D_view_setup *view_setup,int view_move_dir,cha
 // walk view draw piece
 //
 
-extern void walk_view_draw_select_mesh_get_grow_handles(int rn,int mesh_idx,int *px,int *py,int *pz);
+extern void walk_view_draw_select_mesh_get_grow_handles(int mesh_idx,int *px,int *py,int *pz);
 extern void walk_view_sight_path_trace(portal_sight_list_type *sight,int u);
 extern void walk_view_sight_path_mark(int rn);
 extern void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position);
@@ -53,9 +53,9 @@ extern void walk_view_draw_select_portal(int rn,d3pnt *cpt);
 extern void walk_view_click_drag_movement(editor_3D_view_setup *view_setup,int view_move_dir,int x,int y,int *xadd,int *yadd,int *zadd);
 extern int walk_view_get_grid(void);
 extern void walk_view_click_grid(d3pnt *pt);
-extern void walk_view_click_snap(int portal_idx,int mesh_idx,int vertex_idx,d3pnt *pt,d3pnt *mpt);
+extern void walk_view_click_snap(int mesh_idx,int vertex_idx,d3pnt *pt,d3pnt *mpt);
 extern void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool dblclick);
-extern bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,portal_type *portal,map_mesh_type *mesh,int poly_idx,int *hit_z);
+extern bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,map_mesh_type *mesh,int poly_idx,int *hit_z);
 extern bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 extern bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 extern bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
@@ -69,7 +69,7 @@ extern bool walk_view_click_drag_texture(editor_3D_view_setup *view_setup,d3pnt 
 // walk view draw handle
 //
 
-extern void walk_view_sprite_select_size(d3pnt *cpt,d3pos *pos,int *px,int *pz,int *ty,int *by);
+extern void walk_view_sprite_select_size(d3pnt *cpt,d3pnt *pnt,int *px,int *pz,int *ty,int *by);
 
 //
 // walk view movement
@@ -101,5 +101,5 @@ extern void walk_view_models_start(void);
 extern void walk_view_models_close(void);
 extern void walk_view_models_reset(void);
 extern bool walk_view_model_draw(d3pnt *cpt,d3pos *pos,d3ang *ang,char *name);
-extern bool walk_view_model_click_select_size(d3pnt *cpt,char *name,d3pos *pos,d3ang *ang,int *px,int *pz,int *ty,int *by);
-extern bool walk_view_model_draw_select(d3pnt *cpt,d3pos *pos,d3ang *ang,char *name);
+extern bool walk_view_model_click_select_size(d3pnt *cpt,char *name,d3pnt *pnt,d3ang *ang,int *px,int *pz,int *ty,int *by);
+extern bool walk_view_model_draw_select(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name);

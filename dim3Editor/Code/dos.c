@@ -28,7 +28,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "dialog.h"
 #include "common_view.h"
-#include "portal_view.h"
 #include "walk_view.h"
 
 extern WindowRef				mainwind;
@@ -140,77 +139,13 @@ bool create_course_script(char *file_name)
 	return(TRUE);
 }
 
-bool create_first_portal(void)
-{
-	int				x,y,z;
-	char			bitmap_name[256],path[1024],err_str[256];
-	unsigned char	p_err_str[256];
-	spot_type		*spot;
-	map_light_type	*lit;
-
-		// get first texture
-		
-	if (!dialog_file_open_run("BitmapOpen","Bitmaps/Textures","png",bitmap_name)) return(FALSE);
-		
-	file_paths_data(&file_path_setup,path,"Bitmaps/Textures",bitmap_name,"png");
-	if (!bitmap_check(path,err_str)) {
-		CopyCStringToPascal(err_str,p_err_str);
-		StandardAlert(0,"\pTexture Error",p_err_str,NULL,NULL);
-		return(FALSE);
-	}
-
-	map_add_texture_frame(&map,0,bitmap_name,"","","");
-	
-		// get first portal
-		
-	cx=map_max_size>>1;
-	cz=map_max_size>>1;
-	cy=200*map_enlarge;
-	
-	map.nportal=0;
-	if (!portal_new()) return(FALSE);
-
-	map_portal_calculate_center(&map,0,&x,&y,&z);
-	if (y==0) y=200;
-	
-		// put player spot in first portal
-		
-	spot=&map.spots[0];
-	map.nspot=1;
-    
-	spot->pnt.x=x;
-	spot->pnt.y=y;
-	spot->pnt.z=z;
-	spot->ang.y=0;
-	strcpy(spot->name,"Start");
-	strcpy(spot->type,"Player");
-	strcpy(spot->script,"Player");
-	spot->display_model[0]=0x0;
-	spot->params[0]=0x0;
-	
-		// and create a single light
-		
-	lit=&map.lights[0];
-	map.nlight=1;
-	
-	lit->pnt.x=x;
-	lit->pnt.z=z+4;
-	lit->pnt.y=y-10;
-	lit->type=lt_normal;
-	lit->col.r=lit->col.g=lit->col.b=1;
-	lit->intensity=100;
-	lit->on=TRUE;
-	
-	return(TRUE);
-}
-
 /* =======================================================
 
       New Map
       
 ======================================================= */
 
-bool file_new_map(bool create_initial_portal)
+bool file_new_map(void)
 {
 	char		file_name[256];
 	
@@ -238,17 +173,6 @@ bool file_new_map(bool create_initial_portal)
     
     open_windows();
 	main_wind_set_title(file_name);
-	
-		// create first portal
-		
-	if (!create_initial_portal) return(TRUE);
-	
-	if (!create_first_portal()) {
-		map_opened=FALSE;
-		close_windows();
-		map_close(&map);
-		return(FALSE);
-	}
 	
 		// start models
 		

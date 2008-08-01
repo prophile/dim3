@@ -160,56 +160,46 @@ void walk_view_click_grid(d3pnt *pt)
 	pt->z*=sz;
 }
 
-void walk_view_click_snap(int portal_idx,int mesh_idx,int vertex_idx,d3pnt *pt,d3pnt *mpt)
+void walk_view_click_snap(int mesh_idx,int vertex_idx,d3pnt *pt,d3pnt *mpt)
 {
-	int				n,k,t,chk_x,chk_y,chk_z;
+	int				n,t,chk_x,chk_y,chk_z;
 	d3pnt			*dpt;
-	portal_type		*portal,*chk_portal;
 	map_mesh_type	*mesh;
 	
 	if (vertex_mode!=vertex_mode_snap) return;
 	
-		// put vertexes in map space
+		// get snap vertex
 		
-	chk_portal=&map.portals[portal_idx];
-	
-	chk_x=(pt->x+mpt->x)+chk_portal->x;
+	chk_x=pt->x+mpt->x;
 	chk_y=pt->y+mpt->y;
-	chk_z=(pt->z+mpt->z)+chk_portal->z;
+	chk_z=pt->z+mpt->z;
 	
 		// any vertexes to snap to?
 		
-	portal=map.portals;
-	
-	for (n=0;n!=map.nportal;n++) {
-	
-		mesh=portal->mesh.meshes;
+	mesh=map.mesh.meshes;
 		
-		for (k=0;k!=portal->mesh.nmesh;k++) {
-			
-			if ((n==portal_idx) && (k==mesh_idx)) {
-				mesh++;
-				continue;
-			}
-	
-			dpt=mesh->vertexes;
-			
-			for (t=0;t!=mesh->nvertex;t++) {
-			
-				if (distance_get((dpt->x+portal->x),dpt->y,(dpt->z+portal->z),chk_x,chk_y,chk_z)<(map_enlarge*5)) {
-					mpt->x=(dpt->x+portal->x)-(pt->x+chk_portal->x);
-					mpt->y=dpt->y-pt->y;
-					mpt->z=(dpt->z+portal->z)-(pt->z+chk_portal->z);
-					return;
-				}
-				
-				dpt++;
-			}
+	for (n=0;n!=map.mesh.nmesh;n++) {
 		
+		if (n==mesh_idx) {
 			mesh++;
+			continue;
 		}
+
+		dpt=mesh->vertexes;
 		
-		portal++;
+		for (t=0;t!=mesh->nvertex;t++) {
+		
+			if (distance_get(dpt->x,dpt->y,dpt->z,chk_x,chk_y,chk_z)<(map_enlarge*5)) {
+				mpt->x=dpt->x-pt->x;
+				mpt->y=dpt->y-pt->y;
+				mpt->z=dpt->z-pt->z;
+				return;
+			}
+			
+			dpt++;
+		}
+	
+		mesh++;
 	}
 }
 
@@ -219,7 +209,7 @@ void walk_view_click_snap(int portal_idx,int mesh_idx,int vertex_idx,d3pnt *pt,d
       
 ======================================================= */
 
-bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,portal_type *portal,map_mesh_type *mesh,int poly_idx,int *hit_z)
+bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,map_mesh_type *mesh,int poly_idx,int *hit_z)
 {
 	int					t,fz,px[8],py[8],pz[8];
 	bool				clip_ok,   off_left,off_right,off_top,off_bottom;
@@ -250,9 +240,9 @@ bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *cli
 
 	for (t=0;t!=mesh_poly->ptsz;t++) {
 		pt=&mesh->vertexes[mesh_poly->v[t]];
-		px[t]=(pt->x+portal->x)-view_setup->cpt.x;
+		px[t]=pt->x-view_setup->cpt.x;
 		py[t]=pt->y-view_setup->cpt.y;
-		pz[t]=view_setup->cpt.z-(pt->z+portal->z);
+		pz[t]=view_setup->cpt.z-pt->z;
 		
 		if (walk_view_click_rotate_polygon_behind_z(px[t],py[t],pz[t])) return(FALSE);
 				
@@ -282,7 +272,7 @@ bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *cli
 	return(TRUE);
 }
 
-bool walk_view_quad_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,portal_type *portal,int *px,int *py,int *pz,int *hit_z)
+bool walk_view_quad_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,int *px,int *py,int *pz,int *hit_z)
 {
 	int					t,fz;
 	bool				off_left,off_right,off_top,off_bottom;
@@ -317,7 +307,7 @@ bool walk_view_quad_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	return(TRUE);
 }
 
-bool walk_view_cube_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,portal_type *portal,int *x,int *z,int ty,int by,int *hit_z)
+bool walk_view_cube_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,int *x,int *z,int ty,int by,int *hit_z)
 {
 	int					px[4],py[4],pz[4];
 	bool				hit;
@@ -330,7 +320,7 @@ bool walk_view_cube_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	memmove(pz,z,(4*sizeof(int)));
 	py[0]=py[1]=py[2]=py[3]=ty;
 
-	hit=hit||walk_view_quad_click_index(view_setup,click_pt,portal,px,py,pz,hit_z);
+	hit=hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z);
 	
 		// bottom
 		
@@ -338,7 +328,7 @@ bool walk_view_cube_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	memmove(pz,z,(4*sizeof(int)));
 	py[0]=py[1]=py[2]=py[3]=by;
 
-	hit=hit||walk_view_quad_click_index(view_setup,click_pt,portal,px,py,pz,hit_z);
+	hit=hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z);
 	
 		// front
 		
@@ -349,7 +339,7 @@ bool walk_view_cube_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	py[0]=py[1]=ty;
 	py[2]=py[3]=by;
 
-	hit=hit||walk_view_quad_click_index(view_setup,click_pt,portal,px,py,pz,hit_z);
+	hit=hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z);
 
 		// back
 		
@@ -360,7 +350,7 @@ bool walk_view_cube_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	py[0]=py[1]=ty;
 	py[2]=py[3]=by;
 
-	hit=hit||walk_view_quad_click_index(view_setup,click_pt,portal,px,py,pz,hit_z);
+	hit=hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z);
 	
 		// left
 		
@@ -371,7 +361,7 @@ bool walk_view_cube_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	py[0]=py[1]=ty;
 	py[2]=py[3]=by;
 
-	hit=hit||walk_view_quad_click_index(view_setup,click_pt,portal,px,py,pz,hit_z);
+	hit=hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z);
 
 		// right
 		
@@ -382,7 +372,7 @@ bool walk_view_cube_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	py[0]=py[1]=ty;
 	py[2]=py[3]=by;
 
-	return(hit||walk_view_quad_click_index(view_setup,click_pt,portal,px,py,pz,hit_z));
+	return(hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z));
 }
 
 bool walk_view_liquid_click(editor_3D_view_setup *view_setup,d3pnt *click_pt,portal_type *portal,map_liquid_type *liq,int *hit_z)
@@ -395,7 +385,7 @@ bool walk_view_liquid_click(editor_3D_view_setup *view_setup,d3pnt *click_pt,por
 	pz[0]=pz[1]=view_setup->cpt.z-(liq->top+portal->z);
 	pz[2]=pz[3]=view_setup->cpt.z-(liq->bot+portal->z);
 	
-	return(walk_view_quad_click_index(view_setup,click_pt,portal,px,py,pz,hit_z));
+	return(walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z));
 }
 
 /* =======================================================
@@ -445,7 +435,7 @@ void walk_view_click_portal(editor_3D_view_setup *view_setup,d3pnt *click_pt)
 			by-=view_setup->cpt.y;
 		}
 		
-		if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&hit_z)) {
+		if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&hit_z)) {
 			hit=TRUE;
 			cr=n;
 			break;
@@ -472,9 +462,9 @@ void walk_view_click_portal(editor_3D_view_setup *view_setup,d3pnt *click_pt)
       
 ======================================================= */
 
-void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,int *type,int *portal_idx,int *main_idx,int *sub_idx,bool sel_only)
+void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,int *type,int *main_idx,int *sub_idx,bool sel_only)
 {
-	int					i,n,k,fz,box_wid,box_high,
+	int					n,k,fz,box_wid,box_high,
 						px[4],pz[4],ty,by,hit_z;
 	portal_type			*portal;
 	map_mesh_type		*mesh;
@@ -492,196 +482,170 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	
 	*type=-1;
 	hit_z=100000;
+		
+		// portal meshes
 	
-		// run through the portals
-		
-	for (i=0;i!=map.nportal;i++) {
+	mesh=map.mesh.meshes;
 	
-		portal=&map.portals[i];
-        if (!portal->in_path) continue;
+	for (n=0;n!=map.mesh.nmesh;n++) {
+	
+		for (k=0;k!=mesh->npoly;k++) {
 		
-			// portal meshes
-		
-		mesh=portal->mesh.meshes;
-		
-		for (n=0;n!=portal->mesh.nmesh;n++) {
-		
-			for (k=0;k!=mesh->npoly;k++) {
-			
-				if (walk_view_mesh_poly_click_index(view_setup,click_pt,portal,mesh,k,&fz)) {
-					if (fz<hit_z) {
-						hit_z=fz;
-						*type=mesh_piece;
-						*portal_idx=i;
-						*main_idx=n;
-						*sub_idx=k;
-					}
+			if (walk_view_mesh_poly_click_index(view_setup,click_pt,mesh,k,&fz)) {
+				if (fz<hit_z) {
+					hit_z=fz;
+					*type=mesh_piece;
+					*main_idx=n;
+					*sub_idx=k;
 				}
+			}
 
-			}
-		
-			mesh++;
 		}
-		
-		if (dp_liquid) {
-		
-				// portal liquids
-				
-			for (n=0;n!=portal->liquid.nliquid;n++) {
-				if (walk_view_liquid_click(view_setup,click_pt,portal,&portal->liquid.liquids[n],&fz)) {
-					if (fz<hit_z) {
-						hit_z=fz;
-						*type=liquid_piece;
-						*portal_idx=i;
-						*main_idx=n;
-						*sub_idx=-1;
-					}
+	
+		mesh++;
+	}
+	
+	if (dp_liquid) {
+	
+			// portal liquids
+			
+		for (n=0;n!=map.liquid.nliquid;n++) {
+			if (walk_view_liquid_click(view_setup,click_pt,portal,&map.liquid.liquids[n],&fz)) {
+				if (fz<hit_z) {
+					hit_z=fz;
+					*type=liquid_piece;
+					*main_idx=n;
+					*sub_idx=-1;
 				}
 			}
 		}
-		
-		if (dp_object) {
-		
-				// portal spots
-				
-			for (n=0;n!=map.nspot;n++) {
-				
-				spot=&map.spots[n];
-				if (spot->pos.rn!=i)  continue;
-				
-				if (!walk_view_model_click_select_size(&view_setup->cpt,spot->display_model,&spot->pos,&spot->ang,px,pz,&ty,&by)) continue;
-				
-				if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&fz)) {
-					if (fz<hit_z) {
-						hit_z=fz;
-						*type=spot_piece;
-						*portal_idx=i;
-						*main_idx=n;
-						*sub_idx=-1;
-					}
-				}
-			}
-		
-				// portal scenery
-				
-			for (n=0;n!=map.nscenery;n++) {
-				
-				scenery=&map.sceneries[n];
-				if (scenery->pos.rn!=i)  continue;
-				
-				if (!walk_view_model_click_select_size(&view_setup->cpt,scenery->model_name,&scenery->pos,&scenery->ang,px,pz,&ty,&by)) continue;
-				
-				if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&fz)) {
-					if (fz<hit_z) {
-						hit_z=fz;
-						*type=scenery_piece;
-						*portal_idx=i;
-						*main_idx=n;
-						*sub_idx=-1;
-					}
+	}
+	
+	if (dp_object) {
+	
+			// portal spots
+			
+		for (n=0;n!=map.nspot;n++) {
+			
+			spot=&map.spots[n];
+			
+			if (!walk_view_model_click_select_size(&view_setup->cpt,spot->display_model,&spot->pnt,&spot->ang,px,pz,&ty,&by)) continue;
+			
+			if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
+				if (fz<hit_z) {
+					hit_z=fz;
+					*type=spot_piece;
+					*main_idx=n;
+					*sub_idx=-1;
 				}
 			}
 		}
-		
-		if (dp_lightsoundparticle) {
-		
-				// map lights
-				
-			for (n=0;n!=map.nlight;n++) {
+	
+			// portal scenery
 			
-				map_light=&map.lights[n];
-				if (map_light->pos.rn!=i) continue;
-				
-				walk_view_sprite_select_size(&view_setup->cpt,&map_light->pos,px,pz,&ty,&by);
-				
-				if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&fz)) {
-					if (fz<hit_z) {
-						hit_z=fz;
-						*type=light_piece;
-						*portal_idx=i;
-						*main_idx=n;
-						*sub_idx=-1;
-					}
+		for (n=0;n!=map.nscenery;n++) {
+			
+			scenery=&map.sceneries[n];
+			
+			if (!walk_view_model_click_select_size(&view_setup->cpt,scenery->model_name,&scenery->pnt,&scenery->ang,px,pz,&ty,&by)) continue;
+			
+			if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
+				if (fz<hit_z) {
+					hit_z=fz;
+					*type=scenery_piece;
+					*main_idx=n;
+					*sub_idx=-1;
 				}
 			}
+		}
+	}
+	
+	if (dp_lightsoundparticle) {
+	
+			// map lights
 			
-				// map sound
-				
-			for (n=0;n!=map.nsound;n++) {
+		for (n=0;n!=map.nlight;n++) {
+		
+			map_light=&map.lights[n];
 			
-				map_sound=&map.sounds[n];
-				if (map_sound->pos.rn!=i) continue;
-				
-				walk_view_sprite_select_size(&view_setup->cpt,&map_sound->pos,px,pz,&ty,&by);
-				
-				if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&fz)) {
-					if (fz<hit_z) {
-						hit_z=fz;
-						*type=sound_piece;
-						*portal_idx=i;
-						*main_idx=n;
-						*sub_idx=-1;
-					}
-				}
-			}
+			walk_view_sprite_select_size(&view_setup->cpt,&map_light->pnt,px,pz,&ty,&by);
 			
-				// map particle
-				
-			for (n=0;n!=map.nparticle;n++) {
-			
-				map_particle=&map.particles[n];
-				if (map_particle->pos.rn!=i) continue;
-				
-				walk_view_sprite_select_size(&view_setup->cpt,&map_particle->pos,px,pz,&ty,&by);
-				
-				if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&fz)) {
-					if (fz<hit_z) {
-						hit_z=fz;
-						*type=particle_piece;
-						*portal_idx=i;
-						*main_idx=n;
-						*sub_idx=-1;
-					}
+			if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
+				if (fz<hit_z) {
+					hit_z=fz;
+					*type=light_piece;
+					*main_idx=n;
+					*sub_idx=-1;
 				}
 			}
 		}
 		
-		if (dp_node) {
-		
-				// map node
-				
-			for (n=0;n!=map.nnode;n++) {
+			// map sound
 			
-				node=&map.nodes[n];
-				if (node->pos.rn!=i) continue;
-				
-				walk_view_sprite_select_size(&view_setup->cpt,&node->pos,px,pz,&ty,&by);
-				
-				if (walk_view_cube_click_index(view_setup,click_pt,portal,px,pz,ty,by,&fz)) {
-					if (fz<hit_z) {
-						hit_z=fz;
-						*type=node_piece;
-						*portal_idx=i;
-						*main_idx=n;
-						*sub_idx=-1;
-					}
+		for (n=0;n!=map.nsound;n++) {
+		
+			map_sound=&map.sounds[n];
+			
+			walk_view_sprite_select_size(&view_setup->cpt,&map_sound->pnt,px,pz,&ty,&by);
+			
+			if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
+				if (fz<hit_z) {
+					hit_z=fz;
+					*type=sound_piece;
+					*main_idx=n;
+					*sub_idx=-1;
 				}
 			}
-		}	
+		}
+		
+			// map particle
+			
+		for (n=0;n!=map.nparticle;n++) {
+		
+			map_particle=&map.particles[n];
+			
+			walk_view_sprite_select_size(&view_setup->cpt,&map_particle->pnt,px,pz,&ty,&by);
+			
+			if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
+				if (fz<hit_z) {
+					hit_z=fz;
+					*type=particle_piece;
+					*main_idx=n;
+					*sub_idx=-1;
+				}
+			}
+		}
+	}
+	
+	if (dp_node) {
+	
+			// map node
+			
+		for (n=0;n!=map.nnode;n++) {
+		
+			node=&map.nodes[n];
+			
+			walk_view_sprite_select_size(&view_setup->cpt,&node->pnt,px,pz,&ty,&by);
+			
+			if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
+				if (fz<hit_z) {
+					hit_z=fz;
+					*type=node_piece;
+					*main_idx=n;
+					*sub_idx=-1;
+				}
+			}
+		}
 	}
 }
 	
 void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,bool dblclick)
 {
-	int				type,portal_idx,main_idx,sub_idx;
+	int				type,main_idx,sub_idx;
 	
 		// anything clicked?
 		
-	walk_view_mesh_click_index(view_setup,pt,&type,&portal_idx,&main_idx,&sub_idx,FALSE);
-	
-		// if a selection, make sure right portal is selected
-				
-	if (type!=-1) cr=portal_idx;
+	walk_view_mesh_click_index(view_setup,pt,&type,&main_idx,&sub_idx,FALSE);
 	
 		// clear or add to selection
 		
@@ -690,13 +654,13 @@ void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,boo
 	}
 	else {
 		if (!main_wind_shift_down()) {
-			if (!select_check(type,portal_idx,main_idx,sub_idx)) {			// keep selection if selecting an already selected piece
+			if (!select_check(type,main_idx,sub_idx)) {			// keep selection if selecting an already selected piece
 				select_clear();	
-				select_add(type,portal_idx,main_idx,sub_idx);
+				select_add(type,main_idx,sub_idx);
 			}
 		}
 		else {
-			select_flip(type,portal_idx,main_idx,sub_idx);
+			select_flip(type,main_idx,sub_idx);
 		}
 	}
 	
@@ -717,21 +681,21 @@ void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,boo
 
 void walk_view_click_info(void)
 {
-	int				type,portal_idx,main_idx,sub_idx;
+	int				type,main_idx,sub_idx;
 	map_liquid_type	*liq;
 	
     if (select_count()!=1) return;
 	
-	select_get(0,&type,&portal_idx,&main_idx,&sub_idx);
+	select_get(0,&type,&main_idx,&sub_idx);
 
 	switch (type) {
 	
 		case mesh_piece:
-			dialog_mesh_setting_run(portal_idx,main_idx,sub_idx);
+			dialog_mesh_setting_run(main_idx,sub_idx);
 			break;
 			
 		case liquid_piece:
-			liq=&map.portals[portal_idx].liquid.liquids[main_idx];
+			liq=&map.liquid.liquids[main_idx];
 			dialog_liquid_settings_run(liq);
 			break;
 	

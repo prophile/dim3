@@ -56,10 +56,8 @@ and can be sold or given away.
 
 #define kCommandView3Panel					FOUR_CHAR_CODE('vw01')
 #define kCommandView4Panel					FOUR_CHAR_CODE('vw02')
-#define kCommandViewPortal					FOUR_CHAR_CODE('vw03')
-#define kCommandViewSitePath				FOUR_CHAR_CODE('vw04')
-#define kCommandViewTopOnly					FOUR_CHAR_CODE('vw05')
-#define kCommandViewForwardOnly				FOUR_CHAR_CODE('vw06')
+#define kCommandViewTopOnly					FOUR_CHAR_CODE('vw03')
+#define kCommandViewForwardOnly				FOUR_CHAR_CODE('vw04')
 #define kCommandViewPerspective				FOUR_CHAR_CODE('vwps')
 #define kCommandViewOrtho					FOUR_CHAR_CODE('vwot')
 
@@ -85,8 +83,6 @@ and can be sold or given away.
 #define kCommandMeshAddLibrary				FOUR_CHAR_CODE('padd')
 #define kCommandPieceDuplicate				FOUR_CHAR_CODE('pdup')
 #define kCommandPieceDelete					FOUR_CHAR_CODE('pdel')
-#define kCommandPieceMove					FOUR_CHAR_CODE('pmov')
-#define kCommandPieceDuplicateMove			FOUR_CHAR_CODE('pdmv')
 
 #define kCommandMeshResize					FOUR_CHAR_CODE('mrsz')
 #define kCommandMeshFlipX					FOUR_CHAR_CODE('pfpx')
@@ -135,10 +131,8 @@ and can be sold or given away.
 
 #define vw_3_panel				0
 #define vw_4_panel				1
-#define vw_portal_only			2
-#define vw_site_path_only		3
-#define vw_top_only				4
-#define vw_forward_only			5
+#define vw_top_only				2
+#define vw_forward_only			3
 
 //
 // perspective

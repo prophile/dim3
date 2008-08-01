@@ -28,7 +28,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "dialog.h"
 #include "common_view.h"
-#include "portal_view.h"
 
 #define import_obj_float_to_int			1000.0f
 #define import_obj_max_dimension		5000
@@ -307,7 +306,7 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 	
 		// push to grid
 		
-	mesh_snap_to_grid(cr,mesh_idx);
+	mesh_snap_to_grid(mesh_idx);
 	
 	return(mesh_idx);
 }
@@ -459,7 +458,7 @@ void piece_add_library_mesh(void)
 		// make selection
 		
 	select_clear();
-	select_add(mesh_piece,rn,mesh_idx,0);
+	select_add(mesh_piece,mesh_idx,0);
 	
 		// change mode to move entire mesh
 		
@@ -485,7 +484,7 @@ void piece_add_library_mesh(void)
 
 void piece_replace_library_mesh(void)
 {
-	int			type,portal_idx,mesh_idx,poly_idx,
+	int			type,mesh_idx,poly_idx,
 				rep_mesh_idx;
 	d3pnt		min,max,mpt;
 	
@@ -493,8 +492,8 @@ void piece_replace_library_mesh(void)
 		
 	if (select_count()==0) return;
 	
-	select_get(0,&type,&portal_idx,&mesh_idx,&poly_idx);
-	if ((type!=mesh_piece) || (portal_idx!=cr)) return;
+	select_get(0,&type,&mesh_idx,&poly_idx);
+	if (type!=mesh_piece) return;
 	
 		// any textures?
 		
@@ -522,7 +521,7 @@ void piece_replace_library_mesh(void)
 		// make selection
 		
 	select_clear();
-	select_add(mesh_piece,cr,rep_mesh_idx,0);
+	select_add(mesh_piece,rep_mesh_idx,0);
 	
 		// change mode to move entire mesh
 		
@@ -532,7 +531,7 @@ void piece_replace_library_mesh(void)
 		map_portal_mesh_reset_uv(&map,cr,mesh_idx);
 	}
 	else {
-		map.portals[portal_idx].mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
+		map.mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
 	}
 	
 	main_wind_draw();
@@ -549,7 +548,7 @@ void piece_replace_library_mesh(void)
 void piece_combine_mesh(int portal_idx)
 {
 	int				n,k,nsel,org_idx,mesh_combine_idx,new_mesh_combine_idx,
-					type,chk_portal_idx,mesh_idx,poly_idx;
+					type,mesh_idx,poly_idx;
 	int				sel_mesh_idx[select_max_item];
 	
 		// get all selected meshes
@@ -559,10 +558,8 @@ void piece_combine_mesh(int portal_idx)
 	nsel=0;
 	
 	for (n=0;n!=select_count();n++) {
-		select_get(n,&type,&chk_portal_idx,&mesh_idx,&poly_idx);
-		if ((type==mesh_piece) && (chk_portal_idx==portal_idx)) {
-			sel_mesh_idx[nsel++]=mesh_idx;
-		}
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type==mesh_piece) sel_mesh_idx[nsel++]=mesh_idx;
 	}
 	
 	if (nsel<2) return;
@@ -595,7 +592,7 @@ void piece_combine_mesh(int portal_idx)
 	}
 	
 	if (mesh_combine_idx!=-1) {
-		select_add(mesh_piece,portal_idx,mesh_combine_idx,0);
+		select_add(mesh_piece,mesh_combine_idx,0);
 	}
 }
 

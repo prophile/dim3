@@ -28,7 +28,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "dialog.h"
 #include "common_view.h"
-#include "portal_view.h"
 #include "walk_view.h"
 #include "import.h"
 
@@ -166,22 +165,6 @@ void menu_set_view_check(int view)
 			CheckMenuItem(GetMenuHandle(app_menu_view),5,FALSE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),6,FALSE);
 			break;
-		case vw_portal_only:
-			CheckMenuItem(GetMenuHandle(app_menu_view),1,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),2,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),3,TRUE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),4,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),5,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),6,FALSE);
-			break;
-		case vw_site_path_only:
-			CheckMenuItem(GetMenuHandle(app_menu_view),1,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),2,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),3,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),4,TRUE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),5,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),6,FALSE);
-			break;
 		case vw_top_only:
 			CheckMenuItem(GetMenuHandle(app_menu_view),1,FALSE);
 			CheckMenuItem(GetMenuHandle(app_menu_view),2,FALSE);
@@ -275,7 +258,6 @@ bool menu_delete_portal_dialog(void)
 
 OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,void *userdata)
 {
-	int				index;
 	HICommand		cmd;
 	
 	GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
@@ -297,7 +279,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			// file menu
 			
 		case kCommandNew:
-			file_new_map(TRUE);
+			file_new_map();
 			undo_clear();
 			return(noErr);
 			
@@ -354,16 +336,6 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 		case kCommandView4Panel:
 			main_wind_set_view(vw_4_panel);
-			main_wind_draw();
-			return(noErr);
-			
-		case kCommandViewPortal:
-			main_wind_set_view(vw_portal_only);
-			main_wind_draw();
-			return(noErr);
-		
-		case kCommandViewSitePath:
-			main_wind_set_view(vw_site_path_only);
 			main_wind_draw();
 			return(noErr);
 			
@@ -439,18 +411,6 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 			// portals menu
 			
-		case kCommandPortalSettings:
-			dialog_portal_settings_run(&map.portals[cr]);
-			return(noErr);
-            
-        case kCommandPortalDuplicate:
-            portal_duplicate();
-            return(noErr);
-            
-        case kCommandPortalDelete:
-			if (menu_delete_portal_dialog()) portal_delete();
-            return(noErr);
-            
 		case kCommandPortalGoToTop:
 			walk_view_portal_go_to_top();
 			return(noErr);
@@ -461,11 +421,6 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 		case kCommandPortalGoToSelection:
 			walk_view_portal_go_to_selection();
-			return(noErr);
-			
-		case kCommandClearPath:
-            map_portal_sight_clear(&map,cr);
-            main_wind_draw();
 			return(noErr);
             
 			// piece menu
@@ -481,20 +436,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 		case kCommandPieceDelete:
 			piece_delete();
 			return(noErr);
-			
-		case kCommandPieceMove:
-			index=dialog_piece_move_to_portal_run();
-			if (index==-1) return(noErr);
-			piece_move_to_portal(index);
-			return(noErr);
-			
-		case kCommandPieceDuplicateMove:
-			index=dialog_piece_move_to_portal_run();
-			if (index==-1) return(noErr);
-			piece_duplicate();
-			piece_move_to_portal(index);
-			return(noErr);
-			
+						
 			// group menu
 			
 		case kCommandGroupAdd:

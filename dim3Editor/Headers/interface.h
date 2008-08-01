@@ -102,7 +102,6 @@ extern void main_wind_set_title(char *file_name);
 extern void main_wind_set_view(int view);
 extern void main_wind_set_perspective(int perspective);
 extern void main_wind_rotate_view(void);
-extern void main_wind_set_view_piece_portal(void);
 extern void main_wind_set_viewport(Rect *view_box,float rgb);
 extern void main_wind_set_3D_projection(Rect *view_box,d3ang *ang,float fov,float near_z,float far_z,float near_z_offset);
 extern void main_wind_draw(void);
@@ -145,7 +144,7 @@ extern void main_wind_setup_full_screen_box(Rect *box);
 // dos
 //
 
-extern bool file_new_map(bool create_initial_portal);
+extern bool file_new_map(void);
 extern bool file_open_map(void);
 extern void file_save_map(void);
 extern void file_close_map(void);

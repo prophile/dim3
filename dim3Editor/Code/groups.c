@@ -167,21 +167,21 @@ int group_count(int group_idx)
 
 void group_set(int group_idx)
 {
-	int				n,sel_count,type,portal_idx,main_idx,sub_idx;
+	int				n,sel_count,type,main_idx,sub_idx;
 	
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&portal_idx,&main_idx,&sub_idx);
+		select_get(n,&type,&main_idx,&sub_idx);
 		
 		switch (type) {
 		
 			case mesh_piece:
-				map.portals[portal_idx].mesh.meshes[main_idx].group_idx=group_idx;
+				map.mesh.meshes[main_idx].group_idx=group_idx;
 				break;
 				
 			case liquid_piece:
-				map.portals[portal_idx].liquid.liquids[main_idx].group_idx=group_idx;
+				map.liquid.liquids[main_idx].group_idx=group_idx;
 				break;
 				
 		}

@@ -38,11 +38,11 @@ extern map_type				map;
       
 ======================================================= */
 
-void walk_view_draw_select_mesh_get_grow_handles(int rn,int mesh_idx,int *px,int *py,int *pz)
+void walk_view_draw_select_mesh_get_grow_handles(int mesh_idx,int *px,int *py,int *pz)
 {
 	d3pnt			min,max;
 	
-	map_portal_mesh_calculate_extent(&map,rn,mesh_idx,&min,&max);
+	map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
 	
 	px[0]=px[3]=px[4]=px[7]=min.x;
 	pz[0]=pz[1]=pz[4]=pz[5]=min.z;
@@ -97,7 +97,7 @@ void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
 		glColor4f(0.0f,0.0f,0.0f,1.0f);
 		glPointSize(walk_view_handle_size);
 		
-		walk_view_draw_select_mesh_get_grow_handles(rn,mesh_idx,px,py,pz);
+		walk_view_draw_select_mesh_get_grow_handles(mesh_idx,px,py,pz);
 		
 		glBegin(GL_POINTS);
 
@@ -176,13 +176,11 @@ void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
       
 ======================================================= */
 
-void walk_view_draw_select_liquid_get_grow_handles(int rn,int liquid_idx,int *px,int *py,int *pz)
+void walk_view_draw_select_liquid_get_grow_handles(int liquid_idx,int *px,int *py,int *pz)
 {
-	portal_type				*portal;
 	map_liquid_type			*liq;
 	
-	portal=&map.portals[rn];
-	liq=&portal->liquid.liquids[liquid_idx];
+	liq=&map.liquid.liquids[liquid_idx];
 	
 	px[0]=px[3]=liq->lft;
 	px[1]=px[2]=liq->rgt;
@@ -191,28 +189,26 @@ void walk_view_draw_select_liquid_get_grow_handles(int rn,int liquid_idx,int *px
 	py[0]=py[1]=py[2]=py[3]=liq->y;
 }
 
-void walk_view_draw_select_liquid(int rn,d3pnt *cpt,int liquid_idx)
+void walk_view_draw_select_liquid(d3pnt *cpt,int liquid_idx)
 {
 	int						n,x,y,z,px[4],py[4],pz[4];
-	portal_type				*portal;
 	map_liquid_type			*liq;
 	
-	portal=&map.portals[rn];
-	liq=&portal->liquid.liquids[liquid_idx];
+	liq=&map.liquid.liquids[liquid_idx];
 	
 	glEnable(GL_DEPTH_TEST);
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	glPointSize(walk_view_handle_size);
 		
-	walk_view_draw_select_liquid_get_grow_handles(rn,liquid_idx,px,py,pz);
+	walk_view_draw_select_liquid_get_grow_handles(liquid_idx,px,py,pz);
 		
 	glBegin(GL_POINTS);
 
 	for (n=0;n!=4;n++) {
-		x=(px[n]+portal->x)-cpt->x;
+		x=px[n]-cpt->x;
 		y=py[n]-cpt->y;
-		z=cpt->z-(pz[n]+portal->z);
+		z=cpt->z-pz[n];
 		glVertex3i(x,y,z);
 	}
 
@@ -225,16 +221,13 @@ void walk_view_draw_select_liquid(int rn,d3pnt *cpt,int liquid_idx)
       
 ======================================================= */
 
-void walk_view_sprite_select_size(d3pnt *cpt,d3pos *pos,int *px,int *pz,int *ty,int *by)
+void walk_view_sprite_select_size(d3pnt *cpt,d3pnt *pnt,int *px,int *pz,int *ty,int *by)
 {
 	int				x,y,z,wid;
-	portal_type		*portal;
 	
-	portal=&map.portals[pos->rn];
-	
-    x=(pos->x+portal->x)-cpt->x;
-    y=(pos->y+1)-cpt->y;
-    z=cpt->z-(pos->z+portal->z);
+    x=pnt->x-cpt->x;
+    y=(pnt->y+1)-cpt->y;
+    z=cpt->z-pnt->z;
     
     wid=map_enlarge*3;
 
@@ -248,16 +241,13 @@ void walk_view_sprite_select_size(d3pnt *cpt,d3pos *pos,int *px,int *pz,int *ty,
 	*ty=y-(map_enlarge*4);
 }
 
-void walk_view_draw_select_sprite(d3pnt *cpt,d3pos *pos)
+void walk_view_draw_select_sprite(d3pnt *cpt,d3pnt *pnt)
 {
     int			x,z,y,wid,high;
-	portal_type	*portal;
-	
-	portal=&map.portals[pos->rn];
   
-    x=(pos->x+portal->x)-cpt->x;
-    y=(pos->y+1)-cpt->y;
-    z=(pos->z+portal->z)-cpt->z;
+    x=pnt->x-cpt->x;
+    y=(pnt->y+1)-cpt->y;
+    z=pnt->z-cpt->z;
     
     wid=map_enlarge*3;
     high=map_enlarge*4;
@@ -307,7 +297,7 @@ void walk_view_draw_select_sprite(d3pnt *cpt,d3pos *pos)
 void walk_view_draw_select_portal(int rn,d3pnt *cpt)
 {
 	int						n,sel_count,
-							type,portal_idx, main_idx,sub_idx;
+							type,main_idx,sub_idx;
 	
 	sel_count=select_count();
 	if (sel_count==0) return;
@@ -316,8 +306,7 @@ void walk_view_draw_select_portal(int rn,d3pnt *cpt)
 		
 	for (n=(sel_count-1);n>=0;n--) {
 	
-		select_get(n,&type,&portal_idx,&main_idx,&sub_idx);
-		if (portal_idx!=rn) continue;
+		select_get(n,&type,&main_idx,&sub_idx);
 		
 			// draw selection
 			
@@ -328,35 +317,35 @@ void walk_view_draw_select_portal(int rn,d3pnt *cpt)
 				break;
 				
 			case liquid_piece:
-				walk_view_draw_select_liquid(rn,cpt,main_idx);
+				walk_view_draw_select_liquid(cpt,main_idx);
 				break;
 				
 			case node_piece:
-				walk_view_draw_select_sprite(cpt,&map.nodes[main_idx].pos);
+				walk_view_draw_select_sprite(cpt,&map.nodes[main_idx].pnt);
 				break;
 				
 			case spot_piece:
-				if (!walk_view_model_draw_select(cpt,&map.spots[main_idx].pos,&map.spots[main_idx].ang,map.spots[main_idx].display_model)) {
-					walk_view_draw_select_sprite(cpt,&map.spots[main_idx].pos);
+				if (!walk_view_model_draw_select(cpt,&map.spots[main_idx].pnt,&map.spots[main_idx].ang,map.spots[main_idx].display_model)) {
+					walk_view_draw_select_sprite(cpt,&map.spots[main_idx].pnt);
 				}
 				break;
 				
 			case scenery_piece:
-				if (!walk_view_model_draw_select(cpt,&map.sceneries[main_idx].pos,&map.sceneries[main_idx].ang,map.sceneries[main_idx].model_name)) {
-					walk_view_draw_select_sprite(cpt,&map.sceneries[main_idx].pos);
+				if (!walk_view_model_draw_select(cpt,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,map.sceneries[main_idx].model_name)) {
+					walk_view_draw_select_sprite(cpt,&map.sceneries[main_idx].pnt);
 				}
 				break;
 				
 			case light_piece:
-				walk_view_draw_select_sprite(cpt,&map.lights[main_idx].pos);
+				walk_view_draw_select_sprite(cpt,&map.lights[main_idx].pnt);
 				break;
 				
 			case sound_piece:
-				walk_view_draw_select_sprite(cpt,&map.sounds[main_idx].pos);
+				walk_view_draw_select_sprite(cpt,&map.sounds[main_idx].pnt);
 				break;
 				
 			case particle_piece:
-				walk_view_draw_select_sprite(cpt,&map.particles[main_idx].pos);
+				walk_view_draw_select_sprite(cpt,&map.particles[main_idx].pnt);
 				break;
 		}
 	}

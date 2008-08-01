@@ -48,8 +48,7 @@ typedef struct		{
 //
 
 typedef struct		{
-                        short						type,
-													portal_idx,main_idx,sub_idx;
+                        int							type,main_idx,sub_idx;
 					} select_item_type;
 
 //
@@ -57,17 +56,17 @@ typedef struct		{
 //
 
 extern void select_clear(void);
-extern void select_add(int type,int portal_idx,int main_idx,int sub_idx);
+extern void select_add(int type,int main_idx,int sub_idx);
 extern int select_count(void);
-extern void select_get(int sel_idx,int *type,int *portal_idx,int *main_idx,int *sub_idx);
-extern void select_switch(int sel_idx,int type,int portal_idx,int main_idx,int sub_idx);
-extern int select_find(int type,int portal_idx,int main_idx,int sub_idx);
-extern bool select_check(int type,int portal_idx,int main_idx,int sub_idx);
+extern void select_get(int sel_idx,int *type,int *main_idx,int *sub_idx);
+extern void select_switch(int sel_idx,int type,int main_idx,int sub_idx);
+extern int select_find(int type,int main_idx,int sub_idx);
+extern bool select_check(int type,int main_idx,int sub_idx);
 extern bool select_has_type(int type);
-extern void select_flip(int type,int portal_idx,int main_idx,int sub_idx);
+extern void select_flip(int type,int main_idx,int sub_idx);
 extern void select_sort(void);
 extern void select_duplicate_clear(void);
-extern void select_duplicate_add(int type,int portal_idx,int main_idx,int sub_idx);
+extern void select_duplicate_add(int type,int main_idx,int sub_idx);
 extern void select_duplicate_copy(void);
 
 //
@@ -90,7 +89,6 @@ extern void group_set(int group_idx);
 // piece routines
 //
 
-extern void piece_move_to_portal(int rn);
 extern void piece_duplicate(void);
 extern void piece_delete_face(void);
 extern void piece_delete(void);
@@ -99,9 +97,9 @@ extern void piece_resize(void);
 extern void piece_flip(bool flip_x,bool flip_y,bool flip_z);
 extern void piece_rotate(float rot_x,float rot_y,float rot_z);
 extern void piece_free_rotate(void);
-extern void mesh_snap_to_grid(int portal_idx,int mesh_idx);
-extern void mesh_poly_snap_to_grid(int portal_idx,int mesh_idx,int poly_idx);
-extern void mesh_vertexes_snap_to_grid(int portal_idx,int mesh_idx);
+extern void mesh_snap_to_grid(int mesh_idx);
+extern void mesh_poly_snap_to_grid(int mesh_idx,int poly_idx);
+extern void mesh_vertexes_snap_to_grid(int mesh_idx);
 extern void piece_mesh_snap_to_grid(void);
 extern void piece_mesh_snap_closest_vertex(void);
 extern void piece_mesh_poly_snap_to_grid(void);

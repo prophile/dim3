@@ -46,12 +46,11 @@ extern map_type				map;
 bool walk_view_click_drag_texture(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool entire_mesh)
 {
 	int						n,k,x,y,
-							type,portal_idx,mesh_idx,poly_idx;
+							type,mesh_idx,poly_idx;
 	bool					first_drag;
 	float					gx_add,gy_add;
 	d3pnt					old_pt;
 	Point					uipt;
-	portal_type				*portal;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	MouseTrackingResult		track;
@@ -60,11 +59,10 @@ bool walk_view_click_drag_texture(editor_3D_view_setup *view_setup,d3pnt *pt,int
 		
 	if (select_count()==0) return(FALSE);
 	
-	select_get(0,&type,&portal_idx,&mesh_idx,&poly_idx);
+	select_get(0,&type,&mesh_idx,&poly_idx);
 	if (type!=mesh_piece) return(FALSE);
 	
-	portal=&map.portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map.mesh.meshes[mesh_idx];
 	
 		// drag
 		

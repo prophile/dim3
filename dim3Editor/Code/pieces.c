@@ -27,86 +27,12 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "common_view.h"
-#include "portal_view.h"
 
 extern int					cr,drag_mode;
 extern CCrsrHandle			dragcur;
 
 extern map_type				map;
-
-/* =======================================================
-
-      Move Pieces
-      
-======================================================= */
-
-void piece_move_to_portal(int rn)
-{
-	int			n,nsel_count,type,portal_idx,main_idx,sub_idx;
-	d3pnt		min,max;
-			
-	undo_clear();
-	
-	select_get_extent(&min,&max);
-	
-	nsel_count=select_count();
-	
-	for (n=0;n!=nsel_count;n++) {
-		
-		select_get(n,&type,&portal_idx,&main_idx,&sub_idx);
-		
-		switch (type) {
-		
-			case mesh_piece:
-				main_idx=map_portal_mesh_switch_portal(&map,portal_idx,main_idx,rn);
-				select_switch(n,type,rn,main_idx,0);
-				break;
-				
-			case liquid_piece:
-				main_idx=map_portal_liquid_switch_portal(&map,portal_idx,main_idx,rn);
-				select_switch(n,type,rn,main_idx,0);
-				break;
-				
-			case spot_piece:
-				map.spots[main_idx].pos.rn=rn;
-				select_switch(n,type,rn,main_idx,0);
-				break;
-				
-			case scenery_piece:
-				map.sceneries[main_idx].pos.rn=rn;
-				select_switch(n,type,rn,main_idx,0);
-				break;
-				
-			case node_piece:
-				map.nodes[main_idx].pos.rn=rn;
-				select_switch(n,type,rn,main_idx,0);
-				break;
-				
-			case light_piece:
-				map.lights[main_idx].pos.rn=rn;
-				select_switch(n,type,rn,main_idx,0);
-				break;
-				
-			case sound_piece:
-				map.sounds[main_idx].pos.rn=rn;
-				select_switch(n,type,rn,main_idx,0);
-				break;
-				
-			case particle_piece:
-				map.particles[main_idx].pos.rn=rn;
-				select_switch(n,type,rn,main_idx,0);
-				break;
-				
-		}
-    }
-	
-		// shift selection to top-left
-		
-	cr=rn;
-	select_move(rn,min.x,min.z,0);
-	
-	main_wind_draw();
-}
+extern setup_type			setup;
 
 /* =======================================================
 
@@ -114,9 +40,15 @@ void piece_move_to_portal(int rn)
       
 ======================================================= */
 
+void piece_duplicate_offset(int *xadd,int *zadd)
+{
+	*xadd=setup.duplicate_offset*map_enlarge;
+	*zadd=setup.duplicate_offset*map_enlarge;
+}
+
 void piece_duplicate(void)
 {
-	int				n,i,nsel_count,type,portal_idx,main_idx,sub_idx,
+	int				n,i,nsel_count,type,main_idx,sub_idx,
 					index,xadd,zadd;
 	d3pnt			mpt;
 
@@ -131,36 +63,36 @@ void piece_duplicate(void)
 	nsel_count=select_count();
 	
 	for (n=0;n!=nsel_count;n++) {
-		select_get(n,&type,&portal_idx,&main_idx,&sub_idx);
+		select_get(n,&type,&main_idx,&sub_idx);
 		
 		switch (type) {
 			
 			case mesh_piece:
-				index=map_portal_mesh_duplicate(&map,portal_idx,main_idx);
+				index=map_mesh_duplicate(&map,main_idx);
 				if (index==-1) {
 					StandardAlert(kAlertCautionAlert,"\pCan Not Create Mesh","\pNot enough memory.",NULL,NULL);
 					return;
 				}
 				
-				map_portal_mesh_calculate_center(&map,portal_idx,index,&mpt);
-				portal_duplicate_piece_offset(portal_idx,mpt.x,mpt.z,&xadd,&zadd);
-				map_portal_mesh_move(&map,portal_idx,index,FALSE,xadd,0,zadd);
+				map_mesh_calculate_center(&map,index,&mpt);
+				piece_duplicate_offset(&xadd,&zadd);
+				map_mesh_move(&map,index,xadd,0,zadd);
 				
-				select_duplicate_add(mesh_piece,portal_idx,index,0);
+				select_duplicate_add(mesh_piece,index,0);
 				break;
 			
 			case liquid_piece:
-				index=map_portal_liquid_duplicate(&map,portal_idx,main_idx);
+				index=map_liquid_duplicate(&map,main_idx);
 				if (index==-1) {
 					StandardAlert(kAlertCautionAlert,"\pCan Not Create Liquid","\pNot enough memory.",NULL,NULL);
 					return;
 				}
 				
-				map_portal_liquid_calculate_center(&map,portal_idx,index,&mpt);
-				portal_duplicate_piece_offset(portal_idx,mpt.x,mpt.z,&xadd,&zadd);
-				map_portal_liquid_move(&map,portal_idx,index,xadd,0,zadd);
+				map_liquid_calculate_center(&map,index,&mpt);
+				piece_duplicate_offset(&xadd,&zadd);
+				map_liquid_move(&map,index,xadd,0,zadd);
 				
-				select_duplicate_add(liquid_piece,portal_idx,index,0);
+				select_duplicate_add(liquid_piece,index,0);
 				break;
 				
 			case spot_piece:
@@ -169,12 +101,12 @@ void piece_duplicate(void)
 					return;
 				}
 				
-				portal_duplicate_piece_offset(map.spots[main_idx].pos.rn,map.spots[main_idx].pos.x,map.spots[main_idx].pos.z,&xadd,&zadd);
+				piece_duplicate_offset(&xadd,&zadd);
 
 				map.spots[map.nspot]=map.spots[main_idx];
-				map.spots[map.nspot].pos.x+=xadd;
-				map.spots[map.nspot].pos.z+=zadd;
-				select_duplicate_add(spot_piece,portal_idx,map.nspot,0);
+				map.spots[map.nspot].pnt.x+=xadd;
+				map.spots[map.nspot].pnt.z+=zadd;
+				select_duplicate_add(spot_piece,map.nspot,0);
 				map.nspot++;
 				break;
 				
@@ -184,12 +116,12 @@ void piece_duplicate(void)
 					return;
 				}
 				
-				portal_duplicate_piece_offset(map.sceneries[main_idx].pos.rn,map.sceneries[main_idx].pos.x,map.sceneries[main_idx].pos.z,&xadd,&zadd);
+				piece_duplicate_offset(&xadd,&zadd);
 
 				map.sceneries[map.nscenery]=map.sceneries[main_idx];
-				map.sceneries[map.nscenery].pos.x+=xadd;
-				map.sceneries[map.nscenery].pos.z+=zadd;
-				select_duplicate_add(scenery_piece,portal_idx,map.nscenery,0);
+				map.sceneries[map.nscenery].pnt.x+=xadd;
+				map.sceneries[map.nscenery].pnt.z+=zadd;
+				select_duplicate_add(scenery_piece,map.nscenery,0);
 				map.nscenery++;
 				break;
 				
@@ -199,15 +131,15 @@ void piece_duplicate(void)
 					return;
 				}
 
-				portal_duplicate_piece_offset(map.nodes[main_idx].pos.rn,map.nodes[main_idx].pos.x,map.nodes[main_idx].pos.z,&xadd,&zadd);
+				piece_duplicate_offset(&xadd,&zadd);
 
 				map.nodes[map.nnode]=map.nodes[main_idx];
-				map.nodes[map.nnode].pos.x+=xadd;
-				map.nodes[map.nnode].pos.z+=zadd;
+				map.nodes[map.nnode].pnt.x+=xadd;
+				map.nodes[map.nnode].pnt.z+=zadd;
 				for (i=0;i!=max_node_link;i++) {
 					map.nodes[map.nnode].link[i]=-1;
 				}
-				select_duplicate_add(node_piece,portal_idx,map.nnode,0);
+				select_duplicate_add(node_piece,map.nnode,0);
 				map.nnode++;
 				break;
 				
@@ -217,12 +149,12 @@ void piece_duplicate(void)
 					return;
 				}
 
-				portal_duplicate_piece_offset(map.lights[main_idx].pos.rn,map.lights[main_idx].pos.x,map.lights[main_idx].pos.z,&xadd,&zadd);
+				piece_duplicate_offset(&xadd,&zadd);
 
 				map.lights[map.nlight]=map.lights[main_idx];
-				map.lights[map.nlight].pos.x+=xadd;
-				map.lights[map.nlight].pos.z+=zadd;
-				select_duplicate_add(light_piece,portal_idx,map.nlight,0);
+				map.lights[map.nlight].pnt.x+=xadd;
+				map.lights[map.nlight].pnt.z+=zadd;
+				select_duplicate_add(light_piece,map.nlight,0);
 				map.nlight++;
 				break;
 				
@@ -232,12 +164,12 @@ void piece_duplicate(void)
 					return;
 				}
 
-				portal_duplicate_piece_offset(map.sounds[main_idx].pos.rn,map.sounds[main_idx].pos.x,map.sounds[main_idx].pos.z,&xadd,&zadd);
+				piece_duplicate_offset(&xadd,&zadd);
 
 				map.sounds[map.nsound]=map.sounds[main_idx];
-				map.sounds[map.nsound].pos.x+=xadd;
-				map.sounds[map.nsound].pos.z+=zadd;
-				select_duplicate_add(sound_piece,portal_idx,map.nsound,0);
+				map.sounds[map.nsound].pnt.x+=xadd;
+				map.sounds[map.nsound].pnt.z+=zadd;
+				select_duplicate_add(sound_piece,map.nsound,0);
 				map.nsound++;
 				break;
 				
@@ -247,12 +179,12 @@ void piece_duplicate(void)
 					return;
 				}
 
-				portal_duplicate_piece_offset(map.particles[main_idx].pos.rn,map.particles[main_idx].pos.x,map.particles[main_idx].pos.z,&xadd,&zadd);
+				piece_duplicate_offset(&xadd,&zadd);
 
 				map.particles[map.nparticle]=map.particles[main_idx];
-				map.particles[map.nparticle].pos.x+=xadd;
-				map.particles[map.nparticle].pos.z+=zadd;
-				select_duplicate_add(particle_piece,portal_idx,map.nparticle,0);
+				map.particles[map.nparticle].pnt.x+=xadd;
+				map.particles[map.nparticle].pnt.z+=zadd;
+				select_duplicate_add(particle_piece,map.nparticle,0);
 				map.nparticle++;
 				break;
 				
@@ -274,7 +206,7 @@ void piece_duplicate(void)
 
 void piece_delete_face(void)
 {
-	int				type,portal_idx,main_idx,sub_idx;
+	int				type,main_idx,sub_idx;
 	
 	undo_clear();
 	
@@ -284,15 +216,15 @@ void piece_delete_face(void)
 	
 		// is a face selected?
 		
-	select_get(0,&type,&portal_idx,&main_idx,&sub_idx);
+	select_get(0,&type,&main_idx,&sub_idx);
 	if (type!=mesh_piece) return;
 	if (sub_idx==-1) return;
 	
 	undo_save();
 	
-	map_portal_mesh_delete_poly(&map,portal_idx,main_idx,sub_idx);
+	map_mesh_delete_poly(&map,main_idx,sub_idx);
 	
-	select_switch(0,mesh_piece,portal_idx,main_idx,0);
+	select_switch(0,mesh_piece,main_idx,0);
 	
 	main_wind_draw();
 }
@@ -300,7 +232,7 @@ void piece_delete_face(void)
 void piece_delete(void)
 {
 	int				n,i,k,nsel_count,
-					type,portal_idx,main_idx,sub_idx;
+					type,main_idx,sub_idx;
 	
 	undo_save();
 	
@@ -313,23 +245,23 @@ void piece_delete(void)
 	nsel_count=select_count();
 	
 	for (n=0;n!=nsel_count;n++) {
-		select_get(n,&type,&portal_idx,&main_idx,&sub_idx);
+		select_get(n,&type,&main_idx,&sub_idx);
 	
 		switch (type) {
 			
 			case mesh_piece:
 				if (drag_mode==drag_mode_polygon) {
-					map_portal_mesh_delete_poly(&map,portal_idx,main_idx,sub_idx);
+					map_mesh_delete_poly(&map,main_idx,sub_idx);
 					break;
 				}
 				if (drag_mode==drag_mode_mesh) {
-					map_portal_mesh_delete(&map,portal_idx,main_idx);
+					map_mesh_delete(&map,main_idx);
 					break;
 				}
 				break;
 				
 			case liquid_piece:
-				map_portal_liquid_delete(&map,portal_idx,main_idx);
+				map_liquid_delete(&map,main_idx);
 				break;
 				
 			case spot_piece:
@@ -400,13 +332,13 @@ void piece_delete(void)
 
 void piece_tesselate(void)
 {
-	int				n,sel_count,type,portal_idx,mesh_idx,poly_idx;
+	int				n,sel_count,type,mesh_idx,poly_idx;
 	
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map_portal_mesh_tesselate(&map,portal_idx,mesh_idx);
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type==mesh_piece) map_mesh_tesselate(&map,mesh_idx);
 	}
 	
 	main_wind_draw();
@@ -420,7 +352,7 @@ void piece_tesselate(void)
 
 void piece_resize(void)
 {
-	int				n,sel_count,type,portal_idx,mesh_idx,poly_idx;
+	int				n,sel_count,type,mesh_idx,poly_idx;
 	float			fct_x,fct_y,fct_z;
 	d3pnt			min,max,mpt;
 	
@@ -439,11 +371,11 @@ void piece_resize(void)
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		select_get(n,&type,&mesh_idx,&poly_idx);
 		
 		if (type==mesh_piece) {
-			map_portal_mesh_calculate_extent(&map,portal_idx,mesh_idx,&min,&max);
-			map_portal_mesh_calculate_center(&map,portal_idx,mesh_idx,&mpt);
+			map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
+			map_mesh_calculate_center(&map,mesh_idx,&mpt);
 						
 			min.x=((min.x-mpt.x)*fct_x)+mpt.x;
 			min.y=((min.y-mpt.y)*fct_y)+mpt.y;
@@ -453,7 +385,7 @@ void piece_resize(void)
 			max.y=((max.y-mpt.y)*fct_y)+mpt.y;
 			max.z=((max.z-mpt.z)*fct_z)+mpt.z;
 
-			map_portal_mesh_resize(&map,portal_idx,mesh_idx,&min,&max);
+			map_mesh_resize(&map,mesh_idx,&min,&max);
 		}
 	}
 	
@@ -468,13 +400,13 @@ void piece_resize(void)
 
 void piece_flip(bool flip_x,bool flip_y,bool flip_z)
 {
-	int				n,sel_count,type,portal_idx,mesh_idx,poly_idx;
+	int				n,sel_count,type,mesh_idx,poly_idx;
 	
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map_portal_mesh_flip(&map,portal_idx,mesh_idx,flip_x,flip_y,flip_z);
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type==mesh_piece) map_mesh_flip(&map,mesh_idx,flip_x,flip_y,flip_z);
 	}
 	
 	main_wind_draw();
@@ -482,13 +414,13 @@ void piece_flip(bool flip_x,bool flip_y,bool flip_z)
 
 void piece_rotate(float rot_x,float rot_y,float rot_z)
 {
-	int				n,sel_count,type,portal_idx,mesh_idx,poly_idx;
+	int				n,sel_count,type,mesh_idx,poly_idx;
 	
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map_portal_mesh_rotate(&map,portal_idx,mesh_idx,FALSE,rot_x,rot_y,rot_z);
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type==mesh_piece) map_mesh_rotate(&map,mesh_idx,rot_x,rot_y,rot_z);
 	}
 	
 	main_wind_draw();
@@ -509,18 +441,16 @@ void piece_free_rotate(void)
       
 ======================================================= */
 
-void mesh_snap_to_grid(int portal_idx,int mesh_idx)
+void mesh_snap_to_grid(int mesh_idx)
 {
 	int						n,nvertex,x,y,z;
 	d3pnt					mpt,mpt2;
 	d3pnt					*pt;
-	portal_type				*portal;
 	map_mesh_type			*mesh;
 
-	portal=&map.portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map.mesh.meshes[mesh_idx];
 
-	map_portal_mesh_calculate_center(&map,portal_idx,mesh_idx,&mpt);
+	map_mesh_calculate_center(&map,mesh_idx,&mpt);
 	memmove(&mpt2,&mpt,sizeof(d3pnt));
 	walk_view_click_grid(&mpt2);
 	
@@ -539,16 +469,14 @@ void mesh_snap_to_grid(int portal_idx,int mesh_idx)
 	}
 }
 
-void mesh_poly_snap_to_grid(int portal_idx,int mesh_idx,int poly_idx)
+void mesh_poly_snap_to_grid(int mesh_idx,int poly_idx)
 {
 	int						n;
 	d3pnt					*pt;
-	portal_type				*portal;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 
-	portal=&map.portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map.mesh.meshes[mesh_idx];
 	poly=&mesh->polys[poly_idx];
 	
 	for (n=0;n!=poly->ptsz;n++) {
@@ -557,15 +485,13 @@ void mesh_poly_snap_to_grid(int portal_idx,int mesh_idx,int poly_idx)
 	}
 }
 
-void mesh_vertexes_snap_to_grid(int portal_idx,int mesh_idx)
+void mesh_vertexes_snap_to_grid(int mesh_idx)
 {
 	int						n,nvertex;
 	d3pnt					*pt;
-	portal_type				*portal;
 	map_mesh_type			*mesh;
 
-	portal=&map.portals[portal_idx];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map.mesh.meshes[mesh_idx];
 
 	nvertex=mesh->nvertex;
 	pt=mesh->vertexes;
@@ -578,23 +504,23 @@ void mesh_vertexes_snap_to_grid(int portal_idx,int mesh_idx)
 
 void piece_mesh_snap_to_grid(void)
 {
-	int			n,sel_count,type,portal_idx,mesh_idx,poly_idx;
+	int			n,sel_count,type,mesh_idx,poly_idx;
 
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		select_get(n,&type,&mesh_idx,&poly_idx);
 		if (type!=mesh_piece) continue;
 		
-		mesh_snap_to_grid(portal_idx,mesh_idx);
+		mesh_snap_to_grid(mesh_idx);
 	}
 }
 
 void piece_mesh_snap_closest_vertex(void)
 {
-	int					n,k,sel_count,type,portal_idx,mesh_idx,poly_idx,
-						portal_1_idx,mesh_1_idx,poly_1_idx,
-						portal_2_idx,mesh_2_idx,poly_2_idx,
+	int					n,k,sel_count,type,mesh_idx,poly_idx,
+						mesh_1_idx,poly_1_idx,
+						mesh_2_idx,poly_2_idx,
 						d,dist,x,y,z;
 	d3pnt				*pt_1,*pt_2;
 	map_mesh_type		*mesh_1,*mesh_2;
@@ -602,21 +528,19 @@ void piece_mesh_snap_closest_vertex(void)
 
 		// find two portals to snap together
 		
-	portal_1_idx=portal_2_idx=-1;
+	mesh_1_idx=mesh_2_idx=-1;
 	
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		select_get(n,&type,&mesh_idx,&poly_idx);
 		if (type!=mesh_piece) continue;
 		
-		if (portal_1_idx==-1) {
-			portal_1_idx=portal_idx;
+		if (mesh_1_idx==-1) {
 			mesh_1_idx=mesh_idx;
 			poly_1_idx=poly_idx;
 		}
 		else {
-			portal_2_idx=portal_idx;
 			mesh_2_idx=mesh_idx;
 			poly_2_idx=poly_idx;
 			break;
@@ -625,15 +549,15 @@ void piece_mesh_snap_closest_vertex(void)
 	
 		// two meshes?
 		
-	if (portal_2_idx==-1) return;
+	if (mesh_2_idx==-1) return;
 	
 		// find closest vertexes
 	
 	x=y=z=0;	
 	dist=-1;
 	
-	mesh_1=&map.portals[portal_1_idx].mesh.meshes[mesh_1_idx];
-	mesh_2=&map.portals[portal_2_idx].mesh.meshes[mesh_2_idx];
+	mesh_1=&map.mesh.meshes[mesh_1_idx];
+	mesh_2=&map.mesh.meshes[mesh_2_idx];
 	
 		// find out of all vertexes
 		
@@ -701,29 +625,29 @@ void piece_mesh_snap_closest_vertex(void)
 
 void piece_mesh_poly_snap_to_grid(void)
 {
-	int			n,sel_count,type,portal_idx,mesh_idx,poly_idx;
+	int			n,sel_count,type,mesh_idx,poly_idx;
 
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		select_get(n,&type,&mesh_idx,&poly_idx);
 		if (type!=mesh_piece) continue;
 		
-		mesh_poly_snap_to_grid(portal_idx,mesh_idx,poly_idx);
+		mesh_poly_snap_to_grid(mesh_idx,poly_idx);
 	}
 }
 
 void piece_mesh_vertexes_snap_to_grid(void)
 {
-	int			n,sel_count,type,portal_idx,mesh_idx,poly_idx;
+	int			n,sel_count,type,mesh_idx,poly_idx;
 
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		select_get(n,&type,&mesh_idx,&poly_idx);
 		if (type!=mesh_piece) continue;
 		
-		mesh_vertexes_snap_to_grid(portal_idx,mesh_idx);
+		mesh_vertexes_snap_to_grid(mesh_idx);
 	}
 }
 
@@ -736,20 +660,20 @@ void piece_mesh_vertexes_snap_to_grid(void)
 void piece_reset_uvs(bool poly_only)
 {
 	int						n,sel_count,
-							type,portal_idx,mesh_idx,poly_idx;
+							type,mesh_idx,poly_idx;
 
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		select_get(n,&type,&mesh_idx,&poly_idx);
 		if (type!=mesh_piece) continue;
-		if (map.portals[portal_idx].mesh.meshes[mesh_idx].flag.lock_uv) continue;
+		if (map.mesh.meshes[mesh_idx].flag.lock_uv) continue;
 		
 		if (poly_only) {
-			map_portal_mesh_reset_poly_uv(&map,portal_idx,mesh_idx,poly_idx);
+			map_mesh_reset_poly_uv(&map,mesh_idx,poly_idx);
 		}
 		else {
-			map_portal_mesh_reset_uv(&map,portal_idx,mesh_idx);
+			map_mesh_reset_uv(&map,mesh_idx);
 		}
 	}
 }
@@ -757,15 +681,15 @@ void piece_reset_uvs(bool poly_only)
 void piece_rotate_uvs(void)
 {
 	int						n,sel_count,
-							type,portal_idx,mesh_idx,poly_idx;
+							type,mesh_idx,poly_idx;
 
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
+		select_get(n,&type,&mesh_idx,&poly_idx);
 		if (type!=mesh_piece) continue;
 
-		map_portal_mesh_rotate_poly_uv(&map,portal_idx,mesh_idx,poly_idx,90.0f);
+		map_mesh_rotate_poly_uv(&map,mesh_idx,poly_idx,90.0f);
 	}
 }
 
@@ -777,13 +701,13 @@ void piece_rotate_uvs(void)
 
 void piece_poly_hole(int hole_type)
 {
-	int				n,sel_count,type,portal_idx,mesh_idx,poly_idx;
+	int				n,sel_count,type,mesh_idx,poly_idx;
 	
 	sel_count=select_count();
 	
 	for (n=0;n!=sel_count;n++) {
-		select_get(n,&type,&portal_idx,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map_portal_mesh_poly_punch_hole(&map,portal_idx,mesh_idx,poly_idx,hole_type);
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type==mesh_piece) map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,hole_type);
 	}
 	
 	select_clear();
