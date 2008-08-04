@@ -43,6 +43,7 @@ extern auto_generate_settings_type	ag_settings;
 
 void map_auto_generate_lights(map_type *map)
 {
+	/*
 	int					n,x,z,y,intensity,lt_type;
 	float				r,g,b;
 	double				dx,dz;
@@ -131,6 +132,7 @@ void map_auto_generate_lights(map_type *map)
 
 		portal++;
 	}
+	*/
 }
 
 /* =======================================================

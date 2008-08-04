@@ -152,8 +152,8 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 				*pv++=(y-fy);
 				*pv++=(fz-z);
 				
-				*pp++=poly->gx[t];
-				*pp++=poly->gy[t];
+				*pp++=poly->gx[t]+poly->draw.x_shift_offset;
+				*pp++=poly->gy[t]+poly->draw.y_shift_offset;
 				
 				poly->draw.portal_v[t]=v_idx;
 				
@@ -187,8 +187,8 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 					*pv++=(y-fy);
 					*pv++=(fz-z);
 					
-					*pp++=lv->gx;
-					*pp++=lv->gy;
+					*pp++=lv->gx+poly->draw.x_shift_offset;
+					*pp++=lv->gy+poly->draw.y_shift_offset;
 					
 					lv++;
 					v_idx++;
@@ -215,8 +215,8 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 					*pv++=(y-fy);
 					*pv++=(fz-z);
 					
-					*pp++=lv->gx;
-					*pp++=lv->gy;
+					*pp++=lv->gx+poly->draw.x_shift_offset;
+					*pp++=lv->gy+poly->draw.y_shift_offset;
 					
 					lv++;
 					v_idx++;

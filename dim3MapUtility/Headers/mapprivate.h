@@ -26,7 +26,7 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// Setting Structures
+// setting structures
 //
 
 typedef struct		{
@@ -36,13 +36,13 @@ typedef struct		{
                     } maputility_settings_type;
 
 //
-// Lighting Constants
+// lighting constants
 //
 
 #define light_tessel_overlap_pixel					0
 
 //
-// Old map version structures (v1)
+// old map version structures (v1)
 //
 
 #define max_segment									32768
@@ -151,7 +151,22 @@ typedef struct		{
 					} segment_type;
 
 //
-// Functions
+// old map version structures (v1-v2)
+//
+
+#define max_portal									256
+
+//
+// portal structures
+//
+
+typedef struct		{
+						int							x,z,ex,ez;
+						map_mesh_message_type		msg;
+					} portal_type;
+
+//
+// functions
 //
 
 extern int map_count_texture_frames(map_type *map,int txt);

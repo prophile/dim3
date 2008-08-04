@@ -8,15 +8,6 @@ EXPORTS
 
 	map_check_game_type								@115
 
-	map_portal_create								@120
-	map_find_portal									@121
-	map_find_portal_hint							@122
-	map_find_portal_by_pos							@123
-	map_portal_delete								@126
-	map_portal_duplicate							@127
-	map_portal_touching_portal						@128
-	map_portal_draw_sort							@129
-
 	map_create_vertex_lists							@160
 	map_dispose_vertex_lists						@161
 
@@ -51,7 +42,7 @@ EXPORTS
 	map_mesh_rotate									@239
 	map_mesh_tesselate								@240
 	map_mesh_poly_punch_hole						@241
-	map_mesh_shift_portal_vertex_list				@242
+	map_mesh_poly_run_shifts						@242
 	map_mesh_get_poly_uv_as_box						@243
 	map_mesh_set_poly_uv_as_box						@244
 	map_mesh_rotate_poly_uv							@245

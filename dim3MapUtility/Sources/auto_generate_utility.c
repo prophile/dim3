@@ -42,7 +42,6 @@ bool				map_ag_seg_moveable;
 
 void map_auto_generate_clear(map_type *map)
 {
-	map->nportal=0;
 	map->nspot=0;
 	map->nnode=0;
 	map->nscenery=0;
@@ -82,6 +81,7 @@ int map_auto_generate_random_int(int max)
 
 bool map_auto_generate_portal_collision(map_type *map,int x,int z,int ex,int ez,int skip_idx)
 {
+	/*
 	int			n;
 	portal_type	*portal;
 
@@ -97,12 +97,13 @@ bool map_auto_generate_portal_collision(map_type *map,int x,int z,int ex,int ez,
 
 		return(TRUE);
 	}
-
+*/
 	return(FALSE);
 }
 
 bool map_auto_generate_portal_horz_edge_block(map_type *map,int skip_portal_idx,int z,int ez,int x)
 {
+	/*
 	int			n;
 	portal_type	*portal;
 
@@ -115,12 +116,13 @@ bool map_auto_generate_portal_horz_edge_block(map_type *map,int skip_portal_idx,
 		if ((z>=portal->z) && (z<portal->ez)) return(TRUE);
 		if ((ez>portal->z) && (ez<=portal->ez)) return(TRUE);
 	}
-
+*/
 	return(FALSE);
 }
 
 bool map_auto_generate_portal_vert_edge_block(map_type *map,int skip_portal_idx,int x,int ex,int z)
 {
+	/*
 	int			n;
 	portal_type	*portal;
 
@@ -133,12 +135,13 @@ bool map_auto_generate_portal_vert_edge_block(map_type *map,int skip_portal_idx,
 		if ((x>=portal->x) && (x<portal->ex)) return(TRUE);
 		if ((ex>portal->x) && (ex<=portal->ex)) return(TRUE);
 	}
-
+*/
 	return(FALSE);
 }
 
 bool map_auto_generate_portal_horz_edge_touch(map_type *map,int skip_portal_idx,int z,int ez,int x)
 {
+	/*
 	int			n;
 	portal_type	*portal;
 
@@ -153,12 +156,13 @@ bool map_auto_generate_portal_horz_edge_touch(map_type *map,int skip_portal_idx,
 		if ((portal->z>=z) && (portal->z<=ez)) return(TRUE);
 		if ((portal->ez>=z) && (portal->ez<=ez)) return(TRUE);
 	}
-
+*/
 	return(FALSE);
 }
 
 bool map_auto_generate_portal_vert_edge_touch(map_type *map,int skip_portal_idx,int x,int ex,int z)
 {
+	/*
 	int			n;
 	portal_type	*portal;
 
@@ -173,7 +177,7 @@ bool map_auto_generate_portal_vert_edge_touch(map_type *map,int skip_portal_idx,
 		if ((portal->x>=x) && (portal->x<=ex)) return(TRUE);
 		if ((portal->ex>=x) && (portal->ex<=ex)) return(TRUE);
 	}
-
+*/
 	return(FALSE);
 }
 
@@ -185,6 +189,7 @@ bool map_auto_generate_portal_vert_edge_touch(map_type *map,int skip_portal_idx,
 
 bool map_auto_generate_portal_touching_left(map_type *map,int portal_idx,unsigned char *corridor_flags)
 {
+	/*
 	int				n;
 	portal_type		*portal,*chk_portal;
 
@@ -200,12 +205,13 @@ bool map_auto_generate_portal_touching_left(map_type *map,int portal_idx,unsigne
 			if (portal->x==chk_portal->ex) return(TRUE);
 		}
 	}
-
+*/
 	return(FALSE);
 }
 
 bool map_auto_generate_portal_touching_right(map_type *map,int portal_idx,unsigned char *corridor_flags)
 {
+	/*
 	int				n;
 	portal_type		*portal,*chk_portal;
 
@@ -221,12 +227,13 @@ bool map_auto_generate_portal_touching_right(map_type *map,int portal_idx,unsign
 			if (portal->ex==chk_portal->x) return(TRUE);
 		}
 	}
-
+*/
 	return(FALSE);
 }
 
 bool map_auto_generate_portal_touching_top(map_type *map,int portal_idx,unsigned char *corridor_flags)
 {
+	/*
 	int				n;
 	portal_type		*portal,*chk_portal;
 
@@ -242,12 +249,13 @@ bool map_auto_generate_portal_touching_top(map_type *map,int portal_idx,unsigned
 			if (portal->z==chk_portal->ez) return(TRUE);
 		}
 	}
-
+*/
 	return(FALSE);
 }
 
 bool map_auto_generate_portal_touching_bottom(map_type *map,int portal_idx,unsigned char *corridor_flags)
 {
+	/*
 	int				n;
 	portal_type		*portal,*chk_portal;
 
@@ -263,17 +271,18 @@ bool map_auto_generate_portal_touching_bottom(map_type *map,int portal_idx,unsig
 			if (portal->ez==chk_portal->z) return(TRUE);
 		}
 	}
-
+*/
 	return(FALSE);
 }
 
 bool map_auto_generate_portal_touching_any(map_type *map,int portal_idx,unsigned char *corridor_flags)
 {
+	/*
 	if (map_auto_generate_portal_touching_left(map,portal_idx,corridor_flags)) return(TRUE);
 	if (map_auto_generate_portal_touching_right(map,portal_idx,corridor_flags)) return(TRUE);
 	if (map_auto_generate_portal_touching_top(map,portal_idx,corridor_flags)) return(TRUE);
 	if (map_auto_generate_portal_touching_bottom(map,portal_idx,corridor_flags)) return(TRUE);
-
+*/
 	return(FALSE);
 }
 
@@ -285,6 +294,7 @@ bool map_auto_generate_portal_touching_any(map_type *map,int portal_idx,unsigned
 
 int map_auto_generate_count_generic_type(int type_count,unsigned char *type_on)
 {
+	/*
 	int			n,count;
 
 		// count types
@@ -296,10 +306,13 @@ int map_auto_generate_count_generic_type(int type_count,unsigned char *type_on)
 	}
 
 	return(count);
+	*/
+	return(0);//supergumba
 }
 
 int map_auto_generate_get_generic_type(int type_count,unsigned char *type_on)
 {
+	/*
 	int				n,idx,count;
 	
 	count=map_auto_generate_count_generic_type(type_count,type_on);
@@ -315,7 +328,7 @@ int map_auto_generate_get_generic_type(int type_count,unsigned char *type_on)
 			if (idx<0) return(n);
 		}
 	}
-
+*/
 	return(0);
 }
 
@@ -352,6 +365,7 @@ bool map_auto_generate_has_door_type(auto_generate_settings_type *ags)
 
 void map_auto_generate_story_extra_floor(bool *lft,bool *rgt,bool *top,bool *bot,bool *horz,bool *vert)
 {
+	/*
 	*horz=FALSE;
 	*vert=FALSE;
 
@@ -401,6 +415,7 @@ void map_auto_generate_story_extra_floor(bool *lft,bool *rgt,bool *top,bool *bot
 
 	*horz=((*lft) && (*rgt));
 	*vert=((*top) && (*bot));
+	*/
 }
 
 /* =======================================================

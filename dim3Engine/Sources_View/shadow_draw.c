@@ -153,7 +153,7 @@ int shadow_render_stencil_fc(int sptr_cnt,short *sptr,int ty,int by,int cnt,int 
 	return(0);
 }
 
-int shadow_render_stencil_portal(portal_type *portal,int y,int ty,int by,int cnt,int *seg_idx)
+int shadow_render_stencil_portal(int y,int ty,int by,int cnt,int *seg_idx)
 {
 	/* supergumba -- redo
 
@@ -210,7 +210,7 @@ int shadow_render_stencil_map(model_draw_shadow *shadow,int *seg_idx)
 		// do current portal
 		
 	portal=&map.portals[rn];
-	cnt=shadow_render_stencil_portal(portal,y,ty,by,cnt,seg_idx);
+	cnt=shadow_render_stencil_portal(y,ty,by,cnt,seg_idx);
 	
 		// do portals touching current portal
 		
@@ -218,7 +218,7 @@ int shadow_render_stencil_map(model_draw_shadow *shadow,int *seg_idx)
 
 	for (i=0;i!=max_sight_list;i++) {
         if (sight->root) {
-			cnt=shadow_render_stencil_portal(&map.portals[sight->rn],y,ty,by,cnt,seg_idx);
+			cnt=shadow_render_stencil_portal(y,ty,by,cnt,seg_idx);
 			if (cnt>=max_shadow_segment) break;
 		}
 		sight++;

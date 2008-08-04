@@ -487,9 +487,9 @@ void view_draw_setup(int tick)
 		
 	map_setup_animated_textures(&map,tick);
 	
-		// any portal updates
+		// any texture shifting updates
 		
-	map_mesh_shift_portal_vertex_list(&map,tick);
+	map_mesh_poly_run_shifts(&map,tick);
 	
 		// setup objects, projectiles, and scenery in path
 		

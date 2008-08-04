@@ -38,30 +38,27 @@ and can be sold or given away.
 int map_liquid_add(map_type *map)
 {
 	int					liquid_idx;
-	portal_liquid_type	*map_liquid;
 	map_liquid_type		*nptr;
 	
-	map_liquid=&map->liquid;
-	
-	liquid_idx=map_liquid->nliquid;
+	liquid_idx=map->liquid.nliquid;
 
 		// create new memory
 
-	if (map_liquid->nliquid==0) {
-		map_liquid->liquids=(map_liquid_type*)valloc(sizeof(map_liquid_type));
-		if (map_liquid->liquids==NULL) return(-1);
+	if (map->liquid.nliquid==0) {
+		map->liquid.liquids=(map_liquid_type*)valloc(sizeof(map_liquid_type));
+		if (map->liquid.liquids==NULL) return(-1);
 	}
 	else {
-		nptr=(map_liquid_type*)valloc((map_liquid->nliquid+1)*sizeof(map_liquid_type));
+		nptr=(map_liquid_type*)valloc((map->liquid.nliquid+1)*sizeof(map_liquid_type));
 		if (nptr==NULL) return(-1);
 
-		memmove(nptr,map_liquid->liquids,(map_liquid->nliquid*sizeof(map_liquid_type)));
-		free(map_liquid->liquids);
+		memmove(nptr,map->liquid.liquids,(map->liquid.nliquid*sizeof(map_liquid_type)));
+		free(map->liquid.liquids);
 
-		map_liquid->liquids=nptr;
+		map->liquid.liquids=nptr;
 	}
 	
-	map_liquid->nliquid++;
+	map->liquid.nliquid++;
 
 	return(liquid_idx);
 }
@@ -69,32 +66,29 @@ int map_liquid_add(map_type *map)
 bool map_liquid_delete(map_type *map,int liquid_idx)
 {
 	int					sz;
-	portal_liquid_type	*map_liquid;
 	map_liquid_type		*nptr;
 	
-	map_liquid=&map->liquid;
-
-	if (map_liquid->nliquid<=1) {
-		map_liquid->nliquid=0;
-		free(map_liquid->liquids);
+	if (map->liquid.nliquid<=1) {
+		map->liquid.nliquid=0;
+		free(map->liquid.liquids);
 		return(TRUE);
 	}
 
-	nptr=(map_liquid_type*)valloc((map_liquid->nliquid-1)*sizeof(map_liquid_type));
+	nptr=(map_liquid_type*)valloc((map->liquid.nliquid-1)*sizeof(map_liquid_type));
 	if (nptr==NULL) return(FALSE);
 
 	if (liquid_idx>0) {
 		sz=(liquid_idx+1)*sizeof(map_liquid_type);
-		memmove(nptr,map_liquid->liquids,sz);
+		memmove(nptr,map->liquid.liquids,sz);
 	}
 
-	sz=(map_liquid->nliquid-liquid_idx)*sizeof(map_liquid_type);
-	if (sz>0) memmove(&nptr[liquid_idx],&map_liquid->liquids[liquid_idx+1],sz);
+	sz=(map->liquid.nliquid-liquid_idx)*sizeof(map_liquid_type);
+	if (sz>0) memmove(&nptr[liquid_idx],&map->liquid.liquids[liquid_idx+1],sz);
 
-	free(map_liquid->liquids);
+	free(map->liquid.liquids);
 
-	map_liquid->liquids=nptr;
-	map_liquid->nliquid--;
+	map->liquid.liquids=nptr;
+	map->liquid.nliquid--;
 
 	return(TRUE);
 }

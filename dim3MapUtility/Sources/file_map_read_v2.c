@@ -190,19 +190,26 @@ void read_single_liquid_v2(map_type *map,portal_type *portal,int liquid_idx,int 
 
 bool decode_map_v2_xml(map_type *map,int map_head)
 {
-	int						i,k,j,y,idx,nmesh,mesh_idx,nliquid,liquid_idx,
+	int						i,k,j,y,idx,nportal,nmesh,mesh_idx,nliquid,liquid_idx,
 							main_portal_tag,portal_tag,msg_tag,
 							main_mesh_tag,mesh_tag,main_liquid_tag,liquid_tag,
 							main_light_tag,light_tag,main_sound_tag,sound_tag,
 							main_particle_tag,particle_tag,main_node_tag,node_tag,
 							main_obj_tag,obj_tag,tag,cnt;
-    portal_type				*portal;
+    portal_type				*portals,*portal;
     map_light_type			*light;
     map_sound_type			*sound;
 	map_particle_type		*particle;
     node_type				*node;
     spot_type				*spot;
 	map_scenery_type		*scenery;
+
+		// temporary segments and portals for converting from v2 to v3
+		
+	nportal=0;
+
+	portals=(portal_type*)valloc(max_portal*sizeof(portal_type));
+	if (portals==NULL) return(FALSE);
 
 		// clear maps and meshes
 
@@ -217,14 +224,12 @@ bool decode_map_v2_xml(map_type *map,int map_head)
     main_portal_tag=xml_findfirstchild("Portals",map_head);
     if (main_portal_tag!=-1) {
     
-        map->nportal=xml_countchildren(main_portal_tag);
+        nportal=xml_countchildren(main_portal_tag);
 		portal_tag=xml_findfirstchild("Portal",main_portal_tag);
 		
-        portal=map->portals;
+        portal=portals;
     
-        for (i=0;i!=map->nportal;i++) {
-			xml_get_attribute_text(portal_tag,"name",portal->name,name_str_len);
-			
+        for (i=0;i!=nportal;i++) {
             xml_get_attribute_3_coord_int(portal_tag,"tl_c3",&portal->x,&y,&portal->z);
             xml_get_attribute_3_coord_int(portal_tag,"br_c3",&portal->ex,&y,&portal->ez);
    
@@ -510,6 +515,8 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 			portal_tag=xml_findnextchild(portal_tag);
         }
     }
+
+	free(portals);
 
 	return(TRUE);
 }

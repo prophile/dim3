@@ -153,7 +153,6 @@ bool map_new(map_type *map,char *name)
 		
 		// pieces
 	
-	map->nportal=0;
 	map->nspot=0;
 	map->nnode=0;
 	map->nscenery=0;
@@ -175,9 +174,6 @@ bool map_new(map_type *map,char *name)
 		
 	map->textures=(texture_type*)valloc(max_map_texture*sizeof(texture_type));
 	if (map->textures==NULL) return(FALSE);
-	
-	map->portals=(portal_type*)valloc(max_portal*sizeof(portal_type));
-	if (map->portals==NULL) return(FALSE);
 	
 	map->spots=(spot_type*)valloc(max_spot*sizeof(spot_type));
 	if (map->spots==NULL) return(FALSE);
@@ -206,7 +202,6 @@ bool map_new(map_type *map,char *name)
 		// zero memory
 		
 	bzero(map->textures,(max_map_texture*sizeof(texture_type)));
-	bzero(map->portals,(max_portal*sizeof(portal_type)));
 	bzero(map->spots,(max_spot*sizeof(spot_type)));
 	bzero(map->nodes,(max_node*sizeof(node_type)));
 	bzero(map->sceneries,(max_map_scenery*sizeof(map_scenery_type)));
@@ -303,7 +298,6 @@ void map_close(map_type *map)
 		// memory
 		
 	free(map->textures);
-	free(map->portals);
 	free(map->spots);
 	free(map->nodes);
 	free(map->sceneries);

@@ -57,6 +57,8 @@ extern void map_movements_auto_open(void);
 
 void portal_triggers(obj_type *obj,int old_rn,int rn)
 {
+	/* supergumba -- redo
+
 	portal_type		*portal;
 
 	if (rn!=-1) {	
@@ -107,6 +109,7 @@ void portal_triggers(obj_type *obj,int old_rn,int rn)
 			
 		if (portal->msg.base_on) object_watch_base_alert(portal,obj,FALSE);
 	}
+	*/
 }
 
 /* =======================================================

@@ -641,7 +641,7 @@ bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,int hole_t
       
 ======================================================= */
 
-inline float map_mesh_shift_texture_single_coord(float f_tick,float shift)
+inline float map_mesh_poly_run_shifts_single_choord(float f_tick,float shift)
 {
 	int				i_add;
 	float			f_add;
@@ -651,30 +651,19 @@ inline float map_mesh_shift_texture_single_coord(float f_tick,float shift)
 	return(f_add-((float)i_add));
 }
 
-void map_mesh_shift_portal_vertex_list(map_type *map,int tick)
+void map_mesh_poly_run_shifts(map_type *map,int tick)
 {
-	/* supergumba
-
-	int						n,k,t,nmesh,npoly,ptsz,idx;
-	float					f_tick,gx,gy,fx,fy;
-	unsigned char			*phit;
-	portal_type				*portal;
+	int						n,k,nmesh,npoly;
+	float					f_tick;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
-	portal_vertex_list_type	*pv;
 	
 	f_tick=(float)tick;
 
-		// clear the hit list so we don't
-		// shift combined vertexes twice
-
-	phit=portal->vertexes.phit;
-	bzero(phit,portal->vertexes.nvlist);
-
 		// run through the meshes
 
-	nmesh=portal->mesh.nmesh;
-	mesh=portal->mesh.meshes;
+	nmesh=map->mesh.nmesh;
+	mesh=map->mesh.meshes;
 
 	for (n=0;n!=nmesh;n++) {
 
@@ -692,33 +681,9 @@ void map_mesh_shift_portal_vertex_list(map_type *map,int tick)
 
 		for (k=0;k!=npoly;k++) {
 
-				// shiftable?
-
-			if (!poly->draw.shift_on) {
-				poly++;
-				continue;
-			}
-
-				// shift polys
-
-			ptsz=poly->ptsz;
-
-			fx=map_mesh_shift_texture_single_coord(f_tick,poly->x_shift);
-			fy=map_mesh_shift_texture_single_coord(f_tick,poly->y_shift);
-
-			for (t=0;t!=ptsz;t++) {
-
-				gx=poly->gx[t]+fx;
-				gy=poly->gy[t]+fy;
-				
-				idx=poly->draw.portal_v[t];
-
-				if (phit[idx]==0x0) {
-					phit[idx]=0x1;
-					pv=&portal->vertexes.vertex_list[idx];
-					pv->gx=gx;
-					pv->gy=gy;
-				}
+			if (poly->draw.shift_on) {
+				poly->draw.x_shift_offset=map_mesh_poly_run_shifts_single_choord(f_tick,poly->x_shift);
+				poly->draw.y_shift_offset=map_mesh_poly_run_shifts_single_choord(f_tick,poly->y_shift);
 			}
 
 			poly++;
@@ -726,7 +691,6 @@ void map_mesh_shift_portal_vertex_list(map_type *map,int tick)
 
 		mesh++;
 	}
-	*/
 }
 
 /* =======================================================

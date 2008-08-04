@@ -159,8 +159,9 @@ void object_watch_portal_alert(obj_type *portal_obj,bool entry)
 	*/
 }
 
-void object_watch_base_alert(portal_type *portal,obj_type *enter_obj,bool entry)
+void object_watch_base_alert(obj_type *enter_obj,bool entry)
 {
+	/* supergumba -- redo
 	int				n;
 	obj_type		*obj;
 	
@@ -181,6 +182,7 @@ void object_watch_base_alert(portal_type *portal,obj_type *enter_obj,bool entry)
 		}
 		obj++;
 	}
+	*/
 }
 
 /* =======================================================

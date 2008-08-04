@@ -143,18 +143,15 @@ void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,
       
 ======================================================= */
 
-void map_convert_liquid(map_type *map,int rn,segment_type *seg)
+void map_convert_liquid(map_type *map,portal_type *portal,segment_type *seg)
 {
 	int				liq_idx;
-	portal_type		*portal;
 	map_liquid_type	*liquid;
 
 	liq_idx=map_liquid_add(map);
 	if (liq_idx==-1) return;
 
 	liquid=&map->liquid.liquids[liq_idx];
-
-	portal=&map->portals[rn];
 
 	liquid->y=(seg->data.liquid.y+1)*map_enlarge;
 	liquid->lft=(seg->data.liquid.lft*map_enlarge)+portal->x;
@@ -194,7 +191,7 @@ void map_convert_liquid(map_type *map,int rn,segment_type *seg)
       
 ======================================================= */
 
-void map_convert_enlarge(map_type *map,int seg_cnt,segment_type *seg_list)
+void map_convert_enlarge(map_type *map,int nportal,portal_type *portals,int seg_cnt,segment_type *seg_list)
 {
 	int					n,t;
 	portal_type			*portal;
@@ -202,9 +199,9 @@ void map_convert_enlarge(map_type *map,int seg_cnt,segment_type *seg_list)
 
 		// enlarge portals
 
-	portal=map->portals;
+	portal=portals;
 
-	for (n=0;n!=map->nportal;n++) {
+	for (n=0;n!=nportal;n++) {
 		portal->x*=map_enlarge;
 		portal->z*=map_enlarge;
 		portal->ex*=map_enlarge;
@@ -219,7 +216,7 @@ void map_convert_enlarge(map_type *map,int seg_cnt,segment_type *seg_list)
 
 	for (n=0;n!=seg_cnt;n++) {
 
-		portal=&map->portals[seg->rn];
+		portal=&portals[seg->rn];
 
 		switch (seg->type) {
 
@@ -847,7 +844,7 @@ bool map_convert_segment_section_to_mesh(map_type *map,int seg_cnt,segment_type 
       
 ======================================================= */
 
-bool map_convert_v1(map_type *map,int seg_cnt,segment_type *seg_list)
+bool map_convert_v1(map_type *map,int nportal,portal_type *portals,int seg_cnt,segment_type *seg_list)
 {
 	int					n,i,p,vlist_sz,plist_sz,first_mesh_idx;
 	int					*plist;
@@ -886,7 +883,7 @@ bool map_convert_v1(map_type *map,int seg_cnt,segment_type *seg_list)
 		// enlarge map and setup vertexes
 		// and UVs inside the segments
 
-	map_convert_enlarge(map,seg_cnt,seg_list);
+	map_convert_enlarge(map,nportal,portals,seg_cnt,seg_list);
 	map_convert_segments(seg_cnt,seg_list);
 	
 		// force portals to be centered in map bounds
@@ -903,9 +900,9 @@ bool map_convert_v1(map_type *map,int seg_cnt,segment_type *seg_list)
 	map->mesh.nmesh=0;
 	map->mesh.meshes=NULL;
 
-	for (n=0;n!=map->nportal;n++) {
+	for (n=0;n!=nportal;n++) {
 	
-		portal=&map->portals[n];
+		portal=&portals[n];
 
 		first_mesh_idx=map->mesh.nmesh;
 
@@ -968,14 +965,14 @@ bool map_convert_v1(map_type *map,int seg_cnt,segment_type *seg_list)
 	map->liquid.nliquid=0;
 	map->liquid.liquids=NULL;
 		
-	portal=map->portals;
+	portal=portals;
 
-	for (n=0;n!=map->nportal;n++) {
+	for (n=0;n!=nportal;n++) {
 
 		seg=seg_list;
 
 		for (i=0;i!=seg_cnt;i++) {
-			if ((seg->rn==n) && (seg->type==sg_liquid)) map_convert_liquid(map,n,seg);
+			if ((seg->rn==n) && (seg->type==sg_liquid)) map_convert_liquid(map,portals,seg);
 			seg++;
 		}
 		
@@ -1059,13 +1056,13 @@ void read_single_segment(int tag,segment_type *seg,int rn,int seg_type)
 
 bool decode_map_v1_xml(map_type *map,int map_head)
 {
-	int						i,k,j,y,idx,seg_cnt,
+	int						i,k,j,y,idx,nportal,seg_cnt,
 							main_portal_tag,portal_tag,msg_tag,
 							main_seg_tag,seg_tag,main_light_tag,light_tag,main_sound_tag,sound_tag,
 							main_particle_tag,particle_tag,main_node_tag,node_tag,
 							main_obj_tag,obj_tag,tag,cnt;
 	bool					convert_ok;
-    portal_type				*portal;
+    portal_type				*portals,*portal;
     segment_type			*seg_list,*seg;
     map_light_type			*light;
     map_sound_type			*sound;
@@ -1074,26 +1071,32 @@ bool decode_map_v1_xml(map_type *map,int map_head)
     spot_type				*spot;
 	map_scenery_type		*scenery;
 	
-		// temporary segments for converting from v1 to v2
+		// temporary segments and portals for converting from v1 to v3
 		
 	seg_cnt=0;
 	
 	seg_list=(segment_type*)valloc(max_segment*sizeof(segment_type));
 	if (seg_list==NULL) return(FALSE);
+
+	nportal=0;
+
+	portals=(portal_type*)valloc(max_portal*sizeof(portal_type));
+	if (portals==NULL) {
+		free(seg_list);
+		return(FALSE);
+	}
 	        
         // portals
 
     main_portal_tag=xml_findfirstchild("Portals",map_head);
     if (main_portal_tag!=-1) {
     
-        map->nportal=xml_countchildren(main_portal_tag);
+        nportal=xml_countchildren(main_portal_tag);
 		portal_tag=xml_findfirstchild("Portal",main_portal_tag);
 		
-        portal=map->portals;
+        portal=portals;
     
-        for (i=0;i!=map->nportal;i++) {
-			xml_get_attribute_text(portal_tag,"name",portal->name,name_str_len);
-			
+        for (i=0;i!=nportal;i++) {
             xml_get_attribute_3_coord_int(portal_tag,"tl_c3",&portal->x,&y,&portal->z);
             xml_get_attribute_3_coord_int(portal_tag,"br_c3",&portal->ex,&y,&portal->ez);
    
@@ -1483,8 +1486,9 @@ bool decode_map_v1_xml(map_type *map,int map_head)
         }
     }
 
-	convert_ok=map_convert_v1(map,seg_cnt,seg_list);
+	convert_ok=map_convert_v1(map,nportal,portals,seg_cnt,seg_list);
 	
+	free(portals);
 	free(seg_list);
 	
 	return(convert_ok);

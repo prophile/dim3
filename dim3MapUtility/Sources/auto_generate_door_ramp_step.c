@@ -54,6 +54,7 @@ extern auto_generate_settings_type		ag_settings;
 
 void map_auto_generate_ramps_position(int *x,int *ex)
 {
+	/*
 	int			mx,wid,split_factor,sz;
 
 	wid=(*ex)-(*x);
@@ -94,10 +95,12 @@ void map_auto_generate_ramps_position(int *x,int *ex)
 			break;
 
 	}
+	*/
 }
 
 void map_auto_generate_ramps(map_type *map)
 {
+	/*
 	int				n,k,x,ex,z,ez,xsz,zsz,kx,kz,
 					split_factor,high,ramp_sz,
 					px[8],py[8],pz[8];
@@ -313,6 +316,7 @@ void map_auto_generate_ramps(map_type *map)
 	
 		portal++;
 	}
+	*/
 }
 
 /* =======================================================
@@ -323,14 +327,18 @@ void map_auto_generate_ramps(map_type *map)
 
 int map_auto_generate_steps_get_length(int ty,int by,int step_size)
 {
+	/*
 	int				step_cnt;
 	
 	step_cnt=(by-ty)/ag_constant_step_high;
 	return(step_cnt*step_size);
+	*/
+	return(0);//supergumba
 }
 
 void map_auto_generate_steps(map_type *map,int rn,int ty,int by,int stair_mode,int step_sz,bool top_step_wall,bool back_wall,int lx,int rx,int lz,int rz)
 {
+	/*
 	int				y,y2,step_cnt,px[8],py[8],pz[8];
 	float			gx[8],gy[8];
 
@@ -445,10 +453,12 @@ void map_auto_generate_steps(map_type *map,int rn,int ty,int by,int stair_mode,i
 
 		y=y2;
 	}
+	*/
 }
 
 void map_auto_generate_corridor_to_portal_steps(map_type *map)
 {
+	/*
 	int				n,k;
 	portal_type		*portal,*chk_portal;
 	
@@ -477,6 +487,7 @@ void map_auto_generate_corridor_to_portal_steps(map_type *map)
 			}
 		}
 	}
+	*/
 }
 
 /* =======================================================
@@ -487,6 +498,7 @@ void map_auto_generate_corridor_to_portal_steps(map_type *map)
 
 int map_auto_generate_doors_get_position(int sz)
 {
+	/*
 	switch (map_auto_generate_random_int(3)) {
 
 		case 0:
@@ -498,10 +510,13 @@ int map_auto_generate_doors_get_position(int sz)
 	}
 
 	return(sz/2);
+	*/
+	return(0);	// supergumba
 }
 
 int map_auto_generate_doors_horizontal(map_type *map,int rn,int x,int zsz,int ty,int by,char *name)
 {
+	/*
 	int			group_idx,px[8],py[8],pz[8];
 	float		gx[8],gy[8];
 
@@ -539,10 +554,13 @@ int map_auto_generate_doors_horizontal(map_type *map,int rn,int x,int zsz,int ty
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 
 	return(group_idx);
+	*/
+	return(0);//supergumba
 }
 
 int map_auto_generate_doors_vertical(map_type *map,int rn,int z,int xsz,int ty,int by,char *name)
 {
+	/*
 	int			group_idx,px[8],py[8],pz[8];
 	float		gx[8],gy[8];
 
@@ -580,10 +598,13 @@ int map_auto_generate_doors_vertical(map_type *map,int rn,int z,int xsz,int ty,i
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 
 	return(group_idx);
+	*/
+	return(0);
 }
 
 void map_auto_generate_doors(map_type *map)
 {
+	/*
 	int						n,x,z,xsz,zsz,ty,by,
 							door_cnt,group_idx,
 							door_type,movement_idx,move_idx;
@@ -665,5 +686,6 @@ void map_auto_generate_doors(map_type *map)
 			
 		door_cnt++;
 	}
+	*/
 }
 

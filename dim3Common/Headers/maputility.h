@@ -35,131 +35,119 @@ extern char light_type_str[][32];
 // map sizes
 //
 
-#define map_enlarge									144				// each units of maze equals this many game units
+#define map_enlarge											144				// each units of maze equals this many game units
 
-#define map_max_size								500000			// maximum size of map on x/z units
+#define map_max_size										500000			// maximum size of map on x/z units
 
-#define map_simple_tessel_size						500				// below this size makes simple lighting tessel
+#define map_simple_tessel_size								500				// below this size makes simple lighting tessel
 
 //
 // map maximums
 //
 
-#define max_mesh									8192			// maximum number of meshes in a map
-#define max_portal									256				// maximum number of portals in a map
+#define max_mesh											8192			// maximum number of meshes in a map
+#define max_map_texture										128				// maximum number of textures in a map
 
-#define max_map_scenery								1024			// maximum number of ambient scenery
-#define max_map_light								256				// maximum number of ambient lights
-#define max_map_sound								256				// maximum number of ambient sounds
-#define max_map_particle							256				// maximum number of ambient particles
+#define max_group											128				// maximum number of mesh groups
 
-#define max_group									128				// maximum number of mesh groups
+#define max_map_scenery										1024			// maximum number of ambient scenery
+#define max_map_light										256				// maximum number of ambient lights
+#define max_map_sound										256				// maximum number of ambient sounds
+#define max_map_particle									256				// maximum number of ambient particles
 
-#define max_map_texture								128				// maximum number of textures in a map
+#define max_spot											512				// maximum number of spot in a map
+#define max_node											512				// maximum number of nodes in a map
+#define max_node_link										16				// maximum number of connected nodes
 
-#define max_spot									512				// maximum number of spot in a map
-#define max_node									512				// maximum number of nodes in a map
-#define max_node_link								16				// maximum number of connected nodes
-
-#define max_movement								64				// maximum number of movements
-#define max_movement_move							16				// maximum number of separate moves in a movement
-
-#define nopath										-1				// no path in sight structs -- supergumba -- can delete
+#define max_movement										64				// maximum number of movements
+#define max_movement_move									16				// maximum number of separate moves in a movement
 
 //
 // strings
 //
 
-#define param_str_len								256				// length of parameter string
+#define param_str_len										256				// length of parameter string
 
 //
 // physics
 //
 
-#define floor_slop									128				// how close to floor to be "standing" on it
+#define floor_slop											128				// how close to floor to be "standing" on it
 
-#define gravity_start_power							0				// starting gravity
-#define gravity_factor								5000			// factor to divide gravity out by when combing with weight
+#define gravity_start_power									0				// starting gravity
+#define gravity_factor										5000			// factor to divide gravity out by when combing with weight
 
-#define gravity_slope_min_y							0.4f			// minimum slope needed to activate gravity
-#define gravity_slope_max_y							1.5f			// maximum climbable slope
-#define gravity_slope_factor						150.0f			// slope gravity factor
-#define gravity_slope_down_cut						0.2f			// amount to count gravity when running with it
+#define gravity_slope_min_y									0.4f			// minimum slope needed to activate gravity
+#define gravity_slope_max_y									1.5f			// maximum climbable slope
+#define gravity_slope_factor								150.0f			// slope gravity factor
+#define gravity_slope_down_cut								0.2f			// amount to count gravity when running with it
 
-#define proj_reflect_slope_max_y					0.5f			// how big a slope before bounces become reflects
-#define proj_bounce_min_speed						10.0f			// minimum speed before bounces cancel
+#define proj_reflect_slope_max_y							0.5f			// how big a slope before bounces become reflects
+#define proj_bounce_min_speed								10.0f			// minimum speed before bounces cancel
 
 //
 // lights
 //
 
-#define max_light_spot								64					// maximum number of lighting objects in a view
+#define max_light_spot										64					// maximum number of lighting objects in a view
 
-#define lt_normal									0
-#define lt_blink									1
-#define lt_glow										2
-#define lt_pulse									3
-#define lt_flicker									4
-#define lt_failing									5
+#define lt_normal											0
+#define lt_blink											1
+#define lt_glow												2
+#define lt_pulse											3
+#define lt_flicker											4
+#define lt_failing											5
 
 //
 // media types
 //
 
-#define mi_none										0
-#define mi_story									1
-#define mi_title									2
-#define mi_movie									3
+#define mi_none												0
+#define mi_story											1
+#define mi_title											2
+#define mi_movie											3
 
 //
 // sky types
 //
 
-#define st_globe									0
-#define st_dome_panoramic							1
-#define st_dome_hemisphere							2
-#define st_cylinder									3
-#define st_cube										4
+#define st_globe											0
+#define st_dome_panoramic									1
+#define st_dome_hemisphere									2
+#define st_cylinder											3
+#define st_cube												4
 
 //
 // liquids
 //
 
-#define ld_horizontal								0
-#define ld_vertical									1
+#define ld_horizontal										0
+#define ld_vertical											1
 
 //
 // light tessel constants
 //
 
-#define light_tessel_grid_sz						6
-#define light_tessel_max_size						(map_enlarge*64)
+#define light_tessel_grid_sz								6
+#define light_tessel_max_size								(map_enlarge*64)
 
-#define light_tessel_max_trig						72
-#define light_tessel_max_vertex						216
-
-//
-// portal vertex list constants
-//
-
-#define flag_pvl_none								0x00
-#define flag_pvl_moveable							0x01
-#define flag_pvl_shiftable							0x02
+#define light_tessel_max_trig								72
+#define light_tessel_max_vertex								216
 
 //
 // group types
 //
 
-#define group_type_mesh								0
-#define group_type_liquid							1
+#define group_type_mesh										0
+#define group_type_liquid									1
 
 //
 // skills
 //
 
-#define skill_easy									0
-#define skill_medium								1
-#define skill_hard									2
+#define skill_easy											0
+#define skill_medium										1
+#define skill_hard											2
 
 //
 // group structure
@@ -220,12 +208,14 @@ typedef struct		{
 typedef struct		{
 						int									portal_v[8],txt_frame_offset,
 															stencil_pass,stencil_idx,decal_stencil_idx;
+						float								x_shift_offset,y_shift_offset;
 						bool								simple_tessel,shift_on;
 					} map_mesh_poly_draw_type;
 
 typedef struct		{
 						int									ptsz,v[8],txt_idx;
-						float								gx[8],gy[8],x_shift,y_shift,
+						float								gx[8],gy[8],
+															x_shift,y_shift,
 															dark_factor,alpha;
 						map_mesh_poly_box_type				box;
 						map_mesh_poly_line_type				line;
@@ -306,24 +296,18 @@ typedef struct		{
 					} map_vertex_type;
 
 //
-// portal structures
+// mesh and liquid collections
 //
 
 typedef struct		{
-						int							nmesh;
-						map_mesh_type				*meshes;
-					} portal_mesh_type;
+						int									nmesh;
+						map_mesh_type						*meshes;
+					} map_mesh_collection_type;
 
 typedef struct		{
-						int							nliquid;
-						map_liquid_type				*liquids;
-					} portal_liquid_type;
-
-typedef struct		{
-						int							x,z,ex,ez,mx,mz,ty,by;
-						char						name[name_str_len];
-						map_mesh_message_type		msg;
-					} portal_type;
+						int									nliquid;
+						map_liquid_type						*liquids;
+					} map_liquid_collection_type;
 
 //
 // scenery, light, sound and particle structures
@@ -494,7 +478,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							nportal,nlight,nsound,nparticle,
+
+						int							nlight,nsound,nparticle,
 													nspot,nnode,nscenery,nmovement,
 													ngroup,start_game_tick;
 													
@@ -512,8 +497,6 @@ typedef struct		{
 						
 						texture_type				*textures;
 						
-						portal_type					*portals;
-						
 						map_scenery_type			*sceneries;
 						map_light_type				*lights;
 						map_sound_type				*sounds;
@@ -524,8 +507,8 @@ typedef struct		{
 						movement_type				*movements;
 						group_type					*groups;
 	
-						portal_mesh_type			mesh;
-						portal_liquid_type			liquid;
+						map_mesh_collection_type	mesh;
+						map_liquid_collection_type	liquid;
 
 						map_vertex_type				vertexes;
 						
@@ -549,15 +532,6 @@ extern int map_count_texture_frames(map_type *map,int txt);
 extern void map_setup_animated_textures(map_type *map,int tick);
 
 extern bool map_check_game_type(char *game_type,char *map_name);
-
-extern int map_portal_create(map_type *map,int x,int z,int ex,int ez);
-extern int map_find_portal(map_type *map,int x,int y,int z);
-extern int map_find_portal_hint(map_type *map,int hint_rn,int x,int y,int z);
-extern bool map_find_portal_by_pos(map_type *map,d3pos *pos);
-extern void map_portal_delete(map_type *map,int rn);
-extern int map_portal_duplicate(map_type *map,int rn,int x,int z);
-extern bool map_portal_touching_portal(map_type *map,int base_rn,int rn);
-extern int map_portal_draw_sort(map_type *map,int rn,int cx,int cy,int cz,int *portal_list);
 
 extern bool map_create_vertex_lists(map_type *map);
 extern void map_dispose_vertex_lists(map_type *map);
@@ -593,7 +567,7 @@ extern void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,boo
 extern void map_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float rot_z);
 extern bool map_mesh_tesselate(map_type *map,int mesh_idx);
 extern bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,int hole_type);
-extern void map_mesh_shift_portal_vertex_list(map_type *map,int tick);
+extern void map_mesh_run_shifts(map_type *map,int tick);
 extern void map_mesh_get_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact);
 extern void map_mesh_set_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact);
 extern void map_mesh_rotate_poly_uv(map_type *map,int mesh_idx,int poly_idx,int rot_ang);

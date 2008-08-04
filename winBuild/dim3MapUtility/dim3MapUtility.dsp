@@ -253,10 +253,6 @@ SOURCE=..\..\dim3MapUtility\Sources\nodes.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3MapUtility\Sources\portal.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3MapUtility\Sources\portal_liquid.c
 # End Source File
 # Begin Source File

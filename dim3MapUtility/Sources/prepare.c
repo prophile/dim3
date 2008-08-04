@@ -238,6 +238,9 @@ void map_prepare(map_type *map)
 			poly->draw.txt_frame_offset=0;
 			poly->draw.shift_on=((poly->x_shift!=0.0f) || (poly->y_shift!=0.0f));
 
+			poly->draw.x_shift_offset=0.0f;
+			poly->draw.y_shift_offset=0.0f;
+
 			mesh->flag.shiftable|=poly->draw.shift_on;
 			
 				// setup mesh min, max, mid

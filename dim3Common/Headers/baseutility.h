@@ -51,10 +51,6 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int				rn,x,y,z;
-					} d3pos;
-					
-typedef struct		{
 						int				x,y,z;
 					} d3pnt;
 

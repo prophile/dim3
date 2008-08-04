@@ -87,6 +87,7 @@ auto_generate_settings_type			ag_settings;
 
 void map_auto_generate_initial_portals(map_type *map)
 {
+	/*
 	int			i,rn,x,z,ex,ez,initial_count,try_count,split_factor,
 				map_x_sz,map_z_sz,portal_rand_sz,portal_min_sz;
 
@@ -170,6 +171,7 @@ void map_auto_generate_initial_portals(map_type *map)
 
 		if (map_mesh_add(map)==-1) break;
 	}
+	*/
 }
 
 /* =======================================================
@@ -180,6 +182,7 @@ void map_auto_generate_initial_portals(map_type *map)
 
 void map_auto_generate_merge_portals(map_type *map)
 {
+	/*
 	int			i,n,k,dist,portal_merge_distance,
 				split_factor,merge_try_count;
 	bool		moved;
@@ -264,6 +267,7 @@ void map_auto_generate_merge_portals(map_type *map)
 
 		if (!moved) break;
 	}
+	*/
 }
 
 /* =======================================================
@@ -274,6 +278,7 @@ void map_auto_generate_merge_portals(map_type *map)
 
 void map_auto_generate_connect_portals(map_type *map)
 {
+	/*
 	int				n,k,rn,corridor_sz,corridor_rand_sz,corridor_min_sz,
 					portal_merge_distance,portal_connect_distance,connect_sz,
 					x,z,ex,ez,x2,z2,ex2,ez2,dist,nportal,cnt,split_factor;
@@ -455,6 +460,7 @@ void map_auto_generate_connect_portals(map_type *map)
 			if (cnt==2) break;
 		}
 	}
+	*/
 }
 
 /* =======================================================
@@ -465,6 +471,7 @@ void map_auto_generate_connect_portals(map_type *map)
 
 void map_auto_generate_portal_y(map_type *map)
 {
+	/*
 	int				n,corridor_slop_y,by_add,portal_high,portal_high_story_add,
 					ty,by,extra_ty,extra_by;
 	portal_type		*portal;
@@ -531,6 +538,7 @@ void map_auto_generate_portal_y(map_type *map)
 		
 		portal++;
 	}
+	*/
 }
 
 /* =======================================================
@@ -541,6 +549,7 @@ void map_auto_generate_portal_y(map_type *map)
 
 void map_auto_generate_walls(map_type *map)
 {
+	/*
 	int				n,x,z,xsz,zsz,ty,by,split_factor,txt_idx,
 					px[8],py[8],pz[8];
 	float			gx[8],gy[8];
@@ -612,6 +621,7 @@ void map_auto_generate_walls(map_type *map)
 
 		portal++;
 	}
+	*/
 }
 
 /* =======================================================
@@ -622,6 +632,7 @@ void map_auto_generate_walls(map_type *map)
 
 void map_auto_generate_height_walls(map_type *map)
 {
+	/*
 	int				n,k,x,ex,kx,z,ez,kz,xsz,zsz,split_factor,txt_idx,
 					px[8],py[8],pz[8];
 	float			gx[8],gy[8];
@@ -737,6 +748,7 @@ void map_auto_generate_height_walls(map_type *map)
 	
 		portal++;
 	}
+	*/
 }
 
 /* =======================================================
@@ -747,6 +759,7 @@ void map_auto_generate_height_walls(map_type *map)
 
 void map_auto_generate_corridor_clip_walls(map_type *map)
 {
+	/*
 	int				n,xsz,zsz,ty,by,
 					px[8],py[8],pz[8],clip_sz;
 	float			gx[8],gy[8];
@@ -850,6 +863,7 @@ void map_auto_generate_corridor_clip_walls(map_type *map)
 			
 		portal++;
 	}
+	*/
 }
 
 /* =======================================================
@@ -860,6 +874,7 @@ void map_auto_generate_corridor_clip_walls(map_type *map)
 
 bool map_auto_generate_portal_ceiling_ok(unsigned char *data,int lx,int lz,int rx,int rz,int lx2,int lz2,int rx2,int rz2)
 {
+	/*
 	int			k,split_factor,mx,mz;
 
 		// in outer ring?
@@ -887,12 +902,13 @@ bool map_auto_generate_portal_ceiling_ok(unsigned char *data,int lx,int lz,int r
 	if ((rx2<=mx) && (lz2>mz)) return(data[ag_ceiling_bottom_left]!=0);
 	if ((lx2==mx) && (lz2>mz)) return(data[ag_ceiling_bottom_middle]!=0);
 	if ((lx2>mx) && (lz2>mz)) return(data[ag_ceiling_bottom_right]!=0);
-	
+	*/
 	return(FALSE);
 }
 
 void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty)
 {
+	/*
 	int				ceiling_type,split_factor,lx2,rx2,lz2,rz2,
 					k,kx,kz,mx,wall_sz,
 					px[8],py[8],pz[8];
@@ -1044,11 +1060,12 @@ void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int
 		map_auto_generate_poly_from_top_trig_wall(mx,(rz-split_factor),(rx-split_factor),(rz-split_factor),(ty-wall_sz),ty,px,py,pz,gx,gy);
 		map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
 	}
-
+*/
 }
 
 void map_auto_generate_corridor_ceiling_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty)
 {
+	/*
 	int				split_factor,lx2,rx2,lz2,rz2,slant_sz,
 					px[8],py[8],pz[8];
 	float			gx[8],gy[8];
@@ -1109,10 +1126,12 @@ void map_auto_generate_corridor_ceiling_add(map_type *map,int rn,int lx,int lz,i
 			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
 		}
 	}
+	*/
 }
 
 void map_auto_generate_ceilings(map_type *map)
 {
+	/*
 	int				n,xsz,zsz;
 	portal_type		*portal;
 
@@ -1136,6 +1155,7 @@ void map_auto_generate_ceilings(map_type *map)
 		
 		portal++;
 	}
+	*/
 }
 
 /* =======================================================
@@ -1146,6 +1166,7 @@ void map_auto_generate_ceilings(map_type *map)
 
 void map_auto_generate_portal_floor_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int by)
 {
+	/*
 	int				split_factor,lx2,rx2,lz2,rz2,
 					floor_type,rough_max,row_add,col_add,xadd,zadd,
 					px[8],py[8],pz[8];
@@ -1233,10 +1254,12 @@ void map_auto_generate_portal_floor_add(map_type *map,int rn,int lx,int lz,int r
 	}
 
 	free(fys);
+	*/
 }
 
 void map_auto_generate_corridor_floor_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int by)
 {
+	/*
 	int				split_factor,lx2,rx2,lz2,rz2,slant_sz,
 					px[8],py[8],pz[8];
 	float			gx[8],gy[8];
@@ -1297,10 +1320,12 @@ void map_auto_generate_corridor_floor_add(map_type *map,int rn,int lx,int lz,int
 			map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 		}
 	}
+	*/
 }
 
 void map_auto_generate_floors(map_type *map)
 {
+	/*
 	int				n,xsz,zsz;
 	portal_type		*portal;
 
@@ -1324,6 +1349,7 @@ void map_auto_generate_floors(map_type *map)
 		
 		portal++;
 	}
+	*/
 }
 
 /* =======================================================
@@ -1334,6 +1360,7 @@ void map_auto_generate_floors(map_type *map)
 
 void map_auto_generate_second_story_block(map_type *map,unsigned char *poly_map,int x,int z,int xsz,int zsz,int split_factor,int y)
 {
+	/*
 	int				lx,rx,lz,rz,by,px[8],py[8],pz[8];
 	float			gx[8],gy[8];
 
@@ -1387,10 +1414,12 @@ void map_auto_generate_second_story_block(map_type *map,unsigned char *poly_map,
 			map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 		}
 	}
+	*/
 }
 
 int map_auto_generate_second_story_steps_get_x(map_type *map,int portal_idx,int z,int ez,bool lft,int xsz,int step_wid)
 {
+	/*
 	int					split_factor;
 	portal_type			*portal;
 	
@@ -1408,12 +1437,13 @@ int map_auto_generate_second_story_steps_get_x(map_type *map,int portal_idx,int 
 		if (!map_auto_generate_portal_horz_edge_touch(map,portal_idx,z,ez,portal->x)) return(0);
 		return(xsz-((split_factor*2)+step_wid));
 	}
-	
+*/	
 	return(0);
 }
 
 int map_auto_generate_second_story_steps_get_z(map_type *map,int portal_idx,int x,int ex,bool top,int zsz,int step_wid)
 {
+	/*
 	int					split_factor;
 	portal_type			*portal;
 	
@@ -1431,12 +1461,13 @@ int map_auto_generate_second_story_steps_get_z(map_type *map,int portal_idx,int 
 		if (!map_auto_generate_portal_vert_edge_touch(map,portal_idx,x,ex,portal->z)) return(0);
 		return(zsz-((split_factor*2)+step_wid));
 	}
-	
+*/	
 	return(0);
 }
 
 void map_auto_generate_second_story(map_type *map)
 {
+	/*
 	int				n,portal_high,extra_ty,split_factor,step_wid,step_len,sz,
 					x,y,z,by,mx,mz,xsz,zsz;
 	bool			lft,rgt,top,bot,horz,vert,
@@ -1557,6 +1588,7 @@ void map_auto_generate_second_story(map_type *map)
 			}
 		}
 	}
+	*/
 }
 
 /* =======================================================
@@ -1567,12 +1599,14 @@ void map_auto_generate_second_story(map_type *map)
 
 void map_auto_generate_clear_flags(void)
 {
+	/*
 	int				n;
 	
 	for (n=0;n!=max_portal;n++) {
 		corridor_flags[n]=ag_corridor_flag_portal;
 		corridor_types[n]=ag_corridor_type_normal;
 	}
+	*/
 }
 
 /* =======================================================
@@ -1583,6 +1617,7 @@ void map_auto_generate_clear_flags(void)
 
 void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 {
+	/*
 	int			sz;
 	
 		// setup global
@@ -1646,6 +1681,7 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 		// create spots
 		
 	map_auto_generate_spots(map);
+	*/
 }
 
 /* =======================================================
@@ -1656,6 +1692,7 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 
 bool map_auto_generate_test(map_type *map,bool load_shaders)
 {
+	/*
 	int								n;
 	auto_generate_settings_type		ags;
 
@@ -1730,6 +1767,6 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 		// create the map
 
 	map_auto_generate(map,&ags);
-
+*/
 	return(TRUE);
 }

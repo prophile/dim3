@@ -423,6 +423,7 @@ void write_single_liquid(map_liquid_type *liq)
 
 bool write_map_xml(map_type *map)
 {
+	/*
     int						n,k,nmesh,nliq;
 	bool					ok;
     portal_type				*portal;
@@ -434,6 +435,7 @@ bool write_map_xml(map_type *map)
     node_type				*node;
     spot_type				*spot;
 	map_scenery_type		*scenery;
+*/
 
 	return(TRUE);			// supergumba -- do not write maps yet
 
