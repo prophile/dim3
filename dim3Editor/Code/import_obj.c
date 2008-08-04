@@ -31,7 +31,6 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int						cr;
 extern map_type					map;
 
 #define import_max_vertex	50000
@@ -610,10 +609,9 @@ void map_import_obj(import_obj_settings_type *oi_settings)
 	map_auto_generate_fix_segments_uv(&map);
 	import_obj_fix_segments_fill(oi_settings);
 	
-		// lights and sight paths
+		// lights
 		
 	if (oi_settings->lights) map_auto_generate_add_simple_lights(&map);
-	if (oi_settings->sight_path) map_portal_sight_generate_paths(&map,FALSE);
 	
 		// create player spot
 		

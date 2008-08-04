@@ -33,7 +33,6 @@ and can be sold or given away.
 
 #define import_height_map_start_y			50000
 
-extern int					cr;
 extern map_type				map;
 
 /* =======================================================
@@ -87,7 +86,7 @@ void import_height_map_add_wall(import_height_map_settings_type *hmi_settings,in
 	gx[0]=gx[1]=gx[2]=gx[3]=0.0f;
 	gy[0]=gy[1]=gy[2]=gy[3]=0.0f;
 
-	map_portal_mesh_add_poly(&map,rn,mesh_idx,4,kx,ky,kz,gx,gy,hmi_settings->texture_portal_wall);
+	map_mesh_add_poly(&map,mesh_idx,4,kx,ky,kz,gx,gy,hmi_settings->texture_portal_wall);
 }
 
 int import_height_map_get_texture_idx(import_height_map_settings_type *hmi_settings,int *ky)
@@ -126,6 +125,7 @@ int import_height_map_get_texture_idx(import_height_map_settings_type *hmi_setti
 
 void map_import_height_map(import_height_map_settings_type *hmi_settings)
 {
+/* supergumba -- redo
 	int					rn,x,z,sx,sz,px,pz,pex,pez,txt_idx,
 						lx,rx,tz,bz,kx[4],ky[4],kz[4],y[4],ty,by,
 						portal_cnt,portal_start,portal_total_sz,
@@ -174,7 +174,7 @@ void map_import_height_map(import_height_map_settings_type *hmi_settings)
 			
 				// mesh for this portal
 				
-			mesh_idx=map_portal_mesh_add(&map,rn);
+			mesh_idx=map_mesh_add(&map);
 			if (mesh_idx==-1) break;
 			
 				// floors
@@ -193,9 +193,7 @@ void map_import_height_map(import_height_map_settings_type *hmi_settings)
 					y[1]=import_height_map_start_y-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,portal_start,portal_total_sz,portal,rx,tz));
 					y[2]=import_height_map_start_y-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,portal_start,portal_total_sz,portal,rx,bz));
 					y[3]=import_height_map_start_y-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,portal_start,portal_total_sz,portal,lx,bz));
-					
-					cr=rn;
-					
+										
 					gx[0]=gx[1]=gx[2]=0.0f;
 					gy[0]=gy[1]=gy[2]=0.0f;
 					
@@ -209,7 +207,7 @@ void map_import_height_map(import_height_map_settings_type *hmi_settings)
 						ky[2]=y[2];
 						
 						txt_idx=import_height_map_get_texture_idx(hmi_settings,ky);
-						map_portal_mesh_add_poly(&map,rn,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
+						map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
 					
 						kx[0]=kx[2]=lx;
 						kx[1]=rx;
@@ -220,7 +218,7 @@ void map_import_height_map(import_height_map_settings_type *hmi_settings)
 						ky[2]=y[3];
 						
 						txt_idx=import_height_map_get_texture_idx(hmi_settings,ky);
-						map_portal_mesh_add_poly(&map,rn,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
+						map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
 					}
 					else {
 						kx[0]=kx[2]=lx;
@@ -232,7 +230,7 @@ void map_import_height_map(import_height_map_settings_type *hmi_settings)
 						ky[2]=y[3];
 						
 						txt_idx=import_height_map_get_texture_idx(hmi_settings,ky);
-						map_portal_mesh_add_poly(&map,rn,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
+						map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
 					
 						kx[0]=kx[1]=rx;
 						kx[2]=lx;
@@ -243,7 +241,7 @@ void map_import_height_map(import_height_map_settings_type *hmi_settings)
 						ky[2]=y[3];
 						
 						txt_idx=import_height_map_get_texture_idx(hmi_settings,ky);
-						map_portal_mesh_add_poly(&map,rn,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
+						map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
 					}
 				}
 			}
@@ -297,14 +295,14 @@ void map_import_height_map(import_height_map_settings_type *hmi_settings)
 		
 	bitmap_close(&bitmap);
 	
-		// lights and sight paths
+		// lightss
 		
 	if (hmi_settings->lights) map_auto_generate_add_simple_lights(&map);
-	map_portal_sight_generate_paths(&map,TRUE);
 	
 		// create player spot
 		
 	map_auto_generate_add_player_spot(&map);
+	*/
 }
 
 

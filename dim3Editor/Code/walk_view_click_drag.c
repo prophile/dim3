@@ -29,7 +29,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int					cr,cx,cz,cy,vertex_mode;
+extern int					cx,cz,cy,vertex_mode;
 extern bool					dp_auto_texture;
 extern CCrsrHandle			dragcur;
 

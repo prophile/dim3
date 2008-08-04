@@ -30,7 +30,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int					cr,cx,cy,cz,magnify_factor,vertex_mode,drag_mode,grid_mode;
+extern int					cx,cy,cz,magnify_factor,vertex_mode,drag_mode,grid_mode;
 extern bool					dp_liquid,dp_object,dp_lightsoundparticle,dp_node;
 extern Rect					main_wind_box;
 
@@ -49,13 +49,8 @@ double						walk_view_mod_matrix[16],walk_view_proj_matrix[16];
 
 void walk_view_click_setup_project(editor_3D_view_setup *view_setup)
 {
-	int				rn;
-	
 		// setup walk view
 		
-	rn=walk_view_find_start_portal();
-	walk_view_sight_path_mark(rn);
-	
 	main_wind_set_viewport(&view_setup->box,0.75f);
 	main_wind_set_3D_projection(&view_setup->box,&view_setup->ang,view_setup->fov,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
 	
@@ -396,6 +391,7 @@ bool walk_view_liquid_click(editor_3D_view_setup *view_setup,d3pnt *click_pt,por
 
 void walk_view_click_portal(editor_3D_view_setup *view_setup,d3pnt *click_pt)
 {
+/* supergumba -- test deleting me
 	int				n,px[4],pz[4],ty,by,hit_z;
 	bool			hit;
 	portal_type		*portal;
@@ -453,7 +449,7 @@ void walk_view_click_portal(editor_3D_view_setup *view_setup,d3pnt *click_pt)
 	
 	main_wind_draw();
 	texture_palette_reset();
-
+*/
 }
 
 /* =======================================================

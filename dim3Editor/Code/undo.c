@@ -28,7 +28,6 @@ and can be sold or given away.
 #include "common_view.h"
 #include "interface.h"
 
-extern int							cr;
 extern map_type						map;
 
 int									undo_type,undo_nmesh;
@@ -69,22 +68,19 @@ void undo_clear(void)
 void undo_save(void)
 {
 	int				n,nmesh;
-	portal_type		*portal;
 	map_mesh_type	*org_mesh,*mesh;
 	
 	undo_clear();
 	
 		// save all meshes in portal
 		
-	portal=&map.portals[cr];
-		
-	nmesh=portal->mesh.nmesh;
+	nmesh=map.mesh.nmesh;
 	if (nmesh==0) return;
 	
 	undo_meshes=(map_mesh_type*)valloc(nmesh*sizeof(map_mesh_type));
 	if (undo_meshes==NULL) return;
 	
-	org_mesh=portal->mesh.meshes;
+	org_mesh=map.mesh.meshes;
 	mesh=undo_meshes;
 	
 	for (n=0;n!=nmesh;n++) {
@@ -123,16 +119,13 @@ void undo_save(void)
 void undo_restore(void)
 {
 	int				n;
-	portal_type		*portal;
 	map_mesh_type	*org_mesh,*mesh;
 	
 		// restore all meshes in portal
 		
 	if (undo_nmesh==0) return;
 	
-	portal=&map.portals[cr];
-		
-	mesh=portal->mesh.meshes;
+	mesh=map.mesh.meshes;
 	org_mesh=undo_meshes;
 	
 	for (n=0;n!=undo_nmesh;n++) {
@@ -149,7 +142,7 @@ void undo_restore(void)
 		mesh++;
 	}
 	
-	portal->mesh.nmesh=undo_nmesh;
+	map.mesh.nmesh=undo_nmesh;
 
 		// clear undo
 		

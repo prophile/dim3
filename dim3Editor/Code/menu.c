@@ -31,7 +31,7 @@ and can be sold or given away.
 #include "walk_view.h"
 #include "import.h"
 
-extern int				cr,drag_mode;
+extern int				drag_mode;
 extern bool				done,map_opened;
 
 extern map_type			map;
@@ -218,38 +218,6 @@ void menu_save_changes_dialog(void)
 	if (hit==kAlertStdAlertOKButton) file_save_map();
 }
 
-void menu_auto_generate_paths_dialog(void)
-{
-	short					hit;
-	AlertStdAlertParamRec	alert_param;
-	
-	memset(&alert_param,0x0,sizeof(AlertStdAlertParamRec));
-	alert_param.defaultText="\pYes";
-	alert_param.cancelText="\pNo";
-	alert_param.defaultButton=kAlertStdAlertOKButton;
-	alert_param.position=kWindowDefaultPosition;
-
-	StandardAlert(0,"\pAuto-Generate Sight Paths?","\pThis will replace all portal sight paths with auto-generated ones.  These paths will probably be incomplete and not-optimal and should be adjusted by hand.",&alert_param,&hit);
-	
-	if (hit==kAlertStdAlertOKButton) map_portal_sight_generate_paths(&map,FALSE);
-}
-
-bool menu_delete_portal_dialog(void)
-{
-	short					hit;
-	AlertStdAlertParamRec	alert_param;
-	
-	memset(&alert_param,0x0,sizeof(AlertStdAlertParamRec));
-	alert_param.defaultText="\pYes";
-	alert_param.cancelText="\pNo";
-	alert_param.defaultButton=kAlertStdAlertOKButton;
-	alert_param.position=kWindowDefaultPosition;
-
-	StandardAlert(0,"\pDelete Portal?","\pAre you sure you want to delete this portal?",&alert_param,&hit);
-	
-	return(hit==kAlertStdAlertOKButton);
-}
-
 /* =======================================================
 
       Menu Events
@@ -385,22 +353,20 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			dialog_map_rain_settings_run();
 			return(noErr);
 			
-		case kCommandAutoGenerateSightPaths:
-			menu_auto_generate_paths_dialog();
-			return(noErr);
-			
+			// supergumba -- get these working
+			// will need a "center map" thing
 		case kCommandMapRaiseY:
-			portal_all_y_change(-(map_enlarge*10));
+		//	portal_all_y_change(-(map_enlarge*10));
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandMapLowerY:
-			portal_all_y_change(map_enlarge*10);
+		//	portal_all_y_change(map_enlarge*10);
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandMapResetUV:
-			portal_all_reset_uvs();
+		//	portal_all_reset_uvs();
 			main_wind_draw();
 			undo_clear();
 			return(noErr);
@@ -454,63 +420,11 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 		case kCommandGroupMovements:
 			dialog_map_movements_run();
 			return(noErr);
-			
-			// portal transform menu
-
-        case kCommandPortalResize:
-            portal_resize();
-			undo_clear();
-            return(noErr);
-
-		case kCommandPortalFlipHorizontal:
-			portal_flip_horizontal();
-			undo_clear();
-			return(noErr);
-			
-		case kCommandPortalFlipVertical:
-			portal_flip_vertical();
-			undo_clear();
-			return(noErr);
-			
-		case kCommandPortalRotate:
-			portal_rotate();
-			undo_clear();
-			return(noErr);
-            
-        case kCommandPortalRaiseY:
-            portal_y_change(-map_enlarge);
-			main_wind_draw();
-			undo_clear();
-            return(noErr);
-            
-        case kCommandPortalLowerY:
-            portal_y_change(map_enlarge);
-			main_wind_draw();
-			undo_clear();
-            return(noErr);
-			
-		case kCommandPortalResetUV:
-			portal_reset_uvs();
-			main_wind_draw();
-			undo_clear();
-			return(noErr);
-			
-        case kCommandPortalSplitHorizontal:
-            portal_split(cr,FALSE);
-			main_wind_draw();
-			undo_clear();
-            return(noErr);
-			
-        case kCommandPortalSplitVertical:
-            portal_split(cr,TRUE);
-			main_wind_draw();
- 			undo_clear();
-			return(noErr);
 			            
 			// mesh transform menu
 
 		case kCommandMeshCombine:
-			piece_combine_mesh(cr);
+			piece_combine_mesh();
 			main_wind_draw();
 			return(noErr);
 			
@@ -551,12 +465,12 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			return(noErr);
 
 		case kCommandMeshRaiseY:
-			select_move(cr,0,0,map_enlarge);
+			select_move(0,0,map_enlarge);
 			main_wind_draw();
 			return(noErr);
             
 		case kCommandMeshLowerY:
-			select_move(cr,0,0,-map_enlarge);
+			select_move(0,0,-map_enlarge);
             main_wind_draw();
  			return(noErr);
 			

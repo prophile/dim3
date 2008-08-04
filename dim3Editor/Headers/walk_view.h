@@ -31,7 +31,6 @@ and can be sold or given away.
 
 extern bool walk_view_initialize(void);
 extern void walk_view_shutdown(void);
-extern int walk_view_find_start_portal(void);
 extern void walk_view_click(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool rot_ok,bool dblclick);
 extern void walk_view_cursor(bool rot_ok);
 extern void walk_view_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch);
@@ -41,10 +40,8 @@ extern void walk_view_key(editor_3D_view_setup *view_setup,int view_move_dir,cha
 //
 
 extern void walk_view_draw_select_mesh_get_grow_handles(int mesh_idx,int *px,int *py,int *pz);
-extern void walk_view_sight_path_trace(portal_sight_list_type *sight,int u);
-extern void walk_view_sight_path_mark(int rn);
 extern void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position);
-extern void walk_view_draw_select_portal(int rn,d3pnt *cpt);
+extern void walk_view_draw_select(d3pnt *cpt);
 
 //
 // walk view click
@@ -100,6 +97,6 @@ extern bool walk_view_swap_click(editor_3D_view_setup *view_setup,d3pnt *pt,bool
 extern void walk_view_models_start(void);
 extern void walk_view_models_close(void);
 extern void walk_view_models_reset(void);
-extern bool walk_view_model_draw(d3pnt *cpt,d3pos *pos,d3ang *ang,char *name);
+extern bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name);
 extern bool walk_view_model_click_select_size(d3pnt *cpt,char *name,d3pnt *pnt,d3ang *ang,int *px,int *pz,int *ty,int *by);
 extern bool walk_view_model_draw_select(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name);

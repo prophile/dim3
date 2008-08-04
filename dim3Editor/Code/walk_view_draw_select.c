@@ -52,16 +52,14 @@ void walk_view_draw_select_mesh_get_grow_handles(int mesh_idx,int *px,int *py,in
 	py[4]=py[5]=py[6]=py[7]=max.y;
 }
 
-void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
+void walk_view_draw_select_mesh(d3pnt *cpt,int mesh_idx,int poly_idx)
 {
 	int						n,k,t,x,y,z,px[8],py[8],pz[8];
 	d3pnt					*pt;
-	portal_type				*portal;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*mesh_poly;
 	
-	portal=&map.portals[rn];
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map.mesh.meshes[mesh_idx];
 	
 		// draw selected mesh
 		
@@ -77,9 +75,9 @@ void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
 		
 		for (t=0;t!=mesh_poly->ptsz;t++) {
 			pt=&mesh->vertexes[mesh_poly->v[t]];
-			x=(pt->x+portal->x)-cpt->x;
+			x=pt->x-cpt->x;
 			y=pt->y-cpt->y;
-			z=cpt->z-(pt->z+portal->z);
+			z=cpt->z-pt->z;
 			glVertex3i(x,y,z);
 		}
 		
@@ -102,9 +100,9 @@ void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
 		glBegin(GL_POINTS);
 
 		for (n=0;n!=8;n++) {
-			x=(px[n]+portal->x)-cpt->x;
+			x=px[n]-cpt->x;
 			y=py[n]-cpt->y;
-			z=cpt->z-(pz[n]+portal->z);
+			z=cpt->z-pz[n];
 			glVertex3i(x,y,z);
 		}
 
@@ -129,9 +127,9 @@ void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
 		
 		for (t=0;t!=mesh_poly->ptsz;t++) {
 			pt=&mesh->vertexes[mesh_poly->v[t]];
-			x=(pt->x+portal->x)-cpt->x;
+			x=pt->x-cpt->x;
 			y=pt->y-cpt->y;
-			z=cpt->z-(pt->z+portal->z);
+			z=cpt->z-pt->z;
 			glVertex3i(x,y,z);
 		}
 		
@@ -156,9 +154,9 @@ void walk_view_draw_select_mesh(int rn,d3pnt *cpt,int mesh_idx,int poly_idx)
 		glBegin(GL_POINTS);
 
 		for (n=0;n!=mesh->nvertex;n++) {
-			x=(pt->x+portal->x)-cpt->x;
+			x=pt->x-cpt->x;
 			y=pt->y-cpt->y;
-			z=cpt->z-(pt->z+portal->z);
+			z=cpt->z-pt->z;
 			glVertex3i(x,y,z);
 			
 			pt++;
@@ -226,7 +224,7 @@ void walk_view_sprite_select_size(d3pnt *cpt,d3pnt *pnt,int *px,int *pz,int *ty,
 	int				x,y,z,wid;
 	
     x=pnt->x-cpt->x;
-    y=(pnt->y+1)-cpt->y;
+    y=pnt->y-cpt->y;
     z=cpt->z-pnt->z;
     
     wid=map_enlarge*3;
@@ -246,7 +244,7 @@ void walk_view_draw_select_sprite(d3pnt *cpt,d3pnt *pnt)
     int			x,z,y,wid,high;
   
     x=pnt->x-cpt->x;
-    y=(pnt->y+1)-cpt->y;
+    y=pnt->y-cpt->y;
     z=pnt->z-cpt->z;
     
     wid=map_enlarge*3;
@@ -290,11 +288,11 @@ void walk_view_draw_select_sprite(d3pnt *cpt,d3pnt *pnt)
 
 /* =======================================================
 
-      Draw Select for Portal
+      Draw Selections for Map
       
 ======================================================= */
 
-void walk_view_draw_select_portal(int rn,d3pnt *cpt)
+void walk_view_draw_select(d3pnt *cpt)
 {
 	int						n,sel_count,
 							type,main_idx,sub_idx;
@@ -313,7 +311,7 @@ void walk_view_draw_select_portal(int rn,d3pnt *cpt)
 		switch (type) {
 		
 			case mesh_piece:
-				walk_view_draw_select_mesh(rn,cpt,main_idx,sub_idx);
+				walk_view_draw_select_mesh(cpt,main_idx,sub_idx);
 				break;
 				
 			case liquid_piece:

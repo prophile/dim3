@@ -31,7 +31,7 @@ and can be sold or given away.
 
 #define drag_texture_shift_factor		100.0f
 
-extern int					cr,cx,cz,cy,vertex_mode;
+extern int					cx,cz,cy,vertex_mode;
 extern bool					dp_auto_texture;
 extern CCrsrHandle			dragcur;
 

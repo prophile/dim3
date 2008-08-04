@@ -32,7 +32,7 @@ and can be sold or given away.
 
 extern WindowRef				mainwind;
 
-extern int						cr,cx,cz,cy,magnify_factor;
+extern int						cx,cz,cy,magnify_factor;
 extern bool						map_opened;
 
 extern file_path_setup_type		file_path_setup;
@@ -53,12 +53,11 @@ void open_windows(void)
 
 void redraw_windows(void)
 {
-    cr=0;
 	
         // starting room
-    
+ // supergumba -- do we need to start with a mesh?   
     if (map.nportal==0) {
-		cr=map_portal_create(&map,(map_max_size/2),(map_max_size/2),(40*map_enlarge),(40*map_enlarge));
+//		cr=map_portal_create(&map,(map_max_size/2),(map_max_size/2),(40*map_enlarge),(40*map_enlarge));
 	}
     
         // center in first room

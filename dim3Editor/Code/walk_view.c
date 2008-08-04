@@ -29,7 +29,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int						cr,top_view_x,top_view_z,txt_palette_high;
+extern int						top_view_x,top_view_z,txt_palette_high;
 
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;
@@ -86,25 +86,6 @@ void walk_view_shutdown(void)
     bitmap_close(&light_bitmap);
     bitmap_close(&sound_bitmap);
     bitmap_close(&particle_bitmap);
-}
-
-/* =======================================================
-
-      Walk View Portal Start
-      
-======================================================= */
-
-int walk_view_find_start_portal(void)
-{
-	int			rn;
-	
-	rn=map_find_portal(&map,cx,cy,cz);
-	if (rn==-1) rn=walk_view_last_rn;
-	if (rn==-1) rn=cr;
-	
-	walk_view_last_rn=rn;
-	
-	return(rn);
 }
 
 /* =======================================================

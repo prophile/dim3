@@ -29,7 +29,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int				cr,cx,cz,cy,vertex_mode,magnify_factor,
+extern int				cx,cz,cy,vertex_mode,magnify_factor,
 						txt_palette_y,txt_palette_high;
 extern float			walk_view_y_angle,walk_view_x_angle;
 extern bool				map_opened,swap_panel_forward,swap_panel_side,swap_panel_top,
@@ -70,7 +70,6 @@ void main_wind_setup_panel_forward(editor_3D_view_setup *view_setup)
 	
 	view_setup->mesh_only=FALSE;
 	view_setup->draw_portal=FALSE;
-	view_setup->ignore_site_path=FALSE;
 	view_setup->draw_light_circle=FALSE;
 	
 	view_setup->swap_on=swap_panel_forward;
@@ -100,7 +99,6 @@ void main_wind_setup_panel_forward_frame(editor_3D_view_setup *view_setup)
 	
 	view_setup->mesh_only=TRUE;
 	view_setup->draw_portal=FALSE;
-	view_setup->ignore_site_path=FALSE;
 	view_setup->draw_light_circle=FALSE;
 
 	view_setup->swap_on=swap_panel_forward;
@@ -131,7 +129,6 @@ void main_wind_setup_panel_forward_full(editor_3D_view_setup *view_setup)
 	
 	view_setup->mesh_only=FALSE;
 	view_setup->draw_portal=FALSE;
-	view_setup->ignore_site_path=FALSE;
 	view_setup->draw_light_circle=FALSE;
 
 	view_setup->swap_on=FALSE;
@@ -167,7 +164,6 @@ void main_wind_setup_panel_side(editor_3D_view_setup *view_setup)
 	
 	view_setup->mesh_only=FALSE;
 	view_setup->draw_portal=FALSE;
-	view_setup->ignore_site_path=FALSE;
 	view_setup->draw_light_circle=FALSE;
 
 	view_setup->swap_on=swap_panel_side;
@@ -197,7 +193,6 @@ void main_wind_setup_panel_side_frame(editor_3D_view_setup *view_setup)
 	
 	view_setup->mesh_only=TRUE;
 	view_setup->draw_portal=FALSE;
-	view_setup->ignore_site_path=FALSE;
 	view_setup->draw_light_circle=FALSE;
 	
 	view_setup->swap_on=swap_panel_side;
@@ -239,7 +234,6 @@ void main_wind_setup_panel_top(editor_3D_view_setup *view_setup)
 	
 	view_setup->mesh_only=FALSE;
 	view_setup->draw_portal=TRUE;
-	view_setup->ignore_site_path=TRUE;
 	view_setup->draw_light_circle=TRUE;
 	
 	view_setup->swap_on=swap_panel_top;
@@ -275,7 +269,6 @@ void main_wind_setup_panel_top_frame(editor_3D_view_setup *view_setup)
 	
 	view_setup->mesh_only=TRUE;
 	view_setup->draw_portal=TRUE;
-	view_setup->ignore_site_path=TRUE;
 	view_setup->draw_light_circle=TRUE;
 	
 	view_setup->swap_on=swap_panel_top;
@@ -312,7 +305,6 @@ void main_wind_setup_panel_top_full(editor_3D_view_setup *view_setup)
 	
 	view_setup->mesh_only=FALSE;
 	view_setup->draw_portal=TRUE;
-	view_setup->ignore_site_path=TRUE;
 	view_setup->draw_light_circle=TRUE;
 	
 	view_setup->swap_on=FALSE;
@@ -348,7 +340,6 @@ void main_wind_setup_panel_walk(editor_3D_view_setup *view_setup)
 	
 	view_setup->mesh_only=FALSE;
 	view_setup->draw_portal=FALSE;
-	view_setup->ignore_site_path=FALSE;
 	view_setup->draw_light_circle=FALSE;
 	
 	view_setup->swap_on=FALSE;

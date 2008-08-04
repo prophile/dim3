@@ -79,13 +79,13 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 239238936;
-			PBXWorkspaceStateSaveDate = 239238936;
+			PBXPerProjectTemplateStateSaveDate = 239344902;
+			PBXWorkspaceStateSaveDate = 239344902;
 		};
 		perUserProjectItems = {
 			262F425F0E29BEB100523EE0 /* PlistBookmark */ = 262F425F0E29BEB100523EE0 /* PlistBookmark */;
 			262F42610E29BEB100523EE0 /* PlistBookmark */ = 262F42610E29BEB100523EE0 /* PlistBookmark */;
-			269328780E41689400FE6996 /* PBXTextBookmark */ = 269328780E41689400FE6996 /* PBXTextBookmark */;
+			26D685460E441E82007668D6 /* PBXTextBookmark */ = 26D685460E441E82007668D6 /* PBXTextBookmark */;
 			26FD1EDF0E42C1950049A45A /* PBXTextBookmark */ = 26FD1EDF0E42C1950049A45A /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
@@ -273,16 +273,6 @@
 			sepNavWindowFrame = "{{84, 213}, {1041, 747}}";
 		};
 	};
-	269328780E41689400FE6996 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5A582BB090C98D500BE7C36 /* interface_defs.h */;
-		name = "interface_defs.h: 386";
-		rLen = 0;
-		rLoc = 8711;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
 	26A4B6430DAF028100E40F35 /* net_host_broadcast.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 2100}}";
@@ -298,6 +288,16 @@
 			sepNavVisRange = "{2914, 1010}";
 			sepNavWindowFrame = "{{430, 180}, {1041, 747}}";
 		};
+	};
+	26D685460E441E82007668D6 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5A582BB090C98D500BE7C36 /* interface_defs.h */;
+		name = "interface_defs.h: 386";
+		rLen = 0;
+		rLoc = 8711;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
 	};
 	26DAED2F0DD55C28000EBB48 /* group_move.c */ = {
 		uiCtxt = {
@@ -655,7 +655,7 @@
 	};
 	F5A582BB090C98D500BE7C36 /* interface_defs.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {12, 5628}}";
+			sepNavIntBoundsRect = "{{0, 0}, {432, 5600}}";
 			sepNavSelRange = "{8711, 0}";
 			sepNavVisRange = "{0, 0}";
 			sepNavWindowFrame = "{{425, 144}, {1041, 747}}";

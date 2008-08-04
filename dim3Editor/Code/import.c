@@ -31,7 +31,6 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int			cr;
 extern map_type		map;
 
 char								import_file_ext[32];
@@ -55,9 +54,7 @@ auto_generate_settings_type			ag_settings;
 ======================================================= */
 
 void import_redraw(void)
-{
-	cr=0;
-	
+{	
 	main_wind_center_position_in_map();		
 	main_wind_draw();
 	

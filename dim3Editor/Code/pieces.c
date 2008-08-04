@@ -28,7 +28,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "common_view.h"
 
-extern int					cr,drag_mode;
+extern int					drag_mode;
 extern CCrsrHandle			dragcur;
 
 extern map_type				map;
@@ -732,25 +732,25 @@ void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch)
 	
 		case 0x1C:
 			walk_view_click_drag_movement(view_setup,view_move_dir,mv,0,&xadd,&yadd,&zadd);
-			select_move(cr,xadd,yadd,zadd);
+			select_move(xadd,yadd,zadd);
 			main_wind_draw();
 			break;
 			
 		case 0x1D:
 			walk_view_click_drag_movement(view_setup,view_move_dir,-mv,0,&xadd,&yadd,&zadd);
-			select_move(cr,xadd,yadd,zadd);
+			select_move(xadd,yadd,zadd);
 			main_wind_draw();
 			break;
 			
 		case 0x1E:
 			walk_view_click_drag_movement(view_setup,view_move_dir,0,mv,&xadd,&yadd,&zadd);
-			select_move(cr,xadd,yadd,zadd);
+			select_move(xadd,yadd,zadd);
 			main_wind_draw();
 			break;
 			
 		case 0x1F:
 			walk_view_click_drag_movement(view_setup,view_move_dir,0,-mv,&xadd,&yadd,&zadd);
-			select_move(cr,xadd,yadd,zadd);
+			select_move(xadd,yadd,zadd);
 			main_wind_draw();
 			break;
 			

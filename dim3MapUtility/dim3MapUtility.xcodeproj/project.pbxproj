@@ -18,7 +18,6 @@
 		F50AF9290885FF0E00F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF9280885FF0E00F261B1 /* os_defs.h */; };
 		F50B25C8092065C900879CCC /* file_map_shader.c in Sources */ = {isa = PBXBuildFile; fileRef = F50B25C7092065C900879CCC /* file_map_shader.c */; };
 		F511664F093CDA2C00E766C3 /* groups.c in Sources */ = {isa = PBXBuildFile; fileRef = F511664E093CDA2C00E766C3 /* groups.c */; };
-		F52A9B7509F0A63C008CE744 /* portal_sight_path.c in Sources */ = {isa = PBXBuildFile; fileRef = F52A9B7409F0A63C008CE744 /* portal_sight_path.c */; };
 		F53F263D0BC05D0A00EB3C0F /* libBaseUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD541A0BBE1EE6001C7C04 /* libBaseUtility.dylib */; };
 		F55255260CE57DFA0045350D /* portal_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = F55255250CE57DFA0045350D /* portal_mesh.c */; };
 		F56B6201080C885A00E9D08B /* mapprivate.h in Headers */ = {isa = PBXBuildFile; fileRef = F56B6200080C885A00E9D08B /* mapprivate.h */; };
@@ -34,7 +33,6 @@
 		F5DD16E40907328000721649 /* prepare.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD16E00907328000721649 /* prepare.c */; };
 		F5DD177F09074E1E00721649 /* portal.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD177E09074E1E00721649 /* portal.c */; };
 		F5DD178C09074E5000721649 /* portal_vertex_list.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD178809074E5000721649 /* portal_vertex_list.c */; };
-		F5DD18B90907FD6700721649 /* portal_light_spot.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD18B80907FD6700721649 /* portal_light_spot.c */; };
 		F5DD18BB0907FD6E00721649 /* spots.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD18BA0907FD6E00721649 /* spots.c */; };
 		F5F49529067BFDB900E809E7 /* map_main.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A8B1B105229DA4008D4331 /* map_main.c */; };
 		F5F4952A067BFDBA00E809E7 /* nodes.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DA8623059148C40043E685 /* nodes.c */; };
@@ -72,7 +70,6 @@
 		F50AF9280885FF0E00F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
 		F50B25C7092065C900879CCC /* file_map_shader.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_map_shader.c; path = Sources/file_map_shader.c; sourceTree = "<group>"; };
 		F511664E093CDA2C00E766C3 /* groups.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = groups.c; path = Sources/groups.c; sourceTree = "<group>"; };
-		F52A9B7409F0A63C008CE744 /* portal_sight_path.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_sight_path.c; path = Sources/portal_sight_path.c; sourceTree = "<group>"; };
 		F55255250CE57DFA0045350D /* portal_mesh.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_mesh.c; path = Sources/portal_mesh.c; sourceTree = "<group>"; };
 		F55A4CE5059A4A3E0006C01E /* dim3maputility.exp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.exports; name = dim3maputility.exp; path = Exports/dim3maputility.exp; sourceTree = "<group>"; };
 		F56B6200080C885A00E9D08B /* mapprivate.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mapprivate.h; path = Headers/mapprivate.h; sourceTree = "<group>"; };
@@ -96,7 +93,6 @@
 		F5DD16E00907328000721649 /* prepare.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = prepare.c; path = Sources/prepare.c; sourceTree = "<group>"; };
 		F5DD177E09074E1E00721649 /* portal.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal.c; path = Sources/portal.c; sourceTree = "<group>"; };
 		F5DD178809074E5000721649 /* portal_vertex_list.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_vertex_list.c; path = Sources/portal_vertex_list.c; sourceTree = "<group>"; };
-		F5DD18B80907FD6700721649 /* portal_light_spot.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_light_spot.c; path = Sources/portal_light_spot.c; sourceTree = "<group>"; };
 		F5DD18BA0907FD6E00721649 /* spots.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = spots.c; path = Sources/spots.c; sourceTree = "<group>"; };
 		F5F4951F067BFCCA00E809E7 /* libMapUtility.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libMapUtility.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5F49535067BFDD100E809E7 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -225,9 +221,7 @@
 				26AFB4310D95B6230004805A /* portal_mesh_update.c */,
 				260AFEC20D404EAA00F6C42F /* portal_liquid.c */,
 				268157EE0DA9B23F009F4CDA /* portal_liquid_update.c */,
-				F52A9B7409F0A63C008CE744 /* portal_sight_path.c */,
 				F5DD178809074E5000721649 /* portal_vertex_list.c */,
-				F5DD18B80907FD6700721649 /* portal_light_spot.c */,
 			);
 			name = Portals;
 			sourceTree = "<group>";
@@ -319,12 +313,10 @@
 				F5DD16E40907328000721649 /* prepare.c in Sources */,
 				F5DD177F09074E1E00721649 /* portal.c in Sources */,
 				F5DD178C09074E5000721649 /* portal_vertex_list.c in Sources */,
-				F5DD18B90907FD6700721649 /* portal_light_spot.c in Sources */,
 				F5DD18BB0907FD6E00721649 /* spots.c in Sources */,
 				F50B25C8092065C900879CCC /* file_map_shader.c in Sources */,
 				F511664F093CDA2C00E766C3 /* groups.c in Sources */,
 				F58F951009B7E260004DD122 /* movements.c in Sources */,
-				F52A9B7509F0A63C008CE744 /* portal_sight_path.c in Sources */,
 				F55255260CE57DFA0045350D /* portal_mesh.c in Sources */,
 				F5CE96C30D23586E00512EE1 /* auto_generate_blocking.c in Sources */,
 				F5CE96C40D23586E00512EE1 /* auto_generate_utility.c in Sources */,

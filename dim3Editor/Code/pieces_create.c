@@ -29,7 +29,7 @@ and can be sold or given away.
 #include "dialog.h"
 #include "common_view.h"
 
-extern int						cr,cy,drag_mode;
+extern int						cx,cy,cz,drag_mode;
 extern bool						dp_object,dp_node,dp_lightsoundparticle,dp_liquid;
 
 extern file_path_setup_type		file_path_setup;
@@ -55,45 +55,27 @@ bool piece_create_texture_ok(void)
       
 ======================================================= */
 
-int piece_create_get_spot(int *x,int *y,int *z,int x_wid,int z_wid,int high)
+void piece_create_get_spot(d3pnt *pnt)
 {
 	d3pnt			min,max;
-	portal_type		*portal;
 	
-		// does this portal have any meshes?
+		// center in view if no selection
 		
-	portal=&map.portals[cr];
-	
-	if (portal->mesh.nmesh==0) {
-		*x=((portal->x+portal->ex)/2)-portal->x;
-		*z=((portal->z+portal->ez)/2)-portal->z;
-		*y=cy;
+	if (select_count()==0) {
+		pnt->x=cx;
+		pnt->z=cz;
+		pnt->y=cy;
 	}
+	
+		// find place in selection
+		
 	else {
-	
-			// find place in selection
-			
-		if (select_count()!=0) {
-			select_get_extent(&min,&max);
-			*x=(min.x+max.x)>>1;
-			*z=(min.z+max.z)>>1;
-			*y=((min.y+max.y)>>1)-1;
-		}
-		
-			// no selection, find portal center
 
-		else {
-			map_portal_calculate_center(&map,cr,x,y,z);
-		}
+		select_get_extent(&min,&max);
+		pnt->x=(min.x+max.x)>>1;
+		pnt->z=(min.z+max.z)>>1;
+		pnt->y=((min.y+max.y)>>1)-1;
 	}
-	
-		// size adjustments
-		
-	if ((*x)<x_wid) *x=x_wid;
-	if ((*z)<z_wid) *z=z_wid;
-	if ((*y)<high) *y=high;
-	
-	return(cr);
 }
 
 /* =======================================================
@@ -104,7 +86,7 @@ int piece_create_get_spot(int *x,int *y,int *z,int x_wid,int z_wid,int high)
 
 void piece_create_spot(void)
 {
-	int				rn,x,z,y,index;
+	int				index;
 	spot_type		*spot;
 	
 	if (map.nspot==max_spot) {
@@ -118,12 +100,8 @@ void piece_create_spot(void)
 	spot=&map.spots[index];
  	map.nspot++;
 	
-	rn=piece_create_get_spot(&x,&y,&z,0,0,0);
+	piece_create_get_spot(&spot->pnt);
     
-	spot->pos.rn=rn;
-	spot->pos.x=x;
-	spot->pos.z=z;
-	spot->pos.y=y;
 	spot->ang.y=0;
 	spot->name[0]=0x0;
 	strcpy(spot->type,"Object");
@@ -153,7 +131,7 @@ void piece_create_spot(void)
 
 void piece_create_scenery(void)
 {
-	int					rn,x,z,y,index;
+	int					index;
 	map_scenery_type	*scenery;
 	
 	if (map.nscenery==max_map_scenery) {
@@ -167,12 +145,8 @@ void piece_create_scenery(void)
 	scenery=&map.sceneries[index];
  	map.nscenery++;
 	
-	rn=piece_create_get_spot(&x,&y,&z,0,0,0);
+	piece_create_get_spot(&scenery->pnt);
     
-	scenery->pos.rn=rn;
-	scenery->pos.x=x;
-	scenery->pos.z=z;
-	scenery->pos.y=y;
 	scenery->ang.y=0;
 	scenery->model_name[0]=0x0;
 	scenery->animation_name[0]=0x0;
@@ -207,7 +181,7 @@ void piece_create_scenery(void)
 
 void piece_create_light(void)
 {
-	int					rn,x,z,y,index;
+	int					index;
 	map_light_type		*lit;
 	
 	if (map.nlight==max_map_light) {
@@ -222,12 +196,8 @@ void piece_create_light(void)
 	lit=&map.lights[index];
 	map.nlight++;
 	
-	rn=piece_create_get_spot(&x,&y,&z,0,0,0);
-	
-	lit->pos.rn=rn;
-	lit->pos.x=x;
-	lit->pos.z=z;
-	lit->pos.y=y;
+	piece_create_get_spot(&lit->pnt);
+
 	lit->type=lt_normal;
 	lit->col.r=lit->col.g=lit->col.b=1;
 	lit->intensity=10000;
@@ -252,7 +222,7 @@ void piece_create_light(void)
 
 void piece_create_sound(void)
 {
-	int					rn,x,z,y,index;
+	int					index;
 	map_sound_type		*snd;
 	
 	if (map.nsound==max_map_sound) {
@@ -267,12 +237,8 @@ void piece_create_sound(void)
 	snd=&map.sounds[index];
 	map.nsound++;
 	
-	rn=piece_create_get_spot(&x,&y,&z,0,0,0);
+	piece_create_get_spot(&snd->pnt);
     
-	snd->pos.rn=rn;
-	snd->pos.x=x;
-	snd->pos.z=z;
-	snd->pos.y=y;
 	snd->pitch=1;
 	snd->name[0]=0x0;
 	snd->on=TRUE;
@@ -296,7 +262,7 @@ void piece_create_sound(void)
 
 void piece_create_particle(void)
 {
-	int					rn,x,z,y,index;
+	int					index;
 	map_particle_type	*prt;
 	
 	if (map.nparticle==max_map_particle) {
@@ -311,12 +277,8 @@ void piece_create_particle(void)
 	prt=&map.particles[index];
 	map.nparticle++;
 	
-	rn=piece_create_get_spot(&x,&y,&z,0,0,0);
+	piece_create_get_spot(&prt->pnt);
     
-	prt->pos.rn=rn;
-	prt->pos.x=x;
-	prt->pos.z=z;
-	prt->pos.y=y;
 	prt->spawn_tick=5000;
 	prt->slop_tick=0;
 	prt->name[0]=0x0;
@@ -341,7 +303,7 @@ void piece_create_particle(void)
 
 void piece_create_node(void)
 {
-	int				i,rn,x,z,y,index;
+	int				i,index;
 	node_type		*node;
 			
 	if (map.nnode==max_node) {
@@ -355,12 +317,8 @@ void piece_create_node(void)
 	node=&map.nodes[index];
 	map.nnode++;
 	
-	rn=piece_create_get_spot(&x,&y,&z,0,0,0);
+	piece_create_get_spot(&node->pnt);
 	
-	node->pos.rn=rn;
-	node->pos.x=x;
-	node->pos.z=z;
-	node->pos.y=y;
 	node->ang.x=0.0f;
 	node->ang.y=0.0f;
 	node->ang.z=0.0f;
@@ -391,29 +349,30 @@ void piece_create_node(void)
 
 void piece_create_liquid(void)
 {
-	int				rn,x,y,z,index,sz;
+	int				index,sz;
+	d3pnt			pnt;
 	map_liquid_type	*liq;
 
 	if (!piece_create_texture_ok()) return;
 
-	sz=map_enlarge*4;
-	rn=piece_create_get_spot(&x,&y,&z,sz,sz,0);
+	piece_create_get_spot(&pnt);
 	
 		// create the liquid
 		
-	index=map_portal_liquid_add(&map,rn);
+	index=map_liquid_add(&map);
 	if (index==-1) {
 		StandardAlert(kAlertCautionAlert,"\pCan Not Create Liquid","\pNot enough memory.",NULL,NULL);
 		return;
 	}
 	
-	liq=&map.portals[rn].liquid.liquids[index];
+	liq=&map.liquid.liquids[index];
 	
-	liq->lft=x-sz;
-	liq->rgt=x+sz;
-	liq->top=z-sz;
-	liq->bot=z+sz;
-	liq->y=y;
+	sz=map_enlarge*4;
+	liq->lft=pnt.x-sz;
+	liq->rgt=pnt.x+sz;
+	liq->top=pnt.z-sz;
+	liq->bot=pnt.z+sz;
+	liq->y=pnt.y;
 	
 	liq->txt_idx=0;
 	liq->group_idx=-1;

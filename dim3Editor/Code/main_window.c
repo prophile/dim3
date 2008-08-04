@@ -29,20 +29,19 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int				cr,cx,cz,cy,vertex_mode,magnify_factor,
+extern int				cx,cz,cy,vertex_mode,magnify_factor,
 						txt_palette_y,txt_palette_high;
 extern float			walk_view_y_angle,walk_view_x_angle;
-extern bool				map_opened,
-						dp_auto_texture,dp_liquid,
-						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide;
+extern bool				map_opened;
 
 extern map_type			map;
 extern setup_type		setup;
 
 int						main_wind_view,main_wind_panel_focus,main_wind_perspective,
-						drag_mode,grid_mode;
-int						wtpt;
-bool					swap_panel_forward,swap_panel_side,swap_panel_top;
+						vertex_mode,drag_mode,grid_mode;
+bool					dp_auto_texture,dp_liquid,
+						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide,
+						swap_panel_forward,swap_panel_side,swap_panel_top;
 Rect					main_wind_box;
 
 WindowRef				mainwind;
@@ -178,7 +177,7 @@ void main_wind_control_tool(int tool_idx)
 			
 		case 10:
 			SetControlValue(tool_ctrl[tool_idx],0);
-			piece_combine_mesh(cr);
+			piece_combine_mesh();
 			main_wind_draw();
 			break;
 
@@ -1197,22 +1196,22 @@ void main_wind_set_focus(int focus)
 
 void main_wind_center_position_in_map(void)
 {
-	int				xsz,zsz,ty,by;
+	d3pnt				pt;
 
-	cx=map.portals[cr].x;
-	cz=map.portals[cr].z;
-	xsz=map.portals[cr].ex-cx;
-	zsz=map.portals[cr].ez-cz;
-	portal_get_y_size(cr,&ty,&by);
-			
-	cx=cx+(xsz/2);		// center starting position
-	cz=cz+(zsz/2);
-	cy=(ty+by)/2;
+	if (map.mesh.nmesh!=0) {
+		map_mesh_calculate_center(&map,0,&pt);
+		cx=pt.x;
+		cy=pt.y;
+		cz=pt.z;
+	}
+	else {
+		cx=map_max_size/2;
+		cy=map_max_size/2;
+		cz=map_max_size/2;
+	}
 	
 	walk_view_y_angle=0.0f;
 	walk_view_x_angle=0.0f;
-	
-	wtpt=0;
 }
 
 /* =======================================================

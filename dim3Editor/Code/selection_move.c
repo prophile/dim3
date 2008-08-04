@@ -73,7 +73,7 @@ void select_get_extent(int *min_x,int *min_z,int *min_y,int *max_x,int *max_z,in
       
 ======================================================= */
 
-void select_move(int rn,int xadd,int zadd,int yadd)
+void select_move(int xadd,int zadd,int yadd)
 {
 /* supergumba
 	int				n,sel_count,

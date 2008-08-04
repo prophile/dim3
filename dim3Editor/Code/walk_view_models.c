@@ -224,9 +224,9 @@ void walk_view_model_draw_material(model_type *model,model_draw_setup *draw_setu
 	glEnd();
 }
 
-bool walk_view_model_draw(d3pnt *cpt,d3pos *pos,d3ang *ang,char *name)
+bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name)
 {
-	int								idx,rn,x,y,z,n;
+	int								idx,x,y,z,n;
 	model_type						*model;
 	model_draw_setup				draw_setup;
 	model_mesh_type					*mesh;
@@ -242,11 +242,9 @@ bool walk_view_model_draw(d3pnt *cpt,d3pos *pos,d3ang *ang,char *name)
 
 		// translated drawing point
 		
-	rn=pos->rn;
-	
-	x=(pos->x+map.portals[rn].x)-cpt->x;
-	y=(pos->y+1)-cpt->y;
-	z=(pos->z+map.portals[rn].z)-cpt->z;
+	x=pnt->x-cpt->x;
+	y=pnt->y-cpt->y;
+	z=pnt->z-cpt->z;
 	
 		// build model vertex list
 		
@@ -333,7 +331,7 @@ bool walk_view_model_click_select_size(d3pnt *cpt,char *name,d3pnt *pnt,d3ang *a
 		// get position
 		
 	x=pnt->x-cpt->x;
-	y=(pnt->y+1)-cpt->y;
+	y=pnt->y-cpt->y;
 	z=cpt->z-pnt->z;
 
 		// default size

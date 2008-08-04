@@ -29,8 +29,6 @@ and can be sold or given away.
 #include "dialog.h"
 #include "common_view.h"
 
-extern int				cr;
-
 extern map_type			map;
 
 extern WindowRef		mainwind;
@@ -45,24 +43,8 @@ void info_status_line_draw_selection(Rect *box)
 {
 	int				type,main_idx,sub_idx,len;
 	char			txt[256];
-	portal_type		*portal;
 	
-		// any selection?
-		
-	if (cr==-1) {
-		MoveTo((box->left+4),(box->bottom-4));
-		DrawText("No portal/piece selected",0,18);
-		return;
-	}
-	
-		// portal text
-		
-	portal=&map.portals[cr];
-	sprintf(txt,"Portal: %d : (%d,%d) - (%d,%d) : (%d,%d) : %d",cr,portal->x,portal->z,portal->ex,portal->ez,(portal->ex-portal->x),(portal->ez-portal->z),portal->mesh.nmesh);
-	
-	MoveTo((box->left+4),(box->bottom-4));
-	DrawText(txt,0,strlen(txt));
-	
+		// supergumba -- fix all this
 		// segment text
 		
 	txt[0]=0x0;

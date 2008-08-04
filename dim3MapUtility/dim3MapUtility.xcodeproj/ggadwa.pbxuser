@@ -43,16 +43,6 @@
 			sepNavWindowFrame = "{{176, 129}, {1041, 747}}";
 		};
 	};
-	269328210E41634500FE6996 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5DA8623059148C40043E685 /* nodes.c */;
-		name = "nodes.c: 94";
-		rLen = 26;
-		rLoc = 2093;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
 	26AFB4310D95B6230004805A /* portal_mesh_update.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 14542}}";
@@ -68,6 +58,16 @@
 			sepNavVisRange = "{1655, 1520}";
 			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
 		};
+	};
+	26D6854E0E441E84007668D6 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DA8623059148C40043E685 /* nodes.c */;
+		name = "nodes.c: 94";
+		rLen = 26;
+		rLoc = 2093;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
 	};
 	26E372E50DA5AB75009653F2 /* file_map_read_v2.c */ = {
 		uiCtxt = {
@@ -101,14 +101,6 @@
 			sepNavSelRange = "{3738, 0}";
 			sepNavVisRange = "{0, 1483}";
 			sepNavWindowFrame = "{{199, 104}, {1041, 747}}";
-		};
-	};
-	F52A9B7409F0A63C008CE744 /* portal_sight_path.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 3766}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{3945, 1294}";
-			sepNavWindowFrame = "{{107, 192}, {1041, 747}}";
 		};
 	};
 	F55255250CE57DFA0045350D /* portal_mesh.c */ = {
@@ -229,11 +221,11 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 239238926;
-			PBXWorkspaceStateSaveDate = 239238926;
+			PBXPerProjectTemplateStateSaveDate = 239344865;
+			PBXWorkspaceStateSaveDate = 239344865;
 		};
 		perUserProjectItems = {
-			269328210E41634500FE6996 /* PBXTextBookmark */ = 269328210E41634500FE6996 /* PBXTextBookmark */;
+			26D6854E0E441E84007668D6 /* PBXTextBookmark */ = 26D6854E0E441E84007668D6 /* PBXTextBookmark */;
 			26FD1EDC0E42C1950049A45A /* PBXTextBookmark */ = 26FD1EDC0E42C1950049A45A /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
@@ -318,14 +310,6 @@
 			sepNavSelRange = "{13904, 39}";
 			sepNavVisRange = "{13390, 1108}";
 			sepNavWindowFrame = "{{599, 200}, {1041, 747}}";
-		};
-	};
-	F5DD18B80907FD6700721649 /* portal_light_spot.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7882}}";
-			sepNavSelRange = "{2358, 562}";
-			sepNavVisRange = "{2076, 1539}";
-			sepNavWindowFrame = "{{350, 194}, {1041, 747}}";
 		};
 	};
 	F5F4951E067BFCCA00E809E7 /* MapUtility */ = {

@@ -114,7 +114,7 @@ extern void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch
 //
 
 extern bool piece_create_texture_ok(void);
-extern int piece_create_get_spot(int *x,int *y,int *z,int x_wid,int z_wid,int high);
+extern void piece_create_get_spot(d3pnt *pnt);
 extern void piece_create_spot(void);
 extern void piece_create_scenery(void);
 extern void piece_create_light(void);
@@ -129,7 +129,7 @@ extern void piece_create_liquid(void);
 
 extern void piece_add_library_mesh(void);
 extern void piece_replace_library_mesh(void);
-extern void piece_combine_mesh(int portal_idx);
+extern void piece_combine_mesh(void);
 
 //
 // clipboard routines

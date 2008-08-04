@@ -58,8 +58,7 @@ void group_add(void)
 
 void group_clear(void)
 {
-	int					n,k,group_idx;
-	portal_type			*portal;
+	int					n,group_idx;
 	map_mesh_type		*mesh;
 	map_liquid_type		*liq;
 	
@@ -72,25 +71,18 @@ void group_clear(void)
 	
 		// clear group from meshes and liquids
 		
-	portal=map.portals;
-
-	for (n=0;n!=map.nportal;n++) {
+	mesh=map.mesh.meshes;
 	
-		mesh=portal->mesh.meshes;
-		
-		for (k=0;k!=portal->mesh.nmesh;k++) {
-			if (mesh->group_idx==group_idx) mesh->group_idx=-1;
-			mesh++;
-		}
-		
-		liq=portal->liquid.liquids;
-		
-		for (k=0;k!=portal->liquid.nliquid;k++) {
-			if (liq->group_idx==group_idx) liq->group_idx=-1;
-			liq++;
-		}
-		
-		portal++;
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		if (mesh->group_idx==group_idx) mesh->group_idx=-1;
+		mesh++;
+	}
+	
+	liq=map.liquid.liquids;
+	
+	for (n=0;n!=map.liquid.nliquid;n++) {
+		if (liq->group_idx==group_idx) liq->group_idx=-1;
+		liq++;
 	}
 	
 	main_wind_tool_fill_group_combo();
@@ -128,32 +120,24 @@ void group_delete(void)
 
 int group_count(int group_idx)
 {
-	int					n,k,cnt;
-	portal_type			*portal;
+	int					n,cnt;
 	map_mesh_type		*mesh;
 	map_liquid_type		*liq;
 	
 	cnt=0;
 	
-	portal=map.portals;
-
-	for (n=0;n!=map.nportal;n++) {
+	mesh=map.mesh.meshes;
 	
-		mesh=portal->mesh.meshes;
-		
-		for (k=0;k!=portal->mesh.nmesh;k++) {
-			if (mesh->group_idx==group_idx) cnt++;
-			mesh++;
-		}
-		
-		liq=portal->liquid.liquids;
-		
-		for (k=0;k!=portal->liquid.nliquid;k++) {
-			if (liq->group_idx==group_idx) cnt++;
-			liq++;
-		}
-		
-		portal++;
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		if (mesh->group_idx==group_idx) cnt++;
+		mesh++;
+	}
+	
+	liq=map.liquid.liquids;
+	
+	for (n=0;n!=map.liquid.nliquid;n++) {
+		if (liq->group_idx==group_idx) cnt++;
+		liq++;
 	}
 	
 	return(cnt);

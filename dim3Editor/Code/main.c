@@ -29,7 +29,6 @@ and can be sold or given away.
 #include "common_view.h"
 #include "dialog.h"
 
-int						cr;
 bool					done,map_opened;
 
 file_path_setup_type	file_path_setup;
@@ -96,7 +95,6 @@ void doinit(void)
 	resizecur=GetCCursor(134);
 	addcur=GetCCursor(135);
     
-	cr=-1;
 	map_opened=FALSE;
 	
 		// setup paths

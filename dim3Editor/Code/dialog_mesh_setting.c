@@ -52,6 +52,18 @@ extern map_type				map;
 #define kMeshPolySettingShiftX					FOUR_CHAR_CODE('sftx')
 #define kMeshPolySettingShiftY					FOUR_CHAR_CODE('sfty')
 
+#define kMeshSendMessageEnter					FOUR_CHAR_CODE('smen')
+#define kMeshSendMessageEnterId					FOUR_CHAR_CODE('meid')
+#define kMeshSendMessageExit					FOUR_CHAR_CODE('smex')
+#define kMeshSendMessageExitId					FOUR_CHAR_CODE('mxid')
+#define kMeshSendMessageMapChange				FOUR_CHAR_CODE('samc')
+#define kMeshSendMessageMapChangeName			FOUR_CHAR_CODE('amnm')
+#define kMeshSendMessageMapChangeSpotName		FOUR_CHAR_CODE('amsn')
+#define kMeshSendMessageMapChangeSpotType		FOUR_CHAR_CODE('amst')
+#define kMeshSendMessageBase					FOUR_CHAR_CODE('tbon')
+#define kMeshSendMessageBaseTeam				FOUR_CHAR_CODE('tbtx')
+
+
 bool						dialog_mesh_setting_cancel;
 WindowRef					dialog_mesh_setting_wind;
 
@@ -137,6 +149,17 @@ bool dialog_mesh_setting_run(int mesh_idx,int poly_idx)
 	dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingShiftX,0,mesh_poly->x_shift);
 	dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingShiftY,0,mesh_poly->y_shift);
 	
+	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSendMessageEnter,0,mesh->msg.entry_on);
+	dialog_set_int(dialog_mesh_setting_wind,kMeshSendMessageEnterId,0,mesh->msg.entry_id);
+	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSendMessageExit,0,mesh->msg.exit_on);
+	dialog_set_int(dialog_mesh_setting_wind,kMeshSendMessageExitId,0,mesh->msg.exit_id);
+	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSendMessageMapChange,0,mesh->msg.map_change_on);
+	dialog_set_text(dialog_mesh_setting_wind,kMeshSendMessageMapChangeName,0,mesh->msg.map_name);
+	dialog_set_text(dialog_mesh_setting_wind,kMeshSendMessageMapChangeSpotName,0,mesh->msg.map_spot_name);
+	dialog_set_text(dialog_mesh_setting_wind,kMeshSendMessageMapChangeSpotType,0,mesh->msg.map_spot_type);
+	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSendMessageBase,0,mesh->msg.base_on);
+	dialog_set_combo(dialog_mesh_setting_wind,kMeshSendMessageBaseTeam,0,mesh->msg.base_team);
+	
 		// show window
 	
 	ShowWindow(dialog_mesh_setting_wind);
@@ -176,6 +199,17 @@ bool dialog_mesh_setting_run(int mesh_idx,int poly_idx)
 		mesh_poly->alpha=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingAlpha,0);
 		mesh_poly->x_shift=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingShiftX,0);
 		mesh_poly->y_shift=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingShiftY,0);
+		
+		mesh->msg.entry_on=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSendMessageEnter,0);
+		mesh->msg.entry_id=dialog_get_int(dialog_mesh_setting_wind,kMeshSendMessageEnterId,0);
+		mesh->msg.exit_on=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSendMessageExit,0);
+		mesh->msg.exit_id=dialog_get_int(dialog_mesh_setting_wind,kMeshSendMessageExitId,0);
+		mesh->msg.map_change_on=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSendMessageMapChange,0);
+		dialog_get_text(dialog_mesh_setting_wind,kMeshSendMessageMapChangeName,0,mesh->msg.map_name,name_str_len);
+		dialog_get_text(dialog_mesh_setting_wind,kMeshSendMessageMapChangeSpotName,0,mesh->msg.map_spot_name,name_str_len);
+		dialog_get_text(dialog_mesh_setting_wind,kMeshSendMessageMapChangeSpotType,0,mesh->msg.map_spot_type,name_str_len);
+		mesh->msg.base_on=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSendMessageBase,0);
+		mesh->msg.base_team=dialog_get_combo(dialog_mesh_setting_wind,kMeshSendMessageBaseTeam,0);
 	}
 	
 		// close window

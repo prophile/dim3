@@ -93,7 +93,7 @@ static pascal OSStatus map_map_setting_event_proc(EventHandlerCallRef handler,Ev
 
 bool dialog_map_settings_run(void)
 {
-	int						n,k,nmesh,npoly;
+	int						n,nmesh,npoly;
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
 	
@@ -119,13 +119,12 @@ bool dialog_map_settings_run(void)
 	
 		// counts
 		
-	nmesh=npoly=0;
+	nmesh=map.mesh.nmesh;
 	
-	for (n=0;n!=map.nportal;n++) {
-		nmesh+=map.portals[n].mesh.nmesh;
-		for (k=0;k!=map.portals[n].mesh.nmesh;k++) {
-			npoly+=map.portals[n].mesh.meshes[k].npoly;
-		}
+	npoly=0;
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		npoly+=map.mesh.meshes[n].npoly;
 	}
 	
 	dialog_set_int(dialog_map_settings_wind,kMapMeshCount,0,nmesh);

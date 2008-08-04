@@ -29,7 +29,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int						cr,cx,cz,cy;
+extern int						cx,cz,cy;
 extern float					walk_view_y_angle,walk_view_x_angle;
 
 extern CCrsrHandle				handcur,forwardcur,rotatecur;
@@ -44,6 +44,7 @@ extern map_type					map;
 
 void walk_view_mouse_reset_portal(void)
 {
+/* supergumba -- try deleting
     register int		i;
 	int					x,z,ex,ez;
     
@@ -58,6 +59,7 @@ void walk_view_mouse_reset_portal(void)
             return;
         }
     }
+	*/
 }
 
 /* =======================================================
@@ -286,23 +288,28 @@ void walk_view_mouse_turn(d3pnt *pt)
 
 void walk_view_portal_go_to_top(void)
 {
+/* supergumba -- redo
 	int					by;
 	
 	portal_get_y_size(cr,&cy,&by);
 	main_wind_draw();
+	*/
 }
 
 void walk_view_portal_go_to_bottom(void)
 {
+/* supergumba -- redo
 	int					ty;
 	
 	portal_get_y_size(cr,&ty,&cy);
 	main_wind_draw();
 	main_wind_draw();
+	*/
 }
 
 void walk_view_portal_go_to_selection(void)
 {
+/* supergumba -- redo
 	d3pnt			min,max;
 	portal_type		*portal;
 	
@@ -314,5 +321,6 @@ void walk_view_portal_go_to_selection(void)
 	cy=(min.y+max.y)/2;
 
 	main_wind_draw();
+	*/
 }
 

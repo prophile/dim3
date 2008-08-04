@@ -32,7 +32,7 @@ and can be sold or given away.
 #define import_obj_float_to_int			1000.0f
 #define import_obj_max_dimension		5000
 
-extern int						cr,cy,drag_mode;
+extern int						cy,drag_mode;
 extern bool						dp_object,dp_node,dp_lightsoundparticle,dp_auto_texture;
 
 extern file_path_setup_type		file_path_setup;
@@ -55,7 +55,6 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 	bool				mesh_ok,mesh_delete;
 	d3pnt				*dpt;
 	d3fpnt				min,max;
-	portal_type			*portal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
@@ -132,30 +131,28 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 	
 		// create new mesh
 		
-	portal=&map.portals[cr];
-	
 	mesh_ok=FALSE;
 	mesh_delete=FALSE;
 	
-	mesh_idx=map_portal_mesh_add(&map,cr);
+	mesh_idx=map_mesh_add(&map);
 	if (mesh_idx!=-1) {
 		mesh_delete=TRUE;
 		
-		if (map_portal_mesh_set_vertex_count(&map,cr,mesh_idx,nvertex)) {
-			if (map_portal_mesh_set_poly_count(&map,cr,mesh_idx,npoly)) {
+		if (map_mesh_set_vertex_count(&map,mesh_idx,nvertex)) {
+			if (map_mesh_set_poly_count(&map,mesh_idx,npoly)) {
 				mesh_ok=TRUE;
 			}
 		}
 	}
 	
 	if (!mesh_ok) {
-		if (mesh_delete) map_portal_mesh_delete(&map,cr,mesh_idx);
+		if (mesh_delete) map_mesh_delete(&map,mesh_idx);
 		textdecode_close();
 		StandardAlert(kAlertStopAlert,"\pImport Failed","\pNot enough memory to create mesh.",NULL,NULL);
 		return(-1);
     }
 	
-	mesh=&portal->mesh.meshes[mesh_idx];
+	mesh=&map.mesh.meshes[mesh_idx];
 	
 		// scale the import
 		
@@ -220,7 +217,7 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 		
 	uvs=(float*)valloc(sizeof(float)*(2*nuv));
 	if (uvs==NULL) {
-		map_portal_mesh_delete(&map,cr,mesh_idx);
+		map_mesh_delete(&map,mesh_idx);
 		textdecode_close();
 		StandardAlert(kAlertStopAlert,"\pImport Failed","\pOut of Memory.",NULL,NULL);
 		return(-1);
@@ -302,7 +299,7 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 	
 		// delete any unused vertexes
 		
-	map_portal_mesh_delete_unused_vertexes(&map,cr,mesh_idx);
+	map_mesh_delete_unused_vertexes(&map,mesh_idx);
 	
 		// push to grid
 		
@@ -351,7 +348,7 @@ int piece_create_ag_mesh(char *name,int mx,int my,int mz)
 
 		// create mesh
 		
-	mesh_idx=map_portal_mesh_add(&map,cr);
+	mesh_idx=map_mesh_add(&map);
 	if (mesh_idx==-1) return(-1);
 	
 		// default UVs
@@ -371,10 +368,10 @@ int piece_create_ag_mesh(char *name,int mx,int my,int mz)
 			pz[2]=pz[3]=((z+1)*sz)+mz;
 
 			py[0]=py[1]=py[2]=py[3]=my;
-			map_portal_mesh_add_poly(&map,cr,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 			
 			py[0]=py[1]=py[2]=py[3]=(ydiv*sz)+my;
-			map_portal_mesh_add_poly(&map,cr,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 		}
 	}
 	
@@ -388,10 +385,10 @@ int piece_create_ag_mesh(char *name,int mx,int my,int mz)
 			py[2]=py[3]=((y+1)*sz)+my;
 			
 			pz[0]=pz[1]=pz[2]=pz[3]=mz;
-			map_portal_mesh_add_poly(&map,cr,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 			
 			pz[0]=pz[1]=pz[2]=pz[3]=(zdiv*sz)+mz;
-			map_portal_mesh_add_poly(&map,cr,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 		}
 	}
 	
@@ -403,10 +400,10 @@ int piece_create_ag_mesh(char *name,int mx,int my,int mz)
 			py[1]=py[2]=((y+1)*sz)+my;
 			
 			px[0]=px[1]=px[2]=px[3]=mx;
-			map_portal_mesh_add_poly(&map,cr,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 			
 			px[0]=px[1]=px[2]=px[3]=(xdiv*sz)+mx;
-			map_portal_mesh_add_poly(&map,cr,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 		}
 	}
 	
@@ -442,17 +439,18 @@ int piece_import_mesh_pick(int mx,int my,int mz)
 
 void piece_add_library_mesh(void)
 {
-	int					mesh_idx,rn,mx,my,mz;
+	int					mesh_idx;
+	d3pnt				pnt;
 	
 	if (!piece_create_texture_ok()) return;
 	
 		// get import location
 		
-	rn=piece_create_get_spot(&mx,&my,&mz,0,0,0);
+	piece_create_get_spot(&pnt);
 			
 		// import mesh
 		
-	mesh_idx=piece_import_mesh_pick(mx,my,mz);
+	mesh_idx=piece_import_mesh_pick(pnt.x,pnt.y,pnt.z);
 	if (mesh_idx==-1) return;
 	
 		// make selection
@@ -465,10 +463,10 @@ void piece_add_library_mesh(void)
 	drag_mode=drag_mode_mesh;
 	
 	if (dp_auto_texture) {
-		map_portal_mesh_reset_uv(&map,rn,mesh_idx);
+		map_mesh_reset_uv(&map,mesh_idx);
 	}
 	else {
-		map.portals[rn].mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
+		map.mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
 	}
 	
 	main_wind_draw();
@@ -501,8 +499,8 @@ void piece_replace_library_mesh(void)
 	
 		// remember size
 		
-	map_portal_mesh_calculate_extent(&map,cr,mesh_idx,&min,&max);
-	map_portal_mesh_calculate_center(&map,cr,mesh_idx,&mpt);
+	map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
+	map_mesh_calculate_center(&map,mesh_idx,&mpt);
 	
 		// import new mesh
 	
@@ -512,11 +510,11 @@ void piece_replace_library_mesh(void)
 		// delete orginial and replace
 		// new mesh index will change with delete
 		
-	if (map_portal_mesh_delete(&map,cr,mesh_idx)) {
+	if (map_mesh_delete(&map,mesh_idx)) {
 		rep_mesh_idx--;
 	}
 	
-	map_portal_mesh_resize(&map,cr,rep_mesh_idx,&min,&max);
+	map_mesh_resize(&map,rep_mesh_idx,&min,&max);
 	
 		// make selection
 		
@@ -528,7 +526,7 @@ void piece_replace_library_mesh(void)
 	drag_mode=drag_mode_mesh;
 	
 	if (dp_auto_texture) {
-		map_portal_mesh_reset_uv(&map,cr,mesh_idx);
+		map_mesh_reset_uv(&map,mesh_idx);
 	}
 	else {
 		map.mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
@@ -545,7 +543,7 @@ void piece_replace_library_mesh(void)
       
 ======================================================= */
 
-void piece_combine_mesh(int portal_idx)
+void piece_combine_mesh(void)
 {
 	int				n,k,nsel,org_idx,mesh_combine_idx,new_mesh_combine_idx,
 					type,mesh_idx,poly_idx;
@@ -577,7 +575,7 @@ void piece_combine_mesh(int portal_idx)
 			// combine
 			
 		mesh_idx=sel_mesh_idx[n];
-		new_mesh_combine_idx=map_portal_mesh_combine(&map,portal_idx,mesh_combine_idx,mesh_idx);
+		new_mesh_combine_idx=map_mesh_combine(&map,mesh_combine_idx,mesh_idx);
 		if (new_mesh_combine_idx==-1) return;
 		
 			// move other meshes in select as combine deleted them
