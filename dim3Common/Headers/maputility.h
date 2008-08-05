@@ -62,6 +62,8 @@ extern char light_type_str[][32];
 #define max_movement										64				// maximum number of movements
 #define max_movement_move									16				// maximum number of separate moves in a movement
 
+#define max_sort_poly										256				// maximum number of transparent polys in a single scene
+
 //
 // strings
 //
@@ -282,20 +284,6 @@ typedef struct		{
 					} map_liquid_type;
 
 //
-// map vertex draw lists
-//
-
-typedef struct		{
-						int									sz,offset;
-					} map_vertex_array_type;
-
-typedef struct		{
-						int									max_vertex_count,draw_vertex_count;
-						float								*ptr;
-						map_vertex_array_type				vert,uv,color,normal;
-					} map_vertex_type;
-
-//
 // mesh and liquid collections
 //
 
@@ -310,9 +298,32 @@ typedef struct		{
 					} map_liquid_collection_type;
 
 //
-// scenery, light, sound and particle structures
+// map vertex draw and sort lists
 //
 
+typedef struct		{
+						int									sz,offset;
+					} map_vertex_array_type;
+
+typedef struct		{
+						int									max_vertex_count,draw_vertex_count;
+						float								*ptr;
+						map_vertex_array_type				vert,uv,color,normal;
+					} map_vertex_type;
+
+typedef struct		{
+						int									mesh_idx,poly_idx;
+						float								dist;
+					} map_poly_sort_item_type;
+
+typedef struct		{
+						int									count;
+						map_poly_sort_item_type				*list;
+					} map_poly_sort_type;
+
+//
+// scenery, light, sound and particle structures
+//
 					
 typedef struct		{
 						int							lighting_mode;
@@ -511,6 +522,7 @@ typedef struct		{
 						map_liquid_collection_type	liquid;
 
 						map_vertex_type				vertexes;
+						map_poly_sort_type			sort;
 						
 					} map_type;
 
@@ -527,6 +539,7 @@ extern void map_close(map_type *map);
 extern void map_refresh_textures(map_type *map);
 
 extern void map_prepare(map_type *map);
+extern void map_center(map_type *map);
 
 extern int map_count_texture_frames(map_type *map,int txt);
 extern void map_setup_animated_textures(map_type *map,int tick);
@@ -567,7 +580,7 @@ extern void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,boo
 extern void map_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float rot_z);
 extern bool map_mesh_tesselate(map_type *map,int mesh_idx);
 extern bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,int hole_type);
-extern void map_mesh_run_shifts(map_type *map,int tick);
+extern void map_mesh_poly_run_shifts(map_type *map,int tick);
 extern void map_mesh_get_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact);
 extern void map_mesh_set_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact);
 extern void map_mesh_rotate_poly_uv(map_type *map,int mesh_idx,int poly_idx,int rot_ang);

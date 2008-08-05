@@ -280,3 +280,135 @@ void map_prepare(map_type *map)
 	}
 }
 
+/* =======================================================
+
+      Center Map
+      
+======================================================= */
+
+void map_center(map_type *map)
+{
+	int					n,k,x,y,z;
+	d3pnt				*pt,min,max;
+	map_mesh_type		*mesh;
+	map_liquid_type		*liq;
+ 	map_scenery_type	*scenery;
+	map_light_type		*light;
+    map_sound_type		*sound;
+	map_particle_type	*particle;
+    node_type			*node;
+    spot_type			*spot;
+
+		// get map size
+
+	min.x=min.y=min.z=map_max_size;
+	max.x=max.y=max.z=0;
+	
+	mesh=map->mesh.meshes;
+		
+	for (n=0;n!=map->mesh.nmesh;n++) {
+
+		pt=mesh->vertexes;
+
+		for (k=0;k!=mesh->nvertex;k++) {
+			if (pt->x<min.x) min.x=pt->x;
+			if (pt->x>max.x) max.x=pt->x;
+			if (pt->y<min.y) min.y=pt->y;
+			if (pt->y>max.y) max.y=pt->y;
+			if (pt->z<min.z) min.z=pt->z;
+			if (pt->z>max.z) max.z=pt->z;
+			pt++;
+		}
+
+		mesh++;
+	}
+
+		// adjust map
+
+	x=((max.x-min.x)/2)-(map_max_size/2);
+	y=((max.y-min.y)/2)-(map_max_size/2);
+	z=((max.z-min.z)/2)-(map_max_size/2);
+
+	mesh=map->mesh.meshes;
+		
+	for (n=0;n!=map->mesh.nmesh;n++) {
+
+		pt=mesh->vertexes;
+
+		for (k=0;k!=mesh->nvertex;k++) {
+			pt->x+=x;
+			pt->y+=y;
+			pt->z+=z;
+			pt++;
+		}
+
+		mesh++;
+	}
+
+	liq=map->liquid.liquids;
+
+	for (n=0;n!=map->liquid.nliquid;n++) {
+
+		liq->lft+=x;
+		liq->rgt+=x;
+		liq->top+=z;
+		liq->bot+=z;
+		liq->y+=y;
+
+		liq++;
+	}
+	
+	scenery=map->sceneries;
+	
+	for (n=0;n!=map->nscenery;n++) {
+		scenery->pnt.x+=x;
+		scenery->pnt.y+=y;
+		scenery->pnt.z+=z;
+		scenery++;
+	}
+
+	light=map->lights;
+	
+	for (n=0;n!=map->nlight;n++) {
+		light->pnt.x+=x;
+		light->pnt.y+=y;
+		light->pnt.z+=z;
+		light++;
+	}
+
+	sound=map->sounds;
+	
+	for (n=0;n!=map->nsound;n++) {
+		sound->pnt.x+=x;
+		sound->pnt.y+=y;
+		sound->pnt.z+=z;
+		sound++;
+	}
+
+	particle=map->particles;
+	
+	for (n=0;n!=map->nparticle;n++) {
+		particle->pnt.x+=x;
+		particle->pnt.y+=y;
+		particle->pnt.z+=z;
+		particle++;
+	}
+
+	node=map->nodes;
+	
+	for (n=0;n!=map->nnode;n++) {
+		node->pnt.x+=x;
+		node->pnt.y+=y;
+		node->pnt.z+=z;
+		node++;
+	}
+
+	spot=map->spots;
+	
+	for (n=0;n!=map->nspot;n++) {
+		spot->pnt.x+=x;
+		spot->pnt.y+=y;
+		spot->pnt.z+=z;
+		spot++;
+	}
+}

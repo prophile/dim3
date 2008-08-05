@@ -267,64 +267,6 @@ void map_convert_enlarge(map_type *map,int nportal,portal_type *portals,int seg_
       
 ======================================================= */
 
-void map_convert_center_map(map_type *map)
-{
-	/* supergumba -- throws everything off
-	will need a version that centers all parts of the map
-	to run after all translations are done
-	*/
-
-	/*
-	int				n,lx,rx,tz,bz,mx,mz;
-	portal_type		*portal;
-	
-	lx=rx=tz=bz=0;
-	
-		// get offsets
-		
-	portal=map->portals;
-	
-	for (n=0;n!=map->nportal;n++) {
-	
-		if (n==0) {
-			lx=portal->x;
-			rx=portal->ex;
-			tz=portal->z;
-			bz=portal->ez;
-		}
-		else {
-			if (portal->x<lx) lx=portal->x;
-			if (portal->ex>rx) rx=portal->ex;
-			if (portal->z<tz) tz=portal->z;
-			if (portal->ez>bz) bz=portal->ez;
-		}
-	
-		portal++;
-	}
-	
-	mx=(map_max_size/2)-((lx+rx)/2);
-	mz=(map_max_size/2)-((tz+bz)/2);
-	
-		// fix the portals
-		
-	portal=map->portals;
-	
-	for (n=0;n!=map->nportal;n++) {
-		portal->x+=mx;
-		portal->ex+=mx;
-		portal->z+=mz;
-		portal->ez+=mz;
-		portal++;
-	}
-	*/
-}
-
-/* =======================================================
-
-      Turn Segments into Polygons
-      
-======================================================= */
-
 void map_convert_segment_orient_uv(int ptsz,float *gx,float *gy,int txt_ang)
 {
 	int				n;
@@ -885,10 +827,6 @@ bool map_convert_v1(map_type *map,int nportal,portal_type *portals,int seg_cnt,s
 
 	map_convert_enlarge(map,nportal,portals,seg_cnt,seg_list);
 	map_convert_segments(seg_cnt,seg_list);
-	
-		// force portals to be centered in map bounds
-		
-	map_convert_center_map(map);
 
 		// tesselate up any curved or clipped segments into
 		// multiple segments before converting to a mesh
@@ -972,7 +910,7 @@ bool map_convert_v1(map_type *map,int nportal,portal_type *portals,int seg_cnt,s
 		seg=seg_list;
 
 		for (i=0;i!=seg_cnt;i++) {
-			if ((seg->rn==n) && (seg->type==sg_liquid)) map_convert_liquid(map,portals,seg);
+			if ((seg->rn==n) && (seg->type==sg_liquid)) map_convert_liquid(map,&portals[seg->rn],seg);
 			seg++;
 		}
 		
@@ -1490,6 +1428,10 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 	
 	free(portals);
 	free(seg_list);
+	
+		// center map
+		
+	map_center(map);
 	
 	return(convert_ok);
 }

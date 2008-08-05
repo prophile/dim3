@@ -131,40 +131,6 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 		
 		for (k=0;k!=mesh->npoly;k++) {
 		
-				// polygon vertexes
-
-				// these vertexes are used to draw the textured
-				// polygons -- there's no normal or lighting usage on these
-				// vertexes, so we skip that step
-				
-			for (t=0;t!=poly->ptsz;t++) {
-			
-				pnt=&mesh->vertexes[poly->v[t]];
-				
-				x=(float)pnt->x;
-				y=(float)pnt->y;
-				z=(float)pnt->z;
-
-				pc+=3;
-				pn+=3;
-
-				*pv++=(x-fx);
-				*pv++=(y-fy);
-				*pv++=(fz-z);
-				
-				*pp++=poly->gx[t]+poly->draw.x_shift_offset;
-				*pp++=poly->gy[t]+poly->draw.y_shift_offset;
-				
-				poly->draw.portal_v[t]=v_idx;
-				
-				v_idx++;
-			}
-			
-				// polygon tesseled lighting
-
-				// these vertexes are used for tesselated effects
-				// like lighting, bump, specular, etc
-
 			v_light_start_idx=v_idx;
 
 			lv=poly->light.vertexes;
@@ -172,6 +138,34 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 				// ray traced version
 
 			if (setup.ray_trace_lighting) {
+
+					// polygon vertexes
+
+				for (t=0;t!=poly->ptsz;t++) {
+				
+					pnt=&mesh->vertexes[poly->v[t]];
+					
+					x=(float)pnt->x;
+					y=(float)pnt->y;
+					z=(float)pnt->z;
+
+					map_calculate_ray_trace_light_color_normal((double)x,(double)y,(double)z,pc,pn);
+					pc+=3;
+					pn+=3;
+
+					*pv++=(x-fx);
+					*pv++=(y-fy);
+					*pv++=(fz-z);
+					
+					*pp++=poly->gx[t]+poly->draw.x_shift_offset;
+					*pp++=poly->gy[t]+poly->draw.y_shift_offset;
+					
+					poly->draw.portal_v[t]=v_idx;
+					
+					v_idx++;
+				}
+
+					// tesseled lighting vertexes
 
 				for (t=0;t!=poly->light.nvertex;t++) {
 
@@ -200,6 +194,34 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 				// regular lighting
 
 			else {
+
+					// polygon vertexes
+
+				for (t=0;t!=poly->ptsz;t++) {
+				
+					pnt=&mesh->vertexes[poly->v[t]];
+					
+					x=(float)pnt->x;
+					y=(float)pnt->y;
+					z=(float)pnt->z;
+
+					map_calculate_light_color_normal((double)x,(double)y,(double)z,pc,pn);
+					pc+=3;
+					pn+=3;
+
+					*pv++=(x-fx);
+					*pv++=(y-fy);
+					*pv++=(fz-z);
+					
+					*pp++=poly->gx[t]+poly->draw.x_shift_offset;
+					*pp++=poly->gy[t]+poly->draw.y_shift_offset;
+					
+					poly->draw.portal_v[t]=v_idx;
+					
+					v_idx++;
+				}
+
+					// tesseled lighting vertexes
 
 				for (t=0;t!=poly->light.nvertex;t++) {
 

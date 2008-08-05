@@ -48,21 +48,19 @@ extern void view_compile_gl_list_dettach(void);
       
 ======================================================= */
 
-/* supergumba -- redo!
-
-void render_transparent_portal_mesh(int mesh_cnt,int *mesh_list,bool is_simple_lighting)
+void render_transparent_portal_mesh(bool is_simple_lighting)
 {
-	int						n,sort_cnt,frame,ntrig;
+	int						n,sort_cnt,frame;
 	unsigned long			txt_id;
 	float					alpha;
 	bool					txt_setup_reset;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
-	map_mesh_poly_sort_type	*sort_list;
+	map_poly_sort_item_type	*sort_list;
 	texture_type			*texture;
 
-	sort_cnt=portal->mesh.draw.sort_cnt;
-	sort_list=portal->mesh.draw.sort_list;
+	sort_cnt=map.sort.count;
+	sort_list=map.sort.list;
 
 		// this flag tells if we need to reset the
 		// texture setup for transparencies.  It starts
@@ -83,7 +81,7 @@ void render_transparent_portal_mesh(int mesh_cnt,int *mesh_list,bool is_simple_l
 	alpha=0.0f;
 
 	for (n=0;n!=sort_cnt;n++) {
-		mesh=&portal->mesh.meshes[sort_list[n].mesh_idx];
+		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
 		poly=&mesh->polys[sort_list[n].poly_idx];
 	
 			// get texture
@@ -166,8 +164,7 @@ void render_transparent_portal_mesh(int mesh_cnt,int *mesh_list,bool is_simple_l
 				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 			}
 			else {
-				ntrig=poly->light.trig_count;
-				glDrawElements(GL_TRIANGLES,(ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_draw_idx);
+				glDrawElements(GL_TRIANGLES,(poly->light.ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_draw_idx);
 			}
 
 				// end specular drawing and force a transparencies reset
@@ -218,12 +215,12 @@ void render_transparent_portal_mesh(int mesh_cnt,int *mesh_list,bool is_simple_l
 	gl_texture_transparent_end();
 }
 
-void render_transparent_portal_shader(int mesh_cnt,int *mesh_list)
+void render_transparent_portal_shader(void)
 {
 	int						n,sort_cnt,frame;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
-	map_mesh_poly_sort_type	*sort_list;
+	map_poly_sort_item_type	*sort_list;
 	texture_type			*texture;
 
 	glEnable(GL_BLEND);
@@ -239,11 +236,11 @@ void render_transparent_portal_shader(int mesh_cnt,int *mesh_list)
 	gl_shader_program_start();
 	gl_texture_shader_start();
 
-	sort_cnt=portal->mesh.draw.sort_cnt;
-	sort_list=portal->mesh.draw.sort_list;
+	sort_cnt=map.sort.count;
+	sort_list=map.sort.list;
 	
 	for (n=0;n!=sort_cnt;n++) {
-		mesh=&portal->mesh.meshes[sort_list[n].mesh_idx];
+		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
 		poly=&mesh->polys[sort_list[n].poly_idx];
 
 			// get texture
@@ -268,7 +265,6 @@ void render_transparent_portal_shader(int mesh_cnt,int *mesh_list)
 	gl_texture_shader_end();
 	gl_shader_program_end();
 }
-*/
 
 /* =======================================================
 
@@ -276,9 +272,7 @@ void render_transparent_portal_shader(int mesh_cnt,int *mesh_list)
       
 ======================================================= */
 
-/* supergumba -- redo!
-
-float segment_render_transparent_segments_far_z(map_mesh_type *mesh,map_mesh_poly_type *poly,int cx,int cy,int cz)
+float render_transparent_segments_far_z(map_mesh_type *mesh,map_mesh_poly_type *poly,d3pnt *pnt)
 {
 	int				n,kx,ky,kz;
 	float			d,dist;
@@ -291,9 +285,9 @@ float segment_render_transparent_segments_far_z(map_mesh_type *mesh,map_mesh_pol
 
 	for (n=0;n!=poly->ptsz;n++) {
 		pt=&mesh->vertexes[poly->v[n]];
-		kx=pt->x-cx;
-		ky=pt->y-cy;
-		kz=pt->z-cz;
+		kx=pt->x-pnt->x;
+		ky=pt->y-pnt->y;
+		kz=pt->z-pnt->z;
 		if (gl_rotate_point_on_screen(kx,ky,kz)) {
 			d=gl_project_point_z(kx,ky,kz);
 			if (d>dist) dist=d;
@@ -303,26 +297,24 @@ float segment_render_transparent_segments_far_z(map_mesh_type *mesh,map_mesh_pol
 	return(dist);
 }
 
-void render_transparent_sort(int rn,int cx,int cy,int cz)
+void render_transparent_sort(int mesh_cnt,int *mesh_list,d3pnt *pnt)
 {
 	int							n,k,i,frame,sort_cnt,sort_idx;
 	float						dist;
-	portal_type					*portal;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
-	map_mesh_poly_sort_type		*sort_list;
+	map_poly_sort_item_type		*sort_list;
 	texture_type				*texture;
 
-	portal=&map.portals[rn];
-	sort_list=portal->mesh.draw.sort_list;
+	sort_list=map.sort.list;
 
 		// create sort list
 
 	sort_cnt=0;
-
-	mesh=portal->mesh.meshes;
 		
-	for (n=0;n!=portal->mesh.nmesh;n++) {
+	for (n=0;n!=mesh_cnt;n++) {
+
+		mesh=&map.mesh.meshes[mesh_list[n]];
 	
 		poly=mesh->polys;
 		
@@ -347,7 +339,7 @@ void render_transparent_sort(int rn,int cx,int cy,int cz)
 
 				// find distance from camera
 
-			dist=segment_render_transparent_segments_far_z(mesh,poly,cx,cy,cz);
+			dist=render_transparent_segments_far_z(mesh,poly,pnt);
 
 				// find position in sort list
 
@@ -363,7 +355,7 @@ void render_transparent_sort(int rn,int cx,int cy,int cz)
 				// add to sort list
 
 			if (sort_idx<sort_cnt) {
-				memmove(&sort_list[sort_idx+1],&sort_list[sort_idx],((sort_cnt-sort_idx)*sizeof(map_mesh_poly_sort_type)));
+				memmove(&sort_list[sort_idx+1],&sort_list[sort_idx],((sort_cnt-sort_idx)*sizeof(map_poly_sort_item_type)));
 			}
 
 			sort_list[sort_idx].mesh_idx=n;
@@ -371,16 +363,18 @@ void render_transparent_sort(int rn,int cx,int cy,int cz)
 			sort_list[sort_idx].dist=dist;
 
 			sort_cnt++;
+			if (sort_cnt>=max_sort_poly) break;
 
 			poly++;
 		}
-	
+
+		if (sort_cnt>=max_sort_poly) break;
+
 		mesh++;
 	}
 
-	portal->mesh.draw.sort_cnt=sort_cnt;
+	map.sort.count=sort_cnt;
 }
-*/
 
 /* =======================================================
 
@@ -390,8 +384,6 @@ void render_transparent_sort(int rn,int cx,int cy,int cz)
 
 void render_transparent_map(int mesh_cnt,int *mesh_list)
 {
-/* supergumba -- redo!
-	int				n;
 	bool			is_simple_lighting;
 
 		// setup view
@@ -411,20 +403,19 @@ void render_transparent_map(int mesh_cnt,int *mesh_list)
 	
 		// attach compiled vertex lists
 
-	view_compile_gl_list_attach();		// supergumba -- change this!
+	view_compile_gl_list_attach();
 
 		// sort meshes
 
-	render_transparent_sort(portal_idx,view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
+	render_transparent_sort(mesh_cnt,mesh_list,&view.camera.pnt);
 
 		// transparent meshes
 
-	render_transparent_portal_mesh(int mesh_cnt,int *mesh_list,is_simple_lighting);
-	render_transparent_portal_shader(int mesh_cnt,int *mesh_list);
+	render_transparent_portal_mesh(is_simple_lighting);
+	render_transparent_portal_shader();
 
 		// dettach any attached lists
 
 	view_compile_gl_list_dettach();
-	*/
 }
 

@@ -664,6 +664,18 @@ bool map_create_vertex_lists(map_type *map)
 		
 		mesh++;
 	}
+
+		// create polygon sorting list
+
+	sz=max_sort_poly*sizeof(map_poly_sort_item_type);
+	map->sort.list=(map_poly_sort_item_type*)valloc(sz);
+	if (map->sort.list==NULL) {
+		free(map->vertexes.ptr);
+		return(FALSE);
+	}
+
+	bzero(map->sort.list,sz);
+
 	
 	return(TRUE);
 }
@@ -674,7 +686,7 @@ void map_dispose_vertex_lists(map_type *map)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
-		// create tesseled lighting vertexes
+		// dispose tesseled lighting vertexes
 		
 	mesh=map->mesh.meshes;
 	
@@ -693,4 +705,5 @@ void map_dispose_vertex_lists(map_type *map)
 		// dispose lists
 		
 	free(map->vertexes.ptr);
+	free(map->sort.list);
 }

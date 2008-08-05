@@ -517,6 +517,10 @@ bool decode_map_v2_xml(map_type *map,int map_head)
     }
 
 	free(portals);
+	
+		// center map
+		
+	map_center(map);
 
 	return(TRUE);
 }

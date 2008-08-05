@@ -75,6 +75,7 @@ EXPORTS
 	map_refresh_textures							@297
 
 	map_prepare										@300
+	map_center										@301
 
 	map_add_texture_frame							@310
 	map_delete_texture_frame						@311

@@ -72,6 +72,7 @@ _map_close
 _map_refresh_textures
 
 _map_prepare
+_map_center
 
 _map_add_texture_frame
 _map_delete_texture_frame
