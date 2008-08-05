@@ -594,3 +594,27 @@ void piece_combine_mesh(void)
 	}
 }
 
+/* =======================================================
+
+      Map Changes
+      
+======================================================= */
+
+void map_mesh_move_all(int x,int y,int z)
+{
+	int				n;
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		map_mesh_move(&map,n,x,y,z);
+	}
+}
+
+void map_mesh_reset_uv_all(void)
+{
+	int				n;
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		map_mesh_reset_uv(&map,n);
+	}
+}
+

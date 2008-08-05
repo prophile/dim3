@@ -43,6 +43,16 @@
 			sepNavWindowFrame = "{{176, 129}, {1041, 747}}";
 		};
 	};
+	269D607A0E47CDE100AC58B1 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DA8623059148C40043E685 /* nodes.c */;
+		name = "nodes.c: 94";
+		rLen = 26;
+		rLoc = 2093;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
 	26AFB4310D95B6230004805A /* portal_mesh_update.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 14542}}";
@@ -84,16 +94,6 @@
 			sepNavVisRange = "{6225, 1707}";
 			sepNavWindowFrame = "{{349, 203}, {1041, 747}}";
 		};
-	};
-	26FD1EDC0E42C1950049A45A /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5DA8623059148C40043E685 /* nodes.c */;
-		name = "nodes.c: 94";
-		rLen = 26;
-		rLoc = 2093;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
 	};
 	F511664E093CDA2C00E766C3 /* groups.c */ = {
 		uiCtxt = {
@@ -221,12 +221,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 239344865;
-			PBXWorkspaceStateSaveDate = 239344865;
+			PBXPerProjectTemplateStateSaveDate = 239586751;
+			PBXWorkspaceStateSaveDate = 239586751;
 		};
 		perUserProjectItems = {
+			269D607A0E47CDE100AC58B1 /* PBXTextBookmark */ = 269D607A0E47CDE100AC58B1 /* PBXTextBookmark */;
 			26D6854E0E441E84007668D6 /* PBXTextBookmark */ = 26D6854E0E441E84007668D6 /* PBXTextBookmark */;
-			26FD1EDC0E42C1950049A45A /* PBXTextBookmark */ = 26FD1EDC0E42C1950049A45A /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -282,7 +282,7 @@
 	};
 	F5DA8623059148C40043E685 /* nodes.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {12, 2100}}";
+			sepNavIntBoundsRect = "{{0, 0}, {432, 2044}}";
 			sepNavSelRange = "{2093, 26}";
 			sepNavVisRange = "{0, 0}";
 			sepNavWindowFrame = "{{208, 185}, {1041, 747}}";
@@ -294,14 +294,6 @@
 			sepNavSelRange = "{1013, 0}";
 			sepNavVisRange = "{7098, 1096}";
 			sepNavWindowFrame = "{{131, 193}, {1041, 747}}";
-		};
-	};
-	F5DD177E09074E1E00721649 /* portal.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6468}}";
-			sepNavSelRange = "{3668, 0}";
-			sepNavVisRange = "{2971, 841}";
-			sepNavWindowFrame = "{{359, 163}, {1041, 747}}";
 		};
 	};
 	F5DD178809074E5000721649 /* portal_vertex_list.c */ = {

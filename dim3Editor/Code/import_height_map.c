@@ -41,8 +41,9 @@ extern map_type				map;
       
 ======================================================= */
 
-float import_height_map_get_height(bitmap_type *bitmap,int portal_start,int portal_total_sz,portal_type *portal,int seg_x,int seg_z)
+float import_height_map_get_height(bitmap_type *bitmap,int portal_start,int portal_total_sz,int seg_x,int seg_z)
 {
+/*
 	int			x,z,y;
 	ptr			p;
 	
@@ -62,7 +63,8 @@ float import_height_map_get_height(bitmap_type *bitmap,int portal_start,int port
 	p=bitmap->data+((y*(bitmap->wid<<2))+(x<<2));
 	
 	return(((float)*p)/255.0f);
-
+*/
+	return(0.0f);	// supergumba
 }
 
 /* =======================================================
@@ -189,10 +191,10 @@ void map_import_height_map(import_height_map_settings_type *hmi_settings)
 					lx=((hmi_settings->portal_sz)/10)*sx;
 					rx=lx+(hmi_settings->portal_sz/10);
 					
-					y[0]=import_height_map_start_y-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,portal_start,portal_total_sz,portal,lx,tz));
-					y[1]=import_height_map_start_y-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,portal_start,portal_total_sz,portal,rx,tz));
-					y[2]=import_height_map_start_y-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,portal_start,portal_total_sz,portal,rx,bz));
-					y[3]=import_height_map_start_y-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,portal_start,portal_total_sz,portal,lx,bz));
+					y[0]=import_height_map_start_y-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,portal_start,portal_total_sz,lx,tz));
+					y[1]=import_height_map_start_y-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,portal_start,portal_total_sz,rx,tz));
+					y[2]=import_height_map_start_y-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,portal_start,portal_total_sz,rx,bz));
+					y[3]=import_height_map_start_y-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,portal_start,portal_total_sz,lx,bz));
 										
 					gx[0]=gx[1]=gx[2]=0.0f;
 					gy[0]=gy[1]=gy[2]=0.0f;

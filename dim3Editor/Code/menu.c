@@ -81,7 +81,6 @@ void menu_fix_enable(void)
 		DisableMenuItem(GetMenuHandle(app_menu_edit),0);
 		DisableMenuItem(GetMenuHandle(app_menu_view),0);
 		DisableMenuItem(GetMenuHandle(app_menu_map),0);
-		DisableMenuItem(GetMenuHandle(app_menu_portal),0);
 		DisableMenuItem(GetMenuHandle(app_menu_pieces),0);
 		DisableMenuItem(GetMenuHandle(app_menu_groups),0);
 	}
@@ -102,7 +101,6 @@ void menu_fix_enable(void)
 		EnableMenuItem(GetMenuHandle(app_menu_edit),0);
 		EnableMenuItem(GetMenuHandle(app_menu_view),0);
 		EnableMenuItem(GetMenuHandle(app_menu_map),0);
-		EnableMenuItem(GetMenuHandle(app_menu_portal),0);
 		EnableMenuItem(GetMenuHandle(app_menu_groups),0);
         
             // pieces menu
@@ -356,17 +354,17 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			// supergumba -- get these working
 			// will need a "center map" thing
 		case kCommandMapRaiseY:
-		//	portal_all_y_change(-(map_enlarge*10));
+			map_mesh_move_all(0,-(map_enlarge*10),0);
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandMapLowerY:
-		//	portal_all_y_change(map_enlarge*10);
+			map_mesh_move_all(0,(map_enlarge*10),0);
 			main_wind_draw();
 			return(noErr);
 			
 		case kCommandMapResetUV:
-		//	portal_all_reset_uvs();
+			map_mesh_reset_uv_all();
 			main_wind_draw();
 			undo_clear();
 			return(noErr);
@@ -374,21 +372,7 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 		case kCommandRun:
 			launch_engine();
 			return(noErr);
-			
-			// portals menu
-			
-		case kCommandPortalGoToTop:
-			walk_view_portal_go_to_top();
-			return(noErr);
-			
-		case kCommandPortalGoToBottom:
-			walk_view_portal_go_to_bottom();
-			return(noErr);
-			
-		case kCommandPortalGoToSelection:
-			walk_view_portal_go_to_selection();
-			return(noErr);
-            
+			            
 			// piece menu
 
 		case kCommandMeshAddLibrary:

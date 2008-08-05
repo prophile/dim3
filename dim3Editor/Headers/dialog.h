@@ -98,14 +98,6 @@ extern bool dialog_map_fog_settings_run(void);
 extern bool dialog_map_rain_settings_run(void);
 
 //
-// portal dialogs
-//
-
-extern bool dialog_portal_settings_run(portal_type *portal);
-extern bool dialog_new_portal_run(int *x_size,int *y_size,int *z_size,char *mesh_name);
-extern int dialog_portal_resize_run(void);
-
-//
 // piece dialogs
 //
 

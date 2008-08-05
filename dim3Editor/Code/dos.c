@@ -53,14 +53,7 @@ void open_windows(void)
 
 void redraw_windows(void)
 {
-	
-        // starting room
- // supergumba -- do we need to start with a mesh?   
-    if (map.nportal==0) {
-//		cr=map_portal_create(&map,(map_max_size/2),(map_max_size/2),(40*map_enlarge),(40*map_enlarge));
-	}
-    
-        // center in first room
+        // center
         
 	select_clear();
 	main_wind_center_position_in_map();

@@ -31,7 +31,6 @@
 		F5CE96C50D23586E00512EE1 /* auto_generate.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CE96C20D23586E00512EE1 /* auto_generate.c */; };
 		F5DB0B780856700C005A7CB7 /* libMapUtility.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5F4951F067BFCCA00E809E7 /* libMapUtility.dylib */; };
 		F5DD16E40907328000721649 /* prepare.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD16E00907328000721649 /* prepare.c */; };
-		F5DD177F09074E1E00721649 /* portal.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD177E09074E1E00721649 /* portal.c */; };
 		F5DD178C09074E5000721649 /* portal_vertex_list.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD178809074E5000721649 /* portal_vertex_list.c */; };
 		F5DD18BB0907FD6E00721649 /* spots.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD18BA0907FD6E00721649 /* spots.c */; };
 		F5F49529067BFDB900E809E7 /* map_main.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A8B1B105229DA4008D4331 /* map_main.c */; };
@@ -91,7 +90,6 @@
 		F5CE96C20D23586E00512EE1 /* auto_generate.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = auto_generate.c; path = Sources/auto_generate.c; sourceTree = "<group>"; };
 		F5DA8623059148C40043E685 /* nodes.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = nodes.c; path = Sources/nodes.c; sourceTree = "<group>"; };
 		F5DD16E00907328000721649 /* prepare.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = prepare.c; path = Sources/prepare.c; sourceTree = "<group>"; };
-		F5DD177E09074E1E00721649 /* portal.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal.c; path = Sources/portal.c; sourceTree = "<group>"; };
 		F5DD178809074E5000721649 /* portal_vertex_list.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = portal_vertex_list.c; path = Sources/portal_vertex_list.c; sourceTree = "<group>"; };
 		F5DD18BA0907FD6E00721649 /* spots.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = spots.c; path = Sources/spots.c; sourceTree = "<group>"; };
 		F5F4951F067BFCCA00E809E7 /* libMapUtility.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libMapUtility.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -216,7 +214,6 @@
 		F5DD177C09074DEE00721649 /* Portals */ = {
 			isa = PBXGroup;
 			children = (
-				F5DD177E09074E1E00721649 /* portal.c */,
 				F55255250CE57DFA0045350D /* portal_mesh.c */,
 				26AFB4310D95B6230004805A /* portal_mesh_update.c */,
 				260AFEC20D404EAA00F6C42F /* portal_liquid.c */,
@@ -311,7 +308,6 @@
 				F5F4952D067BFDBC00E809E7 /* file_map_write.c in Sources */,
 				F5F4952E067BFDBC00E809E7 /* file_map_read.c in Sources */,
 				F5DD16E40907328000721649 /* prepare.c in Sources */,
-				F5DD177F09074E1E00721649 /* portal.c in Sources */,
 				F5DD178C09074E5000721649 /* portal_vertex_list.c in Sources */,
 				F5DD18BB0907FD6E00721649 /* spots.c in Sources */,
 				F50B25C8092065C900879CCC /* file_map_shader.c in Sources */,

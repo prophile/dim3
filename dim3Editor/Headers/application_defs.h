@@ -34,16 +34,14 @@ and can be sold or given away.
 #define app_menu_edit						130
 #define app_menu_view						131
 #define app_menu_map						132
-#define app_menu_portal						133
-#define app_menu_pieces						134
-#define app_menu_groups						137
+#define app_menu_pieces						132
+#define app_menu_groups						133
 
 #define kCommandAbout						FOUR_CHAR_CODE('abot')
 
 #define kCommandNew							FOUR_CHAR_CODE('new ')
 #define kCommandOpen						FOUR_CHAR_CODE('open')
 #define kCommandClose						FOUR_CHAR_CODE('clse')
-// #define kCommandImportOBJ					FOUR_CHAR_CODE('iobj')
 #define kCommandImportHeightMap				FOUR_CHAR_CODE('ihmp')
 #define kCommandAutoGenerateMap				FOUR_CHAR_CODE('atgn')
 #define kCommandSave						FOUR_CHAR_CODE('save')
@@ -67,16 +65,7 @@ and can be sold or given away.
 #define kCommandSkySettings					FOUR_CHAR_CODE('msky')
 #define kCommandRainSettings				FOUR_CHAR_CODE('mrin')
 #define kCommandFogSettings					FOUR_CHAR_CODE('mfog')
-#define kCommandAutoGenerateSightPaths		FOUR_CHAR_CODE('agsp')
 #define kCommandRun							FOUR_CHAR_CODE('mrun')
-
-#define kCommandPortalSettings				FOUR_CHAR_CODE('rset')
-#define kCommandPortalDuplicate				FOUR_CHAR_CODE('rdup')
-#define kCommandPortalDelete				FOUR_CHAR_CODE('rdel')
-#define kCommandPortalGoToTop				FOUR_CHAR_CODE('topp')
-#define kCommandPortalGoToBottom			FOUR_CHAR_CODE('botp')
-#define kCommandPortalGoToSelection			FOUR_CHAR_CODE('selp')
-#define kCommandClearPath					FOUR_CHAR_CODE('clrp')
 
 #define kCommandMeshCombine					FOUR_CHAR_CODE('pcmb')
 #define kCommandMeshTesselate				FOUR_CHAR_CODE('ptsl')
@@ -114,112 +103,101 @@ and can be sold or given away.
 #define kCommandMapLowerY					FOUR_CHAR_CODE('mlwy')
 #define kCommandMapResetUV					FOUR_CHAR_CODE('mpuv')
 
-#define kCommandPortalResize				FOUR_CHAR_CODE('rsiz')
-#define kCommandPortalFlipHorizontal		FOUR_CHAR_CODE('flph')
-#define kCommandPortalFlipVertical			FOUR_CHAR_CODE('flpv')
-#define kCommandPortalRotate				FOUR_CHAR_CODE('rot ')
-#define kCommandPortalRaiseY				FOUR_CHAR_CODE('rrsy')
-#define kCommandPortalLowerY				FOUR_CHAR_CODE('rlry')
-#define kCommandPortalResetUV				FOUR_CHAR_CODE('pruv')
-
-#define kCommandPortalSplitHorizontal		FOUR_CHAR_CODE('rshz')
-#define kCommandPortalSplitVertical			FOUR_CHAR_CODE('rsvt')
-
 //
 // views
 //
 
-#define vw_3_panel				0
-#define vw_4_panel				1
-#define vw_top_only				2
-#define vw_forward_only			3
+#define vw_3_panel								0
+#define vw_4_panel								1
+#define vw_top_only								2
+#define vw_forward_only							3
 
 //
 // perspective
 //
 
-#define ps_perspective			0
-#define ps_ortho				1
+#define ps_perspective							0
+#define ps_ortho								1
 
 //
 // movement directions
 //
 
-#define vm_dir_forward			0
-#define vm_dir_side				1
-#define vm_dir_top				2
+#define vm_dir_forward							0
+#define vm_dir_side								1
+#define vm_dir_top								2
 
 //
 // keyboard panel focus
 //
 
-#define kf_panel_forward		0
-#define kf_panel_side			1
-#define kf_panel_top			2
-#define kf_panel_walk			3
+#define kf_panel_forward						0
+#define kf_panel_side							1
+#define kf_panel_top							2
+#define kf_panel_walk							3
 
 //
 // vertex modes
 //
 
-#define vertex_mode_none		0
-#define vertex_mode_lock		1
-#define vertex_mode_snap		2
+#define vertex_mode_none						0
+#define vertex_mode_lock						1
+#define vertex_mode_snap						2
 
 //
 // drag modes
 //
 
-#define drag_mode_mesh			0
-#define drag_mode_polygon		1
-#define drag_mode_vertex		2
+#define drag_mode_mesh							0
+#define drag_mode_polygon						1
+#define drag_mode_vertex						2
 
 //
 // grid modes
 //
 
-#define grid_mode_none			0
-#define grid_mode_small			1
-#define grid_mode_medium		2
-#define grid_mode_large			3
+#define grid_mode_none							0
+#define grid_mode_small							1
+#define grid_mode_medium						2
+#define grid_mode_large							3
 
 //
 // selection types
 //
 
-#define mesh_piece				100
-#define liquid_piece			101
-#define node_piece				102
-#define spot_piece				103
-#define scenery_piece			104
-#define light_piece				105
-#define sound_piece				106
-#define particle_piece			107
+#define mesh_piece								100
+#define liquid_piece							101
+#define node_piece								102
+#define spot_piece								103
+#define scenery_piece							104
+#define light_piece								105
+#define sound_piece								106
+#define particle_piece							107
 
 //
 // magnify factors
 //
 
-#define magnify_factor_min		4
-#define magnify_factor_max		210
+#define magnify_factor_min						4
+#define magnify_factor_max						210
 
 //
 // fovs
 //
 
-#define walk_view_forward_fov	45
-#define walk_view_side_fov		45
-#define top_view_fov			30
+#define walk_view_forward_fov					45
+#define walk_view_side_fov						45
+#define top_view_fov							30
 
 //
 // walk view opengl settings
 //
 
-#define walk_view_near_z		(6*map_enlarge)
-#define walk_view_far_z			(2000*map_enlarge)
-#define walk_view_near_offset	(3*map_enlarge)
+#define walk_view_near_z						(6*map_enlarge)
+#define walk_view_far_z							(2000*map_enlarge)
+#define walk_view_near_offset					(3*map_enlarge)
 
-#define walk_view_handle_size	8.0f
+#define walk_view_handle_size					8.0f
 
 //
 // draw passing struct

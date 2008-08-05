@@ -370,15 +370,15 @@ bool walk_view_cube_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	return(hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z));
 }
 
-bool walk_view_liquid_click(editor_3D_view_setup *view_setup,d3pnt *click_pt,portal_type *portal,map_liquid_type *liq,int *hit_z)
+bool walk_view_liquid_click(editor_3D_view_setup *view_setup,d3pnt *click_pt,map_liquid_type *liq,int *hit_z)
 {
 	int				px[4],py[4],pz[4];
 
-	px[0]=px[3]=(liq->lft+portal->x)-view_setup->cpt.x;
-	px[1]=px[2]=(liq->rgt+portal->x)-view_setup->cpt.x;
+	px[0]=px[3]=liq->lft-view_setup->cpt.x;
+	px[1]=px[2]=liq->rgt-view_setup->cpt.x;
 	py[0]=py[1]=py[2]=py[3]=liq->y-view_setup->cpt.y;
-	pz[0]=pz[1]=view_setup->cpt.z-(liq->top+portal->z);
-	pz[2]=pz[3]=view_setup->cpt.z-(liq->bot+portal->z);
+	pz[0]=pz[1]=view_setup->cpt.z-liq->top;
+	pz[2]=pz[3]=view_setup->cpt.z-liq->bot;
 	
 	return(walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z));
 }
@@ -462,7 +462,6 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 {
 	int					n,k,fz,box_wid,box_high,
 						px[4],pz[4],ty,by,hit_z;
-	portal_type			*portal;
 	map_mesh_type		*mesh;
 	spot_type			*spot;
 	map_scenery_type	*scenery;
@@ -479,7 +478,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	*type=-1;
 	hit_z=100000;
 		
-		// portal meshes
+		// meshes
 	
 	mesh=map.mesh.meshes;
 	
@@ -503,10 +502,10 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	
 	if (dp_liquid) {
 	
-			// portal liquids
+			// liquids
 			
 		for (n=0;n!=map.liquid.nliquid;n++) {
-			if (walk_view_liquid_click(view_setup,click_pt,portal,&map.liquid.liquids[n],&fz)) {
+			if (walk_view_liquid_click(view_setup,click_pt,&map.liquid.liquids[n],&fz)) {
 				if (fz<hit_z) {
 					hit_z=fz;
 					*type=liquid_piece;
@@ -519,7 +518,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	
 	if (dp_object) {
 	
-			// portal spots
+			// spots
 			
 		for (n=0;n!=map.nspot;n++) {
 			
@@ -537,7 +536,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 			}
 		}
 	
-			// portal scenery
+			// scenery
 			
 		for (n=0;n!=map.nscenery;n++) {
 			
@@ -576,7 +575,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 			}
 		}
 		
-			// map sound
+			// map sounds
 			
 		for (n=0;n!=map.nsound;n++) {
 		
@@ -594,7 +593,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 			}
 		}
 		
-			// map particle
+			// map particles
 			
 		for (n=0;n!=map.nparticle;n++) {
 		
@@ -615,7 +614,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	
 	if (dp_node) {
 	
-			// map node
+			// map nodes
 			
 		for (n=0;n!=map.nnode;n++) {
 		
