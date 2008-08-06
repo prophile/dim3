@@ -31,7 +31,7 @@ and can be sold or given away.
 
 #include "video.h"
 
-int							render_array_current_idx;
+int							render_array_current_idx,render_array_max_sz;
 render_array_type			render_arrays[render_array_max_count];
 
 /* =======================================================
@@ -55,22 +55,21 @@ bool gl_render_arrays_initialize(char *err_str)
 	
 	sz2=(max_particle_count*max_particle_trail)*4;		// particles: total quads
 	if (sz2>sz) sz=sz2;
+
+		// save size
+
+	render_array_max_sz=sz;
 	
 		// create arrays
 		
 	for (n=0;n!=render_array_max_count;n++) {
 		
-		bsz=(sz*3)*sizeof(float);
+		bsz=(sz*(3+2+3+3))*sizeof(float);
 		render_arrays[n].vertex=valloc(bsz);
-		render_arrays[n].color=valloc(bsz);
-		render_arrays[n].normal=valloc(bsz);
-		
-		bsz=(sz*2)*sizeof(float);
-		render_arrays[n].coord=valloc(bsz);
 		
 		render_arrays[n].fence=n+1;
 		
-		if ((render_arrays[n].vertex==NULL) || (render_arrays[n].color==NULL) || (render_arrays[n].normal==NULL) || (render_arrays[n].coord==NULL)) {
+		if (render_arrays[n].vertex==NULL) {
 			strcpy(err_str,"Out of Memory");
 			return(FALSE);
 		}
@@ -85,9 +84,6 @@ void gl_render_arrays_shutdown(void)
 	
 	for (n=0;n!=render_array_max_count;n++) {
 		free(render_arrays[n].vertex);
-		free(render_arrays[n].color);
-		free(render_arrays[n].normal);
-		free(render_arrays[n].coord);
 	}
 }
 
@@ -144,17 +140,17 @@ inline float* gl_render_array_get_current_vertex(void)
 
 inline float* gl_render_array_get_current_coord(void)
 {
-	return(render_arrays[render_array_current_idx].coord);
+	return(render_arrays[render_array_current_idx].vertex+(render_array_max_sz*3));
 }
 
 inline float* gl_render_array_get_current_color(void)
 {
-	return(render_arrays[render_array_current_idx].color);
+	return(render_arrays[render_array_current_idx].vertex+(render_array_max_sz*(3+2)));
 }
 
 inline float* gl_render_array_get_current_normal(void)
 {
-	return(render_arrays[render_array_current_idx].normal);
+	return(render_arrays[render_array_current_idx].vertex+(render_array_max_sz*(3+2+3)));
 }
 
 inline void gl_render_array_stop(void)

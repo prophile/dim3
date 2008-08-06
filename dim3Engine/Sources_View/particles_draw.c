@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "weapons.h"
 #include "projectiles.h"
 #include "models.h"
+#include "lights.h"
 #include "effects.h"
 #include "video.h"
 
@@ -261,6 +262,7 @@ void particle_draw(effect_type *effect,int count)
 	particle_draw_position(effect,count,&mx,&my,&mz);
 
 	if (particle->ambient_factor!=1.0f) {		// get ambient before position change
+		map_calculate_light_reduce_effect(effect);
 		map_calculate_light_color_normal((double)mx,(double)my,(double)mz,pc,pn);
 		ambient_col.r=pc[0];
 		ambient_col.g=pc[1];

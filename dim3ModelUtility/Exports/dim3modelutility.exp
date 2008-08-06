@@ -65,12 +65,6 @@ _model_get_light_position
 _model_get_halo_position
 _model_get_name_position
 
-_model_clear_lights
-_model_add_light
-_model_find_closest_light
-_model_calculate_light_color_and_normal
-_model_calculate_normal_vector
-
 _model_get_size
 _model_get_vertex_extent
 _model_get_vertex_extent_all

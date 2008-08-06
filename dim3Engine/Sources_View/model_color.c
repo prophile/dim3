@@ -29,13 +29,12 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "lights.h"
+
 extern map_type				map;
 extern server_type			server;
 extern setup_type			setup;
 extern view_type			view;
-
-extern int					nlight;
-extern light_spot_type		lspot_cache[max_light_spot];
 
 /* =======================================================
 
@@ -74,9 +73,9 @@ void model_diffuse_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_dr
 	
 	nt=mdl->meshes[mesh_idx].nvertex;
 	
-	pc=mdl->meshes[mesh_idx].gl_color_array;
-	pvn=mdl->meshes[mesh_idx].gl_vertex_normal_array;
-	pln=mdl->meshes[mesh_idx].gl_light_normal_array;
+	pc=mdl->meshes[mesh_idx].draw.gl_color_array;
+	pvn=mdl->meshes[mesh_idx].draw.gl_vertex_normal_array;
+	pln=mdl->meshes[mesh_idx].draw.gl_light_normal_array;
 		
 	for (i=0;i!=nt;i++) {
 	
@@ -114,51 +113,13 @@ void model_diffuse_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_dr
       
 ======================================================= */
 
-void model_build_color_setup_lights(model_type *mdl,model_draw *draw)
-{
-	int						i;
-	float					fx,fy,fz;
-	d3pnt					pnt;
-	matrix_type				mat;
-	light_spot_type			*lspot;
-	
-	memmove(&pnt,&draw->pnt,sizeof(d3pnt));
-	
-		// need to move model if no rot on
-		
-	if (draw->no_rot.on) {
-		matrix_rotate_y(&mat,draw->no_rot.ang.y);
-
-		fx=(float)(pnt.x-draw->no_rot.center.x);
-		fy=(float)(pnt.y-draw->no_rot.center.y);
-		fz=(float)(pnt.z-draw->no_rot.center.z);
-		
-		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
-		
-		pnt.x=((int)fx)+draw->no_rot.center.x;
-		pnt.y=((int)fy)+draw->no_rot.center.y;
-		pnt.z=((int)fz)+draw->no_rot.center.z;
-	}
-
-		// create lighting spots for model
-
-	model_clear_lights(mdl);
-	lspot=lspot_cache;
-
-	for (i=0;i!=nlight;i++) {
-		model_add_light(mdl,&pnt,lspot,map.ambient.light_drop_off_factor);
-		lspot++;
-	}
-}
-
 void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw *draw)
 {
 	int				i,nt,lit;
 	float			col[3],normal[3],r,g,b,
-					fx,fy,fz,cx,cy,cz,nx,ny,kx,ky,kz;
+					fx,fy,fz,cx,cy,cz,nx,ny,nz,kx,ky,kz;
 	float			*pc,*pv,*pln;
 	double			dx,dy,dz;
-	d3col			light_base;
 	matrix_type		mat;
 	model_mesh_type	*mesh;
 		
@@ -168,18 +129,12 @@ void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw
 
 	lit=draw->lit_type;
 	
-		// get ambient color
-		
-	light_base.r=map.ambient.light_color.r+setup.gamma;
-	light_base.g=map.ambient.light_color.g+setup.gamma;
-	light_base.b=map.ambient.light_color.b+setup.gamma;
-	
 		// run the lighting
 		
 	mesh=&mdl->meshes[mesh_idx];
 	nt=mesh->nvertex;
-	pc=mesh->gl_color_array;
-	pln=mesh->gl_light_normal_array;
+	pc=mesh->draw.gl_color_array;
+	pln=mesh->draw.gl_light_normal_array;
 
 		// special per-mesh no lighting
 
@@ -225,13 +180,14 @@ void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw
 			fz+=cz;
 		}
 
-		model_calculate_light_color_and_normal(mdl,&light_base,(double)fx,(double)fy,(double)fz,col,normal);
+		map_calculate_light_color_normal((double)fx,(double)fy,(double)fz,col,normal);
 		
 		r=col[0];
 		g=col[1];
 		b=col[2];
 		nx=normal[0];
 		ny=normal[1];
+		nz=normal[2];
 		
 		for (i=0;i!=nt;i++) {
 			*pc++=r;
@@ -240,7 +196,7 @@ void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw
 			
 			*pln++=nx;
 			*pln++=ny;
-			*pln++=1.0f;
+			*pln++=nz;
 		}
 		
 		return;
@@ -260,9 +216,11 @@ void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw
 			fz+=cz;
 		}
 
-		model_calculate_normal_vector(mdl,(double)fx,(double)fy,(double)fz,normal);
+		map_calculate_light_color_normal((double)fx,(double)fy,(double)fz,col,normal);
+
 		nx=normal[0];
 		ny=normal[1];
+		nz=normal[2];
 		
 		for (i=0;i!=nt;i++) {
 			*pc++=draw->hilite.r;
@@ -271,7 +229,7 @@ void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw
 			
 			*pln++=nx;
 			*pln++=ny;
-			*pln++=1.0f;
+			*pln++=nz;
 		}
 		
 		if ((setup.diffuse_lighting) && (lit==ml_hilite_diffuse)) model_diffuse_color(mdl,mesh_idx,x,z,y,draw);
@@ -281,7 +239,7 @@ void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw
 	
 		// vertex lighting
 		
-	pv=(float*)mesh->gl_vertex_array;
+	pv=(float*)mesh->draw.gl_vertex_array;
 	
 		// vertex lighting with rotation
 		
@@ -292,7 +250,7 @@ void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw
 			dy=(double)((*pv++)+fy);
 			dz=(double)((*pv++)+fz);
 
-			model_calculate_light_color_and_normal(mdl,&light_base,dx,dy,dz,pc,pln);
+			map_calculate_light_color_normal(dx,dy,dz,pc,pln);
 
 			pc+=3;
 			pln+=3;
@@ -312,7 +270,7 @@ void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw
 			dy=(double)(ky+cy);
 			dz=(double)(kz+cz);
 
-			model_calculate_light_color_and_normal(mdl,&light_base,dx,dy,dz,pc,pln);
+			map_calculate_light_color_normal(dx,dy,dz,pc,pln);
 
 			pc+=3;
 			pln+=3;
@@ -340,7 +298,7 @@ void model_tint_team_color(model_type *mdl,int mesh_idx,model_draw *draw)
 		// tint the colors
 
 	nt=mdl->meshes[mesh_idx].nvertex;
-	pc=mdl->meshes[mesh_idx].gl_color_array;
+	pc=mdl->meshes[mesh_idx].draw.gl_color_array;
 	
 	for (i=0;i!=nt;i++) {
 		*pc=(*pc)*draw->tint.r;

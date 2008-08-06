@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "models.h"
 #include "consoles.h"
+#include "lights.h"
 #include "video.h"
 
 extern server_type				server;
@@ -663,6 +664,7 @@ bool model_get_bone_brightness(model_draw *draw,char *pose_name,char *bone_name,
 	
 		// light at position
 
+	map_calculate_light_reduce_model(draw);
 	map_calculate_light_color_normal((double)x,(double)y,(double)z,pc,pn);
 	
 	*bright=(pc[0]+pc[1]+pc[2])/3.0f;

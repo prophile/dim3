@@ -32,7 +32,7 @@ and can be sold or given away.
 #define render_array_max_count					16
 
 typedef struct		{
-						float					*vertex,*coord,*color,*normal;
+						float					*vertex;
 						unsigned long			fence;
 					} render_array_type;
 

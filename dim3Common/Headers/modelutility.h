@@ -52,8 +52,6 @@ and can be sold or given away.
 
 #define max_model_hit_box						16			// maximum number of hit boxes
 
-#define max_model_light_spot					8			// maximum number of lighting objects shining on model
-
 //
 // Animator vertex select and hide
 //
@@ -139,15 +137,19 @@ typedef struct		{
 					} model_material_type;
 
 typedef struct		{
+						float							*gl_vertex_array,*gl_color_array,
+														*gl_vertex_normal_array,*gl_light_normal_array;
+					} model_mesh_draw_type;
+
+typedef struct		{
 						int								nvertex,ntrig;
 						char							name[name_str_len];
 						bool							no_lighting,blend_add;
 						unsigned char					*vertex_sel_mask,*vertex_hide_mask;
-						float							*gl_vertex_array,*gl_color_array,
-														*gl_vertex_normal_array,*gl_light_normal_array;
  						model_vertex_type				*vertexes;
                         model_trig_type					*trigs;
 						model_material_type				*materials;
+						model_mesh_draw_type			draw;
 					} model_mesh_type;
 
 //
@@ -263,15 +265,6 @@ typedef struct		{
 					} model_tags;
 					
 //
-// Model Light Calculations
-//
-
-typedef struct		{
-						int								nspot;
-						light_spot_type					*spots;
-					} model_light_type;
-
-//
 // Model Main Structures
 //
 
@@ -282,7 +275,6 @@ typedef struct		{
 						char							name[name_str_len],load_base_path[1024];
 						d3pnt							center;
 						model_box_type					view_box,shadow_box;
-						model_light_type				light;
 						model_tags						tags;
  						model_mesh_type					meshes[max_model_mesh];
 						model_bone_type					*bones;
@@ -354,12 +346,6 @@ extern void model_resize_draw_vertex(model_type *model,int mesh_idx,float resize
 extern void model_translate_draw_vertex(model_type *model,int mesh_idx,int x,int y,int z);
 
 extern void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
-
-extern void model_clear_lights(model_type *model);
-extern void model_add_light(model_type *model,d3pnt *model_pos,light_spot_type *lspot,float drop_off_factor);
-extern light_spot_type* model_find_closest_light(model_type *model,double x,double y,double z,int *p_dist);
-extern void model_calculate_light_color_and_normal(model_type *model,d3col *light_base,double x,double y,double z,float *cf,float *nf);
-extern void model_calculate_normal_vector(model_type *model,double x,double y,double z,float *nf);
 
 extern void model_get_point_position(model_draw_setup *draw_setup,int *x,int *y,int *z);
 extern void model_get_draw_bone_position(model_draw_setup *draw_setup,int bone_idx,int *x,int *y,int *z);

@@ -2,7 +2,7 @@
 
 Module: dim3 Map Utility
 Author: Brian Barnes
- Usage: Portal Liquids
+ Usage: Map Liquids
 
 ***************************** License ********************************
 

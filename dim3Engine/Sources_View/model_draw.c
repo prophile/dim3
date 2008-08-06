@@ -41,7 +41,6 @@ extern server_type		server;
 extern view_type		view;
 extern setup_type		setup;
 
-extern void model_build_color_setup_lights(model_type *mdl,model_draw *draw);
 extern void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw *draw);
 extern void model_tint_team_color(model_type *mdl,int mesh_idx,model_draw *draw);
 extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf);
@@ -78,9 +77,9 @@ void model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 			// vertex 0
 
 		idx=trig->v[0]*3;
-		vp=mesh->gl_vertex_array+idx;
-		cp=mesh->gl_color_array+idx;
-		np=mesh->gl_light_normal_array+idx;
+		vp=mesh->draw.gl_vertex_array+idx;
+		cp=mesh->draw.gl_color_array+idx;
+		np=mesh->draw.gl_light_normal_array+idx;
 
 		*vl++=*vp++;
 		*vl++=*vp++;
@@ -100,9 +99,9 @@ void model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 			// vertex 1
 
 		idx=trig->v[1]*3;
-		vp=mesh->gl_vertex_array+idx;
-		cp=mesh->gl_color_array+idx;
-		np=mesh->gl_light_normal_array+idx;
+		vp=mesh->draw.gl_vertex_array+idx;
+		cp=mesh->draw.gl_color_array+idx;
+		np=mesh->draw.gl_light_normal_array+idx;
 
 		*vl++=*vp++;
 		*vl++=*vp++;
@@ -122,9 +121,9 @@ void model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 			// vertex 2
 
 		idx=trig->v[2]*3;
-		vp=mesh->gl_vertex_array+idx;
-		cp=mesh->gl_color_array+idx;
-		np=mesh->gl_light_normal_array+idx;
+		vp=mesh->draw.gl_vertex_array+idx;
+		cp=mesh->draw.gl_color_array+idx;
+		np=mesh->draw.gl_light_normal_array+idx;
 
 		*vl++=*vp++;
 		*vl++=*vp++;
@@ -230,21 +229,21 @@ void model_draw_start_mesh_shadow_array(model_type *mdl,model_mesh_type *mesh)
 
 			// vertex 0
 
-		vp=mesh->gl_vertex_array+(trig->v[0]*2);
+		vp=mesh->draw.gl_vertex_array+(trig->v[0]*2);
 
 		*vl++=*vp++;
 		*vl++=*vp;
 
 			// vertex 1
 
-		vp=mesh->gl_vertex_array+(trig->v[1]*2);
+		vp=mesh->draw.gl_vertex_array+(trig->v[1]*2);
 
 		*vl++=*vp++;
 		*vl++=*vp;
 
 			// vertex 2
 
-		vp=mesh->gl_vertex_array+(trig->v[2]*2);
+		vp=mesh->draw.gl_vertex_array+(trig->v[2]*2);
 
 		*vl++=*vp++;
 		*vl++=*vp;
@@ -673,9 +672,12 @@ void model_render(int tick,model_draw *draw)
 
 	model_setup_animated_textures(mdl,draw->cur_texture_frame,tick);
 	
-		// create light list for model and single drawing normal
+		// reduce lighting calculations for model
+
+	map_calculate_light_reduce_model(draw);
+
+		// get single drawing normal
 		
-	model_build_color_setup_lights(mdl,draw);
 	map_calculate_light_color_normal((double)draw->pnt.x,(double)draw->pnt.y,(double)draw->pnt.z,cf,draw->normal);
 
 		// get the meshes to be drawn

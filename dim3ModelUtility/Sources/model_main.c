@@ -86,8 +86,6 @@ bool model_new(model_type *model,char *name)
 
 	model->tags.name_bone_tag=model_null_tag;
 	model->tags.name_bone_idx=-1;
-
-	model->light.nspot=0;
 	
 		// get memory
 		
@@ -96,12 +94,11 @@ bool model_new(model_type *model,char *name)
 	model->meshes[0].materials=valloc(max_model_texture*sizeof(model_material_type));
 	model->meshes[0].vertex_sel_mask=valloc(vertex_sel_hide_mask_sz);
 	model->meshes[0].vertex_hide_mask=valloc(vertex_sel_hide_mask_sz);
-	model->meshes[0].gl_vertex_array=valloc((max_model_vertex*3)*sizeof(float));
-	model->meshes[0].gl_color_array=valloc((max_model_vertex*3)*sizeof(float));
-	model->meshes[0].gl_vertex_normal_array=valloc((max_model_vertex*3)*sizeof(float));
-	model->meshes[0].gl_light_normal_array=valloc((max_model_vertex*3)*sizeof(float));
 
-	model->light.spots=(light_spot_type*)valloc(max_model_light_spot*sizeof(light_spot_type));
+	model->meshes[0].draw.gl_vertex_array=valloc((max_model_vertex*3)*sizeof(float));
+	model->meshes[0].draw.gl_color_array=valloc((max_model_vertex*3)*sizeof(float));
+	model->meshes[0].draw.gl_vertex_normal_array=valloc((max_model_vertex*3)*sizeof(float));
+	model->meshes[0].draw.gl_light_normal_array=valloc((max_model_vertex*3)*sizeof(float));
 	
 	model->bones=valloc(max_model_bone*sizeof(model_bone_type));
 	model->poses=valloc(max_model_pose*sizeof(model_pose_type));
@@ -116,11 +113,10 @@ bool model_new(model_type *model,char *name)
 	if (model->meshes[0].materials==NULL) return(FALSE);
 	if (model->meshes[0].vertex_sel_mask==NULL) return(FALSE);
 	if (model->meshes[0].vertex_hide_mask==NULL) return(FALSE);
-	if (model->meshes[0].gl_vertex_array==NULL) return(FALSE);
-	if (model->meshes[0].gl_color_array==NULL) return(FALSE);
-	if (model->meshes[0].gl_vertex_normal_array==NULL) return(FALSE);
-	if (model->meshes[0].gl_light_normal_array==NULL) return(FALSE);
-	if (model->light.spots==NULL) return(FALSE);
+	if (model->meshes[0].draw.gl_vertex_array==NULL) return(FALSE);
+	if (model->meshes[0].draw.gl_color_array==NULL) return(FALSE);
+	if (model->meshes[0].draw.gl_vertex_normal_array==NULL) return(FALSE);
+	if (model->meshes[0].draw.gl_light_normal_array==NULL) return(FALSE);
 	if (model->bones==NULL) return(FALSE);
 	if (model->poses==NULL) return(FALSE);
 	if (model->animates==NULL) return(FALSE);
@@ -134,12 +130,10 @@ bool model_new(model_type *model,char *name)
 	bzero(model->meshes[0].materials,(max_model_texture*sizeof(model_material_type)));
 	bzero(model->meshes[0].vertex_sel_mask,vertex_sel_hide_mask_sz);
 	bzero(model->meshes[0].vertex_hide_mask,vertex_sel_hide_mask_sz);
-	bzero(model->meshes[0].gl_vertex_array,(max_model_vertex*3)*sizeof(float));
-	bzero(model->meshes[0].gl_color_array,(max_model_vertex*3)*sizeof(float));
-	bzero(model->meshes[0].gl_vertex_normal_array,(max_model_vertex*3)*sizeof(float));
-	bzero(model->meshes[0].gl_light_normal_array,(max_model_vertex*3)*sizeof(float));
-
-	bzero(model->light.spots,max_model_light_spot*sizeof(light_spot_type));
+	bzero(model->meshes[0].draw.gl_vertex_array,(max_model_vertex*3)*sizeof(float));
+	bzero(model->meshes[0].draw.gl_color_array,(max_model_vertex*3)*sizeof(float));
+	bzero(model->meshes[0].draw.gl_vertex_normal_array,(max_model_vertex*3)*sizeof(float));
+	bzero(model->meshes[0].draw.gl_light_normal_array,(max_model_vertex*3)*sizeof(float));
 
 	bzero(model->bones,(max_model_bone*sizeof(model_bone_type)));
 	bzero(model->poses,(max_model_pose*sizeof(model_pose_type)));
@@ -239,13 +233,11 @@ void model_close(model_type *model)
 		free(model->meshes[n].materials);
 		free(model->meshes[n].vertex_sel_mask);
 		free(model->meshes[n].vertex_hide_mask);
-		free(model->meshes[n].gl_vertex_array);
-		free(model->meshes[n].gl_color_array);
-		free(model->meshes[n].gl_vertex_normal_array);
-		free(model->meshes[n].gl_light_normal_array);
+		free(model->meshes[n].draw.gl_vertex_array);
+		free(model->meshes[n].draw.gl_color_array);
+		free(model->meshes[n].draw.gl_vertex_normal_array);
+		free(model->meshes[n].draw.gl_light_normal_array);
 	}
-
-	free(model->light.spots);
 	
 	free(model->bones);
 	free(model->poses);

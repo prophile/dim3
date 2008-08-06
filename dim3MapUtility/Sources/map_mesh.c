@@ -2,7 +2,7 @@
 
 Module: dim3 Map Utility
 Author: Brian Barnes
- Usage: Portal Meshes
+ Usage: Map Meshes
 
 ***************************** License ********************************
 

@@ -62,8 +62,6 @@ extern void spot_start_attach(void);
 extern bool gl_check_shader_ok(void);
 extern void map_movements_initialize(void);
 extern void fade_screen_start(int tick);
-extern bool liquid_create_memory(void);
-extern void liquid_free_memory(void);
 extern void group_move_clear_all(void);
 
 /* =======================================================
@@ -255,12 +253,6 @@ bool map_start(bool skip_media,char *err_str)
 	// supergumba -- all this is mixed up
 
 	progress_draw(40);
-
-	if (!liquid_create_memory()) {
-		progress_shutdown();
-		strcpy(err_str,"Out of memory");
-		return(FALSE);
-	}
 	
 		// start map ambients
 		
@@ -446,7 +438,6 @@ void map_end(void)
 	progress_draw(65);
 
 	map_dispose_vertex_lists(&map);
-	liquid_free_memory();
 	map_group_dispose_unit_list(&map);
 	
 		// close map

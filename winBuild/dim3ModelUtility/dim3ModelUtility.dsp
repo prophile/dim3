@@ -249,10 +249,6 @@ SOURCE=..\..\dim3ModelUtility\Sources\model_frames.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3ModelUtility\Sources\model_light_spot.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3ModelUtility\Sources\model_main.c
 # End Source File
 # Begin Source File

@@ -241,7 +241,27 @@ SOURCE=..\..\dim3MapUtility\Sources\map_frames.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3MapUtility\Sources\map_liquid.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3MapUtility\Sources\map_liquid_update.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3MapUtility\Sources\map_main.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3MapUtility\Sources\map_mesh.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3MapUtility\Sources\map_mesh_update.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3MapUtility\Sources\map_vertex_list.c
 # End Source File
 # Begin Source File
 
@@ -250,26 +270,6 @@ SOURCE=..\..\dim3MapUtility\Sources\movements.c
 # Begin Source File
 
 SOURCE=..\..\dim3MapUtility\Sources\nodes.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3MapUtility\Sources\portal_liquid.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3MapUtility\Sources\portal_liquid_update.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3MapUtility\Sources\portal_mesh.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3MapUtility\Sources\portal_mesh_update.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3MapUtility\Sources\portal_vertex_list.c
 # End Source File
 # Begin Source File
 

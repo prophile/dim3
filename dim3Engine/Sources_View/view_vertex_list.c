@@ -37,8 +37,6 @@ extern setup_type			setup;
 
 GLuint						vertex_vbo=-1;		// supergumba
 
-extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf);
-
 /* =======================================================
 
       Compile Portal OpenGL Lists
@@ -75,7 +73,7 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 		mesh++;
 	}
 
-	map.vertexes.draw_vertex_count=v_count;
+	map.mesh_vertexes.draw_vertex_count=v_count;
 
 
 
@@ -88,29 +86,29 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 	}
 
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vertex_vbo);
-	ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
 */
 
 
 		// arrays and offsets
 
-	map.vertexes.vert.sz=(v_count*3)*sizeof(float);
-	map.vertexes.vert.offset=0;
+	map.mesh_vertexes.vert.sz=(v_count*3)*sizeof(float);
+	map.mesh_vertexes.vert.offset=0;
 
-	pv=(float*)map.vertexes.ptr;
+	pv=(float*)map.mesh_vertexes.vertex_ptr;
 
-	map.vertexes.uv.sz=(v_count*2)*sizeof(float);
-	map.vertexes.uv.offset=map.vertexes.vert.offset+map.vertexes.vert.sz;
+	map.mesh_vertexes.uv.sz=(v_count*2)*sizeof(float);
+	map.mesh_vertexes.uv.offset=map.mesh_vertexes.vert.offset+map.mesh_vertexes.vert.sz;
 
 	pp=pv+(v_count*3);
 
-	map.vertexes.color.sz=(v_count*3)*sizeof(float);
-	map.vertexes.color.offset=map.vertexes.uv.offset+map.vertexes.uv.sz;
+	map.mesh_vertexes.color.sz=(v_count*3)*sizeof(float);
+	map.mesh_vertexes.color.offset=map.mesh_vertexes.uv.offset+map.mesh_vertexes.uv.sz;
 
 	pc=pp+(v_count*2);
 
-	map.vertexes.normal.sz=(v_count*3)*sizeof(float);
-	map.vertexes.normal.offset=map.vertexes.color.offset+map.vertexes.color.sz;
+	map.mesh_vertexes.normal.sz=(v_count*3)*sizeof(float);
+	map.mesh_vertexes.normal.offset=map.mesh_vertexes.color.offset+map.mesh_vertexes.color.sz;
 
 	pn=pc+(v_count*3);
 
@@ -125,7 +123,10 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 		// run throught the vertexes
 
 	for (n=0;n!=mesh_cnt;n++) {
+
 		mesh=&map.mesh.meshes[mesh_list[n]];
+		
+		map_calculate_light_reduce_mesh(mesh);
 		
 		poly=mesh->polys;
 		
@@ -288,43 +289,43 @@ void view_compile_gl_list_attach(void)
 
 		// data
 
-	sz=(map.vertexes.draw_vertex_count*(3+2+3+3))*sizeof(float);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,(void*)map.vertexes.ptr,GL_STREAM_DRAW_ARB);
+	sz=(map.mesh_vertexes.draw_vertex_count*(3+2+3+3))*sizeof(float);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,(void*)map.mesh_vertexes.vertex_ptr,GL_STREAM_DRAW_ARB);
 
 		// vertexes
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,(void*)map.vertexes.vert.offset);
+	glVertexPointer(3,GL_FLOAT,0,(void*)map.mesh_vertexes.vert.offset);
 
 		// uvs
 		
 	glClientActiveTexture(GL_TEXTURE2);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)map.vertexes.uv.offset);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)map.mesh_vertexes.uv.offset);
 
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)map.vertexes.uv.offset);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)map.mesh_vertexes.uv.offset);
 	
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)map.vertexes.uv.offset);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)map.mesh_vertexes.uv.offset);
 
 		// color array
 
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(3,GL_FLOAT,0,(void*)map.vertexes.color.offset);
+	glColorPointer(3,GL_FLOAT,0,(void*)map.mesh_vertexes.color.offset);
 }
 
 
 void view_compile_gl_list_switch_to_color(void)
 {
-	glColorPointer(3,GL_FLOAT,0,(void*)map.vertexes.color.offset);
+	glColorPointer(3,GL_FLOAT,0,(void*)map.mesh_vertexes.color.offset);
 }
 
 void view_compile_gl_list_switch_to_normal(void)
 {
-	glColorPointer(3,GL_FLOAT,0,(void*)map.vertexes.normal.offset);
+	glColorPointer(3,GL_FLOAT,0,(void*)map.mesh_vertexes.normal.offset);
 }
 
 void view_compile_gl_list_dettach(void)

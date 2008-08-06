@@ -268,8 +268,6 @@ typedef struct		{
 
 typedef struct		{
 						int									v_cnt,x_sz,z_sz;
-						int									*idx_list;
-						float								*vl_list,*uv_list,*cl_list;
 					} map_liquid_draw_type;
 
 typedef struct		{
@@ -298,7 +296,7 @@ typedef struct		{
 					} map_liquid_collection_type;
 
 //
-// map vertex draw and sort lists
+// map vertex draw lists
 //
 
 typedef struct		{
@@ -307,9 +305,14 @@ typedef struct		{
 
 typedef struct		{
 						int									max_vertex_count,draw_vertex_count;
-						float								*ptr;
+						int									*index_ptr;
+						float								*vertex_ptr;
 						map_vertex_array_type				vert,uv,color,normal;
 					} map_vertex_type;
+
+//
+// map sort lists
+//
 
 typedef struct		{
 						int									mesh_idx,poly_idx;
@@ -521,7 +524,7 @@ typedef struct		{
 						map_mesh_collection_type	mesh;
 						map_liquid_collection_type	liquid;
 
-						map_vertex_type				vertexes;
+						map_vertex_type				mesh_vertexes,liquid_vertexes;
 						map_poly_sort_type			sort;
 						
 					} map_type;

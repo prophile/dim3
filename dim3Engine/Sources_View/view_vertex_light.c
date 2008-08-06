@@ -38,7 +38,178 @@ extern setup_type			setup;
 extern int					nlight;
 extern light_spot_type		lspot_cache[max_light_spot];
 
+int							nlight_reduce,light_reduce_list[max_light_spot];
+
 extern bool light_trace_map(d3pnt *spt,d3pnt *ept);
+
+/* =======================================================
+
+      Reduce Lighting that Hit Scene
+      
+======================================================= */
+
+void map_calculate_light_reduce_mesh(map_mesh_type *mesh)
+{
+	int					n;
+	light_spot_type		*lspot;
+
+	nlight_reduce=0;
+
+	for (n=0;n!=nlight;n++) {
+
+		lspot=&lspot_cache[n];
+
+			// does this light hit the mesh?
+
+		if ((lspot->pnt.x+lspot->intensity)<mesh->box.min.x) continue;
+		if ((lspot->pnt.x-lspot->intensity)>mesh->box.max.x) continue;
+		if ((lspot->pnt.z+lspot->intensity)<mesh->box.min.z) continue;
+		if ((lspot->pnt.z-lspot->intensity)>mesh->box.max.z) continue;
+		if ((lspot->pnt.y+lspot->intensity)<mesh->box.min.y) continue;
+		if ((lspot->pnt.y-lspot->intensity)>mesh->box.max.y) continue;
+
+			// this light can be considered
+
+		light_reduce_list[nlight_reduce++]=n;
+	}
+}
+
+void map_calculate_light_reduce_liquid(map_liquid_type *liq)
+{
+	int					n;
+	light_spot_type		*lspot;
+
+	nlight_reduce=0;
+
+	for (n=0;n!=nlight;n++) {
+
+		lspot=&lspot_cache[n];
+
+			// does this light hit the liquid?
+
+		if ((lspot->pnt.x+lspot->intensity)<liq->lft) continue;
+		if ((lspot->pnt.x-lspot->intensity)>liq->rgt) continue;
+		if ((lspot->pnt.z+lspot->intensity)<liq->top) continue;
+		if ((lspot->pnt.z-lspot->intensity)>liq->bot) continue;
+		if ((lspot->pnt.y+lspot->intensity)<liq->y) continue;
+		if ((lspot->pnt.y-lspot->intensity)>liq->y) continue;
+
+			// this light can be considered
+
+		light_reduce_list[nlight_reduce++]=n;
+	}
+}
+
+void map_calculate_light_reduce_model(model_draw *draw)
+{
+	int					n,cx,cy,cz,sz;
+	float				fx,fy,fz;
+	d3pnt				pnt,min,max;
+	matrix_type			mat;
+	light_spot_type		*lspot;
+	
+		// need to move model if no rot on
+
+	memmove(&pnt,&draw->pnt,sizeof(d3pnt));
+		
+	if (draw->no_rot.on) {
+		matrix_rotate_y(&mat,draw->no_rot.ang.y);
+
+		fx=(float)(pnt.x-draw->no_rot.center.x);
+		fy=(float)(pnt.y-draw->no_rot.center.y);
+		fz=(float)(pnt.z-draw->no_rot.center.z);
+		
+		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+		
+		pnt.x=((int)fx)+draw->no_rot.center.x;
+		pnt.y=((int)fy)+draw->no_rot.center.y;
+		pnt.z=((int)fz)+draw->no_rot.center.z;
+	}
+
+		// get model bounds
+
+	sz=draw->size.x>>1;
+	min.x=pnt.x-sz;
+	max.x=pnt.x+sz;
+
+	sz=draw->size.z>>1;
+	min.z=pnt.z-sz;
+	max.z=pnt.z+sz;
+
+	min.y=pnt.y-draw->size.y;
+	max.y=pnt.y;
+
+		// any rotations
+
+	cx=pnt.x+draw->center.x;
+	cy=pnt.y+draw->center.y;
+	cz=pnt.z+draw->center.z;
+
+	rotate_point(&min.x,&min.y,&min.z,cx,cy,cz,draw->rot.x,draw->rot.y,draw->rot.z);
+	rotate_point(&max.x,&max.y,&max.z,cx,cy,cz,draw->rot.x,draw->rot.y,draw->rot.z);
+
+		// find lights within these bounds
+
+	nlight_reduce=0;
+
+	for (n=0;n!=nlight;n++) {
+
+		lspot=&lspot_cache[n];
+
+			// does this light hit the model?
+
+		if ((lspot->pnt.x+lspot->intensity)<min.x) continue;
+		if ((lspot->pnt.x-lspot->intensity)>max.x) continue;
+		if ((lspot->pnt.z+lspot->intensity)<min.z) continue;
+		if ((lspot->pnt.z-lspot->intensity)>max.z) continue;
+		if ((lspot->pnt.y+lspot->intensity)<min.y) continue;
+		if ((lspot->pnt.y-lspot->intensity)>max.y) continue;
+
+			// this light can be considered
+
+		light_reduce_list[nlight_reduce++]=n;
+	}
+}
+
+void map_calculate_light_reduce_effect(effect_type *effect)
+{
+	int					n,sz;
+	d3pnt				min,max;
+	light_spot_type		*lspot;
+
+		// get effect bounds
+
+	sz=effect->size>>1;
+
+	min.x=effect->pnt.x-sz;
+	max.x=effect->pnt.x+sz;
+	min.y=effect->pnt.y-sz;
+	max.y=effect->pnt.y+sz;
+	min.z=effect->pnt.z-sz;
+	max.z=effect->pnt.z+sz;
+
+		// find lights within these bounds
+
+	nlight_reduce=0;
+
+	for (n=0;n!=nlight;n++) {
+
+		lspot=&lspot_cache[n];
+
+			// does this light hit the effect?
+
+		if ((lspot->pnt.x+lspot->intensity)<min.x) continue;
+		if ((lspot->pnt.x-lspot->intensity)>max.x) continue;
+		if ((lspot->pnt.z+lspot->intensity)<min.z) continue;
+		if ((lspot->pnt.z-lspot->intensity)>max.z) continue;
+		if ((lspot->pnt.y+lspot->intensity)<min.y) continue;
+		if ((lspot->pnt.y-lspot->intensity)>max.y) continue;
+
+			// this light can be considered
+
+		light_reduce_list[nlight_reduce++]=n;
+	}
+}
 
 /* =======================================================
 
@@ -52,6 +223,19 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 	double				dx,dz,dy,r,g,b,nx,nz,ny,d,mult;
 	light_spot_type		*lspot;
 
+		// no lights in scene
+
+	if (nlight_reduce==0) {
+		*cf++=(map.ambient.light_color.r+setup.gamma);
+		*cf++=(map.ambient.light_color.g+setup.gamma);
+		*cf=(map.ambient.light_color.b+setup.gamma);
+		*nf++=0.5f;
+		*nf++=0.5f;
+		*nf=1.0f;
+		
+		return;
+	}
+
 		// combine all light spot normals
 		// attenuated for distance
 		
@@ -60,9 +244,9 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 	r=g=b=0.0f;
 	nx=ny=nz=0.0f;
 	
-	lspot=lspot_cache;
-	
-	for (n=0;n!=nlight;n++) {
+	for (n=0;n!=nlight_reduce;n++) {
+
+		lspot=&lspot_cache[light_reduce_list[n]];
 		
 		dx=lspot->d_x-x;
 		dy=lspot->d_y-y;
@@ -143,13 +327,19 @@ light_spot_type* map_find_closest_light(double x,double y,double z,int *p_dist)
 	int					n,k;
 	double				dx,dz,dy,d,dist;
 	light_spot_type		*lspot;
+
+		// no lights in scene
+
+	if (nlight_reduce==0) return(NULL);
+
+		// find closest light
 	
 	k=-1;
 	dist=-1;
 	
-	lspot=lspot_cache;
-	
-	for (n=0;n!=nlight;n++) {
+	for (n=0;n!=nlight_reduce;n++) {
+
+		lspot=&lspot_cache[light_reduce_list[n]];
 		
 			// get distance to light spot
 			
@@ -194,6 +384,21 @@ void map_calculate_ray_trace_light_color_normal(double x,double y,double z,float
 	double				mult,r,g,b,dx,dz,dy,nx,ny,nz,d;
 	light_spot_type		*lspot;
 
+		// no lights in scene
+
+	if (nlight_reduce==0) {
+		*cf++=(map.ambient.light_color.r+setup.gamma);
+		*cf++=(map.ambient.light_color.g+setup.gamma);
+		*cf=(map.ambient.light_color.b+setup.gamma);
+		*nf++=0.5f;
+		*nf++=0.5f;
+		*nf=1.0f;
+		
+		return;
+	}
+
+		// starting ray trace point
+
 	spt.x=(int)x;
 	spt.y=(int)y;
 	spt.z=(int)z;
@@ -201,23 +406,20 @@ void map_calculate_ray_trace_light_color_normal(double x,double y,double z,float
 		// combine all light spot colors
 		// attenuated for distance
 		
-	lspot=lspot_cache;
-
 	cnt=0;
 	
 	r=g=b=0.0f;
 	nx=ny=nz=0.0f;
 	
-	for (n=0;n!=nlight;n++) {
+	for (n=0;n!=nlight_reduce;n++) {
+
+		lspot=&lspot_cache[light_reduce_list[n]];
 
 		ept.x=lspot->pnt.x;
 		ept.y=lspot->pnt.y;
 		ept.z=lspot->pnt.z;
 
-		if (light_trace_map(&spt,&ept)) {
-			lspot++;
-			continue;
-		}
+		if (light_trace_map(&spt,&ept)) continue;
 		
 		dx=lspot->d_x-x;
 		dy=lspot->d_y-y;

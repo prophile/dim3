@@ -68,12 +68,6 @@ EXPORTS
 	model_get_halo_position					@234
 	model_get_name_position					@235
 
-	model_clear_lights						@240
-	model_add_light							@241
-	model_find_closest_light				@242
-	model_calculate_light_color_and_normal	@243
-	model_calculate_normal_vector			@244
-
 	model_get_size							@250
 	model_get_vertex_extent					@251
 	model_get_vertex_extent_all				@252

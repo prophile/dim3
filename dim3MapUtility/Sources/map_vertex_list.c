@@ -2,7 +2,7 @@
 
 Module: dim3 Map Utility
 Author: Brian Barnes
- Usage: Portal Vertex Lists
+ Usage: Map Vertex Lists
 
 ***************************** License ********************************
 
@@ -611,15 +611,15 @@ void map_dispose_poly_tesseled_vertexes(map_mesh_poly_type *poly)
 
 /* =======================================================
 
-      Create/Dispose Map Vertex Lists
+      Create/Dispose Mesh Vertex Lists
       
 ======================================================= */
 
-bool map_create_vertex_lists(map_type *map)
+bool map_create_mesh_vertexes(map_type *map)
 {
-	int							n,k,nvlist,sz;
-	map_mesh_type				*mesh;
-	map_mesh_poly_type			*poly;
+	int					n,k,nvlist,sz;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
 	
 		// find maximum possible number of vertexes
 		// that could be drawn in a scene
@@ -636,18 +636,22 @@ bool map_create_vertex_lists(map_type *map)
 		mesh++;
 	}
 	
-		// compiled vertex, coord and color lists
+		// compiled vertex, coord, color and normal lists
 	
 	sz=nvlist*(sizeof(float)*(3+2+3+3));
-	map->vertexes.ptr=(float*)valloc(sz);
-	if (map->vertexes.ptr==NULL) return(FALSE);
+	map->mesh_vertexes.vertex_ptr=(float*)valloc(sz);
+	if (map->mesh_vertexes.vertex_ptr==NULL) return(FALSE);
 	
-	bzero(map->vertexes.ptr,sz);
+	bzero(map->mesh_vertexes.vertex_ptr,sz);
+
+		// no indexes
+
+	map->mesh_vertexes.index_ptr=NULL;
 
 		// remember total
 
-	map->vertexes.max_vertex_count=nvlist;
-	map->vertexes.draw_vertex_count=0;
+	map->mesh_vertexes.max_vertex_count=nvlist;
+	map->mesh_vertexes.draw_vertex_count=0;
 	
 		// create tesseled lighting vertexes
 
@@ -665,22 +669,10 @@ bool map_create_vertex_lists(map_type *map)
 		mesh++;
 	}
 
-		// create polygon sorting list
-
-	sz=max_sort_poly*sizeof(map_poly_sort_item_type);
-	map->sort.list=(map_poly_sort_item_type*)valloc(sz);
-	if (map->sort.list==NULL) {
-		free(map->vertexes.ptr);
-		return(FALSE);
-	}
-
-	bzero(map->sort.list,sz);
-
-	
 	return(TRUE);
 }
 
-void map_dispose_vertex_lists(map_type *map)
+void map_dispose_mesh_vertexes(map_type *map)
 {
 	int					n,k;
 	map_mesh_type		*mesh;
@@ -704,6 +696,123 @@ void map_dispose_vertex_lists(map_type *map)
 
 		// dispose lists
 		
-	free(map->vertexes.ptr);
+	free(map->mesh_vertexes.vertex_ptr);
+}
+
+/* =======================================================
+
+      Create/Dispose Liquid Vertex Lists
+      
+======================================================= */
+
+bool map_create_liquid_vertexes(map_type *map)
+{
+	int					n,x_sz,z_sz,nvlist,sz;
+	map_liquid_type		*liq;
+	
+		// find maximum possible number of vertexes
+		// for liquid griding that could be drawn in a scene
+	
+	nvlist=0;
+	
+	liq=map->liquid.liquids;
+		
+	for (n=0;n!=map->liquid.nliquid;n++) {
+
+		x_sz=((liq->rgt-liq->lft)/liq->tide.split)+4;		// possible extra edges on side because of griding
+		z_sz=((liq->bot-liq->top)/liq->tide.split)+4;
+
+		sz=(x_sz*z_sz);
+		if (sz>nvlist) nvlist=sz;
+		
+		liq++;
+	}
+
+	if (sz==0) sz=4;
+	
+		// compiled vertex, coord, and color lists
+	
+	sz=nvlist*(sizeof(float)*(3+2+3));
+	map->liquid_vertexes.vertex_ptr=(float*)valloc(sz);
+	if (map->liquid_vertexes.vertex_ptr==NULL) return(FALSE);
+	
+	bzero(map->liquid_vertexes.vertex_ptr,sz);
+
+		// compiled index lists
+
+	sz=nvlist*(sizeof(int)*4);
+	map->liquid_vertexes.index_ptr=(int*)valloc(sz);
+	if (map->liquid_vertexes.index_ptr==NULL) {
+		free(map->liquid_vertexes.vertex_ptr);
+		return(FALSE);
+	}
+
+	bzero(map->liquid_vertexes.index_ptr,sz);
+
+
+		// remember total
+
+	map->liquid_vertexes.max_vertex_count=nvlist;
+	map->liquid_vertexes.draw_vertex_count=0;
+
+	return(TRUE);
+}
+
+void map_dispose_liquid_vertexes(map_type *map)
+{
+	free(map->liquid_vertexes.vertex_ptr);
+	free(map->liquid_vertexes.index_ptr);
+}
+
+/* =======================================================
+
+      Create/Dispose Polygon Sorting Lists
+      
+======================================================= */
+
+bool map_create_sort_lists(map_type *map)
+{
+	int					sz;
+
+	sz=max_sort_poly*sizeof(map_poly_sort_item_type);
+	map->sort.list=(map_poly_sort_item_type*)valloc(sz);
+	if (map->sort.list==NULL) return(FALSE);
+
+	bzero(map->sort.list,sz);
+	
+	return(TRUE);
+}
+
+void map_dispose_sort_lists(map_type *map)
+{
 	free(map->sort.list);
+}
+
+/* =======================================================
+
+      Create/Dispose Map Vertex Lists
+      
+======================================================= */
+
+bool map_create_vertex_lists(map_type *map)
+{
+	if (!map_create_mesh_vertexes(map)) return(FALSE);
+	if (!map_create_liquid_vertexes(map)) {
+		map_dispose_mesh_vertexes(map);
+		return(FALSE);
+	}
+	if (!map_create_sort_lists(map)) {
+		map_dispose_liquid_vertexes(map);
+		map_dispose_mesh_vertexes(map);
+		return(FALSE);
+	}
+	
+	return(TRUE);
+}
+
+void map_dispose_vertex_lists(map_type *map)
+{
+	map_dispose_sort_lists(map);
+	map_dispose_liquid_vertexes(map);
+	map_dispose_mesh_vertexes(map);
 }
