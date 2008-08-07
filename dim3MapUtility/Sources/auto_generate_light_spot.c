@@ -31,9 +31,11 @@ and can be sold or given away.
 
 extern int map_auto_generate_random_int(int max);
 
-extern unsigned char				corridor_flags[max_portal];
+extern int								ag_box_count;
+extern unsigned char					corridor_flags[max_portal];
 
-extern auto_generate_settings_type	ag_settings;
+extern auto_generate_settings_type		ag_settings;
+extern auto_generate_box_type			ag_boxes[max_ag_box];
 
 /* =======================================================
 
@@ -43,31 +45,30 @@ extern auto_generate_settings_type	ag_settings;
 
 void map_auto_generate_lights(map_type *map)
 {
-	/*
-	int					n,x,z,y,intensity,lt_type;
-	float				r,g,b;
-	double				dx,dz;
-	portal_type			*portal;
-	map_light_type		*lit;
+	int						n,x,z,y,intensity,lt_type;
+	float					r,g,b;
+	double					dx,dz;
+	auto_generate_box_type	*portal;
+	map_light_type			*lit;
 	
 	if (ag_settings.light_type_on[ag_light_type_include]==0) return;
 
-	portal=map->portals;
+	portal=ag_boxes;
 	
-	for (n=0;n!=map->nportal;n++) {
+	for (n=0;n!=ag_box_count;n++) {
 
 		if (map->nlight>=max_map_light) break;
 	
 			// find light position
 			
-		x=(portal->ex-portal->x)/2;
-		z=(portal->ez-portal->z)/2;
-		y=portal->ty+((portal->by-portal->ty)/2);
+		x=(portal->max.x-portal->min.x)/2;
+		z=(portal->max.z-portal->min.z)/2;
+		y=portal->min.y+((portal->max.y-portal->min.y)/2);
 		
 			// get intensity
 			
-		dx=(portal->ex-portal->x);
-		dz=(portal->ez-portal->z);
+		dx=(portal->max.x-portal->min.x);
+		dz=(portal->max.z-portal->min.z);
 		intensity=((int)sqrt((dx*dx)+(dz*dz)))>>1;			// radius, so use half
 		if (intensity<100) intensity=100;
 		
@@ -132,7 +133,6 @@ void map_auto_generate_lights(map_type *map)
 
 		portal++;
 	}
-	*/
 }
 
 /* =======================================================
@@ -143,7 +143,7 @@ void map_auto_generate_lights(map_type *map)
 
 void map_auto_generate_spots(map_type *map)
 {
-/* supergumba -- fix this!
+	/* supergumba -- spot generation needs to be fixed
 
 	int				n,k,x,y,z,idx;
 	segment_type	*seg;

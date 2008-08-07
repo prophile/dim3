@@ -232,7 +232,6 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 		*nf++=0.5f;
 		*nf++=0.5f;
 		*nf=1.0f;
-		
 		return;
 	}
 
@@ -247,7 +246,7 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 	for (n=0;n!=nlight_reduce;n++) {
 
 		lspot=&lspot_cache[light_reduce_list[n]];
-		
+
 		dx=lspot->d_x-x;
 		dy=lspot->d_y-y;
 		dz=lspot->d_z-z;
@@ -393,7 +392,6 @@ void map_calculate_ray_trace_light_color_normal(double x,double y,double z,float
 		*nf++=0.5f;
 		*nf++=0.5f;
 		*nf=1.0f;
-		
 		return;
 	}
 

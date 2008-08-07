@@ -131,10 +131,6 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 		poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {
-		
-			v_light_start_idx=v_idx;
-
-			lv=poly->light.vertexes;
 
 				// ray traced version
 
@@ -167,6 +163,9 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 				}
 
 					// tesseled lighting vertexes
+
+				v_light_start_idx=v_idx;
+				lv=poly->light.vertexes;
 
 				for (t=0;t!=poly->light.nvertex;t++) {
 
@@ -223,6 +222,9 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 				}
 
 					// tesseled lighting vertexes
+
+				v_light_start_idx=v_idx;
+				lv=poly->light.vertexes;
 
 				for (t=0;t!=poly->light.nvertex;t++) {
 

@@ -26,17 +26,6 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// obj import settings
-//
-
-typedef struct	{
-					int								portal_x_sz,portal_z_sz,portal_x_cnt,portal_z_cnt,
-													texture_portal_wall,texture_portal_floor,texture_portal_ceiling;
-					bool							lights,sight_path,flip_x,flip_z;
-					char							path[1024];
-				} import_obj_settings_type;
-				
-//
 // height map import settings
 //
 
@@ -274,7 +263,7 @@ typedef struct	{
 #define ag_constant_ramp_size_percent				4.0f
 
 //
-// auto-generate structure
+// auto-generate setup structure
 //
 
 typedef struct	{
@@ -299,6 +288,17 @@ typedef struct	{
 					auto_generate_setting_map_type			map;
 					auto_generate_setting_texture_type		texture;
 				} auto_generate_settings_type;
+
+//
+// auto-generate box
+//
+
+#define max_ag_box											256
+
+typedef struct	{
+					int										corridor_flag,corridor_type,ceiling_type;
+					d3pnt									min,max;
+				} auto_generate_box_type;
 
 //
 // auto generate functions

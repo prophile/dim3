@@ -29,10 +29,12 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-int					map_ag_portal_idx,map_ag_mesh_idx,map_ag_poly_txt_idx;
+extern int								ag_box_count;
+extern auto_generate_box_type			ag_boxes[max_ag_box];
 
-int					map_ag_seg_group_idx,map_ag_seg_primitive_uid,map_ag_seg_fill;
-bool				map_ag_seg_moveable;
+int										map_ag_box_idx,map_ag_mesh_idx,map_ag_poly_txt_idx,
+										map_ag_seg_group_idx,map_ag_seg_primitive_uid,map_ag_seg_fill;
+bool									map_ag_seg_moveable;
 
 /* =======================================================
 
@@ -81,103 +83,98 @@ int map_auto_generate_random_int(int max)
 
 bool map_auto_generate_portal_collision(map_type *map,int x,int z,int ex,int ez,int skip_idx)
 {
-	/*
-	int			n;
-	portal_type	*portal;
+	int						n;
+	auto_generate_box_type	*portal;
 
-	for (n=0;n!=map->nportal;n++) {
+	for (n=0;n!=ag_box_count;n++) {
 		if (skip_idx==n) continue;
 
-		portal=&map->portals[n];
+		portal=&ag_boxes[n];
 
-		if (ez<=portal->z) continue;
-		if (ex<=portal->x) continue;
-		if (x>=portal->ex) continue;
-		if (z>=portal->ez) continue;
+		if (ez<=portal->min.z) continue;
+		if (ex<=portal->min.x) continue;
+		if (x>=portal->max.x) continue;
+		if (z>=portal->max.z) continue;
 
 		return(TRUE);
 	}
-*/
+
 	return(FALSE);
 }
 
 bool map_auto_generate_portal_horz_edge_block(map_type *map,int skip_portal_idx,int z,int ez,int x)
 {
-	/*
-	int			n;
-	portal_type	*portal;
+	int						n;
+	auto_generate_box_type	*portal;
 
-	for (n=0;n!=map->nportal;n++) {
+	for (n=0;n!=ag_box_count;n++) {
 		if (skip_portal_idx==n) continue;
 
-		portal=&map->portals[n];
+		portal=&ag_boxes[n];
 
-		if ((portal->x!=x) && (portal->ex!=x)) continue;
-		if ((z>=portal->z) && (z<portal->ez)) return(TRUE);
-		if ((ez>portal->z) && (ez<=portal->ez)) return(TRUE);
+		if ((portal->min.x!=x) && (portal->max.x!=x)) continue;
+		if ((z>=portal->min.z) && (z<portal->max.z)) return(TRUE);
+		if ((ez>portal->min.z) && (ez<=portal->max.z)) return(TRUE);
 	}
-*/
+
 	return(FALSE);
 }
 
 bool map_auto_generate_portal_vert_edge_block(map_type *map,int skip_portal_idx,int x,int ex,int z)
 {
-	/*
-	int			n;
-	portal_type	*portal;
+	int						n;
+	auto_generate_box_type	*portal;
 
-	for (n=0;n!=map->nportal;n++) {
+	for (n=0;n!=ag_box_count;n++) {
 		if (skip_portal_idx==n) continue;
 
-		portal=&map->portals[n];
+		portal=&ag_boxes[n];
 
-		if ((portal->z!=z) && (portal->ez!=z)) continue;
-		if ((x>=portal->x) && (x<portal->ex)) return(TRUE);
-		if ((ex>portal->x) && (ex<=portal->ex)) return(TRUE);
+		if ((portal->min.z!=z) && (portal->max.z!=z)) continue;
+		if ((x>=portal->min.x) && (x<portal->max.x)) return(TRUE);
+		if ((ex>portal->min.x) && (ex<=portal->max.x)) return(TRUE);
 	}
-*/
+
 	return(FALSE);
 }
 
 bool map_auto_generate_portal_horz_edge_touch(map_type *map,int skip_portal_idx,int z,int ez,int x)
 {
-	/*
-	int			n;
-	portal_type	*portal;
+	int						n;
+	auto_generate_box_type	*portal;
 
-	for (n=0;n!=map->nportal;n++) {
+	for (n=0;n!=ag_box_count;n++) {
 		if (skip_portal_idx==n) continue;
 
-		portal=&map->portals[n];
+		portal=&ag_boxes[n];
 
-		if ((portal->x!=x) && (portal->ex!=x)) continue;
-		if ((z>=portal->z) && (z<portal->ez)) return(TRUE);
-		if ((ez>portal->z) && (ez<=portal->ez)) return(TRUE);
-		if ((portal->z>=z) && (portal->z<=ez)) return(TRUE);
-		if ((portal->ez>=z) && (portal->ez<=ez)) return(TRUE);
+		if ((portal->min.x!=x) && (portal->max.x!=x)) continue;
+		if ((z>=portal->min.z) && (z<portal->max.z)) return(TRUE);
+		if ((ez>portal->min.z) && (ez<=portal->max.z)) return(TRUE);
+		if ((portal->min.z>=z) && (portal->min.z<=ez)) return(TRUE);
+		if ((portal->max.z>=z) && (portal->max.z<=ez)) return(TRUE);
 	}
-*/
+
 	return(FALSE);
 }
 
 bool map_auto_generate_portal_vert_edge_touch(map_type *map,int skip_portal_idx,int x,int ex,int z)
 {
-	/*
-	int			n;
-	portal_type	*portal;
+	int						n;
+	auto_generate_box_type	*portal;
 
-	for (n=0;n!=map->nportal;n++) {
+	for (n=0;n!=ag_box_count;n++) {
 		if (skip_portal_idx==n) continue;
 
-		portal=&map->portals[n];
+		portal=&ag_boxes[n];
 
-		if ((portal->z!=z) && (portal->ez!=z)) continue;
-		if ((x>=portal->x) && (x<portal->ex)) return(TRUE);
-		if ((ex>portal->x) && (ex<=portal->ex)) return(TRUE);
-		if ((portal->x>=x) && (portal->x<=ex)) return(TRUE);
-		if ((portal->ex>=x) && (portal->ex<=ex)) return(TRUE);
+		if ((portal->min.z!=z) && (portal->max.z!=z)) continue;
+		if ((x>=portal->min.x) && (x<portal->max.x)) return(TRUE);
+		if ((ex>portal->min.x) && (ex<=portal->max.x)) return(TRUE);
+		if ((portal->min.x>=x) && (portal->min.x<=ex)) return(TRUE);
+		if ((portal->max.x>=x) && (portal->max.x<=ex)) return(TRUE);
 	}
-*/
+
 	return(FALSE);
 }
 
@@ -189,100 +186,95 @@ bool map_auto_generate_portal_vert_edge_touch(map_type *map,int skip_portal_idx,
 
 bool map_auto_generate_portal_touching_left(map_type *map,int portal_idx,unsigned char *corridor_flags)
 {
-	/*
-	int				n;
-	portal_type		*portal,*chk_portal;
+	int							n;
+	auto_generate_box_type		*portal,*chk_portal;
 
-	portal=&map->portals[portal_idx];
+	portal=&ag_boxes[portal_idx];
 	
-	for (n=0;n!=map->nportal;n++) {
+	for (n=0;n!=ag_box_count;n++) {
 		if (portal_idx==n) continue;
 		if (corridor_flags!=NULL) if (corridor_flags[n]!=ag_corridor_flag_portal) continue;
 
-		chk_portal=&map->portals[n];
+		chk_portal=&ag_boxes[n];
 		
-		if (((chk_portal->z>=portal->z) && (chk_portal->z<portal->ez)) || ((chk_portal->ez>portal->z) && (chk_portal->ez<=portal->ez))) {
-			if (portal->x==chk_portal->ex) return(TRUE);
+		if (((chk_portal->min.z>=portal->min.z) && (chk_portal->min.z<portal->max.z)) || ((chk_portal->max.z>portal->min.z) && (chk_portal->max.z<=portal->max.z))) {
+			if (portal->min.x==chk_portal->max.x) return(TRUE);
 		}
 	}
-*/
+
 	return(FALSE);
 }
 
 bool map_auto_generate_portal_touching_right(map_type *map,int portal_idx,unsigned char *corridor_flags)
 {
-	/*
-	int				n;
-	portal_type		*portal,*chk_portal;
+	int							n;
+	auto_generate_box_type		*portal,*chk_portal;
 
-	portal=&map->portals[portal_idx];
+	portal=&ag_boxes[portal_idx];
 	
-	for (n=0;n!=map->nportal;n++) {
+	for (n=0;n!=ag_box_count;n++) {
 		if (portal_idx==n) continue;
 		if (corridor_flags!=NULL) if (corridor_flags[n]!=ag_corridor_flag_portal) continue;
 
-		chk_portal=&map->portals[n];
+		chk_portal=&ag_boxes[n];
 		
-		if (((chk_portal->z>=portal->z) && (chk_portal->z<portal->ez)) || ((chk_portal->ez>portal->z) && (chk_portal->ez<=portal->ez))) {
-			if (portal->ex==chk_portal->x) return(TRUE);
+		if (((chk_portal->min.z>=portal->min.z) && (chk_portal->min.z<portal->max.z)) || ((chk_portal->max.z>portal->min.z) && (chk_portal->max.z<=portal->max.z))) {
+			if (portal->max.x==chk_portal->min.x) return(TRUE);
 		}
 	}
-*/
+
 	return(FALSE);
 }
 
 bool map_auto_generate_portal_touching_top(map_type *map,int portal_idx,unsigned char *corridor_flags)
 {
-	/*
-	int				n;
-	portal_type		*portal,*chk_portal;
+	int							n;
+	auto_generate_box_type		*portal,*chk_portal;
 
-	portal=&map->portals[portal_idx];
+	portal=&ag_boxes[portal_idx];
 	
-	for (n=0;n!=map->nportal;n++) {
+	for (n=0;n!=ag_box_count;n++) {
 		if (portal_idx==n) continue;
 		if (corridor_flags!=NULL) if (corridor_flags[n]!=ag_corridor_flag_portal) continue;
 
-		chk_portal=&map->portals[n];
+		chk_portal=&ag_boxes[n];
 		
-		if (((chk_portal->x>=portal->x) && (chk_portal->x<portal->ex)) || ((chk_portal->ex>portal->x) && (chk_portal->ex<=portal->ex))) {
-			if (portal->z==chk_portal->ez) return(TRUE);
+		if (((chk_portal->min.x>=portal->min.x) && (chk_portal->min.x<portal->max.x)) || ((chk_portal->max.x>portal->min.x) && (chk_portal->max.x<=portal->max.x))) {
+			if (portal->min.z==chk_portal->max.z) return(TRUE);
 		}
 	}
-*/
+
 	return(FALSE);
 }
 
 bool map_auto_generate_portal_touching_bottom(map_type *map,int portal_idx,unsigned char *corridor_flags)
 {
-	/*
-	int				n;
-	portal_type		*portal,*chk_portal;
+	int							n;
+	auto_generate_box_type		*portal,*chk_portal;
 
-	portal=&map->portals[portal_idx];
+	portal=&ag_boxes[portal_idx];
 	
-	for (n=0;n!=map->nportal;n++) {
+	for (n=0;n!=ag_box_count;n++) {
 		if (portal_idx==n) continue;
 		if (corridor_flags!=NULL) if (corridor_flags[n]!=ag_corridor_flag_portal) continue;
 
-		chk_portal=&map->portals[n];
+		chk_portal=&ag_boxes[n];
 		
-		if (((chk_portal->x>=portal->x) && (chk_portal->x<portal->ex)) || ((chk_portal->ex>portal->x) && (chk_portal->ex<=portal->ex))) {
-			if (portal->ez==chk_portal->z) return(TRUE);
+		if (((chk_portal->min.x>=portal->min.x) && (chk_portal->min.x<portal->max.x)) || ((chk_portal->max.x>portal->min.x) && (chk_portal->max.x<=portal->max.x))) {
+			if (portal->max.z==chk_portal->min.z) return(TRUE);
 		}
 	}
-*/
+
 	return(FALSE);
 }
 
 bool map_auto_generate_portal_touching_any(map_type *map,int portal_idx,unsigned char *corridor_flags)
 {
-	/*
 	if (map_auto_generate_portal_touching_left(map,portal_idx,corridor_flags)) return(TRUE);
 	if (map_auto_generate_portal_touching_right(map,portal_idx,corridor_flags)) return(TRUE);
 	if (map_auto_generate_portal_touching_top(map,portal_idx,corridor_flags)) return(TRUE);
 	if (map_auto_generate_portal_touching_bottom(map,portal_idx,corridor_flags)) return(TRUE);
-*/
+
 	return(FALSE);
 }
 
@@ -294,7 +286,6 @@ bool map_auto_generate_portal_touching_any(map_type *map,int portal_idx,unsigned
 
 int map_auto_generate_count_generic_type(int type_count,unsigned char *type_on)
 {
-	/*
 	int			n,count;
 
 		// count types
@@ -306,13 +297,10 @@ int map_auto_generate_count_generic_type(int type_count,unsigned char *type_on)
 	}
 
 	return(count);
-	*/
-	return(0);//supergumba
 }
 
 int map_auto_generate_get_generic_type(int type_count,unsigned char *type_on)
 {
-	/*
 	int				n,idx,count;
 	
 	count=map_auto_generate_count_generic_type(type_count,type_on);
@@ -328,7 +316,7 @@ int map_auto_generate_get_generic_type(int type_count,unsigned char *type_on)
 			if (idx<0) return(n);
 		}
 	}
-*/
+
 	return(0);
 }
 
@@ -365,7 +353,6 @@ bool map_auto_generate_has_door_type(auto_generate_settings_type *ags)
 
 void map_auto_generate_story_extra_floor(bool *lft,bool *rgt,bool *top,bool *bot,bool *horz,bool *vert)
 {
-	/*
 	*horz=FALSE;
 	*vert=FALSE;
 
@@ -415,7 +402,6 @@ void map_auto_generate_story_extra_floor(bool *lft,bool *rgt,bool *top,bool *bot
 
 	*horz=((*lft) && (*rgt));
 	*vert=((*top) && (*bot));
-	*/
 }
 
 /* =======================================================
@@ -543,11 +529,11 @@ void map_auto_generate_poly_from_square_floor_slant(int lx,int lz,int rx,int rz,
       
 ======================================================= */
 
-bool map_auto_generate_mesh_start(map_type *map,int portal_idx,int group_idx,int txt_idx,bool moveable,bool new_mesh)
+bool map_auto_generate_mesh_start(map_type *map,int box_idx,int group_idx,int txt_idx,bool moveable,bool new_mesh)
 {
 	map_mesh_type			*mesh;
 
-	map_ag_portal_idx=portal_idx;
+	map_ag_box_idx=box_idx;
 	map_ag_mesh_idx=0;
 
 	map_ag_poly_txt_idx=txt_idx;
@@ -573,7 +559,18 @@ void map_auto_generate_mesh_change_texture(int txt_idx)
 
 bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z,float *gx,float *gy)
 {
-	return(map_mesh_add_poly(map,map_ag_mesh_idx,ptsz,x,y,z,gx,gy,map_ag_poly_txt_idx)!=-1);
+	int						n,px[8],py[8],pz[8];
+	auto_generate_box_type	*box;
+
+	box=&ag_boxes[map_ag_box_idx];
+
+	for (n=0;n!=ptsz;n++) {
+		px[n]=x[n]+box->min.x;
+		py[n]=y[n]+box->min.y;
+		pz[n]=z[n]+box->min.z;
+	}
+
+	return(map_mesh_add_poly(map,map_ag_mesh_idx,ptsz,px,py,pz,gx,gy,map_ag_poly_txt_idx)!=-1);
 }
 
 /* =======================================================
@@ -584,27 +581,27 @@ bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z
 
 void map_auto_generate_add_simple_lights(map_type *map)
 {
-	/* supergumba -- work on all of this
+	int							n,x,z,y,intensity;
+	double						dx,dz;
+	auto_generate_box_type		*portal;
+	map_light_type				*lit;
 
-	int					n,x,z,y,intensity;
-	double				dx,dz;
-	portal_type			*portal;
-	map_light_type		*lit;
-
-	portal=map->portals;
+	portal=ag_boxes;
 	
-	for (n=0;n!=map->nportal;n++) {
+	for (n=0;n!=ag_box_count;n++) {
 
 		if (map->nlight>=max_map_light) break;
 	
 			// find light position
-			
-//		map_portal_calculate_center(map,n,&x,&y,&z);
+
+		x=(portal->min.x+portal->max.x)>>1;
+		y=(portal->min.y+portal->max.y)>>1;
+		z=(portal->min.z+portal->max.z)>>1;
 		
 			// get intensity
 			
-		dx=(portal->ex-portal->x);
-		dz=(portal->ez-portal->z);
+		dx=(portal->max.x-portal->min.x);
+		dz=(portal->max.z-portal->min.z);
 		intensity=(int)sqrt((dx*dx)+(dz*dz));
 		
 		intensity/=2;								// radius, so use half
@@ -625,7 +622,6 @@ void map_auto_generate_add_simple_lights(map_type *map)
 
 		portal++;
 	}
-	*/
 }
 
 /* =======================================================
@@ -636,16 +632,19 @@ void map_auto_generate_add_simple_lights(map_type *map)
 
 void map_auto_generate_add_player_spot(map_type *map)
 {
-	/* supergumba -- fix all of this
-	int					x,y,z;
-	spot_type			*spot;
+	int							x,y,z;
+	spot_type					*spot;
+	auto_generate_box_type		*portal;
 	
-	if (map->nportal==0) return;
+	if (ag_box_count==0) return;
 		
 		// spot place
 	
-//	map_portal_calculate_center(map,0,&x,&y,&z);
-//	map_portal_calculate_y_extent(map,&ty,&y);
+	portal=&ag_boxes[0];
+
+	x=(portal->min.x+portal->max.x)>>1;
+	y=portal->max.y;
+	z=(portal->min.z+portal->max.z)>>1;
 	
 		// supergumba -- temp fix for rough floors
 		
@@ -665,7 +664,6 @@ void map_auto_generate_add_player_spot(map_type *map)
 	strcpy(spot->script,"Player");
 	spot->display_model[0]=0x0;
 	spot->params[0]=0x0;
-	*/
 }
 
 /* =======================================================
