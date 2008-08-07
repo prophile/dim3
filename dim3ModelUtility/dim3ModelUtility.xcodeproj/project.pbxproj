@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		F50AF90E0885FDA400F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF90D0885FDA400F261B1 /* os_defs.h */; };
-		F53502210B2A85B60000CC3D /* model_light_spot.c in Sources */ = {isa = PBXBuildFile; fileRef = F53502200B2A85B60000CC3D /* model_light_spot.c */; };
 		F55ACE5B097C830900F4AE50 /* mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = F55ACE5A097C830900F4AE50 /* mesh.c */; };
 		F55ACEE4097D724C00F4AE50 /* bone.c in Sources */ = {isa = PBXBuildFile; fileRef = F55ACEE3097D724C00F4AE50 /* bone.c */; };
 		F55ACF3F097D805A00F4AE50 /* pose.c in Sources */ = {isa = PBXBuildFile; fileRef = F55ACF3E097D805A00F4AE50 /* pose.c */; };
@@ -66,7 +65,6 @@
 		F5127DF10513A79A009F12F0 /* dim3modelutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dim3modelutility.h; path = Headers/dim3modelutility.h; sourceTree = "<group>"; };
 		F51B2619055E0251000B696C /* draw_bones.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_bones.c; path = Sources/draw_bones.c; sourceTree = "<group>"; };
 		F51B261A055E0251000B696C /* draw_vertexes.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_vertexes.c; path = Sources/draw_vertexes.c; sourceTree = "<group>"; };
-		F53502200B2A85B60000CC3D /* model_light_spot.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = model_light_spot.c; path = Sources/model_light_spot.c; sourceTree = "<group>"; };
 		F55A4CC705995CB40006C01E /* dim3modelutility.exp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.exports; name = dim3modelutility.exp; path = Exports/dim3modelutility.exp; sourceTree = "<group>"; };
 		F55ACE5A097C830900F4AE50 /* mesh.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = mesh.c; path = Sources/mesh.c; sourceTree = "<group>"; };
 		F55ACEE3097D724C00F4AE50 /* bone.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = bone.c; path = Sources/bone.c; sourceTree = "<group>"; };
@@ -133,7 +131,6 @@
 			isa = PBXGroup;
 			children = (
 				F5E514E00542395B006E0418 /* model_frames.c */,
-				F53502200B2A85B60000CC3D /* model_light_spot.c */,
 				F59413200978BC6600223F2A /* draw_setup.c */,
 				F51B2619055E0251000B696C /* draw_bones.c */,
 				F51B261A055E0251000B696C /* draw_vertexes.c */,
@@ -323,7 +320,6 @@
 				F55ACF3F097D805A00F4AE50 /* pose.c in Sources */,
 				F55ACF41097D805F00F4AE50 /* animation.c in Sources */,
 				F5CEE227097DF7EA00B5F1C2 /* hit_box.c in Sources */,
-				F53502210B2A85B60000CC3D /* model_light_spot.c in Sources */,
 				F5A31C2D0C5EDC52002470A9 /* model_transform.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

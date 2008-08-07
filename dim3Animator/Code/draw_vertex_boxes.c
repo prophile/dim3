@@ -42,7 +42,7 @@ void draw_model_selected_vertexes(model_type *model,int mesh_idx)
 	glPointSize(5);
 	
 	nvertex=model->meshes[mesh_idx].nvertex;
-	pv=model->meshes[mesh_idx].gl_vertex_array;
+	pv=model->meshes[mesh_idx].draw.gl_vertex_array;
 
 	glBegin(GL_POINTS);
 	
@@ -173,8 +173,8 @@ void draw_model_normals(model_type *model,int mesh_idx)
 	glLineWidth(2);
 	
 	nvertex=model->meshes[mesh_idx].nvertex;
-	pv=model->meshes[mesh_idx].gl_vertex_array;
-	pn=model->meshes[mesh_idx].gl_vertex_normal_array;
+	pv=model->meshes[mesh_idx].draw.gl_vertex_array;
+	pn=model->meshes[mesh_idx].draw.gl_vertex_normal_array;
 
 	glBegin(GL_LINES);
 	

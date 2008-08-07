@@ -66,7 +66,7 @@ void model_sel_vertex(int lx,int ty,int rx,int by,bool chg_sel,double *mod_matri
 	nt=mesh->nvertex;
 	vertex=mesh->vertexes;
 	
-	pv=mesh->gl_vertex_array;
+	pv=mesh->draw.gl_vertex_array;
 
 	for (i=0;i!=nt;i++) {
 		sx=(int)*pv++;

@@ -267,7 +267,7 @@ bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name)
 	glEnable(GL_TEXTURE_2D);
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,mesh->gl_vertex_array);
+	glVertexPointer(3,GL_FLOAT,0,mesh->draw.gl_vertex_array);
 	glLockArraysEXT(0,mesh->nvertex);	
 	
 	glEnable(GL_ALPHA_TEST);

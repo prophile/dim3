@@ -34,8 +34,10 @@ and can be sold or given away.
 #define app_menu_edit						130
 #define app_menu_view						131
 #define app_menu_map						132
-#define app_menu_pieces						132
-#define app_menu_groups						133
+#define app_menu_mesh						133
+#define app_menu_polygon					134
+#define app_menu_vertex						135
+#define app_menu_groups						136
 
 #define kCommandAbout						FOUR_CHAR_CODE('abot')
 
@@ -47,10 +49,8 @@ and can be sold or given away.
 #define kCommandSave						FOUR_CHAR_CODE('save')
 
 #define kCommandUndo						FOUR_CHAR_CODE('undo')
-#define kCommandCut							FOUR_CHAR_CODE('cut ')
-#define kCommandCopy						FOUR_CHAR_CODE('copy')
-#define kCommandPaste						FOUR_CHAR_CODE('pste')
-#define kCommandClear						FOUR_CHAR_CODE('cler')
+#define kCommandDuplicate					FOUR_CHAR_CODE('pdup')
+#define kCommandDelete						FOUR_CHAR_CODE('pdel')
 
 #define kCommandView3Panel					FOUR_CHAR_CODE('vw01')
 #define kCommandView4Panel					FOUR_CHAR_CODE('vw02')
@@ -65,14 +65,15 @@ and can be sold or given away.
 #define kCommandSkySettings					FOUR_CHAR_CODE('msky')
 #define kCommandRainSettings				FOUR_CHAR_CODE('mrin')
 #define kCommandFogSettings					FOUR_CHAR_CODE('mfog')
+#define kCommandMapRaiseY					FOUR_CHAR_CODE('mrsy')
+#define kCommandMapLowerY					FOUR_CHAR_CODE('mlwy')
+#define kCommandMapCenter					FOUR_CHAR_CODE('mctr')
+#define kCommandMapResetUV					FOUR_CHAR_CODE('mpuv')
 #define kCommandRun							FOUR_CHAR_CODE('mrun')
 
+#define kCommandMeshAddLibrary				FOUR_CHAR_CODE('padd')
 #define kCommandMeshCombine					FOUR_CHAR_CODE('pcmb')
 #define kCommandMeshTesselate				FOUR_CHAR_CODE('ptsl')
-#define kCommandMeshAddLibrary				FOUR_CHAR_CODE('padd')
-#define kCommandPieceDuplicate				FOUR_CHAR_CODE('pdup')
-#define kCommandPieceDelete					FOUR_CHAR_CODE('pdel')
-
 #define kCommandMeshResize					FOUR_CHAR_CODE('mrsz')
 #define kCommandMeshFlipX					FOUR_CHAR_CODE('pfpx')
 #define kCommandMeshFlipY					FOUR_CHAR_CODE('pfpy')
@@ -98,10 +99,6 @@ and can be sold or given away.
 #define kCommandGroupDelete					FOUR_CHAR_CODE('gdel')
 #define kCommandGroupClear					FOUR_CHAR_CODE('gclr')
 #define kCommandGroupMovements				FOUR_CHAR_CODE('mmov')
-
-#define kCommandMapRaiseY					FOUR_CHAR_CODE('mrsy')
-#define kCommandMapLowerY					FOUR_CHAR_CODE('mlwy')
-#define kCommandMapResetUV					FOUR_CHAR_CODE('mpuv')
 
 //
 // views

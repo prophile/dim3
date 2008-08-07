@@ -81,7 +81,9 @@ void menu_fix_enable(void)
 		DisableMenuItem(GetMenuHandle(app_menu_edit),0);
 		DisableMenuItem(GetMenuHandle(app_menu_view),0);
 		DisableMenuItem(GetMenuHandle(app_menu_map),0);
-		DisableMenuItem(GetMenuHandle(app_menu_pieces),0);
+		DisableMenuItem(GetMenuHandle(app_menu_mesh),0);
+		DisableMenuItem(GetMenuHandle(app_menu_polygon),0);
+		DisableMenuItem(GetMenuHandle(app_menu_vertex),0);
 		DisableMenuItem(GetMenuHandle(app_menu_groups),0);
 	}
 	else {
@@ -105,21 +107,18 @@ void menu_fix_enable(void)
         
             // pieces menu
         
-		EnableMenuItem(GetMenuHandle(app_menu_pieces),0);
 		
 		if (select_has_type(mesh_piece)) {
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),1);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),2);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),3);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),5);
+			EnableMenuItem(GetMenuHandle(app_menu_mesh),0);
+			EnableMenuItem(GetMenuHandle(app_menu_polygon),0);
+			EnableMenuItem(GetMenuHandle(app_menu_vertex),0);
 		}
 		else {
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),1);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),2);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),3);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),5);
+			DisableMenuItem(GetMenuHandle(app_menu_mesh),0);
+			DisableMenuItem(GetMenuHandle(app_menu_polygon),0);
+			DisableMenuItem(GetMenuHandle(app_menu_vertex),0);
 		}
-		
+/*		
 		if (select_count()!=0) {
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),7);
 			EnableMenuItem(GetMenuHandle(app_menu_pieces),8);
@@ -132,7 +131,7 @@ void menu_fix_enable(void)
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),10);
 			DisableMenuItem(GetMenuHandle(app_menu_pieces),11);
 		}
-		
+	*/	
 	}
 	
 	DrawMenuBar();
@@ -261,16 +260,8 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			}
 			undo_clear();
 			return(noErr);
-			
-/* currently unused
-		case kCommandImportOBJ:
-		//	select_clear();
-		//	import_obj();
-		//	undo_clear();
-			return(noErr);
-*/
 
-		case kCommandImportHeightMap:		// supergumba
+		case kCommandImportHeightMap:
 			select_clear();
 			import_height_map();
 			undo_clear();
@@ -291,6 +282,14 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 		case kCommandUndo:
 			undo_run();
+			return(noErr);
+			
+		case kCommandDelete:
+			piece_delete();
+			return(noErr);
+			
+		case kCommandDuplicate:
+			piece_duplicate();
 			return(noErr);
 			
 			// view menu
@@ -351,8 +350,6 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			dialog_map_rain_settings_run();
 			return(noErr);
 			
-			// supergumba -- get these working
-			// will need a "center map" thing
 		case kCommandMapRaiseY:
 			map_mesh_move_all(0,-(map_enlarge*10),0);
 			main_wind_draw();
@@ -360,6 +357,11 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 		case kCommandMapLowerY:
 			map_mesh_move_all(0,(map_enlarge*10),0);
+			main_wind_draw();
+			return(noErr);
+			
+		case kCommandMapCenter:
+			map_center(&map);
 			main_wind_draw();
 			return(noErr);
 			
@@ -373,40 +375,12 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			launch_engine();
 			return(noErr);
 			            
-			// piece menu
+			// mesh menu
 
 		case kCommandMeshAddLibrary:
 		//	primitive_save();
 			return(noErr);
 			
-		case kCommandPieceDuplicate:
-			piece_duplicate();
-			return(noErr);
-            
-		case kCommandPieceDelete:
-			piece_delete();
-			return(noErr);
-						
-			// group menu
-			
-		case kCommandGroupAdd:
-			group_add();
-			return(noErr);
-			
-		case kCommandGroupDelete:
-			group_delete();
-			return(noErr);
-			
-		case kCommandGroupClear:
-			group_clear();
-			return(noErr);
-			
-		case kCommandGroupMovements:
-			dialog_map_movements_run();
-			return(noErr);
-			            
-			// mesh transform menu
-
 		case kCommandMeshCombine:
 			piece_combine_mesh();
 			main_wind_draw();
@@ -499,6 +473,24 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 		case kCommandVertexSnapToGrid:
 			piece_mesh_vertexes_snap_to_grid();
 			main_wind_draw();
+			return(noErr);
+			
+			// group menu
+			
+		case kCommandGroupAdd:
+			group_add();
+			return(noErr);
+			
+		case kCommandGroupDelete:
+			group_delete();
+			return(noErr);
+			
+		case kCommandGroupClear:
+			group_clear();
+			return(noErr);
+			
+		case kCommandGroupMovements:
+			dialog_map_movements_run();
 			return(noErr);
 
 	}

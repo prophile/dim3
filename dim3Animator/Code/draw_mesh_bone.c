@@ -43,7 +43,7 @@ void draw_model_mesh(model_type *model,int mesh_idx)
 		
 	mesh=&model->meshes[mesh_idx];
 		
-	glVertexPointer(3,GL_FLOAT,0,mesh->gl_vertex_array);
+	glVertexPointer(3,GL_FLOAT,0,mesh->draw.gl_vertex_array);
 	glLockArraysEXT(0,mesh->nvertex);
 	
 	glColor4f(0.75,0.75,0.75,1);

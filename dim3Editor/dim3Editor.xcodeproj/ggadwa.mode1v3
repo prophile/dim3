@@ -323,7 +323,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>12</integer>
+									<integer>3</integer>
 									<integer>1</integer>
 									<integer>0</integer>
 								</array>
@@ -364,7 +364,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>portal_view_draw.c</string>
+								<string>Info-dim3_Editor.plist</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -372,17 +372,12 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>portal_view_draw.c</string>
+										<string>Info-dim3_Editor.plist</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>269D60C70E48111500AC58B1</string>
+										<string>268317FF0E4AB2B900BBCDCA</string>
 										<key>history</key>
-										<array>
-											<string>262F42480E29B72E00523EE0</string>
-											<string>26D686520E46C0B7007668D6</string>
-										</array>
-										<key>prevStack</key>
 										<array>
 											<string>262F424B0E29B72E00523EE0</string>
 										</array>
@@ -442,9 +437,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>269D60930E47CE3100AC58B1</string>
+				<string>268317B50E4A8CED00BBCDCA</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>269D60940E47CE3100AC58B1</string>
+				<string>268317B60E4A8CED00BBCDCA</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -563,7 +558,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>239603989.25154901</real>
+	<real>239776441.98916599</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -579,7 +574,6 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>1C78EAAD065D492600B07095</string>
-		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>1CD10A99069EF8BA00B06720</string>
 		<string>260AFEFF0D4050AF00F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3Editor/dim3Editor.xcodeproj</string>
@@ -664,7 +658,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEFF0D4050AF00F6C42F</string>
-				<string>269D60900E47CE2F00AC58B1</string>
+				<string>268317B20E4A8CEB00BBCDCA</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -784,13 +778,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>269D609E0E47EC7800AC58B1</string>
+				<string>268317DC0E4AADA000BBCDCA</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>269D609F0E47EC7800AC58B1</string>
-				<string>269D60A00E47EC7800AC58B1</string>
-				<string>269D60A10E47EC7800AC58B1</string>
-				<string>269D60A20E47EC7800AC58B1</string>
-				<string>269D60A30E47EC7800AC58B1</string>
+				<string>268317DD0E4AADA000BBCDCA</string>
+				<string>268317DE0E4AADA000BBCDCA</string>
+				<string>268317DF0E4AADA000BBCDCA</string>
+				<string>268317E00E4AADA000BBCDCA</string>
+				<string>268317E10E4AADA000BBCDCA</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -944,7 +938,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C78EAAD065D492600B07095</string>
-				<string>269D60BA0E4803C400AC58B1</string>
+				<string>268317E20E4AADA000BBCDCA</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>ToolbarConfiguration</key>
