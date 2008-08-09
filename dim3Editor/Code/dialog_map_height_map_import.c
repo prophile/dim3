@@ -38,9 +38,9 @@ and can be sold or given away.
 #define kMapHeightMapImportIncludeWall				FOUR_CHAR_CODE('iwal')
 #define kMapHeightMapImportIncludeLights			FOUR_CHAR_CODE('ilgt')
 
-#define kMapHeightMapImportSize						FOUR_CHAR_CODE('psiz')
-#define kMapHeightMapImportCount					FOUR_CHAR_CODE('pcnt')
-#define kMapHeightMapImportHigh						FOUR_CHAR_CODE('phgh')
+#define kMapHeightMapImportDivCount					FOUR_CHAR_CODE('dcnt')
+#define kMapHeightMapImportMapTotalSize				FOUR_CHAR_CODE('tsiz')
+#define kMapHeightMapImportMapHigh					FOUR_CHAR_CODE('thgh')
 
 #define kMapHeightMapImportTexturePortalWall		FOUR_CHAR_CODE('pwtx')
 #define kMapHeightMapImportTexturePortalHighFloor	FOUR_CHAR_CODE('pft1')
@@ -144,9 +144,9 @@ bool dialog_map_height_import_setting_run(import_height_map_settings_type *hmi_s
 		dialog_set_boolean(dialog_map_height_import_wind,kMapHeightMapImportIncludeWall,0,hmi_settings->wall);
 		dialog_set_boolean(dialog_map_height_import_wind,kMapHeightMapImportIncludeLights,0,hmi_settings->lights);
 		
-		dialog_set_value(dialog_map_height_import_wind,kMapHeightMapImportSize,0,hmi_settings->portal_sz);
-		dialog_set_value(dialog_map_height_import_wind,kMapHeightMapImportCount,0,hmi_settings->portal_cnt);
-		dialog_set_value(dialog_map_height_import_wind,kMapHeightMapImportHigh,0,hmi_settings->portal_high);
+		dialog_set_value(dialog_map_height_import_wind,kMapHeightMapImportMapTotalSize,0,hmi_settings->total_sz);
+		dialog_set_value(dialog_map_height_import_wind,kMapHeightMapImportDivCount,0,hmi_settings->div_cnt);
+		dialog_set_value(dialog_map_height_import_wind,kMapHeightMapImportMapHigh,0,hmi_settings->high);
 
 		dialog_fill_texture_combo(dialog_map_height_import_wind,kMapHeightMapImportTexturePortalWall,0,FALSE,hmi_settings->texture_portal_wall);
 		dialog_fill_texture_combo(dialog_map_height_import_wind,kMapHeightMapImportTexturePortalHighFloor,0,FALSE,hmi_settings->texture_portal_high_floor);
@@ -189,9 +189,9 @@ bool dialog_map_height_import_setting_run(import_height_map_settings_type *hmi_s
 	hmi_settings->wall=dialog_get_boolean(dialog_map_height_import_wind,kMapHeightMapImportIncludeWall,0);
 	hmi_settings->lights=dialog_get_boolean(dialog_map_height_import_wind,kMapHeightMapImportIncludeLights,0);
 
-	hmi_settings->portal_sz=dialog_get_value(dialog_map_height_import_wind,kMapHeightMapImportSize,0);
-	hmi_settings->portal_cnt=dialog_get_value(dialog_map_height_import_wind,kMapHeightMapImportCount,0);
-	hmi_settings->portal_high=dialog_get_value(dialog_map_height_import_wind,kMapHeightMapImportHigh,0);
+	hmi_settings->div_cnt=dialog_get_value(dialog_map_height_import_wind,kMapHeightMapImportDivCount,0);
+	hmi_settings->total_sz=dialog_get_value(dialog_map_height_import_wind,kMapHeightMapImportMapTotalSize,0);
+	hmi_settings->high=dialog_get_value(dialog_map_height_import_wind,kMapHeightMapImportMapHigh,0);
 		
 	hmi_settings->texture_portal_wall=dialog_get_texture_combo(dialog_map_height_import_wind,kMapHeightMapImportTexturePortalWall,0,FALSE);
 	hmi_settings->texture_portal_high_floor=dialog_get_texture_combo(dialog_map_height_import_wind,kMapHeightMapImportTexturePortalHighFloor,0,FALSE);
