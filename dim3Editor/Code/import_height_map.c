@@ -31,8 +31,6 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-#define import_height_map_start_y			50000
-
 extern map_type				map;
 
 /* =======================================================
@@ -41,19 +39,15 @@ extern map_type				map;
       
 ======================================================= */
 
-float import_height_map_get_height(bitmap_type *bitmap,int portal_start,int portal_total_sz,int seg_x,int seg_z)
+float import_height_map_get_height(bitmap_type *bitmap,int x,int z,int div_cnt)
 {
-/*
-	int			x,z,y;
+	int			y;
 	ptr			p;
 	
 		// find offset in portal
 		
-	x=(portal->x-portal_start)+seg_x;
-	z=(portal->z-portal_start)+seg_z;
-	
-	x=(int)(((float)x/(float)portal_total_sz)*(float)bitmap->wid);
-	y=(int)(((float)z/(float)portal_total_sz)*(float)bitmap->high);
+	x=(int)(((float)x/(float)div_cnt)*(float)bitmap->wid);
+	y=(int)(((float)z/(float)div_cnt)*(float)bitmap->high);
 	
 	if (x<0) x=0;
 	if (x>=bitmap->wid) x=bitmap->wid-1;
@@ -63,8 +57,6 @@ float import_height_map_get_height(bitmap_type *bitmap,int portal_start,int port
 	p=bitmap->data+((y*(bitmap->wid<<2))+(x<<2));
 	
 	return(((float)*p)/255.0f);
-*/
-	return(0.0f);	// supergumba
 }
 
 /* =======================================================
@@ -73,7 +65,7 @@ float import_height_map_get_height(bitmap_type *bitmap,int portal_start,int port
       
 ======================================================= */
 
-void import_height_map_add_wall(import_height_map_settings_type *hmi_settings,int rn,int mesh_idx,int lx,int lz,int rx,int rz,int ty,int by)
+void import_height_map_add_wall(import_height_map_settings_type *hmi_settings,int mesh_idx,int lx,int lz,int rx,int rz,int ty,int by)
 {
 	int				kx[4],ky[4],kz[4];
 	float			gx[4],gy[4];
@@ -101,11 +93,11 @@ int import_height_map_get_texture_idx(import_height_map_settings_type *hmi_setti
 	
 		// get floor separations
 		
-	high=(hmi_settings->portal_high)/3;
+	high=(hmi_settings->high)/3;
 	
 		// get texture
 				
-	switch (abs(y-import_height_map_start_y)/high) {
+	switch (abs(y-(map_max_size>>1))/high) {
 	
 		case 0:
 			return(hmi_settings->texture_portal_low_floor);
@@ -127,14 +119,11 @@ int import_height_map_get_texture_idx(import_height_map_settings_type *hmi_setti
 
 void map_import_height_map(import_height_map_settings_type *hmi_settings)
 {
-/* supergumba -- redo
-	int					rn,x,z,sx,sz,px,pz,pex,pez,txt_idx,
+	int					x,z,px,pz,txt_idx,div_cnt,div_sz,total_sz,
 						lx,rx,tz,bz,kx[4],ky[4],kz[4],y[4],ty,by,
-						portal_cnt,portal_start,portal_total_sz,
 						mesh_idx;
 	float				f_portal_y_sz,gx[4],gy[4];
 	bitmap_type			bitmap;
-	portal_type			*portal;
 	
 		// get the png
 		
@@ -144,167 +133,132 @@ void map_import_height_map(import_height_map_settings_type *hmi_settings)
 		
 	map_auto_generate_clear(&map);
 	
-		// portal counts need to be sqrts
+		// division and sizes
 		
-	portal_cnt=(int)sqrt(hmi_settings->portal_cnt);
-	if (portal_cnt<1) portal_cnt=1;
+	total_sz=hmi_settings->total_sz;
+	div_cnt=hmi_settings->div_cnt;
+	div_sz=total_sz/div_cnt;
 	
-		// get the portal sizes
+	f_portal_y_sz=(float)hmi_settings->high;
+	
+		// floor polygons
 		
-	portal_total_sz=hmi_settings->portal_sz*portal_cnt;
+	mesh_idx=map_mesh_add(&map);
+	if (mesh_idx==-1) {
+		bitmap_close(&bitmap);
+		return;
+	}
 	
-	f_portal_y_sz=(float)hmi_settings->portal_high;
-	
-	portal_start=(map_max_size/2)-((map_max_size-portal_total_sz)/2);
-	
-		// create portals
-	
-	for (z=0;z!=hmi_settings->portal_cnt;z++) {
-		for (x=0;x!=hmi_settings->portal_cnt;x++) {
+	for (z=0;z!=div_cnt;z++) {
+		for (x=0;x!=div_cnt;x++) {
 			
-				// portal
-				
-			px=portal_start+(x*hmi_settings->portal_sz);
-			pz=portal_start+(z*hmi_settings->portal_sz);
-			pex=px+hmi_settings->portal_sz;
-			pez=pz+hmi_settings->portal_sz;
-			
-			rn=map_portal_create(&map,px,pz,pex,pez);
-			if (rn==-1) break;
-			
-			portal=&map.portals[rn];
-			
-				// mesh for this portal
-				
-			mesh_idx=map_mesh_add(&map);
-			if (mesh_idx==-1) break;
+			px=((map_max_size/2)-(total_sz/2))+(x*div_sz);
+			pz=((map_max_size/2)-(total_sz/2))+(z*div_sz);
 			
 				// floors
 				
-			for (sz=0;sz!=10;sz++) {
-			
-				tz=((hmi_settings->portal_sz)/10)*sz;
-				bz=tz+(hmi_settings->portal_sz/10);
-				
-				for (sx=0;sx!=10;sx++) {
-				
-					lx=((hmi_settings->portal_sz)/10)*sx;
-					rx=lx+(hmi_settings->portal_sz/10);
-					
-					y[0]=import_height_map_start_y-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,portal_start,portal_total_sz,lx,tz));
-					y[1]=import_height_map_start_y-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,portal_start,portal_total_sz,rx,tz));
-					y[2]=import_height_map_start_y-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,portal_start,portal_total_sz,rx,bz));
-					y[3]=import_height_map_start_y-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,portal_start,portal_total_sz,lx,bz));
+			y[0]=(map_max_size>>1)-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,x,z,div_cnt));
+			y[1]=(map_max_size>>1)-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,(x+1),z,div_cnt));
+			y[2]=(map_max_size>>1)-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,(x+1),(z+1),div_cnt));
+			y[3]=(map_max_size>>1)-(int)(f_portal_y_sz*import_height_map_get_height(&bitmap,x,(z+1),div_cnt));
 										
-					gx[0]=gx[1]=gx[2]=0.0f;
-					gy[0]=gy[1]=gy[2]=0.0f;
+			gx[0]=gx[1]=gx[2]=0.0f;
+			gy[0]=gy[1]=gy[2]=0.0f;
 					
-					if (((sx+sz)&0x1)!=0) {
-						kx[0]=lx;
-						kx[1]=kx[2]=rx;
-						kz[0]=kz[1]=tz;
-						kz[2]=bz;
-						ky[0]=y[0];
-						ky[1]=y[1];
-						ky[2]=y[2];
-						
-						txt_idx=import_height_map_get_texture_idx(hmi_settings,ky);
-						map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
-					
-						kx[0]=kx[2]=lx;
-						kx[1]=rx;
-						kz[0]=tz;
-						kz[1]=kz[2]=bz;
-						ky[0]=y[0];
-						ky[1]=y[2];
-						ky[2]=y[3];
-						
-						txt_idx=import_height_map_get_texture_idx(hmi_settings,ky);
-						map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
-					}
-					else {
-						kx[0]=kx[2]=lx;
-						kx[1]=rx;
-						kz[0]=kz[1]=tz;
-						kz[2]=bz;
-						ky[0]=y[0];
-						ky[1]=y[1];
-						ky[2]=y[3];
-						
-						txt_idx=import_height_map_get_texture_idx(hmi_settings,ky);
-						map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
-					
-						kx[0]=kx[1]=rx;
-						kx[2]=lx;
-						kz[0]=tz;
-						kz[1]=kz[2]=bz;
-						ky[0]=y[1];
-						ky[1]=y[2];
-						ky[2]=y[3];
-						
-						txt_idx=import_height_map_get_texture_idx(hmi_settings,ky);
-						map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
-					}
-				}
-			}
+			if (((x+z)&0x1)!=0) {
+				kx[0]=px;
+				kx[1]=kx[2]=px+div_sz;
+				kz[0]=kz[1]=pz;
+				kz[2]=pz+div_sz;
+				ky[0]=y[0];
+				ky[1]=y[1];
+				ky[2]=y[2];
+				
+				txt_idx=import_height_map_get_texture_idx(hmi_settings,ky);
+				map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
 			
-				// walls
-
-			if (hmi_settings->wall) {
-
-				by=import_height_map_start_y;
-				ty=by-hmi_settings->portal_high;
-					
-				if (portal->x==portal_start) {
-					for (sz=0;sz!=10;sz++) {
-						tz=((hmi_settings->portal_sz)/10)*sz;
-						bz=tz+(hmi_settings->portal_sz/10);
-						import_height_map_add_wall(hmi_settings,rn,mesh_idx,0,tz,0,bz,ty,by);
-					}
-				}
+				kx[0]=kx[2]=px;
+				kx[1]=px+div_sz;
+				kz[0]=pz;
+				kz[1]=kz[2]=pz+div_sz;
+				ky[0]=y[0];
+				ky[1]=y[2];
+				ky[2]=y[3];
 				
-				if (portal->ex==(portal_start+portal_total_sz)) {
-					for (sz=0;sz!=10;sz++) {
-						tz=((hmi_settings->portal_sz)/10)*sz;
-						bz=tz+(hmi_settings->portal_sz/10);
-						import_height_map_add_wall(hmi_settings,rn,mesh_idx,hmi_settings->portal_sz,tz,hmi_settings->portal_sz,bz,ty,by);
-					}
-				}
-				
-				if (portal->z==portal_start) {
-					for (sx=0;sx!=10;sx++) {
-						lx=((hmi_settings->portal_sz)/10)*sx;
-						rx=lx+(hmi_settings->portal_sz/10);
-						import_height_map_add_wall(hmi_settings,rn,mesh_idx,lx,0,rx,0,ty,by);
-					}
-				}
-				
-				if (portal->ez==(portal_start+portal_total_sz)) {
-					for (sx=0;sx!=10;sx++) {
-						lx=((hmi_settings->portal_sz)/10)*sx;
-						rx=lx+(hmi_settings->portal_sz/10);
-						import_height_map_add_wall(hmi_settings,rn,mesh_idx,lx,hmi_settings->portal_sz,rx,hmi_settings->portal_sz,ty,by);
-					}
-				}
-
+				txt_idx=import_height_map_get_texture_idx(hmi_settings,ky);
+				map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
 			}
-			
-				// reset UVs
+			else {
+				kx[0]=kx[2]=px;
+				kx[1]=px+div_sz;
+				kz[0]=kz[1]=pz;
+				kz[2]=pz+div_sz;
+				ky[0]=y[0];
+				ky[1]=y[1];
+				ky[2]=y[3];
 				
-			map_portal_mesh_reset_uv(&map,rn,mesh_idx);
+				txt_idx=import_height_map_get_texture_idx(hmi_settings,ky);
+				map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
+			
+				kx[0]=kx[1]=px+div_sz;
+				kx[2]=px;
+				kz[0]=pz;
+				kz[1]=kz[2]=pz+div_sz;
+				ky[0]=y[1];
+				ky[1]=y[2];
+				ky[2]=y[3];
+				
+				txt_idx=import_height_map_get_texture_idx(hmi_settings,ky);
+				map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
+			}
 		}
 	}
+	
+		// walls
+		
+	if (hmi_settings->wall) {
+	
+		mesh_idx=map_mesh_add(&map);
+		if (mesh_idx==-1) {
+			bitmap_close(&bitmap);
+			return;
+		}
+		
+		by=(map_max_size>>1);
+		ty=by-hmi_settings->high;
+		
+		lx=((map_max_size/2)-(total_sz/2));
+		rx=lx+total_sz;
+
+		for (z=0;z!=div_cnt;z++) {
+			pz=((map_max_size/2)-(total_sz/2))+(z*div_sz);
+			import_height_map_add_wall(hmi_settings,mesh_idx,lx,pz,lx,(pz+div_sz),ty,by);
+			import_height_map_add_wall(hmi_settings,mesh_idx,rx,pz,rx,(pz+div_sz),ty,by);
+		}
+		
+		tz=((map_max_size/2)-(total_sz/2));
+		bz=tz+total_sz;
+
+		for (x=0;x!=div_cnt;x++) {
+			px=((map_max_size/2)-(total_sz/2))+(x*div_sz);
+			import_height_map_add_wall(hmi_settings,mesh_idx,px,tz,(px+div_sz),tz,ty,by);
+			import_height_map_add_wall(hmi_settings,mesh_idx,px,bz,(px+div_sz),bz,ty,by);
+		}
+	}
+	
+		// reset UVs
+				
+	map_mesh_reset_uv(&map,mesh_idx);
 		
 	bitmap_close(&bitmap);
 	
-		// lightss
+		// lights
 		
 	if (hmi_settings->lights) map_auto_generate_add_simple_lights(&map);
 	
 		// create player spot
 		
 	map_auto_generate_add_player_spot(&map);
-	*/
 }
 
 
