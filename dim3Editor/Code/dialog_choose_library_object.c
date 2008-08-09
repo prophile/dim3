@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Choose Library Object Dialog
+ Usage: Create Grid Mesh Dialog
 
 ***************************** License ********************************
 
@@ -27,27 +27,20 @@ and can be sold or given away.
 
 #include "dialog.h"
 
-#define kLibObjectList					FOUR_CHAR_CODE('list')
-#define kLibObjectListNameColumn		FOUR_CHAR_CODE('pnme')
+#define kGridMeshXDivision				FOUR_CHAR_CODE('xdiv')
+#define kGridMeshYDivision				FOUR_CHAR_CODE('ydiv')
+#define kGridMeshZDivision				FOUR_CHAR_CODE('zdiv')
 
-#define kLibObjectXDivision				FOUR_CHAR_CODE('xdiv')
-#define kLibObjectYDivision				FOUR_CHAR_CODE('ydiv')
-#define kLibObjectZDivision				FOUR_CHAR_CODE('zdiv')
-
-int										dialog_choose_lib_object_count,dialog_choose_lib_object_idx;
-char									*dialog_choose_lib_object_data;
-bool									dialog_choose_lib_object_cancel;
-WindowRef								dialog_choose_lib_object_wind;
-
-extern file_path_setup_type				file_path_setup;
+bool									dialog_create_grid_mesh_cancel;
+WindowRef								dialog_create_grid_mesh_wind;
 
 /* =======================================================
 
-      Choose Primitive Event Handlers
+      Create Grid Mesh Event Handlers
       
 ======================================================= */
 
-static pascal OSStatus choose_lib_object_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
+static pascal OSStatus create_grid_mesh_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
 	HICommand		cmd;
 	
@@ -59,12 +52,12 @@ static pascal OSStatus choose_lib_object_event_proc(EventHandlerCallRef handler,
 			switch (cmd.commandID) {
 			
 				case kHICommandNew:
-					QuitAppModalLoopForWindow(dialog_choose_lib_object_wind);
+					QuitAppModalLoopForWindow(dialog_create_grid_mesh_wind);
 					return(noErr);
 					
 				case kHICommandCancel:
-					dialog_choose_lib_object_cancel=TRUE;
-					QuitAppModalLoopForWindow(dialog_choose_lib_object_wind);
+					dialog_create_grid_mesh_cancel=TRUE;
+					QuitAppModalLoopForWindow(dialog_create_grid_mesh_wind);
 					return(noErr);
 			}
 
@@ -77,184 +70,52 @@ static pascal OSStatus choose_lib_object_event_proc(EventHandlerCallRef handler,
 
 /* =======================================================
 
-      Primitive List Event Handlers
+      Run Create Grid Mesh
       
 ======================================================= */
 
-static pascal OSStatus choose_lib_object_list_item_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserPropertyID property,DataBrowserItemDataRef itemData,Boolean changeValue)
+bool dialog_create_grid_mesh_run(int *xdiv,int *ydiv,int *zdiv)
 {
-	int				idx;
-	char			txt[file_str_len];
-	CFStringRef		cfstr;
-	
-	switch (property) {
-		
-		case kLibObjectListNameColumn:
-			idx=itemID-1;
-			strncpy(txt,(dialog_choose_lib_object_data+(file_str_len*idx)),file_str_len);
-			txt[file_str_len-1]=0x0;
-			
-			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,txt,kCFStringEncodingMacRoman);
-			SetDataBrowserItemDataText(itemData,cfstr);
-			CFRelease(cfstr);
-			return(noErr);
-			
-	}
-
-	return(errDataBrowserPropertyNotSupported);
-}
-
-static pascal void choose_lib_object_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserItemNotification message)
-{
-	UInt32		count;
-	
-	switch (message) {
-	
-		case kDataBrowserItemDoubleClicked:
-			dialog_choose_lib_object_idx=itemID-1;
-			QuitAppModalLoopForWindow(dialog_choose_lib_object_wind);
-			break;
-
-		case kDataBrowserItemSelected:
-			dialog_choose_lib_object_idx=itemID-1;
-			break;
-	}
-
-	GetDataBrowserItemCount(ctrl,kDataBrowserNoItem,FALSE,kDataBrowserItemIsSelected,&count);
-}
-
-/* =======================================================
-
-      Scan Directory for Files
-      
-======================================================= */
-
-void choose_lib_object_create_list(void)
-{
-	int							n,sz;
-	file_path_directory_type	*fpd;
-	
-		// read the directory
-		
-	fpd=file_paths_read_directory(&file_path_setup,"Library","obj",FALSE);
-
-		// get memory for list
-		
-	dialog_choose_lib_object_count=fpd->nfile;
-	if (dialog_choose_lib_object_count==0) {
-		dialog_choose_lib_object_data=NULL;
-		file_paths_close_directory(fpd);
-		return;
-	}
-	
-	sz=dialog_choose_lib_object_count*file_str_len;
-	
-	dialog_choose_lib_object_data=valloc(sz);
-	memset(dialog_choose_lib_object_data,0x0,sz);
-	
-	for (n=0;n!=dialog_choose_lib_object_count;n++) {
-		strcpy((char*)&dialog_choose_lib_object_data[n*file_str_len],fpd->files[n].file_name);
-	}
-	
-	file_paths_close_directory(fpd);
-}
-
-void choose_lib_object_close_list(void)
-{
-	if (dialog_choose_lib_object_data!=NULL) free(dialog_choose_lib_object_data);
-}
-
-/* =======================================================
-
-      Run Choose Primitive
-      
-======================================================= */
-
-bool dialog_choose_library_object_run(char *name)
-{
-	int								xdiv,ydiv,zdiv;
-	ControlRef						ctrl;
-	ControlID						ctrl_id;
-	DataBrowserCallbacks			dbcall;
 	EventHandlerUPP					event_upp;
-	DataBrowserItemDataUPP			list_item_upp;
-	DataBrowserItemNotificationUPP	list_notify_upp;
 	EventTypeSpec					event_list[]={{kEventClassCommand,kEventProcessCommand}};
 	
 		// open the dialog
 		
-	dialog_open(&dialog_choose_lib_object_wind,"ChooseLibraryObject");
+	dialog_open(&dialog_create_grid_mesh_wind,"GridMesh");
 	
 		// install event handler
 		
-	event_upp=NewEventHandlerUPP(choose_lib_object_event_proc);
-	InstallWindowEventHandler(dialog_choose_lib_object_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
+	event_upp=NewEventHandlerUPP(create_grid_mesh_event_proc);
+	InstallWindowEventHandler(dialog_create_grid_mesh_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
 	
 		// setup controls
 		
-	choose_lib_object_create_list();
-	
-	dialog_set_int(dialog_choose_lib_object_wind,kLibObjectXDivision,0,10);
-	dialog_set_int(dialog_choose_lib_object_wind,kLibObjectYDivision,0,2);
-	dialog_set_int(dialog_choose_lib_object_wind,kLibObjectZDivision,0,10);
+	dialog_set_int(dialog_create_grid_mesh_wind,kGridMeshXDivision,0,10);
+	dialog_set_int(dialog_create_grid_mesh_wind,kGridMeshYDivision,0,2);
+	dialog_set_int(dialog_create_grid_mesh_wind,kGridMeshZDivision,0,10);
 		
 		// show window
 	
-	ShowWindow(dialog_choose_lib_object_wind);
-	
-		// setup the list
-		
-	ctrl_id.signature=FOUR_CHAR_CODE('d3ET');
-	ctrl_id.id=0;
-	GetControlByID(dialog_choose_lib_object_wind,&ctrl_id,&ctrl);
-	
-	dbcall.version=kDataBrowserLatestCallbacks;
-	InitDataBrowserCallbacks(&dbcall);
-	
-	list_item_upp=NewDataBrowserItemDataUPP(&choose_lib_object_list_item_proc);
-	dbcall.u.v1.itemDataCallback=list_item_upp;
-
-	list_notify_upp=NewDataBrowserItemNotificationUPP(&choose_lib_object_list_notify_proc);
-	dbcall.u.v1.itemNotificationCallback=list_notify_upp;
-	
-	SetDataBrowserCallbacks(ctrl,&dbcall);
-	
-	AddDataBrowserItems(ctrl,kDataBrowserNoItem,dialog_choose_lib_object_count,NULL,kDataBrowserItemNoProperty);
-	Draw1Control(ctrl);
+	ShowWindow(dialog_create_grid_mesh_wind);
 	
 		// modal window
 		
-	dialog_choose_lib_object_idx=-1;
-	dialog_choose_lib_object_cancel=FALSE;
+	dialog_create_grid_mesh_cancel=FALSE;
 	
-	RunAppModalLoopForWindow(dialog_choose_lib_object_wind);
+	RunAppModalLoopForWindow(dialog_create_grid_mesh_wind);
 	
 		// get object name
 		
-	if (!dialog_choose_lib_object_cancel) {
-	
-		if (dialog_choose_lib_object_idx!=-1) {
-			strncpy(name,(char*)&dialog_choose_lib_object_data[dialog_choose_lib_object_idx*file_str_len],file_str_len);
-			name[file_str_len-1]=0x0;
-		}
-		else {
-			xdiv=dialog_get_int(dialog_choose_lib_object_wind,kLibObjectXDivision,0);
-			ydiv=dialog_get_int(dialog_choose_lib_object_wind,kLibObjectYDivision,0);
-			zdiv=dialog_get_int(dialog_choose_lib_object_wind,kLibObjectZDivision,0);
-			sprintf(name,"AGM %.3dx%.3dx%.3d",xdiv,ydiv,zdiv);
-		}
+	if (!dialog_create_grid_mesh_cancel) {
+		*xdiv=dialog_get_int(dialog_create_grid_mesh_wind,kGridMeshXDivision,0);
+		*ydiv=dialog_get_int(dialog_create_grid_mesh_wind,kGridMeshYDivision,0);
+		*zdiv=dialog_get_int(dialog_create_grid_mesh_wind,kGridMeshZDivision,0);
 	}
 	
 		// close window
 		
-	DisposeDataBrowserItemDataUPP(list_item_upp);
-	DisposeDataBrowserItemNotificationUPP(list_notify_upp);
-	DisposeWindow(dialog_choose_lib_object_wind);
+	DisposeWindow(dialog_create_grid_mesh_wind);
 	
-		// clear up memory
-		
-	choose_lib_object_close_list();
-	
-	return(!dialog_choose_lib_object_cancel);
+	return(!dialog_create_grid_mesh_cancel);
 }
 
