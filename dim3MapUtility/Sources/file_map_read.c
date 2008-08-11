@@ -42,6 +42,7 @@ char					media_type_str[][32]={"none","story","title","movie"},
 
 extern bool decode_map_v1_xml(map_type *map,int map_head);
 extern bool decode_map_v2_xml(map_type *map,int map_head);
+extern bool decode_map_v3_xml(map_type *map,int map_head);
 
 /* =======================================================
 
@@ -372,6 +373,9 @@ bool read_map_xml(map_type *map)
 			break;
 		case 2:
 			map_ok=decode_map_v2_xml(map,map_head);
+			break;
+		default:
+			map_ok=decode_map_v3_xml(map,map_head);
 			break;
 	}
 	

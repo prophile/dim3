@@ -156,7 +156,7 @@ extern char light_type_str[][32];
 //
 
 typedef struct		{
-						short								type,idx;
+						int									type,idx;
 					} group_unit_type;
 
 typedef struct		{
@@ -271,7 +271,7 @@ typedef struct		{
 					} map_liquid_draw_type;
 
 typedef struct		{
-						int									y,lft,rgt,top,bot,txt_idx,group_idx;
+						int									y,depth,lft,rgt,top,bot,txt_idx,group_idx;
 						float								alpha,speed_alter,tint_alpha,
 															x_txtfact,y_txtfact,x_txtoff,y_txtoff,
 															x_shift,y_shift;
@@ -340,8 +340,7 @@ typedef struct		{
 					} map_scenery_type;
 
 typedef struct		{
-						short						type;
-						int							intensity;
+						int							type,intensity;
 						bool						on;
 						d3pnt						pnt;
 						d3col						col;
@@ -364,7 +363,7 @@ typedef struct		{
 					} map_particle_type;
                     
 //
-// spot and node structures
+// script spots
 //
 
 typedef struct		{
@@ -383,13 +382,24 @@ typedef struct		{
 						d3ang						ang;
 					} spot_type;
 
+//
+// nodes
+//
+
 typedef struct		{
-						short						idx,user_value,
+						bool						goal,red_flag,blue_flag,
+													weapon,ammo,armor,
+													normal_cover,duck_cover,sniper;
+					} node_flag_type;
+
+typedef struct		{
+						int							idx,user_value,
 													link[max_node_link],
 													path_hint[max_node];
 						char						name[name_str_len];
 						d3pnt						pnt;
 						d3ang						ang;
+						node_flag_type				flag;
 					} node_type;
 
 //

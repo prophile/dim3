@@ -381,6 +381,7 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_int("txt",liq->txt_idx);
 	xml_add_attribute_3_coord_int("v1",liq->lft,liq->y,liq->top);
 	xml_add_attribute_3_coord_int("v2",liq->rgt,liq->y,liq->bot);
+	xml_add_attribute_int("depth",liq->depth);
 	xml_add_attribute_2_coord_float("uv_off",liq->x_txtoff,liq->y_txtoff);
 	xml_add_attribute_2_coord_float("uv_size",liq->x_txtfact,liq->y_txtfact);
 	xml_add_attribute_color("rgb",&liq->col);
@@ -453,115 +454,36 @@ bool write_map_xml(map_type *map)
 	write_map_textures_xml(map);
 	write_map_movements_xml(map);
    
-        // portals
 
-    xml_add_tagstart("Portals");
-    xml_add_tagend(FALSE);
-    
-    portal=map->portals;
-    
-    for (n=0;n!=map->nportal;n++) {
-        xml_add_tagstart("Portal");
-        
-        xml_add_attribute_text("name",portal->name);
-        
-        xml_add_attribute_3_coord_int("tl_c3",portal->x,0,portal->z);
-        xml_add_attribute_3_coord_int("br_c3",portal->ex,0,portal->ez);
-   
-        xml_add_tagend(FALSE);
-       
-        if ((portal->msg.entry_on) || (portal->msg.exit_on) || (portal->msg.base_on) || (portal->msg.map_change_on)) {
-            xml_add_tagstart("Messages");
-            xml_add_tagend(FALSE);
-            
-            xml_add_tagstart("Entry");
-            xml_add_attribute_boolean("on",portal->msg.entry_on);
-            xml_add_attribute_int("id",portal->msg.entry_id);
-            xml_add_tagend(TRUE);
-            
-            xml_add_tagstart("Exit");
-            xml_add_attribute_boolean("on",portal->msg.exit_on);
-            xml_add_attribute_int("id",portal->msg.exit_id);
-            xml_add_tagend(TRUE);
-			
-            xml_add_tagstart("Base");
-            xml_add_attribute_boolean("on",portal->msg.base_on);
-            xml_add_attribute_int("team",portal->msg.base_team);
-            xml_add_tagend(TRUE);
-			
-            xml_add_tagstart("Map");
-            xml_add_attribute_boolean("on",portal->msg.map_change_on);
-			xml_add_attribute_text("name",portal->msg.map_name);
-			xml_add_attribute_text("spot_name",portal->msg.map_spot_name);
-			xml_add_attribute_text("spot_type",portal->msg.map_spot_type);
-			xml_add_tagend(TRUE);
-  
-            xml_add_tagclose("Messages");
-        }
-        
-            // paths
+		// meshes
 
-        xml_add_tagstart("Paths");
-        xml_add_tagend(FALSE);
-        
-        sight=portal->sight;
-        
-        for (k=0;k!=max_sight_list;k++) {
-        
-            if (sight->rn!=-1) {
-            
-                xml_add_tagstart("Path");
-                
-                xml_add_attribute_int("id",k);
-                xml_add_attribute_int("portal",sight->rn);
-                xml_add_attribute_short_array("link",(short*)sight->link,max_sight_link,TRUE);
-                xml_add_attribute_boolean("root",sight->root);
-                xml_add_tagend(TRUE);
-             }
-            
-            sight++;
-        }
-        
-        xml_add_tagclose("Paths");
+	xml_add_tagstart("Meshes");
+	xml_add_tagend(FALSE);
 
-			// meshes
+	nmesh=portal->mesh.nmesh;
+	mesh=portal->mesh.meshes;
 
-		xml_add_tagstart("Meshes");
-		xml_add_tagend(FALSE);
+	for (k=0;k!=nmesh;k++) {
+		write_single_mesh(mesh);
+		mesh++;
+	}
 
-		nmesh=portal->mesh.nmesh;
-		mesh=portal->mesh.meshes;
+    xml_add_tagclose("Meshes");
 
-		for (k=0;k!=nmesh;k++) {
-			write_single_mesh(mesh);
-			mesh++;
-		}
+		// liquids
 
-        xml_add_tagclose("Meshes");
+	xml_add_tagstart("Liquids");
+	xml_add_tagend(FALSE);
 
-			// liquids
+	nliq=portal->liquid.nliquid;
+	liq=portal->liquid.liquids;
 
-		xml_add_tagstart("Liquids");
-		xml_add_tagend(FALSE);
+	for (k=0;k!=nliq;k++) {
+		write_single_liquid(liq);
+		liq++;
+	}
 
-		nliq=portal->liquid.nliquid;
-		liq=portal->liquid.liquids;
-
-		for (k=0;k!=nliq;k++) {
-			write_single_liquid(liq);
-			liq++;
-		}
-
-        xml_add_tagclose("Liquids");
-		  
-            // end portal
-            
-        xml_add_tagclose("Portal");
-        
-        portal++;
-    }
-            
-    xml_add_tagclose("Portals");
+    xml_add_tagclose("Liquids");
 
 		// scenery
 
@@ -668,6 +590,18 @@ bool write_map_xml(map_type *map)
 	
 		xml_add_tagstart("Hint");
 		xml_add_attribute_short_array("node",(short*)node->path_hint,map->nnode,FALSE);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagstart("Flag");
+		xml_add_attribute_boolean("goal",node->flag.goal);
+		xml_add_attribute_boolean("red_flag",node->flag.red_flag);
+		xml_add_attribute_boolean("blue_flag",node->flag.blue_flag);
+		xml_add_attribute_boolean("weapon",node->flag.weapon);
+		xml_add_attribute_boolean("ammo",node->flag.ammo);
+		xml_add_attribute_boolean("armor",node->flag.armor);
+		xml_add_attribute_boolean("normal_cover",node->flag.normal_cover);
+		xml_add_attribute_boolean("duck_cover",node->flag.duck_cover);
+		xml_add_attribute_boolean("sniper",node->flag.sniper);
 		xml_add_tagend(TRUE);
 	
 		xml_add_tagclose("Node");

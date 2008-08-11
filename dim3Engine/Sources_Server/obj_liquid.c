@@ -45,7 +45,7 @@ extern server_type			server;
 void object_liquid_contact(obj_type *obj)
 {
 	int					n,nliquid,
-						y,eye_y,dy,lft,rgt,top,bot;
+						y,eye_y,lft,rgt,top,bot;
 	d3box				box;
 	map_liquid_type		*liq;
 	
@@ -70,12 +70,11 @@ void object_liquid_contact(obj_type *obj)
 		if (top>liq->bot) continue;
 
 		y=obj->pnt.y;
-		dy=liq->y;
 		
-		if (y>=dy) {
+		if ((y>=liq->y) && (y<(liq->y+liq->depth))) {
 			eye_y=(y+obj->duck.y_move)+obj->size.eye_offset;
 			
- 			if (eye_y>dy) {
+ 			if (eye_y>liq->y) {
 				obj->liquid_mode=lm_under;
 			}
 			else {

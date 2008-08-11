@@ -1467,11 +1467,12 @@ void map_auto_generate_second_story(map_type *map)
 		// create second story in touching portals
 
 	for (n=0;n!=ag_box_count;n++) {
+
+		portal=&ag_boxes[n];
 		if (portal->corridor_flag!=ag_corridor_flag_portal) continue;
 
 			// find touching edges
 
-		portal=&ag_boxes[n];
 		
 		lft=map_auto_generate_portal_touching_left(n);
 		rgt=map_auto_generate_portal_touching_right(n);

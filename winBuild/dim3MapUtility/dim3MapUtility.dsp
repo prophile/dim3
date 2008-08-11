@@ -221,6 +221,10 @@ SOURCE=..\..\dim3MapUtility\Sources\file_map_read_v2.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3MapUtility\Sources\file_map_read_v3.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3MapUtility\Sources\file_map_shader.c
 # End Source File
 # Begin Source File

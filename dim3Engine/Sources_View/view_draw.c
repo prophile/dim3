@@ -212,6 +212,157 @@ bool temp_mesh_visibility_clip_check(d3pnt *min,d3pnt *max,d3pnt *view_pt,int *v
 
 void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,int *mesh_sort_list,float x_rot,float y_rot)
 {
+	int						n,i,k,t,mesh_cnt,idx,
+							view_mesh_idx,draw_mesh_idx;
+	float					ratio;
+	unsigned char			*sp;
+	d3pnt					*pt;
+	map_mesh_type			*mesh,*view_mesh,*draw_mesh;
+	map_mesh_poly_type		*poly;
+	texture_type			*texture;
+	int						vport[4];
+	double					mod_matrix[16],proj_matrix[16];
+	
+	mesh=&map.mesh.meshes[mesh_idx];
+	
+		// drawing setup
+		
+	glViewport(0,0,mesh_view_mesh_wid,mesh_view_mesh_high);
+		
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	
+	ratio=(((float)mesh_view_mesh_wid)/((float)mesh_view_mesh_high))*mesh_view_mesh_aspect_ratio;
+	gluPerspective(mesh_view_mesh_fov,ratio,mesh_view_mesh_near_z,mesh_view_mesh_far_z);
+	glScalef(-1.0f,-1.0f,1.0f);						// x and y are reversed
+	glTranslatef(0.0f,0.0f,(float)mesh_view_mesh_near_z_offset);
+		
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glRotatef(x_rot,1,0,0);						// x pan
+	glRotatef(0.0f,0,0,1);						// z pan
+	glRotatef(((360.0f-y_rot)+180.0f),0,1,0);	// y rotate -- need to reverse the winding
+
+	glGetDoublev(GL_MODELVIEW_MATRIX,mod_matrix);
+	glGetDoublev(GL_PROJECTION_MATRIX,proj_matrix);
+	glGetIntegerv(GL_VIEWPORT,(GLint*)vport);
+
+	gl_texture_bind_start();
+
+	glDisable(GL_BLEND);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_TRUE);
+
+	glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
+
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
+	
+		// supergumba -- hard code this later as it won't be in game
+		
+	gl_texture_opaque_start();
+	
+		// get sort list
+		
+	mesh_cnt=test_me_sort(&mesh->box.mid,mesh_sort_list);		
+
+		// run through all other meshes to test
+		// their visibility against this mesh
+
+		// as we are using the stencil buffer, we can only do up to 255
+		// meshes at a time
+
+		// supergumba -- need to do in batches
+
+	glClear(GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
+
+	for (n=0;n!=mesh_cnt;n++) {
+		
+		view_mesh_idx=mesh_sort_list[n];
+		view_mesh=&map.mesh.meshes[view_mesh_idx];
+
+			// if this mesh, then auto select it
+
+		if (view_mesh_idx==mesh_idx) {
+			mesh->mesh_visibility_flag[view_mesh_idx]=0x1;
+			continue;
+		}
+	
+			// ignore all moving meshes as they
+			// won't always obscure
+
+		if (view_mesh->flag.moveable) {
+			mesh->mesh_visibility_flag[view_mesh_idx]=0x1;
+			continue;
+		}
+
+			// don't draw meshes clipped from view
+
+		if (!temp_mesh_visibility_clip_check(&view_mesh->box.min,&view_mesh->box.max,&mesh->box.mid,vport,mod_matrix,proj_matrix)) continue;
+
+			// stencil in the mesh we are looking at
+
+		glStencilFunc(GL_ALWAYS,(view_mesh_idx+1),0xFF);
+
+		for (t=0;t!=view_mesh->npoly;t++) {
+
+			poly=&view_mesh->polys[t];
+
+				// ignore all transparent polygons
+				// supergumba -- need something better here, they can't be ignored for hiding
+
+			texture=&map.textures[poly->txt_idx];
+			if ((texture->bitmaps[0].alpha_mode==alpha_mode_transparent) || (poly->alpha!=1.0f)) continue;
+
+				// write to the stencil buffer if any part
+				// of the polygon can be seen
+
+			gl_texture_opaque_set(texture->bitmaps[0].gl_id);
+
+			glBegin(GL_POLYGON);
+
+			for (k=0;k!=poly->ptsz;k++) {
+				pt=&view_mesh->vertexes[poly->v[k]];
+				glTexCoord2f(poly->gx[k],poly->gy[k]);
+				glVertex3i((pt->x-mesh->box.mid.x),(pt->y-mesh->box.mid.y),(mesh->box.mid.z-pt->z));
+			}
+
+			glEnd();
+		}
+	}
+
+	gl_texture_opaque_end();
+
+		// read the stencil to look for hits
+
+	glReadPixels(0,0,mesh_view_mesh_wid,mesh_view_mesh_high,GL_STENCIL_INDEX,GL_UNSIGNED_BYTE,stencil_pixels);
+
+	sp=stencil_pixels;
+
+	for (k=0;k!=(mesh_view_mesh_wid*mesh_view_mesh_high);k++) {
+		idx=(int)*sp++;
+		if (idx!=0) mesh->mesh_visibility_flag[idx-1]=0x1;
+	}
+
+	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
+	glClear(GL_STENCIL_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glDisable(GL_STENCIL_TEST);
+}
+
+
+
+
+
+
+/*
+void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,int *mesh_sort_list,float x_rot,float y_rot)
+{
 	int						n,i,k,t,mesh_cnt,
 							view_mesh_idx,draw_mesh_idx;
 	float					ratio;
@@ -252,7 +403,7 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 
 	glDisable(GL_BLEND);
 
-	glDisable(GL_ALPHA_TEST);
+	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 
 	glEnable(GL_DEPTH_TEST);
@@ -275,17 +426,13 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 		// run through all other meshes to test
 		// their visibility against this mesh
 
+		// as we are using the stencil buffer, we can only do up to 255
+		// meshes at a time
+
 	for (n=0;n!=mesh_cnt;n++) {
 		
 		view_mesh_idx=mesh_sort_list[n];
 		view_mesh=&map.mesh.meshes[view_mesh_idx];
-
-
-
-			// supergumba -- for now, testing
-
-		mesh->mesh_visibility_flag[view_mesh_idx]=0x1;
-		continue;
 
 			// if this mesh, then auto select it
 
@@ -308,10 +455,7 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 
 			// don't check meshes clipped from view
 
-		if (!temp_mesh_visibility_clip_check(&view_mesh->box.min,&view_mesh->box.max,&mesh->box.mid,vport,mod_matrix,proj_matrix)) {
-			fprintf(stdout,"skipped %d\n",view_mesh_idx);
-			continue;
-		}
+		if (!temp_mesh_visibility_clip_check(&view_mesh->box.min,&view_mesh->box.max,&mesh->box.mid,vport,mod_matrix,proj_matrix)) continue;
 
 			// draw all the meshes in the scene and use
 			// the stencil buffer to detect if the view mesh
@@ -387,6 +531,8 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 	glClear(GL_STENCIL_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	glDisable(GL_STENCIL_TEST);
 }
+*/
+
 
 bool temp_mesh_view_setup(void)
 {
@@ -394,7 +540,7 @@ bool temp_mesh_view_setup(void)
 	int				*mesh_sort_list;
 	unsigned char	*stencil_pixels;
 	
-	return(TRUE);
+//	return(TRUE);
 	
 	if (mesh_view_done) return(TRUE);
 	
@@ -415,7 +561,8 @@ bool temp_mesh_view_setup(void)
 	
 		// check visibility for all meshes
 	
-	for (n=0;n!=map.mesh.nmesh;n++) {
+//	for (n=0;n!=map.mesh.nmesh;n++) {
+	for (n=0;n!=4;n++) {
 
 		tick=time_get();
 	
@@ -439,7 +586,7 @@ bool temp_mesh_view_setup(void)
 			if (map.mesh.meshes[n].mesh_visibility_flag[t]!=0x0) cnt++;
 		}
 
-		fprintf(stdout,"mesh %d; time = %d; count = %d\n",n,time_get()-tick,cnt);
+		fprintf(stdout,"mesh %d; time = %d; count = %d/%d\n",n,time_get()-tick,cnt,map.mesh.nmesh);
 	}
 	
 	free(mesh_sort_list);
