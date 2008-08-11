@@ -191,7 +191,7 @@ void map_convert_liquid(map_type *map,portal_type *portal,segment_type *seg)
       
 ======================================================= */
 
-void map_convert_enlarge(map_type *map,int nportal,portal_type *portals,int seg_cnt,segment_type *seg_list)
+void map_convert_enlarge(int nportal,portal_type *portals,int seg_cnt,segment_type *seg_list)
 {
 	int					n,t;
 	portal_type			*portal;
@@ -825,7 +825,7 @@ bool map_convert_v1(map_type *map,int nportal,portal_type *portals,int seg_cnt,s
 		// enlarge map and setup vertexes
 		// and UVs inside the segments
 
-	map_convert_enlarge(map,nportal,portals,seg_cnt,seg_list);
+	map_convert_enlarge(nportal,portals,seg_cnt,seg_list);
 	map_convert_segments(seg_cnt,seg_list);
 
 		// tesselate up any curved or clipped segments into

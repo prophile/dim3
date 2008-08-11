@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Import MainLine
+ Usage: Auto Generating and Import Help
 
 ***************************** License ********************************
 
@@ -35,97 +35,24 @@ extern map_type		map;
 
 char								import_file_ext[32];
 
-bool								oi_first=TRUE;
-import_obj_settings_type			oi_settings;
-
-bool								hmi_first=TRUE;
-import_height_map_settings_type		hmi_settings;
-
 bool								ag_first=TRUE;
 auto_generate_settings_type			ag_settings;
 
-//extern void map_import_obj(import_obj_settings_type *io_settings);
-//extern void map_import_height_map(import_height_map_settings_type *hmi_settings);
-
 /* =======================================================
 
-      Import Redraw
+      Auto-Generate Map
       
 ======================================================= */
 
-void import_redraw(void)
-{	
-	main_wind_center_position_in_map();		
-	main_wind_draw();
-	
-	texture_palette_reset();
-	main_wind_tool_reset();
-	main_wind_tool_fix_enable();
-	menu_fix_enable();
-}
-
-/* =======================================================
-
-      Import OBJ
-      
-======================================================= */
-
-void import_obj(void)
-{
-/* supergumba
-		// the dialog
-		
-	if (!dialog_map_obj_import_setting_run(&oi_settings,oi_first)) return;
-	oi_first=FALSE;
-
-		// run import
-		
-	SetCursor(*GetCursor(watchCursor));
-	map_import_obj(&oi_settings);
-	InitCursor();
-
-		// redraw the map
-		
-	import_redraw();
-	*/
-}
-
-/* =======================================================
-
-      Import Height Map
-      
-======================================================= */
-
-void import_height_map(void)
-{
-		// the dialog
-		
-	if (!dialog_map_height_import_setting_run(&hmi_settings,hmi_first)) return;
-	hmi_first=FALSE;
-
-		// run import
-		
-	SetCursor(*GetCursor(watchCursor));
-	map_import_height_map(&hmi_settings);
-	InitCursor();
-
-		// redraw the map
-		
-	import_redraw();
-}
-
-/* =======================================================
-
-      Import Auto-Generate
-      
-======================================================= */
-
-void import_auto_generate(void)
+void auto_generate_map(void)
 {
 		// dialog
 		
 	if (!dialog_map_auto_generate_setting_run(ag_first)) return;
 	ag_first=FALSE;
+
+	select_clear();
+	undo_clear();
 
 		// run the auto-generate
 		
@@ -134,8 +61,16 @@ void import_auto_generate(void)
 	InitCursor();
 	
 		// redraw the map
+	
+	main_wind_tool_fill_group_combo();
 		
-	import_redraw();
+	main_wind_center_position_in_map();		
+	main_wind_draw();
+	
+	texture_palette_reset();
+	main_wind_tool_reset();
+	main_wind_tool_fix_enable();
+	menu_fix_enable();
 }
 
 /* =======================================================

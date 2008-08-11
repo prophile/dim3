@@ -44,7 +44,6 @@ and can be sold or given away.
 #define kCommandNew							FOUR_CHAR_CODE('new ')
 #define kCommandOpen						FOUR_CHAR_CODE('open')
 #define kCommandClose						FOUR_CHAR_CODE('clse')
-#define kCommandImportHeightMap				FOUR_CHAR_CODE('ihmp')
 #define kCommandAutoGenerateMap				FOUR_CHAR_CODE('atgn')
 #define kCommandSave						FOUR_CHAR_CODE('save')
 

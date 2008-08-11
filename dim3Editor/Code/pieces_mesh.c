@@ -32,39 +32,74 @@ and can be sold or given away.
 #define import_obj_float_to_int			1000.0f
 #define import_obj_max_dimension		5000
 
-extern int						cy,drag_mode;
-extern bool						dp_object,dp_node,dp_lightsoundparticle,dp_auto_texture;
+extern int								cy,drag_mode;
+extern bool								dp_object,dp_node,dp_lightsoundparticle,dp_auto_texture;
 
-extern file_path_setup_type		file_path_setup;
-extern map_type					map;
+extern map_type							map;
 
 /* =======================================================
 
-      Import Library Mesh
+      Finish Mesh Addition
       
 ======================================================= */
 
-int piece_import_library_mesh(char *name,int mx,int my,int mz)
+void piece_add_mesh_finish(int mesh_idx)
+{
+	if (mesh_idx==-1) return;
+	
+		// make selection
+		
+	select_clear();
+	select_add(mesh_piece,mesh_idx,0);
+	
+		// change mode to move entire mesh
+		
+	drag_mode=drag_mode_mesh;
+	
+	if (dp_auto_texture) {
+		map_mesh_reset_uv(&map,mesh_idx);
+	}
+	else {
+		map.mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
+	}
+	
+	main_wind_draw();
+	main_wind_tool_reset();
+	main_wind_tool_fix_enable();
+}
+
+/* =======================================================
+
+      Add OBJ Mesh
+      
+======================================================= */
+
+void piece_add_obj_mesh(void)
 {
 	int					n,k,nline,nvertex,npoly,nuv,npt,uv_idx,
 						mesh_idx,x,y,z;
-	char				path[1024],
-						*c,txt[256],vstr[256],uvstr[256];
+	char				*c,txt[256],vstr[256],uvstr[256],path[1024];
 	float				scale,fx,fy,fz,fsz;
 	float				*uvs,*uv;
 	bool				mesh_ok,mesh_delete;
-	d3pnt				*dpt;
+	d3pnt				*dpt,pnt;
 	d3fpnt				min,max;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
+	if (!piece_create_texture_ok()) return;
+	
+		// get import location
+
+	piece_create_get_spot(&pnt);
+	
 		// import the file
 		
-	file_paths_data(&file_path_setup,path,"Library",name,"obj");
-		
+	if (!import_load_file(path,"obj")) return;
+
 	if (!textdecode_open(path,0x20)) {
 		StandardAlert(kAlertStopAlert,"\pImport Failed","\pCould not open OBJ file.",NULL,NULL);
-		return(-1);
+		return;
     }
 	
     nline=textdecode_count();
@@ -116,17 +151,17 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 	if (nvertex==0) {
 		textdecode_close();
 		StandardAlert(kAlertStopAlert,"\pImport Failed","\pNo vertexes in OBJ.",NULL,NULL);
-		return(-1);
+		return;
     }
 	if (npoly==0) {
 		textdecode_close();
 		StandardAlert(kAlertStopAlert,"\pImport Failed","\pNo faces in OBJ.",NULL,NULL);
-		return(-1);
+		return;
     }
 	if (nuv==0) {
 		textdecode_close();
 		StandardAlert(kAlertStopAlert,"\pImport Failed","\pNo UV coordinates in OBJ.",NULL,NULL);
-		return(-1);
+		return;
     }
 	
 		// create new mesh
@@ -149,7 +184,7 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 		if (mesh_delete) map_mesh_delete(&map,mesh_idx);
 		textdecode_close();
 		StandardAlert(kAlertStopAlert,"\pImport Failed","\pNot enough memory to create mesh.",NULL,NULL);
-		return(-1);
+		return;
     }
 	
 	mesh=&map.mesh.meshes[mesh_idx];
@@ -207,9 +242,9 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
  	dpt=mesh->vertexes;
 	
 	for (n=0;n!=nvertex;n++) {
-		dpt->x=(dpt->x-x)+mx;
-		dpt->y=(dpt->y-y)+my;
-		dpt->z=(dpt->z-z)+mz;
+		dpt->x=(dpt->x-x)+pnt.x;
+		dpt->y=(dpt->y-y)+pnt.y;
+		dpt->z=(dpt->z-z)+pnt.z;
 		dpt++;
 	}
 	
@@ -220,7 +255,7 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 		map_mesh_delete(&map,mesh_idx);
 		textdecode_close();
 		StandardAlert(kAlertStopAlert,"\pImport Failed","\pOut of Memory.",NULL,NULL);
-		return(-1);
+		return;
     }
 
  	uv=uvs;
@@ -301,76 +336,210 @@ int piece_import_library_mesh(char *name,int mx,int my,int mz)
 		
 	map_mesh_delete_unused_vertexes(&map,mesh_idx);
 	
-		// push to grid
+		// finish up
 		
-	mesh_snap_to_grid(mesh_idx);
-	
-	return(mesh_idx);
+	piece_add_mesh_finish(mesh_idx);
 }
-
 
 /* =======================================================
 
-      Auto Generate Mesh
+      Add Height Map Mesh
       
 ======================================================= */
 
-int piece_create_ag_mesh(char *name,int mx,int my,int mz)
+float piece_add_height_map_mesh_get_height(bitmap_type *bitmap,int x,int z,int div_cnt)
+{
+	int			y;
+	ptr			p;
+	
+		// find offset in portal
+		
+	x=(int)(((float)x/(float)div_cnt)*(float)bitmap->wid);
+	y=(int)(((float)z/(float)div_cnt)*(float)bitmap->high);
+	
+	if (x<0) x=0;
+	if (x>=bitmap->wid) x=bitmap->wid-1;
+	if (y<0) y=0;
+	if (y>=bitmap->high) y=bitmap->high-1;
+	
+	p=bitmap->data+((y*(bitmap->wid<<2))+(x<<2));
+	
+	return(((float)*p)/255.0f);
+}
+
+void piece_add_height_map_mesh(void)
+{
+	int					x,z,px,pz,div_cnt,div_sz,total_sz,high,
+						kx[4],ky[4],kz[4],y[4],
+						mesh_idx,txt_idx;
+	float				f_portal_y_sz,gx[4],gy[4];
+	char				path[1024];
+	d3pnt				pnt;
+	bitmap_type			bitmap;
+	
+		// get the png
+		
+	if (!import_load_file(path,"png")) return;
+	if (!bitmap_open(&bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE)) return;
+	
+		// division and sizes
+		
+	if (!dialog_height_import_run(&div_cnt,&total_sz,&high)) {
+		bitmap_close(&bitmap);
+		return;
+	}
+		
+	div_sz=total_sz/div_cnt;
+	f_portal_y_sz=(float)high;
+	
+	piece_create_get_spot(&pnt);
+	
+		// texture
+		
+	txt_idx=texture_palette_get_selected_texture();
+	if (txt_idx==-1) txt_idx=0;
+	
+		// polygons
+		
+	mesh_idx=map_mesh_add(&map);
+	if (mesh_idx==-1) {
+		bitmap_close(&bitmap);
+		return;
+	}
+	
+	SetCursor(*GetCursor(watchCursor));
+	
+	for (z=0;z!=div_cnt;z++) {
+		for (x=0;x!=div_cnt;x++) {
+			
+			px=(pnt.x-(total_sz/2))+(x*div_sz);
+			pz=(pnt.z-(total_sz/2))+(z*div_sz);
+			
+				// floors
+				
+			y[0]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(&bitmap,x,z,div_cnt));
+			y[1]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(&bitmap,(x+1),z,div_cnt));
+			y[2]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(&bitmap,(x+1),(z+1),div_cnt));
+			y[3]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(&bitmap,x,(z+1),div_cnt));
+										
+			gx[0]=gx[1]=gx[2]=0.0f;
+			gy[0]=gy[1]=gy[2]=0.0f;
+					
+			if (((x+z)&0x1)!=0) {
+				kx[0]=px;
+				kx[1]=kx[2]=px+div_sz;
+				kz[0]=kz[1]=pz;
+				kz[2]=pz+div_sz;
+				ky[0]=y[0];
+				ky[1]=y[1];
+				ky[2]=y[2];
+				
+				map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
+			
+				kx[0]=kx[2]=px;
+				kx[1]=px+div_sz;
+				kz[0]=pz;
+				kz[1]=kz[2]=pz+div_sz;
+				ky[0]=y[0];
+				ky[1]=y[2];
+				ky[2]=y[3];
+				
+				map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
+			}
+			else {
+				kx[0]=kx[2]=px;
+				kx[1]=px+div_sz;
+				kz[0]=kz[1]=pz;
+				kz[2]=pz+div_sz;
+				ky[0]=y[0];
+				ky[1]=y[1];
+				ky[2]=y[3];
+				
+				map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
+			
+				kx[0]=kx[1]=px+div_sz;
+				kx[2]=px;
+				kz[0]=pz;
+				kz[1]=kz[2]=pz+div_sz;
+				ky[0]=y[1];
+				ky[1]=y[2];
+				ky[2]=y[3];
+				
+				map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
+			}
+		}
+	}
+	
+		// reset UVs
+				
+	map_mesh_reset_uv(&map,mesh_idx);
+		
+	bitmap_close(&bitmap);
+	
+	InitCursor();
+	
+		// finish up
+		
+	piece_add_mesh_finish(mesh_idx);
+}
+
+/* =======================================================
+
+      Add Grid Mesh
+      
+======================================================= */
+
+void piece_add_grid_mesh(void)
 {
 	int				mesh_idx,xdiv,ydiv,zdiv,
 					x,y,z,sz,txt_idx,
 					px[4],py[4],pz[4];
 	float			gx[4],gy[4];
-	char			str[32];
+	d3pnt			pnt;
 	
+	if (!piece_create_texture_ok()) return;
+
 		// get mesh divisions
 		
-	strcpy(str,(char*)&name[4]);
-	str[3]=0x0;
-	xdiv=atoi(str);
-	
-	strcpy(str,(char*)&name[8]);
-	str[3]=0x0;
-	ydiv=atoi(str);
-
-	strcpy(str,(char*)&name[12]);
-	str[3]=0x0;
-	zdiv=atoi(str);
+	if (!dialog_create_grid_mesh_run(&xdiv,&ydiv,&zdiv)) return;
 	
 		// texture and size
 		
 	txt_idx=texture_palette_get_selected_texture();
+	if (txt_idx==-1) txt_idx=0;
 	
-	sz=100;
-	mx-=((xdiv*sz)/2);
-	my-=((ydiv*sz)/2);
-	mz-=((zdiv*sz)/2);
+	sz=map_enlarge*5;
+
+	piece_create_get_spot(&pnt);
+	pnt.x-=((xdiv*sz)/2);
+	pnt.y-=((ydiv*sz)/2);
+	pnt.z-=((zdiv*sz)/2);
 
 		// create mesh
 		
 	mesh_idx=map_mesh_add(&map);
-	if (mesh_idx==-1) return(-1);
+	if (mesh_idx==-1) return;
 	
 		// default UVs
 		
-	gx[0]=gx[3]=0.0f;
-	gx[1]=gx[2]=1.0f;
-	gy[0]=gy[1]=0.0f;
-	gy[2]=gy[3]=1.0f;
+	gx[0]=gx[1]=gx[2]=gx[3]=0.0f;
+	gy[0]=gy[1]=gy[2]=gy[3]=0.0f;
+	
+	SetCursor(*GetCursor(watchCursor));
 	
 		// add top and bottom polys
 		
 	for (z=0;z!=zdiv;z++) {
 		for (x=0;x!=xdiv;x++) {
-			px[0]=px[3]=(x*sz)+mx;
-			px[1]=px[2]=((x+1)*sz)+mx;
-			pz[0]=pz[1]=(z*sz)+mz;
-			pz[2]=pz[3]=((z+1)*sz)+mz;
+			px[0]=px[3]=(x*sz)+pnt.x;
+			px[1]=px[2]=((x+1)*sz)+pnt.x;
+			pz[0]=pz[1]=(z*sz)+pnt.z;
+			pz[2]=pz[3]=((z+1)*sz)+pnt.z;
 
-			py[0]=py[1]=py[2]=py[3]=my;
+			py[0]=py[1]=py[2]=py[3]=pnt.y;
 			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 			
-			py[0]=py[1]=py[2]=py[3]=(ydiv*sz)+my;
+			py[0]=py[1]=py[2]=py[3]=(ydiv*sz)+pnt.y;
 			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 		}
 	}
@@ -379,162 +548,43 @@ int piece_create_ag_mesh(char *name,int mx,int my,int mz)
 		
 	for (x=0;x!=xdiv;x++) {
 		for (y=0;y!=ydiv;y++) {
-			px[0]=px[3]=(x*sz)+mx;
-			px[1]=px[2]=((x+1)*sz)+mx;
-			py[0]=py[1]=(y*sz)+my;
-			py[2]=py[3]=((y+1)*sz)+my;
+			px[0]=px[3]=(x*sz)+pnt.x;
+			px[1]=px[2]=((x+1)*sz)+pnt.x;
+			py[0]=py[1]=(y*sz)+pnt.y;
+			py[2]=py[3]=((y+1)*sz)+pnt.y;
 			
-			pz[0]=pz[1]=pz[2]=pz[3]=mz;
+			pz[0]=pz[1]=pz[2]=pz[3]=pnt.z;
 			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 			
-			pz[0]=pz[1]=pz[2]=pz[3]=(zdiv*sz)+mz;
+			pz[0]=pz[1]=pz[2]=pz[3]=(zdiv*sz)+pnt.z;
 			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 		}
 	}
 	
 	for (z=0;z!=zdiv;z++) {
 		for (y=0;y!=ydiv;y++) {
-			pz[0]=pz[1]=(z*sz)+mz;
-			pz[2]=pz[3]=((z+1)*sz)+mz;
-			py[0]=py[3]=(y*sz)+my;
-			py[1]=py[2]=((y+1)*sz)+my;
+			pz[0]=pz[1]=(z*sz)+pnt.z;
+			pz[2]=pz[3]=((z+1)*sz)+pnt.z;
+			py[0]=py[3]=(y*sz)+pnt.y;
+			py[1]=py[2]=((y+1)*sz)+pnt.y;
 			
-			px[0]=px[1]=px[2]=px[3]=mx;
+			px[0]=px[1]=px[2]=px[3]=pnt.x;
 			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 			
-			px[0]=px[1]=px[2]=px[3]=(xdiv*sz)+mx;
+			px[0]=px[1]=px[2]=px[3]=(xdiv*sz)+pnt.x;
 			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 		}
 	}
 	
-	return(mesh_idx);
-}
-
-/* =======================================================
-
-      Run Mesh Pick
-      
-======================================================= */
-
-int piece_import_mesh(char *name,int mx,int my,int mz)
-{
-	if (memcmp(name,"AGM ",4)!=0) return(piece_import_library_mesh(name,mx,my,mz));
-	return(piece_create_ag_mesh(name,mx,my,mz));
-}
-
-int piece_import_mesh_pick(int mx,int my,int mz)
-{
-	char				name[file_str_len];
-	
-	if (dialog_choose_library_object_run(name)) return(piece_import_mesh(name,mx,my,mz));
-	
-	return(-1);
-}
-
-/* =======================================================
-
-      Add Library Mesh
-      
-======================================================= */
-
-void piece_add_library_mesh(void)
-{
-	int					mesh_idx;
-	d3pnt				pnt;
-	
-	if (!piece_create_texture_ok()) return;
-	
-		// get import location
+		// reset UVs
 		
-	piece_create_get_spot(&pnt);
-			
-		// import mesh
+	map_mesh_reset_uv(&map,mesh_idx);
+	
+	InitCursor();
+	
+		// finish up
 		
-	mesh_idx=piece_import_mesh_pick(pnt.x,pnt.y,pnt.z);
-	if (mesh_idx==-1) return;
-	
-		// make selection
-		
-	select_clear();
-	select_add(mesh_piece,mesh_idx,0);
-	
-		// change mode to move entire mesh
-		
-	drag_mode=drag_mode_mesh;
-	
-	if (dp_auto_texture) {
-		map_mesh_reset_uv(&map,mesh_idx);
-	}
-	else {
-		map.mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
-	}
-	
-	main_wind_draw();
-	main_wind_tool_reset();
-	main_wind_tool_fix_enable();
-}
-
-/* =======================================================
-
-      Replace Library Mesh
-      
-======================================================= */
-
-void piece_replace_library_mesh(void)
-{
-	int			type,mesh_idx,poly_idx,
-				rep_mesh_idx;
-	d3pnt		min,max,mpt;
-	
-		// get mesh to replace
-		
-	if (select_count()==0) return;
-	
-	select_get(0,&type,&mesh_idx,&poly_idx);
-	if (type!=mesh_piece) return;
-	
-		// any textures?
-		
-	if (!piece_create_texture_ok()) return;
-	
-		// remember size
-		
-	map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
-	map_mesh_calculate_center(&map,mesh_idx,&mpt);
-	
-		// import new mesh
-	
-	rep_mesh_idx=piece_import_mesh_pick(mpt.x,mpt.y,mpt.z);
-	if (rep_mesh_idx==-1) return;
-
-		// delete orginial and replace
-		// new mesh index will change with delete
-		
-	if (map_mesh_delete(&map,mesh_idx)) {
-		rep_mesh_idx--;
-	}
-	
-	map_mesh_resize(&map,rep_mesh_idx,&min,&max);
-	
-		// make selection
-		
-	select_clear();
-	select_add(mesh_piece,rep_mesh_idx,0);
-	
-		// change mode to move entire mesh
-		
-	drag_mode=drag_mode_mesh;
-	
-	if (dp_auto_texture) {
-		map_mesh_reset_uv(&map,mesh_idx);
-	}
-	else {
-		map.mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
-	}
-	
-	main_wind_draw();
-	main_wind_tool_reset();
-	main_wind_tool_fix_enable();
+	piece_add_mesh_finish(mesh_idx);
 }
 
 /* =======================================================

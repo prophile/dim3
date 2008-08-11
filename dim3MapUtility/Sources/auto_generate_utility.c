@@ -81,7 +81,7 @@ int map_auto_generate_random_int(int max)
       
 ======================================================= */
 
-bool map_auto_generate_portal_collision(map_type *map,int x,int z,int ex,int ez,int skip_idx)
+bool map_auto_generate_portal_collision(int x,int z,int ex,int ez,int skip_idx)
 {
 	int						n;
 	auto_generate_box_type	*portal;
@@ -102,7 +102,7 @@ bool map_auto_generate_portal_collision(map_type *map,int x,int z,int ex,int ez,
 	return(FALSE);
 }
 
-bool map_auto_generate_portal_horz_edge_block(map_type *map,int skip_portal_idx,int z,int ez,int x)
+bool map_auto_generate_portal_horz_edge_block(int skip_portal_idx,int z,int ez,int x)
 {
 	int						n;
 	auto_generate_box_type	*portal;
@@ -120,7 +120,7 @@ bool map_auto_generate_portal_horz_edge_block(map_type *map,int skip_portal_idx,
 	return(FALSE);
 }
 
-bool map_auto_generate_portal_vert_edge_block(map_type *map,int skip_portal_idx,int x,int ex,int z)
+bool map_auto_generate_portal_vert_edge_block(int skip_portal_idx,int x,int ex,int z)
 {
 	int						n;
 	auto_generate_box_type	*portal;
@@ -138,7 +138,7 @@ bool map_auto_generate_portal_vert_edge_block(map_type *map,int skip_portal_idx,
 	return(FALSE);
 }
 
-bool map_auto_generate_portal_horz_edge_touch(map_type *map,int skip_portal_idx,int z,int ez,int x)
+bool map_auto_generate_portal_horz_edge_touch(int skip_portal_idx,int z,int ez,int x)
 {
 	int						n;
 	auto_generate_box_type	*portal;
@@ -158,7 +158,7 @@ bool map_auto_generate_portal_horz_edge_touch(map_type *map,int skip_portal_idx,
 	return(FALSE);
 }
 
-bool map_auto_generate_portal_vert_edge_touch(map_type *map,int skip_portal_idx,int x,int ex,int z)
+bool map_auto_generate_portal_vert_edge_touch(int skip_portal_idx,int x,int ex,int z)
 {
 	int						n;
 	auto_generate_box_type	*portal;
@@ -184,7 +184,7 @@ bool map_auto_generate_portal_vert_edge_touch(map_type *map,int skip_portal_idx,
       
 ======================================================= */
 
-bool map_auto_generate_portal_touching_left(map_type *map,int portal_idx,unsigned char *corridor_flags)
+bool map_auto_generate_portal_touching_left(int portal_idx)
 {
 	int							n;
 	auto_generate_box_type		*portal,*chk_portal;
@@ -193,9 +193,9 @@ bool map_auto_generate_portal_touching_left(map_type *map,int portal_idx,unsigne
 	
 	for (n=0;n!=ag_box_count;n++) {
 		if (portal_idx==n) continue;
-		if (corridor_flags!=NULL) if (corridor_flags[n]!=ag_corridor_flag_portal) continue;
-
+		
 		chk_portal=&ag_boxes[n];
+		if (chk_portal->corridor_flag!=ag_corridor_flag_portal) continue;
 		
 		if (((chk_portal->min.z>=portal->min.z) && (chk_portal->min.z<portal->max.z)) || ((chk_portal->max.z>portal->min.z) && (chk_portal->max.z<=portal->max.z))) {
 			if (portal->min.x==chk_portal->max.x) return(TRUE);
@@ -205,7 +205,7 @@ bool map_auto_generate_portal_touching_left(map_type *map,int portal_idx,unsigne
 	return(FALSE);
 }
 
-bool map_auto_generate_portal_touching_right(map_type *map,int portal_idx,unsigned char *corridor_flags)
+bool map_auto_generate_portal_touching_right(int portal_idx)
 {
 	int							n;
 	auto_generate_box_type		*portal,*chk_portal;
@@ -214,9 +214,9 @@ bool map_auto_generate_portal_touching_right(map_type *map,int portal_idx,unsign
 	
 	for (n=0;n!=ag_box_count;n++) {
 		if (portal_idx==n) continue;
-		if (corridor_flags!=NULL) if (corridor_flags[n]!=ag_corridor_flag_portal) continue;
 
 		chk_portal=&ag_boxes[n];
+		if (chk_portal->corridor_flag!=ag_corridor_flag_portal) continue;
 		
 		if (((chk_portal->min.z>=portal->min.z) && (chk_portal->min.z<portal->max.z)) || ((chk_portal->max.z>portal->min.z) && (chk_portal->max.z<=portal->max.z))) {
 			if (portal->max.x==chk_portal->min.x) return(TRUE);
@@ -226,7 +226,7 @@ bool map_auto_generate_portal_touching_right(map_type *map,int portal_idx,unsign
 	return(FALSE);
 }
 
-bool map_auto_generate_portal_touching_top(map_type *map,int portal_idx,unsigned char *corridor_flags)
+bool map_auto_generate_portal_touching_top(int portal_idx)
 {
 	int							n;
 	auto_generate_box_type		*portal,*chk_portal;
@@ -235,9 +235,9 @@ bool map_auto_generate_portal_touching_top(map_type *map,int portal_idx,unsigned
 	
 	for (n=0;n!=ag_box_count;n++) {
 		if (portal_idx==n) continue;
-		if (corridor_flags!=NULL) if (corridor_flags[n]!=ag_corridor_flag_portal) continue;
 
 		chk_portal=&ag_boxes[n];
+		if (chk_portal->corridor_flag!=ag_corridor_flag_portal) continue;
 		
 		if (((chk_portal->min.x>=portal->min.x) && (chk_portal->min.x<portal->max.x)) || ((chk_portal->max.x>portal->min.x) && (chk_portal->max.x<=portal->max.x))) {
 			if (portal->min.z==chk_portal->max.z) return(TRUE);
@@ -247,7 +247,7 @@ bool map_auto_generate_portal_touching_top(map_type *map,int portal_idx,unsigned
 	return(FALSE);
 }
 
-bool map_auto_generate_portal_touching_bottom(map_type *map,int portal_idx,unsigned char *corridor_flags)
+bool map_auto_generate_portal_touching_bottom(int portal_idx)
 {
 	int							n;
 	auto_generate_box_type		*portal,*chk_portal;
@@ -256,9 +256,9 @@ bool map_auto_generate_portal_touching_bottom(map_type *map,int portal_idx,unsig
 	
 	for (n=0;n!=ag_box_count;n++) {
 		if (portal_idx==n) continue;
-		if (corridor_flags!=NULL) if (corridor_flags[n]!=ag_corridor_flag_portal) continue;
 
 		chk_portal=&ag_boxes[n];
+		if (chk_portal->corridor_flag!=ag_corridor_flag_portal) continue;
 		
 		if (((chk_portal->min.x>=portal->min.x) && (chk_portal->min.x<portal->max.x)) || ((chk_portal->max.x>portal->min.x) && (chk_portal->max.x<=portal->max.x))) {
 			if (portal->max.z==chk_portal->min.z) return(TRUE);
@@ -268,12 +268,12 @@ bool map_auto_generate_portal_touching_bottom(map_type *map,int portal_idx,unsig
 	return(FALSE);
 }
 
-bool map_auto_generate_portal_touching_any(map_type *map,int portal_idx,unsigned char *corridor_flags)
+bool map_auto_generate_portal_touching_any(int portal_idx)
 {
-	if (map_auto_generate_portal_touching_left(map,portal_idx,corridor_flags)) return(TRUE);
-	if (map_auto_generate_portal_touching_right(map,portal_idx,corridor_flags)) return(TRUE);
-	if (map_auto_generate_portal_touching_top(map,portal_idx,corridor_flags)) return(TRUE);
-	if (map_auto_generate_portal_touching_bottom(map,portal_idx,corridor_flags)) return(TRUE);
+	if (map_auto_generate_portal_touching_left(portal_idx)) return(TRUE);
+	if (map_auto_generate_portal_touching_right(portal_idx)) return(TRUE);
+	if (map_auto_generate_portal_touching_top(portal_idx)) return(TRUE);
+	if (map_auto_generate_portal_touching_bottom(portal_idx)) return(TRUE);
 
 	return(FALSE);
 }
@@ -534,8 +534,6 @@ bool map_auto_generate_mesh_start(map_type *map,int box_idx,int group_idx,int tx
 	map_mesh_type			*mesh;
 
 	map_ag_box_idx=box_idx;
-	map_ag_mesh_idx=0;
-
 	map_ag_poly_txt_idx=txt_idx;
 
 		// need a new mesh?
@@ -547,6 +545,9 @@ bool map_auto_generate_mesh_start(map_type *map,int box_idx,int group_idx,int tx
 		mesh=&map->mesh.meshes[map_ag_mesh_idx];
 		mesh->group_idx=group_idx;
 		mesh->flag.moveable=moveable;
+	}
+	else {
+		map_ag_mesh_idx=ag_boxes[box_idx].mesh_idx;
 	}
 
 	return(TRUE);

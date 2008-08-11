@@ -117,7 +117,7 @@ extern bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z);
 // library dialogs
 //
 
-extern bool dialog_choose_library_object_run(char *name);
+extern bool dialog_create_grid_mesh_run(int *xdiv,int *ydiv,int *zdiv);
 extern void dialog_mesh_scale_run(float *scale);
 
 //
@@ -131,8 +131,7 @@ extern void dialog_shader_setting_run(int txt);
 // import dialogs
 //
 
-extern bool dialog_map_obj_import_setting_run(import_obj_settings_type *oi_settings,bool first);
-extern bool dialog_map_height_import_setting_run(import_height_map_settings_type *hmi_settings,bool first);
+extern bool dialog_height_import_run(int *div_cnt,int *size,int *high);
 extern bool dialog_map_auto_generate_setting_run(bool first);
 
 

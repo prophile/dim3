@@ -289,6 +289,7 @@ void map_prepare(map_type *map)
 void map_center(map_type *map)
 {
 	int					n,k,x,y,z;
+	bool				first_hit;
 	d3pnt				*pt,min,max;
 	map_mesh_type		*mesh;
 	map_liquid_type		*liq;
@@ -298,11 +299,10 @@ void map_center(map_type *map)
 	map_particle_type	*particle;
     node_type			*node;
     spot_type			*spot;
-
+	
 		// get map size
 
-	min.x=min.y=min.z=map_max_size;
-	max.x=max.y=max.z=0;
+	first_hit=TRUE;
 	
 	mesh=map->mesh.meshes;
 		
@@ -311,23 +311,34 @@ void map_center(map_type *map)
 		pt=mesh->vertexes;
 
 		for (k=0;k!=mesh->nvertex;k++) {
-			if (pt->x<min.x) min.x=pt->x;
-			if (pt->x>max.x) max.x=pt->x;
-			if (pt->y<min.y) min.y=pt->y;
-			if (pt->y>max.y) max.y=pt->y;
-			if (pt->z<min.z) min.z=pt->z;
-			if (pt->z>max.z) max.z=pt->z;
+		
+			if (first_hit) {
+				min.x=max.x=pt->x;
+				min.y=max.y=pt->y;
+				min.z=max.z=pt->z;
+				first_hit=FALSE;
+			}
+			else {
+				if (pt->x<min.x) min.x=pt->x;
+				if (pt->x>max.x) max.x=pt->x;
+				if (pt->y<min.y) min.y=pt->y;
+				if (pt->y>max.y) max.y=pt->y;
+				if (pt->z<min.z) min.z=pt->z;
+				if (pt->z>max.z) max.z=pt->z;
+			}
 			pt++;
 		}
 
 		mesh++;
 	}
+	
+	if (!first_hit) return;
 
 		// adjust map
 
-	x=((max.x-min.x)/2)-(map_max_size/2);
-	y=((max.y-min.y)/2)-(map_max_size/2);
-	z=((max.z-min.z)/2)-(map_max_size/2);
+	x=(max.x+min.x)/2;
+	y=(max.y+min.y)/2;
+	z=(max.z+min.z)/2;
 
 	mesh=map->mesh.meshes;
 		
@@ -336,9 +347,9 @@ void map_center(map_type *map)
 		pt=mesh->vertexes;
 
 		for (k=0;k!=mesh->nvertex;k++) {
-			pt->x+=x;
-			pt->y+=y;
-			pt->z+=z;
+			pt->x=(pt->x-x)+(map_max_size/2);
+			pt->y=(pt->y-y)+(map_max_size/2);
+			pt->z=(pt->z-z)+(map_max_size/2);
 			pt++;
 		}
 
@@ -349,11 +360,11 @@ void map_center(map_type *map)
 
 	for (n=0;n!=map->liquid.nliquid;n++) {
 
-		liq->lft+=x;
-		liq->rgt+=x;
-		liq->top+=z;
-		liq->bot+=z;
-		liq->y+=y;
+		liq->lft=(liq->lft-x)+(map_max_size/2);
+		liq->rgt=(liq->rgt-x)+(map_max_size/2);
+		liq->top=(liq->top-z)+(map_max_size/2);
+		liq->bot=(liq->bot-z)+(map_max_size/2);
+		liq->y=(liq->y-y)+(map_max_size/2);
 
 		liq++;
 	}
@@ -361,54 +372,54 @@ void map_center(map_type *map)
 	scenery=map->sceneries;
 	
 	for (n=0;n!=map->nscenery;n++) {
-		scenery->pnt.x+=x;
-		scenery->pnt.y+=y;
-		scenery->pnt.z+=z;
+		scenery->pnt.x=(scenery->pnt.x-x)+(map_max_size/2);
+		scenery->pnt.y=(scenery->pnt.y-y)+(map_max_size/2);
+		scenery->pnt.z=(scenery->pnt.z-z)+(map_max_size/2);
 		scenery++;
 	}
 
 	light=map->lights;
 	
 	for (n=0;n!=map->nlight;n++) {
-		light->pnt.x+=x;
-		light->pnt.y+=y;
-		light->pnt.z+=z;
+		light->pnt.x=(light->pnt.x-x)+(map_max_size/2);
+		light->pnt.y=(light->pnt.y-y)+(map_max_size/2);
+		light->pnt.z=(light->pnt.z-z)+(map_max_size/2);
 		light++;
 	}
 
 	sound=map->sounds;
 	
 	for (n=0;n!=map->nsound;n++) {
-		sound->pnt.x+=x;
-		sound->pnt.y+=y;
-		sound->pnt.z+=z;
+		sound->pnt.x=(sound->pnt.x-x)+(map_max_size/2);
+		sound->pnt.y=(sound->pnt.y-y)+(map_max_size/2);
+		sound->pnt.z=(sound->pnt.z-z)+(map_max_size/2);
 		sound++;
 	}
 
 	particle=map->particles;
 	
 	for (n=0;n!=map->nparticle;n++) {
-		particle->pnt.x+=x;
-		particle->pnt.y+=y;
-		particle->pnt.z+=z;
+		particle->pnt.x=(particle->pnt.x-x)+(map_max_size/2);
+		particle->pnt.y=(particle->pnt.y-y)+(map_max_size/2);
+		particle->pnt.z=(particle->pnt.z-z)+(map_max_size/2);
 		particle++;
 	}
 
 	node=map->nodes;
 	
 	for (n=0;n!=map->nnode;n++) {
-		node->pnt.x+=x;
-		node->pnt.y+=y;
-		node->pnt.z+=z;
+		node->pnt.x=(node->pnt.x-x)+(map_max_size/2);
+		node->pnt.y=(node->pnt.y-y)+(map_max_size/2);
+		node->pnt.z=(node->pnt.z-z)+(map_max_size/2);
 		node++;
 	}
 
 	spot=map->spots;
 	
 	for (n=0;n!=map->nspot;n++) {
-		spot->pnt.x+=x;
-		spot->pnt.y+=y;
-		spot->pnt.z+=z;
+		spot->pnt.x=(spot->pnt.x-x)+(map_max_size/2);
+		spot->pnt.y=(spot->pnt.y-y)+(map_max_size/2);
+		spot->pnt.z=(spot->pnt.z-z)+(map_max_size/2);
 		spot++;
 	}
 }

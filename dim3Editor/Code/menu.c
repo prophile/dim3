@@ -110,28 +110,24 @@ void menu_fix_enable(void)
 		
 		if (select_has_type(mesh_piece)) {
 			EnableMenuItem(GetMenuHandle(app_menu_mesh),0);
-			EnableMenuItem(GetMenuHandle(app_menu_polygon),0);
-			EnableMenuItem(GetMenuHandle(app_menu_vertex),0);
+			if (drag_mode==drag_mode_polygon) {
+				EnableMenuItem(GetMenuHandle(app_menu_polygon),0);
+			}
+			else {
+				DisableMenuItem(GetMenuHandle(app_menu_polygon),0);
+			}
+			if (drag_mode==drag_mode_vertex) {
+				EnableMenuItem(GetMenuHandle(app_menu_vertex),0);
+			}
+			else {
+				DisableMenuItem(GetMenuHandle(app_menu_vertex),0);
+			}
 		}
 		else {
 			DisableMenuItem(GetMenuHandle(app_menu_mesh),0);
 			DisableMenuItem(GetMenuHandle(app_menu_polygon),0);
 			DisableMenuItem(GetMenuHandle(app_menu_vertex),0);
 		}
-/*		
-		if (select_count()!=0) {
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),7);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),8);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),10);
-			EnableMenuItem(GetMenuHandle(app_menu_pieces),11);
-		}
-		else {
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),7);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),8);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),10);
-			DisableMenuItem(GetMenuHandle(app_menu_pieces),11);
-		}
-	*/	
 	}
 	
 	DrawMenuBar();
@@ -261,17 +257,8 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			undo_clear();
 			return(noErr);
 
-		case kCommandImportHeightMap:
-			select_clear();
-			import_height_map();
-			undo_clear();
-			return(noErr);
-			
 		case kCommandAutoGenerateMap:
-			select_clear();
-			import_auto_generate();
-			main_wind_tool_fill_group_combo();
-			undo_clear();
+			auto_generate_map();
 			return(noErr);
 			
 		case kCommandSave:

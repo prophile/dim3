@@ -43,7 +43,6 @@ extern int map_auto_generate_get_door_type(auto_generate_settings_type *ags);
 extern bool map_auto_generate_has_door_type(auto_generate_settings_type *ags);
 
 extern int								ag_box_count;
-extern unsigned char					corridor_flags[max_portal];
 
 extern auto_generate_settings_type		ag_settings;
 extern auto_generate_box_type			ag_boxes[max_ag_box];
@@ -113,11 +112,11 @@ void map_auto_generate_ramps(map_type *map)
 		// create ramps
 
 	for (n=0;n!=ag_box_count;n++) {
-		if (corridor_flags[n]!=ag_corridor_flag_portal) continue;
-		
-			// portal size
 
 		portal=&ag_boxes[n];
+		if (portal->corridor_flag!=ag_corridor_flag_portal) continue;
+		
+			// portal size
 
 		xsz=portal->max.x-portal->min.x;
 		zsz=portal->max.z-portal->min.z;
@@ -126,11 +125,12 @@ void map_auto_generate_ramps(map_type *map)
 	
 		for (k=0;k!=ag_box_count;k++) {
 			if (k==n) continue;
-			if (corridor_flags[k]!=ag_corridor_flag_portal) continue;
+			
+			chk_portal=&ag_boxes[k];
+			if (chk_portal->corridor_flag!=ag_corridor_flag_portal) continue;
 			
 				// only put ramps in rooms that are lower
 				
-			chk_portal=&ag_boxes[k];
 			if (portal->max.y<=chk_portal->max.y) continue;
 
 			high=portal->max.y-chk_portal->max.y;
@@ -455,17 +455,18 @@ void map_auto_generate_corridor_to_portal_steps(map_type *map)
 	auto_generate_box_type		*portal,*chk_portal;
 	
 	for (n=0;n!=ag_box_count;n++) {
-		if (corridor_flags[n]!=ag_corridor_flag_portal) continue;
-
+	
 		portal=&ag_boxes[n];
+		if (portal->corridor_flag!=ag_corridor_flag_portal) continue;
 
 			// find connecting corridors
 
 		for (k=0;k!=ag_box_count;k++) {
 			if (n==k) continue;
-			if (corridor_flags[k]==ag_corridor_flag_portal) continue;
 			
 			chk_portal=&ag_boxes[k];
+			if (chk_portal->corridor_flag==ag_corridor_flag_portal) continue;
+			
 			if (chk_portal->max.y>=portal->max.y) continue;
 
 			if ((chk_portal->min.x>=portal->min.x) && (chk_portal->min.x<=portal->max.x)) {
@@ -606,7 +607,7 @@ void map_auto_generate_doors(map_type *map)
 	
 			// is this a corridor?
 			
-		if (corridor_flags[n]==ag_corridor_flag_portal) continue;
+		if (portal->corridor_flag==ag_corridor_flag_portal) continue;
 			
 			// percentage correct?
 				
@@ -635,7 +636,7 @@ void map_auto_generate_doors(map_type *map)
 		
 			// create door mesh
 			
-		if (corridor_flags[n]==ag_corridor_flag_horizontal) {
+		if (portal->corridor_flag==ag_corridor_flag_horizontal) {
 			x=map_auto_generate_doors_get_position(xsz);
 			group_idx=map_auto_generate_doors_horizontal(map,n,x,zsz,ty,by,name);
 		}

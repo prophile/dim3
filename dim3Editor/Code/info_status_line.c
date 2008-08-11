@@ -29,6 +29,7 @@ and can be sold or given away.
 #include "dialog.h"
 #include "common_view.h"
 
+extern int				cx,cy,cz;
 extern map_type			map;
 
 extern WindowRef		mainwind;
@@ -94,6 +95,7 @@ void info_status_line_draw_selection(Rect *box)
 
 void info_status_line_draw(void)
 {
+	char				txt[256];
 	Rect				wbox,box;
 	GrafPtr				saveport;
 	RGBColor			blackcolor={0x0,0x0,0x0};
@@ -102,6 +104,8 @@ void info_status_line_draw(void)
 	SetPort(GetWindowPort(mainwind));
 	
  	GetWindowPortBounds(mainwind,&wbox);
+	
+	TextSize(10);
 	
 		// clear info window
 		
@@ -116,9 +120,12 @@ void info_status_line_draw(void)
 	MoveTo(box.left,box.top);
 	LineTo(box.right,box.top);
 	
-		// draw selection
+		// position at left
 	
-	TextSize(10);
+	sprintf(txt,"(%d,%d,%d)",cx,cy,cz);
+	
+	MoveTo((box.left+4),(box.bottom-4));
+	DrawText(txt,0,strlen(txt));
 		
 		// the selection text
 		

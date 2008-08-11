@@ -26,18 +26,6 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// height map import settings
-//
-
-typedef struct	{
-					int								portal_sz,portal_cnt,portal_high,
-													texture_portal_wall,texture_portal_high_floor,
-													texture_portal_mid_floor,texture_portal_low_floor;
-					bool							wall,lights;
-					char							path[1024];
-				} import_height_map_settings_type;
-
-//
 // auto-generate flags and modes
 //
 
@@ -296,7 +284,8 @@ typedef struct	{
 #define max_ag_box											256
 
 typedef struct	{
-					int										corridor_flag,corridor_type,ceiling_type;
+					int										mesh_idx,
+															corridor_flag,corridor_type,ceiling_type;
 					d3pnt									min,max;
 				} auto_generate_box_type;
 

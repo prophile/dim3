@@ -734,7 +734,7 @@ bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 {
 	int						x,y,mx,my,mz,xadd,zadd,yadd,
 							type,main_idx,sub_idx;
-	d3pnt					*pnt,old_pt,mpt;
+	d3pnt					*pnt,old_pt,old_pnt,mpt;
 	Point					uipt;
 	bool					first_drag;
 	MouseTrackingResult		track;
@@ -777,6 +777,7 @@ bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 	first_drag=TRUE;
 	
 	memmove(&old_pt,pt,sizeof(d3pnt));
+	memmove(&old_pnt,pnt,sizeof(d3pnt));
 	
 	mx=my=mz=0;
 	
@@ -812,6 +813,10 @@ bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 		mpt.z=mz;
 		
 		walk_view_click_grid(&mpt);
+		
+		pnt->x=old_pnt.x+mpt.x;
+		pnt->y=old_pnt.y+mpt.y;
+		pnt->z=old_pnt.z+mpt.z;
 
         main_wind_draw();
 		

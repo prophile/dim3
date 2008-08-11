@@ -32,7 +32,6 @@ and can be sold or given away.
 extern int map_auto_generate_random_int(int max);
 
 extern int								ag_box_count;
-extern unsigned char					corridor_flags[max_portal];
 
 extern auto_generate_settings_type		ag_settings;
 extern auto_generate_box_type			ag_boxes[max_ag_box];
@@ -79,7 +78,7 @@ void map_auto_generate_lights(map_type *map)
 			// tinting
 			// tinted lights on in portals
 			
-		if ((ag_settings.light_type_on[ag_light_type_tint]!=0) && (corridor_flags[n]==ag_corridor_flag_portal)) {
+		if ((ag_settings.light_type_on[ag_light_type_tint]!=0) && (portal->corridor_flag==ag_corridor_flag_portal)) {
 			
 			switch (map_auto_generate_random_int(4)) {
 				case 0:
@@ -99,7 +98,7 @@ void map_auto_generate_lights(map_type *map)
 			
 		lt_type=lt_normal;
 		
-		if ((ag_settings.light_type_on[ag_light_type_animated]!=0) && (corridor_flags[n]==ag_corridor_flag_portal)) {
+		if ((ag_settings.light_type_on[ag_light_type_animated]!=0) && (portal->corridor_flag==ag_corridor_flag_portal)) {
 		
 			if (map_auto_generate_random_int(100)<(int)(ag_constant_light_animate_percentage*100.0f)) {
 				switch (map_auto_generate_random_int(3)) {

@@ -47,19 +47,8 @@ extern void textdecode_get_line(int i,char *txt);
 extern void textdecode_get_piece(int i,int k,char *txt);
 
 //
-// import obj map
-//
-
-//
-// import height map
-//
-
-extern float import_height_map_get_height(bitmap_type *bitmap,int portal_start,int portal_total_sz,int seg_x,int seg_z);
-extern void import_height_map(void);
-
-//
 // auto-generate maps
 //
 
-extern void import_auto_generate(void);
+extern void auto_generate_map(void);
 

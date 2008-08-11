@@ -76,10 +76,9 @@ char					tool_tooltip_str[tool_count][64]=
 									
 char					piece_tooltip_str[piece_count][64]=
 									{
-										"Add Portal","Add Script Spot",
-										"Add Light","Add Sound",
+										"Add Script Spot","Add Light","Add Sound",
 										"Add Particle","Add Scenery","Add Node",
-										"Add Mesh","Replace Mesh with New Mesh",
+										"Add OBJ Mesh","Add Height Map Mesh","Add Grid Mesh",
 										"Add Liquid Volume"
 									};
 
@@ -233,35 +232,47 @@ void main_wind_control_tool(int tool_idx)
 void main_wind_control_piece(int piece_idx)
 {
 	switch (piece_idx) {
+
 		case 0:
-			break;
-		case 1:
 			piece_create_spot();
 			break;
-		case 2:
+			
+		case 1:
 			piece_create_light();
 			break;
-		case 3:
+			
+		case 2:
 			piece_create_sound();
 			break;
-		case 4:
+			
+		case 3:
 			piece_create_particle();
 			break;
-		case 5:
+			
+		case 4:
 			piece_create_scenery();
 			break;
-		case 6:
+			
+		case 5:
 			piece_create_node();
 			break;
+			
+		case 6:
+			piece_add_obj_mesh();
+			break;
+			
 		case 7:
-			piece_add_library_mesh();
+			piece_add_height_map_mesh();
 			break;
+			
 		case 8:
-			piece_replace_library_mesh();
+			piece_add_grid_mesh();
 			break;
+			
 		case 9:
 			piece_create_liquid();
 			break;
+			
 	}
 	
 	SetControlValue(piece_ctrl[piece_idx],0);
