@@ -40,6 +40,7 @@ extern map_type				map;
 #define kLiquidDrownHarm					FOUR_CHAR_CODE('dhrm')
 #define kLiquidColor						FOUR_CHAR_CODE('colr')
 #define kLiquidTintAlpha					FOUR_CHAR_CODE('talh')
+#define kLiquidDepth						FOUR_CHAR_CODE('dept')
 
 #define kLiquidOffX							FOUR_CHAR_CODE('offx')
 #define kLiquidOffY							FOUR_CHAR_CODE('offy')
@@ -133,6 +134,7 @@ bool dialog_liquid_settings_run(map_liquid_type *liq)
 	dialog_liquid_settings_color.blue=(int)(liq->col.b*(float)0xFFFF);
 	
 	dialog_set_float(dialog_liquid_settings_wind,kLiquidTintAlpha,0,liq->tint_alpha);
+	dialog_set_int(dialog_liquid_settings_wind,kLiquidDepth,0,liq->depth);
 	
 	dialog_set_float(dialog_liquid_settings_wind,kLiquidOffX,0,liq->x_txtoff);
 	dialog_set_float(dialog_liquid_settings_wind,kLiquidOffY,0,liq->y_txtoff);
@@ -180,6 +182,7 @@ bool dialog_liquid_settings_run(map_liquid_type *liq)
 		liq->col.b=((float)dialog_liquid_settings_color.blue/(float)0xFFFF);
 		
 		liq->tint_alpha=dialog_get_float(dialog_liquid_settings_wind,kLiquidTintAlpha,0);
+		liq->depth=dialog_get_int(dialog_liquid_settings_wind,kLiquidDepth,0);
 		
 		liq->x_txtoff=dialog_get_float(dialog_liquid_settings_wind,kLiquidOffX,0);
 		liq->y_txtoff=dialog_get_float(dialog_liquid_settings_wind,kLiquidOffY,0);

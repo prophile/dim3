@@ -158,6 +158,8 @@ void map_convert_liquid(map_type *map,portal_type *portal,segment_type *seg)
 	liquid->rgt=(seg->data.liquid.rgt*map_enlarge)+portal->x;
 	liquid->top=(seg->data.liquid.top*map_enlarge)+portal->z;
 	liquid->bot=(seg->data.liquid.bot*map_enlarge)+portal->z;
+	
+	liquid->depth=5000;
 
 	liquid->alpha=seg->alpha;
 	liquid->speed_alter=seg->data.liquid.speed_alter;

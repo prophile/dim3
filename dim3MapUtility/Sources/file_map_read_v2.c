@@ -154,6 +154,8 @@ void read_single_liquid_v2(map_type *map,portal_type *portal,int liquid_idx,int 
 	liq->rgt+=portal->x;
 	liq->top+=portal->z;
 	liq->bot+=portal->z;
+	
+	liq->depth=5000;
 
 		// physics
 

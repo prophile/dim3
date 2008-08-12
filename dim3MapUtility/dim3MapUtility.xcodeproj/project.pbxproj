@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2674501C0E513E1900812D9D /* file_map_read_v3.c in Sources */ = {isa = PBXBuildFile; fileRef = 2674501B0E513E1900812D9D /* file_map_read_v3.c */; };
 		267568D30DBD52E1008BEDEE /* auto_generate_door_ramp_step.c in Sources */ = {isa = PBXBuildFile; fileRef = 267568D10DBD52E1008BEDEE /* auto_generate_door_ramp_step.c */; };
 		267568D40DBD52E1008BEDEE /* auto_generate_light_spot.c in Sources */ = {isa = PBXBuildFile; fileRef = 267568D20DBD52E1008BEDEE /* auto_generate_light_spot.c */; };
 		2683177D0E4A8B1900BBCDCA /* map_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = 268317780E4A8B1900BBCDCA /* map_liquid.c */; };
@@ -58,6 +59,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2674501B0E513E1900812D9D /* file_map_read_v3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_map_read_v3.c; path = Sources/file_map_read_v3.c; sourceTree = "<group>"; };
 		267568D10DBD52E1008BEDEE /* auto_generate_door_ramp_step.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate_door_ramp_step.c; path = Sources/auto_generate_door_ramp_step.c; sourceTree = "<group>"; };
 		267568D20DBD52E1008BEDEE /* auto_generate_light_spot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate_light_spot.c; path = Sources/auto_generate_light_spot.c; sourceTree = "<group>"; };
 		268317780E4A8B1900BBCDCA /* map_liquid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_liquid.c; path = Sources/map_liquid.c; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 				26FC4AAC0DA2F87A00E6ECED /* file_map_read_v1.c */,
 				26BF8BBA0DBA5B900071D014 /* file_map_read_v1_curves.c */,
 				26E372E50DA5AB75009653F2 /* file_map_read_v2.c */,
+				2674501B0E513E1900812D9D /* file_map_read_v3.c */,
 				F5A8B1AF05229DA4008D4331 /* file_map_read.c */,
 				F5A8B1B005229DA4008D4331 /* file_map_write.c */,
 				F5A10B6C052D294C006A2E68 /* file_map_texture.c */,
@@ -325,6 +328,7 @@
 				2683177F0E4A8B1900BBCDCA /* map_mesh.c in Sources */,
 				268317800E4A8B1900BBCDCA /* map_mesh_update.c in Sources */,
 				268317810E4A8B1900BBCDCA /* map_vertex_list.c in Sources */,
+				2674501C0E513E1900812D9D /* file_map_read_v3.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

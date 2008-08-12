@@ -45,7 +45,7 @@ extern char				media_type_str[][32],
       
 ======================================================= */
 
-bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag,bool set_msg)
+bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 {
 	int					n,nvertex,npoly,
 						msg_tag,main_vertex_tag,vertex_tag,main_poly_tag,poly_tag,tag;
@@ -170,7 +170,7 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->txt_idx=xml_get_attribute_int(tag,"txt");
 		xml_get_attribute_3_coord_int(tag,"v1",&liq->lft,&liq->y,&liq->top);
 		xml_get_attribute_3_coord_int(tag,"v2",&liq->rgt,&liq->y,&liq->bot);
-		liq->depth=xml_get_attribute_int_default(tag,"depth",(map_enlarge*20));
+		liq->depth=xml_get_attribute_int(tag,"depth");
 		xml_get_attribute_2_coord_float(tag,"uv_off",&liq->x_txtoff,&liq->y_txtoff);
 		xml_get_attribute_2_coord_float(tag,"uv_size",&liq->x_txtfact,&liq->y_txtfact);
 		xml_get_attribute_color(tag,"rgb",&liq->col);
@@ -248,7 +248,7 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 
 					// read mesh
 
-				if (!read_single_mesh_v3(map,mesh_idx,mesh_tag,(k==0))) return(FALSE);
+				if (!read_single_mesh_v3(map,mesh_idx,mesh_tag)) return(FALSE);
 				
 				mesh_tag=xml_findnextchild(mesh_tag);
 			}
