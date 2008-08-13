@@ -585,11 +585,11 @@ bool write_map_xml(map_type *map)
 		xml_add_tagend(FALSE);
 	
 		xml_add_tagstart("Link");
-		xml_add_attribute_short_array("node",(short*)node->link,max_node_link,TRUE);
+		xml_add_attribute_int_array("node",node->link,max_node_link,TRUE);
 		xml_add_tagend(TRUE);
 	
 		xml_add_tagstart("Hint");
-		xml_add_attribute_short_array("node",(short*)node->path_hint,map->nnode,FALSE);
+		xml_add_attribute_int_array("node",node->path_hint,map->nnode,FALSE);
 		xml_add_tagend(TRUE);
 
 		xml_add_tagstart("Flag");

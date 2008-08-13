@@ -1207,22 +1207,42 @@ void main_wind_set_focus(int focus)
 
 void main_wind_center_position_in_map(void)
 {
+	int					n;
 	d3pnt				pt;
-
-	if (map.mesh.nmesh!=0) {
-		map_mesh_calculate_center(&map,0,&pt);
-		cx=pt.x;
-		cy=pt.y;
-		cz=pt.z;
-	}
-	else {
-		cx=map_max_size/2;
-		cy=map_max_size/2;
-		cz=map_max_size/2;
-	}
 	
+		// view angles
+		
 	walk_view_y_angle=0.0f;
 	walk_view_x_angle=0.0f;
+	
+		// look for player spot first
+		
+	for (n=0;n!=map.nspot;n++) {
+		if ((strcasecmp(map.spots[n].name,"start")==0) || (strcasecmp(map.spots[n].script,"player")==0)) {
+			cx=map.spots[n].pnt.x;
+			cy=map.spots[n].pnt.y-(map_enlarge*20);
+			cz=map.spots[n].pnt.z;
+			return;
+		}
+	}
+
+		// otherwise do first mesh with vertexes
+		
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		if (map.mesh.meshes[n].nvertex!=0) {
+			map_mesh_calculate_center(&map,n,&pt);
+			cx=pt.x;
+			cy=pt.y;
+			cz=pt.z;
+			return;
+		}
+	}
+	
+		// just center in total map size
+		
+	cx=map_max_size/2;
+	cy=map_max_size/2;
+	cz=map_max_size/2;
 }
 
 /* =======================================================

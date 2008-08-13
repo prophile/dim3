@@ -439,7 +439,7 @@ void walk_view_draw_nodes(d3pnt *cpt)
 	if (!dp_node) return;
 	
 		// connections
-		
+
 	glLineWidth(3.0f);
 	glColor4f(0.0f,1.0f,0.0f,1.0f);
 	
@@ -456,14 +456,13 @@ void walk_view_draw_nodes(d3pnt *cpt)
 				lnode=&map.nodes[node->link[k]];
 				glVertex3i((lnode->pnt.x-cpt->x),((lnode->pnt.y-(map_enlarge*2))-cpt->y),(cpt->z-lnode->pnt.z));
 			}
-			
 		}
 		
 		node++;
 	}
 	
 	glEnd();
-	
+
 	glLineWidth(1.0f);
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 		
