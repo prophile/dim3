@@ -393,7 +393,8 @@ bool temp_mesh_view_setup(void)
 
 		// check visibility for all meshes
 	
-	for (n=0;n!=map.mesh.nmesh;n++) {
+//	for (n=0;n!=map.mesh.nmesh;n++) {
+	for (n=0;n!=4;n++) {
 
 		tick=time_get();
 	
