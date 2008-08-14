@@ -83,8 +83,8 @@ bool		mesh_view_done=FALSE;
 
 
 
-#define mesh_view_mesh_wid				640
-#define mesh_view_mesh_high				480
+#define mesh_view_mesh_wid				320
+#define mesh_view_mesh_high				240
 #define mesh_view_mesh_aspect_ratio		1.0f
 #define mesh_view_mesh_fov				60
 #define mesh_view_mesh_near_z			(6*map_enlarge)
@@ -94,12 +94,11 @@ bool		mesh_view_done=FALSE;
 
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
 
-int test_me_sort(d3pnt *pt,int *mesh_sort_list)
+int obscure_mesh_sort(d3pnt *pt,int *mesh_sort_list)
 {
 	int					n,t,sz,d,cnt,idx;
 	int					*dist;
 	map_mesh_type		*mesh;
-
 
 	dist=valloc(max_mesh*sizeof(int));
 
@@ -154,7 +153,7 @@ int test_me_sort(d3pnt *pt,int *mesh_sort_list)
 
 
 
-bool temp_mesh_visibility_clip_check(d3pnt *min,d3pnt *max,d3pnt *view_pt,int *vport,double *mod_matrix,double *proj_matrix)
+bool obscure_check_mesh_view_clip(d3pnt *min,d3pnt *max,d3pnt *view_pt,int *vport,double *mod_matrix,double *proj_matrix)
 {
 	int			n,px[8],py[8],pz[8];
 	double		dx,dy,dz;
@@ -210,12 +209,15 @@ bool temp_mesh_visibility_clip_check(d3pnt *min,d3pnt *max,d3pnt *view_pt,int *v
 
 
 
-void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,int *mesh_sort_list,float x_rot,float y_rot)
+void obscure_calculate_mesh_single_view(int mesh_idx,d3pnt *cpt,unsigned char *stencil_pixels,int *mesh_sort_list,float x_rot,float y_rot)
 {
-	int						n,k,t,mesh_cnt,idx,
-							view_mesh_idx;
-	bool					transparent;
+	int						n,k,t,mesh_cnt,stencil_idx,
+							last_stencil_mesh_idx,next_last_stencil_mesh_idx,
+							view_mesh_idx,idx;
+	int						stencil_idx_to_mesh_idx[256];
+	bool					transparent,more_batch;
 	unsigned char			*sp;
+	unsigned long			cur_gl_id;
 	d3pnt					*pt;
 	map_mesh_type			*mesh,*view_mesh;
 	map_mesh_poly_type		*poly;
@@ -224,7 +226,7 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 	double					mod_matrix[16],proj_matrix[16];
 	
 	mesh=&map.mesh.meshes[mesh_idx];
-	
+
 		// drawing rotation setup
 		
 	glMatrixMode(GL_MODELVIEW);
@@ -238,15 +240,26 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 	glGetDoublev(GL_PROJECTION_MATRIX,proj_matrix);
 	glGetDoublev(GL_MODELVIEW_MATRIX,mod_matrix);
 
-	gl_texture_bind_start();
+		// setup texturing
 
-		// supergumba -- hard code this later as it won't be in game
-		
-	gl_texture_opaque_start();
+	cur_gl_id=-1;
+
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+	
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+	
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
 	
 		// get sort list
 		
-	mesh_cnt=test_me_sort(&mesh->box.mid,mesh_sort_list);		
+	mesh_cnt=obscure_mesh_sort(cpt,mesh_sort_list);
 
 		// run through all other meshes to test
 		// their visibility against this mesh
@@ -254,101 +267,130 @@ void temp_mesh_visibility_mesh_setup(int mesh_idx,unsigned char *stencil_pixels,
 		// as we are using the stencil buffer, we can only do up to 255
 		// meshes at a time
 
-		// supergumba -- need to do in batches
+	last_stencil_mesh_idx=0;
+	next_last_stencil_mesh_idx=0;
 
-	glClear(GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
+	while (TRUE) {
 
-	for (n=0;n!=mesh_cnt;n++) {
+		glClear(GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
+
+		stencil_idx=1;
+		more_batch=FALSE;
+
+		for (n=0;n!=mesh_cnt;n++) {
+			
+			view_mesh_idx=mesh_sort_list[n];
+			view_mesh=&map.mesh.meshes[view_mesh_idx];
 		
-		view_mesh_idx=mesh_sort_list[n];
-		view_mesh=&map.mesh.meshes[view_mesh_idx];
+				// ignore all moving meshes as they
+				// won't always obscure
 
-			// if this mesh, then auto select it
-
-		if (view_mesh_idx==mesh_idx) {
-			mesh->mesh_visibility_flag[view_mesh_idx]=0x1;
-			continue;
-		}
-	
-			// ignore all moving meshes as they
-			// won't always obscure
-
-		if (view_mesh->flag.moveable) {
-			mesh->mesh_visibility_flag[view_mesh_idx]=0x1;
-			continue;
-		}
-
-			// don't draw meshes clipped from view
-
-		if (!temp_mesh_visibility_clip_check(&view_mesh->box.min,&view_mesh->box.max,&mesh->box.mid,vport,mod_matrix,proj_matrix)) continue;
-
-			// stencil in the mesh we are looking at
-
-		glStencilFunc(GL_ALWAYS,(view_mesh_idx+1),0xFF);
-
-		for (t=0;t!=view_mesh->npoly;t++) {
-
-			poly=&view_mesh->polys[t];
-
-				// transparent polygons don't write into the z
-				// but are compared to see if they are obscured
-
-			texture=&map.textures[poly->txt_idx];
-			if ((texture->bitmaps[0].alpha_mode==alpha_mode_transparent) || (poly->alpha!=1.0f)) {
-				transparent=TRUE;
-				glDepthMask(GL_FALSE);
+			if (view_mesh->flag.moveable) {
+				mesh->mesh_visibility_flag[view_mesh_idx]=0x1;
+				continue;
 			}
 
-				// write to the stencil buffer if any part
-				// of the polygon can be seen
+				// don't draw meshes clipped from view
 
-			gl_texture_opaque_set(texture->bitmaps[0].gl_id);
+			if (!obscure_check_mesh_view_clip(&view_mesh->box.min,&view_mesh->box.max,cpt,vport,mod_matrix,proj_matrix)) continue;
 
-			glBegin(GL_POLYGON);
+				// stencil in the mesh we are looking at
+				// since we might have more than 255 meshes, we
+				// are doing this in batches
 
-			for (k=0;k!=poly->ptsz;k++) {
-				pt=&view_mesh->vertexes[poly->v[k]];
-				glTexCoord2f(poly->gx[k],poly->gy[k]);
-				glVertex3i((pt->x-mesh->box.mid.x),(pt->y-mesh->box.mid.y),(mesh->box.mid.z-pt->z));
+			if (n<last_stencil_mesh_idx) {
+				glStencilFunc(GL_ALWAYS,0,0xFF);
+			}
+			else {
+				if (stencil_idx!=256) {
+					stencil_idx_to_mesh_idx[stencil_idx]=view_mesh_idx;
+					next_last_stencil_mesh_idx=n+1;
+					glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
+					stencil_idx++;
+				}
+				else {
+					glStencilFunc(GL_ALWAYS,0,0xFF);
+					more_batch=TRUE;
+				}
 			}
 
-			glEnd();
+				// draw polys of the mesh
 
-			if (transparent) glDepthMask(GL_TRUE);
+			for (t=0;t!=view_mesh->npoly;t++) {
+
+				poly=&view_mesh->polys[t];
+
+					// transparent polygons don't write into the z
+					// but are compared to see if they are obscured
+
+				texture=&map.textures[poly->txt_idx];
+				if ((texture->bitmaps[0].alpha_mode==alpha_mode_transparent) || (poly->alpha!=1.0f)) {
+					transparent=TRUE;
+					glDepthMask(GL_FALSE);
+				}
+
+					// setup texture
+
+				if (texture->bitmaps[0].gl_id!=cur_gl_id) {
+					cur_gl_id=texture->bitmaps[0].gl_id;
+					glBindTexture(GL_TEXTURE_2D,cur_gl_id);
+				}
+
+					// write to the stencil buffer if any part
+					// of the polygon can be seen
+
+				glBegin(GL_POLYGON);
+
+				for (k=0;k!=poly->ptsz;k++) {
+					pt=&view_mesh->vertexes[poly->v[k]];
+					glTexCoord2f(poly->gx[k],poly->gy[k]);
+					glVertex3i((pt->x-cpt->x),(pt->y-cpt->y),(cpt->z-pt->z));
+				}
+
+				glEnd();
+
+				if (transparent) glDepthMask(GL_TRUE);
+			}
 		}
-	}
 
-	gl_texture_opaque_end();
+		glDisable(GL_TEXTURE_2D);
 
-		// read the stencil to look for hits
+			// read the stencil to look for hits
 
-	glReadPixels(0,0,mesh_view_mesh_wid,mesh_view_mesh_high,GL_STENCIL_INDEX,GL_UNSIGNED_BYTE,stencil_pixels);
+		glReadPixels(0,0,mesh_view_mesh_wid,mesh_view_mesh_high,GL_STENCIL_INDEX,GL_UNSIGNED_BYTE,stencil_pixels);
 
-	sp=stencil_pixels;
+		sp=stencil_pixels;
 
-	for (k=0;k!=(mesh_view_mesh_wid*mesh_view_mesh_high);k++) {
-		idx=(int)*sp++;
-		if (idx!=0) mesh->mesh_visibility_flag[idx-1]=0x1;
+		for (k=0;k!=(mesh_view_mesh_wid*mesh_view_mesh_high);k++) {
+			idx=(int)*sp++;
+			if (idx!=0) mesh->mesh_visibility_flag[stencil_idx_to_mesh_idx[idx]]=0x1;
+		}
+
+			// any more batches to do?
+
+		if (!more_batch) break;
+
+		last_stencil_mesh_idx=next_last_stencil_mesh_idx;
+		if (last_stencil_mesh_idx>=map.mesh.nmesh) break;
 	}
 }
 
 
 
 
-
-bool temp_mesh_view_setup(void)
+bool obscure_calculate_mesh(int mesh_idx)
 {
-	int				n,t,cnt,tick,start_tick;
+	int				tick,t,cnt;
 	int				*mesh_sort_list;
 	float			ratio;
 	unsigned char	*stencil_pixels;
-	
-	if (mesh_view_done) return(TRUE);
-	
-	mesh_view_done=TRUE;
+	d3pnt			cpt;
+	map_mesh_type	*mesh;
 
-	start_tick=time_get();
-	
+	tick=time_get();
+
+	mesh=&map.mesh.meshes[mesh_idx];
+
 		// pixels for reading stencil buffer
 		
 	stencil_pixels=valloc(mesh_view_mesh_wid*mesh_view_mesh_high);
@@ -362,7 +404,7 @@ bool temp_mesh_view_setup(void)
 		return(FALSE);
 	}
 
-		// global rendering setup
+		// global drawing setup
 
 	glViewport(0,0,mesh_view_mesh_wid,mesh_view_mesh_high);
 		
@@ -391,49 +433,115 @@ bool temp_mesh_view_setup(void)
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
 
-		// check visibility for all meshes
-	
-//	for (n=0;n!=map.mesh.nmesh;n++) {
-	for (n=0;n!=4;n++) {
-
-		tick=time_get();
-	
-			// clear visibility bits
+		// clear visibility bits
 		
-		bzero(map.mesh.meshes[n].mesh_visibility_flag,max_mesh);
+	bzero(mesh->mesh_visibility_flag,max_mesh);
+
+		// self always in visibility list
+
+	mesh->mesh_visibility_flag[mesh_idx]=0x1;
 		
-			// build mesh list from different angles
+		// build mesh looking forward
 
-		temp_mesh_visibility_mesh_setup(n,stencil_pixels,mesh_sort_list,0.0f,0.0f);
-		temp_mesh_visibility_mesh_setup(n,stencil_pixels,mesh_sort_list,0.0f,90.0f);
-		temp_mesh_visibility_mesh_setup(n,stencil_pixels,mesh_sort_list,0.0f,180.0f);
-		temp_mesh_visibility_mesh_setup(n,stencil_pixels,mesh_sort_list,0.0f,270.0f);
-		temp_mesh_visibility_mesh_setup(n,stencil_pixels,mesh_sort_list,90.0f,0.0f);
-		temp_mesh_visibility_mesh_setup(n,stencil_pixels,mesh_sort_list,-90.0f,0.0f);
+	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
+	cpt.z=mesh->box.min.z;
+	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,0.0f,0.0f);
 
-			// supergumba -- mesh count
+	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
+	cpt.z=mesh->box.max.z;
+	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,0.0f,0.0f);
 
-		cnt=0;
-		for (t=0;t!=map.mesh.nmesh;t++) {
-			if (map.mesh.meshes[n].mesh_visibility_flag[t]!=0x0) cnt++;
-		}
+		// build mesh looking right
 
-		fprintf(stdout,"mesh %d; time = %d; count = %d/%d\n",n,time_get()-tick,cnt,map.mesh.nmesh);
-	}
-	
+	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
+	cpt.x=mesh->box.min.x;
+	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,0.0f,90.0f);
+
+	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
+	cpt.x=mesh->box.max.x;
+	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,0.0f,90.0f);
+
+		// build mesh looking back
+
+	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
+	cpt.z=mesh->box.min.z;
+	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,0.0f,180.0f);
+
+	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
+	cpt.z=mesh->box.max.z;
+	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,0.0f,180.0f);
+
+		// build mesh looking left
+
+	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
+	cpt.x=mesh->box.min.x;
+	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,0.0f,270.0f);
+
+	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
+	cpt.x=mesh->box.max.x;
+	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,0.0f,270.0f);
+
+		// build mesh looking up
+
+	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
+	cpt.y=mesh->box.max.y;
+	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,90.0f,0.0f);
+
+		// build mesh looking down
+
+	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
+	cpt.y=mesh->box.min.y;
+	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,-90.0f,0.0f);
+		
+		// disable some global setup
+
+	glDisable(GL_STENCIL_TEST);
+	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
+
+		// free memory
+
 	free(mesh_sort_list);
 	free(stencil_pixels);
 
-		// render defaults
+		// supergumba -- mesh count
 
-	glDisable(GL_STENCIL_TEST);
+	cnt=0;
+	for (t=0;t!=map.mesh.nmesh;t++) {
+		if (map.mesh.meshes[mesh_idx].mesh_visibility_flag[t]!=0x0) cnt++;
+	}
 
-	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
+	fprintf(stdout,"mesh %d; time = %d; count = %d/%d\n",mesh_idx,time_get()-tick,cnt,map.mesh.nmesh);
+
+	return(TRUE);
+}
+
+
+// supergumba -- will need to prepare map before calling any of theses
+
+bool obscure_calculate_map(void)
+{
+	int				n,start_tick;
+	
+	if (mesh_view_done) return(TRUE);
+	
+	mesh_view_done=TRUE;
+
+	start_tick=time_get();
+
+		// check visibility for all meshes
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		obscure_calculate_mesh(n);
+	}
 
 	fprintf(stdout,"total = %d\n",time_get()-start_tick);
 	
 	return(TRUE);
 }
+
+
+
+
 
 
 
@@ -830,7 +938,7 @@ void view_draw(int tick)
 	
 		// setup portals for drawing
 		
-	temp_mesh_view_setup();
+	obscure_calculate_map();
 
 	temp_get_mesh_draw_list();
 	
