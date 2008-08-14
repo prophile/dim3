@@ -38,7 +38,7 @@ extern map_type			map;
 extern setup_type		setup;
 
 int						main_wind_view,main_wind_panel_focus,main_wind_perspective,
-						vertex_mode,drag_mode,grid_mode;
+						vertex_mode,drag_mode,grid_mode,obscure_mesh_idx;
 bool					dp_auto_texture,dp_liquid,
 						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide,
 						swap_panel_forward,swap_panel_side,swap_panel_top;
@@ -68,7 +68,7 @@ char					tool_tooltip_str[tool_count][64]=
 										"Small Grid\nSwitch Mode with E",
 										"Medium Grid\nSwitch Mode with E",
 										"Large Grid\nSwitch Mode with E",
-										"Combine Meshes","Tesselate Mesh","Auto-Texture",
+										"Combine Meshes","Tesselate Mesh","Auto-Texture Meshes",
 										"Show/Hide Liquids","Show/Hide Script Spots/Scenery",
 										"Show/Hide Light/Sound/Particles","Show/Hide Nodes",
 										"Edit Map Script","Run Map In Engine",
@@ -79,7 +79,7 @@ char					piece_tooltip_str[piece_count][64]=
 										"Add Script Spot","Add Light","Add Sound",
 										"Add Particle","Add Scenery","Add Node",
 										"Add OBJ Mesh","Add Height Map Mesh","Add Grid Mesh",
-										"Add Liquid Volume"
+										"Add Single Polygon Mesh","Add Liquid Volume"
 									};
 
 /* =======================================================
@@ -270,6 +270,10 @@ void main_wind_control_piece(int piece_idx)
 			break;
 			
 		case 9:
+			piece_add_polygon_mesh();
+			break;
+			
+		case 10:
 			piece_create_liquid();
 			break;
 			
@@ -725,6 +729,8 @@ void main_wind_open(void)
 	
 	drag_mode=drag_mode_mesh;
 	grid_mode=grid_mode_small;
+	
+	obscure_mesh_idx=-1;
 	
         // events
     

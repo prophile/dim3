@@ -35,7 +35,7 @@ and can be sold or given away.
 #define tool_group_menu_id					160
 
 #define piece_button_size					36
-#define piece_count							10
+#define piece_count							11
 
 #define toolbar_high						28
 #define info_high							16

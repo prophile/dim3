@@ -130,6 +130,7 @@ extern void piece_create_liquid(void);
 extern void piece_add_obj_mesh(void);
 extern void piece_add_height_map_mesh(void);
 extern void piece_add_grid_mesh(void);
+extern void piece_add_polygon_mesh(void);
 extern void piece_combine_mesh(void);
 extern void map_mesh_move_all(int x,int y,int z);
 extern void map_mesh_reset_uv_all(void);

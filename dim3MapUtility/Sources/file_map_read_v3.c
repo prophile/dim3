@@ -433,6 +433,7 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 				node->flag.weapon=FALSE;
 				node->flag.ammo=FALSE;
 				node->flag.armor=FALSE;
+				node->flag.health=FALSE;
 				node->flag.normal_cover=FALSE;
 				node->flag.duck_cover=FALSE;
 				node->flag.sniper=FALSE;
@@ -444,6 +445,7 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 				node->flag.weapon=xml_get_attribute_boolean(tag,"weapon");
 				node->flag.ammo=xml_get_attribute_boolean(tag,"ammo");
 				node->flag.armor=xml_get_attribute_boolean(tag,"armor");
+				node->flag.health=xml_get_attribute_boolean(tag,"health");
 				node->flag.normal_cover=xml_get_attribute_boolean(tag,"normal_cover");
 				node->flag.duck_cover=xml_get_attribute_boolean(tag,"duck_cover");
 				node->flag.sniper=xml_get_attribute_boolean(tag,"sniper");

@@ -599,6 +599,7 @@ bool write_map_xml(map_type *map)
 		xml_add_attribute_boolean("weapon",node->flag.weapon);
 		xml_add_attribute_boolean("ammo",node->flag.ammo);
 		xml_add_attribute_boolean("armor",node->flag.armor);
+		xml_add_attribute_boolean("health",node->flag.health);
 		xml_add_attribute_boolean("normal_cover",node->flag.normal_cover);
 		xml_add_attribute_boolean("duck_cover",node->flag.duck_cover);
 		xml_add_attribute_boolean("sniper",node->flag.sniper);

@@ -164,7 +164,7 @@ void walk_view_draw_circle(d3pnt *cpt,d3pnt *pnt,d3col *col,int dist)
 
 void walk_view_draw_meshes_texture(d3pnt *cpt,int clip_y,bool opaque)
 {
-	int					n,k,t,x,y,z;
+	int					n,k,t;
 	unsigned long		old_gl_id;
 	float				dark_factor;
 	bool				clip_ok;
@@ -258,11 +258,8 @@ void walk_view_draw_meshes_texture(d3pnt *cpt,int clip_y,bool opaque)
 			
 			for (t=0;t!=mesh_poly->ptsz;t++) {
 				pt=&mesh->vertexes[mesh_poly->v[t]];
-				x=pt->x-cpt->x;
-				y=pt->y-cpt->y;
-				z=cpt->z-pt->z;
 				glTexCoord2f(mesh_poly->gx[t],mesh_poly->gy[t]);
-				glVertex3i(x,y,z);
+				glVertex3i((pt->x-cpt->x),(pt->y-cpt->y),(cpt->z-pt->z));
 			}
 			
 			glEnd();
@@ -276,7 +273,7 @@ void walk_view_draw_meshes_texture(d3pnt *cpt,int clip_y,bool opaque)
 
 void walk_view_draw_meshes_line(d3pnt *cpt,bool opaque)
 {
-	int					n,k,t,x,y,z;
+	int					n,k,t;
 	d3pnt				*pt;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*mesh_poly;
@@ -311,15 +308,11 @@ void walk_view_draw_meshes_line(d3pnt *cpt,bool opaque)
 			
 			for (t=0;t!=mesh_poly->ptsz;t++) {
 				pt=&mesh->vertexes[mesh_poly->v[t]];
-				x=pt->x-cpt->x;
-				y=pt->y-cpt->y;
-				z=cpt->z-pt->z;
-				glVertex3i(x,y,z);
+				glVertex3i((pt->x-cpt->x),(pt->y-cpt->y),(cpt->z-pt->z));
 			}
 			
 			glEnd();
 		}
-	
 	
 		mesh++;
 	}

@@ -589,6 +589,57 @@ void piece_add_grid_mesh(void)
 
 /* =======================================================
 
+      Add Polygon Mesh
+      
+======================================================= */
+
+void piece_add_polygon_mesh(void)
+{
+	int				mesh_idx,sz,txt_idx,
+					px[4],py[4],pz[4];
+	float			gx[4],gy[4];
+	d3pnt			pnt;
+	
+	if (!piece_create_texture_ok()) return;
+	
+		// texture and size
+		
+	txt_idx=texture_palette_get_selected_texture();
+	if (txt_idx==-1) txt_idx=0;
+	
+		// create mesh
+		
+	mesh_idx=map_mesh_add(&map);
+	if (mesh_idx==-1) return;
+	
+		// create polygon
+		
+	piece_create_get_spot(&pnt);
+
+	sz=map_enlarge*5;
+
+	px[0]=px[3]=pnt.x-sz;
+	px[1]=px[2]=pnt.x+sz;
+	pz[0]=pz[1]=pnt.z-sz;
+	pz[2]=pz[3]=pnt.z+sz;
+	py[0]=py[1]=py[2]=py[3]=pnt.y;
+	
+	gx[0]=gx[1]=gx[2]=gx[3]=0.0f;
+	gy[0]=gy[1]=gy[2]=gy[3]=0.0f;
+
+	map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+	
+		// reset UVs
+		
+	map_mesh_reset_uv(&map,mesh_idx);
+	
+		// finish up
+		
+	piece_add_mesh_finish(mesh_idx);
+}
+
+/* =======================================================
+
       Combine Meshes
       
 ======================================================= */

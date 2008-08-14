@@ -70,7 +70,6 @@ and can be sold or given away.
 #define kCommandMapResetUV					FOUR_CHAR_CODE('mpuv')
 #define kCommandRun							FOUR_CHAR_CODE('mrun')
 
-#define kCommandMeshAddLibrary				FOUR_CHAR_CODE('padd')
 #define kCommandMeshCombine					FOUR_CHAR_CODE('pcmb')
 #define kCommandMeshTesselate				FOUR_CHAR_CODE('ptsl')
 #define kCommandMeshResize					FOUR_CHAR_CODE('mrsz')
@@ -86,6 +85,7 @@ and can be sold or given away.
 #define kCommandMeshSnapToGrid				FOUR_CHAR_CODE('msnp')
 #define kCommandMeshSnapClosestVertex		FOUR_CHAR_CODE('mscv')
 #define kCommandMeshResetUV					FOUR_CHAR_CODE('mruv')
+#define kCommandMeshTestObscure				FOUR_CHAR_CODE('obsc')
 
 #define kCommandPolygonHole1				FOUR_CHAR_CODE('fhl1')
 #define kCommandPolygonSnapToGrid			FOUR_CHAR_CODE('psnp')

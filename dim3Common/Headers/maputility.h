@@ -388,7 +388,7 @@ typedef struct		{
 
 typedef struct		{
 						bool						goal,red_flag,blue_flag,
-													weapon,ammo,armor,
+													weapon,ammo,armor,health,
 													normal_cover,duck_cover,sniper;
 					} node_flag_type;
 

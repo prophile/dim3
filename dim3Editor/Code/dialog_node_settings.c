@@ -30,11 +30,22 @@ and can be sold or given away.
 
 extern map_type				map;
 
-#define kNodeName									FOUR_CHAR_CODE('name')
-#define kNodeUserValue								FOUR_CHAR_CODE('vale')
-#define kNodeAngleX									FOUR_CHAR_CODE('angx')
-#define kNodeAngleY									FOUR_CHAR_CODE('angy')
-#define kNodeAngleZ									FOUR_CHAR_CODE('angz')
+#define kNodeName						FOUR_CHAR_CODE('name')
+#define kNodeUserValue					FOUR_CHAR_CODE('vale')
+#define kNodeAngleX						FOUR_CHAR_CODE('angx')
+#define kNodeAngleY						FOUR_CHAR_CODE('angy')
+#define kNodeAngleZ						FOUR_CHAR_CODE('angz')
+
+#define kNodeFlagGoal					FOUR_CHAR_CODE('fgol')
+#define kNodeFlagRed					FOUR_CHAR_CODE('fred')
+#define kNodeFlagBlue					FOUR_CHAR_CODE('fblu')
+#define kNodeFlagWeapon					FOUR_CHAR_CODE('fwep')
+#define kNodeFlagAmmo					FOUR_CHAR_CODE('famo')
+#define kNodeFlagArmor					FOUR_CHAR_CODE('farm')
+#define kNodeFlagHealth					FOUR_CHAR_CODE('fhlt')
+#define kNodeFlagNormalCover			FOUR_CHAR_CODE('fncv')
+#define kNodeFlagDuckCover				FOUR_CHAR_CODE('fdcv')
+#define kNodeFlagSniper					FOUR_CHAR_CODE('fsnp')
 
 bool						dialog_node_settings_cancel;
 WindowRef					dialog_node_settings_wind;
@@ -97,6 +108,17 @@ bool dialog_node_settings_run(node_type *node)
 	dialog_set_float(dialog_node_settings_wind,kNodeAngleY,0,node->ang.y);
 	dialog_set_float(dialog_node_settings_wind,kNodeAngleZ,0,node->ang.z);
 	
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagGoal,0,node->flag.goal);
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagRed,0,node->flag.red_flag);
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagBlue,0,node->flag.blue_flag);
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagWeapon,0,node->flag.weapon);
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagAmmo,0,node->flag.ammo);
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagArmor,0,node->flag.armor);
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagHealth,0,node->flag.health);
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagNormalCover,0,node->flag.normal_cover);
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagDuckCover,0,node->flag.duck_cover);
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagSniper,0,node->flag.sniper);
+	
 		// show window
 	
 	ShowWindow(dialog_node_settings_wind);
@@ -119,6 +141,17 @@ bool dialog_node_settings_run(node_type *node)
 		node->ang.x=dialog_get_float(dialog_node_settings_wind,kNodeAngleX,0);
 		node->ang.y=dialog_get_float(dialog_node_settings_wind,kNodeAngleY,0);
 		node->ang.z=dialog_get_float(dialog_node_settings_wind,kNodeAngleZ,0);
+		
+		node->flag.goal=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagGoal,0);
+		node->flag.red_flag=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagRed,0);
+		node->flag.blue_flag=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagBlue,0);
+		node->flag.weapon=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagWeapon,0);
+		node->flag.ammo=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagAmmo,0);
+		node->flag.armor=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagArmor,0);
+		node->flag.health=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagHealth,0);
+		node->flag.normal_cover=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagNormalCover,0);
+		node->flag.duck_cover=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagDuckCover,0);
+		node->flag.sniper=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagSniper,0);
 	}
 
 		// close window

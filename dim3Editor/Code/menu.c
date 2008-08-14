@@ -31,7 +31,7 @@ and can be sold or given away.
 #include "walk_view.h"
 #include "import.h"
 
-extern int				drag_mode;
+extern int				drag_mode,obscure_mesh_idx;
 extern bool				done,map_opened;
 
 extern map_type			map;
@@ -364,10 +364,6 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			            
 			// mesh menu
 
-		case kCommandMeshAddLibrary:
-		//	primitive_save();
-			return(noErr);
-			
 		case kCommandMeshCombine:
 			piece_combine_mesh();
 			main_wind_draw();
@@ -431,6 +427,16 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 		case kCommandMeshResetUV:
 			piece_reset_uvs(FALSE);
+			main_wind_draw();
+			return(noErr);
+			
+		case kCommandMeshTestObscure:
+			if (obscure_mesh_idx==-1) {
+			//	obscure_test();
+			}
+			else {
+				obscure_mesh_idx=-1;
+			}
 			main_wind_draw();
 			return(noErr);
 			
