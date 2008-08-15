@@ -46,6 +46,8 @@ extern char light_type_str[][32];
 //
 
 #define max_mesh											8192			// maximum number of meshes in a map
+#define max_mesh_visibility_bytes							1024			// maximum number of bits for mesh list
+
 #define max_map_texture										128				// maximum number of textures in a map
 
 #define max_group											128				// maximum number of mesh groups
@@ -245,7 +247,7 @@ typedef struct		{
 
 typedef struct		{
 						int									nvertex,npoly,group_idx;
-						unsigned char						mesh_visibility_flag[max_mesh];
+						unsigned char						mesh_visibility_flag[max_mesh_visibility_bytes];
 						d3pnt								rot_off;
 						d3pnt								*vertexes;
 						map_mesh_poly_type					*polys;

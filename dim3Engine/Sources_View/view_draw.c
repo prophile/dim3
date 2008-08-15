@@ -94,6 +94,20 @@ bool		mesh_view_done=FALSE;
 
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
 
+
+
+
+inline void mesh_view_bit_set(map_mesh_type *mesh,int idx)
+{
+	mesh->mesh_visibility_flag[idx>>3]=mesh->mesh_visibility_flag[idx>>3]|(0x1<<(idx&0x7));
+}
+
+inline bool mesh_view_bit_get(map_mesh_type *mesh,int idx)
+{
+	return((mesh->mesh_visibility_flag[idx>>3]&(0x1<<(idx&0x7)))!=0x0);
+}
+
+
 int obscure_mesh_sort(d3pnt *pt,int *mesh_sort_list)
 {
 	int					n,t,sz,d,cnt,idx;
@@ -286,7 +300,7 @@ void obscure_calculate_mesh_single_view(int mesh_idx,d3pnt *cpt,unsigned char *s
 				// won't always obscure
 
 			if (view_mesh->flag.moveable) {
-				mesh->mesh_visibility_flag[view_mesh_idx]=0x1;
+				mesh_view_bit_set(mesh,view_mesh_idx);
 				continue;
 			}
 
@@ -363,7 +377,7 @@ void obscure_calculate_mesh_single_view(int mesh_idx,d3pnt *cpt,unsigned char *s
 
 		for (k=0;k!=(mesh_view_mesh_wid*mesh_view_mesh_high);k++) {
 			idx=(int)*sp++;
-			if (idx!=0) mesh->mesh_visibility_flag[stencil_idx_to_mesh_idx[idx]]=0x1;
+			if (idx!=0) mesh_view_bit_set(mesh,stencil_idx_to_mesh_idx[idx]);
 		}
 
 			// any more batches to do?
@@ -439,7 +453,7 @@ bool obscure_calculate_mesh(int mesh_idx)
 
 		// self always in visibility list
 
-	mesh->mesh_visibility_flag[mesh_idx]=0x1;
+	mesh_view_bit_set(mesh,mesh_idx);
 		
 		// build mesh looking forward
 
@@ -507,7 +521,7 @@ bool obscure_calculate_mesh(int mesh_idx)
 
 	cnt=0;
 	for (t=0;t!=map.mesh.nmesh;t++) {
-		if (map.mesh.meshes[mesh_idx].mesh_visibility_flag[t]!=0x0) cnt++;
+		if (mesh_view_bit_get(&map.mesh.meshes[mesh_idx],t)) cnt++;
 	}
 
 	fprintf(stdout,"mesh %d; time = %d; count = %d/%d\n",mesh_idx,time_get()-tick,cnt,map.mesh.nmesh);
@@ -530,7 +544,8 @@ bool obscure_calculate_map(void)
 
 		// check visibility for all meshes
 	
-	for (n=0;n!=map.mesh.nmesh;n++) {
+//	for (n=0;n!=map.mesh.nmesh;n++) {
+	for (n=0;n!=15;n++) {
 		obscure_calculate_mesh(n);
 	}
 
@@ -585,7 +600,7 @@ void temp_get_mesh_draw_list(void)
 			// is this mesh visible?
 
 		if (n!=start_mesh_idx) {
-			if (start_mesh->mesh_visibility_flag[n]==0x0) continue;
+			if (!mesh_view_bit_get(start_mesh,n)) continue;
 		}
 
 			// auto-eliminate meshes outside of view
