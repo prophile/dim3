@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit ÒCreated with dim3 TechnologyÓ is given on a single
+2. This credit â€œCreated with dim3 Technologyâ€ is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -642,7 +642,60 @@ void map_mesh_calculate_uv_center(map_type *map,int mesh_idx,float *gx,float *gy
 	*gy=ky/f_cnt;
 }
 
+/* =======================================================
 
+      Find Mesh
+      
+======================================================= */
 
+int map_find_mesh(map_type *map,d3pnt *pnt)
+{
+	int				n,d,dist,mesh_idx;
+	map_mesh_type	*mesh;
+
+	mesh_idx=-1;
+
+		// look for meshes we are inside of
+
+	dist=map_max_size;
+
+	for (n=0;n!=map->mesh.nmesh;n++) {
+
+			// are we within this mesh?
+
+		mesh=&map->mesh.meshes[n];
+		if ((pnt->x<mesh->box.min.x) || (pnt->x>mesh->box.max.x) || (pnt->y<mesh->box.min.y) || (pnt->y>mesh->box.max.y) || (pnt->z<mesh->box.min.z) || (pnt->z>mesh->box.max.z)) continue;
+
+			// might be within multiple meshes, check distances to find best mesh
+
+		d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,pnt->x,pnt->y,pnt->z);
+		if ((mesh_idx==-1) || (d<dist)) {
+			dist=d;
+			mesh_idx=n;
+		}
+	}
+
+	if (mesh_idx!=-1) return(mesh_idx);
+
+		// if inside no meshes, then closest mesh
+
+	mesh=map->mesh.meshes;
+	dist=map_max_size;
+
+	for (n=0;n!=map->mesh.nmesh;n++) {
+
+		d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,pnt->x,pnt->y,pnt->z);
+		if (d<dist) {
+			dist=d;
+			mesh_idx=n;
+		}
+
+		mesh++;
+	}
+
+	if (mesh_idx==-1) return(0);
+
+	return(mesh_idx);
+}
 
 

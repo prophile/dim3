@@ -106,7 +106,7 @@ extern void piece_mesh_poly_snap_to_grid(void);
 extern void piece_mesh_vertexes_snap_to_grid(void);
 extern void piece_rotate_uvs(void);
 extern void piece_reset_uvs(bool poly_only);
-extern void piece_poly_hole(int hole_type);
+extern void piece_poly_hole(void);
 extern void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch);
 
 //
@@ -136,14 +136,15 @@ extern void map_mesh_move_all(int x,int y,int z);
 extern void map_mesh_reset_uv_all(void);
 
 //
-// clipboard routines
-//
-
-extern void clipboard_clear(void);
-
-//
 // node routines
 //
 
 extern bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *pt);
 extern void node_path_rebuild(void);
+
+//
+// obscuring routines
+//
+
+extern bool obscure_test(void);
+

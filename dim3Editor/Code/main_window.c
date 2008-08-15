@@ -71,7 +71,7 @@ char					tool_tooltip_str[tool_count][64]=
 										"Combine Meshes","Tesselate Mesh","Auto-Texture Meshes",
 										"Show/Hide Liquids","Show/Hide Script Spots/Scenery",
 										"Show/Hide Light/Sound/Particles","Show/Hide Nodes",
-										"Edit Map Script","Run Map In Engine",
+										"Test Mesh Obscuring","Edit Map Script","Run Map In Engine",
 									};
 									
 char					piece_tooltip_str[piece_count][64]=
@@ -177,13 +177,11 @@ void main_wind_control_tool(int tool_idx)
 		case 10:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			piece_combine_mesh();
-			main_wind_draw();
 			break;
 
 		case 11:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			piece_tesselate();
-			main_wind_draw();
 			break;
 			
 		case 12:
@@ -212,13 +210,23 @@ void main_wind_control_tool(int tool_idx)
 			dp_node=!dp_node;
 			break;
 						
-			// script and run buttons
+			// obscure, script and run buttons
 			
 		case 17:
+			if (obscure_test()) {
+				SetControlValue(tool_ctrl[tool_idx],1);
+			}
+			else {
+				SetControlValue(tool_ctrl[tool_idx],0);
+			}
+			break;
+	
+		case 18:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			launch_map_script_editor();
 			break;
-		case 18:
+			
+		case 19:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			launch_engine();
 			break;
@@ -558,7 +566,7 @@ void main_wind_open(void)
 {
 	int							n;
 	Rect						wbox,box;
-	GLint						attrib[]={AGL_NO_RECOVERY,AGL_RGBA,AGL_DOUBLEBUFFER,AGL_ACCELERATED,AGL_PIXEL_SIZE,24,AGL_ALPHA_SIZE,8,AGL_DEPTH_SIZE,16,AGL_NONE};
+	GLint						attrib[]={AGL_NO_RECOVERY,AGL_RGBA,AGL_DOUBLEBUFFER,AGL_ACCELERATED,AGL_PIXEL_SIZE,24,AGL_ALPHA_SIZE,8,AGL_DEPTH_SIZE,16,AGL_STENCIL_SIZE,8,AGL_NONE};
 	GDHandle					gdevice;
 	AGLPixelFormat				pf;
 	IconFamilyHandle			iconfamily;
@@ -615,7 +623,7 @@ void main_wind_open(void)
 			// next button position
 			
 		OffsetRect(&box,tool_button_size,0);
-		if ((n==2) || (n==5) || (n==9) || (n==12) || (n==16)) OffsetRect(&box,3,0);
+		if ((n==2) || (n==5) || (n==9) || (n==12) || (n==16) || (n==17)) OffsetRect(&box,3,0);
 	}
 	
 		// group combo

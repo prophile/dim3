@@ -549,56 +549,6 @@ bool obscure_calculate_map(void)
 
 
 
-int map_find_mesh(int x,int y,int z)
-{
-	int				n,d,dist,mesh_idx;
-	map_mesh_type	*mesh;
-
-	mesh_idx=-1;
-
-		// look for meshes we are inside of
-
-	dist=map_max_size;
-
-	for (n=0;n!=map.mesh.nmesh;n++) {
-
-			// are we within this mesh?
-
-		mesh=&map.mesh.meshes[n];
-		if ((x<mesh->box.min.x) || (x>mesh->box.max.x) || (y<mesh->box.min.y) || (y>mesh->box.max.y) || (z<mesh->box.min.z) || (z>mesh->box.max.z)) continue;
-
-			// might be within multiple meshes, check distances to find best mesh
-
-		d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,x,y,z);
-		if ((mesh_idx==-1) || (d<dist)) {
-			dist=d;
-			mesh_idx=n;
-		}
-	}
-
-	if (mesh_idx!=-1) return(mesh_idx);
-
-		// if inside no meshes, then closest mesh
-
-	mesh=map.mesh.meshes;
-	dist=map_max_size;
-
-	for (n=0;n!=map.mesh.nmesh;n++) {
-
-		d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,x,y,z);
-		if (d<dist) {
-			dist=d;
-			mesh_idx=n;
-		}
-
-		mesh++;
-	}
-
-	if (mesh_idx==-1) return(0);
-
-	return(mesh_idx);
-}
-
 
 
 
@@ -612,7 +562,7 @@ void temp_get_mesh_draw_list(void)
 
 		// get mesh camera is in
 
-	start_mesh_idx=map_find_mesh(view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
+	start_mesh_idx=map_find_mesh(&map,&view.camera.pnt);
 	start_mesh=&map.mesh.meshes[start_mesh_idx];
 
 		// obscure distance -- normally is the opengl projection

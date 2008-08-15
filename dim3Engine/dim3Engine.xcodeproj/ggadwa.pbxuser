@@ -79,14 +79,14 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 239766891;
-			PBXWorkspaceStateSaveDate = 239766891;
+			PBXPerProjectTemplateStateSaveDate = 240453505;
+			PBXWorkspaceStateSaveDate = 240453505;
 		};
 		perUserProjectItems = {
 			262F425F0E29BEB100523EE0 /* PlistBookmark */ = 262F425F0E29BEB100523EE0 /* PlistBookmark */;
 			262F42610E29BEB100523EE0 /* PlistBookmark */ = 262F42610E29BEB100523EE0 /* PlistBookmark */;
-			268317CE0E4AAD4D00BBCDCA /* PBXTextBookmark */ = 268317CE0E4AAD4D00BBCDCA /* PBXTextBookmark */;
-			26D685460E441E82007668D6 /* PBXTextBookmark */ = 26D685460E441E82007668D6 /* PBXTextBookmark */;
+			26829DAF0E54FDB200EEED65 /* PBXTextBookmark */ = 26829DAF0E54FDB200EEED65 /* PBXTextBookmark */;
+			26829E030E5507B100EEED65 /* PBXTextBookmark */ = 26829E030E5507B100EEED65 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -249,7 +249,17 @@
 		vrLen = 1373;
 		vrLoc = 290;
 	};
-	268317CE0E4AAD4D00BBCDCA /* PBXTextBookmark */ = {
+	26829DAF0E54FDB200EEED65 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5A582BB090C98D500BE7C36 /* interface_defs.h */;
+		name = "interface_defs.h: 386";
+		rLen = 0;
+		rLoc = 8711;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	26829E030E5507B100EEED65 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = F5A582BB090C98D500BE7C36 /* interface_defs.h */;
 		name = "interface_defs.h: 386";
@@ -298,16 +308,6 @@
 			sepNavVisRange = "{2914, 1010}";
 			sepNavWindowFrame = "{{430, 180}, {1041, 747}}";
 		};
-	};
-	26D685460E441E82007668D6 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5A582BB090C98D500BE7C36 /* interface_defs.h */;
-		name = "interface_defs.h: 386";
-		rLen = 0;
-		rLoc = 8711;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
 	};
 	26DAED2F0DD55C28000EBB48 /* group_move.c */ = {
 		uiCtxt = {
@@ -957,9 +957,9 @@
 	};
 	F5DD19E10908310200721649 /* view_draw.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 12712}}";
-			sepNavSelRange = "{18526, 0}";
-			sepNavVisRange = "{17979, 932}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 12474}}";
+			sepNavSelRange = "{12805, 216}";
+			sepNavVisRange = "{12049, 1183}";
 			sepNavWindowFrame = "{{454, 144}, {1041, 747}}";
 		};
 	};

@@ -477,7 +477,7 @@ void map_auto_generate_connect_portals(map_type *map)
       
 ======================================================= */
 
-void map_auto_generate_portal_y(map_type *map)
+void map_auto_generate_portal_y(void)
 {
 	int							n,corridor_slop_y,by_add,portal_high,portal_high_story_add,
 								ty,by,extra_ty,extra_by;
@@ -1625,7 +1625,7 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 	map_auto_generate_initial_portals(map);
 	map_auto_generate_merge_portals();
 	map_auto_generate_connect_portals(map);
-	map_auto_generate_portal_y(map);
+	map_auto_generate_portal_y();
 	
 		// create lights
 		

@@ -30,7 +30,7 @@ and can be sold or given away.
 //
 
 #define tool_button_size					28
-#define tool_count							19
+#define tool_count							20
 
 #define tool_group_menu_id					160
 

@@ -31,9 +31,10 @@ EXPORTS
 	map_mesh_add_poly								@226
 	map_mesh_delete_poly							@227
 	map_mesh_delete_unused_vertexes					@228
-	map_mesh_calculate_extent						@231
-	map_mesh_calculate_center						@232
-	map_mesh_calculate_uv_center					@233
+	map_mesh_calculate_extent						@229
+	map_mesh_calculate_center						@230
+	map_mesh_calculate_uv_center					@231
+	map_find_mesh									@232
 	
 	map_mesh_combine								@234
 	map_mesh_move									@236

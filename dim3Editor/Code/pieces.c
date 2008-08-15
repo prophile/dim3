@@ -699,7 +699,7 @@ void piece_rotate_uvs(void)
       
 ======================================================= */
 
-void piece_poly_hole(int hole_type)
+void piece_poly_hole(void)
 {
 	int				n,sel_count,type,mesh_idx,poly_idx;
 	
@@ -707,7 +707,7 @@ void piece_poly_hole(int hole_type)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,hole_type);
+		if (type==mesh_piece) map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx);
 	}
 	
 	select_clear();

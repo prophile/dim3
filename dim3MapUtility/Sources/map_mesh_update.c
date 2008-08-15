@@ -533,7 +533,7 @@ bool map_mesh_tesselate(map_type *map,int mesh_idx)
       
 ======================================================= */
 
-bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,int hole_type)
+bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx)
 {
 	int						n,ptsz,mx,my,mz,
 							px[8],py[8],pz[8],

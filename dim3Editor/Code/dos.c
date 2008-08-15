@@ -214,7 +214,6 @@ bool file_open_map(void)
 		// clear selection
 		
 	select_clear();
-	clipboard_clear();
 	
 		// fill in the groups
 		

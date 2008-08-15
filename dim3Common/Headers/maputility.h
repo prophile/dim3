@@ -585,6 +585,7 @@ extern bool map_mesh_delete_unused_vertexes(map_type *map,int mesh_idx);
 extern void map_mesh_calculate_extent(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max);
 extern void map_mesh_calculate_center(map_type *map,int mesh_idx,d3pnt *mpt);
 extern void map_mesh_calculate_uv_center(map_type *map,int mesh_idx,float *gx,float *gy);
+extern int map_find_mesh(map_type *map,d3pnt *pnt);
 
 extern int map_mesh_combine(map_type *map,int mesh_1_idx,int mesh_2_idx);
 extern void map_mesh_move(map_type *map,int mesh_idx,int x,int y,int z);
@@ -592,7 +593,7 @@ extern void map_mesh_resize(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max);
 extern void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);
 extern void map_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float rot_z);
 extern bool map_mesh_tesselate(map_type *map,int mesh_idx);
-extern bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,int hole_type);
+extern bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx);
 extern void map_mesh_poly_run_shifts(map_type *map,int tick);
 extern void map_mesh_get_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact);
 extern void map_mesh_set_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact);

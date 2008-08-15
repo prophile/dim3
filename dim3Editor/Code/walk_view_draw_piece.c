@@ -29,7 +29,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int				cy,txt_palette_high;
+extern int				cy,txt_palette_high,obscure_mesh_idx;
 extern float			walk_view_fov,walk_view_y_angle,walk_view_x_angle;
 extern bool				dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_textured;
 
@@ -207,6 +207,17 @@ void walk_view_draw_meshes_texture(d3pnt *cpt,int clip_y,bool opaque)
 	mesh=map.mesh.meshes;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
+			
+			// obscure testing
+				
+		if (obscure_mesh_idx!=-1) {
+			if (map.mesh.meshes[obscure_mesh_idx].mesh_visibility_flag[n]==0x0) {
+				mesh++;
+				continue;
+			}
+		}
+		
+			// draw polys
 	
 		for (k=0;k!=mesh->npoly;k++) {
 		
@@ -291,6 +302,17 @@ void walk_view_draw_meshes_line(d3pnt *cpt,bool opaque)
 	mesh=map.mesh.meshes;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
+	
+			// obscure testing
+				
+		if (obscure_mesh_idx!=-1) {
+			if (map.mesh.meshes[obscure_mesh_idx].mesh_visibility_flag[n]==0x0) {
+				mesh++;
+				continue;
+			}
+		}
+		
+			// draw polys
 	
 		for (k=0;k!=mesh->npoly;k++) {
 		

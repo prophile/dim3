@@ -430,20 +430,10 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			main_wind_draw();
 			return(noErr);
 			
-		case kCommandMeshTestObscure:
-			if (obscure_mesh_idx==-1) {
-			//	obscure_test();
-			}
-			else {
-				obscure_mesh_idx=-1;
-			}
-			main_wind_draw();
-			return(noErr);
-			
 			// polygon menu
 			
-		case kCommandPolygonHole1:
-			piece_poly_hole(0);
+		case kCommandPolygonHole:
+			piece_poly_hole();
 			return(noErr);
 			
 		case kCommandPolygonSnapToGrid:

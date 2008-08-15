@@ -13,6 +13,7 @@
 		2644C95C0DF8E349005CE451 /* dialog_mesh_scale.c in Sources */ = {isa = PBXBuildFile; fileRef = 2644C95B0DF8E349005CE451 /* dialog_mesh_scale.c */; };
 		2647AD820E4F48D000BA3338 /* dialog_height_import.c in Sources */ = {isa = PBXBuildFile; fileRef = 2647AD810E4F48D000BA3338 /* dialog_height_import.c */; };
 		26791D430E4D626700AAD058 /* dialog_grid_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 26791D420E4D626700AAD058 /* dialog_grid_mesh.c */; };
+		26829D610E54E75900EEED65 /* obscure.c in Sources */ = {isa = PBXBuildFile; fileRef = 26829D600E54E75900EEED65 /* obscure.c */; };
 		26934B110D876A800009F81E /* walk_view_click_drag.c in Sources */ = {isa = PBXBuildFile; fileRef = 26934B100D876A800009F81E /* walk_view_click_drag.c */; };
 		26AFB4490D95E0E60004805A /* pieces_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AFB4480D95E0E60004805A /* pieces_mesh.c */; };
 		26AFB4C00D9612570004805A /* dialog_mesh_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AFB4BF0D9612570004805A /* dialog_mesh_setting.c */; };
@@ -84,7 +85,6 @@
 		F5A4325C055602DF002DF965 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F59E531D014DBA5801382915 /* AGL.framework */; };
 		F5A4325D055602DF002DF965 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5FE22D0014DC000015DC241 /* OpenGL.framework */; };
 		F5A9881D094BF7D8005E55AE /* dialog.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A9881C094BF7D8005E55AE /* dialog.h */; };
-		F5A989A4094D0233005E55AE /* clipboard.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A989A3094D0233005E55AE /* clipboard.c */; };
 		F5AD54430BBE1FDB001C7C04 /* baseutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD54420BBE1FDB001C7C04 /* baseutility.h */; };
 		F5AD54490BBE2010001C7C04 /* libBaseUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD54480BBE2010001C7C04 /* libBaseUtility.dylib */; };
 		F5AD544A0BBE201F001C7C04 /* libBaseUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD54480BBE2010001C7C04 /* libBaseUtility.dylib */; };
@@ -212,6 +212,7 @@
 		2644C95B0DF8E349005CE451 /* dialog_mesh_scale.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_mesh_scale.c; path = Code/dialog_mesh_scale.c; sourceTree = "<group>"; };
 		2647AD810E4F48D000BA3338 /* dialog_height_import.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_height_import.c; path = Code/dialog_height_import.c; sourceTree = "<group>"; };
 		26791D420E4D626700AAD058 /* dialog_grid_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_grid_mesh.c; path = Code/dialog_grid_mesh.c; sourceTree = "<group>"; };
+		26829D600E54E75900EEED65 /* obscure.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = obscure.c; path = Code/obscure.c; sourceTree = "<group>"; };
 		26934B100D876A800009F81E /* walk_view_click_drag.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = walk_view_click_drag.c; path = Code/walk_view_click_drag.c; sourceTree = "<group>"; };
 		26AFB4480D95E0E60004805A /* pieces_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pieces_mesh.c; path = Code/pieces_mesh.c; sourceTree = "<group>"; };
 		26AFB4BF0D9612570004805A /* dialog_mesh_setting.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_mesh_setting.c; path = Code/dialog_mesh_setting.c; sourceTree = "<group>"; };
@@ -274,7 +275,6 @@
 		F5A43266055602E0002DF965 /* dim3 Editor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dim3 Editor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; name = "Info-dim3_Editor.plist"; path = "Resources/Info-dim3_Editor.plist"; sourceTree = "<group>"; };
 		F5A9881C094BF7D8005E55AE /* dialog.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dialog.h; path = Headers/dialog.h; sourceTree = "<group>"; };
-		F5A989A3094D0233005E55AE /* clipboard.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = clipboard.c; path = Code/clipboard.c; sourceTree = "<group>"; };
 		F5AD54420BBE1FDB001C7C04 /* baseutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = baseutility.h; path = ../dim3Common/Headers/baseutility.h; sourceTree = SOURCE_ROOT; };
 		F5AD54480BBE2010001C7C04 /* libBaseUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBaseUtility.dylib; path = ../dim3Common/Libraries/libBaseUtility.dylib; sourceTree = SOURCE_ROOT; };
 		F5AF023209CFB5A0008B576A /* dialog_free_rotate.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_free_rotate.c; path = Code/dialog_free_rotate.c; sourceTree = "<group>"; };
@@ -523,12 +523,12 @@
 			children = (
 				F52F19B70946A63100FEFE18 /* selection.c */,
 				26FA0EA10DA1F22100D9C232 /* selection_move.c */,
-				F5A989A3094D0233005E55AE /* clipboard.c */,
 				F54797150107EA3C01000001 /* pieces.c */,
 				F54583E3094F868300CBE89A /* pieces_create.c */,
 				26AFB4480D95E0E60004805A /* pieces_mesh.c */,
 				F5595F7D0918717300B60FAD /* groups.c */,
 				0123D86700C0AFD57F000001 /* nodes.c */,
+				26829D600E54E75900EEED65 /* obscure.c */,
 			);
 			name = "Common View";
 			sourceTree = "<group>";
@@ -660,7 +660,6 @@
 				F5595F7E0918717300B60FAD /* groups.c in Sources */,
 				F5DD757B092CFD8700465E14 /* launch.c in Sources */,
 				F52F19B80946A63100FEFE18 /* selection.c in Sources */,
-				F5A989A4094D0233005E55AE /* clipboard.c in Sources */,
 				F54583E4094F868300CBE89A /* pieces_create.c in Sources */,
 				F545877D0952652700CBE89A /* walk_view_compass.c in Sources */,
 				F5D458EE0953160300AF9CE1 /* walk_view_draw_piece.c in Sources */,
@@ -707,6 +706,7 @@
 				2644C95C0DF8E349005CE451 /* dialog_mesh_scale.c in Sources */,
 				26791D430E4D626700AAD058 /* dialog_grid_mesh.c in Sources */,
 				2647AD820E4F48D000BA3338 /* dialog_height_import.c in Sources */,
+				26829D610E54E75900EEED65 /* obscure.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
