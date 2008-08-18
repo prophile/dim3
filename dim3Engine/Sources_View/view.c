@@ -61,6 +61,8 @@ extern void view_draw(int tick);
 extern int game_time_get(void);
 extern void chat_clear_messages(void);
 extern bool fog_solid_on(void);
+extern void view_create_vertex_objects(void);
+extern void view_dispose_vertex_objects(void);
 
 /* =======================================================
 
@@ -292,6 +294,8 @@ bool view_initialize(char *err_str)
 		// gl initialize
 
 	if (!view_initialize_display(err_str)) return(FALSE);
+	
+	view_create_vertex_objects();
 
 		// al initialize
 		
@@ -345,6 +349,7 @@ void view_shutdown(void)
 	
 		// gl shutdown
 
+	view_dispose_vertex_objects();
 	view_shutdown_display();
 
 		// shutdown SDL
@@ -435,8 +440,6 @@ void view_loop_draw(int tick)
 	if (tick<view.time.draw_tick) return;
 	view.time.draw_tick=tick+view.time.draw_time;
 
-	gl_render_arrays_frame_finish();
-
 	view_draw_setup(tick);
 	
 	if (!fog_solid_on()) {
@@ -445,8 +448,6 @@ void view_loop_draw(int tick)
 	else {
 		gl_frame_start(&map.fog.col);		// is obscuring fog on, then background = fog color
 	}
-
-	gl_render_arrays_frame_start();
 
 	view_draw(tick);
 	radar_draw();
@@ -467,9 +468,7 @@ void view_loop_draw(int tick)
 
 void view_gui_draw(void)
 {
-	gl_render_arrays_frame_start();
 	view_draw(game_time_get());
-	gl_render_arrays_frame_finish();
 }
 
 /* =======================================================
@@ -496,7 +495,6 @@ void view_pause_draw(void)
 	d3col		col;
 
 	gl_frame_start(NULL);
-	gl_render_arrays_frame_start();
 
 	gl_setup_viewport(0);
 	gl_2D_view_screen();
@@ -508,7 +506,6 @@ void view_pause_draw(void)
 	gl_text_draw((setup.screen.x_sz-2),(setup.screen.y_sz-2),"[click to resume]",tx_right,FALSE,&col,1.0f);
 	gl_text_end();
 	
-	gl_render_arrays_frame_finish();
 	gl_frame_end();
 }
 

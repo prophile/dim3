@@ -39,6 +39,9 @@ extern view_type			view;
 extern setup_type			setup;
 
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
+extern void view_next_vertex_object(void);
+extern void view_bind_current_vertex_object(void);
+extern void view_unbind_current_vertex_object(void);
 
 /* =======================================================
 
@@ -56,26 +59,62 @@ inline int liquid_render_liquid_get_max_vertex(map_liquid_type *liq)
 	return(x_sz*z_sz);
 }
 
-void liquid_render_liquid_create_vertex(map_liquid_type *liq)
+void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
 {
 	int				x,y,z,x_add,z_add,x_sz,z_sz,
-					v_cnt,v_sz,tide_split;
-	float			fy,fgx,fgy,normal[3];
+					v_cnt,v_sz,sz,tide_split,tide_split_half,
+					tide_high,tide_rate;
+	float			fy,fgx,fgy,normal[3],
+					f_break,f_time,sn,
+					f_tide_split_half,f_tide_high;
 	bool			x_break,z_break;
-	float			*vl,*uv,*cl;
+	float			*vertex_ptr,*vl,*uv,*cl;
 	
 	y=liq->y;
 	fy=(float)(y-view.camera.pnt.y);
 
+		// get total vertex count
+
 	v_sz=liquid_render_liquid_get_max_vertex(liq);
 
-	vl=map.liquid_vertexes.vertex_ptr;
-	uv=map.liquid_vertexes.vertex_ptr+(v_sz*3);
-	cl=map.liquid_vertexes.vertex_ptr+(v_sz*(3+2));
+		// get next VBO to use
+
+	view_next_vertex_object();
+
+		// map VBO to memory
+
+	view_bind_current_vertex_object();
+
+	sz=(v_sz*(3+2+3))*sizeof(float);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+
+	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+
+	vl=vertex_ptr;
+	uv=vertex_ptr+(v_sz*3);
+	cl=vertex_ptr+(v_sz*(3+2));
 
 		// reduce lighting to liquid space
 
 	map_calculate_light_reduce_liquid(liq);
+
+		// setup tiding
+
+	tide_high=liq->tide.high;
+	tide_rate=liq->tide.rate;
+
+	if ((tide_high<=0) || (tide_rate<=0)) {
+
+	}
+	else {
+		tide_split_half=liq->tide.split<<2;
+		f_tide_split_half=(float)tide_split_half;
+		
+		f_tide_high=(float)tide_high;
+
+		f_time=(float)(tick%tide_rate);		// get rate between 0..1
+		f_time=f_time/(float)tide_rate;
+	}
 
 		// create vertexes from tide splits
 
@@ -102,6 +141,8 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 		
 		while (TRUE) {
 
+				// color
+
 			if (setup.ray_trace_lighting) {
 				map_calculate_ray_trace_light_color_normal((double)x,(double)y,(double)z,cl,normal);
 			}
@@ -110,8 +151,23 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 			}
 			cl+=3;
 
+				// setup tide Y
+
+			if (liq->tide.direction==ld_vertical) {
+				f_break=(float)(z%tide_split_half);
+			}
+			else {
+				f_break=(float)(x%tide_split_half);
+			}
+				
+			f_break=f_break/f_tide_split_half;
+		   
+			sn=(float)sin((TRIG_PI*2.0f)*(f_break+f_time));
+
+				// vertex and uvs
+
 			*vl++=(float)(x-view.camera.pnt.x);
-			*vl++=fy;
+			*vl++=fy-(f_tide_high*sn);
 			*vl++=(float)(view.camera.pnt.z-z);
 
 			*uv++=liq->x_txtoff+((liq->x_txtfact*(float)(x-liq->lft))/fgx);
@@ -151,65 +207,12 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 
 	liq->draw.x_sz=x_sz;
 	liq->draw.z_sz=z_sz;
-}
 
-void liquid_render_liquid_alter_tide(int tick,map_liquid_type *liq)
-{
-	int				x,z,k,x_sz,z_sz,
-					tide_split_half,tide_high,tide_rate;
-	float			fy,f_break,f_time,sn,
-					f_tide_split_half,f_tide_high;
-	float			*vl;
-	
-		// any tide differences?
+		// unmap VBO
 
-	tide_high=liq->tide.high;
-	tide_rate=liq->tide.rate;
+	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
 
-	if ((tide_high<=0) || (tide_rate<=0)) return;
-
-		// setup tide changes
-
-	x_sz=liq->draw.x_sz;
-	z_sz=liq->draw.z_sz;
-
-	fy=(float)(liq->y-view.camera.pnt.y);
-
-	tide_split_half=liq->tide.split<<2;
-	f_tide_split_half=(float)tide_split_half;
-	
-	f_tide_high=(float)tide_high;
-
-	f_time=(float)(tick%tide_rate);		// get rate between 0..1
-	f_time=f_time/(float)tide_rate;
-
-		// alter Ys
-
-	vl=map.liquid_vertexes.vertex_ptr;
-
-	for (z=0;z!=z_sz;z++) {
-		for (x=0;x!=x_sz;x++) {
-			
-				// get tide breaking into 0...1
-				
-			if (liq->tide.direction==ld_vertical) {
-				k=((int)*(vl+2))-view.camera.pnt.z;
-			}
-			else {
-				k=((int)*vl)+view.camera.pnt.x;
-			}
-				
-			f_break=(float)(k%tide_split_half);
-			f_break=f_break/f_tide_split_half;
-				
-				// create tide Y
-		   
-			sn=(float)sin((TRIG_PI*2.0f)*(f_break+f_time));
-			*(vl+1)=fy-(f_tide_high*sn);
-
-			vl+=3;
-		}
-	}
+	view_unbind_current_vertex_object();
 }
 
 int liquid_render_liquid_create_quads(map_liquid_type *liq)
@@ -275,21 +278,27 @@ void liquid_render_liquid_start_array(map_liquid_type *liq)
 {
 	int				v_sz;
 
+		// use last compiled buffer
+
+	view_bind_current_vertex_object();
+
+		// vertexes
+
 	v_sz=liquid_render_liquid_get_max_vertex(liq);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,map.liquid_vertexes.vertex_ptr);
+	glVertexPointer(3,GL_FLOAT,0,0);
 
 		// uv array
 		
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(map.liquid_vertexes.vertex_ptr+(v_sz*3)));
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*3)*sizeof(float)));
 	
 		// color array
 		
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(3,GL_FLOAT,0,(map.liquid_vertexes.vertex_ptr+(v_sz*(3+2))));
+	glColorPointer(3,GL_FLOAT,0,(void*)((v_sz*(3+2))*sizeof(float)));
 }
 
 void liquid_render_liquid_end_array(void)
@@ -300,6 +309,8 @@ void liquid_render_liquid_end_array(void)
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
+
+	view_unbind_current_vertex_object();
 }
 
 /* =======================================================
@@ -321,8 +332,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 
 		// setup liquid for drawing
 
-	liquid_render_liquid_create_vertex(liq);
-	liquid_render_liquid_alter_tide(tick,liq);
+	liquid_render_liquid_create_vertex(tick,liq);
 	quad_cnt=liquid_render_liquid_create_quads(liq);
 	if (quad_cnt==0) return;
 	

@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: Portal Vertex Lists
+ Usage: Map Vertex Lists
 
 ***************************** License ********************************
 
@@ -35,7 +35,11 @@ extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
 
-GLuint						vertex_vbo=-1;		// supergumba
+GLuint						map_vertex_vbo;
+
+extern void view_next_vertex_object(void);
+extern void view_bind_current_vertex_object(void);
+extern void view_unbind_current_vertex_object(void);
 
 /* =======================================================
 
@@ -45,10 +49,10 @@ GLuint						vertex_vbo=-1;		// supergumba
 
 void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 {
-	int									n,k,t,ntrig,
+	int									n,k,t,sz,ntrig,
 										v_count,v_idx,v_light_start_idx;
 	float								x,y,z,fx,fy,fz;
-	float								*pv,*pp,*pc,*pn;
+	float								*vertex_ptr,*pv,*pp,*pc,*pn;
 	d3pnt								*pnt;
 	map_mesh_type						*mesh;
 	map_mesh_poly_type					*poly;
@@ -75,27 +79,25 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 	map.mesh_vertexes.draw_vertex_count=v_count;
 
+		// get next VBO to use
 
+	view_next_vertex_object();
 
-	
-/* supergumba
+		// map VBO to memory
 
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vertex_vbo);
-		sz=(map.vertexes.draw_vertex_count*(3+2+3+3))*sizeof(float);
-		glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
-	}
+	view_bind_current_vertex_object();
 
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vertex_vbo);
+	sz=(map.mesh_vertexes.draw_vertex_count*(3+2+3+3))*sizeof(float);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+
 	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-*/
-
 
 		// arrays and offsets
 
 	map.mesh_vertexes.vert.sz=(v_count*3)*sizeof(float);
 	map.mesh_vertexes.vert.offset=0;
 
-	pv=(float*)map.mesh_vertexes.vertex_ptr;
+	pv=vertex_ptr;
 
 	map.mesh_vertexes.uv.sz=(v_count*2)*sizeof(float);
 	map.mesh_vertexes.uv.offset=map.mesh_vertexes.vert.offset+map.mesh_vertexes.vert.sz;
@@ -263,11 +265,11 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 		mesh++;
 	}
 
+		// unmap VBO
 
-	/* supergumba
 	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
-	*/
+
+	view_unbind_current_vertex_object();
 }
 
 /* =======================================================
@@ -278,21 +280,9 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 void view_compile_gl_list_attach(void)
 {
-	int					sz;
+		// use last compiled buffer
 
-
-				// supergumba -- do this some other time
-	if (vertex_vbo==-1) {
-		glGenBuffersARB(1,&vertex_vbo);
-	}
-
-
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vertex_vbo);
-
-		// data
-
-	sz=(map.mesh_vertexes.draw_vertex_count*(3+2+3+3))*sizeof(float);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,(void*)map.mesh_vertexes.vertex_ptr,GL_STREAM_DRAW_ARB);
+	view_bind_current_vertex_object();
 
 		// vertexes
 
@@ -319,7 +309,6 @@ void view_compile_gl_list_attach(void)
 	glColorPointer(3,GL_FLOAT,0,(void*)map.mesh_vertexes.color.offset);
 }
 
-
 void view_compile_gl_list_switch_to_color(void)
 {
 	glColorPointer(3,GL_FLOAT,0,(void*)map.mesh_vertexes.color.offset);
@@ -345,5 +334,5 @@ void view_compile_gl_list_dettach(void)
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+	view_unbind_current_vertex_object();
 }

@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: Portal Vertex Lists
+ Usage: Map Vertex Lighting
 
 ***************************** License ********************************
 

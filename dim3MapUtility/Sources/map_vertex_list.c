@@ -617,7 +617,7 @@ void map_dispose_poly_tesseled_vertexes(map_mesh_poly_type *poly)
 
 bool map_create_mesh_vertexes(map_type *map)
 {
-	int					n,k,nvlist,sz;
+	int					n,k,nvlist;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
@@ -636,14 +636,6 @@ bool map_create_mesh_vertexes(map_type *map)
 		mesh++;
 	}
 	
-		// compiled vertex, coord, color and normal lists
-	
-	sz=nvlist*(sizeof(float)*(3+2+3+3));
-	map->mesh_vertexes.vertex_ptr=(float*)valloc(sz);
-	if (map->mesh_vertexes.vertex_ptr==NULL) return(FALSE);
-	
-	bzero(map->mesh_vertexes.vertex_ptr,sz);
-
 		// no indexes
 
 	map->mesh_vertexes.index_ptr=NULL;
@@ -693,10 +685,6 @@ void map_dispose_mesh_vertexes(map_type *map)
 		
 		mesh++;
 	}
-
-		// dispose lists
-		
-	free(map->mesh_vertexes.vertex_ptr);
 }
 
 /* =======================================================
@@ -730,25 +718,13 @@ bool map_create_liquid_vertexes(map_type *map)
 
 	if (sz==0) sz=4;
 	
-		// compiled vertex, coord, and color lists
-	
-	sz=nvlist*(sizeof(float)*(3+2+3));
-	map->liquid_vertexes.vertex_ptr=(float*)valloc(sz);
-	if (map->liquid_vertexes.vertex_ptr==NULL) return(FALSE);
-	
-	bzero(map->liquid_vertexes.vertex_ptr,sz);
-
 		// compiled index lists
 
 	sz=nvlist*(sizeof(int)*4);
 	map->liquid_vertexes.index_ptr=(int*)valloc(sz);
-	if (map->liquid_vertexes.index_ptr==NULL) {
-		free(map->liquid_vertexes.vertex_ptr);
-		return(FALSE);
-	}
+	if (map->liquid_vertexes.index_ptr==NULL) return(FALSE);
 
 	bzero(map->liquid_vertexes.index_ptr,sz);
-
 
 		// remember total
 
@@ -760,7 +736,6 @@ bool map_create_liquid_vertexes(map_type *map)
 
 void map_dispose_liquid_vertexes(map_type *map)
 {
-	free(map->liquid_vertexes.vertex_ptr);
 	free(map->liquid_vertexes.index_ptr);
 }
 

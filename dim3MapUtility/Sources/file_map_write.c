@@ -264,7 +264,7 @@ void write_single_vertex(int x,int y,int z)
     xml_add_tagend(TRUE);
 }
 
-void write_single_mesh(map_mesh_type *mesh)
+void write_single_mesh(map_type *map,map_mesh_type *mesh)
 {
 	int					n,nvertex,npoly;
 	d3pnt				*pt;
@@ -364,10 +364,10 @@ void write_single_mesh(map_mesh_type *mesh)
 	
 	xml_add_tagclose("Polys");
 	
-		// obscure path
+		// obscure flags
 		
     xml_add_tagstart("Obscure");
-	xml_add_attribute_bit_array("flag",mesh->mesh_visibility_flag,max_mesh_visibility_bytes);
+	xml_add_attribute_bit_array("flag",mesh->mesh_visibility_flag,map->mesh.nmesh);
 	xml_add_tagend(TRUE);
 
 	xml_add_tagclose("Mesh");
@@ -462,7 +462,7 @@ bool write_map_xml(map_type *map)
 	mesh=map->mesh.meshes;
 
 	for (k=0;k!=nmesh;k++) {
-		write_single_mesh(mesh);
+		write_single_mesh(map,mesh);
 		mesh++;
 	}
 

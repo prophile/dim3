@@ -308,7 +308,6 @@ typedef struct		{
 typedef struct		{
 						int									max_vertex_count,draw_vertex_count;
 						int									*index_ptr;
-						float								*vertex_ptr;
 						map_vertex_array_type				vert,uv,color,normal;
 					} map_vertex_type;
 
@@ -331,37 +330,37 @@ typedef struct		{
 //
 					
 typedef struct		{
-						int							lighting_mode;
-						char						model_name[name_str_len],
-													animation_name[name_str_len];
-						bool						contact_object_on,contact_projectile_on,
-													contact_hit_box,face_forward,
-													shadow,shadow_cast_down,override_size;
-						d3pnt						pnt,size;
-						d3ang						ang;
+						int									lighting_mode;
+						char								model_name[name_str_len],
+															animation_name[name_str_len];
+						bool								contact_object_on,contact_projectile_on,
+															contact_hit_box,face_forward,
+															shadow,shadow_cast_down,override_size;
+						d3pnt								pnt,size;
+						d3ang								ang;
 					} map_scenery_type;
 
 typedef struct		{
-						int							type,intensity;
-						bool						on;
-						d3pnt						pnt;
-						d3col						col;
+						int									type,intensity;
+						bool								on;
+						d3pnt								pnt;
+						d3col								col;
 					} map_light_type;
 					
 typedef struct		{
-						int							buffer_idx;
-                        float						pitch;
-						char						name[name_str_len];
-						bool						on;
-						d3pnt						pnt;
+						int									buffer_idx;
+                        float								pitch;
+						char								name[name_str_len];
+						bool								on;
+						d3pnt								pnt;
 					} map_sound_type;
 					
 typedef struct		{
-                        int							spawn_tick,slop_tick,next_spawn_tick,
-													particle_idx;
-						char						name[name_str_len];
-						bool						on;
-						d3pnt						pnt;
+                        int									spawn_tick,slop_tick,next_spawn_tick,
+															particle_idx;
+						char								name[name_str_len];
+						bool								on;
+						d3pnt								pnt;
 					} map_particle_type;
                     
 //
@@ -369,19 +368,19 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							skill;
-						char						name[name_str_len],
-													type[name_str_len],
-													script[name_str_len],
-													display_model[name_str_len],
-													params[param_str_len],
-													attach_name[name_str_len],
-													attach_type[name_str_len],
-													attach_script[file_str_len],
-													attach_params[param_str_len];
-						bool						attach;
-						d3pnt						pnt;
-						d3ang						ang;
+						int									skill;
+						char								name[name_str_len],
+															type[name_str_len],
+															script[name_str_len],
+															display_model[name_str_len],
+															params[param_str_len],
+															attach_name[name_str_len],
+															attach_type[name_str_len],
+															attach_script[file_str_len],
+															attach_params[param_str_len];
+						bool								attach;
+						d3pnt								pnt;
+						d3ang								ang;
 					} spot_type;
 
 //
@@ -389,19 +388,19 @@ typedef struct		{
 //
 
 typedef struct		{
-						bool						goal,red_flag,blue_flag,
-													weapon,ammo,armor,health,
-													normal_cover,duck_cover,sniper;
+						bool								goal,red_flag,blue_flag,
+															weapon,ammo,armor,health,
+															normal_cover,duck_cover,sniper;
 					} node_flag_type;
 
 typedef struct		{
-						int							idx,user_value,
-													link[max_node_link],
-													path_hint[max_node];
-						char						name[name_str_len];
-						d3pnt						pnt;
-						d3ang						ang;
-						node_flag_type				flag;
+						int									idx,user_value,
+															link[max_node_link],
+															path_hint[max_node];
+						char								name[name_str_len];
+						d3pnt								pnt;
+						d3ang								ang;
+						node_flag_type						flag;
 					} node_type;
 
 //
@@ -409,21 +408,21 @@ typedef struct		{
 //
  
 typedef struct		{
-						int							msec,user_id,sound_buffer_idx;
-						char						sound_name[name_str_len];
-						float						sound_pitch;
-						d3pnt						mov;
-						d3ang						rot;
+						int									msec,user_id,sound_buffer_idx;
+						char								sound_name[name_str_len];
+						float								sound_pitch;
+						d3pnt								mov;
+						d3ang								rot;
 					} movement_move_type;
 
 typedef struct		{
-						int							nmove,group_idx,reverse_group_idx,
-													auto_open_distance,cur_move_idx;
-						char						name[name_str_len];
-						bool						auto_start,auto_open,auto_open_never_close,
-													loop,started,opened,reverse;
-						d3pnt						pnt;
-						movement_move_type			moves[max_movement_move];
+						int									nmove,group_idx,reverse_group_idx,
+															auto_open_distance,cur_move_idx;
+						char								name[name_str_len];
+						bool								auto_start,auto_open,auto_open_never_close,
+															loop,started,opened,reverse;
+						d3pnt								pnt;
+						movement_move_type					moves[max_movement_move];
 					} movement_type;
 
 //
@@ -431,13 +430,13 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							type;
-						char						name[name_str_len],title_sound_name[name_str_len];
+						int									type;
+						char								name[name_str_len],title_sound_name[name_str_len];
 					} map_media_type;
 					
 typedef struct		{
-						int							fade_msec;
-						char						name[name_str_len];
+						int									fade_msec;
+						char								name[name_str_len];
 					} map_music_type;
 					
 //
@@ -445,58 +444,58 @@ typedef struct		{
 //
 
 typedef struct		{
-						char						name[name_str_len],
-													title[name_str_len],
-													author[name_str_len],
-													host_name[name_str_len],
-													player_start_name[name_str_len],
-													player_start_type[name_str_len],
-													load_path[1024];
-						bool						in_load;
+						char								name[name_str_len],
+															title[name_str_len],
+															author[name_str_len],
+															host_name[name_str_len],
+															player_start_name[name_str_len],
+															player_start_type[name_str_len],
+															load_path[1024];
+						bool								in_load;
 					} map_info_type;
 					
 typedef struct		{
-						float						gravity,gravity_max_power,gravity_max_speed,
-													resistance,txt_scale_x,txt_scale_y;
-						bool						editor_link_always_start;
-						char						network_game_list[256];
+						float								gravity,gravity_max_power,gravity_max_speed,
+															resistance,txt_scale_x,txt_scale_y;
+						bool								editor_link_always_start;
+						char								network_game_list[256];
 					} map_settings_type;
 					
 typedef struct		{
-						float						sound_pitch,light_drop_off_factor;
-						char						sound_name[name_str_len];
-						d3col						light_color;
+						float								sound_pitch,light_drop_off_factor;
+						char								sound_name[name_str_len];
+						d3col								light_color;
 					} map_ambient_type;					
 
 typedef struct		{
-						int							density,radius,height,speed,
-													line_width,line_length,slant_add,
-													slant_time_msec,slant_change_msec;
-						float						alpha;
-						bool						on,reset;
-						d3col						start_color,end_color;
+						int									density,radius,height,speed,
+															line_width,line_length,slant_add,
+															slant_time_msec,slant_change_msec;
+						float								alpha;
+						bool								on,reset;
+						d3col								start_color,end_color;
 					} map_rain_type;					
 					
 typedef struct		{
-						int							fill;
-						float						x_scroll_fact,y_scroll_fact;
-						bool						on;
+						int									fill;
+						float								x_scroll_fact,y_scroll_fact;
+						bool								on;
 					} map_background_type;					
 					
 typedef struct		{
-						int							type,radius,extra_height,dome_y,
-													fill,bottom_fill,north_fill,south_fill,east_fill,west_fill;
-						float						txt_fact,txt_x_shift,txt_y_shift;
-						bool						on;
+						int									type,radius,extra_height,dome_y,
+															fill,bottom_fill,north_fill,south_fill,east_fill,west_fill;
+						float								txt_fact,txt_x_shift,txt_y_shift;
+						bool								on;
 					} map_sky_type;
 					
 typedef struct		{
-						int							count,inner_radius,outer_radius,
-													high,drop,texture_idx;
-						float						speed,txt_x_fact,txt_y_fact,
-													alpha;
-						bool						on,use_solid_color;
-						d3col						col;
+						int									count,inner_radius,outer_radius,
+															high,drop,texture_idx;
+						float								speed,txt_x_fact,txt_y_fact,
+															alpha;
+						bool								on,use_solid_color;
+						d3col								col;
 					} map_fog_type;
 
 //
@@ -505,39 +504,39 @@ typedef struct		{
 
 typedef struct		{
 
-						int							nlight,nsound,nparticle,
-													nspot,nnode,nscenery,nmovement,
-													ngroup,start_game_tick;
+						int									nlight,nsound,nparticle,
+															nspot,nnode,nscenery,nmovement,
+															ngroup,start_game_tick;
 													
-						map_info_type				info;
+						map_info_type						info;
 						
-						map_ambient_type			ambient;
-						map_background_type			background;
-						map_sky_type				sky;
-						map_fog_type				fog;
-						map_rain_type				rain;
+						map_ambient_type					ambient;
+						map_background_type					background;
+						map_sky_type						sky;
+						map_fog_type						fog;
+						map_rain_type						rain;
 						
-						map_settings_type			settings;
-						map_media_type				media;
-						map_music_type				music;
+						map_settings_type					settings;
+						map_media_type						media;
+						map_music_type						music;
 						
-						texture_type				*textures;
+						texture_type						*textures;
 						
-						map_scenery_type			*sceneries;
-						map_light_type				*lights;
-						map_sound_type				*sounds;
-						map_particle_type			*particles;
-						spot_type					*spots;
-						node_type					*nodes;
+						map_scenery_type					*sceneries;
+						map_light_type						*lights;
+						map_sound_type						*sounds;
+						map_particle_type					*particles;
+						spot_type							*spots;
+						node_type							*nodes;
 						
-						movement_type				*movements;
-						group_type					*groups;
+						movement_type						*movements;
+						group_type							*groups;
 	
-						map_mesh_collection_type	mesh;
-						map_liquid_collection_type	liquid;
+						map_mesh_collection_type			mesh;
+						map_liquid_collection_type			liquid;
 
-						map_vertex_type				mesh_vertexes,liquid_vertexes;
-						map_poly_sort_type			sort;
+						map_vertex_type						mesh_vertexes,liquid_vertexes;
+						map_poly_sort_type					sort;
 						
 					} map_type;
 

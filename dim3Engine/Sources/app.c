@@ -86,10 +86,6 @@ bool app_start(char *err_str)
 		
 	net_setup.host.hosting=FALSE;
 	net_setup.client.joined=FALSE;
-
-		// render arrays
-
-	if (!gl_render_arrays_initialize(err_str)) return(FALSE);
 	
 		// initialize server
 		
@@ -149,10 +145,6 @@ void app_end(void)
 		// shutdown server
 		
 	server_shutdown();
-
-		// render arrays
-
-	gl_render_arrays_shutdown();
 	
 		// OS network shutdown
 		

@@ -43,6 +43,9 @@ extern view_type			view;
 extern setup_type			setup;
 
 extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf);
+extern void view_next_vertex_object(void);
+extern void view_bind_current_vertex_object(void);
+extern void view_unbind_current_vertex_object(void);
 
 /* =======================================================
 
@@ -127,7 +130,7 @@ void particle_draw_position(effect_type *effect,int count,int *x,int *y,int *z)
       
 ======================================================= */
 
-int particle_fill_array_quad_single(int idx,int mx,int my,int mz,d3ang *rot_ang,float pixel_size,matrix_type *mat_x,matrix_type *mat_y,float gravity,int count,int particle_count,particle_piece_type *pps,float gx,float gy,float g_size)
+int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx,int my,int mz,d3ang *rot_ang,float pixel_size,matrix_type *mat_x,matrix_type *mat_y,float gravity,int count,int particle_count,particle_piece_type *pps,float gx,float gy,float g_size)
 {
 	int					n,k;
 	float				fx,fy,fz,f_count,px[4],py[4],pz[4];
@@ -157,8 +160,8 @@ int particle_fill_array_quad_single(int idx,int mx,int my,int mz,d3ang *rot_ang,
 	
 		// fill particle arrays
 	
-	pv=gl_render_array_get_current_vertex()+(idx*3);
-	pt=gl_render_array_get_current_coord()+(idx*2);
+	pv=vertex_ptr+(idx*3);
+	pt=vertex_ptr+(nvertex*3)+(idx*2);
 	
 	f_count=(float)count;
 	
@@ -240,18 +243,18 @@ int particle_fill_array_quad_single(int idx,int mx,int my,int mz,d3ang *rot_ang,
 
 void particle_draw(effect_type *effect,int count)
 {
-	int						i,idx,particle_count,
+	int						i,idx,particle_count,nvertex,
 							ntrail,trail_step,mx,mz,my,
 							pixel_dif,sz;
 	float					gravity,gx,gy,g_size,pixel_sz,f,pc[3],pn[3],
 							alpha,alpha_dif,r,g,b,color_dif,f_count,f_tick;
-	float					*vertex_array;
+	float					*vertex_ptr;
 	d3ang					*rot_ang,rang;
 	d3col					ambient_col;
 	particle_type			*particle;
 	particle_effect_data	*eff_particle;
 	matrix_type				pixel_mat_x,pixel_mat_y;
-	
+
 	eff_particle=&effect->data.particle;
 	particle=&server.particles[eff_particle->particle_idx];
 
@@ -358,10 +361,23 @@ void particle_draw(effect_type *effect,int count)
 		// reduce x/z/y movement and add in offset
 		
 	count=count/10;
+
+		// get next VBO to use
+
+	view_next_vertex_object();
+
+		// map VBO to memory
+
+	view_bind_current_vertex_object();
+
+	nvertex=(particle->count*(particle->trail_count+1))*4;
+
+	sz=(nvertex*(3+2))*sizeof(float);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+
+	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
 	
 		// setup the arrays
-
-	gl_render_array_start();
 
 	particle_count=particle->count;
 	ntrail=particle->trail_count+1;
@@ -377,7 +393,7 @@ void particle_draw(effect_type *effect,int count)
 
 			// draw pixels
 
-		idx=particle_fill_array_quad_single(idx,mx,my,mz,rot_ang,pixel_sz,&pixel_mat_x,&pixel_mat_y,gravity,count,particle_count,particle->pieces[eff_particle->variation_idx],gx,gy,g_size);
+		idx=particle_fill_array_quad_single(vertex_ptr,idx,nvertex,mx,my,mz,rot_ang,pixel_sz,&pixel_mat_x,&pixel_mat_y,gravity,count,particle_count,particle->pieces[eff_particle->variation_idx],gx,gy,g_size);
 
 			// reduce pixel sizes and counts for trails
 			
@@ -385,6 +401,10 @@ void particle_draw(effect_type *effect,int count)
 		count-=trail_step;
 		if ((count<0) || (pixel_sz<=0)) break;
 	}
+
+		// unmap vertex object
+
+	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
 	
 		// draw arrays
 		
@@ -406,40 +426,24 @@ void particle_draw(effect_type *effect,int count)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);			// don't let alpha z's interfere with each other
-	
-	sz=idx*sizeof(float);
-	vertex_array=gl_render_array_get_current_vertex();
 
-#ifdef D3_OS_MAC
-	glVertexArrayRangeAPPLE(sz,vertex_array);
-	glEnableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
-#endif
-		
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,vertex_array);
+	glVertexPointer(3,GL_FLOAT,0,0);
 
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,gl_render_array_get_current_coord());
-
-#ifdef D3_OS_MAC
-	glFlushVertexArrayRangeAPPLE(sz,vertex_array);
-#endif
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)((nvertex*3)*sizeof(float)));
 
 	glDrawArrays(GL_QUADS,0,idx);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
-		
-#ifdef D3_OS_MAC
-    glDisableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
-#endif
 
 	glDepthMask(GL_TRUE);
 	
 	gl_texture_simple_end();
-	
-		// end render array
+
+		// unbind vertex object
 		
-	gl_render_array_stop();
+	view_unbind_current_vertex_object();
 }
 

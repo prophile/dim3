@@ -1271,10 +1271,6 @@ SOURCE=..\..\dim3Engine\Sources_View\fog.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_View\gl_arrays.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3Engine\Sources_View\gl_check.c
 # End Source File
 # Begin Source File
@@ -1484,6 +1480,10 @@ SOURCE=..\..\dim3Engine\Sources_View\view_vertex_light.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_View\view_vertex_list.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_View\view_vertex_object.c
 # End Source File
 # Begin Source File
 

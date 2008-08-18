@@ -107,7 +107,7 @@ inline bool mesh_view_bit_get(map_mesh_type *mesh,int idx)
 	return((mesh->mesh_visibility_flag[idx>>3]&(0x1<<(idx&0x7)))!=0x0);
 }
 
-
+/*
 int obscure_mesh_sort(d3pnt *pt,int *mesh_sort_list)
 {
 	int					n,t,sz,d,cnt,idx;
@@ -559,7 +559,7 @@ bool obscure_calculate_map(void)
 
 
 
-
+*/
 
 
 
@@ -602,7 +602,7 @@ void temp_get_mesh_draw_list(void)
 			// is this mesh visible?
 
 		if (n!=start_mesh_idx) {
-			if (!mesh_view_bit_get(start_mesh,n)) continue;
+//			if (!mesh_view_bit_get(start_mesh,n)) continue;
 		}
 
 			// auto-eliminate meshes outside of view
@@ -904,9 +904,8 @@ void view_draw(int tick)
 	}
 	
 		// setup portals for drawing
-		
-	obscure_calculate_map();
-
+	
+	// supergumba -- deal with all this naming
 	temp_get_mesh_draw_list();
 	
 	view_compile_mesh_gl_lists(tick,mesh_draw_count,mesh_draw_list);

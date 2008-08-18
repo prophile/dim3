@@ -52,19 +52,6 @@ extern bool gl_check_texture_generate_mipmaps_ok(void);
 extern bool gl_check_point_sprite_ok(void);
 extern bool gl_check_shader_ok(void);
 
-	// rendering arrays
-	
-extern bool gl_render_arrays_initialize(char *err_str);
-extern void gl_render_arrays_shutdown(void);
-extern void gl_render_arrays_frame_start(void);
-extern void gl_render_arrays_frame_finish(void);
-extern void gl_render_array_start(void);
-extern float* gl_render_array_get_current_vertex(void);
-extern float* gl_render_array_get_current_coord(void);
-extern float* gl_render_array_get_current_color(void);
-extern float* gl_render_array_get_current_normal(void);
-extern void gl_render_array_stop(void);
-
 	// shaders
 	
 extern void gl_shader_program_start(void);

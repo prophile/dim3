@@ -44,6 +44,9 @@ extern setup_type		setup;
 extern void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw *draw);
 extern void model_tint_team_color(model_type *mdl,int mesh_idx,model_draw *draw);
 extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf);
+extern void view_next_vertex_object(void);
+extern void view_bind_current_vertex_object(void);
+extern void view_unbind_current_vertex_object(void);
 
 /* =======================================================
 
@@ -53,24 +56,37 @@ extern void map_calculate_light_color_normal(double x,double y,double z,float *c
 
 void model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,model_material_type *material)
 {
-	int				n,trig_count,idx,sz;
-	float			*vl,*tl,*cl,*nl,*vp,*cp,*np,
+	int				n,trig_count,nvertex,idx,sz;
+	float			*vl,*tl,*cl,*nl,*vp,*cp,*np,*vertex_ptr,
 					*vertex_array,*coord_array,*color_array,*normal_array;
     model_trig_type	*trig;
 	
 	trig_count=material->trig_count;
 	if (trig_count==0) return;
-	
-	trig=&mesh->trigs[material->trig_start];
-        
+
+	nvertex=trig_count*3;
+
+ 		// get next VBO to use
+
+	view_next_vertex_object();
+
+		// map VBO to memory
+
+	view_bind_current_vertex_object();
+
+	sz=((trig_count*3)*(3+2+3+3))*sizeof(float);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+
+	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+       
 		// build the arrays
 
-	gl_render_array_start();
-	
-	vl=vertex_array=gl_render_array_get_current_vertex();
-	tl=coord_array=gl_render_array_get_current_coord();
-	cl=color_array=gl_render_array_get_current_color();
-	nl=normal_array=gl_render_array_get_current_normal();
+	trig=&mesh->trigs[material->trig_start];
+
+	vl=vertex_array=vertex_ptr;
+	tl=coord_array=vertex_ptr+(nvertex*3);
+	cl=color_array=vertex_ptr+(nvertex*(3+2));
+	nl=normal_array=vertex_ptr+(nvertex*(3+2+3));
 
 	for (n=0;n!=trig_count;n++) {
 
@@ -143,39 +159,32 @@ void model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 		trig++;
 	}
 
+		// unmap VBO
+
+	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+
 		// set the arrays
 		
-	sz=(trig_count*9)*sizeof(float);
-
-#ifdef D3_OS_MAC
-	glVertexArrayRangeAPPLE(sz,vertex_array);
-	glEnableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
-#endif
-		
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,vertex_array);
+	glVertexPointer(3,GL_FLOAT,0,0);
 
 	glClientActiveTexture(GL_TEXTURE2);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,coord_array);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)((nvertex*3)*sizeof(float)));
 
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,coord_array);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)((nvertex*3)*sizeof(float)));
 
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,coord_array);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)((nvertex*3)*sizeof(float)));
 
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(3,GL_FLOAT,0,color_array);
+	glColorPointer(3,GL_FLOAT,0,(void*)((nvertex*(3+2))*sizeof(float)));
 	
 	glEnableClientState(GL_NORMAL_ARRAY);
-	glNormalPointer(GL_FLOAT,0,normal_array);
-	
-#ifdef D3_OS_MAC
-	glFlushVertexArrayRangeAPPLE(sz,vertex_array);
-#endif
+	glNormalPointer(GL_FLOAT,0,(void*)((nvertex*(3+2+3))*sizeof(float)));
 }
 
 void model_draw_stop_mesh_material_array(void)
@@ -193,12 +202,8 @@ void model_draw_stop_mesh_material_array(void)
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-		
-#ifdef D3_OS_MAC
-    glDisableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
-#endif
 
-	gl_render_array_stop();
+	view_unbind_current_vertex_object();
 }
 
 /* =======================================================
@@ -210,19 +215,29 @@ void model_draw_stop_mesh_material_array(void)
 void model_draw_start_mesh_shadow_array(model_type *mdl,model_mesh_type *mesh)
 {
 	int				n,trig_count,sz;
-	float			*vl,*vp,*vertex_array;
+	float			*vl,*vp,*vertex_ptr,*vertex_array;
     model_trig_type	*trig;
-	
-		// start array
 
-  	gl_render_array_start();
-	vl=vertex_array=gl_render_array_get_current_vertex();
-      
+	trig_count=mesh->ntrig;
+
+ 		// get next VBO to use
+
+	view_next_vertex_object();
+
+		// map VBO to memory
+
+	view_bind_current_vertex_object();
+
+	sz=((trig_count*3)*2)*sizeof(float);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+
+	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+
 		// build the arrays
 		// there's no z coordinate in these arrays
 
+	vl=vertex_array=vertex_ptr;
 
-	trig_count=mesh->ntrig;
 	trig=mesh->trigs;
 
 	for (n=0;n!=trig_count;n++) {
@@ -251,32 +266,21 @@ void model_draw_start_mesh_shadow_array(model_type *mdl,model_mesh_type *mesh)
 		trig++;
 	}
 
+		// unmap VBO
+
+	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+
 		// set the arrays
 		
-	sz=(trig_count*6)*sizeof(float);
-
-#ifdef D3_OS_MAC
-	glVertexArrayRangeAPPLE(sz,vertex_array);
-	glEnableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
-#endif
-		
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2,GL_FLOAT,0,vertex_array);
-	
-#ifdef D3_OS_MAC
-	glFlushVertexArrayRangeAPPLE(sz,vertex_array);
-#endif
+	glVertexPointer(2,GL_FLOAT,0,0);
 }
 
 void model_draw_stop_mesh_shadow_array(void)
 {
 	glDisableClientState(GL_VERTEX_ARRAY);
-		
-#ifdef D3_OS_MAC
-	glDisableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
-#endif
 
-	gl_render_array_stop();
+	view_unbind_current_vertex_object();
 }
 
 /* =======================================================
@@ -287,7 +291,7 @@ void model_draw_stop_mesh_shadow_array(void)
 
 void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int						i,frame,trig_count;
+	int						i,frame,trig_count,nvertex;
 	float					alpha;
 	model_mesh_type			*mesh;
     texture_type			*texture;
@@ -359,7 +363,9 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 
 		if ((setup.bump_mapping) && (texture->bumpmaps[frame].gl_id!=-1)) {
 
-			glColorPointer(3,GL_FLOAT,0,gl_render_array_get_current_normal());
+			nvertex=trig_count*3;
+
+			glColorPointer(3,GL_FLOAT,0,(void*)((nvertex*(3+2+3))*sizeof(float)));
 
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_ZERO,GL_SRC_COLOR);
@@ -378,7 +384,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			
 			gl_texture_opaque_tesseled_bump_end();
 
-			glColorPointer(3,GL_FLOAT,0,gl_render_array_get_current_color());
+			glColorPointer(3,GL_FLOAT,0,(void*)((nvertex*(3+2))*sizeof(float)));
 		}
 
 		if (!hilite_on) {

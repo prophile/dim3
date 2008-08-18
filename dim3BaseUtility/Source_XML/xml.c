@@ -854,20 +854,17 @@ bool xml_get_attribute_color(int n,char *name,d3col *col)
 
 bool xml_get_attribute_bit_array(int n,char *name,unsigned char *value,int count)
 {
-	int					n;
-    unsigned char		*c;
-    char				str[256];
+	int					k;
+    char				str[5120];
 	
 	bzero(value,count);
     
-	if (!xml_get_attribute_raw(n,name,str,256)) return(0);
+	if (!xml_get_attribute_raw(n,name,str,5120)) return(0);
 	
-	c=(unsigned char*)value;
-	count*=8;
+	count=strlen(str);
 	
-	for (n=0;n!=count;n++) {
-		if (*c!='0') value[n/8]=value[n/8]|(0x1>>(n%8));
-		c++;
+	for (k=0;k<count;k+=2) {
+		value[k>>1]=(unsigned char)((xml_hex_character_to_int(str[k])*16)+xml_hex_character_to_int(str[k+1]));
 	}
 	
 	return(TRUE);
@@ -1211,8 +1208,21 @@ bool xml_add_attribute_color(char *name,d3col *col)
 
 bool xml_add_attribute_bit_array(char *name,unsigned char *value,int count)
 {
-	int				n;
+	int				k,i;
 	unsigned char	*c;
-	char			str[256];
+	char			txt[5120];
+
+	c=(unsigned char*)value;
+
+	for (k=0;k!=count;k++) {
+		i=(int)*c++;
+
+		txt[(k<<1)]=xml_hex_int_to_character(i>>4);
+		txt[(k<<1)+1]=xml_hex_int_to_character(i);
+	}
+
+	txt[count<<1]=0x0;
+
+	return(xml_add_attribute_text(name,txt));
 }
 

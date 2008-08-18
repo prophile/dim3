@@ -41,6 +41,10 @@ extern server_type			server;
 extern view_type			view;
 extern setup_type			setup;
 
+extern void view_next_vertex_object(void);
+extern void view_bind_current_vertex_object(void);
+extern void view_unbind_current_vertex_object(void);
+
 /* =======================================================
 
       Draw Ring Position
@@ -71,13 +75,13 @@ void ring_draw_position(effect_type *effect,int count,int *x,int *y,int *z)
 
 void ring_draw(effect_type *effect,int count)
 {
-	int						n,px,py,pz,
+	int						n,px,py,pz,nvertex,
 							life_tick,sz;
 	float					mx,my,mz,fx,fy,fz,
 							outer_sz,inner_sz,
 							color_dif,r,g,b,alpha,gx,gy,g_size,
 							f_count,f_tick;
-	float					*vl,*vt,*vertex_array,*coord_array;
+	float					*vl,*vt,*vertex_ptr,*vertex_array,*coord_array;
 	double					rd,rd2;
 	ring_type				*ring;
 	ring_effect_data		*eff_ring;
@@ -139,12 +143,25 @@ void ring_draw(effect_type *effect,int count)
 	matrix_rotate_z(&mat_z,fz);
 	matrix_rotate_y(&mat_y,-angle_add(fy,180.0f));
 
+		// get next VBO to use
+
+	view_next_vertex_object();
+
+		// map VBO to memory
+
+	view_bind_current_vertex_object();
+
+	nvertex=36*4;
+
+	sz=(nvertex*(3+2))*sizeof(float);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+
+	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+
 		// set ring arrays
 
-	gl_render_array_start();
-	
-	vl=vertex_array=gl_render_array_get_current_vertex();
-	vt=coord_array=gl_render_array_get_current_coord();
+	vl=vertex_array=vertex_ptr;
+	vt=coord_array=vertex_ptr+(nvertex*3);
 
 	for (n=0;n!=360;n+=10) {
 		rd=(double)n*ANG_to_RAD;
@@ -219,6 +236,10 @@ void ring_draw(effect_type *effect,int count)
 		*vl++=mz+fz;
 	}
 
+		// unmap vertex object
+
+	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+
 		// draw ring
 		
 	gl_texture_simple_start();
@@ -240,38 +261,23 @@ void ring_draw(effect_type *effect,int count)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 
-	sz=(36*4)*sizeof(float);
-
-#ifdef D3_OS_MAC
-	glVertexArrayRangeAPPLE(sz,vertex_array);
-	glEnableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
-#endif
-		
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,vertex_array);
+	glVertexPointer(3,GL_FLOAT,0,0);
 
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,coord_array);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)((nvertex*3)*sizeof(float)));
 
-#ifdef D3_OS_MAC
-	glFlushVertexArrayRangeAPPLE(sz,vertex_array);
-#endif
-
-	glDrawArrays(GL_QUADS,0,(36*4));
+	glDrawArrays(GL_QUADS,0,nvertex);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
-		
-#ifdef D3_OS_MAC
-    glDisableClientState(GL_VERTEX_ARRAY_RANGE_APPLE);
-#endif
 	
 	glDepthMask(GL_TRUE);
 	
 	gl_texture_simple_end();
-	
-		// end render array
+
+		// unbind vertex object
 		
-	gl_render_array_stop();
+	view_unbind_current_vertex_object();
 }
 
