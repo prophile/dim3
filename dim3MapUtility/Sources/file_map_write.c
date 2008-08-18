@@ -363,6 +363,12 @@ void write_single_mesh(map_mesh_type *mesh)
 	}
 	
 	xml_add_tagclose("Polys");
+	
+		// obscure path
+		
+    xml_add_tagstart("Obscure");
+	xml_add_attribute_bit_array("flag",mesh->mesh_visibility_flag,max_mesh_visibility_bytes);
+	xml_add_tagend(TRUE);
 
 	xml_add_tagclose("Mesh");
 }
@@ -424,9 +430,8 @@ void write_single_liquid(map_liquid_type *liq)
 
 bool write_map_xml(map_type *map)
 {
-    int						n,k,nmesh,nliq;
+    int						k,nmesh,nliq;
 	bool					ok;
-    portal_type				*portal;
     map_mesh_type			*mesh;
 	map_liquid_type			*liq;
     map_light_type			*light;
@@ -447,15 +452,14 @@ bool write_map_xml(map_type *map)
 	write_map_groups_xml(map);
 	write_map_textures_xml(map);
 	write_map_movements_xml(map);
-   
 
 		// meshes
 
 	xml_add_tagstart("Meshes");
 	xml_add_tagend(FALSE);
 
-	nmesh=portal->mesh.nmesh;
-	mesh=portal->mesh.meshes;
+	nmesh=map->mesh.nmesh;
+	mesh=map->mesh.meshes;
 
 	for (k=0;k!=nmesh;k++) {
 		write_single_mesh(mesh);
@@ -469,8 +473,8 @@ bool write_map_xml(map_type *map)
 	xml_add_tagstart("Liquids");
 	xml_add_tagend(FALSE);
 
-	nliq=portal->liquid.nliquid;
-	liq=portal->liquid.liquids;
+	nliq=map->liquid.nliquid;
+	liq=map->liquid.liquids;
 
 	for (k=0;k!=nliq;k++) {
 		write_single_liquid(liq);

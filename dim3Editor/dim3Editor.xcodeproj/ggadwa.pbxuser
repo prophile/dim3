@@ -143,12 +143,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 240445220;
-			PBXWorkspaceStateSaveDate = 240445220;
+			PBXPerProjectTemplateStateSaveDate = 240641128;
+			PBXWorkspaceStateSaveDate = 240641128;
 		};
 		perUserProjectItems = {
-			26829E490E553D7C00EEED65 /* PlistBookmark */ = 26829E490E553D7C00EEED65 /* PlistBookmark */;
-			26AE7FDD0E53E2CC0080E783 /* PlistBookmark */ = 26AE7FDD0E53E2CC0080E783 /* PlistBookmark */;
+			26E90A640E5746930087FEFF /* PlistBookmark */ = 26E90A640E5746930087FEFF /* PlistBookmark */;
+			26E90B130E59324F0087FEFF /* PlistBookmark */ = 26E90B130E59324F0087FEFF /* PlistBookmark */;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -299,22 +299,11 @@
 	};
 	26829D600E54E75900EEED65 /* obscure.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7056}}";
-			sepNavSelRange = "{12335, 0}";
-			sepNavVisRange = "{9077, 1579}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7686}}";
+			sepNavSelRange = "{1639, 0}";
+			sepNavVisRange = "{6292, 1294}";
 			sepNavWindowFrame = "{{416, 190}, {1041, 747}}";
 		};
-	};
-	26829E490E553D7C00EEED65 /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
 	};
 	26934B100D876A800009F81E /* walk_view_click_drag.c */ = {
 		uiCtxt = {
@@ -323,17 +312,6 @@
 			sepNavVisRange = "{15784, 866}";
 			sepNavWindowFrame = "{{419, 157}, {1041, 747}}";
 		};
-	};
-	26AE7FDD0E53E2CC0080E783 /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
 	};
 	26AFB4480D95E0E60004805A /* pieces_mesh.c */ = {
 		uiCtxt = {
@@ -353,9 +331,9 @@
 	};
 	26AFB4D10D9615C00004805A /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1068, 8722}}";
-			sepNavSelRange = "{6732, 20}";
-			sepNavVisRange = "{5755, 1356}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 9170}}";
+			sepNavSelRange = "{6820, 47}";
+			sepNavVisRange = "{5719, 1418}";
 			sepNavWindowFrame = "{{377, 211}, {1041, 747}}";
 		};
 	};
@@ -366,6 +344,28 @@
 			sepNavVisRange = "{2066, 1254}";
 			sepNavWindowFrame = "{{309, 121}, {1041, 747}}";
 		};
+	};
+	26E90A640E5746930087FEFF /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+		);
+		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
+		rLen = 0;
+		rLoc = 2147483647;
+	};
+	26E90B130E59324F0087FEFF /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+		);
+		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
+		rLen = 0;
+		rLoc = 2147483647;
 	};
 	26FA0EA10DA1F22100D9C232 /* selection_move.c */ = {
 		uiCtxt = {
@@ -623,9 +623,9 @@
 	};
 	F5AD54420BBE1FDB001C7C04 /* baseutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 11494}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 11004}}";
 			sepNavSelRange = "{5387, 22}";
-			sepNavVisRange = "{4390, 3800}";
+			sepNavVisRange = "{10632, 2627}";
 			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
 		};
 	};
@@ -671,9 +671,9 @@
 	};
 	F5D458ED0953160300AF9CE1 /* walk_view_draw_piece.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 9338}}";
-			sepNavSelRange = "{12945, 22}";
-			sepNavVisRange = "{4443, 953}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 9296}}";
+			sepNavSelRange = "{1476, 0}";
+			sepNavVisRange = "{0, 1635}";
 			sepNavWindowFrame = "{{335, 210}, {1041, 747}}";
 		};
 	};

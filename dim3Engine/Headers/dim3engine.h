@@ -36,18 +36,21 @@ and can be sold or given away.
 	#include <OpenAL/al.h>
 	#include <OpenAL/alc.h>
 	#include <OpenAL/MacOSX_OALExtensions.h>
+	#include <PNG/png.h>
 #endif
 
 #ifdef D3_OS_LINUX
 	#include <SDL/SDL.h>
 	#include <AL/al.h>
 	#include <AL/alc.h>
+	#include <PNG/png.h>
 #endif
 
 #ifdef D3_OS_WINDOWS
 	#include "SDL.h"
 	#include "al.h"
 	#include "alc.h"
+	#include "png.h"
 #endif
 
 //

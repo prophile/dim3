@@ -126,6 +126,7 @@ void debug_dump(void)
 	model_type			*mdl;
 	script_type			*script;
 	timer_type			*timer;
+	SDL_version			*sdl_ver;
 	
 	console_add_system("Debugging info dumped to stdout");
 	
@@ -157,7 +158,13 @@ void debug_dump(void)
 #ifdef D3_OS_MAC
 	fprintf(stdout,"OS Version: %d.%d.%d\n",os_vers_major,os_vers_minor_1,os_vers_minor_2);
 #endif
-
+	
+	sdl_ver=(SDL_version*)SDL_Linked_Version();
+	fprintf(stdout,"SDL Version: %d.%d.%d\n",sdl_ver->major,sdl_ver->minor,sdl_ver->patch);
+	fprintf(stdout,"OpenAL Version: %s\n",alGetString(AL_VERSION));
+	fprintf(stdout,"JavaScript Version: %.2f\n",((float)JS_VERSION/100.0f));
+	fprintf(stdout,"PNG Version: %s\n",PNG_LIBPNG_VER_STRING);
+	
 	debug_return();
 	
 		// video info
@@ -185,15 +192,6 @@ void debug_dump(void)
 #ifdef D3_OS_WINDOWS
 	fprintf(stdout,"WGL Extensions:\n%s\n",wglGetExtensionsStringARB(wglGetCurrentDC()));
 #endif
-	
-	debug_return();
-	
-		// Script info
-
-	fprintf(stdout,"**************************************\n");
-	fprintf(stdout,"JavaScript\n");
-	fprintf(stdout,"**************************************\n\n");
-	fprintf(stdout,"Version: %.2f\n",((float)JS_VERSION/100.0f));
 	
 	debug_return();
 	

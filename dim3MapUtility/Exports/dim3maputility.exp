@@ -31,7 +31,9 @@ _map_mesh_delete_unused_vertexes
 _map_mesh_calculate_extent
 _map_mesh_calculate_center
 _map_mesh_calculate_uv_center
+
 _map_find_mesh
+_map_calculate_mesh_distance
 
 _map_mesh_combine
 _map_mesh_move

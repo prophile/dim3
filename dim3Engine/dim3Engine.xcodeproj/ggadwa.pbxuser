@@ -79,14 +79,14 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 240453505;
-			PBXWorkspaceStateSaveDate = 240453505;
+			PBXPerProjectTemplateStateSaveDate = 240641761;
+			PBXWorkspaceStateSaveDate = 240641761;
 		};
 		perUserProjectItems = {
 			262F425F0E29BEB100523EE0 /* PlistBookmark */ = 262F425F0E29BEB100523EE0 /* PlistBookmark */;
 			262F42610E29BEB100523EE0 /* PlistBookmark */ = 262F42610E29BEB100523EE0 /* PlistBookmark */;
-			26829DAF0E54FDB200EEED65 /* PBXTextBookmark */ = 26829DAF0E54FDB200EEED65 /* PBXTextBookmark */;
-			26829E030E5507B100EEED65 /* PBXTextBookmark */ = 26829E030E5507B100EEED65 /* PBXTextBookmark */;
+			26E90A970E5748B20087FEFF /* PBXTextBookmark */ = 26E90A970E5748B20087FEFF /* PBXTextBookmark */;
+			26E90AE80E57E7C40087FEFF /* PBXTextBookmark */ = 26E90AE80E57E7C40087FEFF /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -249,26 +249,6 @@
 		vrLen = 1373;
 		vrLoc = 290;
 	};
-	26829DAF0E54FDB200EEED65 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5A582BB090C98D500BE7C36 /* interface_defs.h */;
-		name = "interface_defs.h: 386";
-		rLen = 0;
-		rLoc = 8711;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
-	26829E030E5507B100EEED65 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5A582BB090C98D500BE7C36 /* interface_defs.h */;
-		name = "interface_defs.h: 386";
-		rLen = 0;
-		rLoc = 8711;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
 	268CBC8D0DD2AA7D00CF0256 /* net_client_join_host.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1038, 4004}}";
@@ -324,6 +304,26 @@
 			sepNavVisRange = "{4959, 969}";
 			sepNavWindowFrame = "{{340, 162}, {1041, 747}}";
 		};
+	};
+	26E90A970E5748B20087FEFF /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5A582BB090C98D500BE7C36 /* interface_defs.h */;
+		name = "interface_defs.h: 386";
+		rLen = 0;
+		rLoc = 8711;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	26E90AE80E57E7C40087FEFF /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5A582BB090C98D500BE7C36 /* interface_defs.h */;
+		name = "interface_defs.h: 386";
+		rLen = 0;
+		rLoc = 8711;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
 	};
 	26F08C9E0DAC7DB50097E249 /* net_host.c */ = {
 		uiCtxt = {
@@ -391,9 +391,9 @@
 	};
 	F57CAC770527D9E000A68578 /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1068, 8624}}";
-			sepNavSelRange = "{14809, 15}";
-			sepNavVisRange = "{13964, 2504}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 9170}}";
+			sepNavSelRange = "{6843, 25}";
+			sepNavVisRange = "{6409, 1359}";
 			sepNavWindowFrame = "{{84, 213}, {1041, 747}}";
 		};
 	};
@@ -783,9 +783,9 @@
 	};
 	F5C5EA7E091323C400F94729 /* dim3engine.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1008}}";
-			sepNavSelRange = "{1546, 0}";
-			sepNavVisRange = "{808, 840}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1050}}";
+			sepNavSelRange = "{1246, 0}";
+			sepNavVisRange = "{645, 938}";
 			sepNavWindowFrame = "{{334, 137}, {1041, 747}}";
 		};
 	};
@@ -823,10 +823,10 @@
 	};
 	F5C5EB0E0913264E00F94729 /* debug.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6888}}";
-			sepNavSelRange = "{3208, 12}";
-			sepNavVisRange = "{2656, 1429}";
-			sepNavWindowFrame = "{{61, 234}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6160}}";
+			sepNavSelRange = "{4159, 0}";
+			sepNavVisRange = "{3568, 2544}";
+			sepNavWindowFrame = "{{274, 254}, {1041, 747}}";
 		};
 	};
 	F5C5EB0F0913264E00F94729 /* game.c */ = {
@@ -957,9 +957,9 @@
 	};
 	F5DD19E10908310200721649 /* view_draw.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 12474}}";
-			sepNavSelRange = "{12805, 216}";
-			sepNavVisRange = "{12049, 1183}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 13370}}";
+			sepNavSelRange = "{14631, 0}";
+			sepNavVisRange = "{13925, 1069}";
 			sepNavWindowFrame = "{{454, 144}, {1041, 747}}";
 		};
 	};

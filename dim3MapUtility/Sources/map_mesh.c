@@ -698,4 +698,25 @@ int map_find_mesh(map_type *map,d3pnt *pnt)
 	return(mesh_idx);
 }
 
+int map_calculate_mesh_distance(map_mesh_type *mesh,d3pnt *pnt)
+{
+	int			d,d2;
+	
+	d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,pnt->x,pnt->y,pnt->z);
+
+	d2=distance_get(mesh->box.min.x,mesh->box.mid.y,mesh->box.min.z,pnt->x,pnt->y,pnt->z);
+	if (d2<d) d=d2;
+	
+	d2=distance_get(mesh->box.min.x,mesh->box.mid.y,mesh->box.max.z,pnt->x,pnt->y,pnt->z);
+	if (d2<d) d=d2;
+	
+	d2=distance_get(mesh->box.max.x,mesh->box.mid.y,mesh->box.min.z,pnt->x,pnt->y,pnt->z);
+	if (d2<d) d=d2;
+	
+	d2=distance_get(mesh->box.max.x,mesh->box.mid.y,mesh->box.max.z,pnt->x,pnt->y,pnt->z);
+	if (d2<d) d=d2;
+	
+	return(d);
+}
+
 

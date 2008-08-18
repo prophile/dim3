@@ -142,6 +142,7 @@ EXPORTS
 	xml_get_attribute_3_coord_float				@316
 	xml_get_attribute_4_coord_float				@317
 	xml_get_attribute_color						@318
+	xml_get_attribute_bit_array					@319
 
 	xml_add_tagstart							@320
 	xml_add_tagend								@321
@@ -161,7 +162,7 @@ EXPORTS
 	xml_add_attribute_3_coord_float				@341
 	xml_add_attribute_4_coord_float				@342
 	xml_add_attribute_color						@343
-
+	xml_add_attribute_bit_array					@344
 
 
 

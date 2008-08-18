@@ -449,7 +449,7 @@ bool obscure_calculate_mesh(int mesh_idx)
 
 		// clear visibility bits
 		
-	bzero(mesh->mesh_visibility_flag,max_mesh);
+	bzero(mesh->mesh_visibility_flag,max_mesh_visibility_bytes);
 
 		// self always in visibility list
 
@@ -536,6 +536,8 @@ bool obscure_calculate_map(void)
 {
 	int				n,start_tick;
 	
+	return(TRUE);
+	
 	if (mesh_view_done) return(TRUE);
 	
 	mesh_view_done=TRUE;
@@ -607,7 +609,7 @@ void temp_get_mesh_draw_list(void)
 
 		mesh=&map.mesh.meshes[n];
 
-		d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
+		d=map_calculate_mesh_distance(mesh,&view.camera.pnt);
 		if (d>obscure_dist) continue;
 
 		if (!boundbox_inview(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y)) continue;

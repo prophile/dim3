@@ -314,6 +314,7 @@ extern bool xml_get_attribute_3_coord_int(int n,char *name,int *x,int *y,int *z)
 extern bool xml_get_attribute_3_coord_float(int n,char *name,float *x,float *y,float *z);
 extern bool xml_get_attribute_4_coord_float(int n,char *name,float *r,float *g,float *b,float *a);
 extern bool xml_get_attribute_color(int n,char *name,d3col *col);
+extern bool xml_get_attribute_bit_array(int n,char *name,unsigned char *value,int count);
 
 extern bool xml_add_tagstart(char *name);
 extern bool xml_add_tagend(bool single);
@@ -333,6 +334,7 @@ extern bool xml_add_attribute_3_coord_int(char *name,int x,int y,int z);
 extern bool xml_add_attribute_3_coord_float(char *name,float x,float y,float z);
 extern bool xml_add_attribute_4_coord_float(char *name,float r,float g,float b,float a);
 extern bool xml_add_attribute_color(char *name,d3col *col);
+extern bool xml_add_attribute_bit_array(char *name,unsigned char *value,int count);
 
 /* =======================================================
 

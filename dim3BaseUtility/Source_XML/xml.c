@@ -852,6 +852,27 @@ bool xml_get_attribute_color(int n,char *name,d3col *col)
 	return(TRUE);
 }
 
+bool xml_get_attribute_bit_array(int n,char *name,unsigned char *value,int count)
+{
+	int					n;
+    unsigned char		*c;
+    char				str[256];
+	
+	bzero(value,count);
+    
+	if (!xml_get_attribute_raw(n,name,str,256)) return(0);
+	
+	c=(unsigned char*)value;
+	count*=8;
+	
+	for (n=0;n!=count;n++) {
+		if (*c!='0') value[n/8]=value[n/8]|(0x1>>(n%8));
+		c++;
+	}
+	
+	return(TRUE);
+}
+
 /* =======================================================
 
       Write Tags to Buffer
@@ -1188,5 +1209,10 @@ bool xml_add_attribute_color(char *name,d3col *col)
 	return(xml_add_attribute_text(name,txt));
 }
 
-
+bool xml_add_attribute_bit_array(char *name,unsigned char *value,int count)
+{
+	int				n;
+	unsigned char	*c;
+	char			str[256];
+}
 

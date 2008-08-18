@@ -62,7 +62,7 @@ int obscure_mesh_sort(d3pnt *pt,int *mesh_sort_list)
 
 			// ignore meshes outside of draw distance
 
-		d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,pt->x,pt->y,pt->z);
+		d=map_calculate_mesh_distance(mesh,pt);
 		if (d>(obscure_mesh_view_mesh_far_z-obscure_mesh_view_mesh_near_z)) continue;
 
 			// sort mesh
@@ -162,6 +162,22 @@ bool obscure_check_mesh_view_clip(d3pnt *min,d3pnt *max,d3pnt *view_pt,int *vpor
 
 /* =======================================================
 
+      Obscure Bits
+      
+======================================================= */
+
+inline void obscure_mesh_view_bit_set(map_mesh_type *mesh,int idx)
+{
+	mesh->mesh_visibility_flag[idx>>3]=mesh->mesh_visibility_flag[idx>>3]|(0x1<<(idx&0x7));
+}
+
+inline bool obscure_mesh_view_bit_get(map_mesh_type *mesh,int idx)
+{
+	return((mesh->mesh_visibility_flag[idx>>3]&(0x1<<(idx&0x7)))!=0x0);
+}
+
+/* =======================================================
+
       Obscure Meshes
       
 ======================================================= */
@@ -230,12 +246,17 @@ void obscure_calculate_mesh_single_view(int mesh_idx,d3pnt *cpt,unsigned char *s
 			
 			view_mesh_idx=mesh_sort_list[n];
 			view_mesh=&map.mesh.meshes[view_mesh_idx];
+			
+				// don't draw the mesh itself, as it might
+				// uncessarly block
+				
+			if (view_mesh_idx==mesh_idx) continue;
 		
 				// ignore all moving meshes as they
 				// won't always obscure
 
 			if (view_mesh->flag.moveable) {
-				mesh->mesh_visibility_flag[view_mesh_idx]=0x1;
+				obscure_mesh_view_bit_set(mesh,view_mesh_idx);
 				continue;
 			}
 
@@ -312,7 +333,7 @@ void obscure_calculate_mesh_single_view(int mesh_idx,d3pnt *cpt,unsigned char *s
 
 		for (k=0;k!=(obscure_mesh_view_mesh_wid*obscure_mesh_view_mesh_high);k++) {
 			idx=(int)*sp++;
-			if (idx!=0) mesh->mesh_visibility_flag[stencil_idx_to_mesh_idx[idx]]=0x1;
+			if (idx!=0) obscure_mesh_view_bit_set(mesh,stencil_idx_to_mesh_idx[idx]);
 		}
 
 			// any more batches to do?
@@ -381,11 +402,11 @@ int	cnt,t;
 
 		// clear visibility bits
 		
-	bzero(mesh->mesh_visibility_flag,max_mesh);
+	bzero(mesh->mesh_visibility_flag,max_mesh_visibility_bytes);
 
 		// self always in visibility list
 
-	mesh->mesh_visibility_flag[mesh_idx]=0x1;
+	obscure_mesh_view_bit_set(mesh,mesh_idx);
 		
 		// build mesh looking forward
 
@@ -450,7 +471,7 @@ int	cnt,t;
 	free(stencil_pixels);
 	cnt=0;
 	for (t=0;t!=map.mesh.nmesh;t++) {
-		if (map.mesh.meshes[mesh_idx].mesh_visibility_flag[t]!=0x0) cnt++;
+		if (obscure_mesh_view_bit_get(&map.mesh.meshes[mesh_idx],t)) cnt++;
 	}
 
 	fprintf(stdout,"mesh %d; count = %d/%d\n",mesh_idx,cnt,map.mesh.nmesh);

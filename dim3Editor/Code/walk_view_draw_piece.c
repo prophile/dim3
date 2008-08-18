@@ -40,6 +40,8 @@ extern map_type			map;
 extern bitmap_type		spot_bitmap,scenery_bitmap,node_bitmap,
 						light_bitmap,sound_bitmap,particle_bitmap;
 
+extern bool obscure_mesh_view_bit_get(map_mesh_type *mesh,int idx);
+
 /* =======================================================
 
       Walk View Sprites Drawing
@@ -211,7 +213,7 @@ void walk_view_draw_meshes_texture(d3pnt *cpt,int clip_y,bool opaque)
 			// obscure testing
 				
 		if (obscure_mesh_idx!=-1) {
-			if (map.mesh.meshes[obscure_mesh_idx].mesh_visibility_flag[n]==0x0) {
+			if (!obscure_mesh_view_bit_get(&map.mesh.meshes[obscure_mesh_idx],n)) {
 				mesh++;
 				continue;
 			}
@@ -306,7 +308,7 @@ void walk_view_draw_meshes_line(d3pnt *cpt,bool opaque)
 			// obscure testing
 				
 		if (obscure_mesh_idx!=-1) {
-			if (map.mesh.meshes[obscure_mesh_idx].mesh_visibility_flag[n]==0x0) {
+			if (!obscure_mesh_view_bit_get(&map.mesh.meshes[obscure_mesh_idx],n)) {
 				mesh++;
 				continue;
 			}
