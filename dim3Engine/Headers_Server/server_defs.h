@@ -178,7 +178,7 @@ and can be sold or given away.
 #define sm_normal					0
 #define sm_static					1
 
-#define max_shadow_segment			64
+#define max_shadow_poly				64
 
 //
 // misc settings

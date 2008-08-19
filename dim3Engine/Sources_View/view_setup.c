@@ -47,8 +47,110 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
+extern bool fog_solid_on(void);
 extern bool model_inview(model_draw *draw);
 extern int distance_to_view_center(int x,int y,int z);
+extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
+
+int			mesh_draw_count,mesh_draw_list[max_mesh],mesh_draw_dist[max_mesh];
+
+/* =======================================================
+
+      Create Mesh Draw List
+      
+======================================================= */
+
+inline bool mesh_view_bit_get(map_mesh_type *mesh,int idx)
+{
+	return((mesh->mesh_visibility_flag[idx>>3]&(0x1<<(idx&0x7)))!=0x0);
+}
+
+void view_create_mesh_draw_list(void)
+{
+	int					n,t,sz,d,start_mesh_idx,idx,obscure_dist;
+	map_mesh_type		*start_mesh,*mesh;
+
+		// get mesh camera is in
+
+	start_mesh_idx=map_find_mesh(&map,&view.camera.pnt);
+	start_mesh=&map.mesh.meshes[start_mesh_idx];
+
+		// obscure distance -- normally is the opengl projection
+		// distance but can be the fog distance if fog is on
+
+
+	if (!fog_solid_on()) {
+		obscure_dist=view.camera.far_z-view.camera.near_z;
+	}
+	else {
+		obscure_dist=(map.fog.outer_radius>>1)*3;
+	}
+
+		// check all visibile meshes from the start mesh
+	
+	mesh_draw_count=0;
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+
+			// is this mesh visible?
+
+		if (n!=start_mesh_idx) {
+// supergumba -- put back later
+			if (!mesh_view_bit_get(start_mesh,n)) continue;
+		}
+
+			// auto-eliminate meshes outside of view
+
+		mesh=&map.mesh.meshes[n];
+
+		d=map_calculate_mesh_distance(mesh,&view.camera.pnt);
+		if (d>obscure_dist) continue;
+
+		if (!boundbox_inview(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y)) continue;
+	
+			// top of list is closest items
+
+		idx=-1;
+	
+		for (t=0;t!=mesh_draw_count;t++) {
+			if (mesh_draw_dist[t]>d) {
+				idx=t;
+				break;
+			}
+		}
+	
+			// insert at end of list
+			
+		if (idx==-1) {
+			mesh_draw_dist[mesh_draw_count]=d;
+			mesh_draw_list[mesh_draw_count]=n;
+			mesh_draw_count++;
+			continue;
+		}
+		
+			// insert in list
+			
+		sz=sizeof(int)*(mesh_draw_count-idx);
+		memmove(&mesh_draw_dist[idx+1],&mesh_draw_dist[idx],sz);
+		memmove(&mesh_draw_list[idx+1],&mesh_draw_list[idx],sz);
+		
+		mesh_draw_dist[idx]=d;
+		mesh_draw_list[idx]=n;
+		
+		mesh_draw_count++;
+	}
+}
+
+bool view_mesh_in_draw_list(int mesh_idx)
+{
+	int			n;
+
+	for (n=0;n!=mesh_draw_count;n++) {
+		if (mesh_draw_list[n]==mesh_idx) return(TRUE);
+	}
+
+	return(FALSE);
+}
 
 /* =======================================================
 
@@ -71,10 +173,19 @@ void view_clear_draw_in_view(model_draw *draw)
 
 void view_setup_model_in_view(model_draw *draw,bool in_air,bool is_camera)
 {
-	int					x,z,y;
+	int					mesh_idx,x,z,y;
 	model_type			*mdl;
 
 	if ((draw->uid==-1) || (!draw->on)) return;
+
+		// is it in a mesh that's being shown?
+
+	if (!is_camera) {
+		mesh_idx=map_find_mesh(&map,&draw->pnt);
+		if (mesh_idx!=-1) {
+			if (!view_mesh_in_draw_list(mesh_idx)) return;
+		}
+	}
 	
 		// is model in view?
 		
@@ -482,6 +593,10 @@ void view_draw_setup(int tick)
 	gl_3D_view(&view.camera);
 	gl_3D_rotate(&view.camera.ang);
 	gl_setup_project();
+
+		// setup draw meshes
+
+	view_create_mesh_draw_list();
 
 		// do texture animations
 		

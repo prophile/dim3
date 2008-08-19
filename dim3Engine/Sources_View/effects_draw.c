@@ -41,6 +41,7 @@ extern view_type		view;
 
 extern bool effect_inview(effect_type *effect,int count);
 extern int distance_to_view_center(int x,int y,int z);
+extern bool view_mesh_in_draw_list(int mesh_idx);
 
 /* =======================================================
 
@@ -370,7 +371,7 @@ void effect_image_animate_get_uv(int tick,image_animation_type *animate,float *g
 
 void effect_draw(int tick)
 {
-	int						i,k,t,dist,
+	int						i,k,t,mesh_idx,dist,
 							drawcnt,sz,count;
 	effect_type				*effect;
 	view_sort_effect_type	items[max_effect];
@@ -381,7 +382,14 @@ void effect_draw(int tick)
 	
 	for (i=0;i!=server.count.effect;i++) {
 		effect=&server.effects[i];
-		
+
+			// effect inside a mesh that's hidden?
+
+		mesh_idx=map_find_mesh(&map,&effect->pnt);
+		if (mesh_idx!=-1) {
+			if (!view_mesh_in_draw_list(mesh_idx)) continue;
+		}
+
 			// effect in view
 			
 		count=tick-effect->start_tick;

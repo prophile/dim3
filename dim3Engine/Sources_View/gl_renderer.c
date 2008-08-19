@@ -220,12 +220,6 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 		// all alphas by 8 bit component
 		
 	glDisable(GL_ALPHA_TEST);
-	
-		// optimize vertex arrays
-	
-#ifdef D3_OS_MAC
-	glVertexArrayParameteriAPPLE(GL_VERTEX_ARRAY_STORAGE_HINT_APPLE,GL_STORAGE_SHARED_APPLE);
-#endif
 
 		// texture utility initialize
 		

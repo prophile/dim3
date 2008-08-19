@@ -268,6 +268,14 @@ bool polygon_2D_collision_line(int lx,int lz,int rx,int rz)
 	return(FALSE);
 }
 
+bool polygon_2D_collision_bound_box(int lft,int rgt,int top,int bot)
+{
+	if (lft>cpi_rgt) return(FALSE);
+	if (rgt<cpi_lft) return(FALSE);
+	if (top>cpi_bot) return(FALSE);
+	return(!(bot<cpi_top));
+}
+
 bool polygon_2D_collision_bound_polygon(int ptsz,int *x,int *y,int lft,int rgt,int top,int bot)
 {
 		// do loose hit against bounding boxes

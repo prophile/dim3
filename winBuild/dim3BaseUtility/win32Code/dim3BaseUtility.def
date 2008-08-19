@@ -69,11 +69,12 @@ EXPORTS
 	polygon_2D_polygon_lines_intersect			@196
 	polygon_2D_collision_setup					@197
 	polygon_2D_collision_line					@198
-	polygon_2D_collision_bound_polygon			@199
-	polygon_2D_collision_polygon				@200
-	polygon_get_slope_y							@201
-	polygon_find_y								@202
-	polygon_infinite_find_y						@203
+	polygon_2D_collision_bound_box				@199
+	polygon_2D_collision_bound_polygon			@200
+	polygon_2D_collision_polygon				@201
+	polygon_get_slope_y							@202
+	polygon_find_y								@203
+	polygon_infinite_find_y						@204
 
 	distance_get								@210
 	distance_check								@211

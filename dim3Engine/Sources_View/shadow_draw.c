@@ -47,6 +47,10 @@ int							shadow_stencil_idx;
 void shadow_render_init(void)
 {
 	shadow_stencil_idx=stencil_poly_start;
+
+	glEnable(GL_STENCIL_TEST);
+	glClear(GL_STENCIL_BUFFER_BIT);
+	glDisable(GL_STENCIL_TEST);
 }
 
 int shadow_render_get_stencil(int offset)
@@ -67,116 +71,119 @@ void shadow_render_stencil_add(int add)
 
 /* =======================================================
 
-      Stencil Shadow Segments
+      Stencil Shadow Polygons
       
 ======================================================= */
 
-int shadow_render_stencil_wall(int sptr_cnt,short *sptr,int ty,int y,int cnt,int *seg_idx)
+int shadow_render_stencil_wall_like_poly(int mesh_idx,int poly_idx,int ty,int y,int cnt,poly_pointer_type *poly_list)
 {
-/* supergumba -- will need to rewrite all this
+	int					n;
+	d3pnt				*pt;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
 
-	int					i,n,sx,sy,sz,idx;
-	segment_type		*seg;
-	wall_segment_data	*wall;
+	mesh=&map.mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+
+	if (poly->box.max.y<=ty) return(cnt);
+	if (poly->box.min.y>=y) return(cnt);
+	if (!polygon_2D_collision_line(poly->line.lx,poly->line.lz,poly->line.rx,poly->line.rz)) return(cnt);
+
+	glStencilFunc(GL_ALWAYS,shadow_render_get_stencil(cnt),0xFF);
 	
-	for (i=0;i!=sptr_cnt;i++) {
-		idx=(int)*sptr++;
-		
-		seg=&map.segments[idx];
-		wall=&seg->data.wall;
-		
-		if (wall->by<=ty) continue;
-		if (wall->ty>=y) continue;
-		if (!polygon_2D_collision_line(wall->lx,wall->lz,wall->rx,wall->rz)) continue;
+	poly_list[cnt].mesh_idx=mesh_idx;
+	poly_list[cnt].poly_idx=poly_idx;
+	cnt++;
 
-		glStencilFunc(GL_ALWAYS,shadow_render_get_stencil(cnt),0xFF);
-		
-		if (cnt>=max_shadow_segment) return(max_shadow_segment);
-		seg_idx[cnt++]=idx;
+	glBegin(GL_POLYGON);
 
-		glBegin(GL_POLYGON);
-
-		for (n=0;n!=wall->ptsz;n++) {
-			sx=wall->x[n]-view.camera.pnt.x;
-			sy=wall->y[n]-view.camera.pnt.y;
-			sz=view.camera.pnt.z-wall->z[n];
-			glVertex3i(sx,sy,sz);
-		}
-
-		glEnd();
+	for (n=0;n!=poly->ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+		glVertex3i((pt->x-view.camera.pnt.x),(pt->y-view.camera.pnt.y),(view.camera.pnt.z-pt->z));
 	}
+
+	glEnd();
 	
 	return(cnt);
-	*/
-	
-	return(0);
 }
 
-int shadow_render_stencil_fc(int sptr_cnt,short *sptr,int ty,int by,int cnt,int *seg_idx)
+int shadow_render_stencil_floor_like_poly(int mesh_idx,int poly_idx,int ty,int by,int cnt,poly_pointer_type *poly_list)
 {
-/* supergumba -- will need to rewrite all this
+	int					n,px[8],pz[8];
+	d3pnt				*pt;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
 
-	int					i,n,sx,sy,sz,idx;
-	segment_type		*seg;
-	fc_segment_data		*fc;
+	mesh=&map.mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
 	
-	for (i=0;i!=sptr_cnt;i++) {
-		idx=(int)*sptr++;
-		
-		seg=&map.segments[idx];
-		fc=&seg->data.fc;
-		
-		if (fc->max_y<ty) continue;
-		if (fc->min_y>by) continue;
-		if (!polygon_2D_collision_bound_polygon(fc->ptsz,fc->x,fc->z,fc->min_x,fc->max_x,fc->min_z,fc->max_z)) continue;
-		
-		glStencilFunc(GL_ALWAYS,shadow_render_get_stencil(cnt),0xFF);
+	if (poly->box.max.y<ty) return(cnt);
+	if (poly->box.min.y>by) return(cnt);
+	if (!polygon_2D_collision_bound_box(poly->box.min.x,poly->box.max.x,poly->box.min.z,poly->box.max.z)) return(cnt);
 
-		if (cnt>=max_shadow_segment) return(max_shadow_segment);
-		seg_idx[cnt++]=idx;
-
-		glBegin(GL_POLYGON);
-
-		for (n=0;n!=fc->ptsz;n++) {
-			sx=fc->x[n]-view.camera.pnt.x;
-			sy=fc->y[n]-view.camera.pnt.y;
-			sz=view.camera.pnt.z-fc->z[n];
-			glVertex3i(sx,sy,sz);
-		}
-
-		glEnd();
+	for (n=0;n!=poly->ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+		px[n]=pt->x;
+		pz[n]=pt->z;
 	}
+
+	if (!polygon_2D_collision_polygon(poly->ptsz,px,pz)) return(cnt);
+	
+	glStencilFunc(GL_ALWAYS,shadow_render_get_stencil(cnt),0xFF);
+
+	poly_list[cnt].mesh_idx=mesh_idx;
+	poly_list[cnt].poly_idx=poly_idx;
+	cnt++;
+
+	glBegin(GL_POLYGON);
+
+	for (n=0;n!=poly->ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+		glVertex3i((pt->x-view.camera.pnt.x),(pt->y-view.camera.pnt.y),(view.camera.pnt.z-pt->z));
+	}
+
+	glEnd();
 	
 	return(cnt);
-	*/
-	
-	return(0);
 }
 
-int shadow_render_stencil_portal(int y,int ty,int by,int cnt,int *seg_idx)
+int shadow_render_stencil_mesh(int mesh_idx,int y,int ty,int by,int cnt,poly_pointer_type *poly_list)
 {
-	/* supergumba -- redo
+	int					k;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
 
-		// wall segments
+	mesh=&map.mesh.meshes[mesh_idx];
+
+		// is mesh in collision?
+
+	if ((mesh->box.min.y<ty) || (mesh->box.max.y>by)) return(cnt);
+	if (!polygon_2D_collision_bound_box(mesh->box.min.x,mesh->box.max.x,mesh->box.min.z,mesh->box.max.z)) return(cnt);
+
+		// check polygons
+
+	poly=mesh->polys;
+
+	for (k=0;k!=mesh->npoly;k++) {
 		
-	cnt=shadow_render_stencil_wall(portal->wall_list_hit.count,portal->wall_list_hit.list,ty,y,cnt,seg_idx);
-	if (cnt>=max_shadow_segment) return(max_shadow_segment);
-	
-		// floor segments
+		if (poly->box.wall_like) {
+			cnt=shadow_render_stencil_wall_like_poly(mesh_idx,k,ty,y,cnt,poly_list);
+		}
+		else {
+			cnt=shadow_render_stencil_floor_like_poly(mesh_idx,k,ty,by,cnt,poly_list);
+		}
 		
-	cnt=shadow_render_stencil_fc(portal->fc_list_hit.count,portal->fc_list_hit.list,ty,by,cnt,seg_idx);
-	
+		if (cnt>=max_shadow_poly) return(max_shadow_poly);
+
+		poly++;
+	}
+
 	return(cnt);
-	*/
-	return(0);
 }
 
-int shadow_render_stencil_map(model_draw_shadow *shadow,int *seg_idx)
+int shadow_render_stencil_map(model_draw_shadow *shadow,poly_pointer_type *poly_list,int mesh_draw_count,int *mesh_draw_list)
 {
-	/*
-	int						i,cnt,ty,by,y,high;
-	portal_type				*portal;
-	portal_sight_list_type	*sight;
+	int				n,cnt,ty,by,y,high;
 		
 		// setup shadow volume to compare against map
 		
@@ -184,7 +191,7 @@ int shadow_render_stencil_map(model_draw_shadow *shadow,int *seg_idx)
 	
 	polygon_2D_collision_setup(4,shadow->px,shadow->pz);
 	
-		// find segments that intersect shadow volume
+		// find polygons that intersect shadow volume
 	
 	y=shadow->pnt.y;
 	high=shadow->high;
@@ -206,34 +213,20 @@ int shadow_render_stencil_map(model_draw_shadow *shadow,int *seg_idx)
 	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
 
 	glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
-	
-		// do current portal
-		
-	portal=&map.portals[rn];
-	cnt=shadow_render_stencil_portal(y,ty,by,cnt,seg_idx);
-	
-		// do portals touching current portal
-		
-	sight=portal->sight;
 
-	for (i=0;i!=max_sight_list;i++) {
-        if (sight->root) {
-			cnt=shadow_render_stencil_portal(y,ty,by,cnt,seg_idx);
-			if (cnt>=max_shadow_segment) break;
-		}
-		sight++;
+		// run through show meshes
+
+	for (n=0;n!=mesh_draw_count;n++) {
+		cnt=shadow_render_stencil_mesh(mesh_draw_list[n],y,ty,by,cnt,poly_list);
 	}
 
 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
 
 	glDisable(GL_STENCIL_TEST);
 	
-		// shadow segment count
+		// shadow poly count
 		
 	return(cnt);
-	*/
-
-	return(0);
 }
 
 /* =======================================================
@@ -242,18 +235,17 @@ int shadow_render_stencil_map(model_draw_shadow *shadow,int *seg_idx)
       
 ======================================================= */
 
-/* supergumba -- rewrite
-void shadow_render_draw_wall(segment_type *seg,int x,int y,int z,int *bx,int *bz,float gx,float gy,int high)
+void shadow_render_draw_wall_like_poly(map_mesh_type *mesh,map_mesh_poly_type *poly,int x,int y,int z,int *bx,int *bz,float gx,float gy,int high)
 {
 	int			n,kx,kz,lx,rx,lz,rz,by,px[4],pz[4],py[4],d;
 	float		slice_percent;
 	
 		// find where polygon lines intersect wall line
 		
-	lx=seg->data.wall.lx;
-    lz=seg->data.wall.lz;
-    rx=seg->data.wall.rx;
-    rz=seg->data.wall.rz;
+	lx=poly->line.lx;
+    lz=poly->line.lz;
+    rx=poly->line.rx;
+    rz=poly->line.rz;
 		
 	if (!line_2D_get_intersect(bx[2],bz[2],bx[1],bz[1],lx,lz,rx,rz,&px[2],&pz[2])) return;
 	px[1]=px[2];
@@ -265,7 +257,7 @@ void shadow_render_draw_wall(segment_type *seg,int x,int y,int z,int *bx,int *bz
 	
         // move shadow for wall bottom
         
-    by=seg->data.wall.by;
+    by=poly->box.max.y;
     if (y>by) by+=(y-by);
     
         // move shadow for distance
@@ -303,26 +295,33 @@ void shadow_render_draw_wall(segment_type *seg,int x,int y,int z,int *bx,int *bz
 	glEnd();
 }
 
-void shadow_render_draw_floor(segment_type *seg,int x,int y,int z,int *bx,int *bz,float gx,float gy)
+void shadow_render_draw_floor_like_poly(map_mesh_type *mesh,map_mesh_poly_type *poly,int x,int y,int z,int *bx,int *bz,float gx,float gy)
 {
 	int				n,k,
-					px[4],pz[4],py[4];
+					px[4],pz[4],py[4],
+					fx[8],fy[8],fz[8];
 	float			slice_percent;
-	fc_segment_data	*fc;
-	
-	fc=&seg->data.fc;
+	d3pnt			*pt;
 	
 		// get x,y,z position on floor
 		
 	memmove(px,bx,(sizeof(int)*4));
 	memmove(pz,bz,(sizeof(int)*4));
 	
-	if (fc->flat) {
-		py[0]=py[1]=py[2]=py[3]=fc->y[0];
+	if (poly->box.flat) {
+		py[0]=py[1]=py[2]=py[3]=poly->box.mid.y;
 	}
 	else {
+
+		for (k=0;k!=poly->ptsz;k++) {
+			pt=&mesh->vertexes[poly->v[k]];
+			fx[k]=pt->x;
+			fy[k]=pt->y;
+			fz[k]=pt->z;
+		}
+
 		for (k=0;k!=4;k++) {
-			py[k]=polygon_infinite_find_y(fc->ptsz,fc->x,fc->y,fc->z,px[k],pz[k]);
+			py[k]=polygon_infinite_find_y(poly->ptsz,fx,fy,fz,px[k],pz[k]);
 		}
 	}
 	
@@ -350,35 +349,22 @@ void shadow_render_draw_floor(segment_type *seg,int x,int y,int z,int *bx,int *b
 	glEnd();
 }
 
-void shadow_render_draw_segment(segment_type *seg,int x,int y,int z,int *bx,int *bz,float gx,float gy,int high)
+void shadow_render_draw_map(model_draw_shadow *shadow,float gx,float gy,int poly_cnt,poly_pointer_type *poly_list)
 {
-	switch (seg->type) {
-		case sg_wall:
-			shadow_render_draw_wall(seg,x,y,z,bx,bz,gx,gy,high);
-			return;
-		case sg_floor:
-			shadow_render_draw_floor(seg,x,y,z,bx,bz,gx,gy);
-			return;
-    }
-}
-*/
-
-void shadow_render_draw_map(model_draw_shadow *shadow,float gx,float gy,int seg_cnt,int *seg_idx)
-{
-/*
-	int				n,x,y,z,high;
-	int				*px,*pz;
-	float			ang_y;
-	segment_type	*seg;
+	int					n,x,y,z,high;
+	int					*bx,*bz;
+	float				ang_y;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
 
 		// get volume
 
-	x=shadow->pos.x;
-	y=shadow->pos.y;
-	z=shadow->pos.z;
+	x=shadow->pnt.x;
+	y=shadow->pnt.y;
+	z=shadow->pnt.z;
 	high=shadow->high;
-	px=shadow->px;
-	pz=shadow->pz;
+	bx=shadow->px;
+	bz=shadow->pz;
 	ang_y=shadow->ang.y;
 
 		// draw the shadow texture
@@ -396,17 +382,23 @@ void shadow_render_draw_map(model_draw_shadow *shadow,float gx,float gy,int seg_
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
 		
-	for (n=0;n!=seg_cnt;n++) {
+	for (n=0;n!=poly_cnt;n++) {
 		glStencilFunc(GL_EQUAL,shadow_render_get_stencil(n),0xFF);
 		
-		seg=&map.segments[seg_idx[n]];
-		shadow_render_draw_segment(seg,x,y,z,px,pz,gx,gy,high);
+		mesh=&map.mesh.meshes[poly_list[n].mesh_idx];
+		poly=&mesh->polys[poly_list[n].poly_idx];
+
+		if (poly->box.wall_like) {
+			shadow_render_draw_wall_like_poly(mesh,poly,x,y,z,bx,bz,gx,gy,high);
+		}
+		else {
+			shadow_render_draw_floor_like_poly(mesh,poly,x,y,z,bx,bz,gx,gy);
+		}
 	}
 	
 	glDisable(GL_STENCIL_TEST);
 
 	gl_shadow_texture_bind_end();
-	*/
 }
 
 /* =======================================================
@@ -456,17 +448,17 @@ void shadow_render_test(void)
       
 ======================================================= */
 
-void shadow_render(model_draw *draw)
+void shadow_render(model_draw *draw,int mesh_draw_count,int *mesh_draw_list)
 {
-	int					seg_cnt,
-						seg_idx[max_shadow_segment];
+	int					poly_cnt;
 	float				gx,gy,slice_percent;
+	poly_pointer_type	poly_list[max_shadow_poly];
 
 		// stencil the segments that collide
 		// with shadow volume
 		
-	seg_cnt=shadow_render_stencil_map(&draw->shadow,seg_idx);
-	if (seg_cnt==0) return;
+	poly_cnt=shadow_render_stencil_map(&draw->shadow,poly_list,mesh_draw_count,mesh_draw_list);
+	if (poly_cnt==0) return;
 	
 		// get the texture offsets
 		
@@ -477,10 +469,10 @@ void shadow_render(model_draw *draw)
 
 		// draw shadow to stenciled segments
 
-	shadow_render_draw_map(&draw->shadow,gx,gy,seg_cnt,seg_idx);
+	shadow_render_draw_map(&draw->shadow,gx,gy,poly_cnt,poly_list);
 	
 		// move up the stencil index
 		
-	shadow_render_stencil_add(seg_cnt);
+	shadow_render_stencil_add(poly_cnt);
 }
 

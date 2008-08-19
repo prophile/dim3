@@ -189,6 +189,7 @@ extern bool polygon_2D_polygon_points_inside(int ptsz,int *px,int *py,int ptsz_2
 extern bool polygon_2D_polygon_lines_intersect(int ptsz,int *px,int *py,int ptsz_2,int *px_2,int *py_2);
 extern void polygon_2D_collision_setup(int ptsz,int *px,int *py);
 extern bool polygon_2D_collision_line(int lx,int lz,int rx,int rz);
+extern bool polygon_2D_collision_bound_box(int lft,int rgt,int top,int bot);
 extern bool polygon_2D_collision_bound_polygon(int ptsz,int *x,int *y,int lft,int rgt,int top,int bot);
 extern bool polygon_2D_collision_polygon(int ptsz,int *x,int *y);
 extern float polygon_get_slope_y(int ptsz,int *px,int *py,int *pz,float *ang_y);
