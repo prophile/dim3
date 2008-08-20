@@ -6,15 +6,71 @@
 --------------------Configuration: dim3Engine - Win32 Release--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP27B.tmp" with contents
+Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP2F8.tmp" with contents
 [
 /nologo /MD /W3 /Z7 /O2 /I "..\win32Includes\pthreads" /I "..\win32Includes\GLEW" /I "..\win32Includes\ZLib" /I "..\win32Includes\SDL" /I "..\win32Includes\OpenAL" /I "..\win32Includes\JS" /I "..\win32Includes\PNG" /I "..\..\dim3Engine\Headers_View" /I "..\..\dim3Engine\Headers_Server" /I "..\..\dim3Engine\Headers_Network" /I "..\..\dim3Engine\Headers" /I "..\..\dim3MapUtility\Headers" /I "..\..\dim3ModelUtility\Headers" /I "..\..\dim3BaseUtility\Headers" /I "..\..\dim3Common\Headers" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "D3_PCH" /D "D3_ENGINE" /Fp"Release/dim3Engine.pch" /YX"dim3Engine.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\Gumba\dim3Code\dim3Engine\Sources\app.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources\debug.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources\loop.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\model.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\model_animate.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\model_effect.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\server.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\weapon_melee.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_Server\weapon_projectile.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\console_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\crosshair_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\cursor.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\decals_draw.c"
 "C:\Gumba\dim3Code\dim3Engine\Sources_View\effects_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\elemets.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\error.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\fade.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\files.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\fog.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gl_check.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gl_renderer.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gl_shader.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gl_shadow.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gl_shadow_frame_buffer.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gl_shadow_win32.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gl_text.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gl_texture.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\gui.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\halo_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\hand.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\host.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\hud_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\join.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\map_pick.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\menu_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\model_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\movie.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\network_draw.c"
 "C:\Gumba\dim3Code\dim3Engine\Sources_View\particles_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\progress.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\radar_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\rain.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\remote_status.c"
 "C:\Gumba\dim3Code\dim3Engine\Sources_View\rings_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\segment_liquid.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\segment_render_opaque.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\segment_render_transparent.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\setup_game.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\setup_network.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\shadow_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\shadow_volume.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\sky.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\tint.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\view.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\view_bounds.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\view_draw.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\view_images.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\view_setup.c"
+"C:\Gumba\dim3Code\dim3Engine\Sources_View\zoom_draw.c"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP27B.tmp" 
-Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP27C.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP2F8.tmp" 
+Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP2F9.tmp" with contents
 [
 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"Release/dim3 Engine.pdb" /machine:I386 /out:"..\..\..\dim3\dim3 Engine.exe" 
 .\Release\app.obj
@@ -319,12 +375,68 @@ kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32
 ..\dim3ModelUtility\Release\dim3ModelUtility.lib
 ..\dim3MapUtility\Release\dim3MapUtility.lib
 ]
-Creating command line "link.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP27C.tmp"
+Creating command line "link.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP2F9.tmp"
 <h3>Output Window</h3>
 Compiling...
+app.c
+debug.c
+loop.c
+model.c
+model_animate.c
+model_effect.c
+server.c
+weapon_melee.c
+weapon_projectile.c
+console_draw.c
+crosshair_draw.c
+cursor.c
+decals_draw.c
 effects_draw.c
+elemets.c
+error.c
+fade.c
+files.c
+fog.c
+gl_check.c
+gl_renderer.c
+gl_shader.c
+gl_shadow.c
+gl_shadow_frame_buffer.c
+gl_shadow_win32.c
+gl_text.c
+gl_texture.c
+gui.c
+halo_draw.c
+hand.c
+host.c
+hud_draw.c
+join.c
+map_pick.c
+menu_draw.c
+model_draw.c
+movie.c
+network_draw.c
 particles_draw.c
+progress.c
+radar_draw.c
+rain.c
+remote_status.c
 rings_draw.c
+segment_liquid.c
+segment_render_opaque.c
+segment_render_transparent.c
+setup_game.c
+setup_network.c
+shadow_draw.c
+shadow_volume.c
+sky.c
+tint.c
+view.c
+view_bounds.c
+view_draw.c
+view_images.c
+view_setup.c
+zoom_draw.c
 Linking...
 LINK : warning LNK4089: all references to "zlib1.dll" discarded by /OPT:REF
 

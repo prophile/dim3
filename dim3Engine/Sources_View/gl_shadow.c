@@ -71,8 +71,10 @@ bool gl_shadow_initialize(int shadow_mode,char *err_str)
 
 		// get proper shadow drawing mode
 
-	shadow_use_frame_buffer=gl_check_shadow_frame_buffer_ok();
+	shadow_use_frame_buffer=gl_check_frame_buffer_ok();
 	
+	fprintf(stdout,"frame buffer = %s\n",shadow_use_frame_buffer?"true":"false");
+
 #ifdef D3_OS_MAC
 	shadow_use_frame_buffer=FALSE;		// supergumba -- hack to work around 10.3.9 problem, remove after going to 10.4 only
 #endif

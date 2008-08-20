@@ -433,19 +433,7 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 			xml_get_attribute_int_array(tag,"node",node->path_hint,max_node);
 
 			tag=xml_findfirstchild("Flag",node_tag);
-			if (tag==-1) {
-				node->flag.goal=FALSE;
-				node->flag.red_flag=FALSE;
-				node->flag.blue_flag=FALSE;
-				node->flag.weapon=FALSE;
-				node->flag.ammo=FALSE;
-				node->flag.armor=FALSE;
-				node->flag.health=FALSE;
-				node->flag.normal_cover=FALSE;
-				node->flag.duck_cover=FALSE;
-				node->flag.sniper=FALSE;
-			}
-			else {
+			if (tag!=-1) {
 				node->flag.goal=xml_get_attribute_boolean(tag,"goal");
 				node->flag.red_flag=xml_get_attribute_boolean(tag,"red_flag");
 				node->flag.blue_flag=xml_get_attribute_boolean(tag,"blue_flag");

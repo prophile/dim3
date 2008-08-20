@@ -58,7 +58,7 @@ bool gl_check_glow_ok(void)
 	return(render_info.texture_unit_count>=3);
 }
 
-bool gl_check_shadow_frame_buffer_ok(void)
+bool gl_check_frame_buffer_ok(void)
 {
 	return(strstr(render_info.ext_string,"GL_EXT_framebuffer_object")!=NULL);
 }
@@ -73,7 +73,7 @@ bool gl_check_shadow_pbuffer_ok(void)
 
 bool gl_check_shadow_ok(void)
 {
-	return((gl_check_shadow_pbuffer_ok()) || (gl_check_shadow_frame_buffer_ok()));
+	return((gl_check_shadow_pbuffer_ok()) || (gl_check_frame_buffer_ok()));
 }
 
 bool gl_check_fsaa_ok(void)

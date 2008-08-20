@@ -42,7 +42,7 @@ extern bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,c
 extern bool gl_check_bump_ok(void);
 extern bool gl_check_specular_ok(void);
 extern bool gl_check_glow_ok(void);
-extern bool gl_check_shadow_frame_buffer_ok(void);
+extern bool gl_check_frame_buffer_ok(void);
 extern bool gl_check_shadow_pbuffer_ok(void);
 extern bool gl_check_shadow_ok(void);
 extern bool gl_check_fsaa_ok(void);
