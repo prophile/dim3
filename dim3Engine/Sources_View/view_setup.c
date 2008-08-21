@@ -95,7 +95,6 @@ void view_create_mesh_draw_list(void)
 			// is this mesh visible?
 
 		if (n!=start_mesh_idx) {
-// supergumba -- put back later
 			if (!mesh_view_bit_get(start_mesh,n)) continue;
 		}
 

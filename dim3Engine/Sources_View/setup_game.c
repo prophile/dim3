@@ -212,7 +212,7 @@ void setup_game_graphics_pane(void)
 	y+=control_y_add+separate_y_add;
 
 	element_combo_add("Shadows",(char*)setup_shadow_mode_list,setup.shadow_mode,ctrl_shadow_id,x,y,TRUE);
-	element_enable(ctrl_shadow_id,gl_check_shadow_ok());
+	element_enable(ctrl_shadow_id,gl_check_frame_buffer_ok());
 }
 
 void setup_game_audio_pane(void)

@@ -469,13 +469,16 @@ int	cnt,t;
 
 	free(mesh_sort_list);
 	free(stencil_pixels);
+	
+	/* supergumba -- testing
 	cnt=0;
 	for (t=0;t!=map.mesh.nmesh;t++) {
 		if (obscure_mesh_view_bit_get(&map.mesh.meshes[mesh_idx],t)) cnt++;
 	}
 
 	fprintf(stdout,"mesh %d; count = %d/%d\n",mesh_idx,cnt,map.mesh.nmesh);
-
+	*/
+	
 	return(TRUE);
 }
 

@@ -245,7 +245,9 @@ void file_save_map(void)
 	
     SetCursor(*GetCursor(watchCursor)); 
 	
-	node_path_rebuild();		// force rebuild on node paths
+	node_path_rebuild();		// build node paths
+	obscure_calculate_map();	// build obscure flags
+	
 	ok=map_save(&map);			// save map
 	
 	InitCursor();

@@ -60,20 +60,18 @@ bool gl_check_glow_ok(void)
 
 bool gl_check_frame_buffer_ok(void)
 {
-	return(strstr(render_info.ext_string,"GL_EXT_framebuffer_object")!=NULL);
-}
 
-bool gl_check_shadow_pbuffer_ok(void)
-{
-#ifdef D3_OS_WINDOWS
-	return(strstr(wglGetExtensionsStringARB(wglGetCurrentDC()),"WGL_ARB_pbuffer")!=NULL);
+	// frame buffer routines not defined in 10.3.9, so we need to check this in OS X
+	
+#ifdef D3_OS_MAC
+	#ifndef GL_EXT_framebuffer_object
+		return(FALSE);
+	#endif
 #endif
-	return(TRUE);
-}
 
-bool gl_check_shadow_ok(void)
-{
-	return((gl_check_shadow_pbuffer_ok()) || (gl_check_frame_buffer_ok()));
+		// otherwise just check the string
+		
+	return(strstr(render_info.ext_string,"GL_EXT_framebuffer_object")!=NULL);
 }
 
 bool gl_check_fsaa_ok(void)

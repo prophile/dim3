@@ -30,7 +30,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int					cx,cy,cz,magnify_factor,vertex_mode,drag_mode,grid_mode;
+extern int					cx,cy,cz,magnify_factor,vertex_mode,drag_mode,grid_mode,obscure_mesh_idx;
 extern bool					dp_liquid,dp_object,dp_lightsoundparticle,dp_node;
 extern Rect					main_wind_box;
 
@@ -385,75 +385,6 @@ bool walk_view_liquid_click(editor_3D_view_setup *view_setup,d3pnt *click_pt,map
 
 /* =======================================================
 
-      Select Portal
-      
-======================================================= */
-
-void walk_view_click_portal(editor_3D_view_setup *view_setup,d3pnt *click_pt)
-{
-/* supergumba -- test deleting me
-	int				n,px[4],pz[4],ty,by,hit_z;
-	bool			hit;
-	portal_type		*portal;
-	
-		// only click when portals are drawn
-		
-	if (!view_setup->draw_portal) return;
-	
-		// check for clicked portals
-	
-	hit=FALSE;
-	portal=map.portals;
-	
-	for (n=0;n!=map.nportal;n++) {
-	
-			// don't reselect current portal
-			
-		if (n==cr) {
-			portal++;
-			continue;
-		}
-		
-			// get click boxes
-	
-		px[0]=px[3]=portal->x-view_setup->cpt.x;
-		px[1]=px[2]=portal->ex-view_setup->cpt.x;
-		pz[0]=pz[1]=view_setup->cpt.z-portal->z;
-		pz[2]=pz[3]=view_setup->cpt.z-portal->ez;
-		
-		map_portal_calculate_y_extent(&map,n,&ty,&by);
-
-		if ((ty==0) && (by==0)) {
-			ty=by=view_setup->portal_y-view_setup->cpt.y;			// portal with no Y
-		}
-		else {
-			ty-=view_setup->cpt.y;
-			by-=view_setup->cpt.y;
-		}
-		
-		if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&hit_z)) {
-			hit=TRUE;
-			cr=n;
-			break;
-		}
-	
-		portal++;
-	}
-	
-	if (!hit) return;
-
-		// redraw
-		
-	menu_fix_enable();
-	main_wind_tool_fix_enable();
-	
-	main_wind_draw();
-	texture_palette_reset();
-*/
-}
-
-/* =======================================================
-
       View Piece Get Clicked Index
       
 ======================================================= */
@@ -484,6 +415,17 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
 	
+			// obscure testing
+				
+		if (obscure_mesh_idx!=-1) {
+			if (!obscure_mesh_view_bit_get(&map.mesh.meshes[obscure_mesh_idx],n)) {
+				mesh++;
+				continue;
+			}
+		}
+	
+			// check polygons
+			
 		for (k=0;k!=mesh->npoly;k++) {
 		
 			if (walk_view_mesh_poly_click_index(view_setup,click_pt,mesh,k,&fz)) {
@@ -524,6 +466,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 			
 			spot=&map.spots[n];
 			
+			if (walk_view_draw_pnt_obscure(&spot->pnt)) continue;
 			if (!walk_view_model_click_select_size(&view_setup->cpt,spot->display_model,&spot->pnt,&spot->ang,px,pz,&ty,&by)) continue;
 			
 			if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
@@ -542,6 +485,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 			
 			scenery=&map.sceneries[n];
 			
+			if (walk_view_draw_pnt_obscure(&scenery->pnt)) continue;
 			if (!walk_view_model_click_select_size(&view_setup->cpt,scenery->model_name,&scenery->pnt,&scenery->ang,px,pz,&ty,&by)) continue;
 			
 			if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
@@ -563,6 +507,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 		
 			map_light=&map.lights[n];
 			
+			if (walk_view_draw_pnt_obscure(&map_light->pnt)) continue;
 			walk_view_sprite_select_size(&view_setup->cpt,&map_light->pnt,px,pz,&ty,&by);
 			
 			if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
@@ -581,6 +526,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 		
 			map_sound=&map.sounds[n];
 			
+			if (walk_view_draw_pnt_obscure(&map_sound->pnt)) continue;
 			walk_view_sprite_select_size(&view_setup->cpt,&map_sound->pnt,px,pz,&ty,&by);
 			
 			if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
@@ -599,6 +545,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 		
 			map_particle=&map.particles[n];
 			
+			if (walk_view_draw_pnt_obscure(&map_particle->pnt)) continue;
 			walk_view_sprite_select_size(&view_setup->cpt,&map_particle->pnt,px,pz,&ty,&by);
 			
 			if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
@@ -620,6 +567,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 		
 			node=&map.nodes[n];
 			
+			if (walk_view_draw_pnt_obscure(&node->pnt)) continue;
 			walk_view_sprite_select_size(&view_setup->cpt,&node->pnt,px,pz,&ty,&by);
 			
 			if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
@@ -757,13 +705,6 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 		
 	walk_view_click_piece_normal(view_setup,pt,dblclick);
 	
-		// if no selection, try to select a portal
-		
-	if (select_count()==0) {
-		walk_view_click_portal(view_setup,pt);
-		return;
-	}
-
 		// double-click info
 		
 	if (dblclick) {

@@ -43,8 +43,6 @@ extern bool gl_check_bump_ok(void);
 extern bool gl_check_specular_ok(void);
 extern bool gl_check_glow_ok(void);
 extern bool gl_check_frame_buffer_ok(void);
-extern bool gl_check_shadow_pbuffer_ok(void);
-extern bool gl_check_shadow_ok(void);
 extern bool gl_check_fsaa_ok(void);
 extern bool gl_check_texture_compress_ok(void);
 extern bool gl_check_texture_anisotropic_filter_ok(void);
@@ -67,24 +65,6 @@ extern bool gl_shadow_texture_render_start(void);
 extern void gl_shadow_texture_render_end(void);
 extern bool gl_shadow_texture_bind_start(float alpha);
 extern void gl_shadow_texture_bind_end(void);
-
-	// pbuffer shadows
-	
-extern bool gl_shadow_initialize_pbuffer(int shadow_mode,char *err_str);
-extern void gl_shadow_shutdown_pbuffer(void);
-extern bool gl_shadow_texture_render_start_pbuffer(void);
-extern void gl_shadow_texture_render_end_pbuffer(void);
-extern bool gl_shadow_texture_bind_start_pbuffer(float alpha);
-extern void gl_shadow_texture_bind_end_pbuffer(void);
-
-	// frame buffer shadows
-	
-extern bool gl_shadow_initialize_frame_buffer(int shadow_mode,char *err_str);
-extern void gl_shadow_shutdown_frame_buffer(void);
-extern bool gl_shadow_texture_render_start_frame_buffer(void);
-extern void gl_shadow_texture_render_end_frame_buffer(void);
-extern bool gl_shadow_texture_bind_start_frame_buffer(float alpha);
-extern void gl_shadow_texture_bind_end_frame_buffer(void);
 
 	// view
 	

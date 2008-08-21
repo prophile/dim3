@@ -180,7 +180,7 @@ void debug_dump(void)
 	if (!gl_check_bump_ok()) fprintf(stdout,"Bump-mapping support disabled; Unsupported on this video card.\n");
 	if (!gl_check_specular_ok()) fprintf(stdout,"Specular-mapping support disabled; Unsupported on this video card.\n");
 	if (!gl_check_glow_ok()) fprintf(stdout,"Glow-mapping support disabled; Unsupported on this video card.\n");
-	if (!gl_check_shadow_ok()) fprintf(stdout,"Shadow support disabled; Unsupported on this video card.\n");
+	if (!gl_check_frame_buffer_ok()) fprintf(stdout,"Shadow support disabled; Unsupported on this video card.\n");
 	if (!gl_check_fsaa_ok()) fprintf(stdout,"FSAA support disabled; Unsupported on this video card.\n");
 	if (!gl_check_texture_compress_ok()) fprintf(stdout,"Compression disabled; Unsupported on this video card.\n");
 	if (!gl_check_texture_generate_mipmaps_ok()) fprintf(stdout,"On-card mipmap generation disabled; Unsupported on this video card.\n");

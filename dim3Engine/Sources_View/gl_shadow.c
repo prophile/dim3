@@ -32,7 +32,8 @@ and can be sold or given away.
 #include "video.h"
 
 int							shadow_pbuffer_pixel_size;
-bool						shadow_on,shadow_use_frame_buffer;
+unsigned long				shadow_fbo_id,shadow_fbo_txt_id;
+bool						shadow_on;
 
 extern render_info_type		render_info;
 
@@ -44,21 +45,17 @@ extern render_info_type		render_info;
 
 bool gl_shadow_initialize(int shadow_mode,char *err_str)
 {
-		// defaults
+	int				status;
+	GLuint			gl_id;
 
-	shadow_on=FALSE;
-	shadow_pbuffer_pixel_size=shadow_pbuffer_min_pixel_size;
-
-		// is shadow on?
-
-	shadow_on=FALSE;
-
-	if (!gl_check_shadow_ok()) return(TRUE);
+		// check if shadows are enabled
 		
-	shadow_on=(shadow_mode!=shadow_mode_none);
+	shadow_on=(gl_check_frame_buffer_ok()) && (shadow_mode!=shadow_mode_none);
 	if (!shadow_on) return(TRUE);
-
+	
 		// best size for shadow
+
+	shadow_pbuffer_pixel_size=shadow_pbuffer_min_pixel_size;
 
 	if (shadow_mode==shadow_mode_low) {
 		shadow_pbuffer_pixel_size=shadow_pbuffer_min_pixel_size;
@@ -69,35 +66,54 @@ bool gl_shadow_initialize(int shadow_mode,char *err_str)
 
 	if (shadow_pbuffer_pixel_size>shadow_pbuffer_max_pixel_size) shadow_pbuffer_pixel_size=shadow_pbuffer_max_pixel_size;
 
-		// get proper shadow drawing mode
+		// create the frame buffer object
 
-	shadow_use_frame_buffer=gl_check_frame_buffer_ok();
+	glGenFramebuffersEXT(1,&gl_id);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,gl_id);
+
+	shadow_fbo_id=gl_id;
+
+		// create texture
+
+	glGenTextures(1,&gl_id);
+	glBindTexture(GL_TEXTURE_2D,gl_id);
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,shadow_pbuffer_pixel_size,shadow_pbuffer_pixel_size,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
+
+	shadow_fbo_txt_id=gl_id;
+
+		// attach texture to frame buffer object
+
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_2D,shadow_fbo_txt_id,0);
+
+		// is object OK?
+
+	status=glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
 	
-	fprintf(stdout,"frame buffer = %s\n",shadow_use_frame_buffer?"true":"false");
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
 
-#ifdef D3_OS_MAC
-	shadow_use_frame_buffer=FALSE;		// supergumba -- hack to work around 10.3.9 problem, remove after going to 10.4 only
-#endif
-
-		// run proper method
-
-	if (shadow_use_frame_buffer) {
-		return(gl_shadow_initialize_frame_buffer(shadow_mode,err_str));
+	if (status!=GL_FRAMEBUFFER_COMPLETE_EXT) {
+		strcpy(err_str,"Unable to create frame buffer shadow buffer");
+		return(FALSE);
 	}
 
-	return(gl_shadow_initialize_pbuffer(shadow_mode,err_str));
+	return(TRUE);
 }
 
 void gl_shadow_shutdown(void)
 {
+	GLuint			gl_id;
+	
 	if (!shadow_on) return;
 
-	if (shadow_use_frame_buffer) {
-		gl_shadow_shutdown_frame_buffer();
-	}
-	else {
-		gl_shadow_shutdown_pbuffer();
-	}
+		// destroy frame buffer
+
+	gl_id=shadow_fbo_id;
+	glDeleteFramebuffersEXT(1,&gl_id);
+
+		// destroy texture
+
+	gl_id=shadow_fbo_txt_id;
+	glDeleteTextures(1,&gl_id);
 }
 
 /* =======================================================
@@ -110,23 +126,15 @@ inline bool gl_shadow_texture_render_start(void)
 {
 	if (!shadow_on) return(FALSE);
 
-	if (shadow_use_frame_buffer) {
-		return(gl_shadow_texture_render_start_frame_buffer());
-	}
-
-	return(gl_shadow_texture_render_start_pbuffer());
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,shadow_fbo_id);
+	return(TRUE);
 }
 
 inline void gl_shadow_texture_render_end(void)
 {
 	if (!shadow_on) return;
 
-	if (shadow_use_frame_buffer) {
-		gl_shadow_texture_render_end_frame_buffer();
-	}
-	else {
-		gl_shadow_texture_render_end_pbuffer();
-	}
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
 }
 
 /* =======================================================
@@ -137,23 +145,59 @@ inline void gl_shadow_texture_render_end(void)
 
 inline bool gl_shadow_texture_bind_start(float alpha)
 {
+	GLfloat					col4[4];
+
 	if (!shadow_on) return(FALSE);
+	
+		// bind the texture
+		
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
 
-	if (shadow_use_frame_buffer) {
-		return(gl_shadow_texture_bind_start_frame_buffer(alpha));
-	}
+	glBindTexture(GL_TEXTURE_2D,shadow_fbo_txt_id);
 
-	return(gl_shadow_texture_bind_start_pbuffer(alpha));
+		// setup the rgb combine
+		
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+	
+		// alpha combine
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_MODULATE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_ALPHA,GL_CONSTANT);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_ALPHA,GL_SRC_ALPHA);
+	
+	col4[0]=col4[1]=col4[2]=1.0f;
+	col4[3]=alpha;
+	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
+	
+		// filters
+
+	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	
+		// clamping
+		
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
+
+	return(TRUE);
 }
 
 inline void gl_shadow_texture_bind_end(void)
 {
 	if (!shadow_on) return;
 
-	if (shadow_use_frame_buffer) {
-		gl_shadow_texture_bind_end_frame_buffer();
-	}
-	else {
-		gl_shadow_texture_bind_end_pbuffer();
-	}
+		// remove clamping
+		
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+	
+		// turn off texturing
+		
+	glDisable(GL_TEXTURE_2D);
 }

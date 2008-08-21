@@ -448,6 +448,18 @@ void walk_view_draw_liquids(d3pnt *cpt,bool opaque)
       
 ======================================================= */
 
+bool walk_view_draw_pnt_obscure(d3pnt *pnt)
+{
+	int			mesh_idx;
+	
+	if (obscure_mesh_idx==-1) return(FALSE);
+	
+	mesh_idx=map_find_mesh(&map,pnt);
+	if (mesh_idx==-1) return(FALSE);
+	
+	return(obscure_mesh_view_bit_get(&map.mesh.meshes[obscure_mesh_idx],mesh_idx)==0x0);
+}
+
 void walk_view_draw_nodes(d3pnt *cpt)
 {
 	int			n,k;
@@ -465,6 +477,11 @@ void walk_view_draw_nodes(d3pnt *cpt)
 	node=map.nodes;
 	
 	for (n=0;n!=map.nnode;n++) {
+	
+		if (walk_view_draw_pnt_obscure(&node->pnt)) {
+			node++;
+			continue;
+		}
 			
 		for (k=0;k!=max_node_link;k++) {
 		
@@ -488,27 +505,43 @@ void walk_view_draw_nodes(d3pnt *cpt)
 	node=map.nodes;
 	
 	for (n=0;n!=map.nnode;n++) {
-		walk_view_draw_sprite(cpt,&node->pnt,0.0f,node_bitmap.gl_id);
+		if (!walk_view_draw_pnt_obscure(&node->pnt)) walk_view_draw_sprite(cpt,&node->pnt,0.0f,node_bitmap.gl_id);
 		node++;
 	}
 }
 
 void walk_view_draw_spots_scenery(d3pnt *cpt)
 {
-	int			n;
+	int					n;
+	spot_type			*spot;
+	map_scenery_type	*scenery;
 	
     if (!dp_object) return;
     
+	spot=map.spots;
+	
 	for (n=0;n!=map.nspot;n++) {
-		if (!walk_view_model_draw(cpt,&map.spots[n].pnt,&map.spots[n].ang,map.spots[n].display_model)) {
-			walk_view_draw_sprite(cpt,&map.spots[n].pnt,map.spots[n].ang.y,spot_bitmap.gl_id);
+	
+		if (!walk_view_draw_pnt_obscure(&spot->pnt)) {
+			if (!walk_view_model_draw(cpt,&spot->pnt,&spot->ang,spot->display_model)) {
+				walk_view_draw_sprite(cpt,&spot->pnt,spot->ang.y,spot_bitmap.gl_id);
+			}
 		}
+		
+		spot++;
 	}		
     
+	scenery=map.sceneries;
+	
 	for (n=0;n!=map.nscenery;n++) {
-		if (!walk_view_model_draw(cpt,&map.sceneries[n].pnt,&map.sceneries[n].ang,map.sceneries[n].model_name)) {
-			walk_view_draw_sprite(cpt,&map.sceneries[n].pnt,map.sceneries[n].ang.y,scenery_bitmap.gl_id);
+	
+		if (!walk_view_draw_pnt_obscure(&scenery->pnt)) {
+			if (!walk_view_model_draw(cpt,&scenery->pnt,&scenery->ang,scenery->model_name)) {
+				walk_view_draw_sprite(cpt,&scenery->pnt,scenery->ang.y,scenery_bitmap.gl_id);
+			}
 		}
+		
+		scenery++;
 	}		
 }
 
@@ -519,16 +552,18 @@ void walk_view_draw_lights_sounds_particles(d3pnt *cpt,bool draw_light_circle)
 	if (!dp_lightsoundparticle) return;
 	
 	for (n=0;n!=map.nlight;n++) {
-		if (draw_light_circle) walk_view_draw_circle(cpt,&map.lights[n].pnt,&map.lights[n].col,map.lights[n].intensity);
-		walk_view_draw_sprite(cpt,&map.lights[n].pnt,0.0f,light_bitmap.gl_id);
+		if (!walk_view_draw_pnt_obscure(&map.lights[n].pnt)) {
+			if (draw_light_circle) walk_view_draw_circle(cpt,&map.lights[n].pnt,&map.lights[n].col,map.lights[n].intensity);
+			walk_view_draw_sprite(cpt,&map.lights[n].pnt,0.0f,light_bitmap.gl_id);
+		}
 	}
 	
 	for (n=0;n!=map.nsound;n++) {
-		walk_view_draw_sprite(cpt,&map.sounds[n].pnt,0.0f,sound_bitmap.gl_id);
+		if (!walk_view_draw_pnt_obscure(&map.sounds[n].pnt)) walk_view_draw_sprite(cpt,&map.sounds[n].pnt,0.0f,sound_bitmap.gl_id);
 	}
 	
 	for (n=0;n!=map.nparticle;n++) {
-		walk_view_draw_sprite(cpt,&map.particles[n].pnt,0.0f,particle_bitmap.gl_id);
+		if (!walk_view_draw_pnt_obscure(&map.particles[n].pnt)) walk_view_draw_sprite(cpt,&map.particles[n].pnt,0.0f,particle_bitmap.gl_id);
 	}
 }
 

@@ -53,7 +53,7 @@ void write_map_settings_xml(map_type *map)
 {
     xml_add_tagstart("Creator");
     xml_add_attribute_text("name","dim3 Map Editor");
-    xml_add_attribute_text("version","2.0");
+    xml_add_attribute_text("version","3.0");
     xml_add_tagend(TRUE);
     
     xml_add_tagstart("Info");
@@ -264,7 +264,7 @@ void write_single_vertex(int x,int y,int z)
     xml_add_tagend(TRUE);
 }
 
-void write_single_mesh(map_type *map,map_mesh_type *mesh)
+void write_single_mesh(map_mesh_type *mesh)
 {
 	int					n,nvertex,npoly;
 	d3pnt				*pt;
@@ -462,7 +462,7 @@ bool write_map_xml(map_type *map)
 	mesh=map->mesh.meshes;
 
 	for (k=0;k!=nmesh;k++) {
-		write_single_mesh(map,mesh);
+		write_single_mesh(mesh);
 		mesh++;
 	}
 
