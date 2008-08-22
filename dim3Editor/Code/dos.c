@@ -243,14 +243,28 @@ void file_save_map(void)
 {
 	bool			ok;
 	
-    SetCursor(*GetCursor(watchCursor)); 
+		// supergumba -- status lines don't work, we need to come up with something better here
+		
+	SetCursor(*GetCursor(watchCursor));
+		
+		// build node paths
+		
+	info_status_line_activity("Building Node Paths...");
+	node_path_rebuild();
 	
-	node_path_rebuild();		// build node paths
-	obscure_calculate_map();	// build obscure flags
+		// build obscure flags
+		
+	info_status_line_activity("Building Obscure Flags...");
+	obscure_calculate_map();
 	
-	ok=map_save(&map);			// save map
+		// save map
+		
+	info_status_line_activity("Writing Map XML...");
+	ok=map_save(&map);
 	
 	InitCursor();
+	
+	info_status_line_draw();
 	
 	if (!ok) StandardAlert(kAlertCautionAlert,"\pdim3 Editor could not save map","\pThe disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).",NULL,NULL);
 }

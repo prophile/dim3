@@ -34,19 +34,68 @@ extern map_type			map;
 
 extern WindowRef		mainwind;
 
+GrafPtr					info_status_saveport;
+
+/* =======================================================
+
+      Info Status Draw Utility
+      
+======================================================= */
+
+void info_status_line_draw_start(void)
+{
+	Rect				wbox;
+	RGBColor			blackcolor={0x0,0x0,0x0};
+	
+	GetPort(&info_status_saveport);
+	SetPort(GetWindowPort(mainwind));
+	
+		// erase
+		
+ 	GetWindowPortBounds(mainwind,&wbox);
+	wbox.top=wbox.bottom-info_high;
+	EraseRect(&wbox);
+	
+		// setup text drawing
+		
+	RGBForeColor(&blackcolor);
+	TextSize(10);
+	
+		// draw the line
+		
+	MoveTo(wbox.left,wbox.top);
+	LineTo(wbox.right,wbox.top);
+}
+
+void info_status_line_draw_end(void)
+{
+	SetPort(info_status_saveport);
+}
+
 /* =======================================================
 
       Info Status Line Drawing
       
 ======================================================= */
 
-void info_status_line_draw_selection(Rect *box)
+void info_status_line_draw(void)
 {
 	int				type,main_idx,sub_idx,len;
-	char			txt[256];
+	char				txt[256];
+	Rect				wbox;
 	
-		// supergumba -- fix all this
-		// segment text
+	info_status_line_draw_start();
+	
+ 	GetWindowPortBounds(mainwind,&wbox);
+
+		// left info
+	
+	sprintf(txt,"(%d,%d,%d)",cx,cy,cz);
+	
+	MoveTo((wbox.left+4),(wbox.bottom-4));
+	DrawText(txt,0,strlen(txt));
+		
+		// right info
 		
 	txt[0]=0x0;
 		
@@ -60,6 +109,14 @@ void info_status_line_draw_selection(Rect *box)
 		switch (type) {
 		
 		// supergumba -- need work here
+		
+			case mesh_piece:
+				sprintf(txt,"Mesh: %d",main_idx);
+				break;
+		
+			case liquid_piece:
+				sprintf(txt,"Liquid: %d",main_idx);
+				break;
 		
 			case node_piece:
 				sprintf(txt,"Node: %s (%d,%d,%d)",map.nodes[main_idx].name,map.nodes[main_idx].pnt.x,map.nodes[main_idx].pnt.y,map.nodes[main_idx].pnt.z);
@@ -89,48 +146,30 @@ void info_status_line_draw_selection(Rect *box)
 	
 	len=TextWidth(txt,0,strlen(txt));
 		
-	MoveTo((box->right-(len+20)),(box->bottom-4));
+	MoveTo((wbox.right-(len+20)),(wbox.bottom-4));
 	DrawText(txt,0,strlen(txt));
+
+	info_status_line_draw_end();
 }
 
-void info_status_line_draw(void)
+/* =======================================================
+
+      Info Status Activity Drawing
+      
+======================================================= */
+
+void info_status_line_activity(char *str)
 {
-	char				txt[256];
-	Rect				wbox,box;
-	GrafPtr				saveport;
-	RGBColor			blackcolor={0x0,0x0,0x0};
+	Rect				wbox;
 	
-	GetPort(&saveport);
-	SetPort(GetWindowPort(mainwind));
+	info_status_line_draw_start();
 	
- 	GetWindowPortBounds(mainwind,&wbox);
+	if (str!=NULL) {
+		GetWindowPortBounds(mainwind,&wbox);
 	
-	TextSize(10);
-	
-		// clear info window
-		
-	box=wbox;
-	box.top=box.bottom-info_high;
-	EraseRect(&box);
-	
-		// draw the line
-		
-	RGBForeColor(&blackcolor);
-	
-	MoveTo(box.left,box.top);
-	LineTo(box.right,box.top);
-	
-		// position at left
-	
-	sprintf(txt,"(%d,%d,%d)",cx,cy,cz);
-	
-	MoveTo((box.left+4),(box.bottom-4));
-	DrawText(txt,0,strlen(txt));
-		
-		// the selection text
-		
-	info_status_line_draw_selection(&box);
+		MoveTo((wbox.left+4),(wbox.bottom-4));
+		DrawText(str,0,strlen(str));
+	}	
 
-	SetPort(saveport);
+	info_status_line_draw_end();
 }
-

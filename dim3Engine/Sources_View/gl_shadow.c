@@ -37,6 +37,21 @@ bool						shadow_on;
 
 extern render_info_type		render_info;
 
+// supergumba -- special hack for missing symbols in 10.3.9
+
+#ifdef D3_OS_MAC
+	#ifndef GL_EXT_framebuffer_object
+		#define GL_FRAMEBUFFER_EXT                 0x8D40
+		#define GL_COLOR_ATTACHMENT0_EXT           0x8CE0
+		#define GL_FRAMEBUFFER_COMPLETE_EXT        0x8CD5
+		void glBindFramebufferEXT(GLenum target, GLuint framebuffer) {}
+		void glGenFramebuffersEXT(GLsizei n, GLuint *framebuffers) {}
+		void glFramebufferTexture2DEXT(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level) {}
+		GLenum glCheckFramebufferStatusEXT(GLenum target) { return(0); }
+		void glDeleteFramebuffersEXT(GLsizei n, const GLuint *framebuffers) {}
+	#endif
+#endif
+
 /* =======================================================
 
       Open and Close Shadow OpenGL Context

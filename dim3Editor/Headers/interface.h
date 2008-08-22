@@ -80,6 +80,7 @@ extern void texture_palette_click(Point pt,bool dbl_click);
 //
 
 extern void info_status_line_draw(void);
+extern void info_status_line_activity(char *str);
 
 //
 // progress window

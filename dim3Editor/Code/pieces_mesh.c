@@ -32,7 +32,7 @@ and can be sold or given away.
 #define import_obj_float_to_int			1000.0f
 #define import_obj_max_dimension		5000
 
-extern int								cy,drag_mode;
+extern int								cx,cy,cz,drag_mode;
 extern bool								dp_object,dp_node,dp_lightsoundparticle,dp_auto_texture;
 
 extern map_type							map;
@@ -51,7 +51,7 @@ void piece_add_mesh_finish(int mesh_idx)
 		
 	select_clear();
 	select_add(mesh_piece,mesh_idx,0);
-	
+
 		// change mode to move entire mesh
 		
 	drag_mode=drag_mode_mesh;
@@ -70,6 +70,38 @@ void piece_add_mesh_finish(int mesh_idx)
 
 /* =======================================================
 
+      OBJ Replacementment
+      
+======================================================= */
+
+void piece_add_obj_mesh_replace(d3fpnt *min,d3fpnt *max,d3fpnt *scale,d3pnt *pnt)
+{
+	int				type,mesh_idx,poly_idx;
+	d3pnt			kmin,kmax;
+	
+	if (select_count()==0) return;
+	
+	select_get(0,&type,&mesh_idx,&poly_idx);
+	if (type!=mesh_piece) return;
+	
+		// get new size
+		
+	map_mesh_calculate_extent(&map,mesh_idx,&kmin,&kmax);
+	map_mesh_calculate_center(&map,mesh_idx,pnt);
+	
+		// get factor
+		
+	scale->x=(float)(kmax.x-kmin.x)/(float)(max->x-min->x);
+	scale->y=(float)(kmax.y-kmin.y)/(float)(max->y-min->y);
+	scale->z=(float)(kmax.z-kmin.z)/(float)(max->z-min->z);
+	
+		// delete old mesh
+		
+	map_mesh_delete(&map,mesh_idx);
+}
+
+/* =======================================================
+
       Add OBJ Mesh
       
 ======================================================= */
@@ -79,11 +111,11 @@ void piece_add_obj_mesh(void)
 	int					n,k,nline,nvertex,npoly,nuv,npt,uv_idx,
 						mesh_idx,x,y,z;
 	char				*c,txt[256],vstr[256],uvstr[256],path[1024];
-	float				scale,fx,fy,fz,fsz;
+	float				fx,fy,fz,fsz,f_scale;
 	float				*uvs,*uv;
-	bool				mesh_ok,mesh_delete;
+	bool				mesh_ok,mesh_delete,replace;
 	d3pnt				*dpt,pnt;
-	d3fpnt				min,max;
+	d3fpnt				min,max,scale;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
@@ -164,6 +196,24 @@ void piece_add_obj_mesh(void)
 		return;
     }
 	
+		// get default scale
+		
+	fsz=max.x-min.x;
+	if ((max.y-min.y)>fsz) fsz=max.y-min.y;
+	if ((max.z-min.z)>fsz) fsz=max.z-min.z;
+	
+	f_scale=import_obj_max_dimension/fsz;
+	k=(int)(f_scale*100.0f);
+	f_scale=((float)k)/100.0f;
+
+	replace=dialog_mesh_scale_run(&f_scale);
+	
+	scale.x=scale.y=scale.z=f_scale;
+	
+		// fix scale if a replace
+		
+	if (replace) piece_add_obj_mesh_replace(&min,&max,&scale,&pnt);
+	
 		// create new mesh
 		
 	mesh_ok=FALSE;
@@ -189,18 +239,6 @@ void piece_add_obj_mesh(void)
 	
 	mesh=&map.mesh.meshes[mesh_idx];
 	
-		// scale the import
-		
-	fsz=max.x-min.x;
-	if ((max.y-min.y)>fsz) fsz=max.y-min.y;
-	if ((max.z-min.z)>fsz) fsz=max.z-min.z;
-	
-	scale=import_obj_max_dimension/fsz;
-	k=(int)(scale*100.0f);
-	scale=((float)k)/100.0f;
-
-	dialog_mesh_scale_run(&scale);
-	
 		// get the vertexes
 
  	dpt=mesh->vertexes;
@@ -211,13 +249,13 @@ void piece_add_obj_mesh(void)
 		if (strcmp(txt,"v")!=0) continue;
                 
 		textdecode_get_piece(n,1,txt);
-		dpt->x=(int)(strtod(txt,NULL)*scale);
+		dpt->x=(int)(strtod(txt,NULL)*scale.x);
 		
 		textdecode_get_piece(n,2,txt);
-		dpt->y=-(int)(strtod(txt,NULL)*scale);
+		dpt->y=-(int)(strtod(txt,NULL)*scale.y);
 		
 		textdecode_get_piece(n,3,txt);
-		dpt->z=(int)(strtod(txt,NULL)*scale);
+		dpt->z=(int)(strtod(txt,NULL)*scale.z);
         
 		dpt++;
     }

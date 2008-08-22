@@ -31,7 +31,10 @@ and can be sold or given away.
 extern map_type				map;
 
 #define kMeshScaleScale							FOUR_CHAR_CODE('scle')
+#define kMeshScaleButtonScale					FOUR_CHAR_CODE('scal')
+#define kMeshScaleButtonReplace					FOUR_CHAR_CODE('repl')
 
+bool						dialog_mesh_scale_replace;
 WindowRef					dialog_mesh_scale_wind;
 
 /* =======================================================
@@ -51,7 +54,13 @@ static pascal OSStatus portal_setting_event_proc(EventHandlerCallRef handler,Eve
 			
 			switch (cmd.commandID) {
 				
-				case kHICommandOK:
+				case kMeshScaleButtonScale:
+					dialog_mesh_scale_replace=FALSE;
+					QuitAppModalLoopForWindow(dialog_mesh_scale_wind);
+					return(noErr);
+					
+				case kMeshScaleButtonReplace:
+					dialog_mesh_scale_replace=TRUE;
 					QuitAppModalLoopForWindow(dialog_mesh_scale_wind);
 					return(noErr);
 					
@@ -70,7 +79,7 @@ static pascal OSStatus portal_setting_event_proc(EventHandlerCallRef handler,Eve
       
 ======================================================= */
 
-void dialog_mesh_scale_run(float *scale)
+bool dialog_mesh_scale_run(float *scale)
 {
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
@@ -95,6 +104,8 @@ void dialog_mesh_scale_run(float *scale)
 	
 		// modal window
 		
+	dialog_mesh_scale_replace=FALSE;
+	
 	RunAppModalLoopForWindow(dialog_mesh_scale_wind);
 	
 		// dialog to data
@@ -104,5 +115,7 @@ void dialog_mesh_scale_run(float *scale)
 		// close window
 		
 	DisposeWindow(dialog_mesh_scale_wind);
+	
+	return(dialog_mesh_scale_replace);
 }
 

@@ -118,7 +118,7 @@ extern bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z);
 //
 
 extern bool dialog_create_grid_mesh_run(int *xdiv,int *ydiv,int *zdiv);
-extern void dialog_mesh_scale_run(float *scale);
+extern bool dialog_mesh_scale_run(float *scale);
 
 //
 // texture dialogs

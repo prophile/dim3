@@ -47,7 +47,7 @@ void doloop(void)
 {
 	EventHandlerRef		menu_event;
 	EventHandlerUPP		menu_upp;
-	EventTypeSpec		app_menu_events[]=	{{kEventClassCommand,kEventProcessCommand}};
+	EventTypeSpec		app_menu_events[]={{kEventClassCommand,kEventProcessCommand}};
 	
 	menu_upp=NewEventHandlerUPP(menu_event_callback);						   
 	InstallEventHandler(GetApplicationEventTarget(),menu_upp,GetEventTypeCount(app_menu_events),app_menu_events,NULL,&menu_event);

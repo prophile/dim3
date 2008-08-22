@@ -325,12 +325,12 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>72</integer>
-									<integer>0</integer>
+									<integer>82</integer>
+									<integer>81</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {292, 816}}</string>
+							<string>{{0, 731}, {292, 816}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -377,10 +377,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>260E4F5D0E5D1D1E00F83038</string>
+										<string>2631DACB0E5E7DDA00294E04</string>
 										<key>history</key>
 										<array>
-											<string>26FDE8CD0E4E06E60060987F</string>
+											<string>260E4F5D0E5D1D1E00F83038</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -438,9 +438,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>260E4F530E5D188200F83038</string>
+				<string>2631DACC0E5E7DDA00294E04</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>260E4F540E5D188200F83038</string>
+				<string>2631DACD0E5E7DDA00294E04</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -559,7 +559,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>240983326.64182499</real>
+	<real>241073626.301505</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -574,8 +574,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C78EAAD065D492600B07095</string>
-		<string>1CD10A99069EF8BA00B06720</string>
 		<string>260AFEE90D40505C00F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3Animator/dim3Animator.xcodeproj</string>
 	</array>
@@ -657,7 +655,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEE90D40505C00F6C42F</string>
-				<string>260E4F4F0E5D187700F83038</string>
+				<string>2631DAC90E5E7DCF00294E04</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
