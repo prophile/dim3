@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "effects.h"
 #include "consoles.h"
+#include "lights.h"
 #include "video.h"
 
 extern map_type			map;

@@ -1291,14 +1291,6 @@ SOURCE=..\..\dim3Engine\Sources_View\gl_shadow.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_View\gl_shadow_frame_buffer.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_View\gl_shadow_win32.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3Engine\Sources_View\gl_text.c
 # End Source File
 # Begin Source File

@@ -115,7 +115,7 @@ void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,c
 
 void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,char *ext_name,int dir_type)
 {
-	int					n,idx;
+	int					n,sz,idx;
 	char				*c,path2[1024],file_name[file_str_len];
 	bool				find_first;
 	WIN32_FIND_DATA		find_data;

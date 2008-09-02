@@ -198,7 +198,6 @@ bool map_start(bool skip_media,char *err_str)
 	load_shaders=gl_check_shader_ok();
 
 	/* supergumba -- testing! */
-
 /*
 	if (!map_auto_generate_test(&map,load_shaders)) {
 		progress_shutdown();

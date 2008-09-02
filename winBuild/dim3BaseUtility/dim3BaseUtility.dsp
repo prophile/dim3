@@ -177,6 +177,10 @@ SOURCE=..\..\dim3BaseUtility\Sources_Math\angles.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3BaseUtility\Sources_Math\area.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3BaseUtility\Sources_Math\clip.c
 # End Source File
 # Begin Source File
