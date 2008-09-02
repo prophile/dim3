@@ -239,7 +239,7 @@ void change_model_wind(Point start_pt)
 		memmove(&last_pt,&pt,sizeof(Point));
 		
 		if (shift_on) {
-			shift_x=old_shift_x-((last_pt.h-start_pt.h)*4);
+			shift_x=old_shift_x+((last_pt.h-start_pt.h)*4);
 			shift_y=old_shift_y-((last_pt.v-start_pt.v)*4);
 		}
 		if (rotate_on) {
@@ -383,6 +383,7 @@ bool drag_bone_model_wind(Point start_pt)
 			// select as current bone
 		
 		cur_bone=k;
+		reset_bone_tab(cur_bone);
 		
 			// switch to pose and redraw model
 			

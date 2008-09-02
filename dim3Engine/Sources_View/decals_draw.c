@@ -77,7 +77,7 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 {
 	int				n,k,tick,fade_out_start_tick,
 					x[4],z[4],y[4];
-	float			alpha,g_size,gx,gy;
+	float			alpha,g_size,gx,gy,cf[3],nf[3];
 	mark_type		*mark;
 	
 		// get the alpha
@@ -110,10 +110,15 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 		z[n]=view.camera.pnt.z-decal->z[n];		// switch negative here
 	}
 	
+		// get lighting
+		
+	map_calculate_light_reduce_all();
+	map_calculate_light_color_normal((double)decal->x[0],(double)decal->y[0],(double)decal->z[0],cf,nf);
+	
          // draw the polygon
 			
 	glStencilFunc(GL_EQUAL,stencil_idx,0xFF);
-	gl_texture_decal_set(view_images_get_gl_id(server.marks[decal->mark_idx].image_idx),alpha);
+	gl_texture_decal_set(view_images_get_gl_id(server.marks[decal->mark_idx].image_idx),cf[0],cf[1],cf[2],alpha);
 	
 	glBegin(GL_QUADS);
     glTexCoord2f(gx,gy);
@@ -127,9 +132,9 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
     glEnd();
 }
 
-void decal_render(void)
+void decal_render(int mesh_draw_count,int *mesh_draw_list)
 {
-	int					n,stencil_idx;
+	int					n,k,stencil_idx;
 	decal_type			*decal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*mesh_poly;
@@ -137,12 +142,25 @@ void decal_render(void)
 	if (server.count.decal==0) return;
 
 		// clear all rendering stencil marks
+		// and detect if in view
 
 	decal=server.decals;
 
 	for (n=0;n!=server.count.decal;n++) {
-		mesh_poly=&map.mesh.meshes[decal->mesh_idx].polys[decal->poly_idx];
-		mesh_poly->draw.decal_stencil_idx=0;
+	
+		decal->in_view=FALSE;
+		
+		for (k=0;k!=mesh_draw_count;k++) {
+			if (mesh_draw_list[k]==decal->mesh_idx) {
+				decal->in_view=TRUE;
+			}
+		}
+		
+		if (decal->in_view) {
+			mesh_poly=&map.mesh.meshes[decal->mesh_idx].polys[decal->poly_idx];
+			mesh_poly->draw.decal_stencil_idx=0;
+		}
+		
 		decal++;
 	}
 
@@ -170,15 +188,15 @@ void decal_render(void)
 	stencil_idx=stencil_poly_start;
 	decal=server.decals;
 
-	// supergumba -- need to check portals against mesh list
-
 	for (n=0;n!=server.count.decal;n++) {
 
-		mesh=&map.mesh.meshes[decal->mesh_idx];
-		mesh_poly=&mesh->polys[decal->poly_idx];
-		decal_render_stencil(stencil_idx,mesh,mesh_poly);
-		stencil_idx++;
-
+		if (decal->in_view) {
+			mesh=&map.mesh.meshes[decal->mesh_idx];
+			mesh_poly=&mesh->polys[decal->poly_idx];
+			decal_render_stencil(stencil_idx,mesh,mesh_poly);
+			stencil_idx++;
+		}
+		
 		decal++;
 	}
 
@@ -196,13 +214,14 @@ void decal_render(void)
 	glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
 
 	decal=server.decals;
-	// supergumba -- need to check portals against mesh list
 
 	for (n=0;n!=server.count.decal;n++) {
-
-		mesh_poly=&map.mesh.meshes[decal->mesh_idx].polys[decal->poly_idx];
-		decal_render_mark(mesh_poly->draw.decal_stencil_idx,decal);
-
+	
+		if (decal->in_view) {
+			mesh_poly=&map.mesh.meshes[decal->mesh_idx].polys[decal->poly_idx];
+			decal_render_mark(mesh_poly->draw.decal_stencil_idx,decal);
+		}
+		
 		decal++;
 	}
 

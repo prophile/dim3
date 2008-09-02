@@ -69,7 +69,7 @@ extern void view_draw_effect_tint(int tick,obj_type *obj);
 extern void fade_screen_draw(int tick);
 extern void fade_object_draw(int tick,obj_type *obj);
 extern void liquid_render(int tick);
-extern void decal_render(void);
+extern void decal_render(int mesh_draw_count,int *mesh_draw_list);
 extern void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list);
 
 extern int			mesh_draw_count,mesh_draw_list[max_mesh];
@@ -342,7 +342,7 @@ void view_draw(int tick)
 
 		// draw decals
 
-	decal_render();
+	decal_render(mesh_draw_count,mesh_draw_list);
 	
 		// effects
 

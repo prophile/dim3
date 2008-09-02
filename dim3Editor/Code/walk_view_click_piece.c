@@ -31,7 +31,7 @@ and can be sold or given away.
 #include "walk_view.h"
 
 extern int					cx,cy,cz,magnify_factor,vertex_mode,drag_mode,grid_mode,obscure_mesh_idx;
-extern bool					dp_liquid,dp_object,dp_lightsoundparticle,dp_node;
+extern bool					select_toggle_mode,dp_liquid,dp_object,dp_lightsoundparticle,dp_node;
 extern Rect					main_wind_box;
 
 extern CCrsrHandle			towardcur,dragcur;
@@ -585,18 +585,23 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,bool dblclick)
 {
 	int				type,main_idx,sub_idx;
+	bool			toggle_select;
 	
 		// anything clicked?
 		
 	walk_view_mesh_click_index(view_setup,pt,&type,&main_idx,&sub_idx,FALSE);
 	
+		// regular or toggle selection
+		
+	toggle_select=main_wind_shift_down() || select_toggle_mode;
+	
 		// clear or add to selection
 		
 	if (type==-1) {
-		if (!main_wind_shift_down()) select_clear();
+		if (!toggle_select) select_clear();
 	}
 	else {
-		if (!main_wind_shift_down()) {
+		if (!toggle_select) {
 			if (!select_check(type,main_idx,sub_idx)) {			// keep selection if selecting an already selected piece
 				select_clear();	
 				select_add(type,main_idx,sub_idx);
@@ -704,6 +709,10 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 		// select mesh/polygon
 		
 	walk_view_click_piece_normal(view_setup,pt,dblclick);
+	
+		// reset any obscure testing
+		
+	obscure_reset();
 	
 		// double-click info
 		

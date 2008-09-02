@@ -65,6 +65,7 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 	mesh->flag.climbable=xml_get_attribute_boolean(mesh_tag,"climbable");
 	mesh->flag.hilite=xml_get_attribute_boolean(mesh_tag,"hilite");
 	mesh->flag.lock_uv=xml_get_attribute_boolean(mesh_tag,"lock_uv");
+	mesh->flag.no_self_obscure=xml_get_attribute_boolean(mesh_tag,"no_self_obscure");
 	
 	xml_get_attribute_3_coord_int(mesh_tag,"rot_off",&mesh->rot_off.x,&mesh->rot_off.y,&mesh->rot_off.z);
 
@@ -134,8 +135,8 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 		poly=mesh->polys;
 
 		for (n=0;n!=npoly;n++) {
-
 			poly->txt_idx=xml_get_attribute_int(poly_tag,"txt");
+			
 			poly->ptsz=xml_get_attribute_int_array(poly_tag,"v",poly->v,8);
 			xml_get_attribute_float_array(poly_tag,"x",poly->gx,8);
 			xml_get_attribute_float_array(poly_tag,"y",poly->gy,8);

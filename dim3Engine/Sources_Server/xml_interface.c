@@ -273,6 +273,7 @@ void read_settings_interface_bitmap(int bitmap_tag)
 	bitmap->repeat.on=FALSE;
 	bitmap->repeat.count=0;
 	bitmap->repeat.x_add=bitmap->repeat.y_add=0;
+	bitmap->repeat.col=bitmap->repeat.row=0;
 	
 	tag=xml_findfirstchild("Repeat",bitmap_tag);
 	if (tag!=-1) {
@@ -280,6 +281,8 @@ void read_settings_interface_bitmap(int bitmap_tag)
 		bitmap->repeat.count=xml_get_attribute_int(tag,"count");
 		bitmap->repeat.x_add=xml_get_attribute_int(tag,"x");
 		bitmap->repeat.y_add=xml_get_attribute_int(tag,"y");
+		bitmap->repeat.col=xml_get_attribute_int(tag,"col");
+		bitmap->repeat.row=xml_get_attribute_int(tag,"row");
 	}
 	
 	bitmap->fade.on=FALSE;

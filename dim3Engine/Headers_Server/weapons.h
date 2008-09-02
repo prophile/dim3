@@ -56,7 +56,7 @@ extern void weapon_zoom_off(obj_type *obj,weapon_type *weap);
 
 extern void weapon_run_hand(obj_type *obj,int tick);
 extern void weapon_hand_bounce(obj_type *obj);
-extern int weapon_get_bounce(obj_type *obj);
+extern int weapon_get_bounce(obj_type *obj,weapon_type *weap);
 
 extern void weapon_setup_fire(weapon_type *weap,int method);
 extern bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,d3pnt *pt,d3ang *ang);

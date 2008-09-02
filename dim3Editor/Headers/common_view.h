@@ -64,6 +64,7 @@ extern int select_find(int type,int main_idx,int sub_idx);
 extern bool select_check(int type,int main_idx,int sub_idx);
 extern bool select_has_type(int type);
 extern void select_flip(int type,int main_idx,int sub_idx);
+extern void select_delete_move_index(int type,int main_idx,int sub_idx);
 extern void select_sort(void);
 extern void select_duplicate_clear(void);
 extern void select_duplicate_add(int type,int main_idx,int sub_idx);
@@ -132,8 +133,10 @@ extern void piece_add_height_map_mesh(void);
 extern void piece_add_grid_mesh(void);
 extern void piece_add_polygon_mesh(void);
 extern void piece_combine_mesh(void);
+extern void piece_split_mesh(void);
 extern void map_mesh_move_all(int x,int y,int z);
 extern void map_mesh_reset_uv_all(void);
+extern void map_mesh_delete_no_poly(void);
 
 //
 // node routines
@@ -147,4 +150,6 @@ extern void node_path_rebuild(void);
 //
 
 extern bool obscure_test(void);
+extern void obscure_reset(void);
+
 

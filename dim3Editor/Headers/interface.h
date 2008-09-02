@@ -30,7 +30,7 @@ and can be sold or given away.
 //
 
 #define tool_button_size					28
-#define tool_count							20
+#define tool_count							22
 
 #define tool_group_menu_id					160
 
@@ -119,6 +119,7 @@ extern void main_wind_key_cursor(void);
 extern void main_wind_key_down(char ch);
 extern void main_wind_scroll_wheel(d3pnt *pt,int delta);
 extern void main_wind_tool_reset(void);
+extern void main_wind_obscure_tool_reset(void);
 extern void main_wind_tool_fill_group_combo(void);
 extern void main_wind_tool_default(void);
 extern void main_wind_tool_fix_enable(void);

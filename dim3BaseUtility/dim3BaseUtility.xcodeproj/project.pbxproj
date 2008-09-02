@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2612D45F0E6CEEE200994B22 /* area.c in Sources */ = {isa = PBXBuildFile; fileRef = 2612D45E0E6CEEE200994B22 /* area.c */; };
 		F53F280E0BC1C7D900EB3C0F /* dim3baseutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD52AB0BBE1727001C7C04 /* dim3baseutility.h */; };
 		F53F280F0BC1C7D900EB3C0F /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD52AE0BBE1746001C7C04 /* os_defs.h */; };
 		F53F28100BC1C7D900EB3C0F /* baseutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD52A00BBE16AC001C7C04 /* baseutility.h */; };
@@ -61,6 +62,7 @@
 
 /* Begin PBXFileReference section */
 		08FB77AAFE841565C02AAC07 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		2612D45E0E6CEEE200994B22 /* area.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = area.c; path = Sources_Math/area.c; sourceTree = "<group>"; };
 		F53F25260BBF770900EB3C0F /* file_paths.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_paths.c; path = Sources_File/file_paths.c; sourceTree = "<group>"; };
 		F53F280B0BC1C74800EB3C0F /* libBaseUtility.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libBaseUtility.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		F54A715E0C76A940005AAE98 /* socket_udp.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = socket_udp.c; path = Sources_Network/socket_udp.c; sourceTree = "<group>"; };
@@ -192,6 +194,7 @@
 				F5AD52800BBE14FA001C7C04 /* lines.c */,
 				F5AD52810BBE14FA001C7C04 /* angles.c */,
 				F5AD52820BBE14FA001C7C04 /* polygons.c */,
+				2612D45E0E6CEEE200994B22 /* area.c */,
 				F5AD52830BBE14FA001C7C04 /* time.c */,
 				F5AD52840BBE14FA001C7C04 /* rotations.c */,
 				F5AD52850BBE14FA001C7C04 /* matrix.c */,
@@ -326,6 +329,7 @@
 				F53F282B0BC1C7F200EB3C0F /* queue.c in Sources */,
 				F54A715F0C76A940005AAE98 /* socket_udp.c in Sources */,
 				F556BC750C7BA9E90059E7FC /* file_search.c in Sources */,
+				2612D45F0E6CEEE200994B22 /* area.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

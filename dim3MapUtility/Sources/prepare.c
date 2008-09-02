@@ -37,50 +37,49 @@ and can be sold or given away.
 
 void map_prepare_mesh_poly_determine_wall_like(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	int				n,k,ptsz,px[8],pz[8];
-	d3pnt			*pt,*chk_pt;
+	int				n,ptsz,x_area,y_area,z_area,px[8],py[8];
+	d3pnt			*pt;
 	
 	poly->box.wall_like=FALSE;
 	
-		// flat polygons are not wall-like
+		// flat polygons are automatically not wall-like
 		
 	if (poly->box.flat) return;
 	
-		// check for common xz points
-		// and assume wall type if they exist
+		// get area against x, y, and z planes
 		
 	ptsz=poly->ptsz;
 	
 	for (n=0;n!=ptsz;n++) {
 		pt=&mesh->vertexes[poly->v[n]];
-
-		for (k=0;k!=ptsz;k++) {
-			if (k==n) continue;
-			
-			chk_pt=&mesh->vertexes[poly->v[k]];
-			if ((pt->x==chk_pt->x) && (pt->z==chk_pt->z)) {
-				poly->box.wall_like=TRUE;
-				return;
-			}
-		}
+		px[n]=pt->y;
+		py[n]=pt->z;
 	}
 	
-		// over a certain slope means wall like
-
-	if (poly->slope.y>1.5f) {
-		poly->box.wall_like=TRUE;
-		return;
-	}
-
-		// otherwise determine if all points are in a line
-
+	x_area=area_2D_polygon(ptsz,px,py);
+	
 	for (n=0;n!=ptsz;n++) {
 		pt=&mesh->vertexes[poly->v[n]];
 		px[n]=pt->x;
-		pz[n]=pt->z;
+		py[n]=pt->z;
 	}
-
-	poly->box.wall_like=line_2D_all_points_in_line(ptsz,px,pz,0.0f);
+	
+	y_area=area_2D_polygon(ptsz,px,py);
+	
+	for (n=0;n!=ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+		px[n]=pt->x;
+		py[n]=pt->y;
+	}
+	
+	z_area=area_2D_polygon(ptsz,px,py);
+	
+		// if the y area is greater than both the x and z area,
+		// then consider it a floor
+		
+	if ((y_area>x_area) && (y_area>z_area)) return;
+	
+	poly->box.wall_like=TRUE;
 }
 
 void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
@@ -272,10 +271,12 @@ void map_prepare(map_type *map)
 		memmove(&mesh->box.min,&mesh_min,sizeof(d3pnt));
 		memmove(&mesh->box.max,&mesh_max,sizeof(d3pnt));
 		
-		mesh->box.mid.x=mesh_mid.x/mesh->npoly;
-		mesh->box.mid.y=mesh_mid.y/mesh->npoly;
-		mesh->box.mid.z=mesh_mid.z/mesh->npoly;
-	
+		if (mesh->npoly!=0) {
+			mesh->box.mid.x=mesh_mid.x/mesh->npoly;
+			mesh->box.mid.y=mesh_mid.y/mesh->npoly;
+			mesh->box.mid.z=mesh_mid.z/mesh->npoly;
+		}
+		
 		mesh++;
 	}
 }

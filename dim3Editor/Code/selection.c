@@ -124,6 +124,27 @@ void select_flip(int type,int main_idx,int sub_idx)
 
 /* =======================================================
 
+      Changing Selection For Deletions
+      
+======================================================= */
+
+void select_delete_move_index(int type,int main_idx,int sub_idx)
+{
+	int					n;
+	select_item_type	*select_item;
+	
+	select_item=select_items;
+	
+	for (n=0;n!=nselect_item;n++) {
+		if ((select_item->type==type) && (select_item->main_idx==main_idx)) {
+			if (select_item->sub_idx>=sub_idx) select_item->sub_idx--;
+		}
+		select_item++;
+	}
+}
+
+/* =======================================================
+
       Sorting Selection
       
 ======================================================= */

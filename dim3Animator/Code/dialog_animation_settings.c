@@ -91,6 +91,7 @@ extern model_type		model;
 
 #define kAnimationMeshName					FOUR_CHAR_CODE('mshn')
 #define kAnimationMeshFadeInTime			FOUR_CHAR_CODE('msfi')
+#define kAnimationMeshFadeLifeTime			FOUR_CHAR_CODE('msfl')
 #define kAnimationMeshFadeOutTime			FOUR_CHAR_CODE('msfo')
 
 WindowRef					dialog_animation_settings_wind;
@@ -164,6 +165,7 @@ void dialog_pose_move_settings_load(void)
 		dialog_set_combo(dialog_animation_settings_wind,kAnimationMeshName,0,(mesh_idx+2));
 	}
 	dialog_set_int(dialog_animation_settings_wind,kAnimationMeshFadeInTime,0,pose_move->mesh_fade.fade_in_msec);
+	dialog_set_int(dialog_animation_settings_wind,kAnimationMeshFadeLifeTime,0,pose_move->mesh_fade.fade_life_msec);
 	dialog_set_int(dialog_animation_settings_wind,kAnimationMeshFadeOutTime,0,pose_move->mesh_fade.fade_out_msec);
 	
 	DrawControls(dialog_animation_settings_wind);
@@ -214,6 +216,7 @@ void dialog_pose_move_settings_save(void)
 		strcpy(pose_move->mesh_fade.name,model.meshes[mesh_idx-2].name);
 	}
 	pose_move->mesh_fade.fade_in_msec=dialog_get_int(dialog_animation_settings_wind,kAnimationMeshFadeInTime,0);
+	pose_move->mesh_fade.fade_life_msec=dialog_get_int(dialog_animation_settings_wind,kAnimationMeshFadeLifeTime,0);
 	pose_move->mesh_fade.fade_out_msec=dialog_get_int(dialog_animation_settings_wind,kAnimationMeshFadeOutTime,0);
 }
 

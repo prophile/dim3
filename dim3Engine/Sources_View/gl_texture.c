@@ -400,8 +400,6 @@ inline void gl_texture_opaque_glow_set(int txt_id,int glow_id,float glow_color)
 
 void gl_texture_decal_start(void)
 {
-	cur_alpha=-1.0f;
-
 		// texture unit 0
 		// contains texture
 
@@ -410,9 +408,11 @@ void gl_texture_decal_start(void)
 	
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 	
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_CONSTANT);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
 
 	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_MODULATE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
@@ -426,24 +426,22 @@ void gl_texture_decal_end(void)
 	glDisable(GL_TEXTURE_2D);
 }
 
-inline void gl_texture_decal_set(int txt_id,float alpha)
+inline void gl_texture_decal_set(int txt_id,float r,float g,float b,float alpha)
 {
-	GLfloat			alpha_fct[4];
+	GLfloat			fct[4];
 
 		// texture
 	
 	gl_texture_bind(0,txt_id);
 	
-		// alpha already set?
+		// color and alpha
 	 
-	if (cur_alpha!=alpha) {
-		cur_alpha=alpha;
+	fct[0]=r;
+	fct[1]=g;
+	fct[2]=b;
+	fct[3]=alpha;
 
-		alpha_fct[0]=alpha_fct[1]=alpha_fct[2]=1.0f;
-		alpha_fct[3]=alpha;
-
-		glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,alpha_fct);
-	}
+	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,fct);
 }
 
 /* =======================================================

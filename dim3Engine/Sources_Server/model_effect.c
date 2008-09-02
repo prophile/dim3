@@ -244,7 +244,7 @@ void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx
 		// mesh fades
 
 	if (pose_move->mesh_fade.mesh_idx!=-1) {
-		model_mesh_fade_start(draw,pose_move->mesh_fade.mesh_idx,pose_move->mesh_fade.fade_in_msec,pose_move->mesh_fade.fade_out_msec);
+		model_mesh_fade_start(draw,pose_move->mesh_fade.mesh_idx,pose_move->mesh_fade.fade_in_msec,pose_move->mesh_fade.fade_life_msec,pose_move->mesh_fade.fade_out_msec);
 	}
 	
 		// flash

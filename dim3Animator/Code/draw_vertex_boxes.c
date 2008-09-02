@@ -208,28 +208,13 @@ void draw_model_normals(model_type *model,int mesh_idx)
 
 void draw_model_axis(model_type *model)
 {
-	int				n,sz;
-	
 		// x axis
 		
 	glColor4f(1,0,0,1);
 	
     glBegin(GL_LINES);
-	
 	glVertex3i(-20000,model->center.y,model->center.z);
 	glVertex3i(20000,model->center.y,model->center.z);
-	
-	for (n=1;n!=20;n++) {
-		sz=20;
-		if ((n%5)==0) sz=50;
-		
-		glVertex3i(-(map_enlarge*n),model->center.y,(model->center.z+sz));
-		glVertex3i(-(map_enlarge*n),model->center.y,(model->center.z-sz));
-		
-		glVertex3i((map_enlarge*n),model->center.y,(model->center.z+sz));
-		glVertex3i((map_enlarge*n),model->center.y,(model->center.z-sz));
-	}
-	
 	glEnd();
 	
 		// y axis
@@ -237,21 +222,8 @@ void draw_model_axis(model_type *model)
 	glColor4f(0,1,0,1);
 	
     glBegin(GL_LINES);
-	
 	glVertex3i(model->center.x,-20000,model->center.z);
 	glVertex3i(model->center.x,20000,model->center.z);
-
-	for (n=1;n!=20;n++) {
-		sz=20;
-		if ((n%5)==0) sz=50;
-		
-		glVertex3i((model->center.x+sz),-(map_enlarge*n),model->center.z);
-		glVertex3i((model->center.x-sz),-(map_enlarge*n),model->center.z);
-		
-		glVertex3i((model->center.x+sz),(map_enlarge*n),model->center.z);
-		glVertex3i((model->center.x-sz),(map_enlarge*n),model->center.z);
-	}
-
     glEnd();
 
 		// z axis
@@ -259,21 +231,8 @@ void draw_model_axis(model_type *model)
 	glColor4f(0,0,1,1);
 	
     glBegin(GL_LINES);
-
 	glVertex3i(model->center.x,model->center.y,-20000);
 	glVertex3i(model->center.x,model->center.y,20000);
-	
-	for (n=1;n!=20;n++) {
-		sz=20;
-		if ((n%5)==0) sz=50;
-		
-		glVertex3i((model->center.x+sz),model->center.y,-(map_enlarge*n));
-		glVertex3i((model->center.x-sz),model->center.y,-(map_enlarge*n));
-		
-		glVertex3i((model->center.x+sz),model->center.y,(map_enlarge*n));
-		glVertex3i((model->center.x-sz),model->center.y,(map_enlarge*n));
-	}
-
     glEnd();
 }
 

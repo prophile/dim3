@@ -82,7 +82,7 @@ extern void object_telefrag(obj_type *obj,obj_type *source_obj);
 extern void object_telefrag_check(obj_type *obj);
 extern void object_setup_touch(obj_type *obj,obj_type *source_obj,bool stand);
 extern void object_touch(obj_type *obj);
-extern void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_weap,proj_type *from_proj,d3pnt *melee_hit_pt);
+extern void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_weap,proj_type *from_proj,d3pnt *melee_hit_pt,int damage);
 extern void object_click(obj_type *obj,obj_type *from_obj);
 extern void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,proj_type *source_proj,d3pnt *melee_hit_pt,int damage);
 extern void object_heal(obj_type *obj,int heal);

@@ -58,7 +58,7 @@ extern void model_animation_effect_launch(model_draw *draw,int animate_idx,int p
 extern void model_fade_clear(model_draw *draw);
 extern void model_fade_start(model_draw *draw,int fade_msec,float end_alpha);
 extern void model_fade_run(int tick,model_draw *draw);
-extern void model_mesh_fade_start(model_draw *draw,int mesh_idx,int fade_in_msec,int fade_out_msec);
+extern void model_mesh_fade_start(model_draw *draw,int mesh_idx,int fade_in_msec,int fade_life_msec,int fade_out_msec);
 extern void model_mesh_fade_run(int tick,model_draw *draw);
 
 extern int model_find_mesh_from_draw(model_draw *draw,char *name);

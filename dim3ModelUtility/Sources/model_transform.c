@@ -174,18 +174,23 @@ void model_flip_all(model_type *model,bool flip_x,bool flip_y,bool flip_z)
 		bone_move=pose->bone_moves;
 		
 		for (n=0;n!=nbone;n++) {
+		
 			if (flip_x) {
-				bone_move->rot.x=-bone_move->rot.x;
-				bone_move->mov.x=-bone_move->mov.x;
+				bone_move->rot.y=-bone_move->rot.y;
+				bone_move->rot.z=-bone_move->rot.z;
+				bone_move->mov.x=1.0f-(bone_move->mov.x-1.0f);
 			}
 			if (flip_y) {
-				bone_move->rot.y=-bone_move->rot.y;
-				bone_move->mov.y=-bone_move->mov.y;
+				bone_move->rot.x=-bone_move->rot.x;
+				bone_move->rot.z=-bone_move->rot.z;
+				bone_move->mov.y=1.0f-(bone_move->mov.y-1.0f);
 			}
 			if (flip_z) {
-				bone_move->rot.z=-bone_move->rot.z;
-				bone_move->mov.z=-bone_move->mov.z;
+				bone_move->rot.x=-bone_move->rot.x;
+				bone_move->rot.y=-bone_move->rot.y;
+				bone_move->mov.z=1.0f-(bone_move->mov.z-1.0f);
 			}
+			
 			bone_move++;
 		}
 		

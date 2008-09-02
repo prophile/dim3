@@ -63,6 +63,8 @@ void draw_weapon_hand(int tick,obj_type *obj,weapon_type *weap)
 	draw=&weap->draw;
 	if ((draw->uid==-1) || (!draw->on)) return;
 	
+	if (!draw->on) return;
+	
 	mdl=model_find_uid(draw->uid);
 	if (mdl==NULL) return;
 	

@@ -315,27 +315,21 @@ void render_transparent_sort(int mesh_cnt,int *mesh_list,d3pnt *pnt)
 	for (n=0;n!=mesh_cnt;n++) {
 
 		mesh=&map.mesh.meshes[mesh_list[n]];
-	
-		poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {
+		
+			poly=&mesh->polys[k];
 
 				// get texture
 
 			texture=&map.textures[poly->txt_idx];
-			if (texture->shader.on) {
-				poly++;
-				continue;
-			}
+			if (texture->shader.on) continue;
 			
 			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
 				// transparent?
 
-			if ((texture->bitmaps[frame].alpha_mode!=alpha_mode_transparent) && (poly->alpha==1.0f)) {
-				poly++;
-				continue;
-			}
+			if ((texture->bitmaps[frame].alpha_mode!=alpha_mode_transparent) && (poly->alpha==1.0f)) continue;
 
 				// find distance from camera
 
@@ -358,7 +352,7 @@ void render_transparent_sort(int mesh_cnt,int *mesh_list,d3pnt *pnt)
 				memmove(&sort_list[sort_idx+1],&sort_list[sort_idx],((sort_cnt-sort_idx)*sizeof(map_poly_sort_item_type)));
 			}
 
-			sort_list[sort_idx].mesh_idx=n;
+			sort_list[sort_idx].mesh_idx=mesh_list[n];
 			sort_list[sort_idx].poly_idx=k;
 			sort_list[sort_idx].dist=dist;
 
@@ -369,8 +363,6 @@ void render_transparent_sort(int mesh_cnt,int *mesh_list,d3pnt *pnt)
 		}
 
 		if (sort_cnt>=max_sort_poly) break;
-
-		mesh++;
 	}
 
 	map.sort.count=sort_cnt;

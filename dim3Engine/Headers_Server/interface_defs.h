@@ -29,44 +29,44 @@ and can be sold or given away.
 // GUI Defines
 //
 
-#define max_element					128
-#define max_element_str_len			64
-#define max_element_value_str_len	64
-#define max_element_column			32
-#define max_element_tab				8
+#define max_element								128
+#define max_element_str_len						64
+#define max_element_value_str_len				64
+#define max_element_column						32
+#define max_element_tab							8
 
 //
 // GUI elements
 //
 
-#define element_type_button			0
-#define element_type_bitmap			1
-#define element_type_text			2
-#define element_type_text_field		3
-#define element_type_checkbox		4
-#define element_type_combo			5
-#define element_type_slider			6
-#define element_type_table			7
-#define element_type_tab			8
+#define element_type_button						0
+#define element_type_bitmap						1
+#define element_type_text						2
+#define element_type_text_field					3
+#define element_type_checkbox					4
+#define element_type_combo						5
+#define element_type_slider						6
+#define element_type_table						7
+#define element_type_tab						8
 
 //
 // GUI position mode
 //
 
-#define element_pos_top				0
-#define element_pos_bottom			1
-#define element_pos_center			2
+#define element_pos_top							0
+#define element_pos_bottom						1
+#define element_pos_center						2
 
-#define element_pos_left			0
-#define element_pos_right			1
+#define element_pos_left						0
+#define element_pos_right						1
 
 //
 // GUI table bitmap mode
 //
 
-#define element_table_bitmap_none		0
-#define element_table_bitmap_data		1
-#define element_table_bitmap_document	2
+#define element_table_bitmap_none				0
+#define element_table_bitmap_data				1
+#define element_table_bitmap_document			2
 
 //
 // GUI scaling factors
@@ -143,47 +143,47 @@ typedef struct		{
 // HUD defines
 //
 
-#define max_hud_image				300	
+#define max_hud_image							300	
 
-#define max_hud_bitmap				256
-#define max_hud_text				256
-#define max_hud_bar					32
+#define max_hud_bitmap							256
+#define max_hud_text							256
+#define max_hud_bar								32
 
-#define max_radar_icon				16
+#define max_radar_icon							16
 
-#define max_hud_text_str_sz			256
+#define max_hud_text_str_sz						256
 
-#define max_menu					16
-#define max_menu_item				24
-#define max_menu_item_data_sz		64
+#define max_menu								16
+#define max_menu_item							24
+#define max_menu_item_data_sz					64
 
-#define max_chooser					32
-#define max_chooser_text			32
-#define max_chooser_item			32
-#define max_choose_frame_text_sz	64
-#define max_chooser_text_data_sz	256
+#define max_chooser								32
+#define max_chooser_text						32
+#define max_chooser_item						32
+#define max_choose_frame_text_sz				64
+#define max_chooser_text_data_sz				256
 
-#define max_chooser_sub_txt			16
+#define max_chooser_sub_txt						16
 
-#define max_story_page				16
+#define max_story_page							16
 
 //
 // chat
 //
 
-#define max_chat_lines				15
-#define chat_str_len				64
+#define max_chat_lines							15
+#define chat_str_len							64
 
 //
 // console
 //
 
-#define max_console_line			8
-#define max_console_txt_sz			80
+#define max_console_line						8
+#define max_console_txt_sz						80
 
-#define console_mode_close			0
-#define console_mode_fps			1
-#define console_mode_open			2
+#define console_mode_close						0
+#define console_mode_fps						1
+#define console_mode_open						2
 
 typedef struct		{
 						int						style;
@@ -210,7 +210,7 @@ typedef struct		{
 					} hud_item_fade_type;
 					
 typedef struct		{
-						int						x_add,y_add,count;
+						int						x_add,y_add,col,row,count;
 						bool					on;
 					} hud_bitmap_repeat_type;
 					

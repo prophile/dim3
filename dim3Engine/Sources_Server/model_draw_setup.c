@@ -250,7 +250,7 @@ void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignor
 		// extra y shifting
 
 	y_shift=weap->hand.shift.y+obj->duck.y_move;
-	if (!ignore_y_shifts) y_shift+=(swap_yadd+weapon_get_bounce(obj));
+	if (!ignore_y_shifts) y_shift+=(swap_yadd+weapon_get_bounce(obj,weap));
 		
 	fy=((float)y_shift)-fy;
 	

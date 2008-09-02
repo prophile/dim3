@@ -39,7 +39,7 @@ and can be sold or given away.
 
 void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,char *ext_name,int dir_type)
 {
-	int						n,idx;
+	int						n,sz,idx;
 	char					*c,file_name[file_str_len];
 	DIR						*dir;
 	struct dirent			*de;
@@ -66,6 +66,7 @@ void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,c
 		}
 		
 			// is name a override?
+			// if so, delete original
 			
 		strncpy(file_name,de->d_name,file_str_len);
 		file_name[file_str_len-1]=0x0;
@@ -82,16 +83,17 @@ void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,c
 			}
 		}
 		
+		if (idx!=-1) {
+			sz=(fpd->nfile-(idx+1))*sizeof(file_path_directory_file_type);
+			if (sz>0) memmove(&fpd->files[idx],&fpd->files[idx+1],sz);
+			fpd->nfile--;
+		}
+		
 			// new name
 			
-		if (idx==-1) {
-			fpd->files[fpd->nfile].dir_type=dir_type;
-			strcpy(fpd->files[fpd->nfile].file_name,file_name);
-			fpd->nfile++;
-		}
-		else {
-			fpd->files[idx].dir_type=dir_type;
-		}
+		fpd->files[fpd->nfile].dir_type=dir_type;
+		strcpy(fpd->files[fpd->nfile].file_name,file_name);
+		fpd->nfile++;
 		
 			// move on to next file
 			
@@ -143,6 +145,7 @@ void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,c
 		if ((find_data.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY)!=0) continue;
 
 			// is name a override?
+			// if so, delete original
 		
 		strncpy(file_name,find_data.cFileName,file_str_len);
 		file_name[file_str_len-1]=0x0;
@@ -159,16 +162,21 @@ void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,c
 			}
 		}
 		
+		if (idx!=-1) {
+			sz=(fpd->nfile-(idx+1))*sizeof(file_path_directory_file_type);
+			if (sz>0) memmove(&fpd->files[idx],&fpd->files[idx+1],sz);
+			fpd->nfile--;
+		}
+		
 			// new name
 			
-		if (idx==-1) {
-			fpd->files[fpd->nfile].dir_type=dir_type;
-			strcpy(fpd->files[fpd->nfile].file_name,file_name);
-			fpd->nfile++;
-		}
-		else {
-			fpd->files[idx].dir_type=dir_type;
-		}
+		fpd->files[fpd->nfile].dir_type=dir_type;
+		strcpy(fpd->files[fpd->nfile].file_name,file_name);
+		fpd->nfile++;
+		
+			// move on to next file
+			
+		if (fpd->nfile>=file_paths_max_directory_file) break;
 	}
 
 	FindClose(find_hand);

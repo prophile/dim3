@@ -1627,10 +1627,6 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 	map_auto_generate_connect_portals(map);
 	map_auto_generate_portal_y();
 	
-		// create lights
-		
-	map_auto_generate_lights(map);
-	
 		// create meshes
 
 	map_auto_generate_walls(map);
@@ -1652,6 +1648,10 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 		// rebuild the UVs
 		
 	map_auto_generate_reset_UVs(map);
+	
+		// create lights
+		
+	map_auto_generate_lights(map);
 	
 		// create player spot
 		

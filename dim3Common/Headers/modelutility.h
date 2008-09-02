@@ -34,7 +34,7 @@ and can be sold or given away.
 #define max_model_mesh							32			// maximum number of meshes
 
 #define max_model_vertex						8000		// maximum number of vertexs
-#define max_model_bone							64			// maximum number of bones
+#define max_model_bone							128			// maximum number of bones
 #define max_model_trig							8000		// maximum number of triangles in a model
 
 #define max_model_texture						32			// maximum number of textures in model
@@ -218,7 +218,7 @@ typedef struct		{
 					} model_pose_move_ring_type;
 
 typedef struct		{
-						int								mesh_idx,fade_in_msec,fade_out_msec;
+						int								mesh_idx,fade_in_msec,fade_life_msec,fade_out_msec;
 						char							name[name_str_len];
 					} model_pose_move_mesh_fade_type;
 					

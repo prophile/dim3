@@ -249,7 +249,7 @@ typedef struct		{
 
 typedef struct		{
 						bool					on;
-						int						start_tick,fade_in_msec,fade_out_msec;
+						int						start_tick,fade_in_msec,fade_life_msec,fade_out_msec;
 						float					alpha;
 					} model_draw_mesh_fade;
 
@@ -687,6 +687,7 @@ typedef struct		{
 					
 typedef struct		{
 						int					raise_tick,lower_tick,select_shift;
+						float				bounce_ang,bounce_speed;
 						d3pnt				shift;
 						d3ang				ang;
 					} weap_hand_type;
@@ -876,6 +877,7 @@ typedef struct		{
 						int						mark_idx,mesh_idx,poly_idx,
 												start_tick,x[4],z[4],y[4];
                         float					alpha;
+						bool					in_view;
 					} decal_type;
 
 //

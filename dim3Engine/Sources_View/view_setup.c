@@ -266,10 +266,7 @@ void view_setup_objects(int tick)
 		
 			weap=weapon_find_uid(obj->held_weapon.current_uid);
 			if (weap!=NULL) {
-			
 				draw=&weap->draw;
-				draw->on=TRUE;
-				
 				view_clear_draw_in_view(draw);
 				model_draw_setup_weapon(tick,obj,weap,FALSE);
 				view_setup_model_in_view(draw,FALSE,FALSE);

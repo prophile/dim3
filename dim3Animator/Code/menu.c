@@ -472,6 +472,8 @@ void insert_mesh_dim3_model(void)
 	
 	if (cur_mesh==-1) cur_mesh=0;
 	
+	SetCursor(*GetCursor(watchCursor));
+	
 	insert_model(file_name);
 	
     model_calculate_parents(&model);
@@ -480,6 +482,9 @@ void insert_mesh_dim3_model(void)
     model_recalc_boxes(&model);
     model_recalc_normals(&model,cur_mesh);
 	
+	InitCursor();
+	
+	reset_bone_tab(-1);
     draw_model_wind_pose(&model,cur_mesh,cur_pose);
     texture_palette_draw();
     info_palette_draw();

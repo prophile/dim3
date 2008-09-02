@@ -32,13 +32,15 @@ extern map_type				map;
 
 extern AGLContext			ctx;
 
-#define obscure_mesh_view_mesh_wid				320
-#define obscure_mesh_view_mesh_high				240
+#define obscure_mesh_view_mesh_wid				160
+#define obscure_mesh_view_mesh_high				120
 #define obscure_mesh_view_mesh_aspect_ratio		1.0f
 #define obscure_mesh_view_mesh_fov				60
 #define obscure_mesh_view_mesh_near_z			(6*map_enlarge)
 #define obscure_mesh_view_mesh_far_z			(2000*map_enlarge)
 #define obscure_mesh_view_mesh_near_z_offset	-(3*map_enlarge)
+#define obscure_mesh_view_min_distance			(100*map_enlarge)
+#define obscure_mesh_view_slop_angle			30.0f
 
 /* =======================================================
 
@@ -178,6 +180,83 @@ inline bool obscure_mesh_view_bit_get(map_mesh_type *mesh,int idx)
 
 /* =======================================================
 
+      Min Distance Between Meshes
+      
+======================================================= */
+
+void obscure_calculate_meshes_close_single_point(int which_pt,map_mesh_type *mesh,d3pnt *pt)
+{
+	switch (which_pt) {
+	
+		case 1:
+			pt->x=mesh->box.mid.x;
+			pt->y=mesh->box.min.y;
+			pt->z=mesh->box.mid.z;
+			break;
+			
+		case 2:
+			pt->x=mesh->box.mid.x;
+			pt->y=mesh->box.max.y;
+			pt->z=mesh->box.mid.z;
+			break;
+			
+		case 3:
+			pt->x=mesh->box.min.x;
+			pt->y=mesh->box.mid.y;
+			pt->z=mesh->box.mid.z;
+			break;
+			
+		case 4:
+			pt->x=mesh->box.max.x;
+			pt->y=mesh->box.mid.y;
+			pt->z=mesh->box.mid.z;
+			break;
+			
+		case 5:
+			pt->x=mesh->box.mid.x;
+			pt->y=mesh->box.mid.y;
+			pt->z=mesh->box.min.z;
+			break;
+			
+		case 6:
+			pt->x=mesh->box.mid.x;
+			pt->y=mesh->box.mid.y;
+			pt->z=mesh->box.max.z;
+			break;
+			
+		default:
+			pt->x=mesh->box.mid.x;
+			pt->y=mesh->box.mid.y;
+			pt->z=mesh->box.mid.z;
+			break;
+			
+	}
+}
+
+bool obscure_calculate_meshes_close(map_mesh_type *mesh,map_mesh_type *view_mesh)
+{
+	int			n,k,dist;
+	d3pnt		pt,pt2;
+	
+	for (n=0;n!=7;n++) {
+	
+		obscure_calculate_meshes_close_single_point(n,mesh,&pt);
+		
+		for (k=0;k!=7;k++) {
+
+			obscure_calculate_meshes_close_single_point(k,view_mesh,&pt2);
+
+			dist=distance_get(pt.x,pt.y,pt.z,pt2.x,pt2.y,pt2.z);
+			if (dist<obscure_mesh_view_min_distance) return(TRUE);
+		}
+		
+	}
+
+	return(FALSE);
+}
+
+/* =======================================================
+
       Obscure Meshes
       
 ======================================================= */
@@ -238,6 +317,11 @@ void obscure_calculate_mesh_single_view(int mesh_idx,d3pnt *cpt,unsigned char *s
 	while (TRUE) {
 
 		glClear(GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
+		
+	/* supergumba -- test obscure draw
+		glClear(GL_COLOR_BUFFER_BIT);
+		glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
+	*/
 
 		stencil_idx=1;
 		more_batch=FALSE;
@@ -249,8 +333,15 @@ void obscure_calculate_mesh_single_view(int mesh_idx,d3pnt *cpt,unsigned char *s
 			
 				// don't draw the mesh itself, as it might
 				// uncessarly block
+			
+			if (view_mesh_idx==mesh_idx) {
+				if (mesh->flag.no_self_obscure) continue;
+			}
+			
+				// meshes within a certain min distance
+				// are always included
 				
-			if (view_mesh_idx==mesh_idx) continue;
+			if (obscure_calculate_meshes_close(mesh,view_mesh)) obscure_mesh_view_bit_set(mesh,view_mesh_idx);
 		
 				// ignore all moving meshes as they
 				// won't always obscure
@@ -292,6 +383,8 @@ void obscure_calculate_mesh_single_view(int mesh_idx,d3pnt *cpt,unsigned char *s
 
 					// transparent polygons don't write into the z
 					// but are compared to see if they are obscured
+					
+				transparent=FALSE;
 
 				texture=&map.textures[poly->txt_idx];
 				if ((texture->bitmaps[0].alpha_mode==alpha_mode_transparent) || (poly->alpha!=1.0f)) {
@@ -324,6 +417,12 @@ void obscure_calculate_mesh_single_view(int mesh_idx,d3pnt *cpt,unsigned char *s
 		}
 
 		glDisable(GL_TEXTURE_2D);
+	
+	/* supergumba -- testing obscure draw	
+		aglSwapBuffers(ctx);
+		while (Button()) {}
+		while (!Button()) {}
+	*/
 
 			// read the stencil to look for hits
 
@@ -347,7 +446,6 @@ void obscure_calculate_mesh_single_view(int mesh_idx,d3pnt *cpt,unsigned char *s
 
 bool obscure_calculate_mesh(int mesh_idx)
 {
-int	cnt,t;
 	int				*mesh_sort_list;
 	float			ratio;
 	unsigned char	*stencil_pixels;
@@ -407,59 +505,39 @@ int	cnt,t;
 		// self always in visibility list
 
 	obscure_mesh_view_bit_set(mesh,mesh_idx);
-		
+
 		// build mesh looking forward
 
 	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
 	cpt.z=(mesh->box.min.z+mesh->box.mid.z)/2;
+	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,obscure_mesh_view_slop_angle,0.0f);
 	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,0.0f,0.0f);
-
-	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
-	cpt.z=(mesh->box.max.z+mesh->box.mid.z)/2;
-	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,0.0f,0.0f);
+	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,-obscure_mesh_view_slop_angle,0.0f);
 
 		// build mesh looking right
 
 	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
-	cpt.x=(mesh->box.min.x+mesh->box.mid.x)/2;
-	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,0.0f,90.0f);
-
-	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
 	cpt.x=(mesh->box.max.x+mesh->box.mid.x)/2;
+	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,obscure_mesh_view_slop_angle,90.0f);
 	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,0.0f,90.0f);
+	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,-obscure_mesh_view_slop_angle,90.0f);
 
 		// build mesh looking back
 
 	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
-	cpt.z=(mesh->box.min.z+mesh->box.mid.z)/2;
-	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,0.0f,180.0f);
-
-	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
 	cpt.z=(mesh->box.max.z+mesh->box.mid.z)/2;
+	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,obscure_mesh_view_slop_angle,180.0f);
 	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,0.0f,180.0f);
+	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,-obscure_mesh_view_slop_angle,180.0f);
 
 		// build mesh looking left
 
 	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
 	cpt.x=(mesh->box.min.x+mesh->box.mid.x)/2;
+	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,obscure_mesh_view_slop_angle,270.0f);
 	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,0.0f,270.0f);
-
-	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
-	cpt.x=(mesh->box.max.x+mesh->box.mid.x)/2;
-	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,0.0f,270.0f);
-
-		// build mesh looking up
-
-	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
-	cpt.y=mesh->box.max.y;
-	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,90.0f,0.0f);
-
-		// build mesh looking down
-
-	memmove(&cpt,&mesh->box.mid,sizeof(d3pnt));
-	cpt.y=mesh->box.min.y;
-	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,-90.0f,0.0f);
-		
+	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,-obscure_mesh_view_slop_angle,270.0f);
+	
 		// disable some global setup
 
 	glDisable(GL_STENCIL_TEST);
@@ -507,7 +585,7 @@ bool obscure_calculate_map(void)
 
 bool obscure_test(void)
 {
-	d3pnt			pt;
+	int				type,mesh_idx,poly_idx;
 	
 		// if obscuring already on, turn off
 		
@@ -515,21 +593,19 @@ bool obscure_test(void)
 		obscure_mesh_idx=-1;
 		return(FALSE);
 	}
+	
+		// get select
+		
+	select_get(0,&type,&mesh_idx,&poly_idx);
+	if (type!=mesh_piece) return(FALSE);
 		
 		// setup mesh boxes
 		
 	map_prepare(&map);
 	
-		// find mesh under cursor
-		
-	pt.x=cx;
-	pt.y=cy;
-	pt.z=cz;
-	obscure_mesh_idx=map_find_mesh(&map,&pt);
-	
-	if (obscure_mesh_idx==-1) return(FALSE);
-	
 		// setup obscuring
+	
+	obscure_mesh_idx=mesh_idx;
 	
 	if (!obscure_calculate_mesh(obscure_mesh_idx)) {
 		obscure_mesh_idx=-1;
@@ -539,5 +615,45 @@ bool obscure_test(void)
 	return(TRUE);
 }
 
+void obscure_reset(void)
+{
+	int				type,mesh_idx,poly_idx;
+	bool			sel_ok;
+	
+		// if obscure is on and mesh changed, then
+		// reset obscure
+		
+	if (obscure_mesh_idx==-1) return;
+	
+	sel_ok=FALSE;
+	
+	if (select_count()!=0) {
+		select_get(0,&type,&mesh_idx,&poly_idx);
+		sel_ok=(type==mesh_piece);
+	}
+	
+	if (!sel_ok) {
+		obscure_mesh_idx=-1;
+		main_wind_obscure_tool_reset();
+		return;
+	}
+	
+	if (mesh_idx==obscure_mesh_idx) return;
+	
+		// setup mesh boxes
+		
+	map_prepare(&map);
+	
+		// setup obscuring
+	
+	obscure_mesh_idx=mesh_idx;
+	
+	if (!obscure_calculate_mesh(obscure_mesh_idx)) {
+		obscure_mesh_idx=-1;
+	}
+	
+	main_wind_obscure_tool_reset();
+	main_wind_draw();
+}
 
 

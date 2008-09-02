@@ -217,6 +217,8 @@ bool weapon_create(obj_type *obj,char *name)
 	weap->hand.raise_tick=500;
 	weap->hand.lower_tick=500;
 	weap->hand.select_shift=map_enlarge<<1;
+	weap->hand.bounce_ang=30.0f;
+	weap->hand.bounce_speed=5.0f;
 	
 	weap->kickback.life_msec=0;
 	weap->kickback.size=0;

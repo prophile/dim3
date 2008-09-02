@@ -38,6 +38,7 @@ extern map_type				map;
 #define kMeshSettingClimbable					FOUR_CHAR_CODE('fclb')
 #define kMeshSettingHilite						FOUR_CHAR_CODE('hilt')
 #define kMeshSettingLockUV						FOUR_CHAR_CODE('lkuv')
+#define kMeshSettingNoSelfObscure				FOUR_CHAR_CODE('nsob')
 
 #define kMeshSettingRotX						FOUR_CHAR_CODE('rotx')
 #define kMeshSettingRotY						FOUR_CHAR_CODE('roty')
@@ -130,6 +131,7 @@ bool dialog_mesh_setting_run(int mesh_idx,int poly_idx)
 	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSettingClimbable,0,mesh->flag.climbable);
 	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSettingHilite,0,mesh->flag.hilite);
 	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSettingLockUV,0,mesh->flag.lock_uv);
+	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSettingNoSelfObscure,0,mesh->flag.no_self_obscure);
 
 	dialog_set_int(dialog_mesh_setting_wind,kMeshSettingRotX,0,mesh->rot_off.x);
 	dialog_set_int(dialog_mesh_setting_wind,kMeshSettingRotY,0,mesh->rot_off.y);
@@ -183,6 +185,7 @@ bool dialog_mesh_setting_run(int mesh_idx,int poly_idx)
 		mesh->flag.climbable=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingClimbable,0);
 		mesh->flag.hilite=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingHilite,0);
 		mesh->flag.lock_uv=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingLockUV,0);
+		mesh->flag.no_self_obscure=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingNoSelfObscure,0);
 		
 		mesh->rot_off.x=dialog_get_int(dialog_mesh_setting_wind,kMeshSettingRotX,0);
 		mesh->rot_off.y=dialog_get_int(dialog_mesh_setting_wind,kMeshSettingRotY,0);

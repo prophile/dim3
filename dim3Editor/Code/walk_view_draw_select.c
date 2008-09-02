@@ -52,7 +52,7 @@ void walk_view_draw_select_mesh_get_grow_handles(int mesh_idx,int *px,int *py,in
 	py[4]=py[5]=py[6]=py[7]=max.y;
 }
 
-void walk_view_draw_select_mesh(d3pnt *cpt,int mesh_idx,int poly_idx)
+void walk_view_draw_select_mesh(d3pnt *cpt,int mesh_idx)
 {
 	int						n,k,t,x,y,z,px[8],py[8],pz[8];
 	d3pnt					*pt;
@@ -110,62 +110,65 @@ void walk_view_draw_select_mesh(d3pnt *cpt,int mesh_idx,int poly_idx)
 	
 		return;
 	}
-	
-		// draw selected mesh poly
-		
-	if (drag_mode==drag_mode_polygon) {
-	
-		glDisable(GL_DEPTH_TEST);
-		
-		glLineWidth(2.0f);
+}
 
-		glColor4f(1.0f,0.0f,0.0f,1.0f);
-		
-		mesh_poly=&mesh->polys[poly_idx];
-		
-		glBegin(GL_LINE_LOOP);
-		
-		for (t=0;t!=mesh_poly->ptsz;t++) {
-			pt=&mesh->vertexes[mesh_poly->v[t]];
-			x=pt->x-cpt->x;
-			y=pt->y-cpt->y;
-			z=cpt->z-pt->z;
-			glVertex3i(x,y,z);
-		}
-		
-		glEnd();
+void walk_view_draw_select_mesh_vertex(d3pnt *cpt,int mesh_idx)
+{
+	int						n,x,y,z;
+	d3pnt					*pt;
+	map_mesh_type			*mesh;
+	
+	glEnable(GL_DEPTH_TEST);
 
-		glLineWidth(1.0f);
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glPointSize(walk_view_handle_size);
+	
+	mesh=&map.mesh.meshes[mesh_idx];
+	pt=mesh->vertexes;
+	
+	glBegin(GL_POINTS);
+
+	for (n=0;n!=mesh->nvertex;n++) {
+		x=pt->x-cpt->x;
+		y=pt->y-cpt->y;
+		z=cpt->z-pt->z;
+		glVertex3i(x,y,z);
 		
-		return;
+		pt++;
+	}
+
+	glEnd();
+}
+
+void walk_view_draw_select_mesh_poly(d3pnt *cpt,int mesh_idx,int poly_idx)
+{
+	int						n,x,y,z;
+	d3pnt					*pt;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*mesh_poly;
+	
+	glDisable(GL_DEPTH_TEST);
+	
+	glLineWidth(2.0f);
+
+	glColor4f(1.0f,0.0f,0.0f,1.0f);
+	
+	mesh=&map.mesh.meshes[mesh_idx];
+	mesh_poly=&mesh->polys[poly_idx];
+	
+	glBegin(GL_LINE_LOOP);
+	
+	for (n=0;n!=mesh_poly->ptsz;n++) {
+		pt=&mesh->vertexes[mesh_poly->v[n]];
+		x=pt->x-cpt->x;
+		y=pt->y-cpt->y;
+		z=cpt->z-pt->z;
+		glVertex3i(x,y,z);
 	}
 	
-		// draw the vertexes
-		
-	if (drag_mode==drag_mode_vertex) {
-		
-		glEnable(GL_DEPTH_TEST);
+	glEnd();
 
-		glColor4f(0.0f,0.0f,0.0f,1.0f);
-		glPointSize(walk_view_handle_size);
-		
-		pt=mesh->vertexes;
-		
-		glBegin(GL_POINTS);
-
-		for (n=0;n!=mesh->nvertex;n++) {
-			x=pt->x-cpt->x;
-			y=pt->y-cpt->y;
-			z=cpt->z-pt->z;
-			glVertex3i(x,y,z);
-			
-			pt++;
-		}
-
-		glEnd();
-		
-		return;
-	}
+	glLineWidth(1.0f);
 }
 
 /* =======================================================
@@ -296,11 +299,20 @@ void walk_view_draw_select(d3pnt *cpt)
 {
 	int						n,sel_count,
 							type,main_idx,sub_idx;
+	unsigned char			draw_mesh_once[max_mesh];
 	
 	sel_count=select_count();
 	if (sel_count==0) return;
 	
-		// draw the selection
+		// only draw mesh selections once
+		// as there could be multiple polygon selections
+		// for a single mesh
+		
+	memset(draw_mesh_once,0x0,max_mesh);
+	
+		// draw the selection of meshes, liquids,
+		// and other pieces, drawing the selected
+		// polygons later
 		
 	for (n=(sel_count-1);n>=0;n--) {
 	
@@ -311,7 +323,10 @@ void walk_view_draw_select(d3pnt *cpt)
 		switch (type) {
 		
 			case mesh_piece:
-				walk_view_draw_select_mesh(cpt,main_idx,sub_idx);
+				if (draw_mesh_once[main_idx]==0x0) {
+					draw_mesh_once[main_idx]=0x1;
+					walk_view_draw_select_mesh(cpt,main_idx);
+				}
 				break;
 				
 			case liquid_piece:
@@ -345,6 +360,40 @@ void walk_view_draw_select(d3pnt *cpt)
 			case particle_piece:
 				walk_view_draw_select_sprite(cpt,&map.particles[main_idx].pnt);
 				break;
+		}
+	}
+	
+		// draw selected polygons
+		// draw afterwards so mesh highlighting doesn't
+		// effect selection
+		
+	if (drag_mode==drag_mode_polygon) {
+	
+		for (n=(sel_count-1);n>=0;n--) {
+		
+			select_get(n,&type,&main_idx,&sub_idx);
+			if (type!=mesh_piece) continue;
+			
+			walk_view_draw_select_mesh_poly(cpt,main_idx,sub_idx);
+		}
+		
+	}
+	
+		// finish with selecte mesh vertexes
+		
+	if (drag_mode==drag_mode_vertex) {
+
+		memset(draw_mesh_once,0x0,max_mesh);
+			
+		for (n=(sel_count-1);n>=0;n--) {
+		
+			select_get(n,&type,&main_idx,&sub_idx);
+			if (type!=mesh_piece) continue;
+			
+			if (draw_mesh_once[main_idx]==0x0) {
+				draw_mesh_once[main_idx]=0x1;
+				walk_view_draw_select_mesh_vertex(cpt,main_idx);
+			}
 		}
 	}
 }

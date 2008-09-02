@@ -340,14 +340,22 @@ void weapon_run_hand(obj_type *obj,int tick)
 
 void weapon_hand_bounce(obj_type *obj)
 {
-	int			bounce_add;
+	float		speed;
+	weapon_type	*weap;
+	
+		// get values
+		
+	weap=weapon_find_current(obj);
+	if (weap==NULL) return;
+	
+	speed=weap->hand.bounce_speed;
 	
 		// return weapon to neutral
 		
 	if ((!obj->forward_move.moving) && (!obj->side_move.moving)) {
 	
 		if (obj->held_weapon.bounce_y>0) {
-			obj->held_weapon.bounce_y-=8;
+			obj->held_weapon.bounce_y-=(int)(speed*2.0f);
 			if (obj->held_weapon.bounce_y<0) obj->held_weapon.bounce_y=0;
 		}
 	
@@ -356,18 +364,17 @@ void weapon_hand_bounce(obj_type *obj)
 	
 		// bounce weapon
 		
-	bounce_add=3;
-	if (obj->forward_move.running) bounce_add=5;
+	if (!obj->forward_move.running) speed=speed/2.0f;;
 	
-	obj->held_weapon.bounce_y+=bounce_add;
+	obj->held_weapon.bounce_y+=(int)speed;
 	if (obj->held_weapon.bounce_y>=360) obj->held_weapon.bounce_y=0;
 }
 
-int weapon_get_bounce(obj_type *obj)
+int weapon_get_bounce(obj_type *obj,weapon_type *weap)
 {
 	float		f;
 	
 	f=(float)sin(((float)obj->held_weapon.bounce_y)*ANG_to_RAD);
-	return((int)(f*30));
+	return((int)(f*weap->hand.bounce_ang));
 }
 

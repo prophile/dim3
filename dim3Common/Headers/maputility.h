@@ -235,7 +235,7 @@ typedef struct		{
 typedef struct		{
 						bool								on,pass_through,moveable,
 															hilite,climbable,shiftable,
-															lock_uv,touched;
+															lock_uv,no_self_obscure,touched;
 					} map_mesh_flag_type;
 
 typedef struct		{

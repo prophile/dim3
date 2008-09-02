@@ -735,6 +735,86 @@ void piece_combine_mesh(void)
 
 /* =======================================================
 
+      Split Meshes
+      
+======================================================= */
+
+void piece_split_mesh(void)
+{
+	int					n,k,mesh_idx,x[8],y[8],z[8],
+						type,add_mesh_idx,add_poly_idx;
+	bool				first_mesh;
+	d3pnt				*pt;
+	map_mesh_type		*mesh,*copy_mesh;
+	map_mesh_poly_type	*poly;
+	
+		// create new mesh
+		
+	mesh_idx=map_mesh_add(&map);
+	if (mesh_idx==-1) return;
+	
+		// add in the selected polygons
+		
+	first_mesh=FALSE;
+	mesh=&map.mesh.meshes[mesh_idx];
+		
+	for (n=0;n!=select_count();n++) {
+		select_get(n,&type,&add_mesh_idx,&add_poly_idx);
+		if (type!=mesh_piece) continue;
+		
+			// if first mesh hit, copy mesh settings
+			
+		copy_mesh=&map.mesh.meshes[add_mesh_idx];
+		
+		if (first_mesh) {
+			mesh->group_idx=copy_mesh->group_idx;
+			memmove(&mesh->flag,&copy_mesh->flag,sizeof(map_mesh_flag_type));
+			memmove(&mesh->msg,&copy_mesh->msg,sizeof(map_mesh_message_type));
+			
+			first_mesh=FALSE;
+		}
+		
+			// add the polygon
+		
+		poly=&map.mesh.meshes[add_mesh_idx].polys[add_poly_idx];
+		
+		for (k=0;k!=poly->ptsz;k++) {
+			pt=&copy_mesh->vertexes[poly->v[k]];
+			x[k]=pt->x;
+			y[k]=pt->y;
+			z[k]=pt->z;
+		}
+		
+		map_mesh_add_poly(&map,mesh_idx,poly->ptsz,x,y,z,poly->gx,poly->gy,poly->txt_idx);
+		
+			// delete poly from mesh
+			
+		select_delete_move_index(mesh_piece,add_mesh_idx,add_poly_idx);
+		map_mesh_delete_poly(&map,add_mesh_idx,add_poly_idx);
+	}
+	
+		// if no polygons, delete mesh
+		
+	if (map.mesh.meshes[mesh_idx].npoly==0) {
+		map_mesh_delete(&map,mesh_idx);
+		return;
+	}
+	
+		// make new mesh selection
+		
+	select_clear();
+	select_add(mesh_piece,mesh_idx,0);
+	
+		// auto-switch to mesh drag mode
+		
+	drag_mode=drag_mode_mesh;
+
+	main_wind_tool_reset();
+	main_wind_tool_fix_enable();
+}
+
+/* =======================================================
+
       Map Changes
       
 ======================================================= */
@@ -754,6 +834,25 @@ void map_mesh_reset_uv_all(void)
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
 		map_mesh_reset_uv(&map,n);
+	}
+}
+
+void map_mesh_delete_no_poly(void)
+{
+	int				n;
+	map_mesh_type	*mesh;
+	
+	n=0;
+	
+	while (n<map.mesh.nmesh) {
+		mesh=&map.mesh.meshes[n];
+		
+		if (mesh->npoly!=0) {
+			n++;
+			continue;
+		}
+		
+		map_mesh_delete(&map,n);
 	}
 }
 

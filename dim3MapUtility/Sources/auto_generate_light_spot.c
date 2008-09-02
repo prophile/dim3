@@ -60,9 +60,9 @@ void map_auto_generate_lights(map_type *map)
 	
 			// find light position
 			
-		x=(portal->max.x-portal->min.x)/2;
-		z=(portal->max.z-portal->min.z)/2;
-		y=portal->min.y+((portal->max.y-portal->min.y)/2);
+		x=(portal->max.x+portal->min.x)>>1;
+		z=(portal->max.z+portal->min.z)>>1;
+		y=portal->min.y+((portal->max.y-portal->min.y)>>1);
 		
 			// get intensity
 			

@@ -39,7 +39,7 @@ extern setup_type		setup;
 
 int						main_wind_view,main_wind_panel_focus,main_wind_perspective,
 						vertex_mode,drag_mode,grid_mode,obscure_mesh_idx;
-bool					dp_auto_texture,dp_liquid,
+bool					select_toggle_mode,dp_auto_texture,dp_liquid,
 						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide,
 						swap_panel_forward,swap_panel_side,swap_panel_top;
 Rect					main_wind_box;
@@ -61,6 +61,7 @@ char					tool_tooltip_str[tool_count][64]=
 										"Move Non-Mesh Points Freely\nSwith Mode with Q",
 										"Move Non-Mesh Points Together\nSwith Mode with Q",
 										"Snap Non-Mesh Points\nSwith Mode with Q",
+										"Select Toggle Mode",
 										"Edit Entire Mesh\nSwitch Mode with W or Middle Button",
 										"Edit Polygon Only\nSwitch Mode with W or Middle Button",
 										"Edit Vertex Only\nSwitch Mode with W or Middle Button",
@@ -68,7 +69,7 @@ char					tool_tooltip_str[tool_count][64]=
 										"Small Grid\nSwitch Mode with E",
 										"Medium Grid\nSwitch Mode with E",
 										"Large Grid\nSwitch Mode with E",
-										"Combine Meshes","Tesselate Mesh","Auto-Texture Meshes",
+										"Combine Meshes","Split Meshes","Tesselate Mesh","Auto-Texture Meshes",
 										"Show/Hide Liquids","Show/Hide Script Spots/Scenery",
 										"Show/Hide Light/Sound/Particles","Show/Hide Nodes",
 										"Test Mesh Obscuring","Edit Map Script","Run Map In Engine",
@@ -115,104 +116,115 @@ void main_wind_control_tool(int tool_idx)
 			SetControlValue(tool_ctrl[2],1);
 			break;
 			
-			// drag mode buttons
+			// select toggle mode
 			
 		case 3:
-			drag_mode=drag_mode_mesh;
-			SetControlValue(tool_ctrl[3],1);
-			SetControlValue(tool_ctrl[4],0);
-			SetControlValue(tool_ctrl[5],0);
+			select_toggle_mode=!select_toggle_mode;
 			break;
 			
+			// drag mode buttons
+			
 		case 4:
-			drag_mode=drag_mode_polygon;
-			SetControlValue(tool_ctrl[3],0);
+			drag_mode=drag_mode_mesh;
 			SetControlValue(tool_ctrl[4],1);
 			SetControlValue(tool_ctrl[5],0);
+			SetControlValue(tool_ctrl[6],0);
 			break;
 			
 		case 5:
-			drag_mode=drag_mode_vertex;
-			SetControlValue(tool_ctrl[3],0);
+			drag_mode=drag_mode_polygon;
 			SetControlValue(tool_ctrl[4],0);
 			SetControlValue(tool_ctrl[5],1);
+			SetControlValue(tool_ctrl[6],0);
+			break;
+			
+		case 6:
+			drag_mode=drag_mode_vertex;
+			SetControlValue(tool_ctrl[4],0);
+			SetControlValue(tool_ctrl[5],0);
+			SetControlValue(tool_ctrl[6],1);
 			break;
 			
 			// grid mode buttons
 			
-		case 6:
-			grid_mode=grid_mode_none;
-			SetControlValue(tool_ctrl[6],1);
-			SetControlValue(tool_ctrl[7],0);
-			SetControlValue(tool_ctrl[8],0);
-			SetControlValue(tool_ctrl[9],0);
-			break;
-			
 		case 7:
-			grid_mode=grid_mode_small;
-			SetControlValue(tool_ctrl[6],0);
+			grid_mode=grid_mode_none;
 			SetControlValue(tool_ctrl[7],1);
 			SetControlValue(tool_ctrl[8],0);
 			SetControlValue(tool_ctrl[9],0);
+			SetControlValue(tool_ctrl[10],0);
 			break;
 			
 		case 8:
-			grid_mode=grid_mode_medium;
-			SetControlValue(tool_ctrl[6],0);
+			grid_mode=grid_mode_small;
 			SetControlValue(tool_ctrl[7],0);
 			SetControlValue(tool_ctrl[8],1);
 			SetControlValue(tool_ctrl[9],0);
+			SetControlValue(tool_ctrl[10],0);
 			break;
-
+			
 		case 9:
-			grid_mode=grid_mode_large;
-			SetControlValue(tool_ctrl[6],0);
+			grid_mode=grid_mode_medium;
 			SetControlValue(tool_ctrl[7],0);
 			SetControlValue(tool_ctrl[8],0);
 			SetControlValue(tool_ctrl[9],1);
+			SetControlValue(tool_ctrl[10],0);
+			break;
+
+		case 10:
+			grid_mode=grid_mode_large;
+			SetControlValue(tool_ctrl[7],0);
+			SetControlValue(tool_ctrl[8],0);
+			SetControlValue(tool_ctrl[9],0);
+			SetControlValue(tool_ctrl[10],1);
 			break;
 			
 			// tesselate and auto-texture
 			
-		case 10:
+		case 11:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			piece_combine_mesh();
 			break;
+			
+		case 12:
+			SetControlValue(tool_ctrl[tool_idx],0);
+			piece_split_mesh();
+			break;
 
-		case 11:
+		case 13:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			piece_tesselate();
 			break;
 			
-		case 12:
+		case 14:
 			dp_auto_texture=!dp_auto_texture;
 			break;
 			
 			// show/hide
 			
-		case 13:
+		case 15:
 			select_clear();
 			dp_liquid=!dp_liquid;
 			break;
 			
-		case 14:
+		case 16:
 			select_clear();
 			dp_object=!dp_object;
 			break;
 			
-		case 15:
+		case 17:
 			select_clear();
 			dp_lightsoundparticle=!dp_lightsoundparticle;
 			break;
 			
-		case 16:
+		case 18:
 			select_clear();
 			dp_node=!dp_node;
 			break;
 						
 			// obscure, script and run buttons
 			
-		case 17:
+		case 19:
 			if (obscure_test()) {
 				SetControlValue(tool_ctrl[tool_idx],1);
 			}
@@ -221,12 +233,12 @@ void main_wind_control_tool(int tool_idx)
 			}
 			break;
 	
-		case 18:
+		case 20:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			launch_map_script_editor();
 			break;
 			
-		case 19:
+		case 21:
 			SetControlValue(tool_ctrl[tool_idx],0);
 			launch_engine();
 			break;
@@ -623,7 +635,7 @@ void main_wind_open(void)
 			// next button position
 			
 		OffsetRect(&box,tool_button_size,0);
-		if ((n==2) || (n==5) || (n==9) || (n==12) || (n==16) || (n==17)) OffsetRect(&box,3,0);
+		if ((n==2) || (n==3) || (n==6) || (n==10) || (n==14) || (n==18) || (n==19)) OffsetRect(&box,3,0);
 	}
 	
 		// group combo
@@ -737,6 +749,7 @@ void main_wind_open(void)
 	
 	drag_mode=drag_mode_mesh;
 	grid_mode=grid_mode_small;
+	select_toggle_mode=FALSE;
 	
 	obscure_mesh_idx=-1;
 	
@@ -1669,29 +1682,38 @@ void main_wind_tool_reset(void)
 	SetControlValue(tool_ctrl[1],(vertex_mode==vertex_mode_lock)?1:0);
 	SetControlValue(tool_ctrl[2],(vertex_mode==vertex_mode_snap)?1:0);
 	
+		// select toggle mode
+		
+	SetControlValue(tool_ctrl[3],select_toggle_mode?1:0);
+	
 		// drag mode
 		
-	SetControlValue(tool_ctrl[3],(drag_mode==drag_mode_mesh)?1:0);
-	SetControlValue(tool_ctrl[4],(drag_mode==drag_mode_polygon)?1:0);
-	SetControlValue(tool_ctrl[5],(drag_mode==drag_mode_vertex)?1:0);
+	SetControlValue(tool_ctrl[4],(drag_mode==drag_mode_mesh)?1:0);
+	SetControlValue(tool_ctrl[5],(drag_mode==drag_mode_polygon)?1:0);
+	SetControlValue(tool_ctrl[6],(drag_mode==drag_mode_vertex)?1:0);
 	
 		// grid mode
 		
-	SetControlValue(tool_ctrl[6],(grid_mode==grid_mode_none)?1:0);
-	SetControlValue(tool_ctrl[7],(grid_mode==grid_mode_small)?1:0);
-	SetControlValue(tool_ctrl[8],(grid_mode==grid_mode_medium)?1:0);
-	SetControlValue(tool_ctrl[9],(grid_mode==grid_mode_large)?1:0);
+	SetControlValue(tool_ctrl[7],(grid_mode==grid_mode_none)?1:0);
+	SetControlValue(tool_ctrl[8],(grid_mode==grid_mode_small)?1:0);
+	SetControlValue(tool_ctrl[9],(grid_mode==grid_mode_medium)?1:0);
+	SetControlValue(tool_ctrl[10],(grid_mode==grid_mode_large)?1:0);
 	
 		// auto-texture
 		
-	SetControlValue(tool_ctrl[12],dp_auto_texture?1:0);
+	SetControlValue(tool_ctrl[14],dp_auto_texture?1:0);
  
 		// show/hide
 		
-	SetControlValue(tool_ctrl[13],dp_liquid?1:0);
-	SetControlValue(tool_ctrl[14],dp_object?1:0);
-	SetControlValue(tool_ctrl[15],dp_lightsoundparticle?1:0);
-	SetControlValue(tool_ctrl[16],dp_node?1:0);
+	SetControlValue(tool_ctrl[15],dp_liquid?1:0);
+	SetControlValue(tool_ctrl[16],dp_object?1:0);
+	SetControlValue(tool_ctrl[17],dp_lightsoundparticle?1:0);
+	SetControlValue(tool_ctrl[18],dp_node?1:0);
+}
+
+void main_wind_obscure_tool_reset(void)
+{
+	SetControlValue(tool_ctrl[19],(obscure_mesh_idx!=-1)?1:0);
 }
 
 void main_wind_tool_fill_group_combo(void)

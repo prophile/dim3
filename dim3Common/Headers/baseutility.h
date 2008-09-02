@@ -196,6 +196,9 @@ extern float polygon_get_slope_y(int ptsz,int *px,int *py,int *pz,float *ang_y);
 extern int polygon_find_y(int ptsz,int *px,int *py,int *pz,int kx,int kz);
 extern int polygon_infinite_find_y(int ptsz,int *px,int *py,int *pz,int kx,int kz);
 
+extern int area_2D_trig(int *px,int *py);
+extern int area_2D_polygon(int ptsz,int *px,int *py);
+
 extern int distance_get(int x,int y,int z,int tox,int toy,int toz);
 extern bool distance_check(int x,int y,int z,int tox,int toy,int toz,int max_distance);
 extern int distance_2D_get(int x,int z,int tox,int toz);

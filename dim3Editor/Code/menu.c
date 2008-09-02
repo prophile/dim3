@@ -369,6 +369,11 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			main_wind_draw();
 			return(noErr);
 			
+		case kCommandMeshSplit:
+			piece_split_mesh();
+			main_wind_draw();
+			return(noErr);
+			
 		case kCommandMeshTesselate:
 			piece_tesselate();
 			return(noErr);

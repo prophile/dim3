@@ -265,7 +265,7 @@ void object_touch(obj_type *obj)
       
 ======================================================= */
 
-void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_weap,proj_type *from_proj,d3pnt *melee_hit_pt)
+void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_weap,proj_type *from_proj,d3pnt *melee_hit_pt,int damage)
 {
 	int				x,z,y;
 	obj_hit			*hit;
@@ -282,6 +282,10 @@ void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_weap,pr
     if (from_obj!=NULL) hit->obj_uid=from_obj->uid;
 	if (from_weap!=NULL) hit->weap_uid=from_weap->uid;
 	if (from_proj!=NULL) hit->proj_uid=from_proj->uid;
+	
+		// damage
+		
+	hit->damage=damage;
 	    
 		// hit x,z,y from object or projectile
 		
@@ -385,7 +389,7 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 	
 		// setup callback
 		
-	object_setup_hit(obj,source_obj,source_weap,source_proj,melee_hit_pt);
+	object_setup_hit(obj,source_obj,source_weap,source_proj,melee_hit_pt,damage);
 
 		// run callback
 

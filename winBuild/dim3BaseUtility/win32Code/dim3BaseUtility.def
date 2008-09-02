@@ -76,6 +76,9 @@ EXPORTS
 	polygon_find_y								@203
 	polygon_infinite_find_y						@204
 
+	area_2D_trig								@205
+	area_2D_polygon								@206
+
 	distance_get								@210
 	distance_check								@211
 	distance_2D_get								@212

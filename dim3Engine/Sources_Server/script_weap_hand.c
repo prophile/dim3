@@ -46,6 +46,8 @@ JSPropertySpec	weap_hand_props[]={
 							{"raiseTick",			weap_hand_prop_raise_tick,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{"lowerTick",			weap_hand_prop_lower_tick,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{"selectShift",			weap_hand_prop_select_shift,			JSPROP_PERMANENT|JSPROP_SHARED},
+							{"bobSpeed",			weap_hand_prop_bob_speed,				JSPROP_PERMANENT|JSPROP_SHARED},
+							{"bobAngle",			weap_hand_prop_bob_angle,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 
 /* =======================================================
@@ -87,6 +89,12 @@ JSBool js_get_weap_hand_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 		case weap_hand_prop_select_shift:
 			*vp=INT_TO_JSVAL(weap->hand.select_shift);
 			break;
+		case weap_hand_prop_bob_speed:
+			*vp=script_float_to_value(weap->hand.bounce_speed);
+			break;
+		case weap_hand_prop_bob_angle:
+			*vp=script_float_to_value(weap->hand.bounce_ang);
+			break;
 			
 	}
 	
@@ -111,6 +119,12 @@ JSBool js_set_weap_hand_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 			break;
 		case weap_hand_prop_select_shift:
 			weap->hand.select_shift=JSVAL_TO_INT(*vp);
+			break;
+		case weap_hand_prop_bob_speed:
+			weap->hand.bounce_speed=script_value_to_float(*vp);
+			break;
+		case weap_hand_prop_bob_angle:
+			weap->hand.bounce_ang=script_value_to_float(*vp);
 			break;
 
 	}

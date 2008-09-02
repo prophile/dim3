@@ -11,7 +11,7 @@
 //
 
 #define tool_button_size				36
-#define tool_count						10
+#define tool_count						11
 
 #define model_view_min_size				512
 

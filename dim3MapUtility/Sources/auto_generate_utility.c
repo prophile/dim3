@@ -560,18 +560,21 @@ void map_auto_generate_mesh_change_texture(int txt_idx)
 
 bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z,float *gx,float *gy)
 {
-	int						n,px[8],py[8],pz[8];
+	int						n,px[8],pz[8];
 	auto_generate_box_type	*box;
 
+		// move within x/z bounds
+		
 	box=&ag_boxes[map_ag_box_idx];
 
 	for (n=0;n!=ptsz;n++) {
 		px[n]=x[n]+box->min.x;
-		py[n]=y[n]+box->min.y;
 		pz[n]=z[n]+box->min.z;
 	}
 
-	return(map_mesh_add_poly(map,map_ag_mesh_idx,ptsz,px,py,pz,gx,gy,map_ag_poly_txt_idx)!=-1);
+		// add the mesh
+		
+	return(map_mesh_add_poly(map,map_ag_mesh_idx,ptsz,px,y,pz,gx,gy,map_ag_poly_txt_idx)!=-1);
 }
 
 /* =======================================================
@@ -659,7 +662,11 @@ void map_auto_generate_add_player_spot(map_type *map)
 	spot->pnt.x=x;
 	spot->pnt.y=y;
 	spot->pnt.z=z;
-	spot->ang.y=135;
+	
+	spot->ang.x=0.0f;
+	spot->ang.y=135.0f;
+	spot->ang.z=0.0f;
+	
 	strcpy(spot->name,"Start");
 	strcpy(spot->type,"Player");
 	strcpy(spot->script,"Player");

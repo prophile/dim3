@@ -73,6 +73,9 @@ _polygon_get_slope_y
 _polygon_find_y
 _polygon_infinite_find_y
 
+_area_2D_trig
+_area_2D_polygon
+
 _distance_get
 _distance_check
 _distance_2D_get

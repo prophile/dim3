@@ -509,6 +509,8 @@ and can be sold or given away.
 #define weap_hand_prop_raise_tick					0
 #define weap_hand_prop_lower_tick					1
 #define weap_hand_prop_select_shift					2
+#define weap_hand_prop_bob_speed					3
+#define weap_hand_prop_bob_angle					4
 
 #define weap_hand_position_prop_x					0
 #define weap_hand_position_prop_y					1

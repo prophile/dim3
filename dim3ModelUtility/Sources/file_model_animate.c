@@ -98,6 +98,7 @@ bool read_animate_xml(model_type *model)
          
 			xml_get_attribute_text(tag,"mesh_fade",pose_move->mesh_fade.name,name_str_len);
 			pose_move->mesh_fade.fade_in_msec=xml_get_attribute_int(tag,"mesh_fade_in_time");
+			pose_move->mesh_fade.fade_life_msec=xml_get_attribute_int_default(tag,"mesh_fade_life_time",0);
 			pose_move->mesh_fade.fade_out_msec=xml_get_attribute_int(tag,"mesh_fade_out_time");
 			pose_move->mesh_fade.mesh_idx=model_find_mesh(model,pose_move->mesh_fade.name);
 
@@ -278,6 +279,7 @@ bool write_animate_xml(model_type *model)
 			
 			xml_add_attribute_text("mesh_fade",pose_move->mesh_fade.name);
 			xml_add_attribute_int("mesh_fade_in_time",pose_move->mesh_fade.fade_in_msec);
+			xml_add_attribute_int("mesh_fade_life_time",pose_move->mesh_fade.fade_life_msec);
 			xml_add_attribute_int("mesh_fade_out_time",pose_move->mesh_fade.fade_out_msec);
 
  			xml_add_attribute_model_tag("flash_bone",model->bones[pose_move->flash.bone_idx].tag);

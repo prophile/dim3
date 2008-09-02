@@ -211,6 +211,17 @@ void map_calculate_light_reduce_effect(effect_type *effect)
 	}
 }
 
+void map_calculate_light_reduce_all(void)
+{
+	int					n;
+
+	for (n=0;n!=nlight;n++) {
+		light_reduce_list[n]=n;
+	}
+	
+	nlight_reduce=nlight;
+}
+
 /* =======================================================
 
       Normal Lighting

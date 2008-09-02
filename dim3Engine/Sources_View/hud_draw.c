@@ -93,7 +93,7 @@ bool hud_item_fade_run(int tick,hud_item_fade_type *fade,float *alpha)
 
 void hud_bitmaps_draw(int tick)
 {
-	int							n,r,
+	int							n,r,wrap_count,
 								px[4],py[4],sx,sy,rx,ry,
 								wid,high,repeat_count;
 	float						gx,gy,gx2,gy2,g_size,alpha,cur_alpha;
@@ -202,6 +202,8 @@ void hud_bitmaps_draw(int tick)
 
 		rx=bitmap->repeat.x_add;
 		ry=bitmap->repeat.y_add;
+		
+		wrap_count=0;
 
 			// draw bitmaps
 
@@ -220,16 +222,65 @@ void hud_bitmaps_draw(int tick)
 			glTexCoord2f(gx,gy2);
 			glVertex2i(px[3],py[3]);
 			
-			// move to next repeat
+				// column wrapping repeats
 				
-			px[0]+=rx;
-			px[1]+=rx;
-			px[2]+=rx;
-			px[3]+=rx;
-			py[0]+=ry;
-			py[1]+=ry;
-			py[2]+=ry;
-			py[3]+=ry;
+			if (bitmap->repeat.col!=0) {
+				px[0]+=rx;
+				px[1]+=rx;
+				px[2]+=rx;
+				px[3]+=rx;
+
+				wrap_count++;
+				if (wrap_count==bitmap->repeat.col) {
+					wrap_count=0;
+					
+					px[0]=px[3]=sx;
+					px[1]=px[2]=sx+wid;
+
+					py[0]+=ry;
+					py[1]+=ry;
+					py[2]+=ry;
+					py[3]+=ry;
+				}
+			}
+			
+			else {
+			
+					// row wrapping repeats
+					
+				if (bitmap->repeat.row!=0) {
+					py[0]+=ry;
+					py[1]+=ry;
+					py[2]+=ry;
+					py[3]+=ry;
+
+					wrap_count++;
+					if (wrap_count==bitmap->repeat.row) {
+						wrap_count=0;
+						
+						py[0]=py[1]=sy;
+						py[2]=py[3]=sy+high;
+						
+						px[0]+=rx;
+						px[1]+=rx;
+						px[2]+=rx;
+						px[3]+=rx;
+					}
+				}
+				
+					// regular repeats
+					
+				else {
+					px[0]+=rx;
+					px[1]+=rx;
+					px[2]+=rx;
+					px[3]+=rx;
+					py[0]+=ry;
+					py[1]+=ry;
+					py[2]+=ry;
+					py[3]+=ry;
+				}
+			}
 		}
 			
 		glEnd();

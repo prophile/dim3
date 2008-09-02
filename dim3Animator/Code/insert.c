@@ -40,7 +40,8 @@ extern file_path_setup_type		file_path_setup;
 
 void insert_model(char *file_name)
 {
-	int						i,k,t,v_off,t_off;
+	int						i,k,t,b_off,v_off,t_off,idx;
+	model_bone_type			*bone,*ins_bone;
 	model_vertex_type		*vertex,*ins_vertex;
 	model_trig_type			*trig,*ins_trig;
 	texture_type			*texture,*ins_texture;
@@ -50,6 +51,23 @@ void insert_model(char *file_name)
 		
 	model_setup(&file_path_setup,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
 	model_open(&ins_model,file_name,TRUE,FALSE,FALSE);
+	
+		// bring in the bones
+
+	b_off=model.nbone;
+	ins_bone=ins_model.bones;
+	
+	for (i=0;i!=ins_model.nbone;i++) {
+		idx=model_bone_add(&model,cur_mesh);
+		if (idx==-1) break;
+		
+		bone=&model.bones[idx];
+		
+		memmove(bone,ins_bone,sizeof(model_bone_type));
+		if (bone->parent_idx!=-1) bone->parent_idx+=b_off;
+		
+		ins_bone++;
+	}
 	
 		// bring in the vertexes
 		
@@ -61,6 +79,8 @@ void insert_model(char *file_name)
 	for (i=0;i!=ins_model.meshes[0].nvertex;i++) {
 		memmove(vertex,ins_vertex,sizeof(model_vertex_type));
 		
+		if (vertex->major_bone_idx!=-1) vertex->major_bone_idx+=b_off;
+		if (vertex->minor_bone_idx!=-1) vertex->minor_bone_idx+=b_off;
 		vertex->major_bone_idx=-1;
 		vertex->minor_bone_idx=-1;
 		

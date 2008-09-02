@@ -71,6 +71,7 @@ and can be sold or given away.
 #define kCommandRun							FOUR_CHAR_CODE('mrun')
 
 #define kCommandMeshCombine					FOUR_CHAR_CODE('pcmb')
+#define kCommandMeshSplit					FOUR_CHAR_CODE('pspt')
 #define kCommandMeshTesselate				FOUR_CHAR_CODE('ptsl')
 #define kCommandMeshResize					FOUR_CHAR_CODE('mrsz')
 #define kCommandMeshFlipX					FOUR_CHAR_CODE('pfpx')
