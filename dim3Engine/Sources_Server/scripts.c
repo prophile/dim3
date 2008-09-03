@@ -358,9 +358,9 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 		script->params[0]=0x0;
 	}
 
-	script->global=NULL;		// supergumba
+	script->global=NULL;
 	script->obj=NULL;
-	
+
 		// script attachments
 		
 	script->uid=js.script_current_uid;

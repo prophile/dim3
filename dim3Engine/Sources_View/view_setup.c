@@ -62,7 +62,7 @@ int			mesh_draw_count,mesh_draw_list[max_mesh],mesh_draw_dist[max_mesh];
 
 inline bool mesh_view_bit_get(map_mesh_type *mesh,int idx)
 {
-	return((mesh->mesh_visibility_flag[idx>>3]&(0x1<<(idx&0x7)))!=0x0);
+	return((mesh->obscure.visibility_flag[idx>>3]&(0x1<<(idx&0x7)))!=0x0);
 }
 
 void view_create_mesh_draw_list(void)

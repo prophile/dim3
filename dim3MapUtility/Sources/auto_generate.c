@@ -1753,7 +1753,7 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 		// supergumba -- will need to do something better here
 
 	for (n=0;n!=map->mesh.nmesh;n++) {
-		memset(&map->mesh.meshes[n].mesh_visibility_flag,0xFF,max_mesh_visibility_bytes);
+		memset(&map->mesh.meshes[n].obscure.visibility_flag,0xFF,max_mesh_visibility_bytes);
 	}
 
 	return(TRUE);

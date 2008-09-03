@@ -100,17 +100,11 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 
 	err_up=FALSE;
 	scripts_clear_last_error();
-	
-	fprintf(stdout,"entering script %d\n",idx);
-	fflush(stdout);
-	
+
 	if (!JS_CallFunctionValue(js.cx,script->global,script->event_func,5,argv,&rval)) {
 		err_up=TRUE;
 		scripts_get_last_error(err_str);
 	}
-	
-	fprintf(stdout,"exiting script %d\n",idx);
-	fflush(stdout);
 		
 		// restore old attach
 		

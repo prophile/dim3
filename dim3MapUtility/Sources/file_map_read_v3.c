@@ -154,7 +154,7 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 		
 	tag=xml_findfirstchild("Obscure",mesh_tag);
     if (tag!=-1) {
-		xml_get_attribute_bit_array(tag,"flag",mesh->mesh_visibility_flag,max_mesh_visibility_bytes);
+		xml_get_attribute_bit_array(tag,"flag",mesh->obscure.visibility_flag,max_mesh_visibility_bytes);
 	}
 
 	return(TRUE);

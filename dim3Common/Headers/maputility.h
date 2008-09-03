@@ -246,14 +246,19 @@ typedef struct		{
 					} map_mesh_message_type;
 
 typedef struct		{
+						int									obscure_group_idx;
+						unsigned char						visibility_flag[max_mesh_visibility_bytes];
+					} map_mesh_obscure_type;
+
+typedef struct		{
 						int									nvertex,npoly,group_idx;
-						unsigned char						mesh_visibility_flag[max_mesh_visibility_bytes];
 						d3pnt								rot_off;
 						d3pnt								*vertexes;
 						map_mesh_poly_type					*polys;
 						map_mesh_box_type					box;
 						map_mesh_flag_type					flag;
 						map_mesh_message_type				msg;
+						map_mesh_obscure_type				obscure;
 					} map_mesh_type;
 
 //
