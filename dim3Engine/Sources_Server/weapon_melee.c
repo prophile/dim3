@@ -84,23 +84,15 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 	
 		// check objects
 		
-	hurt_obj=server.objs;
-		
 	for (n=0;n!=server.count.obj;n++) {
 	
 		hurt_obj=&server.objs[n];
 
-        if ((hurt_obj->hidden) || (!hurt_obj->contact.projectile_on) || (hurt_obj->uid==ignore_uid)) {
-			hurt_obj++;
-			continue;
-		}
+        if ((hurt_obj->hidden) || (!hurt_obj->contact.projectile_on) || (hurt_obj->uid==ignore_uid)) continue;
 		
 			// melee hit?
 			
-		if (!collide_sphere_to_object(x,y,z,melee->radius,hurt_obj)) {
-			hurt_obj++;
-			continue;
-		}
+		if (!collide_sphere_to_object(x,y,z,melee->radius,hurt_obj)) continue;
 		
 			// which hit box?
 		
@@ -116,8 +108,6 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 			object_damage(hurt_obj,obj,weap,NULL,pt,melee->damage);
 			scripts_post_event_console(&weap->attach,sd_event_melee,sd_event_melee_hit,0);
 		}
-
-		hurt_obj++;
 	}
    
 		// check projectiles

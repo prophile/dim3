@@ -42,6 +42,8 @@ extern AGLContext			ctx;
 #define obscure_mesh_view_min_distance			(100*map_enlarge)
 #define obscure_mesh_view_slop_angle			30.0f
 
+// #define OBSCURE_TEST		1
+
 /* =======================================================
 
       Obscure Mesh Sorting
@@ -318,10 +320,11 @@ void obscure_calculate_mesh_single_view(int mesh_idx,d3pnt *cpt,unsigned char *s
 
 		glClear(GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
 		
-	/* supergumba -- test obscure draw
+	// supergumba -- test obscure draw
+#ifdef OBSCURE_TEST
 		glClear(GL_COLOR_BUFFER_BIT);
 		glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
-	*/
+#endif
 
 		stencil_idx=1;
 		more_batch=FALSE;
@@ -418,12 +421,12 @@ void obscure_calculate_mesh_single_view(int mesh_idx,d3pnt *cpt,unsigned char *s
 
 		glDisable(GL_TEXTURE_2D);
 	
-	/* supergumba -- testing obscure draw	
+	// supergumba -- test obscure draw
+#ifdef OBSCURE_TEST
 		aglSwapBuffers(ctx);
 		while (Button()) {}
 		while (!Button()) {}
-	*/
-
+#endif
 			// read the stencil to look for hits
 
 		glReadPixels(0,0,obscure_mesh_view_mesh_wid,obscure_mesh_view_mesh_high,GL_STENCIL_INDEX,GL_UNSIGNED_BYTE,stencil_pixels);
@@ -537,7 +540,7 @@ bool obscure_calculate_mesh(int mesh_idx)
 	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,obscure_mesh_view_slop_angle,270.0f);
 	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,0.0f,270.0f);
 	obscure_calculate_mesh_single_view(mesh_idx,&cpt,stencil_pixels,mesh_sort_list,-obscure_mesh_view_slop_angle,270.0f);
-	
+
 		// disable some global setup
 
 	glDisable(GL_STENCIL_TEST);
@@ -548,21 +551,14 @@ bool obscure_calculate_mesh(int mesh_idx)
 	free(mesh_sort_list);
 	free(stencil_pixels);
 	
-	/* supergumba -- testing
-	cnt=0;
-	for (t=0;t!=map.mesh.nmesh;t++) {
-		if (obscure_mesh_view_bit_get(&map.mesh.meshes[mesh_idx],t)) cnt++;
-	}
-
-	fprintf(stdout,"mesh %d; count = %d/%d\n",mesh_idx,cnt,map.mesh.nmesh);
-	*/
-	
 	return(TRUE);
 }
 
 bool obscure_calculate_map(void)
 {
-	int				n;
+	int				n,tick;
+	
+	tick=TickCount();
 	
 		// setup mesh boxes
 		
@@ -573,6 +569,8 @@ bool obscure_calculate_map(void)
 	for (n=0;n!=map.mesh.nmesh;n++) {
 		if (!obscure_calculate_mesh(n)) return(FALSE);
 	}
+	
+	fprintf(stdout,"tick = %d\n",TickCount()-tick);
 	
 	return(TRUE);
 }
@@ -586,6 +584,10 @@ bool obscure_calculate_map(void)
 bool obscure_test(void)
 {
 	int				type,mesh_idx,poly_idx;
+	int	n,min,max;
+	float	fx,fy,fz;
+	bool	ok;
+	map_mesh_type		*mesh,*chk_mesh;
 	
 		// if obscuring already on, turn off
 		
@@ -602,6 +604,61 @@ bool obscure_test(void)
 		// setup mesh boxes
 		
 	map_prepare(&map);
+	
+	
+	
+	/*
+	
+	select_clear();
+	
+	mesh=&map.mesh.meshes[mesh_idx];
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+	
+		if (n==mesh_idx) {
+			select_add(mesh_piece,n,0);
+			continue;
+		}
+		
+		chk_mesh=&map.mesh.meshes[n];
+		
+			// find the % that this mesh is inside the other mesh
+			
+		fx=fy=fz=0.0f;
+		
+		min=chk_mesh->box.min.x;
+		if (mesh->box.min.x>min) min=mesh->box.min.x;
+		max=chk_mesh->box.max.x;
+		if (mesh->box.max.x<max) max=mesh->box.max.x;
+		
+		if (min<max) fx=(float)(max-min)/(chk_mesh->box.max.x-chk_mesh->box.min.x);
+
+		min=chk_mesh->box.min.y;
+		if (mesh->box.min.y>min) min=mesh->box.min.y;
+		max=chk_mesh->box.max.y;
+		if (mesh->box.max.y<max) max=mesh->box.max.y;
+		
+		if (min<max) fy=(float)(max-min)/(chk_mesh->box.max.y-chk_mesh->box.min.y);
+
+		min=chk_mesh->box.min.z;
+		if (mesh->box.min.z>min) min=mesh->box.min.z;
+		max=chk_mesh->box.max.z;
+		if (mesh->box.max.z<max) max=mesh->box.max.z;
+		
+		if (min<max) fz=(float)(max-min)/(chk_mesh->box.max.z-chk_mesh->box.min.z);
+
+			// consider it the same if at least two
+			// axises are within 90%
+			
+		ok=((fx>0.7f) && (fz>0.7f) && (abs(chk_mesh->box.mid.y-mesh->box.mid.y)<obscure_mesh_view_min_distance));
+		
+		if (ok) select_add(mesh_piece,n,0);
+	}
+	
+	return(FALSE);
+	
+	*/
+	
 	
 		// setup obscuring
 	

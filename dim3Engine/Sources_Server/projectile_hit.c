@@ -169,7 +169,7 @@ bool projectile_hit(int tick,proj_type *proj,bool hit_scan)
 			// damage object
 			
         hurt_obj=object_find_uid(uid);
-        object_damage(hurt_obj,obj,weap,proj,NULL,proj_setup->damage);
+		object_damage(hurt_obj,obj,weap,proj,NULL,proj_setup->damage);
 		
 			// push object
 			
