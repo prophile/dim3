@@ -51,65 +51,55 @@ extern void map_movements_auto_open(void);
 
 /* =======================================================
 
-      Portal Triggers/Messages
+      Mesh Triggers/Messages
   
 ======================================================= */
 
-void portal_triggers(obj_type *obj,int old_rn,int rn)
+void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx)
 {
-	/* supergumba -- redo
+	map_mesh_type			*mesh;
 
-	portal_type		*portal;
-
-	if (rn!=-1) {	
-		portal=&map.portals[rn];
+	if (mesh_idx!=-1) {	
+		mesh=&map.mesh.meshes[mesh_idx];
 		
 			// entry messages
 			
-		if (portal->msg.entry_on) {
-			scripts_post_event_console(&js.course_attach,sd_event_message,sd_event_message_from_course,portal->msg.entry_id);
-			scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_course,portal->msg.entry_id);
+		if (mesh->msg.entry_on) {
+			scripts_post_event_console(&js.course_attach,sd_event_message,sd_event_message_from_course,mesh->msg.entry_id);
+			scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_course,mesh->msg.entry_id);
 		}
 		
 			// map change messages
 			
-		if (portal->msg.map_change_on) {
-			strcpy(map.info.name,portal->msg.map_name);
-			strcpy(map.info.player_start_name,portal->msg.map_spot_name);
-			strcpy(map.info.player_start_type,portal->msg.map_spot_type);
+		if (mesh->msg.map_change_on) {
+			strcpy(map.info.name,mesh->msg.map_name);
+			strcpy(map.info.player_start_name,mesh->msg.map_spot_name);
+			strcpy(map.info.player_start_type,mesh->msg.map_spot_type);
 			map.info.in_load=FALSE;
 
 			server.map_change=TRUE;
 		}
 		
-			// portal watch messages
-			
-		object_watch_portal_alert(obj,TRUE);
-		
 			// base watch messages
 			
-		if (portal->msg.base_on) object_watch_base_alert(portal,obj,TRUE);
+		if (mesh->msg.base_on) object_watch_base_alert(mesh,obj,TRUE);
 	}
 	
-	if (old_rn!=-1) {
+	if (old_mesh_idx!=-1) {
+	
+		mesh=&map.mesh.meshes[old_mesh_idx];
 	
 			// exit messages
 			
-		portal=&map.portals[old_rn];
-		if (portal->msg.exit_on) {
-			scripts_post_event_console(&js.course_attach,sd_event_message,sd_event_message_from_course,portal->msg.exit_id);
-			scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_course,portal->msg.exit_id);
+		if (mesh->msg.exit_on) {
+			scripts_post_event_console(&js.course_attach,sd_event_message,sd_event_message_from_course,mesh->msg.exit_id);
+			scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_course,mesh->msg.exit_id);
 		}
-		
-			// portal watch messages
-			
-		object_watch_portal_alert(obj,FALSE);
 		
 			// base watch messages
 			
-		if (portal->msg.base_on) object_watch_base_alert(portal,obj,FALSE);
+		if (mesh->msg.base_on) object_watch_base_alert(mesh,obj,FALSE);
 	}
-	*/
 }
 
 /* =======================================================
@@ -154,6 +144,8 @@ void run_object_normal(obj_type *obj,int tick)
 			object_turn(obj);
 		}
 	}
+	
+	object_thrust(obj);
 
 		// watches
 
@@ -212,7 +204,7 @@ void run_object_normal(obj_type *obj,int tick)
 
 void run_objects_slice(int tick)
 {
-	int				n;
+	int				n,old_mesh_idx,mesh_idx;
 	obj_type		*obj;
 
 	obj=server.objs;
@@ -221,10 +213,9 @@ void run_objects_slice(int tick)
 
 		if (!obj->scenery.on) {
 		
-				// remember current portal
-
-//			old_rn=obj->pos.rn;
-			// supergumba -- REDO PORTAL TRIGGERS HERE
+				// remember current mesh
+				
+			old_mesh_idx=map_find_mesh(&map,&obj->pnt);
 
 				// run object
 
@@ -235,9 +226,10 @@ void run_objects_slice(int tick)
 				run_object_normal(obj,tick);
 			}
 
-				// trigger any portal changes
+				// trigger any mesh changes
 			
-//			if (old_rn!=obj->pos.rn) portal_triggers(obj,old_rn,obj->pos.rn);
+			mesh_idx=map_find_mesh(&map,&obj->pnt);
+			if (old_mesh_idx!=mesh_idx) mesh_triggers(obj,old_mesh_idx,mesh_idx);
 		}
 		
 		obj++;

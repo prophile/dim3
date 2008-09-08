@@ -49,23 +49,37 @@ extern void view_unbind_current_vertex_object(void);
       
 ======================================================= */
 
+inline int liquid_render_liquid_get_tide_split(map_liquid_type *liq)
+{
+	int				tide_split;
+	
+	if (!liq->tide.flat) return(liq->tide.split);
+	
+	tide_split=liq->rgt-liq->lft;
+	if ((liq->bot-liq->top)>tide_split) tide_split=liq->bot-liq->top;
+	
+	return(tide_split);
+}
+
 inline int liquid_render_liquid_get_max_vertex(map_liquid_type *liq)
 {
-	int				x_sz,z_sz;
+	int				tide_split,x_sz,z_sz;
+	
+	tide_split=liquid_render_liquid_get_tide_split(liq);
 
-	x_sz=((liq->rgt-liq->lft)/liq->tide.split)+4;		// possible extra edges on side because of griding
-	z_sz=((liq->bot-liq->top)/liq->tide.split)+4;
+	x_sz=((liq->rgt-liq->lft)/tide_split)+4;		// possible extra edges on side because of griding
+	z_sz=((liq->bot-liq->top)/tide_split)+4;
 
 	return(x_sz*z_sz);
 }
 
 void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
 {
-	int				x,y,z,x_add,z_add,x_sz,z_sz,
+	int				x,y,z,k,x_add,z_add,x_sz,z_sz,
 					v_cnt,v_sz,sz,tide_split,tide_split_half,
 					tide_high,tide_rate;
-	float			fy,fgx,fgy,normal[3],
-					f_break,f_time,sn,
+	float			fy,fgx,fgy,normal[3],x_txtoff,y_txtoff,
+					f_break,f_time,f_tick,sn,
 					f_tide_split_half,f_tide_high;
 	bool			x_break,z_break;
 	float			*vertex_ptr,*vl,*uv,*cl;
@@ -100,6 +114,7 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
 
 		// setup tiding
 
+	tide_split=liquid_render_liquid_get_tide_split(liq);
 	tide_high=liq->tide.high;
 	tide_rate=liq->tide.rate;
 
@@ -107,7 +122,7 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
 
 	}
 	else {
-		tide_split_half=liq->tide.split<<2;
+		tide_split_half=tide_split<<2;
 		f_tide_split_half=(float)tide_split_half;
 		
 		f_tide_high=(float)tide_high;
@@ -115,10 +130,20 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
 		f_time=(float)(tick%tide_rate);		// get rate between 0..1
 		f_time=f_time/(float)tide_rate;
 	}
+	
+		// liquid texture movement
+		
+	f_tick=(float)tick*0.001f;
+	
+	x_txtoff=f_tick*liq->x_shift;
+	k=(int)x_txtoff;
+	x_txtoff=liq->x_txtoff+(x_txtoff-(float)k);
+	
+	y_txtoff=f_tick*liq->y_shift;
+	k=(int)y_txtoff;
+	y_txtoff=liq->y_txtoff+(y_txtoff-(float)k);
 
 		// create vertexes from tide splits
-
-	tide_split=liq->tide.split;
 
 	fgx=(float)(liq->rgt-liq->lft);
 	fgy=(float)(liq->bot-liq->top);
@@ -170,8 +195,8 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
 			*vl++=fy-(f_tide_high*sn);
 			*vl++=(float)(view.camera.pnt.z-z);
 
-			*uv++=liq->x_txtoff+((liq->x_txtfact*(float)(x-liq->lft))/fgx);
-			*uv++=liq->y_txtoff+((liq->y_txtfact*(float)(z-liq->top))/fgy);
+			*uv++=x_txtoff+((liq->x_txtfact*(float)(x-liq->lft))/fgx);
+			*uv++=y_txtoff+((liq->y_txtfact*(float)(z-liq->top))/fgy);
 
 			v_cnt++;
 			
@@ -230,7 +255,7 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
 	z_sz=liq->draw.z_sz-1;
 	if (z_sz<=0) return(0);
 
-	tide_split=liq->tide.split;
+	tide_split=liquid_render_liquid_get_tide_split(liq);
 
 		// create the draw indexes
 

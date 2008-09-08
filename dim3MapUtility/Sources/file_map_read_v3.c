@@ -211,6 +211,7 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->tide.high=xml_get_attribute_int(tag,"high");
 		liq->tide.split=xml_get_attribute_int(tag,"split");
 		liq->tide.direction=xml_get_attribute_list(tag,"tide_direction",(char*)liquid_tide_direction_str);
+        liq->tide.flat=xml_get_attribute_boolean(tag,"flat");
 	}
 }
 

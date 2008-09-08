@@ -55,6 +55,7 @@ _map_liquid_duplicate
 _map_liquid_calculate_center
 
 _map_liquid_move
+_map_liquid_reset_uv
 
 _map_group_create_unit_list
 _map_group_dispose_unit_list

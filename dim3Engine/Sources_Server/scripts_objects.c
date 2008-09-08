@@ -156,6 +156,7 @@ bool script_create_prototype_objects(char *err_str)
 	script_add_obj_vert_speed_object(js.obj_prototype);
 	script_add_obj_turn_speed_object(js.obj_prototype);
 	script_add_obj_object_speed_object(js.obj_prototype);
+	script_add_obj_thrust_object(js.obj_prototype);
 	script_add_obj_look_object(js.obj_prototype);
 	script_add_obj_sight_object(js.obj_prototype);
 	script_add_obj_health_object(js.obj_prototype);

@@ -45,7 +45,7 @@ extern network_setup_type	net_setup;
 extern float				team_color_tint[net_team_count][3];
 extern char					setup_team_color_list[][32];
 
-extern void portal_triggers(obj_type *obj,int old_rn,int rn);
+extern void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx);
 
 /* =======================================================
 
@@ -55,7 +55,7 @@ extern void portal_triggers(obj_type *obj,int old_rn,int rn);
 
 bool player_attach_object(void)
 {
-	int					spot_idx,x,y,z;
+	int					spot_idx,x,y,z,mesh_idx;
 	float				ang_y;
 	spot_type			*spot;
 	obj_type			*obj;
@@ -108,8 +108,9 @@ bool player_attach_object(void)
 		obj->turn.ang_to.y=ang_y;
 		
 			// spot messages
-// supergumba -- redo triggers!			
-//		portal_triggers(obj,-1,obj->pos.rn);
+
+		mesh_idx=map_find_mesh(&map,&obj->pnt);
+		if (mesh_idx!=-1) mesh_triggers(obj,-1,mesh_idx);
 
 			// check for telefrag
 

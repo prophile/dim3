@@ -133,6 +133,13 @@ void object_fix_motion(obj_type *obj)
 {
 	float			turn_max;
     d3ang			*ang;
+	
+		// thrust movement ignores all turning motion
+		
+	if (obj->input_mode==im_thrust) {
+		obj->motion.ang.y=obj->ang.y;
+		return;
+	}
 
 		// fix motion to facing angle
 	

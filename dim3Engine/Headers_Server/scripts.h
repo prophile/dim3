@@ -101,6 +101,7 @@ extern void script_add_obj_side_speed_object(JSObject *parent_obj);
 extern void script_add_obj_vert_speed_object(JSObject *parent_obj);
 extern void script_add_obj_turn_speed_object(JSObject *parent_obj);
 extern void script_add_obj_object_speed_object(JSObject *parent_obj);
+extern void script_add_obj_thrust_object(JSObject *parent_obj);
 extern void script_add_obj_look_object(JSObject *parent_obj);
 extern void script_add_obj_sight_object(JSObject *parent_obj);
 extern void script_add_obj_health_object(JSObject *parent_obj);

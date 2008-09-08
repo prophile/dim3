@@ -58,6 +58,15 @@ void object_motion_setup(obj_type *obj,float *xmove,float *ymove,float *zmove)
 {
 	float			ang,xadd,zadd;
 	
+		// if thrust input type, then use thrust
+		
+	if (obj->input_mode==im_thrust) {
+		*xmove=obj->thrust.vct.x+obj->force.vct.x;
+		*ymove=obj->thrust.vct.y+obj->force.vct.y;
+		*zmove=obj->thrust.vct.z+obj->force.vct.z;
+		return;
+	}
+	
 		// forward motion
 		
 	ang=obj->motion.ang.y;
@@ -1263,6 +1272,35 @@ void object_move_remote(obj_type *obj)
 	object_move_y(obj,i_ymove);
 }
 
+/* =======================================================
+
+      Run Thrust
+      
+======================================================= */
+
+void object_thrust(obj_type *obj)
+{
+	float			xmove,ymove,zmove,ztemp;
+	
+	if (obj->input_mode!=im_thrust) return;
+	if (!obj->forward_move.moving) return;
+	
+    angle_get_movement_float(obj->ang.y,obj->thrust.speed,&xmove,&zmove);
+	angle_get_movement_float(obj->view_ang.x,obj->thrust.speed,&ymove,&ztemp);
+	
+	obj->thrust.vct.x+=xmove;
+	if (obj->thrust.vct.x>obj->thrust.max_speed) obj->thrust.vct.x=obj->thrust.max_speed;
+	if (obj->thrust.vct.x<-obj->thrust.max_speed) obj->thrust.vct.x=-obj->thrust.max_speed;
+	
+	obj->thrust.vct.y+=ymove;
+	if (obj->thrust.vct.y>obj->thrust.max_speed) obj->thrust.vct.y=obj->thrust.max_speed;
+	if (obj->thrust.vct.y<-obj->thrust.max_speed) obj->thrust.vct.y=-obj->thrust.max_speed;
+
+	obj->thrust.vct.z+=zmove;
+	if (obj->thrust.vct.z>obj->thrust.max_speed) obj->thrust.vct.z=obj->thrust.max_speed;
+	if (obj->thrust.vct.z<-obj->thrust.max_speed) obj->thrust.vct.z=-obj->thrust.max_speed;
+}
+	
 /* =======================================================
 
       Start/Stop Object Movement

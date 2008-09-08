@@ -172,12 +172,12 @@ bool obscure_check_mesh_view_clip(d3pnt *min,d3pnt *max,d3pnt *view_pt,int *vpor
 
 inline void obscure_mesh_view_bit_set(map_mesh_type *mesh,int idx)
 {
-	mesh->mesh_visibility_flag[idx>>3]=mesh->mesh_visibility_flag[idx>>3]|(0x1<<(idx&0x7));
+	mesh->obscure.visibility_flag[idx>>3]=mesh->obscure.visibility_flag[idx>>3]|(0x1<<(idx&0x7));
 }
 
 inline bool obscure_mesh_view_bit_get(map_mesh_type *mesh,int idx)
 {
-	return((mesh->mesh_visibility_flag[idx>>3]&(0x1<<(idx&0x7)))!=0x0);
+	return((mesh->obscure.visibility_flag[idx>>3]&(0x1<<(idx&0x7)))!=0x0);
 }
 
 /* =======================================================
@@ -503,7 +503,7 @@ bool obscure_calculate_mesh(int mesh_idx)
 
 		// clear visibility bits
 		
-	bzero(mesh->mesh_visibility_flag,max_mesh_visibility_bytes);
+	bzero(mesh->obscure.visibility_flag,max_mesh_visibility_bytes);
 
 		// self always in visibility list
 
@@ -554,71 +554,25 @@ bool obscure_calculate_mesh(int mesh_idx)
 	return(TRUE);
 }
 
-bool obscure_calculate_map(void)
-{
-	int				n,tick;
-	
-	tick=TickCount();
-	
-		// setup mesh boxes
-		
-	map_prepare(&map);
-	
-		// check visibility for all meshes
-	
-	for (n=0;n!=map.mesh.nmesh;n++) {
-		if (!obscure_calculate_mesh(n)) return(FALSE);
-	}
-	
-	fprintf(stdout,"tick = %d\n",TickCount()-tick);
-	
-	return(TRUE);
-}
-
 /* =======================================================
 
-      Obscure Test
+      Obscure Groups
       
 ======================================================= */
 
-bool obscure_test(void)
+void obscure_calculate_group_for_mesh(int mesh_idx,int group_idx)
 {
-	int				type,mesh_idx,poly_idx;
-	int	n,min,max;
-	float	fx,fy,fz;
-	bool	ok;
-	map_mesh_type		*mesh,*chk_mesh;
-	
-		// if obscuring already on, turn off
-		
-	if (obscure_mesh_idx!=-1) {
-		obscure_mesh_idx=-1;
-		return(FALSE);
-	}
-	
-		// get select
-		
-	select_get(0,&type,&mesh_idx,&poly_idx);
-	if (type!=mesh_piece) return(FALSE);
-		
-		// setup mesh boxes
-		
-	map_prepare(&map);
-	
-	
-	
-	/*
-	
-	select_clear();
+	int						n,min,max;
+	float					fx,fy,fz;
+	bool					ok;
+	map_mesh_type			*mesh,*chk_mesh;
 	
 	mesh=&map.mesh.meshes[mesh_idx];
+	mesh->obscure.group_idx=group_idx;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
 	
-		if (n==mesh_idx) {
-			select_add(mesh_piece,n,0);
-			continue;
-		}
+		if (n==mesh_idx) continue;
 		
 		chk_mesh=&map.mesh.meshes[n];
 		
@@ -652,14 +606,102 @@ bool obscure_test(void)
 			
 		ok=((fx>0.7f) && (fz>0.7f) && (abs(chk_mesh->box.mid.y-mesh->box.mid.y)<obscure_mesh_view_min_distance));
 		
-		if (ok) select_add(mesh_piece,n,0);
+		if (ok) chk_mesh->obscure.group_idx=group_idx;
+	}
+}
+
+void obscure_calculate_groups(void)
+{
+	int				n,group_idx;
+	
+		// clear all groups
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		map.mesh.meshes[n].obscure.group_idx=-1;
+	}
+
+		// put meshes into like groups
+		// to share obscure visibility lists
+		
+	group_idx=0;
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		if (map.mesh.meshes[n].obscure.group_idx==-1) {
+			obscure_calculate_group_for_mesh(n,group_idx);
+			group_idx++;
+		}
+	}
+}
+
+/* =======================================================
+
+      Obscure Map
+      
+======================================================= */
+
+bool obscure_calculate_map(void)
+{
+	int				n,tick;
+	
+//	tick=TickCount();
+// supergumba -- testing	
+		// setup mesh boxes
+		
+	map_prepare(&map);
+	
+		// combine meshes into like groups
+		
+	obscure_calculate_groups();
+	
+		// check visibility for all meshes
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		if (!obscure_calculate_mesh(n)) return(FALSE);
 	}
 	
-	return(FALSE);
+//	fprintf(stdout,"tick = %d\n",(int)(TickCount()-tick));
+// supergumba -- testing	
+	return(TRUE);
+}
+
+/* =======================================================
+
+      Obscure Test
+      
+======================================================= */
+
+bool obscure_test(void)
+{
+	int				n,type,mesh_idx,poly_idx,group_idx;
 	
-	*/
+		// if obscuring already on, turn off
+		
+	if (obscure_mesh_idx!=-1) {
+		obscure_mesh_idx=-1;
+		return(FALSE);
+	}
 	
+		// get select
+		
+	select_get(0,&type,&mesh_idx,&poly_idx);
+	if (type!=mesh_piece) return(FALSE);
+		
+		// setup mesh boxes
+		
+	map_prepare(&map);
+
+		// combine meshes into like groups
+		// and change select to represent
+		// the grouping
+/* supergumba -- do later		
+	obscure_calculate_groups();
 	
+	group_idx=map.mesh.meshes[mesh_idx].obscure.group_idx;
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		if (map.mesh.meshes[n].obscure.group_idx==group_idx) select_add(mesh_piece,n,0);
+	}
+*/
 		// setup obscuring
 	
 	obscure_mesh_idx=mesh_idx;
@@ -697,18 +739,13 @@ void obscure_reset(void)
 	
 	if (mesh_idx==obscure_mesh_idx) return;
 	
-		// setup mesh boxes
+		// run the obscure
 		
-	map_prepare(&map);
-	
-		// setup obscuring
-	
-	obscure_mesh_idx=mesh_idx;
-	
-	if (!obscure_calculate_mesh(obscure_mesh_idx)) {
-		obscure_mesh_idx=-1;
-	}
-	
+	obscure_mesh_idx=-1;
+	obscure_test();
+
+		// necessary redraws
+		
 	main_wind_obscure_tool_reset();
 	main_wind_draw();
 }

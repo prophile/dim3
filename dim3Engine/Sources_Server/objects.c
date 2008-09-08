@@ -382,6 +382,7 @@ obj_type* object_create(int bind)
 	obj->damage.on=FALSE;
 	obj->damage.crushable=FALSE;
 	obj->damage.invincible=FALSE;
+	obj->damage.in_damage=FALSE;
 	
 	obj->input_mode=im_fpp;
 	
@@ -444,6 +445,10 @@ obj_type* object_create(int bind)
 	obj->turn.ignore_mouse=FALSE;
 	obj->turn.only_when_moving=FALSE;
 	obj->turn.restrict_player_turning=FALSE;
+	
+	obj->thrust.speed=0.5f;
+	obj->thrust.max_speed=60.0f;
+	obj->thrust.vct.x=obj->thrust.vct.y=obj->thrust.vct.z=0.0f;
 	
 	obj->look.ang_add=0;
 	obj->look.up_angle=80;

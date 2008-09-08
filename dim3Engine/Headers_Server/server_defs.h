@@ -86,6 +86,7 @@ and can be sold or given away.
 #define im_side_scroll				1
 #define im_top_down					2
 #define im_fly						3
+#define im_thrust					4
 
 //
 // effect types
@@ -378,7 +379,8 @@ typedef struct		{
 					} obj_pickup;
 					
 typedef struct		{
-						bool				on,crushable,invincible;
+						bool				on,crushable,invincible,
+											in_damage;
 					} obj_damage;
 					
 typedef struct		{
@@ -422,7 +424,12 @@ typedef struct		{
 						bool				ignore_mouse,only_when_moving,restrict_player_turning;
 						d3ang				ang_add,ang_to,fix_ang_add;
 					} obj_turn;
-					
+
+typedef struct		{
+						float				speed,max_speed;
+						d3vct				vct;
+					} obj_thrust;
+						
 typedef struct		{
 						float				up_angle,down_angle,speed,
 											ang_add;
@@ -739,6 +746,7 @@ typedef struct		{
                         obj_movement		forward_move,side_move,vert_move;
 						obj_lock			lock;
 						obj_turn			turn;
+						obj_thrust			thrust;
 						obj_look			look;
 						obj_size			size;
 						obj_grow			grow;

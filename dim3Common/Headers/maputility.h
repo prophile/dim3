@@ -246,7 +246,7 @@ typedef struct		{
 					} map_mesh_message_type;
 
 typedef struct		{
-						int									obscure_group_idx;
+						int									group_idx;
 						unsigned char						visibility_flag[max_mesh_visibility_bytes];
 					} map_mesh_obscure_type;
 
@@ -271,6 +271,7 @@ typedef struct		{
 
 typedef struct		{
 						int									rate,high,direction,split;
+						bool								flat;
 					} map_liquid_tide_type;
 
 typedef struct		{
@@ -615,6 +616,7 @@ extern int map_liquid_duplicate(map_type *map,int liquid_idx);
 extern void map_liquid_calculate_center(map_type *map,int liquid_idx,d3pnt *pt);
 
 extern void map_liquid_move(map_type *map,int liquid_idx,int x,int y,int z);
+extern void map_liquid_reset_uv(map_type *map,int liquid_idx);
 
 extern bool map_group_create_unit_list(map_type *map);
 extern void map_group_dispose_unit_list(map_type *map);

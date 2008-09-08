@@ -363,6 +363,11 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 	if (obj->remote.on) return;
 	if (!obj->damage.on) return;
 	
+		// need to make sure cascading scripts
+		// don't re-enter damage calls
+		
+	if (obj->damage.in_damage) return;
+	
         // health
 		
 	if (!obj->damage.invincible) {
@@ -393,7 +398,11 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 
 		// run callback
 
+	obj->damage.in_damage=TRUE;
+	
 	scripts_post_event_console(&obj->attach,sd_event_damage,0,0);
+	
+	obj->damage.in_damage=FALSE;
 }
 
 /* =======================================================

@@ -921,17 +921,17 @@ void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 			y_txtoff=0.0f;
 		}
 				
-			// create the polygons UVs across the line
+			// create the polygons UVs
 			
-		dx=(double)(poly->line.rx-poly->line.lx);
-		dz=(double)(poly->line.rz-poly->line.lz);
+		dx=(double)(poly->box.max.x-poly->box.min.x);
+		dz=(double)(poly->box.max.z-poly->box.min.z);
 		f_dist_2=(float)sqrt((dx*dx)+(dz*dz));
 			
 		for (n=0;n!=poly->ptsz;n++) {
 			pt=&mesh->vertexes[poly->v[n]];
 
-			dx=(double)(pt->x-poly->line.lx);
-			dz=(double)(pt->z-poly->line.lz);
+			dx=(double)(pt->x-poly->box.min.x);
+			dz=(double)(pt->z-poly->box.min.z);
 			f_dist_1=(float)sqrt((dx*dx)+(dz*dz));
 			
 			ky=pt->y-poly->box.min.y;

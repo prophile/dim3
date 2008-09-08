@@ -58,6 +58,7 @@ EXPORTS
 	map_liquid_calculate_center						@253
 	
 	map_liquid_move									@266
+	map_liquid_reset_uv								@267
 
 	map_group_create_unit_list						@270
 	map_group_dispose_unit_list						@271

@@ -129,39 +129,8 @@ void object_watch_death_alert(obj_type *dead_obj)
 	}
 }
 
-void object_watch_portal_alert(obj_type *portal_obj,bool entry)
+void object_watch_base_alert(map_mesh_type *mesh,obj_type *enter_obj,bool entry)
 {
-/* supergumba -- need to rewrite this
-
-	int				n,rn;
-	obj_type		*obj;
-	
-	rn=portal_obj->pos.rn;
-	
-		// notify watching objects of other object entering their portals
-
-	obj=server.objs;
-
-	for (n=0;n!=server.count.obj;n++) {
-		if (obj->watch.on) {
-			if (obj->pos.rn==rn) {
-				obj->watch.obj_uid=portal_obj->uid;
-				if (entry) {
-					scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_enter_portal,0);
-				}
-				else {
-					scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_exit_portal,0);
-				}
-			}
-		}
-		obj++;
-	}
-	*/
-}
-
-void object_watch_base_alert(obj_type *enter_obj,bool entry)
-{
-	/* supergumba -- redo
 	int				n;
 	obj_type		*obj;
 	
@@ -172,7 +141,7 @@ void object_watch_base_alert(obj_type *enter_obj,bool entry)
 	for (n=0;n!=server.count.obj;n++) {
 		if (obj->watch.on) {
 			obj->watch.obj_uid=enter_obj->uid;
-			obj->watch.base_team=portal->msg.base_team;
+			obj->watch.base_team=mesh->msg.base_team;
 			if (entry) {
 				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_enter_base,0);
 			}
@@ -182,7 +151,6 @@ void object_watch_base_alert(obj_type *enter_obj,bool entry)
 		}
 		obj++;
 	}
-	*/
 }
 
 /* =======================================================

@@ -391,6 +391,9 @@ and can be sold or given away.
 #define obj_object_speed_prop_bounce_factor			5
 #define obj_object_speed_prop_no_slide				6
 
+#define obj_thrust_prop_speed						0
+#define obj_thrust_prop_max_speed					1
+
 #define obj_look_prop_up_angle						0
 #define obj_look_prop_down_angle					1
 #define obj_look_prop_effect_weapons				2
@@ -709,6 +712,7 @@ and can be sold or given away.
 #define sd_input_mode_side_scroll						1031
 #define sd_input_mode_top_down							1032
 #define sd_input_mode_fly								1033
+#define sd_input_mode_thrust							1034
 
 //
 // light constants
@@ -767,14 +771,6 @@ and can be sold or given away.
 #define sd_liquid_out									1110
 #define sd_liquid_in									1111
 #define sd_liquid_under									1112
-
-//
-// gl fog contants
-//
-
-#define sd_gl_fog_type_linear							1120
-#define sd_gl_fog_type_exp								1121
-#define sd_gl_fog_type_exp2								1122
 
 //
 // projection constants
@@ -912,11 +908,9 @@ and can be sold or given away.
 #define sd_event_watch_object_near						3050
 #define sd_event_watch_object_far						3051
 #define sd_event_watch_object_death						3052
-#define sd_event_watch_object_enter_portal				3053
-#define sd_event_watch_object_exit_portal				3054
-#define sd_event_watch_object_enter_base				3055
-#define sd_event_watch_object_exit_base					3056
-#define sd_event_watch_object_sound						3057
+#define sd_event_watch_object_enter_base				3053
+#define sd_event_watch_object_exit_base					3054
+#define sd_event_watch_object_sound						3055
 
 #define sd_event_weapon_fire_single						3058
 #define sd_event_weapon_fire_up							3059

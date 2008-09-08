@@ -31,10 +31,13 @@ and can be sold or given away.
 extern map_type				map;
 
 #define kLiquidSpeedAlter					FOUR_CHAR_CODE('salt')
+
 #define kLiquidWaveSize						FOUR_CHAR_CODE('wvsz')
 #define kLiquidTideSize						FOUR_CHAR_CODE('tsiz')
 #define kLiquidTideRate						FOUR_CHAR_CODE('trat')
 #define kLiquidTideDirection				FOUR_CHAR_CODE('tdir')
+#define kLiquidWaveFlat						FOUR_CHAR_CODE('wflt')
+
 #define kLiquidHarm							FOUR_CHAR_CODE('harm')
 #define kLiquidDrownTick					FOUR_CHAR_CODE('dwat')
 #define kLiquidDrownHarm					FOUR_CHAR_CODE('dhrm')
@@ -124,6 +127,7 @@ bool dialog_liquid_settings_run(map_liquid_type *liq)
 	dialog_set_int(dialog_liquid_settings_wind,kLiquidTideSize,0,liq->tide.high);
 	dialog_set_int(dialog_liquid_settings_wind,kLiquidTideRate,0,liq->tide.rate);
 	dialog_set_combo(dialog_liquid_settings_wind,kLiquidTideDirection,0,liq->tide.direction);
+	dialog_set_boolean(dialog_liquid_settings_wind,kLiquidWaveFlat,0,liq->tide.flat);
 	
 	dialog_set_int(dialog_liquid_settings_wind,kLiquidHarm,0,liq->harm.in_harm);
 	dialog_set_int(dialog_liquid_settings_wind,kLiquidDrownTick,0,liq->harm.drown_tick);
@@ -172,6 +176,7 @@ bool dialog_liquid_settings_run(map_liquid_type *liq)
 		liq->tide.high=dialog_get_int(dialog_liquid_settings_wind,kLiquidTideSize,0);
 		liq->tide.rate=dialog_get_int(dialog_liquid_settings_wind,kLiquidTideRate,0);
 		liq->tide.direction=dialog_get_combo(dialog_liquid_settings_wind,kLiquidTideDirection,0);
+		liq->tide.flat=dialog_get_boolean(dialog_liquid_settings_wind,kLiquidWaveFlat,0);
 		
 		liq->harm.in_harm=dialog_get_int(dialog_liquid_settings_wind,kLiquidHarm,0);
 		liq->harm.drown_tick=dialog_get_int(dialog_liquid_settings_wind,kLiquidDrownTick,0);

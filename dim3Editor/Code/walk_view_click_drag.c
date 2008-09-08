@@ -700,6 +700,8 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 				liq->bot=old_dpt.z+mpt.z;
 				break;
 		}
+		
+		if (dp_auto_texture) map_liquid_reset_uv(&map,liquid_idx);
 
         main_wind_draw();
 		
@@ -909,6 +911,8 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		liq->top=old_top+mpt.z;
 		liq->bot=old_bot+mpt.z;
 		liq->y=old_y+mpt.y;
+
+		if (dp_auto_texture) map_liquid_reset_uv(&map,main_idx);
 
         main_wind_draw();
 		

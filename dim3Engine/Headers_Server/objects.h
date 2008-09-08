@@ -125,6 +125,7 @@ extern void object_move_swim(obj_type *obj);
 extern void object_move_normal(obj_type *obj);
 extern void object_move(obj_type *obj);
 extern void object_move_remote(obj_type *obj);
+extern void object_thrust(obj_type *obj);
 extern void object_move_start(obj_type *obj);
 extern void object_move_stop(obj_type *obj);
 
@@ -177,8 +178,7 @@ extern void object_auto_walk(obj_type *obj);
 
 extern void object_watch(obj_type *obj);
 extern void object_watch_death_alert(obj_type *dead_obj);
-extern void object_watch_portal_alert(obj_type *portal_obj,bool entry);
-extern void object_watch_base_alert(obj_type *enter_obj,bool entry);
+extern void object_watch_base_alert(map_mesh_type *mesh,obj_type *enter_obj,bool entry);
 extern void object_watch_sound_alert(int x,int y,int z,int sound_obj_uid,char *sound_name);
 
 extern int object_held_add(obj_type *obj,char *name,char *type,char *script,char *params,char *err_str);

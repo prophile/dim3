@@ -63,6 +63,7 @@ script_define_type			script_dim3_defines[]={
 								{sd_input_mode_side_scroll,						"",		"DIM3_INPUT_MODE_SIDE_SCROLL"},
 								{sd_input_mode_top_down,						"",		"DIM3_INPUT_MODE_TOP_DOWN"},
 								{sd_input_mode_fly,								"",		"DIM3_INPUT_MODE_FLY"},
+								{sd_input_mode_thrust,							"",		"DIM3_INPUT_MODE_THRUST"},
 
 								{sd_light_type_normal,							"",		"DIM3_LIGHT_TYPE_NORMAL"},
 								{sd_light_type_blink,							"",		"DIM3_LIGHT_TYPE_BLINK"},
@@ -97,10 +98,6 @@ script_define_type			script_dim3_defines[]={
 								{sd_liquid_out,									"",		"DIM3_LIQUID_OUT"},
 								{sd_liquid_in,									"",		"DIM3_LIQUID_IN"},
 								{sd_liquid_under,								"",		"DIM3_LIQUID_UNDER"},
-								
-								{sd_gl_fog_type_linear,							"",		"DIM3_GL_FOG_TYPE_LINEAR"},
-								{sd_gl_fog_type_exp,							"",		"DIM3_GL_FOG_TYPE_EXP"},
-								{sd_gl_fog_type_exp2,							"",		"DIM3_GL_FOG_TYPE_EXP2"},
 								
 								{sd_projection_type_fov,						"",		"DIM3_PROJECTION_TYPE_FOV"},
 								{sd_projection_type_frustum,					"",		"DIM3_PROJECTION_TYPE_FRUSTUM"},
@@ -220,8 +217,6 @@ script_define_type			script_dim3_defines[]={
 								{sd_event_watch_object_near,					"",		"DIM3_EVENT_WATCH_OBJECT_NEAR"},
 								{sd_event_watch_object_far,						"",		"DIM3_EVENT_WATCH_OBJECT_FAR"},
 								{sd_event_watch_object_death,					"",		"DIM3_EVENT_WATCH_OBJECT_DEATH"},
-								{sd_event_watch_object_enter_portal,			"",		"DIM3_EVENT_WATCH_OBJECT_ENTER_PORTAL"},
-								{sd_event_watch_object_exit_portal,				"",		"DIM3_EVENT_WATCH_OBJECT_EXIT_PORTAL"},
 								{sd_event_watch_object_enter_base,				"",		"DIM3_EVENT_WATCH_OBJECT_ENTER_BASE"},
 								{sd_event_watch_object_exit_base,				"",		"DIM3_EVENT_WATCH_OBJECT_EXIT_BASE"},
 								{sd_event_watch_object_sound,					"",		"DIM3_EVENT_WATCH_OBJECT_SOUND"},

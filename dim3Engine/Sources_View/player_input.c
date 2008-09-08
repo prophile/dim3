@@ -169,7 +169,7 @@ void player_turn_mouse_input(obj_type *obj,float mouse_x)
 {
 		// only turn in fpp and no mouse ignores
 		
-	if (((obj->input_mode!=im_fpp) && (obj->input_mode!=im_fly)) || (obj->turn.ignore_mouse)) {
+	if (((obj->input_mode!=im_fpp) && (obj->input_mode!=im_fly) && (obj->input_mode!=im_thrust)) || (obj->turn.ignore_mouse)) {
 		obj->turn.ang_add.y=0;
 		return;
 	}
@@ -458,9 +458,10 @@ void player_movement_input(obj_type *obj)
 			break;
 
 		case im_fly:
+		case im_thrust:
 			player_movement_fpp_xz_input(obj);
-			player_movement_fly_swim_y_input(obj);
 			break;
+	
 	}
 }
 

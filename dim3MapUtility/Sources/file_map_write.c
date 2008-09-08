@@ -418,6 +418,7 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_int("high",liq->tide.high);
 	xml_add_attribute_int("split",liq->tide.split);
 	xml_add_attribute_list("tide_direction",(char*)liquid_tide_direction_str,liq->tide.direction);
+	xml_add_attribute_boolean("flat",liq->tide.flat);
 	xml_add_tagend(TRUE);
 
 	xml_add_tagclose("Liquid");
