@@ -207,9 +207,9 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 
     tag=xml_findfirstchild("Tide",liquid_tag);
     if (tag!=-1) {
+		liq->tide.division=xml_get_attribute_int_default(tag,"division",liquid_min_division);
 		liq->tide.rate=xml_get_attribute_int(tag,"rate");
 		liq->tide.high=xml_get_attribute_int(tag,"high");
-		liq->tide.split=xml_get_attribute_int(tag,"split");
 		liq->tide.direction=xml_get_attribute_list(tag,"tide_direction",(char*)liquid_tide_direction_str);
         liq->tide.flat=xml_get_attribute_boolean(tag,"flat");
 	}

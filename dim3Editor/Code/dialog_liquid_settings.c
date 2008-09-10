@@ -123,7 +123,7 @@ bool dialog_liquid_settings_run(map_liquid_type *liq)
 		
 	dialog_set_value(dialog_liquid_settings_wind,kLiquidSpeedAlter,0,(int)(liq->speed_alter*100));
 	
-	dialog_set_int(dialog_liquid_settings_wind,kLiquidWaveSize,0,liq->tide.split);
+	dialog_set_value(dialog_liquid_settings_wind,kLiquidWaveSize,0,liq->tide.division);
 	dialog_set_int(dialog_liquid_settings_wind,kLiquidTideSize,0,liq->tide.high);
 	dialog_set_int(dialog_liquid_settings_wind,kLiquidTideRate,0,liq->tide.rate);
 	dialog_set_combo(dialog_liquid_settings_wind,kLiquidTideDirection,0,liq->tide.direction);
@@ -172,7 +172,7 @@ bool dialog_liquid_settings_run(map_liquid_type *liq)
 	if (!dialog_liquid_settings_cancel) {
 		liq->speed_alter=((float)dialog_get_value(dialog_liquid_settings_wind,kLiquidSpeedAlter,0))/100.0f;
 		
-		liq->tide.split=dialog_get_int(dialog_liquid_settings_wind,kLiquidWaveSize,0);
+		liq->tide.division=dialog_get_value(dialog_liquid_settings_wind,kLiquidWaveSize,0);
 		liq->tide.high=dialog_get_int(dialog_liquid_settings_wind,kLiquidTideSize,0);
 		liq->tide.rate=dialog_get_int(dialog_liquid_settings_wind,kLiquidTideRate,0);
 		liq->tide.direction=dialog_get_combo(dialog_liquid_settings_wind,kLiquidTideDirection,0);

@@ -126,7 +126,7 @@ bool read_single_mesh_v2(map_type *map,portal_type *portal,int mesh_idx,int mesh
 
 void read_single_liquid_v2(map_type *map,portal_type *portal,int liquid_idx,int liquid_tag)
 {
-	int					tag;
+	int					tag,split,sz;
 	map_liquid_type		*liq;
 
 	liq=&map->liquid.liquids[liquid_idx];
@@ -177,9 +177,14 @@ void read_single_liquid_v2(map_type *map,portal_type *portal,int liquid_idx,int 
 
     tag=xml_findfirstchild("Tide",liquid_tag);
     if (tag!=-1) {
+		split=xml_get_attribute_int(tag,"split");
+		
+		sz=liq->rgt-liq->lft;
+		if ((liq->bot-liq->top)>sz) sz=liq->bot-liq->top;
+		liq->tide.division=sz/split;
+
 		liq->tide.rate=xml_get_attribute_int(tag,"rate");
 		liq->tide.high=xml_get_attribute_int(tag,"high");
-		liq->tide.split=xml_get_attribute_int(tag,"split");
 		liq->tide.direction=xml_get_attribute_list(tag,"tide_direction",(char*)liquid_tide_direction_str);
 	}
 }

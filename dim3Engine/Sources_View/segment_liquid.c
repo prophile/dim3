@@ -52,13 +52,13 @@ extern void view_unbind_current_vertex_object(void);
 inline int liquid_render_liquid_get_tide_split(map_liquid_type *liq)
 {
 	int				tide_split;
-	
-	if (!liq->tide.flat) return(liq->tide.split);
-	
+
 	tide_split=liq->rgt-liq->lft;
 	if ((liq->bot-liq->top)>tide_split) tide_split=liq->bot-liq->top;
 	
-	return(tide_split);
+	if (liq->tide.flat) return(tide_split);
+	
+	return(tide_split/liq->tide.division);
 }
 
 inline int liquid_render_liquid_get_max_vertex(map_liquid_type *liq)
@@ -73,7 +73,7 @@ inline int liquid_render_liquid_get_max_vertex(map_liquid_type *liq)
 	return(x_sz*z_sz);
 }
 
-void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
+bool liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
 {
 	int				x,y,z,k,x_add,z_add,x_sz,z_sz,
 					v_cnt,v_sz,sz,tide_split,tide_split_half,
@@ -103,6 +103,7 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
 	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
 
 	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	if (vertex_ptr==NULL) return(FALSE);
 
 	vl=vertex_ptr;
 	uv=vertex_ptr+(v_sz*3);
@@ -115,21 +116,20 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
 		// setup tiding
 
 	tide_split=liquid_render_liquid_get_tide_split(liq);
+	
 	tide_high=liq->tide.high;
+	if (tide_high<1) tide_high=1;
+	
 	tide_rate=liq->tide.rate;
+	if (tide_rate<1) tide_rate=1;
 
-	if ((tide_high<=0) || (tide_rate<=0)) {
+	tide_split_half=tide_split<<2;
+	f_tide_split_half=(float)tide_split_half;
+	
+	f_tide_high=(float)tide_high;
 
-	}
-	else {
-		tide_split_half=tide_split<<2;
-		f_tide_split_half=(float)tide_split_half;
-		
-		f_tide_high=(float)tide_high;
-
-		f_time=(float)(tick%tide_rate);		// get rate between 0..1
-		f_time=f_time/(float)tide_rate;
-	}
+	f_time=(float)(tick%tide_rate);		// get rate between 0..1
+	f_time=f_time/(float)tide_rate;
 	
 		// liquid texture movement
 		
@@ -178,7 +178,7 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
 
 				// setup tide Y
 
-			if (liq->tide.direction==ld_vertical) {
+			if (liq->tide.direction==liquid_direction_vertical) {
 				f_break=(float)(z%tide_split_half);
 			}
 			else {
@@ -236,8 +236,10 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
 		// unmap VBO
 
 	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
-
+	
 	view_unbind_current_vertex_object();
+	
+	return(TRUE);
 }
 
 int liquid_render_liquid_create_quads(map_liquid_type *liq)
@@ -357,7 +359,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 
 		// setup liquid for drawing
 
-	liquid_render_liquid_create_vertex(tick,liq);
+	if (!liquid_render_liquid_create_vertex(tick,liq)) return;
 	quad_cnt=liquid_render_liquid_create_quads(liq);
 	if (quad_cnt==0) return;
 	

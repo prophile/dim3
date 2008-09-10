@@ -145,7 +145,7 @@ void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,
 
 void map_convert_liquid(map_type *map,portal_type *portal,segment_type *seg)
 {
-	int				liq_idx;
+	int				liq_idx,sz;
 	map_liquid_type	*liquid;
 
 	liq_idx=map_liquid_add(map);
@@ -180,11 +180,13 @@ void map_convert_liquid(map_type *map,portal_type *portal,segment_type *seg)
 	liquid->harm.in_harm=seg->data.liquid.harm;
 	liquid->harm.drown_harm=seg->data.liquid.drown_harm;
 	liquid->harm.drown_tick=seg->data.liquid.drown_tick;
-	
+
+	sz=liquid->rgt-liquid->lft;
+	if ((liquid->bot-liquid->top)>sz) sz=liquid->bot-liquid->top;
+	liquid->tide.division=sz/seg->data.liquid.wavesize;
 	liquid->tide.rate=seg->data.liquid.tiderate;
 	liquid->tide.high=seg->data.liquid.tidesize;
 	liquid->tide.direction=seg->data.liquid.tidedirection;
-	liquid->tide.split=seg->data.liquid.wavesize;
 }
 
 /* =======================================================

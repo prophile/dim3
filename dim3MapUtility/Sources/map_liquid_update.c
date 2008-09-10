@@ -76,8 +76,6 @@ void map_liquid_reset_uv(map_type *map,int liquid_idx)
 
 	ltxtz=((float)liq->top)*txt_scale_y;
 	rtxtz=((float)liq->bot)*txt_scale_y;
-	
-	fprintf(stdout,"txt_idx=%d, lft=%d, rgt=%d, ltxtx=%.2f, rtxtx=%.2f, fct=%.5f\n",liq->txt_idx,liq->lft,liq->rgt,ltxtx,rtxtx,txt_scale_x);
 
 	liq->x_txtoff=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtx));
 	liq->x_txtfact=map_get_texture_round_coord(rtxtx-ltxtx);

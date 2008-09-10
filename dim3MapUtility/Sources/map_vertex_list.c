@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit ÒCreated with dim3 TechnologyÓ is given on a single
+2. This credit â€œCreated with dim3 Technologyâ€ is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -547,8 +547,8 @@ bool map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *p
 
 		// memory for tesseled vertexes
 
-	poly->light.trig_vertex_idx=valloc(sizeof(int)*light_tessel_max_vertex);			// supergumba -- need to error check here
-	poly->light.trig_vertex_draw_idx=valloc(sizeof(int)*light_tessel_max_vertex);
+	poly->light.trig_vertex_idx=valloc(sizeof(int)*(light_tessel_max_vertex*3));			// supergumba -- need to error check here
+	poly->light.trig_vertex_draw_idx=valloc(sizeof(int)*(light_tessel_max_vertex*3));
 	poly->light.vertexes=valloc(sizeof(map_mesh_poly_tessel_vertex_type)*light_tessel_max_vertex);
 
 	poly->light.ntrig=0;
@@ -600,7 +600,6 @@ bool map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *p
 	map_portal_add_light_xz_tessel_vertex_list(mesh,poly);
 	return(TRUE);
 }
-
 
 void map_dispose_poly_tesseled_vertexes(map_mesh_poly_type *poly)
 {
@@ -695,7 +694,7 @@ void map_dispose_mesh_vertexes(map_type *map)
 
 bool map_create_liquid_vertexes(map_type *map)
 {
-	int					n,x_sz,z_sz,nvlist,sz;
+	int					n,nvlist,sz;
 	map_liquid_type		*liq;
 	
 		// find maximum possible number of vertexes
@@ -706,11 +705,8 @@ bool map_create_liquid_vertexes(map_type *map)
 	liq=map->liquid.liquids;
 		
 	for (n=0;n!=map->liquid.nliquid;n++) {
-
-		x_sz=((liq->rgt-liq->lft)/liq->tide.split)+4;		// possible extra edges on side because of griding
-		z_sz=((liq->bot-liq->top)/liq->tide.split)+4;
-
-		sz=(x_sz*z_sz);
+	
+		sz=(liq->tide.division+4)*(liq->tide.division+4);	// possible extra edges on side because of griding
 		if (sz>nvlist) nvlist=sz;
 		
 		liq++;

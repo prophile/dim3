@@ -389,8 +389,8 @@ void piece_create_liquid(void)
 	
 	liq->tide.rate=1000;
 	liq->tide.high=100;
-	liq->tide.split=600;
-	liq->tide.direction=ld_horizontal;
+	liq->tide.division=liquid_min_division;
+	liq->tide.direction=liquid_direction_horizontal;
 	
 	liq->harm.in_harm=0;
 	liq->harm.drown_tick=10000;

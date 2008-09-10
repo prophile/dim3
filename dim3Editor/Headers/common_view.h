@@ -136,7 +136,6 @@ extern void piece_combine_mesh(void);
 extern void piece_split_mesh(void);
 extern void map_mesh_move_all(int x,int y,int z);
 extern void map_mesh_reset_uv_all(void);
-extern void map_mesh_delete_no_poly(void);
 
 //
 // node routines

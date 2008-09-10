@@ -79,12 +79,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 242455129;
-			PBXWorkspaceStateSaveDate = 242455129;
+			PBXPerProjectTemplateStateSaveDate = 242712010;
+			PBXWorkspaceStateSaveDate = 242712010;
 		};
 		perUserProjectItems = {
-			2659950E0E74BBB2007FFBC0 /* PlistBookmark */ = 2659950E0E74BBB2007FFBC0 /* PlistBookmark */;
-			26EAEC830E7339680040CD92 /* PlistBookmark */ = 26EAEC830E7339680040CD92 /* PlistBookmark */;
+			268963AC0E7784600074A4E4 /* PlistBookmark */ = 268963AC0E7784600074A4E4 /* PlistBookmark */;
+			26D27D250E776E79004A3CB5 /* PlistBookmark */ = 26D27D250E776E79004A3CB5 /* PlistBookmark */;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -194,17 +194,6 @@
 			sepNavWindowFrame = "{{630, 166}, {1041, 747}}";
 		};
 	};
-	2659950E0E74BBB2007FFBC0 /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5CD87F50557720F0023AD9B /* Info-dim3_Engine.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Engine/Resources/Info-dim3_Engine.plist";
-		rLen = 0;
-		rLoc = 2147483647;
-	};
 	265B377C0D7F8D3A004AE124 /* group_change.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 6258}}";
@@ -237,6 +226,17 @@
 		rType = 0;
 		vrLen = 1373;
 		vrLoc = 290;
+	};
+	268963AC0E7784600074A4E4 /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = F5CD87F50557720F0023AD9B /* Info-dim3_Engine.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+		);
+		name = "/Users/ggadwa/dim3Code/dim3Engine/Resources/Info-dim3_Engine.plist";
+		rLen = 0;
+		rLoc = 2147483647;
 	};
 	268CBC8D0DD2AA7D00CF0256 /* net_client_join_host.c */ = {
 		uiCtxt = {
@@ -286,6 +286,17 @@
 			sepNavWindowFrame = "{{430, 180}, {1041, 747}}";
 		};
 	};
+	26D27D250E776E79004A3CB5 /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = F5CD87F50557720F0023AD9B /* Info-dim3_Engine.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+		);
+		name = "/Users/ggadwa/dim3Code/dim3Engine/Resources/Info-dim3_Engine.plist";
+		rLen = 0;
+		rLoc = 2147483647;
+	};
 	26DAED2F0DD55C28000EBB48 /* group_move.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 4858}}";
@@ -301,17 +312,6 @@
 			sepNavVisRange = "{470, 1201}";
 			sepNavWindowFrame = "{{340, 162}, {1041, 747}}";
 		};
-	};
-	26EAEC830E7339680040CD92 /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5CD87F50557720F0023AD9B /* Info-dim3_Engine.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Engine/Resources/Info-dim3_Engine.plist";
-		rLen = 0;
-		rLoc = 2147483647;
 	};
 	26F08C9E0DAC7DB50097E249 /* net_host.c */ = {
 		uiCtxt = {
@@ -435,9 +435,9 @@
 	};
 	F5A17A5F0CC14D340083AF08 /* segment_render_opaque.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 9800}}";
-			sepNavSelRange = "{9377, 0}";
-			sepNavVisRange = "{8640, 1141}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 9646}}";
+			sepNavSelRange = "{4558, 0}";
+			sepNavVisRange = "{3886, 899}";
 			sepNavWindowFrame = "{{504, 242}, {1041, 747}}";
 		};
 	};
@@ -811,9 +811,9 @@
 	};
 	F5BD968B0C20EF34000F74E1 /* view_vertex_light.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7182}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6776}}";
 			sepNavSelRange = "{5463, 30}";
-			sepNavVisRange = "{4961, 1215}";
+			sepNavVisRange = "{4047, 1189}";
 			sepNavWindowFrame = "{{409, 241}, {1041, 747}}";
 		};
 	};
@@ -867,9 +867,9 @@
 	};
 	F5C5EB090913264E00F94729 /* loop.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4620}}";
-			sepNavSelRange = "{2750, 11}";
-			sepNavVisRange = "{2564, 1010}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4158}}";
+			sepNavSelRange = "{2748, 11}";
+			sepNavVisRange = "{2528, 1040}";
 			sepNavWindowFrame = "{{255, 224}, {1041, 747}}";
 		};
 	};
@@ -993,18 +993,18 @@
 	};
 	F5DD19D7090830C800721649 /* server.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 5992}}";
-			sepNavSelRange = "{9702, 16}";
-			sepNavVisRange = "{9251, 768}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5474}}";
+			sepNavSelRange = "{10040, 0}";
+			sepNavVisRange = "{9250, 831}";
 			sepNavWindowFrame = "{{492, 125}, {1041, 747}}";
 		};
 	};
 	F5DD19D9090830C800721649 /* server_run.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4984}}";
-			sepNavSelRange = "{2846, 0}";
-			sepNavVisRange = "{1645, 1306}";
-			sepNavWindowFrame = "{{388, 195}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5502}}";
+			sepNavSelRange = "{5568, 0}";
+			sepNavVisRange = "{4848, 808}";
+			sepNavWindowFrame = "{{321, 243}, {1041, 747}}";
 		};
 	};
 	F5DD19DD0908310200721649 /* view.c */ = {
@@ -1017,9 +1017,9 @@
 	};
 	F5DD19DE0908310200721649 /* view_vertex_list.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 3962}}";
-			sepNavSelRange = "{4834, 0}";
-			sepNavVisRange = "{3936, 995}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4872}}";
+			sepNavSelRange = "{5733, 0}";
+			sepNavVisRange = "{5195, 854}";
 			sepNavWindowFrame = "{{194, 182}, {1041, 747}}";
 		};
 	};
@@ -1033,9 +1033,9 @@
 	};
 	F5DD19E10908310200721649 /* view_draw.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 5390}}";
-			sepNavSelRange = "{6806, 30}";
-			sepNavVisRange = "{6379, 952}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5656}}";
+			sepNavSelRange = "{7732, 0}";
+			sepNavVisRange = "{7460, 871}";
 			sepNavWindowFrame = "{{454, 144}, {1041, 747}}";
 		};
 	};
@@ -1289,10 +1289,10 @@
 	};
 	F5DD1A5609085AA200721649 /* segment_liquid.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6538}}";
-			sepNavSelRange = "{1645, 0}";
-			sepNavVisRange = "{1011, 1311}";
-			sepNavWindowFrame = "{{67, 244}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6468}}";
+			sepNavSelRange = "{1825, 0}";
+			sepNavVisRange = "{1011, 1372}";
+			sepNavWindowFrame = "{{235, 228}, {1041, 747}}";
 		};
 	};
 	F5DD1A6409085B0200721649 /* light.c */ = {

@@ -321,9 +321,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>17</integer>
-									<integer>10</integer>
-									<integer>9</integer>
+									<integer>6</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -375,10 +374,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>265995110E74C373007FFBC0</string>
+										<string>268963A70E7784590074A4E4</string>
 										<key>history</key>
 										<array>
-											<string>26ABEEA80E73081F0029469D</string>
+											<string>26D27D040E776C04004A3CB5</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -436,9 +435,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>265994990E744B19007FFBC0</string>
+				<string>2689632E0E7779BA0074A4E4</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>2659949A0E744B19007FFBC0</string>
+				<string>2689632F0E7779BA0074A4E4</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -557,7 +556,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>242533235.54049501</real>
+	<real>242713689.442173</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -656,7 +655,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEBC0D404E7500F6C42F</string>
-				<string>265994850E7398EE007FFBC0</string>
+				<string>268963330E7779BA0074A4E4</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -823,7 +822,7 @@
 										<key>Frame</key>
 										<string>{{0, 0}, {781, 0}}</string>
 										<key>RubberWindowFrame</key>
-										<string>790 197 781 470 0 0 1680 1028 </string>
+										<string>499 194 781 470 0 0 1680 1028 </string>
 									</dict>
 									<key>Module</key>
 									<string>PBXNavigatorGroup</string>
@@ -849,7 +848,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {781, 424}}</string>
 								<key>RubberWindowFrame</key>
-								<string>790 197 781 470 0 0 1680 1028 </string>
+								<string>499 194 781 470 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXProjectFindModule</string>
@@ -872,13 +871,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>265994B50E744FC3007FFBC0</string>
-				<string>265994B60E744FC3007FFBC0</string>
+				<string>268963800E7780DA0074A4E4</string>
+				<string>268963810E7780DA0074A4E4</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
 			<key>WindowString</key>
-			<string>790 197 781 470 0 0 1680 1028 </string>
+			<string>499 194 781 470 0 0 1680 1028 </string>
 			<key>WindowToolGUID</key>
 			<string>1C530D57069F1CE1000CFCEE</string>
 			<key>WindowToolIsVisible</key>

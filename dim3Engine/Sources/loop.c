@@ -92,7 +92,7 @@ bool interface_quit_trigger_check(void)
 
 void loop_game_run(int tick)
 {
-		// recieve networking updates
+		// receive networking updates
 		
 	if (net_setup.client.joined) {
 		if (!remote_network_get_updates(tick)) return;

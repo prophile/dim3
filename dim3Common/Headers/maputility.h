@@ -125,8 +125,11 @@ extern char light_type_str[][32];
 // liquids
 //
 
-#define ld_horizontal										0
-#define ld_vertical											1
+#define liquid_min_division									5
+#define liquid_max_division									20
+
+#define liquid_direction_horizontal							0
+#define liquid_direction_vertical							1
 
 //
 // light tessel constants
@@ -135,7 +138,6 @@ extern char light_type_str[][32];
 #define light_tessel_grid_sz								6
 #define light_tessel_max_size								(map_enlarge*64)
 
-#define light_tessel_max_trig								72
 #define light_tessel_max_vertex								216
 
 //
@@ -270,7 +272,7 @@ typedef struct		{
 					} map_liquid_harm_type;
 
 typedef struct		{
-						int									rate,high,direction,split;
+						int									rate,high,direction,division;
 						bool								flat;
 					} map_liquid_tide_type;
 

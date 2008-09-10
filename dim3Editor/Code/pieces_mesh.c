@@ -837,22 +837,3 @@ void map_mesh_reset_uv_all(void)
 	}
 }
 
-void map_mesh_delete_no_poly(void)
-{
-	int				n;
-	map_mesh_type	*mesh;
-	
-	n=0;
-	
-	while (n<map.mesh.nmesh) {
-		mesh=&map.mesh.meshes[n];
-		
-		if (mesh->npoly!=0) {
-			n++;
-			continue;
-		}
-		
-		map_mesh_delete(&map,n);
-	}
-}
-

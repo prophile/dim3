@@ -45,6 +45,81 @@ extern maputility_settings_type		maputility_settings;
 
 /* =======================================================
 
+      Map Fix
+      
+======================================================= */
+
+void write_map_fix_problems(map_type *map)
+{
+	int					n,k;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	map_liquid_type		*liq;
+	
+		// delete any meshes with no vertexes or no polys
+		// or polygon meshes over or under min/max point size
+		
+	n=0;
+	
+	while (n<map->mesh.nmesh) {
+		mesh=&map->mesh.meshes[n];
+		
+			// if no vertexes or polys, delete entire mesh
+			
+		if ((mesh->nvertex<=0) || (mesh->npoly<=0)) {
+			map_mesh_delete(map,n);
+			continue;
+		}
+		
+			// delete any polygons that are bad
+			
+		k=0;
+		
+		while (k<mesh->npoly) {
+			poly=&mesh->polys[k];
+			
+			if ((poly->ptsz<3) || (poly->ptsz>8)) {
+				if (map_mesh_delete_poly(map,n,k)) continue;
+			}
+			
+			k++;
+		}
+		
+		n++;
+	}
+	
+		// fix any liquids that got their coordinates
+		// switched or odd tide settings
+		
+	liq=map->liquid.liquids;
+	
+	for (n=0;n!=map->liquid.nliquid;n++) {
+	
+			// switched coordinates
+			
+		if (liq->lft>liq->rgt) {
+			k=liq->rgt;
+			liq->rgt=liq->lft;
+			liq->lft=k;
+		}
+		
+		if (liq->top>liq->bot) {
+			k=liq->bot;
+			liq->bot=liq->top;
+			liq->top=k;
+		}
+		
+			// odd tide settings
+			
+		if (liq->tide.division<liquid_min_division) liq->tide.division=liquid_min_division;
+		if (liq->tide.division>liquid_max_division) liq->tide.division=liquid_max_division;
+		
+		liq++;
+	}
+}
+
+/* =======================================================
+
       Write Settings
       
 ======================================================= */
@@ -416,7 +491,7 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_tagstart("Tide");
 	xml_add_attribute_int("rate",liq->tide.rate);
 	xml_add_attribute_int("high",liq->tide.high);
-	xml_add_attribute_int("split",liq->tide.split);
+	xml_add_attribute_int("division",liq->tide.division);
 	xml_add_attribute_list("tide_direction",(char*)liquid_tide_direction_str,liq->tide.direction);
 	xml_add_attribute_boolean("flat",liq->tide.flat);
 	xml_add_tagend(TRUE);
@@ -442,6 +517,12 @@ bool write_map_xml(map_type *map)
     node_type				*node;
     spot_type				*spot;
 	map_scenery_type		*scenery;
+	
+		// fix any problems with map before saving
+		
+	write_map_fix_problems(map);
+	
+		// save map
 
     xml_new_file();
     
