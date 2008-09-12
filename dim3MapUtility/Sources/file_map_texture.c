@@ -74,18 +74,66 @@ void map_textures_new(map_type *map)
       
 ======================================================= */
 
-bool map_textures_read(map_type *map)
+bool map_textures_read(map_type *map,bool in_engine)
 {
-	int					i,k;
+	int					i,k,n;
 	char				path[1024];
+	bool				txt_ok[max_map_texture];
 	texture_type		*texture;
 	bitmap_type			*bitmap,*bumpmap,*specularmap,*glowmap,
 						height_bitmap;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	map_liquid_type		*liq;
+						
+		// if in engine, then only load textures
+		// directly hooked up to elements
+		
+	if (in_engine) {
 	
-	texture=map->textures;
+		for (n=0;n!=max_map_texture;n++) {
+			txt_ok[n]=FALSE;
+		}
+		
+		mesh=map->mesh.meshes;
+		
+		for (n=0;n!=map->mesh.nmesh;n++) {
+			
+			poly=mesh->polys;
+			
+			for (k=0;k!=mesh->npoly;k++) {
+				txt_ok[poly->txt_idx]=TRUE;
+				poly++;
+			}
+			
+			mesh++;
+		}
+		
+		liq=map->liquid.liquids;
+		
+		for (n=0;n!=map->liquid.nliquid;n++) {
+			txt_ok[liq->txt_idx]=TRUE;
+			liq++;
+		}
+		
+		if (map->background.fill!=-1) txt_ok[map->background.fill]=TRUE;
+		if (map->sky.fill!=-1) txt_ok[map->sky.fill]=TRUE;
+		if (map->sky.bottom_fill!=-1) txt_ok[map->sky.bottom_fill]=TRUE;
+		if (map->sky.north_fill!=-1) txt_ok[map->sky.north_fill]=TRUE;
+		if (map->sky.south_fill!=-1) txt_ok[map->sky.south_fill]=TRUE;
+		if (map->sky.east_fill!=-1) txt_ok[map->sky.east_fill]=TRUE;
+		if (map->sky.west_fill!=-1) txt_ok[map->sky.west_fill]=TRUE;
+	
+	}
+	
+		// load textures
 	
 	for (i=0;i!=max_map_texture;i++) {
-		
+	
+		texture=&map->textures[i];
+	
+		if ((in_engine) && (!txt_ok[i])) continue;
+			
 		bitmap=texture->bitmaps;
 		bumpmap=texture->bumpmaps;
 		specularmap=texture->specularmaps;
@@ -101,7 +149,7 @@ bool map_textures_read(map_type *map)
 				bitmap_open(bitmap,path,maputility_settings.anisotropic_mode,maputility_settings.texture_quality_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression);
 			
 					// bumpmap
-					
+
 				switch (texture->bump_mode) {
 				
 					case bump_mode_auto_generate:
@@ -136,7 +184,6 @@ bool map_textures_read(map_type *map)
 					file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures_Glow",glowmap->name,"png");
 					bitmap_open(glowmap,path,maputility_settings.anisotropic_mode,maputility_settings.texture_quality_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression);
 				}
-				
 			}
 			
 			bitmap++;
@@ -144,8 +191,6 @@ bool map_textures_read(map_type *map)
 			specularmap++;
 			glowmap++;
 		}
-		
-		texture++;
 	}
 	
 	return(TRUE);

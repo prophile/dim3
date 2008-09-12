@@ -376,6 +376,10 @@ void particle_draw(effect_type *effect,int count)
 	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
 
 	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	if (vertex_ptr==NULL) {
+		view_unbind_current_vertex_object();
+		return;
+	}
 	
 		// setup the arrays
 

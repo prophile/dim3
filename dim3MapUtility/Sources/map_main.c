@@ -71,6 +71,7 @@ bool map_new(map_type *map,char *name)
 	map->settings.resistance=1;
 	map->settings.txt_scale_x=0.04f;
 	map->settings.txt_scale_y=0.04f;
+	map->settings.no_obscure=FALSE;
 	map->settings.editor_link_always_start=FALSE;
 	map->settings.network_game_list[0]=0x0;
 	
@@ -224,23 +225,18 @@ bool map_new(map_type *map,char *name)
       
 ======================================================= */
 
-bool map_open(map_type *map,char *name,bool load_bitmaps,bool setup_glowmaps,bool load_shaders)
+bool map_open(map_type *map,char *name,bool in_engine,bool load_shaders)
 {
 	if (!map_new(map,name)) return(FALSE);
 	
 	strcpy(map->info.name,name);
 	file_paths_data(&maputility_settings.file_path_setup,map->info.load_path,"Maps",map->info.name,"xml");
 	
-	if (!read_map_xml(map)) return(FALSE);
+	if (!read_map_xml(map,in_engine)) return(FALSE);
 
-	if (load_bitmaps) {
-		if (!map_textures_read(map)) return(FALSE);
-		if (setup_glowmaps) if (!map_textures_setup_glowmaps(map)) return(FALSE);
-	}
-
-	if (load_shaders) {
-		if (!map_shaders_read(map)) return(FALSE);
-	}
+	if (!map_textures_read(map,in_engine)) return(FALSE);
+	if (in_engine) if (!map_textures_setup_glowmaps(map)) return(FALSE);
+	if ((in_engine) && (load_shaders)) if (!map_shaders_read(map)) return(FALSE);
 	
 	return(TRUE);
 }
@@ -253,7 +249,7 @@ bool map_open(map_type *map,char *name,bool load_bitmaps,bool setup_glowmaps,boo
 
 bool map_reload(map_type *map)
 {
-	if (!read_map_xml(map)) return(FALSE);
+	if (!read_map_xml(map,FALSE)) return(FALSE);
 
 	return(TRUE);
 }
@@ -317,6 +313,6 @@ void map_close(map_type *map)
 void map_refresh_textures(map_type *map)
 {
 	map_textures_close(map);
-	map_textures_read(map);
+	map_textures_read(map,FALSE);
 }
 

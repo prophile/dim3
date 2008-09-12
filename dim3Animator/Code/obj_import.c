@@ -124,7 +124,7 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 			}
         
 			textdecode_get_piece(i,1,txt);
-			vertex->pnt.x=(int)(strtod(txt,NULL)*import_scale_factor);
+			vertex->pnt.x=-(int)(strtod(txt,NULL)*import_scale_factor);
 			textdecode_get_piece(i,2,txt);
 			vertex->pnt.y=-(int)(strtod(txt,NULL)*import_scale_factor);
 			textdecode_get_piece(i,3,txt);

@@ -70,7 +70,7 @@ extern void fade_screen_draw(int tick);
 extern void fade_object_draw(int tick,obj_type *obj);
 extern void liquid_render(int tick);
 extern void decal_render(int mesh_draw_count,int *mesh_draw_list);
-extern void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list);
+extern bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list);
 
 extern int			mesh_draw_count,mesh_draw_list[max_mesh];
 
@@ -321,7 +321,7 @@ void view_draw(int tick)
 	
 		// compile meshes for drawing
 	
-	view_compile_mesh_gl_lists(tick,mesh_draw_count,mesh_draw_list);
+	if (!view_compile_mesh_gl_lists(tick,mesh_draw_count,mesh_draw_list)) return;
 	
 		// draw opaque polygons
 

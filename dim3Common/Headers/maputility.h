@@ -32,13 +32,17 @@ and can be sold or given away.
 extern char light_type_str[][32];
 
 //
+// version
+//
+
+#define map_current_version									3
+
+//
 // map sizes
 //
 
 #define map_enlarge											144				// each units of maze equals this many game units
-
 #define map_max_size										500000			// maximum size of map on x/z units
-
 #define map_simple_tessel_size								500				// below this size makes simple lighting tessel
 
 //
@@ -465,7 +469,7 @@ typedef struct		{
 typedef struct		{
 						float								gravity,gravity_max_power,gravity_max_speed,
 															resistance,txt_scale_x,txt_scale_y;
-						bool								editor_link_always_start;
+						bool								no_obscure,editor_link_always_start;
 						char								network_game_list[256];
 					} map_settings_type;
 					
@@ -554,7 +558,7 @@ typedef struct		{
 
 extern void map_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int texture_quality_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression);
 extern bool map_new(map_type *map,char *name);
-extern bool map_open(map_type *map,char *name,bool load_bitmaps,bool setup_glowmaps,bool load_shaders);
+extern bool map_open(map_type *map,char *name,bool in_engine,bool load_shaders);
 extern bool map_reload(map_type *map);
 extern bool map_save(map_type *map);
 extern void map_close(map_type *map);

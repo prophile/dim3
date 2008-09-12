@@ -54,7 +54,7 @@ extern void view_unbind_current_vertex_object(void);
       
 ======================================================= */
 
-void model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,model_material_type *material)
+bool model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,model_material_type *material)
 {
 	int				n,trig_count,nvertex,idx,sz;
 	float			*vl,*tl,*cl,*nl,*vp,*cp,*np,*vertex_ptr,
@@ -62,7 +62,7 @@ void model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
     model_trig_type	*trig;
 	
 	trig_count=material->trig_count;
-	if (trig_count==0) return;
+	if (trig_count==0) return(FALSE);
 
 	nvertex=trig_count*3;
 
@@ -78,7 +78,11 @@ void model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
 
 	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-       
+	if (vertex_ptr==NULL) {
+		view_unbind_current_vertex_object();
+		return(FALSE);
+	}
+	
 		// build the arrays
 
 	trig=&mesh->trigs[material->trig_start];
@@ -185,6 +189,8 @@ void model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 	
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glNormalPointer(GL_FLOAT,0,(void*)((nvertex*(3+2+3))*sizeof(float)));
+	
+	return(TRUE);
 }
 
 void model_draw_stop_mesh_material_array(void)
@@ -212,7 +218,7 @@ void model_draw_stop_mesh_material_array(void)
       
 ======================================================= */
 
-void model_draw_start_mesh_shadow_array(model_type *mdl,model_mesh_type *mesh)
+bool model_draw_start_mesh_shadow_array(model_type *mdl,model_mesh_type *mesh)
 {
 	int				n,trig_count,sz;
 	float			*vl,*vp,*vertex_ptr,*vertex_array;
@@ -232,7 +238,11 @@ void model_draw_start_mesh_shadow_array(model_type *mdl,model_mesh_type *mesh)
 	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
 
 	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-
+	if (vertex_ptr==NULL) {
+		view_unbind_current_vertex_object();
+		return(FALSE);
+	}
+	
 		// build the arrays
 		// there's no z coordinate in these arrays
 
@@ -274,6 +284,8 @@ void model_draw_start_mesh_shadow_array(model_type *mdl,model_mesh_type *mesh)
 		
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,0);
+	
+	return(TRUE);
 }
 
 void model_draw_stop_mesh_shadow_array(void)
@@ -291,7 +303,7 @@ void model_draw_stop_mesh_shadow_array(void)
 
 void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int						i,frame,trig_count,nvertex;
+	int						n,frame,trig_count,nvertex;
 	float					alpha;
 	model_mesh_type			*mesh;
     texture_type			*texture;
@@ -301,18 +313,14 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 	
 		// run through the materials
 
-	texture=mdl->textures;
-	material=mesh->materials;
-
-	for (i=0;i!=max_model_texture;i++) {
+	for (n=0;n!=max_model_texture;n++) {
+	
+		texture=&mdl->textures[n];
+		material=&mesh->materials[n];
 	
 			// no shaders
 			
-		if (texture->shader.on) {
-			texture++;
-			material++;
-			continue;
-		}
+		if (texture->shader.on) continue;
 
 			// any opaque trigs?
 			
@@ -321,24 +329,16 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 		alpha=draw->alpha;
 		if (draw->mesh_fades[mesh_idx].on) alpha=draw->mesh_fades[mesh_idx].alpha;
 			
-		if ((texture->bitmaps[frame].alpha_mode==alpha_mode_transparent) || (alpha!=1.0)) {
-			texture++;
-			material++;
-			continue;
-		}
+		if ((texture->bitmaps[frame].alpha_mode==alpha_mode_transparent) || (alpha!=1.0)) continue;
 
 			// trig count
 
 		trig_count=material->trig_count;
-		if (trig_count==0) {
-			texture++;
-			material++;
-			continue;
-		}
+		if (trig_count==0) continue;
 
 			// create and start drawing arrays
 
-		model_draw_start_mesh_material_array(mdl,mesh,material);
+		if (!model_draw_start_mesh_material_array(mdl,mesh,material)) continue;
 			
 			// regular texture
 
@@ -447,9 +447,6 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			// stop drawing arrays
 
 		model_draw_stop_mesh_material_array();
-
-		texture++;
-		material++;
 	}
 }
 
@@ -465,31 +462,23 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 	
 		// run through the materials
 
-	texture=mdl->textures;
-	material=mesh->materials;
-
 	for (n=0;n!=max_model_texture;n++) {
+	
+		texture=&mdl->textures[n];
+		material=&mesh->materials[n];
 
 			// only shaders
 			
-		if (!texture->shader.on) {
-			texture++;
-			material++;
-			continue;
-		}
+		if (!texture->shader.on) continue;
 
 			// don't draw if no trigs
 
 		trig_count=material->trig_count;
-		if (trig_count==0) {
-			texture++;
-			material++;
-			continue;
-		}
+		if (trig_count==0) continue;
 
 			// create and start drawing arrays
 
-		model_draw_start_mesh_material_array(mdl,mesh,material);
+		if (!model_draw_start_mesh_material_array(mdl,mesh,material)) continue;
 		
 			// run the shader
 			
@@ -522,15 +511,12 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			// stop drawing arrays
 
 		model_draw_stop_mesh_material_array();
-
-		texture++;
-		material++;
 	}
 }
 
 void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int						i,frame,trig_count;
+	int						n,frame,trig_count;
 	float					alpha;
 	model_mesh_type			*mesh;
     texture_type			*texture;
@@ -540,18 +526,14 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 	
 		// run through textures
 
-	texture=mdl->textures;
-	material=mesh->materials;
-
-	for (i=0;i!=max_model_texture;i++) {
+	for (n=0;n!=max_model_texture;n++) {
+	
+		texture=&mdl->textures[n];
+		material=&mesh->materials[n];
 	
 			// no shaders
 			
-		if (texture->shader.on) {
-			texture++;
-			material++;
-			continue;
-		}
+		if (texture->shader.on) continue;
 	
 			// any transparent trigs?
 			
@@ -560,24 +542,16 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 		alpha=draw->alpha;
 		if (draw->mesh_fades[mesh_idx].on) alpha=draw->mesh_fades[mesh_idx].alpha;
 			
-		if (!((texture->bitmaps[frame].alpha_mode==alpha_mode_transparent) || (alpha!=1.0))) {
-			texture++;
-			material++;
-			continue;
-		}
+		if (!((texture->bitmaps[frame].alpha_mode==alpha_mode_transparent) || (alpha!=1.0))) continue;
 
 			// don't draw if no trigs
 
 		trig_count=material->trig_count;
-		if (trig_count==0) {
-			texture++;
-			material++;
-			continue;
-		}
+		if (trig_count==0) continue;
 
 			// create and start drawing arrays
 
-		model_draw_start_mesh_material_array(mdl,mesh,material);
+		if (!model_draw_start_mesh_material_array(mdl,mesh,material)) continue;
 		
 			// transparent textures
 			
@@ -606,7 +580,6 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			// specular mapped textures
 
 		if ((setup.specular_mapping) && (texture->specularmaps[frame].gl_id!=-1)) {
-
 			
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_DST_COLOR,GL_ONE);
@@ -651,9 +624,6 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			// stop drawing arrays
 
 		model_draw_stop_mesh_material_array();
-		
-		texture++;
-		material++;
 	}
 }
 
@@ -842,8 +812,10 @@ void model_render_shadow(model_draw *draw,float draw_sz,int shadow_idx)
 		
 			// draw trigs
 		
-		model_draw_start_mesh_shadow_array(mdl,mesh);
+		if (!model_draw_start_mesh_shadow_array(mdl,mesh)) continue;
+		
 		glDrawArrays(GL_TRIANGLES,0,(mesh->ntrig*3));
+		
 		model_draw_stop_mesh_shadow_array();
 	}
 

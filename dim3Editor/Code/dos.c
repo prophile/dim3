@@ -202,8 +202,8 @@ bool file_open_map(void)
 	
 	map_setup(&file_path_setup,setup.anisotropic_mode,setup.texture_quality_mode,setup.mipmap_mode,setup.mipmap_card_generated,setup.texture_compression);
 	
-	ok=map_open(&map,file_name,TRUE,FALSE,FALSE);
- 
+	ok=map_open(&map,file_name,FALSE,FALSE);
+
     InitCursor();
 	
 	if (!ok) {

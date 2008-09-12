@@ -316,7 +316,6 @@ bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name)
 	return(TRUE);
 }
 
-
 /* =======================================================
 
       Get Model Click Size

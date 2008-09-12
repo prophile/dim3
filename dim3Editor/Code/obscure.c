@@ -643,6 +643,10 @@ bool obscure_calculate_map(void)
 {
 	int				n,tick;
 	
+		// if no obscure on, ignore calculation
+		
+	if (map.settings.no_obscure) return(TRUE);
+	
 //	tick=TickCount();
 // supergumba -- testing	
 		// setup mesh boxes

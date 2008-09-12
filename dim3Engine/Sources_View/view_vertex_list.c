@@ -47,7 +47,7 @@ extern void view_unbind_current_vertex_object(void);
       
 ======================================================= */
 
-void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
+bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 {
 	int									n,k,t,sz,ntrig,
 										v_count,v_idx,v_light_start_idx;
@@ -91,7 +91,11 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
 
 	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-
+	if (vertex_ptr==NULL) {
+		view_unbind_current_vertex_object();
+		return(FALSE);
+	}
+	
 		// arrays and offsets
 
 	map.mesh_vertexes.vert.sz=(v_count*3)*sizeof(float);
@@ -270,6 +274,8 @@ void view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
 
 	view_unbind_current_vertex_object();
+	
+	return(TRUE);
 }
 
 /* =======================================================

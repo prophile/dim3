@@ -103,8 +103,11 @@ bool liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
 	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
 
 	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-	if (vertex_ptr==NULL) return(FALSE);
-
+	if (vertex_ptr==NULL) {
+		view_unbind_current_vertex_object();
+		return(FALSE);
+	}
+	
 	vl=vertex_ptr;
 	uv=vertex_ptr+(v_sz*3);
 	cl=vertex_ptr+(v_sz*(3+2));
