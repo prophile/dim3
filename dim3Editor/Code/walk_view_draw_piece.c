@@ -40,7 +40,7 @@ extern map_type			map;
 extern bitmap_type		spot_bitmap,scenery_bitmap,node_bitmap,
 						light_bitmap,sound_bitmap,particle_bitmap;
 
-extern bool obscure_mesh_view_bit_get(map_mesh_type *mesh,int idx);
+extern bool obscure_mesh_view_bit_get(unsigned char *visibility_flag,int idx);
 
 /* =======================================================
 
@@ -213,7 +213,7 @@ void walk_view_draw_meshes_texture(d3pnt *cpt,int clip_y,bool opaque)
 			// obscure testing
 				
 		if (obscure_mesh_idx!=-1) {
-			if (!obscure_mesh_view_bit_get(&map.mesh.meshes[obscure_mesh_idx],n)) {
+			if (!obscure_mesh_view_bit_get(map.mesh.meshes[obscure_mesh_idx].obscure.visibility_flag,n)) {
 				mesh++;
 				continue;
 			}
@@ -308,7 +308,7 @@ void walk_view_draw_meshes_line(d3pnt *cpt,bool opaque)
 			// obscure testing
 				
 		if (obscure_mesh_idx!=-1) {
-			if (!obscure_mesh_view_bit_get(&map.mesh.meshes[obscure_mesh_idx],n)) {
+			if (!obscure_mesh_view_bit_get(map.mesh.meshes[obscure_mesh_idx].obscure.visibility_flag,n)) {
 				mesh++;
 				continue;
 			}
@@ -512,7 +512,7 @@ bool walk_view_draw_pnt_obscure(d3pnt *pnt)
 	mesh_idx=map_find_mesh(&map,pnt);
 	if (mesh_idx==-1) return(FALSE);
 	
-	return(obscure_mesh_view_bit_get(&map.mesh.meshes[obscure_mesh_idx],mesh_idx)==0x0);
+	return(obscure_mesh_view_bit_get(map.mesh.meshes[obscure_mesh_idx].obscure.visibility_flag,mesh_idx)==0x0);
 }
 
 void walk_view_draw_nodes(d3pnt *cpt)

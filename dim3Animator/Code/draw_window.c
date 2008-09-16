@@ -34,6 +34,7 @@ extern bool					fileopen,play_animate,model_bump_on,model_normal_on,model_bone_d
 							model_box_on,drag_sel_on;
 extern Rect					drag_sel_box;
 extern AGLContext			ctx;
+extern WindowRef			model_wind;
 
 extern model_draw_setup		draw_setup;
 
@@ -47,7 +48,17 @@ void draw_model_gl_setup(model_type *model)
 {
 	int				yoff,sz,bsz;
 	float			aspect;
+	Rect			wbox;
 	
+		// model viewport
+		
+	GetWindowPortBounds(model_wind,&wbox);
+	
+	glViewport(wbox.left,texture_palette_height,gl_view_x_sz,gl_view_y_sz);
+	glScissor(wbox.left,texture_palette_height,gl_view_x_sz,gl_view_y_sz);
+
+		// model perspective
+		
 	aspect=(float)gl_view_x_sz/(float)gl_view_y_sz;
 	
 	sz=model->view_box.size.x;
@@ -106,6 +117,10 @@ void draw_model_setup_bones_vertexes(model_type *model,int mesh_idx,model_draw_s
 
 void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 {
+		// setup transformation to fit model in middle of screen
+		
+	draw_model_gl_setup(model);
+
 		// clear the buffer
 		
 	glClearColor(0.9,0.9,0.9,0);
@@ -115,10 +130,6 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 		aglSwapBuffers(ctx);
 		return;
 	}
-
-		// setup transformation to fit model in middle of screen
-		
-	draw_model_gl_setup(model);
 	
 		// draw the center
 		

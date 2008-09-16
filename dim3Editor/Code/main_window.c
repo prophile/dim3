@@ -724,7 +724,7 @@ void main_wind_open(void)
 	aglSetCurrentContext(ctx);
 	aglDestroyPixelFormat(pf);
 
-	glEnable(GL_SMOOTH);
+	glDisable(GL_SMOOTH);
 	glDisable(GL_DITHER);
 	
 	glEnable(GL_BLEND);

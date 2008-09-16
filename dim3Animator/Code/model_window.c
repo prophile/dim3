@@ -276,9 +276,29 @@ bool model_wind_control(ControlRef ctrl)
       
 ======================================================= */
 
-void model_wind_resize(void)
+void model_wind_gl_port_setup(void)
 {
 	long			rect[4];
+	Rect			box;
+
+	GetWindowPortBounds(model_wind,&box);
+	
+ 	rect[0]=box.left;
+	rect[1]=info_palette_height;
+	rect[2]=gl_view_x_sz;
+	rect[3]=gl_view_y_sz+texture_palette_height;
+
+	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
+	aglEnable(ctx,AGL_BUFFER_RECT);
+	
+	glViewport(box.left,info_palette_height,gl_view_x_sz,(gl_view_y_sz+texture_palette_height));
+	
+	glEnable(GL_SCISSOR_TEST);
+	glScissor(box.left,info_palette_height,gl_view_x_sz,(gl_view_y_sz+texture_palette_height));
+}
+
+void model_wind_resize(void)
+{
 	Rect			box;
 	
 		// new model view size
@@ -296,15 +316,7 @@ void model_wind_resize(void)
 	
 		// resize gl view
 		
-	glViewport(0,0,gl_view_x_sz,gl_view_y_sz);
-		
-	rect[0]=0;
-	rect[1]=box.bottom-(tool_button_size+gl_view_y_sz);
-	rect[2]=gl_view_x_sz;
-	rect[3]=gl_view_y_sz;
- 
-	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
-	aglEnable(ctx,AGL_BUFFER_RECT);
+	model_wind_gl_port_setup();
 	
 		// redraw
 
@@ -627,7 +639,6 @@ void model_wind_timer(EventLoopTimerRef inTimer,void *inUserData)
 void model_wind_open(void)
 {
 	int							n;
-	long						rect[4];
 	Rect						wbox,box;
 	GLint						attrib[]={AGL_RGBA,AGL_DOUBLEBUFFER,AGL_DEPTH_SIZE,16,AGL_ALL_RENDERERS,AGL_NONE};
 	AGLPixelFormat				pf;
@@ -728,20 +739,10 @@ void model_wind_open(void)
 	aglSetCurrentContext(ctx);
 	aglDestroyPixelFormat(pf);
 	
-	glViewport(0,0,gl_view_x_sz,gl_view_y_sz);
+	model_wind_gl_port_setup();
 	
-	GetWindowPortBounds(model_wind,&box);
-	
-	rect[0]=0;
-	rect[1]=box.bottom-(tool_button_size+gl_view_y_sz);
-	rect[2]=gl_view_x_sz;
-	rect[3]=gl_view_y_sz;
- 
-	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
-	aglEnable(ctx,AGL_BUFFER_RECT);
-
-	glEnable(GL_SMOOTH);
-	glEnable(GL_DITHER);
+	glDisable(GL_SMOOTH);
+	glDisable(GL_DITHER);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST);

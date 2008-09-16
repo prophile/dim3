@@ -41,6 +41,8 @@ extern file_path_setup_type		file_path_setup;
 void insert_model(char *file_name)
 {
 	int						i,k,t,b_off,v_off,t_off,idx;
+	char					str[8];
+	bool					bone_ok;
 	model_bone_type			*bone,*ins_bone;
 	model_vertex_type		*vertex,*ins_vertex;
 	model_trig_type			*trig,*ins_trig;
@@ -66,6 +68,30 @@ void insert_model(char *file_name)
 		memmove(bone,ins_bone,sizeof(model_bone_type));
 		if (bone->parent_idx!=-1) bone->parent_idx+=b_off;
 		
+			// fix duplicate names
+			
+		while (true) {
+			
+			bone_ok=TRUE;
+			
+			for (k=0;k!=b_off;k++) {
+				if (model.bones[k].tag==bone->tag) {
+					model_tag_to_text(bone->tag,str);
+					if ((str[3]<'0') || (str[3]>'9')) {
+						str[3]='1';
+					}
+					else {
+						str[3]+=1;
+					}
+					bone->tag=text_to_model_tag(str);
+					bone_ok=FALSE;
+					break;
+				}
+			}
+			
+			if (bone_ok) break;
+		}
+		
 		ins_bone++;
 	}
 	
@@ -81,8 +107,6 @@ void insert_model(char *file_name)
 		
 		if (vertex->major_bone_idx!=-1) vertex->major_bone_idx+=b_off;
 		if (vertex->minor_bone_idx!=-1) vertex->minor_bone_idx+=b_off;
-		vertex->major_bone_idx=-1;
-		vertex->minor_bone_idx=-1;
 		
 		vertex++;
 		model.meshes[cur_mesh].nvertex++;

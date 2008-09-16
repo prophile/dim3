@@ -79,28 +79,17 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 242878189;
-			PBXWorkspaceStateSaveDate = 242878189;
+			PBXPerProjectTemplateStateSaveDate = 243229801;
+			PBXWorkspaceStateSaveDate = 243229801;
 		};
 		perUserProjectItems = {
-			2602F1D00E78BA0600EFE7D4 /* PlistBookmark */ = 2602F1D00E78BA0600EFE7D4 /* PlistBookmark */;
-			268B382B0E7A171E00463A37 /* PlistBookmark */ = 268B382B0E7A171E00463A37 /* PlistBookmark */;
+			261C6B2C0E7E19A60014F355 /* PlistBookmark */ = 261C6B2C0E7E19A60014F355 /* PlistBookmark */;
+			268B72A10E7F64A200FAD3A3 /* PlistBookmark */ = 268B72A10E7F64A200FAD3A3 /* PlistBookmark */;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
 		userBuildSettings = {
 		};
-	};
-	2602F1D00E78BA0600EFE7D4 /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5CD87F50557720F0023AD9B /* Info-dim3_Engine.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Engine/Resources/Info-dim3_Engine.plist";
-		rLen = 0;
-		rLoc = 2147483647;
 	};
 	260AFF520D4052E200F6C42F /* dim3 Engine */ = {
 		isa = PBXExecutable;
@@ -136,6 +125,17 @@
 	260AFF620D40531F00F6C42F /* Code sense */ = {
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
+	};
+	261C6B2C0E7E19A60014F355 /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = F5CD87F50557720F0023AD9B /* Info-dim3_Engine.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+		);
+		name = "/Users/ggadwa/dim3Code/dim3Engine/Resources/Info-dim3_Engine.plist";
+		rLen = 0;
+		rLoc = 2147483647;
 	};
 	2644F0760D426C6E00470CB5 /* dim3Engine in dim3 */ = {
 		isa = PBXExecutable;
@@ -238,7 +238,7 @@
 		vrLen = 1373;
 		vrLoc = 290;
 	};
-	268B382B0E7A171E00463A37 /* PlistBookmark */ = {
+	268B72A10E7F64A200FAD3A3 /* PlistBookmark */ = {
 		isa = PlistBookmark;
 		fRef = F5CD87F50557720F0023AD9B /* Info-dim3_Engine.plist */;
 		fallbackIsa = PBXBookmark;
@@ -994,8 +994,8 @@
 	F5DD19A70908101700721649 /* player_input.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 12124}}";
-			sepNavSelRange = "{4327, 0}";
-			sepNavVisRange = "{3747, 1127}";
+			sepNavSelRange = "{4630, 0}";
+			sepNavVisRange = "{4000, 1235}";
 			sepNavWindowFrame = "{{237, 262}, {1041, 747}}";
 		};
 	};

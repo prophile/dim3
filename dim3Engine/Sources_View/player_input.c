@@ -181,7 +181,7 @@ void player_turn_mouse_input(obj_type *obj,float mouse_x)
 
 void player_turn_key_input(obj_type *obj)
 {
-	if ((obj->input_mode!=im_fpp) && (obj->input_mode!=im_fly)) return;
+	if ((obj->input_mode!=im_fpp) && (obj->input_mode!=im_fly) && (obj->input_mode!=im_thrust)) return;
 	
 	if (input_action_get_state(nc_turn_left)) obj->turn.ang_add.y=-obj->turn.key_speed;
 	if (input_action_get_state(nc_turn_right)) obj->turn.ang_add.y=obj->turn.key_speed;

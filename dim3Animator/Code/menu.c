@@ -484,7 +484,10 @@ void insert_mesh_dim3_model(void)
 	
 	InitCursor();
 	
+	reset_vertex_tab();
 	reset_bone_tab(-1);
+	reset_pose_tab(-1,-1);
+	reset_animate_tab(-1,-1);
     draw_model_wind_pose(&model,cur_mesh,cur_pose);
     texture_palette_draw();
     info_palette_draw();

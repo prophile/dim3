@@ -69,15 +69,15 @@ void info_palette_draw(void)
 	x=wbox.left;
 	y=wbox.bottom-4;
 
-	sprintf(txt,"X: %d [%.2f]",model.view_box.size.x,((float)model.view_box.size.x/(float)map_enlarge));
+	sprintf(txt,"X: %d",model.view_box.size.x);
 	MoveTo((x+5),y);
 	DrawText(txt,0,strlen(txt));
 
-	sprintf(txt,"Z: %d [%.2f]",model.view_box.size.z,((float)model.view_box.size.z/(float)map_enlarge));
+	sprintf(txt,"Z: %d",model.view_box.size.z);
 	MoveTo((x+135),y);
 	DrawText(txt,0,strlen(txt));
 
-	sprintf(txt,"Y: %d [%.2f]",model.view_box.size.y,((float)model.view_box.size.y/(float)map_enlarge));
+	sprintf(txt,"Y: %d",model.view_box.size.y);
 	MoveTo((x+265),y);
 	DrawText(txt,0,strlen(txt));
 

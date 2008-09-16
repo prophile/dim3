@@ -65,11 +65,6 @@ static pascal OSStatus scale_event_proc(EventHandlerCallRef handler,EventRef eve
 							dialog_set_float(dialog_scale_wind,kZValue,0,dialog_scale_z);
 							dialog_set_float(dialog_scale_wind,kYValue,0,dialog_scale_y);
 							break;
-						case 2:
-							dialog_set_float(dialog_scale_wind,kXValue,0,(dialog_scale_x/(float)map_enlarge));
-							dialog_set_float(dialog_scale_wind,kZValue,0,(dialog_scale_z/(float)map_enlarge));
-							dialog_set_float(dialog_scale_wind,kYValue,0,(dialog_scale_y/(float)map_enlarge));
-							break;
 					}
 					DrawControls(dialog_scale_wind);
 					return(noErr);
@@ -149,11 +144,6 @@ bool dialog_scale_run(model_type *mdl,float *x,float *z,float *y)
 				*x=dialog_get_float(dialog_scale_wind,kXValue,0)/dialog_scale_x;
 				*z=dialog_get_float(dialog_scale_wind,kZValue,0)/dialog_scale_z;
 				*y=dialog_get_float(dialog_scale_wind,kYValue,0)/dialog_scale_y;
-				break;
-			case 2:
-				*x=(dialog_get_float(dialog_scale_wind,kXValue,0)*(float)map_enlarge)/dialog_scale_x;
-				*z=(dialog_get_float(dialog_scale_wind,kZValue,0)*(float)map_enlarge)/dialog_scale_z;
-				*y=(dialog_get_float(dialog_scale_wind,kYValue,0)*(float)map_enlarge)/dialog_scale_y;
 				break;
 		}
 	}

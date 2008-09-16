@@ -30,11 +30,12 @@ and can be sold or given away.
 #include "dialog.h"
 #include "model.h"
 
-extern int						cur_mesh,cur_pose,gl_view_x_sz,gl_view_y_sz;
-extern bool						fileopen;
-extern model_type				model;
+extern int					cur_mesh,cur_pose,gl_view_x_sz,gl_view_y_sz;
+extern bool					fileopen;
+extern model_type			model;
 
-extern WindowRef				model_wind;
+extern AGLContext			ctx;
+extern WindowRef			model_wind;
 
 /* =======================================================
 
@@ -176,64 +177,108 @@ void texture_palette_bitmap_draw(bitmap_type *bitmap,CGrafPtr dport,Rect *dbox)
 
 void texture_palette_draw(void)
 {
-	int						i,row_texture_count;
-	Rect					wbox,box;
-    RGBColor				ltgraycolor={0xCCCC,0xCCCC,0xCCCC},blackcolor={0x0,0x0,0x0};
+	int						i,x,y,row_texture_count;
+	Rect					wbox;
 	texture_type			*texture;
-    GrafPtr					saveport;
 	
  	if (!fileopen) return;
 
-		// drawing area
+		// texture palette viewport
 		
-	GetPort(&saveport);
-	SetPort(GetWindowPort(model_wind));
-	
 	GetWindowPortBounds(model_wind,&wbox);
 	
-	wbox.top+=tool_button_size+gl_view_y_sz;
-	wbox.bottom=wbox.top+texture_palette_height;
+	glViewport(wbox.left,0,gl_view_x_sz,texture_palette_height);
+	glScissor(wbox.left,0,gl_view_x_sz,texture_palette_height);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho((GLdouble)wbox.left,(GLdouble)(wbox.left+gl_view_x_sz),(GLdouble)(wbox.bottom-info_palette_height),(GLdouble)(wbox.bottom-(info_palette_height+texture_palette_height)),-1.0,1.0);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	glClearColor(1.0f,1.0f,1.0f,0.0f);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	
 		// draw textures
 
 	row_texture_count=max_model_texture/texture_palette_row_count;
 	
-	box=wbox;
-	box.right=box.left+texture_palette_texture_size;
-	box.bottom=box.top+texture_palette_texture_size;
+	glDisable(GL_DEPTH_TEST);
 	
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+		
+	glEnable(GL_TEXTURE_2D);
+
+	x=wbox.left;
+	y=wbox.bottom-(info_palette_height+texture_palette_height);
+
 	texture=model.textures;
 
 	for (i=0;i!=max_model_texture;i++) {
-			
-			// the texture
+		
+			// the textures
 			
 		if (texture->bitmaps[0].data!=NULL) {
-			texture_palette_bitmap_draw(&texture->bitmaps[0],GetWindowPort(model_wind),&box);
-        }
+			glColor4f(1.0f,1.0f,1.0f,1.0f);
+			glBindTexture(GL_TEXTURE_2D,texture->bitmaps[0].gl_id);
+
+			glBegin(GL_QUADS);
+			glTexCoord2f(0,0);
+			glVertex2i(x,y);
+			glTexCoord2f(1,0);
+			glVertex2i((x+texture_palette_texture_size),y);
+			glTexCoord2f(1,1);
+			glVertex2i((x+texture_palette_texture_size),(y+texture_palette_texture_size));
+			glTexCoord2f(0,1);
+			glVertex2i(x,(y+texture_palette_texture_size));
+			glEnd();
+		}
 		else {
-			RGBForeColor(&ltgraycolor);
-			PaintRect(&box);
+			glDisable(GL_TEXTURE_2D);
+			
+			glColor4f(0.8f,0.8f,0.8f,1.0f);
+			
+			glBegin(GL_QUADS);
+			glVertex2i(x,y);
+			glVertex2i((x+texture_palette_texture_size),y);
+			glVertex2i((x+texture_palette_texture_size),(y+texture_palette_texture_size));
+			glVertex2i(x,(y+texture_palette_texture_size));
+			glEnd();
+			
+			glEnable(GL_TEXTURE_2D);
 		}
 
 			// the frame
 			
-        RGBForeColor(&blackcolor);
-		FrameRect(&box);
+        glColor4f(1.0f,1.0f,1.0f,1.0f);
 		
+		glBegin(GL_LINE_LOOP);
+		glVertex2i(x,(y+1));
+		glVertex2i((x+texture_palette_texture_size),(y+1));
+		glVertex2i((x+texture_palette_texture_size),((y+1)+texture_palette_texture_size));
+		glVertex2i(x,((y+1)+texture_palette_texture_size));
+		glEnd();
+		
+			// next position
+			
 		if (((i+1)%row_texture_count)==0) {
-			OffsetRect(&box,0,texture_palette_texture_size);
-			box.left=0;
-			box.right=texture_palette_texture_size;
+			y+=texture_palette_texture_size;
+			x=wbox.left;
 		}
 		else {
-			OffsetRect(&box,texture_palette_texture_size,0);
+			x+=texture_palette_texture_size;
 		}
-		
+	
 		texture++;
 	}
-
-	SetPort(saveport);
+	
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_ALPHA_TEST);
+	glEnable(GL_DEPTH_TEST);
+	
+	aglSwapBuffers(ctx);
 }
 
 /* =======================================================

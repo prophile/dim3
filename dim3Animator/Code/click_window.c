@@ -74,7 +74,7 @@ void model_sel_vertex(int lx,int ty,int rx,int by,bool chg_sel,double *mod_matri
 		sz=(int)*pv++;
 		gluProject(sx,sy,sz,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
 		x=(int)dx;
-		y=(int)(gl_view_y_sz-dy);
+		y=(int)((gl_view_y_sz+texture_palette_height)-dy);
 		
 		if ((x>=lx) && (x<=rx) && (y>=ty) && (y<=by)) {
 			if (!model_check_hide_mask(&model,cur_mesh,i)) model_set_sel_mask(&model,cur_mesh,i,chg_sel);
@@ -277,7 +277,7 @@ bool draw_bone_model_wind_click_box(Point start_pt,float x,float y,float z)
 	
 	gluProject(x,y,z,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
 	ix=(int)dx;
-	iy=(int)(gl_view_y_sz-dy);
+	iy=(int)((gl_view_y_sz+texture_palette_height)-dy);
 
 		// check box
 		

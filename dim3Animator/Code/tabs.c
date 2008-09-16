@@ -203,7 +203,7 @@ void tabs_start(void)
 
 	tabbox.left+=(gl_view_x_sz+10);
 	tabbox.right-=4;
-	tabbox.top+=2;
+	tabbox.top+=6;
 	tabbox.bottom-=(info_palette_height+8);
     
         // tabs
@@ -214,7 +214,7 @@ void tabs_start(void)
 		tabarray[n].enabled=TRUE;
 	}
 	
-	CreateTabsControl(model_wind,&tabbox,kControlTabSizeMini,kControlTabDirectionNorth,6,tabarray,&tab_list);
+	CreateTabsControl(model_wind,&tabbox,kControlTabSizeSmall,kControlTabDirectionNorth,6,tabarray,&tab_list);
 	Draw1Control(tab_list);
 	
 	for (n=0;n!=6;n++) {
@@ -287,7 +287,7 @@ void tabs_resize(void)
 
 	tabbox.left+=(gl_view_x_sz+10);
 	tabbox.right-=4;
-	tabbox.top+=2;
+	tabbox.top+=6;
 	tabbox.bottom-=(info_palette_height+8);
     
         // tabs

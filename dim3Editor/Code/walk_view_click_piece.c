@@ -41,6 +41,8 @@ extern map_type				map;
 int							walk_view_vport[4];
 double						walk_view_mod_matrix[16],walk_view_proj_matrix[16];
 
+extern bool obscure_mesh_view_bit_get(unsigned char *visibility_flag,int idx);
+
 /* =======================================================
 
       Click Utilities
@@ -418,7 +420,7 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 			// obscure testing
 				
 		if (obscure_mesh_idx!=-1) {
-			if (!obscure_mesh_view_bit_get(&map.mesh.meshes[obscure_mesh_idx],n)) {
+			if (!obscure_mesh_view_bit_get(map.mesh.meshes[obscure_mesh_idx].obscure.visibility_flag,n)) {
 				mesh++;
 				continue;
 			}

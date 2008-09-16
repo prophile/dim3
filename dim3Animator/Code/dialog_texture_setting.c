@@ -60,6 +60,9 @@ and can be sold or given away.
 extern model_type				model;
 extern file_path_setup_type		file_path_setup;
 
+extern 	AGLContext				ctx;
+extern WindowRef				model_wind;
+
 int								dialog_texture_wind_current_txt,dialog_texture_wind_current_frame;
 texture_type					frame_texture;
 WindowRef						dialog_texture_wind;
