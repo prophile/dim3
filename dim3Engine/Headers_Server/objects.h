@@ -36,6 +36,7 @@ extern int object_script_spawn(char *name,char *type,char *script,char *params,d
 extern bool object_script_remove(int uid);
 
 extern void object_set_radius(obj_type *obj);
+extern void object_set_spawn_mesh(obj_type *obj);
 extern void object_set_position(obj_type *obj,int x,int z,int y,float ang_y,float ymove);
 extern void object_stop(obj_type *obj);
 

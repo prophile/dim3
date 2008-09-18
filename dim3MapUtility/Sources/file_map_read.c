@@ -31,7 +31,8 @@ and can be sold or given away.
 
 extern maputility_settings_type		maputility_settings;
 
-char					media_type_str[][32]={"none","story","title","movie"},
+char					obscure_type_str[][32]={"none","rough","complete"},
+						media_type_str[][32]={"none","story","title","movie"},
 						sky_type_str[][32]={"globe","dome_panoramic","dome_hemisphere","cylinder","cube"},
 						gl_fog_type_str[][32]={"linear","exp","exp2"},
 						liquid_tide_direction_str[][32]={"horizontal","vertical",""},
@@ -72,7 +73,7 @@ void decode_map_settings_xml(map_type *map,int map_head)
 		map->settings.resistance=xml_get_attribute_float_default(tag,"resistance",1);
 		map->settings.txt_scale_x=xml_get_attribute_float_default(tag,"txt_scale_x",0.04f);
 		map->settings.txt_scale_y=xml_get_attribute_float_default(tag,"txt_scale_y",0.04f);
-		map->settings.no_obscure=xml_get_attribute_boolean(tag,"no_obscure");
+		map->settings.obscure_type=xml_get_attribute_list(tag,"obscure_type",(char*)obscure_type_str);
 		map->settings.editor_link_always_start=xml_get_attribute_boolean(tag,"editor_link_always_start");
         xml_get_attribute_text(tag,"network_game_list",map->settings.network_game_list,256);
 	}

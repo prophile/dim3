@@ -371,7 +371,7 @@ void effect_image_animate_get_uv(int tick,image_animation_type *animate,float *g
 
 void effect_draw(int tick)
 {
-	int						i,k,t,mesh_idx,dist,
+	int						i,k,t,dist,
 							drawcnt,sz,count;
 	effect_type				*effect;
 	view_sort_effect_type	items[max_effect];
@@ -385,9 +385,8 @@ void effect_draw(int tick)
 
 			// effect inside a mesh that's hidden?
 
-		mesh_idx=map_find_mesh(&map,&effect->pnt);
-		if (mesh_idx!=-1) {
-			if (!view_mesh_in_draw_list(mesh_idx)) continue;
+		if (effect->mesh_idx!=-1) {
+			if (!view_mesh_in_draw_list(effect->mesh_idx)) continue;
 		}
 
 			// effect in view

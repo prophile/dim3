@@ -561,10 +561,10 @@ void ray_trace_map(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_
 
 			// rough bounds check
 
-		if ((spt->y<mesh->box.min.y) && (ept->y<mesh->box.min.y)) continue;
-		if ((spt->y>mesh->box.max.y) && (ept->y>mesh->box.max.y)) continue;
 		if ((spt->x<mesh->box.min.x) && (ept->x<mesh->box.min.x)) continue;
 		if ((spt->x>mesh->box.max.x) && (ept->x>mesh->box.max.x)) continue;
+		if ((spt->y<mesh->box.min.y) && (ept->y<mesh->box.min.y)) continue;
+		if ((spt->y>mesh->box.max.y) && (ept->y>mesh->box.max.y)) continue;
 		if ((spt->z<mesh->box.min.z) && (ept->z<mesh->box.min.z)) continue;
 		if ((spt->z>mesh->box.max.z) && (ept->z>mesh->box.max.z)) continue;
 
@@ -587,10 +587,10 @@ void ray_trace_map(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_
 			
 				// rough bounds check
 
-			if ((spt->y<poly->box.min.y) && (ept->y<poly->box.min.y)) continue;
-			if ((spt->y>poly->box.max.y) && (ept->y>poly->box.max.y)) continue;
 			if ((spt->x<poly->box.min.x) && (ept->x<poly->box.min.x)) continue;
 			if ((spt->x>poly->box.max.x) && (ept->x>poly->box.max.x)) continue;
+			if ((spt->y<poly->box.min.y) && (ept->y<poly->box.min.y)) continue;
+			if ((spt->y>poly->box.max.y) && (ept->y>poly->box.max.y)) continue;
 			if ((spt->z<poly->box.min.z) && (ept->z<poly->box.min.z)) continue;
 			if ((spt->z>poly->box.max.z) && (ept->z>poly->box.max.z)) continue;
 

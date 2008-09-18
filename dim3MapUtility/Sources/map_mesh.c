@@ -651,6 +651,8 @@ void map_mesh_calculate_uv_center(map_type *map,int mesh_idx,float *gx,float *gy
       
 ======================================================= */
 
+// supergumba -- subtitute and test
+/*
 int map_find_mesh(map_type *map,d3pnt *pnt)
 {
 	int				n,d,dist,mesh_idx;
@@ -720,6 +722,132 @@ int map_calculate_mesh_distance(map_mesh_type *mesh,d3pnt *pnt)
 	if (d2<d) d=d2;
 	
 	return(d);
+}
+*/
+
+int map_find_mesh(map_type *map,d3pnt *pnt)
+{
+	int				n,mesh_idx;
+	double			d,dx,dy,dz,dist;
+	map_mesh_type	*mesh;
+
+	mesh_idx=-1;
+
+		// look for meshes we are inside of
+
+	dist=0.0;
+
+	for (n=0;n!=map->mesh.nmesh;n++) {
+
+			// are we within this mesh?
+
+		mesh=&map->mesh.meshes[n];
+		if ((pnt->x<mesh->box.min.x) || (pnt->x>mesh->box.max.x) || (pnt->y<mesh->box.min.y) || (pnt->y>mesh->box.max.y) || (pnt->z<mesh->box.min.z) || (pnt->z>mesh->box.max.z)) continue;
+
+			// might be within multiple meshes, check distances to find best mesh
+			// don't need to do the sqrt since we are only checking against other
+			// distances
+
+		dx=(double)(mesh->box.mid.x-pnt->x);
+		dy=(double)(mesh->box.mid.y-pnt->y);
+		dz=(double)(mesh->box.mid.z-pnt->z);
+		d=(dx*dx)+(dy*dy)+(dz*dz);
+			
+		if ((mesh_idx==-1) || (d<dist)) {
+			dist=d;
+			mesh_idx=n;
+		}
+	}
+
+	if (mesh_idx!=-1) return(mesh_idx);
+
+		// if inside no meshes, then closest mesh
+
+	mesh=map->mesh.meshes;
+	dist=0.0;
+
+	for (n=0;n!=map->mesh.nmesh;n++) {
+
+		dx=(double)(mesh->box.mid.x-pnt->x);
+		dy=(double)(mesh->box.mid.y-pnt->y);
+		dz=(double)(mesh->box.mid.z-pnt->z);
+		d=(dx*dx)+(dy*dy)+(dz*dz);
+
+		if ((n==0) || (d<dist)) {
+			dist=d;
+			mesh_idx=n;
+		}
+
+		mesh++;
+	}
+
+	if (mesh_idx==-1) return(0);
+
+	return(mesh_idx);
+}
+
+int map_calculate_mesh_distance(map_mesh_type *mesh,d3pnt *pnt)
+{
+	double			d,d2,dx,dy,dz;
+	
+		// check middle
+
+	dx=(double)(mesh->box.mid.x-pnt->x);
+	dy=(double)(mesh->box.mid.y-pnt->y);
+	dz=(double)(mesh->box.mid.z-pnt->z);
+	d=(dx*dx)+(dy*dy)+(dz*dz);
+
+		// and the 8 corners
+
+	dx=(double)(mesh->box.min.x-pnt->x);
+	dy=(double)(mesh->box.min.y-pnt->y);
+	dz=(double)(mesh->box.min.z-pnt->z);
+	d2=(dx*dx)+(dy*dy)+(dz*dz);
+	if (d2<d) d=d2;
+
+	dx=(double)(mesh->box.max.x-pnt->x);
+	dy=(double)(mesh->box.min.y-pnt->y);
+	dz=(double)(mesh->box.min.z-pnt->z);
+	d2=(dx*dx)+(dy*dy)+(dz*dz);
+	if (d2<d) d=d2;
+
+	dx=(double)(mesh->box.max.x-pnt->x);
+	dy=(double)(mesh->box.min.y-pnt->y);
+	dz=(double)(mesh->box.max.z-pnt->z);
+	d2=(dx*dx)+(dy*dy)+(dz*dz);
+	if (d2<d) d=d2;
+
+	dx=(double)(mesh->box.min.x-pnt->x);
+	dy=(double)(mesh->box.min.y-pnt->y);
+	dz=(double)(mesh->box.max.z-pnt->z);
+	d2=(dx*dx)+(dy*dy)+(dz*dz);
+	if (d2<d) d=d2;
+
+	dx=(double)(mesh->box.min.x-pnt->x);
+	dy=(double)(mesh->box.max.y-pnt->y);
+	dz=(double)(mesh->box.min.z-pnt->z);
+	d2=(dx*dx)+(dy*dy)+(dz*dz);
+	if (d2<d) d=d2;
+
+	dx=(double)(mesh->box.max.x-pnt->x);
+	dy=(double)(mesh->box.max.y-pnt->y);
+	dz=(double)(mesh->box.min.z-pnt->z);
+	d2=(dx*dx)+(dy*dy)+(dz*dz);
+	if (d2<d) d=d2;
+
+	dx=(double)(mesh->box.max.x-pnt->x);
+	dy=(double)(mesh->box.max.y-pnt->y);
+	dz=(double)(mesh->box.max.z-pnt->z);
+	d2=(dx*dx)+(dy*dy)+(dz*dz);
+	if (d2<d) d=d2;
+
+	dx=(double)(mesh->box.min.x-pnt->x);
+	dy=(double)(mesh->box.max.y-pnt->y);
+	dz=(double)(mesh->box.max.z-pnt->z);
+	d2=(dx*dx)+(dy*dy)+(dz*dz);
+	if (d2<d) d=d2;
+	
+	return((int)sqrt(d));
 }
 
 

@@ -31,6 +31,7 @@ and can be sold or given away.
 
 extern float map_get_texture_reduce_coord(float f);
 extern float map_get_texture_round_coord(float f);
+extern void map_get_texture_uv_get_scale(map_type *map,int txt_idx,float *txt_scale_x,float *txt_scale_y);
 
 /* =======================================================
 

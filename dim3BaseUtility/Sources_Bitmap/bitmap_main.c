@@ -67,7 +67,8 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int texture
 	
 		// read bitmap
 	
-	if (!bitmap_png_read(bitmap,path)) return(FALSE);
+	bitmap->data=png_utility_read(path,&bitmap->wid,&bitmap->high);
+	if (bitmap->data==NULL) return(FALSE);
 	
 		// find if bitmap has transparencies
 		
@@ -155,7 +156,7 @@ bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col,int anisotropic_mode
 
 bool bitmap_save(bitmap_type *bitmap,char *path)
 {
-	return(bitmap_png_write(bitmap,path));
+	return(png_utility_write(bitmap->data,bitmap->wid,bitmap->high,path));
 }
 
 /* =======================================================
@@ -179,14 +180,19 @@ void bitmap_close(bitmap_type *bitmap)
       
 ======================================================= */
 
+unsigned char* bitmap_load_png_data(char *path,int *p_wid,int *p_high)
+{
+	return(png_utility_read(path,p_wid,p_high));
+}
+
 bool bitmap_check(char *path,char *err_str)
 {
-	return(bitmap_png_check(path,err_str));
+	return(png_utility_check(path,err_str));
 }
 
 bool bitmap_copy(char *srce_path,char *dest_path)
 {
-	return(bitmap_png_copy(srce_path,dest_path));
+	return(png_utility_copy(srce_path,dest_path));
 }
 
 

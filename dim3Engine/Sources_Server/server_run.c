@@ -213,9 +213,11 @@ void run_objects_slice(int tick)
 
 		if (!obj->scenery.on) {
 		
-				// remember current mesh
+				// remember current mesh if not suspended
 				
-			old_mesh_idx=map_find_mesh(&map,&obj->pnt);
+			if (!obj->suspend) {
+				old_mesh_idx=map_find_mesh(&map,&obj->pnt);
+			}
 
 				// run object
 
@@ -226,10 +228,12 @@ void run_objects_slice(int tick)
 				run_object_normal(obj,tick);
 			}
 
-				// trigger any mesh changes
+				// trigger any mesh changes if not suspended
 			
-			mesh_idx=map_find_mesh(&map,&obj->pnt);
-			if (old_mesh_idx!=mesh_idx) mesh_triggers(obj,old_mesh_idx,mesh_idx);
+			if (!obj->suspend) {
+				mesh_idx=map_find_mesh(&map,&obj->pnt);
+				if (old_mesh_idx!=mesh_idx) mesh_triggers(obj,old_mesh_idx,mesh_idx);
+			}
 		}
 		
 		obj++;

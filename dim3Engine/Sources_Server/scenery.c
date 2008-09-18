@@ -87,6 +87,10 @@ void scenery_create(void)
 		obj->draw.face_forward=map_scenery->face_forward;
 		obj->draw.shadow.on=map_scenery->shadow;
 		obj->draw.shadow.always_in_air=map_scenery->shadow_cast_down;
+
+			// needs spawn mesh
+
+		object_set_spawn_mesh(obj);
 		
 			// load the model
 			

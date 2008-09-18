@@ -79,10 +79,10 @@ typedef struct	{
 // References
 //
 
-bool bitmap_png_read(bitmap_type *bitmap,char *path);
-bool bitmap_png_write(bitmap_type *bitmap,char *path);
-bool bitmap_png_check(char *path,char *err_str);
-bool bitmap_png_copy(char *srce_path,char *dest_path);
+unsigned char* png_utility_read(char *path,int *p_wid,int *p_high);
+bool png_utility_write(unsigned char *data,int wid,int high,char *path);
+bool png_utility_check(char *path,char *err_str);
+bool png_utility_copy(char *srce_path,char *dest_path);
 bool bitmap_texture_open(bitmap_type *bitmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression);
 void bitmap_texture_close(bitmap_type *bitmap);
 void bitmap_reduce(bitmap_type *bitmap,int max_pixel_sz);

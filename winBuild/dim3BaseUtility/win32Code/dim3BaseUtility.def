@@ -187,14 +187,15 @@ EXPORTS
 
 	bitmap_setup_render_glowmap					@390
 
-	bitmap_check								@400
-	bitmap_copy									@401
+	bitmap_load_png_data						@400
+	bitmap_check								@401
+	bitmap_copy									@402
 
-	bitmap_movie_start							@402
-	bitmap_movie_end							@403
-	bitmap_movie_get_texture_id					@404
-	bitmap_movie_playing						@405
-	bitmap_movie_texture_refresh				@406
+	bitmap_movie_start							@403
+	bitmap_movie_end							@404
+	bitmap_movie_get_texture_id					@405
+	bitmap_movie_playing						@406
+	bitmap_movie_texture_refresh				@407
 
 	shader_map_add								@410
 	shader_model_add							@411

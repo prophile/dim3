@@ -730,7 +730,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int					uid,bind,team_idx,spawn_idx,
+						int					uid,bind,team_idx,spawn_idx,spawn_mesh_idx,
 											count,input_mode,air_mode,liquid_mode,
 											stand_obj_uid,damage_obj_uid,item_count,
 											last_move_animation_event,last_turn_animation_event;
@@ -871,7 +871,7 @@ typedef union		{
 					} effect_data;
 	
 typedef struct		{
-						int						effecttype,size,
+						int						effecttype,mesh_idx,size,
 												start_tick,life_tick;
 						d3pnt					pnt;
 						effect_data				data;

@@ -523,6 +523,7 @@ extern bool bitmap_create_normal_from_bitmap(bitmap_type *bitmap,bitmap_type *sr
 
 extern bool bitmap_setup_render_glowmap(bitmap_type *glowmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression);
 
+extern unsigned char* bitmap_load_png_data(char *path,int *p_wid,int *p_high);
 extern bool bitmap_check(char *path,char *err_str);
 extern bool bitmap_copy(char *srce_path,char *dest_path);
 

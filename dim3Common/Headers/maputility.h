@@ -71,6 +71,14 @@ extern char light_type_str[][32];
 #define max_sort_poly										256				// maximum number of transparent polys in a single scene
 
 //
+// obscure types
+//
+
+#define obscure_type_none									0
+#define obscure_type_rough									1
+#define obscure_type_complete								2
+
+//
 // strings
 //
 
@@ -467,9 +475,10 @@ typedef struct		{
 					} map_info_type;
 					
 typedef struct		{
+						int									obscure_type;
 						float								gravity,gravity_max_power,gravity_max_speed,
 															resistance,txt_scale_x,txt_scale_y;
-						bool								no_obscure,editor_link_always_start;
+						bool								editor_link_always_start;
 						char								network_game_list[256];
 					} map_settings_type;
 					

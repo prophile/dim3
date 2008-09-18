@@ -71,7 +71,7 @@ bool map_new(map_type *map,char *name)
 	map->settings.resistance=1;
 	map->settings.txt_scale_x=0.04f;
 	map->settings.txt_scale_y=0.04f;
-	map->settings.no_obscure=FALSE;
+	map->settings.obscure_type=obscure_type_complete;
 	map->settings.editor_link_always_start=FALSE;
 	map->settings.network_game_list[0]=0x0;
 	

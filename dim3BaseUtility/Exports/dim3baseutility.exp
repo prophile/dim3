@@ -184,6 +184,7 @@ _bitmap_create_normal_from_bitmap
 
 _bitmap_setup_render_glowmap
 
+_bitmap_load_png_data
 _bitmap_check
 _bitmap_copy
 

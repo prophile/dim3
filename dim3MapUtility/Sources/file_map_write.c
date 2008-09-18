@@ -29,7 +29,8 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-extern char					media_type_str[][32],
+extern char					obscure_type_str[][32],
+							media_type_str[][32],
 							sky_type_str[][32],
 							gl_fog_type_str[][32],
 							segment_type_str[][32],
@@ -51,8 +52,7 @@ extern maputility_settings_type		maputility_settings;
 
 void write_map_fix_problems(map_type *map)
 {
-	int					n,k,t,i;
-	bool				vertex_hit;
+	int					n,k;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	map_liquid_type		*liq;
@@ -90,48 +90,14 @@ void write_map_fix_problems(map_type *map)
 	}
 	
 		// remove any unused vertexes
-/* supergumba -- try later	
+
 	mesh=map->mesh.meshes;
 	
 	for (n=0;n!=map->mesh.nmesh;n++) {
-	
-		for (k=0;k!=mesh->nvertex;k++) {
-		
-				// in a polygon?
-				
-			vertex_hit=FALSE;
-			poly=mesh->polys;
-			
-			for (t=0;t!=mesh->npoly;t++) {
-				for (i=0;i!=poly->ptsz;i++) {
-					if (poly->v[i]==k) {
-						vertex_hit=TRUE;
-						break;
-					}
-				}
-				poly++;
-			}
-			
-			if (!vertex_hit) fprintf(stdout,"unused vertex %d.%d\n",n,k);
-			
-				// is it a duplicate?
-				
-			vertex_hit=FALSE;
-			for (t=0;t!=mesh->nvertex;t++) {
-				if (t!=k) {
-					if ((mesh->vertexes[t].x==mesh->vertexes[k].x) && (mesh->vertexes[t].y==mesh->vertexes[k].y) && (mesh->vertexes[t].z==mesh->vertexes[k].z)) {
-						vertex_hit=TRUE;
-						break;
-					}
-				}
-			}
-			if (vertex_hit) fprintf(stdout,"duplicate vertex %d.%d\n",n,k);
-	
-		}
-		
+		map_mesh_delete_unused_vertexes(map,n);
 		mesh++;
 	}
-*/	
+
 		// fix any liquids that got their coordinates
 		// switched or odd tide settings
 		
@@ -187,7 +153,7 @@ void write_map_settings_xml(map_type *map)
     xml_add_attribute_float("resistance",map->settings.resistance);
 	xml_add_attribute_float("txt_scale_x",map->settings.txt_scale_x);
 	xml_add_attribute_float("txt_scale_y",map->settings.txt_scale_y);
-	xml_add_attribute_boolean("no_obscure",map->settings.no_obscure);
+	xml_add_attribute_list("obscure_type",(char*)obscure_type_str,map->settings.obscure_type);
 	xml_add_attribute_boolean("editor_link_always_start",map->settings.editor_link_always_start);
 	xml_add_attribute_text("network_game_list",map->settings.network_game_list);
     xml_add_tagend(TRUE);

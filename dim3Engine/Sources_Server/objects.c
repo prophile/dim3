@@ -276,6 +276,11 @@ void object_set_radius(obj_type *obj)
       
 ======================================================= */
 
+void object_set_spawn_mesh(obj_type *obj)
+{
+	obj->spawn_mesh_idx=map_find_mesh(&map,&obj->pnt);
+}
+
 void object_set_position(obj_type *obj,int x,int z,int y,float ang_y,float ymove)
 {
 	d3pnt				*pnt;
@@ -305,6 +310,8 @@ void object_set_position(obj_type *obj,int x,int z,int y,float ang_y,float ymove
 	motion->vct.y=ymove;
 	
 	obj->force.gravity=gravity_start_power;
+
+	object_set_spawn_mesh(obj);
 }
 
 void object_stop(obj_type *obj)

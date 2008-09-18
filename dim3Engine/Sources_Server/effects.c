@@ -72,6 +72,8 @@ effect_type* effect_spawn(int effecttype,d3pnt *pt,int life_tick)
 	
 	memmove(&effect->pnt,pt,sizeof(d3pnt));
 
+	effect->mesh_idx=map_find_mesh(&map,pt);
+
 	effect->start_tick=game_time_get();
 	effect->life_tick=life_tick;
 	

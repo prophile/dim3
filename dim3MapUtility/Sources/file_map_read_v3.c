@@ -31,7 +31,8 @@ and can be sold or given away.
 
 extern maputility_settings_type		maputility_settings;
 
-extern char				media_type_str[][32],
+extern char				obscure_type_str[][32],
+						media_type_str[][32],
 						sky_type_str[][32],
 						gl_fog_type_str[][32],
 						liquid_tide_direction_str[][32],

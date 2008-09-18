@@ -35,12 +35,12 @@ and can be sold or given away.
       
 ======================================================= */
 
-bool bitmap_png_read(bitmap_type *bitmap,char *path)
+unsigned char* png_utility_read(char *path,int *p_wid,int *p_high)
 {
 	int						x,y,
 							psz,rowbytes,channels,wid,high;
 	unsigned char			header[8];
-	unsigned char			*data,*rp;
+	unsigned char			*data,*ptr,*rp;
 	FILE					*file;
 	png_structp				png_ptr;
 	png_infop				info_ptr;
@@ -49,30 +49,30 @@ bool bitmap_png_read(bitmap_type *bitmap,char *path)
 		// open file
 		
 	file=fopen(path,"rb");
-	if (file==NULL) return(FALSE);
+	if (file==NULL) return(NULL);
 	
 	fread(header,1,8,file);
-	if (png_sig_cmp(header,0,8)) return(FALSE);
+	if (png_sig_cmp(header,0,8)) return(NULL);
 	
 		// setup read
 		
 	png_ptr=png_create_read_struct(PNG_LIBPNG_VER_STRING,NULL,NULL,NULL);
 	if (png_ptr==NULL) {
 		fclose(file);
-		return(FALSE);
+		return(NULL);
 	}
 	
 	info_ptr=png_create_info_struct(png_ptr);
 	if (info_ptr==NULL) {
 		png_destroy_read_struct(&png_ptr,NULL,NULL);
 		fclose(file);
-		return(FALSE);
+		return(NULL);
 	}
 	
 	if (setjmp(png_jmpbuf(png_ptr))) {
 		png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
 		fclose(file);
-		return(FALSE);
+		return(NULL);
 	}
 	
 	png_init_io(png_ptr,file);
@@ -93,16 +93,18 @@ bool bitmap_png_read(bitmap_type *bitmap,char *path)
 		
 	psz=(wid<<2)*high;
 	
-	bitmap->data=valloc(psz);
-	if (bitmap->data==NULL) {
+	data=valloc(psz);
+	if (data==NULL) {
 		png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
 		fclose(file);
-		return(FALSE);
+		return(NULL);
 	}
 	
-	bitmap->wid=wid;
-	bitmap->high=high;
-	
+	if (p_wid!=NULL) {
+		*p_wid=wid;
+		*p_high=high;
+	}
+
 		// read the file
 		
 	rptrs=(png_bytep*)malloc(sizeof(png_bytep)*high);
@@ -115,15 +117,15 @@ bool bitmap_png_read(bitmap_type *bitmap,char *path)
 	
 		// translate
 		
-	data=bitmap->data;
+	ptr=data;
 	
 	if (channels==4) {
 	
 			// RGBA
 			
 		for (y=0;y!=high;y++) {
-			memmove(data,rptrs[y],rowbytes);
-			data+=rowbytes;
+			memmove(ptr,rptrs[y],rowbytes);
+			ptr+=rowbytes;
 		}
 	}
 	else {
@@ -133,10 +135,10 @@ bool bitmap_png_read(bitmap_type *bitmap,char *path)
 		for (y=0;y!=high;y++) {
 			rp=rptrs[y];
 			for (x=0;x!=wid;x++) {
-				*data++=*rp++;
-				*data++=*rp++;
-				*data++=*rp++;
-				*data++=0xFF;
+				*ptr++=*rp++;
+				*ptr++=*rp++;
+				*ptr++=*rp++;
+				*ptr++=0xFF;
 			}
 		}
 	}
@@ -152,7 +154,7 @@ bool bitmap_png_read(bitmap_type *bitmap,char *path)
 	png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
 	fclose(file);
 	
-	return(TRUE);
+	return(data);
 }
 
 /* =======================================================
@@ -161,10 +163,10 @@ bool bitmap_png_read(bitmap_type *bitmap,char *path)
       
 ======================================================= */
 
-bool bitmap_png_write(bitmap_type *bitmap,char *path)
+bool png_utility_write(unsigned char *data,int wid,int high,char *path)
 {
 	int						y,rowbytes;
-	unsigned char			*data;
+	unsigned char			*ptr;
 	FILE					*file;
 	png_structp				png_ptr;
 	png_infop				info_ptr;
@@ -200,20 +202,20 @@ bool bitmap_png_write(bitmap_type *bitmap,char *path)
 	
 		// write the header
 		
-	png_set_IHDR(png_ptr,info_ptr,bitmap->wid,bitmap->high,8,PNG_COLOR_TYPE_RGB_ALPHA,PNG_INTERLACE_NONE,PNG_COMPRESSION_TYPE_BASE,PNG_FILTER_TYPE_BASE);
+	png_set_IHDR(png_ptr,info_ptr,wid,high,8,PNG_COLOR_TYPE_RGB_ALPHA,PNG_INTERLACE_NONE,PNG_COMPRESSION_TYPE_BASE,PNG_FILTER_TYPE_BASE);
 	png_write_info(png_ptr,info_ptr);
 	
 		// setup row pointers
 		
-	rptrs=(png_bytep*)malloc(sizeof(png_bytep)*bitmap->high);
+	rptrs=(png_bytep*)malloc(sizeof(png_bytep)*high);
 	
-	rowbytes=(bitmap->wid<<2);
-	data=bitmap->data;
+	rowbytes=(wid<<2);
+	ptr=data;
 	
-	for (y=0;y!=bitmap->high;y++) {
+	for (y=0;y!=high;y++) {
 		rptrs[y]=(png_byte*)malloc(rowbytes);
-		memmove(rptrs[y],data,rowbytes);
-		data+=rowbytes;
+		memmove(rptrs[y],ptr,rowbytes);
+		ptr+=rowbytes;
 	}
 		
 		// write the image
@@ -226,7 +228,7 @@ bool bitmap_png_write(bitmap_type *bitmap,char *path)
 	
 		// clean up
 		
-	for (y=0;y!=bitmap->high;y++) {
+	for (y=0;y!=high;y++) {
 		free(rptrs[y]);
 	}
 	
@@ -244,7 +246,7 @@ bool bitmap_png_write(bitmap_type *bitmap,char *path)
       
 ======================================================= */
 
-bool bitmap_png_check(char *path,char *err_str)
+bool png_utility_check(char *path,char *err_str)
 {
 	int						x,y,bit_depth,channels,
 							*v,values[]={2,4,8,16,32,64,128,256,512,1024,2048,4096,-1};
@@ -353,7 +355,7 @@ bool bitmap_png_check(char *path,char *err_str)
       
 ======================================================= */
 
-bool bitmap_png_copy(char *srce_path,char *dest_path)
+bool png_utility_copy(char *srce_path,char *dest_path)
 {
 	int				sz;
 	unsigned char	c[1024];

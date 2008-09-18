@@ -847,6 +847,10 @@ SOURCE=..\..\dim3Engine\Sources_Server\script_obj_object_speed.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_object_thrust.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Engine\Sources_Server\script_obj_pickup.c
 # End Source File
 # Begin Source File
