@@ -51,7 +51,9 @@ void bitmap_new(bitmap_type *bitmap)
 
 bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int texture_quality_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression)
 {
-	char		*c;
+	int					n,psz;
+	char				*c;
+	unsigned char		*data;
 	
 	bitmap_new(bitmap);
 	
@@ -66,6 +68,28 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int texture
 		// read bitmap
 	
 	if (!bitmap_png_read(bitmap,path)) return(FALSE);
+	
+		// find if bitmap has transparencies
+		
+	bitmap->alpha_mode=alpha_mode_none;
+		
+	psz=(bitmap->wid<<2)*bitmap->high;
+	data=bitmap->data+3;
+	
+	for (n=0;n<psz;n+=4) {
+	
+		if (*data!=0xFF) {
+			if (*data==0x0) {
+				bitmap->alpha_mode=alpha_mode_cut_out;			// possibly a cut out
+			}
+			else {
+				bitmap->alpha_mode=alpha_mode_transparent;		// and single non-0xFF and non-0x00 means transparency
+				break;
+			}
+		}
+
+		data+=4;
+	}
 	
 		// quality changes
 		

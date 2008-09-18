@@ -51,7 +51,8 @@ extern maputility_settings_type		maputility_settings;
 
 void write_map_fix_problems(map_type *map)
 {
-	int					n,k;
+	int					n,k,t,i;
+	bool				vertex_hit;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	map_liquid_type		*liq;
@@ -88,6 +89,49 @@ void write_map_fix_problems(map_type *map)
 		n++;
 	}
 	
+		// remove any unused vertexes
+/* supergumba -- try later	
+	mesh=map->mesh.meshes;
+	
+	for (n=0;n!=map->mesh.nmesh;n++) {
+	
+		for (k=0;k!=mesh->nvertex;k++) {
+		
+				// in a polygon?
+				
+			vertex_hit=FALSE;
+			poly=mesh->polys;
+			
+			for (t=0;t!=mesh->npoly;t++) {
+				for (i=0;i!=poly->ptsz;i++) {
+					if (poly->v[i]==k) {
+						vertex_hit=TRUE;
+						break;
+					}
+				}
+				poly++;
+			}
+			
+			if (!vertex_hit) fprintf(stdout,"unused vertex %d.%d\n",n,k);
+			
+				// is it a duplicate?
+				
+			vertex_hit=FALSE;
+			for (t=0;t!=mesh->nvertex;t++) {
+				if (t!=k) {
+					if ((mesh->vertexes[t].x==mesh->vertexes[k].x) && (mesh->vertexes[t].y==mesh->vertexes[k].y) && (mesh->vertexes[t].z==mesh->vertexes[k].z)) {
+						vertex_hit=TRUE;
+						break;
+					}
+				}
+			}
+			if (vertex_hit) fprintf(stdout,"duplicate vertex %d.%d\n",n,k);
+	
+		}
+		
+		mesh++;
+	}
+*/	
 		// fix any liquids that got their coordinates
 		// switched or odd tide settings
 		

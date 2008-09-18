@@ -37,7 +37,7 @@ and can be sold or given away.
 
 bool bitmap_png_read(bitmap_type *bitmap,char *path)
 {
-	int						n,x,y,
+	int						x,y,
 							psz,rowbytes,channels,wid,high;
 	unsigned char			header[8];
 	unsigned char			*data,*rp;
@@ -151,27 +151,6 @@ bool bitmap_png_read(bitmap_type *bitmap,char *path)
 		
 	png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
 	fclose(file);
-	
-		// find if bitmap has transparencies
-		
-	bitmap->alpha_mode=alpha_mode_none;
-		
-	data=bitmap->data+3;
-	
-	for (n=0;n<psz;n+=4) {
-	
-		if (*data!=0xFF) {
-			if (*data==0x0) {
-				bitmap->alpha_mode=alpha_mode_cut_out;			// possibly a cut out
-			}
-			else {
-				bitmap->alpha_mode=alpha_mode_transparent;		// and single non-0xFF and non-0x00 means transparency
-				break;
-			}
-		}
-
-		data+=4;
-	}
 	
 	return(TRUE);
 }

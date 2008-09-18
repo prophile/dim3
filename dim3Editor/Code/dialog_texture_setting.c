@@ -69,6 +69,10 @@ texture_type					frame_texture;
 WindowRef						dialog_texture_wind;
 RGBColor						dialog_texture_color;
 
+
+
+
+
 /* =======================================================
 
       Texture Drawing

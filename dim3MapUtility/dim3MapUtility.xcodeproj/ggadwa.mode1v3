@@ -321,13 +321,14 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>6</integer>
-									<integer>1</integer>
+									<integer>17</integer>
+									<integer>10</integer>
+									<integer>9</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 7}, {284, 692}}</string>
+							<string>{{0, 0}, {284, 692}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -374,10 +375,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>268B382A0E7A170900463A37</string>
+										<string>266D2D6C0E81DE74004EFD11</string>
 										<key>history</key>
 										<array>
-											<string>2602F1D10E78BA0700EFE7D4</string>
+											<string>268B382A0E7A170900463A37</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -435,9 +436,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>268B37430E7A021D00463A37</string>
+				<string>266D2D4A0E81DD15004EFD11</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>268B37440E7A021D00463A37</string>
+				<string>266D2D4B0E81DD15004EFD11</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -556,7 +557,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>242882313.77409399</real>
+	<real>243392116.041906</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -655,7 +656,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEBC0D404E7500F6C42F</string>
-				<string>268B37590E7A041600463A37</string>
+				<string>266D2D4F0E81DD15004EFD11</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -871,8 +872,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>268B374A0E7A032200463A37</string>
-				<string>268B374B0E7A032200463A37</string>
+				<string>266D2D460E81DC15004EFD11</string>
+				<string>266D2D470E81DC15004EFD11</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
