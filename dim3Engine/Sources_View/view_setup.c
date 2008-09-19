@@ -170,27 +170,16 @@ void view_clear_draw_in_view(model_draw *draw)
 	if (mdl!=NULL) model_clear_draw_setup(mdl,&draw->setup);
 }
 
-void view_setup_model_in_view(model_draw *draw,bool in_air,bool is_camera,bool is_suspend,int spawn_mesh_idx)
+void view_setup_model_in_view(model_draw *draw,bool in_air,bool is_camera,int mesh_idx)
 {
-	int					mesh_idx,x,z,y;
+	int					x,z,y;
 	model_type			*mdl;
 
 	if ((draw->uid==-1) || (!draw->on)) return;
 
 		// is the model in a mesh that's being shown?
-		// if the object is suspended, we don't need
-		// to lookup the mesh but take the mesh it
-		// spawned on
 
 	if (!is_camera) {
-
-		if (is_suspend) {
-			mesh_idx=spawn_mesh_idx;
-		}
-		else {
-			mesh_idx=map_find_mesh(&map,&draw->pnt);
-		}
-
 		if (mesh_idx!=-1) {
 			if (!view_mesh_in_draw_list(mesh_idx)) return;
 		}
@@ -264,7 +253,7 @@ void view_setup_objects(int tick)
 	
 			// find model, shadows, and light in view
 		
-		view_setup_model_in_view(draw,is_air,is_camera,obj->suspend,obj->spawn_mesh_idx);
+		view_setup_model_in_view(draw,is_air,is_camera,obj->mesh.cur_mesh_idx);
 	
 			// setup model animations for models in view
 		
@@ -279,7 +268,7 @@ void view_setup_objects(int tick)
 				draw=&weap->draw;
 				view_clear_draw_in_view(draw);
 				model_draw_setup_weapon(tick,obj,weap,FALSE);
-				view_setup_model_in_view(draw,FALSE,FALSE,FALSE,-1);
+				view_setup_model_in_view(draw,FALSE,FALSE,obj->mesh.cur_mesh_idx);
 			}
 		}
 	}
@@ -293,7 +282,7 @@ void view_setup_objects(int tick)
 
 void view_setup_projectiles(int tick)
 {
-	int					i;
+	int					i,mesh_idx;
 	proj_type			*proj;
 
 	proj=server.projs;
@@ -311,7 +300,8 @@ void view_setup_projectiles(int tick)
 		
 			// find model and shadows in view
 			
-		view_setup_model_in_view(&proj->draw,TRUE,FALSE,FALSE,-1);
+		mesh_idx=map_find_mesh(&map,&proj->draw.pnt);
+		view_setup_model_in_view(&proj->draw,TRUE,FALSE,mesh_idx);
 		
 			// setup model animations for models in view
 			

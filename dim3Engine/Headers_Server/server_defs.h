@@ -451,6 +451,10 @@ typedef struct		{
 						float				factor;
 					} obj_bounce;
 
+typedef struct		{
+						int					spawn_mesh_idx,cur_mesh_idx;
+					} obj_mesh;
+
 //
 // jumping, falling
 //
@@ -747,6 +751,7 @@ typedef struct		{
 						obj_lock			lock;
 						obj_turn			turn;
 						obj_thrust			thrust;
+						obj_mesh			mesh;
 						obj_look			look;
 						obj_size			size;
 						obj_grow			grow;

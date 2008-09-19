@@ -204,7 +204,8 @@ void run_object_normal(obj_type *obj,int tick)
 
 void run_objects_slice(int tick)
 {
-	int				n,old_mesh_idx,mesh_idx;
+	int				n,mesh_idx;
+	d3pnt			old_pnt;
 	obj_type		*obj;
 
 	obj=server.objs;
@@ -213,10 +214,13 @@ void run_objects_slice(int tick)
 
 		if (!obj->scenery.on) {
 		
-				// remember current mesh if not suspended
+				// remember current position if not suspended
+				// so we can check for mesh changes
 				
 			if (!obj->suspend) {
-				old_mesh_idx=map_find_mesh(&map,&obj->pnt);
+				old_pnt.x=obj->pnt.x;
+				old_pnt.y=obj->pnt.y;
+				old_pnt.z=obj->pnt.z;
 			}
 
 				// run object
@@ -231,8 +235,13 @@ void run_objects_slice(int tick)
 				// trigger any mesh changes if not suspended
 			
 			if (!obj->suspend) {
-				mesh_idx=map_find_mesh(&map,&obj->pnt);
-				if (old_mesh_idx!=mesh_idx) mesh_triggers(obj,old_mesh_idx,mesh_idx);
+				if ((old_pnt.x!=obj->pnt.x) || (old_pnt.y!=obj->pnt.y) || (old_pnt.z!=obj->pnt.z)) {
+					mesh_idx=map_find_mesh(&map,&obj->pnt);
+					if (obj->mesh.cur_mesh_idx!=mesh_idx) {
+						mesh_triggers(obj,obj->mesh.cur_mesh_idx,mesh_idx);
+						obj->mesh.cur_mesh_idx=mesh_idx;
+					}
+				}
 			}
 		}
 		

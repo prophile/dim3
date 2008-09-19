@@ -651,80 +651,6 @@ void map_mesh_calculate_uv_center(map_type *map,int mesh_idx,float *gx,float *gy
       
 ======================================================= */
 
-// supergumba -- subtitute and test
-/*
-int map_find_mesh(map_type *map,d3pnt *pnt)
-{
-	int				n,d,dist,mesh_idx;
-	map_mesh_type	*mesh;
-
-	mesh_idx=-1;
-
-		// look for meshes we are inside of
-
-	dist=map_max_size;
-
-	for (n=0;n!=map->mesh.nmesh;n++) {
-
-			// are we within this mesh?
-
-		mesh=&map->mesh.meshes[n];
-		if ((pnt->x<mesh->box.min.x) || (pnt->x>mesh->box.max.x) || (pnt->y<mesh->box.min.y) || (pnt->y>mesh->box.max.y) || (pnt->z<mesh->box.min.z) || (pnt->z>mesh->box.max.z)) continue;
-
-			// might be within multiple meshes, check distances to find best mesh
-
-		d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,pnt->x,pnt->y,pnt->z);
-		if ((mesh_idx==-1) || (d<dist)) {
-			dist=d;
-			mesh_idx=n;
-		}
-	}
-
-	if (mesh_idx!=-1) return(mesh_idx);
-
-		// if inside no meshes, then closest mesh
-
-	mesh=map->mesh.meshes;
-	dist=map_max_size;
-
-	for (n=0;n!=map->mesh.nmesh;n++) {
-
-		d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,pnt->x,pnt->y,pnt->z);
-		if (d<dist) {
-			dist=d;
-			mesh_idx=n;
-		}
-
-		mesh++;
-	}
-
-	if (mesh_idx==-1) return(0);
-
-	return(mesh_idx);
-}
-
-int map_calculate_mesh_distance(map_mesh_type *mesh,d3pnt *pnt)
-{
-	int			d,d2;
-	
-	d=distance_get(mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z,pnt->x,pnt->y,pnt->z);
-
-	d2=distance_get(mesh->box.min.x,mesh->box.mid.y,mesh->box.min.z,pnt->x,pnt->y,pnt->z);
-	if (d2<d) d=d2;
-	
-	d2=distance_get(mesh->box.min.x,mesh->box.mid.y,mesh->box.max.z,pnt->x,pnt->y,pnt->z);
-	if (d2<d) d=d2;
-	
-	d2=distance_get(mesh->box.max.x,mesh->box.mid.y,mesh->box.min.z,pnt->x,pnt->y,pnt->z);
-	if (d2<d) d=d2;
-	
-	d2=distance_get(mesh->box.max.x,mesh->box.mid.y,mesh->box.max.z,pnt->x,pnt->y,pnt->z);
-	if (d2<d) d=d2;
-	
-	return(d);
-}
-*/
-
 int map_find_mesh(map_type *map,d3pnt *pnt)
 {
 	int				n,mesh_idx;
@@ -737,16 +663,20 @@ int map_find_mesh(map_type *map,d3pnt *pnt)
 
 	dist=0.0;
 
+	mesh=map->mesh.meshes;
+
 	for (n=0;n!=map->mesh.nmesh;n++) {
 
 			// are we within this mesh?
 
-		mesh=&map->mesh.meshes[n];
-		if ((pnt->x<mesh->box.min.x) || (pnt->x>mesh->box.max.x) || (pnt->y<mesh->box.min.y) || (pnt->y>mesh->box.max.y) || (pnt->z<mesh->box.min.z) || (pnt->z>mesh->box.max.z)) continue;
+		if ((pnt->x<mesh->box.min.x) || (pnt->x>mesh->box.max.x) || (pnt->y<mesh->box.min.y) || (pnt->y>mesh->box.max.y) || (pnt->z<mesh->box.min.z) || (pnt->z>mesh->box.max.z)) {
+			mesh++;
+			continue;
+		}
 
 			// might be within multiple meshes, check distances to find best mesh
-			// don't need to do the sqrt since we are only checking against other
-			// distances
+			// don't need to do the square root as we are
+			// only comparing if one is greater than the other
 
 		dx=(double)(mesh->box.mid.x-pnt->x);
 		dy=(double)(mesh->box.mid.y-pnt->y);
@@ -757,14 +687,15 @@ int map_find_mesh(map_type *map,d3pnt *pnt)
 			dist=d;
 			mesh_idx=n;
 		}
+
+		mesh++;
 	}
 
 	if (mesh_idx!=-1) return(mesh_idx);
 
-		// if inside no meshes, then closest mesh
+		// if inside no meshes, then pick closest mesh
 
 	mesh=map->mesh.meshes;
-	dist=0.0;
 
 	for (n=0;n!=map->mesh.nmesh;n++) {
 
@@ -773,7 +704,7 @@ int map_find_mesh(map_type *map,d3pnt *pnt)
 		dz=(double)(mesh->box.mid.z-pnt->z);
 		d=(dx*dx)+(dy*dy)+(dz*dz);
 
-		if ((n==0) || (d<dist)) {
+		if ((mesh_idx==-1) || (d<dist)) {
 			dist=d;
 			mesh_idx=n;
 		}
