@@ -44,7 +44,7 @@ extern map_type				map;
 
 #define kMapGameTypeList							FOUR_CHAR_CODE('gtyp')
 
-#define kMapNoObscure								FOUR_CHAR_CODE('nobs')
+#define kMapObscureType								FOUR_CHAR_CODE('obty')
 #define kMapEditorLinkStartAlways					FOUR_CHAR_CODE('elss')
 
 bool						dialog_map_settings_cancel;
@@ -115,7 +115,7 @@ bool dialog_map_settings_run(void)
 	
 	dialog_set_text(dialog_map_settings_wind,kMapGameTypeList,0,map.settings.network_game_list);
 	
-	dialog_set_boolean(dialog_map_settings_wind,kMapNoObscure,0,map.settings.no_obscure);
+	dialog_set_combo(dialog_map_settings_wind,kMapObscureType,0,map.settings.obscure_type);
 	dialog_set_boolean(dialog_map_settings_wind,kMapEditorLinkStartAlways,0,map.settings.editor_link_always_start);
 	
 		// counts
@@ -160,7 +160,7 @@ bool dialog_map_settings_run(void)
 		
 		dialog_get_text(dialog_map_settings_wind,kMapGameTypeList,0,map.settings.network_game_list,256);
 		
-		map.settings.no_obscure=dialog_get_boolean(dialog_map_settings_wind,kMapNoObscure,0);
+		map.settings.obscure_type=dialog_get_combo(dialog_map_settings_wind,kMapObscureType,0);
 		map.settings.editor_link_always_start=dialog_get_boolean(dialog_map_settings_wind,kMapEditorLinkStartAlways,0);
 	}
 

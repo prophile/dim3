@@ -27,8 +27,9 @@ and can be sold or given away.
 
 #include "import.h"
 
-extern int				cur_mesh;
-extern model_type		model;
+extern int						cur_mesh;
+extern file_path_setup_type		file_path_setup;
+extern model_type				model;
 
 /* =======================================================
 
@@ -47,125 +48,6 @@ void clear_materials(void)
 		material->trig_start=material->trig_count=0;
 		material++;
     }
-}
-
-/* =======================================================
-
-      Resize Picts
-      
-======================================================= */
-
-void pic_get_size(PicHandle pic,int *p_xsz,int *p_ysz)
-{
-	int					i,x,y,xsz,ysz,
-						pow2[5]={16,32,64,128,256};
-	
-	x=(*pic)->picFrame.right-(*pic)->picFrame.left;
-	y=(*pic)->picFrame.bottom-(*pic)->picFrame.top;
-
-	xsz=128;
-	for ((i=0);(i!=5);i++) {
-		if (x<=pow2[i]) {
-			xsz=pow2[i];
-			break;
-		}
-	}
-	
-	ysz=128;
-	for ((i=0);(i!=5);i++) {
-		if (y<=pow2[i]) {
-			ysz=pow2[i];
-			break;
-		}
-	}
-	
-	*p_xsz=xsz;
-	*p_ysz=ysz;
-}
-
-/* =======================================================
-
-      Picts to Textures
-      
-======================================================= */
-
-ptr pic_to_memory(PicHandle pic,int xsz,int ysz)
-{
-	int					x,y,bsz,xbyte,row_add;
-	Rect				box;
-	ptr					txtptr,sptr,dptr;
-	PixMapHandle		texturemap;
-	GWorldPtr			gworld;
-	CGrafPtr			saveport;
-	
-	bsz=(xsz<<2)*ysz;
-	txtptr=valloc(bsz);
-
-		// draw the texture
-		
-	SetRect(&box,0,0,xsz,ysz);
-	NewGWorld(&gworld,32,&box,NULL,NULL,0);
-	
-	GetPort(&saveport);
-	SetGWorld(gworld,NULL);
-	DrawPicture(pic,&box);
-	SetGWorld(saveport,NULL);
-	
-		// copy the translated data through
-		
-	texturemap=GetGWorldPixMap(gworld);
-	
-	LockPixels(texturemap);
-	sptr=(unsigned char*)GetPixBaseAddr(texturemap);
-	xbyte=xsz<<2;
-	row_add=GetPixRowBytes(texturemap)-xbyte;
-
-	dptr=txtptr;
-	for ((y=0);(y<ysz);y++) {
-		for ((x=0);(x<xbyte);x++) {
-			*dptr++=*sptr++;
-		}
-		sptr=sptr+row_add;
-	}
-	
-	UnlockPixels(texturemap);
-	
-		// dispose the gworld
-		
-	DisposeGWorld(gworld);
-	
-	return(txtptr);
-}
-
-/* =======================================================
-
-      RGB Conversion Routines
-      
-======================================================= */
-
-ptr rgb_to_opengl(int xsz,int ysz,ptr txtptr)
-{
-	int			t,col,sz;
-	long		*l_srce;
-	ptr			dest,tmptxtptr;
-
-	tmptxtptr=valloc((xsz*4)*ysz);
-	if (tmptxtptr==NULL) return(NULL);
-	
-	sz=xsz*ysz;
-	dest=tmptxtptr;
-	
-	l_srce=(long*)txtptr;
-	
-	for ((t=0);(t<sz);t++) {
-		col=*l_srce++;
-		*dest++=(unsigned char)((col>>16)&0xFF);
-		*dest++=(unsigned char)((col>>8)&0xFF);
-		*dest++=(unsigned char)(col&0xFF);
-		*dest++=0xFF;
-	}
-
-	return(tmptxtptr);
 }
 
 /* =======================================================
@@ -214,7 +96,7 @@ int texture_find_free(void)
 int texture_pick(char *material_name,char *err_str)
 {
 	int				idx;
-    char			path[1024],txt[256];
+    char			path[1024],path2[1024],sub_path[1024],txt[256];
 	unsigned char	p_str[256];
 	texture_type	*texture;
 	
@@ -245,10 +127,16 @@ int texture_pick(char *material_name,char *err_str)
 		strcpy(err_str,"Unable to open bitmap.");
 		return(-1);
 	}
+	
+		// copy bitmap to model folder
+		
+	sprintf(sub_path,"Models/%s/Bitmaps/Textures",model.name);
+	file_paths_data_default(&file_path_setup,path2,sub_path,texture->bitmaps[0].name,"png");	
+	
+	bitmap_copy(path,path2);
 
 	return(idx);
 }
-
 
 /* =======================================================
 

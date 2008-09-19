@@ -78,7 +78,6 @@
 #define kCommandDeleteMesh				FOUR_CHAR_CODE('dmsh')
 #define kCommandImportOBJ				FOUR_CHAR_CODE('opOB')
 #define kCommandImportLWO				FOUR_CHAR_CODE('opLW')
-#define kCommandImportMW				FOUR_CHAR_CODE('opMW')
 #define kCommandImportC4DXML			FOUR_CHAR_CODE('opC4')
 #define kCommandInsertXML				FOUR_CHAR_CODE('opDM')
 #define kCommandScale					FOUR_CHAR_CODE('scle')

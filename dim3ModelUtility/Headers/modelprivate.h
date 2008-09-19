@@ -58,7 +58,6 @@ extern bool write_animate_xml(model_type *model);
 extern void model_textures_clear(model_type *model);
 extern void model_textures_read(model_type *model);
 extern bool model_textures_setup_glowmaps(model_type *model);
-extern void model_textures_write(model_type *model);
 extern void model_textures_close(model_type *model);
 extern bool model_shaders_read(model_type *model);
 extern void model_shaders_close(model_type *model);

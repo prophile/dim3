@@ -46,7 +46,6 @@
 		F5A42DA20555EC87002DF965 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 0111608C00BE2A8F7F000001 /* main.c */; };
 		F5A42DA30555EC87002DF965 /* menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 0111608D00BE2A8F7F000001 /* menu.c */; };
 		F5A42DA40555EC87002DF965 /* model_window.c in Sources */ = {isa = PBXBuildFile; fileRef = 0111608E00BE2A8F7F000001 /* model_window.c */; };
-		F5A42DA50555EC87002DF965 /* mw_import.c in Sources */ = {isa = PBXBuildFile; fileRef = 0111608F00BE2A8F7F000001 /* mw_import.c */; };
 		F5A42DA60555EC87002DF965 /* texture_import.c in Sources */ = {isa = PBXBuildFile; fileRef = 0111609200BE2A8F7F000001 /* texture_import.c */; };
 		F5A42DA80555EC87002DF965 /* obj_import.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C12EAB0143003C01000001 /* obj_import.c */; };
 		F5A42DA90555EC87002DF965 /* nav_serve.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CAF0140183DF6A013CEF5C /* nav_serve.c */; };
@@ -119,7 +118,6 @@
 		0111608C00BE2A8F7F000001 /* main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = main.c; path = Code/main.c; sourceTree = "<group>"; };
 		0111608D00BE2A8F7F000001 /* menu.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = menu.c; path = Code/menu.c; sourceTree = "<group>"; };
 		0111608E00BE2A8F7F000001 /* model_window.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = model_window.c; path = Code/model_window.c; sourceTree = "<group>"; };
-		0111608F00BE2A8F7F000001 /* mw_import.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = mw_import.c; path = Code/mw_import.c; sourceTree = "<group>"; };
 		0111609100BE2A8F7F000001 /* text_decode.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = text_decode.c; path = Code/text_decode.c; sourceTree = "<group>"; };
 		0111609200BE2A8F7F000001 /* texture_import.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = texture_import.c; path = Code/texture_import.c; sourceTree = "<group>"; };
 		011160A100BE2AC97F000001 /* dim3 Animator.rsrc */ = {isa = PBXFileReference; lastKnownFileType = archive.rsrc; name = "dim3 Animator.rsrc"; path = "Resources/dim3 Animator.rsrc"; sourceTree = "<group>"; };
@@ -246,7 +244,6 @@
 				0111609100BE2A8F7F000001 /* text_decode.c */,
 				F5C12EAB0143003C01000001 /* obj_import.c */,
 				F5F8B3D10239B6DE010E3C3C /* lwo_import.c */,
-				0111608F00BE2A8F7F000001 /* mw_import.c */,
 				F5263C1D0CC58C7E00A84EB9 /* c4d_xml_import.c */,
 				0111609200BE2A8F7F000001 /* texture_import.c */,
 				F579A01D07DFDF8400DB4213 /* insert.c */,
@@ -500,7 +497,6 @@
 				F5A42DA20555EC87002DF965 /* main.c in Sources */,
 				F5A42DA30555EC87002DF965 /* menu.c in Sources */,
 				F5A42DA40555EC87002DF965 /* model_window.c in Sources */,
-				F5A42DA50555EC87002DF965 /* mw_import.c in Sources */,
 				F5A42DA60555EC87002DF965 /* texture_import.c in Sources */,
 				F5A42DA80555EC87002DF965 /* obj_import.c in Sources */,
 				F5A42DA90555EC87002DF965 /* nav_serve.c in Sources */,
@@ -568,8 +564,7 @@
 		F5DB0C230856A7FD005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = "$(NATIVE_ARCH)";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

@@ -402,7 +402,7 @@ extern void model_set_sel_mask_material(model_type *model,int mesh_idx,int mater
 extern void model_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int texture_quality_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression);
 extern bool model_new(model_type *model,char *name);
 extern bool model_open(model_type *model,char *name,bool load_bitmaps,bool setup_glowmaps,bool load_shaders);
-extern bool model_save(model_type *model,bool save_bitmaps);
+extern bool model_save(model_type *model);
 extern void model_close(model_type *model);
 
 extern void model_refresh_textures(model_type *model);

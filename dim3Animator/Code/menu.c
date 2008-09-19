@@ -159,7 +159,7 @@ bool create_binary(void)
 
         // write the binary
 	
-	model_save(&model,TRUE);
+	model_save(&model);
 	
 	InitCursor();
     
@@ -171,7 +171,7 @@ bool save_binary(void)
 	bool				ok;
 	
 	SetCursor(*GetCursor(watchCursor));
-	ok=model_save(&model,TRUE);
+	ok=model_save(&model);
 	InitCursor();
 	
 	if (!ok) StandardAlert(kAlertCautionAlert,"\pdim3 Animator could not save model.","\pThe disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).",NULL,NULL);
@@ -379,39 +379,6 @@ void import_mesh_lightwave(void)
 	
     model_center_xz(&model,cur_mesh);
     model_floor(&model,cur_mesh);
-    model_recalc_boxes(&model);
-    model_recalc_normals(&model,cur_mesh);
-	
-	reset_vertex_tab();
-	reset_bone_tab(cur_bone);
-	
-    draw_model_wind_pose(&model,cur_mesh,cur_pose);
-    texture_palette_draw();
-    info_palette_draw();
-}
-
-void import_mesh_meshwork(void)
-{
-	float			scale;
-	char			path[1024],err_str[256];
-	unsigned char	p_err_str[256];
-    
-	InitCursor();
-	if (!nav_open_file("mesh",path)) return;
-	
-	if (cur_mesh==-1) cur_mesh=0;
-	model.meshes[cur_mesh].nvertex=model.meshes[cur_mesh].ntrig=0;
-	
-	if (!import_meshwork(path,err_str)) {
-		CopyCStringToPascal(err_str,p_err_str);
-		StandardAlert(0,"\pCould not import MeshWork file",p_err_str,NULL,NULL);
-	}
-	
-	dialog_import_finish_run(&model,&scale);
-	model_scale_all(&model,scale,scale,scale);
-	
-    model_center_xz_all(&model);
-    model_floor_all(&model);
     model_recalc_boxes(&model);
     model_recalc_normals(&model,cur_mesh);
 	
@@ -842,11 +809,6 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 		case kCommandImportLWO:
 			model_wind_play(FALSE,FALSE);
 			import_mesh_lightwave();
-			return(noErr);
-			
-		case kCommandImportMW:
-			model_wind_play(FALSE,FALSE);
-			import_mesh_meshwork();
 			return(noErr);
 			
 		case kCommandImportC4DXML:

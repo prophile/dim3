@@ -197,7 +197,7 @@ bool model_open(model_type *model,char *name,bool load_bitmaps,bool setup_glowma
       
 ======================================================= */
 
-bool model_save(model_type *model,bool save_bitmaps)
+bool model_save(model_type *model)
 {
 	bool			ok,ok2,ok3;
 	
@@ -206,10 +206,6 @@ bool model_save(model_type *model,bool save_bitmaps)
     ok=write_mesh_xml(model);
     ok2=write_pose_xml(model);
     ok3=write_animate_xml(model);
-	
-		// write bitmaps
-		
-    if (save_bitmaps) model_textures_write(model);
 	
 	return(ok||ok2||ok3);
 }

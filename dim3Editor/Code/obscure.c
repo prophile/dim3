@@ -755,7 +755,7 @@ bool obscure_calculate_map(void)
 	
 		// if no obscure on, ignore calculation
 		
-	if (map.settings.no_obscure) return(TRUE);
+	if (map.settings.obscure_type==obscure_type_none) return(TRUE);
 
 		// setup mesh boxes
 		

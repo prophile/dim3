@@ -186,67 +186,6 @@ bool model_textures_setup_glowmaps(model_type *model)
 
 /* =======================================================
 
-      Write Textures
-      
-======================================================= */
-
-void model_textures_write(model_type *model)
-{
-    int						i,k;
-    char					path[1024];
-    texture_type			*texture;
-	bitmap_type				*bitmap,*bumpmap,*specularmap,*glowmap;
-	struct stat				sb;
-
-    texture=model->textures;
-    
-	for (i=0;i!=max_model_texture;i++) {
-    
-		bitmap=texture->bitmaps;
-		bumpmap=texture->bumpmaps;
- 		specularmap=texture->specularmaps;
-		glowmap=texture->glowmaps;
-   
-        for (k=0;k!=max_texture_frame;k++) {
-		
-			if (bitmap->data!=NULL) {
-			
-				sprintf(path,"%s/Bitmaps/Textures/%s.png",model->load_base_path,bitmap->name);
-				if (stat(path,&sb)!=0) bitmap_save(bitmap,path);		// only save if bitmap doesn't exist
-				
-				switch (texture->bump_mode) {
-					case bump_mode_height_map:
-					case bump_mode_normal_map:
-						if (bumpmap->data!=NULL) {
-							sprintf(path,"%s/Bitmaps/Textures_dot3/%s.png",model->load_base_path,bumpmap->name);
-							if (stat(path,&sb)!=0) bitmap_save(bumpmap,path);
-						}
-						break;
-				}
-				
-				if (specularmap->name[0]!=0x0) {
-					sprintf(path,"%s/Bitmaps/Textures_Specular/%s.png",model->load_base_path,specularmap->name);
-					if (stat(path,&sb)!=0) bitmap_save(specularmap,path);
-				}
-				
-				if (glowmap->name[0]!=0x0) {
-					sprintf(path,"%s/Bitmaps/Textures_Glow/%s.png",model->load_base_path,glowmap->name);
-					if (stat(path,&sb)!=0) bitmap_save(glowmap,path);
-				}
-			}
-			
-			bitmap++;
-			bumpmap++;
-			specularmap++;
-			glowmap++;
-        }
-        
-        texture++;
-	}
-}
-
-/* =======================================================
-
       Close Textures
       
 ======================================================= */

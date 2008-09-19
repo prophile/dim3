@@ -41,7 +41,7 @@ extern file_path_setup_type		file_path_setup;
 void insert_model(char *file_name)
 {
 	int						i,k,t,b_off,v_off,t_off,idx;
-	char					str[8];
+	char					str[8],path[1024],path2[1024],sub_path[1024];
 	bool					bone_ok;
 	model_bone_type			*bone,*ins_bone;
 	model_vertex_type		*vertex,*ins_vertex;
@@ -173,6 +173,20 @@ void insert_model(char *file_name)
 					
 		for (t=0;t!=max_model_texture;t++) {
 			ins_texture->bitmaps[t].data=NULL;
+		}
+		
+			// copy over bitmap
+
+		for (t=0;t!=max_model_texture;t++) {
+			if (texture->bitmaps[t].data!=NULL) {
+				sprintf(sub_path,"Models/%s/Bitmaps/Textures",file_name);
+				file_paths_data_default(&file_path_setup,path,sub_path,ins_texture->bitmaps[t].name,"png");	
+
+				sprintf(sub_path,"Models/%s/Bitmaps/Textures",model.name);
+				file_paths_data_default(&file_path_setup,path2,sub_path,texture->bitmaps[t].name,"png");
+				
+				bitmap_copy(path,path2);
+			}
 		}
 		
 		ins_texture++;

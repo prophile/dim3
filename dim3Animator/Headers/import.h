@@ -27,7 +27,6 @@ and can be sold or given away.
 
 extern bool import_obj(char *path,bool *found_normals,char *err_str);
 extern bool import_lightwave(char *path,char *err_str);
-extern bool import_meshwork(char *path,char *err_str);
 extern bool import_c4d_xml(char *path,char *err_str);
 extern void insert_model(char *file_name);
 
@@ -41,9 +40,6 @@ extern void textdecode_get_line(int i,char *txt,int len);
 extern void textdecode_get_piece(int i,int k,char *txt);
 
 extern void clear_materials(void);
-extern void pic_get_size(PicHandle pic,int *p_xsz,int *p_ysz);
-extern ptr pic_to_memory(PicHandle pic,int xsz,int ysz);
-extern ptr rgb_to_opengl(int xsz,int ysz,ptr txtptr);
 extern int texture_count(void);
 extern int texture_find_free(void);
 extern int texture_pick(char *material_name,char *err_str);
