@@ -509,6 +509,7 @@ typedef struct		{
 extern void bitmap_new(bitmap_type *bitmap);
 extern bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int texture_quality_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated);
 extern bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col);
+extern bool bitmap_data(bitmap_type *bitmap,char *name,unsigned char *data,int wid,int high,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression);
 extern bool bitmap_save(bitmap_type *bitmap,char *path);
 extern void bitmap_close(bitmap_type *bitmap);
 

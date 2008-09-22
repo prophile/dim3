@@ -170,6 +170,7 @@ _xml_add_attribute_bit_array
 _bitmap_new
 _bitmap_open
 _bitmap_color
+_bitmap_data
 _bitmap_save
 _bitmap_close
 

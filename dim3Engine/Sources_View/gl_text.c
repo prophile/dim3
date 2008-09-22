@@ -45,8 +45,101 @@ float						font_char_size[90]=
 								 0.38f,0.67f,0.54f,0.67f,0.58f,0.62f,0.54f,0.67f,0.58f,0.42f,
 								 0.67f,0.67f,0.33f,0.33f,0.62f,0.33f,0.90f,0.64f,0.65f,0.60f,
 								 0.67f,0.46f,0.54f,0.42f,0.64f,0.60f,0.83f,0.60f,0.58f,0.62f};
-								 
+
 bitmap_type					font_small_bitmap,font_large_bitmap;
+
+/* =======================================================
+
+      Create Fonts
+      
+======================================================= */
+
+#ifdef D3_OS_WINDOWS
+
+bool gl_text_create_font(void)
+{
+	int				n,x,y;
+	unsigned char	ch;
+	unsigned char	*data,*ptr;
+	HDC				dc;
+	HBITMAP			bmp,*old_bmp;
+	HFONT			font;
+	COLORREF		col;
+
+		// data for bitmap
+
+	data=valloc((128*4)*128);
+	if (data!=NULL) return(FALSE);
+
+		// create bitmap
+
+	dc=CreateCompatibleDC(NULL);
+	bmp=CreateCompatibleBitmap(dc,128,128);
+	old_bmp=SelectObject(dc,bmp);
+
+	SetMapMode(dc,MM_TEXT);
+	SetMapperFlags(dc,0x1);
+	SetTextAlign(dc,TA_BASELINE);
+	SetBkMode(dc,OPAQUE);
+	SetBkColor(dc,RGB(0,0,0));
+
+		// draw the characters
+
+	font=CreateFont(12,0,0,0,FW_NORMAL,0,0,0,0,0,0,0,0,"Arial");
+	SelectObject(dc,font);
+	SetTextColor(dc,RGB(255,255,255));
+
+	for (n=0;n!=90;n++) {
+		ch=(unsigned char)(n+'!');
+
+		x=(n%10)*12;
+		y=((n/10)*14)+11;
+
+		TextOut(dc,x,y,(char*)ch,1);
+	}
+
+	DeleteObject(font);
+
+		// get the bitmap
+
+	ptr=data;
+
+	for (y=0;y!=128;y++) {
+
+		for (x=0;x!=128;x++) {
+
+			col=GetPixel(dc,x,y);
+
+			*ptr++=GetRValue(col);
+			*ptr++=GetGValue(col);
+			*ptr++=GetBValue(col);
+
+			*ptr++=0xFF; // GetRValue(col);		// as they are black and white, assume any changes in gray = alpha
+
+		}
+	}
+
+	bitmap_data(&font_small_bitmap,"small_font",data,128,128,anisotropic_mode_none,mipmap_mode_none,FALSE,TRUE);
+	free(data);
+
+		// delete the bitmap
+
+	SelectObject(dc,old_bmp);
+	DeleteObject(bmp);
+	DeleteDC(dc);
+
+	return(TRUE);
+}
+
+#endif
+
+#ifdef D3_OS_MAC
+
+void gl_text_create_font(void)
+{
+}
+
+#endif
 
 /* =======================================================
 
@@ -61,8 +154,10 @@ void gl_text_initialize(void)
 		// load fonts
 		
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Fonts","small","png");
-	bitmap_open(&font_small_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+//	bitmap_open(&font_small_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
 	
+	gl_text_create_font();
+
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Fonts","large","png");
 	bitmap_open(&font_large_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
 }

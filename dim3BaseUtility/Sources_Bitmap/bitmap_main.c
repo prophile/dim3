@@ -150,6 +150,35 @@ bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col)
 
 /* =======================================================
 
+      Data Bitmap
+      
+======================================================= */
+
+bool bitmap_data(bitmap_type *bitmap,char *name,unsigned char *data,int wid,int high,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression)
+{
+	int			sz;
+	
+	strcpy(bitmap->name,name);
+	bitmap->wid=wid;
+	bitmap->high=high;
+	
+	sz=(wid*4)*high;
+
+	bitmap->data=valloc(sz);
+	if (bitmap->data==NULL) return(FALSE);
+
+	memmove(bitmap->data,data,sz);
+	
+	if (!bitmap_texture_open(bitmap,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression,TRUE)) {
+		free(bitmap->data);
+		return(FALSE);
+	}
+	
+	return(TRUE);
+}
+
+/* =======================================================
+
       Save Bitmaps
       
 ======================================================= */

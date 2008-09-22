@@ -173,8 +173,9 @@ EXPORTS
 	bitmap_new									@350
 	bitmap_open									@351
 	bitmap_color								@352
-	bitmap_save									@353
-	bitmap_close								@354
+	bitmap_data									@353
+	bitmap_save									@354
+	bitmap_close								@355
 
 	bitmap_texture_setup_animation				@360
 	bitmap_texture_recalc_animation				@361
