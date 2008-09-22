@@ -769,7 +769,7 @@
 				INFOPLIST_FILE = "Resources/Info-dim3_Editor.plist";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries";
 				MACOSX_DEPLOYMENT_TARGET = 10.3;
-				PER_ARCH_CFLAGS_i386 = "-fast -msse2";
+				PER_ARCH_CFLAGS_i386 = "-msse2 -fno-omit-frame-pointer";
 				PER_ARCH_CFLAGS_ppc = "-fast -faltivec -mcpu=G4";
 				PREBINDING = NO;
 				PRODUCT_NAME = "dim3 Editor";

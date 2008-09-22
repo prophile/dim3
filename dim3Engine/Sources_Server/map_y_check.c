@@ -33,6 +33,7 @@ and can be sold or given away.
 
 // supergumba -- move to physics
 #define object_box_check_point_division		100
+#define object_box_check_radius_simple		500				// this radius or below we use simple checks
 
 #include "scripts.h"
 #include "objects.h"
@@ -206,6 +207,7 @@ int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly
 }
 */
 
+
 int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly)
 {
 	int					i,x,y,z,cy,fy,px[5],pz[5];
@@ -312,10 +314,19 @@ int pin_downward_movement_obj(obj_type *obj,int my)
 {
 	int				y;
 	d3box			box;
-
+	
+		// choose either simple one point checks or more
+		// complex checks
+	
 	box_create_from_object(&box,obj);
-	y=pin_downward_movement_box(&box,my,&obj->contact.stand_poly);
 
+	if (obj->size.radius<=object_box_check_radius_simple) {
+		y=find_poly_for_downward_point(box.x,box.max_y,box.z,my,&obj->contact.stand_poly);
+	}
+	else {
+		y=pin_downward_movement_box(&box,my,&obj->contact.stand_poly);
+	}
+	
 	if (y==-1) return(my);
 	
 	return(y-box.max_y);
@@ -326,9 +337,18 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 	int				y;
 	d3box			box;
 
-	box_create_from_object(&box,obj);
-	y=pin_upward_movement_box(&box,abs(my),&obj->contact.head_poly);
+		// choose either simple one point checks or more
+		// complex checks
 
+	box_create_from_object(&box,obj);
+
+	if (obj->size.radius<=object_box_check_radius_simple) {
+		y=find_poly_for_upward_point(box.x,box.min_y,box.z,abs(my),&obj->contact.head_poly);
+	}
+	else {
+		y=pin_upward_movement_box(&box,abs(my),&obj->contact.head_poly);
+	}
+	
 	if (y==-1) return(my);
 
 	return(box.min_y-y);

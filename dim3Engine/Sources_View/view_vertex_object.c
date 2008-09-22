@@ -38,6 +38,7 @@ extern view_type			view;
 extern setup_type			setup;
 
 int							cur_vbo_cache_idx;
+bool						vbo_locked[view_vertex_object_count];
 GLuint						vbo_cache[view_vertex_object_count];
 
 /* =======================================================
@@ -48,8 +49,17 @@ GLuint						vbo_cache[view_vertex_object_count];
 
 void view_create_vertex_objects(void)
 {
+	int				n;
+	
 	cur_vbo_cache_idx=0;
 	glGenBuffersARB(view_vertex_object_count,vbo_cache);
+	
+		// vbos can be locked and kept out of
+		// rotation if they are used more than once
+		
+	for (n=0;n!=view_vertex_object_count;n++) {
+		vbo_locked[n]=FALSE;
+	}
 }
 
 void view_dispose_vertex_objects(void)
@@ -65,8 +75,15 @@ void view_dispose_vertex_objects(void)
 
 inline void view_next_vertex_object(void)
 {
-	cur_vbo_cache_idx++;
-	if (cur_vbo_cache_idx==view_vertex_object_count) cur_vbo_cache_idx=0;
+		// this assumes all vbos will never be locked
+		// based on the code, this will be true
+		
+	while (TRUE) {
+		cur_vbo_cache_idx++;
+		if (cur_vbo_cache_idx==view_vertex_object_count) cur_vbo_cache_idx=0;
+		
+		if (!vbo_locked[cur_vbo_cache_idx]) break;
+	}
 }
 
 inline void view_bind_current_vertex_object(void)
@@ -74,9 +91,25 @@ inline void view_bind_current_vertex_object(void)
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_cache[cur_vbo_cache_idx]);
 }
 
+inline void view_bind_specific_vertex_object(int vbo_cache_idx)
+{
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_cache[vbo_cache_idx]);
+}
+
 inline void view_unbind_current_vertex_object(void)
 {
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+}
+
+inline int view_lock_current_vertext_object(void)
+{
+	vbo_locked[cur_vbo_cache_idx]=TRUE;
+	return(cur_vbo_cache_idx);
+}
+
+inline void view_unlock_current_vertext_object(int vbo_cache_idx)
+{
+	vbo_locked[vbo_cache_idx]=FALSE;
 }
 
 

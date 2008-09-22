@@ -146,27 +146,27 @@ bool map_textures_read(map_type *map,bool in_engine)
 					// bitmap
 					
 				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",bitmap->name,"png");
-				bitmap_open(bitmap,path,maputility_settings.anisotropic_mode,maputility_settings.texture_quality_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression);
+				bitmap_open(bitmap,path,maputility_settings.anisotropic_mode,maputility_settings.texture_quality_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated);
 			
 					// bumpmap
 
 				switch (texture->bump_mode) {
 				
 					case bump_mode_auto_generate:
-						bitmap_create_normal_from_bitmap(bumpmap,bitmap,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression);
+						bitmap_create_normal_from_bitmap(bumpmap,bitmap,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated);
 						break;
 						
 					case bump_mode_height_map:
 						bitmap_new(&height_bitmap);
 						file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures_Height",bumpmap->name,"png");
-						bitmap_open(&height_bitmap,path,anisotropic_mode_none,maputility_settings.texture_quality_mode,mipmap_mode_none,FALSE,FALSE);
-						bitmap_create_normal_from_height_bitmap(bumpmap,&height_bitmap,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression);
+						bitmap_open(&height_bitmap,path,anisotropic_mode_none,maputility_settings.texture_quality_mode,mipmap_mode_none,FALSE,FALSE,texture->pixelated);
+						bitmap_create_normal_from_height_bitmap(bumpmap,&height_bitmap,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated);
 						bitmap_close(&height_bitmap);
 						break;
 						
 					case bump_mode_normal_map:
 						file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures_dot3",bumpmap->name,"png");
-						bitmap_open(bumpmap,path,anisotropic_mode_none,maputility_settings.texture_quality_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression);
+						bitmap_open(bumpmap,path,anisotropic_mode_none,maputility_settings.texture_quality_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated);
 						break;
 						
 				}
@@ -175,14 +175,14 @@ bool map_textures_read(map_type *map,bool in_engine)
 					
 				if (specularmap->name[0]!=0x0) {
 					file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures_Specular",specularmap->name,"png");
-					bitmap_open(specularmap,path,maputility_settings.anisotropic_mode,maputility_settings.texture_quality_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression);
+					bitmap_open(specularmap,path,maputility_settings.anisotropic_mode,maputility_settings.texture_quality_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated);
 				}
 				
 					// glow map
 					
 				if (glowmap->name[0]!=0x0) {
 					file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures_Glow",glowmap->name,"png");
-					bitmap_open(glowmap,path,maputility_settings.anisotropic_mode,maputility_settings.texture_quality_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression);
+					bitmap_open(glowmap,path,maputility_settings.anisotropic_mode,maputility_settings.texture_quality_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated);
 				}
 			}
 			
@@ -216,7 +216,7 @@ bool map_textures_setup_glowmaps(map_type *map)
 		
 		for (k=0;k!=max_texture_frame;k++) {
 			if ((bitmap->data!=NULL) && (glowmap->data!=NULL)) {
-				if (!bitmap_setup_render_glowmap(glowmap,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression)) return(FALSE);
+				if (!bitmap_setup_render_glowmap(glowmap,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated)) return(FALSE);
 			}
 			bitmap++;
 			glowmap++;

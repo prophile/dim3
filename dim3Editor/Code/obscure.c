@@ -41,6 +41,7 @@ extern AGLContext			ctx;
 #define obscure_mesh_view_mesh_near_z_offset	-(3*map_enlarge)
 #define obscure_mesh_view_min_distance			(100*map_enlarge)
 #define obscure_mesh_view_slop_angle			30.0f
+#define obscure_mesh_rough_radius				100000
 
 // #define OBSCURE_TEST		1
 
@@ -66,7 +67,7 @@ int obscure_mesh_sort(d3pnt *pt,int *mesh_sort_list)
 
 			// ignore meshes outside of draw distance
 
-		d=map_calculate_mesh_distance(mesh,pt);
+		d=map_mesh_calculate_distance(mesh,pt);
 		if (d>(obscure_mesh_view_mesh_far_z-obscure_mesh_view_mesh_near_z)) continue;
 
 			// sort mesh
@@ -451,18 +452,12 @@ void obscure_calculate_group_single_visibility(int group_idx,d3pnt *cpt,unsigned
 	}
 }
 
-bool obscure_calculate_group_visibility(int group_idx)
+bool obscure_calculate_group_min_max(int group_idx,d3pnt *min,d3pnt *max)
 {
-	int				n,y,*mesh_sort_list;
-	float			ratio;
-	unsigned char	*stencil_pixels;
-	unsigned char	visibility_flag[max_mesh_visibility_bytes];
+	int				n;
 	bool			first_mesh;
-	d3pnt			min,max,look_pt[11];
 	map_mesh_type	*mesh;
-	
-		// get the min/max for group of meshes
-		
+
 	first_mesh=TRUE;
 	mesh=map.mesh.meshes;
 	
@@ -471,17 +466,17 @@ bool obscure_calculate_group_visibility(int group_idx)
 		if (mesh->obscure.group_idx==group_idx) {
 		
 			if (first_mesh) {
-				memmove(&min,&mesh->box.min,sizeof(d3pnt));
-				memmove(&max,&mesh->box.max,sizeof(d3pnt));
+				memmove(min,&mesh->box.min,sizeof(d3pnt));
+				memmove(max,&mesh->box.max,sizeof(d3pnt));
 				first_mesh=FALSE;
 			}
 			else {
-				if (mesh->box.min.x<min.x) min.x=mesh->box.min.x;
-				if (mesh->box.min.y<min.y) min.y=mesh->box.min.y;
-				if (mesh->box.min.z<min.z) min.z=mesh->box.min.z;
-				if (mesh->box.max.x>max.x) max.x=mesh->box.max.x;
-				if (mesh->box.max.y>max.y) max.y=mesh->box.max.y;
-				if (mesh->box.max.z>max.z) max.z=mesh->box.max.z;
+				if (mesh->box.min.x<min->x) min->x=mesh->box.min.x;
+				if (mesh->box.min.y<min->y) min->y=mesh->box.min.y;
+				if (mesh->box.min.z<min->z) min->z=mesh->box.min.z;
+				if (mesh->box.max.x>max->x) max->x=mesh->box.max.x;
+				if (mesh->box.max.y>max->y) max->y=mesh->box.max.y;
+				if (mesh->box.max.z>max->z) max->z=mesh->box.max.z;
 			}
 		
 		}
@@ -491,7 +486,21 @@ bool obscure_calculate_group_visibility(int group_idx)
 	
 		// were there any meshes in this group?
 		
-	if (first_mesh) return(FALSE);
+	return(!first_mesh);
+}
+
+bool obscure_calculate_group_visibility_complete(int group_idx)
+{
+	int				n,y,*mesh_sort_list;
+	float			ratio;
+	unsigned char	*stencil_pixels;
+	unsigned char	visibility_flag[max_mesh_visibility_bytes];
+	d3pnt			min,max,look_pt[11];
+	map_mesh_type	*mesh;
+	
+		// get the min/max for group of meshes
+		
+	if (!obscure_calculate_group_min_max(group_idx,&min,&max)) return(FALSE);
 
 		// pixels for reading stencil buffer
 		
@@ -660,6 +669,62 @@ bool obscure_calculate_group_visibility(int group_idx)
 	}
 	
 	return(TRUE);
+}
+
+bool obscure_calculate_group_visibility_rough(int group_idx)
+{
+	int				n;
+	unsigned char	visibility_flag[max_mesh_visibility_bytes];
+	d3pnt			min,max,mid;
+	map_mesh_type	*mesh;
+	
+		// get the min/max for group of meshes
+		
+	if (!obscure_calculate_group_min_max(group_idx,&min,&max)) return(FALSE);
+	
+	mid.x=(min.x+max.x)>>1;
+	mid.y=(min.y+max.y)>>1;
+	mid.z=(min.z+max.z)>>1;
+	
+		// clear visibility bits
+		
+	bzero(visibility_flag,max_mesh_visibility_bytes);
+	
+		// find meshes within a certain radius
+		
+	mesh=map.mesh.meshes;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+	
+		if (mesh->obscure.group_idx==group_idx) {
+			obscure_mesh_view_bit_set(visibility_flag,n);
+		}
+		else {
+			if (map_mesh_calculate_distance(mesh,&mid)<=obscure_mesh_rough_radius)obscure_mesh_view_bit_set(visibility_flag,n);
+		}
+		
+		mesh++;
+	}
+	
+		// set the group
+		
+	mesh=map.mesh.meshes;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		if (mesh->obscure.group_idx==group_idx) memmove(mesh->obscure.visibility_flag,visibility_flag,max_mesh_visibility_bytes);
+		mesh++;
+	}
+
+	return(TRUE);
+}
+
+bool obscure_calculate_group_visibility(int group_idx)
+{
+	if (map.settings.obscure_type==obscure_type_rough) {
+		return(obscure_calculate_group_visibility_rough(group_idx));
+	}
+	
+	return(obscure_calculate_group_visibility_complete(group_idx));
 }
 
 /* =======================================================

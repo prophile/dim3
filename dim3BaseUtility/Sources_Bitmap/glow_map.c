@@ -35,7 +35,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-bool bitmap_setup_render_glowmap(bitmap_type *glowmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression)
+bool bitmap_setup_render_glowmap(bitmap_type *glowmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated)
 {
 	int				x,y,wid,high;
 	unsigned char	gr,gg,gb;
@@ -65,7 +65,7 @@ bool bitmap_setup_render_glowmap(bitmap_type *glowmap,int anisotropic_mode,int m
 		
 	if (glowmap->gl_id!=-1) bitmap_texture_close(glowmap);
 		
-	if (!bitmap_texture_open(glowmap,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression)) {
+	if (!bitmap_texture_open(glowmap,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression,pixelated)) {
 		free(glowmap->data);
 		return(FALSE);
 	}

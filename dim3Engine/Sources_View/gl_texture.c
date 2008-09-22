@@ -54,7 +54,7 @@ void gl_texture_initialize(void)
 	d3col			col;
 	
 	col.r=col.b=col.g=0.0f;
-	bitmap_color(&null_bitmap,"[null]",&col,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
+	bitmap_color(&null_bitmap,"[null]",&col);
 }
 
 void gl_texture_shutdown(void)

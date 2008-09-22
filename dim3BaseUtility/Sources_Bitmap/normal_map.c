@@ -115,7 +115,7 @@ void bitmap_normal_data_create_from_gs_data(ptr data,float *gs_data,int wid,int 
       
 ======================================================= */
 
-bool bitmap_create_normal_from_height_bitmap(bitmap_type *bitmap,bitmap_type *height_bitmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression)
+bool bitmap_create_normal_from_height_bitmap(bitmap_type *bitmap,bitmap_type *height_bitmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated)
 {
 	int					x,y,wid,high;
 	ptr					data,p_data;
@@ -171,7 +171,7 @@ bool bitmap_create_normal_from_height_bitmap(bitmap_type *bitmap,bitmap_type *he
 
 		// open the texture
 		
-	if (!bitmap_texture_open(bitmap,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression)) {
+	if (!bitmap_texture_open(bitmap,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression,pixelated)) {
 		free(bitmap->data);
 		return(FALSE);
 	}
@@ -185,7 +185,7 @@ bool bitmap_create_normal_from_height_bitmap(bitmap_type *bitmap,bitmap_type *he
       
 ======================================================= */
 
-bool bitmap_create_normal_from_bitmap(bitmap_type *bitmap,bitmap_type *srce_bitmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression)
+bool bitmap_create_normal_from_bitmap(bitmap_type *bitmap,bitmap_type *srce_bitmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated)
 {
 	int					x,y,wid,high;
 	float				r,g,b;
@@ -246,7 +246,7 @@ bool bitmap_create_normal_from_bitmap(bitmap_type *bitmap,bitmap_type *srce_bitm
 
 		// open the texture
 
-	if (!bitmap_texture_open(bitmap,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression)) {
+	if (!bitmap_texture_open(bitmap,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression,pixelated)) {
 		free(bitmap->data);
 		return(FALSE);
 	}

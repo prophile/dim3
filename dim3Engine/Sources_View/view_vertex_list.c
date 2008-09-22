@@ -35,11 +35,14 @@ extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
 
-GLuint						map_vertex_vbo;
+int							map_vertex_vbo_idx;
 
 extern void view_next_vertex_object(void);
 extern void view_bind_current_vertex_object(void);
+extern void view_bind_specific_vertex_object(int vbo_cache_idx);
 extern void view_unbind_current_vertex_object(void);
+extern int view_lock_current_vertext_object(void);
+extern void view_unlock_current_vertext_object(int vbo_cache_idx);
 
 /* =======================================================
 
@@ -58,6 +61,10 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 	map_mesh_poly_type					*poly;
 	map_mesh_poly_tessel_vertex_type	*lv;
 
+		// no locked vbo yet
+		
+	map_vertex_vbo_idx=-1;
+	
 		// find total number of vertexes in
 		// this seen
 
@@ -275,7 +282,18 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 	view_unbind_current_vertex_object();
 	
+		// lock it so it won't be re-used until after
+		// both the oqaque and transparent parts of the map
+		// are rendered
+		
+	map_vertex_vbo_idx=view_lock_current_vertext_object();
+	
 	return(TRUE);
+}
+
+void view_release_mesh_gl_lists(void)
+{
+	if (map_vertex_vbo_idx!=-1) view_unlock_current_vertext_object(map_vertex_vbo_idx);
 }
 
 /* =======================================================
@@ -288,7 +306,7 @@ void view_compile_gl_list_attach(void)
 {
 		// use last compiled buffer
 
-	view_bind_current_vertex_object();
+	view_bind_specific_vertex_object(map_vertex_vbo_idx);
 
 		// vertexes
 

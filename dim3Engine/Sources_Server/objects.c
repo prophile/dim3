@@ -278,7 +278,7 @@ void object_set_radius(obj_type *obj)
 
 void object_set_spawn_mesh(obj_type *obj)
 {
-	obj->mesh.spawn_mesh_idx=map_find_mesh(&map,&obj->pnt);
+	obj->mesh.spawn_mesh_idx=map_mesh_find(&map,&obj->pnt);
 	obj->mesh.cur_mesh_idx=obj->mesh.spawn_mesh_idx;
 }
 

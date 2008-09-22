@@ -509,7 +509,7 @@ bool walk_view_draw_pnt_obscure(d3pnt *pnt)
 	
 	if (obscure_mesh_idx==-1) return(FALSE);
 	
-	mesh_idx=map_find_mesh(&map,pnt);
+	mesh_idx=map_mesh_find(&map,pnt);
 	if (mesh_idx==-1) return(FALSE);
 	
 	return(obscure_mesh_view_bit_get(map.mesh.meshes[obscure_mesh_idx].obscure.visibility_flag,mesh_idx)==0x0);

@@ -212,7 +212,7 @@ void run_objects_slice(int tick)
 
 	for (n=0;n!=server.count.obj;n++) {
 
-		if (!obj->scenery.on) {
+		if ((!obj->scenery.on) && (!obj->hidden)) {
 		
 				// remember current position if not suspended
 				// so we can check for mesh changes
@@ -236,7 +236,7 @@ void run_objects_slice(int tick)
 			
 			if (!obj->suspend) {
 				if ((old_pnt.x!=obj->pnt.x) || (old_pnt.y!=obj->pnt.y) || (old_pnt.z!=obj->pnt.z)) {
-					mesh_idx=map_find_mesh(&map,&obj->pnt);
+					mesh_idx=map_mesh_find(&map,&obj->pnt);
 					if (obj->mesh.cur_mesh_idx!=mesh_idx) {
 						mesh_triggers(obj,obj->mesh.cur_mesh_idx,mesh_idx);
 						obj->mesh.cur_mesh_idx=mesh_idx;
@@ -259,28 +259,31 @@ void run_objects_no_slice(int tick)
 
 	for (n=0;n!=server.count.obj;n++) {
 
-		model_draw_setup_object(tick,obj);
-		model_run_animation(&obj->draw);
+		if (!obj->hidden) {
+			
+			model_draw_setup_object(tick,obj);
+			model_run_animation(&obj->draw);
 
-		if (!obj->scenery.on) {
+			if (!obj->scenery.on) {
 
-				// fades
+					// fades
 
-			model_fade_run(tick,&obj->draw);
-			model_mesh_fade_run(tick,&obj->draw);
+				model_fade_run(tick,&obj->draw);
+				model_mesh_fade_run(tick,&obj->draw);
 
-				// held weapons
+					// held weapons
 
-			if (obj->player) {
-				weap=weapon_find_current(obj);
-				if (weap!=NULL) {
-					model_draw_setup_weapon(tick,obj,weap,FALSE);
-					weapon_run_hand(obj,tick);
+				if (obj->player) {
+					weap=weapon_find_current(obj);
+					if (weap!=NULL) {
+						model_draw_setup_weapon(tick,obj,weap,FALSE);
+						weapon_run_hand(obj,tick);
+					}
 				}
+
 			}
-
 		}
-
+		
 		obj++;
 	}
 }

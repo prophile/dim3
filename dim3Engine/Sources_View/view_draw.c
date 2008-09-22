@@ -71,6 +71,7 @@ extern void fade_object_draw(int tick,obj_type *obj);
 extern void liquid_render(int tick);
 extern void decal_render(int mesh_draw_count,int *mesh_draw_list);
 extern bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list);
+extern void view_release_mesh_gl_lists(void);
 
 extern int			mesh_draw_count,mesh_draw_list[max_mesh];
 
@@ -335,6 +336,10 @@ void view_draw(int tick)
 		// draw tranparent polygons
 
 	render_transparent_map(mesh_draw_count,mesh_draw_list);
+	
+		// release the lock on the mesh drawing vbo
+		
+	view_release_mesh_gl_lists();
 
 		// draw liquids
 

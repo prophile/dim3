@@ -49,7 +49,7 @@ void bitmap_new(bitmap_type *bitmap)
       
 ======================================================= */
 
-bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int texture_quality_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression)
+bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int texture_quality_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated)
 {
 	int					n,psz;
 	char				*c;
@@ -108,7 +108,7 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int texture
 	
 		// get the texture
 		
-	if (!bitmap_texture_open(bitmap,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression)) {
+	if (!bitmap_texture_open(bitmap,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression,pixelated)) {
 		free(bitmap->data);
 		return(FALSE);
 	}
@@ -122,7 +122,7 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int texture
       
 ======================================================= */
 
-bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression)
+bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col)
 {
 	int			i;
 	long		collong,*dptr;
@@ -140,7 +140,7 @@ bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col,int anisotropic_mode
 		*dptr++=collong;
 	}
 	
-	if (!bitmap_texture_open(bitmap,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression)) {
+	if (!bitmap_texture_open(bitmap,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,TRUE)) {
 		free(bitmap->data);
 		return(FALSE);
 	}

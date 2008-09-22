@@ -68,7 +68,7 @@ extern char light_type_str[][32];
 #define max_movement										64				// maximum number of movements
 #define max_movement_move									16				// maximum number of separate moves in a movement
 
-#define max_sort_poly										256				// maximum number of transparent polys in a single scene
+#define max_sort_poly										512				// maximum number of transparent polys in a single scene
 
 //
 // obscure types
@@ -608,8 +608,10 @@ extern void map_mesh_calculate_extent(map_type *map,int mesh_idx,d3pnt *min,d3pn
 extern void map_mesh_calculate_center(map_type *map,int mesh_idx,d3pnt *mpt);
 extern void map_mesh_calculate_uv_center(map_type *map,int mesh_idx,float *gx,float *gy);
 
-extern int map_find_mesh(map_type *map,d3pnt *pnt);
-extern int map_calculate_mesh_distance(map_mesh_type *mesh,d3pnt *pnt);
+extern int map_mesh_find(map_type *map,d3pnt *pnt);
+extern int map_mesh_find_closest(map_type *map,d3pnt *pnt);
+extern int map_mesh_find_always(map_type *map,d3pnt *pnt);
+extern int map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt);
 
 extern int map_mesh_combine(map_type *map,int mesh_1_idx,int mesh_2_idx);
 extern void map_mesh_move(map_type *map,int mesh_idx,int x,int y,int z);

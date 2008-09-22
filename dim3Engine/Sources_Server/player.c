@@ -109,7 +109,7 @@ bool player_attach_object(void)
 		
 			// spot messages
 
-		mesh_idx=map_find_mesh(&map,&obj->pnt);
+		mesh_idx=map_mesh_find(&map,&obj->pnt);
 		if (mesh_idx!=-1) mesh_triggers(obj,-1,mesh_idx);
 
 			// check for telefrag

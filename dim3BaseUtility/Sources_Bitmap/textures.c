@@ -61,8 +61,18 @@ void bitmap_texture_set_anisotropic_mode(int anisotropic_mode)
 	}
 }
 
-void bitmap_texture_set_mipmap_filter(int mipmap_mode)
+void bitmap_texture_set_mipmap_filter(int mipmap_mode,bool pixelated)
 {
+		// pixelated textures are always nearest
+		
+	if (pixelated) {
+		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+		return;
+	}
+	
+		// regular mipmap modes
+		
 	switch (mipmap_mode) {
 	
 		case mipmap_mode_none:
@@ -89,7 +99,7 @@ void bitmap_texture_set_mipmap_filter(int mipmap_mode)
       
 ======================================================= */
 
-bool bitmap_texture_open(bitmap_type *bitmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression)
+bool bitmap_texture_open(bitmap_type *bitmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated)
 {
 	int					gl_txtformat;
 	GLuint				gl_id;
@@ -113,12 +123,12 @@ bool bitmap_texture_open(bitmap_type *bitmap,int anisotropic_mode,int mipmap_mod
 		
 	glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
 	
-	bitmap_texture_set_mipmap_filter(mipmap_mode);
+	bitmap_texture_set_mipmap_filter(mipmap_mode,pixelated);
 	bitmap_texture_set_anisotropic_mode(anisotropic_mode);
 	
 		// load texture
 		
-	if (mipmap_mode==mipmap_mode_none) {
+	if ((mipmap_mode==mipmap_mode_none) || (pixelated)) {
 		glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE,GL_TRUE);
 		glTexImage2D(GL_TEXTURE_2D,0,gl_txtformat,bitmap->wid,bitmap->high,0,GL_RGBA,GL_UNSIGNED_BYTE,bitmap->data);
 		glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE,GL_FALSE);
@@ -279,6 +289,7 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 	texture->bump_mode=xml_get_attribute_list(main_tag,"bump",(char*)bitmap_bump_mode_str);
 	texture->animate.on=xml_get_attribute_boolean(main_tag,"animate");
 	texture->additive=xml_get_attribute_boolean(main_tag,"additive");
+	texture->pixelated=xml_get_attribute_boolean(main_tag,"pixelated");
 	
 	texture->glow.rate=xml_get_attribute_int(main_tag,"glow_rate");
 	texture->glow.min=xml_get_attribute_float_default(main_tag,"glow_min",0.25f);
@@ -383,6 +394,7 @@ void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_s
 	xml_add_attribute_list("bump",(char*)bitmap_bump_mode_str,texture->bump_mode);
 	xml_add_attribute_boolean("animate",texture->animate.on);
 	xml_add_attribute_boolean("additive",texture->additive);
+	xml_add_attribute_boolean("pixelated",texture->pixelated);
 	
 	xml_add_attribute_int("glow_rate",texture->glow.rate);
 	xml_add_attribute_float("glow_min",texture->glow.min);

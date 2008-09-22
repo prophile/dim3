@@ -1991,7 +1991,7 @@
 					"-lSystemStubs",
 					"-lz",
 				);
-				PER_ARCH_CFLAGS_i386 = "-fast -msse2";
+				PER_ARCH_CFLAGS_i386 = "-msse2 -fno-omit-frame-pointer";
 				PER_ARCH_CFLAGS_ppc = "-fast -faltivec -mcpu=G4";
 				PREBINDING = NO;
 				PRODUCT_NAME = "dim3 Engine";

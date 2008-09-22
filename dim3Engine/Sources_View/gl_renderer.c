@@ -190,8 +190,7 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 	if (lock_fps_refresh) {
 		swapint=1;
 		CGLSetParameter(current_ctx,kCGLCPSwapInterval,&swapint);
-	}
-	
+	}	
 #endif
     
 	glEnable(GL_SCISSOR_TEST);

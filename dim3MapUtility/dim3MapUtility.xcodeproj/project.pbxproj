@@ -377,7 +377,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.3;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
-				PER_ARCH_CFLAGS_i386 = "-fast -msse2 -fPIC";
+				PER_ARCH_CFLAGS_i386 = "-msse2 -fPIC -fno-omit-frame-pointer";
 				PER_ARCH_CFLAGS_ppc = "-fast -faltivec -fPIC -mcpu=G4";
 				PREBINDING = NO;
 				PRODUCT_NAME = libMapUtility;

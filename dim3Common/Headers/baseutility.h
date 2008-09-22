@@ -489,7 +489,7 @@ typedef struct		{
 typedef struct		{
 						int						bump_mode;
 						float					txt_scale_x,txt_scale_y;
-						bool					additive;
+						bool					additive,pixelated;
 						char					material_name[name_str_len];
 						d3col					col;
 						bitmap_type				bitmaps[max_texture_frame],
@@ -507,8 +507,8 @@ typedef struct		{
 //
 
 extern void bitmap_new(bitmap_type *bitmap);
-extern bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int texture_quality_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression);
-extern bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression);
+extern bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int texture_quality_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated);
+extern bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col);
 extern bool bitmap_save(bitmap_type *bitmap,char *path);
 extern void bitmap_close(bitmap_type *bitmap);
 
@@ -518,10 +518,10 @@ extern void bitmap_texture_recalc_animation(texture_type *texture);
 extern void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale);
 extern void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_scale);
 
-extern bool bitmap_create_normal_from_height_bitmap(bitmap_type *bitmap,bitmap_type *height_map,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression);
-extern bool bitmap_create_normal_from_bitmap(bitmap_type *bitmap,bitmap_type *srce_bitmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression);
+extern bool bitmap_create_normal_from_height_bitmap(bitmap_type *bitmap,bitmap_type *height_map,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated);
+extern bool bitmap_create_normal_from_bitmap(bitmap_type *bitmap,bitmap_type *srce_bitmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated);
 
-extern bool bitmap_setup_render_glowmap(bitmap_type *glowmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression);
+extern bool bitmap_setup_render_glowmap(bitmap_type *glowmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated);
 
 extern unsigned char* bitmap_load_png_data(char *path,int *p_wid,int *p_high);
 extern bool bitmap_check(char *path,char *err_str);

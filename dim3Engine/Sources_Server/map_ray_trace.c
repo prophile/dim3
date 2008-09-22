@@ -551,13 +551,6 @@ void ray_trace_map(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_
 	for (n=0;n!=map.mesh.nmesh;n++) {
 		
 		mesh=&map.mesh.meshes[n];
-		
-			// skip pass through meshes
-
-		if (mesh->flag.pass_through) {
-			mesh++;
-			continue;
-		}
 
 			// rough bounds check
 
@@ -567,6 +560,10 @@ void ray_trace_map(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_
 		if ((spt->y>mesh->box.max.y) && (ept->y>mesh->box.max.y)) continue;
 		if ((spt->z<mesh->box.min.z) && (ept->z<mesh->box.min.z)) continue;
 		if ((spt->z>mesh->box.max.z) && (ept->z>mesh->box.max.z)) continue;
+		
+			// skip pass through meshes
+
+		if (mesh->flag.pass_through) continue;
 
 			// check polygons
 
@@ -612,8 +609,6 @@ void ray_trace_map(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_
 			contact->poly.mesh_idx=n;
 			contact->poly.poly_idx=k;
 		}
-
-		mesh++;
 	}
 }
 

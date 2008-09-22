@@ -651,7 +651,7 @@ void map_mesh_calculate_uv_center(map_type *map,int mesh_idx,float *gx,float *gy
       
 ======================================================= */
 
-int map_find_mesh(map_type *map,d3pnt *pnt)
+int map_mesh_find(map_type *map,d3pnt *pnt)
 {
 	int				n,mesh_idx;
 	double			d,dx,dy,dz,dist;
@@ -661,7 +661,8 @@ int map_find_mesh(map_type *map,d3pnt *pnt)
 
 		// look for meshes we are inside of
 
-	dist=0.0;
+	dist=(double)map_max_size;
+	dist=dist*dist;
 
 	mesh=map->mesh.meshes;
 
@@ -683,7 +684,7 @@ int map_find_mesh(map_type *map,d3pnt *pnt)
 		dz=(double)(mesh->box.mid.z-pnt->z);
 		d=(dx*dx)+(dy*dy)+(dz*dz);
 			
-		if ((mesh_idx==-1) || (d<dist)) {
+		if (d<dist) {
 			dist=d;
 			mesh_idx=n;
 		}
@@ -691,9 +692,21 @@ int map_find_mesh(map_type *map,d3pnt *pnt)
 		mesh++;
 	}
 
-	if (mesh_idx!=-1) return(mesh_idx);
+	return(mesh_idx);
+}
 
-		// if inside no meshes, then pick closest mesh
+int map_mesh_find_closest(map_type *map,d3pnt *pnt)
+{
+	int				n,mesh_idx;
+	double			d,dx,dy,dz,dist;
+	map_mesh_type	*mesh;
+
+		// find closest by distance to center
+
+	mesh_idx=0;
+	
+	dist=(double)map_max_size;
+	dist=dist*dist;
 
 	mesh=map->mesh.meshes;
 
@@ -704,7 +717,7 @@ int map_find_mesh(map_type *map,d3pnt *pnt)
 		dz=(double)(mesh->box.mid.z-pnt->z);
 		d=(dx*dx)+(dy*dy)+(dz*dz);
 
-		if ((mesh_idx==-1) || (d<dist)) {
+		if (d<dist) {
 			dist=d;
 			mesh_idx=n;
 		}
@@ -712,12 +725,20 @@ int map_find_mesh(map_type *map,d3pnt *pnt)
 		mesh++;
 	}
 
-	if (mesh_idx==-1) return(0);
-
 	return(mesh_idx);
 }
 
-int map_calculate_mesh_distance(map_mesh_type *mesh,d3pnt *pnt)
+int map_mesh_find_always(map_type *map,d3pnt *pnt)
+{
+	int			mesh_idx;
+		
+	mesh_idx=map_mesh_find(map,pnt);
+	if (mesh_idx==-1) mesh_idx=map_mesh_find_closest(map,pnt);
+	
+	return(mesh_idx);
+}
+
+int map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt)
 {
 	double			d,d2,dx,dy,dz;
 	

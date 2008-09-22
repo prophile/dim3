@@ -72,12 +72,11 @@ void view_create_mesh_draw_list(void)
 
 		// get mesh camera is in
 
-	start_mesh_idx=map_find_mesh(&map,&view.camera.pnt);
+	start_mesh_idx=map_mesh_find_always(&map,&view.camera.pnt);
 	start_mesh=&map.mesh.meshes[start_mesh_idx];
 
 		// obscure distance -- normally is the opengl projection
 		// distance but can be the fog distance if fog is on
-
 
 	if (!fog_solid_on()) {
 		obscure_dist=view.camera.far_z-view.camera.near_z;
@@ -102,7 +101,7 @@ void view_create_mesh_draw_list(void)
 
 		mesh=&map.mesh.meshes[n];
 
-		d=map_calculate_mesh_distance(mesh,&view.camera.pnt);
+		d=map_mesh_calculate_distance(mesh,&view.camera.pnt);
 		if (d>obscure_dist) continue;
 
 		if (!boundbox_inview(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y)) continue;
@@ -300,7 +299,7 @@ void view_setup_projectiles(int tick)
 		
 			// find model and shadows in view
 			
-		mesh_idx=map_find_mesh(&map,&proj->draw.pnt);
+		mesh_idx=map_mesh_find(&map,&proj->draw.pnt);
 		view_setup_model_in_view(&proj->draw,TRUE,FALSE,mesh_idx);
 		
 			// setup model animations for models in view

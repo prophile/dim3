@@ -418,7 +418,7 @@ void piece_add_height_map_mesh(void)
 		// get the png
 		
 	if (!import_load_file(path,"png")) return;
-	if (!bitmap_open(&bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE)) return;
+	if (!bitmap_open(&bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE)) return;
 	
 		// division and sizes
 		

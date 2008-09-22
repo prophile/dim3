@@ -56,22 +56,22 @@ bool walk_view_initialize(void)
 		// interface textures
 		
 	file_paths_app(&file_path_setup,path,"Contents/Resources/Icons","spot","png");
-	bitmap_open(&spot_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
+	bitmap_open(&spot_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
 
 	file_paths_app(&file_path_setup,path,"Contents/Resources/Icons","scenery","png");
-	bitmap_open(&scenery_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
+	bitmap_open(&scenery_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
 	
 	file_paths_app(&file_path_setup,path,"Contents/Resources/Icons","node","png");
-	bitmap_open(&node_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
+	bitmap_open(&node_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
 	
 	file_paths_app(&file_path_setup,path,"Contents/Resources/Icons","light","png");
-	bitmap_open(&light_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
+	bitmap_open(&light_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
 
 	file_paths_app(&file_path_setup,path,"Contents/Resources/Icons","sound","png");
-	bitmap_open(&sound_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
+	bitmap_open(&sound_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
 
 	file_paths_app(&file_path_setup,path,"Contents/Resources/Icons","particle","png");
-	bitmap_open(&particle_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
+	bitmap_open(&particle_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
 
 	return(TRUE);
 }
