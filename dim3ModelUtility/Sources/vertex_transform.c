@@ -247,7 +247,7 @@ void model_delete_sel_vertex(model_type *model,int mesh_idx)
 					
 			for (k=0;k!=max_model_texture;k++) {
 			
-				if (model->textures[k].bitmaps[0].data!=NULL) {
+				if (model->textures[k].bitmaps[0].gl_id!=-1) {
 				
 					trig_start=model->meshes[mesh_idx].materials[k].trig_start;
 					trig_end=trig_start+model->meshes[mesh_idx].materials[k].trig_count;

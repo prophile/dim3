@@ -193,7 +193,7 @@ bool map_start(bool skip_media,char *err_str)
 	sprintf(txt,"Opening %s",map.info.name);
 	console_add_system(txt);
 	
-	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.texture_quality_mode,setup.mipmap_mode,setup.mipmap_card_generated,setup.texture_compression);
+	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.mipmap_card_generated,setup.texture_compression);
 	
 	load_shaders=gl_check_shader_ok();
 

@@ -79,8 +79,7 @@ void model_textures_read(model_type *model)
     int						i,k;
     char					sub_path[1024],path[1024];
 	texture_type			*texture;
-	bitmap_type				*bitmap,*bumpmap,*specularmap,*glowmap,
-							height_bitmap;
+	bitmap_type				*bitmap,*bumpmap,*specularmap,*glowmap;
    
         // load the fills
         
@@ -96,31 +95,31 @@ void model_textures_read(model_type *model)
         for (k=0;k!=max_texture_frame;k++) {
 		
 			if (bitmap->name[0]!=0x0) {
+
 				sprintf(sub_path,"Models/%s/Bitmaps/Textures",model->name);
 				file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,bitmap->name,"png");
-				bitmap_open(bitmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.texture_quality_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated);
+				bitmap_open(bitmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated,FALSE);
 
 					// bumpmap
 					
 				switch (texture->bump_mode) {
 				
 					case bump_mode_auto_generate:
-						bitmap_create_normal_from_bitmap(bumpmap,bitmap,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated);
+						sprintf(sub_path,"Models/%s/Bitmaps/Textures",model->name);
+						file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,bitmap->name,"png");
+						bitmap_open_normal_from_bitmap(bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated);
 						break;
-						
+
 					case bump_mode_height_map:
-						bitmap_new(&height_bitmap);
 						sprintf(sub_path,"Models/%s/Bitmaps/Textures_Height",model->name);
 						file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,bumpmap->name,"png");
-						bitmap_open(&height_bitmap,path,anisotropic_mode_none,modelutility_settings.texture_quality_mode,mipmap_mode_none,FALSE,FALSE,texture->pixelated);
-						bitmap_create_normal_from_height_bitmap(bumpmap,&height_bitmap,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated);
-						bitmap_close(&height_bitmap);
+						bitmap_open_normal_from_height(bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated);
 						break;
 						
 					case bump_mode_normal_map:
 						sprintf(sub_path,"Models/%s/Bitmaps/Textures_dot3",model->name);
 						file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,bumpmap->name,"png");
-						bitmap_open(bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.texture_quality_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated);
+						bitmap_open(bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated,FALSE);
 						break;
 						
 				}
@@ -130,7 +129,7 @@ void model_textures_read(model_type *model)
 				if (specularmap->name[0]!=0x0) {
 					sprintf(sub_path,"Models/%s/Bitmaps/Textures_Specular",model->name);
 					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,specularmap->name,"png");
-					bitmap_open(specularmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.texture_quality_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated);
+					bitmap_open(specularmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated,FALSE);
 				}
 
 					// glow map
@@ -138,7 +137,7 @@ void model_textures_read(model_type *model)
 				if (glowmap->name[0]!=0x0) {
 					sprintf(sub_path,"Models/%s/Bitmaps/Textures_Glow",model->name);
 					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,glowmap->name,"png");
-					bitmap_open(glowmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.texture_quality_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated);
+					bitmap_open(glowmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated,TRUE);
 				}
 			}
 			
@@ -150,38 +149,6 @@ void model_textures_read(model_type *model)
         
         texture++;
 	}
-}
-
-/* =======================================================
-
-      Convert Glow Maps
-      
-======================================================= */
-
-bool model_textures_setup_glowmaps(model_type *model)
-{
-	int					i,k;
-	texture_type		*texture;
-	bitmap_type			*bitmap,*glowmap;
-	
-    texture=model->textures;
-    
-	for (i=0;i!=max_model_texture;i++) {
-		bitmap=texture->bitmaps;
-		glowmap=texture->glowmaps;
-		
-		for (k=0;k!=max_texture_frame;k++) {
-			if ((bitmap->data!=NULL) && (glowmap->data!=NULL)) {
-				if (!bitmap_setup_render_glowmap(glowmap,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated)) return(FALSE);
-			}
-			bitmap++;
-			glowmap++;
-		}
-		
-		texture++;
-	}
-	
-	return(TRUE);
 }
 
 /* =======================================================
@@ -206,10 +173,10 @@ void model_textures_close(model_type *model)
 		glowmap=texture->glowmaps;
   
         for (k=0;k!=max_texture_frame;k++) {
-			if (bitmap->data!=NULL) bitmap_close(bitmap);
-			if (bumpmap->data!=NULL) bitmap_close(bumpmap);
-			if (specularmap->data!=NULL) bitmap_close(specularmap);
-			if (glowmap->data!=NULL) bitmap_close(glowmap);
+			bitmap_close(bitmap);
+			bitmap_close(bumpmap);
+			bitmap_close(specularmap);
+			bitmap_close(glowmap);
 			
 			bitmap++;
 			bumpmap++;

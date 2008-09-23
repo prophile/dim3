@@ -271,7 +271,6 @@ bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *pa
 						ss_wid,ss_high,dsz;
 	unsigned char		*pixel_buffer,*data,*sptr,*dptr,*s2ptr,*d2ptr;
 	bool				ok;
-	bitmap_type			bitmap;
 	
 	pixel_buffer=(unsigned char*)valloc((wid*3)*high);
 	if (pixel_buffer==NULL) return(FALSE);
@@ -326,11 +325,8 @@ bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *pa
 	free(pixel_buffer);
 
 		// save screenshot
-		
-	bitmap.data=data;
-	bitmap.wid=ss_wid;
-	bitmap.high=ss_high;
-	ok=bitmap_save(&bitmap,path);
+
+	ok=bitmap_write_png_data(data,ss_wid,ss_high,path);
 		
 	free(data);
 	

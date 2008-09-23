@@ -80,8 +80,7 @@ bool map_textures_read(map_type *map,bool in_engine)
 	char				path[1024];
 	bool				txt_ok[max_map_texture];
 	texture_type		*texture;
-	bitmap_type			*bitmap,*bumpmap,*specularmap,*glowmap,
-						height_bitmap;
+	bitmap_type			*bitmap,*bumpmap,*specularmap,*glowmap;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	map_liquid_type		*liq;
@@ -146,27 +145,25 @@ bool map_textures_read(map_type *map,bool in_engine)
 					// bitmap
 					
 				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",bitmap->name,"png");
-				bitmap_open(bitmap,path,maputility_settings.anisotropic_mode,maputility_settings.texture_quality_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated);
+				bitmap_open(bitmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated,FALSE);
 			
 					// bumpmap
 
 				switch (texture->bump_mode) {
 				
 					case bump_mode_auto_generate:
-						bitmap_create_normal_from_bitmap(bumpmap,bitmap,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated);
+						file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",bitmap->name,"png");
+						bitmap_open_normal_from_bitmap(bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated);
 						break;
 						
 					case bump_mode_height_map:
-						bitmap_new(&height_bitmap);
 						file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures_Height",bumpmap->name,"png");
-						bitmap_open(&height_bitmap,path,anisotropic_mode_none,maputility_settings.texture_quality_mode,mipmap_mode_none,FALSE,FALSE,texture->pixelated);
-						bitmap_create_normal_from_height_bitmap(bumpmap,&height_bitmap,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated);
-						bitmap_close(&height_bitmap);
+						bitmap_open_normal_from_height(bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated);
 						break;
 						
 					case bump_mode_normal_map:
 						file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures_dot3",bumpmap->name,"png");
-						bitmap_open(bumpmap,path,anisotropic_mode_none,maputility_settings.texture_quality_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated);
+						bitmap_open(bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated,FALSE);
 						break;
 						
 				}
@@ -175,14 +172,14 @@ bool map_textures_read(map_type *map,bool in_engine)
 					
 				if (specularmap->name[0]!=0x0) {
 					file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures_Specular",specularmap->name,"png");
-					bitmap_open(specularmap,path,maputility_settings.anisotropic_mode,maputility_settings.texture_quality_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated);
+					bitmap_open(specularmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated,FALSE);
 				}
 				
 					// glow map
 					
 				if (glowmap->name[0]!=0x0) {
 					file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures_Glow",glowmap->name,"png");
-					bitmap_open(glowmap,path,maputility_settings.anisotropic_mode,maputility_settings.texture_quality_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated);
+					bitmap_open(glowmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated,TRUE);
 				}
 			}
 			
@@ -191,38 +188,6 @@ bool map_textures_read(map_type *map,bool in_engine)
 			specularmap++;
 			glowmap++;
 		}
-	}
-	
-	return(TRUE);
-}
-
-/* =======================================================
-
-      Convert Glow Maps
-      
-======================================================= */
-
-bool map_textures_setup_glowmaps(map_type *map)
-{
-	int					i,k;
-	texture_type		*texture;
-	bitmap_type			*bitmap,*glowmap;
-	
-	texture=map->textures;
-	
-	for (i=0;i!=max_map_texture;i++) {
-		bitmap=texture->bitmaps;
-		glowmap=texture->glowmaps;
-		
-		for (k=0;k!=max_texture_frame;k++) {
-			if ((bitmap->data!=NULL) && (glowmap->data!=NULL)) {
-				if (!bitmap_setup_render_glowmap(glowmap,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.card_generated_mipmaps,maputility_settings.compression,texture->pixelated)) return(FALSE);
-			}
-			bitmap++;
-			glowmap++;
-		}
-		
-		texture++;
 	}
 	
 	return(TRUE);
@@ -250,15 +215,10 @@ void map_textures_close(map_type *map)
 		glowmap=texture->glowmaps;
 		
 		for (k=0;k!=max_texture_frame;k++) {
-			if (bitmap->data!=NULL) bitmap_close(bitmap);
-			if (bumpmap->data!=NULL) bitmap_close(bumpmap);
-			if (specularmap->data!=NULL) bitmap_close(specularmap);
-			if (glowmap->data!=NULL) bitmap_close(glowmap);
-			
-			bitmap->data=NULL;
-			bumpmap->data=NULL;
-			specularmap->data=NULL;
-			glowmap->data=NULL;
+			bitmap_close(bitmap);
+			bitmap_close(bumpmap);
+			bitmap_close(specularmap);
+			bitmap_close(glowmap);
 			
 			bitmap++;
 			bumpmap++;

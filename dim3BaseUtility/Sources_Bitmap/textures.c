@@ -99,14 +99,14 @@ void bitmap_texture_set_mipmap_filter(int mipmap_mode,bool pixelated)
       
 ======================================================= */
 
-bool bitmap_texture_open(bitmap_type *bitmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated)
+bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated)
 {
 	int					gl_txtformat;
 	GLuint				gl_id;
 	
 		// if no bitmap data then no texture
 		
-	if (bitmap->data==NULL) return(FALSE);
+	if (data==NULL) return(FALSE);
 
 		// bind the texture
 		
@@ -130,18 +130,18 @@ bool bitmap_texture_open(bitmap_type *bitmap,int anisotropic_mode,int mipmap_mod
 		
 	if ((mipmap_mode==mipmap_mode_none) || (pixelated)) {
 		glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE,GL_TRUE);
-		glTexImage2D(GL_TEXTURE_2D,0,gl_txtformat,bitmap->wid,bitmap->high,0,GL_RGBA,GL_UNSIGNED_BYTE,bitmap->data);
+		glTexImage2D(GL_TEXTURE_2D,0,gl_txtformat,bitmap->wid,bitmap->high,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
 		glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE,GL_FALSE);
 	}
 	else {
 		if (!use_card_generated_mipmaps) {
-			gluBuild2DMipmaps(GL_TEXTURE_2D,gl_txtformat,bitmap->wid,bitmap->high,GL_RGBA,GL_UNSIGNED_BYTE,bitmap->data);
+			gluBuild2DMipmaps(GL_TEXTURE_2D,gl_txtformat,bitmap->wid,bitmap->high,GL_RGBA,GL_UNSIGNED_BYTE,data);
 		}
 		else {
 			glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE,GL_TRUE);
 			glHint(GL_GENERATE_MIPMAP_HINT_SGIS,GL_NICEST);
 			glTexParameteri(GL_TEXTURE_2D,GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
-			glTexImage2D(GL_TEXTURE_2D,0,gl_txtformat,bitmap->wid,bitmap->high,0,GL_RGBA,GL_UNSIGNED_BYTE,bitmap->data);
+			glTexImage2D(GL_TEXTURE_2D,0,gl_txtformat,bitmap->wid,bitmap->high,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
 			glTexParameteri(GL_TEXTURE_2D,GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
 			glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE,GL_FALSE);
 		}
@@ -227,7 +227,7 @@ void bitmap_texture_setup_animation(texture_type *texture,int texture_count,unsi
 	
 	for (n=0;n!=texture_count;n++) {
 	
-		if (texture->bitmaps[0].data==NULL) {
+		if (texture->bitmaps[0].gl_id==-1) {
 			texture++;
 			continue;
 		}
@@ -245,9 +245,7 @@ void bitmap_texture_setup_animation(texture_type *texture,int texture_count,unsi
 		
 			// set the glow
 
-		if (texture->glowmaps[0].data!=NULL) {
-			bitmap_texture_set_glow(texture,tick);
-		}
+		if (texture->glowmaps[0].gl_id!=-1) bitmap_texture_set_glow(texture,tick);
 		
 		texture++;
 	}

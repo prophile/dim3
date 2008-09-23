@@ -48,7 +48,7 @@ void cursor_initialize(void)
 	char		path[1024];
 	
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","cursor","png");
-	bitmap_open(&cursor_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&cursor_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 }
 
 void cursor_shutdown(void)

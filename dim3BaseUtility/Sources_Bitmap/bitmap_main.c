@@ -39,7 +39,6 @@ void bitmap_new(bitmap_type *bitmap)
 {
 	bitmap->name[0]=0x0;
 	bitmap->wid=bitmap->high=0;
-	bitmap->data=NULL;
 	bitmap->gl_id=-1;
 }
 
@@ -49,11 +48,13 @@ void bitmap_new(bitmap_type *bitmap)
       
 ======================================================= */
 
-bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int texture_quality_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated)
+bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated,bool scrub_black_to_alpha)
 {
 	int					n,psz;
 	char				*c;
-	unsigned char		*data;
+	unsigned char		gr,gg,gb;
+	unsigned char		*png_data,*data;
+	bool				ok;
 	
 	bitmap_new(bitmap);
 	
@@ -67,15 +68,34 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int texture
 	
 		// read bitmap
 	
-	bitmap->data=png_utility_read(path,&bitmap->wid,&bitmap->high);
-	if (bitmap->data==NULL) return(FALSE);
+	png_data=png_utility_read(path,&bitmap->wid,&bitmap->high);
+	if (png_data==NULL) return(FALSE);
+
+	psz=(bitmap->wid<<2)*bitmap->high;
+
+		// scrub blacks to alpahs
+		// this is mostly used for glow maps
+
+	if (scrub_black_to_alpha) {
+
+		data=png_data;
+
+		for (n=0;n<psz;n+=4) {
+			gr=*data++;
+			gg=*data++;
+			gb=*data++;
+				
+			if ((gr==0) && (gg==0) && (gb==0)) *data=0;
+				
+			data++;
+		}
+	}
 	
 		// find if bitmap has transparencies
 		
 	bitmap->alpha_mode=alpha_mode_none;
 		
-	psz=(bitmap->wid<<2)*bitmap->high;
-	data=bitmap->data+3;
+	data=png_data+3;
 	
 	for (n=0;n<psz;n+=4) {
 	
@@ -92,28 +112,13 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int texture
 		data+=4;
 	}
 	
-		// quality changes
-		
-	switch (texture_quality_mode) {
-		
-		case texture_quality_mode_low:
-			bitmap_reduce(bitmap,128);
-			break;
-			
-		case texture_quality_mode_medium:
-			bitmap_reduce(bitmap,256);
-			break;
-			
-	}
-	
 		// get the texture
 		
-	if (!bitmap_texture_open(bitmap,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression,pixelated)) {
-		free(bitmap->data);
-		return(FALSE);
-	}
+	ok=bitmap_texture_open(bitmap,png_data,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression,pixelated);
+
+	free(png_data);
 	
-	return(TRUE);
+	return(ok);
 }
 
 /* =======================================================
@@ -124,28 +129,30 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int texture
 
 bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col)
 {
-	int			i;
-	long		collong,*dptr;
+	int				i;
+	long			collong,*dptr;
+	unsigned char	*png_data;
+	bool			ok;
 	
 	strcpy(bitmap->name,name);
 	bitmap->wid=bitmap->high=32;
 	
-	bitmap->data=valloc(4096);
-	if (bitmap->data==NULL) return(FALSE);
+	png_data=valloc(4096);
+	if (png_data==NULL) return(FALSE);
 	
 	collong=((int)(0xFF*col->r)<<24)|((int)(0xFF*col->g)<<16)|((int)(0xFF*col->b)<<8)|0x000000FF;
 	
-	dptr=(long*)bitmap->data;
+	dptr=(long*)png_data;
+
 	for (i=0;i!=1024;i++) {
 		*dptr++=collong;
 	}
 	
-	if (!bitmap_texture_open(bitmap,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,TRUE)) {
-		free(bitmap->data);
-		return(FALSE);
-	}
+	ok=bitmap_texture_open(bitmap,png_data,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,TRUE);
+
+	free(png_data);
 	
-	return(TRUE);
+	return(ok);
 }
 
 /* =======================================================
@@ -163,19 +170,12 @@ bool bitmap_data(bitmap_type *bitmap,char *name,unsigned char *data,int wid,int 
 	bitmap->wid=wid;
 	bitmap->high=high;
 	
-		// copy over bitmap
-		
-	psz=(wid*4)*high;
-
-	bitmap->data=valloc(psz);
-	if (bitmap->data==NULL) return(FALSE);
-
-	memmove(bitmap->data,data,psz);
-	
 		// find if bitmap has transparencies
 		
 	bitmap->alpha_mode=alpha_mode_none;
-	ptr=bitmap->data+3;
+	ptr=data+3;
+
+	psz=(wid*4)*high;
 	
 	for (n=0;n<psz;n+=4) {
 	
@@ -194,23 +194,7 @@ bool bitmap_data(bitmap_type *bitmap,char *name,unsigned char *data,int wid,int 
 
 		// get the texture
 		
-	if (!bitmap_texture_open(bitmap,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression,TRUE)) {
-		free(bitmap->data);
-		return(FALSE);
-	}
-	
-	return(TRUE);
-}
-
-/* =======================================================
-
-      Save Bitmaps
-      
-======================================================= */
-
-bool bitmap_save(bitmap_type *bitmap,char *path)
-{
-	return(png_utility_write(bitmap->data,bitmap->wid,bitmap->high,path));
+	return(bitmap_texture_open(bitmap,data,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression,TRUE));
 }
 
 /* =======================================================
@@ -222,10 +206,8 @@ bool bitmap_save(bitmap_type *bitmap,char *path)
 void bitmap_close(bitmap_type *bitmap)
 {
 	if (bitmap->gl_id!=-1) bitmap_texture_close(bitmap);
-	if (bitmap->data!=NULL) free(bitmap->data);
 	
 	bitmap->gl_id=-1;
-	bitmap->data=NULL;
 }
 
 /* =======================================================
@@ -237,6 +219,11 @@ void bitmap_close(bitmap_type *bitmap)
 unsigned char* bitmap_load_png_data(char *path,int *p_wid,int *p_high)
 {
 	return(png_utility_read(path,p_wid,p_high));
+}
+
+bool bitmap_write_png_data(unsigned char *data,int wid,int high,char *path)
+{
+	return(png_utility_write(data,wid,high,path));
 }
 
 bool bitmap_check(char *path,char *err_str)

@@ -72,77 +72,77 @@ void element_open_global_bitmaps(void)
 		// text boxes
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","textbox","png");
-	bitmap_open(&element_textbox,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_textbox,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","textbox_selected","png");
-	bitmap_open(&element_textbox_selected,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_textbox_selected,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 		// combos
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","combo_close","png");
-	bitmap_open(&element_combo_close,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_combo_close,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","combo_close_selected","png");
-	bitmap_open(&element_combo_close_selected,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_combo_close_selected,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","combo_open_top","png");
-	bitmap_open(&element_combo_open_top,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_combo_open_top,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","combo_open_top_selected","png");
-	bitmap_open(&element_combo_open_top_selected,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_combo_open_top_selected,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","combo_open_middle","png");
-	bitmap_open(&element_combo_open_middle,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_combo_open_middle,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","combo_open_middle_selected","png");
-	bitmap_open(&element_combo_open_middle_selected,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_combo_open_middle_selected,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","combo_open_bottom","png");
-	bitmap_open(&element_combo_open_bottom,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_combo_open_bottom,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","combo_open_bottom_selected","png");
-	bitmap_open(&element_combo_open_bottom_selected,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_combo_open_bottom_selected,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 		// checkboxes
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","checkbox_true","png");
-	bitmap_open(&element_checkbox_true,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_checkbox_true,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","checkbox_true_selected","png");
-	bitmap_open(&element_checkbox_true_selected,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_checkbox_true_selected,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","checkbox_false","png");
-	bitmap_open(&element_checkbox_false,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_checkbox_false,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","checkbox_false_selected","png");
-	bitmap_open(&element_checkbox_false_selected,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_checkbox_false_selected,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 		// sliders
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","slider","png");
-	bitmap_open(&element_slider,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_slider,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","slider_selected","png");
-	bitmap_open(&element_slider_selected,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_slider_selected,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","slider_fill","png");
-	bitmap_open(&element_slider_fill,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_slider_fill,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 		// tables
 		
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","scroll_up","png");
-	bitmap_open(&element_scroll_up,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_scroll_up,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","scroll_down","png");
-	bitmap_open(&element_scroll_down,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_scroll_down,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","busy","png");
-	bitmap_open(&element_busy,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_busy,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 		
 		// tabs
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","tab_border","png");
-	bitmap_open(&element_tab_border,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element_tab_border,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 }
 
 void element_close_global_bitmaps(void)
@@ -299,13 +299,13 @@ void element_button_add(char *path,char *path2,int id,int x,int y,int wid,int hi
 	
 		// skip button if graphic is missing to avoid crash
 
-	if (!bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE)) {
+	if (!bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE)) {
 		nelement--;
 		pthread_mutex_unlock(&element_thread_lock);
 		return;
 	}
 
-	bitmap_open(&element->setup.button.bitmap_select,path2,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&element->setup.button.bitmap_select,path2,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	if ((wid!=-1) && (high!=-1)) {
 		element->wid=wid;
@@ -353,7 +353,7 @@ void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool fram
 		element->setup.button.bitmap.gl_id=-1;
 	}
 	else {
-		bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+		bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 	}
 	
 	element->x=x;
@@ -650,8 +650,8 @@ void element_tab_add(char *path_list,char *path2_list,int value,int id,int ntab,
 	element->setup.tab.ntab=ntab;
 	
 	for (n=0;n!=ntab;n++) {
-		bitmap_open(&element->setup.tab.bitmap[n],(char*)&path_list[n*1024],anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
-		bitmap_open(&element->setup.tab.bitmap_select[n],(char*)&path2_list[n*1024],anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+		bitmap_open(&element->setup.tab.bitmap[n],(char*)&path_list[n*1024],anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
+		bitmap_open(&element->setup.tab.bitmap_select[n],(char*)&path2_list[n*1024],anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 	}
 
 	pthread_mutex_unlock(&element_thread_lock);
@@ -1876,7 +1876,7 @@ void element_table_load_row_bitmaps(element_type *element)
 			file_paths_documents(&setup.file_path_setup,path,subdir,filename,"png");
 		}
 
-		bitmap_open(&element->setup.table.bitmap[n],path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+		bitmap_open(&element->setup.table.bitmap[n],path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 	}
 }
 
@@ -2708,7 +2708,7 @@ void element_set_bitmap(int id,char *path)
 			element->setup.button.bitmap.gl_id=-1;
 		}
 		else {
-			bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+			bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 		}
 	}
 

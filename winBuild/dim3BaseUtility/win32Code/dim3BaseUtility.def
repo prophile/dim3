@@ -174,8 +174,7 @@ EXPORTS
 	bitmap_open									@351
 	bitmap_color								@352
 	bitmap_data									@353
-	bitmap_save									@354
-	bitmap_close								@355
+	bitmap_close								@354
 
 	bitmap_texture_setup_animation				@360
 	bitmap_texture_recalc_animation				@361
@@ -183,20 +182,19 @@ EXPORTS
 	bitmap_texture_read_xml						@370
 	bitmap_texture_write_xml					@371
 
-	bitmap_create_normal_from_height_bitmap		@380
-	bitmap_create_normal_from_bitmap			@381
-
-	bitmap_setup_render_glowmap					@390
+	bitmap_open_normal_from_height				@380
+	bitmap_open_normal_from_bitmap				@381
 
 	bitmap_load_png_data						@400
-	bitmap_check								@401
-	bitmap_copy									@402
+	bitmap_write_png_data						@401
+	bitmap_check								@402
+	bitmap_copy									@403
 
-	bitmap_movie_start							@403
-	bitmap_movie_end							@404
-	bitmap_movie_get_texture_id					@405
-	bitmap_movie_playing						@406
-	bitmap_movie_texture_refresh				@407
+	bitmap_movie_start							@404
+	bitmap_movie_end							@405
+	bitmap_movie_get_texture_id					@406
+	bitmap_movie_playing						@407
+	bitmap_movie_texture_refresh				@408
 
 	shader_map_add								@410
 	shader_model_add							@411

@@ -150,8 +150,8 @@ model_type* model_load_single(char *name)
 
 	load_shaders=gl_check_shader_ok();
 	
-	model_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.texture_quality_mode,setup.mipmap_mode,setup.mipmap_card_generated,setup.texture_compression);
-	if (!model_open(mdl,name,TRUE,TRUE,load_shaders)) return(NULL);
+	model_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.mipmap_card_generated,setup.texture_compression);
+	if (!model_open(mdl,name,TRUE,load_shaders)) return(NULL);
 
 		// deal with shader errors or shaders turned off
 

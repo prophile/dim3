@@ -115,25 +115,32 @@ void bitmap_normal_data_create_from_gs_data(ptr data,float *gs_data,int wid,int 
       
 ======================================================= */
 
-bool bitmap_create_normal_from_height_bitmap(bitmap_type *bitmap,bitmap_type *height_bitmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated)
+bool bitmap_open_normal_from_height(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated)
 {
 	int					x,y,wid,high;
-	ptr					data,p_data;
+	char				*c;
+	unsigned char		*png_data,*data,*p_data;
 	float				*gs_data,*p_gs_data;
+	bool				ok;
 	
-		// is height bitmap open?
+		// get name
 		
-	if (height_bitmap->data==NULL) return(FALSE);
+	c=strrchr(path,'/');
+	if (c!=NULL) strcpy(bitmap->name,(c+1));
 	
-		// duplicate settings
+	c=strrchr(bitmap->name,'.');
+	if (c!=NULL) *c=0x0;
+
+	strcat(bitmap->name,"_normal");
+	
+		// read bitmap
+	
+	png_data=png_utility_read(path,&bitmap->wid,&bitmap->high);
+	if (png_data==NULL) return(FALSE);
 		
-	bitmap->wid=height_bitmap->wid;
-	bitmap->high=height_bitmap->high;
-	strcpy(bitmap->name,height_bitmap->name);
-	bitmap->name[file_str_len-1]=0x0;
 	bitmap->alpha_mode=alpha_mode_none;
-	bitmap->gl_id=-1;
-	bitmap->data=NULL;
+	
+	bitmap->alpha_mode=alpha_mode_none;
 	
 		// new data
 		
@@ -141,19 +148,23 @@ bool bitmap_create_normal_from_height_bitmap(bitmap_type *bitmap,bitmap_type *he
 	high=bitmap->high;
 		
 	data=valloc((wid<<2)*high);
-	if (data==NULL) return(FALSE);
-	
+	if (data==NULL) {
+		free(png_data);
+		return(FALSE);
+	}
+
 		// gray scale map
 		
 	gs_data=(float*)valloc((wid*high)*sizeof(float));
 	if (gs_data==NULL) {
+		free(png_data);
 		free(data);
 		return(FALSE);
 	}
 	
 		// create the gray scale
 		
-	p_data=height_bitmap->data;
+	p_data=png_data;
 	p_gs_data=gs_data;
 	
 	for (y=0;y!=high;y++) {
@@ -166,17 +177,16 @@ bool bitmap_create_normal_from_height_bitmap(bitmap_type *bitmap,bitmap_type *he
 		// create the normal
 	
 	bitmap_normal_data_create_from_gs_data(data,gs_data,wid,high);
-	
-	bitmap->data=data;
 
 		// open the texture
 		
-	if (!bitmap_texture_open(bitmap,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression,pixelated)) {
-		free(bitmap->data);
-		return(FALSE);
-	}
+	ok=bitmap_texture_open(bitmap,data,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression,pixelated);
 
-	return(TRUE);
+	free(png_data);
+	free(gs_data);
+	free(data);
+
+	return(ok);
 }
 
 /* =======================================================
@@ -185,46 +195,57 @@ bool bitmap_create_normal_from_height_bitmap(bitmap_type *bitmap,bitmap_type *he
       
 ======================================================= */
 
-bool bitmap_create_normal_from_bitmap(bitmap_type *bitmap,bitmap_type *srce_bitmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated)
+bool bitmap_open_normal_from_bitmap(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated)
 {
 	int					x,y,wid,high;
+	char				*c;
+	unsigned char		*png_data,*data,*p_data;
 	float				r,g,b;
 	float				*gs_data,*p_gs_data;
-	ptr					data,p_data;
+	bool				ok;
 	
-		// is srce bitmap open?
-		
-	if (srce_bitmap->data==NULL) return(FALSE);
+	bitmap_new(bitmap);
 	
-		// duplicate settings
+		// get name
 		
-	bitmap->wid=srce_bitmap->wid;
-	bitmap->high=srce_bitmap->high;
-	snprintf(bitmap->name,file_str_len,"%s_normal",srce_bitmap->name);
-	bitmap->name[file_str_len-1]=0x0;
+	c=strrchr(path,'/');
+	if (c!=NULL) strcpy(bitmap->name,(c+1));
+	
+	c=strrchr(bitmap->name,'.');
+	if (c!=NULL) *c=0x0;
+
+	strcat(bitmap->name,"_normal");
+	
+		// read bitmap
+	
+	png_data=png_utility_read(path,&bitmap->wid,&bitmap->high);
+	if (png_data==NULL) return(FALSE);
+		
 	bitmap->alpha_mode=alpha_mode_none;
-	bitmap->gl_id=-1;
-	bitmap->data=NULL;
 	
-		// new data
+		// translate the data
 		
 	wid=bitmap->wid;
 	high=bitmap->high;
 		
 	data=valloc((wid<<2)*high);
-	if (data==NULL) return(FALSE);
-	
+	if (data==NULL) {
+		free(png_data);
+		return(FALSE);
+	}
+
 		// gray scale map
 		
 	gs_data=(float*)valloc((wid*high)*sizeof(float));
 	if (gs_data==NULL) {
+		free(png_data);
 		free(data);
 		return(FALSE);
 	}
 	
 		// create the gray scale
 		
-	p_data=srce_bitmap->data;
+	p_data=png_data;
 	p_gs_data=gs_data;
 	
 	for (y=0;y!=high;y++) {
@@ -241,17 +262,16 @@ bool bitmap_create_normal_from_bitmap(bitmap_type *bitmap,bitmap_type *srce_bitm
 		// create the normal
 		
 	bitmap_normal_data_create_from_gs_data(data,gs_data,wid,high);
-	
-	bitmap->data=data;
 
 		// open the texture
 
-	if (!bitmap_texture_open(bitmap,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression,pixelated)) {
-		free(bitmap->data);
-		return(FALSE);
-	}
+	ok=bitmap_texture_open(bitmap,data,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression,pixelated);
 	
-	return(TRUE);
+	free(png_data);
+	free(gs_data);
+	free(data);
+	
+	return(ok);
 }
 
 

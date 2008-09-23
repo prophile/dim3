@@ -37,11 +37,10 @@ modelutility_settings_type		modelutility_settings;
       
 ======================================================= */
 
-void model_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int texture_quality_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression)
+void model_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression)
 {
 	memmove(&modelutility_settings.file_path_setup,file_path_setup,sizeof(file_path_setup_type));
 	modelutility_settings.anisotropic_mode=anisotropic_mode;
-	modelutility_settings.texture_quality_mode=texture_quality_mode;
 	modelutility_settings.mipmap_mode=mipmap_mode;
 	modelutility_settings.card_generated_mipmaps=use_card_generated_mipmaps;
 	modelutility_settings.compression=use_compression;
@@ -152,7 +151,7 @@ bool model_new(model_type *model,char *name)
       
 ======================================================= */
 
-bool model_open(model_type *model,char *name,bool load_bitmaps,bool setup_glowmaps,bool load_shaders)
+bool model_open(model_type *model,char *name,bool load_bitmaps,bool load_shaders)
 {
 	char			sub_path[1024];
 	
@@ -182,7 +181,6 @@ bool model_open(model_type *model,char *name,bool load_bitmaps,bool setup_glowma
 		// read bitmaps
 
 	if (load_bitmaps) model_textures_read(model);
-	if (setup_glowmaps) model_textures_setup_glowmaps(model);
 	
 		// read shaders
 		

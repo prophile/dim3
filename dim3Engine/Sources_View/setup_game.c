@@ -46,7 +46,6 @@ and can be sold or given away.
 #define ctrl_fsaa_id						1
 #define ctrl_lock_fps_refresh_id			2
 #define ctrl_anisotropic_id					3
-#define ctrl_texture_quality_id				4
 #define ctrl_mipmap_id						5
 #define ctrl_mipmap_card_id					6
 #define ctrl_compression_id					7
@@ -108,7 +107,6 @@ int							setup_tab_value,setup_action_scroll_pos,
 
 char						setup_screen_size_list[max_screen_size][32],
 							setup_anisotropic_mode_list[][32]=anisotropic_mode_setup_list_def,
-							setup_texture_quality_mode_list[][32]=texture_quality_mode_setup_list_def,
 							setup_mipmap_mode_list[][32]=mipmap_mode_setup_list_def,
 							setup_fsaa_mode_list[][32]=setup_fsaa_mode_list_def,
 							setup_shadow_mode_list[][32]=setup_shadow_mode_list_def,
@@ -135,7 +133,7 @@ void setup_game_display_pane(void)
 	
 	control_y_add=element_get_control_high();
 	separate_y_add=element_get_separator_high();
-	control_y_sz=(control_y_add*7)+separate_y_add;
+	control_y_sz=(control_y_add*6)+separate_y_add;
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
@@ -165,8 +163,6 @@ void setup_game_display_pane(void)
 	
 	element_combo_add("Anisotropic Filtering",(char*)setup_anisotropic_mode_list,setup.anisotropic_mode,ctrl_anisotropic_id,x,y,TRUE);
 	element_enable(ctrl_anisotropic_id,gl_check_texture_anisotropic_filter_ok());
-	y+=control_y_add;
-	element_combo_add("Texture Quality",(char*)setup_texture_quality_mode_list,setup.texture_quality_mode,ctrl_texture_quality_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Texture Compression",setup.texture_compression,ctrl_compression_id,x,y,TRUE);
 	element_enable(ctrl_compression_id,gl_check_texture_compress_ok());
@@ -761,10 +757,6 @@ void setup_game_handle_click(int id)
 			setup.anisotropic_mode=element_get_value(ctrl_anisotropic_id);
 			break;
 			
-		case ctrl_texture_quality_id:
-			setup.texture_quality_mode=element_get_value(ctrl_texture_quality_id);
-			break;
-
 		case ctrl_mipmap_id:
 			setup.mipmap_mode=element_get_value(ctrl_mipmap_id);
 			break;

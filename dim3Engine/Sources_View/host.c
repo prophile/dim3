@@ -70,7 +70,7 @@ void host_fill_map_table(char *game_type)
 
 		// need to make sure map paths are correct
 
-	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.texture_quality_mode,setup.mipmap_mode,setup.mipmap_card_generated,setup.texture_compression);
+	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.mipmap_card_generated,setup.texture_compression);
 
 		// load in all maps with the correct game type
 

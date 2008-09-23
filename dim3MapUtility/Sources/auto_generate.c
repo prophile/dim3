@@ -1694,7 +1694,6 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 		// load textures
 
 	if (!map_textures_read(map,TRUE)) return(FALSE);
-	if (!map_textures_setup_glowmaps(map)) return(FALSE);
 	if (load_shaders) if (!map_shaders_read(map)) return(FALSE);
 
 		// setup auto generation values

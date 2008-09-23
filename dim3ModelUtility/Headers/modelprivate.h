@@ -30,7 +30,7 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int						anisotropic_mode,texture_quality_mode,mipmap_mode;
+						int						anisotropic_mode,mipmap_mode;
 						bool					card_generated_mipmaps,compression;
 						file_path_setup_type	file_path_setup;
                     } modelutility_settings_type;
@@ -57,7 +57,6 @@ extern bool write_animate_xml(model_type *model);
 
 extern void model_textures_clear(model_type *model);
 extern void model_textures_read(model_type *model);
-extern bool model_textures_setup_glowmaps(model_type *model);
 extern void model_textures_close(model_type *model);
 extern bool model_shaders_read(model_type *model);
 extern void model_shaders_close(model_type *model);

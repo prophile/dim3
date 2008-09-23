@@ -90,7 +90,7 @@ void chooser_open(void)
 
 			// add text element
 
-		element_text_add(str,0,text->x,text->y,text->just,(!text->large),text->clickable,FALSE);
+		element_text_add(str,text->text_id,text->x,text->y,text->just,(!text->large),text->clickable,FALSE);
 		text++;
 	}
 

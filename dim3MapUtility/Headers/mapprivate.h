@@ -30,7 +30,7 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int						anisotropic_mode,texture_quality_mode,mipmap_mode;
+						int						anisotropic_mode,mipmap_mode;
 						bool					card_generated_mipmaps,compression;
 						file_path_setup_type	file_path_setup;
                     } maputility_settings_type;
@@ -171,7 +171,6 @@ typedef struct		{
 
 extern int map_count_texture_frames(map_type *map,int txt);
 extern bool map_textures_read(map_type *map,bool in_engine);
-extern bool map_textures_setup_glowmaps(map_type *map);
 extern void map_textures_close(map_type *map);
 extern bool map_shaders_read(map_type *map);
 extern void map_shaders_close(map_type *map);

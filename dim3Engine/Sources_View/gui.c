@@ -96,12 +96,12 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view)
 		if (gl_is_screen_widescreen()) {
 			sprintf(name,"%s_wide",bitmap_name);
 			file_paths_data(&setup.file_path_setup,path,background_path,name,"png");
-			load_ok=bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+			load_ok=bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 		}
 
 		if (!load_ok) {
 			file_paths_data(&setup.file_path_setup,path,background_path,bitmap_name,"png");
-			bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+			bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 		}
 	}
 	

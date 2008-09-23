@@ -99,13 +99,13 @@ bool map_delete_texture_frame(map_type *map,int txt)
 	
 	count--;
 	map->textures[txt].bitmaps[count].name[0]=0x0;
-	map->textures[txt].bitmaps[count].data=NULL;
+	map->textures[txt].bitmaps[count].gl_id=-1;
 	map->textures[txt].bumpmaps[count].name[0]=0x0;
-	map->textures[txt].bumpmaps[count].data=NULL;
+	map->textures[txt].bumpmaps[count].gl_id=-1;
 	map->textures[txt].specularmaps[count].name[0]=0x0;
-	map->textures[txt].specularmaps[count].data=NULL;
+	map->textures[txt].specularmaps[count].gl_id=-1;
 	map->textures[txt].glowmaps[count].name[0]=0x0;
-	map->textures[txt].glowmaps[count].data=NULL;
+	map->textures[txt].glowmaps[count].gl_id=-1;
 	
 	return(map_textures_read(map,FALSE));
 }

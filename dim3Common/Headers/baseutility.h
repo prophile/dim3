@@ -366,16 +366,6 @@ extern bool xml_add_attribute_bit_array(char *name,unsigned char *value,int coun
 #define anisotropic_mode_setup_list_def			{"None","Low","Medium","High",""}
 
 //
-// texture quality modes
-//
-
-#define texture_quality_mode_low				0
-#define texture_quality_mode_medium				1
-#define texture_quality_mode_high				2
-
-#define texture_quality_mode_setup_list_def		{"Low","Medium","High",""}
-
-//
 // mipmap modes
 //
 
@@ -424,7 +414,6 @@ typedef struct		{
 						int						wid,high,alpha_mode;
 						char					name[file_str_len];
 						GLuint					gl_id;
-						ptr						data2;
 					} bitmap_type;
 
 //
@@ -507,10 +496,9 @@ typedef struct		{
 //
 
 extern void bitmap_new(bitmap_type *bitmap);
-extern bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int texture_quality_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated);
+extern bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated,bool scrub_black_to_alpha);
 extern bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col);
 extern bool bitmap_data(bitmap_type *bitmap,char *name,unsigned char *data,int wid,int high,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression);
-extern bool bitmap_save(bitmap_type *bitmap,char *path);
 extern void bitmap_close(bitmap_type *bitmap);
 
 extern void bitmap_texture_setup_animation(texture_type *texture,int texture_count,unsigned char *user_frames,int tick);
@@ -519,12 +507,11 @@ extern void bitmap_texture_recalc_animation(texture_type *texture);
 extern void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale);
 extern void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_scale);
 
-extern bool bitmap_create_normal_from_height_bitmap(bitmap_type *bitmap,bitmap_type *height_map,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated);
-extern bool bitmap_create_normal_from_bitmap(bitmap_type *bitmap,bitmap_type *srce_bitmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated);
-
-extern bool bitmap_setup_render_glowmap(bitmap_type *glowmap,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated);
+extern bool bitmap_open_normal_from_height(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated);
+extern bool bitmap_open_normal_from_bitmap(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated);
 
 extern unsigned char* bitmap_load_png_data(char *path,int *p_wid,int *p_high);
+extern bool bitmap_write_png_data(unsigned char *data,int wid,int high,char *path);
 extern bool bitmap_check(char *path,char *err_str);
 extern bool bitmap_copy(char *srce_path,char *dest_path);
 

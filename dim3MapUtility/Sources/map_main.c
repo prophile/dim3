@@ -37,11 +37,10 @@ maputility_settings_type		maputility_settings;
       
 ======================================================= */
 
-void map_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int texture_quality_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression)
+void map_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression)
 {
 	memmove(&maputility_settings.file_path_setup,file_path_setup,sizeof(file_path_setup_type));
 	maputility_settings.anisotropic_mode=anisotropic_mode;
-	maputility_settings.texture_quality_mode=texture_quality_mode;
 	maputility_settings.mipmap_mode=mipmap_mode;
 	maputility_settings.card_generated_mipmaps=use_card_generated_mipmaps;
 	maputility_settings.compression=use_compression;
@@ -235,7 +234,6 @@ bool map_open(map_type *map,char *name,bool in_engine,bool load_shaders)
 	if (!read_map_xml(map,in_engine)) return(FALSE);
 
 	if (!map_textures_read(map,in_engine)) return(FALSE);
-	if (in_engine) if (!map_textures_setup_glowmaps(map)) return(FALSE);
 	if ((in_engine) && (load_shaders)) if (!map_shaders_read(map)) return(FALSE);
 	
 	return(TRUE);

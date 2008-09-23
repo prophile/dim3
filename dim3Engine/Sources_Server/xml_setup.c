@@ -46,7 +46,6 @@ void setup_xml_default(void)
 	setup.lock_fps_refresh=FALSE;
 	
 	setup.anisotropic_mode=anisotropic_mode_none;
-	setup.texture_quality_mode=texture_quality_mode_high;
 	setup.mipmap_mode=mipmap_mode_trilinear;
 	setup.mipmap_card_generated=TRUE;
 	setup.texture_compression=FALSE;
@@ -201,7 +200,6 @@ bool setup_xml_read_path(char *path)
 	setup_xml_read_key_float(setup_tag,"Gamma",&setup.gamma);
     setup_xml_read_key_boolean(setup_tag,"Texture_Compression",&setup.texture_compression);
     setup_xml_read_key_int(setup_tag,"Anisotropic_Mode",&setup.anisotropic_mode);
-    setup_xml_read_key_int(setup_tag,"Texture_Quality_Mode",&setup.texture_quality_mode);
     setup_xml_read_key_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
     setup_xml_read_key_boolean(setup_tag,"Mipmap_Card_Generated",&setup.mipmap_card_generated);
 	setup_xml_read_key_boolean(setup_tag,"Bump_Mapping",&setup.bump_mapping);
@@ -390,7 +388,6 @@ bool setup_xml_write(void)
 	setup_xml_write_key_float("Gamma",setup.gamma);
     setup_xml_write_key_boolean("Texture_Compression",setup.texture_compression);
     setup_xml_write_key_int("Anisotropic_Mode",setup.anisotropic_mode);
-    setup_xml_write_key_int("Texture_Quality_Mode",setup.texture_quality_mode);
     setup_xml_write_key_int("Mipmap_Mode",setup.mipmap_mode);
     setup_xml_write_key_boolean("Mipmap_Card_Generated",setup.mipmap_card_generated);
 	setup_xml_write_key_boolean("Bump_Mapping",setup.bump_mapping);
@@ -512,7 +509,6 @@ void setup_restore(void)
 	setup.lock_fps_refresh=FALSE;
 	
 	setup.anisotropic_mode=anisotropic_mode_none;
-	setup.texture_quality_mode=texture_quality_mode_low;
 	setup.mipmap_mode=mipmap_mode_none;
 	setup.mipmap_card_generated=FALSE;
 	setup.texture_compression=FALSE;

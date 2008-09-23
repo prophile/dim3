@@ -99,13 +99,13 @@ bool model_delete_texture_frame(model_type *model,int txt)
 	
 	count--;
 	model->textures[txt].bitmaps[count].name[0]=0x0;
-	model->textures[txt].bitmaps[count].data=NULL;
+	model->textures[txt].bitmaps[count].gl_id=-1;
 	model->textures[txt].bumpmaps[count].name[0]=0x0;
-	model->textures[txt].bumpmaps[count].data=NULL;
+	model->textures[txt].bumpmaps[count].gl_id=-1;
 	model->textures[txt].specularmaps[count].name[0]=0x0;
-	model->textures[txt].specularmaps[count].data=NULL;
+	model->textures[txt].specularmaps[count].gl_id=-1;
 	model->textures[txt].glowmaps[count].name[0]=0x0;
-	model->textures[txt].glowmaps[count].data=NULL;
+	model->textures[txt].glowmaps[count].gl_id=-1;
 	
 	model_textures_read(model);
 	

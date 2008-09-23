@@ -257,19 +257,11 @@ SOURCE=..\..\dim3BaseUtility\Sources_Bitmap\bitmap_movie.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3BaseUtility\Sources_Bitmap\glow_map.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3BaseUtility\Sources_Bitmap\normal_map.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\dim3BaseUtility\Sources_Bitmap\pngutility.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3BaseUtility\Sources_Bitmap\reduce.c
 # End Source File
 # Begin Source File
 
