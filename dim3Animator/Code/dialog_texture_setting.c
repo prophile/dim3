@@ -71,6 +71,192 @@ RGBColor						dialog_texture_color;
 
 /* =======================================================
 
+      Texture Drawing
+      
+======================================================= */
+
+void texture_setting_bitmap_draw(bitmap_type *bitmap,CGrafPtr dport,Rect *dbox)
+{
+	int					x,y,wid,high,row_add,
+						xbyte,k,gray;
+	unsigned char		r,g,b;
+	unsigned char		*data,*sptr,*dptr;
+	float				alpha,fr,fg,fb;
+	Rect				box;
+	PixMapHandle		texturemap;
+	GWorldPtr			gworld;
+	
+		// draw the texture to the back buffer
+		
+	wid=dbox->right-dbox->left;
+	high=dbox->bottom-dbox->top;
+	
+	glViewport(0,0,wid,high);
+	
+	glEnable(GL_SCISSOR_TEST);
+	glScissor(0,0,wid,high);
+		
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(0,(GLdouble)wid,(GLdouble)0,high);
+		
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_STENCIL_TEST);
+	glDisable(GL_BLEND);
+	
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+	
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D,bitmap->gl_id);
+	
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f,0.0f);
+	glVertex2i(0,0);
+	glTexCoord2f(1.0f,0.0f);
+	glVertex2i(wid,0);
+	glTexCoord2f(1.0f,1.0f);
+	glVertex2i(wid,high);
+	glTexCoord2f(0.0f,1.0f);
+	glVertex2i(0,high);
+	glEnd();
+	
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_ALPHA_TEST);
+	
+		// get the data
+		
+	data=valloc((wid<<2)*high);
+	if (data==NULL) return;
+	
+	glFinish();
+	glReadPixels(0,0,wid,high,GL_RGBA,GL_UNSIGNED_BYTE,data);
+	
+		// make gworld for texture
+		
+	SetRect(&box,0,0,wid,high);
+	NewGWorld(&gworld,32,&box,NULL,NULL,0);
+    
+        // copy RGB for gworld
+        
+	texturemap=GetGWorldPixMap(gworld);
+	
+	LockPixels(texturemap);
+	sptr=(ptr)GetPixBaseAddr(texturemap);
+	xbyte=wid<<2;
+	row_add=GetPixRowBytes(texturemap)-xbyte;
+
+	dptr=data;
+	
+	switch (bitmap->alpha_mode) {
+	
+		case alpha_mode_none:
+		
+			for (y=0;y!=high;y++) {
+				for (x=0;x!=wid;x++) {
+					*sptr++=0xFF;
+					*sptr++=*dptr++;
+					*sptr++=*dptr++;
+					*sptr++=*dptr++;
+					dptr++;
+				}
+				sptr+=row_add;
+			}
+			break;
+			
+		case alpha_mode_cut_out:
+		
+			for (y=0;y!=high;y++) {
+				for (x=0;x!=wid;x++) {
+					r=*dptr++;
+					g=*dptr++;
+					b=*dptr++;
+					alpha=*dptr++;
+					
+					*sptr++=0xFF;
+					
+					if (alpha!=255) {
+						*sptr++=0x0;
+						*sptr++=0x0;
+						*sptr++=0xFF;
+					}
+					else {
+						*sptr++=r;
+						*sptr++=g;
+						*sptr++=b;
+					}
+				}
+				sptr+=row_add;
+			}
+			break;
+		
+		case alpha_mode_transparent:
+
+			for (y=0;y!=high;y++) {
+				for (x=0;x!=wid;x++) {
+					
+					r=*dptr++;
+					g=*dptr++;
+					b=*dptr++;
+					alpha=((float)*dptr++)/255.0f;
+				
+						// calculate alpha
+						
+					if (alpha!=1.0f) {
+						gray=((((y/5)+(x/5))&0x1)==0x0)?0x00:0x55;
+						
+						fr=((float)r)/255.0f;
+						fr*=alpha;
+						k=(int)(fr*255.0f)+gray;
+						if (k>255) k=255;
+						r=(unsigned char)k;
+						
+						fg=((float)g)/255.0f;
+						fg*=alpha;
+						k=(int)(fg*255.0f)+gray;
+						if (k>255) k=255;
+						g=(unsigned char)k;
+						
+						fb=((float)b)/255.0f;
+						fb*=alpha;
+						k=(int)(fb*255.0f)+gray;
+						if (k>255) k=255;
+						b=(unsigned char)k;
+					}
+					
+					*sptr++=0xFF;
+					*sptr++=r;
+					*sptr++=g;
+					*sptr++=b;
+				}
+				
+				sptr+=row_add;
+			}
+			break;
+	}
+
+	CopyBits((BitMap*)(*texturemap),GetPortBitMapForCopyBits(dport),&box,dbox,srcCopy,NULL);
+    
+	UnlockPixels(texturemap);
+	
+		// dispose the gworld
+		
+	DisposeGWorld(gworld);
+	
+		// free png data
+		
+	free(data);
+}
+
+/* =======================================================
+
       Texture Frames
       
 ======================================================= */
@@ -156,14 +342,14 @@ void texture_setting_frame_reset(void)
 	
 	GetControlBounds(ctrl,&box);
 		
-	if (texture->bitmaps[cframe].data==NULL) {
+	if (texture->bitmaps[cframe].gl_id==-1) {
 		RGBForeColor(&ltgraycolor);
 		PaintRect(&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
 	else {
-		texture_palette_bitmap_draw(&texture->bitmaps[cframe],GetWindowPort(dialog_texture_wind),&box);
+		texture_setting_bitmap_draw(&texture->bitmaps[cframe],GetWindowPort(dialog_texture_wind),&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
@@ -176,14 +362,14 @@ void texture_setting_frame_reset(void)
 	
 	GetControlBounds(ctrl,&box);
 	
-	if ((texture->bumpmaps[cframe].data==NULL) || (!bump_show)) {
+	if ((texture->bumpmaps[cframe].gl_id==-1) || (!bump_show)) {
 		RGBForeColor(&ltgraycolor);
 		PaintRect(&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
 	else {
-		texture_palette_bitmap_draw(&texture->bumpmaps[cframe],GetWindowPort(dialog_texture_wind),&box);
+		texture_setting_bitmap_draw(&texture->bumpmaps[cframe],GetWindowPort(dialog_texture_wind),&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
@@ -196,14 +382,14 @@ void texture_setting_frame_reset(void)
 	
 	GetControlBounds(ctrl,&box);
 	
-	if (texture->specularmaps[cframe].data==NULL) {
+	if (texture->specularmaps[cframe].gl_id==-1) {
 		RGBForeColor(&ltgraycolor);
 		PaintRect(&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
 	else {
-		texture_palette_bitmap_draw(&texture->specularmaps[cframe],GetWindowPort(dialog_texture_wind),&box);
+		texture_setting_bitmap_draw(&texture->specularmaps[cframe],GetWindowPort(dialog_texture_wind),&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
@@ -216,14 +402,14 @@ void texture_setting_frame_reset(void)
 	
 	GetControlBounds(ctrl,&box);
 	
-	if (texture->glowmaps[cframe].data==NULL) {
+	if (texture->glowmaps[cframe].gl_id==-1) {
 		RGBForeColor(&ltgraycolor);
 		PaintRect(&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
 	else {
-		texture_palette_bitmap_draw(&texture->glowmaps[cframe],GetWindowPort(dialog_texture_wind),&box);
+		texture_setting_bitmap_draw(&texture->glowmaps[cframe],GetWindowPort(dialog_texture_wind),&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}

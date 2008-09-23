@@ -154,9 +154,9 @@ void gl_text_initialize(void)
 		// load fonts
 		
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Fonts","small","png");
-//	bitmap_open(&font_small_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
+	bitmap_open(&font_small_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
 	
-	gl_text_create_font();
+//	gl_text_create_font();
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Fonts","large","png");
 	bitmap_open(&font_large_bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);

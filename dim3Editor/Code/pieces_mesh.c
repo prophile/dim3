@@ -385,45 +385,46 @@ void piece_add_obj_mesh(void)
       
 ======================================================= */
 
-float piece_add_height_map_mesh_get_height(bitmap_type *bitmap,int x,int z,int div_cnt)
+float piece_add_height_map_mesh_get_height(unsigned char *data,int wid,int high,int x,int z,int div_cnt)
 {
-	int			y;
-	ptr			p;
+	int				y;
+	unsigned char	*p;
 	
 		// find offset in portal
 		
-	x=(int)(((float)x/(float)div_cnt)*(float)bitmap->wid);
-	y=(int)(((float)z/(float)div_cnt)*(float)bitmap->high);
+	x=(int)(((float)x/(float)div_cnt)*(float)wid);
+	y=(int)(((float)z/(float)div_cnt)*(float)high);
 	
 	if (x<0) x=0;
-	if (x>=bitmap->wid) x=bitmap->wid-1;
+	if (x>=wid) x=wid-1;
 	if (y<0) y=0;
-	if (y>=bitmap->high) y=bitmap->high-1;
+	if (y>=high) y=high-1;
 	
-	p=bitmap->data+((y*(bitmap->wid<<2))+(x<<2));
+	p=data+((y*(wid<<2))+(x<<2));
 	
 	return(((float)*p)/255.0f);
 }
 
 void piece_add_height_map_mesh(void)
 {
-	int					x,z,px,pz,div_cnt,div_sz,total_sz,high,
+	int					x,z,px,pz,div_cnt,div_sz,total_sz,bwid,bhigh,high,
 						kx[4],ky[4],kz[4],y[4],
 						mesh_idx,txt_idx;
 	float				f_portal_y_sz,gx[4],gy[4];
 	char				path[1024];
+	unsigned char		*data;
 	d3pnt				pnt;
-	bitmap_type			bitmap;
 	
 		// get the png
 		
 	if (!import_load_file(path,"png")) return;
-	if (!bitmap_open(&bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE)) return;
+	data=bitmap_load_png_data(path,&bwid,&bhigh);
+	if (data==NULL) return;
 	
 		// division and sizes
 		
 	if (!dialog_height_import_run(&div_cnt,&total_sz,&high)) {
-		bitmap_close(&bitmap);
+		free(data);
 		return;
 	}
 		
@@ -441,7 +442,7 @@ void piece_add_height_map_mesh(void)
 		
 	mesh_idx=map_mesh_add(&map);
 	if (mesh_idx==-1) {
-		bitmap_close(&bitmap);
+		free(data);
 		return;
 	}
 	
@@ -455,10 +456,10 @@ void piece_add_height_map_mesh(void)
 			
 				// floors
 				
-			y[0]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(&bitmap,x,z,div_cnt));
-			y[1]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(&bitmap,(x+1),z,div_cnt));
-			y[2]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(&bitmap,(x+1),(z+1),div_cnt));
-			y[3]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(&bitmap,x,(z+1),div_cnt));
+			y[0]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(data,bwid,bhigh,x,z,div_cnt));
+			y[1]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(data,bwid,bhigh,(x+1),z,div_cnt));
+			y[2]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(data,bwid,bhigh,(x+1),(z+1),div_cnt));
+			y[3]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(data,bwid,bhigh,x,(z+1),div_cnt));
 										
 			gx[0]=gx[1]=gx[2]=0.0f;
 			gy[0]=gy[1]=gy[2]=0.0f;
@@ -512,7 +513,7 @@ void piece_add_height_map_mesh(void)
 				
 	map_mesh_reset_uv(&map,mesh_idx);
 		
-	bitmap_close(&bitmap);
+	free(data);
 	
 	InitCursor();
 	

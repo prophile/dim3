@@ -63,7 +63,7 @@ void model_start_texture(texture_type *texture)
 	
 		// no bump maps
 		
-	if ((texture->bumpmaps[0].data==NULL) || (!model_bump_on)) {
+	if ((texture->bumpmaps[0].gl_id==-1) || (!model_bump_on)) {
 		glActiveTexture(GL_TEXTURE0);
 		glEnable(GL_TEXTURE_2D);
 		
@@ -126,7 +126,7 @@ void model_end_texture(texture_type *texture)
 
 		// no bump maps
 		
-	if (texture->bumpmaps[0].data==NULL) {
+	if (texture->bumpmaps[0].gl_id==-1) {
 		glActiveTexture(GL_TEXTURE0);
 		glDisable(GL_TEXTURE_2D);
 		return;

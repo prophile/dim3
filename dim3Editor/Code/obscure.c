@@ -434,6 +434,7 @@ void obscure_calculate_group_single_visibility(int group_idx,d3pnt *cpt,unsigned
 #endif
 			// read the stencil to look for hits
 
+		glFinish();
 		glReadPixels(0,0,obscure_mesh_view_mesh_wid,obscure_mesh_view_mesh_high,GL_STENCIL_INDEX,GL_UNSIGNED_BYTE,stencil_pixels);
 
 		sp=stencil_pixels;
@@ -518,6 +519,9 @@ bool obscure_calculate_group_visibility_complete(int group_idx)
 		// global drawing setup
 		
 	glDisable(GL_SCISSOR_TEST);
+
+	glEnable(GL_SCISSOR_TEST);
+	glScissor(0,0,obscure_mesh_view_mesh_wid,obscure_mesh_view_mesh_high);
 
 	glViewport(0,0,obscure_mesh_view_mesh_wid,obscure_mesh_view_mesh_high);
 		

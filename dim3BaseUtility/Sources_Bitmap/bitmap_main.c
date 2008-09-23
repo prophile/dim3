@@ -156,19 +156,44 @@ bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col)
 
 bool bitmap_data(bitmap_type *bitmap,char *name,unsigned char *data,int wid,int high,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression)
 {
-	int			sz;
+	int				n,psz;
+	unsigned char	*ptr;
 	
 	strcpy(bitmap->name,name);
 	bitmap->wid=wid;
 	bitmap->high=high;
 	
-	sz=(wid*4)*high;
+		// copy over bitmap
+		
+	psz=(wid*4)*high;
 
-	bitmap->data=valloc(sz);
+	bitmap->data=valloc(psz);
 	if (bitmap->data==NULL) return(FALSE);
 
-	memmove(bitmap->data,data,sz);
+	memmove(bitmap->data,data,psz);
 	
+		// find if bitmap has transparencies
+		
+	bitmap->alpha_mode=alpha_mode_none;
+	ptr=bitmap->data+3;
+	
+	for (n=0;n<psz;n+=4) {
+	
+		if (*ptr!=0xFF) {
+			if (*ptr==0x0) {
+				bitmap->alpha_mode=alpha_mode_cut_out;			// possibly a cut out
+			}
+			else {
+				bitmap->alpha_mode=alpha_mode_transparent;		// and single non-0xFF and non-0x00 means transparency
+				break;
+			}
+		}
+
+		ptr+=4;
+	}
+
+		// get the texture
+		
 	if (!bitmap_texture_open(bitmap,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression,TRUE)) {
 		free(bitmap->data);
 		return(FALSE);

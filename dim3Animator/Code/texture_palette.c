@@ -39,138 +39,6 @@ extern WindowRef			model_wind;
 
 /* =======================================================
 
-      Texture Drawing
-      
-======================================================= */
-
-void texture_palette_bitmap_draw(bitmap_type *bitmap,CGrafPtr dport,Rect *dbox)
-{
-	register int		x,y,xsz,ysz,row_add;
-	register ptr		sptr,dptr;
-	int					xbyte,k,gray;
-	unsigned char		r,g,b;
-	float				alpha,fr,fg,fb;
-	Rect				box;
-	PixMapHandle		texturemap;
-	GWorldPtr			gworld;
-	
-	xsz=bitmap->wid;
-	ysz=bitmap->high;
-	
-		// make gworld for texture
-		
-	SetRect(&box,0,0,xsz,ysz);
-	NewGWorld(&gworld,32,&box,NULL,NULL,0);
-    
-        // copy RGB for gworld
-        
-	texturemap=GetGWorldPixMap(gworld);
-	
-	LockPixels(texturemap);
-	sptr=(ptr)GetPixBaseAddr(texturemap);
-	xbyte=xsz<<2;
-	row_add=GetPixRowBytes(texturemap)-xbyte;
-
-	dptr=bitmap->data;
-	
-	switch (bitmap->alpha_mode) {
-	
-		case alpha_mode_none:
-		
-			for (y=0;y!=ysz;y++) {
-				for (x=0;x!=xsz;x++) {
-					*sptr++=0xFF;
-					*sptr++=*dptr++;
-					*sptr++=*dptr++;
-					*sptr++=*dptr++;
-					dptr++;
-				}
-				sptr=sptr+row_add;
-			}
-			break;
-			
-		case alpha_mode_cut_out:
-		
-			for (y=0;y!=ysz;y++) {
-				for (x=0;x!=xsz;x++) {
-					r=*dptr++;
-					g=*dptr++;
-					b=*dptr++;
-					alpha=*dptr++;
-					
-					*sptr++=0xFF;
-					
-					if (alpha!=255) {
-						*sptr++=0x0;
-						*sptr++=0x0;
-						*sptr++=0xFF;
-					}
-					else {
-						*sptr++=r;
-						*sptr++=g;
-						*sptr++=b;
-					}
-				}
-				sptr=sptr+row_add;
-			}
-			break;
-		
-		case alpha_mode_transparent:
-
-			for (y=0;y!=ysz;y++) {
-				for (x=0;x!=xsz;x++) {
-					
-					r=*dptr++;
-					g=*dptr++;
-					b=*dptr++;
-					alpha=((float)*dptr++)/255.0f;
-				
-						// calculate alpha
-						
-					if (alpha!=1.0f) {
-						gray=((((y/5)+(x/5))&0x1)==0x0)?0x00:0x55;
-						
-						fr=((float)r)/255.0f;
-						fr*=alpha;
-						k=(int)(fr*255.0f)+gray;
-						if (k>255) k=255;
-						r=(unsigned char)k;
-						
-						fg=((float)g)/255.0f;
-						fg*=alpha;
-						k=(int)(fg*255.0f)+gray;
-						if (k>255) k=255;
-						g=(unsigned char)k;
-						
-						fb=((float)b)/255.0f;
-						fb*=alpha;
-						k=(int)(fb*255.0f)+gray;
-						if (k>255) k=255;
-						b=(unsigned char)k;
-					}
-					
-					*sptr++=0xFF;
-					*sptr++=r;
-					*sptr++=g;
-					*sptr++=b;
-				}
-				
-				sptr=sptr+row_add;
-			}
-			break;
-	}
-
-	CopyBits((BitMap*)(*texturemap),GetPortBitMapForCopyBits(dport),&box,dbox,srcCopy,NULL);
-    
-	UnlockPixels(texturemap);
-	
-		// dispose the gworld
-		
-	DisposeGWorld(gworld);
-}
-
-/* =======================================================
-
       Texture Palette Drawing
       
 ======================================================= */
@@ -220,7 +88,7 @@ void texture_palette_draw(void)
 		
 			// the textures
 			
-		if (texture->bitmaps[0].data!=NULL) {
+		if (texture->bitmaps[0].gl_id!=-1) {
 			glColor4f(1.0f,1.0f,1.0f,1.0f);
 			glBindTexture(GL_TEXTURE_2D,texture->bitmaps[0].gl_id);
 

@@ -65,7 +65,7 @@ int texture_count(void)
 	texture=model.textures;
 	
     for (n=0;n!=max_model_texture;n++) {
-		if (texture->bitmaps[0].data!=NULL) count++;
+		if (texture->bitmaps[0].gl_id!=-1) count++;
 		texture++;
 	}
 	
@@ -80,7 +80,7 @@ int texture_find_free(void)
 	texture=model.textures;
 	
     for (n=0;n!=max_model_texture;n++) {
-		if (texture->bitmaps[0].data==NULL) return(n);
+		if (texture->bitmaps[0].gl_id==-1) return(n);
 		texture++;
 	}
 	

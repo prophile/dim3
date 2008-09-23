@@ -34,9 +34,9 @@
 	};
 	0111609200BE2A8F7F000001 /* texture_import.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1464, 2268}}";
-			sepNavSelRange = "{3175, 0}";
-			sepNavVisRange = "{2127, 1348}";
+			sepNavIntBoundsRect = "{{0, 0}, {1464, 2366}}";
+			sepNavSelRange = "{2020, 0}";
+			sepNavVisRange = "{1307, 819}";
 			sepNavWindowFrame = "{{244, 186}, {1041, 747}}";
 		};
 	};
@@ -119,12 +119,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 243652021;
-			PBXWorkspaceStateSaveDate = 243652021;
+			PBXPerProjectTemplateStateSaveDate = 243831729;
+			PBXWorkspaceStateSaveDate = 243831729;
 		};
 		perUserProjectItems = {
-			26AB10D60E8560AF00ED7E29 /* PBXTextBookmark */ = 26AB10D60E8560AF00ED7E29 /* PBXTextBookmark */;
 			26AB11320E85D5BA00ED7E29 /* PBXTextBookmark */ = 26AB11320E85D5BA00ED7E29 /* PBXTextBookmark */;
+			26D2CED70E88997700FF86C4 /* PBXTextBookmark */ = 26D2CED70E88997700FF86C4 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -245,7 +245,7 @@
 			sepNavWindowFrame = "{{247, 201}, {1041, 747}}";
 		};
 	};
-	26AB10D60E8560AF00ED7E29 /* PBXTextBookmark */ = {
+	26AB11320E85D5BA00ED7E29 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
 		name = "InfoPlist.strings: 5";
@@ -255,7 +255,7 @@
 		vrLen = 0;
 		vrLoc = 0;
 	};
-	26AB11320E85D5BA00ED7E29 /* PBXTextBookmark */ = {
+	26D2CED70E88997700FF86C4 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
 		name = "InfoPlist.strings: 5";
@@ -275,9 +275,9 @@
 	};
 	F503D2560981A35B00DEDC74 /* draw_model.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4228}}";
-			sepNavSelRange = "{5202, 27}";
-			sepNavVisRange = "{4706, 1037}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4074}}";
+			sepNavSelRange = "{3492, 0}";
+			sepNavVisRange = "{2866, 1151}";
 			sepNavWindowFrame = "{{210, 191}, {1041, 747}}";
 		};
 	};
@@ -315,17 +315,17 @@
 	};
 	F54B62DA0C4030A8005CB612 /* texture_palette.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4732}}";
-			sepNavSelRange = "{1338, 2289}";
-			sepNavVisRange = "{2869, 950}";
+			sepNavIntBoundsRect = "{{0, 0}, {1152, 2590}}";
+			sepNavSelRange = "{2463, 0}";
+			sepNavVisRange = "{1714, 1259}";
 			sepNavWindowFrame = "{{257, 231}, {1041, 747}}";
 		};
 	};
 	F54B630E0C4033E8005CB612 /* info_palette.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1484}}";
-			sepNavSelRange = "{1956, 0}";
-			sepNavVisRange = "{1136, 985}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1512}}";
+			sepNavSelRange = "{2421, 0}";
+			sepNavVisRange = "{1564, 995}";
 			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
 		};
 	};
@@ -363,9 +363,9 @@
 	};
 	F579A01D07DFDF8400DB4213 /* insert.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2842}}";
-			sepNavSelRange = "{4748, 0}";
-			sepNavVisRange = "{3690, 1159}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2926}}";
+			sepNavSelRange = "{4390, 0}";
+			sepNavVisRange = "{3847, 998}";
 			sepNavWindowFrame = "{{371, 227}, {1041, 747}}";
 		};
 	};
@@ -433,9 +433,9 @@
 	};
 	F5AF0C9C09638E9700F99950 /* dialog_texture_setting.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7882}}";
-			sepNavSelRange = "{18346, 0}";
-			sepNavVisRange = "{10210, 1404}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 11186}}";
+			sepNavSelRange = "{10466, 0}";
+			sepNavVisRange = "{9762, 1280}";
 			sepNavWindowFrame = "{{417, 256}, {1041, 747}}";
 		};
 	};
@@ -493,6 +493,14 @@
 			sepNavSelRange = "{1632, 0}";
 			sepNavVisRange = "{0, 1891}";
 			sepNavWindowFrame = "{{670, 194}, {1041, 747}}";
+		};
+	};
+	F5C5352C09267BFA00663E36 /* window.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 700}}";
+			sepNavSelRange = "{1404, 0}";
+			sepNavVisRange = "{0, 1595}";
+			sepNavWindowFrame = "{{38, 255}, {1041, 747}}";
 		};
 	};
 	F5C5354609267C6D00663E36 /* dialog.h */ = {

@@ -58,7 +58,7 @@ void dialog_fill_texture_combo(WindowRef wind,unsigned long sig,int id,bool none
 	
 	for (n=0;n!=max_map_texture;n++) {
 	
-		if (texture->bitmaps[0].data==NULL) {
+		if (texture->bitmaps[0].gl_id==-1) {
 			dialog_add_combo_item(wind,sig,id,"(no texture)",0);
 		}
 		else {

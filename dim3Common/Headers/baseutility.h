@@ -424,7 +424,7 @@ typedef struct		{
 						int						wid,high,alpha_mode;
 						char					name[file_str_len];
 						GLuint					gl_id;
-						ptr						data;
+						ptr						data2;
 					} bitmap_type;
 
 //

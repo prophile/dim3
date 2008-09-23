@@ -95,7 +95,7 @@ void info_palette_draw(void)
 	
 	ntexture=0;
 	for (i=0;i!=max_model_texture;i++) {
-		if (model.textures[i].bitmaps[0].data!=NULL) ntexture++;
+		if (model.textures[i].bitmaps[0].gl_id!=-1) ntexture++;
 	}
 
 	sprintf(txt,"Materials: %d",(int)ntexture);

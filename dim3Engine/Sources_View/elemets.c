@@ -351,7 +351,6 @@ void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool fram
 	
 	if (path==NULL) {
 		element->setup.button.bitmap.gl_id=-1;
-		element->setup.button.bitmap.data=NULL;
 	}
 	else {
 		bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);
@@ -361,7 +360,7 @@ void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool fram
 	element->y=y;
 	
 	if ((wid==-1) || (high==-1)) {
-		if (element->setup.button.bitmap.data!=NULL) {
+		if (element->setup.button.bitmap.gl_id!=-1) {
 			element->wid=element->setup.button.bitmap.wid;
 			element->high=element->setup.button.bitmap.high;
 		}
@@ -872,7 +871,7 @@ void element_draw_bitmap(element_type *element)
 
 		// the picture
 		
-	if (element->setup.button.bitmap.data!=NULL) {
+	if (element->setup.button.bitmap.gl_id!=-1) {
 		gl_texture_simple_start();
 
 		glEnable(GL_BLEND);
@@ -2703,11 +2702,10 @@ void element_set_bitmap(int id,char *path)
 
 	element=element_find(id);
 	if (element!=NULL) {
-		if (element->setup.button.bitmap.data!=NULL) bitmap_close(&element->setup.button.bitmap);
+		if (element->setup.button.bitmap.gl_id!=-1) bitmap_close(&element->setup.button.bitmap);
 		
 		if (path==NULL) {
 			element->setup.button.bitmap.gl_id=-1;
-			element->setup.button.bitmap.data=NULL;
 		}
 		else {
 			bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,FALSE);

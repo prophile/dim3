@@ -375,10 +375,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>26497BF50E86B8C3000A65A1</string>
+										<string>26D2CD830E884BFF00FF86C4</string>
 										<key>history</key>
 										<array>
-											<string>26AB11290E85A8CF00ED7E29</string>
+											<string>26497BF50E86B8C3000A65A1</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -436,9 +436,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26497BF60E86B8C3000A65A1</string>
+				<string>26D2CD810E884BD400FF86C4</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26497BF70E86B8C3000A65A1</string>
+				<string>26D2CD820E884BD400FF86C4</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -557,7 +557,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>243710147.60555601</real>
+	<real>243813375.073735</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -572,7 +572,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>26497BF80E86B8C3000A65A1</string>
 		<string>260AFEBC0D404E7500F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3MapUtility/dim3MapUtility.xcodeproj</string>
 	</array>
@@ -615,6 +614,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -654,7 +655,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEBC0D404E7500F6C42F</string>
-				<string>26497BEE0E86B759000A65A1</string>
+				<string>26D2CD7E0E884BD100FF86C4</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

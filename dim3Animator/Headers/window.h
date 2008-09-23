@@ -39,7 +39,6 @@ extern void tabs_resize(void);
 
 extern void click_model_wind(Point pt,unsigned long modifiers);
 
-extern void texture_palette_bitmap_draw(bitmap_type *bitmap,CGrafPtr dport,Rect *dbox);
 extern void texture_palette_draw(void);
 extern void texture_palette_click(Point pt,bool dblclick);
 

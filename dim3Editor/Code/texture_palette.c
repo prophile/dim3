@@ -209,7 +209,7 @@ void texture_palette_draw(void)
 		
 			// the textures
 			
-		if (texture->bitmaps[0].data!=NULL) {
+		if (texture->bitmaps[0].gl_id!=-1) {
 			glBindTexture(GL_TEXTURE_2D,texture->bitmaps[0].gl_id);
 
 			glBegin(GL_QUADS);
@@ -333,7 +333,7 @@ void texture_palette_click(Point pt,bool dblclick)
     
 		// single clicks
 		
-	if (map.textures[nsel].bitmaps[0].data==NULL) return;
+	if (map.textures[nsel].bitmaps[0].gl_id==-1) return;
 	
 	texture_palette_put_selected_texture(nsel);
 	texture_palette_reset();
