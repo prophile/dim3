@@ -108,16 +108,16 @@ void piece_add_obj_mesh_replace(d3fpnt *min,d3fpnt *max,d3fpnt *scale,d3pnt *pnt
 
 void piece_add_obj_mesh(void)
 {
-	int					n,k,nline,nvertex,npoly,nuv,npt,uv_idx,
-						mesh_idx,x,y,z;
+	int					n,k,nline,nvertex,npoly,nuv,npt,v_idx,uv_idx,
+						mesh_idx,txt_idx,x,y,z;
+	int					px[8],py[8],pz[8];
 	char				*c,txt[256],vstr[256],uvstr[256],path[1024];
-	float				fx,fy,fz,fsz,f_scale;
+	float				fx,fy,fz,fsz,f_scale,gx[8],gy[8];
 	float				*uvs,*uv;
-	bool				mesh_ok,mesh_delete,replace;
-	d3pnt				*dpt,pnt;
+	bool				replace,mesh_add;
+	d3pnt				*vertexes,*dpt,pnt;
 	d3fpnt				min,max,scale;
 	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
 	
 	if (!piece_create_texture_ok()) return;
 	
@@ -214,34 +214,21 @@ void piece_add_obj_mesh(void)
 		
 	if (replace) piece_add_obj_mesh_replace(&min,&max,&scale,&pnt);
 	
-		// create new mesh
+		// get texture index
 		
-	mesh_ok=FALSE;
-	mesh_delete=FALSE;
-	
-	mesh_idx=map_mesh_add(&map);
-	if (mesh_idx!=-1) {
-		mesh_delete=TRUE;
-		
-		if (map_mesh_set_vertex_count(&map,mesh_idx,nvertex)) {
-			if (map_mesh_set_poly_count(&map,mesh_idx,npoly)) {
-				mesh_ok=TRUE;
-			}
-		}
-	}
-	
-	if (!mesh_ok) {
-		if (mesh_delete) map_mesh_delete(&map,mesh_idx);
-		textdecode_close();
-		StandardAlert(kAlertStopAlert,"\pImport Failed","\pNot enough memory to create mesh.",NULL,NULL);
-		return;
-    }
-	
-	mesh=&map.mesh.meshes[mesh_idx];
+	txt_idx=texture_palette_get_selected_texture();
+	if (txt_idx==-1) txt_idx=0;
 	
 		// get the vertexes
 
- 	dpt=mesh->vertexes;
+	vertexes=(d3pnt*)valloc(sizeof(d3pnt)*nvertex);
+	if (vertexes==NULL) {
+		textdecode_close();
+		StandardAlert(kAlertStopAlert,"\pImport Failed","\pOut of Memory.",NULL,NULL);
+		return;
+    }
+	
+ 	dpt=vertexes;
 
     for (n=0;n!=nline;n++) {
 
@@ -264,7 +251,7 @@ void piece_add_obj_mesh(void)
 		
 	x=y=z=0;
 	
- 	dpt=mesh->vertexes;
+ 	dpt=vertexes;
 	
 	for (n=0;n!=nvertex;n++) {
 		x+=dpt->x;
@@ -277,7 +264,7 @@ void piece_add_obj_mesh(void)
 	y/=nvertex;
 	z/=nvertex;
 		
- 	dpt=mesh->vertexes;
+	dpt=vertexes;
 	
 	for (n=0;n!=nvertex;n++) {
 		dpt->x=(dpt->x-x)+pnt.x;
@@ -290,7 +277,6 @@ void piece_add_obj_mesh(void)
 		
 	uvs=(float*)valloc(sizeof(float)*(2*nuv));
 	if (uvs==NULL) {
-		map_mesh_delete(&map,mesh_idx);
 		textdecode_close();
 		StandardAlert(kAlertStopAlert,"\pImport Failed","\pOut of Memory.",NULL,NULL);
 		return;
@@ -308,24 +294,46 @@ void piece_add_obj_mesh(void)
 		*uv++=1.0f-strtod(uvstr,NULL);
     }
 
+		// need to split up meshes by materials
+		
+	mesh=NULL;
+	
 		// get the polys
 
-	poly=mesh->polys;
-	
     for (n=0;n!=nline;n++) {
-
-        textdecode_get_piece(n,0,txt);
-        if (strcmp(txt,"f")!=0) continue;
-		
-			// setup poly
+	
+       textdecode_get_piece(n,0,txt);
+	
+			// new material, add a new mesh
+			// if we don't have one yet and if we do,
+			// the older one actually has polygons
 			
-		poly->txt_idx=texture_palette_get_selected_texture();
-		if (poly->txt_idx==-1) poly->txt_idx=0;
+		if ((strcmp(txt,"usemtl")==0) || (mesh==NULL)) {
 		
-		poly->x_shift=poly->y_shift=0.0f;
-		poly->dark_factor=1.0f;
-		poly->alpha=1.0f;
+			mesh_add=TRUE;
+			
+			if (mesh!=NULL) {
+				mesh_add=(mesh->npoly!=0);
+			}
+				
+			if (mesh_add) {
+			
+				mesh_idx=map_mesh_add(&map);
+				
+				if (mesh_idx==-1) {
+					textdecode_close();
+					StandardAlert(kAlertStopAlert,"\pImport Failed","\pNot enough memory to create mesh.",NULL,NULL);
+					return;
+				}
+	
+				mesh=&map.mesh.meshes[mesh_idx];
+			}
+		}
 
+			// a face?
+			
+		if (strcmp(txt,"f")!=0) continue;
+		
             // get the face points
         
         npt=0;
@@ -345,34 +353,34 @@ void piece_add_obj_mesh(void)
             c=strchr(uvstr,'/');
             if (c!=NULL) *c=0x0;
             
-            poly->v[npt]=atoi(vstr)-1;
+            v_idx=atoi(vstr)-1;
+			dpt=vertexes+v_idx;
+			
+			px[npt]=dpt->x;
+			py[npt]=dpt->y;
+			pz[npt]=dpt->z;
             
 			if (uvstr[0]==0x0) {
-				poly->gx[npt]=poly->gy[npt]=0.0f;
+				gx[npt]=gy[npt]=0.0f;
 			}
 			else {
 				uv_idx=atoi(uvstr)-1;
 				
 				uv=uvs+(uv_idx*2);
-                poly->gx[npt]=*uv++;
-                poly->gy[npt]=*uv;
+                gx[npt]=*uv++;
+                gy[npt]=*uv;
             }
 			
             npt++;
         }
 		
-		poly->ptsz=npt;
-		
-		poly++;
+		map_mesh_add_poly(&map,mesh_idx,npt,px,py,pz,gx,gy,txt_idx);
 	}
 	
+	free(vertexes);
 	free(uvs);
 	
 	textdecode_close();
-	
-		// delete any unused vertexes
-		
-	map_mesh_delete_unused_vertexes(&map,mesh_idx);
 	
 		// finish up
 		

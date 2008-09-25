@@ -111,6 +111,8 @@ void texture_setting_bitmap_draw(bitmap_type *bitmap,CGrafPtr dport,Rect *dbox)
 	glAlphaFunc(GL_NOTEQUAL,0);
 	
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
+	
+	glClearColor(1.0f,1.0f,1.0f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glActiveTexture(GL_TEXTURE0);

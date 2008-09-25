@@ -55,6 +55,8 @@ void draw_model_gl_setup(model_type *model)
 	GetWindowPortBounds(model_wind,&wbox);
 	
 	glViewport(wbox.left,texture_palette_height,gl_view_x_sz,gl_view_y_sz);
+	
+	glEnable(GL_SCISSOR_TEST);
 	glScissor(wbox.left,texture_palette_height,gl_view_x_sz,gl_view_y_sz);
 
 		// model perspective
@@ -71,6 +73,7 @@ void draw_model_gl_setup(model_type *model)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+	
 	gluPerspective(45,aspect,(bsz>>1),(sz*10));
 	glScalef(1,-1,1);						// y is reversed
 	
@@ -82,6 +85,12 @@ void draw_model_gl_setup(model_type *model)
 	
 	glRotatef(ang_x,1,0,0);
 	glRotatef(ang_y,0,1,0);
+	
+	glColor4f(1.0f,1.0f,1.0f,0.0f);
+	
+	glEnable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_ALPHA_TEST);
 }
 
 /* =======================================================

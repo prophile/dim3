@@ -1,7 +1,6 @@
 <Setup>
 <Texture_Compression value="false" />
 <Anisotropic_Mode value="0" />
-<Texture_Quality_Mode value="2" />
 <Mipmap_Mode value="2" />
 <Mipmap_Card_Generated value="false" />
 <View_Flip value="false" />

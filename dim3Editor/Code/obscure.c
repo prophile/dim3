@@ -327,6 +327,7 @@ void obscure_calculate_group_single_visibility(int group_idx,d3pnt *cpt,unsigned
 		
 	// supergumba -- test obscure draw
 #ifdef OBSCURE_TEST
+		glClearColor(1.0f,1.0f,1.0f,0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
 #endif

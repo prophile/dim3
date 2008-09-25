@@ -56,6 +56,8 @@ void texture_palette_draw(void)
 	GetWindowPortBounds(model_wind,&wbox);
 	
 	glViewport(wbox.left,0,gl_view_x_sz,texture_palette_height);
+	
+	glEnable(GL_SCISSOR_TEST);
 	glScissor(wbox.left,0,gl_view_x_sz,texture_palette_height);
 
 	glMatrixMode(GL_PROJECTION);
@@ -66,18 +68,19 @@ void texture_palette_draw(void)
 	glLoadIdentity();
 	
 	glClearColor(1.0f,1.0f,1.0f,0.0f);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 	
 		// draw textures
 
 	row_texture_count=max_model_texture/texture_palette_row_count;
 	
+	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 	
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 		
-	glEnable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE0);
 
 	x=wbox.left;
 	y=wbox.bottom-(info_palette_height+texture_palette_height);
@@ -90,6 +93,8 @@ void texture_palette_draw(void)
 			
 		if (texture->bitmaps[0].gl_id!=-1) {
 			glColor4f(1.0f,1.0f,1.0f,1.0f);
+			
+			glEnable(GL_TEXTURE_2D);
 			glBindTexture(GL_TEXTURE_2D,texture->bitmaps[0].gl_id);
 
 			glBegin(GL_QUADS);
@@ -102,10 +107,10 @@ void texture_palette_draw(void)
 			glTexCoord2f(0,1);
 			glVertex2i(x,(y+texture_palette_texture_size));
 			glEnd();
+			
+			glDisable(GL_TEXTURE_2D);
 		}
 		else {
-			glDisable(GL_TEXTURE_2D);
-			
 			glColor4f(0.8f,0.8f,0.8f,1.0f);
 			
 			glBegin(GL_QUADS);
@@ -114,13 +119,11 @@ void texture_palette_draw(void)
 			glVertex2i((x+texture_palette_texture_size),(y+texture_palette_texture_size));
 			glVertex2i(x,(y+texture_palette_texture_size));
 			glEnd();
-			
-			glEnable(GL_TEXTURE_2D);
 		}
 
 			// the frame
 			
-        glColor4f(1.0f,1.0f,1.0f,1.0f);
+        glColor4f(0.0f,0.0f,0.0f,1.0f);
 		
 		glBegin(GL_LINE_LOOP);
 		glVertex2i(x,(y+1));
@@ -141,10 +144,6 @@ void texture_palette_draw(void)
 	
 		texture++;
 	}
-	
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_ALPHA_TEST);
-	glEnable(GL_DEPTH_TEST);
 	
 	aglSwapBuffers(ctx);
 }

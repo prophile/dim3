@@ -234,7 +234,7 @@ void new_model_xml(void)
 
 	SetCursor(*GetCursor(watchCursor));
 		
-	model_setup(&file_path_setup,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
+	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
 	model_new(&model,filename);
 	
 	model.nmesh=1;
@@ -275,8 +275,8 @@ void open_model_xml(void)
 
 	windows_start();
     
-	model_setup(&file_path_setup,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
-	model_open(&model,file_name,TRUE,FALSE,FALSE);
+	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
+	model_open(&model,file_name,TRUE,FALSE);
     	
 	InitCursor();
 	

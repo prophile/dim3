@@ -40,7 +40,6 @@ setup_type						setup;
 void setup_xml_default(void)
 {
 	setup.anisotropic_mode=anisotropic_mode_none;
-	setup.texture_quality_mode=texture_quality_mode_high;
 	setup.mipmap_mode=mipmap_mode_bilinear;
 	setup.mipmap_card_generated=FALSE;
 	setup.texture_compression=FALSE;
@@ -116,7 +115,6 @@ bool setup_xml_read(void)
 
 	setup_xml_read_key_boolean(setup_tag,"Texture_Compression",&setup.texture_compression);
 	setup_xml_read_key_int(setup_tag,"Anisotropic_Mode",&setup.anisotropic_mode);
-    setup_xml_read_key_int(setup_tag,"Texture_Quality_Mode",&setup.texture_quality_mode);
     setup_xml_read_key_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
     setup_xml_read_key_boolean(setup_tag,"Mipmap_Card_Generated",&setup.mipmap_card_generated);
 

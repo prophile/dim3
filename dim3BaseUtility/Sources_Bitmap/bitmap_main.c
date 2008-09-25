@@ -52,7 +52,6 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 {
 	int					n,psz;
 	char				*c;
-	unsigned char		gr,gg,gb;
 	unsigned char		*png_data,*data;
 	bool				ok;
 	
@@ -81,13 +80,8 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 		data=png_data;
 
 		for (n=0;n<psz;n+=4) {
-			gr=*data++;
-			gg=*data++;
-			gb=*data++;
-				
-			if ((gr==0) && (gg==0) && (gb==0)) *data=0;
-				
-			data++;
+			*(data+3)=*data;
+			data+=4;
 		}
 	}
 	

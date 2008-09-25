@@ -48,7 +48,7 @@ void walk_view_models_start(void)
 	
 	models=valloc(sizeof(model_type)*max_model);
 	
-	model_setup(&file_path_setup,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE);
+	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
 }
 
 void walk_view_models_close(void)
@@ -159,7 +159,7 @@ void walk_view_models_reset(void)
 			idx=walk_view_models_find_model(spot->display_model);
 			
 			if ((idx==-1) && (nmodel<max_model)) {
-				if (model_open(&models[nmodel],spot->display_model,TRUE,FALSE,FALSE)) nmodel++;
+				if (model_open(&models[nmodel],spot->display_model,TRUE,FALSE)) nmodel++;
 			}
 		}
 		
@@ -175,7 +175,7 @@ void walk_view_models_reset(void)
 			idx=walk_view_models_find_model(scenery->model_name);
 			
 			if ((idx==-1) && (nmodel<max_model)) {
-				if (model_open(&models[nmodel],scenery->model_name,TRUE,FALSE,FALSE)) nmodel++;
+				if (model_open(&models[nmodel],scenery->model_name,TRUE,FALSE)) nmodel++;
 			}
 		}
 		

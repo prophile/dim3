@@ -30,7 +30,7 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int							anisotropic_mode,texture_quality_mode,mipmap_mode,
+						int							anisotropic_mode,mipmap_mode,
 													duplicate_offset;
 						bool						mipmap_card_generated,texture_compression,
 													view_flip,auto_texture;

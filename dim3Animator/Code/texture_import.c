@@ -123,7 +123,7 @@ int texture_pick(char *material_name,char *err_str)
 	
 		// open texture
 	
-	if (!bitmap_open(&texture->bitmaps[0],path,anisotropic_mode_none,texture_quality_mode_high,mipmap_mode_none,FALSE,FALSE,texture->pixelated)) {
+	if (!bitmap_open(&texture->bitmaps[0],path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,texture->pixelated,FALSE)) {
 		strcpy(err_str,"Unable to open bitmap.");
 		return(-1);
 	}
