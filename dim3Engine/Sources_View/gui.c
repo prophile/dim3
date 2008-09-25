@@ -96,12 +96,12 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view)
 		if (gl_is_screen_widescreen()) {
 			sprintf(name,"%s_wide",bitmap_name);
 			file_paths_data(&setup.file_path_setup,path,background_path,name,"png");
-			load_ok=bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
+			load_ok=bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
 		}
 
 		if (!load_ok) {
 			file_paths_data(&setup.file_path_setup,path,background_path,bitmap_name,"png");
-			bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
+			bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
 		}
 	}
 	
@@ -150,7 +150,10 @@ void gui_draw_background(float alpha)
 {
 		// show view in background
 
-	if (gui_show_view) view_gui_draw();
+	if (gui_show_view) {
+		view_gui_draw();
+		return;
+	}
 
 		// no background at all?
 
@@ -355,9 +358,9 @@ void gui_draw(float background_alpha,bool cursor)
 	glDisable(GL_DEPTH_TEST);
 
 	element_draw(TRUE);
-	
+
 	if (cursor) cursor_draw();
-	
+
 		// end frame
 
 	gl_frame_end();

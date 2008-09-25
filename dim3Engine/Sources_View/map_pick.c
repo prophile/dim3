@@ -157,9 +157,9 @@ void map_pick_click(void)
 {
 	int			id;
 	
-		// map pick key flips it off
+		// esc or map key flips it off
 		
-	if (input_action_get_state_single(nc_menu)) {
+	if ((input_action_get_state_single(nc_menu)) || (input_action_get_state_single(nc_debug_map))) {
 		map_pick_close();
 		return;
 	}

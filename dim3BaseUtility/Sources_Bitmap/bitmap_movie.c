@@ -125,9 +125,7 @@ bool bitmap_movie_start(char *path,int *wid,int *high)
 	
 		// load texture
 		
-	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE,1);
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,movie_wid,movie_high,0,GL_RGBA,GL_UNSIGNED_BYTE,movie_data);
-	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE,0);
 	
 		// start the movie playing
 		
@@ -216,9 +214,7 @@ void bitmap_movie_texture_refresh(void)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D,movie_gl_id);
 		
-	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE,1);
 	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,movie_wid,movie_high,GL_RGBA,GL_UNSIGNED_INT_8_8_8_8,movie_data);
-	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE,0);
 #endif
 }
 

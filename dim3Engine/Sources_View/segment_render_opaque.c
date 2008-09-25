@@ -647,7 +647,7 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 
 	stencil_pass_cnt=render_opaque_mesh_stencil_mark(mesh_cnt,mesh_list);
 
-			// attach map complied open gl list
+		// attach map complied open gl list
 
 	view_compile_gl_list_attach();
 		
@@ -666,7 +666,6 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 			if (setup.specular_mapping) render_opaque_portal_specular(mesh_cnt,mesh_list,stencil_pass,is_simple_lighting);
 			render_opaque_portal_lighting_fix(mesh_cnt,mesh_list,stencil_pass);
 		}
-
 	}
 
 	glDisable(GL_STENCIL_TEST);
@@ -680,5 +679,6 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 		// dettach any attached lists
 
 	view_compile_gl_list_dettach();
+
 }
 

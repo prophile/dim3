@@ -47,8 +47,7 @@ and can be sold or given away.
 #define ctrl_lock_fps_refresh_id			2
 #define ctrl_anisotropic_id					3
 #define ctrl_mipmap_id						5
-#define ctrl_mipmap_card_id					6
-#define ctrl_compression_id					7
+#define ctrl_compression_id					6
 
 #define ctrl_bumpmapping_id					10
 #define ctrl_gamma_id						11
@@ -133,7 +132,7 @@ void setup_game_display_pane(void)
 	
 	control_y_add=element_get_control_high();
 	separate_y_add=element_get_separator_high();
-	control_y_sz=(control_y_add*6)+separate_y_add;
+	control_y_sz=(control_y_add*5)+separate_y_add;
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
@@ -168,9 +167,6 @@ void setup_game_display_pane(void)
 	element_enable(ctrl_compression_id,gl_check_texture_compress_ok());
 	y+=control_y_add;
 	element_combo_add("MipMap Filtering",(char*)setup_mipmap_mode_list,setup.mipmap_mode,ctrl_mipmap_id,x,y,TRUE);
-	y+=control_y_add;
-	element_checkbox_add("MipMapping On Card",setup.mipmap_card_generated,ctrl_mipmap_card_id,x,y,TRUE);
-	element_enable(ctrl_mipmap_card_id,gl_check_texture_generate_mipmaps_ok());
 }
 
 void setup_game_graphics_pane(void)
@@ -638,7 +634,6 @@ void setup_game_save_close(void)
 		display_reset=display_reset || (setup_backup.texture_compression!=setup.texture_compression);
 		display_reset=display_reset || (setup_backup.anisotropic_mode!=setup.anisotropic_mode);
 		display_reset=display_reset || (setup_backup.mipmap_mode!=setup.mipmap_mode);
-		display_reset=display_reset || (setup_backup.mipmap_card_generated!=setup.mipmap_card_generated);
 	
 		if (display_reset) {
 			if (!view_reset_display(err_str)) {
@@ -759,10 +754,6 @@ void setup_game_handle_click(int id)
 			
 		case ctrl_mipmap_id:
 			setup.mipmap_mode=element_get_value(ctrl_mipmap_id);
-			break;
-
-		case ctrl_mipmap_card_id:
-			setup.mipmap_card_generated=element_get_value(ctrl_mipmap_card_id);
 			break;
 
 		case ctrl_fsaa_id:

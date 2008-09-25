@@ -81,7 +81,6 @@ bool gl_check_fsaa_ok(void)
 
 bool gl_check_texture_compress_ok(void)
 {
-	if (strstr(render_info.name,"NVIDIA")!=NULL) return(FALSE);
 	return(strstr(render_info.ext_string,"GL_ARB_texture_compression")!=NULL);
 }
 
@@ -92,7 +91,6 @@ bool gl_check_texture_anisotropic_filter_ok(void)
 
 bool gl_check_texture_generate_mipmaps_ok(void)
 {
-	if (strstr(render_info.name,"NVIDIA")!=NULL) return(FALSE);
 	return(strstr(render_info.ext_string,"GL_SGIS_generate_mipmap")!=NULL);
 }
 

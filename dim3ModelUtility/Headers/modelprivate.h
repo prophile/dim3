@@ -31,7 +31,7 @@ and can be sold or given away.
 
 typedef struct		{
 						int						anisotropic_mode,mipmap_mode;
-						bool					card_generated_mipmaps,compression;
+						bool					compression;
 						file_path_setup_type	file_path_setup;
                     } modelutility_settings_type;
 

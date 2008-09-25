@@ -48,7 +48,7 @@ void bitmap_new(bitmap_type *bitmap)
       
 ======================================================= */
 
-bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression,bool pixelated,bool scrub_black_to_alpha)
+bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool use_compression,bool pixelated,bool scrub_black_to_alpha)
 {
 	int					n,psz;
 	char				*c;
@@ -108,7 +108,7 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 	
 		// get the texture
 		
-	ok=bitmap_texture_open(bitmap,png_data,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression,pixelated);
+	ok=bitmap_texture_open(bitmap,png_data,anisotropic_mode,mipmap_mode,use_compression,pixelated);
 
 	free(png_data);
 	
@@ -142,7 +142,7 @@ bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col)
 		*dptr++=collong;
 	}
 	
-	ok=bitmap_texture_open(bitmap,png_data,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,TRUE);
+	ok=bitmap_texture_open(bitmap,png_data,anisotropic_mode_none,mipmap_mode_none,FALSE,TRUE);
 
 	free(png_data);
 	
@@ -155,7 +155,7 @@ bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col)
       
 ======================================================= */
 
-bool bitmap_data(bitmap_type *bitmap,char *name,unsigned char *data,int wid,int high,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression)
+bool bitmap_data(bitmap_type *bitmap,char *name,unsigned char *data,int wid,int high,int anisotropic_mode,int mipmap_mode,bool use_compression)
 {
 	int				n,psz;
 	unsigned char	*ptr;
@@ -188,7 +188,7 @@ bool bitmap_data(bitmap_type *bitmap,char *name,unsigned char *data,int wid,int 
 
 		// get the texture
 		
-	return(bitmap_texture_open(bitmap,data,anisotropic_mode,mipmap_mode,use_card_generated_mipmaps,use_compression,TRUE));
+	return(bitmap_texture_open(bitmap,data,anisotropic_mode,mipmap_mode,use_compression,TRUE));
 }
 
 /* =======================================================

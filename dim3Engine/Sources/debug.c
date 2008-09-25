@@ -183,7 +183,6 @@ void debug_dump(void)
 	if (!gl_check_frame_buffer_ok()) fprintf(stdout,"Shadow support disabled; Unsupported on this video card.\n");
 	if (!gl_check_fsaa_ok()) fprintf(stdout,"FSAA support disabled; Unsupported on this video card.\n");
 	if (!gl_check_texture_compress_ok()) fprintf(stdout,"Compression disabled; Unsupported on this video card.\n");
-	if (!gl_check_texture_generate_mipmaps_ok()) fprintf(stdout,"On-card mipmap generation disabled; Unsupported on this video card.\n");
 	if (!gl_check_point_sprite_ok()) fprintf(stdout,"Point sprite support disabled; Unsupported on this video card.\n");
 	if (!gl_check_shader_ok()) fprintf(stdout,"GLSL support disabled; Unsupported on this video card.\n");
 

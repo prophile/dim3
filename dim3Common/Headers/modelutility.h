@@ -399,7 +399,7 @@ extern void model_set_sel_mask_no_bone(model_type *model,int mesh_idx);
 extern void model_set_sel_mask_near_bone(model_type *model,int mesh_idx,int bone_idx,float percentage);
 extern void model_set_sel_mask_material(model_type *model,int mesh_idx,int material_idx);
 
-extern void model_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression);
+extern void model_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,bool use_compression);
 extern bool model_new(model_type *model,char *name);
 extern bool model_open(model_type *model,char *name,bool load_bitmaps,bool load_shaders);
 extern bool model_save(model_type *model);

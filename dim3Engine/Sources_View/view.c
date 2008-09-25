@@ -225,7 +225,6 @@ bool view_initialize_display(char *err_str)
 	if (!gl_check_fsaa_ok()) setup.fsaa_mode=fsaa_mode_none;
 	if (!gl_check_texture_compress_ok()) setup.texture_compression=FALSE;
 	if (!gl_check_texture_anisotropic_filter_ok()) setup.anisotropic_mode=anisotropic_mode_none;
-	if (!gl_check_texture_generate_mipmaps_ok()) setup.mipmap_card_generated=FALSE;
 
 		// initialize text
 	
@@ -468,7 +467,12 @@ void view_loop_draw(int tick)
 
 void view_gui_draw(void)
 {
-	view_draw(game_time_get());
+	int			tick;
+
+	tick=game_time_get();
+
+	view_draw_setup(tick);
+	view_draw(tick);
 }
 
 /* =======================================================

@@ -37,12 +37,11 @@ maputility_settings_type		maputility_settings;
       
 ======================================================= */
 
-void map_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,bool use_card_generated_mipmaps,bool use_compression)
+void map_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,bool use_compression)
 {
 	memmove(&maputility_settings.file_path_setup,file_path_setup,sizeof(file_path_setup_type));
 	maputility_settings.anisotropic_mode=anisotropic_mode;
 	maputility_settings.mipmap_mode=mipmap_mode;
-	maputility_settings.card_generated_mipmaps=use_card_generated_mipmaps;
 	maputility_settings.compression=use_compression;
 }
 

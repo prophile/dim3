@@ -56,46 +56,52 @@ bitmap_type					font_small_bitmap,font_large_bitmap;
 
 #ifdef D3_OS_WINDOWS
 
-bool gl_text_create_font(void)
+bool gl_text_create_font(bitmap_type *bitmap,int pixel_sz,int font_high,int wid,int high)
 {
-	int				n,x,y;
+	int				n,x,y,baseline_add;
 	unsigned char	ch;
 	unsigned char	*data,*ptr;
-	HDC				dc;
+	HDC				screen_dc,dc;
 	HBITMAP			bmp,*old_bmp;
 	HFONT			font;
 	COLORREF		col;
 
 		// data for bitmap
 
-	data=valloc((128*4)*128);
-	if (data!=NULL) return(FALSE);
+	data=valloc((pixel_sz<<2)*pixel_sz);
+	if (data==NULL) return(FALSE);
 
 		// create bitmap
 
-	dc=CreateCompatibleDC(NULL);
-	bmp=CreateCompatibleBitmap(dc,128,128);
+	screen_dc=GetDC(NULL);
+
+	dc=CreateCompatibleDC(screen_dc);
+	bmp=CreateCompatibleBitmap(screen_dc,pixel_sz,pixel_sz);
 	old_bmp=SelectObject(dc,bmp);
 
 	SetMapMode(dc,MM_TEXT);
-	SetMapperFlags(dc,0x1);
+	SetMapperFlags(dc,1);
 	SetTextAlign(dc,TA_BASELINE);
 	SetBkMode(dc,OPAQUE);
 	SetBkColor(dc,RGB(0,0,0));
 
+		// baseline add
+
+	baseline_add=((high/3)+1)*2;
+
 		// draw the characters
 
-	font=CreateFont(12,0,0,0,FW_NORMAL,0,0,0,0,0,0,0,0,"Arial");
+	font=CreateFont(-font_high,0,0,0,FW_NORMAL,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,"Arial");
 	SelectObject(dc,font);
 	SetTextColor(dc,RGB(255,255,255));
 
 	for (n=0;n!=90;n++) {
 		ch=(unsigned char)(n+'!');
 
-		x=(n%10)*12;
-		y=((n/10)*14)+11;
+		x=(n%10)*wid;
+		y=((n/10)*high)+baseline_add;
 
-		TextOut(dc,x,y,(char*)ch,1);
+		TextOut(dc,x,y,(char*)&ch,1);
 	}
 
 	DeleteObject(font);
@@ -104,22 +110,23 @@ bool gl_text_create_font(void)
 
 	ptr=data;
 
-	for (y=0;y!=128;y++) {
+	for (y=0;y!=pixel_sz;y++) {
 
-		for (x=0;x!=128;x++) {
+		for (x=0;x!=pixel_sz;x++) {
 
 			col=GetPixel(dc,x,y);
 
-			*ptr++=GetRValue(col);
-			*ptr++=GetGValue(col);
-			*ptr++=GetBValue(col);
+			*ptr++=0xFF;
+			*ptr++=0xFF;
+			*ptr++=0xFF;
 
-			*ptr++=0xFF; // GetRValue(col);		// as they are black and white, assume any changes in gray = alpha
+			*ptr++=GetRValue(col);		// use the anti-aliased font as the alpha mask
 
 		}
 	}
 
-	bitmap_data(&font_small_bitmap,"small_font",data,128,128,anisotropic_mode_none,mipmap_mode_none,FALSE,TRUE);
+	bitmap_data(bitmap,"small_font",data,pixel_sz,pixel_sz,anisotropic_mode_none,mipmap_mode_none,FALSE);
+
 	free(data);
 
 		// delete the bitmap
@@ -135,7 +142,7 @@ bool gl_text_create_font(void)
 
 #ifdef D3_OS_MAC
 
-void gl_text_create_font(void)
+bool gl_text_create_font(bitmap_type *bitmap,int pixel_sz,int font_high,int wid,int high)
 {
 }
 
@@ -153,13 +160,15 @@ void gl_text_initialize(void)
 	
 		// load fonts
 		
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Fonts","small","png");
-	bitmap_open(&font_small_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
+//	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Fonts","small","png");
+//	bitmap_open(&font_small_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
 	
-//	gl_text_create_font();
+//	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Fonts","large","png");
+//	bitmap_open(&font_large_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
 
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Fonts","large","png");
-	bitmap_open(&font_large_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
+//	gl_text_create_font(&font_small_bitmap,128,14,12,14);
+	gl_text_create_font(&font_large_bitmap,256,28,24,28);
+	gl_text_create_font(&font_small_bitmap,256,28,24,28);
 }
 
 void gl_text_shutdown(void)

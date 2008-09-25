@@ -136,32 +136,19 @@ void menu_setup_control(void)
 
 void menu_open(void)
 {
-	fprintf(stdout,"OPEN 1\n");
-	fflush(stdout);
-
 	gui_initialize(NULL,NULL,TRUE);
 
-	fprintf(stdout,"OPEN 2\n");
-	fflush(stdout);
 	menu_idx=0;
 	menu_setup_control();
-	fprintf(stdout,"OPEN 3\n");
-	fflush(stdout);
 	
 	server.state=gs_menu;
-	fprintf(stdout,"OPEN 4\n");
-	fflush(stdout);
 }
 
 void menu_close(void)
 {
-	fprintf(stdout,"CLOSE 1\n");
-	fflush(stdout);
 	gui_shutdown();
 	
 	if (server.state==gs_menu) server.state=gs_running;			// only reset to running if picked menu item didn't reset to something else
-	fprintf(stdout,"CLOSE 2\n");
-	fflush(stdout);
 }
 
 /* =======================================================
@@ -275,21 +262,21 @@ void menu_trigger_set(void)
 
 void menu_input(void)
 {
-		// menu start and end key
-		
-	if (input_action_get_state_single(nc_menu)) {
-		if (server.state==gs_running) {
-			menu_open();
-		}
-		else {
-			menu_close();
-		}
-	}
+	if (input_action_get_state_single(nc_menu)) menu_trigger_set();
 }
 
 void menu_click(void)
 {
 	int			id;
+
+		// esc cancels menu
+
+	if (input_action_get_state_single(nc_menu)) {
+		menu_close();
+		return;
+	}
+
+		// check for clicks
 		
 	id=gui_click();
 	if (id==-1) return;
@@ -307,16 +294,7 @@ void menu_click(void)
 
 void menu_run(void)
 {
-	fprintf(stdout,"RUN 1\n");
-	fflush(stdout);
 	gui_draw(1.0f,TRUE);
-	fprintf(stdout,"RUN 2\n");
-	fflush(stdout);
 	menu_click();
-	fprintf(stdout,"RUN 3\n");
-	fflush(stdout);
-	menu_input();
-	fprintf(stdout,"RUN 4\n");
-	fflush(stdout);
 }
 

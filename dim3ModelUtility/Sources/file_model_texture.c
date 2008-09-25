@@ -98,7 +98,7 @@ void model_textures_read(model_type *model)
 
 				sprintf(sub_path,"Models/%s/Bitmaps/Textures",model->name);
 				file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,bitmap->name,"png");
-				bitmap_open(bitmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated,FALSE);
+				bitmap_open(bitmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.compression,texture->pixelated,FALSE);
 
 					// bumpmap
 					
@@ -107,19 +107,19 @@ void model_textures_read(model_type *model)
 					case bump_mode_auto_generate:
 						sprintf(sub_path,"Models/%s/Bitmaps/Textures",model->name);
 						file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,bitmap->name,"png");
-						bitmap_open_normal_from_bitmap(bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated);
+						bitmap_open_normal_from_bitmap(bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.compression,texture->pixelated);
 						break;
 
 					case bump_mode_height_map:
 						sprintf(sub_path,"Models/%s/Bitmaps/Textures_Height",model->name);
 						file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,bumpmap->name,"png");
-						bitmap_open_normal_from_height(bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated);
+						bitmap_open_normal_from_height(bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.compression,texture->pixelated);
 						break;
 						
 					case bump_mode_normal_map:
 						sprintf(sub_path,"Models/%s/Bitmaps/Textures_dot3",model->name);
 						file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,bumpmap->name,"png");
-						bitmap_open(bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated,FALSE);
+						bitmap_open(bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.compression,texture->pixelated,FALSE);
 						break;
 						
 				}
@@ -129,7 +129,7 @@ void model_textures_read(model_type *model)
 				if (specularmap->name[0]!=0x0) {
 					sprintf(sub_path,"Models/%s/Bitmaps/Textures_Specular",model->name);
 					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,specularmap->name,"png");
-					bitmap_open(specularmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated,FALSE);
+					bitmap_open(specularmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.compression,texture->pixelated,FALSE);
 				}
 
 					// glow map
@@ -137,7 +137,7 @@ void model_textures_read(model_type *model)
 				if (glowmap->name[0]!=0x0) {
 					sprintf(sub_path,"Models/%s/Bitmaps/Textures_Glow",model->name);
 					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,glowmap->name,"png");
-					bitmap_open(glowmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.card_generated_mipmaps,modelutility_settings.compression,texture->pixelated,TRUE);
+					bitmap_open(glowmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.compression,texture->pixelated,TRUE);
 				}
 			}
 			

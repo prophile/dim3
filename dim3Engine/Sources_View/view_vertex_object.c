@@ -75,14 +75,26 @@ void view_dispose_vertex_objects(void)
 
 inline void view_next_vertex_object(void)
 {
-		// this assumes all vbos will never be locked
-		// based on the code, this will be true
+	int			org_idx;
+
+	org_idx=cur_vbo_cache_idx;
+
+		// based on the code, all vbos should never be
+		// locked, but just in case (some weird condition)
+		// we only loop round once
 		
 	while (TRUE) {
+
 		cur_vbo_cache_idx++;
 		if (cur_vbo_cache_idx==view_vertex_object_count) cur_vbo_cache_idx=0;
 		
+			// is it unlocked?
+
 		if (!vbo_locked[cur_vbo_cache_idx]) break;
+
+			// have we gone in a complete circle?
+
+		if (cur_vbo_cache_idx==org_idx) break;
 	}
 }
 
