@@ -188,7 +188,7 @@ bool bitmap_data(bitmap_type *bitmap,char *name,unsigned char *data,int wid,int 
 
 		// get the texture
 		
-	return(bitmap_texture_open(bitmap,data,anisotropic_mode,mipmap_mode,use_compression,TRUE));
+	return(bitmap_texture_open(bitmap,data,anisotropic_mode,mipmap_mode,use_compression,FALSE));
 }
 
 /* =======================================================

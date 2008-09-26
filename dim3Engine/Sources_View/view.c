@@ -461,30 +461,21 @@ void view_loop_draw(int tick)
 
 /* =======================================================
 
-      View Draw for GUI Screens
-      
-======================================================= */
-
-void view_gui_draw(void)
-{
-	int			tick;
-
-	tick=game_time_get();
-
-	view_draw_setup(tick);
-	view_draw(tick);
-}
-
-/* =======================================================
-
       View Draw for Screen Captures
       
 ======================================================= */
 
 void view_capture_draw(char *path)
 {
+	int			tick;
+
+	tick=game_time_get();
+
 	gl_frame_start(NULL);
-	view_gui_draw();
+	
+	view_draw_setup(tick);
+	view_draw(tick);
+	
 	gl_screen_shot(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz,TRUE,path);
 }
 

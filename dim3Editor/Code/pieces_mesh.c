@@ -586,8 +586,10 @@ void piece_add_grid_mesh(void)
 			py[0]=py[1]=py[2]=py[3]=pnt.y;
 			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 			
-			py[0]=py[1]=py[2]=py[3]=(ydiv*sz)+pnt.y;
-			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			if (ydiv!=0) {
+				py[0]=py[1]=py[2]=py[3]=(ydiv*sz)+pnt.y;
+				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			}
 		}
 	}
 	
@@ -603,8 +605,10 @@ void piece_add_grid_mesh(void)
 			pz[0]=pz[1]=pz[2]=pz[3]=pnt.z;
 			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 			
-			pz[0]=pz[1]=pz[2]=pz[3]=(zdiv*sz)+pnt.z;
-			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			if (zdiv!=0) {
+				pz[0]=pz[1]=pz[2]=pz[3]=(zdiv*sz)+pnt.z;
+				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			}
 		}
 	}
 	
@@ -618,8 +622,10 @@ void piece_add_grid_mesh(void)
 			px[0]=px[1]=px[2]=px[3]=pnt.x;
 			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 			
-			px[0]=px[1]=px[2]=px[3]=(xdiv*sz)+pnt.x;
-			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			if (xdiv!=0) {
+				px[0]=px[1]=px[2]=px[3]=(xdiv*sz)+pnt.x;
+				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
+			}
 		}
 	}
 	

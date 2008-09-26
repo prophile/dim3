@@ -148,7 +148,7 @@ bool file_new_map(void)
 	
 		// set the map paths
 		
-	map_setup(&file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.mipmap_card_generated,setup.texture_compression);
+	map_setup(&file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.texture_compression);
 	
 		// copy the course script
 		
@@ -200,7 +200,7 @@ bool file_open_map(void)
 	open_windows();
 	main_wind_set_title(file_name);
 	
-	map_setup(&file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.mipmap_card_generated,setup.texture_compression);
+	map_setup(&file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.texture_compression);
 	
 	ok=map_open(&map,file_name,FALSE,FALSE);
 

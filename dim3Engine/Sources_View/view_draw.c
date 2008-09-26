@@ -322,10 +322,6 @@ void view_draw(int tick)
 
 		// compile meshes for drawing
 	
-	// supergumba -- temporary until I figure out crashing problem
-
-	if (server.state!=gs_menu) {
-
 	if (!view_compile_mesh_gl_lists(tick,mesh_draw_count,mesh_draw_list)) return;
 
 		// draw opaque polygons
@@ -344,7 +340,7 @@ void view_draw(int tick)
 		// release the lock on the mesh drawing vbo
 
 	view_release_mesh_gl_lists();
-	}	// supergumba -- other part
+
 		// draw liquids
 
 	liquid_render(tick);

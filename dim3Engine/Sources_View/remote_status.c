@@ -44,8 +44,6 @@ extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-extern bitmap_type			font_small_bitmap;
-
 int							remote_slow_image_idx,remote_talk_image_idx;
 
 /* =======================================================

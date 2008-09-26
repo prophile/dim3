@@ -31,6 +31,14 @@ and can be sold or given away.
 
 #include "video.h"
 
+// supergumba -- move to defs file
+
+#define font_bitmap_pixel_sz			256
+#define font_bitmap_point				28
+#define font_bitmap_char_wid			24
+#define font_bitmap_char_high			28
+#define font_bitmap_char_baseline		21
+
 extern hud_type				hud;
 extern setup_type			setup;
 
@@ -46,19 +54,19 @@ float						font_char_size[90]=
 								 0.67f,0.67f,0.33f,0.33f,0.62f,0.33f,0.90f,0.64f,0.65f,0.60f,
 								 0.67f,0.46f,0.54f,0.42f,0.64f,0.60f,0.83f,0.60f,0.58f,0.62f};
 
-bitmap_type					font_small_bitmap,font_large_bitmap;
+bitmap_type					font_bitmap;
 
 /* =======================================================
 
-      Create Fonts
+      Setup Text Drawing
       
 ======================================================= */
 
 #ifdef D3_OS_WINDOWS
 
-bool gl_text_create_font(bitmap_type *bitmap,int pixel_sz,int font_high,int wid,int high)
+void gl_text_initialize(void)
 {
-	int				n,x,y,baseline_add;
+	int				n,x,y,font_high;
 	unsigned char	ch;
 	unsigned char	*data,*ptr;
 	HDC				screen_dc,dc;
@@ -68,15 +76,15 @@ bool gl_text_create_font(bitmap_type *bitmap,int pixel_sz,int font_high,int wid,
 
 		// data for bitmap
 
-	data=valloc((pixel_sz<<2)*pixel_sz);
-	if (data==NULL) return(FALSE);
+	data=valloc((font_bitmap_pixel_sz<<2)*font_bitmap_pixel_sz);
+	if (data==NULL) return;
 
 		// create bitmap
 
 	screen_dc=GetDC(NULL);
 
 	dc=CreateCompatibleDC(screen_dc);
-	bmp=CreateCompatibleBitmap(screen_dc,pixel_sz,pixel_sz);
+	bmp=CreateCompatibleBitmap(screen_dc,font_bitmap_pixel_sz,font_bitmap_pixel_sz);
 	old_bmp=SelectObject(dc,bmp);
 
 	SetMapMode(dc,MM_TEXT);
@@ -85,12 +93,9 @@ bool gl_text_create_font(bitmap_type *bitmap,int pixel_sz,int font_high,int wid,
 	SetBkMode(dc,OPAQUE);
 	SetBkColor(dc,RGB(0,0,0));
 
-		// baseline add
-
-	baseline_add=((high/3)+1)*2;
-
 		// draw the characters
 
+	font_high=-MulDiv(font_bitmap_point,GetDeviceCaps(dc,LOGPIXELSY),72);
 	font=CreateFont(-font_high,0,0,0,FW_NORMAL,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,"Arial");
 	SelectObject(dc,font);
 	SetTextColor(dc,RGB(255,255,255));
@@ -98,8 +103,8 @@ bool gl_text_create_font(bitmap_type *bitmap,int pixel_sz,int font_high,int wid,
 	for (n=0;n!=90;n++) {
 		ch=(unsigned char)(n+'!');
 
-		x=(n%10)*wid;
-		y=((n/10)*high)+baseline_add;
+		x=(n%10)*font_bitmap_char_wid;
+		y=((n/10)*font_bitmap_char_high)+font_bitmap_char_baseline;
 
 		TextOut(dc,x,y,(char*)&ch,1);
 	}
@@ -110,9 +115,9 @@ bool gl_text_create_font(bitmap_type *bitmap,int pixel_sz,int font_high,int wid,
 
 	ptr=data;
 
-	for (y=0;y!=pixel_sz;y++) {
+	for (y=0;y!=font_bitmap_pixel_sz;y++) {
 
-		for (x=0;x!=pixel_sz;x++) {
+		for (x=0;x!=font_bitmap_pixel_sz;x++) {
 
 			col=GetPixel(dc,x,y);
 
@@ -125,7 +130,7 @@ bool gl_text_create_font(bitmap_type *bitmap,int pixel_sz,int font_high,int wid,
 		}
 	}
 
-	bitmap_data(bitmap,"small_font",data,pixel_sz,pixel_sz,anisotropic_mode_none,mipmap_mode_none,FALSE);
+	bitmap_data(&font_bitmap,"font",data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,anisotropic_mode_none,mipmap_mode_none,FALSE);
 
 	free(data);
 
@@ -134,47 +139,97 @@ bool gl_text_create_font(bitmap_type *bitmap,int pixel_sz,int font_high,int wid,
 	SelectObject(dc,old_bmp);
 	DeleteObject(bmp);
 	DeleteDC(dc);
-
-	return(TRUE);
 }
 
 #endif
 
 #ifdef D3_OS_MAC
 
-bool gl_text_create_font(bitmap_type *bitmap,int pixel_sz,int font_high,int wid,int high)
+void gl_text_initialize(void)
 {
+	int					n,x,y,row_add;
+	unsigned char		ch;
+	unsigned char		*data,*sptr,*dptr;
+	Rect				box;
+	PixMapHandle		texturemap;
+	GWorldPtr			gworld;
+	CGrafPtr			org_gworld;
+	GDHandle			org_gdhand;
+	
+		// data for bitmap
+
+	data=valloc((font_bitmap_pixel_sz<<2)*font_bitmap_pixel_sz);
+	if (data==NULL) return;
+
+		// create bitmap
+		
+	SetRect(&box,0,0,font_bitmap_pixel_sz,font_bitmap_pixel_sz);
+	NewGWorld(&gworld,32,&box,NULL,NULL,0);
+	
+	GetGWorld(&org_gworld,&org_gdhand);
+	SetGWorld(gworld,NULL);
+	
+		// draw the characters
+
+	TextFont(FMGetFontFamilyFromName("\pArial"));
+	TextSize(font_bitmap_point);
+	TextFace(0);
+	
+	SwapQDTextFlags(kQDUseCGTextRendering|kQDUseCGTextMetrics);
+		
+	for (n=0;n!=90;n++) {
+		ch=(unsigned char)(n+'!');
+
+		x=(n%10)*font_bitmap_char_wid;
+		y=((n/10)*font_bitmap_char_high)+font_bitmap_char_baseline;
+
+		MoveTo(x,y);
+		DrawChar(ch);
+	}
+
+		// get the bitmap
+
+	texturemap=GetGWorldPixMap(gworld);
+
+	LockPixels(texturemap);
+	sptr=(unsigned char*)GetPixBaseAddr(texturemap);
+	row_add=GetPixRowBytes(texturemap)-(font_bitmap_pixel_sz<<2);
+	
+	dptr=data;
+
+	for (y=0;y!=font_bitmap_pixel_sz;y++) {
+
+		for (x=0;x!=font_bitmap_pixel_sz;x++) {
+
+			*dptr++=0xFF;
+			*dptr++=0xFF;
+			*dptr++=0xFF;
+
+			*dptr++=*sptr++;		// use the anti-aliased font as the alpha mask (using the red component)
+			sptr+=3;
+
+		}
+		
+		sptr+=row_add;
+	}
+	
+	UnlockPixels(texturemap);
+	
+	bitmap_data(&font_bitmap,"font",data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,anisotropic_mode_none,mipmap_mode_none,FALSE);
+
+	free(data);
+
+		// dispose the gworld
+		
+	SetGWorld(org_gworld,org_gdhand);
+	DisposeGWorld(gworld);
 }
 
 #endif
 
-/* =======================================================
-
-      Setup Text Drawing
-      
-======================================================= */
-
-void gl_text_initialize(void)
-{
-	char				path[1024];
-	
-		// load fonts
-		
-//	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Fonts","small","png");
-//	bitmap_open(&font_small_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-	
-//	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Fonts","large","png");
-//	bitmap_open(&font_large_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-//	gl_text_create_font(&font_small_bitmap,128,14,12,14);
-	gl_text_create_font(&font_large_bitmap,256,28,24,28);
-	gl_text_create_font(&font_small_bitmap,256,28,24,28);
-}
-
 void gl_text_shutdown(void)
 {
-	bitmap_close(&font_small_bitmap);
-	bitmap_close(&font_large_bitmap);
+	bitmap_close(&font_bitmap);
 }
 
 /* =======================================================
@@ -240,7 +295,7 @@ void gl_text_start(bool small_text)
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
 	
-	glBindTexture(GL_TEXTURE_2D,font_small?font_small_bitmap.gl_id:font_large_bitmap.gl_id);
+	glBindTexture(GL_TEXTURE_2D,font_bitmap.gl_id);
 	
 		// texture combines
 		

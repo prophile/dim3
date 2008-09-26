@@ -35,11 +35,16 @@ and can be sold or given away.
 #include "sounds.h"
 #include "inputs.h"
 
+// supergumba -- move to defs file
+
+#define gui_screenshot_wid		256
+#define gui_screenshot_high		128
+#define gui_screenshot_darken	0.8f
+
 extern server_type			server;
 extern hud_type				hud;
 extern setup_type			setup;
 
-bool						gui_has_background,gui_show_view;
 char						gui_last_key;
 bitmap_type					gui_background_bitmap;
 chooser_frame_type			gui_frame;
@@ -47,7 +52,97 @@ chooser_frame_type			gui_frame;
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
 extern void map_restart_ambient(void);
-extern void view_gui_draw(void);
+
+/* =======================================================
+
+      GUI Background
+      
+======================================================= */
+
+void gui_initialize_load_background(char *background_path,char *bitmap_name)
+{
+	char		name[256],path[1024];
+
+		// load the background bitmap
+		// we pick the version with _wide on the
+		// end if screen is in widescreen resolutions
+
+	if (gl_is_screen_widescreen()) {
+		sprintf(name,"%s_wide",bitmap_name);
+		file_paths_data(&setup.file_path_setup,path,background_path,name,"png");
+		if (bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE)) return;
+	}
+	
+		// and fail-over to the original if not loaded
+
+	file_paths_data(&setup.file_path_setup,path,background_path,bitmap_name,"png");
+	bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
+}
+
+inline unsigned char gui_initialize_load_screenshot_reduce_byte(unsigned char byte)
+{
+	float		f;
+	
+	f=(float)byte;
+	return((unsigned char)(f*gui_screenshot_darken));
+}
+
+void gui_initialize_load_screenshot(void)
+{
+	int					x,y,x_skip,y_skip,dsz;
+	unsigned char		*pixel_buffer,*data,*sptr,*dptr,*s2ptr,*d2ptr;
+	
+	pixel_buffer=(unsigned char*)valloc((setup.screen.x_sz*3)*setup.screen.y_sz);
+	if (pixel_buffer==NULL) return;
+	
+	glReadPixels(0,0,setup.screen.x_sz,setup.screen.y_sz,GL_RGB,GL_UNSIGNED_BYTE,pixel_buffer);
+	
+		// reduce size
+		
+	x_skip=setup.screen.x_sz/gui_screenshot_wid;
+	y_skip=setup.screen.y_sz/gui_screenshot_high;
+	
+		// flip and/or reduce the data
+		
+	dsz=((gui_screenshot_wid<<2)*gui_screenshot_high);
+	
+	data=(unsigned char*)valloc(dsz);
+	if (data==NULL) {
+		free(pixel_buffer);
+		return;
+	}
+	
+	bzero(data,dsz);
+	
+	sptr=pixel_buffer;
+	dptr=data+((gui_screenshot_high-1)*(gui_screenshot_wid<<2));
+
+	for (y=0;y!=gui_screenshot_high;y++) {
+	
+		s2ptr=sptr;
+		d2ptr=dptr;
+		
+		for (x=0;x!=gui_screenshot_wid;x++) {
+			*d2ptr++=gui_initialize_load_screenshot_reduce_byte(*s2ptr++);
+			*d2ptr++=gui_initialize_load_screenshot_reduce_byte(*s2ptr++);
+			*d2ptr++=gui_initialize_load_screenshot_reduce_byte(*s2ptr++);
+			*d2ptr++=0xFF;
+			
+			s2ptr+=((x_skip-1)*3);
+		}
+			
+		sptr+=((setup.screen.x_sz*3)*y_skip);
+		dptr-=(gui_screenshot_wid<<2);
+	}
+
+	free(pixel_buffer);
+
+		// save screenshot
+
+	bitmap_data(&gui_background_bitmap,"gui_background",data,gui_screenshot_wid,gui_screenshot_high,anisotropic_mode_none,mipmap_mode_trilinear,FALSE);
+		
+	free(data);
+}
 
 /* =======================================================
 
@@ -58,8 +153,6 @@ extern void view_gui_draw(void);
 void gui_initialize(char *background_path,char *bitmap_name,bool show_view)
 {
 	int			x,y;
-	char		name[256],path[1024];
-	bool		load_ok;
 	
 		// pause game
 		
@@ -78,32 +171,18 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view)
 	cursor_initialize();
 	element_initialize();
 	
-		// load the background bitmap
-		// we pick the version with _wide on the
-		// end if screen is in widescreen resolutions
-		// and fail-over to the original if not loaded
+		// load up the proper background bitmap
 		
-	gui_has_background=FALSE;
-	gui_show_view=show_view;
+	gui_background_bitmap.gl_id=-1;
+	
+	if (!show_view) {
+		gui_initialize_load_background(background_path,bitmap_name);
+	}
+	else {
+		gui_initialize_load_screenshot();
+	}
 	
 	gui_frame.on=FALSE;
-	
-	if (bitmap_name!=NULL) {
-		gui_has_background=TRUE;
-
-		load_ok=FALSE;
-		
-		if (gl_is_screen_widescreen()) {
-			sprintf(name,"%s_wide",bitmap_name);
-			file_paths_data(&setup.file_path_setup,path,background_path,name,"png");
-			load_ok=bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-		}
-
-		if (!load_ok) {
-			file_paths_data(&setup.file_path_setup,path,background_path,bitmap_name,"png");
-			bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-		}
-	}
 	
 		// start mouse in middle of screen
 		
@@ -120,7 +199,7 @@ void gui_shutdown(void)
 {
 		// close background bitmap
 		
-	if (gui_has_background) bitmap_close(&gui_background_bitmap);
+	bitmap_close(&gui_background_bitmap);
 	
 		// release cursor and elements
 		
@@ -148,16 +227,9 @@ void gui_shutdown(void)
 
 void gui_draw_background(float alpha)
 {
-		// show view in background
-
-	if (gui_show_view) {
-		view_gui_draw();
-		return;
-	}
-
 		// no background at all?
 
-	if (!gui_has_background) return;
+	if (gui_background_bitmap.gl_id==-1) return;
 
 		// 2D draw setup
 
@@ -170,18 +242,6 @@ void gui_draw_background(float alpha)
 
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
-
-		// missing bitmap?
-
-	if (gui_background_bitmap.gl_id==-1) {
-		glBegin(GL_QUADS);
-		glVertex2i(0,0);
-		glVertex2i(hud.scale_x,0);
-		glVertex2i(hud.scale_x,hud.scale_y);
-		glVertex2i(0,hud.scale_y);
-		glEnd();
-		return;
-	}
 
 		// draw bitmap
 

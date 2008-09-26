@@ -91,7 +91,7 @@ bool dialog_create_grid_mesh_run(int *xdiv,int *ydiv,int *zdiv)
 		// setup controls
 		
 	dialog_set_int(dialog_create_grid_mesh_wind,kGridMeshXDivision,0,10);
-	dialog_set_int(dialog_create_grid_mesh_wind,kGridMeshYDivision,0,2);
+	dialog_set_int(dialog_create_grid_mesh_wind,kGridMeshYDivision,0,10);
 	dialog_set_int(dialog_create_grid_mesh_wind,kGridMeshZDivision,0,10);
 		
 		// show window
