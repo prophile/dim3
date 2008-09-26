@@ -559,6 +559,8 @@ bool object_start_script(obj_type *obj,char *name,char *params,char *err_str)
 	obj->attach.thing_type=thing_type_object;
 	obj->attach.thing_uid=obj->uid;
 
+	scripts_clear_attach_data(&obj->attach);
+
 	if (!scripts_add_console(&obj->attach,"Objects",name,params,err_str)) {
 		obj->hidden=TRUE;			// hide objects if scripts fail to compile
 		return(FALSE);

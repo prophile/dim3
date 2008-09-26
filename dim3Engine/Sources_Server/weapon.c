@@ -278,6 +278,8 @@ void weapon_start(weapon_type *weap)
 	weap->attach.thing_type=thing_type_weapon;
 	weap->attach.thing_uid=weap->uid;
 	
+	scripts_clear_attach_data(&weap->attach);
+
 	scripts_add_console(&weap->attach,"Weapons",weap->name,NULL,err_str);
 	model_load_and_init(&weap->draw);
 	

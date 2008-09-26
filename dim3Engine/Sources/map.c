@@ -289,6 +289,8 @@ bool map_start(bool skip_media,char *err_str)
 		
 	js.course_attach.thing_type=thing_type_course;
 	js.course_attach.thing_uid=-1;
+
+	scripts_clear_attach_data(&js.course_attach);
 	
 	if (!scripts_add(&js.course_attach,"Courses",map.info.name,NULL,err_str)) {
 		progress_shutdown();

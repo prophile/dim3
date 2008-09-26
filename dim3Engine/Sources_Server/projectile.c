@@ -101,6 +101,8 @@ proj_type* projectile_create(int tick,obj_type *obj,weapon_type *weap,proj_setup
 	proj->attach.thing_uid=proj->uid;
 	proj->attach.script_uid=proj_setup->attach.script_uid;
 
+	scripts_clear_attach_data(&proj->attach);
+
     return(proj);
 }
 

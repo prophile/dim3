@@ -57,6 +57,8 @@ and can be sold or given away.
 #define max_moves									256
 #define max_globals									1024
 
+#define max_msg_data								8
+
 #define js_script_memory_size						(20*1024*1024)
 
 //
@@ -951,12 +953,35 @@ typedef struct		{
 					} script_define_type;
 
 //
+// global structures
+//
+ 
+typedef union		{
+						int					global_int;
+						float				global_float;
+						bool				global_boolean;
+						char				global_string[max_global_str_len];
+					} global_data;
+ 
+typedef struct		{
+						int					type,script_uid;
+						char				name[name_str_len];
+						global_data			data;
+					} global_type;
+
+//
 // script structures
 //
  
 typedef struct		{
+						int					type;
+						global_data			data;
+					} attach_msg_type;
+
+typedef struct		{
 						int					thing_type,thing_uid,
 											script_uid;
+						attach_msg_type		set_msg_data[max_msg_data],get_msg_data[max_msg_data];
 					} attach_type;
  
 typedef struct		{
@@ -973,23 +998,6 @@ typedef struct		{
 						jsval				event_func;
 						JSObject			*global,*obj;
 					} script_type;
-
-//
-// global structures
-//
- 
-typedef union		{
-						int					global_int;
-						float				global_float;
-						bool				global_boolean;
-						char				global_string[max_global_str_len];
-					} global_data;
- 
-typedef struct		{
-						int					type,script_uid;
-						char				name[name_str_len];
-						global_data			data;
-					} global_type;
 
 //
 // count and flag structures

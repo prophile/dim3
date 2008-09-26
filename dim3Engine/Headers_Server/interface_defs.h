@@ -192,12 +192,16 @@ typedef struct		{
 					} console_line_type;
 
 //
-// color settings
+// color and font settings
 //
 
 typedef struct		{
 						d3col					base,header,disabled,mouse_over,hilite;
 					} hud_color_type;
+
+typedef struct		{
+						char					name[name_str_len],alt_name[name_str_len];
+					} hud_font_type;
 
 //
 // bitmaps, text, bars
@@ -388,6 +392,7 @@ typedef struct		{
 												intro_music[name_str_len];
 						hud_count_type			count;
 						hud_color_type			color;
+						hud_font_type			font;
 						hud_progress_type		progress;
 						hud_intro_type			intro;
 						hud_fade_type			fade;

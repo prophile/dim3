@@ -52,6 +52,8 @@ JSBool js_event_send_message_to_course_func(JSContext *cx,JSObject *j_obj,uintN 
 JSBool js_event_send_message_to_game_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_event_send_message_to_held_weapon_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_event_send_message_to_spawn_weapon_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_event_set_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_event_get_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			event_class={"event_class",JSCLASS_HAS_PRIVATE,
 							script_add_property,JS_PropertyStub,
@@ -74,6 +76,8 @@ JSFunctionSpec	event_functions[]={
 							{"sendMessageToGame",			js_event_send_message_to_game_func,				1},
 							{"sendMessageToHeldWeapon",		js_event_send_message_to_held_weapon_func,		1},
 							{"sendMessageToSpawnWeapon",	js_event_send_message_to_spawn_weapon_func,		1},
+							{"setMessageData",				js_event_set_message_data_func,					2},
+							{"getMessageData",				js_event_get_message_data_func,					1},
 							{0}};
 
 /* =======================================================
@@ -205,6 +209,7 @@ JSBool js_event_send_message_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 	
 		case sd_message_to_player:
 			obj=object_find_uid(server.player_obj_uid);
+			memmove(obj->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 			scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,id);
 			break;
 	
@@ -215,15 +220,18 @@ JSBool js_event_send_message_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 				*rval=JSVAL_FALSE;
 				break;
 			}
-			
+
+			memmove(obj->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 			scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,id);
 			break;
 			
 		case sd_message_to_course:
+			memmove(js.course_attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 			scripts_post_event_console(&js.course_attach,sd_event_message,sd_event_message_from_script,id);
 			break;
 		
 		case sd_message_to_game:
+			memmove(js.game_attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 			scripts_post_event_console(&js.game_attach,sd_event_message,sd_event_message_from_script,id);
 			break;
 	
@@ -237,6 +245,9 @@ JSBool js_event_send_message_to_player_func(JSContext *cx,JSObject *j_obj,uintN 
 	obj_type		*obj;
 
 	obj=object_find_uid(server.player_obj_uid);
+
+	memmove(obj->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
+
 	scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,JSVAL_TO_INT(argv[0]));
 
 	return(JS_TRUE);
@@ -251,7 +262,9 @@ JSBool js_event_send_message_to_object_by_id_func(JSContext *cx,JSObject *j_obj,
 		*rval=JSVAL_FALSE;
 		return(JS_TRUE);
 	}
-			
+
+	memmove(obj->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
+
 	scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,JSVAL_TO_INT(argv[1]));
 
 	*rval=JSVAL_TRUE;
@@ -270,6 +283,8 @@ JSBool js_event_send_message_to_object_by_name_func(JSContext *cx,JSObject *j_ob
 		*rval=JSVAL_FALSE;
 		return(JS_TRUE);
 	}
+
+	memmove(obj->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 			
 	scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_script,JSVAL_TO_INT(argv[1]));
 
@@ -280,12 +295,16 @@ JSBool js_event_send_message_to_object_by_name_func(JSContext *cx,JSObject *j_ob
 
 JSBool js_event_send_message_to_course_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
+	memmove(js.course_attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
+
 	scripts_post_event_console(&js.course_attach,sd_event_message,sd_event_message_from_script,JSVAL_TO_INT(argv[0]));
 	return(JS_TRUE);
 }
 
 JSBool js_event_send_message_to_game_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
+	memmove(js.game_attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
+
 	scripts_post_event_console(&js.game_attach,sd_event_message,sd_event_message_from_script,JSVAL_TO_INT(argv[0]));
 	return(JS_TRUE);
 }
@@ -306,6 +325,8 @@ JSBool js_event_send_message_to_held_weapon_func(JSContext *cx,JSObject *j_obj,u
 		JS_ReportError(js.cx,"No held weapon");
 		return(JS_FALSE);
 	}
+
+	memmove(weap->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
 
 	scripts_post_event_console(&weap->attach,sd_event_message,sd_event_message_from_script,JSVAL_TO_INT(argv[0]));
 	return(JS_TRUE);
@@ -333,6 +354,90 @@ JSBool js_event_send_message_to_spawn_weapon_func(JSContext *cx,JSObject *j_obj,
 		return(JS_FALSE);
 	}
 
+	memmove(weap->attach.get_msg_data,js.attach.set_msg_data,(sizeof(attach_msg_type)*max_msg_data));
+
 	scripts_post_event_console(&weap->attach,sd_event_message,sd_event_message_from_script,JSVAL_TO_INT(argv[0]));
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Message Data
+      
+======================================================= */
+
+JSBool js_event_set_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int			idx;
+
+		// get index
+
+	idx=JSVAL_TO_INT(argv[0]);
+	if ((idx<0) || (idx>=max_msg_data)) {
+		JS_ReportError(js.cx,"Message data index out of bounds");
+		return(JS_FALSE);
+	}
+
+		// set data
+
+	if (JSVAL_IS_INT(argv[1])) {
+		js.attach.set_msg_data[idx].type=global_type_int;
+		js.attach.set_msg_data[idx].data.global_int=JSVAL_TO_INT(argv[1]);
+		return(JS_TRUE);
+	}
+	
+	if (JSVAL_IS_DOUBLE(argv[1])) {
+		js.attach.set_msg_data[idx].type=global_type_float;
+		js.attach.set_msg_data[idx].data.global_float=script_value_to_float(argv[1]);
+		return(JS_TRUE);
+	}
+	
+	if (JSVAL_IS_BOOLEAN(argv[1])) {
+		js.attach.set_msg_data[idx].type=global_type_boolean;
+		js.attach.set_msg_data[idx].data.global_boolean=JSVAL_TO_BOOLEAN(argv[1]);
+		return(JS_TRUE);
+	}
+	
+	js.attach.set_msg_data[idx].type=global_type_string;
+	script_value_to_string(argv[1],js.attach.set_msg_data[idx].data.global_string,max_global_str_len);	
+    return(JS_TRUE);
+}
+
+JSBool js_event_get_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int			idx;
+
+ 		// get index
+
+	idx=JSVAL_TO_INT(argv[0]);
+	if ((idx<0) || (idx>=max_msg_data)) {
+		JS_ReportError(js.cx,"Message data index out of bounds");
+		return(JS_FALSE);
+	}
+
+		// get data
+
+	*rval=JSVAL_NULL;
+
+	switch (js.attach.get_msg_data[idx].type) {
+
+		case global_type_int:
+			*rval=INT_TO_JSVAL(js.attach.get_msg_data[idx].data.global_int);
+			break;
+
+		case global_type_float:
+			*rval=script_float_to_value(js.attach.get_msg_data[idx].data.global_float);
+			break;
+
+		case global_type_boolean:
+			*rval=BOOLEAN_TO_JSVAL(js.attach.get_msg_data[idx].data.global_boolean);
+			break;
+
+		case global_type_string:
+			*rval=script_string_to_value(js.attach.get_msg_data[idx].data.global_string);
+			break;
+
+	}
+
 	return(JS_TRUE);
 }

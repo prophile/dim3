@@ -317,6 +317,8 @@ bool server_game_start(char *game_script_name,int skill,int remote_count,network
 	
 	js.game_attach.thing_type=thing_type_game;
 	js.game_attach.thing_uid=-1;
+
+	scripts_clear_attach_data(&js.game_attach);
 	
 	if (!scripts_add(&js.game_attach,"Game",game_script_name,NULL,err_str)) return(FALSE);
 	

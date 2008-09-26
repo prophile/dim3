@@ -228,6 +228,8 @@ void proj_setup_start(proj_setup_type *proj_setup)
 	proj_setup->attach.thing_type=thing_type_projectile_setup;
 	proj_setup->attach.thing_uid=proj_setup->uid;
 
+	scripts_clear_attach_data(&proj_setup->attach);
+
 	scripts_add_console(&proj_setup->attach,"Projectiles",proj_setup->name,NULL,err_str);
 	model_load_and_init(&proj_setup->draw);
 }

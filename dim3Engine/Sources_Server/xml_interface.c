@@ -88,6 +88,11 @@ void default_settings_interface(void)
 	
 	hud.color.hilite.g=0.6f;
 	hud.color.hilite.r=hud.color.hilite.b=0.0f;
+
+		// fonts
+
+	strcpy(hud.font.name,"Arial");
+	strcpy(hud.font.alt_name,"Courier");
 	
 		// progress
 		
@@ -660,7 +665,7 @@ void read_settings_interface(void)
 	int					interface_head_tag,scale_tag,
 						bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
 						radar_head_tag,menu_head_tag,menu_tag,chooser_head_tag,chooser_tag,
-						color_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,music_tag,
+						color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,music_tag,
 						proj_tag,games_head_tag,game_tag;
 	char				path[1024];
 
@@ -767,6 +772,15 @@ void read_settings_interface(void)
 		xml_get_attribute_color(color_tag,"mouse_over",&hud.color.mouse_over);
 		xml_get_attribute_color(color_tag,"hilite",&hud.color.hilite);
 	}
+
+		// fonts
+
+	font_tag=xml_findfirstchild("Font",interface_head_tag);
+	if (font_tag!=-1) {
+		xml_get_attribute_text(font_tag,"name",hud.font.name,name_str_len);
+		xml_get_attribute_text(font_tag,"alt_name",hud.font.alt_name,name_str_len);
+	}
+
 	
 		// progress
 

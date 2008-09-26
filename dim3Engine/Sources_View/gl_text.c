@@ -43,18 +43,12 @@ extern hud_type				hud;
 extern setup_type			setup;
 
 bool						font_small;
-float						font_char_size[90]=
-								{0.38f,0.42f,0.67f,0.67f,0.71f,0.75f,0.29f,0.50f,0.33f,0.54f,
-								 0.83f,0.38f,0.40f,0.38f,0.58f,0.67f,0.67f,0.67f,0.67f,0.67f,
-								 0.67f,0.67f,0.67f,0.67f,0.67f,0.38f,0.38f,0.83f,0.83f,0.83f,
-								 0.46f,0.92f,0.75f,0.62f,0.70f,0.79f,0.67f,0.64f,0.79f,0.79f,
-								 0.33f,0.50f,0.71f,0.58f,0.90f,0.79f,0.83f,0.58f,0.83f,0.67f,
-								 0.67f,0.67f,0.75f,0.71f,0.96f,0.67f,0.67f,0.67f,0.50f,0.58f,
-								 0.38f,0.67f,0.54f,0.67f,0.58f,0.62f,0.54f,0.67f,0.58f,0.42f,
-								 0.67f,0.67f,0.33f,0.33f,0.62f,0.33f,0.90f,0.64f,0.65f,0.60f,
-								 0.67f,0.46f,0.54f,0.42f,0.64f,0.60f,0.83f,0.60f,0.58f,0.62f};
-
+float						font_char_size[90];
 bitmap_type					font_bitmap;
+
+extern void view_next_vertex_object(void);
+extern void view_bind_current_vertex_object(void);
+extern void view_unbind_current_vertex_object(void);
 
 /* =======================================================
 
@@ -62,93 +56,12 @@ bitmap_type					font_bitmap;
       
 ======================================================= */
 
-#ifdef D3_OS_WINDOWS
-
-void gl_text_initialize(void)
-{
-	int				n,x,y,font_high;
-	unsigned char	ch;
-	unsigned char	*data,*ptr;
-	HDC				screen_dc,dc;
-	HBITMAP			bmp,*old_bmp;
-	HFONT			font;
-	COLORREF		col;
-
-		// data for bitmap
-
-	data=valloc((font_bitmap_pixel_sz<<2)*font_bitmap_pixel_sz);
-	if (data==NULL) return;
-
-		// create bitmap
-
-	screen_dc=GetDC(NULL);
-
-	dc=CreateCompatibleDC(screen_dc);
-	bmp=CreateCompatibleBitmap(screen_dc,font_bitmap_pixel_sz,font_bitmap_pixel_sz);
-	old_bmp=SelectObject(dc,bmp);
-
-	SetMapMode(dc,MM_TEXT);
-	SetMapperFlags(dc,1);
-	SetTextAlign(dc,TA_BASELINE);
-	SetBkMode(dc,OPAQUE);
-	SetBkColor(dc,RGB(0,0,0));
-
-		// draw the characters
-
-	font_high=-MulDiv(font_bitmap_point,GetDeviceCaps(dc,LOGPIXELSY),72);
-	font=CreateFont(-font_high,0,0,0,FW_NORMAL,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,"Arial");
-	SelectObject(dc,font);
-	SetTextColor(dc,RGB(255,255,255));
-
-	for (n=0;n!=90;n++) {
-		ch=(unsigned char)(n+'!');
-
-		x=(n%10)*font_bitmap_char_wid;
-		y=((n/10)*font_bitmap_char_high)+font_bitmap_char_baseline;
-
-		TextOut(dc,x,y,(char*)&ch,1);
-	}
-
-	DeleteObject(font);
-
-		// get the bitmap
-
-	ptr=data;
-
-	for (y=0;y!=font_bitmap_pixel_sz;y++) {
-
-		for (x=0;x!=font_bitmap_pixel_sz;x++) {
-
-			col=GetPixel(dc,x,y);
-
-			*ptr++=0xFF;
-			*ptr++=0xFF;
-			*ptr++=0xFF;
-
-			*ptr++=GetRValue(col);		// use the anti-aliased font as the alpha mask
-
-		}
-	}
-
-	bitmap_data(&font_bitmap,"font",data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,anisotropic_mode_none,mipmap_mode_none,FALSE);
-
-	free(data);
-
-		// delete the bitmap
-
-	SelectObject(dc,old_bmp);
-	DeleteObject(bmp);
-	DeleteDC(dc);
-}
-
-#endif
-
 #ifdef D3_OS_MAC
 
 void gl_text_initialize(void)
 {
-	int					n,x,y,row_add;
-	unsigned char		ch;
+	int					n,x,y,row_add,font;
+	unsigned char		ch,p_str;
 	unsigned char		*data,*sptr,*dptr;
 	Rect				box;
 	PixMapHandle		texturemap;
@@ -171,13 +84,26 @@ void gl_text_initialize(void)
 	
 		// draw the characters
 
-	TextFont(FMGetFontFamilyFromName("\pArial"));
+	strcpy(&p_str[1],hud.font.name);
+	p_str[0]=(unsigned char)strlen(hud.font.name);
+	font=FMGetFontFamilyFromName(p_str);
+
+	if (font==kInvalidFontFamily) {
+		strcpy(&p_str[1],hud.font.alt_name);
+		p_str[0]=(unsigned char)strlen(hud.font.alt_name);
+		font=FMGetFontFamilyFromName(p_str);
+	}
+
+	TextFont(font);
 	TextSize(font_bitmap_point);
 	TextFace(0);
 	
 	SwapQDTextFlags(kQDUseCGTextRendering|kQDUseCGTextMetrics);
 		
 	for (n=0;n!=90;n++) {
+
+			// draw the character
+
 		ch=(unsigned char)(n+'!');
 
 		x=(n%10)*font_bitmap_char_wid;
@@ -185,6 +111,10 @@ void gl_text_initialize(void)
 
 		MoveTo(x,y);
 		DrawChar(ch);
+
+			// get the spacing information
+
+		font_char_size[n]=(float)CharWidth(ch)/(float)font_bitmap_char_wid;
 	}
 
 		// get the bitmap
@@ -223,6 +153,99 @@ void gl_text_initialize(void)
 		
 	SetGWorld(org_gworld,org_gdhand);
 	DisposeGWorld(gworld);
+}
+
+#endif
+
+#ifdef D3_OS_WINDOWS
+
+void gl_text_initialize(void)
+{
+	int				n,x,y;
+	unsigned char	ch;
+	unsigned char	*data,*ptr;
+	HDC				screen_dc,dc;
+	HBITMAP			bmp,*old_bmp;
+	HFONT			font;
+	COLORREF		col;
+	SIZE			chsz;
+
+		// data for bitmap
+
+	data=valloc((font_bitmap_pixel_sz<<2)*font_bitmap_pixel_sz);
+	if (data==NULL) return;
+
+		// create bitmap
+
+	screen_dc=GetDC(NULL);
+
+	dc=CreateCompatibleDC(screen_dc);
+	bmp=CreateCompatibleBitmap(screen_dc,font_bitmap_pixel_sz,font_bitmap_pixel_sz);
+	old_bmp=SelectObject(dc,bmp);
+
+	SetMapMode(dc,MM_TEXT);
+	SetMapperFlags(dc,1);
+	SetTextAlign(dc,TA_BASELINE);
+	SetBkMode(dc,TRANSPARENT);
+	SetBkColor(dc,RGB(0,0,0));
+
+		// draw the characters
+
+	font=CreateFont(-font_bitmap_point,0,0,0,FW_MEDIUM,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,hud.font.name);
+	if (font==NULL) {
+		font=CreateFont(-font_bitmap_point,0,0,0,FW_MEDIUM,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,hud.font.alt_name);
+	}
+
+	SelectObject(dc,font);
+	SetTextColor(dc,RGB(255,255,255));
+
+	for (n=0;n!=90;n++) {
+
+			// draw the character
+
+		ch=(unsigned char)(n+'!');
+
+		x=(n%10)*font_bitmap_char_wid;
+		y=((n/10)*font_bitmap_char_high)+font_bitmap_char_baseline;
+
+		TextOut(dc,x,y,(char*)&ch,1);
+
+			// get the spacing information
+
+		GetTextExtentPoint32(dc,(char*)&ch,1,&chsz);
+		font_char_size[n]=(float)chsz.cx/(float)font_bitmap_char_wid;
+	}
+
+	DeleteObject(font);
+
+		// get the bitmap
+
+	ptr=data;
+
+	for (y=0;y!=font_bitmap_pixel_sz;y++) {
+
+		for (x=0;x!=font_bitmap_pixel_sz;x++) {
+
+			col=GetPixel(dc,x,y);
+
+			*ptr++=0xFF;
+			*ptr++=0xFF;
+			*ptr++=0xFF;
+
+			*ptr++=GetRValue(col);		// use the anti-aliased font as the alpha mask
+
+		}
+	}
+
+	bitmap_data(&font_bitmap,"font",data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,anisotropic_mode_none,mipmap_mode_none,FALSE);
+
+	free(data);
+
+		// delete the bitmap
+
+	SelectObject(dc,old_bmp);
+	DeleteObject(bmp);
+	DeleteDC(dc);
 }
 
 #endif
@@ -350,34 +373,70 @@ void gl_text_end(void)
 
 void gl_text_draw_line(int x,int y,char *txt,int txtlen,bool vcenter)
 {
-	int			i,ch,
-				lft,rgt,top,bot,xoff,yoff,wid,high;
-	float		gx_lft,gx_rgt,gy_top,gy_bot;
+	int			n,sz,ch,xoff,yoff,cnt;
+	float		f_lft,f_rgt,f_top,f_bot,f_wid,f_high,
+				gx_lft,gx_rgt,gy_top,gy_bot;
+	float		*vertex_ptr,*uv_ptr;
 	char		*c;
+
+	if (txtlen==0) return;
     
 		// get width and height
 		
-	wid=gl_text_get_char_width(font_small);
-	high=gl_text_get_char_height(font_small);
-	
-		// draw text
-	
-	glBegin(GL_QUADS);
+	f_wid=(float)gl_text_get_char_width(font_small);
+	f_high=(float)gl_text_get_char_height(font_small);
 
-	lft=x;
-	bot=y;
-	if (vcenter) bot+=((high>>1)+(high/8));		// add in middle + descender
-	top=bot-high;
+		// construct VBO
+
+	view_next_vertex_object();
+	view_bind_current_vertex_object();
+
+	sz=((txtlen*4)*(2+2))*sizeof(float);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+
+	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	if (vertex_ptr==NULL) {
+		view_unbind_current_vertex_object();
+		return;
+	}
+
+	uv_ptr=vertex_ptr+((txtlen*4)*2);
+
+		// create the quads
+
+	f_lft=(float)x;
+	f_bot=(float)y;
+	if (vcenter) f_bot+=((f_high/2)+(f_high/8));		// add in middle + descender
+	f_top=f_bot-f_high;
 	
 	c=txt;
+	cnt=0;
 	
-	for (i=0;i<txtlen;i++) {
+	for (n=0;n<txtlen;n++) {
 	
 		ch=(int)*c++;
 
 		if ((ch>='!') && (ch<='z')) {
-		
+			
 			ch-='!';
+
+				// the vertexes
+
+			f_rgt=f_lft+f_wid;
+
+			*vertex_ptr++=f_lft;
+			*vertex_ptr++=f_top;
+			*vertex_ptr++=f_rgt;
+			*vertex_ptr++=f_top;
+			*vertex_ptr++=f_rgt;
+			*vertex_ptr++=f_bot;
+			*vertex_ptr++=f_lft;
+			*vertex_ptr++=f_bot;
+
+			f_lft+=(f_wid*font_char_size[ch]);
+
+				// the UVs
+
 			yoff=ch/10;
 			xoff=ch-(yoff*10);
 
@@ -385,27 +444,39 @@ void gl_text_draw_line(int x,int y,char *txt,int txtlen,bool vcenter)
 			gx_rgt=gx_lft+0.089f;
 			gy_top=((float)yoff)*0.109375f;
 			gy_bot=gy_top+0.108f;
-			
-			rgt=lft+wid;
-            
-			glTexCoord2f(gx_lft,gy_top);
-			glVertex2i(lft,top);
-			glTexCoord2f(gx_rgt,gy_top);
-			glVertex2i(rgt,top);
-			glTexCoord2f(gx_rgt,gy_bot);
-			glVertex2i(rgt,bot);
-			glTexCoord2f(gx_lft,gy_bot);
-			glVertex2i(lft,bot);
-			
-			lft+=(int)(wid*font_char_size[ch]);
-			
+
+			*uv_ptr++=gx_lft;
+			*uv_ptr++=gy_top;
+			*uv_ptr++=gx_rgt;
+			*uv_ptr++=gy_top;
+			*uv_ptr++=gx_rgt;
+			*uv_ptr++=gy_bot;
+			*uv_ptr++=gx_lft;
+			*uv_ptr++=gy_bot;
+
+			cnt+=4;
 		}
 		else {
-			lft+=wid/3;
+			f_lft+=(f_wid/3);
 		}
 	}
 
-	glEnd();
+	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+
+		// draw text
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+		
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((txtlen*4)*2)*sizeof(float)));
+
+	glDrawArrays(GL_QUADS,0,cnt);
+
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	view_unbind_current_vertex_object();
 }
 
 void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float alpha)
