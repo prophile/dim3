@@ -301,10 +301,10 @@ void scripts_clear_attach_data(attach_type *attach)
 	int				n;
 
 	for (n=0;n!=max_msg_data;n++) {
-		attach->set_msg_data[n].type=global_type_int;
-		attach->set_msg_data[n].data.global_int=0;
-		attach->get_msg_data[n].type=global_type_int;
-		attach->get_msg_data[n].data.global_int=0;
+		attach->set_msg_data[n].type=d3_jsval_type_int;
+		attach->set_msg_data[n].data.d3_int=0;
+		attach->get_msg_data[n].type=d3_jsval_type_int;
+		attach->get_msg_data[n].data.d3_int=0;
 	}
 }
 

@@ -84,11 +84,11 @@ void object_rigid_body_angle_reset_z(obj_type *obj)
 
 void object_rigid_body_reset_angle(obj_type *obj)
 {
-	int			xsz,zsz,y,ky,off_y,ry,
-				fy[4];
-	float		x_ang,x_neg_ang,x_pos_ang,
-				z_ang,z_neg_ang,z_pos_ang;
-	bool		hit;
+	int					xsz,zsz,y,ky,off_y,ry,
+						fy[4];
+	float				x_ang,x_neg_ang,x_pos_ang,
+						z_ang,z_neg_ang,z_pos_ang;
+	poly_pointer_type	stand_poly;
 
 		// is rigid body on?
 
@@ -112,8 +112,8 @@ void object_rigid_body_reset_angle(obj_type *obj)
 	}
 	else {
 
-		ky=pin_downward_movement_point(obj->pnt.x,y,obj->pnt.z,obj->rigid_body.max_drop_y,&hit);
-		if (hit) {
+		ky=pin_downward_movement_point(obj->pnt.x,y,obj->pnt.z,obj->rigid_body.max_drop_y,&stand_poly);
+		if (stand_poly.mesh_idx!=-1) {
 			ky+=y;
 
 			if (ky>y) {

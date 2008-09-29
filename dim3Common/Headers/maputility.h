@@ -176,16 +176,11 @@ typedef struct		{
 					} group_unit_type;
 
 typedef struct		{
-						int									thing_type,thing_uid,
-															script_uid;
-					} group_script_attach_type;
-
-typedef struct		{
 						int									count,movement_idx,user_id;
 						bool								on,freeze,has_mov,has_rot;
 						d3fpnt								cur_mov;
 						d3vct								mov_add,rot_add;
-						group_script_attach_type			attach;
+						attach_type							attach;
 					} group_move_type;
 
 typedef struct		{

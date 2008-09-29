@@ -57,8 +57,6 @@ and can be sold or given away.
 #define max_moves									256
 #define max_globals									1024
 
-#define max_msg_data								8
-
 #define js_script_memory_size						(20*1024*1024)
 
 //
@@ -80,17 +78,6 @@ and can be sold or given away.
 #define timer_mode_repeat							1
 #define timer_mode_chain							2
 #define timer_mode_dispose							3
-
-//
-// Global defines
-//
-
-#define global_type_int								0
-#define global_type_float							1
-#define global_type_boolean							2
-#define global_type_string							3
-
-#define max_global_str_len							128
 
 //
 // d3Angle/d3Point/d3Size property IDs
@@ -956,33 +943,15 @@ typedef struct		{
 // global structures
 //
  
-typedef union		{
-						int					global_int;
-						float				global_float;
-						bool				global_boolean;
-						char				global_string[max_global_str_len];
-					} global_data;
- 
 typedef struct		{
 						int					type,script_uid;
 						char				name[name_str_len];
-						global_data			data;
+						d3_jsval_data_type	data;
 					} global_type;
 
 //
 // script structures
 //
- 
-typedef struct		{
-						int					type;
-						global_data			data;
-					} attach_msg_type;
-
-typedef struct		{
-						int					thing_type,thing_uid,
-											script_uid;
-						attach_msg_type		set_msg_data[max_msg_data],get_msg_data[max_msg_data];
-					} attach_type;
  
 typedef struct		{
 						int					mode,count,freq,user_id;

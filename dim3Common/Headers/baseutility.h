@@ -81,6 +81,41 @@ typedef struct		{
 
 /* =======================================================
 
+     Shared Script Structures
+      
+======================================================= */
+
+#define d3_jsval_type_int							0
+#define d3_jsval_type_float							1
+#define d3_jsval_type_boolean						2
+#define d3_jsval_type_string						3
+
+#define max_d3_jsval_str_len						128
+
+
+#define max_msg_data								8
+
+typedef union		{
+						int							d3_int;
+						float						d3_float;
+						bool						d3_boolean;
+						char						d3_string[max_d3_jsval_str_len];
+					} d3_jsval_data_type;
+ 
+
+typedef struct		{
+						int							type;
+						d3_jsval_data_type			data;
+					} attach_msg_type;
+
+typedef struct		{
+						int							thing_type,thing_uid,
+													script_uid;
+						attach_msg_type				set_msg_data[max_msg_data],get_msg_data[max_msg_data];
+					} attach_type;
+ 
+/* =======================================================
+
       Map/Model Utility Shared Structures
       
 ======================================================= */

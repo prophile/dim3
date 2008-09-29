@@ -61,13 +61,11 @@ extern bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly);
 extern bool map_spot_empty_sphere(int sx,int sy,int sz,int radius,int ignore_obj_uid,int *hit_obj_uid);
 extern bool map_spot_empty_object(obj_type *obj);
 
-extern int find_poly_for_upward_point(int x,int y,int z,int ydist,poly_pointer_type *poly);
-extern int find_poly_for_downward_point(int x,int y,int z,int ydist,poly_pointer_type *poly);
 extern int find_poly_nearest_stand(int x,int y,int z,int ydist,bool ignore_higher);
+extern int pin_downward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *stand_poly);
 extern int pin_downward_movement_obj(obj_type *obj,int my);
+extern int pin_upward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *head_poly);
 extern int pin_upward_movement_obj(obj_type *obj,int my);
-extern int pin_downward_movement_point(int x,int y,int z,int my,bool *hit);
-extern int pin_upward_movement_point(int x,int y,int z,int my,bool *hit);
 extern bool map_crush_object(obj_type *obj);
 extern bool map_stand_check_object(obj_type *obj);
 
@@ -75,4 +73,5 @@ extern void ray_push(d3pnt *pt,d3ang *ang,int dist);
 extern void ray_push_to_end(d3pnt *pt,d3pnt *ept,int dist);
 extern bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_contact_type *contact);
 extern bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_type *contact);
+extern void ray_trace_map_by_point_array(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact,ray_trace_contact_type *contacts);
 

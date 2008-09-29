@@ -33,11 +33,16 @@ and can be sold or given away.
 
 // supergumba -- move to defs file
 
-#define font_bitmap_pixel_sz			256
+#define font_bitmap_pixel_sz			512
 #define font_bitmap_point				28
-#define font_bitmap_char_wid			24
-#define font_bitmap_char_high			28
-#define font_bitmap_char_baseline		21
+#define font_bitmap_char_wid			30
+#define font_bitmap_char_high			35
+#define font_bitmap_char_baseline		24
+#define font_bitmap_char_per_line		17
+#define font_bitmap_gl_xoff				0.05859f
+#define font_bitmap_gl_xadd				0.056f
+#define font_bitmap_gl_yoff				0.06836f
+#define font_bitmap_gl_yadd				0.066f
 
 extern hud_type				hud;
 extern setup_type			setup;
@@ -61,7 +66,7 @@ extern void view_unbind_current_vertex_object(void);
 void gl_text_initialize(void)
 {
 	int					n,x,y,row_add,font;
-	unsigned char		ch,p_str;
+	unsigned char		ch,p_str[name_str_len+1];
 	unsigned char		*data,*sptr,*dptr;
 	Rect				box;
 	PixMapHandle		texturemap;
@@ -84,12 +89,12 @@ void gl_text_initialize(void)
 	
 		// draw the characters
 
-	strcpy(&p_str[1],hud.font.name);
+	strcpy((char*)&p_str[1],hud.font.name);
 	p_str[0]=(unsigned char)strlen(hud.font.name);
 	font=FMGetFontFamilyFromName(p_str);
 
 	if (font==kInvalidFontFamily) {
-		strcpy(&p_str[1],hud.font.alt_name);
+		strcpy((char*)&p_str[1],hud.font.alt_name);
 		p_str[0]=(unsigned char)strlen(hud.font.alt_name);
 		font=FMGetFontFamilyFromName(p_str);
 	}
@@ -106,8 +111,8 @@ void gl_text_initialize(void)
 
 		ch=(unsigned char)(n+'!');
 
-		x=(n%10)*font_bitmap_char_wid;
-		y=((n/10)*font_bitmap_char_high)+font_bitmap_char_baseline;
+		x=(n%font_bitmap_char_per_line)*font_bitmap_char_wid;
+		y=((n/font_bitmap_char_per_line)*font_bitmap_char_high)+font_bitmap_char_baseline;
 
 		MoveTo(x,y);
 		DrawChar(ch);
@@ -205,8 +210,8 @@ void gl_text_initialize(void)
 
 		ch=(unsigned char)(n+'!');
 
-		x=(n%10)*font_bitmap_char_wid;
-		y=((n/10)*font_bitmap_char_high)+font_bitmap_char_baseline;
+		x=(n%font_bitmap_char_per_line)*font_bitmap_char_wid;
+		y=((n/font_bitmap_char_per_line)*font_bitmap_char_high)+font_bitmap_char_baseline;
 
 		TextOut(dc,x,y,(char*)&ch,1);
 
@@ -437,13 +442,13 @@ void gl_text_draw_line(int x,int y,char *txt,int txtlen,bool vcenter)
 
 				// the UVs
 
-			yoff=ch/10;
-			xoff=ch-(yoff*10);
+			yoff=ch/font_bitmap_char_per_line;
+			xoff=ch-(yoff*font_bitmap_char_per_line);
 
-			gx_lft=((float)xoff)*0.09375f;
-			gx_rgt=gx_lft+0.089f;
-			gy_top=((float)yoff)*0.109375f;
-			gy_bot=gy_top+0.108f;
+			gx_lft=((float)xoff)*font_bitmap_gl_xoff;
+			gx_rgt=gx_lft+font_bitmap_gl_xadd;
+			gy_top=((float)yoff)*font_bitmap_gl_yoff;
+			gy_bot=gy_top+font_bitmap_gl_yadd;
 
 			*uv_ptr++=gx_lft;
 			*uv_ptr++=gy_top;

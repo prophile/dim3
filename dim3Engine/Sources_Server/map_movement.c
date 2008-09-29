@@ -54,6 +54,7 @@ void map_movements_get_center(movement_type *movement,int *cx,int *cy,int *cz)
 	int			x,y,z,x2,y2,z2;
 	
 	map_group_get_center(&map,movement->group_idx,&x,&y,&z);
+	
 	if (movement->reverse_group_idx!=-1) {
 		map_group_get_center(&map,movement->reverse_group_idx,&x2,&y2,&z2);
 		x=(x+x2)>>1;

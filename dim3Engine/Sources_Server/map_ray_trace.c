@@ -36,6 +36,20 @@ and can be sold or given away.
 extern map_type				map;
 extern server_type			server;
 
+
+
+
+inline bool map_mesh_flag_bit_get(unsigned char *flag,int idx)
+{
+	return((flag[idx>>3]&(0x1<<(idx&0x7)))!=0x0);
+}
+
+inline void map_mesh_flag_bit_set(unsigned char *flag,int idx)
+{
+	flag[idx>>3]=flag[idx>>3]|(0x1<<(idx&0x7));
+}
+
+
 /* =======================================================
 
       Ray Trace Vector Utilities
@@ -479,7 +493,7 @@ float ray_trace_projectile(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,proj_type
       
 ======================================================= */
 
-void ray_trace_map(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_trace_contact_type *contact)
+void ray_trace_map(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,unsigned char *flag,ray_trace_contact_type *contact)
 {
 	int					n,k;
 	float				t;
@@ -549,21 +563,10 @@ void ray_trace_map(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_
 		// check the meshes
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
+	
+		if (!map_mesh_flag_bit_get(flag,n)) continue;
 		
 		mesh=&map.mesh.meshes[n];
-
-			// rough bounds check
-
-		if ((spt->x<mesh->box.min.x) && (ept->x<mesh->box.min.x)) continue;
-		if ((spt->x>mesh->box.max.x) && (ept->x>mesh->box.max.x)) continue;
-		if ((spt->y<mesh->box.min.y) && (ept->y<mesh->box.min.y)) continue;
-		if ((spt->y>mesh->box.max.y) && (ept->y>mesh->box.max.y)) continue;
-		if ((spt->z<mesh->box.min.z) && (ept->z<mesh->box.min.z)) continue;
-		if ((spt->z>mesh->box.max.z) && (ept->z>mesh->box.max.z)) continue;
-		
-			// skip pass through meshes
-
-		if (mesh->flag.pass_through) continue;
 
 			// check polygons
 
@@ -664,12 +667,47 @@ void ray_push_to_end(d3pnt *pt,d3pnt *ept,int dist)
 
 /* =======================================================
 
+      Setup Visibility List
+      
+======================================================= */
+
+void ray_trace_map_mesh_flag_add_ray(d3pnt *spt,d3pnt *ept,unsigned char *flag)
+{
+	int				n;
+	map_mesh_type	*mesh;
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		
+		mesh=&map.mesh.meshes[n];
+
+			// rough bounds check
+
+		if ((spt->x<mesh->box.min.x) && (ept->x<mesh->box.min.x)) continue;
+		if ((spt->x>mesh->box.max.x) && (ept->x>mesh->box.max.x)) continue;
+		if ((spt->y<mesh->box.min.y) && (ept->y<mesh->box.min.y)) continue;
+		if ((spt->y>mesh->box.max.y) && (ept->y>mesh->box.max.y)) continue;
+		if ((spt->z<mesh->box.min.z) && (ept->z<mesh->box.min.z)) continue;
+		if ((spt->z>mesh->box.max.z) && (ept->z>mesh->box.max.z)) continue;
+		
+			// skip pass through meshes
+
+		if (mesh->flag.pass_through) continue;
+		
+			// set bit
+
+		map_mesh_flag_bit_set(flag,n);
+	}
+}
+
+/* =======================================================
+
       Ray Trace By Angle and Distance
       
 ======================================================= */
 
 bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_contact_type *contact)
 {
+	unsigned char		flag[max_mesh_visibility_bytes];
 	float				hit_t;
 	d3pnt				ept;
 	d3vct				vct;
@@ -714,9 +752,14 @@ bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_
 	hpt->y=ept.y;
 	hpt->z=ept.z;
 		
+		// setup mesh hit list
+		
+	bzero(flag,max_mesh_visibility_bytes);
+	ray_trace_map_mesh_flag_add_ray(spt,&ept,flag);
+		
 		// ray trace map
 
-	ray_trace_map(spt,&ept,&vct,hpt,&hit_t,contact);
+	ray_trace_map(spt,&ept,&vct,hpt,&hit_t,flag,contact);
 	
 	return((hit_t>=0.0f) && (hit_t<=1.0f));
 }
@@ -729,6 +772,7 @@ bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_
 
 bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_type *contact)
 {
+	unsigned char		flag[max_mesh_visibility_bytes];
 	float				hit_t;
 	d3vct				vct;
 	
@@ -750,9 +794,61 @@ bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_t
 	hpt->y=ept->y;
 	hpt->z=ept->z;
 		
-		// check against all portals
+		// setup mesh hit list
+		
+	bzero(flag,max_mesh_visibility_bytes);
+	ray_trace_map_mesh_flag_add_ray(spt,ept,flag);
+	
+		// check against map
 
-	ray_trace_map(spt,ept,&vct,hpt,&hit_t,contact);
+	ray_trace_map(spt,ept,&vct,hpt,&hit_t,flag,contact);
 	
 	return((hit_t>=0.0f) && (hit_t<=1.0f));
 }
+
+void ray_trace_map_by_point_array(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact,ray_trace_contact_type *contacts)
+{
+	int					n;
+	unsigned char		flag[max_mesh_visibility_bytes];
+	float				hit_t;
+	d3vct				vct;
+	
+		// setup mesh hit list
+		
+	bzero(flag,max_mesh_visibility_bytes);
+	
+	for (n=0;n!=cnt;n++) {
+		ray_trace_map_mesh_flag_add_ray(&spt[n],&ept[n],flag);
+	}
+	
+		// run the ray array
+		
+	for (n=0;n!=cnt;n++) {
+	
+			// create contact from base
+			
+		memmove(&contacts[n],base_contact,sizeof(ray_trace_contact_type));
+		ray_trace_contact_clear(&contacts[n]);
+	
+			// create vector from points
+
+		vct.x=(float)(ept[n].x-spt[n].x);
+		vct.y=(float)(ept[n].y-spt[n].y);
+		vct.z=(float)(ept[n].z-spt[n].z);
+		
+			// default is past end of line
+			
+		hit_t=2.0f;
+		
+		hpt[n].x=ept[n].x;
+		hpt[n].y=ept[n].y;
+		hpt[n].z=ept[n].z;
+		
+			// check against map
+
+		ray_trace_map(&spt[n],&ept[n],&vct,&hpt[n],&hit_t,flag,&contacts[n]);
+		
+		hits[n]=(hit_t>=0.0f) && (hit_t<=1.0f);
+	}
+}
+

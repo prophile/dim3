@@ -42,7 +42,7 @@ bool map_group_create_single_unit_list(map_type *map,int group_idx)
 	map_liquid_type	*liq;
 	group_type		*group;
 	group_unit_type	*unit_list;
-	
+
 	group=&map->groups[group_idx];
 	
 		// default setting

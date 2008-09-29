@@ -381,25 +381,25 @@ JSBool js_event_set_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 		// set data
 
 	if (JSVAL_IS_INT(argv[1])) {
-		js.attach.set_msg_data[idx].type=global_type_int;
-		js.attach.set_msg_data[idx].data.global_int=JSVAL_TO_INT(argv[1]);
+		js.attach.set_msg_data[idx].type=d3_jsval_type_int;
+		js.attach.set_msg_data[idx].data.d3_int=JSVAL_TO_INT(argv[1]);
 		return(JS_TRUE);
 	}
 	
 	if (JSVAL_IS_DOUBLE(argv[1])) {
-		js.attach.set_msg_data[idx].type=global_type_float;
-		js.attach.set_msg_data[idx].data.global_float=script_value_to_float(argv[1]);
+		js.attach.set_msg_data[idx].type=d3_jsval_type_float;
+		js.attach.set_msg_data[idx].data.d3_float=script_value_to_float(argv[1]);
 		return(JS_TRUE);
 	}
 	
 	if (JSVAL_IS_BOOLEAN(argv[1])) {
-		js.attach.set_msg_data[idx].type=global_type_boolean;
-		js.attach.set_msg_data[idx].data.global_boolean=JSVAL_TO_BOOLEAN(argv[1]);
+		js.attach.set_msg_data[idx].type=d3_jsval_type_boolean;
+		js.attach.set_msg_data[idx].data.d3_boolean=JSVAL_TO_BOOLEAN(argv[1]);
 		return(JS_TRUE);
 	}
 	
-	js.attach.set_msg_data[idx].type=global_type_string;
-	script_value_to_string(argv[1],js.attach.set_msg_data[idx].data.global_string,max_global_str_len);	
+	js.attach.set_msg_data[idx].type=d3_jsval_type_string;
+	script_value_to_string(argv[1],js.attach.set_msg_data[idx].data.d3_string,max_d3_jsval_str_len);	
     return(JS_TRUE);
 }
 
@@ -421,20 +421,20 @@ JSBool js_event_get_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 
 	switch (js.attach.get_msg_data[idx].type) {
 
-		case global_type_int:
-			*rval=INT_TO_JSVAL(js.attach.get_msg_data[idx].data.global_int);
+		case d3_jsval_type_int:
+			*rval=INT_TO_JSVAL(js.attach.get_msg_data[idx].data.d3_int);
 			break;
 
-		case global_type_float:
-			*rval=script_float_to_value(js.attach.get_msg_data[idx].data.global_float);
+		case d3_jsval_type_float:
+			*rval=script_float_to_value(js.attach.get_msg_data[idx].data.d3_float);
 			break;
 
-		case global_type_boolean:
-			*rval=BOOLEAN_TO_JSVAL(js.attach.get_msg_data[idx].data.global_boolean);
+		case d3_jsval_type_boolean:
+			*rval=BOOLEAN_TO_JSVAL(js.attach.get_msg_data[idx].data.d3_boolean);
 			break;
 
-		case global_type_string:
-			*rval=script_string_to_value(js.attach.get_msg_data[idx].data.global_string);
+		case d3_jsval_type_string:
+			*rval=script_string_to_value(js.attach.get_msg_data[idx].data.d3_string);
 			break;
 
 	}

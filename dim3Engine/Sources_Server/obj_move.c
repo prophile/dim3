@@ -479,7 +479,7 @@ void object_motion_slope_alter_movement(obj_type *obj,float *xmove,float *zmove)
 	y=obj->pnt.y;
 	z=obj->pnt.z+(int)(*zmove);
 
-	sy=find_poly_for_downward_point(x,y,z,obj->size.y,&poly);
+	sy=pin_downward_movement_point(x,y,z,obj->size.y,&poly);
 	if (poly.mesh_idx==-1) return;
 
 		// ignore flat polygons

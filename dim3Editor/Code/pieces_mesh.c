@@ -76,28 +76,74 @@ void piece_add_mesh_finish(int mesh_idx)
 
 void piece_add_obj_mesh_replace(d3fpnt *min,d3fpnt *max,d3fpnt *scale,d3pnt *pnt)
 {
-	int				type,mesh_idx,poly_idx;
-	d3pnt			kmin,kmax;
+	int				n,type,mesh_idx,poly_idx,sel_cnt,hit_cnt;
+	d3pnt			kmin,kmax,kpnt,pmin,pmax,ppnt;
 	
-	if (select_count()==0) return;
-	
-	select_get(0,&type,&mesh_idx,&poly_idx);
-	if (type!=mesh_piece) return;
-	
-		// get new size
+	sel_cnt=select_count();
+	if (sel_cnt==0) return;
+
+		// sort segment so higher indexes are deleted first
 		
-	map_mesh_calculate_extent(&map,mesh_idx,&kmin,&kmax);
-	map_mesh_calculate_center(&map,mesh_idx,pnt);
+	select_sort();
+
+		// get size
+		
+	hit_cnt=0;
+		
+	for (n=0;n!=sel_cnt;n++) {
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
 	
+			// find farthest sizes
+			
+		map_mesh_calculate_extent(&map,mesh_idx,&pmin,&pmax);
+		map_mesh_calculate_center(&map,mesh_idx,&ppnt);
+		
+		if (hit_cnt==0) {
+			memmove(&kmin,&pmin,sizeof(d3pnt));
+			memmove(&kmax,&pmax,sizeof(d3pnt));
+			memmove(&kpnt,&ppnt,sizeof(d3pnt));
+		}
+		else {
+			if (pmin.x<kmin.x) kmin.x=pmin.x;
+			if (pmax.x>kmax.x) kmax.x=pmax.x;
+			if (pmin.y<kmin.y) kmin.y=pmin.y;
+			if (pmax.y>kmax.y) kmax.y=pmax.y;
+			if (pmin.z<kmin.z) kmin.z=pmin.z;
+			if (pmax.z>kmax.z) kmax.z=pmax.z;
+			
+			kpnt.x+=ppnt.x;
+			kpnt.y+=ppnt.y;
+			kpnt.z+=ppnt.z;
+		}
+		
+		hit_cnt++;
+	}
+	
+		// no meshes hit
+		
+	if (hit_cnt==0) return;
+	
+		// get center
+		
+	pnt->x=kpnt.x/hit_cnt;
+	pnt->y=kpnt.y/hit_cnt;
+	pnt->z=kpnt.z/hit_cnt;
+		
 		// get factor
 		
 	scale->x=(float)(kmax.x-kmin.x)/(float)(max->x-min->x);
 	scale->y=(float)(kmax.y-kmin.y)/(float)(max->y-min->y);
 	scale->z=(float)(kmax.z-kmin.z)/(float)(max->z-min->z);
 	
-		// delete old mesh
+		// delete old meshes
 		
-	map_mesh_delete(&map,mesh_idx);
+	for (n=0;n!=sel_cnt;n++) {
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type==mesh_piece) map_mesh_delete(&map,mesh_idx);
+	}
+	
+	select_clear();
 }
 
 /* =======================================================

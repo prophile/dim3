@@ -53,7 +53,7 @@ bool group_move_start(int group_idx,int movement_idx,d3pnt *mov,d3ang *rot,int c
 	group_type			*group;
 	group_move_type		*move;
 	group_unit_type		*unit_list;
-	
+
 	group=&map.groups[group_idx];
 
 		// no negative move counts

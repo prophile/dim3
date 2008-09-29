@@ -44,70 +44,6 @@ extern server_type		server;
 
 /* =======================================================
 
-      Check Floor/Ceiling for Point
-      
-======================================================= */
-
-int find_poly_for_upward_point(int x,int y,int z,int ydist,poly_pointer_type *poly)
-{
-	d3pnt					spt,ept,hpt;
-	ray_trace_contact_type	contact;
-
-	spt.x=x;
-	spt.y=y+ydist;
-	spt.z=z;
-
-	ept.x=x;
-	ept.y=y-ydist;
-	ept.z=z;
-
-	contact.obj_on=FALSE;
-	contact.proj_on=FALSE;
-
-	contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
-	contact.origin=poly_ray_trace_origin_unknown;
-
-	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
-		memmove(poly,&contact.poly,sizeof(poly_pointer_type));
-		return(hpt.y);
-	}
-
-	poly->mesh_idx=-1;
-
-	return(y-ydist);
-}
-
-int find_poly_for_downward_point(int x,int y,int z,int ydist,poly_pointer_type *poly)
-{
-	d3pnt					spt,ept,hpt;
-	ray_trace_contact_type	contact;
-
-	spt.x=x;
-	spt.y=y-ydist;
-	spt.z=z;
-
-	ept.x=x;
-	ept.y=y+ydist;
-	ept.z=z;
-	
-	contact.obj_on=FALSE;
-	contact.proj_on=FALSE;
-
-	contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
-	contact.origin=poly_ray_trace_origin_unknown;
-
-	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
-		memmove(poly,&contact.poly,sizeof(poly_pointer_type));
-		return(hpt.y);
-	}
-
-	poly->mesh_idx=-1;
-
-	return(y+ydist);
-}
-
-/* =======================================================
-
       Find Next Nearest Stand Poly Point
       
 ======================================================= */
@@ -139,176 +75,104 @@ int find_poly_nearest_stand(int x,int y,int z,int ydist,bool ignore_higher)
 
 /* =======================================================
 
-      Pin Downward Box Movements
+      Pin Downward Movements
       
 ======================================================= */
 
-// supergumba -- testing
-
-/*
-int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly)
+int pin_downward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *stand_poly)
 {
-	int					x,y,z,cy,fy,
-						xdiv,zdiv,xsz,zsz;
-	poly_pointer_type	poly;
+	d3pnt					spt,ept,hpt;
+	ray_trace_contact_type	contact;
 
-		// get check division
+	spt.x=x;
+	spt.y=y-ydist;
+	spt.z=z;
 
-	xsz=(box->max_x-box->min_x)/object_box_check_point_division;
-	if (xsz<=0) xsz=1;
-
-	zsz=(box->max_z-box->min_z)/object_box_check_point_division;
-	if (zsz<=0) zsz=1;
-
-		// find the highest point
-		
-	stand_poly->portal_idx=-1;
-	cy=-1;
-
-	y=box->max_y;
+	ept.x=x;
+	ept.y=y+ydist;
+	ept.z=z;
 	
-	for (zdiv=0;zdiv<=zsz;zdiv++) {
+	contact.obj_on=FALSE;
+	contact.proj_on=FALSE;
 
-		if (zdiv==zsz) {
-			z=box->max_z;
-		}
-		else {
-			z=box->min_z+(zdiv*object_box_check_point_division);
-		}
+	contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
+	contact.origin=poly_ray_trace_origin_unknown;
 
-		for (xdiv=0;xdiv<=xsz;xdiv++) {
-
-			if (xdiv==xsz) {
-				x=box->max_x;
-			}
-			else {
-				x=box->min_x+(xdiv*object_box_check_point_division);
-			}
-		
-				// check poly collisions
-				
-			fy=find_poly_for_downward_point(x,y,z,ydist,&poly);
-			if (poly.portal_idx!=-1) {
-				if (stand_poly->portal_idx==-1) {
-					memmove(stand_poly,&poly,sizeof(poly_pointer_type));
-					cy=fy;
-				}
-				else {
-					if (fy<cy) {
-						memmove(stand_poly,&poly,sizeof(poly_pointer_type));
-						cy=fy;
-					}
-				}
-			}
-		}
+	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
+		stand_poly->mesh_idx=contact.poly.mesh_idx;
+		stand_poly->poly_idx=contact.poly.poly_idx;
+		return(hpt.y);
 	}
-	
-	return(cy);
-}
-*/
 
+	stand_poly->mesh_idx=-1;
+
+	return(y+ydist);
+}
 
 int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly)
 {
-	int					i,x,y,z,cy,fy,px[5],pz[5];
-	poly_pointer_type	poly;
+	int						n,cy;
+	bool					hits[5];
+	d3pnt					spt[5],ept[5],hpt[5];
+	ray_trace_contact_type	base_contact,contacts[5];
 	
-	y=box->max_y;
+		// setup contact
+		
+	base_contact.obj_on=FALSE;
+	base_contact.proj_on=FALSE;
+
+	base_contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
+	base_contact.origin=poly_ray_trace_origin_unknown;
+
+		// create ray arrays
 	
-	px[0]=px[3]=box->min_x;
-	px[1]=px[2]=box->max_x;
+	spt[0].x=spt[3].x=ept[0].x=ept[3].x=box->min_x;
+	spt[1].x=spt[2].x=ept[1].x=ept[2].x=box->max_x;
 	
-	pz[0]=pz[1]=box->min_z;
-	pz[2]=pz[3]=box->max_z;
+	spt[0].z=spt[1].z=ept[0].z=ept[1].z=box->min_z;
+	spt[2].z=spt[3].z=ept[2].z=ept[3].z=box->max_z;
 	
-	px[4]=box->x;
-	pz[4]=box->z;
+	spt[4].x=ept[4].x=box->x;
+	spt[4].z=ept[4].z=box->z;
+	
+	spt[0].y=spt[1].y=spt[2].y=spt[3].y=spt[4].y=box->max_y-ydist;
+	ept[0].y=ept[1].y=ept[2].y=ept[3].y=ept[4].y=box->max_y+ydist;
+		
+		// run the rays
+		
+	ray_trace_map_by_point_array(5,spt,ept,hpt,hits,&base_contact,contacts);
 	
 		// find the highest point
 		
 	stand_poly->mesh_idx=-1;
 	cy=-1;
 	
-	for (i=0;i!=5;i++) {
-		x=px[i];
-		z=pz[i];
+	for (n=0;n!=5;n++) {
 		
 			// check poly collisions
 			
-		fy=find_poly_for_downward_point(x,y,z,ydist,&poly);
-		if (poly.mesh_idx!=-1) {
+		if (hits[n]) {
+		
 			if (stand_poly->mesh_idx==-1) {
-				memmove(stand_poly,&poly,sizeof(poly_pointer_type));
-				cy=fy;
+				stand_poly->mesh_idx=contacts[n].poly.mesh_idx;
+				stand_poly->poly_idx=contacts[n].poly.poly_idx;
+				cy=hpt[n].y;
 			}
 			else {
-				if (fy<cy) {
-					memmove(stand_poly,&poly,sizeof(poly_pointer_type));
-					cy=fy;
+				if (hpt[n].y<cy) {
+					stand_poly->mesh_idx=contacts[n].poly.mesh_idx;
+					stand_poly->poly_idx=contacts[n].poly.poly_idx;
+					cy=hpt[n].y;
 				}
 			}
-		}
-	}
-	
-	return(cy);
-}
-
-/* =======================================================
-
-      Pin Upward Box Movements
-      
-======================================================= */
-
-int pin_upward_movement_box(d3box *box,int ydist,poly_pointer_type *head_poly)
-{
-	int					i,x,y,z,cy,fy,px[5],pz[5];
-	poly_pointer_type	poly;
-	
-	y=box->min_y;
-	
-	px[0]=px[3]=box->min_x;
-	px[1]=px[2]=box->max_x;
-	
-	pz[0]=pz[1]=box->min_z;
-	pz[2]=pz[3]=box->max_z;
-	
-	px[4]=box->x;
-	pz[4]=box->z;
-	
-		// find the lowest point
-		
-	head_poly->mesh_idx=-1;
-	cy=-1;
-	
-	for (i=0;i!=5;i++) {
-		x=px[i];
-		z=pz[i];
-		
-			// check poly collisions
 			
-		fy=find_poly_for_upward_point(x,y,z,ydist,&poly);
-		if (poly.mesh_idx!=-1) {
-			if (head_poly->mesh_idx==-1) {
-				memmove(head_poly,&poly,sizeof(poly_pointer_type));
-				cy=fy;
-			}
-			else {
-				if (fy>cy) {
-					memmove(head_poly,&poly,sizeof(poly_pointer_type));
-					cy=fy;
-				}
-			}
 		}
 	}
-
+	
+	if (cy==-1) return(box->max_y+ydist);
+	
 	return(cy);
 }
-
-/* =======================================================
-
-      Pin Object Movements
-      
-======================================================= */
 
 int pin_downward_movement_obj(obj_type *obj,int my)
 {
@@ -321,15 +185,116 @@ int pin_downward_movement_obj(obj_type *obj,int my)
 	box_create_from_object(&box,obj);
 
 	if (obj->size.radius<=object_box_check_radius_simple) {
-		y=find_poly_for_downward_point(box.x,box.max_y,box.z,my,&obj->contact.stand_poly);
+		y=pin_downward_movement_point(box.x,box.max_y,box.z,my,&obj->contact.stand_poly);
 	}
 	else {
 		y=pin_downward_movement_box(&box,my,&obj->contact.stand_poly);
 	}
 	
-	if (y==-1) return(my);
+	if (obj->contact.stand_poly.mesh_idx==-1) return(my);
 	
 	return(y-box.max_y);
+}
+
+/* =======================================================
+
+      Pin Upward Movements
+      
+======================================================= */
+
+int pin_upward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *head_poly)
+{
+	d3pnt					spt,ept,hpt;
+	ray_trace_contact_type	contact;
+
+	spt.x=x;
+	spt.y=y+ydist;
+	spt.z=z;
+
+	ept.x=x;
+	ept.y=y-ydist;
+	ept.z=z;
+
+	contact.obj_on=FALSE;
+	contact.proj_on=FALSE;
+
+	contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
+	contact.origin=poly_ray_trace_origin_unknown;
+
+	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
+		head_poly->mesh_idx=contact.poly.mesh_idx;
+		head_poly->poly_idx=contact.poly.poly_idx;
+		return(hpt.y);
+	}
+
+	head_poly->mesh_idx=-1;
+
+	return(y-ydist);
+}
+
+int pin_upward_movement_box(d3box *box,int ydist,poly_pointer_type *head_poly)
+{
+	int						n,cy;
+	bool					hits[5];
+	d3pnt					spt[5],ept[5],hpt[5];
+	ray_trace_contact_type	base_contact,contacts[5];
+	
+		// setup contact
+		
+	base_contact.obj_on=FALSE;
+	base_contact.proj_on=FALSE;
+
+	base_contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
+	base_contact.origin=poly_ray_trace_origin_unknown;
+
+		// create ray arrays
+	
+	spt[0].x=spt[3].x=ept[0].x=ept[3].x=box->min_x;
+	spt[1].x=spt[2].x=ept[1].x=ept[2].x=box->max_x;
+	
+	spt[0].z=spt[1].z=ept[0].z=ept[1].z=box->min_z;
+	spt[2].z=spt[3].z=ept[2].z=ept[3].z=box->max_z;
+	
+	spt[4].x=ept[4].x=box->x;
+	spt[4].z=ept[4].z=box->z;
+	
+	spt[0].y=spt[1].y=spt[2].y=spt[3].y=spt[4].y=box->min_y+ydist;
+	ept[0].y=ept[1].y=ept[2].y=ept[3].y=ept[4].y=box->min_y-ydist;
+		
+		// run the rays
+		
+	ray_trace_map_by_point_array(5,spt,ept,hpt,hits,&base_contact,contacts);
+	
+		// find the lowest point
+		
+	head_poly->mesh_idx=-1;
+	cy=-1;
+	
+	for (n=0;n!=5;n++) {
+		
+			// check poly collisions
+			
+		if (hits[n]) {
+		
+			if (head_poly->mesh_idx==-1) {
+				head_poly->mesh_idx=contacts[n].poly.mesh_idx;
+				head_poly->poly_idx=contacts[n].poly.poly_idx;
+				cy=hpt[n].y;
+			}
+			else {
+				if (hpt[n].y>cy) {
+					head_poly->mesh_idx=contacts[n].poly.mesh_idx;
+					head_poly->poly_idx=contacts[n].poly.poly_idx;
+					cy=hpt[n].y;
+				}
+			}
+			
+		}
+	}
+	
+	if (cy==-1) return(box->min_y-ydist);
+	
+	return(cy);
 }
 
 int pin_upward_movement_obj(obj_type *obj,int my)
@@ -343,51 +308,15 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 	box_create_from_object(&box,obj);
 
 	if (obj->size.radius<=object_box_check_radius_simple) {
-		y=find_poly_for_upward_point(box.x,box.min_y,box.z,abs(my),&obj->contact.head_poly);
+		y=pin_upward_movement_point(box.x,box.min_y,box.z,abs(my),&obj->contact.head_poly);
 	}
 	else {
 		y=pin_upward_movement_box(&box,abs(my),&obj->contact.head_poly);
 	}
 	
-	if (y==-1) return(my);
+	if (obj->contact.head_poly.mesh_idx==-1) return(my);
 
 	return(box.min_y-y);
-}
-
-/* =======================================================
-
-      Pin Y Movement against Map
-      
-======================================================= */
-
-int pin_downward_movement_point(int x,int y,int z,int my,bool *hit)
-{
-	int						sy;
-	poly_pointer_type		poly;
-
-	sy=find_poly_for_downward_point(x,y,z,my,&poly);
-	if (poly.mesh_idx==-1) {
-		*hit=FALSE;
-		return(0);
-	}
-
-	*hit=TRUE;
-	return(sy-y);
-}
-
-int pin_upward_movement_point(int x,int y,int z,int my,bool *hit)
-{
-	int						sy;
-	poly_pointer_type		poly;
-
-	sy=find_poly_for_upward_point(x,y,z,my,&poly);
-	if (poly.mesh_idx==-1) {
-		*hit=FALSE;
-		return(0);
-	}
-
-	*hit=TRUE;
-	return(sy-y);
 }
 
 /* =======================================================
