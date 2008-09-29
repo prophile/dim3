@@ -77,6 +77,17 @@ int map_mesh_add(map_type *map)
 	mesh->flag.no_self_obscure=FALSE;
 
 	mesh->rot_off.x=mesh->rot_off.y=mesh->rot_off.z=0;
+
+	mesh->msg.entry_id=0;
+	mesh->msg.exit_id=0;
+	mesh->msg.base_team=0;
+	mesh->msg.entry_on=FALSE;
+	mesh->msg.exit_on=FALSE;
+	mesh->msg.base_on=FALSE;
+	mesh->msg.map_change_on=FALSE;
+	mesh->msg.map_name[0]=0x0;
+	mesh->msg.map_spot_name[0]=0x0;
+	mesh->msg.map_spot_type[0]=0x0;
 	
 	mesh->nvertex=0;
 	mesh->vertexes=NULL;

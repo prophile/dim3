@@ -158,10 +158,10 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 							px[15],py[15],pz[15],
 							d,dist,mv_dist;
 	float					mv_ang;
-	bool					bump;
-	d3pnt					spt,ept,hpt[15];
+	bool					bump,hits[15];
+	d3pnt					spt[15],ept[15],hpt[15];
 	map_mesh_poly_type		*poly;
-	ray_trace_contact_type	contact[15];
+	ray_trace_contact_type	base_contact,contacts[15];
 
 		// get collision points
 
@@ -191,7 +191,30 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		yadd2=*yadd;
 	}
 
-		// run rays on all points
+		// set the collisions and run the
+		// ray tracing
+
+	base_contact.obj_on=TRUE;
+	base_contact.obj_ignore_uid=obj->uid;
+
+	base_contact.proj_on=FALSE;
+	base_contact.proj_ignore_uid=-1;
+
+	base_contact.hit_mode=poly_ray_trace_hit_mode_wall_only;
+	base_contact.origin=poly_ray_trace_origin_object;
+
+	for (n=0;n!=15;n++) {
+		spt[n].x=px[n];
+		spt[n].y=py[n];
+		spt[n].z=pz[n];
+
+		ept[n].x=spt[n].x+xadd2;
+		ept[n].y=spt[n].y+yadd2;
+		ept[n].z=spt[n].z+zadd2;
+	}
+	
+	ray_trace_map_by_point_array(15,spt,ept,hpt,hits,&base_contact,contacts);
+
 		// find the one that moves the leasts
 		// as the most suitable hit point
 
@@ -200,29 +223,8 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 
 	for (n=0;n!=15;n++) {
 			
-			// setup ray trace
-
-		spt.x=px[n];
-		spt.y=py[n];
-		spt.z=pz[n];
-
-		ept.x=spt.x+xadd2;
-		ept.y=spt.y+yadd2;
-		ept.z=spt.z+zadd2;
-
-		contact[n].obj_on=TRUE;
-		contact[n].obj_ignore_uid=obj->uid;
-
-		contact[n].proj_on=FALSE;
-		contact[n].proj_ignore_uid=-1;
-
-		contact[n].hit_mode=poly_ray_trace_hit_mode_wall_only;
-		contact[n].origin=poly_ray_trace_origin_object;
-	
-			// run trace
-
-		if (ray_trace_map_by_point(&spt,&ept,&hpt[n],&contact[n])) {
-			d=collide_point_distance(&spt,&hpt[n]);
+		if (hits[n]) {
+			d=collide_point_distance(&spt[n],&hpt[n]);
 			if ((d<=dist) || (idx==-1)) {
 				dist=d;
 				idx=n;
@@ -239,10 +241,10 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		// for bump-capable segments as it pushes
 		// the object around on stairs
 		
-	if (contact[idx].poly.mesh_idx!=-1) {
+	if (contacts[idx].poly.mesh_idx!=-1) {
 	
 		if (obj->bump.on) {
-			poly=&map.mesh.meshes[contact[idx].poly.mesh_idx].polys[contact[idx].poly.poly_idx];
+			poly=&map.mesh.meshes[contacts[idx].poly.mesh_idx].polys[contacts[idx].poly.poly_idx];
 			bump=((obj->pnt.y-poly->box.min.y)<=obj->bump.high);
 		}
 		else {
@@ -271,12 +273,12 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	
 		// setup the hits
 
-	if (contact[idx].poly.mesh_idx!=-1) {
-		memmove(&obj->contact.hit_poly,&contact[idx].poly,sizeof(poly_pointer_type));
+	if (contacts[idx].poly.mesh_idx!=-1) {
+		memmove(&obj->contact.hit_poly,&contacts[idx].poly,sizeof(poly_pointer_type));
 	}
 
-	if (contact[idx].obj_uid!=-1) obj->contact.obj_uid=contact[idx].obj_uid;
-	if (contact[idx].proj_uid!=-1) obj->contact.proj_uid=contact[idx].proj_uid;
+	if (contacts[idx].obj_uid!=-1) obj->contact.obj_uid=contacts[idx].obj_uid;
+	if (contacts[idx].proj_uid!=-1) obj->contact.proj_uid=contacts[idx].proj_uid;
 
 	return(TRUE);
 }

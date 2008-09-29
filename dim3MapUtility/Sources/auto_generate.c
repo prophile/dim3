@@ -964,7 +964,7 @@ void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int
 		rz2=rz-split_factor;
 		mx=(lx2+rx2)>>1;
 		
-		if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.portal_wall,FALSE,FALSE)) return;
+		if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.corridor_ceiling,FALSE,FALSE)) return;
 		map_auto_generate_poly_from_square_floor_slant(lx2,lz2,mx,rz2,ty,wall_sz,ag_ceiling_lower_pos_x,FALSE,px,py,pz,gx,gy);
 		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 		map_auto_generate_poly_from_square_floor_slant(mx,lz2,rx2,rz2,ty,wall_sz,ag_ceiling_lower_neg_x,FALSE,px,py,pz,gx,gy);
@@ -1005,8 +1005,8 @@ void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int
 
 		if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.portal_ceiling,FALSE,FALSE)) return;
 
-		k=(rz-lz)/split_factor;
-		lz2=lz+((k>>1)*split_factor);
+		k=((rz-lz)>>1)/split_factor;
+		lz2=k*split_factor;
 		rz2=lz2+split_factor;
 
 		lx2=lx+split_factor;
@@ -1025,8 +1025,8 @@ void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int
 
 		if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.portal_ceiling,FALSE,FALSE)) return;
 
-		k=(rx-lx)/split_factor;
-		lx2=lx+((k>>1)*split_factor);
+		k=((rx-lx)>>1)/split_factor;
+		lx2=k*split_factor;
 		rx2=lx2+split_factor;
 
 		lz2=lz+split_factor;
@@ -1042,7 +1042,7 @@ void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int
 
 	if (data[ag_ceiling_wall_slant]!=0) {
 
-		if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.portal_wall,FALSE,FALSE)) return;
+		if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.portal_ceiling,FALSE,FALSE)) return;
 
 		kx=(rx-lx)>>1;
 
@@ -1527,7 +1527,7 @@ void map_auto_generate_second_story(map_type *map)
 
 		if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.second_story,FALSE,TRUE)) return;
 
-		y=(map_max_size>>1)-((portal_high+extra_ty)>>1);
+		y=(map_max_size>>1)-((portal_high>>1)+ag_constant_step_story_size);
 
 		for (z=0;z<zsz;z++) {
 			for (x=0;x<xsz;x++) {
@@ -1691,11 +1691,6 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 	strcpy(map->textures[5].bitmaps[0].name,"Stone Wall");
 	strcpy(map->textures[6].bitmaps[0].name,"Planks Old");
 
-		// load textures
-
-	if (!map_textures_read(map,TRUE)) return(FALSE);
-	if (load_shaders) if (!map_shaders_read(map)) return(FALSE);
-
 		// setup auto generation values
 
 #ifndef D3_OS_WINDOWS
@@ -1754,6 +1749,11 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 	for (n=0;n!=map->mesh.nmesh;n++) {
 		memset(&map->mesh.meshes[n].obscure.visibility_flag,0xFF,max_mesh_visibility_bytes);
 	}
+
+		// load textures
+
+	if (!map_textures_read(map,TRUE)) return(FALSE);
+	if (load_shaders) if (!map_shaders_read(map)) return(FALSE);
 
 	return(TRUE);
 }

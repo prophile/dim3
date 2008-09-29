@@ -244,8 +244,8 @@ and can be sold or given away.
 #define ag_constant_light_animate_percentage		0.1f
 
 #define ag_constant_step_high						(3*map_enlarge)
-#define ag_constant_step_corridor_size				(8*map_enlarge)
-#define ag_constant_step_story_size					800
+#define ag_constant_step_corridor_size				(12*map_enlarge)
+#define ag_constant_step_story_size					(10*map_enlarge)
 
 #define ag_constant_ramp_min_high					(4*map_enlarge)
 #define ag_constant_ramp_size_percent				4.0f

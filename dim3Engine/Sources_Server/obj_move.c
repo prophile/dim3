@@ -1114,6 +1114,7 @@ void object_move_normal(obj_type *obj)
 			while (TRUE) {
 
 				if (object_bump_up(obj)) {
+
 					obj->pnt.x=old_x;
 					obj->pnt.z=old_z;
 					
@@ -1122,8 +1123,9 @@ void object_move_normal(obj_type *obj)
 					i_zmove=(int)zmove;
 					
 					obj->contact.hit_poly.mesh_idx=-1;
-					if (!object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) break;
-
+					if (!collide_object_to_map(obj,&i_xmove,&i_ymove,&i_zmove)) break;
+				//	if (!object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) break;
+				// supergumba
 					bump_cnt++;
 					if (bump_cnt>2) break;
 
