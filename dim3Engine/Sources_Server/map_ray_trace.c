@@ -337,6 +337,12 @@ float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,obj_type *obj
 	model_type			*model;
 	model_hit_box_type	*hit_box;
 	
+	x=obj->pnt.x;
+	z=obj->pnt.z;
+	
+	ty=obj->pnt.y-obj->size.y;
+	y=by=obj->pnt.y;
+
 		// setup fine check
 		
 	wid=obj->size.x>>1;
@@ -413,6 +419,12 @@ float ray_trace_projectile(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,proj_type
 {
 	int			wid,x,z,lx,rx,tz,bz,ty,by;
 	float		rang;
+
+	x=proj->pnt.x;
+	z=proj->pnt.z;
+	
+	ty=proj->pnt.y-proj->size.y;
+	by=proj->pnt.y;
 	
 		// setup fine check
 		
@@ -927,6 +939,7 @@ void ray_trace_map_by_point_array(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool 
 	
 			// create contact from base
 			
+		memmove(&contacts[n],base_contact,sizeof(ray_trace_contact_type));
 		ray_trace_contact_clear(&contacts[n]);
 	
 			// create vector from points

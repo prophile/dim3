@@ -1124,8 +1124,7 @@ void object_move_normal(obj_type *obj)
 					
 					obj->contact.hit_poly.mesh_idx=-1;
 					if (!collide_object_to_map(obj,&i_xmove,&i_ymove,&i_zmove)) break;
-				//	if (!object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) break;
-				// supergumba
+
 					bump_cnt++;
 					if (bump_cnt>2) break;
 
