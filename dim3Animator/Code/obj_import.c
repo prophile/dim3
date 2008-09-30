@@ -90,14 +90,6 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 		return(FALSE);
 	}
 	
-		// single import?
-		
-	single_material=FALSE;
-	
-	if (ntexture>1) {
-		single_material=texture_use_single();
-	}
-
 		// get the vertex and uv
 
     nvertex=0;
@@ -171,11 +163,29 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
         }
     }
 	
-	*found_normals=(nobj_normal!=0);
+		// can't import if no UVs
+		
+	if (nobj_uv==0) {
+		textdecode_close();
+		sprintf(err_str,"There are no UVs in this OBJ, please texture map the model before importing.");
+		return(FALSE);
+	}
+
+		// set new vertexes
     
     model.meshes[cur_mesh].nvertex=nvertex;
+	
+		// single material import?
+		
+	single_material=FALSE;
+	
+	if (ntexture>1) {
+		single_material=texture_use_single();
+	}
 
 		// get the triangles
+		
+	*found_normals=(nobj_normal!=0);
 
 	first_material=TRUE;
 	material=NULL;

@@ -339,6 +339,7 @@ void import_mesh_obj(void)
 	if (!import_obj(path,&found_normals,err_str)) {
 		CopyCStringToPascal(err_str,p_err_str);
 		StandardAlert(0,"\pCould not import .OBJ file",p_err_str,NULL,NULL);
+		return;
 	}
 	
 	dialog_import_finish_run(&model,&scale);
@@ -372,6 +373,7 @@ void import_mesh_lightwave(void)
 	if (!import_lightwave(path,err_str)) {
 		CopyCStringToPascal(err_str,p_err_str);
 		StandardAlert(0,"\pCould not import .LWO file",p_err_str,NULL,NULL);
+		return;
 	}
 	
 	dialog_import_finish_run(&model,&scale);
@@ -405,6 +407,7 @@ void import_mesh_c4d_xml(void)
 	if (!import_c4d_xml(path,err_str)) {
 		CopyCStringToPascal(err_str,p_err_str);
 		StandardAlert(0,"\pCould not import .XML file",p_err_str,NULL,NULL);
+		return;
 	}
 	
 	dialog_import_finish_run(&model,&scale);
