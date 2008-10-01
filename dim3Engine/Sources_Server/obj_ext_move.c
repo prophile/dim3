@@ -143,18 +143,19 @@ void object_move_with_wall_segment(int seg_idx,int xmove,int zmove)
 	*/
 }
 
+
+
+
 // supergumba -- these will all need to be fixed
 void object_move_with_mesh(int mesh_idx,int xmove,int zmove)
 {
 	int			n;
 	obj_type	*obj;
-	
+
 	obj=server.objs;
 	
 	for (n=0;n!=server.count.obj;n++) {
-		if ((!obj->remote.on) && (obj->contact.stand_poly.mesh_idx==mesh_idx)) {
-			object_move_with_move(obj,xmove,zmove);
-		}
+		if (obj->contact.stand_poly.mesh_idx==mesh_idx) object_move_with_move(obj,xmove,zmove);
 		obj++;
 	}
 }

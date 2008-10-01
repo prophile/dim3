@@ -180,6 +180,60 @@ void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 	}
 }
 
+void map_prepare_mesh_box(map_mesh_type *mesh)
+{
+	int						n;
+	d3pnt					mesh_min,mesh_max,mesh_mid;
+	map_mesh_poly_type		*poly;
+		
+		// start mesh min/max/mid
+			
+	mesh_min.x=mesh_min.y=mesh_min.z=0;
+	mesh_max.x=mesh_max.y=mesh_max.z=0;
+	mesh_mid.x=mesh_mid.y=mesh_mid.z=0;
+
+		// determine size
+
+	poly=mesh->polys;
+	
+	for (n=0;n!=mesh->npoly;n++) {
+		
+			// setup mesh min, max, mid
+			
+		if (n==0) {
+			memmove(&mesh_min,&poly->box.min,sizeof(d3pnt));
+			memmove(&mesh_max,&poly->box.max,sizeof(d3pnt));
+			memmove(&mesh_mid,&poly->box.mid,sizeof(d3pnt));
+		}
+		else {
+			if (poly->box.min.x<mesh_min.x) mesh_min.x=poly->box.min.x;
+			if (poly->box.min.y<mesh_min.y) mesh_min.y=poly->box.min.y;
+			if (poly->box.min.z<mesh_min.z) mesh_min.z=poly->box.min.z;
+		
+			if (poly->box.max.x>mesh_max.x) mesh_max.x=poly->box.max.x;
+			if (poly->box.max.y>mesh_max.y) mesh_max.y=poly->box.max.y;
+			if (poly->box.max.z>mesh_max.z) mesh_max.z=poly->box.max.z;
+			
+			mesh_mid.x+=poly->box.mid.x;
+			mesh_mid.y+=poly->box.mid.y;
+			mesh_mid.z+=poly->box.mid.z;
+		}
+	
+		poly++;
+	}
+	
+		// setup mesh box
+		
+	memmove(&mesh->box.min,&mesh_min,sizeof(d3pnt));
+	memmove(&mesh->box.max,&mesh_max,sizeof(d3pnt));
+	
+	if (mesh->npoly!=0) {
+		mesh->box.mid.x=mesh_mid.x/mesh->npoly;
+		mesh->box.mid.y=mesh_mid.y/mesh->npoly;
+		mesh->box.mid.z=mesh_mid.z/mesh->npoly;
+	}
+}
+
 /* =======================================================
 
       Prepare Map
@@ -189,7 +243,6 @@ void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 void map_prepare(map_type *map)
 {
 	int					n,k,simple_cnt;
-	d3pnt				mesh_min,mesh_max,mesh_mid;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
@@ -203,12 +256,6 @@ void map_prepare(map_type *map)
 
 		mesh->flag.touched=FALSE;
 		mesh->flag.shiftable=FALSE;
-		
-			// start mesh min/max/mid
-			
-		mesh_min.x=mesh_min.y=mesh_min.z=0;
-		mesh_max.x=mesh_max.y=mesh_max.z=0;
-		mesh_mid.x=mesh_mid.y=mesh_mid.z=0;
 		
 			// run through the mesh polygons
 
@@ -241,41 +288,13 @@ void map_prepare(map_type *map)
 			poly->draw.y_shift_offset=0.0f;
 
 			mesh->flag.shiftable|=poly->draw.shift_on;
-			
-				// setup mesh min, max, mid
-				
-			if (k==0) {
-				memmove(&mesh_min,&poly->box.min,sizeof(d3pnt));
-				memmove(&mesh_max,&poly->box.max,sizeof(d3pnt));
-				memmove(&mesh_mid,&poly->box.mid,sizeof(d3pnt));
-			}
-			else {
-				if (poly->box.min.x<mesh_min.x) mesh_min.x=poly->box.min.x;
-				if (poly->box.min.y<mesh_min.y) mesh_min.y=poly->box.min.y;
-				if (poly->box.min.z<mesh_min.z) mesh_min.z=poly->box.min.z;
-			
-				if (poly->box.max.x>mesh_max.x) mesh_max.x=poly->box.max.x;
-				if (poly->box.max.y>mesh_max.y) mesh_max.y=poly->box.max.y;
-				if (poly->box.max.z>mesh_max.z) mesh_max.z=poly->box.max.z;
-				
-				mesh_mid.x+=poly->box.mid.x;
-				mesh_mid.y+=poly->box.mid.y;
-				mesh_mid.z+=poly->box.mid.z;
-			}
 		
 			poly++;
 		}
-		
-			// setup mesh box
-			
-		memmove(&mesh->box.min,&mesh_min,sizeof(d3pnt));
-		memmove(&mesh->box.max,&mesh_max,sizeof(d3pnt));
-		
-		if (mesh->npoly!=0) {
-			mesh->box.mid.x=mesh_mid.x/mesh->npoly;
-			mesh->box.mid.y=mesh_mid.y/mesh->npoly;
-			mesh->box.mid.z=mesh_mid.z/mesh->npoly;
-		}
+
+			// setup boxes
+
+		map_prepare_mesh_box(mesh);
 		
 		mesh++;
 	}

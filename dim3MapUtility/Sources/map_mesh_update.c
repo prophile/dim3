@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 extern void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly);
+extern void map_prepare_mesh_box(map_mesh_type *mesh);
 
 /* =======================================================
 
@@ -187,17 +188,7 @@ void map_mesh_move(map_type *map,int mesh_idx,int x,int y,int z)
 	
 	for (n=0;n!=npoly;n++) {
 
-		poly->box.min.x+=x;
-		poly->box.min.y+=y;
-		poly->box.min.z+=z;
-		
-		poly->box.max.x+=x;
-		poly->box.max.y+=y;
-		poly->box.max.z+=z;
-		
-		poly->box.mid.x+=x;
-		poly->box.mid.y+=y;
-		poly->box.mid.z+=z;
+			// light vertexes
 
 		pl=poly->light.vertexes;
 
@@ -207,23 +198,17 @@ void map_mesh_move(map_type *map,int mesh_idx,int x,int y,int z)
 			pl->z+=z;
 			pl++;
 		}
-	
+
+			// fix poly box
+
+		map_prepare_mesh_poly(mesh,poly);
+
 		poly++;
 	}
-	
-		// move mesh box
-		
-	mesh->box.min.x+=x;
-	mesh->box.min.y+=y;
-	mesh->box.min.z+=z;
-	
-	mesh->box.max.x+=x;
-	mesh->box.max.y+=y;
-	mesh->box.max.z+=z;
-	
-	mesh->box.mid.x+=x;
-	mesh->box.mid.y+=y;
-	mesh->box.mid.z+=z;
+
+		// fix mesh box
+
+	map_prepare_mesh_box(mesh);
 }
 
 /* =======================================================
@@ -359,38 +344,6 @@ void map_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float ro
 		pt++;
 	}
 
-		// rotate boxes
-
-	fx=((float)mesh->box.min.x)-f_mpt.x;
-	fy=((float)mesh->box.min.y)-f_mpt.y;
-	fz=((float)mesh->box.min.z)-f_mpt.z;
-
-	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
-
-	mesh->box.min.x=(int)(fx+f_mpt.x);
-	mesh->box.min.y=(int)(fy+f_mpt.y);
-	mesh->box.min.z=(int)(fz+f_mpt.z);
-
-	fx=((float)mesh->box.max.x)-f_mpt.x;
-	fy=((float)mesh->box.max.y)-f_mpt.y;
-	fz=((float)mesh->box.max.z)-f_mpt.z;
-
-	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
-
-	mesh->box.max.x=(int)(fx+f_mpt.x);
-	mesh->box.max.y=(int)(fy+f_mpt.y);
-	mesh->box.max.z=(int)(fz+f_mpt.z);
-
-	fx=((float)mesh->box.mid.x)-f_mpt.x;
-	fy=((float)mesh->box.mid.y)-f_mpt.y;
-	fz=((float)mesh->box.mid.z)-f_mpt.z;
-
-	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
-
-	mesh->box.mid.x=(int)(fx+f_mpt.x);
-	mesh->box.mid.y=(int)(fy+f_mpt.y);
-	mesh->box.mid.z=(int)(fz+f_mpt.z);
-
 		// rotate polygons
 
 	npoly=mesh->npoly;
@@ -417,41 +370,16 @@ void map_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float ro
 			pl++;
 		}
 
-			// poly boxes
+			// fix poly boxes
 
-		fx=((float)poly->box.min.x)-f_mpt.x;
-		fy=((float)poly->box.min.y)-f_mpt.y;
-		fz=((float)poly->box.min.z)-f_mpt.z;
+		map_prepare_mesh_poly(mesh,poly);
 
-		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
-
-		poly->box.min.x=(int)(fx+f_mpt.x);
-		poly->box.min.y=(int)(fy+f_mpt.y);
-		poly->box.min.z=(int)(fz+f_mpt.z);
-
-		fx=((float)poly->box.max.x)-f_mpt.x;
-		fy=((float)poly->box.max.y)-f_mpt.y;
-		fz=((float)poly->box.max.z)-f_mpt.z;
-
-		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
-
-		poly->box.max.x=(int)(fx+f_mpt.x);
-		poly->box.max.y=(int)(fy+f_mpt.y);
-		poly->box.max.z=(int)(fz+f_mpt.z);
-
-		fx=((float)poly->box.mid.x)-f_mpt.x;
-		fy=((float)poly->box.mid.y)-f_mpt.y;
-		fz=((float)poly->box.mid.z)-f_mpt.z;
-
-		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
-
-		poly->box.mid.x=(int)(fx+f_mpt.x);
-		poly->box.mid.y=(int)(fy+f_mpt.y);
-		poly->box.mid.z=(int)(fz+f_mpt.z);
-	
 		poly++;
 	}
 
+		// fix mesh box
+
+	map_prepare_mesh_box(mesh);
 }
 
 /* =======================================================
