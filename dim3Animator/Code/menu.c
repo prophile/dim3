@@ -341,13 +341,15 @@ void import_mesh_obj(void)
 		StandardAlert(0,"\pCould not import .OBJ file",p_err_str,NULL,NULL);
 		return;
 	}
+
+	model_delete_unused_vertexes(&model,cur_mesh);
 	
 	dialog_import_finish_run(&model,&scale);
 	model_scale(&model,cur_mesh,scale,scale,scale);
 
-    model_center_xz(&model,cur_mesh);
-    model_floor(&model,cur_mesh);
-    model_recalc_boxes(&model);
+	model_center_xz(&model,cur_mesh);
+	model_floor(&model,cur_mesh);
+	model_recalc_boxes(&model);
     if (!found_normals) model_recalc_normals(&model,cur_mesh);
 	
 	reset_vertex_tab();
@@ -375,6 +377,8 @@ void import_mesh_lightwave(void)
 		StandardAlert(0,"\pCould not import .LWO file",p_err_str,NULL,NULL);
 		return;
 	}
+	
+	model_delete_unused_vertexes(&model,cur_mesh);
 	
 	dialog_import_finish_run(&model,&scale);
 	model_scale(&model,cur_mesh,scale,scale,scale);
@@ -409,6 +413,8 @@ void import_mesh_c4d_xml(void)
 		StandardAlert(0,"\pCould not import .XML file",p_err_str,NULL,NULL);
 		return;
 	}
+	
+	model_delete_unused_vertexes(&model,cur_mesh);
 	
 	dialog_import_finish_run(&model,&scale);
 	model_scale_all(&model,scale,scale,scale);

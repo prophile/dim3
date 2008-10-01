@@ -96,6 +96,7 @@ EXPORTS
 	model_rotate_sel_vertexes				@292
 	model_invert_normal_sel_vertexes		@293
 	model_delete_sel_vertex					@294
+	model_delete_unused_vertexes			@295
 
 	model_clear_sel_mask					@300
 	model_set_sel_mask						@301

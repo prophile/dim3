@@ -382,6 +382,7 @@ extern void model_scale_sel_vertexes(model_type *model,int mesh_idx,float x,floa
 extern void model_rotate_sel_vertexes(model_type *model,int mesh_idx,float ang_x,float ang_y,float ang_z);
 extern void model_invert_normal_sel_vertexes(model_type *model,int mesh_idx);
 extern void model_delete_sel_vertex(model_type *model,int mesh_idx);
+extern void model_delete_unused_vertexes(model_type *model,int mesh_idx);
 
 extern void model_clear_sel_mask(model_type *model,int mesh_idx);
 extern void model_set_sel_mask(model_type *model,int mesh_idx,int vertex_idx,bool value);

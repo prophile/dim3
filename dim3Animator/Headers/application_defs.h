@@ -184,4 +184,4 @@
 // import Settings
 //
 
-#define import_scale_factor				100.0f
+#define import_scale_factor				10000.0f

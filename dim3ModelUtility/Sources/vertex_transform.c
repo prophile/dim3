@@ -273,3 +273,62 @@ void model_delete_sel_vertex(model_type *model,int mesh_idx)
 	model_clear_hide_mask(model,mesh_idx);
 }
 
+/* =======================================================
+
+      Delete Unused Vertexes
+      
+======================================================= */
+
+void model_delete_unused_vertexes(model_type *model,int mesh_idx)
+{
+	int					n,k,i,t,nvertex,ntrig,sz;
+	unsigned char		*v_ok;
+    model_trig_type		*trig;
+	
+		// vertex hit list
+		
+	v_ok=(unsigned char*)valloc(max_model_vertex);
+	bzero(v_ok,max_model_vertex);
+	
+		// find vertexes hit
+		
+	ntrig=model->meshes[mesh_idx].ntrig;
+	trig=model->meshes[mesh_idx].trigs;
+	
+	for (n=0;n!=ntrig;n++) {
+		for (k=0;k!=3;k++) {
+			v_ok[trig->v[k]]=0x1;
+		}
+		trig++;
+	}
+	
+		// delete unused vertexes
+		
+	nvertex=model->meshes[mesh_idx].nvertex-1;
+	
+	for (n=nvertex;n>=0;n--) {
+	
+		if (v_ok[n]) continue;
+		
+			// change all trigs vertex pointers
+	
+		trig=model->meshes[mesh_idx].trigs;
+		
+		for (i=0;i!=ntrig;i++) {
+			for (t=0;t!=3;t++) {
+				if (trig->v[t]>n) trig->v[t]--;
+			}
+			trig++;
+		}
+		
+			// delete vertex
+			
+		sz=(nvertex-n)*sizeof(model_vertex_type);
+		if (sz>0) memmove(&model->meshes[mesh_idx].vertexes[n],&model->meshes[mesh_idx].vertexes[n+1],sz);
+	
+		nvertex--;
+	}
+	
+	model->meshes[mesh_idx].nvertex=nvertex;
+}
+

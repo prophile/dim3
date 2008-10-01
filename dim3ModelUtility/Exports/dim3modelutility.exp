@@ -93,6 +93,7 @@ _model_scale_sel_vertexes
 _model_rotate_sel_vertexes
 _model_invert_normal_sel_vertexes
 _model_delete_sel_vertex
+_model_delete_unused_vertexes
 
 _model_clear_sel_mask
 _model_set_sel_mask

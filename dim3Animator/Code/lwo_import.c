@@ -284,9 +284,9 @@ bool import_lightwave(char *path,char *err_str)
 	vertex=model.meshes[cur_mesh].vertexes;
     
     for ((i=0);(i!=nvertex);i++) {
-        vertex->pnt.x=(short)((*fptr++)*import_scale_factor);
-        vertex->pnt.y=-(short)((*fptr++)*import_scale_factor);
-        vertex->pnt.z=(short)((*fptr++)*import_scale_factor);
+        vertex->pnt.x=(int)((*fptr++)*import_scale_factor);
+        vertex->pnt.y=-(int)((*fptr++)*import_scale_factor);
+        vertex->pnt.z=(int)((*fptr++)*import_scale_factor);
     
         vertex->major_bone_idx=vertex->minor_bone_idx=-1;
         vertex->bone_factor=1;
