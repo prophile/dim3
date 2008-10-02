@@ -387,37 +387,37 @@ void player_movement_top_down_input(obj_type *obj)
 		
 	if (left) {
 		if (up) {
-			object_player_turn_direct(obj,315);
+			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,315.0f));
 			return;
 		}
 		if (down) {
-			object_player_turn_direct(obj,225);
+			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,225.0f));
 			return;
 		}
-		object_player_turn_direct(obj,270);
+		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,270.0f));
 		return;
 	}
 	
 	if (right) {
 		if (up) {
-			object_player_turn_direct(obj,45);
+			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,45.0f));
 			return;
 		}
 		if (down) {
-			object_player_turn_direct(obj,135);
+			object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,135.0f));
 			return;
 		}
-		object_player_turn_direct(obj,90);
+		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,90.0f));
 		return;
 	}
 	
 	if (up) {
-		object_player_turn_direct(obj,0);
+		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,0.0f));
 		return;
 	}
 	
 	if (down) {
-		object_player_turn_direct(obj,180);
+		object_player_turn_direct(obj,angle_add(obj->turn.top_down_ang_offset,180.0f));
 		return;
 	}
 }
@@ -458,6 +458,10 @@ void player_movement_input(obj_type *obj)
 			break;
 
 		case im_fly:
+			player_movement_fpp_xz_input(obj);
+			player_movement_fly_swim_y_input(obj);
+			break;
+
 		case im_thrust:
 			player_movement_fpp_xz_input(obj);
 			break;

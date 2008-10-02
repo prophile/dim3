@@ -279,29 +279,30 @@ inline int gl_text_get_char_height(bool small_text)
 
 int gl_text_get_string_width(char *str,bool small_text)
 {
-	int			i,ch,x,wid,len;
+	int			i,ch,len;
+	float		fx,f_wid;
 	char		*c;
 	
-	wid=gl_text_get_char_width(small_text);
+	f_wid=(float)gl_text_get_char_width(small_text);
 	
 	c=str;
 	len=strlen(str);
 	
-	x=0;
+	fx=0.0f;
 	
 	for (i=0;i<len;i++) {
 		ch=(int)*c++;
 
 		if ((ch>='!') && (ch<='z')) {
 			ch-='!';
-			x+=(int)(wid*font_char_size[ch]);
+			fx+=(f_wid*font_char_size[ch]);
 		}
 		else {
-			x+=(wid/3);
+			fx+=(f_wid/3.0f);
 		}
 	}
 	
-	return(x);
+	return((int)fx);
 }
 
 /* =======================================================

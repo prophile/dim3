@@ -420,7 +420,7 @@ typedef struct		{
 											run_speed,run_motion_speed,
 											crawl_speed,crawl_motion_speed,
 											air_speed,air_motion_speed,
-											key_speed;
+											key_speed,top_down_ang_offset;
 						bool				ignore_mouse,only_when_moving,restrict_player_turning;
 						d3ang				ang_add,ang_to,fix_ang_add;
 					} obj_turn;
