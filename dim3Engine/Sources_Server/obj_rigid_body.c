@@ -114,7 +114,6 @@ void object_rigid_body_reset_angle(obj_type *obj)
 
 		ky=pin_downward_movement_point(obj->pnt.x,y,obj->pnt.z,obj->rigid_body.max_drop_y,&stand_poly);
 		if (stand_poly.mesh_idx!=-1) {
-			ky+=y;
 
 			if (ky>y) {
 

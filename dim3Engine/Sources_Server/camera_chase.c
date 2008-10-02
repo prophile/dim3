@@ -123,7 +123,7 @@ int camera_chase_get_division(int x,int z,int y)
 void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
 {
 	int						n,xadd,yadd,zadd,radius,div,
-							cx,cz,cy,nx,nz,ychng,hit_obj_uid;
+							cx,cz,cy,nx,nz,upy,hit_obj_uid;
 	float					fang,fx,fy,fz;
 	poly_pointer_type		head_poly;
 	matrix_type				mat;
@@ -189,8 +189,8 @@ void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
 		
 			// y movement
 			
-		ychng=pin_upward_movement_point(cx,cy,cz,yadd,&head_poly);
-		if (head_poly.mesh_idx==-1) cy+=ychng;
+		upy=pin_upward_movement_point(cx,cy,cz,yadd,&head_poly);
+		if (head_poly.mesh_idx==-1) cy=upy;
 	}
 	
         // new camera position

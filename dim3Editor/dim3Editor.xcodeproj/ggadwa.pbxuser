@@ -143,16 +143,27 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 244506017;
-			PBXWorkspaceStateSaveDate = 244506017;
+			PBXPerProjectTemplateStateSaveDate = 244606973;
+			PBXWorkspaceStateSaveDate = 244606973;
 		};
 		perUserProjectItems = {
+			2601C0BD0E9468B300E74509 /* PlistBookmark */ = 2601C0BD0E9468B300E74509 /* PlistBookmark */;
 			264AEBAC0E92DDCD0018B57E /* PlistBookmark */ = 264AEBAC0E92DDCD0018B57E /* PlistBookmark */;
-			266701AD0E91E2B0003F292A /* PlistBookmark */ = 266701AD0E91E2B0003F292A /* PlistBookmark */;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBuildSettings = {
 		};
+	};
+	2601C0BD0E9468B300E74509 /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+		);
+		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
+		rLen = 0;
+		rLoc = 2147483647;
 	};
 	260AFEF40D40506A00F6C42F /* dim3 Editor */ = {
 		isa = PBXExecutable;
@@ -298,17 +309,6 @@
 		};
 	};
 	264AEBAC0E92DDCD0018B57E /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
-	};
-	266701AD0E91E2B0003F292A /* PlistBookmark */ = {
 		isa = PlistBookmark;
 		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
 		fallbackIsa = PBXBookmark;
