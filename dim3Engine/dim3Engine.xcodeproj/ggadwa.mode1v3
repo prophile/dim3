@@ -341,7 +341,7 @@
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 326}, {289, 785}}</string>
+							<string>{{0, 0}, {289, 785}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -388,10 +388,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>2601C0CE0E946AA400E74509</string>
+										<string>26168D2F0E95C80C00287AF9</string>
 										<key>history</key>
 										<array>
-											<string>264AEBAD0E92DDE10018B57E</string>
+											<string>2601C0CE0E946AA400E74509</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -449,9 +449,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>2601C09D0E9466F000E74509</string>
+				<string>26168D2D0E95C77900287AF9</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>2601C09E0E9466F000E74509</string>
+				<string>26168D2E0E95C77900287AF9</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -570,7 +570,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>244607652.00930199</real>
+	<real>244697100.17126101</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -585,11 +585,8 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C530D57069F1CE1000CFCEE</string>
-		<string>1C78EAAD065D492600B07095</string>
-		<string>1CD10A99069EF8BA00B06720</string>
-		<string>260AFF5E0D40530200F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3Engine/dim3Engine.xcodeproj</string>
+		<string>260AFF5E0D40530200F6C42F</string>
 	</array>
 	<key>WindowString</key>
 	<string>13 172 311 844 0 0 1680 1028 </string>
@@ -671,7 +668,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFF5E0D40530200F6C42F</string>
-				<string>2601C09A0E9466E600E74509</string>
+				<string>26168D2A0E95C77600287AF9</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -682,7 +679,7 @@
 			<key>WindowToolGUID</key>
 			<string>260AFF5E0D40530200F6C42F</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>

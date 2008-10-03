@@ -435,6 +435,20 @@ void piece_free_rotate(void)
 	piece_rotate(rot_x,rot_y,rot_z);
 }
 
+void piece_move(int move_x,int move_y,int move_z)
+{
+	int				n,sel_count,type,mesh_idx,poly_idx;
+	
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type==mesh_piece) map_mesh_move(&map,mesh_idx,move_x,move_y,move_z);
+	}
+	
+	main_wind_draw();
+}
+
 /* =======================================================
 
       Snap Mesh to Grid

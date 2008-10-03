@@ -411,12 +411,12 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			return(noErr);
 
 		case kCommandMeshRaiseY:
-			select_move(0,0,map_enlarge);
+			piece_move(0,-100,0);
 			main_wind_draw();
 			return(noErr);
             
 		case kCommandMeshLowerY:
-			select_move(0,0,-map_enlarge);
+			piece_move(0,100,0);
             main_wind_draw();
  			return(noErr);
 			

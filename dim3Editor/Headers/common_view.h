@@ -98,6 +98,7 @@ extern void piece_resize(void);
 extern void piece_flip(bool flip_x,bool flip_y,bool flip_z);
 extern void piece_rotate(float rot_x,float rot_y,float rot_z);
 extern void piece_free_rotate(void);
+extern void piece_move(int move_x,int move_y,int move_z);
 extern void mesh_snap_to_grid(int mesh_idx);
 extern void mesh_poly_snap_to_grid(int mesh_idx,int poly_idx);
 extern void mesh_vertexes_snap_to_grid(int mesh_idx);
