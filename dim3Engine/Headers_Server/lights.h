@@ -56,6 +56,10 @@ extern void map_calculate_light_reduce_liquid(map_liquid_type *liq);
 extern void map_calculate_light_reduce_model(model_draw *draw);
 extern void map_calculate_light_reduce_effect(effect_type *effect);
 extern void map_calculate_light_reduce_all(void);
+
+extern bool map_calculate_light_reduce_check_equal(map_mesh_type *mesh);
+extern void map_calculate_light_reduce_save(map_mesh_type *mesh);
+
 extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf);
 extern void map_calculate_ray_trace_light_color_normal(double x,double y,double z,float *cf,float *nf);
 

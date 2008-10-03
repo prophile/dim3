@@ -63,6 +63,8 @@ extern bool gl_check_shader_ok(void);
 extern void map_movements_initialize(void);
 extern void fade_screen_start(int tick);
 extern void group_move_clear_all(void);
+extern bool view_compile_mesh_gl_list_init(void);
+extern void view_compile_mesh_gl_list_free(void);
 
 /* =======================================================
 
@@ -183,7 +185,7 @@ bool map_start(bool skip_media,char *err_str)
 		// start progress
 		
 	progress_initialize("Opening");
-	progress_draw(5);
+	progress_draw(10);
 	
 	current_map_spawn_idx=0;
 	strcpy(current_map_name,map.info.name);		// remember for close
@@ -224,51 +226,43 @@ bool map_start(bool skip_media,char *err_str)
 
 		// prepare map surfaces
 	
-	progress_draw(15);
-	map_prepare(&map);
-	
-		// create group lists
-	
 	progress_draw(20);
+
+	map_prepare(&map);
 
 		// segment, vertex, and light lists for portals
 
-	progress_draw(25);
-
 	progress_draw(30);
-	
-	progress_draw(35);
 
 	if (!map_create_vertex_lists(&map)) {
 		progress_shutdown();
 		strcpy(err_str,"Out of memory");
 		return(FALSE);
 	}
+
 	if (!map_group_create_unit_list(&map)) {
 		progress_shutdown();
 		strcpy(err_str,"Out of memory");
 		return(FALSE);
 	}
-	// supergumba -- all this is mixed up
 
-	progress_draw(40);
-	
+	if (!view_compile_mesh_gl_list_init()) {
+		progress_shutdown();
+		strcpy(err_str,"Out of memory");
+		return(FALSE);
+	}
+
 		// start map ambients
+		// and clear all proj, effects, decals, etc
 		
-	progress_draw(45);
+	progress_draw(40);
 
 	map_start_ambient();
 	if (map.ambient.sound_name[0]!=0x0) map_set_ambient(map.ambient.sound_name,map.ambient.sound_pitch);
 
-		// clear projectile, effects, and marks
-		
-	progress_draw(50);
-
 	projectile_start();
 	effect_start();
 	particle_map_initialize();
-
-	progress_draw(55);
 
 	decal_clear();
 	group_move_clear_all();
@@ -277,15 +271,11 @@ bool map_start(bool skip_media,char *err_str)
 		
 	map.rain.reset=TRUE;
 
-		// clear spot attachements
-	
-	progress_draw(60);
-		
-	map_spot_clear_attach(&map);
- 
         // run the course script
 
-	progress_draw(65);
+	progress_draw(50);
+
+	map_spot_clear_attach(&map);
 		
 	js.course_attach.thing_type=thing_type_course;
 	js.course_attach.thing_uid=-1;
@@ -303,9 +293,6 @@ bool map_start(bool skip_media,char *err_str)
 	progress_draw(70);
 
 	spot_start_attach();
-
-	progress_draw(75);
-
 	scenery_create();
 	scenery_start();
 	
@@ -323,8 +310,6 @@ bool map_start(bool skip_media,char *err_str)
 	
 		// connect camera to player
 		
-	progress_draw(85);
-
 	obj=object_find_uid(server.player_obj_uid);
 	camera_connect(obj);
 	
@@ -338,8 +323,6 @@ bool map_start(bool skip_media,char *err_str)
 
 		// initialize movements and lookups
 	
-	progress_draw(95);
-		
 	map_movements_initialize();
 	map_lookups_setup();
 	
@@ -438,6 +421,7 @@ void map_end(void)
 		
 	progress_draw(65);
 
+	view_compile_mesh_gl_list_free();
 	map_dispose_vertex_lists(&map);
 	map_group_dispose_unit_list(&map);
 	

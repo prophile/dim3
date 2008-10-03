@@ -222,6 +222,7 @@ typedef struct		{
 						int									portal_v[8],txt_frame_offset,
 															stencil_pass,stencil_idx,decal_stencil_idx;
 						float								x_shift_offset,y_shift_offset;
+						float								*p_color,*p_normal;
 						bool								simple_tessel,shift_on;
 					} map_mesh_poly_draw_type;
 
@@ -260,6 +261,17 @@ typedef struct		{
 					} map_mesh_obscure_type;
 
 typedef struct		{
+						double								intensity;
+						d3pnt								pnt;
+						d3col								col;
+					} map_mesh_draw_light_spot_type;
+
+typedef struct		{
+						int									nlight;
+						map_mesh_draw_light_spot_type		light_spots[max_light_spot];
+					} map_mesh_draw_type;
+
+typedef struct		{
 						int									nvertex,npoly,group_idx;
 						d3pnt								rot_off;
 						d3pnt								*vertexes;
@@ -268,6 +280,7 @@ typedef struct		{
 						map_mesh_flag_type					flag;
 						map_mesh_message_type				msg;
 						map_mesh_obscure_type				obscure;
+						map_mesh_draw_type					draw;
 					} map_mesh_type;
 
 //
