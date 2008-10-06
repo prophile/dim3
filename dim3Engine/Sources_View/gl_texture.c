@@ -486,7 +486,7 @@ inline void gl_texture_transparent_set(int txt_id,float alpha)
 
 	gl_texture_bind(0,txt_id);
 	
-	col4[0]=col4[1]=col4[2]=1;
+	col4[0]=col4[1]=col4[2]=1.0f;
 	col4[3]=alpha;
 	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
 }
@@ -556,7 +556,7 @@ inline void gl_texture_transparent_specular_set(int specular_id,float alpha)
 
 	gl_texture_bind(1,specular_id);
 
-	col4[0]=col4[1]=col4[2]=1;
+	col4[0]=col4[1]=col4[2]=1.0f;
 	col4[3]=alpha;
 	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
 }

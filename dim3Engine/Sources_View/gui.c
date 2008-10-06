@@ -37,9 +37,9 @@ and can be sold or given away.
 
 // supergumba -- move to defs file
 
-#define gui_screenshot_wid		256
-#define gui_screenshot_high		128
-#define gui_screenshot_darken	0.8f
+#define gui_screenshot_wid			256
+#define gui_screenshot_high			128
+#define gui_screenshot_blur_count	10
 
 extern server_type			server;
 extern hud_type				hud;
@@ -79,18 +79,60 @@ void gui_initialize_load_background(char *background_path,char *bitmap_name)
 	bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
 }
 
-inline unsigned char gui_initialize_load_screenshot_reduce_byte(unsigned char byte)
+void gui_initialize_load_screenshot_blur_pixel(unsigned char *data,unsigned char *data2,int x,int y)
 {
-	float		f;
+	int				cnt,r,g,b;
+	unsigned char	*ptr;
 	
-	f=(float)byte;
-	return((unsigned char)(f*gui_screenshot_darken));
+	cnt=0;
+	r=g=b=0;
+
+	if (x>0) {
+		ptr=data+((y*(gui_screenshot_wid<<2))+((x-1)<<2));
+		r+=(int)*ptr++;
+		g+=(int)*ptr++;
+		b+=(int)*ptr++;
+		cnt++;
+	}
+	if (x<(gui_screenshot_wid-1)) {
+		ptr=data+((y*(gui_screenshot_wid<<2))+((x+1)<<2));
+		r+=(int)*ptr++;
+		g+=(int)*ptr++;
+		b+=(int)*ptr++;
+		cnt++;
+	}
+	if (y>0) {
+		ptr=data+(((y-1)*(gui_screenshot_wid<<2))+(x<<2));
+		r+=(int)*ptr++;
+		g+=(int)*ptr++;
+		b+=(int)*ptr++;
+		cnt++;
+	}
+	if (y<(gui_screenshot_high-1)) {
+		ptr=data+(((y+1)*(gui_screenshot_wid<<2))+(x<<2));
+		r+=(int)*ptr++;
+		g+=(int)*ptr++;
+		b+=(int)*ptr++;
+		cnt++;
+	}
+
+	ptr=data+((y*(gui_screenshot_wid<<2))+(x<<2));
+	r+=(int)*ptr++;
+	g+=(int)*ptr++;
+	b+=(int)*ptr++;
+	cnt++;
+	
+	ptr=data2+((y*(gui_screenshot_wid<<2))+(x<<2));
+	*ptr++=(unsigned char)(r/cnt);
+	*ptr++=(unsigned char)(g/cnt);
+	*ptr++=(unsigned char)(b/cnt);
+	*ptr=0xFF;
 }
 
 void gui_initialize_load_screenshot(void)
 {
-	int					x,y,x_skip,y_skip,dsz;
-	unsigned char		*pixel_buffer,*data,*sptr,*dptr,*s2ptr,*d2ptr;
+	int					n,x,y,x_skip,y_skip,dsz;
+	unsigned char		*pixel_buffer,*data,*data2,*sptr,*dptr,*s2ptr,*d2ptr;
 	
 	pixel_buffer=(unsigned char*)valloc((setup.screen.x_sz*3)*setup.screen.y_sz);
 	if (pixel_buffer==NULL) return;
@@ -111,9 +153,7 @@ void gui_initialize_load_screenshot(void)
 		free(pixel_buffer);
 		return;
 	}
-	
-	bzero(data,dsz);
-	
+
 	sptr=pixel_buffer;
 	dptr=data+((gui_screenshot_high-1)*(gui_screenshot_wid<<2));
 
@@ -123,9 +163,9 @@ void gui_initialize_load_screenshot(void)
 		d2ptr=dptr;
 		
 		for (x=0;x!=gui_screenshot_wid;x++) {
-			*d2ptr++=gui_initialize_load_screenshot_reduce_byte(*s2ptr++);
-			*d2ptr++=gui_initialize_load_screenshot_reduce_byte(*s2ptr++);
-			*d2ptr++=gui_initialize_load_screenshot_reduce_byte(*s2ptr++);
+			*d2ptr++=*s2ptr++;
+			*d2ptr++=*s2ptr++;
+			*d2ptr++=*s2ptr++;
 			*d2ptr++=0xFF;
 			
 			s2ptr+=((x_skip-1)*3);
@@ -136,12 +176,32 @@ void gui_initialize_load_screenshot(void)
 	}
 
 	free(pixel_buffer);
+	
+		// blur the data
+		
+	data2=(unsigned char*)valloc(dsz);
+	if (data2==NULL) {
+		free(data);
+		return;
+	}
+	
+	for (n=0;n!=gui_screenshot_blur_count;n++) {
+	
+		for (y=0;y!=gui_screenshot_high;y++) {
+			for (x=0;x!=gui_screenshot_wid;x++) {
+				gui_initialize_load_screenshot_blur_pixel(data,data2,x,y);
+			}
+		}
+		
+		memmove(data,data2,dsz);
+	}
 
 		// save screenshot
 
 	bitmap_data(&gui_background_bitmap,"gui_background",data,gui_screenshot_wid,gui_screenshot_high,anisotropic_mode_none,mipmap_mode_trilinear,FALSE);
 		
 	free(data);
+	free(data2);
 }
 
 /* =======================================================

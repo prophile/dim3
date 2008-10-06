@@ -143,27 +143,16 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 244698128;
-			PBXWorkspaceStateSaveDate = 244698128;
+			PBXPerProjectTemplateStateSaveDate = 244872083;
+			PBXWorkspaceStateSaveDate = 244872083;
 		};
 		perUserProjectItems = {
-			2601C0BD0E9468B300E74509 /* PlistBookmark */ = 2601C0BD0E9468B300E74509 /* PlistBookmark */;
-			26168D710E95D71C00287AF9 /* PlistBookmark */ = 26168D710E95D71C00287AF9 /* PlistBookmark */;
+			262DABF70E98732F00E0A7E8 /* PlistBookmark */ = 262DABF70E98732F00E0A7E8 /* PlistBookmark */;
+			262DAC3C0E98780D00E0A7E8 /* PlistBookmark */ = 262DAC3C0E98780D00E0A7E8 /* PlistBookmark */;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBuildSettings = {
 		};
-	};
-	2601C0BD0E9468B300E74509 /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
 	};
 	260AFEF40D40506A00F6C42F /* dim3 Editor */ = {
 		isa = PBXExecutable;
@@ -252,7 +241,18 @@
 		path = "../../dim3/dim3 Editor.app";
 		sourceTree = SOURCE_ROOT;
 	};
-	26168D710E95D71C00287AF9 /* PlistBookmark */ = {
+	262DABF70E98732F00E0A7E8 /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+		);
+		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
+		rLen = 0;
+		rLoc = 2147483647;
+	};
+	262DAC3C0E98780D00E0A7E8 /* PlistBookmark */ = {
 		isa = PlistBookmark;
 		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
 		fallbackIsa = PBXBookmark;
@@ -292,7 +292,7 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 973;
-		modificationTime = 243824439.723942;
+		modificationTime = 244789362.44618;
 		state = 0;
 	};
 	263614450DC41DF6002345C0 /* walk_view_click_texture.c */ = {
@@ -719,9 +719,9 @@
 	};
 	F5D458ED0953160300AF9CE1 /* walk_view_draw_piece.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 10052}}";
-			sepNavSelRange = "{10835, 0}";
-			sepNavVisRange = "{10371, 874}";
+			sepNavIntBoundsRect = "{{0, 0}, {702, 10374}}";
+			sepNavSelRange = "{5164, 0}";
+			sepNavVisRange = "{5053, 160}";
 			sepNavWindowFrame = "{{335, 210}, {1041, 747}}";
 		};
 	};

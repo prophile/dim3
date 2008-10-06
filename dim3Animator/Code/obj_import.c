@@ -150,11 +150,11 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 					if (nobj_normal>=max_model_vertex) continue;
 				
 					textdecode_get_piece(i,1,txt);
-					normal_vertex->normal.x=strtod(txt,NULL);
+					normal_vertex->normal.x=-strtod(txt,NULL);
 					textdecode_get_piece(i,2,txt);
-					normal_vertex->normal.y=strtod(txt,NULL);
+					normal_vertex->normal.y=-strtod(txt,NULL);
 					textdecode_get_piece(i,2,txt);
-					normal_vertex->normal.z=strtod(txt,NULL);
+					normal_vertex->normal.z=-strtod(txt,NULL);
 					
 					normal_vertex++;
 					nobj_normal++;

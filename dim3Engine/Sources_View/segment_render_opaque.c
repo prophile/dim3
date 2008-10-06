@@ -104,7 +104,7 @@ void render_opaque_portal_normal(int mesh_cnt,int *mesh_list,int stencil_pass)
 			}
 			
 			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
+			
 				// setup texture
 
 			gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
@@ -486,6 +486,14 @@ void render_opaque_portal_glow(int mesh_cnt,int *mesh_list)
 
 			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
+				// glow maps happen outside of stenciling
+				// so we need to check for transparencies here
+
+			if ((texture->bitmaps[frame].alpha_mode==alpha_mode_transparent) || (poly->alpha!=1.0f)) {
+				poly++;
+				continue;
+			}
+
 				// glow texture set?
 
 			if (texture->glowmaps[frame].gl_id==-1) {
@@ -557,6 +565,14 @@ void render_opaque_portal_shader(int mesh_cnt,int *mesh_list)
 
 			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
+				// shaders happen outside of stenciling
+				// so we need to check for transparencies here
+
+			if ((texture->bitmaps[frame].alpha_mode==alpha_mode_transparent) || (poly->alpha!=1.0f)) {
+				poly++;
+				continue;
+			}
+
 				// setup shader
 
 			gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
@@ -586,9 +602,10 @@ void render_opaque_portal_shader(int mesh_cnt,int *mesh_list)
 
 int render_opaque_mesh_stencil_mark(int mesh_cnt,int *mesh_list)
 {
-	int					n,k,stencil_pass,stencil_idx;
+	int					n,k,frame,stencil_pass,stencil_idx;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
+	texture_type		*texture;
 
 	stencil_pass=0;
 	stencil_idx=stencil_poly_start;
@@ -601,15 +618,31 @@ int render_opaque_mesh_stencil_mark(int mesh_cnt,int *mesh_list)
 
 		for (k=0;k!=mesh->npoly;k++) {
 
-			poly->draw.stencil_pass=stencil_pass;
-			poly->draw.stencil_idx=stencil_idx;
+				// shaders and transparent polys won't be
+				// drawing in these routines, so skip them
+				// here so they won't be included in drawing 
 
-			stencil_idx++;
-			if (stencil_idx>stencil_poly_end) {
-				stencil_idx=stencil_poly_start;
-				stencil_pass++;
+			texture=&map.textures[poly->txt_idx];
+			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+
+			if ((texture->bitmaps[frame].alpha_mode==alpha_mode_transparent) || (poly->alpha!=1.0f) || (texture->shader.on)) {
+				poly->draw.stencil_pass=-1;
 			}
 
+				// create stencil
+				
+			else {
+			
+				poly->draw.stencil_pass=stencil_pass;
+				poly->draw.stencil_idx=stencil_idx;
+
+				stencil_idx++;
+				if (stencil_idx>stencil_poly_end) {
+					stencil_idx=stencil_poly_start;
+					stencil_pass++;
+				}
+			}
+			
 			poly++;
 		}
 	}
@@ -627,7 +660,7 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 {
 	int					stencil_pass,stencil_pass_cnt;
 	bool				is_simple_lighting;
-
+	
 		// setup view
 
 	gl_setup_viewport(console_y_offset());

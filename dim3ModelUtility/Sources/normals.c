@@ -111,9 +111,9 @@ void model_recalc_normals(model_type *model,int mesh_idx)
 		}
 		else {
 			f=(float)cnt;
-			vertex->normal.x=fx/f;
-			vertex->normal.z=fz/f;
-			vertex->normal.y=fy/f;
+			vertex->normal.x=-(fx/f);
+			vertex->normal.z=-(fz/f);
+			vertex->normal.y=-(fy/f);
 		}
 		
 		vertex++;

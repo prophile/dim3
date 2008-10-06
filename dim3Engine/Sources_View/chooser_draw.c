@@ -46,50 +46,90 @@ extern int chooser_find(char *name);
 
 /* =======================================================
 
+      Text Substitutions
+      
+======================================================= */
+
+void chooser_text_substitute(char *init_str,char *sub_str,int max_len)
+{
+	int				idx,len,sz;
+	char			ch,*c,*c2;
+	
+	c=init_str;
+	c2=sub_str;
+	
+	while (*c!=0x0) {
+	
+			// are we over text string max size?
+			
+		if ((int)(c2-sub_str)>=(max_len-1)) break;
+	
+			// are we hitting a {0..9} substitution string?
+			
+		if (*c=='{') {
+		
+			ch=*(c+1);
+			idx=(int)(ch-'0');
+			
+			if ((idx>=0) && (idx<max_chooser_sub_txt) && (*(c+2)=='}')) {
+			
+				if (chooser_sub_txt[idx][0]!=0x0) {
+					sz=(max_len-1)-(int)(c-init_str);
+					len=strlen(chooser_sub_txt[idx]);
+					if (len>sz) break;
+					
+					*c2=0x0;
+					strcpy(c2,chooser_sub_txt[idx]);
+					c2+=len;
+				}
+				
+				c+=3;
+				continue;
+			}
+		}
+		
+		*c2++=*c++;
+	}
+	
+	*c2=0x0;
+}
+
+/* =======================================================
+
       Chooser Operations
       
 ======================================================= */
 
 void chooser_open(void)
 {
-	int					n,idx;
+	int					n;
 	char				path[1024],path2[1024],fname[256],
-						a[32],*c,str[max_chooser_text_data_sz];
+						title[max_choose_frame_text_sz],str[max_chooser_text_data_sz];
 	chooser_type		*chooser;
 	chooser_text_type	*text;
 	chooser_item_type	*item;
+	chooser_frame_type	frame;
 	
-	gui_initialize(NULL,NULL,TRUE);
-	
-		// setup elements
-		
 	chooser=&hud.choosers[chooser_idx];
-	gui_set_frame(&chooser->frame);
+	
+		// text substitution for frames
+		
+	memmove(&frame,&chooser->frame,sizeof(chooser_frame_type));
+
+	chooser_text_substitute(chooser->frame.title,title,max_choose_frame_text_sz);
+	strcpy(frame.title,title);
+	
+		// setup gui
+		
+	gui_initialize(NULL,NULL,TRUE);
+	gui_set_frame(&frame);
 		
 		// text
 
 	text=chooser->texts;
 
 	for (n=0;n<chooser->ntext;n++) {
-
-			// check for substitutions
-
-		strcpy(str,text->data);
-		if ((str[0]=='{') && ((str[1]>='0') && (str[1]<='9'))) {
-			strncpy(a,(char*)&str[1],32);
-			a[32]=0x0;
-			c=strchr(a,'}');
-			if (c!=NULL) {
-				*c=0x0;
-				idx=atoi(a);
-				if ((idx>=0) && (idx<max_chooser_sub_txt)) {
-					strcpy(str,chooser_sub_txt[idx]);
-				}
-			}
-		}
-
-			// add text element
-
+		chooser_text_substitute(text->data,str,max_chooser_text_data_sz);
 		element_text_add(str,text->text_id,text->x,text->y,text->just,(!text->large),text->clickable,FALSE);
 		text++;
 	}
@@ -108,7 +148,7 @@ void chooser_open(void)
 			element_button_add(path,path2,item->item_id,item->x,item->y,item->wid,item->high,element_pos_left,element_pos_top);
 		}
 		else {
-			element_bitmap_add(path,0,item->x,item->y,-1,-1,FALSE);
+			element_bitmap_add(path,0,item->x,item->y,item->wid,item->high,FALSE);
 		}
 		
 		item++;

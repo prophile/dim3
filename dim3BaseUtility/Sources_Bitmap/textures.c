@@ -70,7 +70,7 @@ void bitmap_texture_set_mipmap_filter(int mipmap_mode,bool pixelated)
 		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 		return;
 	}
-	
+			
 		// regular mipmap modes
 		
 	switch (mipmap_mode) {
@@ -132,10 +132,7 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic
 		glTexImage2D(GL_TEXTURE_2D,0,gl_txtformat,bitmap->wid,bitmap->high,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
 	}
 	else {
-		glHint(GL_GENERATE_MIPMAP_HINT_SGIS,GL_NICEST);
-		glTexParameteri(GL_TEXTURE_2D,GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
-		glTexImage2D(GL_TEXTURE_2D,0,gl_txtformat,bitmap->wid,bitmap->high,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
-		glTexParameteri(GL_TEXTURE_2D,GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
+		gluBuild2DMipmaps(GL_TEXTURE_2D,gl_txtformat,bitmap->wid,bitmap->high,GL_RGBA,GL_UNSIGNED_BYTE,data);
 	}
 	
 		// auto load texture so compression takes effect

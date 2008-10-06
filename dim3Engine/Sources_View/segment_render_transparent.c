@@ -171,7 +171,6 @@ void render_transparent_portal_mesh(bool is_simple_lighting)
 
 			gl_texture_transparent_specular_end();
 			txt_setup_reset=TRUE;
-
 		}
 
 			// draw any glow on the transparent segment
@@ -377,7 +376,7 @@ void render_transparent_sort(int mesh_cnt,int *mesh_list,d3pnt *pnt)
 void render_transparent_map(int mesh_cnt,int *mesh_list)
 {
 	bool			is_simple_lighting;
-
+		
 		// setup view
 
 	gl_setup_viewport(console_y_offset());
