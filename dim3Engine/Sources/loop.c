@@ -219,7 +219,7 @@ bool loop_pause(void)
 
 bool loop_main(char *err_str)
 {
-	int				tick;
+	int				tick,state;
 
 		// paused?
 
@@ -245,6 +245,8 @@ bool loop_main(char *err_str)
 	map_clear_changes();
 		
 		// run proper game state
+
+	state=server.state;
 		
 	switch (server.state) {
 	
@@ -324,6 +326,15 @@ bool loop_main(char *err_str)
 	menu_trigger_check();
 	file_trigger_check();
 	map_pick_trigger_check();
+		
+		// if we are changing state from game
+		// play to interface element, capture screen
+		// for background
+
+	if ((server.state!=gs_running) && (state==gs_running)) {
+		gui_screenshot_load();
+		fprintf(stdout,"got shot!\n");
+	}
 	
 	return(TRUE);
 }

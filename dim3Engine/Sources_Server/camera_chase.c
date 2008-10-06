@@ -123,9 +123,10 @@ int camera_chase_get_division(int x,int z,int y)
 void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
 {
 	int						n,xadd,yadd,zadd,radius,div,
-							cx,cz,cy,nx,nz,upy,hit_obj_uid;
+							cx,cz,cy;
 	float					fang,fx,fy,fz;
-	poly_pointer_type		head_poly;
+	d3pnt					spt,ept,hpt;
+	ray_trace_contact_type	contact;
 	matrix_type				mat;
 	obj_type				*obj;
 	weapon_type				*weap;
@@ -172,6 +173,15 @@ void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
 	cx=(int)fx+obj->pnt.x;
 	cz=(int)fz+obj->pnt.z;
 	cy=(int)fy+(obj->pnt.y-obj->size.y);
+
+		// setup contacts
+
+	contact.obj_on=TRUE;
+	contact.obj_ignore_uid=obj->uid;
+
+	contact.proj_on=FALSE;
+
+	contact.origin=poly_ray_trace_origin_unknown;
 		
 		// move camera
 		
@@ -179,18 +189,32 @@ void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
 		
 			// xz movement
 			
-		nx=cx+xadd;
-		nz=cz+zadd;
-		
-		if (!map_spot_empty_sphere(nx,cy,nz,radius,obj->uid,&hit_obj_uid)) {		// box has hit some walls
-			cx=nx;
-			cz=nz;
+		spt.x=cx;
+		spt.y=cy;
+		spt.z=cz;
+
+		ept.x=cx+xadd;
+		ept.y=cy;
+		ept.z=cz+zadd;
+
+		contact.hit_mode=poly_ray_trace_hit_mode_wall_only;
+		if (!ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
+			cx+=xadd;
+			cz+=zadd;
 		}
 		
 			// y movement
-			
-		upy=pin_upward_movement_point(cx,cy,cz,yadd,&head_poly);
-		if (head_poly.mesh_idx==-1) cy=upy;
+
+		spt.x=cx;
+		spt.y=cy;
+		spt.z=cz;
+
+		ept.x=cx;
+		ept.y=cy+yadd;
+		ept.z=cz;
+
+		contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
+		if (!ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) cy+=yadd;
 	}
 	
         // new camera position

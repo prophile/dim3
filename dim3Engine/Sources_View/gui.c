@@ -46,7 +46,8 @@ extern hud_type				hud;
 extern setup_type			setup;
 
 char						gui_last_key;
-bitmap_type					gui_background_bitmap;
+bool						gui_show_view;
+bitmap_type					gui_background_bitmap,gui_screenshot_bitmap;
 chooser_frame_type			gui_frame;
 
 extern void game_time_pause_start(void);
@@ -55,31 +56,21 @@ extern void map_restart_ambient(void);
 
 /* =======================================================
 
-      GUI Background
+      GUI Screenshots
       
 ======================================================= */
 
-void gui_initialize_load_background(char *background_path,char *bitmap_name)
+void gui_screenshot_initialize(void)
 {
-	char		name[256],path[1024];
-
-		// load the background bitmap
-		// we pick the version with _wide on the
-		// end if screen is in widescreen resolutions
-
-	if (gl_is_screen_widescreen()) {
-		sprintf(name,"%s_wide",bitmap_name);
-		file_paths_data(&setup.file_path_setup,path,background_path,name,"png");
-		if (bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE)) return;
-	}
-	
-		// and fail-over to the original if not loaded
-
-	file_paths_data(&setup.file_path_setup,path,background_path,bitmap_name,"png");
-	bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
+	gui_screenshot_bitmap.gl_id=-1;
 }
 
-void gui_initialize_load_screenshot_blur_pixel(unsigned char *data,unsigned char *data2,int x,int y)
+void gui_screenshot_free(void)
+{
+	bitmap_close(&gui_screenshot_bitmap);
+}
+
+void gui_screenshot_load_blur_pixel(unsigned char *data,unsigned char *data2,int x,int y)
 {
 	int				cnt,r,g,b;
 	unsigned char	*ptr;
@@ -129,7 +120,7 @@ void gui_initialize_load_screenshot_blur_pixel(unsigned char *data,unsigned char
 	*ptr=0xFF;
 }
 
-void gui_initialize_load_screenshot(void)
+void gui_screenshot_load(void)
 {
 	int					n,x,y,x_skip,y_skip,dsz;
 	unsigned char		*pixel_buffer,*data,*data2,*sptr,*dptr,*s2ptr,*d2ptr;
@@ -189,7 +180,7 @@ void gui_initialize_load_screenshot(void)
 	
 		for (y=0;y!=gui_screenshot_high;y++) {
 			for (x=0;x!=gui_screenshot_wid;x++) {
-				gui_initialize_load_screenshot_blur_pixel(data,data2,x,y);
+				gui_screenshot_load_blur_pixel(data,data2,x,y);
 			}
 		}
 		
@@ -198,10 +189,36 @@ void gui_initialize_load_screenshot(void)
 
 		// save screenshot
 
-	bitmap_data(&gui_background_bitmap,"gui_background",data,gui_screenshot_wid,gui_screenshot_high,anisotropic_mode_none,mipmap_mode_trilinear,FALSE);
+	bitmap_data(&gui_screenshot_bitmap,"gui_background",data,gui_screenshot_wid,gui_screenshot_high,anisotropic_mode_none,mipmap_mode_trilinear,FALSE);
 		
 	free(data);
 	free(data2);
+}
+
+/* =======================================================
+
+      GUI Background
+      
+======================================================= */
+
+void gui_background_load(char *background_path,char *bitmap_name)
+{
+	char		name[256],path[1024];
+
+		// load the background bitmap
+		// we pick the version with _wide on the
+		// end if screen is in widescreen resolutions
+
+	if (gl_is_screen_widescreen()) {
+		sprintf(name,"%s_wide",bitmap_name);
+		file_paths_data(&setup.file_path_setup,path,background_path,name,"png");
+		if (bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE)) return;
+	}
+	
+		// and fail-over to the original if not loaded
+
+	file_paths_data(&setup.file_path_setup,path,background_path,bitmap_name,"png");
+	bitmap_open(&gui_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
 }
 
 /* =======================================================
@@ -233,13 +250,11 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view)
 	
 		// load up the proper background bitmap
 		
-	gui_background_bitmap.gl_id=-1;
+	gui_show_view=show_view;
 	
-	if (!show_view) {
-		gui_initialize_load_background(background_path,bitmap_name);
-	}
-	else {
-		gui_initialize_load_screenshot();
+	if (!gui_show_view) {
+		gui_background_bitmap.gl_id=-1;
+		gui_background_load(background_path,bitmap_name);
 	}
 	
 	gui_frame.on=FALSE;
@@ -259,7 +274,7 @@ void gui_shutdown(void)
 {
 		// close background bitmap
 		
-	bitmap_close(&gui_background_bitmap);
+	if (!gui_show_view) bitmap_close(&gui_background_bitmap);
 	
 		// release cursor and elements
 		
@@ -287,9 +302,18 @@ void gui_shutdown(void)
 
 void gui_draw_background(float alpha)
 {
+	unsigned long		gl_id;
+
 		// no background at all?
 
-	if (gui_background_bitmap.gl_id==-1) return;
+	if (!gui_show_view) {
+		gl_id=gui_background_bitmap.gl_id;
+	}
+	else {
+		gl_id=gui_screenshot_bitmap.gl_id;
+	}
+
+	if (gl_id==-1) return;
 
 		// 2D draw setup
 
@@ -307,7 +331,7 @@ void gui_draw_background(float alpha)
 
 	gl_texture_simple_start();
 
-	gl_texture_simple_set(gui_background_bitmap.gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
+	gl_texture_simple_set(gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
 		
     glBegin(GL_QUADS);
 	glTexCoord2f(0,0);

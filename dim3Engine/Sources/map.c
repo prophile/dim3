@@ -181,6 +181,7 @@ bool map_start(bool skip_media,char *err_str)
 	obj_type		*obj;
 
 	game_time_pause_start();
+	gui_screenshot_initialize();
 	
 		// start progress
 		
@@ -436,6 +437,8 @@ void map_end(void)
 	progress_draw(100);
 	
 	progress_shutdown();
+
+	gui_screenshot_free();
 	
 		// map closed
 		
