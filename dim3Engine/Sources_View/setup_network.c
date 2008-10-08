@@ -170,22 +170,15 @@ void setup_network_host_pane(void)
 
 void setup_network_create_pane(void)
 {
-	int			x,y,n,wid,high,padding,
+	int			x,y,wid,high,padding,
 				tab_list_wid,tab_pane_high,pane;
-	char		path[1024],path2[1024],
-				tab_path[6][1024],tab_path2[6][1024];
-	char		tab_list[][32]={"tab_player","tab_host"},
-				tab_selected_list[][32]={"tab_player_selected","tab_host_selected"};
+	char		path[1024],path2[1024];
+	char		tab_list[][32]={"Player","Host"};
 							
 	element_clear();
 	
 		// tabs
 		
-	for (n=0;n!=2;n++) {
-		file_paths_data(&setup.file_path_setup,tab_path[n],"Bitmaps/UI_Elements",tab_list[n],"png");
-		file_paths_data(&setup.file_path_setup,tab_path2[n],"Bitmaps/UI_Elements",tab_selected_list[n],"png");
-	}
-	
 	padding=element_get_padding();;
 	
 	wid=hud.scale_x;
@@ -193,7 +186,7 @@ void setup_network_create_pane(void)
 	tab_list_wid=(int)(((float)hud.scale_x)*0.85f);
 	tab_pane_high=(int)(((float)hud.scale_y)*0.84f);
 	
-	element_tab_add((char*)tab_path,(char*)tab_path2,setup_network_tab_value,ctrl_network_tab_id,2,0,padding,wid,high,tab_list_wid,tab_pane_high);
+	element_tab_add((char*)tab_list,setup_network_tab_value,ctrl_network_tab_id,2,0,padding,wid,high,tab_list_wid,tab_pane_high);
 	
 		// buttons
 		

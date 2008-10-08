@@ -118,7 +118,7 @@ typedef struct		{
 
 typedef struct		{
 						int						ntab,list_wid,ext_high;
-						bitmap_type				bitmap[max_element_tab],bitmap_select[max_element_tab];
+						char					name[max_element_tab][name_str_len];
 					} element_tab_type;
 
 typedef union		{

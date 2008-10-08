@@ -206,13 +206,6 @@ void element_release_control_memory(void)
 				}
 				break;
 		
-			case element_type_tab:
-				for (k=0;k!=element->setup.tab.ntab;k++) {
-					bitmap_close(&element->setup.tab.bitmap[k]);
-					bitmap_close(&element->setup.tab.bitmap_select[k]);
-				}
-				break;
-				
 		}
 		
 		element++;
@@ -620,7 +613,7 @@ void element_table_add(element_column_type* cols,char *row_data,int id,int ncolu
 	pthread_mutex_unlock(&element_thread_lock);
 }
 
-void element_tab_add(char *path_list,char *path2_list,int value,int id,int ntab,int x,int y,int wid,int high,int list_wid,int ext_high)
+void element_tab_add(char *tab_list,int value,int id,int ntab,int x,int y,int wid,int high,int list_wid,int ext_high)
 {
 	int				n;
 	element_type	*element;
@@ -650,8 +643,7 @@ void element_tab_add(char *path_list,char *path2_list,int value,int id,int ntab,
 	element->setup.tab.ntab=ntab;
 	
 	for (n=0;n!=ntab;n++) {
-		bitmap_open(&element->setup.tab.bitmap[n],(char*)&path_list[n*1024],anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-		bitmap_open(&element->setup.tab.bitmap_select[n],(char*)&path2_list[n*1024],anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
+		strcpy(element->setup.tab.name[n],(char*)&tab_list[n*name_str_len]);
 	}
 
 	pthread_mutex_unlock(&element_thread_lock);
@@ -2147,9 +2139,11 @@ bool element_click_tab(element_type *element,int x)
 
 void element_draw_tab(element_type *element,int sel_id,int x)
 {
-	int				n,ky,xstart,xadd,high,max_sz,
+	int				n,ky,xstart,xadd,high,max_sz,slant_add,
 					lft,rgt,top,bot,lx,rx,ty,by,
 					klft,krgt,ktop;
+	float			col_base;
+	d3col			txt_col;
 	
 	high=gl_text_get_char_height(TRUE);
 		
@@ -2164,8 +2158,6 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 
 		// bitmap drawing
 		
-	gl_texture_simple_start();
-
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
@@ -2182,67 +2174,120 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 	klft=0;
 	krgt=xadd;
 	ktop=top;
+
+	glBegin(GL_QUADS);
+
 	ky=bot;
 
-	gl_texture_simple_set(element_tab_border.gl_id,FALSE,1,1,1,1);
-	
-	glBegin(GL_QUADS);
-	glTexCoord2f(0,0);
-	glVertex2i(lx,ky);
-	glTexCoord2f(1,0);
+	glColor4f(0.7f,0.7f,0.7f,1.0f);
+	glVertex2i(lx,(ky-3));
+	glVertex2i(rx,(ky-3));
+	glColor4f(0.4f,0.4f,0.4f,1.0f);
 	glVertex2i(rx,ky);
-	glTexCoord2f(1,1);
-	glVertex2i(rx,(ky+4));
-	glTexCoord2f(0,1);
-	glVertex2i(lx,(ky+4));
-	glEnd();
+	glVertex2i(lx,ky);
+
+	glColor4f(0.4f,0.4f,0.4f,1.0f);
+	glVertex2i(lx,ky);
+	glVertex2i(rx,ky);
+	glColor4f(0.7f,0.7f,0.7f,1.0f);
+	glVertex2i(rx,(ky+3));
+	glVertex2i(lx,(ky+3));
 
 	ky=top+element->setup.tab.ext_high;
 
-	glBegin(GL_QUADS);
-	glTexCoord2f(0,0);
-	glVertex2i(lx,(ky-4));
-	glTexCoord2f(1,0);
-	glVertex2i(rx,(ky-4));
-	glTexCoord2f(1,1);
+	glColor4f(0.7f,0.7f,0.7f,1.0f);
+	glVertex2i(lx,(ky-3));
+	glVertex2i(rx,(ky-3));
+	glColor4f(0.4f,0.4f,0.4f,1.0f);
 	glVertex2i(rx,ky);
-	glTexCoord2f(0,1);
 	glVertex2i(lx,ky);
+
+	glColor4f(0.4f,0.4f,0.4f,1.0f);
+	glVertex2i(lx,ky);
+	glVertex2i(rx,ky);
+	glColor4f(0.7f,0.7f,0.7f,1.0f);
+	glVertex2i(rx,(ky+3));
+	glVertex2i(lx,(ky+3));
+
+	glEnd();
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+
+	glBegin(GL_LINES);
+
+	ky=bot;
+
+	glVertex2i(lx,(ky-4));
+	glVertex2i(rx,(ky-4));
+	glVertex2i(lx,(ky+4));
+	glVertex2i(rx,(ky+4));
+
+	ky=top+element->setup.tab.ext_high;
+
+	glVertex2i(lx,(ky-4));
+	glVertex2i(rx,(ky-4));
+	glVertex2i(lx,(ky+4));
+	glVertex2i(rx,(ky+4));
+
 	glEnd();
 
 		// tabs
 		
 	xstart=lft+(int)(((float)hud.scale_x)*0.02f);
+	slant_add=(int)(((float)hud.scale_x)*0.01f);
 		
 	for (n=0;n!=element->setup.tab.ntab;n++) {
+
 		lx=xstart+(xadd*n);
 		rx=lx+xadd;
-		ty=top;
-		by=bot+1;
 		
-		if (element->value==n) {
-			gl_texture_simple_set(element->setup.tab.bitmap_select[n].gl_id,TRUE,1,1,1,1);
+		if (element->value!=n) {
+			ty=top+slant_add;
+			by=bot-4;
+			col_base=0.25f;
+			txt_col.r=txt_col.g=txt_col.b=0.0f;
 		}
 		else {
-			gl_texture_simple_set(element->setup.tab.bitmap[n].gl_id,TRUE,1,1,1,1);
+			ty=top;
+			by=bot+3;
+			col_base=0.35f;
+			memmove(&txt_col,&hud.color.hilite,sizeof(d3col));
 		}
 
 		glBegin(GL_QUADS);
-		glTexCoord2f(0,0);
-		glVertex2i(lx,ty);
-		glTexCoord2f(1,0);
-		glVertex2i(rx,ty);
-		glTexCoord2f(1,1);
+
+		glColor4f(col_base,col_base,col_base,1.0f);
+		glVertex2i((lx+slant_add),ty);
+		glVertex2i((rx-slant_add),ty);
+		glColor4f((col_base+0.25f),(col_base+0.25f),(col_base+0.25f),1.0f);
+		glVertex2i(rx,(ty+slant_add));
+		glVertex2i(lx,(ty+slant_add));
+
+		glVertex2i(lx,(ty+slant_add));
+		glVertex2i(rx,(ty+slant_add));
+		glColor4f((col_base+0.75f),(col_base+0.75f),(col_base+0.75f),1.0f);
 		glVertex2i(rx,by);
-		glTexCoord2f(0,1);
 		glVertex2i(lx,by);
 		glEnd();
+
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+
+		glBegin(GL_LINE_LOOP);
+		glVertex2i(lx,by);
+		glVertex2i(lx,(ty+slant_add));
+		glVertex2i((lx+slant_add),ty);
+		glVertex2i((rx-slant_add),ty);
+		glVertex2i(rx,(ty+slant_add));
+		glVertex2i(rx,by);
+		glEnd();
+
+		gl_text_start(TRUE);
+		gl_text_draw(((lx+rx)>>1),(((ty+slant_add)+by)>>1),element->setup.tab.name[n],tx_center,TRUE,&txt_col,1.0f);
+		gl_text_end();
 	}
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
-
-	gl_texture_simple_end();
 }
 
 /* =======================================================
