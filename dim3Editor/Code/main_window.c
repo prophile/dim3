@@ -704,7 +704,7 @@ void main_wind_open(void)
 	box.bottom=wbox.bottom-(115+info_high);
 	
 	magnify_proc=NewControlActionUPP(main_wind_magnify_action);
-	CreateSliderControl(mainwind,&box,72,magnify_factor_min,magnify_factor_max,kControlSliderDoesNotPoint,0,TRUE,magnify_proc,&magnify_slider);
+	CreateSliderControl(mainwind,&box,magnify_factor_default,magnify_factor_min,magnify_factor_max,kControlSliderDoesNotPoint,0,TRUE,magnify_proc,&magnify_slider);
 
 		// show window before additional setup
 		

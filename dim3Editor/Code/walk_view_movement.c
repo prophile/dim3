@@ -29,38 +29,12 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int						cx,cz,cy;
+extern int						cx,cz,cy,magnify_factor;
 extern float					walk_view_y_angle,walk_view_x_angle;
 
 extern CCrsrHandle				handcur,forwardcur,rotatecur;
 
 extern map_type					map;
-
-/* =======================================================
-
-      Change Portal for Mouse Movement
-      
-======================================================= */
-
-void walk_view_mouse_reset_portal(void)
-{
-/* supergumba -- try deleting
-    register int		i;
-	int					x,z,ex,ez;
-    
-    for (i=0;i!=map.nportal;i++) {
-        x=map.portals[i].x*map_enlarge;
-        z=map.portals[i].z*map_enlarge;
-        ex=map.portals[i].ex*map_enlarge;
-        ez=map.portals[i].ez*map_enlarge;
-        
-        if ((cx>=x) && (cx<=ex) && (cz>=z) && (cz<=ez)) {
-            cr=i;
-            return;
-        }
-    }
-	*/
-}
 
 /* =======================================================
 
@@ -70,7 +44,7 @@ void walk_view_mouse_reset_portal(void)
 
 void walk_view_mouse_xy_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
-	int						x,y,xadd,zadd,yadd;
+	int						x,y,xadd,zadd,yadd,sz;
 	d3pnt					old_pt;
 	Point					uipt;
 	MouseTrackingResult		track;
@@ -105,9 +79,10 @@ void walk_view_mouse_xy_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 				rotate_2D_point_center(&xadd,&zadd,view_setup->ang.y);
 				break;
 			case vm_dir_top:
-				xadd=x;
+				sz=(int)((float)(magnify_factor_max-magnify_factor)*mouse_top_view_drag_scale);
+				xadd=x*sz;
 				yadd=0;
-				zadd=y;
+				zadd=y*sz;
 				break;
 			default:
 				xadd=yadd=zadd=0;
@@ -118,7 +93,6 @@ void walk_view_mouse_xy_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		cx+=(xadd*32);
 		cy+=(yadd*32);
 
-		walk_view_mouse_reset_portal();
         main_wind_draw();
 		
 	} while (track!=kMouseTrackingMouseReleased);
@@ -181,7 +155,6 @@ void walk_view_mouse_z_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int v
 		cx+=(xadd*32);
 		cy+=(yadd*32);
 
-        walk_view_mouse_reset_portal();
         main_wind_draw();
 		
 	} while (track!=kMouseTrackingMouseReleased);
@@ -211,7 +184,6 @@ void walk_view_scroll_wheel_z_movement(editor_3D_view_setup *view_setup,int delt
 	cx+=(xadd*32);
 	cy+=(yadd*32);
 	
-	walk_view_mouse_reset_portal();
 	main_wind_draw();
 }
 

@@ -174,8 +174,20 @@ and can be sold or given away.
 // magnify factors
 //
 
-#define magnify_factor_min						4
-#define magnify_factor_max						210
+#define magnify_factor_min						10
+#define magnify_factor_max						910
+
+#define magnify_factor_default					700
+
+//
+// view mouse scales
+//
+
+#define mouse_forward_view_scale				30.0f
+#define mouse_side_view_scale					30.0f
+#define mouse_top_view_scale					0.4f
+
+#define mouse_top_view_drag_scale				0.01f
 
 //
 // fovs

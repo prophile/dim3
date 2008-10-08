@@ -60,7 +60,7 @@ void redraw_windows(void)
 
         // some defaults
         
-	magnify_factor=magnify_factor_min+((magnify_factor_max-magnify_factor_min)/3);
+	magnify_factor=magnify_factor_default;
 	main_wind_set_view(vw_3_panel);
 	main_wind_set_perspective(ps_perspective);
 	

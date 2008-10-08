@@ -73,7 +73,6 @@ extern void walk_view_sprite_select_size(d3pnt *cpt,d3pnt *pnt,int *px,int *pz,i
 // walk view movement
 //
 
-extern void walk_view_mouse_reset_portal(void);
 extern void walk_view_mouse_xy_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 extern void walk_view_mouse_z_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 extern void walk_view_scroll_wheel_z_movement(editor_3D_view_setup *view_setup,int delta,int view_move_dir);

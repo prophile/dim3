@@ -99,21 +99,21 @@ void walk_view_click_drag_movement(editor_3D_view_setup *view_setup,int view_mov
 	switch (view_move_dir) {
 	
 		case vm_dir_forward:
-			*xadd=-(x*25);
-			*yadd=-(y*25);
+			*xadd=-(int)(((float)x)*mouse_forward_view_scale);
+			*yadd=-(int)(((float)y)*mouse_forward_view_scale);
 			*zadd=0;
 			rotate_2D_point_center(xadd,zadd,-view_setup->ang.y);
 			return;
 			
 		case vm_dir_side:
-			*xadd=x*25;
-			*yadd=-(y*25);
+			*xadd=(int)(((float)x)*mouse_side_view_scale);
+			*yadd=-(int)((((float)y)*mouse_side_view_scale));
 			*zadd=0;
 			rotate_2D_point_center(xadd,zadd,view_setup->ang.y);
 			return;
 			
 		case vm_dir_top:
-			sz=(magnify_factor_max-magnify_factor)>>1;
+			sz=(int)((float)(magnify_factor_max-magnify_factor)*mouse_top_view_scale);
 			if (sz<10) sz=10;
 			
 			*xadd=-(x*sz);
