@@ -92,6 +92,8 @@ and can be sold or given away.
 //
 
 typedef struct		{
+						char					name[name_str_len];
+						bool					text_only;
 						bitmap_type				bitmap,bitmap_select;
 					} element_button_type;
 

@@ -271,7 +271,7 @@ inline int element_get_padding(void)
       
 ======================================================= */
 
-void element_button_add(char *path,char *path2,int id,int x,int y,int wid,int high,int x_pos,int y_pos)
+void element_button_text_add(char *name,int id,int x,int y,int wid,int high,int x_pos,int y_pos)
 {
 	element_type	*element;
 
@@ -289,6 +289,54 @@ void element_button_add(char *path,char *path2,int id,int x,int y,int wid,int hi
 	element->selectable=TRUE;
 	element->enabled=TRUE;
 	element->hidden=FALSE;
+
+	element->setup.button.text_only=TRUE;
+	strcpy(element->setup.button.name,name);
+	
+	element->wid=wid;
+	element->high=high;
+	
+	switch (x_pos) {
+		case element_pos_right:
+			element->x-=element->wid;
+			break;
+		case element_pos_center:
+			element->x-=(element->wid>>1);
+			break;
+	}
+
+	switch (y_pos) {
+		case element_pos_bottom:
+			element->y-=element->high;
+			break;
+		case element_pos_center:
+			element->y-=(element->high>>1);
+			break;
+	}
+
+	pthread_mutex_unlock(&element_thread_lock);
+}
+
+void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid,int high,int x_pos,int y_pos)
+{
+	element_type	*element;
+
+	pthread_mutex_lock(&element_thread_lock);
+	
+	element=&elements[nelement];
+	nelement++;
+	
+	element->id=id;
+	element->type=element_type_button;
+	
+	element->x=x;
+	element->y=y;
+	
+	element->selectable=TRUE;
+	element->enabled=TRUE;
+	element->hidden=FALSE;
+
+	element->setup.button.text_only=FALSE;
 	
 		// skip button if graphic is missing to avoid crash
 
@@ -298,7 +346,11 @@ void element_button_add(char *path,char *path2,int id,int x,int y,int wid,int hi
 		return;
 	}
 
-	bitmap_open(&element->setup.button.bitmap_select,path2,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
+		// if no selected button, then just use the regular one
+
+	if (!bitmap_open(&element->setup.button.bitmap_select,path2,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE)) {
+		bitmap_open(&element->setup.button.bitmap_select,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
+	}
 
 	if ((wid!=-1) && (high!=-1)) {
 		element->wid=wid;
@@ -804,19 +856,95 @@ int element_find_for_xy(int x,int y)
       
 ======================================================= */
 
-void element_draw_button(element_type *element,int sel_id)
+void element_draw_button_text(element_type *element,int sel_id)
+{
+	int				lft,rgt,top,bot,slant_add;
+	float			base_col;
+	d3col			txt_col,outline_col;
+	
+	if (element->enabled) {
+		base_col=0.3f;
+		if (element->id==sel_id) {
+			memmove(&outline_col,&hud.color.mouse_over,sizeof(d3col));
+			memmove(&txt_col,&hud.color.mouse_over,sizeof(d3col));
+		}
+		else {
+			outline_col.r=outline_col.g=outline_col.b=0.2f;
+			txt_col.r=txt_col.g=txt_col.b=0.0f;
+		}
+	}
+	else {
+		base_col=0.0f;
+		outline_col.r=outline_col.g=outline_col.b=0.0f;
+		txt_col.r=txt_col.g=txt_col.b=0.3f;
+	}
+	
+	element_get_box(element,&lft,&rgt,&top,&bot);
+	slant_add=(int)(((float)hud.scale_x)*0.008f);
+	
+		// button background
+
+	glBegin(GL_QUADS);
+
+	glColor4f(base_col,base_col,base_col,1.0f);
+	glVertex2i(lft,bot);
+	glVertex2i(lft,top);
+	glColor4f((base_col+0.5f),(base_col+0.5f),(base_col+0.5f),1.0f);
+	glVertex2i((lft+slant_add),(top+slant_add));
+	glVertex2i((lft+slant_add),(bot-slant_add));
+
+	glColor4f(base_col,base_col,base_col,1.0f);
+	glVertex2i(rgt,bot);
+	glVertex2i(rgt,top);
+	glColor4f((base_col+0.5f),(base_col+0.5f),(base_col+0.5f),1.0f);
+	glVertex2i((rgt-slant_add),(top+slant_add));
+	glVertex2i((rgt-slant_add),(bot-slant_add));
+
+	glColor4f(base_col,base_col,base_col,1.0f);
+	glVertex2i(lft,top);
+	glVertex2i(rgt,top);
+	glColor4f((base_col+0.5f),(base_col+0.5f),(base_col+0.5f),1.0f);
+	glVertex2i((rgt-slant_add),(top+slant_add));
+	glVertex2i((lft+slant_add),(top+slant_add));
+
+	glColor4f(base_col,base_col,base_col,1.0f);
+	glVertex2i(lft,bot);
+	glVertex2i(rgt,bot);
+	glColor4f((base_col+0.5f),(base_col+0.5f),(base_col+0.5f),1.0f);
+	glVertex2i((rgt-slant_add),(bot-slant_add));
+	glVertex2i((lft+slant_add),(bot-slant_add));
+
+	glColor4f((base_col+0.4f),(base_col+0.4f),(base_col+0.4f),1.0f);
+	glVertex2i((lft+slant_add),(top+slant_add));
+	glVertex2i((rgt-slant_add),(top+slant_add));
+	glVertex2i((rgt-slant_add),(bot-slant_add));
+	glVertex2i((lft+slant_add),(bot-slant_add));
+
+	glEnd();
+
+		// button outline
+
+	glColor4f(outline_col.r,outline_col.g,outline_col.b,1.0f);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(lft,top);
+	glVertex2i(rgt,top);
+	glVertex2i(rgt,bot);
+	glVertex2i(lft,bot);
+	glEnd();
+	
+		// button text
+
+	gl_text_start(TRUE);
+	gl_text_draw(((lft+rgt)>>1),((top+bot)>>1),element->setup.button.name,tx_center,TRUE,&txt_col,1.0f);
+	gl_text_end();
+}
+
+void element_draw_button_bitmap(element_type *element,int sel_id)
 {
 	int				lft,rgt,top,bot;
 	
 	gl_texture_simple_start();
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glDisable(GL_DEPTH_TEST);
 
 	if (element->enabled) {
 		if (element->id==sel_id) {
@@ -844,6 +972,24 @@ void element_draw_button(element_type *element,int sel_id)
 	glEnd();
 	
 	gl_texture_simple_end();
+}
+
+void element_draw_button(element_type *element,int sel_id)
+{
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glDisable(GL_DEPTH_TEST);
+
+	if (element->setup.button.text_only) {
+		element_draw_button_text(element,sel_id);
+	}
+	else {
+		element_draw_button_bitmap(element,sel_id);
+	}
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
@@ -2143,7 +2289,7 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 					lft,rgt,top,bot,lx,rx,ty,by,
 					klft,krgt,ktop;
 	float			col_base;
-	d3col			txt_col;
+	d3col			txt_col,outline_col;
 	
 	high=gl_text_get_char_height(TRUE);
 		
@@ -2231,30 +2377,28 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 
 	glEnd();
 
-		// tabs
+		// tabs backgrounds
 		
 	xstart=lft+(int)(((float)hud.scale_x)*0.02f);
 	slant_add=(int)(((float)hud.scale_x)*0.01f);
-		
+
+	glBegin(GL_QUADS);
+
 	for (n=0;n!=element->setup.tab.ntab;n++) {
 
 		lx=xstart+(xadd*n);
 		rx=lx+xadd;
 		
 		if (element->value!=n) {
-			ty=top+slant_add;
+			ty=top+(int)(((float)slant_add)*1.5f);
 			by=bot-3;
 			col_base=0.25f;
-			txt_col.r=txt_col.g=txt_col.b=0.0f;
 		}
 		else {
 			ty=top;
 			by=bot+4;
 			col_base=0.35f;
-			memmove(&txt_col,&hud.color.hilite,sizeof(d3col));
 		}
-
-		glBegin(GL_QUADS);
 
 		glColor4f(col_base,col_base,col_base,1.0f);
 		glVertex2i((lx+slant_add),ty);
@@ -2268,9 +2412,41 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 		glColor4f((col_base+0.75f),(col_base+0.75f),(col_base+0.75f),1.0f);
 		glVertex2i(rx,by);
 		glVertex2i(lx,by);
-		glEnd();
+	}
+	
+	glEnd();
 
-		glColor4f(0.0f,0.0f,0.0f,1.0f);
+		// tabs foreground
+		
+	for (n=0;n!=element->setup.tab.ntab;n++) {
+
+		lx=xstart+(xadd*n);
+		rx=lx+xadd;
+		
+		if (element->value!=n) {
+			ty=top+(int)(((float)slant_add)*1.5f);
+			by=bot-3;
+		}
+		else {
+			ty=top;
+			by=bot+4;
+		}
+		
+		txt_col.r=txt_col.g=txt_col.b=0.0f;
+		outline_col.r=outline_col.g=outline_col.b=0.0f;
+
+		if (element->value==n) {
+			memmove(&txt_col,&hud.color.hilite,sizeof(d3col));
+		}
+
+		if (element->id==sel_id) {
+			if (element_mouse_over_tab(element,x)==n) {
+				memmove(&txt_col,&hud.color.mouse_over,sizeof(d3col));
+				memmove(&outline_col,&hud.color.mouse_over,sizeof(d3col));
+			}
+		}
+
+		glColor4f(outline_col.r,outline_col.g,outline_col.b,1.0f);
 
 		glBegin(GL_LINE_LOOP);
 		glVertex2i(lx,by);
@@ -2282,7 +2458,7 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 		glEnd();
 
 		gl_text_start(TRUE);
-		gl_text_draw(((lx+rx)>>1),(((ty+slant_add)+by)>>1),element->setup.tab.name[n],tx_center,TRUE,&txt_col,1.0f);
+		gl_text_draw(((lx+rx)>>1),((ty+by)>>1),element->setup.tab.name[n],tx_center,TRUE,&txt_col,1.0f);
 		gl_text_end();
 	}
 

@@ -54,13 +54,6 @@ and can be sold or given away.
 
 #define setup_shadow_mode_list_def		{"None","Low","High",""}
 
-#define timeout_mode_short				0
-#define timeout_mode_medium				1
-#define timeout_mode_long				2
-
-#define setup_timeout_mode_list_def		{"Short","Medium","Long",""}
-#define setup_timeout_mode_values		{3,5,10}
-
 #define setup_joystick_mode_list_def	{"Not Used","Turn Only","Turning and Moving","Turning and Looking",""}
 
 #define joystick_mode_not_used			0
@@ -115,7 +108,7 @@ typedef struct		{
 					} setup_network_hosts_type;
 
 typedef struct		{
-						int							nhost,team_idx,timeout_mode;
+						int							nhost,team_idx;
 						char						name[name_str_len];
 						bool						show_names;
 						setup_network_hosts_type	hosts[max_setup_network_host];

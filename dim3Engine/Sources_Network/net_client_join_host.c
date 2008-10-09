@@ -40,7 +40,6 @@ extern setup_type			setup;
 extern bool					join_thread_quit,client_msg_handler_active;
 extern d3socket				client_socket;
 
-int							client_timeout_values[]=setup_timeout_mode_values;
 network_setup_type			net_setup;
 
 /* =======================================================
@@ -83,7 +82,7 @@ bool net_client_ping_host(char *ip,char *status,char *host_name,char *proj_name,
 		// do it in a non-blocking manner so the join
 		// UI can exit if needed
 		
-	count=client_timeout_values[setup.network.timeout_mode];
+	count=client_timeout_wait_seconds;
 	connect_ok=FALSE;
 	
 	count*=1000;
@@ -200,7 +199,7 @@ bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_n
 
 		// connect
 		
-	if (!network_connect_block(client_socket,ip,net_port_host,client_timeout_values[setup.network.timeout_mode],err_str)) {
+	if (!network_connect_block(client_socket,ip,net_port_host,client_timeout_wait_seconds,err_str)) {
 		strcpy(deny_reason,"Host Unreachable (No connection)");
 		network_close_socket(&client_socket);
 		return(FALSE);
@@ -222,7 +221,7 @@ bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_n
 		// the host) -- throw these away until we get the join
 		// reply
 		
-	timeout_count=client_timeout_values[setup.network.timeout_mode];
+	timeout_count=client_timeout_wait_seconds;
 	timeout_count*=1000;
 	
 	read_ok=FALSE;

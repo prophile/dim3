@@ -42,10 +42,9 @@ and can be sold or given away.
 
 #define ctrl_network_name_id				10
 #define ctrl_network_team_id				11
-#define ctrl_network_timeout_id				12
-#define ctrl_network_show_names_id			13
-#define ctrl_network_host_id				14
-#define ctrl_network_host_ip_id				15
+#define ctrl_network_show_names_id			12
+#define ctrl_network_host_id				13
+#define ctrl_network_host_ip_id				14
 
 #define setup_network_host_add_button		20
 #define setup_network_host_update_button	21
@@ -66,7 +65,6 @@ extern setup_type			setup_backup;
 
 int							setup_network_tab_value,setup_network_host_scroll_pos;
 char						setup_team_color_list[][32]=net_team_color_list_def,
-							setup_timeout_mode_list[][32]=setup_timeout_mode_list_def,
 							setup_host_list[max_setup_network_host+1][128];
 
 /* =======================================================
@@ -96,7 +94,7 @@ void setup_network_player_pane(void)
 						control_y_add,control_y_sz;
 
 	control_y_add=element_get_control_high();
-	control_y_sz=control_y_add*4;
+	control_y_sz=control_y_add*3;
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
@@ -107,15 +105,12 @@ void setup_network_player_pane(void)
 	y+=control_y_add;
 	element_combo_add("Team",(char*)setup_team_color_list,setup.network.team_idx,ctrl_network_team_id,x,y,TRUE);
 	y+=control_y_add;
-	element_combo_add("Timeout Wait",(char*)setup_timeout_mode_list,setup.network.timeout_mode,ctrl_network_timeout_id,x,y,TRUE);
-	y+=control_y_add;
 	element_checkbox_add("Show Names",setup.network.show_names,ctrl_network_show_names_id,x,y,TRUE);
 }
 
 void setup_network_host_pane(void)
 {
 	int						x,y,wid,high,padding,control_y_add;
-	char					path[1024],path2[1024];
 	element_column_type		cols[1];
 
 	x=(int)(((float)hud.scale_x)*0.03f);
@@ -153,26 +148,19 @@ void setup_network_host_pane(void)
 	
 	y+=(padding+(high/2));
 
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_network_host_add","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_network_host_add_selected","png");
-	element_button_add(path,path2,setup_network_host_add_button,(x-(padding/2)),y,wid,high,element_pos_right,element_pos_center);
+	element_button_text_add("Add Host",setup_network_host_add_button,(x-(padding/2)),y,wid,high,element_pos_right,element_pos_center);
 
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_network_host_update","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_network_host_update_selected","png");
-	element_button_add(path,path2,setup_network_host_update_button,(x-(padding/2)),y,wid,high,element_pos_right,element_pos_center);
+	element_button_text_add("Update Host",setup_network_host_update_button,(x-(padding/2)),y,wid,high,element_pos_right,element_pos_center);
 	element_hide(setup_network_host_update_button,TRUE);
 	
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_network_host_delete","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_network_host_delete_selected","png");
-	element_button_add(path,path2,setup_network_host_delete_button,(x+(padding/2)),y,wid,high,element_pos_left,element_pos_center);
+	element_button_text_add("Delete Host",setup_network_host_delete_button,(x+(padding/2)),y,wid,high,element_pos_left,element_pos_center);
 	element_enable(setup_network_host_delete_button,FALSE);
 }
 
 void setup_network_create_pane(void)
 {
-	int			x,y,wid,high,padding,
+	int			x,y,wid,high,yadd,padding,
 				tab_list_wid,tab_pane_high,pane;
-	char		path[1024],path2[1024];
 	char		tab_list[][32]={"Player","Host"};
 							
 	element_clear();
@@ -182,11 +170,12 @@ void setup_network_create_pane(void)
 	padding=element_get_padding();;
 	
 	wid=hud.scale_x;
-	high=(int)(((float)hud.scale_y)*0.075f);
+	yadd=(int)(((float)hud.scale_y)*0.015f);
+	high=(int)(((float)hud.scale_y)*0.065f);
 	tab_list_wid=(int)(((float)hud.scale_x)*0.85f);
-	tab_pane_high=(int)(((float)hud.scale_y)*0.84f);
+	tab_pane_high=(int)(((float)hud.scale_y)*0.82f);
 	
-	element_tab_add((char*)tab_list,setup_network_tab_value,ctrl_network_tab_id,2,0,padding,wid,high,tab_list_wid,tab_pane_high);
+	element_tab_add((char*)tab_list,setup_network_tab_value,ctrl_network_tab_id,2,0,(padding+yadd),wid,high,tab_list_wid,tab_pane_high);
 	
 		// buttons
 		
@@ -197,15 +186,11 @@ void setup_network_create_pane(void)
 	x=hud.scale_x-padding;
 	y=hud.scale_y-padding;
 
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_ok","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_ok_selected","png");
-	element_button_add(path,path2,setup_network_ok_button,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_button_text_add("OK",setup_network_ok_button,x,y,wid,high,element_pos_right,element_pos_bottom);
 
 	x=element_get_x_position(setup_network_ok_button)-padding;
 
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_cancel","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_cancel_selected","png");
-	element_button_add(path,path2,setup_network_cancel_button,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_button_text_add("Cancel",setup_network_cancel_button,x,y,wid,high,element_pos_right,element_pos_bottom);
 	
 		// specific pane controls
 		
@@ -422,10 +407,6 @@ void setup_network_handle_click(int id)
 
 		case ctrl_network_team_id:
 			setup.network.team_idx=element_get_value(ctrl_network_team_id);
-			break;
-
-		case ctrl_network_timeout_id:
-			setup.network.timeout_mode=element_get_value(ctrl_network_timeout_id);
 			break;
 
 		case ctrl_network_show_names_id:

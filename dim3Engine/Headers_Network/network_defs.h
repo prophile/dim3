@@ -43,3 +43,9 @@ typedef struct		{
 
 #define server_no_data_u_wait						25
 #define server_max_network_error_reject				10
+
+//
+// client defines
+//
+
+#define client_timeout_wait_seconds					5

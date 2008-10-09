@@ -145,7 +145,7 @@ void chooser_open(void)
 		if (item->clickable) {
 			sprintf(fname,"%s_selected",item->file);
 			file_paths_data(&setup.file_path_setup,path2,"Chooser",fname,"png");
-			element_button_add(path,path2,item->item_id,item->x,item->y,item->wid,item->high,element_pos_left,element_pos_top);
+			element_button_bitmap_add(path,path2,item->item_id,item->x,item->y,item->wid,item->high,element_pos_left,element_pos_top);
 		}
 		else {
 			element_bitmap_add(path,0,item->x,item->y,item->wid,item->high,FALSE);

@@ -91,16 +91,16 @@ void story_setup_control(void)
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","icon_close","png");
 	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","icon_close_selected","png");
-	element_button_add(path,path2,story_icon_close_id,rx,ty,-1,-1,element_pos_right,element_pos_bottom);
+	element_button_bitmap_add(path,path2,story_icon_close_id,rx,ty,-1,-1,element_pos_right,element_pos_bottom);
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","icon_back","png");
 	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","icon_back_selected","png");
-	element_button_add(path,path2,story_icon_back_id,lx,by,-1,-1,element_pos_left,element_pos_top);
+	element_button_bitmap_add(path,path2,story_icon_back_id,lx,by,-1,-1,element_pos_left,element_pos_top);
 	element_enable(story_icon_back_id,(story_page>0));
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","icon_forward","png");
 	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","icon_forward_selected","png");
-	element_button_add(path,path2,story_icon_forward_id,rx,by,-1,-1,element_pos_right,element_pos_top);
+	element_button_bitmap_add(path,path2,story_icon_forward_id,rx,by,-1,-1,element_pos_right,element_pos_top);
 	element_enable(story_icon_forward_id,(story_page<(story_page_count-1)));
 	
 		// story bitmap

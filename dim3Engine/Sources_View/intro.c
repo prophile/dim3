@@ -86,7 +86,7 @@ void intro_open_add_button(hud_intro_button_type *btn,char *name,int id,bool hid
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements",name,"png");
 	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements",sel_name,"png");
-	element_button_add(path,path2,id,btn->x,btn->y,btn->wid,btn->high,element_pos_left,element_pos_top);
+	element_button_bitmap_add(path,path2,id,btn->x,btn->y,btn->wid,btn->high,element_pos_left,element_pos_top);
 
 	if (hide) element_hide(id,TRUE);
 }

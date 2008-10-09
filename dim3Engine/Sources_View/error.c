@@ -76,7 +76,7 @@ void error_open(char *err_str,char *err_str_2)
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","icon_close","png");
 	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","icon_close_selected","png");
-	element_button_add(path,path2,error_icon_close_id,x,y,-1,-1,element_pos_center,element_pos_top);
+	element_button_bitmap_add(path,path2,error_icon_close_id,x,y,-1,-1,element_pos_center,element_pos_top);
 
 		// running error
 		

@@ -66,7 +66,8 @@ extern int element_get_control_high(void);
 extern int element_get_separator_high(void);
 extern int element_get_padding(void);
 
-extern void element_button_add(char *path,char *path2,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
+extern void element_button_text_add(char *name,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
+extern void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
 extern void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool framed);
 extern void element_text_add(char *str,int id,int x,int y,int just,bool small_text,bool selectable,bool alert);
 extern void element_text_field_add(char *str,char *value_str,int max_value_str_sz,int id,int x,int y,bool selectable);

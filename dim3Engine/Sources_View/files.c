@@ -262,7 +262,6 @@ void file_save_delete(void)
 void file_open(void)
 {
 	int					x,y,wid,high,padding;
-	char				path[1024],path2[1024];
 	element_column_type	cols[4];
 	
 		// setup gui
@@ -300,29 +299,21 @@ void file_open(void)
 	x=hud.scale_x-padding;
 	y=hud.scale_y-padding;
 	
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_save","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_save_selected","png");
-	element_button_add(path,path2,file_button_save_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_button_text_add("Save",file_button_save_id,x,y,wid,high,element_pos_right,element_pos_bottom);
 	element_hide(file_button_save_id,!server.map_open);
 	
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_load","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_load_selected","png");
-	element_button_add(path,path2,file_button_load_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_button_text_add("Load",file_button_load_id,x,y,wid,high,element_pos_right,element_pos_bottom);
 	element_enable(file_button_load_id,FALSE);
 	element_hide(file_button_load_id,server.map_open);
 
 	x=element_get_x_position(file_button_load_id)-padding;
 	
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_delete","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_delete_selected","png");
-	element_button_add(path,path2,file_button_delete_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_button_text_add("Delete",file_button_delete_id,x,y,wid,high,element_pos_right,element_pos_bottom);
 	element_enable(file_button_delete_id,FALSE);
 	
 	x=element_get_x_position(file_button_delete_id)-padding;
 
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_cancel","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_cancel_selected","png");
-	element_button_add(path,path2,file_button_cancel_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_button_text_add("Cancel",file_button_cancel_id,x,y,wid,high,element_pos_right,element_pos_bottom);
 
 		// in file chooser
 		

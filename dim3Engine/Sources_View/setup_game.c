@@ -267,7 +267,6 @@ void setup_game_mouse_pane(void)
 void setup_game_action_pane(void)
 {
 	int					n,k,list_cnt,idx,x,y,wid,high,padding;
-	char				path[1024],path2[1024];
 	element_column_type	cols[2];
 	
 	x=(int)(((float)hud.scale_x)*0.03f);
@@ -331,22 +330,17 @@ void setup_game_action_pane(void)
 	
 	y+=(padding+(high/2));
 	
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_action_set","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_action_set_selected","png");
-	element_button_add(path,path2,setup_action_set_button,(x-(padding/2)),y,wid,high,element_pos_right,element_pos_center);
+	element_button_text_add("Set Action",setup_action_set_button,(x-(padding/2)),y,wid,high,element_pos_right,element_pos_center);
 	element_enable(setup_action_set_button,FALSE);
 	
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_action_clear","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_action_clear_selected","png");
-	element_button_add(path,path2,setup_action_clear_button,(x+(padding/2)),y,wid,high,element_pos_left,element_pos_center);
+	element_button_text_add("Clear Action",setup_action_clear_button,(x+(padding/2)),y,wid,high,element_pos_left,element_pos_center);
 	element_enable(setup_action_clear_button,FALSE);
 }
 
 void setup_game_create_pane(void)
 {
-	int			x,y,wid,high,padding,
+	int			x,y,wid,high,yadd,padding,
 				tab_list_wid,tab_pane_high,ntab,stab,pane;
-	char		path[1024],path2[1024];
 	char		tab_list[][name_str_len]={"Display","Graphics","Audio","Mouse","Actions"};
 							
 	element_clear();
@@ -365,11 +359,12 @@ void setup_game_create_pane(void)
 	padding=element_get_padding();
 	
 	wid=hud.scale_x;
-	high=(int)(((float)hud.scale_y)*0.075f);
+	yadd=(int)(((float)hud.scale_y)*0.015f);
+	high=(int)(((float)hud.scale_y)*0.065f);
 	tab_list_wid=(int)(((float)hud.scale_x)*0.85f);
-	tab_pane_high=(int)(((float)hud.scale_y)*0.84f);
+	tab_pane_high=(int)(((float)hud.scale_y)*0.82f);
 	
-	element_tab_add((char*)&tab_list[stab][0],setup_tab_value,ctrl_tab_id,ntab,0,padding,wid,high,tab_list_wid,tab_pane_high);
+	element_tab_add((char*)&tab_list[stab][0],setup_tab_value,ctrl_tab_id,ntab,0,(padding+yadd),wid,high,tab_list_wid,tab_pane_high);
 	
 		// buttons
 		
@@ -379,22 +374,16 @@ void setup_game_create_pane(void)
 	x=padding;
 	y=hud.scale_y-padding;
 
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_default","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_default_selected","png");
-	element_button_add(path,path2,setup_game_default_button,x,y,wid,high,element_pos_left,element_pos_bottom);
+	element_button_text_add("Default",setup_game_default_button,x,y,wid,high,element_pos_left,element_pos_bottom);
 
 	wid=(int)(((float)hud.scale_x)*0.1f);
 	x=hud.scale_x-padding;
 
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_ok","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_ok_selected","png");
-	element_button_add(path,path2,setup_game_ok_button,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_button_text_add("OK",setup_game_ok_button,x,y,wid,high,element_pos_right,element_pos_bottom);
 
 	x=element_get_x_position(setup_game_ok_button)-padding;
 
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_cancel","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_cancel_selected","png");
-	element_button_add(path,path2,setup_game_cancel_button,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_button_text_add("Cancel",setup_game_cancel_button,x,y,wid,high,element_pos_right,element_pos_bottom);
 	
 		// specific pane controls
 		

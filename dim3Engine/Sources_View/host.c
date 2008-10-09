@@ -105,7 +105,6 @@ void host_fill_map_table(char *game_type)
 void host_open(void)
 {
 	int							n,x,y,wid,high,padding;
-	char						path[1024],path2[1024];
 	element_column_type			cols[1];
 	
 		// setup gui
@@ -161,16 +160,12 @@ void host_open(void)
 	x=hud.scale_x-padding;
 	y=hud.scale_y-padding;
 	
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_host","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_host_selected","png");
-	element_button_add(path,path2,host_button_host_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_button_text_add("Host",host_button_host_id,x,y,wid,high,element_pos_right,element_pos_bottom);
 	element_enable(host_button_host_id,FALSE);
 
 	x=element_get_x_position(host_button_host_id)-padding;
 
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_cancel","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_cancel_selected","png");
-	element_button_add(path,path2,host_button_cancel_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_button_text_add("Cancel",host_button_cancel_id,x,y,wid,high,element_pos_right,element_pos_bottom);
 
 		// in join thread
 	

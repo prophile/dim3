@@ -146,7 +146,7 @@ void* net_host_broadcast_thread(void *arg)
 		uc_ptr=(unsigned char*)&r_addr;
 		sprintf(ip,"%d.%d.%d.%d",uc_ptr[0],uc_ptr[1],uc_ptr[2],uc_ptr[3]);
 		
-		if (network_connect_block(sock,ip,net_port_host_broadcast_reply,5,err_str)) {
+		if (network_connect_block(sock,ip,net_port_host_broadcast_reply,client_timeout_wait_seconds,err_str)) {
 			net_host_client_handle_info(sock);
 		}
 		

@@ -252,7 +252,7 @@ void* join_ping_thread_local(void *arg)
 		
 	if (network_udp_send_broadcast(ip_resolve,net_port_host_broadcast)) {
 		
-		count=client_timeout_values[setup.network.timeout_mode];
+		count=client_timeout_wait_seconds;
 		count*=1000;
 		
 		while ((count>0) && (!join_thread_quit)) {
@@ -393,7 +393,6 @@ void join_ping_thread_end(void)
 void join_open(bool local)
 {
 	int					x,y,wid,high,padding;
-	char				path[1024],path2[1024];
 	element_column_type	cols[4];
 	
 		// setup gui
@@ -443,16 +442,12 @@ void join_open(bool local)
 	x=hud.scale_x-padding;
 	y=hud.scale_y-padding;
 	
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_join","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_join_selected","png");
-	element_button_add(path,path2,join_button_join_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_button_text_add("Join",join_button_join_id,x,y,wid,high,element_pos_right,element_pos_bottom);
 	element_enable(join_button_join_id,FALSE);
 
 	x=element_get_x_position(join_button_join_id)-padding;
 
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","button_cancel","png");
-	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements","button_cancel_selected","png");
-	element_button_add(path,path2,join_button_cancel_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	element_button_text_add("Cancel",join_button_cancel_id,x,y,wid,high,element_pos_right,element_pos_bottom);
 
 		// in join thread
 		
