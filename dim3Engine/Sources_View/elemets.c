@@ -2243,13 +2243,13 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 		
 		if (element->value!=n) {
 			ty=top+slant_add;
-			by=bot-4;
+			by=bot-3;
 			col_base=0.25f;
 			txt_col.r=txt_col.g=txt_col.b=0.0f;
 		}
 		else {
 			ty=top;
-			by=bot+3;
+			by=bot+4;
 			col_base=0.35f;
 			memmove(&txt_col,&hud.color.hilite,sizeof(d3col));
 		}

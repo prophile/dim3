@@ -340,6 +340,7 @@ typedef struct		{
 												button_game_new_easy,button_game_new_medium,button_game_new_hard,
 												button_multiplayer,
 												button_multiplayer_host,button_multiplayer_join,button_multiplayer_setup,
+												button_multiplayer_join_lan,button_multiplayer_join_wan,
 												button_credit,button_quit;
 					} hud_intro_type;
 

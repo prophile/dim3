@@ -191,6 +191,18 @@ void default_settings_interface(void)
 	hud.intro.button_multiplayer_setup.wid=128;
 	hud.intro.button_multiplayer_setup.high=32;
 	hud.intro.button_multiplayer_setup.on=TRUE;
+	
+	hud.intro.button_multiplayer_join_lan.x=128;
+	hud.intro.button_multiplayer_join_lan.y=160;
+	hud.intro.button_multiplayer_join_lan.wid=128;
+	hud.intro.button_multiplayer_join_lan.high=32;
+	hud.intro.button_multiplayer_join_lan.on=TRUE;
+	
+	hud.intro.button_multiplayer_join_wan.x=128;
+	hud.intro.button_multiplayer_join_wan.y=192;
+	hud.intro.button_multiplayer_join_wan.wid=128;
+	hud.intro.button_multiplayer_join_wan.high=32;
+	hud.intro.button_multiplayer_join_wan.on=TRUE;
 
 		// credit, setup, quit buttons
 
@@ -830,6 +842,8 @@ void read_settings_interface(void)
 		read_settings_interface_button(xml_findfirstchild("Multiplayer_Host",button_tag),&hud.intro.button_multiplayer_host);
 		read_settings_interface_button(xml_findfirstchild("Multiplayer_Join",button_tag),&hud.intro.button_multiplayer_join);
 		read_settings_interface_button(xml_findfirstchild("Multiplayer_Setup",button_tag),&hud.intro.button_multiplayer_setup);
+		read_settings_interface_button(xml_findfirstchild("Multiplayer_Join_Lan",button_tag),&hud.intro.button_multiplayer_join_lan);
+		read_settings_interface_button(xml_findfirstchild("Multiplayer_Join_Wan",button_tag),&hud.intro.button_multiplayer_join_wan);
 		read_settings_interface_button(xml_findfirstchild("Credit",button_tag),&hud.intro.button_credit);
 		read_settings_interface_button(xml_findfirstchild("Quit",button_tag),&hud.intro.button_quit);
 	}

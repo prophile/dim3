@@ -390,7 +390,7 @@ void join_ping_thread_end(void)
       
 ======================================================= */
 
-void join_open(void)
+void join_open(bool local)
 {
 	int					x,y,wid,high,padding;
 	char				path[1024],path2[1024];
