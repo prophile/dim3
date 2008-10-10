@@ -76,7 +76,7 @@ void default_settings_interface(void)
 	
 		// colors
 		
-	hud.color.base.r=hud.color.base.g=hud.color.base.b=1;
+	hud.color.base.r=hud.color.base.g=hud.color.base.b=1.0f;
 	
 	hud.color.header.r=hud.color.header.b=1.0f;
 	hud.color.header.g=0.3f;
@@ -88,6 +88,8 @@ void default_settings_interface(void)
 	
 	hud.color.hilite.g=0.6f;
 	hud.color.hilite.r=hud.color.hilite.b=0.0f;
+	
+	hud.color.default_tint.r=hud.color.default_tint.g=hud.color.default_tint.b=1.0f;
 
 		// fonts
 
@@ -276,6 +278,7 @@ void read_settings_interface_bitmap(int bitmap_tag)
 	
 	bitmap->alpha=1.0f;
 	bitmap->flip_horz=bitmap->flip_vert=FALSE;
+	bitmap->team_tint=FALSE;
 	bitmap->show=TRUE;
 	
 	tag=xml_findfirstchild("Settings",bitmap_tag);
@@ -283,6 +286,7 @@ void read_settings_interface_bitmap(int bitmap_tag)
 		bitmap->alpha=xml_get_attribute_float_default(tag,"alpha",1.0f);
 		bitmap->flip_horz=xml_get_attribute_boolean(tag,"flip_horizontal");
 		bitmap->flip_vert=xml_get_attribute_boolean(tag,"flip_vertical");
+		bitmap->team_tint=xml_get_attribute_boolean(tag,"team_tint");
 		bitmap->show=!xml_get_attribute_boolean(tag,"hide");
 		bitmap->flash=xml_get_attribute_boolean(tag,"flash");
 	}
@@ -783,6 +787,7 @@ void read_settings_interface(void)
 		xml_get_attribute_color(color_tag,"disabled",&hud.color.disabled);
 		xml_get_attribute_color(color_tag,"mouse_over",&hud.color.mouse_over);
 		xml_get_attribute_color(color_tag,"hilite",&hud.color.hilite);
+		xml_get_attribute_color(color_tag,"default_tint",&hud.color.default_tint);
 	}
 
 		// fonts

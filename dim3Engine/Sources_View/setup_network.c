@@ -117,7 +117,7 @@ void setup_network_host_pane(void)
 	y=(int)(((float)hud.scale_y)*0.15f);
 
 	wid=hud.scale_x-(x*2);
-	high=(int)(((float)hud.scale_y)*0.70f)-y;
+	high=(int)(((float)hud.scale_y)*0.68f)-y;
 
 	control_y_add=element_get_control_high();
 

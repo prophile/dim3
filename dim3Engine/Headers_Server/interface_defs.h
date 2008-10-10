@@ -198,7 +198,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						d3col					base,header,disabled,mouse_over,hilite;
+						d3col					base,header,disabled,mouse_over,hilite,default_tint;
 					} hud_color_type;
 
 typedef struct		{
@@ -224,7 +224,7 @@ typedef struct		{
 						int						x,y,x_size,y_size,image_idx,show_tick;
 						float					alpha,rot;
 						char					name[name_str_len],filename[file_str_len];
-						bool					show,flash,flip_horz,flip_vert;
+						bool					show,flash,flip_horz,flip_vert,team_tint;
 						hud_bitmap_repeat_type	repeat;
 						image_animation_type	animate;
 						hud_item_fade_type		fade;

@@ -2285,11 +2285,11 @@ bool element_click_tab(element_type *element,int x)
 
 void element_draw_tab(element_type *element,int sel_id,int x)
 {
-	int				n,ky,xstart,xadd,high,max_sz,slant_add,
+	int				n,ky,xstart,xadd,high,max_sz,slant_add,mouse_idx,
 					lft,rgt,top,bot,lx,rx,ty,by,
 					klft,krgt,ktop;
 	float			col_base;
-	d3col			txt_col,outline_col;
+	d3col			txt_col;
 	
 	high=gl_text_get_char_height(TRUE);
 		
@@ -2376,13 +2376,19 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 	glVertex2i(rx,(ky+4));
 
 	glEnd();
+	
+		// get mouse over element
+	
+	mouse_idx=-1;
+	
+	if (element->id==sel_id) {
+		mouse_idx=element_mouse_over_tab(element,x);
+	}
 
-		// tabs backgrounds
+		// tabs
 		
 	xstart=lft+(int)(((float)hud.scale_x)*0.02f);
 	slant_add=(int)(((float)hud.scale_x)*0.01f);
-
-	glBegin(GL_QUADS);
 
 	for (n=0;n!=element->setup.tab.ntab;n++) {
 
@@ -2391,7 +2397,7 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 		
 		if (element->value!=n) {
 			ty=top+(int)(((float)slant_add)*1.5f);
-			by=bot-3;
+			by=bot-4;
 			col_base=0.25f;
 		}
 		else {
@@ -2399,6 +2405,18 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 			by=bot+4;
 			col_base=0.35f;
 		}
+		
+		txt_col.r=txt_col.g=txt_col.b=0.0f;
+		
+		if (element->value==n) {
+			memmove(&txt_col,&hud.color.hilite,sizeof(d3col));
+		}
+		
+		if (mouse_idx==n) {
+			memmove(&txt_col,&hud.color.mouse_over,sizeof(d3col));
+		}
+
+		glBegin(GL_QUADS);
 
 		glColor4f(col_base,col_base,col_base,1.0f);
 		glVertex2i((lx+slant_add),ty);
@@ -2412,41 +2430,10 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 		glColor4f((col_base+0.75f),(col_base+0.75f),(col_base+0.75f),1.0f);
 		glVertex2i(rx,by);
 		glVertex2i(lx,by);
-	}
-	
-	glEnd();
-
-		// tabs foreground
 		
-	for (n=0;n!=element->setup.tab.ntab;n++) {
-
-		lx=xstart+(xadd*n);
-		rx=lx+xadd;
+		glEnd();
 		
-		if (element->value!=n) {
-			ty=top+(int)(((float)slant_add)*1.5f);
-			by=bot-3;
-		}
-		else {
-			ty=top;
-			by=bot+4;
-		}
-		
-		txt_col.r=txt_col.g=txt_col.b=0.0f;
-		outline_col.r=outline_col.g=outline_col.b=0.0f;
-
-		if (element->value==n) {
-			memmove(&txt_col,&hud.color.hilite,sizeof(d3col));
-		}
-
-		if (element->id==sel_id) {
-			if (element_mouse_over_tab(element,x)==n) {
-				memmove(&txt_col,&hud.color.mouse_over,sizeof(d3col));
-				memmove(&outline_col,&hud.color.mouse_over,sizeof(d3col));
-			}
-		}
-
-		glColor4f(outline_col.r,outline_col.g,outline_col.b,1.0f);
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
 
 		glBegin(GL_LINE_LOOP);
 		glVertex2i(lx,by);
@@ -2456,12 +2443,39 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 		glVertex2i(rx,(ty+slant_add));
 		glVertex2i(rx,by);
 		glEnd();
-
+		
 		gl_text_start(TRUE);
 		gl_text_draw(((lx+rx)>>1),((ty+by)>>1),element->setup.tab.name[n],tx_center,TRUE,&txt_col,1.0f);
 		gl_text_end();
 	}
 
+		// mouse over element
+		
+	if (mouse_idx!=-1) {
+		lx=xstart+(xadd*mouse_idx);
+		rx=lx+xadd;
+		
+		if (element->value!=mouse_idx) {
+			ty=top+(int)(((float)slant_add)*1.5f);
+			by=bot-4;
+		}
+		else {
+			ty=top;
+			by=bot+4;
+		}
+
+		glColor4f(hud.color.mouse_over.r,hud.color.mouse_over.g,hud.color.mouse_over.b,1.0f);
+
+		glBegin(GL_LINE_LOOP);
+		glVertex2i(lx,by);
+		glVertex2i(lx,(ty+slant_add));
+		glVertex2i((lx+slant_add),ty);
+		glVertex2i((rx-slant_add),ty);
+		glVertex2i(rx,(ty+slant_add));
+		glVertex2i(rx,by);
+		glEnd();
+	}
+	
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 }

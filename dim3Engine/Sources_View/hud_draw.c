@@ -98,11 +98,13 @@ void hud_bitmaps_draw(int tick)
 								wid,high,repeat_count;
 	float						gx,gy,gx2,gy2,g_size,alpha,cur_alpha;
 	GLuint						cur_gl_id;
+	d3col						tint,cur_tint;
 	hud_bitmap_type				*bitmap;
 	bitmap_type					*bitmap_data;
 		
 	cur_gl_id=-1;
 	cur_alpha=1.0f;
+	cur_tint.r=cur_tint.g=cur_tint.b=1.0f;
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -129,6 +131,20 @@ void hud_bitmaps_draw(int tick)
 		if (hud_item_fade_run(tick,&bitmap->fade,&alpha)) {
 			bitmap->show=FALSE;			// a fade has turned off bitmap
 			continue;
+		}
+		
+			// tint
+			
+		if (!bitmap->team_tint) {
+			tint.r=tint.g=tint.b=1.0f;
+		}
+		else {
+			if (!net_setup.client.joined) {
+				memmove(&tint,&hud.color.default_tint,sizeof(d3col));
+			}
+			else {
+				player_get_ui_color(&tint);
+			}
 		}
 
             // get bitmap and position
@@ -171,10 +187,11 @@ void hud_bitmaps_draw(int tick)
 
 			// need to change texture?
 
-		if ((cur_gl_id!=bitmap_data->gl_id) || (cur_alpha!=alpha)) {
+		if ((cur_gl_id!=bitmap_data->gl_id) || (cur_alpha!=alpha) || (cur_tint.r!=tint.r) || (cur_tint.g!=tint.g) || (cur_tint.b!=tint.b)) {
 			cur_gl_id=bitmap_data->gl_id;
 			cur_alpha=alpha;
-			gl_texture_simple_set(cur_gl_id,TRUE,1,1,1,cur_alpha);
+			memmove(&cur_tint,&tint,sizeof(d3col));
+			gl_texture_simple_set(cur_gl_id,TRUE,tint.r,tint.g,tint.b,cur_alpha);
 		}
 		
 			// find the repeat count
