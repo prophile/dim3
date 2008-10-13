@@ -202,8 +202,6 @@ void model_run_animation_single(model_draw *draw,int animation_idx)
 	model_type				*mdl;
 	model_animate_type		*animate;
  	model_draw_animation	*draw_animation;
-   
-	if (draw->uid==-1) return;
     
         // stopped or resting animation?
 

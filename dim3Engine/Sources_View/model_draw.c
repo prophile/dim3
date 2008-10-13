@@ -339,7 +339,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			// create and start drawing arrays
 
 		if (!model_draw_start_mesh_material_array(mdl,mesh,material)) continue;
-			
+
 			// regular texture
 
 		glDisable(GL_BLEND);
@@ -710,7 +710,9 @@ void model_render(int tick,model_draw *draw)
 		// draw transparent materials
 
 	for (n=0;n!=mdl->nmesh;n++) {
-		if ((mesh_mask&(0x1<<n))!=0) model_draw_transparent_trigs(mdl,n,draw);
+		if ((mesh_mask&(0x1<<n))!=0) {
+			model_draw_transparent_trigs(mdl,n,draw);
+		}
 	}
 }
 

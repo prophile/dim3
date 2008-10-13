@@ -167,15 +167,13 @@ void network_score_players_draw(void)
 
 		obj=&server.objs[sort_idx[n]];
 	
-		if (obj->player) {
-			player_get_ui_color(&col);
+		if (obj->remote.on) {
+			remote_get_ui_color(obj,&col);
 			network_score_single_box_draw(lx,rx,y2,yadd,&col);
 		}
 		else {
-			if (obj->remote.on) {
-				remote_get_ui_color(obj,&col);
-				network_score_single_box_draw(lx,rx,y2,yadd,&col);
-			}
+			player_get_ui_color(&col);
+			network_score_single_box_draw(lx,rx,y2,yadd,&col);
 		}
 
 		y2+=(yadd+3);
@@ -186,16 +184,7 @@ void network_score_players_draw(void)
 	for (n=0;n!=nscore;n++) {
 
 		obj=&server.objs[sort_idx[n]];
-	
-		if (obj->player) {
-			network_score_single_name_draw(obj->name,obj->score.score,lx,rx,y);
-		}
-		else {
-			if (obj->remote.on) {
-				remote_get_ui_color(obj,&col);
-				network_score_single_name_draw(obj->name,obj->score.score,lx,rx,y);
-			}
-		}
+		network_score_single_name_draw(obj->name,obj->score.score,lx,rx,y);
 
 		y+=(yadd+3);
 	}

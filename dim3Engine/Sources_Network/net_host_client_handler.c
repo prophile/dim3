@@ -95,6 +95,7 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 		// send all other players on host the new player for remote add
 		
 	if (remote_uid!=-1) {
+		remote_add.uid=htons((short)remote_uid);
 		strncpy(remote_add.name,request_join->name,name_str_len);
 		remote_add.name[name_str_len-1]=0x0;
 		remote_add.team_idx=htons((short)net_team_none);

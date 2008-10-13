@@ -737,43 +737,105 @@ void piece_poly_hole(void)
 
 void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch)
 {
-	int				mv,xadd,yadd,zadd;
+	int				n,sel_count,type,main_idx,sub_idx,mv,xadd,yadd,zadd;
+	
+		// special check for delete key
+		
+	if (ch==0x08) {
+		piece_delete();
+		main_wind_draw();
+		menu_fix_enable();
+		main_wind_tool_fix_enable();
+		return;
+	}
+	
+		// nudge keys movement
 	
 	mv=walk_view_get_grid();
-	if (main_wind_shift_down()) mv*=10;
+	if (!main_wind_shift_down()) mv/=10;
+	
+	if (mv<1) mv=1;
+	
+	xadd=yadd=zadd=0;
 		
 	switch (ch) {
 	
 		case 0x1C:
 			walk_view_click_drag_movement(view_setup,view_move_dir,mv,0,&xadd,&yadd,&zadd);
-			select_move(xadd,yadd,zadd);
-			main_wind_draw();
 			break;
 			
 		case 0x1D:
 			walk_view_click_drag_movement(view_setup,view_move_dir,-mv,0,&xadd,&yadd,&zadd);
-			select_move(xadd,yadd,zadd);
-			main_wind_draw();
 			break;
 			
 		case 0x1E:
 			walk_view_click_drag_movement(view_setup,view_move_dir,0,mv,&xadd,&yadd,&zadd);
-			select_move(xadd,yadd,zadd);
-			main_wind_draw();
 			break;
 			
 		case 0x1F:
 			walk_view_click_drag_movement(view_setup,view_move_dir,0,-mv,&xadd,&yadd,&zadd);
-			select_move(xadd,yadd,zadd);
-			main_wind_draw();
 			break;
 			
-		case 8:
-			piece_delete();
-			main_wind_draw();
-			menu_fix_enable();
-			main_wind_tool_fix_enable();
-			break;
 	}
+	
+	if ((xadd==0) && (yadd==0) && (zadd==0)) return;
+	
+		// move selection
+	
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&main_idx,&sub_idx);
+
+		switch (type) {
+		
+			case mesh_piece:
+				map_mesh_move(&map,main_idx,xadd,yadd,zadd);
+				break;
+				
+			case liquid_piece:
+				map_liquid_move(&map,main_idx,xadd,yadd,zadd);
+				break;
+				
+			case node_piece:
+				map.nodes[main_idx].pnt.x+=xadd;
+				map.nodes[main_idx].pnt.y+=yadd;
+				map.nodes[main_idx].pnt.z+=zadd;
+				break;
+				
+			case spot_piece:
+				map.spots[main_idx].pnt.x+=xadd;
+				map.spots[main_idx].pnt.y+=yadd;
+				map.spots[main_idx].pnt.z+=zadd;
+				break;
+				
+			case scenery_piece:
+				map.sceneries[main_idx].pnt.x+=xadd;
+				map.sceneries[main_idx].pnt.y+=yadd;
+				map.sceneries[main_idx].pnt.z+=zadd;
+				break;
+				
+			case light_piece:
+				map.lights[main_idx].pnt.x+=xadd;
+				map.lights[main_idx].pnt.y+=yadd;
+				map.lights[main_idx].pnt.z+=zadd;
+				break;
+				
+			case sound_piece:
+				map.sounds[main_idx].pnt.x+=xadd;
+				map.sounds[main_idx].pnt.y+=yadd;
+				map.sounds[main_idx].pnt.z+=zadd;
+				break;
+				
+			case particle_piece:
+				map.particles[main_idx].pnt.x+=xadd;
+				map.particles[main_idx].pnt.y+=yadd;
+				map.particles[main_idx].pnt.z+=zadd;
+				break;
+				
+		}
+	}
+	
+	main_wind_draw();
 }
 

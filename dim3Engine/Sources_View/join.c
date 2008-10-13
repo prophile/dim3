@@ -36,8 +36,9 @@ and can be sold or given away.
 
 #define join_button_join_id				0
 #define join_button_cancel_id			1
-#define join_table_id					2
-#define join_status_id					3
+#define join_button_rescan_id			2
+#define join_table_id					3
+#define join_status_id					4
 
 extern void intro_open(void);
 extern bool game_start(int skill,int remote_count,network_request_remote_add *remotes,char *err_str);
@@ -53,12 +54,12 @@ extern int					client_timeout_values[];
 extern char					setup_team_color_list[][32];
 
 char						*join_table_data;
-bool						join_thread_quit;
-pthread_t					join_thread_local,join_thread_local_accept,join_thread_network;
+bool						join_local,join_thread_quit;
+pthread_t					join_thread,join_thread_accept;
 pthread_mutex_t				join_thread_lock;
 
 int							join_count,join_start_tick_local;
-bool						join_done_local,join_done_network;
+bool						join_list_done;
 join_server_info			join_list[max_setup_network_host];
 			
 /* =======================================================
@@ -86,14 +87,7 @@ char* join_create_list(void)
 	c=row_data;
 	
 	for (n=0;n!=join_count;n++) {
-	
-		if (info->local) {
-			snprintf(c,128,"Maps;%s;%s (local)\t%s @ %s\t%d/%d\t%dms",info->name,info->name,info->game_name,info->map_name,info->player_count,info->player_max_count,info->ping_msec);
-		}
-		else {
-			snprintf(c,128,"Maps;%s;%s (net)\t%s @ %s\t%d/%d\t%dms",info->name,info->name,info->game_name,info->map_name,info->player_count,info->player_max_count,info->ping_msec);
-		}
-		
+		snprintf(c,128,"Maps;%s;%s\t%s @ %s\t%d/%d\t%dms",info->map_name,info->name,info->game_name,info->map_name,info->player_count,info->player_max_count,info->ping_msec);
 		c[127]=0x0;
 		
 		c+=128;
@@ -202,7 +196,7 @@ void* join_ping_thread_local_accept(void *arg)
 		
 			// spawn a thread to deal with replies
 			
-		pthread_create(&join_thread_local_accept,NULL,join_ping_thread_local_accept_read,(void*)sock);
+		pthread_create(&join_thread_accept,NULL,join_ping_thread_local_accept_read,(void*)sock);
 	}
 
 	pthread_exit(NULL);
@@ -229,21 +223,21 @@ void* join_ping_thread_local(void *arg)
 	network_socket_blocking(broadcast_reply_sock,TRUE);
 
 	if (!network_bind(broadcast_reply_sock,ip_resolve,net_port_host_broadcast_reply,err_str)) {
-		join_done_local=TRUE;
+		join_list_done=TRUE;
 		pthread_exit(NULL);
 		return(0);
 	}
 	
 	if (listen(broadcast_reply_sock,32)!=0) {
 		network_close_socket(&broadcast_reply_sock);
-		join_done_local=TRUE;
+		join_list_done=TRUE;
 		pthread_exit(NULL);
 		return(0);
 	}
 
 		// run thread and wait for accepts to start
 		
-	pthread_create(&join_thread_local_accept,NULL,join_ping_thread_local_accept,(void*)broadcast_reply_sock);
+	pthread_create(&join_thread_accept,NULL,join_ping_thread_local_accept,(void*)broadcast_reply_sock);
 	
 		// send broadcast to all network nodes
 		// asking for connections from hosts
@@ -266,9 +260,9 @@ void* join_ping_thread_local(void *arg)
 		// join the thread to wait for end
 		
 	network_close_socket(&broadcast_reply_sock);
-	pthread_join(join_thread_local_accept,NULL);
+	pthread_join(join_thread_accept,NULL);
 	
-	join_done_local=TRUE;
+	join_list_done=TRUE;
 	pthread_exit(NULL);
 	return(0);
 }
@@ -333,7 +327,7 @@ void* join_ping_thread_network(void *arg)
 		idx++;
 	}
 	
-	join_done_network=TRUE;
+	join_list_done=TRUE;
 	
 	pthread_exit(NULL);
 	
@@ -346,8 +340,11 @@ void* join_ping_thread_network(void *arg)
       
 ======================================================= */
 
-void join_ping_thread_start(void)
+void join_ping_thread_start(bool local)
 {
+		// empty join list
+		
+	join_count=0;
 	join_thread_quit=FALSE;
 	
 		// table is busy
@@ -358,28 +355,29 @@ void join_ping_thread_start(void)
 		
 	pthread_mutex_init(&join_thread_lock,NULL);
 
-		// start pinging local games
+		// start pinging hosts
 		
-	join_done_local=FALSE;
-	pthread_create(&join_thread_local,NULL,join_ping_thread_local,NULL);
-
-		// start pinging network games
-		
-	join_done_network=FALSE;
-	pthread_create(&join_thread_network,NULL,join_ping_thread_network,NULL);
+	join_list_done=FALSE;
+	
+	if (local) {
+		pthread_create(&join_thread,NULL,join_ping_thread_local,NULL);
+	}
+	else {
+		pthread_create(&join_thread,NULL,join_ping_thread_network,NULL);
+	}
 }
 
 void join_ping_thread_idle(void)
 {
-	element_table_busy(join_table_id,((!join_done_local) || (!join_done_network)));
+	element_table_busy(join_table_id,(!join_list_done));
+	element_enable(join_button_rescan_id,join_list_done);
 }
 
 void join_ping_thread_end(void)
 {
 	join_thread_quit=TRUE;
 	
-	pthread_join(join_thread_local,NULL);
-	pthread_join(join_thread_network,NULL);
+	pthread_join(join_thread,NULL);
 	
 	pthread_mutex_destroy(&join_thread_lock);
 }
@@ -395,17 +393,26 @@ void join_open(bool local)
 	int					x,y,wid,high,padding;
 	element_column_type	cols[4];
 	
+	join_local=local;
+
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","join",FALSE);
-	
-		// empty join list
-		
-	join_count=0;
+	gui_initialize("Bitmaps/Backgrounds","setup",FALSE);
 	
 		// controls
 							
 	element_clear();
+	
+		// title
+		
+	y=(int)(((float)hud.scale_y)*0.09f);
+	
+	if (local) {
+		element_text_add("Join Local Multiplayer Game",-1,5,y,tx_left,FALSE,FALSE,FALSE);
+	}
+	else {
+		element_text_add("Join Internet Multiplayer Game",-1,5,y,tx_left,FALSE,FALSE,FALSE);
+	}
 	
 		// hosts table
 		
@@ -436,12 +443,18 @@ void join_open(bool local)
 		
 	padding=element_get_padding();
 	
-	wid=(int)(((float)hud.scale_x)*0.1f);
-	high=(int)(((float)hud.scale_x)*0.05f);
-	
-	x=hud.scale_x-padding;
+	x=padding;
 	y=hud.scale_y-padding;
 	
+	wid=(int)(((float)hud.scale_x)*0.15f);
+	high=(int)(((float)hud.scale_x)*0.05f);
+
+	element_button_text_add("Rescan Hosts",join_button_rescan_id,x,y,wid,high,element_pos_left,element_pos_bottom);
+	element_enable(join_button_rescan_id,FALSE);
+	
+	x=hud.scale_x-padding;
+	wid=(int)(((float)hud.scale_x)*0.1f);
+
 	element_button_text_add("Join",join_button_join_id,x,y,wid,high,element_pos_right,element_pos_bottom);
 	element_enable(join_button_join_id,FALSE);
 
@@ -455,7 +468,7 @@ void join_open(bool local)
 
 		// start ping thread
 
-	join_ping_thread_start();
+	join_ping_thread_start(local);
 }
 
 void join_close(void)
@@ -603,6 +616,12 @@ void join_click(void)
 		case join_button_cancel_id:
 			join_close();
 			intro_open();
+			break;
+			
+		case join_button_rescan_id:
+			element_enable(join_button_rescan_id,FALSE);
+			join_ping_thread_end();
+			join_ping_thread_start(join_local);
 			break;
 
 		case join_table_id:

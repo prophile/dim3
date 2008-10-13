@@ -219,7 +219,7 @@ void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx
 	model_draw_setup		*setup;
 	model_animate_type		*animate;
 	model_pose_move_type	*pose_move;
-
+	
 	mdl=model_find_uid(draw->uid);
 	if (mdl==NULL) return;
 

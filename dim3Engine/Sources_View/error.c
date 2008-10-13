@@ -57,8 +57,10 @@ void error_open(char *err_str,char *err_str_2)
 	
 		// setup
 		
-	gui_initialize("Bitmaps/Backgrounds","error",FALSE);
-	
+	gui_initialize("Bitmaps/Backgrounds","setup",FALSE);
+
+		// error
+		
 	x=hud.scale_x/2;
 	
 	y=(hud.scale_y/2)-5;

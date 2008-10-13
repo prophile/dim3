@@ -374,18 +374,22 @@ bool object_bump_up(obj_type *obj)
         ydif=obj->pnt.y-mesh_poly->box.min.y;
     }
     
-		// get bump move
+		// get bump move and no bump if
+		// you hit your head going up
 		
 	if ((ydif<=0) || (ydif>obj->bump.high)) return(FALSE);
 
 	ymove=pin_upward_movement_obj(obj,-ydif);
+	if (obj->contact.head_poly.mesh_idx!=-1) return(FALSE);
 	
 		// do bump
-	
+		// and in movement to smooth offset so bumps are smoothed
+		// out instead of jittery
+		
 	obj->pnt.y+=ymove;
-	obj->bump.smooth_offset+=abs(ymove);					// bump moves player up, but offset pushes them down and smoothes out the bump
+	obj->bump.smooth_offset-=ymove;
 
-	return(obj->contact.head_poly.mesh_idx==-1);
+	return(TRUE);
 }
 
 void object_fix_bump_smooth(obj_type *obj)
@@ -1013,10 +1017,10 @@ void object_move_swim(obj_type *obj)
 
 void object_move_normal(obj_type *obj)
 {
-	int				x,z,i_xmove,i_ymove,i_zmove,bump_cnt,
+	int				x,z,i_xmove,i_ymove,i_zmove,move_cnt,
 					start_y,fall_damage,hit_obj_uid,old_x,old_z;
     float			xmove,zmove,ymove;
-	bool			old_falling;
+	bool			bump_once,push_once,old_falling;
 
 		// get object motion
 		
@@ -1100,57 +1104,70 @@ void object_move_normal(obj_type *obj)
 
 	if ((i_xmove!=0) || (i_zmove!=0)) {
 	
+			// try to move a number of times
+			// bumping up or hitting another object
+			// can force the move to stop and then
+			// need to be retried
+			
+		move_cnt=0;
+		bump_once=FALSE;
+		push_once=FALSE;
+		hit_obj_uid=-1;
+	
 			// attempt to move
+			
+		while (TRUE) {
 
-		if (object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) {
+			if (!object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) break;
 
-				// run any bump up, reset x/z and
-				// then try the movement again
-				// do this a couple time in case you
-				// are going up a series of steep bumps
-				
-			bump_cnt=0;
+				// run any potential bump ups
+				// if we are bumping up, then eliminate any
+				// additional y movement
 
-			while (TRUE) {
+			if (!bump_once) {
 
 				if (object_bump_up(obj)) {
-
-					obj->pnt.x=old_x;
-					obj->pnt.z=old_z;
+					
+					bump_once=TRUE;
 					
 					i_xmove=(int)xmove;
 					i_ymove=0;
 					i_zmove=(int)zmove;
-					
-					obj->contact.hit_poly.mesh_idx=-1;
-					if (!collide_object_to_map(obj,&i_xmove,&i_ymove,&i_zmove)) break;
-
-					bump_cnt++;
-					if (bump_cnt>2) break;
-
-					continue;
 				}
-				
-				break;
 			}
-				
+			
 				// push objects, then
 				// try the movement again
 				// save the hit object uid so
 				// the hit still registers
 
-			if (!object_push_with_object(obj,i_xmove,i_zmove)) {
+			if (!push_once) {
+			
+				if (!object_push_with_object(obj,i_xmove,i_zmove)) {
 				
-				i_xmove=(int)xmove;
-				i_ymove=(int)ymove;
-				i_zmove=(int)zmove;
+					push_once=TRUE;
+					
+					i_xmove=(int)xmove;
+					i_ymove=(int)ymove;
+					i_zmove=(int)zmove;
 
-				hit_obj_uid=obj->contact.obj_uid;
-				object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove);
-				obj->contact.obj_uid=hit_obj_uid;
+					hit_obj_uid=obj->contact.obj_uid;
+				}
 			}
+		
+				// only retry 2 times
+				
+			move_cnt++;
+			if (move_cnt>2) break;
 		}
+		
+			// potentially, pushing could reset the object
+			// hit ID, so we reset it here
+			
+		if (hit_obj_uid!=-1) obj->contact.obj_uid=hit_obj_uid;
 
+			// additional movements if we actually moved
+			
 		if ((i_xmove!=0) || (i_zmove!=0)) {
 
 				// move objects standing on object
@@ -1164,7 +1181,6 @@ void object_move_normal(obj_type *obj)
 	}
 	
 		// check for objects that have finished falling
-		//
 		// here we do any damage and send any landing
 		// events
 	

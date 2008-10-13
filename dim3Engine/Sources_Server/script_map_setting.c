@@ -55,6 +55,7 @@ JSPropertySpec	map_setting_props[]={
 							{"gravity",				map_setting_prop_gravity,			JSPROP_PERMANENT|JSPROP_SHARED},
 							{"resistance",			map_setting_prop_resistance,		JSPROP_PERMANENT|JSPROP_SHARED},
 							{"multiplayer",			map_setting_prop_multiplayer,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"multiplayerType",		map_setting_prop_multiplayer_type,	JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 							
 JSFunctionSpec	map_setting_functions[]={
@@ -99,7 +100,15 @@ JSBool js_get_map_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
             *vp=script_float_to_value(map.settings.resistance);
 			break;
 		case map_setting_prop_multiplayer:
-            *vp=BOOLEAN_TO_JSVAL(net_setup.client.joined);
+            *vp=BOOLEAN_TO_JSVAL((net_setup.host.hosting) || (net_setup.client.joined));
+			break;
+		case map_setting_prop_multiplayer_type:
+			if ((!net_setup.host.hosting) && (!net_setup.client.joined)) {
+				*vp=JSVAL_NULL;
+			}
+			else {
+				*vp=script_string_to_value(net_setup.client.game_name);
+			}
 			break;
 
 	}

@@ -248,7 +248,7 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 
 bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
 {
-	int						n,x,y,mx,my,mz,xadd,yadd,zadd,
+	int						n,k,x,y,mx,my,mz,xadd,yadd,zadd,nsel,nvertex,
 							type,mesh_idx,poly_idx,fz;
 	bool					hit,first_drag;
 	d3pnt					old_pt,*dpt,*old_dpt,*old_dpt_ptr,mpt;
@@ -258,40 +258,73 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 	
 		// any selection?
 		
-	if (select_count()==0) return(FALSE);
+	nsel=select_count();
+	if (nsel==0) return(FALSE);
 	
 	select_get(0,&type,&mesh_idx,&poly_idx);
 	if (type!=mesh_piece) return(FALSE);
 	
 	mesh=&map.mesh.meshes[mesh_idx];
 		
-		// are we clicking in mesh
+		// are we clicking in a selected mesh
 		
 	hit=FALSE;
+	
+	for (k=0;k!=nsel;k++) {
+		select_get(k,&type,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
 		
-	for (n=0;n!=mesh->npoly;n++) {
-		if (walk_view_mesh_poly_click_index(view_setup,pt,mesh,n,&fz)) {
-			hit=TRUE;
-			break;
+		mesh=&map.mesh.meshes[mesh_idx];
+		
+		for (n=0;n!=mesh->npoly;n++) {
+			if (walk_view_mesh_poly_click_index(view_setup,pt,mesh,n,&fz)) {
+				hit=TRUE;
+				break;
+			}
 		}
+		
+		if (hit) break;
 	}
 	
 	if (!hit) return(FALSE);
 	
-		// drag
+		// start drag
 		
     if (!Button()) return(FALSE);
 	
 	undo_save();
-			
-	first_drag=TRUE;
 	
-	old_dpt=valloc(mesh->nvertex*sizeof(d3pnt));
+		// save old vertexes
+		
+	nvertex=0;
+	
+	for (k=0;k!=nsel;k++) {
+		select_get(k,&type,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
+		
+		nvertex+=map.mesh.meshes[mesh_idx].nvertex;
+	}
+	
+	old_dpt=valloc(nvertex*sizeof(d3pnt));
 	if (old_dpt==NULL) return(FALSE);
 	
-	memmove(old_dpt,mesh->vertexes,(mesh->nvertex*sizeof(d3pnt)));
+	old_dpt_ptr=old_dpt;
 	
+	for (k=0;k!=nsel;k++) {
+		select_get(k,&type,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
+		
+		mesh=&map.mesh.meshes[mesh_idx];
+
+		memmove(old_dpt_ptr,mesh->vertexes,(mesh->nvertex*sizeof(d3pnt)));
+		old_dpt_ptr+=mesh->nvertex;
+	}
+	
+		// drag meshes
+		
 	mx=my=mz=0;
+			
+	first_drag=TRUE;
 	
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
@@ -330,20 +363,27 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 
 			// move vertexes
 		
-		dpt=mesh->vertexes;
 		old_dpt_ptr=old_dpt;
 		
-		for (n=0;n!=mesh->nvertex;n++) {
-			dpt->x=old_dpt_ptr->x+mpt.x;
-			dpt->y=old_dpt_ptr->y+mpt.y;
-			dpt->z=old_dpt_ptr->z+mpt.z;
+		for (k=0;k!=nsel;k++) {
+			select_get(k,&type,&mesh_idx,&poly_idx);
+			if (type!=mesh_piece) continue;
 			
-			dpt++;
-			old_dpt_ptr++;
+			mesh=&map.mesh.meshes[mesh_idx];
+			dpt=mesh->vertexes;
+		
+			for (n=0;n!=mesh->nvertex;n++) {
+				dpt->x=old_dpt_ptr->x+mpt.x;
+				dpt->y=old_dpt_ptr->y+mpt.y;
+				dpt->z=old_dpt_ptr->z+mpt.z;
+				
+				dpt++;
+				old_dpt_ptr++;
+			}
+			
+			if ((dp_auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
 		}
 		
-		if ((dp_auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
-
         main_wind_draw();
 		
 	} while (track!=kMouseTrackingMouseReleased);

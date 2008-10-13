@@ -151,7 +151,7 @@ int net_host_player_join(d3socket sock,char *name,char *deny_reason)
 	
 	for (n=0;n!=net_host_player_count;n++) {
 		if (strcasecmp(player->name,name)==0) {
-			strcpy(deny_reason,"Player name already in use");
+			sprintf(deny_reason,"Player name '%s' already in use",name);
 			pthread_mutex_unlock(&net_host_player_lock);
 			return(-1);
 		}
@@ -337,10 +337,10 @@ int net_host_player_create_remote_add_list(int player_remote_uid,network_request
 	for (n=0;n!=net_host_player_count;n++) {
 		
 		if (player->remote_uid!=player_remote_uid) {
-			remotes[cnt].uid=player->remote_uid;
+			remotes[cnt].uid=htons((short)player->remote_uid);
 			strcpy(remotes[cnt].name,player->name);
-			remotes[cnt].team_idx=player->team_idx;
-			remotes[cnt].score=player->score;
+			remotes[cnt].team_idx=htons((short)player->team_idx);
+			remotes[cnt].score=htons((short)player->score);
 			remotes[cnt].pnt_x=htonl(player->pnt.x);
 			remotes[cnt].pnt_y=htonl(player->pnt.y);
 			remotes[cnt].pnt_z=htonl(player->pnt.z);
@@ -380,7 +380,7 @@ void net_host_player_send_others_packet(int player_remote_uid,int action,int que
 	player=net_host_players;
 	
 	for (n=0;n!=net_host_player_count;n++) {
-		if ((player->remote_uid!=player_remote_uid) && (player->ready) && (player->sock!=(d3socket)NULL)) socks[nsock++]=player->sock;
+		if ((player->remote_uid!=player_remote_uid) && (player->ready)) socks[nsock++]=player->sock;
 		player++;
 	}
 	

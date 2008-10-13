@@ -65,7 +65,7 @@ extern void map_end(void);
       
 ======================================================= */
 
-bool remote_add(int remote_uid,network_request_remote_add *add)
+bool remote_add(network_request_remote_add *add)
 {
 	int					n;
 	char				err_str[256];
@@ -89,7 +89,7 @@ bool remote_add(int remote_uid,network_request_remote_add *add)
 	obj->pnt.z=ntohl(add->pnt_z);
 
 	obj->remote.on=TRUE;
-	obj->remote.uid=remote_uid;
+	obj->remote.uid=(signed short)ntohs(add->uid);
 	obj->remote.last_update=game_time_get();
 	obj->remote.talking=FALSE;
 	
@@ -641,7 +641,7 @@ bool remote_network_get_updates(int tick)
 				break;
 
 			case net_action_request_remote_add:
-				remote_add(from_remote_uid,(network_request_remote_add*)data);
+				remote_add((network_request_remote_add*)data);
 				break;
 				
 			case net_action_request_remote_remove:

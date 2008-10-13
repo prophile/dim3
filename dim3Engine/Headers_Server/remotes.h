@@ -25,7 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
-extern bool remote_add(int remote_uid,network_request_remote_add *add);
+extern bool remote_add(network_request_remote_add *add);
 extern void remote_remove(int remote_uid);
 
 extern void remote_get_tint(obj_type *obj,d3col *tint);

@@ -266,7 +266,12 @@ void file_open(void)
 	
 		// setup gui
 		
-	gui_initialize("Bitmaps/Backgrounds","files",FALSE);
+	gui_initialize("Bitmaps/Backgrounds","setup",FALSE);
+	
+		// title
+		
+	y=(int)(((float)hud.scale_y)*0.09f);
+	element_text_add("Load Saved Game",-1,5,y,tx_left,FALSE,FALSE,FALSE);
 	
 		// make the file list
 		

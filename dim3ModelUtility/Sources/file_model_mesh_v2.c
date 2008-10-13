@@ -204,6 +204,17 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 		mesh->no_lighting=xml_get_attribute_boolean(mesh_tag,"no_lighting");
 		mesh->blend_add=xml_get_attribute_boolean(mesh_tag,"additive");
 		
+			// don't allow blank mesh names
+			
+		if (mesh->name[0]==0x0) {
+			if (mesh_idx==0) {
+				strcpy(mesh->name,"Default");
+			}
+			else {
+				sprintf(mesh->name,"Mesh %d",mesh_idx);
+			}
+		}
+		
 			// vertexes
 		
 		vertex_tag=xml_findfirstchild("Vertexes",mesh_tag);

@@ -79,15 +79,15 @@ JSBool js_get_game_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	switch (JSVAL_TO_INT(id)) {
 	
 		case game_setting_prop_type:
-			if (!net_setup.client.joined) {
+			if ((!net_setup.host.hosting) && (!net_setup.client.joined)) {
 				*vp=JSVAL_NULL;
 			}
 			else {
-				*vp=INT_TO_JSVAL(net_setup.client.game_name);
+				*vp=script_string_to_value(net_setup.client.game_name);
 			}
 			break;
 		case game_setting_prop_multiplayer:
-            *vp=BOOLEAN_TO_JSVAL(net_setup.client.joined);
+            *vp=BOOLEAN_TO_JSVAL((net_setup.host.hosting) || (net_setup.client.joined));
 			break;
 		case game_setting_prop_skill:
             *vp=INT_TO_JSVAL(server.skill);
