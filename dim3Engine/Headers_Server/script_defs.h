@@ -830,6 +830,7 @@ and can be sold or given away.
 #define sd_event_interface								2033
 #define sd_event_state									2034
 #define sd_event_rule									2035
+#define sd_event_remote									2036
 
 //
 // sub events constants
@@ -931,6 +932,10 @@ and can be sold or given away.
 
 #define sd_event_rule_join								3077
 #define sd_event_rule_score								3078
+
+#define sd_event_remote_join							3079
+#define sd_event_remote_leave							3080
+#define sd_event_remote_team							3081
 
 //
 // define structure

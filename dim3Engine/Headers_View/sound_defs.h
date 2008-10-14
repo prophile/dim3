@@ -26,32 +26,42 @@ and can be sold or given away.
 *********************************************************************/
 
 //
+// audio setup
+//
+
+#define audio_frequency							44100
+#define audio_format							AUDIO_S16LSB
+#define audio_channels							2
+#define audio_sample_size						8192
+
+//
 // sound maximums
 //
 	
-#define al_max_source			32
-#define al_max_buffer			512
-#define al_max_ambient			8
+#define al_max_source							32
+#define al_max_buffer							512
+#define al_max_ambient							8
 
 //
 // fade directions
 //
 
-#define music_fade_mode_none		0
-#define music_fade_mode_in			1
-#define music_fade_mode_out			2
-#define music_fade_mode_out_fade_in	3
+#define music_fade_mode_none					0
+#define music_fade_mode_in						1
+#define music_fade_mode_out						2
+#define music_fade_mode_out_fade_in				3
 
 //
 // sound structures
 //
 	
 typedef struct		{
-						int						index;
+						int						index,len;
 						float					min_dist,max_dist;
 						char					name[name_str_len];
 						bool					loaded;
-						unsigned int			al_id;
+						unsigned char			*data;
+						unsigned int			al_id;			// supergumba -- can delete a lot of this
 					} al_buffer_type;
 	
 typedef struct		{

@@ -355,7 +355,7 @@ bool server_game_start(char *game_script_name,int skill,int remote_count,network
 		remote=remotes;
 		
 		for (n=0;n!=remote_count;n++) {
-			remote_add(remote);
+			remote_add(remote,FALSE);
 			remote++;
 		}
 	}

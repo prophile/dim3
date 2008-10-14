@@ -44,6 +44,66 @@ al_source_type			al_sources[al_max_source];
 	ALC_API ALvoid alMacOSXRenderChannelCount(const ALint value);
 #endif
 
+#ifdef SDL_SOUND
+
+
+
+void audio_callback(void *userdata,Uint8 *stream,int len)
+{
+
+
+}
+
+
+
+bool al_initialize(char *err_str)
+{
+	SDL_AudioSpec	aspec,ospec;
+
+	SDL_InitSubSystem(SDL_INIT_AUDIO);		// supergumba -- move to SDL_Init
+
+		// initialize SDL audio
+
+	aspec.freq=audio_frequency;
+	aspec.format=audio_format;
+	aspec.channels=audio_channels;
+	aspec.samples=audio_sample_size;
+	aspec.callback=audio_callback;
+	aspec.userdata=NULL;
+
+	if (SDL_OpenAudio(&aspec,&ospec)==-1) {
+		sprintf(err_str,"Audio: Could not initialize: %s",SDL_GetError());
+		return(FALSE);
+	}
+
+		// make sure we got the setup we need
+
+	if ((ospec.freq!=audio_frequency) || (ospec.format!=audio_format) || (ospec.channels!=audio_channels)) {
+		SDL_CloseAudio();
+		sprintf(err_str,"Audio: Unable to get desired audio format");
+		return(FALSE);
+
+	}
+
+		// no buffers loaded
+
+	al_buffer_count=0;
+
+	return(TRUE);
+}
+
+void al_shutdown(void)
+{
+	SDL_CloseAudio();
+}
+
+void al_set_volume(float sound_volume)
+{
+}
+
+#else
+
+
 /* =======================================================
 
       Initialize and Shutdown OpenAL
@@ -153,3 +213,4 @@ void al_set_volume(float sound_volume)
 	}
 }
 
+#endif

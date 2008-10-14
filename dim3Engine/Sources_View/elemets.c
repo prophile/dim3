@@ -37,15 +37,6 @@ extern setup_type			setup;
 
 int							nelement,element_click_down_id,
 							element_open_text_field_id,element_open_combo_id;
-bitmap_type					element_textbox,element_textbox_selected,
-							element_combo_close,element_combo_close_selected,
-							element_combo_open_top,element_combo_open_top_selected,
-							element_combo_open_middle,element_combo_open_middle_selected,
-							element_combo_open_bottom,element_combo_open_bottom_selected,
-							element_checkbox_true,element_checkbox_false,
-							element_checkbox_true_selected,element_checkbox_false_selected,
-							element_slider,element_slider_selected,element_slider_fill,
-							element_scroll_up,element_scroll_down,element_tab_border;
 element_type				elements[max_element];
 
 pthread_mutex_t				element_thread_lock;
@@ -63,113 +54,6 @@ void element_reset_controls(void)
 	element_click_down_id=-1;
 	element_open_text_field_id=-1;
 	element_open_combo_id=-1;
-}
-
-void element_open_global_bitmaps(void)
-{
-	char			path[1024];
-
-		// text boxes
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","textbox","png");
-	bitmap_open(&element_textbox,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","textbox_selected","png");
-	bitmap_open(&element_textbox_selected,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-		// combos
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","combo_close","png");
-	bitmap_open(&element_combo_close,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","combo_close_selected","png");
-	bitmap_open(&element_combo_close_selected,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","combo_open_top","png");
-	bitmap_open(&element_combo_open_top,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","combo_open_top_selected","png");
-	bitmap_open(&element_combo_open_top_selected,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","combo_open_middle","png");
-	bitmap_open(&element_combo_open_middle,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","combo_open_middle_selected","png");
-	bitmap_open(&element_combo_open_middle_selected,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","combo_open_bottom","png");
-	bitmap_open(&element_combo_open_bottom,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","combo_open_bottom_selected","png");
-	bitmap_open(&element_combo_open_bottom_selected,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-		// checkboxes
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","checkbox_true","png");
-	bitmap_open(&element_checkbox_true,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","checkbox_true_selected","png");
-	bitmap_open(&element_checkbox_true_selected,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","checkbox_false","png");
-	bitmap_open(&element_checkbox_false,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","checkbox_false_selected","png");
-	bitmap_open(&element_checkbox_false_selected,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-		// sliders
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","slider","png");
-	bitmap_open(&element_slider,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","slider_selected","png");
-	bitmap_open(&element_slider_selected,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","slider_fill","png");
-	bitmap_open(&element_slider_fill,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-		// tables
-		
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","scroll_up","png");
-	bitmap_open(&element_scroll_up,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","scroll_down","png");
-	bitmap_open(&element_scroll_down,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-		
-		// tabs
-
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","tab_border","png");
-	bitmap_open(&element_tab_border,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
-}
-
-void element_close_global_bitmaps(void)
-{
-	bitmap_close(&element_textbox);
-	bitmap_close(&element_textbox_selected);
-
-	bitmap_close(&element_combo_close);
-	bitmap_close(&element_combo_close_selected);
-	bitmap_close(&element_combo_open_top);
-	bitmap_close(&element_combo_open_top_selected);
-	bitmap_close(&element_combo_open_middle);
-	bitmap_close(&element_combo_open_middle_selected);
-	bitmap_close(&element_combo_open_bottom);
-	bitmap_close(&element_combo_open_bottom_selected);
-
-	bitmap_close(&element_checkbox_true);
-	bitmap_close(&element_checkbox_true_selected);
-
-	bitmap_close(&element_checkbox_false);
-	bitmap_close(&element_checkbox_false_selected);
-
-	bitmap_close(&element_slider);
-	bitmap_close(&element_slider_selected);
-	bitmap_close(&element_slider_fill);
-
-	bitmap_close(&element_scroll_up);
-	bitmap_close(&element_scroll_down);
-	
-	bitmap_close(&element_tab_border);
 }
 
 void element_release_control_memory(void)
@@ -208,7 +92,6 @@ void element_release_control_memory(void)
 void element_initialize(void)
 {
 	element_reset_controls();
-	element_open_global_bitmaps();
 
 	pthread_mutex_init(&element_thread_lock,NULL);		// used to make elements thread safe for certain UIs
 }
@@ -216,7 +99,6 @@ void element_initialize(void)
 void element_shutdown(void)
 {
 	element_release_control_memory();
-	element_close_global_bitmaps();
 
 	pthread_mutex_destroy(&element_thread_lock);
 }
@@ -1156,19 +1038,17 @@ void element_draw_text_field(element_type *element,int sel_id)
 		
 	gl_text_start(TRUE);
 	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.base,1.0f);
-	gl_text_draw(x,ky,":",tx_center,TRUE,&hud.color.base,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.base,1.0f);
 	gl_text_end();
 		
 		// control box
 		
-	lft=x+5;
+	lft=x+10;
 	rgt=lft+element->wid;
-	top=(y-element->high)-1;
-	bot=y+1;
+	top=ky-(element->high>>1);
+	bot=top+element->high;
 	
-	alpha=(element->enabled?1.0f:0.5f);
-
-	gl_texture_simple_start();
+	alpha=(element->enabled?1.0f:0.3f);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -1178,28 +1058,33 @@ void element_draw_text_field(element_type *element,int sel_id)
 
 	glDisable(GL_DEPTH_TEST);
 
-	if (element->id==sel_id) {
-		gl_texture_simple_set(element_textbox_selected.gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
+		// outline
+
+	glColor4f(0.0f,0.0f,0.0f,alpha);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(lft,top);
+	glVertex2i(rgt,top);
+	glVertex2i(rgt,bot);
+	glVertex2i(lft,bot);
+	glEnd();
+
+	if ((element->id==sel_id) && (element->enabled)) {
+		glColor4f(hud.color.mouse_over.r,hud.color.mouse_over.g,hud.color.mouse_over.b,alpha);
 	}
 	else {
-		gl_texture_simple_set(element_textbox.gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
+		glColor4f(1.0f,1.0f,1.0f,alpha);
 	}
 
-	glBegin(GL_QUADS);
-	glTexCoord2f(0,0);
-	glVertex2i(lft,top);
-	glTexCoord2f(1,0);
-	glVertex2i(rgt,top);
-	glTexCoord2f(1,1);
-	glVertex2i(rgt,bot);
-	glTexCoord2f(0,1);
-	glVertex2i(lft,bot);
+	glBegin(GL_LINE_LOOP);
+	glVertex2i((lft+1),(top+1));
+	glVertex2i((rgt-1),(top+1));
+	glVertex2i((rgt-1),(bot-1));
+	glVertex2i((lft+1),(bot-1));
 	glEnd();
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
-
-	gl_texture_simple_end();
 
 		// control text
 
@@ -1210,14 +1095,14 @@ void element_draw_text_field(element_type *element,int sel_id)
 		
 	if (element->enabled) {
 		if (element->id==element_open_text_field_id) {
-			gl_text_draw((x+10),ky,txt,tx_left,TRUE,&hud.color.mouse_over,1.0f);
+			gl_text_draw((x+15),(ky-1),txt,tx_left,TRUE,&hud.color.mouse_over,1.0f);
 		}
 		else {
-			gl_text_draw((x+10),ky,txt,tx_left,TRUE,&hud.color.base,1.0f);
+			gl_text_draw((x+15),(ky-1),txt,tx_left,TRUE,&hud.color.base,1.0f);
 		}
 	}
 	else {
-		gl_text_draw((x+10),ky,txt,tx_left,TRUE,&hud.color.disabled,1.0f);
+		gl_text_draw((x+15),(ky-1),txt,tx_left,TRUE,&hud.color.disabled,1.0f);
 	}
 	
 	gl_text_end();
@@ -1248,19 +1133,17 @@ void element_draw_checkbox(element_type *element,int sel_id)
 
 	gl_text_start(TRUE);
 	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.base,1.0f);
-	gl_text_draw(x,ky,":",tx_center,TRUE,&hud.color.base,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.base,1.0f);
 	gl_text_end();
 	
 		// checkbox
 		
-	lft=x+5;
-	rgt=lft+(element->wid-1);
-	top=(y-element->high)+1;
-	bot=y-1;
-	
-	alpha=(element->enabled?1.0f:0.5f);
+	lft=x+10;
+	rgt=lft+element->high;
+	top=ky-(element->high>>1);
+	bot=top+element->high;
 
-	gl_texture_simple_start();
+	alpha=(element->enabled?1.0f:0.3f);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -1270,38 +1153,64 @@ void element_draw_checkbox(element_type *element,int sel_id)
 
 	glDisable(GL_DEPTH_TEST);
 
-	if (element->value==0) {
-		if ((element->id==sel_id) && (element->enabled)) {
-			gl_texture_simple_set(element_checkbox_false_selected.gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
-		}
-		else {
-			gl_texture_simple_set(element_checkbox_false.gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
-		}
-	}
-	else {
-		if ((element->id==sel_id) && (element->enabled)) {
-			gl_texture_simple_set(element_checkbox_true_selected.gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
-		}
-		else {
-			gl_texture_simple_set(element_checkbox_true.gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
-		}
-	}
+		// background
 
 	glBegin(GL_QUADS);
-	glTexCoord2f(0,0);
+
+	glColor4f(0.6f,0.6f,0.6f,alpha);
 	glVertex2i(lft,top);
-	glTexCoord2f(1,0);
 	glVertex2i(rgt,top);
-	glTexCoord2f(1,1);
+
+	glColor4f(0.3f,0.3f,0.3f,alpha);
 	glVertex2i(rgt,bot);
-	glTexCoord2f(0,1);
 	glVertex2i(lft,bot);
+
+	glEnd();
+
+		// check
+
+	if (element->value!=0) {
+		
+		glLineWidth(3.0f);
+		glColor4f(hud.color.hilite.r,hud.color.hilite.g,hud.color.hilite.b,alpha);
+
+		glBegin(GL_LINES);
+		glVertex2i((lft+3),(top+3));
+		glVertex2i((rgt-3),(bot-3));
+		glVertex2i((rgt-3),(top+3));
+		glVertex2i((lft+3),(bot-3));
+		glEnd();
+
+		glLineWidth(1.0f);
+	}
+
+		// outline
+
+	glColor4f(0.0f,0.0f,0.0f,alpha);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(lft,top);
+	glVertex2i(rgt,top);
+	glVertex2i(rgt,bot);
+	glVertex2i(lft,bot);
+	glEnd();
+
+	if ((element->id==sel_id) && (element->enabled)) {
+		glColor4f(hud.color.mouse_over.r,hud.color.mouse_over.g,hud.color.mouse_over.b,alpha);
+	}
+	else {
+		glColor4f(1.0f,1.0f,1.0f,alpha);
+	}
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i((lft+1),(top+1));
+	glVertex2i((rgt-1),(top+1));
+	glVertex2i((rgt-1),(bot-1));
+	glVertex2i((lft+1),(bot-1));
 	glEnd();
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
-
-	gl_texture_simple_end();
 }
 
 /* =======================================================
@@ -1338,10 +1247,10 @@ void element_box_combo_open(element_type *element,int *lft,int *rgt,int *top,int
 
 	cnt=element_get_combo_list_count(element);
 		
-	*lft=element->x+5;
-	*rgt=*lft+150;
-	*top=(element->y-element->high)-1;
-	*bot=*top+((cnt*element->high)+1);
+	*lft=element->x+10;
+	*rgt=(*lft+element->wid)-element->high;
+	*top=element->y-element->high;
+	*bot=*top+(cnt*element->high);
 }
 
 bool element_in_combo_open(element_type *element,int x,int y)
@@ -1376,7 +1285,7 @@ bool element_click_combo_open(element_type *element,int x,int y)
 
 void element_draw_combo(element_type *element,int sel_id)
 {
-	int				x,y,ky,lft,rgt,top,bot;
+	int				x,y,sz,kx,ky,lft,rgt,top,bot;
 	char			str[256];
 	float			alpha;
 	
@@ -1389,19 +1298,17 @@ void element_draw_combo(element_type *element,int sel_id)
 
 	gl_text_start(TRUE);
 	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.base,1.0f);
-	gl_text_draw(x,ky,":",tx_center,TRUE,&hud.color.base,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.base,1.0f);
 	gl_text_end();
 		
 		// combo box
 		
-	lft=x+5;
+	lft=x+10;
 	rgt=lft+element->wid;
-	top=(y-element->high)-1;
-	bot=y+1;
+	top=ky-(element->high>>1);
+	bot=top+element->high;
 
-	alpha=(element->enabled?1.0f:0.5f);
-
-	gl_texture_simple_start();
+	alpha=(element->enabled?1.0f:0.3f);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -1411,42 +1318,96 @@ void element_draw_combo(element_type *element,int sel_id)
 
 	glDisable(GL_DEPTH_TEST);
 
-		// text box
-
-	if ((element->id==sel_id) && (element->enabled)) {
-		gl_texture_simple_set(element_combo_close_selected.gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
-	}
-	else {
-		gl_texture_simple_set(element_combo_close.gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
-	}
+		// background
 
 	glBegin(GL_QUADS);
-	glTexCoord2f(0,0);
+
+	glColor4f(0.6f,0.6f,0.6f,alpha);
 	glVertex2i(lft,top);
-	glTexCoord2f(1,0);
 	glVertex2i(rgt,top);
-	glTexCoord2f(1,1);
+
+	glColor4f(0.3f,0.3f,0.3f,alpha);
 	glVertex2i(rgt,bot);
-	glTexCoord2f(0,1);
+	glVertex2i(lft,bot);
+
+	glEnd();
+
+		// outline
+
+	sz=(bot-top)-8;
+	kx=(rgt-8)-sz;
+
+	glColor4f(0.0f,0.0f,0.0f,alpha);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(lft,top);
+	glVertex2i(rgt,top);
+	glVertex2i(rgt,bot);
 	glVertex2i(lft,bot);
 	glEnd();
 
-	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
+	glBegin(GL_LINES);
+	glVertex2i(kx,top);
+	glVertex2i(kx,bot);
+	glEnd();
 
-	gl_texture_simple_end();
+	glColor4f(1.0f,1.0f,1.0f,alpha);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(kx,(top+1));
+	glVertex2i((rgt-1),(top+1));
+	glVertex2i((rgt-1),(bot-1));
+	glVertex2i(kx,(bot-1));
+	glEnd();
+
+	if ((element->id==sel_id) && (element->enabled)) {
+		glColor4f(hud.color.mouse_over.r,hud.color.mouse_over.g,hud.color.mouse_over.b,alpha);
+	}
+	else {
+		glColor4f(1.0f,1.0f,1.0f,alpha);
+	}
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i((lft+1),(top+1));
+	glVertex2i((kx-1),(top+1));
+	glVertex2i((kx-1),(bot-1));
+	glVertex2i((lft+1),(bot-1));
+	glEnd();
+
+		// arrow
+
+	if ((element->id==element_open_combo_id) || ((element->id==sel_id) && (element->enabled))) {
+		glColor4f(hud.color.mouse_over.r,hud.color.mouse_over.g,hud.color.mouse_over.b,alpha);
+	}
+	else {
+		glColor4f(hud.color.hilite.r,hud.color.hilite.g,hud.color.hilite.b,alpha);
+	}
+
+	glBegin(GL_TRIANGLES);
+	glVertex2i(((rgt-4)-sz),(top+4));
+	glVertex2i((rgt-4),(top+4));
+	glVertex2i(((rgt-4)-(sz/2)),(bot-4));
+	glEnd();
+
+	glColor4f(0.0f,0.0f,0.0f,alpha);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(((rgt-4)-sz),(top+4));
+	glVertex2i((rgt-4),(top+4));
+	glVertex2i(((rgt-4)-(sz/2)),(bot-4));
+	glEnd();
 
 		// control text
 
 	strcpy(str,(element->data+(element->value*32)));
-		
+
 	gl_text_start(TRUE);
 		
 	if (element->enabled) {
-		gl_text_draw((x+10),ky,str,tx_left,TRUE,&hud.color.base,1.0f);
+		gl_text_draw((x+15),(ky-1),str,tx_left,TRUE,&hud.color.base,1.0f);
 	}
 	else {
-		gl_text_draw((x+10),ky,str,tx_left,TRUE,&hud.color.disabled,1.0f);
+		gl_text_draw((x+15),(ky-1),str,tx_left,TRUE,&hud.color.disabled,1.0f);
 	}
 	
 	gl_text_end();
@@ -1454,87 +1415,111 @@ void element_draw_combo(element_type *element,int sel_id)
 
 void element_draw_combo_open(element_type *element)
 {
-	int				x,y,n,cnt,lft,rgt,top,bot;
+	int				x,y,n,cnt,lft,rgt,top,bot,sel_item_idx;
 	char			str[256];
 	
+		// combo count
+
+	cnt=element_get_combo_list_count(element);
+
+		// get selected item
+
+	input_gui_get_mouse_position(&x,&y);
+
+	sel_item_idx=-1;
+
+	element_box_combo_open(element,&lft,&rgt,&top,&bot);
+	if ((x>=lft) && (x<=rgt) && (y>=top) && (y<=bot)) {
+		sel_item_idx=(y-top)/element->high;
+	}
+
+		// drawing sizes
+
 	x=element->x;
 	y=element->y;
 	
-	cnt=element_get_combo_list_count(element);
+	lft=x+10;
+	rgt=(lft+element->wid)-element->high;
+	top=y-element->high;
+
+		// draw items
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glDisable(GL_DEPTH_TEST);
+
+		// background
+
+	bot=top+(cnt*element->high);
+
+	glBegin(GL_QUADS);
+
+	glColor4f(0.6f,0.6f,0.6f,1.0f);
+	glVertex2i(lft,top);
+	glVertex2i(rgt,top);
+
+	glColor4f(0.3f,0.3f,0.3f,1.0f);
+	glVertex2i(rgt,bot);
+	glVertex2i(lft,bot);
+
+	glEnd();
 
 		// combo items
 
 	for (n=0;n!=cnt;n++) {
 
-			// graphic
+		bot=top+element->high;
 
-		lft=x+5;
-		rgt=lft+element->wid;
-		top=(y-element->high)-1;
-		bot=y+1;
+			// selection
 
-		gl_texture_simple_start();
+		if (element->value==n) {
+			glColor4f(hud.color.hilite.r,hud.color.hilite.g,hud.color.hilite.b,1.0f);
 
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_NOTEQUAL,0);
-
-		glDisable(GL_DEPTH_TEST);
-
-		if (n==0) {
-			if (element->value==n) {
-				gl_texture_simple_set(element_combo_open_top_selected.gl_id,TRUE,1.0f,1.0f,1.0f,1.0f);
-			}
-			else {
-				gl_texture_simple_set(element_combo_open_top.gl_id,TRUE,1.0f,1.0f,1.0f,1.0f);
-			}
+			glBegin(GL_QUADS);
+			glVertex2i(lft,top);
+			glVertex2i(rgt,top);
+			glVertex2i(rgt,bot);
+			glVertex2i(lft,bot);
+			glEnd();
 		}
-		else {
-			if (n==(cnt-1)) {
-				if (element->value==n) {
-					gl_texture_simple_set(element_combo_open_bottom_selected.gl_id,TRUE,1.0f,1.0f,1.0f,1.0f);
-				}
-				else {
-					gl_texture_simple_set(element_combo_open_bottom.gl_id,TRUE,1.0f,1.0f,1.0f,1.0f);
-				}
-			}
-			else {
-				if (element->value==n) {
-					gl_texture_simple_set(element_combo_open_middle_selected.gl_id,TRUE,1.0f,1.0f,1.0f,1.0f);
-				}
-				else {
-					gl_texture_simple_set(element_combo_open_middle.gl_id,TRUE,1.0f,1.0f,1.0f,1.0f);
-				}
-			}
-		}
-
-		glBegin(GL_QUADS);
-		glTexCoord2f(0,0);
-		glVertex2i(lft,top);
-		glTexCoord2f(1,0);
-		glVertex2i(rgt,top);
-		glTexCoord2f(1,1);
-		glVertex2i(rgt,bot);
-		glTexCoord2f(0,1);
-		glVertex2i(lft,bot);
-		glEnd();
-
-		glDisable(GL_BLEND);
-		glDisable(GL_ALPHA_TEST);
-
-		gl_texture_simple_end();
 
 			// text
 
 		gl_text_start(TRUE);
 		strcpy(str,(element->data+(n*32)));
-		gl_text_draw((x+10),(y-(element->high>>1)),str,tx_left,TRUE,&hud.color.base,1.0f);
+
+		if (sel_item_idx==n) {
+			gl_text_draw((x+10),((top+bot)>>1),str,tx_left,TRUE,&hud.color.mouse_over,1.0f);
+		}
+		else {
+			gl_text_draw((x+10),((top+bot)>>1),str,tx_left,TRUE,&hud.color.base,1.0f);
+		}
+
 		gl_text_end();
 
-		y+=element->high;
+		top+=element->high;
 	}
+
+		// outline
+
+	top=y-element->high;
+	bot=top+(cnt*element->high);
+
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(lft,top);
+	glVertex2i(rgt,top);
+	glVertex2i(rgt,bot);
+	glVertex2i(lft,bot);
+	glEnd();
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
 }
 
 /* =======================================================
@@ -1545,7 +1530,7 @@ void element_draw_combo_open(element_type *element)
 
 void element_click_slider(element_type *element,int x,int y)
 {
-	x=x-(element->x+5);
+	x-=(element->x+10);
 	if (x<0) x=0;
 	if (x>element->wid) x=element->wid;
 	
@@ -1574,23 +1559,21 @@ void element_draw_slider(element_type *element,int sel_id)
 
 	gl_text_start(TRUE);
 	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.base,1.0f);
-	gl_text_draw(x,ky,":",tx_center,TRUE,&hud.color.base,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.base,1.0f);
 	gl_text_end();
 	
 		// slider size
 		
-	lft=x+5;
+	lft=x+10;
 	rgt=lft+element->wid;
-	top=(y-element->high)+1;
-	bot=y-1;
+	top=ky-(element->high>>1);
+	bot=top+element->high;
 	
 	mid=lft+(int)(((float)element->wid)*element->setup.slider.value);
 
-	alpha=(element->enabled?1.0f:0.5f);
+	alpha=(element->enabled?1.0f:0.3f);
 
 		// draw slider
-
-	gl_texture_simple_start();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -1599,70 +1582,76 @@ void element_draw_slider(element_type *element,int sel_id)
 	glAlphaFunc(GL_NOTEQUAL,0);
 
 	glDisable(GL_DEPTH_TEST);
-
-		// slider box
-
-	if (element->id==sel_id) {
-		gl_texture_simple_set(element_textbox_selected.gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
-	}
-	else {
-		gl_texture_simple_set(element_textbox.gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
-	}
-
-	glBegin(GL_QUADS);
-	glTexCoord2f(0,0);
-	glVertex2i(lft,top);
-	glTexCoord2f(1,0);
-	glVertex2i(rgt,top);
-	glTexCoord2f(1,1);
-	glVertex2i(rgt,bot);
-	glTexCoord2f(0,1);
-	glVertex2i(lft,bot);
-	glEnd();
 	
 		// slider value
 		
 	if (element->enabled) {
-		gl_texture_simple_set(element_slider_fill.gl_id,FALSE,1.0f,1.0f,1.0f,alpha);
 
 		glBegin(GL_QUADS);
-		glTexCoord2f(0,0);
+
+		glColor4f(hud.color.hilite.r,hud.color.hilite.g,hud.color.hilite.b,alpha);
 		glVertex2i((lft+1),(top+1));
-		glTexCoord2f(1,0);
 		glVertex2i(mid,(top+1));
-		glTexCoord2f(1,1);
+
+		glColor4f((hud.color.hilite.r*0.7f),(hud.color.hilite.g*0.7f),(hud.color.hilite.b*0.7f),alpha);
 		glVertex2i(mid,(bot-1));
-		glTexCoord2f(0,1);
 		glVertex2i((lft+1),(bot-1));
+
 		glEnd();
 	}
 
-		// slider drag
+		// outline
 
-	if (element->id==sel_id) {
-		gl_texture_simple_set(element_slider_selected.gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
+	glColor4f(0.0f,0.0f,0.0f,alpha);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(lft,top);
+	glVertex2i(rgt,top);
+	glVertex2i(rgt,bot);
+	glVertex2i(lft,bot);
+	glEnd();
+
+	if ((element->id==sel_id) && (element->enabled)) {
+		glColor4f(hud.color.mouse_over.r,hud.color.mouse_over.g,hud.color.mouse_over.b,alpha);
 	}
 	else {
-		gl_texture_simple_set(element_slider.gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
+		glColor4f(1.0f,1.0f,1.0f,alpha);
 	}
-	
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i((lft+1),(top+1));
+	glVertex2i((rgt-1),(top+1));
+	glVertex2i((rgt-1),(bot-1));
+	glVertex2i((lft+1),(bot-1));
+	glEnd();
+
+		// slider drag
+
 	if ((mid+16)>rgt) mid=rgt-16;
 
 	glBegin(GL_QUADS);
-	glTexCoord2f(0,0);
+
+	glColor4f(0.6f,0.6f,0.6f,alpha);
 	glVertex2i(mid,top);
-	glTexCoord2f(1,0);
 	glVertex2i((mid+16),top);
-	glTexCoord2f(1,1);
+
+	glColor4f(0.3f,0.3f,0.3f,alpha);
 	glVertex2i((mid+16),bot);
-	glTexCoord2f(0,1);
+	glVertex2i(mid,bot);
+
+	glEnd();
+
+	glColor4f(1.0f,1.0f,1.0f,alpha);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(mid,top);
+	glVertex2i((mid+16),top);
+	glVertex2i((mid+16),bot);
 	glVertex2i(mid,bot);
 	glEnd();
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
-
-	gl_texture_simple_end();
 }
 
 /* =======================================================
@@ -2103,8 +2092,6 @@ void element_draw_table(element_type *element,int sel_id)
 	
 		// scrolling arrows
 		
-	gl_texture_simple_start();
-
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
@@ -2120,18 +2107,21 @@ void element_draw_table(element_type *element,int sel_id)
 	rgt=lft+16;
 	top+=(high+8);
 	bot=top+16;
-	
-	gl_texture_simple_set(element_scroll_up.gl_id,TRUE,1,1,1,(up_ok?1.0f:0.1f));
-	
-	glBegin(GL_QUADS);
-	glTexCoord2f(0,0);
-	glVertex2i(lft,top);
-	glTexCoord2f(1,0);
-	glVertex2i(rgt,top);
-	glTexCoord2f(1,1);
-	glVertex2i(rgt,bot);
-	glTexCoord2f(0,1);
+
+	glColor4f(hud.color.hilite.r,hud.color.hilite.g,hud.color.hilite.b,(up_ok?1.0f:0.1f));
+
+	glBegin(GL_TRIANGLES);
 	glVertex2i(lft,bot);
+	glVertex2i(rgt,bot);
+	glVertex2i(((lft+rgt)>>1),top);
+	glEnd();
+
+	glColor4f(0.0f,0.0f,0.0f,(up_ok?1.0f:0.3f));
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(lft,bot);
+	glVertex2i(rgt,bot);
+	glVertex2i(((lft+rgt)>>1),top);
 	glEnd();
 
 		// scroll down
@@ -2141,24 +2131,25 @@ void element_draw_table(element_type *element,int sel_id)
 	rgt=lft+16;
 	bot-=4;
 	top=bot-16;
+
+	glColor4f(hud.color.hilite.r,hud.color.hilite.g,hud.color.hilite.b,(down_ok?1.0f:0.1f));
 	
-	gl_texture_simple_set(element_scroll_down.gl_id,TRUE,1,1,1,(down_ok?1.0f:0.1f));
-	
-	glBegin(GL_QUADS);
-	glTexCoord2f(0,0);
+	glBegin(GL_TRIANGLES);
 	glVertex2i(lft,top);
-	glTexCoord2f(1,0);
 	glVertex2i(rgt,top);
-	glTexCoord2f(1,1);
-	glVertex2i(rgt,bot);
-	glTexCoord2f(0,1);
-	glVertex2i(lft,bot);
+	glVertex2i(((lft+rgt)>>1),bot);
+	glEnd();
+
+	glColor4f(0.0f,0.0f,0.0f,(up_ok?1.0f:0.3f));
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(lft,top);
+	glVertex2i(rgt,top);
+	glVertex2i(((lft+rgt)>>1),bot);
 	glEnd();
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
-
-	gl_texture_simple_end();
 
 		// busy
 		

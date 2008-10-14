@@ -159,11 +159,10 @@ void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool ch
 		// model animations
 
 	draw=&obj->draw;
+	animation=draw->animations;
+	net_animation=update.animation;
 	
 	for (n=0;n!=max_model_blend_animation;n++) {
-		animation=&draw->animations[n];
-		net_animation=&update.animation[n];
-
 		net_animation->model_tick=htonl(animation->tick-tick);
 		net_animation->model_mode=htons((short)animation->mode);
 		net_animation->model_animate_idx=htons((short)animation->animate_idx);
@@ -171,9 +170,12 @@ void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool ch
 		net_animation->model_pose_move_idx=htons((short)animation->pose_move_idx);
 		net_animation->model_smooth_animate_idx=htons((short)animation->smooth_animate_idx);
 		net_animation->model_smooth_pose_move_idx=htons((short)animation->smooth_pose_move_idx);
+
+		animation++;
+		net_animation++;
 	}
 	
-	update.model_mesh_mask=htons((short)draw->mesh_mask);
+	update.model_mesh_mask=htonl(draw->mesh_mask);
 	memmove(update.model_cur_texture_frame,draw->cur_texture_frame,max_model_texture);
 
 		// send update

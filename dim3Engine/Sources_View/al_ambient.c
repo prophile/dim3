@@ -36,6 +36,22 @@ al_ambient_type					al_ambients[al_max_ambient];
 
 extern al_source_type			al_sources[al_max_source];
 
+#ifdef SDL_SOUND
+
+void al_ambient_list_clear(void)
+{
+}	
+
+void al_ambient_list_add(int buffer_idx,int x,int y,int z,float pitch)
+{
+}
+
+void al_ambients_run(void)
+{
+}
+
+#else
+
 /* =======================================================
 
       Add Ambient Sounds To List
@@ -164,3 +180,4 @@ void al_ambients_run(void)
 	}
 }
 
+#endif

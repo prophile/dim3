@@ -32,6 +32,8 @@ and can be sold or given away.
 #include "scripts.h"
 #include "interfaces.h"
 
+extern float			team_color_server_tint[net_team_count][3];
+
 extern js_type			js;
 
 JSBool js_interface_text_show_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -42,6 +44,7 @@ JSBool js_interface_text_move_relative_func(JSContext *cx,JSObject *j_obj,uintN 
 JSBool js_interface_text_set_text_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_text_set_large_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_text_set_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_interface_text_set_team_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_text_set_alpha_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_text_start_fade_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
@@ -59,6 +62,7 @@ JSFunctionSpec	interface_text_functions[]={
 							{"setText",				js_interface_text_set_text_func,		2},
 							{"setLarge",			js_interface_text_set_large_func,		2},
 							{"setColor",			js_interface_text_set_color_func,		4},
+							{"setTeamColor",		js_interface_text_set_team_color_func,	2},
 							{"setAlpha",			js_interface_text_set_alpha_func,		2},
 							{"startFade",			js_interface_text_start_fade_func,		1},
 							{0}};
@@ -166,6 +170,24 @@ JSBool js_interface_text_set_large_func(JSContext *cx,JSObject *j_obj,uintN argc
 }
 
 JSBool js_interface_text_set_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int						idx;
+	hud_text_type			*text;
+	
+	text=script_find_text_from_name(argv[0]);
+	if (text==NULL) return(JS_FALSE);
+
+	idx=JSVAL_TO_INT(argv[1]);
+	if ((idx<0) || (idx>=net_team_count)) return(JS_TRUE);
+	
+	text->color.r=team_color_server_tint[idx][0];
+	text->color.g=team_color_server_tint[idx][1];
+	text->color.b=team_color_server_tint[idx][2];
+	
+	return(JS_TRUE);
+}
+
+JSBool js_interface_text_set_team_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
 	hud_text_type			*text;
 	

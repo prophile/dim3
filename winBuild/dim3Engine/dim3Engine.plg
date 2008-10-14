@@ -6,7 +6,7 @@
 --------------------Configuration: dim3Engine - Win32 Release--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP1F4.tmp" with contents
+Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP49C.tmp" with contents
 [
 /nologo /MD /W3 /Z7 /O2 /I "..\win32Includes\pthreads" /I "..\win32Includes\GLEW" /I "..\win32Includes\ZLib" /I "..\win32Includes\SDL" /I "..\win32Includes\OpenAL" /I "..\win32Includes\JS" /I "..\win32Includes\PNG" /I "..\..\dim3Engine\Headers_View" /I "..\..\dim3Engine\Headers_Server" /I "..\..\dim3Engine\Headers_Network" /I "..\..\dim3Engine\Headers" /I "..\..\dim3MapUtility\Headers" /I "..\..\dim3ModelUtility\Headers" /I "..\..\dim3BaseUtility\Headers" /I "..\..\dim3Common\Headers" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "D3_PCH" /D "D3_ENGINE" /Fp"Release/dim3Engine.pch" /YX"dim3Engine.h" /Fo"Release/" /Fd"Release/" /FD /c 
 "C:\Gumba\dim3Code\dim3Engine\Sources\app.c"
@@ -296,8 +296,8 @@ Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP1F4.tmp" with cont
 "C:\Gumba\dim3Code\dim3Engine\Sources_Network\net_host_client_handler.c"
 "C:\Gumba\dim3Code\dim3Engine\Sources_Network\net_host_players.c"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP1F4.tmp" 
-Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP1F5.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP49C.tmp" 
+Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP49D.tmp" with contents
 [
 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"Release/dim3 Engine.pdb" /machine:I386 /out:"..\..\..\dim3\dim3 Engine.exe" 
 .\Release\app.obj
@@ -601,7 +601,7 @@ kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32
 ..\dim3ModelUtility\Release\dim3ModelUtility.lib
 ..\dim3MapUtility\Release\dim3MapUtility.lib
 ]
-Creating command line "link.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP1F5.tmp"
+Creating command line "link.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP49D.tmp"
 <h3>Output Window</h3>
 Compiling...
 app.c

@@ -43,6 +43,73 @@ extern int					al_buffer_count;
 extern al_buffer_type		al_buffers[al_max_buffer];
 extern al_source_type		al_sources[al_max_source];
 
+#ifdef SDL_SOUND
+
+
+bool al_music_initialize(char *err_str)
+{
+	return(TRUE);
+}
+
+void al_music_shutdown(void)
+{
+}
+
+bool al_music_play(char *name,char *path)
+{
+	return(TRUE);
+}
+
+void al_music_stop(void)
+{
+}
+
+void al_music_pause(void)
+{
+}
+
+void al_music_resume(void)
+{
+}
+
+bool al_music_playing(void)
+{
+	return(TRUE);
+}
+
+bool al_music_playing_is_name(char *name)
+{
+	return(TRUE);
+}
+
+void al_music_set_volume(float music_volume)
+{
+}
+
+void al_music_set_state(bool music_on)
+{
+}
+
+bool al_music_fade_in(int tick,char *name,char *path,int msec)
+{
+	return(TRUE);
+}
+
+void al_music_fade_out(int tick,int msec)
+{
+}
+
+bool al_music_fade_out_fade_in(int tick,char *name,char *path,int fade_out_msec,int fade_in_msec)
+{
+	return(TRUE);
+}
+
+void al_music_run(int tick)
+{
+}
+
+#else
+
 /* =======================================================
 
       Music Initialize and Shutdown
@@ -340,3 +407,5 @@ void al_music_run(int tick)
 	}
 	
 }
+
+#endif

@@ -33,6 +33,8 @@ and can be sold or given away.
 #include "objects.h"
 #include "models.h"
 
+extern char				setup_team_color_list[net_team_count+1][32];
+
 extern server_type		server;
 extern js_type			js;
 
@@ -46,6 +48,7 @@ JSBool js_map_object_nearest_team_func(JSContext *cx,JSObject *j_obj,uintN argc,
 JSBool js_map_object_get_name_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_type_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_object_get_team_name_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_distance_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_angle_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_position_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -81,6 +84,7 @@ JSFunctionSpec	map_object_functions[]={
 							{"getName",				js_map_object_get_name_func,				1},
 							{"getType",				js_map_object_get_type_func,				1},
 							{"getTeam",				js_map_object_get_team_func,				1},
+							{"getTeamName",			js_map_object_get_team_name_func,			1},
 							{"getDistance",			js_map_object_get_distance_func,			4},
 							{"getAngleTo",			js_map_object_get_angle_to_func,			4},
 							{"getPosition",			js_map_object_get_position_func,			1},
@@ -386,6 +390,19 @@ JSBool js_map_object_get_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 	if (obj==NULL) return(JS_FALSE);
 
 	*rval=INT_TO_JSVAL(obj->team_idx+sd_team_none);
+	return(JS_TRUE);
+}
+
+JSBool js_map_object_get_team_name_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	obj_type		*obj;
+	
+		// uid
+	
+	obj=script_find_obj_from_uid_arg(argv[0]);
+	if (obj==NULL) return(JS_FALSE);
+
+	*rval=script_string_to_value(setup_team_color_list[obj->team_idx]);
 	return(JS_TRUE);
 }
 

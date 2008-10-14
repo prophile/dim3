@@ -39,6 +39,36 @@ extern int					al_buffer_count,al_source_count;
 extern al_buffer_type		al_buffers[al_max_buffer];
 extern al_source_type		al_sources[al_max_source];
 
+#ifdef SDL_SOUND
+
+void al_set_listener(int x,int y,int z,float ang_y)
+{
+}
+
+int al_distance_to_listener(int x,int y,int z)
+{
+	return(0);
+}
+
+int al_play_source(int buffer_idx,int x,int y,int z,float pitch,bool loop,bool ambient,bool global,bool player)
+{
+	return(-1);
+}
+
+void al_stop_source(int source_idx)
+{
+}
+
+void al_stop_all_sources(void)
+{
+}
+
+void al_stop_all_looping_sources(void)
+{
+}
+
+#else
+
 /* =======================================================
 
       Set Listener
@@ -285,4 +315,6 @@ int al_get_next_source_ambient(int source_idx)
 
 	return(-1);
 }
+
+#endif
 

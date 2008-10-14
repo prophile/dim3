@@ -29,165 +29,165 @@ and can be sold or given away.
 // game states
 //
 
-#define gs_running					0
-#define gs_intro					1
-#define gs_credit					2
-#define gs_join						3
-#define gs_host						4
-#define gs_menu						5
-#define gs_chooser					6
-#define gs_setup_game				7
-#define gs_setup_network			8
-#define gs_file						9
-#define gs_story					10
-#define gs_title					11
-#define gs_movie					12
-#define gs_error					13
-#define gs_map_pick					14
+#define gs_running								0
+#define gs_intro								1
+#define gs_credit								2
+#define gs_join									3
+#define gs_host									4
+#define gs_menu									5
+#define gs_chooser								6
+#define gs_setup_game							7
+#define gs_setup_network						8
+#define gs_file									9
+#define gs_story								10
+#define gs_title								11
+#define gs_movie								12
+#define gs_error								13
+#define gs_map_pick								14
 
 //
 // maximums
 //
 
-#define max_object					2048
-#define max_projectile				256
-#define max_effect					512
-#define max_decal					128
+#define max_object								2048
+#define max_projectile							256
+#define max_effect								512
+#define max_decal								128
 
-#define max_weapon					512
-#define max_proj_setup				512
+#define max_weapon								512
+#define max_proj_setup							512
 
-#define max_particle				256
-#define max_particle_count			256
-#define max_particle_trail			16
-#define max_particle_variation		4
-#define max_particle_group			16
-#define max_ring					32
-#define max_halo					32
-#define max_mark					256
-#define max_crosshair				32
-#define max_rain_density			5120
+#define max_particle							256
+#define max_particle_count						256
+#define max_particle_trail						16
+#define max_particle_variation					4
+#define max_particle_group						16
+#define max_ring								32
+#define max_halo								32
+#define max_mark								256
+#define max_crosshair							32
+#define max_rain_density						5120
 
-#define max_object_bit_mask			32
+#define max_object_bit_mask						32
 
 //
 // binding types
 //
 
-#define bt_game						0
-#define bt_map						1
-#define bt_remote					2
+#define bt_game									0
+#define bt_map									1
+#define bt_remote								2
 
 //
 // input modes
 //
 
-#define im_fpp						0
-#define im_side_scroll				1
-#define im_top_down					2
-#define im_fly						3
-#define im_thrust					4
+#define im_fpp									0
+#define im_side_scroll							1
+#define im_top_down								2
+#define im_fly									3
+#define im_thrust								4
 
 //
 // effect types
 //
 
-#define ef_flash					0
-#define ef_particle					1
-#define ef_ring						2
-#define ef_lightning				3
-#define ef_ray						4
-#define ef_globe					5
-#define ef_shake					6
+#define ef_flash								0
+#define ef_particle								1
+#define ef_ring									2
+#define ef_lightning							3
+#define ef_ray									4
+#define ef_globe								5
+#define ef_shake								6
 
 //
 // weapon modes
 //
 
-#define wm_held						0
-#define wm_lower					1
-#define wm_raise					2
+#define wm_held									0
+#define wm_lower								1
+#define wm_raise								2
 
 //
 // weapon crosshair types
 //
 
-#define ct_center					0
-#define ct_bone_tracking			1
-#define ct_bone_tracking_resizing	2
-#define ct_barrel_tracking			3
-#define ct_barrel_tracking_resizing	4
-#define ct_barrel_debug				5
+#define ct_center								0
+#define ct_bone_tracking						1
+#define ct_bone_tracking_resizing				2
+#define ct_barrel_tracking						3
+#define ct_barrel_tracking_resizing				4
+#define ct_barrel_debug							5
 
 //
 // ducking modes
 //
 
-#define dm_stand					0
-#define dm_duck						1
-#define dm_stand_up					2
-#define dm_duck_down				3
+#define dm_stand								0
+#define dm_duck									1
+#define dm_stand_up								2
+#define dm_duck_down							3
 
 //
 // air modes
 //
 
-#define am_up						0
-#define am_down						1
-#define am_falling					2
-#define am_ground					3
+#define am_up									0
+#define am_down									1
+#define am_falling								2
+#define am_ground								3
 
 //
 // liquid modes
 //
 
-#define lm_out						0
-#define lm_in						1
-#define lm_under					2
+#define lm_out									0
+#define lm_in									1
+#define lm_under								2
 
 //
 // animation modes
 //
 
-#define am_stopped					0
-#define am_playing					1
-#define am_resting					2
+#define am_stopped								0
+#define am_playing								1
+#define am_resting								2
 
 //
 // auto walk modes
 //
 
-#define aw_none						0
-#define aw_node						1
-#define aw_object					2
-#define aw_object_turn_only			3
-#define aw_position					4
+#define aw_none									0
+#define aw_node									1
+#define aw_object								2
+#define aw_object_turn_only						3
+#define aw_position								4
 
 //
 // model lighting
 //
  
-#define ml_flat						0
-#define ml_hilite					1
-#define ml_hilite_diffuse			2
-#define ml_vertex					3
+#define ml_flat									0
+#define ml_hilite								1
+#define ml_hilite_diffuse						2
+#define ml_vertex								3
 
 //
 // shadow settings
 //
 
-#define sm_normal					0
-#define sm_static					1
+#define sm_normal								0
+#define sm_static								1
 
-#define max_shadow_poly				64
+#define max_shadow_poly							64
 
 //
 // misc settings
 //
 
-#define ws_step_factor				4					// how much to reduce movement when wall sliding
-#define pd_parent_grace				100					// how long till projectile can strike parent again
-#define ci_object_click_angle		20.0f				// angle at which you can click an object
+#define ws_step_factor							4					// how much to reduce movement when wall sliding
+#define pd_parent_grace							100					// how long till projectile can strike parent again
+#define ci_object_click_angle					20.0f				// angle at which you can click an object
 
 //
 // models

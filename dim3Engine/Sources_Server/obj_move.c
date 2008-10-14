@@ -703,7 +703,7 @@ void object_move_y_fly(obj_type *obj,int ymove)
 
 bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int lx,int rx,int lz,int rz)
 {
-	int					n,xadd2,zadd2,mx,mz;
+	int					n,xadd2,yadd2,zadd2,mx,mz;
 	float				f,ang,rang;
 	bool				hit,cwise;
 	d3vct				line_vct,obj_vct;
@@ -711,31 +711,43 @@ bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int l
 		// special check for horizontal/vertical walls
 
 	if (lx==rx) {
-
 		xadd2=0;
-		hit=collide_object_to_map(obj,&xadd2,yadd,zadd);
-		obj->pnt.z+=(*zadd);
-		if (!hit) return(FALSE);
+		yadd2=0;
+		zadd2=*zadd;
 
+		if (collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) return(FALSE);
+
+		obj->pnt.z+=zadd2;
+
+		xadd2=*xadd;
+		yadd2=0;
 		zadd2=0;
-		hit=collide_object_to_map(obj,xadd,yadd,&zadd2);
-		obj->pnt.x+=(*xadd);
 
-		return(hit);
+		if (collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) return(FALSE);
+
+		obj->pnt.x+=xadd2;
+
+		return(FALSE);
 	}
 	
 	if (lz==rz) {
-
+		xadd2=*xadd;
+		yadd2=0;
 		zadd2=0;
-		hit=collide_object_to_map(obj,xadd,yadd,&zadd2);
-		obj->pnt.x+=(*xadd);
-		if (!hit) return(FALSE);
+
+		if (collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) return(FALSE);
+
+		obj->pnt.x+=xadd2;
 
 		xadd2=0;
-		hit=collide_object_to_map(obj,&xadd2,yadd,zadd);
-		obj->pnt.z+=(*zadd);
+		yadd2=0;
+		zadd2=*zadd;
 
-		return(hit);
+		if (collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) return(FALSE);
+
+		obj->pnt.z+=zadd2;
+
+		return(FALSE);
 	}
 	
 		// get angle between the line and the object movement
@@ -782,30 +794,44 @@ bool object_move_xz_slide_line(obj_type *obj,int *xadd,int *yadd,int *zadd,int l
 
 	for (n=0;n!=ws_step_factor;n++) {
 
+			// try z then x movement first
+
 		xadd2=0;
+		yadd2=0;
 		zadd2=mz;
 
-		hit=collide_object_to_map(obj,&xadd2,yadd,&zadd2);
-		obj->pnt.z+=zadd2;
+		hit=collide_object_to_map(obj,&xadd2,&yadd2,&zadd2);
+		
+		if (!hit) {
+			obj->pnt.z+=zadd2;
 
-		if (hit) {
 			xadd2=mx;
+			yadd2=0;
 			zadd2=0;
-			collide_object_to_map(obj,&xadd2,yadd,&zadd2);
-			obj->pnt.x+=xadd2;
+
+			if (!collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) {
+				obj->pnt.x+=xadd2;
+			}
+
+			continue;
 		}
-		else {
 
-			xadd2=mx;
-			zadd2=0;
+			// try x then z movement next
 
-			hit=collide_object_to_map(obj,&xadd2,yadd,&zadd2);
+		xadd2=mx;
+		yadd2=0;
+		zadd2=0;
+
+		hit=collide_object_to_map(obj,&xadd2,&yadd2,&zadd2);
+
+		if (!hit) {
 			obj->pnt.x+=xadd2;
 
-			if (hit) {
-				xadd2=0;
-				zadd2=mz;
-				collide_object_to_map(obj,&xadd2,yadd,&zadd2);
+			xadd2=0;
+			yadd2=0;
+			zadd2=mz;
+
+			if (!collide_object_to_map(obj,&xadd2,&yadd2,&zadd2)) {
 				obj->pnt.z+=zadd2;
 			}
 		}

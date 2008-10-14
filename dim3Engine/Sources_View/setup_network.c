@@ -64,7 +64,7 @@ extern hud_type				hud;
 extern setup_type			setup_backup;
 
 int							setup_network_tab_value,setup_network_host_scroll_pos;
-char						setup_team_color_list[][32]=net_team_color_list_def,
+char						setup_team_color_list[net_team_count+1][32]=net_team_color_list_def,
 							setup_host_list[max_setup_network_host+1][128];
 
 /* =======================================================

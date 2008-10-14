@@ -513,7 +513,7 @@ void join_game(void)
 	int							idx,remote_uid,remote_count;
 	char						game_name[name_str_len],map_name[name_str_len],
 								deny_reason[64],err_str[256];
-	network_request_remote_add	remotes[net_max_remote_count];
+	network_request_remote_add	remotes[host_max_remote_count];
 	
 		// get game to join
 		

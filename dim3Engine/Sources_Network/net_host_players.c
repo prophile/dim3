@@ -33,7 +33,7 @@ extern char team_colors[][16];
 
 int						net_host_player_count,server_next_remote_uid;
 float					team_color_server_tint[net_team_count][3]=net_team_color_server_tint_def;
-net_host_player_type	net_host_players[net_max_remote_count];
+net_host_player_type	net_host_players[host_max_remote_count];
 
 pthread_mutex_t			net_host_player_lock;
 
@@ -139,7 +139,7 @@ int net_host_player_join(d3socket sock,char *name,char *deny_reason)
 	
 		// host full?
 		
-	if (net_host_player_count==net_max_remote_count) {
+	if (net_host_player_count==host_max_remote_count) {
 		strcpy(deny_reason,"Server is full");
 		pthread_mutex_unlock(&net_host_player_lock);
 		return(-1);
@@ -366,7 +366,7 @@ int net_host_player_create_remote_add_list(int player_remote_uid,network_request
 void net_host_player_send_others_packet(int player_remote_uid,int action,int queue_mode,unsigned char *data,int len,bool skip_flooded)
 {
 	int						n,nsock;
-	d3socket				socks[net_max_remote_count];
+	d3socket				socks[host_max_remote_count];
 	net_host_player_type	*player;
 	
 		// we build the list of other player's sockets

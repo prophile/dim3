@@ -49,7 +49,7 @@ void net_host_client_handle_info(int sock)
 	network_reply_info		info;
 	
 	info.player_count=htons((short)net_host_player_count);
-	info.player_max_count=htons((short)net_max_remote_count);
+	info.player_max_count=htons((short)host_max_remote_count);
 	strcpy(info.host_name,net_setup.host.name);
 	strcpy(info.host_ip_resolve,net_setup.host.ip_resolve);
 	strcpy(info.proj_name,net_setup.host.proj_name);
@@ -182,7 +182,7 @@ void* net_host_client_handler_thread(void *arg)
 			// any messages?
 			
 		if (!network_receive_ready(sock)) {
-			usleep(server_no_data_u_wait);
+			usleep(host_no_data_u_wait);
 			continue;
 		}
 		
@@ -192,7 +192,7 @@ void* net_host_client_handler_thread(void *arg)
 			
 		if (!network_receive_packet(sock,&action,&queue_mode,&from_remote_uid,data,&len)) {
 			net_error_count++;
-			if (net_error_count==server_max_network_error_reject) {
+			if (net_error_count==host_max_network_error_reject) {
 				if (client_remote_uid!=-1) net_host_client_handle_leave(client_remote_uid);
 				client_remote_uid=-1;
 				break;

@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "network.h"
+#include "scripts.h"
 #include "objects.h"
 #include "remotes.h"
 #include "weapons.h"
@@ -65,11 +66,11 @@ extern void map_end(void);
       
 ======================================================= */
 
-bool remote_add(network_request_remote_add *add)
+bool remote_add(network_request_remote_add *add,bool send_event)
 {
 	int					n;
 	char				err_str[256];
-	obj_type			*obj;
+	obj_type			*obj,*player_obj;
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
     
@@ -124,28 +125,54 @@ bool remote_add(network_request_remote_add *add)
 		// start remotes hidden
 		
 	obj->hidden=TRUE;
+
+		// send event to player
+
+	if (send_event) {
+		player_obj=object_find_uid(server.player_obj_uid);
+		scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_join,obj->uid);
+	}
 	
 	return(TRUE);
 }
 
-void remote_team(int remote_uid,network_request_team *team)
+void remote_team(int remote_uid,network_request_team *team,bool send_event)
 {
-	obj_type			*obj;
+	obj_type			*obj,*player_obj;
 	
+		// change team
+
 	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
 
 	obj->team_idx=(signed short)ntohs(team->team_idx);
+
+		// send event to player
+
+	if (send_event) {
+		player_obj=object_find_uid(server.player_obj_uid);
+		scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_team,obj->uid);
+	}
 }
 
-void remote_remove(int remote_uid)
+void remote_remove(int remote_uid,bool send_event)
 {
 	int					idx;
+	obj_type			*player_obj;
 	
 		// find remote index
 		
 	idx=object_find_index_remote_uid(remote_uid);
 	if (idx==-1) return;
+
+		// send event to player
+		// do it before dispose so player can
+		// read the object if it wants to
+
+	if (send_event) {
+		player_obj=object_find_uid(server.player_obj_uid);
+		scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_leave,server.objs[idx].uid);
+	}
 	
 		// remove the obj
 		
@@ -198,12 +225,12 @@ void remote_get_ui_color(obj_type *obj,d3col *col)
 
 bool remote_timed_out(obj_type *obj)
 {
-	return((game_time_get()-obj->remote.last_update)>net_communication_timeout_msec);
+	return((game_time_get()-obj->remote.last_update)>client_communication_timeout_msec);
 }
 
 bool remote_slow(obj_type *obj)
 {
-	return((game_time_get()-obj->remote.last_update)>net_communication_slow_msec);
+	return((game_time_get()-obj->remote.last_update)>client_communication_slow_msec);
 }
 
 /* =======================================================
@@ -221,10 +248,10 @@ void remote_predict_move(obj_type *obj)
 		// if slow, then reduce movement
 		
 	if (remote_slow(obj)) {
-		obj->motion.vct.x*=net_predict_slow_reduction;
-		obj->motion.vct.y*=net_predict_slow_reduction;
-		obj->motion.vct.z*=net_predict_slow_reduction;
-		obj->turn.fix_ang_add.y*=net_predict_slow_reduction;
+		obj->motion.vct.x*=client_predict_slow_reduction;
+		obj->motion.vct.y*=client_predict_slow_reduction;
+		obj->motion.vct.z*=client_predict_slow_reduction;
+		obj->turn.fix_ang_add.y*=client_predict_slow_reduction;
 	}
 	
 		// predict rotations
@@ -247,7 +274,7 @@ void remote_host_reset(void)
 	int							remote_uid,remote_count;
 	char						game_name[name_str_len],map_name[name_str_len],
 								deny_reason[64],err_str[256];
-	network_request_remote_add	remotes[net_max_remote_count];
+	network_request_remote_add	remotes[host_max_remote_count];
 	
 		// quit current game
 		
@@ -356,10 +383,6 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 	obj->ang.x=ntohf(update->fp_ang_x);
 	obj->ang.y=ntohf(update->fp_ang_y);
 	obj->ang.z=ntohf(update->fp_ang_z);
-
-	if (map_spot_empty_object(obj)) {
-		memmove(&obj->pnt,&org_pnt,sizeof(d3pnt));		// spot not empty, don't move there
-	}
 	
 		// update predicition values
 		
@@ -387,7 +410,7 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 		animation->smooth_pose_move_idx=(signed short)ntohs(net_animation->model_smooth_pose_move_idx);
 	}			
 		
-	draw->mesh_mask=(signed short)ntohs(update->model_mesh_mask);
+	draw->mesh_mask=ntohl(update->model_mesh_mask);
 	memmove(&draw->cur_texture_frame,update->model_cur_texture_frame,max_model_texture);
 	
 		// update flags
@@ -622,7 +645,7 @@ bool remote_network_get_updates(int tick)
 
 	count=0;
 	
-	while (count<net_client_message_per_loop_count) {
+	while (count<client_message_per_loop_count) {
 	
 			// check for messages
 
@@ -637,15 +660,15 @@ bool remote_network_get_updates(int tick)
 				break;
 				
 			case net_action_request_team:
-				remote_team(from_remote_uid,(network_request_team*)data);
+				remote_team(from_remote_uid,(network_request_team*)data,TRUE);
 				break;
 
 			case net_action_request_remote_add:
-				remote_add((network_request_remote_add*)data);
+				remote_add((network_request_remote_add*)data,TRUE);
 				break;
 				
 			case net_action_request_remote_remove:
-				remote_remove(from_remote_uid);
+				remote_remove(from_remote_uid,TRUE);
 				break;
 			
 			case net_action_request_remote_update:

@@ -134,12 +134,12 @@ void loop_game_run(int tick)
 	if (net_setup.client.joined) {
 	
 		if (tick>=server.time.network_update_tick) {
-			server.time.network_update_tick=tick+net_communication_update_msec_rate;
+			server.time.network_update_tick=tick+client_communication_update_msec_rate;
 			remote_network_send_updates(tick);
 		}
 
 		if (tick>=server.time.network_latency_ping_tick) {
-			server.time.network_latency_ping_tick=tick+net_communication_latency_ping_msec_rate;
+			server.time.network_latency_ping_tick=tick+client_communication_latency_ping_msec_rate;
 			remote_network_send_latency_ping(tick);
 		}
 	}
