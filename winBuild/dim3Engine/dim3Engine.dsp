@@ -1197,6 +1197,9 @@ SOURCE=..\..\dim3Engine\Headers_View\view_defs.h
 # Begin Group "View Sources"
 
 # PROP Default_Filter ""
+# Begin Group "Audio"
+
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_View\al_ambient.c
@@ -1225,6 +1228,39 @@ SOURCE=..\..\dim3Engine\Sources_View\al_setup.c
 
 SOURCE=..\..\dim3Engine\Sources_View\ambients.c
 # End Source File
+# End Group
+# Begin Group "Video"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_View\gl_check.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_View\gl_frames.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_View\gl_renderer.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_View\gl_shader.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_View\gl_shadow.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_View\gl_text.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_View\gl_texture.c
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_View\chooser_draw.c
@@ -1272,34 +1308,6 @@ SOURCE=..\..\dim3Engine\Sources_View\files.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_View\fog.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_View\gl_check.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_View\gl_frames.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_View\gl_renderer.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_View\gl_shader.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_View\gl_shadow.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_View\gl_text.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_View\gl_texture.c
 # End Source File
 # Begin Source File
 

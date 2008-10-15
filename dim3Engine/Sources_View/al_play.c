@@ -41,17 +41,84 @@ extern al_source_type		al_sources[al_max_source];
 
 #ifdef SDL_SOUND
 
+extern int					audio_global_sound_volume;
+extern d3pnt				audio_listener_pnt;
+
+extern audio_play_type		audio_plays[audio_max_play];
+
+// supergumba -- get rid of ang_y
 void al_set_listener(int x,int y,int z,float ang_y)
 {
+	audio_listener_pnt.x=x;
+	audio_listener_pnt.y=y;
+	audio_listener_pnt.z=z;
 }
 
 int al_distance_to_listener(int x,int y,int z)
 {
-	return(0);
+	return(distance_get(x,y,z,audio_listener_pnt.x,audio_listener_pnt.y,audio_listener_pnt.z));
 }
 
-int al_play_source(int buffer_idx,int x,int y,int z,float pitch,bool loop,bool ambient,bool global,bool player)
+// supergumba -- deal with ambient, loop, global
+// supergumba -- deal with pitch
+// supergumba -- can we delete ambient
+// supergumba -- need to deal with volume, also
+
+int al_play_source(int buffer_idx,int x,int y,int z,float pitch,bool loop,bool ambient,bool no_position,bool no_cancel)
 {
+	int					n,idx,non_no_cancel_idx;
+	audio_play_type		*play;
+
+	SDL_LockAudio();
+
+		// find an open play structure
+		// also find first non no_cancel
+		// source in case we need to replace one
+
+	idx=non_no_cancel_idx=-1;
+	play=audio_plays;
+
+	for (n=0;n!=audio_max_play;n++) {
+		if (!play->used) {
+			idx=n;
+			break;
+		}
+		if (non_no_cancel_idx==-1) non_no_cancel_idx=n;
+		play++;
+	}
+
+		// if possible, replace another sound
+
+	if (idx==-1) idx=non_no_cancel_idx;
+
+		// no place, can't place sound
+
+	if (idx==-1) {
+		SDL_UnlockAudio();
+		return(-1);
+	}
+
+		// setup play structure
+
+	play->buffer_idx=buffer_idx;
+	play->stream_pos=0;
+
+	play->pitch=pitch;
+
+	play->pnt.x=x;
+	play->pnt.y=y;
+	play->pnt.z=z;
+
+	play->vol_fact=audio_global_sound_volume;
+
+	play->loop=loop;
+	play->no_position=no_position;
+	play->no_cancel=no_cancel;
+
+	play->used=TRUE;
+
+	SDL_UnlockAudio();
+
 	return(-1);
 }
 

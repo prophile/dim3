@@ -6,7 +6,7 @@
 --------------------Configuration: dim3MapUtility - Win32 Release--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP3E2.tmp" with contents
+Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP4B8.tmp" with contents
 [
 /nologo /MD /W3 /GX /O2 /I "..\win32Includes\pthreads" /I "..\win32Includes\GLEW" /I "..\win32Includes\ZLib" /I "..\win32Includes\SDL" /I "..\win32Includes\OpenAL" /I "..\win32Includes\JS" /I "..\win32Includes\PNG" /I "..\..\dim3MapUtility\Headers" /I "..\..\dim3Common\Headers" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "D3_PCH" /Fp"Release/dim3MapUtility.pch" /YX"dim3MapUtility.h" /Fo"Release/" /Fd"Release/" /FD /c 
 "C:\Gumba\dim3Code\winBuild\dim3MapUtility\win32Code\dim3MapUtility.c"
@@ -36,8 +36,8 @@ Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP3E2.tmp" with cont
 "C:\Gumba\dim3Code\dim3MapUtility\Sources\prepare.c"
 "C:\Gumba\dim3Code\dim3MapUtility\Sources\spots.c"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP3E2.tmp" 
-Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP3E3.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP4B8.tmp" 
+Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP4B9.tmp" with contents
 [
 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"Release/dim3MapUtility.pdb" /machine:I386 /def:".\win32Code\dim3MapUtility.def" /out:"..\..\..\dim3\dim3MapUtility.dll" /implib:"Release/dim3MapUtility.lib" 
 .\Release\dim3MapUtility.obj
@@ -75,7 +75,7 @@ kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32
 ..\win32Includes\ZLib\zdll.lib
 ..\dim3BaseUtility\Release\dim3BaseUtility.lib
 ]
-Creating command line "link.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP3E3.tmp"
+Creating command line "link.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP4B9.tmp"
 <h3>Output Window</h3>
 Compiling...
 dim3MapUtility.c

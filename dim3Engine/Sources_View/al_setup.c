@@ -46,18 +46,137 @@ al_source_type			al_sources[al_max_source];
 
 #ifdef SDL_SOUND
 
+int						audio_global_sound_volume,audio_global_music_volume;
+d3pnt					audio_listener_pnt;
+audio_play_type			audio_plays[audio_max_play];
 
 
 void audio_callback(void *userdata,Uint8 *stream,int len)
 {
+	int					n,k,stream_len,dist,
+						left_channel,right_channel;
+	short				*s_stream,data;
+	bool				has_play;
+	audio_play_type		*play;
+	al_buffer_type		*buffer;
 
+		// calculate pitch and left/right channel multiplications
+		// here.  We use a x/1024 factor to save on having to do
+		// any int -> float conversions
 
+	has_play=FALSE;
+
+	for (n=0;n!=audio_max_play;n++) {
+
+		play=&audio_plays[n];
+
+			// start with sound being skipped, only
+			// use if a sound exists and it's within the
+			// maximum distance
+
+		play->skip=TRUE;
+
+		if (!play->used) continue;
+
+			// mark to see if we have any sounds at all
+
+		has_play=TRUE;
+
+			// is there positioning?
+
+		if (play->no_position) {
+			play->skip=FALSE;
+			play->left_fact=play->right_fact=1024;
+			continue;
+		}
+
+			// are we within the maximum distance?
+
+		buffer=&al_buffers[play->buffer_idx];
+
+		dist=distance_get(play->pnt.x,play->pnt.y,play->pnt.z,audio_listener_pnt.x,audio_listener_pnt.y,audio_listener_pnt.z);
+		if (dist>=buffer->max_dist) continue;
+
+			// calculate left/right channels
+
+		play->skip=FALSE;
+
+		if (dist<=buffer->min_dist) {
+			play->left_fact=play->right_fact=1024;
+		}
+		else {
+			play->left_fact=1024-(int)(1024.0f*((float)(dist-buffer->min_dist)/(float)(buffer->max_dist-buffer->min_dist)));
+			play->right_fact=play->left_fact;
+		}
+	}
+
+		// if no plays, skip
+
+	if (!has_play) return;
+
+		// mix the audio
+
+	s_stream=(short*)stream;
+	stream_len=len>>2;					// we are in stereo and 16 bit samples, so divide len by 4
+
+	for (k=0;k<stream_len;k++) {
+
+		left_channel=0;
+		right_channel=0;
+
+			// mix plays
+
+		play=audio_plays;
+
+		for (n=0;n!=audio_max_play;n++) {
+
+			if (!play->skip) {
+
+					// get stream data
+
+				buffer=&al_buffers[play->buffer_idx];
+				data=(int)(*(buffer->data+play->stream_pos));
+
+					// create the channels
+
+				left_channel+=((data*play->left_fact)>>10);
+				right_channel+=((data*play->right_fact)>>10);
+				
+					// move onto next position in stream
+
+				play->stream_pos++;
+				if (play->stream_pos>=buffer->sample_len) {
+					play->used=FALSE;
+					play->skip=TRUE;
+				}
+
+			}
+
+			play++;
+		}
+
+			// global volume adjustment
+
+//		left_channel=((left_channel*play->vol_fact)>>10);
+		if (left_channel<-32768) left_channel=-32768;
+		if (left_channel>32768) left_channel=32768;
+
+//		right_channel=((right_channel*play->vol_fact)>>10);
+		if (right_channel<-32768) right_channel=-32768;
+		if (right_channel>32768) right_channel=32768;
+
+			// send channels to stream
+
+		*s_stream++=(short)left_channel;
+		*s_stream++=(short)right_channel;
+	}
 }
 
 
 
 bool al_initialize(char *err_str)
 {
+	int				n;
 	SDL_AudioSpec	aspec,ospec;
 
 	SDL_InitSubSystem(SDL_INIT_AUDIO);		// supergumba -- move to SDL_Init
@@ -89,16 +208,34 @@ bool al_initialize(char *err_str)
 
 	al_buffer_count=0;
 
+		// no sounds playing
+
+	for (n=0;n!=audio_max_play;n++) {
+		audio_plays[n].used=FALSE;
+	}
+
+		// default global volumes
+		// sound volumes are factors of x/1024
+
+	audio_global_sound_volume=512;
+	audio_global_music_volume=512;
+
+		// start loop
+
+	SDL_PauseAudio(0);
+
 	return(TRUE);
 }
 
 void al_shutdown(void)
 {
+	SDL_PauseAudio(1);
 	SDL_CloseAudio();
 }
 
 void al_set_volume(float sound_volume)
 {
+	audio_global_sound_volume=(int)(1024.0f*sound_volume);
 }
 
 #else

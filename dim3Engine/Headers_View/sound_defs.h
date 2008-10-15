@@ -25,6 +25,9 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#define SDL_SOUND			1
+// supergumba -- temporary, trying to switch to SDL sound
+
 //
 // audio setup
 //
@@ -32,7 +35,7 @@ and can be sold or given away.
 #define audio_frequency							44100
 #define audio_format							AUDIO_S16LSB
 #define audio_channels							2
-#define audio_sample_size						8192
+#define audio_sample_size						2048
 
 //
 // sound maximums
@@ -41,6 +44,8 @@ and can be sold or given away.
 #define al_max_source							32
 #define al_max_buffer							512
 #define al_max_ambient							8
+
+#define audio_max_play							32
 
 //
 // fade directions
@@ -56,20 +61,28 @@ and can be sold or given away.
 //
 	
 typedef struct		{
-						int						index,len;
+						int						index,len,sample_len;
 						float					min_dist,max_dist;
 						char					name[name_str_len];
 						bool					loaded;
-						unsigned char			*data;
+						short					*data;
 						unsigned int			al_id;			// supergumba -- can delete a lot of this
 					} al_buffer_type;
+
+typedef struct		{
+                        int						buffer_idx,stream_pos,
+												left_fact,right_fact,vol_fact;
+                        float					pitch;
+						bool					used,skip,loop,no_position,no_cancel;
+						d3pnt					pnt;
+					} audio_play_type;
 	
 typedef struct		{
 						int						buffer_idx;
-						bool					ambient,player;
+						bool					ambient,player2;
 						unsigned int			al_id;
 						d3pnt					pnt;
-					} al_source_type;
+					} al_source_type;						// supergumba -- can delete
 
 typedef struct		{
                         int						buffer_idx,dist;

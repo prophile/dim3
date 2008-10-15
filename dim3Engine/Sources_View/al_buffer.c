@@ -95,8 +95,9 @@ int al_open_buffer(char *name,char *path,int min_dist,int max_dist)
 
 	strcpy(buffer->name,name);
 
-	buffer->data=acvt.buf;
+	buffer->data=(short*)acvt.buf;
 	buffer->len=(int)(((double)acvt.len)*acvt.len_ratio);
+	buffer->sample_len=buffer->len>>1;				// size of 16 bit samples
 	
 	buffer->min_dist=(float)min_dist;
 	buffer->max_dist=(float)max_dist;
@@ -114,7 +115,7 @@ void al_close_buffer(int idx)
 	al_buffer_type  *buffer;
 
 	buffer=&al_buffers[idx];
-	if (buffer->loaded) SDL_FreeWAV(al_buffers[idx].data);
+	if (buffer->loaded) SDL_FreeWAV((Uint8*)al_buffers[idx].data);
 
 	buffer->loaded=FALSE;
 }

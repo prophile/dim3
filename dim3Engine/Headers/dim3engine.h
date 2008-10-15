@@ -29,9 +29,6 @@ and can be sold or given away.
 // System Includes
 //
 
-// #define SDL_SOUND			1
-// supergumba -- temporary, trying to switch to SDL sound
-
 #include "os_defs.h"
 
 #ifdef D3_OS_MAC
