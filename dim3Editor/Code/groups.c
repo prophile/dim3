@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Group Routines
+ Usage: Group Utility Routines
 
 ***************************** License ********************************
 
@@ -32,85 +32,6 @@ and can be sold or given away.
 extern map_type					map;
 
 extern ControlRef				group_combo;
-
-/* =======================================================
-
-      Add\Delete Group
-      
-======================================================= */
-
-void group_add(void)
-{
-	group_type			*grp;
-	
-	if (map.ngroup<max_group) {
-	
-		grp=&map.groups[map.ngroup];
-		grp->name[0]=0x0;
-		if (dialog_group_settings_run(grp)) {
-			map.ngroup++;
-		}
-		
-	}
-	
-	main_wind_tool_fill_group_combo();
-}
-
-void group_clear(void)
-{
-	int					n,group_idx;
-	map_mesh_type		*mesh;
-	map_liquid_type		*liq;
-	
-		// get current group
-		
-	group_idx=GetControl32BitValue(group_combo);
-	
-	group_idx-=3;
-	if (group_idx<0) return;
-	
-		// clear group from meshes and liquids
-		
-	mesh=map.mesh.meshes;
-	
-	for (n=0;n!=map.mesh.nmesh;n++) {
-		if (mesh->group_idx==group_idx) mesh->group_idx=-1;
-		mesh++;
-	}
-	
-	liq=map.liquid.liquids;
-	
-	for (n=0;n!=map.liquid.nliquid;n++) {
-		if (liq->group_idx==group_idx) liq->group_idx=-1;
-		liq++;
-	}
-	
-	main_wind_tool_fill_group_combo();
-}
-
-void group_delete(void)
-{
-	int					n,group_idx;
-	
-		// clear group
-		
-	group_clear();
-	
-		// remove group
-		
-	group_idx=GetControl32BitValue(group_combo);
-	
-	group_idx-=3;
-	if (group_idx<0) return;
-
-	for (n=group_idx;n<map.ngroup;n++) {
-		map.groups[n]=map.groups[n+1];
-	}
-	map.ngroup--;
-	
-	main_wind_tool_fill_group_combo();
-}
-
 
 /* =======================================================
 
@@ -170,7 +91,34 @@ void group_set(int group_idx)
 				
 		}
 	}
+}
+
+void group_clear(int group_idx,bool delete_shift)
+{
+	int					n;
+	map_mesh_type		*mesh;
+	map_liquid_type		*liq;
 	
-	main_wind_tool_fill_group_combo();
+		// clear group from meshes and liquids
+		
+	mesh=map.mesh.meshes;
+	
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		if (mesh->group_idx==group_idx) mesh->group_idx=-1;
+		if (delete_shift) {
+			if (mesh->group_idx>group_idx) mesh->group_idx--;
+		}
+		mesh++;
+	}
+	
+	liq=map.liquid.liquids;
+	
+	for (n=0;n!=map.liquid.nliquid;n++) {
+		if (liq->group_idx==group_idx) liq->group_idx=-1;
+		if (delete_shift) {
+			if (liq->group_idx>group_idx) liq->group_idx--;
+		}
+		liq++;
+	}
 }
 

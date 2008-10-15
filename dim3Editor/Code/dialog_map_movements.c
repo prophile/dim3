@@ -242,7 +242,7 @@ static pascal OSStatus map_movements_event_proc(EventHandlerCallRef handler,Even
 
 /* =======================================================
 
-      File List Event Handlers
+      Movement List Event Handlers
       
 ======================================================= */
 

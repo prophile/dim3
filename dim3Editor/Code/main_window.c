@@ -311,16 +311,14 @@ void main_wind_control(ControlRef ctrl)
 	if (ctrl==group_combo) {
 		idx=GetControl32BitValue(ctrl);
 		
-			// no group
-			
 		if (idx==1) {
 			group_set(-1);
-			return;
+		}
+		else {
+			group_set(idx-3);
 		}
 		
-			// set a group
-			
-		group_set(idx-3);
+		main_wind_tool_fill_group_combo();
 		return;
 	}
 		

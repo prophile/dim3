@@ -465,18 +465,10 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 			// group menu
 			
-		case kCommandGroupAdd:
-			group_add();
+		case kCommandGroups:
+			dialog_map_groups_run();
 			return(noErr);
-			
-		case kCommandGroupDelete:
-			group_delete();
-			return(noErr);
-			
-		case kCommandGroupClear:
-			group_clear();
-			return(noErr);
-			
+
 		case kCommandGroupMovements:
 			dialog_map_movements_run();
 			return(noErr);

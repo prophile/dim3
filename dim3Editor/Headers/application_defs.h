@@ -94,9 +94,7 @@ and can be sold or given away.
 
 #define kCommandVertexSnapToGrid			FOUR_CHAR_CODE('vsnp')
 
-#define kCommandGroupAdd					FOUR_CHAR_CODE('gadd')
-#define kCommandGroupDelete					FOUR_CHAR_CODE('gdel')
-#define kCommandGroupClear					FOUR_CHAR_CODE('gclr')
+#define kCommandGroups						FOUR_CHAR_CODE('grrp')
 #define kCommandGroupMovements				FOUR_CHAR_CODE('mmov')
 
 //
