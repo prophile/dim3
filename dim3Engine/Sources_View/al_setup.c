@@ -157,11 +157,11 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 
 			// global volume adjustment
 
-//		left_channel=((left_channel*play->vol_fact)>>10);
+		left_channel=((left_channel*audio_global_sound_volume)>>10);
 		if (left_channel<-32768) left_channel=-32768;
 		if (left_channel>32768) left_channel=32768;
 
-//		right_channel=((right_channel*play->vol_fact)>>10);
+		right_channel=((right_channel*audio_global_sound_volume)>>10);
 		if (right_channel<-32768) right_channel=-32768;
 		if (right_channel>32768) right_channel=32768;
 

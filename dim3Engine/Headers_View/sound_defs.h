@@ -71,7 +71,7 @@ typedef struct		{
 
 typedef struct		{
                         int						buffer_idx,stream_pos,
-												left_fact,right_fact,vol_fact;
+												left_fact,right_fact;
                         float					pitch;
 						bool					used,skip,loop,no_position,no_cancel;
 						d3pnt					pnt;

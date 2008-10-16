@@ -324,16 +324,13 @@ void model_delete_unused_vertexes(model_type *model,int mesh_idx)
 			// delete vertex
 			
 		sz=(nvertex-n)*sizeof(model_vertex_type);
-		if (sz>0) {
-			memmove(&model->meshes[mesh_idx].vertexes[n],&model->meshes[mesh_idx].vertexes[n+1],sz);
-			
-			sz=nvertex-n;
-			memmove(&v_ok[n],&v_ok[n+1],sz);
-		}
+		if (sz>0) memmove(&model->meshes[mesh_idx].vertexes[n],&model->meshes[mesh_idx].vertexes[n+1],sz);
 		
 		nvertex--;
 	}
 	
 	model->meshes[mesh_idx].nvertex=nvertex;
+
+	free(v_ok);
 }
 

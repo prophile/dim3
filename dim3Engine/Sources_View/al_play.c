@@ -109,8 +109,6 @@ int al_play_source(int buffer_idx,int x,int y,int z,float pitch,bool loop,bool a
 	play->pnt.y=y;
 	play->pnt.z=z;
 
-	play->vol_fact=audio_global_sound_volume;
-
 	play->loop=loop;
 	play->no_position=no_position;
 	play->no_cancel=no_cancel;
