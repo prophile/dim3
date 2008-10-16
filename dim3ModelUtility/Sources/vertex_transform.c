@@ -304,11 +304,11 @@ void model_delete_unused_vertexes(model_type *model,int mesh_idx)
 	
 		// delete unused vertexes
 		
-	nvertex=model->meshes[mesh_idx].nvertex-1;
+	nvertex=model->meshes[mesh_idx].nvertex;
 	
-	for (n=nvertex;n>=0;n--) {
+	for (n=(nvertex-1);n>=0;n--) {
 	
-		if (v_ok[n]) continue;
+		if (v_ok[n]==0x1) continue;
 		
 			// change all trigs vertex pointers
 	
@@ -324,8 +324,13 @@ void model_delete_unused_vertexes(model_type *model,int mesh_idx)
 			// delete vertex
 			
 		sz=(nvertex-n)*sizeof(model_vertex_type);
-		if (sz>0) memmove(&model->meshes[mesh_idx].vertexes[n],&model->meshes[mesh_idx].vertexes[n+1],sz);
-	
+		if (sz>0) {
+			memmove(&model->meshes[mesh_idx].vertexes[n],&model->meshes[mesh_idx].vertexes[n+1],sz);
+			
+			sz=nvertex-n;
+			memmove(&v_ok[n],&v_ok[n+1],sz);
+		}
+		
 		nvertex--;
 	}
 	

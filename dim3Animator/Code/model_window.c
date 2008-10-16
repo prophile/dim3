@@ -38,7 +38,7 @@ ControlRef						tool_ctrl[tool_count];
 IconSuiteRef					tool_icon[tool_count];
 
 char							tool_tooltip_str[tool_count][64]={
-									"Show Textured Model","Show Mesh Only","Show Bones Only","Show Mesh and Bones Only",
+									"Show Textured Model","Show Mesh Only","Show Bones Only","Show Textured Model and Bones Only","Show Mesh and Bones Only",
 									"Always Show First Mesh","Show Model, Shadow, and Hit Boxes","Show Bump-Mapping","Show Normals",
 									"Rotate Bones Mode","Stretch Bones Mode","Play Current Animation"};
 
@@ -202,6 +202,7 @@ bool model_wind_control(ControlRef ctrl)
 			SetControlValue(tool_ctrl[1],0);
 			SetControlValue(tool_ctrl[2],0);
 			SetControlValue(tool_ctrl[3],0);
+			SetControlValue(tool_ctrl[4],0);
 			draw_type=dt_model;
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			break;
@@ -211,6 +212,7 @@ bool model_wind_control(ControlRef ctrl)
 			SetControlValue(tool_ctrl[1],1);
 			SetControlValue(tool_ctrl[2],0);
 			SetControlValue(tool_ctrl[3],0);
+			SetControlValue(tool_ctrl[4],0);
 			draw_type=dt_mesh;
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			break;
@@ -220,6 +222,7 @@ bool model_wind_control(ControlRef ctrl)
 			SetControlValue(tool_ctrl[1],0);
 			SetControlValue(tool_ctrl[2],1);
 			SetControlValue(tool_ctrl[3],0);
+			SetControlValue(tool_ctrl[4],0);
 			draw_type=dt_bones;
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			break;
@@ -229,38 +232,48 @@ bool model_wind_control(ControlRef ctrl)
 			SetControlValue(tool_ctrl[1],0);
 			SetControlValue(tool_ctrl[2],0);
 			SetControlValue(tool_ctrl[3],1);
-			draw_type=dt_mesh_bones;
+			SetControlValue(tool_ctrl[4],0);
+			draw_type=dt_model_bones;
 			break;
 			
 		case 4:
-			model_show_first_mesh=!model_show_first_mesh;
+			SetControlValue(tool_ctrl[0],0);
+			SetControlValue(tool_ctrl[1],0);
+			SetControlValue(tool_ctrl[2],0);
+			SetControlValue(tool_ctrl[3],0);
+			SetControlValue(tool_ctrl[4],1);
+			draw_type=dt_mesh_bones;
 			break;
 			
 		case 5:
-			model_box_on=!model_box_on;
+			model_show_first_mesh=!model_show_first_mesh;
 			break;
 			
 		case 6:
-			model_bump_on=!model_bump_on;
+			model_box_on=!model_box_on;
 			break;
 			
 		case 7:
-			model_normal_on=!model_normal_on;
+			model_bump_on=!model_bump_on;
 			break;
 			
 		case 8:
+			model_normal_on=!model_normal_on;
+			break;
+			
+		case 9:
 			drag_bone_mode=drag_bone_mode_rotate;
 			SetControlValue(tool_ctrl[8],1);
 			SetControlValue(tool_ctrl[9],0);
 			break;
 			
-		case 9:
+		case 10:
 			drag_bone_mode=drag_bone_mode_stretch;
 			SetControlValue(tool_ctrl[8],0);
 			SetControlValue(tool_ctrl[9],1);
 			break;
 			
-		case 10:
+		case 11:
 			model_wind_play(!play_animate,FALSE);
 			break;
 	}
@@ -724,7 +737,7 @@ void model_wind_open(void)
 			// next button position
 			
 		OffsetRect(&box,tool_button_size,0);
-		if ((n==3) || (n==7) || (n==9)) OffsetRect(&box,5,0);
+		if ((n==4) || (n==8) || (n==10)) OffsetRect(&box,5,0);
 	}
 	
 		// tabs
@@ -835,17 +848,18 @@ void model_wind_reset_tools(void)
 	SetControlValue(tool_ctrl[0],(draw_type==dt_model)?1:0);
 	SetControlValue(tool_ctrl[1],(draw_type==dt_mesh)?1:0);
 	SetControlValue(tool_ctrl[2],(draw_type==dt_bones)?1:0);
-	SetControlValue(tool_ctrl[3],(draw_type==dt_mesh_bones)?1:0);
+	SetControlValue(tool_ctrl[3],(draw_type==dt_model_bones)?1:0);
+	SetControlValue(tool_ctrl[4],(draw_type==dt_mesh_bones)?1:0);
     
-	SetControlValue(tool_ctrl[4],model_show_first_mesh?1:0);
-	SetControlValue(tool_ctrl[5],model_box_on?1:0);
-	SetControlValue(tool_ctrl[6],model_bump_on?1:0);
-	SetControlValue(tool_ctrl[7],model_normal_on?1:0);
+	SetControlValue(tool_ctrl[5],model_show_first_mesh?1:0);
+	SetControlValue(tool_ctrl[6],model_box_on?1:0);
+	SetControlValue(tool_ctrl[7],model_bump_on?1:0);
+	SetControlValue(tool_ctrl[8],model_normal_on?1:0);
 	
-	SetControlValue(tool_ctrl[8],(drag_bone_mode==drag_bone_mode_rotate)?1:0);
-	SetControlValue(tool_ctrl[9],(drag_bone_mode==drag_bone_mode_stretch)?1:0);
+	SetControlValue(tool_ctrl[9],(drag_bone_mode==drag_bone_mode_rotate)?1:0);
+	SetControlValue(tool_ctrl[10],(drag_bone_mode==drag_bone_mode_stretch)?1:0);
 
-	SetControlValue(tool_ctrl[10],play_animate?1:0);
+	SetControlValue(tool_ctrl[11],play_animate?1:0);
 }
 
 void model_wind_switch_mesh_mode(void)
@@ -856,6 +870,7 @@ void model_wind_switch_mesh_mode(void)
 	SetControlValue(tool_ctrl[0],(draw_type==dt_model)?1:0);
 	SetControlValue(tool_ctrl[1],(draw_type==dt_mesh)?1:0);
 	SetControlValue(tool_ctrl[2],(draw_type==dt_bones)?1:0);
-	SetControlValue(tool_ctrl[3],(draw_type==dt_mesh_bones)?1:0);
+	SetControlValue(tool_ctrl[3],(draw_type==dt_model_bones)?1:0);
+	SetControlValue(tool_ctrl[4],(draw_type==dt_mesh_bones)?1:0);
 }
 

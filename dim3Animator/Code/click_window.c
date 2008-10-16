@@ -493,7 +493,7 @@ void click_model_wind(Point pt,unsigned long modifiers)
 		return;
 	}
 	
-	if ((draw_type==dt_bones) || (draw_type==dt_mesh_bones)) {
+	if ((draw_type==dt_bones) || (draw_type==dt_model_bones) || (draw_type==dt_mesh_bones)) {
 		if (drag_bone_model_wind(pt)) return;
 	}
 	

@@ -11,7 +11,7 @@
 //
 
 #define tool_button_size				36
-#define tool_count						11
+#define tool_count						12
 
 #define model_view_min_size				512
 
@@ -162,7 +162,8 @@
 #define dt_model						0
 #define dt_mesh							1
 #define dt_bones						2
-#define dt_mesh_bones					3
+#define dt_model_bones					3
+#define dt_mesh_bones					4
 
 //
 // Drag Modes

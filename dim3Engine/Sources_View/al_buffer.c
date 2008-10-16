@@ -74,7 +74,7 @@ int al_open_buffer(char *name,char *path,int min_dist,int max_dist)
 
 		// load wave data
 
-	if (SDL_LoadWAV(path,&aspec,&data,&len)==NULL) return(-1);
+	if (SDL_LoadWAV(path,&aspec,(Uint8**)&data,(Uint32*)&len)==NULL) return(-1);
 
 		// convert data to required format
 
