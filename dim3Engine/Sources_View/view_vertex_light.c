@@ -280,6 +280,19 @@ void map_calculate_light_reduce_save(map_mesh_type *mesh)
 	}
 }
 
+void map_calculate_light_clear_all(void)
+{
+	int					n;
+	map_mesh_type		*mesh;
+
+	mesh=map.mesh.meshes;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		mesh->draw.nlight=-1;
+		mesh++;
+	}
+}
+
 /* =======================================================
 
       Normal Lighting

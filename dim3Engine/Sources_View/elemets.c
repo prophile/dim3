@@ -738,24 +738,24 @@ int element_find_for_xy(int x,int y)
 void element_draw_button_text(element_type *element,int sel_id)
 {
 	int				lft,rgt,top,bot,slant_add;
-	float			base_col;
+	float			alpha;
 	d3col			txt_col,outline_col;
 	
 	if (element->enabled) {
-		base_col=0.3f;
+		alpha=1.0f;
 		if (element->id==sel_id) {
 			memmove(&outline_col,&hud.color.mouse_over,sizeof(d3col));
 			memmove(&txt_col,&hud.color.mouse_over,sizeof(d3col));
 		}
 		else {
 			outline_col.r=outline_col.g=outline_col.b=0.2f;
-			txt_col.r=txt_col.g=txt_col.b=0.0f;
+			memmove(&txt_col,&hud.color.gradient_text,sizeof(d3col));
 		}
 	}
 	else {
-		base_col=0.0f;
+		alpha=0.3f;
 		outline_col.r=outline_col.g=outline_col.b=0.0f;
-		txt_col.r=txt_col.g=txt_col.b=0.3f;
+		memmove(&txt_col,&hud.color.gradient_text,sizeof(d3col));
 	}
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
@@ -765,35 +765,35 @@ void element_draw_button_text(element_type *element,int sel_id)
 
 	glBegin(GL_QUADS);
 
-	glColor4f(base_col,base_col,base_col,1.0f);
+	glColor4f(hud.color.gradient_end.r,hud.color.gradient_end.g,hud.color.gradient_end.b,alpha);
 	glVertex2i(lft,bot);
 	glVertex2i(lft,top);
-	glColor4f((base_col+0.5f),(base_col+0.5f),(base_col+0.5f),1.0f);
+	glColor4f(hud.color.gradient_start.r,hud.color.gradient_start.g,hud.color.gradient_start.b,alpha);
 	glVertex2i((lft+slant_add),(top+slant_add));
 	glVertex2i((lft+slant_add),(bot-slant_add));
 
-	glColor4f(base_col,base_col,base_col,1.0f);
+	glColor4f(hud.color.gradient_end.r,hud.color.gradient_end.g,hud.color.gradient_end.b,alpha);
 	glVertex2i(rgt,bot);
 	glVertex2i(rgt,top);
-	glColor4f((base_col+0.5f),(base_col+0.5f),(base_col+0.5f),1.0f);
+	glColor4f(hud.color.gradient_start.r,hud.color.gradient_start.g,hud.color.gradient_start.b,alpha);
 	glVertex2i((rgt-slant_add),(top+slant_add));
 	glVertex2i((rgt-slant_add),(bot-slant_add));
 
-	glColor4f(base_col,base_col,base_col,1.0f);
+	glColor4f(hud.color.gradient_end.r,hud.color.gradient_end.g,hud.color.gradient_end.b,alpha);
 	glVertex2i(lft,top);
 	glVertex2i(rgt,top);
-	glColor4f((base_col+0.5f),(base_col+0.5f),(base_col+0.5f),1.0f);
+	glColor4f(hud.color.gradient_start.r,hud.color.gradient_start.g,hud.color.gradient_start.b,alpha);
 	glVertex2i((rgt-slant_add),(top+slant_add));
 	glVertex2i((lft+slant_add),(top+slant_add));
 
-	glColor4f(base_col,base_col,base_col,1.0f);
+	glColor4f(hud.color.gradient_end.r,hud.color.gradient_end.g,hud.color.gradient_end.b,alpha);
 	glVertex2i(lft,bot);
 	glVertex2i(rgt,bot);
-	glColor4f((base_col+0.5f),(base_col+0.5f),(base_col+0.5f),1.0f);
+	glColor4f(hud.color.gradient_start.r,hud.color.gradient_start.g,hud.color.gradient_start.b,alpha);
 	glVertex2i((rgt-slant_add),(bot-slant_add));
 	glVertex2i((lft+slant_add),(bot-slant_add));
 
-	glColor4f((base_col+0.4f),(base_col+0.4f),(base_col+0.4f),1.0f);
+	glColor4f(hud.color.gradient_start.r,hud.color.gradient_start.g,hud.color.gradient_start.b,alpha);
 	glVertex2i((lft+slant_add),(top+slant_add));
 	glVertex2i((rgt-slant_add),(top+slant_add));
 	glVertex2i((rgt-slant_add),(bot-slant_add));
@@ -803,7 +803,7 @@ void element_draw_button_text(element_type *element,int sel_id)
 
 		// button outline
 
-	glColor4f(outline_col.r,outline_col.g,outline_col.b,1.0f);
+	glColor4f(0.0f,0.0f,0.0f,alpha);
 
 	glBegin(GL_LINE_LOOP);
 	glVertex2i(lft,top);
@@ -1157,11 +1157,11 @@ void element_draw_checkbox(element_type *element,int sel_id)
 
 	glBegin(GL_QUADS);
 
-	glColor4f(0.6f,0.6f,0.6f,alpha);
+	glColor4f(hud.color.gradient_start.r,hud.color.gradient_start.g,hud.color.gradient_start.b,alpha);
 	glVertex2i(lft,top);
 	glVertex2i(rgt,top);
 
-	glColor4f(0.3f,0.3f,0.3f,alpha);
+	glColor4f(hud.color.gradient_end.r,hud.color.gradient_end.g,hud.color.gradient_end.b,alpha);
 	glVertex2i(rgt,bot);
 	glVertex2i(lft,bot);
 
@@ -1322,11 +1322,11 @@ void element_draw_combo(element_type *element,int sel_id)
 
 	glBegin(GL_QUADS);
 
-	glColor4f(0.6f,0.6f,0.6f,alpha);
+	glColor4f(hud.color.gradient_start.r,hud.color.gradient_start.g,hud.color.gradient_start.b,alpha);
 	glVertex2i(lft,top);
 	glVertex2i(rgt,top);
 
-	glColor4f(0.3f,0.3f,0.3f,alpha);
+	glColor4f(hud.color.gradient_end.r,hud.color.gradient_end.g,hud.color.gradient_end.b,alpha);
 	glVertex2i(rgt,bot);
 	glVertex2i(lft,bot);
 
@@ -1402,14 +1402,7 @@ void element_draw_combo(element_type *element,int sel_id)
 	strcpy(str,(element->data+(element->value*32)));
 
 	gl_text_start(TRUE);
-		
-	if (element->enabled) {
-		gl_text_draw((x+15),(ky-1),str,tx_left,TRUE,&hud.color.base,1.0f);
-	}
-	else {
-		gl_text_draw((x+15),(ky-1),str,tx_left,TRUE,&hud.color.disabled,1.0f);
-	}
-	
+	gl_text_draw((x+15),(ky-1),str,tx_left,TRUE,&hud.color.gradient_text,alpha);
 	gl_text_end();
 }
 
@@ -1458,11 +1451,11 @@ void element_draw_combo_open(element_type *element)
 
 	glBegin(GL_QUADS);
 
-	glColor4f(0.6f,0.6f,0.6f,1.0f);
+	glColor4f(hud.color.gradient_start.r,hud.color.gradient_start.g,hud.color.gradient_start.b,1.0f);
 	glVertex2i(lft,top);
 	glVertex2i(rgt,top);
 
-	glColor4f(0.3f,0.3f,0.3f,1.0f);
+	glColor4f(hud.color.gradient_end.r,hud.color.gradient_end.g,hud.color.gradient_end.b,1.0f);
 	glVertex2i(rgt,bot);
 	glVertex2i(lft,bot);
 
@@ -1496,7 +1489,7 @@ void element_draw_combo_open(element_type *element)
 			gl_text_draw((x+10),((top+bot)>>1),str,tx_left,TRUE,&hud.color.mouse_over,1.0f);
 		}
 		else {
-			gl_text_draw((x+10),((top+bot)>>1),str,tx_left,TRUE,&hud.color.base,1.0f);
+			gl_text_draw((x+10),((top+bot)>>1),str,tx_left,TRUE,&hud.color.gradient_text,1.0f);
 		}
 
 		gl_text_end();
@@ -2337,33 +2330,34 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 
 	ky=bot;
 
-	glColor4f(0.7f,0.7f,0.7f,1.0f);
+	glColor4f(hud.color.gradient_start.r,hud.color.gradient_start.g,hud.color.gradient_start.b,1.0f);
 	glVertex2i(lx,(ky-3));
 	glVertex2i(rx,(ky-3));
-	glColor4f(0.4f,0.4f,0.4f,1.0f);
+
+	glColor4f(hud.color.gradient_end.r,hud.color.gradient_end.g,hud.color.gradient_end.b,1.0f);
 	glVertex2i(rx,ky);
 	glVertex2i(lx,ky);
 
-	glColor4f(0.4f,0.4f,0.4f,1.0f);
 	glVertex2i(lx,ky);
 	glVertex2i(rx,ky);
-	glColor4f(0.7f,0.7f,0.7f,1.0f);
+
+	glColor4f(hud.color.gradient_start.r,hud.color.gradient_start.g,hud.color.gradient_start.b,1.0f);
 	glVertex2i(rx,(ky+3));
 	glVertex2i(lx,(ky+3));
 
 	ky=top+element->setup.tab.ext_high;
 
-	glColor4f(0.7f,0.7f,0.7f,1.0f);
 	glVertex2i(lx,(ky-3));
 	glVertex2i(rx,(ky-3));
-	glColor4f(0.4f,0.4f,0.4f,1.0f);
+
+	glColor4f(hud.color.gradient_end.r,hud.color.gradient_end.g,hud.color.gradient_end.b,1.0f);
 	glVertex2i(rx,ky);
 	glVertex2i(lx,ky);
 
-	glColor4f(0.4f,0.4f,0.4f,1.0f);
 	glVertex2i(lx,ky);
 	glVertex2i(rx,ky);
-	glColor4f(0.7f,0.7f,0.7f,1.0f);
+
+	glColor4f(hud.color.gradient_start.r,hud.color.gradient_start.g,hud.color.gradient_start.b,1.0f);
 	glVertex2i(rx,(ky+3));
 	glVertex2i(lx,(ky+3));
 
@@ -2393,21 +2387,22 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 		
 	glBegin(GL_QUADS);
 	
-	glColor4f(0.5f,0.5f,0.5f,0.2f);
+	glColor4f(hud.color.gradient_start.r,hud.color.gradient_start.g,hud.color.gradient_start.b,0.2f);
 	glVertex2i(lx,(bot+4));
 	glVertex2i(rx,(bot+4));
 	
 	ky=top+(element->setup.tab.ext_high>>1);
 
-	glColor4f(0.0f,0.0f,0.0f,0.2f);
+	glColor4f(hud.color.gradient_end.r,hud.color.gradient_end.g,hud.color.gradient_end.b,0.2f);
 	glVertex2i(rx,ky);
 	glVertex2i(lx,ky);
 	
-	glVertex2i(lx,(ky+1));
-	glVertex2i(rx,(ky+1));
-	glColor4f(0.5f,0.5f,0.5f,0.2f);
-	
+	glVertex2i(lx,ky);
+	glVertex2i(rx,ky);
+
 	ky=top+element->setup.tab.ext_high;
+
+	glColor4f(hud.color.gradient_start.r,hud.color.gradient_start.g,hud.color.gradient_start.b,0.2f);
 	glVertex2i(rx,(ky-4));
 	glVertex2i(lx,(ky-4));
 	
@@ -2442,7 +2437,7 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 			col_base=0.35f;
 		}
 		
-		txt_col.r=txt_col.g=txt_col.b=0.0f;
+		memmove(&txt_col,&hud.color.gradient_text,sizeof(d3col));
 		
 		if (element->value==n) {
 			memmove(&txt_col,&hud.color.hilite,sizeof(d3col));
@@ -2454,16 +2449,21 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 
 		glBegin(GL_QUADS);
 
-		glColor4f(col_base,col_base,col_base,1.0f);
+		glColor4f(hud.color.gradient_start.r,hud.color.gradient_start.g,hud.color.gradient_start.b,1.0f);
 		glVertex2i((lx+slant_add),ty);
 		glVertex2i((rx-slant_add),ty);
-		glColor4f((col_base+0.25f),(col_base+0.25f),(col_base+0.25f),1.0f);
+		glColor4f(hud.color.gradient_end.r,hud.color.gradient_end.g,hud.color.gradient_end.b,1.0f);
 		glVertex2i(rx,(ty+slant_add));
 		glVertex2i(lx,(ty+slant_add));
 
 		glVertex2i(lx,(ty+slant_add));
 		glVertex2i(rx,(ty+slant_add));
-		glColor4f((col_base+0.75f),(col_base+0.75f),(col_base+0.75f),1.0f);
+		glColor4f(hud.color.gradient_start.r,hud.color.gradient_start.g,hud.color.gradient_start.b,1.0f);
+		glVertex2i(rx,(ty+(slant_add<<1)));
+		glVertex2i(lx,(ty+(slant_add<<1)));
+
+		glVertex2i(lx,(ty+(slant_add<<1)));
+		glVertex2i(rx,(ty+(slant_add<<1)));
 		glVertex2i(rx,by);
 		glVertex2i(lx,by);
 		

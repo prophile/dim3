@@ -836,8 +836,6 @@ bool xml_get_attribute_color(int n,char *name,d3col *col)
 	int			k;
 	char		str[8];
 
-	col->r=col->g=col->b=0;
-
 	if (!xml_get_attribute_raw(n,name,str,8)) return(FALSE);
 	
 	k=(xml_hex_character_to_int(str[0])*16)+xml_hex_character_to_int(str[1]);

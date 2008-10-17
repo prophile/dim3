@@ -204,7 +204,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						d3col					base,header,disabled,mouse_over,hilite,default_tint;
+						d3col					base,header,disabled,mouse_over,hilite,
+												gradient_text,gradient_start,gradient_end,default_tint;
 					} hud_color_type;
 
 typedef struct		{
