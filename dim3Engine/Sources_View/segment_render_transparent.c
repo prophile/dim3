@@ -48,7 +48,7 @@ extern void view_compile_gl_list_dettach(void);
       
 ======================================================= */
 
-void render_transparent_portal_mesh(bool is_simple_lighting)
+void render_transparent_portal_mesh(bool is_fog_lighting)
 {
 	int						n,sort_cnt,frame;
 	unsigned long			txt_id;
@@ -137,7 +137,7 @@ void render_transparent_portal_mesh(bool is_simple_lighting)
 
 			// draw any specular on the transparent segment
 
-		if (texture->specularmaps[frame].gl_id!=-1) {
+		if ((!is_fog_lighting) && (texture->specularmaps[frame].gl_id!=-1)) {
 			
 				// end transparencies drawing and start specular
 
@@ -160,12 +160,7 @@ void render_transparent_portal_mesh(bool is_simple_lighting)
 
 				// use lighting mesh as specular is dependant upon the light
 
-			if (is_simple_lighting) {
-				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
-			}
-			else {
-				glDrawElements(GL_TRIANGLES,(poly->light.ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_draw_idx);
-			}
+			glDrawElements(GL_TRIANGLES,(poly->light.ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_draw_idx);
 
 				// end specular drawing and force a transparencies reset
 
@@ -375,7 +370,7 @@ void render_transparent_sort(int mesh_cnt,int *mesh_list,d3pnt *pnt)
 
 void render_transparent_map(int mesh_cnt,int *mesh_list)
 {
-	bool			is_simple_lighting;
+	bool			is_fog_lighting;
 		
 		// setup view
 
@@ -388,9 +383,9 @@ void render_transparent_map(int mesh_cnt,int *mesh_list)
 
 	gl_texture_bind_start();
 
-		// check for simple lighting
+		// check for obscure fog lighting
 
-	is_simple_lighting=fog_solid_on();
+	is_fog_lighting=fog_solid_on();
 	
 		// attach compiled vertex lists
 
@@ -402,7 +397,7 @@ void render_transparent_map(int mesh_cnt,int *mesh_list)
 
 		// transparent meshes
 
-	render_transparent_portal_mesh(is_simple_lighting);
+	render_transparent_portal_mesh(is_fog_lighting);
 	render_transparent_portal_shader();
 
 		// dettach any attached lists

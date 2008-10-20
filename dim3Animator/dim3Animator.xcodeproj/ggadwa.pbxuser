@@ -42,7 +42,7 @@
 	};
 	0867D6ABFE840B52C02AAC07 /* English */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {12, 98}}";
+			sepNavIntBoundsRect = "{{0, 0}, {546, 84}}";
 			sepNavSelRange = "{206, 0}";
 			sepNavVisRange = "{0, 0}";
 			sepNavWindowFrame = "{{130, 171}, {1041, 747}}";
@@ -119,12 +119,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 245818443;
-			PBXWorkspaceStateSaveDate = 245818443;
+			PBXPerProjectTemplateStateSaveDate = 246086937;
+			PBXWorkspaceStateSaveDate = 246086937;
 		};
 		perUserProjectItems = {
-			2639F9D30EA6B3FC00A47557 /* PBXTextBookmark */ = 2639F9D30EA6B3FC00A47557 /* PBXTextBookmark */;
-			2639FA520EA6EBA900A47557 /* PBXTextBookmark */ = 2639FA520EA6EBA900A47557 /* PBXTextBookmark */;
+			26665D220EA9A121001B1BF5 /* PBXTextBookmark */ = 26665D220EA9A121001B1BF5 /* PBXTextBookmark */;
+			26CAADC90EAAFE710051877E /* PBXTextBookmark */ = 26CAADC90EAAFE710051877E /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -229,17 +229,7 @@
 		path = "../../dim3/dim3 Animator.app";
 		sourceTree = SOURCE_ROOT;
 	};
-	2639F9D30EA6B3FC00A47557 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
-		name = "InfoPlist.strings: 5";
-		rLen = 0;
-		rLoc = 206;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
-	2639FA520EA6EBA900A47557 /* PBXTextBookmark */ = {
+	26665D220EA9A121001B1BF5 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
 		name = "InfoPlist.strings: 5";
@@ -264,6 +254,16 @@
 			sepNavVisRange = "{2399, 1836}";
 			sepNavWindowFrame = "{{247, 201}, {1041, 747}}";
 		};
+	};
+	26CAADC90EAAFE710051877E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
+		name = "InfoPlist.strings: 5";
+		rLen = 0;
+		rLoc = 206;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
 	};
 	F502976802E0BC0201701C02 /* bone_tab.c */ = {
 		uiCtxt = {

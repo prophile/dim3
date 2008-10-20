@@ -427,9 +427,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>2639FA2C0EA6E8DC00A47557</string>
+				<string>26665CFD0EA9A012001B1BF5</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>2639FA2D0EA6E8DC00A47557</string>
+				<string>26665CFE0EA9A012001B1BF5</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -548,7 +548,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>245820327.589838</real>
+	<real>245997675.834501</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -563,10 +563,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C78EAAD065D492600B07095</string>
 		<string>260AFED80D404F3200F6C42F</string>
-		<string>2639FA380EA6E98300A47557</string>
-		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>/Users/ggadwa/dim3Code/dim3ModelUtility/dim3ModelUtility.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -647,7 +644,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFED80D404F3200F6C42F</string>
-				<string>2639FA330EA6E98000A47557</string>
+				<string>26665CFB0EA9A00E001B1BF5</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

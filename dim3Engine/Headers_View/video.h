@@ -90,7 +90,7 @@ extern void gl_project_fix_rotation(view_camera_type *camera,int y_off,int *x,in
 extern void gl_texture_initialize(void);
 extern void gl_texture_shutdown(void);
 extern void gl_texture_bind_start(void);
-extern void gl_texture_opaque_start(void);
+extern void gl_texture_opaque_start(bool lite);
 extern void gl_texture_opaque_end(void);
 extern void gl_texture_opaque_set(int txt_id);
 extern void gl_texture_opaque_tesseled_bump_start(void);

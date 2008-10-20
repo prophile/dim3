@@ -80,6 +80,7 @@ void walk_view_mouse_xy_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 				break;
 			case vm_dir_top:
 				sz=(int)((float)(magnify_factor_max-magnify_factor)*mouse_top_view_drag_scale);
+				if (sz<1) sz=1;
 				xadd=x*sz;
 				yadd=0;
 				zadd=y*sz;

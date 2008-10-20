@@ -301,7 +301,7 @@ void model_draw_stop_mesh_shadow_array(void)
       
 ======================================================= */
 
-void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
+void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw,bool is_fog_lighting)
 {
 	int						n,frame,trig_count,nvertex;
 	float					alpha;
@@ -351,7 +351,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 		glDepthFunc(GL_LEQUAL);
 		glDepthMask(GL_TRUE);
 
-		gl_texture_opaque_start();
+		gl_texture_opaque_start(is_fog_lighting);
 		gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
 
 		glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
@@ -387,7 +387,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			glColorPointer(3,GL_FLOAT,0,(void*)((nvertex*(3+2))*sizeof(float)));
 		}
 
-		if (!hilite_on) {
+		if ((!hilite_on) && (!is_fog_lighting)) {
 
 				// lighting
 
@@ -407,7 +407,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
 			
 			gl_texture_tesseled_lighting_end();
-
+			
 				// specular
 			
 			if ((setup.specular_mapping) && (texture->specularmaps[frame].gl_id!=-1)) {
@@ -637,6 +637,7 @@ void model_render(int tick,model_draw *draw)
 {
 	int				n,x,y,z,tx,ty,tz,mesh_mask;
 	float			cf[3];
+	bool			is_fog_lighting;
 	model_type		*mdl;
 	
 		// get model
@@ -655,6 +656,10 @@ void model_render(int tick,model_draw *draw)
 		// get single drawing normal
 		
 	map_calculate_light_color_normal((double)draw->pnt.x,(double)draw->pnt.y,(double)draw->pnt.z,cf,draw->normal);
+	
+		// detect obscuring fog lighting
+		
+	is_fog_lighting=fog_solid_on();
 
 		// get the meshes to be drawn
 
@@ -702,7 +707,7 @@ void model_render(int tick,model_draw *draw)
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))!=0) {
-			model_draw_opaque_trigs(mdl,n,draw);
+			model_draw_opaque_trigs(mdl,n,draw,is_fog_lighting);
 			model_draw_shader_trigs(mdl,n,draw);
 		}
 	}

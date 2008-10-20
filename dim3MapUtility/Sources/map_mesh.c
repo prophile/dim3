@@ -751,66 +751,47 @@ int map_mesh_find_always(map_type *map,d3pnt *pnt)
 
 int map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt)
 {
-	double			d,d2,dx,dy,dz;
+	double			dx,dy,dz;
 	
-		// check middle
-
-	dx=(double)(mesh->box.mid.x-pnt->x);
-	dy=(double)(mesh->box.mid.y-pnt->y);
-	dz=(double)(mesh->box.mid.z-pnt->z);
-	d=(dx*dx)+(dy*dy)+(dz*dz);
-
-		// and the 8 corners
-
-	dx=(double)(mesh->box.min.x-pnt->x);
-	dy=(double)(mesh->box.min.y-pnt->y);
-	dz=(double)(mesh->box.min.z-pnt->z);
-	d2=(dx*dx)+(dy*dy)+(dz*dz);
-	if (d2<d) d=d2;
-
-	dx=(double)(mesh->box.max.x-pnt->x);
-	dy=(double)(mesh->box.min.y-pnt->y);
-	dz=(double)(mesh->box.min.z-pnt->z);
-	d2=(dx*dx)+(dy*dy)+(dz*dz);
-	if (d2<d) d=d2;
-
-	dx=(double)(mesh->box.max.x-pnt->x);
-	dy=(double)(mesh->box.min.y-pnt->y);
-	dz=(double)(mesh->box.max.z-pnt->z);
-	d2=(dx*dx)+(dy*dy)+(dz*dz);
-	if (d2<d) d=d2;
-
-	dx=(double)(mesh->box.min.x-pnt->x);
-	dy=(double)(mesh->box.min.y-pnt->y);
-	dz=(double)(mesh->box.max.z-pnt->z);
-	d2=(dx*dx)+(dy*dy)+(dz*dz);
-	if (d2<d) d=d2;
-
-	dx=(double)(mesh->box.min.x-pnt->x);
-	dy=(double)(mesh->box.max.y-pnt->y);
-	dz=(double)(mesh->box.min.z-pnt->z);
-	d2=(dx*dx)+(dy*dy)+(dz*dz);
-	if (d2<d) d=d2;
-
-	dx=(double)(mesh->box.max.x-pnt->x);
-	dy=(double)(mesh->box.max.y-pnt->y);
-	dz=(double)(mesh->box.min.z-pnt->z);
-	d2=(dx*dx)+(dy*dy)+(dz*dz);
-	if (d2<d) d=d2;
-
-	dx=(double)(mesh->box.max.x-pnt->x);
-	dy=(double)(mesh->box.max.y-pnt->y);
-	dz=(double)(mesh->box.max.z-pnt->z);
-	d2=(dx*dx)+(dy*dy)+(dz*dz);
-	if (d2<d) d=d2;
-
-	dx=(double)(mesh->box.min.x-pnt->x);
-	dy=(double)(mesh->box.max.y-pnt->y);
-	dz=(double)(mesh->box.max.z-pnt->z);
-	d2=(dx*dx)+(dy*dy)+(dz*dz);
-	if (d2<d) d=d2;
+		// find collision points
+		
+	if ((pnt->x>=mesh->box.min.x) && (pnt->x<=mesh->box.max.x)) {
+		dx=0;
+	}
+	else {
+		if (pnt->x<mesh->box.min.x) {
+			dx=mesh->box.min.x-pnt->x;
+		}
+		else {
+			dx=pnt->x-mesh->box.max.x;
+		}
+	}
 	
-	return((int)sqrt(d));
+	if ((pnt->y>=mesh->box.min.y) && (pnt->y<=mesh->box.max.y)) {
+		dy=0;
+	}
+	else {
+		if (pnt->y<mesh->box.min.y) {
+			dy=mesh->box.min.y-pnt->y;
+		}
+		else {
+			dy=pnt->y-mesh->box.max.y;
+		}
+	}
+	
+	if ((pnt->z>=mesh->box.min.z) && (pnt->z<=mesh->box.max.z)) {
+		dz=0;
+	}
+	else {
+		if (pnt->z<mesh->box.min.z) {
+			dz=mesh->box.min.z-pnt->z;
+		}
+		else {
+			dz=pnt->z-mesh->box.max.z;
+		}
+	}
+	
+	return((int)sqrt((dx*dx)+(dy*dy)+(dz*dz)));
 }
 
 

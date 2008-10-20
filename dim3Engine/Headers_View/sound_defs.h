@@ -25,7 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#define SDL_SOUND			1
+// #define SDL_SOUND			1
 // supergumba -- temporary, trying to switch to SDL sound
 
 //
@@ -79,7 +79,7 @@ typedef struct		{
 	
 typedef struct		{
 						int						buffer_idx;
-						bool					ambient,player2;
+						bool					ambient,player;
 						unsigned int			al_id;
 						d3pnt					pnt;
 					} al_source_type;						// supergumba -- can delete

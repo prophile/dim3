@@ -54,7 +54,7 @@ extern void view_compile_gl_list_dettach(void);
       
 ======================================================= */
 
-void render_opaque_portal_normal(int mesh_cnt,int *mesh_list,int stencil_pass)
+void render_opaque_portal_normal(int mesh_cnt,int *mesh_list,int stencil_pass,bool is_fog_lighting)
 {
 	int					n,k,frame;
 	map_mesh_type		*mesh;
@@ -62,6 +62,8 @@ void render_opaque_portal_normal(int mesh_cnt,int *mesh_list,int stencil_pass)
 	texture_type		*texture;
 
 		// setup drawing
+		// if we are in fog lighting, then we need to
+		// skip the mesh lighting and light by vertex
 
 	glDisable(GL_BLEND);
 	
@@ -74,7 +76,7 @@ void render_opaque_portal_normal(int mesh_cnt,int *mesh_list,int stencil_pass)
 
 	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
 
-	gl_texture_opaque_start();
+	gl_texture_opaque_start(is_fog_lighting);
 	
 		// run through the meshes
 
@@ -129,7 +131,7 @@ void render_opaque_portal_normal(int mesh_cnt,int *mesh_list,int stencil_pass)
       
 ======================================================= */
 
-void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool is_simple_lighting)
+void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool is_fog_lighting)
 {
 	int					n,k,frame;
 	map_mesh_type		*mesh;
@@ -160,7 +162,7 @@ void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool
 			// hilited, then we need to clear the stencil
 			// here as there will be no lighting pass
 
-		if ((mesh->flag.hilite) || (hilite_on)) {
+		if ((mesh->flag.hilite) || (hilite_on) || (is_fog_lighting)) {
 			glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
 		}
 		else {
@@ -223,7 +225,7 @@ void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool
       
 ======================================================= */
 
-void render_opaque_portal_lighting(int mesh_cnt,int *mesh_list,int stencil_pass,bool is_simple_lighting)
+void render_opaque_portal_lighting(int mesh_cnt,int *mesh_list,int stencil_pass)
 {
 	int					n,k,frame;
 	map_mesh_type		*mesh;
@@ -234,7 +236,7 @@ void render_opaque_portal_lighting(int mesh_cnt,int *mesh_list,int stencil_pass,
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ZERO,GL_SRC_COLOR);
-
+	
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_ALPHA_TEST);
 
@@ -275,11 +277,11 @@ void render_opaque_portal_lighting(int mesh_cnt,int *mesh_list,int stencil_pass,
 			
 				// if no specular pass, then clear stencil here
 				
-			if (!((setup.specular_mapping) && (texture->specularmaps[frame].gl_id!=-1))) {
-				glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
+			if ((setup.specular_mapping) && (texture->specularmaps[frame].gl_id!=-1)) {
+				glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
 			}
 			else {
-				glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
+				glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
 			}
 
 				// draw lighting
@@ -359,7 +361,7 @@ void render_opaque_portal_lighting_fix(int mesh_cnt,int *mesh_list,int stencil_p
 	gl_texture_tesseled_lighting_end();
 }
 
-void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass,bool is_simple_lighting)
+void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass)
 {
 	int					n,k,frame;
 	map_mesh_type		*mesh;
@@ -659,7 +661,7 @@ int render_opaque_mesh_stencil_mark(int mesh_cnt,int *mesh_list)
 void render_opaque_map(int mesh_cnt,int *mesh_list)
 {
 	int					stencil_pass,stencil_pass_cnt;
-	bool				is_simple_lighting;
+	bool				is_fog_lighting;
 	
 		// setup view
 
@@ -672,9 +674,9 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 
 	gl_texture_bind_start();
 
-		// detect simple lighting
+		// detect obscuring fog lighting
 
-	is_simple_lighting=fog_solid_on();
+	is_fog_lighting=fog_solid_on();
 
 		// create stencil passes
 
@@ -691,12 +693,12 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 
 	for (stencil_pass=0;stencil_pass<=stencil_pass_cnt;stencil_pass++) {
 
-		render_opaque_portal_normal(mesh_cnt,mesh_list,stencil_pass);
-		if (setup.bump_mapping) render_opaque_portal_bump(mesh_cnt,mesh_list,stencil_pass,is_simple_lighting);
+		render_opaque_portal_normal(mesh_cnt,mesh_list,stencil_pass,is_fog_lighting);
+		if (setup.bump_mapping) render_opaque_portal_bump(mesh_cnt,mesh_list,stencil_pass,is_fog_lighting);
 
-		if (!hilite_on) {
-			render_opaque_portal_lighting(mesh_cnt,mesh_list,stencil_pass,is_simple_lighting);
-			if (setup.specular_mapping) render_opaque_portal_specular(mesh_cnt,mesh_list,stencil_pass,is_simple_lighting);
+		if ((!hilite_on) && (!is_fog_lighting)) {
+			render_opaque_portal_lighting(mesh_cnt,mesh_list,stencil_pass);
+			if (setup.specular_mapping) render_opaque_portal_specular(mesh_cnt,mesh_list,stencil_pass);
 			render_opaque_portal_lighting_fix(mesh_cnt,mesh_list,stencil_pass);
 		}
 	}

@@ -137,7 +137,7 @@ typedef struct		{
 						bool						lock_fps_refresh,texture_compression,
 													diffuse_lighting,ray_trace_lighting,
 													bump_mapping,specular_mapping,glow_mapping,
-													halo,mark,fog,
+													halo,mark,
 													always_run,toggle_run,invert_look,mouse_smooth,
 													music_on,debug_console,window,window_editor;
 						setup_path_type				path;

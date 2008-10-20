@@ -97,15 +97,16 @@ void view_create_mesh_draw_list(void)
 			if (!mesh_view_bit_get(start_mesh,n)) continue;
 		}
 
-			// auto-eliminate meshes outside of view
-
+			// auto-eliminate meshes drawn outside the view,
+			
 		mesh=&map.mesh.meshes[n];
-
+		
 		d=map_mesh_calculate_distance(mesh,&view.camera.pnt);
 		if (d>obscure_dist) continue;
-
+		
 		if (!boundbox_inview(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y)) continue;
-	
+		
+			// sort meshes into drawing list
 			// top of list is closest items
 
 		idx=-1;

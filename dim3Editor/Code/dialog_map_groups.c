@@ -156,17 +156,17 @@ static pascal OSStatus map_groups_event_proc(EventHandlerCallRef handler,EventRe
 		
 					map_groups_reset_list(dialog_map_groups_current_idx);
 					Draw1Control(map_groups_list_get_ctrl());
-					map_movement_reset_buttons();
+					map_group_reset_buttons();
 					
 					main_wind_tool_fill_group_combo();
 					return(noErr);
 					
 				case kMapGroupClearButton:
-					group_clear(dialog_map_groups_current_idx);
+					group_clear(dialog_map_groups_current_idx,FALSE);
 
 					map_groups_reset_list(dialog_map_groups_current_idx);
 					Draw1Control(map_groups_list_get_ctrl());
-					map_movement_reset_buttons();
+					map_group_reset_buttons();
 					
 					main_wind_tool_fill_group_combo();
 					return(noErr);
@@ -195,7 +195,7 @@ static pascal OSStatus map_groups_event_proc(EventHandlerCallRef handler,EventRe
 					
 					map_groups_reset_list(-1);
 					Draw1Control(map_groups_list_get_ctrl());
-					map_movement_reset_buttons();
+					map_group_reset_buttons();
 					
 					main_wind_tool_fill_group_combo();
 					return(noErr);
@@ -268,7 +268,7 @@ static pascal void map_groups_list_notify_proc(ControlRef ctrl,DataBrowserItemID
 			
 		case kDataBrowserItemSelected:
 			dialog_map_groups_current_idx=itemID-1;
-			map_movement_reset_buttons();
+			map_group_reset_buttons();
 			break;
 
 		case kDataBrowserItemDeselected:
@@ -278,7 +278,7 @@ static pascal void map_groups_list_notify_proc(ControlRef ctrl,DataBrowserItemID
 			if (count!=0) break;
 			
 			dialog_map_groups_current_idx=-1;
-			map_movement_reset_buttons();
+			map_group_reset_buttons();
 			break;
 			
 	}
@@ -321,7 +321,7 @@ bool dialog_map_groups_run(void)
 	SetDataBrowserListViewDisclosureColumn(ctrl,kMapGroupListNameColumn,FALSE);
 	
 	map_groups_reset_list(-1);
-	map_movement_reset_buttons();
+	map_group_reset_buttons();
 
 		// show window
 	

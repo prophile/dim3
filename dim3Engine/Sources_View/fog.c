@@ -56,7 +56,7 @@ void fog_draw_textured(int tick)
 	
 		// textured fog on?
 		
-	if ((!map.fog.on) || (!setup.fog) || (map.fog.use_solid_color)) return;
+	if ((!map.fog.on) || (map.fog.use_solid_color)) return;
 
 		// setup viewpoint
 		
@@ -156,7 +156,7 @@ void fog_draw_textured(int tick)
 
 inline bool fog_solid_on(void)
 {
-	return((map.fog.on) && (setup.fog) && (map.fog.use_solid_color));
+	return((map.fog.on) && (map.fog.use_solid_color));
 }
 
 void fog_solid_start(void)

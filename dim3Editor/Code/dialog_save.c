@@ -45,11 +45,11 @@ bool dialog_save_run(void)
 
 	dialog_open(&dialog_save_wind,"Save");
 	ShowWindow(dialog_save_wind);
-	
+
 	node_path_rebuild();
 	obscure_calculate_map();
 	dialog_save_ok=map_save(&map);
-	
+
 	DisposeWindow(dialog_save_wind);
 	
 	InitCursor();

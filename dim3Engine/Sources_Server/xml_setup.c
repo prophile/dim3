@@ -58,8 +58,7 @@ void setup_xml_default(void)
 	setup.halo=TRUE;
 	
 	setup.fsaa_mode=fsaa_mode_none;
-	
-	setup.fog=TRUE;
+
 	setup.mark=TRUE;
 	setup.shadow_mode=shadow_mode_low;
 	
@@ -206,7 +205,6 @@ bool setup_xml_read_path(char *path)
 	setup_xml_read_key_boolean(setup_tag,"Diffuse_Lighting",&setup.diffuse_lighting);
 	setup_xml_read_key_boolean(setup_tag,"Ray_Trace_Lighting",&setup.ray_trace_lighting);
 	setup_xml_read_key_int(setup_tag,"FSAA_Mode",&setup.fsaa_mode);
-	setup_xml_read_key_boolean(setup_tag,"Fog",&setup.fog);
 	setup_xml_read_key_boolean(setup_tag,"Mark",&setup.mark);
 	setup_xml_read_key_int(setup_tag,"Shadow_Mode",&setup.shadow_mode);
 	setup_xml_read_key_float(setup_tag,"Sound_Volume",&setup.sound_volume);
@@ -392,7 +390,6 @@ bool setup_xml_write(void)
 	setup_xml_write_key_boolean("Diffuse_Lighting",setup.diffuse_lighting);
 	setup_xml_write_key_boolean("Ray_Trace_Lighting",setup.ray_trace_lighting);
 	setup_xml_write_key_int("FSAA_Mode",setup.fsaa_mode);
-	setup_xml_write_key_boolean("Fog",setup.fog);
 	setup_xml_write_key_boolean("Mark",setup.mark);
 	setup_xml_write_key_int("Shadow_Mode",setup.shadow_mode);
 	setup_xml_write_key_float("Sound_Volume",setup.sound_volume);
@@ -516,7 +513,6 @@ void setup_restore(void)
 	
 	setup.fsaa_mode=fsaa_mode_none;
 	
-	setup.fog=FALSE;
 	setup.mark=FALSE;
 	setup.shadow_mode=shadow_mode_none;
 	

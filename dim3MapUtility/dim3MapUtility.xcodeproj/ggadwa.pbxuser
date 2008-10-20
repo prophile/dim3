@@ -53,10 +53,10 @@
 	};
 	2683177A0E4A8B1900BBCDCA /* map_mesh.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1086, 11088}}";
-			sepNavSelRange = "{13740, 0}";
-			sepNavVisRange = "{13086, 909}";
-			sepNavWindowFrame = "{{188, 191}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1086, 11018}}";
+			sepNavSelRange = "{14574, 0}";
+			sepNavVisRange = "{14380, 869}";
+			sepNavWindowFrame = "{{541, 177}, {1041, 747}}";
 		};
 	};
 	2683177B0E4A8B1900BBCDCA /* map_mesh_update.c */ = {
@@ -83,7 +83,17 @@
 			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
 		};
 	};
-	26CB73910E9AC57500CA9B3B /* PBXTextBookmark */ = {
+	26CAAD450EAAEA1F0051877E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DA8623059148C40043E685 /* nodes.c */;
+		name = "nodes.c: 94";
+		rLen = 26;
+		rLoc = 2093;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	26CAAD700EAAEF700051877E /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = F5DA8623059148C40043E685 /* nodes.c */;
 		name = "nodes.c: 94";
@@ -100,16 +110,6 @@
 			sepNavVisRange = "{3720, 1360}";
 			sepNavWindowFrame = "{{270, 154}, {1041, 747}}";
 		};
-	};
-	26EE383D0EA55A9C002A8365 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5DA8623059148C40043E685 /* nodes.c */;
-		name = "nodes.c: 94";
-		rLen = 26;
-		rLoc = 2093;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
 	};
 	26FC4AAC0DA2F87A00E6ECED /* file_map_read_v1.c */ = {
 		uiCtxt = {
@@ -253,12 +253,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 245717642;
-			PBXWorkspaceStateSaveDate = 245717642;
+			PBXPerProjectTemplateStateSaveDate = 246082965;
+			PBXWorkspaceStateSaveDate = 246082965;
 		};
 		perUserProjectItems = {
-			26CB73910E9AC57500CA9B3B /* PBXTextBookmark */ = 26CB73910E9AC57500CA9B3B /* PBXTextBookmark */;
-			26EE383D0EA55A9C002A8365 /* PBXTextBookmark */ = 26EE383D0EA55A9C002A8365 /* PBXTextBookmark */;
+			26CAAD450EAAEA1F0051877E /* PBXTextBookmark */ = 26CAAD450EAAEA1F0051877E /* PBXTextBookmark */;
+			26CAAD700EAAEF700051877E /* PBXTextBookmark */ = 26CAAD700EAAEF700051877E /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -274,9 +274,9 @@
 	};
 	F5C53548051C085800968AF1 /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 9716}}";
-			sepNavSelRange = "{4686, 0}";
-			sepNavVisRange = "{4494, 937}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 8792}}";
+			sepNavSelRange = "{17548, 27}";
+			sepNavVisRange = "{16840, 2937}";
 			sepNavWindowFrame = "{{447, 145}, {1041, 691}}";
 		};
 	};

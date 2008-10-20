@@ -56,9 +56,8 @@ and can be sold or given away.
 #define ctrl_specularmapping_id				14
 #define ctrl_glowmapping_id					15
 #define ctrl_halo_id						16
-#define ctrl_fog_id							17
-#define ctrl_mark_id						18
-#define ctrl_shadow_id						19
+#define ctrl_mark_id						17
+#define ctrl_shadow_id						18
 
 #define ctrl_sound_volume_id				30
 #define ctrl_music_on_id					31
@@ -175,7 +174,7 @@ void setup_game_graphics_pane(void)
 	
 	control_y_add=element_get_control_high();
 	separate_y_add=element_get_separator_high();
-	control_y_sz=(control_y_add*9)+(2*separate_y_add);
+	control_y_sz=(control_y_add*8)+(2*separate_y_add);
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
@@ -199,8 +198,6 @@ void setup_game_graphics_pane(void)
 	element_checkbox_add("Halos",setup.halo,ctrl_halo_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Decals",setup.mark,ctrl_mark_id,x,y,TRUE);
-	y+=control_y_add;
-	element_checkbox_add("Fog",setup.fog,ctrl_fog_id,x,y,TRUE);
 	y+=control_y_add+separate_y_add;
 
 	element_combo_add("Shadows",(char*)setup_shadow_mode_list,setup.shadow_mode,ctrl_shadow_id,x,y,TRUE);
@@ -768,10 +765,6 @@ void setup_game_handle_click(int id)
 			
 		case ctrl_halo_id:
 			setup.halo=element_get_value(ctrl_halo_id);
-			break;
-			
-		case ctrl_fog_id:
-			setup.fog=element_get_value(ctrl_fog_id);
 			break;
 			
 		case ctrl_mark_id:

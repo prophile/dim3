@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit “Created with dim3 Technology” is given on a single
+2. This credit ‚ÄúCreated with dim3 Technology‚Äù is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -50,7 +50,7 @@ extern char light_type_str[][32];
 //
 
 #define max_mesh											8192			// maximum number of meshes in a map
-#define max_mesh_visibility_bytes							1024			// maximum number of bits for mesh list
+#define max_mesh_visibility_bytes							1024			// maximum number of bytes for mesh list
 
 #define max_map_texture										128				// maximum number of textures in a map
 
@@ -256,7 +256,7 @@ typedef struct		{
 					} map_mesh_message_type;
 
 typedef struct		{
-						int									group_idx;
+						int									group_idx2;	// supergumba -- delete
 						unsigned char						visibility_flag[max_mesh_visibility_bytes];
 					} map_mesh_obscure_type;
 

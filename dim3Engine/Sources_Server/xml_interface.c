@@ -90,8 +90,10 @@ void default_settings_interface(void)
 	hud.color.hilite.r=hud.color.hilite.b=0.0f;
 
 	hud.color.gradient_text.r=hud.color.gradient_text.g=hud.color.gradient_text.b=0.0f;
-	hud.color.gradient_start.r=hud.color.gradient_start.g=hud.color.gradient_start.b=0.6f;
-	hud.color.gradient_end.r=hud.color.gradient_end.g=hud.color.gradient_end.b=0.3f;
+	hud.color.gradient_start.r=hud.color.gradient_start.g=0.6f;
+	hud.color.gradient_start.b=0.7f;
+	hud.color.gradient_end.r=hud.color.gradient_end.g=0.2f;
+	hud.color.gradient_end.b=0.3f;
 	
 	hud.color.default_tint.r=hud.color.default_tint.g=hud.color.default_tint.b=1.0f;
 
