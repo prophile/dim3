@@ -47,6 +47,7 @@ extern void map_calculate_light_color_normal(double x,double y,double z,float *c
 extern void view_next_vertex_object(void);
 extern void view_bind_current_vertex_object(void);
 extern void view_unbind_current_vertex_object(void);
+extern bool fog_solid_on(void);
 
 /* =======================================================
 

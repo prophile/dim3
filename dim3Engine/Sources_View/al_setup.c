@@ -53,9 +53,11 @@ audio_play_type			audio_plays[audio_max_play];
 
 void audio_callback(void *userdata,Uint8 *stream,int len)
 {
-	int					n,k,stream_len,dist,
+	int					n,k,stream_len,dist,vol,
 						left_channel,right_channel;
 	short				*s_stream,data;
+	float				ang;
+	double				d_ang;
 	bool				has_play;
 	audio_play_type		*play;
 	al_buffer_type		*buffer;
@@ -97,17 +99,26 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 		dist=distance_get(play->pnt.x,play->pnt.y,play->pnt.z,audio_listener_pnt.x,audio_listener_pnt.y,audio_listener_pnt.z);
 		if (dist>=buffer->max_dist) continue;
 
-			// calculate left/right channels
+			// calculate the volume
 
 		play->skip=FALSE;
 
 		if (dist<=buffer->min_dist) {
-			play->left_fact=play->right_fact=1024;
+			vol=1024;
 		}
 		else {
-			play->left_fact=1024-(int)(1024.0f*((float)(dist-buffer->min_dist)/(float)(buffer->max_dist-buffer->min_dist)));
-			play->right_fact=play->left_fact;
+			vol=1024-(int)(1024.0f*((float)(dist-buffer->min_dist)/(float)(buffer->max_dist-buffer->min_dist)));
 		}
+
+			// get position to source
+
+		ang=angle_find(audio_listener_pnt.x,audio_listener_pnt.z,play->pnt.x,play->pnt.z);
+
+			// calculate left/right channels
+
+		d_ang=(double)(ang*ANG_to_RAD);
+		play->left_fact=(int)(((float)vol)*(-sin(d_ang)));
+		play->right_fact=(int)(((float)vol)*cos(d_ang));
 	}
 
 		// if no plays, skip

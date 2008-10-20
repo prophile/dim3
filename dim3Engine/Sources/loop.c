@@ -333,7 +333,6 @@ bool loop_main(char *err_str)
 
 	if ((server.state!=gs_running) && (state==gs_running)) {
 		gui_screenshot_load();
-		fprintf(stdout,"got shot!\n");
 	}
 	
 	return(TRUE);
