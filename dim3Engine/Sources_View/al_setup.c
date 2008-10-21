@@ -46,7 +46,10 @@ al_source_type			al_sources[al_max_source];
 
 #ifdef SDL_SOUND
 
-int						audio_global_sound_volume,audio_global_music_volume;
+int						audio_global_sound_volume,audio_global_music_volume,
+						audio_music_buffer_idx,audio_music_stream_pos;
+float					audio_listener_ang_y;
+bool					audio_music_playing;
 d3pnt					audio_listener_pnt;
 audio_play_type			audio_plays[audio_max_play];
 
@@ -111,8 +114,10 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 		}
 
 			// get position to source
+			// need to add in player's Y angle
 
 		ang=angle_find(audio_listener_pnt.x,audio_listener_pnt.z,play->pnt.x,play->pnt.z);
+		ang=angle_add(ang,-audio_listener_ang_y);
 
 			// calculate left/right channels
 
@@ -123,13 +128,13 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 			d_ang=(double)(((350.0f-ang)/2.0f)*ANG_to_RAD);
 		}
 		
-		play->left_fact=(int)(((float)vol)*fabs(sin(d_ang)));
-		play->right_fact=(int)(((float)vol)*fabs(cos(d_ang)));
+		play->left_fact=(int)(((float)vol)*fabs(cos(d_ang)));
+		play->right_fact=(int)(((float)vol)*fabs(sin(d_ang)));
 	}
 
-		// if no plays, skip
+		// if no plays or music, skip audio mix
 
-	if (!has_play) return;
+	if ((!has_play) && (!audio_music_playing)) return;
 
 		// mix the audio
 
@@ -160,11 +165,19 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 				right_channel+=((data*play->right_fact)>>10);
 				
 					// move onto next position in stream
+					// or loop or stop sound
 
 				play->stream_pos++;
 				if (play->stream_pos>=buffer->sample_len) {
-					play->used=FALSE;
-					play->skip=TRUE;
+
+					if (play->loop) {
+						play->stream_pos=0;
+					}
+					else {
+						play->used=FALSE;
+						play->skip=TRUE;
+					}
+
 				}
 
 			}
@@ -175,10 +188,27 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 			// global volume adjustment
 
 		left_channel=((left_channel*audio_global_sound_volume)>>10);
+		right_channel=((right_channel*audio_global_sound_volume)>>10);
+		
+			// add in the music
+
+		if (audio_music_playing) {
+			buffer=&al_buffers[audio_music_buffer_idx];
+
+			data=(int)(*(buffer->data+audio_music_stream_pos));
+			vol=(data*audio_global_music_volume)>>10;
+
+			left_channel+=vol;
+			right_channel+=vol;
+
+			audio_music_stream_pos++;
+			if (audio_music_stream_pos>=buffer->sample_len) audio_music_stream_pos=0;
+		}
+
+			// fix any overflow
+
 		if (left_channel<-32768) left_channel=-32768;
 		if (left_channel>32768) left_channel=32768;
-
-		right_channel=((right_channel*audio_global_sound_volume)>>10);
 		if (right_channel<-32768) right_channel=-32768;
 		if (right_channel>32768) right_channel=32768;
 

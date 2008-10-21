@@ -45,49 +45,133 @@ extern al_source_type		al_sources[al_max_source];
 
 #ifdef SDL_SOUND
 
+bool						audio_music_paused;
+
+extern int					audio_global_music_volume,
+							audio_music_buffer_idx,audio_music_stream_pos;
+extern bool					audio_music_playing;
 
 bool al_music_initialize(char *err_str)
 {
+	al_music_state_on=TRUE;
+
+	audio_music_playing=FALSE;
+	audio_music_paused=FALSE;
+
+	al_music_buffer_idx=-1;
+
+	audio_global_music_volume=600;
+	
 	return(TRUE);
 }
 
 void al_music_shutdown(void)
 {
+	if (al_music_buffer_idx!=-1) al_close_buffer(al_music_buffer_idx);
 }
 
 bool al_music_play(char *name,char *path)
 {
+	bool			load;
+	al_buffer_type  *buffer;
+
+	SDL_LockAudio();
+	
+		// start with no fade
+		
+	al_music_fade_mode=music_fade_mode_none;
+	
+		// if same music, don't reload
+		
+	load=TRUE;
+	
+	if (al_music_buffer_idx!=-1) {
+		buffer=&al_buffers[al_music_buffer_idx];
+		load=(strcmp(buffer->name,name)!=0);
+	}
+	
+		// open music
+		
+	if (load) {
+		al_music_buffer_idx=al_open_buffer(name,path,0,0);
+
+		if (al_music_buffer_idx==-1) {
+			SDL_UnlockAudio();
+			return(FALSE);
+		}
+	}
+	
+	buffer=&al_buffers[al_music_buffer_idx];
+	
+		// play
+
+	audio_music_stream_pos=0;
+	audio_music_paused=FALSE;
+		
+	if (al_music_state_on) audio_music_playing=TRUE;
+
+	SDL_UnlockAudio();
+
 	return(TRUE);
 }
 
 void al_music_stop(void)
 {
+	SDL_LockAudio();
+
+	audio_music_stream_pos=0;
+	audio_music_playing=FALSE;
+
+	SDL_UnlockAudio();
 }
 
 void al_music_pause(void)
 {
+	if (audio_music_playing) {
+		audio_music_paused=TRUE;
+		audio_music_playing=FALSE;
+	}
 }
 
 void al_music_resume(void)
 {
+	if (audio_music_paused) {
+		audio_music_paused=FALSE;
+		audio_music_playing=TRUE;
+	}
 }
 
 bool al_music_playing(void)
 {
-	return(TRUE);
+	return(audio_music_playing);
 }
 
 bool al_music_playing_is_name(char *name)
 {
-	return(TRUE);
+	al_buffer_type  *buffer;
+	
+	if (!audio_music_playing) return(FALSE);
+	
+	buffer=&al_buffers[al_music_buffer_idx];
+	return(strcmp(buffer->name,name)==0);
 }
 
 void al_music_set_volume(float music_volume)
 {
+	audio_global_music_volume=(int)(1024.0f*music_volume);
 }
 
 void al_music_set_state(bool music_on)
 {
+	if (al_music_state_on==music_on) return;
+	
+	al_music_state_on=music_on;
+	if (music_on) {
+		al_music_resume();
+	}
+	else {
+		al_music_pause();
+	}
 }
 
 bool al_music_fade_in(int tick,char *name,char *path,int msec)

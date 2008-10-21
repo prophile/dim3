@@ -25,7 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
-// #define SDL_SOUND			1
+#define SDL_SOUND			1
 // supergumba -- temporary, trying to switch to SDL sound
 
 //
@@ -73,7 +73,7 @@ typedef struct		{
                         int						buffer_idx,stream_pos,
 												left_fact,right_fact;
                         float					pitch;
-						bool					used,skip,loop,no_position,no_cancel;
+						bool					used,skip,loop,ambient,no_position,no_cancel;
 						d3pnt					pnt;
 					} audio_play_type;
 	

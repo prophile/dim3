@@ -38,17 +38,146 @@ extern al_source_type			al_sources[al_max_source];
 
 #ifdef SDL_SOUND
 
+audio_play_type			audio_plays[audio_max_play];
+
+/* =======================================================
+
+      Add Ambient Sounds To List
+      
+======================================================= */
+
 void al_ambient_list_clear(void)
 {
+	al_ambient_count=0;
 }	
 
 void al_ambient_list_add(int buffer_idx,int x,int y,int z,float pitch)
 {
+	int					n,dist,max_dist;
+	al_ambient_type		*ambient;
+
+		// get distance to ambient
+		
+	dist=al_distance_to_listener(x,y,z);
+	max_dist=al_get_buffer_max_dist(buffer_idx);
+
+	if (dist>max_dist) return;
+	
+		// already playing this sound?
+
+	ambient=al_ambients;
+	
+	for (n=0;n!=al_ambient_count;n++) {
+	
+		if (ambient->buffer_idx==buffer_idx) {		// replace with closer ambient
+
+			if (dist<ambient->dist) {
+				ambient->pnt.x=x;
+				ambient->pnt.y=y;
+				ambient->pnt.z=z;
+				ambient->dist=dist;
+				ambient->pitch=pitch;
+			}
+			
+			return;
+		}
+	
+		ambient++;
+	}
+
+		// add to list
+		
+	if (al_ambient_count>=al_max_ambient) return;
+	
+	ambient=&al_ambients[al_ambient_count];
+	al_ambient_count++;
+	
+	ambient->buffer_idx=buffer_idx;
+	ambient->pnt.x=x;
+	ambient->pnt.y=y;
+	ambient->pnt.z=z;
+	ambient->dist=dist;
+	ambient->pitch=pitch;
+	
+	ambient->hit=FALSE;
 }
+
+/* =======================================================
+
+      Run Ambient Sounds
+      
+======================================================= */
 
 void al_ambients_run(void)
 {
+	int					n,k;
+	bool				amb_ok;
+	al_ambient_type		*ambient;
+	audio_play_type		*play;
+
+	SDL_LockAudio();
+			
+		// run through all the currently playing ambients
+		
+	play=audio_plays;
+	
+	for (k=0;k!=audio_max_play;k++) {
+		
+		if ((!play->used) || (!play->ambient)) {
+			play++;
+			continue;
+		}
+
+			// is this playing sound in our ambient list?
+
+		amb_ok=FALSE;
+		ambient=al_ambients;
+	
+		for (n=0;n!=al_ambient_count;n++) {
+		
+			if (ambient->buffer_idx==play->buffer_idx) {
+			
+					// found sound in ambients
+					
+				ambient->hit=TRUE;
+				amb_ok=TRUE;
+				
+					// update ambient
+					
+				play->pnt.x=ambient->pnt.x;
+				play->pnt.y=ambient->pnt.y;
+				play->pnt.z=ambient->pnt.z;
+				play->pitch=ambient->pitch;
+				
+				break;
+			}
+			
+			ambient++;
+		}
+		
+			// if the ambient sound is not in our ambient
+			// list, it must have stopped so kill it
+			
+		if (!amb_ok) al_stop_source(k);
+
+		play++;
+	}
+	
+		// add any remaining ambients as new sounds
+	
+	ambient=al_ambients;
+
+	for (n=0;n!=al_ambient_count;n++) {
+		if ((!ambient->hit) && (ambient->buffer_idx!=-1)) {
+			al_play_source(ambient->buffer_idx,ambient->pnt.x,ambient->pnt.y,ambient->pnt.z,ambient->pitch,TRUE,TRUE,FALSE,FALSE);
+		}
+		ambient++;
+	}
+
+	SDL_UnlockAudio();
 }
+
+
 
 #else
 

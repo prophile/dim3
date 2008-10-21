@@ -42,6 +42,7 @@ extern al_source_type		al_sources[al_max_source];
 #ifdef SDL_SOUND
 
 extern int					audio_global_sound_volume;
+extern float				audio_listener_ang_y;
 extern d3pnt				audio_listener_pnt;
 
 extern audio_play_type		audio_plays[audio_max_play];
@@ -49,9 +50,15 @@ extern audio_play_type		audio_plays[audio_max_play];
 // supergumba -- get rid of ang_y
 void al_set_listener(int x,int y,int z,float ang_y)
 {
+		// position
+
 	audio_listener_pnt.x=x;
 	audio_listener_pnt.y=y;
 	audio_listener_pnt.z=z;
+
+		// add 90 degrees to put ears on side of head
+
+	audio_listener_ang_y=angle_add(ang_y,-90.0f);
 }
 
 int al_distance_to_listener(int x,int y,int z)
@@ -59,10 +66,7 @@ int al_distance_to_listener(int x,int y,int z)
 	return(distance_get(x,y,z,audio_listener_pnt.x,audio_listener_pnt.y,audio_listener_pnt.z));
 }
 
-// supergumba -- deal with ambient, loop, global
 // supergumba -- deal with pitch
-// supergumba -- can we delete ambient
-// supergumba -- need to deal with volume, also
 
 int al_play_source(int buffer_idx,int x,int y,int z,float pitch,bool loop,bool ambient,bool no_position,bool no_cancel)
 {
@@ -100,6 +104,8 @@ int al_play_source(int buffer_idx,int x,int y,int z,float pitch,bool loop,bool a
 
 		// setup play structure
 
+	play=&audio_plays[idx];
+
 	play->buffer_idx=buffer_idx;
 	play->stream_pos=0;
 
@@ -110,6 +116,7 @@ int al_play_source(int buffer_idx,int x,int y,int z,float pitch,bool loop,bool a
 	play->pnt.z=z;
 
 	play->loop=loop;
+	play->ambient=ambient;
 	play->no_position=no_position;
 	play->no_cancel=no_cancel;
 
@@ -117,20 +124,54 @@ int al_play_source(int buffer_idx,int x,int y,int z,float pitch,bool loop,bool a
 
 	SDL_UnlockAudio();
 
-	return(-1);
+	return(idx);
 }
 
-void al_stop_source(int source_idx)
+void al_stop_source(int play_idx)
 {
+	SDL_LockAudio();
+
+	audio_plays[play_idx].used=FALSE;
+
+	SDL_UnlockAudio();
 }
 
 void al_stop_all_sources(void)
 {
+	int					n;
+	audio_play_type		*play;
+
+	SDL_LockAudio();
+
+	play=audio_plays;
+
+	for (n=0;n!=audio_max_play;n++) {
+		play->used=FALSE;
+		play++;
+	}
+
+	SDL_UnlockAudio();
 }
 
 void al_stop_all_looping_sources(void)
 {
+	int					n;
+	audio_play_type		*play;
+
+	SDL_LockAudio();
+
+	play=audio_plays;
+
+	for (n=0;n!=audio_max_play;n++) {
+		if (play->loop) play->used=FALSE;
+		play++;
+	}
+
+	SDL_UnlockAudio();
 }
+
+
+
 
 #else
 
