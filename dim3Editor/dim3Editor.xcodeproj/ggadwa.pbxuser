@@ -143,42 +143,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 246146118;
-			PBXWorkspaceStateSaveDate = 246146118;
+			PBXPerProjectTemplateStateSaveDate = 246251539;
+			PBXWorkspaceStateSaveDate = 246251539;
 		};
 		perUserProjectItems = {
-			263676350EABE4550086960F /* PlistBookmark */ = 263676350EABE4550086960F /* PlistBookmark */;
-			2636763E0EABFC7B0086960F /* PBXBookmark */ = 2636763E0EABFC7B0086960F /* PBXBookmark */;
-			263676520EABFD790086960F /* PBXTextBookmark */ = 263676520EABFD790086960F /* PBXTextBookmark */;
-			263676570EABFD9A0086960F /* PlistBookmark */ = 263676570EABFD9A0086960F /* PlistBookmark */;
-			2636765A0EABFD9A0086960F /* PBXTextBookmark */ = 2636765A0EABFD9A0086960F /* PBXTextBookmark */;
-			2636765D0EABFD9A0086960F /* PBXTextBookmark */ = 2636765D0EABFD9A0086960F /* PBXTextBookmark */;
-			2636765F0EABFDDC0086960F /* PlistBookmark */ = 2636765F0EABFDDC0086960F /* PlistBookmark */;
-			263676600EABFDDC0086960F /* PBXTextBookmark */ = 263676600EABFDDC0086960F /* PBXTextBookmark */;
-			263676610EABFDDC0086960F /* PBXTextBookmark */ = 263676610EABFDDC0086960F /* PBXTextBookmark */;
-			263676620EABFE1B0086960F /* PlistBookmark */ = 263676620EABFE1B0086960F /* PlistBookmark */;
-			263676630EABFE1B0086960F /* PBXTextBookmark */ = 263676630EABFE1B0086960F /* PBXTextBookmark */;
-			263676660EAC03980086960F /* PBXTextBookmark */ = 263676660EAC03980086960F /* PBXTextBookmark */;
-			263676670EAC116F0086960F /* PlistBookmark */ = 263676670EAC116F0086960F /* PlistBookmark */;
-			263676680EAC116F0086960F /* PBXTextBookmark */ = 263676680EAC116F0086960F /* PBXTextBookmark */;
-			2636766B0EAC16F70086960F /* PBXTextBookmark */ = 2636766B0EAC16F70086960F /* PBXTextBookmark */;
-			2636766C0EAC18C60086960F /* PlistBookmark */ = 2636766C0EAC18C60086960F /* PlistBookmark */;
-			2636766D0EAC18C60086960F /* PBXTextBookmark */ = 2636766D0EAC18C60086960F /* PBXTextBookmark */;
-			2636767A0EAC1B0E0086960F /* PBXTextBookmark */ = 2636767A0EAC1B0E0086960F /* PBXTextBookmark */;
-			263676820EAC1BCF0086960F /* PlistBookmark */ = 263676820EAC1BCF0086960F /* PlistBookmark */;
-			263676830EAC1BCF0086960F /* PBXTextBookmark */ = 263676830EAC1BCF0086960F /* PBXTextBookmark */;
-			263676860EAC1C9A0086960F /* PlistBookmark */ = 263676860EAC1C9A0086960F /* PlistBookmark */;
-			263676870EAC1C9A0086960F /* PBXTextBookmark */ = 263676870EAC1C9A0086960F /* PBXTextBookmark */;
-			263676B40EAC2E290086960F /* PBXTextBookmark */ = 263676B40EAC2E290086960F /* PBXTextBookmark */;
-			263676B70EAC2E540086960F /* PlistBookmark */ = 263676B70EAC2E540086960F /* PlistBookmark */;
-			263676B80EAC2E540086960F /* PBXTextBookmark */ = 263676B80EAC2E540086960F /* PBXTextBookmark */;
-			263676BE0EAC2ED20086960F /* PlistBookmark */ = 263676BE0EAC2ED20086960F /* PlistBookmark */;
-			263676BF0EAC2ED20086960F /* PBXTextBookmark */ = 263676BF0EAC2ED20086960F /* PBXTextBookmark */;
-			263676C10EAC2F390086960F /* PlistBookmark */ = 263676C10EAC2F390086960F /* PlistBookmark */;
-			263676C20EAC2F390086960F /* PBXTextBookmark */ = 263676C20EAC2F390086960F /* PBXTextBookmark */;
-			263676C30EAC300C0086960F /* PlistBookmark */ = 263676C30EAC300C0086960F /* PlistBookmark */;
-			26665D840EA9AE5C001B1BF5 = 26665D840EA9AE5C001B1BF5 /* PlistBookmark */;
-			26CAAE0F0EABB90E0051877E = 26CAAE0F0EABB90E0051877E /* PlistBookmark */;
+			263677220EAD5B050086960F /* PlistBookmark */ = 263677220EAD5B050086960F /* PlistBookmark */;
+			2636778F0EAD8CEF0086960F /* PlistBookmark */ = 2636778F0EAD8CEF0086960F /* PlistBookmark */;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -311,7 +281,7 @@
 			sepNavWindowFrame = "{{432, 161}, {1041, 747}}";
 		};
 	};
-	263676350EABE4550086960F /* PlistBookmark */ = {
+	263677220EAD5B050086960F /* PlistBookmark */ = {
 		isa = PlistBookmark;
 		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
 		fallbackIsa = PBXBookmark;
@@ -322,279 +292,7 @@
 		rLen = 0;
 		rLoc = 2147483647;
 	};
-	2636763E0EABFC7B0086960F /* PBXBookmark */ = {
-		isa = PBXBookmark;
-		fRef = 26829D600E54E75900EEED65 /* obscure.c */;
-	};
-	263676520EABFD790086960F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0123D85F00C0AFD57F000001 /* dos.c */;
-		rLen = 9;
-		rLoc = 3175;
-		rType = 0;
-	};
-	263676570EABFD9A0086960F /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
-	};
-	2636765A0EABFD9A0086960F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0123D85F00C0AFD57F000001 /* dos.c */;
-		name = "dos.c: 204";
-		rLen = 0;
-		rLoc = 4445;
-		rType = 0;
-		vrLen = 892;
-		vrLoc = 3854;
-	};
-	2636765D0EABFD9A0086960F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 26829D600E54E75900EEED65 /* obscure.c */;
-		name = "obscure.c: 839";
-		rLen = 0;
-		rLoc = 24633;
-		rType = 0;
-		vrLen = 933;
-		vrLoc = 23287;
-	};
-	2636765F0EABFDDC0086960F /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
-	};
-	263676600EABFDDC0086960F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0123D85F00C0AFD57F000001 /* dos.c */;
-		name = "dos.c: 204";
-		rLen = 0;
-		rLoc = 4445;
-		rType = 0;
-		vrLen = 891;
-		vrLoc = 3854;
-	};
-	263676610EABFDDC0086960F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 26829D600E54E75900EEED65 /* obscure.c */;
-		name = "obscure.c: 839";
-		rLen = 0;
-		rLoc = 24633;
-		rType = 0;
-		vrLen = 933;
-		vrLoc = 23287;
-	};
-	263676620EABFE1B0086960F /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
-	};
-	263676630EABFE1B0086960F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 26829D600E54E75900EEED65 /* obscure.c */;
-		name = "obscure.c: 839";
-		rLen = 0;
-		rLoc = 24633;
-		rType = 0;
-		vrLen = 980;
-		vrLoc = 23287;
-	};
-	263676660EAC03980086960F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 26829D600E54E75900EEED65 /* obscure.c */;
-		rLen = 25;
-		rLoc = 13907;
-		rType = 0;
-	};
-	263676670EAC116F0086960F /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
-	};
-	263676680EAC116F0086960F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 26829D600E54E75900EEED65 /* obscure.c */;
-		name = "obscure.c: 853";
-		rLen = 0;
-		rLoc = 24756;
-		rType = 0;
-		vrLen = 880;
-		vrLoc = 22595;
-	};
-	2636766B0EAC16F70086960F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		comments = "error: 'map_mesh_obscure_type' has no member named 'group_idx'";
-		fRef = 26829D600E54E75900EEED65 /* obscure.c */;
-		rLen = 0;
-		rLoc = 259;
-		rType = 1;
-	};
-	2636766C0EAC18C60086960F /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
-	};
-	2636766D0EAC18C60086960F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 26829D600E54E75900EEED65 /* obscure.c */;
-		name = "obscure.c: 728";
-		rLen = 0;
-		rLoc = 20946;
-		rType = 0;
-		vrLen = 1360;
-		vrLoc = 21044;
-	};
-	2636767A0EAC1B0E0086960F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		comments = "error: 'map_mesh_obscure_type' has no member named 'group_idx'";
-		fRef = 26829D600E54E75900EEED65 /* obscure.c */;
-		rLen = 1;
-		rLoc = 690;
-		rType = 1;
-	};
-	263676820EAC1BCF0086960F /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
-	};
-	263676830EAC1BCF0086960F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 26829D600E54E75900EEED65 /* obscure.c */;
-		name = "obscure.c: 965";
-		rLen = 0;
-		rLoc = 25727;
-		rType = 0;
-		vrLen = 943;
-		vrLoc = 25287;
-	};
-	263676860EAC1C9A0086960F /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
-	};
-	263676870EAC1C9A0086960F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 26829D600E54E75900EEED65 /* obscure.c */;
-		name = "obscure.c: 952";
-		rLen = 0;
-		rLoc = 25409;
-		rType = 0;
-		vrLen = 899;
-		vrLoc = 25282;
-	};
-	263676B40EAC2E290086960F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		comments = "error: 'map_mesh_obscure_type' has no member named 'group_idx'";
-		fRef = 26829D600E54E75900EEED65 /* obscure.c */;
-		rLen = 1;
-		rLoc = 690;
-		rType = 1;
-	};
-	263676B70EAC2E540086960F /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
-	};
-	263676B80EAC2E540086960F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 26829D600E54E75900EEED65 /* obscure.c */;
-		name = "obscure.c: 695";
-		rLen = 0;
-		rLoc = 19498;
-		rType = 0;
-		vrLen = 2187;
-		vrLoc = 17609;
-	};
-	263676BE0EAC2ED20086960F /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
-	};
-	263676BF0EAC2ED20086960F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 26829D600E54E75900EEED65 /* obscure.c */;
-		name = "obscure.c: 695";
-		rLen = 0;
-		rLoc = 19497;
-		rType = 0;
-		vrLen = 2594;
-		vrLoc = 17029;
-	};
-	263676C10EAC2F390086960F /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
-	};
-	263676C20EAC2F390086960F /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 26829D600E54E75900EEED65 /* obscure.c */;
-		name = "obscure.c: 915";
-		rLen = 0;
-		rLoc = 24624;
-		rType = 0;
-		vrLen = 887;
-		vrLoc = 24210;
-	};
-	263676C30EAC300C0086960F /* PlistBookmark */ = {
+	2636778F0EAD8CEF0086960F /* PlistBookmark */ = {
 		isa = PlistBookmark;
 		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
 		fallbackIsa = PBXBookmark;
@@ -621,17 +319,6 @@
 			sepNavWindowFrame = "{{344, 157}, {1041, 747}}";
 		};
 	};
-	26665D840EA9AE5C001B1BF5 /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
-	};
 	26791D420E4D626700AAD058 /* dialog_grid_mesh.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 1666}}";
@@ -642,9 +329,9 @@
 	};
 	26829D600E54E75900EEED65 /* obscure.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 13412}}";
-			sepNavSelRange = "{19497, 0}";
-			sepNavVisRange = "{18942, 1221}";
+			sepNavIntBoundsRect = "{{0, 0}, {1074, 14154}}";
+			sepNavSelRange = "{19957, 0}";
+			sepNavVisRange = "{16720, 3626}";
 			sepNavWindowFrame = "{{319, 229}, {1041, 747}}";
 		};
 	};
@@ -675,8 +362,8 @@
 	26AFB4D10D9615C00004805A /* maputility.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 9660}}";
-			sepNavSelRange = "{6986, 0}";
-			sepNavVisRange = "{6096, 1500}";
+			sepNavSelRange = "{5163, 9}";
+			sepNavVisRange = "{4406, 974}";
 			sepNavWindowFrame = "{{640, 133}, {1041, 747}}";
 		};
 	};
@@ -687,17 +374,6 @@
 			sepNavVisRange = "{328, 1183}";
 			sepNavWindowFrame = "{{349, 232}, {1041, 747}}";
 		};
-	};
-	26CAAE0F0EABB90E0051877E /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
 	};
 	26DB6D960DDFCE4100BDD008 /* dialog_resize.c */ = {
 		uiCtxt = {
@@ -957,9 +633,9 @@
 	};
 	F595F3390A8BBEF0004AB8BA /* modelutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1080, 5264}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5404}}";
 			sepNavSelRange = "{3651, 86}";
-			sepNavVisRange = "{11657, 3785}";
+			sepNavVisRange = "{0, 1815}";
 			sepNavWindowFrame = "{{61, 234}, {1041, 747}}";
 		};
 	};

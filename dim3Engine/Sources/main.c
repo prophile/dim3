@@ -226,18 +226,6 @@ int main(int argc,char *argv[])
 	bool			app_start_ok;
 	char			err_str[256];
 
-	int		n;
-	double	d;
-
-	for (n=0;n<=180;n+=5) {
-		d=ANG_to_RAD*(float)(n/2);
-		fprintf(stdout,"%d = %.2f / %.2f\n",n,sin(d),cos(d));
-	}
-
-	// sin goes from 0 to 1 (right ear 180 = 0, 0 = 1)
-	// cos goes from 1 to 0 (left ear 180= 1, 0 = 0)
-
-
 		// setup paths
 
 	if (!file_paths_setup(&setup.file_path_setup,FALSE)) {

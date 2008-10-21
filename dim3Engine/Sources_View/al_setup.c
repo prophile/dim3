@@ -116,9 +116,15 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 
 			// calculate left/right channels
 
-		d_ang=(double)(ang*ANG_to_RAD);
-		play->left_fact=(int)(((float)vol)*(-sin(d_ang)));
-		play->right_fact=(int)(((float)vol)*cos(d_ang));
+		if (ang<180.0f) {
+			d_ang=(double)((ang/2.0f)*ANG_to_RAD);
+		}
+		else {
+			d_ang=(double)(((350.0f-ang)/2.0f)*ANG_to_RAD);
+		}
+		
+		play->left_fact=(int)(((float)vol)*fabs(sin(d_ang)));
+		play->right_fact=(int)(((float)vol)*fabs(cos(d_ang)));
 	}
 
 		// if no plays, skip
