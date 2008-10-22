@@ -85,23 +85,23 @@ bool al_music_play(char *name,char *path)
 		
 	load=TRUE;
 	
-	if (al_music_buffer_idx!=-1) {
-		buffer=&al_buffers[al_music_buffer_idx];
+	if (audio_music_buffer_idx!=-1) {
+		buffer=&al_buffers[audio_music_buffer_idx];
 		load=(strcmp(buffer->name,name)!=0);
 	}
 	
 		// open music
 		
 	if (load) {
-		al_music_buffer_idx=al_open_buffer(name,path,0,0);
+		audio_music_buffer_idx=al_open_buffer(name,path,0,0);
 
-		if (al_music_buffer_idx==-1) {
+		if (audio_music_buffer_idx==-1) {
 			SDL_UnlockAudio();
 			return(FALSE);
 		}
 	}
 	
-	buffer=&al_buffers[al_music_buffer_idx];
+	buffer=&al_buffers[audio_music_buffer_idx];
 	
 		// play
 
@@ -152,7 +152,7 @@ bool al_music_playing_is_name(char *name)
 	
 	if (!audio_music_playing) return(FALSE);
 	
-	buffer=&al_buffers[al_music_buffer_idx];
+	buffer=&al_buffers[audio_music_buffer_idx];
 	return(strcmp(buffer->name,name)==0);
 }
 

@@ -79,12 +79,14 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 246238182;
-			PBXWorkspaceStateSaveDate = 246238182;
+			PBXPerProjectTemplateStateSaveDate = 246337213;
+			PBXWorkspaceStateSaveDate = 246337213;
 		};
 		perUserProjectItems = {
-			263676A40EAC2ADB0086960F /* PlistBookmark */ = 263676A40EAC2ADB0086960F /* PlistBookmark */;
-			263677370EAD5C240086960F /* PlistBookmark */ = 263677370EAD5C240086960F /* PlistBookmark */;
+			266C8B170EAEC99D00BD4E6A /* PlistBookmark */ = 266C8B170EAEC99D00BD4E6A /* PlistBookmark */;
+			268891F10EAECECC00019045 /* PBXBookmark */ = 268891F10EAECECC00019045 /* PBXBookmark */;
+			268891FC0EAECEF800019045 /* PlistBookmark */ = 268891FC0EAECEF800019045 /* PlistBookmark */;
+			268892010EAECEF800019045 /* PBXTextBookmark */ = 268892010EAECEF800019045 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -133,28 +135,6 @@
 			sepNavVisRange = "{1827, 1056}";
 			sepNavWindowFrame = "{{520, 154}, {1041, 747}}";
 		};
-	};
-	263676A40EAC2ADB0086960F /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5CD87F50557720F0023AD9B /* Info-dim3_Engine.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Engine/Resources/Info-dim3_Engine.plist";
-		rLen = 0;
-		rLoc = 2147483647;
-	};
-	263677370EAD5C240086960F /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5CD87F50557720F0023AD9B /* Info-dim3_Engine.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Engine/Resources/Info-dim3_Engine.plist";
-		rLen = 0;
-		rLoc = 2147483647;
 	};
 	2644F0760D426C6E00470CB5 /* dim3Engine in dim3 */ = {
 		isa = PBXExecutable;
@@ -256,6 +236,42 @@
 		rType = 0;
 		vrLen = 1373;
 		vrLoc = 290;
+	};
+	266C8B170EAEC99D00BD4E6A /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = F5CD87F50557720F0023AD9B /* Info-dim3_Engine.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+		);
+		name = "/Users/ggadwa/dim3Code/dim3Engine/Resources/Info-dim3_Engine.plist";
+		rLen = 0;
+		rLoc = 2147483647;
+	};
+	268891F10EAECECC00019045 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = F5A582C9090C992C00BE7C36 /* sound_defs.h */;
+	};
+	268891FC0EAECEF800019045 /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = F5CD87F50557720F0023AD9B /* Info-dim3_Engine.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+		);
+		name = "/Users/ggadwa/dim3Code/dim3Engine/Resources/Info-dim3_Engine.plist";
+		rLen = 0;
+		rLoc = 2147483647;
+	};
+	268892010EAECEF800019045 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5A582C9090C992C00BE7C36 /* sound_defs.h */;
+		name = "sound_defs.h: 28";
+		rLen = 0;
+		rLoc = 951;
+		rType = 0;
+		vrLen = 1352;
+		vrLoc = 0;
 	};
 	268CBC8D0DD2AA7D00CF0256 /* net_client_join_host.c */ = {
 		uiCtxt = {
@@ -795,7 +811,7 @@
 	};
 	F5A582C9090C992C00BE7C36 /* sound_defs.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1316}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1330}}";
 			sepNavSelRange = "{951, 0}";
 			sepNavVisRange = "{0, 1352}";
 			sepNavWindowFrame = "{{380, 260}, {1041, 747}}";
@@ -1537,18 +1553,26 @@
 	};
 	F5DD1AA109085D9900721649 /* al_setup.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4984}}";
-			sepNavSelRange = "{3230, 0}";
-			sepNavVisRange = "{2452, 1136}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5404}}";
+			sepNavSelRange = "{4621, 22}";
+			sepNavVisRange = "{4281, 1003}";
 			sepNavWindowFrame = "{{299, 198}, {1041, 747}}";
 		};
 	};
 	F5DD1AA309085D9900721649 /* al_buffer.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 3346}}";
-			sepNavSelRange = "{2172, 0}";
-			sepNavVisRange = "{1661, 1110}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 3430}}";
+			sepNavSelRange = "{2640, 0}";
+			sepNavVisRange = "{1762, 1041}";
 			sepNavWindowFrame = "{{423, 117}, {1041, 747}}";
+		};
+	};
+	F5DD1AA409085D9900721649 /* al_music.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6916}}";
+			sepNavSelRange = "{3686, 0}";
+			sepNavVisRange = "{1793, 840}";
+			sepNavWindowFrame = "{{232, 210}, {1041, 747}}";
 		};
 	};
 	F5DD1AA509085D9900721649 /* al_play.c */ = {

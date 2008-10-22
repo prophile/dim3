@@ -97,7 +97,7 @@ int al_open_buffer(char *name,char *path,int min_dist,int max_dist)
 
 	buffer->data=(short*)acvt.buf;
 	buffer->len=(int)(((double)acvt.len)*acvt.len_ratio);
-	buffer->sample_len=buffer->len>>1;				// size of 16 bit samples
+	buffer->sample_len=buffer->len>>1;						// size of 16 bit samples
 	
 	buffer->min_dist=(float)min_dist;
 	buffer->max_dist=(float)max_dist;

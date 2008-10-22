@@ -25,7 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#define SDL_SOUND			1
+// #define SDL_SOUND			1
 // supergumba -- temporary, trying to switch to SDL sound
 
 //
