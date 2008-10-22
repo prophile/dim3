@@ -280,7 +280,7 @@ bool view_initialize(char *err_str)
 
 		// start SDL
 
-	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_JOYSTICK|SDL_INIT_NOPARACHUTE)==-1) {
+	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_JOYSTICK|SDL_INIT_NOPARACHUTE)==-1) {
 		view_memory_release();
 		sprintf(err_str,"SDL: Could not init (Error: %s)\n",SDL_GetError());
 		return(FALSE);
@@ -296,7 +296,7 @@ bool view_initialize(char *err_str)
 	
 	view_create_vertex_objects();
 
-		// al initialize
+		// sound initialize
 		
 	if (!al_initialize(err_str)) {
 		gl_shadow_shutdown();

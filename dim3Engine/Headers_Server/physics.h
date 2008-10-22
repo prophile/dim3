@@ -58,9 +58,6 @@ extern void collide_push_objects(int sx,int sz,int sy,int radius,int force);
 
 extern bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly);
 
-extern bool map_spot_empty_sphere(int sx,int sy,int sz,int radius,int ignore_obj_uid,int *hit_obj_uid);
-extern bool map_spot_empty_object(obj_type *obj);
-
 extern int find_poly_nearest_stand(int x,int y,int z,int ydist,bool ignore_higher);
 extern int pin_downward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *stand_poly);
 extern int pin_downward_movement_obj(obj_type *obj,int my);

@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "network.h"
 #include "scripts.h"
+#include "physics.h"
 #include "objects.h"
 #include "remotes.h"
 #include "weapons.h"
@@ -83,7 +84,9 @@ void weapon_setup_fire(weapon_type *weap,int method)
 
 bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,d3pnt *pt,d3ang *ang)
 {
-	proj_type			*proj;
+	d3pnt					spt,ept,hpt;
+	proj_type				*proj;
+	ray_trace_contact_type	contact;
 	
 		// create new projectile
 		
@@ -91,7 +94,6 @@ bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_t
 	if (proj==NULL) return(FALSE);
 
 	projectile_spawn_position(proj,pt,ang,obj);
-	projectile_set_origin(proj);
 	
 		// call spawn
 		
@@ -103,6 +105,39 @@ bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_t
 		if (obj->uid==server.player_obj_uid) {
 			net_client_send_projectile_add(net_setup.client.remote_uid,weap->name,proj_setup->name,pt,ang);
 		}
+	}
+
+		// detect weapons being fired into walls
+		// if so, destroy projectile
+
+	spt.x=obj->pnt.x;
+	spt.y=obj->pnt.y;
+	spt.z=obj->pnt.z;
+
+	ept.x=proj->pnt.x;
+	ept.y=proj->pnt.y;
+	ept.z=proj->pnt.z;
+	
+	contact.obj_on=TRUE;
+	contact.proj_on=proj_setup->collision;
+	contact.obj_ignore_uid=obj->uid;
+	contact.proj_ignore_uid=proj->uid;
+
+	contact.hit_mode=poly_ray_trace_hit_mode_all;
+	contact.origin=poly_ray_trace_origin_projectile;
+	
+	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
+
+		proj->pnt.x=hpt.x;
+		proj->pnt.y=hpt.y;
+		proj->pnt.z=hpt.z;
+
+		proj->contact.hit_poly.mesh_idx=contact.poly.mesh_idx;
+		proj->contact.hit_poly.poly_idx=contact.poly.poly_idx;
+		proj->contact.obj_uid=contact.obj_uid;
+		proj->contact.proj_uid=contact.proj_uid;
+
+		projectile_hit(tick,proj,FALSE);
 	}
 
 	return(TRUE);

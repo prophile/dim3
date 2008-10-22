@@ -31,46 +31,30 @@ and can be sold or given away.
 
 #include "sounds.h"
 
-extern int				al_buffer_count;
-extern al_buffer_type   al_buffers[al_max_buffer];
+extern int					audio_buffer_count;
+extern audio_buffer_type	audio_buffers[audio_max_buffer];
 
-#ifdef SDL_SOUND
+/* =======================================================
 
-/*
-#define AUDIO_U8	0x0008	-- Unsigned 8-bit samples --
-#define AUDIO_S8	0x8008	-- Signed 8-bit samples --
-#define AUDIO_U16LSB	0x0010	-- Unsigned 16-bit samples --
-#define AUDIO_S16LSB	0x8010	-- Signed 16-bit samples --
-#define AUDIO_U16MSB	0x1010	-- As above, but big-endian byte order --
-#define AUDIO_S16MSB	0x9010	-- As above, but big-endian byte order --
-#define AUDIO_U16	AUDIO_U16LSB
-#define AUDIO_S16	AUDIO_S16LSB
-
--- Native audio byte ordering --
-#if SDL_BYTEORDER == SDL_LIL_ENDIAN
-#define AUDIO_U16SYS	AUDIO_U16LSB
-#define AUDIO_S16SYS	AUDIO_S16LSB
-#else
-#define AUDIO_U16SYS	AUDIO_U16MSB
-#define AUDIO_S16SYS	AUDIO_S16MSB
-#endif
-*/
+      Load and Close OpenAL Buffers
+      
+======================================================= */
 
 int al_open_buffer(char *name,char *path,int min_dist,int max_dist)
 {
-	int				len;
-	unsigned char	*data;
-	al_buffer_type  *buffer;
-	SDL_AudioSpec	aspec;
-	SDL_AudioCVT	acvt;
+	int					len;
+	unsigned char		*data;
+	audio_buffer_type  *buffer;
+	SDL_AudioSpec		aspec;
+	SDL_AudioCVT		acvt;
 
 		// any more buffers?
 
-	if (al_buffer_count>=al_max_buffer) return(-1);
+	if (audio_buffer_count>=audio_max_buffer) return(-1);
 
 		// get next buffer
 
-	buffer=&al_buffers[al_buffer_count];
+	buffer=&audio_buffers[audio_buffer_count];
 
 		// load wave data
 
@@ -98,6 +82,7 @@ int al_open_buffer(char *name,char *path,int min_dist,int max_dist)
 	buffer->data=(short*)acvt.buf;
 	buffer->len=(int)(((double)acvt.len)*acvt.len_ratio);
 	buffer->sample_len=buffer->len>>1;						// size of 16 bit samples
+	buffer->f_sample_len=(float)buffer->sample_len;
 	
 	buffer->min_dist=(float)min_dist;
 	buffer->max_dist=(float)max_dist;
@@ -106,16 +91,16 @@ int al_open_buffer(char *name,char *path,int min_dist,int max_dist)
 
 		// goto next buffer
 
-	al_buffer_count++;
-	return(al_buffer_count-1);
+	audio_buffer_count++;
+	return(audio_buffer_count-1);
 }
 
 void al_close_buffer(int idx)
 {
-	al_buffer_type  *buffer;
+	audio_buffer_type  *buffer;
 
-	buffer=&al_buffers[idx];
-	if (buffer->loaded) SDL_FreeWAV((Uint8*)al_buffers[idx].data);
+	buffer=&audio_buffers[idx];
+	if (buffer->loaded) SDL_FreeWAV((Uint8*)buffer->data);
 
 	buffer->loaded=FALSE;
 }
@@ -124,105 +109,7 @@ void al_close_all_buffers(void)
 {
 	int		n;
 	
-	for (n=0;n!=al_max_buffer;n++) {
-		al_close_buffer(n);
-	}
-}
-
-int al_find_buffer(char *name)
-{
-	int					n;
-	al_buffer_type		*buffer;
-    
-	buffer=al_buffers;
-	
-	for (n=0;n!=al_buffer_count;n++) {
-		if (buffer->loaded) {
-			if (strcmp(buffer->name,name)==0) return(n);
-		}
-		buffer++;
-	}
-
-	return(-1);
-}
-
-int al_get_buffer_max_dist(int buffer_idx)
-{
-	return((int)al_buffers[buffer_idx].max_dist);
-}
-
-
-#else
-
-/* =======================================================
-
-      Load and Close OpenAL Buffers
-      
-======================================================= */
-
-int al_open_buffer(char *name,char *path,int min_dist,int max_dist)
-{
-	int				err;
-	ALenum			format;
-	ALsizei			size,freq;
-    ALboolean		loop;
-	ALvoid			*data;
-	al_buffer_type  *buffer;
-
-		// load the wave
-		
-	alGetError();
-	
-    loop=FALSE;
-	al_load_wav_file(path,&format,&data,&size,&freq,&loop);
-
-	if ((data==NULL) || (alGetError()!=AL_NO_ERROR)) return(-1);
-	
-		// initialize the buffer
-		
-	buffer=&al_buffers[al_buffer_count];
-	strcpy(buffer->name,name);
-	
-	alGenBuffers(1,&buffer->al_id);
-	if (alGetError()!=AL_NO_ERROR) {
-		al_free_wav_file(format,data,size,freq);
-		return(-1);
-	}
-	
-	alBufferData(buffer->al_id,format,data,size,freq);
-	err=alGetError();
-	
-	al_free_wav_file(format,data,size,freq);
-
-	if (alGetError()!=AL_NO_ERROR) {
-		alDeleteBuffers(1,&buffer->al_id);
-		return(-1);
-	}
-	
-	buffer->min_dist=(float)min_dist;
-	buffer->max_dist=(float)max_dist;
-
-	buffer->loaded=TRUE;
-	
-	al_buffer_count++;
-	return(al_buffer_count-1);
-}
-
-void al_close_buffer(int idx)
-{
-	al_buffer_type  *buffer;
-	
-	buffer=&al_buffers[idx];
-	if (buffer->loaded) alDeleteBuffers(1,&buffer->al_id);
-	
-	buffer->loaded=FALSE;
-}
-
-void al_close_all_buffers(void)
-{
-	int		n;
-	
-	for (n=0;n!=al_max_buffer;n++) {
+	for (n=0;n!=audio_max_buffer;n++) {
 		al_close_buffer(n);
 	}
 }
@@ -236,11 +123,11 @@ void al_close_all_buffers(void)
 int al_find_buffer(char *name)
 {
 	int					n;
-	al_buffer_type		*buffer;
+	audio_buffer_type	*buffer;
     
-	buffer=al_buffers;
+	buffer=audio_buffers;
 	
-	for (n=0;n!=al_buffer_count;n++) {
+	for (n=0;n!=audio_buffer_count;n++) {
 		if (buffer->loaded) {
 			if (strcmp(buffer->name,name)==0) return(n);
 		}
@@ -249,7 +136,7 @@ int al_find_buffer(char *name)
 
 	return(-1);
 }
-	
+
 /* =======================================================
 
       Buffer Info
@@ -258,7 +145,7 @@ int al_find_buffer(char *name)
 
 int al_get_buffer_max_dist(int buffer_idx)
 {
-	return((int)al_buffers[buffer_idx].max_dist);
+	return((int)audio_buffers[buffer_idx].max_dist);
 }
 
-#endif
+

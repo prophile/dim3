@@ -31,39 +31,31 @@ and can be sold or given away.
 
 #include "sounds.h"
 
-int						al_buffer_count,al_source_count;
-
-ALCcontext				*al_context;
-ALCdevice				*al_device;
-
-al_buffer_type			al_buffers[al_max_buffer];
-al_source_type			al_sources[al_max_source];
-
-#ifdef D3_OS_MAC
-	ALC_API ALvoid alcMacOSXRenderingQuality(const ALint value);
-	ALC_API ALvoid alMacOSXRenderChannelCount(const ALint value);
-#endif
-
-#ifdef SDL_SOUND
-
-int						audio_global_sound_volume,audio_global_music_volume,
+int						audio_buffer_count,
+						audio_global_sound_volume,audio_global_music_volume,
 						audio_music_buffer_idx,audio_music_stream_pos;
 float					audio_listener_ang_y;
 bool					audio_music_playing;
 d3pnt					audio_listener_pnt;
+audio_buffer_type		audio_buffers[audio_max_buffer];
 audio_play_type			audio_plays[audio_max_play];
 
+/* =======================================================
+
+      Audio Callback Routine
+      
+======================================================= */
 
 void audio_callback(void *userdata,Uint8 *stream,int len)
 {
-	int					n,k,stream_len,dist,vol,
+	int					n,k,pos,stream_len,dist,vol,
 						left_channel,right_channel;
 	short				*s_stream,data;
 	float				ang;
 	double				d_ang;
 	bool				has_play;
+	audio_buffer_type	*buffer;
 	audio_play_type		*play;
-	al_buffer_type		*buffer;
 
 		// calculate pitch and left/right channel multiplications
 		// here.  We use a x/1024 factor to save on having to do
@@ -83,7 +75,7 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 
 		if (!play->used) continue;
 
-			// mark to see if we have any sounds at all
+			// we have at least one sound
 
 		has_play=TRUE;
 
@@ -97,7 +89,7 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 
 			// are we within the maximum distance?
 
-		buffer=&al_buffers[play->buffer_idx];
+		buffer=&audio_buffers[play->buffer_idx];
 
 		dist=distance_get(play->pnt.x,play->pnt.y,play->pnt.z,audio_listener_pnt.x,audio_listener_pnt.y,audio_listener_pnt.z);
 		if (dist>=buffer->max_dist) continue;
@@ -156,8 +148,10 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 
 					// get stream data
 
-				buffer=&al_buffers[play->buffer_idx];
-				data=(int)(*(buffer->data+play->stream_pos));
+				pos=(int)play->stream_pos;
+
+				buffer=&audio_buffers[play->buffer_idx];
+				data=(int)(*(buffer->data+pos));
 
 					// create the channels
 
@@ -167,11 +161,12 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 					// move onto next position in stream
 					// or loop or stop sound
 
-				play->stream_pos++;
-				if (play->stream_pos>=buffer->sample_len) {
+				play->stream_pos+=play->pitch;
+
+				if (play->stream_pos>=buffer->f_sample_len) {
 
 					if (play->loop) {
-						play->stream_pos=0;
+						play->stream_pos=play->stream_pos-buffer->f_sample_len;
 					}
 					else {
 						play->used=FALSE;
@@ -193,7 +188,7 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 			// add in the music
 
 		if (audio_music_playing) {
-			buffer=&al_buffers[audio_music_buffer_idx];
+			buffer=&audio_buffers[audio_music_buffer_idx];
 
 			data=(int)(*(buffer->data+audio_music_stream_pos));
 			vol=(data*audio_global_music_volume)>>10;
@@ -219,14 +214,16 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 	}
 }
 
+/* =======================================================
 
+      Initialize and Shutdown SDL Sound
+      
+======================================================= */
 
 bool al_initialize(char *err_str)
 {
 	int				n;
 	SDL_AudioSpec	aspec,ospec;
-
-	SDL_InitSubSystem(SDL_INIT_AUDIO);		// supergumba -- move to SDL_Init
 
 		// initialize SDL audio
 
@@ -253,7 +250,7 @@ bool al_initialize(char *err_str)
 
 		// no buffers loaded
 
-	al_buffer_count=0;
+	audio_buffer_count=0;
 
 		// no sounds playing
 
@@ -280,121 +277,14 @@ void al_shutdown(void)
 	SDL_CloseAudio();
 }
 
+/* =======================================================
+
+      Set Sound Volume
+      
+======================================================= */
+
 void al_set_volume(float sound_volume)
 {
 	audio_global_sound_volume=(int)(1024.0f*sound_volume);
 }
 
-#else
-
-
-/* =======================================================
-
-      Initialize and Shutdown OpenAL
-      
-======================================================= */
-
-bool al_initialize(char *err_str)
-{
-	int				n,err;
-	
-		// create device and context
-		
- 	al_device=alcOpenDevice(NULL);
-	if (al_device==NULL) {
-		strcpy(err_str,"OpenAL: Could not open device");
-		return(FALSE);
-	}
-	
-	al_context=alcCreateContext(al_device,0);
-	if (al_context==NULL) {
-		alcCloseDevice(al_device);
-		strcpy(err_str,"OpenAL: Could not create context");
-		return(FALSE);
-	}
-
-	alcMakeContextCurrent(al_context);
-	
-		// initialize music
-		
-	if (!al_music_initialize(err_str)) return(FALSE);
-	
-		// create the sample sources
-		
-	al_source_count=0;
-
-	for (n=0;n!=al_max_source;n++) {
-
-		alGetError();
-		alGenSources(1,&al_sources[n].al_id);
-		err=alGetError();
-
-		if (err!=AL_NO_ERROR) break;			// reached max number of sources for this implementation
-
-		al_source_count++;
-	}
-	
-		// some initial setup
-	
-	alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
-	alListenerf(AL_GAIN,1);
-
-#ifdef D3_OS_MAC
-	alEnable(ALC_MAC_OSX_CONVERT_DATA_UPON_LOADING);
-	alcMacOSXRenderingQuality(ALC_MAC_OSX_SPATIAL_RENDERING_QUALITY_LOW);
-	alMacOSXRenderChannelCount(ALC_MAC_OSX_RENDER_CHANNEL_COUNT_STEREO);
-#endif
-
-	alDopplerFactor(0);
-		
-		// no buffers loaded
-	
-	al_buffer_count=0;
-
-	return(TRUE);
-}
-
-void al_shutdown(void)
-{
-	int			n;
-	ALuint		al_id[al_max_source];
-	
-		// shutdown music
-		
-	al_music_shutdown();
-	
-		// close all buffers
-		
-	al_close_all_buffers();
-	
-		// close sources
-		
-	for (n=0;n!=al_source_count;n++) {
-		al_id[n]=al_sources[n].al_id;
-	}
-
-	alDeleteSources(al_source_count,al_id);
-	
-		// close context and device
-
-	alcMakeContextCurrent(NULL);
-	alcDestroyContext(al_context);
-	alcCloseDevice(al_device);
-}
-
-/* =======================================================
-
-      Set OpenAL Volumes
-      
-======================================================= */
-
-void al_set_volume(float sound_volume)
-{
-	int			n;
-	
-	for (n=0;n!=al_source_count;n++) {
-		alSourcef(al_sources[n].al_id,AL_GAIN,sound_volume);
-	}
-}
-
-#endif

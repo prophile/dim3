@@ -640,10 +640,12 @@ bool object_enter_vehicle(obj_type *obj,char *err_str)
 
 bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 {
-	int				x,z,y;
-	bool			old_ok,empty;
-	obj_type		*orig_obj;
-	obj_vehicle		*vehicle;
+	int						x,z,y;
+	bool					empty;
+	d3pnt					spt,ept,hpt;
+	obj_type				*orig_obj;
+	obj_vehicle				*vehicle;
+	ray_trace_contact_type	contact;
 
 		// don't exit moving vehicles
 
@@ -674,14 +676,27 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 
 	orig_obj->ang.y=angle_find(orig_obj->pnt.x,orig_obj->pnt.z,vehicle_obj->pnt.x,vehicle_obj->pnt.z);
 	
-		// can we exit?
+		// is there enough empty space to exit?
+		// go from center of vehicle to obj + radius
+
+	spt.x=vehicle_obj->pnt.x;
+	spt.y=vehicle_obj->pnt.y;
+	spt.z=vehicle_obj->pnt.z;
+
+	ept.x=orig_obj->pnt.x;
+	ept.y=orig_obj->pnt.y;
+	ept.z=orig_obj->pnt.z;
+
+	ray_push_to_end(&ept,&spt,-orig_obj->size.radius);
 	
-	old_ok=vehicle_obj->contact.object_on;				// don't collide with vehicle
-	vehicle_obj->contact.object_on=FALSE;
+	contact.obj_on=TRUE;
+	contact.proj_on=FALSE;
+	contact.obj_ignore_uid=vehicle_obj->uid;
+
+	contact.hit_mode=poly_ray_trace_hit_mode_all;
+	contact.origin=poly_ray_trace_origin_object;
 	
-	empty=!map_spot_empty_object(orig_obj);
-	
-	vehicle_obj->contact.object_on=old_ok;
+	empty=!ray_trace_map_by_point(&spt,&ept,&hpt,&contact);
 	
 	if ((!empty) && (!ignore_errors)) {
 		if (err_str!=NULL) strcpy(err_str,"No space in map to exit");

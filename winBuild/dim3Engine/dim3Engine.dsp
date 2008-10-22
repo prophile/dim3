@@ -146,22 +146,6 @@ SOURCE=..\win32Includes\SDL\SDLmain.lib
 SOURCE=..\win32Includes\SDL\SDL.lib
 # End Source File
 # End Group
-# Begin Group "OpenAL"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\win32Includes\OpenAL\al.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\win32Includes\OpenAL\alc.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\win32Includes\OpenAL\wrap_oal.lib
-# End Source File
-# End Group
 # Begin Group "PNG"
 
 # PROP Default_Filter ""
@@ -460,10 +444,6 @@ SOURCE=..\..\dim3Engine\Sources_Server\map_movement.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_Server\map_ray_trace.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\map_xz_check.c
 # End Source File
 # Begin Source File
 
@@ -1207,10 +1187,6 @@ SOURCE=..\..\dim3Engine\Sources_View\al_ambient.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_View\al_buffer.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_View\al_file.c
 # End Source File
 # Begin Source File
 

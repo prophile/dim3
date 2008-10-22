@@ -31,14 +31,10 @@ and can be sold or given away.
 
 #include "sounds.h"
 
-int								al_ambient_count;					
-al_ambient_type					al_ambients[al_max_ambient];
+int								audio_ambient_count;					
+audio_ambient_type				audio_ambients[audio_max_ambient];
 
-extern al_source_type			al_sources[al_max_source];
-
-#ifdef SDL_SOUND
-
-audio_play_type			audio_plays[audio_max_play];
+extern audio_play_type			audio_plays[audio_max_play];
 
 /* =======================================================
 
@@ -48,13 +44,13 @@ audio_play_type			audio_plays[audio_max_play];
 
 void al_ambient_list_clear(void)
 {
-	al_ambient_count=0;
+	audio_ambient_count=0;
 }	
 
 void al_ambient_list_add(int buffer_idx,int x,int y,int z,float pitch)
 {
-	int					n,dist,max_dist;
-	al_ambient_type		*ambient;
+	int						n,dist,max_dist;
+	audio_ambient_type		*ambient;
 
 		// get distance to ambient
 		
@@ -65,9 +61,9 @@ void al_ambient_list_add(int buffer_idx,int x,int y,int z,float pitch)
 	
 		// already playing this sound?
 
-	ambient=al_ambients;
+	ambient=audio_ambients;
 	
-	for (n=0;n!=al_ambient_count;n++) {
+	for (n=0;n!=audio_ambient_count;n++) {
 	
 		if (ambient->buffer_idx==buffer_idx) {		// replace with closer ambient
 
@@ -87,10 +83,10 @@ void al_ambient_list_add(int buffer_idx,int x,int y,int z,float pitch)
 
 		// add to list
 		
-	if (al_ambient_count>=al_max_ambient) return;
+	if (audio_ambient_count>=audio_max_ambient) return;
 	
-	ambient=&al_ambients[al_ambient_count];
-	al_ambient_count++;
+	ambient=&audio_ambients[audio_ambient_count];
+	audio_ambient_count++;
 	
 	ambient->buffer_idx=buffer_idx;
 	ambient->pnt.x=x;
@@ -112,7 +108,7 @@ void al_ambients_run(void)
 {
 	int					n,k;
 	bool				amb_ok;
-	al_ambient_type		*ambient;
+	audio_ambient_type	*ambient;
 	audio_play_type		*play;
 
 	SDL_LockAudio();
@@ -131,9 +127,9 @@ void al_ambients_run(void)
 			// is this playing sound in our ambient list?
 
 		amb_ok=FALSE;
-		ambient=al_ambients;
+		ambient=audio_ambients;
 	
-		for (n=0;n!=al_ambient_count;n++) {
+		for (n=0;n!=audio_ambient_count;n++) {
 		
 			if (ambient->buffer_idx==play->buffer_idx) {
 			
@@ -165,9 +161,9 @@ void al_ambients_run(void)
 	
 		// add any remaining ambients as new sounds
 	
-	ambient=al_ambients;
+	ambient=audio_ambients;
 
-	for (n=0;n!=al_ambient_count;n++) {
+	for (n=0;n!=audio_ambient_count;n++) {
 		if ((!ambient->hit) && (ambient->buffer_idx!=-1)) {
 			al_play_source(ambient->buffer_idx,ambient->pnt.x,ambient->pnt.y,ambient->pnt.z,ambient->pitch,TRUE,TRUE,FALSE,FALSE);
 		}
@@ -177,136 +173,3 @@ void al_ambients_run(void)
 	SDL_UnlockAudio();
 }
 
-
-
-#else
-
-/* =======================================================
-
-      Add Ambient Sounds To List
-      
-======================================================= */
-
-void al_ambient_list_clear(void)
-{
-	al_ambient_count=0;
-}	
-
-void al_ambient_list_add(int buffer_idx,int x,int y,int z,float pitch)
-{
-	int					n,dist,max_dist;
-	al_ambient_type		*ambient;
-
-		// get distance to ambient
-		
-	dist=al_distance_to_listener(x,y,z);
-	max_dist=al_get_buffer_max_dist(buffer_idx);
-
-	if (dist>max_dist) return;
-	
-		// already playing this sound?
-
-	ambient=al_ambients;
-	
-	for (n=0;n!=al_ambient_count;n++) {
-	
-		if (ambient->buffer_idx==buffer_idx) {		// replace with closer ambient
-
-			if (dist<ambient->dist) {
-				ambient->pnt.x=x;
-				ambient->pnt.y=y;
-				ambient->pnt.z=z;
-				ambient->dist=dist;
-				ambient->pitch=pitch;
-			}
-			
-			return;
-		}
-	
-		ambient++;
-	}
-
-		// add to list
-		
-	if (al_ambient_count>=al_max_ambient) return;
-	
-	ambient=&al_ambients[al_ambient_count];
-	al_ambient_count++;
-	
-	ambient->buffer_idx=buffer_idx;
-	ambient->pnt.x=x;
-	ambient->pnt.y=y;
-	ambient->pnt.z=z;
-	ambient->dist=dist;
-	ambient->pitch=pitch;
-	
-	ambient->hit=FALSE;
-}
-
-/* =======================================================
-
-      Run Ambient Sounds
-      
-======================================================= */
-
-void al_ambients_run(void)
-{
-	int					n,source_idx,buffer_idx;
-	bool				amb_ok;
-	al_ambient_type		*ambient;
-	al_source_type		*source;
-			
-		// remove any current ambients not in the new list
-		
-	source_idx=-1;
-	
-	while (TRUE) {
-		source_idx=al_get_next_source_ambient(source_idx);
-		if (source_idx==-1) break;
-
-		buffer_idx=al_sources[source_idx].buffer_idx;
-
-			// is this sound in our ambient list?
-
-		amb_ok=FALSE;
-		ambient=al_ambients;
-	
-		for (n=0;n!=al_ambient_count;n++) {
-		
-			if (ambient->buffer_idx==buffer_idx) {
-			
-					// found sound in ambients
-					
-				ambient->hit=TRUE;
-				amb_ok=TRUE;
-				
-					// update ambient
-					
-				source=&al_sources[source_idx];
-				alSource3f(source->al_id,AL_POSITION,(ALfloat)ambient->pnt.x,(ALfloat)ambient->pnt.y,(ALfloat)ambient->pnt.z);
-				alSourcef(source->al_id,AL_PITCH,ambient->pitch);
-				
-				break;
-			}
-			
-			ambient++;
-		}
-		
-			// sound not in our list, so kill it
-			
-		if (!amb_ok) al_stop_source(source_idx);
-	}
-	
-		// add the rest as new sounds
-	
-	ambient=al_ambients;
-
-	for (n=0;n!=al_ambient_count;n++) {
-		if ((!ambient->hit) && (ambient->buffer_idx!=-1)) {
-			al_play_source(ambient->buffer_idx,ambient->pnt.x,ambient->pnt.y,ambient->pnt.z,ambient->pitch,TRUE,TRUE,FALSE,FALSE);
-		}
-		ambient++;
-	}
-}
-
-#endif
