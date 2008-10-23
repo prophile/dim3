@@ -177,18 +177,43 @@ int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly
 int pin_downward_movement_obj(obj_type *obj,int my)
 {
 	int				y;
+	bool			simple;
 	d3box			box;
+	map_mesh_type	*mesh;
 	
-		// choose either simple one point checks or more
-		// complex checks
+		// determine if we should do easy check or complex
+		// check.  Players and objects with rigid body get
+		// more complex checks
+
+	simple=(!obj->player) && (!obj->rigid_body.on);
 	
+		// if simple, we can check to see if it's currently
+		// on a mesh and if that mesh is not moveable.  If so,
+		// don't recheck
+		
+	if (simple) {
+	
+		if (obj->contact.stand_poly.mesh_idx!=-1) {
+		
+			mesh=&map.mesh.meshes[obj->contact.stand_poly.mesh_idx];
+			if (!mesh->flag.moveable) return;
+		
+		// supergumba -- move this around to falling part
+		}
+	
+	}
+		
+		// otherwise, recheck the movement
+		
 	box_create_from_object(&box,obj);
 
-	if (obj->size.radius<=object_box_check_radius_simple) {
+	if (simple) {
 		y=pin_downward_movement_point(box.x,box.max_y,box.z,my,&obj->contact.stand_poly);
+		fprintf(stdout,"%d: simple\n",obj->uid);
 	}
 	else {
 		y=pin_downward_movement_box(&box,my,&obj->contact.stand_poly);
+		fprintf(stdout,"%d: complex\n",obj->uid);
 	}
 	
 	if (obj->contact.stand_poly.mesh_idx==-1) return(my);

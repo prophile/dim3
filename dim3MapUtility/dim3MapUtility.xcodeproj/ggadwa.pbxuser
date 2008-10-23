@@ -21,6 +21,16 @@
 		vrLen = 0;
 		vrLoc = 0;
 	};
+	264705540EB0186C00DF2DFB /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DA8623059148C40043E685 /* nodes.c */;
+		name = "nodes.c: 94";
+		rLen = 26;
+		rLoc = 2093;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
 	2674501B0E513E1900812D9D /* file_map_read_v3.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 7042}}";
@@ -93,16 +103,6 @@
 			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
 		};
 	};
-	26CAAD700EAAEF700051877E /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5DA8623059148C40043E685 /* nodes.c */;
-		name = "nodes.c: 94";
-		rLen = 26;
-		rLoc = 2093;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
 	26E372E50DA5AB75009653F2 /* file_map_read_v2.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 7490}}";
@@ -153,9 +153,9 @@
 	};
 	F5A10B6C052D294C006A2E68 /* file_map_texture.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1536, 3764}}";
-			sepNavSelRange = "{4490, 0}";
-			sepNavVisRange = "{1697, 909}";
+			sepNavIntBoundsRect = "{{0, 0}, {1056, 3178}}";
+			sepNavSelRange = "{3261, 0}";
+			sepNavVisRange = "{2519, 1322}";
 			sepNavWindowFrame = "{{358, 213}, {1041, 747}}";
 		};
 	};
@@ -253,12 +253,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 246238129;
-			PBXWorkspaceStateSaveDate = 246238129;
+			PBXPerProjectTemplateStateSaveDate = 246420839;
+			PBXWorkspaceStateSaveDate = 246420839;
 		};
 		perUserProjectItems = {
 			263676E90EAD4BE20086960F /* PBXTextBookmark */ = 263676E90EAD4BE20086960F /* PBXTextBookmark */;
-			26CAAD700EAAEF700051877E /* PBXTextBookmark */ = 26CAAD700EAAEF700051877E /* PBXTextBookmark */;
+			264705540EB0186C00DF2DFB /* PBXTextBookmark */ = 264705540EB0186C00DF2DFB /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {

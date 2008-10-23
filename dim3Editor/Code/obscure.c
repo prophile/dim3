@@ -41,6 +41,8 @@ extern AGLContext			ctx;
 #define obscure_mesh_view_mesh_near_z_offset	-(3*map_enlarge)
 #define obscure_mesh_view_min_distance			(100*map_enlarge)
 #define obscure_mesh_view_slop_angle			30.0f
+#define obscure_mesh_view_grid_size				(8*map_enlarge)
+#define obscure_mesh_view_grid_push				(2*map_enlarge)
 #define obscure_mesh_rough_radius				100000
 
 typedef struct		{
@@ -570,11 +572,13 @@ void obscure_calculate_group_single_visibility(int group_idx,d3pnt *cpt,unsigned
 
 bool obscure_calculate_group_visibility_complete(int group_idx)
 {
-	int				n,y,*mesh_sort_list;
+	int				n,x,y,z,
+					x_sz,y_sz,z_sz,x_cnt,y_cnt,z_cnt,x_add,y_add,z_add;
+	int				*mesh_sort_list;
 	float			ratio;
 	unsigned char	*stencil_pixels;
 	unsigned char	visibility_flag[max_mesh_visibility_bytes];
-	d3pnt			min,max,look_pt[11];
+	d3pnt			min,max,pnt;
 	map_mesh_type	*mesh;
 	
 		// get the min/max for group of meshes
@@ -638,95 +642,63 @@ bool obscure_calculate_group_visibility_complete(int group_idx)
 		if (obscure_groups[group_idx].mesh_in_group[n]) obscure_mesh_view_bit_set(visibility_flag,n);
 	}
 	
-		// find natural y position of mesh grouping
+		// divisions across the mesh
+
+	x_sz=(max.x-min.x)-(obscure_mesh_view_grid_push<<1);
+	x_cnt=x_sz/obscure_mesh_view_grid_size;
+	if (x_cnt<2) x_cnt=2;
+	x_add=(max.x-min.x)/x_cnt;
 		
-	y=max.y-((max.y-min.y)>>2);
-
-		// look points
+	y_sz=(max.y-min.y)-(obscure_mesh_view_grid_push<<1);
+	y_cnt=y_sz/obscure_mesh_view_grid_size;
+	if (y_cnt<2) y_cnt=2;
+	y_add=(max.y-min.y)/y_cnt;
+	
+	z_sz=(max.z-min.z)-(obscure_mesh_view_grid_push<<1);
+	z_cnt=z_sz/obscure_mesh_view_grid_size;
+	if (z_cnt<2) z_cnt=2;
+	z_add=(max.z-min.z)/z_cnt;
+	
+		// look across the mesh
 		
-	look_pt[0].x=(min.x+max.x)>>1;
-	look_pt[0].y=y;
-	look_pt[0].z=(min.z+max.z)>>1;
+//	for (y=0;y!=y_cnt;y++) {
 	
-	look_pt[1].x=(min.x+max.x)>>1;
-	look_pt[1].y=y;
-	look_pt[1].z=(min.z+max.z)>>1;
-	
-	look_pt[2].x=(min.x+max.x)>>1;
-	look_pt[2].y=y;
-	look_pt[2].z=(min.z+max.z)>>1;
-	
-	look_pt[3].x=min.x+((max.x-min.x)>>2);
-	look_pt[3].y=y;
-	look_pt[3].z=min.z+((max.z-min.z)>>2);
-	
-	look_pt[4].x=(min.x+max.x)>>1;
-	look_pt[4].y=y;
-	look_pt[4].z=min.z+((max.z-min.z)>>2);
-	
-	look_pt[5].x=max.x-((max.x-min.x)>>2);
-	look_pt[5].y=y;
-	look_pt[5].z=min.z+((max.z-min.z)>>2);
-	
-	look_pt[6].x=max.x-((max.x-min.x)>>2);
-	look_pt[6].y=y;
-	look_pt[6].z=(min.z+max.z)>>1;
+//		if (y==(y_cnt-1)) {
+//			pnt.y=max.y-obscure_mesh_view_grid_push;
+//		}
+//		else {
+//			pnt.y=(min.y+obscure_mesh_view_grid_push)+(y*y_add);
+//		}
 
-	look_pt[7].x=max.x-((max.x-min.x)>>2);
-	look_pt[7].y=y;
-	look_pt[7].z=max.z-((max.z-min.z)>>2);
-	
-	look_pt[8].x=(min.x+max.x)>>1;
-	look_pt[8].y=y;
-	look_pt[8].z=max.z-((max.z-min.z)>>2);
-
-	look_pt[9].x=min.x+((max.x-min.x)>>2);
-	look_pt[9].y=y;
-	look_pt[9].z=max.z-((max.z-min.z)>>2);
-	
-	look_pt[10].x=min.x+((max.x-min.x)>>2);
-	look_pt[10].y=y;
-	look_pt[10].z=(min.z+max.z)>>1;
-
-		// build mesh looking forward
-
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[0],visibility_flag,stencil_pixels,mesh_sort_list,obscure_mesh_view_slop_angle,0.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[1],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,0.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[2],visibility_flag,stencil_pixels,mesh_sort_list,-obscure_mesh_view_slop_angle,0.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[10],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,345.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[4],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,345.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[4],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,15.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[6],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,15.0f);
-
-		// build mesh looking right
-
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[0],visibility_flag,stencil_pixels,mesh_sort_list,obscure_mesh_view_slop_angle,90.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[1],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,90.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[2],visibility_flag,stencil_pixels,mesh_sort_list,-obscure_mesh_view_slop_angle,90.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[4],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,75.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[6],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,75.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[6],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,105.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[8],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,105.0f);
-
-		// build mesh looking back
-
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[0],visibility_flag,stencil_pixels,mesh_sort_list,obscure_mesh_view_slop_angle,180.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[1],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,180.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[2],visibility_flag,stencil_pixels,mesh_sort_list,-obscure_mesh_view_slop_angle,180.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[10],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,165.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[8],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,165.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[8],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,195.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[6],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,195.0f);
-
-		// build mesh looking left
-
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[0],visibility_flag,stencil_pixels,mesh_sort_list,obscure_mesh_view_slop_angle,270.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[1],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,270.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[2],visibility_flag,stencil_pixels,mesh_sort_list,-obscure_mesh_view_slop_angle,270.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[4],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,255.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[10],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,255.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[10],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,285.0f);
-	obscure_calculate_group_single_visibility(group_idx,&look_pt[8],visibility_flag,stencil_pixels,mesh_sort_list,0.0f,285.0f);
+// supergumba -- need flag for this
+pnt.y=max.y-(map_enlarge*5);
+		
+		for (x=0;x!=x_cnt;x++) {
+		
+			if (x==(x_cnt-1)) {
+				pnt.x=max.x-obscure_mesh_view_grid_push;
+			}
+			else {
+				pnt.x=(min.x+obscure_mesh_view_grid_push)+(x*x_add);
+			}
+			
+			for (z=0;z!=z_cnt;z++) {
+			
+				if (z==(z_cnt-1)) {
+					pnt.z=max.z-obscure_mesh_view_grid_push;
+				}
+				else {
+					pnt.z=(min.z+obscure_mesh_view_grid_push)+(z*z_add);
+				}
+		
+				for (n=0;n!=8;n++) {
+					obscure_calculate_group_single_visibility(group_idx,&pnt,visibility_flag,stencil_pixels,mesh_sort_list,0.0f,(float)(n*90));
+					obscure_calculate_group_single_visibility(group_idx,&pnt,visibility_flag,stencil_pixels,mesh_sort_list,obscure_mesh_view_slop_angle,(float)(n*90));
+					obscure_calculate_group_single_visibility(group_idx,&pnt,visibility_flag,stencil_pixels,mesh_sort_list,-obscure_mesh_view_slop_angle,(float)(n*90));
+				}
+			}
+		}
+//	}
 
 		// disable some global setup
 

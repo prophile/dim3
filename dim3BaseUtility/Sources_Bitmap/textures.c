@@ -137,14 +137,16 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic
 	
 		// auto load texture so compression takes effect
 		
-	glEnable(GL_TEXTURE_2D);
-	glBegin(GL_TRIANGLES);
-	glVertex3i(-1,-1,0);
-	glVertex3i(-1,-1,0);
-	glVertex3i(-1,-1,0);
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
-		
+	if (use_compression) {
+		glEnable(GL_TEXTURE_2D);
+		glBegin(GL_TRIANGLES);
+		glVertex3i(-1,-1,0);
+		glVertex3i(-1,-1,0);
+		glVertex3i(-1,-1,0);
+		glEnd();
+		glDisable(GL_TEXTURE_2D);
+	}
+	
 		// set to bitmap
 		
 	bitmap->gl_id=gl_id;

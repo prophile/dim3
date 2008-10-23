@@ -214,7 +214,7 @@ void bitmap_movie_texture_refresh(void)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D,movie_gl_id);
 		
-	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,movie_wid,movie_high,GL_RGBA,GL_UNSIGNED_INT_8_8_8_8,movie_data);
+	glTexSubImage2D(GL_TEXTURE_2D,0,0,0,movie_wid,movie_high,GL_RGBA,GL_UNSIGNED_BYTE,movie_data);
 #endif
 }
 
