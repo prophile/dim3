@@ -509,7 +509,20 @@ void ray_trace_map(int item_count,ray_trace_check_item_type *item_list,d3pnt *sp
 				break;
 
 			case ray_trace_check_item_mesh:
+
 				mesh=&map.mesh.meshes[item->index];
+						
+					// rough bounds check
+					// list building is a little rough to quickly eliminate
+					// most meshes, so we'll still check it here just in case
+					// we can eliminate a easy mesh
+
+				if ((spt->x<mesh->box.min.x) && (ept->x<mesh->box.min.x)) break;
+				if ((spt->x>mesh->box.max.x) && (ept->x>mesh->box.max.x)) break;
+				if ((spt->y<mesh->box.min.y) && (ept->y<mesh->box.min.y)) break;
+				if ((spt->y>mesh->box.max.y) && (ept->y>mesh->box.max.y)) break;
+				if ((spt->z<mesh->box.min.z) && (ept->z<mesh->box.min.z)) break;
+				if ((spt->z>mesh->box.max.z) && (ept->z>mesh->box.max.z)) break;
 
 					// check polygons
 
@@ -619,6 +632,205 @@ void ray_push_to_end(d3pnt *pt,d3pnt *ept,int dist)
       
 ======================================================= */
 
+/*
+
+int ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_contact_type *contact,ray_trace_check_item_type *item_list)
+{
+	int							n,x,z,radius,item_count;
+	d3pnt						*spt,*ept,min,max;
+	obj_type					*obj;
+	proj_type					*proj;
+	map_mesh_type				*mesh;
+	ray_trace_check_item_type	*item;
+	
+	item_count=0;
+	item=item_list;
+
+		// get bounds for all vectors
+		// and use those as a collision check
+		// this is rough, but going through all
+		// the meshes is actually longer than
+		// dealing with a few missed hits
+
+	spt=spts;
+	ept=epts;
+	
+	if (spt->x<ept->x) {
+		min.x=spt->x;
+		max.x=ept->x;
+	}
+	else {
+		min.x=ept->x;
+		max.x=spt->x;
+	}
+
+	if (spt->y<ept->y) {
+		min.y=spt->y;
+		max.y=ept->y;
+	}
+	else {
+		min.y=ept->y;
+		max.y=spt->y;
+	}
+
+	if (spt->z<ept->z) {
+		min.z=spt->z;
+		max.z=ept->z;
+	}
+	else {
+		min.z=ept->z;
+		max.z=spt->z;
+	}
+
+	for (n=1;n<cnt;n++) {
+
+		spt++;
+		ept++;
+
+		if (spt->x<min.x) min.x=spt->x;
+		if (ept->x<min.x) min.x=ept->x;
+		if (spt->x>max.x) max.x=spt->x;
+		if (ept->x>max.x) max.x=ept->x;
+
+		if (spt->y<min.y) min.y=spt->y;
+		if (ept->y<min.y) min.y=ept->y;
+		if (spt->y>max.y) max.y=spt->y;
+		if (ept->y>max.y) max.y=ept->y;
+
+		if (spt->z<min.z) min.z=spt->z;
+		if (ept->z<min.z) min.z=ept->z;
+		if (spt->z>max.z) max.z=spt->z;
+		if (ept->z>max.z) max.z=ept->z;
+	}
+
+		// check objects
+		
+	if (contact->obj_on) {
+	
+		for (n=0;n!=server.count.obj;n++) {
+
+			obj=&server.objs[n];
+
+				// object a hit candidate?
+
+			if ((obj->hidden) || (obj->pickup.on) || (obj->uid==contact->obj_ignore_uid)) continue;
+			if (((contact->origin==poly_ray_trace_origin_object) && (!obj->contact.object_on)) || ((contact->origin==poly_ray_trace_origin_projectile) && (!obj->contact.projectile_on))) continue;
+			
+				// rough y vector box check
+				
+			if (max.y<(obj->pnt.y-obj->size.y)) continue;
+			if (min.y>obj->pnt.y) continue;
+			
+				// rough x/z vector box checks
+				
+			x=obj->pnt.x;
+			z=obj->pnt.z;
+
+			radius=obj->size.x;
+			if (obj->size.z>radius) radius=obj->size.z;
+			
+			radius=radius>>1;
+			
+			if (max.x<(x-radius)) continue;
+			if (min.x>(x+radius)) continue;
+			if (max.z<(z-radius)) continue;
+			if (min.z>(z+radius)) continue;
+
+				// add to item list
+				
+			item->type=ray_trace_check_item_object;
+			item->index=n;
+
+			item++;
+			item_count++;
+			
+				// in list, no more checks required
+			
+			if (item_count==ray_trace_max_check_item) return(item_count);
+		}
+	}
+	
+		// check projectiles
+		
+	if (contact->proj_on) {
+	
+		for (n=0;n!=server.count.proj;n++) {
+
+			proj=&server.projs[n];
+
+				// is projectile a hit candidate?
+
+			if (proj->uid==contact->proj_ignore_uid) continue;
+			
+				// rough y vector box check
+				
+			if (max.y<(proj->pnt.y-proj->size.y)) continue;
+			if (min.y>proj->pnt.y) continue;
+			
+				// rough x/z vector box checks
+				
+			x=proj->pnt.x;
+			z=proj->pnt.z;
+
+			radius=proj->size.radius>>1;
+			
+			if (max.x<(x-radius)) continue;
+			if (min.x>(x+radius)) continue;
+			if (max.z<(z-radius)) continue;
+			if (min.z>(z+radius)) continue;
+			
+				// add to item list
+
+			item->type=ray_trace_check_item_projectile;
+			item->index=n;
+
+			item++;
+			item_count++;
+			
+			if (item_count==ray_trace_max_check_item) return(item_count);
+		}
+	}
+	
+		// check all meshes
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+
+		mesh=&map.mesh.meshes[n];
+		
+			// rough vector box bounds check
+
+		if (max.x<mesh->box.min.x) continue;
+		if (min.x>mesh->box.max.x) continue;
+		if (max.y<mesh->box.min.y) continue;
+		if (min.y>mesh->box.max.y) continue;
+		if (max.z<mesh->box.min.z) continue;
+		if (min.z>mesh->box.max.z) continue;
+			
+			// skip pass through meshes
+			// we do this second as I suspect there will
+			// be a limited number of these, a lot less then
+			// will be eliminated with the bounds check
+
+		if (mesh->flag.pass_through) continue;
+		
+			// add to item list
+
+		item->type=ray_trace_check_item_mesh;
+		item->index=n;
+
+		item++;
+		item_count++;
+
+		if (item_count==ray_trace_max_check_item) return(item_count);
+	}
+	
+	return(item_count);
+}
+
+
+*/
+
+
 int ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_contact_type *contact,ray_trace_check_item_type *item_list)
 {
 	int							n,k,x,y,z,lx,rx,tz,bz,ty,by,radius,item_count;
@@ -629,6 +841,7 @@ int ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_cont
 	ray_trace_check_item_type	*item;
 	
 	item_count=0;
+	item=item_list;
 
 		// check objects
 		
@@ -689,10 +902,11 @@ int ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_cont
 
 					// add to item list
 					
-				item=&item_list[item_count++];
-
 				item->type=ray_trace_check_item_object;
 				item->index=n;
+
+				item++;
+				item_count++;
 				
 					// in list, no more checks required
 				
@@ -756,10 +970,11 @@ int ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_cont
 				
 					// add to item list
 
-				item=&item_list[item_count++];
-
 				item->type=ray_trace_check_item_projectile;
 				item->index=n;
+
+				item++;
+				item_count++;
 				
 				if (item_count==ray_trace_max_check_item) return(item_count);
 				
@@ -803,11 +1018,12 @@ int ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_cont
 			
 				// add to item list
 
-			item=&item_list[item_count++];
-
 			item->type=ray_trace_check_item_mesh;
 			item->index=n;
-			
+
+			item++;
+			item_count++;
+
 			if (item_count==ray_trace_max_check_item) return(item_count);
 			
 				// in list, no more checks required
@@ -820,6 +1036,7 @@ int ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_cont
 	
 	return(item_count);
 }
+
 
 /* =======================================================
 

@@ -62,33 +62,30 @@ void view_run(int tick)
 		// run-tick objects
 		
 	if (tick>=view.time.run_tick) {
+
 		while (tick>=view.time.run_tick) {
-			view.time.run_tick+=10;
+			view.time.run_tick+=50;
 		}
-		
-		obj=object_find_uid(server.player_obj_uid);
-		
+
 			// check clicable objects
 			
+		obj=object_find_uid(server.player_obj_uid);
 		obj->click.current_click_obj_uid=object_find_uid_click_object(obj);
 
 			// listener position
 			
 		al_set_listener(obj->pnt.x,obj->pnt.y,obj->pnt.z,obj->ang.y);
-	}
-	
-		// ambients and music
-			
-	if (tick>=view.time.ambient_tick) {
-		while (tick>=view.time.ambient_tick) {
-			view.time.ambient_tick+=50;
-		}
 		
+			// ambients
+
 		al_ambient_list_clear();
 		ambient_add_map_sounds();
 		ambient_add_objects();
 		
 		al_ambients_run();
+
+			// music
+
 		al_music_run(tick);
 	}
 }

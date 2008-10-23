@@ -210,13 +210,12 @@ bool object_push_with_object(obj_type *obj,int xmove,int zmove)
 		// compare weights
 
 	weight_dif=obj->size.weight-pushed_obj->size.weight;
-	if (weight_dif<0) return(TRUE);
+	if (weight_dif<0) return(FALSE);
 
-		// reduce movement for weight
+		// calculate the force by weight
 
-	if (weight_dif>500) weight_dif=500;
-	
-	f=1.0f+(((float)weight_dif)/1000.0f);
+	if (weight_dif>2000) weight_dif=2000;
+	f=0.25f+(0.0008f*weight_dif);
 	
 		// add in vector
 
@@ -228,7 +227,9 @@ bool object_push_with_object(obj_type *obj,int xmove,int zmove)
 
 		// movement
 
-	return(object_move_with_move(pushed_obj,(int)f_xmove,(int)f_zmove));
+	object_move_with_move(pushed_obj,(int)f_xmove,(int)f_zmove);
+
+	return(FALSE);
 }
 
 void object_move_with_standing_object(obj_type *obj,int xmove,int zmove)

@@ -344,7 +344,7 @@ bool map_start(bool skip_media,char *err_str)
 	tick=game_time_get();
 	map.start_game_tick=tick;
 	server.time.run_tick=tick;
-	view.time.run_tick=view.time.ambient_tick=tick;
+	view.time.run_tick=tick;
 	js.time.timer_tick=tick;
 
 	view.fps.tick=view.fps.count=0;

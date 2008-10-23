@@ -131,7 +131,7 @@ typedef struct		{
 
 typedef struct		{
 						int						input_tick,draw_tick,draw_time,
-												run_tick,ambient_tick;
+												run_tick;
 					} view_time_type;
 
 //

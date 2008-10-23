@@ -942,33 +942,40 @@ void object_move_fly(obj_type *obj)
 	object_motion_setup(obj,&xmove,&ymove,&zmove);
 	object_motion_lock(obj,&xmove,&ymove,&zmove);
 	object_motion_set_script_property(obj,xmove,ymove,zmove);
-    
+ 
+		// clear all contacts
+
+	object_clear_contact(&obj->contact);
+   
         // moving x/z
 
 	i_xmove=(int)xmove;
 	i_ymove=(int)ymove;
 	i_zmove=(int)zmove;
 	
-	if (object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) {
-	
-			// pushing objects
-			
-		if (!object_push_with_object(obj,i_xmove,i_zmove)) {
-			
-			i_xmove=(int)xmove;
-			i_ymove=(int)ymove;
-			i_zmove=(int)zmove;
+	if ((i_xmove!=0) || (i_zmove!=0) || (i_ymove!=0)) {
 
-			hit_obj_uid=obj->contact.obj_uid;
-			object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove);
-			obj->contact.obj_uid=hit_obj_uid;
+		if (object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) {
+	
+				// pushing objects
+				
+			if (!object_push_with_object(obj,i_xmove,i_zmove)) {
+				
+				i_xmove=(int)xmove;
+				i_ymove=(int)ymove;
+				i_zmove=(int)zmove;
+
+				hit_obj_uid=obj->contact.obj_uid;
+				object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove);
+				obj->contact.obj_uid=hit_obj_uid;
+			}
 		}
+	
+			// force move other objects
+	
+		if ((i_xmove!=0) || (i_zmove!=0)) object_move_with_standing_object(obj,i_xmove,i_zmove);
 	}
-	
-		// force move other objects
-	
-	if ((i_xmove!=0) || (i_zmove!=0)) object_move_with_standing_object(obj,i_xmove,i_zmove);
-	
+
 		// bounces
 		
 	object_move_xz_bounce(obj);
@@ -989,6 +996,10 @@ void object_move_swim(obj_type *obj)
 	object_motion_lock(obj,&xmove,&ymove,&zmove);
 	object_motion_set_script_property(obj,xmove,ymove,zmove);
 
+		// clear all contacts
+
+	object_clear_contact(&obj->contact);
+
 		// speed cuts
 
 	liq_speed_alter=object_liquid_alter_speed(obj);
@@ -1007,31 +1018,34 @@ void object_move_swim(obj_type *obj)
 	}
 
         // moving x/z
-		
+
 	i_xmove=(int)xmove;
 	i_ymove=(int)ymove;
 	i_zmove=(int)zmove;
 	
-	if (object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) {
-	
-			// pushing objects
-			
-		if (!object_push_with_object(obj,i_xmove,i_zmove)) {
-			
-			i_xmove=(int)xmove;
-			i_ymove=(int)ymove;
-			i_zmove=(int)zmove;
+	if ((i_xmove!=0) || (i_zmove!=0) || (i_ymove!=0)) {
+		
+		if (object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove)) {
+		
+				// pushing objects
+				
+			if (!object_push_with_object(obj,i_xmove,i_zmove)) {
+				
+				i_xmove=(int)xmove;
+				i_ymove=(int)ymove;
+				i_zmove=(int)zmove;
 
-			hit_obj_uid=obj->contact.obj_uid;
-			object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove);
-			obj->contact.obj_uid=hit_obj_uid;
+				hit_obj_uid=obj->contact.obj_uid;
+				object_move_xz_slide(obj,&i_xmove,&i_ymove,&i_zmove);
+				obj->contact.obj_uid=hit_obj_uid;
+			}
 		}
+
+			// move standing objects
+
+		if ((i_xmove!=0) || (i_zmove!=0)) object_move_with_standing_object(obj,i_xmove,i_zmove);
 	}
 
-		// move standing objects
-
-	if ((i_xmove!=0) || (i_zmove!=0)) object_move_with_standing_object(obj,i_xmove,i_zmove);
-	
 		// bounces
 		
 	object_move_xz_bounce(obj);
@@ -1043,10 +1057,11 @@ void object_move_swim(obj_type *obj)
 
 void object_move_normal(obj_type *obj)
 {
-	int				x,z,i_xmove,i_ymove,i_zmove,move_cnt,
-					start_y,fall_damage,hit_obj_uid,old_x,old_z;
+	int				i_xmove,i_ymove,i_zmove,
+					start_y,fall_damage,hit_obj_uid;
     float			xmove,zmove,ymove;
 	bool			bump_once,push_once,old_falling;
+	d3pnt			old_pnt;
 
 		// get object motion
 		
@@ -1063,6 +1078,30 @@ void object_move_normal(obj_type *obj)
 
 	i_xmove=(int)xmove;
 	i_zmove=(int)zmove;
+	i_ymove=(int)ymove;
+
+		// special check for non-moving objects that can retain their
+		// position and not run physics.  They must be standing on
+		// non-moveable meshes and not be a player
+
+	if ((i_xmove==0) && (i_zmove==0) && (i_ymove==0) && (!obj->player)) {
+	
+			// are we standing on a non-moving mesh?
+			// if so, mark no hit collisions and return
+
+		if (obj->contact.stand_poly.mesh_idx!=-1) {
+
+			if (!map.mesh.meshes[obj->contact.stand_poly.mesh_idx].flag.moveable) {
+				obj->contact.hit_poly.mesh_idx=-1;
+				return;
+			}
+
+		}
+	}
+
+		// clear all contacts
+
+	object_clear_contact(&obj->contact);
 
 		// move the object in y space at the projected
 		// x/z position
@@ -1076,18 +1115,12 @@ void object_move_normal(obj_type *obj)
 		// to avoid land features that might block foward
 		// movement
 
-	old_x=obj->pnt.x;
-	x=obj->pnt.x+i_xmove;
-	
-	old_z=obj->pnt.z;
-	z=obj->pnt.z+i_zmove;
+	memmove(&old_pnt,&obj->pnt,sizeof(d3pnt));
 
 	start_y=obj->pnt.y;
 
-	obj->pnt.x=x;
-	obj->pnt.z=z;
-
-	i_ymove=(int)ymove;
+	obj->pnt.x=obj->pnt.x+i_xmove;
+	obj->pnt.z=obj->pnt.z+i_zmove;
 
 	if (i_ymove<0) {
 		object_move_y_up(obj,i_ymove);
@@ -1097,8 +1130,8 @@ void object_move_normal(obj_type *obj)
 		object_move_y_down(obj,i_ymove);
 	}
 
-	obj->pnt.x=old_x;
-	obj->pnt.z=old_z;
+	obj->pnt.x=old_pnt.x;
+	obj->pnt.z=old_pnt.z;
 
 		// add in the last y change. we use this
 		// information in the next move to help
@@ -1135,7 +1168,6 @@ void object_move_normal(obj_type *obj)
 			// can force the move to stop and then
 			// need to be retried
 			
-		move_cnt=0;
 		bump_once=FALSE;
 		push_once=FALSE;
 		hit_obj_uid=-1;
@@ -1156,10 +1188,16 @@ void object_move_normal(obj_type *obj)
 					
 					bump_once=TRUE;
 					
+					obj->pnt.x=old_pnt.x;
+					obj->pnt.z=old_pnt.z;
+					
 					i_xmove=(int)xmove;
 					i_ymove=0;
 					i_zmove=(int)zmove;
+					
+					continue;
 				}
+
 			}
 			
 				// push objects, then
@@ -1172,19 +1210,21 @@ void object_move_normal(obj_type *obj)
 				if (!object_push_with_object(obj,i_xmove,i_zmove)) {
 				
 					push_once=TRUE;
+
+					memmove(&obj->pnt,&old_pnt,sizeof(d3pnt));
 					
 					i_xmove=(int)xmove;
 					i_ymove=(int)ymove;
 					i_zmove=(int)zmove;
 
 					hit_obj_uid=obj->contact.obj_uid;
+
+					continue;
 				}
+
 			}
 		
-				// only retry 2 times
-				
-			move_cnt++;
-			if (move_cnt>2) break;
+			break;
 		}
 		
 			// potentially, pushing could reset the object
@@ -1253,10 +1293,6 @@ void object_move_normal(obj_type *obj)
 void object_move(obj_type *obj)
 {
 	int				x,y,z;
-
-		// clear all contacts
-
-	object_clear_contact(&obj->contact);
 
 		// save original position for ladder checks
 

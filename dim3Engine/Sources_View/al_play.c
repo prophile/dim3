@@ -45,6 +45,8 @@ extern audio_play_type		audio_plays[audio_max_play];
 
 void al_set_listener(int x,int y,int z,float ang_y)
 {
+	SDL_LockAudio();
+
 		// position
 
 	audio_listener_pnt.x=x;
@@ -54,6 +56,8 @@ void al_set_listener(int x,int y,int z,float ang_y)
 		// add 90 degrees to put ears on side of head
 
 	audio_listener_ang_y=angle_add(ang_y,-90.0f);
+
+	SDL_UnlockAudio();
 }
 
 /* =======================================================
