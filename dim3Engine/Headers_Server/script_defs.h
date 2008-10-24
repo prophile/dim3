@@ -632,6 +632,7 @@ and can be sold or given away.
 #define proj_hit_prop_is_player						2
 #define proj_hit_prop_start_tick					3
 #define proj_hit_prop_material_name					4
+#define proj_hit_prop_reflect_vector				5
 
 #define proj_action_prop_damage						0
 #define proj_action_prop_collision					1

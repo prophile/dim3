@@ -227,7 +227,7 @@ void render_transparent_portal_shader(void)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 
-	gl_shader_program_start();
+	gl_shader_program_start(max_map_texture,map.textures);
 	gl_texture_shader_start();
 
 	sort_cnt=map.sort.count;

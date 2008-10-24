@@ -483,7 +483,7 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 		
 			// run the shader
 			
-		gl_shader_program_start();
+		gl_shader_program_start(max_model_texture,mdl->textures);
 		gl_texture_shader_start();
 		
 		glDisable(GL_BLEND);

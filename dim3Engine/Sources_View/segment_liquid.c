@@ -382,8 +382,10 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 
 		// start shader or regular texture
 
+		// supergumba -- separate these so shader program start isn't called continually
+
 	if (texture->shader.on) {
-		gl_shader_program_start();
+		gl_shader_program_start(max_map_texture,map.textures);
 		gl_texture_shader_start();
 
 		gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);

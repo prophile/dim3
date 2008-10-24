@@ -52,7 +52,7 @@ extern bool gl_check_shader_ok(void);
 
 	// shaders
 	
-extern void gl_shader_program_start(void);
+extern void gl_shader_program_start(int texture_cnt,texture_type *texture);
 extern void gl_shader_program_end(void);
 extern void gl_shader_set_program(GLhandleARB shader_prog_obj);
 extern void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type *texture);

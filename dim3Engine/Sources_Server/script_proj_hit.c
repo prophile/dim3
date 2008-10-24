@@ -50,6 +50,7 @@ JSPropertySpec	proj_hit_props[]={
 							{"isPlayer",			proj_hit_prop_is_player,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"startTick",			proj_hit_prop_start_tick,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"materialName",		proj_hit_prop_material_name,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"reflectVector",		proj_hit_prop_reflect_vector,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 
 /* =======================================================
@@ -155,6 +156,7 @@ JSBool js_get_proj_hit_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 {
 	int					hit_type;
 	char				hit_name[name_str_len];
+	d3vct				vct;
 	proj_type			*proj;
 
 	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
@@ -183,6 +185,11 @@ JSBool js_get_proj_hit_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 			js_get_proj_hit_material_name(proj,hit_type,hit_name);
 			*vp=script_string_to_value(hit_name);
 			break;
+		case proj_hit_prop_reflect_vector:
+			projectile_reflect_vector(proj,&vct);
+			*vp=script_angle_to_value(vct.x,vct.y,vct.z);
+			break;
+
 	}
 	
 	return(JS_TRUE);

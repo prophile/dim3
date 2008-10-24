@@ -213,15 +213,15 @@ bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_ev
       
 ======================================================= */
 
-void projectile_reflect(proj_type *proj,bool send_event)
+float projectile_reflect_angle(proj_type *proj)
 {
 	int					x,z,y;
 	float				f,ang;
 	bool				wall_hit;
+	d3vct				proj_vct,normal_vct;
 	poly_pointer_type	*poly;
 	map_mesh_poly_type	*mesh_poly;
-	d3vct				proj_vct,normal_vct;
-	
+
 		// get information about collided mesh
 
 	poly=&proj->contact.hit_poly;
@@ -233,44 +233,63 @@ void projectile_reflect(proj_type *proj,bool send_event)
 		mesh_poly=&map.mesh.meshes[poly->mesh_idx].polys[poly->poly_idx];
 		wall_hit=mesh_poly->box.wall_like;
 	}
-
-		// reset to last good position
-
-	memmove(&proj->pnt,&proj->last_pnt,sizeof(d3pnt));
 	
 		// if not wall-like, then just reverse
 		
 	if ((mesh_poly==NULL) || (!wall_hit)) {
-		proj->ang.y=proj->motion.ang.y=angle_add(proj->motion.ang.y,180);
-	}
-	else {
-
-			// get the projectile and polygon vector
-
-		projectile_set_motion(proj,1000,proj->motion.ang.y,0,&x,&y,&z);
-		
-		proj_vct.x=(float)x;			// projectile vector
-		proj_vct.y=0.0f;
-		proj_vct.z=(float)z;
-		vector_normalize(&proj_vct);
-		
-		vector_create(&normal_vct,mesh_poly->box.min.x,0,mesh_poly->box.min.z,mesh_poly->box.max.x,0,mesh_poly->box.max.z);		// perpendicular vector (swap x/z)
-		
-			// get the angle between them
-
-		f=vector_dot_product(&proj_vct,&normal_vct);
-		f=((float)acos(f))*RAD_to_ANG;
-
-		if (f>90.0f) f=180.0f-f;							// always use the most shallow angle
-
-			// calculate the reflection angle
-			
-		ang=angle_add(proj->motion.ang.y,-(180.0f-(f*2)));
-		if (ang==proj->ang.y) ang=angle_add(ang,180.0f);	// special check for straight hits
-
-		proj->ang.y=proj->motion.ang.y=ang;
+		return(proj->motion.ang.y=angle_add(proj->motion.ang.y,180.0f));
 	}
 
+		// get the projectile and polygon vector
+
+	projectile_set_motion(proj,1000,proj->motion.ang.y,0,&x,&y,&z);
+	
+	proj_vct.x=(float)x;			// projectile vector
+	proj_vct.y=0.0f;
+	proj_vct.z=(float)z;
+	vector_normalize(&proj_vct);
+	
+	vector_create(&normal_vct,mesh_poly->box.min.x,0,mesh_poly->box.min.z,mesh_poly->box.max.x,0,mesh_poly->box.max.z);		// perpendicular vector (swap x/z)
+	
+		// get the angle between them
+
+	f=vector_dot_product(&proj_vct,&normal_vct);
+	f=((float)acos(f))*RAD_to_ANG;
+
+	if (f>90.0f) f=180.0f-f;							// always use the most shallow angle
+
+		// calculate the reflection angle
+		
+	ang=angle_add(proj->motion.ang.y,-(180.0f-(f*2)));
+	if (ang==proj->ang.y) ang=angle_add(ang,180.0f);	// special check for straight hits
+
+	return(ang);
+}
+
+void projectile_reflect_vector(proj_type *proj,d3vct *vct)
+{
+	int				x,y,z;
+	float			ang_y;
+
+	ang_y=projectile_reflect_angle(proj);
+
+	projectile_set_motion(proj,1000,ang_y,proj->motion.ang.x,&x,&y,&z);
+	
+	vct->x=(float)x;
+	vct->y=(float)y;
+	vct->z=(float)z;
+	vector_normalize(vct);
+
+	fprintf(stdout,"%.2f,%.2f,%.2f\n",vct->x,vct->y,vct->z);
+}
+
+void projectile_reflect(proj_type *proj,bool send_event)
+{
+		// setup the reflect
+
+	memmove(&proj->pnt,&proj->last_pnt,sizeof(d3pnt));
+	proj->ang.y=proj->motion.ang.y=projectile_reflect_angle(proj);
+	
 		// send event
 
 	if (send_event) scripts_post_event_console(&proj->attach,sd_event_projectile,sd_event_projectile_reflect,0);

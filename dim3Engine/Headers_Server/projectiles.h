@@ -61,6 +61,8 @@ extern void projectile_turn_xz_towards(proj_type *proj,obj_type *to_obj,float tu
 extern void projectile_thrust_y_towards(proj_type *proj,obj_type *to_obj,float thrust_add);
 extern void projectile_seek(proj_type *proj,obj_type *to_obj,float turn_add,float thrust_add);
 extern bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_event);
+extern float projectile_reflect_angle(proj_type *proj);
+extern void projectile_reflect_vector(proj_type *proj,d3vct *vct);
 extern void projectile_reflect(proj_type *proj,bool send_event);
 extern void projectile_reset_angle_for_flight(proj_type *proj);
 

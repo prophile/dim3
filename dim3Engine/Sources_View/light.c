@@ -172,7 +172,7 @@ void light_add(d3pnt *pnt,int light_type,int intensity,d3col *col)
       
 ======================================================= */
 
-int light_create_glsl_array(d3pnt *pnt,float *light_pos,float *light_col,float *light_normal)
+int light_create_glsl_array(d3pnt *pnt,d3pnt *camera_pnt,float *light_pos,float *light_col,float *light_normal)
 {
 	int						n,cnt,idx,light_idx[max_light_spot];
 	float					*pos,*col,*normal;
@@ -242,11 +242,11 @@ int light_create_glsl_array(d3pnt *pnt,float *light_pos,float *light_col,float *
 	for (n=0;n!=nlight;n++) {
 		lspot=&lspot_cache[light_idx[n]];
 
-		*pos=(float)lspot->pnt.x;
+		*pos=(float)(lspot->pnt.x-camera_pnt->x);
 		pos++;
-		*pos=(float)lspot->pnt.y;
+		*pos=(float)(lspot->pnt.y-camera_pnt->y);
 		pos++;
-		*pos=(float)lspot->pnt.z;
+		*pos=(float)(camera_pnt->z-lspot->pnt.z);
 		pos++;
 
 		*col=lspot->col.r;

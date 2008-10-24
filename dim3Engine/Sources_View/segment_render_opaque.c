@@ -542,7 +542,7 @@ void render_opaque_portal_shader(int mesh_cnt,int *mesh_list)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 
-	gl_shader_program_start();
+	gl_shader_program_start(max_map_texture,map.textures);
 	gl_texture_shader_start();
 	
 		// run through the meshes

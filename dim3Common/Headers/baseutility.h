@@ -472,7 +472,7 @@ typedef struct		{
 						char					vertex_name[file_str_len],
 												fragment_name[file_str_len],
 												init_error[1024];
-						bool					on;
+						bool					on,global_vars_set;
 						shader_custom_var_type	custom_vars[max_shader_custom_vars];
 						GLhandleARB				vertex_obj,fragment_obj,program_obj;
 					} shader_type;

@@ -44,13 +44,22 @@ extern float game_time_fequency_second_get(void);
 
 /* =======================================================
 
-      Use Shaders
+      Shader Programs
       
 ======================================================= */
 
-void gl_shader_program_start(void)
+void gl_shader_program_start(int texture_cnt,texture_type *texture)
 {
+	int				n;
+
 	gl_shader_current_prog_obj=0;
+
+		// some variables only need to be set once
+
+	for (n=0;n!=texture_cnt;n++) {
+		texture->shader.global_vars_set=FALSE;
+		texture++;
+	}
 }
 
 void gl_shader_program_end(void)
@@ -77,6 +86,12 @@ void gl_shader_set_program(GLhandleARB shader_prog_obj)
 	gl_shader_current_prog_obj=shader_prog_obj;
 }
 
+/* =======================================================
+
+      Shader Variables
+      
+======================================================= */
+
 void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type *texture)
 {
 	int						n,nlight;
@@ -88,30 +103,91 @@ void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type
 
 	if (shader_prog_obj==0) return;
 
-		// time/frequency variables
+		// per texture variables
 
-	var=glGetUniformLocationARB(shader_prog_obj,"dim3TimeMillisec");
-	if (var!=-1) glUniform1iARB(var,game_time_get());
-		
-	var=glGetUniformLocationARB(shader_prog_obj,"dim3FrequencySecond");
-	if (var!=-1) glUniform1fARB(var,game_time_fequency_second_get());
+	if (!texture->shader.global_vars_set) {
 
-		// camera and render position
+		texture->shader.global_vars_set=TRUE;
+
+			// time/frequency variables
+
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3TimeMillisec");
+		if (var!=-1) glUniform1iARB(var,game_time_get());
+			
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3FrequencySecond");
+		if (var!=-1) glUniform1fARB(var,game_time_fequency_second_get());
+
+			// camera position
+			
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3CameraPosition");
+		if (var!=-1) glUniform3fARB(var,0.0f,0.0f,0.0f);
+
+			// ambient light
+
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3AmbientLightColor");
+		glUniform3fARB(var,map.ambient.light_color.r,map.ambient.light_color.g,map.ambient.light_color.b);
+			
+			// textures
+			
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3Tex");
+		if (var!=-1) glUniform1iARB(var,0);
+
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3TexBump");
+		if (var!=-1) glUniform1iARB(var,1);
 		
-	var=glGetUniformLocationARB(shader_prog_obj,"dim3CameraPosition");
-	if (var!=-1) glUniform3fARB(var,(float)camera.pnt.x,(float)camera.pnt.y,(float)camera.pnt.z);
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3TexSpecular");
+		if (var!=-1) glUniform1iARB(var,2);
+		
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3TexGlow");
+		if (var!=-1) glUniform1iARB(var,3);
+		
+			// texture color
+			
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3TexColor");
+		if (var!=-1) glUniform4fARB(var,texture->col.r,texture->col.g,texture->col.b,1.0f);
+
+			// custom variables
+			
+		for (n=0;n!=max_shader_custom_vars;n++) {
+			cvar=&texture->shader.custom_vars[n];
+
+			if (cvar->name[0]==0x0) continue;
+			
+			var=glGetUniformLocationARB(shader_prog_obj,cvar->name);
+			if (var==-1) continue;
+			
+			switch (cvar->var_type) {
+			
+				case shader_var_type_int:
+					glUniform1iARB(var,cvar->value.i);
+					break;
+					
+				case shader_var_type_float:
+					glUniform1fARB(var,cvar->value.f);
+					break;
+					
+				case shader_var_type_vec3:
+					glUniform3fARB(var,cvar->value.vec3[0],cvar->value.vec3[1],cvar->value.vec3[2]);
+					break;
+					
+				case shader_var_type_vec4:
+					glUniform4fARB(var,cvar->value.vec4[0],cvar->value.vec4[1],cvar->value.vec4[2],cvar->value.vec4[3]);
+					break;
+			}
+		}
+		
+	}
+
+		// per-polygon variables
+		
+		// render position
 	
 	var=glGetUniformLocationARB(shader_prog_obj,"dim3RenderPosition");
 	if (var!=-1) glUniform3fARB(var,(float)pnt->x,(float)pnt->y,(float)pnt->z);
-
-		// ambient light
-
-	var=glGetUniformLocationARB(shader_prog_obj,"dim3AmbientLightColor");
-	glUniform3fARB(var,map.ambient.light_color.r,map.ambient.light_color.g,map.ambient.light_color.b);
 	
 		// light array
 
-	nlight=light_create_glsl_array(pnt,light_pos,light_col,light_normal);
+	nlight=light_create_glsl_array(pnt,&camera.pnt,light_pos,light_col,light_normal);
 
 	var=glGetUniformLocationARB(shader_prog_obj,"dim3lightCount");
 	if (var!=-1) glUniform1iARB(var,nlight);
@@ -154,53 +230,5 @@ void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type
 		if (var!=-1) glUniform4fARB(var,light_col[0],light_col[1],light_col[2],light_col[3]);
 	}
 
-		// textures
-		
-	var=glGetUniformLocationARB(shader_prog_obj,"dim3Tex");
-	if (var!=-1) glUniform1iARB(var,0);
-
-	var=glGetUniformLocationARB(shader_prog_obj,"dim3TexBump");
-	if (var!=-1) glUniform1iARB(var,1);
-	
-	var=glGetUniformLocationARB(shader_prog_obj,"dim3TexSpecular");
-	if (var!=-1) glUniform1iARB(var,2);
-	
-	var=glGetUniformLocationARB(shader_prog_obj,"dim3TexGlow");
-	if (var!=-1) glUniform1iARB(var,3);
-	
-		// texture color
-		
-	var=glGetUniformLocationARB(shader_prog_obj,"dim3TexColor");
-	if (var!=-1) glUniform4fARB(var,texture->col.r,texture->col.g,texture->col.b,1.0f);
-	
-		// custom variables
-		
-	for (n=0;n!=max_shader_custom_vars;n++) {
-		cvar=&texture->shader.custom_vars[n];
-
-		if (cvar->name[0]==0x0) continue;
-		
-		var=glGetUniformLocationARB(shader_prog_obj,cvar->name);
-		if (var==-1) continue;
-		
-		switch (cvar->var_type) {
-		
-			case shader_var_type_int:
-				glUniform1iARB(var,cvar->value.i);
-				break;
-				
-			case shader_var_type_float:
-				glUniform1fARB(var,cvar->value.f);
-				break;
-				
-			case shader_var_type_vec3:
-				glUniform3fARB(var,cvar->value.vec3[0],cvar->value.vec3[1],cvar->value.vec3[2]);
-				break;
-				
-			case shader_var_type_vec4:
-				glUniform4fARB(var,cvar->value.vec4[0],cvar->value.vec4[1],cvar->value.vec4[2],cvar->value.vec4[3]);
-				break;
-		}
-	}
 }
 
