@@ -215,6 +215,7 @@ void menu_select_editor(int id)
 
 		case menu_editor_reload_map_id:
 			server.map_change=TRUE;
+			server.skip_media=FALSE;
 			break;
 
 		case menu_editor_quit_id:

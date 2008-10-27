@@ -25,12 +25,6 @@ and can be sold or given away.
  
 *********************************************************************/
 
-extern void box_create_from_point(d3box *box,int x,int y,int z,int wid,int high);
-extern void box_create_from_object(d3box *box,obj_type *obj);
-extern void box_create_from_projectile(d3box *box,proj_type *proj);
-extern void box_add_movement(d3box *box,int mx,int mz);
-extern bool box_collide_2D_line(d3box *box,int lx,int rx,int lz,int rz);
-
 extern void collide_object_polygon(obj_type *obj,int x_add,int z_add,int *px,int *pz);
 extern void collide_object_hit_box_polygon(obj_type *obj,model_hit_box_type *hit_box,int *px,int *pz);
 extern bool collide_object_to_object(obj_type *obj1,int x_add,int z_add,obj_type *obj2,bool include_y,bool include_stand);
@@ -63,7 +57,7 @@ extern int pin_downward_movement_point(int x,int y,int z,int ydist,poly_pointer_
 extern int pin_downward_movement_obj(obj_type *obj,int my);
 extern int pin_upward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *head_poly);
 extern int pin_upward_movement_obj(obj_type *obj,int my);
-extern bool map_crush_object(obj_type *obj);
+extern bool map_stand_crush_object(obj_type *obj);
 extern bool map_stand_check_object(obj_type *obj);
 
 extern void ray_push(d3pnt *pt,d3ang *ang,int dist);

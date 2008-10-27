@@ -234,7 +234,6 @@ bool collide_object_to_object_hit_box_slide(obj_type *obj1,int x_add,int z_add,o
 	return(collide_polygon_to_polygon_slide(px_1,pz_1,px_2,pz_2,lx,rx,lz,rz));
 }
 
-
 /* =======================================================
 
       Colliding Projectile to Object

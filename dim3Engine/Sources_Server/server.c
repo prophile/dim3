@@ -264,6 +264,9 @@ bool server_initialize(char *err_str)
 		
 	server.game_open=FALSE;
 	server.map_open=FALSE;
+
+	server.map_change=FALSE;
+	server.skip_media=FALSE;
 	
 	return(TRUE);
 }

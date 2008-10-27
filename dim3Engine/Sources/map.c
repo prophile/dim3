@@ -74,7 +74,18 @@ extern void view_compile_mesh_gl_list_free(void);
 
 void map_media_start(map_media_type *media)
 {
-	if (setup.editor_override.on) return;			// no media when launched from editor
+		// no media when launched from editor
+
+	if (setup.editor_override.on) return;
+
+		// no media if last change was a skip change
+
+	if (server.skip_media) {
+		server.skip_media=FALSE;
+		return;
+	}
+
+		// run the media type
 
 	switch (media->type) {
 	
@@ -456,6 +467,7 @@ void map_end(void)
 void map_clear_changes(void)
 {
 	server.map_change=FALSE;
+	server.skip_media=FALSE;
 }
 
 bool map_need_rebuild(void)

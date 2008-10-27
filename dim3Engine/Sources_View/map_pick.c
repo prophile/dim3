@@ -121,6 +121,7 @@ void map_pick_select(int id)
 		strcpy(map.info.player_start_type,"Player");
 		map.info.in_load=FALSE;
 		server.map_change=TRUE;
+		server.skip_media=TRUE;
 	}
 
 	map_pick_close();

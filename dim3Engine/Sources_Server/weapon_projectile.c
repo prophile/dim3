@@ -119,9 +119,8 @@ bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_t
 	ept.z=proj->pnt.z;
 	
 	contact.obj_on=TRUE;
-	contact.proj_on=proj_setup->collision;
+	contact.proj_on=FALSE;
 	contact.obj_ignore_uid=obj->uid;
-	contact.proj_ignore_uid=proj->uid;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_projectile;
@@ -135,7 +134,7 @@ bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_t
 		proj->contact.hit_poly.mesh_idx=contact.poly.mesh_idx;
 		proj->contact.hit_poly.poly_idx=contact.poly.poly_idx;
 		proj->contact.obj_uid=contact.obj_uid;
-		proj->contact.proj_uid=contact.proj_uid;
+		proj->contact.proj_uid=-1;
 
 		projectile_hit(tick,proj,FALSE);
 	}

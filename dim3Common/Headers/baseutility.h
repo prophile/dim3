@@ -71,11 +71,6 @@ typedef struct		{
 					} d3ang;
 					
 typedef struct		{
-						int				x,z,y,
-										min_x,max_x,min_z,max_z,min_y,max_y;
-					} d3box;
-					
-typedef struct		{
 						float			r,g,b;
 					} d3col;
 

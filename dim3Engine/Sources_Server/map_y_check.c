@@ -104,9 +104,9 @@ int pin_downward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *s
 	return(y+ydist);
 }
 
-int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly)
+int pin_downward_movement_complex(obj_type *obj,int ydist,poly_pointer_type *stand_poly)
 {
-	int						n,cy;
+	int						n,cy,sz;
 	bool					hits[5];
 	d3pnt					spt[5],ept[5],hpt[5];
 	ray_trace_contact_type	base_contact,contacts[5];
@@ -121,17 +121,19 @@ int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly
 
 		// create ray arrays
 	
-	spt[0].x=spt[3].x=ept[0].x=ept[3].x=box->min_x;
-	spt[1].x=spt[2].x=ept[1].x=ept[2].x=box->max_x;
+	sz=obj->size.x>>1;
+	spt[0].x=spt[3].x=ept[0].x=ept[3].x=obj->pnt.x-sz;
+	spt[1].x=spt[2].x=ept[1].x=ept[2].x=obj->pnt.x+sz;
 	
-	spt[0].z=spt[1].z=ept[0].z=ept[1].z=box->min_z;
-	spt[2].z=spt[3].z=ept[2].z=ept[3].z=box->max_z;
+	sz=obj->size.z>>1;
+	spt[0].z=spt[1].z=ept[0].z=ept[1].z=obj->pnt.z-sz;
+	spt[2].z=spt[3].z=ept[2].z=ept[3].z=obj->pnt.z+sz;
 	
-	spt[4].x=ept[4].x=box->x;
-	spt[4].z=ept[4].z=box->z;
+	spt[4].x=ept[4].x=obj->pnt.x;
+	spt[4].z=ept[4].z=obj->pnt.z;
 	
-	spt[0].y=spt[1].y=spt[2].y=spt[3].y=spt[4].y=box->max_y-ydist;
-	ept[0].y=ept[1].y=ept[2].y=ept[3].y=ept[4].y=box->max_y+ydist;
+	spt[0].y=spt[1].y=spt[2].y=spt[3].y=spt[4].y=obj->pnt.y-ydist;
+	ept[0].y=ept[1].y=ept[2].y=ept[3].y=ept[4].y=obj->pnt.y+ydist;
 		
 		// run the rays
 		
@@ -164,7 +166,7 @@ int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly
 		}
 	}
 	
-	if (cy==-1) return(box->max_y+ydist);
+	if (cy==-1) return(obj->pnt.y+ydist);
 	
 	return(cy);
 }
@@ -172,24 +174,21 @@ int pin_downward_movement_box(d3box *box,int ydist,poly_pointer_type *stand_poly
 int pin_downward_movement_obj(obj_type *obj,int my)
 {
 	int				y;
-	d3box			box;
-	
-	box_create_from_object(&box,obj);
 
 		// determine if we should do easy check or complex
 		// check.  Players and objects with rigid body get
 		// more complex checks
 
 	if ((!obj->player) && (!obj->rigid_body.on)) {
-		y=pin_downward_movement_point(box.x,box.max_y,box.z,my,&obj->contact.stand_poly);
+		y=pin_downward_movement_point(obj->pnt.x,obj->pnt.y,obj->pnt.z,my,&obj->contact.stand_poly);
 	}
 	else {
-		y=pin_downward_movement_box(&box,my,&obj->contact.stand_poly);
+		y=pin_downward_movement_complex(obj,my,&obj->contact.stand_poly);
 	}
 	
 	if (obj->contact.stand_poly.mesh_idx==-1) return(my);
 	
-	return(y-box.max_y);
+	return(y-obj->pnt.y);
 }
 
 /* =======================================================
@@ -228,9 +227,9 @@ int pin_upward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *hea
 	return(y-ydist);
 }
 
-int pin_upward_movement_box(d3box *box,int ydist,poly_pointer_type *head_poly)
+int pin_upward_movement_complex(obj_type *obj,int ydist,poly_pointer_type *head_poly)
 {
-	int						n,cy;
+	int						n,cy,sz;
 	bool					hits[5];
 	d3pnt					spt[5],ept[5],hpt[5];
 	ray_trace_contact_type	base_contact,contacts[5];
@@ -245,17 +244,21 @@ int pin_upward_movement_box(d3box *box,int ydist,poly_pointer_type *head_poly)
 
 		// create ray arrays
 	
-	spt[0].x=spt[3].x=ept[0].x=ept[3].x=box->min_x;
-	spt[1].x=spt[2].x=ept[1].x=ept[2].x=box->max_x;
+	sz=obj->size.x>>1;
+	spt[0].x=spt[3].x=ept[0].x=ept[3].x=obj->pnt.x-sz;
+	spt[1].x=spt[2].x=ept[1].x=ept[2].x=obj->pnt.x+sz;
 	
-	spt[0].z=spt[1].z=ept[0].z=ept[1].z=box->min_z;
-	spt[2].z=spt[3].z=ept[2].z=ept[3].z=box->max_z;
+	sz=obj->size.z>>1;
+	spt[0].z=spt[1].z=ept[0].z=ept[1].z=obj->pnt.z-sz;
+	spt[2].z=spt[3].z=ept[2].z=ept[3].z=obj->pnt.z+sz;
 	
-	spt[4].x=ept[4].x=box->x;
-	spt[4].z=ept[4].z=box->z;
+	spt[4].x=ept[4].x=obj->pnt.x;
+	spt[4].z=ept[4].z=obj->pnt.z;
 	
-	spt[0].y=spt[1].y=spt[2].y=spt[3].y=spt[4].y=box->min_y+ydist;
-	ept[0].y=ept[1].y=ept[2].y=ept[3].y=ept[4].y=box->min_y-ydist;
+	sz=obj->size.y;
+	if (obj->duck.mode!=dm_stand) sz-=obj->duck.y_move;
+	spt[0].y=spt[1].y=spt[2].y=spt[3].y=spt[4].y=(obj->pnt.y-sz)+ydist;
+	ept[0].y=ept[1].y=ept[2].y=ept[3].y=ept[4].y=(obj->pnt.y-sz)-ydist;
 		
 		// run the rays
 		
@@ -288,64 +291,56 @@ int pin_upward_movement_box(d3box *box,int ydist,poly_pointer_type *head_poly)
 		}
 	}
 	
-	if (cy==-1) return(box->min_y-ydist);
+	if (cy==-1) return((obj->pnt.y-sz)-ydist);
 	
 	return(cy);
 }
 
 int pin_upward_movement_obj(obj_type *obj,int my)
 {
-	int				y;
-	d3box			box;
-
-	box_create_from_object(&box,obj);
+	int				y,sz;
 
 		// determine if we should do easy check or complex
 		// check.  Players and objects with rigid body get
 		// more complex checks
 
 	if ((!obj->player) && (!obj->rigid_body.on)) {
-		y=pin_upward_movement_point(box.x,box.min_y,box.z,abs(my),&obj->contact.head_poly);
+		y=pin_upward_movement_point(obj->pnt.x,obj->pnt.y,obj->pnt.z,abs(my),&obj->contact.head_poly);
 	}
 	else {
-		y=pin_upward_movement_box(&box,abs(my),&obj->contact.head_poly);
+		y=pin_upward_movement_complex(obj,abs(my),&obj->contact.head_poly);
 	}
 	
 	if (obj->contact.head_poly.mesh_idx==-1) return(my);
 
-	return(box.min_y-y);
+		// need to get duck value for this factor
+
+	sz=obj->size.y;
+	if (obj->duck.mode!=dm_stand) sz-=obj->duck.y_move;
+
+	return((obj->pnt.y-sz)-y);
 }
 
 /* =======================================================
 
-      Check if Object is being Crushed
+      Check if Object is being Crushed from Above
       
 ======================================================= */
 
-bool map_crush_object(obj_type *obj)
+bool map_stand_crush_object(obj_type *obj)
 {
-	/* supergumba -- need to work on this
 	int					sy,fudge;
-	d3box				box;
 	poly_pointer_type	poly;
 
 		// crushing fudge (only check middle 1/2 of object)
 
 	fudge=obj->size.y>>2;
-
-		// get movement box
-
-	box_create_from_object(&box,obj);
-	box.min_y=obj->pos.y-fudge;
-
 	sy=obj->size.y-(fudge<<1);
 
 		// possible to move up?
 
-	pin_upward_movement_box(&box,-sy,&poly);
-	return(poly.portal_idx!=-1);
-*/
-	return(FALSE);
+	pin_upward_movement_complex(obj,-sy,&poly);
+	return(poly.mesh_idx!=-1);
 }
 
 /* =======================================================
@@ -357,21 +352,15 @@ bool map_crush_object(obj_type *obj)
 bool map_stand_check_object(obj_type *obj)
 {
 	int					sy;
-	d3box				box;
 	poly_pointer_type	poly;
 
 		// total stand up height
 
 	sy=obj->duck.y_change;
 
-		// get movement box
-
-	box_create_from_object(&box,obj);
-	box.min_y=(obj->pnt.y-obj->size.y)+sy;
-
 		// possible to move up?
 
-	pin_upward_movement_box(&box,-sy,&poly);
+	pin_upward_movement_complex(obj,-sy,&poly);
 	return(poly.mesh_idx!=-1);
 }
 

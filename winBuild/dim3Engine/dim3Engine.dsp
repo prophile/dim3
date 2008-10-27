@@ -355,10 +355,6 @@ SOURCE=..\..\dim3Engine\Headers_Server\xmls.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_Server\box.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3Engine\Sources_Server\camera.c
 # End Source File
 # Begin Source File

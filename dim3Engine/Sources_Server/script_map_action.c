@@ -132,6 +132,7 @@ JSBool js_map_action_restart_map_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 		// use the last values to restart
 		
 	server.map_change=TRUE;
+	server.skip_media=TRUE;
 	
 	return(JS_TRUE);
 }
@@ -151,6 +152,7 @@ JSBool js_map_action_restart_map_from_save_func(JSContext *cx,JSObject *j_obj,ui
 		
 	if (!game_file_reload_ok()) {
 		server.map_change=TRUE;
+		server.skip_media=TRUE;
 		return(JS_TRUE);
 	}
 	

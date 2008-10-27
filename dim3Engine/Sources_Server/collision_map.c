@@ -60,8 +60,6 @@ bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly)
       
 ======================================================= */
 
-// supergumba -- NEW COLLISION -- to collide utility
-
 int collide_point_distance(d3pnt *pt_1,d3pnt *pt_2)
 {
 	double		dx,dz,dy;

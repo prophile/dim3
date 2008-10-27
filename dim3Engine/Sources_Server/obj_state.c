@@ -455,11 +455,12 @@ void object_crush(obj_type *obj,bool auto_crush)
 	if ((!obj->damage.on) || (!obj->damage.crushable)) return;
 	if (obj->status.health<=0) return;
 	
-		// are we being crushed?
-		// sometimes this comes from a call that has already
-		// detected the crush (like moving walls)
+		// moving walls automatically crush you
+		// and call this routine.  The only crushing
+		// that will be needed to be check
+		// regularly is crushing from above
 		
-	if (!auto_crush) if (!map_crush_object(obj)) return;
+	if (!auto_crush) if (!map_stand_crush_object(obj)) return;
 	
 		// send events and post max damage
 		
