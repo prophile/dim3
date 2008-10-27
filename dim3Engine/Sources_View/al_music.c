@@ -31,8 +31,7 @@ and can be sold or given away.
 
 #include "sounds.h"
 
-int							audio_music_buffer_idx,
-							audio_music_fade_mode,audio_music_fade_start_tick,audio_music_fade_msec,
+int							audio_music_fade_mode,audio_music_fade_start_tick,audio_music_fade_msec,
 							audio_music_fade_next_msec,audio_music_original_volume;
 char						audio_music_fade_next_name[name_str_len],audio_music_fade_next_path[1024];
 bool						audio_music_state_on,audio_music_paused;

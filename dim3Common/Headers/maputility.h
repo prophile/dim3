@@ -168,6 +168,14 @@ extern char light_type_str[][32];
 #define skill_hard											2
 
 //
+// spawn play types
+//
+
+#define spawn_always										0
+#define spawn_single_player_only							1
+#define spawn_multiplayer_only								2
+
+//
 // group structure
 //
 
@@ -396,7 +404,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int									skill;
+						int									skill,spawn;
 						char								name[name_str_len],
 															type[name_str_len],
 															script[name_str_len],
@@ -485,7 +493,7 @@ typedef struct		{
 typedef struct		{
 						int									obscure_type;
 						float								gravity,gravity_max_power,gravity_max_speed,
-															resistance,txt_scale_x,txt_scale_y;
+															resistance,push_factor,txt_scale_x,txt_scale_y;
 						bool								editor_link_always_start;
 						char								network_game_list[256];
 					} map_settings_type;

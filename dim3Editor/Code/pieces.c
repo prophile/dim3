@@ -252,6 +252,7 @@ void piece_delete(void)
 			case mesh_piece:
 				if (drag_mode==drag_mode_polygon) {
 					map_mesh_delete_poly(&map,main_idx,sub_idx);
+					select_delete_move_index(mesh_piece,main_idx,sub_idx);
 					break;
 				}
 				if (drag_mode==drag_mode_mesh) {

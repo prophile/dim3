@@ -814,17 +814,24 @@ void spot_start_attach(void)
 {
 	int					i;
 	char				err_str[256];
+	bool				multiplayer;
 	spot_type			*spot;
+	
+	multiplayer=(net_setup.host.hosting) || (net_setup.client.joined);
 	
 		// check if a spot was attached by a
 		// script.  If it was, and the skill levels
-		// are OK, spawn this object into the map
+		// and spawn type are OK, spawn this object into the map
 		
-	spot=map.spots;
-	
 	for (i=0;i!=map.nspot;i++) {
-		if ((spot->attach) && (spot->skill<=server.skill)) object_start(spot,FALSE,bt_map,err_str);
-		spot++;
+	
+		spot=&map.spots[i];
+		if (!spot->attach) continue;
+		if (spot->skill>server.skill) continue;
+		if ((spot->spawn==spawn_single_player_only) && (multiplayer)) continue;
+		if ((spot->spawn==spawn_multiplayer_only) && (!multiplayer)) continue;
+		 
+		object_start(spot,FALSE,bt_map,err_str);
 	}
 }
 

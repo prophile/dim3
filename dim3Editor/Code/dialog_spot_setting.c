@@ -37,6 +37,7 @@ extern map_type				map;
 #define kSpotParams									FOUR_CHAR_CODE('parm')
 #define kSpotAngle									FOUR_CHAR_CODE('ange')
 #define kSpotSkill									FOUR_CHAR_CODE('skil')
+#define kSpotSpawn									FOUR_CHAR_CODE('spwn')
 #define kSpotDisplayModel							FOUR_CHAR_CODE('dspm')
 #define kSpotButtonEdit								FOUR_CHAR_CODE('edit')
 
@@ -165,6 +166,7 @@ bool dialog_spot_setting_run(spot_type *spot)
 	dialog_special_combo_fill_script(dialog_spot_setting_wind,kSpotScript,0,spot->script);
 	dialog_set_float(dialog_spot_setting_wind,kSpotAngle,0,spot->ang.y);
 	dialog_set_combo(dialog_spot_setting_wind,kSpotSkill,0,spot->skill);
+	dialog_set_combo(dialog_spot_setting_wind,kSpotSpawn,0,spot->spawn);
 	
 	dialog_special_combo_fill_model(dialog_spot_setting_wind,kSpotDisplayModel,0,spot->display_model);
 	
@@ -194,6 +196,7 @@ bool dialog_spot_setting_run(spot_type *spot)
 		dialog_special_combo_get_script(dialog_spot_setting_wind,kSpotScript,0,spot->script,name_str_len);
 		spot->ang.y=dialog_get_float(dialog_spot_setting_wind,kSpotAngle,0);
 		spot->skill=dialog_get_combo(dialog_spot_setting_wind,kSpotSkill,0);
+		spot->spawn=dialog_get_combo(dialog_spot_setting_wind,kSpotSpawn,0);
 		
 		dialog_special_combo_get_model(dialog_spot_setting_wind,kSpotDisplayModel,0,spot->display_model,name_str_len);
 		

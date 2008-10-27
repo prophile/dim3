@@ -26,9 +26,9 @@
 	};
 	0111608E00BE2A8F7F000001 /* model_window.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1098, 12278}}";
-			sepNavSelRange = "{19806, 29}";
-			sepNavVisRange = "{18743, 1190}";
+			sepNavIntBoundsRect = "{{0, 0}, {1098, 12292}}";
+			sepNavSelRange = "{6556, 0}";
+			sepNavVisRange = "{5820, 952}";
 			sepNavWindowFrame = "{{175, 237}, {1041, 747}}";
 		};
 	};
@@ -119,12 +119,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 246086937;
-			PBXWorkspaceStateSaveDate = 246086937;
+			PBXPerProjectTemplateStateSaveDate = 246773451;
+			PBXWorkspaceStateSaveDate = 246773451;
 		};
 		perUserProjectItems = {
-			26665D220EA9A121001B1BF5 /* PBXTextBookmark */ = 26665D220EA9A121001B1BF5 /* PBXTextBookmark */;
-			26CAADC90EAAFE710051877E /* PBXTextBookmark */ = 26CAADC90EAAFE710051877E /* PBXTextBookmark */;
+			26F0BF240EB3B024006F723F /* PBXTextBookmark */ = 26F0BF240EB3B024006F723F /* PBXTextBookmark */;
+			26F0C0420EB576EC006F723F /* PBXTextBookmark */ = 26F0C0420EB576EC006F723F /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -229,16 +229,6 @@
 		path = "../../dim3/dim3 Animator.app";
 		sourceTree = SOURCE_ROOT;
 	};
-	26665D220EA9A121001B1BF5 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
-		name = "InfoPlist.strings: 5";
-		rLen = 0;
-		rLoc = 206;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
 	26AA925B0DF2457E004A03AE /* dialog_particle_settings.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 1988}}";
@@ -255,7 +245,17 @@
 			sepNavWindowFrame = "{{247, 201}, {1041, 747}}";
 		};
 	};
-	26CAADC90EAAFE710051877E /* PBXTextBookmark */ = {
+	26F0BF240EB3B024006F723F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
+		name = "InfoPlist.strings: 5";
+		rLen = 0;
+		rLoc = 206;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	26F0C0420EB576EC006F723F /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
 		name = "InfoPlist.strings: 5";

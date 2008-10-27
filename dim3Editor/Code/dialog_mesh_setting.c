@@ -29,6 +29,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "dialog.h"
 
+extern int					drag_mode;
 extern map_type				map;
 
 #define kMeshSettingOn							FOUR_CHAR_CODE('fson')
@@ -109,22 +110,28 @@ static pascal OSStatus mesh_setting_event_proc(EventHandlerCallRef handler,Event
       
 ======================================================= */
 
-bool dialog_mesh_setting_run(int mesh_idx,int poly_idx)
+bool dialog_mesh_setting_run(void)
 {
+	int						n,cnt,type,mesh_idx,poly_idx;
 	float					x_txtoff,y_txtoff,x_txtfact,y_txtfact;
 	map_mesh_type			*mesh;
-	map_mesh_poly_type		*mesh_poly;
+	map_mesh_poly_type		*poly;
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
 	
 		// open the dialog
 		
 	dialog_open(&dialog_mesh_setting_wind,"MeshSetting");
+	
+		// use first selected mesh as basis
+		
+	select_get(0,&type,&mesh_idx,&poly_idx);
+	
+	mesh=&map.mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
 
 		// set controls
 	
-	mesh=&map.mesh.meshes[mesh_idx];
-		
 	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSettingOn,0,mesh->flag.on);
 	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSettingPassThrough,0,mesh->flag.pass_through);
 	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSettingMovable,0,mesh->flag.moveable);
@@ -137,19 +144,29 @@ bool dialog_mesh_setting_run(int mesh_idx,int poly_idx)
 	dialog_set_int(dialog_mesh_setting_wind,kMeshSettingRotY,0,mesh->rot_off.y);
 	dialog_set_int(dialog_mesh_setting_wind,kMeshSettingRotZ,0,mesh->rot_off.z);
 	
-	mesh_poly=&mesh->polys[poly_idx];
-	
-	map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
-	
-	dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingOffX,0,x_txtoff);
-	dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingOffY,0,y_txtoff);
-	dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingSizeX,0,x_txtfact);
-	dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingSizeY,0,y_txtfact);
-	
-	dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingAlpha,0,mesh_poly->alpha);
-	dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingDark,0,mesh_poly->dark_factor);
-	dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingShiftX,0,mesh_poly->x_shift);
-	dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingShiftY,0,mesh_poly->y_shift);
+	if (drag_mode==drag_mode_polygon) {
+		map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
+		
+		dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingOffX,0,x_txtoff);
+		dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingOffY,0,y_txtoff);
+		dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingSizeX,0,x_txtfact);
+		dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingSizeY,0,y_txtfact);
+		
+		dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingAlpha,0,poly->alpha);
+		dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingDark,0,poly->dark_factor);
+		dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingShiftX,0,poly->x_shift);
+		dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingShiftY,0,poly->y_shift);
+	}
+	else {
+		dialog_enable(dialog_mesh_setting_wind,kMeshPolySettingOffX,0,FALSE);
+		dialog_enable(dialog_mesh_setting_wind,kMeshPolySettingOffY,0,FALSE);
+		dialog_enable(dialog_mesh_setting_wind,kMeshPolySettingSizeX,0,FALSE);
+		dialog_enable(dialog_mesh_setting_wind,kMeshPolySettingSizeY,0,FALSE);
+		dialog_enable(dialog_mesh_setting_wind,kMeshPolySettingAlpha,0,FALSE);
+		dialog_enable(dialog_mesh_setting_wind,kMeshPolySettingDark,0,FALSE);
+		dialog_enable(dialog_mesh_setting_wind,kMeshPolySettingShiftX,0,FALSE);
+		dialog_enable(dialog_mesh_setting_wind,kMeshPolySettingShiftY,0,FALSE);
+	}
 	
 	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSendMessageEnter,0,mesh->msg.entry_on);
 	dialog_set_int(dialog_mesh_setting_wind,kMeshSendMessageEnterId,0,mesh->msg.entry_id);
@@ -179,40 +196,54 @@ bool dialog_mesh_setting_run(int mesh_idx,int poly_idx)
 		// dialog to data
 		
 	if (!dialog_mesh_setting_cancel) {
-		mesh->flag.on=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingOn,0);
-		mesh->flag.pass_through=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingPassThrough,0);
-		mesh->flag.moveable=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingMovable,0);
-		mesh->flag.climbable=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingClimbable,0);
-		mesh->flag.hilite=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingHilite,0);
-		mesh->flag.lock_uv=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingLockUV,0);
-		mesh->flag.no_self_obscure=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingNoSelfObscure,0);
-		
-		mesh->rot_off.x=dialog_get_int(dialog_mesh_setting_wind,kMeshSettingRotX,0);
-		mesh->rot_off.y=dialog_get_int(dialog_mesh_setting_wind,kMeshSettingRotY,0);
-		mesh->rot_off.z=dialog_get_int(dialog_mesh_setting_wind,kMeshSettingRotZ,0);
 	
-		x_txtoff=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingOffX,0);
-		y_txtoff=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingOffY,0);
-		x_txtfact=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingSizeX,0);
-		y_txtfact=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingSizeY,0);
-
-		map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,x_txtoff,y_txtoff,x_txtfact,y_txtfact);
-
-		mesh_poly->dark_factor=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingDark,0);
-		mesh_poly->alpha=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingAlpha,0);
-		mesh_poly->x_shift=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingShiftX,0);
-		mesh_poly->y_shift=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingShiftY,0);
+		cnt=select_count();
 		
-		mesh->msg.entry_on=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSendMessageEnter,0);
-		mesh->msg.entry_id=dialog_get_int(dialog_mesh_setting_wind,kMeshSendMessageEnterId,0);
-		mesh->msg.exit_on=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSendMessageExit,0);
-		mesh->msg.exit_id=dialog_get_int(dialog_mesh_setting_wind,kMeshSendMessageExitId,0);
-		mesh->msg.map_change_on=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSendMessageMapChange,0);
-		dialog_get_text(dialog_mesh_setting_wind,kMeshSendMessageMapChangeName,0,mesh->msg.map_name,name_str_len);
-		dialog_get_text(dialog_mesh_setting_wind,kMeshSendMessageMapChangeSpotName,0,mesh->msg.map_spot_name,name_str_len);
-		dialog_get_text(dialog_mesh_setting_wind,kMeshSendMessageMapChangeSpotType,0,mesh->msg.map_spot_type,name_str_len);
-		mesh->msg.base_on=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSendMessageBase,0);
-		mesh->msg.base_team=dialog_get_combo(dialog_mesh_setting_wind,kMeshSendMessageBaseTeam,0);
+		for (n=0;n!=cnt;n++) {
+			
+			select_get(n,&type,&mesh_idx,&poly_idx);
+			if (type!=mesh_piece) continue;
+	
+			mesh=&map.mesh.meshes[mesh_idx];
+			poly=&mesh->polys[poly_idx];
+
+			mesh->flag.on=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingOn,0);
+			mesh->flag.pass_through=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingPassThrough,0);
+			mesh->flag.moveable=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingMovable,0);
+			mesh->flag.climbable=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingClimbable,0);
+			mesh->flag.hilite=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingHilite,0);
+			mesh->flag.lock_uv=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingLockUV,0);
+			mesh->flag.no_self_obscure=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSettingNoSelfObscure,0);
+			
+			mesh->rot_off.x=dialog_get_int(dialog_mesh_setting_wind,kMeshSettingRotX,0);
+			mesh->rot_off.y=dialog_get_int(dialog_mesh_setting_wind,kMeshSettingRotY,0);
+			mesh->rot_off.z=dialog_get_int(dialog_mesh_setting_wind,kMeshSettingRotZ,0);
+		
+			if (drag_mode==drag_mode_polygon) {
+				x_txtoff=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingOffX,0);
+				y_txtoff=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingOffY,0);
+				x_txtfact=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingSizeX,0);
+				y_txtfact=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingSizeY,0);
+
+				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,x_txtoff,y_txtoff,x_txtfact,y_txtfact);
+
+				poly->dark_factor=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingDark,0);
+				poly->alpha=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingAlpha,0);
+				poly->x_shift=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingShiftX,0);
+				poly->y_shift=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingShiftY,0);
+			}
+			
+			mesh->msg.entry_on=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSendMessageEnter,0);
+			mesh->msg.entry_id=dialog_get_int(dialog_mesh_setting_wind,kMeshSendMessageEnterId,0);
+			mesh->msg.exit_on=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSendMessageExit,0);
+			mesh->msg.exit_id=dialog_get_int(dialog_mesh_setting_wind,kMeshSendMessageExitId,0);
+			mesh->msg.map_change_on=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSendMessageMapChange,0);
+			dialog_get_text(dialog_mesh_setting_wind,kMeshSendMessageMapChangeName,0,mesh->msg.map_name,name_str_len);
+			dialog_get_text(dialog_mesh_setting_wind,kMeshSendMessageMapChangeSpotName,0,mesh->msg.map_spot_name,name_str_len);
+			dialog_get_text(dialog_mesh_setting_wind,kMeshSendMessageMapChangeSpotType,0,mesh->msg.map_spot_type,name_str_len);
+			mesh->msg.base_on=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSendMessageBase,0);
+			mesh->msg.base_team=dialog_get_combo(dialog_mesh_setting_wind,kMeshSendMessageBaseTeam,0);
+		}
 	}
 	
 		// close window

@@ -634,14 +634,14 @@ void walk_view_click_info(void)
 	int				type,main_idx,sub_idx;
 	map_liquid_type	*liq;
 	
-    if (select_count()!=1) return;
+    if (select_count()==0) return;
 	
 	select_get(0,&type,&main_idx,&sub_idx);
 
 	switch (type) {
 	
 		case mesh_piece:
-			dialog_mesh_setting_run(main_idx,sub_idx);
+			dialog_mesh_setting_run();
 			break;
 			
 		case liquid_piece:

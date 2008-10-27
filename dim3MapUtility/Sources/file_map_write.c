@@ -33,13 +33,11 @@ extern char					obscure_type_str[][32],
 							media_type_str[][32],
 							sky_type_str[][32],
 							gl_fog_type_str[][32],
-							segment_type_str[][32],
-							segment_clip_str[][32],
-							segment_curve_str[][32],
-							segment_push_str[][32],
 							liquid_tide_direction_str[][32],
 							light_type_str[][32],
 							lighting_mode_str[][32],
+							skill_type_str[][32],
+							spawn_type_str[][32],
 							map_bump_mode_str[][32];
 
 extern maputility_settings_type		maputility_settings;
@@ -151,6 +149,7 @@ void write_map_settings_xml(map_type *map)
 	xml_add_attribute_float("gravity_max_power",map->settings.gravity_max_power);
 	xml_add_attribute_float("gravity_max_speed",map->settings.gravity_max_speed);
     xml_add_attribute_float("resistance",map->settings.resistance);
+    xml_add_attribute_float("push_factor",map->settings.push_factor);
 	xml_add_attribute_float("txt_scale_x",map->settings.txt_scale_x);
 	xml_add_attribute_float("txt_scale_y",map->settings.txt_scale_y);
 	xml_add_attribute_list("obscure_type",(char*)obscure_type_str,map->settings.obscure_type);
@@ -719,7 +718,8 @@ bool write_map_xml(map_type *map)
 		xml_add_attribute_text("display_model",spot->display_model);
 		xml_add_attribute_text("params",spot->params);
 		xml_add_attribute_float("angle",spot->ang.y);
-		xml_add_attribute_int("skill",spot->skill);
+		xml_add_attribute_list("skill",(char*)skill_type_str,spot->skill);
+		xml_add_attribute_list("spawn",(char*)spawn_type_str,spot->spawn);
 		xml_add_tagend(TRUE);
 	}
 	

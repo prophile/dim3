@@ -35,6 +35,7 @@ and can be sold or given away.
 
 extern map_type				map;
 extern server_type			server;
+extern view_type			view;
 
 extern bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd);	// supergumba
 
@@ -266,23 +267,6 @@ float projectile_reflect_angle(proj_type *proj)
 	return(ang);
 }
 
-void projectile_reflect_vector(proj_type *proj,d3vct *vct)
-{
-	int				x,y,z;
-	float			ang_y;
-
-	ang_y=projectile_reflect_angle(proj);
-
-	projectile_set_motion(proj,1000,ang_y,proj->motion.ang.x,&x,&y,&z);
-	
-	vct->x=(float)x;
-	vct->y=(float)y;
-	vct->z=(float)z;
-	vector_normalize(vct);
-
-	fprintf(stdout,"%.2f,%.2f,%.2f\n",vct->x,vct->y,vct->z);
-}
-
 void projectile_reflect(proj_type *proj,bool send_event)
 {
 		// setup the reflect
@@ -320,4 +304,84 @@ void projectile_reset_angle_for_flight(proj_type *proj)
 	dist=(int)sqrtf(f);
 	proj->ang.x=angle_add(180,angle_find(0,0,(int)fy,dist));
 }
+
+/* =======================================================
+
+      Hit Vectors
+      
+======================================================= */
+
+void projectile_eject_vector(proj_type *proj,d3vct *vct)
+{
+	int					x,y,z;
+	float				wall_ang;
+	poly_pointer_type	*poly;
+	map_mesh_poly_type	*mesh_poly;
+
+	poly=&proj->contact.hit_poly;
+
+		// if it hit anything other than a polygon, just eject backwards
+		
+	if (poly->mesh_idx==-1) {
+		projectile_set_motion(proj,1000,proj->motion.ang.y,proj->motion.ang.x,&x,&y,&z);
+	
+		vct->x=-(float)x;
+		vct->y=-(float)y;
+		vct->z=-(float)z;
+		vector_normalize(vct);
+		
+		return;
+	}
+	
+		// if the polygon is floor like, eject towards camera
+		// either up or down
+	
+	mesh_poly=&map.mesh.meshes[poly->mesh_idx].polys[poly->poly_idx];
+		
+	if (!mesh_poly->box.wall_like) {
+		if (view.camera.pnt.y<proj->pnt.y) {
+			vct->y=-1.0f;
+		}
+		else {
+			vct->y=1.0f;
+		}
+		vct->x=vct->z=0.0f;
+		return;
+	}
+	
+		// else eject at angle of wall
+		// always eject towards the camera
+		
+	wall_ang=angle_find(mesh_poly->box.min.x,mesh_poly->box.min.z,mesh_poly->box.max.x,mesh_poly->box.max.z);
+	wall_ang=angle_add(wall_ang,90.0f);
+
+	angle_get_movement(wall_ang,1000,&x,&z);
+	
+	x=abs(x);
+	if (view.camera.pnt.x<proj->pnt.x) x=-x;
+	
+	z=abs(z);
+	if (view.camera.pnt.z<proj->pnt.z) z=-z;
+	
+	vct->x=(float)x;
+	vct->y=0;
+	vct->z=(float)z;
+	vector_normalize(vct);
+}
+
+void projectile_reflect_vector(proj_type *proj,d3vct *vct)
+{
+	int				x,y,z;
+	float			ang_y;
+
+	ang_y=projectile_reflect_angle(proj);
+
+	projectile_set_motion(proj,1000,ang_y,proj->motion.ang.x,&x,&y,&z);
+	
+	vct->x=(float)x;
+	vct->y=(float)y;
+	vct->z=(float)z;
+	vector_normalize(vct);
+}
+
 

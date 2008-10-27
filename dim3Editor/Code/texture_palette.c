@@ -116,7 +116,7 @@ void texture_palette_put_selected_texture(int txt_idx)
 		
 			// only set polygon
 			
-		if (drag_mode!=drag_mode_mesh) {
+		if (drag_mode==drag_mode_polygon) {
 			mesh->polys[poly_idx].txt_idx=txt_idx;
 		}
 		

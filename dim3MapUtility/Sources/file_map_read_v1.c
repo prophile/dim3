@@ -1414,6 +1414,7 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					spot->ang.y=xml_get_attribute_float(obj_tag,"angle");
 					
 					spot->skill=skill_easy;
+					spot->spawn=spawn_always;
 
 					spot->pnt.x=(spot->pnt.x*map_enlarge)+(portal->x*map_enlarge);
 					spot->pnt.y=(spot->pnt.y+1)*map_enlarge;

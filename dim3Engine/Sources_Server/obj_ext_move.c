@@ -215,7 +215,7 @@ bool object_push_with_object(obj_type *obj,int xmove,int zmove)
 		// calculate the force by weight
 
 	if (weight_dif>2000) weight_dif=2000;
-	f=0.25f+(0.0008f*weight_dif);
+	f=0.25f+(map.settings.push_factor*weight_dif);
 	
 		// add in vector
 

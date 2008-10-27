@@ -38,6 +38,8 @@ char					obscure_type_str[][32]={"none","rough","complete"},
 						liquid_tide_direction_str[][32]={"horizontal","vertical",""},
                         light_type_str[][32]={"normal","blink","glow","pulse","flicker","failing",""},
 						lighting_mode_str[][32]={"flat","hilite","hilite_diffuse","vertex"},
+						skill_type_str[][32]={"easy","medium","hard",""},
+						spawn_type_str[][32]={"always","single_player","multiplayer",""},
 						map_bump_mode_str[][32]=bump_mode_xml_list_str;
 
 
@@ -71,6 +73,7 @@ void decode_map_settings_xml(map_type *map,int map_head)
         map->settings.gravity_max_power=xml_get_attribute_float_default(tag,"gravity_max_power",32);
 		map->settings.gravity_max_speed=xml_get_attribute_float_default(tag,"gravity_max_speed",400);
 		map->settings.resistance=xml_get_attribute_float_default(tag,"resistance",1);
+		map->settings.push_factor=xml_get_attribute_float_default(tag,"push_factor",0.0008f);
 		map->settings.txt_scale_x=xml_get_attribute_float_default(tag,"txt_scale_x",0.04f);
 		map->settings.txt_scale_y=xml_get_attribute_float_default(tag,"txt_scale_y",0.04f);
 		map->settings.obscure_type=xml_get_attribute_list(tag,"obscure_type",(char*)obscure_type_str);

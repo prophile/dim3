@@ -50,6 +50,7 @@ JSPropertySpec	proj_hit_props[]={
 							{"isPlayer",			proj_hit_prop_is_player,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"startTick",			proj_hit_prop_start_tick,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"materialName",		proj_hit_prop_material_name,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"ejectVector",			proj_hit_prop_eject_vector,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"reflectVector",		proj_hit_prop_reflect_vector,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 
@@ -184,6 +185,10 @@ JSBool js_get_proj_hit_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 			hit_type=js_get_proj_hit_type(proj);
 			js_get_proj_hit_material_name(proj,hit_type,hit_name);
 			*vp=script_string_to_value(hit_name);
+			break;
+		case proj_hit_prop_eject_vector:
+			projectile_eject_vector(proj,&vct);
+			*vp=script_angle_to_value(vct.x,vct.y,vct.z);
 			break;
 		case proj_hit_prop_reflect_vector:
 			projectile_reflect_vector(proj,&vct);

@@ -572,7 +572,7 @@ void obscure_calculate_group_single_visibility(int group_idx,d3pnt *cpt,unsigned
 
 bool obscure_calculate_group_visibility_complete(int group_idx)
 {
-	int				n,x,y,z,
+	int				n,x,z,
 					x_sz,y_sz,z_sz,x_cnt,y_cnt,z_cnt,x_add,y_add,z_add;
 	int				*mesh_sort_list;
 	float			ratio;
@@ -791,11 +791,14 @@ bool obscure_calculate_group_visibility_rough(int group_idx)
 
 bool obscure_calculate_group_visibility(int group_idx)
 {
-	if (map.settings.obscure_type==obscure_type_rough) {
+
+// supergumba -- until complete is working, just do rough now
+
+//	if (map.settings.obscure_type==obscure_type_rough) {
 		return(obscure_calculate_group_visibility_rough(group_idx));
-	}
+//	}
 	
-	return(obscure_calculate_group_visibility_complete(group_idx));
+//	return(obscure_calculate_group_visibility_complete(group_idx));
 }
 
 /* =======================================================

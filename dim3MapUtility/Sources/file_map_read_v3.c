@@ -38,6 +38,8 @@ extern char				obscure_type_str[][32],
 						liquid_tide_direction_str[][32],
                         light_type_str[][32],
 						lighting_mode_str[][32],
+						skill_type_str[][32],
+						spawn_type_str[][32],
 						map_bump_mode_str[][32];
 
 /* =======================================================
@@ -476,7 +478,8 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 			xml_get_attribute_text(obj_tag,"params",spot->params,param_str_len);
 			spot->ang.y=xml_get_attribute_float(obj_tag,"angle");
 			
-			spot->skill=xml_get_attribute_int(obj_tag,"skill");
+			spot->skill=xml_get_attribute_list(obj_tag,"skill",(char*)skill_type_str);
+			spot->spawn=xml_get_attribute_list(obj_tag,"spawn",(char*)spawn_type_str);
 			
 			obj_tag=xml_findnextchild(obj_tag);
 		}

@@ -39,6 +39,7 @@ extern map_type				map;
 #define kMapGravityPower							FOUR_CHAR_CODE('gpwr')
 #define kMapGravitySpeed							FOUR_CHAR_CODE('gspd')
 #define kMapResistance								FOUR_CHAR_CODE('rest')
+#define kMapPushFactor								FOUR_CHAR_CODE('push')
 #define kMapTextureXFactor							FOUR_CHAR_CODE('trxf')
 #define kMapTextureYFactor							FOUR_CHAR_CODE('tryf')
 
@@ -110,6 +111,7 @@ bool dialog_map_settings_run(void)
 	dialog_set_float(dialog_map_settings_wind,kMapGravityPower,0,map.settings.gravity_max_power);
 	dialog_set_float(dialog_map_settings_wind,kMapGravitySpeed,0,map.settings.gravity_max_speed);
 	dialog_set_float(dialog_map_settings_wind,kMapResistance,0,map.settings.resistance);
+	dialog_set_float(dialog_map_settings_wind,kMapPushFactor,0,map.settings.push_factor);
 	dialog_set_float(dialog_map_settings_wind,kMapTextureXFactor,0,map.settings.txt_scale_x);
 	dialog_set_float(dialog_map_settings_wind,kMapTextureYFactor,0,map.settings.txt_scale_y);
 	
@@ -155,6 +157,7 @@ bool dialog_map_settings_run(void)
 		map.settings.gravity_max_power=dialog_get_float(dialog_map_settings_wind,kMapGravityPower,0);
 		map.settings.gravity_max_speed=dialog_get_float(dialog_map_settings_wind,kMapGravitySpeed,0);
 		map.settings.resistance=dialog_get_float(dialog_map_settings_wind,kMapResistance,0);
+		map.settings.push_factor=dialog_get_float(dialog_map_settings_wind,kMapPushFactor,0);
 		map.settings.txt_scale_x=dialog_get_float(dialog_map_settings_wind,kMapTextureXFactor,0);
 		map.settings.txt_scale_y=dialog_get_float(dialog_map_settings_wind,kMapTextureYFactor,0);
 		
