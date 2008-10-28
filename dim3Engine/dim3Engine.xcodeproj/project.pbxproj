@@ -284,7 +284,6 @@
 		F5DD1A40090858F700721649 /* effects_spawn.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A3E090858F700721649 /* effects_spawn.c */; };
 		F5DD1A420908593C00721649 /* projectile.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A410908593C00721649 /* projectile.c */; };
 		F5DD1A450908594D00721649 /* particles.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A440908594D00721649 /* particles.c */; };
-		F5DD1A4B0908598900721649 /* box.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A460908598900721649 /* box.c */; };
 		F5DD1A4C0908598900721649 /* collision_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A470908598900721649 /* collision_utility.c */; };
 		F5DD1A4D0908598900721649 /* collision.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A480908598900721649 /* collision.c */; };
 		F5DD1A4F0908598900721649 /* map_y_check.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A4A0908598900721649 /* map_y_check.c */; };
@@ -654,7 +653,6 @@
 		F5DD1A3E090858F700721649 /* effects_spawn.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = effects_spawn.c; path = Sources_Server/effects_spawn.c; sourceTree = "<group>"; };
 		F5DD1A410908593C00721649 /* projectile.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = projectile.c; path = Sources_Server/projectile.c; sourceTree = "<group>"; };
 		F5DD1A440908594D00721649 /* particles.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = particles.c; path = Sources_Server/particles.c; sourceTree = "<group>"; };
-		F5DD1A460908598900721649 /* box.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = box.c; path = Sources_Server/box.c; sourceTree = "<group>"; };
 		F5DD1A470908598900721649 /* collision_utility.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = collision_utility.c; path = Sources_Server/collision_utility.c; sourceTree = "<group>"; };
 		F5DD1A480908598900721649 /* collision.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = collision.c; path = Sources_Server/collision.c; sourceTree = "<group>"; };
 		F5DD1A4A0908598900721649 /* map_y_check.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = map_y_check.c; path = Sources_Server/map_y_check.c; sourceTree = "<group>"; };
@@ -1035,7 +1033,6 @@
 		F52A334C012B8B0B01000001 /* Map */ = {
 			isa = PBXGroup;
 			children = (
-				F5DD1A460908598900721649 /* box.c */,
 				F5DD1A480908598900721649 /* collision.c */,
 				F5DD1A470908598900721649 /* collision_utility.c */,
 				F5DD2C8E0CEABBA20028796D /* collision_map.c */,
@@ -1679,7 +1676,6 @@
 				F5DD1A40090858F700721649 /* effects_spawn.c in Sources */,
 				F5DD1A420908593C00721649 /* projectile.c in Sources */,
 				F5DD1A450908594D00721649 /* particles.c in Sources */,
-				F5DD1A4B0908598900721649 /* box.c in Sources */,
 				F5DD1A4C0908598900721649 /* collision_utility.c in Sources */,
 				F5DD1A4D0908598900721649 /* collision.c in Sources */,
 				F5DD1A4F0908598900721649 /* map_y_check.c in Sources */,
@@ -1933,8 +1929,7 @@
 		F5DB0BF1085671A9005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = "$(NATIVE_ARCH)";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

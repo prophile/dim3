@@ -371,7 +371,7 @@ void render_transparent_sort(int mesh_cnt,int *mesh_list,d3pnt *pnt)
 void render_transparent_map(int mesh_cnt,int *mesh_list)
 {
 	bool			is_fog_lighting;
-		
+	
 		// setup view
 
 	gl_setup_viewport(console_y_offset());

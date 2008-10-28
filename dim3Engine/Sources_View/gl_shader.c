@@ -189,7 +189,7 @@ void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type
 
 	nlight=light_create_glsl_array(pnt,&camera.pnt,light_pos,light_col,light_normal);
 
-	var=glGetUniformLocationARB(shader_prog_obj,"dim3lightCount");
+	var=glGetUniformLocationARB(shader_prog_obj,"dim3LightCount");
 	if (var!=-1) glUniform1iARB(var,nlight);
 
 	var=glGetUniformLocationARB(shader_prog_obj,"dim3LightPositions");

@@ -49,8 +49,8 @@ audio_play_type			audio_plays[audio_max_play];
 void audio_callback(void *userdata,Uint8 *stream,int len)
 {
 	int					n,k,pos,stream_len,dist,vol,
-						left_channel,right_channel;
-	short				*s_stream,data;
+						data,left_channel,right_channel;
+	short				*s_stream;
 	float				ang;
 	double				d_ang;
 	bool				has_play;
