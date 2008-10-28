@@ -31,6 +31,7 @@ and can be sold or given away.
 
 extern map_type			map;
 extern server_type		server;
+extern view_type		view;
 extern setup_type		setup;
 
 int						nlight;
@@ -172,11 +173,10 @@ void light_add(d3pnt *pnt,int light_type,int intensity,d3col *col)
       
 ======================================================= */
 
-int light_create_glsl_array(d3pnt *pnt,d3pnt *camera_pnt,float *light_pos,float *light_col,float *light_normal)
+int light_create_glsl_array(d3pnt *pnt,float *light_pos,float *light_col,float *light_normal)
 {
-	int						n,cnt,idx,light_idx[max_light_spot];
+	int						n;
 	float					*pos,*col,*normal;
-	double					dx,dy,dz,d,dist[max_light_spot];
 	d3vct					vct;
 	light_spot_type			*lspot;
 
@@ -188,84 +188,31 @@ int light_create_glsl_array(d3pnt *pnt,d3pnt *camera_pnt,float *light_pos,float 
 
 	if (nlight==0) return(0);
 
-		// need to sort the list
-
-	lspot=lspot_cache;
-
-	for (n=0;n!=nlight;n++) {
-		dx=lspot->pnt.x-pnt->x;
-		dy=lspot->pnt.y-pnt->y;
-		dz=lspot->pnt.z-pnt->z;
-		dist[n]=(dx*dx)+(dy*dy)+(dz*dz);
-
-		lspot++;
-	}
-
-	cnt=0;
-
-	while (TRUE) {
-
-		d=-1.0;
-		idx=-1;
-
-		for (n=0;n!=nlight;n++) {
-			if (dist[n]==-1) continue;
-			if (d==-1.0) {
-				idx=n;
-				d=dist[n];
-			}
-			else {
-				if (dist[n]<d) {
-					idx=n;
-					d=dist[n];
-				}
-			}
-		}
-
-		if (idx==-1) break;
-
-		light_idx[cnt]=idx;
-
-		dist[idx]=-1;
-
-		cnt++;
-		if (cnt==nlight) break;
-	}
-
-
-		// set the lights
+		// create the list
 
 	pos=light_pos;
 	col=light_col;
 	normal=light_normal;
 
+	lspot=lspot_cache;
+
 	for (n=0;n!=nlight;n++) {
-		lspot=&lspot_cache[light_idx[n]];
+		*pos++=(float)(lspot->pnt.x-view.camera.pnt.x);
+		*pos++=(float)(lspot->pnt.y-view.camera.pnt.y);
+		*pos++=(float)(view.camera.pnt.z-lspot->pnt.z);
 
-		*pos=(float)(lspot->pnt.x-camera_pnt->x);
-		pos++;
-		*pos=(float)(lspot->pnt.y-camera_pnt->y);
-		pos++;
-		*pos=(float)(camera_pnt->z-lspot->pnt.z);
-		pos++;
-
-		*col=lspot->col.r;
-		col++;
-		*col=lspot->col.g;
-		col++;
-		*col=lspot->col.b;
-		col++;
-		*col=(float)lspot->intensity;
-		col++;
+		*col++=lspot->col.r;
+		*col++=lspot->col.g;
+		*col++=lspot->col.b;
+		*col++=(float)lspot->intensity;
 
 		vector_create(&vct,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,pnt->x,pnt->y,pnt->z);
 		
-		*normal=vct.x;
-		normal++;
-		*normal=vct.y;
-		normal++;
-		*normal=vct.z;
-		normal++;
+		*normal++=vct.x;
+		*normal++=vct.y;
+		*normal++=vct.z;
+
+		lspot++;
 	}
 
 	return(nlight);

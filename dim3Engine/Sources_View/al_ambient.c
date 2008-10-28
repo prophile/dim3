@@ -111,6 +111,19 @@ void al_ambients_run(void)
 	audio_ambient_type	*ambient;
 	audio_play_type		*play;
 
+		// we need to keep a list of ambients that
+		// aren't already in play list
+
+	ambient=audio_ambients;
+
+	for (n=0;n!=audio_ambient_count;n++) {
+		ambient->hit=FALSE;
+		ambient++;
+	}
+
+		// lock list and find ambients already playing
+		// to adjust
+
 	SDL_LockAudio();
 			
 		// run through all the currently playing ambients
@@ -154,12 +167,17 @@ void al_ambients_run(void)
 			// if the ambient sound is not in our ambient
 			// list, it must have stopped so kill it
 			
-		if (!amb_ok) al_stop_source(k);
+		if (!amb_ok) play->used=FALSE;
 
 		play++;
 	}
+
+	SDL_UnlockAudio();
 	
 		// add any remaining ambients as new sounds
+		// we do this outside locks because play
+		// locks itself and we aren't going over the
+		// play list
 	
 	ambient=audio_ambients;
 
@@ -169,7 +187,5 @@ void al_ambients_run(void)
 		}
 		ambient++;
 	}
-
-	SDL_UnlockAudio();
 }
 

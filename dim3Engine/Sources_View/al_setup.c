@@ -79,6 +79,11 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 
 		has_play=TRUE;
 
+			// get the buffer and stream add
+
+		buffer=&audio_buffers[play->buffer_idx];
+		play->stream_add=play->pitch*buffer->freq_factor;
+
 			// is there positioning?
 
 		if (play->no_position) {
@@ -88,8 +93,6 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 		}
 
 			// are we within the maximum distance?
-
-		buffer=&audio_buffers[play->buffer_idx];
 
 		dist=distance_get(play->pnt.x,play->pnt.y,play->pnt.z,audio_listener_pnt.x,audio_listener_pnt.y,audio_listener_pnt.z);
 		if (dist>=buffer->max_dist) continue;
@@ -161,7 +164,7 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 					// move onto next position in stream
 					// or loop or stop sound
 
-				play->stream_pos+=play->pitch;
+				play->stream_pos+=play->stream_add;
 
 				if (play->stream_pos>=buffer->f_sample_len) {
 

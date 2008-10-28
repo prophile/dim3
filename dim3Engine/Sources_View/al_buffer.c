@@ -61,8 +61,11 @@ int al_open_buffer(char *name,char *path,int min_dist,int max_dist)
 	if (SDL_LoadWAV(path,&aspec,(Uint8**)&data,(Uint32*)&len)==NULL) return(-1);
 
 		// convert data to required format
+		// we only care about removing stereo
+		// and getting the signed short format
+		// correct, we handle frequencies in place
 
-	if (SDL_BuildAudioCVT(&acvt,aspec.format,aspec.channels,aspec.freq,audio_format,1,audio_frequency)==-1) {
+	if (SDL_BuildAudioCVT(&acvt,aspec.format,aspec.channels,aspec.freq,audio_format,1,aspec.freq)==-1) {
 		SDL_FreeWAV(data);
 		return(-1);
 	}
@@ -75,17 +78,25 @@ int al_open_buffer(char *name,char *path,int min_dist,int max_dist)
 
 	if (SDL_ConvertAudio(&acvt)==-1) return(-1);
 
+		// got good data?
+		// we need at least one short
+
+	len=(int)(((double)acvt.len)*acvt.len_ratio);
+	if (len<2) return(-1);
+
 		// setup buffer
 
 	strcpy(buffer->name,name);
 
 	buffer->data=(short*)acvt.buf;
-	buffer->len=(int)(((double)acvt.len)*acvt.len_ratio);
+	buffer->len=len;
 	buffer->sample_len=buffer->len>>1;						// size of 16 bit samples
 	buffer->f_sample_len=(float)buffer->sample_len;
 	
 	buffer->min_dist=(float)min_dist;
 	buffer->max_dist=(float)max_dist;
+
+	buffer->freq_factor=((float)aspec.freq)/((float)audio_frequency);
 
 	buffer->loaded=TRUE;
 

@@ -129,18 +129,26 @@ void al_music_stop(void)
 
 void al_music_pause(void)
 {
+	SDL_LockAudio();
+
 	if (audio_music_playing) {
 		audio_music_paused=TRUE;
 		audio_music_playing=FALSE;
 	}
+
+	SDL_UnlockAudio();
 }
 
 void al_music_resume(void)
 {
+	SDL_LockAudio();
+
 	if (audio_music_paused) {
 		audio_music_paused=FALSE;
 		audio_music_playing=TRUE;
 	}
+
+	SDL_UnlockAudio();
 }
 
 bool al_music_playing(void)
