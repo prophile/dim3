@@ -49,7 +49,7 @@ extern bool shadow_get_volume(model_draw *draw,bool in_air);
 extern bool shadow_inview(model_draw *draw);
 extern bool shadow_texture_init(void);
 extern void shadow_texture_finish(void);
-extern void shadow_texture_create(model_draw *draw);
+extern bool shadow_texture_create(model_draw *draw);
 
 extern void map_calculate_light_reduce_mesh(map_mesh_type *mesh);
 extern void map_calculate_light_reduce_liquid(map_liquid_type *liq);

@@ -33,8 +33,8 @@ and can be sold or given away.
 
 int						audio_buffer_count,
 						audio_global_sound_volume,audio_global_music_volume,
-						audio_music_buffer_idx,audio_music_stream_pos;
-float					audio_listener_ang_y;
+						audio_music_buffer_idx;
+float					audio_listener_ang_y,audio_music_stream_pos;
 bool					audio_music_playing;
 d3pnt					audio_listener_pnt;
 audio_buffer_type		audio_buffers[audio_max_buffer];
@@ -193,14 +193,16 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 		if (audio_music_playing) {
 			buffer=&audio_buffers[audio_music_buffer_idx];
 
-			data=(int)(*(buffer->data+audio_music_stream_pos));
+			pos=(int)audio_music_stream_pos;
+
+			data=(int)(*(buffer->data+pos));
 			vol=(data*audio_global_music_volume)>>10;
 
 			left_channel+=vol;
 			right_channel+=vol;
 
-			audio_music_stream_pos++;
-			if (audio_music_stream_pos>=buffer->sample_len) audio_music_stream_pos=0;
+			audio_music_stream_pos+=buffer->freq_factor;
+			if (audio_music_stream_pos>=buffer->f_sample_len) audio_music_stream_pos=audio_music_stream_pos-buffer->f_sample_len;
 		}
 
 			// fix any overflow

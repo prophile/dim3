@@ -43,6 +43,7 @@ extern view_type			view;
 extern setup_type			setup;
 
 extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf);
+extern void view_resize_current_vertex_object(int sz);
 extern void view_next_vertex_object(void);
 extern void view_bind_current_vertex_object(void);
 extern void view_unbind_current_vertex_object(void);
@@ -373,7 +374,7 @@ void particle_draw(effect_type *effect,int count)
 	nvertex=(particle->count*(particle->trail_count+1))*4;
 
 	sz=(nvertex*(3+2))*sizeof(float);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+	view_resize_current_vertex_object(sz);
 
 	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
 	if (vertex_ptr==NULL) {

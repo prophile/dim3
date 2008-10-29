@@ -37,7 +37,8 @@ char						audio_music_fade_next_name[name_str_len],audio_music_fade_next_path[10
 bool						audio_music_state_on,audio_music_paused;
 
 extern int					audio_buffer_count,audio_global_music_volume,
-							audio_music_buffer_idx,audio_music_stream_pos;
+							audio_music_buffer_idx;
+extern float				audio_music_stream_pos;
 extern bool					audio_music_playing;
 extern audio_buffer_type	audio_buffers[audio_max_buffer];
 
@@ -107,7 +108,7 @@ bool al_music_play(char *name,char *path)
 	
 		// play
 
-	audio_music_stream_pos=0;
+	audio_music_stream_pos=0.0f;
 	audio_music_paused=FALSE;
 		
 	if (audio_music_state_on) audio_music_playing=TRUE;
@@ -121,7 +122,7 @@ void al_music_stop(void)
 {
 	SDL_LockAudio();
 
-	audio_music_stream_pos=0;
+	audio_music_stream_pos=0.0f;
 	audio_music_playing=FALSE;
 
 	SDL_UnlockAudio();

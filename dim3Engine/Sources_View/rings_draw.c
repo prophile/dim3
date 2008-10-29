@@ -42,6 +42,7 @@ extern view_type			view;
 extern setup_type			setup;
 
 extern void view_next_vertex_object(void);
+extern void view_resize_current_vertex_object(int sz);
 extern void view_bind_current_vertex_object(void);
 extern void view_unbind_current_vertex_object(void);
 
@@ -154,7 +155,7 @@ void ring_draw(effect_type *effect,int count)
 	nvertex=36*4;
 
 	sz=(nvertex*(3+2))*sizeof(float);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+	view_resize_current_vertex_object(sz);
 
 	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
 	if (vertex_ptr==NULL) {

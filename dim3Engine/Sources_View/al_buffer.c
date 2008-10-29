@@ -42,7 +42,7 @@ extern audio_buffer_type	audio_buffers[audio_max_buffer];
 
 int al_open_buffer(char *name,char *path,int min_dist,int max_dist)
 {
-	int					len;
+	int					len,org_len,new_len;
 	unsigned char		*data;
 	audio_buffer_type  *buffer;
 	SDL_AudioSpec		aspec;
@@ -70,7 +70,9 @@ int al_open_buffer(char *name,char *path,int min_dist,int max_dist)
 		return(-1);
 	}
 
-	acvt.buf=valloc(len*acvt.len_mult);
+	org_len=len*acvt.len_mult;
+
+	acvt.buf=valloc(org_len);
 	acvt.len=len;
 	memcpy(acvt.buf,data,len);
 
@@ -81,15 +83,17 @@ int al_open_buffer(char *name,char *path,int min_dist,int max_dist)
 		// got good data?
 		// we need at least one short
 
-	len=(int)(((double)acvt.len)*acvt.len_ratio);
-	if (len<2) return(-1);
+	new_len=(int)(((double)acvt.len)*acvt.len_ratio);
+	if (new_len<2) return(-1);
+
+	if (new_len>org_len) new_len=org_len;		// just in case the conversion messes up
 
 		// setup buffer
 
 	strcpy(buffer->name,name);
 
 	buffer->data=(short*)acvt.buf;
-	buffer->len=len;
+	buffer->len=new_len;
 	buffer->sample_len=buffer->len>>1;						// size of 16 bit samples
 	buffer->f_sample_len=(float)buffer->sample_len;
 	

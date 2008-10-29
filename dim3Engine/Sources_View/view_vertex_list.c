@@ -35,14 +35,9 @@ extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
 
-int							map_vertex_vbo_idx;
-
-extern void view_next_vertex_object(void);
-extern void view_bind_current_vertex_object(void);
-extern void view_bind_specific_vertex_object(int vbo_cache_idx);
-extern void view_unbind_current_vertex_object(void);
-extern int view_lock_current_vertext_object(void);
-extern void view_unlock_current_vertext_object(int vbo_cache_idx);
+extern void view_resize_map_vertex_object(int sz);
+extern void view_bind_map_vertex_object(void);
+extern void view_unbind_map_vertex_object(void);
 
 /* =======================================================
 
@@ -212,10 +207,6 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 	map_mesh_poly_type					*poly;
 	map_mesh_poly_tessel_vertex_type	*lv;
 
-		// no locked vbo yet
-		
-	map_vertex_vbo_idx=-1;
-	
 		// find total number of vertexes in
 		// this seen
 
@@ -237,20 +228,16 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 	map.mesh_vertexes.draw_vertex_count=v_count;
 
-		// get next VBO to use
-
-	view_next_vertex_object();
-
 		// map VBO to memory
 
-	view_bind_current_vertex_object();
+	view_bind_map_vertex_object();
 
 	sz=(map.mesh_vertexes.draw_vertex_count*(3+2+3+3))*sizeof(float);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+	view_resize_map_vertex_object(sz);
 
 	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
 	if (vertex_ptr==NULL) {
-		view_unbind_current_vertex_object();
+		view_unbind_map_vertex_object();
 		return(FALSE);
 	}
 	
@@ -382,20 +369,9 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
 
-	view_unbind_current_vertex_object();
-	
-		// lock it so it won't be re-used until after
-		// both the oqaque and transparent parts of the map
-		// are rendered
-		
-	map_vertex_vbo_idx=view_lock_current_vertext_object();
+	view_unbind_map_vertex_object();
 	
 	return(TRUE);
-}
-
-void view_release_mesh_gl_lists(void)
-{
-	if (map_vertex_vbo_idx!=-1) view_unlock_current_vertext_object(map_vertex_vbo_idx);
 }
 
 /* =======================================================
@@ -408,7 +384,7 @@ void view_compile_gl_list_attach(void)
 {
 		// use last compiled buffer
 
-	view_bind_specific_vertex_object(map_vertex_vbo_idx);
+	view_bind_map_vertex_object();
 
 		// vertexes
 
@@ -460,5 +436,5 @@ void view_compile_gl_list_dettach(void)
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
-	view_unbind_current_vertex_object();
+	view_unbind_map_vertex_object();
 }

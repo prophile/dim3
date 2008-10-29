@@ -172,12 +172,11 @@ void view_clear_draw_in_view(model_draw *draw)
 
 void view_setup_model_in_view(model_draw *draw,bool in_air,bool is_camera,int mesh_idx)
 {
-	int					x,z,y;
-	model_type			*mdl;
+	int					x,z,y,obscure_dist;
 
 	if ((draw->uid==-1) || (!draw->on)) return;
 
-		// is the model in a mesh that's being shown?
+		// is model in a mesh that's in the mesh draw list?
 
 	if (!is_camera) {
 		if (mesh_idx!=-1) {
@@ -185,24 +184,34 @@ void view_setup_model_in_view(model_draw *draw,bool in_air,bool is_camera,int me
 		}
 	}
 	
-		// is model in view?
-		
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return;
+		// is model within obscure distance
 
+	if (!fog_solid_on()) {
+		obscure_dist=view.camera.far_z-view.camera.near_z;
+	}
+	else {
+		obscure_dist=(map.fog.outer_radius>>1)*3;
+	}
+		
 	x=draw->pnt.x;
 	y=draw->pnt.y;
 	z=draw->pnt.z;
 	
 	draw->lod_dist=distance_to_view_center(x,y,z);
+	if (draw->lod_dist>=obscure_dist) return;
 	
+		// is model in view?
+
 	if (!is_camera) {
 		draw->in_view=model_inview(draw);
 	}
 		
 		// is shadow in view
-		
+		// shadows have a shorter obscure distance
+
 	if ((setup.shadow_mode==shadow_mode_none) || (!draw->shadow.on)) return;
+
+	if (draw->lod_dist>=(obscure_dist>>2)) return;
 	
 	if (shadow_get_volume(draw,in_air)) {
 		draw->shadow.in_view=shadow_inview(draw);

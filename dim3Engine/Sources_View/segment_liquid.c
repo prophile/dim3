@@ -40,6 +40,7 @@ extern setup_type			setup;
 
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
 extern void view_next_vertex_object(void);
+extern void view_resize_current_vertex_object(int sz);
 extern void view_bind_current_vertex_object(void);
 extern void view_unbind_current_vertex_object(void);
 
@@ -100,7 +101,7 @@ bool liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
 	view_bind_current_vertex_object();
 
 	sz=(v_sz*(3+2+3))*sizeof(float);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+	view_resize_current_vertex_object(sz);
 
 	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
 	if (vertex_ptr==NULL) {

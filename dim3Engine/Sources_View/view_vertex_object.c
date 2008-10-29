@@ -37,9 +37,9 @@ extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
 
-int							cur_vbo_cache_idx;
-bool						vbo_locked[view_vertex_object_count];
-GLuint						vbo_cache[view_vertex_object_count];
+int							cur_vbo_cache_idx,
+							vbo_map_sz,vbo_cache_sz[view_vertex_object_count];
+GLuint						vbo_map,vbo_cache[view_vertex_object_count];
 
 /* =======================================================
 
@@ -49,79 +49,89 @@ GLuint						vbo_cache[view_vertex_object_count];
 
 void view_create_vertex_objects(void)
 {
-	int				n;
-	
-	cur_vbo_cache_idx=0;
+	int			n;
+
+		// map vbo
+
+	glGenBuffersARB(1,&vbo_map);
+
+		// misc vbos
+
 	glGenBuffersARB(view_vertex_object_count,vbo_cache);
-	
-		// vbos can be locked and kept out of
-		// rotation if they are used more than once
-		
+
+		// initial sizes
+		// we only remap the buffer is the size is greater
+		// while this cost us memory, we don't get the cost of
+		// reseting these buffers constantly
+
+	vbo_map_sz=-1;
+
 	for (n=0;n!=view_vertex_object_count;n++) {
-		vbo_locked[n]=FALSE;
+		vbo_cache_sz[n]=-1;
 	}
+
+		// start at first misc vbo
+
+	cur_vbo_cache_idx=0;
 }
 
 void view_dispose_vertex_objects(void)
 {
+	glDeleteBuffersARB(1,&vbo_map);
 	glDeleteBuffersARB(view_vertex_object_count,vbo_cache);
 }
 
 /* =======================================================
 
-      Use Map OpenGL Lists
+      Map Vertex Object
+      
+======================================================= */
+
+inline void view_resize_map_vertex_object(int sz)
+{
+	if (sz>vbo_map_sz) {
+		vbo_map_sz=sz;
+		glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+	}
+}
+
+inline void view_bind_map_vertex_object(void)
+{
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_map);
+}
+
+inline void view_unbind_map_vertex_object(void)
+{
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+}
+
+/* =======================================================
+
+      Model, Particle, Etc Vertexe Objects
       
 ======================================================= */
 
 inline void view_next_vertex_object(void)
 {
-	int			org_idx;
+	cur_vbo_cache_idx++;
+	if (cur_vbo_cache_idx==view_vertex_object_count) cur_vbo_cache_idx=0;
+}
 
-	org_idx=cur_vbo_cache_idx;
-
-		// based on the code, all vbos should never be
-		// locked, but just in case (some weird condition)
-		// we only loop round once
-		
-	while (TRUE) {
-
-		cur_vbo_cache_idx++;
-		if (cur_vbo_cache_idx==view_vertex_object_count) cur_vbo_cache_idx=0;
-		
-			// is it unlocked?
-
-		if (!vbo_locked[cur_vbo_cache_idx]) break;
-
-			// have we gone in a complete circle?
-
-		if (cur_vbo_cache_idx==org_idx) break;
+inline void view_resize_current_vertex_object(int sz)
+{
+	if (sz>vbo_cache_sz[cur_vbo_cache_idx]) {
+		vbo_cache_sz[cur_vbo_cache_idx]=sz;
+		glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
 	}
 }
+
 
 inline void view_bind_current_vertex_object(void)
 {
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_cache[cur_vbo_cache_idx]);
 }
 
-inline void view_bind_specific_vertex_object(int vbo_cache_idx)
-{
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_cache[vbo_cache_idx]);
-}
-
 inline void view_unbind_current_vertex_object(void)
 {
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 }
-
-inline int view_lock_current_vertext_object(void)
-{
-	vbo_locked[cur_vbo_cache_idx]=TRUE;
-	return(cur_vbo_cache_idx);
-}
-
-inline void view_unlock_current_vertext_object(int vbo_cache_idx)
-{
-	vbo_locked[vbo_cache_idx]=FALSE;
-}
-
-

@@ -317,7 +317,7 @@ void shadow_texture_finish(void)
       
 ======================================================= */
 
-void shadow_texture_create(model_draw *draw)
+bool shadow_texture_create(model_draw *draw)
 {
 	int					x_org,y_org,slice_pixel_size;
 	model_type			*mdl;
@@ -329,12 +329,12 @@ void shadow_texture_create(model_draw *draw)
 	shadow=&draw->shadow;
 	shadow->texture_idx=-1;
 	
-	if (shadow_texture_count==(shadow_pbuffer_slice_count*shadow_pbuffer_slice_count)) return;
+	if (shadow_texture_count==(shadow_pbuffer_slice_count*shadow_pbuffer_slice_count)) return(FALSE);
 	
 		// get model
 	
 	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return;
+	if (mdl==NULL) return(FALSE);
 	
 		// shadow texture index and slices
 		// shadows are all drawn on a single pbuffer, split into slices
@@ -383,6 +383,8 @@ void shadow_texture_create(model_draw *draw)
 	shd_draw.setup.ang.z=0;
 
 	model_render_shadow(&shd_draw,shadow_pbuffer_gl_transform_size,shadow->texture_idx);
+
+	return(TRUE);
 }
 
 

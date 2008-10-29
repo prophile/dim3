@@ -53,6 +53,7 @@ float						font_char_size[90];
 bitmap_type					font_bitmap;
 
 extern void view_next_vertex_object(void);
+extern void view_resize_current_vertex_object(int sz);
 extern void view_bind_current_vertex_object(void);
 extern void view_unbind_current_vertex_object(void);
 
@@ -399,7 +400,7 @@ void gl_text_draw_line(int x,int y,char *txt,int txtlen,bool vcenter)
 	view_bind_current_vertex_object();
 
 	sz=((txtlen*4)*(2+2))*sizeof(float);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+	view_resize_current_vertex_object(sz);
 
 	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
 	if (vertex_ptr==NULL) {
