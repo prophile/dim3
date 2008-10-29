@@ -53,7 +53,7 @@ void object_liquid_contact(obj_type *obj)
 
 	sz=obj->size.x>>1;
 	lft=obj->pnt.x-sz;
-	rgt=obj->pnt.z+sz;
+	rgt=obj->pnt.x+sz;
 
 	sz=obj->size.z>>1;
 	top=obj->pnt.z-sz;

@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
+int	test_cnt=0,simple_cnt=0;
 /* =======================================================
 
       Find UV within Vertex List
@@ -223,6 +224,7 @@ void map_portal_add_light_xy_tessel_vertex_list(map_mesh_type *mesh,map_mesh_pol
 
 	light->nvertex=vl_cnt;
 	light->ntrig=ntrig;
+	test_cnt+=ntrig;
 }
 
 void map_portal_add_light_xz_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly)
@@ -357,6 +359,8 @@ void map_portal_add_light_xz_tessel_vertex_list(map_mesh_type *mesh,map_mesh_pol
 
 	light->nvertex=vl_cnt;
 	light->ntrig=ntrig;
+	
+	test_cnt+=ntrig;
 }
 
 void map_portal_add_light_yz_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly)
@@ -491,6 +495,7 @@ void map_portal_add_light_yz_tessel_vertex_list(map_mesh_type *mesh,map_mesh_pol
 
 	light->nvertex=vl_cnt;
 	light->ntrig=ntrig;
+	test_cnt+=ntrig;
 }
 
 void map_portal_add_light_simple_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly)
@@ -533,6 +538,8 @@ void map_portal_add_light_simple_vertex_list(map_mesh_type *mesh,map_mesh_poly_t
 	}
 
 	light->ntrig=ntrig;
+	
+	simple_cnt++;
 }
 
 /* =======================================================
@@ -659,6 +666,8 @@ bool map_create_mesh_vertexes(map_type *map)
 		
 		mesh++;
 	}
+	
+	fprintf(stdout,"trig count = %d; simple count = %d\n",test_cnt,simple_cnt);		// supergumba -- testing
 
 	return(TRUE);
 }

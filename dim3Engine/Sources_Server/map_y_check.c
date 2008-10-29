@@ -329,18 +329,28 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 
 bool map_stand_crush_object(obj_type *obj)
 {
-	int					sy,fudge;
+	int					fudge;
 	poly_pointer_type	poly;
 
-		// crushing fudge (only check middle 1/2 of object)
+		// pick a crushing fudge, reduce size and
+		// see if you can move up that far
 
-	fudge=obj->size.y>>2;
-	sy=obj->size.y-(fudge<<1);
+	fudge=obj->size.y>>3;
 
-		// possible to move up?
-
-	pin_upward_movement_complex(obj,-sy,&poly);
-	return(poly.mesh_idx!=-1);
+	obj->size.y-=fudge;
+	pin_upward_movement_complex(obj,-fudge,&poly);
+	obj->size.y+=fudge;
+	
+	if (poly.mesh_idx==-1) return(FALSE);
+	
+		// if we can, go into auto duck before crushing
+		// if already in duck, crush
+		
+	if (obj->duck.mode==dm_duck) return(TRUE);
+	
+	object_start_duck(obj);
+	
+	return(FALSE);
 }
 
 /* =======================================================

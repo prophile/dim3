@@ -73,7 +73,7 @@ int collide_point_distance(d3pnt *pt_1,d3pnt *pt_2)
 
 void collide_object_ray_trace_points(obj_type *obj,int x_add,int z_add,int *px,int *py,int *pz)
 {
-	int			x,z,x_sz,z_sz,
+	int			x,z,x_sz,z_sz,ty,by,y_sz,
 				move_side,face_side,side;
 	float		move_ang,face_ang;
 
@@ -142,12 +142,19 @@ void collide_object_ray_trace_points(obj_type *obj,int x_add,int z_add,int *px,i
 	rotate_2D_polygon(15,px,pz,x,z,face_ang);
 
 		// setup Ys
+		
+	ty=obj->pnt.y-obj->size.y;
+	if (obj->duck.mode!=dm_stand) ty+=obj->duck.y_move;
+	
+	by=obj->pnt.y;
+	
+	y_sz=(by-ty)>>2;
 
-	py[0]=py[1]=py[2]=(obj->pnt.y-obj->size.y)+(map_enlarge>>1);
-	py[3]=py[4]=py[5]=(obj->pnt.y-obj->size.y)+(obj->size.y>>2);
-	py[6]=py[7]=py[8]=obj->pnt.y-(obj->size.y>>1);
-	py[9]=py[10]=py[11]=obj->pnt.y-(obj->size.y>>2);
-	py[12]=py[13]=py[14]=obj->pnt.y-(map_enlarge>>1);
+	py[0]=py[1]=py[2]=ty;
+	py[3]=py[4]=py[5]=ty+y_sz;
+	py[6]=py[7]=py[8]=(ty+by)>>1;
+	py[9]=py[10]=py[11]=by-y_sz;
+	py[12]=py[13]=py[14]=by-(map_enlarge>>1);
 }
 
 bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
