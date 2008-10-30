@@ -246,7 +246,7 @@ bool map_start(bool skip_media,char *err_str)
 
 	progress_draw(30);
 
-	if (!map_create_vertex_lists(&map)) {
+	if (!map_create_vertex_lists(&map,setup.quality_mode)) {
 		progress_shutdown();
 		strcpy(err_str,"Out of memory");
 		return(FALSE);

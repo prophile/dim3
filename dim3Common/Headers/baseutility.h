@@ -406,6 +406,17 @@ extern bool xml_add_attribute_bit_array(char *name,unsigned char *value,int coun
 #define mipmap_mode_setup_list_def				{"None","Bilinear","Trilinear",""}
 
 //
+// quality modes
+//
+
+#define quality_mode_low						0
+#define quality_mode_medium						1
+#define quality_mode_high						2
+#define quality_mode_super						3
+
+#define quality_mode_setup_list_def				{"Low","Medium","High","Super",""}
+
+//
 // bump modes
 //
 

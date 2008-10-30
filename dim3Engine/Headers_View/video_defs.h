@@ -72,10 +72,17 @@ typedef struct		{
 					} render_info_type;
 
 //
-// Fonts
+// fonts
 //
 
 #define tx_left									0
 #define tx_center								1
 #define tx_right								2
 
+//
+// hilite modes
+//
+
+#define hilite_mode_off							0
+#define hilite_mode_hilite						1
+#define hilite_mode_mesh						2

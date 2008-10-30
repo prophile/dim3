@@ -34,7 +34,7 @@ and can be sold or given away.
 #include "lights.h"
 #include "video.h"
 
-extern bool				hilite_on;
+extern int				hilite_mode;
 
 extern map_type			map;
 extern server_type		server;
@@ -363,7 +363,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw,bool 
 			// bump mapping
 			// need to switch to normal array for bumping
 
-		if ((setup.bump_mapping) && (texture->bumpmaps[frame].gl_id!=-1)) {
+		if (texture->bumpmaps[frame].gl_id!=-1) {
 
 			nvertex=trig_count*3;
 
@@ -389,7 +389,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw,bool 
 			glColorPointer(3,GL_FLOAT,0,(void*)((nvertex*(3+2))*sizeof(float)));
 		}
 
-		if ((!hilite_on) && (!is_fog_lighting)) {
+		if ((hilite_mode==hilite_mode_off) && (!is_fog_lighting)) {
 
 				// lighting
 
@@ -412,7 +412,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw,bool 
 			
 				// specular
 			
-			if ((setup.specular_mapping) && (texture->specularmaps[frame].gl_id!=-1)) {
+			if (texture->specularmaps[frame].gl_id!=-1) {
 
 				glBlendFunc(GL_ONE,GL_ONE);
 
@@ -427,7 +427,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw,bool 
 
 			// glow mapped textures
 
-		if ((setup.glow_mapping) && (texture->glowmaps[frame].gl_id!=-1)) {
+		if (texture->glowmaps[frame].gl_id!=-1) {
 			
 			glDisable(GL_BLEND);
 
@@ -581,7 +581,7 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 
 			// specular mapped textures
 
-		if ((setup.specular_mapping) && (texture->specularmaps[frame].gl_id!=-1)) {
+		if (texture->specularmaps[frame].gl_id!=-1) {
 			
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_DST_COLOR,GL_ONE);
@@ -602,7 +602,7 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 
 			// glow mapped textures
 
-		if ((setup.glow_mapping) && (texture->glowmaps[frame].gl_id!=-1)) {
+		if (texture->glowmaps[frame].gl_id!=-1) {
 
 			
 			glEnable(GL_BLEND);

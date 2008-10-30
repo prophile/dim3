@@ -35,29 +35,20 @@ and can be sold or given away.
 #include "sounds.h"
 #include "inputs.h"
 
-#define setup_pane_display					0
-#define setup_pane_graphics					1
-#define setup_pane_audio					2
-#define setup_pane_mouse					3
-#define setup_pane_action					4
-#define setup_pane_network					5
+#define setup_pane_video					0
+#define setup_pane_audio					1
+#define setup_pane_mouse					2
+#define setup_pane_action					3
+#define setup_pane_network					4
 
 #define ctrl_screen_size_id					0
 #define ctrl_fsaa_id						1
 #define ctrl_lock_fps_refresh_id			2
-#define ctrl_anisotropic_id					3
+#define ctrl_quality_id						3
+#define ctrl_anisotropic_id					4
 #define ctrl_mipmap_id						5
 #define ctrl_compression_id					6
-
-#define ctrl_bumpmapping_id					10
-#define ctrl_gamma_id						11
-#define ctrl_diffuselighting_id				12
-#define ctrl_raytracelighting_id			13
-#define ctrl_specularmapping_id				14
-#define ctrl_glowmapping_id					15
-#define ctrl_halo_id						16
-#define ctrl_mark_id						17
-#define ctrl_shadow_id						18
+#define ctrl_gamma_id						7
 
 #define ctrl_sound_volume_id				30
 #define ctrl_music_on_id					31
@@ -107,7 +98,7 @@ char						setup_screen_size_list[max_screen_size][32],
 							setup_anisotropic_mode_list[][32]=anisotropic_mode_setup_list_def,
 							setup_mipmap_mode_list[][32]=mipmap_mode_setup_list_def,
 							setup_fsaa_mode_list[][32]=setup_fsaa_mode_list_def,
-							setup_shadow_mode_list[][32]=setup_shadow_mode_list_def,
+							setup_quality_mode_list[][32]=quality_mode_setup_list_def,
 							setup_joystick_mode_list[][32]=setup_joystick_mode_list_def,
 							setup_control_names[][32]=control_names,
 							setup_action_list[ncontrol+1][128];
@@ -124,14 +115,14 @@ action_display_type			action_display[ncontrol];
       
 ======================================================= */
 
-void setup_game_display_pane(void)
+void setup_game_video_pane(void)
 {
 	int			n,idx,wid,high,
 				x,y,control_y_add,separate_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
 	separate_y_add=element_get_separator_high();
-	control_y_sz=(control_y_add*5)+separate_y_add;
+	control_y_sz=(control_y_add*8)+(separate_y_add*3);
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
@@ -158,7 +149,10 @@ void setup_game_display_pane(void)
 	y+=control_y_add;
 	element_checkbox_add("Lock FPS to Refresh Rate",setup.lock_fps_refresh,ctrl_lock_fps_refresh_id,x,y,TRUE);
 	y+=control_y_add+separate_y_add;
-	
+
+	element_combo_add("Quality:",(char*)setup_quality_mode_list,setup.quality_mode,ctrl_quality_id,x,y,TRUE);
+	y+=control_y_add+separate_y_add;
+
 	element_combo_add("Anisotropic Filtering",(char*)setup_anisotropic_mode_list,setup.anisotropic_mode,ctrl_anisotropic_id,x,y,TRUE);
 	element_enable(ctrl_anisotropic_id,gl_check_texture_anisotropic_filter_ok());
 	y+=control_y_add;
@@ -166,42 +160,9 @@ void setup_game_display_pane(void)
 	element_enable(ctrl_compression_id,gl_check_texture_compress_ok());
 	y+=control_y_add;
 	element_combo_add("MipMap Filtering",(char*)setup_mipmap_mode_list,setup.mipmap_mode,ctrl_mipmap_id,x,y,TRUE);
-}
+	y+=control_y_add+separate_y_add;
 
-void setup_game_graphics_pane(void)
-{
-	int			x,y,control_y_add,separate_y_add,control_y_sz;
-	
-	control_y_add=element_get_control_high();
-	separate_y_add=element_get_separator_high();
-	control_y_sz=(control_y_add*8)+(2*separate_y_add);
-	
-	x=(int)(((float)hud.scale_x)*0.4f);
-	y=(hud.scale_y>>1)-(control_y_sz>>1);
-	
-	element_checkbox_add("Diffuse Lighting",setup.diffuse_lighting,ctrl_diffuselighting_id,x,y,TRUE);
-	y+=control_y_add;
-	element_checkbox_add("Ray-Trace Lighting",setup.ray_trace_lighting,ctrl_raytracelighting_id,x,y,TRUE);
-	y+=control_y_add;
 	element_slider_add("Gamma",setup.gamma,-0.5f,0.5f,ctrl_gamma_id,x,y,TRUE);
-	y+=control_y_add+separate_y_add;
-
-	element_checkbox_add("Bump Mapping",setup.bump_mapping,ctrl_bumpmapping_id,x,y,TRUE);
-	element_enable(ctrl_bumpmapping_id,gl_check_bump_ok());
-	y+=control_y_add;
-	element_checkbox_add("Specular Mapping",setup.specular_mapping,ctrl_specularmapping_id,x,y,TRUE);
-	element_enable(ctrl_specularmapping_id,gl_check_specular_ok());
-	y+=control_y_add;
-	element_checkbox_add("Glow Mapping",setup.glow_mapping,ctrl_glowmapping_id,x,y,TRUE);
-	element_enable(ctrl_glowmapping_id,gl_check_glow_ok());
-	y+=control_y_add;
-	element_checkbox_add("Halos",setup.halo,ctrl_halo_id,x,y,TRUE);
-	y+=control_y_add;
-	element_checkbox_add("Decals",setup.mark,ctrl_mark_id,x,y,TRUE);
-	y+=control_y_add+separate_y_add;
-
-	element_combo_add("Shadows",(char*)setup_shadow_mode_list,setup.shadow_mode,ctrl_shadow_id,x,y,TRUE);
-	element_enable(ctrl_shadow_id,gl_check_frame_buffer_ok());
 }
 
 void setup_game_audio_pane(void)
@@ -338,7 +299,7 @@ void setup_game_create_pane(void)
 {
 	int			x,y,wid,high,yadd,padding,
 				tab_list_wid,tab_pane_high,ntab,stab,pane;
-	char		tab_list[][name_str_len]={"Display","Graphics","Audio","Mouse","Actions"};
+	char		tab_list[][name_str_len]={"Video","Audio","Control","Actions"};
 							
 	element_clear();
 	
@@ -346,11 +307,11 @@ void setup_game_create_pane(void)
 		
 	if (!setup_in_game) {
 		stab=0;
-		ntab=5;
+		ntab=4;
 	}
 	else {
 		stab=1;
-		ntab=4;
+		ntab=3;
 	}
 	
 	padding=element_get_padding();
@@ -388,11 +349,8 @@ void setup_game_create_pane(void)
 	if (setup_in_game) pane++;
 		
 	switch (pane) {
-		case setup_pane_display:
-			setup_game_display_pane();
-			break;
-		case setup_pane_graphics:
-			setup_game_graphics_pane();
+		case setup_pane_video:
+			setup_game_video_pane();
 			break;
 		case setup_pane_audio:
 			setup_game_audio_pane();
@@ -597,9 +555,9 @@ void setup_game_save_close(void)
 		// need shadow reset?
 		
 	if (setup_in_game) {
-		if (setup_backup.shadow_mode!=setup.shadow_mode) {
+		if (setup_backup.quality_mode!=setup.quality_mode) {
 			gl_shadow_shutdown();
-			gl_shadow_initialize(setup.shadow_mode,err_str);
+			gl_shadow_initialize(err_str);
 		}
 	}
 	
@@ -711,7 +669,7 @@ void setup_game_handle_click(int id)
 			element_set_scroll_position(ctrl_action_id,setup_action_scroll_pos);
 			return;
 	
-			// graphics pane
+			// video pane
 			
 		case ctrl_screen_size_id:
 			idx=element_get_value(ctrl_screen_size_id);
@@ -727,6 +685,10 @@ void setup_game_handle_click(int id)
 			setup.texture_compression=element_get_value(ctrl_compression_id);
 			break;
 			
+		case ctrl_quality_id:
+			setup.quality_mode=element_get_value(ctrl_quality_id);
+			break;
+
 		case ctrl_anisotropic_id:
 			setup.anisotropic_mode=element_get_value(ctrl_anisotropic_id);
 			break;
@@ -739,40 +701,8 @@ void setup_game_handle_click(int id)
 			setup.fsaa_mode=element_get_value(ctrl_fsaa_id);
 			break;
 
-		case ctrl_bumpmapping_id:
-			setup.bump_mapping=element_get_value(ctrl_bumpmapping_id);
-			break;
-			
 		case ctrl_gamma_id:
 			setup.gamma=element_get_slider_value(ctrl_gamma_id);
-			break;
-
-		case ctrl_diffuselighting_id:
-			setup.diffuse_lighting=element_get_value(ctrl_diffuselighting_id);
-			break;
-			
-		case ctrl_raytracelighting_id:
-			setup.ray_trace_lighting=element_get_value(ctrl_raytracelighting_id);
-			break;
-			
-		case ctrl_specularmapping_id:
-			setup.specular_mapping=element_get_value(ctrl_specularmapping_id);
-			break;
-
-		case ctrl_glowmapping_id:
-			setup.glow_mapping=element_get_value(ctrl_glowmapping_id);
-			break;
-			
-		case ctrl_halo_id:
-			setup.halo=element_get_value(ctrl_halo_id);
-			break;
-			
-		case ctrl_mark_id:
-			setup.mark=element_get_value(ctrl_mark_id);
-			break;
-			
-		case ctrl_shadow_id:
-			setup.shadow_mode=element_get_value(ctrl_shadow_id);
 			break;
 			
 			// audio pane

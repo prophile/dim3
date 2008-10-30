@@ -33,7 +33,7 @@ and can be sold or given away.
 #include "consoles.h"
 #include "video.h"
 
-extern bool				hilite_on;
+extern int				hilite_mode;
 
 extern map_type			map;
 extern server_type		server;
@@ -162,7 +162,7 @@ void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool
 			// hilited, then we need to clear the stencil
 			// here as there will be no lighting pass
 
-		if ((mesh->flag.hilite) || (hilite_on) || (is_fog_lighting)) {
+		if ((mesh->flag.hilite) || (hilite_mode==hilite_mode_hilite) || (is_fog_lighting)) {
 			glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
 		}
 		else {
@@ -277,7 +277,7 @@ void render_opaque_portal_lighting(int mesh_cnt,int *mesh_list,int stencil_pass)
 			
 				// if no specular pass, then clear stencil here
 				
-			if ((setup.specular_mapping) && (texture->specularmaps[frame].gl_id!=-1)) {
+			if (texture->specularmaps[frame].gl_id!=-1) {
 				glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
 			}
 			else {
@@ -298,6 +298,75 @@ void render_opaque_portal_lighting(int mesh_cnt,int *mesh_list,int stencil_pass)
 		// end drawing
 
 	gl_texture_tesseled_lighting_end();
+}
+
+void render_opaque_portal_lighting_mesh_debug(int mesh_cnt,int *mesh_list,int stencil_pass)
+{
+	int					n,k,frame;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	texture_type		*texture;
+
+		// setup drawing
+
+	glDisable(GL_BLEND);
+	
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_ALPHA_TEST);
+
+	glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
+
+	glColor4f(1.0f,1.0f,1.0f,.1.0f);
+
+	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+
+		// run through the meshes
+
+	for (n=0;n!=mesh_cnt;n++) {
+
+		mesh=&map.mesh.meshes[mesh_list[n]];
+
+			// skip hilited polygons
+
+		if (mesh->flag.hilite) continue;
+
+			// run through the polys
+
+		poly=mesh->polys;
+
+		for (k=0;k!=mesh->npoly;k++) {
+
+				// in stencil pass?
+
+			if (poly->draw.stencil_pass!=stencil_pass) {
+				poly++;
+				continue;
+			}
+
+				// get texture
+
+			texture=&map.textures[poly->txt_idx];
+			if (texture->shader.on) {
+				poly++;
+				continue;
+			}
+
+			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+
+				// draw lighting
+
+			gl_texture_tesseled_lighting_set(-1,poly->dark_factor);
+			glStencilFunc(GL_EQUAL,poly->draw.stencil_idx,0xFF);
+
+			glDrawElements(GL_TRIANGLES,(poly->light.ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_draw_idx);
+
+			poly++;
+		}
+	}
+
+		// end drawing
+
+	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 }
 
 void render_opaque_portal_lighting_fix(int mesh_cnt,int *mesh_list,int stencil_pass)
@@ -360,6 +429,12 @@ void render_opaque_portal_lighting_fix(int mesh_cnt,int *mesh_list,int stencil_p
 
 	gl_texture_tesseled_lighting_end();
 }
+
+/* =======================================================
+
+      Opaque Map Speculars
+      
+======================================================= */
 
 void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass)
 {
@@ -694,12 +769,31 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 	for (stencil_pass=0;stencil_pass<=stencil_pass_cnt;stencil_pass++) {
 		
 		render_opaque_portal_normal(mesh_cnt,mesh_list,stencil_pass,is_fog_lighting);
-		if (setup.bump_mapping) render_opaque_portal_bump(mesh_cnt,mesh_list,stencil_pass,is_fog_lighting);
+		render_opaque_portal_bump(mesh_cnt,mesh_list,stencil_pass,is_fog_lighting);
 
-		if ((!hilite_on) && (!is_fog_lighting)) {
-			render_opaque_portal_lighting(mesh_cnt,mesh_list,stencil_pass);
-			if (setup.specular_mapping) render_opaque_portal_specular(mesh_cnt,mesh_list,stencil_pass);
-			render_opaque_portal_lighting_fix(mesh_cnt,mesh_list,stencil_pass);
+		if (!is_fog_lighting) {
+			
+			switch (hilite_mode) {
+
+				case hilite_mode_off:
+					render_opaque_portal_lighting(mesh_cnt,mesh_list,stencil_pass);
+					render_opaque_portal_specular(mesh_cnt,mesh_list,stencil_pass);
+					render_opaque_portal_lighting_fix(mesh_cnt,mesh_list,stencil_pass);
+					break;
+
+				case hilite_mode_hilite:
+					render_opaque_portal_lighting(mesh_cnt,mesh_list,stencil_pass);
+					render_opaque_portal_specular(mesh_cnt,mesh_list,stencil_pass);
+					render_opaque_portal_lighting_fix(mesh_cnt,mesh_list,stencil_pass);
+					break;
+
+				case hilite_mode_mesh:
+					render_opaque_portal_lighting_mesh_debug(mesh_cnt,mesh_list,stencil_pass);
+					glClear(GL_STENCIL_BUFFER_BIT);		// need to clear stencil since mesh lighting isn't drawing
+					break;
+
+			}
+
 		}
 	}
 

@@ -69,59 +69,19 @@ void map_portal_vertex_list_find_uv(int ptsz,int *x,int *y,float *gx,float *gy,i
 		// find new UV
 
 	if (rx==lx) {
-		*p_gx=0.0f;
+		*p_gx=lgx;
 	}
 	else {
 		*p_gx=lgx+((rgx-lgx)*((float)(kx-lx)/(float)(rx-lx)));
 	}
 
 	if (by==ty) {
-		*p_gy=0.0f;
+		*p_gy=tgy;
 	}
 	else {
 		*p_gy=tgy+((bgy-tgy)*((float)(ky-ty)/(float)(by-ty)));
 	}
 
-}
-
-
-int map_portal_vertex_list_find_missing_axis(int ptsz,int *x,int *y,int *z,int kx,int kz)
-{
-	int				n,ky,lx,rx,tz,bz,ly,ry,ty,by;
-
-		// find axis extents
-
-	lx=rx=x[0];
-	ty=by=y[0];
-	tz=bz=z[0];
-
-	for (n=1;n<ptsz;n++) {
-		if (x[n]<lx) {
-			lx=x[n];
-			ly=y[n];
-		}
-		if (x[n]>rx) {
-			rx=x[n];
-			ry=y[n];
-		}
-		if (z[n]<tz) {
-			tz=z[n];
-			ty=y[n];
-		}
-		if (z[n]>bz) {
-			bz=z[n];
-			by=y[n];
-		}
-	}
-
-		// find missing axis
-		
-	if ((rx==lx) || (tz==bz)) return(y[0]);
-	
-	ky=ly+(((ry-ly)*(kx-lx))/(rx-lx));
-	ky+=ty+(((by-ty)*(kz-tz))/(bz-tz));
-	
-	return(ky>>1);
 }
 
 /* =======================================================
@@ -130,11 +90,11 @@ int map_portal_vertex_list_find_missing_axis(int ptsz,int *x,int *y,int *z,int k
       
 ======================================================= */
 
-void map_portal_add_light_xy_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly)
+void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int grid_split_sz)
 {
-	int									n,vl_cnt,x,y,z,ptsz,px[8],py[8],pz[8],
-										xdist,ydist,xtot,ytot,xskip,yskip,ntrig;
-	int									grid_x[light_tessel_grid_sz+1],
+	int									n,vl_cnt,x,y,ptsz,px[8],py[8],pz[8],
+										xzdist,xdist,ydist,zdist,xztot,ytot,xskip,yskip,zskip,ntrig;
+	int									grid_x[light_tessel_grid_sz+1],grid_z[light_tessel_grid_sz+1],
 										grid_y[light_tessel_grid_sz+1],
 										idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
 	float								p_gx,p_gy;
@@ -147,33 +107,39 @@ void map_portal_add_light_xy_tessel_vertex_list(map_mesh_type *mesh,map_mesh_pol
 
 		// get tessel size, possible total of 64 triangles, 8 grid spots (max)
 
-	xdist=poly->box.max.x-poly->box.min.x;
+	xdist=poly->line.rx-poly->line.lx;
 	ydist=poly->box.max.y-poly->box.min.y;
+	zdist=poly->line.rz-poly->line.lz;
 
-	xtot=(xdist*light_tessel_grid_sz)/light_tessel_max_size;
-	if (xtot>light_tessel_grid_sz) xtot=light_tessel_grid_sz;
-	if (xtot<=0) xtot=1;
+	xzdist=(int)sqrt((double)(xdist*xdist)+(double)(zdist*zdist));
+	xztot=xzdist/grid_split_sz;
+	if (xztot<=0) xztot=1;
+	if (xztot>light_tessel_grid_sz) xztot=light_tessel_grid_sz;
 
-	ytot=(ydist*light_tessel_grid_sz)/light_tessel_max_size;
-	if (ytot>light_tessel_grid_sz) ytot=light_tessel_grid_sz;
+	ytot=ydist/grid_split_sz;
 	if (ytot<=0) ytot=1;
+	if (ytot>light_tessel_grid_sz) ytot=light_tessel_grid_sz;
 
-	xskip=xdist/xtot;
+	xskip=xdist/xztot;
+	zskip=zdist/xztot;
 	yskip=ydist/ytot;
 
 		// create the grid overlay
 
-	for (x=0;x<=xtot;x++) {
+	for (x=0;x<=xztot;x++) {
 	
 		if (x==0) {
-			grid_x[x]=poly->box.min.x-light_tessel_overlap_pixel;
+			grid_x[x]=poly->line.lx-light_tessel_overlap_pixel;
+			grid_z[x]=poly->line.lz-light_tessel_overlap_pixel;
 		}
 		else {
-			if (x==xtot) {
-				grid_x[x]=poly->box.max.x+light_tessel_overlap_pixel;
+			if (x==xztot) {
+				grid_x[x]=poly->line.rx+light_tessel_overlap_pixel;
+				grid_z[x]=poly->line.rz+light_tessel_overlap_pixel;
 			}
 			else {
-				grid_x[x]=poly->box.min.x+(x*xskip);
+				grid_x[x]=poly->line.lx+(x*xskip);
+				grid_z[x]=poly->line.lz+(x*zskip);
 			}
 		}
 	}
@@ -207,16 +173,14 @@ void map_portal_add_light_xy_tessel_vertex_list(map_mesh_type *mesh,map_mesh_pol
 	vl_cnt=0;
 
 	for (y=0;y<=ytot;y++) {
-		for (x=0;x<=xtot;x++) {
+		for (x=0;x<=xztot;x++) {
 
-			z=polygon_find_y(ptsz,px,pz,py,grid_x[x],grid_y[y]);
-			if (z==-1) z=polygon_infinite_find_y(ptsz,px,pz,py,grid_x[x],grid_y[y]);
-
-			map_portal_vertex_list_find_uv(ptsz,px,py,poly->gx,poly->gy,grid_x[x],grid_y[y],&p_gx,&p_gy);
+		//	map_portal_vertex_list_find_wall_uv(ptsz,px,py,pz,poly->gx,poly->gy,grid_x[x],grid_y[y],grid_z[x],&p_gx,&p_gy);
+			p_gx=p_gy=0.0f;
 
 			vl->x=grid_x[x];
 			vl->y=grid_y[y];
-			vl->z=z;
+			vl->z=grid_z[x];
 			vl->gx=p_gx;
 			vl->gy=p_gy;
 
@@ -233,7 +197,7 @@ void map_portal_add_light_xy_tessel_vertex_list(map_mesh_type *mesh,map_mesh_pol
 
 	for (y=0;y!=ytot;y++) {
 		
-		for (x=0;x!=xtot;x++) {
+		for (x=0;x!=xztot;x++) {
 		
 			if (((y+x)&0x1)==0) {
 				light->trig_vertex_idx[(ntrig*3)]=idx[x][y];
@@ -265,7 +229,7 @@ void map_portal_add_light_xy_tessel_vertex_list(map_mesh_type *mesh,map_mesh_pol
 	light->ntrig=ntrig;
 }
 
-void map_portal_add_light_xz_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly)
+void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int grid_split_sz)
 {
 	int									n,vl_cnt,x,y,z,ptsz,px[8],py[8],pz[8],
 										xdist,zdist,xtot,ztot,xskip,zskip,ntrig;
@@ -285,11 +249,11 @@ void map_portal_add_light_xz_tessel_vertex_list(map_mesh_type *mesh,map_mesh_pol
 	xdist=poly->box.max.x-poly->box.min.x;
 	zdist=poly->box.max.z-poly->box.min.z;
 
-	xtot=(xdist*light_tessel_grid_sz)/light_tessel_max_size;
+	xtot=xdist/grid_split_sz;
 	if (xtot>light_tessel_grid_sz) xtot=light_tessel_grid_sz;
 	if (xtot<=0) xtot=1;
 
-	ztot=(zdist*light_tessel_grid_sz)/light_tessel_max_size;
+	ztot=zdist/grid_split_sz;
 	if (ztot>light_tessel_grid_sz) ztot=light_tessel_grid_sz;
 	if (ztot<=0) ztot=1;
 
@@ -399,143 +363,6 @@ void map_portal_add_light_xz_tessel_vertex_list(map_mesh_type *mesh,map_mesh_pol
 	light->ntrig=ntrig;
 }
 
-void map_portal_add_light_yz_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly)
-{
-	int									n,vl_cnt,x,y,z,ptsz,px[8],py[8],pz[8],
-										zdist,ydist,ztot,ytot,zskip,yskip,ntrig;
-	int									grid_z[light_tessel_grid_sz+1],
-										grid_y[light_tessel_grid_sz+1],
-										idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
-	float								p_gx,p_gy;
-	d3pnt								*pt;
-	map_mesh_poly_light_type			*light;
-	map_mesh_poly_tessel_vertex_type	*vl;
-
-	light=&poly->light;
-	vl=light->vertexes;
-
-		// get tessel size, possible total of 64 triangles, 8 grid spots (max)
-
-	zdist=poly->box.max.z-poly->box.min.z;
-	ydist=poly->box.max.y-poly->box.min.y;
-
-	ztot=(zdist*light_tessel_grid_sz)/light_tessel_max_size;
-	if (ztot>light_tessel_grid_sz) ztot=light_tessel_grid_sz;
-	if (ztot<=0) ztot=1;
-
-	ytot=(ydist*light_tessel_grid_sz)/light_tessel_max_size;
-	if (ytot>light_tessel_grid_sz) ytot=light_tessel_grid_sz;
-	if (ytot<=0) ytot=1;
-
-	zskip=zdist/ztot;
-	yskip=ydist/ytot;
-
-		// create the grid overlay
-
-	for (z=0;z<=ztot;z++) {
-		if (z==0) {
-			grid_z[z]=poly->box.min.z-light_tessel_overlap_pixel;
-		}
-		else {
-			if (z==ztot) {
-				grid_z[z]=poly->box.max.z+light_tessel_overlap_pixel;
-			}
-			else {
-				grid_z[z]=poly->box.min.z+(z*zskip);
-			}
-		}
-	}
-
-	for (y=0;y<=ytot;y++) {
-	
-		if (y==0) {
-			grid_y[y]=poly->box.min.y-light_tessel_overlap_pixel;
-		}
-		else {
-			if (y==ytot) {
-				grid_y[y]=poly->box.max.y+light_tessel_overlap_pixel;
-			}
-			else {
-				grid_y[y]=poly->box.min.y+(y*yskip);
-			}
-		}
-	}
-
-		// get vertexes for grid
-
-	ptsz=poly->ptsz;
-
-	for (n=0;n!=ptsz;n++) {
-		pt=&mesh->vertexes[poly->v[n]];
-		px[n]=pt->x;
-		py[n]=pt->y;
-		pz[n]=pt->z;
-	}
-
-	vl_cnt=0;
-
-	for (y=0;y<=ytot;y++) {
-		for (z=0;z<=ztot;z++) {
-
-			x=polygon_find_y(ptsz,pz,px,py,grid_z[z],grid_y[y]);
-			if (x==-1) x=polygon_infinite_find_y(ptsz,pz,px,py,grid_z[z],grid_y[y]);
-			
-			// supergumba -- fix these problems
-			x=map_portal_vertex_list_find_missing_axis(ptsz,pz,px,py,grid_z[z],grid_y[y]);
-
-			map_portal_vertex_list_find_uv(ptsz,pz,py,poly->gx,poly->gy,grid_z[z],grid_y[y],&p_gx,&p_gy);
-
-			vl->x=x;
-			vl->y=grid_y[y];
-			vl->z=grid_z[z];
-			vl->gx=p_gx;
-			vl->gy=p_gy;
-
-			idx[z][y]=vl_cnt;
-
-			vl_cnt++;
-			vl++;
-		}
-	}
-
-		// tesselate grid into triangles
-
-	ntrig=0;
-
-	for (y=0;y!=ytot;y++) {
-		
-		for (z=0;z!=ztot;z++) {
-		
-			if (((y+z)&0x1)==0) {
-				light->trig_vertex_idx[(ntrig*3)]=idx[z][y];
-				light->trig_vertex_idx[(ntrig*3)+1]=idx[z+1][y];
-				light->trig_vertex_idx[(ntrig*3)+2]=idx[z+1][y+1];
-				ntrig++;
-				
-				light->trig_vertex_idx[(ntrig*3)]=idx[z][y];
-				light->trig_vertex_idx[(ntrig*3)+1]=idx[z][y+1];
-				light->trig_vertex_idx[(ntrig*3)+2]=idx[z+1][y+1];
-				ntrig++;
-			}
-			else {
-				light->trig_vertex_idx[(ntrig*3)]=idx[z+1][y];
-				light->trig_vertex_idx[(ntrig*3)+1]=idx[z][y];
-				light->trig_vertex_idx[(ntrig*3)+2]=idx[z][y+1];
-				ntrig++;
-				
-				light->trig_vertex_idx[(ntrig*3)]=idx[z+1][y];
-				light->trig_vertex_idx[(ntrig*3)+1]=idx[z+1][y+1];
-				light->trig_vertex_idx[(ntrig*3)+2]=idx[z][y+1];
-				ntrig++;
-			}
-			
-		}
-	}
-
-	light->nvertex=vl_cnt;
-	light->ntrig=ntrig;
-}
-
 void map_portal_add_light_simple_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int									n,ntrig;
@@ -584,9 +411,9 @@ void map_portal_add_light_simple_vertex_list(map_mesh_type *mesh,map_mesh_poly_t
       
 ======================================================= */
 
-bool map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *poly)
+void map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *poly,int quality_mode)
 {
-	int			xsz,ysz,zsz;
+	int			grid_split_sz;
 
 		// memory for tesseled vertexes
 
@@ -599,49 +426,21 @@ bool map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *p
 	
 		// simple light tessels
 
-	if ((poly->draw.simple_tessel) || (mesh->flag.hilite)) {
+	if ((quality_mode==quality_mode_low) || (poly->draw.simple_tessel) || (mesh->flag.hilite)) {
 		map_portal_add_light_simple_vertex_list(mesh,poly);
-		return(TRUE);
+		return;
 	}
 
 		// tessel depending on shape of polygon
-		// first, automatically tessel on the other two
-		// axises if any axies' length is 0
 
-	xsz=poly->box.max.x-poly->box.min.x;
-	if (xsz==0) {
-		map_portal_add_light_yz_tessel_vertex_list(mesh,poly);
-		return(TRUE);
-	}
-
-	ysz=poly->box.max.y-poly->box.min.y;
-	if (ysz==0) {
-		map_portal_add_light_xz_tessel_vertex_list(mesh,poly);
-		return(TRUE);
-	}
-
-	zsz=poly->box.max.z-poly->box.min.z;
-	if (zsz==0) {
-		map_portal_add_light_xy_tessel_vertex_list(mesh,poly);
-		return(TRUE);
-	}
-
-		// last ditch wall type checks
+	grid_split_sz=(quality_mode==quality_mode_medium)?(map_enlarge*16):(map_enlarge*8);
 
 	if (poly->box.wall_like) {
-		if (xsz>zsz) {
-			map_portal_add_light_xy_tessel_vertex_list(mesh,poly);
-		}
-		else {
-			map_portal_add_light_yz_tessel_vertex_list(mesh,poly);
-		}
-		return(TRUE);
+		map_portal_add_light_wall_tessel_vertex_list(mesh,poly,grid_split_sz);
 	}
-
-		// else treat as floor like polygon
-
-	map_portal_add_light_xz_tessel_vertex_list(mesh,poly);
-	return(TRUE);
+	else {
+		map_portal_add_light_floor_tessel_vertex_list(mesh,poly,grid_split_sz);
+	}
 }
 
 void map_dispose_poly_tesseled_vertexes(map_mesh_poly_type *poly)
@@ -657,7 +456,7 @@ void map_dispose_poly_tesseled_vertexes(map_mesh_poly_type *poly)
       
 ======================================================= */
 
-bool map_create_mesh_vertexes(map_type *map)
+bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 {
 	int					n,k,nvlist;
 	map_mesh_type		*mesh;
@@ -696,7 +495,7 @@ bool map_create_mesh_vertexes(map_type *map)
 		poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {
-			map_create_poly_tesseled_vertexes(mesh,poly);
+			map_create_poly_tesseled_vertexes(mesh,poly,quality_mode);
 			poly++;
 		}
 		
@@ -808,9 +607,9 @@ void map_dispose_sort_lists(map_type *map)
       
 ======================================================= */
 
-bool map_create_vertex_lists(map_type *map)
+bool map_create_vertex_lists(map_type *map,int quality_mode)
 {
-	if (!map_create_mesh_vertexes(map)) return(FALSE);
+	if (!map_create_mesh_vertexes(map,quality_mode)) return(FALSE);
 	if (!map_create_liquid_vertexes(map)) {
 		map_dispose_mesh_vertexes(map);
 		return(FALSE);

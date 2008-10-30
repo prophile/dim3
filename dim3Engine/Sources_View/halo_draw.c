@@ -99,8 +99,6 @@ void halo_draw_setup(void)
 	ray_trace_contact_type	contact;
 	
 	view.count.halo_draw_in_view=0;
-
-	if (!setup.halo) return;
 	
 		// clear all halo spots
 	

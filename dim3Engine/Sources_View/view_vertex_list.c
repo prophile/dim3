@@ -141,6 +141,8 @@ void view_compile_mesh_gl_lists_poly_normal(map_mesh_type *mesh,map_mesh_poly_ty
 	pc=poly->draw.p_color;
 	pn=poly->draw.p_normal;
 
+		// polygon lighting vertexes
+
 	for (n=0;n!=poly->ptsz;n++) {
 		pnt=&mesh->vertexes[poly->v[n]];
 		map_calculate_light_color_normal((double)pnt->x,(double)pnt->y,(double)pnt->z,pc,pn);
@@ -170,6 +172,8 @@ void view_compile_mesh_gl_lists_poly_ray_trace(map_mesh_type *mesh,map_mesh_poly
 	pc=poly->draw.p_color;
 	pn=poly->draw.p_normal;
 
+		// polygon lighting vertexes
+
 	for (n=0;n!=poly->ptsz;n++) {
 		pnt=&mesh->vertexes[poly->v[n]];
 		map_calculate_ray_trace_light_color_normal((double)pnt->x,(double)pnt->y,(double)pnt->z,pc,pn);
@@ -197,9 +201,9 @@ void view_compile_mesh_gl_lists_poly_ray_trace(map_mesh_type *mesh,map_mesh_poly
 
 bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 {
-	int									n,k,t,sz,ntrig,cnt,
+	int									n,k,t,sz,ntrig,
 										v_count,v_idx,v_light_start_idx;
-	float								fx,fy,fz;
+	float								fx,fy,fz,x_shift_offset,y_shift_offset;
 	float								*vertex_ptr,*pv,*pp,*pc,*pn,*lpc,*lpn;
 	bool								recalc_light;
 	d3pnt								*pnt;
@@ -295,7 +299,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 			if ((recalc_light) && (!mesh->flag.hilite)) {
 
-				if (!setup.ray_trace_lighting) {
+				if (setup.quality_mode!=quality_mode_super) {
 					view_compile_mesh_gl_lists_poly_normal(mesh,poly);
 				}
 				else {
@@ -303,6 +307,14 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 				}
 
 			}
+
+				// lights and normals
+
+			lpc=poly->draw.p_color;
+			lpn=poly->draw.p_normal;
+			
+			x_shift_offset=poly->draw.x_shift_offset;
+			y_shift_offset=poly->draw.y_shift_offset;
 
 				// build the vertex, UV, color, and normal lists
 
@@ -313,9 +325,17 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 				*pv++=(((float)pnt->x)-fx);
 				*pv++=(((float)pnt->y)-fy);
 				*pv++=(fz-((float)pnt->z));
+
+				*pc++=*lpc++;
+				*pc++=*lpc++;
+				*pc++=*lpc++;
+			
+				*pn++=*lpn++;
+				*pn++=*lpn++;
+				*pn++=*lpn++;
 				
-				*pp++=poly->gx[t]+poly->draw.x_shift_offset;
-				*pp++=poly->gy[t]+poly->draw.y_shift_offset;
+				*pp++=poly->gx[t]+x_shift_offset;
+				*pp++=poly->gy[t]+y_shift_offset;
 				
 				poly->draw.portal_v[t]=v_idx;
 				
@@ -333,36 +353,19 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 				*pv++=(((float)lv->y)-fy);
 				*pv++=(fz-((float)lv->z));
 				
-				*pp++=lv->gx+poly->draw.x_shift_offset;
-				*pp++=lv->gy+poly->draw.y_shift_offset;
+				*pc++=*lpc++;
+				*pc++=*lpc++;
+				*pc++=*lpc++;
+			
+				*pn++=*lpn++;
+				*pn++=*lpn++;
+				*pn++=*lpn++;
+				
+				*pp++=lv->gx+x_shift_offset;
+				*pp++=lv->gy+y_shift_offset;
 				
 				lv++;
 				v_idx++;
-			}
-
-				// move over lighting and normal data
-
-			cnt=poly->ptsz+poly->light.nvertex;
-			
-			lpc=poly->draw.p_color;
-			lpn=poly->draw.p_normal;
-
-			if (!mesh->flag.hilite) {
-				for (t=0;t!=cnt;t++) {
-					*pc++=*lpc++;
-					*pc++=*lpc++;
-					*pc++=*lpc++;
-					*pn++=*lpn++;
-					*pn++=*lpn++;
-					*pn++=*lpn++;
-				}
-			}
-			else {
-				for (t=0;t!=cnt;t++) {
-					*pn++=*lpn++;
-					*pn++=*lpn++;
-					*pn++=*lpn++;
-				}
 			}
 
 				// create light mesh draw indexes by offset

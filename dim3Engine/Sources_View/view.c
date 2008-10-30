@@ -218,10 +218,6 @@ bool view_initialize_display(char *err_str)
 
 		// fix some OpenGL settings if not supported by card
 
-	if (!gl_check_bump_ok()) setup.bump_mapping=FALSE;
-	if (!gl_check_specular_ok()) setup.specular_mapping=FALSE;
-	if (!gl_check_glow_ok()) setup.glow_mapping=FALSE;
-	if (!gl_check_frame_buffer_ok()) setup.shadow_mode=shadow_mode_none;
 	if (!gl_check_fsaa_ok()) setup.fsaa_mode=fsaa_mode_none;
 	if (!gl_check_texture_compress_ok()) setup.texture_compression=FALSE;
 	if (!gl_check_texture_anisotropic_filter_ok()) setup.anisotropic_mode=anisotropic_mode_none;
@@ -232,7 +228,7 @@ bool view_initialize_display(char *err_str)
 
 		// shadows
 
-	if (!gl_shadow_initialize(setup.shadow_mode,err_str)) {
+	if (!gl_shadow_initialize(err_str)) {
 		gl_text_shutdown();
 		gl_shutdown();
 		view_memory_release();

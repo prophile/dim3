@@ -36,8 +36,6 @@ extern server_type			server;
 extern map_type				map;
 extern view_type			view;
 
-extern bool					hilite_on;
-
 int							vport[4];
 double						mod_matrix[16],proj_matrix[16],
 							fix_rot_camera_x,fix_rot_camera_y,fix_rot_camera_z;

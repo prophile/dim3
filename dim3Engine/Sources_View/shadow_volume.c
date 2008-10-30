@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "video.h"
 
 extern int					shadow_pbuffer_pixel_size;
+extern bool					shadow_on;
 
 extern map_type				map;
 extern setup_type			setup;
@@ -267,7 +268,7 @@ bool shadow_texture_init(void)
 {
 		// shadows on?
 
-	if (setup.shadow_mode==shadow_mode_none) return(FALSE);
+	if (!shadow_on) return(FALSE);
 
 		// start shadow slicing
 		
@@ -300,7 +301,7 @@ bool shadow_texture_init(void)
 
 void shadow_texture_finish(void)
 {
-	if (setup.shadow_mode==shadow_mode_none) return;
+	if (!shadow_on) return;
 
 		// flush so shadows draw correctly
 		

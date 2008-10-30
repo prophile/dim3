@@ -35,7 +35,7 @@ extern view_type		view;
 extern setup_type		setup;
 
 int						nlight;
-bool					hilite_on=FALSE;
+int						hilite_mode=hilite_mode_off;
 light_spot_type			lspot_cache[max_light_spot];
 
 double					light_flicker_value[64]={

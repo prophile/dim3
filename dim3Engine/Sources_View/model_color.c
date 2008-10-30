@@ -232,7 +232,7 @@ void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw
 			*pln++=nz;
 		}
 		
-		if ((setup.diffuse_lighting) && (lit==ml_hilite_diffuse)) model_diffuse_color(mdl,mesh_idx,x,z,y,draw);
+		if ((setup.quality_mode>=quality_mode_medium) && (lit==ml_hilite_diffuse)) model_diffuse_color(mdl,mesh_idx,x,z,y,draw);
 		
 		return;
 	}
@@ -279,7 +279,7 @@ void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw
 	
 		// diffuse colors
 
-	if (setup.diffuse_lighting) model_diffuse_color(mdl,mesh_idx,x,z,y,draw);
+	if (setup.quality_mode>=quality_mode_medium) model_diffuse_color(mdl,mesh_idx,x,z,y,draw);
 }
 
 /* =======================================================

@@ -41,6 +41,8 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "video.h"
 
+extern bool					shadow_on;
+
 extern map_type				map;
 extern camera_type			camera;
 extern view_type			view;
@@ -209,9 +211,9 @@ void view_setup_model_in_view(model_draw *draw,bool in_air,bool is_camera,int me
 		// is shadow in view
 		// shadows have a shorter obscure distance
 
-	if ((setup.shadow_mode==shadow_mode_none) || (!draw->shadow.on)) return;
+	if ((!shadow_on) || (!draw->shadow.on)) return;
 
-	if (draw->lod_dist>=(obscure_dist>>2)) return;
+	if (draw->lod_dist>=(obscure_dist>>1)) return;
 	
 	if (shadow_get_volume(draw,in_air)) {
 		draw->shadow.in_view=shadow_inview(draw);

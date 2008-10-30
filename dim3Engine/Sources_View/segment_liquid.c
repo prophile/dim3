@@ -172,7 +172,7 @@ bool liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
 
 				// color
 
-			if (setup.ray_trace_lighting) {
+			if (setup.quality_mode==quality_mode_super) {
 				map_calculate_ray_trace_light_color_normal((double)x,(double)y,(double)z,cl,normal);
 			}
 			else {

@@ -42,22 +42,6 @@ extern render_info_type		render_info;
       
 ======================================================= */
 
-bool gl_check_bump_ok(void)
-{
-	if (strstr(render_info.ext_string,"GL_ARB_texture_env_dot3")==NULL) return(FALSE);
-	return(render_info.texture_unit_count>=3);
-}
-
-bool gl_check_specular_ok(void)
-{
-	return(render_info.texture_unit_count>=3);
-}
-
-bool gl_check_glow_ok(void)
-{
-	return(render_info.texture_unit_count>=3);
-}
-
 bool gl_check_frame_buffer_ok(void)
 {
 

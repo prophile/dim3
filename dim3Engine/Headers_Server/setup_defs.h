@@ -38,8 +38,7 @@ and can be sold or given away.
 // setup values
 //
 
-// anistropic mode, texture quality mode, mipmap mode all defined in bitmaputility.h
-// light mode defined in maputility.h
+// anistropic mode, texture quality mode, mipmap mode, and mipmap mode all defined in baseutility.h
 
 #define fsaa_mode_none					0
 #define fsaa_mode_low					1
@@ -47,12 +46,6 @@ and can be sold or given away.
 #define fsaa_mode_high					3
 
 #define setup_fsaa_mode_list_def		{"None","Low","Medium","High",""}
-
-#define shadow_mode_none				0
-#define shadow_mode_low					1
-#define shadow_mode_high				2
-
-#define setup_shadow_mode_list_def		{"None","Low","High",""}
 
 #define setup_joystick_mode_list_def	{"Not Used","Turn Only","Turning and Moving","Turning and Looking",""}
 
@@ -131,13 +124,10 @@ typedef struct		{
 					
 typedef struct		{
 						int							screen_wid,screen_high,
-													anisotropic_mode,mipmap_mode,fsaa_mode,
-													shadow_mode,joystick_mode;
+													quality_mode,anisotropic_mode,mipmap_mode,fsaa_mode,
+													joystick_mode;
 						float						gamma,sound_volume,music_volume;
 						bool						lock_fps_refresh,texture_compression,
-													diffuse_lighting,ray_trace_lighting,
-													bump_mapping,specular_mapping,glow_mapping,
-													halo,mark,
 													always_run,toggle_run,invert_look,mouse_smooth,
 													music_on,debug_console,window,window_editor;
 						setup_path_type				path;

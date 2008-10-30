@@ -597,7 +597,7 @@ extern void map_setup_animated_textures(map_type *map,int tick);
 
 extern bool map_check_game_type(char *game_type,char *map_name);
 
-extern bool map_create_vertex_lists(map_type *map);
+extern bool map_create_vertex_lists(map_type *map,int quality_mode);
 extern void map_dispose_vertex_lists(map_type *map);
 
 extern int map_count_spot(map_type *map,char *name,char *type);

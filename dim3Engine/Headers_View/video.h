@@ -39,9 +39,6 @@ extern bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,c
 
 	// settings
 	
-extern bool gl_check_bump_ok(void);
-extern bool gl_check_specular_ok(void);
-extern bool gl_check_glow_ok(void);
 extern bool gl_check_frame_buffer_ok(void);
 extern bool gl_check_fsaa_ok(void);
 extern bool gl_check_texture_compress_ok(void);
@@ -59,7 +56,7 @@ extern void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,textu
 
 	// shadows
 	
-extern bool gl_shadow_initialize(int shadow_mode,char *err_str);
+extern bool gl_shadow_initialize(char *err_str);
 extern void gl_shadow_shutdown(void);
 extern bool gl_shadow_texture_render_start(void);
 extern void gl_shadow_texture_render_end(void);

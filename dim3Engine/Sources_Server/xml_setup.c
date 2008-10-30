@@ -44,23 +44,13 @@ void setup_xml_default(void)
 	setup.screen_wid=640;
 	setup.screen_high=480;
 	setup.lock_fps_refresh=FALSE;
+
+	setup.quality_mode=quality_mode_medium;
 	
 	setup.anisotropic_mode=anisotropic_mode_none;
 	setup.mipmap_mode=mipmap_mode_trilinear;
 	setup.texture_compression=FALSE;
-
-	setup.diffuse_lighting=TRUE;
-	setup.ray_trace_lighting=FALSE;
-
-	setup.bump_mapping=TRUE;
-	setup.specular_mapping=TRUE;
-	setup.glow_mapping=TRUE;
-	setup.halo=TRUE;
-	
 	setup.fsaa_mode=fsaa_mode_none;
-
-	setup.mark=TRUE;
-	setup.shadow_mode=shadow_mode_low;
 	
 	setup.gamma=0.0f;
 	
@@ -196,17 +186,10 @@ bool setup_xml_read_path(char *path)
 	setup_xml_read_key_boolean(setup_tag,"Lock_FPS_Refresh",&setup.lock_fps_refresh);
 	setup_xml_read_key_float(setup_tag,"Gamma",&setup.gamma);
     setup_xml_read_key_boolean(setup_tag,"Texture_Compression",&setup.texture_compression);
+    setup_xml_read_key_int(setup_tag,"Quality_Mode",&setup.quality_mode);
     setup_xml_read_key_int(setup_tag,"Anisotropic_Mode",&setup.anisotropic_mode);
     setup_xml_read_key_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
-	setup_xml_read_key_boolean(setup_tag,"Bump_Mapping",&setup.bump_mapping);
-	setup_xml_read_key_boolean(setup_tag,"Specular_Mapping",&setup.specular_mapping);
-	setup_xml_read_key_boolean(setup_tag,"Glow_Mapping",&setup.glow_mapping);
-	setup_xml_read_key_boolean(setup_tag,"Halo",&setup.halo);
-	setup_xml_read_key_boolean(setup_tag,"Diffuse_Lighting",&setup.diffuse_lighting);
-	setup_xml_read_key_boolean(setup_tag,"Ray_Trace_Lighting",&setup.ray_trace_lighting);
 	setup_xml_read_key_int(setup_tag,"FSAA_Mode",&setup.fsaa_mode);
-	setup_xml_read_key_boolean(setup_tag,"Mark",&setup.mark);
-	setup_xml_read_key_int(setup_tag,"Shadow_Mode",&setup.shadow_mode);
 	setup_xml_read_key_float(setup_tag,"Sound_Volume",&setup.sound_volume);
 	setup_xml_read_key_boolean(setup_tag,"Music_On",&setup.music_on);
 	setup_xml_read_key_float(setup_tag,"Music_Volume",&setup.music_volume);
@@ -381,17 +364,10 @@ bool setup_xml_write(void)
     setup_xml_write_key_boolean("Lock_FPS_Refresh",setup.lock_fps_refresh);
 	setup_xml_write_key_float("Gamma",setup.gamma);
     setup_xml_write_key_boolean("Texture_Compression",setup.texture_compression);
-    setup_xml_write_key_int("Anisotropic_Mode",setup.anisotropic_mode);
+	setup_xml_write_key_int("Quality_Mode",setup.quality_mode);
+	setup_xml_write_key_int("Anisotropic_Mode",setup.anisotropic_mode);
     setup_xml_write_key_int("Mipmap_Mode",setup.mipmap_mode);
-	setup_xml_write_key_boolean("Bump_Mapping",setup.bump_mapping);
-	setup_xml_write_key_boolean("Specular_Mapping",setup.specular_mapping);
-	setup_xml_write_key_boolean("Glow_Mapping",setup.glow_mapping);
-	setup_xml_write_key_boolean("Halo",setup.halo);
-	setup_xml_write_key_boolean("Diffuse_Lighting",setup.diffuse_lighting);
-	setup_xml_write_key_boolean("Ray_Trace_Lighting",setup.ray_trace_lighting);
 	setup_xml_write_key_int("FSAA_Mode",setup.fsaa_mode);
-	setup_xml_write_key_boolean("Mark",setup.mark);
-	setup_xml_write_key_int("Shadow_Mode",setup.shadow_mode);
 	setup_xml_write_key_float("Sound_Volume",setup.sound_volume);
 	setup_xml_write_key_boolean("Music_On",setup.music_on);
 	setup_xml_write_key_float("Music_Volume",setup.music_volume);
@@ -498,23 +474,13 @@ void setup_restore(void)
 	setup.screen_wid=640;
 	setup.screen_high=480;
 	setup.lock_fps_refresh=FALSE;
+
+	setup.quality_mode=quality_mode_low;
 	
 	setup.anisotropic_mode=anisotropic_mode_none;
 	setup.mipmap_mode=mipmap_mode_none;
 	setup.texture_compression=FALSE;
-
-	setup.diffuse_lighting=FALSE;
-	setup.ray_trace_lighting=FALSE;
-
-	setup.bump_mapping=FALSE;
-	setup.specular_mapping=FALSE;
-	setup.glow_mapping=FALSE;
-	setup.halo=FALSE;
-	
 	setup.fsaa_mode=fsaa_mode_none;
-	
-	setup.mark=FALSE;
-	setup.shadow_mode=shadow_mode_none;
 	
 	setup.music_on=FALSE;
 

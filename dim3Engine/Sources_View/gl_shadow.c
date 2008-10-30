@@ -35,6 +35,7 @@ int							shadow_pbuffer_pixel_size;
 unsigned long				shadow_fbo_id,shadow_fbo_txt_id;
 bool						shadow_on;
 
+extern setup_type			setup;
 extern render_info_type		render_info;
 
 // supergumba -- special hack for missing symbols in 10.3.9
@@ -58,21 +59,21 @@ extern render_info_type		render_info;
       
 ======================================================= */
 
-bool gl_shadow_initialize(int shadow_mode,char *err_str)
+bool gl_shadow_initialize(char *err_str)
 {
 	int				status;
 	GLuint			gl_id;
 
 		// check if shadows are enabled
 		
-	shadow_on=(gl_check_frame_buffer_ok()) && (shadow_mode!=shadow_mode_none);
+	shadow_on=(gl_check_frame_buffer_ok()) && (setup.quality_mode==quality_mode_low);
 	if (!shadow_on) return(TRUE);
 	
 		// best size for shadow
 
 	shadow_pbuffer_pixel_size=shadow_pbuffer_min_pixel_size;
 
-	if (shadow_mode==shadow_mode_low) {
+	if (setup.quality_mode==quality_mode_medium) {
 		shadow_pbuffer_pixel_size=shadow_pbuffer_min_pixel_size;
 	}
 	else {

@@ -37,8 +37,8 @@ and can be sold or given away.
 #include "inputs.h"
 #include "interfaces.h"
 
-extern int					os_vers_major,os_vers_minor_1,os_vers_minor_2;
-extern bool					hilite_on;
+extern int					os_vers_major,os_vers_minor_1,os_vers_minor_2,
+							hilite_mode;
 extern char					arch_type[64];
 
 extern render_info_type		render_info;
@@ -176,9 +176,6 @@ void debug_dump(void)
 	fprintf(stdout,"Max Texture Units: %d\n",render_info.texture_unit_count);
 	fprintf(stdout,"Max Texture Size: %d\n",render_info.texture_max_size);
 	
-	if (!gl_check_bump_ok()) fprintf(stdout,"Bump-mapping support disabled; Unsupported on this video card.\n");
-	if (!gl_check_specular_ok()) fprintf(stdout,"Specular-mapping support disabled; Unsupported on this video card.\n");
-	if (!gl_check_glow_ok()) fprintf(stdout,"Glow-mapping support disabled; Unsupported on this video card.\n");
 	if (!gl_check_frame_buffer_ok()) fprintf(stdout,"Shadow support disabled; Unsupported on this video card.\n");
 	if (!gl_check_fsaa_ok()) fprintf(stdout,"FSAA support disabled; Unsupported on this video card.\n");
 	if (!gl_check_texture_compress_ok()) fprintf(stdout,"Compression disabled; Unsupported on this video card.\n");
@@ -421,14 +418,8 @@ void debug_dump(void)
 
 void debug_light(void)
 {
-	hilite_on=!hilite_on;
-	
-	if (!hilite_on) {
-		console_add_system("Lighting: ON");
-	}
-	else {
-		console_add_system("Lighting: OFF");
-	}
+	hilite_mode++;
+	if (hilite_mode>hilite_mode_mesh) hilite_mode=hilite_mode_off;
 }
 
 /* =======================================================
