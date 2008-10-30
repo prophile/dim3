@@ -111,7 +111,7 @@ bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_t
 		// if so, destroy projectile
 
 	spt.x=obj->pnt.x;
-	spt.y=obj->pnt.y;
+	spt.y=obj->pnt.y-(obj->size.y>>1);
 	spt.z=obj->pnt.z;
 
 	ept.x=proj->pnt.x;

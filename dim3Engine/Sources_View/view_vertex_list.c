@@ -200,7 +200,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 	int									n,k,t,sz,ntrig,cnt,
 										v_count,v_idx,v_light_start_idx;
 	float								fx,fy,fz;
-	float								*vertex_ptr,*pv,*pp,*pc,*pn;
+	float								*vertex_ptr,*pv,*pp,*pc,*pn,*lpc,*lpn;
 	bool								recalc_light;
 	d3pnt								*pnt;
 	map_mesh_type						*mesh;
@@ -342,14 +342,28 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 				// move over lighting and normal data
 
-			cnt=(poly->ptsz+poly->light.nvertex)*3;
-			sz=cnt*sizeof(float);
+			cnt=poly->ptsz+poly->light.nvertex;
+			
+			lpc=poly->draw.p_color;
+			lpn=poly->draw.p_normal;
 
-			if (!mesh->flag.hilite) memmove(pc,poly->draw.p_color,sz);
-			memmove(pn,poly->draw.p_normal,sz);
-
-			pc+=cnt;
-			pn+=cnt;
+			if (!mesh->flag.hilite) {
+				for (t=0;t!=cnt;t++) {
+					*pc++=*lpc++;
+					*pc++=*lpc++;
+					*pc++=*lpc++;
+					*pn++=*lpn++;
+					*pn++=*lpn++;
+					*pn++=*lpn++;
+				}
+			}
+			else {
+				for (t=0;t!=cnt;t++) {
+					*pn++=*lpn++;
+					*pn++=*lpn++;
+					*pn++=*lpn++;
+				}
+			}
 
 				// create light mesh draw indexes by offset
 

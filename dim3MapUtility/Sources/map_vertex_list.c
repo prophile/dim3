@@ -29,7 +29,6 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-int	test_cnt=0,simple_cnt=0;
 /* =======================================================
 
       Find UV within Vertex List
@@ -83,6 +82,46 @@ void map_portal_vertex_list_find_uv(int ptsz,int *x,int *y,float *gx,float *gy,i
 		*p_gy=tgy+((bgy-tgy)*((float)(ky-ty)/(float)(by-ty)));
 	}
 
+}
+
+
+int map_portal_vertex_list_find_missing_axis(int ptsz,int *x,int *y,int *z,int kx,int kz)
+{
+	int				n,ky,lx,rx,tz,bz,ly,ry,ty,by;
+
+		// find axis extents
+
+	lx=rx=x[0];
+	ty=by=y[0];
+	tz=bz=z[0];
+
+	for (n=1;n<ptsz;n++) {
+		if (x[n]<lx) {
+			lx=x[n];
+			ly=y[n];
+		}
+		if (x[n]>rx) {
+			rx=x[n];
+			ry=y[n];
+		}
+		if (z[n]<tz) {
+			tz=z[n];
+			ty=y[n];
+		}
+		if (z[n]>bz) {
+			bz=z[n];
+			by=y[n];
+		}
+	}
+
+		// find missing axis
+		
+	if ((rx==lx) || (tz==bz)) return(y[0]);
+	
+	ky=ly+(((ry-ly)*(kx-lx))/(rx-lx));
+	ky+=ty+(((by-ty)*(kz-tz))/(bz-tz));
+	
+	return(ky>>1);
 }
 
 /* =======================================================
@@ -224,7 +263,6 @@ void map_portal_add_light_xy_tessel_vertex_list(map_mesh_type *mesh,map_mesh_pol
 
 	light->nvertex=vl_cnt;
 	light->ntrig=ntrig;
-	test_cnt+=ntrig;
 }
 
 void map_portal_add_light_xz_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly)
@@ -359,8 +397,6 @@ void map_portal_add_light_xz_tessel_vertex_list(map_mesh_type *mesh,map_mesh_pol
 
 	light->nvertex=vl_cnt;
 	light->ntrig=ntrig;
-	
-	test_cnt+=ntrig;
 }
 
 void map_portal_add_light_yz_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly)
@@ -443,6 +479,9 @@ void map_portal_add_light_yz_tessel_vertex_list(map_mesh_type *mesh,map_mesh_pol
 
 			x=polygon_find_y(ptsz,pz,px,py,grid_z[z],grid_y[y]);
 			if (x==-1) x=polygon_infinite_find_y(ptsz,pz,px,py,grid_z[z],grid_y[y]);
+			
+			// supergumba -- fix these problems
+			x=map_portal_vertex_list_find_missing_axis(ptsz,pz,px,py,grid_z[z],grid_y[y]);
 
 			map_portal_vertex_list_find_uv(ptsz,pz,py,poly->gx,poly->gy,grid_z[z],grid_y[y],&p_gx,&p_gy);
 
@@ -495,7 +534,6 @@ void map_portal_add_light_yz_tessel_vertex_list(map_mesh_type *mesh,map_mesh_pol
 
 	light->nvertex=vl_cnt;
 	light->ntrig=ntrig;
-	test_cnt+=ntrig;
 }
 
 void map_portal_add_light_simple_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly)
@@ -538,8 +576,6 @@ void map_portal_add_light_simple_vertex_list(map_mesh_type *mesh,map_mesh_poly_t
 	}
 
 	light->ntrig=ntrig;
-	
-	simple_cnt++;
 }
 
 /* =======================================================
@@ -666,8 +702,6 @@ bool map_create_mesh_vertexes(map_type *map)
 		
 		mesh++;
 	}
-	
-	fprintf(stdout,"trig count = %d; simple count = %d\n",test_cnt,simple_cnt);		// supergumba -- testing
 
 	return(TRUE);
 }
