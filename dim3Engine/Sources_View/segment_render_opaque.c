@@ -316,7 +316,7 @@ void render_opaque_portal_lighting_mesh_debug(int mesh_cnt,int *mesh_list,int st
 
 	glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
 
-	glColor4f(1.0f,1.0f,1.0f,.1.0f);
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
 
 	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 
