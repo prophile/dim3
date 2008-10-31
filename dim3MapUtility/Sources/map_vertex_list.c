@@ -35,6 +35,8 @@ and can be sold or given away.
       
 ======================================================= */
 
+/* supergumba
+
 void map_portal_vertex_list_find_uv(int ptsz,int *x,int *y,float *gx,float *gy,int kx,int ky,float *p_gx,float *p_gy)
 {
 	int				n,lx,rx,ty,by;
@@ -83,6 +85,55 @@ void map_portal_vertex_list_find_uv(int ptsz,int *x,int *y,float *gx,float *gy,i
 	}
 
 }
+*/
+
+
+void map_portal_vertex_list_find_uv(int ptsz,int *x,int *y,int *z,float *gx,float *gy,int kx,int ky,int kz,float *p_gx,float *p_gy)
+{
+	int				n,idx;
+	float			d,d2;
+	bool			xdif,ydif,zdif,xdif2,ydif2,zdif2;
+
+		// find a vertex that's opposite
+		// the kx,ky,kz from vertex 0
+
+	xdif=((kx-x[0])<0);
+	ydif=((ky-y[0])<0);
+	zdif=((kz-z[0])<0);
+
+	idx=2;		// if nothing found, just use +2 vertex
+
+	for (n=1;n<ptsz;n++) {
+		xdif2=((kx-x[n])<0);
+		ydif2=((ky-y[n])<0);
+		zdif2=((kz-z[n])<0);
+
+		if ((xdif!=xdif2) && (ydif!=ydif2)) {
+			idx=n;
+			break;
+		}
+
+		if ((zdif!=zdif2) && (ydif!=ydif2)) {
+			idx=n;
+			break;
+		}
+
+		if ((xdif!=xdif2) && (zdif!=zdif2)) {
+			idx=n;
+			break;
+		}
+	}
+
+		// get the distance
+
+	d=(float)distance_get(x[0],y[0],z[0],kx,ky,kz);
+	d2=(float)distance_get(x[idx],y[idx],z[idx],kx,ky,kz);
+
+		// get coordinate
+
+	*p_gx=gx[0]+(((gx[idx]-gx[0])*d)/(d+d2));
+	*p_gy=gy[0]+(((gy[idx]-gy[0])*d)/(d+d2));
+}
 
 /* =======================================================
 
@@ -97,7 +148,8 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 	int									grid_x[light_tessel_grid_sz+1],grid_z[light_tessel_grid_sz+1],
 										grid_y[light_tessel_grid_sz+1],
 										idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
-	float								p_gx,p_gy;
+	float								lgx,rgx,tgy,bgy,f_dist;
+	double								kx,kz;
 	d3pnt								*pt;
 	map_mesh_poly_light_type			*light;
 	map_mesh_poly_tessel_vertex_type	*vl;
@@ -160,6 +212,10 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 	}
 
 		// get vertexes for grid
+		// and find uv extends
+
+	lgx=rgx=0.0f;
+	tgy=bgy=0.0f;
 
 	ptsz=poly->ptsz;
 
@@ -168,6 +224,11 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 		px[n]=pt->x;
 		py[n]=pt->y;
 		pz[n]=pt->z;
+
+		if ((pt->x==poly->line.lx) && (pt->z==poly->line.lz)) lgx=poly->gx[n];
+		if ((pt->x==poly->line.rx) && (pt->z==poly->line.rz)) rgx=poly->gx[n];
+		if (pt->y==poly->box.min.y) tgy=poly->gy[n];
+		if (pt->y==poly->box.max.y) bgy=poly->gy[n];
 	}
 
 	vl_cnt=0;
@@ -175,14 +236,16 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 	for (y=0;y<=ytot;y++) {
 		for (x=0;x<=xztot;x++) {
 
-		//	map_portal_vertex_list_find_wall_uv(ptsz,px,py,pz,poly->gx,poly->gy,grid_x[x],grid_y[y],grid_z[x],&p_gx,&p_gy);
-			p_gx=p_gy=0.0f;
-
 			vl->x=grid_x[x];
 			vl->y=grid_y[y];
 			vl->z=grid_z[x];
-			vl->gx=p_gx;
-			vl->gy=p_gy;
+
+			kx=(vl->x-poly->line.lx);
+			kz=(vl->z-poly->line.lz);
+			f_dist=(float)sqrt((double)(kx*kx)+(double)(kz*kz));
+
+			vl->gx=lgx+(((rgx-lgx)*f_dist)/(float)xzdist);
+			vl->gy=tgy+(((bgy-tgy)*(float)(vl->y-poly->box.min.y))/(float)(poly->box.max.y-poly->box.min.y));
 
 			idx[x][y]=vl_cnt;
 
@@ -236,7 +299,7 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 	int									grid_x[light_tessel_grid_sz+1],
 										grid_z[light_tessel_grid_sz+1],
 										idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
-	float								p_gx,p_gy;
+	float								lgx,rgx,lgy,rgy;
 	d3pnt								*pt;
 	map_mesh_poly_light_type			*light;
 	map_mesh_poly_tessel_vertex_type	*vl;
@@ -292,6 +355,10 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 	}
 
 		// get vertexes for grid
+		// and find uv extends
+
+	lgx=rgx=0.0f;
+	lgy=rgy=0.0f;
 
 	ptsz=poly->ptsz;
 
@@ -300,6 +367,11 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 		px[n]=pt->x;
 		py[n]=pt->y;
 		pz[n]=pt->z;
+
+		if (pt->x==poly->box.min.x) lgx=poly->gx[n];
+		if (pt->x==poly->box.max.x) rgx=poly->gx[n];
+		if (pt->z==poly->box.min.z) lgy=poly->gy[n];
+		if (pt->z==poly->box.max.z) rgy=poly->gy[n];
 	}
 
 	vl_cnt=0;
@@ -307,16 +379,20 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 	for (z=0;z<=ztot;z++) {
 		for (x=0;x<=xtot;x++) {
 
-			y=polygon_find_y(ptsz,px,py,pz,grid_x[x],grid_z[z]);
-			if (y==-1) y=polygon_infinite_find_y(ptsz,px,py,pz,grid_x[x],grid_z[z]);
-
-			map_portal_vertex_list_find_uv(ptsz,px,pz,poly->gx,poly->gy,grid_x[x],grid_z[z],&p_gx,&p_gy);
+			if (poly->box.flat) {
+				y=poly->box.mid.y;
+			}
+			else {
+				y=polygon_find_y(ptsz,px,py,pz,grid_x[x],grid_z[z]);
+				if (y==-1) y=polygon_infinite_find_y(ptsz,px,py,pz,grid_x[x],grid_z[z]);
+			}
 
 			vl->x=grid_x[x];
 			vl->y=y;
 			vl->z=grid_z[z];
-			vl->gx=p_gx;
-			vl->gy=p_gy;
+
+			vl->gx=lgx+(((rgx-lgx)*(float)(vl->x-poly->box.min.x))/(float)(poly->box.max.x-poly->box.min.x));
+			vl->gy=lgy+(((rgy-lgy)*(float)(vl->z-poly->box.min.z))/(float)(poly->box.max.z-poly->box.min.z));
 
 			idx[x][z]=vl_cnt;
 

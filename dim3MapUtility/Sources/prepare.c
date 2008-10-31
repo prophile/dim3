@@ -45,11 +45,26 @@ void map_prepare_mesh_poly_determine_wall_like(map_mesh_type *mesh,map_mesh_poly
 		// flat polygons are automatically not wall-like
 		
 	if (poly->box.flat) return;
+
+		// if triangles have all x/z points in a line, they
+		// are automatically wall-like
+
+	ptsz=poly->ptsz;
+
+	if (ptsz==3) {
+		for (n=0;n!=ptsz;n++) {
+			pt=&mesh->vertexes[poly->v[n]];
+			px[n]=pt->y;
+			py[n]=pt->z;
+		}
+
+		if (line_2D_all_points_in_line(ptsz,px,py,0.1f)) {
+			poly->box.wall_like=TRUE;
+		}
+	}
 	
 		// get area against x, y, and z planes
 		
-	ptsz=poly->ptsz;
-	
 	for (n=0;n!=ptsz;n++) {
 		pt=&mesh->vertexes[poly->v[n]];
 		px[n]=pt->y;
@@ -78,6 +93,12 @@ void map_prepare_mesh_poly_determine_wall_like(map_mesh_type *mesh,map_mesh_poly
 		// then consider it a floor
 		
 	if ((y_area>x_area) && (y_area>z_area)) return;
+
+		// if the slope is greater than 30, also consider it a floor
+
+	if (poly->slope.ang_y>=30.0f) return;
+
+		// otherwise it's a wall
 	
 	poly->box.wall_like=TRUE;
 }
@@ -144,9 +165,17 @@ void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 		pz[n]=pt->z;
 	}
 
-	poly->slope.y=polygon_get_slope_y(poly->ptsz,px,py,pz,&poly->slope.ang_y);
-	angle_get_movement_float(poly->slope.ang_y,(gravity_slope_factor*poly->slope.y),&poly->slope.move_x,&poly->slope.move_z);
-	
+	if (poly->box.flat) {
+		poly->slope.y=0.0f;
+		poly->slope.ang_y=0.0f;
+		poly->slope.move_x=0.0f;
+		poly->slope.move_z=0.0f;
+	}
+	else {
+		poly->slope.y=polygon_get_slope_y(poly->ptsz,px,py,pz,&poly->slope.ang_y);
+		angle_get_movement_float(poly->slope.ang_y,(gravity_slope_factor*poly->slope.y),&poly->slope.move_x,&poly->slope.move_z);
+	}
+
 		// determine if wall like
 		
 	map_prepare_mesh_poly_determine_wall_like(mesh,poly);
@@ -270,6 +299,7 @@ void map_prepare(map_type *map)
 				// detect simple tessel segments
 				// if two of the axises are under simple
 				// tessel size, then entire polygon is simple tessel
+				// triangles are automatically simple tesselled
 
 			simple_cnt=0;
 
@@ -277,7 +307,7 @@ void map_prepare(map_type *map)
 			if ((poly->box.max.z-poly->box.min.z)<map_simple_tessel_size) simple_cnt++;
 			if ((poly->box.max.y-poly->box.min.y)<map_simple_tessel_size) simple_cnt++;
 		
-			poly->draw.simple_tessel=(simple_cnt>=2);
+			poly->draw.simple_tessel=(simple_cnt>=2) || (poly->ptsz==3);
 
 				// setup texture and shifting flags
 

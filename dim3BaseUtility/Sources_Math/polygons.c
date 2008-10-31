@@ -360,16 +360,22 @@ float polygon_get_slope_y(int ptsz,int *px,int *py,int *pz,float *ang_y)
 		bz=cz;
 	}
 
-		// find the angle between points
-
-	*ang_y=angle_find(bx,bz,tx,tz);
-
-		// find slope between points
+		// xz distance
 
 	dx=(double)(bx-tx);
 	dz=(double)(bz-tz);
 	dist=(float)sqrt((dx*dx)+(dz*dz));
-	if (dist==0) return(0);
+
+	if (dist==0.0f) {
+		*ang_y=0.0f;
+		return(0.0f);
+	}
+
+		// find the angle between points
+
+	*ang_y=angle_find(0,by,(int)dist,ty);
+
+		// find slope between points
 
 	return(((float)abs(by-ty))/dist);
 }

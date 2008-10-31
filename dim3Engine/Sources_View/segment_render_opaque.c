@@ -147,6 +147,8 @@ void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ZERO,GL_SRC_COLOR);
 
+	glDisable(GL_BLEND);		// supergumba -- testing
+
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_ALPHA_TEST);
 
@@ -719,6 +721,8 @@ int render_opaque_mesh_stencil_mark(int mesh_cnt,int *mesh_list)
 					stencil_pass++;
 				}
 			}
+
+			if (!poly->box.wall_like) poly->draw.stencil_pass=-1;		// supergumba -- testing
 			
 			poly++;
 		}
@@ -776,12 +780,6 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 			switch (hilite_mode) {
 
 				case hilite_mode_off:
-					render_opaque_portal_lighting(mesh_cnt,mesh_list,stencil_pass);
-					render_opaque_portal_specular(mesh_cnt,mesh_list,stencil_pass);
-					render_opaque_portal_lighting_fix(mesh_cnt,mesh_list,stencil_pass);
-					break;
-
-				case hilite_mode_hilite:
 					render_opaque_portal_lighting(mesh_cnt,mesh_list,stencil_pass);
 					render_opaque_portal_specular(mesh_cnt,mesh_list,stencil_pass);
 					render_opaque_portal_lighting_fix(mesh_cnt,mesh_list,stencil_pass);
