@@ -37,6 +37,7 @@ and can be sold or given away.
 #include "video.h"
 #include "sounds.h"
 
+extern map_type				map;
 extern server_type			server;
 extern view_type			view;
 extern hud_type				hud;
@@ -302,6 +303,8 @@ void network_score_teams_draw(void)
 
 void network_score_draw(void)
 {
+	char			str[256];
+	d3col			col;
 	obj_type		*player_obj;
 
 		// only draw if player is dead or
@@ -311,6 +314,16 @@ void network_score_draw(void)
 		player_obj=object_find_uid(server.player_obj_uid);
 		if (player_obj->status.health!=0) return;
 	}
+	
+		// game type and map
+		
+	sprintf(str,"%s at %s",net_setup.client.game_name,map.info.name);
+	
+	col.r=col.g=col.b=1.0f;
+	
+	gl_text_start(FALSE);
+	gl_text_draw((hud.scale_x>>1),gl_text_get_char_height(FALSE),str,tx_center,TRUE,&col,1.0f);
+	gl_text_end();
 	
 		// draw player and team scores
 

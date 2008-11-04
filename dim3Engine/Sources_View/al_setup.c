@@ -150,12 +150,12 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 			if (!play->skip) {
 
 					// get stream data
-
+					
 				pos=(int)play->stream_pos;
 
 				buffer=&audio_buffers[play->buffer_idx];
 				data=(int)(*(buffer->data+pos));
-
+	
 					// create the channels
 
 				left_channel+=((data*play->left_fact)>>10);

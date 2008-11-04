@@ -107,14 +107,14 @@ bool remote_add(network_request_remote_add *add,bool send_event)
 	weap=server.weapons;
 		
 	for (n=0;n!=server.count.weapon;n++) {
-		if (weap->obj_uid==obj->uid) model_load_and_init(&weap->draw);
+		if (weap->obj_uid==obj->uid) weapon_start(weap);
 		weap++;
 	}
 				
 	proj_setup=server.proj_setups;
 	
 	for (n=0;n!=server.count.proj_setup;n++) {
-		if (proj_setup->obj_uid==obj->uid) model_load_and_init(&proj_setup->draw);
+		if (proj_setup->obj_uid==obj->uid) proj_setup_start(proj_setup);
 		proj_setup++;
 	}
 	
@@ -384,6 +384,8 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 	obj->ang.y=ntohf(update->fp_ang_y);
 	obj->ang.z=ntohf(update->fp_ang_z);
 	
+	obj->mesh.cur_mesh_idx=map_mesh_find(&map,&obj->pnt);
+
 		// update predicition values
 		
 	obj->motion.vct.x=ntohf(update->fp_move_vct_x);
@@ -537,15 +539,23 @@ void remote_projectile_add(int remote_uid,network_request_remote_fire *proj_add)
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
 	
+	fprintf(stdout,"1. got project add!\n");
+	
 	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
+	
+	fprintf(stdout,"2. got project add (%s)!\n",proj_add->weap_name);
 	
 	weap=weapon_find_name(obj,proj_add->weap_name);
 	if (weap==NULL) return;
 	
+	fprintf(stdout,"3. got project add (%s)!\n",proj_add->proj_setup_name);
+	
 	proj_setup=find_proj_setups(weap,proj_add->proj_setup_name);
 	if (proj_setup==NULL) return;
 	
+	fprintf(stdout,"4. got project add!\n");
+
 	pt.x=ntohl(proj_add->pt_x);
 	pt.y=ntohl(proj_add->pt_y);
 	pt.z=ntohl(proj_add->pt_z);

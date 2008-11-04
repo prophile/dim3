@@ -29,7 +29,7 @@ and can be sold or given away.
 #include "dialog.h"
 #include "common_view.h"
 
-extern int				cx,cy,cz;
+extern int				cx,cy,cz,drag_mode;
 extern map_type			map;
 
 extern WindowRef		mainwind;
@@ -74,6 +74,47 @@ void info_status_line_draw_end(void)
 
 /* =======================================================
 
+      Mesh Status Line
+      
+======================================================= */
+
+void info_status_line_mesh(char *txt,int mesh_idx,int poly_idx)
+{
+	char					str[256];
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	
+	mesh=&map.mesh.meshes[mesh_idx];
+	
+		// polygon selection
+		
+	if (drag_mode==drag_mode_polygon) {
+	
+		poly=&mesh->polys[poly_idx];
+		map_prepare_mesh_poly(mesh,poly);
+		
+		sprintf(txt,"Poly: %d/%d (%d,%d,%d) ",mesh_idx,poly_idx,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z);
+		
+		if (poly->box.wall_like) {
+			strcat(txt,"W");
+		}
+		else {
+			sprintf(str,"FC %d",(int)poly->slope.ang_y);
+			strcat(txt,str);
+		}
+		
+		return;
+	}
+	
+		// mesh selection
+		
+	map_prepare_mesh_box(mesh);
+		
+	sprintf(txt,"Mesh: %d (%d,%d,%d)-(%d,%d,%d) (%d,%d,%d) ",mesh_idx,mesh->box.min.x,mesh->box.min.y,mesh->box.min.z,mesh->box.max.x,mesh->box.max.y,mesh->box.max.z,mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z);
+}
+
+/* =======================================================
+
       Info Status Line Drawing
       
 ======================================================= */
@@ -81,8 +122,8 @@ void info_status_line_draw_end(void)
 void info_status_line_draw(void)
 {
 	int				type,main_idx,sub_idx,len;
-	char				txt[256];
-	Rect				wbox;
+	char			txt[256];
+	Rect			wbox;
 	
 	info_status_line_draw_start();
 	
@@ -108,10 +149,8 @@ void info_status_line_draw(void)
 
 		switch (type) {
 		
-		// supergumba -- need work here
-		
 			case mesh_piece:
-				sprintf(txt,"Mesh: %d",main_idx);
+				info_status_line_mesh(txt,main_idx,sub_idx);
 				break;
 		
 			case liquid_piece:

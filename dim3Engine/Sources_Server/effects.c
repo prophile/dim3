@@ -58,6 +58,15 @@ effect_type* effect_spawn(int effecttype,d3pnt *pt,int life_tick)
 {
 	effect_type		*effect;
 	
+		// can't spawn 0 time effects
+		
+	if (life_tick<=0) {
+		console_add_error("Can't spawn effects with no life time");
+		return(NULL);
+	}
+	
+		// any more effect spots?
+		
 	if (server.count.effect>=max_effect) {
 		console_add_error("No more spots to spawn effect");
 		return(NULL);

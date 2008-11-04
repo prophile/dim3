@@ -37,6 +37,7 @@ extern WindowRef		mainwind;
 extern AGLContext		ctx;
 
 extern map_type			map;
+extern setup_type		setup;
 extern bitmap_type		spot_bitmap,scenery_bitmap,node_bitmap,
 						light_bitmap,sound_bitmap,particle_bitmap;
 
@@ -297,7 +298,7 @@ void walk_view_draw_meshes_line(d3pnt *cpt,bool opaque)
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_BLEND);
 	
-	glColor4f(0.5f,0.5f,1.0f,1.0f);
+	glColor4f(setup.col.mesh_line.r,setup.col.mesh_line.g,setup.col.mesh_line.b,1.0f);
 	
 		// draw portal mesh lines
 
@@ -438,7 +439,7 @@ void walk_view_draw_liquids(d3pnt *cpt,bool opaque)
 		
 			// depth lines
 			
-		glColor4f(0.5f,0.5f,1.0f,1.0f);
+		glColor4f(setup.col.mesh_line.r,setup.col.mesh_line.g,setup.col.mesh_line.b,1.0f);
 		
 		y2=(liquid->y+liquid->depth)-cpt->y;
 		
@@ -630,7 +631,7 @@ void walk_view_draw_lights_sounds_particles(d3pnt *cpt,bool draw_light_circle)
 
 void walk_view_gl_setup(editor_3D_view_setup *view_setup)
 {
-	main_wind_set_viewport(&view_setup->box,0.75f);
+	main_wind_set_viewport(&view_setup->box,TRUE,TRUE);
 	main_wind_set_3D_projection(&view_setup->box,&view_setup->ang,view_setup->fov,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
 
 	glEnable(GL_DEPTH_TEST);
@@ -682,7 +683,7 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 	
        // 3D view
         
-	main_wind_set_viewport(&view_setup->box,0.75f);
+	main_wind_set_viewport(&view_setup->box,TRUE,TRUE);
 	main_wind_set_3D_projection(&view_setup->box,&view_setup->ang,view_setup->fov,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
 
 	glEnable(GL_DEPTH_TEST);

@@ -58,14 +58,14 @@ void effect_add_single_light(int tick,effect_type *effect)
 	count=tick-effect->start_tick;
 
 	if (count<mid_tick) {										// start of flash
-		intensity=(intensity*count)/mid_tick;
+		if (mid_tick>0) intensity=(intensity*count)/mid_tick;
 	}
 	else {
 		if (count>mid_tick) {									// fade of flash
 			fade_tick=(effect->life_tick-flash->mid_tick);
 			count=fade_tick-(count-mid_tick);
 	
-			intensity=(intensity*count)/fade_tick;
+			if (fade_tick>0) intensity=(intensity*count)/fade_tick;
 		}
 	}
 	

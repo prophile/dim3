@@ -377,10 +377,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>26F0C0420EB576EC006F723F</string>
+										<string>2624DE590EBEB2380098B78B</string>
 										<key>history</key>
 										<array>
-											<string>26F0BF240EB3B024006F723F</string>
+											<string>26F0C0420EB576EC006F723F</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -438,9 +438,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26F0C0430EB576EC006F723F</string>
+				<string>2624DE5A0EBEB2380098B78B</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26F0C0440EB576EC006F723F</string>
+				<string>2624DE5B0EBEB2380098B78B</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -559,7 +559,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>246773484.96775001</real>
+	<real>247378488.791852</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -575,6 +575,7 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>260AFEE90D40505C00F6C42F</string>
+		<string>1CD10A99069EF8BA00B06720</string>
 		<string>/Users/ggadwa/dim3Code/dim3Animator/dim3Animator.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -655,7 +656,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEE90D40505C00F6C42F</string>
-				<string>26F0C0400EB576D9006F723F</string>
+				<string>2624DE510EBEB00F0098B78B</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -775,13 +776,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>26F0BF1B0EB3AFEF006F723F</string>
+				<string>2624DE520EBEB0100098B78B</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>26F0BF1C0EB3AFEF006F723F</string>
-				<string>26F0BF1D0EB3AFEF006F723F</string>
-				<string>26F0BF1E0EB3AFEF006F723F</string>
-				<string>26F0BF1F0EB3AFEF006F723F</string>
-				<string>26F0BF200EB3AFEF006F723F</string>
+				<string>2624DE530EBEB0100098B78B</string>
+				<string>2624DE540EBEB0100098B78B</string>
+				<string>2624DE550EBEB0100098B78B</string>
+				<string>2624DE560EBEB0100098B78B</string>
+				<string>2624DE570EBEB0100098B78B</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>

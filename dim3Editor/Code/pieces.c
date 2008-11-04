@@ -347,7 +347,7 @@ void piece_tesselate(void)
 
 /* =======================================================
 
-      Piece Resize
+      Piece Resize and Reposition
       
 ======================================================= */
 
@@ -389,6 +389,30 @@ void piece_resize(void)
 			map_mesh_resize(&map,mesh_idx,&min,&max);
 		}
 	}
+	
+	main_wind_draw();
+}
+
+void piece_reposition(void)
+{
+	int				type,mesh_idx,poly_idx;
+	map_mesh_type	*mesh;
+	
+	if (select_count()==0) return;
+	
+	select_get(0,&type,&mesh_idx,&poly_idx);
+	if (type!=mesh_piece) return;
+	
+	mesh=&map.mesh.meshes[mesh_idx];
+	map_prepare_mesh_box(mesh);
+	
+		// get the reposition
+		
+    dialog_reposition_run(&mesh->box.min,&mesh->box.max);
+	
+		// reposition
+		
+	map_mesh_resize(&map,mesh_idx,&mesh->box.min,&mesh->box.max);
 	
 	main_wind_draw();
 }
@@ -448,6 +472,31 @@ void piece_move(int move_x,int move_y,int move_z)
 	}
 	
 	main_wind_draw();
+}
+
+/* =======================================================
+
+      Select All Polys in Mesh
+      
+======================================================= */
+
+void piece_mesh_select_all_poly(void)
+{
+	int				n,k,sel_count,type,mesh_idx,poly_idx;
+	map_mesh_type	*mesh;
+	
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
+		
+		mesh=&map.mesh.meshes[mesh_idx];
+		
+		for (k=0;k!=mesh->npoly;k++) {
+			if (!select_check(mesh_piece,mesh_idx,k)) select_add(mesh_piece,mesh_idx,k);
+		}
+	}
 }
 
 /* =======================================================

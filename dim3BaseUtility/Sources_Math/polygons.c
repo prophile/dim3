@@ -373,7 +373,9 @@ float polygon_get_slope_y(int ptsz,int *px,int *py,int *pz,float *ang_y)
 
 		// find the angle between points
 
-	*ang_y=angle_find(0,by,(int)dist,ty);
+	*ang_y=90.0f-angle_find(0,by,(int)dist,ty);
+	if (*ang_y<0.0f) *ang_y=0.0f;
+	if (*ang_y>90.0f) *ang_y=90.0f;
 
 		// find slope between points
 

@@ -31,6 +31,7 @@ and can be sold or given away.
 extern int					drag_mode;
 
 extern map_type				map;
+extern setup_type			setup;
 
 /* =======================================================
 
@@ -63,7 +64,7 @@ void walk_view_draw_select_mesh(d3pnt *cpt,int mesh_idx)
 	
 		// draw selected mesh
 		
-	glColor4f(1.0f,1.0f,0.0f,1.0f);
+	glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
 	
 	glEnable(GL_DEPTH_TEST);
 	
@@ -151,7 +152,7 @@ void walk_view_draw_select_mesh_poly(d3pnt *cpt,int mesh_idx,int poly_idx)
 	
 	glLineWidth(2.0f);
 
-	glColor4f(1.0f,0.0f,0.0f,1.0f);
+	glColor4f(setup.col.poly_sel.r,setup.col.poly_sel.g,setup.col.poly_sel.b,1.0f);
 	
 	mesh=&map.mesh.meshes[mesh_idx];
 	mesh_poly=&mesh->polys[poly_idx];

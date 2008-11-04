@@ -80,8 +80,10 @@ EXPORTS
 	map_close										@296
 	map_refresh_textures							@297
 
-	map_prepare										@300
-	map_center										@301
+	map_prepare_mesh_poly							@300
+	map_prepare_mesh_box							@301
+	map_prepare										@302
+	map_center										@303
 
 	map_add_texture_frame							@310
 	map_delete_texture_frame						@311

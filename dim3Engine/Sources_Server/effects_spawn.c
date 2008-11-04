@@ -45,7 +45,9 @@ bool effect_spawn_flash(d3pnt *pt,d3col *col,int intensity,int flash_msec,int fa
 {
 	effect_type			*effect;
 	flash_effect_data	*flash;
-
+	
+		// spawn the flash
+		
 	effect=effect_spawn(ef_flash,pt,(flash_msec+fade_msec));
 	if (effect==NULL) return(FALSE);
 

@@ -148,7 +148,7 @@ void texture_palette_draw(void)
 	
 		// viewport setup
 		
-	main_wind_set_viewport(&txt_palette_box,1.0f);
+	main_wind_set_viewport(&txt_palette_box,TRUE,FALSE);
 	
 		// texture page switch
 		

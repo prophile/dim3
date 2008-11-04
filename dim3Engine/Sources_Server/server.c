@@ -338,6 +338,18 @@ bool server_game_start(char *game_script_name,int skill,int remote_count,network
 		return(FALSE);
 	}
 	
+		// put in remotes
+		
+	if (remote_count!=0) {
+	
+		remote=remotes;
+		
+		for (n=0;n!=remote_count;n++) {
+			remote_add(remote,FALSE);
+			remote++;
+		}
+	}
+	
 		// start player object
 	
 	server.player_obj_uid=object_start(NULL,TRUE,bt_game,err_str);
@@ -350,18 +362,6 @@ bool server_game_start(char *game_script_name,int skill,int remote_count,network
 		// spawing of player needs to happen before map_start events
 		
 	object_spawn(object_find_uid(server.player_obj_uid));
-	
-		// put in remotes
-		
-	if (remote_count!=0) {
-	
-		remote=remotes;
-		
-		for (n=0;n!=remote_count;n++) {
-			remote_add(remote,FALSE);
-			remote++;
-		}
-	}
 	
 	return(TRUE);
 }

@@ -74,6 +74,7 @@ and can be sold or given away.
 #define kCommandMeshSplit					FOUR_CHAR_CODE('pspt')
 #define kCommandMeshTesselate				FOUR_CHAR_CODE('ptsl')
 #define kCommandMeshResize					FOUR_CHAR_CODE('mrsz')
+#define kCommandMeshReposition				FOUR_CHAR_CODE('mrps')
 #define kCommandMeshFlipX					FOUR_CHAR_CODE('pfpx')
 #define kCommandMeshFlipY					FOUR_CHAR_CODE('pfpy')
 #define kCommandMeshFlipZ					FOUR_CHAR_CODE('pfpz')
@@ -83,6 +84,7 @@ and can be sold or given away.
 #define kCommandMeshFreeRotate				FOUR_CHAR_CODE('prtf')
 #define kCommandMeshRaiseY					FOUR_CHAR_CODE('prsy')
 #define kCommandMeshLowerY					FOUR_CHAR_CODE('plry')
+#define kCommandMeshSelectAllPoly			FOUR_CHAR_CODE('msll')
 #define kCommandMeshSnapToGrid				FOUR_CHAR_CODE('msnp')
 #define kCommandMeshSnapClosestVertex		FOUR_CHAR_CODE('mscv')
 #define kCommandMeshResetUV					FOUR_CHAR_CODE('mruv')
@@ -175,7 +177,7 @@ and can be sold or given away.
 #define magnify_factor_min						10
 #define magnify_factor_max						910
 
-#define magnify_factor_default					700
+#define magnify_factor_default					800
 
 //
 // view mouse scales

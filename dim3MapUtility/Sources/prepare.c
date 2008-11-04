@@ -37,7 +37,7 @@ and can be sold or given away.
 
 void map_prepare_mesh_poly_determine_wall_like(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	int				n,ptsz,x_area,y_area,z_area,px[8],py[8];
+	int				n,ptsz,px[8],py[8];
 	d3pnt			*pt;
 	
 	poly->box.wall_like=FALSE;
@@ -46,57 +46,25 @@ void map_prepare_mesh_poly_determine_wall_like(map_mesh_type *mesh,map_mesh_poly
 		
 	if (poly->box.flat) return;
 
-		// if triangles have all x/z points in a line, they
-		// are automatically wall-like
+		// if all x/z points in a line, then polygon
+		// is automatically wall-like
 
 	ptsz=poly->ptsz;
 
-	if (ptsz==3) {
-		for (n=0;n!=ptsz;n++) {
-			pt=&mesh->vertexes[poly->v[n]];
-			px[n]=pt->y;
-			py[n]=pt->z;
-		}
-
-		if (line_2D_all_points_in_line(ptsz,px,py,0.1f)) {
-			poly->box.wall_like=TRUE;
-		}
-	}
-	
-		// get area against x, y, and z planes
-		
-	for (n=0;n!=ptsz;n++) {
-		pt=&mesh->vertexes[poly->v[n]];
-		px[n]=pt->y;
-		py[n]=pt->z;
-	}
-	
-	x_area=area_2D_polygon(ptsz,px,py);
-	
 	for (n=0;n!=ptsz;n++) {
 		pt=&mesh->vertexes[poly->v[n]];
 		px[n]=pt->x;
 		py[n]=pt->z;
 	}
-	
-	y_area=area_2D_polygon(ptsz,px,py);
-	
-	for (n=0;n!=ptsz;n++) {
-		pt=&mesh->vertexes[poly->v[n]];
-		px[n]=pt->x;
-		py[n]=pt->y;
+
+	if (line_2D_all_points_in_line(ptsz,px,py,0.1f)) {
+		poly->box.wall_like=TRUE;
+		return;
 	}
 	
-	z_area=area_2D_polygon(ptsz,px,py);
-	
-		// if the y area is greater than both the x and z area,
-		// then consider it a floor
-		
-	if ((y_area>x_area) && (y_area>z_area)) return;
+		// if the slope is greater than 60, then consider it a FC
 
-		// if the slope is greater than 30, also consider it a floor
-
-	if (poly->slope.ang_y>=30.0f) return;
+	if (poly->slope.ang_y<60.0f) return;
 
 		// otherwise it's a wall
 	
@@ -212,8 +180,7 @@ void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 void map_prepare_mesh_box(map_mesh_type *mesh)
 {
 	int						n;
-	d3pnt					mesh_min,mesh_max,mesh_mid;
-	map_mesh_poly_type		*poly;
+	d3pnt					*pt,mesh_min,mesh_max,mesh_mid;
 		
 		// start mesh min/max/mid
 			
@@ -222,33 +189,33 @@ void map_prepare_mesh_box(map_mesh_type *mesh)
 	mesh_mid.x=mesh_mid.y=mesh_mid.z=0;
 
 		// determine size
-
-	poly=mesh->polys;
 	
-	for (n=0;n!=mesh->npoly;n++) {
+	pt=mesh->vertexes;
+
+	for (n=0;n!=mesh->nvertex;n++) {
 		
 			// setup mesh min, max, mid
 			
 		if (n==0) {
-			memmove(&mesh_min,&poly->box.min,sizeof(d3pnt));
-			memmove(&mesh_max,&poly->box.max,sizeof(d3pnt));
-			memmove(&mesh_mid,&poly->box.mid,sizeof(d3pnt));
+			memmove(&mesh_min,pt,sizeof(d3pnt));
+			memmove(&mesh_max,pt,sizeof(d3pnt));
+			memmove(&mesh_mid,pt,sizeof(d3pnt));
 		}
 		else {
-			if (poly->box.min.x<mesh_min.x) mesh_min.x=poly->box.min.x;
-			if (poly->box.min.y<mesh_min.y) mesh_min.y=poly->box.min.y;
-			if (poly->box.min.z<mesh_min.z) mesh_min.z=poly->box.min.z;
+			if (pt->x<mesh_min.x) mesh_min.x=pt->x;
+			if (pt->y<mesh_min.y) mesh_min.y=pt->y;
+			if (pt->z<mesh_min.z) mesh_min.z=pt->z;
 		
-			if (poly->box.max.x>mesh_max.x) mesh_max.x=poly->box.max.x;
-			if (poly->box.max.y>mesh_max.y) mesh_max.y=poly->box.max.y;
-			if (poly->box.max.z>mesh_max.z) mesh_max.z=poly->box.max.z;
+			if (pt->x>mesh_max.x) mesh_max.x=pt->x;
+			if (pt->y>mesh_max.y) mesh_max.y=pt->y;
+			if (pt->z>mesh_max.z) mesh_max.z=pt->z;
 			
-			mesh_mid.x+=poly->box.mid.x;
-			mesh_mid.y+=poly->box.mid.y;
-			mesh_mid.z+=poly->box.mid.z;
+			mesh_mid.x+=pt->x;
+			mesh_mid.y+=pt->y;
+			mesh_mid.z+=pt->z;
 		}
 	
-		poly++;
+		pt++;
 	}
 	
 		// setup mesh box
@@ -256,10 +223,10 @@ void map_prepare_mesh_box(map_mesh_type *mesh)
 	memmove(&mesh->box.min,&mesh_min,sizeof(d3pnt));
 	memmove(&mesh->box.max,&mesh_max,sizeof(d3pnt));
 	
-	if (mesh->npoly!=0) {
-		mesh->box.mid.x=mesh_mid.x/mesh->npoly;
-		mesh->box.mid.y=mesh_mid.y/mesh->npoly;
-		mesh->box.mid.z=mesh_mid.z/mesh->npoly;
+	if (mesh->nvertex!=0) {
+		mesh->box.mid.x=mesh_mid.x/mesh->nvertex;
+		mesh->box.mid.y=mesh_mid.y/mesh->nvertex;
+		mesh->box.mid.z=mesh_mid.z/mesh->nvertex;
 	}
 }
 

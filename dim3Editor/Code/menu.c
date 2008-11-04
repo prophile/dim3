@@ -382,6 +382,10 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			piece_resize();
 			return(noErr);
 			
+		case kCommandMeshReposition:
+			piece_reposition();
+			return(noErr);
+			
 		case kCommandMeshFlipX:
 			piece_flip(TRUE,FALSE,TRUE);
 			return(noErr);
@@ -419,6 +423,11 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			piece_move(0,100,0);
             main_wind_draw();
  			return(noErr);
+
+		case kCommandMeshSelectAllPoly:
+			piece_mesh_select_all_poly();
+			main_wind_draw();
+			return(noErr);
 			
 		case kCommandMeshSnapToGrid:
 			piece_mesh_snap_to_grid();

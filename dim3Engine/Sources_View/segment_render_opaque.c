@@ -147,8 +147,6 @@ void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ZERO,GL_SRC_COLOR);
 
-	glDisable(GL_BLEND);		// supergumba -- testing
-
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_ALPHA_TEST);
 
@@ -721,8 +719,6 @@ int render_opaque_mesh_stencil_mark(int mesh_cnt,int *mesh_list)
 					stencil_pass++;
 				}
 			}
-
-			if (!poly->box.wall_like) poly->draw.stencil_pass=-1;		// supergumba -- testing
 			
 			poly++;
 		}

@@ -6,4 +6,8 @@
 <Auto_Texture value="true" />
 <Duplicate_Offset value="5" />
 <Engine_Name value="dim3 Engine" />
+<Color_Mesh_Line value="7F7FFF" />
+<Color_Mesh_Sel value="FFFF00" />
+<Color_Poly_Sel value="FF0000" />
+<Color_Background value="CCCCCC" />
 </Setup>

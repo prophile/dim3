@@ -48,6 +48,22 @@ void setup_xml_default(void)
 	setup.duplicate_offset=5;
 	
 	strcpy(setup.engine_name,"dim3 Engine");
+	
+	setup.col.mesh_line.r=0.5f;
+	setup.col.mesh_line.g=0.5f;
+	setup.col.mesh_line.b=1.0f;
+	
+	setup.col.mesh_sel.r=1.0f;
+	setup.col.mesh_sel.g=1.0f;
+	setup.col.mesh_sel.b=0.0f;
+	
+	setup.col.poly_sel.r=1.0f;
+	setup.col.poly_sel.g=0.0f;
+	setup.col.poly_sel.b=0.0f;
+	
+	setup.col.background.r=0.75f;
+	setup.col.background.g=0.75f;
+	setup.col.background.b=0.75f;
 }
 
 /* =======================================================
@@ -88,6 +104,14 @@ void setup_xml_read_key_boolean(int setup_tag,char *name,bool *value)
 	if (tag!=-1) *value=xml_get_attribute_boolean(tag,"value");	
 }
 
+void setup_xml_read_key_color(int setup_tag,char *name,d3col *value)
+{
+	int			tag;
+
+	tag=xml_findfirstchild(name,setup_tag);
+	if (tag!=-1) xml_get_attribute_color(tag,"value",value);	
+}
+
 bool setup_xml_read(void)
 {
 	int							setup_tag;
@@ -121,7 +145,12 @@ bool setup_xml_read(void)
 	setup_xml_read_key_int(setup_tag,"Duplicate_Offset",&setup.duplicate_offset);
 	
 	setup_xml_read_key_text(setup_tag,"Engine_Name",setup.engine_name,256);
-   
+	
+	setup_xml_read_key_color(setup_tag,"Color_Mesh_Line",&setup.col.mesh_line);
+	setup_xml_read_key_color(setup_tag,"Color_Mesh_Sel",&setup.col.mesh_sel);
+	setup_xml_read_key_color(setup_tag,"Color_Poly_Sel",&setup.col.poly_sel);
+	setup_xml_read_key_color(setup_tag,"Color_Background",&setup.col.background);
+  
 	xml_close_file();
 	
 	return(TRUE);

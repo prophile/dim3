@@ -232,13 +232,13 @@ JSBool js_model_animation_start_then_change_func(JSContext *cx,JSObject *j_obj,u
 		JS_ReportError(js.cx,"Named animation does not exist: %s",name);
 		return(JS_FALSE);
 	}
-	
+
 	script_value_to_string(argv[1],name,name_str_len);
 	if (!model_change_animation(draw,name)) {
 		JS_ReportError(js.cx,"Named animation does not exist: %s",name);
 		return(JS_FALSE);
 	}
-	
+
 	return(JS_TRUE);
 }
 

@@ -143,13 +143,13 @@ void map_portal_vertex_list_find_uv(int ptsz,int *x,int *y,int *z,float *gx,floa
 
 void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int grid_split_sz)
 {
-	int									n,vl_cnt,x,y,ptsz,px[8],py[8],pz[8],
+	int									n,vl_cnt,x,y,ptsz,
 										xzdist,xdist,ydist,zdist,xztot,ytot,xskip,yskip,zskip,ntrig;
 	int									grid_x[light_tessel_grid_sz+1],grid_z[light_tessel_grid_sz+1],
 										grid_y[light_tessel_grid_sz+1],
 										idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
 	float								lgx,rgx,tgy,bgy,f_dist;
-	double								kx,kz;
+	double								dx,dz;
 	d3pnt								*pt;
 	map_mesh_poly_light_type			*light;
 	map_mesh_poly_tessel_vertex_type	*vl;
@@ -163,7 +163,9 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 	ydist=poly->box.max.y-poly->box.min.y;
 	zdist=poly->line.rz-poly->line.lz;
 
-	xzdist=(int)sqrt((double)(xdist*xdist)+(double)(zdist*zdist));
+	dx=(double)xdist;
+	dz=(double)zdist;
+	xzdist=(int)sqrt((dx*dx)+(dz*dz));
 	xztot=xzdist/grid_split_sz;
 	if (xztot<=0) xztot=1;
 	if (xztot>light_tessel_grid_sz) xztot=light_tessel_grid_sz;
@@ -221,10 +223,6 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 
 	for (n=0;n!=ptsz;n++) {
 		pt=&mesh->vertexes[poly->v[n]];
-		px[n]=pt->x;
-		py[n]=pt->y;
-		pz[n]=pt->z;
-
 		if ((pt->x==poly->line.lx) && (pt->z==poly->line.lz)) lgx=poly->gx[n];
 		if ((pt->x==poly->line.rx) && (pt->z==poly->line.rz)) rgx=poly->gx[n];
 		if (pt->y==poly->box.min.y) tgy=poly->gy[n];
@@ -240,9 +238,9 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 			vl->y=grid_y[y];
 			vl->z=grid_z[x];
 
-			kx=(vl->x-poly->line.lx);
-			kz=(vl->z-poly->line.lz);
-			f_dist=(float)sqrt((double)(kx*kx)+(double)(kz*kz));
+			dx=(double)(vl->x-poly->line.lx);
+			dz=(double)(vl->z-poly->line.lz);
+			f_dist=(float)sqrt((dx*dx)+(dz*dz));
 
 			vl->gx=lgx+(((rgx-lgx)*f_dist)/(float)xzdist);
 			vl->gy=tgy+(((bgy-tgy)*(float)(vl->y-poly->box.min.y))/(float)(poly->box.max.y-poly->box.min.y));

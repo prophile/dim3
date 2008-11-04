@@ -227,7 +227,7 @@ void line_2D_find_inside_infinite(int x,int z,int wid,int lx,int lz,int rx,int r
 
 bool line_2D_all_points_in_line(int ptsz,int *px,int *pz,float slop)
 {
-	int				n,x,z;
+	int				n,x,z,slope_cnt;
 	float			slopes[8];
 	bool			same_x,same_z,horz,vert;
 
@@ -249,11 +249,17 @@ bool line_2D_all_points_in_line(int ptsz,int *px,int *pz,float slop)
 		// get the average slopes
 
 	horz=vert=FALSE;
+	slope_cnt=0;
 
-	for (n=1;n<ptsz;n++) {
+	for (n=0;n<(ptsz-1);n++) {
 
-		x=px[0]-px[n];
-		z=pz[0]-pz[n];
+		x=px[0]-px[n+1];
+		z=pz[0]-pz[n+1];
+		
+			// if point is equal, then we ignore
+			// the slope and the point
+			
+		if ((x==0) && (z==0)) continue;
 
 			// special check for horz or vertical lines
 			// note vertical lines have undefined slope, so
@@ -263,26 +269,29 @@ bool line_2D_all_points_in_line(int ptsz,int *px,int *pz,float slop)
 
 		if (x==0) {
 			horz=TRUE;
-			slopes[n-1]=0.0f;
+			slopes[slope_cnt]=0.0f;
 		}
 		else {
 			if (z==0) {
 				vert=TRUE;
-				slopes[n-1]=0.0f;
+				slopes[slope_cnt]=0.0f;
 			}
 			else {
-				slopes[n-1]=((float)x)/((float)z);
+				slopes[slope_cnt]=((float)x)/((float)z);
 			}
 		}
+		
+		slope_cnt++;
 	}
 
 		// if both horz and vertical, then not in line
 
 	if ((horz) && (vert)) return(FALSE);
 
-		// get the average difference
-
-	for (n=1;n<(ptsz-1);n++) {
+		// compare all the slopes to each other, if they
+		// are within the slope, it's all within a line
+		
+	for (n=1;n<slope_cnt;n++) {
 		if (fabs(slopes[0]-slopes[n])>slop) return(FALSE);
 	}
 	

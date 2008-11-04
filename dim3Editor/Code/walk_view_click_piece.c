@@ -53,7 +53,7 @@ void walk_view_click_setup_project(editor_3D_view_setup *view_setup)
 {
 		// setup walk view
 		
-	main_wind_set_viewport(&view_setup->box,0.75f);
+	main_wind_set_viewport(&view_setup->box,TRUE,TRUE);
 	main_wind_set_3D_projection(&view_setup->box,&view_setup->ang,view_setup->fov,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
 	
 		// get projection

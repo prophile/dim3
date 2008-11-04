@@ -77,6 +77,8 @@ _map_save
 _map_close
 _map_refresh_textures
 
+_map_prepare_mesh_poly
+_map_prepare_mesh_box
 _map_prepare
 _map_center
 

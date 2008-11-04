@@ -103,7 +103,7 @@ extern void main_wind_set_title(char *file_name);
 extern void main_wind_set_view(int view);
 extern void main_wind_set_perspective(int perspective);
 extern void main_wind_rotate_view(void);
-extern void main_wind_set_viewport(Rect *view_box,float rgb);
+extern void main_wind_set_viewport(Rect *view_box,bool erase,bool use_background);
 extern void main_wind_set_3D_projection(Rect *view_box,d3ang *ang,float fov,float near_z,float far_z,float near_z_offset);
 extern void main_wind_draw(void);
 extern void main_wind_center_position_in_map(void);

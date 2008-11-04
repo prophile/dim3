@@ -30,11 +30,16 @@ and can be sold or given away.
 //
 
 typedef struct		{
+						d3col						mesh_line,mesh_sel,poly_sel,background;
+					} setup_col_type;
+
+typedef struct		{
 						int							anisotropic_mode,mipmap_mode,
 													duplicate_offset;
 						bool						texture_compression,
 													view_flip,auto_texture;
 						char						engine_name[256];
+						setup_col_type				col;
 					} setup_type;
 
 //
@@ -93,10 +98,12 @@ extern void piece_delete_face(void);
 extern void piece_delete(void);
 extern void piece_tesselate(void);
 extern void piece_resize(void);
+extern void piece_reposition(void);
 extern void piece_flip(bool flip_x,bool flip_y,bool flip_z);
 extern void piece_rotate(float rot_x,float rot_y,float rot_z);
 extern void piece_free_rotate(void);
 extern void piece_move(int move_x,int move_y,int move_z);
+extern void piece_mesh_select_all_poly(void);
 extern void mesh_snap_to_grid(int mesh_idx);
 extern void mesh_poly_snap_to_grid(int mesh_idx,int poly_idx);
 extern void mesh_vertexes_snap_to_grid(int mesh_idx);

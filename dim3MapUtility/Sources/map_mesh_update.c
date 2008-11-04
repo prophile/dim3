@@ -816,8 +816,8 @@ void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 		
 	if (poly->box.wall_like) {
 		
-		ltxtx=(float)(poly->box.min.x+poly->box.min.z)*txt_scale_x;
-		rtxtx=(float)(poly->box.max.x+poly->box.max.z)*txt_scale_x;
+		ltxtx=(float)(poly->line.lx+poly->line.lz)*txt_scale_x;
+		rtxtx=(float)(poly->line.rx+poly->line.rz)*txt_scale_x;
 			
 			// get point texture factor
 				
@@ -825,8 +825,8 @@ void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 			
 			// get distance texture factor
 				
-		dx=(double)(poly->box.min.x-poly->box.max.x);
-		dz=(double)(poly->box.min.z-poly->box.max.z);
+		dx=(double)(poly->line.rx-poly->line.lx);
+		dz=(double)(poly->line.rz-poly->line.lz);
 		d=(dx*dx)+(dz*dz);
 		x_txtfact_2=(float)(sqrt(d)*txt_scale_x);
 		if (x_txtfact<0) x_txtfact_2=-x_txtfact_2;
@@ -851,15 +851,15 @@ void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 				
 			// create the polygons UVs
 			
-		dx=(double)(poly->box.max.x-poly->box.min.x);
-		dz=(double)(poly->box.max.z-poly->box.min.z);
+		dx=(double)(poly->box.max.x-poly->line.lx);
+		dz=(double)(poly->box.max.z-poly->line.lz);
 		f_dist_2=(float)sqrt((dx*dx)+(dz*dz));
 			
 		for (n=0;n!=poly->ptsz;n++) {
 			pt=&mesh->vertexes[poly->v[n]];
 
-			dx=(double)(pt->x-poly->box.min.x);
-			dz=(double)(pt->z-poly->box.min.z);
+			dx=(double)(pt->x-poly->line.lx);
+			dz=(double)(pt->z-poly->line.lz);
 			f_dist_1=(float)sqrt((dx*dx)+(dz*dz));
 			
 			ky=pt->y-poly->box.min.y;

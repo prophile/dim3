@@ -171,24 +171,6 @@ JSBool js_interface_text_set_large_func(JSContext *cx,JSObject *j_obj,uintN argc
 
 JSBool js_interface_text_set_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	int						idx;
-	hud_text_type			*text;
-	
-	text=script_find_text_from_name(argv[0]);
-	if (text==NULL) return(JS_FALSE);
-
-	idx=JSVAL_TO_INT(argv[1]);
-	if ((idx<0) || (idx>=net_team_count)) return(JS_TRUE);
-	
-	text->color.r=team_color_server_tint[idx][0];
-	text->color.g=team_color_server_tint[idx][1];
-	text->color.b=team_color_server_tint[idx][2];
-	
-	return(JS_TRUE);
-}
-
-JSBool js_interface_text_set_team_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
-{
 	hud_text_type			*text;
 	
 	text=script_find_text_from_name(argv[0]);
@@ -197,6 +179,24 @@ JSBool js_interface_text_set_team_color_func(JSContext *cx,JSObject *j_obj,uintN
 	text->color.r=script_value_to_float(argv[1]);
 	text->color.g=script_value_to_float(argv[2]);
 	text->color.b=script_value_to_float(argv[3]);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_interface_text_set_team_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int						idx;
+	hud_text_type			*text;
+	
+	text=script_find_text_from_name(argv[0]);
+	if (text==NULL) return(JS_FALSE);
+
+	idx=JSVAL_TO_INT(argv[1])-sd_team_none;
+	if ((idx<0) || (idx>=net_team_count)) return(JS_TRUE);
+	
+	text->color.r=team_color_server_tint[idx][0];
+	text->color.g=team_color_server_tint[idx][1];
+	text->color.b=team_color_server_tint[idx][2];
 	
 	return(JS_TRUE);
 }

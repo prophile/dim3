@@ -347,7 +347,7 @@
 							<real>284</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>972 259 306 751 0 0 1680 1028 </string>
+						<string>1127 268 306 751 0 0 1680 1028 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -375,10 +375,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>26C51AD80EBAAB0E00C16F31</string>
+										<string>2630CC3C0EBFF46A006E9F9C</string>
 										<key>history</key>
 										<array>
-											<string>26C51AA80EBA7CC800C16F31</string>
+											<string>26772F020EBD66B900F9E241</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -392,7 +392,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {0, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>972 259 306 751 0 0 1680 1028 </string>
+								<string>1127 268 306 751 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -412,7 +412,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {0, 705}}</string>
 								<key>RubberWindowFrame</key>
-								<string>972 259 306 751 0 0 1680 1028 </string>
+								<string>1127 268 306 751 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -436,9 +436,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26C51AD90EBAAB0E00C16F31</string>
+				<string>2630CC340EBFF3DF006E9F9C</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26C51ADA0EBAAB0E00C16F31</string>
+				<string>2630CC350EBFF3DF006E9F9C</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -557,7 +557,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>247114510.25892901</real>
+	<real>247460970.63142499</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -572,11 +572,13 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>2630CC390EBFF3DF006E9F9C</string>
 		<string>260AFEBC0D404E7500F6C42F</string>
+		<string>2630CC360EBFF3DF006E9F9C</string>
 		<string>/Users/ggadwa/dim3Code/dim3MapUtility/dim3MapUtility.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>972 259 306 751 0 0 1680 1028 </string>
+	<string>1127 268 306 751 0 0 1680 1028 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -655,7 +657,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEBC0D404E7500F6C42F</string>
-				<string>26C51AC40EBA83A800C16F31</string>
+				<string>2630CC2E0EBFF309006E9F9C</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

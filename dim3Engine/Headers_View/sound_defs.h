@@ -30,7 +30,7 @@ and can be sold or given away.
 //
 
 #define audio_frequency							44100
-#define audio_format							AUDIO_S16LSB
+#define audio_format							AUDIO_S16SYS
 #define audio_channels							2
 #define audio_sample_size						2048
 

@@ -904,7 +904,7 @@ void main_wind_set_perspective(int perspective)
       
 ======================================================= */
 
-void main_wind_set_viewport(Rect *view_box,float rgb)
+void main_wind_set_viewport(Rect *view_box,bool erase,bool use_background)
 {
 	int				bot_y;
 	Rect			wbox;
@@ -932,9 +932,14 @@ void main_wind_set_viewport(Rect *view_box,float rgb)
 		
 		// erase viewport
 		
-	if (rgb<0) return;
+	if (!erase) return;
 		
-	glColor4f(rgb,rgb,rgb,1.0f);
+	if (use_background) {
+		glColor4f(setup.col.background.r,setup.col.background.g,setup.col.background.b,1.0f);
+	}
+	else {
+		glColor4f(1.0f,1.0f,1.0f,1.0f);
+	}
 	
 	glBegin(GL_QUADS);
 	glVertex2i(view_box->left,view_box->top);
@@ -1006,7 +1011,7 @@ void main_wind_draw_3_panel_dividers(void)
 	
 		// use full view port
 	
-	main_wind_set_viewport(&main_wind_box,-1.0f);
+	main_wind_set_viewport(&main_wind_box,FALSE,FALSE);
 	
 		// draw dividers
 
@@ -1058,7 +1063,7 @@ void main_wind_draw_4_panel_dividers(void)
 	
 		// use full view port
 	
-	main_wind_set_viewport(&main_wind_box,-1.0f);
+	main_wind_set_viewport(&main_wind_box,FALSE,FALSE);
 	
 		// draw dividers
 
