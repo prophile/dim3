@@ -674,6 +674,7 @@ void read_settings_interface_button(int tag,hud_intro_button_type *btn)
 	btn->wid=xml_get_attribute_int_default(tag,"width",-1);
 	btn->high=xml_get_attribute_int_default(tag,"height",-1);
 	btn->on=xml_get_attribute_boolean(tag,"on");
+	btn->on=xml_get_attribute_boolean(tag,"on");
 }
 
 /* =======================================================
@@ -845,6 +846,13 @@ void read_settings_interface(void)
 		
 	button_tag=xml_findfirstchild("Buttons",interface_head_tag);
 	if (button_tag!=-1) {
+
+			// button settings
+
+		hud.intro.popup=xml_get_attribute_boolean(button_tag,"popup");
+
+			// buttons
+
 		read_settings_interface_button(xml_findfirstchild("Game",button_tag),&hud.intro.button_game);
 		read_settings_interface_button(xml_findfirstchild("Game_New",button_tag),&hud.intro.button_game_new);
 		read_settings_interface_button(xml_findfirstchild("Game_Load",button_tag),&hud.intro.button_game_load);
@@ -894,6 +902,7 @@ void read_settings_interface(void)
 		while (game_tag!=-1) {
 		
 			xml_get_attribute_text(game_tag,"type",net_setup.games[net_setup.ngame].name,name_str_len);
+			net_setup.games[net_setup.ngame].use_teams=xml_get_attribute_boolean(fade_tag,"use_teams");
 			
 			net_setup.ngame++;
 			if (net_setup.ngame==network_setup_max_game) break;

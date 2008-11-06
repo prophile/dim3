@@ -326,6 +326,18 @@ void object_rotate_with_mesh(int mesh_idx,float y)
       
 ======================================================= */
 
+bool object_push_object_allowed(obj_type *obj,obj_type *push_obj)
+{
+	int			weight_dif;
+
+	if (!push_obj->contact.pushable) return(FALSE);
+
+		// compare weights
+
+	weight_dif=obj->size.weight-push_obj->size.weight;
+	return(weight_dif>=0);
+}
+
 bool object_push_with_object(obj_type *obj,int xmove,int zmove)
 {
 	int				weight_dif;

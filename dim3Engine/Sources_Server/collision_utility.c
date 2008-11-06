@@ -175,63 +175,122 @@ bool collide_object_to_object_hit_box(obj_type *obj1,int x_add,int z_add,obj_typ
       
 ======================================================= */
 
-bool collide_polygon_to_polygon_slide(int *px_1,int *pz_1,int *px_2,int *pz_2,int *lx,int *rx,int *lz,int *rz)
+bool collide_object_to_object_get_slide_line(obj_type *obj,int hit_face,int *p_lx,int *p_rx,int *p_lz,int *p_rz)
 {
-	int		n,n2,k,k2;
+	int			x,z,lx,rx,tz,bz,sz,px[2],pz[2];
+	float		rang;
 
-		// get sliding angle which is the angle
-		// of all the lines hit
-
-	for (n=0;n!=4;n++) {
-		n2=(n+1)&0x3;
-		
-		for (k=0;k!=4;k++) {
-			k2=(k+1)&0x3;
-
-				// is there a hit?
-
-			if (!line_2D_test_intersect(px_1[n],pz_1[n],px_1[n2],pz_1[n2],px_2[k],pz_2[k],px_2[k2],pz_2[k2])) continue;
-			
-				// return the hit
-				
-			*lx=px_2[k];
-			*rx=px_2[k2];
-			*lz=pz_2[k];
-			*rz=pz_2[k2];
-			
-			return(TRUE);
-		}
-	}
+	sz=obj->size.x>>1;
+	x=obj->pnt.x;
+	lx=x-sz;
+	rx=x+sz;
 	
-	return(FALSE);
+	sz=obj->size.z>>1;
+	z=obj->pnt.z;
+	tz=z-sz;
+	bz=z+sz;
+		
+	rang=angle_add(obj->ang.y,obj->draw.rot.y);
+
+	switch (hit_face) {
+
+		case ray_trace_face_hit_neg_z:
+			px[0]=lx;
+			px[1]=rx;
+			pz[0]=pz[1]=tz;
+			break;
+
+		case ray_trace_face_hit_pos_z:
+			px[0]=lx;
+			px[1]=rx;
+			pz[0]=pz[1]=bz;
+			break;
+	
+		case ray_trace_face_hit_neg_x:
+			px[0]=px[1]=lx;
+			pz[0]=tz;
+			pz[1]=bz;
+			break;
+	
+		case ray_trace_face_hit_pos_x:
+			px[0]=px[1]=rx;
+			pz[0]=tz;
+			pz[1]=bz;
+			break;
+	
+		case ray_trace_face_hit_neg_y:
+		case ray_trace_face_hit_pos_y:
+			return(FALSE);
+
+	}
+
+	rotate_2D_polygon(2,px,pz,x,z,rang);
+
+	*p_lx=px[0];
+	*p_rx=px[1];
+	*p_lz=pz[0];
+	*p_rz=pz[1];
+
+	return(TRUE);
 }
 
-bool collide_object_to_object_slide(obj_type *obj1,int x_add,int z_add,obj_type *obj2,int *lx,int *rx,int *lz,int *rz)
+bool collide_object_to_hit_box_get_slide_line(obj_type *obj,int hit_face,model_hit_box_type *hit_box,int *p_lx,int *p_rx,int *p_lz,int *p_rz)
 {
-	int		px_1[4],pz_1[4],px_2[4],pz_2[4];
+	int			x,z,lx,rx,tz,bz,sz,px[2],pz[2];
+	float		rang;
 
-		// get collision polygons
+	sz=hit_box->box.size.x>>1;
+	x=obj->pnt.x+hit_box->box.offset.x;
+	lx=x-sz;
+	rx=x+sz;
+	
+	sz=hit_box->box.size.z>>1;
+	z=obj->pnt.z+hit_box->box.offset.z;
+	tz=z-sz;
+	bz=z+sz;
+		
+	rang=angle_add(obj->ang.y,obj->draw.rot.y);
 
-	collide_object_polygon(obj1,x_add,z_add,px_1,pz_1);
-	collide_object_polygon(obj2,0,0,px_2,pz_2);
+	switch (hit_face) {
 
-		// slide between the polygons
+		case ray_trace_face_hit_neg_z:
+			px[0]=lx;
+			px[1]=rx;
+			pz[0]=pz[1]=tz;
+			break;
 
-	return(collide_polygon_to_polygon_slide(px_1,pz_1,px_2,pz_2,lx,rx,lz,rz));
-}
+		case ray_trace_face_hit_pos_z:
+			px[0]=lx;
+			px[1]=rx;
+			pz[0]=pz[1]=bz;
+			break;
+	
+		case ray_trace_face_hit_neg_x:
+			px[0]=px[1]=lx;
+			pz[0]=tz;
+			pz[1]=bz;
+			break;
+	
+		case ray_trace_face_hit_pos_x:
+			px[0]=px[1]=rx;
+			pz[0]=tz;
+			pz[1]=bz;
+			break;
+	
+		case ray_trace_face_hit_neg_y:
+		case ray_trace_face_hit_pos_y:
+			return(FALSE);
 
-bool collide_object_to_object_hit_box_slide(obj_type *obj1,int x_add,int z_add,obj_type *obj2,model_hit_box_type *hit_box,int *lx,int *rx,int *lz,int *rz)
-{
-	int		px_1[4],pz_1[4],px_2[4],pz_2[4];
+	}
 
-		// get collision polygons
+	rotate_2D_polygon(2,px,pz,x,z,rang);
 
-	collide_object_polygon(obj1,x_add,z_add,px_1,pz_1);
-	collide_object_hit_box_polygon(obj2,hit_box,px_2,pz_2);
+	*p_lx=px[0];
+	*p_rx=px[1];
+	*p_lz=pz[0];
+	*p_rz=pz[1];
 
-		// slide between the polygons
-
-	return(collide_polygon_to_polygon_slide(px_1,pz_1,px_2,pz_2,lx,rx,lz,rz));
+	return(TRUE);
 }
 
 /* =======================================================

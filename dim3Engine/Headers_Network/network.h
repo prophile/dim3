@@ -44,7 +44,8 @@ extern void* net_host_client_handler_thread(void *arg);
 // host local joins
 //
 
-int net_host_client_handle_local_join(network_request_join *request_join,char *err_str);
+extern int net_client_find_game(char *game_name);
+extern int net_host_client_handle_local_join(network_request_join *request_join,char *err_str);
 
 //
 // host player lists

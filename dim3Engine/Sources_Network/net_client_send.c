@@ -293,7 +293,7 @@ void net_client_send_projectile_add(int remote_uid,char *weap_name,char *proj_se
 {
 	network_request_remote_fire		fire;
 	
-	fire.fire_type=net_remote_fire_type_projectile;
+	fire.fire_type=htons(net_remote_fire_type_projectile);
 
 	fire.pt_x=htonl(pt->x);
 	fire.pt_y=htonl(pt->y);
@@ -323,7 +323,7 @@ void net_client_send_hitscan_add(int remote_uid,char *weap_name,char *proj_setup
 {
 	network_request_remote_fire		fire;
 	
-	fire.fire_type=net_remote_fire_type_hit_scan;
+	fire.fire_type=htons(net_remote_fire_type_hit_scan);
 	
 	fire.pt_x=htonl(pt->x);
 	fire.pt_y=htonl(pt->y);
@@ -353,7 +353,7 @@ void net_client_send_melee_add(int remote_uid,char *weap_name,int radius,int dis
 {
 	network_request_remote_fire		fire;
 	
-	fire.fire_type=net_remote_fire_type_melee;
+	fire.fire_type=htons(net_remote_fire_type_melee);
 	
 	fire.pt_x=htonl(pt->x);
 	fire.pt_y=htonl(pt->y);

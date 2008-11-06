@@ -80,10 +80,10 @@ void projectile_hitscan(int tick,obj_type *obj,weapon_type *weap,proj_setup_type
 	spt.y=proj->pnt.y;
 	spt.z=proj->pnt.z;
 	
-	contact.obj_on=TRUE;
-	contact.proj_on=proj_setup->collision;
-	contact.obj_ignore_uid=obj->uid;
-	contact.proj_ignore_uid=proj->uid;
+	contact.obj.on=TRUE;
+	contact.proj.on=proj_setup->collision;
+	contact.obj.ignore_uid=obj->uid;
+	contact.proj.ignore_uid=proj->uid;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_projectile;
@@ -99,14 +99,14 @@ void projectile_hitscan(int tick,obj_type *obj,weapon_type *weap,proj_setup_type
 	memmove(&proj->contact.hit_poly,&contact.poly,sizeof(poly_pointer_type));
 	proj->contact.liquid_idx=-1;
 
-	proj->contact.obj_uid=contact.obj_uid;
-	proj->contact.proj_uid=contact.proj_uid;
+	proj->contact.obj_uid=contact.obj.uid;
+	proj->contact.proj_uid=contact.proj.uid;
 	proj->contact.melee=FALSE;
 	
 		// projectile collisions force other projectile into hit mode
 			
-	if (contact.proj_uid!=-1) {
-		hit_proj=projectile_find_uid(contact.proj_uid);
+	if (contact.proj.uid!=-1) {
+		hit_proj=projectile_find_uid(contact.proj.uid);
 		hit_proj->contact.proj_uid=proj->uid;
 		if (projectile_hit(tick,hit_proj,TRUE)) {				// force other projectile into hit mode
 			projectile_mark_dispose(hit_proj);

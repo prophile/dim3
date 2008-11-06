@@ -222,8 +222,8 @@ void remote_draw_names_setup(void)
 	ept.y=view.camera.pnt.y;
 	ept.z=view.camera.pnt.z;
 
-	contact.obj_on=TRUE;
-	contact.proj_on=FALSE;
+	contact.obj.on=TRUE;
+	contact.proj.on=FALSE;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_object;
@@ -236,13 +236,13 @@ void remote_draw_names_setup(void)
 		spt.y=obj->draw.remote_name.pnt.y;
 		spt.z=obj->draw.remote_name.pnt.z;
 
-		contact.obj_ignore_uid=obj->uid;
+		contact.obj.ignore_uid=obj->uid;
 		
 		hit=ray_trace_map_by_point(&spt,&ept,&hpt,&contact);
 		
 		if (camera.mode==cv_fpp) {
 			if (hit) {
-				if (contact.obj_uid!=server.player_obj_uid) {
+				if (contact.obj.uid!=server.player_obj_uid) {
 					obj->draw.remote_name.on=FALSE;
 					continue;
 				}

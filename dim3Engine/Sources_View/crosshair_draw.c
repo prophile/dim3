@@ -77,9 +77,9 @@ bool crosshair_get_location(int tick,obj_type *obj,weapon_type *weap,int *kx,int
 
 		// trace
 
-	contact.obj_on=TRUE;
-	contact.obj_ignore_uid=obj->uid;
-	contact.proj_on=FALSE;
+	contact.obj.on=TRUE;
+	contact.obj.ignore_uid=obj->uid;
+	contact.proj.on=FALSE;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_object;
@@ -92,7 +92,7 @@ bool crosshair_get_location(int tick,obj_type *obj,weapon_type *weap,int *kx,int
 	*ky=hpt.y;
 	*kz=hpt.z;
 	
-	*hit_obj_uid=contact.obj_uid;
+	*hit_obj_uid=contact.obj.uid;
 	
 	return(TRUE);
 }

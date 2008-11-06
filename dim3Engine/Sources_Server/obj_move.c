@@ -902,10 +902,14 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	cnt_obj=object_find_uid(obj->contact.obj_uid);
 	if (cnt_obj==NULL) return(FALSE);
 
+		// if it's pushable, then we don't slide
+
+	if (object_push_object_allowed(obj,cnt_obj)) return(TRUE);
+
 		// no hit box collisions
 
 	if (!cnt_obj->hit_box.on) {
-		if (!collide_object_to_object_slide(obj,*xadd,*zadd,cnt_obj,&lx,&rx,&lz,&rz)) return(TRUE);
+		if (!collide_object_to_object_get_slide_line(cnt_obj,obj->contact.hit_face,&lx,&rx,&lz,&rz)) return(TRUE);
 		return(object_move_xz_slide_line(obj,xadd,yadd,zadd,lx,rx,lz,rz));
 	}
 
@@ -922,7 +926,7 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	
 		// check hit boxes
 		
-	if (!collide_object_to_object_hit_box_slide(obj,*xadd,*zadd,cnt_obj,&model->hit_boxes[hit_box_idx],&lx,&rx,&lz,&rz)) return(TRUE);
+	if (!collide_object_to_hit_box_get_slide_line(cnt_obj,obj->contact.hit_face,&model->hit_boxes[hit_box_idx],&lx,&rx,&lz,&rz)) return(TRUE);
 	return(object_move_xz_slide_line(obj,xadd,yadd,zadd,lx,rx,lz,rz));
 }
 

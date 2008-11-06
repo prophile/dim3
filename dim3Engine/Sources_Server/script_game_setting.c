@@ -83,7 +83,7 @@ JSBool js_get_game_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
 				*vp=JSVAL_NULL;
 			}
 			else {
-				*vp=script_string_to_value(net_setup.client.game_name);
+				*vp=script_string_to_value(net_setup.games[net_setup.game_idx].name);
 			}
 			break;
 		case game_setting_prop_multiplayer:

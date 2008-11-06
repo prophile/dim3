@@ -194,9 +194,7 @@ void host_game_setup(void)
 	int				idx;
 	char			*c;
 	
-	idx=element_get_value(host_game_type_id);
-	strcpy(net_setup.host.game_name,net_setup.games[idx].name);
-	
+	net_setup.game_idx=element_get_value(host_game_type_id);
 	net_setup.host.map_name[0]=0x0;
 	
 	idx=element_get_value(host_table_id);
@@ -249,8 +247,6 @@ void host_game(void)
 
 		// setup game from host
 		
-	strcpy(net_setup.client.game_name,net_setup.host.game_name);
-	
 	map.info.name[0]=0x0;
 	strcpy(map.info.host_name,net_setup.host.map_name);
 	

@@ -344,6 +344,7 @@ typedef struct		{
 					} hud_intro_button_type;
 					
 typedef struct		{
+						bool					popup;
 						hud_intro_button_type	button_game,
 												button_game_new,button_game_load,button_game_setup,
 												button_game_new_easy,button_game_new_medium,button_game_new_hard,

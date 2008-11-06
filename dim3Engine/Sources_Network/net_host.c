@@ -210,3 +210,4 @@ void net_host_game_end(void)
 	
 	net_host_player_shutdown();
 }
+

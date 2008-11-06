@@ -314,11 +314,11 @@ bool object_sight_test_object(obj_type *obj,int test_obj_uid)
 
 		// setup contact
 
-	contact.obj_on=TRUE;
-	contact.proj_on=FALSE;
+	contact.obj.on=TRUE;
+	contact.proj.on=FALSE;
 
-	contact.obj_ignore_uid=obj->uid;
-	contact.proj_ignore_uid=-1;
+	contact.obj.ignore_uid=obj->uid;
+	contact.proj.ignore_uid=-1;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_object;
@@ -373,7 +373,7 @@ bool object_sight_test_object(obj_type *obj,int test_obj_uid)
 				// ray trace
 
 			if (ray_trace_map_by_angle(&spt,&ang,obj->sight.distance,&hpt,&contact)) {
-				if (contact.obj_uid==test_obj_uid) return(TRUE);
+				if (contact.obj.uid==test_obj_uid) return(TRUE);
 			}
 
 			ang.y=angle_add(ang.y,side_add);		// these angles are constrained 0...360

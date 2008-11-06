@@ -29,8 +29,8 @@ extern void collide_object_polygon(obj_type *obj,int x_add,int z_add,int *px,int
 extern void collide_object_hit_box_polygon(obj_type *obj,model_hit_box_type *hit_box,int *px,int *pz);
 extern bool collide_object_to_object(obj_type *obj1,int x_add,int z_add,obj_type *obj2,bool include_y,bool include_stand);
 extern bool collide_object_to_object_hit_box(obj_type *obj1,int x_add,int z_add,obj_type *obj2,model_hit_box_type *hit_box);
-extern bool collide_object_to_object_slide(obj_type *obj1,int x_add,int z_add,obj_type *obj2,int *lx,int *rx,int *lz,int *rz);
-extern bool collide_object_to_object_hit_box_slide(obj_type *obj1,int x_add,int z_add,obj_type *obj2,model_hit_box_type *hit_box,int *lx,int *rx,int *lz,int *rz);
+extern bool collide_object_to_object_get_slide_line(obj_type *obj,int hit_face,int *p_lx,int *p_rx,int *p_lz,int *p_rz);
+extern bool collide_object_to_hit_box_get_slide_line(obj_type *obj,int hit_face,model_hit_box_type *hit_box,int *p_lx,int *p_rx,int *p_lz,int *p_rz);
 extern void collide_projectile_polygon(proj_type *proj,int *px,int *pz);
 extern bool collide_projectile_to_object(proj_type *proj,obj_type *obj);
 extern bool collide_projectile_to_object_hit_box(proj_type *proj,obj_type *obj,model_hit_box_type *hit_box);
@@ -48,7 +48,7 @@ extern int collide_find_projectile_for_projectile(proj_type *proj);
 extern bool collide_set_object_hit_box_for_sphere_hit(int sx,int sy,int sz,int radius,obj_type *obj);
 extern int collide_find_object_for_sphere_hit(int sx,int sy,int sz,int radius,int ignore_obj_uid);
 extern int collide_find_object_for_sphere(int sx,int sy,int sz,int radius,int ignore_obj_uid);
-extern void collide_push_objects(int sx,int sz,int sy,int radius,int force);
+extern void collide_push_objects(int sx,int sy,int sz,int radius,int force);
 
 extern bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly);
 

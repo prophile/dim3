@@ -543,8 +543,17 @@ void join_game(void)
 	net_setup.client.joined=TRUE;
 	net_setup.client.remote_uid=remote_uid;
 	net_setup.client.latency=0;
+	
+		// setup game type
 
-	strcpy(net_setup.client.game_name,game_name);
+	net_setup.game_idx=net_client_find_game(game_name);
+	if (net_setup.game_idx==-1) {
+		net_client_send_leave_host(net_setup.client.remote_uid);
+		net_client_join_host_end();
+		sprintf(err_str,"Could not find game type: %s",game_name);
+		error_open(err_str,"Network Game Canceled");
+		return;
+	}
 	
 	map.info.name[0]=0x0;
 	strcpy(map.info.host_name,map_name);

@@ -199,11 +199,11 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		// set the collisions and run the
 		// ray tracing
 
-	base_contact.obj_on=TRUE;
-	base_contact.obj_ignore_uid=obj->uid;
+	base_contact.obj.on=TRUE;
+	base_contact.obj.ignore_uid=obj->uid;
 
-	base_contact.proj_on=FALSE;
-	base_contact.proj_ignore_uid=-1;
+	base_contact.proj.on=FALSE;
+	base_contact.proj.ignore_uid=-1;
 
 	base_contact.hit_mode=poly_ray_trace_hit_mode_wall_only;
 	base_contact.origin=poly_ray_trace_origin_object;
@@ -282,8 +282,15 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		memmove(&obj->contact.hit_poly,&contacts[idx].poly,sizeof(poly_pointer_type));
 	}
 
-	if (contacts[idx].obj_uid!=-1) obj->contact.obj_uid=contacts[idx].obj_uid;
-	if (contacts[idx].proj_uid!=-1) obj->contact.proj_uid=contacts[idx].proj_uid;
+	if (contacts[idx].obj.uid!=-1) {
+		obj->contact.obj_uid=contacts[idx].obj.uid;
+		obj->contact.hit_face=contacts[idx].obj.hit_face;
+	}
+
+	if (contacts[idx].proj.uid!=-1) {
+		obj->contact.proj_uid=contacts[idx].proj.uid;
+		obj->contact.hit_face=contacts[idx].proj.hit_face;
+	}
 
 	return(TRUE);
 }
@@ -310,17 +317,17 @@ bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
 	ept.y=spt.y+yadd;
 	ept.z=spt.z+zadd;
 
-	contact.obj_on=TRUE;
+	contact.obj.on=TRUE;
 	if (proj->parent_grace>0) {
-		contact.obj_ignore_uid=proj->obj_uid;
+		contact.obj.ignore_uid=proj->obj_uid;
 	}
 	else {
-		contact.obj_ignore_uid=-1;
+		contact.obj.ignore_uid=-1;
 	}
 
 	proj_setup=proj_setups_find_uid(proj->proj_setup_uid);
-	contact.proj_on=proj_setup->collision;
-	contact.proj_ignore_uid=proj->uid;
+	contact.proj.on=proj_setup->collision;
+	contact.proj.ignore_uid=proj->uid;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_projectile;
@@ -342,8 +349,8 @@ bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd)
 
 		// setup hits
 
-	proj->contact.obj_uid=contact.obj_uid;
-	proj->contact.proj_uid=contact.proj_uid;
+	proj->contact.obj_uid=contact.obj.uid;
+	proj->contact.proj_uid=contact.proj.uid;
 	memmove(&proj->contact.hit_poly,&contact.poly,sizeof(poly_pointer_type));
 
 	return(TRUE);

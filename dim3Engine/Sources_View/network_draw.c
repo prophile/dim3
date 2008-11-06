@@ -98,7 +98,7 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int y)
       
 ======================================================= */
 
-void network_score_players_draw(void)
+void network_score_players_draw(bool center)
 {
 	int				n,k,lx,rx,y,y2,yadd,high,nscore,idx,sz;
 	short			s_score,
@@ -143,9 +143,15 @@ void network_score_players_draw(void)
 
 		// sizes
 
-	lx=hud.scale_x>>4;
-	rx=(hud.scale_x>>1)-(hud.scale_x>>5);
-		
+	if (center) {
+		lx=hud.scale_x>>2;
+		rx=lx+(hud.scale_x>>1);
+	}
+	else {
+		lx=hud.scale_x>>4;
+		rx=(hud.scale_x>>1)-(hud.scale_x>>5);
+	}
+	
 	yadd=gl_text_get_char_height(FALSE);
 	high=(yadd+3)*nscore;
 	y=((hud.scale_y-high)>>1)+(yadd+3);
@@ -304,6 +310,7 @@ void network_score_teams_draw(void)
 void network_score_draw(void)
 {
 	char			str[256];
+	bool			use_teams;
 	d3col			col;
 	obj_type		*player_obj;
 
@@ -317,7 +324,7 @@ void network_score_draw(void)
 	
 		// game type and map
 		
-	sprintf(str,"%s at %s",net_setup.client.game_name,map.info.name);
+	sprintf(str,"%s at %s",net_setup.games[net_setup.game_idx].name,map.info.name);
 	
 	col.r=col.g=col.b=1.0f;
 	
@@ -326,9 +333,12 @@ void network_score_draw(void)
 	gl_text_end();
 	
 		// draw player and team scores
+		// if this game is team type
 
-	network_score_players_draw();
-	network_score_teams_draw();
+	use_teams=net_setup.games[net_setup.game_idx].use_teams;
+
+	network_score_players_draw(!use_teams);
+	if (use_teams) network_score_teams_draw();
 }
 
 /* =======================================================

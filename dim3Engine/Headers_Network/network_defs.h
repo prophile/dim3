@@ -71,7 +71,7 @@ typedef struct		{
 						char						name[name_str_len],
 													ip_name[256],ip_resolve[64],
 													proj_name[name_str_len],
-													game_name[name_str_len],
+													game_name2[name_str_len],
 													map_name[name_str_len];
 						bool						hosting;
 					} network_setup_host_type;
@@ -79,16 +79,17 @@ typedef struct		{
 typedef struct		{
 						int							remote_uid,
 													latency,latency_ping_tick;
-						char						joined_ip[32],game_name[name_str_len];
+						char						joined_ip[32],game_name2[name_str_len];
 						bool						joined;
 					} network_setup_client_type;
 
 typedef struct		{
 						char						name[name_str_len];
+						bool						use_teams;
 					} network_setup_game_type;
 
 typedef struct		{
-						int							ngame;
+						int							ngame,game_idx;
 						network_setup_host_type		host;
 						network_setup_client_type	client;
 						network_setup_game_type		games[network_setup_max_game];

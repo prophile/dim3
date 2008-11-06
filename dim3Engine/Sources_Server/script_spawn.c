@@ -450,7 +450,7 @@ JSBool js_spawn_push_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,j
 	radius=JSVAL_TO_INT(argv[3]);
 	force=JSVAL_TO_INT(argv[4]);
 
-	collide_push_objects(x,z,y,radius,force);
+	collide_push_objects(x,y,z,radius,force);
 	*rval=JSVAL_TRUE;
 	
 	return(JS_TRUE);

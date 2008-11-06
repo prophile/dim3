@@ -294,8 +294,18 @@ void remote_host_reset(void)
 	net_setup.client.remote_uid=remote_uid;
 	net_setup.client.latency=0;
 
-	strcpy(net_setup.client.game_name,game_name);
-	
+		// setup game play type
+
+	net_setup.game_idx=net_client_find_game(game_name);
+	if (net_setup.game_idx==-1) {
+		net_client_send_leave_host(net_setup.client.remote_uid);
+		net_client_end_message_queue();
+		net_client_join_host_end();
+		sprintf(err_str,"Could not find game type: %s",game_name);
+		error_open(err_str,"Network Game Canceled");
+		return;	
+	}
+
 	map.info.name[0]=0x0;
 	strcpy(map.info.host_name,map_name);
 	
@@ -539,22 +549,14 @@ void remote_projectile_add(int remote_uid,network_request_remote_fire *proj_add)
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
 	
-	fprintf(stdout,"1. got project add!\n");
-	
 	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
-	
-	fprintf(stdout,"2. got project add (%s)!\n",proj_add->weap_name);
 	
 	weap=weapon_find_name(obj,proj_add->weap_name);
 	if (weap==NULL) return;
 	
-	fprintf(stdout,"3. got project add (%s)!\n",proj_add->proj_setup_name);
-	
 	proj_setup=find_proj_setups(weap,proj_add->proj_setup_name);
 	if (proj_setup==NULL) return;
-	
-	fprintf(stdout,"4. got project add!\n");
 
 	pt.x=ntohl(proj_add->pt_x);
 	pt.y=ntohl(proj_add->pt_y);
@@ -606,7 +608,8 @@ void remote_melee_add(int remote_uid,network_request_remote_fire *rem_melee)
 	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
 	
-	weap=weapon_find_name(obj,rem_melee->weap_name);
+	weap=NULL;
+	if (rem_melee->weap_name[0]!=0x0) weap=weapon_find_name(obj,rem_melee->weap_name);
 	
 	pt.x=ntohl(rem_melee->pt_x);
 	pt.y=ntohl(rem_melee->pt_y);
@@ -616,17 +619,21 @@ void remote_melee_add(int remote_uid,network_request_remote_fire *rem_melee)
 	ang.y=ntohf(rem_melee->fp_ang_y);
 	ang.z=ntohf(rem_melee->fp_ang_z);
 	
-	melee.radius=(signed short)ntohs(rem_melee->radius);
-	melee.distance=(signed short)ntohs(rem_melee->distance);
-	melee.damage=(signed short)ntohs(rem_melee->damage);
-	melee.force=(signed short)ntohs(rem_melee->force);
+	melee.radius=(int)ntohs(rem_melee->radius);
+	melee.distance=(int)ntohs(rem_melee->distance);
+	melee.damage=(int)ntohs(rem_melee->damage);
+	melee.force=(int)ntohs(rem_melee->force);
 	
 	melee_add(obj,weap,&pt,&ang,&melee,obj->uid);
 }
 
 void remote_fire(int remote_uid,network_request_remote_fire *fire)
 {
-	switch (fire->fire_type) {
+	int				fire_type;
+
+	fire_type=(int)ntohs(fire->fire_type);
+
+	switch (fire_type) {
 
 		case net_remote_fire_type_projectile:
 			remote_projectile_add(remote_uid,fire);

@@ -53,7 +53,7 @@ void net_host_client_handle_info(int sock)
 	strcpy(info.host_name,net_setup.host.name);
 	strcpy(info.host_ip_resolve,net_setup.host.ip_resolve);
 	strcpy(info.proj_name,net_setup.host.proj_name);
-	strcpy(info.game_name,net_setup.host.game_name);
+	strcpy(info.game_name,net_setup.games[net_setup.game_idx].name);
 	strcpy(info.map_name,net_setup.host.map_name);
 
 	network_send_packet(sock,net_action_reply_info,net_queue_mode_normal,net_remote_uid_host,(unsigned char*)&info,sizeof(network_reply_info));
@@ -77,7 +77,7 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 
 		// construct the reply
 	
-	strcpy(reply_join.game_name,net_setup.host.game_name);
+	strcpy(reply_join.game_name,net_setup.games[net_setup.game_idx].name);
 	strcpy(reply_join.map_name,net_setup.host.map_name);
 	reply_join.join_uid=htons((short)remote_uid);
 	

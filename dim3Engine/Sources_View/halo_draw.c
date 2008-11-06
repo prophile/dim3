@@ -152,7 +152,7 @@ void halo_draw_setup(void)
 	ept.y=view.camera.pnt.y;
 	ept.z=view.camera.pnt.z;
 
-	contact.proj_on=FALSE;
+	contact.proj.on=FALSE;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_object;
@@ -175,13 +175,13 @@ void halo_draw_setup(void)
 
 			// ray trace for visibily
 
-		contact.obj_on=!halo_draw->no_clip_object;
+		contact.obj.on=!halo_draw->no_clip_object;
 
 		if (halo_draw->no_clip_self) {
-			contact.obj_ignore_uid=halo_draw->obj_uid;
+			contact.obj.ignore_uid=halo_draw->obj_uid;
 		}
 		else {
-			contact.obj_ignore_uid=-1;
+			contact.obj.ignore_uid=-1;
 		}
 		
 			// push slighty towards player to clear
@@ -197,7 +197,7 @@ void halo_draw_setup(void)
 
 		if (camera.mode==cv_fpp) {
 			if (hit) {
-				if (contact.obj_uid!=server.player_obj_uid) {
+				if (contact.obj.uid!=server.player_obj_uid) {
 					halo_draw->in_view=FALSE;
 					continue;
 				}

@@ -85,8 +85,8 @@ float ray_trace_vector_inner_product(d3vct *v1,d3vct *v2)
 void ray_trace_contact_clear(ray_trace_contact_type *contact)
 {
 	contact->poly.mesh_idx=-1;
-	contact->obj_uid=-1;
-	contact->proj_uid=-1;
+	contact->obj.uid=-1;
+	contact->proj.uid=-1;
 }
 
 /* =======================================================
@@ -244,7 +244,7 @@ float ray_trace_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,int ptsz,int *x,int *y,
 	return(hit_t);
 }
 
-float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,int rx,int tz,int bz,int ty,int by,float rang)
+float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int *hit_face,int x,int z,int lx,int rx,int tz,int bz,int ty,int by,float rang)
 {
 	int			n,idx,px[4],py[4],pz[4];
 	float		t[6],hit_t;
@@ -315,6 +315,7 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
 		hpt->x=pt[idx].x;
 		hpt->y=pt[idx].y;
 		hpt->z=pt[idx].z;
+		*hit_face=idx;
 		return(hit_t);
 	}
 	
@@ -327,7 +328,7 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
       
 ======================================================= */
 
-float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,obj_type *obj)
+float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_face,obj_type *obj)
 {
 	int					n,nhit_box,wid,
 						x,y,z,lx,rx,tz,bz,ty,by,
@@ -358,7 +359,7 @@ float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,obj_type *obj
 		// regular collisions
 
 	if (!obj->hit_box.on) {
-		return(ray_trace_rotated_box(spt,vct,hpt,x,z,lx,rx,tz,bz,ty,by,rang));
+		return(ray_trace_rotated_box(spt,vct,hpt,hit_face,x,z,lx,rx,tz,bz,ty,by,rang));
 	}
 
 		// hit box collisions
@@ -395,7 +396,7 @@ float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,obj_type *obj
 		tz=z2-wid;
 		bz=z2+wid;
 		
-		hit_t=ray_trace_rotated_box(spt,vct,hpt,x,z,lx,rx,tz,bz,ty,by,rang);
+		hit_t=ray_trace_rotated_box(spt,vct,hpt,hit_face,x,z,lx,rx,tz,bz,ty,by,rang);
 		if (hit_t!=-1.0f) {
 			obj->hit_box.hit=TRUE;
 			obj->hit_box.model_uid=draw->uid;
@@ -415,7 +416,7 @@ float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,obj_type *obj
       
 ======================================================= */
 
-float ray_trace_projectile(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,proj_type *proj)
+float ray_trace_projectile(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_face,proj_type *proj)
 {
 	int			wid,x,z,lx,rx,tz,bz,ty,by;
 	float		rang;
@@ -440,7 +441,7 @@ float ray_trace_projectile(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,proj_type
 
 		// box collisions
 
-	return(ray_trace_rotated_box(spt,vct,hpt,x,z,lx,rx,tz,bz,ty,by,rang));
+	return(ray_trace_rotated_box(spt,vct,hpt,hit_face,x,z,lx,rx,tz,bz,ty,by,rang));
 }
 
 /* =======================================================
@@ -451,7 +452,7 @@ float ray_trace_projectile(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,proj_type
 
 void ray_trace_map(int item_count,ray_trace_check_item_type *item_list,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_trace_contact_type *contact)
 {
-	int							n,k;
+	int							n,k,hit_face;
 	float						t;
 	d3pnt						pt;
 	obj_type					*obj;
@@ -473,7 +474,7 @@ void ray_trace_map(int item_count,ray_trace_check_item_type *item_list,d3pnt *sp
 			case ray_trace_check_item_object:
 				obj=&server.objs[item->index];
 
-				t=ray_trace_object(spt,ept,vct,&pt,obj);
+				t=ray_trace_object(spt,ept,vct,&pt,&hit_face,obj);
 				if (t==-1.0f) break;
 				
 					// closer hit?
@@ -486,13 +487,15 @@ void ray_trace_map(int item_count,ray_trace_check_item_type *item_list,d3pnt *sp
 				hpt->z=pt.z;
 			
 				ray_trace_contact_clear(contact);
-				contact->obj_uid=obj->uid;
+
+				contact->obj.uid=obj->uid;
+				contact->obj.hit_face=hit_face;
 				break;
 
 			case ray_trace_check_item_projectile:
 				proj=&server.projs[item->index];
 				
-				t=ray_trace_projectile(spt,ept,vct,&pt,proj);
+				t=ray_trace_projectile(spt,ept,vct,&pt,&hit_face,proj);
 				if (t==-1.0f) break;
 					
 					// closer hit?
@@ -505,7 +508,9 @@ void ray_trace_map(int item_count,ray_trace_check_item_type *item_list,d3pnt *sp
 				hpt->z=pt.z;
 				
 				ray_trace_contact_clear(contact);
-				contact->proj_uid=proj->uid;
+
+				contact->proj.uid=proj->uid;
+				contact->proj.hit_face=hit_face;
 				break;
 
 			case ray_trace_check_item_mesh:
@@ -703,7 +708,7 @@ int ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_cont
 
 		// check objects
 		
-	if (contact->obj_on) {
+	if (contact->obj.on) {
 	
 		for (n=0;n!=server.count.obj;n++) {
 
@@ -711,7 +716,7 @@ int ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_cont
 
 				// object a hit candidate?
 
-			if ((obj->hidden) || (obj->pickup.on) || (obj->uid==contact->obj_ignore_uid)) continue;
+			if ((obj->hidden) || (obj->pickup.on) || (obj->uid==contact->obj.ignore_uid)) continue;
 			if (((contact->origin==poly_ray_trace_origin_object) && (!obj->contact.object_on)) || ((contact->origin==poly_ray_trace_origin_projectile) && (!obj->contact.projectile_on))) continue;
 			
 				// rough y vector box check
@@ -750,7 +755,7 @@ int ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_cont
 	
 		// check projectiles
 		
-	if (contact->proj_on) {
+	if (contact->proj.on) {
 	
 		for (n=0;n!=server.count.proj;n++) {
 
@@ -758,7 +763,7 @@ int ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_cont
 
 				// is projectile a hit candidate?
 
-			if (proj->uid==contact->proj_ignore_uid) continue;
+			if (proj->uid==contact->proj.ignore_uid) continue;
 			
 				// rough y vector box check
 				

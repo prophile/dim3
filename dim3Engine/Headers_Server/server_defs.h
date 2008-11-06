@@ -338,7 +338,7 @@ typedef struct		{
 					} obj_status;
 			
 typedef struct		{
-						int					obj_uid,proj_uid,hit_box_idx,
+						int					obj_uid,proj_uid,hit_face,hit_box_idx,
 											liquid_idx;
 						bool				object_on,projectile_on,force_on,
 											melee,pushable;
@@ -897,19 +897,30 @@ typedef struct		{
 // ray trace structures
 //
 
-#define poly_ray_trace_hit_mode_all				0
-#define poly_ray_trace_hit_mode_wall_only		1
-#define poly_ray_trace_hit_mode_floor_only		2
+#define poly_ray_trace_hit_mode_all						0
+#define poly_ray_trace_hit_mode_wall_only				1
+#define poly_ray_trace_hit_mode_floor_only				2
 
-#define poly_ray_trace_origin_unknown			0
-#define poly_ray_trace_origin_object			1
-#define poly_ray_trace_origin_projectile		2
+#define poly_ray_trace_origin_unknown					0
+#define poly_ray_trace_origin_object					1
+#define poly_ray_trace_origin_projectile				2
+
+#define ray_trace_face_hit_neg_z						0
+#define ray_trace_face_hit_pos_z						1
+#define ray_trace_face_hit_neg_x						2
+#define ray_trace_face_hit_pos_x						3
+#define ray_trace_face_hit_neg_y						4
+#define ray_trace_face_hit_pos_y						5
 
 typedef struct		{
-						int						obj_uid,proj_uid,hit_mode,origin,
-												obj_ignore_uid,proj_ignore_uid;
-						bool					obj_on,proj_on;
-						poly_pointer_type		poly;
+						int								uid,ignore_uid,hit_face;
+						bool							on;
+					} ray_trace_obj_proj_type;
+
+typedef struct		{
+						int								hit_mode,origin;
+						ray_trace_obj_proj_type			obj,proj;
+						poly_pointer_type				poly;
 					} ray_trace_contact_type;
 
 //
@@ -917,10 +928,10 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						run_tick,
-												network_update_tick,
-												network_latency_ping_tick;
-						bool					paused;
+						int								run_tick,
+														network_update_tick,
+														network_latency_ping_tick;
+						bool							paused;
 					} server_time_type;
 
 //

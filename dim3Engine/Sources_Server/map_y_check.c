@@ -57,8 +57,8 @@ int find_poly_nearest_stand(int x,int y,int z,int ydist,bool ignore_higher)
 	ept.y=y+ydist;
 	ept.z=z;
 
-	contact.obj_on=FALSE;
-	contact.proj_on=FALSE;
+	contact.obj.on=FALSE;
+	contact.proj.on=FALSE;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
 	contact.origin=poly_ray_trace_origin_unknown;
@@ -87,8 +87,8 @@ int pin_downward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *s
 	ept.y=y+ydist;
 	ept.z=z;
 	
-	contact.obj_on=FALSE;
-	contact.proj_on=FALSE;
+	contact.obj.on=FALSE;
+	contact.proj.on=FALSE;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
 	contact.origin=poly_ray_trace_origin_unknown;
@@ -113,8 +113,8 @@ int pin_downward_movement_complex(obj_type *obj,int ydist,poly_pointer_type *sta
 	
 		// setup contact
 		
-	base_contact.obj_on=FALSE;
-	base_contact.proj_on=FALSE;
+	base_contact.obj.on=FALSE;
+	base_contact.proj.on=FALSE;
 
 	base_contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
 	base_contact.origin=poly_ray_trace_origin_unknown;
@@ -210,8 +210,8 @@ int pin_upward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *hea
 	ept.y=y-ydist;
 	ept.z=z;
 
-	contact.obj_on=FALSE;
-	contact.proj_on=FALSE;
+	contact.obj.on=FALSE;
+	contact.proj.on=FALSE;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
 	contact.origin=poly_ray_trace_origin_unknown;
@@ -236,8 +236,8 @@ int pin_upward_movement_complex(obj_type *obj,int ydist,poly_pointer_type *head_
 	
 		// setup contact
 		
-	base_contact.obj_on=FALSE;
-	base_contact.proj_on=FALSE;
+	base_contact.obj.on=FALSE;
+	base_contact.proj.on=FALSE;
 
 	base_contact.hit_mode=poly_ray_trace_hit_mode_floor_only;
 	base_contact.origin=poly_ray_trace_origin_unknown;

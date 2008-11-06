@@ -88,7 +88,7 @@ void intro_open_add_button(hud_intro_button_type *btn,char *name,int id,bool hid
 	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements",sel_name,"png");
 	element_button_bitmap_add(path,path2,id,btn->x,btn->y,btn->wid,btn->high,element_pos_left,element_pos_top);
 
-	if (hide) element_hide(id,TRUE);
+	if ((hide) && (hud.intro.popup)) element_hide(id,TRUE);
 }
 
 void intro_open(void)
@@ -169,6 +169,12 @@ void intro_close(bool in_game,bool stop_music)
 void intro_show_buttons(void)
 {
 	int			id;
+
+		// only hide if in popup mode
+
+	if (!hud.intro.popup) return;
+
+		// hide/show proper buttons
 
 	id=element_get_selected();
 

@@ -689,9 +689,9 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 
 	ray_push_to_end(&ept,&spt,-orig_obj->size.radius);
 	
-	contact.obj_on=TRUE;
-	contact.proj_on=FALSE;
-	contact.obj_ignore_uid=vehicle_obj->uid;
+	contact.obj.on=TRUE;
+	contact.proj.on=FALSE;
+	contact.obj.ignore_uid=vehicle_obj->uid;
 
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_object;

@@ -437,7 +437,7 @@ int collide_find_object_for_sphere(int sx,int sy,int sz,int radius,int ignore_ob
       
 ======================================================= */
 
-void collide_push_objects(int sx,int sz,int sy,int radius,int force)
+void collide_push_objects(int sx,int sy,int sz,int radius,int force)
 {
 	int			n,yhit;
 	d3ang		ang;

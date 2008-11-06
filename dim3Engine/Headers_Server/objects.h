@@ -132,6 +132,7 @@ extern void object_move_stop(obj_type *obj);
 
 extern void object_move_with_mesh(int mesh_idx,int xmove,int zmove);
 extern void object_rotate_with_mesh(int mesh_idx,float y);
+extern bool object_push_object_allowed(obj_type *obj,obj_type *push_obj);
 extern bool object_push_with_object(obj_type *obj,int xmove,int zmove);
 extern void object_move_with_standing_object(obj_type *obj,int xmove,int zmove);
 extern void object_rotate_with_standing_object(obj_type *obj,float y);

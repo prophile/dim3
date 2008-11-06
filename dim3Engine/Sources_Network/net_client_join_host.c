@@ -44,6 +44,23 @@ network_setup_type			net_setup;
 
 /* =======================================================
 
+      Find Game From Name
+      
+======================================================= */
+
+int net_client_find_game(char *game_name)
+{
+	int			n;
+
+	for (n=0;n!=net_setup.ngame;n++) {
+		if (strcasecmp(net_setup.games[n].name,game_name)==0) return(n);
+	}
+
+	return(-1);
+}
+
+/* =======================================================
+
       Ping Host
       
 ======================================================= */
