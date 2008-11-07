@@ -121,7 +121,7 @@ bool proj_setup_add(obj_type *obj,weapon_type *weap,char *name)
 	proj_setup->mark.name[0]=0x0;
 
 	proj_setup->speed=map_enlarge;
-	proj_setup->decel_speed=1;
+	proj_setup->decel_speed=0;
 	proj_setup->decel_grace=0;
 	proj_setup->decel_min_speed=0;
 	

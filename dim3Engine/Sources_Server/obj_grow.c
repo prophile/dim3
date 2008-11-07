@@ -38,7 +38,7 @@ extern int game_time_get(void);
 
 /* =======================================================
 
-      Start/Clear Object Grows
+      Clear Object Grows
       
 ======================================================= */
 
@@ -47,7 +47,36 @@ void object_grow_clear(obj_type *obj)
 	obj->grow.on=FALSE;
 }
 
-void object_grow_start(obj_type *obj,int grow_msec,float end_resize,d3pnt *end_size,d3pnt *end_offset)
+/* =======================================================
+
+      Direct Object Grows
+      
+======================================================= */
+
+void object_grow_direct(obj_type *obj,float end_resize)
+{
+	obj_grow		*grow;
+
+	grow=&obj->grow;
+
+	grow->on=FALSE;
+
+	obj->draw.resize=end_resize;
+	
+	obj->size.x=(int)((float)obj->size.x*end_resize);
+	obj->size.y=(int)((float)obj->size.y*end_resize);
+	obj->size.z=(int)((float)obj->size.z*end_resize);
+
+	obj->size.eye_offset=(int)((float)obj->size.eye_offset*end_resize);
+}
+
+/* =======================================================
+
+      Start Object Grows
+      
+======================================================= */
+
+void object_grow_start(obj_type *obj,int grow_msec,float end_resize,d3pnt *end_offset)
 {
 	float			f_msec;
 	obj_grow		*grow;
@@ -57,30 +86,47 @@ void object_grow_start(obj_type *obj,int grow_msec,float end_resize,d3pnt *end_s
 	grow->count=grow_msec/10;
 	f_msec=(float)grow->count;
 
+		// model changes
+
 	grow->resize_end=end_resize;
 	grow->resize_add=(end_resize-obj->draw.resize)/f_msec;
 
-	memmove(&grow->size_end,end_size,sizeof(d3pnt));
-	
-	grow->size_add.x=(float)(end_size->x-obj->size.x)/f_msec;
+		// collision changes
+
+	grow->size_end.x=(int)((float)obj->size.x*end_resize);
+	grow->size_add.x=(float)(grow->size_end.x-obj->size.x)/f_msec;
 	grow->size_accum.x=0.0f;
 
-	grow->size_add.y=(float)(end_size->y-obj->size.y)/f_msec;
+	grow->size_end.y=(int)((float)obj->size.y*end_resize);
+	grow->size_add.y=(float)(grow->size_end.y-obj->size.y)/f_msec;
 	grow->size_accum.y=0.0f;
 
-	grow->size_add.z=(float)(end_size->z-obj->size.z)/f_msec;
+	grow->size_end.z=(int)((float)obj->size.z*end_resize);
+	grow->size_add.z=(float)(grow->size_end.z-obj->size.z)/f_msec;
 	grow->size_accum.z=0.0f;
 	
-	memmove(&grow->offset_end,end_offset,sizeof(d3pnt));
+		// offset changes
 
-	grow->offset_add.x=(float)(end_offset->x-obj->draw.offset.x)/f_msec;
+	if (end_offset==NULL) {
+		memmove(&grow->offset_end,&obj->draw.offset,sizeof(d3pnt));
+		grow->offset_add.x=grow->offset_add.y=grow->offset_add.z=0.0f;
+	}
+	else {
+		memmove(&grow->offset_end,end_offset,sizeof(d3pnt));
+		grow->offset_add.x=(float)(end_offset->x-obj->draw.offset.x)/f_msec;
+		grow->offset_add.y=(float)(end_offset->y-obj->draw.offset.y)/f_msec;
+		grow->offset_add.z=(float)(end_offset->z-obj->draw.offset.z)/f_msec;
+	}
+
 	grow->offset_accum.x=0.0f;
-
-	grow->offset_add.y=(float)(end_offset->y-obj->draw.offset.y)/f_msec;
 	grow->offset_accum.y=0.0f;
-
-	grow->offset_add.z=(float)(end_offset->z-obj->draw.offset.z)/f_msec;
 	grow->offset_accum.z=0.0f;
+
+		// eye offset (part of Y change)
+
+	grow->eye_offset_end=(int)((float)obj->size.eye_offset*end_resize);
+	grow->eye_offset_add=(float)(grow->eye_offset_end-obj->size.eye_offset)/f_msec;
+	grow->eye_offset_accum=0.0f;
 
 	grow->on=TRUE;
 }
@@ -93,7 +139,7 @@ void object_grow_start(obj_type *obj,int grow_msec,float end_resize,d3pnt *end_s
 
 void object_grow_run(obj_type *obj)
 {
-	int					n,xmove,ymove,zmove;
+	int					n,xmove,ymove,zmove,xoff,yoff,zoff,eye;
 	float				ypush;
 	obj_grow			*grow;
 	obj_type			*test_obj;
@@ -118,6 +164,8 @@ void object_grow_run(obj_type *obj)
 		obj->draw.offset.x=grow->offset_end.x;
 		obj->draw.offset.y=grow->offset_end.y;
 		obj->draw.offset.z=grow->offset_end.z;
+
+		obj->size.eye_offset=grow->eye_offset_end;
 
 		return;
 	}
@@ -149,25 +197,35 @@ void object_grow_run(obj_type *obj)
 		// calculate model offset
 		
 	grow->offset_accum.x+=grow->offset_add.x;
-	xmove=(int)grow->offset_accum.x;
-	grow->offset_accum.x-=(float)xmove;
+	xoff=(int)grow->offset_accum.x;
+	grow->offset_accum.x-=(float)xoff;
 
-	obj->draw.offset.x+=xmove;
+	obj->draw.offset.x+=xoff;
 
 	grow->offset_accum.y+=grow->offset_add.y;
-	ymove=(int)grow->offset_accum.y;
-	grow->offset_accum.y-=(float)ymove;
+	yoff=(int)grow->offset_accum.y;
+	grow->offset_accum.y-=(float)yoff;
 
-	obj->draw.offset.y+=ymove;
+	obj->draw.offset.y+=yoff;
 
 	grow->offset_accum.z+=grow->offset_add.z;
-	zmove=(int)grow->offset_accum.z;
-	grow->offset_accum.z-=(float)zmove;
+	zoff=(int)grow->offset_accum.z;
+	grow->offset_accum.z-=(float)zoff;
 
-	obj->draw.offset.z+=zmove;
+	obj->draw.offset.z+=zoff;
+
+		// calculate eye offset
+
+	grow->eye_offset_accum+=grow->eye_offset_add;
+	eye=(int)grow->eye_offset_accum;
+	grow->eye_offset_accum-=(float)eye;
+
+	obj->size.eye_offset+=eye;
 
 		// move any objects standing on this one
 		// if object is growing upwards
+
+	ymove+=yoff;
 
 	if (ymove>0) {
 	

@@ -256,7 +256,7 @@ void object_clear_draw(model_draw *draw)
 
 /* =======================================================
 
-      Object Radius
+      Object Size and Radius
       
 ======================================================= */
 

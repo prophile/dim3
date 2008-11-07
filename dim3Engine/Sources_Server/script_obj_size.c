@@ -36,7 +36,9 @@ extern js_type			js;
 
 JSBool js_get_obj_size_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_set_obj_size_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_obj_size_grow_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_obj_size_grow_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_obj_size_grow_over_time_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_obj_size_grow_over_time_change_offset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			obj_size_class={"obj_size_class",0,
 							script_add_property,JS_PropertyStub,
@@ -53,7 +55,9 @@ JSPropertySpec	obj_size_props[]={
 							{0}};
 
 JSFunctionSpec	obj_size_functions[]={
-							{"grow",				js_obj_size_grow_func,				8},
+							{"growTo",						js_obj_size_grow_to_func,						1},
+							{"growOverTime",				js_obj_size_grow_over_time_func,				2},
+							{"growOverTimeChangeOffset",	js_obj_size_grow_over_time_change_offset_func,	5},
 							{0}};
 
 /* =======================================================
@@ -153,24 +157,51 @@ JSBool js_set_obj_size_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
       
 ======================================================= */
 
-JSBool js_obj_size_grow_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_obj_size_grow_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
 	float			resize;
-	d3pnt			size,offset;
 	obj_type		*obj;
 
 	resize=script_value_to_float(argv[0]);
 	
-	size.x=JSVAL_TO_INT(argv[1]);
-	size.z=JSVAL_TO_INT(argv[2]);
-	size.y=JSVAL_TO_INT(argv[3]);
+	obj=object_find_uid(js.attach.thing_uid);
+	object_grow_direct(obj,resize);
 	
-	offset.x=JSVAL_TO_INT(argv[4]);
-	offset.z=JSVAL_TO_INT(argv[5]);
-	offset.y=JSVAL_TO_INT(argv[6]);
+	return(JS_TRUE);
+}
+
+JSBool js_obj_size_grow_over_time_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int				msec;
+	float			resize;
+	obj_type		*obj;
+
+	resize=script_value_to_float(argv[0]);
+	msec=JSVAL_TO_INT(argv[1]);
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	object_grow_start(obj,JSVAL_TO_INT(argv[7]),resize,&size,&offset);
+	object_grow_start(obj,msec,resize,NULL);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_size_grow_over_time_change_offset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int				msec;
+	float			resize;
+	d3pnt			offset;
+	obj_type		*obj;
+
+	resize=script_value_to_float(argv[0]);
+	
+	offset.x=JSVAL_TO_INT(argv[1]);
+	offset.z=JSVAL_TO_INT(argv[2]);
+	offset.y=JSVAL_TO_INT(argv[3]);
+
+	msec=JSVAL_TO_INT(argv[4]);
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	object_grow_start(obj,msec,resize,&offset);
 	
 	return(JS_TRUE);
 }

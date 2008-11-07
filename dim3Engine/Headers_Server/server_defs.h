@@ -307,8 +307,9 @@ typedef struct		{
 					} obj_size;
 
 typedef struct		{
-						int					count;
-						float				resize_end,resize_add;
+						int					count,eye_offset_end;
+						float				resize_end,resize_add,
+											eye_offset_add,eye_offset_accum;
 						bool				on;
 						d3pnt				size_end,offset_end;
 						d3vct				size_add,size_accum,

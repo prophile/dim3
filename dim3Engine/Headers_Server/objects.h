@@ -187,7 +187,8 @@ extern int object_held_add(obj_type *obj,char *name,char *type,char *script,char
 extern bool object_held_drop(obj_type *obj,int uid,float y_ang,int y_change,char *err_str);
 
 extern void object_grow_clear(obj_type *obj);
-extern void object_grow_start(obj_type *obj,int grow_msec,float end_resize,d3pnt *end_size,d3pnt *end_offset);
+extern void object_grow_direct(obj_type *obj,float end_resize);
+extern void object_grow_start(obj_type *obj,int grow_msec,float end_resize,d3pnt *end_offset);
 extern void object_grow_run(obj_type *obj);
 
 extern void item_pickup_check(obj_type *obj);
