@@ -235,12 +235,15 @@ void run_objects_slice(int tick)
 				// trigger any mesh changes if not suspended
 			
 			if (!obj->suspend) {
+			
 				if ((old_pnt.x!=obj->pnt.x) || (old_pnt.y!=obj->pnt.y) || (old_pnt.z!=obj->pnt.z)) {
+				
 					mesh_idx=map_mesh_find(&map,&obj->pnt);
 					if (obj->mesh.cur_mesh_idx!=mesh_idx) {
 						mesh_triggers(obj,obj->mesh.cur_mesh_idx,mesh_idx);
 						obj->mesh.cur_mesh_idx=mesh_idx;
 					}
+					
 				}
 			}
 		}

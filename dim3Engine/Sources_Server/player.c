@@ -104,7 +104,7 @@ bool player_attach_object(void)
 		
 		spot=&map.spots[spot_idx];
 		
-		object_set_position(obj,x,z,y,ang_y,0);
+		object_set_position(obj,x,y,z,ang_y,0);
 		obj->turn.ang_to.y=ang_y;
 		
 			// spot messages

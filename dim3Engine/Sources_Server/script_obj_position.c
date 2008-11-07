@@ -129,12 +129,7 @@ JSBool js_obj_position_place_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 	
 	obj=object_find_uid(js.attach.thing_uid);
 
-	obj->pnt.x=JSVAL_TO_INT(argv[0]);
-	obj->pnt.z=JSVAL_TO_INT(argv[1]);
-	obj->pnt.y=JSVAL_TO_INT(argv[2]);
-    
-    obj->ang.y=obj->motion.ang.y=script_value_to_float(argv[3]);
-	
+	object_set_position(obj,JSVAL_TO_INT(argv[0]),JSVAL_TO_INT(argv[2]),JSVAL_TO_INT(argv[1]),script_value_to_float(argv[3]),0);
 	object_telefrag_check(obj);
     
     *rval=JSVAL_TRUE;
@@ -166,9 +161,7 @@ JSBool js_obj_position_place_random_spot_func(JSContext *cx,JSObject *j_obj,uint
 	
 		// move player
 	
-	object_set_position(obj,spot->pnt.x,spot->pnt.z,spot->pnt.y,spot->ang.y,0);
-	obj->turn.ang_to.y=spot->ang.y;
-	
+	object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
  	object_telefrag_check(obj);
   
     *rval=JSVAL_TRUE;
@@ -207,10 +200,8 @@ JSBool js_obj_position_place_network_spot_func(JSContext *cx,JSObject *j_obj,uin
 	
 		// move player
 	
-	object_set_position(obj,spot->pnt.x,spot->pnt.z,spot->pnt.y,spot->ang.y,0);
-	obj->turn.ang_to.y=spot->ang.y;
- 
-	object_telefrag_check(obj);
+	object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
+ 	object_telefrag_check(obj);
    
     *rval=JSVAL_TRUE;
 
@@ -228,11 +219,8 @@ JSBool js_obj_position_move_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 	zadd=JSVAL_TO_INT(argv[1]);
 	yadd=JSVAL_TO_INT(argv[2]);
 	
-	obj->pnt.x+=xadd;
-	obj->pnt.z+=zadd;
-	obj->pnt.y+=yadd;
-	
-	object_telefrag_check(obj);
+	object_set_position(obj,(obj->pnt.x+xadd),(obj->pnt.y+yadd),(obj->pnt.z+zadd),obj->ang.y,0);
+ 	object_telefrag_check(obj);
 
 	*rval=JSVAL_TRUE;
 

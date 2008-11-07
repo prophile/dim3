@@ -41,6 +41,7 @@ extern server_type			server;
 extern network_setup_type	net_setup;
 
 JSBool js_sound_play_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_sound_play_global_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_sound_start_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_sound_stop_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_sound_fade_in_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -53,6 +54,7 @@ JSClass			sound_class={"sound_class",0,
 							
 JSFunctionSpec	sound_functions[]={
 							{"play",				js_sound_play_func,						5},
+							{"playGlobal",			js_sound_play_global_func,				2},
 							{"startMusic",			js_sound_start_music_func,				1},
 							{"stopMusic",			js_sound_stop_music_func,				0},
 							{"fadeInMusic",			js_sound_fade_in_music_func,			2},
@@ -80,11 +82,9 @@ void script_add_global_sound_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_sound_play_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+bool script_sound_play(char *name,d3pnt *pt,float pitch,bool global)
 {
-	int				x,y,z,buffer_idx,sound_obj_uid;
-	float			pitch;
-	char			name[name_str_len];
+	int				buffer_idx,sound_obj_uid;
 	bool			remote_ok,player;
 	obj_type		*obj;
 	weapon_type		*weap;
@@ -102,23 +102,17 @@ JSBool js_sound_play_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,j
 	
 		// play sound
 		
-	script_value_to_string(argv[0],name,name_str_len);
-	x=JSVAL_TO_INT(argv[1]);
-	z=JSVAL_TO_INT(argv[2]);
-	y=JSVAL_TO_INT(argv[3]);
-	pitch=script_value_to_float(argv[4]);
-
 	buffer_idx=al_find_buffer(name);
 	if (buffer_idx==-1) {
 		JS_ReportError(js.cx,"Named sound does not exist: %s",name);
-		return(JS_FALSE);
+		return(FALSE);
 	}
 
-	al_play_source(buffer_idx,x,y,z,pitch,FALSE,FALSE,FALSE,player);
+	al_play_source(buffer_idx,pt->x,pt->y,pt->z,pitch,FALSE,FALSE,global,player);
 
 		// run sound watches
 
-	if (sound_obj_uid!=-1) object_watch_sound_alert(x,y,z,sound_obj_uid,name);
+	if (sound_obj_uid!=-1) object_watch_sound_alert(pt->x,pt->y,pt->z,sound_obj_uid,name);
 	
 		// detect if sound should be remoted
 		
@@ -142,9 +136,42 @@ JSBool js_sound_play_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,j
 				break;
 		}
 		
-		if (remote_ok) net_client_send_sound(net_setup.client.remote_uid,x,y,z,pitch,name);
+		if (remote_ok) net_client_send_sound(net_setup.client.remote_uid,pt->x,pt->y,pt->z,pitch,name);
 	}
 
+	return(TRUE);
+}
+
+JSBool js_sound_play_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	float			pitch;
+	char			name[name_str_len];
+	d3pnt			pt;
+	
+	script_value_to_string(argv[0],name,name_str_len);
+	pt.x=JSVAL_TO_INT(argv[1]);
+	pt.z=JSVAL_TO_INT(argv[2]);
+	pt.y=JSVAL_TO_INT(argv[3]);
+	pitch=script_value_to_float(argv[4]);
+
+	if (!script_sound_play(name,&pt,pitch,FALSE)) return(JS_FALSE);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_sound_play_global_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	float			pitch;
+	char			name[name_str_len];
+	d3pnt			pt;
+	
+	script_value_to_string(argv[0],name,name_str_len);
+	pitch=script_value_to_float(argv[1]);
+	
+	pt.x=pt.y=pt.z=0;
+
+	if (!script_sound_play(name,&pt,pitch,TRUE)) return(JS_FALSE);
+	
 	return(JS_TRUE);
 }
 

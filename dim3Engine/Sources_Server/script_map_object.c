@@ -57,6 +57,7 @@ JSBool js_map_object_get_size_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 JSBool js_map_object_get_health_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_is_hidden_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_is_contact_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_object_is_max_health_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_shove_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_shove_direct_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_add_goal_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -93,6 +94,7 @@ JSFunctionSpec	map_object_functions[]={
 							{"getHealth",			js_map_object_get_health_func,				1},
 							{"isHidden",			js_map_object_is_hidden_func,				1},
 							{"isContact",			js_map_object_is_contact_func,				1},
+							{"isMaxHealth",			js_map_object_is_max_health_func,			1},
 							{"shove",				js_map_object_shove_func,					5},
 							{"shoveDirect",			js_map_object_shove_direct_func,			4},
 							{"addGoal",				js_map_object_add_goal_func,				1},
@@ -533,14 +535,10 @@ JSBool js_map_object_is_hidden_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 {
 	obj_type		*obj;
 
-		// uid
-	
 	obj=script_find_obj_from_uid_arg(argv[0]);
 	if (obj==NULL) return(JS_FALSE);
-	
-		// get size
 		
-	*rval=INT_TO_JSVAL(obj->hidden);
+	*rval=BOOLEAN_TO_JSVAL(obj->hidden);
 	return(JS_TRUE);
 }
 
@@ -548,14 +546,21 @@ JSBool js_map_object_is_contact_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 {
 	obj_type		*obj;
 
-		// uid
-	
 	obj=script_find_obj_from_uid_arg(argv[0]);
 	if (obj==NULL) return(JS_FALSE);
-	
-		// get size
 		
-	*rval=INT_TO_JSVAL((obj->contact.object_on) || (obj->contact.projectile_on) || (obj->contact.force_on));
+	*rval=BOOLEAN_TO_JSVAL((obj->contact.object_on) || (obj->contact.projectile_on) || (obj->contact.force_on));
+	return(JS_TRUE);
+}
+
+JSBool js_map_object_is_max_health_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	obj_type		*obj;
+
+	obj=script_find_obj_from_uid_arg(argv[0]);
+	if (obj==NULL) return(JS_FALSE);
+		
+	*rval=BOOLEAN_TO_JSVAL(obj->status.health>=obj->status.max_health);
 	return(JS_TRUE);
 }
 

@@ -902,7 +902,7 @@ void read_settings_interface(void)
 		while (game_tag!=-1) {
 		
 			xml_get_attribute_text(game_tag,"type",net_setup.games[net_setup.ngame].name,name_str_len);
-			net_setup.games[net_setup.ngame].use_teams=xml_get_attribute_boolean(fade_tag,"use_teams");
+			net_setup.games[net_setup.ngame].use_teams=xml_get_attribute_boolean(game_tag,"use_teams");
 			
 			net_setup.ngame++;
 			if (net_setup.ngame==network_setup_max_game) break;

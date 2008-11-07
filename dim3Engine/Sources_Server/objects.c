@@ -282,7 +282,7 @@ void object_set_spawn_mesh(obj_type *obj)
 	obj->mesh.cur_mesh_idx=obj->mesh.spawn_mesh_idx;
 }
 
-void object_set_position(obj_type *obj,int x,int z,int y,float ang_y,float ymove)
+void object_set_position(obj_type *obj,int x,int y,int z,float ang_y,float ymove)
 {
 	d3pnt				*pnt;
 	d3ang				*ang;
@@ -291,8 +291,8 @@ void object_set_position(obj_type *obj,int x,int z,int y,float ang_y,float ymove
 	pnt=&obj->pnt;
 	
 	pnt->x=x;
-	pnt->z=z;
 	pnt->y=y;
+	pnt->z=z;
 	
 	ang=&obj->ang;
 	ang->x=0;
@@ -309,6 +309,8 @@ void object_set_position(obj_type *obj,int x,int z,int y,float ang_y,float ymove
 	motion->last_y_change=0;
 	motion->ang.y=ang_y;
 	motion->vct.y=ymove;
+	
+	obj->turn.ang_to.y=ang_y;
 	
 	obj->force.gravity=gravity_start_power;
 
@@ -587,6 +589,8 @@ void object_reset(obj_type *obj)
 	memmove(&obj->pnt,&obj->org_pnt,sizeof(d3pnt));	
 	memmove(&obj->ang,&obj->org_ang,sizeof(d3ang));
 	obj->motion.ang.y=obj->turn.ang_to.y=obj->ang.y;
+	
+	object_set_spawn_mesh(obj);
 }
 
 /* =======================================================
@@ -656,7 +660,7 @@ int object_start(spot_type *spot,bool player,int bind,char *err_str)
 
 			// attach object to spot
 
-		object_set_position(obj,spot->pnt.x,spot->pnt.z,spot->pnt.y,spot->ang.y,0);
+		object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
 		obj->turn.ang_to.y=spot->ang.y;
 		
 		object_reset_prepare(obj);
