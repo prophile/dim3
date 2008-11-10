@@ -45,7 +45,7 @@ extern bool map_movement_next_move(int movement_idx,attach_type *attach);
       
 ======================================================= */
 
-bool group_move_start(int group_idx,int movement_idx,d3pnt *mov,d3ang *rot,int count,int user_id)
+bool group_move_start(int group_idx,int movement_idx,d3pnt *mov,d3ang *rot,int count,int user_id,bool main_move)
 {
 	int					n,unit_cnt;
 	float				f_count;
@@ -111,6 +111,8 @@ bool group_move_start(int group_idx,int movement_idx,d3pnt *mov,d3ang *rot,int c
 		
 	move->movement_idx=movement_idx;
 	move->user_id=user_id;
+	
+	move->main_move=main_move;
 	
 	move->freeze=FALSE;
 	move->on=TRUE;
@@ -312,22 +314,33 @@ void group_moves_run(void)
 		}
 		
 		move->count--;
-
-			// finished?
-
-		if (move->count==0) {
-			user_id=move->user_id;
-
-				// post the finished event
-		
-			move->on=FALSE;
-			scripts_post_event_console((attach_type*)&move->attach,sd_event_move,sd_event_move_done,user_id);
+	}
 	
-				// signal back to the original map movement
+		// handle any finished moves
+		// we do this separately as multiple group moves
+		// hooked up to a move can interfere with each other
 		
-			if (map_movement_next_move(move->movement_idx,(attach_type*)&move->attach)) {
-				scripts_post_event_console((attach_type*)&move->attach,sd_event_move,sd_event_move_loop,user_id);
-			}
+	for (n=0;n!=map.ngroup;n++) {
+
+		move=&map.groups[n].move;
+		if ((!move->on) || (move->freeze) || (move->count!=0)) continue;
+
+		move->on=FALSE;
+
+			// only post events and single map movements if
+			// this move is the main move of a group of movements
+			
+		if (!move->main_move) continue;
+
+			// post the finished event
+	
+		user_id=move->user_id;
+		scripts_post_event_console((attach_type*)&move->attach,sd_event_move,sd_event_move_done,user_id);
+
+			// signal back to the original map movement
+	
+		if (map_movement_next_move(move->movement_idx,(attach_type*)&move->attach)) {
+			scripts_post_event_console((attach_type*)&move->attach,sd_event_move,sd_event_move_loop,user_id);
 		}
 	}
 }

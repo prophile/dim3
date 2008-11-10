@@ -60,11 +60,11 @@ int console_y_offset(void)
 			return(0);
 			
 		case console_mode_fps:
-			y=gl_text_get_char_height(TRUE);
+			y=gl_text_get_char_height_small();
 			return((y*setup.screen.y_sz)/hud.scale_y);
 			
 		case console_mode_open:
-			y=gl_text_get_char_height(TRUE);
+			y=gl_text_get_char_height_small();
 			y=(max_console_line*y)+2;
 			return((y*setup.screen.y_sz)/hud.scale_y);
 		
@@ -103,7 +103,7 @@ void console_draw_fps(void)
 	
 		// setup fonts
 	
-    y_add=gl_text_get_char_height(TRUE);
+    y_add=gl_text_get_char_height_small();
     
 		// background
 
@@ -123,7 +123,7 @@ void console_draw_fps(void)
 	glVertex2i(lx,by);
 	glEnd();
 	
-	gl_text_start(TRUE);
+	gl_text_start_small();
 	col.r=col.g=col.b=0.0f;
 	
 		// version
@@ -171,7 +171,7 @@ void console_draw_open(void)
 	
 		// setup fonts
 	
-    y_add=gl_text_get_char_height(TRUE);
+    y_add=gl_text_get_char_height_small();
     
 		// console background
 		
@@ -201,7 +201,7 @@ void console_draw_open(void)
 	
 		// console lines
 		
-	gl_text_start(TRUE);
+	gl_text_start_small();
 	
 	cline=console_line;
 	

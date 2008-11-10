@@ -127,10 +127,12 @@ extern void gl_texture_movie_end(void);
 
 extern void gl_text_initialize(void);
 extern void gl_text_shutdown(void);
-extern int gl_text_get_char_width(bool small_text);
-extern int gl_text_get_char_height(bool small_text);
-extern int gl_text_get_string_width(char *str,bool small_text);
-extern void gl_text_start(bool small_text);
+extern int gl_text_get_char_height_small(void);
+extern int gl_text_get_char_height_large(void);
+extern int gl_text_get_string_width_small(char *str);
+extern int gl_text_get_string_width_large(char *str);
+extern void gl_text_start_small(void);
+extern void gl_text_start_large(void);
 extern void gl_text_end(void);
 extern void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float alpha);
 

@@ -144,7 +144,7 @@ typedef struct		{
 typedef struct		{
 						int								nvertex,ntrig;
 						char							name[name_str_len];
-						bool							no_lighting,blend_add;
+						bool							no_lighting,blend_add,tintable;
 						unsigned char					*vertex_sel_mask,*vertex_hide_mask;
  						model_vertex_type				*vertexes;
                         model_trig_type					*trigs;

@@ -38,6 +38,7 @@ JSBool js_get_obj_size_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 JSBool js_set_obj_size_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_size_grow_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_size_grow_over_time_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_obj_size_grow_over_time_change_size_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_size_grow_over_time_change_offset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			obj_size_class={"obj_size_class",0,
@@ -57,6 +58,7 @@ JSPropertySpec	obj_size_props[]={
 JSFunctionSpec	obj_size_functions[]={
 							{"growTo",						js_obj_size_grow_to_func,						1},
 							{"growOverTime",				js_obj_size_grow_over_time_func,				2},
+							{"growOverTimeChangeSize",		js_obj_size_grow_over_time_change_size_func,	5},
 							{"growOverTimeChangeOffset",	js_obj_size_grow_over_time_change_offset_func,	5},
 							{0}};
 
@@ -180,7 +182,28 @@ JSBool js_obj_size_grow_over_time_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	msec=JSVAL_TO_INT(argv[1]);
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	object_grow_start(obj,msec,resize,NULL);
+	object_grow_start(obj,msec,resize,NULL,NULL);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_size_grow_over_time_change_size_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int				msec;
+	float			resize;
+	d3pnt			size;
+	obj_type		*obj;
+
+	resize=script_value_to_float(argv[0]);
+	
+	size.x=JSVAL_TO_INT(argv[1]);
+	size.z=JSVAL_TO_INT(argv[2]);
+	size.y=JSVAL_TO_INT(argv[3]);
+
+	msec=JSVAL_TO_INT(argv[4]);
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	object_grow_start(obj,msec,resize,&size,NULL);
 	
 	return(JS_TRUE);
 }
@@ -201,7 +224,7 @@ JSBool js_obj_size_grow_over_time_change_offset_func(JSContext *cx,JSObject *j_o
 	msec=JSVAL_TO_INT(argv[4]);
 	
 	obj=object_find_uid(js.attach.thing_uid);
-	object_grow_start(obj,msec,resize,&offset);
+	object_grow_start(obj,msec,resize,NULL,&offset);
 	
 	return(JS_TRUE);
 }

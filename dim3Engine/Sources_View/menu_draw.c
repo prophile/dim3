@@ -78,7 +78,7 @@ void menu_setup_control_interface(void)
 	
 		// setup the controls
 		
-	high=gl_text_get_char_height(FALSE);
+	high=gl_text_get_char_height_large();
 	
 	x=hud.scale_x>>1;
 	y=((hud.scale_y-((high+5)*nitem))>>1)+(high+5);
@@ -95,7 +95,7 @@ void menu_setup_control_editor(void)
 {
 	int					x,y,high;
 		
-	high=gl_text_get_char_height(FALSE);
+	high=gl_text_get_char_height_large();
 	
 	x=hud.scale_x>>1;
 	y=((hud.scale_y-((high+5)*4))>>1)+(high+5);

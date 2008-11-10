@@ -214,7 +214,7 @@ void net_client_send_death(int remote_uid,int kill_uid,bool telefrag)
 		}
 		
 		death.kill_remote_uid=htons((short)send_kill_uid);
-		death.telefrag=0x0;
+		death.telefrag=htons(0);
 
 	}
 
@@ -231,7 +231,7 @@ void net_client_send_death(int remote_uid,int kill_uid,bool telefrag)
 		}
 		
 		death.kill_remote_uid=htons((short)send_telefrag_uid);
-		death.telefrag=0x1;
+		death.telefrag=htons(1);
 
 	}
 

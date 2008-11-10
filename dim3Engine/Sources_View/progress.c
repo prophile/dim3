@@ -85,7 +85,7 @@ void progress_draw(float percentage)
 	
 		// position and sizes of progress pieces
 		
-	sz=gl_text_get_char_height(TRUE);
+	sz=gl_text_get_char_height_small();
 	
 		// start the frame
 	
@@ -169,7 +169,7 @@ void progress_draw(float percentage)
 	
 		// progress text
 
-	gl_text_start(TRUE);
+	gl_text_start_small();
 	
 	x=(hud.progress.lx+hud.progress.rx)>>1;
 	y=(hud.progress.ty+hud.progress.by)>>1;

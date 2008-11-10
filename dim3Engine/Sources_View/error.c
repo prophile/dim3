@@ -66,10 +66,10 @@ void error_open(char *err_str,char *err_str_2)
 	y=(hud.scale_y/2)-5;
 	element_text_add("[Error]",-1,x,y,tx_center,FALSE,FALSE,TRUE);
 
-	y+=gl_text_get_char_height(TRUE)+5;
+	y+=gl_text_get_char_height_small()+5;
 	element_text_add(err_str,-1,x,y,tx_center,TRUE,FALSE,FALSE);
 	
-	y+=gl_text_get_char_height(TRUE)+3;
+	y+=gl_text_get_char_height_small()+3;
 	element_text_add(err_str_2,-1,x,y,tx_center,TRUE,FALSE,FALSE);
 
 		// close button

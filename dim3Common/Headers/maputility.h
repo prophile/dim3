@@ -185,7 +185,8 @@ typedef struct		{
 
 typedef struct		{
 						int									count,movement_idx,user_id;
-						bool								on,freeze,has_mov,has_rot;
+						bool								on,freeze,has_mov,has_rot,
+															main_move;
 						d3fpnt								cur_mov;
 						d3vct								mov_add,rot_add;
 						attach_type							attach;

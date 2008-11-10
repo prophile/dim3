@@ -48,7 +48,7 @@ and can be sold or given away.
 extern hud_type				hud;
 extern setup_type			setup;
 
-bool						font_small;
+int							font_size;
 float						font_char_size[90];
 bitmap_type					font_bitmap;
 
@@ -264,28 +264,33 @@ void gl_text_shutdown(void)
 
 /* =======================================================
 
-      Text Sizes
+      Character Sizes
       
 ======================================================= */
 
-inline int gl_text_get_char_width(bool small_text)
+inline int gl_text_get_char_height_small(void)
 {
-	if (small_text) return((int)(((float)hud.scale_x)*text_small_factor));
-	return((int)(((float)hud.scale_x)*text_large_factor));
+	return((int)(((float)hud.scale_x)*(text_small_wid_factor*text_height_factor)));
 }
 
-inline int gl_text_get_char_height(bool small_text)
+inline int gl_text_get_char_height_large(void)
 {
-	return((int)(((float)gl_text_get_char_width(small_text))*text_height_factor));
+	return((int)(((float)hud.scale_x)*(text_large_wid_factor*text_height_factor)));
 }
 
-int gl_text_get_string_width(char *str,bool small_text)
+/* =======================================================
+
+      String Sizes
+      
+======================================================= */
+
+int gl_text_get_string_width_pixel(char *str,int text_size)
 {
 	int			i,ch,len;
 	float		fx,f_wid;
 	char		*c;
 	
-	f_wid=(float)gl_text_get_char_width(small_text);
+	f_wid=(float)text_size;
 	
 	c=str;
 	len=strlen(str);
@@ -307,19 +312,35 @@ int gl_text_get_string_width(char *str,bool small_text)
 	return((int)fx);
 }
 
+int gl_text_get_string_width_small(char *str)
+{
+	int			text_size;
+	
+	text_size=(int)(((float)hud.scale_x)*text_small_wid_factor);
+	return(gl_text_get_string_width_pixel(str,text_size));
+}
+
+int gl_text_get_string_width_large(char *str)
+{
+	int			text_size;
+	
+	text_size=(int)(((float)hud.scale_x)*text_large_wid_factor);
+	return(gl_text_get_string_width_pixel(str,text_size));
+}
+
 /* =======================================================
 
       Start and End Text Drawing
       
 ======================================================= */
 
-void gl_text_start(bool small_text)
+void gl_text_start(int text_size)
 {
 	GLfloat				fct[4];
 
 		// remember font size
 		
-	font_small=small_text;
+	font_size=text_size;
 	
 		// setup texture
 		
@@ -361,6 +382,21 @@ void gl_text_start(bool small_text)
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 }
 
+void gl_text_start_small(void)
+{
+	gl_text_start((int)(((float)hud.scale_x)*text_small_wid_factor));
+}
+
+void gl_text_start_medium(void)
+{
+	gl_text_start((int)(((float)hud.scale_x)*text_medium_wid_factor));
+}
+
+void gl_text_start_large(void)
+{
+	gl_text_start((int)(((float)hud.scale_x)*text_large_wid_factor));
+}
+
 void gl_text_end(void)
 {
 	glDisable(GL_BLEND);
@@ -391,8 +427,8 @@ void gl_text_draw_line(int x,int y,char *txt,int txtlen,bool vcenter)
     
 		// get width and height
 		
-	f_wid=(float)gl_text_get_char_width(font_small);
-	f_high=(float)gl_text_get_char_height(font_small);
+	f_wid=(float)font_size;
+	f_high=f_wid*text_height_factor;
 
 		// construct VBO
 
@@ -495,10 +531,10 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
         
 	switch (just) {
 		case tx_center:
-			x-=(gl_text_get_string_width(txt,font_small)>>1);
+			x-=(gl_text_get_string_width_pixel(txt,font_size)>>1);
 			break;
 		case tx_right:
-			x-=gl_text_get_string_width(txt,font_small);
+			x-=gl_text_get_string_width_pixel(txt,font_size);
 			break;
 	}
 	

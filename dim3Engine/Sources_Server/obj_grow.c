@@ -76,7 +76,7 @@ void object_grow_direct(obj_type *obj,float end_resize)
       
 ======================================================= */
 
-void object_grow_start(obj_type *obj,int grow_msec,float end_resize,d3pnt *end_offset)
+void object_grow_start(obj_type *obj,int grow_msec,float end_resize,d3pnt *end_size,d3pnt *end_offset)
 {
 	float			f_msec;
 	obj_grow		*grow;
@@ -93,15 +93,23 @@ void object_grow_start(obj_type *obj,int grow_msec,float end_resize,d3pnt *end_o
 
 		// collision changes
 
-	grow->size_end.x=(int)((float)obj->size.x*end_resize);
+	if (end_size==NULL ) {
+		grow->size_end.x=(int)((float)obj->size.x*end_resize);
+		grow->size_end.y=(int)((float)obj->size.y*end_resize);
+		grow->size_end.z=(int)((float)obj->size.z*end_resize);
+	}
+	else {
+		grow->size_end.x=end_size->x;
+		grow->size_end.y=end_size->y;
+		grow->size_end.z=end_size->z;
+	}
+		
 	grow->size_add.x=(float)(grow->size_end.x-obj->size.x)/f_msec;
 	grow->size_accum.x=0.0f;
 
-	grow->size_end.y=(int)((float)obj->size.y*end_resize);
 	grow->size_add.y=(float)(grow->size_end.y-obj->size.y)/f_msec;
 	grow->size_accum.y=0.0f;
 
-	grow->size_end.z=(int)((float)obj->size.z*end_resize);
 	grow->size_add.z=(float)(grow->size_end.z-obj->size.z)/f_msec;
 	grow->size_accum.z=0.0f;
 	

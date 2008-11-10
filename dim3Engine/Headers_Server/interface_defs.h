@@ -74,8 +74,9 @@ and can be sold or given away.
 
 #define cursor_size_factor						0.05f
 
-#define text_small_factor						0.02f
-#define text_large_factor						0.038f
+#define text_small_wid_factor					0.02f
+#define text_medium_wid_factor					0.025f
+#define text_large_wid_factor					0.038f
 #define text_height_factor						1.2f
 
 #define element_control_high_factor				1.5f

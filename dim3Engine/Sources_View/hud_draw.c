@@ -380,9 +380,9 @@ void hud_texts_draw(int tick)
 
 	if (has_small) {
 
-		high=gl_text_get_char_height(TRUE);
+		high=gl_text_get_char_height_small();
 			
-		gl_text_start(TRUE);
+		gl_text_start_small();
 		
 		text=hud.texts;
 		
@@ -420,9 +420,9 @@ void hud_texts_draw(int tick)
 
 	if (has_large) {
 
-		high=gl_text_get_char_height(FALSE);
+		high=gl_text_get_char_height_large();
 			
-		gl_text_start(FALSE);
+		gl_text_start_large();
 		
 		text=hud.texts;
 		

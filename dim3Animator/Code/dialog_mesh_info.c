@@ -30,6 +30,7 @@ and can be sold or given away.
 #define kMeshInfoName					FOUR_CHAR_CODE('name')
 #define kMeshNoLighting					FOUR_CHAR_CODE('nlit')
 #define kMeshAdditive					FOUR_CHAR_CODE('badd')
+#define kMeshTintable					FOUR_CHAR_CODE('tint')
 
 bool					dialog_cancel;
 WindowRef				dialog_mesh_info_wind;
@@ -88,6 +89,7 @@ bool dialog_mesh_info_run(model_mesh_type *mesh)
 	dialog_set_text(dialog_mesh_info_wind,kMeshInfoName,0,mesh->name);
 	dialog_set_boolean(dialog_mesh_info_wind,kMeshNoLighting,0,mesh->no_lighting);
 	dialog_set_boolean(dialog_mesh_info_wind,kMeshAdditive,0,mesh->blend_add);
+	dialog_set_boolean(dialog_mesh_info_wind,kMeshTintable,0,mesh->tintable);
 	
 		// show window
 	
@@ -109,6 +111,7 @@ bool dialog_mesh_info_run(model_mesh_type *mesh)
 		dialog_get_text(dialog_mesh_info_wind,kMeshInfoName,0,mesh->name,name_str_len);
 		mesh->no_lighting=dialog_get_boolean(dialog_mesh_info_wind,kMeshNoLighting,0);
 		mesh->blend_add=dialog_get_boolean(dialog_mesh_info_wind,kMeshAdditive,0);
+		mesh->tintable=dialog_get_boolean(dialog_mesh_info_wind,kMeshTintable,0);
 	}
 	
 		// close window

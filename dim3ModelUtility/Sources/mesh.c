@@ -81,6 +81,7 @@ int model_mesh_add(model_type *model)
 	strcpy(mesh->name,"New Mesh");
 	mesh->no_lighting=FALSE;
 	mesh->blend_add=FALSE;
+	mesh->tintable=FALSE;
 	
 	model->nmesh++;
 	
@@ -117,6 +118,7 @@ int model_mesh_duplicate(model_type *model,int mesh_idx)
 
 	mesh->no_lighting=org_mesh->no_lighting;
 	mesh->blend_add=org_mesh->blend_add;
+	mesh->tintable=org_mesh->tintable;
 	
 	return(idx);
 }
@@ -143,6 +145,7 @@ void model_mesh_copy(model_type *model,int copy_mesh_idx,int mesh_idx)
 
 	mesh->no_lighting=org_mesh->no_lighting;
 	mesh->blend_add=org_mesh->blend_add;
+	mesh->tintable=org_mesh->tintable;
 }
 
 /* =======================================================

@@ -492,7 +492,7 @@ void view_pause_draw(void)
 
 	col.r=col.g=col.b=1.0f;
 			
-	gl_text_start(TRUE);
+	gl_text_start_small();
 	gl_text_draw(2,(setup.screen.y_sz-2),"[paused]",tx_left,FALSE,&col,1.0f);
 	gl_text_draw((setup.screen.x_sz-2),(setup.screen.y_sz-2),"[click to resume]",tx_right,FALSE,&col,1.0f);
 	gl_text_end();

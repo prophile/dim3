@@ -694,7 +694,7 @@ void model_render(int tick,model_draw *draw)
 			// build color lists
 			
 		model_build_color(mdl,n,x,z,y,draw);
-		model_tint_team_color(mdl,n,draw);
+		if (mdl->meshes[n].tintable) model_tint_team_color(mdl,n,draw);
 
 			// translate vertex to view
 			

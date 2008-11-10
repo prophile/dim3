@@ -405,13 +405,14 @@ void join_open(bool local)
 	
 		// title
 		
+	x=(int)(((float)hud.scale_x)*0.03f);
 	y=(int)(((float)hud.scale_y)*0.09f);
 	
 	if (local) {
-		element_text_add("Join Local Multiplayer Game",-1,5,y,tx_left,FALSE,FALSE,FALSE);
+		element_text_add("Join Local Multiplayer Game",-1,x,y,tx_left,FALSE,FALSE,FALSE);
 	}
 	else {
-		element_text_add("Join Internet Multiplayer Game",-1,5,y,tx_left,FALSE,FALSE,FALSE);
+		element_text_add("Join Internet Multiplayer Game",-1,x,y,tx_left,FALSE,FALSE,FALSE);
 	}
 	
 		// hosts table
@@ -446,7 +447,7 @@ void join_open(bool local)
 	x=padding;
 	y=hud.scale_y-padding;
 	
-	wid=(int)(((float)hud.scale_x)*0.15f);
+	wid=(int)(((float)hud.scale_x)*0.2f);
 	high=(int)(((float)hud.scale_x)*0.05f);
 
 	element_button_text_add("Rescan Hosts",join_button_rescan_id,x,y,wid,high,element_pos_left,element_pos_bottom);

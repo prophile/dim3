@@ -62,7 +62,7 @@ void map_pick_setup_control(void)
 		
 	nfile=map_pick_fpd->nfile;
 	
-	high=gl_text_get_char_height(TRUE);
+	high=gl_text_get_char_height_small();
 	
 	xadd=hud.scale_x/3;
 	

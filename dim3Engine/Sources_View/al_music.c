@@ -207,8 +207,6 @@ bool al_music_fade_in(int tick,char *name,char *path,int msec)
 
 	if (msec<=0) {
 		audio_music_fade_mode=music_fade_mode_none;
-		audio_music_original_volume=audio_global_music_volume;
-		audio_global_music_volume=0;
 		return(TRUE);
 	}
 	
@@ -217,6 +215,9 @@ bool al_music_fade_in(int tick,char *name,char *path,int msec)
 	audio_music_fade_mode=music_fade_mode_in;
 	audio_music_fade_start_tick=tick;
 	audio_music_fade_msec=msec;
+	
+	audio_music_original_volume=audio_global_music_volume;
+	audio_global_music_volume=0;
 
 	return(TRUE);
 }
@@ -234,7 +235,6 @@ void al_music_fade_out(int tick,int msec)
 
 	if (msec<=0) {
 		al_music_stop();
-		audio_global_music_volume=audio_music_original_volume;
 		audio_music_fade_mode=music_fade_mode_none;
 		return;
 	}
@@ -244,6 +244,8 @@ void al_music_fade_out(int tick,int msec)
 	audio_music_fade_mode=music_fade_mode_out;
 	audio_music_fade_start_tick=tick;
 	audio_music_fade_msec=msec;
+	
+	audio_music_original_volume=audio_global_music_volume;
 }
 
 bool al_music_fade_out_fade_in(int tick,char *name,char *path,int fade_out_msec,int fade_in_msec)

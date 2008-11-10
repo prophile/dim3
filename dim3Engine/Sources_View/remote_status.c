@@ -275,7 +275,7 @@ void remote_draw_names_render(void)
 	
 		// draw all names
 
-	gl_text_start(TRUE);
+	gl_text_start_small();
 
 	obj=server.objs;
 

@@ -39,7 +39,7 @@ extern server_type		server;
 extern camera_type		camera;
 extern js_type			js;
 
-extern bool group_move_start(int group_idx,int movement_idx,d3pnt *mov,d3ang *rot,int count,int user_id);
+extern bool group_move_start(int group_idx,int movement_idx,d3pnt *mov,d3ang *rot,int count,int user_id,bool main_move);
 extern void group_move_freeze(int group_idx,bool freeze);
 extern bool group_move_frozen(int group_idx);
 
@@ -112,12 +112,12 @@ void map_movements_start(int movement_idx,int move_idx,attach_type *attach)
 	msec=move->msec/10;
 	
 	if (!movement->reverse) {
-		group_move_start(movement->group_idx,movement_idx,&move->mov,&move->rot,msec,move->user_id);
-		if (movement->reverse_group_idx!=-1) group_move_start(movement->reverse_group_idx,movement_idx,&rev_mov,&rev_rot,msec,move->user_id);
+		group_move_start(movement->group_idx,movement_idx,&move->mov,&move->rot,msec,move->user_id,TRUE);
+		if (movement->reverse_group_idx!=-1) group_move_start(movement->reverse_group_idx,movement_idx,&rev_mov,&rev_rot,msec,move->user_id,FALSE);
 	}
 	else {
-		group_move_start(movement->group_idx,movement_idx,&rev_mov,&rev_rot,msec,move->user_id);
-		if (movement->reverse_group_idx!=-1) group_move_start(movement->reverse_group_idx,movement_idx,&move->mov,&move->rot,msec,move->user_id);
+		group_move_start(movement->group_idx,movement_idx,&rev_mov,&rev_rot,msec,move->user_id,TRUE);
+		if (movement->reverse_group_idx!=-1) group_move_start(movement->reverse_group_idx,movement_idx,&move->mov,&move->rot,msec,move->user_id,FALSE);
 	}
 	
 		// restore old attach

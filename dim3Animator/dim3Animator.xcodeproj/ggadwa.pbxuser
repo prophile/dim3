@@ -42,7 +42,7 @@
 	};
 	0867D6ABFE840B52C02AAC07 /* English */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {12, 98}}";
+			sepNavIntBoundsRect = "{{0, 0}, {546, 84}}";
 			sepNavSelRange = "{206, 0}";
 			sepNavVisRange = "{0, 0}";
 			sepNavWindowFrame = "{{130, 171}, {1041, 747}}";
@@ -119,12 +119,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 247377915;
-			PBXWorkspaceStateSaveDate = 247377915;
+			PBXPerProjectTemplateStateSaveDate = 247886952;
+			PBXWorkspaceStateSaveDate = 247886952;
 		};
 		perUserProjectItems = {
-			2624DE590EBEB2380098B78B /* PBXTextBookmark */ = 2624DE590EBEB2380098B78B /* PBXTextBookmark */;
-			26F0C0420EB576EC006F723F /* PBXTextBookmark */ = 26F0C0420EB576EC006F723F /* PBXTextBookmark */;
+			26F8CE9D0EC56B22006E4676 /* PBXTextBookmark */ = 26F8CE9D0EC56B22006E4676 /* PBXTextBookmark */;
+			26F9A4C70EC6758600578171 /* PBXTextBookmark */ = 26F9A4C70EC6758600578171 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -229,16 +229,6 @@
 		path = "../../dim3/dim3 Animator.app";
 		sourceTree = SOURCE_ROOT;
 	};
-	2624DE590EBEB2380098B78B /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
-		name = "InfoPlist.strings: 5";
-		rLen = 0;
-		rLoc = 206;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
 	26AA925B0DF2457E004A03AE /* dialog_particle_settings.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 1988}}";
@@ -255,7 +245,17 @@
 			sepNavWindowFrame = "{{247, 201}, {1041, 747}}";
 		};
 	};
-	26F0C0420EB576EC006F723F /* PBXTextBookmark */ = {
+	26F8CE9D0EC56B22006E4676 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
+		name = "InfoPlist.strings: 5";
+		rLen = 0;
+		rLoc = 206;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	26F9A4C70EC6758600578171 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
 		name = "InfoPlist.strings: 5";
@@ -291,9 +291,9 @@
 	};
 	F503D2670981A42C00DEDC74 /* draw_vertex_boxes.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 3318}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 3346}}";
 			sepNavSelRange = "{5044, 0}";
-			sepNavVisRange = "{4179, 881}";
+			sepNavVisRange = "{1581, 1049}";
 			sepNavWindowFrame = "{{176, 129}, {1041, 747}}";
 		};
 	};
@@ -371,9 +371,9 @@
 	};
 	F5941294097878F300223F2A /* dialog_mesh_info.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1596}}";
-			sepNavSelRange = "{1114, 24}";
-			sepNavVisRange = "{71, 1545}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1736}}";
+			sepNavSelRange = "{3457, 0}";
+			sepNavVisRange = "{2087, 1468}";
 			sepNavWindowFrame = "{{84, 213}, {1041, 747}}";
 		};
 	};
@@ -513,9 +513,9 @@
 	};
 	F5C6C64A09D659BB005DFE3D /* dialog_model_settings.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2338}}";
-			sepNavSelRange = "{4565, 38}";
-			sepNavVisRange = "{2504, 1716}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2478}}";
+			sepNavSelRange = "{1469, 0}";
+			sepNavVisRange = "{283, 1781}";
 			sepNavWindowFrame = "{{107, 192}, {1041, 747}}";
 		};
 	};

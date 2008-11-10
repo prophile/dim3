@@ -239,6 +239,20 @@ bool remote_slow(obj_type *obj)
       
 ======================================================= */
 
+void remote_update_current_mesh(obj_type *obj)
+{
+	int				old_mesh_idx;
+	
+		// reset current mesh
+		
+	old_mesh_idx=obj->mesh.cur_mesh_idx;
+	obj->mesh.cur_mesh_idx=map_mesh_find(&map,&obj->pnt);
+	
+		// handle any triggers
+		
+	if (old_mesh_idx!=obj->mesh.cur_mesh_idx) mesh_triggers(obj,old_mesh_idx,obj->mesh.cur_mesh_idx);
+}
+
 void remote_predict_move(obj_type *obj)
 {
 		// stop predicting after timeout
@@ -261,6 +275,7 @@ void remote_predict_move(obj_type *obj)
 		// predict movements
 		
 	object_move_remote(obj);
+	remote_update_current_mesh(obj);
 }
 
 /* =======================================================
@@ -393,8 +408,6 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 	obj->ang.x=ntohf(update->fp_ang_x);
 	obj->ang.y=ntohf(update->fp_ang_y);
 	obj->ang.z=ntohf(update->fp_ang_z);
-	
-	obj->mesh.cur_mesh_idx=map_mesh_find(&map,&obj->pnt);
 
 		// update predicition values
 		
@@ -443,19 +456,32 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 		// last update tick
 		
 	obj->remote.last_update=game_time_get();
+	
+		// update current mesh and handle
+		// triggers
+		
+	remote_update_current_mesh(obj);
 }
 
 void remote_death(int remote_uid,network_request_remote_death *death)
 {
 	int					kill_remote_uid,telefrag_remote_uid;
+	bool				telefrag;
 	obj_type			*obj,*kill_obj,*telefrag_obj;
 	
 	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
+	
+		// set health to obj
+		// this stops dead remotes from picking things up
+		
+	obj->status.health=0;
 
 		// normal death
+		
+	telefrag=(ntohs(death->telefrag)!=0);
 
-	if (death->telefrag==0x0) {
+	if (!telefrag) {
 		
 			// get killing remote uid
 			

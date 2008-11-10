@@ -89,7 +89,7 @@ bool model_hide_mesh(model_draw *draw,char *name)
 	idx=model_find_mesh_from_draw(draw,name);
 	if (idx==-1) return(FALSE);
 	
-	draw->mesh_mask&=((0x1<<idx)^0xFF);
+	draw->mesh_mask&=((0x1<<idx)^0xFFFF);
     
 	return(TRUE);
 }
