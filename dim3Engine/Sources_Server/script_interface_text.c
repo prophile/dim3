@@ -42,7 +42,7 @@ JSBool js_interface_text_hide_all_func(JSContext *cx,JSObject *j_obj,uintN argc,
 JSBool js_interface_text_move_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_text_move_relative_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_text_set_text_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_interface_text_set_large_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_interface_text_set_size_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_text_set_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_text_set_team_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_text_set_alpha_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -60,7 +60,7 @@ JSFunctionSpec	interface_text_functions[]={
 							{"move",				js_interface_text_move_func,			3},
 							{"moveRelative",		js_interface_text_move_relative_func,	3},
 							{"setText",				js_interface_text_set_text_func,		2},
-							{"setLarge",			js_interface_text_set_large_func,		2},
+							{"setSize",				js_interface_text_set_size_func,		2},
 							{"setColor",			js_interface_text_set_color_func,		4},
 							{"setTeamColor",		js_interface_text_set_team_color_func,	2},
 							{"setAlpha",			js_interface_text_set_alpha_func,		2},
@@ -157,14 +157,14 @@ JSBool js_interface_text_set_text_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	return(JS_TRUE);
 }
 
-JSBool js_interface_text_set_large_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_interface_text_set_size_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
 	hud_text_type			*text;
 	
 	text=script_find_text_from_name(argv[0]);
 	if (text==NULL) return(JS_FALSE);
 	
-	text->large=JSVAL_TO_BOOLEAN(argv[1]);
+	text->size=JSVAL_TO_INT(argv[1]);
 	
 	return(JS_TRUE);
 }

@@ -150,10 +150,10 @@ void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool ch
 		// vehicles
 		
 	if (obj->vehicle.attach_obj_uid==-1) {
-		update.vehicle_map_spawn_idx=-1;
+		update.vehicle_map_spawn_idx=htons(-1);
 	}
 	else {
-		update.vehicle_map_spawn_idx=obj->spawn_idx;
+		update.vehicle_map_spawn_idx=htons((short)obj->spawn_idx);
 	}
 	
 		// model animations

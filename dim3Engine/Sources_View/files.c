@@ -273,7 +273,7 @@ void file_open(void)
 	x=(int)(((float)hud.scale_x)*0.03f);
 	y=(int)(((float)hud.scale_y)*0.09f);
 
-	element_text_add("Load Saved Game",-1,x,y,tx_left,FALSE,FALSE,FALSE);
+	element_text_add("Load Saved Game",-1,x,y,hud.font.text_size_large,tx_left,FALSE,FALSE);
 	
 		// make the file list
 		

@@ -350,111 +350,51 @@ void hud_texts_draw_return(int x,int y,int ysz,char *data,int just,d3col *col,fl
 
 void hud_texts_draw(int tick)
 {
-	int				n,high;
+	int				n,high,cur_size;
 	float			alpha;
-	bool			has_small,has_large;
 	hud_text_type  *text;
 
-		// check for sizes
-
-	has_small=has_large=FALSE;
+	cur_size=-1;
 
 	text=hud.texts;
-
+	
 	for (n=0;n!=hud.count.text;n++) {
 
 		if (text->show) {
-			if (text->large) {
-				has_large=TRUE;
+
+				// time for a new text size?
+
+			if (text->size!=cur_size) {
+				cur_size=text->size;
+
+				gl_text_start(cur_size);
+				high=gl_text_get_char_height(cur_size);
+			}
+
+				// fading?
+		
+			alpha=text->alpha;
+			if (hud_item_fade_run(tick,&text->fade,&alpha)) {
+				text->show=FALSE;			// a fade has turned off bitmap
+				continue;
+			}
+
+				// draw text
+
+			if (text->fps) hud_texts_fps(text->data);
+
+			if (text->has_return) {
+				hud_texts_draw_return(text->x,text->y,high,text->data,text->just,&text->color,alpha);
 			}
 			else {
-				has_small=TRUE;
+				gl_text_draw(text->x,text->y,text->data,text->just,FALSE,&text->color,alpha);
 			}
 		}
 
 		text++;
 	}
-
 	
-		// small texts
-
-	if (has_small) {
-
-		high=gl_text_get_char_height_small();
-			
-		gl_text_start_small();
-		
-		text=hud.texts;
-		
-		for (n=0;n!=hud.count.text;n++) {
-
-			if ((text->show) && (!text->large)) {
-
-					// fading?
-			
-				alpha=text->alpha;
-				if (hud_item_fade_run(tick,&text->fade,&alpha)) {
-					text->show=FALSE;			// a fade has turned off bitmap
-					continue;
-				}
-
-					// draw text
-
-				if (text->fps) hud_texts_fps(text->data);
-
-				if (text->has_return) {
-					hud_texts_draw_return(text->x,text->y,high,text->data,text->just,&text->color,alpha);
-				}
-				else {
-					gl_text_draw(text->x,text->y,text->data,text->just,FALSE,&text->color,alpha);
-				}
-			}
-
-			text++;
-		}
-		
-		gl_text_end();
-	}
-	
-		// large texts
-
-	if (has_large) {
-
-		high=gl_text_get_char_height_large();
-			
-		gl_text_start_large();
-		
-		text=hud.texts;
-		
-		for (n=0;n!=hud.count.text;n++) {
-
-			if ((text->show) && (text->large)) {
-
-					// fading?
-			
-				alpha=text->alpha;
-				if (hud_item_fade_run(tick,&text->fade,&alpha)) {
-					text->show=FALSE;			// a fade has turned off bitmap
-					continue;
-				}
-
-					// draw text
-
-				if (text->fps) hud_texts_fps(text->data);
-
-				if (text->has_return) {
-					hud_texts_draw_return(text->x,text->y,high,text->data,text->just,&text->color,alpha);
-				}
-				else {
-					gl_text_draw(text->x,text->y,text->data,text->just,FALSE,&text->color,alpha);
-				}
-			}
-
-			text++;
-		}
-		
-		gl_text_end();
-	}
+	gl_text_end();		// OK to call text_end without a text_start
 }
 
 /* =======================================================

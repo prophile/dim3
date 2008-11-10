@@ -78,13 +78,13 @@ void menu_setup_control_interface(void)
 	
 		// setup the controls
 		
-	high=gl_text_get_char_height_large();
+	high=gl_text_get_char_height(hud.font.text_size_large);
 	
 	x=hud.scale_x>>1;
 	y=((hud.scale_y-((high+5)*nitem))>>1)+(high+5);
 	
 	for (n=0;n!=nitem;n++) {
-		element_text_add(item->data,n,x,y,tx_center,FALSE,TRUE,FALSE);
+		element_text_add(item->data,n,x,y,hud.font.text_size_large,tx_center,TRUE,FALSE);
 		if ((net_setup.client.joined) && (item->multiplayer_disable)) element_enable(n,FALSE);
 		y+=(high+5);
 		item++;
@@ -95,21 +95,21 @@ void menu_setup_control_editor(void)
 {
 	int					x,y,high;
 		
-	high=gl_text_get_char_height_large();
+	high=gl_text_get_char_height(hud.font.text_size_large);
 	
 	x=hud.scale_x>>1;
 	y=((hud.scale_y-((high+5)*4))>>1)+(high+5);
 
-	element_text_add("Continue",menu_editor_continue_id,x,y,tx_center,FALSE,TRUE,FALSE);
+	element_text_add("Continue",menu_editor_continue_id,x,y,hud.font.text_size_large,tx_center,TRUE,FALSE);
 	y+=(high+5);
 
-	element_text_add("Toggle Lighting",menu_editor_toggle_lighting_id,x,y,tx_center,FALSE,TRUE,FALSE);
+	element_text_add("Toggle Lighting",menu_editor_toggle_lighting_id,x,y,hud.font.text_size_large,tx_center,TRUE,FALSE);
 	y+=(high+5);
 
-	element_text_add("Reload Map",menu_editor_reload_map_id,x,y,tx_center,FALSE,TRUE,FALSE);
+	element_text_add("Reload Map",menu_editor_reload_map_id,x,y,hud.font.text_size_large,tx_center,TRUE,FALSE);
 	y+=(high+5);
 
-	element_text_add("Quit",menu_editor_quit_id,x,y,tx_center,FALSE,TRUE,FALSE);
+	element_text_add("Quit",menu_editor_quit_id,x,y,hud.font.text_size_large,tx_center,TRUE,FALSE);
 }
 
 void menu_setup_control(void)

@@ -401,7 +401,7 @@ void gui_draw_dialog(void)
 		// header
 		
 	if (is_header) {
-		high=gl_text_get_char_height_small();
+		high=gl_text_get_char_height(hud.font.text_size_small);
 		head_top=top-(high+(high/2));
 		
 		y=(head_top+top)>>1;
@@ -426,7 +426,7 @@ void gui_draw_dialog(void)
 		
 		col.r=col.g=col.b=0.0f;
 		
-		gl_text_start_small();
+		gl_text_start(hud.font.text_size_medium);
 		gl_text_draw(((lft+rgt)/2),y,gui_frame.title,tx_center,TRUE,&col,1.0f);
 		gl_text_end();
 	}
@@ -535,7 +535,7 @@ void gui_draw_message(char *txt)
 	
 		// get band size
 		
-	high=(gl_text_get_char_height_large()+10)>>1;
+	high=(gl_text_get_char_height(hud.font.text_size_large)+10)>>1;
 	
 	y=hud.scale_y>>1;
 	ty=y-high;
@@ -562,7 +562,7 @@ void gui_draw_message(char *txt)
 	
 	col.r=col.g=col.b=0.0f;
 	
-	gl_text_start_large();
+	gl_text_start(hud.font.text_size_large);
 	gl_text_draw(x,y,txt,tx_center,TRUE,&col,1.0f);
 	gl_text_end();
 	

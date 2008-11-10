@@ -104,10 +104,11 @@ void chooser_open(void)
 {
 	int					n;
 	char				path[1024],path2[1024],fname[256],
-						title[max_choose_frame_text_sz],str[max_chooser_text_data_sz];
+						title[max_chooser_frame_text_sz],str[max_chooser_text_data_sz];
 	chooser_type		*chooser;
 	chooser_text_type	*text;
 	chooser_item_type	*item;
+	chooser_button_type	*button;
 	chooser_frame_type	frame;
 	
 	chooser=&hud.choosers[chooser_idx];
@@ -116,7 +117,7 @@ void chooser_open(void)
 		
 	memmove(&frame,&chooser->frame,sizeof(chooser_frame_type));
 
-	chooser_text_substitute(chooser->frame.title,title,max_choose_frame_text_sz);
+	chooser_text_substitute(chooser->frame.title,title,max_chooser_frame_text_sz);
 	strcpy(frame.title,title);
 	
 		// setup gui
@@ -128,9 +129,9 @@ void chooser_open(void)
 
 	text=chooser->texts;
 
-	for (n=0;n<chooser->ntext;n++) {
+	for (n=0;n!=chooser->ntext;n++) {
 		chooser_text_substitute(text->data,str,max_chooser_text_data_sz);
-		element_text_add(str,text->text_id,text->x,text->y,text->just,(!text->large),text->clickable,FALSE);
+		element_text_add(str,text->text_id,text->x,text->y,text->size,text->just,text->clickable,FALSE);
 		text++;
 	}
 
@@ -138,7 +139,7 @@ void chooser_open(void)
 
 	item=chooser->items;
 
-	for (n=0;n<chooser->nitem;n++) {
+	for (n=0;n!=chooser->nitem;n++) {
 	
 		file_paths_data(&setup.file_path_setup,path,"Chooser",item->file,"png");
 		
@@ -152,6 +153,15 @@ void chooser_open(void)
 		}
 		
 		item++;
+	}
+
+		// buttons
+
+	button=chooser->buttons;
+
+	for (n=0;n!=chooser->nbutton;n++) {
+		element_button_text_add(button->name,button->item_id,button->x,button->y,button->wid,button->high,element_pos_left,element_pos_top);
+		button++;
 	}
 	
 		// clear raw key

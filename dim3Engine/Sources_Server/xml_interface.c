@@ -41,8 +41,9 @@ char							just_mode_str[][32]={"left","center","right"};
 extern int menu_add(char *name);
 extern void menu_add_item(int menu_idx,int item_id,char *data,char *sub_menu,bool multiplayer_disable,bool quit);
 extern int chooser_add(char *name);
-extern void chooser_add_text(int chooser_idx,int text_id,char *data,int x,int y,bool large,int just,bool clickable);
+extern void chooser_add_text(int chooser_idx,int text_id,char *data,int x,int y,int size,int just,bool clickable);
 extern void chooser_add_item(int chooser_idx,int item_id,char *file,int x,int y,int wid,int high,bool clickable);
+extern void chooser_add_button(int chooser_idx,int item_id,char *name,int x,int y,int wid,int high);
 
 /* =======================================================
 
@@ -356,7 +357,7 @@ void read_settings_interface_text(int text_tag)
 		text->y=xml_get_attribute_int(tag,"y");
 	}
 	
-	text->large=FALSE;
+	text->size=hud.font.text_size_small;
 	text->color.r=text->color.g=text->color.b=1;
 	text->show=TRUE;
 	text->fps=FALSE;
@@ -369,7 +370,7 @@ void read_settings_interface_text(int text_tag)
 	if (tag!=-1) {
 		text->alpha=xml_get_attribute_float_default(tag,"alpha",1.0f);
 		xml_get_attribute_text(tag,"data",data,max_hud_text_str_sz);
-		text->large=xml_get_attribute_boolean(tag,"large");
+		text->size=xml_get_attribute_int_default(tag,"size",hud.font.text_size_small);
 		xml_get_attribute_color(tag,"color",&text->color);
 		text->just=xml_get_attribute_list(tag,"just",(char*)just_mode_str);
 		text->show=!xml_get_attribute_boolean(tag,"hide");
@@ -578,10 +579,12 @@ void read_settings_interface_menu(int menu_tag)
 void read_settings_interface_chooser(int chooser_tag)
 {
 	int				idx,just,tag,texts_head_tag,text_tag,
-					items_head_tag,item_tag,x,y,wid,high,id;
+					items_head_tag,item_tag,buttons_head_tag,button_tag,
+					x,y,wid,high,id,text_size;
 	char			name[name_str_len],file[file_str_len],
+					btn_name[max_chooser_button_text_sz],
 					data[max_chooser_text_data_sz];
-	bool			clickable,large;
+	bool			clickable;
 
 	xml_get_attribute_text(chooser_tag,"name",name,name_str_len);
 	
@@ -601,13 +604,13 @@ void read_settings_interface_chooser(int chooser_tag)
 
 		id=xml_get_attribute_int(text_tag,"id");
 		xml_get_attribute_text(text_tag,"data",data,max_chooser_text_data_sz);
-		large=xml_get_attribute_boolean(text_tag,"large");
+		text_size=xml_get_attribute_int_default(text_tag,"size",hud.font.text_size_small);
 		just=xml_get_attribute_list(text_tag,"just",(char*)just_mode_str);
 		x=xml_get_attribute_int(text_tag,"x");
 		y=xml_get_attribute_int(text_tag,"y");
 		clickable=xml_get_attribute_boolean(text_tag,"clickable");
 
-		chooser_add_text(idx,id,data,x,y,large,just,clickable);
+		chooser_add_text(idx,id,data,x,y,text_size,just,clickable);
 
 		text_tag=xml_findnextchild(text_tag);
 	}
@@ -617,7 +620,7 @@ void read_settings_interface_chooser(int chooser_tag)
 	tag=xml_findfirstchild("Frame",chooser_tag);
 	if (tag!=-1) {
 		hud.choosers[idx].frame.on=xml_get_attribute_boolean(tag,"on");
-		xml_get_attribute_text(tag,"title",hud.choosers[idx].frame.title,max_choose_frame_text_sz);
+		xml_get_attribute_text(tag,"title",hud.choosers[idx].frame.title,max_chooser_frame_text_sz);
 		hud.choosers[idx].frame.x=xml_get_attribute_int(tag,"x");
 		hud.choosers[idx].frame.y=xml_get_attribute_int(tag,"y");
 		hud.choosers[idx].frame.wid=xml_get_attribute_int(tag,"width");
@@ -656,6 +659,26 @@ void read_settings_interface_chooser(int chooser_tag)
 		chooser_add_item(idx,id,file,x,y,wid,high,clickable);
 		
 		item_tag=xml_findnextchild(item_tag);
+	}
+
+		// buttons
+	
+	buttons_head_tag=xml_findfirstchild("Buttons",chooser_tag);
+	if (buttons_head_tag==-1) return;
+	
+	button_tag=xml_findfirstchild("Button",buttons_head_tag);
+	
+	while (button_tag!=-1) {
+		id=xml_get_attribute_int(button_tag,"id");
+		xml_get_attribute_text(button_tag,"name",btn_name,max_chooser_button_text_sz);
+		x=xml_get_attribute_int(button_tag,"x");
+		y=xml_get_attribute_int(button_tag,"y");
+		wid=xml_get_attribute_int_default(button_tag,"width",-1);
+		high=xml_get_attribute_int_default(button_tag,"height",-1);
+		
+		chooser_add_button(idx,id,btn_name,x,y,wid,high);
+		
+		button_tag=xml_findnextchild(button_tag);
 	}
 }
 
@@ -714,6 +737,12 @@ void read_settings_interface(void)
 		hud.scale_x=xml_get_attribute_int_default(scale_tag,"x",640);
 		hud.scale_y=xml_get_attribute_int_default(scale_tag,"y",480);
 	}
+
+		// some initial text sizes
+
+	hud.font.text_size_small=(int)(((float)hud.scale_x)*text_small_wid_factor);
+	hud.font.text_size_medium=(int)(((float)hud.scale_x)*text_medium_wid_factor);
+	hud.font.text_size_large=(int)(((float)hud.scale_x)*text_large_wid_factor);
 	
 		// bitmaps
 	

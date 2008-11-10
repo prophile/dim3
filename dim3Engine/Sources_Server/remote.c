@@ -59,6 +59,7 @@ extern bool game_start(int skill,int remote_count,network_request_remote_add *re
 extern void game_end(void);
 extern bool map_start(bool skip_media,char *err_str);
 extern void map_end(void);
+extern void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx);
 
 /* =======================================================
 
@@ -415,17 +416,16 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 	obj->motion.vct.y=ntohf(update->fp_move_vct_y);
 	obj->motion.vct.z=ntohf(update->fp_move_vct_z);
 
-	obj->turn.fix_ang_add.x=obj->turn.fix_ang_add.z=0;
+	obj->turn.fix_ang_add.x=obj->turn.fix_ang_add.z=0.0f;
 	obj->turn.fix_ang_add.y=ntohf(update->fp_turn_ang_add_y);
 	
 		// update animations
 		
 	draw=&obj->draw;
+	animation=draw->animations;
+	net_animation=update->animation;
 
 	for (n=0;n!=max_model_blend_animation;n++) {
-		animation=&draw->animations[n];
-		net_animation=&update->animation[n];
-
 		animation->tick=ntohl(net_animation->model_tick)+game_time_get();
 		animation->mode=(signed short)ntohs(net_animation->model_mode);
 		animation->animate_idx=(signed short)ntohs(net_animation->model_animate_idx);
@@ -433,6 +433,9 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 		animation->pose_move_idx=(signed short)ntohs(net_animation->model_pose_move_idx);
 		animation->smooth_animate_idx=(signed short)ntohs(net_animation->model_smooth_animate_idx);
 		animation->smooth_pose_move_idx=(signed short)ntohs(net_animation->model_smooth_pose_move_idx);
+
+		animation++;
+		net_animation++;
 	}			
 		
 	draw->mesh_mask=ntohl(update->model_mesh_mask);

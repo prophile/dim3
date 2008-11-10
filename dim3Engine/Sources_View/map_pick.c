@@ -62,7 +62,7 @@ void map_pick_setup_control(void)
 		
 	nfile=map_pick_fpd->nfile;
 	
-	high=gl_text_get_char_height_small();
+	high=gl_text_get_char_height(hud.font.text_size_small);
 	
 	xadd=hud.scale_x/3;
 	
@@ -70,7 +70,7 @@ void map_pick_setup_control(void)
 	y=y_start=(hud.scale_y-((high+1)*15))>>1;
 	
 	for (n=0;n!=nfile;n++) {
-		element_text_add(map_pick_fpd->files[n].file_name,n,x,y,tx_center,TRUE,TRUE,FALSE);
+		element_text_add(map_pick_fpd->files[n].file_name,n,x,y,hud.font.text_size_small,tx_center,TRUE,FALSE);
 		if (((n+1)%16)==0) {
 			x+=xadd;
 			y=y_start;
@@ -80,7 +80,7 @@ void map_pick_setup_control(void)
 		}
 	}
 	
-	element_text_add("Exit",map_pick_close_id,(hud.scale_x-10),(hud.scale_y-(high+1)),tx_right,TRUE,TRUE,FALSE);
+	element_text_add("Exit",map_pick_close_id,(hud.scale_x-10),(hud.scale_y-(high+1)),hud.font.text_size_small,tx_right,TRUE,FALSE);
 }
 
 /* =======================================================

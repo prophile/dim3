@@ -127,12 +127,12 @@ void element_clear(void)
 
 inline int element_get_control_high(void)
 {
-	return((int)(((float)gl_text_get_char_height_small())*element_control_high_factor));
+	return((int)(((float)gl_text_get_char_height(hud.font.text_size_small))*element_control_high_factor));
 }
 
 inline int element_get_separator_high(void)
 {
-	return((int)(((float)gl_text_get_char_height_small())*element_control_separator_factor));
+	return((int)(((float)gl_text_get_char_height(hud.font.text_size_small))*element_control_separator_factor));
 }
 
 inline int element_get_padding(void)
@@ -301,7 +301,7 @@ void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool fram
 	pthread_mutex_unlock(&element_thread_lock);
 }
 
-void element_text_add(char *str,int id,int x,int y,int just,bool small_text,bool selectable,bool alert)
+void element_text_add(char *str,int id,int x,int y,int size,int just,bool selectable,bool alert)
 {
 	int				wid,high;
 	char			*c,*c2;
@@ -318,8 +318,8 @@ void element_text_add(char *str,int id,int x,int y,int just,bool small_text,bool
 	element->x=x;
 	element->y=y;
 	
+	element->setup.text.size=size;
 	element->setup.text.just=just;
-	element->setup.text.small_text=small_text;
 	element->setup.text.alert=alert;
 
 	element->selectable=selectable;
@@ -330,12 +330,7 @@ void element_text_add(char *str,int id,int x,int y,int just,bool small_text,bool
 
 		// need to calculate size through returns
 
-	if (small_text) {
-		high=gl_text_get_char_height_small();
-	}
-	else {
-		high=gl_text_get_char_height_large();
-	}
+	high=gl_text_get_char_height(size);
 
 	element->wid=0;
 	element->high=high;
@@ -346,13 +341,7 @@ void element_text_add(char *str,int id,int x,int y,int just,bool small_text,bool
 		c2=strstr(c,"{r}");
 		if (c2!=NULL) *c2=0x0;
 		
-		if (small_text) {
-			wid=gl_text_get_string_width_small(c);
-		}
-		else {
-			wid=gl_text_get_string_width_large(c);
-		}
-		
+		wid=gl_text_get_string_width(size,c);
 		if (wid>element->wid) element->wid=wid;
 		
 		if (c2==NULL) break;
@@ -825,7 +814,7 @@ void element_draw_button_text(element_type *element,int sel_id)
 	
 		// button text
 
-	gl_text_start_medium();
+	gl_text_start(hud.font.text_size_medium);
 	gl_text_draw(((lft+rgt)>>1),((top+bot)>>1),element->setup.button.name,tx_center,TRUE,&txt_col,1.0f);
 	gl_text_end();
 }
@@ -978,22 +967,11 @@ void element_draw_text(element_type *element,int sel_id)
 		// get height
 
 	y=element->y;
-	
-	if (element->setup.text.small_text) {
-		high=gl_text_get_char_height_small();
-	}
-	else {
-		high=gl_text_get_char_height_large();
-	}
+	high=gl_text_get_char_height(element->setup.text.size);
 
 		// draw text
 
-	if (element->setup.text.small_text) {
-		gl_text_start_small();
-	}
-	else {
-		gl_text_start_large();
-	}
+	gl_text_start(element->setup.text.size);
 
 	c=element->str;
 	
@@ -1029,7 +1007,7 @@ bool element_click_text_field_open(element_type *element,int x,int y)
 {
 	int				high,lft,rgt,top,bot;
 	
-	high=gl_text_get_char_height_small();
+	high=gl_text_get_char_height(hud.font.text_size_small);
 		
 		// control box
 		
@@ -1058,7 +1036,7 @@ void element_draw_text_field(element_type *element,int sel_id)
 
 	ky=y-(element->high>>1);
 		
-	gl_text_start_small();
+	gl_text_start(hud.font.text_size_small);
 	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.base,1.0f);
 	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.base,1.0f);
 	gl_text_end();
@@ -1113,7 +1091,7 @@ void element_draw_text_field(element_type *element,int sel_id)
 	strcpy(txt,element->value_str);
 	if (element_open_text_field_id==element->id) strcat(txt,"_");
 
-	gl_text_start_small();
+	gl_text_start(hud.font.text_size_small);
 		
 	if (element->enabled) {
 		if (element->id==element_open_text_field_id) {
@@ -1153,7 +1131,7 @@ void element_draw_checkbox(element_type *element,int sel_id)
 
 	ky=y-(element->high>>1);
 
-	gl_text_start_small();
+	gl_text_start(hud.font.text_size_small);
 	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.base,1.0f);
 	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.base,1.0f);
 	gl_text_end();
@@ -1318,7 +1296,7 @@ void element_draw_combo(element_type *element,int sel_id)
 	
 	ky=y-(element->high>>1);
 
-	gl_text_start_small();
+	gl_text_start(hud.font.text_size_small);
 	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.base,1.0f);
 	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.base,1.0f);
 	gl_text_end();
@@ -1423,7 +1401,7 @@ void element_draw_combo(element_type *element,int sel_id)
 
 	strcpy(str,(element->data+(element->value*32)));
 
-	gl_text_start_small();
+	gl_text_start(hud.font.text_size_small);
 	gl_text_draw((x+15),(ky-1),str,tx_left,TRUE,&hud.color.gradient_text,alpha);
 	gl_text_end();
 }
@@ -1504,7 +1482,7 @@ void element_draw_combo_open(element_type *element)
 
 			// text
 
-		gl_text_start_small();
+		gl_text_start(hud.font.text_size_small);
 		strcpy(str,(element->data+(n*32)));
 
 		if (sel_item_idx==n) {
@@ -1572,7 +1550,7 @@ void element_draw_slider(element_type *element,int sel_id)
 	
 	ky=y-(element->high>>1);
 
-	gl_text_start_small();
+	gl_text_start(hud.font.text_size_small);
 	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.base,1.0f);
 	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.base,1.0f);
 	gl_text_end();
@@ -1696,7 +1674,7 @@ int element_get_table_row_count(element_type *element)
 
 inline int element_get_table_row_high(element_type *element)
 {
-	if (element->setup.table.bitmap_mode==element_table_bitmap_none) return(gl_text_get_char_height_small()+2);
+	if (element->setup.table.bitmap_mode==element_table_bitmap_none) return(gl_text_get_char_height(hud.font.text_size_small)+2);
 
 	return(element_table_bitmap_size+2);
 }
@@ -1708,7 +1686,7 @@ bool element_click_table(element_type *element,int x,int y)
 	
 		// get text sizes
 		
-	high=gl_text_get_char_height_small()+2;
+	high=gl_text_get_char_height(hud.font.text_size_small)+2;
 	row_high=element_get_table_row_high(element);
 	
 	row_cnt=element_get_table_row_count(element);
@@ -1841,7 +1819,7 @@ void element_draw_table_line_header(element_type *element,int x,int y,int wid,in
 	y+=(row_high>>1);
 	
 	for (n=0;n!=element->setup.table.ncolumn;n++) {
-		gl_text_start_small();
+		gl_text_start(hud.font.text_size_small);
 		gl_text_draw((x+4),y,element->setup.table.cols[n].name,tx_left,TRUE,&col,1.0f);
 		gl_text_end();
 		
@@ -1999,7 +1977,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 
 				col.r=col.g=col.b=1.0f;
 
-				gl_text_start_large();
+				gl_text_start(hud.font.text_size_large);
 				gl_text_draw((dx+(element_table_bitmap_size>>1)),(y+(element_table_bitmap_size>>1)),"?",tx_center,TRUE,&col,1.0f);
 				gl_text_end();
 			}
@@ -2019,7 +1997,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 		
 			// draw text
 			
-		gl_text_start_small();
+		gl_text_start(hud.font.text_size_small);
 		gl_text_draw(dx,dy,txt,tx_left,TRUE,txt_col,1.0f);
 		gl_text_end();
 		
@@ -2043,7 +2021,7 @@ void element_draw_table(element_type *element,int sel_id)
 		// sizes
 	
 	wid=element->wid-30;
-	high=gl_text_get_char_height_small()+2;
+	high=gl_text_get_char_height(hud.font.text_size_small)+2;
 	row_high=element_get_table_row_high(element);
 	
 		// get element counts
@@ -2318,7 +2296,7 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 	float			col_base;
 	d3col			txt_col;
 	
-	high=gl_text_get_char_height_small();
+	high=gl_text_get_char_height(hud.font.text_size_small);
 		
 		// sizes
 	
@@ -2502,7 +2480,7 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 		glVertex2i(rx,by);
 		glEnd();
 		
-		gl_text_start_medium();
+		gl_text_start(hud.font.text_size_medium);
 		gl_text_draw(((lx+rx)>>1),((ty+by)>>1),element->setup.tab.name[n],tx_center,TRUE,&txt_col,1.0f);
 		gl_text_end();
 	}

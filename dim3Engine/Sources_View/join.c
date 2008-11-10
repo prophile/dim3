@@ -409,10 +409,10 @@ void join_open(bool local)
 	y=(int)(((float)hud.scale_y)*0.09f);
 	
 	if (local) {
-		element_text_add("Join Local Multiplayer Game",-1,x,y,tx_left,FALSE,FALSE,FALSE);
+		element_text_add("Join Local Multiplayer Game",-1,x,y,hud.font.text_size_large,tx_left,FALSE,FALSE);
 	}
 	else {
-		element_text_add("Join Internet Multiplayer Game",-1,x,y,tx_left,FALSE,FALSE,FALSE);
+		element_text_add("Join Internet Multiplayer Game",-1,x,y,hud.font.text_size_large,tx_left,FALSE,FALSE);
 	}
 	
 		// hosts table
@@ -438,7 +438,7 @@ void join_open(bool local)
 		// status
 		
 	y=hud.scale_y-24;
-	element_text_add("",join_status_id,15,y,tx_left,TRUE,FALSE,FALSE);
+	element_text_add("",join_status_id,15,y,hud.font.text_size_small,tx_left,FALSE,FALSE);
 	
 		// buttons
 		

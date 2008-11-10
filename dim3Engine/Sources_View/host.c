@@ -120,7 +120,7 @@ void host_open(void)
 	x=(int)(((float)hud.scale_x)*0.03f);
 	y=(int)(((float)hud.scale_y)*0.09f);
 
-	element_text_add("Host Multiplayer Game",-1,x,y,tx_left,FALSE,FALSE,FALSE);
+	element_text_add("Host Multiplayer Game",-1,x,y,hud.font.text_size_large,tx_left,FALSE,FALSE);
 	
 		// game type
 
@@ -155,7 +155,7 @@ void host_open(void)
 		// status
 		
 	y=hud.scale_y-24;
-	element_text_add("",host_status_id,15,y,tx_left,TRUE,FALSE,FALSE);
+	element_text_add("",host_status_id,15,y,hud.font.text_size_small,tx_left,FALSE,FALSE);
 	
 		// buttons
 		

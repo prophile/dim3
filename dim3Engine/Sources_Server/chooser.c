@@ -49,12 +49,15 @@ int chooser_add(char *name)
 	hud.count.chooser++;
 	
 	strcpy(chooser->name,name);
+
+	chooser->ntext=0;
 	chooser->nitem=0;
+	chooser->nbutton=0;
 	
 	return(hud.count.chooser-1);
 }
 
-void chooser_add_text(int chooser_idx,int text_id,char *data,int x,int y,bool large,int just,bool clickable)
+void chooser_add_text(int chooser_idx,int text_id,char *data,int x,int y,int size,int just,bool clickable)
 {
 	chooser_type		*chooser;
 	chooser_text_type	*text;
@@ -70,11 +73,10 @@ void chooser_add_text(int chooser_idx,int text_id,char *data,int x,int y,bool la
 	strcpy(text->data,data);
 	text->x=x;
 	text->y=y;
-	text->large=large;
+	text->size=size;
 	text->just=just;
 	text->clickable=clickable;
 }
-
 
 void chooser_add_item(int chooser_idx,int item_id,char *file,int x,int y,int wid,int high,bool clickable)
 {
@@ -95,6 +97,26 @@ void chooser_add_item(int chooser_idx,int item_id,char *file,int x,int y,int wid
 	item->wid=wid;
 	item->high=high;
 	item->clickable=clickable;
+}
+
+void chooser_add_button(int chooser_idx,int item_id,char *name,int x,int y,int wid,int high)
+{
+	chooser_type		*chooser;
+	chooser_button_type	*button;
+	
+	chooser=&hud.choosers[chooser_idx];
+	
+	if (chooser->nbutton>=max_chooser_button) return;
+	
+	button=&chooser->buttons[chooser->nbutton];
+	chooser->nbutton++;
+	
+	button->item_id=item_id;
+	strcpy(button->name,name);
+	button->x=x;
+	button->y=y;
+	button->wid=wid;
+	button->high=high;
 }
 
 /* =======================================================

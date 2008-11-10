@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version			"2.5b9"
+#define dim3_version			"2.5b10"
 
 /* =======================================================
 
@@ -270,12 +270,12 @@ extern void string_convert_float(char *str,float f);
 //
 
 typedef struct	{
-					char			app_name[256],
-									org_app_name[256],
-									path_base[1024],
-									path_app[1024],
-									path_data[1024],
-									path_data_2[1024];
+					char							app_name[256],
+													org_app_name[256],
+													path_base[1024],
+													path_app[1024],
+													path_data[1024],
+													path_data_2[1024];
 				} file_path_setup_type;
 				
 //
@@ -577,7 +577,7 @@ extern void shader_delete(shader_type *shader);
 //
 
 #define htonf(x)									(htonl((int)((x)*1000.0f)))
-#define ntohf(x)									(((float)ntohl(x))/1000.0f)
+#define ntohf(x)									(((float)((signed int)ntohl(x)))/1000.0f)
 
 //
 // networking ports

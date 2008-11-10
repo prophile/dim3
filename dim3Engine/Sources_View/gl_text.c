@@ -264,27 +264,16 @@ void gl_text_shutdown(void)
 
 /* =======================================================
 
-      Character Sizes
+      Character/String Sizes
       
 ======================================================= */
 
-inline int gl_text_get_char_height_small(void)
+inline int gl_text_get_char_height(int text_size)
 {
-	return((int)(((float)hud.scale_x)*(text_small_wid_factor*text_height_factor)));
+	return((int)(((float)text_size)*text_height_factor));
 }
 
-inline int gl_text_get_char_height_large(void)
-{
-	return((int)(((float)hud.scale_x)*(text_large_wid_factor*text_height_factor)));
-}
-
-/* =======================================================
-
-      String Sizes
-      
-======================================================= */
-
-int gl_text_get_string_width_pixel(char *str,int text_size)
+int gl_text_get_string_width(int text_size,char *str)
 {
 	int			i,ch,len;
 	float		fx,f_wid;
@@ -310,22 +299,6 @@ int gl_text_get_string_width_pixel(char *str,int text_size)
 	}
 	
 	return((int)fx);
-}
-
-int gl_text_get_string_width_small(char *str)
-{
-	int			text_size;
-	
-	text_size=(int)(((float)hud.scale_x)*text_small_wid_factor);
-	return(gl_text_get_string_width_pixel(str,text_size));
-}
-
-int gl_text_get_string_width_large(char *str)
-{
-	int			text_size;
-	
-	text_size=(int)(((float)hud.scale_x)*text_large_wid_factor);
-	return(gl_text_get_string_width_pixel(str,text_size));
 }
 
 /* =======================================================
@@ -380,21 +353,6 @@ void gl_text_start(int text_size)
 		
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-}
-
-void gl_text_start_small(void)
-{
-	gl_text_start((int)(((float)hud.scale_x)*text_small_wid_factor));
-}
-
-void gl_text_start_medium(void)
-{
-	gl_text_start((int)(((float)hud.scale_x)*text_medium_wid_factor));
-}
-
-void gl_text_start_large(void)
-{
-	gl_text_start((int)(((float)hud.scale_x)*text_large_wid_factor));
 }
 
 void gl_text_end(void)
@@ -531,10 +489,10 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
         
 	switch (just) {
 		case tx_center:
-			x-=(gl_text_get_string_width_pixel(txt,font_size)>>1);
+			x-=(gl_text_get_string_width(font_size,txt)>>1);
 			break;
 		case tx_right:
-			x-=gl_text_get_string_width_pixel(txt,font_size);
+			x-=gl_text_get_string_width(font_size,txt);
 			break;
 	}
 	

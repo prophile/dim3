@@ -86,7 +86,7 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int y)
 	col.r=col.g=col.b=0.0f;
 	sprintf(txt,"%d",score);
 		
-	gl_text_start_large();
+	gl_text_start(hud.font.text_size_large);
 	gl_text_draw(lx,(y+1),name,tx_left,FALSE,&col,0.75f);
 	gl_text_draw(rx,(y+1),txt,tx_right,FALSE,&col,0.75f);
 	gl_text_end();
@@ -152,14 +152,14 @@ void network_score_players_draw(bool center)
 		rx=(hud.scale_x>>1)-(hud.scale_x>>5);
 	}
 	
-	yadd=gl_text_get_char_height_large();
+	yadd=gl_text_get_char_height(hud.font.text_size_large);
 	high=(yadd+3)*nscore;
 	y=((hud.scale_y-high)>>1)+(yadd+3);
 
 		// header
 
 	col.r=col.g=col.b=1.0f;
-	gl_text_start_large();
+	gl_text_start(hud.font.text_size_large);
 	gl_text_draw(lx,(y-(yadd+3)),"Players",tx_left,FALSE,&col,1.0f);
 	gl_text_end();
 	
@@ -265,14 +265,14 @@ void network_score_teams_draw(void)
 	lx=(hud.scale_x>>1)+(hud.scale_x>>5);
 	rx=hud.scale_x-(hud.scale_x>>4);
 		
-	yadd=gl_text_get_char_height_large();
+	yadd=gl_text_get_char_height(hud.font.text_size_large);
 	high=(yadd+3)*nplayer;
 	y=((hud.scale_y-high)>>1)+(yadd+3);
 
 		// header
 
 	col.r=col.g=col.b=1.0f;
-	gl_text_start_large();
+	gl_text_start(hud.font.text_size_large);
 	gl_text_draw(rx,(y-(yadd+3)),"Teams",tx_right,FALSE,&col,1.0f);
 	gl_text_end();
 	
@@ -328,8 +328,8 @@ void network_score_draw(void)
 	
 	col.r=col.g=col.b=1.0f;
 	
-	gl_text_start_large();
-	gl_text_draw((hud.scale_x>>1),gl_text_get_char_height_large(),str,tx_center,TRUE,&col,1.0f);
+	gl_text_start(hud.font.text_size_large);
+	gl_text_draw((hud.scale_x>>1),gl_text_get_char_height(hud.font.text_size_large),str,tx_center,TRUE,&col,1.0f);
 	gl_text_end();
 	
 		// draw player and team scores
@@ -356,14 +356,14 @@ void network_chat_draw(int tick)
 
 		// draw position
 
-	yadd=gl_text_get_char_height_small()+1;
+	yadd=gl_text_get_char_height(hud.font.text_size_small)+1;
 
 	x=hud.chat.x;
 	y=hud.chat.y;
 
 		// draw text
 
-	gl_text_start_small();
+	gl_text_start(hud.font.text_size_small);
 
 		// currently typing?
 
