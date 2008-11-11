@@ -370,7 +370,8 @@ void remote_host_exit(void)
 
 void remote_update(int remote_uid,network_request_remote_update *update)
 {
-	int							n,flags,map_spawn_idx;
+	int							n,flags,map_spawn_idx,
+								animation_mode,animate_idx,animate_next_idx;
 	d3pnt						org_pnt;
 	obj_type					*obj;
 	model_draw					*draw;
@@ -420,20 +421,29 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 	obj->turn.fix_ang_add.y=ntohf(update->fp_turn_ang_add_y);
 	
 		// update animations
+		// only change animations if mode, animation, or next
+		// animation are changing
 		
 	draw=&obj->draw;
 	animation=draw->animations;
 	net_animation=update->animation;
 
 	for (n=0;n!=max_model_blend_animation;n++) {
-		animation->tick=ntohl(net_animation->model_tick)+game_time_get();
-		animation->mode=(signed short)ntohs(net_animation->model_mode);
-		animation->animate_idx=(signed short)ntohs(net_animation->model_animate_idx);
-		animation->animate_next_idx=(signed short)ntohs(net_animation->model_animate_next_idx);
-		animation->pose_move_idx=(signed short)ntohs(net_animation->model_pose_move_idx);
-		animation->smooth_animate_idx=(signed short)ntohs(net_animation->model_smooth_animate_idx);
-		animation->smooth_pose_move_idx=(signed short)ntohs(net_animation->model_smooth_pose_move_idx);
-
+	
+		animation_mode=(signed short)ntohs(net_animation->model_mode);
+		animate_idx=(signed short)ntohs(net_animation->model_animate_idx);
+		animate_next_idx=(signed short)ntohs(net_animation->model_animate_next_idx);
+		
+		if ((animation_mode!=animation->mode) || (animation->animate_idx!=animate_idx) || (animation->animate_next_idx!=animate_next_idx)) {
+			animation->tick=ntohl(net_animation->model_tick)+game_time_get();
+			animation->mode=animation_mode;
+			animation->animate_idx=animate_idx;
+			animation->animate_next_idx=animate_next_idx;
+			animation->pose_move_idx=(signed short)ntohs(net_animation->model_pose_move_idx);
+			animation->smooth_animate_idx=(signed short)ntohs(net_animation->model_smooth_animate_idx);
+			animation->smooth_pose_move_idx=(signed short)ntohs(net_animation->model_smooth_pose_move_idx);
+		}
+		
 		animation++;
 		net_animation++;
 	}			

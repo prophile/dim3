@@ -66,7 +66,7 @@ typedef struct		{
 typedef struct		{
                         int						buffer_idx,left_fact,right_fact;
                         float					pitch,stream_pos,stream_add;
-						bool					used,skip,loop,ambient,no_position,no_cancel;
+						bool					used,mix,loop,ambient,no_position,no_cancel;
 						d3pnt					pnt;
 					} audio_play_type;
 	

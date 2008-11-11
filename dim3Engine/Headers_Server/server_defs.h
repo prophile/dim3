@@ -243,6 +243,7 @@ typedef struct		{
 					} model_draw_no_rot;
 
 typedef struct		{
+						int						size;
 						float					fade;
 						bool					on;
 						d3pnt					pnt,proj_pnt;

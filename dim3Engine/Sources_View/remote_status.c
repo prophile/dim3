@@ -175,7 +175,6 @@ void remote_draw_names_setup(void)
 		
 			// translate and rotate point
 			
-		
 		dist=distance_get(x,y,z,view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
 		if (dist>=remote_name_max_distance) continue;
 
@@ -195,7 +194,7 @@ void remote_draw_names_setup(void)
 		gl_rotate_point(&x2,&y2,&z2);
 		if (z2<0) continue;
 				
-			// project halos
+			// project names
 
 		gl_project_point(&x,&y,&z);
 
@@ -211,6 +210,9 @@ void remote_draw_names_setup(void)
 		else {
 			obj->draw.remote_name.fade=1.0f-((float)(dist-remote_name_min_distance)/(float)(remote_name_max_distance-remote_name_min_distance));
 		}
+		
+		obj->draw.remote_name.size=hud.font.text_size_medium-(int)((float)(hud.font.text_size_medium*dist)/(float)(remote_name_max_distance-remote_name_min_distance));
+		if (obj->draw.remote_name.size<10) obj->draw.remote_name.size=10;
 		
 		obj->draw.remote_name.on=TRUE;
 	}
@@ -263,7 +265,7 @@ void remote_draw_names_setup(void)
 
 void remote_draw_names_render(void)
 {
-	int					n,x,y;
+	int					n,x,y,text_size;
 	d3col				col;
 	obj_type			*obj;
 	
@@ -273,9 +275,11 @@ void remote_draw_names_render(void)
 	gl_setup_viewport(console_y_offset());
 	gl_2D_view_interface();
 	
+	glDisable(GL_DEPTH_TEST);
+	
 		// draw all names
 
-	gl_text_start(hud.font.text_size_small);
+	text_size=-1;
 
 	obj=server.objs;
 
@@ -294,6 +298,11 @@ void remote_draw_names_render(void)
 			y=(y*hud.scale_y)/setup.screen.y_sz;
 
 				// draw text
+				
+			if (text_size!=obj->draw.remote_name.size) {
+				text_size=obj->draw.remote_name.size;
+				gl_text_start(text_size);
+			}
 
 			remote_get_ui_color(obj,&col);
 			gl_text_draw(x,y,obj->name,tx_center,FALSE,&col,obj->draw.remote_name.fade);
@@ -302,5 +311,5 @@ void remote_draw_names_render(void)
 		obj++;
 	}
 
-	gl_text_end();
+	gl_text_end();		// can call end without a start
 }

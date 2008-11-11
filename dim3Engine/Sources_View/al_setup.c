@@ -66,14 +66,13 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 	for (n=0;n!=audio_max_play;n++) {
 
 		play=&audio_plays[n];
+		if (!play->used) continue;
 
-			// start with sound being skipped, only
+			// start with sound not in mix, only
 			// use if a sound exists and it's within the
 			// maximum distance
 
-		play->skip=TRUE;
-
-		if (!play->used) continue;
+		play->mix=FALSE;
 
 			// we have at least one sound
 
@@ -87,7 +86,7 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 			// is there positioning?
 
 		if (play->no_position) {
-			play->skip=FALSE;
+			play->mix=TRUE;
 			play->left_fact=play->right_fact=1024;
 			continue;
 		}
@@ -99,7 +98,7 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 
 			// calculate the volume
 
-		play->skip=FALSE;
+		play->mix=TRUE;
 
 		if (dist<=buffer->min_dist) {
 			vol=1024;
@@ -143,44 +142,45 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 
 			// mix plays
 
-		play=audio_plays;
-
 		for (n=0;n!=audio_max_play;n++) {
 
-			if (!play->skip) {
+			play=&audio_plays[n];
+			if (!play->used) continue;
+
+				// get buffer for mixing
+				
+			buffer=&audio_buffers[play->buffer_idx];
+
+				// do we mix this stream?
+				
+			if (play->mix) {
 
 					// get stream data
 					
 				pos=(int)play->stream_pos;
-
-				buffer=&audio_buffers[play->buffer_idx];
 				data=(int)(*(buffer->data+pos));
 	
 					// create the channels
 
 				left_channel+=((data*play->left_fact)>>10);
 				right_channel+=((data*play->right_fact)>>10);
-				
-					// move onto next position in stream
-					// or loop or stop sound
+			}
+			
+				// move onto next position in stream
+				// or loop or stop sound
 
-				play->stream_pos+=play->stream_add;
+			play->stream_pos+=play->stream_add;
 
-				if (play->stream_pos>=buffer->f_sample_len) {
+			if (play->stream_pos>=buffer->f_sample_len) {
 
-					if (play->loop) {
-						play->stream_pos=play->stream_pos-buffer->f_sample_len;
-					}
-					else {
-						play->used=FALSE;
-						play->skip=TRUE;
-					}
-
+				if (play->loop) {
+					play->stream_pos=play->stream_pos-buffer->f_sample_len;
+				}
+				else {
+					play->used=FALSE;
 				}
 
 			}
-
-			play++;
 		}
 
 			// global volume adjustment
