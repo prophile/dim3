@@ -108,12 +108,6 @@ void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx)
   
 ======================================================= */
 
-void run_object_remote(obj_type *obj)
-{
-	remote_predict_move(obj);
-	item_pickup_check(obj);
-}
-
 void run_object_normal(obj_type *obj,int tick)
 {
 		// spawning
@@ -226,7 +220,7 @@ void run_objects_slice(int tick)
 				// run object
 
 			if (obj->remote.on) {
-				run_object_remote(obj);
+				remote_predict_move(obj);
 			}
 			else {
 				run_object_normal(obj,tick);

@@ -123,6 +123,7 @@ int model_animate_pose_insert(model_type *model,int animate_idx,int animate_pose
  	
 	animate->pose_moves[k].sound.name[0]=0x0;
 	animate->pose_moves[k].sound.pitch=1.0f;
+	animate->pose_moves[k].sound.no_position=FALSE;
 	
  	animate->pose_moves[k].flash.intensity=0;
  	animate->pose_moves[k].flash.flash_msec=0;

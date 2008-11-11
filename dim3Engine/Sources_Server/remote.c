@@ -83,6 +83,8 @@ bool remote_add(network_request_remote_add *add,bool send_event)
 		// setup remote
 		
 	strcpy(obj->name,add->name);
+	strcpy(obj->type,"Remote");
+
 	obj->team_idx=(signed short)ntohs(add->team_idx);
 	obj->player=TRUE;
 	
@@ -690,6 +692,62 @@ void remote_fire(int remote_uid,network_request_remote_fire *fire)
 
 /* =======================================================
 
+      Remote Pickup
+      
+======================================================= */
+
+void remote_pickup(int remote_uid,network_request_remote_pickup *pickup)
+{
+	int					n,idx;
+	d3pnt				org_pnt;
+	obj_type			*obj;
+	weapon_type			*weap;
+	
+	obj=object_find_remote_uid(remote_uid);
+	if (obj==NULL) return;
+
+		// make sure pickup is at proper point
+
+	memmove(&org_pnt,&obj->pnt,sizeof(d3pnt));
+	
+	obj->pnt.x=ntohl(pickup->pt_x);
+	obj->pnt.y=ntohl(pickup->pt_y);
+	obj->pnt.z=ntohl(pickup->pt_z);
+
+		// setup health, ammo as they
+		// could effect pickups
+
+	obj->status.health=(signed short)ntohs(pickup->health);
+
+	idx=0;
+	weap=server.weapons;
+		
+	for (n=0;n!=server.count.weapon;n++) {
+
+		if (weap->obj_uid==obj->uid) {
+			weap->ammo.count=(signed short)ntohs(pickup->ammos[idx].ammo_count);
+			weap->ammo.clip_count=(signed short)ntohs(pickup->ammos[idx].clip_count);
+			weap->alt_ammo.count=(signed short)ntohs(pickup->ammos[idx].alt_ammo_count);
+			weap->alt_ammo.clip_count=(signed short)ntohs(pickup->ammos[idx].alt_clip_count);
+
+			idx++;
+			if (idx==net_max_weapon_per_remote) break;
+		}
+
+		weap++;
+	}
+
+		// run pickup
+
+	item_pickup_check(obj);
+
+		// restore point
+
+	memmove(&obj->pnt,&org_pnt,sizeof(d3pnt));
+}
+
+/* =======================================================
+
       Remote Networking Receives
       
 ======================================================= */
@@ -745,6 +803,10 @@ bool remote_network_get_updates(int tick)
 
 			case net_action_request_remote_fire:
 				remote_fire(from_remote_uid,(network_request_remote_fire*)data);
+				break;
+
+			case net_action_request_remote_pickup:
+				remote_pickup(from_remote_uid,(network_request_remote_pickup*)data);
 				break;
 
 			case net_action_reply_latency_ping:

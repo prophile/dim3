@@ -379,3 +379,52 @@ void net_client_send_melee_add(int remote_uid,char *weap_name,int radius,int dis
 	}
 }
 
+/* =======================================================
+
+      Pickup Messages
+	        
+======================================================= */
+
+void net_client_send_pickup(int remote_uid,obj_type *obj)
+{
+	int									n,idx;
+	weapon_type							*weap;
+	network_request_remote_pickup		pickup;
+	
+		// make sure pickup can work by
+		// moving over settings pickups are concerned with
+
+	pickup.pt_x=htonl(obj->pnt.x);
+	pickup.pt_y=htonl(obj->pnt.y);
+	pickup.pt_z=htonl(obj->pnt.z);
+
+	pickup.health=htons((short)obj->status.health);
+
+	idx=0;
+	weap=server.weapons;
+		
+	for (n=0;n!=server.count.weapon;n++) {
+
+		if (weap->obj_uid==obj->uid) {
+			pickup.ammos[idx].ammo_count=htons((short)weap->ammo.count);
+			pickup.ammos[idx].clip_count=htons((short)weap->ammo.clip_count);
+			pickup.ammos[idx].alt_ammo_count=htons((short)weap->alt_ammo.count);
+			pickup.ammos[idx].alt_clip_count=htons((short)weap->alt_ammo.clip_count);
+
+			idx++;
+			if (idx==net_max_weapon_per_remote) break;
+		}
+
+		weap++;
+	}
+
+		// send message
+
+	if (net_setup.host.hosting) {
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_pickup,net_queue_mode_normal,(unsigned char*)&pickup,sizeof(network_request_remote_pickup),FALSE);
+	}
+	else {
+		network_send_packet(client_socket,net_action_request_remote_pickup,net_queue_mode_normal,remote_uid,(unsigned char*)&pickup,sizeof(network_request_remote_pickup));
+	}
+}
+

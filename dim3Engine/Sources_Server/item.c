@@ -33,8 +33,10 @@ and can be sold or given away.
 #include "objects.h"
 #include "weapons.h"
 #include "physics.h"
+#include "network.h"
 
-extern server_type		server;
+extern server_type			server;
+extern network_setup_type	net_setup;
 
 extern bool collide_object_to_item(obj_type *obj1,obj_type *obj2);
 
@@ -94,6 +96,14 @@ void item_pickup_check(obj_type *obj)
 				// send pickup event to object
 				
 			scripts_post_event_console(&obj->attach,sd_event_pickup,0,0);
+
+				// send network event
+
+			if (net_setup.client.joined) {
+				if (obj->uid==server.player_obj_uid) {
+					net_client_send_pickup(net_setup.client.remote_uid,obj);
+				}
+			}
 			
 				// successfully picked up
 				

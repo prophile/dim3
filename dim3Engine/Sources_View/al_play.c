@@ -96,7 +96,7 @@ int al_play_source(int buffer_idx,int x,int y,int z,float pitch,bool loop,bool a
 			idx=n;
 			break;
 		}
-		if (non_no_cancel_idx==-1) non_no_cancel_idx=n;
+		if ((non_no_cancel_idx==-1) && (!play->no_cancel)) non_no_cancel_idx=n;
 		play++;
 	}
 

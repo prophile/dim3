@@ -95,6 +95,7 @@ bool read_animate_xml(model_type *model)
 			xml_get_attribute_text(tag,"sound",pose_move->sound.name,name_str_len);
 			pose_move->sound.bone_idx=model_find_bone(model,xml_get_attribute_model_tag(tag,"sound_bone"));
 			pose_move->sound.pitch=xml_get_attribute_float_default(tag,"sound_pitch",1.0f);
+			pose_move->sound.no_position=xml_get_attribute_boolean(tag,"sound_global");
          
 			xml_get_attribute_text(tag,"mesh_fade",pose_move->mesh_fade.name,name_str_len);
 			pose_move->mesh_fade.fade_in_msec=xml_get_attribute_int(tag,"mesh_fade_in_time");
@@ -276,6 +277,7 @@ bool write_animate_xml(model_type *model)
             xml_add_attribute_text("sound",pose_move->sound.name);
  			xml_add_attribute_model_tag("sound_bone",model->bones[pose_move->sound.bone_idx].tag);
 			xml_add_attribute_float("sound_pitch",pose_move->sound.pitch);
+			xml_add_attribute_boolean("sound_global",pose_move->sound.no_position);
 			
 			xml_add_attribute_text("mesh_fade",pose_move->mesh_fade.name);
 			xml_add_attribute_int("mesh_fade_in_time",pose_move->mesh_fade.fade_in_msec);

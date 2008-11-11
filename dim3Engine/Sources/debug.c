@@ -195,10 +195,12 @@ void debug_dump(void)
 	debug_header("Objects",server.count.obj);
 	
 	debug_space("Name",25);
+	debug_space("Type",15);
 	debug_space("Script",25);
 	debug_space("Binding",10);
 	debug_return();
 	debug_space("------------------------",25);
+	debug_space("------------------------",15);
 	debug_space("------------------------",25);
 	debug_space("---------",10);
 	debug_return();
@@ -207,6 +209,7 @@ void debug_dump(void)
 	
 	for ((i=0);(i!=server.count.obj);i++) {
 		debug_space(obj->name,25);
+		debug_space(obj->type,15);
 		if (!obj->scenery.on) {
 			idx=scripts_find_uid(obj->attach.script_uid);
 			debug_space(js.scripts[idx].name,25);

@@ -80,6 +80,7 @@ void scenery_create(void)
 		obj->hit_box.on=map_scenery->contact_hit_box;
 
 		strcpy(obj->name,map_scenery->model_name);
+		strcpy(obj->type,"Scenery");
 		strcpy(obj->draw.name,map_scenery->model_name);
 		
 		obj->draw.on=TRUE;

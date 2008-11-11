@@ -124,9 +124,10 @@ typedef struct		{
 #define net_action_request_remote_chat				14
 #define net_action_request_remote_sound				15
 #define net_action_request_remote_fire				16
-#define net_action_request_latency_ping				17
-#define net_action_reply_latency_ping				18
-#define net_action_request_host_exit				19
+#define net_action_request_remote_pickup			17
+#define net_action_request_latency_ping				18
+#define net_action_reply_latency_ping				19
+#define net_action_request_host_exit				20
 
 //
 // remote fire types
@@ -135,6 +136,12 @@ typedef struct		{
 #define net_remote_fire_type_projectile				0
 #define net_remote_fire_type_hit_scan				1
 #define net_remote_fire_type_melee					2
+
+//
+// network maximums
+//
+
+#define net_max_weapon_per_remote					24
 
 //
 // team definitions
@@ -235,4 +242,14 @@ typedef struct		{
 						char						weap_name[name_str_len],proj_setup_name[name_str_len];
 					} network_request_remote_fire;
 
+typedef struct		{
+						short						ammo_count,clip_count,
+													alt_ammo_count,alt_clip_count;
+					} network_request_remote_ammo;
+
+typedef struct		{
+						int							pt_x,pt_y,pt_z;
+						short						health;
+						network_request_remote_ammo	ammos[net_max_weapon_per_remote];
+					} network_request_remote_pickup;
 

@@ -189,6 +189,7 @@ typedef struct		{
 typedef struct		{
 						int								bone_idx,buffer_idx;
 						float							pitch;
+						bool							no_position;
 						char							name[name_str_len];
 					} model_pose_move_sound_type;
 					
