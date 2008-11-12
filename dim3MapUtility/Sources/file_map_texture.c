@@ -129,8 +129,6 @@ bool map_textures_read(map_type *map,bool in_engine)
 	
 	for (i=0;i!=max_map_texture;i++) {
 	
-		fprintf(stdout,"texture %d\n",i);
-	
 		texture=&map->textures[i];
 	
 		if ((in_engine) && (!txt_ok[i])) continue;

@@ -138,6 +138,7 @@ extern void script_add_weap_kickback_object(JSObject *parent_obj);
 extern void script_add_weap_recoil_object(JSObject *parent_obj);
 extern void script_add_weap_melee_object(JSObject *parent_obj);
 extern void script_add_weap_fire_object(JSObject *parent_obj);
+extern void script_add_weap_target_object(JSObject *parent_obj);
 extern void script_add_weap_zoom_object(JSObject *parent_obj);
 
 extern void script_add_proj_setting_object(JSObject *parent_obj);

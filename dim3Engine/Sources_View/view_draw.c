@@ -64,6 +64,7 @@ extern void polygon_segment_start(void);
 extern void polygon_segment_end(void);
 extern bool model_inview(model_draw *draw);
 extern void model_render(int tick,model_draw *draw);
+extern void model_render_target(model_draw *draw);
 extern void view_draw_liquid_tint(int liquid_idx);
 extern void view_draw_effect_tint(int tick,obj_type *obj);
 extern void fade_screen_draw(int tick);
@@ -198,6 +199,7 @@ void view_draw_models(int tick)
 				if (obj->draw.in_view) {
 					model_render(tick,&obj->draw);
 					if (obj->remote.on) remote_draw_status(obj);
+					if (object_is_targetted(obj)) model_render_target(&obj->draw);
 				}
 				break;
 

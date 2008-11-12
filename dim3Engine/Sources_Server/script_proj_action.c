@@ -40,6 +40,7 @@ JSBool js_set_proj_action_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 JSBool js_proj_action_rotate_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_proj_action_turn_towards_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_proj_action_seek_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_proj_action_seek_target_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_proj_action_bounce_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_proj_action_reflect_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_proj_action_stick_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -64,6 +65,7 @@ JSFunctionSpec	proj_action_functions[]={
 							{"rotate",				js_proj_action_rotate_func,				1},
 							{"turnTowards",			js_proj_action_turn_towards_func,		2},
 							{"seek",				js_proj_action_seek_func,				3},
+							{"seekTarget",			js_proj_action_seek_target_func,		2},
 							{"bounce",				js_proj_action_bounce_func,				2},
 							{"reflect",				js_proj_action_reflect_func,			0},
 							{"stick",				js_proj_action_stick_func,				0},
@@ -213,6 +215,29 @@ JSBool js_proj_action_seek_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *
 	if (to_obj==NULL) return(JS_FALSE);
 	
 	projectile_seek(proj,to_obj,script_value_to_float(argv[1]),script_value_to_float(argv[2]));
+	
+	return(JS_TRUE);
+}
+
+JSBool js_proj_action_seek_target_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	obj_type			*to_obj;
+	weapon_type			*weap;
+	proj_setup_type		*proj_setup;
+	proj_type			*proj;
+
+	proj=proj_get_attach();
+	if (proj==NULL) return(JS_TRUE);
+
+	proj_setup=proj_setups_find_uid(proj->proj_setup_uid);
+	if (proj_setup==NULL) return(JS_TRUE);
+	
+	weap=weapon_find_uid(proj_setup->weap_uid);
+		
+	to_obj=object_find_uid(weap->target.obj_uid);
+	if (to_obj==NULL) return(JS_FALSE);
+	
+	projectile_seek(proj,to_obj,script_value_to_float(argv[0]),script_value_to_float(argv[1]));
 	
 	return(JS_TRUE);
 }

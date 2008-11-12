@@ -244,8 +244,106 @@ void weapon_pick(int tick,obj_type *obj,int offset)
 		// set weapon
     
     weapon_goto(tick,obj,weap);
-}    
-   
+}
+    
+/* =======================================================
+
+      Weapon Targetting
+      
+======================================================= */
+
+void weapon_target_next_object(obj_type *obj,weapon_type *weap)
+{
+	int				n,dist,min_dist,cur_dist,dif,cur_dif,
+					min_uid,next_uid;
+	obj_type		*chk_obj;
+
+		// get current last min difference
+
+	if (weap->target.obj_uid!=-1) {
+		chk_obj=object_find_uid(weap->target.obj_uid);
+		cur_dist=distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,chk_obj->pnt.x,chk_obj->pnt.y,chk_obj->pnt.z);
+	}
+	else {
+		cur_dist=weap->target.distance;
+	}
+
+		// find next further object
+		// or the closest object if no further objects
+
+	min_dist=-1;
+	cur_dif=-1;
+
+	next_uid=-1;
+	min_uid=-1;
+
+	for (n=0;n!=server.count.obj;n++) {
+
+		chk_obj=&server.objs[n];
+
+		if (strcasecmp(chk_obj->type,weap->target.type)!=0) continue;
+
+			// outside max distance?
+
+		dist=distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,chk_obj->pnt.x,chk_obj->pnt.y,chk_obj->pnt.z);
+		if (dist>weap->target.distance) continue;
+
+			// remember closest target
+
+		if ((min_dist==-1) || (dist<min_dist)) {
+			min_dist=dist;
+			min_uid=chk_obj->uid;
+		}
+
+			// next further target?
+
+		dif=dist-cur_dist;
+		if (dif<0) continue;
+
+		if ((cur_dif==-1) || (dif<cur_dif)) {
+			cur_dif=dif;
+			next_uid=chk_obj->uid;
+		}
+	}
+
+		// get next uid
+
+	if (next_uid==-1) next_uid=min_uid;
+	weap->target.obj_uid=next_uid;
+}
+
+bool weapon_target_start(obj_type *obj,weapon_type *weap,char *target_type)
+{
+	obj_type		*obj2;
+
+		// get first targetted object
+
+	strcpy(weap->target.type,target_type);
+
+	weap->target.obj_uid=-1;
+	weapon_target_next_object(obj,weap);
+
+		// if no available targets, return false
+
+	if (weap->target.obj_uid==-1) {
+		weap->target.on=FALSE;
+		return(FALSE);
+	}
+
+		// targetting on
+
+	weap->target.on=TRUE;
+
+	return(TRUE);
+}
+
+bool weapon_target_end(obj_type *obj,weapon_type *weap)
+{
+	weap->target.on=FALSE;
+
+	return(weap->target.obj_uid!=-1);
+}
+
 /* =======================================================
 
       Weapon Zooming

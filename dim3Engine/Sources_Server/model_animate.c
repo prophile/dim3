@@ -454,11 +454,16 @@ void model_calc_animation_poses(model_draw *draw)
 
 		setup_pose->acceleration=pose_move_1->acceleration;
     
-		k=(1000*(game_time_get()-animation->tick))/pose_move_1->msec;
-		if (k<0) k=0;
-		if (k>1000) k=1000;
-		
-		setup_pose->factor=((float)(1000-k))/1000.0f;
+		if (pose_move_1->msec==0) {
+			setup_pose->factor=1.0f;
+		}
+		else {
+			k=(1000*(game_time_get()-animation->tick))/pose_move_1->msec;
+			if (k<0) k=0;
+			if (k>1000) k=1000;
+
+			setup_pose->factor=((float)(1000-k))/1000.0f;
+		}
 	}
 }
 

@@ -179,6 +179,9 @@ bool weapon_create(obj_type *obj,char *name)
 	weap->proj.repeat_ok=TRUE;
 	weap->proj.repeat_tick=1000;
 	weap->proj.next_repeat_tick=0;
+
+	weap->target.distance=map_enlarge*350;
+	weap->target.on=FALSE;
 	
 	weap->zoom.on=FALSE;
 	weap->zoom.active=FALSE;

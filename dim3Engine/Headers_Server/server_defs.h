@@ -689,6 +689,12 @@ typedef struct		{
 						int					method,last_fire_tick;
 						bool				cancel;
 					} weap_fire_type;
+
+typedef struct		{
+						int					distance,obj_uid;
+						char				type[name_str_len];
+						bool				on;
+					} weap_target_type;
 					
 typedef struct		{
 						int					mask_idx,step_count,current_step;
@@ -725,6 +731,7 @@ typedef struct		{
 						weap_recoil_type	recoil;
 						weap_crosshair_type crosshair;
 						weap_fire_type		fire;
+						weap_target_type	target;
 						weap_zoom_type		zoom;
 						weap_hand_type		hand;
 						weap_proj_type		proj;

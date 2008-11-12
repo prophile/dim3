@@ -587,6 +587,10 @@ and can be sold or given away.
 #define weap_fire_prop_method						0
 #define weap_fire_prop_last_fire_tick				1
 
+#define weap_target_prop_on							0
+#define weap_target_prop_distance					1
+#define weap_target_prop_objectId					2
+
 #define weap_zoom_prop_on							0
 #define weap_zoom_prop_active						1
 #define weap_zoom_prop_fov_minimum					2
@@ -642,6 +646,7 @@ and can be sold or given away.
 #define proj_action_prop_auto_bounce_min_move		4
 #define proj_action_prop_auto_bounce_reduce			5
 #define proj_action_prop_auto_reflect				6
+#define proj_action_prop_target_object_id			7
 
 #define proj_push_prop_on							0
 #define proj_push_prop_force						1

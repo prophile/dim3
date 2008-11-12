@@ -86,7 +86,7 @@ void object_score_death(obj_type *obj)
 	
 		// suicide
 		
-	if  ((obj->uid==obj->damage_obj_uid) || (obj->damage_obj_uid==-1)) {
+	if ((obj->uid==obj->damage_obj_uid) || (obj->damage_obj_uid==-1)) {
 		obj->score.suicide++;
 		object_score_update(obj);
 	}
@@ -586,6 +586,34 @@ void object_shove_direct(obj_type *obj,d3vct *vct)
 		// reset gravity
 		
 	obj->force.gravity=gravity_start_power;
+}
+
+/* =======================================================
+
+      Object Target
+      
+======================================================= */
+
+bool object_is_targetted(obj_type *obj)
+{
+	int				n;
+	obj_type		*player_obj;
+	weapon_type		*weap;
+
+		// look for any targetting on player's weapons
+
+	player_obj=object_find_uid(server.player_obj_uid);
+
+	weap=server.weapons;
+		
+	for (n=0;n!=server.count.weapon;n++) {
+		if (weap->obj_uid==player_obj->uid) {
+			if ((weap->target.on) && (weap->target.obj_uid==obj->uid)) return(TRUE);
+		}
+		weap++;
+	}
+
+	return(FALSE);
 }
 
 /* =======================================================

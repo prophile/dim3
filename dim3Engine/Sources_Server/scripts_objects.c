@@ -207,6 +207,7 @@ bool script_create_prototype_objects(char *err_str)
 	script_add_weap_alt_ammo_object(js.weap_prototype);
 	script_add_weap_melee_object(js.weap_prototype);
 	script_add_weap_fire_object(js.weap_prototype);
+	script_add_weap_target_object(js.weap_prototype);
 	script_add_weap_zoom_object(js.weap_prototype);
 	script_add_model_object(js.weap_prototype);
 	

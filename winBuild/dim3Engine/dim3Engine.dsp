@@ -1043,6 +1043,10 @@ SOURCE=..\..\dim3Engine\Sources_Server\script_weap_setting.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_target.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Engine\Sources_Server\script_weap_zoom.c
 # End Source File
 # Begin Source File

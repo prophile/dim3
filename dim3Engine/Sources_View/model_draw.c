@@ -725,7 +725,7 @@ void model_render(int tick,model_draw *draw)
 
 /* =======================================================
 
-      Draw Flat Model
+      Draw Shadow Model
       
 ======================================================= */
 
@@ -831,5 +831,110 @@ void model_render_shadow(model_draw *draw,float draw_sz,int shadow_idx)
 	glDisable(GL_POLYGON_SMOOTH);
 }
 
+/* =======================================================
+
+      Draw Target Model
+      
+======================================================= */
+
+void model_render_target(model_draw *draw)
+{
+	int				ty,by,lx,rx,lz,rz,wid;
+	float			rang;
+	model_type		*mdl;
+	
+		// get model
+
+	mdl=model_find_uid(draw->uid);
+	if (mdl==NULL) return;
+
+		// get draw coordinates
+
+	ty=draw->pnt.y-mdl->view_box.size.y;
+	by=draw->pnt.y;
+
+	rang=angle_find(view.camera.pnt.x,view.camera.pnt.z,draw->pnt.x,draw->pnt.z);
+
+	wid=(mdl->view_box.size.x+mdl->view_box.size.z)>>2;
+
+	lx=-wid;
+	rx=wid;
+	lz=rz=0;
+
+	rotate_2D_point_center(&lx,&lz,rang);
+	rotate_2D_point_center(&rx,&rz,rang);
+
+	lx+=draw->pnt.x;
+	rx+=draw->pnt.x;
+	lz+=draw->pnt.z;
+	rz+=draw->pnt.z;
+
+	lx-=view.camera.pnt.x;
+	rx-=view.camera.pnt.x;
+	ty-=view.camera.pnt.y;
+	by-=view.camera.pnt.y;
+	lz=view.camera.pnt.z-lz;
+	rz=view.camera.pnt.z-rz;
+
+		// draw target
+
+	glColor4f(0.0f,0.0f,1.0f,1.0f);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex3i(lx,ty,lz);
+	glVertex3i(rx,ty,rz);
+	glVertex3i(rx,by,rz);
+	glVertex3i(lx,by,lz);
+	glEnd();
+	
 
 
+/*
+	x=draw->pnt.x;
+	y=draw->pnt.y;
+	z=draw->pnt.z;
+		
+	tx=x-view.camera.pnt.x;
+	ty=y-view.camera.pnt.y;
+	tz=z-view.camera.pnt.z;
+	
+	for (n=0;n!=mdl->nmesh;n++) {
+		if ((mesh_mask&(0x1<<n))==0) continue;
+
+			// build model vertex list
+			
+		model_create_draw_vertexes(mdl,n,&draw->setup);
+		if (draw->resize!=1) model_resize_draw_vertex(mdl,n,draw->resize);
+
+			// build color lists
+			
+		model_build_color(mdl,n,x,z,y,draw);
+		if (mdl->meshes[n].tintable) model_tint_team_color(mdl,n,draw);
+
+			// translate vertex to view
+			
+		model_translate_draw_vertex(mdl,n,tx,ty,tz);
+	}
+
+		// texture binding optimization
+
+	gl_texture_bind_start();
+
+		// draw opaque materials
+
+	for (n=0;n!=mdl->nmesh;n++) {
+		if ((mesh_mask&(0x1<<n))!=0) {
+			model_draw_opaque_trigs(mdl,n,draw,is_fog_lighting);
+			model_draw_shader_trigs(mdl,n,draw);
+		}
+	}
+	
+		// draw transparent materials
+
+	for (n=0;n!=mdl->nmesh;n++) {
+		if ((mesh_mask&(0x1<<n))!=0) {
+			model_draw_transparent_trigs(mdl,n,draw);
+		}
+	}
+	*/
+}
