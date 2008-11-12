@@ -119,16 +119,36 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 247886952;
-			PBXWorkspaceStateSaveDate = 247886952;
+			PBXPerProjectTemplateStateSaveDate = 248159939;
+			PBXWorkspaceStateSaveDate = 248159939;
 		};
 		perUserProjectItems = {
-			26F8CE9D0EC56B22006E4676 /* PBXTextBookmark */ = 26F8CE9D0EC56B22006E4676 /* PBXTextBookmark */;
-			26F9A4C70EC6758600578171 /* PBXTextBookmark */ = 26F9A4C70EC6758600578171 /* PBXTextBookmark */;
+			26071C450ECA62750045894F /* PBXTextBookmark */ = 26071C450ECA62750045894F /* PBXTextBookmark */;
+			26071CE00ECA9EDB0045894F /* PBXTextBookmark */ = 26071CE00ECA9EDB0045894F /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
 		userBuildSettings = {
 		};
+	};
+	26071C450ECA62750045894F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
+		name = "InfoPlist.strings: 5";
+		rLen = 0;
+		rLoc = 206;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	26071CE00ECA9EDB0045894F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
+		name = "InfoPlist.strings: 5";
+		rLen = 0;
+		rLoc = 206;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
 	};
 	260AFEE30D40504C00F6C42F /* dim3 Animator */ = {
 		isa = PBXExecutable;
@@ -244,26 +264,6 @@
 			sepNavVisRange = "{2399, 1836}";
 			sepNavWindowFrame = "{{247, 201}, {1041, 747}}";
 		};
-	};
-	26F8CE9D0EC56B22006E4676 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
-		name = "InfoPlist.strings: 5";
-		rLen = 0;
-		rLoc = 206;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
-	26F9A4C70EC6758600578171 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
-		name = "InfoPlist.strings: 5";
-		rLen = 0;
-		rLoc = 206;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
 	};
 	F502976802E0BC0201701C02 /* bone_tab.c */ = {
 		uiCtxt = {
@@ -441,9 +441,9 @@
 	};
 	F5B3736A0C56807100D6AE9E /* dialog_animation_settings.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1092, 10738}}";
-			sepNavSelRange = "{10453, 0}";
-			sepNavVisRange = "{8800, 2527}";
+			sepNavIntBoundsRect = "{{0, 0}, {1092, 9954}}";
+			sepNavSelRange = "{5769, 0}";
+			sepNavVisRange = "{4389, 3019}";
 			sepNavWindowFrame = "{{295, 187}, {1041, 747}}";
 		};
 	};
@@ -521,9 +521,9 @@
 	};
 	F5CA4EF7051010AD0055C8B8 /* modelutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 5166}}";
-			sepNavSelRange = "{7939, 17}";
-			sepNavVisRange = "{12677, 3274}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5712}}";
+			sepNavSelRange = "{5157, 5}";
+			sepNavVisRange = "{4585, 1220}";
 			sepNavWindowFrame = "{{431, 185}, {1041, 747}}";
 		};
 	};

@@ -319,14 +319,14 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>11</integer>
-									<integer>8</integer>
+									<integer>30</integer>
+									<integer>25</integer>
 									<integer>7</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {243, 525}}</string>
+							<string>{{0, 26}, {243, 525}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -426,9 +426,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>261DD44E0EC8EC7B0099F038</string>
+				<string>26071CD50ECA9EC00045894F</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>261DD44F0EC8EC7B0099F038</string>
+				<string>26071CD60ECA9EC00045894F</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -547,7 +547,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>248048763.20895499</real>
+	<real>248159936.79598701</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -563,6 +563,7 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>26A5EAC70D404C5F00BB47DE</string>
+		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>/Users/ggadwa/dim3Code/dim3BaseUtility/dim3BaseUtility.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -643,7 +644,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>26A5EAC70D404C5F00BB47DE</string>
-				<string>261DD44C0EC8EC6D0099F038</string>
+				<string>26071CC20ECA9E280045894F</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -837,8 +838,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>26772EC90EBD5EB700F9E241</string>
-				<string>26772ECA0EBD5EB700F9E241</string>
+				<string>26071CBE0ECA9E240045894F</string>
+				<string>26071CBF0ECA9E240045894F</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>

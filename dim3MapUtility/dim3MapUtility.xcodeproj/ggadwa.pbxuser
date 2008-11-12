@@ -1,5 +1,15 @@
 // !$*UTF8*$!
 {
+	26071CD40ECA9EBE0045894F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DA8623059148C40043E685 /* nodes.c */;
+		name = "nodes.c: 94";
+		rLen = 26;
+		rLoc = 2093;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
 	260AFEBF0D404E9300F6C42F /* Source Control */ = {
 		isa = PBXSourceControlManager;
 		fallbackIsa = XCSourceControlManager;
@@ -101,16 +111,6 @@
 			sepNavWindowFrame = "{{334, 135}, {1041, 747}}";
 		};
 	};
-	26E4E92A0EC7EC3000D8FB41 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5DA8623059148C40043E685 /* nodes.c */;
-		name = "nodes.c: 94";
-		rLen = 26;
-		rLoc = 2093;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
 	26FC4AAC0DA2F87A00E6ECED /* file_map_read_v1.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1038, 19964}}";
@@ -153,10 +153,10 @@
 	};
 	F5A10B6C052D294C006A2E68 /* file_map_texture.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1056, 3178}}";
-			sepNavSelRange = "{3261, 0}";
-			sepNavVisRange = "{2519, 1322}";
-			sepNavWindowFrame = "{{358, 213}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1068, 3136}}";
+			sepNavSelRange = "{4310, 30}";
+			sepNavVisRange = "{3185, 1984}";
+			sepNavWindowFrame = "{{225, 190}, {1041, 747}}";
 		};
 	};
 	F5A8B1AF05229DA4008D4331 /* file_map_read.c */ = {
@@ -253,12 +253,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 248048788;
-			PBXWorkspaceStateSaveDate = 248048788;
+			PBXPerProjectTemplateStateSaveDate = 248159520;
+			PBXWorkspaceStateSaveDate = 248159520;
 		};
 		perUserProjectItems = {
+			26071CD40ECA9EBE0045894F /* PBXTextBookmark */ = 26071CD40ECA9EBE0045894F /* PBXTextBookmark */;
 			261DD4640EC8ECA70099F038 /* PBXTextBookmark */ = 261DD4640EC8ECA70099F038 /* PBXTextBookmark */;
-			26E4E92A0EC7EC3000D8FB41 /* PBXTextBookmark */ = 26E4E92A0EC7EC3000D8FB41 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {

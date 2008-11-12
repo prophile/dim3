@@ -130,8 +130,6 @@ bool bitmap_open_normal_from_height(bitmap_type *bitmap,char *path,int anisotrop
 	
 	c=strrchr(bitmap->name,'.');
 	if (c!=NULL) *c=0x0;
-
-	strcat(bitmap->name,"_normal");
 	
 		// read bitmap
 	
@@ -213,8 +211,6 @@ bool bitmap_open_normal_from_bitmap(bitmap_type *bitmap,char *path,int anisotrop
 	
 	c=strrchr(bitmap->name,'.');
 	if (c!=NULL) *c=0x0;
-
-	strcat(bitmap->name,"_normal");
 	
 		// read bitmap
 	

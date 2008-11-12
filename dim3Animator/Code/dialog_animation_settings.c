@@ -64,6 +64,7 @@ extern model_type		model;
 #define kAnimationSoundBone					FOUR_CHAR_CODE('sbne')
 #define kAnimationSoundName					FOUR_CHAR_CODE('sndn')
 #define kAnimationSoundPitch				FOUR_CHAR_CODE('sndp')
+#define kAnimationSoundGlobal				FOUR_CHAR_CODE('sglb')
 
 #define kAnimationParticleList				FOUR_CHAR_CODE('part')
 #define kAnimationParticleListNameColumn	FOUR_CHAR_CODE('pnme')
@@ -133,6 +134,7 @@ void dialog_pose_move_settings_load(void)
 	dialog_set_bone_combo(dialog_animation_settings_wind,kAnimationSoundBone,0,pose_move->sound.bone_idx);
 	dialog_special_combo_fill_sound(dialog_animation_settings_wind,kAnimationSoundName,0,pose_move->sound.name);
 	dialog_set_float(dialog_animation_settings_wind,kAnimationSoundPitch,0,pose_move->sound.pitch);
+	dialog_set_boolean(dialog_animation_settings_wind,kAnimationSoundGlobal,0,pose_move->sound.no_position);
 	
 	dialog_particle_idx=-1;
 	
@@ -194,6 +196,7 @@ void dialog_pose_move_settings_save(void)
 	pose_move->sound.bone_idx=dialog_get_bone_combo(dialog_animation_settings_wind,kAnimationSoundBone,0);
 	dialog_special_combo_get_sound(dialog_animation_settings_wind,kAnimationSoundName,0,pose_move->sound.name,name_str_len);
 	pose_move->sound.pitch=dialog_get_float(dialog_animation_settings_wind,kAnimationSoundPitch,0);
+	pose_move->sound.no_position=dialog_get_boolean(dialog_animation_settings_wind,kAnimationSoundGlobal,0);
 	
 	pose_move->flash.intensity=dialog_get_int(dialog_animation_settings_wind,kAnimationFlashIntensity,0);
 	pose_move->flash.flash_msec=dialog_get_int(dialog_animation_settings_wind,kAnimationFlashLiveTime,0);
