@@ -31,112 +31,6 @@ and can be sold or given away.
 
 /* =======================================================
 
-      Find UV within Vertex List
-      
-======================================================= */
-
-/* supergumba
-
-void map_portal_vertex_list_find_uv(int ptsz,int *x,int *y,float *gx,float *gy,int kx,int ky,float *p_gx,float *p_gy)
-{
-	int				n,lx,rx,ty,by;
-	float			lgx,rgx,tgy,bgy;
-
-		// find UV extents
-
-	lx=rx=x[0];
-	lgx=rgx=gx[0];
-	ty=by=y[0];
-	tgy=bgy=gy[0];
-
-	for (n=1;n<ptsz;n++) {
-		if (x[n]<lx) {
-			lx=x[n];
-			lgx=gx[n];
-		}
-		if (x[n]>rx) {
-			rx=x[n];
-			rgx=gx[n];
-		}
-		if (y[n]<ty) {
-			ty=y[n];
-			tgy=gy[n];
-		}
-		if (y[n]>by) {
-			by=y[n];
-			bgy=gy[n];
-		}
-	}
-
-		// find new UV
-
-	if (rx==lx) {
-		*p_gx=lgx;
-	}
-	else {
-		*p_gx=lgx+((rgx-lgx)*((float)(kx-lx)/(float)(rx-lx)));
-	}
-
-	if (by==ty) {
-		*p_gy=tgy;
-	}
-	else {
-		*p_gy=tgy+((bgy-tgy)*((float)(ky-ty)/(float)(by-ty)));
-	}
-
-}
-*/
-
-
-void map_portal_vertex_list_find_uv(int ptsz,int *x,int *y,int *z,float *gx,float *gy,int kx,int ky,int kz,float *p_gx,float *p_gy)
-{
-	int				n,idx;
-	float			d,d2;
-	bool			xdif,ydif,zdif,xdif2,ydif2,zdif2;
-
-		// find a vertex that's opposite
-		// the kx,ky,kz from vertex 0
-
-	xdif=((kx-x[0])<0);
-	ydif=((ky-y[0])<0);
-	zdif=((kz-z[0])<0);
-
-	idx=2;		// if nothing found, just use +2 vertex
-
-	for (n=1;n<ptsz;n++) {
-		xdif2=((kx-x[n])<0);
-		ydif2=((ky-y[n])<0);
-		zdif2=((kz-z[n])<0);
-
-		if ((xdif!=xdif2) && (ydif!=ydif2)) {
-			idx=n;
-			break;
-		}
-
-		if ((zdif!=zdif2) && (ydif!=ydif2)) {
-			idx=n;
-			break;
-		}
-
-		if ((xdif!=xdif2) && (zdif!=zdif2)) {
-			idx=n;
-			break;
-		}
-	}
-
-		// get the distance
-
-	d=(float)distance_get(x[0],y[0],z[0],kx,ky,kz);
-	d2=(float)distance_get(x[idx],y[idx],z[idx],kx,ky,kz);
-
-		// get coordinate
-
-	*p_gx=gx[0]+(((gx[idx]-gx[0])*d)/(d+d2));
-	*p_gy=gy[0]+(((gy[idx]-gy[0])*d)/(d+d2));
-}
-
-/* =======================================================
-
       Build Tesseled Lighting Triangles
       
 ======================================================= */
@@ -437,36 +331,23 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 	light->ntrig=ntrig;
 }
 
+/* =======================================================
+
+      Simple Lighting Tessel
+      
+======================================================= */
+
 void map_portal_add_light_simple_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	int									n,ntrig;
-	d3pnt								*pt;
-	map_mesh_poly_light_type			*light;
-	map_mesh_poly_tessel_vertex_type	*vl;
+	int							n,ntrig;
+	map_mesh_poly_light_type	*light;
 
 	light=&poly->light;
-	vl=light->vertexes;
 
-		// break up polygon into triangles
-		// but no tesselation of triangles
-		// this is used for simple lighting
-
-		// vertexes
-
-	for (n=0;n!=poly->ptsz;n++) {
-		pt=&mesh->vertexes[poly->v[n]];
-
-		vl->x=pt->x;
-		vl->y=pt->y;
-		vl->z=pt->z;
-		vl->gx=poly->gx[n];
-		vl->gy=poly->gy[n];
-		vl++;
-	}
-
-	light->nvertex=poly->ptsz;
-
-		// polygons
+		// simple tessel just breaks up the polygon
+		// into triangle.  We don't create any
+		// lighting vertexes as we can re-use the
+		// polygon vertexes
 
 	ntrig=poly->ptsz-2;
 
@@ -476,6 +357,7 @@ void map_portal_add_light_simple_vertex_list(map_mesh_type *mesh,map_mesh_poly_t
 		light->trig_vertex_idx[(n*3)+2]=n+2;
 	}
 
+	light->nvertex=0;
 	light->ntrig=ntrig;
 }
 
@@ -501,11 +383,16 @@ void map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *p
 		// simple light tessels
 
 	if ((quality_mode==quality_mode_low) || (poly->draw.simple_tessel) || (mesh->flag.hilite)) {
+
+		poly->light.simple_tessel=TRUE;
 		map_portal_add_light_simple_vertex_list(mesh,poly);
+
 		return;
 	}
 
 		// tessel depending on shape of polygon
+	
+	poly->light.simple_tessel=FALSE;
 
 	grid_split_sz=(quality_mode==quality_mode_medium)?(map_enlarge*16):(map_enlarge*8);
 
@@ -565,7 +452,7 @@ bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 	mesh=map->mesh.meshes;
 	
 	for (n=0;n!=map->mesh.nmesh;n++) {
-	
+
 		poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {

@@ -591,6 +591,10 @@ and can be sold or given away.
 #define weap_target_prop_distance					1
 #define weap_target_prop_objectId					2
 
+#define weap_target_color_prop_red					0
+#define weap_target_color_prop_green				1
+#define weap_target_color_prop_blue					2
+
 #define weap_zoom_prop_on							0
 #define weap_zoom_prop_active						1
 #define weap_zoom_prop_fov_minimum					2

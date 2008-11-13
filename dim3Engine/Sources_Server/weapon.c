@@ -180,8 +180,10 @@ bool weapon_create(obj_type *obj,char *name)
 	weap->proj.repeat_tick=1000;
 	weap->proj.next_repeat_tick=0;
 
-	weap->target.distance=map_enlarge*350;
+	weap->target.distance=25000;
 	weap->target.on=FALSE;
+	weap->target.col.r=weap->target.col.g=0.0f;
+	weap->target.col.b=1.0f;
 	
 	weap->zoom.on=FALSE;
 	weap->zoom.active=FALSE;

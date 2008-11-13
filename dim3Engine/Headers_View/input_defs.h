@@ -67,132 +67,132 @@ and can be sold or given away.
 // configurable controls
 //
 
-#define ncontrol				93				// total number of controls
+#define ncontrol					93				// total number of controls
 
-#define nc_move_forward			0
-#define nc_move_backward		1
-#define nc_turn_left			2
-#define nc_turn_right			3
+#define nc_move_forward				0
+#define nc_move_backward			1
+#define nc_turn_left				2
+#define nc_turn_right				3
 
-#define nc_sidestep_left		4
-#define nc_sidestep_right		5
+#define nc_sidestep_left			4
+#define nc_sidestep_right			5
 
-#define nc_run					6
+#define nc_run						6
 
-#define nc_jump					7
-#define nc_duck					8
+#define nc_jump						7
+#define nc_duck						8
 
-#define nc_up					9
-#define nc_down					10
+#define nc_up						9
+#define nc_down						10
 
-#define nc_enter_exit			11
+#define nc_enter_exit				11
 
-#define nc_next_weapon			12
-#define nc_previous_weapon		13
+#define nc_next_weapon				12
+#define nc_previous_weapon			13
 
-#define nc_fire_0				14
-#define nc_fire_1				15
-#define nc_fire_2				16
-#define nc_fire_3				17
+#define nc_fire_0					14
+#define nc_fire_1					15
+#define nc_fire_2					16
+#define nc_fire_3					17
 
-#define nc_weapon_zoom			18
-#define nc_weapon_zoom_increase	19
-#define nc_weapon_zoom_decrease	20
+#define nc_weapon_zoom				18
+#define nc_weapon_zoom_increase		19
+#define nc_weapon_zoom_decrease		20
 
-#define nc_target_next			21
-#define nc_target_previous		22
+#define nc_weapon_target_next		21
+#define nc_weapon_target_previous	22
 
-#define nc_weapon_0				23
-#define nc_weapon_1				24
-#define nc_weapon_2				25
-#define nc_weapon_3				26
-#define nc_weapon_4				27
-#define nc_weapon_5				28
-#define nc_weapon_6				29
-#define nc_weapon_7				30
-#define nc_weapon_8				31
-#define nc_weapon_9				32
-#define nc_weapon_10			33
-#define nc_weapon_11			34
-#define nc_weapon_12			35
-#define nc_weapon_13			36
-#define nc_weapon_14			37
-#define nc_weapon_15			38
-#define nc_weapon_16			39
-#define nc_weapon_17			40
-#define nc_weapon_18			41
-#define nc_weapon_19			42
+#define nc_weapon_0					23
+#define nc_weapon_1					24
+#define nc_weapon_2					25
+#define nc_weapon_3					26
+#define nc_weapon_4					27
+#define nc_weapon_5					28
+#define nc_weapon_6					29
+#define nc_weapon_7					30
+#define nc_weapon_8					31
+#define nc_weapon_9					32
+#define nc_weapon_10				33
+#define nc_weapon_11				34
+#define nc_weapon_12				35
+#define nc_weapon_13				36
+#define nc_weapon_14				37
+#define nc_weapon_15				38
+#define nc_weapon_16				39
+#define nc_weapon_17				40
+#define nc_weapon_18				41
+#define nc_weapon_19				42
 
-#define nc_game_0				43
-#define nc_game_1				44
-#define nc_game_2				45
-#define nc_game_3				46
-#define nc_game_4				47
-#define nc_game_5				48
-#define nc_game_6				49
-#define nc_game_7				50
-#define nc_game_8				51
-#define nc_game_9				52
-#define nc_game_10				53
-#define nc_game_11				54
-#define nc_game_12				55
-#define nc_game_13				56
-#define nc_game_14				57
-#define nc_game_15				58
-#define nc_game_16				59
-#define nc_game_17				60
-#define nc_game_18				61
-#define nc_game_19				62
+#define nc_game_0					43
+#define nc_game_1					44
+#define nc_game_2					45
+#define nc_game_3					46
+#define nc_game_4					47
+#define nc_game_5					48
+#define nc_game_6					49
+#define nc_game_7					50
+#define nc_game_8					51
+#define nc_game_9					52
+#define nc_game_10					53
+#define nc_game_11					54
+#define nc_game_12					55
+#define nc_game_13					56
+#define nc_game_14					57
+#define nc_game_15					58
+#define nc_game_16					59
+#define nc_game_17					60
+#define nc_game_18					61
+#define nc_game_19					62
 
-#define nc_player_0				63
-#define nc_player_1				64
-#define nc_player_2				65
-#define nc_player_3				66
-#define nc_player_4				67
-#define nc_player_5				68
-#define nc_player_6				69
-#define nc_player_7				70
-#define nc_player_8				71
-#define nc_player_9				72
-#define nc_player_10			73
-#define nc_player_11			74
-#define nc_player_12			75
-#define nc_player_13			76
-#define nc_player_14			77
-#define nc_player_15			78
-#define nc_player_16			79
-#define nc_player_17			80
-#define nc_player_18			81
-#define nc_player_19			82
+#define nc_player_0					63
+#define nc_player_1					64
+#define nc_player_2					65
+#define nc_player_3					66
+#define nc_player_4					67
+#define nc_player_5					68
+#define nc_player_6					69
+#define nc_player_7					70
+#define nc_player_8					71
+#define nc_player_9					72
+#define nc_player_10				73
+#define nc_player_11				74
+#define nc_player_12				75
+#define nc_player_13				76
+#define nc_player_14				77
+#define nc_player_15				78
+#define nc_player_16				79
+#define nc_player_17				80
+#define nc_player_18				81
+#define nc_player_19				82
 
-#define nc_console				83
-#define nc_menu					84
-#define nc_quick_save			85
-#define nc_save_load			86
+#define nc_console					83
+#define nc_menu						84
+#define nc_quick_save				85
+#define nc_save_load				86
 
-#define nc_message				87
-#define nc_score				88
+#define nc_message					87
+#define nc_score					88
 
-#define nc_debug_status			89
-#define nc_debug_light			90
-#define nc_debug_screenshot		91
-#define nc_debug_map			92
+#define nc_debug_status				89
+#define nc_debug_light				90
+#define nc_debug_screenshot			91
+#define nc_debug_map				92
 
 //
 // control ranges
 //
 
-#define nc_fire_start			14
-#define nc_fire_end				17
+#define nc_fire_start				14
+#define nc_fire_end					17
 
-#define nc_weapon_start			23
-#define nc_weapon_end			42
+#define nc_weapon_start				23
+#define nc_weapon_end				42
 
-#define nc_game_start			43
-#define nc_game_end				62
+#define nc_game_start				43
+#define nc_game_end					62
 
-#define nc_player_start			63
-#define nc_player_end			82
+#define nc_player_start				63
+#define nc_player_end				82
 
 //
 // SDL key lookups

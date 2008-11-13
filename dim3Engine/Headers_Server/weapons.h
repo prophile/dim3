@@ -51,6 +51,8 @@ extern void weapon_goto(int tick,obj_type *obj,weapon_type *weap);
 extern void weapon_switch(int tick,obj_type *obj,int dir);
 extern void weapon_pick(int tick,obj_type *obj,int offset);
 
+extern void weapon_target_next_object(obj_type *obj,weapon_type *weap);
+extern void weapon_target_previous_object(obj_type *obj,weapon_type *weap);
 extern bool weapon_target_start(obj_type *obj,weapon_type *weap,char *target_type);
 extern bool weapon_target_end(obj_type *obj,weapon_type *weap);
 

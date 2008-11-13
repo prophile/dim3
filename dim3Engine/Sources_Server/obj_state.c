@@ -594,7 +594,7 @@ void object_shove_direct(obj_type *obj,d3vct *vct)
       
 ======================================================= */
 
-bool object_is_targetted(obj_type *obj)
+bool object_is_targetted(obj_type *obj,d3col *col)
 {
 	int				n;
 	obj_type		*player_obj;
@@ -608,7 +608,10 @@ bool object_is_targetted(obj_type *obj)
 		
 	for (n=0;n!=server.count.weapon;n++) {
 		if (weap->obj_uid==player_obj->uid) {
-			if ((weap->target.on) && (weap->target.obj_uid==obj->uid)) return(TRUE);
+			if ((weap->target.on) && (weap->target.obj_uid==obj->uid)) {
+				memmove(col,&weap->target.col,sizeof(d3col));
+				return(TRUE);
+			}
 		}
 		weap++;
 	}

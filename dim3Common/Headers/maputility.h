@@ -223,6 +223,7 @@ typedef struct		{
 
 typedef struct		{
 						int									nvertex,ntrig;
+						bool								simple_tessel;
 						int									*trig_vertex_idx,*trig_vertex_draw_idx;
 						map_mesh_poly_tessel_vertex_type	*vertexes;
 					} map_mesh_poly_light_type;

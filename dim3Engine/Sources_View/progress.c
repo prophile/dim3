@@ -75,17 +75,13 @@ void progress_shutdown(void)
 
 void progress_draw(float percentage)
 {
-	int					lft,rgt,top,bot,mid,rgt2,x,y,sz;
+	int					lft,rgt,top,bot,mid,rgt2,x,y;
 
 		// any change?
 		
 	if (progress_current==percentage) return;
 	
 	progress_current=percentage;
-	
-		// position and sizes of progress pieces
-		
-	sz=gl_text_get_char_height(hud.font.text_size_small);
 	
 		// start the frame
 	
@@ -169,10 +165,10 @@ void progress_draw(float percentage)
 	
 		// progress text
 
-	gl_text_start(hud.font.text_size_small);
+	gl_text_start(hud.font.text_size_medium);
 	
 	x=(hud.progress.lx+hud.progress.rx)>>1;
-	y=(hud.progress.ty+hud.progress.by)>>1;
+	y=((hud.progress.ty+hud.progress.by)>>1)-(gl_text_get_char_height(hud.font.text_size_medium)>>3);
 	
 	gl_text_draw(x,y,progress_str,tx_center,TRUE,&hud.progress.text_color,1.0f);
 	

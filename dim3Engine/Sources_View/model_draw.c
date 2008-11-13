@@ -603,7 +603,6 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			// glow mapped textures
 
 		if (texture->glowmaps[frame].gl_id!=-1) {
-
 			
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -837,9 +836,9 @@ void model_render_shadow(model_draw *draw,float draw_sz,int shadow_idx)
       
 ======================================================= */
 
-void model_render_target(model_draw *draw)
+void model_render_target(model_draw *draw,d3col *col)
 {
-	int				ty,by,lx,rx,lz,rz,wid;
+	int				ty,by,lx,rx,lz,rz,wid,xadd,zadd;
 	float			rang;
 	model_type		*mdl;
 	
@@ -869,6 +868,17 @@ void model_render_target(model_draw *draw)
 	lz+=draw->pnt.z;
 	rz+=draw->pnt.z;
 
+		// move towards camera
+
+	angle_get_movement(rang,wid,&xadd,&zadd);
+
+	lx-=xadd;
+	rx-=xadd;
+	lz-=zadd;
+	rz-=zadd;
+
+		// position against camera
+
 	lx-=view.camera.pnt.x;
 	rx-=view.camera.pnt.x;
 	ty-=view.camera.pnt.y;
@@ -877,8 +887,14 @@ void model_render_target(model_draw *draw)
 	rz=view.camera.pnt.z-rz;
 
 		// draw target
+	
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+			
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
 
-	glColor4f(0.0f,0.0f,1.0f,1.0f);
+	glColor4f(col->r,col->g,col->b,1.0f);
 
 	glBegin(GL_LINE_LOOP);
 	glVertex3i(lx,ty,lz);
@@ -886,55 +902,4 @@ void model_render_target(model_draw *draw)
 	glVertex3i(rx,by,rz);
 	glVertex3i(lx,by,lz);
 	glEnd();
-	
-
-
-/*
-	x=draw->pnt.x;
-	y=draw->pnt.y;
-	z=draw->pnt.z;
-		
-	tx=x-view.camera.pnt.x;
-	ty=y-view.camera.pnt.y;
-	tz=z-view.camera.pnt.z;
-	
-	for (n=0;n!=mdl->nmesh;n++) {
-		if ((mesh_mask&(0x1<<n))==0) continue;
-
-			// build model vertex list
-			
-		model_create_draw_vertexes(mdl,n,&draw->setup);
-		if (draw->resize!=1) model_resize_draw_vertex(mdl,n,draw->resize);
-
-			// build color lists
-			
-		model_build_color(mdl,n,x,z,y,draw);
-		if (mdl->meshes[n].tintable) model_tint_team_color(mdl,n,draw);
-
-			// translate vertex to view
-			
-		model_translate_draw_vertex(mdl,n,tx,ty,tz);
-	}
-
-		// texture binding optimization
-
-	gl_texture_bind_start();
-
-		// draw opaque materials
-
-	for (n=0;n!=mdl->nmesh;n++) {
-		if ((mesh_mask&(0x1<<n))!=0) {
-			model_draw_opaque_trigs(mdl,n,draw,is_fog_lighting);
-			model_draw_shader_trigs(mdl,n,draw);
-		}
-	}
-	
-		// draw transparent materials
-
-	for (n=0;n!=mdl->nmesh;n++) {
-		if ((mesh_mask&(0x1<<n))!=0) {
-			model_draw_transparent_trigs(mdl,n,draw);
-		}
-	}
-	*/
 }

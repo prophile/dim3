@@ -48,23 +48,36 @@ extern bool collide_object_to_item(obj_type *obj1,obj_type *obj2);
 
 void item_pickup_check(obj_type *obj)
 {
-	int				n,ignore_uid;
-	obj_type		*item_obj;
+	int								n;
+	bool							network_on;
+	obj_type						*item_obj;
+	network_request_remote_pickup	pickup;
 	
+		// can pick up if you are hidden, no contact,
+		// set to ignore pickup, or are a pickup item
+		// yourself
+
 	if (obj->hidden) return;
 	if (!obj->contact.object_on) return;
-	if (obj->pickup.on) return;			// pickup objects can't pickup themselves
-	if (obj->pickup.ignore) return;		// this object can't pick anything up
+	if (obj->pickup.on) return;
+	if (obj->pickup.ignore) return;
 
-	if ((obj->player) && (obj->status.health==0)) return;		// dead players can't pickup
-	
-	ignore_uid=obj->uid;
+		// dead players can't pickup items
+
+	if ((obj->player) && (obj->status.health==0)) return;
+
+		// detect if we need to send synch
+		// pickup network messages
+
+	network_on=(net_setup.client.joined) && (obj->uid==server.player_obj_uid);
+
+		// check for collisions with pickup items
 	
 	item_obj=server.objs;
     
 	for (n=0;n!=server.count.obj;n++) {
     
-		if ((item_obj->hidden) || (!item_obj->pickup.on) || (!item_obj->contact.object_on) || (item_obj->uid==ignore_uid)) {
+		if ((item_obj->hidden) || (!item_obj->pickup.on) || (!item_obj->contact.object_on) || (item_obj->uid==obj->uid)) {
 			item_obj++;
 			continue;
 		}
@@ -84,6 +97,12 @@ void item_pickup_check(obj_type *obj)
 			obj->pickup.item_uid=item_obj->uid;
 			obj->pickup.obj_uid=-1;
 
+				// need to setup any network messages
+				// before the pickup event as it could
+				// change parts of the object
+
+			if (network_on) net_client_setup_pickup(obj,&pickup);
+
 				// send pickup event to item
 
 			scripts_post_event_console(&item_obj->attach,sd_event_pickup,0,0);
@@ -99,7 +118,7 @@ void item_pickup_check(obj_type *obj)
 
 				// send network event
 
-			if ((net_setup.client.joined) && (obj->uid==server.player_obj_uid)) net_client_send_pickup(net_setup.client.remote_uid,obj);
+			if (network_on) net_client_send_pickup(net_setup.client.remote_uid,&pickup);
 			
 				// successfully picked up
 				

@@ -258,7 +258,7 @@ void weapon_target_next_object(obj_type *obj,weapon_type *weap)
 					min_uid,next_uid;
 	obj_type		*chk_obj;
 
-		// get current last min difference
+		// get current distance
 
 	if (weap->target.obj_uid!=-1) {
 		chk_obj=object_find_uid(weap->target.obj_uid);
@@ -295,6 +295,10 @@ void weapon_target_next_object(obj_type *obj,weapon_type *weap)
 			min_uid=chk_obj->uid;
 		}
 
+			// can't re-select same target
+
+		if (chk_obj->uid==weap->target.obj_uid) continue;
+
 			// next further target?
 
 		dif=dist-cur_dist;
@@ -312,10 +316,72 @@ void weapon_target_next_object(obj_type *obj,weapon_type *weap)
 	weap->target.obj_uid=next_uid;
 }
 
+void weapon_target_previous_object(obj_type *obj,weapon_type *weap)
+{
+	int				n,dist,max_dist,cur_dist,dif,cur_dif,
+					max_uid,prev_uid;
+	obj_type		*chk_obj;
+
+		// get current distance
+
+	if (weap->target.obj_uid!=-1) {
+		chk_obj=object_find_uid(weap->target.obj_uid);
+		cur_dist=distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,chk_obj->pnt.x,chk_obj->pnt.y,chk_obj->pnt.z);
+	}
+	else {
+		cur_dist=weap->target.distance;
+	}
+
+		// find next closest object
+		// or the furthest object if no further objects
+
+	max_dist=0;
+	cur_dif=-1;
+
+	prev_uid=-1;
+	max_uid=-1;
+
+	for (n=0;n!=server.count.obj;n++) {
+
+		chk_obj=&server.objs[n];
+
+		if (strcasecmp(chk_obj->type,weap->target.type)!=0) continue;
+
+			// outside max distance?
+
+		dist=distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,chk_obj->pnt.x,chk_obj->pnt.y,chk_obj->pnt.z);
+		if (dist>weap->target.distance) continue;
+
+			// remember furthest target
+
+		if (dist>max_dist) {
+			max_dist=dist;
+			max_uid=chk_obj->uid;
+		}
+
+			// can't re-select same target
+
+		if (chk_obj->uid==weap->target.obj_uid) continue;
+
+			// next closest target?
+
+		dif=cur_dist-dist;
+		if (dif<0) continue;
+
+		if ((cur_dif==-1) || (dif<cur_dif)) {
+			cur_dif=dif;
+			prev_uid=chk_obj->uid;
+		}
+	}
+
+		// get next uid
+
+	if (prev_uid==-1) prev_uid=max_uid;
+	weap->target.obj_uid=prev_uid;
+}
+
 bool weapon_target_start(obj_type *obj,weapon_type *weap,char *target_type)
 {
-	obj_type		*obj2;
-
 		// get first targetted object
 
 	strcpy(weap->target.type,target_type);
@@ -368,6 +434,7 @@ void weapon_zoom_on(obj_type *obj,weapon_type *weap)
 
  	scripts_post_event_console(&weap->attach,sd_event_weapon_fire,sd_event_weapon_fire_zoom_enter,0);
 }
+
 void weapon_zoom_off(obj_type *obj,weapon_type *weap)
 {
 	if (!weap->zoom.active) return;

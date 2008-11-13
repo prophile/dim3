@@ -694,6 +694,7 @@ typedef struct		{
 						int					distance,obj_uid;
 						char				type[name_str_len];
 						bool				on;
+						d3col				col;
 					} weap_target_type;
 					
 typedef struct		{

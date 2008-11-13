@@ -47,8 +47,8 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 
 int							mouse_last_read_tick;
-bool						weapon_change_key_down,weapon_zoom_key_down,enter_exit_key_down,
-							network_score_key_down,toggle_run_state,
+bool						weapon_change_key_down,weapon_target_key_down,weapon_zoom_key_down,
+							enter_exit_key_down,network_score_key_down,toggle_run_state,
 							fire_key_down[4],command_key_down[20],player_key_down[20];
 
 extern void chat_add_message(int tick,char *name,char *str,d3col *col);
@@ -66,6 +66,7 @@ void player_clear_input(void)
 	mouse_last_read_tick=-1;
 
 	weapon_change_key_down=FALSE;
+	weapon_target_key_down=FALSE;
 	weapon_zoom_key_down=FALSE;
 	enter_exit_key_down=FALSE;
 	network_score_key_down=FALSE;
@@ -487,6 +488,43 @@ void player_jump_duck_input(obj_type *obj)
       
 ======================================================= */
 
+void player_weapon_target_input(obj_type *obj,weapon_type *weap)
+{
+	bool				target_next,target_previous;
+ 	
+		// targetting on?
+		
+	if (!weap->target.on) return;
+	
+		// any zoom keys down?
+		
+	target_next=input_action_get_state(nc_weapon_target_next);
+	target_previous=input_action_get_state(nc_weapon_target_previous);
+	
+	if ((!target_next) && (!target_previous)) {
+		weapon_target_key_down=FALSE;
+		return;
+	}
+	
+		// key held down, ignore
+		
+	if (weapon_target_key_down) return;
+	
+		// change targets
+
+	if (target_next) {
+		weapon_target_next_object(obj,weap);
+		weapon_target_key_down=TRUE;
+		return;
+	}
+
+	if (target_previous) {
+		weapon_target_previous_object(obj,weap);
+		weapon_target_key_down=TRUE;
+		return;
+	}
+}
+
 void player_weapon_zoom_input(obj_type *obj,weapon_type *weap)
 {
 	bool				zoom_key,zoom_increase_key,zoom_decrease_key;
@@ -548,25 +586,24 @@ void player_weapon_change_input(int tick,obj_type *obj,weapon_type *weap)
 	bool			down_key,weapon_key[(nc_weapon_end-nc_weapon_start)+1],
 					next_weapon_key,previous_weapon_key;
 	
-		// special check if weapon change key is same as zoom key
-		// if zoom on, don't change weapon
+		// special check if weapon change key is same as the
+		// zoom or targetting keys.  If either are on, don't
+		// change the weapon
 		
 	next_weapon_key=input_action_get_state(nc_next_weapon);
 	previous_weapon_key=input_action_get_state(nc_previous_weapon);
 		
 	if ((weap->zoom.on) && (weap->zoom.active)) {
-		if (input_check_action_same_attachment(nc_next_weapon,nc_weapon_zoom_increase)) {
-			next_weapon_key=FALSE;
-		}
-		if (input_check_action_same_attachment(nc_next_weapon,nc_weapon_zoom_decrease)) {
-			next_weapon_key=FALSE;
-		}
-		if (input_check_action_same_attachment(nc_previous_weapon,nc_weapon_zoom_increase)) {
-			previous_weapon_key=FALSE;
-		}
-		if (input_check_action_same_attachment(nc_previous_weapon,nc_weapon_zoom_decrease)) {
-			previous_weapon_key=FALSE;
-		}
+		if (input_check_action_same_attachment(nc_next_weapon,nc_weapon_zoom_increase)) next_weapon_key=FALSE;
+		if (input_check_action_same_attachment(nc_next_weapon,nc_weapon_zoom_decrease)) next_weapon_key=FALSE;
+		if (input_check_action_same_attachment(nc_previous_weapon,nc_weapon_zoom_increase)) previous_weapon_key=FALSE;
+		if (input_check_action_same_attachment(nc_previous_weapon,nc_weapon_zoom_decrease)) previous_weapon_key=FALSE;
+	}
+	if (weap->target.on) {
+		if (input_check_action_same_attachment(nc_next_weapon,nc_weapon_target_next)) next_weapon_key=FALSE;
+		if (input_check_action_same_attachment(nc_next_weapon,nc_weapon_target_previous)) next_weapon_key=FALSE;
+		if (input_check_action_same_attachment(nc_previous_weapon,nc_weapon_target_next)) previous_weapon_key=FALSE;
+		if (input_check_action_same_attachment(nc_previous_weapon,nc_weapon_target_previous)) previous_weapon_key=FALSE;
 	}
 	
 		// any weapon change keys down?
@@ -591,6 +628,7 @@ void player_weapon_change_input(int tick,obj_type *obj,weapon_type *weap)
 		// change weapons
 
 	weapon_zoom_off(obj,weap);
+	weapon_target_end(obj,weap);
 		
 	if (next_weapon_key) {
 		weapon_switch(tick,obj,1);
@@ -658,6 +696,7 @@ void player_weapon_input(int tick,obj_type *obj)
 		// weapon keys
 		
 	if ((obj->held_weapon.mode==wm_held) && (weap!=NULL)) {
+		player_weapon_target_input(obj,weap);
 		player_weapon_zoom_input(obj,weap);
 		player_weapon_fire_input(tick,obj,weap);
 	}

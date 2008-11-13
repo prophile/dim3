@@ -30,6 +30,8 @@ and can be sold or given away.
 #endif
 
 #include "scripts.h"
+#include "objects.h"
+#include "weapons.h"
 #include "projectiles.h"
 
 extern server_type		server;

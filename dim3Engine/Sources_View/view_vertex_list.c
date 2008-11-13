@@ -150,6 +150,11 @@ void view_compile_mesh_gl_lists_poly_normal(map_mesh_type *mesh,map_mesh_poly_ty
 		pn+=3;
 	}
 
+		// simple tessel uses polygon
+		// vertexes, so ignore lighting vertexes
+
+	if (poly->light.simple_tessel) return;
+
 		// tesseled lighting vertexes
 
 	lv=poly->light.vertexes;
@@ -181,6 +186,11 @@ void view_compile_mesh_gl_lists_poly_ray_trace(map_mesh_type *mesh,map_mesh_poly
 		pn+=3;
 	}
 
+		// simple tessel uses polygon
+		// vertexes, so ignore lighting vertexes
+
+	if (poly->light.simple_tessel) return;
+
 		// tesseled lighting vertexes
 
 	lv=poly->light.vertexes;
@@ -201,8 +211,8 @@ void view_compile_mesh_gl_lists_poly_ray_trace(map_mesh_type *mesh,map_mesh_poly
 
 bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 {
-	int									n,k,t,sz,ntrig,
-										v_count,v_idx,v_light_start_idx;
+	int									n,k,t,sz,nvertex,
+										v_count,v_idx,v_poly_start_idx,v_light_start_idx;
 	float								fx,fy,fz,x_shift_offset,y_shift_offset;
 	float								*vertex_ptr,*pv,*pp,*pc,*pn,*lpc,*lpn;
 	bool								recalc_light;
@@ -308,7 +318,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 			}
 
-				// lights and normals
+				// polygon vertexes
 
 			lpc=poly->draw.p_color;
 			lpn=poly->draw.p_normal;
@@ -316,7 +326,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 			x_shift_offset=poly->draw.x_shift_offset;
 			y_shift_offset=poly->draw.y_shift_offset;
 
-				// build the vertex, UV, color, and normal lists
+			v_poly_start_idx=v_idx;
 
 			for (t=0;t!=poly->ptsz;t++) {
 			
@@ -344,35 +354,47 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 				// tesseled lighting vertexes
 
-			v_light_start_idx=v_idx;
-			lv=poly->light.vertexes;
+			if (!poly->light.simple_tessel) {
 
-			for (t=0;t!=poly->light.nvertex;t++) {
+				v_light_start_idx=v_idx;
+				lv=poly->light.vertexes;
 
-				*pv++=(((float)lv->x)-fx);
-				*pv++=(((float)lv->y)-fy);
-				*pv++=(fz-((float)lv->z));
+				for (t=0;t!=poly->light.nvertex;t++) {
+
+					*pv++=(((float)lv->x)-fx);
+					*pv++=(((float)lv->y)-fy);
+					*pv++=(fz-((float)lv->z));
+					
+					*pc++=*lpc++;
+					*pc++=*lpc++;
+					*pc++=*lpc++;
 				
-				*pc++=*lpc++;
-				*pc++=*lpc++;
-				*pc++=*lpc++;
-			
-				*pn++=*lpn++;
-				*pn++=*lpn++;
-				*pn++=*lpn++;
-				
-				*pp++=lv->gx+x_shift_offset;
-				*pp++=lv->gy+y_shift_offset;
-				
-				lv++;
-				v_idx++;
+					*pn++=*lpn++;
+					*pn++=*lpn++;
+					*pn++=*lpn++;
+					
+					*pp++=lv->gx+x_shift_offset;
+					*pp++=lv->gy+y_shift_offset;
+					
+					lv++;
+					v_idx++;
+				}
+			}
+
+				// if polygon was simple tessel, then
+				// all the vertexes come from the original
+				// polygon vertexes and there are no
+				// tesseled lighting vertexes
+
+			else {
+				v_light_start_idx=v_poly_start_idx;
 			}
 
 				// create light mesh draw indexes by offset
 
-			ntrig=poly->light.ntrig*3;
+			nvertex=poly->light.ntrig*3;
 
-			for (t=0;t!=ntrig;t++) {
+			for (t=0;t!=nvertex;t++) {
 				poly->light.trig_vertex_draw_idx[t]=poly->light.trig_vertex_idx[t]+v_light_start_idx;
 			}
 

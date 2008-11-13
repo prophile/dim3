@@ -122,30 +122,20 @@ void projectile_turn_xz_towards(proj_type *proj,obj_type *to_obj,float turn_add)
 
 void projectile_thrust_y_towards(proj_type *proj,obj_type *to_obj,float thrust_add)
 {
-	int			py,oy;
-	float		ymove;
+	int			py,oy,dist;
+	float		rang;
 	
-		// find new thrust
+		// find new thrust angle
 
 	py=proj->pnt.y-(proj->size.y>>1);
 	oy=to_obj->pnt.y-(to_obj->size.y>>1);
-	
-	ymove=0;
 
-	if (abs(py-oy)>thrust_add) {
-		if (py<oy) {
-			ymove=(float)(oy-py);
-			if (ymove>thrust_add) ymove=thrust_add;
-		}
-		else {
-			ymove=(float)(py-oy);
-			if (ymove<-thrust_add) ymove=-thrust_add;
-		}
-	}
+	dist=distance_2D_get(proj->pnt.x,proj->pnt.z,to_obj->pnt.x,to_obj->pnt.z);
+	rang=180.0f-angle_find(py,0,oy,dist);
 
 		// smooth out changes
 
-	proj->force.vct.y=(proj->force.vct.y+thrust_add)/2.0f;
+	proj->motion.ang.x=(proj->motion.ang.x-rang)/2.0f;
 }
 
 void projectile_seek(proj_type *proj,obj_type *to_obj,float turn_add,float thrust_add)

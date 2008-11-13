@@ -56,6 +56,8 @@ JSFunctionSpec	weap_target_functions[]={
 							{"end",					js_weap_target_end_func,				0},
 							{0}};
 
+extern void script_add_weap_target_color_object(JSObject *parent_obj);
+
 /* =======================================================
 
       Create Object
@@ -69,6 +71,10 @@ void script_add_weap_target_object(JSObject *parent_obj)
 	j_obj=JS_DefineObject(js.cx,parent_obj,"target",&weap_target_class,NULL,0);
 	JS_DefineProperties(js.cx,j_obj,weap_target_props);
 	JS_DefineFunctions(js.cx,j_obj,weap_target_functions);
+
+		// target color objects
+		
+	script_add_weap_target_color_object(j_obj);
 }
 
 /* =======================================================
