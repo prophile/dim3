@@ -99,11 +99,7 @@ void item_pickup_check(obj_type *obj)
 
 				// send network event
 
-			if (net_setup.client.joined) {
-				if (obj->uid==server.player_obj_uid) {
-					net_client_send_pickup(net_setup.client.remote_uid,obj);
-				}
-			}
+			if ((net_setup.client.joined) && (obj->uid==server.player_obj_uid)) net_client_send_pickup(net_setup.client.remote_uid,obj);
 			
 				// successfully picked up
 				

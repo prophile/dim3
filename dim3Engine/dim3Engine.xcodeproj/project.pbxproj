@@ -12,6 +12,7 @@
 		2657380F0DB07F650061E1B4 /* setup_game.c in Sources */ = {isa = PBXBuildFile; fileRef = 2657380D0DB07F650061E1B4 /* setup_game.c */; };
 		265B377D0D7F8D3A004AE124 /* group_change.c in Sources */ = {isa = PBXBuildFile; fileRef = 265B377C0D7F8D3A004AE124 /* group_change.c */; };
 		265B377F0D7F8D58004AE124 /* script_map_group.c in Sources */ = {isa = PBXBuildFile; fileRef = 265B377E0D7F8D58004AE124 /* script_map_group.c */; };
+		267345E30ECB95E80048BD10 /* script_weap_target.c in Sources */ = {isa = PBXBuildFile; fileRef = 267345E20ECB95E80048BD10 /* script_weap_target.c */; };
 		268CBC8C0DD2AA6700CF0256 /* network.h in Headers */ = {isa = PBXBuildFile; fileRef = 268CBC8B0DD2AA6700CF0256 /* network.h */; };
 		268CBC910DD2AA7D00CF0256 /* net_client_join_host.c in Sources */ = {isa = PBXBuildFile; fileRef = 268CBC8D0DD2AA7D00CF0256 /* net_client_join_host.c */; };
 		268CBC920DD2AA7D00CF0256 /* net_client_receive.c in Sources */ = {isa = PBXBuildFile; fileRef = 268CBC8E0DD2AA7D00CF0256 /* net_client_receive.c */; };
@@ -385,6 +386,7 @@
 		2657380D0DB07F650061E1B4 /* setup_game.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = setup_game.c; path = Sources_View/setup_game.c; sourceTree = "<group>"; };
 		265B377C0D7F8D3A004AE124 /* group_change.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = group_change.c; path = Sources_Server/group_change.c; sourceTree = "<group>"; };
 		265B377E0D7F8D58004AE124 /* script_map_group.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_map_group.c; path = Sources_Server/script_map_group.c; sourceTree = "<group>"; };
+		267345E20ECB95E80048BD10 /* script_weap_target.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_weap_target.c; path = Sources_Server/script_weap_target.c; sourceTree = "<group>"; };
 		268CBC8B0DD2AA6700CF0256 /* network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = network.h; path = Headers_Network/network.h; sourceTree = "<group>"; };
 		268CBC8D0DD2AA7D00CF0256 /* net_client_join_host.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_client_join_host.c; path = Sources_Network/net_client_join_host.c; sourceTree = "<group>"; };
 		268CBC8E0DD2AA7D00CF0256 /* net_client_receive.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_client_receive.c; path = Sources_Network/net_client_receive.c; sourceTree = "<group>"; };
@@ -864,6 +866,7 @@
 				F52C9A960ABB5B9400C63C19 /* script_weap_recoil.c */,
 				F5A581D1090B433F00BE7C36 /* script_weap_melee.c */,
 				F5A581CC090B433F00BE7C36 /* script_weap_fire.c */,
+				267345E20ECB95E80048BD10 /* script_weap_target.c */,
 				F557C58A0A4253FF008DB85C /* script_weap_zoom.c */,
 			);
 			name = Weapons;
@@ -1909,6 +1912,7 @@
 				26DB6E030DE07A9700BDD008 /* obj_ext_move.c in Sources */,
 				26101DCE0E5D075100D2919B /* view_vertex_object.c in Sources */,
 				26ABEE820E72F0700029469D /* script_obj_object_thrust.c in Sources */,
+				267345E30ECB95E80048BD10 /* script_weap_target.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
