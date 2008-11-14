@@ -104,8 +104,9 @@ void host_fill_map_table(char *game_type)
 
 void host_open(void)
 {
-	int							n,x,y,wid,high,padding;
-	element_column_type			cols[1];
+	int						n,x,y,wid,high,padding;
+	char					str[256],str2[256];
+	element_column_type		cols[1];
 	
 		// setup gui
 		
@@ -130,17 +131,17 @@ void host_open(void)
 	net_game_types[net_setup.ngame][0]=0x0;
 
 	x=(int)(((float)hud.scale_x)*0.15f);
-	y=(int)(((float)hud.scale_y)*0.17f);
+	y=(int)(((float)hud.scale_y)*0.15f);
 	
 	element_combo_add("Game Type",(char*)net_game_types,0,host_game_type_id,x,y,TRUE);
-	y+=element_get_control_high();
+	y+=element_get_padding();
 
 		// hosts table
 		
 	x=(int)(((float)hud.scale_x)*0.03f);
 
 	wid=hud.scale_x-(x*2);
-	high=(int)(((float)hud.scale_y)*0.83f)-y;
+	high=(int)(((float)hud.scale_y)*0.86f)-y;
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=1.0f;
@@ -153,17 +154,36 @@ void host_open(void)
 	host_fill_map_table(net_setup.games[0].name);
 	
 		// status
+		// start with IP information
+
+	if (net_setup.host.name[0]==0x0) network_get_host_name(net_setup.host.name);
+	network_get_host_ip(net_setup.host.ip_name,net_setup.host.ip_resolve);
+
+	if (strcmp(net_setup.host.ip_resolve,"127.0.0.1")==0) {
+		strcpy(str,"Local Machine");
+	}
+	else {
+		if (network_ip_local(net_setup.host.ip_resolve)) {
+			strcpy(str,"Local Network");
+		}
+		else {
+			strcpy(str,"Internet");
+		}
+	}
+
+	sprintf(str2,"; %s; %s:%d-%d",net_setup.host.name,net_setup.host.ip_resolve,net_port_host,net_port_host_query);
+	strcat(str,str2);
+
+	padding=element_get_padding();
+	high=(int)(((float)hud.scale_x)*0.05f);
 		
-	y=hud.scale_y-24;
-	element_text_add("",host_status_id,15,y,hud.font.text_size_small,tx_left,FALSE,FALSE);
+	y=hud.scale_y-((padding+(high/2))-(element_get_control_high()/2));
+	element_text_add(str,host_status_id,15,y,hud.font.text_size_small,tx_left,FALSE,FALSE);
 	
 		// buttons
 		
-	padding=element_get_padding();
-	
 	wid=(int)(((float)hud.scale_x)*0.1f);
-	high=(int)(((float)hud.scale_x)*0.05f);
-	
+
 	x=hud.scale_x-padding;
 	y=hud.scale_y-padding;
 	

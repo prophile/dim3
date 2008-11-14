@@ -41,18 +41,19 @@ EXPORTS
 	map_mesh_calculate_distance						@235
 	
 	map_mesh_combine								@236
-	map_mesh_move									@237
-	map_mesh_resize									@238
-	map_mesh_flip									@239
-	map_mesh_rotate									@240
-	map_mesh_tesselate								@241
-	map_mesh_poly_punch_hole						@242
-	map_mesh_poly_run_shifts						@243
-	map_mesh_get_poly_uv_as_box						@244
-	map_mesh_set_poly_uv_as_box						@245
-	map_mesh_rotate_poly_uv							@246
-	map_mesh_reset_poly_uv							@247
-	map_mesh_reset_uv								@248
+	map_mesh_combine_small							@237
+	map_mesh_move									@238
+	map_mesh_resize									@239
+	map_mesh_flip									@240
+	map_mesh_rotate									@241
+	map_mesh_tesselate								@242
+	map_mesh_poly_punch_hole						@243
+	map_mesh_poly_run_shifts						@244
+	map_mesh_get_poly_uv_as_box						@245
+	map_mesh_set_poly_uv_as_box						@246
+	map_mesh_rotate_poly_uv							@247
+	map_mesh_reset_poly_uv							@248
+	map_mesh_reset_uv								@249
 
 	map_liquid_add									@250
 	map_liquid_delete								@251

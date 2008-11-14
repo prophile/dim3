@@ -282,10 +282,10 @@ void file_open(void)
 		// files
 		
 	x=(int)(((float)hud.scale_x)*0.03f);
-	y=(int)(((float)hud.scale_y)*0.15f);
+	y=(int)(((float)hud.scale_y)*0.12f);
 
 	wid=hud.scale_x-(x*2);
-	high=(int)(((float)hud.scale_y)*0.83f)-y;
+	high=(int)(((float)hud.scale_y)*0.88f)-y;
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=0.50f;

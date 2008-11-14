@@ -84,6 +84,11 @@ void render_opaque_portal_normal(int mesh_cnt,int *mesh_list,int stencil_pass,bo
 
 		mesh=&map.mesh.meshes[mesh_list[n]];
 
+			// does this mesh have polys in the
+			// stencil pass?
+
+		if ((stencil_pass<mesh->draw.stencil_pass_start) || (stencil_pass>mesh->draw.stencil_pass_end)) continue;
+
 			// run through the polys
 
 		poly=mesh->polys;
@@ -158,6 +163,11 @@ void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool
 
 		mesh=&map.mesh.meshes[mesh_list[n]];
 
+			// does this mesh have polys in the
+			// stencil pass?
+
+		if ((stencil_pass<mesh->draw.stencil_pass_start) || (stencil_pass>mesh->draw.stencil_pass_end)) continue;
+
 			// if hilite is on or this mesh is
 			// hilited, then we need to clear the stencil
 			// here as there will be no lighting pass
@@ -204,7 +214,14 @@ void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool
 			gl_texture_opaque_tesseled_bump_set(texture->bumpmaps[frame].gl_id);
 			glStencilFunc(GL_EQUAL,poly->draw.stencil_idx,0xFF);
 
-			glDrawElements(GL_TRIANGLES,(poly->light.ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_draw_idx);
+				// draw either by lighting mesh or simple polygon
+
+			if (poly->light.simple_tessel) {
+				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
+			}
+			else {
+				glDrawElements(GL_TRIANGLES,(poly->light.ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_draw_idx);
+			}
 
 			poly++;
 		}
@@ -248,6 +265,11 @@ void render_opaque_portal_lighting(int mesh_cnt,int *mesh_list,int stencil_pass)
 
 		mesh=&map.mesh.meshes[mesh_list[n]];
 
+			// does this mesh have polys in the
+			// stencil pass?
+
+		if ((stencil_pass<mesh->draw.stencil_pass_start) || (stencil_pass>mesh->draw.stencil_pass_end)) continue;
+
 			// skip hilited polygons
 
 		if (mesh->flag.hilite) continue;
@@ -261,6 +283,14 @@ void render_opaque_portal_lighting(int mesh_cnt,int *mesh_list,int stencil_pass)
 				// in stencil pass?
 
 			if (poly->draw.stencil_pass!=stencil_pass) {
+				poly++;
+				continue;
+			}
+
+				// simple tessels only need the lighting
+				// fix pass as they don't draw with a mesh
+
+			if (poly->light.simple_tessel) {
 				poly++;
 				continue;
 			}
@@ -302,10 +332,9 @@ void render_opaque_portal_lighting(int mesh_cnt,int *mesh_list,int stencil_pass)
 
 void render_opaque_portal_lighting_mesh_debug(int mesh_cnt,int *mesh_list,int stencil_pass)
 {
-	int					n,k,frame;
+	int					n,k;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
-	texture_type		*texture;
 
 		// setup drawing
 
@@ -326,6 +355,11 @@ void render_opaque_portal_lighting_mesh_debug(int mesh_cnt,int *mesh_list,int st
 
 		mesh=&map.mesh.meshes[mesh_list[n]];
 
+			// does this mesh have polys in the
+			// stencil pass?
+
+		if ((stencil_pass<mesh->draw.stencil_pass_start) || (stencil_pass>mesh->draw.stencil_pass_end)) continue;
+
 			// skip hilited polygons
 
 		if (mesh->flag.hilite) continue;
@@ -343,22 +377,19 @@ void render_opaque_portal_lighting_mesh_debug(int mesh_cnt,int *mesh_list,int st
 				continue;
 			}
 
-				// get texture
-
-			texture=&map.textures[poly->txt_idx];
-			if (texture->shader.on) {
-				poly++;
-				continue;
-			}
-
-			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
 				// draw lighting
 
 			gl_texture_tesseled_lighting_set(-1,poly->dark_factor);
 			glStencilFunc(GL_EQUAL,poly->draw.stencil_idx,0xFF);
 
-			glDrawElements(GL_TRIANGLES,(poly->light.ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_draw_idx);
+				// draw either by lighting mesh or simple polygon
+
+			if (poly->light.simple_tessel) {
+				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
+			}
+			else {
+				glDrawElements(GL_TRIANGLES,(poly->light.ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_draw_idx);
+			}
 
 			poly++;
 		}
@@ -396,6 +427,11 @@ void render_opaque_portal_lighting_fix(int mesh_cnt,int *mesh_list,int stencil_p
 	for (n=0;n!=mesh_cnt;n++) {
 
 		mesh=&map.mesh.meshes[mesh_list[n]];
+
+			// does this mesh have polys in the
+			// stencil pass?
+
+		if ((stencil_pass<mesh->draw.stencil_pass_start) || (stencil_pass>mesh->draw.stencil_pass_end)) continue;
 
 			// skip hilited polygons
 
@@ -461,6 +497,11 @@ void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass)
 
 		mesh=&map.mesh.meshes[mesh_list[n]];
 
+			// does this mesh have polys in the
+			// stencil pass?
+
+		if ((stencil_pass<mesh->draw.stencil_pass_start) || (stencil_pass>mesh->draw.stencil_pass_end)) continue;
+
 			// skip hilited polygons
 
 		if (mesh->flag.hilite) continue;
@@ -500,7 +541,14 @@ void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass)
 			gl_texture_tesseled_specular_set(texture->specularmaps[frame].gl_id);
 			glStencilFunc(GL_EQUAL,poly->draw.stencil_idx,0xFF);
 
-			glDrawElements(GL_TRIANGLES,(poly->light.ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_draw_idx);
+				// draw either by lighting mesh or simple polygon
+
+			if (poly->light.simple_tessel) {
+				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
+			}
+			else {
+				glDrawElements(GL_TRIANGLES,(poly->light.ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_draw_idx);
+			}
 
 			poly++;
 		}
@@ -578,10 +626,16 @@ void render_opaque_portal_glow(int mesh_cnt,int *mesh_list)
 				continue;
 			}
 
-				// draw polygon
-
 			gl_texture_opaque_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,texture->glow.current_color);
-			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
+
+				// draw either by lighting mesh or simple polygon
+
+			if (poly->light.simple_tessel) {
+				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
+			}
+			else {
+				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
+			}
 
 			poly++;
 		}
@@ -690,6 +744,7 @@ int render_opaque_mesh_stencil_mark(int mesh_cnt,int *mesh_list)
 	for (n=0;n!=mesh_cnt;n++) {
 
 		mesh=&map.mesh.meshes[mesh_list[n]];
+		mesh->draw.stencil_pass_start=stencil_pass;
 
 		poly=mesh->polys;
 
@@ -722,6 +777,8 @@ int render_opaque_mesh_stencil_mark(int mesh_cnt,int *mesh_list)
 			
 			poly++;
 		}
+
+		mesh->draw.stencil_pass_end=stencil_pass;
 	}
 
 	return(stencil_pass);

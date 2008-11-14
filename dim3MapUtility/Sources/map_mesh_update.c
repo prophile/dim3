@@ -152,6 +152,73 @@ int map_mesh_combine(map_type *map,int mesh_1_idx,int mesh_2_idx)
 	return(mesh_idx-2);
 }
 
+int map_mesh_find_vertex_share(map_type *map,int mesh_idx)
+{
+	int					n,i,k;
+	d3pnt				*pt,*chk_pt;
+	map_mesh_type		*mesh,*chk_mesh;
+
+	mesh=&map->mesh.meshes[mesh_idx];
+	chk_mesh=map->mesh.meshes;
+
+	for (n=0;n!=map->mesh.nmesh;n++) {
+
+		if (n==mesh_idx) {
+			chk_mesh++;
+			continue;
+		}
+		
+		pt=mesh->vertexes;
+
+		for (i=0;i!=mesh->nvertex;i++) {
+
+			chk_pt=chk_mesh->vertexes;
+
+			for (k=0;k!=chk_mesh->nvertex;k++) {
+				if ((chk_pt->x==pt->x) && (chk_pt->y==pt->y) && (chk_pt->z==pt->z)) return(n);
+				chk_pt++;
+			}
+
+			pt++;
+		}
+
+		chk_mesh++;
+	}
+
+	return(-1);
+}
+
+int map_mesh_combine_small(map_type *map,int poly_threshold)
+{
+	int			n,total,comb_mesh_idx;
+	bool		repeat;
+
+	total=0;
+	repeat=TRUE;
+
+	while (repeat) {
+
+		repeat=FALSE;
+
+		for (n=0;n!=map->mesh.nmesh;n++) {
+
+			if (map->mesh.meshes[n].npoly<=poly_threshold) {
+
+				comb_mesh_idx=map_mesh_find_vertex_share(map,n);
+				if (comb_mesh_idx!=-1) {
+					if (map_mesh_combine(map,n,comb_mesh_idx)==-1) break;		// some memory problem, just exit with no repeat
+					
+					total++;
+					repeat=TRUE;
+					break;
+				}
+			}
+		}
+	}
+
+	return(total);
+}
+
 /* =======================================================
 
       Move Mesh

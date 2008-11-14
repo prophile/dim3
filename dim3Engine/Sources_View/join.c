@@ -418,10 +418,10 @@ void join_open(bool local)
 		// hosts table
 		
 	x=(int)(((float)hud.scale_x)*0.03f);
-	y=(int)(((float)hud.scale_y)*0.15f);
+	y=(int)(((float)hud.scale_y)*0.12f);
 
 	wid=hud.scale_x-(x*2);
-	high=(int)(((float)hud.scale_y)*0.83f)-y;
+	high=(int)(((float)hud.scale_y)*0.88f)-y;
 
 	strcpy(cols[0].name,"Name");
 	cols[0].percent_size=0.45f;
@@ -436,19 +436,19 @@ void join_open(bool local)
 	element_table_busy(join_table_id,TRUE);
 	
 		// status
+
+	padding=element_get_padding();
+	high=(int)(((float)hud.scale_x)*0.05f);
 		
-	y=hud.scale_y-24;
+	y=hud.scale_y-((padding+(high/2))-(element_get_control_high()/2));
 	element_text_add("",join_status_id,15,y,hud.font.text_size_small,tx_left,FALSE,FALSE);
 	
 		// buttons
 		
-	padding=element_get_padding();
-	
 	x=padding;
 	y=hud.scale_y-padding;
 	
 	wid=(int)(((float)hud.scale_x)*0.2f);
-	high=(int)(((float)hud.scale_x)*0.05f);
 
 	element_button_text_add("Rescan Hosts",join_button_rescan_id,x,y,wid,high,element_pos_left,element_pos_bottom);
 	element_enable(join_button_rescan_id,FALSE);

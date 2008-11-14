@@ -54,7 +54,7 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 	char				*c;
 	unsigned char		*png_data,*data;
 	bool				ok;
-	
+
 	bitmap_new(bitmap);
 	
 		// get name

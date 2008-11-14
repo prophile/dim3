@@ -237,11 +237,16 @@ bool view_initialize_display(char *err_str)
 		return(FALSE);
 	}
 
+		// vertex objects
+	
+	view_create_vertex_objects();
+
 	return(TRUE);
 }
 
 void view_shutdown_display(void)
 {
+	view_dispose_vertex_objects();
 	gl_shadow_shutdown();
 	gl_text_shutdown();
 	gl_shutdown();
@@ -290,8 +295,6 @@ bool view_initialize(char *err_str)
 		// gl initialize
 
 	if (!view_initialize_display(err_str)) return(FALSE);
-	
-	view_create_vertex_objects();
 
 		// sound initialize
 		
@@ -345,7 +348,6 @@ void view_shutdown(void)
 	
 		// gl shutdown
 
-	view_dispose_vertex_objects();
 	view_shutdown_display();
 
 		// shutdown SDL

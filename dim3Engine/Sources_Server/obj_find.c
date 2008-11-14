@@ -112,12 +112,12 @@ int object_find_index_remote_uid(int uid)
 
 obj_type* object_find_spawn_idx(int spawn_idx)
 {
-	int				i;
+	int				n;
 	obj_type		*obj;
 	
 	obj=server.objs;
 	
-	for ((i=0);(i!=server.count.obj);i++) {
+	for (n=0;n!=server.count.obj;n++) {
 		if (obj->spawn_idx==spawn_idx) return(obj);
 		obj++;
 	}
@@ -133,12 +133,12 @@ obj_type* object_find_spawn_idx(int spawn_idx)
 
 obj_type* object_find_name(char *name)
 {
-	int			i;
+	int			n;
 	obj_type	*obj;
 	
 	obj=server.objs;
 	
-	for ((i=0);(i!=server.count.obj);i++) {
+	for (n=0;n!=server.count.obj;n++) {
 		if (strcasecmp(obj->name,name)==0) return(obj);
 		obj++;
 	}
@@ -152,7 +152,7 @@ obj_type* object_find_name(char *name)
       
 ======================================================= */
 
-obj_type* object_find_nearest(int x,int z,int y,char *name,char *type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,bool remote)
+obj_type* object_find_nearest(d3pnt *pt,char *name,char *type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,bool remote,bool skip_self)
 {
 	int				n,i,d,dist;
 	float			fang;
@@ -161,7 +161,7 @@ obj_type* object_find_nearest(int x,int z,int y,char *name,char *type,int team_i
 	i=-1;
     dist=max_dist;
 	
-	for ((n=0);(n!=server.count.obj);n++) {
+	for (n=0;n!=server.count.obj;n++) {
 		obj=&server.objs[n];
 		
 		if (obj->hidden) continue;
@@ -174,6 +174,10 @@ obj_type* object_find_nearest(int x,int z,int y,char *name,char *type,int team_i
 		}
 		if (remote) {
 			if (!obj->remote.on) continue;
+		}
+
+		if (skip_self) {
+			if (obj->uid==server.player_obj_uid) continue;
 		}
 		
 			// check name
@@ -196,14 +200,14 @@ obj_type* object_find_nearest(int x,int z,int y,char *name,char *type,int team_i
 		
 			// check distance
 			
-		d=distance_get(x,y,z,obj->pnt.x,obj->pnt.y,obj->pnt.z);
+		d=distance_get(pt->x,pt->y,pt->z,obj->pnt.x,obj->pnt.y,obj->pnt.z);
 		if (d<min_dist) continue;
 		if (d>dist) continue;
 		
 			// check angle
 			
 		if (ang!=-1) {
-			fang=angle_find(x,z,obj->pnt.x,obj->pnt.z);
+			fang=angle_find(pt->x,pt->z,obj->pnt.x,obj->pnt.z);
 			if (angle_dif(fang,ang,NULL)>ang_sweep) continue;
 		}
 		

@@ -277,7 +277,8 @@ typedef struct		{
 					} map_mesh_draw_light_spot_type;
 
 typedef struct		{
-						int									nlight;
+						int									nlight,
+															stencil_pass_start,stencil_pass_end;
 						map_mesh_draw_light_spot_type		light_spots[max_light_spot];
 					} map_mesh_draw_type;
 
@@ -634,6 +635,7 @@ extern int map_mesh_find_always(map_type *map,d3pnt *pnt);
 extern int map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt);
 
 extern int map_mesh_combine(map_type *map,int mesh_1_idx,int mesh_2_idx);
+extern int map_mesh_combine_small(map_type *map,int poly_threshold);
 extern void map_mesh_move(map_type *map,int mesh_idx,int x,int y,int z);
 extern void map_mesh_resize(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max);
 extern void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);
