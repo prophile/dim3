@@ -67,7 +67,7 @@ extern bool walk_view_click_drag_texture(editor_3D_view_setup *view_setup,d3pnt 
 // walk view draw handle
 //
 
-extern void walk_view_sprite_select_size(d3pnt *cpt,d3pnt *pnt,int *px,int *pz,int *ty,int *by);
+extern void walk_view_sprite_select_size(d3pnt *cpt,d3pnt *pnt,int *px,int *py,int *pz);
 
 //
 // walk view movement
@@ -97,6 +97,6 @@ extern bool walk_view_swap_click(editor_3D_view_setup *view_setup,d3pnt *pt,bool
 extern void walk_view_models_start(void);
 extern void walk_view_models_close(void);
 extern void walk_view_models_reset(void);
-extern bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name);
-extern bool walk_view_model_click_select_size(d3pnt *cpt,char *name,d3pnt *pnt,d3ang *ang,int *px,int *pz,int *ty,int *by);
+extern bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name,int *texture_frames,int frame_count);
+extern bool walk_view_model_click_select_size(d3pnt *cpt,char *name,d3pnt *pnt,d3ang *ang,int *px,int *py,int *pz);
 extern bool walk_view_model_draw_select(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name);

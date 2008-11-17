@@ -122,7 +122,7 @@ void scenery_create(void)
 
 void scenery_start(void)
 {
-	int					n;
+	int					n,k;
 	map_scenery_type	*map_scenery;
 	obj_type			*obj;
 
@@ -148,6 +148,12 @@ void scenery_start(void)
 			}
 		
 			object_set_radius(obj);
+			
+				// change texture frames
+				
+			for (k=0;k!=max_map_scenery_model_texture_frame;k++) {
+				obj->draw.cur_texture_frame[k]=(unsigned char)map_scenery->texture_frames[k];
+			}
 				
 				// start scenery animation
 				

@@ -57,6 +57,8 @@ extern char light_type_str[][32];
 #define max_group											128				// maximum number of mesh groups
 
 #define max_map_scenery										1024			// maximum number of ambient scenery
+#define max_map_scenery_model_texture_frame					8				// maximum number of changable texture frames
+
 #define max_map_light										256				// maximum number of ambient lights
 #define max_map_sound										256				// maximum number of ambient sounds
 #define max_map_particle									256				// maximum number of ambient particles
@@ -369,7 +371,8 @@ typedef struct		{
 //
 					
 typedef struct		{
-						int									lighting_mode;
+						int									lighting_mode,
+															texture_frames[max_map_scenery_model_texture_frame];
 						char								model_name[name_str_len],
 															animation_name[name_str_len];
 						bool								contact_object_on,contact_projectile_on,

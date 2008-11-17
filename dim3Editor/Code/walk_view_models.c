@@ -189,7 +189,7 @@ void walk_view_models_reset(void)
       
 ======================================================= */
 
-void walk_view_model_draw_material(model_type *model,model_draw_setup *draw_setup,texture_type *texture,model_material_type *material)
+void walk_view_model_draw_material(model_type *model,model_draw_setup *draw_setup,texture_type *texture,model_material_type *material,int frame)
 {
 	register int					k,trig_count,bitmap_gl_id;
     register model_trig_type		*trig;
@@ -199,7 +199,7 @@ void walk_view_model_draw_material(model_type *model,model_draw_setup *draw_setu
 
 		// setup texture
 
-	bitmap_gl_id=texture->bitmaps[0].gl_id;
+	bitmap_gl_id=texture->bitmaps[frame].gl_id;
 	glBindTexture(GL_TEXTURE_2D,bitmap_gl_id);
 	
 		// triangles
@@ -224,9 +224,9 @@ void walk_view_model_draw_material(model_type *model,model_draw_setup *draw_setu
 	glEnd();
 }
 
-bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name)
+bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name,int *texture_frames,int frame_count)
 {
-	int								idx,x,y,z,n;
+	int								idx,x,y,z,n,frame;
 	model_type						*model;
 	model_draw_setup				draw_setup;
 	model_mesh_type					*mesh;
@@ -285,7 +285,9 @@ bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name)
 	material=mesh->materials;
     
     for (n=0;n!=max_model_texture;n++) {
-		if (texture->bitmaps[0].alpha_mode!=alpha_mode_transparent) walk_view_model_draw_material(model,&draw_setup,texture,material);
+		frame=0;
+		if (n<frame_count) frame=texture_frames[n];
+		if (texture->bitmaps[0].alpha_mode!=alpha_mode_transparent) walk_view_model_draw_material(model,&draw_setup,texture,material,frame);
 		texture++;
 		material++;
 	}
@@ -299,7 +301,9 @@ bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name)
 	material=mesh->materials;
     
     for (n=0;n!=max_model_texture;n++) {
-		if (texture->bitmaps[0].alpha_mode==alpha_mode_transparent) walk_view_model_draw_material(model,&draw_setup,texture,material);
+		frame=0;
+		if (n<frame_count) frame=texture_frames[n];
+		if (texture->bitmaps[0].alpha_mode==alpha_mode_transparent) walk_view_model_draw_material(model,&draw_setup,texture,material,frame);
 		texture++;
 		material++;
 	}
@@ -322,21 +326,19 @@ bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name)
       
 ======================================================= */
 
-bool walk_view_model_click_select_size(d3pnt *cpt,char *name,d3pnt *pnt,d3ang *ang,int *px,int *pz,int *ty,int *by)
+bool walk_view_model_click_select_size(d3pnt *cpt,char *name,d3pnt *pnt,d3ang *ang,int *px,int *py,int *pz)
 {
-	int						idx,x,y,z,wid_x,wid_z,high;
+	int						n,idx,cx,cy,cz,wid_x,wid_z,high;
+	float					fx,fy,fz;
+	matrix_type				rot_x_mat,rot_y_mat,rot_z_mat;
 	model_type				*model;
 	
-		// get position
-		
-	x=pnt->x-cpt->x;
-	y=pnt->y-cpt->y;
-	z=cpt->z-pnt->z;
-
 		// default size
 		
     wid_x=wid_z=map_enlarge*3;
     high=map_enlarge*4;
+	
+	cx=cy=cz=0;
 
 		// if there is a model, then get size
 		
@@ -351,22 +353,52 @@ bool walk_view_model_click_select_size(d3pnt *cpt,char *name,d3pnt *pnt,d3ang *a
 				wid_x=model->view_box.size.x>>1;
 				wid_z=model->view_box.size.z>>1;
 				high=model->view_box.size.y;
+				
+				cx=model->center.x;
+				cy=model->center.y;
+				cz=model->center.z;
 			}
 		}
 	}
 	
 		// get polygons
 	
-	px[0]=px[3]=x-wid_x;
-	px[1]=px[2]=x+wid_x;
-		
-	pz[0]=pz[1]=z-wid_z;
-	pz[2]=pz[3]=z+wid_z;
+	px[0]=px[3]=px[6]=px[7]=-wid_x;
+	px[1]=px[2]=px[4]=px[5]=wid_x;
 	
-	if (ang!=NULL) rotate_2D_polygon(4,px,pz,x,z,-ang->y);
+	py[0]=py[1]=py[2]=py[3]=-high;
+	py[4]=py[5]=py[6]=py[7]=0;
+		
+	pz[0]=pz[1]=pz[4]=pz[7]=-wid_z;
+	pz[2]=pz[3]=pz[5]=pz[6]=wid_z;
+	
+		// any rotations
+	
+	if (ang!=NULL) {
+		matrix_rotate_x(&rot_x_mat,ang->x);
+		matrix_rotate_z(&rot_z_mat,ang->z);
+		matrix_rotate_y(&rot_y_mat,ang->y);
 
-	*ty=y-high;
-	*by=y;
+		for (n=0;n!=8;n++) {
+			fx=(float)(px[n]-cx);
+			fy=(float)(py[n]-cy);
+			fz=(float)(pz[n]-cz);
+			
+			matrix_vertex_multiply(&rot_x_mat,&fx,&fy,&fz);
+			matrix_vertex_multiply(&rot_z_mat,&fx,&fy,&fz);
+			matrix_vertex_multiply(&rot_y_mat,&fx,&fy,&fz);
+			
+			px[n]=((int)fx)+cx;
+			py[n]=((int)fy)+cy;
+			pz[n]=((int)fz)+cz;
+		}
+	}
+	
+	for (n=0;n!=8;n++) {
+		px[n]=(px[n]+pnt->x)-cpt->x;
+		py[n]=(py[n]+pnt->y)-cpt->y;
+		pz[n]=cpt->z-(pz[n]+pnt->z);
+	}
 	
 	return(TRUE);
 }
@@ -379,11 +411,11 @@ bool walk_view_model_click_select_size(d3pnt *cpt,char *name,d3pnt *pnt,d3ang *a
 
 bool walk_view_model_draw_select(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name)
 {
-	int				px[4],pz[4],ty,by;
+	int				px[8],py[8],pz[8];
 	
 		// get polygons
 		
-	if (!walk_view_model_click_select_size(cpt,name,pnt,ang,px,pz,&ty,&by)) return(FALSE);
+	if (!walk_view_model_click_select_size(cpt,name,pnt,ang,px,py,pz)) return(FALSE);
 
 		// draw selection
 		
@@ -391,28 +423,28 @@ bool walk_view_model_draw_select(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name)
 	glColor4f(1,0,0,1);
     
 	glBegin(GL_LINE_LOOP);
-	glVertex3i(px[0],ty,pz[0]);
-	glVertex3i(px[1],ty,pz[1]);
-	glVertex3i(px[2],ty,pz[2]);
-	glVertex3i(px[3],ty,pz[3]);
+	glVertex3i(px[0],py[0],pz[0]);
+	glVertex3i(px[1],py[1],pz[1]);
+	glVertex3i(px[2],py[2],pz[2]);
+	glVertex3i(px[3],py[3],pz[3]);
 	glEnd();
 
 	glBegin(GL_LINE_LOOP);
-	glVertex3i(px[0],by,pz[0]);
-	glVertex3i(px[1],by,pz[1]);
-	glVertex3i(px[2],by,pz[2]);
-	glVertex3i(px[3],by,pz[3]);
+	glVertex3i(px[4],py[4],pz[4]);
+	glVertex3i(px[5],py[5],pz[5]);
+	glVertex3i(px[6],py[6],pz[6]);
+	glVertex3i(px[7],py[7],pz[7]);
 	glEnd();
 	
 	glBegin(GL_LINES);
- 	glVertex3i(px[0],ty,pz[0]);
-	glVertex3i(px[0],by,pz[0]);
-	glVertex3i(px[1],ty,pz[1]);
-	glVertex3i(px[1],by,pz[1]);
-	glVertex3i(px[2],ty,pz[2]);
-	glVertex3i(px[2],by,pz[2]);
-	glVertex3i(px[3],ty,pz[3]);
-	glVertex3i(px[3],by,pz[3]);
+	glVertex3i(px[0],py[0],pz[0]);
+	glVertex3i(px[7],py[7],pz[7]);
+	glVertex3i(px[1],py[1],pz[1]);
+	glVertex3i(px[4],py[4],pz[4]);
+	glVertex3i(px[2],py[2],pz[2]);
+	glVertex3i(px[5],py[5],pz[5]);
+	glVertex3i(px[3],py[3],pz[3]);
+	glVertex3i(px[6],py[6],pz[6]);
 	glEnd();
     
     glLineWidth(1);

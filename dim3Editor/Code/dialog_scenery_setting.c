@@ -47,6 +47,7 @@ extern map_type				map;
 #define kScenerySizeX								FOUR_CHAR_CODE('rszX')
 #define kScenerySizeY								FOUR_CHAR_CODE('rszY')
 #define kScenerySizeZ								FOUR_CHAR_CODE('rszZ')
+#define kSceneryFrame								FOUR_CHAR_CODE('txtf')
 
 bool						dialog_scenery_setting_cancel;
 WindowRef					dialog_scenery_setting_wind;
@@ -94,6 +95,7 @@ static pascal OSStatus map_scenery_setting_event_proc(EventHandlerCallRef handle
 
 bool dialog_scenery_setting_run(map_scenery_type *scenery)
 {
+	int						n;
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
 	
@@ -119,6 +121,10 @@ bool dialog_scenery_setting_run(map_scenery_type *scenery)
 	dialog_set_int(dialog_scenery_setting_wind,kScenerySizeX,0,scenery->size.x);
 	dialog_set_int(dialog_scenery_setting_wind,kScenerySizeY,0,scenery->size.y);
 	dialog_set_int(dialog_scenery_setting_wind,kScenerySizeZ,0,scenery->size.z);
+	
+	for (n=0;n!=max_map_scenery_model_texture_frame;n++) {
+		dialog_set_int(dialog_scenery_setting_wind,kSceneryFrame,n,scenery->texture_frames[n]);
+	}
 	
 		// show window
 	
@@ -153,6 +159,10 @@ bool dialog_scenery_setting_run(map_scenery_type *scenery)
 		scenery->size.x=dialog_get_int(dialog_scenery_setting_wind,kScenerySizeX,0);
 		scenery->size.y=dialog_get_int(dialog_scenery_setting_wind,kScenerySizeY,0);
 		scenery->size.z=dialog_get_int(dialog_scenery_setting_wind,kScenerySizeZ,0);
+		
+		for (n=0;n!=max_map_scenery_model_texture_frame;n++) {
+			scenery->texture_frames[n]=dialog_get_int(dialog_scenery_setting_wind,kSceneryFrame,n);
+		}
 	
 		main_wind_draw();
 	}

@@ -223,7 +223,7 @@ void walk_view_draw_select_liquid(d3pnt *cpt,int liquid_idx)
       
 ======================================================= */
 
-void walk_view_sprite_select_size(d3pnt *cpt,d3pnt *pnt,int *px,int *pz,int *ty,int *by)
+void walk_view_sprite_select_size(d3pnt *cpt,d3pnt *pnt,int *px,int *py,int *pz)
 {
 	int				x,y,z,wid;
 	
@@ -233,14 +233,14 @@ void walk_view_sprite_select_size(d3pnt *cpt,d3pnt *pnt,int *px,int *pz,int *ty,
     
     wid=map_enlarge*3;
 
-	px[0]=px[3]=x-wid;
-	px[1]=px[2]=x+wid;
+	px[0]=px[3]=px[6]=px[7]=x-wid;
+	px[1]=px[2]=px[4]=px[5]=x+wid;
 	
-	pz[0]=pz[1]=z-wid;
-	pz[2]=pz[3]=z+wid;
-	
-	*by=y;
-	*ty=y-(map_enlarge*4);
+	py[0]=py[1]=py[2]=py[3]=y-(map_enlarge*4);
+	py[4]=py[5]=py[6]=py[7]=y;
+		
+	pz[0]=pz[1]=pz[4]=pz[7]=z-wid;
+	pz[2]=pz[3]=pz[5]=pz[6]=z+wid;
 }
 
 void walk_view_draw_select_sprite(d3pnt *cpt,d3pnt *pnt)

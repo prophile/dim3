@@ -43,7 +43,7 @@ WindowRef					dialog_resize_wind;
       
 ======================================================= */
 
-static pascal OSStatus portal_setting_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
+static pascal OSStatus dialog_resize_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
 	HICommand		cmd;
 	
@@ -101,7 +101,7 @@ bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z)
 	
 		// install event handler
 		
-	event_upp=NewEventHandlerUPP(portal_setting_event_proc);
+	event_upp=NewEventHandlerUPP(dialog_resize_event_proc);
 	InstallWindowEventHandler(dialog_resize_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
 	
 		// modal window

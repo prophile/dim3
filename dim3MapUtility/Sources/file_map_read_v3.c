@@ -323,6 +323,8 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 			scenery->shadow=xml_get_attribute_boolean(obj_tag,"shadow");
 			scenery->shadow_cast_down=xml_get_attribute_boolean(obj_tag,"shadow_cast_down");
 			
+			xml_get_attribute_int_array(obj_tag,"frames",scenery->texture_frames,max_map_scenery_model_texture_frame);
+			
 			scenery->override_size=xml_get_attribute_boolean(obj_tag,"override_size");
 			xml_get_attribute_3_coord_int(obj_tag,"size",&scenery->size.x,&scenery->size.y,&scenery->size.z);
 			

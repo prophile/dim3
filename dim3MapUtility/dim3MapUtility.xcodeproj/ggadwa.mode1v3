@@ -327,7 +327,7 @@
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {284, 692}}</string>
+							<string>{{0, 18}, {284, 692}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -374,10 +374,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>267345BB0ECB94AB0048BD10</string>
+										<string>266C16480ED0D35E0018D1C9</string>
 										<key>history</key>
 										<array>
-											<string>26071CD40ECA9EBE0045894F</string>
+											<string>266C15EE0ECFFE6C0018D1C9</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -435,9 +435,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>267345B90ECB949F0048BD10</string>
+				<string>266C16490ED0D35E0018D1C9</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>267345BA0ECB949F0048BD10</string>
+				<string>266C164A0ED0D35E0018D1C9</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -556,7 +556,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>248222891.57849801</real>
+	<real>248566622.53409299</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -654,7 +654,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEBC0D404E7500F6C42F</string>
-				<string>267345B60ECB949C0048BD10</string>
+				<string>266C163A0ED0D0300018D1C9</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -870,8 +870,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>26071CA20ECA9D8F0045894F</string>
-				<string>26071CA30ECA9D8F0045894F</string>
+				<string>26BF01B10ECCE792009996C6</string>
+				<string>26BF01B20ECCE792009996C6</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>

@@ -43,7 +43,7 @@ WindowRef					dialog_free_rotate_wind;
       
 ======================================================= */
 
-static pascal OSStatus portal_setting_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
+static pascal OSStatus dialog_free_rotate_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
 	HICommand		cmd;
 	
@@ -100,7 +100,7 @@ bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z)
 	
 		// install event handler
 		
-	event_upp=NewEventHandlerUPP(portal_setting_event_proc);
+	event_upp=NewEventHandlerUPP(dialog_free_rotate_event_proc);
 	InstallWindowEventHandler(dialog_free_rotate_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
 	
 		// modal window

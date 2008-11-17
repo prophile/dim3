@@ -46,7 +46,7 @@ WindowRef					dialog_reposition_wind;
       
 ======================================================= */
 
-static pascal OSStatus portal_setting_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
+static pascal OSStatus dialog_reposition_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
 	HICommand		cmd;
 	
@@ -107,7 +107,7 @@ bool dialog_reposition_run(d3pnt *min,d3pnt *max)
 	
 		// install event handler
 		
-	event_upp=NewEventHandlerUPP(portal_setting_event_proc);
+	event_upp=NewEventHandlerUPP(dialog_reposition_event_proc);
 	InstallWindowEventHandler(dialog_reposition_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
 	
 		// modal window

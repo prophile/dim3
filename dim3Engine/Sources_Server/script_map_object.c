@@ -81,7 +81,7 @@ JSFunctionSpec	map_object_functions[]={
 							{"findAllPlayers",			js_map_object_find_all_players_func,		0},
 							{"nearest",					js_map_object_nearest_func,					9},
 							{"nearestPlayer",			js_map_object_nearest_player_func,			7},
-							{"nearestPlayerSkipSelf",	js_map_object_nearest_player_func,			7},
+							{"nearestPlayerSkipSelf",	js_map_object_nearest_player_skip_self_func,7},
 							{"nearestRemotePlayer",		js_map_object_nearest_remote_player_func,	7},
 							{"nearestTeam",				js_map_object_nearest_team_func,			8},
 							{"getName",					js_map_object_get_name_func,				1},

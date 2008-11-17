@@ -131,7 +131,7 @@ void piece_create_spot(void)
 
 void piece_create_scenery(void)
 {
-	int					index;
+	int					n,index;
 	map_scenery_type	*scenery;
 	
 	if (map.nscenery==max_map_scenery) {
@@ -158,6 +158,10 @@ void piece_create_scenery(void)
 	scenery->shadow=FALSE;
 	scenery->override_size=FALSE;
 	scenery->size.x=scenery->size.y=scenery->size.z=0;
+	
+	for (n=0;n!=max_map_scenery_model_texture_frame;n++) {
+		scenery->texture_frames[n]=0;
+	}
     
 		// select spot
 		

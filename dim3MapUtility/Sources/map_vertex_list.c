@@ -337,7 +337,7 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
       
 ======================================================= */
 
-void map_portal_add_light_simple_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly)
+void map_portal_add_light_simple_vertex_list(map_mesh_poly_type *poly)
 {
 	int							n,ntrig;
 	map_mesh_poly_light_type	*light;
@@ -385,7 +385,7 @@ void map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *p
 	if ((quality_mode==quality_mode_low) || (poly->draw.simple_tessel) || (mesh->flag.hilite)) {
 
 		poly->light.simple_tessel=TRUE;
-		map_portal_add_light_simple_vertex_list(mesh,poly);
+		map_portal_add_light_simple_vertex_list(poly);
 
 		return;
 	}

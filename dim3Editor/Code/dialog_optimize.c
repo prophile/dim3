@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Mesh Scale Dialog
+ Usage: Optimize Dialog
 
 ***************************** License ********************************
 
@@ -30,20 +30,18 @@ and can be sold or given away.
 
 extern map_type				map;
 
-#define kMeshScaleScale							FOUR_CHAR_CODE('scle')
-#define kMeshScaleButtonScale					FOUR_CHAR_CODE('scal')
-#define kMeshScaleButtonReplace					FOUR_CHAR_CODE('repl')
+#define kPolyThreshold		FOUR_CHAR_CODE('cont')
 
-bool						dialog_mesh_scale_replace;
-WindowRef					dialog_mesh_scale_wind;
+bool						dialog_optimize_cancel;
+WindowRef					dialog_optimize_wind;
 
 /* =======================================================
 
-      Mesh Scale Event Handlers
+      Optimize Event Handlers
       
 ======================================================= */
 
-static pascal OSStatus dialog_mesh_scale_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
+static pascal OSStatus dialog_optimize_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
 	HICommand		cmd;
 	
@@ -54,14 +52,13 @@ static pascal OSStatus dialog_mesh_scale_event_proc(EventHandlerCallRef handler,
 			
 			switch (cmd.commandID) {
 				
-				case kMeshScaleButtonScale:
-					dialog_mesh_scale_replace=FALSE;
-					QuitAppModalLoopForWindow(dialog_mesh_scale_wind);
+				case kHICommandCancel:
+					dialog_optimize_cancel=TRUE;
+					QuitAppModalLoopForWindow(dialog_optimize_wind);
 					return(noErr);
 					
-				case kMeshScaleButtonReplace:
-					dialog_mesh_scale_replace=TRUE;
-					QuitAppModalLoopForWindow(dialog_mesh_scale_wind);
+				case kHICommandOK:
+					QuitAppModalLoopForWindow(dialog_optimize_wind);
 					return(noErr);
 					
 			}
@@ -75,47 +72,48 @@ static pascal OSStatus dialog_mesh_scale_event_proc(EventHandlerCallRef handler,
 
 /* =======================================================
 
-      Run Mesh Scale Dialog
+      Run Optimize Dialog
       
 ======================================================= */
 
-bool dialog_mesh_scale_run(float *scale)
+bool dialog_optimize_run(int *poly_threshold)
 {
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
 	
 		// open the dialog
 		
-	dialog_open(&dialog_mesh_scale_wind,"MeshScale");
+	dialog_open(&dialog_optimize_wind,"MapOptimize");
 
 		// set controls
 		
-	dialog_set_float(dialog_mesh_scale_wind,kMeshScaleScale,0,(*scale));
-	dialog_set_focus(dialog_mesh_scale_wind,kMeshScaleScale,0);
+	dialog_set_int(dialog_optimize_wind,kPolyThreshold,0,5);
+	dialog_set_focus(dialog_optimize_wind,kPolyThreshold,0);
 	
 		// show window
 	
-	ShowWindow(dialog_mesh_scale_wind);
+	ShowWindow(dialog_optimize_wind);
 	
 		// install event handler
 		
-	event_upp=NewEventHandlerUPP(dialog_mesh_scale_event_proc);
-	InstallWindowEventHandler(dialog_mesh_scale_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
+	event_upp=NewEventHandlerUPP(dialog_optimize_event_proc);
+	InstallWindowEventHandler(dialog_optimize_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
 	
 		// modal window
 		
-	dialog_mesh_scale_replace=FALSE;
-	
-	RunAppModalLoopForWindow(dialog_mesh_scale_wind);
+	dialog_optimize_cancel=FALSE;
+	RunAppModalLoopForWindow(dialog_optimize_wind);
 	
 		// dialog to data
 		
-	*scale=dialog_get_float(dialog_mesh_scale_wind,kMeshScaleScale,0);
+	if (!dialog_optimize_cancel) {
+		*poly_threshold=(float)dialog_get_int(dialog_optimize_wind,kPolyThreshold,0);
+	}
 
 		// close window
 		
-	DisposeWindow(dialog_mesh_scale_wind);
+	DisposeWindow(dialog_optimize_wind);
 	
-	return(dialog_mesh_scale_replace);
+	return(!dialog_optimize_cancel);
 }
 

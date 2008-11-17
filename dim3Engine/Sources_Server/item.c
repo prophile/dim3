@@ -56,7 +56,7 @@ void item_pickup_check(obj_type *obj)
 		// can pick up if you are hidden, no contact,
 		// set to ignore pickup, or are a pickup item
 		// yourself
-
+		
 	if (obj->hidden) return;
 	if (!obj->contact.object_on) return;
 	if (obj->pickup.on) return;
@@ -85,7 +85,7 @@ void item_pickup_check(obj_type *obj)
             // check bounds
 			
 		if (collide_object_to_object(obj,0,0,item_obj,TRUE,TRUE)) {
-		
+	
 				// setup pickup for items
 				
 			item_obj->pickup.item_uid=-1;
@@ -111,7 +111,7 @@ void item_pickup_check(obj_type *obj)
 				item_obj++;
 				continue;
 			}
-			
+		
 				// send pickup event to object
 				
 			scripts_post_event_console(&obj->attach,sd_event_pickup,0,0);

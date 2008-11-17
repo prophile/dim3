@@ -97,6 +97,7 @@ extern bool dialog_map_ambient_light_sound_settings_run(void);
 extern bool dialog_background_sky_setting_run(void);
 extern bool dialog_map_fog_settings_run(void);
 extern bool dialog_map_rain_settings_run(void);
+extern bool dialog_optimize_run(int *poly_threshold);
 
 //
 // piece dialogs

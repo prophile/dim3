@@ -358,6 +358,12 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			undo_clear();
 			return(noErr);
 			
+		case kCommandMapOptimize:
+			map_optimize();
+			main_wind_draw();
+			undo_clear();
+			return(noErr);
+			
 		case kCommandRun:
 			launch_engine();
 			return(noErr);

@@ -304,7 +304,23 @@ bool walk_view_quad_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	return(TRUE);
 }
 
-bool walk_view_cube_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,int *x,int *z,int ty,int by,int *hit_z)
+void walk_view_cube_click_index_make_quad(int *x,int *y,int *z,int *px,int *py,int *pz,int v1,int v2,int v3,int v4)
+{
+	px[0]=x[v1];
+	px[1]=x[v2];
+	px[2]=x[v3];
+	px[3]=x[v4];
+	py[0]=y[v1];
+	py[1]=y[v2];
+	py[2]=y[v3];
+	py[3]=y[v4];
+	pz[0]=z[v1];
+	pz[1]=z[v2];
+	pz[2]=z[v3];
+	pz[3]=z[v4];
+}
+
+bool walk_view_cube_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,int *x,int *y,int *z,int *hit_z)
 {
 	int					px[4],py[4],pz[4];
 	bool				hit;
@@ -312,63 +328,33 @@ bool walk_view_cube_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	hit=FALSE;
 	
 		// top
-	
-	memmove(px,x,(4*sizeof(int)));
-	memmove(pz,z,(4*sizeof(int)));
-	py[0]=py[1]=py[2]=py[3]=ty;
-
+		
+	walk_view_cube_click_index_make_quad(x,y,z,px,py,pz,0,1,2,3);
 	hit=hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z);
 	
 		// bottom
 		
-	memmove(px,x,(4*sizeof(int)));
-	memmove(pz,z,(4*sizeof(int)));
-	py[0]=py[1]=py[2]=py[3]=by;
-
+	walk_view_cube_click_index_make_quad(x,y,z,px,py,pz,4,5,6,7);
 	hit=hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z);
 	
 		// front
 		
-	px[0]=px[3]=x[3];
-	px[1]=px[2]=x[2];
-	pz[0]=pz[3]=z[3];
-	pz[1]=pz[2]=z[2];
-	py[0]=py[1]=ty;
-	py[2]=py[3]=by;
-
+	walk_view_cube_click_index_make_quad(x,y,z,px,py,pz,3,2,5,6);
 	hit=hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z);
 
 		// back
 		
-	px[0]=px[3]=x[0];
-	px[1]=px[2]=x[1];
-	pz[0]=pz[3]=z[0];
-	pz[1]=pz[2]=z[1];
-	py[0]=py[1]=ty;
-	py[2]=py[3]=by;
-
+	walk_view_cube_click_index_make_quad(x,y,z,px,py,pz,0,1,4,7);
 	hit=hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z);
 	
 		// left
 		
-	px[0]=px[3]=x[0];
-	px[1]=px[2]=x[3];
-	pz[0]=pz[3]=z[0];
-	pz[1]=pz[2]=z[3];
-	py[0]=py[1]=ty;
-	py[2]=py[3]=by;
-
+	walk_view_cube_click_index_make_quad(x,y,z,px,py,pz,0,7,6,3);
 	hit=hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z);
 
 		// right
 		
-	px[0]=px[3]=x[1];
-	px[1]=px[2]=x[2];
-	pz[0]=pz[3]=z[1];
-	pz[1]=pz[2]=z[2];
-	py[0]=py[1]=ty;
-	py[2]=py[3]=by;
-
+	walk_view_cube_click_index_make_quad(x,y,z,px,py,pz,1,2,5,4);
 	return(hit||walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z));
 }
 
@@ -394,7 +380,7 @@ bool walk_view_liquid_click(editor_3D_view_setup *view_setup,d3pnt *click_pt,map
 void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt,int *type,int *main_idx,int *sub_idx,bool sel_only)
 {
 	int					n,k,fz,box_wid,box_high,
-						px[4],pz[4],ty,by,hit_z;
+						px[8],py[8],pz[8],hit_z;
 	map_mesh_type		*mesh;
 	spot_type			*spot;
 	map_scenery_type	*scenery;
@@ -469,9 +455,9 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 			spot=&map.spots[n];
 			
 			if (walk_view_draw_pnt_obscure(&spot->pnt)) continue;
-			if (!walk_view_model_click_select_size(&view_setup->cpt,spot->display_model,&spot->pnt,&spot->ang,px,pz,&ty,&by)) continue;
+			if (!walk_view_model_click_select_size(&view_setup->cpt,spot->display_model,&spot->pnt,&spot->ang,px,py,pz)) continue;
 			
-			if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
+			if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
 				if (fz<hit_z) {
 					hit_z=fz;
 					*type=spot_piece;
@@ -488,9 +474,9 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 			scenery=&map.sceneries[n];
 			
 			if (walk_view_draw_pnt_obscure(&scenery->pnt)) continue;
-			if (!walk_view_model_click_select_size(&view_setup->cpt,scenery->model_name,&scenery->pnt,&scenery->ang,px,pz,&ty,&by)) continue;
+			if (!walk_view_model_click_select_size(&view_setup->cpt,scenery->model_name,&scenery->pnt,&scenery->ang,px,py,pz)) continue;
 			
-			if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
+			if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
 				if (fz<hit_z) {
 					hit_z=fz;
 					*type=scenery_piece;
@@ -510,9 +496,9 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 			map_light=&map.lights[n];
 			
 			if (walk_view_draw_pnt_obscure(&map_light->pnt)) continue;
-			walk_view_sprite_select_size(&view_setup->cpt,&map_light->pnt,px,pz,&ty,&by);
+			walk_view_sprite_select_size(&view_setup->cpt,&map_light->pnt,px,py,pz);
 			
-			if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
+			if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
 				if (fz<hit_z) {
 					hit_z=fz;
 					*type=light_piece;
@@ -529,9 +515,9 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 			map_sound=&map.sounds[n];
 			
 			if (walk_view_draw_pnt_obscure(&map_sound->pnt)) continue;
-			walk_view_sprite_select_size(&view_setup->cpt,&map_sound->pnt,px,pz,&ty,&by);
+			walk_view_sprite_select_size(&view_setup->cpt,&map_sound->pnt,px,py,pz);
 			
-			if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
+			if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
 				if (fz<hit_z) {
 					hit_z=fz;
 					*type=sound_piece;
@@ -548,9 +534,9 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 			map_particle=&map.particles[n];
 			
 			if (walk_view_draw_pnt_obscure(&map_particle->pnt)) continue;
-			walk_view_sprite_select_size(&view_setup->cpt,&map_particle->pnt,px,pz,&ty,&by);
+			walk_view_sprite_select_size(&view_setup->cpt,&map_particle->pnt,px,py,pz);
 			
-			if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
+			if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
 				if (fz<hit_z) {
 					hit_z=fz;
 					*type=particle_piece;
@@ -570,9 +556,9 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 			node=&map.nodes[n];
 			
 			if (walk_view_draw_pnt_obscure(&node->pnt)) continue;
-			walk_view_sprite_select_size(&view_setup->cpt,&node->pnt,px,pz,&ty,&by);
+			walk_view_sprite_select_size(&view_setup->cpt,&node->pnt,px,py,pz);
 			
-			if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
+			if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
 				if (fz<hit_z) {
 					hit_z=fz;
 					*type=node_piece;

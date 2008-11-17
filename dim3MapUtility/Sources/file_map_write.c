@@ -596,6 +596,7 @@ bool write_map_xml(map_type *map)
 		xml_add_attribute_boolean("face_forward",scenery->face_forward);
 		xml_add_attribute_boolean("shadow",scenery->shadow);
 		xml_add_attribute_boolean("shadow_cast_down",scenery->shadow_cast_down);
+		xml_add_attribute_int_array("frames",scenery->texture_frames,max_map_scenery_model_texture_frame,FALSE);
 		xml_add_attribute_boolean("override_size",scenery->override_size);
 		xml_add_attribute_3_coord_int("size",scenery->size.x,scenery->size.y,scenery->size.z);
 		xml_add_tagend(TRUE);

@@ -898,3 +898,19 @@ void map_mesh_reset_uv_all(void)
 	}
 }
 
+void map_optimize(void)
+{
+	int					poly_threshold,comb_count;
+	char				str[256];
+	unsigned char		p_str[256];
+	
+	if (!dialog_optimize_run(&poly_threshold)) return;
+	
+	SetCursor(*GetCursor(watchCursor));
+	comb_count=map_mesh_combine_small(&map,poly_threshold);
+	InitCursor();
+	
+	sprintf(str,"%d small meshes were combined with larger meshes.",comb_count);
+	CopyCStringToPascal(str,p_str);
+	StandardAlert(0,"\pOptimize",p_str,NULL,NULL);
+}

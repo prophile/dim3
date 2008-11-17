@@ -163,10 +163,22 @@ int map_mesh_find_vertex_share(map_type *map,int mesh_idx)
 
 	for (n=0;n!=map->mesh.nmesh;n++) {
 
+			// can't combine to self
+			
 		if (n==mesh_idx) {
 			chk_mesh++;
 			continue;
 		}
+		
+			// ignore meshes that have
+			// different groups or are moveable
+			
+		if ((chk_mesh->flag.moveable) || (chk_mesh->group_idx!=-1)) {
+			chk_mesh++;
+			continue;
+		}
+		
+			// any shared vertexes?
 		
 		pt=mesh->vertexes;
 
@@ -190,8 +202,9 @@ int map_mesh_find_vertex_share(map_type *map,int mesh_idx)
 
 int map_mesh_combine_small(map_type *map,int poly_threshold)
 {
-	int			n,total,comb_mesh_idx;
-	bool		repeat;
+	int				n,total,comb_mesh_idx;
+	bool			repeat;
+	map_mesh_type	*mesh;
 
 	total=0;
 	repeat=TRUE;
@@ -199,10 +212,14 @@ int map_mesh_combine_small(map_type *map,int poly_threshold)
 	while (repeat) {
 
 		repeat=FALSE;
+		
+		mesh=map->mesh.meshes;
 
 		for (n=0;n!=map->mesh.nmesh;n++) {
 
-			if (map->mesh.meshes[n].npoly<=poly_threshold) {
+				// only consider non-grouped, non-moving meshes
+				
+			if ((mesh->npoly<=poly_threshold) && (mesh->group_idx=-1) && (!mesh->flag.moveable)) {
 
 				comb_mesh_idx=map_mesh_find_vertex_share(map,n);
 				if (comb_mesh_idx!=-1) {
@@ -213,6 +230,8 @@ int map_mesh_combine_small(map_type *map,int poly_threshold)
 					break;
 				}
 			}
+			
+			mesh++;
 		}
 	}
 

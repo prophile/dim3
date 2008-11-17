@@ -40,7 +40,7 @@ int						link_dist[max_node][max_node_link];
 
 int node_link_find_node_by_point(editor_3D_view_setup *view_setup,d3pnt *click_pt)
 {
-	int				n,px[4],pz[4],ty,by,fz,hit_z,node_idx;
+	int				n,px[8],py[8],pz[8],fz,hit_z,node_idx;
 	node_type		*node;
 	
 	node_idx=-1;
@@ -49,9 +49,9 @@ int node_link_find_node_by_point(editor_3D_view_setup *view_setup,d3pnt *click_p
 	for (n=0;n!=map.nnode;n++) {
 	
 		node=&map.nodes[n];
-		walk_view_sprite_select_size(&view_setup->cpt,&node->pnt,px,pz,&ty,&by);
+		walk_view_sprite_select_size(&view_setup->cpt,&node->pnt,px,py,pz);
 		
-		if (walk_view_cube_click_index(view_setup,click_pt,px,pz,ty,by,&fz)) {
+		if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
 			if (fz<hit_z) {
 				hit_z=fz;
 				node_idx=n;

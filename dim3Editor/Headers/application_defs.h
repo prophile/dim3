@@ -68,6 +68,7 @@ and can be sold or given away.
 #define kCommandMapLowerY					FOUR_CHAR_CODE('mlwy')
 #define kCommandMapCenter					FOUR_CHAR_CODE('mctr')
 #define kCommandMapResetUV					FOUR_CHAR_CODE('mpuv')
+#define kCommandMapOptimize					FOUR_CHAR_CODE('mopt')
 #define kCommandRun							FOUR_CHAR_CODE('mrun')
 
 #define kCommandMeshCombine					FOUR_CHAR_CODE('pcmb')

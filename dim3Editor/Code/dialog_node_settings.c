@@ -56,7 +56,7 @@ WindowRef					dialog_node_settings_wind;
       
 ======================================================= */
 
-static pascal OSStatus portal_setting_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
+static pascal OSStatus dialog_node_setting_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
 	HICommand		cmd;
 	
@@ -125,7 +125,7 @@ bool dialog_node_settings_run(node_type *node)
 	
 		// install event handler
 		
-	event_upp=NewEventHandlerUPP(portal_setting_event_proc);
+	event_upp=NewEventHandlerUPP(dialog_node_setting_event_proc);
 	InstallWindowEventHandler(dialog_node_settings_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
 	
 		// modal window
