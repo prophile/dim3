@@ -1375,10 +1375,10 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					node->user_value=xml_get_attribute_int_default(node_tag,"user",0);
 					
 					tag=xml_findfirstchild("Link",node_tag);
-					xml_get_attribute_int_array(tag,"node",node->link,max_node_link);
+					xml_get_attribute_short_array(tag,"node",node->link,max_node_link);
 					
 					tag=xml_findfirstchild("Hint",node_tag);
-					xml_get_attribute_int_array(tag,"node",node->path_hint,map->nnode);
+					xml_get_attribute_short_array(tag,"node",node->path_hint,map->nnode);
 
 					node->pnt.x=(node->pnt.x*map_enlarge)+(portal->x*map_enlarge);
 					node->pnt.y=(node->pnt.y+1)*map_enlarge;

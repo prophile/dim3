@@ -45,6 +45,7 @@ extern server_type			server;
 
 void weapon_initialize_list(void)
 {
+	server.weapons=NULL;
 	server.count.weapon=0;
 	server.uid.weapon=0;
 }
@@ -137,12 +138,30 @@ weapon_type* weapon_find_offset(obj_type *obj,int offset)
 
 bool weapon_create(obj_type *obj,char *name)
 {
-	weapon_type		*weap;
+	weapon_type		*weap,*ptr;
 	
 	if (server.count.weapon>=max_weapon) return(FALSE);
 
+		// only allow a maximum number of weapons
+
+	if (server.count.weapon>=max_weapon) return(FALSE);
+
+		// create memory for new weapon
+
+	ptr=(weapon_type*)valloc(sizeof(weapon_type)*(server.count.weapon+1));
+	if (ptr==NULL) return(FALSE);
+
+	if (server.weapons!=NULL) {
+		memmove(ptr,server.weapons,(sizeof(weapon_type)*server.count.weapon));
+		free(server.weapons);
+	}
+
+	server.weapons=ptr;
+
 	weap=&server.weapons[server.count.weapon];
 	server.count.weapon++;
+
+		// initialize weapon
 	
 	weap->uid=server.uid.weapon;
 	server.uid.weapon++;
@@ -293,15 +312,46 @@ void weapon_start(weapon_type *weap)
 
 void weapon_dispose(int idx)
 {
-	weapon_type		*weap;
+	weapon_type		*weap,*ptr;
 
 	weap=&server.weapons[idx];
+
+		// clear weapon
 
 	scripts_dispose(weap->attach.script_uid);
 	models_dispose(weap->draw.uid);
 
-	if (idx<(server.count.weapon-1)) {
-		memmove(&server.weapons[idx],&server.weapons[idx+1],(sizeof(weapon_type)*((server.count.weapon-idx)-1)));
+		// is the list completely empty?
+
+	if (server.count.weapon==1) {
+		free(server.weapons);
+		server.weapons=NULL;
+		server.count.weapon=0;
+		return;
+	}
+
+		// if for some reason we can't create new
+		// memory, just shuffle the list and wait
+		// until next time
+
+	ptr=(weapon_type*)valloc(sizeof(weapon_type)*(server.count.weapon-1));
+
+	if (ptr==NULL) {
+		if (idx<(server.count.weapon-1)) {
+			memmove(&server.weapons[idx],&server.weapons[idx+1],(sizeof(weapon_type)*((server.count.weapon-idx)-1)));
+		}
+	}
+	else {
+
+		if (idx>0) {
+			memmove(ptr,server.weapons,(sizeof(weapon_type)*idx));
+		}
+		if (idx<(server.count.weapon-1)) {
+			memmove(&ptr[idx],&server.weapons[idx+1],(sizeof(weapon_type)*((server.count.weapon-idx)-1)));
+		}
+
+		free(server.weapons);
+		server.weapons=ptr;
 	}
 	
 	server.count.weapon--;

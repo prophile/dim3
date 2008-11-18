@@ -448,8 +448,8 @@ void view_loop_draw(int tick)
 	}
 
 	view_draw(tick);
-	radar_draw();
 	hud_draw(tick);
+	radar_draw(tick);
 	network_draw(tick);
 	console_draw();
 	

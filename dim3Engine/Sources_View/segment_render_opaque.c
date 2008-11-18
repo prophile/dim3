@@ -168,6 +168,10 @@ void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool
 
 		if ((stencil_pass<mesh->draw.stencil_pass_start) || (stencil_pass>mesh->draw.stencil_pass_end)) continue;
 
+			// skip meshes without bumps
+
+		if (!mesh->flag.has_bump) continue;
+
 			// if hilite is on or this mesh is
 			// hilited, then we need to clear the stencil
 			// here as there will be no lighting pass
@@ -487,8 +491,6 @@ void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass)
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_ALPHA_TEST);
 
-	glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
-
 	gl_texture_tesseled_specular_start();
 	
 		// run through the meshes
@@ -503,8 +505,9 @@ void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass)
 		if ((stencil_pass<mesh->draw.stencil_pass_start) || (stencil_pass>mesh->draw.stencil_pass_end)) continue;
 
 			// skip hilited polygons
+			// or meshes with no speculars
 
-		if (mesh->flag.hilite) continue;
+		if ((!mesh->flag.has_specular) || (mesh->flag.hilite)) continue;
 
 			// run through the polys
 
@@ -542,11 +545,15 @@ void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass)
 			glStencilFunc(GL_EQUAL,poly->draw.stencil_idx,0xFF);
 
 				// draw either by lighting mesh or simple polygon
+				// if simple tessel, we need to keep the stencil around
+				// as the lighting "fix" pass is the only pass
 
 			if (poly->light.simple_tessel) {
+				glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
 				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 			}
 			else {
+				glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
 				glDrawElements(GL_TRIANGLES,(poly->light.ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_draw_idx);
 			}
 
@@ -591,9 +598,10 @@ void render_opaque_portal_glow(int mesh_cnt,int *mesh_list)
 
 		mesh=&map.mesh.meshes[mesh_list[n]];
 
-			// skip hilited polygons
+			// skip hilited meshes
+			// or meshes with no glows
 
-		if (mesh->flag.hilite) continue;
+		if ((!mesh->flag.has_glow) || (mesh->flag.hilite)) continue;
 
 			// run through the polys
 
@@ -628,14 +636,9 @@ void render_opaque_portal_glow(int mesh_cnt,int *mesh_list)
 
 			gl_texture_opaque_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,texture->glow.current_color);
 
-				// draw either by lighting mesh or simple polygon
+				// draw polygon
 
-			if (poly->light.simple_tessel) {
-				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
-			}
-			else {
-				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
-			}
+			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 
 			poly++;
 		}

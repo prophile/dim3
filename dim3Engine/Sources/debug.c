@@ -60,11 +60,16 @@ extern int game_time_get(void);
       
 ======================================================= */
 
-void debug_header(char *txt,int count)
+void debug_header(char *txt,int count,int memory)
 {
-	fprintf(stdout,"**************************************\n");
-	fprintf(stdout,"%s [%d]\n",txt,count);
-	fprintf(stdout,"**************************************\n\n");
+	fprintf(stdout,"****************************************************************************\n");
+	if (memory!=-1) {
+		fprintf(stdout,"%s | Count=%d | Memory=%.2fM\n",txt,count,(((float)memory)/1000000.0f));
+	}
+	else {
+		fprintf(stdout,"%s | Count=%d\n",txt,count);
+	}
+	fprintf(stdout,"****************************************************************************\n\n");
 }
 
 void debug_space(char *txt,int fieldsz)
@@ -191,8 +196,8 @@ void debug_dump(void)
 	debug_return();
 	
 		// objects
-		
-	debug_header("Objects",server.count.obj);
+
+	debug_header("Objects",server.count.obj,(sizeof(obj_type)*server.count.obj));
 	
 	debug_space("Name",25);
 	debug_space("Type",15);
@@ -224,9 +229,89 @@ void debug_dump(void)
 	
 	debug_return();
 	
+		// weapons
+
+	debug_header("Weapons",server.count.weapon,(sizeof(weapon_type)*server.count.weapon));
+	
+	debug_space("Name",20);
+	debug_space("Object",20);
+	debug_return();
+	debug_space("-------------------",20);
+	debug_space("-------------------",20);
+	debug_return();
+	
+	weap=server.weapons;
+	
+	for ((i=0);(i!=server.count.weapon);i++) {
+		obj=object_find_uid(weap->obj_uid);
+		
+		debug_space(weap->name,20);
+		debug_space(obj->name,20);
+		debug_return();
+		weap++;
+	}
+	
+	debug_return();
+	
+		// projectile setups
+
+	debug_header("Projectile Setups",server.count.proj_setup,(sizeof(proj_setup_type)*server.count.proj_setup));
+	
+	debug_space("Name",20);
+	debug_space("Object",20);
+	debug_space("Weapon",20);
+	debug_return();
+	debug_space("-------------------",20);
+	debug_space("-------------------",20);
+	debug_space("-------------------",20);
+	debug_return();
+	
+	proj_setup=server.proj_setups;
+	
+	for ((i=0);(i!=server.count.proj_setup);i++) {
+		obj=object_find_uid(proj_setup->obj_uid);
+		weap=weapon_find_uid(proj_setup->weap_uid);
+		
+		debug_space(proj_setup->name,20);
+		debug_space(obj->name,20);
+		debug_space(weap->name,20);
+		debug_return();
+		proj_setup++;
+	}
+	
+	debug_return();
+	
+		// models
+		
+	debug_header("Models",server.count.model,(sizeof(model_type)*server.count.model));
+	
+	debug_space("Name",32);
+	debug_space("Vertexes",10);
+	debug_space("Trigs",10);
+	debug_space("Ref Count",10);
+	debug_return();
+	debug_space("------------------------------",32);
+	debug_space("---------",10);
+	debug_space("---------",10);
+	debug_space("---------",10);
+	debug_return();
+	
+	mdl=server.models;
+	
+	for ((i=0);(i!=server.count.model);i++) {
+		debug_space(mdl->name,32);
+		debug_int_space(mdl->meshes[0].nvertex,10);
+		debug_int_space(mdl->meshes[0].ntrig,10);
+		debug_int_space(mdl->reference_count,10);
+		debug_return();
+		mdl++;
+	}
+	
+	debug_return();
+	
 		// projectiles
 		
-	debug_header("Projectiles",server.count.proj);
+	debug_header("Projectiles",server.count.proj,-1);
 	
 	debug_space("Name",20);
 	debug_space("Object",20);
@@ -255,7 +340,7 @@ void debug_dump(void)
 	
 		// effects
 		
-	debug_header("Effects",server.count.effect);
+	debug_header("Effects",server.count.effect,-1);
 	
 	debug_space("Type",10);
 	debug_space("Life Tick",10);
@@ -275,86 +360,6 @@ void debug_dump(void)
 	
 	debug_return();
 	
-		// weapons
-		
-	debug_header("Weapons",server.count.weapon);
-	
-	debug_space("Name",20);
-	debug_space("Object",20);
-	debug_return();
-	debug_space("-------------------",20);
-	debug_space("-------------------",20);
-	debug_return();
-	
-	weap=server.weapons;
-	
-	for ((i=0);(i!=server.count.weapon);i++) {
-		obj=object_find_uid(weap->obj_uid);
-		
-		debug_space(weap->name,20);
-		debug_space(obj->name,20);
-		debug_return();
-		weap++;
-	}
-	
-	debug_return();
-	
-		// projectile setups
-		
-	debug_header("Projectile Setups",server.count.proj_setup);
-	
-	debug_space("Name",20);
-	debug_space("Object",20);
-	debug_space("Weapon",20);
-	debug_return();
-	debug_space("-------------------",20);
-	debug_space("-------------------",20);
-	debug_space("-------------------",20);
-	debug_return();
-	
-	proj_setup=server.proj_setups;
-	
-	for ((i=0);(i!=server.count.proj_setup);i++) {
-		obj=object_find_uid(proj_setup->obj_uid);
-		weap=weapon_find_uid(proj_setup->weap_uid);
-		
-		debug_space(proj_setup->name,20);
-		debug_space(obj->name,20);
-		debug_space(weap->name,20);
-		debug_return();
-		proj_setup++;
-	}
-	
-	debug_return();
-	
-		// models
-		
-	debug_header("Models",server.count.model);
-	
-	debug_space("Name",32);
-	debug_space("Vertexes",10);
-	debug_space("Trigs",10);
-	debug_space("Ref Count",10);
-	debug_return();
-	debug_space("------------------------------",32);
-	debug_space("---------",10);
-	debug_space("---------",10);
-	debug_space("---------",10);
-	debug_return();
-	
-	mdl=server.models;
-	
-	for ((i=0);(i!=server.count.model);i++) {
-		debug_space(mdl->name,32);
-		debug_int_space(mdl->meshes[0].nvertex,10);
-		debug_int_space(mdl->meshes[0].ntrig,10);
-		debug_int_space(mdl->reference_count,10);
-		debug_return();
-		mdl++;
-	}
-	
-	debug_return();
-	
 		// scripts
 		
 	script=js.scripts;
@@ -365,7 +370,7 @@ void debug_dump(void)
 		script++;
 	}
 		
-	debug_header("Scripts",cnt);
+	debug_header("Scripts",cnt,-1);
 	
 	debug_space("Name",32);
 	debug_return();
@@ -386,7 +391,7 @@ void debug_dump(void)
 	
 		// timers
 		
-	debug_header("Timers",js.count.timer);
+	debug_header("Timers",js.count.timer,-1);
 	
 	debug_space("Script",32);
 	debug_space("Count",10);

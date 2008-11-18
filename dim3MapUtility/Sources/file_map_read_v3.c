@@ -323,7 +323,7 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 			scenery->shadow=xml_get_attribute_boolean(obj_tag,"shadow");
 			scenery->shadow_cast_down=xml_get_attribute_boolean(obj_tag,"shadow_cast_down");
 			
-			xml_get_attribute_int_array(obj_tag,"frames",scenery->texture_frames,max_map_scenery_model_texture_frame);
+			xml_get_attribute_short_array(obj_tag,"frames",scenery->texture_frame,max_map_scenery_model_texture_frame);
 			
 			scenery->override_size=xml_get_attribute_boolean(obj_tag,"override_size");
 			xml_get_attribute_3_coord_int(obj_tag,"size",&scenery->size.x,&scenery->size.y,&scenery->size.z);
@@ -434,23 +434,26 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 			node->user_value=xml_get_attribute_int_default(node_tag,"user",0);
 			
 			tag=xml_findfirstchild("Link",node_tag);
-			xml_get_attribute_int_array(tag,"node",node->link,max_node_link);
+			xml_get_attribute_short_array(tag,"node",node->link,max_node_link);
 			
 			tag=xml_findfirstchild("Hint",node_tag);
-			xml_get_attribute_int_array(tag,"node",node->path_hint,max_node);
+			xml_get_attribute_short_array(tag,"node",node->path_hint,max_node);
+
+			node->flags=0;
 
 			tag=xml_findfirstchild("Flag",node_tag);
 			if (tag!=-1) {
-				node->flag.goal=xml_get_attribute_boolean(tag,"goal");
-				node->flag.red_flag=xml_get_attribute_boolean(tag,"red_flag");
-				node->flag.blue_flag=xml_get_attribute_boolean(tag,"blue_flag");
-				node->flag.weapon=xml_get_attribute_boolean(tag,"weapon");
-				node->flag.ammo=xml_get_attribute_boolean(tag,"ammo");
-				node->flag.armor=xml_get_attribute_boolean(tag,"armor");
-				node->flag.health=xml_get_attribute_boolean(tag,"health");
-				node->flag.normal_cover=xml_get_attribute_boolean(tag,"normal_cover");
-				node->flag.duck_cover=xml_get_attribute_boolean(tag,"duck_cover");
-				node->flag.sniper=xml_get_attribute_boolean(tag,"sniper");
+				if (xml_get_attribute_boolean(tag,"goal")) node->flags|=node_flag_goal;
+				if (xml_get_attribute_boolean(tag,"red_flag")) node->flags|=node_flag_red_flag;
+				if (xml_get_attribute_boolean(tag,"blue_flag")) node->flags|=node_flag_blue_flag;
+				if (xml_get_attribute_boolean(tag,"weapon")) node->flags|=node_flag_weapon;
+				if (xml_get_attribute_boolean(tag,"ammo")) node->flags|=node_flag_ammo;
+				if (xml_get_attribute_boolean(tag,"armor")) node->flags|=node_flag_armor;
+				if (xml_get_attribute_boolean(tag,"health")) node->flags|=node_flag_health;
+				if (xml_get_attribute_boolean(tag,"normal_cover")) node->flags|=node_flag_normal_cover;
+				if (xml_get_attribute_boolean(tag,"duck_cover")) node->flags|=node_flag_duck_cover;
+				if (xml_get_attribute_boolean(tag,"sniper")) node->flags|=node_flag_sniper;
+				if (xml_get_attribute_boolean(tag,"climb")) node->flags|=node_flag_climb;
 			}
 
 			node_tag=xml_findnextchild(node_tag);

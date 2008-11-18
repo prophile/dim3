@@ -241,6 +241,7 @@ void map_prepare(map_type *map)
 	int					n,k,simple_cnt;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
+	texture_type		*texture;
 	
 		// prepare meshes
 
@@ -252,6 +253,9 @@ void map_prepare(map_type *map)
 
 		mesh->flag.touched=FALSE;
 		mesh->flag.shiftable=FALSE;
+		mesh->flag.has_bump=FALSE;
+		mesh->flag.has_specular=FALSE;
+		mesh->flag.has_glow=FALSE;
 		
 			// run through the mesh polygons
 
@@ -285,7 +289,17 @@ void map_prepare(map_type *map)
 			poly->draw.y_shift_offset=0.0f;
 
 			mesh->flag.shiftable|=poly->draw.shift_on;
-		
+
+				// mesh rendering flags
+
+			texture=&map->textures[poly->txt_idx];
+
+			if (!texture->shader.on) {
+				if (texture->bumpmaps[0].gl_id!=-1) mesh->flag.has_bump=TRUE;
+				if (texture->specularmaps[0].gl_id!=-1) mesh->flag.has_specular=TRUE;
+				if (texture->glowmaps[0].gl_id!=-1) mesh->flag.has_glow=TRUE;
+			}
+
 			poly++;
 		}
 

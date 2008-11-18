@@ -48,6 +48,7 @@ extern int mark_find(char *name);
 
 void proj_setup_initialize_list(void)
 {
+	server.proj_setups=NULL;
 	server.count.proj_setup=0;
 	server.uid.proj_setup=0;
 }
@@ -99,12 +100,28 @@ proj_setup_type* find_proj_setups(weapon_type *weap,char *name)
 
 bool proj_setup_add(obj_type *obj,weapon_type *weap,char *name)
 {
-	proj_setup_type		*proj_setup;
+	proj_setup_type		*proj_setup,*ptr;
 	
+		// only allow a maximum number of projectile setups
+
 	if (server.count.proj_setup>=max_proj_setup) return(FALSE);
-	
+
+		// create memory for new projectile setup
+
+	ptr=(proj_setup_type*)valloc(sizeof(proj_setup_type)*(server.count.proj_setup+1));
+	if (ptr==NULL) return(FALSE);
+
+	if (server.proj_setups!=NULL) {
+		memmove(ptr,server.proj_setups,(sizeof(proj_setup_type)*server.count.proj_setup));
+		free(server.proj_setups);
+	}
+
+	server.proj_setups=ptr;
+
 	proj_setup=&server.proj_setups[server.count.proj_setup];
 	server.count.proj_setup++;
+
+		// initialize projectile setup
 	
 	proj_setup->uid=server.uid.proj_setup;
 	server.uid.proj_setup++;
@@ -236,17 +253,48 @@ void proj_setup_start(proj_setup_type *proj_setup)
 
 void proj_setup_dispose(int idx)
 {
-	proj_setup_type	*proj_setup;
+	proj_setup_type	*proj_setup,*ptr;
 
 	proj_setup=&server.proj_setups[idx];
+
+		// clear setup
 
 	scripts_dispose(proj_setup->attach.script_uid);
 	models_dispose(proj_setup->draw.uid);
 
-	if (idx<(server.count.proj_setup-1)) {
-		memmove(&server.proj_setups[idx],&server.proj_setups[idx+1],(sizeof(proj_setup_type)*((server.count.proj_setup-idx)-1)));
+		// is the list completely empty?
+
+	if (server.count.proj_setup==1) {
+		free(server.proj_setups);
+		server.proj_setups=NULL;
+		server.count.proj_setup=0;
+		return;
 	}
-		
+
+		// if for some reason we can't create new
+		// memory, just shuffle the list and wait
+		// until next time
+
+	ptr=(proj_setup_type*)valloc(sizeof(proj_setup_type)*(server.count.proj_setup-1));
+
+	if (ptr==NULL) {
+		if (idx<(server.count.proj_setup-1)) {
+			memmove(&server.proj_setups[idx],&server.proj_setups[idx+1],(sizeof(proj_setup_type)*((server.count.proj_setup-idx)-1)));
+		}
+	}
+	else {
+
+		if (idx>0) {
+			memmove(ptr,server.proj_setups,(sizeof(proj_setup_type)*idx));
+		}
+		if (idx<(server.count.proj_setup-1)) {
+			memmove(&ptr[idx],&server.proj_setups[idx+1],(sizeof(proj_setup_type)*((server.count.proj_setup-idx)-1)));
+		}
+
+		free(server.proj_setups);
+		server.proj_setups=ptr;
+	}
+	
 	server.count.proj_setup--;
 }
 

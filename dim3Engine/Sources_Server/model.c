@@ -45,6 +45,10 @@ extern setup_type		setup;
 
 void model_initialize(void)
 {
+	fprintf(stdout,"INITIALIZE\n");
+	fflush(stdout);
+
+	server.models=NULL;
 	server.count.model=0;
 	server.uid.model=0;
 }
@@ -57,13 +61,13 @@ void model_initialize(void)
 
 int model_find_uid_index(int uid)
 {
-	int				i;
+	int				n;
 	model_type		*mdl;
 
 	mdl=server.models;
 	
-	for (i=0;i!=server.count.model;i++) {
-		if (mdl->uid==uid) return(i);
+	for (n=0;n!=server.count.model;n++) {
+		if (mdl->uid==uid) return(n);
 		mdl++;
 	}
 	
@@ -72,12 +76,12 @@ int model_find_uid_index(int uid)
 
 model_type* model_find_uid(int uid)
 {
-	int				i;
+	int				n;
 	model_type		*mdl;
 
 	mdl=server.models;
 	
-	for (i=0;i!=server.count.model;i++) {
+	for (n=0;n!=server.count.model;n++) {
 		if (mdl->uid==uid) return(mdl);
 		mdl++;
 	}
@@ -87,12 +91,12 @@ model_type* model_find_uid(int uid)
 
 model_type* model_find(char *name)
 {
-	int				i;
+	int				n;
 	model_type		*mdl;
 
 	mdl=server.models;
 	
-	for (i=0;i!=server.count.model;i++) {
+	for (n=0;n!=server.count.model;n++) {
 		if (strcasecmp(mdl->name,name)==0) return(mdl);
 		mdl++;
 	}
@@ -129,7 +133,7 @@ model_type* model_load_single(char *name)
 {
 	int					n;
 	bool				load_shaders;
-	model_type			*mdl;
+	model_type			*mdl,*ptr;
 	
 		// has model been already loaded?
 		// if so, return model and increment reference count
@@ -139,19 +143,40 @@ model_type* model_load_single(char *name)
 		mdl->reference_count++;
 		return(mdl);
 	}
-	
-		// new model
-		
+
+		// only allow a maximum number of models
+
 	if (server.count.model>=max_model) return(NULL);
-	
+
+		// create memory for new model
+
+	if (server.models==NULL) {
+		server.models=(model_type*)valloc(sizeof(model_type)*(max_model));
+	}
+
+	/*
+	ptr=(model_type*)valloc(sizeof(model_type)*(server.count.model+1));
+	if (ptr==NULL) return(NULL);
+
+	if (server.models!=NULL) {
+		memmove(ptr,server.models,(sizeof(model_type)*server.count.model));
+		free(server.models);
+	}
+
+	server.models=ptr;
+*/
 	mdl=&server.models[server.count.model];
-	
+	server.count.model++;
+
 		// load model
 
 	load_shaders=gl_check_shader_ok();
 	
 	model_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.texture_compression);
-	if (!model_open(mdl,name,TRUE,load_shaders)) return(NULL);
+	if (!model_open(mdl,name,TRUE,load_shaders)) {
+		server.count.model--;		// error loading, leave memory as is an fix next model load
+		return(NULL);
+	}
 
 		// deal with shader errors or shaders turned off
 
@@ -171,25 +196,28 @@ model_type* model_load_single(char *name)
 		// start reference count at 1
 
 	mdl->reference_count=1;
-	
+
 		// new unique ID
 		
 	mdl->uid=server.uid.model;
 	server.uid.model++;
-	
-	server.count.model++;
 	
 	return(mdl);
 }
 
 void model_load_and_init(model_draw *draw)
 {
+	int					n;
 	char				err_str[256];
 	model_type			*mdl;
 	
 	draw->uid=-1;
 	draw->center.x=draw->center.y=draw->center.z=0;
 	draw->size.x=draw->size.y=draw->size.z=0;
+
+	draw->script_animation_idx=0;
+	draw->script_halo_idx=0;
+	draw->script_light_idx=0;
 	
 	if (draw->name[0]!=0x0) {
 		mdl=model_load_single(draw->name);
@@ -208,8 +236,16 @@ void model_load_and_init(model_draw *draw)
 	else {
 		draw->on=FALSE;
 	}
-	
-	model_stop_animation(draw);
+
+		// stop all animations and fades
+
+	for (n=0;n!=max_model_blend_animation;n++) {
+		draw->script_animation_idx=n;
+		model_stop_animation(draw);
+	}
+
+	draw->script_animation_idx=0;
+
 	model_fade_clear(draw);
 }
 
@@ -222,8 +258,8 @@ void model_load_and_init(model_draw *draw)
 void models_dispose(int uid)
 {
 	int					idx;
-	model_type			*model;
-	
+	model_type			*model,*ptr;
+
 		// was model loaded?
 		
 	if (uid==-1) return;
@@ -240,14 +276,43 @@ void models_dispose(int uid)
 	model->reference_count--;
 	if (model->reference_count>0) return;
 
-		// dispose
+		// dispose model
 
 	model_close(model);
-	
-	if (idx<(server.count.model-1)) {
-		memmove(&server.models[idx],&server.models[idx+1],(sizeof(model_type)*((server.count.model-idx)-1)));
+
+		// is the list completely empty?
+
+	if (server.count.model==1) {
+		free(server.models);
+		server.models=NULL;
+		server.count.model=0;
+		return;
 	}
-		
+
+		// if for some reason we can't create new
+		// memory, just shuffle the list and wait
+		// until next time
+
+	ptr=(model_type*)valloc(sizeof(model_type)*(server.count.model-1));
+
+	if (ptr==NULL) {
+		if (idx<(server.count.model-1)) {
+			memmove(&server.models[idx],&server.models[idx+1],(sizeof(model_type)*((server.count.model-idx)-1)));
+		}
+	}
+	else {
+
+		if (idx>0) {
+			memmove(ptr,server.models,(sizeof(model_type)*idx));
+		}
+		if (idx<(server.count.model-1)) {
+			memmove(&ptr[idx],&server.models[idx+1],(sizeof(model_type)*((server.count.model-idx)-1)));
+		}
+
+		free(server.models);
+		server.models=ptr;
+	}
+	
 	server.count.model--;
 }
 

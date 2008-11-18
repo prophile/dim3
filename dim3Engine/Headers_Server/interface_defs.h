@@ -271,7 +271,7 @@ typedef struct		{
 
 typedef struct		{
 						int						x,y,display_radius,view_radius,
-												background_image_idx,nicon;
+												background_image_idx,nicon,no_motion_fade;
 						bool					on,rot;
 						char					background_bitmap_name[name_str_len];
 						hud_radar_icon_type		icons[max_radar_icon];

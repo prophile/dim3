@@ -107,8 +107,8 @@ bool shader_report_error(char *err_str,char *vertex_name,char *fragment_name,GLh
 	
 	glGetInfoLogARB(hand,len,NULL,str);
 
-	strncat(err_str,str,1024);
-	err_str[1023]=0x0;
+	strncat(err_str,str,max_shader_error_len);
+	err_str[max_shader_error_len-1]=0x0;
 
 	free(str);
 	
@@ -168,7 +168,8 @@ bool shader_load(shader_type *shader,char *vert_path,char *frag_path)
 	if (vert_path[0]!=0x0) {
 		vertex_data=shader_open_file(vert_path);
 		if (vertex_data==NULL) {
-			sprintf(shader->init_error,"GLSL Error:\n Missing vertex shader file named '%s'",vert_path);
+			snprintf(shader->init_error,max_shader_error_len,"GLSL Error:\n Missing vertex shader file named '%s'",vert_path);
+			shader->init_error[max_shader_error_len-1]=0x0;
 			return(FALSE);
 		}
 	}
@@ -176,7 +177,8 @@ bool shader_load(shader_type *shader,char *vert_path,char *frag_path)
 	if (frag_path[0]!=0x0) {
 		fragment_data=shader_open_file(frag_path);
 		if (fragment_data==NULL) {
-			sprintf(shader->init_error,"GLSL Error:\n Missing fragment shader file named '%s'",frag_path);
+			snprintf(shader->init_error,max_shader_error_len,"GLSL Error:\n Missing fragment shader file named '%s'",frag_path);
+			shader->init_error[max_shader_error_len-1]=0x0;
 			return(FALSE);
 		}
 	}

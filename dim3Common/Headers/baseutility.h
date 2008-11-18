@@ -431,14 +431,14 @@ extern bool xml_add_attribute_bit_array(char *name,unsigned char *value,int coun
 // texture maximums
 //
 
-#define max_texture_frame						64				// maximum number of frames in a texture
-#define max_texture_frame_mask					0x3F			// mask for maximum number of textures frames
+#define max_texture_frame						16				// maximum number of frames in a texture
+#define max_texture_frame_mask					0x0F			// mask for maximum number of textures frames
 
 //
 // shaders
 //
 
-#define max_shader_custom_vars					8
+#define max_shader_custom_vars					4
 
 #define shader_var_type_int						0
 #define shader_var_type_float					1
@@ -446,6 +446,8 @@ extern bool xml_add_attribute_bit_array(char *name,unsigned char *value,int coun
 #define shader_var_type_vec4					3
 
 #define shader_var_type_xml_list_str			{"int","float","vec3","vec4",""}
+
+#define max_shader_error_len					256
 
 //
 // bitmap structures
@@ -477,7 +479,7 @@ typedef struct		{
 typedef struct		{
 						char					vertex_name[file_str_len],
 												fragment_name[file_str_len],
-												init_error[1024];
+												init_error[max_shader_error_len];
 						bool					on,global_vars_set;
 						shader_custom_var_type	custom_vars[max_shader_custom_vars];
 						GLhandleARB				vertex_obj,fragment_obj,program_obj;

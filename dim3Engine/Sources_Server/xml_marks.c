@@ -42,71 +42,93 @@ extern setup_type			setup;
 
 void read_settings_mark(void)
 {
-	int					marks_head_tag,mark_tag,tag;
+	int					nmark,marks_head_tag,mark_tag,tag;
 	char				path[1024];
 	mark_type			*mark;
+
+		// no marks yet
+
+	server.marks=NULL;
+	server.count.mark=0;
 	
 		// read in interface from setting files
 		
 	file_paths_data(&setup.file_path_setup,path,"Settings","Marks","xml");
 	if (!xml_open_file(path)) return;
 	
-		// decode the file
+		// get counts
 		
     marks_head_tag=xml_findrootchild("Marks");
-    if (marks_head_tag!=-1) {
+    if (marks_head_tag==-1) {
+		xml_close_file();
+		return;
+	}
+
+	nmark=xml_countchildren(marks_head_tag);
+
+	if (nmark==0) {
+		xml_close_file();
+		return;
+	}
+
+	server.marks=(mark_type*)valloc(sizeof(mark_type)*nmark);
+	if (server.marks==NULL) {
+		xml_close_file();
+		return;
+	}
+
+		// read the marks
 	
-		mark_tag=xml_findfirstchild("Mark",marks_head_tag);
+	mark_tag=xml_findfirstchild("Mark",marks_head_tag);
+	
+	while (mark_tag!=-1) {
+	
+			// start a new mark
+			
+		mark=&server.marks[server.count.mark];
 		
-		while (mark_tag!=-1) {
+		xml_get_attribute_text(mark_tag,"name",mark->name,name_str_len);
 		
-				// start a new mark
-				
-			mark=&server.marks[server.count.mark];
-			
-			xml_get_attribute_text(mark_tag,"name",mark->name,name_str_len);
-			
-			tag=xml_findfirstchild("Setting",mark_tag);
-			if (tag!=-1) {
-				mark->life_msec=xml_get_attribute_int(tag,"time");
-				mark->fade_in_msec=xml_get_attribute_int(tag,"fade_in");
-				mark->fade_out_msec=xml_get_attribute_int(tag,"fade_out");
-				mark->no_rotate=xml_get_attribute_boolean(tag,"no_rotate");
-				mark->no_transparent=xml_get_attribute_boolean(tag,"no_transparent");
-				mark->no_opaque=xml_get_attribute_boolean(tag,"no_opaque");
-			}
-			else {
-				mark->life_msec=1000;
-				mark->fade_in_msec=mark->fade_out_msec=500;
-				mark->no_rotate=FALSE;
-				mark->no_transparent=FALSE;
-				mark->no_opaque=FALSE;
-			}
-			
-			mark->total_msec=mark->life_msec+mark->fade_in_msec+mark->fade_out_msec;
-			
-			mark->animate.image_count=1;
-			mark->animate.image_per_row=1;
-			mark->animate.msec=200;
-			mark->animate.loop=TRUE;
-			mark->animate.loop_back=FALSE;
-		
-			tag=xml_findfirstchild("Image",mark_tag);
-			if (tag!=-1) {
-				xml_get_attribute_text(tag,"file",mark->bitmap_name,file_str_len);
-				mark->animate.image_count=xml_get_attribute_int(tag,"count");
-				mark->animate.image_per_row=(int)sqrt((float)mark->animate.image_count);
-				mark->animate.msec=xml_get_attribute_int(tag,"time");
-				mark->animate.loop=xml_get_attribute_boolean(tag,"loop");
-				mark->animate.loop_back=xml_get_attribute_boolean(tag,"loop_back");
-			}
-			
-				// move on to next mark
-				
-			server.count.mark++;
-			
-			mark_tag=xml_findnextchild(mark_tag);
+		tag=xml_findfirstchild("Setting",mark_tag);
+		if (tag!=-1) {
+			mark->life_msec=xml_get_attribute_int(tag,"time");
+			mark->fade_in_msec=xml_get_attribute_int(tag,"fade_in");
+			mark->fade_out_msec=xml_get_attribute_int(tag,"fade_out");
+			mark->no_rotate=xml_get_attribute_boolean(tag,"no_rotate");
+			mark->no_transparent=xml_get_attribute_boolean(tag,"no_transparent");
+			mark->no_opaque=xml_get_attribute_boolean(tag,"no_opaque");
 		}
+		else {
+			mark->life_msec=1000;
+			mark->fade_in_msec=mark->fade_out_msec=500;
+			mark->no_rotate=FALSE;
+			mark->no_transparent=FALSE;
+			mark->no_opaque=FALSE;
+		}
+		
+		mark->total_msec=mark->life_msec+mark->fade_in_msec+mark->fade_out_msec;
+		
+		mark->animate.image_count=1;
+		mark->animate.image_per_row=1;
+		mark->animate.msec=200;
+		mark->animate.loop=TRUE;
+		mark->animate.loop_back=FALSE;
+	
+		tag=xml_findfirstchild("Image",mark_tag);
+		if (tag!=-1) {
+			xml_get_attribute_text(tag,"file",mark->bitmap_name,file_str_len);
+			mark->animate.image_count=xml_get_attribute_int(tag,"count");
+			mark->animate.image_per_row=(int)sqrt((float)mark->animate.image_count);
+			mark->animate.msec=xml_get_attribute_int(tag,"time");
+			mark->animate.loop=xml_get_attribute_boolean(tag,"loop");
+			mark->animate.loop_back=xml_get_attribute_boolean(tag,"loop_back");
+		}
+		
+			// move on to next mark
+			
+		server.count.mark++;
+		
+		mark_tag=xml_findnextchild(mark_tag);
 	}
 	
 	xml_close_file();

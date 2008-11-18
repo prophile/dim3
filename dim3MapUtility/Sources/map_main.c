@@ -199,6 +199,22 @@ bool map_new(map_type *map,char *name)
 	map->groups=(group_type*)valloc(max_group*sizeof(group_type));
 	if (map->groups==NULL) return(FALSE);
 
+
+		// supergumba -- memory testing
+
+	fprintf(stdout,"textures = %.2f\n",((float)(max_map_texture*sizeof(texture_type)))/1000000.0f);
+	fprintf(stdout,"spots = %.2f\n",((float)(max_spot*sizeof(spot_type)))/1000000.0f);
+	fprintf(stdout,"nodes = %.2f\n",((float)(max_node*sizeof(node_type)))/1000000.0f);
+	fprintf(stdout,"sceneries = %.2f\n",((float)(max_map_scenery*sizeof(map_scenery_type)))/1000000.0f);
+	fprintf(stdout,"movements = %.2f\n",((float)(max_movement*sizeof(movement_type)))/1000000.0f);
+	fprintf(stdout,"lights = %.2f\n",((float)(max_map_light*sizeof(map_light_type)))/1000000.0f);
+	fprintf(stdout,"sounds = %.2f\n",((float)(max_map_sound*sizeof(map_sound_type)))/1000000.0f);
+	fprintf(stdout,"particles = %.2f\n",((float)(max_map_particle*sizeof(map_particle_type)))/1000000.0f);
+	fprintf(stdout,"groups = %.2f\n",((float)(max_group*sizeof(group_type)))/1000000.0f);
+
+
+
+
 		// zero memory
 		
 	bzero(map->textures,(max_map_texture*sizeof(texture_type)));

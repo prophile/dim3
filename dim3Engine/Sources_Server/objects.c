@@ -55,6 +55,7 @@ int							game_obj_rule_uid=-1;
 
 void object_initialize_list(void)
 {
+	server.objs=NULL;
 	server.count.obj=0;
 	server.uid.obj=0;
 }
@@ -353,12 +354,28 @@ void object_stop(obj_type *obj)
 
 obj_type* object_create(int bind)
 {
-	obj_type		*obj;
-	
+	obj_type		*obj,*ptr;
+
+		// only allow a maximum number of objects
+
 	if (server.count.obj>=max_object) return(NULL);
-	
+
+		// create memory for new object
+
+	ptr=(obj_type*)valloc(sizeof(obj_type)*(server.count.obj+1));
+	if (ptr==NULL) return(NULL);
+
+	if (server.objs!=NULL) {
+		memmove(ptr,server.objs,(sizeof(obj_type)*server.count.obj));
+		free(server.objs);
+	}
+
+	server.objs=ptr;
+
 	obj=&server.objs[server.count.obj];
 	server.count.obj++;
+
+		// initialize object
 	
 	obj->uid=server.uid.obj;
 	server.uid.obj++;
@@ -484,6 +501,7 @@ obj_type* object_create(int bind)
 	obj->radar.icon_idx=-1;
 	obj->radar.motion_only=FALSE;
 	obj->radar.always_visible=FALSE;
+	obj->radar.fade_start_tick=0;
 	
 	obj->status.health=obj->status.start_health=obj->status.max_health=100;
 	obj->status.health_recover_tick=obj->status.health_recover_count=0;
@@ -622,7 +640,7 @@ int object_start(spot_type *spot,bool player,int bind,char *err_str)
 	obj_type			*obj;
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
-	
+
 		// create object
 		
 	obj=object_create(bind);
@@ -729,7 +747,7 @@ int object_start(spot_type *spot,bool player,int bind,char *err_str)
 void object_dispose_single(int idx)
 {
 	int					n;
-	obj_type			*obj;
+	obj_type			*obj,*ptr;
 	weapon_type			*weap;
 	proj_setup_type		*proj_setup;
 
@@ -776,10 +794,37 @@ void object_dispose_single(int idx)
 	scripts_dispose(obj->attach.script_uid);
 	models_dispose(obj->draw.uid);
 
-		// remove from list
+		// is the list completely empty?
 
-	if (idx<(server.count.obj-1)) {
-		memmove(&server.objs[idx],&server.objs[idx+1],(sizeof(obj_type)*((server.count.obj-idx)-1)));
+	if (server.count.obj==1) {
+		free(server.objs);
+		server.objs=NULL;
+		server.count.obj=0;
+		return;
+	}
+
+		// if for some reason we can't create new
+		// memory, just shuffle the list and wait
+		// until next time
+
+	ptr=(obj_type*)valloc(sizeof(obj_type)*(server.count.obj-1));
+
+	if (ptr==NULL) {
+		if (idx<(server.count.obj-1)) {
+			memmove(&server.objs[idx],&server.objs[idx+1],(sizeof(obj_type)*((server.count.obj-idx)-1)));
+		}
+	}
+	else {
+
+		if (idx>0) {
+			memmove(ptr,server.objs,(sizeof(obj_type)*idx));
+		}
+		if (idx<(server.count.obj-1)) {
+			memmove(&ptr[idx],&server.objs[idx+1],(sizeof(obj_type)*((server.count.obj-idx)-1)));
+		}
+
+		free(server.objs);
+		server.objs=ptr;
 	}
 	
 	server.count.obj--;

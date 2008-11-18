@@ -215,7 +215,6 @@ typedef struct		{
 						int						idx,
 												min_dist,max_dist,
 												min_size,max_size;
-						char					name[name_str_len];
 						float					min_alpha,max_alpha;
 						bool					on,no_clip_object,no_clip_self;
 					} model_draw_halo;
@@ -250,9 +249,9 @@ typedef struct		{
 					} model_draw_remote_name;
 
 typedef struct		{
-						bool					on;
 						int						start_tick,fade_in_msec,fade_life_msec,fade_out_msec;
 						float					alpha;
+						bool					on;
 					} model_draw_mesh_fade;
 
 typedef struct		{
@@ -284,7 +283,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int					mesh_idx,poly_idx;
+						int						mesh_idx,poly_idx;
 					} poly_pointer_type;
 
 //
@@ -292,10 +291,10 @@ typedef struct		{
 //
 
 typedef struct		{
-						int					buffer_idx;
-						char				name[name_str_len];
-						float				pitch;
-						bool				on;
+						int						buffer_idx;
+						char					name[name_str_len];
+						float					pitch;
+						bool					on;
 					} obj_snd_ambient;
 
 //
@@ -303,18 +302,18 @@ typedef struct		{
 //
 
 typedef struct		{
-						int					x,z,y,radius,
-											eye_offset,weight;
+						int						x,z,y,radius,
+												eye_offset,weight;
 					} obj_size;
 
 typedef struct		{
-						int					count,eye_offset_end;
-						float				resize_end,resize_add,
-											eye_offset_add,eye_offset_accum;
-						bool				on;
-						d3pnt				size_end,offset_end;
-						d3vct				size_add,size_accum,
-											offset_add,offset_accum;
+						int						count,eye_offset_end;
+						float					resize_end,resize_add,
+												eye_offset_add,eye_offset_accum;
+						bool					on;
+						d3pnt					size_end,offset_end;
+						d3vct					size_add,size_accum,
+												offset_add,offset_accum;
 					} obj_grow;
 
 //
@@ -322,11 +321,11 @@ typedef struct		{
 //
 
 typedef struct		{
-						int					max_drop_y,draw_offset_y;
-						float				reset_factor_y,smooth_factor_y,
-											max_ang_x,reset_factor_x,smooth_factor_x,
-											max_ang_z,reset_factor_z,smooth_factor_z;
-						bool				on;
+						int						max_drop_y,draw_offset_y;
+						float					reset_factor_y,smooth_factor_y,
+												max_ang_x,reset_factor_x,smooth_factor_x,
+												max_ang_z,reset_factor_z,smooth_factor_z;
+						bool					on;
 					} obj_rigid_body;
 
 //
@@ -334,60 +333,60 @@ typedef struct		{
 //
 
 typedef struct		{
-						int					health,max_health,start_health,
-											health_recover_tick,health_recover_amount,health_recover_count,
-											liquid_under_tick,liquid_harm_count,liquid_drown_count;
+						int						health,max_health,start_health,
+												health_recover_tick,health_recover_amount,health_recover_count,
+												liquid_under_tick,liquid_harm_count,liquid_drown_count;
 					} obj_status;
 			
 typedef struct		{
-						int					obj_uid,proj_uid,hit_face,hit_box_idx,
-											liquid_idx;
-						bool				object_on,projectile_on,force_on,
-											melee,pushable;
-						poly_pointer_type	hit_poly,stand_poly,head_poly;
+						int						obj_uid,proj_uid,hit_face,hit_box_idx,
+												liquid_idx;
+						bool					object_on,projectile_on,force_on,
+												melee,pushable;
+						poly_pointer_type		hit_poly,stand_poly,head_poly;
 					} obj_contact;
 					
 typedef struct		{
-						int					obj_uid;
-						bool				stand;
-						d3pnt				pnt;
-						d3ang				ang;
+						int						obj_uid;
+						bool					stand;
+						d3pnt					pnt;
+						d3ang					ang;
 					} obj_touch;
 					
 typedef struct		{
-						int					obj_uid,weap_uid,proj_uid,
-											damage;
-						char				hit_box_name[name_str_len];
-						d3pnt				pnt;
-						d3ang				ang;
+						int						obj_uid,weap_uid,proj_uid,
+												damage;
+						char					hit_box_name[name_str_len];
+						d3pnt					pnt;
+						d3ang					ang;
 					} obj_hit;
 					
 typedef struct		{
-						int					model_uid,hit_box_idx;
-						bool				on,hit;
+						int						model_uid,hit_box_idx;
+						bool					on,hit;
 					} obj_hit_box;
 					
 typedef struct		{
-						int					distance,current_click_obj_uid,
-											crosshair_up_idx,crosshair_down_idx;
-						char				crosshair_up_name[name_str_len],
-											crosshair_down_name[name_str_len];
-						bool				on,click_crosshair_on;
+						int						distance,current_click_obj_uid,
+												crosshair_up_idx,crosshair_down_idx;
+						char					crosshair_up_name[name_str_len],
+												crosshair_down_name[name_str_len];
+						bool					on,click_crosshair_on;
 					} obj_click;
 					
 typedef struct		{
-						int					obj_uid,item_uid;
-						bool				on,ignore,canceled;
+						int						obj_uid,item_uid;
+						bool					on,ignore,canceled;
 					} obj_pickup;
 					
 typedef struct		{
-						bool				on,crushable,invincible,
-											in_damage;
+						bool					on,crushable,invincible,
+												in_damage;
 					} obj_damage;
 					
 typedef struct		{
-						int					method;
-						char				name[name_str_len];
+						int						method;
+						char					name[name_str_len];
 					} obj_weapon_fire;
 					
 //
@@ -395,8 +394,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						int					side_division,look_division,distance;
-						float				side_angle,look_angle;
+						int						side_division,look_division,distance;
+						float					side_angle,look_angle;
 					} obj_sight;
 
 //
@@ -404,57 +403,57 @@ typedef struct		{
 //
 
 typedef struct		{
-						int					last_y_change;
-						d3vct				vct;
-						d3ang				ang;
+						int						last_y_change;
+						d3vct					vct;
+						d3ang					ang;
 					} obj_motion;
 
 typedef struct		{
-                        float				speed,
-                                            max_crawl_speed,max_walk_speed,max_run_speed,max_air_speed,
-                                            accelerate,decelerate,air_accelerate,air_decelerate,
-											slop,seek_ang;
-                        bool				moving,running,reverse,seeking;
+                        float					speed,
+												max_crawl_speed,max_walk_speed,max_run_speed,max_air_speed,
+												accelerate,decelerate,air_accelerate,air_decelerate,
+												slop,seek_ang;
+                        bool					moving,running,reverse,seeking;
                     } obj_movement;
 					
 typedef struct		{
-						float				walk_speed,walk_motion_speed,
-											run_speed,run_motion_speed,
-											crawl_speed,crawl_motion_speed,
-											air_speed,air_motion_speed,
-											key_speed,top_down_ang_offset;
-						bool				ignore_mouse,only_when_moving,restrict_player_turning;
-						d3ang				ang_add,ang_to,fix_ang_add;
+						float					walk_speed,walk_motion_speed,
+												run_speed,run_motion_speed,
+												crawl_speed,crawl_motion_speed,
+												air_speed,air_motion_speed,
+												key_speed,top_down_ang_offset;
+						bool					ignore_mouse,only_when_moving,restrict_player_turning;
+						d3ang					ang_add,ang_to,fix_ang_add;
 					} obj_turn;
 
 typedef struct		{
-						float				speed,max_speed;
-						d3vct				vct;
+						float					speed,max_speed;
+						d3vct					vct;
 					} obj_thrust;
 						
 typedef struct		{
-						float				up_angle,down_angle,speed,
-											ang_add;
-						bool				effect_weapons;
+						float					up_angle,down_angle,speed,
+												ang_add;
+						bool					effect_weapons;
 					} obj_look;
 					
 typedef struct		{
-						bool				x,y,z;
+						bool					x,y,z;
 					} obj_lock;
 					
 typedef struct		{
-						int					high,smooth_offset;
-						float				smooth_factor;
-						bool				on;
+						int						high,smooth_offset;
+						float					smooth_factor;
+						bool					on;
 					} obj_bump;
 					
 typedef struct		{
-						int					mesh_idx;
-						float				factor;
+						int						mesh_idx;
+						float					factor;
 					} obj_bounce;
 
 typedef struct		{
-						int					spawn_mesh_idx,cur_mesh_idx;
+						int						spawn_mesh_idx,cur_mesh_idx;
 					} obj_mesh;
 
 //
@@ -462,19 +461,19 @@ typedef struct		{
 //
 
 typedef struct		{
-						int					mode,y_add,y_move,y_change;
-						bool				on;
+						int						mode,y_add,y_move,y_change;
+						bool					on;
 					} obj_duck;
 					
 typedef struct		{
-						int					y_add;
-						bool				on;
+						int						y_add;
+						bool					on;
 					} obj_jump;
 					
 typedef struct		{
-						int					dist,damage_minimum_height;
-						float				damage_factor;
-						bool				change;
+						int						dist,damage_minimum_height;
+						float					damage_factor;
+						bool					change;
 					} obj_fall;
 
 //
@@ -482,16 +481,16 @@ typedef struct		{
 //
 					
 typedef struct		{
-						int					mode,obj_uid,
-											node_seek_idx,node_dest_idx,node_event_id,
-											node_slop;
-						d3pnt				pnt;
+						int						mode,obj_uid,
+												node_seek_idx,node_dest_idx,node_event_id,
+												node_slop;
+						d3pnt					pnt;
 					} obj_auto_walk;
 					
 typedef struct		{
-						int					dist,obj_uid,base_team;
-						char				obj_flags[max_object],sound_name[name_str_len];
-						bool				on;
+						int						dist,obj_uid,base_team;
+						char					obj_flags[max_object],sound_name[name_str_len];
+						bool					on;
 					} obj_watch;
 		
 //
@@ -499,9 +498,9 @@ typedef struct		{
 //
 
 typedef struct		{
-						int					attach_obj_uid;
-						bool				on;
-						d3pnt				attach_offset;
+						int						attach_obj_uid;
+						bool					on;
+						d3pnt					attach_offset;
 					} obj_vehicle;
 
 //
@@ -509,9 +508,9 @@ typedef struct		{
 //
 
 typedef struct		{
-						int					icon_idx;
-						char				icon[name_str_len];
-						bool				on,motion_only,always_visible;
+						int						icon_idx,fade_start_tick;
+						char					icon[name_str_len];
+						bool					on,motion_only,always_visible;
 					} obj_radar;
 
 //
@@ -519,12 +518,12 @@ typedef struct		{
 //
 
 typedef struct		{
-						float				gravity;
-						d3vct				vct;
+						float					gravity;
+						d3vct					vct;
 					} obj_force;
 
 typedef struct		{
-						int					size;
+						int						size;
 					} obj_kickback;
 
 //
@@ -532,23 +531,23 @@ typedef struct		{
 //
 
 typedef struct		{
-						int					start_tick,
-											fade_in_tick,life_tick,fade_out_tick;
-						float				alpha;
-						bool				on;
-						d3col				col;
+						int						start_tick,
+												fade_in_tick,life_tick,fade_out_tick;
+						float					alpha;
+						bool					on;
+						d3col					col;
 					} obj_fs_tint;
 					
 typedef struct		{
-						int					start_tick,life_tick,
-											center_x,center_y;
-						float				start_size,end_size;
-						bool				on,auto_clear;
+						int						start_tick,life_tick,
+												center_x,center_y;
+						float					start_size,end_size;
+						bool					on,auto_clear;
 					} obj_fs_fade;
 
 typedef struct		{
-						obj_fs_tint			tint;
-						obj_fs_fade			fade;
+						obj_fs_tint				tint;
+						obj_fs_fade				fade;
 					} obj_fs_effect;
 					
 //
@@ -556,13 +555,13 @@ typedef struct		{
 //
 
 typedef struct		{
-						int					uid,last_update;
-						bool				on,talking;
+						int						uid,last_update;
+						bool					on,talking;
 					} obj_remote;
 
 typedef struct		{
-						int					kill,death,suicide,goal,
-											score;
+						int						kill,death,suicide,goal,
+												score;
 					} obj_score;
 
 //
@@ -570,8 +569,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						int					idx;
-						bool				on;
+						int						idx;
+						bool					on;
 					} obj_scenery;
 
 //
@@ -579,21 +578,21 @@ typedef struct		{
 //
  
 typedef struct		{
-						int					mode,swap_tick,bounce_y,
-											current_uid,next_uid;
+						int						mode,swap_tick,bounce_y,
+												current_uid,next_uid;
 					} obj_held_weapon;
 					
 typedef struct		{
-						int					x,y,sz,aim_obj_uid,
-											alt_tick,gl_id;
-						float				alpha;
-						bool				on;
-						d3col				color;
+						int						x,y,sz,aim_obj_uid,
+												alt_tick,gl_id;
+						float					alpha;
+						bool					on;
+						d3col					color;
 					} obj_crosshair_draw;
 					
 typedef struct		{
-						int					x,y,old_camera_mode;
-						bool				on;
+						int						x,y,old_camera_mode;
+						bool					on;
 					} obj_zoom_draw;
 
 //
@@ -601,11 +600,11 @@ typedef struct		{
 //
  
 typedef struct		{
-						int					radius,distance,damage,
-											force;
-						char				strike_pose_name[name_str_len],
-											object_strike_pose_name[name_str_len];
-						model_tag			strike_bone_tag,object_strike_bone_tag;
+						int						radius,distance,damage,
+												force;
+						char					strike_pose_name[name_str_len],
+												object_strike_pose_name[name_str_len];
+						model_tag				strike_bone_tag,object_strike_bone_tag;
 					} melee_type;
 
 //
@@ -660,83 +659,83 @@ typedef struct		{
 //
 
 typedef struct		{
-						int					count,init_count,max_count,
-											clip_count,init_clip_count,max_clip_count,
-											last_reload_tick;
-						bool				reset,use_ammo,use_clips;
+						int						count,init_count,max_count,
+												clip_count,init_clip_count,max_clip_count,
+												last_reload_tick;
+						bool					reset,use_ammo,use_clips;
 					} weap_ammo_type;
 					
 typedef struct		{
-						int					size,life_msec;
+						int						size,life_msec;
 					} weap_kickback_type;
 
 typedef struct		{
-						float				look_reset,turn_reset;
-						d3ang				ang,
-											min_ang,max_ang,reset_ang;
+						float					look_reset,turn_reset;
+						d3ang					ang,
+												min_ang,max_ang,reset_ang;
 					} weap_recoil_type;
 
 typedef struct		{
-						int					type,min_size,max_size,distance,
-											bone_idx,fire_idx;
-						char				fire_name[name_str_len];
-						bool				on;
-						d3col				col,empty_col,pickup_col;
-						model_tag			bone_tag;
+						int						type,min_size,max_size,distance,
+												bone_idx,fire_idx;
+						char					fire_name[name_str_len];
+						bool					on;
+						d3col					col,empty_col,pickup_col;
+						model_tag				bone_tag;
 					} weap_crosshair_type;
 					
 typedef struct		{
-						int					method,last_fire_tick;
-						bool				cancel;
+						int						method,last_fire_tick;
+						bool					cancel;
 					} weap_fire_type;
 
 typedef struct		{
-						int					distance,obj_uid;
-						char				type[name_str_len];
-						bool				on;
-						d3col				col;
+						int						distance,obj_uid;
+						char					type[name_str_len];
+						bool					on;
+						d3col					col;
 					} weap_target_type;
 					
 typedef struct		{
-						int					mask_idx,step_count,current_step;
-						float				fov_min,fov_max,
-											turn_factor,crawl_turn_factor,look_factor;
-						char				mask_name[name_str_len];
-						bool				on,active;
+						int						mask_idx,step_count,current_step;
+						float					fov_min,fov_max,
+												turn_factor,crawl_turn_factor,look_factor;
+						char					mask_name[name_str_len];
+						bool					on,active;
 					} weap_zoom_type;
 					
 typedef struct		{
-						int					raise_tick,lower_tick,select_shift;
-						float				bounce_ang,bounce_speed;
-						d3pnt				shift;
-						d3ang				ang;
+						int						raise_tick,lower_tick,select_shift;
+						float					bounce_ang,bounce_speed;
+						d3pnt					shift;
+						d3ang					ang;
 					} weap_hand_type;
 
 typedef struct		{
-						int					repeat_tick,next_repeat_tick;
-						char				fire_pose_name[name_str_len],
-											object_fire_pose_name[name_str_len];
-						bool				repeat_on,repeat_ok;
-						model_tag			fire_bone_tag,barrel_bone_tag,
-											object_fire_bone_tag;
+						int						repeat_tick,next_repeat_tick;
+						char					fire_pose_name[name_str_len],
+												object_fire_pose_name[name_str_len];
+						bool					repeat_on,repeat_ok;
+						model_tag				fire_bone_tag,barrel_bone_tag,
+												object_fire_bone_tag;
 					} weap_proj_type;
 					
 typedef struct		{
-						int					uid,obj_uid;
-						char				name[name_str_len];
-						bool				hidden,fail_in_liquid;
-						model_draw			draw;
-						melee_type			melee;
-						weap_ammo_type		ammo,alt_ammo;
-						weap_kickback_type  kickback;
-						weap_recoil_type	recoil;
-						weap_crosshair_type crosshair;
-						weap_fire_type		fire;
-						weap_target_type	target;
-						weap_zoom_type		zoom;
-						weap_hand_type		hand;
-						weap_proj_type		proj;
-						attach_type			attach;
+						int						uid,obj_uid;
+						char					name[name_str_len];
+						bool					hidden,fail_in_liquid;
+						model_draw				draw;
+						melee_type				melee;
+						weap_ammo_type			ammo,alt_ammo;
+						weap_kickback_type		kickback;
+						weap_recoil_type		recoil;
+						weap_crosshair_type		crosshair;
+						weap_fire_type			fire;
+						weap_target_type		target;
+						weap_zoom_type			zoom;
+						weap_hand_type			hand;
+						weap_proj_type			proj;
+						attach_type				attach;
 					} weapon_type;
 					
 //
@@ -744,60 +743,60 @@ typedef struct		{
 //
 
 typedef struct		{
-						int					uid,bind,team_idx,spawn_idx,spawn_mesh_idx,
-											count,input_mode,air_mode,liquid_mode,
-											stand_obj_uid,damage_obj_uid,item_count,
-											last_move_animation_event,last_turn_animation_event;
-						char				name[name_str_len],type[name_str_len],spawn_spot_name[name_str_len];
-						bool				spawning,hidden,suspend,fly,slope_gravity,
-											player,side_step,crawl,single_speed,no_slide,
-											open_doors,input_freeze,hide_all_weapons,
-											find_on,in_collide_event,on_ladder,
-											quick_reverse,death_trigger;
-						d3pnt				pnt,org_pnt;
-						d3ang				ang,view_ang,org_ang;
-						obj_motion			motion;
-                        obj_movement		forward_move,side_move,vert_move;
-						obj_lock			lock;
-						obj_turn			turn;
-						obj_thrust			thrust;
-						obj_mesh			mesh;
-						obj_look			look;
-						obj_size			size;
-						obj_grow			grow;
-						obj_sight			sight;
-						obj_rigid_body		rigid_body;
-						obj_bump			bump;
-						obj_bounce			bounce;
-						obj_duck			duck;
-						obj_jump			jump;
-						obj_fall			fall;
-						obj_auto_walk		auto_walk;
-						obj_watch			watch;
-						obj_vehicle			vehicle;
-						obj_radar			radar;
-						obj_force			force;
-						obj_kickback		kickback;
-						obj_fs_effect		fs_effect;
-						obj_status			status;
-						obj_contact			contact;
-						obj_touch			touch;
-						obj_hit				hit;
-						obj_hit_box			hit_box;
-						obj_click			click;
-						obj_pickup			pickup;
-						obj_damage			damage;
-						obj_weapon_fire		weapon_fire;
-						obj_held_weapon		held_weapon;
-						obj_crosshair_draw	crosshair_draw;
-						obj_zoom_draw		zoom_draw;
-						melee_type			melee;
-						model_draw			draw;
-						obj_snd_ambient		ambient;
-						attach_type			attach;
-						obj_remote			remote;
-						obj_score			score;
-						obj_scenery			scenery;
+						int						uid,bind,team_idx,spawn_idx,spawn_mesh_idx,
+												count,input_mode,air_mode,liquid_mode,
+												stand_obj_uid,damage_obj_uid,item_count,
+												last_move_animation_event,last_turn_animation_event;
+						char					name[name_str_len],type[name_str_len],spawn_spot_name[name_str_len];
+						bool					spawning,hidden,suspend,fly,slope_gravity,
+												player,side_step,crawl,single_speed,no_slide,
+												open_doors,input_freeze,hide_all_weapons,
+												find_on,in_collide_event,on_ladder,
+												quick_reverse,death_trigger;
+						d3pnt					pnt,org_pnt;
+						d3ang					ang,view_ang,org_ang;
+						obj_motion				motion;
+                        obj_movement			forward_move,side_move,vert_move;
+						obj_lock				lock;
+						obj_turn				turn;
+						obj_thrust				thrust;
+						obj_mesh				mesh;
+						obj_look				look;
+						obj_size				size;
+						obj_grow				grow;
+						obj_sight				sight;
+						obj_rigid_body			rigid_body;
+						obj_bump				bump;
+						obj_bounce				bounce;
+						obj_duck				duck;
+						obj_jump				jump;
+						obj_fall				fall;
+						obj_auto_walk			auto_walk;
+						obj_watch				watch;
+						obj_vehicle				vehicle;
+						obj_radar				radar;
+						obj_force				force;
+						obj_kickback			kickback;
+						obj_fs_effect			fs_effect;
+						obj_status				status;
+						obj_contact				contact;
+						obj_touch				touch;
+						obj_hit					hit;
+						obj_hit_box				hit_box;
+						obj_click				click;
+						obj_pickup				pickup;
+						obj_damage				damage;
+						obj_weapon_fire			weapon_fire;
+						obj_held_weapon			held_weapon;
+						obj_crosshair_draw		crosshair_draw;
+						obj_zoom_draw			zoom_draw;
+						melee_type				melee;
+						model_draw				draw;
+						obj_snd_ambient			ambient;
+						attach_type				attach;
+						obj_remote				remote;
+						obj_score				score;
+						obj_scenery				scenery;
 					} obj_type;
 
 //

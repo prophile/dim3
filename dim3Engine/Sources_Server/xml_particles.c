@@ -42,13 +42,19 @@ extern setup_type			setup;
 
 void read_settings_particle(void)
 {
-	int					n,particle_data_head_tag,particle_head_tag,particle_tag,
+	int					n,nparticle,
+						particle_data_head_tag,particle_head_tag,particle_tag,
 						particle_group_head_tag,particle_group_tag,tag,
 						ring_radius,ring_size;
 	float				ring_min_move,ring_max_move;
 	bool				ring_flip;
 	char				path[1024];
 	particle_type		*particle;
+
+		// no particles yet
+
+	server.particles=NULL;
+	server.count.particle=0;
 
 		// read in particles from setting files
 		
@@ -59,13 +65,15 @@ void read_settings_particle(void)
 		
 	particle_data_head_tag=xml_findrootchild("Particle_Data");
 	
-		// particles
+		// particle and group head tags
        
 	if (particle_data_head_tag==-1) {
 		particle_head_tag=xml_findrootchild("Particles");
+		particle_group_head_tag=xml_findrootchild("Particle_Groups");
 	}
 	else {
 		particle_head_tag=xml_findfirstchild("Particles",particle_data_head_tag);
+		particle_group_head_tag=xml_findfirstchild("Particle_Groups",particle_data_head_tag);
 	}
 	
     if (particle_head_tag==-1) {
@@ -73,8 +81,26 @@ void read_settings_particle(void)
 		return;
 	}
 
+		// get counts
+
+	nparticle=xml_countchildren(particle_head_tag);
+	if (particle_group_head_tag!=-1) nparticle+=xml_countchildren(particle_group_head_tag);
+
+	if (nparticle==0) {
+		xml_close_file();
+		return;
+	}
+
+	server.particles=(particle_type*)valloc(sizeof(particle_type)*nparticle);
+	if (server.particles==NULL) {
+		xml_close_file();
+		return;
+	}
+
+		// load regular particles
+
 	particle_tag=xml_findfirstchild("Particle",particle_head_tag);
-    
+
 	while (particle_tag!=-1) {
 	
 			// create a new particle
@@ -221,22 +247,15 @@ void read_settings_particle(void)
 		particle_tag=xml_findnextchild(particle_tag);
 	}
 
-		// particle groups
-
-	if (particle_data_head_tag==-1) {
-		particle_group_head_tag=xml_findrootchild("Particle_Groups");
-	}
-	else {
-		particle_group_head_tag=xml_findfirstchild("Particle_Groups",particle_data_head_tag);
-	}
+		// load group particles
 
     if (particle_group_head_tag==-1) {
 		xml_close_file();
 		return;
 	}
 
-	particle_group_tag=xml_findfirstchild("Particle_Group",particle_group_head_tag);
-    
+  	particle_group_tag=xml_findfirstchild("Particle_Group",particle_group_head_tag);
+   
 	while (particle_group_tag!=-1) {
 	
 			// create a new particle group

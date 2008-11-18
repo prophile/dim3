@@ -42,41 +42,63 @@ extern setup_type			setup;
 
 void read_settings_crosshair(void)
 {
-	int					crosshairs_head_tag,crosshair_tag,tag;
+	int					ncrosshair,crosshairs_head_tag,crosshair_tag,tag;
 	char				path[1024];
 	crosshair_type		*crosshair;
+
+		// no crosshairs yet
+
+	server.crosshairs=NULL;
+	server.count.crosshair=0;
 	
 		// read in crosshairs from setting files
 		
 	file_paths_data(&setup.file_path_setup,path,"Settings","Crosshairs","xml");
 	if (!xml_open_file(path)) return;
 	
-		// decode the file
+		// get counts
 		
     crosshairs_head_tag=xml_findrootchild("Crosshairs");
-    if (crosshairs_head_tag!=-1) {
+    if (crosshairs_head_tag==-1) {
+		xml_close_file();
+		return;
+	}
+
+	ncrosshair=xml_countchildren(crosshairs_head_tag);
+
+	if (ncrosshair==0) {
+		xml_close_file();
+		return;
+	}
+
+	server.crosshairs=(crosshair_type*)valloc(sizeof(crosshair_type)*ncrosshair);
+	if (server.crosshairs==NULL) {
+		xml_close_file();
+		return;
+	}
+
+		// read the crosshairs
 	
-		crosshair_tag=xml_findfirstchild("Crosshair",crosshairs_head_tag);
+	crosshair_tag=xml_findfirstchild("Crosshair",crosshairs_head_tag);
+	
+	while (crosshair_tag!=-1) {
+	
+			// create a new crosshair
+			
+		crosshair=&server.crosshairs[server.count.crosshair];
 		
-		while (crosshair_tag!=-1) {
+		xml_get_attribute_text(crosshair_tag,"name",crosshair->name,name_str_len);
 		
-				// create a new crosshair
-				
-			crosshair=&server.crosshairs[server.count.crosshair];
-			
-			xml_get_attribute_text(crosshair_tag,"name",crosshair->name,name_str_len);
-			
-			tag=xml_findfirstchild("Image",crosshair_tag);
-			if (tag!=-1) {
-				xml_get_attribute_text(tag,"file",crosshair->bitmap_name,file_str_len);
-			}
-			
-				// move on to next crosshair
-				
-			server.count.crosshair++;
-			
-			crosshair_tag=xml_findnextchild(crosshair_tag);
+		tag=xml_findfirstchild("Image",crosshair_tag);
+		if (tag!=-1) {
+			xml_get_attribute_text(tag,"file",crosshair->bitmap_name,file_str_len);
 		}
+		
+			// move on to next crosshair
+			
+		server.count.crosshair++;
+		
+		crosshair_tag=xml_findnextchild(crosshair_tag);
 	}
 	
 	xml_close_file();

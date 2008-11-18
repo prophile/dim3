@@ -47,12 +47,12 @@ extern render_info_type		render_info;
       
 ======================================================= */
 
-void radar_draw(void)
+void radar_draw(int tick)
 {
 	int						n,x,y,lx,rx,ty,by,px[4],py[4],
-							dist,max_dist,fade_dist,radar_sz;
+							dist,max_dist,fade_dist,fade_count,radar_sz;
 	unsigned long			cur_gl_id,gl_id;
-	float					alpha,cur_alpha;
+	float					alpha,cur_alpha,fade_mult;
 	obj_type				*obj,*player_obj;
 	hud_radar_icon_type		*icon;
 	
@@ -114,17 +114,36 @@ void radar_draw(void)
 		obj=&server.objs[n];
 
 		if ((obj->hidden) || (!obj->radar.on) || (obj->radar.icon_idx==-1)) continue;
-
-			// motion only?
-			
-		if (obj->radar.motion_only) {
-			if ((!obj->forward_move.moving) && (!obj->vert_move.moving)) continue;
-		}
 			
 			// get distance
 			
 		dist=distance_2D_get(obj->pnt.x,obj->pnt.z,player_obj->pnt.x,player_obj->pnt.z);
 		if ((!obj->radar.always_visible) && (dist>max_dist)) continue;
+
+			// motion only?
+
+		fade_mult=1.0f;
+			
+		if (obj->radar.motion_only) {
+
+				// if moving, turn on the fade count
+				// for when it stops
+
+			if ((obj->forward_move.moving) || (obj->vert_move.moving)) {
+				obj->radar.fade_start_tick=tick;
+			}
+
+				// if not moving, handle the fading
+
+			else {
+				if (hud.radar.no_motion_fade==0) continue;
+
+				fade_count=tick-obj->radar.fade_start_tick;
+				if (fade_count>hud.radar.no_motion_fade) continue;
+
+				fade_mult=1.0f-(((float)fade_count)/((float)hud.radar.no_motion_fade));
+			}
+		}
 
 			// get the position
 
@@ -150,6 +169,8 @@ void radar_draw(void)
 		if ((!obj->radar.always_visible) && (dist>fade_dist)) {
 			alpha=1.0f-(float)(dist-fade_dist)/(float)fade_dist;
 		}
+
+		alpha*=fade_mult;
 			
 			// draw object
 		

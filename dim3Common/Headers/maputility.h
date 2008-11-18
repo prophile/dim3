@@ -162,6 +162,22 @@ extern char light_type_str[][32];
 #define group_type_liquid									1
 
 //
+// node flags
+//
+
+#define node_flag_goal										0x0001
+#define node_flag_red_flag									0x0002
+#define node_flag_blue_flag									0x0004
+#define node_flag_weapon									0x0008
+#define node_flag_ammo										0x0010
+#define node_flag_armor										0x0020
+#define node_flag_health									0x0040
+#define node_flag_normal_cover								0x0080
+#define node_flag_duck_cover								0x0100
+#define node_flag_sniper									0x0200
+#define node_flag_climb										0x0400
+
+//
 // skills
 //
 
@@ -257,7 +273,8 @@ typedef struct		{
 typedef struct		{
 						bool								on,pass_through,moveable,
 															hilite,climbable,shiftable,
-															lock_uv,no_self_obscure,touched;
+															lock_uv,no_self_obscure,touched,
+															has_bump,has_specular,has_glow;
 					} map_mesh_flag_type;
 
 typedef struct		{
@@ -371,10 +388,9 @@ typedef struct		{
 //
 					
 typedef struct		{
-						int									lighting_mode,
-															texture_frames[max_map_scenery_model_texture_frame];
-						char								model_name[name_str_len],
-															animation_name[name_str_len];
+						int									lighting_mode;
+						short								texture_frame[max_map_scenery_model_texture_frame];
+						char								model_name[name_str_len],animation_name[name_str_len];
 						bool								contact_object_on,contact_projectile_on,
 															contact_hit_box,face_forward,
 															shadow,shadow_cast_down,override_size;
@@ -430,19 +446,13 @@ typedef struct		{
 //
 
 typedef struct		{
-						bool								goal,red_flag,blue_flag,
-															weapon,ammo,armor,health,
-															normal_cover,duck_cover,sniper;
-					} node_flag_type;
-
-typedef struct		{
-						int									idx,user_value,
-															link[max_node_link],
+						int									idx,user_value;
+						short								link[max_node_link],
 															path_hint[max_node];
+						unsigned long						flags;
 						char								name[name_str_len];
 						d3pnt								pnt;
 						d3ang								ang;
-						node_flag_type						flag;
 					} node_type;
 
 //

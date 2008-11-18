@@ -42,22 +42,42 @@ extern setup_type			setup;
 
 void read_settings_ring(void)
 {
-	int					ring_head_tag,ring_tag,tag;
+	int					nring,ring_head_tag,ring_tag,tag;
 	char				path[1024];
 	ring_type			*ring;
+
+		// no rings yet
+
+	server.rings=NULL;
+	server.count.ring=0;
 
 		// read in rings from setting files
 		
 	file_paths_data(&setup.file_path_setup,path,"Settings","Rings","xml");
 	if (!xml_open_file(path)) return;
 	
-		// rings
+		// get counts
        
     ring_head_tag=xml_findrootchild("Rings");
     if (ring_head_tag==-1) {
 		xml_close_file();
 		return;
 	}
+
+	nring=xml_countchildren(ring_head_tag);
+
+	if (nring==0) {
+		xml_close_file();
+		return;
+	}
+
+	server.rings=(ring_type*)valloc(sizeof(ring_type)*nring);
+	if (server.rings==NULL) {
+		xml_close_file();
+		return;
+	}
+
+		// read in the rings
 
 	ring_tag=xml_findfirstchild("Ring",ring_head_tag);
     

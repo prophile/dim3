@@ -95,7 +95,7 @@ int map_find_next_node_in_path(map_type *map,int from_idx,int to_idx)
 {
 	if ((from_idx==-1) || (to_idx==-1)) return(-1);
 	
-	return(map->nodes[from_idx].path_hint[to_idx]);
+	return((int)map->nodes[from_idx].path_hint[to_idx]);
 }
 
 /* =======================================================

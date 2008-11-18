@@ -160,13 +160,13 @@ void collide_object_ray_trace_points(obj_type *obj,int x_add,int z_add,int *px,i
 bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 {
 	int						n,x,z,idx,xadd2,yadd2,zadd2,radius,
-							px[15],py[15],pz[15],
+							px[21],py[21],pz[21],
 							d,dist,mv_dist;
 	float					mv_ang;
-	bool					bump,hits[15];
-	d3pnt					spt[15],ept[15],hpt[15];
+	bool					bump,hits[21];
+	d3pnt					spt[21],ept[21],hpt[21];
 	map_mesh_poly_type		*poly;
-	ray_trace_contact_type	base_contact,contacts[15];
+	ray_trace_contact_type	base_contact,contacts[21];
 
 		// get collision points
 
@@ -208,6 +208,8 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	base_contact.hit_mode=poly_ray_trace_hit_mode_wall_only;
 	base_contact.origin=poly_ray_trace_origin_object;
 
+		// straight forward rays
+
 	for (n=0;n!=15;n++) {
 		spt[n].x=px[n];
 		spt[n].y=py[n];
@@ -217,8 +219,54 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 		ept[n].y=spt[n].y+yadd2;
 		ept[n].z=spt[n].z+zadd2;
 	}
-	
-	ray_trace_map_by_point_array(15,spt,ept,hpt,hits,&base_contact,contacts);
+		
+		// cross-over rays
+
+	spt[15].x=px[15]=px[0];
+	spt[15].y=py[15]=py[0];
+	spt[15].z=pz[15]=pz[0];
+	ept[15].x=px[14]+xadd2;
+	ept[15].y=py[14]+yadd2;
+	ept[15].z=pz[14]+zadd2;
+
+	spt[16].x=px[16]=px[2];
+	spt[16].y=py[16]=py[2];
+	spt[16].z=pz[16]=pz[2];
+	ept[16].x=px[12]+xadd2;
+	ept[16].y=py[12]+yadd2;
+	ept[16].z=pz[12]+zadd2;
+
+	spt[17].x=px[17]=px[12];
+	spt[17].y=py[17]=py[12];
+	spt[17].z=pz[17]=pz[12];
+	ept[17].x=px[2]+xadd2;
+	ept[17].y=py[2]+yadd2;
+	ept[17].z=pz[2]+zadd2;
+
+	spt[18].x=px[18]=px[14];
+	spt[18].y=py[18]=py[14];
+	spt[18].z=pz[18]=pz[14];
+	ept[18].x=px[0]+xadd2;
+	ept[18].y=py[0]+yadd2;
+	ept[18].z=pz[0]+zadd2;
+
+	spt[19].x=px[19]=px[6];
+	spt[19].y=py[19]=py[6];
+	spt[19].z=pz[19]=pz[6];
+	ept[19].x=px[8]+xadd2;
+	ept[19].y=py[8]+yadd2;
+	ept[19].z=pz[8]+zadd2;
+
+	spt[20].x=px[20]=px[8];
+	spt[20].y=py[20]=py[8];
+	spt[20].z=pz[20]=pz[8];
+	ept[20].x=px[6]+xadd2;
+	ept[20].y=py[6]+yadd2;
+	ept[20].z=pz[6]+zadd2;
+
+		// run ray trace
+
+	ray_trace_map_by_point_array(21,spt,ept,hpt,hits,&base_contact,contacts);
 
 		// find the one that moves the leasts
 		// as the most suitable hit point
@@ -226,7 +274,7 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	idx=-1;
 	dist=0;
 
-	for (n=0;n!=15;n++) {
+	for (n=0;n!=21;n++) {
 			
 		if (hits[n]) {
 			d=collide_point_distance(&spt[n],&hpt[n]);

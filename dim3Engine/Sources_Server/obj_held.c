@@ -45,16 +45,28 @@ extern js_type				js;
 
 int object_held_add(obj_type *obj,char *name,char *type,char *script,char *params,char *err_str)
 {
+	int				uid;
 	obj_type		*held_obj;
 	attach_type		old_attach;
+
+		// we need to grab the uid of the object
+		// that is getting the held item as the pointer
+		// we be invalid after an object create
+
+	uid=obj->uid;
 	
-		// create object
+		// create the held object
 		
 	held_obj=object_create(bt_map);
 	if (held_obj==NULL) {
 		sprintf(err_str,"Could not create object %s",name);
 		return(-1);
 	}
+
+		// fix the pointer to the original
+		// object
+
+	obj=object_find_uid(uid);
 
 		// setup held object
 

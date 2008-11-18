@@ -135,7 +135,7 @@ int collide_find_object_for_standing_object(obj_type *obj)
 	
 	for (n=0;n!=server.count.obj;n++) {
 	
-		if ((stand_obj->uid==ignore_obj_uid) || (obj->hidden) || (!obj->contact.object_on) || (obj->pickup.on)) {
+		if ((stand_obj->uid==ignore_obj_uid) || (stand_obj->hidden) || (!stand_obj->contact.object_on) || (stand_obj->pickup.on)) {
 			stand_obj++;
 			continue;
 		}

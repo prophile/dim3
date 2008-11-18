@@ -132,7 +132,7 @@ extern void network_draw(int tick);
 // radar
 //
 
-extern void radar_draw(void);
+extern void radar_draw(int tick);
 
 //
 // crosshairs

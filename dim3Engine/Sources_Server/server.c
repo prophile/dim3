@@ -63,15 +63,16 @@ bool server_memory_allocate(void)
     server.objs=NULL;
 	server.weapons=NULL;
 	server.proj_setups=NULL;
-    server.projs=NULL;
-    server.effects=NULL;
-    server.decals=NULL;
-	server.models=NULL;
 	server.particles=NULL;
-	server.rings=NULL;
+ 	server.rings=NULL;
 	server.halos=NULL;
 	server.marks=NULL;
 	server.crosshairs=NULL;
+	server.models=NULL;
+
+	server.projs=NULL;
+    server.effects=NULL;
+    server.decals=NULL;
 	
 	js.scripts=NULL;
 	js.timers=NULL;
@@ -83,17 +84,10 @@ bool server_memory_allocate(void)
 	hud.menus=NULL;
 	hud.choosers=NULL;
 	hud.chat.lines=NULL;
-	
-		// server pointers
-		
-	server.objs=(obj_type*)valloc(max_object*sizeof(obj_type));
-	if (server.objs==NULL) return(FALSE);
-	
-	server.weapons=(weapon_type*)valloc(max_weapon*sizeof(weapon_type));
-	if (server.weapons==NULL) return(FALSE);
-	
-	server.proj_setups=(proj_setup_type*)valloc(max_proj_setup*sizeof(proj_setup_type));
-	if (server.proj_setups==NULL) return(FALSE);
+
+		// non-dynamic server pointers
+		// these are pre-created to speed up
+		// the game
 	
 	server.projs=(proj_type*)valloc(max_projectile*sizeof(proj_type));
 	if (server.projs==NULL) return(FALSE);
@@ -103,25 +97,11 @@ bool server_memory_allocate(void)
 	
 	server.decals=(decal_type*)valloc(max_decal*sizeof(decal_type));
 	if (server.decals==NULL) return(FALSE);
-	
-	server.models=(model_type*)valloc(max_model*sizeof(model_type));
-	if (server.models==NULL) return(FALSE);
-	
-	server.particles=(particle_type*)valloc(max_particle*sizeof(particle_type));
-	if (server.particles==NULL) return(FALSE);
-	
-	server.rings=(ring_type*)valloc(max_ring*sizeof(ring_type));
-	if (server.rings==NULL) return(FALSE);
 
-	server.halos=(halo_type*)valloc(max_halo*sizeof(halo_type));
-	if (server.halos==NULL) return(FALSE);
-	
-	server.marks=(mark_type*)valloc(max_mark*sizeof(mark_type));
-	if (server.marks==NULL) return(FALSE);
-	
-	server.crosshairs=(crosshair_type*)valloc(max_crosshair*sizeof(crosshair_type));
-	if (server.crosshairs==NULL) return(FALSE);
-	
+		// supergumba -- memory testing
+
+	fprintf(stdout,"models = %.2f\n",((float)(max_model*sizeof(model_type)))/1000000.0f);
+
 		// js engine pointers
 		
 	js.scripts=(script_type*)valloc(max_scripts*sizeof(script_type));
@@ -155,18 +135,9 @@ bool server_memory_allocate(void)
 	
 		// zero memory
 		
-	bzero(server.objs,(max_object*sizeof(obj_type)));
-	bzero(server.weapons,(max_weapon*sizeof(weapon_type)));
-	bzero(server.proj_setups,(max_proj_setup*sizeof(proj_setup_type)));
 	bzero(server.projs,(max_projectile*sizeof(proj_type)));
 	bzero(server.effects,(max_effect*sizeof(effect_type)));
 	bzero(server.decals,(max_decal*sizeof(decal_type)));
-	bzero(server.models,(max_model*sizeof(model_type)));
-	bzero(server.particles,(max_particle*sizeof(particle_type)));
-	bzero(server.rings,(max_ring*sizeof(ring_type)));
-	bzero(server.halos,(max_halo*sizeof(halo_type)));
-	bzero(server.marks,(max_mark*sizeof(mark_type)));
-	bzero(server.crosshairs,(max_crosshair*sizeof(crosshair_type)));
 	bzero(js.scripts,(max_scripts*sizeof(script_type)));
 	bzero(js.timers,(max_timers*sizeof(timer_type)));
 	bzero(js.globals,(max_globals*sizeof(global_type)));
@@ -182,20 +153,23 @@ bool server_memory_allocate(void)
 
 void server_memory_release(void)
 {
-		// server pointers
+		// catch all for dynamic server pointers
 		
 	if (server.objs!=NULL) free(server.objs);
 	if (server.weapons!=NULL) free(server.weapons);
 	if (server.proj_setups!=NULL) free(server.proj_setups);
-	if (server.projs!=NULL) free(server.projs);
-	if (server.effects!=NULL) free(server.effects);
-	if (server.decals!=NULL) free(server.decals);
-	if (server.models!=NULL) free(server.models);
 	if (server.particles!=NULL) free(server.particles);
 	if (server.rings!=NULL) free(server.rings);
 	if (server.halos!=NULL) free(server.halos);
 	if (server.marks!=NULL) free(server.marks);
 	if (server.crosshairs!=NULL) free(server.crosshairs);
+	if (server.models!=NULL) free(server.models);
+
+		// non-dynamic server pointers
+
+	if (server.projs!=NULL) free(server.projs);
+	if (server.effects!=NULL) free(server.effects);
+	if (server.decals!=NULL) free(server.decals);
 	
 		// js pointers
 		

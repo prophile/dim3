@@ -110,8 +110,9 @@ void halo_draw_setup(void)
 	}
 
 		// remove halos behind z or off-screen
+		// ignore console as it won't matter for projection
 		
-	gl_setup_viewport(console_y_offset());
+	gl_setup_viewport(0);
 	gl_3D_view(&view.camera);
 	gl_3D_rotate(&view.camera.ang);
 	gl_setup_project();

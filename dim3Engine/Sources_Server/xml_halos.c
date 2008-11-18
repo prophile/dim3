@@ -42,41 +42,63 @@ extern setup_type			setup;
 
 void read_settings_halo(void)
 {
-	int					halos_head_tag,halo_tag,tag;
+	int					nhalo,halos_head_tag,halo_tag,tag;
 	char				path[1024];
 	halo_type			*halo;
-	
+
+		// no halos yet
+
+	server.halos=NULL;
+	server.count.halo=0;
+
 		// read in interface from setting files
 		
 	file_paths_data(&setup.file_path_setup,path,"Settings","Halos","xml");
 	if (!xml_open_file(path)) return;
 	
-		// decode the file
+		// get counts
 		
     halos_head_tag=xml_findrootchild("Halos");
-    if (halos_head_tag!=-1) {
+    if (halos_head_tag==-1) {
+		xml_close_file();
+		return;
+	}
+
+	nhalo=xml_countchildren(halos_head_tag);
+
+	if (nhalo==0) {
+		xml_close_file();
+		return;
+	}
+
+	server.halos=(halo_type*)valloc(sizeof(halo_type)*nhalo);
+	if (server.halos==NULL) {
+		xml_close_file();
+		return;
+	}
+
+		// read the halos
+
+	halo_tag=xml_findfirstchild("Halo",halos_head_tag);
 	
-		halo_tag=xml_findfirstchild("Halo",halos_head_tag);
-		
-		while (halo_tag!=-1) {
-		
-				// create a new halo
-				
-			halo=&server.halos[server.count.halo];
-			
-			xml_get_attribute_text(halo_tag,"name",halo->name,name_str_len);
-			
-			tag=xml_findfirstchild("Image",halo_tag);
-			if (tag!=-1) {
-				xml_get_attribute_text(tag,"file",halo->bitmap_name,file_str_len);
-			}
-			
-				// move on to next halo
-				
-			server.count.halo++;
+	while (halo_tag!=-1) {
 	
-			halo_tag=xml_findnextchild(halo_tag);
+			// create a new halo
+			
+		halo=&server.halos[server.count.halo];
+		
+		xml_get_attribute_text(halo_tag,"name",halo->name,name_str_len);
+		
+		tag=xml_findfirstchild("Image",halo_tag);
+		if (tag!=-1) {
+			xml_get_attribute_text(tag,"file",halo->bitmap_name,file_str_len);
 		}
+		
+			// move on to next halo
+			
+		server.count.halo++;
+
+		halo_tag=xml_findnextchild(halo_tag);
 	}
 	
 	xml_close_file();

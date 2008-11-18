@@ -35,6 +35,7 @@ and can be sold or given away.
 JSBool js_get_model_halo_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_set_model_halo_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
+extern server_type		server;
 extern js_type			js;
 
 JSClass			model_halo_class={"model_halo_class",0,
@@ -97,7 +98,12 @@ JSBool js_get_model_halo_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 			*vp=BOOLEAN_TO_JSVAL(halo->on);
 			break;
 		case model_halo_prop_name:
-			*vp=script_string_to_value(halo->name);
+			if (halo->idx==-1) {
+				*vp=JSVAL_NULL;
+			}
+			else {
+				*vp=script_string_to_value(server.halos[halo->idx].name);
+			}
 			break;
 		case model_halo_prop_min_distance:
 			*vp=INT_TO_JSVAL(halo->min_dist);
@@ -131,6 +137,7 @@ JSBool js_get_model_halo_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 
 JSBool js_set_model_halo_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
+	char				name[name_str_len];
 	model_draw			*draw;
 	model_draw_halo		*halo;
 
@@ -149,8 +156,8 @@ JSBool js_set_model_halo_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 			halo->on=JSVAL_TO_BOOLEAN(*vp);
 			break;
 		case model_halo_prop_name:
-			script_value_to_string(*vp,halo->name,name_str_len);
-			halo->idx=halo_find(halo->name);
+			script_value_to_string(*vp,name,name_str_len);
+			halo->idx=halo_find(name);
 			break;
 		case model_halo_prop_min_distance:
 			halo->min_dist=JSVAL_TO_INT(*vp);
