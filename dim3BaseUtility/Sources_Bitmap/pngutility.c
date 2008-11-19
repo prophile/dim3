@@ -45,7 +45,7 @@ unsigned char* png_utility_read(char *path,int *p_wid,int *p_high)
 	png_structp				png_ptr;
 	png_infop				info_ptr;
 	png_bytep				*rptrs;
-	
+
 		// open file
 		
 	file=fopen(path,"rb");
@@ -54,7 +54,7 @@ unsigned char* png_utility_read(char *path,int *p_wid,int *p_high)
 	fread(header,1,8,file);
 	if (png_sig_cmp(header,0,8)) return(NULL);
 	
-		// setup read
+		// get info
 		
 	png_ptr=png_create_read_struct(PNG_LIBPNG_VER_STRING,NULL,NULL,NULL);
 	if (png_ptr==NULL) {
@@ -85,10 +85,7 @@ unsigned char* png_utility_read(char *path,int *p_wid,int *p_high)
 	rowbytes=info_ptr->rowbytes;
 	
 	channels=png_get_channels(png_ptr,info_ptr);
-	
-	png_set_interlace_handling(png_ptr);
-	png_read_update_info(png_ptr,info_ptr);
-	
+
 		// create the bitmap
 		
 	psz=(wid<<2)*high;
@@ -105,12 +102,50 @@ unsigned char* png_utility_read(char *path,int *p_wid,int *p_high)
 		*p_high=high;
 	}
 
+		// special check for non-24/32 bit
+		// textures
+
+	if ((info_ptr->pixel_depth!=24) && (info_ptr->pixel_depth!=32)) {
+
+			// just make a white texture
+
+		ptr=data;
+
+		for (y=0;y!=high;y++) {
+			for (x=0;x!=wid;x++) {
+				*ptr++=0xFF;
+				*ptr++=0xFF;
+				*ptr++=0xFF;
+				*ptr++=0xFF;
+			}
+		}
+
+		png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
+		fclose(file);
+
+		return(data);
+	}
+
 		// read the file
+
+	png_set_interlace_handling(png_ptr);
+	png_read_update_info(png_ptr,info_ptr);
 		
 	rptrs=(png_bytep*)malloc(sizeof(png_bytep)*high);
+	if (rptrs==NULL) {
+		png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
+		fclose(file);
+		return(NULL);
+	}
 	
 	for (y=0;y!=high;y++) {
 		rptrs[y]=(png_byte*)malloc(rowbytes);
+		if (rptrs[y]==NULL) {
+			png_destroy_read_struct(&png_ptr,&info_ptr,NULL);		// note -- this error state will leak -- need to fix in the future
+			free(rptrs);
+			fclose(file);
+			return(NULL);
+		}
 	}
 	
 	png_read_image(png_ptr,rptrs);

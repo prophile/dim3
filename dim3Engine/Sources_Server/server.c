@@ -318,6 +318,10 @@ bool server_game_start(char *game_script_name,int skill,int remote_count,network
 		strcpy(err_str,"Game: No start map specified in game script");
 		return(FALSE);
 	}
+
+		// prepare for any script based spawns
+
+	object_script_spawn_start();
 	
 		// put in remotes
 		
@@ -333,7 +337,7 @@ bool server_game_start(char *game_script_name,int skill,int remote_count,network
 	
 		// start player object
 	
-	server.player_obj_uid=object_start(NULL,TRUE,bt_game,err_str);
+	server.player_obj_uid=object_start(NULL,TRUE,bt_game,-1,err_str);
 	if (server.player_obj_uid==-1) {
 		scripts_dispose(js.game_attach.script_uid);
 		return(FALSE);
@@ -343,6 +347,10 @@ bool server_game_start(char *game_script_name,int skill,int remote_count,network
 		// spawing of player needs to happen before map_start events
 		
 	object_spawn(object_find_uid(server.player_obj_uid));
+
+		// finish any script based spawns
+
+	object_script_spawn_finish();
 	
 	return(TRUE);
 }
@@ -358,6 +366,10 @@ void server_game_stop(void)
 		// dispose game script
 
 	scripts_dispose(js.game_attach.script_uid);
+
+		// finish with object list free
+
+	object_free_list();
 }
 
 /* =======================================================
@@ -368,6 +380,16 @@ void server_game_stop(void)
 
 void server_loop(int tick)
 {
+		// prepare for any script based spawns
+
+	object_script_spawn_start();
+
+		// run all server functions
+
 	scripts_run(tick);
 	server_run(tick);
+
+		// finish spawning any script based objects
+
+	object_script_spawn_finish();
 }

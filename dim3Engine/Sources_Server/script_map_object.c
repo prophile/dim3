@@ -795,7 +795,7 @@ JSBool js_map_object_spawn_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *
 
 		// spawn
 
-	uid=object_script_spawn(name,type,script,params,&pnt,&ang);
+	uid=object_script_spawn(name,type,script,params,&pnt,&ang,FALSE);
 	if (uid==-1) return(JS_FALSE);
 
 		// return UID

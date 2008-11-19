@@ -36,6 +36,7 @@ and can be sold or given away.
 #include "projectiles.h"
 #include "models.h"
 #include "interfaces.h"
+#include "consoles.h"
 
 extern int					current_map_spawn_idx;
 
@@ -45,7 +46,10 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern js_type				js;
 
-int							game_obj_rule_uid=-1;
+int							ndelayed_obj_spawn,
+							game_obj_rule_uid=-1;
+
+delayed_obj_spawn_type		*delayed_obj_spawns;
 
 /* =======================================================
 
@@ -58,6 +62,20 @@ void object_initialize_list(void)
 	server.objs=NULL;
 	server.count.obj=0;
 	server.uid.obj=0;
+
+		// script based object spawns need to
+		// be delayed so they don't effect the
+		// object list in loop
+
+	ndelayed_obj_spawn=0;
+	delayed_obj_spawns=(delayed_obj_spawn_type*)valloc(sizeof(delayed_obj_spawn_type)*max_delayed_obj_spawn);
+}
+
+void object_free_list(void)
+{
+	if (delayed_obj_spawns!=NULL) free(delayed_obj_spawns);
+
+	delayed_obj_spawns=NULL;
 }
 
 /* =======================================================
@@ -352,7 +370,17 @@ void object_stop(obj_type *obj)
       
 ======================================================= */
 
-obj_type* object_create(int bind)
+int object_reserve_uid(void)
+{
+	int				uid;
+
+	uid=server.uid.obj;
+	server.uid.obj++;
+
+	return(uid);
+}
+
+obj_type* object_create(int bind,int reserve_uid)
 {
 	obj_type		*obj,*ptr;
 
@@ -375,12 +403,18 @@ obj_type* object_create(int bind)
 	obj=&server.objs[server.count.obj];
 	server.count.obj++;
 
-		// initialize object
-	
-	obj->uid=server.uid.obj;
-	server.uid.obj++;
-	
+		// uid and bind
+
 	obj->bind=bind;
+
+	if (reserve_uid==-1) {
+		obj->uid=object_reserve_uid();
+	}
+	else {
+		obj->uid=reserve_uid;
+	}
+
+		// initialize object
 	
 	obj->spawn_idx=current_map_spawn_idx;
 	current_map_spawn_idx++;
@@ -633,7 +667,7 @@ void object_attach_click_crosshair_down(obj_type *obj)
       
 ======================================================= */
 
-int object_start(spot_type *spot,bool player,int bind,char *err_str)
+int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_str)
 {
 	int					n;
 	bool				ok;
@@ -643,7 +677,7 @@ int object_start(spot_type *spot,bool player,int bind,char *err_str)
 
 		// create object
 		
-	obj=object_create(bind);
+	obj=object_create(bind,reserve_uid);
 	if (obj==NULL) {
 		strcpy(err_str,"Out of memory");
 		return(-1);
@@ -696,7 +730,7 @@ int object_start(spot_type *spot,bool player,int bind,char *err_str)
 	}
 		
 		// start script
-		
+
 	if (player) {
 		ok=object_start_script(obj,"Player",NULL,err_str);
 	}
@@ -880,48 +914,137 @@ void spot_start_attach(void)
 		if ((spot->spawn==spawn_single_player_only) && (multiplayer)) continue;
 		if ((spot->spawn==spawn_multiplayer_only) && (!multiplayer)) continue;
 		 
-		object_start(spot,FALSE,bt_map,err_str);
+		object_start(spot,FALSE,bt_map,-1,err_str);
 	}
 }
 
 /* =======================================================
 
       Script Object Spawn/Remove
+
+	  Spawning can make changes in the obj list, throwing
+	  off any obj pointers and causing a crash.  Because of
+	  this, we need to make sure all script spawns are
+	  cached and then done after everything else
       
 ======================================================= */
 
-int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *pnt,d3ang *ang)
+void object_script_spawn_start(void)
 {
-	int					uid;
-	char				err_str[256];
-	spot_type			spot;
+	ndelayed_obj_spawn=0;
+}
 
-		// create fake spot
+void object_script_spawn_finish(void)
+{
+	int						n,idx,uid;
+	char					err_str[256],obj_err_str[256];
+	spot_type				spot;
+	obj_type				*obj;
+	delayed_obj_spawn_type	*spawn;
 
-	bzero(&spot,sizeof(spot_type));
+		// do all the adds
 
-	strcpy(spot.attach_name,name);
-	strcpy(spot.attach_type,type);
-	strcpy(spot.attach_script,script);
-	strcpy(spot.attach_params,params);
+	spawn=delayed_obj_spawns;
 
-	memmove(&spot.pnt,pnt,sizeof(d3pnt));
-	memmove(&spot.ang,ang,sizeof(d3ang));
+	for (n=0;n!=ndelayed_obj_spawn;n++) {
 
-		// start object
+		if (!spawn->dispose) {
 
-	uid=object_start(&spot,FALSE,bt_map,err_str);
-	if (uid==-1) {
-		JS_ReportError(js.cx,"Object Spawn Failed: %s",err_str);
-		return(FALSE);
+				// create fake spot
+
+			bzero(&spot,sizeof(spot_type));
+
+			strcpy(spot.attach_name,spawn->name);
+			strcpy(spot.attach_type,spawn->type);
+			strcpy(spot.attach_script,spawn->script);
+			strcpy(spot.attach_params,spawn->params);
+
+			memmove(&spot.pnt,&spawn->pnt,sizeof(d3pnt));
+			memmove(&spot.ang,&spawn->ang,sizeof(d3ang));
+
+				// start object
+
+			uid=object_start(&spot,FALSE,bt_map,spawn->uid,obj_err_str);
+			if (uid==-1) {
+				sprintf(err_str,"Object Spawn Failed: %s",obj_err_str);
+				console_add_error(err_str);
+			}
+
+				// hide object
+
+			if (spawn->hide) {
+				obj=object_find_uid(uid);
+
+				obj->hidden=TRUE;
+				obj->contact.object_on=FALSE;
+				obj->contact.projectile_on=FALSE;
+				obj->contact.force_on=FALSE;
+			}
+
+		}
+		
+		spawn++;
 	}
 
-	return(uid);
+		// do all the removes
+
+	spawn=delayed_obj_spawns;
+
+	for (n=0;n!=ndelayed_obj_spawn;n++) {
+
+		if (spawn->dispose) {
+
+			idx=object_find_index_uid(spawn->uid);
+			if (idx==-1) {
+				sprintf(err_str,"No object exists with ID: %d",spawn->uid);
+				console_add_error(err_str);
+			}
+			else {
+				object_dispose_single(idx);
+			}
+
+		}
+		
+		spawn++;
+	}
+
+}
+
+int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide)
+{
+	delayed_obj_spawn_type	*spawn;
+
+		// room on list?
+
+	if ((ndelayed_obj_spawn>=max_delayed_obj_spawn) || (delayed_obj_spawns==NULL)) {
+		JS_ReportError(js.cx,"Not enough memory to spawn object");
+		return(-1);
+	}
+
+		// add to list
+
+	spawn=&delayed_obj_spawns[ndelayed_obj_spawn];
+	ndelayed_obj_spawn++;
+
+	spawn->uid=object_reserve_uid();
+	spawn->dispose=FALSE;
+
+	strcpy(spawn->name,name);
+	strcpy(spawn->type,type);
+	strcpy(spawn->script,script);
+	strcpy(spawn->params,params);
+	memmove(&spawn->pnt,pnt,sizeof(d3pnt));
+	memmove(&spawn->ang,ang,sizeof(d3ang));
+	spawn->hide=hide;
+
+		// return uid
+
+	return(spawn->uid);
 }
 
 bool object_script_remove(int uid)
 {
-	int				idx;
+	delayed_obj_spawn_type	*spawn;
 
 		// can not dispose player object
 
@@ -930,15 +1053,13 @@ bool object_script_remove(int uid)
 		return(FALSE);
 	}
 
-		// dispose
+		// add to list
 
-	idx=object_find_index_uid(uid);
-	if (idx==-1) {
-		JS_ReportError(js.cx,"No object exists with ID: %d",uid);
-		return(FALSE);
-	}
-		
-	object_dispose_single(idx);
+	spawn=&delayed_obj_spawns[ndelayed_obj_spawn];
+	ndelayed_obj_spawn++;
+
+	spawn->uid=uid;
+	spawn->dispose=TRUE;
 
 	return(TRUE);
 }

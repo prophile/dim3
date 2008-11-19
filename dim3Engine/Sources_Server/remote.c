@@ -69,7 +69,7 @@ extern void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx);
 
 bool remote_add(network_request_remote_add *add,bool send_event)
 {
-	int					n;
+	int					n,uid;
 	char				err_str[256];
 	obj_type			*obj,*player_obj;
 	weapon_type			*weap;
@@ -77,7 +77,7 @@ bool remote_add(network_request_remote_add *add,bool send_event)
     
 		// create new object
 		
-	obj=object_create(bt_remote);
+	obj=object_create(bt_remote,-1);
     if (obj==NULL) return(FALSE);
 	
 		// setup remote
@@ -100,8 +100,13 @@ bool remote_add(network_request_remote_add *add,bool send_event)
 	obj->bind=bt_remote;
 	
 		// start remote scripts
-		
+		// remember uid as object list might change
+
+	uid=obj->uid;
+
 	object_start_script(obj,"Player",NULL,err_str);
+
+	obj=object_find_uid(uid);
 
 		// load models
 		

@@ -54,7 +54,7 @@ void scenery_create(void)
 
 			// create new object
 
-		obj=object_create(bt_map);
+		obj=object_create(bt_map,-1);
 		if (obj==NULL) break;
 
 			// no scripts, events, etc

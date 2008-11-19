@@ -45,9 +45,6 @@ extern setup_type		setup;
 
 void model_initialize(void)
 {
-	fprintf(stdout,"INITIALIZE\n");
-	fflush(stdout);
-
 	server.models=NULL;
 	server.count.model=0;
 	server.uid.model=0;
@@ -205,7 +202,7 @@ void model_load_and_init(model_draw *draw)
 	int					n;
 	char				err_str[256];
 	model_type			*mdl;
-	
+
 	draw->uid=-1;
 	draw->center.x=draw->center.y=draw->center.z=0;
 	draw->size.x=draw->size.y=draw->size.z=0;

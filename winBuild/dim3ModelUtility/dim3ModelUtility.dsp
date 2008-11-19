@@ -271,14 +271,6 @@ SOURCE=..\..\dim3ModelUtility\Sources\positions.c
 
 SOURCE=..\..\dim3ModelUtility\Sources\size.c
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3ModelUtility\Sources\vertex_masks.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3ModelUtility\Sources\vertex_transform.c
-# End Source File
 # End Group
 # End Group
 # End Target

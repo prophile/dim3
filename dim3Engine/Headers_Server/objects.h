@@ -26,13 +26,16 @@ and can be sold or given away.
 *********************************************************************/
 
 extern void object_initialize_list(void);
+extern void object_free_list(void);
 
-extern obj_type* object_create(int bind);
-extern int object_start(spot_type *spot,bool player,int bind,char *err_str);
+extern obj_type* object_create(int bind,int reserve_uid);
+extern int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_str);
 extern void object_dispose_single(int idx);
 extern void object_dispose_2(int bind);
 
-extern int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *pnt,d3ang *ang);
+extern void object_script_spawn_start(void);
+extern void object_script_spawn_finish(void);
+extern int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide);
 extern bool object_script_remove(int uid);
 
 extern void object_set_radius(obj_type *obj);

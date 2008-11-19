@@ -193,7 +193,7 @@ bool map_start(bool skip_media,char *err_str)
 
 	game_time_pause_start();
 	gui_screenshot_initialize();
-	
+
 		// start progress
 		
 	progress_initialize("Opening");
@@ -299,6 +299,10 @@ bool map_start(bool skip_media,char *err_str)
 		return(FALSE);
 	}
 	
+		// prepare for any script based spawns
+
+	object_script_spawn_start();
+
 		// create the attached objects
 		// and scenery
 		
@@ -332,6 +336,10 @@ bool map_start(bool skip_media,char *err_str)
 	scripts_post_event_console(&js.game_attach,sd_event_map,sd_event_map_open,0);
 	scripts_post_event_console(&js.course_attach,sd_event_map,sd_event_map_open,0);
 	scripts_post_event_console(&obj->attach,sd_event_map,sd_event_map_open,0);
+
+		// finish any script based spawns
+
+	object_script_spawn_finish();
 
 		// initialize movements and lookups
 	

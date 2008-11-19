@@ -45,57 +45,7 @@ extern js_type				js;
 
 int object_held_add(obj_type *obj,char *name,char *type,char *script,char *params,char *err_str)
 {
-	int				uid;
-	obj_type		*held_obj;
-	attach_type		old_attach;
-
-		// we need to grab the uid of the object
-		// that is getting the held item as the pointer
-		// we be invalid after an object create
-
-	uid=obj->uid;
-	
-		// create the held object
-		
-	held_obj=object_create(bt_map);
-	if (held_obj==NULL) {
-		sprintf(err_str,"Could not create object %s",name);
-		return(-1);
-	}
-
-		// fix the pointer to the original
-		// object
-
-	obj=object_find_uid(uid);
-
-		// setup held object
-
-	strcpy(held_obj->name,name);
-	strcpy(held_obj->type,type);
-		
-	object_set_position(held_obj,obj->pnt.x,obj->pnt.y,obj->pnt.z,obj->ang.y,0);
-	
-		// save current attach
-		
-	memmove(&old_attach,&js.attach,sizeof(attach_type));
-		
-		// start script
-		
-	if (!object_start_script(held_obj,script,params,err_str)) return(-1);
-	model_load_and_init(&held_obj->draw);
-	
-		// restore old attach
-		
-	memmove(&js.attach,&old_attach,sizeof(attach_type));
-
-		// hide object
-
-	held_obj->hidden=TRUE;
-	held_obj->contact.object_on=FALSE;
-	held_obj->contact.projectile_on=FALSE;
-	held_obj->contact.force_on=FALSE;
-
-	return(held_obj->uid);
+	return(object_script_spawn(name,type,script,params,&obj->pnt,&obj->ang,TRUE));
 }
 
 /* =======================================================

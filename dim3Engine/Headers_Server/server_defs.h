@@ -57,6 +57,8 @@ and can be sold or given away.
 #define max_weapon								512
 #define max_proj_setup							512
 
+#define max_delayed_obj_spawn					64
+
 #define max_particle							256
 #define max_particle_count						256
 #define max_particle_trail						16
@@ -285,6 +287,19 @@ typedef struct		{
 typedef struct		{
 						int						mesh_idx,poly_idx;
 					} poly_pointer_type;
+
+//
+// delayed spawn structure
+//
+
+typedef struct		{
+						int						uid;
+						bool					dispose,hide;
+						char					name[name_str_len],type[name_str_len],
+												script[file_str_len],params[param_str_len];
+						d3pnt					pnt;
+						d3ang					ang;
+					} delayed_obj_spawn_type;
 
 //
 // object sounds
