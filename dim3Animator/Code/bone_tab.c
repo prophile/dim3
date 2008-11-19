@@ -167,7 +167,7 @@ static pascal void bone_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemI
 		case kDataBrowserItemSelected:
 			cur_bone=itemID-1;
 			if (cur_bone!=-1) {
-				model_set_sel_mask_bone(&model,cur_mesh,cur_bone);
+				vertex_set_sel_mask_bone(cur_mesh,cur_bone);
 				hilite_vertex_rows();
 				model_view_reset=TRUE;
 			}

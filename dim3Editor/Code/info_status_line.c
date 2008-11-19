@@ -154,31 +154,31 @@ void info_status_line_draw(void)
 				break;
 		
 			case liquid_piece:
-				sprintf(txt,"Liquid: %d",main_idx);
+				sprintf(txt,"Liquid: %d/%d",main_idx,map.liquid.nliquid);
 				break;
 		
 			case node_piece:
-				sprintf(txt,"Node: %s (%d,%d,%d)",map.nodes[main_idx].name,map.nodes[main_idx].pnt.x,map.nodes[main_idx].pnt.y,map.nodes[main_idx].pnt.z);
+				sprintf(txt,"Node: %d/%d %s (%d,%d,%d)",main_idx,map.nnode,map.nodes[main_idx].name,map.nodes[main_idx].pnt.x,map.nodes[main_idx].pnt.y,map.nodes[main_idx].pnt.z);
 				break;
 				
 			case spot_piece:
-				sprintf(txt,"Spot: %s (%d,%d,%d)",map.spots[main_idx].name,map.spots[main_idx].pnt.x,map.spots[main_idx].pnt.y,map.spots[main_idx].pnt.z);
+				sprintf(txt,"Spot: %d/%d %s (%d,%d,%d)",main_idx,map.nspot,map.spots[main_idx].name,map.spots[main_idx].pnt.x,map.spots[main_idx].pnt.y,map.spots[main_idx].pnt.z);
 				break;
 				
 			case scenery_piece:
-				sprintf(txt,"Scenery: %s (%d,%d,%d)",map.sceneries[main_idx].model_name,map.sceneries[main_idx].pnt.x,map.sceneries[main_idx].pnt.y,map.sceneries[main_idx].pnt.z);
+				sprintf(txt,"Scenery: %d/%d %s (%d,%d,%d)",main_idx,map.nscenery,map.sceneries[main_idx].model_name,map.sceneries[main_idx].pnt.x,map.sceneries[main_idx].pnt.y,map.sceneries[main_idx].pnt.z);
 				break;
 				
 			case light_piece:
-				sprintf(txt,"Light: (%d,%d,%d)",map.lights[main_idx].pnt.x,map.lights[main_idx].pnt.y,map.lights[main_idx].pnt.z);
+				sprintf(txt,"Light: %d/%d (%d,%d,%d)",main_idx,map.nlight,map.lights[main_idx].pnt.x,map.lights[main_idx].pnt.y,map.lights[main_idx].pnt.z);
 				break;
 				
 			case sound_piece:
-				sprintf(txt,"Sound: %s (%d,%d,%d)",map.sounds[main_idx].name,map.sounds[main_idx].pnt.x,map.sounds[main_idx].pnt.y,map.sounds[main_idx].pnt.z);
+				sprintf(txt,"Sound: %d/%d %s (%d,%d,%d)",main_idx,map.nsound,map.sounds[main_idx].name,map.sounds[main_idx].pnt.x,map.sounds[main_idx].pnt.y,map.sounds[main_idx].pnt.z);
 				break;
 				
 			case particle_piece:
-				sprintf(txt,"Particle: %s (%d,%d,%d)",map.particles[main_idx].name,map.particles[main_idx].pnt.x,map.particles[main_idx].pnt.y,map.particles[main_idx].pnt.z);
+				sprintf(txt,"Particle: %d/%d %s (%d,%d,%d)",main_idx,map.nparticle,map.particles[main_idx].name,map.particles[main_idx].pnt.x,map.particles[main_idx].pnt.y,map.particles[main_idx].pnt.z);
 				break;
 		}
 	}

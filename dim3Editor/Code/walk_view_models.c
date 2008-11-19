@@ -224,7 +224,7 @@ void walk_view_model_draw_material(model_type *model,model_draw_setup *draw_setu
 	glEnd();
 }
 
-bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name,int *texture_frames,int frame_count)
+bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,int frame_count)
 {
 	int								idx,x,y,z,n,frame;
 	model_type						*model;
@@ -286,7 +286,7 @@ bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name,int *textu
     
     for (n=0;n!=max_model_texture;n++) {
 		frame=0;
-		if (n<frame_count) frame=texture_frames[n];
+		if (n<frame_count) frame=(int)texture_frame[n];
 		if (texture->bitmaps[0].alpha_mode!=alpha_mode_transparent) walk_view_model_draw_material(model,&draw_setup,texture,material,frame);
 		texture++;
 		material++;
@@ -302,7 +302,7 @@ bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name,int *textu
     
     for (n=0;n!=max_model_texture;n++) {
 		frame=0;
-		if (n<frame_count) frame=texture_frames[n];
+		if (n<frame_count) frame=(int)texture_frame[n];
 		if (texture->bitmaps[0].alpha_mode==alpha_mode_transparent) walk_view_model_draw_material(model,&draw_setup,texture,material,frame);
 		texture++;
 		material++;

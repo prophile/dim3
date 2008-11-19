@@ -192,8 +192,8 @@ void reset_model_open(void)
 	shift_x=shift_y=0;
 	magnify_z=0;
 	
-	model_clear_sel_mask(&model,cur_mesh);
-	model_clear_hide_mask(&model,cur_mesh);
+	vertex_clear_sel_mask(cur_mesh);
+	vertex_clear_hide_mask(cur_mesh);
 	
 	cur_mesh=0;
 	
@@ -342,7 +342,7 @@ void import_mesh_obj(void)
 		return;
 	}
 
-	model_delete_unused_vertexes(&model,cur_mesh);
+	vertex_delete_unused_vertexes(cur_mesh);
 	
 	dialog_import_finish_run(&model,&scale);
 	model_scale(&model,cur_mesh,scale,scale,scale);
@@ -378,7 +378,7 @@ void import_mesh_lightwave(void)
 		return;
 	}
 	
-	model_delete_unused_vertexes(&model,cur_mesh);
+	vertex_delete_unused_vertexes(cur_mesh);
 	
 	dialog_import_finish_run(&model,&scale);
 	model_scale(&model,cur_mesh,scale,scale,scale);
@@ -414,7 +414,7 @@ void import_mesh_c4d_xml(void)
 		return;
 	}
 	
-	model_delete_unused_vertexes(&model,cur_mesh);
+	vertex_delete_unused_vertexes(cur_mesh);
 	
 	dialog_import_finish_run(&model,&scale);
 	model_scale_all(&model,scale,scale,scale);
@@ -895,60 +895,60 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			// --------------------------------
 			
 		case kCommandVertexSelectAll:
-			model_set_sel_mask_all(&model,cur_mesh);
+			vertex_set_sel_mask_all(cur_mesh);
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			hilite_vertex_rows();
 			return(noErr);
 			
 		case kCommandVertexSelectNotAttached:
-			model_set_sel_mask_no_bone(&model,cur_mesh);
+			vertex_set_sel_mask_no_bone(cur_mesh);
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			hilite_vertex_rows();
 			return(noErr);
 			
 		case kCommandVertexNudge:
 			if (!dialog_nudge_rotate_run(&x,&z,&y,"NudgePick",0)) return(noErr);
-			model_move_sel_vertexes(&model,cur_mesh,x,y,z);
+			vertex_move_sel_vertexes(cur_mesh,x,y,z);
 			model_calculate_parents(&model);
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
 			
 		case kCommandVertexScale:
 			if (!dialog_scale_run(&model,&fx,&fz,&fy)) return(noErr);
-			model_scale_sel_vertexes(&model,cur_mesh,fx,fy,fz);
+			vertex_scale_sel_vertexes(cur_mesh,fx,fy,fz);
 			model_calculate_parents(&model);
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
 			
 		case kCommandVertexRotate:
 			if (!dialog_nudge_rotate_run(&x,&z,&y,"RotatePick",0)) return(noErr);
-			model_rotate_sel_vertexes(&model,cur_mesh,(float)x,(float)y,(float)z);
+			vertex_rotate_sel_vertexes(cur_mesh,(float)x,(float)y,(float)z);
 			model_calculate_parents(&model);
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
 			
 		case kCommandVertexInvertNormals:
-			model_invert_normal_sel_vertexes(&model,cur_mesh);
+			vertex_invert_normal_sel_vertexes(cur_mesh);
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
 			
 		case kCommandVertexHideSelected:
-			model_hide_mask_set_sel_vertexes(&model,cur_mesh);
+			vertex_hide_mask_set_sel_vertexes(cur_mesh);
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
 			
 		case kCommandVertexHideNonSelected:
-			model_hide_mask_set_non_sel_vertexes(&model,cur_mesh);
+			vertex_hide_mask_set_non_sel_vertexes(cur_mesh);
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
 			
 		case kCommandVertexShowAll:
-			model_hide_mask_show_all_vertexes(&model,cur_mesh);
+			vertex_hide_mask_show_all_vertexes(cur_mesh);
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
 			
 		case kCommandVertexDelete:
-			model_delete_sel_vertex(&model,cur_mesh);
+			vertex_delete_sel_vertex(cur_mesh);
 			model_calculate_parents(&model);
 			texture_palette_draw();
 			info_palette_draw();
@@ -965,13 +965,14 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			
 		case kCommandNewBone:
             switch_tab_bone();
-			idx=model_bone_add(&model,cur_mesh);
+			vertex_find_center_sel_vertexes(cur_mesh,&x,&y,&z);
+			idx=model_bone_add(&model,x,y,z);
 			if (idx!=-1) {
 				if (!dialog_bone_settings_run(&model.bones[idx])) {
 					model_bone_delete(&model,idx);
 					return(noErr);
 				}
-				model_set_sel_vertex_to_bone(&model,cur_mesh,idx,-1,1.0f);
+				vertex_set_sel_vertex_to_bone(cur_mesh,idx,-1,1.0f);
 				cur_bone=idx;
 			}
 			reset_bone_tab(cur_bone);
@@ -980,7 +981,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			
 		case kCommandSetBone:
 			if (!dialog_set_vertex_bone_run(&major_bone_idx,&minor_bone_idx,&bone_factor)) return(noErr);
-			model_set_sel_vertex_to_bone(&model,cur_mesh,major_bone_idx,minor_bone_idx,bone_factor);
+			vertex_set_sel_vertex_to_bone(cur_mesh,major_bone_idx,minor_bone_idx,bone_factor);
 			reset_vertex_tab();
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
@@ -1006,7 +1007,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			
 		case kCommandSelectVertexNearBone:
 			if (cur_bone!=-1) return(noErr);
-			model_set_sel_mask_near_bone(&model,cur_mesh,cur_bone,0.10);
+			vertex_set_sel_mask_near_bone(cur_mesh,cur_bone,0.10);
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
 			

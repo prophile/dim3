@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		261F12440ED3CB3000A8A0D8 /* vertex_masks.c in Sources */ = {isa = PBXBuildFile; fileRef = 261F12430ED3CB2F00A8A0D8 /* vertex_masks.c */; };
+		261F128A0ED3D04A00A8A0D8 /* vertex_transform.c in Sources */ = {isa = PBXBuildFile; fileRef = 261F12890ED3D04A00A8A0D8 /* vertex_transform.c */; };
 		26AA925C0DF2457E004A03AE /* dialog_particle_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AA925B0DF2457E004A03AE /* dialog_particle_settings.c */; };
 		26AA925E0DF24582004A03AE /* dialog_ring_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AA925D0DF24582004A03AE /* dialog_ring_settings.c */; };
 		F503D2570981A35B00DEDC74 /* draw_model.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D2560981A35B00DEDC74 /* draw_model.c */; };
@@ -124,6 +126,8 @@
 		011160A300BE30DC7F000001 /* dim3 Animator.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "dim3 Animator.icns"; path = "Resources/dim3 Animator.icns"; sourceTree = "<group>"; };
 		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		261F12430ED3CB2F00A8A0D8 /* vertex_masks.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vertex_masks.c; path = Code/vertex_masks.c; sourceTree = "<group>"; };
+		261F12890ED3D04A00A8A0D8 /* vertex_transform.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vertex_transform.c; path = Code/vertex_transform.c; sourceTree = "<group>"; };
 		26AA925B0DF2457E004A03AE /* dialog_particle_settings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_particle_settings.c; path = Code/dialog_particle_settings.c; sourceTree = "<group>"; };
 		26AA925D0DF24582004A03AE /* dialog_ring_settings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_ring_settings.c; path = Code/dialog_ring_settings.c; sourceTree = "<group>"; };
 		F502976802E0BC0201701C02 /* bone_tab.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = bone_tab.c; path = Code/bone_tab.c; sourceTree = "<group>"; };
@@ -322,6 +326,7 @@
 			isa = PBXGroup;
 			children = (
 				0123D84900C09EE17F000001 /* Draw */,
+				261F12870ED3D01600A8A0D8 /* Vertexes */,
 				0123D84A00C09EE17F000001 /* Windows */,
 				F5C01E7F01EABA9401A091D9 /* Setting Tabs */,
 				0123D84B00C09EE17F000001 /* Import */,
@@ -352,6 +357,15 @@
 				F5934BB6099E79150063E081 /* PNG.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		261F12870ED3D01600A8A0D8 /* Vertexes */ = {
+			isa = PBXGroup;
+			children = (
+				261F12430ED3CB2F00A8A0D8 /* vertex_masks.c */,
+				261F12890ED3D04A00A8A0D8 /* vertex_transform.c */,
+			);
+			name = Vertexes;
 			sourceTree = "<group>";
 		};
 		F5C01E7F01EABA9401A091D9 /* Setting Tabs */ = {
@@ -544,6 +558,8 @@
 				F5D1A7A40CF933E6001B5E1B /* dialog_play_blend_animation.c in Sources */,
 				26AA925C0DF2457E004A03AE /* dialog_particle_settings.c in Sources */,
 				26AA925E0DF24582004A03AE /* dialog_ring_settings.c in Sources */,
+				261F12440ED3CB3000A8A0D8 /* vertex_masks.c in Sources */,
+				261F128A0ED3D04A00A8A0D8 /* vertex_transform.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

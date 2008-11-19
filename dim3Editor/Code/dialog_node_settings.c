@@ -46,6 +46,7 @@ extern map_type				map;
 #define kNodeFlagNormalCover			FOUR_CHAR_CODE('fncv')
 #define kNodeFlagDuckCover				FOUR_CHAR_CODE('fdcv')
 #define kNodeFlagSniper					FOUR_CHAR_CODE('fsnp')
+#define kNodeFlagClimb					FOUR_CHAR_CODE('fclb')
 
 bool						dialog_node_settings_cancel;
 WindowRef					dialog_node_settings_wind;
@@ -108,16 +109,17 @@ bool dialog_node_settings_run(node_type *node)
 	dialog_set_float(dialog_node_settings_wind,kNodeAngleY,0,node->ang.y);
 	dialog_set_float(dialog_node_settings_wind,kNodeAngleZ,0,node->ang.z);
 	
-	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagGoal,0,node->flag.goal);
-	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagRed,0,node->flag.red_flag);
-	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagBlue,0,node->flag.blue_flag);
-	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagWeapon,0,node->flag.weapon);
-	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagAmmo,0,node->flag.ammo);
-	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagArmor,0,node->flag.armor);
-	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagHealth,0,node->flag.health);
-	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagNormalCover,0,node->flag.normal_cover);
-	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagDuckCover,0,node->flag.duck_cover);
-	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagSniper,0,node->flag.sniper);
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagGoal,0,((node->flags&node_flag_goal)!=0));
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagRed,0,((node->flags&node_flag_red_flag)!=0));
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagBlue,0,((node->flags&node_flag_blue_flag)!=0));
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagWeapon,0,((node->flags&node_flag_weapon)!=0));
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagAmmo,0,((node->flags&node_flag_ammo)!=0));
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagArmor,0,((node->flags&node_flag_armor)!=0));
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagHealth,0,((node->flags&node_flag_health)!=0));
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagNormalCover,0,((node->flags&node_flag_normal_cover)!=0));
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagDuckCover,0,((node->flags&node_flag_duck_cover)!=0));
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagSniper,0,((node->flags&node_flag_sniper)!=0));
+	dialog_set_boolean(dialog_node_settings_wind,kNodeFlagClimb,0,((node->flags&node_flag_climb)!=0));
 	
 		// show window
 	
@@ -142,16 +144,18 @@ bool dialog_node_settings_run(node_type *node)
 		node->ang.y=dialog_get_float(dialog_node_settings_wind,kNodeAngleY,0);
 		node->ang.z=dialog_get_float(dialog_node_settings_wind,kNodeAngleZ,0);
 		
-		node->flag.goal=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagGoal,0);
-		node->flag.red_flag=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagRed,0);
-		node->flag.blue_flag=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagBlue,0);
-		node->flag.weapon=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagWeapon,0);
-		node->flag.ammo=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagAmmo,0);
-		node->flag.armor=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagArmor,0);
-		node->flag.health=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagHealth,0);
-		node->flag.normal_cover=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagNormalCover,0);
-		node->flag.duck_cover=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagDuckCover,0);
-		node->flag.sniper=dialog_get_boolean(dialog_node_settings_wind,kNodeFlagSniper,0);
+		node->flags=0;
+		if (dialog_get_boolean(dialog_node_settings_wind,kNodeFlagGoal,0)) node->flags|=node_flag_goal;
+		if (dialog_get_boolean(dialog_node_settings_wind,kNodeFlagRed,0)) node->flags|=node_flag_red_flag;
+		if (dialog_get_boolean(dialog_node_settings_wind,kNodeFlagBlue,0)) node->flags|=node_flag_blue_flag;
+		if (dialog_get_boolean(dialog_node_settings_wind,kNodeFlagWeapon,0)) node->flags|=node_flag_weapon;
+		if (dialog_get_boolean(dialog_node_settings_wind,kNodeFlagAmmo,0)) node->flags|=node_flag_ammo;
+		if (dialog_get_boolean(dialog_node_settings_wind,kNodeFlagArmor,0)) node->flags|=node_flag_armor;
+		if (dialog_get_boolean(dialog_node_settings_wind,kNodeFlagHealth,0)) node->flags|=node_flag_health;
+		if (dialog_get_boolean(dialog_node_settings_wind,kNodeFlagNormalCover,0)) node->flags|=node_flag_normal_cover;
+		if (dialog_get_boolean(dialog_node_settings_wind,kNodeFlagDuckCover,0)) node->flags|=node_flag_duck_cover;
+		if (dialog_get_boolean(dialog_node_settings_wind,kNodeFlagSniper,0)) node->flags|=node_flag_sniper;
+		if (dialog_get_boolean(dialog_node_settings_wind,kNodeFlagClimb,0)) node->flags|=node_flag_climb;
 	}
 
 		// close window

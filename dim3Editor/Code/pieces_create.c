@@ -160,7 +160,7 @@ void piece_create_scenery(void)
 	scenery->size.x=scenery->size.y=scenery->size.z=0;
 	
 	for (n=0;n!=max_map_scenery_model_texture_frame;n++) {
-		scenery->texture_frames[n]=0;
+		scenery->texture_frame[n]=0;
 	}
     
 		// select spot

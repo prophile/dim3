@@ -123,7 +123,7 @@ bool dialog_scenery_setting_run(map_scenery_type *scenery)
 	dialog_set_int(dialog_scenery_setting_wind,kScenerySizeZ,0,scenery->size.z);
 	
 	for (n=0;n!=max_map_scenery_model_texture_frame;n++) {
-		dialog_set_int(dialog_scenery_setting_wind,kSceneryFrame,n,scenery->texture_frames[n]);
+		dialog_set_int(dialog_scenery_setting_wind,kSceneryFrame,n,(int)scenery->texture_frame[n]);
 	}
 	
 		// show window
@@ -161,7 +161,7 @@ bool dialog_scenery_setting_run(map_scenery_type *scenery)
 		scenery->size.z=dialog_get_int(dialog_scenery_setting_wind,kScenerySizeZ,0);
 		
 		for (n=0;n!=max_map_scenery_model_texture_frame;n++) {
-			scenery->texture_frames[n]=dialog_get_int(dialog_scenery_setting_wind,kSceneryFrame,n);
+			scenery->texture_frame[n]=(short)dialog_get_int(dialog_scenery_setting_wind,kSceneryFrame,n);
 		}
 	
 		main_wind_draw();

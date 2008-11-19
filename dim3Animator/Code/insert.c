@@ -60,7 +60,7 @@ void insert_model(char *file_name)
 	ins_bone=ins_model.bones;
 	
 	for (i=0;i!=ins_model.nbone;i++) {
-		idx=model_bone_add(&model,cur_mesh);
+		idx=model_bone_add(&model,0,0,0);
 		if (idx==-1) break;
 		
 		bone=&model.bones[idx];

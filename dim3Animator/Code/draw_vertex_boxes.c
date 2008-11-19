@@ -47,7 +47,7 @@ void draw_model_selected_vertexes(model_type *model,int mesh_idx)
 	glBegin(GL_POINTS);
 	
 	for (n=0;n!=nvertex;n++) {
-		if ((model_check_sel_mask(model,mesh_idx,n)) && (!model_check_hide_mask(model,mesh_idx,n))) glVertex3f(*pv,*(pv+1),*(pv+2));
+		if ((vertex_check_sel_mask(mesh_idx,n)) && (!vertex_check_hide_mask(mesh_idx,n))) glVertex3f(*pv,*(pv+1),*(pv+2));
 		pv+=3;
 	}
 	
@@ -179,7 +179,7 @@ void draw_model_normals(model_type *model,int mesh_idx)
 	glBegin(GL_LINES);
 	
 	for (n=0;n!=nvertex;n++) {
-		if (model_check_hide_mask(model,mesh_idx,n)) {
+		if (vertex_check_hide_mask(mesh_idx,n)) {
 			pv+=3;
 			pn+=3;
 			continue;

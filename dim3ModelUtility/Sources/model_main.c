@@ -90,8 +90,6 @@ bool model_new(model_type *model,char *name)
 	model->meshes[0].vertexes=valloc(max_model_vertex*sizeof(model_vertex_type));
 	model->meshes[0].trigs=valloc(max_model_trig*sizeof(model_trig_type));
 	model->meshes[0].materials=valloc(max_model_texture*sizeof(model_material_type));
-	model->meshes[0].vertex_sel_mask=valloc(vertex_sel_hide_mask_sz);
-	model->meshes[0].vertex_hide_mask=valloc(vertex_sel_hide_mask_sz);
 
 	model->meshes[0].draw.gl_vertex_array=valloc((max_model_vertex*3)*sizeof(float));
 	model->meshes[0].draw.gl_color_array=valloc((max_model_vertex*3)*sizeof(float));
@@ -109,8 +107,6 @@ bool model_new(model_type *model,char *name)
 	if (model->meshes[0].vertexes==NULL) return(FALSE);
 	if (model->meshes[0].trigs==NULL) return(FALSE);
 	if (model->meshes[0].materials==NULL) return(FALSE);
-	if (model->meshes[0].vertex_sel_mask==NULL) return(FALSE);
-	if (model->meshes[0].vertex_hide_mask==NULL) return(FALSE);
 	if (model->meshes[0].draw.gl_vertex_array==NULL) return(FALSE);
 	if (model->meshes[0].draw.gl_color_array==NULL) return(FALSE);
 	if (model->meshes[0].draw.gl_vertex_normal_array==NULL) return(FALSE);
@@ -126,8 +122,6 @@ bool model_new(model_type *model,char *name)
 	bzero(model->meshes[0].vertexes,(max_model_vertex*sizeof(model_vertex_type)));
 	bzero(model->meshes[0].trigs,(max_model_trig*sizeof(model_trig_type)));
 	bzero(model->meshes[0].materials,(max_model_texture*sizeof(model_material_type)));
-	bzero(model->meshes[0].vertex_sel_mask,vertex_sel_hide_mask_sz);
-	bzero(model->meshes[0].vertex_hide_mask,vertex_sel_hide_mask_sz);
 	bzero(model->meshes[0].draw.gl_vertex_array,(max_model_vertex*3)*sizeof(float));
 	bzero(model->meshes[0].draw.gl_color_array,(max_model_vertex*3)*sizeof(float));
 	bzero(model->meshes[0].draw.gl_vertex_normal_array,(max_model_vertex*3)*sizeof(float));
@@ -224,8 +218,6 @@ void model_close(model_type *model)
 		free(model->meshes[n].vertexes);
 		free(model->meshes[n].trigs);
 		free(model->meshes[n].materials);
-		free(model->meshes[n].vertex_sel_mask);
-		free(model->meshes[n].vertex_hide_mask);
 		free(model->meshes[n].draw.gl_vertex_array);
 		free(model->meshes[n].draw.gl_color_array);
 		free(model->meshes[n].draw.gl_vertex_normal_array);

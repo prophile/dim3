@@ -8,7 +8,6 @@ _model_mesh_delete
 
 _model_bone_add
 _model_bone_delete
-_model_set_sel_vertex_to_bone
 _model_check_bone_duplicate_tag
 _model_check_bone_circular
 _model_bone_move
@@ -87,29 +86,6 @@ _model_center_xz_all
 _model_floor
 _model_floor_all
 _model_flip_uv
-
-_model_move_sel_vertexes
-_model_scale_sel_vertexes
-_model_rotate_sel_vertexes
-_model_invert_normal_sel_vertexes
-_model_delete_sel_vertex
-_model_delete_unused_vertexes
-
-_model_clear_sel_mask
-_model_set_sel_mask
-_model_set_sel_mask_all
-_model_check_sel_mask
-_model_clear_hide_mask
-_model_set_hide_mask
-_model_check_hide_mask
-_model_hide_mask_set_sel_vertexes
-_model_hide_mask_set_non_sel_vertexes
-_model_hide_mask_show_all_vertexes
-_model_check_hide_mask_trig
-_model_set_sel_mask_bone
-_model_set_sel_mask_no_bone
-_model_set_sel_mask_near_bone
-_model_set_sel_mask_material
 
 _model_setup
 _model_new

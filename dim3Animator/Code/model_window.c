@@ -74,7 +74,7 @@ void model_wind_key(char ch,bool up)
 		// esc key deselects
 		
 	if ((ch==0x1B) && (!up)) {
-		model_clear_sel_mask(&model,cur_mesh);
+		vertex_clear_sel_mask(cur_mesh);
 		draw_model_wind_pose(&model,cur_mesh,cur_pose);
 		return;
 	}

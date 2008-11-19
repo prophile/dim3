@@ -53,7 +53,7 @@ void draw_model_mesh(model_type *model,int mesh_idx)
     
     for (n=0;n!=ntrig;n++) {
 	
-		if (!model_check_hide_mask_trig(model,mesh_idx,trig)) {
+		if (!vertex_check_hide_mask_trig(mesh_idx,trig)) {
 			glBegin(GL_LINE_LOOP);
 			glArrayElement(trig->v[0]);
 			glArrayElement(trig->v[1]);

@@ -77,7 +77,7 @@ void model_sel_vertex(int lx,int ty,int rx,int by,bool chg_sel,double *mod_matri
 		y=(int)((gl_view_y_sz+texture_palette_height)-dy);
 		
 		if ((x>=lx) && (x<=rx) && (y>=ty) && (y<=by)) {
-			if (!model_check_hide_mask(&model,cur_mesh,i)) model_set_sel_mask(&model,cur_mesh,i,chg_sel);
+			if (!vertex_check_hide_mask(cur_mesh,i)) vertex_set_sel_mask(cur_mesh,i,chg_sel);
 		}
 		
 		vertex++;
@@ -93,7 +93,7 @@ void select_model_wind_save_sel_state(char *vertex_sel)
 	vertex=model.meshes[cur_mesh].vertexes;
 
 	for (i=0;i!=nt;i++) {
-		vertex_sel[i]=(char)model_check_sel_mask(&model,cur_mesh,i);
+		vertex_sel[i]=(char)vertex_check_sel_mask(cur_mesh,i);
 		vertex++;
 	}
 }
@@ -107,7 +107,7 @@ void select_model_wind_restore_sel_state(char *vertex_sel)
 	vertex=model.meshes[cur_mesh].vertexes;
 
 	for (i=0;i!=nt;i++) {
-		model_set_sel_mask(&model,cur_mesh,i,(vertex_sel[i]!=0));
+		vertex_set_sel_mask(cur_mesh,i,(vertex_sel[i]!=0));
 		vertex++;
 	}
 }

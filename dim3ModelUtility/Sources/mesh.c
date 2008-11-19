@@ -52,8 +52,6 @@ int model_mesh_add(model_type *model)
 	mesh->vertexes=valloc(max_model_vertex*sizeof(model_vertex_type));
 	mesh->trigs=valloc(max_model_trig*sizeof(model_trig_type));
 	mesh->materials=valloc(max_model_texture*sizeof(model_material_type));
-	mesh->vertex_sel_mask=valloc(vertex_sel_hide_mask_sz);
-	mesh->vertex_hide_mask=valloc(vertex_sel_hide_mask_sz);
 	mesh->draw.gl_vertex_array=valloc((max_model_vertex*3)*sizeof(float));
 	mesh->draw.gl_color_array=valloc((max_model_vertex*3)*sizeof(float));
 	mesh->draw.gl_vertex_normal_array=valloc((max_model_vertex*3)*sizeof(float));
@@ -62,8 +60,6 @@ int model_mesh_add(model_type *model)
 	bzero(mesh->vertexes,(max_model_vertex*sizeof(model_vertex_type)));
 	bzero(mesh->trigs,(max_model_trig*sizeof(model_trig_type)));
 	bzero(mesh->materials,(max_model_texture*sizeof(model_material_type)));
-	bzero(mesh->vertex_sel_mask,vertex_sel_hide_mask_sz);
-	bzero(mesh->vertex_hide_mask,vertex_sel_hide_mask_sz);
 	bzero(mesh->draw.gl_vertex_array,(max_model_vertex*3)*sizeof(float));
 	bzero(mesh->draw.gl_color_array,(max_model_vertex*3)*sizeof(float));
 	bzero(mesh->draw.gl_vertex_normal_array,(max_model_vertex*3)*sizeof(float));
@@ -170,8 +166,6 @@ bool model_mesh_delete(model_type *model,int mesh_idx)
 	free(mesh->vertexes);
 	free(mesh->trigs);
 	free(mesh->materials);
-	free(mesh->vertex_sel_mask);
-	free(mesh->vertex_hide_mask);
 	free(mesh->draw.gl_vertex_array);
 	free(mesh->draw.gl_color_array);
 	free(mesh->draw.gl_vertex_normal_array);

@@ -71,7 +71,7 @@ void hilite_vertex_rows(void)
 	itemID=vertex_sel_itemIDs;
 	
 	for (n=0;n!=nt;n++) {
-		if (model_check_sel_mask(&model,cur_mesh,n)) {
+		if (vertex_check_sel_mask(cur_mesh,n)) {
 			*itemID=n+1;
 			itemID++;
 			nitem++;
@@ -181,13 +181,13 @@ static pascal void vertex_list_notify_proc(ControlRef ctrl,DataBrowserItemID ite
 
 		case kDataBrowserItemSelected:
 			if (vertex_sel_in_hilite) break;
-			model_set_sel_mask(&model,cur_mesh,(itemID-1),TRUE);
+			vertex_set_sel_mask(cur_mesh,(itemID-1),TRUE);
 			model_view_reset=TRUE;
 			break;
 			
 		case kDataBrowserItemDeselected:
 			if (vertex_sel_in_hilite) break;
-			model_set_sel_mask(&model,cur_mesh,(itemID-1),FALSE);
+			vertex_set_sel_mask(cur_mesh,(itemID-1),FALSE);
 			model_view_reset=TRUE;
 			break;
 	}

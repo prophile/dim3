@@ -184,7 +184,7 @@ void texture_palette_click(Point pt,bool dblclick)
 		dialog_texture_setting_run(nsel);
 	}
 	else {
-		model_set_sel_mask_material(&model,cur_mesh,nsel);
+		vertex_set_sel_mask_material(cur_mesh,nsel);
 		hilite_vertex_rows();
 	}
 	

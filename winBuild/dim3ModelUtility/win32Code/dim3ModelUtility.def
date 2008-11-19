@@ -11,7 +11,6 @@ EXPORTS
 
 	model_bone_add							@120
 	model_bone_delete						@121
-	model_set_sel_vertex_to_bone			@122
 	model_check_bone_duplicate_tag			@123
 	model_check_bone_circular				@124
 	model_bone_move							@125
@@ -90,29 +89,6 @@ EXPORTS
 	model_floor								@281
 	model_floor_all							@282
 	model_flip_uv							@283
-
-	model_move_sel_vertexes					@290
-	model_scale_sel_vertexes				@291
-	model_rotate_sel_vertexes				@292
-	model_invert_normal_sel_vertexes		@293
-	model_delete_sel_vertex					@294
-	model_delete_unused_vertexes			@295
-
-	model_clear_sel_mask					@300
-	model_set_sel_mask						@301
-	model_set_sel_mask_all					@302
-	model_check_sel_mask					@303
-	model_clear_hide_mask					@304
-	model_set_hide_mask						@305
-	model_check_hide_mask					@306
-	model_hide_mask_set_sel_vertexes		@307
-	model_hide_mask_set_non_sel_vertexes	@308
-	model_hide_mask_show_all_vertexes		@309
-	model_check_hide_mask_trig				@310
-	model_set_sel_mask_bone					@311
-	model_set_sel_mask_no_bone				@312
-	model_set_sel_mask_near_bone			@313
-	model_set_sel_mask_material				@314
 
 	model_setup								@320
 	model_new								@321

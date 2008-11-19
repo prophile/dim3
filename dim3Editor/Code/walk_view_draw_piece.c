@@ -592,7 +592,7 @@ void walk_view_draw_spots_scenery(d3pnt *cpt)
 	for (n=0;n!=map.nscenery;n++) {
 	
 		if (!walk_view_draw_pnt_obscure(&scenery->pnt)) {
-			if (!walk_view_model_draw(cpt,&scenery->pnt,&scenery->ang,scenery->model_name,scenery->texture_frames,max_map_scenery_model_texture_frame)) {
+			if (!walk_view_model_draw(cpt,&scenery->pnt,&scenery->ang,scenery->model_name,scenery->texture_frame,max_map_scenery_model_texture_frame)) {
 				walk_view_draw_sprite(cpt,&scenery->pnt,scenery->ang.y,scenery_bitmap.gl_id);
 			}
 		}

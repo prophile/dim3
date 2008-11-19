@@ -178,7 +178,7 @@ void draw_model_material(model_type *model,int mesh_idx,texture_type *texture,mo
 
 	for (k=0;k!=trig_count;k++) {
 	
-		if (!model_check_hide_mask_trig(model,mesh_idx,trig)) {
+		if (!vertex_check_hide_mask_trig(mesh_idx,trig)) {
 			glTexCoord2f(trig->gx[0],trig->gy[0]);
 			glMultiTexCoord2f(GL_TEXTURE1,trig->gx[0],trig->gy[0]);
 			glArrayElement(trig->v[0]);

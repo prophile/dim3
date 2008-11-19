@@ -145,7 +145,6 @@ typedef struct		{
 						int								nvertex,ntrig;
 						char							name[name_str_len];
 						bool							no_lighting,blend_add,tintable;
-						unsigned char					*vertex_sel_mask,*vertex_hide_mask;
  						model_vertex_type				*vertexes;
                         model_trig_type					*trigs;
 						model_material_type				*materials;
@@ -297,9 +296,8 @@ extern int model_mesh_duplicate(model_type *model,int mesh_idx);
 extern void model_mesh_copy(model_type *model,int copy_mesh_idx,int mesh_idx);
 extern bool model_mesh_delete(model_type *model,int mesh_idx);
 
-extern int model_bone_add(model_type *model,int mesh_idx);
+extern int model_bone_add(model_type *model,int x,int y,int z);
 extern void model_bone_delete(model_type *model,int bone_idx);
-extern void model_set_sel_vertex_to_bone(model_type *model,int mesh_idx,int major_bone_idx,int minor_bone_idx,float factor);
 extern bool model_check_bone_duplicate_tag(model_type *model,model_bone_type *bone);
 extern bool model_check_bone_circular(model_type *model,model_bone_type *bone);
 extern void model_bone_move(model_type *model,int bone_idx,int x,int y,int z,bool nudge_children,bool nudge_vertexes);
@@ -377,29 +375,6 @@ extern void model_center_xz_all(model_type *model);
 extern void model_floor(model_type *model,int mesh_idx);
 extern void model_floor_all(model_type *model);
 extern void model_flip_uv(model_type *model,int mesh_idx,bool flip_u,bool flip_v);
-
-extern void model_move_sel_vertexes(model_type *model,int mesh_idx,int x,int y,int z);
-extern void model_scale_sel_vertexes(model_type *model,int mesh_idx,float x,float y,float z);
-extern void model_rotate_sel_vertexes(model_type *model,int mesh_idx,float ang_x,float ang_y,float ang_z);
-extern void model_invert_normal_sel_vertexes(model_type *model,int mesh_idx);
-extern void model_delete_sel_vertex(model_type *model,int mesh_idx);
-extern void model_delete_unused_vertexes(model_type *model,int mesh_idx);
-
-extern void model_clear_sel_mask(model_type *model,int mesh_idx);
-extern void model_set_sel_mask(model_type *model,int mesh_idx,int vertex_idx,bool value);
-extern void model_set_sel_mask_all(model_type *model,int mesh_idx);
-extern bool model_check_sel_mask(model_type *model,int mesh_idx,int vertex_idx);
-extern void model_clear_hide_mask(model_type *model,int mesh_idx);
-extern void model_set_hide_mask(model_type *model,int mesh_idx,int vertex_idx,bool value);
-extern bool model_check_hide_mask(model_type *model,int mesh_idx,int vertex_idx);
-extern void model_hide_mask_set_sel_vertexes(model_type *model,int mesh_idx);
-extern void model_hide_mask_set_non_sel_vertexes(model_type *model,int mesh_idx);
-extern void model_hide_mask_show_all_vertexes(model_type *model,int mesh_idx);
-extern bool model_check_hide_mask_trig(model_type *model,int mesh_idx,model_trig_type *trig);
-extern void model_set_sel_mask_bone(model_type *model,int mesh_idx,int bone_idx);
-extern void model_set_sel_mask_no_bone(model_type *model,int mesh_idx);
-extern void model_set_sel_mask_near_bone(model_type *model,int mesh_idx,int bone_idx,float percentage);
-extern void model_set_sel_mask_material(model_type *model,int mesh_idx,int material_idx);
 
 extern void model_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,bool use_compression);
 extern bool model_new(model_type *model,char *name);

@@ -150,11 +150,6 @@ model_type* model_load_single(char *name)
 
 		// create memory for new model
 
-	if (server.models==NULL) {
-		server.models=(model_type*)valloc(sizeof(model_type)*(max_model));
-	}
-
-	/*
 	ptr=(model_type*)valloc(sizeof(model_type)*(server.count.model+1));
 	if (ptr==NULL) return(NULL);
 
@@ -164,7 +159,7 @@ model_type* model_load_single(char *name)
 	}
 
 	server.models=ptr;
-*/
+
 	mdl=&server.models[server.count.model];
 	server.count.model++;
 

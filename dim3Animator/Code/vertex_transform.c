@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Model Utility
+Module: dim3 Animator
 Author: Brian Barnes
  Usage: Model Vertex Transformations
 
@@ -25,9 +25,9 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#ifdef D3_PCH
-	#include "dim3modelutility.h"
-#endif
+#include "model.h"
+
+extern model_type				model;
 
 /* =======================================================
 
@@ -35,19 +35,19 @@ and can be sold or given away.
       
 ======================================================= */
 
-void model_find_center_sel_vertexes(model_type *model,int mesh_idx,int *p_cx,int *p_cy,int *p_cz)
+void vertex_find_center_sel_vertexes(int mesh_idx,int *p_cx,int *p_cy,int *p_cz)
 {
 	int					i,nt,cx,cz,cy,cnt;
 	model_vertex_type	*vertex;
 	
-	nt=model->meshes[mesh_idx].nvertex;
-	vertex=model->meshes[mesh_idx].vertexes;
+	nt=model.meshes[mesh_idx].nvertex;
+	vertex=model.meshes[mesh_idx].vertexes;
 	
 	cx=cy=cz=0;
 	cnt=0;
 	
 	for (i=0;i!=nt;i++) {
-		if (model_check_sel_mask(model,mesh_idx,i)) {
+		if (vertex_check_sel_mask(mesh_idx,i)) {
 			cx+=vertex->pnt.x;
 			cy+=vertex->pnt.y;
 			cz+=vertex->pnt.z;
@@ -67,17 +67,17 @@ void model_find_center_sel_vertexes(model_type *model,int mesh_idx,int *p_cx,int
       
 ======================================================= */
 
-void model_move_sel_vertexes(model_type *model,int mesh_idx,int x,int y,int z)
+void vertex_move_sel_vertexes(int mesh_idx,int x,int y,int z)
 {
 	int					i,nt;
 	model_vertex_type	*vertex;
 	
-	nt=model->meshes[mesh_idx].nvertex;
+	nt=model.meshes[mesh_idx].nvertex;
 		
-	vertex=model->meshes[mesh_idx].vertexes;
+	vertex=model.meshes[mesh_idx].vertexes;
 	
 	for (i=0;i!=nt;i++) {
-		if (model_check_sel_mask(model,mesh_idx,i)) {
+		if (vertex_check_sel_mask(mesh_idx,i)) {
 			vertex->pnt.x+=x;
 			vertex->pnt.y+=y;
 			vertex->pnt.z+=z;
@@ -92,7 +92,7 @@ void model_move_sel_vertexes(model_type *model,int mesh_idx,int x,int y,int z)
       
 ======================================================= */
 
-void model_scale_sel_vertexes(model_type *model,int mesh_idx,float x,float y,float z)
+void vertex_scale_sel_vertexes(int mesh_idx,float x,float y,float z)
 {
 	int					i,nt,
 						x2,z2,y2,cx,cz,cy;
@@ -100,15 +100,15 @@ void model_scale_sel_vertexes(model_type *model,int mesh_idx,float x,float y,flo
 	
 		// find vertex center
 		
-	model_find_center_sel_vertexes(model,mesh_idx,&cx,&cy,&cz);
+	vertex_find_center_sel_vertexes(mesh_idx,&cx,&cy,&cz);
 	
 		// scale vertexes
 
-	nt=model->meshes[mesh_idx].nvertex;
-	vertex=model->meshes[mesh_idx].vertexes;
+	nt=model.meshes[mesh_idx].nvertex;
+	vertex=model.meshes[mesh_idx].vertexes;
 	
 	for (i=0;i!=nt;i++) {
-		if (model_check_sel_mask(model,mesh_idx,i)) {
+		if (vertex_check_sel_mask(mesh_idx,i)) {
 			x2=vertex->pnt.x-cx;
 			y2=vertex->pnt.y-cy;
 			z2=vertex->pnt.z-cz;
@@ -129,22 +129,22 @@ void model_scale_sel_vertexes(model_type *model,int mesh_idx,float x,float y,flo
       
 ======================================================= */
 
-void model_rotate_sel_vertexes(model_type *model,int mesh_idx,float ang_x,float ang_y,float ang_z)
+void vertex_rotate_sel_vertexes(int mesh_idx,float ang_x,float ang_y,float ang_z)
 {
 	int					i,nt,cx,cz,cy;
 	model_vertex_type	*vertex;
 	
 		// find vertex center
 		
-	model_find_center_sel_vertexes(model,mesh_idx,&cx,&cy,&cz);
+	vertex_find_center_sel_vertexes(mesh_idx,&cx,&cy,&cz);
 	
 		// rotate vertexes
 
-	nt=model->meshes[mesh_idx].nvertex;
-	vertex=model->meshes[mesh_idx].vertexes;
+	nt=model.meshes[mesh_idx].nvertex;
+	vertex=model.meshes[mesh_idx].vertexes;
 	
 	for (i=0;i!=nt;i++) {
-		if (model_check_sel_mask(model,mesh_idx,i)) {
+		if (vertex_check_sel_mask(mesh_idx,i)) {
 			rotate_point(&vertex->pnt.x,&vertex->pnt.y,&vertex->pnt.z,cx,cy,cz,ang_x,ang_y,ang_z);
 		}
 		vertex++;
@@ -157,16 +157,16 @@ void model_rotate_sel_vertexes(model_type *model,int mesh_idx,float ang_x,float 
       
 ======================================================= */
 
-void model_invert_normal_sel_vertexes(model_type *model,int mesh_idx)
+void vertex_invert_normal_sel_vertexes(int mesh_idx)
 {
 	int					i,nt;
 	model_vertex_type	*vertex;
 	
-	nt=model->meshes[mesh_idx].nvertex;
-	vertex=model->meshes[mesh_idx].vertexes;
+	nt=model.meshes[mesh_idx].nvertex;
+	vertex=model.meshes[mesh_idx].vertexes;
 	
 	for (i=0;i!=nt;i++) {
-		if (model_check_sel_mask(model,mesh_idx,i)) {
+		if (vertex_check_sel_mask(mesh_idx,i)) {
 			vertex->normal.x=-vertex->normal.x;
 			vertex->normal.y=-vertex->normal.y;
 			vertex->normal.z=-vertex->normal.z;
@@ -181,7 +181,7 @@ void model_invert_normal_sel_vertexes(model_type *model,int mesh_idx)
       
 ======================================================= */
 
-void model_delete_sel_vertex(model_type *model,int mesh_idx)
+void vertex_delete_sel_vertex(int mesh_idx)
 {
 	int					i,n,k,j,
 						trig_start,trig_end,sz;
@@ -190,14 +190,14 @@ void model_delete_sel_vertex(model_type *model,int mesh_idx)
 
 		// convert sels to boolean
 		
-	for (i=0;i!=model->meshes[mesh_idx].nvertex;i++) {
-		vertex_sel[i]=(char)model_check_sel_mask(model,mesh_idx,i);
+	for (i=0;i!=model.meshes[mesh_idx].nvertex;i++) {
+		vertex_sel[i]=(char)vertex_check_sel_mask(mesh_idx,i);
 	}
 	
 		// delete all vertexes
 		
 	i=0;
-	while (i<model->meshes[mesh_idx].nvertex) {
+	while (i<model.meshes[mesh_idx].nvertex) {
 	
 		if (vertex_sel[i]==0) {
 			i++;
@@ -206,26 +206,26 @@ void model_delete_sel_vertex(model_type *model,int mesh_idx)
 		
 			// delete the vertex
 			
-		sz=((model->meshes[mesh_idx].nvertex-1)-i);
+		sz=((model.meshes[mesh_idx].nvertex-1)-i);
 		
 		if (sz>0) {
-			memmove(&model->meshes[mesh_idx].vertexes[i],&model->meshes[mesh_idx].vertexes[i+1],(sz*sizeof(model_vertex_type)));
+			memmove(&model.meshes[mesh_idx].vertexes[i],&model.meshes[mesh_idx].vertexes[i+1],(sz*sizeof(model_vertex_type)));
 			memmove(&vertex_sel[i],&vertex_sel[i+1],sz);
 		}
 		
-		model->meshes[mesh_idx].nvertex--;
+		model.meshes[mesh_idx].nvertex--;
 		
 			// delete all trigs with vertex
 			
 		n=0;
 		
-		while (n<model->meshes[mesh_idx].ntrig) {
+		while (n<model.meshes[mesh_idx].ntrig) {
 		
 			hit=FALSE;
 			
 			for (j=0;j!=3;j++) {
-				hit=hit||(model->meshes[mesh_idx].trigs[n].v[j]==i);
-				if (model->meshes[mesh_idx].trigs[n].v[j]>i) model->meshes[mesh_idx].trigs[n].v[j]--;
+				hit=hit||(model.meshes[mesh_idx].trigs[n].v[j]==i);
+				if (model.meshes[mesh_idx].trigs[n].v[j]>i) model.meshes[mesh_idx].trigs[n].v[j]--;
 			}
 		
 			if (!hit) {
@@ -235,29 +235,29 @@ void model_delete_sel_vertex(model_type *model,int mesh_idx)
 			
 				// delete trig
 					
-			sz=((model->meshes[mesh_idx].ntrig-1)-n);
+			sz=((model.meshes[mesh_idx].ntrig-1)-n);
 			
 			if (sz>0) {
-				memmove(&model->meshes[mesh_idx].trigs[n],&model->meshes[mesh_idx].trigs[n+1],(sz*sizeof(model_trig_type)));
+				memmove(&model.meshes[mesh_idx].trigs[n],&model.meshes[mesh_idx].trigs[n+1],(sz*sizeof(model_trig_type)));
 			}
 				
-			model->meshes[mesh_idx].ntrig--;
+			model.meshes[mesh_idx].ntrig--;
 		
 				// move texture trig starts
 					
 			for (k=0;k!=max_model_texture;k++) {
 			
-				if (model->textures[k].bitmaps[0].gl_id!=-1) {
+				if (model.textures[k].bitmaps[0].gl_id!=-1) {
 				
-					trig_start=model->meshes[mesh_idx].materials[k].trig_start;
-					trig_end=trig_start+model->meshes[mesh_idx].materials[k].trig_count;
+					trig_start=model.meshes[mesh_idx].materials[k].trig_start;
+					trig_end=trig_start+model.meshes[mesh_idx].materials[k].trig_count;
 					
 					if (trig_start>n) {
-						model->meshes[mesh_idx].materials[k].trig_start--;
+						model.meshes[mesh_idx].materials[k].trig_start--;
 					}
 					else {
 						if ((n>=trig_start) && (n<trig_end)) {
-							model->meshes[mesh_idx].materials[k].trig_count--;
+							model.meshes[mesh_idx].materials[k].trig_count--;
 						}
 					}
 				
@@ -269,8 +269,8 @@ void model_delete_sel_vertex(model_type *model,int mesh_idx)
 	
 		// clear sels
 		
-	model_clear_sel_mask(model,mesh_idx);
-	model_clear_hide_mask(model,mesh_idx);
+	vertex_clear_sel_mask(mesh_idx);
+	vertex_clear_hide_mask(mesh_idx);
 }
 
 /* =======================================================
@@ -279,7 +279,7 @@ void model_delete_sel_vertex(model_type *model,int mesh_idx)
       
 ======================================================= */
 
-void model_delete_unused_vertexes(model_type *model,int mesh_idx)
+void vertex_delete_unused_vertexes(int mesh_idx)
 {
 	int					n,k,i,t,nvertex,ntrig,sz;
 	unsigned char		*v_ok;
@@ -292,8 +292,8 @@ void model_delete_unused_vertexes(model_type *model,int mesh_idx)
 	
 		// find vertexes hit
 		
-	ntrig=model->meshes[mesh_idx].ntrig;
-	trig=model->meshes[mesh_idx].trigs;
+	ntrig=model.meshes[mesh_idx].ntrig;
+	trig=model.meshes[mesh_idx].trigs;
 	
 	for (n=0;n!=ntrig;n++) {
 		for (k=0;k!=3;k++) {
@@ -304,7 +304,7 @@ void model_delete_unused_vertexes(model_type *model,int mesh_idx)
 	
 		// delete unused vertexes
 		
-	nvertex=model->meshes[mesh_idx].nvertex;
+	nvertex=model.meshes[mesh_idx].nvertex;
 	
 	for (n=(nvertex-1);n>=0;n--) {
 	
@@ -312,7 +312,7 @@ void model_delete_unused_vertexes(model_type *model,int mesh_idx)
 		
 			// change all trigs vertex pointers
 	
-		trig=model->meshes[mesh_idx].trigs;
+		trig=model.meshes[mesh_idx].trigs;
 		
 		for (i=0;i!=ntrig;i++) {
 			for (t=0;t!=3;t++) {
@@ -324,12 +324,12 @@ void model_delete_unused_vertexes(model_type *model,int mesh_idx)
 			// delete vertex
 			
 		sz=(nvertex-n)*sizeof(model_vertex_type);
-		if (sz>0) memmove(&model->meshes[mesh_idx].vertexes[n],&model->meshes[mesh_idx].vertexes[n+1],sz);
+		if (sz>0) memmove(&model.meshes[mesh_idx].vertexes[n],&model.meshes[mesh_idx].vertexes[n+1],sz);
 		
 		nvertex--;
 	}
 	
-	model->meshes[mesh_idx].nvertex=nvertex;
+	model.meshes[mesh_idx].nvertex=nvertex;
 
 	free(v_ok);
 }

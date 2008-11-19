@@ -35,39 +35,13 @@ and can be sold or given away.
       
 ======================================================= */
 
-int model_bone_add(model_type *model,int mesh_idx)
+int model_bone_add(model_type *model,int x,int y,int z)
 {
-	int					nbone,i,nt,x,z,y,cnt;
-	model_vertex_type	*vertex;
+	int					nbone,i;
 	model_bone_type		*bone;
 	
 	nbone=model->nbone;
 	if (nbone>=max_model_bone) return(-1);
-	
-		// find center of selected vertexes
-		
-	x=z=y=cnt=0;
-	
-	nt=model->meshes[mesh_idx].nvertex;
-	vertex=model->meshes[mesh_idx].vertexes;
-	
-	for (i=0;i!=nt;i++) {
-	
-		if (model_check_sel_mask(model,mesh_idx,i)) {
-			x+=vertex->pnt.x;
-			z+=vertex->pnt.z;
-			y+=vertex->pnt.y;
-			cnt++;
-		}
-		
-		vertex++;
-	}
-	
-	if (cnt!=0) {
-		x/=cnt;
-		z/=cnt;
-		y/=cnt;
-	}
 	
 		// create the new bone
 	
@@ -168,36 +142,6 @@ void model_bone_delete(model_type *model,int bone_idx)
 		
 		// reset bones
 
-	model_calculate_parents(model);
-}
-
-/* =======================================================
-
-      Set Vertexes To Bone
-      
-======================================================= */
-
-void model_set_sel_vertex_to_bone(model_type *model,int mesh_idx,int major_bone_idx,int minor_bone_idx,float factor)
-{
-	int					i,nt;
-	model_vertex_type	*vertex;
-	
-		// attach vertexes to bone
-		
-	nt=model->meshes[mesh_idx].nvertex;
-	vertex=model->meshes[mesh_idx].vertexes;
-	
-	for (i=0;i!=nt;i++) {
-	
-		if (model_check_sel_mask(model,mesh_idx,i)) {
-			vertex->major_bone_idx=major_bone_idx;
-			vertex->minor_bone_idx=minor_bone_idx;
-			vertex->bone_factor=factor;
-		}
-		
-		vertex++;
-	}
-	
 	model_calculate_parents(model);
 }
 
