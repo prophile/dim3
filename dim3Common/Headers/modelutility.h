@@ -383,3 +383,6 @@ extern bool model_save(model_type *model);
 extern void model_close(model_type *model);
 
 extern void model_refresh_textures(model_type *model);
+
+extern int model_memory_size(model_type *model);
+

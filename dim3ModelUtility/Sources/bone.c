@@ -37,15 +37,32 @@ and can be sold or given away.
 
 int model_bone_add(model_type *model,int x,int y,int z)
 {
-	int					nbone,i;
-	model_bone_type		*bone;
+	int					n,bone_idx;
+	model_bone_type		*bone,*ptr;
+
+		// only allow a maximum number of bones
+
+	if (model->nbone>=max_model_bone) return(-1);
+
+		// create memory for new bones
+
+	ptr=(model_bone_type*)valloc(sizeof(model_bone_type)*(model->nbone+1));
+	if (ptr==NULL) return(-1);
+
+	if (model->bones!=NULL) {
+		memmove(ptr,model->bones,(sizeof(model_bone_type)*model->nbone));
+		free(model->bones);
+	}
+
+	model->bones=ptr;
+
+	bone_idx=model->nbone;
+	model->nbone++;
+
+		// initialize the bone
 	
-	nbone=model->nbone;
-	if (nbone>=max_model_bone) return(-1);
-	
-		// create the new bone
-	
-	bone=&model->bones[nbone];
+	bone=&model->bones[bone_idx];
+	bzero(bone,sizeof(model_bone_type));
 	
 	bone->name[0]=0x0;
 	bone->tag=model_null_tag;
@@ -54,35 +71,33 @@ int model_bone_add(model_type *model,int x,int y,int z)
 	bone->pnt.y=y;
 	bone->pnt.z=z;
 	
-	model->nbone++;
-	
 		// fix any poses
 		
-	for (i=0;i!=model->npose;i++) {
-		model->poses[i].bone_moves[nbone].rot.x=0;
-		model->poses[i].bone_moves[nbone].rot.y=0;
-		model->poses[i].bone_moves[nbone].rot.z=0;
-		model->poses[i].bone_moves[nbone].mov.x=1;
-		model->poses[i].bone_moves[nbone].mov.y=1;
-		model->poses[i].bone_moves[nbone].mov.z=1;
-		model->poses[i].bone_moves[nbone].acceleration=0;
-		model->poses[i].bone_moves[nbone].skip_blended=FALSE;
-		model->poses[i].bone_moves[nbone].constraint.bone_idx=-1;
-		model->poses[i].bone_moves[nbone].constraint.offset.x=0;
-		model->poses[i].bone_moves[nbone].constraint.offset.y=0;
-		model->poses[i].bone_moves[nbone].constraint.offset.z=0;
+	for (n=0;n!=model->npose;n++) {
+		model->poses[n].bone_moves[bone_idx].rot.x=0;
+		model->poses[n].bone_moves[bone_idx].rot.y=0;
+		model->poses[n].bone_moves[bone_idx].rot.z=0;
+		model->poses[n].bone_moves[bone_idx].mov.x=1;
+		model->poses[n].bone_moves[bone_idx].mov.y=1;
+		model->poses[n].bone_moves[bone_idx].mov.z=1;
+		model->poses[n].bone_moves[bone_idx].acceleration=0;
+		model->poses[n].bone_moves[bone_idx].skip_blended=FALSE;
+		model->poses[n].bone_moves[bone_idx].constraint.bone_idx=-1;
+		model->poses[n].bone_moves[bone_idx].constraint.offset.x=0;
+		model->poses[n].bone_moves[bone_idx].constraint.offset.y=0;
+		model->poses[n].bone_moves[bone_idx].constraint.offset.z=0;
 	}
 	
 	model_calculate_parents(model);
 	
-	return(nbone);
+	return(bone_idx);
 }
 
 void model_bone_delete(model_type *model,int bone_idx)
 {
 	int					i,n,nt,sz;
 	model_vertex_type	*vertex;
-	model_bone_type		*bone;
+	model_bone_type		*bone,*ptr;
 	model_pose_type		*pose;
 	
 		// delete all vertex attachments
@@ -113,7 +128,7 @@ void model_bone_delete(model_type *model,int bone_idx)
 	nt=model->nbone;
 	bone=model->bones;
 	
-	for (i=0;i!=nt;i++) {
+	for (n=0;n!=nt;n++) {
 		if (bone->parent_idx==bone_idx) {
 			bone->parent_idx=-1;
 		}
@@ -123,19 +138,51 @@ void model_bone_delete(model_type *model,int bone_idx)
 		bone++;
 	}
 	
-		// delete current bone (plus bone moves)
+		// delete pose bone moves
 		
 	sz=(model->nbone-bone_idx)-1;
+
 	if (sz>0) {
-		memmove(&model->bones[bone_idx],&model->bones[bone_idx+1],(sz*sizeof(model_bone_type)));
-		
 		nt=model->npose;
 		pose=model->poses;
 		
-		for (i=0;i!=nt;i++) {
+		for (n=0;n!=nt;n++) {
 			memmove(&pose->bone_moves[bone_idx],&pose->bone_moves[bone_idx+1],(sz*sizeof(model_bone_move_type)));
 			pose++;
 		}
+	}
+
+		// is the list completely empty?
+
+	if (model->nbone==1) {
+		free(model->bones);
+		model->bones=NULL;
+		model->nbone=0;
+		return;
+	}
+
+		// if for some reason we can't create new
+		// memory, just shuffle the list and wait
+		// until next time
+
+	ptr=(model_bone_type*)valloc(sizeof(model_bone_type)*(model->nbone-1));
+
+	if (ptr==NULL) {
+		if (bone_idx<(model->nbone-1)) {
+			memmove(&model->bones[bone_idx],&model->bones[bone_idx+1],(sizeof(model_bone_type)*((model->nbone-bone_idx)-1)));
+		}
+	}
+	else {
+
+		if (bone_idx>0) {
+			memmove(ptr,model->bones,(sizeof(model_bone_type)*bone_idx));
+		}
+		if (bone_idx<(model->nbone-1)) {
+			memmove(&ptr[bone_idx],&model->bones[bone_idx+1],(sizeof(model_bone_type)*((model->nbone-bone_idx)-1)));
+		}
+
+		free(model->bones);
+		model->bones=ptr;
 	}
 	
 	model->nbone--;

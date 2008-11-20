@@ -53,7 +53,7 @@ void model_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int 
 
 bool model_new(model_type *model,char *name)
 {
-	int				k;
+	int				n;
 	char			sub_path[1024];
 	
     memset(model,0x0,sizeof(model_type));
@@ -72,20 +72,35 @@ bool model_new(model_type *model,char *name)
 	
 	model->shadow_fudge=0;
 	
-	for (k=0;k!=max_model_light;k++) {
-		model->tags.light_bone_tag[k]=model_null_tag;
-		model->tags.light_bone_idx[k]=-1;
+	for (n=0;n!=max_model_light;n++) {
+		model->tags.light_bone_tag[n]=model_null_tag;
+		model->tags.light_bone_idx[n]=-1;
 	}
 
-	for (k=0;k!=max_model_halo;k++) {
-		model->tags.halo_bone_tag[k]=model_null_tag;
-		model->tags.halo_bone_idx[k]=-1;
+	for (n=0;n!=max_model_halo;n++) {
+		model->tags.halo_bone_tag[n]=model_null_tag;
+		model->tags.halo_bone_idx[n]=-1;
 	}
 
 	model->tags.name_bone_tag=model_null_tag;
 	model->tags.name_bone_idx=-1;
+
+		// dynamic memory
+
+	model->nbone=0;
+	model->npose=0;
+	model->nanimate=0;
+	model->nhit_box=0;
+
+	model->bones=NULL;
+	model->poses=NULL;
+	model->animates=NULL;
+	model->hit_boxes=valloc(max_model_hit_box*sizeof(model_hit_box_type));
 	
-		// get memory
+		// non-dynamic memory
+
+	model->meshes[0].nvertex=0;
+	model->meshes[0].ntrig=0;
 		
 	model->meshes[0].vertexes=valloc(max_model_vertex*sizeof(model_vertex_type));
 	model->meshes[0].trigs=valloc(max_model_trig*sizeof(model_trig_type));
@@ -96,10 +111,6 @@ bool model_new(model_type *model,char *name)
 	model->meshes[0].draw.gl_vertex_normal_array=valloc((max_model_vertex*3)*sizeof(float));
 	model->meshes[0].draw.gl_light_normal_array=valloc((max_model_vertex*3)*sizeof(float));
 	
-	model->bones=valloc(max_model_bone*sizeof(model_bone_type));
-	model->poses=valloc(max_model_pose*sizeof(model_pose_type));
-	model->animates=valloc(max_model_animate*sizeof(model_animate_type));
-	model->hit_boxes=valloc(max_model_hit_box*sizeof(model_hit_box_type));
 	model->textures=valloc(max_model_texture*sizeof(texture_type));
 	
 		// memory OK?
@@ -111,10 +122,7 @@ bool model_new(model_type *model,char *name)
 	if (model->meshes[0].draw.gl_color_array==NULL) return(FALSE);
 	if (model->meshes[0].draw.gl_vertex_normal_array==NULL) return(FALSE);
 	if (model->meshes[0].draw.gl_light_normal_array==NULL) return(FALSE);
-	if (model->bones==NULL) return(FALSE);
-	if (model->poses==NULL) return(FALSE);
-	if (model->animates==NULL) return(FALSE);
-	if (model->hit_boxes==NULL) return(FALSE);
+
 	if (model->textures==NULL) return(FALSE);
 
 		// zero memory
@@ -127,11 +135,9 @@ bool model_new(model_type *model,char *name)
 	bzero(model->meshes[0].draw.gl_vertex_normal_array,(max_model_vertex*3)*sizeof(float));
 	bzero(model->meshes[0].draw.gl_light_normal_array,(max_model_vertex*3)*sizeof(float));
 
-	bzero(model->bones,(max_model_bone*sizeof(model_bone_type)));
-	bzero(model->poses,(max_model_pose*sizeof(model_pose_type)));
-	bzero(model->animates,(max_model_animate*sizeof(model_animate_type)));
-	bzero(model->hit_boxes,(max_model_hit_box*sizeof(model_hit_box_type)));
 	bzero(model->textures,(max_model_texture*sizeof(texture_type)));
+
+	bzero(model->hit_boxes,(max_model_hit_box*sizeof(model_hit_box_type)));
 
 	model_textures_clear(model);
 	
@@ -223,12 +229,13 @@ void model_close(model_type *model)
 		free(model->meshes[n].draw.gl_vertex_normal_array);
 		free(model->meshes[n].draw.gl_light_normal_array);
 	}
-	
-	free(model->bones);
-	free(model->poses);
-	free(model->animates);
+
 	free(model->textures);
-	free(model->hit_boxes);
+	
+	if (model->bones!=NULL) free(model->bones);
+	if (model->poses!=NULL) free(model->poses);
+	if (model->animates!=NULL) free(model->animates);
+	if (model->hit_boxes!=NULL) free(model->hit_boxes);
 }
 
 /* =======================================================
@@ -241,4 +248,33 @@ void model_refresh_textures(model_type *model)
 {
 	model_textures_close(model);
 	model_textures_read(model);
+}
+
+/* =======================================================
+
+      Model Memory Size
+      
+======================================================= */
+
+int model_memory_size(model_type *model)
+{
+	int			sz;
+
+	sz=(max_model_vertex*sizeof(model_vertex_type));
+	sz+=(max_model_trig*sizeof(model_trig_type));
+	sz+=(max_model_texture*sizeof(model_material_type));
+
+	sz+=((max_model_vertex*3)*sizeof(float));
+	sz+=((max_model_vertex*3)*sizeof(float));
+	sz+=((max_model_vertex*3)*sizeof(float));
+	sz+=((max_model_vertex*3)*sizeof(float));
+
+	sz+=(max_model_texture*sizeof(texture_type));
+	
+	sz+=(model->nbone*sizeof(model_bone_type));
+	sz+=(model->npose*sizeof(model_pose_type));
+	sz+=(model->nanimate*sizeof(model_animate_type));
+	sz+=(max_model_hit_box*sizeof(model_hit_box_type));
+
+	return(sz);
 }

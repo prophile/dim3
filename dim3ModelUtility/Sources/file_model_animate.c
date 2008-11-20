@@ -39,7 +39,8 @@ extern modelutility_settings_type		modelutility_settings;
 
 bool read_animate_xml(model_type *model)
 {
-	int						i,k,t,tag,model_head,poses_tag,animations_tag,animation_tag,
+	int						n,k,t,nanimate,animate_idx,
+							tag,model_head,poses_tag,animations_tag,animation_tag,
 							particles_head,particle_tag,rings_head,ring_tag;
     char					sub_path[1024],path[1024],posename[256],str[256];
 	bool					old_particle_def,old_ring_def;
@@ -54,19 +55,33 @@ bool read_animate_xml(model_type *model)
 	if (!xml_open_file(path)) return(FALSE);
 
     model_head=xml_findrootchild("Model");
-    if (model_head==-1) return(FALSE);
-    
+    if (model_head==-1) {
+		xml_close_file();
+		return(FALSE);
+    }
+
         // animations
         
     animations_tag=xml_findfirstchild("Animations",model_head);
 
-    model->nanimate=xml_countchildren(animations_tag);
+    nanimate=xml_countchildren(animations_tag);
 	animation_tag=xml_findfirstchild("Animation",animations_tag);
-	
-    animate=model->animates;
     
-    for (i=0;i!=model->nanimate;i++) {
-        xml_get_attribute_text(animation_tag,"name",animate->name,64);
+    for (n=0;n!=nanimate;n++) {
+ 
+			// add new animation
+
+		animate_idx=model_animate_add(model);
+		if (animate_idx==-1) {
+			xml_close_file();
+			return(FALSE);
+		}
+
+		animate=&model->animates[animate_idx];
+
+			// set pose animation
+
+		xml_get_attribute_text(animation_tag,"name",animate->name,64);
         
         tag=xml_findfirstchild("Loop",animation_tag);
         animate->loop=xml_get_attribute_boolean(tag,"repeat");
@@ -201,7 +216,6 @@ bool read_animate_xml(model_type *model)
 		if (animate->loop_end==-1) animate->loop_end=animate->npose_move-1;
         if (animate->loop_end>(animate->npose_move-1)) animate->loop_end=animate->npose_move-1;
          
-        animate++;
 		animation_tag=xml_findnextchild(animation_tag);
     }
 
@@ -218,7 +232,7 @@ bool read_animate_xml(model_type *model)
 
 bool write_animate_xml(model_type *model)
 {
-	int						i,k,t;
+	int						n,k,t;
 	char					path[1024];
 	bool					ok;
     model_pose_move_type	*pose_move;
@@ -243,7 +257,7 @@ bool write_animate_xml(model_type *model)
     
     animate=model->animates;
     
-    for (i=0;i!=model->nanimate;i++) {
+    for (n=0;n!=model->nanimate;n++) {
     
         xml_add_tagstart("Animation");
         xml_add_attribute_text("name",animate->name);

@@ -97,8 +97,6 @@ void model_animation_effect_setup(model_type *mdl)
 void model_animation_effect_launch_bone_position(model_draw *draw,int animate_idx,int pose_idx,int bone_idx,d3pnt *pt)
 {
 	model_type				*mdl;
-	model_draw_setup		*setup;
-	model_animate_type		*animate;
 
 		// default to center of model
 
@@ -111,13 +109,8 @@ void model_animation_effect_launch_bone_position(model_draw *draw,int animate_id
 	mdl=model_find_uid(draw->uid);
 	if (mdl==NULL) return;
 
-	setup=&draw->setup;
-	
-	animate=&mdl->animates[animate_idx];
-	if ((pose_idx<0) || (pose_idx>=animate->npose_move)) return;
-
 	if (bone_idx!=-1) {
-		model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,&pt->x,&pt->y,&pt->z);
+		model_calc_draw_bone_position(mdl,&draw->setup,pose_idx,bone_idx,&pt->x,&pt->y,&pt->z);
 		pt->x+=draw->pnt.x;
 		pt->y+=draw->pnt.y;
 		pt->z+=draw->pnt.z;
@@ -137,7 +130,7 @@ void model_animation_effect_launch_particle(model_particle_type *particle,d3pnt 
 	d3pnt			spt;
 	particle_rotate	rot;
 	particle_motion	motion;
-	
+
 	memmove(&spt,pt,sizeof(d3pnt));
 	
 		// make particle slop
@@ -233,7 +226,7 @@ void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx
 		// sounds
 		
 	if (pose_move->sound.buffer_idx!=-1) {
-		model_animation_effect_launch_bone_position(draw,animate_idx,pose_idx,pose_move->sound.bone_idx,&pt);
+		model_animation_effect_launch_bone_position(draw,animate_idx,pose_move->pose_idx,pose_move->sound.bone_idx,&pt);
 
 		al_play_source(pose_move->sound.buffer_idx,pt.x,pt.y,pt.z,pose_move->sound.pitch,FALSE,FALSE,pose_move->sound.no_position,draw->player);
 		object_watch_sound_alert(pt.x,pt.y,pt.z,draw->connect.obj_uid,pose_move->sound.name);	// sound watches
@@ -250,7 +243,7 @@ void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx
 		// flash
 		
 	if (pose_move->flash.intensity!=0) {
-		model_animation_effect_launch_bone_position(draw,animate_idx,pose_idx,pose_move->flash.bone_idx,&pt);
+		model_animation_effect_launch_bone_position(draw,animate_idx,pose_move->pose_idx,pose_move->flash.bone_idx,&pt);
 		effect_spawn_flash(&pt,&pose_move->flash.col,pose_move->flash.intensity,pose_move->flash.flash_msec,pose_move->flash.fade_msec);
 	}
 	
@@ -264,7 +257,7 @@ void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx
 		
 	for (t=0;t!=pose_move->particle.count;t++) {
 		if (pose_move->particle.particles[t].particle_idx!=-1) {
-			model_animation_effect_launch_bone_position(draw,animate_idx,pose_idx,pose_move->particle.particles[t].bone_idx,&pt);
+			model_animation_effect_launch_bone_position(draw,animate_idx,pose_move->pose_idx,pose_move->particle.particles[t].bone_idx,&pt);
 			model_animation_effect_launch_particle(&pose_move->particle.particles[t],&pt,&setup->ang,&draw->connect,pose_move->particle.particles[t].bone_idx);
 		}
 	}
@@ -273,7 +266,7 @@ void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx
 		
 	for (t=0;t!=pose_move->ring.count;t++) {
 		if (pose_move->ring.rings[t].ring_idx!=-1) {
-			model_animation_effect_launch_bone_position(draw,animate_idx,pose_idx,pose_move->ring.rings[t].bone_idx,&pt);
+			model_animation_effect_launch_bone_position(draw,animate_idx,pose_move->pose_idx,pose_move->ring.rings[t].bone_idx,&pt);
 			model_animation_effect_launch_ring(&pose_move->ring.rings[t],&pt,&setup->ang);
 		}
 	}

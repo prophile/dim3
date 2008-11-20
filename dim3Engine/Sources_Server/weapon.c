@@ -140,8 +140,6 @@ bool weapon_create(obj_type *obj,char *name)
 {
 	weapon_type		*weap,*ptr;
 	
-	if (server.count.weapon>=max_weapon) return(FALSE);
-
 		// only allow a maximum number of weapons
 
 	if (server.count.weapon>=max_weapon) return(FALSE);

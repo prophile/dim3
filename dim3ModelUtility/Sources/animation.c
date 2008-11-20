@@ -37,47 +37,92 @@ and can be sold or given away.
 
 int model_animate_add(model_type *model)
 {
-	int				nanimate;
-	
-	nanimate=model->nanimate;
-	if (nanimate>=max_model_animate) return(-1);
-	
-	strcpy(model->animates[nanimate].name,"New Animation");
-	model->animates[nanimate].loop=TRUE;
-	
-	model->animates[nanimate].npose_move=0;	
-	model->animates[nanimate].loop_start=-1;	
-	model->animates[nanimate].loop_end=-1;	
+	int					animate_idx;
+	model_animate_type	*animate,*ptr;
+
+		// only allow a maximum number of animations
+
+	if (model->nanimate>=max_model_animate) return(-1);
+
+		// create memory for new animation
+
+	ptr=(model_animate_type*)valloc(sizeof(model_animate_type)*(model->nanimate+1));
+	if (ptr==NULL) return(-1);
+
+	if (model->animates!=NULL) {
+		memmove(ptr,model->animates,(sizeof(model_animate_type)*model->nanimate));
+		free(model->animates);
+	}
+
+	model->animates=ptr;
+
+	animate_idx=model->nanimate;
 	model->nanimate++;
+
+		// initialize animate
+
+	animate=&model->animates[animate_idx];
+	bzero(animate,sizeof(model_animate_type));
+
+	strcpy(animate->name,"New Animation");
+	animate->loop=TRUE;
 	
-	return(nanimate);
+	animate->npose_move=0;
+	animate->loop_start=-1;	
+	animate->loop_end=-1;	
+	
+	return(animate_idx);
 }
 
 int model_animate_duplicate(model_type *model,int animate_idx)
 {
-	int				nanimate;
+	int					dup_animate_idx;
 	
-	nanimate=model->nanimate;
-	if (nanimate>=max_model_animate) return(-1);
+	dup_animate_idx=model_animate_add(model);
+	if (dup_animate_idx==-1) return(-1);
 	
-	memmove(&model->animates[nanimate],&model->animates[animate_idx],sizeof(model_animate_type));
-	strcat(model->animates[nanimate].name," copy");
-
-	model->nanimate++;
+	memmove(&model->animates[dup_animate_idx],&model->animates[animate_idx],sizeof(model_animate_type));
+	strcat(model->animates[dup_animate_idx].name," copy");
 	
-	return(nanimate);
+	return(dup_animate_idx);
 }
 
 void model_animate_delete(model_type *model,int animate_idx)
 {
-	int				nanimate,sz;
-	
-	nanimate=model->nanimate;
+	model_animate_type	*ptr;
 
-    if (animate_idx<(nanimate-1)) {
-        sz=((nanimate-1)-animate_idx)*sizeof(model_animate_type);
-        memmove(&model->animates[animate_idx],&model->animates[animate_idx+1],sz);
-    }
+		// is the list completely empty?
+
+	if (model->nanimate==1) {
+		free(model->animates);
+		model->animates=NULL;
+		model->nanimate=0;
+		return;
+	}
+
+		// if for some reason we can't create new
+		// memory, just shuffle the list and wait
+		// until next time
+
+	ptr=(model_animate_type*)valloc(sizeof(model_animate_type)*(model->nanimate-1));
+
+	if (ptr==NULL) {
+		if (animate_idx<(model->nanimate-1)) {
+			memmove(&model->animates[animate_idx],&model->animates[animate_idx+1],(sizeof(model_animate_type)*((model->nanimate-animate_idx)-1)));
+		}
+	}
+	else {
+
+		if (animate_idx>0) {
+			memmove(ptr,model->animates,(sizeof(model_animate_type)*animate_idx));
+		}
+		if (animate_idx<(model->nanimate-1)) {
+			memmove(&ptr[animate_idx],&model->animates[animate_idx+1],(sizeof(model_animate_type)*((model->nanimate-animate_idx)-1)));
+		}
+
+		free(model->animates);
+		model->animates=ptr;
+	}
 	
 	model->nanimate--;
 }

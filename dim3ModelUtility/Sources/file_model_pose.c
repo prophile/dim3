@@ -39,12 +39,13 @@ extern modelutility_settings_type		modelutility_settings;
 
 bool read_pose_xml(model_type *model)
 {
-	int						i,k,t,cnt,tag,model_head,bone_tag,poses_tag,pose_tag,constraint_bone_idx;
+	int						n,k,t,npose,pose_idx,cnt,
+							tag,model_head,bone_tag,poses_tag,pose_tag,constraint_bone_idx;
 	char					sub_path[1024],path[1024];
 	model_tag				constraint_bone_tag;
     model_bone_move_type	*bone_move;
 	model_pose_type			*pose;
-	
+
         // load the pose xml
         
 	sprintf(sub_path,"Models/%s",model->name);
@@ -59,12 +60,23 @@ bool read_pose_xml(model_type *model)
         
     poses_tag=xml_findfirstchild("Poses",model_head);
 
-    model->npose=xml_countchildren(poses_tag);
+    npose=xml_countchildren(poses_tag);
 	pose_tag=xml_findfirstchild("Pose",poses_tag);
-
-    pose=model->poses;
     
-    for (i=0;i!=model->npose;i++) {
+    for (n=0;n!=npose;n++) {
+
+			// add new pose
+
+		pose_idx=model_pose_add(model);
+		if (pose_idx==-1) {
+			xml_close_file();
+			return(FALSE);
+		}
+
+		pose=&model->poses[pose_idx];
+
+			// set pose data
+
         xml_get_attribute_text(pose_tag,"name",pose->name,64);
         
         bone_move=pose->bone_moves;
@@ -110,7 +122,6 @@ bool read_pose_xml(model_type *model)
 			tag=xml_findnextchild(tag);
         }
     
-        pose++;
 		pose_tag=xml_findnextchild(pose_tag);
     }
 
@@ -136,7 +147,7 @@ bool write_bone_move(model_bone_move_type *bone_move)
 
 bool write_pose_xml(model_type *model)
 {
-	int						i,k;
+	int						n,k;
 	char					path[1024];
 	bool					ok;
     model_bone_move_type	*bone_move;
@@ -161,7 +172,7 @@ bool write_pose_xml(model_type *model)
     
     pose=model->poses;
     
-    for (i=0;i!=model->npose;i++) {
+    for (n=0;n!=model->npose;n++) {
     
         xml_add_tagstart("Pose");
         xml_add_attribute_text("name",pose->name);

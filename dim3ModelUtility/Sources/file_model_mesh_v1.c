@@ -43,7 +43,7 @@ extern model_tag			bone_parent_tag[max_model_bone],
 
 void decode_mesh_v1_xml(model_type *model,int model_head)
 {
-	int						i,n,k,nfill,ntrig,frame_count,
+	int						i,n,k,bone_idx,nbone,nfill,ntrig,frame_count,
 							tag,hit_box_tag,vertex_tag,bone_tag,vtag,trig_tag,image_tag,
 							fills_tag,fill_tag;
 	model_hit_box_type		*hit_box;
@@ -139,22 +139,29 @@ void decode_mesh_v1_xml(model_type *model,int model_head)
     }
     
         // bones
-        
+
     bone_tag=xml_findfirstchild("Bones",model_head);
 
-    model->nbone=xml_countchildren(bone_tag);
+    nbone=xml_countchildren(bone_tag);
 	tag=xml_findfirstchild("Bone",bone_tag);
-
-    bone=model->bones;
     
-    for (i=0;i!=model->nbone;i++) {
+    for (i=0;i!=nbone;i++) {
+
+			// add new bone
+
+		bone_idx=model_bone_add(model,0,0,0);
+		if (bone_idx==-1) break;
+
+			// fill in bone
+
+		bone=&model->bones[bone_idx];
+
         bone->tag=xml_get_attribute_model_tag(tag,"tag");
 		xml_get_attribute_text(tag,"name",bone->name,name_str_len);
         
         xml_get_attribute_3_coord_int(tag,"c3",&bone->pnt.x,&bone->pnt.y,&bone->pnt.z);
         bone_parent_tag[i]=xml_get_attribute_model_tag(tag,"parent");
     
-        bone++;
 		tag=xml_findnextchild(tag);
     }
 	

@@ -61,7 +61,7 @@ bool server_memory_allocate(void)
 
 
 	// supergumba--testing!
-	
+
 	fprintf(stdout,"model bones = %.2f\n",((float)(max_model_bone*sizeof(model_bone_type)))/1000000.0f);
 	fprintf(stdout,"model poses = %.2f\n",((float)(max_model_pose*sizeof(model_pose_type)))/1000000.0f);
 	fprintf(stdout,"model animate = %.2f\n",((float)(max_model_animate*sizeof(model_animate_type)))/1000000.0f);

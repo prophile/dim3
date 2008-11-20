@@ -122,7 +122,7 @@ void debug_return(void)
 
 void debug_dump(void)
 {
-	int					i,idx,cnt;
+	int					i,idx,cnt,mem_sz;
 	obj_type			*obj;
 	effect_type			*effect;
 	proj_type			*proj;
@@ -148,7 +148,6 @@ void debug_dump(void)
 	fprintf(stdout,"Game\n");
 	fprintf(stdout,"**************************************\n\n");
 	fprintf(stdout,"Project:  %s\n",net_setup.host.proj_name);
-	fprintf(stdout,"Map:  %s\n",map.info.name);
 	fprintf(stdout,"Tick: %d\n",game_time_get());
 	
 	debug_return();
@@ -192,6 +191,21 @@ void debug_dump(void)
 #ifdef D3_OS_WINDOWS
 	fprintf(stdout,"WGL Extensions:\n%s\n",wglGetExtensionsStringARB(wglGetCurrentDC()));
 #endif
+	
+	debug_return();
+
+		// map info
+		
+	fprintf(stdout,"**************************************\n");
+	fprintf(stdout,"Map\n");
+	fprintf(stdout,"**************************************\n\n");
+	fprintf(stdout,"Map:  %s\n",map.info.name);
+	fprintf(stdout,"Author:  %s\n",map.info.author);
+	fprintf(stdout,"Mesh Count:  %d\n",map.mesh.nmesh);
+	fprintf(stdout,"Liquid Count:  %d\n",map.liquid.nliquid);
+	fprintf(stdout,"Spot Count:  %d\n",map.nspot);
+	fprintf(stdout,"Scenery Count:  %d\n",map.nscenery);
+	fprintf(stdout,"Node Count:  %d\n",map.nnode);
 	
 	debug_return();
 	
@@ -282,8 +296,17 @@ void debug_dump(void)
 	debug_return();
 	
 		// models
+
+	mem_sz=sizeof(model_type)*server.count.model;
+
+	mdl=server.models;
+	
+	for (i=0;i!=server.count.model;i++) {
+		mem_sz+=model_memory_size(mdl);
+		mdl++;
+	}
 		
-	debug_header("Models",server.count.model,(sizeof(model_type)*server.count.model));
+	debug_header("Models",server.count.model,mem_sz);
 	
 	debug_space("Name",32);
 	debug_space("Vertexes",10);
@@ -295,10 +318,10 @@ void debug_dump(void)
 	debug_space("---------",10);
 	debug_space("---------",10);
 	debug_return();
-	
+
 	mdl=server.models;
 	
-	for ((i=0);(i!=server.count.model);i++) {
+	for (i=0;i!=server.count.model;i++) {
 		debug_space(mdl->name,32);
 		debug_int_space(mdl->meshes[0].nvertex,10);
 		debug_int_space(mdl->meshes[0].ntrig,10);
@@ -311,7 +334,7 @@ void debug_dump(void)
 	
 		// projectiles
 		
-	debug_header("Projectiles",server.count.proj,-1);
+	debug_header("Projectiles",server.count.proj,(sizeof(proj_type)*max_projectile));
 	
 	debug_space("Name",20);
 	debug_space("Object",20);
@@ -340,7 +363,7 @@ void debug_dump(void)
 	
 		// effects
 		
-	debug_header("Effects",server.count.effect,-1);
+	debug_header("Effects",server.count.effect,(sizeof(effect_type)*max_effect));
 	
 	debug_space("Type",10);
 	debug_space("Life Tick",10);

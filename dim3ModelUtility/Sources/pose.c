@@ -37,19 +37,39 @@ and can be sold or given away.
 
 int model_pose_add(model_type *model)
 {
-	int						n,npose;
+	int						n,pose_idx;
+	model_pose_type			*pose,*ptr;
 	model_bone_move_type	*bone_move;
+
+		// only allow a maximum number of poses
+
+	if (model->npose>=max_model_pose) return(-1);
+
+		// create memory for new pose
+
+	ptr=(model_pose_type*)valloc(sizeof(model_pose_type)*(model->npose+1));
+	if (ptr==NULL) return(-1);
+
+	if (model->poses!=NULL) {
+		memmove(ptr,model->poses,(sizeof(model_pose_type)*model->npose));
+		free(model->poses);
+	}
+
+	model->poses=ptr;
+
+	pose_idx=model->npose;
+	model->npose++;
+
+		// initialize the pose
 	
-	npose=model->npose;
-	if (npose>=max_model_pose) return(-1);
+	pose=&model->poses[pose_idx];
+	bzero(pose,sizeof(model_pose_type));
 	
-	bzero(&model->poses[npose],sizeof(model_pose_type));
+	strcpy(pose->name,"New Pose");
 	
-	strcpy(model->poses[npose].name,"New Pose");
+	bone_move=pose->bone_moves;
 	
-	bone_move=model->poses[npose].bone_moves;
-	
-	for (n=0;n<model->nbone;n++) {
+	for (n=0;n!=model->nbone;n++) {
 		bone_move->acceleration=0;
 		bone_move->skip_blended=FALSE;
 		
@@ -62,42 +82,27 @@ int model_pose_add(model_type *model)
 		bone_move++;
 	}
 	
-	model->npose++;
-	
-	return(npose);
+	return(pose_idx);
 }
 
 int model_pose_duplicate(model_type *model,int pose_idx)
 {
-	int				npose;
+	int				dup_pose_idx;
 
-		// duplicate selected pose
-		
-	npose=model->npose;
-	if (npose>=max_model_pose) return(-1);
+	dup_pose_idx=model_pose_add(model);
+	if (dup_pose_idx==-1) return(-1);
 	
-	memmove(&model->poses[npose],&model->poses[pose_idx],sizeof(model_pose_type));
+	memmove(&model->poses[dup_pose_idx],&model->poses[pose_idx],sizeof(model_pose_type));
+	strcat(model->poses[dup_pose_idx].name," copy");
 	
-	strcat(model->poses[npose].name," copy");
-
-	model->npose++;
-	
-	return(npose);
+	return(dup_pose_idx);
 }
 
 void model_pose_delete(model_type *model,int pose_idx)
 {
-	int					n,k,npose,nanimate,npose_move,sz;
+	int					n,k,nanimate,npose_move;
+	model_pose_type		*ptr;
 	model_animate_type	*animate;
-    
-        // delete pose
-    
-    npose=model->npose;
-    
-    if (pose_idx<(npose-1)) {
-        sz=((npose-1)-pose_idx)*sizeof(model_pose_type);
-        memmove(&model->poses[pose_idx],&model->poses[pose_idx+1],sz);
-    }
     
         // fix pose indexes
         
@@ -112,6 +117,39 @@ void model_pose_delete(model_type *model,int pose_idx)
         }
         animate++;
     }
+
+		// is the list completely empty?
+
+	if (model->npose==1) {
+		free(model->poses);
+		model->poses=NULL;
+		model->npose=0;
+		return;
+	}
+
+		// if for some reason we can't create new
+		// memory, just shuffle the list and wait
+		// until next time
+
+	ptr=(model_pose_type*)valloc(sizeof(model_pose_type)*(model->npose-1));
+
+	if (ptr==NULL) {
+		if (pose_idx<(model->npose-1)) {
+			memmove(&model->poses[pose_idx],&model->poses[pose_idx+1],(sizeof(model_pose_type)*((model->npose-pose_idx)-1)));
+		}
+	}
+	else {
+
+		if (pose_idx>0) {
+			memmove(ptr,model->poses,(sizeof(model_pose_type)*pose_idx));
+		}
+		if (pose_idx<(model->npose-1)) {
+			memmove(&ptr[pose_idx],&model->poses[pose_idx+1],(sizeof(model_pose_type)*((model->npose-pose_idx)-1)));
+		}
+
+		free(model->poses);
+		model->poses=ptr;
+	}
 	
 	model->npose--;
 }

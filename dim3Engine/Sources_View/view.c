@@ -175,10 +175,6 @@ void view_create_screen_size_list(void)
 			}
 		}
 	}
-
-	render_info.screen_sizes[k].wid=768;		// supergumba -- testing
-	render_info.screen_sizes[k].high=480;
-	k++;
 	
 	render_info.nscreen_size=k;
 }
