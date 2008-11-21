@@ -62,7 +62,7 @@ bool model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 	float			*vl,*tl,*cl,*nl,*vp,*cp,*np,*vertex_ptr,
 					*vertex_array,*coord_array,*color_array,*normal_array;
     model_trig_type	*trig;
-	
+
 	trig_count=material->trig_count;
 	if (trig_count==0) return(FALSE);
 

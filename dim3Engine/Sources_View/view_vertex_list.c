@@ -41,7 +41,7 @@ extern void view_unbind_map_vertex_object(void);
 
 /* =======================================================
 
-      Setup Light Change Cache
+      Setup Mesh Light Change Cache
       
 ======================================================= */
 
@@ -60,41 +60,38 @@ bool view_compile_mesh_gl_list_init(void)
 
 		mesh->draw.nlight=-1;
 
-			// memory for colors and normals
+			// get count for color and normal lists
 
+		cnt=0;
 		poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {
-
-				// number of vertexes
-
-			cnt=poly->ptsz+poly->light.nvertex;
-
-				// get memory
-
-			sz=(cnt*3)*sizeof(float);
-
-			poly->draw.p_color=(float*)malloc(sz);
-			if (poly->draw.p_color==NULL) return(FALSE);
-
-			poly->draw.p_normal=(float*)malloc(sz);
-			if (poly->draw.p_normal==NULL) return(FALSE);
-
-				// clear to default values
-
-			pc=poly->draw.p_color;
-			pn=poly->draw.p_normal;
-
-			for (t=0;t!=cnt;t++) {
-				*pc++=1.0f;
-				*pc++=1.0f;
-				*pc++=1.0f;
-				*pn++=0.5f;
-				*pn++=0.5f;
-				*pn++=1.0f;
-			}
-
+			cnt+=(poly->ptsz+poly->light.nvertex);
 			poly++;
+		}
+
+			// allocate the lists
+
+		sz=(cnt*3)*sizeof(float);
+
+		mesh->draw.p_color=(float*)malloc(sz);
+		if (mesh->draw.p_color==NULL) return(FALSE);
+
+		mesh->draw.p_normal=(float*)malloc(sz);
+		if (mesh->draw.p_normal==NULL) return(FALSE);
+
+			// defaults
+
+		pc=mesh->draw.p_color;
+		pn=mesh->draw.p_normal;
+
+		for (t=0;t!=cnt;t++) {
+			*pc++=1.0f;
+			*pc++=1.0f;
+			*pc++=1.0f;
+			*pn++=0.5f;
+			*pn++=0.5f;
+			*pn++=1.0f;
 		}
 
 		mesh++;
@@ -105,101 +102,109 @@ bool view_compile_mesh_gl_list_init(void)
 
 void view_compile_mesh_gl_list_free(void)
 {
-	int					n,k;
+	int					n;
 	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
 
 	mesh=map.mesh.meshes;
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
-
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-			free(poly->draw.p_color);
-			free(poly->draw.p_normal);
-			poly++;
-		}
-
+		free(mesh->draw.p_color);
+		free(mesh->draw.p_normal);
 		mesh++;
 	}
 }
 
 /* =======================================================
 
-      Calculate Polygon Lighting
+      Calculate Mesh Light Cache
       
 ======================================================= */
 
-void view_compile_mesh_gl_lists_poly_normal(map_mesh_type *mesh,map_mesh_poly_type *poly)
+void view_compile_mesh_gl_lists_normal(map_mesh_type *mesh)
 {
-	int									n;
+	int									n,k;
 	float								*pc,*pn;
 	d3pnt								*pnt;
+	map_mesh_poly_type					*poly;
 	map_mesh_poly_tessel_vertex_type	*lv;
 
-	pc=poly->draw.p_color;
-	pn=poly->draw.p_normal;
+	pc=mesh->draw.p_color;
+	pn=mesh->draw.p_normal;
 
-		// polygon lighting vertexes
+	poly=mesh->polys;
+		
+	for (n=0;n!=mesh->npoly;n++) {
 
-	for (n=0;n!=poly->ptsz;n++) {
-		pnt=&mesh->vertexes[poly->v[n]];
-		map_calculate_light_color_normal((double)pnt->x,(double)pnt->y,(double)pnt->z,pc,pn);
-		pc+=3;
-		pn+=3;
-	}
+			// polygon lighting vertexes
 
-		// simple tessel uses polygon
-		// vertexes, so ignore lighting vertexes
+		for (k=0;k!=poly->ptsz;k++) {
+			pnt=&mesh->vertexes[poly->v[k]];
+			map_calculate_light_color_normal((double)pnt->x,(double)pnt->y,(double)pnt->z,pc,pn);
+			pc+=3;
+			pn+=3;
+		}
 
-	if (poly->light.simple_tessel) return;
+			// if not simple, calculate the lighting mesh
 
-		// tesseled lighting vertexes
+		if (!poly->light.simple_tessel) {
 
-	lv=poly->light.vertexes;
+				// tesseled lighting vertexes
 
-	for (n=0;n!=poly->light.nvertex;n++) {
-		map_calculate_light_color_normal((double)lv->x,(double)lv->y,(double)lv->z,pc,pn);
-		pc+=3;
-		pn+=3;
-		lv++;
+			lv=poly->light.vertexes;
+
+			for (k=0;k!=poly->light.nvertex;k++) {
+				map_calculate_light_color_normal((double)lv->x,(double)lv->y,(double)lv->z,pc,pn);
+				pc+=3;
+				pn+=3;
+				lv++;
+			}
+		}
+
+		poly++;
 	}
 }
 
-void view_compile_mesh_gl_lists_poly_ray_trace(map_mesh_type *mesh,map_mesh_poly_type *poly)
+void view_compile_mesh_gl_lists_ray_trace(map_mesh_type *mesh)
 {
-	int									n;
+	int									n,k;
 	float								*pc,*pn;
 	d3pnt								*pnt;
+	map_mesh_poly_type					*poly;
 	map_mesh_poly_tessel_vertex_type	*lv;
 
-	pc=poly->draw.p_color;
-	pn=poly->draw.p_normal;
+	pc=mesh->draw.p_color;
+	pn=mesh->draw.p_normal;
 
-		// polygon lighting vertexes
+	poly=mesh->polys;
+		
+	for (n=0;n!=mesh->npoly;n++) {
 
-	for (n=0;n!=poly->ptsz;n++) {
-		pnt=&mesh->vertexes[poly->v[n]];
-		map_calculate_ray_trace_light_color_normal((double)pnt->x,(double)pnt->y,(double)pnt->z,pc,pn);
-		pc+=3;
-		pn+=3;
-	}
+			// polygon lighting vertexes
 
-		// simple tessel uses polygon
-		// vertexes, so ignore lighting vertexes
+		for (k=0;k!=poly->ptsz;k++) {
+			pnt=&mesh->vertexes[poly->v[k]];
+			map_calculate_ray_trace_light_color_normal((double)pnt->x,(double)pnt->y,(double)pnt->z,pc,pn);
+			pc+=3;
+			pn+=3;
+		}
 
-	if (poly->light.simple_tessel) return;
+			// if not simple, calculate the lighting mesh
 
-		// tesseled lighting vertexes
+		if (!poly->light.simple_tessel) {
 
-	lv=poly->light.vertexes;
+				// tesseled lighting vertexes
 
-	for (n=0;n!=poly->light.nvertex;n++) {
-		map_calculate_ray_trace_light_color_normal((double)lv->x,(double)lv->y,(double)lv->z,pc,pn);
-		pc+=3;
-		pn+=3;
-		lv++;
+			lv=poly->light.vertexes;
+
+			for (k=0;k!=poly->light.nvertex;k++) {
+				map_calculate_ray_trace_light_color_normal((double)lv->x,(double)lv->y,(double)lv->z,pc,pn);
+				pc+=3;
+				pn+=3;
+				lv++;
+			}
+		}
+
+		poly++;
 	}
 }
 
@@ -222,22 +227,12 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 	map_mesh_poly_tessel_vertex_type	*lv;
 
 		// find total number of vertexes in
-		// this seen
+		// this scene
 
 	v_count=0;
 
 	for (n=0;n!=mesh_cnt;n++) {
-		mesh=&map.mesh.meshes[mesh_list[n]];
-		
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-			v_count+=poly->ptsz;
-			v_count+=poly->light.nvertex;
-			poly++;
-		}
-		
-		mesh++;
+		v_count+=map.mesh.meshes[mesh_list[n]].draw.vertex_count;
 	}
 
 	map.mesh_vertexes.draw_vertex_count=v_count;
@@ -286,7 +281,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 	v_idx=0;
 	
 		// run throught the meshes
-
+	
 	for (n=0;n!=mesh_cnt;n++) {
 
 		mesh=&map.mesh.meshes[mesh_list[n]];
@@ -299,30 +294,28 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 		recalc_light=!map_calculate_light_reduce_check_equal(mesh);
 		map_calculate_light_reduce_save(mesh);
 
+		if ((recalc_light) && (!mesh->flag.hilite)) {
+
+			if (setup.quality_mode!=quality_mode_super) {
+				view_compile_mesh_gl_lists_normal(mesh);
+			}
+			else {
+				view_compile_mesh_gl_lists_ray_trace(mesh);
+			}
+
+		}
+		
+		lpc=mesh->draw.p_color;
+		lpn=mesh->draw.p_normal;
+
 			// run through the polys
 
 		poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {
 
-				// calculate the vertex and mesh lighting
-
-			if ((recalc_light) && (!mesh->flag.hilite)) {
-
-				if (setup.quality_mode!=quality_mode_super) {
-					view_compile_mesh_gl_lists_poly_normal(mesh,poly);
-				}
-				else {
-					view_compile_mesh_gl_lists_poly_ray_trace(mesh,poly);
-				}
-
-			}
-
 				// polygon vertexes
 
-			lpc=poly->draw.p_color;
-			lpn=poly->draw.p_normal;
-			
 			x_shift_offset=poly->draw.x_shift_offset;
 			y_shift_offset=poly->draw.y_shift_offset;
 
@@ -382,10 +375,10 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 					// create light mesh draw indexes by offset
 
-				nvertex=poly->light.ntrig*3;
+				nvertex=poly->light.nquad<<2;
 
 				for (t=0;t!=nvertex;t++) {
-					poly->light.trig_vertex_draw_idx[t]=poly->light.trig_vertex_idx[t]+v_light_start_idx;
+					poly->light.quad_vertex_draw_idx[t]=poly->light.quad_vertex_idx[t]+v_light_start_idx;
 				}
 			}
 

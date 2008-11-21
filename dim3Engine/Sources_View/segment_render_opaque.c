@@ -224,7 +224,7 @@ void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool
 				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 			}
 			else {
-				glDrawElements(GL_TRIANGLES,(poly->light.ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_draw_idx);
+				glDrawElements(GL_QUADS,(poly->light.nquad<<2),GL_UNSIGNED_INT,(GLvoid*)poly->light.quad_vertex_draw_idx);
 			}
 
 			poly++;
@@ -322,8 +322,7 @@ void render_opaque_portal_lighting(int mesh_cnt,int *mesh_list,int stencil_pass)
 
 			gl_texture_tesseled_lighting_set(-1,poly->dark_factor);
 			glStencilFunc(GL_EQUAL,poly->draw.stencil_idx,0xFF);
-
-			glDrawElements(GL_TRIANGLES,(poly->light.ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_draw_idx);
+			glDrawElements(GL_QUADS,(poly->light.nquad<<2),GL_UNSIGNED_INT,(GLvoid*)poly->light.quad_vertex_draw_idx);
 
 			poly++;
 		}
@@ -392,7 +391,7 @@ void render_opaque_portal_lighting_mesh_debug(int mesh_cnt,int *mesh_list,int st
 				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.portal_v);
 			}
 			else {
-				glDrawElements(GL_TRIANGLES,(poly->light.ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_draw_idx);
+				glDrawElements(GL_QUADS,(poly->light.nquad<<2),GL_UNSIGNED_INT,(GLvoid*)poly->light.quad_vertex_draw_idx);
 			}
 
 			poly++;
@@ -554,7 +553,7 @@ void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass)
 			}
 			else {
 				glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
-				glDrawElements(GL_TRIANGLES,(poly->light.ntrig*3),GL_UNSIGNED_INT,(GLvoid*)poly->light.trig_vertex_draw_idx);
+				glDrawElements(GL_QUADS,(poly->light.nquad<<2),GL_UNSIGNED_INT,(GLvoid*)poly->light.quad_vertex_draw_idx);
 			}
 
 			poly++;

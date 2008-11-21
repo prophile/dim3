@@ -38,7 +38,7 @@ and can be sold or given away.
 void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int grid_split_sz)
 {
 	int									n,vl_cnt,x,y,ptsz,
-										xzdist,xdist,ydist,zdist,xztot,ytot,xskip,yskip,zskip,ntrig;
+										xzdist,xdist,ydist,zdist,xztot,ytot,xskip,yskip,zskip,nquad;
 	int									grid_x[light_tessel_grid_sz+1],grid_z[light_tessel_grid_sz+1],
 										grid_y[light_tessel_grid_sz+1],
 										idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
@@ -127,11 +127,11 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 	poly->light.vertexes=malloc(sizeof(map_mesh_poly_tessel_vertex_type)*((xztot+1)*(ytot+1)));
 	if (poly->light.vertexes==NULL) return;
 	
-	poly->light.trig_vertex_idx=malloc(sizeof(int)*((xztot*ytot)*6));
-	if (poly->light.trig_vertex_idx==NULL) return;
+	poly->light.quad_vertex_idx=malloc(sizeof(int)*((xztot*ytot)*4));
+	if (poly->light.quad_vertex_idx==NULL) return;
 	
-	poly->light.trig_vertex_draw_idx=malloc(sizeof(int)*((xztot*ytot)*6));
-	if (poly->light.trig_vertex_draw_idx==NULL) return;
+	poly->light.quad_vertex_draw_idx=malloc(sizeof(int)*((xztot*ytot)*4));
+	if (poly->light.quad_vertex_draw_idx==NULL) return;
 
 		// create vertexes
 		
@@ -161,46 +161,29 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 
 		// tesselate grid into triangles
 
-	ntrig=0;
+	nquad=0;
 
 	for (y=0;y!=ytot;y++) {
 		
 		for (x=0;x!=xztot;x++) {
-		
-			if (((y+x)&0x1)==0) {
-				light->trig_vertex_idx[(ntrig*3)]=idx[x][y];
-				light->trig_vertex_idx[(ntrig*3)+1]=idx[x+1][y];
-				light->trig_vertex_idx[(ntrig*3)+2]=idx[x+1][y+1];
-				ntrig++;
-				
-				light->trig_vertex_idx[(ntrig*3)]=idx[x][y];
-				light->trig_vertex_idx[(ntrig*3)+1]=idx[x][y+1];
-				light->trig_vertex_idx[(ntrig*3)+2]=idx[x+1][y+1];
-				ntrig++;
-			}
-			else {
-				light->trig_vertex_idx[(ntrig*3)]=idx[x+1][y];
-				light->trig_vertex_idx[(ntrig*3)+1]=idx[x][y];
-				light->trig_vertex_idx[(ntrig*3)+2]=idx[x][y+1];
-				ntrig++;
-				
-				light->trig_vertex_idx[(ntrig*3)]=idx[x+1][y];
-				light->trig_vertex_idx[(ntrig*3)+1]=idx[x+1][y+1];
-				light->trig_vertex_idx[(ntrig*3)+2]=idx[x][y+1];
-				ntrig++;
-			}
 			
+			light->quad_vertex_idx[(nquad<<2)]=idx[x][y];
+			light->quad_vertex_idx[(nquad<<2)+1]=idx[x+1][y];
+			light->quad_vertex_idx[(nquad<<2)+2]=idx[x+1][y+1];
+			light->quad_vertex_idx[(nquad<<2)+3]=idx[x][y+1];
+			
+			nquad++;
 		}
 	}
 
 	light->nvertex=vl_cnt;
-	light->ntrig=ntrig;
+	light->nquad=nquad;
 }
 
 void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int grid_split_sz)
 {
 	int									n,vl_cnt,x,y,z,ptsz,px[8],py[8],pz[8],
-										xdist,zdist,xtot,ztot,xskip,zskip,ntrig;
+										xdist,zdist,xtot,ztot,xskip,zskip,nquad;
 	int									grid_x[light_tessel_grid_sz+1],
 										grid_z[light_tessel_grid_sz+1],
 										idx[light_tessel_grid_sz+1][light_tessel_grid_sz+1];
@@ -283,11 +266,11 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 	poly->light.vertexes=malloc(sizeof(map_mesh_poly_tessel_vertex_type)*((xtot+1)*(ztot+1)));
 	if (poly->light.vertexes==NULL) return;
 	
-	poly->light.trig_vertex_idx=malloc(sizeof(int)*((xtot*ztot)*6));
-	if (poly->light.trig_vertex_idx==NULL) return;
+	poly->light.quad_vertex_idx=malloc(sizeof(int)*((xtot*ztot)*4));
+	if (poly->light.quad_vertex_idx==NULL) return;
 	
-	poly->light.trig_vertex_draw_idx=malloc(sizeof(int)*((xtot*ztot)*6));
-	if (poly->light.trig_vertex_draw_idx==NULL) return;
+	poly->light.quad_vertex_draw_idx=malloc(sizeof(int)*((xtot*ztot)*4));
+	if (poly->light.quad_vertex_draw_idx==NULL) return;
 
 		// create vertexes
 		
@@ -321,40 +304,23 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 
 		// tesselate grid into triangles
 
-	ntrig=0;
+	nquad=0;
 
 	for (z=0;z!=ztot;z++) {
 		
 		for (x=0;x!=xtot;x++) {
 		
-			if (((z+x)&0x1)==0) {
-				light->trig_vertex_idx[(ntrig*3)]=idx[x][z];
-				light->trig_vertex_idx[(ntrig*3)+1]=idx[x+1][z];
-				light->trig_vertex_idx[(ntrig*3)+2]=idx[x+1][z+1];
-				ntrig++;
-				
-				light->trig_vertex_idx[(ntrig*3)]=idx[x][z];
-				light->trig_vertex_idx[(ntrig*3)+1]=idx[x][z+1];
-				light->trig_vertex_idx[(ntrig*3)+2]=idx[x+1][z+1];
-				ntrig++;
-			}
-			else {
-				light->trig_vertex_idx[(ntrig*3)]=idx[x+1][z];
-				light->trig_vertex_idx[(ntrig*3)+1]=idx[x][z];
-				light->trig_vertex_idx[(ntrig*3)+2]=idx[x][z+1];
-				ntrig++;
-				
-				light->trig_vertex_idx[(ntrig*3)]=idx[x+1][z];
-				light->trig_vertex_idx[(ntrig*3)+1]=idx[x+1][z+1];
-				light->trig_vertex_idx[(ntrig*3)+2]=idx[x][z+1];
-				ntrig++;
-			}
-			
+			light->quad_vertex_idx[(nquad<<2)]=idx[x][z];
+			light->quad_vertex_idx[(nquad<<2)+1]=idx[x+1][z];
+			light->quad_vertex_idx[(nquad<<2)+2]=idx[x+1][z+1];
+			light->quad_vertex_idx[(nquad<<2)+3]=idx[x][z+1];
+
+			nquad++;
 		}
 	}
 
 	light->nvertex=vl_cnt;
-	light->ntrig=ntrig;
+	light->nquad=nquad;
 }
 
 /* =======================================================
@@ -367,11 +333,11 @@ void map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *p
 {
 	int			grid_split_sz;
 
-	poly->light.ntrig=0;
 	poly->light.nvertex=0;
+	poly->light.nquad=0;
 		
-	poly->light.trig_vertex_idx=NULL;
-	poly->light.trig_vertex_draw_idx=NULL;
+	poly->light.quad_vertex_idx=NULL;
+	poly->light.quad_vertex_draw_idx=NULL;
 	poly->light.vertexes=NULL;
 	
 		// simple light tessels
@@ -379,14 +345,10 @@ void map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *p
 
 	if ((quality_mode==quality_mode_low) || (poly->draw.simple_tessel) || (mesh->flag.hilite)) {
 		poly->light.simple_tessel=TRUE;
-		poly->light.nvertex=0;
-		poly->light.ntrig=0;
 		return;
 	}
 	
 		// tesseled lighting needs draw and vertex lists
-
-
 		// tessel depending on shape of polygon
 	
 	poly->light.simple_tessel=FALSE;
@@ -403,8 +365,8 @@ void map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *p
 
 void map_dispose_poly_tesseled_vertexes(map_mesh_poly_type *poly)
 {
-	if (poly->light.trig_vertex_idx!=NULL) free(poly->light.trig_vertex_idx);
-	if (poly->light.trig_vertex_draw_idx!=NULL) free(poly->light.trig_vertex_draw_idx);
+	if (poly->light.quad_vertex_idx!=NULL) free(poly->light.quad_vertex_idx);
+	if (poly->light.quad_vertex_draw_idx!=NULL) free(poly->light.quad_vertex_draw_idx);
 	if (poly->light.vertexes!=NULL) free(poly->light.vertexes);
 }
 
@@ -416,32 +378,15 @@ void map_dispose_poly_tesseled_vertexes(map_mesh_poly_type *poly)
 
 bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 {
-	int					n,k,nvlist;
+	int					n,k,vertex_count;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
-		// find maximum possible number of vertexes
-		// that could be drawn in a scene
-	
-	nvlist=0;
-	
-	mesh=map->mesh.meshes;
-		
-	for (n=0;n!=map->mesh.nmesh;n++) {
-
-		nvlist+=mesh->nvertex;
-		nvlist+=(mesh->npoly*light_tessel_max_vertex);
-		
-		mesh++;
-	}
-	
-		// no indexes
+		// indexes and max vertexes are only
+		// used for liquids
 
 	map->mesh_vertexes.index_ptr=NULL;
-
-		// remember total
-
-	map->mesh_vertexes.max_vertex_count=nvlist;
+	map->mesh_vertexes.max_vertex_count=0;
 	map->mesh_vertexes.draw_vertex_count=0;
 	
 		// create tesseled lighting vertexes
@@ -450,12 +395,21 @@ bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 	
 	for (n=0;n!=map->mesh.nmesh;n++) {
 
+		vertex_count=0;
+
+			// create lighting
+
 		poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {
 			map_create_poly_tesseled_vertexes(mesh,poly,quality_mode);
+			vertex_count+=(poly->ptsz+poly->light.nvertex);
 			poly++;
 		}
+
+			// remember the count
+
+		mesh->draw.vertex_count=vertex_count;
 		
 		mesh++;
 	}

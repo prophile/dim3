@@ -52,18 +52,10 @@ int model_mesh_add(model_type *model)
 	mesh->vertexes=malloc(max_model_vertex*sizeof(model_vertex_type));
 	mesh->trigs=malloc(max_model_trig*sizeof(model_trig_type));
 	mesh->materials=malloc(max_model_texture*sizeof(model_material_type));
-	mesh->draw.gl_vertex_array=malloc((max_model_vertex*3)*sizeof(float));
-	mesh->draw.gl_color_array=malloc((max_model_vertex*3)*sizeof(float));
-	mesh->draw.gl_vertex_normal_array=malloc((max_model_vertex*3)*sizeof(float));
-	mesh->draw.gl_light_normal_array=malloc((max_model_vertex*3)*sizeof(float));
 	
 	bzero(mesh->vertexes,(max_model_vertex*sizeof(model_vertex_type)));
 	bzero(mesh->trigs,(max_model_trig*sizeof(model_trig_type)));
 	bzero(mesh->materials,(max_model_texture*sizeof(model_material_type)));
-	bzero(mesh->draw.gl_vertex_array,(max_model_vertex*3)*sizeof(float));
-	bzero(mesh->draw.gl_color_array,(max_model_vertex*3)*sizeof(float));
-	bzero(mesh->draw.gl_vertex_normal_array,(max_model_vertex*3)*sizeof(float));
-	bzero(mesh->draw.gl_light_normal_array,(max_model_vertex*3)*sizeof(float));
 	
 		// initialize
 		

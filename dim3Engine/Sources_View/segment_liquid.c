@@ -418,7 +418,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 
 		// draw the quads
 
-	glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)map.liquid_vertexes.index_ptr);
+	glDrawElements(GL_QUADS,(quad_cnt<<2),GL_UNSIGNED_INT,(GLvoid*)map.liquid_vertexes.index_ptr);
 
 		// end texture
 

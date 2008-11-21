@@ -43,7 +43,8 @@ extern model_tag			bone_parent_tag[max_model_bone],
 
 void decode_mesh_v2_xml(model_type *model,int model_head)
 {
-	int						i,n,k,j,bone_idx,nbone,mesh_idx,nmesh,nfill,ntrig,
+	int						i,n,k,j,bone_idx,nbone,hit_box_idx,nhit_box,
+							mesh_idx,nmesh,nfill,ntrig,
 							tag,hit_box_tag,meshes_tag,mesh_tag,
 							vertex_tag,bone_tag,vtag,trig_tag,
 							materials_tag,material_tag,fills_tag,fill_tag;
@@ -118,17 +119,24 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
     hit_box_tag=xml_findfirstchild("Hit_Boxes",model_head);
 	if (hit_box_tag!=-1) {
 	
-		model->nhit_box=xml_countchildren(hit_box_tag);
+		nhit_box=xml_countchildren(hit_box_tag);
 		tag=xml_findfirstchild("Hit_Box",hit_box_tag);
 		
-		hit_box=model->hit_boxes;
-		
-		for (i=0;i!=model->nhit_box;i++) {
+		for (i=0;i!=nhit_box;i++) {
+ 				
+				// add new hit box
+
+			hit_box_idx=model_hit_box_add(model);
+			if (hit_box_idx==-1) break;
+
+				// fill in hit box
+
+			hit_box=&model->hit_boxes[hit_box_idx];
+
 			xml_get_attribute_text(tag,"name",hit_box->name,64);
 			xml_get_attribute_3_coord_int(tag,"size",&hit_box->box.size.x,&hit_box->box.size.y,&hit_box->box.size.z);
 			xml_get_attribute_3_coord_int(tag,"offset",&hit_box->box.offset.x,&hit_box->box.offset.y,&hit_box->box.offset.z);
 			
-			hit_box++;
 			tag=xml_findnextchild(tag);
 		}
     }

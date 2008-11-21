@@ -382,6 +382,9 @@ extern bool model_open(model_type *model,char *name,bool load_bitmaps,bool load_
 extern bool model_save(model_type *model);
 extern void model_close(model_type *model);
 
+extern bool model_draw_array_initialize(model_type *model);
+extern void model_draw_array_free(model_type *model);
+
 extern void model_refresh_textures(model_type *model);
 
 extern int model_memory_size(model_type *model);

@@ -71,29 +71,9 @@ int collide_point_distance(d3pnt *pt_1,d3pnt *pt_2)
 	return((int)sqrt((dx*dx)+(dy*dy)+(dz*dz)));
 }
 
-void collide_object_ray_trace_points(obj_type *obj,int x_add,int z_add,int *px,int *py,int *pz)
+void collide_object_box_ray_trace_points(d3pnt *pt,d3pnt *box_sz,int side,float face_ang,int x_add,int z_add,int *px,int *py,int *pz)
 {
-	int			x,z,x_sz,z_sz,ty,by,y_sz,
-				move_side,face_side,side;
-	float		move_ang,face_ang;
-
-		// determine the polygon face to
-		// check hit points for
-
-	move_ang=angle_find(0,0,x_add,z_add);
-	face_ang=angle_add(obj->ang.y,obj->draw.rot.y);
-
-	move_side=((int)((move_ang+45.0f)/90.0f))&0x3;
-	face_side=((int)((face_ang+45.0f)/90.0f))&0x3;
-	side=(move_side-face_side)&0x3;
-
-		// polygon size
-
-	x=obj->pnt.x;
-	x_sz=obj->size.x;
-
-	z=obj->pnt.z;
-	z_sz=obj->size.z;
+	int			ty,by,y_sz;
 
 		// get points for that poly face
 
@@ -102,51 +82,49 @@ void collide_object_ray_trace_points(obj_type *obj,int x_add,int z_add,int *px,i
 			// front side
 
 		case 0:
-			pz[0]=pz[1]=pz[2]=pz[3]=pz[4]=pz[5]=pz[6]=pz[7]=pz[8]=pz[9]=pz[10]=pz[11]=pz[12]=pz[13]=pz[14]=pz[15]=z-(z_sz>>1);
-			px[0]=px[3]=px[6]=px[9]=px[12]=x-(x_sz>>1);
-			px[1]=px[4]=px[7]=px[10]=px[13]=x;
-			px[2]=px[5]=px[8]=px[11]=px[14]=x+(x_sz>>1);
+			pz[0]=pz[1]=pz[2]=pz[3]=pz[4]=pz[5]=pz[6]=pz[7]=pz[8]=pz[9]=pz[10]=pz[11]=pz[12]=pz[13]=pz[14]=pz[15]=pt->z-(box_sz->z>>1);
+			px[0]=px[3]=px[6]=px[9]=px[12]=pt->x-(box_sz->x>>1);
+			px[1]=px[4]=px[7]=px[10]=px[13]=pt->x;
+			px[2]=px[5]=px[8]=px[11]=px[14]=pt->x+(box_sz->x>>1);
 			break;
 
 			// right side
 
 		case 1:
-			px[0]=px[1]=px[2]=px[3]=px[4]=px[5]=px[6]=px[7]=px[8]=px[9]=px[10]=px[11]=px[12]=px[13]=px[14]=px[15]=x+(x_sz>>1);
-			pz[0]=pz[3]=pz[6]=pz[9]=pz[12]=z-(z_sz>>1);
-			pz[1]=pz[4]=pz[7]=pz[10]=pz[13]=z;
-			pz[2]=pz[5]=pz[8]=pz[11]=pz[14]=z+(z_sz>>1);
+			px[0]=px[1]=px[2]=px[3]=px[4]=px[5]=px[6]=px[7]=px[8]=px[9]=px[10]=px[11]=px[12]=px[13]=px[14]=px[15]=pt->x+(box_sz->x>>1);
+			pz[0]=pz[3]=pz[6]=pz[9]=pz[12]=pt->z-(box_sz->z>>1);
+			pz[1]=pz[4]=pz[7]=pz[10]=pz[13]=pt->z;
+			pz[2]=pz[5]=pz[8]=pz[11]=pz[14]=pt->z+(box_sz->z>>1);
 			break;
 
 			// back side
 
 		case 2:
-			pz[0]=pz[1]=pz[2]=pz[3]=pz[4]=pz[5]=pz[6]=pz[7]=pz[8]=pz[9]=pz[10]=pz[11]=pz[12]=pz[13]=pz[14]=pz[15]=z+(z_sz>>1);
-			px[0]=px[3]=px[6]=px[9]=px[12]=x-(x_sz>>1);
-			px[1]=px[4]=px[7]=px[10]=px[13]=x;
-			px[2]=px[5]=px[8]=px[11]=px[14]=x+(x_sz>>1);
+			pz[0]=pz[1]=pz[2]=pz[3]=pz[4]=pz[5]=pz[6]=pz[7]=pz[8]=pz[9]=pz[10]=pz[11]=pz[12]=pz[13]=pz[14]=pz[15]=pt->z+(box_sz->z>>1);
+			px[0]=px[3]=px[6]=px[9]=px[12]=pt->x-(box_sz->x>>1);
+			px[1]=px[4]=px[7]=px[10]=px[13]=pt->x;
+			px[2]=px[5]=px[8]=px[11]=px[14]=pt->x+(box_sz->x>>1);
 			break;
 
 			// left side
 
 		case 3:
-			px[0]=px[1]=px[2]=px[3]=px[4]=px[5]=px[6]=px[7]=px[8]=px[9]=px[10]=px[11]=px[12]=px[13]=px[14]=px[15]=x-(x_sz>>1);
-			pz[0]=pz[3]=pz[6]=pz[9]=pz[12]=z-(z_sz>>1);
-			pz[1]=pz[4]=pz[7]=pz[10]=pz[13]=z;
-			pz[2]=pz[5]=pz[8]=pz[11]=pz[14]=z+(z_sz>>1);
+			px[0]=px[1]=px[2]=px[3]=px[4]=px[5]=px[6]=px[7]=px[8]=px[9]=px[10]=px[11]=px[12]=px[13]=px[14]=px[15]=pt->x-(box_sz->x>>1);
+			pz[0]=pz[3]=pz[6]=pz[9]=pz[12]=pt->z-(box_sz->z>>1);
+			pz[1]=pz[4]=pz[7]=pz[10]=pz[13]=pt->z;
+			pz[2]=pz[5]=pz[8]=pz[11]=pz[14]=pt->z+(box_sz->z>>1);
 			break;
 
 	}
 
 		// rotate face
 
-	rotate_2D_polygon(15,px,pz,x,z,face_ang);
+	rotate_2D_polygon(15,px,pz,pt->x,pt->z,face_ang);
 
 		// setup Ys
 		
-	ty=obj->pnt.y-obj->size.y;
-	if (obj->duck.mode!=dm_stand) ty+=obj->duck.y_move;
-	
-	by=obj->pnt.y;
+	ty=pt->y-box_sz->y;
+	by=pt->y;
 	
 	y_sz=(by-ty)>>2;
 
@@ -157,20 +135,30 @@ void collide_object_ray_trace_points(obj_type *obj,int x_add,int z_add,int *px,i
 	py[12]=py[13]=py[14]=by-(map_enlarge>>1);
 }
 
-bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
+bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,int *yadd,int *zadd)
 {
 	int						n,x,z,idx,xadd2,yadd2,zadd2,radius,
 							px[21],py[21],pz[21],
-							d,dist,mv_dist;
-	float					mv_ang;
+							d,dist,mv_dist,side,move_side,face_side;
+	float					mv_ang,move_ang,face_ang;
 	bool					bump,hits[21];
 	d3pnt					spt[21],ept[21],hpt[21];
 	map_mesh_poly_type		*poly;
 	ray_trace_contact_type	base_contact,contacts[21];
 
+		// determine the polygon face to
+		// check hit points for
+
+	move_ang=angle_find(0,0,(*xadd),(*zadd));
+	face_ang=angle_add(obj->ang.y,obj->draw.rot.y);
+
+	move_side=((int)((move_ang+45.0f)/90.0f))&0x3;
+	face_side=((int)((face_ang+45.0f)/90.0f))&0x3;
+	side=(move_side-face_side)&0x3;
+
 		// get collision points
 
-	collide_object_ray_trace_points(obj,*xadd,*zadd,px,py,pz);
+	collide_object_box_ray_trace_points(pt,box_sz,side,face_ang,*xadd,*zadd,px,py,pz);
 
 		// need to increase ray check distance
 		// to avoid objects getting close to polygons
@@ -341,6 +329,75 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	}
 
 	return(TRUE);
+}
+
+bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
+{
+	int					n,nhit_box;
+	bool				hit_box_hit;
+	d3pnt				pt,box_sz;
+	model_draw			*draw;
+	model_type			*model;
+	model_hit_box_type	*hit_box;
+
+		// are we using hit box hits?
+
+	hit_box_hit=FALSE;
+
+	if (obj->hit_box.on) {
+
+		draw=&obj->draw;
+		if ((draw->uid!=-1) && (!draw->on)) {
+	
+			model=model_find_uid(draw->uid);
+			if (model!=NULL) {
+				hit_box_hit=TRUE;
+			}
+		}
+	}
+
+		// regular collisions
+
+	if (!hit_box_hit) {
+		box_sz.x=obj->size.x;
+		box_sz.z=obj->size.z;
+
+		box_sz.y=obj->size.y;
+		if (obj->duck.mode!=dm_stand) box_sz.y-=obj->duck.y_move;
+
+		return(collide_object_box_to_map(obj,&obj->pnt,&box_sz,xadd,yadd,zadd));
+	}
+
+		// hit box collisions
+
+	else {
+
+		hit_box=model->hit_boxes;
+		nhit_box=model->nhit_box;
+		
+		for (n=0;n!=nhit_box;n++) {
+			pt.x=obj->pnt.x+hit_box->box.offset.x;
+			pt.y=obj->pnt.y+hit_box->box.offset.y;
+			pt.z=obj->pnt.z+hit_box->box.offset.z;
+
+			box_sz.x=hit_box->box.size.x;
+			box_sz.z=hit_box->box.size.z;
+
+			box_sz.y=hit_box->box.size.y;
+			if (obj->duck.mode!=dm_stand) box_sz.y-=obj->duck.y_move;
+			
+			if (collide_object_box_to_map(obj,&pt,&box_sz,xadd,yadd,zadd)) {
+				obj->hit_box.hit=TRUE;
+				obj->hit_box.model_uid=draw->uid;
+				obj->hit_box.hit_box_idx=n;
+				return(TRUE);
+			}
+
+			hit_box++;
+		}
+	}
+
+	return(FALSE);
 }
 
 /* =======================================================

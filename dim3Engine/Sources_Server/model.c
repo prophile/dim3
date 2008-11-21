@@ -170,6 +170,12 @@ model_type* model_load_single(char *name)
 		return(NULL);
 	}
 
+	if (!model_draw_array_initialize(mdl)) {
+		model_close(mdl);
+		server.count.model--;		// error loading, leave memory as is an fix next model load
+		return(NULL);
+	}
+
 		// deal with shader errors or shaders turned off
 
 	if (!load_shaders) {
@@ -270,6 +276,7 @@ void models_dispose(int uid)
 
 		// dispose model
 
+	model_draw_array_free(model);
 	model_close(model);
 
 		// is the list completely empty?

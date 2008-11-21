@@ -75,7 +75,6 @@ typedef int						socklen_t;
 #define srandom					srand
 #define snprintf				_snprintf
 #define strtof(a,b)				((float)strtod(a,b))
-#define valloc					malloc
 #define bzero(a,b)				memset(a,0x0,(b))
 #define bcmp(a,b,c)				memcmp(a,b,(c))
 #define usleep(x)               Sleep((DWORD)((x)/1000))

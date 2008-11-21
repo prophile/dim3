@@ -96,6 +96,9 @@ EXPORTS
 	model_save								@323
 	model_close								@324
 
+	model_draw_array_initialize				@325
+	model_draw_array_free					@326
+
 	model_refresh_textures					@330
 	model_memory_size						@331
 

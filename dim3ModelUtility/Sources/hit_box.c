@@ -37,15 +37,32 @@ and can be sold or given away.
 
 int model_hit_box_add(model_type *model)
 {
-	int					nhit_box;
-	model_hit_box_type	*hit_box;
+	int					hit_box_idx;
+	model_hit_box_type	*hit_box,*ptr;
+
+		// only allow a maximum number of hit boxes
+
+	if (model->nhit_box>=max_model_hit_box) return(-1);
+
+		// create memory for new hit box
+
+	ptr=(model_hit_box_type*)malloc(sizeof(model_hit_box_type)*(model->nhit_box+1));
+	if (ptr==NULL) return(-1);
+
+	if (model->hit_boxes!=NULL) {
+		memmove(ptr,model->hit_boxes,(sizeof(model_hit_box_type)*model->nhit_box));
+		free(model->hit_boxes);
+	}
+
+	model->hit_boxes=ptr;
+
+	hit_box_idx=model->nhit_box;
+	model->nhit_box++;
+
+		// initialize the hit box
 	
-	nhit_box=model->nhit_box;
-	if (nhit_box>=max_model_hit_box) return(-1);
-	
-		// create the new hit box
-	
-	hit_box=&model->hit_boxes[nhit_box];
+	hit_box=&model->hit_boxes[hit_box_idx];
+	bzero(hit_box,sizeof(model_hit_box_type));
 	
 	strcpy(hit_box->name,"New Hit Box");
 	hit_box->box.offset.x=0;
@@ -55,23 +72,45 @@ int model_hit_box_add(model_type *model)
 	hit_box->box.size.z=200;
 	hit_box->box.size.y=200;
 	
-	model->nhit_box++;
-	
-	return(nhit_box);
+	return(hit_box_idx);
 }
 
 void model_hit_box_delete(model_type *model,int hit_box_idx)
 {
-	int					nhit_box,sz;
-    
-        // delete hit box
-    
-    nhit_box=model->nhit_box;
-    
-    if (hit_box_idx<(nhit_box-1)) {
-        sz=((nhit_box-1)-hit_box_idx)*sizeof(model_hit_box_type);
-        memmove(&model->hit_boxes[hit_box_idx],&model->hit_boxes[hit_box_idx+1],sz);
-    }
+	model_hit_box_type	*ptr;
+
+		// is the list completely empty?
+
+	if (model->nhit_box==1) {
+		free(model->hit_boxes);
+		model->hit_boxes=NULL;
+		model->nhit_box=0;
+		return;
+	}
+
+		// if for some reason we can't create new
+		// memory, just shuffle the list and wait
+		// until next time
+
+	ptr=(model_hit_box_type*)malloc(sizeof(model_hit_box_type)*(model->nhit_box-1));
+
+	if (ptr==NULL) {
+		if (hit_box_idx<(model->nhit_box-1)) {
+			memmove(&model->hit_boxes[hit_box_idx],&model->hit_boxes[hit_box_idx+1],(sizeof(model_hit_box_type)*((model->nhit_box-hit_box_idx)-1)));
+		}
+	}
+	else {
+
+		if (hit_box_idx>0) {
+			memmove(ptr,model->hit_boxes,(sizeof(model_hit_box_type)*hit_box_idx));
+		}
+		if (hit_box_idx<(model->nhit_box-1)) {
+			memmove(&ptr[hit_box_idx],&model->hit_boxes[hit_box_idx+1],(sizeof(model_hit_box_type)*((model->nhit_box-hit_box_idx)-1)));
+		}
+
+		free(model->hit_boxes);
+		model->hit_boxes=ptr;
+	}
 	
 	model->nhit_box--;
 }

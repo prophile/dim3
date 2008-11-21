@@ -93,5 +93,8 @@ _model_open
 _model_save
 _model_close
 
+_model_draw_array_initialize
+_model_draw_array_free
+
 _model_refresh_textures
 _model_memory_size

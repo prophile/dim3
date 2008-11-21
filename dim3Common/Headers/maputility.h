@@ -152,8 +152,6 @@ extern char light_type_str[][32];
 #define light_tessel_grid_sz								6
 #define light_tessel_max_size								(map_enlarge*64)
 
-#define light_tessel_max_vertex								216
-
 //
 // group types
 //
@@ -240,9 +238,9 @@ typedef struct		{
 					} map_mesh_poly_tessel_vertex_type;
 
 typedef struct		{
-						int									nvertex,ntrig;
+						int									nvertex,nquad;
 						bool								simple_tessel;
-						int									*trig_vertex_idx,*trig_vertex_draw_idx;
+						int									*quad_vertex_idx,*quad_vertex_draw_idx;
 						map_mesh_poly_tessel_vertex_type	*vertexes;
 					} map_mesh_poly_light_type;
 
@@ -250,7 +248,6 @@ typedef struct		{
 						int									portal_v[8],txt_frame_offset,
 															stencil_pass,stencil_idx,decal_stencil_idx;
 						float								x_shift_offset,y_shift_offset;
-						float								*p_color,*p_normal;
 						bool								simple_tessel,shift_on;
 					} map_mesh_poly_draw_type;
 
@@ -285,7 +282,6 @@ typedef struct		{
 					} map_mesh_message_type;
 
 typedef struct		{
-						int									group_idx2;	// supergumba -- delete
 						unsigned char						visibility_flag[max_mesh_visibility_bytes];
 					} map_mesh_obscure_type;
 
@@ -296,8 +292,9 @@ typedef struct		{
 					} map_mesh_draw_light_spot_type;
 
 typedef struct		{
-						int									nlight,
+						int									nlight,vertex_count,
 															stencil_pass_start,stencil_pass_end;
+						float								*p_color,*p_normal;
 						map_mesh_draw_light_spot_type		light_spots[max_light_spot];
 					} map_mesh_draw_type;
 
