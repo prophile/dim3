@@ -147,7 +147,7 @@ model_type* model_load_single(char *name)
 
 		// create memory for new model
 
-	ptr=(model_type*)valloc(sizeof(model_type)*(server.count.model+1));
+	ptr=(model_type*)malloc(sizeof(model_type)*(server.count.model+1));
 	if (ptr==NULL) return(NULL);
 
 	if (server.models!=NULL) {
@@ -285,7 +285,7 @@ void models_dispose(int uid)
 		// memory, just shuffle the list and wait
 		// until next time
 
-	ptr=(model_type*)valloc(sizeof(model_type)*(server.count.model-1));
+	ptr=(model_type*)malloc(sizeof(model_type)*(server.count.model-1));
 
 	if (ptr==NULL) {
 		if (idx<(server.count.model-1)) {

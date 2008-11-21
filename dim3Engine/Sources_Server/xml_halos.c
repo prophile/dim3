@@ -71,7 +71,7 @@ void read_settings_halo(void)
 		return;
 	}
 
-	server.halos=(halo_type*)valloc(sizeof(halo_type)*nhalo);
+	server.halos=(halo_type*)malloc(sizeof(halo_type)*nhalo);
 	if (server.halos==NULL) {
 		xml_close_file();
 		return;

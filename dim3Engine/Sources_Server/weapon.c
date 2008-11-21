@@ -146,7 +146,7 @@ bool weapon_create(obj_type *obj,char *name)
 
 		// create memory for new weapon
 
-	ptr=(weapon_type*)valloc(sizeof(weapon_type)*(server.count.weapon+1));
+	ptr=(weapon_type*)malloc(sizeof(weapon_type)*(server.count.weapon+1));
 	if (ptr==NULL) return(FALSE);
 
 	if (server.weapons!=NULL) {
@@ -332,7 +332,7 @@ void weapon_dispose(int idx)
 		// memory, just shuffle the list and wait
 		// until next time
 
-	ptr=(weapon_type*)valloc(sizeof(weapon_type)*(server.count.weapon-1));
+	ptr=(weapon_type*)malloc(sizeof(weapon_type)*(server.count.weapon-1));
 
 	if (ptr==NULL) {
 		if (idx<(server.count.weapon-1)) {

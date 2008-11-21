@@ -74,10 +74,10 @@ bool view_compile_mesh_gl_list_init(void)
 
 			sz=(cnt*3)*sizeof(float);
 
-			poly->draw.p_color=(float*)valloc(sz);
+			poly->draw.p_color=(float*)malloc(sz);
 			if (poly->draw.p_color==NULL) return(FALSE);
 
-			poly->draw.p_normal=(float*)valloc(sz);
+			poly->draw.p_normal=(float*)malloc(sz);
 			if (poly->draw.p_normal==NULL) return(FALSE);
 
 				// clear to default values

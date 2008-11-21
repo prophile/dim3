@@ -52,7 +52,7 @@ char* shader_open_file(char *path)
 	file=fopen(path,"rb");
 	if (file==NULL) return(NULL);
     
-	data=(char*)valloc(sz+1);
+	data=(char*)malloc(sz+1);
     if (data==NULL) {
         fclose(file);
         return(NULL);

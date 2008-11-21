@@ -351,7 +351,7 @@ void walk_view_draw_meshes_line(d3pnt *cpt,bool opaque)
 
 void walk_view_draw_liquids(d3pnt *cpt,bool opaque)
 {
-	int					n,nliquid,x,y,z,y2;
+	int					n,nliquid,x,y,z,y2,lx,rx,tz,bz;
 	unsigned long		old_gl_id;
 	texture_type		*texture;
 	map_liquid_type		*liquid;
@@ -411,37 +411,45 @@ void walk_view_draw_liquids(d3pnt *cpt,bool opaque)
 			glBindTexture(GL_TEXTURE_2D,old_gl_id);
 		}
 		
+			// dimensions
+			
 		y=liquid->y-cpt->y;
-
+		y2=(liquid->y+liquid->depth)-cpt->y;
+		
+		lx=liquid->lft-cpt->x;
+		rx=liquid->rgt-cpt->x;
+		tz=cpt->z-liquid->top;
+		bz=cpt->z-liquid->bot;
+		
 		glBegin(GL_QUADS);
-
-		x=liquid->lft-cpt->x;
-		z=cpt->z-liquid->top;
+		
+			// bottom
+			
 		glTexCoord2f(liquid->x_txtoff,liquid->y_txtoff);
-		glVertex3i(x,y,z);
-
-		x=liquid->rgt-cpt->x;
-		z=cpt->z-liquid->top;
+		glVertex3i(lx,y2,tz);
 		glTexCoord2f((liquid->x_txtoff+liquid->x_txtfact),liquid->y_txtoff);
-		glVertex3i(x,y,z);
-		
-		x=liquid->rgt-cpt->x;
-		z=cpt->z-liquid->bot;
+		glVertex3i(rx,y2,tz);
 		glTexCoord2f((liquid->x_txtoff+liquid->x_txtfact),(liquid->y_txtoff+liquid->y_txtfact));
-		glVertex3i(x,y,z);
-		
-		x=liquid->lft-cpt->x;
-		z=cpt->z-liquid->bot;
+		glVertex3i(rx,y2,bz);
 		glTexCoord2f(liquid->x_txtoff,(liquid->y_txtoff+liquid->y_txtfact));
-		glVertex3i(x,y,z);
+		glVertex3i(lx,y2,bz);
+
+			// top
+			
+		glTexCoord2f(liquid->x_txtoff,liquid->y_txtoff);
+		glVertex3i(lx,y,tz);
+		glTexCoord2f((liquid->x_txtoff+liquid->x_txtfact),liquid->y_txtoff);
+		glVertex3i(rx,y,tz);
+		glTexCoord2f((liquid->x_txtoff+liquid->x_txtfact),(liquid->y_txtoff+liquid->y_txtfact));
+		glVertex3i(rx,y,bz);
+		glTexCoord2f(liquid->x_txtoff,(liquid->y_txtoff+liquid->y_txtfact));
+		glVertex3i(lx,y,bz);
 
 		glEnd();
 		
 			// depth lines
-			
+	
 		glColor4f(setup.col.mesh_line.r,setup.col.mesh_line.g,setup.col.mesh_line.b,1.0f);
-		
-		y2=(liquid->y+liquid->depth)-cpt->y;
 		
 		glBegin(GL_LINES);
 		
@@ -465,26 +473,6 @@ void walk_view_draw_liquids(d3pnt *cpt,bool opaque)
 		glVertex3i(x,y,z);
 		glVertex3i(x,y2,z);
 
-		glEnd();
-		
-		glBegin(GL_LINE_LOOP);
-		
-		x=liquid->lft-cpt->x;
-		z=cpt->z-liquid->top;
-		glVertex3i(x,y2,z);
-
-		x=liquid->rgt-cpt->x;
-		z=cpt->z-liquid->top;
-		glVertex3i(x,y2,z);
-
-		x=liquid->rgt-cpt->x;
-		z=cpt->z-liquid->bot;
-		glVertex3i(x,y2,z);
-
-		x=liquid->lft-cpt->x;
-		z=cpt->z-liquid->bot;
-		glVertex3i(x,y2,z);
-		
 		glEnd();
 		
 		liquid++;

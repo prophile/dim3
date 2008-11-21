@@ -46,7 +46,7 @@ int model_bone_add(model_type *model,int x,int y,int z)
 
 		// create memory for new bones
 
-	ptr=(model_bone_type*)valloc(sizeof(model_bone_type)*(model->nbone+1));
+	ptr=(model_bone_type*)malloc(sizeof(model_bone_type)*(model->nbone+1));
 	if (ptr==NULL) return(-1);
 
 	if (model->bones!=NULL) {
@@ -165,7 +165,7 @@ void model_bone_delete(model_type *model,int bone_idx)
 		// memory, just shuffle the list and wait
 		// until next time
 
-	ptr=(model_bone_type*)valloc(sizeof(model_bone_type)*(model->nbone-1));
+	ptr=(model_bone_type*)malloc(sizeof(model_bone_type)*(model->nbone-1));
 
 	if (ptr==NULL) {
 		if (bone_idx<(model->nbone-1)) {

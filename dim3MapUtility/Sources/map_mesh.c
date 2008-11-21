@@ -44,13 +44,13 @@ int map_mesh_add(map_type *map)
 
 	if (map->mesh.nmesh==0) {
 		mesh_idx=0;
-		map->mesh.meshes=(map_mesh_type*)valloc(sizeof(map_mesh_type));
+		map->mesh.meshes=(map_mesh_type*)malloc(sizeof(map_mesh_type));
 		if (map->mesh.meshes==NULL) return(FALSE);
 	}
 	else {
 		mesh_idx=map->mesh.nmesh;
 
-		nptr=(map_mesh_type*)valloc((map->mesh.nmesh+1)*sizeof(map_mesh_type));
+		nptr=(map_mesh_type*)malloc((map->mesh.nmesh+1)*sizeof(map_mesh_type));
 		if (nptr==NULL) return(FALSE);
 
 		memmove(nptr,map->mesh.meshes,(map->mesh.nmesh*sizeof(map_mesh_type)));
@@ -121,7 +121,7 @@ bool map_mesh_delete(map_type *map,int mesh_idx)
 		return(TRUE);
 	}
 
-	nptr=(map_mesh_type*)valloc((map->mesh.nmesh-1)*sizeof(map_mesh_type));
+	nptr=(map_mesh_type*)malloc((map->mesh.nmesh-1)*sizeof(map_mesh_type));
 	if (nptr==NULL) return(FALSE);
 
 	if (mesh_idx>0) {
@@ -156,7 +156,7 @@ bool map_mesh_set_vertex_count(map_type *map,int mesh_idx,int nvertex)
 
 		// new memory
 
-	nptr=(d3pnt*)valloc(nvertex*sizeof(d3pnt));
+	nptr=(d3pnt*)malloc(nvertex*sizeof(d3pnt));
 	if (nptr==NULL) return(FALSE);
 
 		// move and delete old vertexes
@@ -186,7 +186,7 @@ bool map_mesh_set_poly_count(map_type *map,int mesh_idx,int npoly)
 
 		// new memory
 
-	nptr=(map_mesh_poly_type*)valloc(npoly*sizeof(map_mesh_poly_type));
+	nptr=(map_mesh_poly_type*)malloc(npoly*sizeof(map_mesh_poly_type));
 	if (nptr==NULL) return(FALSE);
 
 		// move and delete old polygons
@@ -402,7 +402,7 @@ bool map_mesh_delete_poly(map_type *map,int mesh_idx,int poly_idx)
 		mesh->polys=NULL;
 	}
 	else {
-		nmesh_ptr=(map_mesh_poly_type*)valloc((mesh->npoly-1)*sizeof(map_mesh_poly_type));
+		nmesh_ptr=(map_mesh_poly_type*)malloc((mesh->npoly-1)*sizeof(map_mesh_poly_type));
 		if (nmesh_ptr==NULL) return(FALSE);
 
 		if (poly_idx>0) {
@@ -454,7 +454,7 @@ bool map_mesh_delete_poly(map_type *map,int mesh_idx,int poly_idx)
 			break;
 		}
 
-		nvertex_ptr=(d3pnt*)valloc((mesh->nvertex-1)*sizeof(d3pnt));
+		nvertex_ptr=(d3pnt*)malloc((mesh->nvertex-1)*sizeof(d3pnt));
 		if (nvertex_ptr==NULL) return(FALSE);
 
 		if (v_idx>0) {
@@ -535,7 +535,7 @@ bool map_mesh_delete_unused_vertexes(map_type *map,int mesh_idx)
 		
 			// move vertexes
 		
-		nvertex_ptr=(d3pnt*)valloc((mesh->nvertex-1)*sizeof(d3pnt));
+		nvertex_ptr=(d3pnt*)malloc((mesh->nvertex-1)*sizeof(d3pnt));
 		if (nvertex_ptr==NULL) return(FALSE);
 
 		if (n>0) {

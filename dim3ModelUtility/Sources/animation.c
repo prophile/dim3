@@ -46,7 +46,7 @@ int model_animate_add(model_type *model)
 
 		// create memory for new animation
 
-	ptr=(model_animate_type*)valloc(sizeof(model_animate_type)*(model->nanimate+1));
+	ptr=(model_animate_type*)malloc(sizeof(model_animate_type)*(model->nanimate+1));
 	if (ptr==NULL) return(-1);
 
 	if (model->animates!=NULL) {
@@ -104,7 +104,7 @@ void model_animate_delete(model_type *model,int animate_idx)
 		// memory, just shuffle the list and wait
 		// until next time
 
-	ptr=(model_animate_type*)valloc(sizeof(model_animate_type)*(model->nanimate-1));
+	ptr=(model_animate_type*)malloc(sizeof(model_animate_type)*(model->nanimate-1));
 
 	if (ptr==NULL) {
 		if (animate_idx<(model->nanimate-1)) {

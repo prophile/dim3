@@ -498,7 +498,7 @@ bool map_mesh_tesselate(map_type *map,int mesh_idx)
 
 		// create trigs
 
-	trig_polys=(map_mesh_poly_type*)valloc(sizeof(map_mesh_poly_type)*ntrig);
+	trig_polys=(map_mesh_poly_type*)malloc(sizeof(map_mesh_poly_type)*ntrig);
 	if (trig_polys==NULL) return(FALSE);
 
 	trig_poly=trig_polys;

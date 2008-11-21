@@ -58,17 +58,6 @@ extern void server_run(int tick);
 
 bool server_memory_allocate(void)
 {
-
-
-	// supergumba--testing!
-
-	fprintf(stdout,"model bones = %.2f\n",((float)(max_model_bone*sizeof(model_bone_type)))/1000000.0f);
-	fprintf(stdout,"model poses = %.2f\n",((float)(max_model_pose*sizeof(model_pose_type)))/1000000.0f);
-	fprintf(stdout,"model animate = %.2f\n",((float)(max_model_animate*sizeof(model_animate_type)))/1000000.0f);
-	fprintf(stdout,"model hit boxes = %.2f\n",((float)(max_model_hit_box*sizeof(model_hit_box_type)))/1000000.0f);
-
-	fprintf(stdout,"model arrays = %.2f\n",((float)((max_model_vertex*12)*sizeof(float)))/1000000.0f);
-
 		// initialize pointers
 		
     server.objs=NULL;
@@ -100,44 +89,44 @@ bool server_memory_allocate(void)
 		// these are pre-created to speed up
 		// the game
 	
-	server.projs=(proj_type*)valloc(max_projectile*sizeof(proj_type));
+	server.projs=(proj_type*)malloc(max_projectile*sizeof(proj_type));
 	if (server.projs==NULL) return(FALSE);
 
-	server.effects=(effect_type*)valloc(max_effect*sizeof(effect_type));
+	server.effects=(effect_type*)malloc(max_effect*sizeof(effect_type));
 	if (server.effects==NULL) return(FALSE);
 	
-	server.decals=(decal_type*)valloc(max_decal*sizeof(decal_type));
+	server.decals=(decal_type*)malloc(max_decal*sizeof(decal_type));
 	if (server.decals==NULL) return(FALSE);
 
 		// js engine pointers
 		
-	js.scripts=(script_type*)valloc(max_scripts*sizeof(script_type));
+	js.scripts=(script_type*)malloc(max_scripts*sizeof(script_type));
 	if (js.scripts==NULL) return(FALSE);
 	
-	js.timers=(timer_type*)valloc(max_timers*sizeof(timer_type));
+	js.timers=(timer_type*)malloc(max_timers*sizeof(timer_type));
 	if (js.timers==NULL) return(FALSE);
 	
-	js.globals=(global_type*)valloc(max_globals*sizeof(global_type));
+	js.globals=(global_type*)malloc(max_globals*sizeof(global_type));
 	if (js.globals==NULL) return(FALSE);
 	
 		// hud pointers
 
-	hud.bitmaps=(hud_bitmap_type*)valloc(max_hud_bitmap*sizeof(hud_bitmap_type));
+	hud.bitmaps=(hud_bitmap_type*)malloc(max_hud_bitmap*sizeof(hud_bitmap_type));
 	if (hud.bitmaps==NULL) return(FALSE);
 	
-	hud.texts=(hud_text_type*)valloc(max_hud_text*sizeof(hud_text_type));
+	hud.texts=(hud_text_type*)malloc(max_hud_text*sizeof(hud_text_type));
 	if (hud.texts==NULL) return(FALSE);
 	
-	hud.bars=(hud_bar_type*)valloc(max_hud_bar*sizeof(hud_bar_type));
+	hud.bars=(hud_bar_type*)malloc(max_hud_bar*sizeof(hud_bar_type));
 	if (hud.bars==NULL) return(FALSE);
 
-	hud.menus=(menu_type*)valloc(max_menu*sizeof(menu_type));
+	hud.menus=(menu_type*)malloc(max_menu*sizeof(menu_type));
 	if (hud.menus==NULL) return(FALSE);
 	
-	hud.choosers=(chooser_type*)valloc(max_chooser*sizeof(chooser_type));
+	hud.choosers=(chooser_type*)malloc(max_chooser*sizeof(chooser_type));
 	if (hud.choosers==NULL) return(FALSE);
 	
-	hud.chat.lines=(hud_chat_line_type*)valloc(max_chat_lines*sizeof(hud_chat_line_type));
+	hud.chat.lines=(hud_chat_line_type*)malloc(max_chat_lines*sizeof(hud_chat_line_type));
 	if (hud.chat.lines==NULL) return(FALSE);
 	
 		// zero memory

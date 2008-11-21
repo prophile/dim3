@@ -272,7 +272,7 @@ bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *pa
 	unsigned char		*pixel_buffer,*data,*sptr,*dptr,*s2ptr,*d2ptr;
 	bool				ok;
 	
-	pixel_buffer=(unsigned char*)valloc((wid*3)*high);
+	pixel_buffer=(unsigned char*)malloc((wid*3)*high);
 	if (pixel_buffer==NULL) return(FALSE);
 	
 	glReadPixels(lft_x,top_y,wid,high,GL_RGB,GL_UNSIGNED_BYTE,pixel_buffer);
@@ -293,7 +293,7 @@ bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *pa
 		
 	dsz=((ss_wid<<2)*ss_high);
 	
-	data=(unsigned char*)valloc(dsz);
+	data=(unsigned char*)malloc(dsz);
 	if (data==NULL) {
 		free(pixel_buffer);
 		return(FALSE);

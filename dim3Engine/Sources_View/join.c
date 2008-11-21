@@ -78,7 +78,7 @@ char* join_create_list(void)
 		
 	sz=(join_count+1)*128;
 	
-	row_data=valloc(sz);
+	row_data=malloc(sz);
 	bzero(row_data,sz);
 	
 		// build table
@@ -572,7 +572,7 @@ void join_game(void)
 	
 		// start the map
 		
-	if (!map_start(FALSE,err_str)) {
+	if (!map_start(TRUE,err_str)) {
 		net_client_send_leave_host(net_setup.client.remote_uid);
 		net_client_join_host_end();
 		error_open(err_str,"Network Game Canceled");

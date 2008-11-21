@@ -68,7 +68,7 @@ void object_initialize_list(void)
 		// object list in loop
 
 	ndelayed_obj_spawn=0;
-	delayed_obj_spawns=(delayed_obj_spawn_type*)valloc(sizeof(delayed_obj_spawn_type)*max_delayed_obj_spawn);
+	delayed_obj_spawns=(delayed_obj_spawn_type*)malloc(sizeof(delayed_obj_spawn_type)*max_delayed_obj_spawn);
 }
 
 void object_free_list(void)
@@ -390,7 +390,7 @@ obj_type* object_create(int bind,int reserve_uid)
 
 		// create memory for new object
 
-	ptr=(obj_type*)valloc(sizeof(obj_type)*(server.count.obj+1));
+	ptr=(obj_type*)malloc(sizeof(obj_type)*(server.count.obj+1));
 	if (ptr==NULL) return(NULL);
 
 	if (server.objs!=NULL) {
@@ -841,7 +841,7 @@ void object_dispose_single(int idx)
 		// memory, just shuffle the list and wait
 		// until next time
 
-	ptr=(obj_type*)valloc(sizeof(obj_type)*(server.count.obj-1));
+	ptr=(obj_type*)malloc(sizeof(obj_type)*(server.count.obj-1));
 
 	if (ptr==NULL) {
 		if (idx<(server.count.obj-1)) {

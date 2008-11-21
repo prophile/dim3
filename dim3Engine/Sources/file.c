@@ -103,7 +103,7 @@ char* game_file_get_chunk(void *data)
 	game_file_pos+=4;
 	
 	if (data==NULL) {
-		data=valloc(sz);
+		data=malloc(sz);
 		if (data==NULL) return(NULL);
 	}
 	
@@ -129,7 +129,7 @@ bool game_file_compress_save(char *path,char *err_str)
 		// compress it
 		
 	compress_sz=game_file_sz+(int)(((double)game_file_sz)*0.1)+12;
-	compress_data=valloc(compress_sz);
+	compress_data=malloc(compress_sz);
 	if (compress_data==NULL) {
 		strcpy(err_str,"Out of memory");
 		return(FALSE);
@@ -181,7 +181,7 @@ bool game_file_expand_load(char *path,char *err_str)
 	}
 	file_sz=sb.st_size;
 	
-	compress_data=valloc(file_sz);
+	compress_data=malloc(file_sz);
 	if (compress_data==NULL) {
 		strcpy(err_str,"Out of memory");
 		return(FALSE);
@@ -203,7 +203,7 @@ bool game_file_expand_load(char *path,char *err_str)
 	
 		// decompress file
 		
-	game_file_data=valloc(game_file_sz);
+	game_file_data=malloc(game_file_sz);
 	if (game_file_data==NULL) {
 		strcpy(err_str,"Out of memory");
 		free(compress_data);
@@ -283,7 +283,7 @@ bool game_file_save(char *err_str)
 		// start chunks
 		
 	game_file_sz=0;
-	game_file_data=valloc(32);
+	game_file_data=malloc(32);
 
 		// header
 

@@ -91,7 +91,7 @@ void read_settings_particle(void)
 		return;
 	}
 
-	server.particles=(particle_type*)valloc(sizeof(particle_type)*nparticle);
+	server.particles=(particle_type*)malloc(sizeof(particle_type)*nparticle);
 	if (server.particles==NULL) {
 		xml_close_file();
 		return;

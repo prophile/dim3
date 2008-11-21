@@ -140,10 +140,10 @@ void file_build_list(void)
 		
 	sz=max_file_count*128;
 	
-	file_table_data=valloc(sz);
+	file_table_data=malloc(sz);
 	bzero(file_table_data,sz);
 	
-	file_name_data=valloc(sz);
+	file_name_data=malloc(sz);
 	bzero(file_name_data,sz);
 	
 		// grab the files

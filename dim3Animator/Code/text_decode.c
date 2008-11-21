@@ -96,7 +96,7 @@ bool textdecode_open(char *path,char p_piece_break)
 	file=fopen(path,"r");
 	if (file==NULL) return(FALSE);
    
-	text_data=valloc(text_data_sz+1);
+	text_data=malloc(text_data_sz+1);
 	if (text_data==NULL) {
 		fclose(file);
 		return(FALSE);
@@ -111,7 +111,7 @@ bool textdecode_open(char *path,char p_piece_break)
 		
 	text_nline=textdecode_count_linestarts();
 	
-	text_line_starts=(int*)valloc((text_nline+1)*sizeof(int));
+	text_line_starts=(int*)malloc((text_nline+1)*sizeof(int));
 	if (text_line_starts==NULL) {
 		free(text_data);
 		return(FALSE);

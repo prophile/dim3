@@ -287,7 +287,7 @@ void vertex_delete_unused_vertexes(int mesh_idx)
 	
 		// vertex hit list
 		
-	v_ok=(unsigned char*)valloc(max_model_vertex);
+	v_ok=(unsigned char*)malloc(max_model_vertex);
 	bzero(v_ok,max_model_vertex);
 	
 		// find vertexes hit

@@ -202,7 +202,7 @@ int obscure_mesh_sort(d3pnt *pt,int *mesh_sort_list)
 	int					*dist;
 	map_mesh_type		*mesh;
 
-	dist=valloc(max_mesh*sizeof(int));
+	dist=malloc(max_mesh*sizeof(int));
 
 	cnt=0;
 
@@ -587,12 +587,12 @@ bool obscure_calculate_group_visibility_complete(int group_idx)
 
 		// pixels for reading stencil buffer
 		
-	stencil_pixels=valloc(obscure_mesh_view_mesh_wid*obscure_mesh_view_mesh_high);
+	stencil_pixels=malloc(obscure_mesh_view_mesh_wid*obscure_mesh_view_mesh_high);
 	if (stencil_pixels==NULL) return(FALSE);
 	
 		// memory for sorted mesh list
 		
-	mesh_sort_list=valloc(sizeof(int)*max_mesh);
+	mesh_sort_list=malloc(sizeof(int)*max_mesh);
 	if (mesh_sort_list==NULL) {
 		free(stencil_pixels);
 		return(FALSE);
@@ -871,13 +871,13 @@ bool obscure_groups_start(void)
 		
 	nobscure_group=0;
 	
-	obscure_groups=valloc(map.mesh.nmesh*sizeof(obscure_group_type));
+	obscure_groups=malloc(map.mesh.nmesh*sizeof(obscure_group_type));
 	if (obscure_groups==NULL) return(FALSE);
 	
 		// use list to tell what meshes got picked
 		// up and processed with other meshes
 		
-	mesh_hit=valloc(map.mesh.nmesh*sizeof(bool));
+	mesh_hit=malloc(map.mesh.nmesh*sizeof(bool));
 	if (mesh_hit==NULL) {
 		free(obscure_groups);
 		return(FALSE);

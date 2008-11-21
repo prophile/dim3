@@ -529,7 +529,7 @@ void element_table_add(element_column_type* cols,char *row_data,int id,int ncolu
 	}
 	else {
 		sz=element_table_add_get_data_size(row_data);
-		element->data=valloc(sz);
+		element->data=malloc(sz);
 		memmove(element->data,row_data,sz);
 	}
 
@@ -2956,7 +2956,7 @@ void element_set_table_data(int id,char *row_data)
 		}
 		else {
 			sz=element_table_add_get_data_size(row_data);
-			element->data=valloc(sz);
+			element->data=malloc(sz);
 			memmove(element->data,row_data,sz);
 		}
 	}

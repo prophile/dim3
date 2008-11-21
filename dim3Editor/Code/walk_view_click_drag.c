@@ -147,7 +147,7 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 	
 		// backup all the vertexes
 		
-	old_dpt=valloc(mesh->nvertex*sizeof(d3pnt));
+	old_dpt=malloc(mesh->nvertex*sizeof(d3pnt));
 	if (old_dpt==NULL) return(FALSE);
 	
 	memmove(old_dpt,mesh->vertexes,(mesh->nvertex*sizeof(d3pnt)));
@@ -305,7 +305,7 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 		nvertex+=map.mesh.meshes[mesh_idx].nvertex;
 	}
 	
-	old_dpt=valloc(nvertex*sizeof(d3pnt));
+	old_dpt=malloc(nvertex*sizeof(d3pnt));
 	if (old_dpt==NULL) return(FALSE);
 	
 	old_dpt_ptr=old_dpt;
@@ -434,7 +434,7 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 			
 	first_drag=TRUE;
 	
-	old_dpt=valloc(mesh_poly->ptsz*sizeof(d3pnt));
+	old_dpt=malloc(mesh_poly->ptsz*sizeof(d3pnt));
 	if (old_dpt==NULL) return(FALSE);
 	
 	for (n=0;n!=mesh_poly->ptsz;n++) {

@@ -108,7 +108,7 @@ bool proj_setup_add(obj_type *obj,weapon_type *weap,char *name)
 
 		// create memory for new projectile setup
 
-	ptr=(proj_setup_type*)valloc(sizeof(proj_setup_type)*(server.count.proj_setup+1));
+	ptr=(proj_setup_type*)malloc(sizeof(proj_setup_type)*(server.count.proj_setup+1));
 	if (ptr==NULL) return(FALSE);
 
 	if (server.proj_setups!=NULL) {
@@ -275,7 +275,7 @@ void proj_setup_dispose(int idx)
 		// memory, just shuffle the list and wait
 		// until next time
 
-	ptr=(proj_setup_type*)valloc(sizeof(proj_setup_type)*(server.count.proj_setup-1));
+	ptr=(proj_setup_type*)malloc(sizeof(proj_setup_type)*(server.count.proj_setup-1));
 
 	if (ptr==NULL) {
 		if (idx<(server.count.proj_setup-1)) {

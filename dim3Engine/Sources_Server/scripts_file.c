@@ -66,7 +66,7 @@ bool script_load_file(script_type *script,char *script_dir,char *script_name,cha
 	stat(path,&sb);
 	sz=sb.st_size;
 	
-	data=valloc(sz+1);
+	data=malloc(sz+1);
 	if (data==NULL) {
 		fclose(file);
 		sprintf(err_str,"JavaScript Engine: Not enough memory to load script '%s'",path);

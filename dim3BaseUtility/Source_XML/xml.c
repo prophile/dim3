@@ -55,7 +55,7 @@ bool xml_decode(void)
 
 	xml_taglistsz=tag_atom_sz;
 	listsz=tag_atom_sz*sizeof(xmltagtype);
-	xml_taglistptr=(char*)valloc(listsz);
+	xml_taglistptr=(char*)malloc(listsz);
 	if (xml_taglistptr==NULL) return(FALSE);
 
 	tags=(xmltagtype*)xml_taglistptr;
@@ -147,7 +147,7 @@ bool xml_decode(void)
 				if (xml_ntag>=xml_taglistsz) {		// need to add more tags?
 					listsz=(xml_taglistsz+tag_atom_sz)*sizeof(xmltagtype);
 					
-					newtaglistptr=(char*)valloc(listsz);
+					newtaglistptr=(char*)malloc(listsz);
 					if (newtaglistptr!=NULL) {
 						memmove(newtaglistptr,xml_taglistptr,(xml_taglistsz*sizeof(xmltagtype)));
 						free(xml_taglistptr);
@@ -219,7 +219,7 @@ bool xml_new_file(void)
 	xml_filesz=0;
 	xml_buffersz=buff_atom_sz;
 	xml_taglistptr=NULL;
-	xml_dataptr=(char*)valloc(xml_buffersz);
+	xml_dataptr=(char*)malloc(xml_buffersz);
 	return(xml_dataptr!=NULL);
 }
 
@@ -239,7 +239,7 @@ bool xml_open_file(char *path)
 	file=fopen(path,"rb");
 	if (file==NULL) return(FALSE);
     
-	xml_dataptr=(char*)valloc(sz);
+	xml_dataptr=(char*)malloc(sz);
     if (xml_dataptr==NULL) {
         fclose(file);
         return(FALSE);
@@ -880,7 +880,7 @@ bool xml_writebyte(byte b)
 
 	if ((xml_filesz+1)>=xml_buffersz) {					// need to increase the buffer size?
 	
-		newdataptr=(char*)valloc(xml_buffersz+buff_atom_sz);
+		newdataptr=(char*)malloc(xml_buffersz+buff_atom_sz);
 		if (newdataptr==NULL) return(FALSE);
 		
 		memmove(newdataptr,xml_dataptr,xml_buffersz);

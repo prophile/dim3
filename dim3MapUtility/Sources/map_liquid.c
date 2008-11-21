@@ -45,11 +45,11 @@ int map_liquid_add(map_type *map)
 		// create new memory
 
 	if (map->liquid.nliquid==0) {
-		map->liquid.liquids=(map_liquid_type*)valloc(sizeof(map_liquid_type));
+		map->liquid.liquids=(map_liquid_type*)malloc(sizeof(map_liquid_type));
 		if (map->liquid.liquids==NULL) return(-1);
 	}
 	else {
-		nptr=(map_liquid_type*)valloc((map->liquid.nliquid+1)*sizeof(map_liquid_type));
+		nptr=(map_liquid_type*)malloc((map->liquid.nliquid+1)*sizeof(map_liquid_type));
 		if (nptr==NULL) return(-1);
 
 		memmove(nptr,map->liquid.liquids,(map->liquid.nliquid*sizeof(map_liquid_type)));
@@ -74,7 +74,7 @@ bool map_liquid_delete(map_type *map,int liquid_idx)
 		return(TRUE);
 	}
 
-	nptr=(map_liquid_type*)valloc((map->liquid.nliquid-1)*sizeof(map_liquid_type));
+	nptr=(map_liquid_type*)malloc((map->liquid.nliquid-1)*sizeof(map_liquid_type));
 	if (nptr==NULL) return(FALSE);
 
 	if (liquid_idx>0) {

@@ -90,7 +90,7 @@ unsigned char* png_utility_read(char *path,int *p_wid,int *p_high)
 		
 	psz=(wid<<2)*high;
 	
-	data=valloc(psz);
+	data=malloc(psz);
 	if (data==NULL) {
 		png_destroy_read_struct(&png_ptr,&info_ptr,NULL);
 		fclose(file);

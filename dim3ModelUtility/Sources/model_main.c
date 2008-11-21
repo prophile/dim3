@@ -95,23 +95,23 @@ bool model_new(model_type *model,char *name)
 	model->bones=NULL;
 	model->poses=NULL;
 	model->animates=NULL;
-	model->hit_boxes=valloc(max_model_hit_box*sizeof(model_hit_box_type));
+	model->hit_boxes=malloc(max_model_hit_box*sizeof(model_hit_box_type));
 	
 		// non-dynamic memory
 
 	model->meshes[0].nvertex=0;
 	model->meshes[0].ntrig=0;
 		
-	model->meshes[0].vertexes=valloc(max_model_vertex*sizeof(model_vertex_type));
-	model->meshes[0].trigs=valloc(max_model_trig*sizeof(model_trig_type));
-	model->meshes[0].materials=valloc(max_model_texture*sizeof(model_material_type));
+	model->meshes[0].vertexes=malloc(max_model_vertex*sizeof(model_vertex_type));
+	model->meshes[0].trigs=malloc(max_model_trig*sizeof(model_trig_type));
+	model->meshes[0].materials=malloc(max_model_texture*sizeof(model_material_type));
 
-	model->meshes[0].draw.gl_vertex_array=valloc((max_model_vertex*3)*sizeof(float));
-	model->meshes[0].draw.gl_color_array=valloc((max_model_vertex*3)*sizeof(float));
-	model->meshes[0].draw.gl_vertex_normal_array=valloc((max_model_vertex*3)*sizeof(float));
-	model->meshes[0].draw.gl_light_normal_array=valloc((max_model_vertex*3)*sizeof(float));
+	model->meshes[0].draw.gl_vertex_array=malloc((max_model_vertex*3)*sizeof(float));
+	model->meshes[0].draw.gl_color_array=malloc((max_model_vertex*3)*sizeof(float));
+	model->meshes[0].draw.gl_vertex_normal_array=malloc((max_model_vertex*3)*sizeof(float));
+	model->meshes[0].draw.gl_light_normal_array=malloc((max_model_vertex*3)*sizeof(float));
 	
-	model->textures=valloc(max_model_texture*sizeof(texture_type));
+	model->textures=malloc(max_model_texture*sizeof(texture_type));
 	
 		// memory OK?
 		

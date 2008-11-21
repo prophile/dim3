@@ -330,7 +330,7 @@ char* script_parse_defines_set(script_define_type *defines,bool use_int_value,ch
 			}
 			else {
 				coff=c-data;						// need to remember position to put c back into new array
-				data2=valloc(len+(repsz-strsz)+1);
+				data2=malloc(len+(repsz-strsz)+1);
 
 				if (data2!=NULL) {
 					memmove(data2,data,(len+1));
@@ -428,7 +428,7 @@ void script_load_user_defines(void)
 	stat(path,&sb);
 	sz=sb.st_size;
 	
-	data=valloc(sz+1);
+	data=malloc(sz+1);
 	if (data==NULL) return;
 	
 	fread(data,1,sz,file);
@@ -452,7 +452,7 @@ void script_load_user_defines(void)
 	
 		// create defines
 
-	script_user_defines=valloc((cnt+1)*sizeof(script_define_type));
+	script_user_defines=malloc((cnt+1)*sizeof(script_define_type));
 	if (script_user_defines==NULL) {
 		free(data);
 		return;

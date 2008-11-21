@@ -197,7 +197,7 @@ file_path_directory_type* file_paths_read_directory(file_path_setup_type *file_p
 	
 		// create memory for file list
 		
-	fpd=valloc(sizeof(file_path_directory_type));
+	fpd=malloc(sizeof(file_path_directory_type));
 	memset(fpd,0x0,sizeof(file_path_directory_type));
 	
 	fpd->nfile=0;

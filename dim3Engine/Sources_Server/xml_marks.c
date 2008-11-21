@@ -71,7 +71,7 @@ void read_settings_mark(void)
 		return;
 	}
 
-	server.marks=(mark_type*)valloc(sizeof(mark_type)*nmark);
+	server.marks=(mark_type*)malloc(sizeof(mark_type)*nmark);
 	if (server.marks==NULL) {
 		xml_close_file();
 		return;

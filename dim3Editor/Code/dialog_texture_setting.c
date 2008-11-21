@@ -136,7 +136,7 @@ void texture_setting_bitmap_draw(bitmap_type *bitmap,CGrafPtr dport,Rect *dbox)
 	
 		// get the data
 		
-	data=valloc((wid<<2)*high);
+	data=malloc((wid<<2)*high);
 	if (data==NULL) return;
 	
 	glFinish();

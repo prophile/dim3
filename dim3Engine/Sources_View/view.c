@@ -81,13 +81,13 @@ bool view_memory_allocate(void)
 	
 		// view pointers
 
-	view.images=(view_image_type*)valloc(max_view_image*sizeof(view_image_type));
+	view.images=(view_image_type*)malloc(max_view_image*sizeof(view_image_type));
 	if (view.images==NULL) return(FALSE);
 
-	view.halo_draws=(halo_draw_type*)valloc(max_light_spot*sizeof(halo_draw_type));
+	view.halo_draws=(halo_draw_type*)malloc(max_light_spot*sizeof(halo_draw_type));
 	if (view.halo_draws==NULL) return(FALSE);
 
-	view.rain_draws=(rain_draw_type*)valloc(max_rain_density*sizeof(rain_draw_type));
+	view.rain_draws=(rain_draw_type*)malloc(max_rain_density*sizeof(rain_draw_type));
 	if (view.rain_draws==NULL) return(FALSE);
 	
 		// clear pointers

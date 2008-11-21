@@ -78,7 +78,7 @@ void gl_text_initialize(void)
 	
 		// data for bitmap
 
-	data=valloc((font_bitmap_pixel_sz<<2)*font_bitmap_pixel_sz);
+	data=malloc((font_bitmap_pixel_sz<<2)*font_bitmap_pixel_sz);
 	if (data==NULL) return;
 
 		// create bitmap
@@ -179,7 +179,7 @@ void gl_text_initialize(void)
 
 		// data for bitmap
 
-	data=valloc((font_bitmap_pixel_sz<<2)*font_bitmap_pixel_sz);
+	data=malloc((font_bitmap_pixel_sz<<2)*font_bitmap_pixel_sz);
 	if (data==NULL) return;
 
 		// create bitmap

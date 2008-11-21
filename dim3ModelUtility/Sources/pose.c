@@ -47,7 +47,7 @@ int model_pose_add(model_type *model)
 
 		// create memory for new pose
 
-	ptr=(model_pose_type*)valloc(sizeof(model_pose_type)*(model->npose+1));
+	ptr=(model_pose_type*)malloc(sizeof(model_pose_type)*(model->npose+1));
 	if (ptr==NULL) return(-1);
 
 	if (model->poses!=NULL) {
@@ -131,7 +131,7 @@ void model_pose_delete(model_type *model,int pose_idx)
 		// memory, just shuffle the list and wait
 		// until next time
 
-	ptr=(model_pose_type*)valloc(sizeof(model_pose_type)*(model->npose-1));
+	ptr=(model_pose_type*)malloc(sizeof(model_pose_type)*(model->npose-1));
 
 	if (ptr==NULL) {
 		if (pose_idx<(model->npose-1)) {

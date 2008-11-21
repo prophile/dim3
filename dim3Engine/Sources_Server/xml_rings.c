@@ -71,7 +71,7 @@ void read_settings_ring(void)
 		return;
 	}
 
-	server.rings=(ring_type*)valloc(sizeof(ring_type)*nring);
+	server.rings=(ring_type*)malloc(sizeof(ring_type)*nring);
 	if (server.rings==NULL) {
 		xml_close_file();
 		return;

@@ -110,7 +110,7 @@ void loop_game_run(int tick)
 
 	server_loop(tick);
 	view_loop(tick);
-	
+
 		// check interface quits
 		
 	if (interface_quit_trigger_check()) {
@@ -121,7 +121,7 @@ void loop_game_run(int tick)
 	}
 	
 		// calculate fps
-		
+
 	view.fps.tick+=(time_get()-view.fps.time);
 
 	if (view.fps.tick>=1000) {						// average fps over 1 second
@@ -132,7 +132,7 @@ void loop_game_run(int tick)
 		// sending network updates
 
 	if (net_setup.client.joined) {
-	
+
 		if (tick>=server.time.network_update_tick) {
 			server.time.network_update_tick=tick+client_communication_update_msec_rate;
 			remote_network_send_updates(tick);
@@ -142,6 +142,7 @@ void loop_game_run(int tick)
 			server.time.network_latency_ping_tick=tick+client_communication_latency_ping_msec_rate;
 			remote_network_send_latency_ping(tick);
 		}
+
 	}
 }
 
@@ -245,7 +246,7 @@ bool loop_main(char *err_str)
 	map_clear_changes();
 		
 		// run proper game state
-
+		
 	state=server.state;
 		
 	switch (server.state) {

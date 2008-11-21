@@ -219,12 +219,13 @@ bool map_start(bool skip_media,char *err_str)
 		return(FALSE);
 	}
 */
+
 	if (!map_open(&map,map.info.name,TRUE,load_shaders)) {
 		progress_shutdown();
 		sprintf(err_str,"Could not open map: %s.  If this map is from an older version of dim3, use Editor to upgrade it.",map.info.name);
 		return(FALSE);
 	}
-
+	
 		// deal with shader errors or shaders turned off
 
 	if (!load_shaders) {

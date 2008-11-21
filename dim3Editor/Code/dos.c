@@ -106,7 +106,7 @@ bool create_course_script(char *file_name)
 	file=fopen(path,"r");
 	if (file==NULL) return(FALSE);
     
-	data=(char*)valloc(sz);
+	data=(char*)malloc(sz);
     if (data==NULL) {
         fclose(file);
         return(FALSE);

@@ -815,12 +815,12 @@ bool map_convert_v1(map_type *map,int nportal,portal_type *portals,int seg_cnt,s
 
 	vlist_sz=sizeof(d3pnt)*10000;
 
-	vlist=(d3pnt*)valloc(vlist_sz);
+	vlist=(d3pnt*)malloc(vlist_sz);
 	if (vlist==NULL) return(FALSE);
 
 	plist_sz=sizeof(int)*500;
 
-	plist=(int*)valloc(plist_sz);
+	plist=(int*)malloc(plist_sz);
 	if (plist==NULL) {
 		free(vlist);
 		return(FALSE);
@@ -1017,12 +1017,12 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 		
 	seg_cnt=0;
 	
-	seg_list=(segment_type*)valloc(max_segment*sizeof(segment_type));
+	seg_list=(segment_type*)malloc(max_segment*sizeof(segment_type));
 	if (seg_list==NULL) return(FALSE);
 
 	nportal=0;
 
-	portals=(portal_type*)valloc(max_portal*sizeof(portal_type));
+	portals=(portal_type*)malloc(max_portal*sizeof(portal_type));
 	if (portals==NULL) {
 		free(seg_list);
 		return(FALSE);

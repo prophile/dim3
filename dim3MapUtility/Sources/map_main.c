@@ -172,48 +172,32 @@ bool map_new(map_type *map,char *name)
 	
 		// memory
 		
-	map->textures=(texture_type*)valloc(max_map_texture*sizeof(texture_type));
+	map->textures=(texture_type*)malloc(max_map_texture*sizeof(texture_type));
 	if (map->textures==NULL) return(FALSE);
 	
-	map->spots=(spot_type*)valloc(max_spot*sizeof(spot_type));
+	map->spots=(spot_type*)malloc(max_spot*sizeof(spot_type));
 	if (map->spots==NULL) return(FALSE);
 	
-	map->nodes=(node_type*)valloc(max_node*sizeof(node_type));
+	map->nodes=(node_type*)malloc(max_node*sizeof(node_type));
 	if (map->nodes==NULL) return(FALSE);
 	
-	map->sceneries=(map_scenery_type*)valloc(max_map_scenery*sizeof(map_scenery_type));
+	map->sceneries=(map_scenery_type*)malloc(max_map_scenery*sizeof(map_scenery_type));
 	if (map->sceneries==NULL) return(FALSE);
 	
-	map->movements=(movement_type*)valloc(max_movement*sizeof(movement_type));
+	map->movements=(movement_type*)malloc(max_movement*sizeof(movement_type));
 	if (map->movements==NULL) return(FALSE);
 	
-	map->lights=(map_light_type*)valloc(max_map_light*sizeof(map_light_type));
+	map->lights=(map_light_type*)malloc(max_map_light*sizeof(map_light_type));
 	if (map->lights==NULL) return(FALSE);
 	
-	map->sounds=(map_sound_type*)valloc(max_map_sound*sizeof(map_sound_type));
+	map->sounds=(map_sound_type*)malloc(max_map_sound*sizeof(map_sound_type));
 	if (map->sounds==NULL) return(FALSE);
 	
-	map->particles=(map_particle_type*)valloc(max_map_particle*sizeof(map_particle_type));
+	map->particles=(map_particle_type*)malloc(max_map_particle*sizeof(map_particle_type));
 	if (map->particles==NULL) return(FALSE);
 	
-	map->groups=(group_type*)valloc(max_group*sizeof(group_type));
+	map->groups=(group_type*)malloc(max_group*sizeof(group_type));
 	if (map->groups==NULL) return(FALSE);
-
-
-		// supergumba -- memory testing
-
-	fprintf(stdout,"textures = %.2f\n",((float)(max_map_texture*sizeof(texture_type)))/1000000.0f);
-	fprintf(stdout,"spots = %.2f\n",((float)(max_spot*sizeof(spot_type)))/1000000.0f);
-	fprintf(stdout,"nodes = %.2f\n",((float)(max_node*sizeof(node_type)))/1000000.0f);
-	fprintf(stdout,"sceneries = %.2f\n",((float)(max_map_scenery*sizeof(map_scenery_type)))/1000000.0f);
-	fprintf(stdout,"movements = %.2f\n",((float)(max_movement*sizeof(movement_type)))/1000000.0f);
-	fprintf(stdout,"lights = %.2f\n",((float)(max_map_light*sizeof(map_light_type)))/1000000.0f);
-	fprintf(stdout,"sounds = %.2f\n",((float)(max_map_sound*sizeof(map_sound_type)))/1000000.0f);
-	fprintf(stdout,"particles = %.2f\n",((float)(max_map_particle*sizeof(map_particle_type)))/1000000.0f);
-	fprintf(stdout,"groups = %.2f\n",((float)(max_group*sizeof(group_type)))/1000000.0f);
-
-
-
 
 		// zero memory
 		

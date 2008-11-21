@@ -216,7 +216,7 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 		
 	nportal=0;
 
-	portals=(portal_type*)valloc(max_portal*sizeof(portal_type));
+	portals=(portal_type*)malloc(max_portal*sizeof(portal_type));
 	if (portals==NULL) return(FALSE);
 
 		// clear meshes and liquids

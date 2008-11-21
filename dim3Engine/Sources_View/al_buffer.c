@@ -72,7 +72,7 @@ int al_open_buffer(char *name,char *path,int min_dist,int max_dist)
 
 	org_len=len*acvt.len_mult;
 
-	acvt.buf=valloc(org_len);
+	acvt.buf=malloc(org_len);
 	acvt.len=len;
 	memcpy(acvt.buf,data,len);
 

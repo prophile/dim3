@@ -254,7 +254,7 @@ bool import_lightwave(char *path,char *err_str)
 		return(FALSE);
     }
    
-	data=valloc(datasz);
+	data=malloc(datasz);
 	if (data==NULL) {
 		fclose(file);
 		return(FALSE);

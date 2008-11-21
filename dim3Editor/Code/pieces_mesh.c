@@ -267,7 +267,7 @@ void piece_add_obj_mesh(void)
 	
 		// get the vertexes
 
-	vertexes=(d3pnt*)valloc(sizeof(d3pnt)*nvertex);
+	vertexes=(d3pnt*)malloc(sizeof(d3pnt)*nvertex);
 	if (vertexes==NULL) {
 		textdecode_close();
 		StandardAlert(kAlertStopAlert,"\pImport Failed","\pOut of Memory.",NULL,NULL);
@@ -321,7 +321,7 @@ void piece_add_obj_mesh(void)
 	
 		// get the UVs
 		
-	uvs=(float*)valloc(sizeof(float)*(2*nuv));
+	uvs=(float*)malloc(sizeof(float)*(2*nuv));
 	if (uvs==NULL) {
 		textdecode_close();
 		StandardAlert(kAlertStopAlert,"\pImport Failed","\pOut of Memory.",NULL,NULL);

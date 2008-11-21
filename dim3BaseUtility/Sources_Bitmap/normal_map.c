@@ -145,7 +145,7 @@ bool bitmap_open_normal_from_height(bitmap_type *bitmap,char *path,int anisotrop
 	wid=bitmap->wid;
 	high=bitmap->high;
 		
-	data=valloc((wid<<2)*high);
+	data=malloc((wid<<2)*high);
 	if (data==NULL) {
 		free(png_data);
 		return(FALSE);
@@ -153,7 +153,7 @@ bool bitmap_open_normal_from_height(bitmap_type *bitmap,char *path,int anisotrop
 
 		// gray scale map
 		
-	gs_data=(float*)valloc((wid*high)*sizeof(float));
+	gs_data=(float*)malloc((wid*high)*sizeof(float));
 	if (gs_data==NULL) {
 		free(png_data);
 		free(data);
@@ -224,7 +224,7 @@ bool bitmap_open_normal_from_bitmap(bitmap_type *bitmap,char *path,int anisotrop
 	wid=bitmap->wid;
 	high=bitmap->high;
 		
-	data=valloc((wid<<2)*high);
+	data=malloc((wid<<2)*high);
 	if (data==NULL) {
 		free(png_data);
 		return(FALSE);
@@ -232,7 +232,7 @@ bool bitmap_open_normal_from_bitmap(bitmap_type *bitmap,char *path,int anisotrop
 
 		// gray scale map
 		
-	gs_data=(float*)valloc((wid*high)*sizeof(float));
+	gs_data=(float*)malloc((wid*high)*sizeof(float));
 	if (gs_data==NULL) {
 		free(png_data);
 		free(data);

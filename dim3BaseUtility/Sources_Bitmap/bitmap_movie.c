@@ -104,7 +104,7 @@ bool bitmap_movie_start(char *path,int *wid,int *high)
 		// create covert data for textures
 		
 	psz=(movie_wid<<2)*movie_high;
-	movie_data=valloc(psz);
+	movie_data=malloc(psz);
 	if (movie_data==NULL) {
 		DisposeGWorld(movie_gworld);
 		ExitMovies();

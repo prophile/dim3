@@ -81,7 +81,7 @@ void host_fill_map_table(char *game_type)
 	if (nfile>0) {
 		sz=(nfile+1)*128;
 		
-		net_host_file_list=valloc(sz);
+		net_host_file_list=malloc(sz);
 		bzero(net_host_file_list,sz);
 
 		c=net_host_file_list;
@@ -241,7 +241,7 @@ void host_game(void)
 	network_request_join	request_join;
 	
 		// start hosting
-		
+
 	if (!net_host_game_start(err_str)) {
 		error_open(err_str,"Hosting Game Canceled");
 		return;
@@ -282,7 +282,7 @@ void host_game(void)
 	
 		// start the map
 		
-	if (!map_start(FALSE,err_str)) {
+	if (!map_start(TRUE,err_str)) {
 		net_host_game_end();
 		error_open(err_str,"Hosting Game Canceled");
 		return;

@@ -42,7 +42,7 @@ bool network_queue_initialize(network_message_queue *queue)
 	queue->idx=0;
 	queue->ptr=NULL;
 	
-	queue->ptr=(unsigned char*)valloc(net_max_client_msg_cache_size*net_max_client_msg_cache);
+	queue->ptr=(unsigned char*)malloc(net_max_client_msg_cache_size*net_max_client_msg_cache);
 	if (queue->ptr==NULL) return(FALSE);
 	
 	bzero(queue->ptr,(net_max_client_msg_cache_size*net_max_client_msg_cache));

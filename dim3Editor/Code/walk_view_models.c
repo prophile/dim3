@@ -46,7 +46,7 @@ void walk_view_models_start(void)
 {
 	nmodel=0;
 	
-	models=valloc(sizeof(model_type)*max_model);
+	models=malloc(sizeof(model_type)*max_model);
 	
 	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,FALSE);
 }

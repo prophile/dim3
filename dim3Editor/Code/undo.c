@@ -77,7 +77,7 @@ void undo_save(void)
 	nmesh=map.mesh.nmesh;
 	if (nmesh==0) return;
 	
-	undo_meshes=(map_mesh_type*)valloc(nmesh*sizeof(map_mesh_type));
+	undo_meshes=(map_mesh_type*)malloc(nmesh*sizeof(map_mesh_type));
 	if (undo_meshes==NULL) return;
 	
 	org_mesh=map.mesh.meshes;
@@ -89,7 +89,7 @@ void undo_save(void)
 		
 			// need to dup the vertexes and polygons
 			
-		mesh->vertexes=(d3pnt*)valloc(org_mesh->nvertex*sizeof(d3pnt));
+		mesh->vertexes=(d3pnt*)malloc(org_mesh->nvertex*sizeof(d3pnt));
 		if (mesh->vertexes==NULL) {
 			free(undo_meshes);
 			undo_meshes=NULL;
@@ -97,7 +97,7 @@ void undo_save(void)
 		
 		memmove(mesh->vertexes,org_mesh->vertexes,(org_mesh->nvertex*sizeof(d3pnt)));
 		
-		mesh->polys=(map_mesh_poly_type*)valloc(org_mesh->npoly*sizeof(map_mesh_poly_type));
+		mesh->polys=(map_mesh_poly_type*)malloc(org_mesh->npoly*sizeof(map_mesh_poly_type));
 		if (mesh->polys==NULL) {
 			free(undo_meshes);
 			undo_meshes=NULL;

@@ -125,7 +125,7 @@ void gui_screenshot_load(void)
 	int					n,x,y,x_skip,y_skip,dsz;
 	unsigned char		*pixel_buffer,*data,*data2,*sptr,*dptr,*s2ptr,*d2ptr;
 	
-	pixel_buffer=(unsigned char*)valloc((setup.screen.x_sz*3)*setup.screen.y_sz);
+	pixel_buffer=(unsigned char*)malloc((setup.screen.x_sz*3)*setup.screen.y_sz);
 	if (pixel_buffer==NULL) return;
 	
 	glReadPixels(0,0,setup.screen.x_sz,setup.screen.y_sz,GL_RGB,GL_UNSIGNED_BYTE,pixel_buffer);
@@ -139,7 +139,7 @@ void gui_screenshot_load(void)
 		
 	dsz=((gui_screenshot_wid<<2)*gui_screenshot_high);
 	
-	data=(unsigned char*)valloc(dsz);
+	data=(unsigned char*)malloc(dsz);
 	if (data==NULL) {
 		free(pixel_buffer);
 		return;
@@ -170,7 +170,7 @@ void gui_screenshot_load(void)
 	
 		// blur the data
 		
-	data2=(unsigned char*)valloc(dsz);
+	data2=(unsigned char*)malloc(dsz);
 	if (data2==NULL) {
 		free(data);
 		return;

@@ -131,7 +131,7 @@ bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col)
 	strcpy(bitmap->name,name);
 	bitmap->wid=bitmap->high=32;
 	
-	png_data=valloc(4096);
+	png_data=malloc(4096);
 	if (png_data==NULL) return(FALSE);
 	
 	collong=((int)(0xFF*col->r)<<24)|((int)(0xFF*col->g)<<16)|((int)(0xFF*col->b)<<8)|0x000000FF;

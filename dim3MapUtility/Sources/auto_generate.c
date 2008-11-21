@@ -1182,7 +1182,7 @@ void map_auto_generate_portal_floor_add(map_type *map,int rn,int lx,int lz,int r
 	col_add=((rx-lx)/split_factor)+1;
 	row_add=((rz-lz)/split_factor)+1;
 	
-	fys=(int*)valloc(sizeof(int)*(col_add*row_add));
+	fys=(int*)malloc(sizeof(int)*(col_add*row_add));
 	if (fys==NULL) return;
 
 	fy=fys;
@@ -1496,7 +1496,7 @@ void map_auto_generate_second_story(map_type *map)
 		zsz=(portal->max.z-portal->min.z)/split_factor;
 
 		sz=(xsz+1)*(zsz+1);
-		poly_map=(unsigned char*)valloc(sz);
+		poly_map=(unsigned char*)malloc(sz);
 		if (poly_map==NULL) return;
 
 		bzero(poly_map,sz);

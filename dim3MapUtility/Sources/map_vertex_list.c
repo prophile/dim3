@@ -49,7 +49,6 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 	map_mesh_poly_tessel_vertex_type	*vl;
 
 	light=&poly->light;
-	vl=light->vertexes;
 
 		// get tessel size, possible total of 64 triangles, 8 grid spots (max)
 
@@ -122,8 +121,22 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 		if (pt->y==poly->box.min.y) tgy=poly->gy[n];
 		if (pt->y==poly->box.max.y) bgy=poly->gy[n];
 	}
+	
+		// allocate memory
+		
+	poly->light.vertexes=malloc(sizeof(map_mesh_poly_tessel_vertex_type)*((xztot+1)*(ytot+1)));
+	if (poly->light.vertexes==NULL) return;
+	
+	poly->light.trig_vertex_idx=malloc(sizeof(int)*((xztot*ytot)*6));
+	if (poly->light.trig_vertex_idx==NULL) return;
+	
+	poly->light.trig_vertex_draw_idx=malloc(sizeof(int)*((xztot*ytot)*6));
+	if (poly->light.trig_vertex_draw_idx==NULL) return;
 
+		// create vertexes
+		
 	vl_cnt=0;
+	vl=light->vertexes;
 
 	for (y=0;y<=ytot;y++) {
 		for (x=0;x<=xztot;x++) {
@@ -197,7 +210,6 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 	map_mesh_poly_tessel_vertex_type	*vl;
 
 	light=&poly->light;
-	vl=light->vertexes;
 
 		// get tessel size, possible total of 64 triangles, 8 grid spots (max)
 
@@ -266,7 +278,21 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 		if (pt->z==poly->box.max.z) rgy=poly->gy[n];
 	}
 
+		// allocate memory
+		
+	poly->light.vertexes=malloc(sizeof(map_mesh_poly_tessel_vertex_type)*((xtot+1)*(ztot+1)));
+	if (poly->light.vertexes==NULL) return;
+	
+	poly->light.trig_vertex_idx=malloc(sizeof(int)*((xtot*ztot)*6));
+	if (poly->light.trig_vertex_idx==NULL) return;
+	
+	poly->light.trig_vertex_draw_idx=malloc(sizeof(int)*((xtot*ztot)*6));
+	if (poly->light.trig_vertex_draw_idx==NULL) return;
+
+		// create vertexes
+		
 	vl_cnt=0;
+	vl=light->vertexes;
 
 	for (z=0;z<=ztot;z++) {
 		for (x=0;x<=xtot;x++) {
@@ -333,36 +359,6 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 
 /* =======================================================
 
-      Simple Lighting Tessel
-      
-======================================================= */
-
-void map_portal_add_light_simple_vertex_list(map_mesh_poly_type *poly)
-{
-	int							n,ntrig;
-	map_mesh_poly_light_type	*light;
-
-	light=&poly->light;
-
-		// simple tessel just breaks up the polygon
-		// into triangle.  We don't create any
-		// lighting vertexes as we can re-use the
-		// polygon vertexes
-
-	ntrig=poly->ptsz-2;
-
-	for (n=0;n<ntrig;n++) {
-		light->trig_vertex_idx[n*3]=0;
-		light->trig_vertex_idx[(n*3)+1]=n+1;
-		light->trig_vertex_idx[(n*3)+2]=n+2;
-	}
-
-	light->nvertex=0;
-	light->ntrig=ntrig;
-}
-
-/* =======================================================
-
       Create/Dispose Tesseled Lighting Vertexes For Polygon
       
 ======================================================= */
@@ -371,24 +367,25 @@ void map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *p
 {
 	int			grid_split_sz;
 
-		// memory for tesseled vertexes
-
-	poly->light.trig_vertex_idx=valloc(sizeof(int)*(light_tessel_max_vertex*3));			// supergumba -- need to error check here
-	poly->light.trig_vertex_draw_idx=valloc(sizeof(int)*(light_tessel_max_vertex*3));
-	poly->light.vertexes=valloc(sizeof(map_mesh_poly_tessel_vertex_type)*light_tessel_max_vertex);
-
 	poly->light.ntrig=0;
 	poly->light.nvertex=0;
+		
+	poly->light.trig_vertex_idx=NULL;
+	poly->light.trig_vertex_draw_idx=NULL;
+	poly->light.vertexes=NULL;
 	
 		// simple light tessels
+		// these just use the polygon itself so no alloctation or lists are needed
 
 	if ((quality_mode==quality_mode_low) || (poly->draw.simple_tessel) || (mesh->flag.hilite)) {
-
 		poly->light.simple_tessel=TRUE;
-		map_portal_add_light_simple_vertex_list(poly);
-
+		poly->light.nvertex=0;
+		poly->light.ntrig=0;
 		return;
 	}
+	
+		// tesseled lighting needs draw and vertex lists
+
 
 		// tessel depending on shape of polygon
 	
@@ -406,9 +403,9 @@ void map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *p
 
 void map_dispose_poly_tesseled_vertexes(map_mesh_poly_type *poly)
 {
-	free(poly->light.trig_vertex_idx);
-	free(poly->light.trig_vertex_draw_idx);
-	free(poly->light.vertexes);
+	if (poly->light.trig_vertex_idx!=NULL) free(poly->light.trig_vertex_idx);
+	if (poly->light.trig_vertex_draw_idx!=NULL) free(poly->light.trig_vertex_draw_idx);
+	if (poly->light.vertexes!=NULL) free(poly->light.vertexes);
 }
 
 /* =======================================================
@@ -520,7 +517,7 @@ bool map_create_liquid_vertexes(map_type *map)
 		// compiled index lists
 
 	sz=nvlist*(sizeof(int)*4);
-	map->liquid_vertexes.index_ptr=(int*)valloc(sz);
+	map->liquid_vertexes.index_ptr=(int*)malloc(sz);
 	if (map->liquid_vertexes.index_ptr==NULL) return(FALSE);
 
 	bzero(map->liquid_vertexes.index_ptr,sz);
@@ -549,7 +546,7 @@ bool map_create_sort_lists(map_type *map)
 	int					sz;
 
 	sz=max_sort_poly*sizeof(map_poly_sort_item_type);
-	map->sort.list=(map_poly_sort_item_type*)valloc(sz);
+	map->sort.list=(map_poly_sort_item_type*)malloc(sz);
 	if (map->sort.list==NULL) return(FALSE);
 
 	bzero(map->sort.list,sz);

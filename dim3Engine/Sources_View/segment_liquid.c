@@ -38,6 +38,8 @@ extern server_type			server;
 extern view_type			view;
 extern setup_type			setup;
 
+extern int					hilite_mode;
+
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
 extern void view_next_vertex_object(void);
 extern void view_resize_current_vertex_object(int sz);
@@ -172,12 +174,18 @@ bool liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
 
 				// color
 
-			if (setup.quality_mode==quality_mode_super) {
-				map_calculate_ray_trace_light_color_normal((double)x,(double)y,(double)z,cl,normal);
+			if (hilite_mode==hilite_mode_hilite) {
+				*cl=*(cl+1)=*(cl+2)=1.0f;
 			}
 			else {
-				map_calculate_light_color_normal((double)x,(double)y,(double)z,cl,normal);
+				if (setup.quality_mode==quality_mode_super) {
+					map_calculate_ray_trace_light_color_normal((double)x,(double)y,(double)z,cl,normal);
+				}
+				else {
+					map_calculate_light_color_normal((double)x,(double)y,(double)z,cl,normal);
+				}
 			}
+			
 			cl+=3;
 
 				// setup tide Y

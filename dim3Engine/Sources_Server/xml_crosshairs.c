@@ -71,7 +71,7 @@ void read_settings_crosshair(void)
 		return;
 	}
 
-	server.crosshairs=(crosshair_type*)valloc(sizeof(crosshair_type)*ncrosshair);
+	server.crosshairs=(crosshair_type*)malloc(sizeof(crosshair_type)*ncrosshair);
 	if (server.crosshairs==NULL) {
 		xml_close_file();
 		return;

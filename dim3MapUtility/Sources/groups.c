@@ -74,7 +74,7 @@ bool map_group_create_single_unit_list(map_type *map,int group_idx)
 	
 		// create unit list
 		
-	unit_list=(group_unit_type*)valloc(unit_cnt*sizeof(group_unit_type));
+	unit_list=(group_unit_type*)malloc(unit_cnt*sizeof(group_unit_type));
 	if (unit_list==NULL) return(FALSE);
 	
 	bzero(unit_list,(unit_cnt*sizeof(group_unit_type)));
