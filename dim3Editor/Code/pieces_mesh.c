@@ -439,7 +439,7 @@ void piece_add_obj_mesh(void)
       
 ======================================================= */
 
-float piece_add_height_map_mesh_get_height(unsigned char *data,int wid,int high,int x,int z,int div_cnt)
+float piece_add_height_map_mesh_get_height(unsigned char *data,int wid,int high,bool alpha_channel,int x,int z,int div_cnt)
 {
 	int				y;
 	unsigned char	*p;
@@ -454,7 +454,12 @@ float piece_add_height_map_mesh_get_height(unsigned char *data,int wid,int high,
 	if (y<0) y=0;
 	if (y>=high) y=high-1;
 	
-	p=data+((y*(wid<<2))+(x<<2));
+	if (alpha_channel) {
+		p=data+((y*(wid<<2))+(x<<2));
+	}
+	else {
+		p=data+((y*(wid*3))+(x*3));
+	}
 	
 	return(((float)*p)/255.0f);
 }
@@ -467,12 +472,13 @@ void piece_add_height_map_mesh(void)
 	float				f_portal_y_sz,gx[4],gy[4];
 	char				path[1024];
 	unsigned char		*data;
+	bool				alpha_channel;
 	d3pnt				pnt;
 	
 		// get the png
 		
 	if (!import_load_file(path,"png")) return;
-	data=bitmap_load_png_data(path,&bwid,&bhigh);
+	data=bitmap_load_png_data(path,&bwid,&bhigh,&alpha_channel);
 	if (data==NULL) return;
 	
 		// division and sizes
@@ -510,10 +516,10 @@ void piece_add_height_map_mesh(void)
 			
 				// floors
 				
-			y[0]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(data,bwid,bhigh,x,z,div_cnt));
-			y[1]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(data,bwid,bhigh,(x+1),z,div_cnt));
-			y[2]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(data,bwid,bhigh,(x+1),(z+1),div_cnt));
-			y[3]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(data,bwid,bhigh,x,(z+1),div_cnt));
+			y[0]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(data,bwid,bhigh,alpha_channel,x,z,div_cnt));
+			y[1]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(data,bwid,bhigh,alpha_channel,(x+1),z,div_cnt));
+			y[2]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(data,bwid,bhigh,alpha_channel,(x+1),(z+1),div_cnt));
+			y[3]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(data,bwid,bhigh,alpha_channel,x,(z+1),div_cnt));
 										
 			gx[0]=gx[1]=gx[2]=0.0f;
 			gy[0]=gy[1]=gy[2]=0.0f;
@@ -885,7 +891,7 @@ void map_mesh_move_all(int x,int y,int z)
 	int				n;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		map_mesh_move(&map,n,x,y,z);
+		map_mesh_move(&map,n,x,y,z,TRUE);
 	}
 }
 

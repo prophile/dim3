@@ -231,53 +231,30 @@ void map_calculate_light_reduce_all(void)
 bool map_calculate_light_reduce_check_equal(map_mesh_type *mesh)
 {
 	int								n;
+	double							light_hash;
 	light_spot_type					*lspot;
-	map_mesh_draw_light_spot_type	*mspot;
-
-	if (nlight_reduce!=mesh->draw.nlight) return(FALSE);
 	
-	mspot=mesh->draw.light_spots;
+		// create light hash
+		
+	light_hash=0.0;
 
 	for (n=0;n!=nlight_reduce;n++) {
 		lspot=&lspot_cache[light_reduce_list[n]];
 
-		if (lspot->intensity!=mspot->intensity) return(FALSE);
-		if (lspot->pnt.x!=mspot->pnt.x) return(FALSE);
-		if (lspot->pnt.y!=mspot->pnt.y) return(FALSE);
-		if (lspot->pnt.z!=mspot->pnt.z) return(FALSE);
-		if (lspot->col.r!=mspot->col.r) return(FALSE);
-		if (lspot->col.g!=mspot->col.g) return(FALSE);
-		if (lspot->col.b!=mspot->col.b) return(FALSE);
+		light_hash+=lspot->intensity;
+		light_hash+=(double)((lspot->pnt.x*100)+(lspot->pnt.y*10)+lspot->pnt.z);
+		light_hash+=(double)((lspot->col.r*100.0f)+(lspot->col.g*10.0f)+lspot->col.b);
+	}
 
-		mspot++;
+		// if light hash has changed, reset hash
+		// and then rebuild light list
+		
+	if (mesh->draw.light_hash!=light_hash) {
+		mesh->draw.light_hash=light_hash;
+		return(FALSE);
 	}
 
 	return(TRUE);
-}
-
-void map_calculate_light_reduce_save(map_mesh_type *mesh)
-{
-	int								n;
-	light_spot_type					*lspot;
-	map_mesh_draw_light_spot_type	*mspot;
-
-	mesh->draw.nlight=nlight_reduce;
-	
-	mspot=mesh->draw.light_spots;
-
-	for (n=0;n!=nlight_reduce;n++) {
-		lspot=&lspot_cache[light_reduce_list[n]];
-
-		mspot->intensity=lspot->intensity;
-		mspot->pnt.x=lspot->pnt.x;
-		mspot->pnt.y=lspot->pnt.y;
-		mspot->pnt.z=lspot->pnt.z;
-		mspot->col.r=lspot->col.r;
-		mspot->col.g=lspot->col.g;
-		mspot->col.b=lspot->col.b;
-
-		mspot++;
-	}
 }
 
 void map_calculate_light_clear_all(void)
@@ -288,7 +265,7 @@ void map_calculate_light_clear_all(void)
 	mesh=map.mesh.meshes;
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		mesh->draw.nlight=-1;
+		mesh->draw.light_hash=0.0;
 		mesh++;
 	}
 }

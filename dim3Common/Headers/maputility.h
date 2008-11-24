@@ -286,16 +286,10 @@ typedef struct		{
 					} map_mesh_obscure_type;
 
 typedef struct		{
-						double								intensity;
-						d3pnt								pnt;
-						d3col								col;
-					} map_mesh_draw_light_spot_type;
-
-typedef struct		{
-						int									nlight,vertex_count,
+						int									vertex_count,
 															stencil_pass_start,stencil_pass_end;
+						double								light_hash;
 						float								*p_color,*p_normal;
-						map_mesh_draw_light_spot_type		light_spots[max_light_spot];
 					} map_mesh_draw_type;
 
 typedef struct		{
@@ -646,10 +640,10 @@ extern int map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt);
 
 extern int map_mesh_combine(map_type *map,int mesh_1_idx,int mesh_2_idx);
 extern int map_mesh_combine_small(map_type *map,int poly_threshold);
-extern void map_mesh_move(map_type *map,int mesh_idx,int x,int y,int z);
+extern void map_mesh_move(map_type *map,int mesh_idx,int x,int y,int z,bool vertex_only);
 extern void map_mesh_resize(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max);
 extern void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);
-extern void map_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float rot_z);
+extern void map_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float rot_z,bool vertex_only);
 extern bool map_mesh_tesselate(map_type *map,int mesh_idx);
 extern bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx);
 extern void map_mesh_poly_run_shifts(map_type *map,int tick);

@@ -56,9 +56,9 @@ bool view_compile_mesh_gl_list_init(void)
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
 
-			// light check starts not equal
+			// clear the light hash
 
-		mesh->draw.nlight=-1;
+		mesh->draw.light_hash=0.0;
 
 			// get count for color and normal lists
 
@@ -292,10 +292,9 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 		map_calculate_light_reduce_mesh(mesh);
 		recalc_light=!map_calculate_light_reduce_check_equal(mesh);
-		map_calculate_light_reduce_save(mesh);
 
 		if ((recalc_light) && (!mesh->flag.hilite)) {
-
+			
 			if (setup.quality_mode!=quality_mode_super) {
 				view_compile_mesh_gl_lists_normal(mesh);
 			}

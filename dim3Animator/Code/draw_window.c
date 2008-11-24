@@ -140,6 +140,10 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 		return;
 	}
 	
+		// draw memory
+		
+	model_draw_array_initialize(model);
+	
 		// draw the center
 		
 	draw_model_axis(model);
@@ -207,6 +211,10 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 	}
    
 	aglSwapBuffers(ctx);
+	
+		// free memory
+		
+	model_draw_array_free(model);
 }
 
 void draw_model_setup_pose(model_type *model,model_draw_setup *draw_setup,int wpose)

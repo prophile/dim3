@@ -37,17 +37,17 @@
 	};
 	F51B2619055E0251000B696C /* draw_bones.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 8316}}";
-			sepNavSelRange = "{13033, 23}";
-			sepNavVisRange = "{2168, 1269}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 8260}}";
+			sepNavSelRange = "{12434, 0}";
+			sepNavVisRange = "{11993, 1139}";
 			sepNavWindowFrame = "{{221, 131}, {1041, 747}}";
 		};
 	};
 	F51B261A055E0251000B696C /* draw_vertexes.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 8092}}";
-			sepNavSelRange = "{2814, 44}";
-			sepNavVisRange = "{2628, 1234}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 8162}}";
+			sepNavSelRange = "{9016, 0}";
+			sepNavVisRange = "{1592, 1036}";
 			sepNavWindowFrame = "{{473, 148}, {1041, 747}}";
 		};
 	};
@@ -152,8 +152,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 248924773;
-			PBXWorkspaceStateSaveDate = 248924773;
+			PBXPerProjectTemplateStateSaveDate = 249192583;
+			PBXWorkspaceStateSaveDate = 249192583;
 		};
 		sourceControlManager = 260AFEDB0D404F5000F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -209,10 +209,10 @@
 	};
 	F56D96EA0502F83C00143299 /* model_main.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2940}}";
-			sepNavSelRange = "{2753, 344}";
-			sepNavVisRange = "{2058, 1946}";
-			sepNavWindowFrame = "{{347, 139}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4718}}";
+			sepNavSelRange = "{7012, 0}";
+			sepNavVisRange = "{6067, 1285}";
+			sepNavWindowFrame = "{{214, 178}, {1041, 747}}";
 		};
 	};
 	F56E4BB70921B42700BDE927 /* file_model_shader.c */ = {
@@ -253,6 +253,14 @@
 			sepNavSelRange = "{4515, 0}";
 			sepNavVisRange = "{3782, 981}";
 			sepNavWindowFrame = "{{418, 138}, {1041, 747}}";
+		};
+	};
+	F5AD54030BBE1E46001C7C04 /* baseutility.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 10192}}";
+			sepNavSelRange = "{3380, 11}";
+			sepNavVisRange = "{2525, 1011}";
+			sepNavWindowFrame = "{{38, 255}, {1041, 747}}";
 		};
 	};
 	F5CA4EF305100FB60055C8B8 /* modelutility.h */ = {

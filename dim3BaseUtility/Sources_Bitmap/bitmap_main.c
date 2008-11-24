@@ -50,10 +50,10 @@ void bitmap_new(bitmap_type *bitmap)
 
 bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool use_compression,bool pixelated,bool scrub_black_to_alpha)
 {
-	int					n,psz;
+	int					n,psz,row_add;
 	char				*c;
 	unsigned char		*png_data,*data;
-	bool				ok;
+	bool				ok,alpha_channel;
 
 	bitmap_new(bitmap);
 	
@@ -67,43 +67,46 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 	
 		// read bitmap
 	
-	png_data=png_utility_read(path,&bitmap->wid,&bitmap->high);
+	png_data=png_utility_read(path,&bitmap->wid,&bitmap->high,&alpha_channel);
 	if (png_data==NULL) return(FALSE);
-
-	psz=(bitmap->wid<<2)*bitmap->high;
-
-		// scrub blacks to alpahs
-		// this is mostly used for glow maps
-
-	if (scrub_black_to_alpha) {
-
-		data=png_data;
-
-		for (n=0;n<psz;n+=4) {
-			*(data+3)=*data;
-			data+=4;
-		}
-	}
 	
-		// find if bitmap has transparencies
+		// certain alpha routines
 		
 	bitmap->alpha_mode=alpha_mode_none;
-		
-	data=png_data+3;
-	
-	for (n=0;n<psz;n+=4) {
-	
-		if (*data!=0xFF) {
-			if (*data==0x0) {
-				bitmap->alpha_mode=alpha_mode_cut_out;			// possibly a cut out
+
+	if (alpha_channel) {
+
+		psz=(bitmap->wid<<2)*bitmap->high;
+
+			// scrub blacks to alpahs
+			// this is mostly used for glow maps
+
+		if (scrub_black_to_alpha) {
+
+			data=png_data;
+
+			for (n=0;n<psz;n+=row_add) {
+				*(data+3)=*data;
+				data+=4;
 			}
-			else {
+		}
+		
+			// find if bitmap has transparencies
+			// assume it's a cut-out until we see different data
+			
+		bitmap->alpha_mode=alpha_mode_cut_out;
+					
+		data=png_data+3;
+		
+		for (n=0;n<psz;n+=4) {
+		
+			if ((*data!=0xFF) && (*data!=0x0)) {
 				bitmap->alpha_mode=alpha_mode_transparent;		// and single non-0xFF and non-0x00 means transparency
 				break;
 			}
-		}
 
-		data+=4;
+			data+=4;
+		}
 	}
 	
 		// get the texture
@@ -123,23 +126,27 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 
 bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col)
 {
-	int				i;
-	long			collong,*dptr;
-	unsigned char	*png_data;
+	int				i,kr,kg,kb;
+	unsigned char	*png_data,*dptr;
 	bool			ok;
 	
 	strcpy(bitmap->name,name);
 	bitmap->wid=bitmap->high=32;
+	bitmap->alpha_mode=alpha_mode_none;
 	
-	png_data=malloc(4096);
+	png_data=malloc((32*32)*3);
 	if (png_data==NULL) return(FALSE);
 	
-	collong=((int)(0xFF*col->r)<<24)|((int)(0xFF*col->g)<<16)|((int)(0xFF*col->b)<<8)|0x000000FF;
+	kr=(int)(0xFF*col->r);
+	kg=(int)(0xFF*col->g);
+	kb=(int)(0xFF*col->b);
 	
-	dptr=(long*)png_data;
+	dptr=png_data;
 
-	for (i=0;i!=1024;i++) {
-		*dptr++=collong;
+	for (i=0;i!=(32*32);i++) {
+		*dptr++=kr;
+		*dptr++=kg;
+		*dptr++=kb;
 	}
 	
 	ok=bitmap_texture_open(bitmap,png_data,anisotropic_mode_none,mipmap_mode_none,FALSE,TRUE);
@@ -155,7 +162,7 @@ bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col)
       
 ======================================================= */
 
-bool bitmap_data(bitmap_type *bitmap,char *name,unsigned char *data,int wid,int high,int anisotropic_mode,int mipmap_mode,bool use_compression)
+bool bitmap_data(bitmap_type *bitmap,char *name,unsigned char *data,int wid,int high,bool alpha_channel,int anisotropic_mode,int mipmap_mode,bool use_compression)
 {
 	int				n,psz;
 	unsigned char	*ptr;
@@ -164,28 +171,30 @@ bool bitmap_data(bitmap_type *bitmap,char *name,unsigned char *data,int wid,int 
 	bitmap->wid=wid;
 	bitmap->high=high;
 	
-		// find if bitmap has transparencies
-		
 	bitmap->alpha_mode=alpha_mode_none;
-	ptr=data+3;
+	
+		// find if bitmap has transparencies
+		// assume it's a cut-out until we see different data
+	
+	if (alpha_channel) {
+	
+		bitmap->alpha_mode=alpha_mode_cut_out;
 
-	psz=(wid*4)*high;
-	
-	for (n=0;n<psz;n+=4) {
-	
-		if (*ptr!=0xFF) {
-			if (*ptr==0x0) {
-				bitmap->alpha_mode=alpha_mode_cut_out;			// possibly a cut out
-			}
-			else {
+		ptr=data+3;
+
+		psz=(wid<<2)*high;
+		
+		for (n=0;n<psz;n+=4) {
+		
+			if ((*ptr!=0xFF) && (*ptr!=0x0)) {
 				bitmap->alpha_mode=alpha_mode_transparent;		// and single non-0xFF and non-0x00 means transparency
 				break;
 			}
+
+			ptr+=4;
 		}
-
-		ptr+=4;
 	}
-
+	
 		// get the texture
 		
 	return(bitmap_texture_open(bitmap,data,anisotropic_mode,mipmap_mode,use_compression,FALSE));
@@ -210,14 +219,14 @@ void bitmap_close(bitmap_type *bitmap)
       
 ======================================================= */
 
-unsigned char* bitmap_load_png_data(char *path,int *p_wid,int *p_high)
+unsigned char* bitmap_load_png_data(char *path,int *p_wid,int *p_high,bool *alpha_channel)
 {
-	return(png_utility_read(path,p_wid,p_high));
+	return(png_utility_read(path,p_wid,p_high,alpha_channel));
 }
 
-bool bitmap_write_png_data(unsigned char *data,int wid,int high,char *path)
+bool bitmap_write_png_data(unsigned char *data,int wid,int high,bool alpha_channel,char *path)
 {
-	return(png_utility_write(data,wid,high,path));
+	return(png_utility_write(data,wid,high,alpha_channel,path));
 }
 
 bool bitmap_check(char *path,char *err_str)

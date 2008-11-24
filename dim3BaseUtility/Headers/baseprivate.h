@@ -79,8 +79,8 @@ typedef struct	{
 // References
 //
 
-unsigned char* png_utility_read(char *path,int *p_wid,int *p_high);
-bool png_utility_write(unsigned char *data,int wid,int high,char *path);
+unsigned char* png_utility_read(char *path,int *p_wid,int *p_high,bool *alpha_channel);
+bool png_utility_write(unsigned char *data,int wid,int high,bool alpha_channel,char *path);
 bool png_utility_check(char *path,char *err_str);
 bool png_utility_copy(char *srce_path,char *dest_path);
 bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic_mode,int mipmap_mode,bool use_compression,bool pixelated);

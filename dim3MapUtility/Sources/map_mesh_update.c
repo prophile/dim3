@@ -244,7 +244,7 @@ int map_mesh_combine_small(map_type *map,int poly_threshold)
       
 ======================================================= */
 
-void map_mesh_move(map_type *map,int mesh_idx,int x,int y,int z)
+void map_mesh_move(map_type *map,int mesh_idx,int x,int y,int z,bool vertex_only)
 {
 	int									n,k,nvertex,npoly;
 	d3pnt								*pt;
@@ -265,6 +265,8 @@ void map_mesh_move(map_type *map,int mesh_idx,int x,int y,int z)
 		pt->z+=z;
 		pt++;
 	}
+	
+	if (vertex_only) return;
 
 		// move all poly boxes
 		// and lighting vertexes
@@ -387,7 +389,7 @@ void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_
       
 ======================================================= */
 
-void map_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float rot_z)
+void map_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float rot_z,bool vertex_only)
 {
 	int									n,k,nvertex,npoly;
 	float								fx,fy,fz;
@@ -429,6 +431,8 @@ void map_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float ro
 
 		pt++;
 	}
+	
+	if (vertex_only) return;
 
 		// rotate polygons
 

@@ -541,7 +541,7 @@ typedef struct		{
 extern void bitmap_new(bitmap_type *bitmap);
 extern bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool use_compression,bool pixelated,bool scrub_black_to_alpha);
 extern bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col);
-extern bool bitmap_data(bitmap_type *bitmap,char *name,unsigned char *data,int wid,int high,int anisotropic_mode,int mipmap_mode,bool use_compression);
+extern bool bitmap_data(bitmap_type *bitmap,char *name,unsigned char *data,int wid,int high,bool alpha_channel,int anisotropic_mode,int mipmap_mode,bool use_compression);
 extern void bitmap_close(bitmap_type *bitmap);
 
 extern void bitmap_texture_setup_animation(texture_type *texture,int texture_count,unsigned char *user_frames,int tick);
@@ -553,8 +553,8 @@ extern void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool 
 extern bool bitmap_open_normal_from_height(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool use_compression,bool pixelated);
 extern bool bitmap_open_normal_from_bitmap(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool use_compression,bool pixelated);
 
-extern unsigned char* bitmap_load_png_data(char *path,int *p_wid,int *p_high);
-extern bool bitmap_write_png_data(unsigned char *data,int wid,int high,char *path);
+extern unsigned char* bitmap_load_png_data(char *path,int *p_wid,int *p_high,bool *alpha_channel);
+extern bool bitmap_write_png_data(unsigned char *data,int wid,int high,bool alpha_channel,char *path);
 extern bool bitmap_check(char *path,char *err_str);
 extern bool bitmap_copy(char *srce_path,char *dest_path);
 

@@ -289,9 +289,9 @@ bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *pa
 		ss_wid=ss_high=128;
 	}
 	
-		// flip and/or reduce the data
+		// flip the data
 		
-	dsz=((ss_wid<<2)*ss_high);
+	dsz=((ss_wid*3)*ss_high);
 	
 	data=(unsigned char*)malloc(dsz);
 	if (data==NULL) {
@@ -302,7 +302,7 @@ bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *pa
 	bzero(data,dsz);
 	
 	sptr=pixel_buffer;
-	dptr=data+((ss_high-1)*(ss_wid<<2));
+	dptr=data+((ss_high-1)*(ss_wid*3));
 
 	for (y=0;y!=ss_high;y++) {
 	
@@ -313,20 +313,19 @@ bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *pa
 			*d2ptr++=*s2ptr++;
 			*d2ptr++=*s2ptr++;
 			*d2ptr++=*s2ptr++;
-			*d2ptr++=0xFF;
 			
 			s2ptr+=((x_skip-1)*3);
 		}
 			
 		sptr+=((wid*3)*y_skip);
-		dptr-=(ss_wid<<2);
+		dptr-=(ss_wid*3);
 	}
 
 	free(pixel_buffer);
 
 		// save screenshot
 
-	ok=bitmap_write_png_data(data,ss_wid,ss_high,path);
+	ok=bitmap_write_png_data(data,ss_wid,ss_high,FALSE,path);
 		
 	free(data);
 	

@@ -327,7 +327,6 @@ float particle_get_gravity(particle_type *particle,int count)
 		// gravity at this time
 		
 	gravity=particle->start_gravity+(particle->gravity_add*f_count);
-	if (gravity>map.settings.gravity_max_power) gravity=map.settings.gravity_max_power;
 	
 		// particle movements multipled over time
 		

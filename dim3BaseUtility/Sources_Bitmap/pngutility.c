@@ -35,12 +35,12 @@ and can be sold or given away.
       
 ======================================================= */
 
-unsigned char* png_utility_read(char *path,int *p_wid,int *p_high)
+unsigned char* png_utility_read(char *path,int *p_wid,int *p_high,bool *alpha_channel)
 {
 	int						x,y,
 							psz,rowbytes,channels,wid,high;
 	unsigned char			header[8];
-	unsigned char			*data,*ptr,*rp;
+	unsigned char			*data,*ptr;
 	FILE					*file;
 	png_structp				png_ptr;
 	png_infop				info_ptr;
@@ -88,7 +88,14 @@ unsigned char* png_utility_read(char *path,int *p_wid,int *p_high)
 
 		// create the bitmap
 		
-	psz=(wid<<2)*high;
+	if (info_ptr->pixel_depth==32) {
+		psz=(wid<<2)*high;
+		*alpha_channel=TRUE;
+	}
+	else {
+		psz=(wid*3)*high;
+		*alpha_channel=FALSE;
+	}
 	
 	data=malloc(psz);
 	if (data==NULL) {
@@ -113,7 +120,6 @@ unsigned char* png_utility_read(char *path,int *p_wid,int *p_high)
 
 		for (y=0;y!=high;y++) {
 			for (x=0;x!=wid;x++) {
-				*ptr++=0xFF;
 				*ptr++=0xFF;
 				*ptr++=0xFF;
 				*ptr++=0xFF;
@@ -154,30 +160,11 @@ unsigned char* png_utility_read(char *path,int *p_wid,int *p_high)
 		
 	ptr=data;
 	
-	if (channels==4) {
-	
-			// RGBA
-			
-		for (y=0;y!=high;y++) {
-			memmove(ptr,rptrs[y],rowbytes);
-			ptr+=rowbytes;
-		}
+	for (y=0;y!=high;y++) {
+		memmove(ptr,rptrs[y],rowbytes);
+		ptr+=rowbytes;
 	}
-	else {
-	
-			// RGB
-			
-		for (y=0;y!=high;y++) {
-			rp=rptrs[y];
-			for (x=0;x!=wid;x++) {
-				*ptr++=*rp++;
-				*ptr++=*rp++;
-				*ptr++=*rp++;
-				*ptr++=0xFF;
-			}
-		}
-	}
-	
+
 		// clean up
 		
 	for (y=0;y!=high;y++) {
@@ -198,7 +185,7 @@ unsigned char* png_utility_read(char *path,int *p_wid,int *p_high)
       
 ======================================================= */
 
-bool png_utility_write(unsigned char *data,int wid,int high,char *path)
+bool png_utility_write(unsigned char *data,int wid,int high,bool alpha_channel,char *path)
 {
 	int						y,rowbytes;
 	unsigned char			*ptr;
@@ -237,14 +224,20 @@ bool png_utility_write(unsigned char *data,int wid,int high,char *path)
 	
 		// write the header
 		
-	png_set_IHDR(png_ptr,info_ptr,wid,high,8,PNG_COLOR_TYPE_RGB_ALPHA,PNG_INTERLACE_NONE,PNG_COMPRESSION_TYPE_BASE,PNG_FILTER_TYPE_BASE);
+	png_set_IHDR(png_ptr,info_ptr,wid,high,8,(alpha_channel?PNG_COLOR_TYPE_RGB_ALPHA:PNG_COLOR_TYPE_RGB),PNG_INTERLACE_NONE,PNG_COMPRESSION_TYPE_BASE,PNG_FILTER_TYPE_BASE);
 	png_write_info(png_ptr,info_ptr);
 	
 		// setup row pointers
 		
 	rptrs=(png_bytep*)malloc(sizeof(png_bytep)*high);
 	
-	rowbytes=(wid<<2);
+	if (alpha_channel) {
+		rowbytes=(wid<<2);
+	}
+	else {
+		rowbytes=(wid*3);
+	}
+	
 	ptr=data;
 	
 	for (y=0;y!=high;y++) {

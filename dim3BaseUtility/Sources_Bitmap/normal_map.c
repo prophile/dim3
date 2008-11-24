@@ -104,7 +104,6 @@ void bitmap_normal_data_create_from_gs_data(ptr data,float *gs_data,int wid,int 
 			*p_data++=bitmap_normal_pack_float(nx);
 			*p_data++=bitmap_normal_pack_float(ny);
 			*p_data++=bitmap_normal_pack_float(nz);
-			*p_data++=0xFF;
 		}
 	}
 }
@@ -117,11 +116,11 @@ void bitmap_normal_data_create_from_gs_data(ptr data,float *gs_data,int wid,int 
 
 bool bitmap_open_normal_from_height(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool use_compression,bool pixelated)
 {
-	int					x,y,wid,high;
+	int					x,y,wid,high,row_add;
 	char				*c;
 	unsigned char		*png_data,*data,*p_data;
 	float				*gs_data,*p_gs_data;
-	bool				ok;
+	bool				ok,alpha_channel;
 	
 		// get name
 		
@@ -133,10 +132,8 @@ bool bitmap_open_normal_from_height(bitmap_type *bitmap,char *path,int anisotrop
 	
 		// read bitmap
 	
-	png_data=png_utility_read(path,&bitmap->wid,&bitmap->high);
+	png_data=png_utility_read(path,&bitmap->wid,&bitmap->high,&alpha_channel);
 	if (png_data==NULL) return(FALSE);
-		
-	bitmap->alpha_mode=alpha_mode_none;
 	
 	bitmap->alpha_mode=alpha_mode_none;
 	
@@ -145,7 +142,7 @@ bool bitmap_open_normal_from_height(bitmap_type *bitmap,char *path,int anisotrop
 	wid=bitmap->wid;
 	high=bitmap->high;
 		
-	data=malloc((wid<<2)*high);
+	data=malloc((wid*3)*high);
 	if (data==NULL) {
 		free(png_data);
 		return(FALSE);
@@ -165,10 +162,12 @@ bool bitmap_open_normal_from_height(bitmap_type *bitmap,char *path,int anisotrop
 	p_data=png_data;
 	p_gs_data=gs_data;
 	
+	row_add=alpha_channel?4:3;
+	
 	for (y=0;y!=high;y++) {
 		for (x=0;x!=wid;x++) {
 			*p_gs_data++=1.0f-((float)*p_data)/255.0f;		// assume r=g=b
-			p_data+=4;
+			p_data+=row_add;
 		}
 	}
 	
@@ -200,7 +199,7 @@ bool bitmap_open_normal_from_bitmap(bitmap_type *bitmap,char *path,int anisotrop
 	unsigned char		*png_data,*data,*p_data;
 	float				r,g,b;
 	float				*gs_data,*p_gs_data;
-	bool				ok;
+	bool				ok,alpha_channel;
 	
 	bitmap_new(bitmap);
 	
@@ -214,7 +213,7 @@ bool bitmap_open_normal_from_bitmap(bitmap_type *bitmap,char *path,int anisotrop
 	
 		// read bitmap
 	
-	png_data=png_utility_read(path,&bitmap->wid,&bitmap->high);
+	png_data=png_utility_read(path,&bitmap->wid,&bitmap->high,&alpha_channel);
 	if (png_data==NULL) return(FALSE);
 		
 	bitmap->alpha_mode=alpha_mode_none;
@@ -224,7 +223,7 @@ bool bitmap_open_normal_from_bitmap(bitmap_type *bitmap,char *path,int anisotrop
 	wid=bitmap->wid;
 	high=bitmap->high;
 		
-	data=malloc((wid<<2)*high);
+	data=malloc((wid*3)*high);
 	if (data==NULL) {
 		free(png_data);
 		return(FALSE);
@@ -249,7 +248,8 @@ bool bitmap_open_normal_from_bitmap(bitmap_type *bitmap,char *path,int anisotrop
 			r=((float)(*p_data++))/255.0f;
 			g=((float)(*p_data++))/255.0f;
 			b=((float)(*p_data++))/255.0f;
-			*p_data++;
+			
+			if (alpha_channel) *p_data++;
 			
 			*p_gs_data++=(r+g+b)/3.0f;
 		}

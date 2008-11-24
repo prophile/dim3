@@ -468,9 +468,8 @@ void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
 	float					f_cnt;
 	d3vct					fpnt[max_model_bone];
 	matrix_type				avg_mats[max_model_bone][max_model_blend_animation];
-	model_bone_type			*model_bone;
 	model_bone_move_type	*bone_moves;
-	model_draw_bone_type	*draw_bone,draw_bones[max_model_blend_animation][max_model_bone];
+	model_draw_bone_type	draw_bones[max_model_blend_animation][max_model_bone];
 
 		// count number of animations
 
@@ -547,18 +546,15 @@ void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
 	for (n=0;n!=nbone;n++) {
 	
 			// if no moves for this bone in the blended animation, then pick default bone
-			// position from the model itself
+			// position from the model and the rotation from the first animation
 		
 		if (avg_mat_cnt[n]==0) {
 
-			model_bone=&model->bones[n];
-			draw_bone=&draw_setup->bones[n];
+			draw_setup->bones[n].fpnt.x=draw_bones[0][n].fpnt.x;
+			draw_setup->bones[n].fpnt.y=draw_bones[0][n].fpnt.y;
+			draw_setup->bones[n].fpnt.z=draw_bones[0][n].fpnt.z;
 
-			draw_bone->fpnt.x=(float)model_bone->pnt.x;
-			draw_bone->fpnt.y=(float)model_bone->pnt.y;
-			draw_bone->fpnt.z=(float)model_bone->pnt.z;
-
-			matrix_identity(&draw_bone->rot_mat);
+			memmove(&draw_setup->bones[n].rot_mat,&draw_bones[0][n].rot_mat,sizeof(matrix_type));
 
 			continue;
 		}
@@ -583,6 +579,6 @@ void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
 		draw_setup->bones[n].fpnt.y=fpnt[n].y/f_cnt;
 		draw_setup->bones[n].fpnt.z=fpnt[n].z/f_cnt;
 
-		matrix_average(&draw_setup->bones[n].rot_mat,cnt,(matrix_type*)&avg_mats[n]);
+		matrix_average(&draw_setup->bones[n].rot_mat,avg_mat_cnt[n],(matrix_type*)&avg_mats[n]);
 	}
 }

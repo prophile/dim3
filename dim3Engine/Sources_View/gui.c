@@ -79,45 +79,44 @@ void gui_screenshot_load_blur_pixel(unsigned char *data,unsigned char *data2,int
 	r=g=b=0;
 
 	if (x>0) {
-		ptr=data+((y*(gui_screenshot_wid<<2))+((x-1)<<2));
+		ptr=data+((y*(gui_screenshot_wid*3))+((x-1)*3));
 		r+=(int)*ptr++;
 		g+=(int)*ptr++;
 		b+=(int)*ptr++;
 		cnt++;
 	}
 	if (x<(gui_screenshot_wid-1)) {
-		ptr=data+((y*(gui_screenshot_wid<<2))+((x+1)<<2));
+		ptr=data+((y*(gui_screenshot_wid*3))+((x+1)*3));
 		r+=(int)*ptr++;
 		g+=(int)*ptr++;
 		b+=(int)*ptr++;
 		cnt++;
 	}
 	if (y>0) {
-		ptr=data+(((y-1)*(gui_screenshot_wid<<2))+(x<<2));
+		ptr=data+(((y-1)*(gui_screenshot_wid*3))+(x*3));
 		r+=(int)*ptr++;
 		g+=(int)*ptr++;
 		b+=(int)*ptr++;
 		cnt++;
 	}
 	if (y<(gui_screenshot_high-1)) {
-		ptr=data+(((y+1)*(gui_screenshot_wid<<2))+(x<<2));
+		ptr=data+(((y+1)*(gui_screenshot_wid*3))+(x*3));
 		r+=(int)*ptr++;
 		g+=(int)*ptr++;
 		b+=(int)*ptr++;
 		cnt++;
 	}
 
-	ptr=data+((y*(gui_screenshot_wid<<2))+(x<<2));
+	ptr=data+((y*(gui_screenshot_wid*3))+(x*3));
 	r+=(int)*ptr++;
 	g+=(int)*ptr++;
 	b+=(int)*ptr++;
 	cnt++;
 	
-	ptr=data2+((y*(gui_screenshot_wid<<2))+(x<<2));
+	ptr=data2+((y*(gui_screenshot_wid*3))+(x*3));
 	*ptr++=(unsigned char)(r/cnt);
 	*ptr++=(unsigned char)(g/cnt);
 	*ptr++=(unsigned char)(b/cnt);
-	*ptr=0xFF;
 }
 
 void gui_screenshot_load(void)
@@ -137,7 +136,7 @@ void gui_screenshot_load(void)
 	
 		// flip and/or reduce the data
 		
-	dsz=((gui_screenshot_wid<<2)*gui_screenshot_high);
+	dsz=((gui_screenshot_wid*3)*gui_screenshot_high);
 	
 	data=(unsigned char*)malloc(dsz);
 	if (data==NULL) {
@@ -146,7 +145,7 @@ void gui_screenshot_load(void)
 	}
 
 	sptr=pixel_buffer;
-	dptr=data+((gui_screenshot_high-1)*(gui_screenshot_wid<<2));
+	dptr=data+((gui_screenshot_high-1)*(gui_screenshot_wid*3));
 
 	for (y=0;y!=gui_screenshot_high;y++) {
 	
@@ -157,13 +156,12 @@ void gui_screenshot_load(void)
 			*d2ptr++=*s2ptr++;
 			*d2ptr++=*s2ptr++;
 			*d2ptr++=*s2ptr++;
-			*d2ptr++=0xFF;
 			
 			s2ptr+=((x_skip-1)*3);
 		}
 			
 		sptr+=((setup.screen.x_sz*3)*y_skip);
-		dptr-=(gui_screenshot_wid<<2);
+		dptr-=(gui_screenshot_wid*3);
 	}
 
 	free(pixel_buffer);
@@ -189,7 +187,7 @@ void gui_screenshot_load(void)
 
 		// save screenshot
 
-	bitmap_data(&gui_screenshot_bitmap,"gui_background",data,gui_screenshot_wid,gui_screenshot_high,anisotropic_mode_none,mipmap_mode_trilinear,FALSE);
+	bitmap_data(&gui_screenshot_bitmap,"gui_background",data,gui_screenshot_wid,gui_screenshot_high,FALSE,anisotropic_mode_none,mipmap_mode_trilinear,FALSE);
 		
 	free(data);
 	free(data2);

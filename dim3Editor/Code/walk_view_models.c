@@ -61,6 +61,7 @@ void walk_view_models_close(void)
 		model=models;
 	
 		for (n=0;n!=nmodel;n++) {
+			model_draw_array_free(model);
 			model_close(model);
 			model++;
 		}
@@ -137,6 +138,7 @@ void walk_view_models_reset(void)
 			continue;
 		}
 		
+		model_draw_array_free(&models[n]);
 		model_close(&models[n]);
 	
 		if (n<(nmodel-1)) {
@@ -159,7 +161,10 @@ void walk_view_models_reset(void)
 			idx=walk_view_models_find_model(spot->display_model);
 			
 			if ((idx==-1) && (nmodel<max_model)) {
-				if (model_open(&models[nmodel],spot->display_model,TRUE,FALSE)) nmodel++;
+				if (model_open(&models[nmodel],spot->display_model,TRUE,FALSE)) {
+					model_draw_array_initialize(&models[nmodel]);
+					nmodel++;
+				}
 			}
 		}
 		
@@ -175,7 +180,10 @@ void walk_view_models_reset(void)
 			idx=walk_view_models_find_model(scenery->model_name);
 			
 			if ((idx==-1) && (nmodel<max_model)) {
-				if (model_open(&models[nmodel],scenery->model_name,TRUE,FALSE)) nmodel++;
+				if (model_open(&models[nmodel],scenery->model_name,TRUE,FALSE)) {
+					model_draw_array_initialize(&models[nmodel]);
+					nmodel++;
+				}
 			}
 		}
 		
