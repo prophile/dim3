@@ -109,7 +109,7 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 			scripts_post_event_console(&weap->attach,sd_event_melee,sd_event_melee_hit,0);
 		}
 	}
-   
+  
 		// check projectiles
 		
 	proj=server.projs;
@@ -134,7 +134,6 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 			net_client_send_melee_add(net_setup.client.remote_uid,weap_name,melee->radius,melee->distance,melee->damage,melee->force,&pnt,ang);
 		}
 	}
-
 }
 
 /* =======================================================

@@ -65,6 +65,7 @@ extern void fade_screen_start(int tick);
 extern void group_move_clear_all(void);
 extern bool view_compile_mesh_gl_list_init(void);
 extern void view_compile_mesh_gl_list_free(void);
+extern void map_calculate_light_clear_all(void);
 
 /* =======================================================
 

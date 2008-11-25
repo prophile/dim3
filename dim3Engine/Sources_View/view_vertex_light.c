@@ -241,13 +241,12 @@ bool map_calculate_light_reduce_check_equal(map_mesh_type *mesh)
 		// create light averages to compare
 		// against last light calculation
 		
-	if (nlight_reduce==0) {
-		count=0;
-		intensity=0.0;
-		pnt.x=pnt.y=pnt.z=0;
-		col.r=col.g=col.b=0.0f;
-	}
-	else {
+	count=0;
+	intensity=0.0;
+	pnt.x=pnt.y=pnt.z=0;
+	col.r=col.g=col.b=0.0f;
+
+	if (nlight_reduce!=0) {
 	
 		for (n=0;n!=nlight_reduce;n++) {
 			lspot=&lspot_cache[light_reduce_list[n]];

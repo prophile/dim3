@@ -50,7 +50,7 @@ void bitmap_new(bitmap_type *bitmap)
 
 bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool use_compression,bool pixelated,bool scrub_black_to_alpha)
 {
-	int					n,psz,row_add;
+	int					n,psz;
 	char				*c;
 	unsigned char		*png_data,*data;
 	bool				ok,alpha_channel;
@@ -85,7 +85,7 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 
 			data=png_data;
 
-			for (n=0;n<psz;n+=row_add) {
+			for (n=0;n<psz;n+=4) {
 				*(data+3)=*data;
 				data+=4;
 			}
