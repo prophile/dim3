@@ -351,6 +351,8 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 			light->intensity=xml_get_attribute_int(light_tag,"intensity");
 			xml_get_attribute_color(light_tag,"rgb",&light->col);
 			light->on=!xml_get_attribute_boolean(light_tag,"off");
+			
+			if (light->intensity<0) light->intensity=1;
 		
 			light_tag=xml_findnextchild(light_tag);
 		}

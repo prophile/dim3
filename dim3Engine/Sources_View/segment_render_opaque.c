@@ -411,7 +411,7 @@ void render_opaque_portal_lighting_fix(int mesh_cnt,int *mesh_list,int stencil_p
 
 		// this draws over the entire polygon
 		// to catch any pixels that show up between the
-		// tesselated triangles
+		// tesselated quads
 
 		// setup drawing
 
@@ -481,7 +481,7 @@ void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
-
+	
 		// setup drawing
 
 	glEnable(GL_BLEND);

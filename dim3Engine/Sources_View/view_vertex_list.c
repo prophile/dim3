@@ -56,9 +56,9 @@ bool view_compile_mesh_gl_list_init(void)
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
 
-			// clear the light hash
+			// clear the light cache
 
-		mesh->draw.light_hash=0.0;
+		mesh->light_cache.light_count=-1;
 
 			// get count for color and normal lists
 

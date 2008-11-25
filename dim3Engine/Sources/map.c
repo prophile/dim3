@@ -242,6 +242,7 @@ bool map_start(bool skip_media,char *err_str)
 	progress_draw(20);
 
 	map_prepare(&map);
+	map_calculate_light_clear_all();
 
 		// segment, vertex, and light lists for portals
 

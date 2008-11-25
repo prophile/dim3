@@ -150,7 +150,7 @@ void setup_game_video_pane(void)
 	element_checkbox_add("Lock FPS to Refresh Rate",setup.lock_fps_refresh,ctrl_lock_fps_refresh_id,x,y,TRUE);
 	y+=control_y_add+separate_y_add;
 
-	element_combo_add("Quality:",(char*)setup_quality_mode_list,setup.quality_mode,ctrl_quality_id,x,y,TRUE);
+	element_combo_add("Quality",(char*)setup_quality_mode_list,setup.quality_mode,ctrl_quality_id,x,y,TRUE);
 	y+=control_y_add+separate_y_add;
 
 	element_combo_add("Anisotropic Filtering",(char*)setup_anisotropic_mode_list,setup.anisotropic_mode,ctrl_anisotropic_id,x,y,TRUE);

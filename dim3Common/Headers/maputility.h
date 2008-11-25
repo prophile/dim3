@@ -288,9 +288,15 @@ typedef struct		{
 typedef struct		{
 						int									vertex_count,
 															stencil_pass_start,stencil_pass_end;
-						double								light_hash;
 						float								*p_color,*p_normal;
 					} map_mesh_draw_type;
+					
+typedef struct		{
+						int									light_count;
+						double								intensity;
+						d3pnt								pnt;
+						d3col								col;
+					} map_mesh_light_cache_type;
 
 typedef struct		{
 						int									nvertex,npoly,group_idx;
@@ -302,6 +308,7 @@ typedef struct		{
 						map_mesh_message_type				msg;
 						map_mesh_obscure_type				obscure;
 						map_mesh_draw_type					draw;
+						map_mesh_light_cache_type			light_cache;
 					} map_mesh_type;
 
 //

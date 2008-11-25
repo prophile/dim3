@@ -13,9 +13,9 @@
 	};
 	2674501B0E513E1900812D9D /* file_map_read_v3.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7056}}";
-			sepNavSelRange = "{10266, 110}";
-			sepNavVisRange = "{8842, 1864}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7140}}";
+			sepNavSelRange = "{11340, 0}";
+			sepNavVisRange = "{13355, 1944}";
 			sepNavWindowFrame = "{{440, 86}, {1041, 747}}";
 		};
 	};
@@ -75,7 +75,7 @@
 			sepNavWindowFrame = "{{436, 157}, {1041, 747}}";
 		};
 	};
-	269E9FCB0ED882E3009725DA /* PBXTextBookmark */ = {
+	269EA1730EDBB279009725DA /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = F5DA8623059148C40043E685 /* nodes.c */;
 		name = "nodes.c: 94";
@@ -85,7 +85,7 @@
 		vrLen = 0;
 		vrLoc = 0;
 	};
-	269EA0C60EDA5F97009725DA /* PBXTextBookmark */ = {
+	269EA1E00EDBBF7E009725DA /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = F5DA8623059148C40043E685 /* nodes.c */;
 		name = "nodes.c: 94";
@@ -161,9 +161,9 @@
 	};
 	F5A8B1AF05229DA4008D4331 /* file_map_read.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4704}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5558}}";
 			sepNavSelRange = "{1982, 0}";
-			sepNavVisRange = "{5400, 2752}";
+			sepNavVisRange = "{12854, 979}";
 			sepNavWindowFrame = "{{327, 207}, {1041, 747}}";
 		};
 	};
@@ -253,12 +253,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 249191891;
-			PBXWorkspaceStateSaveDate = 249191891;
+			PBXPerProjectTemplateStateSaveDate = 249280821;
+			PBXWorkspaceStateSaveDate = 249280821;
 		};
 		perUserProjectItems = {
-			269E9FCB0ED882E3009725DA /* PBXTextBookmark */ = 269E9FCB0ED882E3009725DA /* PBXTextBookmark */;
-			269EA0C60EDA5F97009725DA /* PBXTextBookmark */ = 269EA0C60EDA5F97009725DA /* PBXTextBookmark */;
+			269EA1730EDBB279009725DA /* PBXTextBookmark */ = 269EA1730EDBB279009725DA /* PBXTextBookmark */;
+			269EA1E00EDBBF7E009725DA /* PBXTextBookmark */ = 269EA1E00EDBBF7E009725DA /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
