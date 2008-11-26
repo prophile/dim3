@@ -320,6 +320,8 @@ void setup_network_host_add_update(bool in_add)
 	host=&setup.network.hosts[host_idx];
 
 	element_get_value_string(ctrl_network_host_ip_id,host->ip);
+
+	fprintf(stdout,"ip = %s [%d/%d]\n",host->ip,host_idx,setup.network.nhost);
 	
 		// rebuild list
 		
@@ -417,10 +419,6 @@ void setup_network_handle_click(int id)
 			setup_network_enable_buttons();
 			break;
 			
-		case ctrl_network_host_ip_id:
-			setup_network_host_add_update(FALSE);
-			break;
-			
 	}
 }
 
@@ -430,8 +428,6 @@ void setup_network_keyboard(void)
 
 	id=gui_keyboard();
 	if (id==-1) return;
-
-	hud_click();
 
 	setup_network_handle_click(id);
 }

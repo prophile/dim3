@@ -388,7 +388,6 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 			
 			if (collide_object_box_to_map(obj,&pt,&box_sz,xadd,yadd,zadd)) {
 				obj->hit_box.hit=TRUE;
-				obj->hit_box.model_uid=draw->uid;
 				obj->hit_box.hit_box_idx=n;
 				return(TRUE);
 			}

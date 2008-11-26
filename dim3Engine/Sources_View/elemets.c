@@ -2257,7 +2257,7 @@ void element_draw_table(element_type *element,int sel_id)
 
 int element_mouse_over_tab(element_type *element,int x)
 {
-	int				lft,rgt,max_sz,xadd;
+	int				lft,rgt,max_sz,xadd,idx;
 	
 		// within tab box?
 		
@@ -2273,7 +2273,10 @@ int element_mouse_over_tab(element_type *element,int x)
 	max_sz=(int)(((float)hud.scale_x)*0.2f);
 	if (xadd>max_sz) xadd=max_sz;
 
-	return((x-lft)/xadd);
+	idx=(x-lft)/xadd;
+	if ((idx<0) || (idx>=element->setup.tab.ntab)) return(-1);
+
+	return(idx);
 }
 
 bool element_click_tab(element_type *element,int x)
@@ -2736,7 +2739,10 @@ int element_click_up_lock(int x,int y)
 			element_click_table(element,x,y);
 			break;
 		case element_type_tab:
-			element_click_tab(element,x);
+			if (!element_click_tab(element,x)) {
+				element_click_down_id=-1;
+				return(-1);
+			}
 			break;
 			
 	}
@@ -2799,7 +2805,7 @@ int element_key_lock(char ch)
 	if (ch==0x8) {
 		if (len==0) return(-1);
 		element->value_str[len-1]=0x0;
-		return(-1);
+		return(element->id);
 	}
 
 		// regular text
@@ -2809,7 +2815,7 @@ int element_key_lock(char ch)
 	element->value_str[len]=ch;
 	element->value_str[len+1]=0x0;
 
-	return(-1);
+	return(element->id);
 }
 
 int element_key(char ch)

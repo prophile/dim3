@@ -369,7 +369,7 @@ bool object_sight_test_object(obj_type *obj,int test_obj_uid)
 				// get starting position
 
 			spt.x=obj->pnt.x;
-			spt.y=obj->pnt.y-obj->size.eye_offset;
+			spt.y=obj->pnt.y+obj->size.eye_offset;
 			spt.z=obj->pnt.z;
 
 			ray_push(&spt,&ang,obj->size.radius);

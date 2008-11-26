@@ -325,7 +325,7 @@ bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 	unsigned char		*nptr;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
-	
+
 		// indexes and max vertexes are only
 		// used for liquids
 
@@ -347,6 +347,9 @@ bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 			// allocate enough memory for all possible
 			// lighting vertexes, and reduce when we have
 			// real counts
+
+			// quad vertex isn't used yet, so we'll set
+			// that when we have exact numbers
 		
 		sz=sizeof(d3pnt)*(((light_tessel_grid_sz+1)*(light_tessel_grid_sz+1))*mesh->npoly);
 		mesh->light.quad_vertexes=(d3pnt*)malloc(sz);
@@ -355,10 +358,8 @@ bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 		sz=(sizeof(float)*2)*(((light_tessel_grid_sz+1)*(light_tessel_grid_sz+1))*mesh->npoly);
 		mesh->light.quad_uvs=(float*)malloc(sz);
 		if (mesh->light.quad_uvs==NULL) return(FALSE);
-	
-		sz=(sizeof(int)*4)*(light_tessel_grid_sz*light_tessel_grid_sz);
-		mesh->light.quad_vertex_idx=(int*)malloc(sz);
-		if (mesh->light.quad_vertex_idx==NULL) return(FALSE);
+
+		mesh->light.quad_vertex_idx=NULL;
 		
 		vertex_offset=0;
 		quad_offset=0;
@@ -386,9 +387,6 @@ bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 			
 			free(mesh->light.quad_uvs);
 			mesh->light.quad_uvs=NULL;
-			
-			free(mesh->light.quad_vertex_idx);
-			mesh->light.quad_vertex_idx=NULL;
 		}
 		else {
 			sz=sizeof(d3pnt)*vertex_offset;
@@ -407,13 +405,9 @@ bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 				mesh->light.quad_uvs=(float*)nptr;
 			}
 			
-			sz=(sizeof(int)*4)*quad_offset;
-			nptr=malloc(sz);
-			if (nptr!=NULL) {
-				memmove(nptr,mesh->light.quad_vertex_idx,sz);
-				free(mesh->light.quad_vertex_idx);
-				mesh->light.quad_vertex_idx=(int*)nptr;
-			}
+			sz=sizeof(int)*quad_offset;		// already contains *4
+			mesh->light.quad_vertex_idx=malloc(sz);
+			if (mesh->light.quad_vertex_idx==NULL) return(FALSE);
 		}
 
 			// remember the count

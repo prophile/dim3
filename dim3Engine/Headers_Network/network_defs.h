@@ -44,8 +44,8 @@ and can be sold or given away.
 #define client_communication_update_msec_rate		50
 #define client_communication_latency_ping_msec_rate	4000
 
-#define client_communication_timeout_msec			1000
-#define client_communication_slow_msec				100
+#define client_communication_timeout_msec			2000
+#define client_communication_slow_msec				500
 
 #define client_predict_slow_reduction				0.75f
 

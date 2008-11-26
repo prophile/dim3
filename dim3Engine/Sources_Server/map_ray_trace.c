@@ -328,7 +328,7 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int *hit_face,int x
       
 ======================================================= */
 
-float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_face,obj_type *obj)
+float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_face,int *hit_box_idx,obj_type *obj)
 {
 	int					n,nhit_box,wid,
 						x,y,z,lx,rx,tz,bz,ty,by,
@@ -356,16 +356,14 @@ float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_face
 		
 	rang=angle_add(obj->ang.y,obj->draw.rot.y);
 
+	*hit_box_idx=-1;
+
 		// regular collisions
 
 	if (!obj->hit_box.on) {
 		return(ray_trace_rotated_box(spt,vct,hpt,hit_face,x,z,lx,rx,tz,bz,ty,by,rang));
 	}
 
-		// hit box collisions
-		
-	obj->hit_box.hit=FALSE;
-	
 		// check model
 		
 	draw=&obj->draw;
@@ -398,9 +396,7 @@ float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_face
 		
 		hit_t=ray_trace_rotated_box(spt,vct,hpt,hit_face,x,z,lx,rx,tz,bz,ty,by,rang);
 		if (hit_t!=-1.0f) {
-			obj->hit_box.hit=TRUE;
-			obj->hit_box.model_uid=draw->uid;
-			obj->hit_box.hit_box_idx=n;
+			*hit_box_idx=n;
 			return(hit_t);
 		}
 
@@ -452,7 +448,7 @@ float ray_trace_projectile(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_
 
 void ray_trace_map(int item_count,ray_trace_check_item_type *item_list,d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_trace_contact_type *contact)
 {
-	int							n,k,hit_face;
+	int							n,k,hit_face,hit_box_idx;
 	float						t;
 	d3pnt						pt;
 	obj_type					*obj;
@@ -474,7 +470,7 @@ void ray_trace_map(int item_count,ray_trace_check_item_type *item_list,d3pnt *sp
 			case ray_trace_check_item_object:
 				obj=&server.objs[item->index];
 
-				t=ray_trace_object(spt,ept,vct,&pt,&hit_face,obj);
+				t=ray_trace_object(spt,ept,vct,&pt,&hit_face,&hit_box_idx,obj);
 				if (t==-1.0f) break;
 				
 					// closer hit?
@@ -490,6 +486,16 @@ void ray_trace_map(int item_count,ray_trace_check_item_type *item_list,d3pnt *sp
 
 				contact->obj.uid=obj->uid;
 				contact->obj.hit_face=hit_face;
+
+				if (hit_box_idx!=-1) {
+					obj->hit_box.hit=TRUE;
+					obj->hit_box.hit_box_idx=n;
+				}
+				else {
+					obj->hit_box.hit=FALSE;
+					obj->hit_box.hit_box_idx=-1;
+				}
+
 				break;
 
 			case ray_trace_check_item_projectile:

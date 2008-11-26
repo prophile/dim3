@@ -354,7 +354,7 @@ typedef struct		{
 					} obj_status;
 			
 typedef struct		{
-						int						obj_uid,proj_uid,hit_face,hit_box_idx,
+						int						obj_uid,proj_uid,hit_face,
 												liquid_idx;
 						bool					object_on,projectile_on,force_on,
 												melee,pushable;
@@ -377,7 +377,7 @@ typedef struct		{
 					} obj_hit;
 					
 typedef struct		{
-						int						model_uid,hit_box_idx;
+						int						hit_box_idx;
 						bool					on,hit;
 					} obj_hit_box;
 					

@@ -63,6 +63,9 @@ extern bool map_rebuild_changes(char *err_str);
 extern void game_end(void);
 extern void map_end(void);
 
+// supergumba -- network testing
+int client_communication_update_msec_rate2=client_communication_update_msec_rate;
+
 /* =======================================================
 
       Game Loop Interface Quit
@@ -92,6 +95,8 @@ bool interface_quit_trigger_check(void)
 
 void loop_game_run(int tick)
 {
+	char	*c,str[256];
+
 		// receive networking updates
 		
 	if (net_setup.client.joined) {
@@ -109,6 +114,38 @@ void loop_game_run(int tick)
 		// run game
 
 	server_loop(tick);
+	
+		// sending network updates
+
+	if (net_setup.client.joined) {
+
+		if (tick>=server.time.network_update_tick) {
+				
+				// supergumba -- special testing keys
+
+			if (input_get_keyboard_key(SDLK_HOME)) {
+				c=0x0;
+				*c=0x0;		// crash!
+			}
+			if (input_get_keyboard_key(SDLK_END)) {
+				client_communication_update_msec_rate2+=50;
+				sprintf(str,"update msec=%d",client_communication_update_msec_rate2);
+				console_add(str);		// slow down communication rate
+			}
+
+			server.time.network_update_tick=tick+client_communication_update_msec_rate2;
+			remote_network_send_updates(tick);
+		}
+
+		if (tick>=server.time.network_latency_ping_tick) {
+			server.time.network_latency_ping_tick=tick+client_communication_latency_ping_msec_rate;
+			remote_network_send_latency_ping(tick);
+		}
+
+	}
+
+		// draw the view
+
 	view_loop(tick);
 
 		// check interface quits
@@ -127,22 +164,6 @@ void loop_game_run(int tick)
 	if (view.fps.tick>=1000) {						// average fps over 1 second
 		view.fps.total=((float)view.fps.count*1000)/(float)view.fps.tick;
 		view.fps.tick=view.fps.count=0;
-	}
-	
-		// sending network updates
-
-	if (net_setup.client.joined) {
-
-		if (tick>=server.time.network_update_tick) {
-			server.time.network_update_tick=tick+client_communication_update_msec_rate;
-			remote_network_send_updates(tick);
-		}
-
-		if (tick>=server.time.network_latency_ping_tick) {
-			server.time.network_latency_ping_tick=tick+client_communication_latency_ping_msec_rate;
-			remote_network_send_latency_ping(tick);
-		}
-
 	}
 }
 

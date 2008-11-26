@@ -781,8 +781,6 @@ void setup_game_keyboard(void)
 	id=gui_keyboard();
 	if (id==-1) return;
 
-	hud_click();
-
 	setup_game_handle_click(id);
 }
 
