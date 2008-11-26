@@ -150,7 +150,6 @@ extern char light_type_str[][32];
 //
 
 #define light_tessel_grid_sz								6
-#define light_tessel_max_size								(map_enlarge*64)
 
 //
 // group types
@@ -233,15 +232,9 @@ typedef struct		{
 					} map_mesh_poly_slope_type;
 
 typedef struct		{
-						int									x,y,z;
-						float								gx,gy;
-					} map_mesh_poly_tessel_vertex_type;
-
-typedef struct		{
-						int									nvertex,nquad;
+						int									nvertex,nquad,
+															vertex_offset,quad_offset,grid_x_sz,grid_y_sz;
 						bool								simple_tessel;
-						int									*quad_vertex_idx,*quad_vertex_draw_idx;
-						map_mesh_poly_tessel_vertex_type	*vertexes;
 					} map_mesh_poly_light_type;
 
 typedef struct		{
@@ -296,7 +289,10 @@ typedef struct		{
 						double								intensity;
 						d3pnt								pnt;
 						d3col								col;
-					} map_mesh_light_cache_type;
+						int									*quad_vertex_idx;
+						float								*quad_uvs;
+						d3pnt								*quad_vertexes;
+					} map_mesh_light_type;
 
 typedef struct		{
 						int									nvertex,npoly,group_idx;
@@ -308,7 +304,7 @@ typedef struct		{
 						map_mesh_message_type				msg;
 						map_mesh_obscure_type				obscure;
 						map_mesh_draw_type					draw;
-						map_mesh_light_cache_type			light_cache;
+						map_mesh_light_type					light;
 					} map_mesh_type;
 
 //

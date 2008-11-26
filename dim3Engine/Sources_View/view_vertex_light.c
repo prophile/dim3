@@ -275,25 +275,25 @@ bool map_calculate_light_reduce_check_equal(map_mesh_type *mesh)
 		// if light averages have changed, then
 		// we will need to rebuild light lists
 		
-	recalc=(mesh->light_cache.light_count!=count);
-	recalc=recalc||(mesh->light_cache.intensity!=intensity);
-	recalc=recalc||(mesh->light_cache.pnt.x!=pnt.x);
-	recalc=recalc||(mesh->light_cache.pnt.y!=pnt.y);
-	recalc=recalc||(mesh->light_cache.pnt.z!=pnt.z);
-	recalc=recalc||(mesh->light_cache.col.r!=col.r);
-	recalc=recalc||(mesh->light_cache.col.g!=col.g);
-	recalc=recalc||(mesh->light_cache.col.b!=col.b);
+	recalc=(mesh->light.light_count!=count);
+	recalc=recalc||(mesh->light.intensity!=intensity);
+	recalc=recalc||(mesh->light.pnt.x!=pnt.x);
+	recalc=recalc||(mesh->light.pnt.y!=pnt.y);
+	recalc=recalc||(mesh->light.pnt.z!=pnt.z);
+	recalc=recalc||(mesh->light.col.r!=col.r);
+	recalc=recalc||(mesh->light.col.g!=col.g);
+	recalc=recalc||(mesh->light.col.b!=col.b);
 
 	if (!recalc) return(TRUE);
 
-	mesh->light_cache.light_count=count;
-	mesh->light_cache.intensity=intensity;
-	mesh->light_cache.pnt.x=pnt.x;
-	mesh->light_cache.pnt.y=pnt.y;
-	mesh->light_cache.pnt.z=pnt.z;
-	mesh->light_cache.col.r=col.r;
-	mesh->light_cache.col.g=col.g;
-	mesh->light_cache.col.b=col.b;
+	mesh->light.light_count=count;
+	mesh->light.intensity=intensity;
+	mesh->light.pnt.x=pnt.x;
+	mesh->light.pnt.y=pnt.y;
+	mesh->light.pnt.z=pnt.z;
+	mesh->light.col.r=col.r;
+	mesh->light.col.g=col.g;
+	mesh->light.col.b=col.b;
 	
 	return(FALSE);
 }
@@ -306,7 +306,7 @@ void map_calculate_light_clear_all(void)
 	mesh=map.mesh.meshes;
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		mesh->light_cache.light_count=-1;
+		mesh->light.light_count=-1;
 		mesh++;
 	}
 }

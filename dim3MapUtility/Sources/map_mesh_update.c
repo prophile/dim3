@@ -247,10 +247,9 @@ int map_mesh_combine_small(map_type *map,int poly_threshold)
 void map_mesh_move(map_type *map,int mesh_idx,int x,int y,int z,bool vertex_only)
 {
 	int									n,k,nvertex,npoly;
-	d3pnt								*pt;
+	d3pnt								*pt,*pl;
 	map_mesh_type						*mesh;
 	map_mesh_poly_type					*poly;
-	map_mesh_poly_tessel_vertex_type	*pl;
 
 	mesh=&map->mesh.meshes[mesh_idx];
 
@@ -278,7 +277,7 @@ void map_mesh_move(map_type *map,int mesh_idx,int x,int y,int z,bool vertex_only
 
 			// light vertexes
 
-		pl=poly->light.vertexes;
+		pl=mesh->light.quad_vertexes+poly->light.vertex_offset;
 
 		for (k=0;k!=poly->light.nvertex;k++) {
 			pl->x+=x;
@@ -394,11 +393,10 @@ void map_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float ro
 	int									n,k,nvertex,npoly;
 	float								fx,fy,fz;
 	d3vct								f_mpt;
-	d3pnt								*pt,mpt;
+	d3pnt								*pt,*pl,mpt;
 	matrix_type							mat;
 	map_mesh_type						*mesh;
 	map_mesh_poly_type					*poly;
-	map_mesh_poly_tessel_vertex_type	*pl;
 
 	mesh=&map->mesh.meshes[mesh_idx];
 
@@ -443,7 +441,7 @@ void map_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float ro
 
 			// light vertexes
 
-		pl=poly->light.vertexes;
+		pl=mesh->light.quad_vertexes+poly->light.vertex_offset;
 
 		for (k=0;k!=poly->light.nvertex;k++) {
 
@@ -456,7 +454,7 @@ void map_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float ro
 			pl->x=(int)(fx+f_mpt.x);
 			pl->y=(int)(fy+f_mpt.y);
 			pl->z=(int)(fz+f_mpt.z);
-
+			
 			pl++;
 		}
 

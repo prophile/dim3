@@ -58,7 +58,7 @@ bool view_compile_mesh_gl_list_init(void)
 
 			// clear the light cache
 
-		mesh->light_cache.light_count=-1;
+		mesh->light.light_count=-1;
 
 			// get count for color and normal lists
 
@@ -124,9 +124,8 @@ void view_compile_mesh_gl_lists_normal(map_mesh_type *mesh)
 {
 	int									n,k;
 	float								*pc,*pn;
-	d3pnt								*pnt;
+	d3pnt								*pnt,*lv_pt;
 	map_mesh_poly_type					*poly;
-	map_mesh_poly_tessel_vertex_type	*lv;
 
 	pc=mesh->draw.p_color;
 	pn=mesh->draw.p_normal;
@@ -150,13 +149,13 @@ void view_compile_mesh_gl_lists_normal(map_mesh_type *mesh)
 
 				// tesseled lighting vertexes
 
-			lv=poly->light.vertexes;
+			lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
 
 			for (k=0;k!=poly->light.nvertex;k++) {
-				map_calculate_light_color_normal((double)lv->x,(double)lv->y,(double)lv->z,pc,pn);
+				map_calculate_light_color_normal((double)lv_pt->x,(double)lv_pt->y,(double)lv_pt->z,pc,pn);
 				pc+=3;
 				pn+=3;
-				lv++;
+				lv_pt++;
 			}
 		}
 
@@ -168,9 +167,8 @@ void view_compile_mesh_gl_lists_ray_trace(map_mesh_type *mesh)
 {
 	int									n,k;
 	float								*pc,*pn;
-	d3pnt								*pnt;
+	d3pnt								*pnt,*lv_pt;
 	map_mesh_poly_type					*poly;
-	map_mesh_poly_tessel_vertex_type	*lv;
 
 	pc=mesh->draw.p_color;
 	pn=mesh->draw.p_normal;
@@ -194,13 +192,13 @@ void view_compile_mesh_gl_lists_ray_trace(map_mesh_type *mesh)
 
 				// tesseled lighting vertexes
 
-			lv=poly->light.vertexes;
+			lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
 
 			for (k=0;k!=poly->light.nvertex;k++) {
-				map_calculate_ray_trace_light_color_normal((double)lv->x,(double)lv->y,(double)lv->z,pc,pn);
+				map_calculate_ray_trace_light_color_normal((double)lv_pt->x,(double)lv_pt->y,(double)lv_pt->z,pc,pn);
 				pc+=3;
 				pn+=3;
-				lv++;
+				lv_pt++;
 			}
 		}
 
@@ -216,15 +214,15 @@ void view_compile_mesh_gl_lists_ray_trace(map_mesh_type *mesh)
 
 bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 {
-	int									n,k,t,sz,nvertex,
+	int									n,k,t,x,y,xtot,sz,
 										v_count,v_idx,v_light_start_idx;
+	int									*qd;
 	float								fx,fy,fz,x_shift_offset,y_shift_offset;
-	float								*vertex_ptr,*pv,*pp,*pc,*pn,*lpc,*lpn;
+	float								*vertex_ptr,*pv,*pp,*pc,*pn,*lpc,*lpn,*lv_uv;
 	bool								recalc_light;
-	d3pnt								*pnt;
+	d3pnt								*pnt,*lv_pt;
 	map_mesh_type						*mesh;
 	map_mesh_poly_type					*poly;
-	map_mesh_poly_tessel_vertex_type	*lv;
 
 		// find total number of vertexes in
 		// this scene
@@ -349,13 +347,15 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 					// create the vertexes
 
 				v_light_start_idx=v_idx;
-				lv=poly->light.vertexes;
+				
+				lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
+				lv_uv=mesh->light.quad_uvs+(poly->light.vertex_offset<<1);
 
 				for (t=0;t!=poly->light.nvertex;t++) {
 
-					*pv++=(((float)lv->x)-fx);
-					*pv++=(((float)lv->y)-fy);
-					*pv++=(fz-((float)lv->z));
+					*pv++=(((float)lv_pt->x)-fx);
+					*pv++=(((float)lv_pt->y)-fy);
+					*pv++=(fz-((float)lv_pt->z));
 					
 					*pc++=*lpc++;
 					*pc++=*lpc++;
@@ -365,19 +365,26 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 					*pn++=*lpn++;
 					*pn++=*lpn++;
 					
-					*pp++=lv->gx+x_shift_offset;
-					*pp++=lv->gy+y_shift_offset;
+					*pp++=(*lv_uv++)+x_shift_offset;
+					*pp++=(*lv_uv++)+y_shift_offset;
 					
-					lv++;
+					lv_pt++;
 					v_idx++;
 				}
 
-					// create light mesh draw indexes by offset
+					// create light mesh draw indexes
 
-				nvertex=poly->light.nquad<<2;
-
-				for (t=0;t!=nvertex;t++) {
-					poly->light.quad_vertex_draw_idx[t]=poly->light.quad_vertex_idx[t]+v_light_start_idx;
+				qd=mesh->light.quad_vertex_idx+poly->light.quad_offset;
+				
+				xtot=poly->light.grid_x_sz+1;
+				
+				for (y=0;y!=poly->light.grid_y_sz;y++) {
+					for (x=0;x!=poly->light.grid_x_sz;x++) {
+						*qd++=((y*xtot)+x)+v_light_start_idx;
+						*qd++=((y*xtot)+(x+1))+v_light_start_idx;
+						*qd++=(((y+1)*xtot)+(x+1))+v_light_start_idx;
+						*qd++=(((y+1)*xtot)+x)+v_light_start_idx;
+					}
 				}
 			}
 

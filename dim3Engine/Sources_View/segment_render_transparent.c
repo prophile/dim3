@@ -160,7 +160,7 @@ void render_transparent_portal_mesh(bool is_fog_lighting)
 
 				// use lighting mesh as specular is dependant upon the light
 
-			glDrawElements(GL_QUADS,(poly->light.nquad<<2),GL_UNSIGNED_INT,(GLvoid*)poly->light.quad_vertex_draw_idx);
+			glDrawElements(GL_QUADS,(poly->light.nquad<<2),GL_UNSIGNED_INT,(GLvoid*)(mesh->light.quad_vertex_idx+poly->light.quad_offset));
 
 				// end specular drawing and force a transparencies reset
 
