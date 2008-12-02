@@ -39,6 +39,7 @@ extern server_type			server;
 extern view_type			view;
 extern hud_type				hud;
 extern setup_type			setup;
+extern network_setup_type	net_setup;
 extern render_info_type		render_info;
 
 /* =======================================================
@@ -53,6 +54,7 @@ void radar_draw(int tick)
 							dist,max_dist,fade_dist,fade_count,radar_sz;
 	unsigned long			cur_gl_id,gl_id;
 	float					alpha,cur_alpha,fade_mult;
+	d3col					tint;
 	obj_type				*obj,*player_obj;
 	hud_radar_icon_type		*icon;
 	
@@ -87,9 +89,21 @@ void radar_draw(int tick)
 	by=ty+(radar_sz<<1);
 
 		// draw radar background
+		
+	if (!hud.radar.team_tint) {
+		tint.r=tint.g=tint.b=1.0f;
+	}
+	else {
+		if (!net_setup.client.joined) {
+			memmove(&tint,&hud.color.default_tint,sizeof(d3col));
+		}
+		else {
+			player_get_ui_color(&tint);
+		}
+	}
 
 	gl_texture_simple_start();
-	gl_texture_simple_set(view_images_get_gl_id(hud.radar.background_image_idx),TRUE,1.0f,1.0f,1.0f,1.0f);
+	gl_texture_simple_set(view_images_get_gl_id(hud.radar.background_image_idx),TRUE,tint.r,tint.g,tint.b,1.0f);
 
 	glBegin(GL_QUADS);
 	glTexCoord2f(0.0f,0.0f);

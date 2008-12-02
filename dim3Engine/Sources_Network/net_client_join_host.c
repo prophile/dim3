@@ -197,7 +197,7 @@ bool net_client_ping_host(char *ip,char *status,char *host_name,char *proj_name,
       
 ======================================================= */
 
-bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_name,char *map_name,char *deny_reason,int *remote_count,network_request_remote_add *remotes)
+bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_name,char *map_name,int *tick_offset,char *deny_reason,int *remote_count,network_request_remote_add *remotes)
 {
 	int						action,from_remote_uid,count,len,
 							timeout_count;
@@ -287,6 +287,8 @@ bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_n
 
 	strcpy(game_name,reply_join.game_name);
 	strcpy(map_name,reply_join.map_name);
+	
+	*tick_offset=ntohl(reply_join.map_tick);
 	
 	count=(int)ntohs(reply_join.remote_count);
 	*remote_count=count;

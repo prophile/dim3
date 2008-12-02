@@ -293,11 +293,11 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 		if ((recalc_light) && (!mesh->flag.hilite)) {
 			
-			if (setup.quality_mode!=quality_mode_super) {
-				view_compile_mesh_gl_lists_normal(mesh);
+			if (setup.ray_trace_lighting) {
+				view_compile_mesh_gl_lists_ray_trace(mesh);
 			}
 			else {
-				view_compile_mesh_gl_lists_ray_trace(mesh);
+				view_compile_mesh_gl_lists_normal(mesh);
 			}
 
 		}

@@ -141,11 +141,11 @@ void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool ch
 	update.fp_ang_y=htonf(obj->ang.y);
 	update.fp_ang_z=htonf(obj->ang.z);
 
-	update.fp_move_vct_x=htonf(obj->motion.vct.x);
-	update.fp_move_vct_y=htonf(obj->motion.vct.y);
-	update.fp_move_vct_z=htonf(obj->motion.vct.z);
+	update.fp_predict_move_x=htonl(obj->pnt.x-obj->last_pnt.x);
+	update.fp_predict_move_y=htonl(obj->pnt.y-obj->last_pnt.y);
+	update.fp_predict_move_z=htonl(obj->pnt.z-obj->last_pnt.z);
 	
-	update.fp_turn_ang_add_y=htonf(obj->turn.fix_ang_add.y);
+	update.fp_predict_turn_y=htonf(obj->last_ang.y-obj->ang.y);
 	
 		// vehicles
 		
@@ -405,6 +405,7 @@ void net_client_setup_pickup(obj_type *obj,network_request_remote_pickup *pickup
 	for (n=0;n!=server.count.weapon;n++) {
 
 		if (weap->obj_uid==obj->uid) {
+			pickup->ammos[idx].hidden=htons(weap->hidden?0:1);
 			pickup->ammos[idx].ammo_count=htons((short)weap->ammo.count);
 			pickup->ammos[idx].clip_count=htons((short)weap->ammo.clip_count);
 			pickup->ammos[idx].alt_ammo_count=htons((short)weap->alt_ammo.count);

@@ -71,7 +71,7 @@ extern void net_host_player_update(int remote_uid,network_request_remote_update 
 //
 
 extern bool net_client_ping_host(char *ip,char *status,char *host_name,char *proj_name,char *game_name,char *map_name,int *player_count,int *player_max_count,int *ping_msec);
-extern bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_name,char *map_name,char *deny_reason,int *remote_count,network_request_remote_add *remotes);
+extern bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_name,char *map_name,int *tick_offset,char *deny_reason,int *remote_count,network_request_remote_add *remotes);
 extern void net_client_join_host_end(void);
 
 //

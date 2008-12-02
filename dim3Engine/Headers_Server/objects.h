@@ -196,13 +196,13 @@ extern void object_grow_start(obj_type *obj,int grow_msec,float end_resize,d3pnt
 extern void object_grow_run(obj_type *obj);
 
 extern void item_pickup_check(obj_type *obj);
-extern void item_add_ammo(obj_type *obj,weapon_type *weap,int add_count);
-extern void item_add_weapon(obj_type *obj,weapon_type *weap);
-extern void item_swap_weapon(obj_type *obj,weapon_type *weap);
-extern void item_add_clip(obj_type *obj,weapon_type *weap,int add_count);
-extern void item_add_alt_ammo(obj_type *obj,weapon_type *weap,int add_count);
-extern void item_add_alt_clip(obj_type *obj,weapon_type *weap,int add_count);
-extern void item_add_health(obj_type *obj,int add_count);
+extern bool item_add_weapon(obj_type *obj,weapon_type *weap);
+extern bool item_swap_weapon(obj_type *obj,weapon_type *weap);
+extern bool item_add_ammo(obj_type *obj,weapon_type *weap,int add_count);
+extern bool item_add_clip(obj_type *obj,weapon_type *weap,int add_count);
+extern bool item_add_alt_ammo(obj_type *obj,weapon_type *weap,int add_count);
+extern bool item_add_alt_clip(obj_type *obj,weapon_type *weap,int add_count);
+extern bool item_add_health(obj_type *obj,int add_count);
 extern void item_add_custom(obj_type *obj,int custom_id);
 
 extern bool player_attach_object(void);

@@ -850,8 +850,6 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	poly_pointer_type	*poly_ptr;
 	map_mesh_poly_type	*poly;
 
-	bool ok;
-
 		// attempt to move cleanly
 
 	xadd2=*xadd;
@@ -917,9 +915,7 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 
 		// hit box collisions
 
-	fprintf(stdout,"1\n");
-	fflush(stdout);
-	hit_box_idx=cnt_obj->hit_box.hit_box_idx;
+	hit_box_idx=cnt_obj->hit_box.obj_hit_box_idx;
 	if (hit_box_idx==-1) return(TRUE);
 		
 	draw=&cnt_obj->draw;
@@ -930,24 +926,8 @@ bool object_move_xz_slide(obj_type *obj,int *xadd,int *yadd,int *zadd)
 	
 		// check hit boxes
 		
-	fprintf(stdout,"2, hit_box_idx=%d, nhit_box=%d\n",hit_box_idx,model->nhit_box);
-	fflush(stdout);
-
-	if (!collide_object_to_hit_box_get_slide_line(cnt_obj,obj->contact.hit_face,&model->hit_boxes[hit_box_idx],&lx,&rx,&lz,&rz)) {
-			fprintf(stdout,"2A\n");
-		fflush(stdout);
-		return(TRUE);
-	}
-
-	fprintf(stdout,"3\n");
-	fflush(stdout);
-	ok=object_move_xz_slide_line(obj,xadd,yadd,zadd,lx,rx,lz,rz);
-
-	fprintf(stdout,"4\n");
-	fflush(stdout);
-	return(ok);
-
-//	return(object_move_xz_slide_line(obj,xadd,yadd,zadd,lx,rx,lz,rz));
+	if (!collide_object_to_hit_box_get_slide_line(cnt_obj,obj->contact.hit_face,&model->hit_boxes[hit_box_idx],&lx,&rx,&lz,&rz)) return(TRUE);
+	return(object_move_xz_slide_line(obj,xadd,yadd,zadd,lx,rx,lz,rz));
 }
 
 /* =======================================================
@@ -1367,11 +1347,19 @@ void object_move_remote(obj_type *obj)
 {
 	int			i_xmove,i_ymove,i_zmove;
 
-	i_xmove=(int)obj->motion.vct.x;
-	i_ymove=(int)obj->motion.vct.y;
-	i_zmove=(int)obj->motion.vct.z;
+	i_xmove=obj->remote.predict.move.x;
+	i_ymove=obj->remote.predict.move.y;
+	i_zmove=obj->remote.predict.move.z;
 
-	collide_object_to_map(obj,&i_xmove,&i_ymove,&i_zmove);
+	if (!collide_object_to_map(obj,&i_xmove,&i_ymove,&i_zmove)) {
+		obj->pnt.x+=i_xmove;
+		obj->pnt.z+=i_zmove;
+	}
+	else {
+		obj->remote.predict.move.x=0;
+		obj->remote.predict.move.z=0;
+	}
+	
 	object_move_y(obj,i_ymove);
 }
 

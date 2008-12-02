@@ -238,7 +238,9 @@ void map_prepare_mesh_box(map_mesh_type *mesh)
 
 void map_prepare(map_type *map)
 {
-	int					n,k,simple_cnt;
+	int					n,k,t,simple_cnt,
+						area,d,px[3],pz[3];
+	d3pnt				*pt;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
@@ -270,16 +272,37 @@ void map_prepare(map_type *map)
 				// detect simple tessel segments
 				// if two of the axises are under simple
 				// tessel size, then entire polygon is simple tessel
-				// triangles are automatically simple tesselled
+				// triangles determined to be simple by their size
 
-			simple_cnt=0;
+			if (poly->ptsz==3) {
+			
+				if (poly->box.wall_like) {
+					d=distance_2D_get(poly->line.lx,poly->line.lz,poly->line.rx,poly->line.rz);
+					area=(d*(poly->box.max.y-poly->box.min.y));
+				}
+				else {
+					for (t=0;t!=3;t++) {
+						pt=&mesh->vertexes[poly->v[t]];
+						px[t]=pt->x;
+						pz[t]=pt->z;
+					}
+					
+					area=(int)(sqrt(area_2D_trig(px,pz)));
+				}
+				
+				poly->draw.simple_tessel=(area<map_simple_tessel_trig_area);
+				
+			}
+			else {
+				simple_cnt=0;
 
-			if ((poly->box.max.x-poly->box.min.x)<map_simple_tessel_size) simple_cnt++;
-			if ((poly->box.max.z-poly->box.min.z)<map_simple_tessel_size) simple_cnt++;
-			if ((poly->box.max.y-poly->box.min.y)<map_simple_tessel_size) simple_cnt++;
-		
-			poly->draw.simple_tessel=(simple_cnt>=2) || (poly->ptsz==3);
-
+				if ((poly->box.max.x-poly->box.min.x)<map_simple_tessel_poly_side_size) simple_cnt++;
+				if ((poly->box.max.z-poly->box.min.z)<map_simple_tessel_poly_side_size) simple_cnt++;
+				if ((poly->box.max.y-poly->box.min.y)<map_simple_tessel_poly_side_size) simple_cnt++;
+			
+				poly->draw.simple_tessel=(simple_cnt>=2);
+			}
+			
 				// setup texture and shifting flags
 
 			poly->draw.txt_frame_offset=0;

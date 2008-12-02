@@ -53,9 +53,9 @@
 	};
 	2683177A0E4A8B1900BBCDCA /* map_mesh.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1086, 11018}}";
-			sepNavSelRange = "{14574, 0}";
-			sepNavVisRange = "{14380, 869}";
+			sepNavIntBoundsRect = "{{0, 0}, {1086, 11088}}";
+			sepNavSelRange = "{14502, 27}";
+			sepNavVisRange = "{14476, 777}";
 			sepNavWindowFrame = "{{541, 177}, {1041, 747}}";
 		};
 	};
@@ -69,21 +69,27 @@
 	};
 	2683177C0E4A8B1900BBCDCA /* map_vertex_list.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7672}}";
-			sepNavSelRange = "{3794, 0}";
-			sepNavVisRange = "{3056, 1353}";
-			sepNavWindowFrame = "{{565, 120}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 10248}}";
+			sepNavSelRange = "{13297, 0}";
+			sepNavVisRange = "{12788, 1129}";
+			sepNavWindowFrame = "{{418, 106}, {1041, 747}}";
 		};
 	};
-	26BE46470EDD19400070DAC1 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5DA8623059148C40043E685 /* nodes.c */;
-		name = "nodes.c: 94";
-		rLen = 26;
-		rLoc = 2093;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
+	26B84E630EE1EC7300B413B1 /* prepare.c:297 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = F5DD16E00907328000721649 /* prepare.c */;
+		functionName = "map_prepare()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 297;
+		modificationTime = 249687155.983718;
+		state = 1;
 	};
 	26BF8BBA0DBA5B900071D014 /* file_map_read_v1_curves.c */ = {
 		uiCtxt = {
@@ -93,15 +99,7 @@
 			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
 		};
 	};
-	26E372E50DA5AB75009653F2 /* file_map_read_v2.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7616}}";
-			sepNavSelRange = "{1303, 0}";
-			sepNavVisRange = "{0, 1599}";
-			sepNavWindowFrame = "{{334, 135}, {1041, 747}}";
-		};
-	};
-	26F713C80EDCEFA2006B1C6E /* PBXTextBookmark */ = {
+	26D607560EE4C34000E07405 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = F5DA8623059148C40043E685 /* nodes.c */;
 		name = "nodes.c: 94";
@@ -110,6 +108,24 @@
 		rType = 0;
 		vrLen = 0;
 		vrLoc = 0;
+	};
+	26D607A70EE4FFCD00E07405 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DA8623059148C40043E685 /* nodes.c */;
+		name = "nodes.c: 94";
+		rLen = 26;
+		rLoc = 2093;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	26E372E50DA5AB75009653F2 /* file_map_read_v2.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7616}}";
+			sepNavSelRange = "{1303, 0}";
+			sepNavVisRange = "{0, 1599}";
+			sepNavWindowFrame = "{{334, 135}, {1041, 747}}";
+		};
 	};
 	26FC4AAC0DA2F87A00E6ECED /* file_map_read_v1.c */ = {
 		uiCtxt = {
@@ -206,6 +222,7 @@
 			F5F4951E067BFCCA00E809E7 /* MapUtility */,
 		);
 		breakpoints = (
+			26B84E630EE1EC7300B413B1 /* prepare.c:297 */,
 		);
 		codeSenseManager = 260AFEC00D404E9300F6C42F /* Code sense */;
 		perUserDictionary = {
@@ -253,12 +270,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 249360314;
-			PBXWorkspaceStateSaveDate = 249360314;
+			PBXPerProjectTemplateStateSaveDate = 249886944;
+			PBXWorkspaceStateSaveDate = 249886944;
 		};
 		perUserProjectItems = {
-			26BE46470EDD19400070DAC1 /* PBXTextBookmark */ = 26BE46470EDD19400070DAC1 /* PBXTextBookmark */;
-			26F713C80EDCEFA2006B1C6E /* PBXTextBookmark */ = 26F713C80EDCEFA2006B1C6E /* PBXTextBookmark */;
+			26D607560EE4C34000E07405 /* PBXTextBookmark */ = 26D607560EE4C34000E07405 /* PBXTextBookmark */;
+			26D607A70EE4FFCD00E07405 /* PBXTextBookmark */ = 26D607A70EE4FFCD00E07405 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -274,10 +291,10 @@
 	};
 	F5C53548051C085800968AF1 /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 9968}}";
-			sepNavSelRange = "{7881, 0}";
-			sepNavVisRange = "{7053, 1338}";
-			sepNavWindowFrame = "{{733, 101}, {1041, 691}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 9786}}";
+			sepNavSelRange = "{4503, 25}";
+			sepNavVisRange = "{3718, 955}";
+			sepNavWindowFrame = "{{516, 78}, {1041, 691}}";
 		};
 	};
 	F5CE96BD0D23584100512EE1 /* mapimport.h */ = {
@@ -322,10 +339,10 @@
 	};
 	F5DD16E00907328000721649 /* prepare.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6384}}";
-			sepNavSelRange = "{3963, 20}";
-			sepNavVisRange = "{4325, 1088}";
-			sepNavWindowFrame = "{{553, 178}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6608}}";
+			sepNavSelRange = "{6189, 0}";
+			sepNavVisRange = "{5545, 1315}";
+			sepNavWindowFrame = "{{191, 147}, {1041, 747}}";
 		};
 	};
 	F5F4951E067BFCCA00E809E7 /* MapUtility */ = {

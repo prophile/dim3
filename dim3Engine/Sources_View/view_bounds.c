@@ -120,10 +120,6 @@ bool complex_boundbox_inview(int *cbx,int *cby,int *cbz)
 		
 		// project to screen
 
-	x=px[0];
-	y=py[0];
-	z=pz[n];
-		
 	gl_project_poly(14,px,py,pz);
 	
 		// off screen?

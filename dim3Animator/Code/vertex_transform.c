@@ -56,6 +56,11 @@ void vertex_find_center_sel_vertexes(int mesh_idx,int *p_cx,int *p_cy,int *p_cz)
 		vertex++;
 	}
 	
+	if (cnt==0) {
+		*p_cx=*p_cy=*p_cz=0;
+		return;
+	}
+	
 	*p_cx=cx/cnt;
 	*p_cy=cy/cnt;
 	*p_cz=cz/cnt;

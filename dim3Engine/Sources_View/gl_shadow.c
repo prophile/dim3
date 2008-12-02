@@ -66,18 +66,18 @@ bool gl_shadow_initialize(char *err_str)
 
 		// check if shadows are enabled
 		
-	shadow_on=(gl_check_frame_buffer_ok()) && (setup.quality_mode==quality_mode_low);
+	shadow_on=(gl_check_frame_buffer_ok()) && (setup.shadow_on);
 	if (!shadow_on) return(TRUE);
 	
 		// best size for shadow
 
 	shadow_pbuffer_pixel_size=shadow_pbuffer_min_pixel_size;
 
-	if (setup.quality_mode==quality_mode_medium) {
-		shadow_pbuffer_pixel_size=shadow_pbuffer_min_pixel_size;
+	if (setup.quality_mode==quality_mode_high) {
+		shadow_pbuffer_pixel_size=render_info.texture_max_size;
 	}
 	else {
-		shadow_pbuffer_pixel_size=render_info.texture_max_size;
+		shadow_pbuffer_pixel_size=shadow_pbuffer_min_pixel_size;
 	}
 
 	if (shadow_pbuffer_pixel_size>shadow_pbuffer_max_pixel_size) shadow_pbuffer_pixel_size=shadow_pbuffer_max_pixel_size;

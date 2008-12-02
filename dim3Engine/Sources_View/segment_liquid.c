@@ -178,7 +178,7 @@ bool liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
 				*cl=*(cl+1)=*(cl+2)=1.0f;
 			}
 			else {
-				if (setup.quality_mode==quality_mode_super) {
+				if (setup.ray_trace_lighting) {
 					map_calculate_ray_trace_light_color_normal((double)x,(double)y,(double)z,cl,normal);
 				}
 				else {

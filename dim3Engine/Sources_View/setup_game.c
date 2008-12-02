@@ -45,10 +45,13 @@ and can be sold or given away.
 #define ctrl_fsaa_id						1
 #define ctrl_lock_fps_refresh_id			2
 #define ctrl_quality_id						3
-#define ctrl_anisotropic_id					4
-#define ctrl_mipmap_id						5
-#define ctrl_compression_id					6
-#define ctrl_gamma_id						7
+#define ctrl_ray_trace_lighting_id			4
+#define ctrl_decal_on_id					5
+#define ctrl_shadow_on_id					6
+#define ctrl_anisotropic_id					7
+#define ctrl_mipmap_id						8
+#define ctrl_compression_id					9
+#define ctrl_gamma_id						10
 
 #define ctrl_sound_volume_id				30
 #define ctrl_music_on_id					31
@@ -122,7 +125,7 @@ void setup_game_video_pane(void)
 	
 	control_y_add=element_get_control_high();
 	separate_y_add=element_get_separator_high();
-	control_y_sz=(control_y_add*8)+(separate_y_add*3);
+	control_y_sz=(control_y_add*11)+(separate_y_add*3);
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
@@ -151,6 +154,12 @@ void setup_game_video_pane(void)
 	y+=control_y_add+separate_y_add;
 
 	element_combo_add("Quality",(char*)setup_quality_mode_list,setup.quality_mode,ctrl_quality_id,x,y,TRUE);
+	y+=control_y_add;
+	element_checkbox_add("Ray Traced Lighting",setup.ray_trace_lighting,ctrl_ray_trace_lighting_id,x,y,TRUE);
+	y+=control_y_add;
+	element_checkbox_add("Decals",setup.decal_on,ctrl_decal_on_id,x,y,TRUE);
+	y+=control_y_add;
+	element_checkbox_add("Shadow",setup.shadow_on,ctrl_shadow_on_id,x,y,TRUE);
 	y+=control_y_add+separate_y_add;
 
 	element_combo_add("Anisotropic Filtering",(char*)setup_anisotropic_mode_list,setup.anisotropic_mode,ctrl_anisotropic_id,x,y,TRUE);
@@ -687,6 +696,18 @@ void setup_game_handle_click(int id)
 			
 		case ctrl_quality_id:
 			setup.quality_mode=element_get_value(ctrl_quality_id);
+			break;
+			
+		case ctrl_ray_trace_lighting_id:
+			setup.ray_trace_lighting=element_get_value(ctrl_ray_trace_lighting_id);
+			break;
+			
+		case ctrl_decal_on_id:
+			setup.decal_on=element_get_value(ctrl_decal_on_id);
+			break;
+			
+		case ctrl_shadow_on_id:
+			setup.shadow_on=element_get_value(ctrl_shadow_on_id);
 			break;
 
 		case ctrl_anisotropic_id:

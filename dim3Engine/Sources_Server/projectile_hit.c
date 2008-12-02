@@ -96,7 +96,7 @@ void projectile_decals(proj_type *proj,proj_setup_type *proj_setup)
 	
 		// can decal this projectile hit?
 
-	if (setup.quality_mode==quality_mode_low) return;
+	if (!setup.decal_on) return;
 	if (!proj_setup->mark.on) return;
 	if (proj_setup->mark.idx==-1) return;
 	if (proj->contact.hit_poly.mesh_idx==-1) return;

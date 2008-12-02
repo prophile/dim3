@@ -154,7 +154,7 @@ JSBool js_obj_pickup_add_weapon_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	weap=script_find_weapon_from_name_arg(obj,argv[1]);
 	if (weap==NULL) return(JS_FALSE);
 	
-    item_add_weapon(obj,weap);
+    *rval=item_add_weapon(obj,weap)?JSVAL_TRUE:JSVAL_FALSE;
 	return(JS_TRUE);
 }
 
@@ -169,7 +169,7 @@ JSBool js_obj_pickup_swap_weapon_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 	weap=script_find_weapon_from_name_arg(obj,argv[1]);
 	if (weap==NULL) return(JS_FALSE);
 	
-    item_swap_weapon(obj,weap);
+    *rval=item_swap_weapon(obj,weap)?JSVAL_TRUE:JSVAL_FALSE;
 	return(JS_TRUE);
 }
 
@@ -184,7 +184,7 @@ JSBool js_obj_pickup_add_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 	weap=script_find_weapon_from_name_arg(obj,argv[1]);
 	if (weap==NULL) return(JS_FALSE);
 	
-    item_add_ammo(obj,weap,JSVAL_TO_INT(argv[2]));
+    *rval=item_add_ammo(obj,weap,JSVAL_TO_INT(argv[2]))?JSVAL_TRUE:JSVAL_FALSE;
 	return(JS_TRUE);
 }
 
@@ -199,7 +199,7 @@ JSBool js_obj_pickup_add_clip_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 	weap=script_find_weapon_from_name_arg(obj,argv[1]);
 	if (weap==NULL) return(JS_FALSE);
 	
-    item_add_clip(obj,weap,JSVAL_TO_INT(argv[2]));
+    *rval=item_add_clip(obj,weap,JSVAL_TO_INT(argv[2]))?JSVAL_TRUE:JSVAL_FALSE;
 	return(JS_TRUE);
 }
 
@@ -214,7 +214,7 @@ JSBool js_obj_pickup_add_alt_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	weap=script_find_weapon_from_name_arg(obj,argv[1]);
 	if (weap==NULL) return(JS_FALSE);
 	
-    item_add_alt_ammo(obj,weap,JSVAL_TO_INT(argv[2]));
+    *rval=item_add_alt_ammo(obj,weap,JSVAL_TO_INT(argv[2]))?JSVAL_TRUE:JSVAL_FALSE;
 	return(JS_TRUE);
 }
 
@@ -229,7 +229,7 @@ JSBool js_obj_pickup_add_alt_clip_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	weap=script_find_weapon_from_name_arg(obj,argv[1]);
 	if (weap==NULL) return(JS_FALSE);
 	
-    item_add_alt_clip(obj,weap,JSVAL_TO_INT(argv[2]));
+    *rval=item_add_alt_clip(obj,weap,JSVAL_TO_INT(argv[2]))?JSVAL_TRUE:JSVAL_FALSE;
 	return(JS_TRUE);
 }
 
@@ -240,7 +240,7 @@ JSBool js_obj_pickup_add_health_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	obj=script_find_obj_from_uid_arg(argv[0]);
 	if (obj==NULL) return(JS_FALSE);
 
-   item_add_health(obj,JSVAL_TO_INT(argv[1]));
+   *rval=item_add_health(obj,JSVAL_TO_INT(argv[1]))?JSVAL_TRUE:JSVAL_FALSE;
 	return(JS_TRUE);
 }
 

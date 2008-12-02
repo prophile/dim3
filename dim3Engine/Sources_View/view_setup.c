@@ -99,13 +99,14 @@ void view_create_mesh_draw_list(void)
 			if (!mesh_view_bit_get(start_mesh,n)) continue;
 		}
 
-			// auto-eliminate meshes drawn outside the view,
+			// auto-eliminate meshes drawn outside the obscure distance
+			// or not in the view
 			
 		mesh=&map.mesh.meshes[n];
 		
 		d=map_mesh_calculate_distance(mesh,&view.camera.pnt);
 		if (d>obscure_dist) continue;
-		
+			
 		if (!boundbox_inview(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y)) continue;
 		
 			// sort meshes into drawing list

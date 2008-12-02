@@ -484,6 +484,7 @@ void read_settings_interface_radar(int radar_tag)
 
 	hud.radar.on=TRUE;
 	hud.radar.rot=TRUE;
+	hud.radar.team_tint=FALSE;
 	hud.radar.no_motion_fade=0;
 	
 	hud.radar.x=hud.radar.y=0;
@@ -498,6 +499,7 @@ void read_settings_interface_radar(int radar_tag)
 	if (tag!=-1) {
 		hud.radar.on=xml_get_attribute_boolean(tag,"on");		// only use on switch if it exists
 		hud.radar.rot=!xml_get_attribute_boolean(tag,"no_rot");
+		hud.radar.team_tint=xml_get_attribute_boolean(tag,"team_tint");
 		hud.radar.no_motion_fade=xml_get_attribute_int(tag,"no_motion_fade");
 	}
 

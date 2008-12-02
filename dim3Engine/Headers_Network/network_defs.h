@@ -34,6 +34,9 @@ and can be sold or given away.
 
 #define host_max_remote_count						24
 
+#define host_client_timeout_msec_rate				10000
+
+
 //
 // client defines
 //
@@ -44,10 +47,7 @@ and can be sold or given away.
 #define client_communication_update_msec_rate		50
 #define client_communication_latency_ping_msec_rate	4000
 
-#define client_communication_timeout_msec			2000
-#define client_communication_slow_msec				500
-
-#define client_predict_slow_reduction				0.75f
+#define client_communication_timeout_msec			1000
 
 //
 // host player list
@@ -194,6 +194,7 @@ typedef struct		{
 					} network_request_join;
 
 typedef struct		{
+						int							map_tick;
 						short						join_uid,remote_count;
 						char						game_name[name_str_len],map_name[name_str_len],
 													deny_reason[64];
@@ -213,9 +214,9 @@ typedef struct		{
 
 typedef struct		{
 						int							flags,pnt_x,pnt_y,pnt_z,
-													fp_ang_x,fp_ang_y,fp_ang_z,fp_turn_ang_add_y,
-													fp_move_vct_x,fp_move_vct_y,fp_move_vct_z,
-													model_mesh_mask;
+													fp_ang_x,fp_ang_y,fp_ang_z,
+													fp_predict_move_x,fp_predict_move_y,fp_predict_move_z,
+													fp_predict_turn_y,model_mesh_mask;
 						short						vehicle_map_spawn_idx,
 													score,health;
 						unsigned char				model_cur_texture_frame[max_model_texture];
@@ -243,7 +244,7 @@ typedef struct		{
 					} network_request_remote_fire;
 
 typedef struct		{
-						short						ammo_count,clip_count,
+						short						hidden,ammo_count,clip_count,
 													alt_ammo_count,alt_clip_count;
 					} network_request_remote_ammo;
 

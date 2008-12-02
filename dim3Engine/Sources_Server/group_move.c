@@ -277,7 +277,7 @@ void group_rotate(int group_idx,float x,float y,float z)
       
 ======================================================= */
 
-void group_moves_run(void)
+void group_moves_run(bool run_events)
 {
 	int				n,x,y,z,user_id;
 	group_move_type	*move;
@@ -335,13 +335,32 @@ void group_moves_run(void)
 			// post the finished event
 	
 		user_id=move->user_id;
-		scripts_post_event_console((attach_type*)&move->attach,sd_event_move,sd_event_move_done,user_id);
+		if (run_events) scripts_post_event_console((attach_type*)&move->attach,sd_event_move,sd_event_move_done,user_id);
 
 			// signal back to the original map movement
 	
 		if (map_movement_next_move(move->movement_idx,(attach_type*)&move->attach)) {
-			scripts_post_event_console((attach_type*)&move->attach,sd_event_move,sd_event_move_loop,user_id);
+			if (run_events) scripts_post_event_console((attach_type*)&move->attach,sd_event_move,sd_event_move_loop,user_id);
 		}
 	}
 }
 
+
+/* =======================================================
+
+      Synch Group Movements with Host
+      
+======================================================= */
+
+void group_moves_synch_with_host(int tick_offset)
+{
+	int			n,count;
+	
+	return;		// supergumba -- fix this later, do it in a different way
+	
+	count=tick_offset/10;
+	
+	for (n=0;n!=count;n++) {
+		group_moves_run(FALSE);
+	}
+}

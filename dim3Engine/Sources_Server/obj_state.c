@@ -326,9 +326,9 @@ void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_weap,pr
 		
 	hit->hit_box_name[0]=0x0;
 		
-	if ((obj->hit_box.on) && (obj->hit_box.hit)) {
+	if ((obj->hit_box.on) && (obj->hit_box.proj_hit_box_idx!=-1)) {
 		model=model_find_uid(obj->draw.uid);
-		if (model!=NULL) strcpy(hit->hit_box_name,model->hit_boxes[obj->hit_box.hit_box_idx].name);
+		if (model!=NULL) strcpy(hit->hit_box_name,model->hit_boxes[obj->hit_box.proj_hit_box_idx].name);
 	}
 }
 

@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit “Created with dim3 Technology” is given on a single
+2. This credit ‚ÄúCreated with dim3 Technology‚Äù is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -38,14 +38,8 @@ and can be sold or given away.
 int area_2D_trig(int *px,int *py)
 {
 	int			area;
-	
-	area=-(px[1]*py[0]);
-	area+=(px[2]*py[0]);
-	area+=(px[0]*py[1]);
-	area-=(px[2]*py[1]);
-	area-=(px[0]*py[2]);
-	area+=(px[1]*py[2]);
-	
+
+	area=(px[0]*(py[1]-py[2]))+(px[1]*(py[2]-py[0]))+(px[2]*(py[0]-py[1]));
 	return(abs(area/2));
 }
 

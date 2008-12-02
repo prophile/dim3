@@ -387,8 +387,7 @@ bool collide_object_to_map(obj_type *obj,int *xadd,int *yadd,int *zadd)
 			if (obj->duck.mode!=dm_stand) box_sz.y-=obj->duck.y_move;
 			
 			if (collide_object_box_to_map(obj,&pt,&box_sz,xadd,yadd,zadd)) {
-				obj->hit_box.hit=TRUE;
-				obj->hit_box.hit_box_idx=n;
+				obj->hit_box.obj_hit_box_idx=n;
 				return(TRUE);
 			}
 

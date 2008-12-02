@@ -135,37 +135,27 @@ void item_pickup_check(obj_type *obj)
       
 ======================================================= */
 
-void item_add_ammo(obj_type *obj,weapon_type *weap,int add_count)
+bool item_add_weapon(obj_type *obj,weapon_type *weap)
 {
-    weap->ammo.count+=add_count;
-    if (weap->ammo.count>weap->ammo.max_count) weap->ammo.count=weap->ammo.max_count;
-}
+		// already own weapon
 
-void item_add_weapon(obj_type *obj,weapon_type *weap)
-{
-		// if already own weapon, then just add ammo
-
-	if (!weap->hidden) {
-		item_add_ammo(obj,weap,weap->ammo.init_count);
-		return;
-	}
+	if (!weap->hidden) return(FALSE);
 
 		// add the weapon
 
 	weap->hidden=FALSE;
 	weapon_reset_ammo(weap);
+	
+	return(TRUE);
 }
 
-void item_swap_weapon(obj_type *obj,weapon_type *weap)
+bool item_swap_weapon(obj_type *obj,weapon_type *weap)
 {
 	weapon_type		*weap_hide;
 
-		// if already own weapon, then just add ammo
+		// already own weapon
 
-	if (!weap->hidden) {
-		item_add_ammo(obj,weap,weap->ammo.init_count);
-		return;
-	}
+	if (!weap->hidden) return(FALSE);
 
 		// hide current weapon
 
@@ -178,33 +168,55 @@ void item_swap_weapon(obj_type *obj,weapon_type *weap)
 	weapon_reset_ammo(weap);
 
 	weapon_set(obj,weap);
+	
+	return(TRUE);
 }
 
-void item_add_clip(obj_type *obj,weapon_type *weap,int add_count)
+bool item_add_ammo(obj_type *obj,weapon_type *weap,int add_count)
 {
-	if (!weap->ammo.use_clips) return;
+	if (weap->ammo.count==weap->ammo.max_count) return(FALSE);
+	
+    weap->ammo.count+=add_count;
+    if (weap->ammo.count>weap->ammo.max_count) weap->ammo.count=weap->ammo.max_count;
+	return(TRUE);
+}
+
+
+bool item_add_clip(obj_type *obj,weapon_type *weap,int add_count)
+{
+	if (!weap->ammo.use_clips) return(FALSE);
+	if (weap->ammo.clip_count==weap->ammo.max_clip_count) return(FALSE);
     
     weap->ammo.clip_count+=add_count;
-    if (weap->ammo.clip_count>weap->ammo.max_clip_count) weap->ammo.clip_count=weap->ammo.max_clip_count;
+	if (weap->ammo.clip_count>weap->ammo.max_clip_count) weap->ammo.clip_count=weap->ammo.max_clip_count;
+	return(TRUE);
 }
 
-void item_add_alt_ammo(obj_type *obj,weapon_type *weap,int add_count)
+bool item_add_alt_ammo(obj_type *obj,weapon_type *weap,int add_count)
 {
+    if (weap->alt_ammo.count==weap->alt_ammo.max_count) return(FALSE);
+
     weap->alt_ammo.count+=add_count;
     if (weap->alt_ammo.count>weap->alt_ammo.max_count) weap->alt_ammo.count=weap->alt_ammo.max_count;
+	return(TRUE);
 }
 
-void item_add_alt_clip(obj_type *obj,weapon_type *weap,int add_count)
+bool item_add_alt_clip(obj_type *obj,weapon_type *weap,int add_count)
 {
-	if (!weap->alt_ammo.use_clips) return;
-    
+	if (!weap->alt_ammo.use_clips) return(FALSE);
+	if (weap->alt_ammo.clip_count==weap->alt_ammo.max_clip_count) return(FALSE);
+   
     weap->alt_ammo.clip_count+=add_count;
     if (weap->alt_ammo.clip_count>weap->alt_ammo.max_clip_count) weap->alt_ammo.clip_count=weap->alt_ammo.max_clip_count;
+	return(TRUE);
 }
 
-void item_add_health(obj_type *obj,int add_count)
+bool item_add_health(obj_type *obj,int add_count)
 {
+	if (obj->status.health==obj->status.max_health) return(FALSE);
+	
 	object_heal(obj,add_count);
+	return(TRUE);
 }
 
 void item_add_custom(obj_type *obj,int custom_id)

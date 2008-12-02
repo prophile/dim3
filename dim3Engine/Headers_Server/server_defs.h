@@ -377,8 +377,8 @@ typedef struct		{
 					} obj_hit;
 					
 typedef struct		{
-						int						hit_box_idx;
-						bool					on,hit;
+						int						obj_hit_box_idx,proj_hit_box_idx;
+						bool					on;
 					} obj_hit_box;
 					
 typedef struct		{
@@ -570,8 +570,14 @@ typedef struct		{
 //
 
 typedef struct		{
+						float					turn_y;
+						d3pnt					move;
+					} obj_remote_predict;
+					
+typedef struct		{
 						int						uid,last_update;
 						bool					on,talking;
+						obj_remote_predict		predict;
 					} obj_remote;
 
 typedef struct		{
@@ -768,8 +774,8 @@ typedef struct		{
 												open_doors,input_freeze,hide_all_weapons,
 												find_on,in_collide_event,on_ladder,
 												quick_reverse,death_trigger;
-						d3pnt					pnt,org_pnt;
-						d3ang					ang,view_ang,org_ang;
+						d3pnt					pnt,org_pnt,last_pnt;
+						d3ang					ang,view_ang,org_ang,last_ang;
 						obj_motion				motion;
                         obj_movement			forward_move,side_move,vert_move;
 						obj_lock				lock;

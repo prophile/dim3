@@ -43,6 +43,7 @@ and can be sold or given away.
 extern void intro_open(void);
 extern bool game_start(int skill,int remote_count,network_request_remote_add *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
+extern void group_moves_synch_with_host(int tick_offset);
 
 extern map_type				map;
 extern server_type			server;
@@ -511,7 +512,7 @@ void join_activity_complete(bool single,char *msg)
 
 void join_game(void)
 {
-	int							idx,remote_uid,remote_count;
+	int							idx,remote_uid,remote_count,tick_offset;
 	char						game_name[name_str_len],map_name[name_str_len],
 								deny_reason[64],err_str[256];
 	network_request_remote_add	remotes[host_max_remote_count];
@@ -530,7 +531,7 @@ void join_game(void)
 							
 		// attempt to join
 
-	if (!net_client_join_host_start(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,deny_reason,&remote_count,remotes)) {
+	if (!net_client_join_host_start(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,&tick_offset,deny_reason,&remote_count,remotes)) {
 		join_close();
 		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
 		error_open(err_str,"Network Game Canceled");
@@ -578,6 +579,8 @@ void join_game(void)
 		error_open(err_str,"Network Game Canceled");
 		return;
 	}
+	
+	group_moves_synch_with_host(tick_offset);
 	
 		// start client network thread
 		

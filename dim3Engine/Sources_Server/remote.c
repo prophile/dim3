@@ -59,6 +59,7 @@ extern bool game_start(int skill,int remote_count,network_request_remote_add *re
 extern void game_end(void);
 extern bool map_start(bool skip_media,char *err_str);
 extern void map_end(void);
+extern void group_moves_synch_with_host(int tick_offset);
 extern void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx);
 
 /* =======================================================
@@ -96,6 +97,12 @@ bool remote_add(network_request_remote_add *add,bool send_event)
 	obj->remote.uid=(signed short)ntohs(add->uid);
 	obj->remote.last_update=game_time_get();
 	obj->remote.talking=FALSE;
+	
+	obj->remote.predict.move.x=0;
+	obj->remote.predict.move.y=0;
+	obj->remote.predict.move.z=0;
+	
+	obj->remote.predict.turn_y=0.0f;
 	
 	obj->bind=bt_remote;
 	
@@ -236,11 +243,6 @@ bool remote_timed_out(obj_type *obj)
 	return((game_time_get()-obj->remote.last_update)>client_communication_timeout_msec);
 }
 
-bool remote_slow(obj_type *obj)
-{
-	return((game_time_get()-obj->remote.last_update)>client_communication_slow_msec);
-}
-
 /* =======================================================
 
       Predict Remote Objects
@@ -263,22 +265,13 @@ void remote_update_current_mesh(obj_type *obj)
 
 void remote_predict_move(obj_type *obj)
 {
-		// stop predicting after timeout
+		// stop predicting after slow timeout
 		
 	if (remote_timed_out(obj)) return;
 	
-		// if slow, then reduce movement
-		
-	if (remote_slow(obj)) {
-		obj->motion.vct.x*=client_predict_slow_reduction;
-		obj->motion.vct.y*=client_predict_slow_reduction;
-		obj->motion.vct.z*=client_predict_slow_reduction;
-		obj->turn.fix_ang_add.y*=client_predict_slow_reduction;
-	}
-	
 		// predict rotations
 	
-    obj->ang.y=angle_add(obj->ang.y,obj->turn.fix_ang_add.y);
+    obj->ang.y=angle_add(obj->ang.y,obj->remote.predict.turn_y);
 	
 		// predict movements
 		
@@ -294,7 +287,7 @@ void remote_predict_move(obj_type *obj)
 
 void remote_host_reset(void)
 {
-	int							remote_uid,remote_count;
+	int							remote_uid,remote_count,tick_offset;
 	char						game_name[name_str_len],map_name[name_str_len],
 								deny_reason[64],err_str[256];
 	network_request_remote_add	remotes[host_max_remote_count];
@@ -306,7 +299,7 @@ void remote_host_reset(void)
 		
 		// attempt to join to new game
 
-	if (!net_client_join_host_start(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,deny_reason,&remote_count,remotes)) {
+	if (!net_client_join_host_start(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,&tick_offset,deny_reason,&remote_count,remotes)) {
 		error_open("Unable to rejoin server after game reset","Network Game Canceled");
 		return;
 	}
@@ -351,6 +344,8 @@ void remote_host_reset(void)
 		error_open(err_str,"Network Game Canceled");
 		return;	
 	}
+	
+	group_moves_synch_with_host(tick_offset);
 		
 		// game is running
 	
@@ -420,12 +415,12 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 
 		// update predicition values
 		
-	obj->motion.vct.x=ntohf(update->fp_move_vct_x);
-	obj->motion.vct.y=ntohf(update->fp_move_vct_y);
-	obj->motion.vct.z=ntohf(update->fp_move_vct_z);
+	obj->remote.predict.move.x=ntohl(update->fp_predict_move_x);
+	obj->remote.predict.move.y=ntohl(update->fp_predict_move_y);
+	obj->remote.predict.move.z=ntohl(update->fp_predict_move_z);
 
 	obj->turn.fix_ang_add.x=obj->turn.fix_ang_add.z=0.0f;
-	obj->turn.fix_ang_add.y=ntohf(update->fp_turn_ang_add_y);
+	obj->remote.predict.turn_y=ntohf(update->fp_predict_turn_y);
 	
 		// update animations
 		// only change animations if mode, animation, or next
@@ -730,6 +725,7 @@ void remote_pickup(int remote_uid,network_request_remote_pickup *pickup)
 	for (n=0;n!=server.count.weapon;n++) {
 
 		if (weap->obj_uid==obj->uid) {
+			weap->hidden=((signed short)ntohs(pickup->ammos[idx].hidden)!=0);
 			weap->ammo.count=(signed short)ntohs(pickup->ammos[idx].ammo_count);
 			weap->ammo.clip_count=(signed short)ntohs(pickup->ammos[idx].clip_count);
 			weap->alt_ammo.count=(signed short)ntohs(pickup->ammos[idx].alt_ammo_count);

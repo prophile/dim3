@@ -29,57 +29,248 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
+#define light_tessel_min_grid_pixel_sz				(map_enlarge*16)
+
 /* =======================================================
 
-      Build Tesseled Lighting Triangles
+      Division Reduction
       
 ======================================================= */
 
-void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int grid_split_sz)
+inline int map_portal_all_light_div_reduce(int dist,int div)
 {
-	int									n,vl_cnt,x,y,ptsz,
-										xzdist,xdist,ydist,zdist,xztot,ytot,xskip,yskip,zskip;
-	int									grid_x[light_tessel_grid_sz+1],grid_z[light_tessel_grid_sz+1],
-										grid_y[light_tessel_grid_sz+1];
+	while (div>1) {
+		if ((dist/div)>light_tessel_min_grid_pixel_sz) break;
+		div--;
+	}
+	
+	return(div);
+}
+
+/* =======================================================
+
+      Triangle Tesselation
+      
+======================================================= */
+
+void map_portal_add_light_trig_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int div)
+{
+	int									vl_cnt,x,y,k,idx,div_x,div_y,
+										d0,d1,d2;
+	float								*vl_uv;
+	d3pnt								p1,p2,chg_x,chg_y;
+	d3vct								g1,g2,chg_gx,chg_gy;;
+	d3pnt								*pt[3],*vl_pt;
+	
+		// find largest side of triangle
+		
+	pt[0]=&mesh->vertexes[poly->v[0]];
+	pt[1]=&mesh->vertexes[poly->v[1]];
+	pt[2]=&mesh->vertexes[poly->v[2]];
+	
+	d0=distance_get(pt[0]->x,pt[0]->y,pt[0]->z,pt[1]->x,pt[1]->y,pt[1]->z);
+	d1=distance_get(pt[1]->x,pt[1]->y,pt[1]->z,pt[2]->x,pt[2]->y,pt[2]->z);
+	d2=distance_get(pt[2]->x,pt[2]->y,pt[2]->z,pt[0]->x,pt[0]->y,pt[0]->z);
+	
+	if ((d0>d1) && (d0>d2)) {
+		idx=2;
+	}
+	else {
+		if (d1>d2) {
+			idx=0;
+		}
+		else {
+			idx=1;
+		}
+	}
+	
+		// get size of shorter lines
+		// and find divisions
+		
+	k=idx+1;
+	if (k==3) k=0;
+	
+	chg_y.x=pt[k]->x-pt[idx]->x;
+	chg_y.y=pt[k]->y-pt[idx]->y;
+	chg_y.z=pt[k]->z-pt[idx]->z;
+	
+	chg_gy.x=poly->gx[k]-poly->gx[idx];
+	chg_gy.y=poly->gy[k]-poly->gy[idx];
+	
+	d0=distance_get(0,0,0,chg_y.x,chg_y.y,chg_y.z);
+	div_y=map_portal_all_light_div_reduce(d0,div);
+	
+	k=idx-1;
+	if (k==-1) k=2;
+	
+	chg_x.x=pt[k]->x-pt[idx]->x;
+	chg_x.y=pt[k]->y-pt[idx]->y;
+	chg_x.z=pt[k]->z-pt[idx]->z;
+	
+	chg_gx.x=poly->gx[k]-poly->gx[idx];
+	chg_gx.y=poly->gy[k]-poly->gy[idx];
+	
+	d0=distance_get(0,0,0,chg_x.x,chg_x.y,chg_x.z);
+	div_x=map_portal_all_light_div_reduce(d0,div);
+	
+		// split up trig on smaller sides
+		
+	vl_cnt=0;
+	vl_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
+	vl_uv=mesh->light.quad_uvs+(poly->light.vertex_offset<<1);
+
+	for (y=0;y<=div_y;y++) {
+	
+		p1.x=pt[idx]->x+((chg_y.x*y)/div_y);
+		p1.y=pt[idx]->y+((chg_y.y*y)/div_y);
+		p1.z=pt[idx]->z+((chg_y.z*y)/div_y);
+		
+		g1.x=poly->gx[idx]+((chg_gy.x*((float)y))/((float)div_y));
+		g1.y=poly->gy[idx]+((chg_gy.y*((float)y))/((float)div_y));
+		
+		p2.x=p1.x+chg_x.x;
+		p2.y=p1.y+chg_x.y;
+		p2.z=p1.z+chg_x.z;
+
+		g2.x=g1.x+chg_gx.x;
+		g2.y=g1.y+chg_gx.y;
+		
+		for (x=0;x<=div_x;x++) {
+		
+			vl_pt->x=p1.x+(((p2.x-p1.x)*x)/div_x);
+			vl_pt->y=p1.y+(((p2.y-p1.y)*x)/div_x);
+			vl_pt->z=p1.z+(((p2.z-p1.z)*x)/div_x);
+
+			*vl_uv++=g1.x+(((g2.x-g1.x)*((float)x))/((float)div_x));
+			*vl_uv++=g1.y+(((g2.y-g1.y)*((float)x))/((float)div_x));
+		
+			vl_cnt++;
+			vl_pt++;
+		}
+	}
+	
+	poly->light.grid_x_sz=div_x;
+	poly->light.grid_y_sz=div_y;
+
+	poly->light.nvertex=vl_cnt;
+	poly->light.nquad=div_x*div_y;
+}
+
+/* =======================================================
+
+      Quad Tesselation
+      
+======================================================= */
+
+void map_portal_add_light_quad_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int div)
+{
+	int									vl_cnt,x,y,d,d2,div_x,div_y;
+	float								*vl_uv;
+	d3pnt								p1,p2;
+	d3vct								g1,g2;
+	d3pnt								*vertexes,*vl_pt;
+
+	vertexes=mesh->vertexes;
+	
+		// get split sizes
+		
+	d=distance_get(vertexes[poly->v[0]].x,vertexes[poly->v[0]].y,vertexes[poly->v[0]].z,vertexes[poly->v[3]].x,vertexes[poly->v[3]].y,vertexes[poly->v[3]].z);
+	d2=distance_get(vertexes[poly->v[1]].x,vertexes[poly->v[1]].y,vertexes[poly->v[1]].z,vertexes[poly->v[2]].x,vertexes[poly->v[2]].y,vertexes[poly->v[2]].z);
+	if (d2>d) d=d2;
+	
+	div_y=map_portal_all_light_div_reduce(d,div);
+	
+	d=distance_get(vertexes[poly->v[0]].x,vertexes[poly->v[0]].y,vertexes[poly->v[0]].z,vertexes[poly->v[1]].x,vertexes[poly->v[1]].y,vertexes[poly->v[1]].z);
+	d2=distance_get(vertexes[poly->v[2]].x,vertexes[poly->v[2]].y,vertexes[poly->v[2]].z,vertexes[poly->v[3]].x,vertexes[poly->v[3]].y,vertexes[poly->v[3]].z);
+	if (d2>d) d=d2;
+	
+	div_x=map_portal_all_light_div_reduce(d,div);
+	
+		// split up quad
+		
+	vl_cnt=0;
+	vl_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
+	vl_uv=mesh->light.quad_uvs+(poly->light.vertex_offset<<1);
+		
+	for (y=0;y<=div_y;y++) {
+	
+		p1.x=vertexes[poly->v[0]].x+(((vertexes[poly->v[3]].x-vertexes[poly->v[0]].x)*y)/div_y);
+		p1.y=vertexes[poly->v[0]].y+(((vertexes[poly->v[3]].y-vertexes[poly->v[0]].y)*y)/div_y);
+		p1.z=vertexes[poly->v[0]].z+(((vertexes[poly->v[3]].z-vertexes[poly->v[0]].z)*y)/div_y);
+		
+		g1.x=poly->gx[0]+(((poly->gx[3]-poly->gx[0])*((float)y))/((float)div_y));
+		g1.y=poly->gy[0]+(((poly->gy[3]-poly->gy[0])*((float)y))/((float)div_y));
+		
+		p2.x=vertexes[poly->v[1]].x+(((vertexes[poly->v[2]].x-vertexes[poly->v[1]].x)*y)/div_y);
+		p2.y=vertexes[poly->v[1]].y+(((vertexes[poly->v[2]].y-vertexes[poly->v[1]].y)*y)/div_y);
+		p2.z=vertexes[poly->v[1]].z+(((vertexes[poly->v[2]].z-vertexes[poly->v[1]].z)*y)/div_y);
+
+		g2.x=poly->gx[1]+(((poly->gx[2]-poly->gx[1])*((float)y))/((float)div_y));
+		g2.y=poly->gy[1]+(((poly->gy[2]-poly->gy[1])*((float)y))/((float)div_y));
+		
+		for (x=0;x<=div_x;x++) {
+			
+			vl_pt->x=p1.x+(((p2.x-p1.x)*x)/div_x);
+			vl_pt->y=p1.y+(((p2.y-p1.y)*x)/div_x);
+			vl_pt->z=p1.z+(((p2.z-p1.z)*x)/div_x);
+
+			*vl_uv++=g1.x+(((g2.x-g1.x)*((float)x))/((float)div_x));
+			*vl_uv++=g1.y+(((g2.y-g1.y)*((float)x))/((float)div_x));
+		
+			vl_cnt++;
+			vl_pt++;
+		}
+	}
+	
+	poly->light.grid_x_sz=div_x;
+	poly->light.grid_y_sz=div_y;
+
+	poly->light.nvertex=vl_cnt;
+	poly->light.nquad=div_x*div_y;
+}
+
+/* =======================================================
+
+      Catch All Wall Tessel
+      
+======================================================= */
+
+void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int div)
+{
+	int									n,vl_cnt,x,y,ptsz,div_x,div_y,
+										xdist,ydist,zdist,xzdist,xskip,yskip,zskip;
+	int									grid_x[light_tessel_max_grid_div+1],grid_z[light_tessel_max_grid_div+1],
+										grid_y[light_tessel_max_grid_div+1];
 	float								lgx,rgx,tgy,bgy,f_dist;
 	float								*vl_uv;
 	double								dx,dz;
 	d3pnt								*pt,*vl_pt;
-	map_mesh_poly_light_type			*light;
 
-	light=&poly->light;
-
-		// get tessel size, possible total of 64 triangles, 8 grid spots (max)
+		// get tessel size
 
 	xdist=poly->line.rx-poly->line.lx;
 	ydist=poly->box.max.y-poly->box.min.y;
 	zdist=poly->line.rz-poly->line.lz;
+	
+	xzdist=(int)(sqrt((double)(xdist*xdist)+(double)(zdist*zdist)));
+	
+	div_y=map_portal_all_light_div_reduce(ydist,div);
+	div_x=map_portal_all_light_div_reduce(xzdist,div);
 
-	dx=(double)xdist;
-	dz=(double)zdist;
-	xzdist=(int)sqrt((dx*dx)+(dz*dz));
-	xztot=xzdist/grid_split_sz;
-	if (xztot<=0) xztot=1;
-	if (xztot>light_tessel_grid_sz) xztot=light_tessel_grid_sz;
-
-	ytot=ydist/grid_split_sz;
-	if (ytot<=0) ytot=1;
-	if (ytot>light_tessel_grid_sz) ytot=light_tessel_grid_sz;
-
-	xskip=xdist/xztot;
-	zskip=zdist/xztot;
-	yskip=ydist/ytot;
+	xskip=xdist/div_x;
+	zskip=zdist/div_x;
+	yskip=ydist/div_y;
 
 		// create the grid overlay
 
-	for (x=0;x<=xztot;x++) {
+	for (x=0;x<=div_x;x++) {
 	
 		if (x==0) {
 			grid_x[x]=poly->line.lx-light_tessel_overlap_pixel;
 			grid_z[x]=poly->line.lz-light_tessel_overlap_pixel;
 		}
 		else {
-			if (x==xztot) {
+			if (x==div_x) {
 				grid_x[x]=poly->line.rx+light_tessel_overlap_pixel;
 				grid_z[x]=poly->line.rz+light_tessel_overlap_pixel;
 			}
@@ -90,13 +281,13 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 		}
 	}
 
-	for (y=0;y<=ytot;y++) {
+	for (y=0;y<=div_y;y++) {
 	
 		if (y==0) {
 			grid_y[y]=poly->box.min.y-light_tessel_overlap_pixel;
 		}
 		else {
-			if (y==ytot) {
+			if (y==div_y) {
 				grid_y[y]=poly->box.max.y+light_tessel_overlap_pixel;
 			}
 			else {
@@ -127,8 +318,8 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 	vl_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
 	vl_uv=mesh->light.quad_uvs+(poly->light.vertex_offset<<1);
 
-	for (y=0;y<=ytot;y++) {
-		for (x=0;x<=xztot;x++) {
+	for (y=0;y<=div_y;y++) {
+		for (x=0;x<=div_x;x++) {
 
 			vl_pt->x=grid_x[x];
 			vl_pt->y=grid_y[y];
@@ -148,51 +339,49 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 
 		// setup light for drawing
 	
-	light->grid_x_sz=xztot;
-	light->grid_y_sz=ytot;
+	poly->light.grid_x_sz=div_x;
+	poly->light.grid_y_sz=div_y;
 
-	light->nvertex=vl_cnt;
-	light->nquad=ytot*xztot;
+	poly->light.nvertex=vl_cnt;
+	poly->light.nquad=div_x*div_y;
 }
 
-void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int grid_split_sz)
+/* =======================================================
+
+      Catch All Floor/Ceiling Tessel
+      
+======================================================= */
+
+void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int div)
 {
 	int									n,vl_cnt,x,y,z,ptsz,px[8],py[8],pz[8],
-										xdist,zdist,xtot,ztot,xskip,zskip;
-	int									grid_x[light_tessel_grid_sz+1],
-										grid_z[light_tessel_grid_sz+1];
+										div_x,div_y,xdist,zdist,xskip,zskip;
+	int									grid_x[light_tessel_max_grid_div+1],
+										grid_z[light_tessel_max_grid_div+1];
 	float								lgx,rgx,lgy,rgy;
 	float								*vl_uv;
 	d3pnt								*pt,*vl_pt;
-	map_mesh_poly_light_type			*light;
-
-	light=&poly->light;
 
 		// get tessel size, possible total of 64 triangles, 8 grid spots (max)
 
 	xdist=poly->box.max.x-poly->box.min.x;
 	zdist=poly->box.max.z-poly->box.min.z;
+	
+	div_y=map_portal_all_light_div_reduce(zdist,div);
+	div_x=map_portal_all_light_div_reduce(xdist,div);
 
-	xtot=xdist/grid_split_sz;
-	if (xtot>light_tessel_grid_sz) xtot=light_tessel_grid_sz;
-	if (xtot<=0) xtot=1;
-
-	ztot=zdist/grid_split_sz;
-	if (ztot>light_tessel_grid_sz) ztot=light_tessel_grid_sz;
-	if (ztot<=0) ztot=1;
-
-	xskip=xdist/xtot;
-	zskip=zdist/ztot;
+	xskip=xdist/div_x;
+	zskip=zdist/div_y;
 
 		// create the grid overlay
 
-	for (x=0;x<=xtot;x++) {
+	for (x=0;x<=div_x;x++) {
 	
 		if (x==0) {
 			grid_x[x]=poly->box.min.x-light_tessel_overlap_pixel;
 		}
 		else {
-			if (x==xtot) {
+			if (x==div_x) {
 				grid_x[x]=poly->box.max.x+light_tessel_overlap_pixel;
 			}
 			else {
@@ -201,12 +390,12 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 		}
 	}
 
-	for (z=0;z<=ztot;z++) {
+	for (z=0;z<=div_y;z++) {
 		if (z==0) {
 			grid_z[z]=poly->box.min.z-light_tessel_overlap_pixel;
 		}
 		else {
-			if (z==ztot) {
+			if (z==div_y) {
 				grid_z[z]=poly->box.max.z+light_tessel_overlap_pixel;
 			}
 			else {
@@ -216,10 +405,9 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 	}
 
 		// get vertexes for grid
-		// and find uv extends
+		// and setup uv and y calculations
 
-	lgx=rgx=0.0f;
-	lgy=rgy=0.0f;
+	lgx=rgx=lgy=rgy=0.0f;
 
 	ptsz=poly->ptsz;
 
@@ -241,15 +429,15 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 	vl_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
 	vl_uv=mesh->light.quad_uvs+(poly->light.vertex_offset<<1);
 
-	for (z=0;z<=ztot;z++) {
-		for (x=0;x<=xtot;x++) {
+	for (z=0;z<=div_y;z++) {
+		for (x=0;x<=div_x;x++) {
 
 			if (poly->box.flat) {
 				y=poly->box.mid.y;
 			}
 			else {
 				y=polygon_find_y(ptsz,px,py,pz,grid_x[x],grid_z[z]);
-				if (y==-1) y=polygon_infinite_find_y(ptsz,px,py,pz,grid_x[x],grid_z[z]);
+				if (y==-1) y=polygon_find_y_outside_point(ptsz,px,py,pz,grid_x[x],grid_z[z]);
 			}
 
 			vl_pt->x=grid_x[x];
@@ -266,11 +454,11 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 
 		// setup light for drawing
 
-	light->grid_x_sz=xtot;
-	light->grid_y_sz=ztot;
+	poly->light.grid_x_sz=div_x;
+	poly->light.grid_y_sz=div_y;
 
-	light->nvertex=vl_cnt;
-	light->nquad=xtot*ztot;
+	poly->light.nvertex=vl_cnt;
+	poly->light.nquad=div_x*div_y;
 }
 
 /* =======================================================
@@ -281,7 +469,7 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 
 void map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *poly,int vertex_offset,int quad_offset,int quality_mode)
 {
-	int			grid_split_sz;
+	int			div;
 
 	poly->light.nvertex=0;
 	poly->light.vertex_offset=vertex_offset;
@@ -301,14 +489,30 @@ void map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *p
 		// tessel depending on shape of polygon
 	
 	poly->light.simple_tessel=FALSE;
+	
+		// get divisions based on quality
+		
+	div=(quality_mode==quality_mode_high?light_tessel_max_grid_div:light_tessel_min_grid_div);
+	
+		// special trig/quad check
 
-	grid_split_sz=(quality_mode==quality_mode_medium)?(map_enlarge*16):(map_enlarge*8);
+	if (poly->ptsz==3) {
+		map_portal_add_light_trig_tessel_vertex_list(mesh,poly,div);
+		return;
+	}
+		
+	if (poly->ptsz==4) {
+		map_portal_add_light_quad_tessel_vertex_list(mesh,poly,div);
+		return;
+	}
+
+		// catch all for non-standard polygons
 
 	if (poly->box.wall_like) {
-		map_portal_add_light_wall_tessel_vertex_list(mesh,poly,grid_split_sz);
+		map_portal_add_light_wall_tessel_vertex_list(mesh,poly,div);
 	}
 	else {
-		map_portal_add_light_floor_tessel_vertex_list(mesh,poly,grid_split_sz);
+		map_portal_add_light_floor_tessel_vertex_list(mesh,poly,div);
 	}
 }
 
@@ -351,11 +555,11 @@ bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 			// quad vertex isn't used yet, so we'll set
 			// that when we have exact numbers
 		
-		sz=sizeof(d3pnt)*(((light_tessel_grid_sz+1)*(light_tessel_grid_sz+1))*mesh->npoly);
+		sz=sizeof(d3pnt)*(((light_tessel_max_grid_div+1)*(light_tessel_max_grid_div+1))*mesh->npoly);
 		mesh->light.quad_vertexes=(d3pnt*)malloc(sz);
 		if (mesh->light.quad_vertexes==NULL) return(FALSE);
 		
-		sz=(sizeof(float)*2)*(((light_tessel_grid_sz+1)*(light_tessel_grid_sz+1))*mesh->npoly);
+		sz=(sizeof(float)*2)*(((light_tessel_max_grid_div+1)*(light_tessel_max_grid_div+1))*mesh->npoly);
 		mesh->light.quad_uvs=(float*)malloc(sz);
 		if (mesh->light.quad_uvs==NULL) return(FALSE);
 

@@ -321,7 +321,8 @@ void shadow_render_draw_floor_like_poly(map_mesh_type *mesh,map_mesh_poly_type *
 		}
 
 		for (k=0;k!=4;k++) {
-			py[k]=polygon_infinite_find_y(poly->ptsz,fx,fy,fz,px[k],pz[k]);
+			py[k]=polygon_find_y(poly->ptsz,fx,fy,fz,px[k],pz[k]);
+			if (py[k]==-1) py[k]=polygon_find_y_outside_point(poly->ptsz,fx,fy,fz,px[k],pz[k]);
 		}
 	}
 	

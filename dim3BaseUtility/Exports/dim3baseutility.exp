@@ -71,7 +71,7 @@ _polygon_2D_collision_bound_polygon
 _polygon_2D_collision_polygon
 _polygon_get_slope_y
 _polygon_find_y
-_polygon_infinite_find_y
+_polygon_find_y_outside_point
 
 _area_2D_trig
 _area_2D_polygon

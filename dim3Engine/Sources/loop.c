@@ -95,8 +95,6 @@ bool interface_quit_trigger_check(void)
 
 void loop_game_run(int tick)
 {
-	char	*c,str[256];
-
 		// receive networking updates
 		
 	if (net_setup.client.joined) {
@@ -120,19 +118,6 @@ void loop_game_run(int tick)
 	if (net_setup.client.joined) {
 
 		if (tick>=server.time.network_update_tick) {
-				
-				// supergumba -- special testing keys
-
-			if (input_get_keyboard_key(SDLK_HOME)) {
-				c=0x0;
-				*c=0x0;		// crash!
-			}
-			if (input_get_keyboard_key(SDLK_END)) {
-				client_communication_update_msec_rate2+=50;
-				sprintf(str,"update msec=%d",client_communication_update_msec_rate2);
-				console_add(str);		// slow down communication rate
-			}
-
 			server.time.network_update_tick=tick+client_communication_update_msec_rate2;
 			remote_network_send_updates(tick);
 		}

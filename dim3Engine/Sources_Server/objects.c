@@ -313,10 +313,14 @@ void object_set_position(obj_type *obj,int x,int y,int z,float ang_y,float ymove
 	pnt->y=y;
 	pnt->z=z;
 	
+	memmove(&obj->last_pnt,pnt,sizeof(d3pnt));
+	
 	ang=&obj->ang;
 	ang->x=0;
 	ang->y=ang_y;
 	ang->z=0;
+	
+	memmove(&obj->last_ang,ang,sizeof(d3ang));
 	
 	ang=&obj->view_ang;
 	ang->x=0;

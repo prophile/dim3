@@ -74,7 +74,7 @@ EXPORTS
 	polygon_2D_collision_polygon				@201
 	polygon_get_slope_y							@202
 	polygon_find_y								@203
-	polygon_infinite_find_y						@204
+	polygon_find_y_outside_point				@204
 
 	area_2D_trig								@205
 	area_2D_polygon								@206

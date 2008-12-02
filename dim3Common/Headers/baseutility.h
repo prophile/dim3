@@ -224,7 +224,7 @@ extern bool polygon_2D_collision_bound_polygon(int ptsz,int *x,int *y,int lft,in
 extern bool polygon_2D_collision_polygon(int ptsz,int *x,int *y);
 extern float polygon_get_slope_y(int ptsz,int *px,int *py,int *pz,float *ang_y);
 extern int polygon_find_y(int ptsz,int *px,int *py,int *pz,int kx,int kz);
-extern int polygon_infinite_find_y(int ptsz,int *px,int *py,int *pz,int kx,int kz);
+extern int polygon_find_y_outside_point(int ptsz,int *px,int *py,int *pz,int kx,int kz);
 
 extern int area_2D_trig(int *px,int *py);
 extern int area_2D_polygon(int ptsz,int *px,int *py);
@@ -412,9 +412,8 @@ extern bool xml_add_attribute_bit_array(char *name,unsigned char *value,int coun
 #define quality_mode_low						0
 #define quality_mode_medium						1
 #define quality_mode_high						2
-#define quality_mode_super						3
 
-#define quality_mode_setup_list_def				{"Low","Medium","High","Super",""}
+#define quality_mode_setup_list_def				{"Low","Medium","High",""}
 
 //
 // bump modes

@@ -46,7 +46,7 @@ extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-extern void group_moves_run(void);
+extern void group_moves_run(bool run_events);
 extern void map_movements_auto_open(void);
 
 /* =======================================================
@@ -113,6 +113,9 @@ void run_object_normal(obj_type *obj,int tick)
 		// spawning
 		
 	if (obj->spawning) object_spawn(obj);
+	
+	memmove(&obj->last_pnt,&obj->pnt,sizeof(d3pnt));
+	memmove(&obj->last_ang,&obj->ang,sizeof(d3ang));
 
 		// item counts
 		
@@ -375,7 +378,7 @@ void server_run(int tick)
 		while (tick>=server.time.run_tick) {
 			server.time.run_tick+=10;
 
-			group_moves_run();
+			group_moves_run(TRUE);
 			
 			run_objects_slice(tick);
 			

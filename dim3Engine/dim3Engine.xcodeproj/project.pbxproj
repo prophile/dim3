@@ -770,6 +770,7 @@
 				F5A60CEE0B279D5A003002D4 /* obj_held.c */,
 				F5DD1A180908580100721649 /* obj_watch.c */,
 				F5DD1A130908580100721649 /* obj_auto_walk.c */,
+				F5DD1A260908583D00721649 /* remote.c */,
 				F5DD1A110908580100721649 /* item.c */,
 				F5F0AC570AD35F1800C50A21 /* scenery.c */,
 			);
@@ -1016,14 +1017,6 @@
 				F51AB0DC0CFE3BDA0085DC72 /* input_joystick.c */,
 			);
 			name = Input;
-			sourceTree = "<group>";
-		};
-		F5135F070815DC080027858F /* Remotes */ = {
-			isa = PBXGroup;
-			children = (
-				F5DD1A260908583D00721649 /* remote.c */,
-			);
-			name = Remotes;
 			sourceTree = "<group>";
 		};
 		F51EE0A80AEED97A0013EC4A /* Game */ = {
@@ -1368,7 +1361,6 @@
 				016FFA2B00BCC5637F000001 /* JavaScript API */,
 				F577A5DE0466155A00F85B8E /* Scripts */,
 				016FFAA100BCC67F7F000001 /* Objects */,
-				F5135F070815DC080027858F /* Remotes */,
 				08B25E0300C087917F000001 /* Weapons */,
 				F590BD0E0419BB06001652AE /* Projectiles */,
 				F53C68E10214E46B01FFB404 /* Camera */,

@@ -488,12 +488,10 @@ void ray_trace_map(int item_count,ray_trace_check_item_type *item_list,d3pnt *sp
 				contact->obj.hit_face=hit_face;
 
 				if (hit_box_idx!=-1) {
-					obj->hit_box.hit=TRUE;
-					obj->hit_box.hit_box_idx=n;
+					obj->hit_box.obj_hit_box_idx=n;
 				}
 				else {
-					obj->hit_box.hit=FALSE;
-					obj->hit_box.hit_box_idx=-1;
+					obj->hit_box.obj_hit_box_idx=-1;
 				}
 
 				break;

@@ -52,6 +52,10 @@ void setup_xml_default(void)
 	setup.texture_compression=FALSE;
 	setup.fsaa_mode=fsaa_mode_none;
 	
+	setup.ray_trace_lighting=FALSE;
+	setup.decal_on=TRUE;
+	setup.shadow_on=TRUE;
+	
 	setup.gamma=0.0f;
 	
 	setup.sound_volume=0.6f;
@@ -190,6 +194,9 @@ bool setup_xml_read_path(char *path)
     setup_xml_read_key_int(setup_tag,"Anisotropic_Mode",&setup.anisotropic_mode);
     setup_xml_read_key_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
 	setup_xml_read_key_int(setup_tag,"FSAA_Mode",&setup.fsaa_mode);
+	setup_xml_read_key_boolean(setup_tag,"Ray_Trace_Lighting",&setup.ray_trace_lighting);
+	setup_xml_read_key_boolean(setup_tag,"Decal_On",&setup.decal_on);
+	setup_xml_read_key_boolean(setup_tag,"Shadow_On",&setup.shadow_on);
 	setup_xml_read_key_float(setup_tag,"Sound_Volume",&setup.sound_volume);
 	setup_xml_read_key_boolean(setup_tag,"Music_On",&setup.music_on);
 	setup_xml_read_key_float(setup_tag,"Music_Volume",&setup.music_volume);
@@ -368,6 +375,9 @@ bool setup_xml_write(void)
 	setup_xml_write_key_int("Anisotropic_Mode",setup.anisotropic_mode);
     setup_xml_write_key_int("Mipmap_Mode",setup.mipmap_mode);
 	setup_xml_write_key_int("FSAA_Mode",setup.fsaa_mode);
+	setup_xml_write_key_boolean("Ray_Trace_Lighting",setup.ray_trace_lighting);
+	setup_xml_write_key_boolean("Decal_On",setup.decal_on);
+	setup_xml_write_key_boolean("Shadow_On",setup.shadow_on);
 	setup_xml_write_key_float("Sound_Volume",setup.sound_volume);
 	setup_xml_write_key_boolean("Music_On",setup.music_on);
 	setup_xml_write_key_float("Music_Volume",setup.music_volume);
@@ -476,6 +486,10 @@ void setup_restore(void)
 	setup.lock_fps_refresh=FALSE;
 
 	setup.quality_mode=quality_mode_low;
+	
+	setup.ray_trace_lighting=FALSE;
+	setup.decal_on=FALSE;
+	setup.shadow_on=FALSE;
 	
 	setup.anisotropic_mode=anisotropic_mode_none;
 	setup.mipmap_mode=mipmap_mode_none;

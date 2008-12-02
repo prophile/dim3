@@ -165,7 +165,7 @@ bool polygon_2D_point_inside(int ptsz,int *px,int *py,int x,int y)
 		j=i;
 	}
 	
-		// inside if crossing are od
+		// inside if crossing are odd
 		
 	return(cnt!=0);
 }
@@ -465,71 +465,58 @@ int polygon_find_y(int ptsz,int *px,int *py,int *pz,int kx,int kz)
 
 /* =======================================================
 
-      Find Y at X,Z against Infinite Polygon
+      Find Y at X,Z outside Polygon
       
 ======================================================= */
 
-int polygon_infinite_find_y(int ptsz,int *px,int *py,int *pz,int kx,int kz)
+int polygon_find_y_outside_point(int ptsz,int *px,int *py,int *pz,int x,int z)
 {
-	int				n,x,z,y,
-					cx,cz,cy,lx,rx,tz,bz,dv,
-					ly,ry,ty,by,lyadd,ryadd,tyadd,byadd;
-		
-		// find center of polygon
-		
-	polygon_find_center(ptsz,px,py,pz,&cx,&cy,&cz);
-		
-		// find extensions of polygon
+	int			n,k,kx,ky,kz,idx,idx2,d,d2;
+	d3pnt		mid;
 	
-	lx=rx=px[0];
-	tz=bz=pz[0];
-	ly=ry=ty=by=0;
-	lyadd=ryadd=tyadd=byadd=0;
-	
-	for (n=0;n<ptsz;n++) {
-		x=px[n];
-		z=pz[n];
-		y=py[n];
+		// get mid point
 		
-		if (x<cx) {
-			if (x<lx) lx=x;
-			ly+=y;
-			lyadd++;
-		}
-		else {
-			if (x>rx) rx=x;
-			ry+=y;
-			ryadd++;
-		}
-		if (z<cz) {
-			if (z<tz) tz=z;
-			ty+=y;
-			tyadd++;
-		}
-		else {
-			if (z>bz) bz=z;
-			by+=y;
-			byadd++;
-		}
+	mid.x=mid.y=mid.z=0;
+	
+	for (n=0;n!=ptsz;n++) {
+		mid.x+=px[n];
+		mid.y+=py[n];
+		mid.z+=pz[n];
 	}
 	
-	if (lyadd!=0) ly=ly/lyadd;
-	if (ryadd!=0) ry=ry/ryadd;
-	if (tyadd!=0) ty=ty/tyadd;
-	if (byadd!=0) by=by/byadd;
+	mid.x/=ptsz;
+	mid.y/=ptsz;
+	mid.z/=ptsz;
 	
-		// find which way is max slant
+		// find a intersection from center
+		// to a polygon line
+		
+	idx=-1;
 	
-	if (abs(by-ty)>abs(ly-ry)) {
-		dv=bz-tz;
-		if (dv==0) return(0);
-		if (kz>tz) return(ty+(((by-ty)*(kz-tz))/dv));
-		return(by+(((ty-by)*(bz-kz))/dv));
+	for (n=0;n!=ptsz;n++) {
+		k=n+1;
+		if (k==ptsz) k=0;
+		
+		if (line_2D_get_intersect(mid.x,mid.z,x,z,px[n],pz[n],px[k],pz[k],&kx,&kz)) {
+			idx=n;
+			idx2=k;
+			break;
+		}
 	}
-	
-	dv=rx-lx;
-	if (dv==0) return(0);
-	if (kx>lx) return(ly+(((ry-ly)*(kx-lx))/dv));
-	return(ry+(((ly-ry)*(rx-kx))/dv));
-}
 
+	if (idx==-1) return(mid.y);
+	
+		// find the y on the line
+		
+	d=distance_2D_get(px[idx],pz[idx],px[idx2],pz[idx2]);
+	d2=distance_2D_get(px[idx],pz[idx],kx,kz);
+	
+	ky=py[idx]+(((py[idx2]-py[idx])*d2)/d);
+	
+		// find y for the point outside polygon
+	
+	d=distance_2D_get(mid.x,mid.z,kx,kz);
+	d2=distance_2D_get(kx,kz,x,z);
+	
+	return(ky+(((ky-mid.y)*d2)/d));
+}

@@ -36,6 +36,8 @@ and can be sold or given away.
 #include "network.h"
 
 extern int					net_host_player_count;
+
+extern map_type				map;
 extern network_setup_type	net_setup;
 
 /* =======================================================
@@ -79,6 +81,7 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 	
 	strcpy(reply_join.game_name,net_setup.games[net_setup.game_idx].name);
 	strcpy(reply_join.map_name,net_setup.host.map_name);
+	reply_join.map_tick=htonl(game_time_get()-map.start_game_tick);
 	reply_join.join_uid=htons((short)remote_uid);
 	
 	if (remote_uid!=-1) {
@@ -162,7 +165,7 @@ void* net_host_client_handler_thread(void *arg)
 {
 	d3socket				sock;
 	int						client_remote_uid,action,queue_mode,from_remote_uid,len,
-							net_error_count;
+							net_error_count,tick,net_timeout_tick;
 	unsigned char			data[net_max_msg_size];
 	
 		// get sock from argument
@@ -174,10 +177,20 @@ void* net_host_client_handler_thread(void *arg)
 	client_remote_uid=-1;
 	
 	net_error_count=0;
+	net_timeout_tick=time_get()+host_client_timeout_msec_rate;
 	
 		// wait for messages
 		
 	while (TRUE) {
+	
+			// have we timed out?
+			
+		tick=time_get();
+		if (tick>net_timeout_tick) {
+			if (client_remote_uid!=-1) net_host_client_handle_leave(client_remote_uid);
+			client_remote_uid=-1;
+			break;
+		}
 	
 			// any messages?
 			
@@ -201,6 +214,10 @@ void* net_host_client_handler_thread(void *arg)
 		}
 
 		net_error_count=0;
+		
+			// reset timeout
+			
+		net_timeout_tick=tick+host_client_timeout_msec_rate;
 		
 			// route messages
 

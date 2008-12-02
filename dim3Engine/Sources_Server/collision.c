@@ -53,7 +53,7 @@ bool collide_set_object_hit_box_for_object_hit(obj_type *obj,int x,int z,obj_typ
 
 		// no hit boxes hit
 
-	obj->hit_box.hit_box_idx=-1;
+	obj->hit_box.obj_hit_box_idx=-1;
 	
 		// check model
 		
@@ -72,7 +72,7 @@ bool collide_set_object_hit_box_for_object_hit(obj_type *obj,int x,int z,obj_typ
 	
 	for (n=0;n!=nhit_box;n++) {
 		if (collide_object_to_object_hit_box(obj,x,z,check_obj,hit_box)) {
-			obj->hit_box.hit_box_idx=n;
+			obj->hit_box.obj_hit_box_idx=n;
 			return(TRUE);
 		}
 		hit_box++;
@@ -173,7 +173,7 @@ bool collide_set_object_hit_box_for_projectile_hit(proj_type *proj,obj_type *obj
 	
 		// tag no hit box hits
 		
-	obj->hit_box.hit=FALSE;
+	obj->hit_box.proj_hit_box_idx=-1;
 	
 		// find hit box middle closest to damage box middle
 	
@@ -211,14 +211,13 @@ bool collide_set_object_hit_box_for_projectile_hit(proj_type *proj,obj_type *obj
 				
 		if ((d<dist) || (dist==-1)) {
 			dist=d;
-			obj->hit_box.hit=TRUE;
-			obj->hit_box.hit_box_idx=n;
+			obj->hit_box.proj_hit_box_idx=n;
 		}
 		
 		hit_box++;
 	}
 
-	return(obj->hit_box.hit);
+	return(obj->hit_box.proj_hit_box_idx!=-1);
 }
 
 int collide_find_object_for_projectile_hit(proj_type *proj,int ignore_obj_uid)
@@ -325,7 +324,7 @@ bool collide_set_object_hit_box_for_sphere_hit(int sx,int sy,int sz,int radius,o
 	
 		// tag no hit box hits
 		
-	obj->hit_box.hit=FALSE;
+	obj->hit_box.obj_hit_box_idx=-1;
 	
 		// find hit box middle closest to damage box middle
 	
@@ -363,14 +362,13 @@ bool collide_set_object_hit_box_for_sphere_hit(int sx,int sy,int sz,int radius,o
 				
 		if ((d<dist) || (dist==-1)) {
 			dist=d;
-			obj->hit_box.hit=TRUE;
-			obj->hit_box.hit_box_idx=n;
+			obj->hit_box.obj_hit_box_idx=n;
 		}
 		
 		hit_box++;
 	}
 
-	return(obj->hit_box.hit);
+	return(obj->hit_box.obj_hit_box_idx!=-1);
 }
 
 int collide_find_object_for_sphere_hit(int sx,int sy,int sz,int radius,int ignore_obj_uid)

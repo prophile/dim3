@@ -128,6 +128,7 @@ typedef struct		{
 													joystick_mode;
 						float						gamma,sound_volume,music_volume;
 						bool						lock_fps_refresh,texture_compression,
+													ray_trace_lighting,decal_on,shadow_on,
 													always_run,toggle_run,invert_look,mouse_smooth,
 													music_on,debug_console,window,window_editor;
 						setup_path_type				path;
