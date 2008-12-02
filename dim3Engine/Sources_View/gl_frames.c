@@ -160,14 +160,14 @@ void gl_setup_viewport(int y_off)
       
 ======================================================= */
 
-void gl_setup_project(void)
+inline void gl_setup_project(void)
 {
 	glGetDoublev(GL_MODELVIEW_MATRIX,mod_matrix);
 	glGetDoublev(GL_PROJECTION_MATRIX,proj_matrix);
 	glGetIntegerv(GL_VIEWPORT,(GLint*)vport);
 }
 
-void gl_rotate_point(int *x,int *y,int *z)
+inline void gl_rotate_point(int *x,int *y,int *z)
 {
 	double			dx,dy,dz;
 	
@@ -180,18 +180,12 @@ void gl_rotate_point(int *x,int *y,int *z)
 	*z=-(int)((dx*mod_matrix[2])+(dy*mod_matrix[6])+(dz*mod_matrix[10])+mod_matrix[14]);
 }
 
-bool gl_rotate_point_on_screen(int x,int y,int z)
+inline bool gl_rotate_point_on_screen(int x,int y,int z)
 {
-	double			dx,dy,dz;
-	
-	dx=(double)x;
-	dy=(double)y;
-	dz=-(double)z;
-	
-	return(((dx*mod_matrix[2])+(dy*mod_matrix[6])+(dz*mod_matrix[10])+mod_matrix[14])<0.0);
+	return(((((double)x)*mod_matrix[2])+(((double)y)*mod_matrix[6])+(((double)-z)*mod_matrix[10])+mod_matrix[14])<0.0);
 }
 
-void gl_project_point(int *x,int *y,int *z)
+inline void gl_project_point(int *x,int *y,int *z)
 {
 	double		dx,dy,dz;
 
@@ -201,7 +195,7 @@ void gl_project_point(int *x,int *y,int *z)
 	*z=(int)dz;
 }
 
-float gl_project_point_z(int x,int y,int z)
+inline float gl_project_point_z(int x,int y,int z)
 {
 	double		dx,dy,dz;
 
@@ -209,7 +203,7 @@ float gl_project_point_z(int x,int y,int z)
 	return((float)dz);
 }
 
-void gl_unproject_point(float fx,float fy,float fz,int *x,int *y,int *z)
+inline void gl_unproject_point(float fx,float fy,float fz,int *x,int *y,int *z)
 {
 	double		dx,dy,dz;
 	
@@ -219,7 +213,7 @@ void gl_unproject_point(float fx,float fy,float fz,int *x,int *y,int *z)
 	*z=-(int)dz;
 }
 
-void gl_project_poly(int ptsz,int *x,int *y,int *z)
+inline void gl_project_poly(int ptsz,int *x,int *y,int *z)
 {
 	int			i;
 
@@ -231,7 +225,7 @@ void gl_project_poly(int ptsz,int *x,int *y,int *z)
 void gl_project_fix_rotation(view_camera_type *camera,int y_off,int *x,int *y,int *z)
 {
 	double			dx,dy,dz,dx2,dy2,dz2;
-	
+
 	gl_setup_viewport(y_off);
 
 		// remember current settings
@@ -245,14 +239,14 @@ void gl_project_fix_rotation(view_camera_type *camera,int y_off,int *x,int *y,in
 		// translate from non-rotated 3D space
 		// to rotated 3D space
 
-	dx=(double)(*x)-view.camera.pnt.x;
-	dy=(double)(*y)-view.camera.pnt.y;
-	dz=(double)(*z)-view.camera.pnt.z;
+	dx=(double)((*x)-view.camera.pnt.x);
+	dy=(double)((*y)-view.camera.pnt.y);
+	dz=(double)(view.camera.pnt.z-(*z));
 
 	gl_3D_view(&view.camera);
 	gl_setup_project();
 
-	gluProject(dx,dy,-dz,mod_matrix,proj_matrix,(GLint*)vport,&dx2,&dy2,&dz2);
+	gluProject(dx,dy,dz,mod_matrix,proj_matrix,(GLint*)vport,&dx2,&dy2,&dz2);
 	dx2-=(double)render_info.view_x;
 	dy2-=(double)render_info.view_y;
 
@@ -262,11 +256,10 @@ void gl_project_fix_rotation(view_camera_type *camera,int y_off,int *x,int *y,in
 	gluUnProject(dx2,dy2,dz2,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
 	dx+=(double)render_info.view_x;
 	dy+=(double)render_info.view_y;
-	dz=-dz;
 
 	*x=((int)dx)+view.camera.pnt.x;
 	*y=((int)dy)+view.camera.pnt.y;
-	*z=((int)dz)+view.camera.pnt.z;
+	*z=view.camera.pnt.z-((int)dz);
 
 		// restore settings
 

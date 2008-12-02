@@ -59,7 +59,7 @@ extern bool fog_solid_on(void);
 
 bool complex_boundbox_inview(int *cbx,int *cby,int *cbz)
 {
-	int			n,x,y,z,
+	int			n,
 				px[14],py[14],pz[14];
 	bool		hit,lft,rgt,top,bot;
 
@@ -106,11 +106,7 @@ bool complex_boundbox_inview(int *cbx,int *cby,int *cbz)
 	hit=FALSE;
 	
 	for (n=0;n!=14;n++) {
-		x=px[n];
-		y=py[n];
-		z=pz[n];
-		gl_rotate_point(&x,&y,&z);
-		if (z>=0) {
+		if (gl_rotate_point_on_screen(px[n],py[n],pz[n])) {
 			hit=TRUE;
 			break;
 		}
@@ -150,6 +146,40 @@ bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by)
 	py[4]=py[5]=py[6]=py[7]=by;
 	
 	return(complex_boundbox_inview(px,py,pz));
+}
+
+/* =======================================================
+
+      Mesh in View
+      
+======================================================= */
+
+bool mesh_inview(map_mesh_type *mesh)
+{
+	int			n,nvertex,x,y,z;
+	d3pnt		*pt;
+	bool		lft,rgt,top,bot;
+
+	nvertex=mesh->nvertex;
+	pt=mesh->vertexes;
+
+	lft=rgt=top=bot=TRUE;
+
+	for (n=0;n!=nvertex;n++) {
+		x=pt->x-view.camera.pnt.x;
+		y=pt->y-view.camera.pnt.y;
+		z=view.camera.pnt.x-pt->z;
+
+		gl_project_point(&x,&y,&z);
+
+		lft=lft&&(x<0);
+		rgt=rgt&&(x>=setup.screen.x_sz);
+		top=top&&(y<0);
+		bot=bot&&(y>=setup.screen.y_sz);
+		pt++;
+	}
+
+	return(!(lft||rgt||top||bot));
 }
 
 /* =======================================================
