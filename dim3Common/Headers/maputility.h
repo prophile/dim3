@@ -202,11 +202,11 @@ typedef struct		{
 					} group_unit_type;
 
 typedef struct		{
-						int									count,movement_idx,user_id;
-						bool								on,freeze,has_mov,has_rot,
-															main_move;
-						d3fpnt								cur_mov;
-						d3vct								mov_add,rot_add;
+						int									count,user_id,
+															movement_idx,movement_move_idx;
+						bool								on,freeze,has_mov,has_rot,main_move;
+						d3pnt								mov_add,cuml_mov_add;
+						d3vct								rot_add,cuml_rot_add;
 						attach_type							attach;
 					} group_move_type;
 
@@ -466,7 +466,7 @@ typedef struct		{
 
 typedef struct		{
 						int									nmove,group_idx,reverse_group_idx,
-															auto_open_distance,cur_move_idx;
+															auto_open_distance;
 						char								name[name_str_len];
 						bool								auto_start,auto_open,auto_open_never_close,
 															loop,started,opened,reverse;

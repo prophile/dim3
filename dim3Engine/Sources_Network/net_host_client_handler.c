@@ -40,6 +40,8 @@ extern int					net_host_player_count;
 extern map_type				map;
 extern network_setup_type	net_setup;
 
+extern int game_time_get(void);
+
 /* =======================================================
 
       Host Client Networking Message Handlers

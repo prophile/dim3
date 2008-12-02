@@ -59,7 +59,7 @@ void map_portal_add_light_trig_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 										d0,d1,d2;
 	float								*vl_uv;
 	d3pnt								p1,p2,chg_x,chg_y;
-	d3vct								g1,g2,chg_gx,chg_gy;;
+	d3vct								g1,g2,chg_gx,chg_gy;
 	d3pnt								*pt[3],*vl_pt;
 	
 		// find largest side of triangle

@@ -405,7 +405,7 @@ void net_client_setup_pickup(obj_type *obj,network_request_remote_pickup *pickup
 	for (n=0;n!=server.count.weapon;n++) {
 
 		if (weap->obj_uid==obj->uid) {
-			pickup->ammos[idx].hidden=htons(weap->hidden?0:1);
+			pickup->ammos[idx].hidden=htons((short)(weap->hidden?0:1));
 			pickup->ammos[idx].ammo_count=htons((short)weap->ammo.count);
 			pickup->ammos[idx].clip_count=htons((short)weap->ammo.clip_count);
 			pickup->ammos[idx].alt_ammo_count=htons((short)weap->alt_ammo.count);

@@ -43,7 +43,6 @@ and can be sold or given away.
 extern void intro_open(void);
 extern bool game_start(int skill,int remote_count,network_request_remote_add *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
-extern void group_moves_synch_with_host(int tick_offset);
 
 extern map_type				map;
 extern server_type			server;
@@ -579,8 +578,6 @@ void join_game(void)
 		error_open(err_str,"Network Game Canceled");
 		return;
 	}
-	
-	group_moves_synch_with_host(tick_offset);
 	
 		// start client network thread
 		

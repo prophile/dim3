@@ -320,8 +320,6 @@ void setup_network_host_add_update(bool in_add)
 	host=&setup.network.hosts[host_idx];
 
 	element_get_value_string(ctrl_network_host_ip_id,host->ip);
-
-	fprintf(stdout,"ip = %s [%d/%d]\n",host->ip,host_idx,setup.network.nhost);
 	
 		// rebuild list
 		

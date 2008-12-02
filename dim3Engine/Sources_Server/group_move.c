@@ -37,7 +37,7 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-extern bool map_movement_next_move(int movement_idx,attach_type *attach);
+extern bool map_movement_next_move(int movement_idx,int move_idx,attach_type *attach);
 
 /* =======================================================
 
@@ -45,7 +45,7 @@ extern bool map_movement_next_move(int movement_idx,attach_type *attach);
       
 ======================================================= */
 
-bool group_move_start(int group_idx,int movement_idx,d3pnt *mov,d3ang *rot,int count,int user_id,bool main_move)
+bool group_move_start(int group_idx,int movement_idx,int movement_move_idx,d3pnt *mov,d3ang *rot,int count,int user_id,bool main_move)
 {
 	int					n,unit_cnt;
 	float				f_count;
@@ -95,21 +95,20 @@ bool group_move_start(int group_idx,int movement_idx,d3pnt *mov,d3ang *rot,int c
 
 	move->count=count;
 	
-	f_count=(float)move->count;
-	move->mov_add.x=((float)mov->x)/f_count;
-	move->mov_add.y=((float)mov->y)/f_count;
-	move->mov_add.z=((float)mov->z)/f_count;
+	move->mov_add.x=mov->x/count;
+	move->mov_add.y=mov->y/count;
+	move->mov_add.z=mov->z/count;
 
+	f_count=(float)move->count;
 	move->rot_add.x=rot->x/f_count;
 	move->rot_add.y=rot->y/f_count;
 	move->rot_add.z=rot->z/f_count;
-
-	move->cur_mov.x=move->cur_mov.y=move->cur_mov.z=0.0f;
 	
 	move->has_mov=((mov->x!=0) || (mov->y!=0) || (mov->z!=0));
 	move->has_rot=((rot->x!=0.0f) || (rot->y!=0.0f) || (rot->z!=0.0f));
 		
 	move->movement_idx=movement_idx;
+	move->movement_move_idx=movement_move_idx;
 	move->user_id=user_id;
 	
 	move->main_move=main_move;
@@ -133,7 +132,11 @@ void group_move_clear_all(void)
 	group=map.groups;
 
 	for (n=0;n!=map.ngroup;n++) {
+
 		group->move.on=FALSE;
+		group->move.cuml_mov_add.x=group->move.cuml_mov_add.y=group->move.cuml_mov_add.z=0;
+		group->move.cuml_rot_add.x=group->move.cuml_rot_add.y=group->move.cuml_rot_add.z=0;
+
 		group++;
 	}
 }
@@ -160,7 +163,7 @@ bool group_move_frozen(int group_idx)
       
 ======================================================= */
 
-void group_move(int group_idx,int xmove,int ymove,int zmove)
+void group_move(int group_idx,int x,int y,int z)
 {
 	int					n,unit_cnt;
 	bool				move_objs;
@@ -171,7 +174,7 @@ void group_move(int group_idx,int xmove,int ymove,int zmove)
 
 		// can this group move objects?
 
-	move_objs=(xmove!=0) || (zmove!=0);
+	move_objs=(x!=0) || (z!=0);
 	
 		// move the meshes
 
@@ -194,24 +197,24 @@ void group_move(int group_idx,int xmove,int ymove,int zmove)
 					// move mesh and mark as
 					// touched so it can be saved with games
 
-				map_mesh_move(&map,unit_list->idx,xmove,ymove,zmove,FALSE);
+				map_mesh_move(&map,unit_list->idx,x,y,z,FALSE);
 				mesh->flag.touched=TRUE;
 
 					// move objects and decals with mesh
 
-				if (move_objs) object_move_with_mesh(unit_list->idx,xmove,zmove);
-				decal_move_with_mesh(unit_list->idx,xmove,ymove,zmove);
+				if (move_objs) object_move_with_mesh(unit_list->idx,x,z);
+				decal_move_with_mesh(unit_list->idx,x,y,z);
 				break;
 
 			case group_type_liquid:
 
 				liq=&map.liquid.liquids[unit_list->idx];
 
-				liq->lft+=xmove;
-				liq->rgt+=xmove;
-				liq->top+=zmove;
-				liq->bot+=zmove;
-				liq->y+=ymove;
+				liq->lft+=x;
+				liq->rgt+=x;
+				liq->top+=z;
+				liq->bot+=z;
+				liq->y+=y;
 
 				break;
 
@@ -219,6 +222,12 @@ void group_move(int group_idx,int xmove,int ymove,int zmove)
 		
 		unit_list++;
 	}
+
+		// keep the cumlative moves
+
+	group->move.cuml_mov_add.x+=x;
+	group->move.cuml_mov_add.y+=y;
+	group->move.cuml_mov_add.z+=z;
 }
 
 /* =======================================================
@@ -269,6 +278,12 @@ void group_rotate(int group_idx,float x,float y,float z)
 		
 		unit_list++;
 	}
+
+		// keep the cumlative rotations
+
+	group->move.cuml_rot_add.x+=x;
+	group->move.cuml_rot_add.y+=y;
+	group->move.cuml_rot_add.z+=z;
 }
 
 /* =======================================================
@@ -279,7 +294,7 @@ void group_rotate(int group_idx,float x,float y,float z)
 
 void group_moves_run(bool run_events)
 {
-	int				n,x,y,z,user_id;
+	int				n,user_id;
 	group_move_type	*move;
 
 		// run all moves
@@ -291,27 +306,11 @@ void group_moves_run(bool run_events)
 		
 			// movements
 			
-		if (move->has_mov) {
-			move->cur_mov.x+=move->mov_add.x;
-			move->cur_mov.y+=move->mov_add.y;
-			move->cur_mov.z+=move->mov_add.z;
-				
-			x=(int)move->cur_mov.x;
-			y=(int)move->cur_mov.y;
-			z=(int)move->cur_mov.z;
-				
-			move->cur_mov.x-=(float)x;
-			move->cur_mov.y-=(float)y;
-			move->cur_mov.z-=(float)z;
-
-			group_move(n,x,y,z);
-		}
+		if (move->has_mov) group_move(n,move->mov_add.x,move->mov_add.y,move->mov_add.z);
 		
 			// rotations
 			
-		if (move->has_rot) {
-			group_rotate(n,move->rot_add.x,move->rot_add.y,move->rot_add.z);
-		}
+		if (move->has_rot) group_rotate(n,move->rot_add.x,move->rot_add.y,move->rot_add.z);
 		
 		move->count--;
 	}
@@ -339,7 +338,7 @@ void group_moves_run(bool run_events)
 
 			// signal back to the original map movement
 	
-		if (map_movement_next_move(move->movement_idx,(attach_type*)&move->attach)) {
+		if (map_movement_next_move(move->movement_idx,move->movement_move_idx,(attach_type*)&move->attach)) {
 			if (run_events) scripts_post_event_console((attach_type*)&move->attach,sd_event_move,sd_event_move_loop,user_id);
 		}
 	}
@@ -352,15 +351,20 @@ void group_moves_run(bool run_events)
       
 ======================================================= */
 
-void group_moves_synch_with_host(int tick_offset)
+void group_moves_synch_with_host(void)
 {
-	int			n,count;
+	int				n;
+	group_type		*group;
+
+	return;		// supergumba -- need to get all groups back to their original settings
+
+		// get moves back to their commulative positions
 	
-	return;		// supergumba -- fix this later, do it in a different way
-	
-	count=tick_offset/10;
-	
-	for (n=0;n!=count;n++) {
-		group_moves_run(FALSE);
+	group=map.groups;
+		
+	for (n=0;n!=map.ngroup;n++) {
+		if (group->move.has_mov) group_move(n,group->move.cuml_mov_add.x,group->move.cuml_mov_add.y,group->move.cuml_mov_add.z);
+		if (group->move.has_rot) group_rotate(n,group->move.cuml_rot_add.x,group->move.cuml_rot_add.y,group->move.cuml_rot_add.z);
+		group++;
 	}
 }

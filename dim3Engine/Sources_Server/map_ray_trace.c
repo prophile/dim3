@@ -487,11 +487,21 @@ void ray_trace_map(int item_count,ray_trace_check_item_type *item_list,d3pnt *sp
 				contact->obj.uid=obj->uid;
 				contact->obj.hit_face=hit_face;
 
-				if (hit_box_idx!=-1) {
-					obj->hit_box.obj_hit_box_idx=n;
+				if (contact->origin!=poly_ray_trace_origin_projectile) {
+					if (hit_box_idx!=-1) {
+						obj->hit_box.obj_hit_box_idx=hit_box_idx;
+					}
+					else {
+						obj->hit_box.obj_hit_box_idx=-1;
+					}
 				}
 				else {
-					obj->hit_box.obj_hit_box_idx=-1;
+					if (hit_box_idx!=-1) {
+						obj->hit_box.proj_hit_box_idx=hit_box_idx;
+					}
+					else {
+						obj->hit_box.proj_hit_box_idx=-1;
+					}
 				}
 
 				break;

@@ -59,7 +59,6 @@ extern bool game_start(int skill,int remote_count,network_request_remote_add *re
 extern void game_end(void);
 extern bool map_start(bool skip_media,char *err_str);
 extern void map_end(void);
-extern void group_moves_synch_with_host(int tick_offset);
 extern void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx);
 
 /* =======================================================
@@ -344,8 +343,6 @@ void remote_host_reset(void)
 		error_open(err_str,"Network Game Canceled");
 		return;	
 	}
-	
-	group_moves_synch_with_host(tick_offset);
 		
 		// game is running
 	

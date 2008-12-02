@@ -39,7 +39,7 @@ extern server_type		server;
 extern camera_type		camera;
 extern js_type			js;
 
-extern bool group_move_start(int group_idx,int movement_idx,d3pnt *mov,d3ang *rot,int count,int user_id,bool main_move);
+extern bool group_move_start(int group_idx,int movement_idx,int movement_move_idx,d3pnt *mov,d3ang *rot,int count,int user_id,bool main_move);
 extern void group_move_freeze(int group_idx,bool freeze);
 extern bool group_move_frozen(int group_idx);
 
@@ -89,7 +89,6 @@ void map_movements_start(int movement_idx,int move_idx,attach_type *attach)
 		
 	movement->started=TRUE;
 	
-	movement->cur_move_idx=move_idx;
 	move=&movement->moves[move_idx];
 	
 		// save current script attach and use course
@@ -112,12 +111,12 @@ void map_movements_start(int movement_idx,int move_idx,attach_type *attach)
 	msec=move->msec/10;
 	
 	if (!movement->reverse) {
-		group_move_start(movement->group_idx,movement_idx,&move->mov,&move->rot,msec,move->user_id,TRUE);
-		if (movement->reverse_group_idx!=-1) group_move_start(movement->reverse_group_idx,movement_idx,&rev_mov,&rev_rot,msec,move->user_id,FALSE);
+		group_move_start(movement->group_idx,movement_idx,move_idx,&move->mov,&move->rot,msec,move->user_id,TRUE);
+		if (movement->reverse_group_idx!=-1) group_move_start(movement->reverse_group_idx,movement_idx,move_idx,&rev_mov,&rev_rot,msec,move->user_id,FALSE);
 	}
 	else {
-		group_move_start(movement->group_idx,movement_idx,&rev_mov,&rev_rot,msec,move->user_id,TRUE);
-		if (movement->reverse_group_idx!=-1) group_move_start(movement->reverse_group_idx,movement_idx,&move->mov,&move->rot,msec,move->user_id,FALSE);
+		group_move_start(movement->group_idx,movement_idx,move_idx,&rev_mov,&rev_rot,msec,move->user_id,TRUE);
+		if (movement->reverse_group_idx!=-1) group_move_start(movement->reverse_group_idx,movement_idx,move_idx,&move->mov,&move->rot,msec,move->user_id,FALSE);
 	}
 	
 		// restore old attach
@@ -250,9 +249,8 @@ bool map_movements_script_is_looping(int movement_idx)
       
 ======================================================= */
 
-bool map_movement_next_move(int movement_idx,attach_type *attach)
+bool map_movement_next_move(int movement_idx,int move_idx,attach_type *attach)
 {
-	int				move_idx;
 	movement_type	*movement;
 	
 	movement=&map.movements[movement_idx];
@@ -261,7 +259,7 @@ bool map_movement_next_move(int movement_idx,attach_type *attach)
 		
 	if (!movement->reverse) {
 		
-		move_idx=movement->cur_move_idx+1;
+		move_idx++;
 		
 		if (move_idx>=movement->nmove) {
 		
@@ -281,7 +279,7 @@ bool map_movement_next_move(int movement_idx,attach_type *attach)
 	}
 	else {
 	
-		move_idx=movement->cur_move_idx-1;
+		move_idx--;
 		
 		if (move_idx<0) {
 		
