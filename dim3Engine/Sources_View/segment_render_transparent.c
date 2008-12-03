@@ -278,14 +278,16 @@ float render_transparent_segments_far_z(map_mesh_type *mesh,map_mesh_poly_type *
 	dist=0.0f;
 
 	for (n=0;n!=poly->ptsz;n++) {
+
 		pt=&mesh->vertexes[poly->v[n]];
 		kx=pt->x-pnt->x;
 		ky=pt->y-pnt->y;
-		kz=pt->z-pnt->z;
-		if (gl_rotate_point_on_screen(kx,ky,kz)) {
-			d=gl_project_point_z(kx,ky,kz);
-			if (d>dist) dist=d;
-		}
+		kz=pnt->z-pt->z;
+
+		if (!gl_project_in_view_z(kx,ky,kz)) continue;
+
+		d=gl_project_get_depth(kx,ky,kz);
+		if (d>dist) dist=d;
 	}
 
 	return(dist);

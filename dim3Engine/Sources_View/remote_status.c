@@ -122,7 +122,7 @@ void remote_draw_status(obj_type *obj)
 
 void remote_draw_names_setup(void)
 {
-	int						n,x,y,z,x2,y2,z2,dist;
+	int						n,x,y,z,dist;
 	bool					hit,has_tag;
 	d3pnt					spt,ept,hpt;
 	obj_type				*obj;
@@ -185,15 +185,11 @@ void remote_draw_names_setup(void)
 			
 		x-=view.camera.pnt.x;
 		y-=view.camera.pnt.y;
-		z-=view.camera.pnt.z;
+		z=view.camera.pnt.z-z;
 		
 			// is it behind the z?
 
-		x2=x;
-		y2=y;
-		z2=z;
-		gl_rotate_point(&x2,&y2,&z2);
-		if (z2<0) continue;
+		if (!gl_project_in_view_z(x,y,z)) continue;
 				
 			// project names
 

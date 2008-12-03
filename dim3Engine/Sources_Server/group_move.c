@@ -103,9 +103,6 @@ bool group_move_start(int group_idx,int movement_idx,int movement_move_idx,d3pnt
 	move->rot_add.x=rot->x/f_count;
 	move->rot_add.y=rot->y/f_count;
 	move->rot_add.z=rot->z/f_count;
-	
-	move->has_mov=((mov->x!=0) || (mov->y!=0) || (mov->z!=0));
-	move->has_rot=((rot->x!=0.0f) || (rot->y!=0.0f) || (rot->z!=0.0f));
 		
 	move->movement_idx=movement_idx;
 	move->movement_move_idx=movement_move_idx;
@@ -134,6 +131,7 @@ void group_move_clear_all(void)
 	for (n=0;n!=map.ngroup;n++) {
 
 		group->move.on=FALSE;
+		group->move.was_moved=FALSE;
 		group->move.cuml_mov_add.x=group->move.cuml_mov_add.y=group->move.cuml_mov_add.z=0;
 		group->move.cuml_rot_add.x=group->move.cuml_rot_add.y=group->move.cuml_rot_add.z=0;
 
@@ -163,23 +161,24 @@ bool group_move_frozen(int group_idx)
       
 ======================================================= */
 
-void group_move(int group_idx,int x,int y,int z)
+void group_move(group_type *group,d3pnt *mpnt)
 {
 	int					n,unit_cnt;
 	bool				move_objs;
-	group_type			*group;
 	group_unit_type		*unit_list;
 	map_mesh_type		*mesh;
 	map_liquid_type		*liq;
 
+		// any movement?
+
+	if ((mpnt->x==0) && (mpnt->y==0) && (mpnt->z==0)) return;
+
 		// can this group move objects?
 
-	move_objs=(x!=0) || (z!=0);
+	move_objs=(mpnt->x!=0) || (mpnt->z!=0);
 	
 		// move the meshes
 
-	group=&map.groups[group_idx];
-	
 	unit_cnt=group->unit_count;
 	unit_list=group->unit_list;
 	
@@ -197,24 +196,24 @@ void group_move(int group_idx,int x,int y,int z)
 					// move mesh and mark as
 					// touched so it can be saved with games
 
-				map_mesh_move(&map,unit_list->idx,x,y,z,FALSE);
+				map_mesh_move(&map,unit_list->idx,mpnt->x,mpnt->y,mpnt->z,FALSE);
 				mesh->flag.touched=TRUE;
 
 					// move objects and decals with mesh
 
-				if (move_objs) object_move_with_mesh(unit_list->idx,x,z);
-				decal_move_with_mesh(unit_list->idx,x,y,z);
+				if (move_objs) object_move_with_mesh(unit_list->idx,mpnt->x,mpnt->z);
+				decal_move_with_mesh(unit_list->idx,mpnt->x,mpnt->y,mpnt->z);
 				break;
 
 			case group_type_liquid:
 
 				liq=&map.liquid.liquids[unit_list->idx];
 
-				liq->lft+=x;
-				liq->rgt+=x;
-				liq->top+=z;
-				liq->bot+=z;
-				liq->y+=y;
+				liq->lft+=mpnt->x;
+				liq->rgt+=mpnt->x;
+				liq->top+=mpnt->z;
+				liq->bot+=mpnt->z;
+				liq->y+=mpnt->y;
 
 				break;
 
@@ -225,9 +224,9 @@ void group_move(int group_idx,int x,int y,int z)
 
 		// keep the cumlative moves
 
-	group->move.cuml_mov_add.x+=x;
-	group->move.cuml_mov_add.y+=y;
-	group->move.cuml_mov_add.z+=z;
+	group->move.cuml_mov_add.x+=mpnt->x;
+	group->move.cuml_mov_add.y+=mpnt->y;
+	group->move.cuml_mov_add.z+=mpnt->z;
 }
 
 /* =======================================================
@@ -236,22 +235,23 @@ void group_move(int group_idx,int x,int y,int z)
       
 ======================================================= */
 
-void group_rotate(int group_idx,float x,float y,float z)
+void group_rotate(group_type *group,d3ang *fpnt)
 {
 	int					n,unit_cnt;
 	bool				move_objs;
-	group_type			*group;
 	group_unit_type		*unit_list;
 	map_mesh_type		*mesh;
 
+		// any rotation?
+
+	if ((fpnt->x==0.0f) && (fpnt->y==0.0f) && (fpnt->z==0.0f)) return;
+
 		// can this group move objects?
 
-	move_objs=(y!=0.0f);
+	move_objs=(fpnt->y!=0.0f);
 	
 		// move the meshes
 
-	group=&map.groups[group_idx];
-	
 	unit_cnt=group->unit_count;
 	unit_list=group->unit_list;
 	
@@ -267,13 +267,13 @@ void group_rotate(int group_idx,float x,float y,float z)
 				// move mesh and mark as
 				// touched so it can be saved with games
 
-			map_mesh_rotate(&map,unit_list->idx,x,y,z,FALSE);
+			map_mesh_rotate(&map,unit_list->idx,fpnt->x,fpnt->y,fpnt->z,FALSE);
 			mesh->flag.touched=TRUE;
 
 				// rotate objects and decals with mesh
 			
-			if (move_objs) object_rotate_with_mesh(unit_list->idx,y);
-			decal_rotate_with_mesh(unit_list->idx,y);
+			if (move_objs) object_rotate_with_mesh(unit_list->idx,fpnt->y);
+			decal_rotate_with_mesh(unit_list->idx,fpnt->y);
 		}
 		
 		unit_list++;
@@ -281,9 +281,9 @@ void group_rotate(int group_idx,float x,float y,float z)
 
 		// keep the cumlative rotations
 
-	group->move.cuml_rot_add.x+=x;
-	group->move.cuml_rot_add.y+=y;
-	group->move.cuml_rot_add.z+=z;
+	group->move.cuml_rot_add.x+=fpnt->x;
+	group->move.cuml_rot_add.y+=fpnt->y;
+	group->move.cuml_rot_add.z+=fpnt->z;
 }
 
 /* =======================================================
@@ -295,22 +295,21 @@ void group_rotate(int group_idx,float x,float y,float z)
 void group_moves_run(bool run_events)
 {
 	int				n,user_id;
+	group_type		*group;
 	group_move_type	*move;
 
 		// run all moves
 		
 	for (n=0;n!=map.ngroup;n++) {
 
-		move=&map.groups[n].move;
+		group=&map.groups[n];
+		move=&group->move;
 		if ((!move->on) || (move->freeze)) continue;
 		
-			// movements
-			
-		if (move->has_mov) group_move(n,move->mov_add.x,move->mov_add.y,move->mov_add.z);
-		
-			// rotations
-			
-		if (move->has_rot) group_rotate(n,move->rot_add.x,move->rot_add.y,move->rot_add.z);
+		group_move(group,&move->mov_add);
+		group_rotate(group,&move->rot_add);
+
+		move->was_moved=TRUE;
 		
 		move->count--;
 	}
@@ -351,20 +350,90 @@ void group_moves_run(bool run_events)
       
 ======================================================= */
 
-void group_moves_synch_with_host(void)
+void group_moves_synch_with_client(int group_idx,network_reply_group_synch *synch)
 {
-	int				n;
+	int				flags;
 	group_type		*group;
 
-	return;		// supergumba -- need to get all groups back to their original settings
+		// setup the synch for the client
 
-		// get moves back to their commulative positions
-	
-	group=map.groups;
+	synch->group_idx=htons((short)group_idx);
+
+	group=&map.groups[group_idx];
+
+	flags=0;
+	if (group->move.on) flags|=net_group_synch_flag_on;
+	if (group->move.freeze) flags|=net_group_synch_flag_freeze;
+	if (group->move.main_move) flags|=net_group_synch_flag_main_move;
+
+	synch->flags=htonl(flags);
+
+	synch->count=htons((short)group->move.count);
+	synch->user_id=htons((short)group->move.user_id);
+	synch->movement_idx=htons((short)group->move.movement_idx);
+	synch->movement_move_idx=htons((short)group->move.movement_move_idx);
+
+	synch->mov_add_x=htonl(group->move.mov_add.x);
+	synch->mov_add_y=htonl(group->move.mov_add.y);
+	synch->mov_add_z=htonl(group->move.mov_add.z);
+
+	synch->fp_rot_add_x=htonf(group->move.rot_add.x);
+	synch->fp_rot_add_y=htonf(group->move.rot_add.y);
+	synch->fp_rot_add_z=htonf(group->move.rot_add.z);
+
+	synch->cuml_mov_add_x=htonl(group->move.cuml_mov_add.x);
+	synch->cuml_mov_add_y=htonl(group->move.cuml_mov_add.y);
+	synch->cuml_mov_add_z=htonl(group->move.cuml_mov_add.z);
+
+	synch->fp_cuml_rot_add_x=htonf(group->move.cuml_rot_add.x);
+	synch->fp_cuml_rot_add_y=htonf(group->move.cuml_rot_add.y);
+	synch->fp_cuml_rot_add_z=htonf(group->move.cuml_rot_add.z);
+}
+
+void group_moves_synch_with_host(network_reply_group_synch *synch)
+{
+	int				group_idx,flags;
+	d3pnt			cuml_mov_add;
+	d3ang			cuml_rot_add;
+	group_type		*group;
+
+		// get the group
+
+	group_idx=(int)ntohs(synch->group_idx);
+	group=&map.groups[group_idx];
+
+		// fix the movement
+
+	flags=ntohl(synch->flags);
+
+	group->move.on=((flags&net_group_synch_flag_on)!=0);
+	group->move.freeze=((flags&net_group_synch_flag_freeze)!=0);
+	group->move.main_move=((flags&net_group_synch_flag_main_move)!=0);
+
+	group->move.count=(int)ntohs(synch->count);
+	group->move.user_id=(int)ntohs(synch->user_id);
+	group->move.movement_idx=(int)ntohs(synch->movement_idx);
+	group->move.movement_move_idx=(int)ntohs(synch->movement_move_idx);
+
+	group->move.mov_add.x=ntohl(synch->mov_add_x);
+	group->move.mov_add.y=ntohl(synch->mov_add_y);
+	group->move.mov_add.z=ntohl(synch->mov_add_z);
+
+	group->move.rot_add.x=ntohf(synch->fp_rot_add_x);
+	group->move.rot_add.y=ntohf(synch->fp_rot_add_y);
+	group->move.rot_add.z=ntohf(synch->fp_rot_add_z);
+
+		// synch the commulative moves
+
+	cuml_mov_add.x=ntohl(synch->cuml_mov_add_x);
+	cuml_mov_add.y=ntohl(synch->cuml_mov_add_y);
+	cuml_mov_add.z=ntohl(synch->cuml_mov_add_z);
 		
-	for (n=0;n!=map.ngroup;n++) {
-		if (group->move.has_mov) group_move(n,group->move.cuml_mov_add.x,group->move.cuml_mov_add.y,group->move.cuml_mov_add.z);
-		if (group->move.has_rot) group_rotate(n,group->move.cuml_rot_add.x,group->move.cuml_rot_add.y,group->move.cuml_rot_add.z);
-		group++;
-	}
+	group_move(group,&cuml_mov_add);
+
+	cuml_rot_add.x=ntohf(synch->fp_cuml_rot_add_x);
+	cuml_rot_add.y=ntohf(synch->fp_cuml_rot_add_y);
+	cuml_rot_add.z=ntohf(synch->fp_cuml_rot_add_z);
+
+	group_rotate(group,&cuml_rot_add);
 }

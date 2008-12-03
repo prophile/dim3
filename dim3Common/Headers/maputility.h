@@ -204,9 +204,9 @@ typedef struct		{
 typedef struct		{
 						int									count,user_id,
 															movement_idx,movement_move_idx;
-						bool								on,freeze,has_mov,has_rot,main_move;
+						bool								on,was_moved,freeze,main_move;
 						d3pnt								mov_add,cuml_mov_add;
-						d3vct								rot_add,cuml_rot_add;
+						d3ang								rot_add,cuml_rot_add;
 						attach_type							attach;
 					} group_move_type;
 

@@ -167,39 +167,35 @@ inline void gl_setup_project(void)
 	glGetIntegerv(GL_VIEWPORT,(GLint*)vport);
 }
 
-inline void gl_rotate_point(int *x,int *y,int *z)
+inline bool gl_project_in_view_z(int x,int y,int z)
 {
-	double			dx,dy,dz;
-	
-	dx=(double)*x;
-	dy=(double)*y;
-	dz=-(double)*z;
-	
-	*x=(int)((dx*mod_matrix[0])+(dy*mod_matrix[4])+(dz*mod_matrix[8])+mod_matrix[12]);
-	*y=(int)((dx*mod_matrix[1])+(dy*mod_matrix[5])+(dz*mod_matrix[9])+mod_matrix[13]);
-	*z=-(int)((dx*mod_matrix[2])+(dy*mod_matrix[6])+(dz*mod_matrix[10])+mod_matrix[14]);
-}
-
-inline bool gl_rotate_point_on_screen(int x,int y,int z)
-{
-	return(((((double)x)*mod_matrix[2])+(((double)y)*mod_matrix[6])+(((double)-z)*mod_matrix[10])+mod_matrix[14])<0.0);
+	return(((((double)x)*mod_matrix[2])+(((double)y)*mod_matrix[6])+(((double)z)*mod_matrix[10])+mod_matrix[14])<0.0);
 }
 
 inline void gl_project_point(int *x,int *y,int *z)
 {
 	double		dx,dy,dz;
 
-	gluProject(*x,*y,-(*z),mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
+	gluProject(*x,*y,*z,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
 	*x=((int)dx)-render_info.view_x;
 	*y=((int)dy)-render_info.view_y;
 	*z=(int)dz;
 }
 
-inline float gl_project_point_z(int x,int y,int z)
+inline void gl_project_poly(int ptsz,int *x,int *y,int *z)
+{
+	int			i;
+
+	for (i=0;i<ptsz;i++) {
+		gl_project_point(&x[i],&y[i],&z[i]);
+	}
+}
+
+inline float gl_project_get_depth(int x,int y,int z)
 {
 	double		dx,dy,dz;
 
-	gluProject(x,y,-z,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
+	gluProject(x,y,z,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
 	return((float)dz);
 }
 
@@ -210,16 +206,7 @@ inline void gl_unproject_point(float fx,float fy,float fz,int *x,int *y,int *z)
 	gluUnProject(fx,fy,fz,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
 	*x=((int)dx)+render_info.view_x;
 	*y=((int)dy)+render_info.view_y;
-	*z=-(int)dz;
-}
-
-inline void gl_project_poly(int ptsz,int *x,int *y,int *z)
-{
-	int			i;
-
-	for (i=0;i<ptsz;i++) {
-		gl_project_point(&x[i],&y[i],&z[i]);
-	}
+	*z=(int)dz;
 }
 
 void gl_project_fix_rotation(view_camera_type *camera,int y_off,int *x,int *y,int *z)

@@ -41,6 +41,7 @@ extern map_type				map;
 extern network_setup_type	net_setup;
 
 extern int game_time_get(void);
+extern void group_moves_synch_with_client(int group_idx,network_reply_group_synch *synch);
 
 /* =======================================================
 
@@ -157,6 +158,24 @@ void net_host_client_handle_update(int remote_uid,network_request_remote_update 
 	net_host_player_send_others_packet(remote_uid,net_action_request_remote_update,net_queue_mode_replace,(unsigned char*)update,sizeof(network_request_remote_update),TRUE);
 }
 
+void net_host_client_handle_group_synch(int sock)
+{
+	int								n;
+	network_reply_group_synch		reply_synch;
+
+		// send a synch for all groups that were
+		// ever moved
+
+	for (n=0;n!=map.ngroup;n++) {
+
+		if (map.groups[n].move.was_moved) {
+			group_moves_synch_with_client(n,&reply_synch);
+			network_send_packet(sock,net_action_reply_group_synch,net_queue_mode_normal,net_remote_uid_host,(unsigned char*)&reply_synch,sizeof(network_reply_group_synch));
+		}
+
+	}
+}
+
 /* =======================================================
 
       Host Client Networking Message Thread
@@ -262,6 +281,11 @@ void* net_host_client_handler_thread(void *arg)
 			case net_action_request_latency_ping:
 				network_send_packet(sock,action,net_queue_mode_normal,net_remote_uid_host,NULL,0);
 				break;
+
+			case net_action_request_group_synch:
+				net_host_client_handle_group_synch(sock);
+				break;
+
 				
 		}
 		

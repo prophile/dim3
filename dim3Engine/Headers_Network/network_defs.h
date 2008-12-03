@@ -128,6 +128,8 @@ typedef struct		{
 #define net_action_request_latency_ping				18
 #define net_action_reply_latency_ping				19
 #define net_action_request_host_exit				20
+#define net_action_request_group_synch				21
+#define net_action_reply_group_synch				22
 
 //
 // remote fire types
@@ -169,6 +171,10 @@ typedef struct		{
 #define net_update_flag_no_contact_projectile		0x00000004
 #define net_update_flag_no_contact_force			0x00000008
 #define net_update_flag_talking						0x00000010
+
+#define net_group_synch_flag_on						0x00000001
+#define net_group_synch_flag_freeze					0x00000002
+#define net_group_synch_flag_main_move				0x00000004
 
 //
 // message data types
@@ -254,3 +260,12 @@ typedef struct		{
 						network_request_remote_ammo	ammos[net_max_weapon_per_remote];
 					} network_request_remote_pickup;
 
+typedef struct		{
+						int							flags,
+													mov_add_x,mov_add_y,mov_add_z,
+													cuml_mov_add_x,cuml_mov_add_y,cuml_mov_add_z,
+													fp_rot_add_x,fp_rot_add_y,fp_rot_add_z,
+													fp_cuml_rot_add_x,fp_cuml_rot_add_y,fp_cuml_rot_add_z;
+						short						group_idx,movement_idx,movement_move_idx,
+													count,user_id;
+					} network_reply_group_synch;

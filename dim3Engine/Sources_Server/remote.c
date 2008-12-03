@@ -60,6 +60,7 @@ extern void game_end(void);
 extern bool map_start(bool skip_media,char *err_str);
 extern void map_end(void);
 extern void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx);
+extern void group_moves_synch_with_host(network_reply_group_synch *synch);
 
 /* =======================================================
 
@@ -814,6 +815,10 @@ bool remote_network_get_updates(int tick)
 			case net_action_request_host_exit:
 				remote_host_exit();
 				return(FALSE);				// break out of all the loops and exit client game
+
+			case net_action_reply_group_synch:
+				group_moves_synch_with_host((network_reply_group_synch*)data);
+				break;
 				
 		}
 	}

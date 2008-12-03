@@ -98,7 +98,7 @@ bool complex_boundbox_inview(int *cbx,int *cby,int *cbz)
 	for (n=0;n!=14;n++) {
 		px[n]-=view.camera.pnt.x;
 		py[n]-=view.camera.pnt.y;
-		pz[n]-=view.camera.pnt.z;
+		pz[n]=view.camera.pnt.z-pz[n];
 	}
 	
 		// check if points are behind z
@@ -106,7 +106,7 @@ bool complex_boundbox_inview(int *cbx,int *cby,int *cbz)
 	hit=FALSE;
 	
 	for (n=0;n!=14;n++) {
-		if (gl_rotate_point_on_screen(px[n],py[n],pz[n])) {
+		if (gl_project_in_view_z(px[n],py[n],pz[n])) {
 			hit=TRUE;
 			break;
 		}
@@ -168,7 +168,7 @@ bool mesh_inview(map_mesh_type *mesh)
 	for (n=0;n!=nvertex;n++) {
 		x=pt->x-view.camera.pnt.x;
 		y=pt->y-view.camera.pnt.y;
-		z=pt->z-view.camera.pnt.z;
+		z=view.camera.pnt.z-pt->z;
 
 		gl_project_point(&x,&y,&z);
 
