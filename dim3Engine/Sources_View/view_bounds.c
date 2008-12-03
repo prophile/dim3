@@ -168,7 +168,7 @@ bool mesh_inview(map_mesh_type *mesh)
 	for (n=0;n!=nvertex;n++) {
 		x=pt->x-view.camera.pnt.x;
 		y=pt->y-view.camera.pnt.y;
-		z=view.camera.pnt.x-pt->z;
+		z=pt->z-view.camera.pnt.z;
 
 		gl_project_point(&x,&y,&z);
 
@@ -176,6 +176,7 @@ bool mesh_inview(map_mesh_type *mesh)
 		rgt=rgt&&(x>=setup.screen.x_sz);
 		top=top&&(y<0);
 		bot=bot&&(y>=setup.screen.y_sz);
+		
 		pt++;
 	}
 

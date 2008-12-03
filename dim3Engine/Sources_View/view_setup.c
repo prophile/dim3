@@ -53,6 +53,7 @@ extern bool fog_solid_on(void);
 extern bool model_inview(model_draw *draw);
 extern int distance_to_view_center(int x,int y,int z);
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
+extern bool mesh_inview(map_mesh_type *mesh);
 
 int			mesh_draw_count,mesh_draw_list[max_mesh],mesh_draw_dist[max_mesh];
 
@@ -107,7 +108,7 @@ void view_create_mesh_draw_list(void)
 		d=map_mesh_calculate_distance(mesh,&view.camera.pnt);
 		if (d>obscure_dist) continue;
 			
-		if (!boundbox_inview(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y)) continue;
+		if (!mesh_inview(mesh)) continue;
 		
 			// sort meshes into drawing list
 			// top of list is closest items
