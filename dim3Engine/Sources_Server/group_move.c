@@ -157,6 +157,35 @@ bool group_move_frozen(int group_idx)
 
 /* =======================================================
 
+      Check if Object is Standing on Group
+      
+======================================================= */
+
+bool group_move_object_stand(int group_idx,int stand_mesh_idx)
+{
+	int					n,unit_cnt;
+	group_type			*group;
+	group_unit_type		*unit_list;
+
+	group=&map.groups[group_idx];
+
+	unit_cnt=group->unit_count;
+	unit_list=group->unit_list;
+	
+	for (n=0;n!=unit_cnt;n++) {
+
+		if (unit_list->type==group_type_mesh) {
+			if (unit_list->idx==stand_mesh_idx) return(TRUE);
+		}
+		
+		unit_list++;
+	}
+
+	return(FALSE);
+}
+
+/* =======================================================
+
       Move Groups
       
 ======================================================= */

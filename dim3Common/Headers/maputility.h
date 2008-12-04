@@ -468,7 +468,8 @@ typedef struct		{
 						int									nmove,group_idx,reverse_group_idx,
 															auto_open_distance;
 						char								name[name_str_len];
-						bool								auto_start,auto_open,auto_open_never_close,
+						bool								auto_start,auto_open,auto_open_stand,
+															auto_open_never_close,
 															loop,started,opened,reverse;
 						d3pnt								pnt;
 						movement_move_type					moves[max_movement_move];

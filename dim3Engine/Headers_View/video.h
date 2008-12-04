@@ -47,6 +47,12 @@ extern bool gl_check_texture_generate_mipmaps_ok(void);
 extern bool gl_check_point_sprite_ok(void);
 extern bool gl_check_shader_ok(void);
 
+	// vbos
+
+#define view_vertex_object_count			8
+
+
+
 	// shaders
 	
 extern void gl_shader_program_start(int texture_cnt,texture_type *texture);

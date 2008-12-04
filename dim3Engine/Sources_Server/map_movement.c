@@ -42,6 +42,7 @@ extern js_type			js;
 extern bool group_move_start(int group_idx,int movement_idx,int movement_move_idx,d3pnt *mov,d3ang *rot,int count,int user_id,bool main_move);
 extern void group_move_freeze(int group_idx,bool freeze);
 extern bool group_move_frozen(int group_idx);
+extern bool group_move_object_stand(int group_idx,int stand_mesh_idx);
 
 /* =======================================================
 
@@ -322,32 +323,63 @@ void map_movements_auto_open(void)
 	
 			// can't check started or non-auto-open movements
 			
-		if ((movement->started) || (!movement->auto_open)) {
+		if ((movement->started) || ((!movement->auto_open) && (!movement->auto_open_stand))) {
 			movement++;
 			continue;
 		}
-		
-			// find any objects close to door
+
+			// find any objects close to auto_open
 			
 		obj_in_range=FALSE;
-		
-		obj=server.objs;
 
-		for (i=0;i!=server.count.obj;i++) {
-			if ((obj->player) || (obj->open_doors)) {
-				if (distance_check(obj->pnt.x,(obj->pnt.y-(obj->size.y>>1)),obj->pnt.z,movement->pnt.x,movement->pnt.y,movement->pnt.z,movement->auto_open_distance)) {
-					obj_in_range=TRUE;
-					break;
+		if (movement->auto_open) {
+			
+			obj=server.objs;
+
+			for (i=0;i!=server.count.obj;i++) {
+				if ((obj->player) || (obj->open_doors)) {
+					if (distance_check(obj->pnt.x,(obj->pnt.y-(obj->size.y>>1)),obj->pnt.z,movement->pnt.x,movement->pnt.y,movement->pnt.z,movement->auto_open_distance)) {
+						obj_in_range=TRUE;
+						break;
+					}
 				}
+				obj++;
 			}
-			obj++;
+
+				// check for camera node walks
+
+			if ((camera.mode==cv_static) && (camera.auto_walk.on) && (camera.auto_walk.open_doors)) {
+				camera_static_get_position(&pnt,NULL);
+				obj_in_range=distance_check(pnt.x,pnt.y,pnt.z,movement->pnt.x,movement->pnt.y,movement->pnt.z,movement->auto_open_distance);
+			}
+
 		}
 
-			// check for camera node walks
+			// check for standing on
 
-		if ((camera.mode==cv_static) && (camera.auto_walk.on) && (camera.auto_walk.open_doors)) {
-			camera_static_get_position(&pnt,NULL);
-			obj_in_range=distance_check(pnt.x,pnt.y,pnt.z,movement->pnt.x,movement->pnt.y,movement->pnt.z,movement->auto_open_distance);
+		if (movement->auto_open_stand) {
+
+			obj=server.objs;
+
+			for (i=0;i!=server.count.obj;i++) {
+
+				if ((obj->player) || (obj->open_doors)) {
+
+					if (obj->contact.stand_poly.mesh_idx!=-1) {
+						if (group_move_object_stand(movement->group_idx,obj->contact.stand_poly.mesh_idx)) {
+							obj_in_range=TRUE;
+							break;
+						}
+						if (group_move_object_stand(movement->reverse_group_idx,obj->contact.stand_poly.mesh_idx)) {
+							obj_in_range=TRUE;
+							break;
+						}
+					}
+				}
+
+				obj++;
+			}
+
 		}
 		
 			// time to open or close?

@@ -304,6 +304,7 @@ void write_map_movements_xml(map_type *map)
 		xml_add_attribute_int("group_reverse",movement->reverse_group_idx);
 		xml_add_attribute_boolean("auto_start",movement->auto_start);
 		xml_add_attribute_boolean("auto_open",movement->auto_open);
+		xml_add_attribute_boolean("auto_open_stand",movement->auto_open_stand);
 		xml_add_attribute_boolean("auto_open_never_close",movement->auto_open_never_close);
 		xml_add_attribute_int("auto_open_distance",movement->auto_open_distance);
 		xml_add_attribute_boolean("loop",movement->loop);

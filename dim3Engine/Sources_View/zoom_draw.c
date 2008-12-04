@@ -42,6 +42,11 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
+extern void view_next_vertex_object(void);
+extern void view_resize_current_vertex_object(int sz);
+extern void view_bind_current_vertex_object(void);
+extern void view_unbind_current_vertex_object(void);
+
 /* =======================================================
 
       Zoom Setup
@@ -125,7 +130,9 @@ void zoom_setup(int tick,obj_type *obj,weapon_type *weap)
 
 void zoom_draw(obj_type *obj,weapon_type *weap)
 {
-	int					x,y,sz,lft,rgt,top,bot,gl_id;
+	int				x,y,sz,lft,rgt,top,bot,
+					cnt,gl_id;
+	float			*vertex_ptr,*uv_ptr;
 	
 		// is weapon not in zoom?
 		
@@ -159,49 +166,126 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
-	
-		// draw borders
-		
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
+		// construct VBO
+
+	view_next_vertex_object();
+	view_bind_current_vertex_object();
+
+	sz=((16*4)*(2+2))*sizeof(float);
+	view_resize_current_vertex_object(sz);
+					
+	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	if (vertex_ptr==NULL) {
+		view_unbind_current_vertex_object();
+		return;
+	}
+
+	uv_ptr=vertex_ptr+((16*4)*2);
+	
+		// border vertexes
+
+	cnt=0;
+		
 	if (lft>0) {
-		glBegin(GL_QUADS);
-		glVertex2i(0,0);
-		glVertex2i((lft+1),0);
-		glVertex2i((lft+1),setup.screen.y_sz);
-		glVertex2i(0,setup.screen.y_sz);
-		glEnd();
+		*vertex_ptr++=0.0f;
+		*vertex_ptr++=0.0f;
+		*vertex_ptr++=(float)(lft+1);
+		*vertex_ptr++=0.0f;
+		*vertex_ptr++=(float)(lft+1);
+		*vertex_ptr++=(float)setup.screen.y_sz;
+		*vertex_ptr++=0.0f;
+		*vertex_ptr++=(float)setup.screen.y_sz;
+
+		uv_ptr+=8;
+		cnt+=4;
 	}
 	
 	if (rgt<setup.screen.x_sz) {
-		glBegin(GL_QUADS);
-		glVertex2i((rgt-1),0);
-		glVertex2i(setup.screen.x_sz,0);
-		glVertex2i(setup.screen.x_sz,setup.screen.y_sz);
-		glVertex2i((rgt-1),setup.screen.y_sz);
-		glEnd();
+		*vertex_ptr++=(float)(rgt-1);
+		*vertex_ptr++=0.0f;
+		*vertex_ptr++=(float)setup.screen.x_sz;
+		*vertex_ptr++=0.0f;
+		*vertex_ptr++=(float)setup.screen.x_sz;
+		*vertex_ptr++=(float)setup.screen.y_sz;
+		*vertex_ptr++=(float)(rgt-1);
+		*vertex_ptr++=(float)setup.screen.y_sz;
+
+		uv_ptr+=8;
+		cnt+=4;
 	}
 	
 	if (top>0) {
-		glBegin(GL_QUADS);
-		glVertex2i(0,0);
-		glVertex2i(setup.screen.x_sz,0);
-		glVertex2i(setup.screen.x_sz,(top+1));
-		glVertex2i(0,(top+1));
-		glEnd();
+		*vertex_ptr++=0.0f;
+		*vertex_ptr++=0.0f;
+		*vertex_ptr++=(float)setup.screen.x_sz;
+		*vertex_ptr++=0.0f;
+		*vertex_ptr++=(float)setup.screen.x_sz;
+		*vertex_ptr++=(float)(top+1);
+		*vertex_ptr++=0.0f;
+		*vertex_ptr++=(float)(top+1);
+
+		uv_ptr+=8;
+		cnt+=4;
 	}
 	
 	if (bot<setup.screen.y_sz) {
-		glBegin(GL_QUADS);
-		glVertex2i(0,(bot-1));
-		glVertex2i(setup.screen.x_sz,(bot-1));
-		glVertex2i(setup.screen.x_sz,setup.screen.y_sz);
-		glVertex2i(0,setup.screen.y_sz);
-		glEnd();
+		*vertex_ptr++=0.0f;
+		*vertex_ptr++=(float)(bot-1);
+		*vertex_ptr++=(float)setup.screen.x_sz;
+		*vertex_ptr++=(float)(bot-1);
+		*vertex_ptr++=(float)setup.screen.x_sz;
+		*vertex_ptr++=(float)setup.screen.y_sz;
+		*vertex_ptr++=0.0f;
+		*vertex_ptr++=(float)setup.screen.y_sz;
+
+		uv_ptr+=8;
+		cnt+=4;
 	}
 
-		// draw scope
-		
+		// zoom bitmap vertexes
+
+	*vertex_ptr++=(float)lft;
+	*vertex_ptr++=(float)top;
+
+	*uv_ptr++=0.0f;
+	*uv_ptr++=0.0f;
+
+	*vertex_ptr++=(float)rgt;
+	*vertex_ptr++=(float)top;
+
+	*uv_ptr++=1.0f;
+	*uv_ptr++=0.0f;
+
+	*vertex_ptr++=(float)rgt;
+	*vertex_ptr++=(float)bot;
+
+	*uv_ptr++=1.0f;
+	*uv_ptr++=1.0f;
+
+	*vertex_ptr++=(float)lft;
+	*vertex_ptr++=(float)bot;
+
+	*uv_ptr++=0.0f;
+	*uv_ptr++=1.0f;
+
+  	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+
+		// draw border and zoom
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+
+		// borders
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glDrawArrays(GL_QUADS,0,cnt);
+
+		// zoom
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((16*4)*2)*sizeof(float)));
+
 	gl_texture_simple_start();
 
 	glEnable(GL_BLEND);
@@ -211,18 +295,16 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 	glAlphaFunc(GL_NOTEQUAL,0);
 
 	gl_texture_simple_set(gl_id,TRUE,1.0f,1.0f,1.0f,1.0f);
-	
-	glBegin(GL_QUADS);
-	glTexCoord2f(0,0);
-	glVertex2i(lft,top);
-	glTexCoord2f(1,0);
-	glVertex2i(rgt,top);
-	glTexCoord2f(1,1);
-	glVertex2i(rgt,bot);
-	glTexCoord2f(0,1);
-	glVertex2i(lft,bot);
-	glEnd();
-	
+
+	glDrawArrays(GL_QUADS,cnt,4);
+
 	gl_texture_simple_end();
+
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		// unbind the vbo
+
+	view_unbind_current_vertex_object();
 }
 

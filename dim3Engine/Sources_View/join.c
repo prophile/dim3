@@ -591,6 +591,10 @@ void join_game(void)
 		// mark as ready to receive data from host
 
 	net_client_send_ready(remote_uid);
+
+		// request moving group synchs
+
+	net_client_request_group_synch_ping(remote_uid);
 	
 		// game is running
 	

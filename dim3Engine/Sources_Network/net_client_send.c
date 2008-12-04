@@ -96,6 +96,19 @@ void net_client_send_latency_ping(int remote_uid)
 
 /* =======================================================
 
+      Host Synching
+      
+======================================================= */
+
+void net_client_request_group_synch_ping(int remote_uid)
+{
+	if (!net_setup.host.hosting) {
+		network_send_packet(client_socket,net_action_request_group_synch,net_queue_mode_normal,remote_uid,NULL,0);
+	}
+}	
+
+/* =======================================================
+
       Object Update Messages
       
 ======================================================= */

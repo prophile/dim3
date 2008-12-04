@@ -92,6 +92,7 @@ extern void net_client_send_ready(int remote_uid);
 extern void net_client_send_set_team(int remote_uid,int team_idx);
 extern void net_client_send_leave_host(int remote_uid);
 extern void net_client_send_latency_ping(int remote_uid);
+extern void net_client_request_group_synch_ping(int remote_uid);
 extern void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool chat_on);
 extern void net_client_send_death(int remote_uid,int kill_uid,bool telefrag);
 extern void net_client_send_chat(int remote_uid,char *str);

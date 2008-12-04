@@ -225,6 +225,7 @@ void decode_map_movements_xml(map_type *map,int map_head)
 		movement->reverse_group_idx=xml_get_attribute_int_default(movement_tag,"group_reverse",-1);
  		movement->auto_start=xml_get_attribute_boolean(movement_tag,"auto_start");
  		movement->auto_open=xml_get_attribute_boolean(movement_tag,"auto_open");
+ 		movement->auto_open_stand=xml_get_attribute_boolean(movement_tag,"auto_open_stand");
  		movement->auto_open_never_close=xml_get_attribute_boolean(movement_tag,"auto_open_never_close");
  		movement->auto_open_distance=xml_get_attribute_int(movement_tag,"auto_open_distance");
 		movement->loop=xml_get_attribute_boolean(movement_tag,"loop");

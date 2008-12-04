@@ -29,9 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-// supergumba -- move this
-
-#define view_vertex_object_count			8
+#include "video.h"
 
 extern map_type				map;
 extern view_type			view;
