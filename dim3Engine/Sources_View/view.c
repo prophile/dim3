@@ -62,8 +62,6 @@ extern void view_draw(int tick);
 extern int game_time_get(void);
 extern void chat_clear_messages(void);
 extern bool fog_solid_on(void);
-extern void view_create_vertex_objects(void);
-extern void view_dispose_vertex_objects(void);
 
 /* =======================================================
 

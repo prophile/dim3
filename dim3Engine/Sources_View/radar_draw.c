@@ -89,7 +89,7 @@ void radar_draw(int tick)
 	by=ty+(radar_sz<<1);
 
 		// draw radar background
-		
+
 	if (!hud.radar.team_tint) {
 		tint.r=tint.g=tint.b=1.0f;
 	}
@@ -115,7 +115,7 @@ void radar_draw(int tick)
 	glTexCoord2f(0.0f,1.0f);
 	glVertex2i(lx,by);
 	glEnd();
-	
+
 		// draw radar objects
 		
 	cur_gl_id=-1;

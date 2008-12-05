@@ -43,10 +43,6 @@ extern view_type			view;
 extern setup_type			setup;
 
 extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf);
-extern void view_resize_current_vertex_object(int sz);
-extern void view_next_vertex_object(void);
-extern void view_bind_current_vertex_object(void);
-extern void view_unbind_current_vertex_object(void);
 
 /* =======================================================
 
@@ -246,7 +242,7 @@ void particle_draw(effect_type *effect,int count)
 {
 	int						i,idx,particle_count,nvertex,
 							ntrail,trail_step,mx,mz,my,
-							pixel_dif,sz;
+							pixel_dif;
 	float					gravity,gx,gy,g_size,pixel_sz,f,pc[3],pn[3],
 							alpha,alpha_dif,r,g,b,color_dif,f_count,f_tick;
 	float					*vertex_ptr;
@@ -363,24 +359,12 @@ void particle_draw(effect_type *effect,int count)
 		
 	count=count/10;
 
-		// get next VBO to use
-
-	view_next_vertex_object();
-
-		// map VBO to memory
-
-	view_bind_current_vertex_object();
+		// construct VBO
 
 	nvertex=(particle->count*(particle->trail_count+1))*4;
 
-	sz=(nvertex*(3+2))*sizeof(float);
-	view_resize_current_vertex_object(sz);
-
-	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-	if (vertex_ptr==NULL) {
-		view_unbind_current_vertex_object();
-		return;
-	}
+	vertex_ptr=view_bind_map_next_vertex_object((nvertex*(3+2)));
+	if (vertex_ptr==NULL) return;
 	
 		// setup the arrays
 
@@ -409,7 +393,7 @@ void particle_draw(effect_type *effect,int count)
 
 		// unmap vertex object
 
-	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+	view_unmap_current_vertex_object();
 	
 		// draw arrays
 		

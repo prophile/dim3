@@ -330,18 +330,7 @@ void gui_draw_background(float alpha)
 	gl_texture_simple_start();
 
 	gl_texture_simple_set(gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
-		
-    glBegin(GL_QUADS);
-	glTexCoord2f(0,0);
-	glVertex2i(0,0);
-	glTexCoord2f(1,0);
-	glVertex2i(hud.scale_x,0);
-	glTexCoord2f(1,1);
-	glVertex2i(hud.scale_x,hud.scale_y);
-	glTexCoord2f(0,1);
-	glVertex2i(0,hud.scale_y);
-    glEnd();
-    
+	view_draw_next_vertex_object_2D_texture_screen(hud.scale_x,hud.scale_y,0.0f,0.0f);
 	gl_texture_simple_end();
 }
 
@@ -433,41 +422,15 @@ void gui_draw_dialog(void)
 
 	glLineWidth(4.0f);
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
-
-	glBegin(GL_LINE_LOOP);
-	glVertex2i(lft,top);
-	glVertex2i(rgt,top);
-	glVertex2i(rgt,bot);
-	glVertex2i(lft,bot);
-	glEnd();
+	view_draw_next_vertex_object_2D_line_quad(lft,rgt,top,bot);
 	
-	if (is_header) {
-		glBegin(GL_LINE_LOOP);
-		glVertex2i(lft,head_top);
-		glVertex2i(rgt,head_top);
-		glVertex2i(rgt,top);
-		glVertex2i(lft,top);
-		glEnd();
-	}
+	if (is_header) view_draw_next_vertex_object_2D_line_quad(lft,rgt,head_top,top);
 	
 	glLineWidth(2.0f);
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
-
-	glBegin(GL_LINE_LOOP);
-	glVertex2i(lft,top);
-	glVertex2i(rgt,top);
-	glVertex2i(rgt,bot);
-	glVertex2i(lft,bot);
-	glEnd();
+	view_draw_next_vertex_object_2D_line_quad(lft,rgt,top,bot);
 	
-	if (is_header) {
-		glBegin(GL_LINE_LOOP);
-		glVertex2i(lft,head_top);
-		glVertex2i(rgt,head_top);
-		glVertex2i(rgt,top);
-		glVertex2i(lft,top);
-		glEnd();
-	}
+	if (is_header) view_draw_next_vertex_object_2D_line_quad(lft,rgt,head_top,top);
 	
 	glLineWidth(1.0f);
 }

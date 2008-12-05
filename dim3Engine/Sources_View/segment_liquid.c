@@ -41,10 +41,6 @@ extern setup_type			setup;
 extern int					hilite_mode;
 
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
-extern void view_next_vertex_object(void);
-extern void view_resize_current_vertex_object(int sz);
-extern void view_bind_current_vertex_object(void);
-extern void view_unbind_current_vertex_object(void);
 
 /* =======================================================
 
@@ -76,40 +72,19 @@ inline int liquid_render_liquid_get_max_vertex(map_liquid_type *liq)
 	return(x_sz*z_sz);
 }
 
-bool liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
+void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,float *vertex_ptr,int v_sz)
 {
 	int				x,y,z,k,x_add,z_add,x_sz,z_sz,
-					v_cnt,v_sz,sz,tide_split,tide_split_half,
+					v_cnt,tide_split,tide_split_half,
 					tide_high,tide_rate;
 	float			fy,fgx,fgy,normal[3],x_txtoff,y_txtoff,
 					f_break,f_time,f_tick,sn,
 					f_tide_split_half,f_tide_high;
 	bool			x_break,z_break;
-	float			*vertex_ptr,*vl,*uv,*cl;
+	float			*vl,*uv,*cl;
 	
 	y=liq->y;
 	fy=(float)(y-view.camera.pnt.y);
-
-		// get total vertex count
-
-	v_sz=liquid_render_liquid_get_max_vertex(liq);
-
-		// get next VBO to use
-
-	view_next_vertex_object();
-
-		// map VBO to memory
-
-	view_bind_current_vertex_object();
-
-	sz=(v_sz*(3+2+3))*sizeof(float);
-	view_resize_current_vertex_object(sz);
-
-	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-	if (vertex_ptr==NULL) {
-		view_unbind_current_vertex_object();
-		return(FALSE);
-	}
 	
 	vl=vertex_ptr;
 	uv=vertex_ptr+(v_sz*3);
@@ -244,14 +219,6 @@ bool liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq)
 
 	liq->draw.x_sz=x_sz;
 	liq->draw.z_sz=z_sz;
-
-		// unmap VBO
-
-	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
-	
-	view_unbind_current_vertex_object();
-	
-	return(TRUE);
 }
 
 int liquid_render_liquid_create_quads(map_liquid_type *liq)
@@ -313,17 +280,9 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
 	return(quad_cnt);
 }
 
-void liquid_render_liquid_start_array(map_liquid_type *liq)
+void liquid_render_liquid_start_array(map_liquid_type *liq,int v_sz)
 {
-	int				v_sz;
-
-		// use last compiled buffer
-
-	view_bind_current_vertex_object();
-
 		// vertexes
-
-	v_sz=liquid_render_liquid_get_max_vertex(liq);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,0);
@@ -348,8 +307,6 @@ void liquid_render_liquid_end_array(void)
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
-
-	view_unbind_current_vertex_object();
 }
 
 /* =======================================================
@@ -360,8 +317,9 @@ void liquid_render_liquid_end_array(void)
 
 void liquid_render_liquid(int tick,map_liquid_type *liq)
 {
-	int						quad_cnt,frame;
+	int						v_sz,quad_cnt,frame;
 	float					col[3],normal[3];
+	float					*vertex_ptr;
 	d3pnt					mid;
 	texture_type			*texture;
 
@@ -369,13 +327,27 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 
 	if (!boundbox_inview(liq->lft,liq->top,liq->rgt,liq->bot,liq->y,liq->y)) return;
 
-		// setup liquid for drawing
+		// setup vbo
 
-	if (!liquid_render_liquid_create_vertex(tick,liq)) return;
-	quad_cnt=liquid_render_liquid_create_quads(liq);
-	if (quad_cnt==0) return;
+	v_sz=liquid_render_liquid_get_max_vertex(liq);
+
+	vertex_ptr=view_bind_map_next_vertex_object((v_sz*(3+2+3)));
+	if (vertex_ptr==NULL) return;
+
+		// create vertexes
+
+	liquid_render_liquid_create_vertex(tick,liq,vertex_ptr,v_sz);
+	view_unmap_current_vertex_object();
 	
-	liquid_render_liquid_start_array(liq);
+		// create quads
+
+	quad_cnt=liquid_render_liquid_create_quads(liq);
+	if (quad_cnt==0) {
+		view_unbind_current_vertex_object();
+		return;
+	}
+	
+	liquid_render_liquid_start_array(liq,v_sz);
 
 		// setup texture
 
@@ -431,6 +403,8 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 	}
 
 	liquid_render_liquid_end_array();
+
+	view_unbind_current_vertex_object();
 }
 
 /* =======================================================

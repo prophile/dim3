@@ -30,14 +30,11 @@ and can be sold or given away.
 #endif
 
 #include "lights.h"
+#include "video.h"
 
 extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
-
-extern void view_resize_map_vertex_object(int sz);
-extern void view_bind_map_vertex_object(void);
-extern void view_unbind_map_vertex_object(void);
 
 /* =======================================================
 
@@ -214,7 +211,7 @@ void view_compile_mesh_gl_lists_ray_trace(map_mesh_type *mesh)
 
 bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 {
-	int									n,k,t,x,y,xtot,sz,
+	int									n,k,t,x,y,xtot,
 										v_count,v_idx,v_light_start_idx;
 	int									*qd;
 	float								fx,fy,fz,x_shift_offset,y_shift_offset;
@@ -237,16 +234,8 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 		// map VBO to memory
 
-	view_bind_map_vertex_object();
-
-	sz=(map.mesh_vertexes.draw_vertex_count*(3+2+3+3))*sizeof(float);
-	view_resize_map_vertex_object(sz);
-
-	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-	if (vertex_ptr==NULL) {
-		view_unbind_map_vertex_object();
-		return(FALSE);
-	}
+	vertex_ptr=view_bind_map_vertex_object((map.mesh_vertexes.draw_vertex_count*(3+2+3+3)));
+	if (vertex_ptr==NULL) return(FALSE);
 	
 		// arrays and offsets
 
@@ -396,7 +385,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 		// unmap VBO
 
-	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+	view_unmap_map_vertex_object();
 
 	view_unbind_map_vertex_object();
 	
@@ -413,7 +402,7 @@ void view_compile_gl_list_attach(void)
 {
 		// use last compiled buffer
 
-	view_bind_map_vertex_object();
+	view_rebind_map_vertex_object();
 
 		// vertexes
 

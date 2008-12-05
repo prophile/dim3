@@ -52,11 +52,6 @@ int							font_size;
 float						font_char_size[90];
 bitmap_type					font_bitmap;
 
-extern void view_next_vertex_object(void);
-extern void view_resize_current_vertex_object(int sz);
-extern void view_bind_current_vertex_object(void);
-extern void view_unbind_current_vertex_object(void);
-
 /* =======================================================
 
       Setup Text Drawing
@@ -379,7 +374,7 @@ void gl_text_end(void)
 
 void gl_text_draw_line(int x,int y,char *txt,int txtlen,bool vcenter)
 {
-	int			n,sz,ch,xoff,yoff,cnt;
+	int			n,ch,xoff,yoff,cnt;
 	float		f_lft,f_rgt,f_top,f_bot,f_wid,f_high,
 				gx_lft,gx_rgt,gy_top,gy_bot;
 	float		*vertex_ptr,*uv_ptr;
@@ -394,17 +389,8 @@ void gl_text_draw_line(int x,int y,char *txt,int txtlen,bool vcenter)
 
 		// construct VBO
 
-	view_next_vertex_object();
-	view_bind_current_vertex_object();
-
-	sz=((txtlen*4)*(2+2))*sizeof(float);
-	view_resize_current_vertex_object(sz);
-
-	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-	if (vertex_ptr==NULL) {
-		view_unbind_current_vertex_object();
-		return;
-	}
+	vertex_ptr=view_bind_map_next_vertex_object(((txtlen*4)*(2+2)));
+	if (vertex_ptr==NULL) return;
 
 	uv_ptr=vertex_ptr+((txtlen*4)*2);
 
@@ -467,7 +453,7 @@ void gl_text_draw_line(int x,int y,char *txt,int txtlen,bool vcenter)
 		}
 	}
 
-	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+	view_unmap_current_vertex_object();
 
 		// draw text
 
@@ -479,8 +465,8 @@ void gl_text_draw_line(int x,int y,char *txt,int txtlen,bool vcenter)
 
 	glDrawArrays(GL_QUADS,0,cnt);
 
-	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
 
 	view_unbind_current_vertex_object();
 }

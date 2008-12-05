@@ -85,17 +85,47 @@ void view_dispose_vertex_objects(void)
       
 ======================================================= */
 
-inline void view_resize_map_vertex_object(int sz)
+float* view_bind_map_vertex_object(int sz)
 {
+	float		*vertex_ptr;
+
+		// bind to map specific VBO
+
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_map);
+
+		// resize it if more memory needed
+		// we only grow up, this *might* be a problem
+		// but it seems more optimal for now.  Will require
+		// more testing
+
+		// size is in floats
+
+	sz*=sizeof(float);
+
 	if (sz>vbo_map_sz) {
 		vbo_map_sz=sz;
 		glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
 	}
+
+		// map pointer
+
+	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	if (vertex_ptr==NULL) {
+		view_unmap_map_vertex_object();
+		return(NULL);
+	}
+
+	return(vertex_ptr);
 }
 
-inline void view_bind_map_vertex_object(void)
+inline void view_rebind_map_vertex_object(void)
 {
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_map);
+}
+
+inline void view_unmap_map_vertex_object(void)
+{
+	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
 }
 
 inline void view_unbind_map_vertex_object(void)
@@ -109,27 +139,299 @@ inline void view_unbind_map_vertex_object(void)
       
 ======================================================= */
 
-inline void view_next_vertex_object(void)
+float* view_bind_map_next_vertex_object(int sz)
 {
+	float			*vertex_ptr;
+
+		// get next object
+
 	cur_vbo_cache_idx++;
 	if (cur_vbo_cache_idx==view_vertex_object_count) cur_vbo_cache_idx=0;
-}
 
-inline void view_resize_current_vertex_object(int sz)
-{
+		// bind it
+
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_cache[cur_vbo_cache_idx]);
+
+		// resize it if more memory needed
+		// we only grow up, this *might* be a problem
+		// but it seems more optimal for now.  Will require
+		// more testing
+
+		// size is in floats
+
+	sz*=sizeof(float);
+
 	if (sz>vbo_cache_sz[cur_vbo_cache_idx]) {
 		vbo_cache_sz[cur_vbo_cache_idx]=sz;
 		glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
 	}
+
+		// map pointer
+
+	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	if (vertex_ptr==NULL) {
+		view_unbind_current_vertex_object();
+		return(NULL);
+	}
+
+	return(vertex_ptr);
 }
 
-
-inline void view_bind_current_vertex_object(void)
+inline void view_unmap_current_vertex_object(void)
 {
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_cache[cur_vbo_cache_idx]);
+	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
 }
 
 inline void view_unbind_current_vertex_object(void)
 {
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+}
+
+/* =======================================================
+
+      Some VBO Utility Routines
+      
+======================================================= */
+
+void view_draw_next_vertex_object_2D_texture_screen(int wid,int high,float gx,float gy)
+{
+	float			*vertex_ptr,*uv_ptr;
+
+	vertex_ptr=view_bind_map_next_vertex_object(((4*4)*(2+2)));
+	if (vertex_ptr==NULL) return;
+
+	uv_ptr=vertex_ptr+((4*4)*2);
+
+		// get the vertexes
+
+	*vertex_ptr++=0.0f;
+	*vertex_ptr++=0.0f;
+
+	*uv_ptr++=gx;
+	*uv_ptr++=gy;
+
+	*vertex_ptr++=(float)wid;
+	*vertex_ptr++=0.0f;
+
+	*uv_ptr++=gx+1.0f;
+	*uv_ptr++=gy;
+
+	*vertex_ptr++=(float)wid;
+	*vertex_ptr++=(float)high;
+
+	*uv_ptr++=gx+1.0f;
+	*uv_ptr++=gy+1.0f;
+
+	*vertex_ptr++=0.0f;
+	*vertex_ptr++=(float)high;
+
+	*uv_ptr++=gx;
+	*uv_ptr++=gy+1.0f;
+
+  	view_unmap_current_vertex_object();
+
+		// draw the quad
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((4*4)*2)*sizeof(float)));
+
+	glDrawArrays(GL_QUADS,0,4);
+
+ 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+		// unbind the vbo
+
+	view_unbind_current_vertex_object();
+}
+
+void view_draw_next_vertex_object_2D_tint_screen(void)
+{
+	float			*vertex_ptr;
+
+	vertex_ptr=view_bind_map_next_vertex_object((4*4)*2);
+	if (vertex_ptr==NULL) return;
+
+		// get the vertexes
+
+	*vertex_ptr++=0.0f;
+	*vertex_ptr++=0.0f;
+
+	*vertex_ptr++=(float)setup.screen.x_sz;
+	*vertex_ptr++=0.0f;
+
+	*vertex_ptr++=(float)setup.screen.x_sz;
+	*vertex_ptr++=(float)setup.screen.y_sz;
+
+	*vertex_ptr++=0.0f;
+	*vertex_ptr++=(float)setup.screen.y_sz;
+
+  	view_unmap_current_vertex_object();
+
+		// draw the quad
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+
+	glDrawArrays(GL_QUADS,0,4);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+		// unbind the vbo
+
+	view_unbind_current_vertex_object();
+}
+
+void view_draw_next_vertex_object_2D_texture_quad(int lft,int rgt,int top,int bot)
+{
+	float			*vertex_ptr,*uv_ptr;
+
+	vertex_ptr=view_bind_map_next_vertex_object(((4*4)*(2+2)));
+	if (vertex_ptr==NULL) return;
+
+	uv_ptr=vertex_ptr+((4*4)*2);
+
+		// get the vertexes
+
+	*vertex_ptr++=(float)lft;
+	*vertex_ptr++=(float)top;
+
+	*uv_ptr++=0.0f;
+	*uv_ptr++=0.0f;
+
+	*vertex_ptr++=(float)rgt;
+	*vertex_ptr++=(float)top;
+
+	*uv_ptr++=1.0f;
+	*uv_ptr++=0.0f;
+
+	*vertex_ptr++=(float)rgt;
+	*vertex_ptr++=(float)bot;
+
+	*uv_ptr++=1.0f;
+	*uv_ptr++=1.0f;
+
+	*vertex_ptr++=(float)lft;
+	*vertex_ptr++=(float)bot;
+
+	*uv_ptr++=0.0f;
+	*uv_ptr++=1.0f;
+
+  	view_unmap_current_vertex_object();
+
+		// draw the quad
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((4*4)*2)*sizeof(float)));
+
+	glDrawArrays(GL_QUADS,0,4);
+
+ 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+		// unbind the vbo
+
+	view_unbind_current_vertex_object();
+}
+
+void view_draw_next_vertex_object_2D_color_quad(int x0,int y0,d3col *col0,int x1,int y1,d3col *col1,int x2,int y2,d3col *col2,int x3,int y3,d3col *col3,float alpha)
+{
+	float			*vertex_ptr,*col_ptr;
+
+	vertex_ptr=view_bind_map_next_vertex_object(((4*4)*(2+3)));
+	if (vertex_ptr==NULL) return;
+
+	col_ptr=vertex_ptr+((4*4)*2);
+
+		// get the vertexes
+
+	*vertex_ptr++=(float)x0;
+	*vertex_ptr++=(float)y0;
+
+	*col_ptr++=col0->r;
+	*col_ptr++=col0->g;
+	*col_ptr++=col0->b;
+
+	*vertex_ptr++=(float)x1;
+	*vertex_ptr++=(float)y1;
+
+	*col_ptr++=col1->r;
+	*col_ptr++=col1->g;
+	*col_ptr++=col1->b;
+
+	*vertex_ptr++=(float)x2;
+	*vertex_ptr++=(float)y2;
+
+	*col_ptr++=col2->r;
+	*col_ptr++=col2->g;
+	*col_ptr++=col2->b;
+
+	*vertex_ptr++=(float)x3;
+	*vertex_ptr++=(float)y3;
+
+	*col_ptr++=col3->r;
+	*col_ptr++=col3->g;
+	*col_ptr++=col3->b;
+
+  	view_unmap_current_vertex_object();
+
+		// draw the quad
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(3,GL_FLOAT,0,(void*)(((4*4)*2)*sizeof(float)));
+
+	glDrawArrays(GL_QUADS,0,4);
+
+ 	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+		// unbind the vbo
+
+	view_unbind_current_vertex_object();
+}
+
+void view_draw_next_vertex_object_2D_line_quad(int lft,int rgt,int top,int bot)
+{
+	float			*vertex_ptr;
+
+	vertex_ptr=view_bind_map_next_vertex_object(((4*4)*2));
+	if (vertex_ptr==NULL) return;
+
+		// get the vertexes
+
+	*vertex_ptr++=(float)lft;
+	*vertex_ptr++=(float)top;
+
+	*vertex_ptr++=(float)rgt;
+	*vertex_ptr++=(float)top;
+
+	*vertex_ptr++=(float)rgt;
+	*vertex_ptr++=(float)bot;
+
+	*vertex_ptr++=(float)lft;
+	*vertex_ptr++=(float)bot;
+
+  	view_unmap_current_vertex_object();
+
+		// draw the quad
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+
+	glDrawArrays(GL_LINE_LOOP,0,4);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+		// unbind the vbo
+
+	view_unbind_current_vertex_object();
 }

@@ -42,11 +42,6 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
-extern void view_next_vertex_object(void);
-extern void view_resize_current_vertex_object(int sz);
-extern void view_bind_current_vertex_object(void);
-extern void view_unbind_current_vertex_object(void);
-
 /* =======================================================
 
       Zoom Setup
@@ -169,17 +164,8 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 
 		// construct VBO
 
-	view_next_vertex_object();
-	view_bind_current_vertex_object();
-
-	sz=((16*4)*(2+2))*sizeof(float);
-	view_resize_current_vertex_object(sz);
-					
-	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-	if (vertex_ptr==NULL) {
-		view_unbind_current_vertex_object();
-		return;
-	}
+	vertex_ptr=view_bind_map_next_vertex_object(((16*4)*(2+2)));
+	if (vertex_ptr==NULL) return;
 
 	uv_ptr=vertex_ptr+((16*4)*2);
 	
@@ -269,7 +255,7 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 	*uv_ptr++=0.0f;
 	*uv_ptr++=1.0f;
 
-  	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+  	view_unmap_current_vertex_object();
 
 		// draw border and zoom
 	
@@ -300,8 +286,8 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 
 	gl_texture_simple_end();
 
-	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
 
 		// unbind the vbo
 

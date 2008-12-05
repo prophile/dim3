@@ -44,10 +44,6 @@ extern setup_type		setup;
 extern void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw *draw);
 extern void model_tint_team_color(model_type *mdl,int mesh_idx,model_draw *draw);
 extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf);
-extern void view_next_vertex_object(void);
-extern void view_resize_current_vertex_object(int sz);
-extern void view_bind_current_vertex_object(void);
-extern void view_unbind_current_vertex_object(void);
 extern bool fog_solid_on(void);
 
 /* =======================================================
@@ -58,7 +54,7 @@ extern bool fog_solid_on(void);
 
 bool model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,model_material_type *material)
 {
-	int				n,trig_count,nvertex,idx,sz;
+	int				n,trig_count,nvertex,idx;
 	float			*vl,*tl,*cl,*nl,*vp,*cp,*np,*vertex_ptr,
 					*vertex_array,*coord_array,*color_array,*normal_array;
     model_trig_type	*trig;
@@ -68,22 +64,10 @@ bool model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 
 	nvertex=trig_count*3;
 
- 		// get next VBO to use
+ 		// construct VBO
 
-	view_next_vertex_object();
-
-		// map VBO to memory
-
-	view_bind_current_vertex_object();
-
-	sz=((trig_count*3)*(3+2+3+3))*sizeof(float);
-	view_resize_current_vertex_object(sz);
-
-	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-	if (vertex_ptr==NULL) {
-		view_unbind_current_vertex_object();
-		return(FALSE);
-	}
+	vertex_ptr=view_bind_map_next_vertex_object(((trig_count*3)*(3+2+3+3)));
+	if (vertex_ptr==NULL) return(FALSE);
 	
 		// build the arrays
 
@@ -167,7 +151,7 @@ bool model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 
 		// unmap VBO
 
-	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+	view_unmap_current_vertex_object();
 
 		// set the arrays
 		
@@ -222,28 +206,16 @@ void model_draw_stop_mesh_material_array(void)
 
 bool model_draw_start_mesh_shadow_array(model_type *mdl,model_mesh_type *mesh)
 {
-	int				n,trig_count,sz;
+	int				n,trig_count;
 	float			*vl,*vp,*vertex_ptr,*vertex_array;
     model_trig_type	*trig;
 
 	trig_count=mesh->ntrig;
 
- 		// get next VBO to use
+ 		// construct VBO
 
-	view_next_vertex_object();
-
-		// map VBO to memory
-
-	view_bind_current_vertex_object();
-
-	sz=((trig_count*3)*2)*sizeof(float);
-	view_resize_current_vertex_object(sz);
-
-	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-	if (vertex_ptr==NULL) {
-		view_unbind_current_vertex_object();
-		return(FALSE);
-	}
+	vertex_ptr=view_bind_map_next_vertex_object(((trig_count*3)*2));
+	if (vertex_ptr==NULL) return(FALSE);
 	
 		// build the arrays
 		// there's no z coordinate in these arrays
@@ -280,7 +252,7 @@ bool model_draw_start_mesh_shadow_array(model_type *mdl,model_mesh_type *mesh)
 
 		// unmap VBO
 
-	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+	view_unmap_current_vertex_object();
 
 		// set the arrays
 		

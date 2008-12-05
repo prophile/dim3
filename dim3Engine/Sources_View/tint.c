@@ -53,10 +53,8 @@ void view_draw_liquid_tint(int liquid_idx)
 		
 	liq=&map.liquid.liquids[liquid_idx];
 	
-		// draw
+		// draw tint
 
-	glColor4f(liq->col.r,liq->col.g,liq->col.b,liq->tint_alpha);
-		
 	gl_setup_viewport(console_y_offset());
 	gl_2D_view_screen();
 
@@ -65,13 +63,9 @@ void view_draw_liquid_tint(int liquid_idx)
 
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
-		
-    glBegin(GL_QUADS);
-	glVertex2i(0,0);
-	glVertex2i(setup.screen.x_sz,0);
-	glVertex2i(setup.screen.x_sz,setup.screen.y_sz);
-	glVertex2i(0,setup.screen.y_sz);
-    glEnd();
+
+	glColor4f(liq->col.r,liq->col.g,liq->col.b,liq->tint_alpha);
+	view_draw_next_vertex_object_2D_tint_screen();
 }
 
 /* =======================================================
@@ -106,10 +100,8 @@ void view_draw_effect_tint(int tick,obj_type *obj)
 			alpha=(float)tick/(float)tint->fade_in_tick;
 		}
 	}
-		
-	glColor4f(tint->col.r,tint->col.g,tint->col.b,(alpha*tint->alpha));
 	
-		// draw
+		// draw tint
 		
 	gl_setup_viewport(console_y_offset());
 	gl_2D_view_screen();
@@ -119,12 +111,8 @@ void view_draw_effect_tint(int tick,obj_type *obj)
 
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
-		
-    glBegin(GL_QUADS);
-	glVertex2i(0,0);
-	glVertex2i(setup.screen.x_sz,0);
-	glVertex2i(setup.screen.x_sz,setup.screen.y_sz);
-	glVertex2i(0,setup.screen.y_sz);
-    glEnd();
+
+	glColor4f(tint->col.r,tint->col.g,tint->col.b,(alpha*tint->alpha));
+	view_draw_next_vertex_object_2D_tint_screen();
 }
 

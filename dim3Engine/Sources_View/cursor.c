@@ -89,19 +89,8 @@ void cursor_draw(void)
 
 	glDisable(GL_DEPTH_TEST);
 
-	gl_texture_simple_set(cursor_bitmap.gl_id,TRUE,1,1,1,1);
-	
-	glBegin(GL_QUADS);
-	glTexCoord2f(0,0);
-	glVertex2i(lft,top);
-	glTexCoord2f(1,0);
-	glVertex2i(rgt,top);
-	glTexCoord2f(1,1);
-	glVertex2i(rgt,bot);
-	glTexCoord2f(0,1);
-	glVertex2i(lft,bot);
-	glEnd();
-	
+	gl_texture_simple_set(cursor_bitmap.gl_id,TRUE,1.0f,1.0f,1.0f,1.0f);
+	view_draw_next_vertex_object_2D_texture_quad(lft,rgt,top,bot);
 	gl_texture_simple_end();
 }
 

@@ -415,18 +415,7 @@ void crosshair_draw(obj_type *obj,weapon_type *weap)
 	glDisable(GL_DEPTH_TEST);
 
 	gl_texture_simple_set(crosshair_draw->gl_id,TRUE,crosshair_draw->color.r,crosshair_draw->color.g,crosshair_draw->color.b,crosshair_draw->alpha);
-	
-	glBegin(GL_QUADS);
-	glTexCoord2f(0,0);
-	glVertex2i(lft,top);
-	glTexCoord2f(1,0);
-	glVertex2i(rgt,top);
-	glTexCoord2f(1,1);
-	glVertex2i(rgt,bot);
-	glTexCoord2f(0,1);
-	glVertex2i(lft,bot);
-	glEnd();
-	
+	view_draw_next_vertex_object_2D_texture_quad(lft,rgt,top,bot);
 	gl_texture_simple_end();
 
 		// debug?

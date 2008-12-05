@@ -229,7 +229,7 @@ void hud_bitmaps_draw(int tick)
 		for (r=0;r!=repeat_count;r++) {
 
 				// quad
-		
+
 			glTexCoord2f(gx,gy);
 			glVertex2i(px[0],py[0]);
 			glTexCoord2f(gx2,gy);

@@ -146,7 +146,7 @@ extern char light_type_str[][32];
 // light tessel constants
 //
 
-#define map_simple_tessel_trig_area							2000			// below this square of triangle area makes triangles simple lighting tessel
+#define map_simple_tessel_trig_area							4000			// below this square of triangle area makes triangles simple lighting tessel
 #define map_simple_tessel_poly_side_size					500				// below this length of side makes simple lighting tessel
 
 #define light_tessel_max_grid_div							8

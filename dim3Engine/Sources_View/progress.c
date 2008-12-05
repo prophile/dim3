@@ -99,19 +99,8 @@ void progress_draw(float percentage)
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 
-	gl_texture_simple_set(progress_bitmap.gl_id,TRUE,1,1,1,1);
-		
-    glBegin(GL_QUADS);
-	glTexCoord2f(0,0);
-	glVertex2i(0,0);
-	glTexCoord2f(1,0);
-	glVertex2i(hud.scale_x,0);
-	glTexCoord2f(1,1);
-	glVertex2i(hud.scale_x,hud.scale_y);
-	glTexCoord2f(0,1);
-	glVertex2i(0,hud.scale_y);
-    glEnd();
-    
+	gl_texture_simple_set(progress_bitmap.gl_id,TRUE,1.0f,1.0f,1.0f,1.0f);
+	view_draw_next_vertex_object_2D_texture_screen(hud.scale_x,hud.scale_y,0.0f,0.0f);
 	gl_texture_simple_end();
 	
 		// draw the progress background
@@ -122,47 +111,17 @@ void progress_draw(float percentage)
 	bot=hud.progress.by;
 
 	mid=(top+bot)>>1;
-	
-    glBegin(GL_QUADS);
-	glColor4f(hud.progress.base_color_start.r,hud.progress.base_color_start.g,hud.progress.base_color_start.b,1.0f);
-	glVertex2i(lft,top);
-	glVertex2i(rgt,top);
-	glColor4f(hud.progress.base_color_end.r,hud.progress.base_color_end.g,hud.progress.base_color_end.b,1.0f);
-	glVertex2i(rgt,mid);
-	glVertex2i(lft,mid);
-    glEnd();
-	
-    glBegin(GL_QUADS);
-	glColor4f(hud.progress.base_color_end.r,hud.progress.base_color_end.g,hud.progress.base_color_end.b,1.0f);
-	glVertex2i(lft,mid);
-	glVertex2i(rgt,mid);
-	glColor4f(hud.progress.base_color_start.r,hud.progress.base_color_start.g,hud.progress.base_color_start.b,1.0f);
-	glVertex2i(rgt,bot);
-	glVertex2i(lft,bot);
-    glEnd();
+
+	view_draw_next_vertex_object_2D_color_quad(lft,top,&hud.progress.base_color_start,rgt,top,&hud.progress.base_color_start,rgt,mid,&hud.progress.base_color_end,lft,mid,&hud.progress.base_color_end,1.0f);
+	view_draw_next_vertex_object_2D_color_quad(lft,mid,&hud.progress.base_color_end,rgt,mid,&hud.progress.base_color_end,rgt,bot,&hud.progress.base_color_start,lft,bot,&hud.progress.base_color_start,1.0f);
 	
 		// draw the progress foreground
 	
 	rgt2=lft+(int)((float)(rgt-lft)*(percentage/100));
 	
-    glBegin(GL_QUADS);
-	glColor4f(hud.progress.hilite_color_start.r,hud.progress.hilite_color_start.g,hud.progress.hilite_color_start.b,1.0f);
-	glVertex2i(lft,top);
-	glVertex2i(rgt2,top);
-	glColor4f(hud.progress.hilite_color_end.r,hud.progress.hilite_color_end.g,hud.progress.hilite_color_end.b,1.0f);
-	glVertex2i(rgt2,mid);
-	glVertex2i(lft,mid);
-    glEnd();
-	
-    glBegin(GL_QUADS);
-	glColor4f(hud.progress.hilite_color_end.r,hud.progress.hilite_color_end.g,hud.progress.hilite_color_end.b,1.0f);
-	glVertex2i(lft,mid);
-	glVertex2i(rgt2,mid);
-	glColor4f(hud.progress.hilite_color_start.r,hud.progress.hilite_color_start.g,hud.progress.hilite_color_start.b,1.0f);
-	glVertex2i(rgt2,bot);
-	glVertex2i(lft,bot);
-    glEnd();
-	
+	view_draw_next_vertex_object_2D_color_quad(lft,top,&hud.progress.hilite_color_start,rgt2,top,&hud.progress.hilite_color_start,rgt2,mid,&hud.progress.hilite_color_end,lft,mid,&hud.progress.hilite_color_end,1.0f);
+	view_draw_next_vertex_object_2D_color_quad(lft,mid,&hud.progress.hilite_color_end,rgt2,mid,&hud.progress.hilite_color_end,rgt2,bot,&hud.progress.hilite_color_start,lft,bot,&hud.progress.hilite_color_start,1.0f);
+
 		// progress text
 
 	gl_text_start(hud.font.text_size_medium);

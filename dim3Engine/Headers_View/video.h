@@ -51,7 +51,20 @@ extern bool gl_check_shader_ok(void);
 
 #define view_vertex_object_count			8
 
-
+extern void view_create_vertex_objects(void);
+extern void view_dispose_vertex_objects(void);
+extern float* view_bind_map_vertex_object(int sz);
+extern void view_rebind_map_vertex_object(void);
+extern void view_unmap_map_vertex_object(void);
+extern void view_unbind_map_vertex_object(void);
+extern float* view_bind_map_next_vertex_object(int sz);
+extern void view_unmap_current_vertex_object(void);
+extern void view_unbind_current_vertex_object(void);
+extern void view_draw_next_vertex_object_2D_texture_screen(int wid,int high,float gx,float gy);
+extern void view_draw_next_vertex_object_2D_tint_screen(void);
+extern void view_draw_next_vertex_object_2D_texture_quad(int lft,int rgt,int top,int bot);
+extern void view_draw_next_vertex_object_2D_color_quad(int x0,int y0,d3col *col0,int x1,int y1,d3col *col1,int x2,int y2,d3col *col2,int x3,int y3,d3col *col3,float alpha);
+extern void view_draw_next_vertex_object_2D_line_quad(int lft,int rgt,int top,int bot);
 
 	// shaders
 	
