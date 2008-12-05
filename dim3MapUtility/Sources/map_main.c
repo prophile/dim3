@@ -119,7 +119,7 @@ bool map_new(map_type *map,char *name)
 		// sky
 		
 	map->sky.on=FALSE;
-	map->sky.type=st_globe;
+	map->sky.type=st_cube;
     map->sky.fill=-1;
     map->sky.bottom_fill=-1;
     map->sky.north_fill=-1;
@@ -127,7 +127,6 @@ bool map_new(map_type *map,char *name)
     map->sky.east_fill=-1;
     map->sky.west_fill=-1;
     map->sky.radius=300*map_enlarge;
-    map->sky.extra_height=50*map_enlarge;
 	map->sky.dome_y=0;
 	map->sky.txt_fact=1;
 	map->sky.txt_x_shift=0;

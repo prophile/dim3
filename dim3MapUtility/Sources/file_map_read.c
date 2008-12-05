@@ -33,7 +33,7 @@ extern maputility_settings_type		maputility_settings;
 
 char					obscure_type_str[][32]={"none","rough","complete"},
 						media_type_str[][32]={"none","story","title","movie"},
-						sky_type_str[][32]={"globe","dome_panoramic","dome_hemisphere","cylinder","cube"},
+						sky_type_str[][32]={"dome_panoramic","dome_hemisphere","cube"},
 						gl_fog_type_str[][32]={"linear","exp","exp2"},
 						liquid_tide_direction_str[][32]={"horizontal","vertical",""},
                         light_type_str[][32]={"normal","blink","glow","pulse","flicker","failing",""},
@@ -120,7 +120,6 @@ void decode_map_settings_xml(map_type *map,int map_head)
 			map->sky.on=xml_get_attribute_boolean(tag,"on");
 			map->sky.type=xml_get_attribute_list(tag,"type",(char*)sky_type_str);
 			map->sky.radius=xml_get_attribute_int(tag,"radius");
-			map->sky.extra_height=xml_get_attribute_int(tag,"extra_height");
 			map->sky.dome_y=xml_get_attribute_int(tag,"dome_y");
 		}
 		tag=xml_findfirstchild("Fill",main_sky_tag);

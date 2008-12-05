@@ -128,11 +128,9 @@ extern char light_type_str[][32];
 // sky types
 //
 
-#define st_globe											0
-#define st_dome_panoramic									1
-#define st_dome_hemisphere									2
-#define st_cylinder											3
-#define st_cube												4
+#define st_dome_panoramic									0
+#define st_dome_hemisphere									1
+#define st_cube												2
 
 //
 // liquids
@@ -148,7 +146,7 @@ extern char light_type_str[][32];
 // light tessel constants
 //
 
-#define map_simple_tessel_trig_area							5000			// below this square of triangle area makes triangles simple lighting tessel
+#define map_simple_tessel_trig_area							2000			// below this square of triangle area makes triangles simple lighting tessel
 #define map_simple_tessel_poly_side_size					500				// below this length of side makes simple lighting tessel
 
 #define light_tessel_max_grid_div							8
@@ -534,7 +532,7 @@ typedef struct		{
 					} map_background_type;					
 					
 typedef struct		{
-						int									type,radius,extra_height,dome_y,
+						int									type,radius,dome_y,
 															fill,bottom_fill,north_fill,south_fill,east_fill,west_fill;
 						float								txt_fact,txt_x_shift,txt_y_shift;
 						bool								on;

@@ -801,7 +801,6 @@ bool map_convert_v1(map_type *map,int nportal,portal_type *portals,int seg_cnt,s
 		// convert map settings
 		
     map->sky.radius*=map_enlarge;
-    map->sky.extra_height*=map_enlarge;
 	map->sky.dome_y*=map_enlarge;
 	
 	map->fog.outer_radius*=map_enlarge;

@@ -34,6 +34,7 @@ extern map_type				map;
 #define kMovementReverseGroup				FOUR_CHAR_CODE('rgrp')
 #define kMovementAutoStart					FOUR_CHAR_CODE('asrt')
 #define kMovementAutoOpen					FOUR_CHAR_CODE('aopn')
+#define kMovementAutoOpenStand				FOUR_CHAR_CODE('aoso')
 #define kMovementAutoOpenDistance			FOUR_CHAR_CODE('dist')
 #define kMovementAutoOpenNeverClose			FOUR_CHAR_CODE('aonc')
 #define kMovementLoop						FOUR_CHAR_CODE('loop')
@@ -111,6 +112,7 @@ bool dialog_movement_settings_run(movement_type *movement)
 	dialog_set_boolean(dialog_movement_settings_wind,kMovementAutoStart,0,movement->auto_start);
 	dialog_set_boolean(dialog_movement_settings_wind,kMovementAutoOpen,0,movement->auto_open);
 	dialog_set_int(dialog_movement_settings_wind,kMovementAutoOpenDistance,0,movement->auto_open_distance);
+	dialog_set_boolean(dialog_movement_settings_wind,kMovementAutoOpenStand,0,movement->auto_open_stand);
 	dialog_set_boolean(dialog_movement_settings_wind,kMovementAutoOpenNeverClose,0,movement->auto_open_never_close);
 	dialog_set_boolean(dialog_movement_settings_wind,kMovementLoop,0,movement->loop);
 	
@@ -139,6 +141,7 @@ bool dialog_movement_settings_run(movement_type *movement)
 		movement->auto_start=dialog_get_boolean(dialog_movement_settings_wind,kMovementAutoStart,0);
 		movement->auto_open=dialog_get_boolean(dialog_movement_settings_wind,kMovementAutoOpen,0);
 		movement->auto_open_distance=dialog_get_int(dialog_movement_settings_wind,kMovementAutoOpenDistance,0);
+		movement->auto_open_stand=dialog_get_boolean(dialog_movement_settings_wind,kMovementAutoOpenStand,0);
 		movement->auto_open_never_close=dialog_get_boolean(dialog_movement_settings_wind,kMovementAutoOpenNeverClose,0);
 		movement->loop=dialog_get_boolean(dialog_movement_settings_wind,kMovementLoop,0);
 	}

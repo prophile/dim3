@@ -101,68 +101,6 @@ void draw_background(int cx,int cy,int cz)
       
 ======================================================= */
 
-void draw_sky_globe(int tick,int y)
-{
-    int					k,txt_id;
-    float				txt_fact,txt_x_shift,txt_y_shift;
-	texture_type		*texture;
-	GLUquadricObj		*quadric;
-					
-		// texture sizes
-		
-	txt_fact=map.sky.txt_fact;
-	
-	txt_x_shift=((float)tick*0.0005f)*map.sky.txt_x_shift;
-	k=(int)txt_x_shift;
-	txt_x_shift=txt_x_shift-(float)k;
-	
-	txt_y_shift=((float)tick*0.0005f)*map.sky.txt_y_shift;
-	k=(int)txt_y_shift;
-	txt_y_shift=txt_y_shift-(float)k;
-
-		// setup view
-
-	gl_setup_viewport(console_y_offset());
-	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.ang);
-	gl_setup_project();
-
-	glMatrixMode(GL_MODELVIEW);
-	glRotatef(90.0f,1.0f,0.0f,0.0f);
-	
-		// setup texture
-		
-	gl_texture_simple_start();
-
-	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_DEPTH_TEST);
-
-	glMatrixMode(GL_TEXTURE);
-	glTranslatef(txt_x_shift,txt_y_shift,0.0f);
-	glScalef(txt_fact,txt_fact,1.0f);
-
-	texture=&map.textures[map.sky.fill];
-	txt_id=texture->bitmaps[texture->animate.current_frame].gl_id;
-	
-	gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
-
-		// draw the globe
-		
-	quadric=gluNewQuadric();
-	gluQuadricNormals(quadric,GLU_NONE);
-	gluQuadricTexture(quadric,GL_TRUE);
-	gluSphere(quadric,map.sky.radius,24,24);
-	gluDeleteQuadric(quadric);
-	
-		// restore
-		
-	glMatrixMode(GL_TEXTURE);
-	glLoadIdentity();
-
-	gl_texture_simple_end();
-}
-
 void draw_sky_dome_panoramic(int tick)
 {
     int					i,n,k,ty,by,txt_id,radius,
@@ -509,110 +447,6 @@ void draw_sky_dome_hemisphere(int tick)
 	view_unbind_current_vertex_object();
 }
 
-void draw_sky_cylinder(int tick,int y)
-{
-    int					k,radius,high,txt_id;
-    float				txt_fact,txt_x_shift,txt_y_shift;
-	d3ang				ang;
-	texture_type		*texture;
-	GLUquadricObj		*quadric;
-
-		// setup view
-
-	memmove(&ang,&view.camera.ang,sizeof(d3ang));
-	ang.x=angle_add(ang.x,90.0f);
-
-	gl_setup_viewport(console_y_offset());
-	gl_3D_view(&view.camera);
-	gl_3D_rotate(&ang);
-	gl_setup_project();
-					
-		// texture sizes
-		
-	txt_fact=map.sky.txt_fact;
-	
-	txt_x_shift=((float)tick*0.0005f)*map.sky.txt_x_shift;
-	k=(int)txt_x_shift;
-	txt_x_shift=txt_x_shift-(float)k;
-	
-	txt_y_shift=((float)tick*0.0005f)*map.sky.txt_y_shift;
-	k=(int)txt_y_shift;
-	txt_y_shift=txt_y_shift-(float)k;
-	
-		// setup texture
-		
-	gl_texture_simple_start();
-
-	glDisable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_DEPTH_TEST);
-
-	glMatrixMode(GL_TEXTURE);
-	glTranslatef(txt_x_shift,txt_y_shift,0.0f);
-	glScalef(txt_fact,-txt_fact,1.0f);
-	
-	glMatrixMode(GL_MODELVIEW);
-		
-	high=map.sky.extra_height;
-	radius=map.sky.radius;
-	
-		// draw the cylinder
-		
-	if (map.sky.north_fill!=-1) {
-		texture=&map.textures[map.sky.north_fill];
-		txt_id=texture->bitmaps[texture->animate.current_frame].gl_id;
-		
-		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
-
-		quadric=gluNewQuadric();
-		gluQuadricNormals(quadric,GLU_NONE);
-		gluQuadricTexture(quadric,GL_TRUE);
-		gluCylinder(quadric,radius,radius,radius,24,24);
-		gluDeleteQuadric(quadric);
-	}
-	
-		// draw the cylinder top
-
-	if (map.sky.fill!=-1) {
-		texture=&map.textures[map.sky.fill];
-		txt_id=texture->bitmaps[texture->animate.current_frame].gl_id;
-
-		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
-			
-		glTranslatef(0.0f,0.0f,(float)radius);
-
-		quadric=gluNewQuadric();
-		gluQuadricNormals(quadric,GLU_NONE);
-		gluQuadricTexture(quadric,GL_TRUE);
-		gluCylinder(quadric,radius,0,high,24,24);
-		gluDeleteQuadric(quadric);
-	}
-	
-		// draw the cylinder bottom
-
-	if (map.sky.bottom_fill!=-1) {
-		texture=&map.textures[map.sky.bottom_fill];
-		txt_id=texture->bitmaps[texture->animate.current_frame].gl_id;
-
-		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
-			
-		glTranslatef(0.0f,0.0f,-(float)(radius+high));
-
-		quadric=gluNewQuadric();
-		gluQuadricNormals(quadric,GLU_NONE);
-		gluQuadricTexture(quadric,GL_TRUE);
-		gluCylinder(quadric,0,radius,high,24,24);
-		gluDeleteQuadric(quadric);
-	}
-	
-		// restore
-		
-	glMatrixMode(GL_TEXTURE);
-	glLoadIdentity();
-	
-	gl_texture_simple_end();
-}
-
 void draw_sky_cube(int tick,int y)
 {
     int					k,txt_id,radius;
@@ -791,20 +625,12 @@ void draw_sky(int tick,int y)
 
 	switch (map.sky.type) {
 	
-		case st_globe:
-			draw_sky_globe(tick,y);
-			break;
-			
 		case st_dome_panoramic:
 			draw_sky_dome_panoramic(tick);
 			break;
 
 		case st_dome_hemisphere:
 			draw_sky_dome_hemisphere(tick);
-			break;
-			
-		case st_cylinder:
-			draw_sky_cylinder(tick,y);
 			break;
 			
 		case st_cube:

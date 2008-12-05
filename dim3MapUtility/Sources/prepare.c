@@ -278,7 +278,7 @@ void map_prepare(map_type *map)
 			
 				if (poly->box.wall_like) {
 					d=distance_2D_get(poly->line.lx,poly->line.lz,poly->line.rx,poly->line.rz);
-					area=(d*(poly->box.max.y-poly->box.min.y));
+					area=(int)sqrt((d*(poly->box.max.y-poly->box.min.y))>>1);
 				}
 				else {
 					for (t=0;t!=3;t++) {
@@ -291,7 +291,6 @@ void map_prepare(map_type *map)
 				}
 				
 				poly->draw.simple_tessel=(area<map_simple_tessel_trig_area);
-				
 			}
 			else {
 				simple_cnt=0;

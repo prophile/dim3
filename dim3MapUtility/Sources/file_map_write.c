@@ -190,7 +190,6 @@ void write_map_settings_xml(map_type *map)
 	xml_add_attribute_boolean("on",map->sky.on);
 	xml_add_attribute_list("type",(char*)sky_type_str,map->sky.type);
     xml_add_attribute_int("radius",map->sky.radius);
-    xml_add_attribute_int("extra_height",map->sky.extra_height);
     xml_add_attribute_int("dome_y",map->sky.dome_y);
     xml_add_tagend(TRUE);
     xml_add_tagstart("Fill");

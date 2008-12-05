@@ -43,7 +43,6 @@ extern map_type				map;
 #define kBackSkySettingSkyTextureEastIndex			FOUR_CHAR_CODE('stxe')
 #define kBackSkySettingSkyTextureWestIndex			FOUR_CHAR_CODE('stxw')
 #define kBackSkySettingSkyRadius					FOUR_CHAR_CODE('syrd')
-#define kBackSkySettingSkyExtraHeight				FOUR_CHAR_CODE('syht')
 #define kBackSkySettingSkyDomeY						FOUR_CHAR_CODE('sdmy')
 #define kBackSkySettingSkyTextureRepeat				FOUR_CHAR_CODE('sytr')
 #define kBackSkySettingSkyTextureXShift				FOUR_CHAR_CODE('stxx')
@@ -121,7 +120,6 @@ bool dialog_background_sky_setting_run(void)
 	dialog_fill_texture_combo(dialog_background_sky_setting_wind,kBackSkySettingSkyTextureEastIndex,0,TRUE,map.sky.east_fill);
 	dialog_fill_texture_combo(dialog_background_sky_setting_wind,kBackSkySettingSkyTextureWestIndex,0,TRUE,map.sky.west_fill);
 	dialog_set_int(dialog_background_sky_setting_wind,kBackSkySettingSkyRadius,0,map.sky.radius);
-	dialog_set_int(dialog_background_sky_setting_wind,kBackSkySettingSkyExtraHeight,0,map.sky.extra_height);
 	dialog_set_int(dialog_background_sky_setting_wind,kBackSkySettingSkyDomeY,0,map.sky.dome_y);
 	dialog_set_float(dialog_background_sky_setting_wind,kBackSkySettingSkyTextureRepeat,0,map.sky.txt_fact);
 	dialog_set_float(dialog_background_sky_setting_wind,kBackSkySettingSkyTextureXShift,0,map.sky.txt_x_shift);
@@ -158,7 +156,6 @@ bool dialog_background_sky_setting_run(void)
 		map.sky.east_fill=dialog_get_texture_combo(dialog_background_sky_setting_wind,kBackSkySettingSkyTextureEastIndex,0,TRUE);
 		map.sky.west_fill=dialog_get_texture_combo(dialog_background_sky_setting_wind,kBackSkySettingSkyTextureWestIndex,0,TRUE);
 		map.sky.radius=dialog_get_int(dialog_background_sky_setting_wind,kBackSkySettingSkyRadius,0);
-		map.sky.extra_height=dialog_get_int(dialog_background_sky_setting_wind,kBackSkySettingSkyExtraHeight,0);
 		map.sky.dome_y=dialog_get_int(dialog_background_sky_setting_wind,kBackSkySettingSkyDomeY,0);
 		map.sky.txt_fact=dialog_get_float(dialog_background_sky_setting_wind,kBackSkySettingSkyTextureRepeat,0);
 		map.sky.txt_x_shift=dialog_get_float(dialog_background_sky_setting_wind,kBackSkySettingSkyTextureXShift,0);
