@@ -43,15 +43,15 @@ extern audio_play_type		audio_plays[audio_max_play];
       
 ======================================================= */
 
-void al_set_listener(int x,int y,int z,float ang_y)
+void al_set_listener(d3pnt *pnt,float ang_y)
 {
 	SDL_LockAudio();
 
 		// position
 
-	audio_listener_pnt.x=x;
-	audio_listener_pnt.y=y;
-	audio_listener_pnt.z=z;
+	audio_listener_pnt.x=pnt->x;
+	audio_listener_pnt.y=pnt->y;
+	audio_listener_pnt.z=pnt->z;
 
 		// add 90 degrees to put ears on side of head
 
@@ -66,9 +66,9 @@ void al_set_listener(int x,int y,int z,float ang_y)
       
 ======================================================= */
 
-int al_distance_to_listener(int x,int y,int z)
+int al_distance_to_listener(d3pnt *pnt)
 {
-	return(distance_get(x,y,z,audio_listener_pnt.x,audio_listener_pnt.y,audio_listener_pnt.z));
+	return(distance_get(pnt->x,pnt->y,pnt->z,audio_listener_pnt.x,audio_listener_pnt.y,audio_listener_pnt.z));
 }
 
 /* =======================================================
@@ -77,7 +77,7 @@ int al_distance_to_listener(int x,int y,int z)
       
 ======================================================= */
 
-int al_play_source(int buffer_idx,int x,int y,int z,float pitch,bool loop,bool ambient,bool no_position,bool no_cancel)
+int al_play_source(int buffer_idx,d3pnt *pnt,float pitch,bool loop,bool ambient,bool no_position,bool no_cancel)
 {
 	int					n,idx,non_no_cancel_idx;
 	audio_play_type		*play;
@@ -120,9 +120,14 @@ int al_play_source(int buffer_idx,int x,int y,int z,float pitch,bool loop,bool a
 
 	play->pitch=pitch;
 
-	play->pnt.x=x;
-	play->pnt.y=y;
-	play->pnt.z=z;
+	if (pnt!=NULL) {
+		play->pnt.x=pnt->x;
+		play->pnt.y=pnt->y;
+		play->pnt.z=pnt->z;
+	}
+	else {
+		play->pnt.x=play->pnt.y=play->pnt.z=0;
+	}
 
 	play->loop=loop;
 	play->ambient=ambient;

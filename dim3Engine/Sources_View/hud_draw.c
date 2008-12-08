@@ -444,26 +444,12 @@ void hud_bars_draw(void)
 		by=bar->y+bar->y_size;
 		ty=by-high;
 			
-		glBegin(GL_QUADS);
-		
 		if (!bar->vert) {
-			glColor4f(bar->fill_start_color.r,bar->fill_start_color.g,bar->fill_start_color.b,bar->fill_alpha);
-			glVertex2i(lx,by);
-			glVertex2i(lx,ty);
-			glColor4f(fill_end_color.r,fill_end_color.g,fill_end_color.b,bar->fill_alpha);
-			glVertex2i(rx,ty);
-			glVertex2i(rx,by);
+			view_draw_next_vertex_object_2D_color_quad(lx,by,&bar->fill_start_color,lx,ty,&bar->fill_start_color,rx,ty,&fill_end_color,rx,by,&fill_end_color,bar->fill_alpha);
 		}
 		else {
-			glColor4f(fill_end_color.r,fill_end_color.g,fill_end_color.b,bar->fill_alpha);
-			glVertex2i(lx,ty);
-			glVertex2i(rx,ty);
-			glColor4f(bar->fill_start_color.r,bar->fill_start_color.g,bar->fill_start_color.b,bar->fill_alpha);
-			glVertex2i(rx,by);
-			glVertex2i(lx,by);
+			view_draw_next_vertex_object_2D_color_quad(lx,ty,&fill_end_color,rx,ty,&fill_end_color,rx,by,&bar->fill_start_color,lx,by,&bar->fill_start_color,bar->fill_alpha);
 		}
-		
-		glEnd();
 		
 			// draw outline
 			
@@ -475,13 +461,7 @@ void hud_bars_draw(void)
 			by=ty+bar->y_size;
 			
 			glColor4f(bar->outline_color.r,bar->outline_color.g,bar->outline_color.b,bar->outline_alpha);
-			
-			glBegin(GL_LINE_LOOP);
-			glVertex2i(lx,by);
-			glVertex2i(lx,ty);
-			glVertex2i(rx,ty);
-			glVertex2i(rx,by);
-			glEnd();
+			view_draw_next_vertex_object_2D_line_quad(lx,rx,ty,by);
 		}
 		
 	}
@@ -500,7 +480,7 @@ void hud_click(void)
 	if (hud.click_sound[0]==0x0) return;
 	
 	buffer_idx=al_find_buffer(hud.click_sound);
-	if (buffer_idx!=-1) al_play_source(buffer_idx,0,0,0,1,FALSE,FALSE,TRUE,FALSE);
+	if (buffer_idx!=-1) al_play_source(buffer_idx,NULL,1,FALSE,FALSE,TRUE,FALSE);
 }
 
 /* =======================================================

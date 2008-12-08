@@ -151,7 +151,7 @@ void map_group_dispose_unit_list(map_type *map)
       
 ======================================================= */
 
-void map_group_get_center(map_type *map,int group_idx,int *x,int *y,int *z)
+void map_group_get_center(map_type *map,int group_idx,d3pnt *center_pnt)
 {
 	int					n,unit_cnt,mx,my,mz;
 	d3pnt				*pt;
@@ -163,7 +163,7 @@ void map_group_get_center(map_type *map,int group_idx,int *x,int *y,int *z)
 	
 	unit_cnt=group->unit_count;
 	if (unit_cnt==0) {
-		*x=*y=*z=0;
+		center_pnt->x=center_pnt->y=center_pnt->z=0;
 		return;
 	}
 	
@@ -192,8 +192,8 @@ void map_group_get_center(map_type *map,int group_idx,int *x,int *y,int *z)
 		unit_list++;
 	}
 	
-	*x=mx/unit_cnt;
-	*y=my/unit_cnt;
-	*z=mz/unit_cnt;
+	center_pnt->x=mx/unit_cnt;
+	center_pnt->y=my/unit_cnt;
+	center_pnt->z=mz/unit_cnt;
 }
 

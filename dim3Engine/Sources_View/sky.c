@@ -63,39 +63,19 @@ void draw_background(int cx,int cy,int cz)
 	gx=((float)(cx+cz))*(map.background.x_scroll_fact*0.001f);
 	gy=((float)cy)*(map.background.y_scroll_fact*0.001f);
 
-		// construct VBO by utility routine
-
-	view_draw_next_vertex_object_2D_texture_screen(setup.screen.x_sz,setup.screen.y_sz,gx,gy);
-
 		// draw background
 		
 	texture=&map.textures[map.background.fill];
 	txt_id=texture->bitmaps[texture->animate.current_frame].gl_id;
 	
-	gl_texture_simple_start();
-
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 
+	gl_texture_simple_start();
 	gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2,GL_FLOAT,0,(void*)0);
-
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((4*4)*2)*sizeof(float)));
-
-	glDrawArrays(GL_QUADS,0,4);
-
- 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
-
+	view_draw_next_vertex_object_2D_texture_screen(setup.screen.x_sz,setup.screen.y_sz,gx,gy);
 	gl_texture_simple_end();
-
-		// unbind the vbo
-
-	view_unbind_current_vertex_object();
 }
 
 /* =======================================================
@@ -306,7 +286,7 @@ void draw_sky_dome_panoramic(int tick)
 
 void draw_sky_dome_hemisphere(int tick)
 {
-    int					i,n,k,txt_id,cnt,radius;
+    int					i,n,k,txt_id,dome_cnt,trig_cnt,radius;
 	float				txt_x_shift,txt_y_shift,
 						gx1,gx2,tgy,bgy,f_ty,f_by;
 	float				*vertex_ptr,*uv_ptr;
@@ -372,7 +352,8 @@ void draw_sky_dome_hemisphere(int tick)
 
 		// create the dome vertexes
 
-	cnt=0;
+	dome_cnt=0;
+	trig_cnt=0;
 		
 	for (i=0;i!=5;i++) {				// the y
 		
@@ -413,7 +394,7 @@ void draw_sky_dome_hemisphere(int tick)
 			*uv_ptr++=gx2;
 			*uv_ptr++=bgy;
 
-			if (i!=5) {
+			if (i!=4) {
 				*vertex_ptr++=(float)(-sin(rxz2)*top_reduce);
 				*vertex_ptr++=f_ty;
 				*vertex_ptr++=(float)(cos(rxz2)*top_reduce);
@@ -427,6 +408,8 @@ void draw_sky_dome_hemisphere(int tick)
 				
 				*uv_ptr++=gx1;
 				*uv_ptr++=tgy;
+				
+				dome_cnt+=4;
 			}
 			else {
 				*vertex_ptr++=0.0f;			// squeeze tops down to triangles
@@ -436,15 +419,8 @@ void draw_sky_dome_hemisphere(int tick)
 				*uv_ptr++=0.5f;
 				*uv_ptr++=0.01f;
 
-				*vertex_ptr++=0.0f;
-				*vertex_ptr++=f_ty;
-				*vertex_ptr++=0.0f;
-
-				*uv_ptr++=0.5f;
-				*uv_ptr++=0.01f;
+				trig_cnt+=3;
 			}
-
-			cnt+=4;
 			
 			rxz+=r_add;
 		}
@@ -460,7 +436,8 @@ void draw_sky_dome_hemisphere(int tick)
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((120*4)*3)*sizeof(float)));
 
-	glDrawArrays(GL_QUADS,0,cnt);
+	glDrawArrays(GL_QUADS,0,dome_cnt);
+	glDrawArrays(GL_TRIANGLES,dome_cnt,trig_cnt);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

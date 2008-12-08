@@ -328,7 +328,6 @@ void gui_draw_background(float alpha)
 		// draw bitmap
 
 	gl_texture_simple_start();
-
 	gl_texture_simple_set(gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
 	view_draw_next_vertex_object_2D_texture_screen(hud.scale_x,hud.scale_y,0.0f,0.0f);
 	gl_texture_simple_end();

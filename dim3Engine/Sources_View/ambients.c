@@ -55,7 +55,7 @@ void ambient_add_objects(void)
 	for (n=0;n!=server.count.obj;n++) {
 		ambient=&obj->ambient;
 		if ((ambient->on) && (ambient->buffer_idx!=-1)) {
-			al_ambient_list_add(ambient->buffer_idx,obj->pnt.x,obj->pnt.y,obj->pnt.z,ambient->pitch);
+			al_ambient_list_add(ambient->buffer_idx,&obj->pnt,ambient->pitch);
 		}
 		obj++;
 	}
@@ -76,7 +76,7 @@ void ambient_add_map_sounds(void)
 		
 	for (n=0;n!=map.nsound;n++) {
 		if ((mapsound->on) && (mapsound->buffer_idx!=-1)) {
-			al_ambient_list_add(mapsound->buffer_idx,mapsound->pnt.x,mapsound->pnt.y,mapsound->pnt.z,mapsound->pitch);
+			al_ambient_list_add(mapsound->buffer_idx,&mapsound->pnt,mapsound->pitch);
 		}
 		mapsound++;
 	}
@@ -116,13 +116,13 @@ void map_set_ambient(char *name,float pitch)
 		return;
 	}
 
-	map_ambient_idx=al_play_source(map_ambient_buffer_idx,0,0,0,pitch,TRUE,FALSE,TRUE,FALSE);
+	map_ambient_idx=al_play_source(map_ambient_buffer_idx,NULL,pitch,TRUE,FALSE,TRUE,FALSE);
 }
 
 void map_restart_ambient(void)
 {
 	if (map_ambient_idx!=-1) {
-		map_ambient_idx=al_play_source(map_ambient_buffer_idx,0,0,0,map_ambient_pitch,TRUE,FALSE,TRUE,FALSE);
+		map_ambient_idx=al_play_source(map_ambient_buffer_idx,NULL,map_ambient_pitch,TRUE,FALSE,TRUE,FALSE);
 	}
 }
 

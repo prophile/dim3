@@ -108,11 +108,11 @@ bool script_sound_play(char *name,d3pnt *pt,float pitch,bool global)
 		return(FALSE);
 	}
 
-	al_play_source(buffer_idx,pt->x,pt->y,pt->z,pitch,FALSE,FALSE,global,player);
+	al_play_source(buffer_idx,pt,pitch,FALSE,FALSE,global,player);
 
 		// run sound watches
 
-	if (sound_obj_uid!=-1) object_watch_sound_alert(pt->x,pt->y,pt->z,sound_obj_uid,name);
+	if (sound_obj_uid!=-1) object_watch_sound_alert(pt,sound_obj_uid,name);
 	
 		// detect if sound should be remoted
 		

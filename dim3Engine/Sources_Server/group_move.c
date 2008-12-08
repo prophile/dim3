@@ -130,10 +130,18 @@ void group_move_clear_all(void)
 
 	for (n=0;n!=map.ngroup;n++) {
 
+			// no movements yet
+
 		group->move.on=FALSE;
 		group->move.was_moved=FALSE;
 		group->move.cuml_mov_add.x=group->move.cuml_mov_add.y=group->move.cuml_mov_add.z=0;
 		group->move.cuml_rot_add.x=group->move.cuml_rot_add.y=group->move.cuml_rot_add.z=0;
+
+			// get group center.  We need to
+			// keep a separate center to stop
+			// rotations from floating
+
+		map_group_get_center(&map,n,&group->center_pnt);
 
 		group++;
 	}
@@ -225,7 +233,7 @@ void group_move(group_type *group,d3pnt *mpnt)
 					// move mesh and mark as
 					// touched so it can be saved with games
 
-				map_mesh_move(&map,unit_list->idx,mpnt->x,mpnt->y,mpnt->z,FALSE);
+				map_mesh_move(&map,unit_list->idx,mpnt,FALSE);
 				mesh->flag.touched=TRUE;
 
 					// move objects and decals with mesh
@@ -256,6 +264,12 @@ void group_move(group_type *group,d3pnt *mpnt)
 	group->move.cuml_mov_add.x+=mpnt->x;
 	group->move.cuml_mov_add.y+=mpnt->y;
 	group->move.cuml_mov_add.z+=mpnt->z;
+
+		// group center changes
+
+	group->center_pnt.x+=mpnt->x;
+	group->center_pnt.y+=mpnt->y;
+	group->center_pnt.z+=mpnt->z;
 }
 
 /* =======================================================
@@ -296,7 +310,7 @@ void group_rotate(group_type *group,d3ang *fpnt)
 				// move mesh and mark as
 				// touched so it can be saved with games
 
-			map_mesh_rotate(&map,unit_list->idx,fpnt->x,fpnt->y,fpnt->z,FALSE);
+			map_mesh_rotate(&map,unit_list->idx,&group->center_pnt,fpnt,FALSE);
 			mesh->flag.touched=TRUE;
 
 				// rotate objects and decals with mesh
@@ -454,15 +468,27 @@ void group_moves_synch_with_host(network_reply_group_synch *synch)
 
 		// synch the commulative moves
 
-	cuml_mov_add.x=ntohl(synch->cuml_mov_add_x);
-	cuml_mov_add.y=ntohl(synch->cuml_mov_add_y);
-	cuml_mov_add.z=ntohl(synch->cuml_mov_add_z);
-		
+		// if there's already been movement, get rid
+		// of that before synching all commulative
+		// movement
+
+	cuml_mov_add.x=ntohl(synch->cuml_mov_add_x)-group->move.cuml_mov_add.x;
+	cuml_mov_add.y=ntohl(synch->cuml_mov_add_y)-group->move.cuml_mov_add.y;
+	cuml_mov_add.z=ntohl(synch->cuml_mov_add_z)-group->move.cuml_mov_add.z;
+
+	group->move.cuml_mov_add.x=0;
+	group->move.cuml_mov_add.y=0;
+	group->move.cuml_mov_add.z=0;
+
 	group_move(group,&cuml_mov_add);
 
-	cuml_rot_add.x=ntohf(synch->fp_cuml_rot_add_x);
-	cuml_rot_add.y=ntohf(synch->fp_cuml_rot_add_y);
-	cuml_rot_add.z=ntohf(synch->fp_cuml_rot_add_z);
+	cuml_rot_add.x=ntohf(synch->fp_cuml_rot_add_x)-group->move.cuml_rot_add.x;
+	cuml_rot_add.y=ntohf(synch->fp_cuml_rot_add_y)-group->move.cuml_rot_add.y;
+	cuml_rot_add.z=ntohf(synch->fp_cuml_rot_add_z)-group->move.cuml_rot_add.z;
+
+	group->move.cuml_rot_add.x=0;
+	group->move.cuml_rot_add.y=0;
+	group->move.cuml_rot_add.z=0;
 
 	group_rotate(group,&cuml_rot_add);
 }

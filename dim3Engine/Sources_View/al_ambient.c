@@ -47,14 +47,14 @@ void al_ambient_list_clear(void)
 	audio_ambient_count=0;
 }	
 
-void al_ambient_list_add(int buffer_idx,int x,int y,int z,float pitch)
+void al_ambient_list_add(int buffer_idx,d3pnt *pnt,float pitch)
 {
 	int						n,dist,max_dist;
 	audio_ambient_type		*ambient;
 
 		// get distance to ambient
 		
-	dist=al_distance_to_listener(x,y,z);
+	dist=al_distance_to_listener(pnt);
 	max_dist=al_get_buffer_max_dist(buffer_idx);
 
 	if (dist>max_dist) return;
@@ -68,9 +68,9 @@ void al_ambient_list_add(int buffer_idx,int x,int y,int z,float pitch)
 		if (ambient->buffer_idx==buffer_idx) {		// replace with closer ambient
 
 			if (dist<ambient->dist) {
-				ambient->pnt.x=x;
-				ambient->pnt.y=y;
-				ambient->pnt.z=z;
+				ambient->pnt.x=pnt->x;
+				ambient->pnt.y=pnt->y;
+				ambient->pnt.z=pnt->z;
 				ambient->dist=dist;
 				ambient->pitch=pitch;
 			}
@@ -89,9 +89,9 @@ void al_ambient_list_add(int buffer_idx,int x,int y,int z,float pitch)
 	audio_ambient_count++;
 	
 	ambient->buffer_idx=buffer_idx;
-	ambient->pnt.x=x;
-	ambient->pnt.y=y;
-	ambient->pnt.z=z;
+	ambient->pnt.x=pnt->x;
+	ambient->pnt.y=pnt->y;
+	ambient->pnt.z=pnt->z;
 	ambient->dist=dist;
 	ambient->pitch=pitch;
 	
@@ -183,7 +183,7 @@ void al_ambients_run(void)
 
 	for (n=0;n!=audio_ambient_count;n++) {
 		if ((!ambient->hit) && (ambient->buffer_idx!=-1)) {
-			al_play_source(ambient->buffer_idx,ambient->pnt.x,ambient->pnt.y,ambient->pnt.z,ambient->pitch,TRUE,TRUE,FALSE,FALSE);
+			al_play_source(ambient->buffer_idx,&ambient->pnt,ambient->pitch,TRUE,TRUE,FALSE,FALSE);
 		}
 		ambient++;
 	}

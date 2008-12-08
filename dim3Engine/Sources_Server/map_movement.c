@@ -50,22 +50,22 @@ extern bool group_move_object_stand(int group_idx,int stand_mesh_idx);
       
 ======================================================= */
 
-void map_movements_get_center(movement_type *movement,int *cx,int *cy,int *cz)
+void map_movements_get_center(movement_type *movement,d3pnt *pt)
 {
-	int			x,y,z,x2,y2,z2;
-	
-	map_group_get_center(&map,movement->group_idx,&x,&y,&z);
+	group_type	*group;
+
+	group=&map.groups[movement->group_idx];
+
+	pt->x=group->center_pnt.x;
+	pt->y=group->center_pnt.y;
+	pt->z=group->center_pnt.z;
 	
 	if (movement->reverse_group_idx!=-1) {
-		map_group_get_center(&map,movement->reverse_group_idx,&x2,&y2,&z2);
-		x=(x+x2)>>1;
-		y=(y+y2)>>1;
-		z=(z+z2)>>1;
+		group=&map.groups[movement->reverse_group_idx];
+		pt->x=(pt->x+group->center_pnt.x)>>1;
+		pt->y=(pt->y+group->center_pnt.y)>>1;
+		pt->z=(pt->z+group->center_pnt.z)>>1;
 	}
-		
-	*cx=x;
-	*cy=y;
-	*cz=z;
 }
 
 /* =======================================================
@@ -76,8 +76,8 @@ void map_movements_get_center(movement_type *movement,int *cx,int *cy,int *cz)
 
 void map_movements_start(int movement_idx,int move_idx,attach_type *attach)
 {
-	int						x,y,z,msec,buffer_idx;
-	d3pnt					rev_mov;
+	int						msec,buffer_idx;
+	d3pnt					rev_mov,pt;
 	d3ang					rev_rot;
 	movement_type			*movement;
 	movement_move_type		*move;
@@ -128,16 +128,16 @@ void map_movements_start(int movement_idx,int move_idx,attach_type *attach)
 		
 	if (move->sound_name[0]==0x0) return;
 	
-	map_movements_get_center(movement,&x,&y,&z);
-	
 	buffer_idx=al_find_buffer(move->sound_name);
 	if (buffer_idx==-1) return;
+
+	map_movements_get_center(movement,&pt);
 	
-	al_play_source(buffer_idx,x,y,z,move->sound_pitch,FALSE,FALSE,FALSE,FALSE);
+	al_play_source(buffer_idx,&pt,move->sound_pitch,FALSE,FALSE,FALSE,FALSE);
 
 		// sound watches
 
-	object_watch_sound_alert(x,y,z,-1,move->sound_name);
+	object_watch_sound_alert(&pt,-1,move->sound_name);
 }
 
 /* =======================================================
@@ -160,10 +160,6 @@ void map_movements_initialize(void)
 			
 		movement->started=FALSE;
 		movement->opened=FALSE;
-		
-			// get center
-			
-		map_movements_get_center(movement,&movement->pnt.x,&movement->pnt.y,&movement->pnt.z);		
 			
 			// run auto-starts
 		
@@ -310,7 +306,7 @@ void map_movements_auto_open(void)
 {
 	int				n,i,nmovement;
 	bool			obj_in_range;
-	d3pnt			pnt;
+	d3pnt			pnt,center_pnt;
 	movement_type	*movement;
 	obj_type		*obj;
 
@@ -333,12 +329,14 @@ void map_movements_auto_open(void)
 		obj_in_range=FALSE;
 
 		if (movement->auto_open) {
-			
+
+			map_movements_get_center(movement,&center_pnt);
+
 			obj=server.objs;
 
 			for (i=0;i!=server.count.obj;i++) {
 				if ((obj->player) || (obj->open_doors)) {
-					if (distance_check(obj->pnt.x,(obj->pnt.y-(obj->size.y>>1)),obj->pnt.z,movement->pnt.x,movement->pnt.y,movement->pnt.z,movement->auto_open_distance)) {
+					if (distance_check(obj->pnt.x,(obj->pnt.y-(obj->size.y>>1)),obj->pnt.z,center_pnt.x,center_pnt.y,center_pnt.z,movement->auto_open_distance)) {
 						obj_in_range=TRUE;
 						break;
 					}
@@ -350,7 +348,7 @@ void map_movements_auto_open(void)
 
 			if ((camera.mode==cv_static) && (camera.auto_walk.on) && (camera.auto_walk.open_doors)) {
 				camera_static_get_position(&pnt,NULL);
-				obj_in_range=distance_check(pnt.x,pnt.y,pnt.z,movement->pnt.x,movement->pnt.y,movement->pnt.z,movement->auto_open_distance);
+				obj_in_range=distance_check(pnt.x,pnt.y,pnt.z,center_pnt.x,center_pnt.y,center_pnt.z,movement->auto_open_distance);
 			}
 
 		}

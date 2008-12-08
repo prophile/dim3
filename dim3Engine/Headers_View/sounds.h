@@ -35,10 +35,10 @@ extern void al_close_all_buffers(void);
 extern int al_find_buffer(char *name);
 extern int al_get_buffer_max_dist(int buffer_idx);
 
-extern void al_set_listener(int x,int y,int z,float ang_y);
-extern int al_distance_to_listener(int x,int y,int z);
+extern void al_set_listener(d3pnt *pnt,float ang_y);
+extern int al_distance_to_listener(d3pnt *pnt);
 
-extern int al_play_source(int buffer_idx,int x,int y,int z,float pitch,bool loop,bool ambient,bool global,bool player);
+extern int al_play_source(int buffer_idx,d3pnt *pnt,float pitch,bool loop,bool ambient,bool global,bool player);
 extern void al_stop_source(int source_idx);
 
 extern bool al_music_initialize(char *err_str);
@@ -58,5 +58,5 @@ extern void al_stop_all_sources(void);
 extern void al_stop_all_looping_sources(void);
 	
 extern void al_ambient_list_clear(void);
-extern void al_ambient_list_add(int buffer_idx,int x,int y,int z,float pitch);
+extern void al_ambient_list_add(int buffer_idx,d3pnt *pnt,float pitch);
 extern void al_ambients_run(void);

@@ -88,14 +88,20 @@ void script_add_map_group_object(JSObject *parent_obj)
 
 JSBool js_map_group_get_center_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	int				group_idx,x,y,z;
+	int				group_idx;
+	group_type		*group;
 	
 	group_idx=script_find_group_from_name(argv[0]);
 	if (group_idx==-1) return(JS_FALSE);
-	
-	map_group_get_center(&map,group_idx,&x,&y,&z);
-	*rval=script_point_to_value(x,y,z);
-	
+
+	if ((group_idx>=0) && (group_idx<map.ngroup)) {
+		group=&map.groups[group_idx];
+		*rval=script_point_to_value(group->center_pnt.x,group->center_pnt.y,group->center_pnt.z);
+	}
+	else {
+		*rval=script_point_to_value(0,0,0);
+	}
+
 	return(JS_TRUE);
 }
 

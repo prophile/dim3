@@ -210,6 +210,7 @@ typedef struct		{
 typedef struct		{
 						int									unit_count;
 						char								name[name_str_len];
+						d3pnt								center_pnt;
 						group_move_type						move;
 						group_unit_type						*unit_list;
 					} group_type;
@@ -468,7 +469,6 @@ typedef struct		{
 						bool								auto_start,auto_open,auto_open_stand,
 															auto_open_never_close,
 															loop,started,opened,reverse;
-						d3pnt								pnt;
 						movement_move_type					moves[max_movement_move];
 					} movement_type;
 
@@ -644,10 +644,10 @@ extern int map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt);
 
 extern int map_mesh_combine(map_type *map,int mesh_1_idx,int mesh_2_idx);
 extern int map_mesh_combine_small(map_type *map,int poly_threshold);
-extern void map_mesh_move(map_type *map,int mesh_idx,int x,int y,int z,bool vertex_only);
+extern void map_mesh_move(map_type *map,int mesh_idx,d3pnt *mov_pnt,bool vertex_only);
 extern void map_mesh_resize(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max);
 extern void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);
-extern void map_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float rot_z,bool vertex_only);
+extern void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang,bool vertex_only);
 extern bool map_mesh_tesselate(map_type *map,int mesh_idx);
 extern bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx);
 extern void map_mesh_poly_run_shifts(map_type *map,int tick);
@@ -667,7 +667,7 @@ extern void map_liquid_reset_uv(map_type *map,int liquid_idx);
 
 extern bool map_group_create_unit_list(map_type *map);
 extern void map_group_dispose_unit_list(map_type *map);
-extern void map_group_get_center(map_type *map,int group_idx,int *x,int *y,int *z);
+extern void map_group_get_center(map_type *map,int group_idx,d3pnt *center_pnt);
 
 extern int map_movement_find(map_type *map,char *name);
 extern int map_movement_add(map_type *map);

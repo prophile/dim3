@@ -244,7 +244,7 @@ int map_mesh_combine_small(map_type *map,int poly_threshold)
       
 ======================================================= */
 
-void map_mesh_move(map_type *map,int mesh_idx,int x,int y,int z,bool vertex_only)
+void map_mesh_move(map_type *map,int mesh_idx,d3pnt *mov_pnt,bool vertex_only)
 {
 	int									n,k,nvertex,npoly;
 	d3pnt								*pt,*pl;
@@ -259,9 +259,9 @@ void map_mesh_move(map_type *map,int mesh_idx,int x,int y,int z,bool vertex_only
 	pt=mesh->vertexes;
 
 	for (n=0;n!=nvertex;n++) {
-		pt->x+=x;
-		pt->y+=y;
-		pt->z+=z;
+		pt->x+=mov_pnt->x;
+		pt->y+=mov_pnt->y;
+		pt->z+=mov_pnt->z;
 		pt++;
 	}
 	
@@ -280,9 +280,9 @@ void map_mesh_move(map_type *map,int mesh_idx,int x,int y,int z,bool vertex_only
 		pl=mesh->light.quad_vertexes+poly->light.vertex_offset;
 
 		for (k=0;k!=poly->light.nvertex;k++) {
-			pl->x+=x;
-			pl->y+=y;
-			pl->z+=z;
+			pl->x+=mov_pnt->x;
+			pl->y+=mov_pnt->y;
+			pl->z+=mov_pnt->z;
 			pl++;
 		}
 
@@ -388,28 +388,27 @@ void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_
       
 ======================================================= */
 
-void map_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float rot_z,bool vertex_only)
+void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang,bool vertex_only)
 {
 	int									n,k,nvertex,npoly;
 	float								fx,fy,fz;
 	d3vct								f_mpt;
-	d3pnt								*pt,*pl,mpt;
+	d3pnt								*pt,*pl;
 	matrix_type							mat;
 	map_mesh_type						*mesh;
 	map_mesh_poly_type					*poly;
 
 	mesh=&map->mesh.meshes[mesh_idx];
 
-		// get center
+		// get mesh rotation center
 
-	map_mesh_calculate_center(map,mesh_idx,&mpt);
-	f_mpt.x=(float)(mpt.x+mesh->rot_off.x);
-	f_mpt.y=(float)(mpt.y+mesh->rot_off.y);
-	f_mpt.z=(float)(mpt.z+mesh->rot_off.z);
+	f_mpt.x=(float)(center_pnt->x+mesh->rot_off.x);
+	f_mpt.y=(float)(center_pnt->y+mesh->rot_off.y);
+	f_mpt.z=(float)(center_pnt->z+mesh->rot_off.z);
 
 		// matrixes
 
-	matrix_rotate_xyz(&mat,rot_x,rot_y,rot_z);
+	matrix_rotate_xyz(&mat,rot_ang->x,rot_ang->y,rot_ang->z);
 
 		// rotate vertexes
 

@@ -67,7 +67,7 @@ void title_open(void)
 
 	if (title_sound_name[0]!=0x0) {
 		buffer_idx=al_find_buffer(title_sound_name);
-		al_play_source(buffer_idx,0,0,0,1.0f,FALSE,FALSE,TRUE,FALSE);
+		al_play_source(buffer_idx,NULL,1.0f,FALSE,FALSE,TRUE,FALSE);
 	}
 
 		// fades

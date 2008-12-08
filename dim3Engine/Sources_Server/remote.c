@@ -557,21 +557,22 @@ void remote_chat(int remote_uid,network_request_remote_chat *chat)
 
 void remote_sound(int remote_uid,network_request_remote_sound *sound)
 {
-	int					x,y,z,buffer_idx;
+	int					buffer_idx;
 	float				pitch;
+	d3pnt				pnt;
 	obj_type			*obj;
 	
 	obj=object_find_remote_uid(remote_uid);
 	if (obj==NULL) return;
 	
-	x=ntohl(sound->pnt_x);
-	y=ntohl(sound->pnt_y);
-	z=ntohl(sound->pnt_z);
+	pnt.x=ntohl(sound->pnt_x);
+	pnt.y=ntohl(sound->pnt_y);
+	pnt.z=ntohl(sound->pnt_z);
 	
 	pitch=ntohf(sound->fp_pitch);
 	
 	buffer_idx=al_find_buffer(sound->name);
-	if (buffer_idx!=-1) al_play_source(buffer_idx,x,y,z,pitch,FALSE,FALSE,FALSE,FALSE);
+	if (buffer_idx!=-1) al_play_source(buffer_idx,&pnt,pitch,FALSE,FALSE,FALSE,FALSE);
 }
 
 /* =======================================================
