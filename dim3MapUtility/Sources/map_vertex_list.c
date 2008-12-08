@@ -29,20 +29,25 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-#define light_tessel_min_grid_pixel_sz				(map_enlarge*16)
-
 /* =======================================================
 
       Division Reduction
       
 ======================================================= */
 
-inline int map_portal_all_light_div_reduce(int dist,int div)
+inline int map_portal_all_light_div_reduce(int dist,int quality_mode)
 {
-	while (div>1) {
-		if ((dist/div)>light_tessel_min_grid_pixel_sz) break;
-		div--;
+	int			div;
+	
+	if (quality_mode==quality_mode_high) {
+		div=dist/(map_enlarge*12);
 	}
+	else {
+		div=dist/(map_enlarge*16);
+	}
+	
+	if (div<1) div=1;
+	if (div>light_tessel_max_grid_div) div=light_tessel_max_grid_div;
 	
 	return(div);
 }
@@ -53,7 +58,7 @@ inline int map_portal_all_light_div_reduce(int dist,int div)
       
 ======================================================= */
 
-void map_portal_add_light_trig_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int div)
+void map_portal_add_light_trig_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int quality_mode)
 {
 	int									vl_cnt,x,y,k,idx,div_x,div_y,
 										d0,d1,d2;
@@ -98,7 +103,7 @@ void map_portal_add_light_trig_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 	chg_gy.y=poly->gy[k]-poly->gy[idx];
 	
 	d0=distance_get(0,0,0,chg_y.x,chg_y.y,chg_y.z);
-	div_y=map_portal_all_light_div_reduce(d0,div);
+	div_y=map_portal_all_light_div_reduce(d0,quality_mode);
 	
 	k=idx-1;
 	if (k==-1) k=2;
@@ -111,7 +116,15 @@ void map_portal_add_light_trig_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 	chg_gx.y=poly->gy[k]-poly->gy[idx];
 	
 	d0=distance_get(0,0,0,chg_x.x,chg_x.y,chg_x.z);
-	div_x=map_portal_all_light_div_reduce(d0,div);
+	div_x=map_portal_all_light_div_reduce(d0,quality_mode);
+	
+		// if a single div on both sides, then
+		// make it simple
+	
+	if ((div_x==1) && (div_y==1)) {
+		poly->light.simple_tessel=TRUE;
+		return;
+	}
 	
 		// split up trig on smaller sides
 		
@@ -162,7 +175,7 @@ void map_portal_add_light_trig_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
       
 ======================================================= */
 
-void map_portal_add_light_quad_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int div)
+void map_portal_add_light_quad_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int quality_mode)
 {
 	int									vl_cnt,x,y,d,d2,div_x,div_y;
 	float								*vl_uv;
@@ -178,13 +191,21 @@ void map_portal_add_light_quad_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 	d2=distance_get(vertexes[poly->v[1]].x,vertexes[poly->v[1]].y,vertexes[poly->v[1]].z,vertexes[poly->v[2]].x,vertexes[poly->v[2]].y,vertexes[poly->v[2]].z);
 	if (d2>d) d=d2;
 	
-	div_y=map_portal_all_light_div_reduce(d,div);
+	div_y=map_portal_all_light_div_reduce(d,quality_mode);
 	
 	d=distance_get(vertexes[poly->v[0]].x,vertexes[poly->v[0]].y,vertexes[poly->v[0]].z,vertexes[poly->v[1]].x,vertexes[poly->v[1]].y,vertexes[poly->v[1]].z);
 	d2=distance_get(vertexes[poly->v[2]].x,vertexes[poly->v[2]].y,vertexes[poly->v[2]].z,vertexes[poly->v[3]].x,vertexes[poly->v[3]].y,vertexes[poly->v[3]].z);
 	if (d2>d) d=d2;
 	
-	div_x=map_portal_all_light_div_reduce(d,div);
+	div_x=map_portal_all_light_div_reduce(d,quality_mode);
+	
+		// if a single div on both sides, then
+		// make it simple
+	
+	if ((div_x==1) && (div_y==1)) {
+		poly->light.simple_tessel=TRUE;
+		return;
+	}
 	
 		// split up quad
 		
@@ -235,7 +256,7 @@ void map_portal_add_light_quad_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
       
 ======================================================= */
 
-void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int div)
+void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int quality_mode)
 {
 	int									n,vl_cnt,x,y,ptsz,div_x,div_y,
 										xdist,ydist,zdist,xzdist,xskip,yskip,zskip;
@@ -254,8 +275,8 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 	
 	xzdist=(int)(sqrt((double)(xdist*xdist)+(double)(zdist*zdist)));
 	
-	div_y=map_portal_all_light_div_reduce(ydist,div);
-	div_x=map_portal_all_light_div_reduce(xzdist,div);
+	div_y=map_portal_all_light_div_reduce(ydist,quality_mode);
+	div_x=map_portal_all_light_div_reduce(xzdist,quality_mode);
 
 	xskip=xdist/div_x;
 	zskip=zdist/div_x;
@@ -352,7 +373,7 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
       
 ======================================================= */
 
-void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int div)
+void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int quality_mode)
 {
 	int									n,vl_cnt,x,y,z,ptsz,px[8],py[8],pz[8],
 										div_x,div_y,xdist,zdist,xskip,zskip;
@@ -367,8 +388,8 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 	xdist=poly->box.max.x-poly->box.min.x;
 	zdist=poly->box.max.z-poly->box.min.z;
 	
-	div_y=map_portal_all_light_div_reduce(zdist,div);
-	div_x=map_portal_all_light_div_reduce(xdist,div);
+	div_y=map_portal_all_light_div_reduce(zdist,quality_mode);
+	div_x=map_portal_all_light_div_reduce(xdist,quality_mode);
 
 	xskip=xdist/div_x;
 	zskip=zdist/div_y;
@@ -469,8 +490,6 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 
 void map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *poly,int vertex_offset,int quad_offset,int quality_mode)
 {
-	int			div;
-
 	poly->light.nvertex=0;
 	poly->light.vertex_offset=vertex_offset;
 	
@@ -490,29 +509,25 @@ void map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *p
 	
 	poly->light.simple_tessel=FALSE;
 	
-		// get divisions based on quality
-		
-	div=(quality_mode==quality_mode_high?light_tessel_max_grid_div:light_tessel_min_grid_div);
-	
 		// special trig/quad check
 
 	if (poly->ptsz==3) {
-		map_portal_add_light_trig_tessel_vertex_list(mesh,poly,div);
+		map_portal_add_light_trig_tessel_vertex_list(mesh,poly,quality_mode);
 		return;
 	}
 		
 	if (poly->ptsz==4) {
-		map_portal_add_light_quad_tessel_vertex_list(mesh,poly,div);
+		map_portal_add_light_quad_tessel_vertex_list(mesh,poly,quality_mode);
 		return;
 	}
 
 		// catch all for non-standard polygons
 
 	if (poly->box.wall_like) {
-		map_portal_add_light_wall_tessel_vertex_list(mesh,poly,div);
+		map_portal_add_light_wall_tessel_vertex_list(mesh,poly,quality_mode);
 	}
 	else {
-		map_portal_add_light_floor_tessel_vertex_list(mesh,poly,div);
+		map_portal_add_light_floor_tessel_vertex_list(mesh,poly,quality_mode);
 	}
 }
 

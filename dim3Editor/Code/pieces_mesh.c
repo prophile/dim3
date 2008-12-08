@@ -912,6 +912,8 @@ void map_optimize(void)
 	
 	if (!dialog_optimize_run(&poly_threshold)) return;
 	
+	select_clear();
+	
 	SetCursor(*GetCursor(watchCursor));
 	comb_count=map_mesh_combine_small(&map,poly_threshold);
 	InitCursor();

@@ -459,7 +459,7 @@ void map_mesh_rotate(map_type *map,int mesh_idx,float rot_x,float rot_y,float ro
 		}
 
 			// fix poly boxes
-
+			
 		map_prepare_mesh_poly(mesh,poly);
 
 		poly++;

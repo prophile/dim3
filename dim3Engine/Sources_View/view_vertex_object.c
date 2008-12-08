@@ -111,7 +111,7 @@ float* view_bind_map_vertex_object(int sz)
 
 	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
 	if (vertex_ptr==NULL) {
-		view_unmap_map_vertex_object();
+		glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 		return(NULL);
 	}
 
@@ -170,7 +170,7 @@ float* view_bind_map_next_vertex_object(int sz)
 
 	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
 	if (vertex_ptr==NULL) {
-		view_unbind_current_vertex_object();
+		glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 		return(NULL);
 	}
 
