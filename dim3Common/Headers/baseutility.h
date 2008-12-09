@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version			"3.0b2"
+#define dim3_version			"3.0b4"
 
 /* =======================================================
 
@@ -581,6 +581,15 @@ extern void shader_delete(shader_type *shader);
 #define ntohf(x)									(((float)((signed int)ntohl(x)))/1000.0f)
 
 //
+// start of message tag
+// network errors can cause messages to become split or missing
+// and we use this to synch with the correct position in the stream
+//
+
+#define net_msg_synch_tag_len						8
+#define net_msg_synch_tag							"dim3msgB"
+
+//
 // networking ports
 //
 
@@ -658,8 +667,6 @@ extern bool network_connect_block(d3socket sock,char *ip,int port,int secs,char 
 extern bool network_bind(d3socket sock,char *ip,int port,char *err_str);
 extern bool network_receive_ready(d3socket sock);
 extern bool network_send_ready(d3socket sock);
-extern int network_receive_data(d3socket sock,unsigned char *data,int len);
-extern int network_send_data(d3socket sock,unsigned char *data,int len);
 extern bool network_receive_packet(d3socket sock,int *action,int *queue_mode,int *from_remote_uid,unsigned char *data,int *len);
 extern bool network_send_packet(d3socket sock,int action,int queue_mode,int from_remote_uid,unsigned char *data,int len);
 

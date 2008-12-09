@@ -29,6 +29,8 @@ and can be sold or given away.
 	#include "dim3baseutility.h"
 #endif
 
+char		network_msg_tag[net_msg_synch_tag_len]={net_msg_synch_tag};
+
 /* =======================================================
 
       Socket Debug Code
@@ -322,8 +324,6 @@ int network_receive_data(d3socket sock,unsigned char *data,int len)
 {
 	int			recv_len,total_len,retry_count;
 
-	if (sock==D3_NULL_SOCKET) return(FALSE);
-
 	retry_count=0;
 	total_len=0;
 	
@@ -352,12 +352,56 @@ int network_receive_data(d3socket sock,unsigned char *data,int len)
 	return(total_len);
 }
 
+bool network_receive_get_next_tag(d3socket sock)
+{
+	int			tag_idx,recv_len,total_len,retry_count;
+	char		byte;
+	
+		// this code exists because it's possible a
+		// message could get broken up, delayed, smashed, etc
+
+		// we tag all messages with these bytes, and always wait
+		// until we see the bytes before considering we have
+		// another message
+
+	tag_idx=0;
+
+	retry_count=0;
+	total_len=0;
+
+	while (TRUE) {
+
+			// if no data, retry a number of times
+
+		if (!network_receive_ready(sock)) {
+			retry_count++;
+			if (retry_count>socket_no_data_retry) return(total_len);
+			usleep(socket_no_data_u_wait);
+			continue;
+		}
+
+			// look for tag
+
+		recv_len=recv(sock,&byte,1,0);
+		if (recv_len==-1) return(-1);
+
+		if (network_msg_tag[tag_idx]==byte) {
+			tag_idx++;
+			if (tag_idx==net_msg_synch_tag_len) return(TRUE);
+		}
+
+		tag_idx=0;
+	}
+}
+
 bool network_receive_packet(d3socket sock,int *action,int *queue_mode,int *from_remote_uid,unsigned char *data,int *len)
 {
 	int					recv_len,data_len;
 	network_header		head;
 	
 	if (sock==D3_NULL_SOCKET) return(FALSE);
+
+	if (!network_receive_get_next_tag(sock)) return(FALSE);
 
 	recv_len=network_receive_data(sock,(unsigned char*)&head,sizeof(network_header));
 	if (recv_len<sizeof(network_header)) return(FALSE);		// didn't get all of network header or -1 error
@@ -386,8 +430,6 @@ bool network_receive_packet(d3socket sock,int *action,int *queue_mode,int *from_
 int network_send_data(d3socket sock,unsigned char *data,int len)
 {
 	int				sent_len,total_len,retry_count;
-
-	if (sock==D3_NULL_SOCKET) return(FALSE);
 
 	retry_count=0;
 	total_len=0;
@@ -423,7 +465,14 @@ bool network_send_packet(d3socket sock,int action,int queue_mode,int from_remote
 	network_header		head;
 	
 	if (sock==D3_NULL_SOCKET) return(FALSE);
-	
+
+		// message tag
+
+	sent_len=network_send_data(sock,network_msg_tag,net_msg_synch_tag_len);
+	if (sent_len<net_msg_synch_tag_len) return(FALSE);			// couldn't get out entire tag
+
+		// header
+
 	head.len=htons((short)len);
 	head.action=htons((short)action);
 	head.queue_mode=htons((short)queue_mode);
@@ -434,6 +483,8 @@ bool network_send_packet(d3socket sock,int action,int queue_mode,int from_remote
 
 	if (data==NULL) return(TRUE);
 	
+		// data
+
 	sent_len=network_send_data(sock,data,len);
 	return(len==sent_len);										// only OK if entire data is sent
 }
