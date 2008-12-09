@@ -288,7 +288,7 @@ bool shadow_texture_init(void)
 	glLoadIdentity();
 	
 	glViewport(0,0,shadow_pbuffer_pixel_size,shadow_pbuffer_pixel_size);
-		
+
 	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT);
 

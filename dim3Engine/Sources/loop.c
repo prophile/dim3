@@ -63,9 +63,6 @@ extern bool map_rebuild_changes(char *err_str);
 extern void game_end(void);
 extern void map_end(void);
 
-// supergumba -- network testing
-int client_communication_update_msec_rate2=client_communication_update_msec_rate;
-
 /* =======================================================
 
       Game Loop Interface Quit
@@ -118,8 +115,13 @@ void loop_game_run(int tick)
 	if (net_setup.client.joined) {
 
 		if (tick>=server.time.network_update_tick) {
-			server.time.network_update_tick=tick+client_communication_update_msec_rate2;
+			server.time.network_update_tick=tick+client_communication_update_msec_rate;
 			remote_network_send_updates(tick);
+		}
+		
+		if (tick>=server.time.network_group_synch_tick) {
+			server.time.network_group_synch_tick=tick+client_communication_group_synch_msec_rate;
+			remote_network_send_group_synch();
 		}
 
 		if (tick>=server.time.network_latency_ping_tick) {

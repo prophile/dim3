@@ -50,7 +50,7 @@ void piece_duplicate(void)
 {
 	int				n,i,nsel_count,type,main_idx,sub_idx,
 					index,xadd,zadd;
-	d3pnt			mpt;
+	d3pnt			mpt,mov_pt;
 
 	undo_clear();
 	
@@ -76,7 +76,12 @@ void piece_duplicate(void)
 				
 				map_mesh_calculate_center(&map,index,&mpt);
 				piece_duplicate_offset(&xadd,&zadd);
-				map_mesh_move(&map,index,xadd,0,zadd,TRUE);
+				
+				mov_pt.x=xadd;
+				mov_pt.y=0;
+				mov_pt.z=zadd;
+				
+				map_mesh_move(&map,index,&mov_pt,TRUE);
 				
 				select_duplicate_add(mesh_piece,index,0);
 				break;
@@ -440,12 +445,21 @@ void piece_flip(bool flip_x,bool flip_y,bool flip_z)
 void piece_rotate(float rot_x,float rot_y,float rot_z)
 {
 	int				n,sel_count,type,mesh_idx,poly_idx;
+	d3pnt			center_pnt;
+	d3ang			rot;
 	
 	sel_count=select_count();
 	
+	rot.x=rot_x;
+	rot.y=rot_y;
+	rot.z=rot_z;
+	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map_mesh_rotate(&map,mesh_idx,rot_x,rot_y,rot_z,TRUE);
+		if (type!=mesh_piece) continue;
+		
+		map_mesh_calculate_center(&map,mesh_idx,&center_pnt);
+		map_mesh_rotate(&map,mesh_idx,&center_pnt,&rot,TRUE);
 	}
 	
 	main_wind_draw();
@@ -463,12 +477,17 @@ void piece_free_rotate(void)
 void piece_move(int move_x,int move_y,int move_z)
 {
 	int				n,sel_count,type,mesh_idx,poly_idx;
+	d3pnt			mov_pnt;
 	
 	sel_count=select_count();
 	
+	mov_pnt.x=move_x;
+	mov_pnt.y=move_y;
+	mov_pnt.z=move_z;
+	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map_mesh_move(&map,mesh_idx,move_x,move_y,move_z,TRUE);
+		if (type==mesh_piece) map_mesh_move(&map,mesh_idx,&mov_pnt,TRUE);
 	}
 	
 	main_wind_draw();
@@ -788,6 +807,7 @@ void piece_poly_hole(void)
 void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch)
 {
 	int				n,sel_count,type,main_idx,sub_idx,mv,xadd,yadd,zadd;
+	d3pnt			pt;
 	
 		// special check for delete key
 		
@@ -840,7 +860,10 @@ void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch)
 		switch (type) {
 		
 			case mesh_piece:
-				map_mesh_move(&map,main_idx,xadd,yadd,zadd,TRUE);
+				pt.x=xadd;
+				pt.y=yadd;
+				pt.z=zadd;
+				map_mesh_move(&map,main_idx,&pt,TRUE);
 				break;
 				
 			case liquid_piece:

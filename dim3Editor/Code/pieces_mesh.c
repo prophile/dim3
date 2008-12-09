@@ -889,9 +889,14 @@ void piece_split_mesh(void)
 void map_mesh_move_all(int x,int y,int z)
 {
 	int				n;
+	d3pnt			pt;
+	
+	pt.x=x;
+	pt.y=y;
+	pt.z=z;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		map_mesh_move(&map,n,x,y,z,TRUE);
+		map_mesh_move(&map,n,&pt,TRUE);
 	}
 }
 

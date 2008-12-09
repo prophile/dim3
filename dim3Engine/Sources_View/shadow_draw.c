@@ -440,6 +440,7 @@ void shadow_render_test(void)
 	glTexCoord2f(0.0f,1.0f);
 	glVertex2i(0,256);
 	glEnd();
+	
 	gl_shadow_texture_bind_end();		
 }
 

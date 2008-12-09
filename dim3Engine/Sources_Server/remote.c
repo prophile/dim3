@@ -829,23 +829,22 @@ bool remote_network_get_updates(int tick)
 
 /* =======================================================
 
-      Remote Networking Updates
+      Remote Networking Updates, Pings, and Synchs
       
 ======================================================= */
 
 void remote_network_send_updates(int tick)
 {
 	obj_type			*obj;
-    
+   
 	obj=object_find_uid(server.player_obj_uid);
 	net_client_send_remote_update(tick,net_setup.client.remote_uid,obj,hud.chat.type_on);
 }
 
-/* =======================================================
-
-      Remote Networking Latency Pings
-      
-======================================================= */
+void remote_network_send_group_synch(void)
+{
+	net_client_request_group_synch_ping(net_setup.client.remote_uid);
+}
 
 void remote_network_send_latency_ping(int tick)
 {

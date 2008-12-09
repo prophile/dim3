@@ -364,8 +364,12 @@ bool map_start(bool skip_media,char *err_str)
 		// restart all the timing
 		
 	tick=game_time_get();
+	
 	map.start_game_tick=tick;
 	server.time.run_tick=tick;
+	server.time.network_update_tick=tick;
+	server.time.network_group_synch_tick=tick;
+	server.time.network_latency_ping_tick=tick;	
 	view.time.run_tick=tick;
 	js.time.timer_tick=tick;
 

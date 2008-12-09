@@ -192,9 +192,6 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 		CGLSetParameter(current_ctx,kCGLCPSwapInterval,&swapint);
 	}	
 #endif
-    
-	glEnable(GL_SCISSOR_TEST);
-	glScissor(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz);
 
 	glViewport(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz);
 	

@@ -115,6 +115,7 @@ bool map_textures_read(map_type *map,bool in_engine)
 			liq++;
 		}
 		
+		if (map->fog.texture_idx!=-1) txt_ok[map->fog.texture_idx]=TRUE;
 		if (map->background.fill!=-1) txt_ok[map->background.fill]=TRUE;
 		if (map->sky.fill!=-1) txt_ok[map->sky.fill]=TRUE;
 		if (map->sky.bottom_fill!=-1) txt_ok[map->sky.bottom_fill]=TRUE;

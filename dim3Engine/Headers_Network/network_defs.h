@@ -45,7 +45,8 @@ and can be sold or given away.
 #define client_message_per_loop_count				5
 
 #define client_communication_update_msec_rate		50
-#define client_communication_latency_ping_msec_rate	4000
+#define client_communication_group_synch_msec_rate	10000
+#define client_communication_latency_ping_msec_rate	5000
 
 #define client_communication_timeout_msec			1000
 
