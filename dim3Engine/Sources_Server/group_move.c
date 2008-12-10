@@ -482,19 +482,11 @@ void group_moves_synch_with_host(network_reply_group_synch *synch)
 	cuml_mov_add.y=ntohl(synch->cuml_mov_add_y)-group->move.cuml_mov_add.y;
 	cuml_mov_add.z=ntohl(synch->cuml_mov_add_z)-group->move.cuml_mov_add.z;
 
-	group->move.cuml_mov_add.x=0;
-	group->move.cuml_mov_add.y=0;
-	group->move.cuml_mov_add.z=0;
-
 	group_move(group,&cuml_mov_add);
 
 	cuml_rot_add.x=ntohf(synch->fp_cuml_rot_add_x)-group->move.cuml_rot_add.x;
 	cuml_rot_add.y=ntohf(synch->fp_cuml_rot_add_y)-group->move.cuml_rot_add.y;
 	cuml_rot_add.z=ntohf(synch->fp_cuml_rot_add_z)-group->move.cuml_rot_add.z;
-
-	group->move.cuml_rot_add.x=0;
-	group->move.cuml_rot_add.y=0;
-	group->move.cuml_rot_add.z=0;
 
 	group_rotate(group,&cuml_rot_add);
 }

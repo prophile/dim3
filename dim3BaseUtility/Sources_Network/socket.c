@@ -350,6 +350,44 @@ int network_receive_data(d3socket sock,unsigned char *data,int len)
 	return(total_len);
 }
 
+bool network_find_next_tag(d3socket sock)
+{
+	int				idx,retry_count,header_count;
+	unsigned char	byte,tag[net_header_tag_size]=net_header_tag;
+
+	idx=0;
+	header_count=0;
+	retry_count=0;
+	
+	while (TRUE) {
+
+			// if no data, retry a number of times
+
+		if (!network_receive_ready(sock)) {
+			retry_count++;
+			if (retry_count>socket_no_data_retry) return(FALSE);
+			usleep(socket_no_data_u_wait);
+			continue;
+		}
+	
+			// grab the data
+			
+		if (recv(sock,&byte,1,0)==-1) return(FALSE);
+
+		if (byte!=tag[idx]) {
+			idx=0;
+			header_count++;
+			if (header_count>net_header_retry_count) return(FALSE);
+			continue;
+		}
+
+		idx++;
+		if (idx==net_header_tag_size) return(TRUE);
+	}
+	
+	return(TRUE);
+}
+
 bool network_receive_packet(d3socket sock,int *action,int *queue_mode,int *from_remote_uid,unsigned char *data,int *len)
 {
 	int					recv_len,data_len;
@@ -357,18 +395,21 @@ bool network_receive_packet(d3socket sock,int *action,int *queue_mode,int *from_
 	
 	if (sock==D3_NULL_SOCKET) return(FALSE);
 
+		// find tag.  We use these tags to tell
+		// if we are really entering a dim3 message block
+		// otherwise, something is desperately wrong and
+		// we'll keep unwinding until we see a good block
+
+	if (!network_find_next_tag(sock)) return(FALSE);
+
+		// get the header
+
 	recv_len=network_receive_data(sock,(unsigned char*)&head,sizeof(network_header));
 	if (recv_len<sizeof(network_header)) return(FALSE);		// didn't get all of network header or -1 error
 	
-		// check to see if tag is right
-		
-	if (memcmp(head.tag,net_header_tag,4)!=0) return(FALSE);
-	
-		// get header
-	
-	*action=(int)head.action;
-	if (queue_mode!=NULL) *queue_mode=(int)head.queue_mode;
 	*len=data_len=(signed short)ntohs(head.len);
+	*action=(signed short)ntohs(head.action);
+	if (queue_mode!=NULL) *queue_mode=(signed short)ntohs(head.queue_mode);
 	*from_remote_uid=(signed short)ntohs(head.from_remote_uid);
 	
 		// check for any other header errors
@@ -428,16 +469,20 @@ bool network_send_packet(d3socket sock,int action,int queue_mode,int from_remote
 	
 	if (sock==D3_NULL_SOCKET) return(FALSE);
 
+		// tag (check recieve for explination)
+
+	sent_len=network_send_data(sock,net_header_tag,net_header_tag_size);
+	if (sent_len<net_header_tag_size) return(FALSE);
+
 		// header
 
-	memcpy(head.tag,net_header_tag,4);
-	head.action=(unsigned char)action;
-	head.queue_mode=(unsigned char)queue_mode;
 	head.len=htons((short)len);
+	head.action=htons((short)action);
+	head.queue_mode=htons((short)queue_mode);
 	head.from_remote_uid=htons((short)from_remote_uid);
 	
 	sent_len=network_send_data(sock,(unsigned char*)&head,sizeof(network_header));
-	if (sent_len<sizeof(network_header)) return(FALSE);			// couldn't get out entire header
+	if (sent_len<sizeof(network_header)) return(FALSE);
 
 	if (data==NULL) return(TRUE);
 	

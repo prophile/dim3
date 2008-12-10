@@ -615,12 +615,17 @@ extern void shader_delete(shader_type *shader);
 //
 // common message header
 //
+// make sure this is always dividable by 4 to help find next message start when
+// transmission becomes garbled
+//
 
-#define net_header_tag								"dim3"
+#define net_header_tag_size							8
+#define net_header_tag								"dim3blck"
+
+#define net_header_retry_count						50
 
 typedef struct		{
-						unsigned char				tag[4],action,queue_mode;
-						short						len,from_remote_uid;
+						short						len,action,queue_mode,from_remote_uid;
 					} network_header;
 
 //
