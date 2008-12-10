@@ -75,6 +75,7 @@ int map_mesh_add(map_type *map)
 	mesh->flag.touched=FALSE;
 	mesh->flag.lock_uv=FALSE;
 	mesh->flag.no_self_obscure=FALSE;
+	mesh->flag.rot_independent=FALSE;
 
 	mesh->rot_off.x=mesh->rot_off.y=mesh->rot_off.z=0;
 

@@ -581,15 +581,6 @@ extern void shader_delete(shader_type *shader);
 #define ntohf(x)									(((float)((signed int)ntohl(x)))/1000.0f)
 
 //
-// start of message tag
-// network errors can cause messages to become split or missing
-// and we use this to synch with the correct position in the stream
-//
-
-#define net_msg_synch_tag_len						8
-#define net_msg_synch_tag							"dim3msgB"
-
-//
 // networking ports
 //
 
@@ -625,8 +616,11 @@ extern void shader_delete(shader_type *shader);
 // common message header
 //
 
+#define net_header_tag								"dim3"
+
 typedef struct		{
-						short						len,action,queue_mode,from_remote_uid;
+						unsigned char				tag[4],action,queue_mode;
+						short						len,from_remote_uid;
 					} network_header;
 
 //

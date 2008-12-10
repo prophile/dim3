@@ -368,6 +368,7 @@ void write_single_mesh(map_mesh_type *mesh)
 	xml_add_attribute_boolean("hilite",mesh->flag.hilite);
 	xml_add_attribute_boolean("lock_uv",mesh->flag.lock_uv);
 	xml_add_attribute_boolean("no_self_obscure",mesh->flag.no_self_obscure);
+	xml_add_attribute_boolean("rot_independent",mesh->flag.rot_independent);
 	
 	xml_add_attribute_3_coord_int("rot_off",mesh->rot_off.x,mesh->rot_off.y,mesh->rot_off.z);
 

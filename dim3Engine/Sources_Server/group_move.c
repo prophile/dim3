@@ -310,7 +310,13 @@ void group_rotate(group_type *group,d3ang *fpnt)
 				// move mesh and mark as
 				// touched so it can be saved with games
 
-			map_mesh_rotate(&map,unit_list->idx,&group->center_pnt,fpnt,FALSE);
+			if (mesh->flag.rot_independent) {
+				map_mesh_rotate(&map,unit_list->idx,&mesh->box.mid,fpnt,FALSE);
+			}
+			else {
+				map_mesh_rotate(&map,unit_list->idx,&group->center_pnt,fpnt,FALSE);
+			}
+			
 			mesh->flag.touched=TRUE;
 
 				// rotate objects and decals with mesh

@@ -1840,10 +1840,10 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 
 void element_draw_table(element_type *element,int sel_id)
 {
-	int				n,x,y,wid,high,cnt,lft,rgt,top,bot,mx,my,row_high;
+	int				n,x,y,wid,high,cnt,lft,rgt,top,bot,tick,row_high;
 	char			*c;
 	bool			up_ok,down_ok;
-	d3col			line_col;
+	d3col			col,col2,line_col;
 
 		// sizes
 	
@@ -1970,41 +1970,22 @@ void element_draw_table(element_type *element,int sel_id)
 	if (element->setup.table.busy) {
 		element_get_box(element,&lft,&rgt,&top,&bot);
 		
-		rgt--;
-		lft=rgt-23;
-		top++;
-		bot=top+29;
-
-		mx=(lft+rgt)>>1;
-		my=(top+bot)>>1;
+		bot=top+(high+3);
 		
-		glBegin(GL_TRIANGLES);
-
-		glColor4f((hud.color.hilite.r*0.5f),(hud.color.hilite.g*0.5f),(hud.color.hilite.b*0.5f),1.0f);
-		
-		switch ((time_get()>>7)&0x3) {
-			case 0:
-				glVertex2i(lft,top);
-				glVertex2i(rgt,top);
-				break;
-			case 1:
-				glVertex2i(rgt,top);
-				glVertex2i(rgt,bot);
-				break;
-			case 2:
-				glVertex2i(lft,bot);
-				glVertex2i(rgt,bot);
-				break;
-			case 3:
-				glVertex2i(lft,top);
-				glVertex2i(lft,bot);
-				break;
+		tick=(time_get()>>1)%1000;
+		if (tick<500) {
+			lft=rgt-22;
+			rgt=lft+((22*tick)/500);
+		}
+		else {
+			lft=rgt-((22*(tick-500))/500);
 		}
 		
-		glColor4f((hud.color.hilite.r*0.8f),(hud.color.hilite.g*0.8f),(hud.color.hilite.b*0.8f),1.0f);
-		glVertex2i(mx,my);
-
-		glEnd();
+		col.r=hud.color.hilite.r*0.5f;
+		col.g=hud.color.hilite.g*0.5f;
+		col.b=hud.color.hilite.b*0.5f;
+		
+		view_draw_next_vertex_object_2D_color_quad(lft,top,&hud.color.hilite,rgt,top,&col,rgt,bot,&col,lft,bot,&hud.color.hilite,1.0f);
 	}
 	
 		// text positions
@@ -2032,16 +2013,21 @@ void element_draw_table(element_type *element,int sel_id)
 			// selection or background
 			
 		if ((n+element->offset)==element->value) {
-			glColor4f(hud.color.hilite.r,hud.color.hilite.g,hud.color.hilite.b,1.0f);
+			memmove(&col,&hud.color.hilite,sizeof(d3col));
+			col2.r=col.r*0.5f;
+			col2.g=col.g*0.5f;
+			col2.b=col.b*0.5f;
 			line_col.r=line_col.g=line_col.b=0.0f;
 		}
 		else {
 			if (((n+element->offset)&0x1)==0) {
-				glColor4f(0.0f,0.0f,0.0f,1.0f);
+				col.r=col.g=col.b=0.0f;
+				col2.r=col2.g=col2.b=0.0f;
 				line_col.r=line_col.g=line_col.b=0.25f;
 			}
 			else {
-				glColor4f(0.15f,0.15f,0.15f,1.0f);
+				col.r=col.g=col.b=0.15f;
+				col2.r=col2.g=col2.b=0.15f;
 				line_col.r=line_col.g=line_col.b=0.0f;
 			}
 		}
@@ -2053,12 +2039,7 @@ void element_draw_table(element_type *element,int sel_id)
 		top=y;
 		bot=y+row_high;
 		
-		glBegin(GL_QUADS);
-		glVertex2i(lft,top);
-		glVertex2i(rgt,top);
-		glVertex2i(rgt,bot);
-		glVertex2i(lft,bot);
-		glEnd();
+		view_draw_next_vertex_object_2D_color_quad(lft,top,&col,rgt,top,&col,rgt,bot,&col2,lft,bot,&col2,1.0f);
 		
 			// table line
 			

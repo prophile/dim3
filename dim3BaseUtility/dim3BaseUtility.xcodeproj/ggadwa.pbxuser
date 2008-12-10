@@ -52,8 +52,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 250292643;
-			PBXWorkspaceStateSaveDate = 250292643;
+			PBXPerProjectTemplateStateSaveDate = 250575051;
+			PBXWorkspaceStateSaveDate = 250575051;
 		};
 		sourceControlManager = 26A5EABE0D404BD000BB47DE /* Source Control */;
 		userBuildSettings = {
@@ -88,6 +88,14 @@
 	};
 	F53F280A0BC1C74800EB3C0F /* dim3BaseUtility */ = {
 		activeExec = 0;
+	};
+	F54A715E0C76A940005AAE98 /* socket_udp.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2212}}";
+			sepNavSelRange = "{1982, 29}";
+			sepNavVisRange = "{1690, 955}";
+			sepNavWindowFrame = "{{350, 124}, {1041, 747}}";
+		};
 	};
 	F556BC740C7BA9E90059E7FC /* file_search.c */ = {
 		uiCtxt = {
@@ -147,10 +155,10 @@
 	};
 	F5AD52A00BBE16AC001C7C04 /* baseutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1032, 9352}}";
-			sepNavSelRange = "{8153, 6}";
-			sepNavVisRange = "{7300, 2439}";
-			sepNavWindowFrame = "{{730, 84}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1032, 9408}}";
+			sepNavSelRange = "{21536, 14}";
+			sepNavVisRange = "{20902, 826}";
+			sepNavWindowFrame = "{{467, 148}, {1041, 747}}";
 		};
 	};
 	F5AD52A90BBE1720001C7C04 /* baseprivate.h */ = {
@@ -227,10 +235,10 @@
 	};
 	F5AD53080BBE1A74001C7C04 /* socket.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {728, 6034}}";
-			sepNavSelRange = "{7221, 102}";
-			sepNavVisRange = "{6919, 387}";
-			sepNavWindowFrame = "{{61, 234}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5936}}";
+			sepNavSelRange = "{1000, 0}";
+			sepNavVisRange = "{219, 1275}";
+			sepNavWindowFrame = "{{386, 129}, {1041, 747}}";
 		};
 	};
 	F5AD53090BBE1A74001C7C04 /* queue.c */ = {

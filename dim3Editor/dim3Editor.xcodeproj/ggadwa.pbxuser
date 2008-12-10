@@ -143,27 +143,16 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 250467572;
-			PBXWorkspaceStateSaveDate = 250467572;
+			PBXPerProjectTemplateStateSaveDate = 250576541;
+			PBXWorkspaceStateSaveDate = 250576541;
 		};
 		perUserProjectItems = {
-			260231890EEDD80E00675B93 /* PlistBookmark */ = 260231890EEDD80E00675B93 /* PlistBookmark */;
-			2659E8FA0EECE4C400712FD4 /* PlistBookmark */ = 2659E8FA0EECE4C400712FD4 /* PlistBookmark */;
+			26AA095D0EEF7FE900FD591C /* PlistBookmark */ = 26AA095D0EEF7FE900FD591C /* PlistBookmark */;
+			26C545AE0EEF4DDD000EB8B5 /* PlistBookmark */ = 26C545AE0EEF4DDD000EB8B5 /* PlistBookmark */;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBuildSettings = {
 		};
-	};
-	260231890EEDD80E00675B93 /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
 	};
 	260AFEF40D40506A00F6C42F /* dim3 Editor */ = {
 		isa = PBXExecutable;
@@ -308,17 +297,6 @@
 			sepNavWindowFrame = "{{344, 157}, {1041, 747}}";
 		};
 	};
-	2659E8FA0EECE4C400712FD4 /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
-	};
 	26772F800EBE8A6600F9E241 /* dialog_reposition.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 1904}}";
@@ -351,6 +329,17 @@
 			sepNavWindowFrame = "{{419, 157}, {1041, 747}}";
 		};
 	};
+	26AA095D0EEF7FE900FD591C /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+		);
+		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
+		rLen = 0;
+		rLoc = 2147483647;
+	};
 	26AFB4480D95E0E60004805A /* pieces_mesh.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 12838}}";
@@ -361,9 +350,9 @@
 	};
 	26AFB4BF0D9612570004805A /* dialog_mesh_setting.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 3598}}";
-			sepNavSelRange = "{1029, 0}";
-			sepNavVisRange = "{133, 1931}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 3556}}";
+			sepNavSelRange = "{8990, 0}";
+			sepNavVisRange = "{7814, 2398}";
 			sepNavWindowFrame = "{{458, 208}, {1041, 747}}";
 		};
 	};
@@ -382,6 +371,17 @@
 			sepNavVisRange = "{328, 1183}";
 			sepNavWindowFrame = "{{349, 232}, {1041, 747}}";
 		};
+	};
+	26C545AE0EEF4DDD000EB8B5 /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+		);
+		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
+		rLen = 0;
+		rLoc = 2147483647;
 	};
 	26DB6D960DDFCE4100BDD008 /* dialog_resize.c */ = {
 		uiCtxt = {

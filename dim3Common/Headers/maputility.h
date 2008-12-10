@@ -264,7 +264,8 @@ typedef struct		{
 typedef struct		{
 						bool								on,pass_through,moveable,
 															hilite,climbable,shiftable,
-															lock_uv,no_self_obscure,touched,
+															lock_uv,no_self_obscure,
+															rot_independent,touched,
 															has_bump,has_specular,has_glow;
 					} map_mesh_flag_type;
 

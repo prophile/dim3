@@ -702,6 +702,7 @@ void read_settings_interface_button(int tag,hud_intro_button_type *btn)
 	btn->high=xml_get_attribute_int_default(tag,"height",-1);
 	btn->on=xml_get_attribute_boolean(tag,"on");
 	btn->on=xml_get_attribute_boolean(tag,"on");
+	btn->popup=xml_get_attribute_boolean(tag,"popup");
 }
 
 /* =======================================================
@@ -879,13 +880,6 @@ void read_settings_interface(void)
 		
 	button_tag=xml_findfirstchild("Buttons",interface_head_tag);
 	if (button_tag!=-1) {
-
-			// button settings
-
-		hud.intro.popup=xml_get_attribute_boolean(button_tag,"popup");
-
-			// buttons
-
 		read_settings_interface_button(xml_findfirstchild("Game",button_tag),&hud.intro.button_game);
 		read_settings_interface_button(xml_findfirstchild("Game_New",button_tag),&hud.intro.button_game_new);
 		read_settings_interface_button(xml_findfirstchild("Game_Load",button_tag),&hud.intro.button_game_load);
