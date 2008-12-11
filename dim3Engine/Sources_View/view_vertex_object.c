@@ -103,6 +103,17 @@ float* view_bind_map_vertex_object(int sz)
 	sz*=sizeof(float);
 
 	if (sz>vbo_map_sz) {
+
+			// we need to grab the pointer first so if the data
+			// is still being used then we'll be stalled
+
+		if (vbo_map_sz!=-1) {
+			vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+			glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+		}
+
+			// now we can change the size
+
 		vbo_map_sz=sz;
 		glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
 	}
@@ -162,6 +173,17 @@ float* view_bind_map_next_vertex_object(int sz)
 	sz*=sizeof(float);
 
 	if (sz>vbo_cache_sz[cur_vbo_cache_idx]) {
+
+			// we need to grab the pointer first so if the data
+			// is still being used then we'll be stalled
+
+		if (vbo_cache_sz[cur_vbo_cache_idx]!=-1) {
+			vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+			glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+		}
+
+			// now we can change the size
+
 		vbo_cache_sz[cur_vbo_cache_idx]=sz;
 		glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
 	}
@@ -197,10 +219,10 @@ void view_draw_next_vertex_object_2D_texture_screen(int wid,int high,float gx,fl
 {
 	float			*vertex_ptr,*uv_ptr;
 
-	vertex_ptr=view_bind_map_next_vertex_object(((4*4)*(2+2)));
+	vertex_ptr=view_bind_map_next_vertex_object(4*(2+2));
 	if (vertex_ptr==NULL) return;
 
-	uv_ptr=vertex_ptr+((4*4)*2);
+	uv_ptr=vertex_ptr+(4*2);
 
 		// get the vertexes
 
@@ -236,7 +258,7 @@ void view_draw_next_vertex_object_2D_texture_screen(int wid,int high,float gx,fl
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((4*4)*2)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
 
 	glDrawArrays(GL_QUADS,0,4);
 
@@ -252,7 +274,7 @@ void view_draw_next_vertex_object_2D_tint_screen(void)
 {
 	float			*vertex_ptr;
 
-	vertex_ptr=view_bind_map_next_vertex_object((4*4)*2);
+	vertex_ptr=view_bind_map_next_vertex_object(4*2);
 	if (vertex_ptr==NULL) return;
 
 		// get the vertexes
@@ -289,10 +311,10 @@ void view_draw_next_vertex_object_2D_texture_quad(int lft,int rgt,int top,int bo
 {
 	float			*vertex_ptr,*uv_ptr;
 
-	vertex_ptr=view_bind_map_next_vertex_object(((4*4)*(2+2)));
+	vertex_ptr=view_bind_map_next_vertex_object(4*(2+2));
 	if (vertex_ptr==NULL) return;
 
-	uv_ptr=vertex_ptr+((4*4)*2);
+	uv_ptr=vertex_ptr+(4*2);
 
 		// get the vertexes
 
@@ -328,7 +350,7 @@ void view_draw_next_vertex_object_2D_texture_quad(int lft,int rgt,int top,int bo
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((4*4)*2)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
 
 	glDrawArrays(GL_QUADS,0,4);
 
@@ -344,10 +366,10 @@ void view_draw_next_vertex_object_2D_color_quad(int x0,int y0,d3col *col0,int x1
 {
 	float			*vertex_ptr,*col_ptr;
 
-	vertex_ptr=view_bind_map_next_vertex_object(((4*4)*(2+3)));
+	vertex_ptr=view_bind_map_next_vertex_object(4*(2+3));
 	if (vertex_ptr==NULL) return;
 
-	col_ptr=vertex_ptr+((4*4)*2);
+	col_ptr=vertex_ptr+(4*2);
 
 		// get the vertexes
 
@@ -387,7 +409,7 @@ void view_draw_next_vertex_object_2D_color_quad(int x0,int y0,d3col *col0,int x1
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(3,GL_FLOAT,0,(void*)(((4*4)*2)*sizeof(float)));
+	glColorPointer(3,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
 
 	glDrawArrays(GL_QUADS,0,4);
 
@@ -403,7 +425,7 @@ void view_draw_next_vertex_object_2D_line_quad(int lft,int rgt,int top,int bot)
 {
 	float			*vertex_ptr;
 
-	vertex_ptr=view_bind_map_next_vertex_object(((4*4)*2));
+	vertex_ptr=view_bind_map_next_vertex_object(4*2);
 	if (vertex_ptr==NULL) return;
 
 		// get the vertexes

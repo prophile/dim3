@@ -826,7 +826,7 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 	glEnable(GL_STENCIL_TEST);
 
 	for (stencil_pass=0;stencil_pass<=stencil_pass_cnt;stencil_pass++) {
-		
+
 		render_opaque_portal_normal(mesh_cnt,mesh_list,stencil_pass,is_fog_lighting);
 		render_opaque_portal_bump(mesh_cnt,mesh_list,stencil_pass,is_fog_lighting);
 

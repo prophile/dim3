@@ -78,7 +78,7 @@ void draw_weapon_hand(int tick,obj_type *obj,weapon_type *weap)
 	glDepthMask(GL_TRUE);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-		// draw model
+		// regular weapon model
 	
 	model_clear_draw_setup(mdl,&draw->setup);
 	model_draw_setup_weapon(tick,obj,weap,FALSE);
@@ -87,5 +87,16 @@ void draw_weapon_hand(int tick,obj_type *obj,weapon_type *weap)
 	model_calc_draw_bones(draw);
 	
 	model_render(tick,draw);
+
+		// dual wielded weapons
+/*
+	model_clear_draw_setup(mdl,&draw->setup);
+	model_draw_setup_weapon(tick,obj,weap,FALSE);
+
+	model_calc_animation(draw);
+	model_calc_draw_bones(draw);
+	
+	model_render(tick,draw);
+*/
 }
 

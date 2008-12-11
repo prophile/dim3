@@ -345,10 +345,10 @@ void draw_sky_dome_hemisphere(int tick)
 
 		// construct VBO
 
-	vertex_ptr=view_bind_map_next_vertex_object(((120*4)*(3+2)));
+	vertex_ptr=view_bind_map_next_vertex_object(((100*4)*(3+2)));
 	if (vertex_ptr==NULL) return;
 
-	uv_ptr=vertex_ptr+((120*4)*3);
+	uv_ptr=vertex_ptr+((100*4)*3);
 
 		// create the dome vertexes
 
@@ -434,7 +434,7 @@ void draw_sky_dome_hemisphere(int tick)
 	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 		
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((120*4)*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((100*4)*3)*sizeof(float)));
 
 	glDrawArrays(GL_QUADS,0,dome_cnt);
 	glDrawArrays(GL_TRIANGLES,dome_cnt,trig_cnt);
