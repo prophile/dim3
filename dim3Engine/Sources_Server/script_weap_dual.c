@@ -117,7 +117,7 @@ JSBool js_set_weap_dual_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 			weap->dual.active=JSVAL_TO_BOOLEAN(*vp);
 			break;
 		case weap_dual_prop_hand_offset:
-			weap->ammo.count=JSVAL_TO_INT(*vp);
+			weap->dual.hand_offset=JSVAL_TO_INT(*vp);
 			break;
 
 	}

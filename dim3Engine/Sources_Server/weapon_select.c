@@ -471,6 +471,12 @@ void weapon_run_hand(obj_type *obj,int tick)
 	model_fade_run(tick,&weap->draw);
 	model_mesh_fade_run(tick,&weap->draw);
 
+	if ((weap->dual.on) && (weap->dual.active)) {
+		model_run_animation(&weap->draw_dual);
+		model_fade_run(tick,&weap->draw_dual);
+		model_mesh_fade_run(tick,&weap->draw_dual);
+	}
+
 		// recoil changes
 
 	weapon_recoil_run(obj,weap);

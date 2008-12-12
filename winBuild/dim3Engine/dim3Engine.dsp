@@ -1007,6 +1007,10 @@ SOURCE=..\..\dim3Engine\Sources_Server\script_weap_crosshair_pickup_color.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_dual.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Engine\Sources_Server\script_weap_fire.c
 # End Source File
 # Begin Source File

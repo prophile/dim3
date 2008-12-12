@@ -706,7 +706,7 @@ typedef struct		{
 					} weap_crosshair_type;
 					
 typedef struct		{
-						int						method,last_fire_tick;
+						int						method,last_fire_tick,last_fire_dual_tick;
 						bool					cancel;
 					} weap_fire_type;
 

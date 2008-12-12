@@ -35,6 +35,7 @@ and can be sold or given away.
 extern js_type			js;
 
 JSBool js_get_weap_fire_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_fire_past_last_fire_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_weap_fire_cancel_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			weap_fire_class={"weap_fire_class",0,
@@ -43,12 +44,13 @@ JSClass			weap_fire_class={"weap_fire_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 JSPropertySpec	weap_fire_props[]={
-							{"method",				weap_fire_prop_method,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"lastFireTick",		weap_fire_prop_last_fire_tick,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"method",				weap_fire_prop_method,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"lastFireTick",		weap_fire_prop_last_fire_tick,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 							
 JSFunctionSpec	weap_fire_functions[]={
-							{"cancel",				js_weap_fire_cancel_func,			0},
+							{"pastLastFire",		js_weap_fire_past_last_fire_func,		1},
+							{"cancel",				js_weap_fire_cancel_func,				0},
 							{0}};
 
 /* =======================================================
@@ -87,7 +89,12 @@ JSBool js_get_weap_fire_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 			break;
 			
 		case weap_fire_prop_last_fire_tick:
-			*vp=INT_TO_JSVAL(weap->fire.last_fire_tick);
+			if ((weap->dual.on) && (weap->dual.active)) {
+				*vp=INT_TO_JSVAL(weap->fire.last_fire_dual_tick);
+			}
+			else {
+				*vp=INT_TO_JSVAL(weap->fire.last_fire_tick);
+			}
 			break;
 			
 	}
@@ -97,9 +104,34 @@ JSBool js_get_weap_fire_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 
 /* =======================================================
 
-      Weapon Fire Cancel
+      Weapon Fire Routines
       
 ======================================================= */
+
+JSBool js_weap_fire_past_last_fire_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int				last_fire_tick;
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	
+	if ((weap->dual.on) && (weap->dual.active)) {
+		last_fire_tick=weap->fire.last_fire_dual_tick;
+	}
+	else {
+		last_fire_tick=weap->fire.last_fire_tick;
+	}
+
+	if (js.time.current_tick>(last_fire_tick+JSVAL_TO_INT(argv[0]))) {
+		*rval=JSVAL_TRUE;
+	}
+	else {
+		*rval=JSVAL_FALSE;
+	}
+    
+	return(JS_TRUE);
+}
+
 
 JSBool js_weap_fire_cancel_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {

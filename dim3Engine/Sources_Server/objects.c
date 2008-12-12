@@ -589,6 +589,9 @@ obj_type* object_create(int bind,int reserve_uid)
 
 	obj->auto_walk.mode=aw_none;
 	obj->auto_walk.node_slop=map_enlarge*5;
+
+	obj->fs_effect.tint.on=FALSE;
+	obj->fs_effect.fade.on=FALSE;
 	
 	object_clear_contact(&obj->contact);
 	object_clear_touch(&obj->touch);

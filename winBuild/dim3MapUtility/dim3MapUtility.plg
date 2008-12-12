@@ -6,38 +6,13 @@
 --------------------Configuration: dim3MapUtility - Win32 Release--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP4E6.tmp" with contents
+Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP1DA.tmp" with contents
 [
 /nologo /MD /W3 /GX /O2 /I "..\win32Includes\pthreads" /I "..\win32Includes\GLEW" /I "..\win32Includes\ZLib" /I "..\win32Includes\SDL" /I "..\win32Includes\OpenAL" /I "..\win32Includes\JS" /I "..\win32Includes\PNG" /I "..\..\dim3MapUtility\Headers" /I "..\..\dim3Common\Headers" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "D3_PCH" /Fp"Release/dim3MapUtility.pch" /YX"dim3MapUtility.h" /Fo"Release/" /Fd"Release/" /FD /c 
-"C:\Gumba\dim3Code\winBuild\dim3MapUtility\win32Code\dim3MapUtility.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\auto_generate.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\auto_generate_blocking.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\auto_generate_door_ramp_step.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\auto_generate_light_spot.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\auto_generate_utility.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\file_map_read.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\file_map_read_v1.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\file_map_read_v1_curves.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\file_map_read_v2.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\file_map_read_v3.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\file_map_shader.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\file_map_texture.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\file_map_write.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\groups.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\map_frames.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\map_liquid.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\map_liquid_update.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\map_main.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\map_mesh.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\map_mesh_update.c"
 "C:\Gumba\dim3Code\dim3MapUtility\Sources\map_vertex_list.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\movements.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\nodes.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\prepare.c"
-"C:\Gumba\dim3Code\dim3MapUtility\Sources\spots.c"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP4E6.tmp" 
-Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP4E7.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP1DA.tmp" 
+Creating temporary file "C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP1DB.tmp" with contents
 [
 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"Release/dim3MapUtility.pdb" /machine:I386 /def:".\win32Code\dim3MapUtility.def" /out:"..\..\..\dim3\dim3MapUtility.dll" /implib:"Release/dim3MapUtility.lib" 
 .\Release\dim3MapUtility.obj
@@ -75,35 +50,10 @@ kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32
 ..\win32Includes\ZLib\zdll.lib
 ..\dim3BaseUtility\Release\dim3BaseUtility.lib
 ]
-Creating command line "link.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP4E7.tmp"
+Creating command line "link.exe @C:\DOCUME~1\bbarnes\LOCALS~1\Temp\RSP1DB.tmp"
 <h3>Output Window</h3>
 Compiling...
-dim3MapUtility.c
-auto_generate.c
-auto_generate_blocking.c
-auto_generate_door_ramp_step.c
-auto_generate_light_spot.c
-auto_generate_utility.c
-file_map_read.c
-file_map_read_v1.c
-file_map_read_v1_curves.c
-file_map_read_v2.c
-file_map_read_v3.c
-file_map_shader.c
-file_map_texture.c
-file_map_write.c
-groups.c
-map_frames.c
-map_liquid.c
-map_liquid_update.c
-map_main.c
-map_mesh.c
-map_mesh_update.c
 map_vertex_list.c
-movements.c
-nodes.c
-prepare.c
-spots.c
 Linking...
    Creating library Release/dim3MapUtility.lib and object Release/dim3MapUtility.exp
 
