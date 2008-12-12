@@ -299,7 +299,7 @@ void crosshair_draw_debug(obj_type *obj,weapon_type *weap)
 	pose_idx=model_find_pose(mdl,weap->proj.fire_pose_name);
 	if (pose_idx==-1) return;
 
-	model_draw_setup_weapon(server.time.run_tick,obj,weap,TRUE);
+	model_draw_setup_weapon(server.time.run_tick,obj,weap,TRUE,FALSE);
 	model_calc_draw_bone_position(mdl,&weap->draw.setup,pose_idx,bone_idx,&sx,&sy,&sz);
 
 	sx+=weap->draw.pnt.x;

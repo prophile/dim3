@@ -172,7 +172,7 @@ bool melee_strike_position_weapon_model(int tick,obj_type *obj,weapon_type *weap
 		return(FALSE);
 	}
 
-	model_draw_setup_weapon(tick,obj,weap,TRUE);
+	model_draw_setup_weapon(tick,obj,weap,TRUE,FALSE);
 
 	setup=&weap->draw.setup;
 

@@ -263,8 +263,13 @@ bool weapon_create(obj_type *obj,char *name)
 	weap->melee.force=0;
 	
 	weap->fire.last_fire_tick=-1;
+	
+	weap->dual.on=FALSE;
+	weap->dual.active=FALSE;
+	weap->dual.hand_offset=0;
 
 	object_clear_draw(&weap->draw);
+	object_clear_draw(&weap->draw_dual);
 	
 	weap->attach.script_uid=-1;
 	
@@ -304,6 +309,8 @@ void weapon_start(weapon_type *weap)
 
 	scripts_add_console(&weap->attach,"Weapons",weap->name,NULL,err_str);
 	model_load_and_init(&weap->draw);
+	
+	memmove(&weap->draw_dual,&weap->draw,sizeof(model_draw));		// make sure dual is setup the same
 	
 	weapon_reset_ammo(weap);
 }

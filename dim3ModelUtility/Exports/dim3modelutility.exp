@@ -53,6 +53,7 @@ _model_create_draw_vertexes
 _model_create_draw_2D_vertexes
 
 _model_resize_draw_vertex
+_model_flip_draw_vertex
 _model_translate_draw_vertex
 
 _model_create_draw_normals

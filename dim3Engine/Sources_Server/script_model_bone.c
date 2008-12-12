@@ -90,7 +90,7 @@ model_draw* script_bone_function_setup(void)
 		case thing_type_weapon:
 			weap=weapon_find_uid(js.attach.thing_uid);
 			obj=object_find_uid(weap->obj_uid);
-			model_draw_setup_weapon(js.time.current_tick,obj,weap,FALSE);
+			model_draw_setup_weapon(js.time.current_tick,obj,weap,FALSE,FALSE);
 			return(&weap->draw);
 			
 		case thing_type_projectile:

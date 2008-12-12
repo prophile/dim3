@@ -262,7 +262,7 @@ typedef struct		{
 												script_light_idx,script_halo_idx;
 						char					name[name_str_len];
 						float					alpha,resize,normal[3];
-						bool					on,in_view,
+						bool					on,in_view,flip_x,
 												bounce,face_forward,player;
 						unsigned char			cur_texture_frame[max_model_texture];
 						d3pnt					pnt,size,center,offset;
@@ -742,16 +742,22 @@ typedef struct		{
 					} weap_proj_type;
 					
 typedef struct		{
+						int						hand_offset;
+						bool					on,active,in_dual;
+					} weap_dual_type;
+					
+typedef struct		{
 						int						uid,obj_uid;
 						char					name[name_str_len];
 						bool					hidden,fail_in_liquid;
-						model_draw				draw;
+						model_draw				draw,draw_dual;
 						melee_type				melee;
 						weap_ammo_type			ammo,alt_ammo;
 						weap_kickback_type		kickback;
 						weap_recoil_type		recoil;
 						weap_crosshair_type		crosshair;
 						weap_fire_type			fire;
+						weap_dual_type			dual;
 						weap_target_type		target;
 						weap_zoom_type			zoom;
 						weap_hand_type			hand;

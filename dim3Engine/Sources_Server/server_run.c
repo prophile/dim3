@@ -276,7 +276,7 @@ void run_objects_no_slice(int tick)
 				if (obj->player) {
 					weap=weapon_find_current(obj);
 					if (weap!=NULL) {
-						model_draw_setup_weapon(tick,obj,weap,FALSE);
+						model_draw_setup_weapon(tick,obj,weap,FALSE,FALSE);
 						weapon_run_hand(obj,tick);
 					}
 				}

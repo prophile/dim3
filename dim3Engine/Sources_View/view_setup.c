@@ -278,7 +278,7 @@ void view_setup_objects(int tick)
 			if (weap!=NULL) {
 				draw=&weap->draw;
 				view_clear_draw_in_view(draw);
-				model_draw_setup_weapon(tick,obj,weap,FALSE);
+				model_draw_setup_weapon(tick,obj,weap,FALSE,FALSE);
 				view_setup_model_in_view(draw,FALSE,FALSE,obj->mesh.cur_mesh_idx);
 			}
 		}

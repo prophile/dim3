@@ -543,7 +543,7 @@ void model_create_draw_2D_vertexes(model_type *model,int mesh_idx,model_draw_set
 
 /* =======================================================
 
-      Resize Model Vertexes
+      Resize and Flip Model Vertexes
       
 ======================================================= */
 
@@ -566,6 +566,20 @@ void model_resize_draw_vertex(model_type *model,int mesh_idx,float resize)
 		pv++;
 		*pv=((*pv)*resize);
 		pv++;
+	}
+}
+
+void model_flip_draw_vertex(model_type *model,int mesh_idx)
+{
+	int			n,nt;
+	float		*pv;
+	
+	nt=model->meshes[mesh_idx].nvertex;
+	pv=model->meshes[mesh_idx].draw.gl_vertex_array;
+	
+	for (n=0;n!=nt;n++) {
+		*pv=-(*pv);
+		pv+=3;
 	}
 }
 

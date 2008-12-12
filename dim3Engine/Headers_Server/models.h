@@ -34,7 +34,7 @@ extern void models_reset_uid(void);
 
 extern void model_draw_setup_object(int tick,obj_type *obj);
 extern void model_draw_setup_projectile(int tick,proj_type *proj);
-extern void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignore_y_shifts);
+extern void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignore_y_shifts,bool dual_hand);
 
 extern void model_change_fill(model_draw *draw,int wfill,int txt);
 extern int model_find_animation_from_draw(model_draw *draw,char *name);

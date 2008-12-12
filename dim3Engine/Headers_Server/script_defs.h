@@ -587,6 +587,10 @@ and can be sold or given away.
 #define weap_fire_prop_method						0
 #define weap_fire_prop_last_fire_tick				1
 
+#define weap_dual_prop_on							0
+#define weap_dual_prop_active						1
+#define weap_dual_prop_hand_offset					2
+
 #define weap_target_prop_on							0
 #define weap_target_prop_distance					1
 #define weap_target_prop_objectId					2

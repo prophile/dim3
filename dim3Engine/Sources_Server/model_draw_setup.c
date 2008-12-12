@@ -69,6 +69,10 @@ void model_draw_setup_object(int tick,obj_type *obj)
 
 	draw->no_rot.on=FALSE;
 	
+		// no flips
+		
+	draw->flip_x=FALSE;
+	
 		// connection
 
 	draw->connect.obj_uid=obj->uid;
@@ -153,6 +157,10 @@ void model_draw_setup_projectile(int tick,proj_type *proj)
 
 	draw->no_rot.on=FALSE;
 	
+		// no flips
+		
+	draw->flip_x=FALSE;
+	
 		// vector
 		
 	draw->connect.obj_uid=-1;
@@ -209,7 +217,7 @@ void model_draw_setup_projectile(int tick,proj_type *proj)
       
 ======================================================= */
 
-void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignore_y_shifts)
+void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignore_y_shifts,bool dual_hand)
 {
 	int					swap_yadd,weap_mode,
 						move_tick,swap_tick,y_shift;
@@ -217,7 +225,15 @@ void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignor
     model_draw			*draw;
 	model_draw_setup	*setup;
 	
-	draw=&weap->draw;
+		// get proper draw and setup
+		
+	if (!dual_hand) {
+		draw=&weap->draw;
+	}
+	else {
+		draw=&weap->draw_dual;
+	}
+	
 	setup=&draw->setup;
 
 		// special check for player
@@ -314,6 +330,16 @@ void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignor
 	}
 
 	weapon_recoil_add(obj,weap,&setup->ang);
+	
+		// dual hand weapons
+		
+	if (dual_hand) {
+		draw->flip_x=TRUE;
+		draw->pnt.x+=weap->dual.hand_offset;
+	}
+	else {
+		draw->flip_x=FALSE;
+	}
 
 		// team tint
 

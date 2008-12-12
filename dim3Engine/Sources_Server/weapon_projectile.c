@@ -178,7 +178,7 @@ bool weapon_get_projectile_position_angle_weapon_model(int tick,obj_type *obj,we
 		return(FALSE);
 	}
 
-	model_draw_setup_weapon(tick,obj,weap,TRUE);
+	model_draw_setup_weapon(tick,obj,weap,TRUE,FALSE);
 
 	setup=&weap->draw.setup;
 
@@ -233,7 +233,7 @@ bool weapon_get_projectile_position_angle_weapon_barrel(int tick,obj_type *obj,w
 		return(FALSE);
 	}
 
-	model_draw_setup_weapon(tick,obj,weap,TRUE);
+	model_draw_setup_weapon(tick,obj,weap,TRUE,FALSE);
 
 	setup=&weap->draw.setup;
 
@@ -597,7 +597,7 @@ void weapon_player_fire_repeat(int tick,obj_type *obj,weapon_type *weap)
 		// time to repeat?
 		
 	if (tick<weap->proj.next_repeat_tick) return;
-	weap->proj.next_repeat_tick-=weap->proj.repeat_tick;
+	weap->proj.next_repeat_tick+=weap->proj.repeat_tick;
 	
 		// setup firing
 		

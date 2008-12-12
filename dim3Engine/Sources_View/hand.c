@@ -63,8 +63,6 @@ void draw_weapon_hand(int tick,obj_type *obj,weapon_type *weap)
 	draw=&weap->draw;
 	if ((draw->uid==-1) || (!draw->on)) return;
 	
-	if (!draw->on) return;
-	
 	mdl=model_find_uid(draw->uid);
 	if (mdl==NULL) return;
 	
@@ -81,7 +79,7 @@ void draw_weapon_hand(int tick,obj_type *obj,weapon_type *weap)
 		// regular weapon model
 	
 	model_clear_draw_setup(mdl,&draw->setup);
-	model_draw_setup_weapon(tick,obj,weap,FALSE);
+	model_draw_setup_weapon(tick,obj,weap,FALSE,FALSE);
 
 	model_calc_animation(draw);
 	model_calc_draw_bones(draw);
@@ -89,14 +87,17 @@ void draw_weapon_hand(int tick,obj_type *obj,weapon_type *weap)
 	model_render(tick,draw);
 
 		// dual wielded weapons
-/*
-	model_clear_draw_setup(mdl,&draw->setup);
-	model_draw_setup_weapon(tick,obj,weap,FALSE);
 
-	model_calc_animation(draw);
-	model_calc_draw_bones(draw);
-	
-	model_render(tick,draw);
-*/
+	if ((weap->dual.on) && (weap->dual.active)) {
+		draw=&weap->draw_dual;
+		
+		model_clear_draw_setup(mdl,&draw->setup);
+		model_draw_setup_weapon(tick,obj,weap,FALSE,TRUE);
+
+		model_calc_animation(draw);
+		model_calc_draw_bones(draw);
+		
+		model_render(tick,draw);
+	}
 }
 

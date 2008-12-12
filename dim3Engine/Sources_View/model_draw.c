@@ -661,6 +661,7 @@ void model_render(int tick,model_draw *draw)
 			
 		model_create_draw_vertexes(mdl,n,&draw->setup);
 		if (draw->resize!=1) model_resize_draw_vertex(mdl,n,draw->resize);
+		if (draw->flip_x) model_flip_draw_vertex(mdl,n);
 
 			// build color lists
 			

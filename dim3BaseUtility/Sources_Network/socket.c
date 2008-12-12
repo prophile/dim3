@@ -471,7 +471,7 @@ bool network_send_packet(d3socket sock,int action,int queue_mode,int from_remote
 
 		// tag (check recieve for explination)
 
-	sent_len=network_send_data(sock,net_header_tag,net_header_tag_size);
+	sent_len=network_send_data(sock,(unsigned char*)net_header_tag,net_header_tag_size);
 	if (sent_len<net_header_tag_size) return(FALSE);
 
 		// header
