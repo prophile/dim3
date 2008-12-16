@@ -272,26 +272,6 @@ SOURCE=..\..\dim3BaseUtility\Sources_Bitmap\shaders.c
 SOURCE=..\..\dim3BaseUtility\Sources_Bitmap\textures.c
 # End Source File
 # End Group
-# Begin Group "Network"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\dim3BaseUtility\Sources_Network\network.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3BaseUtility\Sources_Network\queue.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3BaseUtility\Sources_Network\socket.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3BaseUtility\Sources_Network\socket_udp.c
-# End Source File
-# End Group
 # End Group
 # End Target
 # End Project

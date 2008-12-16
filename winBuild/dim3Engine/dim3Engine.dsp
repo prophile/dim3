@@ -1529,6 +1529,22 @@ SOURCE=..\..\dim3Engine\Sources_Network\net_host_client_handler.c
 
 SOURCE=..\..\dim3Engine\Sources_Network\net_host_players.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Network\net_read_queue.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Network\net_socket.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Network\net_socket_udp.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Network\net_utility.c
+# End Source File
 # End Group
 # End Group
 # End Target

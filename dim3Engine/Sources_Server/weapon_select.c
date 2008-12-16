@@ -52,7 +52,6 @@ void weapon_reset_ammo(weapon_type *weap)
 	weap->alt_ammo.clip_count=weap->alt_ammo.init_clip_count;
 }	
 
-
 void weapon_reset_ammo_object(obj_type *obj)
 {
     int					n;

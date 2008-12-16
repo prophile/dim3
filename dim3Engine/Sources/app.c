@@ -35,6 +35,7 @@ and can be sold or given away.
 #include "video.h"
 #include "inputs.h"
 #include "xmls.h"
+#include "network.h"
 
 extern server_type			server;
 extern setup_type			setup;

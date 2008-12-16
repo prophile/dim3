@@ -139,7 +139,19 @@ bool item_add_weapon(obj_type *obj,weapon_type *weap)
 {
 		// already own weapon
 
-	if (!weap->hidden) return(FALSE);
+	if (!weap->hidden) {
+
+			// can we pick up a second one?
+
+		if (!weap->dual.on) return(FALSE);
+		if (weap->dual.active) return(FALSE);
+
+			// pick it up
+		
+		weap->dual.active=TRUE;
+
+		return(TRUE);
+	}
 
 		// add the weapon
 
@@ -153,19 +165,16 @@ bool item_swap_weapon(obj_type *obj,weapon_type *weap)
 {
 	weapon_type		*weap_hide;
 
-		// already own weapon
+		// add the weapon
 
-	if (!weap->hidden) return(FALSE);
+	if (!item_add_weapon(obj,weap)) return(FALSE);
 
 		// hide current weapon
 
 	weap_hide=weapon_find_current(obj);
 	weap_hide->hidden=TRUE;
 
-		// add this weapon
-
-	weap->hidden=FALSE;
-	weapon_reset_ammo(weap);
+		// set new weapon
 
 	weapon_set(obj,weap);
 	

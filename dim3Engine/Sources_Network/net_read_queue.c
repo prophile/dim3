@@ -29,6 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "network.h"
+
 /* =======================================================
 
       Initialize and Shutdown Queues
@@ -235,7 +237,7 @@ bool net_queue_check_message(net_queue_type *queue,int *action,int *from_remote_
 	
 		// do we have enough to get header?
 		
-	if ((idx+sizeof(network_header))>queue->len) {
+	if ((idx+(int)sizeof(network_header))>queue->len) {
 		pthread_mutex_unlock(&queue->lock);
 		return(FALSE);
 	}

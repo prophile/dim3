@@ -70,7 +70,7 @@ extern bool net_udp_send_broadcast(char *ip,int port);
 
 extern bool net_queue_initialize(net_queue_type *queue);
 extern void net_queue_shutdown(net_queue_type *queue);
-extern inline bool net_queue_feed_socket_has_data(d3socket sock);
+extern bool net_queue_feed_socket_has_data(d3socket sock);
 extern bool net_queue_feed(d3socket sock,net_queue_type *queue);
 extern bool net_queue_push_message(net_queue_type *queue,int action,int remote_uid,unsigned char *msg_data,int msg_len);
 extern bool net_queue_check_message(net_queue_type *queue,int *action,int *from_remote_uid,unsigned char *msg_data,int *msg_data_len);
@@ -88,6 +88,10 @@ extern bool net_host_broadcast_initialize(char *err_str);
 extern void net_host_broadcast_shutdown(void);
 extern void* net_host_broadcast_thread(void *arg);
 
+extern void net_host_client_handle_leave(int remote_uid);
+extern void net_host_client_handle_set_team(int remote_uid,network_request_team *team);
+extern void net_host_client_handle_update(int remote_uid,network_request_remote_update *update);
+
 extern void* net_host_client_handler_thread(void *arg);
 
 //
@@ -95,6 +99,8 @@ extern void* net_host_client_handler_thread(void *arg);
 //
 
 extern int net_client_find_game(char *game_name);
+extern void net_client_push_queue_local(int action,int remote_uid,unsigned char *data,int len);
+
 extern int net_host_client_handle_local_join(network_request_join *request_join,char *err_str);
 
 //
