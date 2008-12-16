@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit “Created with dim3 Technology” is given on a single
+2. This credit ‚ÄúCreated with dim3 Technology‚Äù is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -24,7 +24,57 @@ and can be sold or given away.
 (c) 2000-2007 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
-	
+
+//
+// network
+//
+
+extern void net_initialize(void);
+extern void net_shutdown(void);
+
+extern void net_get_host_name(char *name);
+extern void net_get_host_ip(char *ip_name,char *ip_resolve);
+
+extern bool net_ip_local(char *ip);
+extern void net_ip_local_broadcast(char *ip,char *broad_ip);
+
+//
+// sockets
+//
+
+extern d3socket net_open_socket(void);
+extern d3socket net_open_socket_udp(void);
+extern void net_close_socket(d3socket *sock);
+extern void net_socket_blocking(d3socket sock,bool blocking);
+extern bool net_connect_start(d3socket sock,char *ip,int port,char *err_str);
+extern bool net_connect_check(d3socket sock);
+extern void net_connect_end(d3socket sock);
+extern bool net_connect_block(d3socket sock,char *ip,int port,int secs,char *err_str);
+extern bool net_bind(d3socket sock,char *ip,int port,char *err_str);
+extern bool net_receive_ready(d3socket sock);
+extern bool net_send_ready(d3socket sock);
+extern bool net_send_message(d3socket sock,int action,int from_remote_uid,unsigned char *data,int len);
+
+//
+// udp sockets
+//
+
+extern d3socket net_udp_open_socket(void);
+extern bool net_udp_bind_broadcast(d3socket sock,int port,char *err_str);
+extern unsigned long net_udp_receive_broadcast(int sock);
+extern bool net_udp_send_broadcast(char *ip,int port);
+
+//
+// read queues
+//
+
+extern bool net_queue_initialize(net_queue_type *queue);
+extern void net_queue_shutdown(net_queue_type *queue);
+extern inline bool net_queue_feed_socket_has_data(d3socket sock);
+extern bool net_queue_feed(d3socket sock,net_queue_type *queue);
+extern bool net_queue_push_message(net_queue_type *queue,int action,int remote_uid,unsigned char *msg_data,int msg_len);
+extern bool net_queue_check_message(net_queue_type *queue,int *action,int *from_remote_uid,unsigned char *msg_data,int *msg_data_len);
+extern bool net_queue_block_single_message(d3socket sock,int req_action,int req_remote_uid,unsigned char *req_msg_data,int req_msg_len,int rep_desired_action,unsigned char *rep_msg_data,int rep_msg_len);
 
 //
 // hosting
@@ -60,8 +110,8 @@ extern int net_host_player_join(d3socket sock,char *name,char *deny_reason);
 extern void net_host_player_ready(int remote_uid,bool ready);
 extern void net_host_player_leave(int remote_uid);
 extern int net_host_player_create_remote_add_list(int player_remote_uid,network_request_remote_add *remotes);
-extern void net_host_player_send_others_packet(int player_remote_uid,int action,int queue_mode,unsigned char *data,int len,bool skip_flooded);
-extern void net_host_player_send_all_packet(int action,int queue_mode,unsigned char *data,int len,bool skip_flooded);
+extern void net_host_player_send_others_packet(int player_remote_uid,int action,unsigned char *data,int len,bool skip_flooded);
+extern void net_host_player_send_all_packet(int action,unsigned char *data,int len,bool skip_flooded);
 
 extern void net_host_player_update_team(int remote_uid,network_request_team *team);
 extern void net_host_player_update(int remote_uid,network_request_remote_update *update);

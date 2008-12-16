@@ -87,36 +87,48 @@ void script_add_weap_alt_ammo_object(JSObject *parent_obj)
 JSBool js_get_weap_alt_ammo_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
+	weap_ammo_type	*alt_ammo;
 
 	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	weap=weapon_find_uid(js.attach.thing_uid);
+	alt_ammo=&weap->alt_ammo;
 	
 	switch (JSVAL_TO_INT(id)) {
 	
 		case weap_alt_ammo_prop_clip:
-			*vp=BOOLEAN_TO_JSVAL(weap->alt_ammo.use_clips);
+			*vp=BOOLEAN_TO_JSVAL(alt_ammo->use_clips);
 			break;
 		case weap_alt_ammo_prop_count:
-			*vp=INT_TO_JSVAL(weap->alt_ammo.count);
+			if (weap->dual.in_dual) {
+				*vp=INT_TO_JSVAL(alt_ammo->count_dual);
+			}
+			else {
+				*vp=INT_TO_JSVAL(alt_ammo->count);
+			}
 			break;
 		case weap_alt_ammo_prop_init_count:
-			*vp=INT_TO_JSVAL(weap->alt_ammo.init_count);
+			*vp=INT_TO_JSVAL(alt_ammo->init_count);
 			break;
 		case weap_alt_ammo_prop_max_count:
-			*vp=INT_TO_JSVAL(weap->alt_ammo.max_count);
+			*vp=INT_TO_JSVAL(alt_ammo->max_count);
 			break;
 		case weap_alt_ammo_prop_clip_count:
-			*vp=INT_TO_JSVAL(weap->alt_ammo.clip_count);
+			*vp=INT_TO_JSVAL(alt_ammo->clip_count);
 			break;
 		case weap_alt_ammo_prop_init_clip_count:
-			*vp=INT_TO_JSVAL(weap->alt_ammo.init_clip_count);
+			*vp=INT_TO_JSVAL(alt_ammo->init_clip_count);
 			break;
 		case weap_alt_ammo_prop_max_clip_count:
-			*vp=INT_TO_JSVAL(weap->alt_ammo.max_clip_count);
+			*vp=INT_TO_JSVAL(alt_ammo->max_clip_count);
 			break;
 		case weap_alt_ammo_prop_last_reload_tick:
-			*vp=INT_TO_JSVAL(weap->alt_ammo.last_reload_tick);
+			if (weap->dual.in_dual) {
+				*vp=INT_TO_JSVAL(alt_ammo->last_reload_dual_tick);
+			}
+			else {
+				*vp=INT_TO_JSVAL(alt_ammo->last_reload_tick);
+			}
 			break;
 			
 	}
@@ -127,33 +139,40 @@ JSBool js_get_weap_alt_ammo_property(JSContext *cx,JSObject *j_obj,jsval id,jsva
 JSBool js_set_weap_alt_ammo_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
+	weap_ammo_type	*alt_ammo;
 	
 	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	weap=weapon_find_uid(js.attach.thing_uid);
+	alt_ammo=&weap->alt_ammo;
 	
 	switch (JSVAL_TO_INT(id)) {
 	
 		case weap_alt_ammo_prop_clip:
-			weap->alt_ammo.use_clips=JSVAL_TO_BOOLEAN(*vp);
+			alt_ammo->use_clips=JSVAL_TO_BOOLEAN(*vp);
 			break;
 		case weap_alt_ammo_prop_count:
-			weap->alt_ammo.count=JSVAL_TO_INT(*vp);
+			if (weap->dual.in_dual) {
+				alt_ammo->count_dual=JSVAL_TO_INT(*vp);
+			}
+			else {
+				alt_ammo->count=JSVAL_TO_INT(*vp);
+			}
 			break;
 		case weap_alt_ammo_prop_init_count:
-			weap->alt_ammo.init_count=JSVAL_TO_INT(*vp);
+			alt_ammo->init_count=JSVAL_TO_INT(*vp);
 			break;
 		case weap_alt_ammo_prop_max_count:
-			weap->alt_ammo.max_count=JSVAL_TO_INT(*vp);
+			alt_ammo->max_count=JSVAL_TO_INT(*vp);
 			break;
 		case weap_alt_ammo_prop_clip_count:
-			weap->alt_ammo.clip_count=JSVAL_TO_INT(*vp);
+			alt_ammo->clip_count=JSVAL_TO_INT(*vp);
 			break;
 		case weap_alt_ammo_prop_init_clip_count:
-			weap->alt_ammo.init_clip_count=JSVAL_TO_INT(*vp);
+			alt_ammo->init_clip_count=JSVAL_TO_INT(*vp);
 			break;
 		case weap_alt_ammo_prop_max_clip_count:
-			weap->alt_ammo.max_clip_count=JSVAL_TO_INT(*vp);
+			alt_ammo->max_clip_count=JSVAL_TO_INT(*vp);
 			break;
 
 	}
@@ -171,43 +190,61 @@ JSBool js_weap_alt_ammo_use_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 {
 	int				count;
 	weapon_type		*weap;
+	weap_ammo_type	*alt_ammo;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
-	
-		// is there enough ammo?
-			
+	alt_ammo=&weap->alt_ammo;
+
 	count=JSVAL_TO_INT(argv[0]);
-	if (weap->alt_ammo.count<count) {
-		*rval=JSVAL_FALSE;
-		return(JS_TRUE);
+	
+	*rval=JSVAL_FALSE;
+	
+	if (weap->dual.in_dual) {
+		if (alt_ammo->count_dual>=count) {
+			alt_ammo->count_dual-=count;
+			*rval=JSVAL_TRUE;
+		}
+	}
+	else {
+		if (alt_ammo->count>=count) {
+			alt_ammo->count-=count;
+			*rval=JSVAL_TRUE;
+		}
 	}
 	
-		// subtract the ammo
-		
-	weap->alt_ammo.count-=count;
-	
-	*rval=JSVAL_TRUE;
 	return(JS_TRUE);
 }
 
 JSBool js_weap_alt_ammo_add_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
+	int				add;
 	weapon_type		*weap;
+	weap_ammo_type	*alt_ammo;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
+	alt_ammo=&weap->alt_ammo;
 	
-		// add ammo
-		
-    weap->alt_ammo.count+=JSVAL_TO_INT(argv[0]);
+	add=JSVAL_TO_INT(argv[0]);
 	
-		// over maximum
-		
-    if (weap->alt_ammo.count>weap->alt_ammo.max_count) {
-		weap->alt_ammo.count=weap->alt_ammo.max_count;
-		*rval=JSVAL_FALSE;
+	*rval=JSVAL_TRUE;
+
+	if (weap->dual.in_dual) {
+		if (alt_ammo->count_dual==alt_ammo->max_count) {
+			*rval=JSVAL_FALSE;
+		}
+		else {
+			alt_ammo->count_dual+=add;
+			if (alt_ammo->count_dual>alt_ammo->max_count) alt_ammo->count_dual=alt_ammo->max_count;
+		}
 	}
 	else {
-		*rval=JSVAL_TRUE;
+		if (alt_ammo->count==alt_ammo->max_count) {
+			*rval=JSVAL_FALSE;
+		}
+		else {
+			alt_ammo->count+=add;
+			if (alt_ammo->count>alt_ammo->max_count) alt_ammo->count=alt_ammo->max_count;
+		}
 	}
 	
 	return(JS_TRUE);
@@ -215,25 +252,34 @@ JSBool js_weap_alt_ammo_add_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 
 JSBool js_weap_alt_ammo_change_clip_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-   obj_type			*obj;
+	obj_type		*obj;
 	weapon_type		*weap;
+	weap_ammo_type	*alt_ammo;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
+	alt_ammo=&weap->alt_ammo;
+
 	obj=object_find_uid(weap->obj_uid);
 	
 		// is this a clip based weapon and enough clips?
 		
-	if ((!weap->alt_ammo.use_clips) || (weap->alt_ammo.clip_count==0)) {
+	if ((!alt_ammo->use_clips) || (alt_ammo->clip_count==0)) {
 		*rval=JSVAL_FALSE;
 		return(JS_TRUE);
 	}
 	
 		// change the clip
 		
-	weap->alt_ammo.count=weap->alt_ammo.max_count;
-	weap->alt_ammo.clip_count--;
-
-	weap->alt_ammo.last_reload_tick=js.time.current_tick;
+	if (weap->dual.in_dual) {
+		alt_ammo->count_dual=alt_ammo->max_count;
+		alt_ammo->last_reload_dual_tick=js.time.current_tick;
+	}
+	else {
+		alt_ammo->count=alt_ammo->max_count;
+		alt_ammo->last_reload_tick=js.time.current_tick;
+	}
+	
+	alt_ammo->clip_count--;
 	
 		// alert object of clip change
 		

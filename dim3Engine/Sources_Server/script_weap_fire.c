@@ -89,11 +89,11 @@ JSBool js_get_weap_fire_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 			break;
 			
 		case weap_fire_prop_last_fire_tick:
-			if ((weap->dual.on) && (weap->dual.active)) {
-				*vp=INT_TO_JSVAL(weap->fire.last_fire_dual_tick);
+			if (!weap->dual.in_dual) {
+				*vp=INT_TO_JSVAL(weap->fire.last_fire_tick);
 			}
 			else {
-				*vp=INT_TO_JSVAL(weap->fire.last_fire_tick);
+				*vp=INT_TO_JSVAL(weap->fire.last_fire_dual_tick);
 			}
 			break;
 			
@@ -115,11 +115,11 @@ JSBool js_weap_fire_past_last_fire_func(JSContext *cx,JSObject *j_obj,uintN argc
 
 	weap=weapon_find_uid(js.attach.thing_uid);
 	
-	if ((weap->dual.on) && (weap->dual.active)) {
-		last_fire_tick=weap->fire.last_fire_dual_tick;
+	if (!weap->dual.in_dual) {
+		last_fire_tick=weap->fire.last_fire_tick;
 	}
 	else {
-		last_fire_tick=weap->fire.last_fire_tick;
+		last_fire_tick=weap->fire.last_fire_dual_tick;
 	}
 
 	if (js.time.current_tick>(last_fire_tick+JSVAL_TO_INT(argv[0]))) {

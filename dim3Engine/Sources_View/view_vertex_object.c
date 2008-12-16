@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit ÒCreated with dim3 TechnologyÓ is given on a single
+2. This credit â€œCreated with dim3 Technologyâ€ is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -366,7 +366,7 @@ void view_draw_next_vertex_object_2D_color_quad(int x0,int y0,d3col *col0,int x1
 {
 	float			*vertex_ptr,*col_ptr;
 
-	vertex_ptr=view_bind_map_next_vertex_object(4*(2+3));
+	vertex_ptr=view_bind_map_next_vertex_object(4*(2+4));
 	if (vertex_ptr==NULL) return;
 
 	col_ptr=vertex_ptr+(4*2);
@@ -379,6 +379,7 @@ void view_draw_next_vertex_object_2D_color_quad(int x0,int y0,d3col *col0,int x1
 	*col_ptr++=col0->r;
 	*col_ptr++=col0->g;
 	*col_ptr++=col0->b;
+	*col_ptr++=alpha;
 
 	*vertex_ptr++=(float)x1;
 	*vertex_ptr++=(float)y1;
@@ -386,6 +387,7 @@ void view_draw_next_vertex_object_2D_color_quad(int x0,int y0,d3col *col0,int x1
 	*col_ptr++=col1->r;
 	*col_ptr++=col1->g;
 	*col_ptr++=col1->b;
+	*col_ptr++=alpha;
 
 	*vertex_ptr++=(float)x2;
 	*vertex_ptr++=(float)y2;
@@ -393,6 +395,7 @@ void view_draw_next_vertex_object_2D_color_quad(int x0,int y0,d3col *col0,int x1
 	*col_ptr++=col2->r;
 	*col_ptr++=col2->g;
 	*col_ptr++=col2->b;
+	*col_ptr++=alpha;
 
 	*vertex_ptr++=(float)x3;
 	*vertex_ptr++=(float)y3;
@@ -400,21 +403,29 @@ void view_draw_next_vertex_object_2D_color_quad(int x0,int y0,d3col *col0,int x1
 	*col_ptr++=col3->r;
 	*col_ptr++=col3->g;
 	*col_ptr++=col3->b;
+	*col_ptr++=alpha;
 
   	view_unmap_current_vertex_object();
 
 		// draw the quad
+		
+	if (alpha!=1.0f) {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	}
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(3,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
+	glColorPointer(4,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
 
 	glDrawArrays(GL_QUADS,0,4);
 
  	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
+	
+	glDisable(GL_BLEND);
 
 		// unbind the vbo
 
@@ -445,6 +456,8 @@ void view_draw_next_vertex_object_2D_line_quad(int lft,int rgt,int top,int bot)
   	view_unmap_current_vertex_object();
 
 		// draw the quad
+		
+	glDisable(GL_BLEND);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);

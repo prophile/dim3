@@ -26,6 +26,30 @@ and can be sold or given away.
 *********************************************************************/
 
 //
+// additional network->host conversions
+//
+
+#define htonf(x)									(htonl((int)((x)*1000.0f)))
+#define ntohf(x)									(((float)((signed int)ntohl(x)))/1000.0f)
+
+//
+// networking ports
+//
+
+#define net_port_host								11800
+#define net_port_host_query							11801
+#define net_port_host_broadcast						11802
+#define net_port_host_broadcast_reply				11803
+
+//
+// low-level socket timing
+//
+
+#define socket_no_data_retry						10
+#define socket_no_data_u_wait						25
+#define net_header_retry_count						50			// supergumba -- can delete some of these
+
+//
 // host defines
 //
 
@@ -35,7 +59,6 @@ and can be sold or given away.
 #define host_max_remote_count						24
 
 #define host_client_timeout_msec_rate				10000
-
 
 //
 // client defines
@@ -49,6 +72,39 @@ and can be sold or given away.
 #define client_communication_latency_ping_msec_rate	5000
 
 #define client_communication_timeout_msec			1000
+
+//
+// queue defines
+//
+
+#define net_queue_max_data_size						10240
+#define net_queue_chunk_read_size					1024
+
+//
+// read queues
+//
+
+typedef struct		{
+						int							len;
+						unsigned char				*data;
+						pthread_mutex_t				lock;
+					} net_queue_type;
+
+//
+// network headers, messages, and tags
+//
+// the tag is used to make sure that we are really into a dim3 message block
+// to work around any garbles or corruptions in the transmission
+//
+
+#define net_header_tag_size							8
+#define net_header_tag								"dim3blck"
+
+#define net_max_msg_size							2048
+
+typedef struct		{
+						short						len,action,from_remote_uid;
+					} network_header;
 
 //
 // host player list

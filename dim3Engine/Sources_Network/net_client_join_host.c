@@ -37,7 +37,7 @@ extern server_type			server;
 extern js_type				js;
 extern setup_type			setup;
 
-extern bool					join_thread_quit,client_msg_handler_active;
+extern bool					join_thread_quit;
 extern d3socket				client_socket;
 
 network_setup_type			net_setup;
@@ -67,9 +67,9 @@ int net_client_find_game(char *game_name)
 
 bool net_client_ping_host(char *ip,char *status,char *host_name,char *proj_name,char *game_name,char *map_name,int *player_count,int *player_max_count,int *ping_msec)
 {
-	int						action,from_remote_uid,len,msec,count;
+	int						msec,count;
 	char					err_str[256];
-	bool					connect_ok,read_ok;
+	bool					connect_ok;
 	network_reply_info		reply_info;
 	
 	status[0]=0x0;
@@ -81,7 +81,7 @@ bool net_client_ping_host(char *ip,char *status,char *host_name,char *proj_name,
 	
 		// create client socket
 		
-	client_socket=network_open_socket();
+	client_socket=net_open_socket();
 	if (client_socket==D3_NULL_SOCKET) {
 		strcpy(status,"Unreachable");
 		return(FALSE);
@@ -89,9 +89,9 @@ bool net_client_ping_host(char *ip,char *status,char *host_name,char *proj_name,
 	
 		// connect to host
 		
-	if (!network_connect_start(client_socket,ip,net_port_host,err_str)) {
+	if (!net_connect_start(client_socket,ip,net_port_host,err_str)) {
 		strcpy(status,"Unreachable");
-		network_close_socket(&client_socket);
+		net_close_socket(&client_socket);
 		return(FALSE);
 	}
 	
@@ -106,7 +106,7 @@ bool net_client_ping_host(char *ip,char *status,char *host_name,char *proj_name,
 	
 	while ((count>0) && (!join_thread_quit)) {
 	
-		if (network_connect_check(client_socket)) {
+		if (net_connect_check(client_socket)) {
 			connect_ok=TRUE;
 			break;
 		}
@@ -115,52 +115,23 @@ bool net_client_ping_host(char *ip,char *status,char *host_name,char *proj_name,
 		count--;
 	}
 
-	network_connect_end(client_socket);
+	net_connect_end(client_socket);
 	
 		// connection failed?
 		
 	if (!connect_ok) {
 		strcpy(status,"Unreachable");
-		network_close_socket(&client_socket);
+		net_close_socket(&client_socket);
 		return(FALSE);
 	}
 	
 		// query for info
 		
 	msec=time_get();
-
-	if (!network_send_packet(client_socket,net_action_request_info,net_queue_mode_normal,net_remote_uid_none,NULL,0)) {
+	
+	if (!net_queue_block_single_message(client_socket,net_action_request_info,net_remote_uid_none,NULL,0,net_action_reply_info,(unsigned char*)&reply_info,sizeof(network_reply_info))) {
 		strcpy(status,"Unreachable");
-		network_close_socket(&client_socket);
-		return(FALSE);
-	}
-
-		// try to read reply for rest of time-out
-		
-	read_ok=FALSE;
-	action=-1;
-	
-	if (count==0) count=1;
-	
-	while ((count>0) && (!join_thread_quit)) {
-		if (network_receive_packet(client_socket,&action,NULL,&from_remote_uid,(unsigned char*)&reply_info,&len)) {
-			read_ok=TRUE;
-			break;
-		}
-		
-		usleep(1000);
-		count--;
-	}
-	
-	if (!read_ok) {
-		strcpy(status,"Unreachable");
-		network_close_socket(&client_socket);
-		return(FALSE);
-	}
-	
-	if (action!=net_action_reply_info) {
-		strcpy(status,"Host Not dim3");
-		network_close_socket(&client_socket);
+		net_close_socket(&client_socket);
 		return(FALSE);
 	}
 
@@ -169,7 +140,7 @@ bool net_client_ping_host(char *ip,char *status,char *host_name,char *proj_name,
 	
 		// close socket
 		
-	network_close_socket(&client_socket);
+	net_close_socket(&client_socket);
 	
 		// ok status message
 		
@@ -199,16 +170,14 @@ bool net_client_ping_host(char *ip,char *status,char *host_name,char *proj_name,
 
 bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_name,char *map_name,int *tick_offset,char *deny_reason,int *remote_count,network_request_remote_add *remotes)
 {
-	int						action,from_remote_uid,count,len,
-							timeout_count;
+	int						count;
 	char					err_str[256];
-	bool					read_ok;
 	network_request_join	request_join;
 	network_reply_join		reply_join;
 	
 		// create client socket
 		
-	client_socket=network_open_socket();
+	client_socket=net_open_socket();
 	if (client_socket==D3_NULL_SOCKET) {
 		strcpy(err_str,"Networking: Unable to open socket");
 		return(FALSE);
@@ -216,9 +185,9 @@ bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_n
 
 		// connect
 		
-	if (!network_connect_block(client_socket,ip,net_port_host,client_timeout_wait_seconds,err_str)) {
+	if (!net_connect_block(client_socket,ip,net_port_host,client_timeout_wait_seconds,err_str)) {
 		strcpy(deny_reason,"Host Unreachable (No connection)");
-		network_close_socket(&client_socket);
+		net_close_socket(&client_socket);
 		return(FALSE);
 	}
 	
@@ -226,46 +195,10 @@ bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_n
 		
 	strcpy(request_join.name,name);
 	strcpy(request_join.vers,dim3_version);
-
-	if (!network_send_packet(client_socket,net_action_request_join,net_queue_mode_normal,net_remote_uid_none,(unsigned char*)&request_join,sizeof(network_request_join))) {
-		strcpy(deny_reason,"Host Unreachable (No send)");
-		network_close_socket(&client_socket);
-		return(FALSE);
-	}
 	
-		// wait for a reply -- it's possible that non-reply
-		// messages could come in (updates from other remotes on
-		// the host) -- throw these away until we get the join
-		// reply
-		
-	timeout_count=client_timeout_wait_seconds;
-	timeout_count*=1000;
-	
-	read_ok=FALSE;
-	action=-1;
-	
-	while (timeout_count>0) {
-	
-		if (network_receive_packet(client_socket,&action,NULL,&from_remote_uid,(unsigned char*)&reply_join,&len)) {
-			if (action==net_action_reply_join) {
-				read_ok=TRUE;
-				break;
-			}
-		}
-		
-		usleep(1000);
-		timeout_count--;
-	}
-	
-	if (!read_ok) {
-		strcpy(deny_reason,"Host Unreachable (No receive)");
-		network_close_socket(&client_socket);
-		return(FALSE);
-	}
-	
-	if (action!=net_action_reply_join) {
-		strcpy(deny_reason,"Host Not dim3 Server");
-		network_close_socket(&client_socket);
+	if (!net_queue_block_single_message(client_socket,net_action_request_join,net_remote_uid_none,(unsigned char*)&request_join,sizeof(network_request_join),net_action_reply_join,(unsigned char*)&reply_join,sizeof(network_reply_join))) {
+		strcpy(deny_reason,"Host Unreachable (Bad send/receive)");
+		net_close_socket(&client_socket);
 		return(FALSE);
 	}
 	
@@ -273,13 +206,9 @@ bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_n
 		
 	if (reply_join.join_uid==-1) {
 		strcpy(deny_reason,reply_join.deny_reason);
-		network_close_socket(&client_socket);
+		net_close_socket(&client_socket);
 		return(FALSE);
 	}
-	
-		// message handler isn't active yet
-		
-	client_msg_handler_active=FALSE;
 	
 		// finish setup
 		
@@ -299,5 +228,5 @@ bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_n
 
 void net_client_join_host_end(void)
 {
-	network_close_socket(&client_socket);
+	net_close_socket(&client_socket);
 }

@@ -156,14 +156,14 @@ void host_open(void)
 		// status
 		// start with IP information
 
-	if (net_setup.host.name[0]==0x0) network_get_host_name(net_setup.host.name);
-	network_get_host_ip(net_setup.host.ip_name,net_setup.host.ip_resolve);
+	if (net_setup.host.name[0]==0x0) net_get_host_name(net_setup.host.name);
+	net_get_host_ip(net_setup.host.ip_name,net_setup.host.ip_resolve);
 
 	if (strcmp(net_setup.host.ip_resolve,"127.0.0.1")==0) {
 		strcpy(str,"Local Machine");
 	}
 	else {
-		if (network_ip_local(net_setup.host.ip_resolve)) {
+		if (net_ip_local(net_setup.host.ip_resolve)) {
 			strcpy(str,"Local Network");
 		}
 		else {

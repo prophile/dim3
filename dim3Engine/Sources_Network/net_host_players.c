@@ -29,6 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "network.h"
+
 extern char team_colors[][16];
 
 int						net_host_player_count,server_next_remote_uid;
@@ -36,8 +38,6 @@ float					team_color_server_tint[net_team_count][3]=net_team_color_server_tint_d
 net_host_player_type	net_host_players[host_max_remote_count];
 
 pthread_mutex_t			net_host_player_lock;
-
-extern void net_client_push_queue_local(int action,int queue_mode,int remote_uid,unsigned char *data,int len);
 
 /* =======================================================
 
@@ -363,7 +363,7 @@ int net_host_player_create_remote_add_list(int player_remote_uid,network_request
 
 // supergumba -- need to implement skip_flooded here
 
-void net_host_player_send_others_packet(int player_remote_uid,int action,int queue_mode,unsigned char *data,int len,bool skip_flooded)
+void net_host_player_send_others_packet(int player_remote_uid,int action,unsigned char *data,int len,bool skip_flooded)
 {
 	int						n,nsock;
 	d3socket				socks[host_max_remote_count];
@@ -393,18 +393,18 @@ void net_host_player_send_others_packet(int player_remote_uid,int action,int que
 			// local (hosting) player
 			
 		if (socks[n]==(d3socket)NULL) {
-			net_client_push_queue_local(action,queue_mode,player_remote_uid,data,len);
+			net_client_push_queue_local(action,player_remote_uid,data,len);
 		}
 		
 			// remote joined players
 			
 		else {
-			if (network_send_ready(socks[n])) network_send_packet(socks[n],action,queue_mode,player_remote_uid,data,len);
+			if (net_send_ready(socks[n])) net_send_message(socks[n],action,player_remote_uid,data,len);
 		}
 	}
 }
 
-void net_host_player_send_all_packet(int action,int queue_mode,unsigned char *data,int len,bool skip_flooded)
+void net_host_player_send_all_packet(int action,unsigned char *data,int len,bool skip_flooded)
 {
-	net_host_player_send_others_packet(-1,action,queue_mode,data,len,skip_flooded);
+	net_host_player_send_others_packet(-1,action,data,len,skip_flooded);
 }

@@ -126,7 +126,7 @@ model_draw* js_find_model_draw(JSObject *j_obj,bool is_child)
 			
 		case thing_type_weapon:
 			weap=weapon_find_uid(js.attach.thing_uid);
-			if ((weap->dual.on) && (weap->dual.active) && (weap->dual.in_dual)) return(&weap->draw_dual);
+			if (weap->dual.in_dual) return(&weap->draw_dual);
 			return(&weap->draw);
 			
 		case thing_type_projectile_setup:

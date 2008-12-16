@@ -143,12 +143,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 250650534;
-			PBXWorkspaceStateSaveDate = 250650534;
+			PBXPerProjectTemplateStateSaveDate = 251077941;
+			PBXWorkspaceStateSaveDate = 251077941;
 		};
 		perUserProjectItems = {
-			26AA095D0EEF7FE900FD591C /* PlistBookmark */ = 26AA095D0EEF7FE900FD591C /* PlistBookmark */;
-			26B221AC0EF0A0C6000979AC /* PlistBookmark */ = 26B221AC0EF0A0C6000979AC /* PlistBookmark */;
+			2685D73F0EF725AE002EB790 /* PlistBookmark */ = 2685D73F0EF725AE002EB790 /* PlistBookmark */;
+			26A5612E0EF6009F00D38FC0 /* PlistBookmark */ = 26A5612E0EF6009F00D38FC0 /* PlistBookmark */;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -321,6 +321,17 @@
 			sepNavWindowFrame = "{{319, 229}, {1041, 747}}";
 		};
 	};
+	2685D73F0EF725AE002EB790 /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+		);
+		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
+		rLen = 0;
+		rLoc = 2147483647;
+	};
 	26934B100D876A800009F81E /* walk_view_click_drag.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 13300}}";
@@ -329,7 +340,7 @@
 			sepNavWindowFrame = "{{419, 157}, {1041, 747}}";
 		};
 	};
-	26AA095D0EEF7FE900FD591C /* PlistBookmark */ = {
+	26A5612E0EF6009F00D38FC0 /* PlistBookmark */ = {
 		isa = PlistBookmark;
 		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
 		fallbackIsa = PBXBookmark;
@@ -363,17 +374,6 @@
 			sepNavVisRange = "{16529, 3277}";
 			sepNavWindowFrame = "{{741, 91}, {1041, 747}}";
 		};
-	};
-	26B221AC0EF0A0C6000979AC /* PlistBookmark */ = {
-		isa = PlistBookmark;
-		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
-		fallbackIsa = PBXBookmark;
-		isK = 0;
-		kPath = (
-		);
-		name = "/Users/ggadwa/dim3Code/dim3Editor/Resources/Info-dim3_Editor.plist";
-		rLen = 0;
-		rLoc = 2147483647;
 	};
 	26BE521A0E5FD01A009B6925 /* dialog_save.c */ = {
 		uiCtxt = {

@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "objects.h"
 #include "interfaces.h"
+#include "network.h"
 
 extern map_type					map;
 extern server_type				server;
@@ -40,12 +41,6 @@ extern setup_type				setup;
 extern d3socket					client_socket;
 
 extern network_setup_type		net_setup;
-
-extern void net_host_player_ready(int remote_uid,bool ready);
-extern void net_host_client_handle_set_team(int remote_uid,network_request_team *team);
-extern void net_host_client_handle_leave(int remote_uid);
-extern void net_host_client_handle_update(int remote_uid,network_request_remote_update *update);
-extern void net_host_player_send_others_packet(int player_remote_uid,int action,int queue_mode,unsigned char *data,int len,bool skip_flooded);
 
 /* =======================================================
 
@@ -59,7 +54,7 @@ void net_client_send_ready(int remote_uid)
 		net_host_player_ready(remote_uid,TRUE);
 	}
 	else {
-		network_send_packet(client_socket,net_action_request_ready,net_queue_mode_normal,remote_uid,NULL,0);
+		net_send_message(client_socket,net_action_request_ready,remote_uid,NULL,0);
 	}
 }
 
@@ -73,7 +68,7 @@ void net_client_send_set_team(int remote_uid,int team_idx)
 		net_host_client_handle_set_team(remote_uid,&team);
 	}
 	else {
-		network_send_packet(client_socket,net_action_request_team,net_queue_mode_normal,remote_uid,(unsigned char*)&team,sizeof(network_request_team));
+		net_send_message(client_socket,net_action_request_team,remote_uid,(unsigned char*)&team,sizeof(network_request_team));
 	}
 }
 
@@ -83,14 +78,14 @@ void net_client_send_leave_host(int remote_uid)
 		net_host_client_handle_leave(remote_uid);
 	}
 	else {
-		network_send_packet(client_socket,net_action_request_leave,net_queue_mode_normal,remote_uid,NULL,0);
+		net_send_message(client_socket,net_action_request_leave,remote_uid,NULL,0);
 	}
 }
 
 void net_client_send_latency_ping(int remote_uid)
 {
 	if (!net_setup.host.hosting) {
-		network_send_packet(client_socket,net_action_request_latency_ping,net_queue_mode_normal,remote_uid,NULL,0);
+		net_send_message(client_socket,net_action_request_latency_ping,remote_uid,NULL,0);
 	}
 }	
 
@@ -103,7 +98,7 @@ void net_client_send_latency_ping(int remote_uid)
 void net_client_request_group_synch_ping(int remote_uid)
 {
 	if (!net_setup.host.hosting) {
-		network_send_packet(client_socket,net_action_request_group_synch,net_queue_mode_normal,remote_uid,NULL,0);
+		net_send_message(client_socket,net_action_request_group_synch,remote_uid,NULL,0);
 	}
 }	
 
@@ -124,7 +119,7 @@ void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool ch
 		// no updates if pipe full
 		
 	if (!net_setup.host.hosting) {
-		if (!network_send_ready(client_socket)) return;
+		if (!net_send_ready(client_socket)) return;
 	}
 
 		// create flags
@@ -197,7 +192,7 @@ void net_client_send_remote_update(int tick,int remote_uid,obj_type *obj,bool ch
 		net_host_client_handle_update(remote_uid,&update);
 	}
 	else {
-		network_send_packet(client_socket,net_action_request_remote_update,net_queue_mode_replace,remote_uid,(unsigned char*)&update,sizeof(network_request_remote_update));
+		net_send_message(client_socket,net_action_request_remote_update,remote_uid,(unsigned char*)&update,sizeof(network_request_remote_update));
 	}
 }
 
@@ -249,10 +244,10 @@ void net_client_send_death(int remote_uid,int kill_uid,bool telefrag)
 	}
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_death,net_queue_mode_normal,(unsigned char*)&death,sizeof(network_request_remote_death),FALSE);
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_death,(unsigned char*)&death,sizeof(network_request_remote_death),FALSE);
 	}
 	else {
-		network_send_packet(client_socket,net_action_request_remote_death,net_queue_mode_normal,remote_uid,(unsigned char*)&death,sizeof(network_request_remote_death));
+		net_send_message(client_socket,net_action_request_remote_death,remote_uid,(unsigned char*)&death,sizeof(network_request_remote_death));
 	}
 }
 
@@ -269,10 +264,10 @@ void net_client_send_chat(int remote_uid,char *str)
 	strcpy(chat.str,str);
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_chat,net_queue_mode_normal,(unsigned char*)&chat,sizeof(network_request_remote_chat),FALSE);
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_chat,(unsigned char*)&chat,sizeof(network_request_remote_chat),FALSE);
 	}
 	else {
-		network_send_packet(client_socket,net_action_request_remote_chat,net_queue_mode_normal,remote_uid,(unsigned char*)&chat,sizeof(network_request_remote_chat));
+		net_send_message(client_socket,net_action_request_remote_chat,remote_uid,(unsigned char*)&chat,sizeof(network_request_remote_chat));
 	}
 }
 
@@ -289,10 +284,10 @@ void net_client_send_sound(int remote_uid,int x,int y,int z,float pitch,char *na
 	strcpy(sound.name,name);
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_sound,net_queue_mode_normal,(unsigned char*)&sound,sizeof(network_request_remote_sound),FALSE);
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_sound,(unsigned char*)&sound,sizeof(network_request_remote_sound),FALSE);
 	}
 	else {
-		network_send_packet(client_socket,net_action_request_remote_sound,net_queue_mode_normal,remote_uid,(unsigned char*)&sound,sizeof(network_request_remote_sound));
+		net_send_message(client_socket,net_action_request_remote_sound,remote_uid,(unsigned char*)&sound,sizeof(network_request_remote_sound));
 	}
 }
 
@@ -325,10 +320,10 @@ void net_client_send_projectile_add(int remote_uid,char *weap_name,char *proj_se
 	fire.force=0;
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_fire,net_queue_mode_normal,(unsigned char*)&fire,sizeof(network_request_remote_fire),FALSE);
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire),FALSE);
 	}
 	else {
-		network_send_packet(client_socket,net_action_request_remote_fire,net_queue_mode_normal,remote_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
+		net_send_message(client_socket,net_action_request_remote_fire,remote_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
 	}
 }
 
@@ -355,10 +350,10 @@ void net_client_send_hitscan_add(int remote_uid,char *weap_name,char *proj_setup
 	fire.force=0;
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_fire,net_queue_mode_normal,(unsigned char*)&fire,sizeof(network_request_remote_fire),FALSE);
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire),FALSE);
 	}
 	else {
-		network_send_packet(client_socket,net_action_request_remote_fire,net_queue_mode_normal,remote_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
+		net_send_message(client_socket,net_action_request_remote_fire,remote_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
 	}
 }
 
@@ -385,10 +380,10 @@ void net_client_send_melee_add(int remote_uid,char *weap_name,int radius,int dis
 	fire.force=htons((short)force);
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_fire,net_queue_mode_normal,(unsigned char*)&fire,sizeof(network_request_remote_fire),FALSE);
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire),FALSE);
 	}
 	else {
-		network_send_packet(client_socket,net_action_request_remote_fire,net_queue_mode_normal,remote_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
+		net_send_message(client_socket,net_action_request_remote_fire,remote_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
 	}
 }
 
@@ -435,10 +430,10 @@ void net_client_setup_pickup(obj_type *obj,network_request_remote_pickup *pickup
 void net_client_send_pickup(int remote_uid,network_request_remote_pickup *pickup)
 {
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_pickup,net_queue_mode_normal,(unsigned char*)pickup,sizeof(network_request_remote_pickup),FALSE);
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_pickup,(unsigned char*)pickup,sizeof(network_request_remote_pickup),FALSE);
 	}
 	else {
-		network_send_packet(client_socket,net_action_request_remote_pickup,net_queue_mode_normal,remote_uid,(unsigned char*)pickup,sizeof(network_request_remote_pickup));
+		net_send_message(client_socket,net_action_request_remote_pickup,remote_uid,(unsigned char*)pickup,sizeof(network_request_remote_pickup));
 	}
 }
 

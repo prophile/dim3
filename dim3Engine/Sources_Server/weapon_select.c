@@ -45,10 +45,10 @@ extern camera_type				camera;
 
 void weapon_reset_ammo(weapon_type *weap)
 {
-	weap->ammo.count=weap->ammo.init_count;
+	weap->ammo.count=weap->ammo.count_dual=weap->ammo.init_count;
 	weap->ammo.clip_count=weap->ammo.init_clip_count;
 	
-	weap->alt_ammo.count=weap->alt_ammo.init_count;
+	weap->alt_ammo.count=weap->alt_ammo.count_dual=weap->alt_ammo.init_count;
 	weap->alt_ammo.clip_count=weap->alt_ammo.init_clip_count;
 }	
 

@@ -132,6 +132,23 @@ weapon_type* weapon_find_offset(obj_type *obj,int offset)
 
 /* =======================================================
 
+      Initial Ammo
+      
+======================================================= */
+
+void weapon_clear_ammo(weap_ammo_type *ammo,bool use)
+{
+	ammo->use_ammo=use;
+	ammo->use_clips=FALSE;
+	ammo->init_count=10;
+	ammo->max_count=100;
+	ammo->init_clip_count=0;
+	ammo->max_clip_count=0;
+	ammo->last_reload_tick=-1;
+}
+
+/* =======================================================
+
       Add Weapon to List
       
 ======================================================= */
@@ -172,20 +189,8 @@ bool weapon_create(obj_type *obj,char *name)
 	strcpy(weap->name,name);
 	weap->ammo.reset=TRUE;
 
-	weap->ammo.use_ammo=TRUE;
-	weap->ammo.use_clips=FALSE;
-	weap->ammo.init_count=10;
-	weap->ammo.max_count=100;
-	weap->ammo.init_clip_count=0;
-	weap->ammo.max_clip_count=0;
-	weap->ammo.last_reload_tick=-1;
-
-	weap->alt_ammo.use_clips=FALSE;
-	weap->alt_ammo.init_count=10;
-	weap->alt_ammo.max_count=100;
-	weap->alt_ammo.init_clip_count=0;
-	weap->alt_ammo.max_clip_count=0;
-	weap->alt_ammo.last_reload_tick=-1;
+	weapon_clear_ammo(&weap->ammo,TRUE);
+	weapon_clear_ammo(&weap->alt_ammo,FALSE);
 	
 	weap->proj.fire_bone_tag=model_null_tag;
 	weap->proj.barrel_bone_tag=model_null_tag;
@@ -267,6 +272,7 @@ bool weapon_create(obj_type *obj,char *name)
 	
 	weap->dual.on=FALSE;
 	weap->dual.active=FALSE;
+	weap->dual.in_dual=FALSE;
 	weap->dual.hand_offset=0;
 
 	object_clear_draw(&weap->draw);
@@ -362,3 +368,4 @@ void weapon_dispose(int idx)
 	
 	server.count.weapon--;
 }
+

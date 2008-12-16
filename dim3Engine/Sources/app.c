@@ -71,7 +71,7 @@ bool app_start(char *err_str)
 	
 		// OS network initialization
 		
-	network_initialize();
+	net_initialize();
 	
 		// start console
 		
@@ -148,6 +148,6 @@ void app_end(void)
 	
 		// OS network shutdown
 		
-	network_shutdown();
+	net_shutdown();
 }
 

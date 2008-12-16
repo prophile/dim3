@@ -680,9 +680,10 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						count,init_count,max_count,
+						int						count,count_dual,
+												init_count,max_count,
 												clip_count,init_clip_count,max_clip_count,
-												last_reload_tick;
+												last_reload_tick,last_reload_dual_tick;
 						bool					reset,use_ammo,use_clips;
 					} weap_ammo_type;
 					

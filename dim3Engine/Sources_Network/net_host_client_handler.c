@@ -61,7 +61,7 @@ void net_host_client_handle_info(int sock)
 	strcpy(info.game_name,net_setup.games[net_setup.game_idx].name);
 	strcpy(info.map_name,net_setup.host.map_name);
 
-	network_send_packet(sock,net_action_reply_info,net_queue_mode_normal,net_remote_uid_host,(unsigned char*)&info,sizeof(network_reply_info));
+	net_send_message(sock,net_action_reply_info,net_remote_uid_host,(unsigned char*)&info,sizeof(network_reply_info));
 }
 
 int net_host_client_handle_join(int sock,network_request_join *request_join)
@@ -96,7 +96,7 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 	
 		// send reply
 	
-	network_send_packet(sock,net_action_reply_join,net_queue_mode_normal,net_remote_uid_host,(unsigned char*)&reply_join,sizeof(network_reply_join));
+	net_send_message(sock,net_action_reply_join,net_remote_uid_host,(unsigned char*)&reply_join,sizeof(network_reply_join));
 	
 		// send all other players on host the new player for remote add
 		
@@ -107,7 +107,7 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 		remote_add.team_idx=htons((short)net_team_none);
 		remote_add.score=0;
 		remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_add,net_queue_mode_normal,(unsigned char*)&remote_add,sizeof(network_request_remote_add),FALSE);
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_remote_add),FALSE);
 	}
 
 	return(remote_uid);
@@ -130,7 +130,7 @@ int net_host_client_handle_local_join(network_request_join *request_join,char *e
 	remote_add.team_idx=htons((short)net_team_none);
 	remote_add.score=0;
 	remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
-	net_host_player_send_others_packet(remote_uid,net_action_request_remote_add,net_queue_mode_normal,(unsigned char*)&remote_add,sizeof(network_request_remote_add),FALSE);
+	net_host_player_send_others_packet(remote_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_remote_add),FALSE);
 
 	return(remote_uid);
 }
@@ -143,19 +143,19 @@ void net_host_client_handle_leave(int remote_uid)
 	
 		// now send all other players on host the remote remove
 		
-	net_host_player_send_others_packet(remote_uid,net_action_request_remote_remove,net_queue_mode_normal,NULL,0,FALSE);
+	net_host_player_send_others_packet(remote_uid,net_action_request_remote_remove,NULL,0,FALSE);
 }
 
 void net_host_client_handle_set_team(int remote_uid,network_request_team *team)
 {
 	net_host_player_update_team(remote_uid,team);
-	net_host_player_send_others_packet(remote_uid,net_action_request_team,net_queue_mode_normal,(unsigned char*)team,sizeof(network_request_team),FALSE);
+	net_host_player_send_others_packet(remote_uid,net_action_request_team,(unsigned char*)team,sizeof(network_request_team),FALSE);
 }
 
 void net_host_client_handle_update(int remote_uid,network_request_remote_update *update)
 {
 	net_host_player_update(remote_uid,update);
-	net_host_player_send_others_packet(remote_uid,net_action_request_remote_update,net_queue_mode_replace,(unsigned char*)update,sizeof(network_request_remote_update),TRUE);
+	net_host_player_send_others_packet(remote_uid,net_action_request_remote_update,(unsigned char*)update,sizeof(network_request_remote_update),TRUE);
 }
 
 void net_host_client_handle_group_synch(int sock)
@@ -170,7 +170,7 @@ void net_host_client_handle_group_synch(int sock)
 
 		if (map.groups[n].move.was_moved) {
 			group_moves_synch_with_client(n,&reply_synch);
-			network_send_packet(sock,net_action_reply_group_synch,net_queue_mode_normal,net_remote_uid_host,(unsigned char*)&reply_synch,sizeof(network_reply_group_synch));
+			net_send_message(sock,net_action_reply_group_synch,net_remote_uid_host,(unsigned char*)&reply_synch,sizeof(network_reply_group_synch));
 		}
 
 	}
@@ -185,60 +185,38 @@ void net_host_client_handle_group_synch(int sock)
 void* net_host_client_handler_thread(void *arg)
 {
 	d3socket				sock;
-	int						client_remote_uid,action,queue_mode,from_remote_uid,len,
-							net_error_count,tick,net_timeout_tick;
+	int						client_remote_uid,action,from_remote_uid,len;
 	unsigned char			data[net_max_msg_size];
+	net_queue_type			queue;
 	
 		// get sock from argument
 		
 	sock=(d3socket)arg;
 	
+		// start queue
+		
+	net_queue_initialize(&queue);
+	
 		// no attached player until join request
 		
 	client_remote_uid=-1;
 	
-	net_error_count=0;
-	net_timeout_tick=time_get()+host_client_timeout_msec_rate;
-	
 		// wait for messages
 		
 	while (TRUE) {
-	
-			// have we timed out?
-			
-		tick=time_get();
-		if (tick>net_timeout_tick) {
+
+			// feed the queue and get messages
+
+		if (!net_queue_feed(sock,&queue)) {
 			if (client_remote_uid!=-1) net_host_client_handle_leave(client_remote_uid);
 			client_remote_uid=-1;
 			break;
 		}
-	
-			// any messages?
 			
-		if (!network_receive_ready(sock)) {
+		if (!net_queue_check_message(&queue,&action,&from_remote_uid,data,&len)) {
 			usleep(host_no_data_u_wait);
 			continue;
 		}
-		
-			// read the message
-			// if error reach past error count, then assume socket has closed on other
-			// end or some other fatal error and kick off user
-			
-		if (!network_receive_packet(sock,&action,&queue_mode,&from_remote_uid,data,&len)) {
-			net_error_count++;
-			if (net_error_count==host_max_network_error_reject) {
-				if (client_remote_uid!=-1) net_host_client_handle_leave(client_remote_uid);
-				client_remote_uid=-1;
-				break;
-			}
-			continue;
-		}
-
-		net_error_count=0;
-		
-			// reset timeout
-			
-		net_timeout_tick=tick+host_client_timeout_msec_rate;
 		
 			// route messages
 
@@ -267,7 +245,7 @@ void* net_host_client_handler_thread(void *arg)
 				
 			case net_action_request_remote_update:
 				net_host_player_update(client_remote_uid,(network_request_remote_update*)data);
-				net_host_player_send_others_packet(client_remote_uid,action,queue_mode,data,len,TRUE);
+				net_host_player_send_others_packet(client_remote_uid,action,data,len,TRUE);
 				break;
 				
 			case net_action_request_remote_death:
@@ -275,18 +253,17 @@ void* net_host_client_handler_thread(void *arg)
 			case net_action_request_remote_sound:
 			case net_action_request_remote_fire:
 			case net_action_request_remote_pickup:
-				net_host_player_send_others_packet(client_remote_uid,action,net_queue_mode_normal,data,len,FALSE);
+				net_host_player_send_others_packet(client_remote_uid,action,data,len,FALSE);
 				break;
 
 			case net_action_request_latency_ping:
-				network_send_packet(sock,action,net_queue_mode_normal,net_remote_uid_host,NULL,0);
+				net_send_message(sock,action,net_remote_uid_host,NULL,0);
 				break;
 
 			case net_action_request_group_synch:
 				net_host_client_handle_group_synch(sock);
 				break;
 
-				
 		}
 		
 			// if no player attached, close socket and exit thread
@@ -294,7 +271,8 @@ void* net_host_client_handler_thread(void *arg)
 		if (client_remote_uid==-1) break;
 	}
 	
-	network_close_socket(&sock);
+	net_queue_shutdown(&queue);
+	net_close_socket(&sock);
 	
 	pthread_exit(NULL);
 	return(NULL);

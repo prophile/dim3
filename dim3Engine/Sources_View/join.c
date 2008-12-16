@@ -105,7 +105,7 @@ char* join_create_list(void)
 
 void* join_ping_thread_local_accept_read(void *arg)
 {
-	int					n,msec,action,queue_mode,from_remote_uid,len;
+	int					msec;
 	unsigned char		data[net_max_msg_size];
 	char				*row_data;
 	network_reply_info	*reply_info;
@@ -118,60 +118,44 @@ void* join_ping_thread_local_accept_read(void *arg)
 		
 	sock=(d3socket)arg;
 	
-	network_socket_blocking(sock,TRUE);
+	net_socket_blocking(sock,TRUE);
 		
 		// wait for data
-		
-	n=0;
-		
-	while (n!=100) {
-		if (network_receive_ready(sock)) break;
-		usleep(10000);
-		n++;
-	}
 	
-		// read data
+	if (net_queue_block_single_message(sock,-1,0,NULL,0,net_action_reply_info,data,sizeof(network_reply_info))) {
 		
-	if (network_receive_packet(sock,&action,&queue_mode,&from_remote_uid,data,&len)) {
+		reply_info=(network_reply_info*)data;
+		
+			// is it the same dim3 project?
+
+		if (strcasecmp(reply_info->proj_name,net_setup.host.proj_name)==0) {
 	
-			// only add to list if reply is right type
+			pthread_mutex_lock(&join_thread_lock);
+
+				// setup info
+
+			info=&join_list[join_count++];
+
+			strcpy(info->name,reply_info->host_name);
+			strcpy(info->ip,reply_info->host_ip_resolve);
+			strcpy(info->game_name,reply_info->game_name);
+			strcpy(info->map_name,reply_info->map_name);
+			info->local=TRUE;
+			info->player_count=(int)ntohs(reply_info->player_count);
+			info->player_max_count=(int)ntohs(reply_info->player_max_count);
+			info->ping_msec=msec;
+
+				// rebuild list
+
+			row_data=join_create_list();
+			element_set_table_data(join_table_id,row_data);
+			free(row_data);
 			
-		if (action==net_action_reply_info) {
-		
-			reply_info=(network_reply_info*)data;
-			
-				// is it the same dim3 project?
-
-			if (strcasecmp(reply_info->proj_name,net_setup.host.proj_name)==0) {
-		
-				pthread_mutex_lock(&join_thread_lock);
-
-					// setup info
-
-				info=&join_list[join_count++];
-
-				strcpy(info->name,reply_info->host_name);
-				strcpy(info->ip,reply_info->host_ip_resolve);
-				strcpy(info->game_name,reply_info->game_name);
-				strcpy(info->map_name,reply_info->map_name);
-				info->local=TRUE;
-				info->player_count=(int)ntohs(reply_info->player_count);
-				info->player_max_count=(int)ntohs(reply_info->player_max_count);
-				info->ping_msec=msec;
-
-					// rebuild list
-
-				row_data=join_create_list();
-				element_set_table_data(join_table_id,row_data);
-				free(row_data);
-				
-				pthread_mutex_unlock(&join_thread_lock);
-			}
-
+			pthread_mutex_unlock(&join_thread_lock);
 		}
 	}
 	
-	network_close_socket(&sock);
+	net_close_socket(&sock);
 	
 	pthread_exit(NULL);
 
@@ -212,24 +196,24 @@ void* join_ping_thread_local(void *arg)
 	
 	join_start_tick_local=time_get();
 	
-	network_get_host_ip(ip_name,ip_resolve);
+	net_get_host_ip(ip_name,ip_resolve);
 	
 		// spawn another thread to wait for replies
 		// we do this on another thread so we can
 		// cancel it under a certain time limit
 		// by closing the socket
 
-	broadcast_reply_sock=network_open_socket();
-	network_socket_blocking(broadcast_reply_sock,TRUE);
+	broadcast_reply_sock=net_open_socket();
+	net_socket_blocking(broadcast_reply_sock,TRUE);
 
-	if (!network_bind(broadcast_reply_sock,ip_resolve,net_port_host_broadcast_reply,err_str)) {
+	if (!net_bind(broadcast_reply_sock,ip_resolve,net_port_host_broadcast_reply,err_str)) {
 		join_list_done=TRUE;
 		pthread_exit(NULL);
 		return(0);
 	}
 	
 	if (listen(broadcast_reply_sock,32)!=0) {
-		network_close_socket(&broadcast_reply_sock);
+		net_close_socket(&broadcast_reply_sock);
 		join_list_done=TRUE;
 		pthread_exit(NULL);
 		return(0);
@@ -244,7 +228,7 @@ void* join_ping_thread_local(void *arg)
 		
 	join_start_tick_local=time_get();
 		
-	if (network_udp_send_broadcast(ip_resolve,net_port_host_broadcast)) {
+	if (net_udp_send_broadcast(ip_resolve,net_port_host_broadcast)) {
 		
 		count=client_timeout_wait_seconds;
 		count*=1000;
@@ -259,7 +243,7 @@ void* join_ping_thread_local(void *arg)
 		// close the socket to cancel the accept and
 		// join the thread to wait for end
 		
-	network_close_socket(&broadcast_reply_sock);
+	net_close_socket(&broadcast_reply_sock);
 	pthread_join(join_thread_accept,NULL);
 	
 	join_list_done=TRUE;

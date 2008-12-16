@@ -89,6 +89,8 @@ void default_settings_interface(void)
 	
 	hud.color.hilite.g=0.6f;
 	hud.color.hilite.r=hud.color.hilite.b=0.0f;
+	
+	hud.color.outline.r=hud.color.outline.g=hud.color.outline.b=0.8f;
 
 	hud.color.gradient_text.r=hud.color.gradient_text.g=hud.color.gradient_text.b=0.0f;
 	hud.color.gradient_start.r=hud.color.gradient_start.g=0.6f;
@@ -828,6 +830,7 @@ void read_settings_interface(void)
 		xml_get_attribute_color(color_tag,"disabled",&hud.color.disabled);
 		xml_get_attribute_color(color_tag,"mouse_over",&hud.color.mouse_over);
 		xml_get_attribute_color(color_tag,"hilite",&hud.color.hilite);
+		xml_get_attribute_color(color_tag,"outline",&hud.color.outline);
 		xml_get_attribute_color(color_tag,"gradient_text",&hud.color.gradient_text);
 		xml_get_attribute_color(color_tag,"gradient_start",&hud.color.gradient_start);
 		xml_get_attribute_color(color_tag,"gradient_end",&hud.color.gradient_end);

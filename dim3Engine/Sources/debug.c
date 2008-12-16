@@ -50,6 +50,7 @@ extern network_setup_type	net_setup;
 
 char						bind_type_str[][16]={"Game","Map","Remote"},
 							effect_type_str[][16]={"Flash","Particle","Lightning","Ray","Globe","Shake"};
+FILE						*debug_log_file=NULL;
 
 extern void console_add_system(char *txt);
 extern int game_time_get(void);
@@ -441,6 +442,26 @@ void debug_dump(void)
 	fflush(stdout);
 }
 
+/* =======================================================
+
+      Debug Log
+      
+======================================================= */
+
+void debug_log(char *str)
+{
+	char			path[1024];
+	
+	if (debug_log_file==NULL) {
+		file_paths_documents(&setup.file_path_setup,path,"Settings","Log","txt");
+		debug_log_file=fopen(path,"w");
+		if (debug_log_file==NULL) return;
+	}
+		
+	fwrite(str,1,strlen(str),debug_log_file);
+	fwrite("\n",1,1,debug_log_file);
+	fflush(debug_log_file);
+}
 /* =======================================================
 
       Debug Light

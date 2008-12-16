@@ -20,6 +20,10 @@
 		268CBC940DD2AA7D00CF0256 /* net_host_client_handler.c in Sources */ = {isa = PBXBuildFile; fileRef = 268CBC900DD2AA7D00CF0256 /* net_host_client_handler.c */; };
 		2696A1F60EF1EB8B005359BF /* script_weap_dual.c in Sources */ = {isa = PBXBuildFile; fileRef = 2696A1F50EF1EB8B005359BF /* script_weap_dual.c */; };
 		26A4B6440DAF028100E40F35 /* net_host_broadcast.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A4B6430DAF028100E40F35 /* net_host_broadcast.c */; };
+		26A561B70EF6974B00D38FC0 /* net_read_queue.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A561B60EF6974B00D38FC0 /* net_read_queue.c */; };
+		26A562590EF6D0AB00D38FC0 /* net_socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A562580EF6D0AB00D38FC0 /* net_socket.c */; };
+		26A5625B0EF6D0B000D38FC0 /* net_socket_udp.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A5625A0EF6D0B000D38FC0 /* net_socket_udp.c */; };
+		26A562B90EF6D50D00D38FC0 /* net_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A562B80EF6D50D00D38FC0 /* net_utility.c */; };
 		26ABEE820E72F0700029469D /* script_obj_object_thrust.c in Sources */ = {isa = PBXBuildFile; fileRef = 26ABEE810E72F0700029469D /* script_obj_object_thrust.c */; };
 		26BF01C20ECCEC22009996C6 /* script_weap_target_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BF01C10ECCEC22009996C6 /* script_weap_target_color.c */; };
 		26D109610DAC797D006666F2 /* host.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D109600DAC797D006666F2 /* host.c */; };
@@ -396,6 +400,10 @@
 		268CBC900DD2AA7D00CF0256 /* net_host_client_handler.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host_client_handler.c; path = Sources_Network/net_host_client_handler.c; sourceTree = "<group>"; };
 		2696A1F50EF1EB8B005359BF /* script_weap_dual.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_weap_dual.c; path = Sources_Server/script_weap_dual.c; sourceTree = "<group>"; };
 		26A4B6430DAF028100E40F35 /* net_host_broadcast.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host_broadcast.c; path = Sources_Network/net_host_broadcast.c; sourceTree = "<group>"; };
+		26A561B60EF6974B00D38FC0 /* net_read_queue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_read_queue.c; path = Sources_Network/net_read_queue.c; sourceTree = "<group>"; };
+		26A562580EF6D0AB00D38FC0 /* net_socket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_socket.c; path = Sources_Network/net_socket.c; sourceTree = "<group>"; };
+		26A5625A0EF6D0B000D38FC0 /* net_socket_udp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_socket_udp.c; path = Sources_Network/net_socket_udp.c; sourceTree = "<group>"; };
+		26A562B80EF6D50D00D38FC0 /* net_utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_utility.c; path = Sources_Network/net_utility.c; sourceTree = "<group>"; };
 		26ABEE810E72F0700029469D /* script_obj_object_thrust.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_obj_object_thrust.c; path = Sources_Server/script_obj_object_thrust.c; sourceTree = "<group>"; };
 		26BF01C10ECCEC22009996C6 /* script_weap_target_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_weap_target_color.c; path = Sources_Server/script_weap_target_color.c; sourceTree = "<group>"; };
 		26D109600DAC797D006666F2 /* host.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = host.c; path = Sources_View/host.c; sourceTree = "<group>"; };
@@ -970,10 +978,22 @@
 			name = Client;
 			sourceTree = "<group>";
 		};
+		26A561070EF5FFD800D38FC0 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				26A562B80EF6D50D00D38FC0 /* net_utility.c */,
+				26A562580EF6D0AB00D38FC0 /* net_socket.c */,
+				26A5625A0EF6D0B000D38FC0 /* net_socket_udp.c */,
+				26A561B60EF6974B00D38FC0 /* net_read_queue.c */,
+			);
+			name = Utility;
+			sourceTree = "<group>";
+		};
 		26F08C9C0DAC7D9C0097E249 /* Network */ = {
 			isa = PBXGroup;
 			children = (
 				26F08CB60DAC7E560097E249 /* Headers */,
+				26A561070EF5FFD800D38FC0 /* Utility */,
 				26A4B6470DAF02A400E40F35 /* Client */,
 				26F08CB70DAC7E5C0097E249 /* Host */,
 			);
@@ -1913,6 +1933,10 @@
 				267345E30ECB95E80048BD10 /* script_weap_target.c in Sources */,
 				26BF01C20ECCEC22009996C6 /* script_weap_target_color.c in Sources */,
 				2696A1F60EF1EB8B005359BF /* script_weap_dual.c in Sources */,
+				26A561B70EF6974B00D38FC0 /* net_read_queue.c in Sources */,
+				26A562590EF6D0AB00D38FC0 /* net_socket.c in Sources */,
+				26A5625B0EF6D0B000D38FC0 /* net_socket_udp.c in Sources */,
+				26A562B90EF6D50D00D38FC0 /* net_utility.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1933,7 +1957,8 @@
 		F5DB0BF1085671A9005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

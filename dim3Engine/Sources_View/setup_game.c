@@ -295,7 +295,7 @@ void setup_game_action_pane(void)
 	wid=(int)(((float)hud.scale_x)*0.2f);
 	high=(int)(((float)hud.scale_x)*0.05f);
 	
-	y+=(padding+(high/2));
+	y+=((padding/2)+(high/2));
 	
 	element_button_text_add("Set Action",setup_action_set_button,(x-(padding/2)),y,wid,high,element_pos_right,element_pos_center);
 	element_enable(setup_action_set_button,FALSE);

@@ -359,11 +359,11 @@ void weapon_script_fire(int tick,obj_type *obj,weapon_type *weap,int method)
 	scripts_post_event_console(&weap->attach,sd_event_weapon_fire,sd_event_weapon_fire_single,0);
 
 	if (!weap->fire.cancel) {
-		if ((weap->dual.on) && (weap->dual.active)) {
-			weap->fire.last_fire_dual_tick=tick;
+		if (!weap->dual.in_dual) {
+			weap->fire.last_fire_tick=tick;
 		}
 		else {
-			weap->fire.last_fire_tick=tick;
+			weap->fire.last_fire_dual_tick=tick;
 		}
 	}
 }
@@ -575,11 +575,11 @@ void weapon_player_fire_down(int tick,obj_type *obj,weapon_type *weap,int method
 	
 		// set last fire
 	
-	if ((weap->dual.on) && (weap->dual.active)) {
-		weap->fire.last_fire_dual_tick=tick;
+	if (!weap->dual.in_dual) {
+		weap->fire.last_fire_tick=tick;
 	}
 	else {
-		weap->fire.last_fire_tick=tick;
+		weap->fire.last_fire_dual_tick=tick;
 	}
 
 	weap->proj.repeat_ok=TRUE;
@@ -624,11 +624,11 @@ void weapon_player_fire_repeat(int tick,obj_type *obj,weapon_type *weap)
 	
 		// set last fire
 		
-	if ((weap->dual.on) && (weap->dual.active)) {
-		weap->fire.last_fire_dual_tick=tick;
+	if (!weap->dual.in_dual) {
+		weap->fire.last_fire_tick=tick;
 	}
 	else {
-		weap->fire.last_fire_tick=tick;
+		weap->fire.last_fire_dual_tick=tick;
 	}
     
         // if weapon OKs message, send message to player

@@ -81,7 +81,7 @@ void net_host_shutdown(void)
 	
 		// shutdown socket and then wait for termination
 		
-	network_close_socket(&host_socket);
+	net_close_socket(&host_socket);
 	pthread_join(host_thread,NULL);
 }
 
@@ -105,7 +105,7 @@ void* net_host_thread(void *arg)
 	
 		// create host socket
 		
-	host_socket=network_open_socket();
+	host_socket=net_open_socket();
 	if (host_socket==D3_NULL_SOCKET) {
 		strcpy(host_err_str,"Networking: Unable to open socket");
 		host_complete=TRUE;
@@ -113,12 +113,12 @@ void* net_host_thread(void *arg)
 		return(NULL);
 	}
 	
-	network_socket_blocking(host_socket,TRUE);
+	net_socket_blocking(host_socket,TRUE);
 		
 		// bind
 
-	if (!network_bind(host_socket,net_setup.host.ip_resolve,net_port_host,host_err_str)) {
-		network_close_socket(&host_socket);
+	if (!net_bind(host_socket,net_setup.host.ip_resolve,net_port_host,host_err_str)) {
+		net_close_socket(&host_socket);
 		host_complete=TRUE;
 		pthread_exit(NULL);
 		return(NULL);
@@ -128,7 +128,7 @@ void* net_host_thread(void *arg)
 		
 	err=listen(host_socket,256);
 	if (err!=0) {
-		network_close_socket(&host_socket);
+		net_close_socket(&host_socket);
 		sprintf(host_err_str,"Networking: Could not start listener on %s (error: %d)",net_setup.host.ip_resolve,errno);
 		host_complete=TRUE;
 		pthread_exit(NULL);
@@ -149,10 +149,10 @@ void* net_host_thread(void *arg)
 		
 			// spawn thread for client
 			
-		network_socket_blocking(sock,FALSE);
+		net_socket_blocking(sock,FALSE);
 		
 		if (pthread_create(&message_thread,NULL,net_host_client_handler_thread,(void*)sock)!=0) {
-			network_close_socket(&sock);
+			net_close_socket(&sock);
 		}
 	}
 	
@@ -174,20 +174,18 @@ bool net_host_game_start(char *err_str)
 	
 		// resolve names to IPs
 		
-	if (net_setup.host.name[0]==0x0) network_get_host_name(net_setup.host.name);
-	network_get_host_ip(net_setup.host.ip_name,net_setup.host.ip_resolve);
+	if (net_setup.host.name[0]==0x0) net_get_host_name(net_setup.host.name);
+	net_get_host_ip(net_setup.host.ip_name,net_setup.host.ip_resolve);
 
 		// start hosting
 
 	if (!net_host_initialize(err_str)) {
-		network_shutdown();
 		net_host_player_shutdown();
 		return(FALSE);
 	}
 	
 	if (!net_host_broadcast_initialize(err_str)) {
 		net_host_shutdown();
-		network_shutdown();
 		net_host_player_shutdown();
 		return(FALSE);
 	}
@@ -199,14 +197,12 @@ void net_host_game_end(void)
 {
 		// inform all player of server shutdown
 
-	net_host_player_send_all_packet(net_action_request_host_exit,net_queue_mode_normal,NULL,0,FALSE);
+	net_host_player_send_all_packet(net_action_request_host_exit,NULL,0,FALSE);
 
 		// shutdown server
 
 	net_host_broadcast_shutdown();
 	net_host_shutdown();
-	
-	network_shutdown();
 	
 	net_host_player_shutdown();
 }

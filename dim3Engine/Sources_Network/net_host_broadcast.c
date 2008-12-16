@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit “Created with dim3 Technology” is given on a single
+2. This credit ‚ÄúCreated with dim3 Technology‚Äù is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -83,7 +83,7 @@ void net_host_broadcast_shutdown(void)
 	
 		// shutdown socket and then wait for termination
 		
-	network_close_socket(&broadcast_listen_socket);
+	net_close_socket(&broadcast_listen_socket);
 	pthread_join(broadcast_listen_thread,NULL);
 }
 
@@ -106,7 +106,7 @@ void* net_host_broadcast_thread(void *arg)
 	
 		// create host socket
 		
-	broadcast_listen_socket=network_udp_open_socket();
+	broadcast_listen_socket=net_udp_open_socket();
 	if (broadcast_listen_socket==D3_NULL_SOCKET) {
 		strcpy(broadcast_listen_err_str,"Networking: Unable to open socket");
 		broadcast_listen_complete=TRUE;
@@ -114,13 +114,13 @@ void* net_host_broadcast_thread(void *arg)
 		return(NULL);
 	}
 		
-	network_socket_blocking(broadcast_listen_socket,TRUE);
+	net_socket_blocking(broadcast_listen_socket,TRUE);
 
 		// bind to the "any" IP to gather
 		// any broadcast messages
 
-	if (!network_udp_bind_broadcast(broadcast_listen_socket,net_port_host_broadcast,broadcast_listen_err_str)) {
-		network_close_socket(&broadcast_listen_socket);
+	if (!net_udp_bind_broadcast(broadcast_listen_socket,net_port_host_broadcast,broadcast_listen_err_str)) {
+		net_close_socket(&broadcast_listen_socket);
 		broadcast_listen_complete=TRUE;
 		pthread_exit(NULL);
 		return(NULL);
@@ -133,24 +133,24 @@ void* net_host_broadcast_thread(void *arg)
 		// start listening
 		
 	while (TRUE) {
-		r_addr=network_udp_receive_broadcast(broadcast_listen_socket);
+		r_addr=net_udp_receive_broadcast(broadcast_listen_socket);
 		if (r_addr==-1) break;
 		
 			// connect and reply that we are a server
 		
 		uc_ptr=(unsigned char*)&r_addr;
 		
-		sock=network_open_socket();
+		sock=net_open_socket();
 		if (sock==D3_NULL_SOCKET) continue;
 		
 		uc_ptr=(unsigned char*)&r_addr;
 		sprintf(ip,"%d.%d.%d.%d",uc_ptr[0],uc_ptr[1],uc_ptr[2],uc_ptr[3]);
 		
-		if (network_connect_block(sock,ip,net_port_host_broadcast_reply,client_timeout_wait_seconds,err_str)) {
+		if (net_connect_block(sock,ip,net_port_host_broadcast_reply,client_timeout_wait_seconds,err_str)) {
 			net_host_client_handle_info(sock);
 		}
 		
-		network_close_socket(&sock);
+		net_close_socket(&sock);
 	}
 	
 	pthread_exit(NULL);
