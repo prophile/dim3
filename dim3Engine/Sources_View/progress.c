@@ -124,7 +124,6 @@ void progress_draw(float percentage)
 
 		// progress text
 
-	
 	x=(hud.progress.lx+hud.progress.rx)>>1;
 	y=(hud.progress.ty+hud.progress.by)>>1;
 	

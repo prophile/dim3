@@ -154,11 +154,6 @@ float* view_bind_map_next_vertex_object(int sz)
 {
 	float			*vertex_ptr;
 
-		// get next object
-
-	cur_vbo_cache_idx++;
-	if (cur_vbo_cache_idx==view_vertex_object_count) cur_vbo_cache_idx=0;
-
 		// bind it
 
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_cache[cur_vbo_cache_idx]);
@@ -195,6 +190,11 @@ float* view_bind_map_next_vertex_object(int sz)
 		glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 		return(NULL);
 	}
+
+		// get next object
+
+	cur_vbo_cache_idx++;
+	if (cur_vbo_cache_idx==view_vertex_object_count) cur_vbo_cache_idx=0;
 
 	return(vertex_ptr);
 }

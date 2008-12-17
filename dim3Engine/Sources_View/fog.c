@@ -45,14 +45,15 @@ extern setup_type			setup;
 
 void fog_draw_textured(int tick)
 {
-	int					n,count,outer_radius,inner_radius,
-						high,drop,radius_add,radius,frame;
+	int					n,k,count,outer_radius,inner_radius,
+						radius_add,radius,frame;
 	unsigned long		gl_id;
-	float				txt_x_off,txt_x_turn,txt_x_off_add,
-						txt_x_fact,txt_y_fact;
-	d3ang				ang;
+	float				r_ang,r_ang_2,r_add,fx_1,fx_2,fz_1,fz_2,f_ty,f_by,
+						txt_x_off,txt_x_turn,txt_x_off_add,
+						gx,gx_add;
+	float				*vertex_ptr,*uv_ptr;
+	double				d_radius;
 	texture_type		*texture;
-	GLUquadricObj		*quadric;
 	
 		// textured fog on?
 		
@@ -60,21 +61,102 @@ void fog_draw_textured(int tick)
 
 		// setup viewpoint
 		
-	ang.x=angle_add(view.camera.ang.x,90.0f);
-	ang.y=ang.z=0;
-
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&ang);
 	gl_setup_project();
-	
-		// translate to correct height
 
-	high=map.fog.high;
-	drop=map.fog.drop;
-		
-	glMatrixMode(GL_MODELVIEW);
-	glTranslatef(0.0f,0.0f,-(float)(high-drop));
+		// drawing layers
+	
+	count=map.fog.count;
+	outer_radius=map.fog.outer_radius;
+	inner_radius=map.fog.inner_radius;
+
+	radius_add=(inner_radius-outer_radius)/count;
+
+		// construct VBO
+
+	vertex_ptr=view_bind_map_next_vertex_object((((8*4)*count)*(3+2)));
+	if (vertex_ptr==NULL) return;
+
+	uv_ptr=vertex_ptr+(((8*4)*count)*3);
+
+		// get drawing setup
+
+	txt_x_off=((float)(tick>>7))*map.fog.speed;
+	txt_x_turn=(map.fog.txt_x_fact*(view.camera.ang.y/360.0f));			// change texture offset with camera rotation
+	txt_x_off_add=1.0f/(float)count;
+
+	r_add=ANG_to_RAD*(float)(180/8);
+
+	radius=outer_radius;
+
+	f_ty=-(float)map.fog.high;
+	f_by=(float)map.fog.drop;
+
+	gx_add=map.fog.txt_x_fact/8.0f;
+
+		// create the fog vertexes
+
+	for (n=0;n!=count;n++) {
+
+		if ((n&0x1)==0x0) {
+			gx=txt_x_turn+txt_x_off;
+		}
+		else {
+			gx=txt_x_turn-txt_x_off;
+		}
+		txt_x_off+=txt_x_off_add;
+
+		r_ang=ANG_to_RAD*(-90.0f);
+
+		for (k=0;k!=8;k++) {
+
+			d_radius=(double)radius;
+
+			r_ang_2=r_ang+r_add;
+
+			fx_1=(float)(-sin(r_ang)*d_radius);
+			fx_2=(float)(-sin(r_ang_2)*d_radius);
+
+			fz_1=-(float)(cos(r_ang)*d_radius);
+			fz_2=-(float)(cos(r_ang_2)*d_radius);
+
+			*vertex_ptr++=fx_1;
+			*vertex_ptr++=f_ty;
+			*vertex_ptr++=fz_1;
+
+			*uv_ptr++=gx;
+			*uv_ptr++=0.0f;
+
+			*vertex_ptr++=fx_2;
+			*vertex_ptr++=f_ty;
+			*vertex_ptr++=fz_2;
+
+			*uv_ptr++=gx+gx_add;
+			*uv_ptr++=0.0f;
+
+			*vertex_ptr++=fx_2;
+			*vertex_ptr++=f_by;
+			*vertex_ptr++=fz_2;
+
+			*uv_ptr++=gx+gx_add;
+			*uv_ptr++=map.fog.txt_y_fact;
+
+			*vertex_ptr++=fx_1;
+			*vertex_ptr++=f_by;
+			*vertex_ptr++=fz_1;
+
+			*uv_ptr++=gx;
+			*uv_ptr++=map.fog.txt_y_fact;
+
+			r_ang=r_ang_2;
+			gx+=gx_add;
+		}
+
+		radius+=radius_add;
+	}
+
+  	view_unmap_current_vertex_object();
 
 		// setup drawing
 		
@@ -87,24 +169,7 @@ void fog_draw_textured(int tick)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 
-		// drawing layers
-	
-	count=map.fog.count;
-	outer_radius=map.fog.outer_radius;
-	inner_radius=map.fog.inner_radius;
-
-	radius_add=(inner_radius-outer_radius)/count;
-
-		// textured or solid color
-
-	txt_x_fact=map.fog.txt_x_fact;						// need to declare these outside to avoid warning
-	txt_y_fact=map.fog.txt_y_fact;
-	
-	txt_x_off=((float)(tick>>7))*map.fog.speed;
-	txt_x_turn=(txt_x_fact*(view.camera.ang.y/360.0f));			// change texture offset with camera rotation
-	txt_x_off_add=1.0f/(float)count;
-
-	glMatrixMode(GL_TEXTURE);
+	map.fog.texture_idx=3;
 
 	texture=&map.textures[map.fog.texture_idx];
 	frame=texture->animate.current_frame&max_texture_frame_mask;
@@ -113,39 +178,26 @@ void fog_draw_textured(int tick)
 	gl_texture_simple_start();
 	gl_texture_simple_set(gl_id,FALSE,1.0f,1.0f,1.0f,map.fog.alpha);
 
-		// draw obscuring cylinders
-
-	quadric=gluNewQuadric();
-	gluQuadricNormals(quadric,GLU_NONE);
-	gluQuadricTexture(quadric,GL_TRUE);
+		// draw the fog
 	
-	radius=outer_radius;
-	
-	for (n=0;n!=count;n++) {
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3,GL_FLOAT,0,(void*)0);
+		
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)((((8*4)*count)*3)*sizeof(float)));
 
-		glLoadIdentity();
+	glDrawArrays(GL_QUADS,0,((8*4)*count));
 
-		if ((n&0x1)==0x0) {
-			glTranslatef((txt_x_turn+txt_x_off),0.0f,0.0f);
-		}
-		else {
-			glTranslatef((txt_x_turn-txt_x_off),0.0f,0.0f);
-		}
-		txt_x_off+=txt_x_off_add;
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
 
-		glScalef(txt_x_fact,txt_y_fact,1.0f);
-
-		gluCylinder(quadric,radius,radius,high,16,1);
-		radius+=radius_add;
-	}
-	
-	gluDeleteQuadric(quadric);
-
-		// turn off texture
+		// end texture
 
 	gl_texture_simple_end();
 
-	glLoadIdentity();
+		// unbind the vbo
+
+	view_unbind_current_vertex_object();
 }
 
 /* =======================================================

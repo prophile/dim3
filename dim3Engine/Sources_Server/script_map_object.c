@@ -59,6 +59,7 @@ JSBool js_map_object_get_health_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 JSBool js_map_object_is_hidden_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_is_contact_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_is_max_health_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_object_move_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_shove_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_shove_direct_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_add_goal_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -97,6 +98,7 @@ JSFunctionSpec	map_object_functions[]={
 							{"isHidden",				js_map_object_is_hidden_func,				1},
 							{"isContact",				js_map_object_is_contact_func,				1},
 							{"isMaxHealth",				js_map_object_is_max_health_func,			1},
+							{"moveTo",					js_map_object_move_to_func,					5},
 							{"shove",					js_map_object_shove_func,					5},
 							{"shoveDirect",				js_map_object_shove_direct_func,			4},
 							{"addGoal",					js_map_object_add_goal_func,				1},
@@ -609,9 +611,26 @@ JSBool js_map_object_is_max_health_func(JSContext *cx,JSObject *j_obj,uintN argc
 
 /* =======================================================
 
-      Object Shoving
+      Object Moving and Shoving
       
 ======================================================= */
+
+JSBool js_map_object_move_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	obj_type		*obj;
+
+		// uid
+	
+	obj=script_find_obj_from_uid_arg(argv[0]);
+	if (obj==NULL) return(JS_FALSE);
+
+		// reposition
+
+	object_set_position(obj,JSVAL_TO_INT(argv[1]),JSVAL_TO_INT(argv[3]),JSVAL_TO_INT(argv[2]),script_value_to_float(argv[4]),0);
+	object_telefrag_check(obj);
+
+	return(JS_TRUE);
+}
 
 JSBool js_map_object_shove_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
