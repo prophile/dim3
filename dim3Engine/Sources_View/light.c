@@ -173,9 +173,9 @@ void light_add(d3pnt *pnt,int light_type,int intensity,d3col *col)
       
 ======================================================= */
 
-int light_create_glsl_array(d3pnt *pnt,float *light_pos,float *light_col,float *light_normal)
+int light_create_glsl_array(d3pnt *pnt,float *light_pos,float *light_col,float *light_normal,int *closest_idx)
 {
-	int						n;
+	int						n,d,dist;
 	float					*pos,*col,*normal;
 	d3vct					vct;
 	light_spot_type			*lspot;
@@ -186,6 +186,8 @@ int light_create_glsl_array(d3pnt *pnt,float *light_pos,float *light_col,float *
 	memset(light_col,0x0,((sizeof(float)*4)*max_light_spot));
 	memset(light_normal,0x0,((sizeof(float)*3)*max_light_spot));
 
+	*closest_idx=0;
+
 	if (nlight==0) return(0);
 
 		// create the list
@@ -193,6 +195,8 @@ int light_create_glsl_array(d3pnt *pnt,float *light_pos,float *light_col,float *
 	pos=light_pos;
 	col=light_col;
 	normal=light_normal;
+
+	dist=map_max_size;
 
 	lspot=lspot_cache;
 
@@ -211,6 +215,12 @@ int light_create_glsl_array(d3pnt *pnt,float *light_pos,float *light_col,float *
 		*normal++=vct.x;
 		*normal++=vct.y;
 		*normal++=vct.z;
+
+		d=(int)distance_get(lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
+		if (d<dist) {
+			dist=d;
+			*closest_idx=n;
+		}
 
 		lspot++;
 	}

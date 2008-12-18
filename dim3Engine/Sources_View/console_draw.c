@@ -113,15 +113,9 @@ void console_draw_fps(void)
 	by=hud.scale_y;
 
 	y=ty+(y_add+1);
-		
-	glColor3f(0.75f,0.75f,0.75f);
-	
-	glBegin(GL_QUADS);
-	glVertex2i(lx,ty);
-	glVertex2i(rx,ty);
-	glVertex2i(rx,by);
-	glVertex2i(lx,by);
-	glEnd();
+
+	col.r=col.g=col.b=0.75f;
+	view_draw_next_vertex_object_2D_color_quad(lx,ty,&col,rx,ty,&col,rx,by,&col,lx,by,&col,1.0f);
 	
 	gl_text_start(hud.font.text_size_small);
 	col.r=col.g=col.b=0.0f;
@@ -162,6 +156,7 @@ void console_draw_fps(void)
 void console_draw_open(void)
 {
 	int					i,y,lx,rx,ty,ty2,by,y_add;
+	d3col				col;
 	console_line_type	*cline;
 	
 		// setup view
@@ -182,23 +177,13 @@ void console_draw_open(void)
 	by=hud.scale_y;
 	
 	y=ty2+1;
-	
-	glColor3f(0.75f,0.75f,0.75f);
-	glBegin(GL_QUADS);
-	glVertex2i(lx,ty);
-	glVertex2i(rx,ty);
-	glVertex2i(rx,ty2);
-	glVertex2i(lx,ty2);
-	glEnd();
-	
-	glColor3f(0.05f,0.05f,0.05f);
-	glBegin(GL_QUADS);
-	glVertex2i(lx,ty2);
-	glVertex2i(rx,ty2);
-	glVertex2i(rx,by);
-	glVertex2i(lx,by);
-	glEnd();
-	
+
+	col.r=col.g=col.b=0.75f;
+	view_draw_next_vertex_object_2D_color_quad(lx,ty,&col,rx,ty,&col,rx,ty2,&col,lx,ty2,&col,1.0f);
+
+	col.r=col.g=col.b=0.05f;
+	view_draw_next_vertex_object_2D_color_quad(lx,ty2,&col,rx,ty2,&col,rx,by,&col,lx,by,&col,1.0f);
+
 		// console lines
 		
 	gl_text_start(hud.font.text_size_small);

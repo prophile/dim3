@@ -392,6 +392,30 @@ void group_moves_run(bool run_events)
 	}
 }
 
+/* =======================================================
+
+      Synch Group Movements with Loaded File
+      
+======================================================= */
+
+void group_moves_synch_with_load(void)
+{
+	int				n;
+	group_type		*group;
+	group_move_type	*move;
+
+	group=map.groups;
+
+	for (n=0;n!=map.ngroup;n++) {
+
+		if (move->was_moved) {
+			group_move(group,&group->move.cuml_mov_add);
+			group_rotate(group,&group->move.cuml_rot_add);
+		}
+		
+		group++;
+	}
+}
 
 /* =======================================================
 
@@ -490,3 +514,4 @@ void group_moves_synch_with_host(network_reply_group_synch *synch)
 
 	group_rotate(group,&cuml_rot_add);
 }
+

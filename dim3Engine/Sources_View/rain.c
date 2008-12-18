@@ -106,9 +106,10 @@ void rain_setup(int tick,int cx,int cy,int cz)
 
 void rain_draw(int tick)
 {
-	int				n,x,y,z,cx,cy,cz,xadd,yadd,zadd,density,
+	int				n,xadd,yadd,zadd,density,
 					slant_add,slant_mult,slant_div;
 	float			slant_ang_y;
+	float			*vertex_ptr,*col_ptr;
 	rain_draw_type	*rain_draw;
 
 		// is rain on and not under liquid?
@@ -116,15 +117,11 @@ void rain_draw(int tick)
 	if (!map.rain.on) return;
 	if (view.camera.under_liquid_idx!=-1) return;
 	
-	cx=view.camera.pnt.x;
-	cy=view.camera.pnt.y;
-	cz=view.camera.pnt.z;
-	
 		// reset on?
 		
 	if (map.rain.reset) {
 		map.rain.reset=FALSE;
-		rain_setup(tick,cx,cy,cz);
+		rain_setup(tick,view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
 	}
 	
 		// rain slant
@@ -166,6 +163,57 @@ void rain_draw(int tick)
 	
 	rain_last_tick=tick;
 
+		// rain density
+
+	density=map.rain.density;
+	if (density>max_rain_density) density=max_rain_density;
+
+		// construct VBO
+
+	vertex_ptr=view_bind_map_next_vertex_object(((density*2)*(3+4)));
+	if (vertex_ptr==NULL) return;
+
+	col_ptr=vertex_ptr+((density*2)*3);
+
+		// create vertexes
+
+	rain_draw=view.rain_draws;
+
+	for (n=0;n!=density;n++) {
+
+			// move rain
+
+		rain_draw->x+=xadd;
+		rain_draw->y+=yadd;
+		rain_draw->z+=zadd;
+		
+		if (rain_draw->y>rain_draw->by) rain_setup_single_reset(rain_draw,view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
+
+			// draw rain
+
+		*vertex_ptr++=(float)(rain_draw->x-view.camera.pnt.x);
+		*vertex_ptr++=(float)(rain_draw->y-view.camera.pnt.y);
+		*vertex_ptr++=(float)(view.camera.pnt.z-rain_draw->z);
+
+		*col_ptr++=map.rain.start_color.r;
+		*col_ptr++=map.rain.start_color.g;
+		*col_ptr++=map.rain.start_color.b;
+		*col_ptr++=map.rain.alpha;
+
+		*vertex_ptr++=(float)((rain_draw->x-view.camera.pnt.x)+xadd);
+		*vertex_ptr++=(float)((rain_draw->y+map.rain.line_length)-view.camera.pnt.y);
+		*vertex_ptr++=(float)((view.camera.pnt.z-rain_draw->z)+zadd);
+
+		*col_ptr++=map.rain.end_color.r;
+		*col_ptr++=map.rain.end_color.g;
+		*col_ptr++=map.rain.end_color.b;
+		*col_ptr++=map.rain.alpha;
+
+		rain_draw++;
+	}
+
+  	view_unmap_current_vertex_object();
+
 		// setup view
 
 	gl_setup_viewport(console_y_offset());
@@ -182,46 +230,25 @@ void rain_draw(int tick)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 
-		// rain lines
-
-	rain_draw=view.rain_draws;
+		// draw the rain
 
 	glLineWidth((float)map.rain.line_width);
-	glBegin(GL_LINES);
-	
-	density=map.rain.density;
-	if (density>max_rain_density) density=max_rain_density;
 
-	for (n=0;n!=density;n++) {
-
-			// move rain
-
-		rain_draw->x+=xadd;
-		rain_draw->y+=yadd;
-		rain_draw->z+=zadd;
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 		
-		if (rain_draw->y>rain_draw->by) rain_setup_single_reset(rain_draw,cx,cy,cz);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(4,GL_FLOAT,0,(void*)(((density*2)*3)*sizeof(float)));
 
-			// draw rain
+	glDrawArrays(GL_LINES,0,(density*2));
 
-		x=rain_draw->x-view.camera.pnt.x;
-		y=rain_draw->y-view.camera.pnt.y;
-		z=view.camera.pnt.z-rain_draw->z;
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
 
-		glColor4f(map.rain.start_color.r,map.rain.start_color.g,map.rain.start_color.b,map.rain.alpha);
-		glVertex3i(x,y,z);
-
-		x=(rain_draw->x-view.camera.pnt.x)+xadd;
-		y=(rain_draw->y+map.rain.line_length)-view.camera.pnt.y;
-		z=(view.camera.pnt.z-rain_draw->z)+zadd;
-
-		glColor4f(map.rain.end_color.r,map.rain.end_color.g,map.rain.end_color.b,map.rain.alpha);
-		glVertex3i(x,y,z);
-
-		rain_draw++;
-	}
-
-	glEnd();
 	glLineWidth(1);
+
+		// unbind the vbo
+
+	view_unbind_current_vertex_object();
 }
 

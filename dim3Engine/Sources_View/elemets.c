@@ -1390,6 +1390,7 @@ void element_draw_slider(element_type *element,int sel_id)
 {
 	int				x,y,ky,lft,rgt,top,bot,mid;
 	float			alpha;
+	d3col			col,col2;
 	
 	x=element->x;
 	y=element->y;
@@ -1427,18 +1428,11 @@ void element_draw_slider(element_type *element,int sel_id)
 		// slider value
 		
 	if (element->enabled) {
+		col2.r=hud.color.hilite.r*0.7f;
+		col2.g=hud.color.hilite.g*0.7f;
+		col2.b=hud.color.hilite.b*0.7f;
 
-		glBegin(GL_QUADS);
-
-		glColor4f(hud.color.hilite.r,hud.color.hilite.g,hud.color.hilite.b,alpha);
-		glVertex2i(lft,top);
-		glVertex2i(mid,top);
-
-		glColor4f((hud.color.hilite.r*0.7f),(hud.color.hilite.g*0.7f),(hud.color.hilite.b*0.7f),alpha);
-		glVertex2i(mid,bot);
-		glVertex2i(lft,bot);
-
-		glEnd();
+		view_draw_next_vertex_object_2D_color_quad(lft,top,&hud.color.hilite,mid,top,&hud.color.hilite,mid,bot,&col2,lft,bot,&col2,alpha);
 	}
 
 		// outline
@@ -1456,17 +1450,9 @@ void element_draw_slider(element_type *element,int sel_id)
 
 	if ((mid+16)>rgt) mid=rgt-16;
 
-	glBegin(GL_QUADS);
-
-	glColor4f(0.6f,0.6f,0.6f,alpha);
-	glVertex2i(mid,top);
-	glVertex2i((mid+16),top);
-
-	glColor4f(0.3f,0.3f,0.3f,alpha);
-	glVertex2i((mid+16),bot);
-	glVertex2i(mid,bot);
-
-	glEnd();
+	col.r=col.g=col.b=0.6f;
+	col2.r=col2.g=col2.b=0.3f;
+	view_draw_next_vertex_object_2D_color_quad(mid,top,&col,(mid+16),top,&col,(mid+16),bot,&col2,mid,bot,&col2,alpha);
 
 	glColor4f(hud.color.outline.r,hud.color.outline.g,hud.color.outline.b,alpha);
 	view_draw_next_vertex_object_2D_line_quad(mid,(mid+16),top,bot);
@@ -1561,7 +1547,7 @@ bool element_click_table(element_type *element,int x,int y)
 void element_draw_table_background_fills(element_type *element,int row_high)
 {
 	int				lft,rgt,top,bot,x,y,top2,bot2,
-					scroll_high,row_count;
+					scroll_high,row_count,tot_row_high,row_per_page,page_count;
 	d3col			col,col2;
 	
 		// header
@@ -1611,10 +1597,16 @@ void element_draw_table_background_fills(element_type *element,int row_high)
 		
 	row_count=element_get_table_row_count(element);
 	if (row_count!=0) {
-		scroll_high=element->high-(24*2);
 
-		top2=top+(element->offset*scroll_high)/row_count;
-		bot2=top2+((scroll_high/row_high)*scroll_high)/row_count;
+		tot_row_high=row_high*row_count;
+		page_count=tot_row_high/(bot-top);
+		if ((tot_row_high%(bot-top))!=0) page_count++;
+
+		scroll_high=(bot-top)/page_count;
+		row_per_page=((element->high-(row_high+4))/row_high)-1;
+
+		top2=top+(scroll_high*(element->offset/row_per_page));
+		bot2=(top2+scroll_high)+4;
 		
 		if (top2>top) top=top2;
 		if (bot2<bot) bot=bot2;
@@ -1732,7 +1724,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 	int				n,dx,dy;
 	unsigned long	gl_id;
 	char			*c,*c2,txt[256];
-	d3col			col;
+	d3col			col,col2;
 
 	dy=y+(row_high>>1);
 	
@@ -1765,17 +1757,8 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 				glDisable(GL_BLEND);
 				glDisable(GL_ALPHA_TEST);
 				glDisable(GL_DEPTH_TEST);
-		
-				glBegin(GL_QUADS);
-				glTexCoord2f(0,0);
-				glVertex2i(dx,(y+1));
-				glTexCoord2f(1,0);
-				glVertex2i((dx+element_table_bitmap_size),(y+1));
-				glTexCoord2f(1,1);
-				glVertex2i((dx+element_table_bitmap_size),((y+1)+element_table_bitmap_size));
-				glTexCoord2f(0,1);
-				glVertex2i(dx,((y+1)+element_table_bitmap_size));
-				glEnd();
+
+				view_draw_next_vertex_object_2D_texture_quad(dx,(dx+element_table_bitmap_size),(y+1),((y+1)+element_table_bitmap_size));
 
 				gl_texture_simple_end();
 				
@@ -1786,21 +1769,14 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 				// missing graphic
 
 			else {
-
-				glBegin(GL_QUADS);
-				glColor4f(0.6f,0.6f,0.6f,1.0f);
-				glVertex2i((dx+2),(y+4));
-				glVertex2i(((dx-4)+element_table_bitmap_size),(y+4));
-				glColor4f(0.4f,0.4f,0.4f,1.0f);
-				glVertex2i(((dx-4)+element_table_bitmap_size),((y-2)+element_table_bitmap_size));
-				glVertex2i((dx+2),((y-2)+element_table_bitmap_size));
-				glEnd();
-			
-				glColor4f(hud.color.outline.r,hud.color.outline.g,hud.color.outline.b,1.0f);
-				glLineWidth(2.0f);
-				view_draw_next_vertex_object_2D_line_quad((dx+2),((dx-4)+element_table_bitmap_size),(y+4),((y-2)+element_table_bitmap_size));
 				
-				glLineWidth(1.0f);
+				col.r=col.g=col.b=0.6f;
+				col2.r=col2.g=col2.b=0.4f;
+
+				view_draw_next_vertex_object_2D_color_quad(dx,(y+1),&col,(dx+element_table_bitmap_size),(y+1),&col,(dx+element_table_bitmap_size),((y+1)+element_table_bitmap_size),&col2,dx,((y+1)+element_table_bitmap_size),&col2,1.0f);
+
+				glColor4f(hud.color.outline.r,hud.color.outline.g,hud.color.outline.b,1.0f);
+				view_draw_next_vertex_object_2D_line_quad(dx,(dx+element_table_bitmap_size),(y+1),((y+1)+element_table_bitmap_size));
 
 				col.r=col.g=col.b=1.0f;
 
@@ -2026,11 +2002,11 @@ void element_draw_table(element_type *element,int sel_id)
 			if (((n+element->offset)&0x1)==0) {
 				col.r=col.g=col.b=0.0f;
 				col2.r=col2.g=col2.b=0.0f;
-				line_col.r=line_col.g=line_col.b=0.25f;
+				line_col.r=line_col.g=line_col.b=0.5f;
 			}
 			else {
-				col.r=col.g=col.b=0.15f;
-				col2.r=col2.g=col2.b=0.15f;
+				col.r=col.g=col.b=0.35f;
+				col2.r=col2.g=col2.b=0.35f;
 				line_col.r=line_col.g=line_col.b=0.0f;
 			}
 			alpha=0.5f;

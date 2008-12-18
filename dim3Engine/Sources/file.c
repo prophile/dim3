@@ -48,7 +48,7 @@ extern setup_type		setup;
 
 unsigned long			game_file_sz,game_file_pos;
 char					game_file_last_save_name[256];
-ptr						game_file_data;
+unsigned char			*game_file_data;
 
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
@@ -59,6 +59,7 @@ extern void game_time_reset(void);
 extern int game_time_get(void);
 extern void game_time_set(int tick);
 extern void view_capture_draw(char *path);
+extern void group_moves_synch_with_load(void);
 
 /* =======================================================
 
@@ -77,17 +78,24 @@ void game_file_initialize(void)
       
 ======================================================= */
 
-bool game_file_add_chunk(void *data,int sz)
+bool game_file_add_chunk(void *data,int count,int sz)
 {
-	ptr			nptr;
+	int				nxt_file_sz;
+	unsigned char	*nptr;
 	
-	nptr=realloc(game_file_data,game_file_sz+(sz+sizeof(int)));
+	sz*=count;
+	nxt_file_sz=game_file_sz+(sz+(sizeof(int)*2));
+
+	nptr=realloc(game_file_data,nxt_file_sz);
 	if (nptr==NULL) return(FALSE);
 	
 	game_file_data=nptr;
-	
+
+	memmove((game_file_data+game_file_sz),&count,sizeof(int));
+	game_file_sz+=sizeof(int);
+
 	memmove((game_file_data+game_file_sz),&sz,sizeof(int));
-	game_file_sz+=4;
+	game_file_sz+=sizeof(int);
 	
 	memmove((game_file_data+game_file_sz),data,sz);
 	game_file_sz+=sz;
@@ -95,17 +103,26 @@ bool game_file_add_chunk(void *data,int sz)
 	return(TRUE);
 }
 
+
+// supergumba -- need difference between things that can be re-allocated and those that can't!
+
 char* game_file_get_chunk(void *data)
 {
-	int			sz;
+	int			count,sz;
 	
+	memmove(&count,(game_file_data+game_file_pos),sizeof(int));
+	game_file_pos+=sizeof(int);
+
 	memmove(&sz,(game_file_data+game_file_pos),sizeof(int));
-	game_file_pos+=4;
+	game_file_pos+=sizeof(int);
 	
+	/* supergumba -- yikes!
+
 	if (data==NULL) {
 		data=malloc(sz);
 		if (data==NULL) return(NULL);
 	}
+	*/
 	
 	memmove(data,(game_file_data+game_file_pos),sz);
 	game_file_pos+=sz;
@@ -260,12 +277,6 @@ bool game_file_save(char *err_str)
 	bool				ok;
 	file_save_header	head;
 	
-		// supergumba -- re-implement this
-		
-	strcpy(err_str,"Not implemented");
-	return(FALSE);
-
-	
 	progress_initialize("Saving");
 	progress_draw(5);
 	
@@ -291,7 +302,7 @@ bool game_file_save(char *err_str)
 	strcpy(head.version,dim3_version);
 	strcpy(head.map_name,map.info.name);
 		
-	game_file_add_chunk(&head,sizeof(file_save_header));
+	game_file_add_chunk(&head,1,sizeof(file_save_header));
 	
 		// send scripts save event
 		// to backup globals
@@ -304,76 +315,60 @@ bool game_file_save(char *err_str)
 		
 	progress_draw(20);
 		
-	game_file_add_chunk(&view.time,sizeof(view_time_type));
-	game_file_add_chunk(&view.fps,sizeof(view_fps_type));
-	game_file_add_chunk(&camera,sizeof(camera_type));
+	game_file_add_chunk(&view.time,1,sizeof(view_time_type));
+	game_file_add_chunk(&view.fps,1,sizeof(view_fps_type));
+	game_file_add_chunk(&camera,1,sizeof(camera_type));
 	
-	game_file_add_chunk(&server.time,sizeof(server_time_type));
-	game_file_add_chunk(&server.player_obj_uid,sizeof(int));
+	game_file_add_chunk(&server.time,1,sizeof(server_time_type));
+	game_file_add_chunk(&server.player_obj_uid,1,sizeof(int));
+	
+	game_file_add_chunk(&server.uid,1,sizeof(server_uid_type));
+	game_file_add_chunk(&server.count,1,sizeof(server_count_type));
 	
 	progress_draw(30);
-	
-	game_file_add_chunk(&server.uid,sizeof(server_uid_type));
-	game_file_add_chunk(&server.count,sizeof(server_count_type));
+
+	game_file_add_chunk(server.objs,server.count.obj,sizeof(obj_type));
+	game_file_add_chunk(server.weapons,server.count.weapon,sizeof(weapon_type));
+	game_file_add_chunk(server.proj_setups,server.count.proj_setup,sizeof(proj_setup_type));
 	
 	progress_draw(40);
-
-	game_file_add_chunk(server.objs,(server.count.obj*sizeof(obj_type)));
-	game_file_add_chunk(server.weapons,(server.count.weapon*sizeof(weapon_type)));
-	game_file_add_chunk(server.proj_setups,(server.count.proj_setup*sizeof(proj_setup_type)));
+	
+	game_file_add_chunk(server.projs,server.count.proj,sizeof(proj_type));
+	game_file_add_chunk(server.effects,server.count.effect,sizeof(effect_type));
+	game_file_add_chunk(server.decals,server.count.decal,sizeof(decal_type));
 	
 	progress_draw(50);
 	
-	game_file_add_chunk(server.projs,(server.count.proj*sizeof(proj_type)));
-	game_file_add_chunk(server.effects,(server.count.effect*sizeof(effect_type)));
-	game_file_add_chunk(server.decals,(server.count.decal*sizeof(decal_type)));
-	
-	progress_draw(60);
-	
-	game_file_add_chunk(hud.bitmaps,(hud.count.bitmap*sizeof(hud_bitmap_type)));
-	game_file_add_chunk(hud.texts,(hud.count.text*sizeof(hud_text_type)));
-	game_file_add_chunk(hud.bars,(hud.count.bar*sizeof(hud_bar_type)));
-	game_file_add_chunk(&hud.radar,sizeof(hud_radar_type));
+	game_file_add_chunk(hud.bitmaps,hud.count.bitmap,sizeof(hud_bitmap_type));
+	game_file_add_chunk(hud.texts,hud.count.text,sizeof(hud_text_type));
+	game_file_add_chunk(hud.bars,hud.count.bar,sizeof(hud_bar_type));
+	game_file_add_chunk(&hud.radar,1,sizeof(hud_radar_type));
 	
 		// map changes
 		
+	progress_draw(60);
+
+	game_file_add_chunk(&map.ambient,1,sizeof(map_ambient_type));					
+	game_file_add_chunk(&map.rain,1,sizeof(map_rain_type));					
+	game_file_add_chunk(&map.background,1,sizeof(map_background_type));					
+	game_file_add_chunk(&map.sky,1,sizeof(map_sky_type));
+	game_file_add_chunk(&map.fog,1,sizeof(map_fog_type));
+
 	progress_draw(70);
 
-	game_file_add_chunk(&map.ambient,sizeof(map_ambient_type));					
-	game_file_add_chunk(&map.rain,sizeof(map_rain_type));					
-	game_file_add_chunk(&map.background,sizeof(map_background_type));					
-	game_file_add_chunk(&map.sky,sizeof(map_sky_type));
-	game_file_add_chunk(&map.fog,sizeof(map_fog_type));
-	
-	/* supergumba -- fix this all up
-	ntouch_segment=map_segments_count_touch(&map);
-	
-	game_file_add_chunk(&ntouch_segment,sizeof(int));
-	
-	seg=map.segments;
-	
-	for (n=0;n<map.nsegment;n++) {
-		if (seg->touched) {
-			seg_idx=n;
-			game_file_add_chunk(&seg_idx,sizeof(int));
-			game_file_add_chunk(seg,sizeof(segment_type));
-		}
-		seg++;
-	}
-	*/
-	
-	game_file_add_chunk(map.movements,sizeof(movement_type)*map.nmovement);
+	game_file_add_chunk(map.groups,1,sizeof(group_type)*map.ngroup);
+	game_file_add_chunk(map.movements,1,sizeof(movement_type)*map.nmovement);
 	
 		// script objects
 		
 	progress_draw(80);
 	
-	game_file_add_chunk(&js.script_current_uid,sizeof(int));
-	game_file_add_chunk(&js.count,sizeof(script_count_type));
-	game_file_add_chunk(&js.time,sizeof(script_time_type));
+	game_file_add_chunk(&js.script_current_uid,1,sizeof(int));
+	game_file_add_chunk(&js.count,1,sizeof(script_count_type));
+	game_file_add_chunk(&js.time,1,sizeof(script_time_type));
 		
-	game_file_add_chunk(js.timers,(js.count.timer*sizeof(timer_type)));
-	game_file_add_chunk(js.globals,(js.count.global*sizeof(global_type)));
+	game_file_add_chunk(js.timers,js.count.timer,sizeof(timer_type));
+	game_file_add_chunk(js.globals,js.count.global,sizeof(global_type));
 
 		// compress and save
 		
@@ -405,15 +400,9 @@ bool game_file_save(char *err_str)
 
 bool game_file_load(char *file_name,char *err_str)
 {
-	int					n,ntouch_segment,seg_idx;
 	char				*c,path[1024],fname[256];
 	file_save_header	head;
 	
-	// supergumba -- re-implement
-	
-	strcpy(err_str,"Not implemented");
-	return(FALSE);
-
 		// load and expand
 		
 	strcpy(fname,file_name);
@@ -482,24 +471,22 @@ bool game_file_load(char *file_name,char *err_str)
 	game_file_get_chunk(&server.time);
 	game_file_get_chunk(&server.player_obj_uid);
 	
-	progress_draw(30);
-
 	game_file_get_chunk(&server.uid);
 	game_file_get_chunk(&server.count);
 	
-	progress_draw(40);
+	progress_draw(30);
 
 	game_file_get_chunk(server.objs);
 	game_file_get_chunk(server.weapons);
 	game_file_get_chunk(server.proj_setups);
 	
-	progress_draw(50);
+	progress_draw(40);
 
 	game_file_get_chunk(server.projs);
 	game_file_get_chunk(server.effects);
 	game_file_get_chunk(server.decals);
 
-	progress_draw(60);
+	progress_draw(50);
 
 	game_file_get_chunk(hud.bitmaps);
 	game_file_get_chunk(hud.texts);
@@ -508,22 +495,20 @@ bool game_file_load(char *file_name,char *err_str)
 	
 		// map changes
 		
-	progress_draw(70);
+	progress_draw(60);
 
 	game_file_get_chunk(&map.ambient);					
 	game_file_get_chunk(&map.rain);					
 	game_file_get_chunk(&map.background);					
 	game_file_get_chunk(&map.sky);
 	game_file_get_chunk(&map.fog);
+
+	progress_draw(70);
 		
-	game_file_get_chunk(&ntouch_segment);
-
-	for (n=0;n<ntouch_segment;n++) {
-		game_file_get_chunk(&seg_idx);
-	//	game_file_get_chunk(&map.segments[seg_idx]);
-	}
-
+	game_file_get_chunk(map.groups);
 	game_file_get_chunk(map.movements);
+
+	group_moves_synch_with_load();
 	
 		// script objects
 		
