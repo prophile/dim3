@@ -53,6 +53,7 @@ void fog_draw_textured(int tick)
 						gx,gx_add;
 	float				*vertex_ptr,*uv_ptr;
 	double				d_radius;
+	d3ang				ang;
 	texture_type		*texture;
 	
 		// textured fog on?
@@ -61,8 +62,12 @@ void fog_draw_textured(int tick)
 
 		// setup viewpoint
 		
+	memmove(&ang,&view.camera.ang,sizeof(d3ang));
+	ang.y=180.0f;
+		
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
+	gl_3D_rotate(&ang);
 	gl_setup_project();
 
 		// drawing layers
@@ -168,8 +173,6 @@ void fog_draw_textured(int tick)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
-
-	map.fog.texture_idx=3;
 
 	texture=&map.textures[map.fog.texture_idx];
 	frame=texture->animate.current_frame&max_texture_frame_mask;

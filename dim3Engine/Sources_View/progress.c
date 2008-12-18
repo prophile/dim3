@@ -127,7 +127,7 @@ void progress_draw(float percentage)
 	x=(hud.progress.lx+hud.progress.rx)>>1;
 	y=(hud.progress.ty+hud.progress.by)>>1;
 	
-	psz=((int)((float)(hud.progress.by-hud.progress.ty)/text_height_factor))-2;
+	psz=((int)((float)(hud.progress.by-hud.progress.ty)/text_height_factor))-8;
 
 	gl_text_start(psz);
 	gl_text_draw(x,y,progress_str,tx_center,TRUE,&hud.progress.text_color,1.0f);
