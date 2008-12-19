@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version			"3.0b4"
+#define dim3_version			"3.0b5"
 
 /* =======================================================
 
@@ -430,8 +430,8 @@ extern bool xml_add_attribute_bit_array(char *name,unsigned char *value,int coun
 // texture maximums
 //
 
-#define max_texture_frame						16				// maximum number of frames in a texture
-#define max_texture_frame_mask					0x0F			// mask for maximum number of textures frames
+#define max_texture_frame						32				// maximum number of frames in a texture
+#define max_texture_frame_mask					0x1F			// mask for maximum number of textures frames
 
 //
 // shaders

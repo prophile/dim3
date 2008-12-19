@@ -402,13 +402,12 @@ void group_moves_synch_with_load(void)
 {
 	int				n;
 	group_type		*group;
-	group_move_type	*move;
 
 	group=map.groups;
 
 	for (n=0;n!=map.ngroup;n++) {
 
-		if (move->was_moved) {
+		if (group->move.was_moved) {
 			group_move(group,&group->move.cuml_mov_add);
 			group_rotate(group,&group->move.cuml_rot_add);
 		}

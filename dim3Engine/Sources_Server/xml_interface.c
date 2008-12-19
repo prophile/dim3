@@ -119,6 +119,7 @@ void default_settings_interface(void)
 	hud.progress.hilite_color_start.r=hud.progress.hilite_color_start.b=0.0f;
 	hud.progress.hilite_color_end.g=1.0f;
 	hud.progress.hilite_color_end.r=hud.progress.hilite_color_end.b=0.0f;
+	hud.progress.text_size=20;
 	hud.progress.text_color.r=hud.progress.text_color.g=hud.progress.text_color.b=0.0f;
 	
 		// chat
@@ -854,6 +855,7 @@ void read_settings_interface(void)
 		hud.progress.rx=xml_get_attribute_int(progress_tag,"right_x");
 		hud.progress.ty=xml_get_attribute_int(progress_tag,"top_y");
 		hud.progress.by=xml_get_attribute_int(progress_tag,"bottom_y");
+		hud.progress.text_size=xml_get_attribute_int(progress_tag,"text_size");
 		xml_get_attribute_color(progress_tag,"base_color_start",&hud.progress.base_color_start);
 		xml_get_attribute_color(progress_tag,"base_color_end",&hud.progress.base_color_end);
 		xml_get_attribute_color(progress_tag,"hilite_color_start",&hud.progress.hilite_color_start);

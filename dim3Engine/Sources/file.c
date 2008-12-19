@@ -103,9 +103,6 @@ bool game_file_add_chunk(void *data,int count,int sz)
 	return(TRUE);
 }
 
-
-// supergumba -- need difference between things that can be re-allocated and those that can't!
-
 char* game_file_get_chunk(void *data)
 {
 	int			count,sz;
@@ -116,13 +113,25 @@ char* game_file_get_chunk(void *data)
 	memmove(&sz,(game_file_data+game_file_pos),sizeof(int));
 	game_file_pos+=sizeof(int);
 	
-	/* supergumba -- yikes!
+	memmove(data,(game_file_data+game_file_pos),sz);
+	game_file_pos+=sz;
+	
+	return(data);
+}
 
-	if (data==NULL) {
-		data=malloc(sz);
-		if (data==NULL) return(NULL);
-	}
-	*/
+char* game_file_replace_chunk(void)
+{
+	int				count,sz;
+	unsigned char	*data;
+	
+	memmove(&count,(game_file_data+game_file_pos),sizeof(int));
+	game_file_pos+=sizeof(int);
+
+	memmove(&sz,(game_file_data+game_file_pos),sizeof(int));
+	game_file_pos+=sizeof(int);
+	
+	data=malloc(count*sz);
+	if (data==NULL) return(FALSE);
 	
 	memmove(data,(game_file_data+game_file_pos),sz);
 	game_file_pos+=sz;
@@ -321,6 +330,7 @@ bool game_file_save(char *err_str)
 	
 	game_file_add_chunk(&server.time,1,sizeof(server_time_type));
 	game_file_add_chunk(&server.player_obj_uid,1,sizeof(int));
+	game_file_add_chunk(&server.skill,1,sizeof(int));
 	
 	game_file_add_chunk(&server.uid,1,sizeof(server_uid_type));
 	game_file_add_chunk(&server.count,1,sizeof(server_count_type));
@@ -470,15 +480,25 @@ bool game_file_load(char *file_name,char *err_str)
 	
 	game_file_get_chunk(&server.time);
 	game_file_get_chunk(&server.player_obj_uid);
+	game_file_get_chunk(&server.skill);
 	
 	game_file_get_chunk(&server.uid);
 	game_file_get_chunk(&server.count);
 	
 	progress_draw(30);
 
-	game_file_get_chunk(server.objs);
-	game_file_get_chunk(server.weapons);
-	game_file_get_chunk(server.proj_setups);
+	free(server.objs);
+	free(server.weapons);
+	free(server.proj_setups);
+
+	server.objs=(obj_type*)game_file_replace_chunk();
+	server.weapons=(weapon_type*)game_file_replace_chunk();
+	server.proj_setups=(proj_setup_type*)game_file_replace_chunk();
+
+	if ((server.objs==NULL) || (server.weapons==NULL) || (server.proj_setups==NULL)) {
+		free(game_file_data);
+		return(FALSE);
+	}
 	
 	progress_draw(40);
 
@@ -503,9 +523,14 @@ bool game_file_load(char *file_name,char *err_str)
 	game_file_get_chunk(&map.sky);
 	game_file_get_chunk(&map.fog);
 
+	map.rain.reset=TRUE;
+
 	progress_draw(70);
-		
+	
+	map_group_dispose_unit_list(&map);			// need to destroy and rebuild unit lists
 	game_file_get_chunk(map.groups);
+	map_group_create_unit_list(&map);
+
 	game_file_get_chunk(map.movements);
 
 	group_moves_synch_with_load();

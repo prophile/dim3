@@ -75,7 +75,7 @@ void progress_shutdown(void)
 
 void progress_draw(float percentage)
 {
-	int					lft,rgt,top,bot,mid,rgt2,x,y,psz;
+	int					lft,rgt,top,bot,mid,rgt2,x,y;
 
 		// any change?
 		
@@ -127,9 +127,7 @@ void progress_draw(float percentage)
 	x=(hud.progress.lx+hud.progress.rx)>>1;
 	y=(hud.progress.ty+hud.progress.by)>>1;
 	
-	psz=((int)((float)(hud.progress.by-hud.progress.ty)/text_height_factor))-8;
-
-	gl_text_start(psz);
+	gl_text_start(hud.progress.text_size);
 	gl_text_draw(x,y,progress_str,tx_center,TRUE,&hud.progress.text_color,1.0f);
 	gl_text_end();
 

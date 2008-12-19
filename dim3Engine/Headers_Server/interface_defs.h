@@ -339,7 +339,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						lx,rx,ty,by;
+						int						lx,rx,ty,by,text_size;
 						d3col					base_color_start,base_color_end,
 												hilite_color_start,hilite_color_end,
 												text_color;
