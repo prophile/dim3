@@ -262,62 +262,6 @@ void effect_draw_ray(effect_type *effect,int count)
 
 /* =======================================================
 
-      Draw Globe
-      
-======================================================= */
-
-void effect_draw_globe(effect_type *effect,int count)
-{
-	int						x,z,y,sz,life_tick;
-	float					alpha;
-	globe_effect_data		*globe;
-	GLUquadricObj			*globe_quadric;
-	
-	globe=&effect->data.globe;
-	
-		// get size and alpha
-		
-	life_tick=effect->life_tick;
-	
-	sz=globe->end_size-globe->start_size;
-	sz=((sz*count)/life_tick)+globe->start_size;
-
-	alpha=globe->end_alpha-globe->start_alpha;
-	alpha=((alpha*(float)count)/(float)life_tick)+globe->start_alpha;
-
-	x=effect->pnt.x-view.camera.pnt.x;
-	y=effect->pnt.y-view.camera.pnt.y;
-	z=view.camera.pnt.z-effect->pnt.z;
-
-		// draw globe
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glDisable(GL_ALPHA_TEST);
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_FALSE);
-		
-	globe_quadric=gluNewQuadric();
-	gluQuadricNormals(globe_quadric,GLU_NONE);
-
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-
-	glTranslatef((float)x,(float)y,(float)z);
-	
-	glColor4f(globe->col.r,globe->col.g,globe->col.b,alpha);
-	gluSphere(globe_quadric,sz,24,24);
-	
-	glPopMatrix();
-
-	gluDeleteQuadric(globe_quadric);
-}
-
-/* =======================================================
-
       Get UV for animated Images
       
 ======================================================= */
@@ -457,10 +401,6 @@ void effect_draw(int tick)
 				
 			case ef_ray:
 				effect_draw_ray(effect,count);
-				break;
-				
-			case ef_globe:
-				effect_draw_globe(effect,count);
 				break;
 				
 		}

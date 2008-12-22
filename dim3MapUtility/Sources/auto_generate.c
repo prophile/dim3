@@ -43,7 +43,6 @@ extern bool map_auto_generate_portal_touching_top(int portal_idx);
 extern bool map_auto_generate_portal_touching_bottom(int portal_idx);
 extern bool map_auto_generate_portal_touching_any(int portal_idx);
 
-extern int map_auto_generate_get_floor_type(auto_generate_settings_type *ags);
 extern int map_auto_generate_get_ceiling_type(auto_generate_settings_type *ags);
 extern int map_auto_generate_get_corridor_type(auto_generate_settings_type *ags);
 
@@ -378,6 +377,9 @@ void map_auto_generate_connect_portals(map_type *map)
 			
 			ag_boxes[ag_box_count].mesh_idx=map_mesh_add(map);
 
+			ag_boxes[ag_box_count].corridor_connect_box_idx[0]=n;
+			ag_boxes[ag_box_count].corridor_connect_box_idx[1]=k;
+
 			ag_box_count++;
 
 				// only allow up to 2 connections in a direction
@@ -459,7 +461,11 @@ void map_auto_generate_connect_portals(map_type *map)
 			
 			ag_boxes[ag_box_count].corridor_flag=ag_corridor_flag_vertical;
 			corridor_types[ag_box_count]=map_auto_generate_get_corridor_type(&ag_settings);
+
 			ag_boxes[ag_box_count].mesh_idx=map_mesh_add(map);
+
+			ag_boxes[ag_box_count].corridor_connect_box_idx[0]=n;
+			ag_boxes[ag_box_count].corridor_connect_box_idx[1]=k;
 
 			ag_box_count++;
 
@@ -479,33 +485,29 @@ void map_auto_generate_connect_portals(map_type *map)
 
 void map_auto_generate_portal_y(void)
 {
-	int							n,corridor_slop_y,by_add,portal_high,portal_high_story_add,
-								ty,by,extra_ty,extra_by;
+	int							n,by_add,portal_high,portal_high_story_add,
+								corridor_high,y,ty,by,extra_ty,extra_by;
 	auto_generate_box_type		*portal;
 	
 		// portal sizes
 
 	portal_high=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_high_percent);
 	portal_high_story_add=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_story_high_add_percent);
-		
+
+	corridor_high=(int)(((float)ag_settings.map.portal_sz)*ag_constant_corridor_high_percent);
+
 	ty=(map_max_size/2)-(portal_high/2);
 	by=(map_max_size/2)+(portal_high/2);
 	
 	extra_ty=(int)(((float)portal_high)*ag_constant_portal_high_extra_top);
 	extra_by=(int)(((float)portal_high)*ag_constant_portal_high_extra_bottom);
 
-		// corridor top slop (so not at very top of portal)
-
-	corridor_slop_y=(int)((float)(by-ty)*ag_constant_portal_high_slop_y);
-
-		// create portal y
+		// create room portals
 
 	portal=ag_boxes;
 
 	for (n=0;n!=ag_box_count;n++) {
 	
-			// rooms have variable Ys
-			
 		if (portal->corridor_flag==ag_corridor_flag_portal) {
 		
 			portal->min.y=ty-map_auto_generate_random_int(extra_ty);
@@ -526,23 +528,45 @@ void map_auto_generate_portal_y(void)
 			}
 
 			portal->max.y=by+by_add;
+
+				// fit within map_enlarge
+
+			portal->min.y/=map_enlarge;
+			portal->min.y*=map_enlarge;
+
+			portal->max.y/=map_enlarge;
+			portal->max.y*=map_enlarge;
 		}
-		
-			// corridors have static Ys
-			
-		else {
-			portal->min.y=(ty+corridor_slop_y);
-			portal->max.y=by;
+
+		portal++;
+	}
+
+		// create corridor portals
+
+	portal=ag_boxes;
+
+	for (n=0;n!=ag_box_count;n++) {
+	
+		if (portal->corridor_flag!=ag_corridor_flag_portal) {
+
+				// corridor stick to highest
+				// room on one of their sides
+
+			y=ag_boxes[portal->corridor_connect_box_idx[0]].max.y;
+			if (ag_boxes[portal->corridor_connect_box_idx[1]].max.y<y) y=ag_boxes[portal->corridor_connect_box_idx[1]].max.y;
+
+			portal->min.y=y-corridor_high;
+			portal->max.y=y;
+
+				// fit within map_enlarge
+
+			portal->min.y/=map_enlarge;
+			portal->min.y*=map_enlarge;
+
+			portal->max.y/=map_enlarge;
+			portal->max.y*=map_enlarge;
 		}
 
-			// fit within map_enlarge
-
-		portal->min.y/=map_enlarge;
-		portal->min.y*=map_enlarge;
-
-		portal->max.y/=map_enlarge;
-		portal->max.y*=map_enlarge;
-		
 		portal++;
 	}
 }
@@ -1160,9 +1184,8 @@ void map_auto_generate_ceilings(map_type *map)
 void map_auto_generate_portal_floor_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int by)
 {
 	int							split_factor,lx2,rx2,lz2,rz2,
-								floor_type,rough_max,row_add,col_add,xadd,zadd,
+								xadd,zadd,
 								px[8],py[8],pz[8];
-	int							*fys,*fy;
 	float						gx[8],gy[8];
 	auto_generate_box_type		*portal;
 		
@@ -1171,35 +1194,6 @@ void map_auto_generate_portal_floor_add(map_type *map,int rn,int lx,int lz,int r
 		// get sizes
 		
 	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
-	rough_max=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_rough_floor_percent);
-	
-		// get floor type
-		
-	floor_type=map_auto_generate_get_floor_type(&ag_settings);
-	
-		// create floor Ys
-
-	col_add=((rx-lx)/split_factor)+1;
-	row_add=((rz-lz)/split_factor)+1;
-	
-	fys=(int*)malloc(sizeof(int)*(col_add*row_add));
-	if (fys==NULL) return;
-
-	fy=fys;
-
-	for (lz=0;lz<row_add;lz++) {
-		for (lx=0;lx<col_add;lx++) {
-		
-			if ((lz==0) || (lz==(row_add-1)) || (lx==0) || (lx==(col_add-1)) || (floor_type!=ag_floor_type_rough)) {
-				*fy=by;
-			}
-			else {
-				*fy=by-map_auto_generate_random_int(rough_max);
-			}
-			
-			fy++;
-		}
-	}
 	
 		// create floor polys
 
@@ -1217,10 +1211,7 @@ void map_auto_generate_portal_floor_add(map_type *map,int rn,int lx,int lz,int r
 
 			rx2=lx2+split_factor;
 
-			if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.portal_floor,FALSE,FALSE)) {
-				free(fys);
-				return;
-			}
+			if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.portal_floor,FALSE,FALSE)) return;
 
 				// create flat polygon
 
@@ -1228,10 +1219,7 @@ void map_auto_generate_portal_floor_add(map_type *map,int rn,int lx,int lz,int r
 
 				// rebuild the Ys
 
-			py[0]=fys[(col_add*zadd)+xadd];
-			py[1]=fys[(col_add*zadd)+(xadd+1)];
-			py[2]=fys[(col_add*(zadd+1))+(xadd+1)];
-			py[3]=fys[(col_add*(zadd+1))+xadd];
+			py[0]=py[1]=py[2]=py[3]=by;
 
 				// generate polygon
 
@@ -1244,8 +1232,6 @@ void map_auto_generate_portal_floor_add(map_type *map,int rn,int lx,int lz,int r
 		lz2=rz2;
 		zadd++;
 	}
-
-	free(fys);
 }
 
 void map_auto_generate_corridor_floor_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int by)
@@ -1705,10 +1691,6 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 	
 	ags.map.map_sz=2000*map_enlarge;
 	ags.map.portal_sz=500*map_enlarge;
-	
-	for (n=0;n!=ag_floor_type_count;n++) {
-		ags.floor_type_on[n]=TRUE;
-	}
 
 	for (n=0;n!=ag_ceiling_type_count;n++) {
 		ags.ceiling_type_on[n]=TRUE;

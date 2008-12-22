@@ -332,7 +332,7 @@ void view_draw(int tick)
 
 		// draw opaque polygons
 
-	render_opaque_map(mesh_draw_count,mesh_draw_list);
+//	render_opaque_map(mesh_draw_count,mesh_draw_list);
 
 		// draw model shadows
 

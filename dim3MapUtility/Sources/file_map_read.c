@@ -121,6 +121,7 @@ void decode_map_settings_xml(map_type *map,int map_head)
 			map->sky.type=xml_get_attribute_list(tag,"type",(char*)sky_type_str);
 			map->sky.radius=xml_get_attribute_int(tag,"radius");
 			map->sky.dome_y=xml_get_attribute_int(tag,"dome_y");
+			map->sky.dome_mirror=xml_get_attribute_boolean(tag,"dome_mirror");
 		}
 		tag=xml_findfirstchild("Fill",main_sky_tag);
 		if (tag!=-1) {

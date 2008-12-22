@@ -802,6 +802,8 @@ bool map_convert_v1(map_type *map,int nportal,portal_type *portals,int seg_cnt,s
 		
     map->sky.radius*=map_enlarge;
 	map->sky.dome_y*=map_enlarge;
+
+	map->sky.dome_mirror=FALSE;
 	
 	map->fog.outer_radius*=map_enlarge;
 	map->fog.inner_radius*=map_enlarge;

@@ -94,21 +94,27 @@ void view_create_mesh_draw_list(void)
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
 
-			// is this mesh visible?
+		if (!mesh->flag.never_obscure) {
 
-		if ((n!=start_mesh_idx) && (map.settings.obscure_type!=obscure_type_none)) {
-			if (!mesh_view_bit_get(start_mesh,n)) continue;
+				// is this mesh visible?
+
+			if ((n!=start_mesh_idx) && (map.settings.obscure_type!=obscure_type_none)) {
+				if (!mesh_view_bit_get(start_mesh,n)) continue;
+			}
+
+				// auto-eliminate meshes drawn outside the obscure distance
+				// or not in the view
+				
+			mesh=&map.mesh.meshes[n];
+			
+			d=map_mesh_calculate_distance(mesh,&view.camera.pnt);
+			if (d>obscure_dist) continue;
+				
+			if (!mesh_inview(mesh)) continue;
 		}
-
-			// auto-eliminate meshes drawn outside the obscure distance
-			// or not in the view
-			
-		mesh=&map.mesh.meshes[n];
-		
-		d=map_mesh_calculate_distance(mesh,&view.camera.pnt);
-		if (d>obscure_dist) continue;
-			
-		if (!mesh_inview(mesh)) continue;
+		else {
+			d=map_mesh_calculate_distance(mesh,&view.camera.pnt);
+		}
 		
 			// sort meshes into drawing list
 			// top of list is closest items

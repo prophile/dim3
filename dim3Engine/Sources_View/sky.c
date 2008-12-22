@@ -284,7 +284,7 @@ void draw_sky_dome_panoramic(int tick)
       
 ======================================================= */
 
-void draw_sky_dome_hemisphere(int tick)
+void draw_sky_dome_hemisphere_half(int tick,float y_dir)
 {
     int					i,n,k,txt_id,dome_cnt,trig_cnt,radius;
 	float				txt_x_shift,txt_y_shift,
@@ -358,7 +358,7 @@ void draw_sky_dome_hemisphere(int tick)
 	for (i=0;i!=5;i++) {				// the y
 		
 		f_by=f_ty;
-		f_ty-=(float)(radius/y_fct[i]);
+		f_ty+=((float)(radius/y_fct[i]))*y_dir;
 
 		rxz=0.0;
 
@@ -452,6 +452,12 @@ void draw_sky_dome_hemisphere(int tick)
 		// unbind the vbo
 
 	view_unbind_current_vertex_object();
+}
+
+void draw_sky_dome_hemisphere(int tick)
+{
+	draw_sky_dome_hemisphere_half(tick,-1.0f);
+	if (map.sky.dome_double) draw_sky_dome_hemisphere_half(tick,1.0f);
 }
 
 /* =======================================================

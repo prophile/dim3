@@ -55,17 +55,6 @@ and can be sold or given away.
 #define ag_stair_pos_x								3
 
 //
-// auto-generate floor types
-//
-
-#define ag_floor_type_count							4
-
-#define ag_floor_type_flat							0
-#define ag_floor_type_rough							1
-#define ag_floor_type_pit							2
-#define ag_floor_type_platform						3
-
-//
 // auto-generate ceiling types
 //
 
@@ -217,8 +206,8 @@ and can be sold or given away.
 // auto-generate constants
 //
 
-#define ag_constant_portal_high_percent				0.10f
-#define ag_constant_portal_story_high_add_percent	0.15f
+#define ag_constant_portal_high_percent				0.075f
+#define ag_constant_portal_story_high_add_percent	0.10f
 
 #define ag_constant_portal_random_percent			0.4f
 #define ag_constant_portal_merge_percent			0.08f
@@ -236,10 +225,11 @@ and can be sold or given away.
 
 #define ag_constant_corridor_size_percent			0.25f
 #define ag_constant_corridor_random_percent			0.4f
+#define ag_constant_corridor_high_percent			0.065f
 
 #define ag_constant_door_percentage					0.5f
 #define ag_constant_door_width						(2*map_enlarge)
-#define ag_constant_door_open_millisec				1000
+#define ag_constant_door_open_millisec				500
 
 #define ag_constant_light_animate_percentage		0.1f
 
@@ -268,8 +258,7 @@ typedef struct	{
 typedef struct	{
 					int										seed,block;
 					char									door_sound[name_str_len];
-					unsigned char							floor_type_on[ag_floor_type_count],
-															ceiling_type_on[ag_ceiling_type_count],
+					unsigned char							ceiling_type_on[ag_ceiling_type_count],
 															corridor_type_on[ag_corridor_type_count],
 															door_type_on[ag_door_type_count],
 															light_type_on[ag_light_type_count];
@@ -284,7 +273,7 @@ typedef struct	{
 #define max_ag_box											256
 
 typedef struct	{
-					int										mesh_idx,
+					int										mesh_idx,corridor_connect_box_idx[2],
 															corridor_flag,corridor_type,ceiling_type;
 					d3pnt									min,max;
 				} auto_generate_box_type;

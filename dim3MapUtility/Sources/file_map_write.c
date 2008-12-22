@@ -191,6 +191,7 @@ void write_map_settings_xml(map_type *map)
 	xml_add_attribute_list("type",(char*)sky_type_str,map->sky.type);
     xml_add_attribute_int("radius",map->sky.radius);
     xml_add_attribute_int("dome_y",map->sky.dome_y);
+    xml_add_attribute_boolean("dome_mirror",map->sky.dome_mirror);
     xml_add_tagend(TRUE);
     xml_add_tagstart("Fill");
     xml_add_attribute_int("index",map->sky.fill);
@@ -368,6 +369,7 @@ void write_single_mesh(map_mesh_type *mesh)
 	xml_add_attribute_boolean("hilite",mesh->flag.hilite);
 	xml_add_attribute_boolean("lock_uv",mesh->flag.lock_uv);
 	xml_add_attribute_boolean("no_self_obscure",mesh->flag.no_self_obscure);
+	xml_add_attribute_boolean("never_obscure",mesh->flag.never_obscure);
 	xml_add_attribute_boolean("rot_independent",mesh->flag.rot_independent);
 	
 	xml_add_attribute_3_coord_int("rot_off",mesh->rot_off.x,mesh->rot_off.y,mesh->rot_off.z);

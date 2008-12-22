@@ -121,40 +121,6 @@ bool effect_spawn_ray(d3pnt *start_pt,d3pnt *end_pt,int wid,d3col *col,int life_
 
 /* =======================================================
 
-      Globe Effects
-      
-======================================================= */
-
-bool effect_spawn_globe(d3pnt *pt,int start_sz,int end_sz,float start_alpha,float end_alpha,d3col *col,int life_msec)
-{
-	effect_type				*effect;
-	globe_effect_data		*globe;
-
-	effect=effect_spawn(ef_globe,pt,life_msec);
-	if (effect==NULL) return(FALSE);
-	
-	globe=&effect->data.globe;
-	
-	globe->start_size=start_sz;
-	globe->end_size=end_sz;
-	
-	memmove(&globe->col,col,sizeof(d3col));
-	
-	globe->start_alpha=start_alpha;
-	globe->end_alpha=end_alpha;
-
-	if (start_sz>end_sz) {
-		effect->size=start_sz;
-	}
-	else {
-		effect->size=end_sz;
-	}
-	
-	return(TRUE);
-}
-
-/* =======================================================
-
       Shake Effects
       
 ======================================================= */

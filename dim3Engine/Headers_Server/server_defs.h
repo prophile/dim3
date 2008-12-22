@@ -99,8 +99,7 @@ and can be sold or given away.
 #define ef_ring									2
 #define ef_lightning							3
 #define ef_ray									4
-#define ef_globe								5
-#define ef_shake								6
+#define ef_shake								5
 
 //
 // weapon modes

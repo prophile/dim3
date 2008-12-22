@@ -45,7 +45,6 @@ JSBool js_spawn_ring_line_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 JSBool js_spawn_flash_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_spawn_lightning_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_spawn_ray_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_spawn_globe_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_spawn_shake_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_spawn_push_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
@@ -63,7 +62,6 @@ JSFunctionSpec	spawn_functions[]={
 							{"flash",				js_spawn_flash_func,				9},
 							{"lightning",			js_spawn_lightning_func,			12},
 							{"ray",					js_spawn_ray_func,					11},
-							{"globe",				js_spawn_globe_func,				11},
 							{"shake",				js_spawn_shake_func,				6},
 							{"push",				js_spawn_push_func,					5},
 							{0}};
@@ -355,45 +353,6 @@ JSBool js_spawn_ray_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,js
 	life_msec=JSVAL_TO_INT(argv[10]);
 
 	if (!effect_spawn_ray(&start_pt,&end_pt,wid,&col,life_msec)) {
-		*rval=JSVAL_FALSE;
-	}
-    else {
-		*rval=JSVAL_TRUE;
-	}
-    
-	return(JS_TRUE);
-}
-
-/* =======================================================
-
-      Spawn Globe
-      
-======================================================= */
-
-JSBool js_spawn_globe_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
-{
-	int				start_sz,end_sz,life_msec;
-	float			start_alpha,end_alpha;
-	d3pnt			pt;
-	d3col			col;
-	
-	pt.x=JSVAL_TO_INT(argv[0]);
-	pt.z=JSVAL_TO_INT(argv[1]);
-	pt.y=JSVAL_TO_INT(argv[2]);
-
-	start_sz=JSVAL_TO_INT(argv[3]);
-	end_sz=JSVAL_TO_INT(argv[4]);
-
-	start_alpha=script_value_to_float(argv[5]);
-	end_alpha=script_value_to_float(argv[6]);
-
-	col.r=script_value_to_float(argv[7]);
-	col.g=script_value_to_float(argv[8]);
-	col.b=script_value_to_float(argv[9]);
-
-	life_msec=JSVAL_TO_INT(argv[10]);
-
-	if (!effect_spawn_globe(&pt,start_sz,end_sz,start_alpha,end_alpha,&col,life_msec)) {
 		*rval=JSVAL_FALSE;
 	}
     else {

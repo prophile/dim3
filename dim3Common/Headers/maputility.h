@@ -265,8 +265,8 @@ typedef struct		{
 						bool								on,pass_through,moveable,
 															hilite,climbable,shiftable,
 															lock_uv,no_self_obscure,
-															rot_independent,touched,
-															has_bump,has_specular,has_glow;
+															never_obscure,rot_independent,
+															touched,has_bump,has_specular,has_glow;
 					} map_mesh_flag_type;
 
 typedef struct		{
@@ -535,7 +535,7 @@ typedef struct		{
 						int									type,radius,dome_y,
 															fill,bottom_fill,north_fill,south_fill,east_fill,west_fill;
 						float								txt_fact,txt_x_shift,txt_y_shift;
-						bool								on;
+						bool								on,dome_mirror;
 					} map_sky_type;
 					
 typedef struct		{

@@ -320,11 +320,6 @@ int map_auto_generate_get_generic_type(int type_count,unsigned char *type_on)
 	return(0);
 }
 
-int map_auto_generate_get_floor_type(auto_generate_settings_type *ags)
-{
-	return(map_auto_generate_get_generic_type(ag_floor_type_count,ags->floor_type_on));
-}
-
 int map_auto_generate_get_ceiling_type(auto_generate_settings_type *ags)
 {
 	return(map_auto_generate_get_generic_type(ag_ceiling_type_count,ags->ceiling_type_on));
@@ -553,6 +548,19 @@ bool map_auto_generate_mesh_start(map_type *map,int box_idx,int group_idx,int tx
 	return(TRUE);
 }
 
+void map_auto_generate_mesh_set_rot_offset(map_type *map,int x,int y,int z)
+{
+	map_mesh_type			*mesh;
+
+	mesh=&map->mesh.meshes[map_ag_mesh_idx];
+
+	mesh->rot_off.x=x;
+	mesh->rot_off.y=y;
+	mesh->rot_off.z=z;
+
+	mesh->flag.rot_independent=FALSE;
+}
+
 void map_auto_generate_mesh_change_texture(int txt_idx)
 {
 	map_ag_poly_txt_idx=txt_idx;
@@ -649,10 +657,6 @@ void map_auto_generate_add_player_spot(map_type *map)
 	x=(portal->min.x+portal->max.x)>>1;
 	y=portal->max.y;
 	z=(portal->min.z+portal->max.z)>>1;
-	
-		// supergumba -- temp fix for rough floors
-		
-	y-=(map_enlarge*5);
 	
 		// add spot
 		

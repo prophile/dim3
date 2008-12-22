@@ -128,6 +128,7 @@ bool map_new(map_type *map,char *name)
     map->sky.west_fill=-1;
     map->sky.radius=300*map_enlarge;
 	map->sky.dome_y=0;
+	map->sky.dome_mirror=FALSE;
 	map->sky.txt_fact=1;
 	map->sky.txt_x_shift=0;
 	map->sky.txt_y_shift=0;
