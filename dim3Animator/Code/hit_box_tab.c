@@ -138,13 +138,22 @@ void reset_hit_box_tab(int chit_box)
 
 void start_hit_box_controls(WindowRef wind,Rect *box)
 {
-    bool							framefocus;
-	ControlFontStyleRec				fontstyle;
-	DataBrowserCallbacks			dbcall;
+	int							yadd;
+    bool						framefocus;
+	Rect						cbox;
+	ControlFontStyleRec			fontstyle;
+	DataBrowserCallbacks		dbcall;
 	
 		// hit_box data browser
+		
+	cbox.left=box->right-((box->right-box->left)/2);
+	cbox.right=box->right;
+	
+	yadd=(box->bottom-box->top)/5;
+	cbox.top=box->top;
+	cbox.bottom=cbox.top+yadd;
 
-	CreateDataBrowserControl(wind,box,kDataBrowserListView,&hit_box_list);
+	CreateDataBrowserControl(wind,&cbox,kDataBrowserListView,&hit_box_list);
     
 	framefocus=FALSE;
 	SetControlData(hit_box_list,kControlNoPart,kControlDataBrowserIncludesFrameAndFocusTag,sizeof(framefocus),&framefocus);
@@ -173,7 +182,7 @@ void start_hit_box_controls(WindowRef wind,Rect *box)
 
 		// columns
 
-	add_db_column(hit_box_list,"Name",kHitBoxNameDBColumn,kDataBrowserTextType,200,0);
+	add_db_column(hit_box_list,"Hit Boxes",kHitBoxNameDBColumn,kDataBrowserTextType,200,0);
 	
 	EmbedControl(hit_box_list,tab_list);
 }
@@ -205,13 +214,13 @@ void resize_hit_box_controls(Rect *box)
 
 void show_hit_box_controls(void)
 {
-    ShowControl(hit_box_list);
-	SetKeyboardFocus(model_wind,hit_box_list,1);
-	Draw1Control(hit_box_list);
+ //   ShowControl(hit_box_list);
+//	SetKeyboardFocus(model_wind,hit_box_list,1);
+//	Draw1Control(hit_box_list);
 }
 
 void hide_hit_box_controls(void)
 {
-    HideControl(hit_box_list);
+ //   HideControl(hit_box_list);
 }
 

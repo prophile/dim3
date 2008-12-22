@@ -220,7 +220,9 @@ void reset_vertex_tab(void)
 
 void start_vertex_controls(WindowRef wind,Rect *box)
 {
+	int								yadd;
     bool							framefocus;
+	Rect							cbox;
 	ControlFontStyleRec				fontstyle;
 	DataBrowserCallbacks			dbcall;
 	
@@ -229,8 +231,15 @@ void start_vertex_controls(WindowRef wind,Rect *box)
 	vertex_sel_in_hilite=FALSE;
 	
 		// vertex data browser
+		
+	cbox.left=box->left;
+	cbox.right=box->left+((box->right-box->left)/2);
+	
+	yadd=(box->bottom-box->top)/5;
+	cbox.top=box->top+yadd;
+	cbox.bottom=cbox.top+(yadd*2);
 
-	CreateDataBrowserControl(wind,box,kDataBrowserListView,&vertex_list);
+	CreateDataBrowserControl(wind,&cbox,kDataBrowserListView,&vertex_list);
     
 	framefocus=FALSE;
 	SetControlData(vertex_list,kControlNoPart,kControlDataBrowserIncludesFrameAndFocusTag,sizeof(framefocus),&framefocus);
@@ -258,7 +267,7 @@ void start_vertex_controls(WindowRef wind,Rect *box)
 
 		// columns
 
-	add_db_column(vertex_list,"Position",kVertexPosDBColumn,kDataBrowserTextType,150,0);
+	add_db_column(vertex_list,"Vertexes",kVertexPosDBColumn,kDataBrowserTextType,150,0);
 	add_db_column(vertex_list,"Bones",kVertexBoneDBColumn,kDataBrowserTextType,300,1);
 	
 	EmbedControl(vertex_list,tab_list);
@@ -291,13 +300,13 @@ void resize_vertex_controls(Rect *box)
 
 void show_vertex_controls(void)
 {
-    ShowControl(vertex_list);
-	SetKeyboardFocus(model_wind,vertex_list,1);
-	Draw1Control(vertex_list);
+//    ShowControl(vertex_list);
+//	SetKeyboardFocus(model_wind,vertex_list,1);
+//	Draw1Control(vertex_list);
 }
 
 void hide_vertex_controls(void)
 {
-    HideControl(vertex_list);
+//    HideControl(vertex_list);
 }
 

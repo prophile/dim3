@@ -327,13 +327,22 @@ void reset_bone_tab(int cbone)
 
 void start_bone_controls(WindowRef wind,Rect *box)
 {
+	int								yadd;
     bool							framefocus;
+	Rect							cbox;
 	ControlFontStyleRec				fontstyle;
 	DataBrowserCallbacks			dbcall;
 
 		// bone data browser
+		
+	cbox.left=box->right-((box->right-box->left)/2);
+	cbox.right=box->right;
+	
+	yadd=(box->bottom-box->top)/5;
+	cbox.top=box->top+yadd;
+	cbox.bottom=cbox.top+(yadd*2);
 
-	CreateDataBrowserControl(wind,box,kDataBrowserListView,&bone_list);
+	CreateDataBrowserControl(wind,&cbox,kDataBrowserListView,&bone_list);
     
 	framefocus=FALSE;
 	SetControlData(bone_list,kControlNoPart,kControlDataBrowserIncludesFrameAndFocusTag,sizeof(framefocus),&framefocus);
@@ -372,7 +381,7 @@ void start_bone_controls(WindowRef wind,Rect *box)
 
 		// columns
 
-	add_db_column(bone_list,"Bone",kBoneTagDBColumn,kDataBrowserTextType,150,0);
+	add_db_column(bone_list,"Bones",kBoneTagDBColumn,kDataBrowserTextType,150,0);
 	add_db_column(bone_list,"Position",kBonePosDBColumn,kDataBrowserTextType,200,1);
 	
 	SetDataBrowserListViewDisclosureColumn(bone_list,kBoneTagDBColumn,FALSE);
@@ -407,17 +416,17 @@ void resize_bone_controls(Rect *box)
 
 void show_bone_controls(void)
 {
-    ShowControl(bone_list);
-	SetKeyboardFocus(model_wind,bone_list,1);
-	Draw1Control(bone_list);
+ //   ShowControl(bone_list);
+//	SetKeyboardFocus(model_wind,bone_list,1);
+//	Draw1Control(bone_list);
 	
-	SetAutomaticControlDragTrackingEnabledForWindow(model_wind, true);
+//	SetAutomaticControlDragTrackingEnabledForWindow(model_wind, true);
 }
 
 void hide_bone_controls(void)
 {
-	SetAutomaticControlDragTrackingEnabledForWindow(model_wind, false);
+//	SetAutomaticControlDragTrackingEnabledForWindow(model_wind, false);
 	
-    HideControl(bone_list);
+ //   HideControl(bone_list);
 }
 

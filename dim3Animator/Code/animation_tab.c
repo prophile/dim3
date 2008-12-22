@@ -87,6 +87,23 @@ int create_db_pose_list(int canimate,DataBrowserItemID itemID,DataBrowserItemID 
 
 /* =======================================================
 
+      Fix Pose Setting
+      
+======================================================= */
+
+void fix_animate_select(void)
+{
+	if ((cur_animate<0) || (cur_animate>=model.nanimate)) cur_animate=0;
+	if (model.nanimate==0) cur_animate=-1;
+	
+	if (cur_animate_pose!=-1) {
+		if ((cur_animate_pose<0) || (cur_animate_pose>=model.animates[cur_animate].npose_move)) cur_animate_pose=0;
+		if (model.animates[cur_animate].npose_move==0) cur_animate_pose=-1;
+	}
+}
+
+/* =======================================================
+
       Animate List Callbacks
       
 ======================================================= */
@@ -111,7 +128,7 @@ static pascal OSStatus animate_list_item_proc(ControlRef ctrl,DataBrowserItemID 
 			SetDataBrowserItemDataText(itemData,cfstr);
 			CFRelease(cfstr);
 			return(noErr);
-			
+			/*
 		case kAnimatePoseDBColumn:
 			if (itemID<1000) return(noErr);
 
@@ -184,10 +201,12 @@ static pascal OSStatus animate_list_item_proc(ControlRef ctrl,DataBrowserItemID 
 			SetDataBrowserItemDataText(itemData,cfstr);
 			CFRelease(cfstr);
 			return(noErr);
-			
+			*/
+	/*		
 		case kDataBrowserItemIsContainerProperty:
 			SetDataBrowserItemDataBooleanValue(itemData,(itemID<1000));
 			return(noErr);
+			*/
 	}
 
 	return(errDataBrowserPropertyNotSupported);
@@ -205,12 +224,20 @@ static pascal void animate_list_notify_proc(ControlRef ctrl,DataBrowserItemID it
 				k=itemID/1000;
 				i=itemID-(k*1000);
 				k--;
-				dialog_animation_settings_run(k,i);
+				
+				cur_animate=k;
+				cur_animate_pose=i;
+				fix_animate_select();
+				
+				dialog_animation_settings_run(cur_animate,cur_animate_pose);
 				redraw_animate_row();
 				break;
 			}
-			k=itemID-1;
-			dialog_animation_settings_run(k,-1);
+			
+			cur_animate=itemID-1;
+			fix_animate_select();
+			
+			dialog_animation_settings_run(cur_animate,-1);
             redraw_animate_row();
 			break;
 			
@@ -219,21 +246,31 @@ static pascal void animate_list_notify_proc(ControlRef ctrl,DataBrowserItemID it
 				k=itemID/1000;
 				i=itemID-(k*1000);
 				k--;
+				
 				cur_animate=k;
 				cur_animate_pose=i;
+				fix_animate_select();
+				
 				cur_pose=model.animates[k].pose_moves[i].pose_idx;
 			}
 			else {
 				cur_animate=itemID-1;
 				cur_animate_pose=-1;
+				fix_animate_select();
 			}
+			
 			model_view_reset=TRUE;
+			break;
+			/*
+		case kDataBrowserItemDeselected:
+			redraw_animate_row();
 			break;
 
 		case kDataBrowserContainerOpened:
 			npose=create_db_pose_list((itemID-1),itemID,poseID);
 			AddDataBrowserItems(animate_list,itemID,npose,poseID,kDataBrowserItemNoProperty);
 			break;
+			*/
 	}
 }
 
@@ -246,29 +283,23 @@ static pascal void animate_list_notify_proc(ControlRef ctrl,DataBrowserItemID it
 void reset_animate_tab(int canimate,int canimatepose)
 {
 	DataBrowserItemID		itemID;
-
+	
 	RemoveDataBrowserItems(animate_list,kDataBrowserNoItem,0,NULL,kDataBrowserItemNoProperty);
 	
 		// add poses
 	
 	AddDataBrowserItems(animate_list,kDataBrowserNoItem,model.nanimate,NULL,kDataBrowserItemNoProperty);
-			
+	
 		// select neutral pose
 				
 	cur_animate=canimate;
 	cur_animate_pose=canimatepose;
+	fix_animate_select();
 	
 	if (cur_animate!=-1) {
-
 		itemID=cur_animate+1;
-		OpenDataBrowserContainer(animate_list,itemID);
-		
-		if (cur_animate_pose!=-1) {
-			itemID=(1000*itemID)+cur_animate_pose;
-		}
+		SetDataBrowserSelectedItems(animate_list,1,&itemID,kDataBrowserItemsAssign);
 	}
-	
-	SetDataBrowserSelectedItems(animate_list,1,&itemID,kDataBrowserItemsAssign);
 }
 
 /* =======================================================
@@ -279,13 +310,23 @@ void reset_animate_tab(int canimate,int canimatepose)
 
 void start_animate_controls(WindowRef wind,Rect *box)
 {
+	int								yadd;
     bool							framefocus;
+	Rect							cbox;
 	ControlFontStyleRec				fontstyle;
 	DataBrowserCallbacks			dbcall;
     
 		// setup data browser for animations
 
-	CreateDataBrowserControl(wind,box,kDataBrowserListView,&animate_list);
+	cbox.left=box->right-((box->right-box->left)/2);
+	cbox.right=box->right;
+	
+	yadd=(box->bottom-box->top)/5;
+	cbox.top=box->top+(yadd*3);
+	cbox.bottom=cbox.top+(yadd*2);
+
+	CreateDataBrowserControl(wind,&cbox,kDataBrowserListView,&animate_list);
+
 	framefocus=FALSE;
 	SetControlData(animate_list,kControlNoPart,kControlDataBrowserIncludesFrameAndFocusTag,sizeof(framefocus),&framefocus);
 
@@ -313,12 +354,12 @@ void start_animate_controls(WindowRef wind,Rect *box)
 
 		// columns
 
-	add_db_column(animate_list,"Name",kAnimateNameDBColumn,kDataBrowserTextType,100,0);
-	add_db_column(animate_list,"Pose",kAnimatePoseDBColumn,kDataBrowserTextType,150,1);
-	add_db_column(animate_list,"Sway & Move",kAnimateSwayMoveDBColumn,kDataBrowserTextType,190,2);
-	add_db_column(animate_list,"Other",kAnimateOtherDBColumn,kDataBrowserTextType,300,3);
+	add_db_column(animate_list,"Animations",kAnimateNameDBColumn,kDataBrowserTextType,300,0);
+//	add_db_column(animate_list,"Pose",kAnimatePoseDBColumn,kDataBrowserTextType,150,1);
+//	add_db_column(animate_list,"Sway & Move",kAnimateSwayMoveDBColumn,kDataBrowserTextType,190,2);
+//	add_db_column(animate_list,"Other",kAnimateOtherDBColumn,kDataBrowserTextType,300,3);
 
-	SetDataBrowserListViewDisclosureColumn(animate_list,kAnimateNameDBColumn,FALSE);
+//	SetDataBrowserListViewDisclosureColumn(animate_list,kAnimateNameDBColumn,FALSE);
 	
 	EmbedControl(animate_list,tab_list);
 }
@@ -350,14 +391,14 @@ void resize_animate_controls(Rect *box)
 
 void show_animate_controls(void)
 {
-	ShowControl(animate_list);
+//	ShowControl(animate_list);
 	
-	SetKeyboardFocus(model_wind,animate_list,1);
-	Draw1Control(animate_list);
+//	SetKeyboardFocus(model_wind,animate_list,1);
+//	Draw1Control(animate_list);
 }
 
 void hide_animate_controls(void)
 {
-	HideControl(animate_list);
+//	HideControl(animate_list);
 }
 

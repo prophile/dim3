@@ -139,13 +139,22 @@ void reset_mesh_tab(int cmesh)
 
 void start_mesh_controls(WindowRef wind,Rect *box)
 {
-    bool							framefocus;
-	ControlFontStyleRec				fontstyle;
-	DataBrowserCallbacks			dbcall;
+	int							yadd;
+    bool						framefocus;
+	Rect						cbox;
+	ControlFontStyleRec			fontstyle;
+	DataBrowserCallbacks		dbcall;
 	
 		// mesh data browser
 
-	CreateDataBrowserControl(wind,box,kDataBrowserListView,&mesh_list);
+	cbox.left=box->left;
+	cbox.right=box->left+((box->right-box->left)/2);
+	
+	yadd=(box->bottom-box->top)/5;
+	cbox.top=box->top;
+	cbox.bottom=cbox.top+yadd;
+	
+	CreateDataBrowserControl(wind,&cbox,kDataBrowserListView,&mesh_list);
     
 	framefocus=FALSE;
 	SetControlData(mesh_list,kControlNoPart,kControlDataBrowserIncludesFrameAndFocusTag,sizeof(framefocus),&framefocus);
@@ -174,7 +183,7 @@ void start_mesh_controls(WindowRef wind,Rect *box)
 
 		// columns
 
-	add_db_column(mesh_list,"Name",kMeshNameDBColumn,kDataBrowserTextType,150,0);
+	add_db_column(mesh_list,"Meshes",kMeshNameDBColumn,kDataBrowserTextType,150,0);
 	
 	EmbedControl(mesh_list,tab_list);
 }
@@ -195,7 +204,18 @@ void end_mesh_controls(void)
 
 void resize_mesh_controls(Rect *box)
 {
-	SizeControl(mesh_list,(box->right-box->left),(box->bottom-box->top));
+	int					yadd;
+	Rect				cbox;
+	
+	cbox.left=box->left;
+	cbox.right=box->left+((box->right-box->left)/2);
+	
+	yadd=(box->bottom-box->top)/5;
+	cbox.top=box->top;
+	cbox.bottom=cbox.top+yadd;
+
+	MoveControl(mesh_list,cbox.left,cbox.top);
+	SizeControl(mesh_list,(cbox.right-cbox.left),(cbox.bottom-cbox.top));
 }
 
 /* =======================================================
@@ -206,13 +226,13 @@ void resize_mesh_controls(Rect *box)
 
 void show_mesh_controls(void)
 {
-	ShowControl(mesh_list);
-	SetKeyboardFocus(model_wind,mesh_list,1);
-	Draw1Control(mesh_list);
+//	ShowControl(mesh_list);
+//	SetKeyboardFocus(model_wind,mesh_list,1);
+//	Draw1Control(mesh_list);
 }
 
 void hide_mesh_controls(void)
 {
-	HideControl(mesh_list);
+//	HideControl(mesh_list);
 }
 

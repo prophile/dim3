@@ -205,6 +205,7 @@ void reset_model_open(void)
 	
     draw_model_wind_pose(&model,cur_mesh,cur_pose);
     texture_palette_draw();
+	mesh_palette_draw();
     info_palette_draw();
 	reset_mesh_tab(0);
 	reset_vertex_tab();
@@ -357,6 +358,7 @@ void import_mesh_obj(void)
 	
     draw_model_wind_pose(&model,cur_mesh,cur_pose);
     texture_palette_draw();
+	mesh_palette_draw();
     info_palette_draw();
 }
 
@@ -393,6 +395,7 @@ void import_mesh_lightwave(void)
 	
     draw_model_wind_pose(&model,cur_mesh,cur_pose);
     texture_palette_draw();
+	mesh_palette_draw();
     info_palette_draw();
 }
 
@@ -429,6 +432,7 @@ void import_mesh_c4d_xml(void)
 	
     draw_model_wind_pose(&model,cur_mesh,cur_pose);
     texture_palette_draw();
+	mesh_palette_draw();
     info_palette_draw();
 }
 
@@ -466,6 +470,7 @@ void insert_mesh_dim3_model(void)
 	reset_animate_tab(-1,-1);
     draw_model_wind_pose(&model,cur_mesh,cur_pose);
     texture_palette_draw();
+	mesh_palette_draw();
     info_palette_draw();
 }
 
@@ -633,6 +638,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			undo_run();
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			texture_palette_draw();
+			mesh_palette_draw();
 			info_palette_draw();
 			return(noErr);
 			
@@ -775,6 +781,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 				cur_mesh=idx;
 			}
 			reset_mesh_tab(cur_mesh);
+			mesh_palette_draw();
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
 			
@@ -789,6 +796,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 				cur_mesh=idx;
 			}
 			reset_mesh_tab(cur_mesh);
+			mesh_palette_draw();
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
 			
@@ -797,6 +805,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			if (idx==-1) return(noErr);
 			if (idx!=cur_mesh) model_mesh_copy(&model,idx,cur_mesh);
 			texture_palette_draw();
+			mesh_palette_draw();
 			info_palette_draw();
 			redraw_model();
 			reset_vertex_tab();
@@ -807,6 +816,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			model_mesh_delete(&model,cur_mesh);
 			cur_mesh=0;
 			reset_mesh_tab(cur_mesh);
+			mesh_palette_draw();
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
 			
@@ -951,6 +961,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			vertex_delete_sel_vertex(cur_mesh);
 			model_calculate_parents(&model);
 			texture_palette_draw();
+			mesh_palette_draw();
 			info_palette_draw();
 			redraw_model();
 			reset_vertex_tab();
@@ -1148,7 +1159,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 					cur_animate=-1;
 					model_animate_delete(&model,idx);
 				}
-		}
+			}
 			reset_animate_tab(cur_animate,-1);
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);

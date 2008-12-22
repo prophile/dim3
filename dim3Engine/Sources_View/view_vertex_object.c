@@ -457,8 +457,6 @@ void view_draw_next_vertex_object_2D_line_quad(int lft,int rgt,int top,int bot)
 
 		// draw the quad
 		
-	glDisable(GL_BLEND);
-
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 

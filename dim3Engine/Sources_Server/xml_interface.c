@@ -440,7 +440,7 @@ void read_settings_interface_bar(int bar_tag)
 	tag=xml_findfirstchild("Outline",bar_tag);
 	if (tag!=-1) {
 		bar->outline=xml_get_attribute_boolean(tag,"on");
-		bar->outline_alpha=xml_get_attribute_float_default(tag,"alpha",1);
+		bar->outline_alpha=xml_get_attribute_float_default(tag,"alpha",1.0f);
 		xml_get_attribute_color(tag,"color",&bar->outline_color);
 	}
 	
@@ -450,7 +450,7 @@ void read_settings_interface_bar(int bar_tag)
 	
 	tag=xml_findfirstchild("Fill",bar_tag);
 	if (tag!=-1) {
-		bar->fill_alpha=xml_get_attribute_float_default(tag,"alpha",1);
+		bar->fill_alpha=xml_get_attribute_float_default(tag,"alpha",1.0f);
 		xml_get_attribute_color(tag,"start_color",&bar->fill_start_color);
 		xml_get_attribute_color(tag,"end_color",&bar->fill_end_color);
 	}

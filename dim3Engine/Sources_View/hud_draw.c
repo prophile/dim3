@@ -460,10 +460,13 @@ void hud_bars_draw(void)
 			ty=bar->y;
 			by=ty+bar->y_size;
 			
+			glLineWidth((float)setup.screen.x_sz/(float)hud.scale_x);
+			
 			glColor4f(bar->outline_color.r,bar->outline_color.g,bar->outline_color.b,bar->outline_alpha);
 			view_draw_next_vertex_object_2D_line_quad(lx,rx,ty,by);
+			
+			glLineWidth(1.0f);
 		}
-		
 	}
 }
 

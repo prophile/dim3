@@ -320,13 +320,22 @@ void add_db_column(ControlRef ctrl,char *name,int idx,int type,int sz,int spot)
 
 void start_pose_controls(WindowRef wind,Rect *box)
 {
+	int								yadd;
     bool							framefocus;
+	Rect							cbox;
 	ControlFontStyleRec				fontstyle;
 	DataBrowserCallbacks			dbcall;
 
 		// pose data browser
+		
+	cbox.left=box->left;
+	cbox.right=box->left+((box->right-box->left)/2);
+	
+	yadd=(box->bottom-box->top)/5;
+	cbox.top=box->top+(yadd*3);
+	cbox.bottom=cbox.top+(yadd*2);
 
-	CreateDataBrowserControl(wind,box,kDataBrowserListView,&pose_list);
+	CreateDataBrowserControl(wind,&cbox,kDataBrowserListView,&pose_list);
     
 	framefocus=FALSE;
 	SetControlData(pose_list,kControlNoPart,kControlDataBrowserIncludesFrameAndFocusTag,sizeof(framefocus),&framefocus);
@@ -355,7 +364,7 @@ void start_pose_controls(WindowRef wind,Rect *box)
 
 		// columns
 
-	add_db_column(pose_list,"Name",kPoseNameDBColumn,kDataBrowserTextType,100,0);
+	add_db_column(pose_list,"Poses",kPoseNameDBColumn,kDataBrowserTextType,100,0);
 	add_db_column(pose_list,"Bone",kPoseBoneDBColumn,kDataBrowserTextType,200,1);
 	add_db_column(pose_list,"Rot & Move",kPoseBoneMoveDBColumn,kDataBrowserTextType,250,2);
 	add_db_column(pose_list,"Accel",kPoseBoneAccDBColumn,kDataBrowserTextType,60,3);
@@ -393,13 +402,13 @@ void resize_pose_controls(Rect *box)
 
 void show_pose_controls(void)
 {
-    ShowControl(pose_list);
-	SetKeyboardFocus(model_wind,pose_list,1);
-	Draw1Control(pose_list);
+//    ShowControl(pose_list);
+//	SetKeyboardFocus(model_wind,pose_list,1);
+//	Draw1Control(pose_list);
 }
 
 void hide_pose_controls(void)
 {
-    HideControl(pose_list);
+//    HideControl(pose_list);
 }
 

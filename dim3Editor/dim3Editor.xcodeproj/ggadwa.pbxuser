@@ -143,12 +143,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 251077941;
-			PBXWorkspaceStateSaveDate = 251077941;
+			PBXPerProjectTemplateStateSaveDate = 251166461;
+			PBXWorkspaceStateSaveDate = 251166461;
 		};
 		perUserProjectItems = {
 			2685D73F0EF725AE002EB790 /* PlistBookmark */ = 2685D73F0EF725AE002EB790 /* PlistBookmark */;
-			26A5612E0EF6009F00D38FC0 /* PlistBookmark */ = 26A5612E0EF6009F00D38FC0 /* PlistBookmark */;
+			26AEA3F30EF9E36300C3D632 /* PlistBookmark */ = 26AEA3F30EF9E36300C3D632 /* PlistBookmark */;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -340,7 +340,7 @@
 			sepNavWindowFrame = "{{419, 157}, {1041, 747}}";
 		};
 	};
-	26A5612E0EF6009F00D38FC0 /* PlistBookmark */ = {
+	26AEA3F30EF9E36300C3D632 /* PlistBookmark */ = {
 		isa = PlistBookmark;
 		fRef = F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */;
 		fallbackIsa = PBXBookmark;
@@ -711,9 +711,9 @@
 	};
 	F5AD54420BBE1FDB001C7C04 /* baseutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 9940}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 8904}}";
 			sepNavSelRange = "{15991, 20}";
-			sepNavVisRange = "{15196, 1141}";
+			sepNavVisRange = "{0, 1346}";
 			sepNavWindowFrame = "{{198, 257}, {1041, 747}}";
 		};
 	};

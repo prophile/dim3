@@ -192,6 +192,7 @@ void switch_tab_control(void)
 
 void tabs_start(void)
 {
+
     int							n;
 	char						tab_names[6][32]={"Meshes","Vertexes","Bones","Poses","Animations","Hit Boxes"};
 	Rect						box,tabbox;
@@ -205,7 +206,7 @@ void tabs_start(void)
 	tabbox.right-=4;
 	tabbox.top+=6;
 	tabbox.bottom-=(info_palette_height+8);
-    
+/*    
         // tabs
         
 	for (n=0;n!=6;n++) {
@@ -220,10 +221,19 @@ void tabs_start(void)
 	for (n=0;n!=6;n++) {
 		CFRelease(tabarray[n].name);
 	}
-	
+	*/
 		// control area
 		
 	SetRect(&box,(tabbox.left+4),(tabbox.top+25),(tabbox.right-4),(tabbox.bottom-6));
+	
+	
+	
+	GetWindowPortBounds(model_wind,&box);
+
+	box.left+=(gl_view_x_sz+mesh_palette_width);
+//	tabbox.right-=4;
+//	tabbox.top+=6;
+	box.bottom-=info_palette_height;
 	
 		// mesh controls
 		
@@ -267,8 +277,9 @@ void tabs_end(void)
 	end_pose_controls();
     end_animate_controls();
 	end_hit_box_controls();
-
+/*
     DisposeControl(tab_list);
+	*/
 }
 
 /* =======================================================
@@ -279,6 +290,7 @@ void tabs_end(void)
 
 void tabs_resize(void)
 {
+/*
 	Rect			tabbox,box;
 	
 		// get bounds
@@ -304,6 +316,7 @@ void tabs_resize(void)
 	resize_pose_controls(&box);
 	resize_animate_controls(&box);
     resize_hit_box_controls(&box);
+	*/
 }
 
 

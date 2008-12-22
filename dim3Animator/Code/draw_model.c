@@ -258,6 +258,8 @@ void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 	glDisable(GL_ALPHA_TEST);
 	
 	glUnlockArraysEXT();
+	
+	glFlush();
 }
 
 /* =======================================================
@@ -311,5 +313,7 @@ void draw_model_faded(model_type *model,int mesh_idx,model_draw_setup *draw_setu
  	glDisable(GL_ALPHA_TEST);
    
 	glUnlockArraysEXT();
+	
+	glFlush();
 }
 

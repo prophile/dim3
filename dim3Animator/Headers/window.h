@@ -42,6 +42,9 @@ extern void click_model_wind(Point pt,unsigned long modifiers);
 extern void texture_palette_draw(void);
 extern void texture_palette_click(Point pt,bool dblclick);
 
+extern void mesh_palette_draw(void);
+extern void mesh_palette_click(Point pt,bool dblclick);
+
 extern void info_palette_draw(void);
 
 extern void model_wind_play(bool play,bool blend);

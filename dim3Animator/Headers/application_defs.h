@@ -19,6 +19,8 @@
 #define texture_palette_row_count		2
 #define texture_palette_texture_size	32
 
+#define mesh_palette_width				64
+
 #define info_palette_height				14
 
 //

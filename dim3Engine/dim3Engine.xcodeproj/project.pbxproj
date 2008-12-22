@@ -1231,7 +1231,6 @@
 				F5A582BD090C98D500BE7C36 /* server_defs.h */,
 				F5A582BC090C98D500BE7C36 /* script_defs.h */,
 				F5A582B9090C98D500BE7C36 /* camera_defs.h */,
-				F5A582BE090C98D500BE7C36 /* setup_defs.h */,
 				F5A582BB090C98D500BE7C36 /* interface_defs.h */,
 				F5A58244090B512000BE7C36 /* scripts.h */,
 				F5A58247090B512000BE7C36 /* objects.h */,
@@ -1244,6 +1243,7 @@
 				F5A58248090B512000BE7C36 /* lights.h */,
 				F5A58241090B512000BE7C36 /* effects.h */,
 				F5A58246090B512000BE7C36 /* cameras.h */,
+				F5A582BE090C98D500BE7C36 /* setup_defs.h */,
 				F5A58242090B512000BE7C36 /* consoles.h */,
 				F5A58285090B589C00BE7C36 /* interfaces.h */,
 				F5A58240090B512000BE7C36 /* xmls.h */,
@@ -1957,8 +1957,7 @@
 		F5DB0BF1085671A9005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = "$(NATIVE_ARCH)";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

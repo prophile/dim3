@@ -298,16 +298,16 @@ void model_wind_gl_port_setup(void)
 	
  	rect[0]=box.left;
 	rect[1]=info_palette_height;
-	rect[2]=gl_view_x_sz;
+	rect[2]=gl_view_x_sz+mesh_palette_width;
 	rect[3]=gl_view_y_sz+texture_palette_height;
 
 	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
 	aglEnable(ctx,AGL_BUFFER_RECT);
 	
-	glViewport(box.left,info_palette_height,gl_view_x_sz,(gl_view_y_sz+texture_palette_height));
+	glViewport(box.left,info_palette_height,(gl_view_x_sz+mesh_palette_width),(gl_view_y_sz+texture_palette_height));
 	
 	glEnable(GL_SCISSOR_TEST);
-	glScissor(box.left,info_palette_height,gl_view_x_sz,(gl_view_y_sz+texture_palette_height));
+	glScissor(box.left,info_palette_height,(gl_view_x_sz+mesh_palette_width),(gl_view_y_sz+texture_palette_height));
 }
 
 void model_wind_resize(void)
@@ -335,6 +335,7 @@ void model_wind_resize(void)
 
 	draw_model_wind_pose(&model,cur_mesh,cur_pose);
 	texture_palette_draw();
+	mesh_palette_draw();
 	info_palette_draw();
 	
 	DrawControls(model_wind);
@@ -380,19 +381,20 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 						// clicking in toolbar or right side controls
 
 					if (pt.v<=tool_button_size) return(eventNotHandledErr);
-					if (pt.h>=gl_view_x_sz) return(eventNotHandledErr);
+					if (pt.h>=(gl_view_x_sz+mesh_palette_width)) return(eventNotHandledErr);
 					
 						// clicking in palettes
 						
 					GetEventParameter(event,kEventParamClickCount,typeUInt32,NULL,sizeof(unsigned long),NULL,&nclick);
 					 
-					if (pt.v>=(tool_button_size+gl_view_y_sz)) {
-						if (pt.v<=(tool_button_size+gl_view_y_sz+texture_palette_height)) {
-							texture_palette_click(pt,(nclick!=1));
-							return(noErr);
-						}
+					if ((pt.h>=0) && (pt.h<=gl_view_x_sz) && (pt.v>=(tool_button_size+gl_view_y_sz)) && (pt.v<=(tool_button_size+gl_view_y_sz+texture_palette_height))) {
+						texture_palette_click(pt,(nclick!=1));
+						return(noErr);
+					}
 					
-						return(eventNotHandledErr);
+					if ((pt.h>=gl_view_x_sz) && (pt.h<=(gl_view_x_sz+mesh_palette_width)) && (pt.v>tool_button_size) && (pt.v<(tool_button_size+gl_view_y_sz+texture_palette_height))) {
+						mesh_palette_click(pt,(nclick!=1));
+						return(noErr);
 					}
 					
 						// clicking in model view
@@ -762,7 +764,7 @@ void model_wind_open(void)
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	
-	glClearColor(0.9,0.9,0.9,0);
+	glClearColor(0.9f,0.9f,0.9f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	aglSwapBuffers(ctx);
 	

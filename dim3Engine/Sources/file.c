@@ -119,7 +119,7 @@ char* game_file_get_chunk(void *data)
 	return(data);
 }
 
-char* game_file_replace_chunk(void)
+unsigned char* game_file_replace_chunk(void)
 {
 	int				count,sz;
 	unsigned char	*data;
