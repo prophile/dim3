@@ -61,7 +61,7 @@ extern void map_auto_generate_mesh_change_texture(int txt_idx);
 extern bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z,float *gx,float *gy);
 
 extern int map_auto_generate_steps_get_length(int ty,int by,int step_size);
-extern void map_auto_generate_steps(map_type *map,int rn,int ty,int by,int stair_mode,int step_sz,bool top_step_wall,bool back_wall,int lx,int rx,int lz,int rz);
+extern void map_auto_generate_steps(map_type *map,int rn,int ty,int by,int stair_mode,int step_sz,bool back_wall,bool side_blocks,int lx,int rx,int lz,int rz);
 
 extern void map_auto_generate_lights(map_type *map);
 extern void map_auto_generate_spots(map_type *map);
@@ -72,7 +72,7 @@ extern void map_auto_generate_doors(map_type *map);
 int									ag_box_count;
 
 unsigned char						ag_ceiling_data[ag_ceiling_type_count][11]=ag_ceiling_data_bytes,
-									ag_ceiling_wall_data[ag_ceiling_type_count][4]=ag_ceiling_wall_data_bytes;
+									ag_ceiling_wall_data[ag_ceiling_type_count][6]=ag_ceiling_wall_data_bytes;
 
 unsigned char						corridor_types[max_portal],
 									ceiling_types[max_portal];
@@ -929,6 +929,93 @@ bool map_auto_generate_portal_ceiling_ok(unsigned char *data,int lx,int lz,int r
 	return(FALSE);
 }
 
+void map_auto_generate_portal_ceilling_pillar(map_type *map,int rn,int lx2,int lz2,int rx2,int rz2,int ty)
+{
+	int							k,split_factor,wall_sz,p_ty,p_by,
+								px[8],py[8],pz[8];
+	float						gx[8],gy[8];
+	auto_generate_box_type		*portal;
+
+	portal=&ag_boxes[rn];
+
+		// get sizes
+		
+	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	wall_sz=(int)((float)(portal->max.y-portal->min.y)*ag_constant_portal_ceiling_slant_percent);
+
+		// create pillar
+
+	k=(rx2-lx2)>>4;
+	lx2+=k;
+	rx2-=k;
+
+	k=(rz2-lz2)>>4;
+	lz2+=k;
+	rz2-=k;
+
+	k=wall_sz>>2;
+	p_ty=ty+k;
+	p_by=portal->max.y-k;
+
+	if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.pillar,FALSE,TRUE)) return;
+
+		// top of pillar
+
+	map_auto_generate_poly_from_square_wall(lx2,lz2,rx2,lz2,ty,p_ty,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(lx2,rz2,rx2,rz2,ty,p_ty,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(lx2,lz2,lx2,rz2,ty,p_ty,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(rx2,lz2,rx2,rz2,ty,p_ty,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_floor(lx2,lz2,rx2,rz2,p_ty,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+		// bottom of pillar
+
+	map_auto_generate_poly_from_square_wall(lx2,lz2,rx2,lz2,p_by,portal->max.y,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(lx2,rz2,rx2,rz2,p_by,portal->max.y,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(lx2,lz2,lx2,rz2,p_by,portal->max.y,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(rx2,lz2,rx2,rz2,p_by,portal->max.y,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_floor(lx2,lz2,rx2,rz2,p_by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+		// pillar
+
+	k=(rx2-lx2)>>3;
+	lx2+=k;
+	rx2-=k;
+
+	k=(rz2-lz2)>>3;
+	lz2+=k;
+	rz2-=k;
+
+	map_auto_generate_poly_from_square_wall(lx2,lz2,rx2,lz2,p_ty,p_by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(lx2,rz2,rx2,rz2,p_ty,p_by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(lx2,lz2,lx2,rz2,p_ty,p_by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(rx2,lz2,rx2,rz2,p_ty,p_by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+}
+
 void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty)
 {
 	int							ceiling_type,split_factor,lx2,rx2,lz2,rz2,
@@ -1081,6 +1168,25 @@ void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int
 
 		map_auto_generate_poly_from_top_trig_wall(mx,(rz-split_factor),(rx-split_factor),(rz-split_factor),(ty-wall_sz),ty,px,py,pz,gx,gy);
 		map_auto_generate_mesh_add_poly(map,3,px,py,pz,gx,gy);
+	}
+
+	if (data[ag_ceiling_central_pillar]!=0) {
+		k=((rx-lx)>>1)/split_factor;
+		lx2=k*split_factor;
+		rx2=lx2+split_factor;
+
+		k=((rz-lz)>>1)/split_factor;
+		lz2=k*split_factor;
+		rz2=lz2+split_factor;
+
+		map_auto_generate_portal_ceilling_pillar(map,rn,lx2,lz2,rx2,rz2,ty);
+	}
+
+	if (data[ag_ceiling_corner_pillars]!=0) {
+		map_auto_generate_portal_ceilling_pillar(map,rn,lx,lz,(lx+split_factor),(lz+split_factor),ty);
+		map_auto_generate_portal_ceilling_pillar(map,rn,(rx-split_factor),lz,rx,(lz+split_factor),ty);
+		map_auto_generate_portal_ceilling_pillar(map,rn,lx,(rz-split_factor),(lx+split_factor),rz,ty);
+		map_auto_generate_portal_ceilling_pillar(map,rn,(rx-split_factor),(rz-split_factor),rx,rz,ty);
 	}
 }
 
@@ -1534,26 +1640,26 @@ void map_auto_generate_second_story(map_type *map)
 		if ((lft) && (!old_lft)) {
 			x=split_factor*2;
 			z=map_auto_generate_second_story_steps_get_z(n,x,(x+step_len),top,zsz,step_wid);
-			map_auto_generate_steps(map,n,y,by,ag_stair_pos_x,ag_constant_step_story_size,FALSE,TRUE,x,x,z,(z+step_wid));
+			map_auto_generate_steps(map,n,y,by,ag_stair_pos_x,ag_constant_step_story_size,TRUE,FALSE,x,x,z,(z+step_wid));
 		}
 		else {
 			if ((rgt) && (!old_rgt)) {
 				x=xsz-(split_factor*2);
 				z=map_auto_generate_second_story_steps_get_z(n,(x-step_len),x,top,zsz,step_wid);
-				map_auto_generate_steps(map,n,y,by,ag_stair_neg_x,ag_constant_step_story_size,FALSE,TRUE,x,x,z,(z+step_wid));
+				map_auto_generate_steps(map,n,y,by,ag_stair_neg_x,ag_constant_step_story_size,TRUE,FALSE,x,x,z,(z+step_wid));
 			}
 		}
 
 		if ((top) && (!old_top)) {
 			z=split_factor*2;
 			x=map_auto_generate_second_story_steps_get_x(n,z,(z+step_len),lft,xsz,step_wid);
-			map_auto_generate_steps(map,n,y,by,ag_stair_pos_z,ag_constant_step_story_size,FALSE,TRUE,x,(x+step_wid),z,z);
+			map_auto_generate_steps(map,n,y,by,ag_stair_pos_z,ag_constant_step_story_size,TRUE,FALSE,x,(x+step_wid),z,z);
 		}
 		else {
 			if ((bot) && (!old_bot)) {
 				z=zsz-(split_factor*2);
 				x=map_auto_generate_second_story_steps_get_x(n,(z-step_len),z,lft,xsz,step_wid);
-				map_auto_generate_steps(map,n,y,by,ag_stair_neg_z,ag_constant_step_story_size,FALSE,TRUE,x,(x+step_wid),z,z);
+				map_auto_generate_steps(map,n,y,by,ag_stair_neg_z,ag_constant_step_story_size,TRUE,FALSE,x,(x+step_wid),z,z);
 			}
 		}
 	}
@@ -1713,6 +1819,7 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 	ags.texture.portal_ceiling=1;
 	ags.texture.steps=5;
 	ags.texture.ramp=5;
+	ags.texture.pillar=4;
 	ags.texture.corridor_wall=4;
 	ags.texture.corridor_floor=4;
 	ags.texture.corridor_ceiling=4;

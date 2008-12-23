@@ -44,8 +44,11 @@ extern auto_generate_box_type			ag_boxes[max_ag_box];
 
 void map_auto_generate_lights(map_type *map)
 {
-	int						n,x,z,y,intensity,lt_type;
-	float					r,g,b;
+	int						n,x,z,y,l_idx,intensity,lt_type;
+	float					r,g,b,
+							r_array[8]={1.0f,1.0f,0.2f,0.2f,1.0f,1.0f,0.2f,1.0f},
+							g_array[8]={1.0f,0.2f,1.0f,0.2f,1.0f,1.0f,1.0f,0.2f},
+							b_array[8]={1.0f,0.2f,0.2f,1.0f,1.0f,0.2f,1.0f,1.0f};
 	double					dx,dz;
 	auto_generate_box_type	*portal;
 	map_light_type			*lit;
@@ -80,17 +83,10 @@ void map_auto_generate_lights(map_type *map)
 			
 		if ((ag_settings.light_type_on[ag_light_type_tint]!=0) && (portal->corridor_flag==ag_corridor_flag_portal)) {
 			
-			switch (map_auto_generate_random_int(4)) {
-				case 0:
-					g=b=0.4f;
-					break;
-				case 1:
-					r=b=0.4f;
-					break;
-				case 2:
-					r=g=0.4f;
-					break;
-			}
+			l_idx=map_auto_generate_random_int(8);
+			r=r_array[l_idx];
+			g=g_array[l_idx];
+			b=b_array[l_idx];
 		}
 		
 			// get the type

@@ -332,7 +332,7 @@ int map_auto_generate_steps_get_length(int ty,int by,int step_size)
 	return(step_cnt*step_size);
 }
 
-void map_auto_generate_steps(map_type *map,int rn,int ty,int by,int stair_mode,int step_sz,bool top_step_wall,bool back_wall,int lx,int rx,int lz,int rz)
+void map_auto_generate_steps(map_type *map,int rn,int ty,int by,int stair_mode,int step_sz,bool back_wall,bool side_blocks,int lx,int rx,int lz,int rz)
 {
 	int				y,y2,step_cnt,px[8],py[8],pz[8];
 	float			gx[8],gy[8];
@@ -359,94 +359,154 @@ void map_auto_generate_steps(map_type *map,int rn,int ty,int by,int stair_mode,i
 	while (TRUE) {
 		y2=y+ag_constant_step_high;
 
-			// step wall
-
-		if ((y!=ty) || (top_step_wall)) {
-		
-			switch (stair_mode) {
-
-				case ag_stair_neg_z:
-					map_auto_generate_poly_from_square_wall(lx,lz,rx,lz,y,y2,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-					break;
-
-				case ag_stair_pos_z:
-					map_auto_generate_poly_from_square_wall(lx,lz,rx,lz,y,y2,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-					break;
-
-				case ag_stair_neg_x:
-					map_auto_generate_poly_from_square_wall(lx,lz,lx,rz,y,y2,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-					break;
-
-				case ag_stair_pos_x:
-					map_auto_generate_poly_from_square_wall(lx,lz,lx,rz,y,y2,px,py,pz,gx,gy);
-					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-					break;
-			}
-		}
-		
-		if (y2>=by) break;
-
-			// step floor and side
-
 		switch (stair_mode) {
 
 			case ag_stair_neg_z:
-				map_auto_generate_poly_from_square_floor(lx,(lz-step_sz),rx,lz,y2,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_square_wall(lx,(lz-step_sz),rx,(lz-step_sz),y,y2,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 
-				map_auto_generate_poly_from_square_wall(lx,(lz-step_sz),lx,lz,y2,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_square_floor(lx,(lz-step_sz),rx,lz,y,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 
-				map_auto_generate_poly_from_square_wall(rx,(lz-step_sz),rx,lz,y2,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				if (!side_blocks) {
+					map_auto_generate_poly_from_square_wall(lx,(lz-step_sz),lx,lz,y,by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+					map_auto_generate_poly_from_square_wall(rx,(lz-step_sz),rx,lz,y,by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
 
 				lz-=step_sz;
 				break;
 
 			case ag_stair_pos_z:
-				map_auto_generate_poly_from_square_floor(lx,lz,rx,(lz+step_sz),y2,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_square_wall(lx,(lz+step_sz),rx,(lz+step_sz),y,y2,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 
-				map_auto_generate_poly_from_square_wall(lx,lz,lx,(lz+step_sz),y2,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_square_floor(lx,lz,rx,(lz+step_sz),y,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 
-				map_auto_generate_poly_from_square_wall(rx,lz,rx,(lz+step_sz),y2,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				if (!side_blocks) {
+					map_auto_generate_poly_from_square_wall(lx,lz,lx,(lz+step_sz),y,by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+					map_auto_generate_poly_from_square_wall(rx,lz,rx,(lz+step_sz),y,by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
 
 				lz+=step_sz;
 				break;
 
 			case ag_stair_neg_x:
-				map_auto_generate_poly_from_square_floor((lx-step_sz),lz,lx,rz,y2,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_square_wall((lx-step_sz),lz,(lx-step_sz),rz,y,y2,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 
-				map_auto_generate_poly_from_square_wall((lx-step_sz),lz,lx,lz,y2,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_square_floor((lx-step_sz),lz,lx,rz,y,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 
-				map_auto_generate_poly_from_square_wall((lx-step_sz),rz,lx,rz,y2,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				if (!side_blocks) {
+					map_auto_generate_poly_from_square_wall((lx-step_sz),lz,lx,lz,y,by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+					map_auto_generate_poly_from_square_wall((lx-step_sz),rz,lx,rz,y,by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
 
 				lx-=step_sz;
 				break;
 
 			case ag_stair_pos_x:
-				map_auto_generate_poly_from_square_floor(lx,lz,(lx+step_sz),rz,y2,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_square_wall((lx+step_sz),lz,(lx+step_sz),rz,y,y2,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 
-				map_auto_generate_poly_from_square_wall(lx,lz,(lx+step_sz),lz,y2,by,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_square_floor(lx,lz,(lx+step_sz),rz,y,px,py,pz,gx,gy);
 				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 
-				map_auto_generate_poly_from_square_wall(lx,rz,(lx+step_sz),rz,y2,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				if (!side_blocks) {
+					map_auto_generate_poly_from_square_wall(lx,lz,(lx+step_sz),lz,y,by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+					map_auto_generate_poly_from_square_wall(lx,rz,(lx+step_sz),rz,y,by,px,py,pz,gx,gy);
+					map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				}
 
 				lx+=step_sz;
 				break;
 		}
 
+		if (y2>=by) break;
+
 		y=y2;
+	}
+
+		// step sides
+
+	if (side_blocks) {
+
+		y=ty-ag_constant_step_side_width;
+
+		switch (stair_mode) {
+
+			case ag_stair_neg_z:
+			case ag_stair_pos_z:
+
+				map_auto_generate_poly_from_square_wall(lx,lz,lx,rz,y,by,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_square_wall((lx-ag_constant_step_side_width),lz,(lx-ag_constant_step_side_width),rz,y,by,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+				map_auto_generate_poly_from_square_wall((lx-ag_constant_step_side_width),lz,lx,lz,y,by,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_square_wall((lx-ag_constant_step_side_width),rz,lx,rz,y,by,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				
+				map_auto_generate_poly_from_square_floor((lx-ag_constant_step_side_width),lz,lx,rz,y,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+				map_auto_generate_poly_from_square_wall(rx,lz,rx,rz,y,by,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_square_wall((rx+ag_constant_step_side_width),lz,(rx+ag_constant_step_side_width),rz,y,by,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+				map_auto_generate_poly_from_square_wall(rx,lz,(rx+ag_constant_step_side_width),lz,y,by,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_square_wall(rx,rz,(rx+ag_constant_step_side_width),rz,y,by,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+				map_auto_generate_poly_from_square_floor(rx,lz,(rx+ag_constant_step_side_width),rz,y,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				break;
+
+			case ag_stair_neg_x:
+			case ag_stair_pos_x:
+				map_auto_generate_poly_from_square_wall(lx,lz,rx,lz,y,by,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_square_wall(lx,(lz-ag_constant_step_side_width),rx,(lz-ag_constant_step_side_width),y,by,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+				map_auto_generate_poly_from_square_wall(lx,(lz-ag_constant_step_side_width),lx,lz,y,by,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_square_wall(rx,(lz-ag_constant_step_side_width),rx,lz,y,by,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+				map_auto_generate_poly_from_square_floor(lx,(lz-ag_constant_step_side_width),rx,lz,y,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+				map_auto_generate_poly_from_square_wall(lx,rz,rx,rz,y,by,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_square_wall(lx,(rz+ag_constant_step_side_width),rx,(rz+ag_constant_step_side_width),y,by,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+				map_auto_generate_poly_from_square_wall(lx,rz,lx,(rz+ag_constant_step_side_width),y,by,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				map_auto_generate_poly_from_square_wall(rx,rz,rx,(rz+ag_constant_step_side_width),y,by,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+				map_auto_generate_poly_from_square_floor(lx,rz,rx,(rz+ag_constant_step_side_width),y,px,py,pz,gx,gy);
+				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+				break;
+
+		}
 	}
 }
 
@@ -471,13 +531,13 @@ void map_auto_generate_corridor_to_portal_steps(map_type *map)
 			if (chk_portal->max.y>=portal->max.y) continue;
 
 			if ((chk_portal->min.x>=portal->min.x) && (chk_portal->min.x<=portal->max.x)) {
-				if (chk_portal->max.z==portal->min.z) map_auto_generate_steps(map,n,chk_portal->max.y,portal->max.y,ag_stair_pos_z,ag_constant_step_corridor_size,TRUE,FALSE,(chk_portal->min.x-portal->min.x),(chk_portal->max.x-portal->min.x),0,0);
-				if (chk_portal->min.z==portal->max.z) map_auto_generate_steps(map,n,chk_portal->max.y,portal->max.y,ag_stair_neg_z,ag_constant_step_corridor_size,TRUE,FALSE,(chk_portal->min.x-portal->min.x),(chk_portal->max.x-portal->min.x),(portal->max.z-portal->min.z),(portal->max.z-portal->min.z));
+				if (chk_portal->max.z==portal->min.z) map_auto_generate_steps(map,n,chk_portal->max.y,portal->max.y,ag_stair_pos_z,ag_constant_step_corridor_size,FALSE,TRUE,(chk_portal->min.x-portal->min.x),(chk_portal->max.x-portal->min.x),0,0);
+				if (chk_portal->min.z==portal->max.z) map_auto_generate_steps(map,n,chk_portal->max.y,portal->max.y,ag_stair_neg_z,ag_constant_step_corridor_size,FALSE,TRUE,(chk_portal->min.x-portal->min.x),(chk_portal->max.x-portal->min.x),(portal->max.z-portal->min.z),(portal->max.z-portal->min.z));
 			}
 			
 			if ((chk_portal->min.z>=portal->min.z) && (chk_portal->min.z<=portal->max.z)) {
-				if (chk_portal->max.x==portal->min.x) map_auto_generate_steps(map,n,chk_portal->max.y,portal->max.y,ag_stair_pos_x,ag_constant_step_corridor_size,TRUE,FALSE,0,0,(chk_portal->min.z-portal->min.z),(chk_portal->max.z-portal->min.z));
-				if (chk_portal->min.x==portal->max.x) map_auto_generate_steps(map,n,chk_portal->max.y,portal->max.y,ag_stair_neg_x,ag_constant_step_corridor_size,TRUE,FALSE,(portal->max.x-portal->min.x),(portal->max.x-portal->min.x),(chk_portal->min.z-portal->min.z),(chk_portal->max.z-portal->min.z));
+				if (chk_portal->max.x==portal->min.x) map_auto_generate_steps(map,n,chk_portal->max.y,portal->max.y,ag_stair_pos_x,ag_constant_step_corridor_size,FALSE,TRUE,0,0,(chk_portal->min.z-portal->min.z),(chk_portal->max.z-portal->min.z));
+				if (chk_portal->min.x==portal->max.x) map_auto_generate_steps(map,n,chk_portal->max.y,portal->max.y,ag_stair_neg_x,ag_constant_step_corridor_size,FALSE,TRUE,(portal->max.x-portal->min.x),(portal->max.x-portal->min.x),(chk_portal->min.z-portal->min.z),(chk_portal->max.z-portal->min.z));
 			}
 		}
 	}

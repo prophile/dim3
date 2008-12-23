@@ -951,6 +951,7 @@ and can be sold or given away.
 #define sd_event_remote_join							3079
 #define sd_event_remote_leave							3080
 #define sd_event_remote_team							3081
+#define sd_event_remote_death							3082
 
 //
 // define structure

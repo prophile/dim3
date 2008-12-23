@@ -84,6 +84,8 @@ and can be sold or given away.
 #define ag_ceiling_wall_horizontal					1
 #define ag_ceiling_wall_vertical					2
 #define ag_ceiling_wall_slant						3
+#define ag_ceiling_central_pillar					4
+#define ag_ceiling_corner_pillars					5
 
 #define ag_ceiling_data_bytes						{ \
 													 {1,1,1,1,1,1,1,1,1,1,0}, \
@@ -96,13 +98,13 @@ and can be sold or given away.
 													}
 
 #define ag_ceiling_wall_data_bytes					{ \
-													 {0,0,0,0}, \
-													 {1,0,0,0}, \
-													 {1,1,1,0}, \
-													 {0,1,0,1}, \
-													 {0,0,1,1}, \
-													 {1,1,0,0}, \
-													 {1,0,1,0} \
+													 {0,0,0,0,0,0}, \
+													 {1,0,0,0,0,0}, \
+													 {1,1,1,0,1,0}, \
+													 {0,1,0,1,0,1}, \
+													 {0,0,1,1,0,1}, \
+													 {1,1,0,0,1,0}, \
+													 {1,0,1,0,1,0} \
 													}
 
 //
@@ -215,7 +217,7 @@ and can be sold or given away.
 #define ag_constant_portal_split_factor_percent		0.1f
 
 #define ag_constant_portal_high_extra_top			0.75f
-#define ag_constant_portal_high_extra_bottom		0.50f
+#define ag_constant_portal_high_extra_bottom		0.60f
 #define ag_constant_portal_high_slop_y				0.10f
 #define ag_constant_portal_rough_floor_percent		0.025f
 #define ag_constant_portal_ceiling_slant_percent	0.40f
@@ -223,8 +225,8 @@ and can be sold or given away.
 #define ag_constant_portal_story_high				(5*map_enlarge)
 #define ag_constant_story_steps_split_factor		1
 
-#define ag_constant_corridor_size_percent			0.25f
-#define ag_constant_corridor_random_percent			0.4f
+#define ag_constant_corridor_size_percent			0.20f
+#define ag_constant_corridor_random_percent			0.5f
 #define ag_constant_corridor_high_percent			0.07f
 
 #define ag_constant_door_percentage					0.5f
@@ -236,6 +238,7 @@ and can be sold or given away.
 #define ag_constant_step_high						(3*map_enlarge)
 #define ag_constant_step_corridor_size				(12*map_enlarge)
 #define ag_constant_step_story_size					(10*map_enlarge)
+#define ag_constant_step_side_width					(5*map_enlarge)
 
 #define ag_constant_ramp_min_high					(4*map_enlarge)
 #define ag_constant_ramp_size_percent				4.0f
@@ -252,7 +255,7 @@ typedef struct	{
 typedef struct	{
 					int										portal_wall,portal_floor,portal_ceiling,
 															corridor_wall,corridor_floor,corridor_ceiling,
-															second_story,door,steps,ramp;
+															second_story,door,steps,ramp,pillar;
 				} auto_generate_setting_texture_type;
 
 typedef struct	{

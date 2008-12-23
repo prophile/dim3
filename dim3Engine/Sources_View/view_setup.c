@@ -94,6 +94,8 @@ void view_create_mesh_draw_list(void)
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
 
+		mesh=&map.mesh.meshes[n];
+			
 		if (!mesh->flag.never_obscure) {
 
 				// is this mesh visible?
@@ -105,8 +107,6 @@ void view_create_mesh_draw_list(void)
 				// auto-eliminate meshes drawn outside the obscure distance
 				// or not in the view
 				
-			mesh=&map.mesh.meshes[n];
-			
 			d=map_mesh_calculate_distance(mesh,&view.camera.pnt);
 			if (d>obscure_dist) continue;
 				
