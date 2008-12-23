@@ -50,7 +50,6 @@ void switch_tab_mesh(void)
 	hide_bone_controls();
 	hide_pose_controls();
     hide_animate_controls();
- 	hide_hit_box_controls();
 	
 	show_mesh_controls();
 }
@@ -65,7 +64,6 @@ void switch_tab_vertex(void)
     hide_bone_controls();
 	hide_pose_controls();
     hide_animate_controls();
-	hide_hit_box_controls();
 	
 	show_vertex_controls();
 }
@@ -80,7 +78,6 @@ void switch_tab_bone(void)
 	hide_vertex_controls();
 	hide_pose_controls();
     hide_animate_controls();
-	hide_hit_box_controls();
 	
     show_bone_controls();
 }
@@ -95,7 +92,6 @@ void switch_tab_pose(void)
 	hide_vertex_controls();
 	hide_bone_controls();
     hide_animate_controls();
-	hide_hit_box_controls();
 	
     show_pose_controls();
 }
@@ -110,7 +106,6 @@ void switch_tab_animate(void)
 	hide_vertex_controls();
 	hide_bone_controls();
     hide_pose_controls();
-	hide_hit_box_controls();
 	
     show_animate_controls();
 }
@@ -126,19 +121,17 @@ void switch_tab_hit_box(void)
 	hide_bone_controls();
     hide_pose_controls();
     hide_animate_controls();
-	
-	show_hit_box_controls();
 }
 
 void switch_tab_control(void)
 {
+/*
     switch (GetControl32BitValue(tab_list)) {
         case 1:
 			hide_vertex_controls();
 			hide_bone_controls();
             hide_pose_controls();
             hide_animate_controls();
-			hide_hit_box_controls();
 			show_mesh_controls();
             break;
         case 2:
@@ -146,7 +139,6 @@ void switch_tab_control(void)
  			hide_bone_controls();
 			hide_pose_controls();
             hide_animate_controls();
-			hide_hit_box_controls();
 			show_vertex_controls();
             break;
         case 3:
@@ -154,7 +146,6 @@ void switch_tab_control(void)
 			hide_vertex_controls();
             hide_pose_controls();
             hide_animate_controls();
-			hide_hit_box_controls();
 			show_bone_controls();
             break;
         case 4:
@@ -173,15 +164,8 @@ void switch_tab_control(void)
 			hide_hit_box_controls();
             show_animate_controls();
             break;
-        case 6:
-			hide_mesh_controls();
-			hide_vertex_controls();
-			hide_bone_controls();
-            hide_pose_controls();
-            hide_animate_controls();
-			show_hit_box_controls();
-            break;
     }
+	*/
 }
 
 /* =======================================================
@@ -259,11 +243,6 @@ void tabs_start(void)
     start_animate_controls(model_wind,&box);
     hide_animate_controls();
 	
-        // hit box controls
-        
-    start_hit_box_controls(model_wind,&box);
-    hide_hit_box_controls();
-	
 		// make sure keyboard focus is on mesh tab
 		
 	show_mesh_controls();
@@ -276,7 +255,6 @@ void tabs_end(void)
 	end_bone_controls();
 	end_pose_controls();
     end_animate_controls();
-	end_hit_box_controls();
 /*
     DisposeControl(tab_list);
 	*/
@@ -315,7 +293,6 @@ void tabs_resize(void)
 	resize_bone_controls(&box);
 	resize_pose_controls(&box);
 	resize_animate_controls(&box);
-    resize_hit_box_controls(&box);
 	*/
 }
 

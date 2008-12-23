@@ -44,6 +44,7 @@ extern map_type				map;
 #define kBackSkySettingSkyTextureWestIndex			FOUR_CHAR_CODE('stxw')
 #define kBackSkySettingSkyRadius					FOUR_CHAR_CODE('syrd')
 #define kBackSkySettingSkyDomeY						FOUR_CHAR_CODE('sdmy')
+#define kBackSkySettingSkyDomeMirror				FOUR_CHAR_CODE('smdm')
 #define kBackSkySettingSkyTextureRepeat				FOUR_CHAR_CODE('sytr')
 #define kBackSkySettingSkyTextureXShift				FOUR_CHAR_CODE('stxx')
 #define kBackSkySettingSkyTextureYShift				FOUR_CHAR_CODE('styy')
@@ -121,6 +122,7 @@ bool dialog_background_sky_setting_run(void)
 	dialog_fill_texture_combo(dialog_background_sky_setting_wind,kBackSkySettingSkyTextureWestIndex,0,TRUE,map.sky.west_fill);
 	dialog_set_int(dialog_background_sky_setting_wind,kBackSkySettingSkyRadius,0,map.sky.radius);
 	dialog_set_int(dialog_background_sky_setting_wind,kBackSkySettingSkyDomeY,0,map.sky.dome_y);
+	dialog_set_boolean(dialog_background_sky_setting_wind,kBackSkySettingSkyDomeMirror,0,map.sky.dome_mirror);
 	dialog_set_float(dialog_background_sky_setting_wind,kBackSkySettingSkyTextureRepeat,0,map.sky.txt_fact);
 	dialog_set_float(dialog_background_sky_setting_wind,kBackSkySettingSkyTextureXShift,0,map.sky.txt_x_shift);
 	dialog_set_float(dialog_background_sky_setting_wind,kBackSkySettingSkyTextureYShift,0,map.sky.txt_y_shift);
@@ -157,6 +159,7 @@ bool dialog_background_sky_setting_run(void)
 		map.sky.west_fill=dialog_get_texture_combo(dialog_background_sky_setting_wind,kBackSkySettingSkyTextureWestIndex,0,TRUE);
 		map.sky.radius=dialog_get_int(dialog_background_sky_setting_wind,kBackSkySettingSkyRadius,0);
 		map.sky.dome_y=dialog_get_int(dialog_background_sky_setting_wind,kBackSkySettingSkyDomeY,0);
+		map.sky.dome_mirror=dialog_get_boolean(dialog_background_sky_setting_wind,kBackSkySettingSkyDomeMirror,0);
 		map.sky.txt_fact=dialog_get_float(dialog_background_sky_setting_wind,kBackSkySettingSkyTextureRepeat,0);
 		map.sky.txt_x_shift=dialog_get_float(dialog_background_sky_setting_wind,kBackSkySettingSkyTextureXShift,0);
 		map.sky.txt_y_shift=dialog_get_float(dialog_background_sky_setting_wind,kBackSkySettingSkyTextureYShift,0);

@@ -27,7 +27,14 @@ and can be sold or given away.
 
 #include "dialog.h"
 
-extern model_type		model;
+extern int					cur_mesh,cur_pose;
+extern model_type			model;
+
+#define kHitBoxList							FOUR_CHAR_CODE('list')
+#define kHitBoxListNameColumn				FOUR_CHAR_CODE('hnme')
+
+#define kHitBoxAdd							FOUR_CHAR_CODE('addp')
+#define kHitBoxSub							FOUR_CHAR_CODE('subp')
 
 #define kHitBoxName							FOUR_CHAR_CODE('name')
 #define kHitBoxSizeX						FOUR_CHAR_CODE('sizx')
@@ -37,14 +44,65 @@ extern model_type		model;
 #define kHitBoxOffsetY						FOUR_CHAR_CODE('offy')
 #define kHitBoxOffsetZ						FOUR_CHAR_CODE('offz')
 
-bool						dialog_hit_box_settings_cancel;
+int							dialog_hit_box_idx;
+bool						dialog_hit_box_change_ok;
+ControlRef					dialog_hit_box_list;
 WindowRef					dialog_hit_box_settings_wind;
+
+/* =======================================================
+
+      Load and Save Hit Box Data
+      
+======================================================= */
+
+void dialog_hit_box_settings_load(void)
+{
+	if (dialog_hit_box_idx==-1) return;
+	
+	dialog_set_text(dialog_hit_box_settings_wind,kHitBoxName,0,model.hit_boxes[dialog_hit_box_idx].name);
+	dialog_set_int(dialog_hit_box_settings_wind,kHitBoxSizeX,0,model.hit_boxes[dialog_hit_box_idx].box.size.x);
+	dialog_set_int(dialog_hit_box_settings_wind,kHitBoxSizeY,0,model.hit_boxes[dialog_hit_box_idx].box.size.y);
+	dialog_set_int(dialog_hit_box_settings_wind,kHitBoxSizeZ,0,model.hit_boxes[dialog_hit_box_idx].box.size.z);
+	dialog_set_int(dialog_hit_box_settings_wind,kHitBoxOffsetX,0,model.hit_boxes[dialog_hit_box_idx].box.offset.x);
+	dialog_set_int(dialog_hit_box_settings_wind,kHitBoxOffsetY,0,model.hit_boxes[dialog_hit_box_idx].box.offset.y);
+	dialog_set_int(dialog_hit_box_settings_wind,kHitBoxOffsetZ,0,model.hit_boxes[dialog_hit_box_idx].box.offset.z);
+	
+	DrawControls(dialog_hit_box_settings_wind);
+	
+	draw_model_wind_pose(&model,cur_mesh,cur_pose);
+}
+
+void dialog_hit_box_settings_save(void)
+{
+	if (dialog_hit_box_idx==-1) return;
+	
+	dialog_get_text(dialog_hit_box_settings_wind,kHitBoxName,0,model.hit_boxes[dialog_hit_box_idx].name,name_str_len);
+	model.hit_boxes[dialog_hit_box_idx].box.size.x=dialog_get_int(dialog_hit_box_settings_wind,kHitBoxSizeX,0);
+	model.hit_boxes[dialog_hit_box_idx].box.size.y=dialog_get_int(dialog_hit_box_settings_wind,kHitBoxSizeY,0);
+	model.hit_boxes[dialog_hit_box_idx].box.size.z=dialog_get_int(dialog_hit_box_settings_wind,kHitBoxSizeZ,0);
+	model.hit_boxes[dialog_hit_box_idx].box.offset.x=dialog_get_int(dialog_hit_box_settings_wind,kHitBoxOffsetX,0);
+	model.hit_boxes[dialog_hit_box_idx].box.offset.y=dialog_get_int(dialog_hit_box_settings_wind,kHitBoxOffsetY,0);
+	model.hit_boxes[dialog_hit_box_idx].box.offset.z=dialog_get_int(dialog_hit_box_settings_wind,kHitBoxOffsetZ,0);
+}
 
 /* =======================================================
 
       Hit Box Setting Event Handlers
       
 ======================================================= */
+
+void dialog_hit_box_list_reset(void)
+{
+	DataBrowserItemID				itemID;
+
+	RemoveDataBrowserItems(dialog_hit_box_list,kDataBrowserNoItem,0,NULL,kDataBrowserItemNoProperty);
+	AddDataBrowserItems(dialog_hit_box_list,kDataBrowserNoItem,model.nhit_box,NULL,kDataBrowserItemNoProperty);
+
+	itemID=dialog_hit_box_idx+1;
+	SetDataBrowserSelectedItems(dialog_hit_box_list,1,&itemID,kDataBrowserItemsAssign);
+
+	Draw1Control(dialog_hit_box_list);
+}
 
 static pascal OSStatus hit_box_settings_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
@@ -56,12 +114,22 @@ static pascal OSStatus hit_box_settings_event_proc(EventHandlerCallRef handler,E
 			GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
 			
 			switch (cmd.commandID) {
-				
-				case kHICommandCancel:
-					dialog_hit_box_settings_cancel=TRUE;
-					QuitAppModalLoopForWindow(dialog_hit_box_settings_wind);
+			
+				case kHitBoxAdd:
+					dialog_hit_box_idx=model_hit_box_add(&model);
+					dialog_hit_box_settings_load();
+					dialog_hit_box_list_reset();
 					return(noErr);
 					
+				case kHitBoxSub:
+					if (model.nhit_box==0) return(noErr);
+					model_hit_box_delete(&model,dialog_hit_box_idx);
+					dialog_hit_box_idx=0;
+					if (dialog_hit_box_idx>=model.nhit_box) dialog_hit_box_idx=-1;
+					dialog_hit_box_settings_load();
+					dialog_hit_box_list_reset();
+					return(noErr);
+				
 				case kHICommandOK:
 					QuitAppModalLoopForWindow(dialog_hit_box_settings_wind);
 					return(noErr);
@@ -77,30 +145,95 @@ static pascal OSStatus hit_box_settings_event_proc(EventHandlerCallRef handler,E
 
 /* =======================================================
 
+      Hit Box List Event Handlers
+      
+======================================================= */
+
+static pascal OSStatus hit_box_list_item_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserPropertyID property,DataBrowserItemDataRef itemData,Boolean changeValue)
+{
+	int				idx;
+	CFStringRef		cfstr;
+	
+	switch (property) {
+	
+		case kHitBoxListNameColumn:
+			idx=itemID-1;
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,model.hit_boxes[idx].name,kCFStringEncodingMacRoman);
+			SetDataBrowserItemDataText(itemData,cfstr);
+			CFRelease(cfstr);
+			return(noErr);
+
+	}
+
+	return(errDataBrowserPropertyNotSupported);
+}
+
+static pascal void hit_box_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserItemNotification message)
+{
+	switch (message) {
+
+		case kDataBrowserItemSelected:
+			if ((!dialog_hit_box_change_ok) || (itemID==0)) return;
+			
+			dialog_hit_box_settings_save();
+			dialog_hit_box_idx=itemID-1;
+			dialog_hit_box_settings_load();
+			
+			break;
+
+	}
+}
+
+/* =======================================================
+
       Run Hit Box Setting
       
 ======================================================= */
 
-bool dialog_hit_box_settings_run(model_hit_box_type *hit_box)
+bool dialog_hit_box_settings_run(void)
 {
-	EventHandlerUPP			event_upp;
-	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
+	ControlID						ctrl_id;
+	DataBrowserItemID				itemID;
+	DataBrowserCallbacks			dbcall;
+	DataBrowserItemDataUPP			hit_box_list_item_upp;
+	DataBrowserItemNotificationUPP	hit_box_list_notify_upp;
+	EventHandlerUPP					event_upp;
+	EventTypeSpec					event_list[]={{kEventClassCommand,kEventProcessCommand}};
 	
 		// open the dialog
 		
 	dialog_open(&dialog_hit_box_settings_wind,"HitBoxSettings");
+	
+		// setup hit box list
+		
+	ctrl_id.signature=kHitBoxList;
+	ctrl_id.id=0;
+	GetControlByID(dialog_hit_box_settings_wind,&ctrl_id,&dialog_hit_box_list);
+	
+	dbcall.version=kDataBrowserLatestCallbacks;
+	InitDataBrowserCallbacks(&dbcall);
+	
+	hit_box_list_item_upp=NewDataBrowserItemDataUPP(&hit_box_list_item_proc);
+	dbcall.u.v1.itemDataCallback=hit_box_list_item_upp;
+
+	hit_box_list_notify_upp=NewDataBrowserItemNotificationUPP(&hit_box_list_notify_proc);
+	dbcall.u.v1.itemNotificationCallback=hit_box_list_notify_upp;
+	
+	SetDataBrowserCallbacks(dialog_hit_box_list,&dbcall);
+	
+	AddDataBrowserItems(dialog_hit_box_list,kDataBrowserNoItem,model.nhit_box,NULL,kDataBrowserItemNoProperty);
+	
+	dialog_hit_box_change_ok=FALSE;
+	
+	itemID=1;
+	SetDataBrowserSelectedItems(dialog_hit_box_list,1,&itemID,kDataBrowserItemsAssign);
+	
+	dialog_hit_box_change_ok=TRUE;
 
 		// set controls
 
-	dialog_set_text(dialog_hit_box_settings_wind,kHitBoxName,0,hit_box->name);
-	dialog_set_int(dialog_hit_box_settings_wind,kHitBoxSizeX,0,hit_box->box.size.x);
-	dialog_set_int(dialog_hit_box_settings_wind,kHitBoxSizeY,0,hit_box->box.size.y);
-	dialog_set_int(dialog_hit_box_settings_wind,kHitBoxSizeZ,0,hit_box->box.size.z);
-	dialog_set_int(dialog_hit_box_settings_wind,kHitBoxOffsetX,0,hit_box->box.offset.x);
-	dialog_set_int(dialog_hit_box_settings_wind,kHitBoxOffsetY,0,hit_box->box.offset.y);
-	dialog_set_int(dialog_hit_box_settings_wind,kHitBoxOffsetZ,0,hit_box->box.offset.z);
-	
-	dialog_set_focus(dialog_hit_box_settings_wind,kHitBoxName,0);
+	dialog_hit_box_idx=0;
+	dialog_hit_box_settings_load();
 	
 		// show window
 	
@@ -113,25 +246,16 @@ bool dialog_hit_box_settings_run(model_hit_box_type *hit_box)
 	
 		// modal window
 		
-	dialog_hit_box_settings_cancel=FALSE;
 	RunAppModalLoopForWindow(dialog_hit_box_settings_wind);
 	
 		// dialog to data
 		
-	if (!dialog_hit_box_settings_cancel) {
-		dialog_get_text(dialog_hit_box_settings_wind,kHitBoxName,0,hit_box->name,name_str_len);
-		hit_box->box.size.x=dialog_get_int(dialog_hit_box_settings_wind,kHitBoxSizeX,0);
-		hit_box->box.size.y=dialog_get_int(dialog_hit_box_settings_wind,kHitBoxSizeY,0);
-		hit_box->box.size.z=dialog_get_int(dialog_hit_box_settings_wind,kHitBoxSizeZ,0);
-		hit_box->box.offset.x=dialog_get_int(dialog_hit_box_settings_wind,kHitBoxOffsetX,0);
-		hit_box->box.offset.y=dialog_get_int(dialog_hit_box_settings_wind,kHitBoxOffsetY,0);
-		hit_box->box.offset.z=dialog_get_int(dialog_hit_box_settings_wind,kHitBoxOffsetZ,0);
-	}
+	dialog_hit_box_settings_save();
 
 		// close window
 		
 	DisposeWindow(dialog_hit_box_settings_wind);
 	
-	return(!dialog_hit_box_settings_cancel);
+	return(TRUE);
 }
 

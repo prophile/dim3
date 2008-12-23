@@ -39,7 +39,6 @@ and can be sold or given away.
 #define kMapGeneratePortalSize						FOUR_CHAR_CODE('ptsz')
 #define kMapGeneratePortalHigh						FOUR_CHAR_CODE('pthg')
 
-#define kMapGenerateFloorType						FOUR_CHAR_CODE('flrt')
 #define kMapGenerateCeilingType						FOUR_CHAR_CODE('clgt')
 #define kMapGenerateCorridorType					FOUR_CHAR_CODE('cort')
 #define kMapGenerateDoorType						FOUR_CHAR_CODE('dort')
@@ -149,10 +148,6 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_set_combo(dialog_map_generate_wind,kMapGenerateBlock,0,ag_settings.block);
 		dialog_set_value(dialog_map_generate_wind,kMapGeneratePortalSize,0,ag_settings.map.portal_sz);
 		
-		for (n=0;n!=ag_floor_type_count;n++) {
-			dialog_set_boolean(dialog_map_generate_wind,kMapGenerateFloorType,n,ag_settings.floor_type_on[n]);
-		}
-		
 		for (n=0;n!=ag_ceiling_type_count;n++) {
 			dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCeilingType,n,ag_settings.ceiling_type_on[n]);
 		}
@@ -219,10 +214,6 @@ bool dialog_map_auto_generate_setting_run(bool first)
 
 	ag_settings.map.map_sz=dialog_get_value(dialog_map_generate_wind,kMapGenerateMapSize,0);
 	ag_settings.map.portal_sz=dialog_get_value(dialog_map_generate_wind,kMapGeneratePortalSize,0);
-
-	for (n=0;n!=ag_floor_type_count;n++) {
-		ag_settings.floor_type_on[n]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateFloorType,n);
-	}
 	
 	for (n=0;n!=ag_ceiling_type_count;n++) {
 		ag_settings.ceiling_type_on[n]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateCeilingType,n);

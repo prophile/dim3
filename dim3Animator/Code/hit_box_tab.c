@@ -91,10 +91,10 @@ static pascal void hit_box_list_notify_proc(ControlRef ctrl,DataBrowserItemID it
 	
 		case kDataBrowserItemDoubleClicked:
 			i=itemID-1;
-			if (dialog_hit_box_settings_run(&model.hit_boxes[i])) {
-				redraw_hit_box_row(i);
-				model_view_reset=TRUE;
-			}
+		//	if (dialog_hit_box_settings_run(&model.hit_boxes[i])) {
+		//		redraw_hit_box_row(i);
+		//		model_view_reset=TRUE;
+		//	}
 			break;
 			
 		case kDataBrowserItemSelected:

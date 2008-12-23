@@ -57,25 +57,17 @@ extern void resize_animate_controls(Rect *box);
 extern void show_animate_controls(void);
 extern void hide_animate_controls(void);
 
-extern void start_hit_box_controls(WindowRef wind,Rect *box);
-extern void end_hit_box_controls(void);
-extern void resize_hit_box_controls(Rect *box);
-extern void show_hit_box_controls(void);
-extern void hide_hit_box_controls(void);
-
 extern void reset_mesh_tab(int cmesh);
 extern void reset_vertex_tab(void);
 extern void reset_bone_tab(int cbone);
 extern void reset_pose_tab(int cpose,int cbonemove);
 extern void reset_animate_tab(int canimate,int canimatepose);
-extern void reset_hit_box_tab(int chit_box);
 
 extern void switch_tab_mesh(void);
 extern void switch_tab_vertex(void);
 extern void switch_tab_bone(void);
 extern void switch_tab_pose(void);
 extern void switch_tab_animate(void);
-extern void switch_tab_hit_box(void);
 extern void switch_tab_control(void);
 
 extern void hilite_vertex_rows(void);

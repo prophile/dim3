@@ -257,12 +257,12 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			undo_clear();
 			return(noErr);
 
-		case kCommandAutoGenerateMap:
-			auto_generate_map();
-			return(noErr);
-			
 		case kCommandSave:
 			file_save_map();
+			return(noErr);
+			
+		case kCommandAutoGenerateMap:
+			auto_generate_map();
 			return(noErr);
 			
 			// edit menu

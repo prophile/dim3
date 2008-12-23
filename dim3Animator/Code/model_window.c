@@ -42,7 +42,7 @@ char							tool_tooltip_str[tool_count][64]={
 									"Always Show First Mesh","Show Model, Shadow, and Hit Boxes","Show Bump-Mapping","Show Normals",
 									"Rotate Bones Mode","Stretch Bones Mode","Play Current Animation"};
 
-int						draw_type,cur_mesh,cur_bone,cur_pose,cur_animate,cur_animate_pose,cur_bone_move,cur_hit_box,
+int						draw_type,cur_mesh,cur_bone,cur_pose,cur_animate,cur_animate_pose,cur_bone_move,
                         shift_x,shift_y,magnify_z,drag_bone_mode,gl_view_x_sz,gl_view_y_sz,
 						play_animate_tick[max_model_blend_animation],
 						play_animate_blend_idx[max_model_blend_animation],

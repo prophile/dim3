@@ -225,7 +225,7 @@ and can be sold or given away.
 
 #define ag_constant_corridor_size_percent			0.25f
 #define ag_constant_corridor_random_percent			0.4f
-#define ag_constant_corridor_high_percent			0.065f
+#define ag_constant_corridor_high_percent			0.07f
 
 #define ag_constant_door_percentage					0.5f
 #define ag_constant_door_width						(2*map_enlarge)

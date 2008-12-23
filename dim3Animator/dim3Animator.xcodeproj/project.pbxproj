@@ -83,7 +83,6 @@
 		F5D97E190857E233000BB6A3 /* dialog_file_new.c in Sources */ = {isa = PBXBuildFile; fileRef = F5D97E170857E233000BB6A3 /* dialog_file_new.c */; };
 		F5DB0C310856A832005A7CB7 /* dim3 Animator.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5A42DC40555EC87002DF965 /* dim3 Animator.app */; };
 		F5EA20E90CCB0B6D005A75F6 /* dialog_finish_import.c in Sources */ = {isa = PBXBuildFile; fileRef = F5EA20E80CCB0B6D005A75F6 /* dialog_finish_import.c */; };
-		F5ED87DA06D4368100C489C7 /* hit_box_tab.c in Sources */ = {isa = PBXBuildFile; fileRef = F5ED87D906D4368100C489C7 /* hit_box_tab.c */; };
 		F5F2FF1509AAC18600F88975 /* dialog_vertex_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = F5F2FF1409AAC18600F88975 /* dialog_vertex_setting.c */; };
 		F5F4956B067C169C00E809E7 /* libModelUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F49567067C169C00E809E7 /* libModelUtility.dylib */; };
 		F5FEF6580BB4EA4500198897 /* libModelUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F5F49567067C169C00E809E7 /* libModelUtility.dylib */; };
@@ -190,7 +189,6 @@
 		F5D97E160857E233000BB6A3 /* dialog_file_open.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_file_open.c; path = Code/dialog_file_open.c; sourceTree = "<group>"; };
 		F5D97E170857E233000BB6A3 /* dialog_file_new.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_file_new.c; path = Code/dialog_file_new.c; sourceTree = "<group>"; };
 		F5EA20E80CCB0B6D005A75F6 /* dialog_finish_import.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_finish_import.c; path = Code/dialog_finish_import.c; sourceTree = "<group>"; };
-		F5ED87D906D4368100C489C7 /* hit_box_tab.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = hit_box_tab.c; path = Code/hit_box_tab.c; sourceTree = "<group>"; };
 		F5F2FF1409AAC18600F88975 /* dialog_vertex_setting.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_vertex_setting.c; path = Code/dialog_vertex_setting.c; sourceTree = "<group>"; };
 		F5F49567067C169C00E809E7 /* libModelUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libModelUtility.dylib; path = ../dim3Common/Libraries/libModelUtility.dylib; sourceTree = SOURCE_ROOT; };
 		F5F8B3D10239B6DE010E3C3C /* lwo_import.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lwo_import.c; path = Code/lwo_import.c; sourceTree = "<group>"; };
@@ -380,7 +378,6 @@
 				F502976802E0BC0201701C02 /* bone_tab.c */,
 				F5C01E8401EABB0C01A091D9 /* pose_tab.c */,
 				F5C01E8301EABB0C01A091D9 /* animation_tab.c */,
-				F5ED87D906D4368100C489C7 /* hit_box_tab.c */,
 			);
 			name = "Setting Tabs";
 			sourceTree = "<group>";
@@ -523,7 +520,6 @@
 				F5A42DB00555EC87002DF965 /* lwo_import.c in Sources */,
 				F5A42DB10555EC87002DF965 /* bone_tab.c in Sources */,
 				F572771106D1A010002DAE5D /* vertex_tab.c in Sources */,
-				F5ED87DA06D4368100C489C7 /* hit_box_tab.c in Sources */,
 				F5B4082807104E7700600D33 /* click_window.c in Sources */,
 				F579A01E07DFDF8400DB4213 /* insert.c in Sources */,
 				F579A06207E120C900DB4213 /* mesh_tab.c in Sources */,

@@ -118,7 +118,7 @@ void draw_model_box(model_box_type *box,model_draw_setup *draw_setup,bool draw_f
     glEnd();
 }
 
-void draw_model_boxes(model_type *model,model_draw_setup *draw_setup,int sel_hit_box_idx)
+void draw_model_boxes(model_type *model,model_draw_setup *draw_setup)
 {
 	int				n;
 	
@@ -130,12 +130,7 @@ void draw_model_boxes(model_type *model,model_draw_setup *draw_setup,int sel_hit
 		// hit boxes
 		
 	for (n=0;n<model->nhit_box;n++) {
-		if (n==sel_hit_box_idx) {
-			glColor4f(1,0,0,0.5);
-		}
-		else {
-			glColor4f(1,1,0,0.5);
-		}
+		glColor4f(1,1,0,0.5);
 		draw_model_box(&model->hit_boxes[n].box,draw_setup,FALSE);
 	}
 	

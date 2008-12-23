@@ -35,7 +35,7 @@ and can be sold or given away.
 char							filename[256];
 
 extern int						draw_type,cur_mesh,cur_bone,cur_pose,cur_bone_move,
-								cur_animate,cur_animate_pose,cur_hit_box,
+								cur_animate,cur_animate_pose,
 								shift_x,shift_y,magnify_z,drag_bone_mode,
 								play_animate_blend_idx[max_model_blend_animation];
 extern float					ang_y,ang_x;
@@ -212,7 +212,6 @@ void reset_model_open(void)
 	reset_bone_tab(-1);
     reset_pose_tab(cur_pose,-1);
     reset_animate_tab(cur_animate,-1);
-	reset_hit_box_tab(-1);
 	
 	undo_clear();
 	
@@ -541,7 +540,6 @@ void redraw_model(void)
 	reset_bone_tab(cur_bone);
     reset_pose_tab(cur_pose,cur_pose);
     reset_animate_tab(cur_animate,cur_animate_pose);
-	reset_hit_box_tab(cur_hit_box);
 }
 
 /* =======================================================
@@ -658,6 +656,11 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
             redraw_model();
 			return(noErr);
 			
+		case kCommandHitBoxes:
+			dialog_hit_box_settings_run();
+            redraw_model();
+			return(noErr);
+		
 		case kCommandPrepareModel:
             prepare_model();
             redraw_model();
@@ -1191,37 +1194,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 				model_wind_play(TRUE,TRUE);
 			}
 			return(noErr);
-			
-			// --------------------------------
-			//
-			// hit box menu
-			//
-			// --------------------------------
-			
-		case kCommandNewHitBox:
-            switch_tab_hit_box();
-			idx=model_hit_box_add(&model);
-			if (idx!=-1) {
-				if (!dialog_hit_box_settings_run(&model.hit_boxes[idx])) {
-					model_hit_box_delete(&model,idx);
-					return(noErr);
-				}
-				cur_hit_box=idx;
-			}
-			reset_hit_box_tab(cur_hit_box);
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
-			return(noErr);
-			
-		case kCommandDeleteHitBox:
-			if (cur_hit_box==-1) return(noErr);
-            switch_tab_hit_box();
-			model_hit_box_delete(&model,cur_hit_box);
-			cur_hit_box=-1;
-			reset_hit_box_tab(cur_hit_box);
-			draw_model_wind_pose(&model,cur_mesh,cur_pose);
-			return(noErr);
-			
-			
+						
 	}
 	
 	return(eventNotHandledErr);

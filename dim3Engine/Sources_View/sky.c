@@ -457,7 +457,7 @@ void draw_sky_dome_hemisphere_half(int tick,float y_dir)
 void draw_sky_dome_hemisphere(int tick)
 {
 	draw_sky_dome_hemisphere_half(tick,-1.0f);
-	if (map.sky.dome_double) draw_sky_dome_hemisphere_half(tick,1.0f);
+	if (map.sky.dome_mirror) draw_sky_dome_hemisphere_half(tick,1.0f);
 }
 
 /* =======================================================

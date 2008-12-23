@@ -44,8 +44,8 @@ and can be sold or given away.
 #define kCommandNew							FOUR_CHAR_CODE('new ')
 #define kCommandOpen						FOUR_CHAR_CODE('open')
 #define kCommandClose						FOUR_CHAR_CODE('clse')
-#define kCommandAutoGenerateMap				FOUR_CHAR_CODE('atgn')
 #define kCommandSave						FOUR_CHAR_CODE('save')
+#define kCommandAutoGenerateMap				FOUR_CHAR_CODE('auto')
 
 #define kCommandUndo						FOUR_CHAR_CODE('undo')
 #define kCommandDuplicate					FOUR_CHAR_CODE('pdup')

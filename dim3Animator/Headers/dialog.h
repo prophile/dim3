@@ -99,7 +99,7 @@ extern bool dialog_animation_settings_run(int animate_idx,int pose_move_idx);
 extern bool dialog_ring_settings_run(model_ring_type *ring);
 extern bool dialog_particle_settings_run(model_particle_type *particle);
 extern bool dialog_animation_reset_time_run(int animate_idx);
-extern bool dialog_hit_box_settings_run(model_hit_box_type *hit_box);
+extern bool dialog_hit_box_settings_run(void);
 extern bool dialog_play_blend_animation_run(void);
 
 extern bool dialog_scale_run(model_type *mdl,float *x,float *z,float *y);
