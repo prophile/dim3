@@ -64,40 +64,6 @@ void redraw_bone_row(void)
     Draw1Control(bone_list);			// this shouldn't be necessary, but it seems to be
 }
 
-/* =======================================================
-
-      Parent/Child Utilities
-      
-======================================================= */
-
-bool bone_is_parent(int parent_idx)
-{
-	int				n;
-	
-	for (n=0;n!=model.nbone;n++) {
-		if (n==parent_idx) continue;
-		if (model.bones[n].parent_idx==parent_idx) return(TRUE);
-	}
-	
-	return(FALSE);
-}
-
-int create_db_bone_child_list(int parent_idx,DataBrowserItemID *boneID)
-{
-	int				n,cnt;
-	
-	cnt=0;
-	
-	for (n=0;n!=model.nbone;n++) {
-		if (n==parent_idx) continue;
-		if (model.bones[n].parent_idx==parent_idx) {
-			boneID[cnt]=n+1;
-			cnt++;
-		}
-	}
-	
-	return(cnt);
-}
 
 /* =======================================================
 
@@ -338,9 +304,9 @@ void start_bone_controls(WindowRef wind,Rect *box)
 	cbox.left=box->right-((box->right-box->left)/2);
 	cbox.right=box->right;
 	
-	yadd=(box->bottom-box->top)/5;
-	cbox.top=box->top+yadd;
-	cbox.bottom=cbox.top+(yadd*2);
+	yadd=(box->bottom-box->top)/3;
+	cbox.top=box->top;
+	cbox.bottom=cbox.top+yadd;
 
 	CreateDataBrowserControl(wind,&cbox,kDataBrowserListView,&bone_list);
     
@@ -385,8 +351,6 @@ void start_bone_controls(WindowRef wind,Rect *box)
 	add_db_column(bone_list,"Position",kBonePosDBColumn,kDataBrowserTextType,200,1);
 	
 	SetDataBrowserListViewDisclosureColumn(bone_list,kBoneTagDBColumn,FALSE);
-	
-	EmbedControl(bone_list,tab_list);
 }
 
 void end_bone_controls(void)

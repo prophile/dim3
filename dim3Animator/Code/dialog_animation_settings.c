@@ -28,7 +28,6 @@ and can be sold or given away.
 #include "window.h"
 #include "dialog.h"
 #include "model.h"
-#include "tab.h"
 
 extern bool				play_animate;
 
@@ -587,9 +586,9 @@ static pascal void ring_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemI
       
 ======================================================= */
 
-bool dialog_animation_settings_run(int animate_idx,int pose_move_idx)
+bool dialog_animation_settings_run(int animate_idx)
 {
-	int								i;
+	int								i,pose_move_idx;
 	ControlRef						ctrl;
 	ControlID						ctrl_id;
 	DataBrowserItemID				itemID;
@@ -610,12 +609,12 @@ bool dialog_animation_settings_run(int animate_idx,int pose_move_idx)
 	
 		// if there is no pose moves or new animation,
 		// then we need to add a default pose
-		
+	
+	pose_move_idx=0;
+			
 	if (model.animates[animate_idx].npose_move==0) {
 		pose_move_idx=model_animate_pose_insert(&model,animate_idx,-1,0);
 	}
-	
-	if (pose_move_idx==-1) pose_move_idx=0;
 	
 		// open the dialog
 		
@@ -776,7 +775,7 @@ bool dialog_animation_settings_run(int animate_idx,int pose_move_idx)
 		memmove(&model.animates[animate_idx],&animate_backup,sizeof(model_animate_type));
 	}
 		
-	reset_animate_tab(dialog_animate_idx,dialog_pose_move_idx);
+	reset_animate_list();
 	
 	return(!dialog_animation_settings_cancel);
 }

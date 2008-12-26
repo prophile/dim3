@@ -896,8 +896,6 @@ bool obscure_groups_start(void)
 		// put meshes into like groups
 		// to share obscure visibility lists
 		
-	bzero(mesh_hit,max_mesh_visibility_bytes);
-	
 	for (n=0;n!=map.mesh.nmesh;n++) {
 		if (!mesh_hit[n]) {
 			obscure_calculate_group_for_mesh(n,nobscure_group,mesh_hit);

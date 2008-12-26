@@ -27,7 +27,6 @@ and can be sold or given away.
 
 #include "model.h"
 #include "window.h"
-#include "tab.h"
 
 WindowRef						model_wind;
 EventHandlerRef					model_wind_event;
@@ -42,7 +41,7 @@ char							tool_tooltip_str[tool_count][64]={
 									"Always Show First Mesh","Show Model, Shadow, and Hit Boxes","Show Bump-Mapping","Show Normals",
 									"Rotate Bones Mode","Stretch Bones Mode","Play Current Animation"};
 
-int						draw_type,cur_mesh,cur_bone,cur_pose,cur_animate,cur_animate_pose,cur_bone_move,
+int						draw_type,cur_mesh,cur_bone,cur_pose,cur_animate,
                         shift_x,shift_y,magnify_z,drag_bone_mode,gl_view_x_sz,gl_view_y_sz,
 						play_animate_tick[max_model_blend_animation],
 						play_animate_blend_idx[max_model_blend_animation],
@@ -178,13 +177,6 @@ bool model_wind_control(ControlRef ctrl)
 {
 	int				i,idx;
 	
-		// tab hit?
-		
-	if (ctrl==tab_list) {
-		switch_tab_control();
-		return(TRUE);
-	}
-		
 	idx=-1;
 	for (i=0;i!=tool_count;i++) {
 		if (ctrl==tool_ctrl[i]) {
@@ -323,9 +315,15 @@ void model_wind_resize(void)
 	
 	if (gl_view_y_sz<model_view_min_size) gl_view_y_sz=model_view_min_size;
 
-		// resize tabs
+		// resize controls
+
+	box.left+=(gl_view_x_sz+mesh_palette_width);
+	box.bottom-=info_palette_height;
 		
-	tabs_resize();
+	resize_pose_controls(&box);
+	resize_bone_controls(&box);
+	resize_animate_controls(&box);
+	resize_vertex_controls(&box);
 	
 		// resize gl view
 		
@@ -741,10 +739,22 @@ void model_wind_open(void)
 		OffsetRect(&box,tool_button_size,0);
 		if ((n==4) || (n==8) || (n==10)) OffsetRect(&box,5,0);
 	}
-	
-		// tabs
 		
-	tabs_start();
+		// dragging for bones window
+		
+	SetAutomaticControlDragTrackingEnabledForWindow(model_wind,TRUE);
+	
+		// controls
+		
+	GetWindowPortBounds(model_wind,&box);
+
+	box.left+=(gl_view_x_sz+mesh_palette_width);
+	box.bottom-=info_palette_height;
+	
+	start_pose_controls(model_wind,&box);
+	start_bone_controls(model_wind,&box);
+    start_animate_controls(model_wind,&box);
+	start_vertex_controls(model_wind,&box);
 	
 		// start open gl
 		
@@ -795,7 +805,10 @@ void model_wind_close(void)
 	
 		// remove controls
 		
-	tabs_end();
+	end_pose_controls();
+	end_bone_controls();
+	end_vertex_controls();
+    end_animate_controls();
 		
 	for (n=0;n!=tool_count;n++) {
 		DisposeControl(tool_ctrl[n]);

@@ -27,48 +27,26 @@ and can be sold or given away.
 
 extern void add_db_column(ControlRef ctrl,char *name,int idx,int type,int sz,int spot);
 
-extern void start_mesh_controls(WindowRef wind,Rect *box);
-extern void end_mesh_controls(void);
-extern void resize_mesh_controls(Rect *box);
-extern void show_mesh_controls(void);
-extern void hide_mesh_controls(void);
-
-extern void start_vertex_controls(WindowRef wind,Rect *box);
-extern void end_vertex_controls(void);
-extern void resize_vertex_controls(Rect *box);
-extern void show_vertex_controls(void);
-extern void hide_vertex_controls(void);
+extern void start_pose_controls(WindowRef wind,Rect *box);
+extern void end_pose_controls(void);
+extern void resize_pose_controls(Rect *box);
 
 extern void start_bone_controls(WindowRef wind,Rect *box);
 extern void end_bone_controls(void);
 extern void resize_bone_controls(Rect *box);
-extern void show_bone_controls(void);
-extern void hide_bone_controls(void);
-
-extern void start_pose_controls(WindowRef wind,Rect *box);
-extern void end_pose_controls(void);
-extern void resize_pose_controls(Rect *box);
-extern void show_pose_controls(void);
-extern void hide_pose_controls(void);
 
 extern void start_animate_controls(WindowRef wind,Rect *bpx);
 extern void end_animate_controls(void);
 extern void resize_animate_controls(Rect *box);
-extern void show_animate_controls(void);
-extern void hide_animate_controls(void);
 
-extern void reset_mesh_tab(int cmesh);
+extern void start_vertex_controls(WindowRef wind,Rect *box);
+extern void end_vertex_controls(void);
+extern void resize_vertex_controls(Rect *box);
+
+extern void reset_pose_list(void);
+extern void reset_bone_list(void);
+extern void reset_animate_list(void);
 extern void reset_vertex_tab(void);
-extern void reset_bone_tab(int cbone);
-extern void reset_pose_tab(int cpose,int cbonemove);
-extern void reset_animate_tab(int canimate,int canimatepose);
-
-extern void switch_tab_mesh(void);
-extern void switch_tab_vertex(void);
-extern void switch_tab_bone(void);
-extern void switch_tab_pose(void);
-extern void switch_tab_animate(void);
-extern void switch_tab_control(void);
 
 extern void hilite_vertex_rows(void);
 

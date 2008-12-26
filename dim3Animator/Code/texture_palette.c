@@ -26,7 +26,6 @@ and can be sold or given away.
 *********************************************************************/
 
 #include "window.h"
-#include "tab.h"
 #include "dialog.h"
 #include "model.h"
 

@@ -42,6 +42,7 @@ extern WindowRef				model_wind;
 
 void switch_tab_mesh(void)
 {
+/*
     if (GetControl32BitValue(tab_list)==1) return;
     
     SetControl32BitValue(tab_list,1);
@@ -52,10 +53,12 @@ void switch_tab_mesh(void)
     hide_animate_controls();
 	
 	show_mesh_controls();
+	*/
 }
 
 void switch_tab_vertex(void)
 {
+/*
     if (GetControl32BitValue(tab_list)==2) return;
     
     SetControl32BitValue(tab_list,2);
@@ -66,10 +69,12 @@ void switch_tab_vertex(void)
     hide_animate_controls();
 	
 	show_vertex_controls();
+	*/
 }
 
 void switch_tab_bone(void)
 {
+/*
     if (GetControl32BitValue(tab_list)==3) return;
     
     SetControl32BitValue(tab_list,3);
@@ -80,10 +85,12 @@ void switch_tab_bone(void)
     hide_animate_controls();
 	
     show_bone_controls();
+	*/
 }
 
 void switch_tab_pose(void)
 {
+/*
     if (GetControl32BitValue(tab_list)==4) return;
     
     SetControl32BitValue(tab_list,4);
@@ -94,10 +101,12 @@ void switch_tab_pose(void)
     hide_animate_controls();
 	
     show_pose_controls();
+	*/
 }
 
 void switch_tab_animate(void)
 {
+/*
     if (GetControl32BitValue(tab_list)==5) return;
     
     SetControl32BitValue(tab_list,5);
@@ -108,10 +117,12 @@ void switch_tab_animate(void)
     hide_pose_controls();
 	
     show_animate_controls();
+	*/
 }
 
 void switch_tab_hit_box(void)
 {
+/*
     if (GetControl32BitValue(tab_list)==6) return;
     
     SetControl32BitValue(tab_list,6);
@@ -121,6 +132,7 @@ void switch_tab_hit_box(void)
 	hide_bone_controls();
     hide_pose_controls();
     hide_animate_controls();
+	*/
 }
 
 void switch_tab_control(void)
@@ -219,41 +231,17 @@ void tabs_start(void)
 //	tabbox.top+=6;
 	box.bottom-=info_palette_height;
 	
-		// mesh controls
-		
-	start_mesh_controls(model_wind,&box);
-	
-		// vertex controls
-		
-	start_vertex_controls(model_wind,&box);
-	hide_vertex_controls();
-	
-        // bone controls
-        
-	start_bone_controls(model_wind,&box);
-	hide_bone_controls();
-	
-        // pose controls
-        
 	start_pose_controls(model_wind,&box);
-	hide_pose_controls();
-    
-        // animation controls
-        
+	start_bone_controls(model_wind,&box);
     start_animate_controls(model_wind,&box);
-    hide_animate_controls();
-	
-		// make sure keyboard focus is on mesh tab
-		
-	show_mesh_controls();
+	start_vertex_controls(model_wind,&box);
 }
 
 void tabs_end(void)
 {
-	end_mesh_controls();
-	end_vertex_controls();
-	end_bone_controls();
 	end_pose_controls();
+	end_bone_controls();
+	end_vertex_controls();
     end_animate_controls();
 /*
     DisposeControl(tab_list);
@@ -288,11 +276,10 @@ void tabs_resize(void)
 
 	SetRect(&box,(tabbox.left+4),(tabbox.top+25),(tabbox.right-4),(tabbox.bottom-6));
 
-	resize_mesh_controls(&box);
-	resize_vertex_controls(&box);
-	resize_bone_controls(&box);
 	resize_pose_controls(&box);
+	resize_bone_controls(&box);
 	resize_animate_controls(&box);
+	resize_vertex_controls(&box);
 	*/
 }
 

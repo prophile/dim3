@@ -28,7 +28,6 @@ and can be sold or given away.
 #include "window.h"
 #include "dialog.h"
 #include "model.h"
-#include "tab.h"
 
 #define kAnimationRingName					FOUR_CHAR_CODE('rign')
 #define kAnimationRingBone					FOUR_CHAR_CODE('rbne')

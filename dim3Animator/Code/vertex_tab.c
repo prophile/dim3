@@ -25,15 +25,14 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "tab.h"
+#include "window.h"
 #include "dialog.h"
 
+bool							vertex_list_notify_ignore;
 ControlRef						vertex_list;
 
 DataBrowserItemDataUPP			vertex_list_setitem_upp;
 DataBrowserItemNotificationUPP	vertex_list_notify_upp;
-
-bool							vertex_sel_in_hilite;
 
 extern int						cur_mesh,cur_pose;
 extern bool						model_view_reset;
@@ -44,26 +43,16 @@ extern ControlRef				tab_list;
 
 /* =======================================================
 
-      Redraw a Row
+      Hiliting Vertexes
       
 ======================================================= */
-
-void redraw_vertex_row(int row)
-{
-    DataBrowserItemID		dbitem;
-    
-	dbitem=row+1;
-	UpdateDataBrowserItems(vertex_list,kDataBrowserNoItem,1,&dbitem,kDataBrowserItemNoProperty,kDataBrowserNoItem);
-    
-    Draw1Control(vertex_list);			// this shouldn't be necessary, but it seems to be
-}
 
 void hilite_vertex_rows(void)
 {
 	register int			n,nt,nitem;
 	DataBrowserItemID		*itemID,vertex_sel_itemIDs[max_model_vertex];
 	
-	vertex_sel_in_hilite=TRUE;
+	vertex_list_notify_ignore=TRUE;
 	
 	nt=model.meshes[cur_mesh].nvertex;
 	nitem=0;
@@ -80,7 +69,29 @@ void hilite_vertex_rows(void)
 	
 	SetDataBrowserSelectedItems(vertex_list,nitem,vertex_sel_itemIDs,kDataBrowserItemsAssign);
 	
-	vertex_sel_in_hilite=FALSE;
+	vertex_list_notify_ignore=FALSE;
+}
+
+/* =======================================================
+
+      Set Vertex List
+      
+======================================================= */
+
+void reset_vertex_tab(void)
+{
+	vertex_list_notify_ignore=TRUE;
+	
+		// setup vertexes
+		
+	RemoveDataBrowserItems(vertex_list,kDataBrowserNoItem,0,NULL,kDataBrowserItemNoProperty);
+	AddDataBrowserItems(vertex_list,kDataBrowserNoItem,model.meshes[cur_mesh].nvertex,NULL,kDataBrowserItemNoProperty);
+
+		// select current bone
+	
+	hilite_vertex_rows();
+	
+	vertex_list_notify_ignore=FALSE;
 }
 
 /* =======================================================
@@ -168,48 +179,29 @@ static pascal void vertex_list_notify_proc(ControlRef ctrl,DataBrowserItemID ite
 {
 	int				i;
 	
+	if (vertex_list_notify_ignore) return;
+	
 	switch (message) {
 	
 		case kDataBrowserItemDoubleClicked:
 			i=itemID-1;
 			if (dialog_vertex_settings_run(&model.meshes[cur_mesh].vertexes[i])) {
 				model_calculate_parents(&model);
-				redraw_vertex_row(i);
+				reset_vertex_tab();
 				model_view_reset=TRUE;
 			}
 			break;
 
 		case kDataBrowserItemSelected:
-			if (vertex_sel_in_hilite) break;
 			vertex_set_sel_mask(cur_mesh,(itemID-1),TRUE);
 			model_view_reset=TRUE;
 			break;
 			
 		case kDataBrowserItemDeselected:
-			if (vertex_sel_in_hilite) break;
 			vertex_set_sel_mask(cur_mesh,(itemID-1),FALSE);
 			model_view_reset=TRUE;
 			break;
 	}
-}
-
-/* =======================================================
-
-      Set Vertex List
-      
-======================================================= */
-
-void reset_vertex_tab(void)
-{
-	RemoveDataBrowserItems(vertex_list,kDataBrowserNoItem,0,NULL,kDataBrowserItemNoProperty);
-	
-		// add vertexes
-	
-	AddDataBrowserItems(vertex_list,kDataBrowserNoItem,model.meshes[cur_mesh].nvertex,NULL,kDataBrowserItemNoProperty);
-
-		// select current bone
-	
-	hilite_vertex_rows();	
 }
 
 /* =======================================================
@@ -220,24 +212,18 @@ void reset_vertex_tab(void)
 
 void start_vertex_controls(WindowRef wind,Rect *box)
 {
-	int								yadd;
     bool							framefocus;
 	Rect							cbox;
 	ControlFontStyleRec				fontstyle;
 	DataBrowserCallbacks			dbcall;
 	
-		// flag to not redraw unecessarly
-		
-	vertex_sel_in_hilite=FALSE;
-	
 		// vertex data browser
 		
-	cbox.left=box->left;
-	cbox.right=box->left+((box->right-box->left)/2);
+	cbox.left=box->left+220;
+	cbox.right=box->right;
 	
-	yadd=(box->bottom-box->top)/5;
-	cbox.top=box->top+yadd;
-	cbox.bottom=cbox.top+(yadd*2);
+	cbox.top=(box->bottom-box->top)/2;
+	cbox.bottom=box->bottom;
 
 	CreateDataBrowserControl(wind,&cbox,kDataBrowserListView,&vertex_list);
     
@@ -270,7 +256,7 @@ void start_vertex_controls(WindowRef wind,Rect *box)
 	add_db_column(vertex_list,"Vertexes",kVertexPosDBColumn,kDataBrowserTextType,150,0);
 	add_db_column(vertex_list,"Bones",kVertexBoneDBColumn,kDataBrowserTextType,300,1);
 	
-	EmbedControl(vertex_list,tab_list);
+	vertex_list_notify_ignore=FALSE;
 }
 
 void end_vertex_controls(void)
@@ -289,24 +275,15 @@ void end_vertex_controls(void)
 
 void resize_vertex_controls(Rect *box)
 {
-	SizeControl(vertex_list,(box->right-box->left),(box->bottom-box->top));
-}
+	Rect		cbox;
+	
+	cbox.left=box->left+220;
+	cbox.right=box->right;
+	
+	cbox.top=(box->bottom-box->top)/2;
+	cbox.bottom=box->bottom;
 
-/* =======================================================
-
-      Hide and Show Vertex Controls
-      
-======================================================= */
-
-void show_vertex_controls(void)
-{
-//    ShowControl(vertex_list);
-//	SetKeyboardFocus(model_wind,vertex_list,1);
-//	Draw1Control(vertex_list);
-}
-
-void hide_vertex_controls(void)
-{
-//    HideControl(vertex_list);
+	MoveControl(vertex_list,cbox.left,cbox.top);
+	SizeControl(vertex_list,(cbox.right-cbox.left),(cbox.bottom-cbox.top));
 }
 

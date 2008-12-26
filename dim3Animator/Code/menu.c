@@ -27,15 +27,13 @@ and can be sold or given away.
 
 #include "model.h"
 #include "window.h"
-#include "tab.h"
 #include "menu.h"
 #include "dialog.h"
 #include "import.h"
 
 char							filename[256];
 
-extern int						draw_type,cur_mesh,cur_bone,cur_pose,cur_bone_move,
-								cur_animate,cur_animate_pose,
+extern int						draw_type,cur_mesh,cur_bone,cur_pose,cur_animate,
 								shift_x,shift_y,magnify_z,drag_bone_mode,
 								play_animate_blend_idx[max_model_blend_animation];
 extern float					ang_y,ang_x;
@@ -196,6 +194,7 @@ void reset_model_open(void)
 	vertex_clear_hide_mask(cur_mesh);
 	
 	cur_mesh=0;
+	cur_bone=-1;
 	
 	cur_pose=-1;
 	if (model.npose!=0) cur_pose=0;
@@ -207,11 +206,10 @@ void reset_model_open(void)
     texture_palette_draw();
 	mesh_palette_draw();
     info_palette_draw();
-	reset_mesh_tab(0);
 	reset_vertex_tab();
-	reset_bone_tab(-1);
-    reset_pose_tab(cur_pose,-1);
-    reset_animate_tab(cur_animate,-1);
+    reset_pose_list();
+	reset_bone_list();
+    reset_animate_list();
 	
 	undo_clear();
 	
@@ -353,7 +351,8 @@ void import_mesh_obj(void)
     if (!found_normals) model_recalc_normals(&model,cur_mesh);
 	
 	reset_vertex_tab();
-	reset_bone_tab(cur_bone);
+	reset_pose_list();
+	reset_bone_list();
 	
     draw_model_wind_pose(&model,cur_mesh,cur_pose);
     texture_palette_draw();
@@ -390,7 +389,8 @@ void import_mesh_lightwave(void)
     model_recalc_normals(&model,cur_mesh);
 	
 	reset_vertex_tab();
-	reset_bone_tab(cur_bone);
+	reset_pose_list();
+	reset_bone_list();
 	
     draw_model_wind_pose(&model,cur_mesh,cur_pose);
     texture_palette_draw();
@@ -427,7 +427,8 @@ void import_mesh_c4d_xml(void)
     model_recalc_normals(&model,cur_mesh);
 	
 	reset_vertex_tab();
-	reset_bone_tab(cur_bone);
+	reset_pose_list();
+	reset_bone_list();
 	
     draw_model_wind_pose(&model,cur_mesh,cur_pose);
     texture_palette_draw();
@@ -464,9 +465,9 @@ void insert_mesh_dim3_model(void)
 	InitCursor();
 	
 	reset_vertex_tab();
-	reset_bone_tab(-1);
-	reset_pose_tab(-1,-1);
-	reset_animate_tab(-1,-1);
+	reset_pose_list();
+	reset_bone_list();
+	reset_animate_list();
     draw_model_wind_pose(&model,cur_mesh,cur_pose);
     texture_palette_draw();
 	mesh_palette_draw();
@@ -535,11 +536,10 @@ void redraw_model(void)
 {
     draw_model_wind_pose(&model,cur_mesh,cur_pose);
     info_palette_draw();
-	reset_mesh_tab(cur_mesh);
 	reset_vertex_tab();
-	reset_bone_tab(cur_bone);
-    reset_pose_tab(cur_pose,cur_pose);
-    reset_animate_tab(cur_animate,cur_animate_pose);
+	reset_pose_list();
+	reset_bone_list();
+    reset_animate_list();
 }
 
 /* =======================================================
@@ -774,31 +774,31 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			// --------------------------------
 			
 		case kCommandNewMesh:
-			switch_tab_mesh();
 			idx=model_mesh_add(&model);
-			if (idx!=-1) {
-				if (!dialog_mesh_info_run(&model.meshes[idx])) {
-					model_mesh_delete(&model,idx);
-					return(noErr);
-				}
-				cur_mesh=idx;
+			if (idx==-1) return(noErr);
+			
+			if (!dialog_mesh_info_run(&model.meshes[idx])) {
+				model_mesh_delete(&model,idx);
+				return(noErr);
 			}
-			reset_mesh_tab(cur_mesh);
+			
+			cur_mesh=idx;
+
 			mesh_palette_draw();
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
 			
 		case kCommandDuplicateMesh:
-			switch_tab_mesh();
 			idx=model_mesh_duplicate(&model,cur_mesh);
-			if (idx!=-1) {
-				if (!dialog_mesh_info_run(&model.meshes[idx])) {
-					model_mesh_delete(&model,idx);
-					return(noErr);
-				}
-				cur_mesh=idx;
+			if (idx==-1) return(noErr);
+			
+			if (!dialog_mesh_info_run(&model.meshes[idx])) {
+				model_mesh_delete(&model,idx);
+				return(noErr);
 			}
-			reset_mesh_tab(cur_mesh);
+			
+			cur_mesh=idx;
+
 			mesh_palette_draw();
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
@@ -815,10 +815,8 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			return(noErr);
 			
 		case kCommandDeleteMesh:
-			switch_tab_mesh();
 			model_mesh_delete(&model,cur_mesh);
 			cur_mesh=0;
-			reset_mesh_tab(cur_mesh);
 			mesh_palette_draw();
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
@@ -978,18 +976,21 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			// --------------------------------
 			
 		case kCommandNewBone:
-            switch_tab_bone();
-			vertex_find_center_sel_vertexes(cur_mesh,&x,&y,&z);
+ 			vertex_find_center_sel_vertexes(cur_mesh,&x,&y,&z);
+			
 			idx=model_bone_add(&model,x,y,z);
-			if (idx!=-1) {
-				if (!dialog_bone_settings_run(&model.bones[idx])) {
-					model_bone_delete(&model,idx);
-					return(noErr);
-				}
-				vertex_set_sel_vertex_to_bone(cur_mesh,idx,-1,1.0f);
-				cur_bone=idx;
+			if (idx==-1) return(noErr);
+			
+			if (!dialog_bone_settings_run(&model.bones[idx])) {
+				model_bone_delete(&model,idx);
+				return(noErr);
 			}
-			reset_bone_tab(cur_bone);
+			
+			vertex_set_sel_vertex_to_bone(cur_mesh,idx,-1,1.0f);
+			cur_bone=idx;
+
+			reset_pose_list();
+			reset_bone_list();
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
 			
@@ -1012,11 +1013,11 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 		case kCommandDeleteBone:
 			if (cur_bone==-1) return(noErr);
 			
-            switch_tab_bone();
-			model_bone_delete(&model,cur_bone);
+ 			model_bone_delete(&model,cur_bone);
 			cur_bone=-1;
 			reset_vertex_tab();
-			reset_bone_tab(cur_bone);
+			reset_pose_list();
+			reset_bone_list();
 			return(noErr);
 			
 		case kCommandSelectVertexNearBone:
@@ -1032,70 +1033,88 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			// --------------------------------
 			
 		case kCommandNewPose:
-            switch_tab_pose();
-			idx=model_pose_add(&model);
-			if (idx!=-1) {
-				if (!dialog_pose_settings_run(&model.poses[idx])) {
-					model_pose_delete(&model,idx);
-					return(noErr);
-				}
-				cur_pose=idx;
+ 			idx=model_pose_add(&model);
+			if (idx==-1) return(noErr);
+			
+			if (!dialog_pose_settings_run(&model.poses[idx])) {
+				model_pose_delete(&model,idx);
+				return(noErr);
 			}
-			reset_pose_tab(cur_pose,-1);
+			
+			cur_pose=idx;
+			cur_bone=-1;
+
+			reset_pose_list();
+			reset_bone_list();
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
 			
 		case kCommandDupPose:
 			if (cur_pose==-1) return(noErr);
-            switch_tab_pose();
+
 			idx=model_pose_duplicate(&model,cur_pose);
-			if (idx!=-1) {
-				if (!dialog_pose_settings_run(&model.poses[idx])) {
-					model_pose_delete(&model,idx);
-					return(noErr);
-				}
-				cur_pose=idx;
+			if (idx==-1) return(noErr);
+			
+			if (!dialog_pose_settings_run(&model.poses[idx])) {
+				model_pose_delete(&model,idx);
+				return(noErr);
 			}
-			reset_pose_tab(cur_pose,-1);
+			
+			cur_pose=idx;
+			cur_bone=-1;
+
+			reset_pose_list();
+			reset_bone_list();
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
 			
 		case kCommandPreviousPose:
-			switch_tab_pose();
 			if (cur_pose>0) cur_pose--;
-			reset_pose_tab(cur_pose,-1);
+			reset_pose_list();
+			reset_bone_list();
 			return(noErr);
 			
 		case kCommandNextPose:
-			switch_tab_pose();
 			if (cur_pose<(model.npose-1)) cur_pose++;
-			reset_pose_tab(cur_pose,-1);
+			reset_pose_list();
+			reset_bone_list();
 			return(noErr);
 			
 		case kCommandClearPose:
 			if (cur_pose==-1) return(noErr);
-			switch_tab_pose();
+
 			model_pose_clear(&model,cur_pose);
-			reset_pose_tab(cur_pose,-1);
+			reset_pose_list();
+			reset_bone_list();
 			return(noErr);
 			
         case kCommandDeletePose:
 			if (cur_pose==-1) return(noErr);
-            switch_tab_pose();
+
 			if (model_check_pose_in_animation(&model,cur_pose)) {
 				StandardAlert(kAlertCautionAlert,"\pCan't Delete Pose","\pThis pose is being used in an animation.",NULL,NULL);
 				return(noErr);
 			}
+			
             model_pose_delete(&model,cur_pose);
-			reset_pose_tab(cur_pose,-1);
+			
+			cur_pose=-1;
+			cur_bone=-1;
+			
+			reset_pose_list();
+			reset_bone_list();
             return(noErr);
 			
 		case kCommandGoToBoneMoveParent:
-            switch_tab_pose();
-			if ((cur_pose!=-1) && (cur_bone_move!=-1)) {
-				parent_idx=model.bones[cur_bone_move].parent_idx;
-				if (parent_idx!=-1) reset_pose_tab(cur_pose,parent_idx);
+			if ((cur_pose==-1) || (cur_bone==-1)) return(noErr);
+			
+			parent_idx=model.bones[cur_bone].parent_idx;
+			if (parent_idx!=-1) {
+				cur_bone=parent_idx;
+				reset_pose_list();
+				reset_bone_list();
 			}
+
 			return(noErr);
 			
 			// --------------------------------
@@ -1105,25 +1124,27 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			// --------------------------------
 			
 		case kCommandBlendSetSkipAll:
-			if (cur_pose!=-1) {
-				model_pose_blend_set_all(&model,cur_pose,TRUE);
-				reset_pose_tab(cur_pose,-1);
-			}
+			if (cur_pose==-1) return(noErr);
+			
+			model_pose_blend_set_all(&model,cur_pose,TRUE);
+			reset_pose_list();
+			reset_bone_list();
 			return(noErr);
 			
 		case kCommandBlendSetSkipNone:
-			if (cur_pose!=-1) {
-				model_pose_blend_set_all(&model,cur_pose,FALSE);
-				reset_pose_tab(cur_pose,-1);
-			}
+			if (cur_pose==-1) return(noErr);
+			
+			model_pose_blend_set_all(&model,cur_pose,FALSE);
+			reset_pose_list();
+			reset_bone_list();
 			return(noErr);
 			
 		case kCommandBlendFlipSkip:
-            switch_tab_pose();
-			if ((cur_pose!=-1) && (cur_bone_move!=-1)) {
-				model.poses[cur_pose].bone_moves[cur_bone_move].skip_blended=!model.poses[cur_pose].bone_moves[cur_bone_move].skip_blended;
-				reset_pose_tab(cur_pose,cur_bone_move);
-			}
+ 			if ((cur_pose==-1) || (cur_bone==-1)) return(noErr);
+			
+			model.poses[cur_pose].bone_moves[cur_bone].skip_blended=!model.poses[cur_pose].bone_moves[cur_bone].skip_blended;
+			reset_pose_list();
+			reset_bone_list();
 			return(noErr);
 						
 			// --------------------------------
@@ -1137,52 +1158,62 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 				StandardAlert(0,"\pCan't Create Animation","\pYou need to have at least one pose before creating an animation.",NULL,NULL);
 				return(noErr);
 			}
+			
 			model_wind_play(FALSE,FALSE);
-            switch_tab_animate();
+			
 			idx=model_animate_add(&model);
-			if (idx!=-1) {
-				cur_animate=idx;
-				if (!dialog_animation_settings_run(idx,-1)) {
-					cur_animate=-1;
-					model_animate_delete(&model,idx);
-				}
+			if (idx==-1) return(noErr);
+			
+			if (!dialog_animation_settings_run(idx)) {
+				model_animate_delete(&model,idx);
+				return(noErr);
 			}
-			reset_animate_tab(cur_animate,-1);
+			
+			cur_animate=idx;
+
+			reset_animate_list();
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
 			
 		case kCommandDupAnimate:
 			if (cur_animate==-1) return(noErr);
 			model_wind_play(FALSE,FALSE);
-            switch_tab_animate();
+ 
 			idx=model_animate_duplicate(&model,cur_animate);
-			if (idx!=-1) {
-				cur_animate=idx;
-				if (!dialog_animation_settings_run(idx,0)) {
-					cur_animate=-1;
-					model_animate_delete(&model,idx);
-				}
+			if (idx==-1) return(noErr);
+			
+			if (!dialog_animation_settings_run(idx)) {
+				model_animate_delete(&model,idx);
+				return(noErr);
 			}
-			reset_animate_tab(cur_animate,-1);
+
+			cur_animate=idx;
+
+			reset_animate_list();
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
             
 		case kCommandDeleteAnimate:
 			if (cur_animate==-1) return(noErr);
 			model_wind_play(FALSE,FALSE);
-            switch_tab_animate();
+
 			model_animate_delete(&model,cur_animate);
-			cur_animate=-1;
-			reset_animate_tab(cur_animate,-1);
+			if (model.nanimate==0) {
+				cur_animate=-1;
+			}
+			else {
+				cur_animate=0;
+			}
+			reset_animate_list();
 			draw_model_wind_pose(&model,cur_mesh,cur_pose);
 			return(noErr);
 			
 		case kCommandResetTimeAnimate:
 			if (cur_animate==-1) return(noErr);
 			model_wind_play(FALSE,FALSE);
-            switch_tab_animate();
+
 			dialog_animation_reset_time_run(cur_animate);
-			reset_animate_tab(cur_animate,-1);
+			reset_animate_list();
 			return(noErr);
 			
 		case kCommandPlayAnimate:

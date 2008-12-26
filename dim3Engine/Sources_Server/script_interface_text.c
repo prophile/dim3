@@ -45,8 +45,10 @@ JSBool js_interface_text_set_text_func(JSContext *cx,JSObject *j_obj,uintN argc,
 JSBool js_interface_text_set_size_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_text_set_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_text_set_team_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_interface_text_set_object_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_text_set_alpha_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_text_start_fade_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_interface_text_set_text_and_fade_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			interface_text_class={"interface_text_class",0,
 							script_add_property,JS_PropertyStub,
@@ -54,17 +56,19 @@ JSClass			interface_text_class={"interface_text_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 JSFunctionSpec	interface_text_functions[]={
-							{"show",				js_interface_text_show_func,			1},
-							{"hide",				js_interface_text_hide_func,			1},
-							{"hideAll",				js_interface_text_hide_all_func,		0},
-							{"move",				js_interface_text_move_func,			3},
-							{"moveRelative",		js_interface_text_move_relative_func,	3},
-							{"setText",				js_interface_text_set_text_func,		2},
-							{"setSize",				js_interface_text_set_size_func,		2},
-							{"setColor",			js_interface_text_set_color_func,		4},
-							{"setTeamColor",		js_interface_text_set_team_color_func,	2},
-							{"setAlpha",			js_interface_text_set_alpha_func,		2},
-							{"startFade",			js_interface_text_start_fade_func,		1},
+							{"show",						js_interface_text_show_func,				1},
+							{"hide",						js_interface_text_hide_func,				1},
+							{"hideAll",						js_interface_text_hide_all_func,			0},
+							{"move",						js_interface_text_move_func,				3},
+							{"moveRelative",				js_interface_text_move_relative_func,		3},
+							{"setText",						js_interface_text_set_text_func,			2},
+							{"setSize",						js_interface_text_set_size_func,			2},
+							{"setColor",					js_interface_text_set_color_func,			4},
+							{"setTeamColor",				js_interface_text_set_team_color_func,		2},
+							{"setObjectColor",				js_interface_text_set_object_color_func,	2},
+							{"setAlpha",					js_interface_text_set_alpha_func,			2},
+							{"startFade",					js_interface_text_start_fade_func,			1},
+							{"setTextAndFade",				js_interface_text_set_text_and_fade_func,	2},
 							{0}};
 
 /* =======================================================
@@ -201,6 +205,24 @@ JSBool js_interface_text_set_team_color_func(JSContext *cx,JSObject *j_obj,uintN
 	return(JS_TRUE);
 }
 
+JSBool js_interface_text_set_object_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	obj_type				*obj;
+	hud_text_type			*text;
+	
+	text=script_find_text_from_name(argv[0]);
+	if (text==NULL) return(JS_FALSE);
+
+	obj=script_find_obj_from_uid_arg(argv[1]);
+	if (obj==NULL) return(JS_TRUE);
+	
+	text->color.r=team_color_server_tint[obj->team_idx][0];
+	text->color.g=team_color_server_tint[obj->team_idx][1];
+	text->color.b=team_color_server_tint[obj->team_idx][2];
+	
+	return(JS_TRUE);
+}
+
 JSBool js_interface_text_set_alpha_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
 	hud_text_type			*text;
@@ -219,6 +241,24 @@ JSBool js_interface_text_start_fade_func(JSContext *cx,JSObject *j_obj,uintN arg
 	
 	text=script_find_text_from_name(argv[0]);
 	if (text==NULL) return(JS_FALSE);
+	
+	text->show=TRUE;
+	text->fade.on=TRUE;
+	text->fade.start_tick=js.time.current_tick;
+	
+	return(JS_TRUE);
+}
+
+JSBool js_interface_text_set_text_and_fade_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	char					data[max_hud_text_str_sz];
+	hud_text_type			*text;
+	
+	text=script_find_text_from_name(argv[0]);
+	if (text==NULL) return(JS_FALSE);
+
+	script_value_to_string(argv[1],data,max_hud_text_str_sz);
+	hud_text_set(text,data);
 	
 	text->show=TRUE;
 	text->fade.on=TRUE;

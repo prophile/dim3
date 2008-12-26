@@ -27,6 +27,8 @@ and can be sold or given away.
 
 #include "model.h"
 
+extern int					cur_pose;
+
 /* =======================================================
 
       Draw Mesh
@@ -265,46 +267,48 @@ void draw_model_bones(model_type *model,model_draw_setup *draw_setup,int sel_bon
 			glVertex3f(x,y,(z-10));
 			glEnd();
 		
-				// draw drag bones
+				// draw drag handles
 				
-			glDisable(GL_DEPTH_TEST);
-			
-			draw_model_bones_get_handle_rot(model,draw_setup,n,&rot);
+			if (cur_pose!=-1) {
+				glDisable(GL_DEPTH_TEST);
 				
-			vct.x=bone_drag_handle_offset;
-			vct.y=0;
-			vct.z=0;
-			ang.x=0;
-			ang.y=rot.y;
-			ang.z=rot.z;
-			col.r=1;
-			col.g=0;
-			col.b=0;
-			draw_model_bones_drag_handle(x,y,z,&vct,&ang,&col);
-			
-			vct.x=0;
-			vct.y=bone_drag_handle_offset;
-			vct.z=0;
-			ang.x=rot.x;
-			ang.y=0;
-			ang.z=rot.z;
-			col.r=0;
-			col.g=1;
-			col.b=0;
-			draw_model_bones_drag_handle(x,y,z,&vct,&ang,&col);
-			
-			vct.x=0;
-			vct.y=0;
-			vct.z=bone_drag_handle_offset;
-			ang.x=rot.x;
-			ang.y=rot.y;
-			ang.z=0;
-			col.r=0;
-			col.g=0;
-			col.b=1;
-			draw_model_bones_drag_handle(x,y,z,&vct,&ang,&col);
-			
-			glEnable(GL_DEPTH_TEST);
+				draw_model_bones_get_handle_rot(model,draw_setup,n,&rot);
+					
+				vct.x=bone_drag_handle_offset;
+				vct.y=0;
+				vct.z=0;
+				ang.x=0;
+				ang.y=rot.y;
+				ang.z=rot.z;
+				col.r=1;
+				col.g=0;
+				col.b=0;
+				draw_model_bones_drag_handle(x,y,z,&vct,&ang,&col);
+				
+				vct.x=0;
+				vct.y=bone_drag_handle_offset;
+				vct.z=0;
+				ang.x=rot.x;
+				ang.y=0;
+				ang.z=rot.z;
+				col.r=0;
+				col.g=1;
+				col.b=0;
+				draw_model_bones_drag_handle(x,y,z,&vct,&ang,&col);
+				
+				vct.x=0;
+				vct.y=0;
+				vct.z=bone_drag_handle_offset;
+				ang.x=rot.x;
+				ang.y=rot.y;
+				ang.z=0;
+				col.r=0;
+				col.g=0;
+				col.b=1;
+				draw_model_bones_drag_handle(x,y,z,&vct,&ang,&col);
+				
+				glEnable(GL_DEPTH_TEST);
+			}
 		}
 		else {
 		

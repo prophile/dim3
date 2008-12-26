@@ -2,7 +2,7 @@
 
 Module: dim3 Animator
 Author: Brian Barnes
- Usage: Pose Tab
+ Usage: Pose List
 
 ***************************** License ********************************
 
@@ -26,58 +26,49 @@ and can be sold or given away.
 *********************************************************************/
 
 #include "model.h"
-#include "tab.h"
 #include "dialog.h"
 
+bool							pose_list_notify_ignore;
 ControlRef						pose_list;
 
 DataBrowserItemDataUPP			pose_list_setitem_upp;
 DataBrowserItemNotificationUPP	pose_list_notify_upp;
 
-extern int						cur_mesh,cur_pose,cur_bone,cur_bone_move;
+extern int						cur_mesh,cur_pose,cur_bone;
 extern bool						model_view_reset;
 extern model_type				model;
 
 extern WindowRef				model_wind;
-extern ControlRef				tab_list;
 
 /* =======================================================
 
-      Redraw a Row
+      Set Pose List
       
 ======================================================= */
 
-void redraw_pose_row(void)
+void reset_pose_list(void)
 {
-    DataBrowserItemID		dbitem;
-    
-	if (cur_pose==-1) return;
-
-    if (cur_bone_move==-1) {
-        dbitem=cur_pose+2;
-        UpdateDataBrowserItems(pose_list,kDataBrowserNoItem,1,&dbitem,kDataBrowserItemNoProperty,kDataBrowserNoItem);
-    }
-    else {
-        dbitem=((cur_pose+2)*1000)+cur_bone_move;
-        UpdateDataBrowserItems(pose_list,(cur_pose+2),1,&dbitem,kDataBrowserItemNoProperty,kDataBrowserNoItem);
-    }
-    
-    Draw1Control(pose_list);			// this shouldn't be necessary, but it seems to be
-}
-
-/* =======================================================
-
-      Create Bone Children ID
-      
-======================================================= */
-
-void create_db_bone_list(DataBrowserItemID itemID,DataBrowserItemID *boneID)
-{
-    int				i;
-    
-	for ((i=0);(i!=model.nbone);i++) {
-		boneID[i]=(itemID*1000)+i;
+	DataBrowserItemID		itemID;
+	
+	pose_list_notify_ignore=TRUE;
+	
+		// setup pose list
+		
+	RemoveDataBrowserItems(pose_list,kDataBrowserNoItem,0,NULL,kDataBrowserItemNoProperty);
+	AddDataBrowserItems(pose_list,kDataBrowserNoItem,(model.npose+1),NULL,kDataBrowserItemNoProperty);
+			
+		// select current pose/bone move
+				
+	if (cur_pose==-1) {
+		itemID=1;
 	}
+	else {
+		itemID=cur_pose+2;
+	}
+	
+	SetDataBrowserSelectedItems(pose_list,1,&itemID,kDataBrowserItemsAssign);
+	
+	pose_list_notify_ignore=FALSE;
 }
 
 /* =======================================================
@@ -88,20 +79,13 @@ void create_db_bone_list(DataBrowserItemID itemID,DataBrowserItemID *boneID)
 
 static pascal OSStatus pose_list_item_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserPropertyID property,DataBrowserItemDataRef itemData,Boolean changeValue)
 {
-	int						k,i;
-	char					txt[256],s_mov_x[32],s_mov_y[32],s_mov_z[32],s_mov_acc[32];
-	model_bone_move_type	*bone_move;
 	CFStringRef				cfstr;
 	
-	if (changeValue) {
-		return(errDataBrowserPropertyNotSupported);
-	}
+	if (changeValue) return(errDataBrowserPropertyNotSupported);
 	
 	switch (property) {
 		
 		case kPoseNameDBColumn:
-			if (itemID>=1000) return(noErr);
-
 			if (itemID==1) {
 				cfstr=CFStringCreateWithCString(kCFAllocatorDefault,"Neutral",kCFStringEncodingMacRoman);
 			}
@@ -111,86 +95,7 @@ static pascal OSStatus pose_list_item_proc(ControlRef ctrl,DataBrowserItemID ite
 			SetDataBrowserItemDataText(itemData,cfstr);
 			CFRelease(cfstr);
 			return(noErr);
-			
-		case kPoseBoneDBColumn:
-			if (itemID<1000) return(noErr);
 
-			k=itemID/1000;
-			i=itemID-(k*1000);
-			k-=2;
-			memmove(txt,&model.bones[i].tag,4);
-			txt[4]=0x0;
-			if (model.bones[i].name[0]!=0x0) {
-				strcat(txt," (");
-				strcat(txt,model.bones[i].name);
-				strcat(txt,")");
-			}
-			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,txt,kCFStringEncodingMacRoman);
-			SetDataBrowserItemDataText(itemData,cfstr);
-			CFRelease(cfstr);
-			return(noErr);
-
-		case kPoseBoneMoveDBColumn:
-			if (itemID<1000) return(noErr);
-
-			k=itemID/1000;
-			i=itemID-(k*1000);
-			k=k-2;
-			
-			bone_move=&model.poses[k].bone_moves[i];
-			
-			string_convert_float(s_mov_x,bone_move->mov.x);
-			string_convert_float(s_mov_y,bone_move->mov.y);
-			string_convert_float(s_mov_z,bone_move->mov.z);
-			
-			sprintf(txt,"(%d,%d,%d) / (%s,%s,%s)",(int)bone_move->rot.x,(int)bone_move->rot.y,(int)bone_move->rot.z,s_mov_x,s_mov_y,s_mov_z);
-			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,txt,kCFStringEncodingMacRoman);
-			SetDataBrowserItemDataText(itemData,cfstr);
-			CFRelease(cfstr);
-			return(noErr);
-			
-		case kPoseBoneAccDBColumn:
-			if (itemID<1000) return(noErr);
-
-			k=itemID/1000;
-			i=itemID-(k*1000);
-			k=k-2;
-			
-			bone_move=&model.poses[k].bone_moves[i];
-			
-			string_convert_float(s_mov_acc,bone_move->acceleration);
-			
-			sprintf(txt,"%s",s_mov_acc);
-			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,txt,kCFStringEncodingMacRoman);
-			SetDataBrowserItemDataText(itemData,cfstr);
-			CFRelease(cfstr);
-			return(noErr);
-		
-		case kPoseBoneBlendDBColumn:
-			if (itemID<1000) return(noErr);
-
-			k=itemID/1000;
-			i=itemID-(k*1000);
-			k=k-2;
-			
-			bone_move=&model.poses[k].bone_moves[i];
-			
-			if (bone_move->skip_blended) {
-				strcpy(txt,"Y");
-			}
-			else {
-				strcpy(txt,"N");
-			}
-			
-			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,txt,kCFStringEncodingMacRoman);
-			SetDataBrowserItemDataText(itemData,cfstr);
-			CFRelease(cfstr);
-			return(noErr);
-			
-		case kDataBrowserItemIsContainerProperty:
-			SetDataBrowserItemDataBooleanValue(itemData,((itemID>1)&&(itemID<1000)));
-			return(noErr);
-			
 	}
 	
 	return(errDataBrowserPropertyNotSupported);
@@ -198,84 +103,38 @@ static pascal OSStatus pose_list_item_proc(ControlRef ctrl,DataBrowserItemID ite
   
 static pascal void pose_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserItemNotification message)
 {
-	int						k,i;
-	DataBrowserItemID		boneID[max_model_bone];
+	int						idx;
+	ItemCount				count;
+	
+	if (pose_list_notify_ignore) return;
 	
 	switch (message) {
 	
 		case kDataBrowserItemDoubleClicked:
-			if (itemID>=1000) {
-				k=itemID/1000;
-				i=itemID-(k*1000);
-				k=k-2;
-				dialog_bone_move_settings_run(&model.poses[k].bone_moves[i]);
-				redraw_pose_row();
-				model_view_reset=TRUE;
-				break;
-			}
-			k=itemID-2;
-			if (k>=0) {
-				dialog_pose_settings_run(&model.poses[k]);
-                redraw_pose_row();
+			idx=itemID-2;
+			if (idx>=0) {
+				dialog_pose_settings_run(&model.poses[idx]);
+                reset_pose_list();
 			}
 			break;
-	
+
 		case kDataBrowserItemSelected:
-			if (itemID>=1000) {
-				k=itemID/1000;
-				i=itemID-(k*1000);
-				k=k-2;
-				cur_pose=k;
-				cur_bone=cur_bone_move=i;
-			}
-			else {
-				cur_pose=itemID-2;
-				cur_bone=cur_bone_move=-1;
-			}
+			idx=itemID-2;
+			cur_pose=itemID-2;
+			reset_bone_list();
 			model_view_reset=TRUE;
 			break;
 			
-		case kDataBrowserContainerOpened:
-			create_db_bone_list(itemID,boneID);
-			AddDataBrowserItems(pose_list,itemID,model.nbone,boneID,kDataBrowserItemNoProperty);
+		case kDataBrowserSelectionSetChanged:
+			GetDataBrowserItemCount(ctrl,kDataBrowserNoItem,FALSE,kDataBrowserItemIsSelected,&count);
+			if (count==0) {
+				reset_pose_list();
+				reset_bone_list();
+				model_view_reset=TRUE;
+			}
 			break;
-	}
-}
 
-/* =======================================================
-
-      Set Pose List
-      
-======================================================= */
-
-void reset_pose_tab(int cpose,int cbonemove)
-{
-	DataBrowserItemID		itemID;
-	
-	RemoveDataBrowserItems(pose_list,kDataBrowserNoItem,0,NULL,kDataBrowserItemNoProperty);
-	
-		// add poses
-	
-	AddDataBrowserItems(pose_list,kDataBrowserNoItem,(model.npose+1),NULL,kDataBrowserItemNoProperty);
-			
-		// select current pose/bone move
-				
-	cur_pose=cpose;
-	cur_bone=cur_bone_move=cbonemove;
-	
-	if (cur_pose==-1) {
-		itemID=1;
 	}
-	else {
-		itemID=cur_pose+2;
-		OpenDataBrowserContainer(pose_list,itemID);
-		
-		if (cur_bone_move!=-1) {
-			itemID=(1000*itemID)+cur_bone_move;
-		}
-	}
-	
-	SetDataBrowserSelectedItems(pose_list,1,&itemID,kDataBrowserItemsAssign);
 }
 
 /* =======================================================
@@ -320,7 +179,6 @@ void add_db_column(ControlRef ctrl,char *name,int idx,int type,int sz,int spot)
 
 void start_pose_controls(WindowRef wind,Rect *box)
 {
-	int								yadd;
     bool							framefocus;
 	Rect							cbox;
 	ControlFontStyleRec				fontstyle;
@@ -329,11 +187,10 @@ void start_pose_controls(WindowRef wind,Rect *box)
 		// pose data browser
 		
 	cbox.left=box->left;
-	cbox.right=box->left+((box->right-box->left)/2);
+	cbox.right=box->left+220;
 	
-	yadd=(box->bottom-box->top)/5;
-	cbox.top=box->top+(yadd*3);
-	cbox.bottom=cbox.top+(yadd*2);
+	cbox.top=box->top;
+	cbox.bottom=(box->bottom-box->top)/2;
 
 	CreateDataBrowserControl(wind,&cbox,kDataBrowserListView,&pose_list);
     
@@ -364,15 +221,9 @@ void start_pose_controls(WindowRef wind,Rect *box)
 
 		// columns
 
-	add_db_column(pose_list,"Poses",kPoseNameDBColumn,kDataBrowserTextType,100,0);
-	add_db_column(pose_list,"Bone",kPoseBoneDBColumn,kDataBrowserTextType,200,1);
-	add_db_column(pose_list,"Rot & Move",kPoseBoneMoveDBColumn,kDataBrowserTextType,250,2);
-	add_db_column(pose_list,"Accel",kPoseBoneAccDBColumn,kDataBrowserTextType,60,3);
-	add_db_column(pose_list,"Skip Blend",kPoseBoneBlendDBColumn,kDataBrowserTextType,80,4);
-
-	SetDataBrowserListViewDisclosureColumn(pose_list,kPoseNameDBColumn,FALSE);
+	add_db_column(pose_list,"Poses",kPoseNameDBColumn,kDataBrowserTextType,200,0);
 	
-	EmbedControl(pose_list,tab_list);
+	pose_list_notify_ignore=FALSE;
 }
 
 void end_pose_controls(void)
@@ -391,24 +242,15 @@ void end_pose_controls(void)
 
 void resize_pose_controls(Rect *box)
 {
-	SizeControl(pose_list,(box->right-box->left),(box->bottom-box->top));
-}
+	Rect		cbox;
+	
+	cbox.left=box->left;
+	cbox.right=box->left+220;
+	
+	cbox.top=box->top;
+	cbox.bottom=(box->bottom-box->top)/2;
 
-/* =======================================================
-
-      Hide and Show Pose Controls
-      
-======================================================= */
-
-void show_pose_controls(void)
-{
-//    ShowControl(pose_list);
-//	SetKeyboardFocus(model_wind,pose_list,1);
-//	Draw1Control(pose_list);
-}
-
-void hide_pose_controls(void)
-{
-//    HideControl(pose_list);
+	MoveControl(pose_list,cbox.left,cbox.top);
+	SizeControl(pose_list,(cbox.right-cbox.left),(cbox.bottom-cbox.top));
 }
 

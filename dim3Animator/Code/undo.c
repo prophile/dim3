@@ -32,8 +32,6 @@ extern model_type				model;
 int								undo_type,undo_pose_idx,undo_bone_idx;
 model_bone_move_type			undo_bone_move;
 
-extern void redraw_pose_row(void);
-
 /* =======================================================
 
       Model Undo
@@ -61,7 +59,7 @@ void undo_run(void)
 	
 		case undo_type_bone_move:
 			memmove(&model.poses[undo_pose_idx].bone_moves[undo_bone_idx],&undo_bone_move,sizeof(model_bone_move_type));
-			redraw_pose_row();
+			reset_bone_list();
 			break;
 			
 	}

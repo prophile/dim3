@@ -28,7 +28,6 @@ and can be sold or given away.
 #include "window.h"
 #include "dialog.h"
 #include "model.h"
-#include "tab.h"
 
 #define kAnimationParticleName				FOUR_CHAR_CODE('prtn')
 #define kAnimationParticleBone				FOUR_CHAR_CODE('pbne')

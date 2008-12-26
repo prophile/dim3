@@ -59,6 +59,7 @@ JSBool js_map_object_get_health_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 JSBool js_map_object_is_hidden_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_is_contact_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_is_max_health_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_object_get_last_damage_object_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_move_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_shove_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_shove_direct_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -77,38 +78,39 @@ JSClass			map_object_class={"map_object_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 JSFunctionSpec	map_object_functions[]={
-							{"find",					js_map_object_find_func,					1},
-							{"findPlayer",				js_map_object_find_player_func,				0},
-							{"findAllPlayers",			js_map_object_find_all_players_func,		0},
-							{"nearest",					js_map_object_nearest_func,					9},
-							{"nearestPlayer",			js_map_object_nearest_player_func,			7},
-							{"nearestPlayerSkipSelf",	js_map_object_nearest_player_skip_self_func,7},
-							{"nearestRemotePlayer",		js_map_object_nearest_remote_player_func,	7},
-							{"nearestTeam",				js_map_object_nearest_team_func,			8},
-							{"getName",					js_map_object_get_name_func,				1},
-							{"getType",					js_map_object_get_type_func,				1},
-							{"getTeam",					js_map_object_get_team_func,				1},
-							{"getTeamName",				js_map_object_get_team_name_func,			1},
-							{"getDistance",				js_map_object_get_distance_func,			4},
-							{"getAngleTo",				js_map_object_get_angle_to_func,			4},
-							{"getPosition",				js_map_object_get_position_func,			1},
-							{"getAngle",				js_map_object_get_angle_func,				1},
-							{"getSize",					js_map_object_get_size_func,				1},
-							{"getHealth",				js_map_object_get_health_func,				1},
-							{"isHidden",				js_map_object_is_hidden_func,				1},
-							{"isContact",				js_map_object_is_contact_func,				1},
-							{"isMaxHealth",				js_map_object_is_max_health_func,			1},
-							{"moveTo",					js_map_object_move_to_func,					5},
-							{"shove",					js_map_object_shove_func,					5},
-							{"shoveDirect",				js_map_object_shove_direct_func,			4},
-							{"addGoal",					js_map_object_add_goal_func,				1},
-							{"setContact",				js_map_object_set_contact_func,				2},
-							{"setHidden",				js_map_object_set_hidden_func,				2},
-							{"setModelLight",			js_map_object_set_model_light_func,			3},
-							{"setModelHalo",			js_map_object_set_model_halo_func,			3},
-							{"setModelMesh",			js_map_object_set_model_mesh_func,			3},
-							{"spawn",					js_map_object_spawn_func,					10},
-							{"remove",					js_map_object_remove_func,					1},
+							{"find",					js_map_object_find_func,						1},
+							{"findPlayer",				js_map_object_find_player_func,					0},
+							{"findAllPlayers",			js_map_object_find_all_players_func,			0},
+							{"nearest",					js_map_object_nearest_func,						9},
+							{"nearestPlayer",			js_map_object_nearest_player_func,				7},
+							{"nearestPlayerSkipSelf",	js_map_object_nearest_player_skip_self_func,	7},
+							{"nearestRemotePlayer",		js_map_object_nearest_remote_player_func,		7},
+							{"nearestTeam",				js_map_object_nearest_team_func,				8},
+							{"getName",					js_map_object_get_name_func,					1},
+							{"getType",					js_map_object_get_type_func,					1},
+							{"getTeam",					js_map_object_get_team_func,					1},
+							{"getTeamName",				js_map_object_get_team_name_func,				1},
+							{"getDistance",				js_map_object_get_distance_func,				4},
+							{"getAngleTo",				js_map_object_get_angle_to_func,				4},
+							{"getPosition",				js_map_object_get_position_func,				1},
+							{"getAngle",				js_map_object_get_angle_func,					1},
+							{"getSize",					js_map_object_get_size_func,					1},
+							{"getHealth",				js_map_object_get_health_func,					1},
+							{"isHidden",				js_map_object_is_hidden_func,					1},
+							{"isContact",				js_map_object_is_contact_func,					1},
+							{"isMaxHealth",				js_map_object_is_max_health_func,				1},
+							{"getLastDamageObjectId",	js_map_object_get_last_damage_object_id_func,	1},
+							{"moveTo",					js_map_object_move_to_func,						5},
+							{"shove",					js_map_object_shove_func,						5},
+							{"shoveDirect",				js_map_object_shove_direct_func,				4},
+							{"addGoal",					js_map_object_add_goal_func,					1},
+							{"setContact",				js_map_object_set_contact_func,					2},
+							{"setHidden",				js_map_object_set_hidden_func,					2},
+							{"setModelLight",			js_map_object_set_model_light_func,				3},
+							{"setModelHalo",			js_map_object_set_model_halo_func,				3},
+							{"setModelMesh",			js_map_object_set_model_mesh_func,				3},
+							{"spawn",					js_map_object_spawn_func,						10},
+							{"remove",					js_map_object_remove_func,						1},
 							{0}};
 
 /* =======================================================
@@ -606,6 +608,17 @@ JSBool js_map_object_is_max_health_func(JSContext *cx,JSObject *j_obj,uintN argc
 	if (obj==NULL) return(JS_FALSE);
 		
 	*rval=BOOLEAN_TO_JSVAL(obj->status.health>=obj->status.max_health);
+	return(JS_TRUE);
+}
+
+JSBool js_map_object_get_last_damage_object_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	obj_type		*obj;
+
+	obj=script_find_obj_from_uid_arg(argv[0]);
+	if (obj==NULL) return(JS_FALSE);
+		
+	*rval=INT_TO_JSVAL(obj->damage_obj_uid);
 	return(JS_TRUE);
 }
 

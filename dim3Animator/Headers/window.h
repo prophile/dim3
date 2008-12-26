@@ -33,10 +33,6 @@ extern void model_wind_reset_tools(void);
 extern void model_wind_switch_mesh_mode(void);
 extern void model_wind_reset_modifiers(void);
 
-extern void tabs_start(void);
-extern void tabs_end(void);
-extern void tabs_resize(void);
-
 extern void click_model_wind(Point pt,unsigned long modifiers);
 
 extern void texture_palette_draw(void);
@@ -46,6 +42,31 @@ extern void mesh_palette_draw(void);
 extern void mesh_palette_click(Point pt,bool dblclick);
 
 extern void info_palette_draw(void);
+
+extern void add_db_column(ControlRef ctrl,char *name,int idx,int type,int sz,int spot);
+
+extern void start_pose_controls(WindowRef wind,Rect *box);
+extern void end_pose_controls(void);
+extern void resize_pose_controls(Rect *box);
+
+extern void start_bone_controls(WindowRef wind,Rect *box);
+extern void end_bone_controls(void);
+extern void resize_bone_controls(Rect *box);
+
+extern void start_animate_controls(WindowRef wind,Rect *bpx);
+extern void end_animate_controls(void);
+extern void resize_animate_controls(Rect *box);
+
+extern void start_vertex_controls(WindowRef wind,Rect *box);
+extern void end_vertex_controls(void);
+extern void resize_vertex_controls(Rect *box);
+
+extern void reset_pose_list(void);
+extern void reset_bone_list(void);
+extern void reset_animate_list(void);
+extern void reset_vertex_tab(void);
+
+extern void hilite_vertex_rows(void);
 
 extern void model_wind_play(bool play,bool blend);
 

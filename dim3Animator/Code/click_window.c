@@ -27,7 +27,6 @@ and can be sold or given away.
 
 #include "model.h"
 #include "window.h"
-#include "tab.h"
 #include "menu.h"
 
 extern int						cur_mesh,cur_pose,cur_bone,draw_type,shift_x,shift_y,magnify_z,drag_bone_mode,
@@ -43,7 +42,6 @@ extern model_draw_setup			draw_setup;
 extern void draw_model_bones_get_handle_rot(model_type *model,model_draw_setup *draw_setup,int bone_idx,d3ang *rot);
 extern float draw_model_bones_drag_handle_offset(model_type *model);
 extern void draw_model_bones_drag_handle_calc(float x,float y,float z,d3vct *vct,d3ang *ang,float *hx,float *hy,float *hz);
-extern void redraw_pose_row(void);
 
 /* =======================================================
 
@@ -51,10 +49,9 @@ extern void redraw_pose_row(void);
       
 ======================================================= */
 
-void model_sel_vertex(int lx,int ty,int rx,int by,bool chg_sel,double *mod_matrix,double *proj_matrix,double *vport)
+void model_sel_vertex(float *pv,int lx,int ty,int rx,int by,bool chg_sel,double *mod_matrix,double *proj_matrix,double *vport)
 {
 	int					i,x,y,nt;
-	float				*pv;
 	double				sx,sy,sz,dx,dy,dz;
 	model_vertex_type	*vertex;
 	model_mesh_type		*mesh;
@@ -65,8 +62,6 @@ void model_sel_vertex(int lx,int ty,int rx,int by,bool chg_sel,double *mod_matri
 		
 	nt=mesh->nvertex;
 	vertex=mesh->vertexes;
-	
-	pv=mesh->draw.gl_vertex_array;
 
 	for (i=0;i!=nt;i++) {
 		sx=(int)*pv++;
@@ -114,21 +109,34 @@ void select_model_wind_restore_sel_state(char *vertex_sel)
 
 void select_model_wind(Point start_pt,unsigned long modifiers)
 {
-	int						lx,rx,ty,by;
+	int						lx,rx,ty,by,sz;
 	double					mod_matrix[16],proj_matrix[16],vport[4];
 	char					org_vertex_sel[max_model_vertex];
 	bool					chg_sel;
+	float					*pv;
 	Point					pt,last_pt;
 	MouseTrackingResult		track;
 	
 	model_wind_play(FALSE,FALSE);
 	
-		// setup the draw pose
+		// get the draw vertexes
+		// need to save off array as drawing will reuse
+		// array and free it
+		
+	model_draw_array_initialize(&model);
 		
 	draw_model_setup_pose(&model,&draw_setup,cur_pose);
 	
 	model_create_draw_bones(&model,&draw_setup);
 	model_create_draw_vertexes(&model,cur_mesh,&draw_setup);
+	
+	sz=(model.meshes[cur_mesh].nvertex*3)*sizeof(float);
+	pv=(float*)malloc(sz);
+	if (pv==NULL) return;
+	
+	memmove(pv,model.meshes[cur_mesh].draw.gl_vertex_array,sz);
+		
+	model_draw_array_free(&model);
 	
 		// setup transforms
 		
@@ -189,7 +197,7 @@ void select_model_wind(Point start_pt,unsigned long modifiers)
 		}
 		
 		select_model_wind_restore_sel_state(org_vertex_sel);
-		model_sel_vertex(lx,ty,rx,by,chg_sel,mod_matrix,proj_matrix,vport);
+		model_sel_vertex(pv,lx,ty,rx,by,chg_sel,mod_matrix,proj_matrix,vport);
 		
 		SetRect(&drag_sel_box,lx,ty,rx,by);
 		draw_model_wind_pose(&model,cur_mesh,cur_pose);
@@ -198,6 +206,10 @@ void select_model_wind(Point start_pt,unsigned long modifiers)
 	
 	drag_sel_on=FALSE;
 	
+	free(pv);
+
+		// redraw the model
+		
 	draw_model_wind_pose(&model,cur_mesh,cur_pose);
 		
 		// reset the data browser
@@ -259,7 +271,7 @@ void change_model_wind(Point start_pt)
 
 /* =======================================================
 
-      Model Window  Bone Clicks
+      Model Window Bone Clicks
       
 ======================================================= */
 
@@ -312,7 +324,7 @@ bool drag_bone_model_wind(Point start_pt)
 		
 	drag_handle=drag_handle_none;
 	
-	if (cur_bone!=-1) {
+	if ((cur_pose==-1) || (cur_bone!=-1)) {
 	
 		draw_bone=&draw_setup.bones[cur_bone];
 		
@@ -381,23 +393,11 @@ bool drag_bone_model_wind(Point start_pt)
 		if (k==-1) return(FALSE);
 	
 			// select as current bone
-		
-		cur_bone=k;
-		reset_bone_tab(cur_bone);
-		
-			// switch to pose and redraw model
 			
-		switch_tab_pose();
-		reset_pose_tab(cur_pose,cur_bone);
+		cur_bone=k;
+		reset_bone_list();
 		draw_model_wind_pose(&model,cur_mesh,cur_pose);
 
-		return(TRUE);
-	}
-	
-		// if no pose, then no handle dragging
-		
-	if (cur_pose==-1) {
-		StandardAlert(0,"\pCan't Drag Bones","\pYou need to select a pose before you can drag any bones.",NULL,NULL);
 		return(TRUE);
 	}
 	
@@ -425,10 +425,7 @@ bool drag_bone_model_wind(Point start_pt)
 			
 	}
 
-		// switch to pose tab
-	
-	switch_tab_pose();
-	reset_pose_tab(cur_pose,cur_bone);
+	reset_bone_list();
 	
 		// drag bone
 
@@ -465,7 +462,8 @@ bool drag_bone_model_wind(Point start_pt)
 		draw_model_wind_pose(&model,cur_mesh,cur_pose);
 		model_bone_drag_on=FALSE;
 		
-		redraw_pose_row();
+		reset_bone_list();
+		redraw_bone_list();
 
 	} while (track!=kMouseTrackingMouseReleased);
 
@@ -496,7 +494,7 @@ void click_model_wind(Point pt,unsigned long modifiers)
 	if ((draw_type==dt_bones) || (draw_type==dt_model_bones) || (draw_type==dt_mesh_bones)) {
 		if (drag_bone_model_wind(pt)) return;
 	}
-	
+		
 	select_model_wind(pt,modifiers);
 }
 

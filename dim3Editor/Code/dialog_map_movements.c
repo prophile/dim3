@@ -268,7 +268,13 @@ static pascal OSStatus map_movements_list_item_proc(ControlRef ctrl,DataBrowserI
 			if (itemID>=1000) return(noErr);
 			movement_idx=itemID-1;
 			
-			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,map.groups[map.movements[movement_idx].group_idx].name,kCFStringEncodingMacRoman);
+			strcpy(str,map.groups[map.movements[movement_idx].group_idx].name);
+			if (map.movements[movement_idx].reverse_group_idx!=-1) {
+				strcat(str,"/");
+				strcat(str,map.groups[map.movements[movement_idx].reverse_group_idx].name);
+			}
+			
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
 			SetDataBrowserItemDataText(itemData,cfstr);
 			CFRelease(cfstr);
 			return(noErr);

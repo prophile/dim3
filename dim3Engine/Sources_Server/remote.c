@@ -513,6 +513,16 @@ void remote_death(int remote_uid,network_request_remote_death *death)
 				if (kill_obj!=NULL) obj->damage_obj_uid=kill_obj->uid;
 			}
 		}
+
+			// send death/suicide remote event
+
+		player_obj=object_find_uid(server.player_obj_uid);
+		if ((obj->damage_obj_uid==-1) || (obj->damage_obj_uid==obj->uid)) {
+			scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_suicide,obj->uid);
+		}
+		else {
+			scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_death,obj->uid);
+		}
 	}
 
 		// telefrag death
@@ -523,6 +533,11 @@ void remote_death(int remote_uid,network_request_remote_death *death)
 		if (telefrag_remote_uid==net_setup.client.remote_uid) {
 			telefrag_obj=object_find_uid(server.player_obj_uid);
 			object_telefrag(telefrag_obj,obj);
+			
+				// send telefrag remote event
+				
+			player_obj=object_find_uid(server.player_obj_uid);
+			scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_telefrag,telefrag_obj->uid);
 		}
 	}
 		
@@ -533,11 +548,6 @@ void remote_death(int remote_uid,network_request_remote_death *death)
 		// send alert to all objects with watches on
 
 	object_watch_death_alert(obj);
-
-		// send death event
-
-	player_obj=object_find_uid(server.player_obj_uid);
-	scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_death,obj->uid);
 }
 
 /* =======================================================

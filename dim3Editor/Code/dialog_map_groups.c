@@ -185,6 +185,13 @@ static pascal OSStatus map_groups_event_proc(EventHandlerCallRef handler,EventRe
 						// clear before deleting
 						
 					group_clear(dialog_map_groups_current_idx,TRUE);
+						
+						// fix group indexes in movements
+						
+					for (n=0;n!=map.nmovement;n++) {
+						if (map.movements[n].group_idx>dialog_map_groups_current_idx) map.movements[n].group_idx--;
+						if (map.movements[n].reverse_group_idx>dialog_map_groups_current_idx) map.movements[n].reverse_group_idx--;
+					}
 
 						// delete
 						

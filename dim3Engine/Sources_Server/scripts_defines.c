@@ -255,6 +255,8 @@ script_define_type			script_dim3_defines[]={
 								{sd_event_remote_leave,							"",		"DIM3_EVENT_REMOTE_LEAVE"},
 								{sd_event_remote_team,							"",		"DIM3_EVENT_REMOTE_TEAM"},
 								{sd_event_remote_death,							"",		"DIM3_EVENT_REMOTE_DEATH"},
+								{sd_event_remote_suicide,						"",		"DIM3_EVENT_REMOTE_SUICIDE"},
+								{sd_event_remote_telefrag,						"",		"DIM3_EVENT_REMOTE_TELEFRAG"},
 								
 								{-1,"",""}};
 

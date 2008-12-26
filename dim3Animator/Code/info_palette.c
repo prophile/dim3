@@ -67,7 +67,7 @@ void info_palette_draw(void)
 		// draw info
 		
 	x=wbox.left;
-	y=wbox.bottom-4;
+	y=wbox.bottom-3;
 
 	sprintf(txt,"X: %d",model.view_box.size.x);
 	MoveTo((x+5),y);
