@@ -320,7 +320,7 @@ void map_auto_generate_ramps(map_type *map)
 
 /* =======================================================
 
-      Corridor to Portal Steps
+      Steps
       
 ======================================================= */
 
@@ -541,6 +541,72 @@ void map_auto_generate_corridor_to_portal_steps(map_type *map)
 			}
 		}
 	}
+}
+
+/* =======================================================
+
+      Lifts
+      
+======================================================= */
+
+void map_auto_generate_lift(map_type *map,int rn,int ty,int by,int lx,int rx,int lz,int rz)
+{
+	int						group_idx,movement_idx,move_idx,high,
+							px[8],py[8],pz[8];
+	float					gx[8],gy[8];
+	char					name[256];
+	movement_type			*movement;
+	movement_move_type		*move;
+
+		// name
+
+	sprintf(name,"Lift_%d",rn);
+
+		// group
+
+	group_idx=map->ngroup;
+	map->ngroup++;
+		
+	strcpy(map->groups[group_idx].name,name);
+
+		// create new mesh for elevator
+
+	high=(by-ty)-ag_constant_step_high;
+	ty+=high;
+	by+=high;
+
+	if (!map_auto_generate_mesh_start(map,rn,group_idx,ag_settings.texture.steps,TRUE,TRUE)) return;
+
+	map_auto_generate_poly_from_square_wall(lx,lz,rx,lz,ty,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(lx,rz,rx,rz,ty,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(lx,lz,lx,rz,ty,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(rx,lz,rx,rz,ty,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_floor(lx,lz,rx,rz,ty,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+		// create the movement
+
+	movement_idx=map_movement_add(map);
+	movement=&map->movements[movement_idx];
+	
+	strcpy(movement->name,name);
+	movement->group_idx=group_idx;
+	movement->auto_open_stand=TRUE;
+		
+	move_idx=map_movement_move_add(map,movement_idx);
+
+	move=&movement->moves[move_idx];
+	move->mov.y=-high;
+	move->msec=ag_constant_lift_move_millisec;
+	strcpy(move->sound_name,ag_settings.door_sound);
 }
 
 /* =======================================================

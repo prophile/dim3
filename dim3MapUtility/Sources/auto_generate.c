@@ -45,6 +45,7 @@ extern bool map_auto_generate_portal_touching_any(int portal_idx);
 
 extern int map_auto_generate_get_ceiling_type(auto_generate_settings_type *ags);
 extern int map_auto_generate_get_corridor_type(auto_generate_settings_type *ags);
+extern int map_auto_generate_get_stair_type(auto_generate_settings_type *ags);
 
 extern bool map_auto_generate_block_collision(auto_generate_settings_type *ags,int x,int z,int ex,int ez);
 
@@ -62,6 +63,7 @@ extern bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y
 
 extern int map_auto_generate_steps_get_length(int ty,int by,int step_size);
 extern void map_auto_generate_steps(map_type *map,int rn,int ty,int by,int stair_mode,int step_sz,bool back_wall,bool side_blocks,int lx,int rx,int lz,int rz);
+extern void map_auto_generate_lift(map_type *map,int rn,int ty,int by,int lx,int rx,int lz,int rz);
 
 extern void map_auto_generate_lights(map_type *map);
 extern void map_auto_generate_spots(map_type *map);
@@ -1543,7 +1545,7 @@ int map_auto_generate_second_story_steps_get_z(int portal_idx,int x,int ex,bool 
 void map_auto_generate_second_story(map_type *map)
 {
 	int							n,portal_high,extra_ty,split_factor,step_wid,step_len,sz,
-								x,y,z,by,mx,mz,xsz,zsz;
+								x,y,z,by,mx,mz,xsz,zsz,stair_type;
 	bool						lft,rgt,top,bot,horz,vert,
 								old_lft,old_rgt,old_top,old_bot;
 	unsigned char				*poly_map;
@@ -1636,30 +1638,67 @@ void map_auto_generate_second_story(map_type *map)
 		by=portal->max.y;
 		
 		step_len=map_auto_generate_steps_get_length(y,by,ag_constant_step_story_size);
+		stair_type=map_auto_generate_get_stair_type(&ag_settings);
 
 		if ((lft) && (!old_lft)) {
 			x=split_factor*2;
 			z=map_auto_generate_second_story_steps_get_z(n,x,(x+step_len),top,zsz,step_wid);
-			map_auto_generate_steps(map,n,y,by,ag_stair_pos_x,ag_constant_step_story_size,TRUE,FALSE,x,x,z,(z+step_wid));
+			
+			switch (stair_type) {
+				case ag_stair_type_stair:
+					map_auto_generate_steps(map,n,y,by,ag_stair_pos_x,ag_constant_step_story_size,TRUE,FALSE,x,x,z,(z+step_wid));
+					break;
+				case ag_stair_type_lift:
+					map_auto_generate_lift(map,n,y,by,x,(x+step_wid),z,(z+step_wid));
+					break;
+			}
+
 		}
 		else {
 			if ((rgt) && (!old_rgt)) {
 				x=xsz-(split_factor*2);
 				z=map_auto_generate_second_story_steps_get_z(n,(x-step_len),x,top,zsz,step_wid);
-				map_auto_generate_steps(map,n,y,by,ag_stair_neg_x,ag_constant_step_story_size,TRUE,FALSE,x,x,z,(z+step_wid));
+
+				switch (stair_type) {
+					case ag_stair_type_stair:
+						map_auto_generate_steps(map,n,y,by,ag_stair_neg_x,ag_constant_step_story_size,TRUE,FALSE,x,x,z,(z+step_wid));
+						break;
+					case ag_stair_type_lift:
+						map_auto_generate_lift(map,n,y,by,(x-step_wid),x,z,(z+step_wid));
+						break;
+				}
+
 			}
 		}
 
 		if ((top) && (!old_top)) {
 			z=split_factor*2;
 			x=map_auto_generate_second_story_steps_get_x(n,z,(z+step_len),lft,xsz,step_wid);
-			map_auto_generate_steps(map,n,y,by,ag_stair_pos_z,ag_constant_step_story_size,TRUE,FALSE,x,(x+step_wid),z,z);
+
+			switch (stair_type) {
+				case ag_stair_type_stair:
+					map_auto_generate_steps(map,n,y,by,ag_stair_pos_z,ag_constant_step_story_size,TRUE,FALSE,x,(x+step_wid),z,z);
+					break;
+				case ag_stair_type_lift:
+					map_auto_generate_lift(map,n,y,by,x,(x+step_wid),z,(z+step_wid));
+					break;
+			}
+
 		}
 		else {
 			if ((bot) && (!old_bot)) {
 				z=zsz-(split_factor*2);
 				x=map_auto_generate_second_story_steps_get_x(n,(z-step_len),z,lft,xsz,step_wid);
-				map_auto_generate_steps(map,n,y,by,ag_stair_neg_z,ag_constant_step_story_size,TRUE,FALSE,x,(x+step_wid),z,z);
+
+				switch (stair_type) {
+					case ag_stair_type_stair:
+						map_auto_generate_steps(map,n,y,by,ag_stair_neg_z,ag_constant_step_story_size,TRUE,FALSE,x,(x+step_wid),z,z);
+						break;
+					case ag_stair_type_lift:
+						map_auto_generate_lift(map,n,y,by,x,(x+step_wid),(z-step_wid),z);
+						break;
+				}
+
 			}
 		}
 	}
@@ -1804,6 +1843,10 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 	
 	for (n=0;n!=ag_corridor_type_count;n++) {
 		ags.corridor_type_on[n]=TRUE;
+	}
+
+	for (n=0;n!=ag_stair_type_count;n++) {
+		ags.stair_type_on[n]=TRUE;
 	}
 
 	for (n=0;n!=ag_door_type_count;n++) {

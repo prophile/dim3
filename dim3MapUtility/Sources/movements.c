@@ -71,6 +71,7 @@ int map_movement_add(map_type *map)
 	movement->reverse_group_idx=-1;
 	movement->auto_start=FALSE;
 	movement->auto_open=FALSE;
+	movement->auto_open_stand=FALSE;
 	movement->auto_open_never_close=FALSE;
 	movement->auto_open_distance=20000;
 	movement->loop=FALSE;

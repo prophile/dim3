@@ -108,6 +108,15 @@ and can be sold or given away.
 													}
 
 //
+// auto-generate stair types
+//
+
+#define ag_stair_type_count							2
+
+#define ag_stair_type_stair							0
+#define ag_stair_type_lift							1
+
+//
 // auto-generate doors
 //
 
@@ -233,6 +242,8 @@ and can be sold or given away.
 #define ag_constant_door_width						(2*map_enlarge)
 #define ag_constant_door_open_millisec				500
 
+#define ag_constant_lift_move_millisec				1000
+
 #define ag_constant_light_animate_percentage		0.1f
 
 #define ag_constant_step_high						(3*map_enlarge)
@@ -263,6 +274,7 @@ typedef struct	{
 					char									door_sound[name_str_len];
 					unsigned char							ceiling_type_on[ag_ceiling_type_count],
 															corridor_type_on[ag_corridor_type_count],
+															stair_type_on[ag_stair_type_count],
 															door_type_on[ag_door_type_count],
 															light_type_on[ag_light_type_count];
 					auto_generate_setting_map_type			map;

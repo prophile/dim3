@@ -330,6 +330,11 @@ int map_auto_generate_get_corridor_type(auto_generate_settings_type *ags)
 	return(map_auto_generate_get_generic_type(ag_corridor_type_count,ags->corridor_type_on));
 }
 
+int map_auto_generate_get_stair_type(auto_generate_settings_type *ags)
+{
+	return(map_auto_generate_get_generic_type(ag_stair_type_count,ags->stair_type_on));
+}
+
 int map_auto_generate_get_door_type(auto_generate_settings_type *ags)
 {
 	return(map_auto_generate_get_generic_type(ag_door_type_count,ags->door_type_on));
