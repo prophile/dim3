@@ -150,7 +150,7 @@ JSBool js_obj_weapon_set_select_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
 	if (weap==NULL) return(JS_FALSE);
 	
-    weapon_set(obj,weap);
+	weapon_set(obj,weap);
 
 	return(JS_TRUE);
 }

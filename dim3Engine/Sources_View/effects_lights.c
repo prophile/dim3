@@ -74,12 +74,12 @@ void effect_add_single_light(int tick,effect_type *effect)
 
 void effect_add_lights(int tick)
 {
-	int					i;
+	int					n;
 	effect_type			*effect;
 	
 	effect=server.effects;
 		
-	for ((i=0);(i!=server.count.effect);i++) {
+	for (n=0;n!=server.count.effect;n++) {
 		effect_add_single_light(tick,effect);		
 		effect++;
 	}

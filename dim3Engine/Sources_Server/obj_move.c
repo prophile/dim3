@@ -1374,10 +1374,9 @@ void object_thrust(obj_type *obj)
 	float			xmove,ymove,zmove,ztemp;
 	
 	if (obj->input_mode!=im_thrust) return;
-	if (!obj->forward_move.moving) return;
 	
 		// contacts cancel thrust
-		
+
 	if ((obj->contact.hit_poly.mesh_idx!=-1) || (obj->contact.obj_uid!=-1)) {
 		obj->thrust.vct.x=0;
 		obj->thrust.vct.y=0;
@@ -1385,6 +1384,8 @@ void object_thrust(obj_type *obj)
 	}
 	
 		// run thrust
+		
+	if (!obj->forward_move.moving) return;
 	
     angle_get_movement_float(obj->ang.y,obj->thrust.speed,&xmove,&zmove);
 	angle_get_movement_float(obj->view_ang.x,obj->thrust.speed,&ymove,&ztemp);

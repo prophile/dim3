@@ -35,6 +35,7 @@ and can be sold or given away.
 extern map_type				map;
 extern server_type			server;
 extern setup_type			setup;
+extern camera_type			camera;
 
 /* =======================================================
 
@@ -189,28 +190,30 @@ void object_player_turn(obj_type *obj)
     if (turn_add==0) return;
 	
 		// zoom factors
-		
-	weap=weapon_find_current(obj);
-	if (weap!=NULL) {
-		if ((weap->zoom.on) && (weap->zoom.active)) {
-			if (obj->duck.mode!=dm_duck) {
-				turn_add*=weap->zoom.turn_factor;
-			}
-			else {
-				turn_add*=weap->zoom.crawl_turn_factor;
+
+	if (camera.mode==cv_fpp) {
+		weap=weapon_find_current(obj);
+		if (weap!=NULL) {
+			if ((weap->zoom.on) && (weap->zoom.active)) {
+				if (obj->duck.mode!=dm_duck) {
+					turn_add*=weap->zoom.turn_factor;
+				}
+				else {
+					turn_add*=weap->zoom.crawl_turn_factor;
+				}
 			}
 		}
 	}
 	
 		// restriction
-		
+
 	if (obj->turn.restrict_player_turning) {
 		turn_restrict=object_get_turn_speed(obj);
 		
 		if (turn_add<-turn_restrict) turn_add=-turn_restrict;
 		if (turn_add>turn_restrict) turn_add=turn_restrict;
 	}
-	
+
 		// turning
 		
     obj->ang.y=angle_add(obj->ang.y,turn_add);

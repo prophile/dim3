@@ -42,6 +42,7 @@ and can be sold or given away.
 #define kMapGenerateCeilingType						FOUR_CHAR_CODE('clgt')
 #define kMapGenerateCorridorType					FOUR_CHAR_CODE('cort')
 #define kMapGenerateDoorType						FOUR_CHAR_CODE('dort')
+#define kMapGenerateStairType						FOUR_CHAR_CODE('star')
 #define kMapGenerateLightType						FOUR_CHAR_CODE('litt')
 
 #define kMapGenerateStepSize						FOUR_CHAR_CODE('stsz')
@@ -161,6 +162,10 @@ bool dialog_map_auto_generate_setting_run(bool first)
 			dialog_set_boolean(dialog_map_generate_wind,kMapGenerateDoorType,n,ag_settings.door_type_on[n]);
 		}
 		
+		for (n=0;n!=ag_stair_type_count;n++) {
+			dialog_set_boolean(dialog_map_generate_wind,kMapGenerateStairType,n,ag_settings.stair_type_on[n]);
+		}
+		
 		for (n=0;n!=ag_light_type_count;n++) {
 			dialog_set_boolean(dialog_map_generate_wind,kMapGenerateLightType,n,ag_settings.light_type_on[n]);
 		}
@@ -228,6 +233,10 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	
 	for (n=0;n!=ag_door_type_count;n++) {
 		ag_settings.door_type_on[n]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateDoorType,n);
+	}
+	
+	for (n=0;n!=ag_stair_type_count;n++) {
+		ag_settings.stair_type_on[n]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateStairType,n);
 	}
 	
 	for (n=0;n!=ag_light_type_count;n++) {

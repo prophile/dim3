@@ -75,6 +75,26 @@
 			sepNavWindowFrame = "{{285, 182}, {1041, 747}}";
 		};
 	};
+	2689CA1A0F059455002FA558 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DA8623059148C40043E685 /* nodes.c */;
+		name = "nodes.c: 94";
+		rLen = 26;
+		rLoc = 2093;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	2689CA410F059C97002FA558 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F5DA8623059148C40043E685 /* nodes.c */;
+		name = "nodes.c: 94";
+		rLen = 26;
+		rLoc = 2093;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
 	26B84E630EE1EC7300B413B1 /* prepare.c:296 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
@@ -98,26 +118,6 @@
 			sepNavVisRange = "{1655, 1520}";
 			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
 		};
-	};
-	26CC05260F01A84600807FEA /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5DA8623059148C40043E685 /* nodes.c */;
-		name = "nodes.c: 94";
-		rLen = 26;
-		rLoc = 2093;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
-	26CC066B0F02174E00807FEA /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = F5DA8623059148C40043E685 /* nodes.c */;
-		name = "nodes.c: 94";
-		rLen = 26;
-		rLoc = 2093;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
 	};
 	26E372E50DA5AB75009653F2 /* file_map_read_v2.c */ = {
 		uiCtxt = {
@@ -270,12 +270,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 251795242;
-			PBXWorkspaceStateSaveDate = 251795242;
+			PBXPerProjectTemplateStateSaveDate = 252025734;
+			PBXWorkspaceStateSaveDate = 252025734;
 		};
 		perUserProjectItems = {
-			26CC05260F01A84600807FEA /* PBXTextBookmark */ = 26CC05260F01A84600807FEA /* PBXTextBookmark */;
-			26CC066B0F02174E00807FEA /* PBXTextBookmark */ = 26CC066B0F02174E00807FEA /* PBXTextBookmark */;
+			2689CA1A0F059455002FA558 /* PBXTextBookmark */ = 2689CA1A0F059455002FA558 /* PBXTextBookmark */;
+			2689CA410F059C97002FA558 /* PBXTextBookmark */ = 2689CA410F059C97002FA558 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -323,10 +323,10 @@
 	};
 	F5CE96C20D23586E00512EE1 /* auto_generate.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 24528}}";
-			sepNavSelRange = "{49320, 0}";
-			sepNavVisRange = "{48614, 1247}";
-			sepNavWindowFrame = "{{100, 117}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 26208}}";
+			sepNavSelRange = "{47433, 1}";
+			sepNavVisRange = "{46653, 1383}";
+			sepNavWindowFrame = "{{364, 217}, {1041, 747}}";
 		};
 	};
 	F5DA8623059148C40043E685 /* nodes.c */ = {

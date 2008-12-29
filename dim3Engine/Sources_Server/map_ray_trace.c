@@ -639,6 +639,7 @@ void ray_push_to_end(d3pnt *pt,d3pnt *ept,int dist)
 	z=ept->z-pt->z;
 
 	td=abs(x)+abs(y)+abs(z);
+	if (td==0) return;
 
 	pt->x+=(x*dist)/td;
 	pt->y+=(y*dist)/td;

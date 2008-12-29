@@ -279,7 +279,7 @@ void view_setup_objects(int tick)
 			// setup held weapon model
 
 		if (obj->held_weapon.current_uid!=-1) {
-		
+
 			weap=weapon_find_uid(obj->held_weapon.current_uid);
 			if (weap!=NULL) {
 				draw=&weap->draw;
@@ -440,7 +440,7 @@ void view_calculate_scope(obj_type *obj,obj_type *camera_obj)
 {
 	float			f_step,f_max_step;
 	weapon_type		*weap;
-
+	
 		// is object the camera object?
 
 	if (camera_obj->uid!=obj->uid) return;
@@ -591,8 +591,10 @@ void view_draw_setup(int tick)
 	
 		// camera adjustments
 	
-	view_calculate_scope(obj,camera_obj);
-	view_calculate_recoil(obj);
+	if (camera.mode==cv_fpp) {
+		view_calculate_scope(obj,camera_obj);
+		view_calculate_recoil(obj);
+	}
 	view_calculate_shakes(tick,obj);
 	view_calculate_sways(tick,obj);
 	
