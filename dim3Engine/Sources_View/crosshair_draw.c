@@ -272,104 +272,6 @@ void crosshair_setup(int tick,obj_type *obj,weapon_type *weap)
 
 /* =======================================================
 
-      Crosshair Debug Drawing
-      
-======================================================= */
-
-void crosshair_draw_debug(obj_type *obj,weapon_type *weap)
-{
-	int				sx,sy,sz,ex,ey,ez,bx,by,bz,obj_uid,pose_idx,bone_idx;
-	model_type		*mdl;
-
-		// setup 3D drawing
-
-	gl_setup_viewport(console_y_offset());
-	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.ang);
-	gl_setup_project();
-
-		// get fire and barrel positions
-
-	mdl=model_find_uid(weap->draw.uid);
-	if (mdl==NULL) return;
-
-	bone_idx=model_find_bone(mdl,weap->proj.fire_bone_tag);
-	if (bone_idx==-1) return;
-
-	pose_idx=model_find_pose(mdl,weap->proj.fire_pose_name);
-	if (pose_idx==-1) return;
-
-	model_draw_setup_weapon(server.time.run_tick,obj,weap,TRUE,FALSE);
-	model_calc_draw_bone_position(mdl,&weap->draw.setup,pose_idx,bone_idx,&sx,&sy,&sz);
-
-	sx+=weap->draw.pnt.x;
-	sy+=weap->draw.pnt.y;
-	sz+=weap->draw.pnt.z;
-	
-	if (weap->draw.no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&sx,&sy,&sz);
-
-	sx-=view.camera.pnt.x;
-	sy-=view.camera.pnt.y;
-	sz-=view.camera.pnt.z;
-
-	bone_idx=model_find_bone(mdl,weap->proj.barrel_bone_tag);
-	if (bone_idx==-1) return;
-
-	model_get_draw_bone_position(&weap->draw.setup,bone_idx,&bx,&by,&bz);
-
-	bx+=weap->draw.pnt.x;
-	by+=weap->draw.pnt.y;
-	bz+=weap->draw.pnt.z;
-
-	if (weap->draw.no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&bx,&by,&bz);
-	
-	bx-=view.camera.pnt.x;
-	by-=view.camera.pnt.y;
-	bz-=view.camera.pnt.z;
-
-		// body line
-
-	glDisable(GL_DEPTH_TEST);
-
-	glColor4f(0,1,1,1);
-	glLineWidth(2);
-
-	glBegin(GL_LINES);
-	glVertex3i(sx,sy,-sz);
-	glVertex3i(bx,by,-bz);
-	glEnd();
-
-	glLineWidth(1);
-
-	glEnable(GL_DEPTH_TEST);
-
-		// cursor line
-
-	ex=ey=ez=0;					// this is here to stop a "might not be used" error in gcc
-	
-	crosshair_get_location(0,obj,weap,&ex,&ez,&ey,&obj_uid);
-	
-	ex-=view.camera.pnt.x;
-	ey-=view.camera.pnt.y;
-	ez-=view.camera.pnt.z;
-
-	glDisable(GL_DEPTH_TEST);
-
-	glColor4f(1,1,0,1);
-	glLineWidth(2);
-
-	glBegin(GL_LINES);
-	glVertex3i(sx,sy,-sz);
-	glVertex3i(ex,ey,-ez);
-	glEnd();
-
-	glLineWidth(1);
-
-	glEnable(GL_DEPTH_TEST);
-}
-
-/* =======================================================
-
       Crosshair Drawing
       
 ======================================================= */
@@ -417,10 +319,6 @@ void crosshair_draw(obj_type *obj,weapon_type *weap)
 	gl_texture_simple_set(crosshair_draw->gl_id,TRUE,crosshair_draw->color.r,crosshair_draw->color.g,crosshair_draw->color.b,crosshair_draw->alpha);
 	view_draw_next_vertex_object_2D_texture_quad(lft,rgt,top,bot);
 	gl_texture_simple_end();
-
-		// debug?
-
-	if (weap->crosshair.type==ct_barrel_debug) crosshair_draw_debug(obj,weap);
 }
 
 

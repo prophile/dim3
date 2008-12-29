@@ -52,7 +52,6 @@ script_define_type			script_dim3_defines[]={
 								{sd_weap_crosshair_type_bone_tracking_resizing,	"",		"DIM3_WEAPON_CROSSHAIR_TYPE_BONE_TRACKING_RESIZING"},
 								{sd_weap_crosshair_type_barrel_tracking,		"",		"DIM3_WEAPON_CROSSHAIR_TYPE_BARREL_TRACKING"},
 								{sd_weap_crosshair_type_barrel_tracking_resizing,"",	"DIM3_WEAPON_CROSSHAIR_TYPE_BARREL_TRACKING_RESIZING"},
-								{sd_weap_crosshair_type_barrel_debug,			"",		"DIM3_WEAPON_CROSSHAIR_TYPE_BARREL_DEBUG"},
 
 								{sd_camera_type_fpp,							"",		"DIM3_CAMERA_TYPE_FPP"},
 								{sd_camera_type_chase,							"",		"DIM3_CAMERA_TYPE_CHASE"},

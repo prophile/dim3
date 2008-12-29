@@ -60,6 +60,7 @@ extern int game_time_get(void);
 extern void game_time_set(int tick);
 extern void view_capture_draw(char *path);
 extern void group_moves_synch_with_load(void);
+extern void map_calculate_light_clear_all(void);
 
 /* =======================================================
 
@@ -130,8 +131,8 @@ unsigned char* game_file_replace_chunk(void)
 	memmove(&sz,(game_file_data+game_file_pos),sizeof(int));
 	game_file_pos+=sizeof(int);
 	
-	data=malloc(count*sz);
-	if (data==NULL) return(FALSE);
+	data=malloc(sz);
+	if (data==NULL) return(NULL);
 	
 	memmove(data,(game_file_data+game_file_pos),sz);
 	game_file_pos+=sz;
@@ -523,8 +524,6 @@ bool game_file_load(char *file_name,char *err_str)
 	game_file_get_chunk(&map.sky);
 	game_file_get_chunk(&map.fog);
 
-	map.rain.reset=TRUE;
-
 	progress_draw(70);
 	
 	map_group_dispose_unit_list(&map);			// need to destroy and rebuild unit lists
@@ -558,7 +557,7 @@ bool game_file_load(char *file_name,char *err_str)
 	progress_draw(95);
 	
 	script_state_load();
-	
+
 		// free game data
 		
 	progress_draw(100);
@@ -568,8 +567,13 @@ bool game_file_load(char *file_name,char *err_str)
 
 	progress_shutdown();
 
-		// reset server timers
+		// fix some necessary functions
+
+	map.rain.reset=TRUE;
+	map_calculate_light_clear_all();
 		
+		 // return to old game time
+
 	game_time_reset();
   
     return(TRUE);

@@ -600,7 +600,7 @@ void view_draw_setup(int tick)
 	
 		// bump smoothing
 		
-	if (obj->bump.on) view.camera.pnt.y+=obj->bump.smooth_offset;		
+	if (obj->bump.on) view.camera.pnt.y+=obj->bump.smooth_offset;
 	
 		// setup viewport
 	

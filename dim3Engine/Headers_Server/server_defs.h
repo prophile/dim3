@@ -118,7 +118,6 @@ and can be sold or given away.
 #define ct_bone_tracking_resizing				2
 #define ct_barrel_tracking						3
 #define ct_barrel_tracking_resizing				4
-#define ct_barrel_debug							5
 
 //
 // ducking modes
@@ -1009,7 +1008,7 @@ typedef struct		{
 												start_alpha,end_alpha,reduce_pixel_fact,
 												ambient_factor;
 						char					name[name_str_len],bitmap_name[name_str_len];
-						bool					reverse,blend_add;
+						bool					reverse,blend_add,globe;
 						d3pnt					pt;
 						d3ang					rot;
 						d3vct					vct,rot_accel;

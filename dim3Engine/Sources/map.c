@@ -396,6 +396,7 @@ bool map_start(bool skip_media,char *err_str)
 
 void map_end(void)
 {
+	char			txt[256];
 	obj_type		*obj;
 	
 	game_time_pause_start();
@@ -409,7 +410,8 @@ void map_end(void)
 	progress_initialize("Closing");
 	progress_draw(5);
 	
-	console_add_system("Closing Map");
+	sprintf(txt,"Closing %s",map.info.name);
+	console_add_system(txt);
 	
 	obj=object_find_uid(server.player_obj_uid);
 	

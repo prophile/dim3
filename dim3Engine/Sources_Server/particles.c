@@ -81,7 +81,7 @@ float particle_float(float fv)
 
 void particle_precalculate(particle_type *particle)
 {
-	int					k,n,count;
+	int					n,k,count;
 	particle_piece_type	*pps;
 
 	count=particle->count;
@@ -91,7 +91,7 @@ void particle_precalculate(particle_type *particle)
 		pps=particle->pieces[k];
 
 		for (n=0;n!=count;n++) {
-		
+	
 				// start positions
 
 			pps->pt.x=particle_int(particle->pt.x);
@@ -111,6 +111,79 @@ void particle_precalculate(particle_type *particle)
 	particle->current_variation_idx=0;
 }
 
+void particle_globe_precalculate(particle_type *particle)
+{
+	int					n,k,y,count,row_count;
+	float				rxz,ry,vy,r_xz_add,r_y_add,xz_reduce;
+	double				d_x_radius,d_y_radius,d_z_radius,d_vx_radius,d_vz_radius;
+	particle_piece_type	*pps;
+
+		// get per-row count
+
+	count=particle->count;
+	row_count=count/20;
+
+		// globes don't use variations
+
+	pps=particle->pieces[0];
+
+		// create particle globe
+
+	d_y_radius=(double)particle->pt.y;
+
+	r_xz_add=ANG_to_RAD*(360/row_count);
+
+	ry=0.0f;
+	r_y_add=ANG_to_RAD*(180/10);
+
+	count=0;
+
+	for (n=0;n!=19;n++) {				// the y
+
+		if (n==10) {
+			ry=-r_y_add;
+			r_y_add=-r_y_add;			// both hemispheres
+		}
+		
+		y=(int)(-sin(ry)*d_y_radius);
+		vy=(float)(-sin(ry)*particle->vct.y);
+
+		xz_reduce=(float)cos(ry);
+
+		d_x_radius=(double)(((float)particle->pt.x)*xz_reduce);
+		d_z_radius=(double)(((float)particle->pt.z)*xz_reduce);
+
+		d_vx_radius=(double)(particle->vct.x*xz_reduce);
+		d_vz_radius=(double)(particle->vct.z*xz_reduce);
+
+		rxz=0.0;
+			
+		for (k=0;k!=row_count;k++) {			// the x and z
+			pps->pt.x=(int)(-sin(rxz)*d_x_radius);
+			pps->pt.y=y;
+			pps->pt.z=(int)(cos(rxz)*d_z_radius);
+
+			pps->vct.x=(float)(-sin(rxz)*d_vx_radius);
+			pps->vct.y=vy;
+			pps->vct.z=(float)(cos(rxz)*d_vz_radius);
+
+			pps++;
+			count++;
+			
+			rxz+=r_xz_add;
+		}
+
+		ry+=r_y_add;
+	}
+
+		// reset particle count to equal
+		// globe count
+
+	particle->count=count;
+
+	particle->current_variation_idx=0;
+}
+
 void particle_precalculate_all(void)
 {
 	int					n;
@@ -119,7 +192,12 @@ void particle_precalculate_all(void)
 	particle=server.particles;
 	
 	for (n=0;n!=server.count.particle;n++) {
-		particle_precalculate(particle);
+		if (!particle->globe) {
+			particle_precalculate(particle);
+		}
+		else {
+			particle_globe_precalculate(particle);
+		}
 		particle++;
 	}
 }
@@ -201,10 +279,15 @@ bool particle_spawn_single(int particle_idx,d3pnt *pt,particle_rotate *rot,parti
 
 		// set variation
 
-	eff_particle->variation_idx=particle->current_variation_idx;
+	if (!particle->globe) {
+		eff_particle->variation_idx=particle->current_variation_idx;
 
-	particle->current_variation_idx++;
-	if (particle->current_variation_idx>=max_particle_variation) particle->current_variation_idx=0;
+		particle->current_variation_idx++;
+		if (particle->current_variation_idx>=max_particle_variation) particle->current_variation_idx=0;
+	}
+	else {
+		eff_particle->variation_idx=0;
+	}
 
 		// setup rotate and motion
 

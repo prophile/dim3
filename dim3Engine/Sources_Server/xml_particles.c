@@ -116,6 +116,7 @@ void read_settings_particle(void)
 		particle->reverse=FALSE;
 		particle->ambient_factor=1.0f;
 		particle->blend_add=FALSE;
+		particle->globe=FALSE;
 
         tag=xml_findfirstchild("Settings",particle_tag);
         if (tag!=-1) {
@@ -124,6 +125,7 @@ void read_settings_particle(void)
             particle->reverse=xml_get_attribute_boolean(tag,"reverse");
             particle->ambient_factor=xml_get_attribute_float_default(tag,"ambient",1.0f);
             particle->blend_add=xml_get_attribute_boolean(tag,"additive");
+            particle->globe=xml_get_attribute_boolean(tag,"globe");
 		}
 
 		if (particle->count>max_particle_count) particle->count=max_particle_count;

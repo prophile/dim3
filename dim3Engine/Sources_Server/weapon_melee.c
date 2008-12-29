@@ -55,7 +55,7 @@ extern network_setup_type	net_setup;
 
 void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *melee,int ignore_uid)
 {
-	int				n,x,y,z,xadd,zadd;
+	int				n,x,y,z,xadd,zadd,damage,dist;
 	bool			hit;
 	char			weap_name[name_str_len];
 	d3pnt			pnt;
@@ -101,6 +101,16 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 		if (hurt_obj->hit_box.on) {
 			hit=collide_set_object_hit_box_for_sphere_hit(x,y,z,melee->radius,hurt_obj);
 		}
+
+			// get damage
+
+		damage=melee->damage;
+
+		dist=distance_get(x,y,z,obj->pnt.x,(obj->pnt.y-(obj->size.y>>1)),obj->pnt.z);
+		dist-=obj->size.radius;
+
+		if (dist>0) damage=damage-((damage*dist)/melee->radius);
+		if (damage<1) damage=1;
 		
 			// hurt
             

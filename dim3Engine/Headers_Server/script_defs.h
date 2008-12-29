@@ -699,7 +699,6 @@ and can be sold or given away.
 #define sd_weap_crosshair_type_bone_tracking_resizing	1012
 #define sd_weap_crosshair_type_barrel_tracking			1013
 #define sd_weap_crosshair_type_barrel_tracking_resizing	1014
-#define sd_weap_crosshair_type_barrel_debug				1015
 
 //
 // camera constants
