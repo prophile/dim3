@@ -181,8 +181,7 @@ and can be sold or given away.
 #define camera_chase_slop_prop_z					2
 
 #define camera_static_position_prop_follow			0
-#define camera_static_position_prop_node_slop		1
-#define camera_static_position_prop_walk_turn_speed	2
+#define camera_static_position_prop_walk_turn_speed	1
 
 #define camera_plane_prop_projection_type			0
 #define camera_plane_prop_fov						1
@@ -333,7 +332,6 @@ and can be sold or given away.
 #define obj_motion_vector_prop_x					0
 #define obj_motion_vector_prop_y					1
 #define obj_motion_vector_prop_z					2
-#define obj_motion_vector_prop_node_slop			3
 
 #define obj_motion_angle_prop_x						0
 #define obj_motion_angle_prop_y						1

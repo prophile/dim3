@@ -35,7 +35,6 @@ and can be sold or given away.
 extern js_type			js;
 
 JSBool js_get_obj_motion_vector_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_obj_motion_vector_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_motion_vector_go_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_motion_vector_stop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_motion_vector_jump_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -53,14 +52,13 @@ JSBool js_obj_motion_vector_turn_to_player_func(JSContext *cx,JSObject *j_obj,ui
 
 JSClass			obj_motion_vector_class={"obj_motion_vector_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_motion_vector_property,js_set_obj_motion_vector_property,
+							js_get_obj_motion_vector_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 JSPropertySpec	obj_motion_vector_props[]={
 							{"x",					obj_motion_vector_prop_x,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"y",					obj_motion_vector_prop_y,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"z",					obj_motion_vector_prop_z,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"nodeSlop",			obj_motion_vector_prop_node_slop,	JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 							
 JSFunctionSpec	obj_motion_vector_functions[]={
@@ -118,28 +116,6 @@ JSBool js_get_obj_motion_vector_property(JSContext *cx,JSObject *j_obj,jsval id,
 			break;
 		case obj_motion_vector_prop_z:
 			*vp=script_float_to_value(obj->motion.vct.z);
-			break;
-		case obj_motion_vector_prop_node_slop:
-			*vp=INT_TO_JSVAL(obj->auto_walk.node_slop);
-			break;
-			
-	}
-	
-	return(JS_TRUE);
-}
-
-JSBool js_set_obj_motion_vector_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
-{
-	obj_type		*obj;
-
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-	
-	obj=object_find_uid(js.attach.thing_uid);
-
-	switch (JSVAL_TO_INT(id)) {
-	
-		case obj_motion_vector_prop_node_slop:
-            obj->auto_walk.node_slop=JSVAL_TO_INT(*vp);
 			break;
 			
 	}

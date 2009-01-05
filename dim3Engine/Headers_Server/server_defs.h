@@ -188,6 +188,7 @@ and can be sold or given away.
 #define ws_step_factor							4					// how much to reduce movement when wall sliding
 #define pd_parent_grace							100					// how long till projectile can strike parent again
 #define ci_object_click_angle					20.0f				// angle at which you can click an object
+#define node_slop_speed_factor					2.0f				// how close to a node do we have to be (compared with speed) to be a hit
 
 //
 // models
@@ -495,8 +496,7 @@ typedef struct		{
 					
 typedef struct		{
 						int						mode,obj_uid,
-												node_seek_idx,node_dest_idx,node_event_id,
-												node_slop;
+												node_seek_idx,node_dest_idx,node_event_id;
 						d3pnt					pnt;
 					} obj_auto_walk;
 					

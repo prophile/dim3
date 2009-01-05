@@ -47,7 +47,7 @@ and can be sold or given away.
 
 typedef struct		{
 						int						node_seek_idx,node_dest_idx,
-												msec,event_id,node_slop;
+												msec,event_id;
 						float					speed,turn_speed;
 						bool					on,open_doors,in_freeze;
 					} camera_auto_walk;

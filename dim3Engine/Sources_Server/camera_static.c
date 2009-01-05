@@ -249,7 +249,7 @@ void camera_static_run(void)
 	
 		// near current seek node?
 		
-	if (dist>camera.auto_walk.node_slop) return;	
+	if (dist>(int)(camera.auto_walk.speed*node_slop_speed_factor)) return;	
 	
 		// move on to next node
 		

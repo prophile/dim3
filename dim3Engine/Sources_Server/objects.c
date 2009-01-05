@@ -588,7 +588,6 @@ obj_type* object_create(int bind,int reserve_uid)
 	obj->last_turn_animation_event=-1;
 
 	obj->auto_walk.mode=aw_none;
-	obj->auto_walk.node_slop=map_enlarge*5;
 
 	obj->fs_effect.tint.on=FALSE;
 	obj->fs_effect.fade.on=FALSE;

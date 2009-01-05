@@ -215,7 +215,7 @@ void object_auto_walk_node(obj_type *obj)
 		// near node?
 		
 	dist=distance_get(node->pnt.x,node->pnt.y,node->pnt.z,obj->pnt.x,obj->pnt.y,obj->pnt.z);
-	if (dist>obj->auto_walk.node_slop) return;
+	if (dist>(int)(obj->forward_move.speed*node_slop_speed_factor)) return;
 	
 		// move on to last node
 		
