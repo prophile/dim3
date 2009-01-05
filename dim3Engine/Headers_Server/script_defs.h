@@ -218,10 +218,9 @@ and can be sold or given away.
 #define model_prop_name								1
 #define model_prop_lit								2
 #define model_prop_bounce							3
-#define model_prop_truform							4
-#define model_prop_alpha							5
-#define model_prop_resize							6
-#define model_prop_face_forward						7
+#define model_prop_alpha							4
+#define model_prop_resize							5
+#define model_prop_face_forward						6
 
 #define model_offset_prop_x							0
 #define model_offset_prop_z							1
@@ -583,6 +582,7 @@ and can be sold or given away.
 #define weap_melee_prop_distance					5
 #define weap_melee_prop_damage						6
 #define weap_melee_prop_force						7
+#define weap_melee_prop_fall_off					8
 
 #define weap_fire_prop_method						0
 #define weap_fire_prop_last_fire_tick				1
@@ -675,7 +675,7 @@ and can be sold or given away.
 #define proj_melee_prop_distance					3
 #define proj_melee_prop_damage						4
 #define proj_melee_prop_force						5
-#define proj_melee_prop_life_tick					6
+#define proj_melee_prop_fall_off					6
 
 //
 // hit constants

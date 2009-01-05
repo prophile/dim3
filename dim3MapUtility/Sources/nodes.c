@@ -31,75 +31,6 @@ and can be sold or given away.
 
 /* =======================================================
 
-      Find Nodes
-      
-======================================================= */
-
-int map_find_node(map_type *map,char *name)
-{
-	int				n,nnode;
-	node_type		*node;
-	
-	nnode=map->nnode;
-	node=map->nodes;
-	
-	for (n=0;n!=nnode;n++) {
-		if (strcmp(node->name,name)==0) return(n);
-		node++;
-	}
-	
-	return(-1);
-}
-
-int map_find_nearest_node(map_type *map,int x,int y,int z,int user_value,float ang,float ang_sweep,int min_dist,int max_dist)
-{
-	int					n,i,nnode,d,dist;
-	float				fang;
-	node_type			*node;
-
-	i=-1;
-    dist=max_dist;
-	
-	nnode=map->nnode;
-    
-	for (n=0;n!=nnode;n++) {
-		node=&map->nodes[n];
-		
-			// check user value
-			
-		if (user_value!=-1) {
-			if (node->user_value!=user_value) continue;
-		}
-	
-			// check distance
-			
-		d=distance_get(x,y,z,node->pnt.x,node->pnt.y,node->pnt.z);
-		if (d<min_dist) continue;
-		if (d>dist) continue;
-		
-			// check angle
-			
-		if (ang!=-1) {
-			fang=angle_find(x,z,node->pnt.x,node->pnt.z);
-			if (angle_dif(fang,ang,NULL)>ang_sweep) continue;
-		}
-			
-		i=n;
-		dist=d;
-	}
-	
-	return(i);
-}
-
-int map_find_next_node_in_path(map_type *map,int from_idx,int to_idx)
-{
-	if ((from_idx==-1) || (to_idx==-1)) return(-1);
-	
-	return((int)map->nodes[from_idx].path_hint[to_idx]);
-}
-
-/* =======================================================
-
       Calculate Node Distance
       
 ======================================================= */
@@ -141,5 +72,92 @@ int map_node_to_node_distance(map_type *map,int from_idx,int to_idx)
 	}
 
 	return(dist);
+}
+
+/* =======================================================
+
+      Find Nodes
+      
+======================================================= */
+
+int map_find_node(map_type *map,char *name)
+{
+	int				n,nnode;
+	node_type		*node;
+	
+	nnode=map->nnode;
+	node=map->nodes;
+	
+	for (n=0;n!=nnode;n++) {
+		if (strcmp(node->name,name)==0) return(n);
+		node++;
+	}
+	
+	return(-1);
+}
+
+int map_find_nearest_node_by_point(map_type *map,d3pnt *pnt)
+{
+	int					n,idx,nnode,d,dist;
+	node_type			*node;
+
+	idx=-1;
+    dist=-1;
+	
+	nnode=map->nnode;
+	node=map->nodes;
+    
+	for (n=0;n!=nnode;n++) {
+		node=&map->nodes[n];
+	
+		d=distance_get(pnt->x,pnt->y,pnt->z,node->pnt.x,node->pnt.y,node->pnt.z);
+		if ((dist==-1) || (d<dist)) {
+			dist=d;
+			idx=n;
+		}
+		
+		node++;
+	}
+	
+	return(idx);
+}
+
+int map_find_nearest_node_in_path(map_type *map,int from_idx,char *name,int *dist)
+{
+	int					n,nnode,idx,d,cur_dist;
+	node_type			*node;
+
+	idx=-1;
+	cur_dist=-1;
+	
+	nnode=map->nnode;
+    
+	for (n=0;n!=nnode;n++) {
+		if (n==from_idx) continue;
+		
+			// check if same name and in path
+		
+		node=&map->nodes[n];
+		if (node->path_hint[from_idx]==-1) continue;
+		if (strcasecmp(name,node->name)!=0) continue;
+		
+			// smallest distance
+			
+		d=map_node_to_node_distance(map,from_idx,n);
+		if ((cur_dist==-1) || (d<cur_dist)) {
+			cur_dist=d;
+			idx=n;
+		}
+	}
+			
+	*dist=cur_dist;
+	return(idx);
+}
+
+int map_find_next_node_in_path(map_type *map,int from_idx,int to_idx)
+{
+	if ((from_idx==-1) || (to_idx==-1)) return(-1);
+	
+	return((int)map->nodes[from_idx].path_hint[to_idx]);
 }
 

@@ -266,6 +266,7 @@ bool weapon_create(obj_type *obj,char *name)
 	weap->melee.distance=0;
 	weap->melee.damage=0;
 	weap->melee.force=0;
+	weap->melee.fall_off=TRUE;
 	
 	weap->fire.last_fire_tick=-1;
 	weap->fire.last_fire_dual_tick=-1;

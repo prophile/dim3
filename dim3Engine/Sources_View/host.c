@@ -65,7 +65,7 @@ char						net_game_types[network_setup_max_game+1][32];
 void host_fill_map_table(char *game_type)
 {
 	int							n,nfile,sz;
-	char						*c;
+	char						*c,info_name[name_str_len];
 	file_path_directory_type	*map_pick_fpd;
 
 		// need to make sure map paths are correct
@@ -87,8 +87,8 @@ void host_fill_map_table(char *game_type)
 		c=net_host_file_list;
 		
 		for (n=0;n!=nfile;n++) {
-			if (map_check_game_type(game_type,map_pick_fpd->files[n].file_name)) {
-				sprintf(c,"Maps;%s;%s",map_pick_fpd->files[n].file_name,map_pick_fpd->files[n].file_name);
+			if (map_check_game_type(game_type,map_pick_fpd->files[n].file_name,info_name)) {
+				sprintf(c,"Maps;%s;%s",map_pick_fpd->files[n].file_name,info_name);
 				c+=128;
 			}
 		}
@@ -221,16 +221,15 @@ void host_game_setup(void)
 	
 	idx=element_get_value(host_table_id);
 	
-		// need to remove graphic name
+		// use graphic name to get to original map name
 				
 	c=net_host_file_list+(idx*128);
 	
 	c=strchr(c,';');
 	if (c!=NULL) {
-		c=strchr((c+1),';');
-		if (c!=NULL) {
-			strcpy(net_setup.host.map_name,(c+1));
-		}
+		strcpy(net_setup.host.map_name,(c+1));
+		c=strchr(net_setup.host.map_name,';');
+		if (c!=NULL) *c=0x0;
 	}
 }
 

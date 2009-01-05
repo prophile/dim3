@@ -17,10 +17,11 @@ EXPORTS
 	map_spot_clear_attach							@203
 	map_spot_attach_object							@204
 
-	map_find_node									@210
-	map_find_nearest_node							@211
-	map_find_next_node_in_path						@212
-	map_node_to_node_distance						@213
+	map_node_to_node_distance						@210
+	map_find_node									@211
+	map_find_nearest_node_by_point					@212
+	map_find_nearest_node_in_path					@213
+	map_find_next_node_in_path						@214
 
 	map_mesh_add									@220
 	map_mesh_delete									@221

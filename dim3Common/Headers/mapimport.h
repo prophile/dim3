@@ -254,6 +254,9 @@ and can be sold or given away.
 #define ag_constant_ramp_min_high					(4*map_enlarge)
 #define ag_constant_ramp_size_percent				4.0f
 
+#define ag_constant_window_percent					0.3f
+#define ag_constant_window_depth					(8*map_enlarge)
+
 //
 // auto-generate setup structure
 //
@@ -264,20 +267,26 @@ typedef struct	{
 				} auto_generate_setting_map_type;
 
 typedef struct	{
+					char									door[name_str_len],
+															lift[name_str_len];
+				} auto_generate_setting_sound_type;
+
+typedef struct	{
 					int										portal_wall,portal_floor,portal_ceiling,
-															corridor_wall,corridor_floor,corridor_ceiling,
-															second_story,door,steps,ramp,pillar;
+															corridor,second_story,window,
+															door,steps,ramp,pillar;
 				} auto_generate_setting_texture_type;
 
 typedef struct	{
 					int										seed,block;
-					char									door_sound[name_str_len];
 					unsigned char							ceiling_type_on[ag_ceiling_type_count],
 															corridor_type_on[ag_corridor_type_count],
 															stair_type_on[ag_stair_type_count],
 															door_type_on[ag_door_type_count],
 															light_type_on[ag_light_type_count];
+					bool									window;
 					auto_generate_setting_map_type			map;
+					auto_generate_setting_sound_type		sound;
 					auto_generate_setting_texture_type		texture;
 				} auto_generate_settings_type;
 
@@ -290,6 +299,9 @@ typedef struct	{
 typedef struct	{
 					int										mesh_idx,corridor_connect_box_idx[2],
 															corridor_flag,corridor_type,ceiling_type;
+					bool									story_top_left,story_top_right,
+															story_bottom_left,story_bottom_right,
+															story_middle;
 					d3pnt									min,max;
 				} auto_generate_box_type;
 

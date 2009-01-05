@@ -180,7 +180,7 @@ bool map_auto_generate_portal_vert_edge_touch(int skip_portal_idx,int x,int ex,i
 
 /* =======================================================
 
-      Edge Touching
+      Portal Edge Touching
       
 ======================================================= */
 
@@ -280,6 +280,92 @@ bool map_auto_generate_portal_touching_any(int portal_idx)
 
 /* =======================================================
 
+      Map Edge Touching
+      
+======================================================= */
+
+bool map_auto_generate_portal_on_map_left_edge(int portal_idx)
+{
+	int							n;
+	auto_generate_box_type		*portal,*chk_portal;
+
+	portal=&ag_boxes[portal_idx];
+	
+	for (n=0;n!=ag_box_count;n++) {
+		if (portal_idx==n) continue;
+		
+		chk_portal=&ag_boxes[n];
+		
+		if (((portal->min.z>=chk_portal->min.z) && (portal->min.z<chk_portal->max.z)) || ((portal->max.z>chk_portal->min.z) && (portal->max.z<=chk_portal->max.z))) {
+			if (chk_portal->max.x<portal->min.x) return(FALSE);
+		}
+	}
+
+	return(TRUE);
+}
+
+bool map_auto_generate_portal_on_map_right_edge(int portal_idx)
+{
+	int							n;
+	auto_generate_box_type		*portal,*chk_portal;
+
+	portal=&ag_boxes[portal_idx];
+	
+	for (n=0;n!=ag_box_count;n++) {
+		if (portal_idx==n) continue;
+
+		chk_portal=&ag_boxes[n];
+		
+		if (((portal->min.z>=chk_portal->min.z) && (portal->min.z<chk_portal->max.z)) || ((portal->max.z>chk_portal->min.z) && (portal->max.z<=chk_portal->max.z))) {
+			if (chk_portal->min.x>portal->max.x) return(FALSE);
+		}
+	}
+
+	return(TRUE);
+}
+
+bool map_auto_generate_portal_on_map_top_edge(int portal_idx)
+{
+	int							n;
+	auto_generate_box_type		*portal,*chk_portal;
+
+	portal=&ag_boxes[portal_idx];
+	
+	for (n=0;n!=ag_box_count;n++) {
+		if (portal_idx==n) continue;
+
+		chk_portal=&ag_boxes[n];
+		
+		if (((portal->min.x>=chk_portal->min.x) && (portal->min.x<chk_portal->max.x)) || ((portal->max.x>chk_portal->min.x) && (portal->max.x<=chk_portal->max.x))) {
+			if (chk_portal->max.z<portal->min.z) return(FALSE);
+		}
+	}
+
+	return(TRUE);
+}
+
+bool map_auto_generate_portal_on_map_bottom_edge(int portal_idx)
+{
+	int							n;
+	auto_generate_box_type		*portal,*chk_portal;
+
+	portal=&ag_boxes[portal_idx];
+	
+	for (n=0;n!=ag_box_count;n++) {
+		if (portal_idx==n) continue;
+
+		chk_portal=&ag_boxes[n];
+		
+		if (((portal->min.x>=chk_portal->min.x) && (portal->min.x<chk_portal->max.x)) || ((portal->max.x>chk_portal->min.x) && (portal->max.x<=chk_portal->max.x))) {
+			if (chk_portal->min.z>portal->max.z) return(FALSE);
+		}
+	}
+
+	return(TRUE);
+}
+
+/* =======================================================
+
       Random Types
       
 ======================================================= */
@@ -304,7 +390,7 @@ int map_auto_generate_get_generic_type(int type_count,unsigned char *type_on)
 	int				n,idx,count;
 	
 	count=map_auto_generate_count_generic_type(type_count,type_on);
-	if (count==0) return(count);
+	if (count==0) return(0);
 
 		// get random type
 
@@ -566,9 +652,14 @@ void map_auto_generate_mesh_set_rot_offset(map_type *map,int x,int y,int z)
 	mesh->flag.rot_independent=FALSE;
 }
 
-void map_auto_generate_mesh_change_texture(int txt_idx)
+int map_auto_generate_mesh_change_texture(int txt_idx)
 {
+	int				old_txt_idx;
+	
+	old_txt_idx=map_ag_poly_txt_idx;
 	map_ag_poly_txt_idx=txt_idx;
+	
+	return(old_txt_idx);
 }
 
 bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z,float *gx,float *gy)
@@ -588,6 +679,17 @@ bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z
 		// add the mesh
 		
 	return(map_mesh_add_poly(map,map_ag_mesh_idx,ptsz,px,y,pz,gx,gy,map_ag_poly_txt_idx)!=-1);
+}
+
+void map_auto_generate_mesh_punch_hole_last_poly(map_type *map,int x,int z)
+{
+	d3pnt			extrude_pnt;
+
+	extrude_pnt.x=x;
+	extrude_pnt.y=0;
+	extrude_pnt.z=z;
+	
+	map_mesh_poly_punch_hole(map,map_ag_mesh_idx,(map->mesh.meshes[map_ag_mesh_idx].npoly-1),&extrude_pnt);
 }
 
 /* =======================================================

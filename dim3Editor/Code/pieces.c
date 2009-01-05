@@ -790,7 +790,7 @@ void piece_poly_hole(void)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx);
+		if (type==mesh_piece) map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,NULL);
 	}
 	
 	select_clear();

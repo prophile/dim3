@@ -327,7 +327,7 @@ void piece_create_node(void)
 	node->ang.y=0.0f;
 	node->ang.z=0.0f;
 	node->name[0]=0x0;
-	node->user_value=0;
+	node->event_id=0;
 
 	for (i=0;i!=max_node_link;i++) {
 		node->link[i]=-1;
@@ -399,6 +399,8 @@ void piece_create_liquid(void)
 	liq->harm.in_harm=0;
 	liq->harm.drown_tick=10000;
 	liq->harm.drown_harm=10;
+	
+	liq->depth=5000;
 
 		// select the liquid
 		

@@ -192,7 +192,6 @@ void run_object_normal(obj_type *obj,int tick)
 	object_death(obj);
 }
 
-
 /* =======================================================
 
       Run Objects

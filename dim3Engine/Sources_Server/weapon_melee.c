@@ -106,11 +106,13 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 
 		damage=melee->damage;
 
-		dist=distance_get(x,y,z,obj->pnt.x,(obj->pnt.y-(obj->size.y>>1)),obj->pnt.z);
-		dist-=obj->size.radius;
+		if (melee->fall_off) {
+			dist=distance_get(x,y,z,obj->pnt.x,(obj->pnt.y-(obj->size.y>>1)),obj->pnt.z);
+			dist-=obj->size.radius;
 
-		if (dist>0) damage=damage-((damage*dist)/melee->radius);
-		if (damage<1) damage=1;
+			if (dist>0) damage=damage-((damage*dist)/melee->radius);
+			if (damage<1) damage=1;
+		}
 		
 			// hurt
             

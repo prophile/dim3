@@ -166,6 +166,7 @@ bool proj_setup_add(obj_type *obj,weapon_type *weap,char *name)
 	proj_setup->melee.distance=0;
 	proj_setup->melee.damage=0;
 	proj_setup->melee.force=0;
+	proj_setup->melee.fall_off=TRUE;
 	
 	object_clear_draw(&proj_setup->draw);
 	

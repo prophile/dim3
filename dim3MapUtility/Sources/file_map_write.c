@@ -676,7 +676,7 @@ bool write_map_xml(map_type *map)
 		xml_add_attribute_3_coord_int("c3",node->pnt.x,node->pnt.y,node->pnt.z);
 		xml_add_attribute_3_coord_float("angle",node->ang.x,node->ang.y,node->ang.z);
 		xml_add_attribute_text("name",node->name);
-		if (node->user_value!=0) xml_add_attribute_int("user",node->user_value);
+		xml_add_attribute_int("event_id",node->event_id);
 		xml_add_tagend(FALSE);
 	
 		xml_add_tagstart("Link");
@@ -687,19 +687,6 @@ bool write_map_xml(map_type *map)
 		xml_add_attribute_short_array("node",node->path_hint,map->nnode,FALSE);
 		xml_add_tagend(TRUE);
 
-		xml_add_tagstart("Flag");
-		if ((node->flags&node_flag_goal)!=0) xml_add_attribute_boolean("goal",TRUE);
-		if ((node->flags&node_flag_red_flag)!=0) xml_add_attribute_boolean("red_flag",TRUE);
-		if ((node->flags&node_flag_blue_flag)!=0) xml_add_attribute_boolean("blue_flag",TRUE);
-		if ((node->flags&node_flag_weapon)!=0) xml_add_attribute_boolean("weapon",TRUE);
-		if ((node->flags&node_flag_ammo)!=0) xml_add_attribute_boolean("ammo",TRUE);
-		if ((node->flags&node_flag_armor)!=0) xml_add_attribute_boolean("armor",TRUE);
-		if ((node->flags&node_flag_health)!=0) xml_add_attribute_boolean("health",TRUE);
-		if ((node->flags&node_flag_normal_cover)!=0) xml_add_attribute_boolean("normal_cover",TRUE);
-		if ((node->flags&node_flag_duck_cover)!=0) xml_add_attribute_boolean("duck_cover",TRUE);
-		if ((node->flags&node_flag_sniper)!=0) xml_add_attribute_boolean("sniper",TRUE);
-		if ((node->flags&node_flag_climb)!=0) xml_add_attribute_boolean("climb",TRUE);
-		xml_add_tagend(TRUE);
 	
 		xml_add_tagclose("Node");
 	}

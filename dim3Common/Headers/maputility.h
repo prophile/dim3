@@ -159,22 +159,6 @@ extern char light_type_str[][32];
 #define group_type_liquid									1
 
 //
-// node flags
-//
-
-#define node_flag_goal										0x0001
-#define node_flag_red_flag									0x0002
-#define node_flag_blue_flag									0x0004
-#define node_flag_weapon									0x0008
-#define node_flag_ammo										0x0010
-#define node_flag_armor										0x0020
-#define node_flag_health									0x0040
-#define node_flag_normal_cover								0x0080
-#define node_flag_duck_cover								0x0100
-#define node_flag_sniper									0x0200
-#define node_flag_climb										0x0400
-
-//
 // skills
 //
 
@@ -442,10 +426,9 @@ typedef struct		{
 //
 
 typedef struct		{
-						int									idx,user_value;
+						int									idx,event_id;
 						short								link[max_node_link],
 															path_hint[max_node];
-						unsigned long						flags;
 						char								name[name_str_len];
 						d3pnt								pnt;
 						d3ang								ang;
@@ -609,7 +592,7 @@ extern void map_center(map_type *map);
 extern int map_count_texture_frames(map_type *map,int txt);
 extern void map_setup_animated_textures(map_type *map,int tick);
 
-extern bool map_check_game_type(char *game_type,char *map_name);
+extern bool map_check_game_type(char *game_type,char *map_name,char *info_name);
 
 extern bool map_create_vertex_lists(map_type *map,int quality_mode);
 extern void map_dispose_vertex_lists(map_type *map);
@@ -620,10 +603,11 @@ extern int map_find_random_spot(map_type *map,char *name,char *type);
 extern void map_spot_clear_attach(map_type *map);
 extern void map_spot_attach_object(spot_type *spot,char *name,char *type,char *script,char *params);
 
-extern int map_find_node(map_type *map,char *name);
-extern int map_find_nearest_node(map_type *map,int x,int y,int z,int user_value,float ang,float ang_sweep,int min_dist,int max_dist);
-extern int map_find_next_node_in_path(map_type *map,int from_idx,int to_idx);
 extern int map_node_to_node_distance(map_type *map,int from_idx,int to_idx);
+extern int map_find_node(map_type *map,char *name);
+extern int map_find_nearest_node_by_point(map_type *map,d3pnt *pnt);
+extern int map_find_nearest_node_in_path(map_type *map,int from_idx,char *name,int *dist);
+extern int map_find_next_node_in_path(map_type *map,int from_idx,int to_idx);
 
 extern int map_mesh_add(map_type *map);
 extern bool map_mesh_delete(map_type *map,int mesh_idx);
@@ -650,7 +634,7 @@ extern void map_mesh_resize(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max);
 extern void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);
 extern void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang,bool vertex_only);
 extern bool map_mesh_tesselate(map_type *map,int mesh_idx);
-extern bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx);
+extern bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *extrude_pnt);
 extern void map_mesh_poly_run_shifts(map_type *map,int tick);
 extern void map_mesh_get_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact);
 extern void map_mesh_set_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact);

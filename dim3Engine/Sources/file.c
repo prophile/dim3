@@ -61,6 +61,7 @@ extern void game_time_set(int tick);
 extern void view_capture_draw(char *path);
 extern void group_moves_synch_with_load(void);
 extern void map_calculate_light_clear_all(void);
+extern void fade_screen_cancel(void);
 
 /* =======================================================
 
@@ -571,6 +572,7 @@ bool game_file_load(char *file_name,char *err_str)
 
 	map.rain.reset=TRUE;
 	map_calculate_light_clear_all();
+	fade_screen_cancel();
 		
 		 // return to old game time
 

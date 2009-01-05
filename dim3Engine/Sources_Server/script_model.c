@@ -57,7 +57,6 @@ JSPropertySpec	model_props[]={
 							{"name",				model_prop_name,					JSPROP_PERMANENT|JSPROP_SHARED},
 							{"lit",					model_prop_lit,						JSPROP_PERMANENT|JSPROP_SHARED},
 							{"bounce",				model_prop_bounce,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"truform",				model_prop_truform,					JSPROP_PERMANENT|JSPROP_SHARED},
 							{"alpha",				model_prop_alpha,					JSPROP_PERMANENT|JSPROP_SHARED},
 							{"resize",				model_prop_resize,					JSPROP_PERMANENT|JSPROP_SHARED},
 							{"faceForward",			model_prop_face_forward,			JSPROP_PERMANENT|JSPROP_SHARED},
@@ -170,10 +169,6 @@ JSBool js_get_model_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 		case model_prop_bounce:
 			*vp=BOOLEAN_TO_JSVAL(draw->bounce);
 			break;
-		case model_prop_truform:
-			// depreciated
-			*vp=BOOLEAN_TO_JSVAL(FALSE);
-			break;
 		case model_prop_alpha:
 			*vp=script_float_to_value(draw->alpha);
 			break;
@@ -209,9 +204,6 @@ JSBool js_set_model_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 			break;
 		case model_prop_bounce:
 			draw->bounce=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case model_prop_truform:
-			// depreciated
 			break;
 		case model_prop_alpha:
 			draw->alpha=script_value_to_float(*vp);

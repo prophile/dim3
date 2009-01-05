@@ -41,6 +41,7 @@ extern server_type			server;
 extern network_setup_type	net_setup;
 
 JSBool js_sound_play_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_sound_play_at_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_sound_play_global_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_sound_start_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_sound_stop_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -54,6 +55,7 @@ JSClass			sound_class={"sound_class",0,
 							
 JSFunctionSpec	sound_functions[]={
 							{"play",				js_sound_play_func,						5},
+							{"playAtObject",		js_sound_play_at_object_func,			3},
 							{"playGlobal",			js_sound_play_global_func,				2},
 							{"startMusic",			js_sound_start_music_func,				1},
 							{"stopMusic",			js_sound_stop_music_func,				0},
@@ -155,6 +157,23 @@ JSBool js_sound_play_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,j
 	pitch=script_value_to_float(argv[4]);
 
 	if (!script_sound_play(name,&pt,pitch,FALSE)) return(JS_FALSE);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_sound_play_at_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	float			pitch;
+	char			name[name_str_len];
+	obj_type		*obj;
+
+	obj=script_find_obj_from_uid_arg(argv[1]);
+	if (obj==NULL) return(JS_FALSE);
+	
+	script_value_to_string(argv[0],name,name_str_len);
+	pitch=script_value_to_float(argv[2]);
+
+	if (!script_sound_play(name,&obj->pnt,pitch,FALSE)) return(JS_FALSE);
 	
 	return(JS_TRUE);
 }

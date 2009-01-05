@@ -265,7 +265,7 @@ void decode_map_movements_xml(map_type *map,int map_head)
       
 ======================================================= */
     
-bool map_check_game_type(char *game_type,char *map_name)
+bool map_check_game_type(char *game_type,char *map_name,char *info_name)
 {
 	int				map_head,tag,idx;
 	char			*c,*c2,game_token[256],
@@ -273,7 +273,7 @@ bool map_check_game_type(char *game_type,char *map_name)
 
 	file_paths_data(&maputility_settings.file_path_setup,path,"Maps",map_name,"xml");
 
-		// get game type list
+		// open XML file
 
 	if (!xml_open_file(path)) return(FALSE);
 
@@ -282,7 +282,20 @@ bool map_check_game_type(char *game_type,char *map_name)
 		xml_close_file();
 		return(FALSE);
     }
+	
+		// get infor name
+		
+	info_name[0]=0x0;
+	
+    tag=xml_findfirstchild("Info",map_head);
+    if (tag!=-1) {
+        xml_get_attribute_text(tag,"name",info_name,name_str_len);
+    }
+	
+	if (info_name[0]==0x0) strcpy(info_name,map_name);
 
+		// get game list
+		
 	game_list[0]=0x0;
 
     tag=xml_findfirstchild("Settings",map_head);

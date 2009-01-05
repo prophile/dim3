@@ -175,17 +175,7 @@ int pin_downward_movement_obj(obj_type *obj,int my)
 {
 	int				y;
 
-		// determine if we should do easy check or complex
-		// check.  Players and objects with rigid body get
-		// more complex checks
-
-	if ((!obj->player) && (!obj->rigid_body.on)) {
-		y=pin_downward_movement_point(obj->pnt.x,obj->pnt.y,obj->pnt.z,my,&obj->contact.stand_poly);
-	}
-	else {
-		y=pin_downward_movement_complex(obj,my,&obj->contact.stand_poly);
-	}
-	
+	y=pin_downward_movement_complex(obj,my,&obj->contact.stand_poly);
 	if (obj->contact.stand_poly.mesh_idx==-1) return(my);
 	
 	return(y-obj->pnt.y);
@@ -300,17 +290,7 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 {
 	int				y,sz;
 
-		// determine if we should do easy check or complex
-		// check.  Players and objects with rigid body get
-		// more complex checks
-
-	if ((!obj->player) && (!obj->rigid_body.on)) {
-		y=pin_upward_movement_point(obj->pnt.x,obj->pnt.y,obj->pnt.z,abs(my),&obj->contact.head_poly);
-	}
-	else {
-		y=pin_upward_movement_complex(obj,abs(my),&obj->contact.head_poly);
-	}
-	
+	y=pin_upward_movement_complex(obj,abs(my),&obj->contact.head_poly);
 	if (obj->contact.head_poly.mesh_idx==-1) return(my);
 
 		// need to get duck value for this factor

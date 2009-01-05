@@ -54,6 +54,7 @@ JSPropertySpec	weap_melee_props[]={
 							{"distance",				weap_melee_prop_distance,					JSPROP_PERMANENT|JSPROP_SHARED},
 							{"damage",					weap_melee_prop_damage,						JSPROP_PERMANENT|JSPROP_SHARED},
 							{"force",					weap_melee_prop_force,						JSPROP_PERMANENT|JSPROP_SHARED},
+							{"fallOff",					weap_melee_prop_fall_off,					JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 
 JSFunctionSpec	weap_melee_functions[]={
@@ -119,6 +120,9 @@ JSBool js_get_weap_melee_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 		case weap_melee_prop_force:
 			*vp=INT_TO_JSVAL(weap->melee.force);
 			break;
+		case weap_melee_prop_fall_off:
+			*vp=BOOLEAN_TO_JSVAL(weap->melee.fall_off);
+			break;
 			
 	}
 	
@@ -161,6 +165,9 @@ JSBool js_set_weap_melee_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 			break;
 		case weap_melee_prop_force:
 			weap->melee.force=JSVAL_TO_INT(*vp);
+			break;
+		case weap_melee_prop_fall_off:
+			weap->melee.fall_off=JSVAL_TO_BOOLEAN(*vp);
 			break;
 
 	}

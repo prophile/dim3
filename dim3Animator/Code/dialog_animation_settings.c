@@ -377,7 +377,7 @@ static pascal OSStatus pose_move_setting_tab_proc(EventHandlerCallRef handler,Ev
 		return(eventNotHandledErr);
 	}
 	
-	if ((event_class=kEventClassControl) && (event_kind==kEventControlHit)) {
+	if ((event_class==kEventClassControl) && (event_kind==kEventControlHit)) {
 		dialog_switch_tab(dialog_animation_settings_wind,kAnimationPoseTab,0,kAnimationPoseTabCount);
 
 			// draw color
@@ -385,6 +385,7 @@ static pascal OSStatus pose_move_setting_tab_proc(EventHandlerCallRef handler,Ev
 		if (dialog_get_value(dialog_animation_settings_wind,kAnimationPoseTab,0)==5) {
 			dialog_draw_color(dialog_animation_settings_wind,kAnimationFlashColor,0,&dialog_pose_move_settings_color);
 		}
+		
 	}
 	
 	return(eventNotHandledErr);

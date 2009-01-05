@@ -606,7 +606,12 @@ void map_auto_generate_lift(map_type *map,int rn,int ty,int by,int lx,int rx,int
 	move=&movement->moves[move_idx];
 	move->mov.y=-high;
 	move->msec=ag_constant_lift_move_millisec;
-	strcpy(move->sound_name,ag_settings.door_sound);
+	strcpy(move->sound_name,ag_settings.sound.lift);
+	
+	move_idx=map_movement_move_add(map,movement_idx);
+
+	move=&movement->moves[move_idx];
+	move->msec=ag_constant_lift_move_millisec;
 }
 
 /* =======================================================
@@ -839,7 +844,7 @@ void map_auto_generate_doors(map_type *map)
 		}
 
 		move->msec=ag_constant_door_open_millisec;
-		strcpy(move->sound_name,ag_settings.door_sound);
+		strcpy(move->sound_name,ag_settings.sound.door);
 		
 			// next door
 			

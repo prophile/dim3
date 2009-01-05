@@ -1373,7 +1373,7 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					xml_get_attribute_3_coord_float(node_tag,"angle",&node->ang.x,&node->ang.y,&node->ang.z);
 
 					xml_get_attribute_text(node_tag,"name",node->name,name_str_len);
-					node->user_value=xml_get_attribute_int_default(node_tag,"user",0);
+					node->event_id=xml_get_attribute_int_default(node_tag,"event_id",0);
 					
 					tag=xml_findfirstchild("Link",node_tag);
 					xml_get_attribute_short_array(tag,"node",node->link,max_node_link);

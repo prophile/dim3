@@ -38,7 +38,7 @@ extern AGLContext		ctx;
 
 extern map_type			map;
 extern setup_type		setup;
-extern bitmap_type		spot_bitmap,scenery_bitmap,node_bitmap,
+extern bitmap_type		spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
 						light_bitmap,sound_bitmap,particle_bitmap;
 
 extern bool obscure_mesh_view_bit_get(unsigned char *visibility_flag,int idx);
@@ -549,7 +549,14 @@ void walk_view_draw_nodes(d3pnt *cpt)
 	node=map.nodes;
 	
 	for (n=0;n!=map.nnode;n++) {
-		if (!walk_view_draw_pnt_obscure(&node->pnt)) walk_view_draw_sprite(cpt,&node->pnt,0.0f,node_bitmap.gl_id);
+		if (!walk_view_draw_pnt_obscure(&node->pnt)) {
+			if (node->name[0]==0x0) {
+				walk_view_draw_sprite(cpt,&node->pnt,0.0f,node_bitmap.gl_id);
+			}
+			else {
+				walk_view_draw_sprite(cpt,&node->pnt,0.0f,node_defined_bitmap.gl_id);
+			}
+		}
 		node++;
 	}
 }

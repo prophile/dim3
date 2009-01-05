@@ -42,7 +42,34 @@ extern js_type				js;
       
 ======================================================= */
 
-bool object_auto_walk_node_setup(obj_type *obj,char *start_node,char *end_node,int event_id)
+bool object_auto_walk_node_setup(obj_type *obj,int from_idx,int to_idx,int event_id)
+{
+		// is end node in start node path?
+		// skip check if to and from are the same
+		
+	if (from_idx!=to_idx) {
+		if (map_find_next_node_in_path(&map,from_idx,to_idx)==-1) {
+			JS_ReportError(js.cx,"End node is not in the same path as the start node");
+			return(FALSE);
+		}
+	}
+	
+		// setup seeking
+		
+	obj->auto_walk.mode=aw_node;
+	obj->auto_walk.node_seek_idx=from_idx;
+	obj->auto_walk.node_dest_idx=to_idx;
+	
+		// setup event and start walking
+		
+	obj->auto_walk.node_event_id=event_id;
+
+	obj->forward_move.moving=TRUE;
+
+	return(TRUE);
+}
+
+bool object_auto_walk_node_name_setup(obj_type *obj,char *start_node,char *end_node,int event_id)
 {
 	int			from_idx,to_idx;
 	
@@ -60,25 +87,7 @@ bool object_auto_walk_node_setup(obj_type *obj,char *start_node,char *end_node,i
 		return(FALSE);
 	}
 	
-		// is end node in start node path?
-		
-	if (map_find_next_node_in_path(&map,from_idx,to_idx)==-1) {
-		JS_ReportError(js.cx,"End node '%s' is not in the same path as the start node '%s'",end_node,start_node);
-		return(FALSE);
-	}
-	
-		// setup seeking
-		
-	obj->auto_walk.mode=aw_node;
-	obj->auto_walk.node_seek_idx=from_idx;
-	obj->auto_walk.node_dest_idx=to_idx;
-	obj->auto_walk.node_event_id=event_id;
-
-		// start walking
-		
-	obj->forward_move.moving=TRUE;
-
-	return(TRUE);
+	return(object_auto_walk_node_setup(obj,from_idx,to_idx,event_id));
 }
 
 bool object_auto_walk_object_setup(obj_type *obj,int uid,bool turn_only)
@@ -107,19 +116,12 @@ bool object_auto_walk_player_setup(obj_type *obj,bool turn_only)
 	return(object_auto_walk_object_setup(obj,server.player_obj_uid,turn_only));
 }
 
-bool object_auto_walk_position_setup(obj_type *obj,d3pnt *pnt,int slop)
+bool object_auto_walk_position_setup(obj_type *obj,d3pnt *pnt)
 {
 		// setup walk to position
 		
 	obj->auto_walk.mode=aw_position;
 	memmove(&obj->auto_walk.pnt,pnt,sizeof(d3pnt));
-	
-		// add in slop
-		
-	if (slop!=0) {
-		obj->auto_walk.pnt.x+=(slop-random_int(slop>>1));
-		obj->auto_walk.pnt.z+=(slop-random_int(slop>>1));
-	}
 
 		// start walking
 		
@@ -181,7 +183,7 @@ void object_auto_walk_set_vertical_move(obj_type *obj,int to_y,int to_z)
 void object_auto_walk_node(obj_type *obj)
 {
 	int				dist,seek_idx,dest_idx;
-	float			ang_y;
+	float			ang_y,dif_y;
 	bool			cwise;
 	node_type		*node;
 	
@@ -195,10 +197,10 @@ void object_auto_walk_node(obj_type *obj)
 	node=&map.nodes[seek_idx];
 	
 	ang_y=angle_find(obj->pnt.x,obj->pnt.z,node->pnt.x,node->pnt.z);
-	angle_dif(ang_y,obj->ang.y,&cwise);
+	dif_y=angle_dif(ang_y,obj->ang.y,&cwise);
 	
 	obj->turn.ang_to.y=ang_y;
-	
+
 	if (cwise) {
 		obj->turn.ang_add.y=-object_get_turn_speed(obj);
 	}
@@ -213,13 +215,13 @@ void object_auto_walk_node(obj_type *obj)
 		// near node?
 		
 	dist=distance_get(node->pnt.x,node->pnt.y,node->pnt.z,obj->pnt.x,obj->pnt.y,obj->pnt.z);
-	if (dist>obj->auto_walk.node_slop) return;	
+	if (dist>obj->auto_walk.node_slop) return;
 	
 		// move on to last node
 		
 	if (seek_idx!=dest_idx) {
 		obj->auto_walk.node_seek_idx=map_find_next_node_in_path(&map,seek_idx,dest_idx);
-		scripts_post_event_console(&obj->attach,sd_event_path,sd_event_path_node,(int)node->user_value);
+		scripts_post_event_console(&obj->attach,sd_event_path,sd_event_path_node,node->event_id);
 		return;
 	}
 	

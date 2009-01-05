@@ -255,7 +255,7 @@ void camera_static_run(void)
 		
 	if (seek_idx!=dest_idx) {
 		camera.auto_walk.node_seek_idx=map_find_next_node_in_path(&map,seek_idx,dest_idx);
-		scripts_post_event_console(&js.course_attach,sd_event_path,sd_event_path_node,(int)node->user_value);
+		scripts_post_event_console(&js.course_attach,sd_event_path,sd_event_path_node,node->event_id);
 		return;
 	}
 	

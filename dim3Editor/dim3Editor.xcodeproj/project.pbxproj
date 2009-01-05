@@ -15,6 +15,8 @@
 		26772F810EBE8A6600F9E241 /* dialog_reposition.c in Sources */ = {isa = PBXBuildFile; fileRef = 26772F800EBE8A6600F9E241 /* dialog_reposition.c */; };
 		26791D430E4D626700AAD058 /* dialog_grid_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 26791D420E4D626700AAD058 /* dialog_grid_mesh.c */; };
 		26829D610E54E75900EEED65 /* obscure.c in Sources */ = {isa = PBXBuildFile; fileRef = 26829D600E54E75900EEED65 /* obscure.c */; };
+		26871A3C0F11666E0043B667 /* node_defined.png in Resources */ = {isa = PBXBuildFile; fileRef = 26871A3B0F11666E0043B667 /* node_defined.png */; };
+		26871A5C0F1168330043B667 /* node_defined.png in Copy (Icons) */ = {isa = PBXBuildFile; fileRef = 26871A3B0F11666E0043B667 /* node_defined.png */; };
 		26934B110D876A800009F81E /* walk_view_click_drag.c in Sources */ = {isa = PBXBuildFile; fileRef = 26934B100D876A800009F81E /* walk_view_click_drag.c */; };
 		26AFB4490D95E0E60004805A /* pieces_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AFB4480D95E0E60004805A /* pieces_mesh.c */; };
 		26AFB4C00D9612570004805A /* dialog_mesh_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AFB4BF0D9612570004805A /* dialog_mesh_setting.c */; };
@@ -145,6 +147,7 @@
 			files = (
 				F522DCD40BBC859700DFF256 /* light.png in Copy (Icons) */,
 				F522DCD50BBC859700DFF256 /* node.png in Copy (Icons) */,
+				26871A5C0F1168330043B667 /* node_defined.png in Copy (Icons) */,
 				F522DCD60BBC859700DFF256 /* particle.png in Copy (Icons) */,
 				F522DCD70BBC859700DFF256 /* scenery.png in Copy (Icons) */,
 				F522DCD80BBC859700DFF256 /* sound.png in Copy (Icons) */,
@@ -217,6 +220,7 @@
 		26772F800EBE8A6600F9E241 /* dialog_reposition.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_reposition.c; path = Code/dialog_reposition.c; sourceTree = "<group>"; };
 		26791D420E4D626700AAD058 /* dialog_grid_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_grid_mesh.c; path = Code/dialog_grid_mesh.c; sourceTree = "<group>"; };
 		26829D600E54E75900EEED65 /* obscure.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = obscure.c; path = Code/obscure.c; sourceTree = "<group>"; };
+		26871A3B0F11666E0043B667 /* node_defined.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = node_defined.png; sourceTree = "<group>"; };
 		26934B100D876A800009F81E /* walk_view_click_drag.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = walk_view_click_drag.c; path = Code/walk_view_click_drag.c; sourceTree = "<group>"; };
 		26AFB4480D95E0E60004805A /* pieces_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pieces_mesh.c; path = Code/pieces_mesh.c; sourceTree = "<group>"; };
 		26AFB4BF0D9612570004805A /* dialog_mesh_setting.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_mesh_setting.c; path = Code/dialog_mesh_setting.c; sourceTree = "<group>"; };
@@ -460,6 +464,7 @@
 			children = (
 				F522DCBF0BBC853C00DFF256 /* light.png */,
 				F522DCC00BBC853C00DFF256 /* node.png */,
+				26871A3B0F11666E0043B667 /* node_defined.png */,
 				F522DCC10BBC853C00DFF256 /* particle.png */,
 				F522DCC20BBC853C00DFF256 /* scenery.png */,
 				F522DCC30BBC853C00DFF256 /* sound.png */,
@@ -531,6 +536,7 @@
 		F5E8EBA808A1C1EF00F06B82 /* Common View */ = {
 			isa = PBXGroup;
 			children = (
+				F5DD757A092CFD8700465E14 /* launch.c */,
 				F52F19B70946A63100FEFE18 /* selection.c */,
 				F54797150107EA3C01000001 /* pieces.c */,
 				F54583E3094F868300CBE89A /* pieces_create.c */,
@@ -550,7 +556,6 @@
 				F57CACA60C38B76200B595F4 /* texture_palette.c */,
 				F5D3312C0C39FF2C00BED1CE /* info_status_line.c */,
 				F510D43D02485F2F01DF5EE2 /* progress_window.c */,
-				F5DD757A092CFD8700465E14 /* launch.c */,
 			);
 			name = Windows;
 			sourceTree = "<group>";
@@ -631,6 +636,7 @@
 				F5A4322B055602DF002DF965 /* InfoPlist.strings in Resources */,
 				F5A4322C055602DF002DF965 /* dim3 Editor.icns in Resources */,
 				F57537BA055B5F4900D42FAF /* dim3 Editor.nib in Resources */,
+				26871A3C0F11666E0043B667 /* node_defined.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -739,8 +745,7 @@
 		F5DB0C540856A994005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = "$(NATIVE_ARCH)";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

@@ -236,11 +236,6 @@ void piece_add_obj_mesh(void)
 		StandardAlert(kAlertStopAlert,"\pImport Failed","\pNo faces in OBJ.",NULL,NULL);
 		return;
     }
-	if (nuv==0) {
-		textdecode_close();
-		StandardAlert(kAlertStopAlert,"\pImport Failed","\pNo UV coordinates in OBJ.",NULL,NULL);
-		return;
-    }
 	
 		// get default scale
 		
@@ -321,24 +316,26 @@ void piece_add_obj_mesh(void)
 	
 		// get the UVs
 		
-	uvs=(float*)malloc(sizeof(float)*(2*nuv));
-	if (uvs==NULL) {
-		textdecode_close();
-		StandardAlert(kAlertStopAlert,"\pImport Failed","\pOut of Memory.",NULL,NULL);
-		return;
-    }
+	if (nuv!=0) {
+		uvs=(float*)malloc(sizeof(float)*(2*nuv));
+		if (uvs==NULL) {
+			textdecode_close();
+			StandardAlert(kAlertStopAlert,"\pImport Failed","\pOut of Memory.",NULL,NULL);
+			return;
+		}
 
- 	uv=uvs;
+		uv=uvs;
 
-    for (n=0;n!=nline;n++) {
-        textdecode_get_piece(n,0,txt);
-		if (strcmp(txt,"vt")!=0) continue;
-                
-		textdecode_get_piece(n,1,uvstr);
-		*uv++=strtod(uvstr,NULL);
-		textdecode_get_piece(n,2,uvstr);
-		*uv++=1.0f-strtod(uvstr,NULL);
-    }
+		for (n=0;n!=nline;n++) {
+			textdecode_get_piece(n,0,txt);
+			if (strcmp(txt,"vt")!=0) continue;
+					
+			textdecode_get_piece(n,1,uvstr);
+			*uv++=strtod(uvstr,NULL);
+			textdecode_get_piece(n,2,uvstr);
+			*uv++=1.0f-strtod(uvstr,NULL);
+		}
+	}
 
 		// need to split up meshes by materials
 		
@@ -406,7 +403,7 @@ void piece_add_obj_mesh(void)
 			py[npt]=dpt->y;
 			pz[npt]=dpt->z;
             
-			if (uvstr[0]==0x0) {
+			if ((uvstr[0]==0x0) || (nuv==0)) {
 				gx[npt]=gy[npt]=0.0f;
 			}
 			else {
@@ -431,6 +428,10 @@ void piece_add_obj_mesh(void)
 		// finish up
 		
 	piece_add_mesh_finish(mesh_idx);
+	
+		// if no uvs, force auto-texture
+		
+	if (nuv==0) map_mesh_reset_uv(&map,mesh_idx);
 }
 
 /* =======================================================

@@ -40,7 +40,7 @@ extern CCrsrHandle				handcur,rotatecur,forwardcur,towardcur,cutcur,addcur;
 int								cx,cz,cy,walk_view_last_rn;
 int								magnify_factor=magnify_size;
 float							walk_view_fov,walk_view_y_angle,walk_view_x_angle;
-bitmap_type						spot_bitmap,scenery_bitmap,node_bitmap,
+bitmap_type						spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
 								light_bitmap,sound_bitmap,particle_bitmap;
 
 /* =======================================================
@@ -64,6 +64,9 @@ bool walk_view_initialize(void)
 	file_paths_app(&file_path_setup,path,"Contents/Resources/Icons","node","png");
 	bitmap_open(&node_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
 	
+	file_paths_app(&file_path_setup,path,"Contents/Resources/Icons","node_defined","png");
+	bitmap_open(&node_defined_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
+	
 	file_paths_app(&file_path_setup,path,"Contents/Resources/Icons","light","png");
 	bitmap_open(&light_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
 
@@ -83,6 +86,7 @@ void walk_view_shutdown(void)
     bitmap_close(&spot_bitmap);
     bitmap_close(&scenery_bitmap);
     bitmap_close(&node_bitmap);
+    bitmap_close(&node_defined_bitmap);
     bitmap_close(&light_bitmap);
     bitmap_close(&sound_bitmap);
     bitmap_close(&particle_bitmap);

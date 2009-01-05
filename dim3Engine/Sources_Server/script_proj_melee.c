@@ -53,7 +53,7 @@ JSPropertySpec	proj_melee_props[]={
 							{"distance",				proj_melee_prop_distance,			JSPROP_PERMANENT|JSPROP_SHARED},
 							{"damage",					proj_melee_prop_damage,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{"force",					proj_melee_prop_force,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"lifeTick",				proj_melee_prop_life_tick,			JSPROP_PERMANENT|JSPROP_SHARED},
+							{"fallOff",					proj_melee_prop_fall_off,			JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 
 JSFunctionSpec	proj_melee_functions[]={
@@ -113,6 +113,9 @@ JSBool js_get_proj_melee_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 		case proj_melee_prop_force:
 			*vp=INT_TO_JSVAL(proj_setup->melee.force);
 			break;
+		case proj_melee_prop_fall_off:
+			*vp=BOOLEAN_TO_JSVAL(proj_setup->melee.fall_off);
+			break;
 			
 	}
 	
@@ -149,6 +152,9 @@ JSBool js_set_proj_melee_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 			break;
 		case proj_melee_prop_force:
 			proj_setup->melee.force=JSVAL_TO_INT(*vp);
+			break;
+		case proj_melee_prop_fall_off:
+			proj_setup->melee.fall_off=JSVAL_TO_BOOLEAN(*vp);
 			break;
 
 	}

@@ -54,6 +54,11 @@ void fade_screen_start(int tick)
 	fade_screen_tick=tick;
 }
 
+void fade_screen_cancel(void)
+{
+	fade_screen_tick=-1;
+}
+
 void fade_screen_draw(int tick)
 {
 	float			alpha;

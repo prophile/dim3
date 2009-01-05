@@ -548,7 +548,7 @@ bool map_mesh_tesselate(map_type *map,int mesh_idx)
       
 ======================================================= */
 
-bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx)
+bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *extrude_pnt)
 {
 	int						n,ptsz,mx,my,mz,
 							px[8],py[8],pz[8],
@@ -643,6 +643,49 @@ bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx)
 		k_gy[3]=gy[n];
 
 		if (map_mesh_add_poly(map,mesh_idx,4,kx,ky,kz,k_gx,k_gy,poly->txt_idx)==-1) return(FALSE);
+	}
+	
+		// extruded polys
+		
+	if (extrude_pnt!=NULL) {
+	
+		for (n=0;n!=ptsz;n++) {
+
+			poly=&mesh->polys[poly_idx];			// add might force memory move, need to always rebuild pointer
+
+			k=n+1;
+			if (k==ptsz) k=0;
+
+			kx[0]=px[n]+extrude_pnt->x;
+			ky[0]=py[n]+extrude_pnt->y;
+			kz[0]=pz[n]+extrude_pnt->z;
+
+			kx[1]=px[n];
+			ky[1]=py[n];
+			kz[1]=pz[n];
+
+			kx[2]=px[k];
+			ky[2]=py[k];
+			kz[2]=pz[k];
+
+			kx[3]=px[k]+extrude_pnt->x;
+			ky[3]=py[k]+extrude_pnt->y;
+			kz[3]=pz[k]+extrude_pnt->z;
+
+			k_gx[0]=0.0f;
+			k_gy[0]=0.0f;
+
+			k_gx[1]=1.0f;
+			k_gy[1]=0.0f;
+
+			k_gx[2]=1.0f;
+			k_gy[2]=1.0f;
+
+			k_gx[3]=0.0f;
+			k_gy[3]=1.0f;
+
+			if (map_mesh_add_poly(map,mesh_idx,4,kx,ky,kz,k_gx,k_gy,poly->txt_idx)==-1) return(FALSE);
+		}
 	}
 
 		// finish by deleting original polygon

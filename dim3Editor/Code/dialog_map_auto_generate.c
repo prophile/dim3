@@ -44,6 +44,7 @@ and can be sold or given away.
 #define kMapGenerateDoorType						FOUR_CHAR_CODE('dort')
 #define kMapGenerateStairType						FOUR_CHAR_CODE('star')
 #define kMapGenerateLightType						FOUR_CHAR_CODE('litt')
+#define kMapGenerateWindow							FOUR_CHAR_CODE('wind')
 
 #define kMapGenerateStepSize						FOUR_CHAR_CODE('stsz')
 #define kMapGenerateStepHigh						FOUR_CHAR_CODE('sthg')
@@ -52,16 +53,18 @@ and can be sold or given away.
 #define kMapGenerateTexturePortalWall				FOUR_CHAR_CODE('pwtx')
 #define kMapGenerateTexturePortalFloor				FOUR_CHAR_CODE('pftx')
 #define kMapGenerateTexturePortalCeiling			FOUR_CHAR_CODE('pctx')
-#define kMapGenerateTextureCorridorWall				FOUR_CHAR_CODE('cwtx')
-#define kMapGenerateTextureCorridorFloor			FOUR_CHAR_CODE('cftx')
-#define kMapGenerateTextureCorridorCeiling			FOUR_CHAR_CODE('cctx')
+#define kMapGenerateTextureCorridor					FOUR_CHAR_CODE('crtx')
 #define kMapGenerateTextureSecondStory				FOUR_CHAR_CODE('sstx')
+#define kMapGenerateTextureWindow					FOUR_CHAR_CODE('wwtx')
 #define kMapGenerateTextureDoor						FOUR_CHAR_CODE('drtx')
 #define kMapGenerateTextureStep						FOUR_CHAR_CODE('sttx')
 #define kMapGenerateTextureRamp						FOUR_CHAR_CODE('rmtx')
 #define kMapGenerateTextureColumn					FOUR_CHAR_CODE('cltx')
 
 #define kMapGenerateDoorSound						FOUR_CHAR_CODE('dsnd')
+#define kMapGenerateLiftSound						FOUR_CHAR_CODE('lsnd')
+
+#define kMapGenerateNewSeed							FOUR_CHAR_CODE('nsed')
 
 extern auto_generate_settings_type			ag_settings;
 
@@ -84,7 +87,7 @@ static pascal OSStatus map_generate_setting_event_proc(EventHandlerCallRef handl
 			GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
 			
 			switch (cmd.commandID) {
-					
+			
 				case kHICommandCancel:
 					dialog_map_generate_cancel=TRUE;
 					QuitAppModalLoopForWindow(dialog_map_generate_wind);
@@ -105,8 +108,33 @@ static pascal OSStatus map_generate_setting_event_proc(EventHandlerCallRef handl
 
 static pascal OSStatus map_generate_setting_tab_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
-	dialog_switch_tab(dialog_map_generate_wind,kMapGenerateTab,0,kMapGenerateTabCount);
-	return(noErr);
+	int				event_class,event_kind;
+	HICommand		cmd;
+	
+	event_class=GetEventClass(event);
+	event_kind=GetEventKind(event);
+	
+	if ((event_class==kEventClassCommand) && (event_kind==kEventProcessCommand)) {
+			
+		GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
+		
+		switch (cmd.commandID) {
+				
+				case kMapGenerateNewSeed:
+					dialog_set_int(dialog_map_generate_wind,kMapGenerateSeed,0,(int)time(NULL));
+					dialog_redraw(dialog_map_generate_wind,kMapGenerateSeed,0);
+					return(noErr);
+				
+		}
+			
+		return(eventNotHandledErr);
+	}
+	
+	if ((event_class==kEventClassControl) && (event_kind==kEventControlHit)) {
+		dialog_switch_tab(dialog_map_generate_wind,kMapGenerateTab,0,kMapGenerateTabCount);
+	}
+	
+	return(eventNotHandledErr);
 }
 
 /* =======================================================
@@ -122,7 +150,8 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	ControlID				ctrl_id;
 	EventHandlerUPP			event_upp,tab_event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}},
-							tab_event_list[]={{kEventClassControl,kEventControlHit}};
+							tab_event_list[]={{kEventClassCommand,kEventProcessCommand},
+											  {kEventClassControl,kEventControlHit}};
 	
 		// open the dialog
 		
@@ -139,13 +168,11 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	tab_event_upp=NewEventHandlerUPP(map_generate_setting_tab_proc);
 	InstallControlEventHandler(ctrl,tab_event_upp,GetEventTypeCount(tab_event_list),tab_event_list,dialog_map_generate_wind,NULL);
 	
-		// set random seed
-		
-	dialog_set_int(dialog_map_generate_wind,kMapGenerateSeed,0,(int)time(NULL));
-	
 		// old settings
 		
 	if (!first) {
+		dialog_set_int(dialog_map_generate_wind,kMapGenerateSeed,0,ag_settings.seed);
+		
 		dialog_set_value(dialog_map_generate_wind,kMapGenerateMapSize,0,ag_settings.map.map_sz);
 		dialog_set_combo(dialog_map_generate_wind,kMapGenerateBlock,0,ag_settings.block);
 		dialog_set_value(dialog_map_generate_wind,kMapGeneratePortalSize,0,ag_settings.map.portal_sz);
@@ -170,15 +197,17 @@ bool dialog_map_auto_generate_setting_run(bool first)
 			dialog_set_boolean(dialog_map_generate_wind,kMapGenerateLightType,n,ag_settings.light_type_on[n]);
 		}
 		
-		dialog_set_text(dialog_map_generate_wind,kMapGenerateDoorSound,0,ag_settings.door_sound);
+		dialog_set_boolean(dialog_map_generate_wind,kMapGenerateWindow,0,ag_settings.window);
+		
+		dialog_set_text(dialog_map_generate_wind,kMapGenerateDoorSound,0,ag_settings.sound.door);
+		dialog_set_text(dialog_map_generate_wind,kMapGenerateLiftSound,0,ag_settings.sound.lift);
 	
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalWall,0,FALSE,ag_settings.texture.portal_wall);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalFloor,0,FALSE,ag_settings.texture.portal_floor);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalCeiling,0,FALSE,ag_settings.texture.portal_ceiling);
-		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorWall,0,FALSE,ag_settings.texture.corridor_wall);
-		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorFloor,0,FALSE,ag_settings.texture.corridor_floor);
-		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorCeiling,0,FALSE,ag_settings.texture.corridor_ceiling);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridor,0,FALSE,ag_settings.texture.corridor);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureSecondStory,0,FALSE,ag_settings.texture.second_story);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureWindow,0,FALSE,ag_settings.texture.window);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureDoor,0,FALSE,ag_settings.texture.door);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureStep,0,FALSE,ag_settings.texture.steps);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE,ag_settings.texture.ramp);
@@ -186,19 +215,22 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	}
 	else {
 	
+			// random seed
+			
+		dialog_set_int(dialog_map_generate_wind,kMapGenerateSeed,0,(int)time(NULL));
+	
 			// always need to set textures
 			
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalWall,0,FALSE,0);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalFloor,0,FALSE,1);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalCeiling,0,FALSE,2);
-		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorWall,0,FALSE,3);
-		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorFloor,0,FALSE,4);
-		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorCeiling,0,FALSE,5);
-		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureSecondStory,0,FALSE,6);
-		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureDoor,0,FALSE,7);
-		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureStep,0,FALSE,8);
-		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE,9);
-		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureColumn,0,FALSE,10);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridor,0,FALSE,3);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureSecondStory,0,FALSE,4);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureWindow,0,FALSE,5);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureDoor,0,FALSE,6);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureStep,0,FALSE,7);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE,8);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureColumn,0,FALSE,9);
 	}
 	
 		// show window
@@ -243,15 +275,17 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		ag_settings.light_type_on[n]=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateLightType,n);
 	}
 	
-	dialog_get_text(dialog_map_generate_wind,kMapGenerateDoorSound,0,ag_settings.door_sound,name_str_len);
+	ag_settings.window=dialog_get_boolean(dialog_map_generate_wind,kMapGenerateWindow,0);
+	
+	dialog_get_text(dialog_map_generate_wind,kMapGenerateDoorSound,0,ag_settings.sound.door,name_str_len);
+	dialog_get_text(dialog_map_generate_wind,kMapGenerateLiftSound,0,ag_settings.sound.lift,name_str_len);
 	
 	ag_settings.texture.portal_wall=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalWall,0,FALSE);
 	ag_settings.texture.portal_floor=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalFloor,0,FALSE);
 	ag_settings.texture.portal_ceiling=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalCeiling,0,FALSE);
-	ag_settings.texture.corridor_wall=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorWall,0,FALSE);
-	ag_settings.texture.corridor_floor=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorFloor,0,FALSE);
-	ag_settings.texture.corridor_ceiling=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridorCeiling,0,FALSE);
+	ag_settings.texture.corridor=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridor,0,FALSE);
 	ag_settings.texture.second_story=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureSecondStory,0,FALSE);
+	ag_settings.texture.window=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureWindow,0,FALSE);
 	ag_settings.texture.door=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureDoor,0,FALSE);
 	ag_settings.texture.steps=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureStep,0,FALSE);
 	ag_settings.texture.ramp=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE);

@@ -623,6 +623,7 @@ typedef struct		{
 												force;
 						char					strike_pose_name[name_str_len],
 												object_strike_pose_name[name_str_len];
+						bool					fall_off;
 						model_tag				strike_bone_tag,object_strike_bone_tag;
 					} melee_type;
 
