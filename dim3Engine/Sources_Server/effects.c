@@ -66,11 +66,10 @@ effect_type* effect_spawn(int effecttype,d3pnt *pt,int life_tick)
 	}
 	
 		// any more effect spots?
+		// this is a silent error, as it's not fatal
+		// and not script-based
 		
-	if (server.count.effect>=max_effect) {
-		console_add_error("No more spots to spawn effect");
-		return(NULL);
-	}
+	if (server.count.effect>=max_effect) return(NULL);
 	
 		// create effect
 	

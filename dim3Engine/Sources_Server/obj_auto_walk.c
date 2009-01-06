@@ -63,6 +63,7 @@ bool object_auto_walk_node_setup(obj_type *obj,int from_idx,int to_idx,int event
 		// setup event and start walking
 		
 	obj->auto_walk.node_event_id=event_id;
+	obj->auto_walk.pause_for_turn=FALSE;
 
 	obj->forward_move.moving=TRUE;
 
@@ -125,6 +126,7 @@ bool object_auto_walk_position_setup(obj_type *obj,d3pnt *pnt)
 
 		// start walking
 		
+	obj->auto_walk.pause_for_turn=FALSE;
 	obj->forward_move.moving=TRUE;
 
 	return(TRUE);
@@ -180,6 +182,39 @@ void object_auto_walk_set_vertical_move(obj_type *obj,int to_y,int to_z)
 	obj->vert_move.seek_ang=angle_find(y,obj->pnt.z,to_y,to_z);
 }
 
+void object_auto_walk_set_motion(obj_type *obj)
+{
+	int				dif_y;
+	float			dif_ang;
+	bool			cwise;
+	
+		// if we are already paused for
+		// turning, then it's a different
+		// value that takes us out of pause
+		
+	if (obj->auto_walk.pause_for_turn) {
+		dif_ang=node_pause_min_angle;
+	}
+	else {
+		dif_ang=node_pause_max_angle;
+	}
+	
+		// see if we can move regularly
+		
+	dif_y=angle_dif(obj->turn.ang_to.y,obj->ang.y,&cwise);
+	
+	if (dif_y<dif_ang) {
+		obj->auto_walk.pause_for_turn=FALSE;
+		obj->forward_move.moving=TRUE;
+		return;
+	}
+		
+		// need to pause
+
+	obj->auto_walk.pause_for_turn=TRUE;
+	obj->forward_move.moving=FALSE;
+}
+
 void object_auto_walk_node(obj_type *obj)
 {
 	int				dist,seek_idx,dest_idx;
@@ -207,6 +242,10 @@ void object_auto_walk_node(obj_type *obj)
 	else {
 		obj->turn.ang_add.y=object_get_turn_speed(obj);
 	}
+	
+		// stop walking if turn is too hard
+		
+	obj->forward_move.moving=(dif_y<45.0f);
 	
 		// if flying, put in a seek angle
 		

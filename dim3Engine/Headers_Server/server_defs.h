@@ -182,13 +182,20 @@ and can be sold or given away.
 #define max_shadow_poly							64
 
 //
+// node walking
+//
+
+#define node_slop_speed_factor					2.0f				// how close to a node do we have to be (compared with speed) to be a hit
+#define node_pause_max_angle					45.0f				// angle needed to get out of a pause to turn
+#define node_pause_min_angle					30.0f				// angle needed to get out of a pause when already paused
+
+//
 // misc settings
 //
 
 #define ws_step_factor							4					// how much to reduce movement when wall sliding
 #define pd_parent_grace							100					// how long till projectile can strike parent again
 #define ci_object_click_angle					20.0f				// angle at which you can click an object
-#define node_slop_speed_factor					2.0f				// how close to a node do we have to be (compared with speed) to be a hit
 
 //
 // models
@@ -497,6 +504,7 @@ typedef struct		{
 typedef struct		{
 						int						mode,obj_uid,
 												node_seek_idx,node_dest_idx,node_event_id;
+						bool					pause_for_turn;
 						d3pnt					pnt;
 					} obj_auto_walk;
 					
