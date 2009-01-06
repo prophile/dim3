@@ -43,12 +43,6 @@ JSBool js_model_animation_interrupt_func(JSContext *cx,JSObject *j_obj,uintN arg
 JSBool js_model_animation_start_then_change_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_model_animation_fade_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-extern JSBool js_model_mesh_show_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-extern JSBool js_model_mesh_show_all_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-extern JSBool js_model_mesh_show_only_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-extern JSBool js_model_mesh_hide_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-extern JSBool js_model_mesh_hide_all_mesh_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-
 extern js_type			js;
 
 JSClass			model_animation_class={"model_animation_class",0,
@@ -68,14 +62,7 @@ JSFunctionSpec	model_animation_functions[]={
 							{"interrupt",			js_model_animation_interrupt_func,				1},
 							{"startThenChange",		js_model_animation_start_then_change_func,		2},
 							{"fade",				js_model_animation_fade_func,					2},
-							{"showMesh",			js_model_mesh_show_mesh_func,					1},
-							{"showAllMesh",			js_model_mesh_show_all_mesh_func,				0},
-							{"showOnlyMesh",		js_model_mesh_show_only_mesh_func,				1},
-							{"hideMesh",			js_model_mesh_hide_mesh_func,					1},
-							{"hideAllMesh",			js_model_mesh_hide_all_mesh_func,				0},
 							{0}};
-
-// supergumba -- ALL MESH STUFF IS DEPRECIATED!  Been moved to model.mesh; erase in later versions
 
 extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 

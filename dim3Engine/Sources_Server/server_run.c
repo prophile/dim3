@@ -362,7 +362,7 @@ void run_projectiles_no_slice(int tick)
 void server_run(int tick)
 {
 	obj_type		*obj;
-	
+
 		// get player object
 		
 	obj=object_find_uid(server.player_obj_uid);
@@ -380,14 +380,13 @@ void server_run(int tick)
 			group_moves_run(TRUE);
 			
 			run_objects_slice(tick);
-			
 			run_projectiles_slice(tick);
 			
 			map_movements_auto_open();
 			
 			camera_run();
 			weapon_hand_bounce(obj);
-			
+		
 			particle_map_run();
 		}
 

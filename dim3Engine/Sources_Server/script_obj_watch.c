@@ -45,17 +45,20 @@ JSClass			obj_watch_class={"obj_watch_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 JSPropertySpec	obj_watch_props[]={
-							{"objectId",			obj_watch_prop_object_id,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectName",			obj_watch_prop_object_name,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectIsPlayer",		obj_watch_prop_object_is_player,	JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectTeam",			obj_watch_prop_object_team,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"baseTeam",			obj_watch_prop_base_team,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"soundName",			obj_watch_prop_sound_name,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"objectId",				obj_watch_prop_object_id,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"objectName",				obj_watch_prop_object_name,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"objectIsPlayer",			obj_watch_prop_object_is_player,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"objectIsRemote",			obj_watch_prop_object_is_remote,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"objectIsBot",				obj_watch_prop_object_is_bot,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"objectIsPlayerRemoteBot",	obj_watch_prop_object_is_player_remote_bot,	JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"objectTeam",				obj_watch_prop_object_team,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"baseTeam",				obj_watch_prop_base_team,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"soundName",				obj_watch_prop_sound_name,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 							
 JSFunctionSpec	obj_watch_functions[]={
-							{"start",				js_obj_watch_start_func,			1},
-							{"stop",				js_obj_watch_stop_func,				0},
+							{"start",					js_obj_watch_start_func,			1},
+							{"stop",					js_obj_watch_stop_func,				0},
 							{0}};
 
 /* =======================================================
@@ -105,7 +108,42 @@ JSBool js_get_obj_watch_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 		case obj_watch_prop_object_is_player:
 			*vp=BOOLEAN_TO_JSVAL(obj->watch.obj_uid==server.player_obj_uid);
 			break;
-			
+
+		case obj_watch_prop_object_is_remote:
+			watch_obj=object_find_uid(obj->watch.obj_uid);
+			if (watch_obj==NULL) {
+				*vp=JSVAL_FALSE;
+				break;
+			}
+
+			*vp=BOOLEAN_TO_JSVAL(watch_obj->remote.on);
+			break;
+
+		case obj_watch_prop_object_is_bot:
+			watch_obj=object_find_uid(obj->watch.obj_uid);
+			if (watch_obj==NULL) {
+				*vp=JSVAL_FALSE;
+				break;
+			}
+
+			*vp=BOOLEAN_TO_JSVAL(strcasecmp(watch_obj->type,"bot")==0);
+			break;
+
+		case obj_watch_prop_object_is_player_remote_bot:
+			if (obj->watch.obj_uid==server.player_obj_uid) {
+				*vp=JSVAL_TRUE;
+				break;
+			}
+
+			watch_obj=object_find_uid(obj->watch.obj_uid);
+			if (watch_obj==NULL) {
+				*vp=JSVAL_FALSE;
+				break;
+			}
+
+			*vp=BOOLEAN_TO_JSVAL((watch_obj->remote.on) || (strcasecmp(watch_obj->type,"bot")==0));
+			break;
+
 		case obj_watch_prop_object_team:
 			watch_obj=object_find_uid(obj->watch.obj_uid);
 			if (watch_obj==NULL) {

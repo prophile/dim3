@@ -364,6 +364,7 @@ void map_movements_auto_open(void)
 				if ((obj->player) || (obj->open_doors)) {
 
 					if (obj->contact.stand_poly.mesh_idx!=-1) {
+
 						if (group_move_object_stand(movement->group_idx,obj->contact.stand_poly.mesh_idx)) {
 							obj_in_range=TRUE;
 							break;
@@ -379,7 +380,7 @@ void map_movements_auto_open(void)
 			}
 
 		}
-		
+
 			// time to open or close?
 			
 		if (!movement->opened) {

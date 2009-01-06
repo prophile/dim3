@@ -475,9 +475,12 @@ and can be sold or given away.
 #define obj_watch_prop_object_id					0
 #define obj_watch_prop_object_name					1
 #define obj_watch_prop_object_is_player				2
-#define obj_watch_prop_object_team					3
-#define obj_watch_prop_base_team					4
-#define obj_watch_prop_sound_name					5
+#define obj_watch_prop_object_is_remote				3
+#define obj_watch_prop_object_is_bot				4
+#define obj_watch_prop_object_is_player_remote_bot	5
+#define obj_watch_prop_object_team					6
+#define obj_watch_prop_base_team					7
+#define obj_watch_prop_sound_name					8
 
 #define obj_weapon_fire_prop_name					0
 #define obj_weapon_fire_prop_method					1

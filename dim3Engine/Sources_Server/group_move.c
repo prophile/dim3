@@ -175,6 +175,8 @@ bool group_move_object_stand(int group_idx,int stand_mesh_idx)
 	group_type			*group;
 	group_unit_type		*unit_list;
 
+	if (group_idx==-1) return(FALSE);
+
 	group=&map.groups[group_idx];
 
 	unit_cnt=group->unit_count;

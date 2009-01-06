@@ -184,8 +184,7 @@ void object_auto_walk_set_vertical_move(obj_type *obj,int to_y,int to_z)
 
 void object_auto_walk_set_motion(obj_type *obj)
 {
-	int				dif_y;
-	float			dif_ang;
+	float			dif_y,dif_ang;
 	bool			cwise;
 	
 		// if we are already paused for
