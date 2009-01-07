@@ -46,6 +46,7 @@ JSPropertySpec	proj_setting_props[]={
 							{"name",				proj_setting_prop_name,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"hitScan",				proj_setting_prop_hitscan,			JSPROP_PERMANENT|JSPROP_SHARED},
 							{"resetAngle",			proj_setting_prop_reset_angle,		JSPROP_PERMANENT|JSPROP_SHARED},
+							{"parentObjectId",		proj_setting_prop_parent_object_id,	JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 
 /* =======================================================
@@ -71,6 +72,7 @@ void script_add_proj_setting_object(JSObject *parent_obj)
 JSBool js_get_proj_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
+	proj_type			*proj;
 
 	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
@@ -87,6 +89,12 @@ JSBool js_get_proj_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
 			break;
 		case proj_setting_prop_reset_angle:
 			*vp=BOOLEAN_TO_JSVAL(proj_setup->reset_angle);
+			break;
+		case proj_setting_prop_parent_object_id:
+			proj=proj_get_attach();
+			if (proj==NULL) return(INT_TO_JSVAL(-1));
+
+			*vp=INT_TO_JSVAL(proj->obj_uid);
 			break;
 			
 	}

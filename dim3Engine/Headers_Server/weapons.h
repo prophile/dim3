@@ -69,7 +69,7 @@ extern bool weapon_get_projectile_position_angle_weapon_model(int tick,obj_type 
 extern bool weapon_get_projectile_position_angle_weapon_barrel(int tick,obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang,char *err_str);
 extern bool weapon_get_projectile_position_angle_object_model(int tick,obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang,char *err_str);
 extern void weapon_get_projectile_position_angle_add_offset(d3ang *ang,d3ang *off_ang);
-extern void weapon_script_fire(int tick,obj_type *obj,weapon_type *weap,int method);
+extern bool weapon_script_fire(int tick,obj_type *obj,weapon_type *weap,int method);
 extern bool weapon_script_projectile_spawn(int tick,obj_type *obj,weapon_type *weap,char *proj_name,d3pnt *pt,d3ang *ang,int count,float slop,char *err_str);
 extern bool weapon_script_projectile_spawn_weapon_model(int tick,obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str);
 extern bool weapon_script_projectile_spawn_weapon_barrel(int tick,obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str);

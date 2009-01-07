@@ -170,7 +170,9 @@ JSBool js_obj_weapon_fire_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 	weap=script_find_weapon_from_name_arg(obj,argv[0]);
 	if (weap==NULL) return(JS_FALSE);
 
-	weapon_script_fire(js.time.current_tick,obj,weap,JSVAL_TO_INT(argv[1]));
+	*rval=JSVAL_FALSE;
+
+	if (weapon_script_fire(js.time.current_tick,obj,weap,JSVAL_TO_INT(argv[1]))) *rval=JSVAL_TRUE;
 
 	return(JS_TRUE);
 }

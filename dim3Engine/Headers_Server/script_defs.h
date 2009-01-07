@@ -499,6 +499,7 @@ and can be sold or given away.
 
 #define weap_setting_prop_name						0
 #define weap_setting_prop_fail_in_liquid			1
+#define weap_setting_prop_parent_object_id			2
 
 #define weap_hand_prop_raise_tick					0
 #define weap_hand_prop_lower_tick					1
@@ -617,6 +618,7 @@ and can be sold or given away.
 #define proj_setting_prop_name						0
 #define proj_setting_prop_hitscan					1
 #define proj_setting_prop_reset_angle				2
+#define proj_setting_prop_parent_object_id			3
 
 #define proj_position_prop_x						0
 #define proj_position_prop_y						1

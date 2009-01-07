@@ -68,7 +68,7 @@ extern obj_type* object_find_remote_uid(int uid);
 extern int object_find_index_remote_uid(int uid);
 extern obj_type* object_find_spawn_idx(int spawn_idx);
 extern obj_type* object_find_name(char *name);
-extern obj_type* object_find_nearest(d3pnt *pt,char *name,char *type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,bool remote,bool skip_self);
+extern obj_type* object_find_nearest(d3pnt *pt,char *name,char *type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,bool remote,int skip_obj_uid);
 extern int object_count_team(int team_idx,int ignore_obj_uid);
 extern int object_find_uid_click_object(obj_type *obj);
 extern int object_find_uid_by_stood_on_object_uid(int stand_obj_uid);

@@ -42,8 +42,9 @@ JSBool js_map_object_find_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 JSBool js_map_object_find_player_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_find_all_players_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_nearest_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_object_nearest_skip_object_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_nearest_player_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_object_nearest_player_skip_self_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_object_nearest_player_skip_object_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_nearest_remote_player_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_nearest_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_name_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -52,6 +53,7 @@ JSBool js_map_object_get_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 JSBool js_map_object_get_team_name_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_distance_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_angle_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_object_get_angle_to_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_position_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_size_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -78,39 +80,41 @@ JSClass			map_object_class={"map_object_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 JSFunctionSpec	map_object_functions[]={
-							{"find",					js_map_object_find_func,						1},
-							{"findPlayer",				js_map_object_find_player_func,					0},
-							{"findAllPlayers",			js_map_object_find_all_players_func,			0},
-							{"nearest",					js_map_object_nearest_func,						9},
-							{"nearestPlayer",			js_map_object_nearest_player_func,				7},
-							{"nearestPlayerSkipSelf",	js_map_object_nearest_player_skip_self_func,	7},
-							{"nearestRemotePlayer",		js_map_object_nearest_remote_player_func,		7},
-							{"nearestTeam",				js_map_object_nearest_team_func,				8},
-							{"getName",					js_map_object_get_name_func,					1},
-							{"getType",					js_map_object_get_type_func,					1},
-							{"getTeam",					js_map_object_get_team_func,					1},
-							{"getTeamName",				js_map_object_get_team_name_func,				1},
-							{"getDistance",				js_map_object_get_distance_func,				4},
-							{"getAngleTo",				js_map_object_get_angle_to_func,				4},
-							{"getPosition",				js_map_object_get_position_func,				1},
-							{"getAngle",				js_map_object_get_angle_func,					1},
-							{"getSize",					js_map_object_get_size_func,					1},
-							{"getHealth",				js_map_object_get_health_func,					1},
-							{"isHidden",				js_map_object_is_hidden_func,					1},
-							{"isContact",				js_map_object_is_contact_func,					1},
-							{"isMaxHealth",				js_map_object_is_max_health_func,				1},
-							{"getLastDamageObjectId",	js_map_object_get_last_damage_object_id_func,	1},
-							{"moveTo",					js_map_object_move_to_func,						5},
-							{"shove",					js_map_object_shove_func,						5},
-							{"shoveDirect",				js_map_object_shove_direct_func,				4},
-							{"addGoal",					js_map_object_add_goal_func,					1},
-							{"setContact",				js_map_object_set_contact_func,					2},
-							{"setHidden",				js_map_object_set_hidden_func,					2},
-							{"setModelLight",			js_map_object_set_model_light_func,				3},
-							{"setModelHalo",			js_map_object_set_model_halo_func,				3},
-							{"setModelMesh",			js_map_object_set_model_mesh_func,				3},
-							{"spawn",					js_map_object_spawn_func,						10},
-							{"remove",					js_map_object_remove_func,						1},
+							{"find",						js_map_object_find_func,							1},
+							{"findPlayer",					js_map_object_find_player_func,						0},
+							{"findAllPlayers",				js_map_object_find_all_players_func,				0},
+							{"nearest",						js_map_object_nearest_func,							9},
+							{"nearestSkipObjectId",			js_map_object_nearest_skip_object_id_func,			10},
+							{"nearestPlayer",				js_map_object_nearest_player_func,					7},
+							{"nearestPlayerSkipObjectId",	js_map_object_nearest_player_skip_object_id_func,	8},
+							{"nearestRemotePlayer",			js_map_object_nearest_remote_player_func,			7},
+							{"nearestTeam",					js_map_object_nearest_team_func,					8},
+							{"getName",						js_map_object_get_name_func,						1},
+							{"getType",						js_map_object_get_type_func,						1},
+							{"getTeam",						js_map_object_get_team_func,						1},
+							{"getTeamName",					js_map_object_get_team_name_func,					1},
+							{"getDistance",					js_map_object_get_distance_func,					4},
+							{"getAngleTo",					js_map_object_get_angle_to_func,					4},
+							{"getAngleToId",				js_map_object_get_angle_to_id_func,					2},
+							{"getPosition",					js_map_object_get_position_func,					1},
+							{"getAngle",					js_map_object_get_angle_func,						1},
+							{"getSize",						js_map_object_get_size_func,						1},
+							{"getHealth",					js_map_object_get_health_func,						1},
+							{"isHidden",					js_map_object_is_hidden_func,						1},
+							{"isContact",					js_map_object_is_contact_func,						1},
+							{"isMaxHealth",					js_map_object_is_max_health_func,					1},
+							{"getLastDamageObjectId",		js_map_object_get_last_damage_object_id_func,		1},
+							{"moveTo",						js_map_object_move_to_func,							5},
+							{"shove",						js_map_object_shove_func,							5},
+							{"shoveDirect",					js_map_object_shove_direct_func,					4},
+							{"addGoal",						js_map_object_add_goal_func,						1},
+							{"setContact",					js_map_object_set_contact_func,						2},
+							{"setHidden",					js_map_object_set_hidden_func,						2},
+							{"setModelLight",				js_map_object_set_model_light_func,					3},
+							{"setModelHalo",				js_map_object_set_model_halo_func,					3},
+							{"setModelMesh",				js_map_object_set_model_mesh_func,					3},
+							{"spawn",						js_map_object_spawn_func,							10},
+							{"remove",						js_map_object_remove_func,							1},
 							{0}};
 
 /* =======================================================
@@ -235,7 +239,62 @@ JSBool js_map_object_nearest_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 	
 		// find object
 
-	obj=object_find_nearest(&pt,name_ptr,type_ptr,-1,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,FALSE);
+	obj=object_find_nearest(&pt,name_ptr,type_ptr,-1,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,-1);
+	if (obj==NULL) {
+		*rval=INT_TO_JSVAL(-1);
+		return(JS_TRUE);
+	}
+	
+	*rval=INT_TO_JSVAL(obj->uid);
+	return(JS_TRUE);
+}
+
+JSBool js_map_object_nearest_skip_object_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int					min_dist,max_dist;
+	char				*name_ptr,name[name_str_len],
+						*type_ptr,type[name_str_len];
+	float				ang,ang_sweep;
+	d3pnt				pt;
+	obj_type			*obj;
+	
+		// x,z,y
+		
+	pt.x=JSVAL_TO_INT(argv[0]);
+	pt.z=JSVAL_TO_INT(argv[1]);
+	pt.y=JSVAL_TO_INT(argv[2]);
+	
+		// name
+		
+	name_ptr=NULL;
+	if (argv[3]!=JSVAL_NULL) {
+		script_value_to_string(argv[3],name,name_str_len);
+		name_ptr=name;
+	}
+	
+		// type
+		
+	type_ptr=NULL;
+	if (argv[4]!=JSVAL_NULL) {
+		script_value_to_string(argv[4],type,name_str_len);
+		type_ptr=type;
+	}
+
+		// angle and sweep
+	
+	ang=-1;
+	ang_sweep=360;
+	if (argv[5]!=JSVAL_NULL) ang=script_value_to_float(argv[5]);
+	if (argv[6]!=JSVAL_NULL) ang_sweep=script_value_to_float(argv[6]);
+	
+		// distances
+		
+	min_dist=JSVAL_TO_INT(argv[7]);
+	max_dist=JSVAL_TO_INT(argv[8]);
+	
+		// find object
+
+	obj=object_find_nearest(&pt,name_ptr,type_ptr,-1,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,JSVAL_TO_INT(argv[9]));
 	if (obj==NULL) {
 		*rval=INT_TO_JSVAL(-1);
 		return(JS_TRUE);
@@ -272,7 +331,7 @@ JSBool js_map_object_nearest_player_func(JSContext *cx,JSObject *j_obj,uintN arg
 	
 		// find object
 
-	obj=object_find_nearest(&pt,NULL,NULL,-1,ang,ang_sweep,min_dist,max_dist,TRUE,FALSE,FALSE);
+	obj=object_find_nearest(&pt,NULL,NULL,-1,ang,ang_sweep,min_dist,max_dist,TRUE,FALSE,-1);
 	if (obj==NULL) {
 		*rval=INT_TO_JSVAL(-1);
 		return(JS_TRUE);
@@ -282,7 +341,7 @@ JSBool js_map_object_nearest_player_func(JSContext *cx,JSObject *j_obj,uintN arg
 	return(JS_TRUE);
 }
 
-JSBool js_map_object_nearest_player_skip_self_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_object_nearest_player_skip_object_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
 	int					min_dist,max_dist;
 	float				ang,ang_sweep;
@@ -309,7 +368,7 @@ JSBool js_map_object_nearest_player_skip_self_func(JSContext *cx,JSObject *j_obj
 	
 		// find object
 
-	obj=object_find_nearest(&pt,NULL,NULL,-1,ang,ang_sweep,min_dist,max_dist,TRUE,FALSE,TRUE);
+	obj=object_find_nearest(&pt,NULL,NULL,-1,ang,ang_sweep,min_dist,max_dist,TRUE,FALSE,JSVAL_TO_INT(argv[7]));
 	if (obj==NULL) {
 		*rval=INT_TO_JSVAL(-1);
 		return(JS_TRUE);
@@ -346,7 +405,7 @@ JSBool js_map_object_nearest_remote_player_func(JSContext *cx,JSObject *j_obj,ui
 	
 		// find object
 
-	obj=object_find_nearest(&pt,NULL,NULL,-1,ang,ang_sweep,min_dist,max_dist,TRUE,TRUE,FALSE);
+	obj=object_find_nearest(&pt,NULL,NULL,-1,ang,ang_sweep,min_dist,max_dist,TRUE,TRUE,-1);
 	if (obj==NULL) {
 		*rval=INT_TO_JSVAL(-1);
 		return(JS_TRUE);
@@ -387,7 +446,7 @@ JSBool js_map_object_nearest_team_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	
 		// find object
 
-	obj=object_find_nearest(&pt,NULL,NULL,team_idx,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,FALSE);
+	obj=object_find_nearest(&pt,NULL,NULL,team_idx,ang,ang_sweep,min_dist,max_dist,FALSE,FALSE,-1);
 	if (obj==NULL) {
 		*rval=INT_TO_JSVAL(-1);
 		return(JS_TRUE);
@@ -506,6 +565,30 @@ JSBool js_map_object_get_angle_to_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	ang_x=angle_find(y,z,obj->pnt.y,obj->pnt.z);
 	ang_y=angle_find(x,z,obj->pnt.x,obj->pnt.z);
 	ang_z=angle_find(x,y,obj->pnt.x,obj->pnt.y);
+		
+	*rval=script_angle_to_value(ang_x,ang_y,ang_z);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_map_object_get_angle_to_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	float			ang_x,ang_z,ang_y;
+	obj_type		*obj,*obj2;
+	
+		// uids
+	
+	obj=script_find_obj_from_uid_arg(argv[0]);
+	if (obj==NULL) return(JS_FALSE);
+
+	obj2=script_find_obj_from_uid_arg(argv[1]);
+	if (obj2==NULL) return(JS_FALSE);
+	
+		// get angles to
+		
+	ang_x=angle_find(obj2->pnt.y,obj2->pnt.z,obj->pnt.y,obj->pnt.z);
+	ang_y=angle_find(obj2->pnt.x,obj2->pnt.z,obj->pnt.x,obj->pnt.z);
+	ang_z=angle_find(obj2->pnt.x,obj2->pnt.y,obj->pnt.x,obj->pnt.y);
 		
 	*rval=script_angle_to_value(ang_x,ang_y,ang_z);
 	

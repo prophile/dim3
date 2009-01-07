@@ -45,6 +45,7 @@ JSClass			weap_setting_class={"weap_setting_class",0,
 JSPropertySpec	weap_setting_props[]={
 							{"name",				weap_setting_prop_name,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"failInLiquid",		weap_setting_prop_fail_in_liquid,	JSPROP_PERMANENT|JSPROP_SHARED},
+							{"parentObjectId",		weap_setting_prop_parent_object_id,	JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 
 /* =======================================================
@@ -82,6 +83,9 @@ JSBool js_get_weap_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
 			break;
 		case weap_setting_prop_fail_in_liquid:
 			*vp=BOOLEAN_TO_JSVAL(weap->fail_in_liquid);
+			break;
+		case weap_setting_prop_parent_object_id:
+			*vp=BOOLEAN_TO_JSVAL(weap->obj_uid);
 			break;
 			
 	}

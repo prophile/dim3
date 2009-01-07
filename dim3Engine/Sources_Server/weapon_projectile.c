@@ -347,25 +347,27 @@ void weapon_get_projectile_position_angle_add_offset(d3ang *ang,d3ang *off_ang)
       
 ======================================================= */
 
-void weapon_script_fire(int tick,obj_type *obj,weapon_type *weap,int method)
+bool weapon_script_fire(int tick,obj_type *obj,weapon_type *weap,int method)
 {
 		// fail under liquid?
 
-	if ((weap->fail_in_liquid) && (obj->liquid_mode==lm_under)) return;
+	if ((weap->fail_in_liquid) && (obj->liquid_mode==lm_under)) return(FALSE);
 
 		// send event
 
 	weapon_setup_fire(weap,method);
 	scripts_post_event_console(&weap->attach,sd_event_weapon_fire,sd_event_weapon_fire_single,0);
 
-	if (!weap->fire.cancel) {
-		if (!weap->dual.in_dual) {
-			weap->fire.last_fire_tick=tick;
-		}
-		else {
-			weap->fire.last_fire_dual_tick=tick;
-		}
+	if (weap->fire.cancel) return(FALSE);
+
+	if (!weap->dual.in_dual) {
+		weap->fire.last_fire_tick=tick;
 	}
+	else {
+		weap->fire.last_fire_dual_tick=tick;
+	}
+	
+	return(TRUE);
 }
 
 /* =======================================================
