@@ -271,7 +271,7 @@ bool weapon_get_projectile_position_angle_weapon_barrel(int tick,obj_type *obj,w
 
 	fire_ang->y=angle_find(barrel_pnt.x,barrel_pnt.z,fire_pnt->x,fire_pnt->z);
 
-	fire_ang->z=0;
+	fire_ang->z=0.0f;
 
 	return(TRUE);
 }
