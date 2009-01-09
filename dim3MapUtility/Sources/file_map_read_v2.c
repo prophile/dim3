@@ -384,6 +384,8 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 
 					light->pnt.x+=portal->x;
 					light->pnt.z+=portal->z;
+					
+					light->fall_off=0.0f;
 				
 					light_tag=xml_findnextchild(light_tag);
 				}

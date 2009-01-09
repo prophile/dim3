@@ -32,6 +32,7 @@ extern map_type				map;
 
 #define kLightType									FOUR_CHAR_CODE('type')
 #define kLightIntensity								FOUR_CHAR_CODE('ints')
+#define kLightFallOff								FOUR_CHAR_CODE('fall')
 #define kLightColor									FOUR_CHAR_CODE('colr')
 #define kLightOn									FOUR_CHAR_CODE('lgon')
 
@@ -105,6 +106,7 @@ bool dialog_map_light_settings_run(map_light_type *light)
 		
 	dialog_set_combo(dialog_map_light_settings_wind,kLightType,0,light->type);
 	dialog_set_int(dialog_map_light_settings_wind,kLightIntensity,0,light->intensity);
+	dialog_set_float(dialog_map_light_settings_wind,kLightFallOff,0,light->fall_off);
 	dialog_set_boolean(dialog_map_light_settings_wind,kLightOn,0,light->on);
 	
 	dialog_map_light_color.red=(int)(light->col.r*(float)0xFFFF);
@@ -134,6 +136,7 @@ bool dialog_map_light_settings_run(map_light_type *light)
 	if (!dialog_map_light_settings_cancel) {
 		light->type=dialog_get_combo(dialog_map_light_settings_wind,kLightType,0);
 		light->intensity=dialog_get_int(dialog_map_light_settings_wind,kLightIntensity,0);
+		light->fall_off=dialog_get_float(dialog_map_light_settings_wind,kLightFallOff,0);
 		light->on=dialog_get_boolean(dialog_map_light_settings_wind,kLightOn,0);
 		
 		light->col.r=((float)dialog_map_light_color.red/(float)0xFFFF);

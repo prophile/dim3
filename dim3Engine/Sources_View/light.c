@@ -123,7 +123,7 @@ double light_get_intensity(int light_type,int intensity)
       
 ======================================================= */
 
-void light_add(d3pnt *pnt,int light_type,int intensity,d3col *col)
+void light_add(d3pnt *pnt,int light_type,int intensity,float fall_off,d3col *col)
 {
 	light_spot_type			*lspot;
 	
@@ -150,7 +150,8 @@ void light_add(d3pnt *pnt,int light_type,int intensity,d3col *col)
 	
 		// use this constant to get rough calculation close to better sqrt calc
 		
-	lspot->d_inv_intensity*=map.ambient.light_drop_off_factor;
+	if (fall_off==0.0f) fall_off=map.ambient.light_drop_off_factor;
+	lspot->d_inv_intensity*=(double)fall_off;
 	
 		// double light values
 		

@@ -119,8 +119,7 @@ typedef struct		{
 						double						d_x,d_y,d_z,
 													intensity,inv_intensity,
 													d_intensity,d_inv_intensity,
-													d_col_r,d_col_g,d_col_b,
-													calc_light_mult;
+													d_col_r,d_col_g,d_col_b;
 						d3pnt						pnt;
 						d3col						col;
 					} light_spot_type;

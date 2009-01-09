@@ -361,7 +361,7 @@ void view_add_model_light(model_draw *draw,int obj_uid)
 				if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&pnt.x,&pnt.y,&pnt.z);
 			}
 			
-			light_add(&pnt,light->type,light->intensity,&light->col);
+			light_add(&pnt,light->type,light->intensity,0.0f,&light->col);
 		}
 
 		light++;
@@ -403,7 +403,7 @@ void view_add_lights(void)
 	maplight=map.lights;
 		
 	for (i=0;i!=map.nlight;i++) {
-		if (maplight->on) light_add(&maplight->pnt,maplight->type,maplight->intensity,&maplight->col);
+		if (maplight->on) light_add(&maplight->pnt,maplight->type,maplight->intensity,maplight->fall_off,&maplight->col);
 		maplight++;
 	}	
 

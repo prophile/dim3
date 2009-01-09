@@ -380,6 +380,7 @@ typedef struct		{
 
 typedef struct		{
 						int									type,intensity;
+						float								fall_off;
 						bool								on;
 						d3pnt								pnt;
 						d3col								col;

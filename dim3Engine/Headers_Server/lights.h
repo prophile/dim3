@@ -27,7 +27,7 @@ and can be sold or given away.
 
 extern void light_clear(void);
 extern double light_get_intensity(int light_type,int intensity);
-extern void light_add(d3pnt *pnt,int light_type,int intensity,d3col *col);
+extern void light_add(d3pnt *pnt,int light_type,int intensity,float fall_off,d3col *col);
 extern int light_create_glsl_array(d3pnt *pnt,float *light_pos,float *light_col,float *light_normal,int *closest_idx);
 
 extern void halo_initialize(void);

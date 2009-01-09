@@ -212,7 +212,7 @@ int node_path_node_in_path(int from_node,int to_node,unsigned char *node_hits,in
 
 int node_path_find_next_node_to_node(int from_node,int to_node)
 {
-	int				i,k,link,n,d,dist;
+	int				i,k,link,d,dist;
 	unsigned char	node_hits[max_node];
    
 	link=-1;
@@ -220,9 +220,8 @@ int node_path_find_next_node_to_node(int from_node,int to_node)
     
         // block off nodes as we trace down paths
     
-    for (n=0;n!=map.nnode;n++) {
-        node_hits[n]=0;
-    }
+	memset(node_hits,0x0,max_node);
+
     node_hits[from_node]=1;
 		
         // trace through links
@@ -256,6 +255,10 @@ void node_path_rebuild(void)
 {
     int				i,x,z,k,n;
 	node_type		*node,*to_node;
+	
+	int		tick;
+	
+	tick=TickCount();
     
         // find distances between all node links
         
@@ -301,5 +304,8 @@ void node_path_rebuild(void)
 		
 		node++;
     }
+	
+	
+	fprintf(stdout,"2. tick = %d\n",(int)(TickCount()-tick));
 }
 

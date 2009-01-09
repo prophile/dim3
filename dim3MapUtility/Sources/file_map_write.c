@@ -619,6 +619,7 @@ bool write_map_xml(map_type *map)
 		xml_add_attribute_list("type",(char*)light_type_str,light->type);
 		xml_add_attribute_3_coord_int("c3",light->pnt.x,light->pnt.y,light->pnt.z);
 		xml_add_attribute_int("intensity",light->intensity);
+		xml_add_attribute_float("fall_off",light->fall_off);
 		xml_add_attribute_color("rgb",&light->col);
 		xml_add_attribute_boolean("off",!light->on);
 		xml_add_tagend(TRUE);

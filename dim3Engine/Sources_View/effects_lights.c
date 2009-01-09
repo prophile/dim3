@@ -69,7 +69,7 @@ void effect_add_single_light(int tick,effect_type *effect)
 		}
 	}
 	
-	light_add(&effect->pnt,lt_normal,intensity,&flash->col);
+	light_add(&effect->pnt,lt_normal,intensity,0.0f,&flash->col);
 }
 
 void effect_add_lights(int tick)

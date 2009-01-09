@@ -124,6 +124,7 @@ void map_auto_generate_lights(map_type *map)
 		lit->col.g=g;
 		lit->col.b=b;
 		lit->intensity=intensity;
+		lit->fall_off=0.0f;
 		lit->on=TRUE;
 
 		portal++;

@@ -737,6 +737,7 @@ void map_auto_generate_add_simple_lights(map_type *map)
 		lit->type=lt_normal;
 		lit->col.r=lit->col.g=lit->col.b=1.0f;
 		lit->intensity=intensity;
+		lit->fall_off=0.0f;
 		lit->on=TRUE;
 
 		portal++;
