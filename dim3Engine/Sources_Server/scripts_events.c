@@ -195,3 +195,72 @@ void scripts_chain_console(attach_type *attach,char *func_name)
 		if (setup.debug_console) console_show();
 	}
 }
+
+/* =======================================================
+
+      Script Direct Call
+      
+======================================================= */
+
+bool scripts_direct_call(attach_type *attach,char *func_name,int arg_count,jsval *args,jsval *rval)
+{
+	int				n,idx;
+	bool			err_up;
+	char			err_str[256];
+	jsval			func_val,argv[5];
+	script_type		*script;
+	attach_type		old_attach;
+	
+		// no error
+		
+	err_str[0]=0x0;
+	*rval=JSVAL_NULL;
+	
+		// find script
+		
+	if (attach->script_uid==-1) return(TRUE);
+	
+	idx=scripts_find_uid(attach->script_uid);
+	if (idx==-1) return(TRUE);
+	
+	script=&js.scripts[idx];
+
+		// find function
+
+	JS_GetProperty(js.cx,script->global,func_name,&func_val);
+	if (func_val==JSVAL_VOID) {
+		sprintf(err_str,"Call failed, unknown function '%s'",func_name);
+		JS_ReportError(js.cx,err_str);
+		return(FALSE);
+	}
+	
+		// save current attach in case event called within another script
+		
+	memmove(&old_attach,&js.attach,sizeof(attach_type));
+	
+		// attach to proper script
+		
+	memmove(&js.attach,attach,sizeof(attach_type));
+
+		// run the event function
+		
+	argv[0]=OBJECT_TO_JSVAL(script->obj);
+
+	for (n=0;n!=arg_count;n++) { 
+		argv[n+1]=args[n];
+	}
+
+	err_up=FALSE;
+	scripts_clear_last_error();
+
+	if (!JS_CallFunctionValue(js.cx,script->global,func_val,(arg_count+1),argv,rval)) {
+		err_up=TRUE;
+		scripts_get_last_error(err_str);
+	}
+		
+		// restore old attach
+		
+	memmove(&js.attach,&old_attach,sizeof(attach_type));
+	
+	return(!err_up);
+}

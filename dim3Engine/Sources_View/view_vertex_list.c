@@ -213,11 +213,12 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 {
 	int									n,k,t,x,y,xtot,
 										v_count,v_idx,v_light_start_idx;
-	int									*qd;
+	unsigned int						*qd;
 	float								fx,fy,fz,x_shift_offset,y_shift_offset;
-	float								*vertex_ptr,*pv,*pp,*pc,*pn,*lpc,*lpn,*lv_uv;
+	float								*vertex_ptr,*pv,*pp,*pc,*pn,*lpc,*lpn;
 	bool								recalc_light;
 	d3pnt								*pnt,*lv_pt;
+	d3uv								*lv_uv;
 	map_mesh_type						*mesh;
 	map_mesh_poly_type					*poly;
 
@@ -324,7 +325,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 				*pp++=poly->gx[t]+x_shift_offset;
 				*pp++=poly->gy[t]+y_shift_offset;
 				
-				poly->draw.portal_v[t]=v_idx;
+				poly->draw.portal_v[t]=(unsigned int)v_idx;
 				
 				v_idx++;
 			}
@@ -338,7 +339,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 				v_light_start_idx=v_idx;
 				
 				lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
-				lv_uv=mesh->light.quad_uvs+(poly->light.vertex_offset<<1);
+				lv_uv=mesh->light.quad_uvs+poly->light.vertex_offset;
 
 				for (t=0;t!=poly->light.nvertex;t++) {
 
@@ -354,25 +355,27 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 					*pn++=*lpn++;
 					*pn++=*lpn++;
 					
-					*pp++=(*lv_uv++)+x_shift_offset;
-					*pp++=(*lv_uv++)+y_shift_offset;
+					*pp++=(lv_uv->x)+x_shift_offset;
+					*pp++=(lv_uv->y)+y_shift_offset;
 					
 					lv_pt++;
+					lv_uv++;
+
 					v_idx++;
 				}
 
 					// create light mesh draw indexes
 
-				qd=mesh->light.quad_vertex_idx+poly->light.quad_offset;
+				qd=mesh->light.quad_indexes+poly->light.quad_index_offset;
 				
 				xtot=poly->light.grid_x_sz+1;
-				
+
 				for (y=0;y!=poly->light.grid_y_sz;y++) {
 					for (x=0;x!=poly->light.grid_x_sz;x++) {
-						*qd++=((y*xtot)+x)+v_light_start_idx;
-						*qd++=((y*xtot)+(x+1))+v_light_start_idx;
-						*qd++=(((y+1)*xtot)+(x+1))+v_light_start_idx;
-						*qd++=(((y+1)*xtot)+x)+v_light_start_idx;
+						*qd++=(unsigned int)(((y*xtot)+x)+v_light_start_idx);
+						*qd++=(unsigned int)(((y*xtot)+(x+1))+v_light_start_idx);
+						*qd++=(unsigned int)((((y+1)*xtot)+(x+1))+v_light_start_idx);
+						*qd++=(unsigned int)((((y+1)*xtot)+x)+v_light_start_idx);
 					}
 				}
 			}

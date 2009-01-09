@@ -218,13 +218,15 @@ typedef struct		{
 
 typedef struct		{
 						int									nvertex,nquad,
-															vertex_offset,quad_offset,grid_x_sz,grid_y_sz;
+															vertex_offset,quad_index_offset,
+															grid_x_sz,grid_y_sz;
 						bool								simple_tessel;
 					} map_mesh_poly_light_type;
 
 typedef struct		{
-						int									portal_v[8],txt_frame_offset,
+						int									txt_frame_offset,
 															stencil_pass,stencil_idx,decal_stencil_idx;
+						unsigned int						portal_v[8];
 						float								x_shift_offset,y_shift_offset;
 						bool								simple_tessel,shift_on;
 					} map_mesh_poly_draw_type;
@@ -275,8 +277,8 @@ typedef struct		{
 						double								intensity;
 						d3pnt								pnt;
 						d3col								col;
-						int									*quad_vertex_idx;
-						float								*quad_uvs;
+						unsigned int						*quad_indexes;
+						d3uv								*quad_uvs;
 						d3pnt								*quad_vertexes;
 					} map_mesh_light_type;
 

@@ -60,12 +60,12 @@ inline int map_portal_all_light_div_reduce(int dist,int quality_mode)
 
 void map_portal_add_light_trig_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int quality_mode)
 {
-	int									vl_cnt,x,y,k,idx,div_x,div_y,
-										d0,d1,d2;
-	float								*vl_uv;
-	d3pnt								p1,p2,chg_x,chg_y;
-	d3vct								g1,g2,chg_gx,chg_gy;
-	d3pnt								*pt[3],*vl_pt;
+	int					vl_cnt,x,y,k,idx,div_x,div_y,
+						d0,d1,d2;
+	d3pnt				p1,p2,chg_x,chg_y;
+	d3vct				g1,g2,chg_gx,chg_gy;
+	d3pnt				*pt[3],*vl_pt;
+	d3uv				*vl_uv;
 	
 		// find largest side of triangle
 		
@@ -130,7 +130,7 @@ void map_portal_add_light_trig_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 		
 	vl_cnt=0;
 	vl_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
-	vl_uv=mesh->light.quad_uvs+(poly->light.vertex_offset<<1);
+	vl_uv=mesh->light.quad_uvs+poly->light.vertex_offset;
 
 	for (y=0;y<=div_y;y++) {
 	
@@ -154,11 +154,13 @@ void map_portal_add_light_trig_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 			vl_pt->y=p1.y+(((p2.y-p1.y)*x)/div_x);
 			vl_pt->z=p1.z+(((p2.z-p1.z)*x)/div_x);
 
-			*vl_uv++=g1.x+(((g2.x-g1.x)*((float)x))/((float)div_x));
-			*vl_uv++=g1.y+(((g2.y-g1.y)*((float)x))/((float)div_x));
+			vl_uv->x=g1.x+(((g2.x-g1.x)*((float)x))/((float)div_x));
+			vl_uv->y=g1.y+(((g2.y-g1.y)*((float)x))/((float)div_x));
 		
 			vl_cnt++;
+
 			vl_pt++;
+			vl_uv++;
 		}
 	}
 	
@@ -177,11 +179,11 @@ void map_portal_add_light_trig_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 
 void map_portal_add_light_quad_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int quality_mode)
 {
-	int									vl_cnt,x,y,d,d2,div_x,div_y;
-	float								*vl_uv;
-	d3pnt								p1,p2;
-	d3vct								g1,g2;
-	d3pnt								*vertexes,*vl_pt;
+	int					vl_cnt,x,y,d,d2,div_x,div_y;
+	d3pnt				p1,p2;
+	d3vct				g1,g2;
+	d3pnt				*vertexes,*vl_pt;
+	d3uv				*vl_uv;
 
 	vertexes=mesh->vertexes;
 	
@@ -211,7 +213,7 @@ void map_portal_add_light_quad_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 		
 	vl_cnt=0;
 	vl_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
-	vl_uv=mesh->light.quad_uvs+(poly->light.vertex_offset<<1);
+	vl_uv=mesh->light.quad_uvs+poly->light.vertex_offset;
 		
 	for (y=0;y<=div_y;y++) {
 	
@@ -235,11 +237,13 @@ void map_portal_add_light_quad_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 			vl_pt->y=p1.y+(((p2.y-p1.y)*x)/div_x);
 			vl_pt->z=p1.z+(((p2.z-p1.z)*x)/div_x);
 
-			*vl_uv++=g1.x+(((g2.x-g1.x)*((float)x))/((float)div_x));
-			*vl_uv++=g1.y+(((g2.y-g1.y)*((float)x))/((float)div_x));
+			vl_uv->x=g1.x+(((g2.x-g1.x)*((float)x))/((float)div_x));
+			vl_uv->y=g1.y+(((g2.y-g1.y)*((float)x))/((float)div_x));
 		
 			vl_cnt++;
+
 			vl_pt++;
+			vl_uv++;
 		}
 	}
 	
@@ -258,14 +262,14 @@ void map_portal_add_light_quad_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 
 void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int quality_mode)
 {
-	int									n,vl_cnt,x,y,ptsz,div_x,div_y,
-										xdist,ydist,zdist,xzdist,xskip,yskip,zskip;
-	int									grid_x[light_tessel_max_grid_div+1],grid_z[light_tessel_max_grid_div+1],
-										grid_y[light_tessel_max_grid_div+1];
-	float								lgx,rgx,tgy,bgy,f_dist;
-	float								*vl_uv;
-	double								dx,dz;
-	d3pnt								*pt,*vl_pt;
+	int					n,vl_cnt,x,y,ptsz,div_x,div_y,
+						xdist,ydist,zdist,xzdist,xskip,yskip,zskip;
+	int					grid_x[light_tessel_max_grid_div+1],grid_z[light_tessel_max_grid_div+1],
+						grid_y[light_tessel_max_grid_div+1];
+	float				lgx,rgx,tgy,bgy,f_dist;
+	double				dx,dz;
+	d3pnt				*pt,*vl_pt;
+	d3uv				*vl_uv;
 
 		// get tessel size
 
@@ -337,7 +341,7 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 		
 	vl_cnt=0;
 	vl_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
-	vl_uv=mesh->light.quad_uvs+(poly->light.vertex_offset<<1);
+	vl_uv=mesh->light.quad_uvs+poly->light.vertex_offset;
 
 	for (y=0;y<=div_y;y++) {
 		for (x=0;x<=div_x;x++) {
@@ -350,11 +354,13 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 			dz=(double)(vl_pt->z-poly->line.lz);
 			f_dist=(float)sqrt((dx*dx)+(dz*dz));
 
-			*vl_uv++=lgx+(((rgx-lgx)*f_dist)/(float)xzdist);
-			*vl_uv++=tgy+(((bgy-tgy)*(float)(vl_pt->y-poly->box.min.y))/(float)(poly->box.max.y-poly->box.min.y));
+			vl_uv->x=lgx+(((rgx-lgx)*f_dist)/(float)xzdist);
+			vl_uv->y=tgy+(((bgy-tgy)*(float)(vl_pt->y-poly->box.min.y))/(float)(poly->box.max.y-poly->box.min.y));
 		
 			vl_cnt++;
+
 			vl_pt++;
+			vl_uv++;
 		}
 	}
 
@@ -375,13 +381,13 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 
 void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int quality_mode)
 {
-	int									n,vl_cnt,x,y,z,ptsz,px[8],py[8],pz[8],
-										div_x,div_y,xdist,zdist,xskip,zskip;
-	int									grid_x[light_tessel_max_grid_div+1],
-										grid_z[light_tessel_max_grid_div+1];
-	float								lgx,rgx,lgy,rgy;
-	float								*vl_uv;
-	d3pnt								*pt,*vl_pt;
+	int					n,vl_cnt,x,y,z,ptsz,px[8],py[8],pz[8],
+						div_x,div_y,xdist,zdist,xskip,zskip;
+	int					grid_x[light_tessel_max_grid_div+1],
+						grid_z[light_tessel_max_grid_div+1];
+	float				lgx,rgx,lgy,rgy;
+	d3pnt				*pt,*vl_pt;
+	d3uv				*vl_uv;
 
 		// get tessel size, possible total of 64 triangles, 8 grid spots (max)
 
@@ -448,7 +454,7 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 		
 	vl_cnt=0;
 	vl_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
-	vl_uv=mesh->light.quad_uvs+(poly->light.vertex_offset<<1);
+	vl_uv=mesh->light.quad_uvs+poly->light.vertex_offset;
 
 	for (z=0;z<=div_y;z++) {
 		for (x=0;x<=div_x;x++) {
@@ -465,11 +471,13 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 			vl_pt->y=y;
 			vl_pt->z=grid_z[z];
 
-			*vl_uv++=lgx+(((rgx-lgx)*(float)(vl_pt->x-poly->box.min.x))/(float)(poly->box.max.x-poly->box.min.x));
-			*vl_uv++=lgy+(((rgy-lgy)*(float)(vl_pt->z-poly->box.min.z))/(float)(poly->box.max.z-poly->box.min.z));
+			vl_uv->x=lgx+(((rgx-lgx)*(float)(vl_pt->x-poly->box.min.x))/(float)(poly->box.max.x-poly->box.min.x));
+			vl_uv->y=lgy+(((rgy-lgy)*(float)(vl_pt->z-poly->box.min.z))/(float)(poly->box.max.z-poly->box.min.z));
 		
 			vl_cnt++;
+
 			vl_pt++;
+			vl_uv++;
 		}
 	}
 
@@ -488,13 +496,13 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
       
 ======================================================= */
 
-void map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *poly,int vertex_offset,int quad_offset,int quality_mode)
+void map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *poly,int vertex_offset,int quad_index_offset,int quality_mode)
 {
 	poly->light.nvertex=0;
 	poly->light.vertex_offset=vertex_offset;
 	
 	poly->light.nquad=0;
-	poly->light.quad_offset=quad_offset;
+	poly->light.quad_index_offset=quad_index_offset;
 	
 		// simple light tessels
 		// these just use the polygon itself
@@ -539,8 +547,8 @@ void map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *p
 
 bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 {
-	int					n,k,vertex_count,sz,
-						vertex_offset,quad_offset;
+	int					n,k,mesh_vertex_count,sz,
+						poly_vertex_count,poly_quad_index_count;
 	unsigned char		*nptr;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
@@ -559,9 +567,9 @@ bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 	for (n=0;n!=map->mesh.nmesh;n++) {
 
 			// keep a total count of all vertexes
-			// for this mesh (poly itself and lighting meshes)
+			// for this mesh (polys themselves and lighting meshes)
 			
-		vertex_count=0;
+		mesh_vertex_count=0;
 		
 			// allocate enough memory for all possible
 			// lighting vertexes, and reduce when we have
@@ -574,25 +582,25 @@ bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 		mesh->light.quad_vertexes=(d3pnt*)malloc(sz);
 		if (mesh->light.quad_vertexes==NULL) return(FALSE);
 		
-		sz=(sizeof(float)*2)*(((light_tessel_max_grid_div+1)*(light_tessel_max_grid_div+1))*mesh->npoly);
-		mesh->light.quad_uvs=(float*)malloc(sz);
+		sz=sizeof(d3uv)*(((light_tessel_max_grid_div+1)*(light_tessel_max_grid_div+1))*mesh->npoly);
+		mesh->light.quad_uvs=(d3uv*)malloc(sz);
 		if (mesh->light.quad_uvs==NULL) return(FALSE);
 
-		mesh->light.quad_vertex_idx=NULL;
+		mesh->light.quad_indexes=NULL;
 		
-		vertex_offset=0;
-		quad_offset=0;
+		poly_vertex_count=0;
+		poly_quad_index_count=0;
 
 			// create lighting
 
 		poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {
-			map_create_poly_tesseled_vertexes(mesh,poly,vertex_offset,quad_offset,quality_mode);
-			vertex_count+=(poly->ptsz+poly->light.nvertex);
+			map_create_poly_tesseled_vertexes(mesh,poly,poly_vertex_count,poly_quad_index_count,quality_mode);
+			mesh_vertex_count+=(poly->ptsz+poly->light.nvertex);
 			
-			vertex_offset+=poly->light.nvertex;
-			quad_offset+=(poly->light.nquad<<2);
+			poly_vertex_count+=(poly->ptsz+poly->light.nvertex); // poly->light.nvertex;
+			poly_quad_index_count+=(poly->light.nquad*4);
 			
 			poly++;
 		}
@@ -600,7 +608,7 @@ bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 			// fix for count
 			// if no lighting mesh vertexes, then just NULL out
 			
-		if (vertex_offset==0) {
+		if (poly_vertex_count==0) {
 			free(mesh->light.quad_vertexes);
 			mesh->light.quad_vertexes=NULL;
 			
@@ -608,7 +616,7 @@ bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 			mesh->light.quad_uvs=NULL;
 		}
 		else {
-			sz=sizeof(d3pnt)*vertex_offset;
+			sz=sizeof(d3pnt)*poly_vertex_count;
 			nptr=malloc(sz);
 			if (nptr!=NULL) {
 				memmove(nptr,mesh->light.quad_vertexes,sz);
@@ -616,22 +624,22 @@ bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 				mesh->light.quad_vertexes=(d3pnt*)nptr;
 			}
 			
-			sz=(sizeof(float)*2)*vertex_offset;
+			sz=sizeof(d3uv)*poly_vertex_count;
 			nptr=malloc(sz);
 			if (nptr!=NULL) {
 				memmove(nptr,mesh->light.quad_uvs,sz);
 				free(mesh->light.quad_uvs);
-				mesh->light.quad_uvs=(float*)nptr;
+				mesh->light.quad_uvs=(d3uv*)nptr;
 			}
 			
-			sz=sizeof(int)*quad_offset;		// already contains *4
-			mesh->light.quad_vertex_idx=malloc(sz);
-			if (mesh->light.quad_vertex_idx==NULL) return(FALSE);
+			sz=sizeof(unsigned int)*poly_quad_index_count;		// already contains *4
+			mesh->light.quad_indexes=malloc(sz);
+			if (mesh->light.quad_indexes==NULL) return(FALSE);
 		}
 
 			// remember the count
 
-		mesh->draw.vertex_count=vertex_count;
+		mesh->draw.vertex_count=mesh_vertex_count;
 		
 		mesh++;
 	}
@@ -651,7 +659,7 @@ void map_dispose_mesh_vertexes(map_type *map)
 	for (n=0;n!=map->mesh.nmesh;n++) {
 		if (mesh->light.quad_vertexes!=NULL) free(mesh->light.quad_vertexes);
 		if (mesh->light.quad_uvs!=NULL) free(mesh->light.quad_uvs);
-		if (mesh->light.quad_vertex_idx!=NULL) free(mesh->light.quad_vertex_idx);
+		if (mesh->light.quad_indexes!=NULL) free(mesh->light.quad_indexes);
 		mesh++;
 	}
 }

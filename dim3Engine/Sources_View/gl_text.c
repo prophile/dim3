@@ -372,15 +372,39 @@ void gl_text_end(void)
       
 ======================================================= */
 
-void gl_text_draw_line(int x,int y,char *txt,int txtlen,bool vcenter)
+void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float alpha)
 {
-	int			n,ch,xoff,yoff,cnt;
+	int			n,txtlen,ch,xoff,yoff,cnt;
 	float		f_lft,f_rgt,f_top,f_bot,f_wid,f_high,
 				gx_lft,gx_rgt,gy_top,gy_bot;
 	float		*vertex_ptr,*uv_ptr;
 	char		*c;
+	GLfloat		fct[4];
 
+		// get text length
+
+	txtlen=strlen(txt);
 	if (txtlen==0) return;
+
+        // font justification
+        
+	switch (just) {
+		case tx_center:
+			x-=(gl_text_get_string_width(font_size,txt)>>1);
+			break;
+		case tx_right:
+			x-=gl_text_get_string_width(font_size,txt);
+			break;
+	}
+	
+        // font color and alpha
+        
+	glColor3f(col->r,col->g,col->b);
+
+	fct[0]=fct[1]=fct[2]=1.0f;
+	fct[3]=alpha;
+	
+	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,fct);
     
 		// get width and height
 		
@@ -471,31 +495,3 @@ void gl_text_draw_line(int x,int y,char *txt,int txtlen,bool vcenter)
 	view_unbind_current_vertex_object();
 }
 
-void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float alpha)
-{
-	GLfloat				fct[4];
-
-        // font justification
-        
-	switch (just) {
-		case tx_center:
-			x-=(gl_text_get_string_width(font_size,txt)>>1);
-			break;
-		case tx_right:
-			x-=gl_text_get_string_width(font_size,txt);
-			break;
-	}
-	
-        // font color and alpha
-        
-	glColor3f(col->r,col->g,col->b);
-
-	fct[0]=fct[1]=fct[2]=1.0f;
-	fct[3]=alpha;
-	
-	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,fct);
-
-		// draw text line
-
-	gl_text_draw_line(x,y,txt,strlen(txt),vcenter);
-}

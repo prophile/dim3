@@ -74,6 +74,10 @@ typedef struct		{
 						float			r,g,b;
 					} d3col;
 
+typedef struct		{
+						float			x,y;
+					} d3uv;
+
 /* =======================================================
 
      Shared Script Structures

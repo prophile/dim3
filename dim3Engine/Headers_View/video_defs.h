@@ -26,15 +26,11 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// render arrays
+// vertex objects
 //
 
-#define render_array_max_count					16
+#define view_vertex_object_count				8
 
-typedef struct		{
-						float					*vertex;
-						unsigned long			fence;
-					} render_array_type;
 
 //
 // shadows

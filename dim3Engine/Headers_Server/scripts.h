@@ -161,6 +161,7 @@ extern bool scripts_post_event(attach_type *attach,int main_event,int sub_event,
 extern void scripts_post_event_console(attach_type *attach,int main_event,int sub_event,int id);
 extern bool scripts_chain(attach_type *attach,char *func_name,char *err_str);
 extern void scripts_chain_console(attach_type *attach,char *func_name);
+extern bool scripts_direct_call(attach_type *attach,char *func_name,int arg_count,jsval *args,jsval *rval);
 
 extern void script_initialize_prototype_objects(void);
 extern void script_release_prototype_objects(void);

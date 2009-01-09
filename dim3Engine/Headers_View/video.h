@@ -49,8 +49,6 @@ extern bool gl_check_shader_ok(void);
 
 	// vbos
 
-#define view_vertex_object_count			8
-
 extern void view_create_vertex_objects(void);
 extern void view_dispose_vertex_objects(void);
 extern float* view_bind_map_vertex_object(int sz);

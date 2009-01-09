@@ -54,6 +54,7 @@ JSBool js_event_send_message_to_held_weapon_func(JSContext *cx,JSObject *j_obj,u
 JSBool js_event_send_message_to_spawn_weapon_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_event_set_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_event_get_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_event_call_object_by_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			event_class={"event_class",JSCLASS_HAS_PRIVATE,
 							script_add_property,JS_PropertyStub,
@@ -78,6 +79,7 @@ JSFunctionSpec	event_functions[]={
 							{"sendMessageToSpawnWeapon",	js_event_send_message_to_spawn_weapon_func,		1},
 							{"setMessageData",				js_event_set_message_data_func,					2},
 							{"getMessageData",				js_event_get_message_data_func,					1},
+							{"callObjectById",				js_event_call_object_by_id_func,				20},
 							{0}};
 
 /* =======================================================
@@ -438,6 +440,44 @@ JSBool js_event_get_message_data_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 			break;
 
 	}
+
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Direct Function Call
+      
+======================================================= */
+
+JSBool js_event_call_object_by_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int				n,arg_count;
+	char			func_name[64];
+	jsval			args[20];
+	obj_type		*obj;
+
+		// get arguments
+
+	obj=object_find_uid(JSVAL_TO_INT(argv[0]));
+	if (obj==NULL) {
+		*rval=JSVAL_FALSE;
+		return(JS_TRUE);
+	}
+
+	script_value_to_string(argv[1],func_name,64);
+
+	arg_count=argc-2;
+	if (arg_count<0) arg_count=0;
+	if (arg_count>20) arg_count=20;
+
+	for (n=0;n!=arg_count;n++) {
+		args[n]=argv[n+2];
+	}
+
+		// call function
+
+	if (!scripts_direct_call(&obj->attach,func_name,arg_count,args,rval)) return(JS_FALSE);
 
 	return(JS_TRUE);
 }
