@@ -76,14 +76,13 @@ void model_get_current_animation_name(model_draw *draw,char *name)
 	model_type					*mdl;
 	model_draw_animation		*draw_animation;
 	
+	name[0]=0x0;
+
 	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return(-1);
+	if (mdl==NULL) return;
 
 	draw_animation=&draw->animations[draw->script_animation_idx];
-	if (draw_animation->animate_idx==-1) {
-		name[0]=0x0;
-		return;
-	}
+	if (draw_animation->animate_idx==-1) return;
 	
 	strcpy(name,mdl->animates[draw_animation->animate_idx].name);
 }

@@ -34,11 +34,16 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "video.h"
 
-#define host_button_host_id				0
-#define host_button_cancel_id			1
-#define host_game_type_id				2
-#define host_table_id					3
-#define host_status_id					4
+#define host_pane_game					0
+#define host_pane_options				1
+
+#define host_tab_id						0
+
+#define host_button_host_id				10
+#define host_button_cancel_id			11
+#define host_game_type_id				12
+#define host_table_id					13
+#define host_status_id					14
 
 extern void intro_open(void);
 extern bool net_host_game_start(char *err_str);
@@ -52,13 +57,13 @@ extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-int							net_game_current_game_type_index;
+int							host_tab_value,net_game_current_game_type_index;
 char						*net_host_file_list;
 char						net_game_types[network_setup_max_game+1][32];
 
 /* =======================================================
 
-      Join Operations
+      Host Map Table
       
 ======================================================= */
 
@@ -102,26 +107,16 @@ void host_fill_map_table(char *game_type)
 	file_paths_close_directory(map_pick_fpd);
 }
 
-void host_open(void)
-{
-	int						n,x,y,wid,high,padding;
-	char					str[256],str2[256];
-	element_column_type		cols[1];
-	
-		// setup gui
-		
-	gui_initialize("Bitmaps/Backgrounds","setup",FALSE);
-	
-		// controls
-							
-	element_clear();
-	
-		// title
-		
-	x=(int)(((float)hud.scale_x)*0.03f);
-	y=(int)(((float)hud.scale_y)*0.09f);
+/* =======================================================
 
-	element_text_add("Host Multiplayer Game",-1,x,y,hud.font.text_size_large,tx_left,FALSE,FALSE);
+      Host Panes
+      
+======================================================= */
+
+void host_game_pane(void)
+{
+	int						n,x,y,wid,high;
+	element_column_type		cols[1];
 	
 		// game type
 
@@ -131,7 +126,7 @@ void host_open(void)
 	net_game_types[net_setup.ngame][0]=0x0;
 
 	x=(int)(((float)hud.scale_x)*0.15f);
-	y=(int)(((float)hud.scale_y)*0.15f);
+	y=(int)(((float)hud.scale_y)*0.17f);
 	
 	element_combo_add("Game Type",(char*)net_game_types,0,host_game_type_id,x,y,TRUE);
 	y+=element_get_padding();
@@ -141,7 +136,7 @@ void host_open(void)
 	x=(int)(((float)hud.scale_x)*0.03f);
 
 	wid=hud.scale_x-(x*2);
-	high=(int)(((float)hud.scale_y)*0.86f)-y;
+	high=(int)(((float)hud.scale_y)*0.83f)-y;
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=1.0f;
@@ -152,6 +147,32 @@ void host_open(void)
 
 	net_game_current_game_type_index=0;
 	host_fill_map_table(net_setup.games[0].name);
+}
+
+void host_options_pane(void)
+{
+}
+
+void host_create_pane(void)
+{
+	int			x,y,wid,high,yadd,padding,
+				tab_list_wid,tab_pane_high,pane;
+	char		str[256],str2[256],
+				tab_list[][32]={"Host Game","Options"};
+							
+	element_clear();
+	
+		// tabs
+		
+	padding=element_get_padding();;
+	
+	wid=hud.scale_x;
+	yadd=(int)(((float)hud.scale_y)*0.015f);
+	high=(int)(((float)hud.scale_y)*0.065f);
+	tab_list_wid=(int)(((float)hud.scale_x)*0.85f);
+	tab_pane_high=(int)(((float)hud.scale_y)*0.82f);
+	
+	element_tab_add((char*)tab_list,host_tab_value,host_tab_id,2,0,(padding+yadd),wid,high,tab_list_wid,tab_pane_high);
 	
 		// status
 		// start with IP information
@@ -193,8 +214,39 @@ void host_open(void)
 	x=element_get_x_position(host_button_host_id)-padding;
 
 	element_button_text_add("Cancel",host_button_cancel_id,x,y,wid,high,element_pos_right,element_pos_bottom);
+	
+		// specific pane controls
+		
+	pane=element_get_value(host_tab_id);
+		
+	switch (pane) {
+		case host_pane_game:
+			host_game_pane();
+			break;
+		case host_pane_options:
+			host_options_pane();
+			break;
+	}
+}
 
-		// in join thread
+/* =======================================================
+
+      Open/Close Host Game
+      
+======================================================= */
+
+void host_open(void)
+{
+		// setup gui
+		
+	gui_initialize("Bitmaps/Backgrounds","setup",FALSE);
+
+		// start with first tab
+		
+	host_tab_value=0;
+	host_create_pane();
+
+		// in host thread
 	
 	server.state=gs_host;
 }
@@ -326,6 +378,15 @@ void host_click(void)
 
 	switch (id) {
 
+			// tab
+			
+		case host_tab_id:
+			host_tab_value=element_get_value(host_tab_id);
+			host_create_pane();
+			return;
+
+			// controls
+
 		case host_game_type_id:
 			idx=element_get_value(host_game_type_id);
 			if (idx!=net_game_current_game_type_index) {
@@ -335,6 +396,8 @@ void host_click(void)
 				element_enable(host_button_host_id,FALSE);
 			}
 			break;
+
+			// buttons
 
 		case host_button_host_id:
 			host_game_setup();
