@@ -76,6 +76,7 @@ extern void walk_view_sprite_select_size(d3pnt *cpt,d3pnt *pnt,int *px,int *py,i
 extern void walk_view_mouse_xy_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 extern void walk_view_mouse_z_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 extern void walk_view_scroll_wheel_z_movement(editor_3D_view_setup *view_setup,int delta,int view_move_dir);
+extern void walk_view_scroll_wheel_rot_z_movement(editor_3D_view_setup *view_setup,int delta);
 extern void walk_view_mouse_turn(d3pnt *pt);
 extern void walk_view_portal_go_to_top(void);
 extern void walk_view_portal_go_to_bottom(void);

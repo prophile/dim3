@@ -510,8 +510,9 @@ typedef struct		{
 					
 typedef struct		{
 						int						dist,obj_uid,base_team;
+						float					restrict_ang;
 						char					obj_flags[max_object],sound_name[name_str_len];
-						bool					on;
+						bool					on,restrict_on;
 					} obj_watch;
 		
 //

@@ -124,7 +124,7 @@ JSBool js_map_node_find_nearest_names_in_path_func(JSContext *cx,JSObject *j_obj
 	len=(int)u_len;
 	
 		// check all names
-	
+		
 	idx=-1;
 	dist=-1;
 		

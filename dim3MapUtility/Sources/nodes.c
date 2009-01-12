@@ -38,10 +38,17 @@ and can be sold or given away.
 int map_node_to_node_distance(map_type *map,int from_idx,int to_idx)
 {
 	int			x,y,z,dist,idx;
+	char		node_hit[max_node];
 	node_type	*node;
 
 	if ((from_idx==-1) || (to_idx==-1)) return(-1);
 	if (from_idx==to_idx) return(0);
+	
+		// detect circular references
+		
+	bzero(node_hit,max_node);
+	
+	node_hit[from_idx]=0x1;
 
 		// starting position
 
@@ -59,7 +66,8 @@ int map_node_to_node_distance(map_type *map,int from_idx,int to_idx)
 	while (TRUE) {
 		idx=map_find_next_node_in_path(map,idx,to_idx);
 		if (idx==-1) return(0);
-		if (idx==from_idx) return(0);			// circular, get out
+		
+		if (node_hit[idx]==0x1) return(0);			// circular, get out
 
 		node=&map->nodes[idx];
 		dist+=distance_get(x,y,z,node->pnt.x,node->pnt.y,node->pnt.z);
@@ -69,6 +77,8 @@ int map_node_to_node_distance(map_type *map,int from_idx,int to_idx)
 		z=node->pnt.z;
 
 		if (idx==to_idx) break;
+		
+		node_hit[idx]=0x1;
 	}
 
 	return(dist);
@@ -151,6 +161,7 @@ int map_find_nearest_node_in_path(map_type *map,int from_idx,char *name,int *dis
 	}
 			
 	*dist=cur_dist;
+
 	return(idx);
 }
 

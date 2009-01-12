@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version			"3.0b5"
+#define dim3_version			"3.0b6"
 
 /* =======================================================
 
@@ -90,7 +90,6 @@ typedef struct		{
 #define d3_jsval_type_string						3
 
 #define max_d3_jsval_str_len						128
-
 
 #define max_msg_data								8
 

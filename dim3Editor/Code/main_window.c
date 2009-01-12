@@ -48,13 +48,16 @@ WindowRef				mainwind;
 EventHandlerRef			main_wind_event;
 EventHandlerUPP			main_wind_upp;
 ControlRef				tool_ctrl[tool_count],piece_ctrl[piece_count],
-						group_combo,magnify_slider;
+						object_combo,node_combo,group_combo,magnify_slider;
 ControlActionUPP		magnify_proc;
 IconSuiteRef			tool_icon[tool_count],piece_icon[piece_count];
-MenuRef					group_menu;
-Rect					group_box;
+MenuRef					object_menu,node_menu,group_menu;
+Rect					object_box,node_box,group_box;
 
 AGLContext				ctx;
+
+short					object_combo_lookup[max_spot],
+						node_combo_lookup[max_node];
 
 char					tool_tooltip_str[tool_count][64]=
 								{
@@ -305,6 +308,44 @@ void main_wind_control_piece(int piece_idx)
 void main_wind_control(ControlRef ctrl)
 {
 	int				i,idx,tool_idx,piece_idx;
+	
+		// object combo
+		
+	if (ctrl==object_combo) {
+		idx=GetControl32BitValue(ctrl);
+		
+		if (idx>2) {
+			idx=object_combo_lookup[idx-3];
+		
+			cx=map.spots[idx].pnt.x;
+			cy=map.spots[idx].pnt.y-500;
+			cz=map.spots[idx].pnt.z;
+			
+			main_wind_draw();	
+		}
+		
+		SetControl32BitValue(ctrl,1);
+		return;
+	}
+	
+		// node combo
+		
+	if (ctrl==node_combo) {
+		idx=GetControl32BitValue(ctrl);
+		
+		if (idx>2) {
+			idx=node_combo_lookup[idx-3];
+		
+			cx=map.nodes[idx].pnt.x;
+			cy=map.nodes[idx].pnt.y-500;
+			cz=map.nodes[idx].pnt.z;
+			
+			main_wind_draw();	
+		}
+		
+		SetControl32BitValue(ctrl,1);
+		return;
+	}
 	
 		// group combo
 		
@@ -636,6 +677,48 @@ void main_wind_open(void)
 		if ((n==2) || (n==3) || (n==6) || (n==10) || (n==14) || (n==18) || (n==19)) OffsetRect(&box,3,0);
 	}
 	
+		// object combo
+		
+	CreateNewMenu(tool_object_menu_id,kMenuAttrExcludesMarkColumn,&object_menu);
+	InsertMenu(object_menu,kInsertHierarchicalMenu);
+	
+	object_box.top=3;
+	object_box.bottom=tool_button_size-3;
+	object_box.left=wbox.right-465;
+	object_box.right=object_box.left+150;
+	
+	CreatePopupButtonControl(mainwind,&object_box,NULL,tool_object_menu_id,FALSE,0,0,0,&object_combo);
+	
+	tag.version=kMacHelpVersion;
+	tag.tagSide=kHMDefaultSide;
+	SetRect(&tag.absHotRect,0,0,0,0);
+	tag.content[kHMMinimumContentIndex].contentType=kHMCFStringContent;
+	tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,"Named Spots",kCFStringEncodingMacRoman);
+	tag.content[kHMMaximumContentIndex].contentType=kHMNoContent;
+		
+	HMSetControlHelpContent(object_combo,&tag);
+	
+		// node combo
+		
+	CreateNewMenu(tool_node_menu_id,kMenuAttrExcludesMarkColumn,&node_menu);
+	InsertMenu(node_menu,kInsertHierarchicalMenu);
+	
+	node_box.top=3;
+	node_box.bottom=tool_button_size-3;
+	node_box.left=wbox.right-310;
+	node_box.right=node_box.left+150;
+	
+	CreatePopupButtonControl(mainwind,&node_box,NULL,tool_node_menu_id,FALSE,0,0,0,&node_combo);
+	
+	tag.version=kMacHelpVersion;
+	tag.tagSide=kHMDefaultSide;
+	SetRect(&tag.absHotRect,0,0,0,0);
+	tag.content[kHMMinimumContentIndex].contentType=kHMCFStringContent;
+	tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,"Named Nodes",kCFStringEncodingMacRoman);
+	tag.content[kHMMaximumContentIndex].contentType=kHMNoContent;
+		
+	HMSetControlHelpContent(node_combo,&tag);
+	
 		// group combo
 		
 	CreateNewMenu(tool_group_menu_id,kMenuAttrExcludesMarkColumn,&group_menu);
@@ -643,8 +726,8 @@ void main_wind_open(void)
 	
 	group_box.top=3;
 	group_box.bottom=tool_button_size-3;
-	group_box.left=wbox.right-205;
-	group_box.right=wbox.right-5;
+	group_box.left=wbox.right-155;
+	group_box.right=group_box.left+150;
 	
 	CreatePopupButtonControl(mainwind,&group_box,NULL,tool_group_menu_id,FALSE,0,0,0,&group_combo);
 	
@@ -777,6 +860,12 @@ void main_wind_close(void)
 		DisposeControl(tool_ctrl[n]);
 		DisposeIconSuite(tool_icon[n],TRUE);
 	}
+	
+	DisposeControl(object_combo);
+	DisposeMenu(object_menu);
+	
+	DisposeControl(node_combo);
+	DisposeMenu(node_menu);
 	
 	DisposeControl(group_combo);
 	DisposeMenu(group_menu);
@@ -1666,7 +1755,7 @@ void main_wind_scroll_wheel(d3pnt *pt,int delta)
 			
 		case vw_forward_only:
 			main_wind_setup_panel_forward_full(&view_setup);
-			walk_view_scroll_wheel_z_movement(&view_setup,delta,vm_dir_forward);
+			walk_view_scroll_wheel_rot_z_movement(&view_setup,delta);
 			break;
 	}
 }
@@ -1717,64 +1806,6 @@ void main_wind_tool_reset(void)
 void main_wind_obscure_tool_reset(void)
 {
 	SetControlValue(tool_ctrl[19],(obscure_mesh_idx!=-1)?1:0);
-}
-
-void main_wind_tool_fill_group_combo(void)
-{
-	int					n,group_idx;
-	char				str[256];
-	CFStringRef			cf_str;
-	HMHelpContentRec	tag;
-	
-		// old settings
-		
-	group_idx=GetControl32BitValue(group_combo);
-	
-		// delete old control and menu
-		
-	DisposeControl(group_combo);
-	
-	DeleteMenu(160);
-	DisposeMenu(group_menu);
-	
-		// recreate the menu
-		
-	CreateNewMenu(tool_group_menu_id,0,&group_menu);
-	
-	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"No Group",kCFStringEncodingMacRoman);
-	AppendMenuItemTextWithCFString(group_menu,cf_str,0,FOUR_CHAR_CODE('gp01'),NULL);
-	CFRelease(cf_str);
-	
-	AppendMenuItemTextWithCFString(group_menu,NULL,kMenuItemAttrSeparator,0,NULL);
-	
-	for (n=0;n<map.ngroup;n++) {
-		sprintf(str,"%s (%d)",map.groups[n].name,group_count(n));
-		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
-		AppendMenuItemTextWithCFString(group_menu,cf_str,0,FOUR_CHAR_CODE('gp03'),NULL);
-		CFRelease(cf_str);
-	}
-	
-	InsertMenu(group_menu,kInsertHierarchicalMenu);
-	
-		// recreate the control
-		
-	CreatePopupButtonControl(mainwind,&group_box,NULL,tool_group_menu_id,FALSE,0,0,0,&group_combo);
-	Draw1Control(group_combo);
-	
-		// build the help
-	
-	tag.version=kMacHelpVersion;
-	tag.tagSide=kHMDefaultSide;
-	SetRect(&tag.absHotRect,0,0,0,0);
-	tag.content[kHMMinimumContentIndex].contentType=kHMCFStringContent;
-	tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,"Mesh Groups",kCFStringEncodingMacRoman);
-	tag.content[kHMMaximumContentIndex].contentType=kHMNoContent;
-		
-	HMSetControlHelpContent(group_combo,&tag);
-	
-		// reset the control
-		
-	SetControl32BitValue(group_combo,group_idx);
 }
 
 void main_wind_tool_default(void)
@@ -1845,5 +1876,187 @@ void main_wind_tool_switch_grid_mode(void)
 	if (grid_mode>grid_mode_large) grid_mode=grid_mode_none;
 
 	main_wind_tool_reset();
+}
+
+/* =======================================================
+
+      Combos
+      
+======================================================= */
+
+void main_wind_tool_fill_object_combo(void)
+{
+	int					n,cnt;
+	char				str[256];
+	CFStringRef			cf_str;
+	HMHelpContentRec	tag;
+	
+		// delete old control and menu
+		
+	DisposeControl(object_combo);
+	
+	DeleteMenu(tool_object_menu_id);
+	DisposeMenu(object_menu);
+	
+		// recreate the menu
+		
+	CreateNewMenu(tool_object_menu_id,0,&object_menu);
+	
+	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"Spots",kCFStringEncodingMacRoman);
+	AppendMenuItemTextWithCFString(object_menu,cf_str,0,FOUR_CHAR_CODE('ob01'),NULL);
+	CFRelease(cf_str);
+	
+	AppendMenuItemTextWithCFString(object_menu,NULL,kMenuItemAttrSeparator,0,NULL);
+	
+	cnt=0;
+	
+	for (n=0;n<map.nspot;n++) {
+		if (map.spots[n].name[0]!=0x0) {
+			object_combo_lookup[cnt++]=n;
+			sprintf(str,"%s (%d)",map.spots[n].name,n);
+			cf_str=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
+			AppendMenuItemTextWithCFString(object_menu,cf_str,0,FOUR_CHAR_CODE('ob03'),NULL);
+			CFRelease(cf_str);
+		}
+	}
+	
+	InsertMenu(object_menu,kInsertHierarchicalMenu);
+	
+		// recreate the control
+		
+	CreatePopupButtonControl(mainwind,&object_box,NULL,tool_object_menu_id,FALSE,0,0,0,&object_combo);
+	Draw1Control(object_combo);
+	
+		// build the help
+	
+	tag.version=kMacHelpVersion;
+	tag.tagSide=kHMDefaultSide;
+	SetRect(&tag.absHotRect,0,0,0,0);
+	tag.content[kHMMinimumContentIndex].contentType=kHMCFStringContent;
+	tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,"Named Spots",kCFStringEncodingMacRoman);
+	tag.content[kHMMaximumContentIndex].contentType=kHMNoContent;
+		
+	HMSetControlHelpContent(object_combo,&tag);
+	
+		// reset the control
+		
+	SetControl32BitValue(object_combo,1);
+}
+
+void main_wind_tool_fill_node_combo(void)
+{
+	int					n,cnt;
+	char				str[256];
+	CFStringRef			cf_str;
+	HMHelpContentRec	tag;
+	
+		// delete old control and menu
+		
+	DisposeControl(node_combo);
+	
+	DeleteMenu(tool_node_menu_id);
+	DisposeMenu(node_menu);
+	
+		// recreate the menu
+		
+	CreateNewMenu(tool_node_menu_id,0,&node_menu);
+	
+	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"Nodes",kCFStringEncodingMacRoman);
+	AppendMenuItemTextWithCFString(node_menu,cf_str,0,FOUR_CHAR_CODE('nd01'),NULL);
+	CFRelease(cf_str);
+	
+	AppendMenuItemTextWithCFString(node_menu,NULL,kMenuItemAttrSeparator,0,NULL);
+	
+	cnt=0;
+	
+	for (n=0;n<map.nnode;n++) {
+		if (map.nodes[n].name[0]!=0x0) {
+			node_combo_lookup[cnt++]=n;
+			sprintf(str,"%s (%d)",map.nodes[n].name,n);
+			cf_str=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
+			AppendMenuItemTextWithCFString(node_menu,cf_str,0,FOUR_CHAR_CODE('nd03'),NULL);
+			CFRelease(cf_str);
+		}
+	}
+	
+	InsertMenu(node_menu,kInsertHierarchicalMenu);
+	
+		// recreate the control
+		
+	CreatePopupButtonControl(mainwind,&node_box,NULL,tool_node_menu_id,FALSE,0,0,0,&node_combo);
+	Draw1Control(node_combo);
+	
+		// build the help
+	
+	tag.version=kMacHelpVersion;
+	tag.tagSide=kHMDefaultSide;
+	SetRect(&tag.absHotRect,0,0,0,0);
+	tag.content[kHMMinimumContentIndex].contentType=kHMCFStringContent;
+	tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,"Named Nodes",kCFStringEncodingMacRoman);
+	tag.content[kHMMaximumContentIndex].contentType=kHMNoContent;
+		
+	HMSetControlHelpContent(node_combo,&tag);
+	
+		// reset the control
+		
+	SetControl32BitValue(node_combo,1);
+}
+
+void main_wind_tool_fill_group_combo(void)
+{
+	int					n,group_idx;
+	char				str[256];
+	CFStringRef			cf_str;
+	HMHelpContentRec	tag;
+	
+		// old settings
+		
+	group_idx=GetControl32BitValue(group_combo);
+	
+		// delete old control and menu
+		
+	DisposeControl(group_combo);
+	
+	DeleteMenu(tool_group_menu_id);
+	DisposeMenu(group_menu);
+	
+		// recreate the menu
+		
+	CreateNewMenu(tool_group_menu_id,0,&group_menu);
+	
+	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"No Group",kCFStringEncodingMacRoman);
+	AppendMenuItemTextWithCFString(group_menu,cf_str,0,FOUR_CHAR_CODE('gp01'),NULL);
+	CFRelease(cf_str);
+	
+	AppendMenuItemTextWithCFString(group_menu,NULL,kMenuItemAttrSeparator,0,NULL);
+	
+	for (n=0;n<map.ngroup;n++) {
+		sprintf(str,"%s (%d)",map.groups[n].name,group_count(n));
+		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
+		AppendMenuItemTextWithCFString(group_menu,cf_str,0,FOUR_CHAR_CODE('gp03'),NULL);
+		CFRelease(cf_str);
+	}
+	
+	InsertMenu(group_menu,kInsertHierarchicalMenu);
+	
+		// recreate the control
+		
+	CreatePopupButtonControl(mainwind,&group_box,NULL,tool_group_menu_id,FALSE,0,0,0,&group_combo);
+	Draw1Control(group_combo);
+	
+		// build the help
+	
+	tag.version=kMacHelpVersion;
+	tag.tagSide=kHMDefaultSide;
+	SetRect(&tag.absHotRect,0,0,0,0);
+	tag.content[kHMMinimumContentIndex].contentType=kHMCFStringContent;
+	tag.content[kHMMinimumContentIndex].u.tagCFString=CFStringCreateWithCString(NULL,"Mesh Groups",kCFStringEncodingMacRoman);
+	tag.content[kHMMaximumContentIndex].contentType=kHMNoContent;
+		
+	HMSetControlHelpContent(group_combo,&tag);
+	
+		// reset the control
+		
+	SetControl32BitValue(group_combo,group_idx);
 }
 

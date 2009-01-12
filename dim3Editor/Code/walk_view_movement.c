@@ -152,9 +152,9 @@ void walk_view_mouse_z_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int v
 				break;
 		}
 		
-		cz+=(zadd*32);
 		cx+=(xadd*32);
 		cy+=(yadd*32);
+		cz+=(zadd*32);
 
         main_wind_draw();
 		
@@ -180,10 +180,26 @@ void walk_view_scroll_wheel_z_movement(editor_3D_view_setup *view_setup,int delt
 		if (view_setup->swap_on) xadd=-xadd;
 	}
 	
-	
-	cz+=(zadd*32);
 	cx+=(xadd*32);
 	cy+=(yadd*32);
+	cz+=(zadd*32);
+	
+	main_wind_draw();
+}
+
+void walk_view_scroll_wheel_rot_z_movement(editor_3D_view_setup *view_setup,int delta)
+{
+	int						xadd,zadd,yadd;
+	
+	xadd=0;
+	yadd=0;
+	zadd=delta*10;
+	
+	rotate_point_center(&xadd,&yadd,&zadd,0.0f,walk_view_y_angle,0.0f);
+	
+	cx-=(xadd*32);
+	cy+=(yadd*32);
+	cz+=(zadd*32);
 	
 	main_wind_draw();
 }

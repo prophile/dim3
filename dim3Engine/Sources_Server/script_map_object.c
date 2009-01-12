@@ -54,7 +54,7 @@ JSBool js_map_object_get_team_name_func(JSContext *cx,JSObject *j_obj,uintN argc
 JSBool js_map_object_get_distance_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_angle_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_angle_to_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_object_facing_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_object_is_facing_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_position_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_size_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -97,7 +97,7 @@ JSFunctionSpec	map_object_functions[]={
 							{"getDistance",					js_map_object_get_distance_func,					4},
 							{"getAngleTo",					js_map_object_get_angle_to_func,					4},
 							{"getAngleToId",				js_map_object_get_angle_to_id_func,					2},
-							{"facingId",					js_map_object_facing_id_func,						3},
+							{"isFacingId",					js_map_object_is_facing_id_func,					3},
 							{"getPosition",					js_map_object_get_position_func,					1},
 							{"getAngle",					js_map_object_get_angle_func,						1},
 							{"getSize",						js_map_object_get_size_func,						1},
@@ -603,7 +603,7 @@ JSBool js_map_object_get_angle_to_id_func(JSContext *cx,JSObject *j_obj,uintN ar
       
 ======================================================= */
 
-JSBool js_map_object_facing_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_map_object_is_facing_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
 	float			ang_y,ang_dif;
 	bool			cwise;

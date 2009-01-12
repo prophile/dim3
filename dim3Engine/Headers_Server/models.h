@@ -37,6 +37,7 @@ extern void model_draw_setup_projectile(int tick,proj_type *proj);
 extern void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignore_y_shifts,bool dual_hand);
 
 extern void model_change_fill(model_draw *draw,int wfill,int txt);
+extern void model_get_current_animation_name(model_draw *draw,char *name);
 extern int model_find_animation_from_draw(model_draw *draw,char *name);
 extern bool model_start_animation(model_draw *draw,char *name);
 extern void model_stop_animation(model_draw *draw);

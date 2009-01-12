@@ -313,6 +313,8 @@ bool object_sight_test_object(obj_type *obj,int test_obj_uid)
 	d3pnt					spt,hpt;
 	d3ang					ang;
 	ray_trace_contact_type	contact;
+	
+	if (test_obj_uid==-1) return(FALSE);
 
 		// setup contact
 

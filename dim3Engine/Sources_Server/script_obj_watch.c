@@ -38,6 +38,8 @@ extern js_type			js;
 JSBool js_get_obj_watch_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_watch_start_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_watch_stop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_obj_watch_set_restrict_sight_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_obj_watch_clear_restrict_sight_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			obj_watch_class={"obj_watch_class",0,
 							script_add_property,JS_PropertyStub,
@@ -57,8 +59,10 @@ JSPropertySpec	obj_watch_props[]={
 							{0}};
 							
 JSFunctionSpec	obj_watch_functions[]={
-							{"start",					js_obj_watch_start_func,			1},
-							{"stop",					js_obj_watch_stop_func,				0},
+							{"start",					js_obj_watch_start_func,					1},
+							{"stop",					js_obj_watch_stop_func,						0},
+							{"setRestrictSight",		js_obj_watch_set_restrict_sight_func,		1},
+							{"clearRestrictSight",		js_obj_watch_clear_restrict_sight_func,		0},
 							{0}};
 
 /* =======================================================
@@ -194,3 +198,31 @@ JSBool js_obj_watch_stop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *ar
 	return(JS_TRUE);
 }
 
+/* =======================================================
+
+      Sight Restriction Functions
+      
+======================================================= */
+
+JSBool js_obj_watch_set_restrict_sight_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	obj_type	*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	
+	obj->watch.restrict_on=TRUE;
+	obj->watch.restrict_ang=script_value_to_float(argv[0]);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_watch_clear_restrict_sight_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	obj_type	*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	
+	obj->watch.restrict_on=FALSE;
+	
+	return(JS_TRUE);
+}

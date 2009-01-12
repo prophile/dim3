@@ -51,17 +51,18 @@ JSClass			model_animation_class={"model_animation_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 JSPropertySpec	model_animation_props[]={
-							{"index",				model_animation_prop_index,						JSPROP_PERMANENT|JSPROP_SHARED},
+							{"index",					model_animation_prop_index,						JSPROP_PERMANENT|JSPROP_SHARED},
+							{"currentAnimationName",	model_animation_prop_cur_animation_name,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 
 JSFunctionSpec	model_animation_functions[]={
-							{"start",				js_model_animation_start_func,					1},
-							{"stop",				js_model_animation_stop_func,					0},
-							{"cancel",				js_model_animation_cancel_func,					1},
-							{"change",				js_model_animation_change_func,					1},
-							{"interrupt",			js_model_animation_interrupt_func,				1},
-							{"startThenChange",		js_model_animation_start_then_change_func,		2},
-							{"fade",				js_model_animation_fade_func,					2},
+							{"start",					js_model_animation_start_func,					1},
+							{"stop",					js_model_animation_stop_func,					0},
+							{"cancel",					js_model_animation_cancel_func,					1},
+							{"change",					js_model_animation_change_func,					1},
+							{"interrupt",				js_model_animation_interrupt_func,				1},
+							{"startThenChange",			js_model_animation_start_then_change_func,		2},
+							{"fade",					js_model_animation_fade_func,					2},
 							{0}};
 
 extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
@@ -89,6 +90,7 @@ void script_add_model_animation_object(JSObject *parent_obj)
 
 JSBool js_get_model_animation_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
+	char				name[64];
 	model_draw			*draw;
 
 	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
@@ -99,6 +101,10 @@ JSBool js_get_model_animation_property(JSContext *cx,JSObject *j_obj,jsval id,js
 	
 		case model_animation_prop_index:
 			*vp=INT_TO_JSVAL(draw->script_animation_idx);
+			break;
+		case model_animation_prop_cur_animation_name:
+			model_get_current_animation_name(draw,name);
+			*vp=script_string_to_value(name);
 			break;
 
 	}

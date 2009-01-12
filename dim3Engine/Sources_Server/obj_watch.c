@@ -45,8 +45,9 @@ extern js_type				js;
 void object_watch(obj_type *obj)
 {
 	int			n,dist,x,z,y,kx,kz,ky;
+	float		ang_y,ang_dif;
 	double		dx,dz,dy;
-	bool		is_near;
+	bool		is_near,cwise;
 	obj_type	*watch_obj;
 	
 		// watching on?
@@ -84,6 +85,15 @@ void object_watch(obj_type *obj)
 					is_near=(((int)sqrt(dx+dz+dy))<=dist);
 				}
 			}
+		}
+		
+			// check angle
+			
+		if ((is_near) && (obj->watch.restrict_on)) {
+		
+			ang_y=angle_find(obj->pnt.x,obj->pnt.z,watch_obj->pnt.x,watch_obj->pnt.z);
+			ang_dif=angle_dif(ang_y,obj->ang.y,&cwise);
+			if (ang_dif>(obj->watch.restrict_ang*0.5f)) is_near=FALSE;		
 		}
 		
 			// has there been a change

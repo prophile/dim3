@@ -173,6 +173,9 @@ bool file_new_map(void)
 		// redraw the window
     
 	redraw_windows();
+	
+	main_wind_tool_fill_object_combo();
+	main_wind_tool_fill_node_combo();
 	main_wind_tool_fill_group_combo();
 	
 	return(TRUE);
@@ -215,8 +218,10 @@ bool file_open_map(void)
 		
 	select_clear();
 	
-		// fill in the groups
+		// fill in the combos
 		
+	main_wind_tool_fill_object_combo();
+	main_wind_tool_fill_node_combo();
 	main_wind_tool_fill_group_combo();
 	
 		// start models

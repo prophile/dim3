@@ -71,6 +71,23 @@ void model_change_fill(model_draw *draw,int wfill,int txt)
       
 ======================================================= */
 
+void model_get_current_animation_name(model_draw *draw,char *name)
+{
+	model_type					*mdl;
+	model_draw_animation		*draw_animation;
+	
+	mdl=model_find_uid(draw->uid);
+	if (mdl==NULL) return(-1);
+
+	draw_animation=&draw->animations[draw->script_animation_idx];
+	if (draw_animation->animate_idx==-1) {
+		name[0]=0x0;
+		return;
+	}
+	
+	strcpy(name,mdl->animates[draw_animation->animate_idx].name);
+}
+
 int model_find_animation_from_draw(model_draw *draw,char *name)
 {
 	model_type					*mdl;

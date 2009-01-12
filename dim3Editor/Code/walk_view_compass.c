@@ -203,7 +203,12 @@ bool walk_view_compass_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 		SetRect(&click_box,lft,top,rgt,bot);
 		OffsetRect(&click_box,box_left,box_top);
 		if (main_wind_click_check_box(pt,&click_box)) {
-			walk_view_y_angle=(float)(360-n);
+			if (n==0) {
+				walk_view_y_angle=0.0f;
+			}
+			else {
+				walk_view_y_angle=(float)(360-n);
+			}
 			main_wind_draw();
 			return(TRUE);
 		}

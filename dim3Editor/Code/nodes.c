@@ -30,7 +30,12 @@ and can be sold or given away.
 
 extern map_type			map;
 
-int						link_dist[max_node][max_node_link];
+typedef struct			{
+							int					win_link_idx,win_dist,
+												link_dist[max_node_link];
+						} node_scan_type;
+
+node_scan_type			node_scan[max_node];
 
 /* =======================================================
 
@@ -104,7 +109,7 @@ bool node_link_has_link(int node_idx,int link_node_idx)
 
 bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 {
-	int			n,node_idx,next_idx,k1,k2;
+	int			n,node_idx,next_idx,k1,k2,sz;
 	d3pnt		click_pt;
 	
 		// is a node selected?
@@ -125,8 +130,18 @@ bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 	if (main_wind_option_down()) {
 			
 		for (n=0;n!=max_node_link;n++) {
-			if (map.nodes[node_idx].link[n]==next_idx) map.nodes[node_idx].link[n]=-1;
-			if (map.nodes[next_idx].link[n]==node_idx) map.nodes[next_idx].link[n]=-1;
+		
+			if (map.nodes[node_idx].link[n]==next_idx) {
+				sz=(max_node_link-n)-1;
+				if (sz>0) memmove(&map.nodes[node_idx].link[n],&map.nodes[node_idx].link[n+1],(sz*sizeof(short)));
+				map.nodes[node_idx].link[max_node_link-1]=-1;
+			}
+			
+			if (map.nodes[next_idx].link[n]==node_idx) {
+				sz=(max_node_link-n)-1;
+				if (sz>0) memmove(&map.nodes[next_idx].link[n],&map.nodes[next_idx].link[n+1],(sz*sizeof(short)));
+				map.nodes[next_idx].link[max_node_link-1]=-1;
+			}
 		}
 		
 		main_wind_draw();
@@ -159,131 +174,118 @@ bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 
 /* =======================================================
 
-      Trace Down Node Paths
-      
-======================================================= */
-
-int node_path_node_in_path(int from_node,int to_node,unsigned char *node_hits,int curdist,int windist)
-{
-	int				i,k,d,dist,nxtdist;
-
-	dist=-1;
-    nxtdist=windist;
-    
-    node_hits[from_node]=1;
-	
-	for (i=0;i!=max_node_link;i++) {
-	
-            // node doubling back?
-            
-		k=map.nodes[from_node].link[i];
-		if (k==-1) continue;
-        if (node_hits[k]!=0) continue;
-        
-         d=link_dist[from_node][i]+curdist;
-        
-            // is this distance already greater than a known winning distance?
-
-        if ((windist!=-1) && (d>windist)) {
-            dist=-1;
-            break;
-        }
-
-            // are we at destination?
-            
-		if (k==to_node) {
-            dist=d;
-            break;
-        }
-        
-        d=node_path_node_in_path(k,to_node,node_hits,d,nxtdist);
-        if (d==-1) continue;
-        
-		if ((dist!=-1) && (d>dist)) continue;
-                
-        dist=d;
-        nxtdist=dist;
-	}
-    
-	node_hits[from_node]=0;
-
-	return(dist);		
-}
-
-int node_path_find_next_node_to_node(int from_node,int to_node)
-{
-	int				i,k,link,d,dist;
-	unsigned char	node_hits[max_node];
-   
-	link=-1;
-	dist=-1;
-    
-        // block off nodes as we trace down paths
-    
-	memset(node_hits,0x0,max_node);
-
-    node_hits[from_node]=1;
-		
-        // trace through links
-        
-	for (i=0;i!=max_node_link;i++) {
-	
-		k=map.nodes[from_node].link[i];
-		if (k==-1) continue;
-		
-		if (k==to_node) return(k);
-        
-		d=node_path_node_in_path(k,to_node,node_hits,0,dist);
-        if (d==-1) continue;
-        
-		if ((link!=-1) && (d>dist)) continue;
-        
-        link=k;
-        dist=d;
-	}
-    
-    return(link);
-}
-
-/* =======================================================
-
       Rebuild Node Paths
       
 ======================================================= */
 
+void node_path_trace_all(int org_node_idx,int org_link_idx,int node_idx,int cur_dist,unsigned char *node_hit,int level)
+{
+	int				n,nxt_node_idx,dist;
+	node_type		*node;
+	
+		// if at the top, node = original node
+		// and clear the hit list and win distance
+		// lists.
+		
+	if (level==40) return;
+	
+	if (level==0) {
+		node_idx=org_node_idx;
+		cur_dist=0;
+		
+		memset(node_hit,0x0,map.nnode);
+		
+		for (n=0;n!=map.nnode;n++) {
+			node_scan[n].win_link_idx=-1;
+		}
+	}
+	
+	node_hit[node_idx]=0x1;
+		
+		// trace all paths from this node
+		
+	node=&map.nodes[node_idx];
+		
+	for (n=0;n!=max_node_link;n++) {
+	
+			// if we are at the top, set the original
+			// link index for distance writes
+			
+		if (level==0) org_link_idx=n;
+		
+			// get next node
+			
+		nxt_node_idx=node->link[n];
+		if (nxt_node_idx==-1) break;
+		
+			// already hit?
+			
+		if (node_hit[nxt_node_idx]!=0x0) continue;
+		
+			// see if this node's distance is
+			// already greater than the current winning distance
+			// or is the winning distance
+			
+		dist=cur_dist+node_scan[node_idx].link_dist[n];
+		
+		if ((node_scan[nxt_node_idx].win_link_idx!=-1) && (dist>node_scan[nxt_node_idx].win_dist)) continue;
+		
+		if ((node_scan[nxt_node_idx].win_link_idx==-1) || (dist<node_scan[nxt_node_idx].win_dist)) {
+			node_scan[nxt_node_idx].win_link_idx=org_link_idx;
+			node_scan[nxt_node_idx].win_dist=dist;
+		}
+		
+			// continue down the path
+		
+		node_path_trace_all(org_node_idx,org_link_idx,nxt_node_idx,dist,node_hit,(level+1));
+	}
+	
+		// backing up, free this node for additional searches
+		
+	node_hit[node_idx]=0x0;
+	
+		// if we are at the first level, then
+		// we can set all the path wins as hints
+		
+	if (level!=0) return;
+	
+	for (n=0;n!=map.nnode;n++) {
+		if (n!=node_idx) {
+			node->path_hint[n]=node->link[node_scan[n].win_link_idx];
+		}
+	}
+}
+
 void node_path_rebuild(void)
 {
     int				i,x,z,k,n;
+	unsigned char	node_hit[max_node];
 	node_type		*node,*to_node;
 	
-	int		tick;
-	
-	tick=TickCount();
-    
-        // find distances between all node links
+        // precalc the distance between each
+		// directly linked node
         
 	node=map.nodes;
 		
-    for (i=0;i!=map.nnode;i++) {
+    for (n=0;n!=map.nnode;n++) {
     
         x=node->pnt.x;
         z=node->pnt.z;
 		
-		to_node=map.nodes;
-    
-        for (k=0;k!=max_node_link;k++) {
-            n=node->link[k];
-            if (n==-1) {
-                link_dist[i][k]=0;
+			// get distance to each directly linked node
+			
+        for (i=0;i!=max_node_link;i++) {
+            k=node->link[i];
+            if ((k==-1) || (k==n)) {
+                node_scan[n].link_dist[i]=0;
             }
             else {
-            	link_dist[i][k]=distance_2D_get(x,z,to_node->pnt.x,to_node->pnt.z);
+				to_node=&map.nodes[k];
+            	node_scan[n].link_dist[i]=distance_2D_get(x,z,to_node->pnt.x,to_node->pnt.z);
             }
-			
-			to_node++;
         }
         
-            // clear out quick paths
+            // clear out path hints
 
         for (k=0;k!=map.nnode;k++) {
             node->path_hint[k]=-1;
@@ -293,19 +295,9 @@ void node_path_rebuild(void)
     }
     
         // find the best path between all nodes
-		
-	node=map.nodes;
-        
+	
     for (i=0;i!=map.nnode;i++) {
-        
-        for (k=0;k!=map.nnode;k++) {
-            if (k!=i) node->path_hint[k]=node_path_find_next_node_to_node(i,k);
-        }
-		
-		node++;
+		node_path_trace_all(i,0,0,0,node_hit,0);
     }
-	
-	
-	fprintf(stdout,"2. tick = %d\n",(int)(TickCount()-tick));
 }
 

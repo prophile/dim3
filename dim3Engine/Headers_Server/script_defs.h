@@ -267,6 +267,7 @@ and can be sold or given away.
 #define model_shadow_prop_static_alpha				6
 
 #define model_animation_prop_index					0
+#define model_animation_prop_cur_animation_name		1
 
 //
 // object property IDs
