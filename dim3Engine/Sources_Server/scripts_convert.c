@@ -72,7 +72,7 @@ void script_value_to_string(jsval val,char *str,int len)
 {
 	JSString		*jstr;
 
-	if (val==JSVAL_NULL) {
+	if ((val==JSVAL_NULL) || (val==JSVAL_VOID) || (!JSVAL_IS_PRIMITIVE(val))) {
 		str[0]=0x0;
 		return;
 	}

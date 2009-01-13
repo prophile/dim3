@@ -144,6 +144,7 @@ bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 			}
 		}
 		
+		main_wind_tool_fill_node_combo();
 		main_wind_draw();
 		
 		return(TRUE);
@@ -164,6 +165,7 @@ bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 		if (!node_link_has_link(node_idx,next_idx)) map.nodes[node_idx].link[k1]=next_idx;
 		if (!node_link_has_link(next_idx,node_idx)) map.nodes[next_idx].link[k2]=node_idx;
 		
+		main_wind_tool_fill_node_combo();
 		main_wind_draw();
 		
 		return(TRUE);

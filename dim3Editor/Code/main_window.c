@@ -907,17 +907,31 @@ void main_wind_set_title(char *file_name)
 void main_wind_resize_buttons(void)
 {
 	int				n,x,y;
-	Rect			wbox,box,group_box;
+	Rect			wbox,box,object_box,node_box,group_box;
 	
 	GetWindowPortBounds(mainwind,&wbox);
 	
-		// group combo
+		// combos
 		
+	object_box.top=3;
+	object_box.bottom=tool_button_size-3;
+	object_box.left=wbox.right-465;
+	object_box.right=object_box.left+150;
+	
+	SetControlBounds(object_combo,&object_box);
+
+	node_box.top=3;
+	node_box.bottom=tool_button_size-3;
+	node_box.left=wbox.right-310;
+	node_box.right=node_box.left+150;
+	
+	SetControlBounds(node_combo,&node_box);
+
 	group_box.top=3;
 	group_box.bottom=tool_button_size-3;
-	group_box.left=wbox.right-205;
-	group_box.right=wbox.right-5;
-	
+	group_box.left=wbox.right-155;
+	group_box.right=group_box.left+150;
+
 	SetControlBounds(group_combo,&group_box);
 	
 		// pieces
@@ -1886,8 +1900,8 @@ void main_wind_tool_switch_grid_mode(void)
 
 void main_wind_tool_fill_object_combo(void)
 {
-	int					n,cnt;
-	char				str[256];
+	int					n,cnt,idx;
+	bool				spot_hit[max_spot];
 	CFStringRef			cf_str;
 	HMHelpContentRec	tag;
 	
@@ -1911,15 +1925,35 @@ void main_wind_tool_fill_object_combo(void)
 	cnt=0;
 	
 	for (n=0;n<map.nspot;n++) {
-		if (map.spots[n].name[0]!=0x0) {
-			object_combo_lookup[cnt++]=n;
-			sprintf(str,"%s (%d)",map.spots[n].name,n);
-			cf_str=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
-			AppendMenuItemTextWithCFString(object_menu,cf_str,0,FOUR_CHAR_CODE('ob03'),NULL);
-			CFRelease(cf_str);
-		}
+		spot_hit[n]=FALSE;
 	}
+
+	while (TRUE) {
 	
+		idx=-1;
+		
+		for (n=0;n<map.nspot;n++) {
+			if ((map.spots[n].name[0]!=0x0) && (!spot_hit[n])) {
+				if (idx==-1) {
+					idx=n;
+				}
+				else {
+					if (strcasecmp(map.spots[idx].name,map.spots[n].name)>0) idx=n;
+				}
+			}
+		}
+		
+		if (idx==-1) break;
+		
+		object_combo_lookup[cnt++]=idx;
+		
+		spot_hit[idx]=TRUE;
+		
+		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,map.spots[idx].name,kCFStringEncodingMacRoman);
+		AppendMenuItemTextWithCFString(object_menu,cf_str,0,FOUR_CHAR_CODE('ob03'),NULL);
+		CFRelease(cf_str);
+	}
+
 	InsertMenu(object_menu,kInsertHierarchicalMenu);
 	
 		// recreate the control
@@ -1945,8 +1979,8 @@ void main_wind_tool_fill_object_combo(void)
 
 void main_wind_tool_fill_node_combo(void)
 {
-	int					n,cnt;
-	char				str[256];
+	int					n,cnt,idx;
+	bool				node_hit[max_node];
 	CFStringRef			cf_str;
 	HMHelpContentRec	tag;
 	
@@ -1970,13 +2004,33 @@ void main_wind_tool_fill_node_combo(void)
 	cnt=0;
 	
 	for (n=0;n<map.nnode;n++) {
-		if (map.nodes[n].name[0]!=0x0) {
-			node_combo_lookup[cnt++]=n;
-			sprintf(str,"%s (%d)",map.nodes[n].name,n);
-			cf_str=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
-			AppendMenuItemTextWithCFString(node_menu,cf_str,0,FOUR_CHAR_CODE('nd03'),NULL);
-			CFRelease(cf_str);
+		node_hit[n]=FALSE;
+	}
+
+	while (TRUE) {
+	
+		idx=-1;
+		
+		for (n=0;n<map.nnode;n++) {
+			if ((map.nodes[n].name[0]!=0x0) && (!node_hit[n])) {
+				if (idx==-1) {
+					idx=n;
+				}
+				else {
+					if (strcasecmp(map.nodes[idx].name,map.nodes[n].name)>0) idx=n;
+				}
+			}
 		}
+		
+		if (idx==-1) break;
+		
+		node_combo_lookup[cnt++]=idx;
+		
+		node_hit[idx]=TRUE;
+		
+		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,map.nodes[idx].name,kCFStringEncodingMacRoman);
+		AppendMenuItemTextWithCFString(node_menu,cf_str,0,FOUR_CHAR_CODE('nd03'),NULL);
+		CFRelease(cf_str);
 	}
 	
 	InsertMenu(node_menu,kInsertHierarchicalMenu);

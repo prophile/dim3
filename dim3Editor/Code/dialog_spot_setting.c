@@ -202,6 +202,7 @@ bool dialog_spot_setting_run(spot_type *spot)
 		
 		dialog_spot_setting_combine_params(spot->params);
 	
+		main_wind_tool_fill_object_combo();
 		main_wind_draw();
 	}
 

@@ -57,7 +57,16 @@ WindowRef					dialog_hit_box_settings_wind;
 
 void dialog_hit_box_settings_load(void)
 {
-	if (dialog_hit_box_idx==-1) return;
+	if (dialog_hit_box_idx==-1) {
+		dialog_set_text(dialog_hit_box_settings_wind,kHitBoxName,0,"");
+		dialog_set_int(dialog_hit_box_settings_wind,kHitBoxSizeX,0,0);
+		dialog_set_int(dialog_hit_box_settings_wind,kHitBoxSizeY,0,0);
+		dialog_set_int(dialog_hit_box_settings_wind,kHitBoxSizeZ,0,0);
+		dialog_set_int(dialog_hit_box_settings_wind,kHitBoxOffsetX,0,0);
+		dialog_set_int(dialog_hit_box_settings_wind,kHitBoxOffsetY,0,0);
+		dialog_set_int(dialog_hit_box_settings_wind,kHitBoxOffsetZ,0,0);
+		return;
+	}
 	
 	dialog_set_text(dialog_hit_box_settings_wind,kHitBoxName,0,model.hit_boxes[dialog_hit_box_idx].name);
 	dialog_set_int(dialog_hit_box_settings_wind,kHitBoxSizeX,0,model.hit_boxes[dialog_hit_box_idx].box.size.x);
@@ -232,7 +241,9 @@ bool dialog_hit_box_settings_run(void)
 
 		// set controls
 
-	dialog_hit_box_idx=0;
+	dialog_hit_box_idx=-1;
+	if (model.nhit_box!=0) dialog_hit_box_idx=0;
+	
 	dialog_hit_box_settings_load();
 	
 		// show window

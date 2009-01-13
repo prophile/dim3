@@ -44,6 +44,18 @@ extern js_type				js;
 
 bool object_auto_walk_node_setup(obj_type *obj,int from_idx,int to_idx,int event_id)
 {
+		// check for valid nodes
+		
+	if ((from_idx<0) || (from_idx>=map.nnode)) {
+		JS_ReportError(js.cx,"Start node is not a valid node Id");
+		return(FALSE);
+	}
+	
+	if ((to_idx<0) || (to_idx>=map.nnode)) {
+		JS_ReportError(js.cx,"End node is not a valid node Id");
+		return(FALSE);
+	}
+
 		// is end node in start node path?
 		// skip check if to and from are the same
 		

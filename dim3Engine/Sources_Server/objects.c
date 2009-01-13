@@ -427,6 +427,7 @@ obj_type* object_create(int bind,int reserve_uid)
 	
 	obj->hidden=FALSE;
 	obj->player=FALSE;
+	obj->bot=FALSE;
 	obj->suspend=FALSE;
 	obj->scenery.on=FALSE;
 	obj->fly=FALSE;
@@ -709,6 +710,8 @@ int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_
 	else {
 		strcpy(obj->name,spot->attach_name);
 		strcpy(obj->type,spot->attach_type);
+		
+		obj->bot=(strcasecmp(obj->type,"bot")==0);
 
 			// if there's an editor display model, then
 			// default model to it

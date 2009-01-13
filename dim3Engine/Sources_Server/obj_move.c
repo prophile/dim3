@@ -1371,7 +1371,8 @@ void object_move_remote(obj_type *obj)
 
 void object_thrust(obj_type *obj)
 {
-	float			xmove,ymove,zmove,ztemp;
+	float			xmove,ymove,zmove,ztemp,
+					speed,neg;
 	
 	if (obj->input_mode!=im_thrust) return;
 	
@@ -1390,6 +1391,8 @@ void object_thrust(obj_type *obj)
     angle_get_movement_float(obj->ang.y,obj->thrust.speed,&xmove,&zmove);
 	angle_get_movement_float(obj->view_ang.x,obj->thrust.speed,&ymove,&ztemp);
 	
+	fprintf(stdout,"MOVE: %.2f, %.2f\n",xmove,zmove);
+	
 	obj->thrust.vct.x+=xmove;
 	if (obj->thrust.vct.x>obj->thrust.max_speed) obj->thrust.vct.x=obj->thrust.max_speed;
 	if (obj->thrust.vct.x<-obj->thrust.max_speed) obj->thrust.vct.x=-obj->thrust.max_speed;
@@ -1401,6 +1404,33 @@ void object_thrust(obj_type *obj)
 	obj->thrust.vct.z+=zmove;
 	if (obj->thrust.vct.z>obj->thrust.max_speed) obj->thrust.vct.z=obj->thrust.max_speed;
 	if (obj->thrust.vct.z<-obj->thrust.max_speed) obj->thrust.vct.z=-obj->thrust.max_speed;
+	
+		// if we are over the max speed, then
+		// divide out the speed to reduce each axis
+		
+	speed=fabs(obj->thrust.vct.x)+fabs(obj->thrust.vct.y)+fabs(obj->thrust.vct.z);
+	if ((speed<=obj->thrust.max_speed) || (speed=0.0f)) return;
+	
+	neg=1;
+	
+	if (obj->thrust.vct.x!=0.0f) {
+	//	neg=(obj->thrust.vct.x<0.0f)?-1.0f:1.0f;
+		obj->thrust.vct.x=(((speed-fabs(obj->thrust.vct.x))/speed)*obj->thrust.max_speed)*neg;
+		fprintf(stdout,"X: %.2f, %.2f, %.2f\n",speed,obj->thrust.vct.x,obj->thrust.max_speed);
+	}
+	
+	if (obj->thrust.vct.y!=0.0f) {
+	//	neg=(obj->thrust.vct.y<0.0f)?-1.0f:1.0f;
+		obj->thrust.vct.y=(((speed-fabs(obj->thrust.vct.y))/speed)*obj->thrust.max_speed)*neg;
+	}
+	
+	if (obj->thrust.vct.z!=0.0f) {
+	//	neg=(obj->thrust.vct.z<0.0f)?-1.0f:1.0f;
+		obj->thrust.vct.z=(((speed-fabs(obj->thrust.vct.z))/speed)*obj->thrust.max_speed)*neg;
+		fprintf(stdout,"Z: %.2f, %.2f, %.2f\n",speed,obj->thrust.vct.z,obj->thrust.max_speed);
+	}
+	
+	fprintf(stdout,"%.2f, %.2f, %.2f\n",obj->thrust.vct.x,obj->thrust.vct.y,obj->thrust.vct.z);
 }
 	
 /* =======================================================

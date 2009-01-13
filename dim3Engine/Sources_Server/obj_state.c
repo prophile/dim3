@@ -174,25 +174,22 @@ void object_telefrag_check(obj_type *obj)
 
 		// only players, remotes, and bots can telefrag
 
-	if ((!obj->player) && (!obj->remote.on) && (strcasecmp(obj->type,"bot")!=0)) return;
+	if ((!obj->player) && (!obj->remote.on) && (!obj->bot)) return;
 
 		// colliding with remotes
 		
 	hit_obj=NULL;
-	check_obj=server.objs;
 	
 	for (n=0;n!=server.count.obj;n++) {
-		if (obj->uid==check_obj->uid) {
-			check_obj++;
-			continue;
-		}
+		check_obj=&server.objs[n];
+	
+		if ((!check_obj->player) && (!check_obj->remote.on) && (!check_obj->bot)) continue;
+		if (obj->uid==check_obj->uid) continue;
 		
 		if (collide_object_to_object(obj,0,0,check_obj,TRUE,FALSE)) {
 			hit_obj=check_obj;
 			break;
 		}
-		
-		check_obj++;
 	}
 	
 	if (hit_obj==NULL) return;

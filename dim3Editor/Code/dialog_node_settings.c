@@ -119,6 +119,8 @@ bool dialog_node_settings_run(node_type *node)
 		node->ang.x=dialog_get_float(dialog_node_settings_wind,kNodeAngleX,0);
 		node->ang.y=dialog_get_float(dialog_node_settings_wind,kNodeAngleY,0);
 		node->ang.z=dialog_get_float(dialog_node_settings_wind,kNodeAngleZ,0);
+		
+		main_wind_tool_fill_node_combo();
 	}
 
 		// close window

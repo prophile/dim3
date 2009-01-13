@@ -130,7 +130,7 @@ JSBool js_get_obj_watch_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 				break;
 			}
 
-			*vp=BOOLEAN_TO_JSVAL(strcasecmp(watch_obj->type,"bot")==0);
+			*vp=BOOLEAN_TO_JSVAL(watch_obj->bot);
 			break;
 
 		case obj_watch_prop_object_is_player_remote_bot:
@@ -145,7 +145,7 @@ JSBool js_get_obj_watch_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 				break;
 			}
 
-			*vp=BOOLEAN_TO_JSVAL((watch_obj->remote.on) || (strcasecmp(watch_obj->type,"bot")==0));
+			*vp=BOOLEAN_TO_JSVAL((watch_obj->remote.on) || (watch_obj->bot));
 			break;
 
 		case obj_watch_prop_object_team:

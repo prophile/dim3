@@ -113,6 +113,8 @@ void piece_duplicate(void)
 				map.spots[map.nspot].pnt.z+=zadd;
 				select_duplicate_add(spot_piece,map.nspot,0);
 				map.nspot++;
+				
+				main_wind_tool_fill_object_combo();
 				break;
 				
 			case scenery_piece:
@@ -146,6 +148,8 @@ void piece_duplicate(void)
 				}
 				select_duplicate_add(node_piece,map.nnode,0);
 				map.nnode++;
+				
+				main_wind_tool_fill_node_combo();
 				break;
 				
 			case light_piece:
@@ -275,6 +279,8 @@ void piece_delete(void)
 					map.spots[i]=map.spots[i+1];
 				}
 				map.nspot--;
+				
+				main_wind_tool_fill_object_combo();
 				break;
 				
 			case scenery_piece:
@@ -299,6 +305,8 @@ void piece_delete(void)
 				}
 				
 				map.nnode--;
+				
+				main_wind_tool_fill_node_combo();
 				break;
 				
 			case light_piece:
