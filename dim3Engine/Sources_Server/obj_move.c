@@ -1394,39 +1394,39 @@ void object_thrust(obj_type *obj)
 	fprintf(stdout,"MOVE: %.2f, %.2f\n",xmove,zmove);
 	
 	obj->thrust.vct.x+=xmove;
-	if (obj->thrust.vct.x>obj->thrust.max_speed) obj->thrust.vct.x=obj->thrust.max_speed;
-	if (obj->thrust.vct.x<-obj->thrust.max_speed) obj->thrust.vct.x=-obj->thrust.max_speed;
+//	if (obj->thrust.vct.x>obj->thrust.max_speed) obj->thrust.vct.x=obj->thrust.max_speed;
+//	if (obj->thrust.vct.x<-obj->thrust.max_speed) obj->thrust.vct.x=-obj->thrust.max_speed;
 	
 	obj->thrust.vct.y+=ymove;
-	if (obj->thrust.vct.y>obj->thrust.max_speed) obj->thrust.vct.y=obj->thrust.max_speed;
-	if (obj->thrust.vct.y<-obj->thrust.max_speed) obj->thrust.vct.y=-obj->thrust.max_speed;
+//	if (obj->thrust.vct.y>obj->thrust.max_speed) obj->thrust.vct.y=obj->thrust.max_speed;
+//	if (obj->thrust.vct.y<-obj->thrust.max_speed) obj->thrust.vct.y=-obj->thrust.max_speed;
 
 	obj->thrust.vct.z+=zmove;
-	if (obj->thrust.vct.z>obj->thrust.max_speed) obj->thrust.vct.z=obj->thrust.max_speed;
-	if (obj->thrust.vct.z<-obj->thrust.max_speed) obj->thrust.vct.z=-obj->thrust.max_speed;
+//	if (obj->thrust.vct.z>obj->thrust.max_speed) obj->thrust.vct.z=obj->thrust.max_speed;
+//	if (obj->thrust.vct.z<-obj->thrust.max_speed) obj->thrust.vct.z=-obj->thrust.max_speed;
 	
 		// if we are over the max speed, then
 		// divide out the speed to reduce each axis
 		
-	speed=fabs(obj->thrust.vct.x)+fabs(obj->thrust.vct.y)+fabs(obj->thrust.vct.z);
-	if ((speed<=obj->thrust.max_speed) || (speed=0.0f)) return;
+	speed=(float)fabs(obj->thrust.vct.x)+(float)fabs(obj->thrust.vct.y)+(float)fabs(obj->thrust.vct.z);
+	if ((speed<=obj->thrust.max_speed) || (speed==0.0f)) return;
 	
 	neg=1;
 	
 	if (obj->thrust.vct.x!=0.0f) {
-	//	neg=(obj->thrust.vct.x<0.0f)?-1.0f:1.0f;
-		obj->thrust.vct.x=(((speed-fabs(obj->thrust.vct.x))/speed)*obj->thrust.max_speed)*neg;
+		neg=(obj->thrust.vct.x<0.0f)?-1.0f:1.0f;
+		obj->thrust.vct.x=(((speed-(float)fabs(obj->thrust.vct.x))/speed)*obj->thrust.max_speed)*neg;
 		fprintf(stdout,"X: %.2f, %.2f, %.2f\n",speed,obj->thrust.vct.x,obj->thrust.max_speed);
 	}
 	
 	if (obj->thrust.vct.y!=0.0f) {
-	//	neg=(obj->thrust.vct.y<0.0f)?-1.0f:1.0f;
-		obj->thrust.vct.y=(((speed-fabs(obj->thrust.vct.y))/speed)*obj->thrust.max_speed)*neg;
+		neg=(obj->thrust.vct.y<0.0f)?-1.0f:1.0f;
+		obj->thrust.vct.y=(((speed-(float)fabs(obj->thrust.vct.y))/speed)*obj->thrust.max_speed)*neg;
 	}
 	
 	if (obj->thrust.vct.z!=0.0f) {
-	//	neg=(obj->thrust.vct.z<0.0f)?-1.0f:1.0f;
-		obj->thrust.vct.z=(((speed-fabs(obj->thrust.vct.z))/speed)*obj->thrust.max_speed)*neg;
+		neg=(obj->thrust.vct.z<0.0f)?-1.0f:1.0f;
+		obj->thrust.vct.z=(((speed-(float)fabs(obj->thrust.vct.z))/speed)*obj->thrust.max_speed)*neg;
 		fprintf(stdout,"Z: %.2f, %.2f, %.2f\n",speed,obj->thrust.vct.z,obj->thrust.max_speed);
 	}
 	

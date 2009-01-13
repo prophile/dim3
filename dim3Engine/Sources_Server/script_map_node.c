@@ -35,6 +35,7 @@ extern map_type			map;
 extern js_type			js;
 
 JSBool js_map_node_find_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_node_find_random_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_node_find_nearest_to_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_node_find_nearest_names_in_path_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_node_next_in_path_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -50,6 +51,7 @@ JSClass			map_node_class={"map_node_class",0,
 
 JSFunctionSpec	map_node_functions[]={
 							{"find",					js_map_node_find_func,							1},
+							{"findRandom",				js_map_node_find_random_func,					1},
 							{"findNearestToObject",		js_map_node_find_nearest_to_object_func,		1},
 							{"findNearestNamesInPath",	js_map_node_find_nearest_names_in_path_func,	2},
 							{"nextInPath",				js_map_node_next_in_path_func,					2},
@@ -87,6 +89,18 @@ JSBool js_map_node_find_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *arg
 	script_value_to_string(argv[0],name,name_str_len);
 	idx=map_find_node(&map,name);
 	*rval=INT_TO_JSVAL(idx);
+	return(JS_TRUE);
+}
+
+JSBool js_map_node_find_random_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int				idx;
+	char			name[name_str_len];
+	
+	script_value_to_string(argv[0],name,name_str_len);
+	idx=map_find_random_node(&map,name);
+	*rval=INT_TO_JSVAL(idx);
+
 	return(JS_TRUE);
 }
 

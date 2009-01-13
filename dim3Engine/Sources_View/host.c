@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "network.h"
 #include "remotes.h"
 #include "interfaces.h"
+#include "xmls.h"
 #include "video.h"
 
 #define host_pane_game					0
@@ -45,6 +46,9 @@ and can be sold or given away.
 #define host_table_id					13
 #define host_status_id					14
 
+#define host_game_bot_count_id			20
+#define host_game_bot_skill_id			21
+
 extern void intro_open(void);
 extern bool net_host_game_start(char *err_str);
 extern void net_host_game_end(void);
@@ -57,9 +61,11 @@ extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-int							host_tab_value,net_game_current_game_type_index;
+int							host_tab_value,host_map_idx,host_game_type_idx;
 char						*net_host_file_list;
-char						net_game_types[network_setup_max_game+1][32];
+char						net_game_types[network_setup_max_game+1][32],
+							bot_count_list[][32]={"None","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16",""},
+							bot_skill_list[][32]={"Very Easy","Easy","Normal","Hard","Very Hard",""};
 
 /* =======================================================
 
@@ -128,7 +134,7 @@ void host_game_pane(void)
 	x=(int)(((float)hud.scale_x)*0.15f);
 	y=(int)(((float)hud.scale_y)*0.17f);
 	
-	element_combo_add("Game Type",(char*)net_game_types,0,host_game_type_id,x,y,TRUE);
+	element_combo_add("Game Type",(char*)net_game_types,host_game_type_idx,host_game_type_id,x,y,TRUE);
 	y+=element_get_padding();
 
 		// hosts table
@@ -145,12 +151,22 @@ void host_game_pane(void)
 	
 		// fill table with maps
 
-	net_game_current_game_type_index=0;
-	host_fill_map_table(net_setup.games[0].name);
+	host_fill_map_table(net_setup.games[host_game_type_idx].name);
+
+	element_set_value(host_table_id,host_map_idx);
 }
 
 void host_options_pane(void)
 {
+	int				x,y;
+
+	x=(int)(((float)hud.scale_x)*0.15f);
+	y=(int)(((float)hud.scale_y)*0.17f);
+	
+	element_combo_add("Bot Count",(char*)bot_count_list,setup.host_game.bot_count,host_game_bot_count_id,x,y,TRUE);
+	y+=element_get_control_high();
+
+	element_combo_add("Bot Skill",(char*)bot_skill_list,setup.host_game.bot_skill,host_game_bot_skill_id,x,y,TRUE);
 }
 
 void host_create_pane(void)
@@ -209,7 +225,7 @@ void host_create_pane(void)
 	y=hud.scale_y-padding;
 	
 	element_button_text_add("Host",host_button_host_id,x,y,wid,high,element_pos_right,element_pos_bottom);
-	element_enable(host_button_host_id,FALSE);
+	element_enable(host_button_host_id,(host_map_idx!=-1));
 
 	x=element_get_x_position(host_button_host_id)-padding;
 
@@ -244,6 +260,9 @@ void host_open(void)
 		// start with first tab
 		
 	host_tab_value=0;
+	host_map_idx=-1;
+	host_game_type_idx=0;
+
 	host_create_pane();
 
 		// in host thread
@@ -365,7 +384,6 @@ void host_game(void)
 void host_click(void)
 {
 	int			id,idx;
-	bool		enable;
 	
 		// is element being clicked
 		
@@ -389,17 +407,27 @@ void host_click(void)
 
 		case host_game_type_id:
 			idx=element_get_value(host_game_type_id);
-			if (idx!=net_game_current_game_type_index) {
-				net_game_current_game_type_index=idx;
+			if (idx!=host_game_type_idx) {
+				host_game_type_idx=idx;
 				host_fill_map_table(net_setup.games[idx].name);
 				element_set_value(host_table_id,-1);
+				host_map_idx=-1;
 				element_enable(host_button_host_id,FALSE);
 			}
+			break;
+
+		case host_game_bot_count_id:
+			setup.host_game.bot_count=element_get_value(host_game_bot_count_id);
+			break;
+
+		case host_game_bot_skill_id:
+			setup.host_game.bot_skill=element_get_value(host_game_bot_skill_id);
 			break;
 
 			// buttons
 
 		case host_button_host_id:
+			setup_xml_write();
 			host_game_setup();
 			host_close();
 			host_game();
@@ -411,8 +439,8 @@ void host_click(void)
 			break;
 
 		case host_table_id:
-			enable=(element_get_value(host_table_id)!=-1);
-			element_enable(host_button_host_id,enable);
+			host_map_idx=element_get_value(host_table_id);
+			element_enable(host_button_host_id,(host_map_idx!=-1));
 			break;
 	}
 }

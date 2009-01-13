@@ -124,6 +124,7 @@ and can be sold or given away.
 #define map_setting_prop_resistance					2
 #define map_setting_prop_multiplayer				3
 #define map_setting_prop_multiplayer_type			4
+#define map_setting_prop_bot_skill					5
 
 #define map_light_color_prop_red					0
 #define map_light_color_prop_green					1

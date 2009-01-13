@@ -165,6 +165,54 @@ int map_find_nearest_node_in_path(map_type *map,int from_idx,char *name,int *dis
 	return(idx);
 }
 
+int map_count_node(map_type *map,char *name)
+{
+	int				n,nnode,count;
+	node_type		*node;
+	
+	count=0;
+
+	node=map->nodes;
+	nnode=map->nnode;
+	
+	for (n=0;n!=nnode;n++) {
+		if (strcmp(node->name,name)==0) count++;
+		node++;
+	}
+	
+	return(count);
+}
+
+int map_find_random_node(map_type *map,char *name)
+{
+	int				n,nnode,count,node_count;
+	node_type		*node;
+	
+	node_count=map_count_node(map,name);
+	if (node_count==-1) return(-1);
+	
+	count=random_int(node_count);
+	
+	node=map->nodes;
+	nnode=map->nnode;
+	
+	for (n=0;n!=nnode;n++) {
+		if (strcmp(node->name,name)==0) {
+			if (count==0) return(n);
+			count--;
+		}
+		node++;
+	}
+	
+	return(-1);
+}
+
+/* =======================================================
+
+      Next In Path
+      
+======================================================= */
+
 int map_find_next_node_in_path(map_type *map,int from_idx,int to_idx)
 {
 	if ((from_idx==-1) || (to_idx==-1)) return(-1);

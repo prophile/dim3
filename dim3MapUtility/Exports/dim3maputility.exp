@@ -18,6 +18,7 @@ _map_node_to_node_distance
 _map_find_node
 _map_find_nearest_node_by_point
 _map_find_nearest_node_in_path
+_map_find_random_node
 _map_find_next_node_in_path
 
 _map_mesh_add

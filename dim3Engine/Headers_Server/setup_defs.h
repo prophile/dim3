@@ -107,6 +107,10 @@ typedef struct		{
 						setup_network_hosts_type	hosts[max_setup_network_host];
 					} setup_network_type;
 
+typedef struct		{
+						int							bot_count,bot_skill;
+					} setup_host_game_type;
+
 //
 // setup editor overrides
 //
@@ -136,6 +140,7 @@ typedef struct		{
 						setup_axis_type				mouse_x,mouse_y,joystick_x,joystick_y;
 						setup_action_list_type		action_list;
 						setup_network_type			network;
+						setup_host_game_type		host_game;
 						file_path_setup_type		file_path_setup;
 						setup_editor_override_type	editor_override;
 					} setup_type;

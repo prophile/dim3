@@ -21,7 +21,8 @@ EXPORTS
 	map_find_node									@211
 	map_find_nearest_node_by_point					@212
 	map_find_nearest_node_in_path					@213
-	map_find_next_node_in_path						@214
+	map_find_random_node							@214
+	map_find_next_node_in_path						@215
 
 	map_mesh_add									@220
 	map_mesh_delete									@221

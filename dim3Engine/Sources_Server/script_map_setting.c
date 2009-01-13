@@ -51,16 +51,17 @@ JSClass			map_setting_class={"map_setting_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 JSPropertySpec	map_setting_props[]={
-							{"scale",				map_setting_prop_scale,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"gravity",				map_setting_prop_gravity,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"resistance",			map_setting_prop_resistance,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"multiplayer",			map_setting_prop_multiplayer,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"multiplayerType",		map_setting_prop_multiplayer_type,	JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"scale",				map_setting_prop_scale,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"gravity",				map_setting_prop_gravity,				JSPROP_PERMANENT|JSPROP_SHARED},
+							{"resistance",			map_setting_prop_resistance,			JSPROP_PERMANENT|JSPROP_SHARED},
+							{"multiplayer",			map_setting_prop_multiplayer,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"multiplayerType",		map_setting_prop_multiplayer_type,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"botSkill",			map_setting_prop_bot_skill,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 							
 JSFunctionSpec	map_setting_functions[]={
-							{"setAmbient",			js_map_set_ambient_func,			2},
-							{"clearAmbient",		js_map_clear_ambient_func,			0},
+							{"setAmbient",			js_map_set_ambient_func,				2},
+							{"clearAmbient",		js_map_clear_ambient_func,				0},
 							{0}};
 
 /* =======================================================
@@ -109,6 +110,9 @@ JSBool js_get_map_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 			else {
 				*vp=script_string_to_value(net_setup.games[net_setup.game_idx].name);
 			}
+			break;
+		case map_setting_prop_bot_skill:
+            *vp=INT_TO_JSVAL(setup.host_game.bot_skill);
 			break;
 
 	}
