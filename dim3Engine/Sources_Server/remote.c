@@ -55,7 +55,7 @@ float						team_color_tint[net_team_count][3]=net_team_color_tint_def;
 
 extern int game_time_get(void);
 extern void chat_add_message(int tick,char *name,char *str,d3col *col);
-extern bool game_start(int skill,int remote_count,network_request_remote_add *remotes,char *err_str);
+extern bool game_start(int skill,network_request_add_objects *net_add_objects,char *err_str);
 extern void game_end(void);
 extern bool map_start(bool skip_media,char *err_str);
 extern void map_end(void);
@@ -68,7 +68,7 @@ extern void group_moves_synch_with_host(network_reply_group_synch *synch);
       
 ======================================================= */
 
-bool remote_add(network_request_remote_add *add,bool send_event)
+bool remote_add(network_request_object_add *add,bool send_event)
 {
 	int					n,uid;
 	char				err_str[256];
@@ -287,11 +287,11 @@ void remote_predict_move(obj_type *obj)
 
 void remote_host_reset(void)
 {
-	int							remote_uid,remote_count,tick_offset;
+	int							remote_uid,tick_offset;
 	char						game_name[name_str_len],map_name[name_str_len],
 								deny_reason[64],err_str[256];
-	network_request_remote_add	remotes[host_max_remote_count];
-	
+	network_request_add_objects net_add_objects;
+
 		// quit current game
 		
 	map_end();
@@ -299,7 +299,7 @@ void remote_host_reset(void)
 		
 		// attempt to join to new game
 
-	if (!net_client_join_host_start(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,&tick_offset,deny_reason,&remote_count,remotes)) {
+	if (!net_client_join_host_start(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,&tick_offset,deny_reason,&net_add_objects)) {
 		error_open("Unable to rejoin server after game reset","Network Game Canceled");
 		return;
 	}
@@ -327,7 +327,7 @@ void remote_host_reset(void)
 	
 		// start the new game
 	
-	if (!game_start(skill_medium,remote_count,remotes,err_str)) {
+	if (!game_start(skill_medium,&net_add_objects,err_str)) {
 		net_client_send_leave_host(net_setup.client.remote_uid);
 		net_client_end_message_queue();
 		net_client_join_host_end();
@@ -793,7 +793,7 @@ bool remote_network_get_updates(int tick)
 				break;
 
 			case net_action_request_remote_add:
-				remote_add((network_request_remote_add*)data,TRUE);
+				remote_add((network_request_object_add*)data,TRUE);
 				break;
 				
 			case net_action_request_remote_remove:
@@ -851,9 +851,24 @@ bool remote_network_get_updates(int tick)
 void remote_network_send_updates(int tick)
 {
 	obj_type			*obj;
-   
+
 	obj=object_find_uid(server.player_obj_uid);
 	net_client_send_remote_update(tick,net_setup.client.remote_uid,obj,hud.chat.type_on);
+
+	/* supergumba
+
+		// any bots if hosting
+
+	if (net_setup.host.hosting) {
+
+		obj=server.objs;
+
+		for (n=0;n!=server.count.obj;n++) {
+			if (obj->bot) net_client_send_remote_update(tick,net_setup.client.remote_uid,obj,FALSE);
+			obj++;
+		}
+	}
+	*/
 }
 
 void remote_network_send_group_synch(void)

@@ -50,7 +50,7 @@ and can be sold or given away.
 #define intro_button_credit_id					13
 #define intro_button_quit_id					14
 
-extern bool game_start(int skill,int remote_count,network_request_remote_add *remotes,char *err_str);
+extern bool game_start(int skill,network_request_add_objects *net_add_objects,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
 extern void file_open(void);
 extern void setup_game_open(bool in_game);
@@ -329,7 +329,7 @@ void intro_click_game(int skill)
 	net_setup.host.hosting=FALSE;
 	net_setup.client.joined=FALSE;
 
-	if (!game_start(skill,0,NULL,err_str)) {
+	if (!game_start(skill,NULL,err_str)) {
 		error_open(err_str,"Game Start Canceled");
 		return;
 	}

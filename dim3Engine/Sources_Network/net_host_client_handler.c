@@ -54,7 +54,7 @@ void net_host_client_handle_info(int sock)
 	network_reply_info		info;
 	
 	info.player_count=htons((short)net_host_player_count);
-	info.player_max_count=htons((short)host_max_remote_count);
+	info.player_max_count=htons((short)host_max_add_object_count);
 	strcpy(info.host_name,net_setup.host.name);
 	strcpy(info.host_ip_resolve,net_setup.host.ip_resolve);
 	strcpy(info.proj_name,net_setup.host.proj_name);
@@ -68,7 +68,7 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 {
 	int							remote_uid;
 	network_reply_join			reply_join;
-	network_request_remote_add	remote_add;
+	network_request_object_add	remote_add;
 
 		// if correct version, add player to host
 
@@ -88,10 +88,10 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 	reply_join.join_uid=htons((short)remote_uid);
 	
 	if (remote_uid!=-1) {
-		reply_join.remote_count=htons((short)net_host_player_create_remote_add_list(remote_uid,reply_join.remotes));
+		net_host_player_create_add_objects_list(remote_uid,&reply_join.add_objects);
 	}
 	else {
-		reply_join.remote_count=0;
+		reply_join.add_objects.count=0;
 	}
 	
 		// send reply
@@ -107,7 +107,7 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 		remote_add.team_idx=htons((short)net_team_none);
 		remote_add.score=0;
 		remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_remote_add),FALSE);
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add),FALSE);
 	}
 
 	return(remote_uid);
@@ -116,7 +116,7 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 int net_host_client_handle_local_join(network_request_join *request_join,char *err_str)
 {
 	int							remote_uid;
-	network_request_remote_add	remote_add;
+	network_request_object_add	remote_add;
 
 		// join directly to host
 
@@ -130,7 +130,7 @@ int net_host_client_handle_local_join(network_request_join *request_join,char *e
 	remote_add.team_idx=htons((short)net_team_none);
 	remote_add.score=0;
 	remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
-	net_host_player_send_others_packet(remote_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_remote_add),FALSE);
+	net_host_player_send_others_packet(remote_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add),FALSE);
 
 	return(remote_uid);
 }

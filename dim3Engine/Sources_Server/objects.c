@@ -62,6 +62,7 @@ void object_initialize_list(void)
 	server.objs=NULL;
 	server.count.obj=0;
 	server.uid.obj=0;
+	server.uid.bot=0;
 
 		// script based object spawns need to
 		// be delayed so they don't effect the
@@ -427,7 +428,7 @@ obj_type* object_create(int bind,int reserve_uid)
 	
 	obj->hidden=FALSE;
 	obj->player=FALSE;
-	obj->bot=FALSE;
+	obj->bot.on=FALSE;
 	obj->suspend=FALSE;
 	obj->scenery.on=FALSE;
 	obj->fly=FALSE;
@@ -711,7 +712,13 @@ int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_
 		strcpy(obj->name,spot->attach_name);
 		strcpy(obj->type,spot->attach_type);
 		
-		obj->bot=(strcasecmp(obj->type,"bot")==0);
+			// special check for bots
+
+		if (strcasecmp(obj->type,"bot")==0) {
+			obj->bot.on=TRUE;
+			obj->bot.uid=server.uid.bot;
+			server.uid.bot++;
+		}
 
 			// if there's an editor display model, then
 			// default model to it

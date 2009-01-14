@@ -154,7 +154,23 @@ SOURCE=..\dim3MapUtility\Release\dim3MapUtility.lib
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\dim3Editor\Headers\common_view.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Editor\Headers\dim3editor.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Editor\Headers\editor_defs.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Editor\Headers\interface.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Editor\Headers\walk_view.h
 # End Source File
 # End Group
 # Begin Group "EditorSources"
@@ -162,23 +178,43 @@ SOURCE=..\..\dim3Editor\Headers\dim3editor.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\TempCode\edit_view_draw.c
+SOURCE=..\..\dim3Editor\Code\walk_view.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\TempCode\edit_view_draw_curve.c
+SOURCE=..\..\dim3Editor\Code\walk_view_click_drag.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\TempCode\edit_view_draw_sort.c
+SOURCE=..\..\dim3Editor\Code\walk_view_click_piece.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\TempCode\edit_view_poly.c
+SOURCE=..\..\dim3Editor\Code\walk_view_click_texture.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\TempCode\edit_view_sight_path.c
+SOURCE=..\..\dim3Editor\Code\walk_view_compass.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Editor\Code\walk_view_draw_piece.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Editor\Code\walk_view_draw_select.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Editor\Code\walk_view_models.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Editor\Code\walk_view_movement.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Editor\Code\walk_view_swap.c
 # End Source File
 # End Group
 # Begin Group "EditorWin32"

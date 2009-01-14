@@ -245,9 +245,9 @@ bool editor_open_map(char *err_str)
 {
 		// open map
 
-	map_setup(&file_path_setup,anisotropic_mode_high,texture_quality_mode_high,mipmap_mode_trilinear,FALSE,FALSE);
+	map_setup(&file_path_setup,anisotropic_mode_high,mipmap_mode_trilinear,FALSE);
 
-	if (!map_open(&map,"Collide",TRUE,FALSE,FALSE)) {
+	if (!map_open(&map,"Bot Test",FALSE,FALSE)) {
 		strcpy(err_str,"Could not open map");
 		return(FALSE);
 	}
@@ -256,13 +256,9 @@ bool editor_open_map(char *err_str)
 
 		// get starting point
 
-	map_portal_calculate_center(&map,0,&view_pnt.x,&view_pnt.y,&view_pnt.z);		// use this to get the Y
-
-	view_pnt.x=(map.portals[0].x+map.portals[0].ex)/2;
-	view_pnt.z=(map.portals[0].z+map.portals[0].ez)/2;
-
-	view_pnt.z+=25;
-	view_pnt.y-=10;
+	view_pnt.x=140000;
+	view_pnt.y=247231;
+	view_pnt.z=278760;
 
 	return(TRUE);
 }

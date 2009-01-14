@@ -30,30 +30,30 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						d3col						mesh_line,mesh_sel,poly_sel,background;
+						d3col					mesh_line,mesh_sel,poly_sel,background;
 					} setup_col_type;
 
 typedef struct		{
-						int							anisotropic_mode,mipmap_mode,
-													duplicate_offset;
-						bool						texture_compression,
-													view_flip,auto_texture;
-						char						engine_name[256];
-						setup_col_type				col;
+						int						anisotropic_mode,mipmap_mode,
+												duplicate_offset;
+						bool					texture_compression,
+												view_flip,auto_texture;
+						char					engine_name[256];
+						setup_col_type			col;
 					} setup_type;
 
 //
 // selection defines
 //
 
-#define select_max_item								1024
+#define select_max_item							1024
 
 //
 // selection structure
 //
 
 typedef struct		{
-                        int							type,main_idx,sub_idx;
+                        int						type,main_idx,sub_idx;
 					} select_item_type;
 
 //

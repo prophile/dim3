@@ -258,10 +258,10 @@ void server_shutdown(void)
       
 ======================================================= */
 
-bool server_game_start(char *game_script_name,int skill,int remote_count,network_request_remote_add *remotes,char *err_str)
+bool server_game_start(char *game_script_name,int skill,network_request_add_objects *net_add_objects,char *err_str)
 {
 	int							n;
-	network_request_remote_add	*remote;
+	network_request_object_add	*obj_add;
 	
 		// initialize lists
 		
@@ -312,15 +312,15 @@ bool server_game_start(char *game_script_name,int skill,int remote_count,network
 
 	object_script_spawn_start();
 	
-		// put in remotes
+		// put in additional objects (remotes, bots)
 		
-	if (remote_count!=0) {
+	if (net_add_objects!=NULL) {
 	
-		remote=remotes;
+		obj_add=net_add_objects->objects;
 		
-		for (n=0;n!=remote_count;n++) {
-			remote_add(remote,FALSE);
-			remote++;
+		for (n=0;n!=net_add_objects->count;n++) {
+			remote_add(obj_add,FALSE);
+			obj_add++;
 		}
 	}
 	

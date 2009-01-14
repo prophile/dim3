@@ -56,7 +56,7 @@ and can be sold or given away.
 #define host_no_data_u_wait							25
 #define host_max_network_error_reject				10
 
-#define host_max_remote_count						24
+#define host_max_add_object_count					24
 
 #define host_client_timeout_msec_rate				10000
 
@@ -189,6 +189,13 @@ typedef struct		{
 #define net_action_reply_group_synch				22
 
 //
+// extra object type
+//
+
+#define net_remote_object_player					0
+#define net_remote_object_bot						1
+
+//
 // remote fire types
 //
 
@@ -234,14 +241,23 @@ typedef struct		{
 #define net_group_synch_flag_main_move				0x00000004
 
 //
-// message data types
+// join remotes and bots
 //
 
 typedef struct		{
 						int							pnt_x,pnt_y,pnt_z;
-						short						uid,score,team_idx;
+						short						obj_type,uid,score,team_idx;
 						char						name[name_str_len];
-					} network_request_remote_add;
+					} network_request_object_add;
+
+typedef struct		{
+						int							count;
+						network_request_object_add	objects[host_max_add_object_count];
+					} network_request_add_objects;
+
+//
+// joining messages
+//
 
 typedef struct		{
 						short						player_count,player_max_count;
@@ -258,15 +274,19 @@ typedef struct		{
 
 typedef struct		{
 						int							map_tick;
-						short						join_uid,remote_count;
+						short						join_uid,remote_count,bot_count;
 						char						game_name[name_str_len],map_name[name_str_len],
 													deny_reason[64];
-						network_request_remote_add	remotes[host_max_remote_count];
+						network_request_add_objects	add_objects;
 					} network_reply_join;
 	
 typedef struct		{
 						short						team_idx;
 					} network_request_team;
+
+//
+// in game messages
+//
 				
 typedef struct		{
 						int							model_tick;
@@ -316,6 +336,10 @@ typedef struct		{
 						short						health;
 						network_request_remote_ammo	ammos[net_max_weapon_per_remote];
 					} network_request_remote_pickup;
+
+//
+// map synch messages
+//
 
 typedef struct		{
 						int							flags,

@@ -33,9 +33,11 @@ and can be sold or given away.
 
 extern char team_colors[][16];
 
+extern server_type		server;
+
 int						net_host_player_count,server_next_remote_uid;
 float					team_color_server_tint[net_team_count][3]=net_team_color_server_tint_def;
-net_host_player_type	net_host_players[host_max_remote_count];
+net_host_player_type	net_host_players[host_max_add_object_count];
 
 pthread_mutex_t			net_host_player_lock;
 
@@ -139,7 +141,7 @@ int net_host_player_join(d3socket sock,char *name,char *deny_reason)
 	
 		// host full?
 		
-	if (net_host_player_count==host_max_remote_count) {
+	if (net_host_player_count==host_max_add_object_count) {
 		strcpy(deny_reason,"Server is full");
 		pthread_mutex_unlock(&net_host_player_lock);
 		return(-1);
@@ -318,32 +320,44 @@ void net_host_player_update(int remote_uid,network_request_remote_update *update
 
 /* =======================================================
 
-      Build Remote List for Join Replies
+      Build Remote\Bot List for Join Replies
       
 ======================================================= */
 
-int net_host_player_create_remote_add_list(int player_remote_uid,network_request_remote_add *remotes)
+void net_host_player_create_add_objects_list(int player_remote_uid,network_request_add_objects *add_objects)
 {
-	int						n,cnt;
-	net_host_player_type	*player;
+	int							n,cnt;
+	net_host_player_type		*player;
+	obj_type					*obj;
+	network_request_object_add	*obj_add;
+
+		// find all remotes and bots
+	
+	cnt=0;
+	obj_add=add_objects->objects;
+	
+		// set up the player remotes
 
 	pthread_mutex_lock(&net_host_player_lock);
-	
-		// set up the remotes
-		
-	cnt=0;
+
 	player=net_host_players;
 	
 	for (n=0;n!=net_host_player_count;n++) {
-		
+
 		if (player->remote_uid!=player_remote_uid) {
-			remotes[cnt].uid=htons((short)player->remote_uid);
-			strcpy(remotes[cnt].name,player->name);
-			remotes[cnt].team_idx=htons((short)player->team_idx);
-			remotes[cnt].score=htons((short)player->score);
-			remotes[cnt].pnt_x=htonl(player->pnt.x);
-			remotes[cnt].pnt_y=htonl(player->pnt.y);
-			remotes[cnt].pnt_z=htonl(player->pnt.z);
+			
+			if (cnt==host_max_add_object_count) break;
+
+			obj_add->obj_type=htons((short)net_remote_object_player);
+			obj_add->uid=htons((short)player->remote_uid);
+			strcpy(obj_add->name,player->name);
+			obj_add->team_idx=htons((short)player->team_idx);
+			obj_add->score=htons((short)player->score);
+			obj_add->pnt_x=htonl(player->pnt.x);
+			obj_add->pnt_y=htonl(player->pnt.y);
+			obj_add->pnt_z=htonl(player->pnt.z);
+
+			obj_add++;
 			cnt++;
 		}
 		
@@ -352,7 +366,35 @@ int net_host_player_create_remote_add_list(int player_remote_uid,network_request
 	
 	pthread_mutex_unlock(&net_host_player_lock);
 
-	return(cnt);
+		// setup the bot remotes
+
+	obj=server.objs;
+
+	for (n=0;n!=server.count.obj;n++) {
+
+		if (obj->bot.on) {
+			
+			if (cnt==host_max_add_object_count) break;
+
+			obj_add->obj_type=htons((short)net_remote_object_bot);
+			obj_add->uid=htons((short)obj->bot.uid);
+			strcpy(obj_add->name,obj->name);
+			obj_add->team_idx=htons((short)obj->team_idx);
+			obj_add->score=htons((short)obj->score.score);
+			obj_add->pnt_x=htonl(obj->pnt.x);
+			obj_add->pnt_y=htonl(obj->pnt.y);
+			obj_add->pnt_z=htonl(obj->pnt.z);
+
+			obj_add++;
+			cnt++;
+		}
+		
+		obj++;
+	}
+
+		// finish with the count
+
+	add_objects->count=htons((short)cnt);
 }
 
 /* =======================================================
@@ -366,7 +408,7 @@ int net_host_player_create_remote_add_list(int player_remote_uid,network_request
 void net_host_player_send_others_packet(int player_remote_uid,int action,unsigned char *data,int len,bool skip_flooded)
 {
 	int						n,nsock;
-	d3socket				socks[host_max_remote_count];
+	d3socket				socks[host_max_add_object_count];
 	net_host_player_type	*player;
 	
 		// we build the list of other player's sockets

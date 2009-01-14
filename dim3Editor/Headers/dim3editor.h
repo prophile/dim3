@@ -52,3 +52,4 @@ and can be sold or given away.
 	#include "application_defs.h"
 #endif
 
+#include "editor_defs.h"

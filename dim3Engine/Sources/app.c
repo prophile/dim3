@@ -48,7 +48,7 @@ extern void server_loop(int tick);
 extern bool view_initialize(char *err_str);
 extern void view_shutdown(void);
 extern void view_loop(int tick);
-extern bool game_start(int skill,int remote_count,network_request_remote_add *remotes,char *err_str);
+extern bool game_start(int skill,network_request_add_objects *net_add_objects,char *err_str);
 extern void game_end(void);
 extern bool map_start(bool skip_media,char *err_str);
 extern void map_end(void);
@@ -111,7 +111,7 @@ bool app_start(char *err_str)
 		
 	server.state=gs_running;
 		
-	if (!game_start(skill_medium,0,NULL,err_str)) {
+	if (!game_start(skill_medium,NULL,err_str)) {
 		view_shutdown();
 		server_shutdown();
 		return(FALSE);
