@@ -31,9 +31,8 @@ and can be sold or given away.
 
 #define drag_texture_shift_factor		100.0f
 
-extern int					cx,cz,cy,vertex_mode;
+extern int					vertex_mode;
 extern bool					dp_auto_texture;
-extern CCrsrHandle			dragcur;
 
 extern map_type				map;
 
@@ -74,8 +73,8 @@ bool walk_view_click_drag_texture(editor_3D_view_setup *view_setup,d3pnt *pt,int
 	
 	do {
 		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h-view_setup->box.left;
-		pt->y=uipt.v-view_setup->box.top;
+		pt->x=uipt.h-view_setup->box.lx;
+		pt->y=uipt.v-view_setup->box.ty;
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -87,7 +86,7 @@ bool walk_view_click_drag_texture(editor_3D_view_setup *view_setup,d3pnt *pt,int
 			// turn on drag cursor
 			
 		if (first_drag) {
-			SetCCursor(dragcur);
+			os_set_drag_cursor();
 			first_drag=FALSE;
 		}
 		
@@ -139,7 +138,7 @@ bool walk_view_click_drag_texture(editor_3D_view_setup *view_setup,d3pnt *pt,int
 		
 	} while (track!=kMouseTrackingMouseReleased);
 	
-	InitCursor();
+	os_set_arrow_cursor();
 	
 	return(!first_drag);
 }

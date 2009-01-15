@@ -32,7 +32,7 @@ and can be sold or given away.
 
 extern WindowRef				mainwind;
 
-extern int						cx,cz,cy,magnify_factor;
+extern int						magnify_factor;
 extern bool						map_opened;
 
 extern file_path_setup_type		file_path_setup;

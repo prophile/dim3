@@ -32,7 +32,7 @@ and can be sold or given away.
 #define import_obj_float_to_int			1000.0f
 #define import_obj_max_dimension		5000
 
-extern int								cx,cy,cz,drag_mode;
+extern int								drag_mode;
 extern bool								dp_object,dp_node,dp_lightsoundparticle,dp_auto_texture;
 
 extern map_type							map;
@@ -576,7 +576,7 @@ void piece_add_height_map_mesh(void)
 		
 	free(data);
 	
-	InitCursor();
+	os_set_arrow_cursor();
 	
 		// finish up
 		
@@ -686,7 +686,7 @@ void piece_add_grid_mesh(void)
 		
 	map_mesh_reset_uv(&map,mesh_idx);
 	
-	InitCursor();
+	os_set_arrow_cursor();
 	
 		// finish up
 		
@@ -920,9 +920,9 @@ void map_optimize(void)
 	
 	select_clear();
 	
-	SetCursor(*GetCursor(watchCursor));
+	os_set_wait_cursor();
 	comb_count=map_mesh_combine_small(&map,poly_threshold);
-	InitCursor();
+	os_set_arrow_cursor();
 	
 	sprintf(str,"%d small meshes were combined with larger meshes.",comb_count);
 	CopyCStringToPascal(str,p_str);

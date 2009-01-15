@@ -29,10 +29,9 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int						cx,cz,cy,magnify_factor;
+extern d3pnt					view_pnt;
+extern int						magnify_factor;
 extern float					walk_view_y_angle,walk_view_x_angle;
-
-extern CCrsrHandle				handcur,forwardcur,rotatecur;
 
 extern map_type					map;
 
@@ -49,7 +48,7 @@ void walk_view_mouse_xy_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	Point					uipt;
 	MouseTrackingResult		track;
     
-    SetCCursor(handcur);
+    os_set_hand_cursor();
 	
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
@@ -90,9 +89,9 @@ void walk_view_mouse_xy_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 				break;
 		}
 		
-		cz+=(zadd*32);
-		cx+=(xadd*32);
-		cy+=(yadd*32);
+		view_pnt.z+=(zadd*32);
+		view_pnt.x+=(xadd*32);
+		view_pnt.y+=(yadd*32);
 
         main_wind_draw();
 		
@@ -112,7 +111,7 @@ void walk_view_mouse_z_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int v
 	Point					uipt;
 	MouseTrackingResult		track;
     
-    SetCCursor(forwardcur);
+    os_set_forward_cursor();
 
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
@@ -152,9 +151,9 @@ void walk_view_mouse_z_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int v
 				break;
 		}
 		
-		cx+=(xadd*32);
-		cy+=(yadd*32);
-		cz+=(zadd*32);
+		view_pnt.x+=(xadd*32);
+		view_pnt.y+=(yadd*32);
+		view_pnt.z+=(zadd*32);
 
         main_wind_draw();
 		
@@ -180,9 +179,9 @@ void walk_view_scroll_wheel_z_movement(editor_3D_view_setup *view_setup,int delt
 		if (view_setup->swap_on) xadd=-xadd;
 	}
 	
-	cx+=(xadd*32);
-	cy+=(yadd*32);
-	cz+=(zadd*32);
+	view_pnt.x+=(xadd*32);
+	view_pnt.y+=(yadd*32);
+	view_pnt.z+=(zadd*32);
 	
 	main_wind_draw();
 }
@@ -197,9 +196,9 @@ void walk_view_scroll_wheel_rot_z_movement(editor_3D_view_setup *view_setup,int 
 	
 	rotate_point_center(&xadd,&yadd,&zadd,0.0f,walk_view_y_angle,0.0f);
 	
-	cx-=(xadd*32);
-	cy+=(yadd*32);
-	cz+=(zadd*32);
+	view_pnt.x-=(xadd*32);
+	view_pnt.y+=(yadd*32);
+	view_pnt.z+=(zadd*32);
 	
 	main_wind_draw();
 }
@@ -217,7 +216,7 @@ void walk_view_mouse_turn(d3pnt *pt)
 	Point					uipt;
 	MouseTrackingResult		track;
     
-    SetCCursor(rotatecur);
+    os_set_rotate_cursor();
 
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
@@ -305,9 +304,9 @@ void walk_view_portal_go_to_selection(void)
 	select_get_extent(&min,&max);
 	
 	portal=&map.portals[cr];
-	cx=((min.x+max.x)/2)+portal->x;
-	cz=((min.z+max.z)/2)+portal->z;
-	cy=(min.y+max.y)/2;
+	view_pnt.x=((min.x+max.x)/2)+portal->x;
+	view_pnt.z=((min.z+max.z)/2)+portal->z;
+	view_pnt.y=(min.y+max.y)/2;
 
 	main_wind_draw();
 	*/

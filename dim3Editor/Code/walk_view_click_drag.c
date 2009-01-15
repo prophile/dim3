@@ -29,9 +29,8 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int					cx,cz,cy,vertex_mode;
+extern int					vertex_mode;
 extern bool					dp_auto_texture;
-extern CCrsrHandle			dragcur;
 
 extern map_type				map;
 
@@ -163,8 +162,8 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 	
 	do {
 		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h-view_setup->box.left;
-		pt->y=uipt.v-view_setup->box.top;
+		pt->x=uipt.h-view_setup->box.lx;
+		pt->y=uipt.v-view_setup->box.ty;
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -176,7 +175,7 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 			// turn on drag cursor
 			
 		if (first_drag) {
-			SetCCursor(dragcur);
+			os_set_drag_cursor();
 			first_drag=FALSE;
 		}
 		
@@ -235,7 +234,7 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 	
 	free(old_dpt);
 	
-	InitCursor();
+	os_set_arrow_cursor();
 	
 	return(!first_drag);
 }
@@ -330,8 +329,8 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 	
 	do {
 		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h-view_setup->box.left;
-		pt->y=uipt.v-view_setup->box.top;
+		pt->x=uipt.h-view_setup->box.lx;
+		pt->y=uipt.v-view_setup->box.ty;
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -343,7 +342,7 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 			// turn on drag cursor
 			
 		if (first_drag) {
-			SetCCursor(dragcur);
+			os_set_drag_cursor();
 			first_drag=FALSE;
 		}
 		
@@ -390,7 +389,7 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 	
 	free(old_dpt);
 	
-	InitCursor();
+	os_set_arrow_cursor();
 	
 	return(!first_drag);
 }
@@ -447,8 +446,8 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 	
 	do {
 		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h-view_setup->box.left;
-		pt->y=uipt.v-view_setup->box.top;
+		pt->x=uipt.h-view_setup->box.lx;
+		pt->y=uipt.v-view_setup->box.ty;
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -460,7 +459,7 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 			// turn on drag cursor
 			
 		if (first_drag) {
-			SetCCursor(dragcur);
+			os_set_drag_cursor();
 			first_drag=FALSE;
 		}
 		
@@ -495,7 +494,7 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 	
 	free(old_dpt);
 
-	InitCursor();
+	os_set_arrow_cursor();
 	
 	return(!first_drag);
 }
@@ -570,8 +569,8 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	
 	do {
 		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h-view_setup->box.left;
-		pt->y=uipt.v-view_setup->box.top;
+		pt->x=uipt.h-view_setup->box.lx;
+		pt->y=uipt.v-view_setup->box.ty;
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -583,7 +582,7 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 			// turn on drag cursor
 			
 		if (first_drag) {
-			SetCCursor(dragcur);
+			os_set_drag_cursor();
 			first_drag=FALSE;
 		}
 		
@@ -614,7 +613,7 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		
 	} while (track!=kMouseTrackingMouseReleased);
 	
-	InitCursor();
+	os_set_arrow_cursor();
 	
 	return(!first_drag);
 }
@@ -689,8 +688,8 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 	
 	do {
 		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h-view_setup->box.left;
-		pt->y=uipt.v-view_setup->box.top;
+		pt->x=uipt.h-view_setup->box.lx;
+		pt->y=uipt.v-view_setup->box.ty;
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -702,7 +701,7 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 			// turn on drag cursor
 			
 		if (first_drag) {
-			SetCCursor(dragcur);
+			os_set_drag_cursor();
 			first_drag=FALSE;
 		}
 		
@@ -761,7 +760,7 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 		liq->bot=chk_z;
 	}
 	
-	InitCursor();
+	os_set_arrow_cursor();
 	
 	return(!first_drag);
 }
@@ -825,8 +824,8 @@ bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 	
 	do {
 		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h-view_setup->box.left;
-		pt->y=uipt.v-view_setup->box.top;
+		pt->x=uipt.h-view_setup->box.lx;
+		pt->y=uipt.v-view_setup->box.ty;
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -838,7 +837,7 @@ bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 			// turn on drag cursor
 			
 		if (first_drag) {
-			SetCCursor(dragcur);
+			os_set_drag_cursor();
 			first_drag=FALSE;
 		}
 		
@@ -864,7 +863,7 @@ bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 		
 	} while (track!=kMouseTrackingMouseReleased);
 	
-	InitCursor();
+	os_set_arrow_cursor();
 	
 	return(!first_drag);
 }
@@ -913,8 +912,8 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	
 	do {
 		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h-view_setup->box.left;
-		pt->y=uipt.v-view_setup->box.top;
+		pt->x=uipt.h-view_setup->box.lx;
+		pt->y=uipt.v-view_setup->box.ty;
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -926,7 +925,7 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 			// turn on drag cursor
 			
 		if (first_drag) {
-			SetCCursor(dragcur);
+			os_set_drag_cursor();
 			first_drag=FALSE;
 		}
 		
@@ -958,7 +957,7 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		
 	} while (track!=kMouseTrackingMouseReleased);
 	
-	InitCursor();
+	os_set_arrow_cursor();
 	
 	return(!first_drag);
 }

@@ -29,7 +29,8 @@ and can be sold or given away.
 #include "dialog.h"
 #include "common_view.h"
 
-extern int						cx,cy,cz,drag_mode;
+extern d3pnt					view_pnt;
+extern int						drag_mode;
 extern bool						dp_object,dp_node,dp_lightsoundparticle,dp_liquid;
 
 extern file_path_setup_type		file_path_setup;
@@ -62,9 +63,9 @@ void piece_create_get_spot(d3pnt *pnt)
 		// center in view if no selection
 		
 	if (select_count()==0) {
-		pnt->x=cx;
-		pnt->z=cz;
-		pnt->y=cy;
+		pnt->x=view_pnt.x;
+		pnt->z=view_pnt.z;
+		pnt->y=view_pnt.y;
 	}
 	
 		// find place in selection

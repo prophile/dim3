@@ -17,6 +17,7 @@
 		26829D610E54E75900EEED65 /* obscure.c in Sources */ = {isa = PBXBuildFile; fileRef = 26829D600E54E75900EEED65 /* obscure.c */; };
 		26871A3C0F11666E0043B667 /* node_defined.png in Resources */ = {isa = PBXBuildFile; fileRef = 26871A3B0F11666E0043B667 /* node_defined.png */; };
 		26871A5C0F1168330043B667 /* node_defined.png in Copy (Icons) */ = {isa = PBXBuildFile; fileRef = 26871A3B0F11666E0043B667 /* node_defined.png */; };
+		26899FA90F1EBF25007860EB /* editor_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26899FA80F1EBF25007860EB /* editor_defs.h */; };
 		26934B110D876A800009F81E /* walk_view_click_drag.c in Sources */ = {isa = PBXBuildFile; fileRef = 26934B100D876A800009F81E /* walk_view_click_drag.c */; };
 		26AFB4490D95E0E60004805A /* pieces_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AFB4480D95E0E60004805A /* pieces_mesh.c */; };
 		26AFB4C00D9612570004805A /* dialog_mesh_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AFB4BF0D9612570004805A /* dialog_mesh_setting.c */; };
@@ -221,6 +222,7 @@
 		26791D420E4D626700AAD058 /* dialog_grid_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_grid_mesh.c; path = Code/dialog_grid_mesh.c; sourceTree = "<group>"; };
 		26829D600E54E75900EEED65 /* obscure.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = obscure.c; path = Code/obscure.c; sourceTree = "<group>"; };
 		26871A3B0F11666E0043B667 /* node_defined.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = node_defined.png; sourceTree = "<group>"; };
+		26899FA80F1EBF25007860EB /* editor_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = editor_defs.h; path = Headers/editor_defs.h; sourceTree = "<group>"; };
 		26934B100D876A800009F81E /* walk_view_click_drag.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = walk_view_click_drag.c; path = Code/walk_view_click_drag.c; sourceTree = "<group>"; };
 		26AFB4480D95E0E60004805A /* pieces_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pieces_mesh.c; path = Code/pieces_mesh.c; sourceTree = "<group>"; };
 		26AFB4BF0D9612570004805A /* dialog_mesh_setting.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_mesh_setting.c; path = Code/dialog_mesh_setting.c; sourceTree = "<group>"; };
@@ -329,6 +331,7 @@
 			children = (
 				F51ABAD3048DAB0200B78D6A /* dim3editor.h */,
 				F51ABADA048DACFE00B78D6A /* application_defs.h */,
+				26899FA80F1EBF25007860EB /* editor_defs.h */,
 				F50AF9AD088601C600F261B1 /* os_defs.h */,
 				F5AD54420BBE1FDB001C7C04 /* baseutility.h */,
 				26AFB4D10D9615C00004805A /* maputility.h */,
@@ -579,6 +582,7 @@
 				F595F33A0A8BBEF0004AB8BA /* modelutility.h in Headers */,
 				F5AD54430BBE1FDB001C7C04 /* baseutility.h in Headers */,
 				26AFB4D20D9615C00004805A /* maputility.h in Headers */,
+				26899FA90F1EBF25007860EB /* editor_defs.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -745,8 +749,7 @@
 		F5DB0C540856A994005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = "$(NATIVE_ARCH)";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

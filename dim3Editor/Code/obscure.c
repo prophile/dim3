@@ -27,7 +27,7 @@ and can be sold or given away.
 
 #include "common_view.h"
 
-extern int					obscure_mesh_idx,cx,cy,cz;
+extern int					obscure_mesh_idx;
 extern map_type				map;
 
 extern AGLContext			ctx;

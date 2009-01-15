@@ -160,7 +160,7 @@ and can be sold or given away.
 
 typedef struct		{
 						int						clip_y,portal_y;
-						Rect					box;
+						d3rect					box;
 						d3pnt					cpt;
 						d3ang					ang;
 						float					fov;

@@ -29,7 +29,8 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int				cx,cz,cy,vertex_mode,magnify_factor,
+extern d3pnt			view_pnt;
+extern int				vertex_mode,magnify_factor,
 						txt_palette_y,txt_palette_high;
 extern float			walk_view_y_angle,walk_view_x_angle;
 extern bool				map_opened,swap_panel_forward,swap_panel_side,swap_panel_top,
@@ -39,8 +40,6 @@ extern bool				map_opened,swap_panel_forward,swap_panel_side,swap_panel_top,
 extern map_type			map;
 extern setup_type		setup;
 
-extern WindowRef		mainwind;
-
 /* =======================================================
 
       Forward Panels
@@ -49,18 +48,18 @@ extern WindowRef		mainwind;
 
 void main_wind_setup_panel_forward(editor_3D_view_setup *view_setup)
 {
-	Rect				wbox;
+	d3rect				wbox;
 	
-	GetWindowPortBounds(mainwind,&wbox);
+	os_get_window_box(&wbox);
 
-	view_setup->box.top=wbox.top+(toolbar_high+2);
-	view_setup->box.bottom=(wbox.top+toolbar_high)+(((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2);
-	view_setup->box.left=wbox.left+2;
-	view_setup->box.right=(wbox.right-piece_wid)-(((wbox.right-piece_wid)-wbox.left)/2);
+	view_setup->box.ty=wbox.ty+(toolbar_high+2);
+	view_setup->box.by=(wbox.ty+toolbar_high)+(((wbox.by-(txt_palette_high+info_high))-(wbox.ty+toolbar_high))/2);
+	view_setup->box.lx=wbox.lx+2;
+	view_setup->box.rx=(wbox.rx-piece_wid)-(((wbox.rx-piece_wid)-wbox.lx)/2);
 	
-	view_setup->cpt.x=cx;
-	view_setup->cpt.y=cy;
-	view_setup->cpt.z=cz;
+	view_setup->cpt.x=view_pnt.x;
+	view_setup->cpt.y=view_pnt.y;
+	view_setup->cpt.z=view_pnt.z;
 
 	view_setup->ang.x=0.0f;
 	view_setup->ang.y=swap_panel_forward?180.0f:0.0f;
@@ -78,18 +77,18 @@ void main_wind_setup_panel_forward(editor_3D_view_setup *view_setup)
 
 void main_wind_setup_panel_forward_frame(editor_3D_view_setup *view_setup)
 {
-	Rect				wbox;
+	d3rect				wbox;
 	
-	GetWindowPortBounds(mainwind,&wbox);
+	os_get_window_box(&wbox);
 
-	view_setup->box.top=wbox.top+(toolbar_high+2);
-	view_setup->box.bottom=(wbox.top+toolbar_high)+(((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2);
-	view_setup->box.left=wbox.left+2;
-	view_setup->box.right=(wbox.right-piece_wid)-(((wbox.right-piece_wid)-wbox.left)/2);
+	view_setup->box.ty=wbox.ty+(toolbar_high+2);
+	view_setup->box.by=(wbox.ty+toolbar_high)+(((wbox.by-(txt_palette_high+info_high))-(wbox.ty+toolbar_high))/2);
+	view_setup->box.lx=wbox.lx+2;
+	view_setup->box.rx=(wbox.rx-piece_wid)-(((wbox.rx-piece_wid)-wbox.lx)/2);
 	
-	view_setup->cpt.x=cx;
-	view_setup->cpt.y=cy;
-	view_setup->cpt.z=cz;
+	view_setup->cpt.x=view_pnt.x;
+	view_setup->cpt.y=view_pnt.y;
+	view_setup->cpt.z=view_pnt.z;
 
 	view_setup->ang.x=0.0f;
 	view_setup->ang.y=swap_panel_forward?180.0f:0.0f;
@@ -107,19 +106,19 @@ void main_wind_setup_panel_forward_frame(editor_3D_view_setup *view_setup)
 
 void main_wind_setup_panel_forward_full(editor_3D_view_setup *view_setup)
 {
-	Rect				wbox;
+	d3rect				wbox;
 	
-	GetWindowPortBounds(mainwind,&wbox);
+	os_get_window_box(&wbox);
 
 	memmove(&view_setup->box,&wbox,sizeof(Rect));
 
-	view_setup->box.top+=toolbar_high;
-	view_setup->box.bottom-=(txt_palette_high+info_high);
-	view_setup->box.right-=piece_wid;
+	view_setup->box.ty+=toolbar_high;
+	view_setup->box.by-=(txt_palette_high+info_high);
+	view_setup->box.rx-=piece_wid;
 
-	view_setup->cpt.x=cx;
-	view_setup->cpt.y=cy;
-	view_setup->cpt.z=cz;
+	view_setup->cpt.x=view_pnt.x;
+	view_setup->cpt.y=view_pnt.y;
+	view_setup->cpt.z=view_pnt.z;
 
 	view_setup->ang.x=walk_view_x_angle;
 	view_setup->ang.y=walk_view_y_angle;
@@ -143,18 +142,18 @@ void main_wind_setup_panel_forward_full(editor_3D_view_setup *view_setup)
 
 void main_wind_setup_panel_side(editor_3D_view_setup *view_setup)
 {
-	Rect				wbox;
+	d3rect				wbox;
 	
-	GetWindowPortBounds(mainwind,&wbox);
+	os_get_window_box(&wbox);
 
-	view_setup->box.top=wbox.top+(toolbar_high+2);
-	view_setup->box.bottom=(wbox.top+toolbar_high)+(((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2);
-	view_setup->box.left=((wbox.right-piece_wid)-(((wbox.right-piece_wid)-wbox.left)/2))+2;
-	view_setup->box.right=wbox.right-(piece_wid+2);
+	view_setup->box.ty=wbox.ty+(toolbar_high+2);
+	view_setup->box.by=(wbox.ty+toolbar_high)+(((wbox.by-(txt_palette_high+info_high))-(wbox.ty+toolbar_high))/2);
+	view_setup->box.lx=((wbox.rx-piece_wid)-(((wbox.rx-piece_wid)-wbox.lx)/2))+2;
+	view_setup->box.rx=wbox.rx-(piece_wid+2);
 	
-	view_setup->cpt.x=cx;
-	view_setup->cpt.y=cy;
-	view_setup->cpt.z=cz;
+	view_setup->cpt.x=view_pnt.x;
+	view_setup->cpt.y=view_pnt.y;
+	view_setup->cpt.z=view_pnt.z;
 
 	view_setup->ang.x=0.0f;
 	view_setup->ang.y=swap_panel_side?90.0f:270.0f;
@@ -172,18 +171,18 @@ void main_wind_setup_panel_side(editor_3D_view_setup *view_setup)
 
 void main_wind_setup_panel_side_frame(editor_3D_view_setup *view_setup)
 {
-	Rect				wbox;
+	d3rect				wbox;
 	
-	GetWindowPortBounds(mainwind,&wbox);
+	os_get_window_box(&wbox);
 
-	view_setup->box.top=wbox.top+(toolbar_high+2);
-	view_setup->box.bottom=(wbox.top+toolbar_high)+(((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2);
-	view_setup->box.left=((wbox.right-piece_wid)-(((wbox.right-piece_wid)-wbox.left)/2))+2;
-	view_setup->box.right=wbox.right-(piece_wid+2);
+	view_setup->box.ty=wbox.ty+(toolbar_high+2);
+	view_setup->box.by=(wbox.ty+toolbar_high)+(((wbox.by-(txt_palette_high+info_high))-(wbox.ty+toolbar_high))/2);
+	view_setup->box.lx=((wbox.rx-piece_wid)-(((wbox.rx-piece_wid)-wbox.lx)/2))+2;
+	view_setup->box.rx=wbox.rx-(piece_wid+2);
 	
-	view_setup->cpt.x=cx;
-	view_setup->cpt.y=cy;
-	view_setup->cpt.z=cz;
+	view_setup->cpt.x=view_pnt.x;
+	view_setup->cpt.y=view_pnt.y;
+	view_setup->cpt.z=view_pnt.z;
 
 	view_setup->ang.x=0.0f;
 	view_setup->ang.y=swap_panel_side?90.0f:270.0f;
@@ -208,23 +207,23 @@ void main_wind_setup_panel_side_frame(editor_3D_view_setup *view_setup)
 void main_wind_setup_panel_top(editor_3D_view_setup *view_setup)
 {
 	int					mag_sz;
-	Rect				wbox;
+	d3rect				wbox;
 	
-	GetWindowPortBounds(mainwind,&wbox);
+	os_get_window_box(&wbox);
 
-	view_setup->box.top=(wbox.top+toolbar_high)+((((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2)+2);
-	view_setup->box.bottom=wbox.bottom-((txt_palette_high+info_high)+2);
-	view_setup->box.left=wbox.left+2;
-	view_setup->box.right=wbox.right-(piece_wid+2);
+	view_setup->box.ty=(wbox.ty+toolbar_high)+((((wbox.by-(txt_palette_high+info_high))-(wbox.ty+toolbar_high))/2)+2);
+	view_setup->box.by=wbox.by-((txt_palette_high+info_high)+2);
+	view_setup->box.lx=wbox.lx+2;
+	view_setup->box.rx=wbox.rx-(piece_wid+2);
 	
 	mag_sz=(magnify_factor_max-magnify_factor)*(map_enlarge<<1);
 	
-	view_setup->cpt.x=cx;
-	view_setup->cpt.y=cy-mag_sz;
-	view_setup->cpt.z=cz;
+	view_setup->cpt.x=view_pnt.x;
+	view_setup->cpt.y=view_pnt.y-mag_sz;
+	view_setup->cpt.z=view_pnt.z;
 	
-	view_setup->clip_y=cy;
-	view_setup->portal_y=cy;
+	view_setup->clip_y=view_pnt.y;
+	view_setup->portal_y=view_pnt.y;
 	
 	view_setup->ang.x=swap_panel_top?(90.0f):(-90.0f);
 	view_setup->ang.y=0.0f;
@@ -243,23 +242,23 @@ void main_wind_setup_panel_top(editor_3D_view_setup *view_setup)
 void main_wind_setup_panel_top_frame(editor_3D_view_setup *view_setup)
 {
 	int					mag_sz;
-	Rect				wbox;
+	d3rect				wbox;
 	
-	GetWindowPortBounds(mainwind,&wbox);
+	os_get_window_box(&wbox);
 
-	view_setup->box.top=(wbox.top+toolbar_high)+((((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2)+2);
-	view_setup->box.bottom=wbox.bottom-((txt_palette_high+info_high)+2);
-	view_setup->box.left=wbox.left+2;
-	view_setup->box.right=(wbox.right-piece_wid)-(((wbox.right-piece_wid)-wbox.left)/2);
+	view_setup->box.ty=(wbox.ty+toolbar_high)+((((wbox.by-(txt_palette_high+info_high))-(wbox.ty+toolbar_high))/2)+2);
+	view_setup->box.by=wbox.by-((txt_palette_high+info_high)+2);
+	view_setup->box.lx=wbox.lx+2;
+	view_setup->box.rx=(wbox.rx-piece_wid)-(((wbox.rx-piece_wid)-wbox.lx)/2);
 	
 	mag_sz=(magnify_factor_max-magnify_factor)*(map_enlarge<<1);
 	
-	view_setup->cpt.x=cx;
-	view_setup->cpt.y=cy-mag_sz;
-	view_setup->cpt.z=cz;
+	view_setup->cpt.x=view_pnt.x;
+	view_setup->cpt.y=view_pnt.y-mag_sz;
+	view_setup->cpt.z=view_pnt.z;
 	
-	view_setup->clip_y=cy;
-	view_setup->portal_y=cy;
+	view_setup->clip_y=view_pnt.y;
+	view_setup->portal_y=view_pnt.y;
 
 	view_setup->ang.x=-90.0f;
 	view_setup->ang.y=0.0f;
@@ -278,24 +277,21 @@ void main_wind_setup_panel_top_frame(editor_3D_view_setup *view_setup)
 void main_wind_setup_panel_top_full(editor_3D_view_setup *view_setup)
 {
 	int					mag_sz;
-	Rect				wbox;
 	
-	GetWindowPortBounds(mainwind,&wbox);
-
-	memmove(&view_setup->box,&wbox,sizeof(Rect));
+	os_get_window_box(&view_setup->box);
 	
-	view_setup->box.top+=toolbar_high;
-	view_setup->box.bottom-=(txt_palette_high+info_high);
-	view_setup->box.right-=piece_wid;
+	view_setup->box.ty+=toolbar_high;
+	view_setup->box.by-=(txt_palette_high+info_high);
+	view_setup->box.rx-=piece_wid;
 
 	mag_sz=(magnify_factor_max-magnify_factor)*(map_enlarge<<1);
 
-	view_setup->cpt.x=cx;
-	view_setup->cpt.y=cy-mag_sz;
-	view_setup->cpt.z=cz;
+	view_setup->cpt.x=view_pnt.x;
+	view_setup->cpt.y=view_pnt.y-mag_sz;
+	view_setup->cpt.z=view_pnt.z;
 	
-	view_setup->clip_y=cy;
-	view_setup->portal_y=cy;
+	view_setup->clip_y=view_pnt.y;
+	view_setup->portal_y=view_pnt.y;
 
 	view_setup->ang.x=-90.0f;
 	view_setup->ang.y=0.0f;
@@ -319,18 +315,18 @@ void main_wind_setup_panel_top_full(editor_3D_view_setup *view_setup)
 
 void main_wind_setup_panel_walk(editor_3D_view_setup *view_setup)
 {
-	Rect				wbox;
+	d3rect				wbox;
 	
-	GetWindowPortBounds(mainwind,&wbox);
+	os_get_window_box(&wbox);
 
-	view_setup->box.top=(wbox.top+toolbar_high)+((((wbox.bottom-(txt_palette_high+info_high))-(wbox.top+toolbar_high))/2)+2);
-	view_setup->box.bottom=wbox.bottom-((txt_palette_high+info_high)+2);
-	view_setup->box.left=((wbox.right-piece_wid)-(((wbox.right-piece_wid)-wbox.left)/2))+2;
-	view_setup->box.right=wbox.right-(piece_wid+2);
+	view_setup->box.ty=(wbox.ty+toolbar_high)+((((wbox.by-(txt_palette_high+info_high))-(wbox.ty+toolbar_high))/2)+2);
+	view_setup->box.by=wbox.by-((txt_palette_high+info_high)+2);
+	view_setup->box.lx=((wbox.rx-piece_wid)-(((wbox.rx-piece_wid)-wbox.lx)/2))+2;
+	view_setup->box.rx=wbox.rx-(piece_wid+2);
 	
-	view_setup->cpt.x=cx;
-	view_setup->cpt.y=cy;
-	view_setup->cpt.z=cz;
+	view_setup->cpt.x=view_pnt.x;
+	view_setup->cpt.y=view_pnt.y;
+	view_setup->cpt.z=view_pnt.z;
 
 	view_setup->ang.x=walk_view_x_angle;
 	view_setup->ang.y=walk_view_y_angle;
@@ -344,20 +340,5 @@ void main_wind_setup_panel_walk(editor_3D_view_setup *view_setup)
 	
 	view_setup->swap_on=FALSE;
 	view_setup->clip_on=FALSE;
-}
-
-/* =======================================================
-
-      Full Screen
-      
-======================================================= */
-
-void main_wind_setup_full_screen_box(Rect *box)
-{
-	GetWindowPortBounds(mainwind,box);
-	
-	box->top+=toolbar_high;
-	box->bottom-=(txt_palette_high+info_high);
-	box->right-=piece_wid;
 }
 

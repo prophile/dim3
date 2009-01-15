@@ -33,7 +33,6 @@ extern int				cy,txt_palette_high,obscure_mesh_idx;
 extern float			walk_view_fov,walk_view_y_angle,walk_view_x_angle;
 extern bool				dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_textured;
 
-extern WindowRef		mainwind;
 extern AGLContext		ctx;
 
 extern map_type			map;
@@ -283,6 +282,8 @@ void walk_view_draw_meshes_texture(d3pnt *cpt,int clip_y,bool opaque)
 	}
 	
 	if (!opaque) glDepthMask(GL_TRUE);
+	
+	glDisable(GL_TEXTURE_2D);
 }
 
 void walk_view_draw_meshes_line(d3pnt *cpt,bool opaque)
@@ -512,6 +513,9 @@ void walk_view_draw_nodes(d3pnt *cpt)
 	if (!dp_node) return;
 	
 		// connections
+		
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_BLEND);
 
 	glLineWidth(3.0f);
 	glColor4f(0.0f,1.0f,0.0f,1.0f);
@@ -639,7 +643,7 @@ void walk_view_gl_setup(editor_3D_view_setup *view_setup)
       
 ======================================================= */
 
-void walk_view_draw_position(Rect *box,d3pnt *cpt)
+void walk_view_draw_position(d3rect *box,d3pnt *cpt)
 {
     int			x,z,sz;
    
@@ -647,8 +651,8 @@ void walk_view_draw_position(Rect *box,d3pnt *cpt)
 
 	glDisable(GL_DEPTH_TEST);
 
-	x=box->left+((box->right-box->left)>>1);
-	z=box->top+((box->bottom-box->top)>>1);
+	x=box->lx+((box->rx-box->lx)>>1);
+	z=box->ty+((box->by-box->ty)>>1);
 	
 	sz=10;
 	

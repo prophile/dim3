@@ -119,8 +119,8 @@ bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 	
 		// are we clicking on a new node?
 		
-	click_pt.x=pt->x-view_setup->box.left;
-	click_pt.y=pt->y-view_setup->box.top;
+	click_pt.x=pt->x-view_setup->box.lx;
+	click_pt.y=pt->y-view_setup->box.ty;
 		
 	next_idx=node_link_find_node_by_point(view_setup,&click_pt);
     if ((next_idx==node_idx) || (next_idx==-1)) return(FALSE);

@@ -53,8 +53,8 @@ void walk_view_compass_draw(editor_3D_view_setup *view_setup)
 	bool			sel;
 	GLUquadricObj	*disk;
 	
-	wid=view_setup->box.right-view_setup->box.left;
-	high=view_setup->box.bottom-view_setup->box.top;
+	wid=view_setup->box.rx-view_setup->box.lx;
+	high=view_setup->box.by-view_setup->box.ty;
 	
 		// 2D drawing
 		
@@ -171,12 +171,12 @@ bool walk_view_compass_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 	int				n,px[4],py[4],box_left,box_top,
 					lft,rgt,top,bot,
 					lx,rx,mx,ty,by,my,wid,high;
-	Rect			click_box;
+	d3rect			click_box;
 	
-	box_left=view_setup->box.left;
-	box_top=view_setup->box.top;
-	wid=view_setup->box.right-view_setup->box.left;
-	high=view_setup->box.bottom-view_setup->box.top;
+	box_left=view_setup->box.lx;
+	box_top=view_setup->box.ty;
+	wid=view_setup->box.rx-view_setup->box.lx;
+	high=view_setup->box.by-view_setup->box.ty;
 		
 		// click Y angle triangles
 		
@@ -200,8 +200,11 @@ bool walk_view_compass_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 		rotate_2D_polygon(4,px,py,mx,my,(float)n);
 		polygon_2D_get_box(4,px,py,&lft,&rgt,&top,&bot);
 	
-		SetRect(&click_box,lft,top,rgt,bot);
-		OffsetRect(&click_box,box_left,box_top);
+		click_box.lx=lft+box_left;
+		click_box.rx=rgt+box_left;
+		click_box.ty=top+box_top;
+		click_box.by=bot+box_top;
+		
 		if (main_wind_click_check_box(pt,&click_box)) {
 			if (n==0) {
 				walk_view_y_angle=0.0f;
@@ -222,8 +225,11 @@ bool walk_view_compass_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 	ty=view_compass_look_y_offset;									// up arrow
 	by=ty+(view_compass_triangle_size*2);
 	
-	SetRect(&click_box,lx,ty,rx,by);
-	OffsetRect(&click_box,box_left,box_top);
+	click_box.lx=lx+box_left;
+	click_box.rx=rx+box_left;
+	click_box.ty=ty+box_top;
+	click_box.by=by+box_top;
+	
 	if (main_wind_click_check_box(pt,&click_box)) {
 		walk_view_x_angle=30.0f;
 		main_wind_draw();
@@ -233,8 +239,11 @@ bool walk_view_compass_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 	by=view_compass_look_y_offset+view_compass_triangle_size+view_compass_radius;				// midddle box
 	ty=by-(view_compass_triangle_size*2);
 	
-	SetRect(&click_box,lx,ty,rx,by);
-	OffsetRect(&click_box,box_left,box_top);
+	click_box.lx=lx+box_left;
+	click_box.rx=rx+box_left;
+	click_box.ty=ty+box_top;
+	click_box.by=by+box_top;
+
 	if (main_wind_click_check_box(pt,&click_box)) {
 		walk_view_x_angle=0.0f;
 		main_wind_draw();
@@ -244,8 +253,11 @@ bool walk_view_compass_click(editor_3D_view_setup *view_setup,d3pnt *pt)
 	by=view_compass_look_y_offset+(view_compass_radius*2);			// down arrow
 	ty=by-(view_compass_triangle_size*2);
 	
-	SetRect(&click_box,lx,ty,rx,by);
-	OffsetRect(&click_box,box_left,box_top);
+	click_box.lx=lx+box_left;
+	click_box.rx=rx+box_left;
+	click_box.ty=ty+box_top;
+	click_box.by=by+box_top;
+
 	if (main_wind_click_check_box(pt,&click_box)) {
 		walk_view_x_angle=-30.0f;
 		main_wind_draw();

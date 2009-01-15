@@ -38,10 +38,8 @@ extern int						top_view_x,top_view_z,txt_palette_high;
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;
 
-extern WindowRef				mainwind;
-extern CCrsrHandle				handcur,rotatecur,forwardcur,towardcur,cutcur,addcur;
-
-int								cx,cz,cy,walk_view_last_rn;
+d3pnt							view_pnt;
+int								walk_view_last_rn;
 int								magnify_factor=magnify_size;
 float							walk_view_fov,walk_view_y_angle,walk_view_x_angle;
 bitmap_type						spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
@@ -145,12 +143,12 @@ void walk_view_cursor(bool rot_ok)
 	if ((select_count()==1) && (select_has_type(node_piece))) {
 	
 		if (main_wind_option_down()) {
-			SetCCursor(cutcur);
+			os_set_cut_cursor();
 			return;
 		}
 		
 		if (main_wind_control_down()) {
-			SetCCursor(addcur);
+			os_set_add_cursor();
 			return;
 		}
 	}
@@ -158,19 +156,19 @@ void walk_view_cursor(bool rot_ok)
 		// normal cursors
 
     if (main_wind_space_down()) {
-        SetCCursor(handcur);
+        os_set_hand_cursor();
         return;
     }
     if ((main_wind_option_down()) && ((!main_wind_control_down()) && (!main_wind_shift_down()))) {
-        SetCCursor(forwardcur);
+        os_set_forward_cursor();
         return;
     }
     if ((main_wind_command_down()) && (rot_ok)) {
-        SetCCursor(rotatecur);
+        os_set_rotate_cursor();
         return;
     }
     
-    InitCursor();
+    os_set_arrow_cursor();
 }
 
 /* =======================================================

@@ -28,8 +28,9 @@ and can be sold or given away.
 #include "common_view.h"
 #include "interface.h"
 
-extern int						cx,cy,cz;
+extern d3pnt					view_pnt;
 extern float					walk_view_y_angle;
+
 extern file_path_setup_type		file_path_setup;
 extern setup_type				setup;
 extern map_type					map;
@@ -83,9 +84,9 @@ void launch_engine(void)
 	
 		// map position
 		
-	pt.x=cx;
-	pt.y=cy;
-	pt.z=cz;
+	pt.x=view_pnt.x;
+	pt.y=view_pnt.y;
+	pt.z=view_pnt.z;
 	ang.x=0.0f;
 	ang.y=walk_view_y_angle;
 	ang.z=0.0f;

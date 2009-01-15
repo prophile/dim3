@@ -29,7 +29,6 @@ and can be sold or given away.
 #include "common_view.h"
 
 extern int					drag_mode;
-extern CCrsrHandle			dragcur;
 
 extern map_type				map;
 extern setup_type			setup;

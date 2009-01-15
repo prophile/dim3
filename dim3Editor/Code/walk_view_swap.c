@@ -49,8 +49,8 @@ void walk_view_swap_draw(editor_3D_view_setup *view_setup)
 {
 	int				lx,rx,mx,ty,by,wid,high;
 	
-	wid=view_setup->box.right-view_setup->box.left;
-	high=view_setup->box.bottom-view_setup->box.top;
+	wid=view_setup->box.rx-view_setup->box.lx;
+	high=view_setup->box.by-view_setup->box.ty;
 	
 		// 2D drawing
 		
@@ -137,13 +137,13 @@ bool walk_view_swap_click(editor_3D_view_setup *view_setup,d3pnt *pt,bool *swap_
 {
 	int				box_left,box_top,
 					lx,rx,ty,by,wid,high;
-	Rect			click_box;
+	d3rect			click_box;
 	
-	box_left=view_setup->box.left;
-	box_top=view_setup->box.top;
+	box_left=view_setup->box.lx;
+	box_top=view_setup->box.ty;
 	
-	wid=view_setup->box.right-view_setup->box.left;
-	high=view_setup->box.bottom-view_setup->box.top;
+	wid=view_setup->box.rx-view_setup->box.lx;
+	high=view_setup->box.by-view_setup->box.ty;
 		
 	
 		// click left triangle
@@ -155,8 +155,12 @@ bool walk_view_swap_click(editor_3D_view_setup *view_setup,d3pnt *pt,bool *swap_
 	by=ty+(view_swap_triangle_size*2);
 	
 	if (view_setup->swap_on) {
-		SetRect(&click_box,lx,ty,rx,by);
-		OffsetRect(&click_box,box_left,box_top);
+		
+		click_box.lx=lx+box_left;
+		click_box.rx=rx+box_left;
+		click_box.ty=ty+box_top;
+		click_box.by=by+box_top;
+		
 		if (main_wind_click_check_box(pt,&click_box)) {
 			*swap_on=FALSE;
 			main_wind_draw();
@@ -170,8 +174,12 @@ bool walk_view_swap_click(editor_3D_view_setup *view_setup,d3pnt *pt,bool *swap_
 	rx=(wid-view_swap_x_rgt_offset)+view_swap_triangle_size;
 	
 	if (!view_setup->swap_on) {
-		SetRect(&click_box,lx,ty,rx,by);
-		OffsetRect(&click_box,box_left,box_top);
+	
+		click_box.lx=lx+box_left;
+		click_box.rx=rx+box_left;
+		click_box.ty=ty+box_top;
+		click_box.by=by+box_top;
+		
 		if (main_wind_click_check_box(pt,&click_box)) {
 			*swap_on=TRUE;
 			main_wind_draw();

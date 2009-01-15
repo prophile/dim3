@@ -29,7 +29,8 @@ and can be sold or given away.
 #include "dialog.h"
 #include "common_view.h"
 
-extern int				cx,cy,cz,drag_mode;
+extern d3pnt			view_pnt;
+extern int				drag_mode;
 extern map_type			map;
 
 extern WindowRef		mainwind;
@@ -131,7 +132,7 @@ void info_status_line_draw(void)
 
 		// left info
 	
-	sprintf(txt,"(%d,%d,%d)",cx,cy,cz);
+	sprintf(txt,"(%d,%d,%d)",view_pnt.x,view_pnt.y,view_pnt.z);
 	
 	MoveTo((wbox.left+4),(wbox.bottom-4));
 	DrawText(txt,0,strlen(txt));

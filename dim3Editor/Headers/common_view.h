@@ -57,6 +57,22 @@ typedef struct		{
 					} select_item_type;
 
 //
+// os routines
+//
+
+extern void os_get_window_box(d3rect *box);
+extern void os_set_arrow_cursor(void);
+extern void os_set_wait_cursor(void);
+extern void os_set_hand_cursor(void);
+extern void os_set_drag_cursor(void);
+extern void os_set_rotate_cursor(void);
+extern void os_set_toward_cursor(void);
+extern void os_set_forward_cursor(void);
+extern void os_set_resize_cursor(void);
+extern void os_set_add_cursor(void);
+extern void os_set_cut_cursor(void);
+
+//
 // selection routines
 //
 

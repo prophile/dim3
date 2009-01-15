@@ -310,6 +310,7 @@
 							<array>
 								<string>F5C5352C051C058600968AF1</string>
 								<string>F5C53538051C06F100968AF1</string>
+								<string>F5C53539051C06F900968AF1</string>
 								<string>F5C5353A051C06FF00968AF1</string>
 								<string>F5DA862D059148E60043E685</string>
 								<string>F5DD177C09074DEE00721649</string>
@@ -321,14 +322,13 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>29</integer>
-									<integer>26</integer>
 									<integer>9</integer>
+									<integer>8</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 45}, {284, 692}}</string>
+							<string>{{0, 0}, {284, 692}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -428,9 +428,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>261335AF0F1AD82400F07CDF</string>
+				<string>26899F9D0F1EBEA1007860EB</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>261335B00F1AD82400F07CDF</string>
+				<string>26899F9E0F1EBEA1007860EB</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -549,7 +549,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>253417352.25417799</real>
+	<real>253673218.11492801</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -564,7 +564,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>261335B10F1AD82400F07CDF</string>
+		<string>260AFEBC0D404E7500F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3MapUtility/dim3MapUtility.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -606,6 +606,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -645,7 +647,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEBC0D404E7500F6C42F</string>
-				<string>261334CC0F19D0BB00F07CDF</string>
+				<string>26899F9B0F1EBE9E007860EB</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

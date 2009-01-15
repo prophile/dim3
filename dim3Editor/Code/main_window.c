@@ -29,7 +29,8 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int				cx,cz,cy,vertex_mode,magnify_factor,
+extern d3pnt			view_pnt;
+extern int				vertex_mode,magnify_factor,
 						txt_palette_y,txt_palette_high;
 extern float			walk_view_y_angle,walk_view_x_angle;
 extern bool				map_opened;
@@ -37,12 +38,14 @@ extern bool				map_opened;
 extern map_type			map;
 extern setup_type		setup;
 
+extern CCrsrHandle		handcur,dragcur,cutcur,rotatecur,towardcur,forwardcur,resizecur,addcur;
+
 int						main_wind_view,main_wind_panel_focus,main_wind_perspective,
 						vertex_mode,drag_mode,grid_mode,obscure_mesh_idx;
 bool					select_toggle_mode,dp_auto_texture,dp_liquid,
 						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide,
 						swap_panel_forward,swap_panel_side,swap_panel_top;
-Rect					main_wind_box;
+d3rect					main_wind_box;
 
 WindowRef				mainwind;
 EventHandlerRef			main_wind_event;
@@ -317,9 +320,12 @@ void main_wind_control(ControlRef ctrl)
 		if (idx>2) {
 			idx=object_combo_lookup[idx-3];
 		
-			cx=map.spots[idx].pnt.x;
-			cy=map.spots[idx].pnt.y-500;
-			cz=map.spots[idx].pnt.z;
+			view_pnt.x=map.spots[idx].pnt.x;
+			view_pnt.y=map.spots[idx].pnt.y-500;
+			view_pnt.z=map.spots[idx].pnt.z;
+			
+			select_clear();
+			select_add(spot_piece,idx,-1);
 			
 			main_wind_draw();	
 		}
@@ -336,9 +342,12 @@ void main_wind_control(ControlRef ctrl)
 		if (idx>2) {
 			idx=node_combo_lookup[idx-3];
 		
-			cx=map.nodes[idx].pnt.x;
-			cy=map.nodes[idx].pnt.y-500;
-			cz=map.nodes[idx].pnt.z;
+			view_pnt.x=map.nodes[idx].pnt.x;
+			view_pnt.y=map.nodes[idx].pnt.y-500;
+			view_pnt.z=map.nodes[idx].pnt.z;
+			
+			select_clear();
+			select_add(node_piece,idx,-1);
 			
 			main_wind_draw();	
 		}
@@ -591,10 +600,10 @@ void main_wind_setup(void)
 		
 	GetWindowPortBounds(mainwind,&wbox);
 
-	main_wind_box.left=0;
-	main_wind_box.right=wbox.right-piece_wid;
-	main_wind_box.top=toolbar_high;
-	main_wind_box.bottom=wbox.bottom-info_high;
+	main_wind_box.lx=0;
+	main_wind_box.rx=wbox.right-piece_wid;
+	main_wind_box.ty=toolbar_high;
+	main_wind_box.by=wbox.bottom-info_high;
 	
 		// buffer rect clipping
 		
@@ -1007,7 +1016,7 @@ void main_wind_set_perspective(int perspective)
       
 ======================================================= */
 
-void main_wind_set_viewport(Rect *view_box,bool erase,bool use_background)
+void main_wind_set_viewport(d3rect *view_box,bool erase,bool use_background)
 {
 	int				bot_y;
 	Rect			wbox;
@@ -1018,9 +1027,9 @@ void main_wind_set_viewport(Rect *view_box,bool erase,bool use_background)
 	bot_y=wbox.bottom-info_high;
 
 	glEnable(GL_SCISSOR_TEST);
-	glScissor(view_box->left,(bot_y-view_box->bottom),(view_box->right-view_box->left),(view_box->bottom-view_box->top));
+	glScissor(view_box->lx,(bot_y-view_box->by),(view_box->rx-view_box->lx),(view_box->by-view_box->ty));
 
-	glViewport(view_box->left,(bot_y-view_box->bottom),(view_box->right-view_box->left),(view_box->bottom-view_box->top));
+	glViewport(view_box->lx,(bot_y-view_box->by),(view_box->rx-view_box->lx),(view_box->by-view_box->ty));
 	
 		// default setup
 		
@@ -1028,7 +1037,7 @@ void main_wind_set_viewport(Rect *view_box,bool erase,bool use_background)
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho((GLdouble)view_box->left,(GLdouble)view_box->right,(GLdouble)view_box->bottom,(GLdouble)view_box->top,-1.0,1.0);
+	glOrtho((GLdouble)view_box->lx,(GLdouble)view_box->rx,(GLdouble)view_box->by,(GLdouble)view_box->ty,-1.0,1.0);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -1045,10 +1054,10 @@ void main_wind_set_viewport(Rect *view_box,bool erase,bool use_background)
 	}
 	
 	glBegin(GL_QUADS);
-	glVertex2i(view_box->left,view_box->top);
-	glVertex2i(view_box->right,view_box->top);
-	glVertex2i(view_box->right,view_box->bottom);
-	glVertex2i(view_box->left,view_box->bottom);
+	glVertex2i(view_box->lx,view_box->ty);
+	glVertex2i(view_box->rx,view_box->ty);
+	glVertex2i(view_box->rx,view_box->by);
+	glVertex2i(view_box->lx,view_box->by);
 	glEnd();
 }
 
@@ -1062,7 +1071,7 @@ void main_wind_set_2D_projection(Rect *view_box)
 	glLoadIdentity();
 }
 
-void main_wind_set_3D_projection(Rect *view_box,d3ang *ang,float fov,float near_z,float far_z,float near_z_offset)
+void main_wind_set_3D_projection(d3rect *view_box,d3ang *ang,float fov,float near_z,float far_z,float near_z_offset)
 {
 	int				x_sz,y_sz;
 	float			ratio;
@@ -1071,12 +1080,12 @@ void main_wind_set_3D_projection(Rect *view_box,d3ang *ang,float fov,float near_
 	glLoadIdentity();
 	
 	if (main_wind_perspective==ps_perspective) {
-		ratio=(float)(view_box->right-view_box->left)/(float)(view_box->bottom-view_box->top);
+		ratio=(float)(view_box->rx-view_box->lx)/(float)(view_box->by-view_box->ty);
 		gluPerspective(fov,ratio,near_z,far_z);
 	}
 	else {
-		x_sz=(view_box->right-view_box->left)*(map_enlarge>>2);
-		y_sz=(view_box->bottom-view_box->top)*(map_enlarge>>2);
+		x_sz=(view_box->rx-view_box->lx)*(map_enlarge>>2);
+		y_sz=(view_box->by-view_box->ty)*(map_enlarge>>2);
 		glOrtho((GLdouble)-x_sz,(GLdouble)x_sz,(GLdouble)-y_sz,(GLdouble)y_sz,near_z,far_z);
 	}
 	
@@ -1096,15 +1105,15 @@ void main_wind_set_3D_projection(Rect *view_box,d3ang *ang,float fov,float near_
       
 ======================================================= */
 
-void main_wind_draw_dividers_single(Rect *box,bool selected)
+void main_wind_draw_dividers_single(d3rect *box,bool selected)
 {
 	glColor4f((selected?1.0f:0.0f),0.0f,0.0f,1.0f);
 	
 	glBegin(GL_LINE_LOOP);
-	glVertex2i((box->left-1),(box->top-1));
-	glVertex2i((box->right+1),(box->top-1));
-	glVertex2i((box->right+1),(box->bottom+1));
-	glVertex2i((box->left-1),(box->bottom+1));
+	glVertex2i((box->lx-1),(box->ty-1));
+	glVertex2i((box->rx+1),(box->ty-1));
+	glVertex2i((box->rx+1),(box->by+1));
+	glVertex2i((box->lx-1),(box->by+1));
 	glEnd();
 }
 
@@ -1352,9 +1361,9 @@ void main_wind_center_position_in_map(void)
 		
 	for (n=0;n!=map.nspot;n++) {
 		if ((strcasecmp(map.spots[n].name,"start")==0) || (strcasecmp(map.spots[n].script,"player")==0)) {
-			cx=map.spots[n].pnt.x;
-			cy=map.spots[n].pnt.y-(map_enlarge*20);
-			cz=map.spots[n].pnt.z;
+			view_pnt.x=map.spots[n].pnt.x;
+			view_pnt.y=map.spots[n].pnt.y-(map_enlarge*20);
+			view_pnt.z=map.spots[n].pnt.z;
 			return;
 		}
 	}
@@ -1364,18 +1373,18 @@ void main_wind_center_position_in_map(void)
 	for (n=0;n!=map.mesh.nmesh;n++) {
 		if (map.mesh.meshes[n].nvertex!=0) {
 			map_mesh_calculate_center(&map,n,&pt);
-			cx=pt.x;
-			cy=pt.y;
-			cz=pt.z;
+			view_pnt.x=pt.x;
+			view_pnt.y=pt.y;
+			view_pnt.z=pt.z;
 			return;
 		}
 	}
 	
 		// just center in total map size
 		
-	cx=map_max_size/2;
-	cy=map_max_size/2;
-	cz=map_max_size/2;
+	view_pnt.x=map_max_size/2;
+	view_pnt.y=map_max_size/2;
+	view_pnt.z=map_max_size/2;
 }
 
 /* =======================================================
@@ -1384,12 +1393,12 @@ void main_wind_center_position_in_map(void)
       
 ======================================================= */
 
-bool main_wind_click_check_box(d3pnt *pt,Rect *box)
+bool main_wind_click_check_box(d3pnt *pt,d3rect *box)
 {
-	if (pt->x<box->left) return(FALSE);
-	if (pt->x>box->right) return(FALSE);
-	if (pt->y<box->top) return(FALSE);
-	return(pt->y<=box->bottom);
+	if (pt->x<box->lx) return(FALSE);
+	if (pt->x>box->rx) return(FALSE);
+	if (pt->y<box->ty) return(FALSE);
+	return(pt->y<=box->by);
 }
 
 bool main_wind_click(d3pnt *pt,bool dblclick)
@@ -2113,4 +2122,73 @@ void main_wind_tool_fill_group_combo(void)
 		
 	SetControl32BitValue(group_combo,group_idx);
 }
+
+/* =======================================================
+
+      Utility Routines
+      
+======================================================= */
+
+void os_get_window_box(d3rect *box)
+{
+	Rect			wbox;
+	
+	GetWindowPortBounds(mainwind,&wbox);
+
+	box->lx=wbox.left;
+	box->rx=wbox.right;
+	box->ty=wbox.top;
+	box->by=wbox.bottom;
+}
+
+void os_set_arrow_cursor(void)
+{
+	InitCursor();
+}
+
+void os_set_wait_cursor(void)
+{
+	SetCursor(*GetCursor(watchCursor));
+}
+
+void os_set_hand_cursor(void)
+{
+   SetCCursor(handcur);
+}
+
+void os_set_drag_cursor(void)
+{
+   SetCCursor(dragcur);
+}
+
+void os_set_rotate_cursor(void)
+{
+   SetCCursor(rotatecur);
+}
+
+void os_set_toward_cursor(void)
+{
+   SetCCursor(towardcur);
+}
+
+void os_set_forward_cursor(void)
+{
+   SetCCursor(forwardcur);
+}
+
+void os_set_resize_cursor(void)
+{
+   SetCCursor(resizecur);
+}
+
+void os_set_add_cursor(void)
+{
+   SetCCursor(addcur);
+}
+
+void os_set_cut_cursor(void)
+{
+   SetCCursor(cutcur);
+}
+
 

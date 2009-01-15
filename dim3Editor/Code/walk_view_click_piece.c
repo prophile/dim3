@@ -30,11 +30,9 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int					cx,cy,cz,magnify_factor,vertex_mode,drag_mode,grid_mode,obscure_mesh_idx;
+extern int					magnify_factor,vertex_mode,drag_mode,grid_mode,obscure_mesh_idx;
 extern bool					select_toggle_mode,dp_liquid,dp_object,dp_lightsoundparticle,dp_node;
-extern Rect					main_wind_box;
-
-extern CCrsrHandle			towardcur,dragcur;
+extern d3rect				main_wind_box;
 
 extern map_type				map;
 
@@ -76,13 +74,13 @@ bool walk_view_click_rotate_polygon_behind_z(int x,int y,int z)
 	return(rz<=walk_view_near_z);
 }
 
-void walk_view_click_project_point(Rect *box,int *x,int *y,int *z)
+void walk_view_click_project_point(d3rect *box,int *x,int *y,int *z)
 {
 	double		dx,dy,dz;
 	
 	gluProject(*x,*y,*z,walk_view_mod_matrix,walk_view_proj_matrix,(GLint*)walk_view_vport,&dx,&dy,&dz);
-	*x=((int)dx)-box->left;
-	*y=(main_wind_box.bottom-((int)dy))-box->top;
+	*x=((int)dx)-box->lx;
+	*y=(main_wind_box.by-((int)dy))-box->ty;
 	*z=(int)((dz)*10000.0f);
 }
 
@@ -253,9 +251,9 @@ bool walk_view_mesh_poly_click_index(editor_3D_view_setup *view_setup,d3pnt *cli
 	
 	for (t=0;t!=mesh_poly->ptsz;t++) {
 		off_left=off_left&&(px[t]<0);
-		off_right=off_right&&(px[t]>(view_setup->box.right-view_setup->box.left));
+		off_right=off_right&&(px[t]>(view_setup->box.rx-view_setup->box.lx));
 		off_top=off_top&&(py[t]<0);
-		off_bottom=off_bottom&&(py[t]>(view_setup->box.bottom-view_setup->box.top));
+		off_bottom=off_bottom&&(py[t]>(view_setup->box.by-view_setup->box.ty));
 	}
 	
 	if ((off_left) || (off_right) || (off_top) || (off_bottom)) return(FALSE);
@@ -288,9 +286,9 @@ bool walk_view_quad_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	
 	for (t=0;t!=4;t++) {
 		off_left=off_left&&(px[t]<0);
-		off_right=off_right&&(px[t]>(view_setup->box.right-view_setup->box.left));
+		off_right=off_right&&(px[t]>(view_setup->box.rx-view_setup->box.lx));
 		off_top=off_top&&(py[t]<0);
-		off_bottom=off_bottom&&(py[t]>(view_setup->box.bottom-view_setup->box.top));
+		off_bottom=off_bottom&&(py[t]>(view_setup->box.by-view_setup->box.ty));
 	}
 	
 	if ((off_left) || (off_right) || (off_top) || (off_bottom)) return(FALSE);
@@ -391,8 +389,8 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	
 	walk_view_click_setup_project(view_setup);
 	
-	box_wid=view_setup->box.right-view_setup->box.left;
-	box_high=view_setup->box.bottom-view_setup->box.top;
+	box_wid=view_setup->box.rx-view_setup->box.lx;
+	box_high=view_setup->box.by-view_setup->box.ty;
 	
 	*type=-1;
 	hit_z=100000;
@@ -673,8 +671,8 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 {
 		// put click within box
 	
-	pt->x-=view_setup->box.left;
-	pt->y-=view_setup->box.top;
+	pt->x-=view_setup->box.lx;
+	pt->y-=view_setup->box.ty;
 	
 		// liquid vertex drags
 		

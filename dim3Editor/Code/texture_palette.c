@@ -41,7 +41,7 @@ extern map_type			map;
 
 int						txt_page,txt_offset,
 						txt_palette_y,txt_palette_high,txt_pixel_sz;
-Rect					txt_palette_box;
+d3rect					txt_palette_box;
 
 extern WindowRef		mainwind;
 
@@ -63,10 +63,10 @@ void texture_palette_setup(void)
 	txt_palette_high=(txt_wind_row_count*txt_pixel_sz);
 	txt_palette_y=(wbox.bottom-txt_palette_high)-info_high;
 	
-	txt_palette_box.left=wbox.left;
-	txt_palette_box.right=wbox.right-piece_wid;
-	txt_palette_box.top=txt_palette_y;
-	txt_palette_box.bottom=txt_palette_box.top+txt_palette_high;
+	txt_palette_box.lx=wbox.left;
+	txt_palette_box.rx=wbox.right-piece_wid;
+	txt_palette_box.ty=txt_palette_y;
+	txt_palette_box.by=txt_palette_box.ty+txt_palette_high;
 }
 
 /* =======================================================
