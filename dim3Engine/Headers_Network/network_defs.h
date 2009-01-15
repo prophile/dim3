@@ -56,7 +56,7 @@ and can be sold or given away.
 #define host_no_data_u_wait							25
 #define host_max_network_error_reject				10
 
-#define host_max_add_object_count					24
+#define host_max_remote_count						24
 
 #define host_client_timeout_msec_rate				10000
 
@@ -114,7 +114,7 @@ typedef struct		{
 						d3socket					sock;
 						int							remote_uid,team_idx,score;
 						char						name[name_str_len];
-						bool						ready;
+						bool						ready,bot;
 						d3pnt						pnt;
 					} net_host_player_type;
 
@@ -252,8 +252,8 @@ typedef struct		{
 
 typedef struct		{
 						int							count;
-						network_request_object_add	objects[host_max_add_object_count];
-					} network_request_add_objects;
+						network_request_object_add	objects[host_max_remote_count];
+					} network_reply_join_remotes;
 
 //
 // joining messages
@@ -277,7 +277,7 @@ typedef struct		{
 						short						join_uid,remote_count,bot_count;
 						char						game_name[name_str_len],map_name[name_str_len],
 													deny_reason[64];
-						network_request_add_objects	add_objects;
+						network_reply_join_remotes	remotes;
 					} network_reply_join;
 	
 typedef struct		{

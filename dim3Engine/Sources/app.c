@@ -48,7 +48,7 @@ extern void server_loop(int tick);
 extern bool view_initialize(char *err_str);
 extern void view_shutdown(void);
 extern void view_loop(int tick);
-extern bool game_start(int skill,network_request_add_objects *net_add_objects,char *err_str);
+extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
 extern void game_end(void);
 extern bool map_start(bool skip_media,char *err_str);
 extern void map_end(void);

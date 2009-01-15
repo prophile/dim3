@@ -536,6 +536,64 @@ void editor_mouse_move(int x,int y)
 
 /* =======================================================
 
+      Utility Routines
+      
+======================================================= */
+
+void os_get_window_box(d3rect *box)
+{
+	RECT			wbox;
+
+	GetClientRect(wnd,&wbox);
+
+	box->lx=wbox.left;
+	box->rx=wbox.right;
+	box->ty=wbox.top;
+	box->by=wbox.bottom;
+}
+
+void os_set_arrow_cursor(void)
+{
+}
+
+void os_set_wait_cursor(void)
+{
+}
+
+void os_set_hand_cursor(void)
+{
+}
+
+void os_set_drag_cursor(void)
+{
+}
+
+void os_set_rotate_cursor(void)
+{
+}
+
+void os_set_toward_cursor(void)
+{
+}
+
+void os_set_forward_cursor(void)
+{
+}
+
+void os_set_resize_cursor(void)
+{
+}
+
+void os_set_add_cursor(void)
+{
+}
+
+void os_set_cut_cursor(void)
+{
+}
+
+/* =======================================================
+
       Editor Main
       
 ======================================================= */

@@ -593,16 +593,6 @@ typedef struct		{
 					} obj_score;
 
 //
-// bot structures
-//
-
-typedef struct		{
-						int						uid;
-						bool					on;
-						obj_remote_predict		predict;
-					} obj_bot;
-
-//
 // scenery objects
 //
 
@@ -795,7 +785,7 @@ typedef struct		{
 												last_move_animation_event,last_turn_animation_event;
 						char					name[name_str_len],type[name_str_len],spawn_spot_name[name_str_len];
 						bool					spawning,hidden,suspend,fly,slope_gravity,
-												player,side_step,crawl,single_speed,no_slide,
+												player,bot,side_step,crawl,single_speed,no_slide,
 												open_doors,input_freeze,hide_all_weapons,
 												find_on,in_collide_event,on_ladder,
 												quick_reverse,death_trigger;
@@ -840,7 +830,6 @@ typedef struct		{
 						model_draw				draw;
 						obj_snd_ambient			ambient;
 						attach_type				attach;
-						obj_bot					bot;
 						obj_remote				remote;
 						obj_score				score;
 						obj_scenery				scenery;
@@ -1083,7 +1072,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						obj,bot,proj,weapon,proj_setup,
+						int						obj,proj,weapon,proj_setup,
 												model;
 					} server_uid_type;
 

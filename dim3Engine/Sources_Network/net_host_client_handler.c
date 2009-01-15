@@ -54,7 +54,7 @@ void net_host_client_handle_info(int sock)
 	network_reply_info		info;
 	
 	info.player_count=htons((short)net_host_player_count);
-	info.player_max_count=htons((short)host_max_add_object_count);
+	info.player_max_count=htons((short)host_max_remote_count);
 	strcpy(info.host_name,net_setup.host.name);
 	strcpy(info.host_ip_resolve,net_setup.host.ip_resolve);
 	strcpy(info.proj_name,net_setup.host.proj_name);
@@ -88,10 +88,10 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 	reply_join.join_uid=htons((short)remote_uid);
 	
 	if (remote_uid!=-1) {
-		net_host_player_create_add_objects_list(remote_uid,&reply_join.add_objects);
+		net_host_player_create_remote_list(remote_uid,&reply_join.remotes);
 	}
 	else {
-		reply_join.add_objects.count=0;
+		reply_join.remotes.count=0;
 	}
 	
 		// send reply
@@ -107,7 +107,7 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 		remote_add.team_idx=htons((short)net_team_none);
 		remote_add.score=0;
 		remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add),FALSE);
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add));
 	}
 
 	return(remote_uid);
@@ -120,7 +120,7 @@ int net_host_client_handle_local_join(network_request_join *request_join,char *e
 
 		// join directly to host
 
-	remote_uid=net_host_player_join((d3socket)NULL,request_join->name,err_str);
+	remote_uid=net_host_player_join(D3_NULL_SOCKET,request_join->name,err_str);
 	if (remote_uid==-1) return(-1);
 
 		// send all other players on host the new player for remote add
@@ -130,7 +130,7 @@ int net_host_client_handle_local_join(network_request_join *request_join,char *e
 	remote_add.team_idx=htons((short)net_team_none);
 	remote_add.score=0;
 	remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
-	net_host_player_send_others_packet(remote_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add),FALSE);
+	net_host_player_send_others_packet(remote_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add));
 
 	return(remote_uid);
 }
@@ -143,19 +143,19 @@ void net_host_client_handle_leave(int remote_uid)
 	
 		// now send all other players on host the remote remove
 		
-	net_host_player_send_others_packet(remote_uid,net_action_request_remote_remove,NULL,0,FALSE);
+	net_host_player_send_others_packet(remote_uid,net_action_request_remote_remove,NULL,0);
 }
 
 void net_host_client_handle_set_team(int remote_uid,network_request_team *team)
 {
 	net_host_player_update_team(remote_uid,team);
-	net_host_player_send_others_packet(remote_uid,net_action_request_team,(unsigned char*)team,sizeof(network_request_team),FALSE);
+	net_host_player_send_others_packet(remote_uid,net_action_request_team,(unsigned char*)team,sizeof(network_request_team));
 }
 
 void net_host_client_handle_update(int remote_uid,network_request_remote_update *update)
 {
 	net_host_player_update(remote_uid,update);
-	net_host_player_send_others_packet(remote_uid,net_action_request_remote_update,(unsigned char*)update,sizeof(network_request_remote_update),TRUE);
+	net_host_player_send_others_packet(remote_uid,net_action_request_remote_update,(unsigned char*)update,sizeof(network_request_remote_update));
 }
 
 void net_host_client_handle_group_synch(int sock)
@@ -245,7 +245,7 @@ void* net_host_client_handler_thread(void *arg)
 				
 			case net_action_request_remote_update:
 				net_host_player_update(client_remote_uid,(network_request_remote_update*)data);
-				net_host_player_send_others_packet(client_remote_uid,action,data,len,TRUE);
+				net_host_player_send_others_packet(client_remote_uid,action,data,len);
 				break;
 				
 			case net_action_request_remote_death:
@@ -253,7 +253,7 @@ void* net_host_client_handler_thread(void *arg)
 			case net_action_request_remote_sound:
 			case net_action_request_remote_fire:
 			case net_action_request_remote_pickup:
-				net_host_player_send_others_packet(client_remote_uid,action,data,len,FALSE);
+				net_host_player_send_others_packet(client_remote_uid,action,data,len);
 				break;
 
 			case net_action_request_latency_ping:

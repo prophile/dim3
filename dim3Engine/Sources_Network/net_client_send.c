@@ -244,7 +244,7 @@ void net_client_send_death(int remote_uid,int kill_uid,bool telefrag)
 	}
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_death,(unsigned char*)&death,sizeof(network_request_remote_death),FALSE);
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_death,(unsigned char*)&death,sizeof(network_request_remote_death));
 	}
 	else {
 		net_send_message(client_socket,net_action_request_remote_death,remote_uid,(unsigned char*)&death,sizeof(network_request_remote_death));
@@ -264,7 +264,7 @@ void net_client_send_chat(int remote_uid,char *str)
 	strcpy(chat.str,str);
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_chat,(unsigned char*)&chat,sizeof(network_request_remote_chat),FALSE);
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_chat,(unsigned char*)&chat,sizeof(network_request_remote_chat));
 	}
 	else {
 		net_send_message(client_socket,net_action_request_remote_chat,remote_uid,(unsigned char*)&chat,sizeof(network_request_remote_chat));
@@ -284,7 +284,7 @@ void net_client_send_sound(int remote_uid,int x,int y,int z,float pitch,char *na
 	strcpy(sound.name,name);
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_sound,(unsigned char*)&sound,sizeof(network_request_remote_sound),FALSE);
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_sound,(unsigned char*)&sound,sizeof(network_request_remote_sound));
 	}
 	else {
 		net_send_message(client_socket,net_action_request_remote_sound,remote_uid,(unsigned char*)&sound,sizeof(network_request_remote_sound));
@@ -320,7 +320,7 @@ void net_client_send_projectile_add(int remote_uid,char *weap_name,char *proj_se
 	fire.force=0;
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire),FALSE);
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire));
 	}
 	else {
 		net_send_message(client_socket,net_action_request_remote_fire,remote_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
@@ -350,7 +350,7 @@ void net_client_send_hitscan_add(int remote_uid,char *weap_name,char *proj_setup
 	fire.force=0;
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire),FALSE);
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire));
 	}
 	else {
 		net_send_message(client_socket,net_action_request_remote_fire,remote_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
@@ -380,7 +380,7 @@ void net_client_send_melee_add(int remote_uid,char *weap_name,int radius,int dis
 	fire.force=htons((short)force);
 
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire),FALSE);
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_fire,(unsigned char*)&fire,sizeof(network_request_remote_fire));
 	}
 	else {
 		net_send_message(client_socket,net_action_request_remote_fire,remote_uid,(unsigned char*)&fire,sizeof(network_request_remote_fire));
@@ -430,7 +430,7 @@ void net_client_setup_pickup(obj_type *obj,network_request_remote_pickup *pickup
 void net_client_send_pickup(int remote_uid,network_request_remote_pickup *pickup)
 {
 	if (net_setup.host.hosting) {
-		net_host_player_send_others_packet(remote_uid,net_action_request_remote_pickup,(unsigned char*)pickup,sizeof(network_request_remote_pickup),FALSE);
+		net_host_player_send_others_packet(remote_uid,net_action_request_remote_pickup,(unsigned char*)pickup,sizeof(network_request_remote_pickup));
 	}
 	else {
 		net_send_message(client_socket,net_action_request_remote_pickup,remote_uid,(unsigned char*)pickup,sizeof(network_request_remote_pickup));

@@ -25,6 +25,10 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3editor.h"
+#endif
+
 #include "interface.h"
 #include "common_view.h"
 #include "walk_view.h"

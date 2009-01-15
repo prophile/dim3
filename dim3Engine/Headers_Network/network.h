@@ -115,9 +115,11 @@ extern int net_host_player_find(int remote_uid);
 extern int net_host_player_join(d3socket sock,char *name,char *deny_reason);
 extern void net_host_player_ready(int remote_uid,bool ready);
 extern void net_host_player_leave(int remote_uid);
-extern void net_host_player_create_add_objects_list(int player_remote_uid,network_request_add_objects *add_objects);
-extern void net_host_player_send_others_packet(int player_remote_uid,int action,unsigned char *data,int len,bool skip_flooded);
-extern void net_host_player_send_all_packet(int action,unsigned char *data,int len,bool skip_flooded);
+extern int net_host_bot_join(obj_type *obj);
+extern void net_host_player_add_bots_to_list(void);
+extern void net_host_player_create_remote_list(int player_remote_uid,network_reply_join_remotes *remotes);
+extern void net_host_player_send_others_packet(int player_remote_uid,int action,unsigned char *data,int len);
+extern void net_host_player_send_all_packet(int action,unsigned char *data,int len);
 
 extern void net_host_player_update_team(int remote_uid,network_request_team *team);
 extern void net_host_player_update(int remote_uid,network_request_remote_update *update);
@@ -127,7 +129,7 @@ extern void net_host_player_update(int remote_uid,network_request_remote_update 
 //
 
 extern bool net_client_ping_host(char *ip,char *status,char *host_name,char *proj_name,char *game_name,char *map_name,int *player_count,int *player_max_count,int *ping_msec);
-extern bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_name,char *map_name,int *tick_offset,char *deny_reason,network_request_add_objects *net_add_objects);
+extern bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_name,char *map_name,int *tick_offset,char *deny_reason,network_reply_join_remotes *remotes);
 extern void net_client_join_host_end(void);
 
 //

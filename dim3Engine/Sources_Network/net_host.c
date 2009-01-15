@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "network.h"
 
+extern server_type			server;
 extern network_setup_type	net_setup;
 
 d3socket					host_socket;
@@ -197,7 +198,7 @@ void net_host_game_end(void)
 {
 		// inform all player of server shutdown
 
-	net_host_player_send_all_packet(net_action_request_host_exit,NULL,0,FALSE);
+	net_host_player_send_all_packet(net_action_request_host_exit,NULL,0);
 
 		// shutdown server
 

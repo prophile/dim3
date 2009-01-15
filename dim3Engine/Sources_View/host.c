@@ -52,7 +52,7 @@ and can be sold or given away.
 extern void intro_open(void);
 extern bool net_host_game_start(char *err_str);
 extern void net_host_game_end(void);
-extern bool game_start(int skill,network_request_add_objects *net_add_objects,char *err_str);
+extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
 
 extern map_type				map;
@@ -357,6 +357,10 @@ void host_game(void)
 		error_open(err_str,"Hosting Game Canceled");
 		return;
 	}
+
+		// add bots to player list
+
+	net_host_player_add_bots_to_list();
 
 		// start local client network queue
 		

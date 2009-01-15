@@ -52,7 +52,7 @@ unsigned char			*game_file_data;
 
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
-extern bool game_start(int skill,network_request_add_objects *net_add_objects,char *err_str);
+extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
 extern void map_end(void);
 extern void game_time_reset(void);

@@ -59,6 +59,7 @@ extern void map_set_ambient(char *name,float pitch);
 extern void map_end_ambient(void);
 extern int game_time_get(void);
 extern void spot_start_attach(void);
+extern void spot_add_multiplayer_bots(void);
 extern bool gl_check_shader_ok(void);
 extern void map_movements_initialize(void);
 extern void fade_screen_start(int tick);
@@ -312,6 +313,8 @@ bool map_start(bool skip_media,char *err_str)
 	progress_draw(70);
 
 	spot_start_attach();
+	spot_add_multiplayer_bots();
+
 	scenery_create();
 	scenery_start();
 	

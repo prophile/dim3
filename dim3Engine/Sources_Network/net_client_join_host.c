@@ -169,7 +169,7 @@ bool net_client_ping_host(char *ip,char *status,char *host_name,char *proj_name,
       
 ======================================================= */
 
-bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_name,char *map_name,int *tick_offset,char *deny_reason,network_request_add_objects *net_add_objects)
+bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_name,char *map_name,int *tick_offset,char *deny_reason,network_reply_join_remotes *remotes)
 {
 	char					err_str[256];
 	network_request_join	request_join;
@@ -221,8 +221,8 @@ bool net_client_join_host_start(char *ip,char *name,int *remote_uid,char *game_n
 
 		// additional objects
 
-	net_add_objects->count=(int)ntohs((short)reply_join.add_objects.count);
-	if (net_add_objects->count!=0) memmove(net_add_objects->objects,reply_join.add_objects.objects,(sizeof(network_request_object_add)*net_add_objects->count));
+	remotes->count=(int)ntohs((short)reply_join.remotes.count);
+	if (remotes->count!=0) memmove(remotes->objects,reply_join.remotes.objects,(sizeof(network_request_object_add)*remotes->count));
 	
 	return(TRUE);
 }

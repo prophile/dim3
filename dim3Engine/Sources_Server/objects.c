@@ -62,7 +62,6 @@ void object_initialize_list(void)
 	server.objs=NULL;
 	server.count.obj=0;
 	server.uid.obj=0;
-	server.uid.bot=0;
 
 		// script based object spawns need to
 		// be delayed so they don't effect the
@@ -428,7 +427,7 @@ obj_type* object_create(int bind,int reserve_uid)
 	
 	obj->hidden=FALSE;
 	obj->player=FALSE;
-	obj->bot.on=FALSE;
+	obj->bot=FALSE;
 	obj->suspend=FALSE;
 	obj->scenery.on=FALSE;
 	obj->fly=FALSE;
@@ -714,11 +713,7 @@ int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_
 		
 			// special check for bots
 
-		if (strcasecmp(obj->type,"bot")==0) {
-			obj->bot.on=TRUE;
-			obj->bot.uid=server.uid.bot;
-			server.uid.bot++;
-		}
+		obj->bot=(strcasecmp(obj->type,"bot")==0);
 
 			// if there's an editor display model, then
 			// default model to it
@@ -934,6 +929,17 @@ void spot_start_attach(void)
 		 
 		object_start(spot,FALSE,bt_map,-1,err_str);
 	}
+}
+
+void spot_add_multiplayer_bots(void)
+{
+		// only spawn on hosts
+
+	if (!net_setup.host.hosting) return;
+
+		// spawn
+
+	// supergumba -- FINISH!
 }
 
 /* =======================================================

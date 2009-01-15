@@ -37,7 +37,7 @@ extern server_type		server;
 
 int						net_host_player_count,server_next_remote_uid;
 float					team_color_server_tint[net_team_count][3]=net_team_color_server_tint_def;
-net_host_player_type	net_host_players[host_max_add_object_count];
+net_host_player_type	net_host_players[host_max_remote_count];
 
 pthread_mutex_t			net_host_player_lock;
 
@@ -141,7 +141,7 @@ int net_host_player_join(d3socket sock,char *name,char *deny_reason)
 	
 		// host full?
 		
-	if (net_host_player_count==host_max_add_object_count) {
+	if (net_host_player_count==host_max_remote_count) {
 		strcpy(deny_reason,"Server is full");
 		pthread_mutex_unlock(&net_host_player_lock);
 		return(-1);
@@ -169,6 +169,8 @@ int net_host_player_join(d3socket sock,char *name,char *deny_reason)
 	player->score=0;
 	strcpy(player->name,name);
 	player->team_idx=net_team_none;
+
+	player->bot=FALSE;
 	
 	player->pnt.x=player->pnt.y=player->pnt.z=0;
 	
@@ -232,6 +234,54 @@ void net_host_player_leave(int remote_uid)
 	net_host_player_count--;
 	
 	pthread_mutex_unlock(&net_host_player_lock);
+}
+
+/* =======================================================
+
+      Join Bots
+      
+======================================================= */
+
+int net_host_bot_join(obj_type *obj)
+{
+	int						remote_uid;
+	net_host_player_type	*player;
+
+		// lock all player operations
+		
+	pthread_mutex_lock(&net_host_player_lock);
+	
+		// host full?
+		
+	if (net_host_player_count==host_max_remote_count) {
+		pthread_mutex_unlock(&net_host_player_lock);
+		return(-1);
+	}
+
+		// create new player
+		
+	player=&net_host_players[net_host_player_count];
+	
+	player->remote_uid=server_next_remote_uid;
+	player->sock=D3_NULL_SOCKET;
+	player->score=obj->score.score;
+	strcpy(player->name,obj->name);
+	player->team_idx=obj->team_idx;
+
+	player->bot=TRUE;
+	
+	memmove(&player->pnt,&obj->pnt,sizeof(d3pnt));
+	
+	player->ready=TRUE;		// bots are automatically ready
+	
+	server_next_remote_uid++;
+	net_host_player_count++;
+	
+	remote_uid=player->remote_uid;
+	
+	pthread_mutex_unlock(&net_host_player_lock);
+	
+	return(remote_uid);
 }
 
 /* =======================================================
@@ -320,21 +370,42 @@ void net_host_player_update(int remote_uid,network_request_remote_update *update
 
 /* =======================================================
 
-      Build Remote\Bot List for Join Replies
+      Add bots to player list
       
 ======================================================= */
 
-void net_host_player_create_add_objects_list(int player_remote_uid,network_request_add_objects *add_objects)
+void net_host_player_add_bots_to_list(void)
+{
+	int				n;
+	obj_type		*obj;
+
+	obj=server.objs;
+
+	for (n=0;n!=server.count.obj;n++) {
+
+
+		obj++;
+	}
+
+	// supergumba -- FINISH!
+}
+
+/* =======================================================
+
+      Build Remote List for Join Replies
+      
+======================================================= */
+
+void net_host_player_create_remote_list(int player_remote_uid,network_reply_join_remotes *remotes)
 {
 	int							n,cnt;
 	net_host_player_type		*player;
-	obj_type					*obj;
 	network_request_object_add	*obj_add;
 
 		// find all remotes and bots
 	
 	cnt=0;
-	obj_add=add_objects->objects;
+	obj_add=remotes->objects;
 	
 		// set up the player remotes
 
@@ -345,8 +416,6 @@ void net_host_player_create_add_objects_list(int player_remote_uid,network_reque
 	for (n=0;n!=net_host_player_count;n++) {
 
 		if (player->remote_uid!=player_remote_uid) {
-			
-			if (cnt==host_max_add_object_count) break;
 
 			obj_add->obj_type=htons((short)net_remote_object_player);
 			obj_add->uid=htons((short)player->remote_uid);
@@ -366,35 +435,9 @@ void net_host_player_create_add_objects_list(int player_remote_uid,network_reque
 	
 	pthread_mutex_unlock(&net_host_player_lock);
 
-		// setup the bot remotes
-
-	obj=server.objs;
-
-	for (n=0;n!=server.count.obj;n++) {
-
-		if (obj->bot.on) {
-			
-			if (cnt==host_max_add_object_count) break;
-
-			obj_add->obj_type=htons((short)net_remote_object_bot);
-			obj_add->uid=htons((short)obj->bot.uid);
-			strcpy(obj_add->name,obj->name);
-			obj_add->team_idx=htons((short)obj->team_idx);
-			obj_add->score=htons((short)obj->score.score);
-			obj_add->pnt_x=htonl(obj->pnt.x);
-			obj_add->pnt_y=htonl(obj->pnt.y);
-			obj_add->pnt_z=htonl(obj->pnt.z);
-
-			obj_add++;
-			cnt++;
-		}
-		
-		obj++;
-	}
-
 		// finish with the count
 
-	add_objects->count=htons((short)cnt);
+	remotes->count=htons((short)cnt);
 }
 
 /* =======================================================
@@ -403,12 +446,10 @@ void net_host_player_create_add_objects_list(int player_remote_uid,network_reque
       
 ======================================================= */
 
-// supergumba -- need to implement skip_flooded here
-
-void net_host_player_send_others_packet(int player_remote_uid,int action,unsigned char *data,int len,bool skip_flooded)
+void net_host_player_send_others_packet(int player_remote_uid,int action,unsigned char *data,int len)
 {
 	int						n,nsock;
-	d3socket				socks[host_max_add_object_count];
+	d3socket				socks[host_max_remote_count];
 	net_host_player_type	*player;
 	
 		// we build the list of other player's sockets
@@ -422,7 +463,7 @@ void net_host_player_send_others_packet(int player_remote_uid,int action,unsigne
 	player=net_host_players;
 	
 	for (n=0;n!=net_host_player_count;n++) {
-		if ((player->remote_uid!=player_remote_uid) && (player->ready)) socks[nsock++]=player->sock;
+		if ((player->remote_uid!=player_remote_uid) && (player->ready) && (!player->bot)) socks[nsock++]=player->sock;
 		player++;
 	}
 	
@@ -434,7 +475,7 @@ void net_host_player_send_others_packet(int player_remote_uid,int action,unsigne
 	
 			// local (hosting) player
 			
-		if (socks[n]==(d3socket)NULL) {
+		if (socks[n]==D3_NULL_SOCKET) {
 			net_client_push_queue_local(action,player_remote_uid,data,len);
 		}
 		
@@ -446,7 +487,7 @@ void net_host_player_send_others_packet(int player_remote_uid,int action,unsigne
 	}
 }
 
-void net_host_player_send_all_packet(int action,unsigned char *data,int len,bool skip_flooded)
+void net_host_player_send_all_packet(int action,unsigned char *data,int len)
 {
-	net_host_player_send_others_packet(-1,action,data,len,skip_flooded);
+	net_host_player_send_others_packet(-1,action,data,len);
 }

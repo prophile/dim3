@@ -104,11 +104,11 @@ void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx)
 
 /* =======================================================
 
-      Run Specific Objects
+      Run Specific Object
   
 ======================================================= */
 
-void run_object_normal(obj_type *obj,int tick)
+void run_object_single(obj_type *obj,int tick)
 {
 		// spawning
 		
@@ -219,13 +219,13 @@ void run_objects_slice(int tick)
 				old_pnt.z=obj->pnt.z;
 			}
 
-				// run object
+				// run objects
 
 			if (obj->remote.on) {
 				remote_predict_move(obj);
 			}
 			else {
-				run_object_normal(obj,tick);
+				run_object_single(obj,tick);
 			}
 
 				// trigger any mesh changes if not suspended

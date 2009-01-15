@@ -41,7 +41,7 @@ and can be sold or given away.
 #define join_status_id					4
 
 extern void intro_open(void);
-extern bool game_start(int skill,network_request_add_objects *net_add_objects,char *err_str);
+extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
 
 extern map_type				map;
@@ -498,7 +498,7 @@ void join_game(void)
 	int							idx,remote_uid,tick_offset;
 	char						game_name[name_str_len],map_name[name_str_len],
 								deny_reason[64],err_str[256];
-	network_request_add_objects net_add_objects;
+	network_reply_join_remotes	remotes;
 	
 		// get game to join
 		
@@ -514,7 +514,7 @@ void join_game(void)
 							
 		// attempt to join
 
-	if (!net_client_join_host_start(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,&tick_offset,deny_reason,&net_add_objects)) {
+	if (!net_client_join_host_start(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,&tick_offset,deny_reason,&remotes)) {
 		join_close();
 		sprintf(err_str,"Unable to Join Game: %s",deny_reason);
 		error_open(err_str,"Network Game Canceled");
@@ -547,7 +547,7 @@ void join_game(void)
 	
 	join_close();
 	
-	if (!game_start(skill_medium,&net_add_objects,err_str)) {
+	if (!game_start(skill_medium,&remotes,err_str)) {
 		net_client_send_leave_host(net_setup.client.remote_uid);
 		net_client_join_host_end();
 		error_open(err_str,"Network Game Canceled");

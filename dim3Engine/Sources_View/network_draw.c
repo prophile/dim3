@@ -113,7 +113,7 @@ void network_score_players_draw(bool center)
 
 	for (n=0;n!=server.count.obj;n++) {
 
-		if ((obj->player) || (obj->remote.on) || (obj->bot.on)) {
+		if ((obj->player) || (obj->remote.on) || (obj->bot)) {
 
 			s_score=(short)obj->score.score;
 			
@@ -174,7 +174,7 @@ void network_score_players_draw(bool center)
 
 		obj=&server.objs[sort_idx[n]];
 	
-		if ((obj->remote.on) || (obj->bot.on)) {
+		if ((obj->remote.on) || (obj->bot)) {
 			remote_get_ui_color(obj,&col);
 			network_score_single_box_draw(lx,rx,y2,yadd,&col);
 		}
@@ -221,7 +221,7 @@ void network_score_teams_draw(void)
 
 	for (n=0;n!=server.count.obj;n++) {
 
-		if ((obj->player) || (obj->remote.on) || (obj->bot.on)) {
+		if ((obj->player) || (obj->remote.on) || (obj->bot)) {
 			team_on[obj->team_idx]=TRUE;
 			team_score[obj->team_idx]+=(short)obj->score.score;
 			nplayer++;

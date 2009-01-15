@@ -50,7 +50,7 @@ and can be sold or given away.
 #define intro_button_credit_id					13
 #define intro_button_quit_id					14
 
-extern bool game_start(int skill,network_request_add_objects *net_add_objects,char *err_str);
+extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
 extern bool map_start(bool skip_media,char *err_str);
 extern void file_open(void);
 extern void setup_game_open(bool in_game);
