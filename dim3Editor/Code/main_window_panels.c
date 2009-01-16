@@ -110,11 +110,10 @@ void main_wind_setup_panel_forward_full(editor_3D_view_setup *view_setup)
 	
 	os_get_window_box(&wbox);
 
-	memmove(&view_setup->box,&wbox,sizeof(Rect));
-
-	view_setup->box.ty+=toolbar_high;
-	view_setup->box.by-=(txt_palette_high+info_high);
-	view_setup->box.rx-=piece_wid;
+	view_setup->box.ty=wbox.ty+toolbar_high;
+	view_setup->box.by=wbox.by-(txt_palette_high+info_high);
+	view_setup->box.lx=wbox.lx;
+	view_setup->box.rx=wbox.rx-piece_wid;
 
 	view_setup->cpt.x=view_pnt.x;
 	view_setup->cpt.y=view_pnt.y;

@@ -101,9 +101,7 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 	bool					first_drag;
 	d3pnt					old_pt,*old_dpt,mpt,
 							org_min,org_max,min,max;
-	Point					uipt;
 	map_mesh_type			*mesh;
-	MouseTrackingResult		track;
 	
 		// any selection?
 		
@@ -144,7 +142,7 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 	
 		// are we dragging?
 		
-    if (!Button()) return(FALSE);
+    if (!os_button_down()) return(FALSE);
 	
 	undo_save();
 	
@@ -164,10 +162,7 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 	
 	mx=my=mz=0;
 	
-	do {
-		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h-view_setup->box.lx;
-		pt->y=uipt.v-view_setup->box.ty;
+	while (!os_track_mouse_location(pt,&view_setup->box)) {
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -233,8 +228,7 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 		if ((dp_auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
 
         main_wind_draw();
-		
-	} while (track!=kMouseTrackingMouseReleased);
+	}
 	
 	free(old_dpt);
 	
@@ -255,9 +249,7 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 							type,mesh_idx,poly_idx,fz;
 	bool					hit,first_drag;
 	d3pnt					old_pt,*dpt,*old_dpt,*old_dpt_ptr,mpt;
-	Point					uipt;
 	map_mesh_type			*mesh;
-	MouseTrackingResult		track;
 	
 		// any selection?
 		
@@ -293,7 +285,7 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 	
 		// start drag
 		
-    if (!Button()) return(FALSE);
+    if (!os_button_down()) return(FALSE);
 	
 	undo_save();
 	
@@ -331,10 +323,7 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 	
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
-	do {
-		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h-view_setup->box.lx;
-		pt->y=uipt.v-view_setup->box.ty;
+	while (!os_track_mouse_location(pt,&view_setup->box)) {
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -388,8 +377,7 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 		}
 		
         main_wind_draw();
-		
-	} while (track!=kMouseTrackingMouseReleased);
+	}
 	
 	free(old_dpt);
 	
@@ -410,10 +398,8 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 							type,mesh_idx,poly_idx,fz;
 	bool					first_drag;
 	d3pnt					old_pt,*dpt,*old_dpt,mpt;
-	Point					uipt;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*mesh_poly;
-	MouseTrackingResult		track;
 	
 		// any selection?
 		
@@ -431,7 +417,7 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 	
 		// drag
 		
-    if (!Button()) return(FALSE);
+    if (!os_button_down()) return(FALSE);
 	
 	undo_save();
 			
@@ -448,10 +434,7 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 	
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
-	do {
-		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h-view_setup->box.lx;
-		pt->y=uipt.v-view_setup->box.ty;
+	while (!os_track_mouse_location(pt,&view_setup->box)) {
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -493,8 +476,7 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 		if ((dp_auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_poly_uv(&map,mesh_idx,poly_idx);
 
         main_wind_draw();
-		
-	} while (track!=kMouseTrackingMouseReleased);
+	}
 	
 	free(old_dpt);
 
@@ -514,9 +496,7 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	int						n,x,y,z,mx,my,mz,xadd,zadd,yadd,hit_z,sz,
 							type,mesh_idx,poly_idx,vertex_idx;
 	d3pnt					old_pt,*dpt,old_dpt,mpt;
-	Point					uipt;
 	bool					first_drag;
-	MouseTrackingResult		track;
 	map_mesh_type			*mesh;
 	
     if (select_count()!=1) return(FALSE);
@@ -558,7 +538,7 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	
 		// drag mesh
 	
-    if (!Button()) return(FALSE);
+    if (!os_button_down()) return(FALSE);
 	
 	undo_save();
 
@@ -571,10 +551,7 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	
 	mx=my=mz=0;
 	
-	do {
-		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h-view_setup->box.lx;
-		pt->y=uipt.v-view_setup->box.ty;
+	while (!os_track_mouse_location(pt,&view_setup->box)) {
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -614,8 +591,7 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		if ((dp_auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
 
         main_wind_draw();
-		
-	} while (track!=kMouseTrackingMouseReleased);
+	}
 	
 	os_set_arrow_cursor();
 	
@@ -634,9 +610,7 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 							px[4],py[4],pz[4],
 							type,liquid_idx,sub_idx,vertex_idx;
 	d3pnt					old_pt,old_dpt,mpt;
-	Point					uipt;
 	bool					first_drag;
-	MouseTrackingResult		track;
 	map_liquid_type			*liq;
 	
     if (select_count()!=1) return(FALSE);
@@ -676,7 +650,7 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 	
 		// drag liquid vertex
 	
-    if (!Button()) return(FALSE);
+    if (!os_button_down()) return(FALSE);
 	
 	undo_save();
 
@@ -690,10 +664,7 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 	
 	mx=my=mz=0;
 	
-	do {
-		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h-view_setup->box.lx;
-		pt->y=uipt.v-view_setup->box.ty;
+	while (!os_track_mouse_location(pt,&view_setup->box)) {
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -747,8 +718,7 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 		if (dp_auto_texture) map_liquid_reset_uv(&map,liquid_idx);
 
         main_wind_draw();
-		
-	} while (track!=kMouseTrackingMouseReleased);
+	}
 	
 		// fix any left/right swaps
 		
@@ -780,9 +750,7 @@ bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 	int						x,y,mx,my,mz,xadd,zadd,yadd,
 							type,main_idx,sub_idx;
 	d3pnt					*pnt,old_pt,old_pnt,mpt;
-	Point					uipt;
 	bool					first_drag;
-	MouseTrackingResult		track;
 	
     if (select_count()!=1) return(FALSE);
 	
@@ -817,7 +785,7 @@ bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 		
 		// drag item
 	
-    if (!Button()) return(FALSE);
+    if (!os_button_down()) return(FALSE);
 
 	first_drag=TRUE;
 	
@@ -826,10 +794,7 @@ bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 	
 	mx=my=mz=0;
 	
-	do {
-		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h-view_setup->box.lx;
-		pt->y=uipt.v-view_setup->box.ty;
+	while (!os_track_mouse_location(pt,&view_setup->box)) {
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -864,8 +829,7 @@ bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 		pnt->z=old_pnt.z+mpt.z;
 
         main_wind_draw();
-		
-	} while (track!=kMouseTrackingMouseReleased);
+	}
 	
 	os_set_arrow_cursor();
 	
@@ -884,10 +848,8 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 							old_lft,old_rgt,old_top,old_bot,old_y,
 							type,main_idx,sub_idx;
 	d3pnt					old_pt,mpt;
-	Point					uipt;
 	bool					first_drag;
 	map_liquid_type			*liq;
-	MouseTrackingResult		track;
 	
     if (select_count()!=1) return(FALSE);
 	
@@ -898,7 +860,7 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		
 		// drag item
 	
-    if (!Button()) return(FALSE);
+    if (!os_button_down()) return(FALSE);
 	
 	undo_save();
 
@@ -914,10 +876,7 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	
 	mx=my=mz=0;
 	
-	do {
-		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h-view_setup->box.lx;
-		pt->y=uipt.v-view_setup->box.ty;
+	while (!os_track_mouse_location(pt,&view_setup->box)) {
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -958,8 +917,7 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		if (dp_auto_texture) map_liquid_reset_uv(&map,main_idx);
 
         main_wind_draw();
-		
-	} while (track!=kMouseTrackingMouseReleased);
+	}
 	
 	os_set_arrow_cursor();
 	

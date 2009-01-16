@@ -201,8 +201,6 @@ and can be sold or given away.
 
 #define interface_screen_prop_width					0
 #define interface_screen_prop_height				1
-#define interface_screen_prop_width_scale			2
-#define interface_screen_prop_height_scale			3
 
 #define interface_radar_prop_on						0
 #define interface_radar_prop_x						1
@@ -327,9 +325,8 @@ and can be sold or given away.
 #define obj_status_prop_stand						5
 #define obj_status_prop_air							6
 #define obj_status_prop_liquid						7
-#define obj_status_prop_floor_tag					8
-#define obj_status_prop_stand_on_object_id			9
-#define obj_status_prop_stand_under_object_id		10
+#define obj_status_prop_stand_on_object_id			8
+#define obj_status_prop_stand_under_object_id		9
 
 #define obj_motion_vector_prop_x					0
 #define obj_motion_vector_prop_y					1

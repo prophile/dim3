@@ -34,7 +34,6 @@ extern void menu_fix_enable(void);
 extern void menu_set_view_check(int view);
 extern void menu_set_perspective_check(int perspective);
 extern void menu_save_changes_dialog(void);
-//extern OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,void *userdata);
 
 extern void undo_clear(void);
 extern void undo_save(void);
@@ -49,7 +48,7 @@ extern int texture_palette_get_selected_texture(void);
 extern void texture_palette_put_selected_texture(int txt_idx);
 extern void texture_palette_draw(void);
 extern void texture_palette_reset(void);
-//extern void texture_palette_click(Point pt,bool dbl_click);
+extern void texture_palette_click(d3pnt *pnt,bool dbl_click);
 
 
 //
@@ -71,7 +70,6 @@ extern void progress_wind_close(void);
 // main window
 //
 
-//extern OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef event,void *userdata);
 extern void main_wind_open(void);
 extern void main_wind_close(void);
 extern void main_wind_resize_buttons(void);

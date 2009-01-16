@@ -91,6 +91,33 @@ and can be sold or given away.
 #define element_table_bitmap_size				64
 
 //
+// GUI text
+//
+
+#define font_bitmap_pixel_sz					512
+#define font_bitmap_point						28
+
+#define font_bitmap_char_wid					30
+#define font_bitmap_char_high					40
+#define font_bitmap_char_baseline				24
+#define font_bitmap_char_render_high			35
+
+#define font_bitmap_char_per_line				17
+
+#define font_bitmap_gl_xoff						((float)font_bitmap_char_wid/(float)font_bitmap_pixel_sz)
+#define font_bitmap_gl_xadd						(font_bitmap_gl_xoff-0.005f)
+#define font_bitmap_gl_yoff						((float)font_bitmap_char_high/(float)font_bitmap_pixel_sz)
+#define font_bitmap_gl_yadd						(((float)font_bitmap_char_render_high/(float)font_bitmap_pixel_sz)-0.005f)
+
+//
+// screenshot backgrounds
+//
+
+#define gui_screenshot_wid						256
+#define gui_screenshot_high						128
+#define gui_screenshot_blur_count				10
+
+//
 // GUI element structures
 //
 

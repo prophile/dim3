@@ -47,7 +47,6 @@ and can be sold or given away.
 
 #define socket_no_data_retry						10
 #define socket_no_data_u_wait						25
-#define net_header_retry_count						50			// supergumba -- can delete some of these
 
 //
 // host defines

@@ -412,9 +412,6 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 		// convert to needed format
 		// x (1 = right [light from left], 0 = left [light from right])
 		// y (1 = top [light from bottom], 0 = bottom [light from top])
-
-		// supergumba -- possible (check math) that in the future
-		// we can use the z coord for a distance hardness factor
 		
 	*nf++=(float)((nx*0.5)+0.5);
 	*nf++=1.0f-(float)((ny*0.5)+0.5);
@@ -584,9 +581,6 @@ void map_calculate_ray_trace_light_color_normal(double x,double y,double z,float
 		// convert to needed format
 		// x (1 = right [light from left], 0 = left [light from right])
 		// y (1 = top [light from bottom], 0 = bottom [light from top])
-
-		// supergumba -- possible (check math) that in the future
-		// we can use the z coord for a distance hardness factor
 		
 	*nf++=(float)((nx*0.5)+0.5);
 	*nf++=1.0f-(float)((ny*0.5)+0.5);

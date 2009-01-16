@@ -49,17 +49,12 @@ void walk_view_mouse_xy_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 {
 	int						x,y,xadd,zadd,yadd,sz;
 	d3pnt					old_pt;
-	Point					uipt;
-	MouseTrackingResult		track;
     
     os_set_hand_cursor();
 	
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
-	do {
-		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h;
-		pt->y=uipt.v;
+	while (!os_track_mouse_location(pt,NULL)) {
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 
@@ -98,8 +93,7 @@ void walk_view_mouse_xy_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		view_pnt.y+=(yadd*32);
 
         main_wind_draw();
-		
-	} while (track!=kMouseTrackingMouseReleased);
+	}
 }
 
 /* =======================================================
@@ -112,17 +106,12 @@ void walk_view_mouse_z_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int v
 {
 	int						x,y,xadd,zadd,yadd;
 	d3pnt					old_pt;
-	Point					uipt;
-	MouseTrackingResult		track;
     
     os_set_forward_cursor();
 
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
-	do {
-		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h;
-		pt->y=uipt.v;
+	while (!os_track_mouse_location(pt,NULL)) {
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -160,8 +149,7 @@ void walk_view_mouse_z_movement(editor_3D_view_setup *view_setup,d3pnt *pt,int v
 		view_pnt.z+=(zadd*32);
 
         main_wind_draw();
-		
-	} while (track!=kMouseTrackingMouseReleased);
+	}
 }
 
 void walk_view_scroll_wheel_z_movement(editor_3D_view_setup *view_setup,int delta,int view_move_dir)
@@ -217,17 +205,12 @@ void walk_view_mouse_turn(d3pnt *pt)
 {
 	int						x,y;
 	d3pnt					old_pt;
-	Point					uipt;
-	MouseTrackingResult		track;
     
     os_set_rotate_cursor();
 
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
-	do {
-		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h;
-		pt->y=uipt.v;
+	while (!os_track_mouse_location(pt,NULL)) {
 		
 		x=old_pt.x-pt->x;
 		y=old_pt.y-pt->y;
@@ -268,8 +251,7 @@ void walk_view_mouse_turn(d3pnt *pt)
 			continue;
 		}
 			
-		
-	} while (track!=kMouseTrackingMouseReleased);
+	}
 }
 
 /* =======================================================

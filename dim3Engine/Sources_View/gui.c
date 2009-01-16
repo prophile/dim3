@@ -35,12 +35,6 @@ and can be sold or given away.
 #include "sounds.h"
 #include "inputs.h"
 
-// supergumba -- move to defs file
-
-#define gui_screenshot_wid			256
-#define gui_screenshot_high			128
-#define gui_screenshot_blur_count	10
-
 extern server_type			server;
 extern hud_type				hud;
 extern setup_type			setup;

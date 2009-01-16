@@ -71,6 +71,8 @@ extern void os_set_forward_cursor(void);
 extern void os_set_resize_cursor(void);
 extern void os_set_add_cursor(void);
 extern void os_set_cut_cursor(void);
+extern bool os_button_down(void);
+extern bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box);
 
 //
 // selection routines

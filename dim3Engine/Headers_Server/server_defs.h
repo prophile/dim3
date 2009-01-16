@@ -957,6 +957,13 @@ typedef struct		{
 #define ray_trace_face_hit_neg_y						4
 #define ray_trace_face_hit_pos_y						5
 
+#define ray_trace_max_check_item						256
+
+#define ray_trace_check_item_object						0
+#define ray_trace_check_item_projectile					1
+#define ray_trace_check_item_mesh						2
+
+
 typedef struct		{
 						int								uid,ignore_uid,hit_face;
 						bool							on;
@@ -967,6 +974,10 @@ typedef struct		{
 						ray_trace_obj_proj_type			obj,proj;
 						poly_pointer_type				poly;
 					} ray_trace_contact_type;
+
+typedef struct		{
+						int								type,index;
+					} ray_trace_check_item_type;
 
 //
 // timing structures

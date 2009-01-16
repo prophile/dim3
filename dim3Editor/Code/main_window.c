@@ -467,6 +467,9 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 					
 					GetWindowPortBounds(mainwind,&wbox);
 					
+					dpt.x=pt.h;
+					dpt.y=pt.v;
+					
 						// click in toolbars
 
 					if ((pt.v<toolbar_high) || (pt.h>(wbox.right-piece_wid))) return(eventNotHandledErr);
@@ -485,15 +488,12 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 					GetEventParameter(event,kEventParamClickCount,typeUInt32,NULL,sizeof(unsigned long),NULL,&nclick);
 					
 					if ((pt.v>=txt_palette_y) && (pt.v<=(txt_palette_y+txt_palette_high))) {
-						texture_palette_click(pt,(nclick!=1));
+						texture_palette_click(&dpt,(nclick!=1));
 						return(noErr);
 					}
 					
 						// click in main window
 						
-					dpt.x=pt.h;
-					dpt.y=pt.v;
-					
                     if (main_wind_click(&dpt,(nclick!=1))) return(noErr);
                     
                     return(eventNotHandledErr);
@@ -2191,4 +2191,27 @@ void os_set_cut_cursor(void)
    SetCCursor(cutcur);
 }
 
+bool os_button_down(void)
+{
+	return(Button());
+}
+
+bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box)
+{
+	Point					uipt;
+	MouseTrackingResult		track;
+
+	TrackMouseLocation(NULL,&uipt,&track);
+	
+	if (offset_box==NULL) {
+		pt->x=uipt.h;
+		pt->y=uipt.v;
+	}
+	else {
+		pt->x=uipt.h-offset_box->lx;
+		pt->y=uipt.v-offset_box->ty;
+	}
+	
+	return(track==kMouseTrackingMouseReleased);
+}
 

@@ -53,7 +53,6 @@ JSPropertySpec	obj_status_props[]={
 							{"stand",				obj_status_prop_stand,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"air",					obj_status_prop_air,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"liquid",				obj_status_prop_liquid,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"floorTag",			obj_status_prop_floor_tag,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"standOnObjectId",		obj_status_prop_stand_on_object_id,	JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"standUnderObjectId",	obj_status_prop_stand_under_object_id,JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
@@ -117,16 +116,6 @@ JSBool js_get_obj_status_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 			break;
 		case obj_status_prop_liquid:
 			*vp=INT_TO_JSVAL(obj->liquid_mode+sd_liquid_out);
-			break;
-		case obj_status_prop_floor_tag:
-			/* supergumba -- need to fix this
-			if (obj->contact.floor_seg_idx==-1) {
-				*vp=INT_TO_JSVAL(-1);
-			}
-			else {
-				*vp=INT_TO_JSVAL(map.segments[obj->contact.floor_seg_idx].tag);
-			}
-			*/
 			break;
 		case obj_status_prop_stand_on_object_id:
 			*vp=INT_TO_JSVAL(obj->stand_obj_uid);

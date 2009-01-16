@@ -297,20 +297,20 @@ void texture_palette_reset(void)
       
 ======================================================= */
 
-void texture_palette_click(Point pt,bool dblclick)
+void texture_palette_click(d3pnt *pnt,bool dblclick)
 {
 	int				nsel,page,page_cnt,yadd;
 	
 		// move within palette
 		
-	pt.v-=txt_palette_y;
+	pnt->y-=txt_palette_y;
 	
 		// texture page change
 		
-	if (pt.h<16) {
+	if (pnt->x<16) {
 		page_cnt=max_map_texture/txt_wind_per_page;
 		yadd=(txt_wind_row_count*txt_pixel_sz)/page_cnt;
-		page=pt.v/yadd;
+		page=pnt->y/yadd;
 		if (txt_page!=page) {
 			txt_page=page;
 			main_wind_draw();
@@ -320,7 +320,7 @@ void texture_palette_click(Point pt,bool dblclick)
 	
 		// find clicked texture
 	
-	nsel=((pt.v/txt_pixel_sz)*txt_wind_column_count)+((pt.h-16)/txt_pixel_sz);
+	nsel=((pnt->y/txt_pixel_sz)*txt_wind_column_count)+((pnt->x-16)/txt_pixel_sz);
 	nsel+=(txt_page*txt_wind_per_page);
 		
 		// double clicks

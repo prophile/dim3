@@ -539,8 +539,8 @@ void obscure_calculate_group_single_visibility(int group_idx,d3pnt *cpt,unsigned
 	
 #ifdef OBSCURE_TEST
 	aglSwapBuffers(ctx);
-	while (Button()) {}
-	while (!Button()) {}
+	while (os_button_down()) {}
+	while (!os_button_down()) {}
 #endif
 		// read the stencil to look for hits
 

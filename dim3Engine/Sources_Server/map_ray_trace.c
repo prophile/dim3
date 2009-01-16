@@ -36,21 +36,6 @@ and can be sold or given away.
 extern map_type				map;
 extern server_type			server;
 
-
-
-
-// supergumba -- all testing
-
-#define ray_trace_max_check_item				256
-
-#define ray_trace_check_item_object				0
-#define ray_trace_check_item_projectile			1
-#define ray_trace_check_item_mesh				2
-
-typedef struct		{
-						int						type,index;
-					} ray_trace_check_item_type;
-
 /* =======================================================
 
       Ray Trace Vector Utilities

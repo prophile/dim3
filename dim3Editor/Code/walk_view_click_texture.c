@@ -53,10 +53,8 @@ bool walk_view_click_drag_texture(editor_3D_view_setup *view_setup,d3pnt *pt,int
 	bool					first_drag;
 	float					gx_add,gy_add;
 	d3pnt					old_pt;
-	Point					uipt;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
-	MouseTrackingResult		track;
 	
 		// any selection?
 		
@@ -69,16 +67,13 @@ bool walk_view_click_drag_texture(editor_3D_view_setup *view_setup,d3pnt *pt,int
 	
 		// drag
 		
-    if (!Button()) return(FALSE);
+    if (!os_button_down()) return(FALSE);
 			
 	first_drag=TRUE;
 	
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
-	do {
-		TrackMouseLocation(NULL,&uipt,&track);
-		pt->x=uipt.h-view_setup->box.lx;
-		pt->y=uipt.v-view_setup->box.ty;
+	while (!os_track_mouse_location(pt,&view_setup->box)) {
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
 		
@@ -139,8 +134,7 @@ bool walk_view_click_drag_texture(editor_3D_view_setup *view_setup,d3pnt *pt,int
 		}
 
         main_wind_draw();
-		
-	} while (track!=kMouseTrackingMouseReleased);
+	}
 	
 	os_set_arrow_cursor();
 	

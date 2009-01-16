@@ -44,11 +44,7 @@ JSClass			interface_screen_class={"interface_screen_class",0,
 JSPropertySpec	interface_screen_props[]={
 							{"width",				interface_screen_prop_width,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"height",				interface_screen_prop_height,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"widthScale",			interface_screen_prop_width_scale,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"heightScale",			interface_screen_prop_height_scale,	JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
-
-// supergumba -- widthScale and heightScale are depreciated
 
 /* =======================================================
 

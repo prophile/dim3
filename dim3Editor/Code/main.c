@@ -36,6 +36,7 @@ file_path_setup_type	file_path_setup;
 CCrsrHandle				handcur,dragcur,cutcur,rotatecur,towardcur,forwardcur,resizecur,addcur;
 
 extern bool setup_xml_read(void);
+extern OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,void *userdata);
 
 /* =======================================================
 
