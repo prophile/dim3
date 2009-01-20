@@ -45,8 +45,10 @@ extern camera_type			camera;
 extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
+extern hud_type				hud;
 
 float						shake_ang_x[16]={-1,0,1,2,1,0,-1,-2,-4,-2,0,4,8,12,8,4};
+float						team_color_tint[net_team_count][3]=net_team_color_tint_def;
 
 extern void draw_weapon_hand(int tick,obj_type *obj,weapon_type *weap);
 extern void draw_background(int cx,int cy,int cz);
@@ -74,6 +76,56 @@ extern void decal_render(int mesh_draw_count,int *mesh_draw_list);
 extern bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list);
 
 extern int			mesh_draw_count,mesh_draw_list[max_mesh];
+
+/* =======================================================
+
+      Team Colors
+      
+======================================================= */
+
+void view_team_get_tint(int team_idx,d3col *tint)
+{
+	if ((team_idx<0) || (team_idx>=net_team_count)) team_idx=0;
+	
+	tint->r=team_color_tint[team_idx][0];
+	tint->g=team_color_tint[team_idx][1];
+	tint->b=team_color_tint[team_idx][2];
+}
+
+void view_object_get_tint(obj_type *obj,d3col *tint)
+{
+	int			team_idx;
+
+	team_idx=obj->team_idx;
+	if ((team_idx<0) || (team_idx>=net_team_count)) team_idx=0;
+
+	tint->r=team_color_tint[team_idx][0];
+	tint->g=team_color_tint[team_idx][1];
+	tint->b=team_color_tint[team_idx][2];
+}
+
+void view_object_get_ui_color(obj_type *obj,bool no_team_to_default,d3col *col)
+{
+	int			team_idx;
+	
+	team_idx=obj->team_idx;
+	if ((team_idx<0) || (team_idx>=net_team_count)) team_idx=0;
+	
+		// if player and no teams, then
+		// use the default color so UI
+		// won't look gross
+				
+	if ((obj->player) && (team_idx==net_team_none) && (no_team_to_default)) {
+		memmove(col,&hud.color.default_tint,sizeof(d3col));
+		return;
+	}
+
+		// team colors
+		
+	col->r=team_color_tint[team_idx][0];
+	col->g=team_color_tint[team_idx][1];
+	col->b=team_color_tint[team_idx][2];
+}
 
 /* =======================================================
 

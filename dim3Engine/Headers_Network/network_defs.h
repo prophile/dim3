@@ -133,8 +133,7 @@ typedef struct		{
 					} network_setup_host_type;
 
 typedef struct		{
-						int							remote_uid,
-													latency,latency_ping_tick;
+						int							latency,latency_ping_tick;
 						char						joined_ip[32],game_name2[name_str_len];
 						bool						joined;
 					} network_setup_client_type;
@@ -188,13 +187,6 @@ typedef struct		{
 #define net_action_reply_group_synch				22
 
 //
-// extra object type
-//
-
-#define net_remote_object_player					0
-#define net_remote_object_bot						1
-
-//
 // remote fire types
 //
 
@@ -222,7 +214,6 @@ typedef struct		{
 #define net_team_purple								5
 
 #define net_team_color_tint_def						{{0.7f,0.7f,0.7f},{1.0f,0.25f,0.25f},{0.25f,0.25f,1.0f},{0.25f,1.0f,0.25f},{1.0f,1.0f,0.25f},{1.0f,0.25f,1.0f}}
-#define net_team_color_server_tint_def				{{0.0f,0.0f,0.0f},{1.0f,0.0f,0.0f},{0.0f,0.0f,1.0f},{0.0f,1.0f,0.0f},{1.0f,1.0f,0.0f},{1.0f,0.0f,1.0f}}
 #define net_team_color_list_def						{"None","Red","Blue","Green","Yellow","Purple",""}
 
 //
@@ -245,12 +236,12 @@ typedef struct		{
 
 typedef struct		{
 						int							pnt_x,pnt_y,pnt_z;
-						short						obj_type,uid,score,team_idx;
+						short						uid,bot,score,team_idx;
 						char						name[name_str_len];
 					} network_request_object_add;
 
 typedef struct		{
-						int							count;
+						short						count;
 						network_request_object_add	objects[host_max_remote_count];
 					} network_reply_join_remotes;
 

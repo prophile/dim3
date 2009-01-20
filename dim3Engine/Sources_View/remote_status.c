@@ -46,6 +46,8 @@ extern network_setup_type	net_setup;
 
 int							remote_slow_image_idx,remote_talk_image_idx;
 
+extern void view_object_get_ui_color(obj_type *obj,bool no_team_to_default,d3col *col);
+
 /* =======================================================
 
       Draw Remote Status Icons
@@ -141,7 +143,7 @@ void remote_draw_names_setup(void)
 		obj++;
 	}
 
-		// remove halos behind z or off-screen
+		// remove names behind z or off-screen
 		// ignore console as it won't matter for projection
 		
 	gl_setup_viewport(0);
@@ -151,7 +153,9 @@ void remote_draw_names_setup(void)
 	
 	for (n=0;n!=server.count.obj;n++) {
 		obj=&server.objs[n];
-		if (!obj->remote.on) continue;
+		
+		if ((!obj->remote.on) && (!obj->bot)) continue;
+		if (obj->hidden) continue;
 		if (!obj->draw.in_view) continue;
 		
 			// get name point
@@ -301,7 +305,7 @@ void remote_draw_names_render(void)
 				gl_text_start(text_size);
 			}
 
-			remote_get_ui_color(obj,&col);
+			view_object_get_ui_color(obj,FALSE,&col);
 			gl_text_draw(x,y,obj->name,tx_center,FALSE,&col,obj->draw.remote_name.fade);
 		}
 		

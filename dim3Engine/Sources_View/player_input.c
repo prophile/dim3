@@ -52,6 +52,7 @@ bool						weapon_change_key_down,weapon_target_key_down,weapon_zoom_key_down,
 							fire_key_down[4],command_key_down[20],player_key_down[20];
 
 extern void chat_add_message(int tick,char *name,char *str,d3col *col);
+extern void view_object_get_ui_color(obj_type *obj,bool no_team_to_default,d3col *col);
 
 /* =======================================================
 
@@ -789,8 +790,8 @@ bool player_message_input(int tick,obj_type *obj)
 			hud.chat.type_on=FALSE;
 			if (len>1) {
 				msg[len-1]=0x0;
-				net_client_send_chat(net_setup.client.remote_uid,msg);
-				player_get_ui_color(&col);
+				net_client_send_chat(obj->remote.uid,msg);
+				view_object_get_ui_color(obj,TRUE,&col);
 				chat_add_message(tick,obj->name,msg,&col);
 			}
 			return(FALSE);
@@ -826,8 +827,8 @@ bool player_message_input(int tick,obj_type *obj)
 			}
 			
 			msg[len-1]=0x0;
-			net_client_send_chat(net_setup.client.remote_uid,msg);
-			player_get_ui_color(&col);
+			net_client_send_chat(obj->remote.uid,msg);
+			view_object_get_ui_color(obj,TRUE,&col);
 			chat_add_message(tick,obj->name,msg,&col);
 			
 			strcpy(msg,nstr);

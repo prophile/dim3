@@ -101,7 +101,7 @@ void game_end(void)
 	
 	if (net_setup.client.joined) {
 		if (!net_setup.host.hosting) {
-			net_client_send_leave_host(net_setup.client.remote_uid);
+			net_client_send_leave_host(object_player_get_remote_uid());
 			net_client_end_message_queue();
 			net_client_join_host_end();
 		}

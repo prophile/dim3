@@ -343,7 +343,6 @@
 		F5F0AC580AD35F1800C50A21 /* scenery.c in Sources */ = {isa = PBXBuildFile; fileRef = F5F0AC570AD35F1800C50A21 /* scenery.c */; };
 		F5F49540067BFE4F00E809E7 /* libMapUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F4953B067BFE4F00E809E7 /* libMapUtility.dylib */; };
 		F5F49542067BFE4F00E809E7 /* libModelUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F4953D067BFE4F00E809E7 /* libModelUtility.dylib */; };
-		F5F654FC0B549D1F00633A54 /* client.h in Headers */ = {isa = PBXBuildFile; fileRef = F5F654FB0B549D1F00633A54 /* client.h */; };
 		F5F656090B55B7E400633A54 /* JS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F656080B55B7E400633A54 /* JS.framework */; };
 		F5F656920B55F05700633A54 /* JS.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F5F656080B55B7E400633A54 /* JS.framework */; };
 		F5FAB74B0A5DEF09001FC86E /* script_obj_vehicle.c in Sources */ = {isa = PBXBuildFile; fileRef = F5FAB74A0A5DEF08001FC86E /* script_obj_vehicle.c */; };
@@ -719,7 +718,6 @@
 		F5F0AC570AD35F1800C50A21 /* scenery.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = scenery.c; path = Sources_Server/scenery.c; sourceTree = "<group>"; };
 		F5F4953B067BFE4F00E809E7 /* libMapUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libMapUtility.dylib; path = ../dim3Common/Libraries/libMapUtility.dylib; sourceTree = SOURCE_ROOT; };
 		F5F4953D067BFE4F00E809E7 /* libModelUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libModelUtility.dylib; path = ../dim3Common/Libraries/libModelUtility.dylib; sourceTree = SOURCE_ROOT; };
-		F5F654FB0B549D1F00633A54 /* client.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = client.h; path = Headers/client.h; sourceTree = "<group>"; };
 		F5F656080B55B7E400633A54 /* JS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JS.framework; path = ../dim3Common/Frameworks/JS.framework; sourceTree = SOURCE_ROOT; };
 		F5FAB74A0A5DEF08001FC86E /* script_obj_vehicle.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_obj_vehicle.c; path = Sources_Server/script_obj_vehicle.c; sourceTree = "<group>"; };
 		F5FD1E470CDECD9500CB5AC7 /* error.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = error.c; path = Sources_View/error.c; sourceTree = "<group>"; };
@@ -1294,7 +1292,6 @@
 		F5AEEE7909099CF200A73CC8 /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				F5F654F90B549CF700633A54 /* Headers */,
 				F5F654FA0B549D0E00633A54 /* Sources */,
 			);
 			name = Main;
@@ -1512,14 +1509,6 @@
 			name = "Segment Render";
 			sourceTree = "<group>";
 		};
-		F5F654F90B549CF700633A54 /* Headers */ = {
-			isa = PBXGroup;
-			children = (
-				F5F654FB0B549D1F00633A54 /* client.h */,
-			);
-			name = Headers;
-			sourceTree = "<group>";
-		};
 		F5F654FA0B549D0E00633A54 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
@@ -1570,7 +1559,6 @@
 				F5A582CE090C993400BE7C36 /* view_defs.h in Headers */,
 				F5075AD10A0C368D000196B7 /* models.h in Headers */,
 				F5F0AC560AD35EF300C50A21 /* scenery.h in Headers */,
-				F5F654FC0B549D1F00633A54 /* client.h in Headers */,
 				F5AD54770BBE2121001C7C04 /* baseutility.h in Headers */,
 				F5FD3CFA0C865C4E00087C1C /* physics.h in Headers */,
 				26F08CBA0DAC7E990097E249 /* network_defs.h in Headers */,
@@ -1957,7 +1945,8 @@
 		F5DB0BF1085671A9005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

@@ -69,7 +69,7 @@ void item_pickup_check(obj_type *obj)
 		// detect if we need to send synch
 		// pickup network messages
 
-	network_on=(net_setup.client.joined) && (obj->uid==server.player_obj_uid);
+	network_on=(net_setup.client.joined) && ((obj->uid==server.player_obj_uid) || (obj->bot));
 
 		// check for collisions with pickup items
 	
@@ -118,7 +118,7 @@ void item_pickup_check(obj_type *obj)
 
 				// send network event
 
-			if (network_on) net_client_send_pickup(net_setup.client.remote_uid,&pickup);
+			if (network_on) net_client_send_pickup(obj->remote.uid,&pickup);
 			
 				// successfully picked up
 				

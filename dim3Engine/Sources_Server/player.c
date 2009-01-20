@@ -42,9 +42,6 @@ extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-extern float				team_color_tint[net_team_count][3];
-extern char					setup_team_color_list[][32];
-
 extern void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx);
 
 /* =======================================================
@@ -142,30 +139,5 @@ void player_detach_object(void)
 	if (obj->vehicle.attach_obj_uid!=-1) {
 		object_exit_vehicle(obj,TRUE,NULL);
 	}
-}
-
-/* =======================================================
-
-      Player Team Colors
-      
-======================================================= */
-
-void player_get_ui_color(d3col *col)
-{
-	int					team_idx;
-	obj_type			*obj;
-	
-	obj=object_find_uid(server.player_obj_uid);
-	
-	team_idx=obj->team_idx;
-
-	if (team_idx==-1) {
-		col->r=col->g=col->b=0.7f;
-		return;
-	}
-
-	col->r=team_color_tint[team_idx][0];
-	col->g=team_color_tint[team_idx][1];
-	col->b=team_color_tint[team_idx][2];
 }
 

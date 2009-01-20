@@ -36,6 +36,8 @@ extern js_type			js;
 
 JSBool js_get_obj_look_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_set_obj_look_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_look_set_look_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_obj_look_set_look_at_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			obj_look_class={"obj_look_class",0,
 							script_add_property,JS_PropertyStub,
@@ -46,6 +48,11 @@ JSPropertySpec	obj_look_props[]={
 							{"upAngle",					obj_look_prop_up_angle,					JSPROP_PERMANENT|JSPROP_SHARED},
 							{"downAngle",				obj_look_prop_down_angle,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{"effectWeapons",			obj_look_prop_effect_weapons,			JSPROP_PERMANENT|JSPROP_SHARED},
+							{0}};
+							
+JSFunctionSpec	obj_look_functions[]={
+							{"setLook",					js_obj_look_set_look_func,				1},
+							{"setLookAt",				js_obj_look_set_look_at_func,			1},
 							{0}};
 
 /* =======================================================
@@ -60,6 +67,7 @@ void script_add_obj_look_object(JSObject *parent_obj)
 
 	j_obj=JS_DefineObject(js.cx,parent_obj,"look",&obj_look_class,NULL,0);
 	JS_DefineProperties(js.cx,j_obj,obj_look_props);
+	JS_DefineFunctions(js.cx,j_obj,obj_look_functions);
 }
 
 /* =======================================================
@@ -118,3 +126,51 @@ JSBool js_set_obj_look_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 	return(JS_TRUE);
 }
 
+/* =======================================================
+
+      Look Functions
+      
+======================================================= */
+
+JSBool js_obj_look_set_look_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->view_ang.x=script_value_to_float(argv[0]);
+
+	return(JS_TRUE);
+}
+
+JSBool js_obj_look_set_look_at_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int				dist,y,look_y;
+	float			ang;
+	obj_type		*obj,*look_obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	
+	look_obj=script_find_obj_from_uid_arg(argv[0]);
+	if (look_obj==NULL) return(JS_FALSE);
+	
+		// no change if within object size
+		
+	y=obj->pnt.y-(obj->size.y>>1);
+	look_y=look_obj->pnt.y-(look_obj->size.y>>1);
+	
+	if (abs(y-look_y)<(look_obj->size.y>>1)) {
+		obj->view_ang.x=0.0f;
+		return(JS_TRUE);
+	}
+	
+		// angle to object
+		
+	dist=distance_2D_get(obj->pnt.x,obj->pnt.z,look_obj->pnt.x,look_obj->pnt.z);
+	ang=angle_find(y,dist,look_y,0);
+	
+	if (ang>180.0f) ang-=360.0f;
+	
+	obj->view_ang.x=-ang;
+
+	return(JS_TRUE);
+}

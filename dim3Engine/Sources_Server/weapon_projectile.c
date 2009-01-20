@@ -102,8 +102,8 @@ bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_t
 		// if this object is the player object, then spawn projectile in remotes
 		
 	if (net_setup.client.joined) {
-		if (obj->uid==server.player_obj_uid) {
-			net_client_send_projectile_add(net_setup.client.remote_uid,weap->name,proj_setup->name,pt,ang);
+		if ((obj->uid==server.player_obj_uid) || (obj->bot)) {
+			net_client_send_projectile_add(obj->remote.uid,weap->name,proj_setup->name,pt,ang);
 		}
 	}
 
@@ -325,7 +325,7 @@ bool weapon_get_projectile_position_angle_object_model(int tick,obj_type *obj,we
 	
 		// angle from object
 		
-	fire_ang->x=setup->ang.x;
+	fire_ang->x=angle_add(setup->ang.x,obj->view_ang.x);
 	fire_ang->y=setup->ang.y;
 	fire_ang->z=setup->ang.z;
 

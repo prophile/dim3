@@ -44,6 +44,8 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern render_info_type		render_info;
 
+extern void view_object_get_ui_color(obj_type *obj,bool no_team_to_default,d3col *col);
+
 /* =======================================================
 
       Run HUD Item Fades
@@ -98,13 +100,17 @@ void hud_bitmaps_draw(int tick)
 								wid,high,repeat_count;
 	float						gx,gy,gx2,gy2,g_size,alpha,cur_alpha;
 	GLuint						cur_gl_id;
-	d3col						tint,cur_tint;
+	d3col						tint,cur_tint,team_tint;
 	hud_bitmap_type				*bitmap;
+	obj_type					*obj;
 	bitmap_type					*bitmap_data;
 		
 	cur_gl_id=-1;
 	cur_alpha=1.0f;
 	cur_tint.r=cur_tint.g=cur_tint.b=1.0f;
+	
+	obj=object_find_uid(server.player_obj_uid);
+	view_object_get_ui_color(obj,TRUE,&team_tint);
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -143,7 +149,7 @@ void hud_bitmaps_draw(int tick)
 				memmove(&tint,&hud.color.default_tint,sizeof(d3col));
 			}
 			else {
-				player_get_ui_color(&tint);
+				memmove(&tint,&team_tint,sizeof(d3col));
 			}
 		}
 

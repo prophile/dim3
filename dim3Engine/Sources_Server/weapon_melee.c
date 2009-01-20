@@ -107,7 +107,7 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 		damage=melee->damage;
 
 		if (melee->fall_off) {
-			dist=distance_get(x,y,z,obj->pnt.x,(obj->pnt.y-(obj->size.y>>1)),obj->pnt.z);
+			dist=distance_2D_get(x,z,hurt_obj->pnt.x,hurt_obj->pnt.z);
 			dist-=obj->size.radius;
 
 			if (dist>0) damage=damage-((damage*dist)/melee->radius);
@@ -117,8 +117,14 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 			// hurt
             
 		if (hit) {
-			object_damage(hurt_obj,obj,weap,NULL,pt,melee->damage);
-			scripts_post_event_console(&weap->attach,sd_event_melee,sd_event_melee_hit,0);
+			object_damage(hurt_obj,obj,weap,NULL,pt,damage);
+			if (weap==NULL) {
+				scripts_post_event_console(&obj->attach,sd_event_melee,sd_event_melee_hit,0);
+			}
+			else {
+				scripts_post_event_console(&weap->attach,sd_event_melee,sd_event_melee_hit,0);
+			}
+			scripts_post_event_console(&hurt_obj->attach,sd_event_melee,sd_event_melee_hit,0);
 		}
 	}
   
@@ -140,10 +146,10 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 		// if this object is the player object, then spawn melee in remotes
 		
 	if (net_setup.client.joined) {
-		if (obj->uid==server.player_obj_uid) {
+		if ((obj->uid==server.player_obj_uid) || (obj->bot)) {
 			weap_name[0]=0x0;
 			if (weap!=NULL) strcpy(weap_name,weap->name);
-			net_client_send_melee_add(net_setup.client.remote_uid,weap_name,melee->radius,melee->distance,melee->damage,melee->force,&pnt,ang);
+			net_client_send_melee_add(obj->remote.uid,weap_name,melee->radius,melee->distance,melee->damage,melee->force,&pnt,ang);
 		}
 	}
 }

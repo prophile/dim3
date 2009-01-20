@@ -91,7 +91,7 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 		net_host_player_create_remote_list(remote_uid,&reply_join.remotes);
 	}
 	else {
-		reply_join.remotes.count=0;
+		reply_join.remotes.count=htons(0);
 	}
 	
 		// send reply

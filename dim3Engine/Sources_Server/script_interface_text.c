@@ -32,9 +32,10 @@ and can be sold or given away.
 #include "scripts.h"
 #include "interfaces.h"
 
-extern float			team_color_server_tint[net_team_count][3];
-
 extern js_type			js;
+
+extern void view_team_get_tint(int team_idx,d3col *tint);
+extern void view_object_get_ui_color(obj_type *obj,bool no_team_to_default,d3col *col);
 
 JSBool js_interface_text_show_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_text_hide_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -189,18 +190,15 @@ JSBool js_interface_text_set_color_func(JSContext *cx,JSObject *j_obj,uintN argc
 
 JSBool js_interface_text_set_team_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	int						idx;
+	int						team_idx;
 	hud_text_type			*text;
 	
 	text=script_find_text_from_name(argv[0]);
 	if (text==NULL) return(JS_FALSE);
 
-	idx=JSVAL_TO_INT(argv[1])-sd_team_none;
-	if ((idx<0) || (idx>=net_team_count)) return(JS_TRUE);
+	team_idx=JSVAL_TO_INT(argv[1])-sd_team_none;
 	
-	text->color.r=team_color_server_tint[idx][0];
-	text->color.g=team_color_server_tint[idx][1];
-	text->color.b=team_color_server_tint[idx][2];
+	view_team_get_tint(team_idx,&text->color);
 	
 	return(JS_TRUE);
 }
@@ -216,9 +214,7 @@ JSBool js_interface_text_set_object_color_func(JSContext *cx,JSObject *j_obj,uin
 	obj=script_find_obj_from_uid_arg(argv[1]);
 	if (obj==NULL) return(JS_TRUE);
 	
-	text->color.r=team_color_server_tint[obj->team_idx][0];
-	text->color.g=team_color_server_tint[obj->team_idx][1];
-	text->color.b=team_color_server_tint[obj->team_idx][2];
+	view_object_get_ui_color(obj,TRUE,&text->color);
 	
 	return(JS_TRUE);
 }

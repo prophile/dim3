@@ -28,9 +28,6 @@ and can be sold or given away.
 extern bool remote_add(network_request_object_add *add,bool send_event);
 extern void remote_remove(int remote_uid,bool send_event);
 
-extern void remote_get_tint(obj_type *obj,d3col *tint);
-extern void remote_get_ui_color(obj_type *obj,d3col *col);
-
 extern bool remote_timed_out(obj_type *obj);
 
 extern void remote_predict_move(obj_type *obj);

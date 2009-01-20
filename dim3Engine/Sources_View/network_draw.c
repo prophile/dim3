@@ -49,6 +49,7 @@ extern float				team_color_tint[net_team_count][3];
 extern char					setup_team_color_list[][32];
 
 extern void chat_time_out(int tick);
+extern void view_object_get_ui_color(obj_type *obj,bool no_team_to_default,d3col *col);
 
 /* =======================================================
 
@@ -174,14 +175,8 @@ void network_score_players_draw(bool center)
 
 		obj=&server.objs[sort_idx[n]];
 	
-		if ((obj->remote.on) || (obj->bot)) {
-			remote_get_ui_color(obj,&col);
-			network_score_single_box_draw(lx,rx,y2,yadd,&col);
-		}
-		else {
-			player_get_ui_color(&col);
-			network_score_single_box_draw(lx,rx,y2,yadd,&col);
-		}
+		view_object_get_ui_color(obj,FALSE,&col);
+		network_score_single_box_draw(lx,rx,y2,yadd,&col);
 
 		y2+=(yadd+3);
 	}

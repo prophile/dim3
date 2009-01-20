@@ -69,9 +69,9 @@ void object_spawn(obj_type *obj)
 
 void object_score_update(obj_type *obj)
 {
-		// only run rules for player
+		// only run rules for players or bots
 
-	if (obj->uid!=server.player_obj_uid) return;
+	if ((obj->uid!=server.player_obj_uid) && (!obj->bot)) return;
 
 		// run rule to update score
 
@@ -148,7 +148,9 @@ void object_death(obj_type *obj)
 	
 		// send death if joined and is player
 		
-	if ((net_setup.client.joined) && (obj->uid==server.player_obj_uid)) net_client_send_death(net_setup.client.remote_uid,obj->damage_obj_uid,FALSE);
+	if (net_setup.client.joined) {
+		if ((obj->uid==server.player_obj_uid) || (obj->bot)) net_client_send_death(obj->remote.uid,obj->damage_obj_uid,FALSE);
+	}
 }
 
 /* =======================================================
@@ -200,7 +202,11 @@ void object_telefrag_check(obj_type *obj)
 
 		// send network message to telefrag
 
-	if (net_setup.client.joined) net_client_send_death(net_setup.client.remote_uid,hit_obj->uid,TRUE);
+	if (net_setup.client.joined) {
+		if ((obj->uid==server.player_obj_uid) || (obj->bot)) {
+			net_client_send_death(obj->remote.uid,hit_obj->uid,TRUE);
+		}
+	}
 }
 
 /* =======================================================
@@ -631,10 +637,6 @@ bool object_set_radar_icon(obj_type *obj)
 	int				n,nicon;
 	
 	obj->radar.icon_idx=-1;
-	
-		// radar off, no icon
-		
-	if (!hud.radar.on) return(TRUE);
 	
 		// find radar icon
 		

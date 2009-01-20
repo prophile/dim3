@@ -43,6 +43,9 @@ extern void object_set_spawn_mesh(obj_type *obj);
 extern void object_set_position(obj_type *obj,int x,int y,int z,float ang_y,float ymove);
 extern void object_stop(obj_type *obj);
 
+extern void object_player_set_remote_uid(int remote_uid);
+extern int object_player_get_remote_uid(void);
+
 extern bool object_start_script(obj_type *obj,char *name,char *params,char *err_str);
 
 extern void object_clear_size(obj_size *size);
@@ -70,6 +73,8 @@ extern obj_type* object_find_spawn_idx(int spawn_idx);
 extern obj_type* object_find_name(char *name);
 extern obj_type* object_find_nearest(d3pnt *pt,char *name,char *type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,bool remote,int skip_obj_uid);
 extern int object_count_team(int team_idx,int ignore_obj_uid);
+extern void object_set_even_team(obj_type *obj);
+extern void object_set_even_opposite(obj_type *obj);
 extern int object_find_uid_click_object(obj_type *obj);
 extern int object_find_uid_by_stood_on_object_uid(int stand_obj_uid);
 extern bool object_sight_test_object(obj_type *obj,int test_obj_uid);
@@ -208,7 +213,6 @@ extern void item_add_custom(obj_type *obj,int custom_id);
 
 extern bool player_attach_object(void);
 extern void player_detach_object(void);
-extern void player_get_ui_color(d3col *col);
 
 extern void player_clear_input(void);
 extern void player_command_input(obj_type *obj);

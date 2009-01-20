@@ -44,6 +44,7 @@ extern map_type				map;
 extern server_type			server;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
+extern hud_type				hud;
 extern js_type				js;
 
 int							ndelayed_obj_spawn,
@@ -517,6 +518,7 @@ obj_type* object_create(int bind,int reserve_uid)
 	obj->thrust.speed=0.5f;
 	obj->thrust.max_speed=60.0f;
 	obj->thrust.vct.x=obj->thrust.vct.y=obj->thrust.vct.z=0.0f;
+	obj->thrust.drag=FALSE;
 	
 	obj->look.ang_add=0;
 	obj->look.up_angle=80;
@@ -610,6 +612,28 @@ obj_type* object_create(int bind,int reserve_uid)
     obj->spawning=TRUE;
 	
 	return(obj);
+}
+
+/* =======================================================
+
+      Remote UID for Player
+      
+======================================================= */
+
+void object_player_set_remote_uid(int remote_uid)
+{
+	obj_type			*obj;
+	
+	obj=object_find_uid(server.player_obj_uid);
+	obj->remote.uid=remote_uid;
+}
+
+int object_player_get_remote_uid(void)
+{
+	obj_type			*obj;
+	
+	obj=object_find_uid(server.player_obj_uid);
+	return(obj->remote.uid);
 }
 
 /* =======================================================
@@ -734,12 +758,12 @@ int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_
 		// if networked player, run rules
 		// and send choosen team to other clients
 	
-	if ((player) && (net_setup.client.joined)) {
+	if (((player) || (obj->bot)) && (net_setup.client.joined)) {
 		game_obj_rule_uid=obj->uid;
 		scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_join,0);
 		game_obj_rule_uid=-1;
 
-		net_client_send_set_team(net_setup.client.remote_uid,obj->team_idx);
+		net_client_send_set_team(obj->remote.uid,obj->team_idx);
 	}
 		
 		// start script
@@ -908,7 +932,7 @@ void object_dispose_2(int bind)
 
 void spot_start_attach(void)
 {
-	int					i;
+	int					n;
 	char				err_str[256];
 	bool				multiplayer;
 	spot_type			*spot;
@@ -919,9 +943,9 @@ void spot_start_attach(void)
 		// script.  If it was, and the skill levels
 		// and spawn type are OK, spawn this object into the map
 		
-	for (i=0;i!=map.nspot;i++) {
+	for (n=0;n!=map.nspot;n++) {
 	
-		spot=&map.spots[i];
+		spot=&map.spots[n];
 		if (!spot->attach) continue;
 		if (spot->skill>server.skill) continue;
 		if ((spot->spawn==spawn_single_player_only) && (multiplayer)) continue;
@@ -933,13 +957,37 @@ void spot_start_attach(void)
 
 void spot_add_multiplayer_bots(void)
 {
+	int				n,spot_idx;
+	char			err_str[256];
+	spot_type		spot;
+
 		// only spawn on hosts
 
 	if (!net_setup.host.hosting) return;
 
 		// spawn
 
-	// supergumba -- FINISH!
+	for (n=0;n!=setup.network.bot.count;n++) {
+	
+		if (hud.bot_names.names[n][0]!=0x0) {
+			strcpy(spot.attach_name,hud.bot_names.names[n]);
+		}
+		else {
+			sprintf(spot.attach_name,"Bot %d",(n+1));
+		}
+		
+		strcpy(spot.attach_type,"Bot");
+		strcpy(spot.attach_script,"Bot");
+		spot.attach_params[0]=0x0;
+		
+		spot_idx=map_find_random_spot(&map,"Spawn","Spawn");
+		if (spot_idx==-1) break;
+		
+		memmove(&spot.pnt,&map.spots[spot_idx].pnt,sizeof(d3pnt));
+		memmove(&spot.ang,&map.spots[spot_idx].ang,sizeof(d3ang));
+		
+		object_start(&spot,FALSE,bt_map,-1,err_str);
+	}
 }
 
 /* =======================================================

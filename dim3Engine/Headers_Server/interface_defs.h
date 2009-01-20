@@ -421,6 +421,10 @@ typedef struct		{
 typedef struct		{
 						bool					on;
 					} hud_score_type;
+
+typedef struct		{
+						char					names[max_multiplayer_bot][name_str_len];
+					} hud_bot_names_type;
 					
 //
 // HUD counts
@@ -452,6 +456,7 @@ typedef struct		{
 						hud_radar_type			radar;
 						hud_chat_type			chat;
 						hud_score_type			score;
+						hud_bot_names_type		bot_names;
 					} hud_type;
 					
 

@@ -39,6 +39,8 @@ extern int					game_obj_rule_uid;
 
 JSBool js_get_game_join_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_game_join_set_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_game_join_set_team_even_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_game_join_set_team_opposite_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_game_join_clear_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_game_join_count_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_game_join_set_spawn_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -50,16 +52,18 @@ JSClass			game_join_class={"game_join_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 JSPropertySpec	game_join_props[]={
-							{"name",				game_join_prop_name,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"team",				game_join_prop_team,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"name",				game_join_prop_name,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"team",				game_join_prop_team,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 							
 JSFunctionSpec	game_join_functions[]={
-							{"setTeam",				js_game_join_set_team_func,			1},
-							{"clearTeam",			js_game_join_clear_team_func,		0},
-							{"countTeam",			js_game_join_count_team_func,		1},
-							{"setSpawnSpot",		js_game_join_set_spawn_spot_func,	1},
-							{"clearSpawnSpot",		js_game_join_clear_spawn_spot_func,	0},
+							{"setTeam",				js_game_join_set_team_func,				1},
+							{"setTeamEven",			js_game_join_set_team_even_func,		0},
+							{"setTeamOpposite",		js_game_join_set_team_opposite_func,	0},
+							{"clearTeam",			js_game_join_clear_team_func,			0},
+							{"countTeam",			js_game_join_count_team_func,			1},
+							{"setSpawnSpot",		js_game_join_set_spawn_spot_func,		1},
+							{"clearSpawnSpot",		js_game_join_clear_spawn_spot_func,		0},
 							{0}};
 
 /* =======================================================
@@ -125,6 +129,30 @@ JSBool js_game_join_set_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 	return(JS_TRUE);
 }
 
+JSBool js_game_join_set_team_even_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	obj_type		*obj;
+
+	if (game_obj_rule_uid==-1) return(JS_TRUE);
+
+	obj=object_find_uid(game_obj_rule_uid);
+	object_set_even_team(obj);
+
+	return(JS_TRUE);
+}
+
+JSBool js_game_join_set_team_opposite_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	obj_type		*obj;
+
+	if (game_obj_rule_uid==-1) return(JS_TRUE);
+
+	obj=object_find_uid(game_obj_rule_uid);
+	object_set_even_opposite(obj);
+
+	return(JS_TRUE);
+}
+
 JSBool js_game_join_clear_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
 	obj_type		*obj;
@@ -132,7 +160,7 @@ JSBool js_game_join_clear_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 	if (game_obj_rule_uid==-1) return(JS_TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
-	obj->team_idx=sd_team_none;
+	obj->team_idx=net_team_none;
 
 	return(JS_TRUE);
 }

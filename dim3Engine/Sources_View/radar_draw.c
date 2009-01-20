@@ -42,6 +42,8 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern render_info_type		render_info;
 
+extern void view_object_get_ui_color(obj_type *obj,bool no_team_to_default,d3col *col);
+
 /* =======================================================
 
       Draw HUD Radar
@@ -98,7 +100,7 @@ void radar_draw(int tick)
 			memmove(&tint,&hud.color.default_tint,sizeof(d3col));
 		}
 		else {
-			player_get_ui_color(&tint);
+			view_object_get_ui_color(player_obj,TRUE,&tint);
 		}
 	}
 
@@ -127,6 +129,7 @@ void radar_draw(int tick)
 	for (n=0;n!=server.count.obj;n++) {
 		obj=&server.objs[n];
 
+		if (obj->uid==server.player_obj_uid) continue;
 		if ((obj->hidden) || (!obj->radar.on) || (obj->radar.icon_idx==-1)) continue;
 			
 			// get distance

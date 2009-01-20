@@ -198,6 +198,12 @@ and can be sold or given away.
 #define ci_object_click_angle					20.0f				// angle at which you can click an object
 
 //
+// multiplayer bots
+//
+
+#define max_multiplayer_bot						16
+
+//
 // models
 //
  
@@ -238,7 +244,8 @@ typedef struct		{
 					} model_draw_shadow;
 
 typedef struct		{
-						int						obj_uid,weap_uid,proj_uid;
+						int						obj_uid,weap_uid,proj_uid,
+												net_remote_uid;
 						bool					net_sound;
 						d3vct					motion_vct;
 					} model_draw_connect;
@@ -449,6 +456,7 @@ typedef struct		{
 
 typedef struct		{
 						float					speed,max_speed;
+						bool					drag;
 						d3vct					vct;
 					} obj_thrust;
 						

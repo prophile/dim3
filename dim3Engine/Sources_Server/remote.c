@@ -48,10 +48,7 @@ extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-extern char					setup_team_color_list[][32];
 extern bool					game_loop_quit;
-
-float						team_color_tint[net_team_count][3]=net_team_color_tint_def;
 
 extern int game_time_get(void);
 extern void chat_add_message(int tick,char *name,char *str,d3col *col);
@@ -61,6 +58,7 @@ extern bool map_start(bool skip_media,char *err_str);
 extern void map_end(void);
 extern void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx);
 extern void group_moves_synch_with_host(network_reply_group_synch *synch);
+extern void view_object_get_ui_color(obj_type *obj,bool no_team_to_default,d3col *col);
 
 /* =======================================================
 
@@ -111,8 +109,13 @@ bool remote_add(network_request_object_add *add,bool send_event)
 
 	uid=obj->uid;
 
-	object_start_script(obj,"Player",NULL,err_str);
-
+	if (ntohs(add->bot)!=0) {
+		object_start_script(obj,"Bot",NULL,err_str);
+	}
+	else {
+		object_start_script(obj,"Player",NULL,err_str);
+	}
+	
 	obj=object_find_uid(uid);
 
 		// load models
@@ -196,44 +199,6 @@ void remote_remove(int remote_uid,bool send_event)
 
 /* =======================================================
 
-      Remote Team Colors
-      
-======================================================= */
-
-void remote_get_tint(obj_type *obj,d3col *tint)
-{
-	int			team_color_idx;
-
-	team_color_idx=obj->team_idx;
-
-	if ((!obj->remote.on) || (team_color_idx==-1)) {
-		tint->r=tint->g=tint->b=1.0f;
-		return;
-	}
-
-	tint->r=team_color_tint[team_color_idx][0];
-	tint->g=team_color_tint[team_color_idx][1];
-	tint->b=team_color_tint[team_color_idx][2];
-}
-
-void remote_get_ui_color(obj_type *obj,d3col *col)
-{
-	int			team_color_idx;
-
-	team_color_idx=obj->team_idx;
-
-	if ((!obj->remote.on) || (team_color_idx==-1)) {
-		col->r=col->g=col->b=0.7f;
-		return;
-	}
-
-	col->r=team_color_tint[team_color_idx][0];
-	col->g=team_color_tint[team_color_idx][1];
-	col->b=team_color_tint[team_color_idx][2];
-}
-
-/* =======================================================
-
       Remote Timeouts
       
 ======================================================= */
@@ -307,14 +272,13 @@ void remote_host_reset(void)
 		// mark remote and joined
 		
 	net_setup.client.joined=TRUE;
-	net_setup.client.remote_uid=remote_uid;
 	net_setup.client.latency=0;
 
 		// setup game play type
 
 	net_setup.game_idx=net_client_find_game(game_name);
 	if (net_setup.game_idx==-1) {
-		net_client_send_leave_host(net_setup.client.remote_uid);
+		net_client_send_leave_host(remote_uid);
 		net_client_end_message_queue();
 		net_client_join_host_end();
 		sprintf(err_str,"Could not find game type: %s",game_name);
@@ -328,7 +292,7 @@ void remote_host_reset(void)
 		// start the new game
 	
 	if (!game_start(skill_medium,&remotes,err_str)) {
-		net_client_send_leave_host(net_setup.client.remote_uid);
+		net_client_send_leave_host(remote_uid);
 		net_client_end_message_queue();
 		net_client_join_host_end();
 		error_open(err_str,"Network Game Canceled");
@@ -338,12 +302,14 @@ void remote_host_reset(void)
 		// start the map
 		
 	if (!map_start(FALSE,err_str)) {
-		net_client_send_leave_host(net_setup.client.remote_uid);
+		net_client_send_leave_host(remote_uid);
 		net_client_end_message_queue();
 		net_client_join_host_end();
 		error_open(err_str,"Network Game Canceled");
 		return;	
 	}
+	
+	object_player_set_remote_uid(remote_uid);
 		
 		// game is running
 	
@@ -478,7 +444,7 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 
 void remote_death(int remote_uid,network_request_remote_death *death)
 {
-	int					kill_remote_uid,telefrag_remote_uid;
+	int					kill_remote_uid,telefrag_remote_uid,player_remote_uid;
 	bool				telefrag;
 	obj_type			*obj,*kill_obj,*telefrag_obj,*player_obj;
 	
@@ -489,6 +455,8 @@ void remote_death(int remote_uid,network_request_remote_death *death)
 		// this stops dead remotes from picking things up
 		
 	obj->status.health=0;
+	
+	player_remote_uid=object_player_get_remote_uid();
 
 		// normal death
 		
@@ -505,7 +473,7 @@ void remote_death(int remote_uid,network_request_remote_death *death)
 		obj->damage_obj_uid=-1;
 		
 		if (kill_remote_uid!=-1) {
-			if (kill_remote_uid==net_setup.client.remote_uid) {
+			if (kill_remote_uid==player_remote_uid) {
 				obj->damage_obj_uid=server.player_obj_uid;			// killed by player
 			}
 			else {
@@ -530,7 +498,7 @@ void remote_death(int remote_uid,network_request_remote_death *death)
 	else {
 		telefrag_remote_uid=(signed short)ntohs(death->kill_remote_uid);
 
-		if (telefrag_remote_uid==net_setup.client.remote_uid) {
+		if (telefrag_remote_uid==player_remote_uid) {
 			telefrag_obj=object_find_uid(server.player_obj_uid);
 			object_telefrag(telefrag_obj,obj);
 			
@@ -566,7 +534,7 @@ void remote_chat(int remote_uid,network_request_remote_chat *chat)
 	
 		// update chat
 
-	remote_get_ui_color(obj,&col);
+	view_object_get_ui_color(obj,FALSE,&col);
 	chat_add_message(game_time_get(),obj->name,chat->str,&col);
 }
 
@@ -854,7 +822,7 @@ void remote_network_send_updates(int tick)
 	obj_type			*obj;
 
 	obj=object_find_uid(server.player_obj_uid);
-	net_client_send_remote_update(tick,net_setup.client.remote_uid,obj,hud.chat.type_on);
+	net_client_send_remote_update(tick,obj->remote.uid,obj,hud.chat.type_on);
 
 		// any bots if hosting
 
@@ -871,12 +839,12 @@ void remote_network_send_updates(int tick)
 
 void remote_network_send_group_synch(void)
 {
-	net_client_request_group_synch_ping(net_setup.client.remote_uid);
+	net_client_request_group_synch_ping(object_player_get_remote_uid());
 }
 
 void remote_network_send_latency_ping(int tick)
 {
 	net_setup.client.latency_ping_tick=tick;
-	net_client_send_latency_ping(net_setup.client.remote_uid);
+	net_client_send_latency_ping(object_player_get_remote_uid());
 }
 

@@ -34,6 +34,8 @@ and can be sold or given away.
 #include "models.h"
 #include "effects.h"
 
+extern void view_object_get_tint(obj_type *obj,d3col *tint);
+
 extern server_type			server;
 extern view_type			view;
 extern camera_type			camera;
@@ -78,7 +80,8 @@ void model_draw_setup_object(int tick,obj_type *obj)
 	draw->connect.obj_uid=obj->uid;
 	draw->connect.weap_uid=-1;
 	draw->connect.proj_uid=-1;
-	draw->connect.net_sound=(obj->uid==server.player_obj_uid);
+	draw->connect.net_sound=(obj->uid==server.player_obj_uid) || (obj->bot);
+	draw->connect.net_remote_uid=obj->remote.uid;
 	draw->connect.motion_vct.x=obj->motion.vct.x;
 	draw->connect.motion_vct.y=obj->motion.vct.y;
 	draw->connect.motion_vct.z=obj->motion.vct.z;
@@ -124,7 +127,7 @@ void model_draw_setup_object(int tick,obj_type *obj)
 
 		// team tint
 
-	remote_get_tint(obj,&draw->tint);
+	view_object_get_tint(obj,&draw->tint);
 }
 
 /* =======================================================

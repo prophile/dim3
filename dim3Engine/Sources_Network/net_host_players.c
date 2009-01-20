@@ -36,7 +36,6 @@ extern char team_colors[][16];
 extern server_type		server;
 
 int						net_host_player_count,server_next_remote_uid;
-float					team_color_server_tint[net_team_count][3]=net_team_color_server_tint_def;
 net_host_player_type	net_host_players[host_max_remote_count];
 
 pthread_mutex_t			net_host_player_lock;
@@ -94,28 +93,6 @@ bool net_host_player_find_name(int remote_uid,char *name)
 	
 	if (idx!=-1) {
 		strcpy(name,net_host_players[idx].name);
-		hit=TRUE;
-	}
-	
-	pthread_mutex_unlock(&net_host_player_lock);
-	
-	return(hit);
-}
-
-bool net_host_player_find_name_team(int remote_uid,char *name,float *col)
-{
-	int				idx;
-	bool			hit;
-	
-	hit=FALSE;
-
-	pthread_mutex_lock(&net_host_player_lock);
-
-	idx=net_host_player_find(remote_uid);
-	
-	if (idx!=-1) {
-		strcpy(name,net_host_players[idx].name);
-		memmove(col,team_color_server_tint[net_host_players[idx].team_idx],(3*sizeof(float)));
 		hit=TRUE;
 	}
 	
@@ -382,12 +359,9 @@ void net_host_player_add_bots_to_list(void)
 	obj=server.objs;
 
 	for (n=0;n!=server.count.obj;n++) {
-
-
+		if (obj->bot) obj->remote.uid=net_host_bot_join(obj);
 		obj++;
 	}
-
-	// supergumba -- FINISH!
 }
 
 /* =======================================================
@@ -417,9 +391,9 @@ void net_host_player_create_remote_list(int player_remote_uid,network_reply_join
 
 		if (player->remote_uid!=player_remote_uid) {
 
-			obj_add->obj_type=htons((short)net_remote_object_player);
 			obj_add->uid=htons((short)player->remote_uid);
 			strcpy(obj_add->name,player->name);
+			obj_add->bot=htons((short)(player->bot?1:0));
 			obj_add->team_idx=htons((short)player->team_idx);
 			obj_add->score=htons((short)player->score);
 			obj_add->pnt_x=htonl(player->pnt.x);

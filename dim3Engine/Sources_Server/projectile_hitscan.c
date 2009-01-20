@@ -69,8 +69,8 @@ void projectile_hitscan(int tick,obj_type *obj,weapon_type *weap,proj_setup_type
 		// if this object is the player object, then spawn projectile in remotes
 		
 	if (net_setup.client.joined) {
-		if (obj->uid==server.player_obj_uid) {
-			net_client_send_hitscan_add(net_setup.client.remote_uid,weap->name,proj_setup->name,pt,ang);
+		if ((obj->uid==server.player_obj_uid) || (obj->bot)) {
+			net_client_send_hitscan_add(obj->remote.uid,weap->name,proj_setup->name,pt,ang);
 		}
 	}
 	

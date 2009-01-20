@@ -209,7 +209,7 @@ void net_client_send_death(int remote_uid,int kill_uid,bool telefrag)
 		
 		if (kill_uid!=-1) {
 			if (kill_uid==server.player_obj_uid) {
-				send_kill_uid=net_setup.client.remote_uid;
+				send_kill_uid=object_player_get_remote_uid();
 			}
 			else {
 				obj=object_find_uid(kill_uid);
@@ -231,7 +231,7 @@ void net_client_send_death(int remote_uid,int kill_uid,bool telefrag)
 	else {
 
 		if (kill_uid==server.player_obj_uid) {
-			send_telefrag_uid=net_setup.client.remote_uid;
+			send_telefrag_uid=object_player_get_remote_uid();
 		}
 		else {
 			obj=object_find_uid(kill_uid);		// only remote objects can telefrag each other, so no other checks necessary

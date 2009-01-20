@@ -171,7 +171,7 @@ JSBool js_obj_weapon_fire_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 	if (weap==NULL) return(JS_FALSE);
 
 	*rval=JSVAL_FALSE;
-
+	
 	if (weapon_script_fire(js.time.current_tick,obj,weap,JSVAL_TO_INT(argv[1]))) *rval=JSVAL_TRUE;
 
 	return(JS_TRUE);

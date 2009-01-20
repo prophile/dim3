@@ -112,7 +112,7 @@ JSBool js_get_map_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 			}
 			break;
 		case map_setting_prop_bot_skill:
-            *vp=INT_TO_JSVAL(setup.host_game.bot_skill);
+            *vp=INT_TO_JSVAL(setup.network.bot.skill);
 			break;
 
 	}

@@ -126,19 +126,19 @@ bool script_sound_play(char *name,d3pnt *pt,float pitch,bool global)
 		
 			case thing_type_object:
 				obj=object_find_uid(js.attach.thing_uid);
-				if (obj!=NULL) remote_ok=((obj->player) && (!obj->remote.on));
+				if (obj!=NULL) remote_ok=(((obj->player) || (obj->bot)) && (!obj->remote.on));
 				break;
 				
 			case thing_type_weapon:
 				weap=weapon_find_uid(js.attach.thing_uid);
 				if (weap!=NULL) {
 					obj=object_find_uid(weap->obj_uid);
-					if (obj!=NULL) remote_ok=((obj->player) && (!obj->remote.on));
+					if (obj!=NULL) remote_ok=(((obj->player) || (obj->bot)) && (!obj->remote.on));
 				}
 				break;
 		}
 		
-		if (remote_ok) net_client_send_sound(net_setup.client.remote_uid,pt->x,pt->y,pt->z,pitch,name);
+		if (remote_ok) net_client_send_sound(obj->remote.uid,pt->x,pt->y,pt->z,pitch,name);
 	}
 
 	return(TRUE);

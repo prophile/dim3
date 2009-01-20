@@ -53,6 +53,8 @@ extern void chooser_add_button(int chooser_idx,int item_id,char *name,int x,int 
 
 void default_settings_interface(void)
 {
+	int				n;
+	
 		// scale
 
 	hud.scale_x=640;
@@ -236,6 +238,12 @@ void default_settings_interface(void)
 
 	net_setup.ngame=1;
 	strcpy(net_setup.games[0].name,"Deathmatch");
+	
+		// bot names
+		
+	for (n=0;n!=max_multiplayer_bot;n++) {
+		hud.bot_names.names[n][0]=0x0;
+	}
 }
 
 /* =======================================================
@@ -716,11 +724,11 @@ void read_settings_interface_button(int tag,hud_intro_button_type *btn)
 
 void read_settings_interface(void)
 {
-	int					interface_head_tag,scale_tag,
+	int					cnt,interface_head_tag,scale_tag,
 						bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
 						radar_head_tag,menu_head_tag,menu_tag,chooser_head_tag,chooser_tag,
 						color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,music_tag,
-						proj_tag,games_head_tag,game_tag;
+						proj_tag,games_head_tag,game_tag,bot_head_tag,bot_tag;
 	char				path[1024];
 
 	default_settings_interface();
@@ -940,6 +948,21 @@ void read_settings_interface(void)
 			if (net_setup.ngame==network_setup_max_game) break;
 
 			game_tag=xml_findnextchild(game_tag);
+		}
+	}
+	
+		// bot names
+	
+    bot_head_tag=xml_findfirstchild("Bots",interface_head_tag);
+    if (bot_head_tag!=-1) {
+	
+		cnt=0;
+		bot_tag=xml_findfirstchild("Bot",bot_head_tag);
+		
+		while (bot_tag!=-1) {
+			xml_get_attribute_text(bot_tag,"name",hud.bot_names.names[cnt],name_str_len);
+			cnt++;
+			bot_tag=xml_findnextchild(bot_tag);
 		}
 	}
 

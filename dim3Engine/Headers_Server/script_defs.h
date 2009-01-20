@@ -380,6 +380,7 @@ and can be sold or given away.
 
 #define obj_thrust_prop_speed						0
 #define obj_thrust_prop_max_speed					1
+#define obj_thrust_prop_drag						2
 
 #define obj_look_prop_up_angle						0
 #define obj_look_prop_down_angle					1

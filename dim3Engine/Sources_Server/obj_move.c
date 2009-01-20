@@ -1372,7 +1372,7 @@ void object_move_remote(obj_type *obj)
 void object_thrust(obj_type *obj)
 {
 	float			xmove,ymove,zmove,ztemp,
-					speed,neg;
+					xmax,ymax,zmax,drag;
 	
 	if (obj->input_mode!=im_thrust) return;
 	
@@ -1387,46 +1387,45 @@ void object_thrust(obj_type *obj)
 		// run thrust
 		
 	if (!obj->forward_move.moving) return;
+	if (obj->thrust.max_speed==0.0f) return;
 	
     angle_get_movement_float(obj->ang.y,obj->thrust.speed,&xmove,&zmove);
 	angle_get_movement_float(obj->view_ang.x,obj->thrust.speed,&ymove,&ztemp);
-	
-	fprintf(stdout,"MOVE: %.2f, %.2f\n",xmove,zmove);
-	
+
 	obj->thrust.vct.x+=xmove;
+	obj->thrust.vct.y+=ymove;
+	obj->thrust.vct.z+=zmove;
+	
+		// drag option
+
+	if (obj->thrust.drag) {
+		
+		drag=1.0f-(obj->thrust.speed/obj->thrust.max_speed);
+
+		angle_get_movement_float(obj->ang.y,obj->thrust.max_speed,&xmax,&zmax);
+		xmax=(float)fabs(xmax);
+		zmax=(float)fabs(zmax);
+	
+		angle_get_movement_float(obj->view_ang.x,obj->thrust.max_speed,&ymax,&ztemp);
+		ymax=(float)fabs(ymax);
+	
+		if ((obj->thrust.vct.x>xmax) || (obj->thrust.vct.x<-xmax)) obj->thrust.vct.x*=drag;
+		if ((obj->thrust.vct.y>ymax) || (obj->thrust.vct.y<-ymax)) obj->thrust.vct.y*=drag;
+		if ((obj->thrust.vct.z>zmax) || (obj->thrust.vct.z<-zmax)) obj->thrust.vct.z*=drag;
+		
+		return;
+	}
+	
+		// regular thrust locked by max
+		
 	if (obj->thrust.vct.x>obj->thrust.max_speed) obj->thrust.vct.x=obj->thrust.max_speed;
 	if (obj->thrust.vct.x<-obj->thrust.max_speed) obj->thrust.vct.x=-obj->thrust.max_speed;
 	
-	obj->thrust.vct.y+=ymove;
 	if (obj->thrust.vct.y>obj->thrust.max_speed) obj->thrust.vct.y=obj->thrust.max_speed;
 	if (obj->thrust.vct.y<-obj->thrust.max_speed) obj->thrust.vct.y=-obj->thrust.max_speed;
-
-	obj->thrust.vct.z+=zmove;
+	
 	if (obj->thrust.vct.z>obj->thrust.max_speed) obj->thrust.vct.z=obj->thrust.max_speed;
 	if (obj->thrust.vct.z<-obj->thrust.max_speed) obj->thrust.vct.z=-obj->thrust.max_speed;
-
-		return;
-		
-		// if we are over the max speed, then
-		// divide out the speed to reduce each axis
-		
-	speed=(float)fabs(obj->thrust.vct.x)+(float)fabs(obj->thrust.vct.y)+(float)fabs(obj->thrust.vct.z);
-	if ((speed<=obj->thrust.max_speed) || (speed==0.0f)) return;
-	
-	if (obj->thrust.vct.x!=0.0f) {
-		neg=(obj->thrust.vct.x<0.0f)?-1.0f:1.0f;
-		obj->thrust.vct.x=(((speed-(float)fabs(obj->thrust.vct.x))/speed)*obj->thrust.max_speed)*neg;
-	}
-	
-	if (obj->thrust.vct.y!=0.0f) {
-		neg=(obj->thrust.vct.y<0.0f)?-1.0f:1.0f;
-		obj->thrust.vct.y=(((speed-(float)fabs(obj->thrust.vct.y))/speed)*obj->thrust.max_speed)*neg;
-	}
-	
-	if (obj->thrust.vct.z!=0.0f) {
-		neg=(obj->thrust.vct.z<0.0f)?-1.0f:1.0f;
-		obj->thrust.vct.z=(((speed-(float)fabs(obj->thrust.vct.z))/speed)*obj->thrust.max_speed)*neg;
-	}
 }
 	
 /* =======================================================

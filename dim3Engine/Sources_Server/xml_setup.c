@@ -104,8 +104,8 @@ void setup_xml_default(void)
 	setup.network.show_names=TRUE;
 	setup.network.nhost=0;
 
-	setup.host_game.bot_count=0;
-	setup.host_game.bot_skill=2;
+	setup.network.bot.count=0;
+	setup.network.bot.skill=2;
 	
 	setup.debug_console=FALSE;
 	setup.window=FALSE;
@@ -234,8 +234,8 @@ bool setup_xml_read_path(char *path)
 	setup_xml_read_key_int(setup_tag,"Joystick_Mode",&setup.joystick_mode);
 	setup_xml_read_key_text(setup_tag,"Network_Name",setup.network.name,name_str_len);
 	setup_xml_read_key_int(setup_tag,"Network_Team",&setup.network.team_idx);
-	setup_xml_read_key_int(setup_tag,"Host_Bot_Count",&setup.host_game.bot_count);
-	setup_xml_read_key_int(setup_tag,"Host_Bot_Skill",&setup.host_game.bot_skill);
+	setup_xml_read_key_int(setup_tag,"Host_Bot_Count",&setup.network.bot.count);
+	setup_xml_read_key_int(setup_tag,"Host_Bot_Skill",&setup.network.bot.skill);
 	setup_xml_read_key_boolean(setup_tag,"Network_Show_Names",&setup.network.show_names);
 	setup_xml_read_key_boolean(setup_tag,"Debug_Console",&setup.debug_console);
 	setup_xml_read_key_boolean(setup_tag,"Window",&setup.window);
@@ -417,8 +417,8 @@ bool setup_xml_write(void)
 	setup_xml_write_key_int("Joystick_Mode",setup.joystick_mode);
 	setup_xml_write_key_text("Network_Name",setup.network.name);
 	setup_xml_write_key_int("Network_Team",setup.network.team_idx);
-	setup_xml_write_key_int("Host_Bot_Count",setup.host_game.bot_count);
-	setup_xml_write_key_int("Host_Bot_Skill",setup.host_game.bot_skill);
+	setup_xml_write_key_int("Host_Bot_Count",setup.network.bot.count);
+	setup_xml_write_key_int("Host_Bot_Skill",setup.network.bot.skill);
 	setup_xml_write_key_boolean("Network_Show_Names",setup.network.show_names);
 	setup_xml_write_key_boolean("Debug_Console",setup.debug_console);
 	setup_xml_write_key_boolean("Window",setup.window);

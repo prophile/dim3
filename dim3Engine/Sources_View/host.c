@@ -64,8 +64,8 @@ extern network_setup_type	net_setup;
 int							host_tab_value,host_map_idx,host_game_type_idx;
 char						*net_host_file_list;
 char						net_game_types[network_setup_max_game+1][32],
-							bot_count_list[][32]={"None","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16",""},
-							bot_skill_list[][32]={"Very Easy","Easy","Normal","Hard","Very Hard",""};
+							bot_count_list[max_multiplayer_bot+2][32],
+							bot_skill_list[6][32]={"Very Easy","Easy","Normal","Hard","Very Hard",""};
 
 /* =======================================================
 
@@ -158,15 +158,25 @@ void host_game_pane(void)
 
 void host_options_pane(void)
 {
-	int				x,y;
+	int				n,x,y;
 
 	x=(int)(((float)hud.scale_x)*0.15f);
 	y=(int)(((float)hud.scale_y)*0.17f);
 	
-	element_combo_add("Bot Count",(char*)bot_count_list,setup.host_game.bot_count,host_game_bot_count_id,x,y,TRUE);
+	for (n=0;n!=(max_multiplayer_bot+1);n++) {
+		if (n==0) {
+			strcpy(bot_count_list[n],"None");
+		}
+		else {
+			sprintf(bot_count_list[n],"%d",n);
+		}
+	}
+	bot_count_list[max_multiplayer_bot+1][0]=0x0;
+	
+	element_combo_add("Bot Count",(char*)bot_count_list,setup.network.bot.count,host_game_bot_count_id,x,y,TRUE);
 	y+=element_get_control_high();
 
-	element_combo_add("Bot Skill",(char*)bot_skill_list,setup.host_game.bot_skill,host_game_bot_skill_id,x,y,TRUE);
+	element_combo_add("Bot Skill",(char*)bot_skill_list,setup.network.bot.skill,host_game_bot_skill_id,x,y,TRUE);
 }
 
 void host_create_pane(void)
@@ -284,17 +294,17 @@ void host_close(void)
 
 void host_game_setup(void)
 {
-	int				idx;
 	char			*c;
 	
-	net_setup.game_idx=element_get_value(host_game_type_id);
-	net_setup.host.map_name[0]=0x0;
-	
-	idx=element_get_value(host_table_id);
+		// game type
+		
+	net_setup.game_idx=host_game_type_idx;
 	
 		// use graphic name to get to original map name
+		
+	net_setup.host.map_name[0]=0x0;
 				
-	c=net_host_file_list+(idx*128);
+	c=net_host_file_list+(host_map_idx*128);
 	
 	c=strchr(c,';');
 	if (c!=NULL) {
@@ -333,7 +343,6 @@ void host_game(void)
 
 	net_setup.host.hosting=TRUE;
 	net_setup.client.joined=TRUE;
-	net_setup.client.remote_uid=remote_uid;
 	net_setup.client.latency=0;
 	strcpy(net_setup.client.joined_ip,"127.0.0.1");
 
@@ -357,6 +366,8 @@ void host_game(void)
 		error_open(err_str,"Hosting Game Canceled");
 		return;
 	}
+	
+	object_player_set_remote_uid(remote_uid);
 
 		// add bots to player list
 
@@ -421,11 +432,11 @@ void host_click(void)
 			break;
 
 		case host_game_bot_count_id:
-			setup.host_game.bot_count=element_get_value(host_game_bot_count_id);
+			setup.network.bot.count=element_get_value(host_game_bot_count_id);
 			break;
 
 		case host_game_bot_skill_id:
-			setup.host_game.bot_skill=element_get_value(host_game_bot_skill_id);
+			setup.network.bot.skill=element_get_value(host_game_bot_skill_id);
 			break;
 
 			// buttons

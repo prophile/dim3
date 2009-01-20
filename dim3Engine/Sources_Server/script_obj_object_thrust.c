@@ -45,6 +45,7 @@ JSClass			obj_thrust_class={"obj_thrust_class",0,
 JSPropertySpec	obj_thrust_props[]={
 							{"speed",					obj_thrust_prop_speed,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{"maxSpeed",				obj_thrust_prop_max_speed,			JSPROP_PERMANENT|JSPROP_SHARED},
+							{"drag",					obj_thrust_prop_drag,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 
 /* =======================================================
@@ -83,6 +84,9 @@ JSBool js_get_obj_thrust_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 		case obj_thrust_prop_max_speed:
 			*vp=script_float_to_value(obj->thrust.max_speed);
             break;
+		case obj_thrust_prop_drag:
+			*vp=BOOLEAN_TO_JSVAL(obj->thrust.drag);
+            break;
 			
 	}
 	
@@ -104,6 +108,9 @@ JSBool js_set_obj_thrust_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
             break;
 		case obj_thrust_prop_max_speed:
 			obj->thrust.max_speed=script_value_to_float(*vp);
+            break;
+		case obj_thrust_prop_drag:
+			obj->thrust.drag=JSVAL_TO_BOOLEAN(*vp);
             break;
 
 	}

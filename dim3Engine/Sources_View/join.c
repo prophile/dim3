@@ -51,7 +51,6 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 
 extern int					client_timeout_values[];
-extern char					setup_team_color_list[][32];
 
 char						*join_table_data;
 bool						join_local,join_thread_quit;
@@ -526,14 +525,13 @@ void join_game(void)
 	net_setup.host.hosting=FALSE;
 	
 	net_setup.client.joined=TRUE;
-	net_setup.client.remote_uid=remote_uid;
 	net_setup.client.latency=0;
 	
 		// setup game type
 
 	net_setup.game_idx=net_client_find_game(game_name);
 	if (net_setup.game_idx==-1) {
-		net_client_send_leave_host(net_setup.client.remote_uid);
+		net_client_send_leave_host(remote_uid);
 		net_client_join_host_end();
 		sprintf(err_str,"Could not find game type: %s",game_name);
 		error_open(err_str,"Network Game Canceled");
@@ -548,7 +546,7 @@ void join_game(void)
 	join_close();
 	
 	if (!game_start(skill_medium,&remotes,err_str)) {
-		net_client_send_leave_host(net_setup.client.remote_uid);
+		net_client_send_leave_host(remote_uid);
 		net_client_join_host_end();
 		error_open(err_str,"Network Game Canceled");
 		return;
@@ -557,16 +555,18 @@ void join_game(void)
 		// start the map
 		
 	if (!map_start(TRUE,err_str)) {
-		net_client_send_leave_host(net_setup.client.remote_uid);
+		net_client_send_leave_host(remote_uid);
 		net_client_join_host_end();
 		error_open(err_str,"Network Game Canceled");
 		return;
 	}
 	
+	object_player_set_remote_uid(remote_uid);
+	
 		// start client network thread
 		
 	if (!net_client_start_message_queue(err_str)) {
-		net_client_send_leave_host(net_setup.client.remote_uid);
+		net_client_send_leave_host(remote_uid);
 		net_client_join_host_end();
 		error_open(err_str,"Network Game Canceled");
 		return;
