@@ -84,7 +84,7 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,float *ver
 	float			*vl,*uv,*cl;
 	
 	y=liq->y;
-	fy=(float)(y-view.camera.pnt.y);
+	fy=(float)y;
 	
 	vl=vertex_ptr;
 	uv=vertex_ptr+(v_sz*3);
@@ -178,9 +178,9 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,float *ver
 
 				// vertex and uvs
 
-			*vl++=(float)(x-view.camera.pnt.x);
+			*vl++=(float)x;
 			*vl++=fy-(f_tide_high*sn);
-			*vl++=(float)(view.camera.pnt.z-z);
+			*vl++=(float)z;
 
 			*uv++=x_txtoff+((liq->x_txtfact*(float)(x-liq->lft))/fgx);
 			*uv++=y_txtoff+((liq->y_txtfact*(float)(z-liq->top))/fgy);

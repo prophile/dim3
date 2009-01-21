@@ -214,7 +214,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 	int									n,k,t,x,y,xtot,
 										v_count,v_idx,v_light_start_idx;
 	unsigned int						*qd;
-	float								fx,fy,fz,x_shift_offset,y_shift_offset;
+	float								x_shift_offset,y_shift_offset;
 	float								*vertex_ptr,*pv,*pp,*pc,*pn,*lpc,*lpn;
 	bool								recalc_light;
 	d3pnt								*pnt,*lv_pt;
@@ -259,16 +259,10 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 	map.mesh_vertexes.normal.offset=map.mesh_vertexes.color.offset+map.mesh_vertexes.color.sz;
 
 	pn=pc+(v_count*3);
-
-		// the eye offset
-
-	fx=(float)view.camera.pnt.x;
-	fy=(float)view.camera.pnt.y;
-	fz=(float)view.camera.pnt.z;
-
-	v_idx=0;
 	
 		// run throught the meshes
+		
+	v_idx=0;
 	
 	for (n=0;n!=mesh_cnt;n++) {
 
@@ -310,9 +304,9 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 			
 				pnt=&mesh->vertexes[poly->v[t]];
 
-				*pv++=(((float)pnt->x)-fx);
-				*pv++=(((float)pnt->y)-fy);
-				*pv++=(fz-((float)pnt->z));
+				*pv++=(float)pnt->x;
+				*pv++=(float)pnt->y;
+				*pv++=(float)pnt->z;
 
 				*pc++=*lpc++;
 				*pc++=*lpc++;
@@ -343,9 +337,9 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 				for (t=0;t!=poly->light.nvertex;t++) {
 
-					*pv++=(((float)lv_pt->x)-fx);
-					*pv++=(((float)lv_pt->y)-fy);
-					*pv++=(fz-((float)lv_pt->z));
+					*pv++=(float)lv_pt->x;
+					*pv++=(float)lv_pt->y;
+					*pv++=(float)lv_pt->z;
 					
 					*pc++=*lpc++;
 					*pc++=*lpc++;

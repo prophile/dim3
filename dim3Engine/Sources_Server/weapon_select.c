@@ -279,9 +279,16 @@ void weapon_target_next_object(obj_type *obj,weapon_type *weap)
 	for (n=0;n!=server.count.obj;n++) {
 
 		chk_obj=&server.objs[n];
+		if (chk_obj->hidden) continue;
 
-		if (strcasecmp(chk_obj->type,weap->target.type)!=0) continue;
-
+		if (weap->target.type[0]==0x0) {
+			if (chk_obj->status.health==0) continue;
+			if ((!chk_obj->remote.on) && (!chk_obj->bot)) continue;
+		}
+		else {
+			if (strcasecmp(chk_obj->type,weap->target.type)!=0) continue;
+		}
+		
 			// outside max distance?
 
 		dist=distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,chk_obj->pnt.x,chk_obj->pnt.y,chk_obj->pnt.z);
@@ -343,9 +350,16 @@ void weapon_target_previous_object(obj_type *obj,weapon_type *weap)
 	for (n=0;n!=server.count.obj;n++) {
 
 		chk_obj=&server.objs[n];
+		if (chk_obj->hidden) continue;
 
-		if (strcasecmp(chk_obj->type,weap->target.type)!=0) continue;
-
+		if (weap->target.type[0]==0x0) {
+			if (chk_obj->status.health==0) continue;
+			if ((!chk_obj->remote.on) && (!chk_obj->bot)) continue;
+		}
+		else {
+			if (strcasecmp(chk_obj->type,weap->target.type)!=0) continue;
+		}
+		
 			// outside max distance?
 
 		dist=distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,chk_obj->pnt.x,chk_obj->pnt.y,chk_obj->pnt.z);
@@ -382,9 +396,15 @@ void weapon_target_previous_object(obj_type *obj,weapon_type *weap)
 bool weapon_target_start(obj_type *obj,weapon_type *weap,char *target_type)
 {
 		// get first targetted object
+		// NULL means any opponent
 
-	strcpy(weap->target.type,target_type);
-
+	if (target_type==NULL) {
+		weap->target.type[0]=0x0;
+	}
+	else {
+		strcpy(weap->target.type,target_type);
+	}
+	
 	weap->target.obj_uid=-1;
 	weapon_target_next_object(obj,weap);
 

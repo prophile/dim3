@@ -121,7 +121,7 @@ void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type
 			// camera is always at 0,0,0
 			
 		var=glGetUniformLocationARB(shader_prog_obj,"dim3CameraPosition");
-		if (var!=-1) glUniform3fARB(var,0.0f,0.0f,0.0f);
+		if (var!=-1) glUniform3fARB(var,(float)view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
 
 			// ambient light
 
@@ -233,6 +233,6 @@ void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type
 		// render position
 	
 	var=glGetUniformLocationARB(shader_prog_obj,"dim3RenderPosition");
-	if (var!=-1) glUniform3fARB(var,(float)(pnt->x-view.camera.pnt.x),(float)(pnt->y-view.camera.pnt.y),(float)(view.camera.pnt.z-pnt->z));
+	if (var!=-1) glUniform3fARB(var,(float)pnt->x,(float)pnt->y,(float)pnt->z);
 }
 

@@ -45,9 +45,9 @@
 	};
 	F51B261A055E0251000B696C /* draw_vertexes.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 8610}}";
-			sepNavSelRange = "{13248, 0}";
-			sepNavVisRange = "{12817, 948}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 8778}}";
+			sepNavSelRange = "{13801, 0}";
+			sepNavVisRange = "{13036, 781}";
 			sepNavWindowFrame = "{{473, 148}, {1041, 747}}";
 		};
 	};
@@ -152,8 +152,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 254088786;
-			PBXWorkspaceStateSaveDate = 254088786;
+			PBXPerProjectTemplateStateSaveDate = 254190262;
+			PBXWorkspaceStateSaveDate = 254190262;
 		};
 		sourceControlManager = 260AFEDB0D404F5000F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -221,6 +221,14 @@
 			sepNavSelRange = "{0, 0}";
 			sepNavVisRange = "{0, 1464}";
 			sepNavWindowFrame = "{{84, 213}, {1041, 747}}";
+		};
+	};
+	F594132A0978BCF500223F2A /* size.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1041, 2450}}";
+			sepNavSelRange = "{3213, 35}";
+			sepNavVisRange = "{3003, 1354}";
+			sepNavWindowFrame = "{{15, 209}, {1056, 814}}";
 		};
 	};
 	F594147B0979776300223F2A /* draw_normals.c */ = {

@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit ÒCreated with dim3 TechnologyÓ is given on a single
+2. This credit â€œCreated with dim3 Technologyâ€ is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -38,6 +38,7 @@ extern js_type			js;
 JSBool js_get_weap_target_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_set_weap_target_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_target_start_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_weap_target_start_opponent_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_weap_target_end_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			weap_target_class={"weap_target_class",0,
@@ -53,6 +54,7 @@ JSPropertySpec	weap_target_props[]={
 							
 JSFunctionSpec	weap_target_functions[]={
 							{"start",				js_weap_target_start_func,				1},
+							{"startOpponent",		js_weap_target_start_opponent_func,		0},
 							{"end",					js_weap_target_end_func,				0},
 							{0}};
 
@@ -136,7 +138,6 @@ JSBool js_set_weap_target_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 JSBool js_weap_target_start_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
 	char				target_type[name_str_len];
-	bool				ok;
 	obj_type			*obj;
 	weapon_type			*weap;
 	
@@ -144,24 +145,34 @@ JSBool js_weap_target_start_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 	obj=object_find_uid(weap->obj_uid);
 
 	script_value_to_string(argv[0],target_type,name_str_len);
-	
-	ok=weapon_target_start(obj,weap,target_type);
-	*rval=BOOLEAN_TO_JSVAL(ok);
+
+	*rval=BOOLEAN_TO_JSVAL(weapon_target_start(obj,weap,target_type));
 
 	return(JS_TRUE);
 }
 
-JSBool js_weap_target_end_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+JSBool js_weap_target_start_opponent_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	bool				ok;
 	obj_type			*obj;
 	weapon_type			*weap;
 	
 	weap=weapon_find_uid(js.attach.thing_uid);
 	obj=object_find_uid(weap->obj_uid);
 	
-	ok=weapon_target_end(obj,weap);
-	*rval=BOOLEAN_TO_JSVAL(ok);
+	*rval=BOOLEAN_TO_JSVAL(weapon_target_start(obj,weap,NULL));
+
+	return(JS_TRUE);
+}
+
+JSBool js_weap_target_end_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	obj_type			*obj;
+	weapon_type			*weap;
+	
+	weap=weapon_find_uid(js.attach.thing_uid);
+	obj=object_find_uid(weap->obj_uid);
+	
+	*rval=BOOLEAN_TO_JSVAL(weapon_target_end(obj,weap));
 
 	return(JS_TRUE);
 }

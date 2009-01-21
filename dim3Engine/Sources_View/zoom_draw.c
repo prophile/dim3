@@ -50,7 +50,7 @@ extern setup_type			setup;
 
 void zoom_setup(int tick,obj_type *obj,weapon_type *weap)
 {
-	int					crosshair_type,x,y,z,tx,ty,tz,old_x,old_y,obj_uid;
+	int					crosshair_type,tx,ty,tz,old_x,old_y,obj_uid;
 	obj_zoom_draw		*zoom_draw;
 	
 	zoom_draw=&obj->zoom_draw;
@@ -84,7 +84,7 @@ void zoom_setup(int tick,obj_type *obj,weapon_type *weap)
 		
 			// get crosshair location
 		
-		if (!crosshair_get_location(tick,obj,weap,&x,&z,&y,&obj_uid)) return;
+		if (!crosshair_get_location(tick,obj,weap,&tx,&tz,&ty,&obj_uid)) return;
 
 		zoom_draw->on=TRUE;
 		
@@ -94,10 +94,6 @@ void zoom_setup(int tick,obj_type *obj,weapon_type *weap)
 		gl_3D_view(&view.camera);
 		gl_3D_rotate(&view.camera.ang);
 		gl_setup_project();
-		
-		tx=x-view.camera.pnt.x;
-		ty=y-view.camera.pnt.y;
-		tz=view.camera.pnt.z-z;
 
 		gl_project_point(&tx,&ty,&tz);
 	}

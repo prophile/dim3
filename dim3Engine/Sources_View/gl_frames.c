@@ -70,6 +70,10 @@ void gl_frame_end(void)
       
 ======================================================= */
 
+/*
+
+// supergumba -- delete
+
 void gl_3D_view(view_camera_type *camera)
 {
 	float			ratio;
@@ -115,6 +119,68 @@ void gl_3D_rotate(d3ang *ang)
 	glRotatef(ang->x,1,0,0);				// x pan
 	glRotatef(ang->z,0,0,1);				// z pan
 	glRotatef(((360.0f-ang->y)+180.0f),0,1,0);	// y rotate -- need to reverse the winding
+}
+*/
+
+
+// supergumba -- redo all of this!
+
+void gl_3D_view(view_camera_type *camera)
+{
+	float			ratio;
+
+		// setup projections
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	switch (camera->projection_type) {
+
+		case cp_fov:
+			ratio=(((float)setup.screen.x_sz)/((float)setup.screen.y_sz))*camera->aspect_ratio;
+			gluPerspective(camera->fov,ratio,camera->near_z,camera->far_z);
+			glScalef(-1.0f,-1.0f,-1.0f);
+			break;
+
+		case cp_frustum:
+			glFrustum(camera->lft,camera->rgt,camera->top,camera->bot,camera->near_z,camera->far_z);
+			glScalef(-1.0f,-1.0f,-1.0f);
+			break;
+	}
+
+		// default rotations
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	gluLookAt((view.camera.pnt.x+0),(view.camera.pnt.y+0),(view.camera.pnt.z+view.camera.near_z),view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z,0.0f,1.0f,0.0f);
+
+	glTranslatef(0.0f,0.0f,(float)view.camera.near_z_offset);
+}
+
+void gl_3D_clear_rotate(void)
+{
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	gluLookAt((view.camera.pnt.x+0),(view.camera.pnt.y+0),(view.camera.pnt.z+view.camera.near_z),view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z,0.0f,1.0f,0.0f);
+
+	glTranslatef(0.0f,0.0f,(float)view.camera.near_z_offset);
+}
+
+void gl_3D_rotate(d3ang *ang)
+{
+	float		fx,fz,fy,f_temp;
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	angle_get_movement_float(ang->y,(float)view.camera.near_z,&fx,&fz);
+	angle_get_movement_float(-ang->x,(float)view.camera.near_z,&fy,&f_temp);
+
+	gluLookAt((view.camera.pnt.x+fx),(view.camera.pnt.y+fy),(view.camera.pnt.z+fz),view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z,0.0f,1.0f,0.0f);
+
+	glTranslatef(0.0f,0.0f,(float)view.camera.near_z_offset);
 }
 
 /* =======================================================
@@ -169,7 +235,7 @@ inline void gl_setup_project(void)
 
 inline bool gl_project_in_view_z(int x,int y,int z)
 {
-	return(((((double)x)*mod_matrix[2])+(((double)y)*mod_matrix[6])+(((double)z)*mod_matrix[10])+mod_matrix[14])<0.0);
+	return(((((double)x)*mod_matrix[2])+(((double)y)*mod_matrix[6])+(((double)z)*mod_matrix[10])+mod_matrix[14])>0.0);
 }
 
 inline void gl_project_point(int *x,int *y,int *z)
@@ -225,28 +291,22 @@ void gl_project_fix_rotation(view_camera_type *camera,int y_off,int *x,int *y,in
 
 		// translate from non-rotated 3D space
 		// to rotated 3D space
-
-	dx=(double)((*x)-view.camera.pnt.x);
-	dy=(double)((*y)-view.camera.pnt.y);
-	dz=(double)(view.camera.pnt.z-(*z));
+		
+	dx=(double)(*x);
+	dy=(double)(*y);
+	dz=(double)(*z);
 
 	gl_3D_view(&view.camera);
 	gl_setup_project();
-
 	gluProject(dx,dy,dz,mod_matrix,proj_matrix,(GLint*)vport,&dx2,&dy2,&dz2);
-	dx2-=(double)render_info.view_x;
-	dy2-=(double)render_info.view_y;
 
 	gl_3D_rotate(&view.camera.ang);
 	gl_setup_project();
-
 	gluUnProject(dx2,dy2,dz2,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
-	dx+=(double)render_info.view_x;
-	dy+=(double)render_info.view_y;
 
-	*x=((int)dx)+view.camera.pnt.x;
-	*y=((int)dy)+view.camera.pnt.y;
-	*z=view.camera.pnt.z-((int)dz);
+	*x=((int)dx);
+	*y=((int)dy);
+	*z=((int)dz);
 
 		// restore settings
 

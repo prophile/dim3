@@ -99,7 +99,7 @@ int shadow_render_stencil_wall_like_poly(int mesh_idx,int poly_idx,int ty,int y,
 
 	for (n=0;n!=poly->ptsz;n++) {
 		pt=&mesh->vertexes[poly->v[n]];
-		glVertex3i((pt->x-view.camera.pnt.x),(pt->y-view.camera.pnt.y),(view.camera.pnt.z-pt->z));
+		glVertex3i(pt->x,pt->y,pt->z);
 	}
 
 	glEnd();
@@ -139,7 +139,7 @@ int shadow_render_stencil_floor_like_poly(int mesh_idx,int poly_idx,int ty,int b
 
 	for (n=0;n!=poly->ptsz;n++) {
 		pt=&mesh->vertexes[poly->v[n]];
-		glVertex3i((pt->x-view.camera.pnt.x),(pt->y-view.camera.pnt.y),(view.camera.pnt.z-pt->z));
+		glVertex3i(pt->x,pt->y,pt->z);
 	}
 
 	glEnd();
@@ -237,7 +237,7 @@ int shadow_render_stencil_map(model_draw_shadow *shadow,poly_pointer_type *poly_
 
 void shadow_render_draw_wall_like_poly(map_mesh_type *mesh,map_mesh_poly_type *poly,int x,int y,int z,int *bx,int *bz,float gx,float gy,int high)
 {
-	int			n,kx,kz,lx,rx,lz,rz,by,px[4],pz[4],py[4],d;
+	int			kx,kz,lx,rx,lz,rz,by,px[4],pz[4],py[4],d;
 	float		slice_percent;
 	
 		// find where polygon lines intersect wall line
@@ -273,12 +273,6 @@ void shadow_render_draw_wall_like_poly(map_mesh_type *mesh,map_mesh_poly_type *p
 	
 		// draw the shadow to the stencil
 		
-	for (n=0;n!=4;n++) {
-		px[n]-=view.camera.pnt.x;
-		py[n]-=view.camera.pnt.y;
-		pz[n]=view.camera.pnt.z-pz[n];		// switch negative here
-	}
-
 	slice_percent=1.0f/(float)shadow_pbuffer_slice_count;
 	
 	glBegin(GL_QUADS);
@@ -297,7 +291,7 @@ void shadow_render_draw_wall_like_poly(map_mesh_type *mesh,map_mesh_poly_type *p
 
 void shadow_render_draw_floor_like_poly(map_mesh_type *mesh,map_mesh_poly_type *poly,int x,int y,int z,int *bx,int *bz,float gx,float gy)
 {
-	int				n,k,
+	int				k,
 					px[4],pz[4],py[4],
 					fx[8],fy[8],fz[8];
 	float			slice_percent;
@@ -328,12 +322,6 @@ void shadow_render_draw_floor_like_poly(map_mesh_type *mesh,map_mesh_poly_type *
 	
 		// draw shadow
 		
-	for (n=0;n!=4;n++) {
-		px[n]-=view.camera.pnt.x;
-		py[n]-=view.camera.pnt.y;
-		pz[n]=view.camera.pnt.z-pz[n];		// switch negative here
-	}
-
 	slice_percent=1.0f/(float)shadow_pbuffer_slice_count;
 	
 	glBegin(GL_QUADS);

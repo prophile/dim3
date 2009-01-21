@@ -607,7 +607,7 @@ void model_translate_draw_vertex(model_type *model,int mesh_idx,int x,int y,int 
 		pv++;
 		*pv+=fy;
 		pv++;
-		*pv=-((*pv)+fz);
+		*pv+=fz;
 		pv++;
 	}
 }

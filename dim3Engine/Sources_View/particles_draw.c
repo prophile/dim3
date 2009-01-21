@@ -189,28 +189,28 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx
 
 		*pv++=(px[0]+fx);
 		*pv++=(py[0]+fy);
-		*pv++=-(fz+pz[0]);
+		*pv++=(pz[0]+fz);
 		
 		*pt++=gx;
 		*pt++=gy;
 
 		*pv++=(px[1]+fx);
 		*pv++=(py[1]+fy);
-		*pv++=-(fz+pz[1]);
+		*pv++=(pz[1]+fz);
 		
 		*pt++=gx+g_size;
 		*pt++=gy;
 
 		*pv++=(px[2]+fx);
 		*pv++=(py[2]+fy);
-		*pv++=-(fz+pz[2]);
+		*pv++=(pz[2]+fz);
 		
 		*pt++=gx+g_size;
 		*pt++=gy+g_size;
 
 		*pv++=(px[3]+fx);
 		*pv++=(py[3]+fy);
-		*pv++=-(fz+pz[3]);
+		*pv++=(pz[3]+fz);
 		
 		*pt++=gx;
 		*pt++=gy+g_size;
@@ -268,10 +268,6 @@ void particle_draw(effect_type *effect,int count)
 		ambient_col.g=pc[1];
 		ambient_col.b=pc[2];
 	}
-
-	mx-=view.camera.pnt.x;
-	my-=view.camera.pnt.y;
-	mz-=view.camera.pnt.z;
 	
 		// particle move rotation
 		// we can have rotations from being attached to a bone of a model

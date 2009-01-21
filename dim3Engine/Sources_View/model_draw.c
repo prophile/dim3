@@ -608,7 +608,7 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 
 void model_render(int tick,model_draw *draw)
 {
-	int				n,x,y,z,tx,ty,tz,mesh_mask;
+	int				n,x,y,z,mesh_mask;
 	float			cf[3];
 	bool			is_fog_lighting;
 	model_type		*mdl;
@@ -649,10 +649,6 @@ void model_render(int tick,model_draw *draw)
 	x=draw->pnt.x;
 	y=draw->pnt.y;
 	z=draw->pnt.z;
-		
-	tx=x-view.camera.pnt.x;
-	ty=y-view.camera.pnt.y;
-	tz=z-view.camera.pnt.z;
 	
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))==0) continue;
@@ -670,7 +666,7 @@ void model_render(int tick,model_draw *draw)
 
 			// translate vertex to view
 			
-		model_translate_draw_vertex(mdl,n,tx,ty,tz);
+		model_translate_draw_vertex(mdl,n,x,y,z);
 	}
 
 		// texture binding optimization
@@ -849,15 +845,6 @@ void model_render_target(model_draw *draw,d3col *col)
 	rx-=xadd;
 	lz-=zadd;
 	rz-=zadd;
-
-		// position against camera
-
-	lx-=view.camera.pnt.x;
-	rx-=view.camera.pnt.x;
-	ty-=view.camera.pnt.y;
-	by-=view.camera.pnt.y;
-	lz=view.camera.pnt.z-lz;
-	rz=view.camera.pnt.z-rz;
 
 		// draw target
 	
