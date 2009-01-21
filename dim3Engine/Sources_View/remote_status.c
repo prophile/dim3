@@ -60,9 +60,9 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 	
 		// get the position and rotation
 		
-	x=obj->pnt.x-view.camera.pnt.x;
-	y=((obj->pnt.y-obj->size.y)-map_enlarge)-view.camera.pnt.y;
-	z=obj->pnt.z-view.camera.pnt.z;
+	x=obj->pnt.x;
+	y=(obj->pnt.y-obj->size.y)-map_enlarge;
+	z=obj->pnt.z;
 	
 	x_sz=map_enlarge<<1;
 	y_sz=map_enlarge<<2;
@@ -148,7 +148,7 @@ void remote_draw_names_setup(void)
 		
 	gl_setup_viewport(0);
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.ang);
+	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
 	gl_setup_project();
 	
 	for (n=0;n!=server.count.obj;n++) {
@@ -186,10 +186,6 @@ void remote_draw_names_setup(void)
 		obj->draw.remote_name.pnt.x=x;
 		obj->draw.remote_name.pnt.y=y;
 		obj->draw.remote_name.pnt.z=z;
-			
-		x-=view.camera.pnt.x;
-		y-=view.camera.pnt.y;
-		z=view.camera.pnt.z-z;
 		
 			// is it behind the z?
 

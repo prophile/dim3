@@ -51,8 +51,8 @@ float						shake_ang_x[16]={-1,0,1,2,1,0,-1,-2,-4,-2,0,4,8,12,8,4};
 float						team_color_tint[net_team_count][3]=net_team_color_tint_def;
 
 extern void draw_weapon_hand(int tick,obj_type *obj,weapon_type *weap);
-extern void draw_background(int cx,int cy,int cz);
-extern void draw_sky(int tick,int y);
+extern void draw_background(void);
+extern void draw_sky(int tick);
 extern bool model_inview(model_draw *draw);
 extern void model_calc_pose_bones(model_draw *draw);
 extern void render_opaque_map(int mesh_cnt,int *mesh_list);
@@ -236,7 +236,7 @@ void view_draw_models(int tick)
 		
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.ang);
+	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
 	gl_setup_project();
 
 		// draw models
@@ -371,8 +371,8 @@ void view_draw(int tick)
 		// unless obscured by fog
 	
 	if (!fog_solid_on()) {
-		draw_background(view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
-		draw_sky(tick,view.camera.pnt.y);
+		draw_background();
+		draw_sky(tick);
 	}
 	else {
 		fog_solid_start();

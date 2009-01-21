@@ -191,18 +191,18 @@ void rain_draw(int tick)
 
 			// draw rain
 
-		*vertex_ptr++=(float)(rain_draw->x-view.camera.pnt.x);
-		*vertex_ptr++=(float)(rain_draw->y-view.camera.pnt.y);
-		*vertex_ptr++=(float)(view.camera.pnt.z-rain_draw->z);
+		*vertex_ptr++=(float)rain_draw->x;
+		*vertex_ptr++=(float)rain_draw->y;
+		*vertex_ptr++=(float)rain_draw->z;
 
 		*col_ptr++=map.rain.start_color.r;
 		*col_ptr++=map.rain.start_color.g;
 		*col_ptr++=map.rain.start_color.b;
 		*col_ptr++=map.rain.alpha;
 
-		*vertex_ptr++=(float)((rain_draw->x-view.camera.pnt.x)+xadd);
-		*vertex_ptr++=(float)((rain_draw->y+map.rain.line_length)-view.camera.pnt.y);
-		*vertex_ptr++=(float)((view.camera.pnt.z-rain_draw->z)+zadd);
+		*vertex_ptr++=(float)(rain_draw->x+xadd);
+		*vertex_ptr++=(float)(rain_draw->y+map.rain.line_length);
+		*vertex_ptr++=(float)(rain_draw->z+zadd);
 
 		*col_ptr++=map.rain.end_color.r;
 		*col_ptr++=map.rain.end_color.g;
@@ -218,7 +218,7 @@ void rain_draw(int tick)
 
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.ang);
+	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
 	gl_setup_project();
 	
 	glEnable(GL_BLEND);

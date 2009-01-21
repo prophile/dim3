@@ -86,7 +86,7 @@ extern void gl_frame_start(d3col *col);
 extern void gl_frame_end(void);
 extern void gl_3D_view(view_camera_type *camera);
 extern void gl_3D_clear_rotate(void);
-extern void gl_3D_rotate(d3ang *ang);
+extern void gl_3D_rotate(d3pnt *pnt,d3ang *ang);
 extern void gl_2D_view_screen(void);
 extern void gl_2D_view_interface(void);
 extern void gl_setup_viewport(int y_off);

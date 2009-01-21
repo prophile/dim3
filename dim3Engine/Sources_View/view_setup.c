@@ -548,7 +548,7 @@ void view_script_transform_3D_to_2D(int x,int y,int z,int *x2,int *y2)
 {
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.ang);
+	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
 	gl_setup_project();
 	
 	gl_project_point(&x,&y,&z);
@@ -606,7 +606,7 @@ void view_draw_setup(int tick)
 	
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.ang);
+	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
 	gl_setup_project();
 
 		// setup draw meshes

@@ -202,9 +202,9 @@ int light_create_glsl_array(d3pnt *pnt,float *light_pos,float *light_col,float *
 	lspot=lspot_cache;
 
 	for (n=0;n!=nlight;n++) {
-		*pos++=(float)(lspot->pnt.x-view.camera.pnt.x);
-		*pos++=(float)(lspot->pnt.y-view.camera.pnt.y);
-		*pos++=(float)(view.camera.pnt.z-lspot->pnt.z);
+		*pos++=(float)lspot->pnt.x;
+		*pos++=(float)lspot->pnt.y;
+		*pos++=(float)lspot->pnt.z;
 
 		*col++=lspot->col.r;
 		*col++=lspot->col.g;

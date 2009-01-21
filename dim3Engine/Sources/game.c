@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "network.h"
+#include "objects.h"
 #include "consoles.h"
 #include "interfaces.h"
 

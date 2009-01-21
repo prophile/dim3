@@ -378,7 +378,7 @@ void render_transparent_map(int mesh_cnt,int *mesh_list)
 
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.ang);
+	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
 	gl_setup_project();
 
 		// texture binding optimization

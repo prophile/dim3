@@ -64,7 +64,7 @@ void decal_render_stencil(int stencil_idx,map_mesh_type *mesh,map_mesh_poly_type
 
 	for (n=0;n!=mesh_poly->ptsz;n++) {
 		pt=&mesh->vertexes[mesh_poly->v[n]];
-		glVertex3i((pt->x-view.camera.pnt.x),(pt->y-view.camera.pnt.y),(view.camera.pnt.z-pt->z));
+		glVertex3i(pt->x,pt->y,pt->z);
 	}
 	
 	glEnd();
@@ -76,8 +76,7 @@ void decal_render_stencil(int stencil_idx,map_mesh_type *mesh,map_mesh_poly_type
 
 void decal_render_mark(int stencil_idx,decal_type *decal)
 {
-	int				n,k,tick,fade_out_start_tick,
-					x[4],z[4],y[4];
+	int				k,tick,fade_out_start_tick;
 	float			alpha,g_size,gx,gy,cf[3],nf[3];
 	mark_type		*mark;
 	
@@ -103,14 +102,6 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 		
 	effect_image_animate_get_uv(tick,&mark->animate,&gx,&gy,&g_size);
 
-		// setup to draw
-		
-	for (n=0;n!=4;n++) {
-		x[n]=decal->x[n]-view.camera.pnt.x;
-		y[n]=decal->y[n]-view.camera.pnt.y;
-		z[n]=view.camera.pnt.z-decal->z[n];		// switch negative here
-	}
-	
 		// get lighting
 		
 	map_calculate_light_reduce_all();
@@ -128,13 +119,13 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 	
 	glBegin(GL_QUADS);
     glTexCoord2f(gx,gy);
-    glVertex3i(x[0],y[0],z[0]);
+    glVertex3i(decal->x[0],decal->y[0],decal->z[0]);
     glTexCoord2f((gx+g_size),gy);
-    glVertex3i(x[1],y[1],z[1]);
+    glVertex3i(decal->x[1],decal->y[1],decal->z[1]);
     glTexCoord2f((gx+g_size),(gy+g_size));
-    glVertex3i(x[2],y[2],z[2]);
+    glVertex3i(decal->x[2],decal->y[2],decal->z[2]);
     glTexCoord2f(gx,(gy+g_size));
-    glVertex3i(x[3],y[3],z[3]);
+    glVertex3i(decal->x[3],decal->y[3],decal->z[3]);
     glEnd();
 }
 

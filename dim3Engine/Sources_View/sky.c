@@ -42,7 +42,7 @@ extern view_type		view;
       
 ======================================================= */
 
-void draw_background(int cx,int cy,int cz)
+void draw_background(void)
 {
 	int					txt_id;
 	float				gx,gy;
@@ -60,8 +60,8 @@ void draw_background(int cx,int cy,int cz)
 	
 		// get scrolling
 		
-	gx=((float)(cx+cz))*(map.background.x_scroll_fact*0.001f);
-	gy=((float)cy)*(map.background.y_scroll_fact*0.001f);
+	gx=((float)(view.camera.pnt.x+view.camera.pnt.z))*(map.background.x_scroll_fact*0.001f);
+	gy=((float)view.camera.pnt.y)*(map.background.y_scroll_fact*0.001f);
 
 		// draw background
 		
@@ -114,7 +114,7 @@ void draw_sky_dome_panoramic(int tick)
 
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.ang);
+	gl_3D_rotate(NULL,&view.camera.ang);
 	gl_setup_project();
 	
 		// dome setup
@@ -314,7 +314,7 @@ void draw_sky_dome_hemisphere_half(int tick,float y_dir)
 
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.ang);
+	gl_3D_rotate(NULL,&view.camera.ang);
 	gl_setup_project();
 	
 		// setup texture
@@ -466,7 +466,7 @@ void draw_sky_dome_hemisphere(int tick)
       
 ======================================================= */
 
-void draw_sky_cube(int tick,int y)
+void draw_sky_cube(int tick)
 {
     int					k,txt_id,offset;
     float				g0,g1,txt_fact,txt_x_shift,txt_y_shift,f_radius;
@@ -477,7 +477,7 @@ void draw_sky_cube(int tick,int y)
 
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.ang);
+	gl_3D_rotate(NULL,&view.camera.ang);
 	gl_setup_project();
 					
 		// texture sizes
@@ -842,7 +842,7 @@ void draw_sky_cube(int tick,int y)
       
 ======================================================= */
 
-void draw_sky(int tick,int y)
+void draw_sky(int tick)
 {
 		// is there a sky?
 	
@@ -861,7 +861,7 @@ void draw_sky(int tick,int y)
 			break;
 			
 		case st_cube:
-			draw_sky_cube(tick,y);
+			draw_sky_cube(tick);
 			break;
 	
 	}

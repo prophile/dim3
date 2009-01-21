@@ -592,6 +592,34 @@ void os_set_cut_cursor(void)
 {
 }
 
+bool os_button_down(void)
+{
+	if (!GetSystemMetrics(SM_SWAPBUTTON)) return(GetAsyncKeyState(VK_LBUTTON)!=0);
+	return(GetAsyncKeyState(VK_RBUTTON)!=0);
+}
+
+bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box)
+{
+	/*
+	Point					uipt;
+	MouseTrackingResult		track;
+
+	TrackMouseLocation(NULL,&uipt,&track);
+	
+	if (offset_box==NULL) {
+		pt->x=uipt.h;
+		pt->y=uipt.v;
+	}
+	else {
+		pt->x=uipt.h-offset_box->lx;
+		pt->y=uipt.v-offset_box->ty;
+	}
+	
+	return(track==kMouseTrackingMouseReleased);
+	*/
+	return(TRUE);
+}
+
 /* =======================================================
 
       Editor Main

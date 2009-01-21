@@ -114,7 +114,7 @@ void halo_draw_setup(void)
 		
 	gl_setup_viewport(0);
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.ang);
+	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
 	gl_setup_project();
 
 	for (i=0;i<view.count.halo_draw;i++) {
@@ -122,9 +122,9 @@ void halo_draw_setup(void)
 		
 			// translate and rotate point
 			
-		x=halo_draw->pnt.x-view.camera.pnt.x;
-		y=halo_draw->pnt.y-view.camera.pnt.y;
-		z=view.camera.pnt.z-halo_draw->pnt.z;
+		x=halo_draw->pnt.x;
+		y=halo_draw->pnt.y;
+		z=halo_draw->pnt.z;
 		
 			// is it behind the z?
 

@@ -89,13 +89,13 @@ void effect_draw_lightning(int tick,effect_type *effect)
 	
         // get line start and end
         
-	sx=lightning->start_pnt.x-view.camera.pnt.x;
-	sy=lightning->start_pnt.y-view.camera.pnt.y;
-	sz=view.camera.pnt.z-lightning->start_pnt.z;
+	sx=lightning->start_pnt.x;
+	sy=lightning->start_pnt.y;
+	sz=lightning->start_pnt.z;
 
-	ex=lightning->end_pnt.x-view.camera.pnt.x;
-	ey=lightning->end_pnt.y-view.camera.pnt.y;
-	ez=view.camera.pnt.z-lightning->end_pnt.z;
+	ex=lightning->end_pnt.x;
+	ey=lightning->end_pnt.y;
+	ez=lightning->end_pnt.z;
 	
         // find number of lines
 
@@ -181,13 +181,13 @@ void effect_draw_ray(effect_type *effect,int count)
 	
         // find line
         
-	sx=ray->start_pnt.x-view.camera.pnt.x;
-	sy=ray->start_pnt.y-view.camera.pnt.y;
-	sz=view.camera.pnt.z-ray->start_pnt.z;
+	sx=ray->start_pnt.x;
+	sy=ray->start_pnt.y;
+	sz=ray->start_pnt.z;
 
-	ex=ray->end_pnt.x-view.camera.pnt.x;
-	ey=ray->end_pnt.y-view.camera.pnt.y;
-	ez=view.camera.pnt.z-ray->end_pnt.z;
+	ex=ray->end_pnt.x;
+	ey=ray->end_pnt.y;
+	ez=ray->end_pnt.z;
 	
 		// build line for count
 	
@@ -375,7 +375,7 @@ void effect_draw(int tick)
 
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.ang);
+	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
 	gl_setup_project();
 		
 		// draw effects

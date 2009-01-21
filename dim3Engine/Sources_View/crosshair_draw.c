@@ -183,7 +183,7 @@ void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 			
 		gl_setup_viewport(0);
 		gl_3D_view(&view.camera);
-		gl_3D_rotate(&view.camera.ang);
+		gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
 		gl_setup_project();
 		
 		tx=x;
