@@ -35,7 +35,7 @@ and can be sold or given away.
 #include "inputs.h"
 
 #define menu_editor_continue_id			1000
-#define menu_editor_toggle_lighting_id	1001
+#define menu_editor_toggle_debug_id		1001
 #define menu_editor_reload_map_id		1002
 #define menu_editor_quit_id				1004
 
@@ -55,7 +55,7 @@ extern int menu_find(char *name);
 extern void map_end(void);
 extern void game_end(void);
 extern void intro_open(void);
-extern void debug_light(void);
+extern void debug_game(void);
 
 /* =======================================================
 
@@ -103,7 +103,7 @@ void menu_setup_control_editor(void)
 	element_text_add("Continue",menu_editor_continue_id,x,y,hud.font.text_size_large,tx_center,TRUE,FALSE);
 	y+=(high+5);
 
-	element_text_add("Toggle Lighting",menu_editor_toggle_lighting_id,x,y,hud.font.text_size_large,tx_center,TRUE,FALSE);
+	element_text_add("Debug Mode",menu_editor_toggle_debug_id,x,y,hud.font.text_size_large,tx_center,TRUE,FALSE);
 	y+=(high+5);
 
 	element_text_add("Reload Map",menu_editor_reload_map_id,x,y,hud.font.text_size_large,tx_center,TRUE,FALSE);
@@ -209,8 +209,8 @@ void menu_select_editor(int id)
 
 	switch (id) {
 
-		case menu_editor_toggle_lighting_id:
-			debug_light();
+		case menu_editor_toggle_debug_id:
+			debug_game();
 			break;
 
 		case menu_editor_reload_map_id:

@@ -70,7 +70,8 @@ inline bool mesh_view_bit_get(map_mesh_type *mesh,int idx)
 
 void view_create_mesh_draw_list(void)
 {
-	int					n,t,sz,d,start_mesh_idx,idx,obscure_dist;
+	int					n,t,sz,d,start_mesh_idx,idx,
+						never_obscure_dist,obscure_dist;
 	map_mesh_type		*start_mesh,*mesh;
 
 		// get mesh camera is in
@@ -87,6 +88,8 @@ void view_create_mesh_draw_list(void)
 	else {
 		obscure_dist=(map.fog.outer_radius>>1)*3;
 	}
+
+	never_obscure_dist=abs(view.camera.near_z)*3;
 
 		// check all visibile meshes from the start mesh
 	
@@ -105,12 +108,17 @@ void view_create_mesh_draw_list(void)
 			}
 
 				// auto-eliminate meshes drawn outside the obscure distance
-				// or not in the view
 				
 			d=map_mesh_calculate_distance(mesh,&view.camera.pnt);
 			if (d>obscure_dist) continue;
 				
-			if (!mesh_inview(mesh)) continue;
+				// within a certain distance, don't check for obscuring
+				// by the view to fix some bugs with large polygons very
+				// close to the camera
+
+			if (d>never_obscure_dist) {
+				if (!mesh_inview(mesh)) continue;
+			}
 		}
 		else {
 			d=map_mesh_calculate_distance(mesh,&view.camera.pnt);

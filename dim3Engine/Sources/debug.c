@@ -37,8 +37,7 @@ and can be sold or given away.
 #include "inputs.h"
 #include "interfaces.h"
 
-extern int					os_vers_major,os_vers_minor_1,os_vers_minor_2,
-							hilite_mode;
+extern int					os_vers_major,os_vers_minor_1,os_vers_minor_2;
 extern char					arch_type[64];
 
 extern render_info_type		render_info;
@@ -50,6 +49,7 @@ extern network_setup_type	net_setup;
 
 char						bind_type_str[][16]={"Game","Map","Remote"},
 							effect_type_str[][16]={"Flash","Particle","Lightning","Ray","Globe","Shake"};
+bool						dim3_debug=FALSE;
 FILE						*debug_log_file=NULL;
 
 extern void console_add_system(char *txt);
@@ -464,14 +464,13 @@ void debug_log(char *str)
 }
 /* =======================================================
 
-      Debug Light
+      Debug Game
       
 ======================================================= */
 
-void debug_light(void)
+void debug_game(void)
 {
-	hilite_mode++;
-	if (hilite_mode>hilite_mode_mesh) hilite_mode=hilite_mode_off;
+	dim3_debug=!dim3_debug;
 }
 
 /* =======================================================
@@ -513,8 +512,8 @@ void debug_input(void)
 		return;
 	}
 	
-	if (input_action_get_state_single(nc_debug_light)) {
-		debug_light();
+	if (input_action_get_state_single(nc_debug_game)) {
+		debug_game();
 		return;
 	}
 	

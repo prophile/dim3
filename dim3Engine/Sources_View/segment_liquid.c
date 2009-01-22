@@ -38,7 +38,7 @@ extern server_type			server;
 extern view_type			view;
 extern setup_type			setup;
 
-extern int					hilite_mode;
+extern bool					dim3_debug;
 
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
 
@@ -149,7 +149,7 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,float *ver
 
 				// color
 
-			if (hilite_mode==hilite_mode_hilite) {
+			if (dim3_debug) {
 				*cl=*(cl+1)=*(cl+2)=1.0f;
 			}
 			else {

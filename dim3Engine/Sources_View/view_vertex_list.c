@@ -73,6 +73,10 @@ bool view_compile_mesh_gl_list_init(void)
 
 		mesh->light.light_count=-1;
 
+			// mesh has not been moved
+
+		mesh->draw.moved=FALSE;
+
 			// get count for color and normal lists
 
 		cnt=0;
@@ -82,6 +86,8 @@ bool view_compile_mesh_gl_list_init(void)
 			cnt+=(poly->ptsz+poly->light.nvertex);
 			poly++;
 		}
+
+		mesh->draw.vertex_count=cnt;
 
 			// allocate the lists
 
@@ -115,10 +121,16 @@ bool view_compile_mesh_gl_list_init(void)
 
 		mesh++;
 	}
-	
+
+		// total vertexes
+
+	map.mesh_vertexes.draw_vertex_count=v_count;
+
 		// initial map VBO
 		
-	vertex_ptr=view_bind_map_vertex_object((v_count*(3+2+3+3)));
+	view_init_map_vertex_object((v_count*(3+2+3+3)));
+
+	vertex_ptr=view_bind_map_map_vertex_object();
 	if (vertex_ptr==NULL) return(FALSE);
 	
 		// arrays and offsets
@@ -144,6 +156,8 @@ bool view_compile_mesh_gl_list_init(void)
 	pn=pc+(v_count*3);
 	
 		// fill in map geometery
+
+	v_idx=0;
 		
 	mesh=map.mesh.meshes;
 
@@ -362,179 +376,163 @@ void view_compile_mesh_gl_lists_ray_trace(map_mesh_type *mesh)
 
 bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 {
-	int									n,k,t,x,y,xtot,
-										v_count,v_idx,v_light_start_idx;
-	unsigned int						*qd;
+	int									n,k,t,v_count,sz;
 	float								x_shift_offset,y_shift_offset;
-	float								*vertex_ptr,*pv,*pp,*pc,*pn,*lpc,*lpn;
+	float								*vertex_ptr,*pv,*pp,*pc,*pn;
 	bool								recalc_light;
 	d3pnt								*pnt,*lv_pt;
 	d3uv								*lv_uv;
 	map_mesh_type						*mesh;
 	map_mesh_poly_type					*poly;
 
-		// find total number of vertexes in
-		// this scene
+		// total number of vertexes
 
-	v_count=0;
-
-	for (n=0;n!=mesh_cnt;n++) {
-		v_count+=map.mesh.meshes[mesh_list[n]].draw.vertex_count;
-	}
-
-	map.mesh_vertexes.draw_vertex_count=v_count;
+	v_count=map.mesh_vertexes.draw_vertex_count;
 
 		// map VBO to memory
 
-	vertex_ptr=view_bind_map_vertex_object((map.mesh_vertexes.draw_vertex_count*(3+2+3+3)));
+	vertex_ptr=view_bind_map_map_vertex_object();
 	if (vertex_ptr==NULL) return(FALSE);
 	
-		// arrays and offsets
-
-	map.mesh_vertexes.vert.sz=(v_count*3)*sizeof(float);
-	map.mesh_vertexes.vert.offset=0;
-
-	pv=vertex_ptr;
-
-	map.mesh_vertexes.uv.sz=(v_count*2)*sizeof(float);
-	map.mesh_vertexes.uv.offset=map.mesh_vertexes.vert.offset+map.mesh_vertexes.vert.sz;
-
-	pp=pv+(v_count*3);
-
-	map.mesh_vertexes.color.sz=(v_count*3)*sizeof(float);
-	map.mesh_vertexes.color.offset=map.mesh_vertexes.uv.offset+map.mesh_vertexes.uv.sz;
-
-	pc=pp+(v_count*2);
-
-	map.mesh_vertexes.normal.sz=(v_count*3)*sizeof(float);
-	map.mesh_vertexes.normal.offset=map.mesh_vertexes.color.offset+map.mesh_vertexes.color.sz;
-
-	pn=pc+(v_count*3);
-	
 		// run throught the meshes
+		// in this scene and update any
+		// relevant data
 		
-	v_idx=0;
-	
 	for (n=0;n!=mesh_cnt;n++) {
 
 		mesh=&map.mesh.meshes[mesh_list[n]];
-		
+
+			// recalculate the vertexes if this
+			// mesh is moving
+
+		if (mesh->draw.moved) {
+
+			pv=vertex_ptr+(mesh->draw.vertex_offset*3);
+
+			poly=mesh->polys;
+			
+			for (k=0;k!=mesh->npoly;k++) {
+
+					// polygon vertexes
+
+				for (t=0;t!=poly->ptsz;t++) {
+				
+					pnt=&mesh->vertexes[poly->v[t]];
+
+					*pv++=(float)pnt->x;
+					*pv++=(float)pnt->y;
+					*pv++=(float)pnt->z;
+				}
+
+					// tesseled lighting vertexes
+
+				if (!poly->light.simple_tessel) {
+
+					lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
+
+					for (t=0;t!=poly->light.nvertex;t++) {
+
+						*pv++=(float)lv_pt->x;
+						*pv++=(float)lv_pt->y;
+						*pv++=(float)lv_pt->z;
+
+						lv_pt++;
+					}
+				}
+
+				poly++;
+			}
+		}
+
+			// recalculate the uvs if this
+			// mesh has shiftable uvs
+
+		if (mesh->flag.shiftable) {
+
+			pp=vertex_ptr+((v_count*3)+(mesh->draw.vertex_offset*2));
+
+			poly=mesh->polys;
+			
+			for (k=0;k!=mesh->npoly;k++) {
+
+					// polygon uvs
+
+				x_shift_offset=poly->draw.x_shift_offset;
+				y_shift_offset=poly->draw.y_shift_offset;
+
+				for (t=0;t!=poly->ptsz;t++) {
+					*pp++=poly->gx[t]+x_shift_offset;
+					*pp++=poly->gy[t]+y_shift_offset;
+				}
+
+					// tesseled lighting uvs
+
+				if (!poly->light.simple_tessel) {
+
+					lv_uv=mesh->light.quad_uvs+poly->light.vertex_offset;
+
+					for (t=0;t!=poly->light.nvertex;t++) {
+						*pp++=(lv_uv->x)+x_shift_offset;
+						*pp++=(lv_uv->y)+y_shift_offset;
+						lv_uv++;
+					}
+				}
+
+				poly++;
+			}
+		}
+
 			// calculate the lights touching
 			// this mesh and find out if they need
 			// to be recalculated
 
-		map_calculate_light_reduce_mesh(mesh);
-		recalc_light=!map_calculate_light_reduce_check_equal(mesh);
+			// moveable meshes always have their
+			// lights recalculated
 
-		if ((recalc_light) && (!mesh->flag.hilite)) {
+		if (!mesh->flag.hilite) {
 			
-			if (setup.ray_trace_lighting) {
-				view_compile_mesh_gl_lists_ray_trace(mesh);
+			map_calculate_light_reduce_mesh(mesh);
+
+			if (mesh->draw.moved) {
+				recalc_light=TRUE;
 			}
 			else {
-				view_compile_mesh_gl_lists_normal(mesh);
+				recalc_light=!map_calculate_light_reduce_check_equal(mesh);
 			}
 
-		}
-		
-		lpc=mesh->draw.p_color;
-		lpn=mesh->draw.p_normal;
+			if (recalc_light) {
 
-			// run through the polys
-
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-
-				// polygon vertexes
-
-			x_shift_offset=poly->draw.x_shift_offset;
-			y_shift_offset=poly->draw.y_shift_offset;
-
-			for (t=0;t!=poly->ptsz;t++) {
-			
-				pnt=&mesh->vertexes[poly->v[t]];
-
-				*pv++=(float)pnt->x;
-				*pv++=(float)pnt->y;
-				*pv++=(float)pnt->z;
-
-				*pc++=*lpc++;
-				*pc++=*lpc++;
-				*pc++=*lpc++;
-			
-				*pn++=*lpn++;
-				*pn++=*lpn++;
-				*pn++=*lpn++;
-				
-				*pp++=poly->gx[t]+x_shift_offset;
-				*pp++=poly->gy[t]+y_shift_offset;
-				
-				poly->draw.portal_v[t]=(unsigned int)v_idx;
-				
-				v_idx++;
-			}
-
-				// tesseled lighting vertexes
-
-			if (!poly->light.simple_tessel) {
-
-					// create the vertexes
-
-				v_light_start_idx=v_idx;
-				
-				lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
-				lv_uv=mesh->light.quad_uvs+poly->light.vertex_offset;
-
-				for (t=0;t!=poly->light.nvertex;t++) {
-
-					*pv++=(float)lv_pt->x;
-					*pv++=(float)lv_pt->y;
-					*pv++=(float)lv_pt->z;
-					
-					*pc++=*lpc++;
-					*pc++=*lpc++;
-					*pc++=*lpc++;
-				
-					*pn++=*lpn++;
-					*pn++=*lpn++;
-					*pn++=*lpn++;
-					
-					*pp++=(lv_uv->x)+x_shift_offset;
-					*pp++=(lv_uv->y)+y_shift_offset;
-					
-					lv_pt++;
-					lv_uv++;
-
-					v_idx++;
+				if (setup.ray_trace_lighting) {
+					view_compile_mesh_gl_lists_ray_trace(mesh);
+				}
+				else {
+					view_compile_mesh_gl_lists_normal(mesh);
 				}
 
-					// create light mesh draw indexes
+					// run through the polys
 
-				qd=mesh->light.quad_indexes+poly->light.quad_index_offset;
-				
-				xtot=poly->light.grid_x_sz+1;
+				sz=(mesh->draw.vertex_count*3)*sizeof(float);
 
-				for (y=0;y!=poly->light.grid_y_sz;y++) {
-					for (x=0;x!=poly->light.grid_x_sz;x++) {
-						*qd++=(unsigned int)(((y*xtot)+x)+v_light_start_idx);
-						*qd++=(unsigned int)(((y*xtot)+(x+1))+v_light_start_idx);
-						*qd++=(unsigned int)((((y+1)*xtot)+(x+1))+v_light_start_idx);
-						*qd++=(unsigned int)((((y+1)*xtot)+x)+v_light_start_idx);
-					}
-				}
+				pc=vertex_ptr+((v_count*(3+2))+(mesh->draw.vertex_offset*3));
+				memmove(pc,mesh->draw.p_color,sz);
+
+				pn=vertex_ptr+((v_count*(3+2+3))+(mesh->draw.vertex_offset*3));
+				memmove(pn,mesh->draw.p_normal,sz);
 			}
-
-			poly++;
 		}
-		
+
+			// reset the moved list so we'll catch
+			// and update any moved vertexes next time
+			// we hit this function
+
+		mesh->draw.moved=FALSE;
+
 		mesh++;
 	}
 
 		// unmap VBO
 
 	view_unmap_map_vertex_object();
-
 	view_unbind_map_vertex_object();
 	
 	return(TRUE);
@@ -550,7 +548,7 @@ void view_compile_gl_list_attach(void)
 {
 		// use last compiled buffer
 
-	view_rebind_map_vertex_object();
+	view_bind_map_vertex_object();
 
 		// vertexes
 

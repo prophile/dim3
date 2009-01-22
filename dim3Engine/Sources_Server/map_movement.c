@@ -335,7 +335,7 @@ void map_movements_auto_open(void)
 			obj=server.objs;
 
 			for (i=0;i!=server.count.obj;i++) {
-				if ((obj->player) || (obj->open_doors)) {
+				if (((obj->player) || (obj->open_doors)) && (obj->status.health!=0)) {
 					if (distance_check(obj->pnt.x,(obj->pnt.y-(obj->size.y>>1)),obj->pnt.z,center_pnt.x,center_pnt.y,center_pnt.z,movement->auto_open_distance)) {
 						obj_in_range=TRUE;
 						break;
@@ -361,7 +361,7 @@ void map_movements_auto_open(void)
 
 			for (i=0;i!=server.count.obj;i++) {
 
-				if ((obj->player) || (obj->open_doors)) {
+				if (((obj->player) || (obj->open_doors)) && (obj->status.health!=0)) {
 
 					if (obj->contact.stand_poly.mesh_idx!=-1) {
 

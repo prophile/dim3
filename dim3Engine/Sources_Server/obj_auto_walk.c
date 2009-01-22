@@ -171,6 +171,40 @@ void object_auto_walk_stop(obj_type *obj)
 
 /* =======================================================
 
+      Auto Walking Get End Position
+      
+======================================================= */
+
+bool object_auto_walk_get_seek_position(obj_type *obj,d3pnt *pnt)
+{
+	obj_type		*seek_obj;
+
+	switch (obj->auto_walk.mode) {
+
+		case aw_node:
+			memmove(pnt,&map.nodes[obj->auto_walk.node_seek_idx].pnt,sizeof(d3pnt));
+			return(TRUE);
+
+		case aw_object:
+		case aw_object_turn_only:
+			seek_obj=object_find_uid(obj->auto_walk.obj_uid);
+			if (seek_obj==NULL) return(FALSE);
+			
+			pnt->x=seek_obj->pnt.x;
+			pnt->y=seek_obj->pnt.y+seek_obj->size.eye_offset;
+			pnt->z=seek_obj->pnt.z;
+			return(TRUE);
+
+		case aw_position:
+			memmove(pnt,&obj->auto_walk.pnt,sizeof(d3pnt));
+			return(TRUE);
+	}
+
+	return(FALSE);
+}
+
+/* =======================================================
+
       Auto Walking
       
 ======================================================= */
@@ -344,16 +378,20 @@ void object_auto_walk_position(obj_type *obj)
 void object_auto_walk(obj_type *obj)
 {
 	switch (obj->auto_walk.mode) {
+
 		case aw_node:
 			object_auto_walk_node(obj);
 			return;
+
 		case aw_object:
 		case aw_object_turn_only:
 			object_auto_walk_object(obj);
 			return;
+
 		case aw_position:
 			object_auto_walk_position(obj);
-			break;
+			return;
+
 	}
 }
 

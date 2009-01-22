@@ -235,6 +235,8 @@ bool map_open(map_type *map,char *name,bool in_engine,bool load_shaders)
 
 	if (!map_textures_read(map,in_engine)) return(FALSE);
 	if ((in_engine) && (load_shaders)) if (!map_shaders_read(map)) return(FALSE);
+
+	map_find_random_spot_clear(map,NULL,NULL);
 	
 	return(TRUE);
 }

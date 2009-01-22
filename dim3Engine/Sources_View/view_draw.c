@@ -76,6 +76,7 @@ extern void decal_render(int mesh_draw_count,int *mesh_draw_list);
 extern bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list);
 
 extern int			mesh_draw_count,mesh_draw_list[max_mesh];
+extern bool			dim3_debug;
 
 /* =======================================================
 
@@ -125,6 +126,30 @@ void view_object_get_ui_color(obj_type *obj,bool no_team_to_default,d3col *col)
 	col->r=team_color_tint[team_idx][0];
 	col->g=team_color_tint[team_idx][1];
 	col->b=team_color_tint[team_idx][2];
+}
+
+/* =======================================================
+
+      Draw Debug Object Paths
+      
+======================================================= */
+
+void view_draw_object_path(obj_type *obj)
+{
+	d3pnt			pnt;
+
+	if (!object_auto_walk_get_seek_position(obj,&pnt)) return;
+
+	glLineWidth(5.0f);
+
+	glColor4f(0.0f,1.0f,0.0f,1.0f);
+
+	glBegin(GL_LINES);
+	glVertex3i(obj->pnt.x,(obj->pnt.y+obj->size.eye_offset),obj->pnt.z);
+	glVertex3i(pnt.x,pnt.y,pnt.z);
+	glEnd();
+
+	glLineWidth(1.0f);
 }
 
 /* =======================================================
@@ -253,6 +278,7 @@ void view_draw_models(int tick)
 					model_render(tick,&obj->draw);
 					if (obj->remote.on) remote_draw_status(obj);
 					if (object_is_targetted(obj,&col)) model_render_target(&obj->draw,&col);
+					if (dim3_debug) view_draw_object_path(obj);
 				}
 				break;
 

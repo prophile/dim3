@@ -36,7 +36,7 @@ extern view_type			view;
 extern setup_type			setup;
 
 int							cur_vbo_cache_idx,
-							vbo_map_sz,vbo_cache_sz[view_vertex_object_count];
+							vbo_cache_sz[view_vertex_object_count];
 GLuint						vbo_map,vbo_cache[view_vertex_object_count];
 
 /* =======================================================
@@ -62,8 +62,6 @@ void view_create_vertex_objects(void)
 		// while this cost us memory, we don't get the cost of
 		// reseting these buffers constantly
 
-	vbo_map_sz=-1;
-
 	for (n=0;n!=view_vertex_object_count;n++) {
 		vbo_cache_sz[n]=-1;
 	}
@@ -85,38 +83,25 @@ void view_dispose_vertex_objects(void)
       
 ======================================================= */
 
-float* view_bind_map_vertex_object(int sz)
+void view_init_map_vertex_object(int sz)
+{
+		// create map geometery buffer
+
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_map);
+
+	sz*=sizeof(float);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+}
+
+inline float* view_bind_map_map_vertex_object(void)
 {
 	float		*vertex_ptr;
 
 		// bind to map specific VBO
 
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_map);
-
-		// resize it if more memory needed
-		// we only grow up, this *might* be a problem
-		// but it seems more optimal for now.  Will require
-		// more testing
-
-		// size is in floats
-
-	sz*=sizeof(float);
-
-	if (sz>vbo_map_sz) {
-
-			// we need to grab the pointer first so if the data
-			// is still being used then we'll be stalled
-
-		if (vbo_map_sz!=-1) {
-			vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-			glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
-		}
-
-			// now we can change the size
-
-		vbo_map_sz=sz;
-		glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
-	}
 
 		// map pointer
 
@@ -129,7 +114,7 @@ float* view_bind_map_vertex_object(int sz)
 	return(vertex_ptr);
 }
 
-inline void view_rebind_map_vertex_object(void)
+inline void view_bind_map_vertex_object(void)
 {
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_map);
 }

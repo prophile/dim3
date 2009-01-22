@@ -60,7 +60,7 @@ and can be sold or given away.
 								 "player_10","player_11","player_12","player_13","player_14", \
 								 "player_15","player_16","player_17","player_18","player_19", \
 								 "console","menu","quick_save","save_load","message", "network_score", \
-								 "debug_status","debug_light","debug_screenshot","debug_map", \
+								 "debug_status","debug_game","debug_screenshot","debug_map", \
 								 ""}
 
 //
@@ -174,7 +174,7 @@ and can be sold or given away.
 #define nc_score					88
 
 #define nc_debug_status				89
-#define nc_debug_light				90
+#define nc_debug_game				90
 #define nc_debug_screenshot			91
 #define nc_debug_map				92
 

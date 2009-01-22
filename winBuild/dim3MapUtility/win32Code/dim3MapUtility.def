@@ -13,9 +13,10 @@ EXPORTS
 
 	map_count_spot									@200
 	map_find_spot									@201
-	map_find_random_spot							@202
-	map_spot_clear_attach							@203
-	map_spot_attach_object							@204
+	map_find_random_spot_clear						@202
+	map_find_random_spot							@203
+	map_spot_clear_attach							@204
+	map_spot_attach_object							@205
 
 	map_node_to_node_distance						@210
 	map_find_node									@211

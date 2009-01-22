@@ -34,7 +34,7 @@ and can be sold or given away.
 #include "video.h"
 
 extern int					shadow_pbuffer_pixel_size;
-extern bool					shadow_on;
+extern bool					shadow_on,dim3_debug;
 
 extern map_type				map;
 extern setup_type			setup;
@@ -351,28 +351,29 @@ bool shadow_texture_create(model_draw *draw)
 
 	shadow_texture_count++;
 
-	// this is used for testing shadow
-/*
-	glLineWidth(2.0f);
-	
-	glColor4f(1,0,0,1);
-	glBegin(GL_LINES);
-	glVertex2f(0.0f,0.0f);
-	glVertex2f(shadow_pbuffer_gl_transform_size,shadow_pbuffer_gl_transform_size);
-	glVertex2f(shadow_pbuffer_gl_transform_size,0.0f);
-	glVertex2f(0.0f,shadow_pbuffer_gl_transform_size);
-	glEnd();
-	
-	glColor4f(0,1,0,1);
-	glBegin(GL_LINE_LOOP);
-	glVertex2f(0.0f,0.0f);
-	glVertex2f(shadow_pbuffer_gl_transform_size,0.0f);
-	glVertex2f(shadow_pbuffer_gl_transform_size,shadow_pbuffer_gl_transform_size);
-	glVertex2f(0.0f,shadow_pbuffer_gl_transform_size);
-	glEnd();
-	
-	shadow->alpha=1.0f;
-*/
+		// shadow debug
+
+	if (dim3_debug) {
+
+		glColor4f(1.0f,0.2f,0.2f,1.0f);
+
+		glBegin(GL_LINES);
+		glVertex2f(0.0f,0.0f);
+		glVertex2f(shadow_pbuffer_gl_transform_size,shadow_pbuffer_gl_transform_size);
+		glVertex2f(shadow_pbuffer_gl_transform_size,0.0f);
+		glVertex2f(0.0f,shadow_pbuffer_gl_transform_size);
+		glEnd();
+
+		glBegin(GL_LINE_LOOP);
+		glVertex2f(0.0f,0.0f);
+		glVertex2f(shadow_pbuffer_gl_transform_size,0.0f);
+		glVertex2f(shadow_pbuffer_gl_transform_size,shadow_pbuffer_gl_transform_size);
+		glVertex2f(0.0f,shadow_pbuffer_gl_transform_size);
+		glEnd();
+
+		draw->shadow.alpha=1.0f;
+	}
+
 		// draw model
 
 	memmove(&shd_draw,draw,sizeof(model_draw));

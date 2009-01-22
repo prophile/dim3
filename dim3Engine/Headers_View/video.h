@@ -51,8 +51,9 @@ extern bool gl_check_shader_ok(void);
 
 extern void view_create_vertex_objects(void);
 extern void view_dispose_vertex_objects(void);
-extern float* view_bind_map_vertex_object(int sz);
-extern void view_rebind_map_vertex_object(void);
+extern void view_init_map_vertex_object(int sz);
+extern float* view_bind_map_map_vertex_object(void);
+extern void view_bind_map_vertex_object(void);
 extern void view_unmap_map_vertex_object(void);
 extern void view_unbind_map_vertex_object(void);
 extern float* view_bind_map_next_vertex_object(int sz);

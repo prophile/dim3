@@ -269,6 +269,7 @@ typedef struct		{
 typedef struct		{
 						int									vertex_count,vertex_offset,
 															stencil_pass_start,stencil_pass_end;
+						bool								moved;
 						float								*p_color,*p_normal;
 					} map_mesh_draw_type;
 					
@@ -419,7 +420,7 @@ typedef struct		{
 															attach_type[name_str_len],
 															attach_script[file_str_len],
 															attach_params[param_str_len];
-						bool								attach;
+						bool								attach,random_hit;
 						d3pnt								pnt;
 						d3ang								ang;
 					} spot_type;
@@ -602,6 +603,7 @@ extern void map_dispose_vertex_lists(map_type *map);
 
 extern int map_count_spot(map_type *map,char *name,char *type);
 extern int map_find_spot(map_type *map,char *name,char *type);
+extern void map_find_random_spot_clear(map_type *map,char *name,char *type);
 extern int map_find_random_spot(map_type *map,char *name,char *type);
 extern void map_spot_clear_attach(map_type *map);
 extern void map_spot_attach_object(spot_type *spot,char *name,char *type,char *script,char *params);

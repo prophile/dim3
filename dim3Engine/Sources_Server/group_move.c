@@ -238,6 +238,10 @@ void group_move(group_type *group,d3pnt *mpnt)
 				map_mesh_move(&map,unit_list->idx,mpnt,FALSE);
 				mesh->flag.touched=TRUE;
 
+					// will need to update vertex/lights in vbo
+
+				mesh->draw.moved=TRUE;
+
 					// move objects and decals with mesh
 
 				if (move_objs) object_move_with_mesh(unit_list->idx,mpnt->x,mpnt->z);
@@ -320,6 +324,10 @@ void group_rotate(group_type *group,d3ang *fpnt)
 			}
 			
 			mesh->flag.touched=TRUE;
+
+				// will need to update vertex/lights in vbo
+
+			mesh->draw.moved=TRUE;
 
 				// rotate objects and decals with mesh
 			

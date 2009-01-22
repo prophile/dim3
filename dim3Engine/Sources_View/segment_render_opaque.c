@@ -33,7 +33,7 @@ and can be sold or given away.
 #include "consoles.h"
 #include "video.h"
 
-extern int				hilite_mode;
+extern bool				dim3_debug;
 
 extern map_type			map;
 extern server_type		server;
@@ -176,7 +176,7 @@ void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool
 			// hilited, then we need to clear the stencil
 			// here as there will be no lighting pass
 
-		if ((mesh->flag.hilite) || (hilite_mode==hilite_mode_hilite) || (is_fog_lighting)) {
+		if ((mesh->flag.hilite) || (dim3_debug) || (is_fog_lighting)) {
 			glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
 		}
 		else {
@@ -830,23 +830,15 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 		render_opaque_portal_normal(mesh_cnt,mesh_list,stencil_pass,is_fog_lighting);
 		render_opaque_portal_bump(mesh_cnt,mesh_list,stencil_pass,is_fog_lighting);
 
-		if (!is_fog_lighting) {
-			
-			switch (hilite_mode) {
+		if ((!dim3_debug) && (!is_fog_lighting)) {
+			render_opaque_portal_lighting(mesh_cnt,mesh_list,stencil_pass);
+			render_opaque_portal_specular(mesh_cnt,mesh_list,stencil_pass);
+			render_opaque_portal_lighting_fix(mesh_cnt,mesh_list,stencil_pass);
 
-				case hilite_mode_off:
-					render_opaque_portal_lighting(mesh_cnt,mesh_list,stencil_pass);
-					render_opaque_portal_specular(mesh_cnt,mesh_list,stencil_pass);
-					render_opaque_portal_lighting_fix(mesh_cnt,mesh_list,stencil_pass);
-					break;
-
-				case hilite_mode_mesh:
-					render_opaque_portal_lighting_mesh_debug(mesh_cnt,mesh_list,stencil_pass);
-					glClear(GL_STENCIL_BUFFER_BIT);		// need to clear stencil since mesh lighting isn't drawing
-					break;
-
-			}
-
+			/* supergumba -- lighting testing
+				render_opaque_portal_lighting_mesh_debug(mesh_cnt,mesh_list,stencil_pass);
+				glClear(GL_STENCIL_BUFFER_BIT);		// need to clear stencil since mesh lighting isn't drawing
+			*/
 		}
 	}
 

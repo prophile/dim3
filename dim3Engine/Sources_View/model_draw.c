@@ -34,7 +34,7 @@ and can be sold or given away.
 #include "lights.h"
 #include "video.h"
 
-extern int				hilite_mode;
+extern bool				dim3_debug;
 
 extern map_type			map;
 extern server_type		server;
@@ -361,7 +361,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw,bool 
 			glColorPointer(3,GL_FLOAT,0,(void*)((nvertex*(3+2))*sizeof(float)));
 		}
 
-		if ((hilite_mode==hilite_mode_off) && (!is_fog_lighting)) {
+		if ((!dim3_debug) && (!is_fog_lighting)) {
 
 				// lighting
 
@@ -602,6 +602,75 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 
 /* =======================================================
 
+      Draw Model Bounding Box
+      
+======================================================= */
+
+void model_render_bounding_box(model_draw *draw)
+{
+	int				x,y,z,xsz,zsz,px[8],py[8],pz[8];
+	model_type		*mdl;
+	
+		// get model
+
+	mdl=model_find_uid(draw->uid);
+	if (mdl==NULL) return;
+
+		// bounding box
+
+	x=draw->pnt.x+mdl->view_box.offset.x;
+	y=draw->pnt.y+mdl->view_box.offset.y;
+	z=draw->pnt.z+mdl->view_box.offset.z;
+
+	xsz=mdl->view_box.size.x>>1;
+	zsz=mdl->view_box.size.z>>1;
+
+	px[0]=px[1]=px[4]=px[5]=x-xsz;
+	px[2]=px[3]=px[6]=px[7]=x+xsz;
+
+	py[0]=py[1]=py[2]=py[3]=y-mdl->view_box.size.y;
+	py[4]=py[5]=py[6]=py[7]=y;
+
+	pz[1]=pz[2]=pz[5]=pz[6]=z-zsz;
+	pz[0]=pz[3]=pz[4]=pz[7]=z+zsz;
+
+	rotate_polygon(8,px,py,pz,x,y,z,draw->setup.ang.x,draw->setup.ang.y,draw->setup.ang.z);
+
+		// draw box
+
+	glColor4f(0.2f,0.2f,1.0f,1.0f);
+	glLineWidth(2.0f);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex3i(px[0],py[0],pz[0]);
+	glVertex3i(px[1],py[1],pz[1]);
+	glVertex3i(px[2],py[2],pz[2]);
+	glVertex3i(px[3],py[3],pz[3]);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	glVertex3i(px[4],py[4],pz[4]);
+	glVertex3i(px[5],py[5],pz[5]);
+	glVertex3i(px[6],py[6],pz[6]);
+	glVertex3i(px[7],py[7],pz[7]);
+	glEnd();
+
+	glBegin(GL_LINES);
+	glVertex3i(px[0],py[0],pz[0]);
+	glVertex3i(px[4],py[4],pz[4]);
+	glVertex3i(px[1],py[1],pz[1]);
+	glVertex3i(px[5],py[5],pz[5]);
+	glVertex3i(px[2],py[2],pz[2]);
+	glVertex3i(px[6],py[6],pz[6]);
+	glVertex3i(px[3],py[3],pz[3]);
+	glVertex3i(px[7],py[7],pz[7]);
+	glEnd();
+
+	glLineWidth(1.0f);
+}
+
+/* =======================================================
+
       Draw Normal Model
       
 ======================================================= */
@@ -689,6 +758,10 @@ void model_render(int tick,model_draw *draw)
 			model_draw_transparent_trigs(mdl,n,draw);
 		}
 	}
+
+		// debug view box
+
+	if (dim3_debug) model_render_bounding_box(draw);
 }
 
 /* =======================================================

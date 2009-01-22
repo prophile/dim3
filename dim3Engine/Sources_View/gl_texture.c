@@ -190,9 +190,6 @@ void gl_texture_tesseled_lighting_start(void)
 		// texture unit 0
 		// this contains the lighting color modulated
 		// with the darkness factor
-		
-		// if in ray traced lighting, then
-		// skip darkness setting
 
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
@@ -201,18 +198,11 @@ void gl_texture_tesseled_lighting_start(void)
 	
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 
-	if (setup.ray_trace_lighting) {
-		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PRIMARY_COLOR);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_CONSTANT);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
-	}
-	else {
-		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PRIMARY_COLOR);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-	}
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PRIMARY_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_CONSTANT);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
 
 	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
@@ -240,14 +230,11 @@ inline void gl_texture_tesseled_lighting_set(int alpha_mask_id,float dark_factor
 	if (alpha_mask_id!=-1) gl_texture_bind(0,alpha_mask_id);
 
 		// darkness factor
-		// ignore if ray tracing is on
 
-	if (!setup.ray_trace_lighting) {
-		dark_fct[0]=dark_fct[1]=dark_fct[2]=dark_factor;
-		dark_fct[3]=1.0f;
+	dark_fct[0]=dark_fct[1]=dark_fct[2]=dark_factor;
+	dark_fct[3]=1.0f;
 
-		glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,dark_fct);
-	}
+	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,dark_fct);
 }
 
 /* =======================================================

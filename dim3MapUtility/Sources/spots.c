@@ -74,18 +74,66 @@ int map_find_spot(map_type *map,char *name,char *type)
 	return(-1);
 }
 
+/* =======================================================
+
+      Random Spot Find
+      
+======================================================= */
+
+void map_find_random_spot_clear(map_type *map,char *name,char *type)
+{
+	int				n,nspot;
+	spot_type		*spot;
+	
+	nspot=map->nspot;
+	
+	for (n=0;n!=nspot;n++) {
+		spot=&map->spots[n];
+		
+		if (name!=NULL) if (strcmp(spot->name,name)!=0) continue;
+		if (type!=NULL) if (strcmp(spot->type,type)!=0) continue;
+
+		spot->random_hit=FALSE;
+	}
+}
+
 int map_find_random_spot(map_type *map,char *name,char *type)
 {
-	int				n,nspot,count,spot_count;
+	int				n,nspot,count,spot_count,org_count;
 	spot_type		*spot;
 	
 	spot_count=map_count_spot(map,name,type);
 	if (spot_count==-1) return(-1);
 	
-	count=random_int(spot_count);
+	org_count=random_int(spot_count);
 	
 	nspot=map->nspot;
+
+		// check for unused spots
+		// this makes us do a random round robin
+		// approach to cut down on telefrags
 	
+	count=org_count;
+
+	for (n=0;n!=nspot;n++) {
+		spot=&map->spots[n];
+		if (spot->random_hit) continue;
+		
+		if (name!=NULL) if (strcmp(spot->name,name)!=0) continue;
+		if (type!=NULL) if (strcmp(spot->type,type)!=0) continue;
+		
+		if (count==0) return(n);
+		
+		count--;
+	}
+
+		// if we couldn't find one, clear all random
+		// hits and try again
+
+	map_find_random_spot_clear(map,name,type);
+
+	count=org_count;
+
 	for (n=0;n!=nspot;n++) {
 		spot=&map->spots[n];
 		
