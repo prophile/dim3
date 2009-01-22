@@ -267,7 +267,7 @@ typedef struct		{
 					} map_mesh_obscure_type;
 
 typedef struct		{
-						int									vertex_count,
+						int									vertex_count,vertex_offset,
 															stencil_pass_start,stencil_pass_end;
 						float								*p_color,*p_normal;
 					} map_mesh_draw_type;

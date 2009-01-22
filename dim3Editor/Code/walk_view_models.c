@@ -256,7 +256,7 @@ bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name,short *tex
 		
 	x=pnt->x-cpt->x;
 	y=pnt->y-cpt->y;
-	z=pnt->z-cpt->z;
+	z=cpt->z-pnt->z;
 	
 		// build model vertex list
 		
@@ -265,7 +265,9 @@ bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name,short *tex
     draw_setup.poses[0].idx_1=draw_setup.poses[0].idx_2=-1;
     draw_setup.poses[0].factor=0;
 	draw_setup.poses[0].acceleration=0;
+	
 	memmove(&draw_setup.ang,ang,sizeof(d3ang));
+	draw_setup.ang.y=angle_add(ang->y,180.0f);
 	
 	model_create_draw_bones(model,&draw_setup);
 	model_create_draw_vertexes(model,0,&draw_setup);

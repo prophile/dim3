@@ -38,17 +38,33 @@ extern setup_type			setup;
 
 /* =======================================================
 
-      Setup Mesh Light Change Cache
+      Setup Color and Normal Lists for
+	  Each Mesh
+	  
+	  Create the original map mesh vertex and
+	  uv lists
       
 ======================================================= */
 
 bool view_compile_mesh_gl_list_init(void)
 {
-	int					n,k,t,cnt,sz;
-	float				*pc,*pn;
+	int					n,k,t,cnt,sz,x,y,xtot,
+						v_count,v_idx,v_light_start_idx;
+	unsigned int		*qd;
+	float				x_shift_offset,y_shift_offset;
+	float				*vertex_ptr,*pv,*pp,*pc,*pn;
+	d3pnt				*pnt,*lv_pt;
+	d3uv				*lv_uv;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 
+		// get total number of vertexes
+		// and their offsets to setup vertex object for map
+		
+	v_count=0;
+	
+		// setup meshes
+		
 	mesh=map.mesh.meshes;
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
@@ -90,9 +106,144 @@ bool view_compile_mesh_gl_list_init(void)
 			*pn++=0.5f;
 			*pn++=1.0f;
 		}
+		
+			// add up vertex count and set
+			// vertex offset into vertex object
+			
+		mesh->draw.vertex_offset=v_count;
+		v_count+=mesh->draw.vertex_count;
 
 		mesh++;
 	}
+	
+		// initial map VBO
+		
+	vertex_ptr=view_bind_map_vertex_object((v_count*(3+2+3+3)));
+	if (vertex_ptr==NULL) return(FALSE);
+	
+		// arrays and offsets
+
+	map.mesh_vertexes.vert.sz=(v_count*3)*sizeof(float);
+	map.mesh_vertexes.vert.offset=0;
+
+	pv=vertex_ptr;
+
+	map.mesh_vertexes.uv.sz=(v_count*2)*sizeof(float);
+	map.mesh_vertexes.uv.offset=map.mesh_vertexes.vert.offset+map.mesh_vertexes.vert.sz;
+
+	pp=pv+(v_count*3);
+
+	map.mesh_vertexes.color.sz=(v_count*3)*sizeof(float);
+	map.mesh_vertexes.color.offset=map.mesh_vertexes.uv.offset+map.mesh_vertexes.uv.sz;
+
+	pc=pp+(v_count*2);
+
+	map.mesh_vertexes.normal.sz=(v_count*3)*sizeof(float);
+	map.mesh_vertexes.normal.offset=map.mesh_vertexes.color.offset+map.mesh_vertexes.color.sz;
+
+	pn=pc+(v_count*3);
+	
+		// fill in map geometery
+		
+	mesh=map.mesh.meshes;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+	
+			// run through the polys
+
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+
+				// polygon vertexes
+
+			x_shift_offset=poly->draw.x_shift_offset;
+			y_shift_offset=poly->draw.y_shift_offset;
+
+			for (t=0;t!=poly->ptsz;t++) {
+			
+				pnt=&mesh->vertexes[poly->v[t]];
+
+				*pv++=(float)pnt->x;
+				*pv++=(float)pnt->y;
+				*pv++=(float)pnt->z;
+
+				*pc++=1.0f;
+				*pc++=1.0f;
+				*pc++=1.0f;
+			
+				*pn++=0.5f;
+				*pn++=0.5f;
+				*pn++=1.0f;
+				
+				*pp++=poly->gx[t]+x_shift_offset;
+				*pp++=poly->gy[t]+y_shift_offset;
+				
+				poly->draw.portal_v[t]=(unsigned int)v_idx;
+				
+				v_idx++;
+			}
+
+				// tesseled lighting vertexes
+
+			if (!poly->light.simple_tessel) {
+
+					// create the vertexes
+
+				v_light_start_idx=v_idx;
+				
+				lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
+				lv_uv=mesh->light.quad_uvs+poly->light.vertex_offset;
+
+				for (t=0;t!=poly->light.nvertex;t++) {
+
+					*pv++=(float)lv_pt->x;
+					*pv++=(float)lv_pt->y;
+					*pv++=(float)lv_pt->z;
+					
+					*pc++=1.0f;
+					*pc++=1.0f;
+					*pc++=1.0f;
+				
+					*pn++=0.5f;
+					*pn++=0.5f;
+					*pn++=1.0f;
+					
+					*pp++=(lv_uv->x)+x_shift_offset;
+					*pp++=(lv_uv->y)+y_shift_offset;
+					
+					lv_pt++;
+					lv_uv++;
+
+					v_idx++;
+				}
+
+					// create light mesh draw indexes
+
+				qd=mesh->light.quad_indexes+poly->light.quad_index_offset;
+				
+				xtot=poly->light.grid_x_sz+1;
+
+				for (y=0;y!=poly->light.grid_y_sz;y++) {
+					for (x=0;x!=poly->light.grid_x_sz;x++) {
+						*qd++=(unsigned int)(((y*xtot)+x)+v_light_start_idx);
+						*qd++=(unsigned int)(((y*xtot)+(x+1))+v_light_start_idx);
+						*qd++=(unsigned int)((((y+1)*xtot)+(x+1))+v_light_start_idx);
+						*qd++=(unsigned int)((((y+1)*xtot)+x)+v_light_start_idx);
+					}
+				}
+			}
+
+			poly++;
+		}
+		
+		mesh++;
+	}
+	
+		// unmap VBO
+
+	view_unmap_map_vertex_object();
+	view_unbind_map_vertex_object();
 
 	return(TRUE);
 }
