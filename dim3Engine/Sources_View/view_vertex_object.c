@@ -37,7 +37,7 @@ extern setup_type			setup;
 
 int							cur_vbo_cache_idx,
 							vbo_cache_sz[view_vertex_object_count];
-GLuint						vbo_map,vbo_cache[view_vertex_object_count];
+GLuint						vbo_map,vbo_sky,vbo_cache[view_vertex_object_count];
 
 /* =======================================================
 
@@ -49,9 +49,10 @@ void view_create_vertex_objects(void)
 {
 	int			n;
 
-		// map vbo
+		// map and sky vbo
 
 	glGenBuffersARB(1,&vbo_map);
+	glGenBuffersARB(1,&vbo_sky);
 
 		// misc vbos
 
@@ -74,6 +75,7 @@ void view_create_vertex_objects(void)
 void view_dispose_vertex_objects(void)
 {
 	glDeleteBuffersARB(1,&vbo_map);
+	glDeleteBuffersARB(1,&vbo_sky);
 	glDeleteBuffersARB(view_vertex_object_count,vbo_cache);
 }
 
@@ -125,6 +127,58 @@ inline void view_unmap_map_vertex_object(void)
 }
 
 inline void view_unbind_map_vertex_object(void)
+{
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+}
+
+/* =======================================================
+
+      Sky Vertex Object
+      
+======================================================= */
+
+void view_init_sky_vertex_object(int sz)
+{
+		// create map geometery buffer
+
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_sky);
+
+	sz*=sizeof(float);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_DYNAMIC_DRAW_ARB);
+
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+}
+
+inline float* view_bind_map_sky_vertex_object(void)
+{
+	float		*vertex_ptr;
+
+		// bind to map specific VBO
+
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_sky);
+
+		// map pointer
+
+	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	if (vertex_ptr==NULL) {
+		glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+		return(NULL);
+	}
+
+	return(vertex_ptr);
+}
+
+inline void view_bind_sky_vertex_object(void)
+{
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_sky);
+}
+
+inline void view_unmap_sky_vertex_object(void)
+{
+	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+}
+
+inline void view_unbind_sky_vertex_object(void)
 {
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 }

@@ -70,61 +70,6 @@ void gl_frame_end(void)
       
 ======================================================= */
 
-/*
-
-// supergumba -- delete
-
-void gl_3D_view(view_camera_type *camera)
-{
-	float			ratio;
-
-		// setup projections
-		
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	
-	switch (camera->projection_type) {
-	
-		case cp_fov:
-			ratio=(((float)setup.screen.x_sz)/((float)setup.screen.y_sz))*camera->aspect_ratio;
-			gluPerspective(camera->fov,ratio,camera->near_z,camera->far_z);
-			glScalef(-1.0f,-1.0f,1.0f);						// x and y are reversed
-			glTranslatef(0.0f,0.0f,(float)camera->near_z_offset);
-			break;
-			
-		case cp_frustum:
-			glFrustum(camera->rgt,camera->lft,camera->bot,camera->top,camera->near_z,camera->far_z);
-			glTranslatef(0.0f,0.0f,(float)camera->near_z_offset);
-			break;
-			
-	}
-
-		// default rotations
-		
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-}
-
-void gl_3D_clear_rotate(void)
-{
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-}
-
-void gl_3D_rotate(d3ang *ang)
-{
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	
-	glRotatef(ang->x,1,0,0);				// x pan
-	glRotatef(ang->z,0,0,1);				// z pan
-	glRotatef(((360.0f-ang->y)+180.0f),0,1,0);	// y rotate -- need to reverse the winding
-}
-*/
-
-
-// supergumba -- redo all of this!
-
 void gl_3D_view(view_camera_type *camera)
 {
 	float			ratio;
@@ -153,17 +98,7 @@ void gl_3D_view(view_camera_type *camera)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	gluLookAt((view.camera.pnt.x+0),(view.camera.pnt.y+0),(view.camera.pnt.z+view.camera.near_z),view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z,0.0f,1.0f,0.0f);
-
-	glTranslatef(0.0f,0.0f,(float)view.camera.near_z_offset);
-}
-
-void gl_3D_clear_rotate(void)
-{
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	
-	gluLookAt((view.camera.pnt.x+0),(view.camera.pnt.y+0),(view.camera.pnt.z+view.camera.near_z),view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z,0.0f,1.0f,0.0f);
+	gluLookAt(view.camera.pnt.x,view.camera.pnt.y,(view.camera.pnt.z+view.camera.near_z),view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z,0.0f,1.0f,0.0f);
 
 	glTranslatef(0.0f,0.0f,(float)view.camera.near_z_offset);
 }
