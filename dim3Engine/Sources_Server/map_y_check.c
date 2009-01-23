@@ -309,16 +309,16 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 
 bool map_stand_crush_object(obj_type *obj)
 {
-	int					fudge;
+	int					y,fudge;
 	poly_pointer_type	poly;
-
+	
 		// pick a crushing fudge, reduce size and
 		// see if you can move up that far
 
 	fudge=obj->size.y>>3;
-
+	
 	obj->size.y-=fudge;
-	pin_upward_movement_complex(obj,-fudge,&poly);
+	y=pin_upward_movement_complex(obj,fudge,&poly);
 	obj->size.y+=fudge;
 	
 	if (poly.mesh_idx==-1) return(FALSE);
@@ -341,7 +341,7 @@ bool map_stand_crush_object(obj_type *obj)
 
 bool map_stand_check_object(obj_type *obj)
 {
-	int					sy;
+	int					y,sy;
 	poly_pointer_type	poly;
 
 		// total stand up height
@@ -350,7 +350,7 @@ bool map_stand_check_object(obj_type *obj)
 
 		// possible to move up?
 
-	pin_upward_movement_complex(obj,-sy,&poly);
-	return(poly.mesh_idx!=-1);
+	y=pin_upward_movement_complex(obj,sy,&poly);
+	return(poly.mesh_idx==-1);
 }
 

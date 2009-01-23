@@ -36,8 +36,7 @@ typedef struct		{
 typedef struct		{
 						int						anisotropic_mode,mipmap_mode,
 												duplicate_offset;
-						bool					texture_compression,
-												view_flip,auto_texture;
+						bool					auto_texture;
 						char					engine_name[256];
 						setup_col_type			col;
 					} setup_type;

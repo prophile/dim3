@@ -1,8 +1,5 @@
 <Setup>
-<Texture_Compression value="false" />
-<Anisotropic_Mode value="0" />
 <Mipmap_Mode value="2" />
-<View_Flip value="false" />
 <Auto_Texture value="true" />
 <Duplicate_Offset value="5" />
 <Engine_Name value="dim3 Engine" />

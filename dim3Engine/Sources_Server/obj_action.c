@@ -478,16 +478,16 @@ void object_start_stand(obj_type *obj)
     if ((obj->duck.mode==dm_stand) || (obj->duck.mode==dm_stand_up)) return;
 	
 		// check if object can stand up
-		
+
 	old_mode=obj->duck.mode;
 	obj->duck.mode=dm_stand;
 
-	stand_ok=!map_stand_check_object(obj);
+	stand_ok=map_stand_check_object(obj);
 	
 	obj->duck.mode=old_mode;
 	
 	if (!stand_ok) return;
-	
+
 		// stand up
     
     obj->duck.mode=dm_stand_up;
@@ -507,7 +507,7 @@ void object_start_duck(obj_type *obj)
 void object_ducking(obj_type *obj)
 {
     int			duck_mode,y_change;
-    
+	
     duck_mode=obj->duck.mode;
     if ((duck_mode==dm_stand) || (duck_mode==dm_duck)) return;
     

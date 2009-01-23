@@ -136,17 +136,20 @@ void view_object_get_ui_color(obj_type *obj,bool no_team_to_default,d3col *col)
 
 void view_draw_object_path(obj_type *obj)
 {
+	int				yadd;
 	d3pnt			pnt;
 
 	if (!object_auto_walk_get_seek_position(obj,&pnt)) return;
 
-	glLineWidth(5.0f);
+	glLineWidth(2.0f);
 
 	glColor4f(0.0f,1.0f,0.0f,1.0f);
+	
+	yadd=obj->size.y>>1;
 
 	glBegin(GL_LINES);
-	glVertex3i(obj->pnt.x,(obj->pnt.y+obj->size.eye_offset),obj->pnt.z);
-	glVertex3i(pnt.x,pnt.y,pnt.z);
+	glVertex3i(obj->pnt.x,(obj->pnt.y-yadd),obj->pnt.z);
+	glVertex3i(pnt.x,(pnt.y-yadd),pnt.z);
 	glEnd();
 
 	glLineWidth(1.0f);

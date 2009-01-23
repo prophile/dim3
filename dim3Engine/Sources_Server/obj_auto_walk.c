@@ -191,7 +191,7 @@ bool object_auto_walk_get_seek_position(obj_type *obj,d3pnt *pnt)
 			if (seek_obj==NULL) return(FALSE);
 			
 			pnt->x=seek_obj->pnt.x;
-			pnt->y=seek_obj->pnt.y+seek_obj->size.eye_offset;
+			pnt->y=seek_obj->pnt.y;
 			pnt->z=seek_obj->pnt.z;
 			return(TRUE);
 

@@ -90,7 +90,7 @@ void view_init_map_vertex_object(int sz)
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_map);
 
 	sz*=sizeof(float);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_DYNAMIC_DRAW_ARB);
 
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 }

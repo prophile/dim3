@@ -39,11 +39,8 @@ setup_type						setup;
 
 void setup_xml_default(void)
 {
-	setup.anisotropic_mode=anisotropic_mode_none;
 	setup.mipmap_mode=mipmap_mode_bilinear;
-	setup.texture_compression=FALSE;
 	
-	setup.view_flip=FALSE;
 	setup.auto_texture=TRUE;
 	setup.duplicate_offset=5;
 	
@@ -136,12 +133,9 @@ bool setup_xml_read(void)
 	
 		// keys
 
-	setup_xml_read_key_boolean(setup_tag,"Texture_Compression",&setup.texture_compression);
-	setup_xml_read_key_int(setup_tag,"Anisotropic_Mode",&setup.anisotropic_mode);
     setup_xml_read_key_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
  
-    setup_xml_read_key_boolean(setup_tag,"View_Flip",&setup.view_flip);
-    setup_xml_read_key_boolean(setup_tag,"Auto_Texture",&setup.auto_texture);
+     setup_xml_read_key_boolean(setup_tag,"Auto_Texture",&setup.auto_texture);
 	setup_xml_read_key_int(setup_tag,"Duplicate_Offset",&setup.duplicate_offset);
 	
 	setup_xml_read_key_text(setup_tag,"Engine_Name",setup.engine_name,256);

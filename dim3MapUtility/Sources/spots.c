@@ -99,22 +99,39 @@ void map_find_random_spot_clear(map_type *map,char *name,char *type)
 
 int map_find_random_spot(map_type *map,char *name,char *type)
 {
-	int				n,nspot,count,spot_count,org_count;
+	int				n,nspot,count,spot_count,free_spot_count;
 	spot_type		*spot;
 	
-	spot_count=map_count_spot(map,name,type);
-	if (spot_count==-1) return(-1);
-	
-	org_count=random_int(spot_count);
+		// count the spots
+		
+	spot_count=0;
+	free_spot_count=0;
 	
 	nspot=map->nspot;
 
-		// check for unused spots
-		// this makes us do a random round robin
-		// approach to cut down on telefrags
+	for (n=0;n!=nspot;n++) {
+		spot=&map->spots[n];
+		
+		if (name!=NULL) if (strcmp(spot->name,name)!=0) continue;
+		if (type!=NULL) if (strcmp(spot->type,type)!=0) continue;
+		
+		spot_count++;
+		if (!spot->random_hit) free_spot_count++;
+	}
 	
-	count=org_count;
-
+	if (spot_count==0) return(-1);
+	
+		// do we need to clear the round robin flags?
+		
+	if (free_spot_count==0) {
+		map_find_random_spot_clear(map,name,type);
+		free_spot_count=spot_count;
+	}
+	
+		// find random number in count
+		
+	count=random_int(free_spot_count);
+	
 	for (n=0;n!=nspot;n++) {
 		spot=&map->spots[n];
 		if (spot->random_hit) continue;
@@ -122,25 +139,10 @@ int map_find_random_spot(map_type *map,char *name,char *type)
 		if (name!=NULL) if (strcmp(spot->name,name)!=0) continue;
 		if (type!=NULL) if (strcmp(spot->type,type)!=0) continue;
 		
-		if (count==0) return(n);
-		
-		count--;
-	}
-
-		// if we couldn't find one, clear all random
-		// hits and try again
-
-	map_find_random_spot_clear(map,name,type);
-
-	count=org_count;
-
-	for (n=0;n!=nspot;n++) {
-		spot=&map->spots[n];
-		
-		if (name!=NULL) if (strcmp(spot->name,name)!=0) continue;
-		if (type!=NULL) if (strcmp(spot->type,type)!=0) continue;
-		
-		if (count==0) return(n);
+		if (count==0) {
+			spot->random_hit=TRUE;
+			return(n);
+		}
 		
 		count--;
 	}
