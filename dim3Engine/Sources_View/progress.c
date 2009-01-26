@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "video.h"
 
+extern map_type				map;
 extern setup_type			setup;
 extern hud_type				hud;
 
@@ -52,10 +53,14 @@ void progress_initialize(char *action)
 		
 	strcpy(progress_str,action);
 	
-		// progress background
-	
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Backgrounds","load","png");
-	bitmap_open(&progress_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
+		// check for map progress background,
+		// otherwise use default
+		
+	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Backgrounds_Map",map.info.name,"png");
+	if (!bitmap_open(&progress_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE)) {
+		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Backgrounds","load","png");
+		bitmap_open(&progress_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE);
+	}
 	
 		// current progress
 		

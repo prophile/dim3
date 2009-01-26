@@ -137,10 +137,10 @@ void map_auto_generate_lights(map_type *map)
       
 ======================================================= */
 
+/* supergumba -- spot generation needs to be fixed
+
 void map_auto_generate_spots(map_type *map)
 {
-	/* supergumba -- spot generation needs to be fixed
-
 	int				n,k,x,y,z,idx;
 	segment_type	*seg;
 	spot_type		*spot;
@@ -184,7 +184,7 @@ void map_auto_generate_spots(map_type *map)
 		
 		map->nspot++;
 	}
-	*/
 }
+	*/
 
 

@@ -649,7 +649,7 @@ void main_wind_open(void)
         
     GetAvailableWindowPositioningBounds(GetMainDevice(),&wbox);
 
-	SetRect(&wbox,(wbox.left+3),(wbox.top+25),(wbox.right-3),(wbox.bottom-5));
+	SetRect(&wbox,wbox.left,(wbox.top+25),wbox.right,wbox.bottom);
 	CreateNewWindow(kDocumentWindowClass,kWindowCloseBoxAttribute|kWindowCollapseBoxAttribute|kWindowFullZoomAttribute|kWindowResizableAttribute|kWindowLiveResizeAttribute|kWindowStandardHandlerAttribute|kWindowInWindowMenuAttribute,&wbox,&mainwind);
 	
 		// toolbar controls

@@ -147,7 +147,7 @@ unsigned char* png_utility_read(char *path,int *p_wid,int *p_high,bool *alpha_ch
 	for (y=0;y!=high;y++) {
 		rptrs[y]=(png_byte*)malloc(rowbytes);
 		if (rptrs[y]==NULL) {
-			png_destroy_read_struct(&png_ptr,&info_ptr,NULL);		// note -- this error state will leak -- need to fix in the future
+			png_destroy_read_struct(&png_ptr,&info_ptr,NULL);		// supergumba -- note -- this error state will leak -- need to fix in the future
 			free(rptrs);
 			fclose(file);
 			return(NULL);
@@ -276,7 +276,7 @@ bool png_utility_write(unsigned char *data,int wid,int high,bool alpha_channel,c
 
 bool png_utility_check(char *path,char *err_str)
 {
-	int						x,y,bit_depth,channels,
+	int						x,y,bit_depth,color_type,channels,
 							*v,values[]={2,4,8,16,32,64,128,256,512,1024,2048,4096,-1};
 	bool					x_ok,y_ok;
 	unsigned char			header[8];
@@ -330,6 +330,7 @@ bool png_utility_check(char *path,char *err_str)
 	x=info_ptr->width;
 	y=info_ptr->height;
 	bit_depth=info_ptr->bit_depth;
+	color_type=info_ptr->color_type;
 	
 	channels=png_get_channels(png_ptr,info_ptr);
 	
@@ -343,7 +344,7 @@ bool png_utility_check(char *path,char *err_str)
 	
 		// correct bit depth?
 		
-	if (bit_depth!=8) {
+	if ((bit_depth!=8) || ((color_type!=PNG_COLOR_TYPE_RGB) && (color_type!=PNG_COLOR_TYPE_RGB_ALPHA))) {
 		strcpy(err_str,"PNG color components need to have a bit depth of 8.");
 		return(FALSE);
 	}

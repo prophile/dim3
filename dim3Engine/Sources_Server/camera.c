@@ -79,7 +79,7 @@ void camera_initialize(void)
 	camera.plane.rgt=6*map_enlarge;
 	camera.plane.top=-(6*map_enlarge);
 	camera.plane.bot=3*map_enlarge;
-	camera.plane.near_z=6*map_enlarge;
+	camera.plane.near_z=3*map_enlarge;
 	camera.plane.far_z=2000*map_enlarge;
 	camera.plane.near_z_offset=-(3*map_enlarge);
 	

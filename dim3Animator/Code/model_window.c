@@ -671,7 +671,7 @@ void model_wind_open(void)
 
     GetAvailableWindowPositioningBounds(GetMainDevice(),&wbox);
 	
-	SetRect(&box,(wbox.left+5),(wbox.top+25),(wbox.right-5),(wbox.bottom-5));
+	SetRect(&box,wbox.left,(wbox.top+25),wbox.right,wbox.bottom);
 	CreateNewWindow(kDocumentWindowClass,kWindowStandardDocumentAttributes|kWindowLiveResizeAttribute|kWindowStandardHandlerAttribute|kWindowInWindowMenuAttribute,&box,&model_wind);
 	SetWTitle(model_wind,"\pModel");
 	ShowWindow(model_wind);

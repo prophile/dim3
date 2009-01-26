@@ -213,12 +213,6 @@ void draw_sky_dome_panoramic(int tick)
     int					k,txt_id;
 	float				txt_x_shift,txt_y_shift;
 	texture_type		*texture;
-
-		// dome setup
-
-	int					y_fct[5]={2,3,5,6,9};
-	float				gy_fct[6]={1.00f,0.80f,0.60f,0.40f,0.20f,0.01f};
-	double				reduce_fct[5]={6.8f,6.4f,6.0f,5.5f,5.0f};
 	
 		// texture sizes
 		

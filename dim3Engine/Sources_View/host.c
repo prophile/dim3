@@ -100,7 +100,7 @@ void host_fill_map_table(char *game_type)
 		
 		for (n=0;n!=nfile;n++) {
 			if (map_check_game_type(game_type,map_pick_fpd->files[n].file_name,info_name)) {
-				sprintf(c,"Maps;%s;%s",map_pick_fpd->files[n].file_name,info_name);
+				sprintf(c,"Bitmaps/Icons_Map;%s;%s",map_pick_fpd->files[n].file_name,info_name);
 				c+=128;
 			}
 		}

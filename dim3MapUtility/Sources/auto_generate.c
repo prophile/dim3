@@ -1901,10 +1901,6 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 		
 	map_auto_generate_add_player_spot(map);
 	
-		// create spots
-		
-	map_auto_generate_spots(map);
-	
 		// center map
 		
 	map_center(map);

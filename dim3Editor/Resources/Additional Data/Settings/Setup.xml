@@ -1,6 +1,6 @@
 <Setup>
 <Mipmap_Mode value="2" />
-<Auto_Texture value="true" />
+<Auto_Texture value="false" />
 <Duplicate_Offset value="5" />
 <Engine_Name value="dim3 Engine" />
 <Color_Mesh_Line value="7F7FFF" />

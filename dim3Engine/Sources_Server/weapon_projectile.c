@@ -468,7 +468,7 @@ bool weapon_script_projectile_spawn_center(int tick,obj_type *obj,weapon_type *w
 	pt.z=obj->pnt.z;
 	pt.y=(obj->pnt.y+obj->duck.y_move)+obj->size.eye_offset;
 
-	ang.x=-obj->view_ang.x;
+	ang.x=-(obj->view_ang.x*(1.0f-((fabs(obj->view_ang.x)/90.0f)*0.5f)));
 	ang.y=obj->ang.y;
 	ang.z=0.0f;
 

@@ -369,6 +369,8 @@ void object_stop(obj_type *obj)
 	
 	obj->last_move_animation_event=-1;
 	obj->last_turn_animation_event=-1;
+	
+	obj->thrust.vct.x=obj->thrust.vct.y=obj->thrust.vct.z=0.0f;
 }   
 
 /* =======================================================

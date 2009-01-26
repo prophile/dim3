@@ -130,9 +130,69 @@ void view_object_get_ui_color(obj_type *obj,bool no_team_to_default,d3col *col)
 
 /* =======================================================
 
-      Draw Debug Object Paths
+      Draw Debug Object
       
 ======================================================= */
+
+void view_draw_debug_bounding_box(obj_type *obj)
+{
+	int				x,y,z,xsz,ysz,zsz,px[8],py[8],pz[8];
+
+		// bounding box
+
+	x=obj->pnt.x;
+	y=obj->pnt.y;
+	z=obj->pnt.z;
+
+	xsz=obj->size.x>>1;
+	zsz=obj->size.z>>1;
+	
+	ysz=obj->size.y;
+	if (obj->duck.mode!=dm_stand) ysz-=obj->duck.y_move;
+
+	px[0]=px[1]=px[4]=px[5]=x-xsz;
+	px[2]=px[3]=px[6]=px[7]=x+xsz;
+
+	py[0]=py[1]=py[2]=py[3]=y-ysz;
+	py[4]=py[5]=py[6]=py[7]=y;
+
+	pz[1]=pz[2]=pz[5]=pz[6]=z-zsz;
+	pz[0]=pz[3]=pz[4]=pz[7]=z+zsz;
+
+	rotate_polygon(8,px,py,pz,x,y,z,obj->draw.setup.ang.x,obj->draw.setup.ang.y,obj->draw.setup.ang.z);
+
+		// draw box
+
+	glColor4f(0.2f,0.2f,1.0f,1.0f);
+	glLineWidth(2.0f);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex3i(px[0],py[0],pz[0]);
+	glVertex3i(px[1],py[1],pz[1]);
+	glVertex3i(px[2],py[2],pz[2]);
+	glVertex3i(px[3],py[3],pz[3]);
+	glEnd();
+
+	glBegin(GL_LINE_LOOP);
+	glVertex3i(px[4],py[4],pz[4]);
+	glVertex3i(px[5],py[5],pz[5]);
+	glVertex3i(px[6],py[6],pz[6]);
+	glVertex3i(px[7],py[7],pz[7]);
+	glEnd();
+
+	glBegin(GL_LINES);
+	glVertex3i(px[0],py[0],pz[0]);
+	glVertex3i(px[4],py[4],pz[4]);
+	glVertex3i(px[1],py[1],pz[1]);
+	glVertex3i(px[5],py[5],pz[5]);
+	glVertex3i(px[2],py[2],pz[2]);
+	glVertex3i(px[6],py[6],pz[6]);
+	glVertex3i(px[3],py[3],pz[3]);
+	glVertex3i(px[7],py[7],pz[7]);
+	glEnd();
+
+	glLineWidth(1.0f);
+}
 
 void view_draw_object_path(obj_type *obj)
 {
@@ -277,11 +337,14 @@ void view_draw_models(int tick)
 
 			case view_sort_object:
 				obj=&server.objs[sort->items[i].idx];
-				if (obj->draw.in_view) {
-					model_render(tick,&obj->draw);
-					if (obj->remote.on) remote_draw_status(obj);
-					if (object_is_targetted(obj,&col)) model_render_target(&obj->draw,&col);
-					if (dim3_debug) view_draw_object_path(obj);
+				if (!obj->draw.in_view) break;
+				
+				model_render(tick,&obj->draw);
+				if (obj->remote.on) remote_draw_status(obj);
+				if (object_is_targetted(obj,&col)) model_render_target(&obj->draw,&col);
+				if (dim3_debug) {
+					view_draw_debug_bounding_box(obj);
+					view_draw_object_path(obj);
 				}
 				break;
 
