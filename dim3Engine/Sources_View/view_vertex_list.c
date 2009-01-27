@@ -48,8 +48,8 @@ extern setup_type			setup;
 
 bool view_compile_mesh_gl_list_init(void)
 {
-	int					n,k,t,cnt,sz,x,y,xtot,
-						v_count,v_idx,v_light_start_idx;
+	int					n,k,t,cnt,sz,v_count,v_idx;
+	unsigned int		v_light_start_idx;
 	unsigned int		*qd;
 	float				x_shift_offset,y_shift_offset;
 	float				*vertex_ptr,*pv,*pp,*pc,*pn;
@@ -71,7 +71,7 @@ bool view_compile_mesh_gl_list_init(void)
 
 			// clear the light cache
 
-		mesh->light.light_count=-1;
+		mesh->light.cache.light_count=-1;
 
 			// mesh has not been moved
 
@@ -169,6 +169,12 @@ bool view_compile_mesh_gl_list_init(void)
 		
 		for (k=0;k!=mesh->npoly;k++) {
 
+				// offsets into verext lists
+
+			poly->draw.poly_vertex_offset=v_idx;
+			
+			v_light_start_idx=(unsigned int)(v_idx+poly->ptsz);
+
 				// polygon vertexes
 
 			x_shift_offset=poly->draw.x_shift_offset;
@@ -193,8 +199,6 @@ bool view_compile_mesh_gl_list_init(void)
 				*pp++=poly->gx[t]+x_shift_offset;
 				*pp++=poly->gy[t]+y_shift_offset;
 				
-				poly->draw.portal_v[t]=(unsigned int)v_idx;
-				
 				v_idx++;
 			}
 
@@ -204,10 +208,8 @@ bool view_compile_mesh_gl_list_init(void)
 
 					// create the vertexes
 
-				v_light_start_idx=v_idx;
-				
-				lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
-				lv_uv=mesh->light.quad_uvs+poly->light.vertex_offset;
+				lv_pt=mesh->draw.p_vertexes+poly->light.vertex_offset;
+				lv_uv=mesh->draw.p_uvs+poly->light.vertex_offset;
 
 				for (t=0;t!=poly->light.nvertex;t++) {
 
@@ -225,26 +227,20 @@ bool view_compile_mesh_gl_list_init(void)
 					
 					*pp++=(lv_uv->x)+x_shift_offset;
 					*pp++=(lv_uv->y)+y_shift_offset;
-					
+
 					lv_pt++;
 					lv_uv++;
 
 					v_idx++;
 				}
 
-					// create light mesh draw indexes
+					// offset light draw indexes
 
 				qd=mesh->light.quad_indexes+poly->light.quad_index_offset;
-				
-				xtot=poly->light.grid_x_sz+1;
 
-				for (y=0;y!=poly->light.grid_y_sz;y++) {
-					for (x=0;x!=poly->light.grid_x_sz;x++) {
-						*qd++=(unsigned int)(((y*xtot)+x)+v_light_start_idx);
-						*qd++=(unsigned int)(((y*xtot)+(x+1))+v_light_start_idx);
-						*qd++=(unsigned int)((((y+1)*xtot)+(x+1))+v_light_start_idx);
-						*qd++=(unsigned int)((((y+1)*xtot)+x)+v_light_start_idx);
-					}
+				for (t=0;t!=(poly->light.nquad*4);t++) {
+					*qd+=v_light_start_idx;
+					qd++;
 				}
 			}
 
@@ -311,7 +307,7 @@ void view_compile_mesh_gl_lists_normal(map_mesh_type *mesh)
 
 				// tesseled lighting vertexes
 
-			lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
+			lv_pt=mesh->draw.p_vertexes+poly->light.vertex_offset;
 
 			for (k=0;k!=poly->light.nvertex;k++) {
 				map_calculate_light_color_normal((double)lv_pt->x,(double)lv_pt->y,(double)lv_pt->z,pc,pn);
@@ -354,7 +350,7 @@ void view_compile_mesh_gl_lists_ray_trace(map_mesh_type *mesh)
 
 				// tesseled lighting vertexes
 
-			lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
+			lv_pt=mesh->draw.p_vertexes+poly->light.vertex_offset;
 
 			for (k=0;k!=poly->light.nvertex;k++) {
 				map_calculate_ray_trace_light_color_normal((double)lv_pt->x,(double)lv_pt->y,(double)lv_pt->z,pc,pn);
@@ -428,7 +424,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 				if (!poly->light.simple_tessel) {
 
-					lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
+					lv_pt=mesh->draw.p_vertexes+poly->light.vertex_offset;
 
 					for (t=0;t!=poly->light.nvertex;t++) {
 
@@ -469,7 +465,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 				if (!poly->light.simple_tessel) {
 
-					lv_uv=mesh->light.quad_uvs+poly->light.vertex_offset;
+					lv_uv=mesh->draw.p_uvs+poly->light.vertex_offset;
 
 					for (t=0;t!=poly->light.nvertex;t++) {
 						*pp++=(lv_uv->x)+x_shift_offset;
@@ -509,15 +505,17 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 					view_compile_mesh_gl_lists_normal(mesh);
 				}
 
-					// run through the polys
+					// move over the light lists
 
 				sz=(mesh->draw.vertex_count*3)*sizeof(float);
 
 				pc=vertex_ptr+((v_count*(3+2))+(mesh->draw.vertex_offset*3));
 				memmove(pc,mesh->draw.p_color,sz);
 
-				pn=vertex_ptr+((v_count*(3+2+3))+(mesh->draw.vertex_offset*3));
-				memmove(pn,mesh->draw.p_normal,sz);
+				if (mesh->flag.has_bump) {
+					pn=vertex_ptr+((v_count*(3+2+3))+(mesh->draw.vertex_offset*3));
+					memmove(pn,mesh->draw.p_normal,sz);
+				}
 			}
 		}
 
