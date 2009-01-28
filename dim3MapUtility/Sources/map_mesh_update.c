@@ -277,7 +277,7 @@ void map_mesh_move(map_type *map,int mesh_idx,d3pnt *mov_pnt,bool vertex_only)
 
 			// light vertexes
 
-		pl=mesh->draw.p_vertexes+poly->light.vertex_offset;
+		pl=mesh->light.quad_vertexes+poly->light.vertex_offset;
 
 		for (k=0;k!=poly->light.nvertex;k++) {
 			pl->x+=mov_pnt->x;
@@ -440,7 +440,7 @@ void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang
 
 			// light vertexes
 
-		pl=mesh->draw.p_vertexes+poly->light.vertex_offset;
+		pl=mesh->light.quad_vertexes+poly->light.vertex_offset;
 
 		for (k=0;k!=poly->light.nvertex;k++) {
 

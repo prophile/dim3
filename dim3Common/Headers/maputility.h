@@ -224,7 +224,7 @@ typedef struct		{
 					} map_mesh_poly_light_type;
 
 typedef struct		{
-						int									poly_vertex_offset,txt_frame_offset,
+						int									vertex_offset,gl_vertex_offset,txt_frame_offset,
 															stencil_pass,stencil_idx,decal_stencil_idx;
 						float								x_shift_offset,y_shift_offset;
 						bool								simple_tessel,shift_on;
@@ -269,9 +269,6 @@ typedef struct		{
 						int									vertex_count,vertex_offset,
 															stencil_pass_start,stencil_pass_end;
 						bool								moved;
-						float								*p_color,*p_normal;
-						d3pnt								*p_vertexes;
-						d3uv								*p_uvs;
 					} map_mesh_draw_type;
 
 typedef struct		{
@@ -283,6 +280,8 @@ typedef struct		{
 
 typedef struct		{
 						map_mesh_light_cache_type			cache;
+						d3pnt								*quad_vertexes;
+						d3uv								*quad_uvs;
 						unsigned int						*quad_indexes;
 					} map_mesh_light_type;
 
@@ -351,7 +350,7 @@ typedef struct		{
 
 typedef struct		{
 						int									max_vertex_count,draw_vertex_count;
-						int									*index_ptr;
+						unsigned int						*indexes;
 						map_vertex_array_type				vert,uv,color,normal;
 					} map_vertex_type;
 

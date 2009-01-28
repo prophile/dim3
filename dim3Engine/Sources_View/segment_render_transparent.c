@@ -133,7 +133,7 @@ void render_transparent_portal_mesh(bool is_fog_lighting)
 			}
 		}
 
-		glDrawArrays(GL_POLYGON,poly->draw.poly_vertex_offset,poly->ptsz);
+		glDrawArrays(GL_POLYGON,poly->draw.gl_vertex_offset,poly->ptsz);
 
 			// draw any specular on the transparent segment
 
@@ -197,7 +197,7 @@ void render_transparent_portal_mesh(bool is_fog_lighting)
 
 			gl_texture_transparent_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,poly->alpha,texture->glow.current_color);
 
-			glDrawArrays(GL_POLYGON,poly->draw.poly_vertex_offset,poly->ptsz);
+			glDrawArrays(GL_POLYGON,poly->draw.gl_vertex_offset,poly->ptsz);
 
 				// end glow drawing and force a transparencies reset
 
@@ -253,7 +253,7 @@ void render_transparent_portal_shader(void)
 		
 		gl_shader_set_variables(texture->shader.program_obj,&poly->box.mid,texture);
 
-		glDrawArrays(GL_POLYGON,poly->draw.poly_vertex_offset,poly->ptsz);
+		glDrawArrays(GL_POLYGON,poly->draw.gl_vertex_offset,poly->ptsz);
 	}
 
 	gl_texture_shader_end();

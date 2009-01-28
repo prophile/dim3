@@ -226,7 +226,7 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
 	int				x,z,x_sz,z_sz,v_sz,quad_cnt,
 					tz,bz,tz_add,top_row,bot_row,
 					lx,rx,lx_add,tide_split;
-	int				*d_idx;
+	unsigned int	*d_idx;
 		
 		// drawing the quads only draws to the edges
 
@@ -243,7 +243,7 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
 	v_sz=liquid_render_liquid_get_max_vertex(liq);
 
 	quad_cnt=0;
-	d_idx=map.liquid_vertexes.index_ptr;
+	d_idx=map.liquid_vertexes.indexes;
 		
 	tz=liq->top;
 	tz_add=tide_split-(tz%tide_split);
@@ -263,10 +263,10 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
 			lx_add=tide_split;
 			if (rx>=liq->rgt) rx=liq->rgt;
 			
-			*d_idx++=top_row+x;
-			*d_idx++=top_row+(x+1);
-			*d_idx++=bot_row+(x+1);
-			*d_idx++=bot_row+x;
+			*d_idx++=(unsigned int)(top_row+x);
+			*d_idx++=(unsigned int)(top_row+(x+1));
+			*d_idx++=(unsigned int)(bot_row+(x+1));
+			*d_idx++=(unsigned int)(bot_row+x);
 
 			quad_cnt++;
 
@@ -338,7 +338,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 
 	liquid_render_liquid_create_vertex(tick,liq,vertex_ptr,v_sz);
 	view_unmap_current_vertex_object();
-	
+
 		// create quads
 
 	quad_cnt=liquid_render_liquid_create_quads(liq);
@@ -390,7 +390,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 
 		// draw the quads
 
-	glDrawElements(GL_QUADS,(quad_cnt<<2),GL_UNSIGNED_INT,(GLvoid*)map.liquid_vertexes.index_ptr);
+	glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)map.liquid_vertexes.indexes);
 
 		// end texture
 

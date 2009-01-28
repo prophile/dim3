@@ -48,8 +48,8 @@ extern setup_type			setup;
 
 bool view_compile_mesh_gl_list_init(void)
 {
-	int					n,k,t,cnt,sz,v_count,v_idx;
-	unsigned int		v_light_start_idx;
+	int					n,k,t,cnt,v_count,v_idx;
+	unsigned int		v_poly_start_idx,v_light_start_idx;
 	unsigned int		*qd;
 	float				x_shift_offset,y_shift_offset;
 	float				*vertex_ptr,*pv,*pp,*pc,*pn;
@@ -88,30 +88,6 @@ bool view_compile_mesh_gl_list_init(void)
 		}
 
 		mesh->draw.vertex_count=cnt;
-
-			// allocate the lists
-
-		sz=(cnt*3)*sizeof(float);
-
-		mesh->draw.p_color=(float*)malloc(sz);
-		if (mesh->draw.p_color==NULL) return(FALSE);
-
-		mesh->draw.p_normal=(float*)malloc(sz);
-		if (mesh->draw.p_normal==NULL) return(FALSE);
-
-			// defaults
-
-		pc=mesh->draw.p_color;
-		pn=mesh->draw.p_normal;
-
-		for (t=0;t!=cnt;t++) {
-			*pc++=1.0f;
-			*pc++=1.0f;
-			*pc++=1.0f;
-			*pn++=0.5f;
-			*pn++=0.5f;
-			*pn++=1.0f;
-		}
 		
 			// add up vertex count and set
 			// vertex offset into vertex object
@@ -162,7 +138,7 @@ bool view_compile_mesh_gl_list_init(void)
 	mesh=map.mesh.meshes;
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
-	
+
 			// run through the polys
 
 		poly=mesh->polys;
@@ -171,8 +147,9 @@ bool view_compile_mesh_gl_list_init(void)
 
 				// offsets into verext lists
 
-			poly->draw.poly_vertex_offset=v_idx;
+			poly->draw.gl_vertex_offset=v_idx;
 			
+			v_poly_start_idx=v_idx;
 			v_light_start_idx=(unsigned int)(v_idx+poly->ptsz);
 
 				// polygon vertexes
@@ -208,8 +185,8 @@ bool view_compile_mesh_gl_list_init(void)
 
 					// create the vertexes
 
-				lv_pt=mesh->draw.p_vertexes+poly->light.vertex_offset;
-				lv_uv=mesh->draw.p_uvs+poly->light.vertex_offset;
+				lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
+				lv_uv=mesh->light.quad_uvs+poly->light.vertex_offset;
 
 				for (t=0;t!=poly->light.nvertex;t++) {
 
@@ -239,7 +216,12 @@ bool view_compile_mesh_gl_list_init(void)
 				qd=mesh->light.quad_indexes+poly->light.quad_index_offset;
 
 				for (t=0;t!=(poly->light.nquad*4);t++) {
-					*qd+=v_light_start_idx;
+					if (*qd>=1000) {
+						*qd=v_poly_start_idx+((*qd)-1000);
+					}
+					else {
+						*qd+=v_light_start_idx;
+					}
 					qd++;
 				}
 			}
@@ -260,16 +242,6 @@ bool view_compile_mesh_gl_list_init(void)
 
 void view_compile_mesh_gl_list_free(void)
 {
-	int					n;
-	map_mesh_type		*mesh;
-
-	mesh=map.mesh.meshes;
-
-	for (n=0;n!=map.mesh.nmesh;n++) {
-		free(mesh->draw.p_color);
-		free(mesh->draw.p_normal);
-		mesh++;
-	}
 }
 
 /* =======================================================
@@ -278,15 +250,11 @@ void view_compile_mesh_gl_list_free(void)
       
 ======================================================= */
 
-void view_compile_mesh_gl_lists_normal(map_mesh_type *mesh)
+void view_compile_mesh_gl_lists_normal(map_mesh_type *mesh,float *pc,float *pn)
 {
-	int									n,k;
-	float								*pc,*pn;
-	d3pnt								*pnt,*lv_pt;
-	map_mesh_poly_type					*poly;
-
-	pc=mesh->draw.p_color;
-	pn=mesh->draw.p_normal;
+	int							n,k;
+	d3pnt						*pnt,*lv_pt;
+	map_mesh_poly_type			*poly;
 
 	poly=mesh->polys;
 		
@@ -307,7 +275,7 @@ void view_compile_mesh_gl_lists_normal(map_mesh_type *mesh)
 
 				// tesseled lighting vertexes
 
-			lv_pt=mesh->draw.p_vertexes+poly->light.vertex_offset;
+			lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
 
 			for (k=0;k!=poly->light.nvertex;k++) {
 				map_calculate_light_color_normal((double)lv_pt->x,(double)lv_pt->y,(double)lv_pt->z,pc,pn);
@@ -321,15 +289,11 @@ void view_compile_mesh_gl_lists_normal(map_mesh_type *mesh)
 	}
 }
 
-void view_compile_mesh_gl_lists_ray_trace(map_mesh_type *mesh)
+void view_compile_mesh_gl_lists_ray_trace(map_mesh_type *mesh,float *pc,float *pn)
 {
-	int									n,k;
-	float								*pc,*pn;
-	d3pnt								*pnt,*lv_pt;
-	map_mesh_poly_type					*poly;
-
-	pc=mesh->draw.p_color;
-	pn=mesh->draw.p_normal;
+	int							n,k;
+	d3pnt						*pnt,*lv_pt;
+	map_mesh_poly_type			*poly;
 
 	poly=mesh->polys;
 		
@@ -350,7 +314,7 @@ void view_compile_mesh_gl_lists_ray_trace(map_mesh_type *mesh)
 
 				// tesseled lighting vertexes
 
-			lv_pt=mesh->draw.p_vertexes+poly->light.vertex_offset;
+			lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
 
 			for (k=0;k!=poly->light.nvertex;k++) {
 				map_calculate_ray_trace_light_color_normal((double)lv_pt->x,(double)lv_pt->y,(double)lv_pt->z,pc,pn);
@@ -372,7 +336,7 @@ void view_compile_mesh_gl_lists_ray_trace(map_mesh_type *mesh)
 
 bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 {
-	int									n,k,t,v_count,sz;
+	int									n,k,t,v_count;
 	float								x_shift_offset,y_shift_offset;
 	float								*vertex_ptr,*pv,*pp,*pc,*pn;
 	bool								recalc_light;
@@ -424,7 +388,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 				if (!poly->light.simple_tessel) {
 
-					lv_pt=mesh->draw.p_vertexes+poly->light.vertex_offset;
+					lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
 
 					for (t=0;t!=poly->light.nvertex;t++) {
 
@@ -465,7 +429,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 				if (!poly->light.simple_tessel) {
 
-					lv_uv=mesh->draw.p_uvs+poly->light.vertex_offset;
+					lv_uv=mesh->light.quad_uvs+poly->light.vertex_offset;
 
 					for (t=0;t!=poly->light.nvertex;t++) {
 						*pp++=(lv_uv->x)+x_shift_offset;
@@ -497,24 +461,15 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 			}
 
 			if (recalc_light) {
+				
+				pc=vertex_ptr+((v_count*(3+2))+(mesh->draw.vertex_offset*3));
+				pn=vertex_ptr+((v_count*(3+2+3))+(mesh->draw.vertex_offset*3));
 
 				if (setup.ray_trace_lighting) {
-					view_compile_mesh_gl_lists_ray_trace(mesh);
+					view_compile_mesh_gl_lists_ray_trace(mesh,pc,pn);
 				}
 				else {
-					view_compile_mesh_gl_lists_normal(mesh);
-				}
-
-					// move over the light lists
-
-				sz=(mesh->draw.vertex_count*3)*sizeof(float);
-
-				pc=vertex_ptr+((v_count*(3+2))+(mesh->draw.vertex_offset*3));
-				memmove(pc,mesh->draw.p_color,sz);
-
-				if (mesh->flag.has_bump) {
-					pn=vertex_ptr+((v_count*(3+2+3))+(mesh->draw.vertex_offset*3));
-					memmove(pn,mesh->draw.p_normal,sz);
+					view_compile_mesh_gl_lists_normal(mesh,pc,pn);
 				}
 			}
 		}

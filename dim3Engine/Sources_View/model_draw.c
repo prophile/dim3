@@ -315,6 +315,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw,bool 
 		if (!model_draw_start_mesh_material_array(mdl,mesh,material)) continue;
 
 			// regular texture
+			// this is lite on the triangle itself
 
 		glDisable(GL_BLEND);
 			
@@ -325,7 +326,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw,bool 
 		glDepthFunc(GL_LEQUAL);
 		glDepthMask(GL_TRUE);
 
-		gl_texture_opaque_start(is_fog_lighting);
+		gl_texture_opaque_start(!dim3_debug);
 		gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
 
 		glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
@@ -361,40 +362,17 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw,bool 
 			glColorPointer(3,GL_FLOAT,0,(void*)((nvertex*(3+2))*sizeof(float)));
 		}
 
-		if ((!dim3_debug) && (!is_fog_lighting)) {
+			// specular
 
-				// lighting
+		if ((!dim3_debug) && (!is_fog_lighting) && (texture->specularmaps[frame].gl_id!=-1)) {
+			glBlendFunc(GL_ONE,GL_ONE);
 
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_ZERO,GL_SRC_COLOR);
-
-			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc(GL_NOTEQUAL,0);
-
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_EQUAL);
-			glDepthMask(GL_FALSE);
-			
-			gl_texture_tesseled_lighting_start();
-			gl_texture_tesseled_lighting_set(texture->bitmaps[frame].gl_id,1.0f);
+			gl_texture_tesseled_specular_start();
+			gl_texture_tesseled_specular_set(texture->specularmaps[frame].gl_id);
 
 			glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
-			
-			gl_texture_tesseled_lighting_end();
-			
-				// specular
-			
-			if (texture->specularmaps[frame].gl_id!=-1) {
-
-				glBlendFunc(GL_ONE,GL_ONE);
-
-				gl_texture_tesseled_specular_start();
-				gl_texture_tesseled_specular_set(texture->specularmaps[frame].gl_id);
-
-				glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
 				
-				gl_texture_tesseled_specular_end();
-			}
+			gl_texture_tesseled_specular_end();
 		}
 
 			// glow mapped textures
