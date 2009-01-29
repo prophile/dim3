@@ -44,7 +44,7 @@ extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
 
 /* =======================================================
 
-      Setup Liquid Rendering
+      Initialize Liquid GL Lists
       
 ======================================================= */
 
@@ -71,6 +71,30 @@ inline int liquid_render_liquid_get_max_vertex(map_liquid_type *liq)
 
 	return(x_sz*z_sz);
 }
+
+void liquid_gl_list_init(void)
+{
+	int					n,v_sz,sz;
+	map_liquid_type		*liq;
+
+	sz=0;
+
+	liq=map.liquid.liquids;
+
+	for (n=0;n!=map.liquid.nliquid;n++) {
+		v_sz=liquid_render_liquid_get_max_vertex(liq);
+		if (v_sz>sz) sz=v_sz;
+		liq++;
+	}
+	
+	view_init_liquid_vertex_object(v_sz*(3+2+3));
+}
+
+/* =======================================================
+
+      Setup Liquid Vertexes
+      
+======================================================= */
 
 void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,float *vertex_ptr,int v_sz)
 {
@@ -329,21 +353,21 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 
 		// setup vbo
 
-	v_sz=liquid_render_liquid_get_max_vertex(liq);
-
-	vertex_ptr=view_bind_map_next_vertex_object((v_sz*(3+2+3)));
+	vertex_ptr=view_bind_map_liquid_vertex_object();
 	if (vertex_ptr==NULL) return;
 
 		// create vertexes
 
+	v_sz=liquid_render_liquid_get_max_vertex(liq);
+
 	liquid_render_liquid_create_vertex(tick,liq,vertex_ptr,v_sz);
-	view_unmap_current_vertex_object();
+	view_unmap_liquid_vertex_object();
 
 		// create quads
 
 	quad_cnt=liquid_render_liquid_create_quads(liq);
 	if (quad_cnt==0) {
-		view_unbind_current_vertex_object();
+		view_unbind_liquid_vertex_object();
 		return;
 	}
 	
@@ -404,7 +428,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 
 	liquid_render_liquid_end_array();
 
-	view_unbind_current_vertex_object();
+	view_unbind_liquid_vertex_object();
 }
 
 /* =======================================================

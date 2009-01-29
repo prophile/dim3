@@ -596,7 +596,7 @@ void view_draw_setup(int tick)
 	view.camera.near_z_offset=camera.plane.near_z_offset;
 	view.camera.fov=camera.plane.fov;
 	view.camera.aspect_ratio=camera.plane.aspect_ratio;
-	
+
 		// camera adjustments
 	
 	if (camera.mode==cv_fpp) {
