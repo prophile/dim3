@@ -1071,8 +1071,8 @@ void map_mesh_whole_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 	poly=&mesh->polys[poly_idx];
 
 	for (n=0;n!=poly->ptsz;n++) {
-		poly->gx[n]=floor(poly->gx[n]);
-		poly->gy[n]=floor(poly->gy[n]);
+		poly->gx[n]=(float)floor(poly->gx[n]);
+		poly->gy[n]=(float)floor(poly->gy[n]);
 	}
 }
 

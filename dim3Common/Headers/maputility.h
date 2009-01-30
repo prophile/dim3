@@ -350,7 +350,6 @@ typedef struct		{
 
 typedef struct		{
 						int									max_vertex_count,draw_vertex_count;
-						unsigned int						*indexes;
 						map_vertex_array_type				vert,uv,color,normal;
 					} map_vertex_type;
 
@@ -573,7 +572,7 @@ typedef struct		{
 						map_mesh_collection_type			mesh;
 						map_liquid_collection_type			liquid;
 
-						map_vertex_type						mesh_vertexes,liquid_vertexes;
+						map_vertex_type						mesh_vertexes;
 						map_poly_sort_type					sort;
 						
 					} map_type;

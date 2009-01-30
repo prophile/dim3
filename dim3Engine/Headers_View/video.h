@@ -51,24 +51,37 @@ extern bool gl_check_shader_ok(void);
 
 extern void view_create_vertex_objects(void);
 extern void view_dispose_vertex_objects(void);
+
 extern void view_init_map_vertex_object(int sz);
 extern float* view_bind_map_map_vertex_object(void);
 extern void view_bind_map_vertex_object(void);
 extern void view_unmap_map_vertex_object(void);
 extern void view_unbind_map_vertex_object(void);
+extern void view_init_map_index_object(int sz);
+extern unsigned int* view_bind_map_map_index_object(void);
+extern void view_bind_map_index_object(void);
+extern void view_unmap_map_index_object(void);
+extern void view_unbind_map_index_object(void);
+
 extern void view_init_liquid_vertex_object(int sz);
 extern float* view_bind_map_liquid_vertex_object(void);
-extern void view_bind_liquid_vertex_object(void);
 extern void view_unmap_liquid_vertex_object(void);
 extern void view_unbind_liquid_vertex_object(void);
+extern void view_init_liquid_index_object(int sz);
+extern unsigned int* view_bind_map_liquid_index_object(void);
+extern void view_unmap_liquid_index_object(void);
+extern void view_unbind_liquid_index_object(void);
+
 extern void view_init_sky_vertex_object(int sz);
 extern float* view_bind_map_sky_vertex_object(void);
 extern void view_bind_sky_vertex_object(void);
 extern void view_unmap_sky_vertex_object(void);
 extern void view_unbind_sky_vertex_object(void);
+
 extern float* view_bind_map_next_vertex_object(int sz);
 extern void view_unmap_current_vertex_object(void);
 extern void view_unbind_current_vertex_object(void);
+
 extern void view_draw_next_vertex_object_2D_texture_screen(int wid,int high,float gx,float gy);
 extern void view_draw_next_vertex_object_2D_tint_screen(void);
 extern void view_draw_next_vertex_object_2D_texture_quad(int lft,int rgt,int top,int bot);

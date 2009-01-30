@@ -48,9 +48,9 @@ extern setup_type			setup;
 
 bool view_compile_mesh_gl_list_init(void)
 {
-	int					n,k,t,cnt,v_count,v_idx;
+	int					n,k,t,cnt,v_count,q_count,v_idx;
 	unsigned int		v_poly_start_idx,v_light_start_idx;
-	unsigned int		*qd;
+	unsigned int		*index_ptr,*qd;
 	float				x_shift_offset,y_shift_offset;
 	float				*vertex_ptr,*pv,*pp,*pc,*pn;
 	d3pnt				*pnt,*lv_pt;
@@ -58,10 +58,13 @@ bool view_compile_mesh_gl_list_init(void)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 
-		// get total number of vertexes
+	int	q_idx;
+
+		// get total number of vertexes and quads
 		// and their offsets to setup vertex object for map
 		
 	v_count=0;
+	q_count=0;
 	
 		// setup meshes
 		
@@ -84,6 +87,7 @@ bool view_compile_mesh_gl_list_init(void)
 		
 		for (k=0;k!=mesh->npoly;k++) {
 			cnt+=(poly->ptsz+poly->light.nvertex);
+			q_count+=poly->light.nquad;
 			poly++;
 		}
 
@@ -104,11 +108,19 @@ bool view_compile_mesh_gl_list_init(void)
 
 		// initial map VBO
 		
-	view_init_map_vertex_object((v_count*(3+2+3+3)));
+	view_init_map_vertex_object(v_count*(3+2+3+3));
+	view_init_map_index_object(q_count*4);
 
 	vertex_ptr=view_bind_map_map_vertex_object();
 	if (vertex_ptr==NULL) return(FALSE);
-	
+
+	index_ptr=view_bind_map_map_index_object();
+	if (index_ptr==NULL) {
+		view_unmap_map_vertex_object();
+		view_unbind_map_vertex_object();
+		return(FALSE);
+	}
+
 		// arrays and offsets
 
 	map.mesh_vertexes.vert.sz=(v_count*3)*sizeof(float);
@@ -134,6 +146,7 @@ bool view_compile_mesh_gl_list_init(void)
 		// fill in map geometery
 
 	v_idx=0;
+	q_idx=0;
 		
 	mesh=map.mesh.meshes;
 
@@ -217,22 +230,27 @@ bool view_compile_mesh_gl_list_init(void)
 
 				for (t=0;t!=(poly->light.nquad*4);t++) {
 					if (*qd>=1000) {
-						*qd=v_poly_start_idx+((*qd)-1000);
+						*index_ptr=v_poly_start_idx+((*qd)-1000);
 					}
 					else {
-						*qd+=v_light_start_idx;
+						*index_ptr=(*qd)+v_light_start_idx;
 					}
 					qd++;
+					index_ptr++;
+					q_idx++;
 				}
 			}
 
 			poly++;
 		}
-		
+	
 		mesh++;
 	}
 	
 		// unmap VBO
+
+	view_unmap_map_index_object();
+	view_unbind_map_index_object();
 
 	view_unmap_map_vertex_object();
 	view_unbind_map_vertex_object();
@@ -502,6 +520,7 @@ void view_compile_gl_list_attach(void)
 		// use last compiled buffer
 
 	view_bind_map_vertex_object();
+	view_bind_map_index_object();
 
 		// vertexes
 
@@ -553,5 +572,6 @@ void view_compile_gl_list_dettach(void)
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
+	view_unbind_map_index_object();
 	view_unbind_map_vertex_object();
 }

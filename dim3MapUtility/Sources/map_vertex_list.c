@@ -664,7 +664,6 @@ bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 		// indexes and max vertexes are only
 		// used for liquids
 
-	map->mesh_vertexes.indexes=NULL;
 	map->mesh_vertexes.max_vertex_count=0;
 	map->mesh_vertexes.draw_vertex_count=0;
 	
@@ -785,55 +784,6 @@ void map_dispose_mesh_vertexes(map_type *map)
 
 /* =======================================================
 
-      Create/Dispose Liquid Vertex Lists
-      
-======================================================= */
-
-bool map_create_liquid_vertexes(map_type *map)
-{
-	int					n,nvlist,sz;
-	map_liquid_type		*liq;
-	
-		// find maximum possible number of vertexes
-		// for liquid griding that could be drawn in a scene
-	
-	nvlist=0;
-	
-	liq=map->liquid.liquids;
-		
-	for (n=0;n!=map->liquid.nliquid;n++) {
-	
-		sz=(liq->tide.division+4)*(liq->tide.division+4);	// possible extra edges on side because of griding
-		if (sz>nvlist) nvlist=sz;
-		
-		liq++;
-	}
-
-	if (sz==0) sz=4;
-	
-		// compiled index lists
-
-	sz=nvlist*(sizeof(unsigned int)*4);
-	map->liquid_vertexes.indexes=(unsigned int*)malloc(sz);
-	if (map->liquid_vertexes.indexes==NULL) return(FALSE);
-
-	bzero(map->liquid_vertexes.indexes,sz);
-
-		// remember total
-
-	map->liquid_vertexes.max_vertex_count=nvlist;
-	map->liquid_vertexes.draw_vertex_count=0;
-
-	return(TRUE);
-}
-
-void map_dispose_liquid_vertexes(map_type *map)
-{
-	free(map->liquid_vertexes.indexes);
-}
-
-/* =======================================================
-
       Create/Dispose Polygon Sorting Lists
       
 ======================================================= */
@@ -866,13 +816,7 @@ bool map_create_vertex_lists(map_type *map,int quality_mode)
 {
 	if (!map_create_mesh_vertexes(map,quality_mode)) return(FALSE);
 
-	if (!map_create_liquid_vertexes(map)) {
-		map_dispose_mesh_vertexes(map);
-		return(FALSE);
-	}
-
 	if (!map_create_sort_lists(map)) {
-		map_dispose_liquid_vertexes(map);
 		map_dispose_mesh_vertexes(map);
 		return(FALSE);
 	}
@@ -883,6 +827,5 @@ bool map_create_vertex_lists(map_type *map,int quality_mode)
 void map_dispose_vertex_lists(map_type *map)
 {
 	map_dispose_sort_lists(map);
-	map_dispose_liquid_vertexes(map);
 	map_dispose_mesh_vertexes(map);
 }

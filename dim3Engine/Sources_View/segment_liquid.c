@@ -86,8 +86,9 @@ void liquid_gl_list_init(void)
 		if (v_sz>sz) sz=v_sz;
 		liq++;
 	}
-	
+
 	view_init_liquid_vertex_object(v_sz*(3+2+3));
+	view_init_liquid_index_object(v_sz*4);
 }
 
 /* =======================================================
@@ -96,7 +97,7 @@ void liquid_gl_list_init(void)
       
 ======================================================= */
 
-void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,float *vertex_ptr,int v_sz)
+void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz)
 {
 	int				x,y,z,k,x_add,z_add,x_sz,z_sz,
 					v_cnt,tide_split,tide_split_half,
@@ -105,10 +106,15 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,float *ver
 					f_break,f_time,f_tick,sn,
 					f_tide_split_half,f_tide_high;
 	bool			x_break,z_break;
-	float			*vl,*uv,*cl;
+	float			*vertex_ptr,*vl,*uv,*cl;
 	
 	y=liq->y;
 	fy=(float)y;
+
+		// setup vbo
+
+	vertex_ptr=view_bind_map_liquid_vertex_object();
+	if (vertex_ptr==NULL) return;
 	
 	vl=vertex_ptr;
 	uv=vertex_ptr+(v_sz*3);
@@ -237,6 +243,8 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,float *ver
 		}
 	}
 
+	view_unmap_liquid_vertex_object();
+
 		// setup split sizes
 
 	liq->draw.v_cnt=v_cnt;
@@ -247,11 +255,11 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,float *ver
 
 int liquid_render_liquid_create_quads(map_liquid_type *liq)
 {
-	int				x,z,x_sz,z_sz,v_sz,quad_cnt,
+	int				x,z,x_sz,z_sz,quad_cnt,
 					tz,bz,tz_add,top_row,bot_row,
 					lx,rx,lx_add,tide_split;
-	unsigned int	*d_idx;
-		
+	unsigned int	*index_ptr;
+
 		// drawing the quads only draws to the edges
 
 	x_sz=liq->draw.x_sz-1;
@@ -262,12 +270,14 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
 
 	tide_split=liquid_render_liquid_get_tide_split(liq);
 
+		// setup index vbo
+
+	index_ptr=view_bind_map_liquid_index_object();
+	if (index_ptr==NULL) return(0);
+
 		// create the draw indexes
 
-	v_sz=liquid_render_liquid_get_max_vertex(liq);
-
 	quad_cnt=0;
-	d_idx=map.liquid_vertexes.indexes;
 		
 	tz=liq->top;
 	tz_add=tide_split-(tz%tide_split);
@@ -287,10 +297,10 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
 			lx_add=tide_split;
 			if (rx>=liq->rgt) rx=liq->rgt;
 			
-			*d_idx++=(unsigned int)(top_row+x);
-			*d_idx++=(unsigned int)(top_row+(x+1));
-			*d_idx++=(unsigned int)(bot_row+(x+1));
-			*d_idx++=(unsigned int)(bot_row+x);
+			*index_ptr++=(unsigned int)(top_row+x);
+			*index_ptr++=(unsigned int)(top_row+(x+1));
+			*index_ptr++=(unsigned int)(bot_row+(x+1));
+			*index_ptr++=(unsigned int)(bot_row+x);
 
 			quad_cnt++;
 
@@ -301,36 +311,9 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
 		top_row=bot_row;
 	}
 
+	view_unmap_liquid_index_object();
+
 	return(quad_cnt);
-}
-
-void liquid_render_liquid_start_array(map_liquid_type *liq,int v_sz)
-{
-		// vertexes
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,0);
-
-		// uv array
-		
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*3)*sizeof(float)));
-	
-		// color array
-		
-	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(3,GL_FLOAT,0,(void*)((v_sz*(3+2))*sizeof(float)));
-}
-
-void liquid_render_liquid_end_array(void)
-{
-	glDisableClientState(GL_COLOR_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE0);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================
@@ -343,7 +326,6 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 {
 	int						v_sz,quad_cnt,frame;
 	float					col[3],normal[3];
-	float					*vertex_ptr;
 	d3pnt					mid;
 	texture_type			*texture;
 
@@ -351,17 +333,11 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 
 	if (!boundbox_inview(liq->lft,liq->top,liq->rgt,liq->bot,liq->y,liq->y)) return;
 
-		// setup vbo
-
-	vertex_ptr=view_bind_map_liquid_vertex_object();
-	if (vertex_ptr==NULL) return;
-
 		// create vertexes
 
 	v_sz=liquid_render_liquid_get_max_vertex(liq);
 
-	liquid_render_liquid_create_vertex(tick,liq,vertex_ptr,v_sz);
-	view_unmap_liquid_vertex_object();
+	liquid_render_liquid_create_vertex(tick,liq,v_sz);
 
 		// create quads
 
@@ -371,7 +347,17 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 		return;
 	}
 	
-	liquid_render_liquid_start_array(liq,v_sz);
+		// setup drawing
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3,GL_FLOAT,0,0);
+
+	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*3)*sizeof(float)));
+	
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(3,GL_FLOAT,0,(void*)((v_sz*(3+2))*sizeof(float)));
 
 		// setup texture
 
@@ -414,7 +400,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 
 		// draw the quads
 
-	glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)map.liquid_vertexes.indexes);
+	glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
 
 		// end texture
 
@@ -426,8 +412,18 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 		gl_texture_transparent_end();
 	}
 
-	liquid_render_liquid_end_array();
+		// end drawing
 
+	glDisableClientState(GL_COLOR_ARRAY);
+
+	glClientActiveTexture(GL_TEXTURE0);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+		// unmap VBOs
+
+	view_unbind_liquid_index_object();
 	view_unbind_liquid_vertex_object();
 }
 
