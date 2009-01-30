@@ -58,7 +58,6 @@ model_type				model;
 model_draw_setup		draw_setup;
 
 extern bool				fileopen;
-extern ControlRef		tab_list;
 
 /* =======================================================
 
@@ -290,16 +289,16 @@ void model_wind_gl_port_setup(void)
 	
  	rect[0]=box.left;
 	rect[1]=info_palette_height;
-	rect[2]=gl_view_x_sz+mesh_palette_width;
+	rect[2]=gl_view_x_sz;
 	rect[3]=gl_view_y_sz+texture_palette_height;
 
 	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
 	aglEnable(ctx,AGL_BUFFER_RECT);
 	
-	glViewport(box.left,info_palette_height,(gl_view_x_sz+mesh_palette_width),(gl_view_y_sz+texture_palette_height));
+	glViewport(box.left,info_palette_height,(gl_view_x_sz),(gl_view_y_sz+texture_palette_height));
 	
 	glEnable(GL_SCISSOR_TEST);
-	glScissor(box.left,info_palette_height,(gl_view_x_sz+mesh_palette_width),(gl_view_y_sz+texture_palette_height));
+	glScissor(box.left,info_palette_height,(gl_view_x_sz),(gl_view_y_sz+texture_palette_height));
 }
 
 void model_wind_resize(void)
@@ -317,12 +316,13 @@ void model_wind_resize(void)
 
 		// resize controls
 
-	box.left+=(gl_view_x_sz+mesh_palette_width);
+	box.left+=gl_view_x_sz;
 	box.bottom-=info_palette_height;
 		
 	resize_pose_controls(&box);
 	resize_bone_controls(&box);
 	resize_animate_controls(&box);
+	resize_mesh_controls(&box);
 	resize_vertex_controls(&box);
 	
 		// resize gl view
@@ -333,7 +333,6 @@ void model_wind_resize(void)
 
 	draw_model_wind_pose(&model,cur_mesh,cur_pose);
 	texture_palette_draw();
-	mesh_palette_draw();
 	info_palette_draw();
 	
 	DrawControls(model_wind);
@@ -379,7 +378,7 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 						// clicking in toolbar or right side controls
 
 					if (pt.v<=tool_button_size) return(eventNotHandledErr);
-					if (pt.h>=(gl_view_x_sz+mesh_palette_width)) return(eventNotHandledErr);
+					if (pt.h>=gl_view_x_sz) return(eventNotHandledErr);
 					
 						// clicking in palettes
 						
@@ -387,11 +386,6 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 					 
 					if ((pt.h>=0) && (pt.h<=gl_view_x_sz) && (pt.v>=(tool_button_size+gl_view_y_sz)) && (pt.v<=(tool_button_size+gl_view_y_sz+texture_palette_height))) {
 						texture_palette_click(pt,(nclick!=1));
-						return(noErr);
-					}
-					
-					if ((pt.h>=gl_view_x_sz) && (pt.h<=(gl_view_x_sz+mesh_palette_width)) && (pt.v>tool_button_size) && (pt.v<(tool_button_size+gl_view_y_sz+texture_palette_height))) {
-						mesh_palette_click(pt,(nclick!=1));
 						return(noErr);
 					}
 					
@@ -748,12 +742,13 @@ void model_wind_open(void)
 		
 	GetWindowPortBounds(model_wind,&box);
 
-	box.left+=(gl_view_x_sz+mesh_palette_width);
+	box.left+=gl_view_x_sz;
 	box.bottom-=info_palette_height;
 	
 	start_pose_controls(model_wind,&box);
 	start_bone_controls(model_wind,&box);
     start_animate_controls(model_wind,&box);
+	start_mesh_controls(model_wind,&box);
 	start_vertex_controls(model_wind,&box);
 	
 		// start open gl
@@ -807,8 +802,9 @@ void model_wind_close(void)
 		
 	end_pose_controls();
 	end_bone_controls();
-	end_vertex_controls();
     end_animate_controls();
+    end_mesh_controls();
+	end_vertex_controls();
 		
 	for (n=0;n!=tool_count;n++) {
 		DisposeControl(tool_ctrl[n]);

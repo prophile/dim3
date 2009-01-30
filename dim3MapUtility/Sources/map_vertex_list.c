@@ -560,7 +560,7 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 
 			v_in_poly_idx[z][x]=map_light_grid_point_in_poly_point(mesh,poly,vl_pt);
 			if (v_in_poly_idx[z][x]==-1) {
-				v_in_poly_idx[y][x]=vl_cnt;
+				v_in_poly_idx[z][x]=vl_cnt;
 
 				vl_uv->x=lgx+(((rgx-lgx)*(float)(vl_pt->x-poly->box.min.x))/(float)(poly->box.max.x-poly->box.min.x));
 				vl_uv->y=lgy+(((rgy-lgy)*(float)(vl_pt->z-poly->box.min.z))/(float)(poly->box.max.z-poly->box.min.z));
@@ -571,7 +571,7 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 				vl_uv++;
 			}
 			else {
-				v_in_poly_idx[y][x]+=1000;
+				v_in_poly_idx[z][x]+=1000;
 			}
 		}
 	}

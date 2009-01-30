@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		261F12440ED3CB3000A8A0D8 /* vertex_masks.c in Sources */ = {isa = PBXBuildFile; fileRef = 261F12430ED3CB2F00A8A0D8 /* vertex_masks.c */; };
 		261F128A0ED3D04A00A8A0D8 /* vertex_transform.c in Sources */ = {isa = PBXBuildFile; fileRef = 261F12890ED3D04A00A8A0D8 /* vertex_transform.c */; };
-		266657B70EFEB1D200A86680 /* mesh_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 266657B60EFEB1D200A86680 /* mesh_palette.c */; };
+		26A59FA50F327FB5007C6209 /* mesh_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A59FA40F327FB5007C6209 /* mesh_list.c */; };
 		26AA925C0DF2457E004A03AE /* dialog_particle_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AA925B0DF2457E004A03AE /* dialog_particle_settings.c */; };
 		26AA925E0DF24582004A03AE /* dialog_ring_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AA925D0DF24582004A03AE /* dialog_ring_settings.c */; };
 		26CC06B20F02C88E00807FEA /* bone_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CC06B10F02C88E00807FEA /* bone_list.c */; };
@@ -125,7 +125,7 @@
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		261F12430ED3CB2F00A8A0D8 /* vertex_masks.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vertex_masks.c; path = Code/vertex_masks.c; sourceTree = "<group>"; };
 		261F12890ED3D04A00A8A0D8 /* vertex_transform.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vertex_transform.c; path = Code/vertex_transform.c; sourceTree = "<group>"; };
-		266657B60EFEB1D200A86680 /* mesh_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mesh_palette.c; path = Code/mesh_palette.c; sourceTree = "<group>"; };
+		26A59FA40F327FB5007C6209 /* mesh_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mesh_list.c; path = Code/mesh_list.c; sourceTree = "<group>"; };
 		26AA925B0DF2457E004A03AE /* dialog_particle_settings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_particle_settings.c; path = Code/dialog_particle_settings.c; sourceTree = "<group>"; };
 		26AA925D0DF24582004A03AE /* dialog_ring_settings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_ring_settings.c; path = Code/dialog_ring_settings.c; sourceTree = "<group>"; };
 		26CC06B10F02C88E00807FEA /* bone_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bone_list.c; path = Code/bone_list.c; sourceTree = "<group>"; };
@@ -231,7 +231,6 @@
 			children = (
 				0111608E00BE2A8F7F000001 /* model_window.c */,
 				F54B62DA0C4030A8005CB612 /* texture_palette.c */,
-				266657B60EFEB1D200A86680 /* mesh_palette.c */,
 				F54B630E0C4033E8005CB612 /* info_palette.c */,
 			);
 			name = Windows;
@@ -368,6 +367,7 @@
 				F5C01E8401EABB0C01A091D9 /* pose_tab.c */,
 				26CC06B10F02C88E00807FEA /* bone_list.c */,
 				F5C01E8301EABB0C01A091D9 /* animation_tab.c */,
+				26A59FA40F327FB5007C6209 /* mesh_list.c */,
 				F572771006D1A010002DAE5D /* vertex_tab.c */,
 			);
 			name = Lists;
@@ -546,8 +546,8 @@
 				26AA925E0DF24582004A03AE /* dialog_ring_settings.c in Sources */,
 				261F12440ED3CB3000A8A0D8 /* vertex_masks.c in Sources */,
 				261F128A0ED3D04A00A8A0D8 /* vertex_transform.c in Sources */,
-				266657B70EFEB1D200A86680 /* mesh_palette.c in Sources */,
 				26CC06B20F02C88E00807FEA /* bone_list.c in Sources */,
+				26A59FA50F327FB5007C6209 /* mesh_list.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

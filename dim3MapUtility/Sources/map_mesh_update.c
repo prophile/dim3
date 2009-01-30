@@ -1055,3 +1055,38 @@ void map_mesh_reset_uv(map_type *map,int mesh_idx)
 	}
 }
 
+/* =======================================================
+
+      Whole Number UVs
+      
+======================================================= */
+
+void map_mesh_whole_poly_uv(map_type *map,int mesh_idx,int poly_idx)
+{
+	int						n;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+
+	mesh=&map->mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+
+	for (n=0;n!=poly->ptsz;n++) {
+		poly->gx[n]=floor(poly->gx[n]);
+		poly->gy[n]=floor(poly->gy[n]);
+	}
+}
+
+void map_mesh_whole_uv(map_type *map,int mesh_idx)
+{
+	int						n,npoly;
+	map_mesh_type			*mesh;
+
+	mesh=&map->mesh.meshes[mesh_idx];
+
+	npoly=mesh->npoly;
+
+	for (n=0;n!=npoly;n++) {
+		map_mesh_whole_poly_uv(map,mesh_idx,n);
+	}
+}
+

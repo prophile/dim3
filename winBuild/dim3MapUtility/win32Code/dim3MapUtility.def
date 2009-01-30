@@ -57,14 +57,16 @@ EXPORTS
 	map_mesh_rotate_poly_uv							@247
 	map_mesh_reset_poly_uv							@248
 	map_mesh_reset_uv								@249
+	map_mesh_whole_poly_uv							@250
+	map_mesh_whole_uv								@251
 
-	map_liquid_add									@250
-	map_liquid_delete								@251
-	map_liquid_duplicate							@252
-	map_liquid_calculate_center						@253
+	map_liquid_add									@260
+	map_liquid_delete								@261
+	map_liquid_duplicate							@262
+	map_liquid_calculate_center						@263
 	
-	map_liquid_move									@266
-	map_liquid_reset_uv								@267
+	map_liquid_move									@265
+	map_liquid_reset_uv								@266
 
 	map_group_create_unit_list						@270
 	map_group_dispose_unit_list						@271

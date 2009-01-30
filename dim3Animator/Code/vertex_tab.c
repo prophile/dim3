@@ -39,7 +39,6 @@ extern bool						model_view_reset;
 extern model_type				model;
 
 extern WindowRef				model_wind;
-extern ControlRef				tab_list;
 
 /* =======================================================
 
@@ -219,7 +218,7 @@ void start_vertex_controls(WindowRef wind,Rect *box)
 	
 		// vertex data browser
 		
-	cbox.left=box->left+220;
+	cbox.left=box->left+440;
 	cbox.right=box->right;
 	
 	cbox.top=(box->bottom-box->top)/2;
@@ -277,7 +276,7 @@ void resize_vertex_controls(Rect *box)
 {
 	Rect		cbox;
 	
-	cbox.left=box->left+220;
+	cbox.left=box->left+440;
 	cbox.right=box->right;
 	
 	cbox.top=(box->bottom-box->top)/2;

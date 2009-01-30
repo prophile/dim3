@@ -39,7 +39,6 @@ extern bool						model_view_reset;
 extern model_type				model;
 
 extern WindowRef				model_wind;
-extern ControlRef				tab_list;
 
 /* =======================================================
 

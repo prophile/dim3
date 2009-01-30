@@ -130,6 +130,7 @@ extern void piece_mesh_poly_snap_to_grid(void);
 extern void piece_mesh_vertexes_snap_to_grid(void);
 extern void piece_rotate_uvs(void);
 extern void piece_reset_uvs(bool poly_only);
+extern void piece_whole_uvs(bool poly_only);
 extern void piece_poly_hole(void);
 extern void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch);
 

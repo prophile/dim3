@@ -450,6 +450,11 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			main_wind_draw();
 			return(noErr);
 			
+		case kCommandMeshWholeUV:
+			piece_whole_uvs(FALSE);
+			main_wind_draw();
+			return(noErr);
+			
 			// polygon menu
 			
 		case kCommandPolygonHole:
@@ -468,6 +473,11 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 
 		case kCommandPolygonResetUV:
 			piece_reset_uvs(TRUE);
+			main_wind_draw();
+			return(noErr);
+			
+		case kCommandPolygonWholeUV:
+			piece_whole_uvs(TRUE);
 			main_wind_draw();
 			return(noErr);
 			
