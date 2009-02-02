@@ -71,6 +71,8 @@ extern char light_type_str[][32];
 
 #define max_sort_poly										512				// maximum number of transparent polys in a single scene
 
+#define max_mesh_light_cache								8				// maximum number of cached lights
+
 //
 // obscure types
 //
@@ -217,14 +219,15 @@ typedef struct		{
 					} map_mesh_poly_slope_type;
 
 typedef struct		{
-						int									nvertex,nquad,
-															vertex_offset,quad_index_offset,
+						int									nvertex,nquad,vertex_offset,
+															quad_index_offset,gl_quad_index_offset,
 															grid_x_sz,grid_y_sz;
 						bool								simple_tessel;
 					} map_mesh_poly_light_type;
 
 typedef struct		{
-						int									vertex_offset,gl_vertex_offset,txt_frame_offset,
+						int									txt_frame_offset,vertex_offset,
+															gl_poly_index_min,gl_poly_index_max,gl_poly_index_offset,
 															stencil_pass,stencil_idx,decal_stencil_idx;
 						float								x_shift_offset,y_shift_offset;
 						bool								simple_tessel,shift_on;
@@ -250,8 +253,9 @@ typedef struct		{
 						bool								on,pass_through,moveable,
 															hilite,climbable,shiftable,
 															lock_uv,no_self_obscure,
-															never_obscure,rot_independent,
-															touched,has_bump,has_specular,has_glow;
+															never_obscure,rot_independent,touched,
+															has_simple,has_bump,has_shader,
+															has_specular,has_glow;
 					} map_mesh_flag_type;
 
 typedef struct		{
@@ -272,14 +276,14 @@ typedef struct		{
 					} map_mesh_draw_type;
 
 typedef struct		{
-						int									light_count;
 						double								intensity;
 						d3pnt								pnt;
 						d3col								col;
 					} map_mesh_light_cache_type;
 
 typedef struct		{
-						map_mesh_light_cache_type			cache;
+						int									nlight_cache;
+						map_mesh_light_cache_type			light_cache[max_mesh_light_cache];
 						d3pnt								*quad_vertexes;
 						d3uv								*quad_uvs;
 						unsigned int						*quad_indexes;
@@ -331,7 +335,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int									nmesh;
+						int									nmesh,vbo_vertex_count;
 						map_mesh_type						*meshes;
 					} map_mesh_collection_type;
 
@@ -339,19 +343,6 @@ typedef struct		{
 						int									nliquid;
 						map_liquid_type						*liquids;
 					} map_liquid_collection_type;
-
-//
-// map vertex draw lists
-//
-
-typedef struct		{
-						int									sz,offset;
-					} map_vertex_array_type;
-
-typedef struct		{
-						int									max_vertex_count,draw_vertex_count;
-						map_vertex_array_type				vert,uv,color,normal;
-					} map_vertex_type;
 
 //
 // map sort lists
@@ -571,8 +562,6 @@ typedef struct		{
 	
 						map_mesh_collection_type			mesh;
 						map_liquid_collection_type			liquid;
-
-						map_vertex_type						mesh_vertexes;
 						map_poly_sort_type					sort;
 						
 					} map_type;

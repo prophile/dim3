@@ -661,12 +661,6 @@ bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 
-		// indexes and max vertexes are only
-		// used for liquids
-
-	map->mesh_vertexes.max_vertex_count=0;
-	map->mesh_vertexes.draw_vertex_count=0;
-	
 		// create tesseled lighting vertexes
 
 	mesh=map->mesh.meshes;

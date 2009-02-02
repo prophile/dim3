@@ -73,7 +73,7 @@ void view_create_mesh_draw_list(void)
 	int					n,t,sz,d,start_mesh_idx,idx,
 						never_obscure_dist,obscure_dist;
 	map_mesh_type		*start_mesh,*mesh;
-
+	
 		// get mesh camera is in
 
 	start_mesh_idx=map_mesh_find_always(&map,&view.camera.pnt);

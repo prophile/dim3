@@ -48,7 +48,7 @@ extern setup_type			setup;
 
 bool view_compile_mesh_gl_list_init(void)
 {
-	int					n,k,t,cnt,v_count,q_count,v_idx;
+	int					n,k,t,v_cnt,i_cnt,v_idx,i_idx;
 	unsigned int		v_poly_start_idx,v_light_start_idx;
 	unsigned int		*index_ptr,*qd;
 	float				x_shift_offset,y_shift_offset;
@@ -58,13 +58,11 @@ bool view_compile_mesh_gl_list_init(void)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 
-	int	q_idx;
-
-		// get total number of vertexes and quads
+		// get total number of vertexes and indexes
 		// and their offsets to setup vertex object for map
 		
-	v_count=0;
-	q_count=0;
+	v_cnt=0;
+	i_cnt=0;
 	
 		// setup meshes
 		
@@ -74,79 +72,51 @@ bool view_compile_mesh_gl_list_init(void)
 
 			// clear the light cache
 
-		mesh->light.cache.light_count=-1;
+		mesh->light.nlight_cache=-1;
 
 			// mesh has not been moved
 
 		mesh->draw.moved=FALSE;
 
-			// get count for color and normal lists
+			// setup offsets
 
-		cnt=0;
+		mesh->draw.vertex_offset=v_cnt;
+
 		poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {
-			cnt+=(poly->ptsz+poly->light.nvertex);
-			q_count+=poly->light.nquad;
+			poly->draw.vertex_offset=v_cnt;
+			
+			v_cnt+=(poly->ptsz+poly->light.nvertex);
+			i_cnt+=(poly->ptsz+(poly->light.nquad*4));
+			
 			poly++;
 		}
 
-		mesh->draw.vertex_count=cnt;
-		
-			// add up vertex count and set
-			// vertex offset into vertex object
-			
-		mesh->draw.vertex_offset=v_count;
-		v_count+=mesh->draw.vertex_count;
+		mesh->draw.vertex_count=v_cnt-mesh->draw.vertex_offset;
 
 		mesh++;
 	}
 
 		// total vertexes
 
-	map.mesh_vertexes.draw_vertex_count=v_count;
+	map.mesh.vbo_vertex_count=v_cnt;
 
-		// initial map VBO
+		// initial vertex VBO
 		
-	view_init_map_vertex_object(v_count*(3+2+3+3));
-	view_init_map_index_object(q_count*4);
+	view_init_map_vertex_object(v_cnt*(3+2+3+3));
 
 	vertex_ptr=view_bind_map_map_vertex_object();
 	if (vertex_ptr==NULL) return(FALSE);
 
-	index_ptr=view_bind_map_map_index_object();
-	if (index_ptr==NULL) {
-		view_unmap_map_vertex_object();
-		view_unbind_map_vertex_object();
-		return(FALSE);
-	}
-
-		// arrays and offsets
-
-	map.mesh_vertexes.vert.sz=(v_count*3)*sizeof(float);
-	map.mesh_vertexes.vert.offset=0;
-
 	pv=vertex_ptr;
+	pp=pv+(v_cnt*3);
+	pc=pp+(v_cnt*2);
+	pn=pc+(v_cnt*3);
 
-	map.mesh_vertexes.uv.sz=(v_count*2)*sizeof(float);
-	map.mesh_vertexes.uv.offset=map.mesh_vertexes.vert.offset+map.mesh_vertexes.vert.sz;
-
-	pp=pv+(v_count*3);
-
-	map.mesh_vertexes.color.sz=(v_count*3)*sizeof(float);
-	map.mesh_vertexes.color.offset=map.mesh_vertexes.uv.offset+map.mesh_vertexes.uv.sz;
-
-	pc=pp+(v_count*2);
-
-	map.mesh_vertexes.normal.sz=(v_count*3)*sizeof(float);
-	map.mesh_vertexes.normal.offset=map.mesh_vertexes.color.offset+map.mesh_vertexes.color.sz;
-
-	pn=pc+(v_count*3);
-	
-		// fill in map geometery
+		// create the vertexes
 
 	v_idx=0;
-	q_idx=0;
 		
 	mesh=map.mesh.meshes;
 
@@ -157,13 +127,6 @@ bool view_compile_mesh_gl_list_init(void)
 		poly=mesh->polys;
 		
 		for (k=0;k!=mesh->npoly;k++) {
-
-				// offsets into verext lists
-
-			poly->draw.gl_vertex_offset=v_idx;
-			
-			v_poly_start_idx=v_idx;
-			v_light_start_idx=(unsigned int)(v_idx+poly->ptsz);
 
 				// polygon vertexes
 
@@ -223,22 +186,6 @@ bool view_compile_mesh_gl_list_init(void)
 
 					v_idx++;
 				}
-
-					// offset light draw indexes
-
-				qd=mesh->light.quad_indexes+poly->light.quad_index_offset;
-
-				for (t=0;t!=(poly->light.nquad*4);t++) {
-					if (*qd>=1000) {
-						*index_ptr=v_poly_start_idx+((*qd)-1000);
-					}
-					else {
-						*index_ptr=(*qd)+v_light_start_idx;
-					}
-					qd++;
-					index_ptr++;
-					q_idx++;
-				}
 			}
 
 			poly++;
@@ -246,14 +193,87 @@ bool view_compile_mesh_gl_list_init(void)
 	
 		mesh++;
 	}
+
+		// unmap vertex VBO
+		
+	view_unmap_map_vertex_object();
+	view_unbind_map_vertex_object();
+
+		// initialize index VBO
+		
+	view_init_map_index_object(i_cnt);
+		
+	index_ptr=view_bind_map_map_index_object();
+	if (index_ptr==NULL) {
+		view_unmap_map_vertex_object();
+		view_unbind_map_vertex_object();
+		return(FALSE);
+	}
+
+		// map the indexes
+
+	i_idx=0;
 	
-		// unmap VBO
+	mesh=map.mesh.meshes;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+
+			// run through the polys
+
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+		
+				// polygon indexes
+				
+			v_poly_start_idx=poly->draw.vertex_offset;
+			poly->draw.gl_poly_index_offset=i_idx*sizeof(unsigned int);
+				
+			for (t=0;t!=poly->ptsz;t++) {
+				*index_ptr++=v_poly_start_idx+t;
+				i_idx++;
+			}
+
+				// tesseled lighting quads indexes
+
+			if (!poly->light.simple_tessel) {
+					
+				v_light_start_idx=(unsigned int)(v_poly_start_idx+poly->ptsz);
+
+				qd=mesh->light.quad_indexes+poly->light.quad_index_offset;
+				poly->light.gl_quad_index_offset=i_idx*sizeof(unsigned int);
+
+				for (t=0;t!=(poly->light.nquad*4);t++) {
+				
+					if (*qd>=1000) {
+						*index_ptr=v_poly_start_idx+((*qd)-1000);
+					}
+					else {
+						*index_ptr=(*qd)+v_light_start_idx;
+					}
+					
+					qd++;
+					index_ptr++;
+					
+					i_idx++;
+				}
+			}
+			
+				// min/max range of element
+				
+			poly->draw.gl_poly_index_min=v_poly_start_idx;
+			poly->draw.gl_poly_index_max=v_poly_start_idx+(poly->ptsz+poly->light.nvertex);	// rough but will work to get indexes within smaller ranges
+
+			poly++;
+		}
+	
+		mesh++;
+	}
+	
+		// unmap index VBO
 
 	view_unmap_map_index_object();
 	view_unbind_map_index_object();
-
-	view_unmap_map_vertex_object();
-	view_unbind_map_vertex_object();
 
 	return(TRUE);
 }
@@ -354,18 +374,18 @@ void view_compile_mesh_gl_lists_ray_trace(map_mesh_type *mesh,float *pc,float *p
 
 bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 {
-	int									n,k,t,v_count;
-	float								x_shift_offset,y_shift_offset;
-	float								*vertex_ptr,*pv,*pp,*pc,*pn;
-	bool								recalc_light;
-	d3pnt								*pnt,*lv_pt;
-	d3uv								*lv_uv;
-	map_mesh_type						*mesh;
-	map_mesh_poly_type					*poly;
+	int							n,k,t,v_count;
+	float						x_shift_offset,y_shift_offset;
+	float						*vertex_ptr,*pv,*pp,*pc,*pn;
+	bool						recalc_light;
+	d3pnt						*pnt,*lv_pt;
+	d3uv						*lv_uv;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
 
 		// total number of vertexes
 
-	v_count=map.mesh_vertexes.draw_vertex_count;
+	v_count=map.mesh.vbo_vertex_count;
 
 		// map VBO to memory
 
@@ -468,7 +488,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 			// lights recalculated
 
 		if (!mesh->flag.hilite) {
-			
+
 			map_calculate_light_reduce_mesh(mesh);
 
 			if (mesh->draw.moved) {
@@ -490,6 +510,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 					view_compile_mesh_gl_lists_normal(mesh,pc,pn);
 				}
 			}
+
 		}
 
 			// reset the moved list so we'll catch
@@ -517,6 +538,10 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 void view_compile_gl_list_attach(void)
 {
+	int				v_cnt,offset;
+	
+	v_cnt=map.mesh.vbo_vertex_count;
+
 		// use last compiled buffer
 
 	view_bind_map_vertex_object();
@@ -525,36 +550,44 @@ void view_compile_gl_list_attach(void)
 		// vertexes
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,(void*)map.mesh_vertexes.vert.offset);
+	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 
 		// uvs
 		
+	offset=(v_cnt*3)*sizeof(float);
+	
 	glClientActiveTexture(GL_TEXTURE2);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)map.mesh_vertexes.uv.offset);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
 
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)map.mesh_vertexes.uv.offset);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
 	
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)map.mesh_vertexes.uv.offset);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
 
 		// color array
 
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(3,GL_FLOAT,0,(void*)map.mesh_vertexes.color.offset);
+	glColorPointer(3,GL_FLOAT,0,(void*)((v_cnt*(3+2))*sizeof(float)));
 }
 
 void view_compile_gl_list_switch_to_color(void)
 {
-	glColorPointer(3,GL_FLOAT,0,(void*)map.mesh_vertexes.color.offset);
+	int				v_cnt;
+	
+	v_cnt=map.mesh.vbo_vertex_count;
+	glColorPointer(3,GL_FLOAT,0,(void*)((v_cnt*(3+2))*sizeof(float)));
 }
 
 void view_compile_gl_list_switch_to_normal(void)
 {
-	glColorPointer(3,GL_FLOAT,0,(void*)map.mesh_vertexes.normal.offset);
+	int				v_cnt;
+	
+	v_cnt=map.mesh.vbo_vertex_count;
+	glColorPointer(3,GL_FLOAT,0,(void*)((v_cnt*(3+2+3))*sizeof(float)));
 }
 
 void view_compile_gl_list_dettach(void)

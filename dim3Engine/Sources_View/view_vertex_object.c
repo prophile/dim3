@@ -151,7 +151,7 @@ void view_init_map_index_object(int sz)
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,vbo_map_index);
 
 	sz*=sizeof(unsigned int);
-	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,sz,NULL,GL_DYNAMIC_DRAW_ARB);
+	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,sz,NULL,GL_STATIC_DRAW_ARB);
 
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
 }

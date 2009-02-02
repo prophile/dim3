@@ -230,70 +230,55 @@ void map_calculate_light_reduce_all(void)
 
 bool map_calculate_light_reduce_check_equal(map_mesh_type *mesh)
 {
-	int						n,count;
-	float					f_count;
-	double					intensity;
-	bool					recalc;
-	d3pnt					pnt;
-	d3col					col;
-	light_spot_type			*lspot;
+	int							n;
+	bool						recalc;
+	light_spot_type				*lspot;
+	map_mesh_light_cache_type	*lcache;
 	
-		// create light averages to compare
-		// against last light calculation
+		// different count of lights?
 		
-	count=0;
-	intensity=0.0;
-	pnt.x=pnt.y=pnt.z=0;
-	col.r=col.g=col.b=0.0f;
-
-	if (nlight_reduce!=0) {
+	recalc=(nlight_reduce!=mesh->light.nlight_cache);
 	
-		for (n=0;n!=nlight_reduce;n++) {
+		// check the lights
+		
+	if (!recalc) {
+	
+		for (n=0;n!=mesh->light.nlight_cache;n++) {
 			lspot=&lspot_cache[light_reduce_list[n]];
+			lcache=&mesh->light.light_cache[n];
 			
-			intensity+=lspot->intensity;
-			pnt.x+=(lspot->pnt.x-mesh->box.mid.x);
-			pnt.y+=(lspot->pnt.x-mesh->box.mid.y);
-			pnt.z+=(lspot->pnt.x-mesh->box.mid.z);
-			col.r+=lspot->col.r;
-			col.g+=lspot->col.r;
-			col.b+=lspot->col.r;
+			if ((lspot->pnt.x!=lcache->pnt.x) || (lspot->pnt.y!=lcache->pnt.y) || (lspot->pnt.z!=lcache->pnt.z)) {
+				recalc=TRUE;
+				break;
+			}
+		
+			if ((lspot->col.r!=lcache->col.r) || (lspot->col.g!=lcache->col.g) || (lspot->col.b!=lcache->col.b)) {
+				recalc=TRUE;
+				break;
+			}
+			
+			if (lspot->intensity!=lcache->intensity) {
+				recalc=TRUE;
+				break;
+			}
 		}
-		
-		count=nlight_reduce;
-		f_count=(float)count;
-		
-		intensity/=(double)f_count;
-		pnt.x/=count;
-		pnt.y/=count;
-		pnt.z/=count;
-		col.r/=f_count;
-		col.g/=f_count;
-		col.b/=f_count;
 	}
 	
-		// if light averages have changed, then
-		// we will need to rebuild light lists
-		
-	recalc=(mesh->light.cache.light_count!=count);
-	recalc=recalc||(mesh->light.cache.intensity!=intensity);
-	recalc=recalc||(mesh->light.cache.pnt.x!=pnt.x);
-	recalc=recalc||(mesh->light.cache.pnt.y!=pnt.y);
-	recalc=recalc||(mesh->light.cache.pnt.z!=pnt.z);
-	recalc=recalc||(mesh->light.cache.col.r!=col.r);
-	recalc=recalc||(mesh->light.cache.col.g!=col.g);
-	recalc=recalc||(mesh->light.cache.col.b!=col.b);
-
 	if (!recalc) return(TRUE);
-
-	mesh->light.cache.light_count=count;
-	mesh->light.cache.intensity=intensity;
-	mesh->light.cache.pnt.x=pnt.x;
-	mesh->light.cache.pnt.y=pnt.y;
-	mesh->light.cache.pnt.z=pnt.z;
-	mesh->light.cache.col.r=col.r;
-	mesh->light.cache.col.g=col.g;
-	mesh->light.cache.col.b=col.b;
+	
+		// setup the cache for next time
+		
+	mesh->light.nlight_cache=nlight_reduce;
+	if (mesh->light.nlight_cache>max_mesh_light_cache) mesh->light.nlight_cache=max_mesh_light_cache;
+		
+	for (n=0;n!=mesh->light.nlight_cache;n++) {
+		lspot=&lspot_cache[light_reduce_list[n]];
+		lcache=&mesh->light.light_cache[n];
+		
+		memmove(&lcache->pnt,&lspot->pnt,sizeof(d3pnt));
+		memmove(&lcache->col,&lspot->col,sizeof(d3col));
+		lcache->intensity=lspot->intensity;
+	}
 	
 	return(FALSE);
 }
@@ -306,7 +291,7 @@ void map_calculate_light_clear_all(void)
 	mesh=map.mesh.meshes;
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		mesh->light.cache.light_count=-1;
+		mesh->light.nlight_cache=-1;
 		mesh++;
 	}
 }

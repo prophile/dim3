@@ -119,8 +119,8 @@ void render_opaque_portal_normal(int mesh_cnt,int *mesh_list,int stencil_pass,bo
 
 				// draw polygon
 
-			glDrawArrays(GL_POLYGON,poly->draw.gl_vertex_offset,poly->ptsz);
-			
+			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+		
 			poly++;
 		}
 	}
@@ -221,10 +221,10 @@ void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool
 				// draw either by lighting mesh or simple polygon
 
 			if (poly->light.simple_tessel) {
-				glDrawArrays(GL_POLYGON,poly->draw.gl_vertex_offset,poly->ptsz);
+				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 			}
 			else {
-				glDrawElements(GL_QUADS,(poly->light.nquad*4),GL_UNSIGNED_INT,(GLvoid*)poly->light.quad_index_offset);
+				glDrawRangeElements(GL_QUADS,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,(poly->light.nquad*4),GL_UNSIGNED_INT,(GLvoid*)poly->light.gl_quad_index_offset);
 			}
 
 			poly++;
@@ -322,7 +322,8 @@ void render_opaque_portal_lighting(int mesh_cnt,int *mesh_list,int stencil_pass)
 
 			gl_texture_tesseled_lighting_set(-1,poly->dark_factor);
 			glStencilFunc(GL_EQUAL,poly->draw.stencil_idx,0xFF);
-			glDrawElements(GL_QUADS,(poly->light.nquad*4),GL_UNSIGNED_INT,(GLvoid*)poly->light.quad_index_offset);
+			
+			glDrawRangeElements(GL_QUADS,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,(poly->light.nquad*4),GL_UNSIGNED_INT,(GLvoid*)poly->light.gl_quad_index_offset);
 
 			poly++;
 		}
@@ -347,8 +348,6 @@ void render_opaque_portal_lighting_mesh_debug(int mesh_cnt,int *mesh_list,int st
 	glDisable(GL_ALPHA_TEST);
 
 	glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
-
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
 
 	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 
@@ -388,10 +387,10 @@ void render_opaque_portal_lighting_mesh_debug(int mesh_cnt,int *mesh_list,int st
 				// draw either by lighting mesh or simple polygon
 
 			if (poly->light.simple_tessel) {
-				glDrawArrays(GL_POLYGON,poly->draw.gl_vertex_offset,poly->ptsz);
+				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 			}
 			else {
-				glDrawElements(GL_QUADS,(poly->light.nquad*4),GL_UNSIGNED_INT,(GLvoid*)poly->light.quad_index_offset);
+				glDrawRangeElements(GL_QUADS,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,(poly->light.nquad*4),GL_UNSIGNED_INT,(GLvoid*)poly->light.gl_quad_index_offset);
 			}
 
 			poly++;
@@ -458,7 +457,7 @@ void render_opaque_portal_lighting_fix(int mesh_cnt,int *mesh_list,int stencil_p
 			gl_texture_tesseled_lighting_set(-1,poly->dark_factor);
 			glStencilFunc(GL_EQUAL,poly->draw.stencil_idx,0xFF);
 
-			glDrawArrays(GL_POLYGON,poly->draw.gl_vertex_offset,poly->ptsz);
+			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 
 			poly++;
 		}
@@ -549,11 +548,11 @@ void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass)
 
 			if (poly->light.simple_tessel) {
 				glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
-				glDrawArrays(GL_POLYGON,poly->draw.gl_vertex_offset,poly->ptsz);
+				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 			}
 			else {
 				glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
-				glDrawElements(GL_QUADS,(poly->light.nquad*4),GL_UNSIGNED_INT,(GLvoid*)poly->light.quad_index_offset);
+				glDrawRangeElements(GL_QUADS,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,(poly->light.nquad*4),GL_UNSIGNED_INT,(GLvoid*)poly->light.gl_quad_index_offset);
 			}
 
 			poly++;
@@ -637,8 +636,8 @@ void render_opaque_portal_glow(int mesh_cnt,int *mesh_list)
 
 				// draw polygon
 
-			glDrawArrays(GL_POLYGON,poly->draw.gl_vertex_offset,poly->ptsz);
-
+			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+			
 			poly++;
 		}
 	}
@@ -669,7 +668,7 @@ void render_opaque_portal_shader(int mesh_cnt,int *mesh_list)
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 	
-	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST); 
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 
@@ -681,6 +680,10 @@ void render_opaque_portal_shader(int mesh_cnt,int *mesh_list)
 	for (n=0;n!=mesh_cnt;n++) {
 
 		mesh=&map.mesh.meshes[mesh_list[n]];
+		
+			// skip meshes with no shaders
+			
+		if (!mesh->flag.has_shader) continue;
 
 			// run through the polys
 
@@ -715,8 +718,8 @@ void render_opaque_portal_shader(int mesh_cnt,int *mesh_list)
 
 				// draw polygon
 
-			glDrawArrays(GL_POLYGON,poly->draw.gl_vertex_offset,poly->ptsz);
-
+			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+			
 			poly++;
 		}
 	}
@@ -834,11 +837,10 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 			render_opaque_portal_lighting(mesh_cnt,mesh_list,stencil_pass);
 			render_opaque_portal_specular(mesh_cnt,mesh_list,stencil_pass);
 			render_opaque_portal_lighting_fix(mesh_cnt,mesh_list,stencil_pass);
-
-			/* supergumba -- lighting testing
+				/*
 				render_opaque_portal_lighting_mesh_debug(mesh_cnt,mesh_list,stencil_pass);
 				glClear(GL_STENCIL_BUFFER_BIT);		// need to clear stencil since mesh lighting isn't drawing
-			*/
+				*/
 		}
 	}
 
@@ -853,6 +855,5 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 		// dettach any attached lists
 
 	view_compile_gl_list_dettach();
-
 }
 

@@ -570,16 +570,14 @@ void obscure_calculate_group_single_visibility(int group_idx,d3pnt *cpt,unsigned
 	}
 }
 
-bool obscure_calculate_group_visibility_complete(int group_idx)
+bool obscure_calculate_group_visibility_complete(int group_idx,unsigned char *visibility_flag)
 {
 	int				n,x,z,
 					x_sz,y_sz,z_sz,x_cnt,y_cnt,z_cnt,x_add,y_add,z_add;
 	int				*mesh_sort_list;
 	float			ratio;
 	unsigned char	*stencil_pixels;
-	unsigned char	visibility_flag[max_mesh_visibility_bytes];
 	d3pnt			min,max,pnt;
-	map_mesh_type	*mesh;
 	
 		// get the min/max for group of meshes
 		
@@ -631,16 +629,6 @@ bool obscure_calculate_group_visibility_complete(int group_idx)
 
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
-
-		// clear visibility bits
-		
-	bzero(visibility_flag,max_mesh_visibility_bytes);
-
-		// group meshes always in visibility list
-
-	for (n=0;n!=map.mesh.nmesh;n++) {
-		if (obscure_groups[group_idx].mesh_in_group[n]) obscure_mesh_view_bit_set(visibility_flag,n);
-	}
 	
 		// divisions across the mesh
 
@@ -709,15 +697,6 @@ pnt.y=max.y-(map_enlarge*5);
 
 	free(mesh_sort_list);
 	free(stencil_pixels);
-	
-		// set the group
-		
-	mesh=map.mesh.meshes;
-
-	for (n=0;n!=map.mesh.nmesh;n++) {
-		if (obscure_groups[group_idx].mesh_in_group[n]) memmove(mesh->obscure.visibility_flag,visibility_flag,max_mesh_visibility_bytes);
-		mesh++;
-	}
 
 	return(TRUE);
 }
@@ -728,13 +707,10 @@ pnt.y=max.y-(map_enlarge*5);
       
 ======================================================= */
 
-bool obscure_calculate_group_visibility_rough(int group_idx)
+bool obscure_calculate_group_visibility_rough(int group_idx,unsigned char *visibility_flag)
 {
 	int				n;
-	unsigned char	visibility_flag[max_mesh_visibility_bytes];
-	bool			group_ok;
 	d3pnt			min,max,mid,chk_min,chk_max,chk_mid;
-	map_mesh_type	*mesh;
 	
 		// get the min/max for group of meshes
 		
@@ -744,40 +720,20 @@ bool obscure_calculate_group_visibility_rough(int group_idx)
 	mid.y=(min.y+max.y)>>1;
 	mid.z=(min.z+max.z)>>1;
 	
-		// clear visibility bits
-		
-	bzero(visibility_flag,max_mesh_visibility_bytes);
-	
 		// find other groups within a certain radius
 		// and set all the meshes within that group to be shown
 		
 	for (n=0;n!=nobscure_group;n++) {
 	
-		group_ok=FALSE;
-		
-		if (n==group_idx) {
-			group_ok=TRUE;
-		}
-		else {
-			if (obscure_calculate_group_min_max(n,&chk_min,&chk_max)) {
-				chk_mid.x=(chk_min.x+chk_max.x)>>1;
-				chk_mid.y=(chk_min.y+chk_max.y)>>1;
-				chk_mid.z=(chk_min.z+chk_max.z)>>1;
-		
-				group_ok=(distance_get(mid.x,mid.y,mid.z,chk_mid.x,chk_mid.y,chk_mid.z)<=obscure_mesh_rough_radius);
-			}
-		}
-		
-		if (group_ok) obscure_group_view_bit_set(visibility_flag,n);
-	}
+		if (n==group_idx) continue;
 	
-		// set all members of the group to the shown meshes
-		
-	mesh=map.mesh.meshes;
-
-	for (n=0;n!=map.mesh.nmesh;n++) {
-		if (obscure_groups[group_idx].mesh_in_group[n]) memmove(mesh->obscure.visibility_flag,visibility_flag,max_mesh_visibility_bytes);
-		mesh++;
+		if (obscure_calculate_group_min_max(n,&chk_min,&chk_max)) {
+			chk_mid.x=(chk_min.x+chk_max.x)>>1;
+			chk_mid.y=(chk_min.y+chk_max.y)>>1;
+			chk_mid.z=(chk_min.z+chk_max.z)>>1;
+	
+			if (distance_get(mid.x,mid.y,mid.z,chk_mid.x,chk_mid.y,chk_mid.z)<=obscure_mesh_rough_radius) obscure_group_view_bit_set(visibility_flag,n);
+		}
 	}
 
 	return(TRUE);
@@ -791,14 +747,50 @@ bool obscure_calculate_group_visibility_rough(int group_idx)
 
 bool obscure_calculate_group_visibility(int group_idx)
 {
-
-// supergumba -- until complete is working, just do rough now
-
-//	if (map.settings.obscure_type==obscure_type_rough) {
-		return(obscure_calculate_group_visibility_rough(group_idx));
-//	}
+	int				n;
+	bool			ok;
+	unsigned char	visibility_flag[max_mesh_visibility_bytes];
+	map_mesh_type	*mesh;
 	
-//	return(obscure_calculate_group_visibility_complete(group_idx));
+		// clear visibility bits
+		
+	bzero(visibility_flag,max_mesh_visibility_bytes);
+
+		// everything in this group automatically in mesh
+		
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		if (obscure_groups[group_idx].mesh_in_group[n]) obscure_mesh_view_bit_set(visibility_flag,n);
+	}
+	
+		// run obscure
+	
+	// supergumba -- need to work on this
+	ok=obscure_calculate_group_visibility_rough(group_idx,visibility_flag);
+/*		
+	switch (map.settings.obscure_type) {
+
+		case obscure_type_rough:
+			ok=obscure_calculate_group_visibility_rough(group_idx,visibility_flag);
+			break;
+	
+		case obscure_type_complete:
+			ok=obscure_calculate_group_visibility_complete(group_idx,visibility_flag);
+			break;
+			
+	}
+*/	
+	if (!ok) return(FALSE);
+	
+		// set all members of the group to the shown meshes
+		
+	mesh=map.mesh.meshes;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		if (obscure_groups[group_idx].mesh_in_group[n]) memmove(mesh->obscure.visibility_flag,visibility_flag,max_mesh_visibility_bytes);
+		mesh++;
+	}
+	
+	return(TRUE);
 }
 
 /* =======================================================
@@ -963,6 +955,10 @@ bool obscure_test(void)
 	int				n,type,mesh_idx,poly_idx,group_idx;
 	bool			ok;
 	
+		// nothing for none obscuring
+		
+	if (map.settings.obscure_type==obscure_type_none) return(FALSE);
+	
 		// if obscuring already on, turn off
 		
 	if (obscure_mesh_idx!=-1) {
@@ -991,11 +987,12 @@ bool obscure_test(void)
 		if (obscure_groups[group_idx].mesh_in_group[n]) select_add(mesh_piece,n,0);
 	}
 
-		// setup obscuring
+		// run obscuring
 	
 	obscure_mesh_idx=mesh_idx;
-	
 	ok=obscure_calculate_group_visibility(group_idx);
+	
+		// auto add obscured meshes
 	obscure_groups_end();
 	
 	if (!ok) {
