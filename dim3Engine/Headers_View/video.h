@@ -81,6 +81,9 @@ extern void view_unbind_sky_vertex_object(void);
 extern float* view_bind_map_next_vertex_object(int sz);
 extern void view_unmap_current_vertex_object(void);
 extern void view_unbind_current_vertex_object(void);
+extern unsigned short* view_bind_map_next_index_object(int sz);
+extern void view_unmap_current_index_object(void);
+extern void view_unbind_current_index_object(void);
 
 extern void view_draw_next_vertex_object_2D_texture_screen(int wid,int high,float gx,float gy);
 extern void view_draw_next_vertex_object_2D_tint_screen(void);

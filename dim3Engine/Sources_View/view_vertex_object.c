@@ -35,11 +35,14 @@ extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
 
-int							cur_vbo_cache_idx,
-							vbo_cache_sz[view_vertex_object_count];
+int							cur_vbo_cache_idx,cur_vbo_cache_index_idx,
+							vbo_cache_sz[view_vertex_object_count],
+							vbo_cache_index_sz[view_vertex_object_count];
 GLuint						vbo_map,vbo_map_index,
-							vbo_liquid,vbo_liquid_index,vbo_sky,
-							vbo_cache[view_vertex_object_count];
+							vbo_liquid,vbo_liquid_index,
+							vbo_sky,
+							vbo_cache[view_vertex_object_count],
+							vbo_cache_index[view_vertex_object_count];
 
 /* =======================================================
 
@@ -64,6 +67,7 @@ void view_create_vertex_objects(void)
 		// misc vbos
 
 	glGenBuffersARB(view_vertex_object_count,vbo_cache);
+	glGenBuffersARB(view_vertex_object_count,vbo_cache_index);
 
 		// initial sizes
 		// we only remap the buffer is the size is greater
@@ -72,11 +76,13 @@ void view_create_vertex_objects(void)
 
 	for (n=0;n!=view_vertex_object_count;n++) {
 		vbo_cache_sz[n]=-1;
+		vbo_cache_index_sz[n]=-1;
 	}
 
 		// start at first misc vbo
 
 	cur_vbo_cache_idx=0;
+	cur_vbo_cache_index_idx=0;
 }
 
 void view_dispose_vertex_objects(void)
@@ -90,6 +96,7 @@ void view_dispose_vertex_objects(void)
 	glDeleteBuffersARB(1,&vbo_sky);
 
 	glDeleteBuffersARB(view_vertex_object_count,vbo_cache);
+	glDeleteBuffersARB(view_vertex_object_count,vbo_cache_index);
 }
 
 /* =======================================================
@@ -393,6 +400,60 @@ inline void view_unmap_current_vertex_object(void)
 inline void view_unbind_current_vertex_object(void)
 {
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+}
+
+unsigned short* view_bind_map_next_index_object(int sz)
+{
+	unsigned short		*index_ptr;
+
+		// bind it
+
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,vbo_cache_index[cur_vbo_cache_index_idx]);
+
+		// size is in unsigned short
+
+	sz*=sizeof(unsigned short);
+
+	if (sz>vbo_cache_index_sz[cur_vbo_cache_index_idx]) {
+
+			// we need to grab the pointer first so if the data
+			// is still being used then we'll be stalled
+
+		if (vbo_cache_index_sz[cur_vbo_cache_index_idx]!=-1) {
+			index_ptr=(unsigned short*)glMapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+			glUnmapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB);
+		}
+
+			// now we can change the size
+
+		vbo_cache_index_sz[cur_vbo_cache_index_idx]=sz;
+		glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+	}
+
+		// map pointer
+
+	index_ptr=(unsigned short*)glMapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	if (index_ptr==NULL) {
+		glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
+		return(NULL);
+	}
+
+		// get next object
+
+	cur_vbo_cache_index_idx++;
+	if (cur_vbo_cache_index_idx==view_vertex_object_count) cur_vbo_cache_index_idx=0;
+
+	return(index_ptr);
+}
+
+inline void view_unmap_current_index_object(void)
+{
+	glUnmapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB);
+}
+
+inline void view_unbind_current_index_object(void)
+{
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
 }
 
 /* =======================================================

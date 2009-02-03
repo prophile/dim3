@@ -39,8 +39,7 @@ char					obscure_type_str[][32]={"none","rough","complete"},
                         light_type_str[][32]={"normal","blink","glow","pulse","flicker","failing",""},
 						lighting_mode_str[][32]={"flat","hilite","hilite_diffuse","vertex"},
 						skill_type_str[][32]={"easy","medium","hard",""},
-						spawn_type_str[][32]={"always","single_player","multiplayer",""},
-						map_bump_mode_str[][32]=bump_mode_xml_list_str;
+						spawn_type_str[][32]={"always","single_player","multiplayer",""};
 
 
 extern bool decode_map_v1_xml(map_type *map,int map_head);

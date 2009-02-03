@@ -182,9 +182,6 @@ EXPORTS
 	bitmap_texture_read_xml						@370
 	bitmap_texture_write_xml					@371
 
-	bitmap_open_normal_from_height				@380
-	bitmap_open_normal_from_bitmap				@381
-
 	bitmap_load_png_data						@400
 	bitmap_write_png_data						@401
 	bitmap_check								@402

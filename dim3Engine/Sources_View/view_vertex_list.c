@@ -353,6 +353,7 @@ void view_compile_mesh_gl_lists_normal(map_mesh_type *mesh,float *pc,float *pn,f
 void view_compile_mesh_gl_lists_ray_trace(map_mesh_type *mesh,float *pc,float *pn,float *ps)
 {
 	int							n,k;
+	float						f_intensity;
 	d3pnt						*pnt,*lv_pt;
 	map_mesh_poly_type			*poly;
 
@@ -364,9 +365,14 @@ void view_compile_mesh_gl_lists_ray_trace(map_mesh_type *mesh,float *pc,float *p
 
 		for (k=0;k!=poly->ptsz;k++) {
 			pnt=&mesh->vertexes[poly->v[k]];
-			map_calculate_ray_trace_light_color_normal((double)pnt->x,(double)pnt->y,(double)pnt->z,pc,pn);
+			map_calculate_ray_trace_light_color_normal((double)pnt->x,(double)pnt->y,(double)pnt->z,pc,pn,&f_intensity);
+
 			pc+=3;
 			pn+=3;
+
+			*ps++=f_intensity;
+			*ps++=f_intensity;
+			*ps++=f_intensity;
 		}
 
 			// if not simple, calculate the lighting mesh
@@ -378,9 +384,15 @@ void view_compile_mesh_gl_lists_ray_trace(map_mesh_type *mesh,float *pc,float *p
 			lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
 
 			for (k=0;k!=poly->light.nvertex;k++) {
-				map_calculate_ray_trace_light_color_normal((double)lv_pt->x,(double)lv_pt->y,(double)lv_pt->z,pc,pn);
+				map_calculate_ray_trace_light_color_normal((double)lv_pt->x,(double)lv_pt->y,(double)lv_pt->z,pc,pn,&f_intensity);
+
 				pc+=3;
 				pn+=3;
+
+				*ps++=f_intensity;
+				*ps++=f_intensity;
+				*ps++=f_intensity;
+
 				lv_pt++;
 			}
 		}

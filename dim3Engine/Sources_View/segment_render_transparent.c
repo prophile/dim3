@@ -133,7 +133,7 @@ void render_transparent_portal_mesh(bool is_fog_lighting)
 			}
 		}
 
-		glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 
 			// draw any specular on the transparent segment
 
@@ -161,7 +161,7 @@ void render_transparent_portal_mesh(bool is_fog_lighting)
 				// use lighting mesh as specular is dependant upon the light
 
 			if (poly->light.simple_tessel) {
-				glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+				glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 			}
 			else {
 				glDrawRangeElements(GL_QUADS,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,(poly->light.nquad*4),GL_UNSIGNED_INT,(GLvoid*)poly->light.gl_quad_index_offset);
@@ -202,7 +202,7 @@ void render_transparent_portal_mesh(bool is_fog_lighting)
 
 			gl_texture_transparent_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,poly->alpha,texture->glow.current_color);
 
-			glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 			
 				// end glow drawing and force a transparencies reset
 
@@ -258,7 +258,7 @@ void render_transparent_portal_shader(void)
 		
 		gl_shader_set_variables(texture->shader.program_obj,&poly->box.mid,texture);
 
-		glDrawElements(GL_POLYGON,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}
 
 	gl_texture_shader_end();

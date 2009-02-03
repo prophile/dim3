@@ -31,8 +31,7 @@ and can be sold or given away.
 
 extern modelutility_settings_type		modelutility_settings;
 
-char						deform_mode_str[][32]=deform_mode_xml_list_str,
-							model_bump_mode_str[][32]=bump_mode_xml_list_str;
+char						deform_mode_str[][32]=deform_mode_xml_list_str;
 
 model_tag					bone_parent_tag[max_model_bone],
                             major_bone_tag[max_model_vertex],

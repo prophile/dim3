@@ -150,23 +150,9 @@ bool map_textures_read(map_type *map,bool in_engine)
 			
 					// bumpmap
 
-				switch (texture->bump_mode) {
-				
-					case bump_mode_auto_generate:
-						file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",bitmap->name,"png");
-						bitmap_open_normal_from_bitmap(bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated);
-						break;
-						
-					case bump_mode_height_map:
-						file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures_Height",bumpmap->name,"png");
-						bitmap_open_normal_from_height(bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated);
-						break;
-						
-					case bump_mode_normal_map:
-						file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures_dot3",bumpmap->name,"png");
-						bitmap_open(bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated,FALSE);
-						break;
-						
+				if (bumpmap->name[0]!=0x0) {
+					file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures_dot3",bumpmap->name,"png");
+					bitmap_open(bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated,FALSE);
 				}
 				
 					// specular map

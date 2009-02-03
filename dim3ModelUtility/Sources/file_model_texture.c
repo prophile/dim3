@@ -101,27 +101,11 @@ void model_textures_read(model_type *model)
 				bitmap_open(bitmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.compression,texture->pixelated,FALSE);
 
 					// bumpmap
-					
-				switch (texture->bump_mode) {
-				
-					case bump_mode_auto_generate:
-						sprintf(sub_path,"Models/%s/Bitmaps/Textures",model->name);
-						file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,bitmap->name,"png");
-						bitmap_open_normal_from_bitmap(bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.compression,texture->pixelated);
-						break;
 
-					case bump_mode_height_map:
-						sprintf(sub_path,"Models/%s/Bitmaps/Textures_Height",model->name);
-						file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,bumpmap->name,"png");
-						bitmap_open_normal_from_height(bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.compression,texture->pixelated);
-						break;
-						
-					case bump_mode_normal_map:
-						sprintf(sub_path,"Models/%s/Bitmaps/Textures_dot3",model->name);
-						file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,bumpmap->name,"png");
-						bitmap_open(bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.compression,texture->pixelated,FALSE);
-						break;
-						
+				if (bumpmap->name[0]!=0x0) {
+					sprintf(sub_path,"Models/%s/Bitmaps/Textures_dot3",model->name);
+					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,bumpmap->name,"png");
+					bitmap_open(bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,modelutility_settings.compression,texture->pixelated,FALSE);
 				}
 				
 					// specular map

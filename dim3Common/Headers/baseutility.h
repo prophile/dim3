@@ -418,17 +418,6 @@ extern bool xml_add_attribute_bit_array(char *name,unsigned char *value,int coun
 #define quality_mode_setup_list_def				{"Low","Medium","High",""}
 
 //
-// bump modes
-//
-
-#define bump_mode_none							0
-#define bump_mode_auto_generate					1
-#define bump_mode_height_map					2
-#define bump_mode_normal_map					3
-
-#define bump_mode_xml_list_str					{"none","auto_generate","height_map","normal_map",""}
-
-//
 // texture maximums
 //
 
@@ -520,7 +509,6 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						bump_mode;
 						float					txt_scale_x,txt_scale_y;
 						bool					additive,pixelated;
 						char					material_name[name_str_len];
@@ -550,9 +538,6 @@ extern void bitmap_texture_recalc_animation(texture_type *texture);
 
 extern void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale);
 extern void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_scale);
-
-extern bool bitmap_open_normal_from_height(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool use_compression,bool pixelated);
-extern bool bitmap_open_normal_from_bitmap(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool use_compression,bool pixelated);
 
 extern unsigned char* bitmap_load_png_data(char *path,int *p_wid,int *p_high,bool *alpha_channel);
 extern bool bitmap_write_png_data(unsigned char *data,int wid,int high,bool alpha_channel,char *path);

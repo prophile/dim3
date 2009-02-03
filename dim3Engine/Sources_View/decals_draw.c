@@ -106,7 +106,7 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 		
 	map_calculate_light_reduce_all();
 	if (setup.ray_trace_lighting) {
-		map_calculate_ray_trace_light_color_normal((double)decal->x[0],(double)decal->y[0],(double)decal->z[0],cf,nf);
+		map_calculate_ray_trace_light_color_normal((double)decal->x[0],(double)decal->y[0],(double)decal->z[0],cf,nf,&f_intensity);
 	}
 	else {
 		map_calculate_light_color_normal((double)decal->x[0],(double)decal->y[0],(double)decal->z[0],cf,nf,&f_intensity);

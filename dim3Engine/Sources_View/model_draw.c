@@ -56,6 +56,7 @@ bool model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 	int				n,trig_count,nvertex,idx;
 	float			*vl,*tl,*cl,*nl,*vp,*cp,*np,*vertex_ptr,
 					*vertex_array,*coord_array,*color_array,*normal_array;
+	unsigned short	*index_ptr;
     model_trig_type	*trig;
 
 	trig_count=material->trig_count;
@@ -67,8 +68,15 @@ bool model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 
 	vertex_ptr=view_bind_map_next_vertex_object(((trig_count*3)*(3+2+3+3)));
 	if (vertex_ptr==NULL) return(FALSE);
+
+	index_ptr=view_bind_map_next_index_object(trig_count*3);
+	if (index_ptr==NULL) {
+		view_unmap_current_vertex_object();
+		view_unbind_current_vertex_object();
+		return(FALSE);
+	}
 	
-		// build the arrays
+		// build the vertexes and indexes
 
 	trig=&mesh->trigs[material->trig_start];
 
@@ -82,6 +90,7 @@ bool model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 			// vertex 0
 
 		idx=trig->v[0]*3;
+
 		vp=mesh->draw.gl_vertex_array+idx;
 		cp=mesh->draw.gl_color_array+idx;
 		np=mesh->draw.gl_light_normal_array+idx;
@@ -104,6 +113,7 @@ bool model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 			// vertex 1
 
 		idx=trig->v[1]*3;
+
 		vp=mesh->draw.gl_vertex_array+idx;
 		cp=mesh->draw.gl_color_array+idx;
 		np=mesh->draw.gl_light_normal_array+idx;
@@ -126,6 +136,7 @@ bool model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 			// vertex 2
 
 		idx=trig->v[2]*3;
+
 		vp=mesh->draw.gl_vertex_array+idx;
 		cp=mesh->draw.gl_color_array+idx;
 		np=mesh->draw.gl_light_normal_array+idx;
@@ -144,12 +155,19 @@ bool model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 		*nl++=*np++;
 		*nl++=*np++;
 		*nl++=*np;
+
+			// indexes
+
+		*index_ptr++=(unsigned short)(n*3);
+		*index_ptr++=(unsigned short)((n*3)+1);
+		*index_ptr++=(unsigned short)((n*3)+2);
 		
 		trig++;
 	}
 
 		// unmap VBO
 
+	view_unmap_current_index_object();
 	view_unmap_current_vertex_object();
 
 		// set the arrays
@@ -194,6 +212,7 @@ void model_draw_stop_mesh_material_array(void)
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
+	view_unbind_current_index_object();
 	view_unbind_current_vertex_object();
 }
 
@@ -207,6 +226,7 @@ bool model_draw_start_mesh_shadow_array(model_type *mdl,model_mesh_type *mesh)
 {
 	int				n,trig_count;
 	float			*vl,*vp,*vertex_ptr,*vertex_array;
+	unsigned short	*index_ptr;
     model_trig_type	*trig;
 
 	trig_count=mesh->ntrig;
@@ -215,42 +235,39 @@ bool model_draw_start_mesh_shadow_array(model_type *mdl,model_mesh_type *mesh)
 
 	vertex_ptr=view_bind_map_next_vertex_object(((trig_count*3)*2));
 	if (vertex_ptr==NULL) return(FALSE);
+
+	index_ptr=view_bind_map_next_index_object(trig_count*3);
+	if (index_ptr==NULL) {
+		view_unmap_current_vertex_object();
+		view_unbind_current_vertex_object();
+		return(FALSE);
+	}
 	
-		// build the arrays
+		// build the vertexs and indexes
 		// there's no z coordinate in these arrays
 
 	vl=vertex_array=vertex_ptr;
+	vp=mesh->draw.gl_vertex_array;
+
+	for (n=0;n!=mesh->nvertex;n++) {
+		*vl++=*vp++;
+		*vl++=*vp++;
+	}
 
 	trig=mesh->trigs;
 
 	for (n=0;n!=trig_count;n++) {
 
-			// vertex 0
-
-		vp=mesh->draw.gl_vertex_array+(trig->v[0]*2);
-
-		*vl++=*vp++;
-		*vl++=*vp;
-
-			// vertex 1
-
-		vp=mesh->draw.gl_vertex_array+(trig->v[1]*2);
-
-		*vl++=*vp++;
-		*vl++=*vp;
-
-			// vertex 2
-
-		vp=mesh->draw.gl_vertex_array+(trig->v[2]*2);
-
-		*vl++=*vp++;
-		*vl++=*vp;
+		*index_ptr=(unsigned short)trig->v[0];
+		*index_ptr=(unsigned short)trig->v[1];
+		*index_ptr=(unsigned short)trig->v[2];
 		
 		trig++;
 	}
 
 		// unmap VBO
 
+	view_unmap_current_index_object();
 	view_unmap_current_vertex_object();
 
 		// set the arrays
@@ -265,6 +282,7 @@ void model_draw_stop_mesh_shadow_array(void)
 {
 	glDisableClientState(GL_VERTEX_ARRAY);
 
+	view_unbind_current_index_object();
 	view_unbind_current_vertex_object();
 }
 
@@ -328,7 +346,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw,bool 
 		gl_texture_opaque_start(!dim3_debug);
 		gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
 
-		glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
+		glDrawRangeElements(GL_TRIANGLES,0,mesh->nvertex,(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)0);
 			
 		gl_texture_opaque_end();
 
@@ -354,8 +372,8 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw,bool 
 			gl_texture_opaque_tesseled_bump_start();
 			gl_texture_opaque_tesseled_bump_set(texture->bumpmaps[frame].gl_id);
 
-			glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
-			
+			glDrawRangeElements(GL_TRIANGLES,0,mesh->nvertex,(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)0);
+		
 			gl_texture_opaque_tesseled_bump_end();
 
 			glColorPointer(3,GL_FLOAT,0,(void*)((nvertex*(3+2))*sizeof(float)));
@@ -369,7 +387,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw,bool 
 			gl_texture_tesseled_specular_start();
 			gl_texture_tesseled_specular_set(texture->specularmaps[frame].gl_id);
 
-			glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
+			glDrawRangeElements(GL_TRIANGLES,0,mesh->nvertex,(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)0);
 				
 			gl_texture_tesseled_specular_end();
 		}
@@ -390,7 +408,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw,bool 
 			gl_texture_opaque_glow_start();
 			gl_texture_opaque_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,texture->glow.current_color);
 
-			glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
+			glDrawRangeElements(GL_TRIANGLES,0,mesh->nvertex,(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)0);
 			
 			gl_texture_opaque_glow_end();
 		}
@@ -454,7 +472,7 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 	
 		gl_shader_set_variables(texture->shader.program_obj,&pnt,texture);
 		
-		glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
+		glDrawRangeElements(GL_TRIANGLES,0,mesh->nvertex,(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)0);
 			
 		gl_texture_shader_end();
 		gl_shader_program_end();
@@ -524,7 +542,7 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 		gl_texture_transparent_start();
 		gl_texture_transparent_set(texture->bitmaps[texture->animate.current_frame].gl_id,alpha);
 
-		glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
+		glDrawRangeElements(GL_TRIANGLES,0,mesh->nvertex,(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)0);
 
 		gl_texture_transparent_end();
 
@@ -544,7 +562,7 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			gl_texture_transparent_specular_start();
 			gl_texture_transparent_specular_set(texture->specularmaps[texture->animate.current_frame].gl_id,alpha);
 		
-			glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
+			glDrawRangeElements(GL_TRIANGLES,0,mesh->nvertex,(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)0);
 			
 			gl_texture_transparent_specular_end();
 		}
@@ -566,7 +584,7 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 			gl_texture_transparent_glow_start();
 			gl_texture_transparent_glow_set(texture->bitmaps[texture->animate.current_frame].gl_id,texture->glowmaps[texture->animate.current_frame].gl_id,alpha,texture->glow.current_color);
 
-			glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
+			glDrawRangeElements(GL_TRIANGLES,0,mesh->nvertex,(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)0);
 			
 			gl_texture_transparent_glow_end();
 		}
@@ -768,7 +786,7 @@ void model_render_shadow(model_draw *draw,float draw_sz,int shadow_idx)
 		
 		if (!model_draw_start_mesh_shadow_array(mdl,mesh)) continue;
 		
-		glDrawArrays(GL_TRIANGLES,0,(mesh->ntrig*3));
+		glDrawRangeElements(GL_TRIANGLES,0,mesh->nvertex,(mesh->ntrig*3),GL_UNSIGNED_SHORT,(GLvoid*)0);
 		
 		model_draw_stop_mesh_shadow_array();
 	}

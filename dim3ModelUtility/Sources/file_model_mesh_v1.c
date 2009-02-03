@@ -231,7 +231,6 @@ void decode_mesh_v1_xml(model_type *model,int model_head)
 		texture->animate.current_frame=0;
 		texture->animate.total_wait=0;
 		
-		texture->bump_mode=xml_get_attribute_list(fill_tag,"bump",(char*)model_bump_mode_str);
       	texture->animate.on=xml_get_attribute_boolean(fill_tag,"animate");
 		
 		xml_get_attribute_text(fill_tag,"vertex_shader",texture->shader.vertex_name,file_str_len);

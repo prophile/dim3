@@ -29,8 +29,7 @@ and can be sold or given away.
 	#include "dim3baseutility.h"
 #endif
 
-char					bitmap_bump_mode_str[][32]=bump_mode_xml_list_str,
-						bitmap_shader_var_type_str[][32]=shader_var_type_xml_list_str;
+char					bitmap_shader_var_type_str[][32]=shader_var_type_xml_list_str;
 
 /* =======================================================
 
@@ -281,7 +280,6 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 
 		// settings
 		
-	texture->bump_mode=xml_get_attribute_list(main_tag,"bump",(char*)bitmap_bump_mode_str);
 	texture->animate.on=xml_get_attribute_boolean(main_tag,"animate");
 	texture->additive=xml_get_attribute_boolean(main_tag,"additive");
 	texture->pixelated=xml_get_attribute_boolean(main_tag,"pixelated");
@@ -323,8 +321,6 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 			xml_get_attribute_text_default_blank(image_tag,"bumpmap",texture->bumpmaps[k].name,file_str_len);
 			xml_get_attribute_text_default_blank(image_tag,"specularmap",texture->specularmaps[k].name,file_str_len);
 			xml_get_attribute_text_default_blank(image_tag,"glowmap",texture->glowmaps[k].name,file_str_len);
-			
-			if ((texture->bump_mode!=bump_mode_height_map) && (texture->bump_mode!=bump_mode_normal_map)) texture->bumpmaps[k].name[0]=0x0;
 
 			image_tag=xml_findnextchild(image_tag);
 		}
@@ -386,7 +382,6 @@ void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_s
 	
 		// settings
 		
-	xml_add_attribute_list("bump",(char*)bitmap_bump_mode_str,texture->bump_mode);
 	xml_add_attribute_boolean("animate",texture->animate.on);
 	xml_add_attribute_boolean("additive",texture->additive);
 	xml_add_attribute_boolean("pixelated",texture->pixelated);
@@ -425,8 +420,6 @@ void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_s
 		if (texture->specularmaps[k].name[0]!=0x0) xml_add_attribute_text("specularmap",texture->specularmaps[k].name);
 		if (texture->glowmaps[k].name[0]!=0x0) xml_add_attribute_text("glowmap",texture->glowmaps[k].name);
 		xml_add_tagend(TRUE);
-		
-		if ((texture->bump_mode!=bump_mode_height_map) && (texture->bump_mode!=bump_mode_normal_map)) texture->bumpmaps[k].name[0]=0x0;
 	}
 	
 	xml_add_tagclose("Images");

@@ -305,6 +305,7 @@ void map_calculate_light_clear_all(void)
 void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf,float *f_intensity)
 {
 	int					n,cnt;
+	float				f;
 	double				dx,dz,dy,r,g,b,nx,nz,ny,d,mult,tot_mult;
 	light_spot_type		*lspot;
 
@@ -326,10 +327,10 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 		
 	cnt=0;
 	
-	tot_mult=0.0f;
+	tot_mult=0.0;
 	
-	r=g=b=0.0f;
-	nx=ny=nz=0.0f;
+	r=g=b=0.0;
+	nx=ny=nz=0.0;
 	
 	for (n=0;n!=nlight_reduce;n++) {
 
@@ -410,8 +411,8 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 	
 		// create the intensity for speculars
 	
-	tot_mult=tot_mult/(float)cnt;
-	*f_intensity=tot_mult*tot_mult;
+	f=(float)tot_mult/(float)cnt;
+	*f_intensity=f*f;
 }
 
 light_spot_type* map_find_closest_light(double x,double y,double z,int *p_dist)
@@ -469,11 +470,12 @@ light_spot_type* map_find_closest_light(double x,double y,double z,int *p_dist)
       
 ======================================================= */
 
-void map_calculate_ray_trace_light_color_normal(double x,double y,double z,float *cf,float *nf)
+void map_calculate_ray_trace_light_color_normal(double x,double y,double z,float *cf,float *nf,float *f_intensity)
 {
 	int					n,cnt;
+	float				f;
+	double				mult,tot_mult,r,g,b,dx,dz,dy,nx,ny,nz,d;
 	d3pnt				spt,ept;
-	double				mult,r,g,b,dx,dz,dy,nx,ny,nz,d;
 	light_spot_type		*lspot;
 
 		// no lights in scene
@@ -485,6 +487,7 @@ void map_calculate_ray_trace_light_color_normal(double x,double y,double z,float
 		*nf++=0.5f;
 		*nf++=0.5f;
 		*nf=1.0f;
+		*f_intensity=0.0f;
 		return;
 	}
 
@@ -498,9 +501,11 @@ void map_calculate_ray_trace_light_color_normal(double x,double y,double z,float
 		// attenuated for distance
 		
 	cnt=0;
+
+	tot_mult=0.0;
 	
-	r=g=b=0.0f;
-	nx=ny=nz=0.0f;
+	r=g=b=0.0;
+	nx=ny=nz=0.0;
 	
 	for (n=0;n!=nlight_reduce;n++) {
 
@@ -520,6 +525,8 @@ void map_calculate_ray_trace_light_color_normal(double x,double y,double z,float
 
 		if (d<=lspot->d_intensity) {
 			mult=(lspot->d_intensity-d)*lspot->d_inv_intensity;
+
+			tot_mult+=mult;
 
 			r+=(lspot->d_col_r*mult);
 			g+=(lspot->d_col_g*mult);
@@ -547,6 +554,7 @@ void map_calculate_ray_trace_light_color_normal(double x,double y,double z,float
 		*nf++=0.5f;
 		*nf++=0.5f;
 		*nf=1.0f;
+		*f_intensity=0.0f;
 		return;
 	}
 
@@ -581,6 +589,11 @@ void map_calculate_ray_trace_light_color_normal(double x,double y,double z,float
 	*nf++=(float)((nx*0.5)+0.5);
 	*nf++=1.0f-(float)((ny*0.5)+0.5);
 	*nf=1.0f;
+	
+		// create the intensity for speculars
+	
+	f=(float)tot_mult/(float)cnt;
+	*f_intensity=f*f;
 }
 
 

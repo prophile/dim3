@@ -184,7 +184,7 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz)
 			}
 			else {
 				if (setup.ray_trace_lighting) {
-					map_calculate_ray_trace_light_color_normal((double)x,(double)y,(double)z,cl,normal);
+					map_calculate_ray_trace_light_color_normal((double)x,(double)y,(double)z,cl,normal,&f_intensity);
 				}
 				else {
 					map_calculate_light_color_normal((double)x,(double)y,(double)z,cl,normal,&f_intensity);
