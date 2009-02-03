@@ -116,7 +116,7 @@ void model_diffuse_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_dr
 void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw *draw)
 {
 	int				i,nt,lit;
-	float			col[3],normal[3],r,g,b,
+	float			col[3],normal[3],f_intensity,r,g,b,
 					fx,fy,fz,cx,cy,cz,nx,ny,nz,kx,ky,kz;
 	float			*pc,*pv,*pln;
 	double			dx,dy,dz;
@@ -180,7 +180,7 @@ void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw
 			fz+=cz;
 		}
 
-		map_calculate_light_color_normal((double)fx,(double)fy,(double)fz,col,normal);
+		map_calculate_light_color_normal((double)fx,(double)fy,(double)fz,col,normal,&f_intensity);
 		
 		r=col[0];
 		g=col[1];
@@ -216,7 +216,7 @@ void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw
 			fz+=cz;
 		}
 
-		map_calculate_light_color_normal((double)fx,(double)fy,(double)fz,col,normal);
+		map_calculate_light_color_normal((double)fx,(double)fy,(double)fz,col,normal,&f_intensity);
 
 		nx=normal[0];
 		ny=normal[1];
@@ -250,7 +250,7 @@ void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw
 			dy=(double)((*pv++)+fy);
 			dz=(double)((*pv++)+fz);
 
-			map_calculate_light_color_normal(dx,dy,dz,pc,pln);
+			map_calculate_light_color_normal(dx,dy,dz,pc,pln,&f_intensity);
 
 			pc+=3;
 			pln+=3;
@@ -270,7 +270,7 @@ void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw
 			dy=(double)(ky+cy);
 			dz=(double)(kz+cz);
 
-			map_calculate_light_color_normal(dx,dy,dz,pc,pln);
+			map_calculate_light_color_normal(dx,dy,dz,pc,pln,&f_intensity);
 
 			pc+=3;
 			pln+=3;

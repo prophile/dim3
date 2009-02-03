@@ -46,6 +46,7 @@ extern bool fog_solid_on(void);
 extern void view_compile_gl_list_attach(void);
 extern void view_compile_gl_list_switch_to_color(void);
 extern void view_compile_gl_list_switch_to_normal(void);
+extern void view_compile_gl_list_switch_to_specular(void);
 extern void view_compile_gl_list_dettach(void);
 
 /* =======================================================
@@ -481,6 +482,10 @@ void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass)
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
 	
+		// need to use intensity color
+		
+	view_compile_gl_list_switch_to_specular();
+	
 		// setup drawing
 
 	glEnable(GL_BLEND);
@@ -562,6 +567,10 @@ void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass)
 		// end drawing
 
 	gl_texture_tesseled_specular_end();
+
+		// restore original color array
+
+	view_compile_gl_list_switch_to_color();
 }
 
 /* =======================================================

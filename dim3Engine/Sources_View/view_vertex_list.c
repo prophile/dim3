@@ -52,7 +52,7 @@ bool view_compile_mesh_gl_list_init(void)
 	unsigned int		v_poly_start_idx,v_light_start_idx;
 	unsigned int		*index_ptr,*qd;
 	float				x_shift_offset,y_shift_offset;
-	float				*vertex_ptr,*pv,*pp,*pc,*pn;
+	float				*vertex_ptr,*pv,*pp,*pc,*pn,*ps;
 	d3pnt				*pnt,*lv_pt;
 	d3uv				*lv_uv;
 	map_mesh_type		*mesh;
@@ -104,7 +104,7 @@ bool view_compile_mesh_gl_list_init(void)
 
 		// initial vertex VBO
 		
-	view_init_map_vertex_object(v_cnt*(3+2+3+3));
+	view_init_map_vertex_object(v_cnt*(3+2+3+3+3));
 
 	vertex_ptr=view_bind_map_map_vertex_object();
 	if (vertex_ptr==NULL) return(FALSE);
@@ -113,6 +113,7 @@ bool view_compile_mesh_gl_list_init(void)
 	pp=pv+(v_cnt*3);
 	pc=pp+(v_cnt*2);
 	pn=pc+(v_cnt*3);
+	ps=pn+(v_cnt*3);
 
 		// create the vertexes
 
@@ -149,6 +150,10 @@ bool view_compile_mesh_gl_list_init(void)
 				*pn++=0.5f;
 				*pn++=1.0f;
 				
+				*ps++=1.0f;
+				*ps++=1.0f;
+				*ps++=1.0f;
+				
 				*pp++=poly->gx[t]+x_shift_offset;
 				*pp++=poly->gy[t]+y_shift_offset;
 				
@@ -177,6 +182,10 @@ bool view_compile_mesh_gl_list_init(void)
 					*pn++=0.5f;
 					*pn++=0.5f;
 					*pn++=1.0f;
+					
+					*ps++=1.0f;
+					*ps++=1.0f;
+					*ps++=1.0f;
 					
 					*pp++=(lv_uv->x)+x_shift_offset;
 					*pp++=(lv_uv->y)+y_shift_offset;
@@ -288,9 +297,10 @@ void view_compile_mesh_gl_list_free(void)
       
 ======================================================= */
 
-void view_compile_mesh_gl_lists_normal(map_mesh_type *mesh,float *pc,float *pn)
+void view_compile_mesh_gl_lists_normal(map_mesh_type *mesh,float *pc,float *pn,float *ps)
 {
 	int							n,k;
+	float						f_intensity;
 	d3pnt						*pnt,*lv_pt;
 	map_mesh_poly_type			*poly;
 
@@ -301,10 +311,16 @@ void view_compile_mesh_gl_lists_normal(map_mesh_type *mesh,float *pc,float *pn)
 			// polygon lighting vertexes
 
 		for (k=0;k!=poly->ptsz;k++) {
+		
 			pnt=&mesh->vertexes[poly->v[k]];
-			map_calculate_light_color_normal((double)pnt->x,(double)pnt->y,(double)pnt->z,pc,pn);
+			map_calculate_light_color_normal((double)pnt->x,(double)pnt->y,(double)pnt->z,pc,pn,&f_intensity);
+			
 			pc+=3;
 			pn+=3;
+			
+			*ps++=f_intensity;
+			*ps++=f_intensity;
+			*ps++=f_intensity;
 		}
 
 			// if not simple, calculate the lighting mesh
@@ -316,9 +332,16 @@ void view_compile_mesh_gl_lists_normal(map_mesh_type *mesh,float *pc,float *pn)
 			lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
 
 			for (k=0;k!=poly->light.nvertex;k++) {
-				map_calculate_light_color_normal((double)lv_pt->x,(double)lv_pt->y,(double)lv_pt->z,pc,pn);
+			
+				map_calculate_light_color_normal((double)lv_pt->x,(double)lv_pt->y,(double)lv_pt->z,pc,pn,&f_intensity);
+				
 				pc+=3;
 				pn+=3;
+				
+				*ps++=f_intensity;
+				*ps++=f_intensity;
+				*ps++=f_intensity;
+				
 				lv_pt++;
 			}
 		}
@@ -327,7 +350,7 @@ void view_compile_mesh_gl_lists_normal(map_mesh_type *mesh,float *pc,float *pn)
 	}
 }
 
-void view_compile_mesh_gl_lists_ray_trace(map_mesh_type *mesh,float *pc,float *pn)
+void view_compile_mesh_gl_lists_ray_trace(map_mesh_type *mesh,float *pc,float *pn,float *ps)
 {
 	int							n,k;
 	d3pnt						*pnt,*lv_pt;
@@ -376,7 +399,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 {
 	int							n,k,t,v_count;
 	float						x_shift_offset,y_shift_offset;
-	float						*vertex_ptr,*pv,*pp,*pc,*pn;
+	float						*vertex_ptr,*pv,*pp,*pc,*pn,*ps;
 	bool						recalc_light;
 	d3pnt						*pnt,*lv_pt;
 	d3uv						*lv_uv;
@@ -502,12 +525,13 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 				
 				pc=vertex_ptr+((v_count*(3+2))+(mesh->draw.vertex_offset*3));
 				pn=vertex_ptr+((v_count*(3+2+3))+(mesh->draw.vertex_offset*3));
+				ps=vertex_ptr+((v_count*(3+2+3+3))+(mesh->draw.vertex_offset*3));
 
 				if (setup.ray_trace_lighting) {
-					view_compile_mesh_gl_lists_ray_trace(mesh,pc,pn);
+					view_compile_mesh_gl_lists_ray_trace(mesh,pc,pn,ps);
 				}
 				else {
-					view_compile_mesh_gl_lists_normal(mesh,pc,pn);
+					view_compile_mesh_gl_lists_normal(mesh,pc,pn,ps);
 				}
 			}
 
@@ -588,6 +612,14 @@ void view_compile_gl_list_switch_to_normal(void)
 	
 	v_cnt=map.mesh.vbo_vertex_count;
 	glColorPointer(3,GL_FLOAT,0,(void*)((v_cnt*(3+2+3))*sizeof(float)));
+}
+
+void view_compile_gl_list_switch_to_specular(void)
+{
+	int				v_cnt;
+	
+	v_cnt=map.mesh.vbo_vertex_count;
+	glColorPointer(3,GL_FLOAT,0,(void*)((v_cnt*(3+2+3+3))*sizeof(float)));
 }
 
 void view_compile_gl_list_dettach(void)

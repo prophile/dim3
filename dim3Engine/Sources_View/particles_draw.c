@@ -42,8 +42,6 @@ extern server_type			server;
 extern view_type			view;
 extern setup_type			setup;
 
-extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf);
-
 /* =======================================================
 
       Get Particle Connected Model Draw
@@ -243,7 +241,7 @@ void particle_draw(effect_type *effect,int count)
 	int						i,idx,particle_count,nvertex,
 							ntrail,trail_step,mx,mz,my,
 							pixel_dif;
-	float					gravity,gx,gy,g_size,pixel_sz,f,pc[3],pn[3],
+	float					gravity,gx,gy,g_size,pixel_sz,f,pc[3],pn[3],f_intensity,
 							alpha,alpha_dif,r,g,b,color_dif,f_count,f_tick;
 	float					*vertex_ptr;
 	d3ang					*rot_ang,rang;
@@ -263,7 +261,7 @@ void particle_draw(effect_type *effect,int count)
 
 	if (particle->ambient_factor!=1.0f) {		// get ambient before position change
 		map_calculate_light_reduce_effect(effect);
-		map_calculate_light_color_normal((double)mx,(double)my,(double)mz,pc,pn);
+		map_calculate_light_color_normal((double)mx,(double)my,(double)mz,pc,pn,&f_intensity);
 		ambient_col.r=pc[0];
 		ambient_col.g=pc[1];
 		ambient_col.b=pc[2];

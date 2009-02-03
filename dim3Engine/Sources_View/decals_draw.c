@@ -77,7 +77,7 @@ void decal_render_stencil(int stencil_idx,map_mesh_type *mesh,map_mesh_poly_type
 void decal_render_mark(int stencil_idx,decal_type *decal)
 {
 	int				k,tick,fade_out_start_tick;
-	float			alpha,g_size,gx,gy,cf[3],nf[3];
+	float			alpha,g_size,gx,gy,cf[3],nf[3],f_intensity;
 	mark_type		*mark;
 	
 		// get the alpha
@@ -109,7 +109,7 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 		map_calculate_ray_trace_light_color_normal((double)decal->x[0],(double)decal->y[0],(double)decal->z[0],cf,nf);
 	}
 	else {
-		map_calculate_light_color_normal((double)decal->x[0],(double)decal->y[0],(double)decal->z[0],cf,nf);
+		map_calculate_light_color_normal((double)decal->x[0],(double)decal->y[0],(double)decal->z[0],cf,nf,&f_intensity);
 	}
 	
          // draw the polygon

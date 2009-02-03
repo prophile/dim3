@@ -212,7 +212,7 @@ extern bool item_add_alt_clip(obj_type *obj,weapon_type *weap,int add_count);
 extern bool item_add_health(obj_type *obj,int add_count);
 extern void item_add_custom(obj_type *obj,int custom_id);
 
-extern bool player_attach_object(void);
+extern bool player_attach_object(char *err_str);
 extern void player_detach_object(void);
 
 extern void player_clear_input(void);

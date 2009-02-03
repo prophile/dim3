@@ -43,7 +43,6 @@ extern setup_type		setup;
 
 extern void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw *draw);
 extern void model_tint_team_color(model_type *mdl,int mesh_idx,model_draw *draw);
-extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf);
 extern bool fog_solid_on(void);
 
 /* =======================================================
@@ -587,7 +586,7 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 void model_render(int tick,model_draw *draw)
 {
 	int				n,x,y,z,mesh_mask;
-	float			cf[3];
+	float			cf[3],f_intensity;
 	bool			is_fog_lighting;
 	model_type		*mdl;
 	
@@ -606,7 +605,7 @@ void model_render(int tick,model_draw *draw)
 
 		// get single drawing normal
 		
-	map_calculate_light_color_normal((double)draw->pnt.x,(double)draw->pnt.y,(double)draw->pnt.z,cf,draw->normal);
+	map_calculate_light_color_normal((double)draw->pnt.x,(double)draw->pnt.y,(double)draw->pnt.z,cf,draw->normal,&f_intensity);
 	
 		// detect obscuring fog lighting
 		

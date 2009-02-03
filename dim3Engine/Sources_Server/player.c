@@ -50,7 +50,7 @@ extern void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx);
       
 ======================================================= */
 
-bool player_attach_object(void)
+bool player_attach_object(char *err_str)
 {
 	int					spot_idx,x,y,z,mesh_idx;
 	float				ang_y;
@@ -65,17 +65,27 @@ bool player_attach_object(void)
 
 		if (!net_setup.client.joined) {
 			spot_idx=map_find_random_spot(&map,map.info.player_start_name,map.info.player_start_type);
+			if (spot_idx==-1) {
+				sprintf(err_str,"Could not find spot: %s-%s",map.info.player_start_name,map.info.player_start_type);
+				return(FALSE);
+			}
 		}
 		else {
 			if (obj->spawn_spot_name[0]==0x0) {
 				spot_idx=map_find_random_spot(&map,NULL,"Spawn");
+				if (spot_idx==-1) {
+					strcpy(err_str,"Could not find spot: *-Spawn");
+					return(FALSE);
+				}
 			}
 			else {
 				spot_idx=map_find_random_spot(&map,obj->spawn_spot_name,"Spawn");
+				if (spot_idx==-1) {
+					sprintf(err_str,"Could not find spot: %s-Spawn",obj->spawn_spot_name);
+					return(FALSE);
+				}
 			}
 		}
-
-		if (spot_idx==-1) return(FALSE);
 
 			// get spawn spot position
 		

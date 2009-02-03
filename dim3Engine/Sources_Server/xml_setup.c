@@ -104,6 +104,8 @@ void setup_xml_default(void)
 	setup.network.show_names=TRUE;
 	setup.network.nhost=0;
 
+	setup.network.last_map[0]=0x0;
+	
 	setup.network.bot.count=0;
 	setup.network.bot.skill=2;
 	
@@ -234,6 +236,7 @@ bool setup_xml_read_path(char *path)
 	setup_xml_read_key_int(setup_tag,"Joystick_Mode",&setup.joystick_mode);
 	setup_xml_read_key_text(setup_tag,"Network_Name",setup.network.name,name_str_len);
 	setup_xml_read_key_int(setup_tag,"Network_Team",&setup.network.team_idx);
+	setup_xml_read_key_text(setup_tag,"Network_Last_Map",setup.network.last_map,name_str_len);
 	setup_xml_read_key_int(setup_tag,"Host_Bot_Count",&setup.network.bot.count);
 	setup_xml_read_key_int(setup_tag,"Host_Bot_Skill",&setup.network.bot.skill);
 	setup_xml_read_key_boolean(setup_tag,"Network_Show_Names",&setup.network.show_names);
@@ -417,6 +420,7 @@ bool setup_xml_write(void)
 	setup_xml_write_key_int("Joystick_Mode",setup.joystick_mode);
 	setup_xml_write_key_text("Network_Name",setup.network.name);
 	setup_xml_write_key_int("Network_Team",setup.network.team_idx);
+	setup_xml_write_key_text("Network_Last_Map",setup.network.last_map);
 	setup_xml_write_key_int("Host_Bot_Count",setup.network.bot.count);
 	setup_xml_write_key_int("Host_Bot_Skill",setup.network.bot.skill);
 	setup_xml_write_key_boolean("Network_Show_Names",setup.network.show_names);

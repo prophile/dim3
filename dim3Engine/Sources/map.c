@@ -327,9 +327,8 @@ bool map_start(bool skip_media,char *err_str)
 
 	progress_draw(80);
 
-	if (!player_attach_object()) {
+	if (!player_attach_object(err_str)) {
 		progress_shutdown();
-		sprintf(err_str,"Could not find spot: %s-%s",map.info.player_start_name,map.info.player_start_type);
 		return(FALSE);
 	}
 

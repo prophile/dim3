@@ -116,6 +116,67 @@ void host_fill_map_table(char *game_type)
 
 /* =======================================================
 
+      Set and Get Last Host Map
+      
+======================================================= */
+
+void host_set_last_map(void)
+{
+	int				idx;
+	char			*list,*c;
+	char			str[256];
+	
+	idx=0;
+	list=net_host_file_list;
+	
+	while (TRUE) {
+		if (*list==0x0) break;
+		
+		c=list;
+		list+=128;
+		
+		c=strchr(c,';');
+		if (c!=NULL) {
+			strcpy(str,(c+1));
+			c=strchr(str,';');
+			if (c!=NULL) *c=0x0;
+		}
+		
+		if (strcasecmp(setup.network.last_map,str)==0) {
+			host_map_idx=idx;
+			return;
+		}
+		
+		idx++;
+	}
+	
+	host_map_idx=-1;
+}
+
+void host_get_last_map(void)
+{
+	char			*c;
+	char			str[256];
+	
+	if (host_map_idx==-1) {
+		setup.network.last_map[0]=0x0;
+		return;
+	}
+	
+	c=net_host_file_list+(host_map_idx*128);
+	
+	c=strchr(c,';');
+	if (c!=NULL) {
+		strcpy(str,(c+1));
+		c=strchr(str,';');
+		if (c!=NULL) *c=0x0;
+	}
+	
+	strcpy(setup.network.last_map,str);
+}
+
+/* =======================================================
+
       Host Panes
       
 ======================================================= */
@@ -153,6 +214,7 @@ void host_game_pane(void)
 		// fill table with maps
 
 	host_fill_map_table(net_setup.games[host_game_type_idx].name);
+	host_set_last_map();
 
 	element_set_value(host_table_id,host_map_idx);
 }
@@ -426,10 +488,16 @@ void host_click(void)
 			if (idx!=host_game_type_idx) {
 				host_game_type_idx=idx;
 				host_fill_map_table(net_setup.games[idx].name);
-				element_set_value(host_table_id,-1);
-				host_map_idx=-1;
-				element_enable(host_button_host_id,FALSE);
+				host_set_last_map();
+				element_set_value(host_table_id,host_map_idx);
+				element_enable(host_button_host_id,(host_map_idx!=-1));
 			}
+			break;
+
+		case host_table_id:
+			host_map_idx=element_get_value(host_table_id);
+			element_enable(host_button_host_id,(host_map_idx!=-1));
+			host_get_last_map();
 			break;
 
 		case host_game_bot_count_id:
@@ -452,11 +520,6 @@ void host_click(void)
 		case host_button_cancel_id:
 			host_close();
 			intro_open();
-			break;
-
-		case host_table_id:
-			host_map_idx=element_get_value(host_table_id);
-			element_enable(host_button_host_id,(host_map_idx!=-1));
 			break;
 	}
 }

@@ -102,7 +102,7 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz)
 	int				x,y,z,k,x_add,z_add,x_sz,z_sz,
 					v_cnt,tide_split,tide_split_half,
 					tide_high,tide_rate;
-	float			fy,fgx,fgy,normal[3],x_txtoff,y_txtoff,
+	float			fy,fgx,fgy,normal[3],f_intensity,x_txtoff,y_txtoff,
 					f_break,f_time,f_tick,sn,
 					f_tide_split_half,f_tide_high;
 	bool			x_break,z_break;
@@ -187,7 +187,7 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz)
 					map_calculate_ray_trace_light_color_normal((double)x,(double)y,(double)z,cl,normal);
 				}
 				else {
-					map_calculate_light_color_normal((double)x,(double)y,(double)z,cl,normal);
+					map_calculate_light_color_normal((double)x,(double)y,(double)z,cl,normal,&f_intensity);
 				}
 			}
 			
@@ -325,7 +325,7 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
 void liquid_render_liquid(int tick,map_liquid_type *liq)
 {
 	int						v_sz,quad_cnt,frame;
-	float					col[3],normal[3];
+	float					col[3],normal[3],f_intensity;
 	d3pnt					mid;
 	texture_type			*texture;
 
@@ -389,7 +389,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 		gl_shader_set_variables(texture->shader.program_obj,&mid,texture);
 
 		map_calculate_light_reduce_liquid(liq);
-		map_calculate_light_color_normal((double)mid.x,(double)mid.y,(double)mid.z,col,normal);
+		map_calculate_light_color_normal((double)mid.x,(double)mid.y,(double)mid.z,col,normal,&f_intensity);
 
 		glNormal3f(normal[0],normal[1],normal[2]);
 	}

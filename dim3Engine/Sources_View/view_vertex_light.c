@@ -302,10 +302,10 @@ void map_calculate_light_clear_all(void)
       
 ======================================================= */
 
-void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf)
+void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf,float *f_intensity)
 {
 	int					n,cnt;
-	double				dx,dz,dy,r,g,b,nx,nz,ny,d,mult;
+	double				dx,dz,dy,r,g,b,nx,nz,ny,d,mult,tot_mult;
 	light_spot_type		*lspot;
 
 		// no lights in scene
@@ -317,6 +317,7 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 		*nf++=0.5f;
 		*nf++=0.5f;
 		*nf=1.0f;
+		*f_intensity=0.0f;
 		return;
 	}
 
@@ -324,6 +325,8 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 		// attenuated for distance
 		
 	cnt=0;
+	
+	tot_mult=0.0f;
 	
 	r=g=b=0.0f;
 	nx=ny=nz=0.0f;
@@ -340,6 +343,8 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 
 		if (d<=lspot->d_intensity) {
 			mult=(lspot->d_intensity-d)*lspot->d_inv_intensity;
+			
+			tot_mult+=mult;
 
 			r+=(lspot->d_col_r*mult);
 			g+=(lspot->d_col_g*mult);
@@ -367,6 +372,7 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 		*nf++=0.5f;
 		*nf++=0.5f;
 		*nf=1.0f;
+		*f_intensity=0.0f;
 		return;
 	}
 	
@@ -401,6 +407,11 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 	*nf++=(float)((nx*0.5)+0.5);
 	*nf++=1.0f-(float)((ny*0.5)+0.5);
 	*nf=1.0f;
+	
+		// create the intensity for speculars
+	
+	tot_mult=tot_mult/(float)cnt;
+	*f_intensity=tot_mult*tot_mult;
 }
 
 light_spot_type* map_find_closest_light(double x,double y,double z,int *p_dist)
