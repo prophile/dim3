@@ -225,7 +225,7 @@ void model_draw_stop_mesh_material_array(void)
 bool model_draw_start_mesh_shadow_array(model_type *mdl,model_mesh_type *mesh)
 {
 	int				n,trig_count;
-	float			*vl,*vp,*vertex_ptr,*vertex_array;
+	float			*vl,*vp,*vertex_ptr;
 	unsigned short	*index_ptr;
     model_trig_type	*trig;
 
@@ -233,7 +233,7 @@ bool model_draw_start_mesh_shadow_array(model_type *mdl,model_mesh_type *mesh)
 
  		// construct VBO
 
-	vertex_ptr=view_bind_map_next_vertex_object(((trig_count*3)*2));
+	vertex_ptr=view_bind_map_next_vertex_object(mesh->nvertex*2);
 	if (vertex_ptr==NULL) return(FALSE);
 
 	index_ptr=view_bind_map_next_index_object(trig_count*3);
@@ -246,7 +246,7 @@ bool model_draw_start_mesh_shadow_array(model_type *mdl,model_mesh_type *mesh)
 		// build the vertexs and indexes
 		// there's no z coordinate in these arrays
 
-	vl=vertex_array=vertex_ptr;
+	vl=vertex_ptr;
 	vp=mesh->draw.gl_vertex_array;
 
 	for (n=0;n!=mesh->nvertex;n++) {
@@ -258,9 +258,9 @@ bool model_draw_start_mesh_shadow_array(model_type *mdl,model_mesh_type *mesh)
 
 	for (n=0;n!=trig_count;n++) {
 
-		*index_ptr=(unsigned short)trig->v[0];
-		*index_ptr=(unsigned short)trig->v[1];
-		*index_ptr=(unsigned short)trig->v[2];
+		*index_ptr++=(unsigned short)trig->v[0];
+		*index_ptr++=(unsigned short)trig->v[1];
+		*index_ptr++=(unsigned short)trig->v[2];
 		
 		trig++;
 	}
@@ -354,7 +354,6 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,model_draw *draw,bool 
 			// need to switch to normal array for bumping
 
 		if (texture->bumpmaps[frame].gl_id!=-1) {
-
 			nvertex=trig_count*3;
 
 			glColorPointer(3,GL_FLOAT,0,(void*)((nvertex*(3+2+3))*sizeof(float)));

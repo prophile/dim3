@@ -518,6 +518,7 @@ void host_click(void)
 			break;
 			
 		case host_button_cancel_id:
+			setup_xml_write();
 			host_close();
 			intro_open();
 			break;

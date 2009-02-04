@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version			"3.0b8"
+#define dim3_version					"3.0b9"
 
 /* =======================================================
 
@@ -138,6 +138,8 @@ typedef struct		{
 //
 
 #define TRIG_PI					3.14159265358979f
+#define D_TRIG_PI				3.14159265358979
+#define D_INV_TRIG_PI			0.31830988618379
 #define ANG_to_RAD				(float)(TRIG_PI/180.0f)
 #define RAD_to_ANG				(float)(180.0f/TRIG_PI)
 

@@ -1090,3 +1090,65 @@ void map_mesh_whole_uv(map_type *map,int mesh_idx)
 	}
 }
 
+/* =======================================================
+
+      Single Stamp Number UVs
+      
+======================================================= */
+
+void map_mesh_single_poly_uv(map_type *map,int mesh_idx,int poly_idx)
+{
+	int						n;
+	float					m_gx,m_gy;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+
+	mesh=&map->mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+
+		// find the middle gx/gy
+
+	m_gx=m_gy=0.0f;
+
+	for (n=0;n!=poly->ptsz;n++) {
+		m_gx+=poly->gx[n];
+		m_gy+=poly->gy[n];
+	}
+
+	m_gx=m_gx/(float)poly->ptsz;
+	m_gy=m_gy/(float)poly->ptsz;
+
+		// spread the 0-1 around the middle
+
+	for (n=0;n!=poly->ptsz;n++) {
+
+		if (poly->gx[n]<m_gx) {
+			poly->gx[n]=0.0f;
+		}
+		else {
+			poly->gx[n]=1.0f;
+		}
+
+		if (poly->gy[n]<m_gy) {
+			poly->gy[n]=0.0f;
+		}
+		else {
+			poly->gy[n]=1.0f;
+		}
+	}
+}
+
+void map_mesh_single_uv(map_type *map,int mesh_idx)
+{
+	int						n,npoly;
+	map_mesh_type			*mesh;
+
+	mesh=&map->mesh.meshes[mesh_idx];
+
+	npoly=mesh->npoly;
+
+	for (n=0;n!=npoly;n++) {
+		map_mesh_single_poly_uv(map,mesh_idx,n);
+	}
+}
+

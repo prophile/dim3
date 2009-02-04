@@ -639,6 +639,8 @@ extern void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx);
 extern void map_mesh_reset_uv(map_type *map,int mesh_idx);
 extern void map_mesh_whole_poly_uv(map_type *map,int mesh_idx,int poly_idx);
 extern void map_mesh_whole_uv(map_type *map,int mesh_idx);
+extern void map_mesh_single_poly_uv(map_type *map,int mesh_idx,int poly_idx);
+extern void map_mesh_single_uv(map_type *map,int mesh_idx);
 
 extern int map_liquid_add(map_type *map);
 extern bool map_liquid_delete(map_type *map,int liquid_idx);

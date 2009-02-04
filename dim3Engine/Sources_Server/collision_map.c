@@ -199,9 +199,9 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 		// straight forward rays
 
 	for (n=0;n!=15;n++) {
-		spt[n].x=px[n];
-		spt[n].y=py[n];
-		spt[n].z=pz[n];
+		spt[n].x=px[n]-xadd2;
+		spt[n].y=py[n]-yadd2;
+		spt[n].z=pz[n]-zadd2;
 
 		ept[n].x=spt[n].x+xadd2;
 		ept[n].y=spt[n].y+yadd2;

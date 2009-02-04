@@ -56,6 +56,8 @@ _map_mesh_reset_poly_uv
 _map_mesh_reset_uv
 _map_mesh_whole_poly_uv
 _map_mesh_whole_uv
+_map_mesh_single_poly_uv
+_map_mesh_single_uv
 
 _map_liquid_add
 _map_liquid_delete

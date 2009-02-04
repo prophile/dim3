@@ -382,13 +382,61 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 	nx*=d;
 	ny*=d;
 	nz*=d;
+
+		// create the x (left/right) normal
+		// from y angle to vertex and the
+		// y (top/bottom) from the x/z angle
+
+	ny=(sqrt((nx*nx)*(nz*nz)),ny);
+	nx=atan2(nx,nz);
+
+		// convert to needed format
+		// x (1 = right [light from left], 0 = left [light from right])
+		// y (1 = top [light from bottom], 0 = bottom [light from top])
+
+	nx+=(D_TRIG_PI*0.5);
+	if (nx>(D_TRIG_PI*2.0)) nx-=(D_TRIG_PI*2.0);
+
+	if (nx<D_TRIG_PI) {
+		nx*=D_INV_TRIG_PI;
+	}
+	else {
+		nx=1.0-((nx-D_TRIG_PI)*D_INV_TRIG_PI);
+	}
+
+	ny+=(D_TRIG_PI*0.5);
+	if (ny>(D_TRIG_PI*2.0)) ny-=(D_TRIG_PI*2.0);
+
+	if (ny<D_TRIG_PI) {
+		ny*=D_INV_TRIG_PI;
+	}
+	else {
+		ny=1.0-((ny-D_TRIG_PI)*D_INV_TRIG_PI);
+	}
+
+		// normalize normal vector
+
+	d=sqrt((nx*nx)+(ny*ny));
+	if (d!=0.0) {
+		d=1.0/d;
+		nx*=d;
+		ny*=d;
+	}
+
+	*nf++=(float)nx;
+	*nf++=(float)ny;
+	*nf=1.0f;
+
+// supergumba -- testing
+
+
 	
 		// combine x and z together to make x
 		// factor.  Note that this does not always
 		// give the correct results but will be close
 		// most of the time -- otherwise we're going to
 		// have to calculate polygon vectors
-		
+/*		
 	nx+=nz;
 
 		// normalize normal vector
@@ -399,7 +447,8 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 		nx*=d;
 		ny*=d;
 	}
-	
+
+
 		// convert to needed format
 		// x (1 = right [light from left], 0 = left [light from right])
 		// y (1 = top [light from bottom], 0 = bottom [light from top])
@@ -407,7 +456,7 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 	*nf++=(float)((nx*0.5)+0.5);
 	*nf++=1.0f-(float)((ny*0.5)+0.5);
 	*nf=1.0f;
-	
+	*/
 		// create the intensity for speculars
 	
 	*f_intensity=(float)tot_mult/(float)cnt;

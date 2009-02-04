@@ -59,6 +59,8 @@ EXPORTS
 	map_mesh_reset_uv								@249
 	map_mesh_whole_poly_uv							@250
 	map_mesh_whole_uv								@251
+	map_mesh_single_poly_uv							@252
+	map_mesh_single_uv								@253
 
 	map_liquid_add									@260
 	map_liquid_delete								@261
