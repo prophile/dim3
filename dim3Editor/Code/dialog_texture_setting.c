@@ -42,7 +42,6 @@ and can be sold or given away.
 #define kTextureSettingFrameGlowmapClear			FOUR_CHAR_CODE('clgw')
 #define kTextureSettingFrameWait					FOUR_CHAR_CODE('watm')
 #define kTextureSettingColor						FOUR_CHAR_CODE('colr')
-#define kTextureSettingBumpMode						FOUR_CHAR_CODE('bmmd')
 #define kTextureSettingAnimate						FOUR_CHAR_CODE('anmt')
 #define kTextureSettingAlphaAdditive				FOUR_CHAR_CODE('addv')
 #define kTextureSettingPixelated					FOUR_CHAR_CODE('pxld')
@@ -311,8 +310,7 @@ void texture_setting_frame_save(void)
 
 void texture_setting_frame_reset(void)
 {
-    int						cframe,bump_mode;
-	bool					bump_enable,bump_show;
+    int						cframe;
     Rect					box;
 	ControlRef				ctrl;
 	ControlID				ctrl_id;
@@ -322,12 +320,6 @@ void texture_setting_frame_reset(void)
 		// save wait from current frame
 		
 	texture_setting_frame_save();
-	
-		// enable/disable flags
-		
-	bump_mode=dialog_get_value(dialog_texture_wind,kTextureSettingBumpMode,0)-1;
-	bump_enable=((bump_mode!=bump_mode_none) && (bump_mode!=bump_mode_auto_generate));
-	bump_show=(bump_mode!=bump_mode_none);
 	
 		// get current frame
 		
@@ -365,7 +357,7 @@ void texture_setting_frame_reset(void)
 	
 	GetControlBounds(ctrl,&box);
 	
-	if ((texture->bumpmaps[cframe].gl_id==-1) || (!bump_show)) {
+	if (texture->bumpmaps[cframe].gl_id==-1) {
 		RGBForeColor(&ltgraycolor);
 		PaintRect(&box);
 		RGBForeColor(&blackcolor);
@@ -420,11 +412,6 @@ void texture_setting_frame_reset(void)
 		// set wait
 		
 	dialog_set_int(dialog_texture_wind,kTextureSettingFrameWait,0,texture->animate.wait[cframe]);
-	
-		// disable/enable buttons
-		
-	dialog_enable(dialog_texture_wind,kTextureSettingFrameBumpmapEdit,0,bump_enable);
-	dialog_enable(dialog_texture_wind,kTextureSettingFrameBumpmapClear,0,bump_enable);
 }
 
 /* =======================================================
@@ -456,50 +443,20 @@ bool texture_setting_bitmap_open(char *bitmap_name)
 
 bool texture_setting_bumpmap_open(char *bumpmap_name)
 {
-	int					bump_mode;
     char				err_str[256],path[1024];
 	unsigned char		p_err_str[256];
 	
-		// get current bump mode
+		// get bumpmap
 		
-	bump_mode=dialog_get_value(dialog_texture_wind,kTextureSettingBumpMode,0)-1;
+	if (!dialog_file_open_run("BumpmapOpen","Bitmaps/Textures_dot3","png",bumpmap_name)) return(FALSE);
 	
-		// get bump or height map
+		// check bumpmap
 		
-	bumpmap_name[0]=0x0;
-		
-	switch (bump_mode) {
-	
-		case bump_mode_height_map:
-		
-			if (!dialog_file_open_run("HeightmapOpen","Bitmaps/Textures_Height","png",bumpmap_name)) {
-				bumpmap_name[0]=0x0;
-				break;
-			}
-			
-			file_paths_data(&file_path_setup,path,"Bitmaps/Textures_Height",bumpmap_name,"png");
-			if (!bitmap_check(path,err_str)) {
-				CopyCStringToPascal(err_str,p_err_str);
-				StandardAlert(0,"\pTexture Error",p_err_str,NULL,NULL);
-				return(FALSE);
-			}
-			break;
-			
-		case bump_mode_normal_map:
-		
-			if (!dialog_file_open_run("BumpmapOpen","Bitmaps/Textures_dot3","png",bumpmap_name)) {
-				bumpmap_name[0]=0x0;
-				break;
-			}
-			
-			file_paths_data(&file_path_setup,path,"Bitmaps/Textures_dot3",bumpmap_name,"png");
-			if (!bitmap_check(path,err_str)) {
-				CopyCStringToPascal(err_str,p_err_str);
-				StandardAlert(0,"\pTexture Error",p_err_str,NULL,NULL);
-				return(FALSE);
-			}
-			break;
-			
+	file_paths_data(&file_path_setup,path,"Bitmaps/Textures_dot3",bumpmap_name,"png");
+	if (!bitmap_check(path,err_str)) {
+		CopyCStringToPascal(err_str,p_err_str);
+		StandardAlert(0,"\pTexture Error",p_err_str,NULL,NULL);
+		return(FALSE);
 	}
 	
 	return(TRUE);
@@ -656,14 +613,6 @@ static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,Ev
 					InitCursor();
 					return(noErr);
 					
-				case kTextureSettingBumpMode:
-					SetCursor(*GetCursor(watchCursor));
-					map.textures[dialog_texture_wind_current_txt].bump_mode=dialog_get_value(dialog_texture_wind,kTextureSettingBumpMode,0)-1;
-					map_refresh_textures(&map);
-					texture_setting_frame_reset();
-					InitCursor();
-					return(noErr);
-										
 				case kTextureSettingButtonColor:
 					pt.h=pt.v=-1;
 					if (GetColor(pt,"\pChoose the Light Color:",&dialog_texture_color,&color)) {
@@ -725,7 +674,6 @@ void dialog_texture_setting_run(int txt)
 	dialog_texture_color.green=(int)(texture->col.g*(float)0xFFFF);
 	dialog_texture_color.blue=(int)(texture->col.b*(float)0xFFFF);
 		
-	dialog_set_value(dialog_texture_wind,kTextureSettingBumpMode,0,(texture->bump_mode+1));
 	dialog_set_boolean(dialog_texture_wind,kTextureSettingAnimate,0,texture->animate.on);
 	dialog_set_boolean(dialog_texture_wind,kTextureSettingAlphaAdditive,0,texture->additive);
 	dialog_set_boolean(dialog_texture_wind,kTextureSettingPixelated,0,texture->pixelated);
@@ -760,7 +708,6 @@ void dialog_texture_setting_run(int txt)
 	texture->col.g=((float)dialog_texture_color.green/(float)0xFFFF);
 	texture->col.b=((float)dialog_texture_color.blue/(float)0xFFFF);
 		
-	texture->bump_mode=dialog_get_value(dialog_texture_wind,kTextureSettingBumpMode,0)-1;
 	texture->animate.on=dialog_get_boolean(dialog_texture_wind,kTextureSettingAnimate,0);
 	texture->additive=dialog_get_boolean(dialog_texture_wind,kTextureSettingAlphaAdditive,0);
 	texture->pixelated=dialog_get_boolean(dialog_texture_wind,kTextureSettingPixelated,0);
