@@ -788,6 +788,26 @@ void piece_whole_uvs(bool poly_only)
 	}
 }
 
+void piece_single_uvs(bool poly_only)
+{
+	int						n,sel_count,
+							type,mesh_idx,poly_idx;
+
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
+		
+		if (poly_only) {
+			map_mesh_single_poly_uv(&map,mesh_idx,poly_idx);
+		}
+		else {
+			map_mesh_single_uv(&map,mesh_idx);
+		}
+	}
+}
+
 void piece_rotate_uvs(void)
 {
 	int						n,sel_count,

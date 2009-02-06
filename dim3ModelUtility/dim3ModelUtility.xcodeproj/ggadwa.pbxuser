@@ -85,9 +85,9 @@
 	};
 	F55ACF40097D805F00F4AE50 /* animation.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4284}}";
-			sepNavSelRange = "{6513, 1878}";
-			sepNavVisRange = "{7266, 1299}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4844}}";
+			sepNavSelRange = "{2558, 13}";
+			sepNavVisRange = "{1882, 1155}";
 			sepNavWindowFrame = "{{176, 129}, {1041, 747}}";
 		};
 	};
@@ -152,8 +152,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 255398214;
-			PBXWorkspaceStateSaveDate = 255398214;
+			PBXPerProjectTemplateStateSaveDate = 255499268;
+			PBXWorkspaceStateSaveDate = 255499268;
 		};
 		sourceControlManager = 260AFEDB0D404F5000F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -177,10 +177,10 @@
 	};
 	F56D96E60502F83C00143299 /* file_model_animate.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1254, 4998}}";
-			sepNavSelRange = "{3935, 15}";
-			sepNavVisRange = "{1856, 2305}";
-			sepNavWindowFrame = "{{379, 161}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1254, 5684}}";
+			sepNavSelRange = "{9875, 0}";
+			sepNavVisRange = "{13312, 1142}";
+			sepNavWindowFrame = "{{375, 165}, {1041, 747}}";
 		};
 	};
 	F56D96E70502F83C00143299 /* file_model_texture.c */ = {
@@ -201,17 +201,17 @@
 	};
 	F56D96E90502F83C00143299 /* file_model_pose.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1062, 2982}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1062, 3122}}";
 			sepNavSelRange = "{2296, 0}";
-			sepNavVisRange = "{1847, 2047}";
+			sepNavVisRange = "{3423, 1441}";
 			sepNavWindowFrame = "{{130, 171}, {1041, 747}}";
 		};
 	};
 	F56D96EA0502F83C00143299 /* model_main.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4536}}";
-			sepNavSelRange = "{5653, 27}";
-			sepNavVisRange = "{5139, 1486}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4382}}";
+			sepNavSelRange = "{2642, 13}";
+			sepNavVisRange = "{2384, 1281}";
 			sepNavWindowFrame = "{{214, 178}, {1041, 747}}";
 		};
 	};
@@ -273,9 +273,9 @@
 	};
 	F5CA4EF305100FB60055C8B8 /* modelutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 5502}}";
-			sepNavSelRange = "{11400, 0}";
-			sepNavVisRange = "{284, 1888}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5446}}";
+			sepNavSelRange = "{7729, 8}";
+			sepNavVisRange = "{6673, 1290}";
 			sepNavWindowFrame = "{{260, 281}, {1041, 747}}";
 		};
 	};

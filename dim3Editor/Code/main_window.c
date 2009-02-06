@@ -1071,7 +1071,7 @@ void main_wind_set_2D_projection(Rect *view_box)
 	glLoadIdentity();
 }
 
-void main_wind_set_3D_projection(d3rect *view_box,d3ang *ang,float fov,float near_z,float far_z,float near_z_offset)
+void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,float near_z,float far_z,float near_z_offset)
 {
 	int				x_sz,y_sz;
 	float			ratio;
@@ -1080,23 +1080,53 @@ void main_wind_set_3D_projection(d3rect *view_box,d3ang *ang,float fov,float nea
 	glLoadIdentity();
 	
 	if (main_wind_perspective==ps_perspective) {
-		ratio=(float)(view_box->rx-view_box->lx)/(float)(view_box->by-view_box->ty);
-		gluPerspective(fov,ratio,near_z,far_z);
+		ratio=(float)(view_setup->box.rx-view_setup->box.lx)/(float)(view_setup->box.by-view_setup->box.ty);
+		gluPerspective(view_setup->fov,ratio,near_z,far_z);
 	}
 	else {
-		x_sz=(view_box->rx-view_box->lx)*(map_enlarge>>2);
-		y_sz=(view_box->by-view_box->ty)*(map_enlarge>>2);
+		x_sz=(view_setup->box.rx-view_setup->box.lx)*(map_enlarge>>2);
+		y_sz=(view_setup->box.by-view_setup->box.ty)*(map_enlarge>>2);
 		glOrtho((GLdouble)-x_sz,(GLdouble)x_sz,(GLdouble)-y_sz,(GLdouble)y_sz,near_z,far_z);
 	}
 	
-	glScalef(-1,-1,1);						// x and y are reversed
-	glTranslatef(0,0,near_z_offset);
-
+	glScalef(-1.0f,-1.0f,-1.0f);
+	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	glRotatef(ang->x,1,0,0);
-	glRotatef(angle_add(ang->y,180.0f),0,1,0);
+	switch (view_setup->proj_type) {
+	
+		case walk_view_proj_type_forward:
+			if (swap_panel_forward) {
+				glRotatef(0.0f,0.0f,1.0f,0.0f);
+			}
+			else {
+				glRotatef(180.0f,0.0f,1.0f,0.0f);
+			}
+			break;
+			
+		case walk_view_proj_type_side:
+			if (swap_panel_side) {
+				glRotatef(90.0f,0.0f,1.0f,0.0f);
+			}
+			else {
+				glRotatef(270.0f,0.0f,1.0f,0.0f);
+			}
+			break;
+
+		case walk_view_proj_type_top:
+			glRotatef(90.0f,1.0f,0.0f,0.0f);
+			glRotatef(180.0f,0.0f,1.0f,0.0f);
+			break;
+
+		case walk_view_proj_type_walk:
+			glRotatef(-walk_view_x_angle,1.0f,0.0f,0.0f);
+			glRotatef(-angle_add(walk_view_y_angle,180.0f),0.0f,1.0f,0.0f);
+			break;
+			
+	}
+	
+	glTranslatef(-view_setup->cpt.x,-view_setup->cpt.y,(-view_setup->cpt.z)+near_z_offset);
 }
 
 /* =======================================================

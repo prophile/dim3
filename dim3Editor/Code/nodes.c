@@ -54,7 +54,7 @@ int node_link_find_node_by_point(editor_3D_view_setup *view_setup,d3pnt *click_p
 	for (n=0;n!=map.nnode;n++) {
 	
 		node=&map.nodes[n];
-		walk_view_sprite_select_size(&view_setup->cpt,&node->pnt,px,py,pz);
+		walk_view_sprite_select_size(&node->pnt,px,py,pz);
 		
 		if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
 			if (fz<hit_z) {

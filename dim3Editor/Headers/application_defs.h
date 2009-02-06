@@ -90,12 +90,14 @@ and can be sold or given away.
 #define kCommandMeshSnapClosestVertex		FOUR_CHAR_CODE('mscv')
 #define kCommandMeshResetUV					FOUR_CHAR_CODE('mruv')
 #define kCommandMeshWholeUV					FOUR_CHAR_CODE('mrwv')
+#define kCommandMeshSingleUV				FOUR_CHAR_CODE('mrss')
 
 #define kCommandPolygonHole					FOUR_CHAR_CODE('fhl1')
 #define kCommandPolygonSnapToGrid			FOUR_CHAR_CODE('psnp')
 #define kCommandPolygonRotateUV				FOUR_CHAR_CODE('pyru')
 #define kCommandPolygonResetUV				FOUR_CHAR_CODE('pyuv')
 #define kCommandPolygonWholeUV				FOUR_CHAR_CODE('pywv')
+#define kCommandPolygonSingleUV				FOUR_CHAR_CODE('pyss')
 
 #define kCommandVertexSnapToGrid			FOUR_CHAR_CODE('vsnp')
 

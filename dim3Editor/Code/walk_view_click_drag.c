@@ -122,9 +122,9 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 	walk_view_draw_select_mesh_get_grow_handles(mesh_idx,px,py,pz);
 
 	for (n=0;n!=8;n++) {
-		x=px[n]-view_setup->cpt.x;
-		y=py[n]-view_setup->cpt.y;
-		z=view_setup->cpt.z-pz[n];
+		x=px[n];
+		y=py[n];
+		z=pz[n];
 		
 		if (!walk_view_click_rotate_polygon_behind_z(x,y,z)) {
 			walk_view_click_project_point(&view_setup->box,&x,&y,&z);
@@ -516,9 +516,9 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 	dpt=mesh->vertexes;
 	
 	for (n=0;n!=mesh->nvertex;n++) {
-		x=dpt->x-view_setup->cpt.x;
-		y=dpt->y-view_setup->cpt.y;
-		z=view_setup->cpt.z-dpt->z;
+		x=dpt->x;
+		y=dpt->y;
+		z=dpt->z;
 		
 		if (!walk_view_click_rotate_polygon_behind_z(x,y,z)) {
 			walk_view_click_project_point(&view_setup->box,&x,&y,&z);
@@ -630,9 +630,9 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 	sz=(int)(walk_view_handle_size/2);
 	
 	for (n=0;n!=4;n++) {
-		x=px[n]-view_setup->cpt.x;
-		y=py[n]-view_setup->cpt.y;
-		z=view_setup->cpt.z-pz[n];
+		x=px[n];
+		y=py[n];
+		z=pz[n];
 		
 		if (!walk_view_click_rotate_polygon_behind_z(x,y,z)) {
 			walk_view_click_project_point(&view_setup->box,&x,&y,&z);

@@ -50,6 +50,8 @@ void main_wind_setup_panel_forward(editor_3D_view_setup *view_setup)
 {
 	d3rect				wbox;
 	
+	view_setup->proj_type=walk_view_proj_type_forward;
+	
 	os_get_window_box(&wbox);
 
 	view_setup->box.ty=wbox.ty+(toolbar_high+2);
@@ -79,6 +81,8 @@ void main_wind_setup_panel_forward_frame(editor_3D_view_setup *view_setup)
 {
 	d3rect				wbox;
 	
+	view_setup->proj_type=walk_view_proj_type_forward;
+
 	os_get_window_box(&wbox);
 
 	view_setup->box.ty=wbox.ty+(toolbar_high+2);
@@ -107,6 +111,8 @@ void main_wind_setup_panel_forward_frame(editor_3D_view_setup *view_setup)
 void main_wind_setup_panel_forward_full(editor_3D_view_setup *view_setup)
 {
 	d3rect				wbox;
+	
+	view_setup->proj_type=walk_view_proj_type_walk;
 	
 	os_get_window_box(&wbox);
 
@@ -143,6 +149,8 @@ void main_wind_setup_panel_side(editor_3D_view_setup *view_setup)
 {
 	d3rect				wbox;
 	
+	view_setup->proj_type=walk_view_proj_type_side;
+
 	os_get_window_box(&wbox);
 
 	view_setup->box.ty=wbox.ty+(toolbar_high+2);
@@ -172,6 +180,8 @@ void main_wind_setup_panel_side_frame(editor_3D_view_setup *view_setup)
 {
 	d3rect				wbox;
 	
+	view_setup->proj_type=walk_view_proj_type_side;
+
 	os_get_window_box(&wbox);
 
 	view_setup->box.ty=wbox.ty+(toolbar_high+2);
@@ -208,6 +218,8 @@ void main_wind_setup_panel_top(editor_3D_view_setup *view_setup)
 	int					mag_sz;
 	d3rect				wbox;
 	
+	view_setup->proj_type=walk_view_proj_type_top;
+
 	os_get_window_box(&wbox);
 
 	view_setup->box.ty=(wbox.ty+toolbar_high)+((((wbox.by-(txt_palette_high+info_high))-(wbox.ty+toolbar_high))/2)+2);
@@ -243,6 +255,8 @@ void main_wind_setup_panel_top_frame(editor_3D_view_setup *view_setup)
 	int					mag_sz;
 	d3rect				wbox;
 	
+	view_setup->proj_type=walk_view_proj_type_top;
+	
 	os_get_window_box(&wbox);
 
 	view_setup->box.ty=(wbox.ty+toolbar_high)+((((wbox.by-(txt_palette_high+info_high))-(wbox.ty+toolbar_high))/2)+2);
@@ -276,6 +290,8 @@ void main_wind_setup_panel_top_frame(editor_3D_view_setup *view_setup)
 void main_wind_setup_panel_top_full(editor_3D_view_setup *view_setup)
 {
 	int					mag_sz;
+	
+	view_setup->proj_type=walk_view_proj_type_top;
 	
 	os_get_window_box(&view_setup->box);
 	
@@ -315,6 +331,8 @@ void main_wind_setup_panel_top_full(editor_3D_view_setup *view_setup)
 void main_wind_setup_panel_walk(editor_3D_view_setup *view_setup)
 {
 	d3rect				wbox;
+
+	view_setup->proj_type=walk_view_proj_type_walk;
 	
 	os_get_window_box(&wbox);
 

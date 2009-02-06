@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "remotes.h"
 #include "weapons.h"
 #include "projectiles.h"
+#include "models.h"
 #include "lights.h"
 #include "effects.h"
 #include "cameras.h"
@@ -136,13 +137,15 @@ void view_object_get_ui_color(obj_type *obj,bool no_team_to_default,d3col *col)
 
 void view_draw_debug_bounding_box(obj_type *obj)
 {
-	int				x,y,z,xsz,ysz,zsz,px[8],py[8],pz[8];
+	int				n,xsz,ysz,zsz,px[8],py[8],pz[8];
+	float			fx,fy,fz;
+	matrix_type		rot_x_mat,rot_y_mat,rot_z_mat;
+	model_type		*mdl;
+	
+	mdl=model_find_uid(obj->draw.uid);
+	if (mdl==NULL) return;
 
 		// bounding box
-
-	x=obj->pnt.x;
-	y=obj->pnt.y;
-	z=obj->pnt.z;
 
 	xsz=obj->size.x>>1;
 	zsz=obj->size.z>>1;
@@ -150,16 +153,38 @@ void view_draw_debug_bounding_box(obj_type *obj)
 	ysz=obj->size.y;
 	if (obj->duck.mode!=dm_stand) ysz-=obj->duck.y_move;
 
-	px[0]=px[1]=px[4]=px[5]=x-xsz;
-	px[2]=px[3]=px[6]=px[7]=x+xsz;
+	px[0]=px[1]=px[4]=px[5]=-xsz;
+	px[2]=px[3]=px[6]=px[7]=xsz;
 
-	py[0]=py[1]=py[2]=py[3]=y-ysz;
-	py[4]=py[5]=py[6]=py[7]=y;
+	py[0]=py[1]=py[2]=py[3]=-ysz;
+	py[4]=py[5]=py[6]=py[7]=0;
 
-	pz[1]=pz[2]=pz[5]=pz[6]=z-zsz;
-	pz[0]=pz[3]=pz[4]=pz[7]=z+zsz;
+	pz[1]=pz[2]=pz[5]=pz[6]=-zsz;
+	pz[0]=pz[3]=pz[4]=pz[7]=zsz;
 
-	rotate_polygon(8,px,py,pz,x,y,z,obj->draw.setup.ang.x,obj->draw.setup.ang.y,obj->draw.setup.ang.z);
+	matrix_rotate_x(&rot_x_mat,obj->draw.setup.ang.x);
+	matrix_rotate_z(&rot_z_mat,obj->draw.setup.ang.z);
+	matrix_rotate_y(&rot_y_mat,obj->draw.setup.ang.y);
+
+	for (n=0;n!=8;n++) {
+		fx=(float)(px[n]-mdl->center.x);
+		fy=(float)(py[n]-mdl->center.y);
+		fz=(float)(pz[n]-mdl->center.z);
+		
+		matrix_vertex_multiply(&rot_x_mat,&fx,&fy,&fz);
+		matrix_vertex_multiply(&rot_z_mat,&fx,&fy,&fz);
+		matrix_vertex_multiply(&rot_y_mat,&fx,&fy,&fz);
+		
+		px[n]=((int)fx)+mdl->center.x;
+		py[n]=((int)fy)+mdl->center.y;
+		pz[n]=((int)fz)+mdl->center.z;
+	}
+	
+	for (n=0;n!=8;n++) {
+		px[n]=px[n]+obj->pnt.x;
+		py[n]=py[n]+obj->pnt.y;
+		pz[n]=pz[n]+obj->pnt.z;
+	}
 
 		// draw box
 

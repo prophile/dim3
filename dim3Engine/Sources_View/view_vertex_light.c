@@ -387,7 +387,7 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 		// from y angle to vertex and the
 		// y (top/bottom) from the x/z angle
 
-	ny=(sqrt((nx*nx)*(nz*nz)),ny);
+	ny=atan2(sqrt((nx*nx)*(nz*nz)),ny);
 	nx=atan2(nx,nz);
 
 		// convert to needed format

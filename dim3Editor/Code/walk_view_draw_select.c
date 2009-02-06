@@ -57,9 +57,9 @@ void walk_view_draw_select_mesh_get_grow_handles(int mesh_idx,int *px,int *py,in
 	py[4]=py[5]=py[6]=py[7]=max.y;
 }
 
-void walk_view_draw_select_mesh(d3pnt *cpt,int mesh_idx)
+void walk_view_draw_select_mesh(int mesh_idx)
 {
-	int						n,k,t,x,y,z,px[8],py[8],pz[8];
+	int						n,k,t,px[8],py[8],pz[8];
 	d3pnt					*pt;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*mesh_poly;
@@ -80,10 +80,7 @@ void walk_view_draw_select_mesh(d3pnt *cpt,int mesh_idx)
 		
 		for (t=0;t!=mesh_poly->ptsz;t++) {
 			pt=&mesh->vertexes[mesh_poly->v[t]];
-			x=pt->x-cpt->x;
-			y=pt->y-cpt->y;
-			z=cpt->z-pt->z;
-			glVertex3i(x,y,z);
+			glVertex3i(pt->x,pt->y,pt->z);
 		}
 		
 		glEnd();
@@ -105,10 +102,7 @@ void walk_view_draw_select_mesh(d3pnt *cpt,int mesh_idx)
 		glBegin(GL_POINTS);
 
 		for (n=0;n!=8;n++) {
-			x=px[n]-cpt->x;
-			y=py[n]-cpt->y;
-			z=cpt->z-pz[n];
-			glVertex3i(x,y,z);
+			glVertex3i(px[n],py[n],pz[n]);
 		}
 
 		glEnd();
@@ -117,9 +111,9 @@ void walk_view_draw_select_mesh(d3pnt *cpt,int mesh_idx)
 	}
 }
 
-void walk_view_draw_select_mesh_vertex(d3pnt *cpt,int mesh_idx)
+void walk_view_draw_select_mesh_vertex(int mesh_idx)
 {
-	int						n,x,y,z;
+	int						n;
 	d3pnt					*pt;
 	map_mesh_type			*mesh;
 	
@@ -134,10 +128,7 @@ void walk_view_draw_select_mesh_vertex(d3pnt *cpt,int mesh_idx)
 	glBegin(GL_POINTS);
 
 	for (n=0;n!=mesh->nvertex;n++) {
-		x=pt->x-cpt->x;
-		y=pt->y-cpt->y;
-		z=cpt->z-pt->z;
-		glVertex3i(x,y,z);
+		glVertex3i(pt->x,pt->y,pt->z);
 		
 		pt++;
 	}
@@ -145,9 +136,9 @@ void walk_view_draw_select_mesh_vertex(d3pnt *cpt,int mesh_idx)
 	glEnd();
 }
 
-void walk_view_draw_select_mesh_poly(d3pnt *cpt,int mesh_idx,int poly_idx)
+void walk_view_draw_select_mesh_poly(int mesh_idx,int poly_idx)
 {
-	int						n,x,y,z;
+	int						n;
 	d3pnt					*pt;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*mesh_poly;
@@ -165,10 +156,7 @@ void walk_view_draw_select_mesh_poly(d3pnt *cpt,int mesh_idx,int poly_idx)
 	
 	for (n=0;n!=mesh_poly->ptsz;n++) {
 		pt=&mesh->vertexes[mesh_poly->v[n]];
-		x=pt->x-cpt->x;
-		y=pt->y-cpt->y;
-		z=cpt->z-pt->z;
-		glVertex3i(x,y,z);
+		glVertex3i(pt->x,pt->y,pt->z);
 	}
 	
 	glEnd();
@@ -195,9 +183,9 @@ void walk_view_draw_select_liquid_get_grow_handles(int liquid_idx,int *px,int *p
 	py[0]=py[1]=py[2]=py[3]=liq->y;
 }
 
-void walk_view_draw_select_liquid(d3pnt *cpt,int liquid_idx)
+void walk_view_draw_select_liquid(int liquid_idx)
 {
-	int						n,x,y,z,px[4],py[4],pz[4];
+	int						n,px[4],py[4],pz[4];
 	map_liquid_type			*liq;
 	
 	liq=&map.liquid.liquids[liquid_idx];
@@ -212,10 +200,7 @@ void walk_view_draw_select_liquid(d3pnt *cpt,int liquid_idx)
 	glBegin(GL_POINTS);
 
 	for (n=0;n!=4;n++) {
-		x=px[n]-cpt->x;
-		y=py[n]-cpt->y;
-		z=cpt->z-pz[n];
-		glVertex3i(x,y,z);
+		glVertex3i(px[n],py[n],pz[n]);
 	}
 
 	glEnd();
@@ -227,34 +212,26 @@ void walk_view_draw_select_liquid(d3pnt *cpt,int liquid_idx)
       
 ======================================================= */
 
-void walk_view_sprite_select_size(d3pnt *cpt,d3pnt *pnt,int *px,int *py,int *pz)
+void walk_view_sprite_select_size(d3pnt *pnt,int *px,int *py,int *pz)
 {
-	int				x,y,z,wid;
+	int				wid;
 	
-    x=pnt->x-cpt->x;
-    y=pnt->y-cpt->y;
-    z=cpt->z-pnt->z;
-    
     wid=map_enlarge*3;
 
-	px[0]=px[3]=px[6]=px[7]=x-wid;
-	px[1]=px[2]=px[4]=px[5]=x+wid;
+	px[0]=px[3]=px[6]=px[7]=pnt->x-wid;
+	px[1]=px[2]=px[4]=px[5]=pnt->x+wid;
 	
-	py[0]=py[1]=py[2]=py[3]=y-(map_enlarge*4);
-	py[4]=py[5]=py[6]=py[7]=y;
+	py[0]=py[1]=py[2]=py[3]=pnt->y-(map_enlarge*4);
+	py[4]=py[5]=py[6]=py[7]=pnt->y;
 		
-	pz[0]=pz[1]=pz[4]=pz[7]=z-wid;
-	pz[2]=pz[3]=pz[5]=pz[6]=z+wid;
+	pz[0]=pz[1]=pz[4]=pz[7]=pnt->z-wid;
+	pz[2]=pz[3]=pz[5]=pz[6]=pnt->z+wid;
 }
 
-void walk_view_draw_select_sprite(d3pnt *cpt,d3pnt *pnt)
+void walk_view_draw_select_sprite(d3pnt *pnt)
 {
-    int			x,z,y,wid,high;
+    int			wid,high;
   
-    x=pnt->x-cpt->x;
-    y=pnt->y-cpt->y;
-    z=pnt->z-cpt->z;
-    
     wid=map_enlarge*3;
     high=map_enlarge*4;
     
@@ -264,31 +241,31 @@ void walk_view_draw_select_sprite(d3pnt *cpt,d3pnt *pnt)
 	glLineWidth(2);
     
 	glBegin(GL_LINE_LOOP);
-	glVertex3i((x-wid),(y-high),-(z-wid));
-	glVertex3i((x+wid),(y-high),-(z-wid));
-	glVertex3i((x+wid),y,-(z-wid));
-	glVertex3i((x-wid),y,-(z-wid));
+	glVertex3i((pnt->x-wid),(pnt->y-high),(pnt->z-wid));
+	glVertex3i((pnt->x+wid),(pnt->y-high),(pnt->z-wid));
+	glVertex3i((pnt->x+wid),pnt->y,(pnt->z-wid));
+	glVertex3i((pnt->x-wid),pnt->y,(pnt->z-wid));
 	glEnd();
 
 	glBegin(GL_LINE_LOOP);
- 	glVertex3i((x-wid),(y-high),-(z+wid));
-	glVertex3i((x+wid),(y-high),-(z+wid));
-	glVertex3i((x+wid),y,-(z+wid));
-	glVertex3i((x-wid),y,-(z+wid));
+ 	glVertex3i((pnt->x-wid),(pnt->y-high),(pnt->z+wid));
+	glVertex3i((pnt->x+wid),(pnt->y-high),(pnt->z+wid));
+	glVertex3i((pnt->x+wid),pnt->y,(pnt->z+wid));
+	glVertex3i((pnt->x-wid),pnt->y,(pnt->z+wid));
 	glEnd();
 	
 	glBegin(GL_LINE_LOOP);
- 	glVertex3i((x-wid),(y-high),-(z-wid));
-	glVertex3i((x-wid),(y-high),-(z+wid));
-	glVertex3i((x-wid),y,-(z+wid));
-	glVertex3i((x-wid),y,-(z-wid));
+ 	glVertex3i((pnt->x-wid),(pnt->y-high),(pnt->z-wid));
+	glVertex3i((pnt->x-wid),(pnt->y-high),(pnt->z+wid));
+	glVertex3i((pnt->x-wid),pnt->y,(pnt->z+wid));
+	glVertex3i((pnt->x-wid),pnt->y,(pnt->z-wid));
 	glEnd();
 	
 	glBegin(GL_LINE_LOOP);
-	glVertex3i((x+wid),(y-high),-(z-wid));
-	glVertex3i((x+wid),(y-high),-(z+wid));
-	glVertex3i((x+wid),y,-(z+wid));
-	glVertex3i((x+wid),y,-(z-wid));
+	glVertex3i((pnt->x+wid),(pnt->y-high),(pnt->z-wid));
+	glVertex3i((pnt->x+wid),(pnt->y-high),(pnt->z+wid));
+	glVertex3i((pnt->x+wid),pnt->y,(pnt->z+wid));
+	glVertex3i((pnt->x+wid),pnt->y,(pnt->z-wid));
 	glEnd();
     
     glLineWidth(1);
@@ -330,40 +307,40 @@ void walk_view_draw_select(d3pnt *cpt)
 			case mesh_piece:
 				if (draw_mesh_once[main_idx]==0x0) {
 					draw_mesh_once[main_idx]=0x1;
-					walk_view_draw_select_mesh(cpt,main_idx);
+					walk_view_draw_select_mesh(main_idx);
 				}
 				break;
 				
 			case liquid_piece:
-				walk_view_draw_select_liquid(cpt,main_idx);
+				walk_view_draw_select_liquid(main_idx);
 				break;
 				
 			case node_piece:
-				walk_view_draw_select_sprite(cpt,&map.nodes[main_idx].pnt);
+				walk_view_draw_select_sprite(&map.nodes[main_idx].pnt);
 				break;
 				
 			case spot_piece:
-				if (!walk_view_model_draw_select(cpt,&map.spots[main_idx].pnt,&map.spots[main_idx].ang,map.spots[main_idx].display_model)) {
-					walk_view_draw_select_sprite(cpt,&map.spots[main_idx].pnt);
+				if (!walk_view_model_draw_select(&map.spots[main_idx].pnt,&map.spots[main_idx].ang,map.spots[main_idx].display_model)) {
+					walk_view_draw_select_sprite(&map.spots[main_idx].pnt);
 				}
 				break;
 				
 			case scenery_piece:
-				if (!walk_view_model_draw_select(cpt,&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,map.sceneries[main_idx].model_name)) {
-					walk_view_draw_select_sprite(cpt,&map.sceneries[main_idx].pnt);
+				if (!walk_view_model_draw_select(&map.sceneries[main_idx].pnt,&map.sceneries[main_idx].ang,map.sceneries[main_idx].model_name)) {
+					walk_view_draw_select_sprite(&map.sceneries[main_idx].pnt);
 				}
 				break;
 				
 			case light_piece:
-				walk_view_draw_select_sprite(cpt,&map.lights[main_idx].pnt);
+				walk_view_draw_select_sprite(&map.lights[main_idx].pnt);
 				break;
 				
 			case sound_piece:
-				walk_view_draw_select_sprite(cpt,&map.sounds[main_idx].pnt);
+				walk_view_draw_select_sprite(&map.sounds[main_idx].pnt);
 				break;
 				
 			case particle_piece:
-				walk_view_draw_select_sprite(cpt,&map.particles[main_idx].pnt);
+				walk_view_draw_select_sprite(&map.particles[main_idx].pnt);
 				break;
 		}
 	}
@@ -379,7 +356,7 @@ void walk_view_draw_select(d3pnt *cpt)
 			select_get(n,&type,&main_idx,&sub_idx);
 			if (type!=mesh_piece) continue;
 			
-			walk_view_draw_select_mesh_poly(cpt,main_idx,sub_idx);
+			walk_view_draw_select_mesh_poly(main_idx,sub_idx);
 		}
 		
 	}
@@ -397,7 +374,7 @@ void walk_view_draw_select(d3pnt *cpt)
 			
 			if (draw_mesh_once[main_idx]==0x0) {
 				draw_mesh_once[main_idx]=0x1;
-				walk_view_draw_select_mesh_vertex(cpt,main_idx);
+				walk_view_draw_select_mesh_vertex(main_idx);
 			}
 		}
 	}

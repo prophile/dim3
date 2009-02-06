@@ -201,7 +201,7 @@ void walk_view_models_reset(void)
       
 ======================================================= */
 
-void walk_view_model_draw_material(model_type *model,model_draw_setup *draw_setup,texture_type *texture,model_material_type *material,int frame)
+void walk_view_model_draw_material(model_type *model,texture_type *texture,model_material_type *material,int frame)
 {
 	register int					k,trig_count,bitmap_gl_id;
     register model_trig_type		*trig;
@@ -236,9 +236,9 @@ void walk_view_model_draw_material(model_type *model,model_draw_setup *draw_setu
 	glEnd();
 }
 
-bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,int frame_count)
+bool walk_view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,int frame_count)
 {
-	int								idx,x,y,z,n,frame;
+	int								idx,n,frame;
 	model_type						*model;
 	model_draw_setup				draw_setup;
 	model_mesh_type					*mesh;
@@ -252,12 +252,6 @@ bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name,short *tex
 	
 	model=&models[idx];
 
-		// translated drawing point
-		
-	x=pnt->x-cpt->x;
-	y=pnt->y-cpt->y;
-	z=cpt->z-pnt->z;
-	
 		// build model vertex list
 		
 	model_clear_draw_setup(model,&draw_setup);
@@ -267,12 +261,12 @@ bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name,short *tex
 	draw_setup.poses[0].acceleration=0;
 	
 	memmove(&draw_setup.ang,ang,sizeof(d3ang));
-	draw_setup.ang.y=angle_add(ang->y,180.0f);
+	draw_setup.ang.y=ang->y;
 	
 	model_create_draw_bones(model,&draw_setup);
 	model_create_draw_vertexes(model,0,&draw_setup);
 
-	model_translate_draw_vertex(model,0,x,y,z);
+	model_translate_draw_vertex(model,0,pnt->x,pnt->y,pnt->z);
 
 		// draw triangles
 
@@ -301,7 +295,7 @@ bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name,short *tex
     for (n=0;n!=max_model_texture;n++) {
 		frame=0;
 		if (n<frame_count) frame=(int)texture_frame[n];
-		if (texture->bitmaps[0].alpha_mode!=alpha_mode_transparent) walk_view_model_draw_material(model,&draw_setup,texture,material,frame);
+		if (texture->bitmaps[0].alpha_mode!=alpha_mode_transparent) walk_view_model_draw_material(model,texture,material,frame);
 		texture++;
 		material++;
 	}
@@ -317,7 +311,7 @@ bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name,short *tex
     for (n=0;n!=max_model_texture;n++) {
 		frame=0;
 		if (n<frame_count) frame=(int)texture_frame[n];
-		if (texture->bitmaps[0].alpha_mode==alpha_mode_transparent) walk_view_model_draw_material(model,&draw_setup,texture,material,frame);
+		if (texture->bitmaps[0].alpha_mode==alpha_mode_transparent) walk_view_model_draw_material(model,texture,material,frame);
 		texture++;
 		material++;
 	}
@@ -340,7 +334,7 @@ bool walk_view_model_draw(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name,short *tex
       
 ======================================================= */
 
-bool walk_view_model_click_select_size(d3pnt *cpt,char *name,d3pnt *pnt,d3ang *ang,int *px,int *py,int *pz)
+bool walk_view_model_click_select_size(char *name,d3pnt *pnt,d3ang *ang,int *px,int *py,int *pz)
 {
 	int						n,idx,cx,cy,cz,wid_x,wid_z,high;
 	float					fx,fy,fz;
@@ -409,9 +403,9 @@ bool walk_view_model_click_select_size(d3pnt *cpt,char *name,d3pnt *pnt,d3ang *a
 	}
 	
 	for (n=0;n!=8;n++) {
-		px[n]=(px[n]+pnt->x)-cpt->x;
-		py[n]=(py[n]+pnt->y)-cpt->y;
-		pz[n]=cpt->z-(pz[n]+pnt->z);
+		px[n]=px[n]+pnt->x;
+		py[n]=py[n]+pnt->y;
+		pz[n]=pz[n]+pnt->z;
 	}
 	
 	return(TRUE);
@@ -423,13 +417,13 @@ bool walk_view_model_click_select_size(d3pnt *cpt,char *name,d3pnt *pnt,d3ang *a
       
 ======================================================= */
 
-bool walk_view_model_draw_select(d3pnt *cpt,d3pnt *pnt,d3ang *ang,char *name)
+bool walk_view_model_draw_select(d3pnt *pnt,d3ang *ang,char *name)
 {
 	int				px[8],py[8],pz[8];
 	
 		// get polygons
 		
-	if (!walk_view_model_click_select_size(cpt,name,pnt,ang,px,py,pz)) return(FALSE);
+	if (!walk_view_model_click_select_size(name,pnt,ang,px,py,pz)) return(FALSE);
 
 		// draw selection
 		

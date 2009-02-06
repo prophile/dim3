@@ -79,7 +79,7 @@ extern void main_wind_set_view(int view);
 extern void main_wind_set_perspective(int perspective);
 extern void main_wind_rotate_view(void);
 extern void main_wind_set_viewport(d3rect *view_box,bool erase,bool use_background);
-extern void main_wind_set_3D_projection(d3rect *view_box,d3ang *ang,float fov,float near_z,float far_z,float near_z_offset);
+extern void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,float near_z,float far_z,float near_z_offset);
 extern void main_wind_draw(void);
 extern void main_wind_center_position_in_map(void);
 extern bool main_wind_click_check_box(d3pnt *pt,d3rect *box);

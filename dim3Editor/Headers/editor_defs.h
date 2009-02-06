@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit “Created with dim3 Technology” is given on a single
+2. This credit ‚ÄúCreated with dim3 Technology‚Äù is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -137,6 +137,15 @@ and can be sold or given away.
 #define mouse_top_view_drag_scale				0.01f
 
 //
+// walk view types
+//
+
+#define walk_view_proj_type_forward				0
+#define walk_view_proj_type_side				1
+#define walk_view_proj_type_top					2
+#define walk_view_proj_type_walk				3
+
+//
 // fovs
 //
 
@@ -159,7 +168,7 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int						clip_y,portal_y;
+						int						proj_type,clip_y,portal_y;
 						d3rect					box;
 						d3pnt					cpt;
 						d3ang					ang;
