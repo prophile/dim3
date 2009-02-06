@@ -514,8 +514,10 @@ void map_auto_generate_poly_from_square_wall(int lx,int lz,int rx,int rz,int ty,
 	y[0]=y[1]=ty;
 	y[2]=y[3]=by;
 	
-	gx[0]=gx[1]=gx[2]=gx[3]=0.0f;
-	gy[0]=gy[1]=gy[2]=gy[3]=0.0f;
+	gx[0]=gx[3]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[1]=0.0f;
+	gy[2]=gy[3]=1.0f;
 }
 
 void map_auto_generate_poly_from_top_trig_wall(int lx,int lz,int rx,int rz,int ty,int by,int *x,int *y,int *z,float *gx,float *gy)
@@ -555,8 +557,52 @@ void map_auto_generate_poly_from_square_floor(int lx,int lz,int rx,int rz,int fy
 		
 	y[0]=y[1]=y[2]=y[3]=fy;
 
-	gx[0]=gx[1]=gx[2]=gx[3]=0.0f;
-	gy[0]=gy[1]=gy[2]=gy[3]=0.0f;
+	gx[0]=gx[3]=0.0f;
+	gx[1]=gx[2]=1.0f;
+	gy[0]=gy[1]=0.0f;
+	gy[2]=gy[3]=1.0f;
+}
+
+void map_auto_generate_poly_from_square_wall_slant(int lx,int lz,int rx,int rz,int ty,int ty2,int by,int lower_mode,bool reverse_slant,int *x,int *y,int *z,float *gx,float *gy)
+{
+	map_auto_generate_poly_from_square_wall(lx,lz,rx,rz,ty,by,x,y,z,gx,gy);
+	
+	if (reverse_slant) {
+	
+		switch (lower_mode) {
+			case ag_ceiling_lower_neg_x:
+				y[0]=y[3]=ty2;
+				break;
+			case ag_ceiling_lower_pos_x:
+				y[1]=y[2]=ty2;
+				break;
+			case ag_ceiling_lower_neg_z:
+				y[0]=y[1]=ty2;
+				break;
+			case ag_ceiling_lower_pos_z:
+				y[2]=y[3]=ty2;
+				break;
+		}
+	}
+	
+	else {
+	
+		switch (lower_mode) {
+			case ag_ceiling_lower_neg_x:
+				y[1]=y[2]=ty2;
+				break;
+			case ag_ceiling_lower_pos_x:
+				y[0]=y[3]=ty2;
+				break;
+			case ag_ceiling_lower_neg_z:
+				y[2]=y[3]=ty2;
+				break;
+			case ag_ceiling_lower_pos_z:
+				y[0]=y[1]=ty2;
+				break;
+		}
+	
+	}
 }
 
 void map_auto_generate_poly_from_square_floor_slant(int lx,int lz,int rx,int rz,int fy,int yadd,int lower_mode,bool reverse_slant,int *x,int *y,int *z,float *gx,float *gy)
@@ -637,6 +683,11 @@ bool map_auto_generate_mesh_start(map_type *map,int box_idx,int group_idx,int tx
 	}
 
 	return(TRUE);
+}
+
+void map_auto_generate_mesh_set_lock(map_type *map)
+{
+	map->mesh.meshes[map_ag_mesh_idx].flag.lock_uv=TRUE;
 }
 
 void map_auto_generate_mesh_set_rot_offset(map_type *map,int x,int y,int z)

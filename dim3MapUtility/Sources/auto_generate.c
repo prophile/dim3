@@ -62,6 +62,7 @@ extern void map_auto_generate_poly_from_square_floor(int lx,int lz,int rx,int rz
 extern void map_auto_generate_poly_from_square_floor_slant(int lx,int lz,int rx,int rz,int fy,int yadd,int lower_mode,bool reverse_slant,int *x,int *y,int *z,float *gx,float *gy);
 
 extern bool map_auto_generate_mesh_start(map_type *map,int box_idx,int group_idx,int txt_idx,bool moveable,bool new_mesh);
+extern void map_auto_generate_mesh_set_lock(map_type *map);
 extern int map_auto_generate_mesh_change_texture(int txt_idx);
 extern bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z,float *gx,float *gy);
 extern void map_auto_generate_mesh_punch_hole_last_poly(map_type *map,int x,int z);
@@ -69,6 +70,7 @@ extern void map_auto_generate_mesh_punch_hole_last_poly(map_type *map,int x,int 
 extern int map_auto_generate_steps_get_length(int ty,int by,int step_size);
 extern void map_auto_generate_steps(map_type *map,int rn,int ty,int by,int stair_mode,int step_sz,bool back_wall,bool side_blocks,int lx,int rx,int lz,int rz);
 extern void map_auto_generate_lift(map_type *map,int rn,int ty,int by,int lx,int rx,int lz,int rz);
+extern void map_auto_generate_slant_side(map_type *map,int rn,int ty,int by,int stair_mode,int lx,int rx,int lz,int rz);
 
 extern void map_auto_generate_lights(map_type *map);
 extern void map_auto_generate_spots(map_type *map);
@@ -996,6 +998,7 @@ void map_auto_generate_portal_single_ceilling_pillar(map_type *map,int rn,int lx
 	p_by=by-k;
 
 	if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.pillar,FALSE,TRUE)) return;
+	map_auto_generate_mesh_set_lock(map);
 
 		// top of pillar
 
@@ -1760,6 +1763,7 @@ void map_auto_generate_second_story(map_type *map)
 			switch (stair_type) {
 				case ag_stair_type_stair:
 					map_auto_generate_steps(map,n,y,by,ag_stair_pos_x,ag_constant_step_story_size,TRUE,FALSE,x,x,z,(z+step_wid));
+					map_auto_generate_slant_side(map,n,y,by,ag_stair_pos_x,x,x,z,(z+step_wid));
 					break;
 				case ag_stair_type_lift:
 					map_auto_generate_lift(map,n,y,by,x,(x+step_wid),z,(z+step_wid));
@@ -1775,6 +1779,7 @@ void map_auto_generate_second_story(map_type *map)
 				switch (stair_type) {
 					case ag_stair_type_stair:
 						map_auto_generate_steps(map,n,y,by,ag_stair_neg_x,ag_constant_step_story_size,TRUE,FALSE,x,x,z,(z+step_wid));
+						map_auto_generate_slant_side(map,n,y,by,ag_stair_neg_x,x,x,z,(z+step_wid));
 						break;
 					case ag_stair_type_lift:
 						map_auto_generate_lift(map,n,y,by,(x-step_wid),x,z,(z+step_wid));
@@ -1791,6 +1796,7 @@ void map_auto_generate_second_story(map_type *map)
 			switch (stair_type) {
 				case ag_stair_type_stair:
 					map_auto_generate_steps(map,n,y,by,ag_stair_pos_z,ag_constant_step_story_size,TRUE,FALSE,x,(x+step_wid),z,z);
+					map_auto_generate_slant_side(map,n,y,by,ag_stair_pos_z,x,(x+step_wid),z,z);
 					break;
 				case ag_stair_type_lift:
 					map_auto_generate_lift(map,n,y,by,x,(x+step_wid),z,(z+step_wid));
@@ -1806,6 +1812,7 @@ void map_auto_generate_second_story(map_type *map)
 				switch (stair_type) {
 					case ag_stair_type_stair:
 						map_auto_generate_steps(map,n,y,by,ag_stair_neg_z,ag_constant_step_story_size,TRUE,FALSE,x,(x+step_wid),z,z);
+						map_auto_generate_slant_side(map,n,y,by,ag_stair_neg_z,x,(x+step_wid),z,z);
 						break;
 					case ag_stair_type_lift:
 						map_auto_generate_lift(map,n,y,by,x,(x+step_wid),(z-step_wid),z);
@@ -1919,7 +1926,7 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 
 		// start new map
 
-	if (!map_new(map,"Demo")) return(FALSE);
+	if (!map_new(map,"Bot Test")) return(FALSE);
 
 		// setup textures
 
