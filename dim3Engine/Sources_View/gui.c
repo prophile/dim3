@@ -498,9 +498,9 @@ void gui_draw_message(char *txt)
 	lx=0;
 	rx=hud.scale_x;
 	
-		// draw the blue band
+		// draw the band
 		
-	glColor4f(0.4f,0.1f,1.0f,1.0f);
+	glColor4f(hud.color.header.r,hud.color.header.g,hud.color.header.b,1.0f);
 	
 	glBegin(GL_QUADS);
 	glVertex2i(lx,ty);

@@ -563,46 +563,11 @@ void map_auto_generate_poly_from_square_floor(int lx,int lz,int rx,int rz,int fy
 	gy[2]=gy[3]=1.0f;
 }
 
-void map_auto_generate_poly_from_square_wall_slant(int lx,int lz,int rx,int rz,int ty,int ty2,int by,int lower_mode,bool reverse_slant,int *x,int *y,int *z,float *gx,float *gy)
+void map_auto_generate_poly_from_square_wall_slant(int lx,int lz,int rx,int rz,int ty,int ty2,int by,int *x,int *y,int *z,float *gx,float *gy)
 {
 	map_auto_generate_poly_from_square_wall(lx,lz,rx,rz,ty,by,x,y,z,gx,gy);
 	
-	if (reverse_slant) {
-	
-		switch (lower_mode) {
-			case ag_ceiling_lower_neg_x:
-				y[0]=y[3]=ty2;
-				break;
-			case ag_ceiling_lower_pos_x:
-				y[1]=y[2]=ty2;
-				break;
-			case ag_ceiling_lower_neg_z:
-				y[0]=y[1]=ty2;
-				break;
-			case ag_ceiling_lower_pos_z:
-				y[2]=y[3]=ty2;
-				break;
-		}
-	}
-	
-	else {
-	
-		switch (lower_mode) {
-			case ag_ceiling_lower_neg_x:
-				y[1]=y[2]=ty2;
-				break;
-			case ag_ceiling_lower_pos_x:
-				y[0]=y[3]=ty2;
-				break;
-			case ag_ceiling_lower_neg_z:
-				y[2]=y[3]=ty2;
-				break;
-			case ag_ceiling_lower_pos_z:
-				y[0]=y[1]=ty2;
-				break;
-		}
-	
-	}
+	y[1]=ty2;
 }
 
 void map_auto_generate_poly_from_square_floor_slant(int lx,int lz,int rx,int rz,int fy,int yadd,int lower_mode,bool reverse_slant,int *x,int *y,int *z,float *gx,float *gy)

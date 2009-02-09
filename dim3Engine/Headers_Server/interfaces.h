@@ -93,6 +93,7 @@ extern void element_set_table_data(int id,char *row_data);
 extern void element_set_bitmap(int id,char *path);
 extern int element_get_scroll_position(int id);
 extern void element_set_scroll_position(int id,int pos);
+extern void element_make_selection_visible(int id);
 extern int element_get_x_position(int id);
 
 extern void element_draw(bool cursor_hilite);

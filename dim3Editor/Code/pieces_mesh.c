@@ -906,7 +906,7 @@ void map_mesh_reset_uv_all(void)
 	int				n;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		map_mesh_reset_uv(&map,n);
+		if (!map.mesh.meshes[n].flag.lock_uv) map_mesh_reset_uv(&map,n);
 	}
 }
 

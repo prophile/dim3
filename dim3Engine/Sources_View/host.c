@@ -217,6 +217,7 @@ void host_game_pane(void)
 	host_set_last_map();
 
 	element_set_value(host_table_id,host_map_idx);
+	element_make_selection_visible(host_table_id);
 }
 
 void host_options_pane(void)
@@ -490,6 +491,7 @@ void host_click(void)
 				host_fill_map_table(net_setup.games[idx].name);
 				host_set_last_map();
 				element_set_value(host_table_id,host_map_idx);
+				element_make_selection_visible(host_table_id);
 				element_enable(host_button_host_id,(host_map_idx!=-1));
 			}
 			break;

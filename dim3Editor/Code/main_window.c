@@ -1061,11 +1061,11 @@ void main_wind_set_viewport(d3rect *view_box,bool erase,bool use_background)
 	glEnd();
 }
 
-void main_wind_set_2D_projection(Rect *view_box)
+void main_wind_set_2D_projection(editor_3D_view_setup *view_setup)
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho((GLdouble)view_box->left,(GLdouble)view_box->right,(GLdouble)view_box->bottom,(GLdouble)view_box->top,-1.0,1.0);
+	glOrtho((GLdouble)view_setup->box.lx,(GLdouble)view_setup->box.rx,(GLdouble)view_setup->box.by,(GLdouble)view_setup->box.ty,-1.0,1.0);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

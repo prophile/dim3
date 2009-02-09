@@ -639,16 +639,16 @@ void walk_view_gl_setup(editor_3D_view_setup *view_setup)
       
 ======================================================= */
 
-void walk_view_draw_position(d3rect *box)
+void walk_view_draw_position(editor_3D_view_setup *view_setup)
 {
     int			x,z,sz;
    
- 	main_wind_set_2D_projection(box);
+ 	main_wind_set_2D_projection(view_setup);
 
 	glDisable(GL_DEPTH_TEST);
 
-	x=box->lx+((box->rx-box->lx)>>1);
-	z=box->ty+((box->by-box->ty)>>1);
+	x=view_setup->box.lx+((view_setup->box.rx-view_setup->box.lx)>>1);
+	z=view_setup->box.ty+((view_setup->box.by-view_setup->box.ty)>>1);
 	
 	sz=10;
 	
@@ -724,6 +724,6 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 		
 	main_wind_set_3D_projection(view_setup,walk_view_near_z,walk_view_far_z,walk_view_near_offset);
 
-	if (draw_position) walk_view_draw_position(&view_setup->box);
+	if (draw_position) walk_view_draw_position(view_setup);
 }
 

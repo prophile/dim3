@@ -443,7 +443,7 @@ void setup_game_action_wait_for_input(void)
 {
 	int					n,ctrl_idx,action_idx;
 	char				name[32];
-	bool				no_key_up;
+	bool				no_key_up,already_set;
 	setup_action_type	*action;
 	
 		// if we already got input, wait for it to clear
@@ -473,8 +473,20 @@ void setup_game_action_wait_for_input(void)
 	
 	action=&setup.action_list.actions[action_idx];
 	
-	n=setup_game_action_find_free_attach(action);
-	if (n!=-1) strcpy(action->attach[n],name);
+		// already picked?
+		
+	already_set=FALSE;
+	
+	for (n=0;n!=max_setup_action_attach;n++) {
+		if (strcasecmp(action->attach[n],name)==0) already_set=TRUE;
+	}
+
+		// if not add
+	
+	if (!already_set) {
+		n=setup_game_action_find_free_attach(action);
+		if (n!=-1) strcpy(action->attach[n],name);
+	}
 	
 		// rebuild list
 		

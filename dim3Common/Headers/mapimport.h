@@ -137,6 +137,14 @@ and can be sold or given away.
 #define ag_light_type_animated						2
 
 //
+// auto-generate steps type
+//
+
+#define ag_step_second_story						0
+#define ag_step_corridor							1
+#define ag_step_ramp								2
+
+//
 // auto-generate blockings
 //
 
@@ -226,12 +234,12 @@ and can be sold or given away.
 #define ag_constant_portal_split_factor_percent		0.1f
 
 #define ag_constant_portal_high_extra_top			0.75f
-#define ag_constant_portal_high_extra_bottom		0.60f
+#define ag_constant_portal_high_extra_bottom		0.65f
 #define ag_constant_portal_high_slop_y				0.10f
 #define ag_constant_portal_rough_floor_percent		0.025f
 #define ag_constant_portal_ceiling_slant_percent	0.40f
 
-#define ag_constant_portal_story_high				(5*map_enlarge)
+#define ag_constant_story_floor_high				(5*map_enlarge)
 #define ag_constant_story_steps_split_factor		1
 
 #define ag_constant_corridor_size_percent			0.20f
@@ -246,13 +254,15 @@ and can be sold or given away.
 
 #define ag_constant_light_animate_percentage		0.1f
 
-#define ag_constant_step_high						(3*map_enlarge)
 #define ag_constant_step_corridor_size				(12*map_enlarge)
+#define ag_constant_step_corridor_high				(3*map_enlarge)
 #define ag_constant_step_story_size					(10*map_enlarge)
-#define ag_constant_step_side_width					(5*map_enlarge)
+#define ag_constant_step_story_high					(5*map_enlarge)
+
+#define ag_constant_step_side_wid					(map_enlarge*4)
 
 #define ag_constant_ramp_min_high					(4*map_enlarge)
-#define ag_constant_ramp_size_percent				4.0f
+#define ag_constant_ramp_length						(35*map_enlarge)
 
 #define ag_constant_window_percent					0.3f
 #define ag_constant_window_depth					(8*map_enlarge)
@@ -274,7 +284,7 @@ typedef struct	{
 typedef struct	{
 					int										portal_wall,portal_floor,portal_ceiling,
 															corridor,second_story,window,
-															door,steps,ramp,pillar;
+															door,steps,ramp,column,column_base;
 				} auto_generate_setting_texture_type;
 
 typedef struct	{

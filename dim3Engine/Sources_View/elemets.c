@@ -1493,7 +1493,7 @@ inline int element_get_table_row_high(element_type *element)
 	return(element_table_bitmap_size+2);
 }
 
-bool element_click_table(element_type *element,int x,int y)
+void element_click_table(element_type *element,int x,int y)
 {
 	int				high,row_high,row_cnt,cnt;
 	bool			up_ok,down_ok;
@@ -1508,27 +1508,25 @@ bool element_click_table(element_type *element,int x,int y)
 		// check for clicking in scroll bar
 		
 	if (x>((element->x+element->wid)-24)) {
-		element->value=-1;
 		
 			// get scrolling sizes
 			
 		cnt=((element->high-(high+4))/row_high)-1;
 		up_ok=(element->offset!=0);
-		down_ok=((element->offset+cnt)<row_cnt);
+		down_ok=((element->offset+(cnt+1))<row_cnt);
 		
 		y-=element->y;
 		
 		if ((y>=(high+4)) && (y<=(high+28)) && (up_ok)) {
-			element->offset-=cnt;
-			return(TRUE);
+			element->offset-=(cnt+1);
+		}
+		else {
+			if ((y>=(element->high-24)) && (down_ok)) {
+				element->offset+=(cnt+1);
+			}
 		}
 		
-		if ((y>=(element->high-24)) && (down_ok)) {
-			element->offset+=cnt;
-			return(TRUE);
-		}
-	
-		return(FALSE);
+		return;
 	}
 	
 		// select cliked on element
@@ -1538,23 +1536,20 @@ bool element_click_table(element_type *element,int x,int y)
 	
 	if ((element->value<0) || (element->value>=row_cnt)) {
 		element->value=-1;
-		return(FALSE);
 	}
-	
-	return(TRUE);
 }
 
-void element_draw_table_background_fills(element_type *element,int row_high)
+void element_draw_table_background_fills(element_type *element,int high,int row_high)
 {
-	int				lft,rgt,top,bot,x,y,top2,bot2,
-					scroll_high,row_count,tot_row_high,row_per_page,page_count;
+	int				lft,rgt,top,bot,x,y,top2,bot2,cnt,
+					scroll_high,row_count;
 	d3col			col,col2;
 	
 		// header
 		
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	
-	bot=(top+row_high)+4;
+	bot=(top+high)+4;
 	y=(top+bot)>>1;
 	
 	col2.r=hud.color.header.r/2.0f;
@@ -1569,7 +1564,7 @@ void element_draw_table_background_fills(element_type *element,int row_high)
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	
 	lft=rgt-24;
-	top+=(row_high+4);
+	top+=(high+4);
 	bot2=top+24;
 	
 	x=(lft+rgt)>>1;
@@ -1597,19 +1592,14 @@ void element_draw_table_background_fills(element_type *element,int row_high)
 		
 	row_count=element_get_table_row_count(element);
 	if (row_count!=0) {
+	
+		scroll_high=(bot-top)/row_count;
+		cnt=((element->high-(high+4))/row_high)-1;
 
-		tot_row_high=row_high*row_count;
-		page_count=tot_row_high/(bot-top);
-		if ((tot_row_high%(bot-top))!=0) page_count++;
-
-		scroll_high=(bot-top)/page_count;
-		row_per_page=((element->high-(row_high+4))/row_high)-1;
-
-		top2=top+(scroll_high*(element->offset/row_per_page));
-		bot2=(top2+scroll_high)+4;
-		
-		if (top2>top) top=top2;
-		if (bot2<bot) bot=bot2;
+		if (element->offset!=0) top+=(scroll_high*element->offset);
+		if ((element->offset+(cnt+1))<row_count) {
+			bot=top+(scroll_high*(cnt+1));
+		}
 	}
 	
 	view_draw_next_vertex_object_2D_color_quad(lft,top,&col,rgt,top,&col,rgt,bot,&col2,lft,bot,&col2,1.0f);
@@ -1832,11 +1822,11 @@ void element_draw_table(element_type *element,int sel_id)
 		
 	cnt=((element->high-(high+4))/row_high)-1;
 	up_ok=(element->offset!=0);
-	down_ok=((element->offset+cnt)<element_get_table_row_count(element));
+	down_ok=((element->offset+(cnt+1))<element_get_table_row_count(element));
 	
 		// header and scroll bar fill
 		
-	element_draw_table_background_fills(element,high);
+	element_draw_table_background_fills(element,high,row_high);
 		
 		// outline
 		
@@ -2694,6 +2684,32 @@ void element_set_scroll_position(int id,int pos)
 	element=element_find(id);
 	if (element!=NULL) element->offset=pos;
 
+	pthread_mutex_unlock(&element_thread_lock);
+}
+
+void element_make_selection_visible(int id)
+{
+	int				high,row_high,cnt;
+	element_type	*element;
+
+	pthread_mutex_lock(&element_thread_lock);
+
+	element=element_find(id);
+	if (element!=NULL) {
+	
+		if (element->value!=-1) {
+	
+			high=gl_text_get_char_height(hud.font.text_size_small)+2;
+			row_high=element_get_table_row_high(element);
+			cnt=((element->high-(high+4))/row_high)-1;
+			
+			element->offset=0;
+			while (element->value>=(element->offset+(cnt+1))) {
+				element->offset+=(cnt+1);
+			}
+		}
+	}
+	
 	pthread_mutex_unlock(&element_thread_lock);
 }
 

@@ -60,6 +60,7 @@ and can be sold or given away.
 #define kMapGenerateTextureStep						FOUR_CHAR_CODE('sttx')
 #define kMapGenerateTextureRamp						FOUR_CHAR_CODE('rmtx')
 #define kMapGenerateTextureColumn					FOUR_CHAR_CODE('cltx')
+#define kMapGenerateTextureColumnBase				FOUR_CHAR_CODE('cbtx')
 
 #define kMapGenerateDoorSound						FOUR_CHAR_CODE('dsnd')
 #define kMapGenerateLiftSound						FOUR_CHAR_CODE('lsnd')
@@ -211,7 +212,8 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureDoor,0,FALSE,ag_settings.texture.door);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureStep,0,FALSE,ag_settings.texture.steps);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE,ag_settings.texture.ramp);
-		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureColumn,0,FALSE,ag_settings.texture.pillar);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureColumn,0,FALSE,ag_settings.texture.column);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureColumnBase,0,FALSE,ag_settings.texture.column_base);
 	}
 	else {
 	
@@ -231,6 +233,7 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureStep,0,FALSE,7);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE,8);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureColumn,0,FALSE,9);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureColumnBase,0,FALSE,10);
 	}
 	
 		// show window
@@ -289,7 +292,8 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	ag_settings.texture.door=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureDoor,0,FALSE);
 	ag_settings.texture.steps=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureStep,0,FALSE);
 	ag_settings.texture.ramp=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureRamp,0,FALSE);
-	ag_settings.texture.pillar=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureColumn,0,FALSE);
+	ag_settings.texture.column=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureColumn,0,FALSE);
+	ag_settings.texture.column_base=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureColumnBase,0,FALSE);
 	
 		// close window
 		
