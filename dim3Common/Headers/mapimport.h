@@ -259,7 +259,9 @@ and can be sold or given away.
 #define ag_constant_step_story_size					(10*map_enlarge)
 #define ag_constant_step_story_high					(5*map_enlarge)
 
-#define ag_constant_step_side_wid					(map_enlarge*4)
+#define ag_constant_step_side_wid					(4*map_enlarge)
+
+#define ag_constant_door_frame_depth				(4*map_enlarge)
 
 #define ag_constant_ramp_min_high					(4*map_enlarge)
 #define ag_constant_ramp_length						(35*map_enlarge)
@@ -284,7 +286,7 @@ typedef struct	{
 typedef struct	{
 					int										portal_wall,portal_floor,portal_ceiling,
 															corridor,second_story,window,
-															door,steps,ramp,column,column_base;
+															door,steps,ramp,column,column_base,frame;
 				} auto_generate_setting_texture_type;
 
 typedef struct	{
@@ -294,7 +296,7 @@ typedef struct	{
 															stair_type_on[ag_stair_type_count],
 															door_type_on[ag_door_type_count],
 															light_type_on[ag_light_type_count];
-					bool									window;
+					bool									window,frame;
 					auto_generate_setting_map_type			map;
 					auto_generate_setting_sound_type		sound;
 					auto_generate_setting_texture_type		texture;

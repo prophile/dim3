@@ -33,7 +33,8 @@ extern int								ag_box_count;
 extern auto_generate_box_type			ag_boxes[max_ag_box];
 
 int										map_ag_box_idx,map_ag_mesh_idx,map_ag_poly_txt_idx,
-										map_ag_seg_group_idx,map_ag_seg_primitive_uid,map_ag_seg_fill;
+										map_ag_seg_group_idx,map_ag_seg_primitive_uid,map_ag_seg_fill,
+										old_map_ag_box_idx,old_map_ag_poly_txt_idx,old_map_ag_mesh_idx;
 bool									map_ag_seg_moveable;
 
 /* =======================================================
@@ -563,13 +564,6 @@ void map_auto_generate_poly_from_square_floor(int lx,int lz,int rx,int rz,int fy
 	gy[2]=gy[3]=1.0f;
 }
 
-void map_auto_generate_poly_from_square_wall_slant(int lx,int lz,int rx,int rz,int ty,int ty2,int by,int *x,int *y,int *z,float *gx,float *gy)
-{
-	map_auto_generate_poly_from_square_wall(lx,lz,rx,rz,ty,by,x,y,z,gx,gy);
-	
-	y[1]=ty2;
-}
-
 void map_auto_generate_poly_from_square_floor_slant(int lx,int lz,int rx,int rz,int fy,int yadd,int lower_mode,bool reverse_slant,int *x,int *y,int *z,float *gx,float *gy)
 {
 	map_auto_generate_poly_from_square_floor(lx,lz,rx,rz,fy,x,y,z,gx,gy);
@@ -648,6 +642,20 @@ bool map_auto_generate_mesh_start(map_type *map,int box_idx,int group_idx,int tx
 	}
 
 	return(TRUE);
+}
+
+void map_auto_generate_mesh_save_current(void)
+{
+	old_map_ag_box_idx=map_ag_box_idx;
+	old_map_ag_poly_txt_idx=map_ag_poly_txt_idx;
+	old_map_ag_mesh_idx=map_ag_mesh_idx;
+}
+
+void map_auto_generate_mesh_restore_current(void)
+{
+	map_ag_box_idx=old_map_ag_box_idx;
+	map_ag_poly_txt_idx=old_map_ag_poly_txt_idx;
+	map_ag_mesh_idx=old_map_ag_mesh_idx;
 }
 
 void map_auto_generate_mesh_set_lock(map_type *map)
