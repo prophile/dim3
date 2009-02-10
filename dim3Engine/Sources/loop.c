@@ -42,7 +42,7 @@ extern view_type			view;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-bool						interface_quit,game_loop_pause_button_down;
+bool						interface_quit,game_loop_pause_button_down,game_score_limit_trigger;
 
 extern void game_time_initialize(void);
 extern int game_time_calculate(void);
@@ -156,6 +156,27 @@ void loop_game_run(int tick)
 
 /* =======================================================
 
+      Game At Score limit
+      
+======================================================= */
+
+void score_limit_trigger_clear(void)
+{
+	game_score_limit_trigger=FALSE;
+}
+
+void score_limit_trigger_check(void)
+{
+	if (game_score_limit_trigger) server.state=gs_score_limit;
+}
+
+void loop_game_score_limit(int tick)
+{
+	view_loop(tick);
+}
+
+/* =======================================================
+
       Pausing
       
 ======================================================= */
@@ -248,6 +269,7 @@ bool loop_main(char *err_str)
 	menu_trigger_clear();
 	file_trigger_clear();
 	map_pick_trigger_clear();
+	score_limit_trigger_clear();
 	
 		// clear map changes
 	
@@ -314,6 +336,10 @@ bool loop_main(char *err_str)
 		case gs_map_pick:
 			map_pick_run();
 			break;
+
+		case gs_score_limit:
+			loop_game_score_limit(tick);
+			break;
 			
 	}
 	
@@ -335,6 +361,7 @@ bool loop_main(char *err_str)
 	menu_trigger_check();
 	file_trigger_check();
 	map_pick_trigger_check();
+	score_limit_trigger_check();
 		
 		// if we are changing state from game
 		// play to interface element, capture screen

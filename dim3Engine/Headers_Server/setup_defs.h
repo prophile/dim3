@@ -105,7 +105,7 @@ typedef struct		{
 					} setup_network_bot_type;
 
 typedef struct		{
-						int							nhost,team_idx;
+						int							nhost,team_idx,score_limit;
 						char						name[name_str_len],last_map[name_str_len];
 						bool						show_names;
 						setup_network_hosts_type	hosts[max_setup_network_host];

@@ -50,6 +50,8 @@ and can be sold or given away.
 #define host_game_bot_count_id			20
 #define host_game_bot_skill_id			21
 
+#define host_game_score_limit_id		22
+
 extern void intro_open(void);
 extern bool net_host_game_start(char *err_str);
 extern void net_host_game_end(void);
@@ -223,6 +225,7 @@ void host_game_pane(void)
 void host_options_pane(void)
 {
 	int				n,x,y;
+	char			str[32];
 
 	x=(int)(((float)hud.scale_x)*0.15f);
 	y=(int)(((float)hud.scale_y)*0.17f);
@@ -241,6 +244,10 @@ void host_options_pane(void)
 	y+=element_get_control_high();
 
 	element_combo_add("Bot Skill",(char*)bot_skill_list,setup.network.bot.skill,host_game_bot_skill_id,x,y,TRUE);
+	y+=element_get_control_high();
+
+	sprintf(str,"%d",setup.network.score_limit);
+	element_text_field_add("Score Limit:",str,32,host_game_score_limit_id,x,y,TRUE);
 }
 
 void host_create_pane(void)
@@ -463,16 +470,10 @@ void host_game(void)
       
 ======================================================= */
 
-void host_click(void)
+void host_handle_click(int id)
 {
-	int			id,idx;
-	
-		// is element being clicked
-		
-	id=gui_click();
-	if (id==-1) return;
-	
-	hud_click();
+	int			idx;
+	char		str[32];
 	
 		// run selection
 
@@ -513,6 +514,12 @@ void host_click(void)
 			setup.network.bot.skill=element_get_value(host_game_bot_skill_id);
 			break;
 
+		case host_game_score_limit_id:
+			element_get_value_string(host_game_score_limit_id,str);
+			setup.network.score_limit=atoi(str);
+			if (setup.network.score_limit<0) setup.network.score_limit=0;
+			break;
+
 			// buttons
 
 		case host_button_host_id:
@@ -529,7 +536,28 @@ void host_click(void)
 			break;
 	}
 }
+
+
+void host_keyboard(void)
+{
+	int			id;
+
+	id=gui_keyboard();
+	if (id!=-1) host_handle_click(id);
+}
+
+void host_click(void)
+{
+	int			id;
 	
+	id=gui_click();
+	if (id==-1) return;
+	
+	hud_click();
+
+	host_handle_click(id);
+}
+
 /* =======================================================
 
       Run Host
@@ -540,5 +568,6 @@ void host_run(void)
 {
 	gui_draw(1.0f,TRUE);
 	host_click();
+	host_keyboard();
 }
 

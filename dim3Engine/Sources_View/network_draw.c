@@ -309,12 +309,15 @@ void network_score_draw(void)
 	d3col			col;
 	obj_type		*player_obj;
 
-		// only draw if player is dead or
+		// only draw if game is at it's score
+		// limit, the player is dead or
 		// score set to show
 		
-	if (!hud.score.on) {
-		player_obj=object_find_uid(server.player_obj_uid);
-		if (player_obj->status.health!=0) return;
+	if (server.state!=gs_score_limit) {
+		if (!hud.score.on) {
+			player_obj=object_find_uid(server.player_obj_uid);
+			if (player_obj->status.health!=0) return;
+		}
 	}
 	
 		// game type and map

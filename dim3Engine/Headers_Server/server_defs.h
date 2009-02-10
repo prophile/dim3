@@ -44,6 +44,7 @@ and can be sold or given away.
 #define gs_movie								12
 #define gs_error								13
 #define gs_map_pick								14
+#define gs_score_limit							15
 
 //
 // maximums
