@@ -299,7 +299,6 @@ void host_create_pane(void)
 	y=hud.scale_y-padding;
 	
 	element_button_text_add("Host",host_button_host_id,x,y,wid,high,element_pos_right,element_pos_bottom);
-	element_enable(host_button_host_id,(host_map_idx!=-1));
 
 	x=element_get_x_position(host_button_host_id)-padding;
 
@@ -317,6 +316,10 @@ void host_create_pane(void)
 			host_options_pane();
 			break;
 	}
+	
+		// enable host button
+		
+	element_enable(host_button_host_id,(host_map_idx!=-1));
 }
 
 /* =======================================================

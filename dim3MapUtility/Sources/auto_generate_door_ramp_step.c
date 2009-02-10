@@ -548,7 +548,7 @@ void map_auto_generate_vert_frame_mesh(map_type *map,int rn,int ty,int by,int x,
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 
 	map_auto_generate_poly_from_square_wall(rx,(z+zadd),(x+frame_sz),(z+zadd),ty,by,px,py,pz,gx,gy);
-	py[0]=y;
+	py[1]=y;
 	if (full_frame) py[2]=y2;
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 
@@ -633,7 +633,7 @@ void map_auto_generate_horz_frame_mesh(map_type *map,int rn,int ty,int by,int x,
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 
 	map_auto_generate_poly_from_square_wall((x+xadd),rz,(x+xadd),(z+frame_sz),ty,by,px,py,pz,gx,gy);
-	py[0]=y;
+	py[1]=y;
 	if (full_frame) py[2]=y2;
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 

@@ -674,7 +674,7 @@ void map_auto_generate_mesh_window_horz_frame_mesh(map_type *map,int rn,int ty,i
 
 void map_auto_generate_walls(map_type *map)
 {
-	int							n,x,z,xsz,zsz,ty,by,split_factor,txt_idx,
+	int							n,x,z,xsz,zsz,ty,by,split_factor,txt_idx,slant_sz,
 								px[8],py[8],pz[8];
 	float						gx[8],gy[8];
 	bool						lft_edge,rgt_edge,top_edge,bot_edge;
@@ -711,7 +711,15 @@ void map_auto_generate_walls(map_type *map)
 
 		ty=portal->min.y;
 		by=portal->max.y;
-
+		
+			// fix cooridors with slants in them
+			
+		if (portal->corridor_flag!=ag_corridor_flag_portal) {
+			slant_sz=(portal->max.y-portal->min.y)>>2;
+			if ((corridor_types[n]==ag_corridor_type_slanted_ceiling) || (corridor_types[n]==ag_corridor_type_octagon)) ty+=slant_sz;
+			if (corridor_types[n]==ag_corridor_type_octagon) by-=slant_sz;
+		}
+		
 			// portal size
 
 		xsz=portal->max.x-portal->min.x;
@@ -774,7 +782,13 @@ void map_auto_generate_walls(map_type *map)
 				}
 			}
 		}
-
+		
+			// if a cooridor, force segments to 0..1 uv
+			
+		if (portal->corridor_flag!=ag_corridor_flag_portal) {
+			map_auto_generate_mesh_set_lock(map);
+		}
+		
 		portal++;
 	}
 }
@@ -939,7 +953,7 @@ void map_auto_generate_corridor_clip_walls(map_type *map)
 			
 		if ((corridor_types[n]==ag_corridor_type_slanted_ceiling) || (corridor_types[n]==ag_corridor_type_octagon)) {
 
-			if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.portal_wall,FALSE,FALSE)) return;
+			if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.portal_wall,FALSE,TRUE)) return;
 
 			ty=portal->min.y;
 			by=ty+clip_sz;
@@ -977,8 +991,6 @@ void map_auto_generate_corridor_clip_walls(map_type *map)
 			// bottom walls
 			
 		if (corridor_types[n]==ag_corridor_type_octagon) {
-
-			if (!map_auto_generate_mesh_start(map,n,-1,ag_settings.texture.portal_wall,FALSE,FALSE)) return;
 		
 			ty=portal->max.y-clip_sz;
 			by=portal->max.y;
@@ -1353,14 +1365,17 @@ void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int
 
 void map_auto_generate_corridor_ceiling_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty)
 {
-	int							split_factor,lx2,rx2,lz2,rz2,slant_sz,
+	int							split_factor,lx2,rx2,lx3,rx3,lz2,rz2,lz3,rz3,slant_sz,
 								px[8],py[8],pz[8];
 	float						gx[8],gy[8];
+	bool						slant_piece;
 	auto_generate_box_type		*portal;
 	
 		// get sizes
 		
 	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	
+	slant_piece=(corridor_types[rn]==ag_corridor_type_slanted_ceiling) || (corridor_types[rn]==ag_corridor_type_octagon);
 		
 	   // get portal slants
 
@@ -1375,15 +1390,35 @@ void map_auto_generate_corridor_ceiling_add(map_type *map,int rn,int lx,int lz,i
 	while (lz2<rz) {
 
 		rz2=lz2+split_factor;
-
+		
+			// fix any edges touching slanted walls
+			
+		lz3=lz2;
+		rz3=rz2;
+		
+		if ((slant_piece) && (portal->corridor_flag==ag_corridor_flag_horizontal)) {
+			if (lz3==lz) lz3+=slant_sz;
+			if (rz3==rz) rz3-=slant_sz;
+		}
+		
 		lx2=lx;
 
 		while (lx2<rx) {
 
 			rx2=lx2+split_factor;
 				
+				// fix any edges touching slanted walls
+			
+			lx3=lx2;
+			rx3=rx2;
+		
+			if ((slant_piece) && (portal->corridor_flag==ag_corridor_flag_vertical)) {
+				if (lx3==lx) lx3+=slant_sz;
+				if (rx3==rx) rx3-=slant_sz;
+			}
+			
 			if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.corridor,FALSE,FALSE)) return;
-			map_auto_generate_poly_from_square_floor(lx2,lz2,rx2,rz2,ty,px,py,pz,gx,gy);
+			map_auto_generate_poly_from_square_floor(lx3,lz3,rx3,rz3,ty,px,py,pz,gx,gy);
 			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
 			
 			lx2=rx2;
@@ -1394,7 +1429,7 @@ void map_auto_generate_corridor_ceiling_add(map_type *map,int rn,int lx,int lz,i
 	
 		// additional slanted ceilings for corridors
 		
-	if ((corridor_types[rn]==ag_corridor_type_slanted_ceiling) || (corridor_types[rn]==ag_corridor_type_octagon)) {
+	if (slant_piece) {
 
 		if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.corridor,FALSE,FALSE)) return;
 
@@ -1521,14 +1556,17 @@ void map_auto_generate_portal_floor_add(map_type *map,int rn,int lx,int lz,int r
 
 void map_auto_generate_corridor_floor_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int by)
 {
-	int							split_factor,lx2,rx2,lz2,rz2,slant_sz,
+	int							split_factor,lx2,rx2,lx3,rx3,lz2,rz2,lz3,rz3,slant_sz,
 								px[8],py[8],pz[8];
 	float						gx[8],gy[8];
+	bool						slant_piece;
 	auto_generate_box_type		*portal;
 	
 		// get sizes
 		
 	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	
+	slant_piece=(corridor_types[rn]==ag_corridor_type_octagon);
 		
 	   // get portal slants
 
@@ -1543,15 +1581,35 @@ void map_auto_generate_corridor_floor_add(map_type *map,int rn,int lx,int lz,int
 	while (lz2<rz) {
 
 		rz2=lz2+split_factor;
+		
+			// fix any edges touching slanted walls
+			
+		lz3=lz2;
+		rz3=rz2;
+		
+		if ((slant_piece) && (portal->corridor_flag==ag_corridor_flag_horizontal)) {
+			if (lz3==lz) lz3+=slant_sz;
+			if (rz3==rz) rz3-=slant_sz;
+		}
 
 		lx2=lx;
 
 		while (lx2<rx) {
 
 			rx2=lx2+split_factor;
+			
+				// fix any edges touching slanted walls
+			
+			lx3=lx2;
+			rx3=rx2;
+		
+			if ((slant_piece) && (portal->corridor_flag==ag_corridor_flag_vertical)) {
+				if (lx3==lx) lx3+=slant_sz;
+				if (rx3==rx) rx3-=slant_sz;
+			}
 
 			if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.corridor,FALSE,FALSE)) return;
-			map_auto_generate_poly_from_square_floor(lx2,lz2,rx2,rz2,by,px,py,pz,gx,gy);
+			map_auto_generate_poly_from_square_floor(lx3,lz3,rx3,rz3,by,px,py,pz,gx,gy);
 			map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 			
 			lx2=rx2;
@@ -1562,7 +1620,7 @@ void map_auto_generate_corridor_floor_add(map_type *map,int rn,int lx,int lz,int
 	
 		// additional slanted floors for corridors
 		
-	if (corridor_types[rn]==ag_corridor_type_octagon) {
+	if (slant_piece) {
 		
 		if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.corridor,FALSE,FALSE)) return;
 
