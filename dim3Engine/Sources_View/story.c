@@ -159,6 +159,8 @@ void story_trigger_check(void)
 
 void story_trigger_set(char *name,int event_id)
 {
+	if (server.state!=gs_running) return;
+
 	story_page=0;
 	story_page_count=1;
 	strcpy(story_name,name);

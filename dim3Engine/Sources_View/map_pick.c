@@ -145,7 +145,7 @@ void map_pick_trigger_check(void)
 
 void map_pick_trigger_set(void)
 {
-	map_pick_start_trigger=TRUE;
+	if (server.state==gs_running) map_pick_start_trigger=TRUE;
 }
 
 /* =======================================================

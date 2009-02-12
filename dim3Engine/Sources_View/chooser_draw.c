@@ -38,7 +38,7 @@ extern js_type				js;
 extern hud_type				hud;
 extern setup_type			setup;
 
-int							chooser_idx;
+int							chooser_idx,old_server_state;
 char						chooser_sub_txt[max_chooser_sub_txt][max_chooser_text_data_sz];
 bool						chooser_start_trigger;
 
@@ -164,7 +164,9 @@ void chooser_open(void)
 		button++;
 	}
 	
-		// clear raw key
+		// change state
+
+	old_server_state=server.state;
 	
 	server.state=gs_chooser;
 }
@@ -173,7 +175,7 @@ void chooser_close(void)
 {
 	gui_shutdown();
 	
-	if (server.state==gs_chooser) server.state=gs_running;			// only reset to running if picked chooser item didn't reset to something else
+	if (server.state==gs_chooser) server.state=old_server_state;			// only reset to running if picked chooser item didn't reset to something else
 }
 
 /* =======================================================
@@ -195,6 +197,8 @@ void chooser_trigger_check(void)
 void chooser_trigger_set(char *name,char *sub_txt)
 {
 	int				n;
+
+	if (server.state!=gs_running) return;
 
 		// find chooser
 

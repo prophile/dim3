@@ -48,7 +48,7 @@ extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-int							menu_idx;
+int							menu_idx,org_server_state;
 bool						menu_start_trigger;
 
 extern int menu_find(char *name);
@@ -140,6 +140,8 @@ void menu_open(void)
 
 	menu_idx=0;
 	menu_setup_control();
+
+	org_server_state=server.state;
 	
 	server.state=gs_menu;
 }
@@ -148,7 +150,7 @@ void menu_close(void)
 {
 	gui_shutdown();
 	
-	if (server.state==gs_menu) server.state=gs_running;			// only reset to running if picked menu item didn't reset to something else
+	if (server.state==gs_menu) server.state=org_server_state;			// only reset to running if picked menu item didn't reset to something else
 }
 
 /* =======================================================

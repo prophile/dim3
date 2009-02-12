@@ -261,6 +261,8 @@ void model_build_color_hilite_diffuse(model_type *mdl,int mesh_idx,float fx,floa
 	}
 
 	map_calculate_light_color_normal((double)fx,(double)fy,(double)fz,col,normal,&f_intensity);
+	
+	model_build_color_get_tint(mesh,draw,&tint_r,&tint_g,&tint_b);
 
 	r=draw->hilite.r*tint_r;
 	g=draw->hilite.g*tint_g;
@@ -275,8 +277,6 @@ void model_build_color_hilite_diffuse(model_type *mdl,int mesh_idx,float fx,floa
 	nt=mesh->nvertex;
 	pc=mesh->draw.gl_color_array;
 	pn=mesh->draw.gl_light_normal_array;
-	
-	model_build_color_get_tint(mesh,draw,&tint_r,&tint_g,&tint_b);
 	
 	for (n=0;n!=nt;n++) {
 	

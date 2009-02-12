@@ -123,6 +123,8 @@ void title_trigger_check(void)
 
 void title_trigger_set(char *dir,char *name,char *sound_name,int event_id)
 {
+	if (server.state!=gs_running) return;
+
 	strcpy(title_dir,dir);
 	strcpy(title_name,name);
 	strcpy(title_sound_name,sound_name);

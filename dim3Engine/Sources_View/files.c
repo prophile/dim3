@@ -356,7 +356,7 @@ void file_trigger_check(void)
 
 void file_trigger_set(void)
 {
-	file_start_trigger=TRUE;
+	if (server.state==gs_running) file_start_trigger=TRUE;
 }
 
 /* =======================================================

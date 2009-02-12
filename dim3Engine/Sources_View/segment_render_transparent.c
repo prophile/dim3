@@ -41,6 +41,9 @@ extern setup_type		setup;
 extern bool fog_solid_on(void);
 extern void view_compile_gl_list_attach(void);
 extern void view_compile_gl_list_dettach(void);
+extern void view_compile_gl_list_switch_to_color(void);
+extern void view_compile_gl_list_switch_to_normal(void);
+extern void view_compile_gl_list_switch_to_specular(void);
 
 /* =======================================================
 

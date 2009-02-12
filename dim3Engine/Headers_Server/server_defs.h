@@ -271,6 +271,11 @@ typedef struct		{
 					} model_draw_mesh_fade;
 
 typedef struct		{
+						int						index_offset,vertex_offset,
+												uv_offset,color_offset,normal_offset,specular_offset;
+					} model_draw_mesh_gl;
+
+typedef struct		{
 						int						uid,lit_type,spin_tick,
 												mesh_mask,lod_dist,script_animation_idx,
 												script_light_idx,script_halo_idx;
@@ -291,6 +296,7 @@ typedef struct		{
 						model_draw_fade			fade;
 						model_draw_no_rot		no_rot;
 						model_draw_remote_name	remote_name;
+						model_draw_mesh_gl		mesh_gl[max_model_mesh];
 						model_draw_setup		setup;
 					} model_draw;
 
