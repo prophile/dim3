@@ -144,6 +144,7 @@ void render_transparent_portal_mesh(bool is_fog_lighting)
 			gl_texture_transparent_end();
 			
 			gl_texture_transparent_specular_start();
+			view_compile_gl_list_switch_to_specular();
 
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE,GL_ONE);		// speculars are always additive
@@ -170,6 +171,8 @@ void render_transparent_portal_mesh(bool is_fog_lighting)
 				// end specular drawing and force a transparencies reset
 
 			gl_texture_transparent_specular_end();
+			view_compile_gl_list_switch_to_color();
+			
 			txt_setup_reset=TRUE;
 		}
 

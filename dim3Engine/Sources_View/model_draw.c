@@ -41,8 +41,7 @@ extern server_type		server;
 extern view_type		view;
 extern setup_type		setup;
 
-extern void model_build_color(model_type *mdl,int mesh_idx,int x,int z,int y,model_draw *draw);
-extern void model_tint_team_color(model_type *mdl,int mesh_idx,model_draw *draw);
+extern void model_build_color(model_type *mdl,int mesh_idx,int x,int y,int z,model_draw *draw);
 extern bool fog_solid_on(void);
 
 /* =======================================================
@@ -190,15 +189,11 @@ bool model_draw_start_mesh_material_array(model_type *mdl,model_mesh_type *mesh,
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(3,GL_FLOAT,0,(void*)((nvertex*(3+2))*sizeof(float)));
 	
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glNormalPointer(GL_FLOAT,0,(void*)((nvertex*(3+2+3))*sizeof(float)));
-	
 	return(TRUE);
 }
 
 void model_draw_stop_mesh_material_array(void)
 {
-	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
 
 	glClientActiveTexture(GL_TEXTURE2);
@@ -655,8 +650,7 @@ void model_render(int tick,model_draw *draw)
 
 			// build color lists
 			
-		model_build_color(mdl,n,x,z,y,draw);
-		if (mdl->meshes[n].tintable) model_tint_team_color(mdl,n,draw);
+		model_build_color(mdl,n,x,y,z,draw);
 
 			// translate vertex to view
 			
