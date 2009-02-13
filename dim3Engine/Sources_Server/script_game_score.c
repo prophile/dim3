@@ -31,13 +31,13 @@ and can be sold or given away.
 
 #include "scripts.h"
 #include "objects.h"
+#include "interfaces.h"
 
 extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
 extern int				game_obj_rule_uid;
-extern bool				game_score_limit_trigger;
 
 JSBool js_get_game_score_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_game_score_set_score_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -131,7 +131,7 @@ JSBool js_game_score_set_score_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 	if (net_setup.client.joined) {
 		if (setup.network.score_limit!=0) {
 			if (obj->score.score>=setup.network.score_limit) {
-				game_score_limit_trigger=TRUE;
+				score_limit_trigger_set();
 			}
 		}
 	}

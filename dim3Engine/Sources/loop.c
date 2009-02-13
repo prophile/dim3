@@ -42,7 +42,7 @@ extern view_type			view;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-bool						interface_quit,game_loop_pause_button_down,game_score_limit_trigger;
+bool						interface_quit,game_loop_pause_button_down;
 
 extern void game_time_initialize(void);
 extern int game_time_calculate(void);
@@ -152,27 +152,6 @@ void loop_game_run(int tick)
 		view.fps.total=((float)view.fps.count*1000)/(float)view.fps.tick;
 		view.fps.tick=view.fps.count=0;
 	}
-}
-
-/* =======================================================
-
-      Game At Score limit
-      
-======================================================= */
-
-void score_limit_trigger_clear(void)
-{
-	game_score_limit_trigger=FALSE;
-}
-
-void score_limit_trigger_check(void)
-{
-	if (game_score_limit_trigger) server.state=gs_score_limit;
-}
-
-void loop_game_score_limit(int tick)
-{
-	view_loop(tick);
 }
 
 /* =======================================================
@@ -338,7 +317,7 @@ bool loop_main(char *err_str)
 			break;
 
 		case gs_score_limit:
-			loop_game_score_limit(tick);
+			score_limit_run(tick);
 			break;
 			
 	}

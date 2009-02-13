@@ -74,6 +74,8 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 	}
 
 	if ((nvertex==0) || (ntrig==0)) return(FALSE);
+	
+	draw->vbo_ptr.ntrig=ntrig;
 
  		// construct VBO
 
@@ -102,11 +104,7 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 		mesh=&mdl->meshes[n];
 		trig=mesh->trigs;
 
-		draw->mesh_gl[n].index_offset=t_idx;
-		draw->mesh_gl[n].vertex_offset=t_idx;
-		draw->mesh_gl[n].uv_offset=t_idx+((ntrig*3)*3);
-		draw->mesh_gl[n].color_offset=t_idx+((ntrig*3)*(3+2));
-		draw->mesh_gl[n].normal_offset=t_idx+((ntrig*3)*(3+2+3));
+		draw->vbo_ptr.index_offset[n]=t_idx;
 
 		for (k=0;k!=mesh->ntrig;k++) {
 
@@ -199,61 +197,39 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 		// set the pointers
 		
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 
 	glClientActiveTexture(GL_TEXTURE2);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((ntrig*3)*3)*sizeof(float)));
 
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((ntrig*3)*3)*sizeof(float)));
 
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((ntrig*3)*3)*sizeof(float)));
 
 	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(3,GL_FLOAT,0,(void*)(((ntrig*3)*(3+2))*sizeof(float)));
 
 	return(TRUE);
 }
 
-int model_draw_set_vertex_objects(model_type *mdl,int mesh_idx,model_draw *draw)
+inline int model_draw_set_vertex_objects(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int			idx;
-
-		// setup the pointers
-
-	idx=draw->mesh_gl[mesh_idx].vertex_offset;
-	glVertexPointer(3,GL_FLOAT,0,(void*)(idx*sizeof(float)));
-
-	idx=draw->mesh_gl[mesh_idx].uv_offset;
-
-	glClientActiveTexture(GL_TEXTURE2);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(idx*sizeof(float)));
-
-	glClientActiveTexture(GL_TEXTURE1);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(idx*sizeof(float)));
-
-	glClientActiveTexture(GL_TEXTURE0);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(idx*sizeof(float)));
-
-	idx=draw->mesh_gl[mesh_idx].color_offset;
-	glColorPointer(3,GL_FLOAT,0,(void*)(idx*sizeof(float)));
-
-	return(draw->mesh_gl[mesh_idx].index_offset);
+	return(draw->vbo_ptr.index_offset[mesh_idx]);
 }
 
-void model_draw_set_vertex_objects_switch_color(model_type *mdl,int mesh_idx,model_draw *draw)
+inline void model_draw_set_vertex_objects_switch_color(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int			idx;
-
-	idx=draw->mesh_gl[mesh_idx].color_offset;
-	glColorPointer(3,GL_FLOAT,0,(void*)(idx*sizeof(float)));
+	glColorPointer(3,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2))*sizeof(float)));
 }
 
-void model_draw_set_vertex_objects_switch_normal(model_type *mdl,int mesh_idx,model_draw *draw)
+inline void model_draw_set_vertex_objects_switch_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int			idx;
-
-	idx=draw->mesh_gl[mesh_idx].normal_offset;
-	glColorPointer(3,GL_FLOAT,0,(void*)(idx*sizeof(float)));
+	glColorPointer(3,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2+3))*sizeof(float)));
 }
 
 void model_draw_release_vertex_objects(void)

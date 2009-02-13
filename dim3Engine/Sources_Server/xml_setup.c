@@ -241,7 +241,7 @@ bool setup_xml_read_path(char *path)
 	setup_xml_read_key_text(setup_tag,"Network_Last_Map",setup.network.last_map,name_str_len);
 	setup_xml_read_key_int(setup_tag,"Host_Bot_Count",&setup.network.bot.count);
 	setup_xml_read_key_int(setup_tag,"Host_Bot_Skill",&setup.network.bot.skill);
-	setup_xml_read_key_int(setup_tag,"Network_Score_Limit",&setup.network.score_limit);
+	setup_xml_read_key_int(setup_tag,"Host_Score_Limit",&setup.network.score_limit);
 	setup_xml_read_key_boolean(setup_tag,"Network_Show_Names",&setup.network.show_names);
 	setup_xml_read_key_boolean(setup_tag,"Debug_Console",&setup.debug_console);
 	setup_xml_read_key_boolean(setup_tag,"Window",&setup.window);

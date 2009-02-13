@@ -26,6 +26,7 @@
 		26A5625B0EF6D0B000D38FC0 /* net_socket_udp.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A5625A0EF6D0B000D38FC0 /* net_socket_udp.c */; };
 		26A562B90EF6D50D00D38FC0 /* net_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A562B80EF6D50D00D38FC0 /* net_utility.c */; };
 		26ABEE820E72F0700029469D /* script_obj_object_thrust.c in Sources */ = {isa = PBXBuildFile; fileRef = 26ABEE810E72F0700029469D /* script_obj_object_thrust.c */; };
+		26BE14280F44FA57008DB7DB /* score_limit.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BE14270F44FA57008DB7DB /* score_limit.c */; };
 		26BF01C20ECCEC22009996C6 /* script_weap_target_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BF01C10ECCEC22009996C6 /* script_weap_target_color.c */; };
 		26D109610DAC797D006666F2 /* host.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D109600DAC797D006666F2 /* host.c */; };
 		26DAED300DD55C28000EBB48 /* group_move.c in Sources */ = {isa = PBXBuildFile; fileRef = 26DAED2F0DD55C28000EBB48 /* group_move.c */; };
@@ -406,6 +407,7 @@
 		26A5625A0EF6D0B000D38FC0 /* net_socket_udp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_socket_udp.c; path = Sources_Network/net_socket_udp.c; sourceTree = "<group>"; };
 		26A562B80EF6D50D00D38FC0 /* net_utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_utility.c; path = Sources_Network/net_utility.c; sourceTree = "<group>"; };
 		26ABEE810E72F0700029469D /* script_obj_object_thrust.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_obj_object_thrust.c; path = Sources_Server/script_obj_object_thrust.c; sourceTree = "<group>"; };
+		26BE14270F44FA57008DB7DB /* score_limit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = score_limit.c; path = Sources_View/score_limit.c; sourceTree = "<group>"; };
 		26BF01C10ECCEC22009996C6 /* script_weap_target_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_weap_target_color.c; path = Sources_Server/script_weap_target_color.c; sourceTree = "<group>"; };
 		26D109600DAC797D006666F2 /* host.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = host.c; path = Sources_View/host.c; sourceTree = "<group>"; };
 		26DAED2F0DD55C28000EBB48 /* group_move.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = group_move.c; path = Sources_Server/group_move.c; sourceTree = "<group>"; };
@@ -1342,6 +1344,7 @@
 				F5DD1A7E09085BC600721649 /* title.c */,
 				F5DD1A7D09085BC600721649 /* story.c */,
 				F5DD1A7B09085BC600721649 /* movie.c */,
+				26BE14270F44FA57008DB7DB /* score_limit.c */,
 				F5FD1E470CDECD9500CB5AC7 /* error.c */,
 				F52BF9340C70E55900FDB222 /* map_pick.c */,
 			);
@@ -1929,6 +1932,7 @@
 				26A562590EF6D0AB00D38FC0 /* net_socket.c in Sources */,
 				26A5625B0EF6D0B000D38FC0 /* net_socket_udp.c in Sources */,
 				26A562B90EF6D50D00D38FC0 /* net_utility.c in Sources */,
+				26BE14280F44FA57008DB7DB /* score_limit.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -506,8 +506,13 @@ void view_pause_draw(void)
 
 void view_loop(int tick)
 {
+		// run the input
+		
 	view_loop_input(tick);
-	if (server.state!=gs_running) return;
+	
+		// early exit from input changing state
+		
+	if ((server.state!=gs_running) && (server.state!=gs_score_limit)) return;
 		
 		// run the view
 		
