@@ -568,7 +568,7 @@ void view_draw(int tick)
 
 		// shadow testing code
 
-	test_me();		// supergumba
+//	test_me();		// supergumba
 
 //	shadow_render_test();
 }

@@ -395,7 +395,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 		trig_idx=trig_start_idx+(material->trig_start*3);
 
 			// regular texture
-			// this is lite on the triangle itself
+			// this is lit on the triangle itself
 
 		glDisable(GL_BLEND);
 			
@@ -477,8 +477,10 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 			glDepthFunc(GL_EQUAL);
 			glDepthMask(GL_FALSE);
 
+			// supergumba -- needs to be fixed
+
 			gl_texture_opaque_glow_start();
-			gl_texture_opaque_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,texture->glow.current_color);
+			gl_texture_opaque_glow_set(texture->glowmaps[frame].gl_id,texture->glow.current_color);
 
 			glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 			

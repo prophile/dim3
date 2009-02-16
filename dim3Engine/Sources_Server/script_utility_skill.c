@@ -66,12 +66,14 @@ void script_add_utility_skill_object(JSObject *parent_obj)
 
 JSBool js_utility_skill_get_from_min_max_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	int				min,max;
+	float			skill,min,max;
 
 	min=script_value_to_float(argv[0]);
 	max=script_value_to_float(argv[1]);
+	
+	skill=(float)setup.network.bot.skill;
 
-	*rval=script_float_to_value(min+(((max-min)*setup.network.bot.skill)/4));
+	*rval=script_float_to_value(min+(((max-min)*skill)/4.0f));
 	
 	return(JS_TRUE);
 }

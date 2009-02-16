@@ -361,7 +361,7 @@ void network_score_draw(int tick)
 			
 		k=tick%2000;
 		if (k>=1000) k=2000-k;
-		f_flash=0.5f*((float)k/1000.0);
+		f_flash=0.5f*((float)k/1000.0f);
 		
 		col.r=col.r+f_flash;
 		col.g=col.g+f_flash;

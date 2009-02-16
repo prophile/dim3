@@ -983,6 +983,10 @@ SOURCE=..\..\dim3Engine\Sources_Server\script_utility_random.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3Engine\Sources_Server\script_utility_skill.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Engine\Sources_Server\script_weap_alt_ammo.c
 # End Source File
 # Begin Source File
@@ -1392,6 +1396,10 @@ SOURCE=..\..\dim3Engine\Sources_View\remote_status.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_View\rings_draw.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_View\score_limit.c
 # End Source File
 # Begin Source File
 

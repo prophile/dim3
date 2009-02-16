@@ -31,10 +31,13 @@ and can be sold or given away.
 
 #define SCORE_LIMIT_SECOND_PAUSE		15
 
+#include "objects.h"
+#include "remotes.h"
 #include "scripts.h"
 #include "interfaces.h"
 #include "video.h"
 #include "inputs.h"
+#include "network.h"
 
 extern bool					game_loop_quit;
 
@@ -47,6 +50,9 @@ extern network_setup_type	net_setup;
 
 int							score_limit_start_tick;
 bool						score_limit_start_trigger;
+
+extern void game_reset(void);
+extern void remote_host_exit(void);
 
 /* =======================================================
 

@@ -143,7 +143,7 @@ extern void gl_texture_tesseled_specular_end(void);
 extern void gl_texture_tesseled_specular_set(int specular_id);
 extern void gl_texture_opaque_glow_start(void);
 extern void gl_texture_opaque_glow_end(void);
-extern void gl_texture_opaque_glow_set(int txt_id,int glow_id,float glow_color);
+extern void gl_texture_opaque_glow_set(int glow_id,float glow_color);
 extern void gl_texture_decal_start(void);
 extern void gl_texture_decal_end(void);
 extern void gl_texture_decal_set(int txt_id,float r,float g,float b,float alpha);

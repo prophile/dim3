@@ -243,6 +243,197 @@ void render_opaque_portal_bump(int mesh_cnt,int *mesh_list,int stencil_pass,bool
 
 /* =======================================================
 
+      Opaque Map Speculars and Glow
+      
+======================================================= */
+
+void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass)
+{
+	int					n,k,frame;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	texture_type		*texture;
+	
+		// need to use intensity color
+		
+	view_compile_gl_list_switch_to_specular();
+	
+		// setup drawing
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE,GL_ONE);
+
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_ALPHA_TEST);
+
+		// don't loose the stencil
+
+	glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
+
+	gl_texture_tesseled_specular_start();
+	
+		// run through the meshes
+
+	for (n=0;n!=mesh_cnt;n++) {
+
+		mesh=&map.mesh.meshes[mesh_list[n]];
+
+			// does this mesh have polys in the
+			// stencil pass?
+
+		if ((stencil_pass<mesh->draw.stencil_pass_start) || (stencil_pass>mesh->draw.stencil_pass_end)) continue;
+
+			// skip hilited polygons
+			// or meshes with no speculars
+
+		if ((!mesh->flag.has_specular) || (mesh->flag.hilite)) continue;
+
+			// run through the polys
+
+		poly=mesh->polys;
+
+		for (k=0;k!=mesh->npoly;k++) {
+
+				// in stencil pass?
+
+			if (poly->draw.stencil_pass!=stencil_pass) {
+				poly++;
+				continue;
+			}
+
+				// get texture
+
+			texture=&map.textures[poly->txt_idx];
+			if (texture->shader.on) {
+				poly++;
+				continue;
+			}
+
+			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+
+				// specular texture set?
+
+			if (texture->specularmaps[frame].gl_id==-1) {
+				poly++;
+				continue;
+			}
+
+				// draw specular
+
+			gl_texture_tesseled_specular_set(texture->specularmaps[frame].gl_id);
+			glStencilFunc(GL_EQUAL,poly->draw.stencil_idx,0xFF);
+
+				// draw either by lighting mesh or simple polygon
+				// if simple tessel, we need to keep the stencil around
+				// as the lighting "fix" pass is the only pass
+
+			if (poly->light.simple_tessel) {
+				glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+			}
+			else {
+				glDrawRangeElements(GL_QUADS,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,(poly->light.nquad*4),GL_UNSIGNED_INT,(GLvoid*)poly->light.gl_quad_index_offset);
+			}
+
+			poly++;
+		}
+	}
+
+		// end drawing
+
+	gl_texture_tesseled_specular_end();
+
+		// restore original color array
+
+	view_compile_gl_list_switch_to_color();
+}
+
+void render_opaque_portal_glow(int mesh_cnt,int *mesh_list,int stencil_pass)
+{
+	int					n,k,frame;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	texture_type		*texture;
+	
+		// setup drawing
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE,GL_ONE);
+
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_ALPHA_TEST);
+
+		// don't loose the stencil
+
+	glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
+
+	gl_texture_opaque_glow_start();
+	
+		// run through the meshes
+
+	for (n=0;n!=mesh_cnt;n++) {
+
+		mesh=&map.mesh.meshes[mesh_list[n]];
+
+			// does this mesh have polys in the
+			// stencil pass?
+
+		if ((stencil_pass<mesh->draw.stencil_pass_start) || (stencil_pass>mesh->draw.stencil_pass_end)) continue;
+
+			// skip hilited polygons
+			// or meshes with no speculars
+
+		if ((!mesh->flag.has_glow) || (mesh->flag.hilite)) continue;
+
+			// run through the polys
+
+		poly=mesh->polys;
+
+		for (k=0;k!=mesh->npoly;k++) {
+
+				// in stencil pass?
+
+			if (poly->draw.stencil_pass!=stencil_pass) {
+				poly++;
+				continue;
+			}
+
+				// get texture
+
+			texture=&map.textures[poly->txt_idx];
+			if (texture->shader.on) {
+				poly++;
+				continue;
+			}
+
+			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+
+				// glow texture set?
+
+			if (texture->glowmaps[frame].gl_id==-1) {
+				poly++;
+				continue;
+			}
+
+				// draw glow
+
+			gl_texture_opaque_glow_set(texture->glowmaps[frame].gl_id,texture->glow.current_color);
+			glStencilFunc(GL_EQUAL,poly->draw.stencil_idx,0xFF);
+
+				// glow is always a full texture effect
+
+			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+
+			poly++;
+		}
+	}
+
+		// end drawing
+
+	gl_texture_opaque_glow_end();
+}
+
+/* =======================================================
+
       Opaque Map Lighting
       
 ======================================================= */
@@ -261,6 +452,11 @@ void render_opaque_portal_lighting(int mesh_cnt,int *mesh_list,int stencil_pass)
 	
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_ALPHA_TEST);
+
+		// clear the stencil here
+		// so the "fix" pass can grab any missing edges
+
+	glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
 
 	gl_texture_tesseled_lighting_start();
 
@@ -310,15 +506,6 @@ void render_opaque_portal_lighting(int mesh_cnt,int *mesh_list,int stencil_pass)
 
 			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 			
-				// if no specular pass, then clear stencil here
-				
-			if (texture->specularmaps[frame].gl_id!=-1) {
-				glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
-			}
-			else {
-				glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
-			}
-
 				// draw lighting
 
 			gl_texture_tesseled_lighting_set(-1,poly->dark_factor);
@@ -467,193 +654,6 @@ void render_opaque_portal_lighting_fix(int mesh_cnt,int *mesh_list,int stencil_p
 		// end drawing
 
 	gl_texture_tesseled_lighting_end();
-}
-
-/* =======================================================
-
-      Opaque Map Speculars
-      
-======================================================= */
-
-void render_opaque_portal_specular(int mesh_cnt,int *mesh_list,int stencil_pass)
-{
-	int					n,k,frame;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	texture_type		*texture;
-	
-		// need to use intensity color
-		
-	view_compile_gl_list_switch_to_specular();
-	
-		// setup drawing
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE,GL_ONE);
-
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_ALPHA_TEST);
-
-	gl_texture_tesseled_specular_start();
-	
-		// run through the meshes
-
-	for (n=0;n!=mesh_cnt;n++) {
-
-		mesh=&map.mesh.meshes[mesh_list[n]];
-
-			// does this mesh have polys in the
-			// stencil pass?
-
-		if ((stencil_pass<mesh->draw.stencil_pass_start) || (stencil_pass>mesh->draw.stencil_pass_end)) continue;
-
-			// skip hilited polygons
-			// or meshes with no speculars
-
-		if ((!mesh->flag.has_specular) || (mesh->flag.hilite)) continue;
-
-			// run through the polys
-
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-
-				// in stencil pass?
-
-			if (poly->draw.stencil_pass!=stencil_pass) {
-				poly++;
-				continue;
-			}
-
-				// get texture
-
-			texture=&map.textures[poly->txt_idx];
-			if (texture->shader.on) {
-				poly++;
-				continue;
-			}
-
-			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-				// specular texture set?
-
-			if (texture->specularmaps[frame].gl_id==-1) {
-				poly++;
-				continue;
-			}
-
-				// draw specular
-
-			gl_texture_tesseled_specular_set(texture->specularmaps[frame].gl_id);
-			glStencilFunc(GL_EQUAL,poly->draw.stencil_idx,0xFF);
-
-				// draw either by lighting mesh or simple polygon
-				// if simple tessel, we need to keep the stencil around
-				// as the lighting "fix" pass is the only pass
-
-			if (poly->light.simple_tessel) {
-				glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
-				glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-			}
-			else {
-				glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
-				glDrawRangeElements(GL_QUADS,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,(poly->light.nquad*4),GL_UNSIGNED_INT,(GLvoid*)poly->light.gl_quad_index_offset);
-			}
-
-			poly++;
-		}
-	}
-
-		// end drawing
-
-	gl_texture_tesseled_specular_end();
-
-		// restore original color array
-
-	view_compile_gl_list_switch_to_color();
-}
-
-/* =======================================================
-
-      Opaque Map Glows
-      
-======================================================= */
-
-void render_opaque_portal_glow(int mesh_cnt,int *mesh_list)
-{
-	int					n,k,frame;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	texture_type		*texture;
-
-		// setup drawing
-
-	glDisable(GL_BLEND);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_EQUAL);
-	glDepthMask(GL_FALSE);
-
-	gl_texture_opaque_glow_start();
-	
-		// run through the meshes
-
-	for (n=0;n!=mesh_cnt;n++) {
-
-		mesh=&map.mesh.meshes[mesh_list[n]];
-
-			// skip hilited meshes
-			// or meshes with no glows
-
-		if ((!mesh->flag.has_glow) || (mesh->flag.hilite)) continue;
-
-			// run through the polys
-
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-
-				// get texture
-
-			texture=&map.textures[poly->txt_idx];
-			if (texture->shader.on) {
-				poly++;
-				continue;
-			}
-
-			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-				// glow maps happen outside of stenciling
-				// so we need to check for transparencies here
-
-			if ((texture->bitmaps[frame].alpha_mode==alpha_mode_transparent) || (poly->alpha!=1.0f)) {
-				poly++;
-				continue;
-			}
-
-				// glow texture set?
-
-			if (texture->glowmaps[frame].gl_id==-1) {
-				poly++;
-				continue;
-			}
-
-			gl_texture_opaque_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,texture->glow.current_color);
-
-				// draw polygon
-
-			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-			
-			poly++;
-		}
-	}
-
-		// end drawing
-
-	gl_texture_opaque_glow_end();
 }
 
 /* =======================================================
@@ -843,8 +843,9 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 		render_opaque_portal_bump(mesh_cnt,mesh_list,stencil_pass,is_fog_lighting);
 
 		if ((!dim3_debug) && (!is_fog_lighting)) {
-			render_opaque_portal_lighting(mesh_cnt,mesh_list,stencil_pass);
 			render_opaque_portal_specular(mesh_cnt,mesh_list,stencil_pass);
+			render_opaque_portal_glow(mesh_cnt,mesh_list,stencil_pass);
+			render_opaque_portal_lighting(mesh_cnt,mesh_list,stencil_pass);
 			render_opaque_portal_lighting_fix(mesh_cnt,mesh_list,stencil_pass);
 				/*
 				render_opaque_portal_lighting_mesh_debug(mesh_cnt,mesh_list,stencil_pass);
@@ -855,10 +856,8 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 
 	glDisable(GL_STENCIL_TEST);
 
-		// glow maps and shaders happen outside
-		// of stenciling
+		// shaders happen outside of stenciling
 
-	render_opaque_portal_glow(mesh_cnt,mesh_list);
 	render_opaque_portal_shader(mesh_cnt,mesh_list);
 
 		// dettach any attached lists
