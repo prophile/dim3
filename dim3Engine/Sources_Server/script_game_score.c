@@ -128,13 +128,7 @@ JSBool js_game_score_set_score_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 
 		// have we hit a network score limit?
 
-	if (net_setup.client.joined) {
-		if (setup.network.score_limit!=0) {
-			if (obj->score.score>=setup.network.score_limit) {
-				score_limit_trigger_set();
-			}
-		}
-	}
+	if (net_setup.client.joined) score_limit_trigger_set_check_scores();
 
 	return(JS_TRUE);
 }

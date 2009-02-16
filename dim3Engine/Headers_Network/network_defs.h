@@ -167,7 +167,7 @@ typedef struct		{
 #define net_action_reply_info						2
 #define net_action_request_join						3
 #define net_action_reply_join						4
-#define net_action_request_host_reset				5
+#define net_action_request_game_reset				5
 #define net_action_request_ready					6
 #define net_action_request_team						7
 #define net_action_request_leave					8
@@ -185,6 +185,7 @@ typedef struct		{
 #define net_action_request_host_exit				20
 #define net_action_request_group_synch				21
 #define net_action_reply_group_synch				22
+#define net_action_request_game_score_limit			23
 
 //
 // remote fire types

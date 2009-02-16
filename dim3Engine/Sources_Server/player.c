@@ -121,7 +121,7 @@ bool player_attach_object(char *err_str)
 
 			// check for telefrag
 
-		object_telefrag_check(obj);
+		object_telefrag_players(obj,FALSE);
 	}
 	
 		// other settings

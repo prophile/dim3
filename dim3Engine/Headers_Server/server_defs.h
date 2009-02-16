@@ -516,8 +516,9 @@ typedef struct		{
 //
 					
 typedef struct		{
-						int						mode,obj_uid,
-												node_seek_idx,node_dest_idx,node_event_id;
+						int						mode,obj_uid,node_event_id,
+												node_from_idx,node_dest_idx,
+												node_seek_idx,node_last_seek_idx;
 						bool					pause_for_turn;
 						d3pnt					pnt;
 					} obj_auto_walk;

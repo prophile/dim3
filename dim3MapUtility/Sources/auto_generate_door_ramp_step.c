@@ -258,14 +258,15 @@ void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int step_sz
 
 void map_auto_generate_ramps_position(int *x,int *ex)
 {
-	int			mx,wid,split_factor,sz;
+	int			mx,wid,split_factor,sz,portal_sz;
 
 	wid=(*ex)-(*x);
 	sz=wid>>1;
 
 		// make sure ramp is at least a certain width
 		
-	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
 
 	if (sz<split_factor) {
 		sz=split_factor;
@@ -303,14 +304,15 @@ void map_auto_generate_ramps_position(int *x,int *ex)
 void map_auto_generate_ramps(map_type *map)
 {
 	int							n,k,x,ex,z,ez,xsz,zsz,kx,kz,
-								split_factor,high,
+								split_factor,high,portal_sz,
 								px[8],py[8],pz[8];
 	float						gx[8],gy[8];
 	auto_generate_box_type		*portal,*chk_portal;
 
 		// how we split the walls into a mesh
 
-	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
 	
 		// create ramps
 

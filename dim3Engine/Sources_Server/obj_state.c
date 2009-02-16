@@ -169,18 +169,19 @@ void object_telefrag(obj_type *obj,obj_type *source_obj)
 	object_death(obj);
 }
 
-void object_telefrag_check(obj_type *obj)
+bool object_telefrag_players(obj_type *obj,bool check_only)
 {
 	int			n;
-	obj_type	*check_obj,*hit_obj;
+	bool		hit;
+	obj_type	*check_obj;
 
 		// only players, remotes, and bots can telefrag
 
-	if ((!obj->player) && (!obj->remote.on) && (!obj->bot)) return;
+	if ((!obj->player) && (!obj->remote.on) && (!obj->bot)) return(FALSE);
 
 		// colliding with remotes
 		
-	hit_obj=NULL;
+	hit=FALSE;
 	
 	for (n=0;n!=server.count.obj;n++) {
 		check_obj=&server.objs[n];
@@ -189,24 +190,29 @@ void object_telefrag_check(obj_type *obj)
 		if (obj->uid==check_obj->uid) continue;
 		
 		if (collide_object_to_object(obj,0,0,check_obj,TRUE,FALSE)) {
-			hit_obj=check_obj;
-			break;
-		}
-	}
-	
-	if (hit_obj==NULL) return;
-	
-		// telefrag
 		
-	object_telefrag(obj,hit_obj);
+				// if we are only checking, just return TRUE on
+				// first hit
+				
+			if (check_only) return(TRUE);
+		
+				// telefrag
+				
+			object_telefrag(check_obj,obj);
 
-		// send network message to telefrag
+				// send network message to telefrag
 
-	if (net_setup.client.joined) {
-		if ((obj->uid==server.player_obj_uid) || (obj->bot)) {
-			net_client_send_death(obj->remote.uid,hit_obj->uid,TRUE);
+			if (net_setup.client.joined) {
+				if ((check_obj->uid==server.player_obj_uid) || (check_obj->bot)) {
+					net_client_send_death(check_obj->remote.uid,obj->uid,TRUE);
+				}
+			}
+			
+			hit=TRUE;
 		}
 	}
+	
+	return(hit);
 }
 
 /* =======================================================

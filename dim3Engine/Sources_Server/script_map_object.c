@@ -760,7 +760,7 @@ JSBool js_map_object_move_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 		// reposition
 
 	object_set_position(obj,JSVAL_TO_INT(argv[1]),JSVAL_TO_INT(argv[3]),JSVAL_TO_INT(argv[2]),script_value_to_float(argv[4]),0);
-	object_telefrag_check(obj);
+	object_telefrag_players(obj,FALSE);
 
 	return(JS_TRUE);
 }

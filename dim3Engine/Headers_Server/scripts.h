@@ -70,6 +70,8 @@ extern jsval script_point_to_value(int x,int y,int z);
 extern obj_type* script_find_obj_from_uid_arg(jsval arg);
 extern weapon_type* script_find_weapon_from_name_arg(obj_type *obj,jsval arg);
 extern spot_type* script_find_spot_from_idx_arg(jsval arg);
+extern spot_type* script_find_spot_from_name_type(jsval arg_0,jsval arg_1);
+extern spot_type* script_find_network_spot(obj_type *obj);
 extern node_type* script_find_node_from_idx_arg(jsval arg);
 extern hud_text_type* script_find_text_from_name(jsval arg);
 extern hud_bitmap_type* script_find_bitmap_from_name(jsval arg);

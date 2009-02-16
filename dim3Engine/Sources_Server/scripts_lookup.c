@@ -94,7 +94,37 @@ spot_type* script_find_spot_from_idx_arg(jsval arg)
 	}
 	
 	return(&map.spots[idx]);
-}	
+}
+
+spot_type* script_find_spot_from_name_type(jsval arg_0,jsval arg_1)
+{
+	int				idx;
+	char			name[name_str_len],type[name_str_len];
+
+	script_value_to_string(arg_0,name,name_str_len);
+	script_value_to_string(arg_1,type,name_str_len);
+	
+	idx=map_find_random_spot(&map,name,type);
+	if (idx==-1) {
+		JS_ReportError(js.cx,"No spot exists with this name-type: %s-%s",name,type);
+		return(NULL);
+	}
+	
+	return(&map.spots[idx]);
+}
+
+spot_type* script_find_network_spot(obj_type *obj)
+{
+	int				idx;
+	
+	idx=object_find_network_spawn_spot(obj);
+	if (idx==-1) {
+		JS_ReportError(js.cx,"Could not find a new network spawn spot");
+		return(NULL);
+	}
+	
+	return(&map.spots[idx]);
+}
 
 node_type* script_find_node_from_idx_arg(jsval arg)
 {

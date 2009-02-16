@@ -99,7 +99,7 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int y)
       
 ======================================================= */
 
-void network_score_players_draw(bool center)
+int network_score_players_draw(bool center)
 {
 	int				n,k,lx,rx,y,y2,yadd,high,nscore,idx,sz;
 	short			s_score,
@@ -190,9 +190,11 @@ void network_score_players_draw(bool center)
 
 		y+=(yadd+3);
 	}
+	
+	return(sort_idx[0]);
 }
 
-void network_score_teams_draw(void)
+int network_score_teams_draw(void)
 {
 	int				n,k,lx,rx,y,y2,yadd,high,nscore,nplayer,idx,sz;
 	short			s_score,team_score[net_team_count],
@@ -300,11 +302,15 @@ void network_score_teams_draw(void)
 
 		y+=(yadd+3);
 	}
+	
+	return(sort_idx[0]);
 }
 
-void network_score_draw(void)
+void network_score_draw(int tick)
 {
-	char			str[256];
+	int				k,y,win_idx;
+	float			f_flash;
+	char			str[256],str2[256];
 	bool			use_teams;
 	d3col			col;
 	obj_type		*player_obj;
@@ -320,23 +326,67 @@ void network_score_draw(void)
 		}
 	}
 	
-		// game type and map
-		
-	sprintf(str,"%s at %s",net_setup.games[net_setup.game_idx].name,map.info.name);
-	
-	col.r=col.g=col.b=1.0f;
-	
-	gl_text_start(hud.font.text_size_large);
-	gl_text_draw((hud.scale_x>>1),gl_text_get_char_height(hud.font.text_size_large),str,tx_center,TRUE,&col,1.0f);
-	gl_text_end();
-	
 		// draw player and team scores
 		// if this game is team type
 
 	use_teams=net_setup.games[net_setup.game_idx].use_teams;
 
-	network_score_players_draw(!use_teams);
-	if (use_teams) network_score_teams_draw();
+	if (!use_teams) {
+		win_idx=network_score_players_draw(TRUE);
+	}
+	else {
+		network_score_players_draw(FALSE);
+		win_idx=network_score_teams_draw();
+	}
+	
+		// won message
+		
+	str[0]=0x0;
+	col.r=col.g=col.b=1.0f;
+	
+	if (server.state==gs_score_limit) {
+	
+		if (!use_teams) {
+			sprintf(str,"Player %s Won!",server.objs[win_idx].name);
+			view_object_get_ui_color(&server.objs[win_idx],FALSE,&col);
+		}
+		else {
+			sprintf(str,"Team %s Won!",setup_team_color_list[win_idx]);
+			col.r=team_color_tint[win_idx][0];
+			col.g=team_color_tint[win_idx][1];
+			col.b=team_color_tint[win_idx][2];
+		}
+		
+			// flash won message
+			
+		k=tick%2000;
+		if (k>=1000) k=2000-k;
+		f_flash=0.5f*((float)k/1000.0);
+		
+		col.r=col.r+f_flash;
+		col.g=col.g+f_flash;
+		col.b=col.b+f_flash;
+	}
+
+		// map message
+		
+	sprintf(str2,"%s at %s",net_setup.games[net_setup.game_idx].name,map.info.name);
+	
+		// titles
+		
+	y=gl_text_get_char_height(hud.font.text_size_large);
+	
+	gl_text_start(hud.font.text_size_large);
+	
+	if (str[0]!=0x0) {
+		gl_text_draw((hud.scale_x>>1),y,str,tx_center,TRUE,&col,1.0f);
+		y+=y;
+	}
+	
+	col.r=col.g=col.b=1.0f;
+	gl_text_draw((hud.scale_x>>1),y,str2,tx_center,TRUE,&col,1.0f);
+	
+	gl_text_end();
 }
 
 /* =======================================================
@@ -412,7 +462,7 @@ void network_draw(int tick)
 	
 		// draw the score and chat
 		
-	network_score_draw();
+	network_score_draw(tick);
 	network_chat_draw(tick);
 	
 		// reset any color changes

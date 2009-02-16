@@ -100,21 +100,22 @@ auto_generate_box_type				ag_boxes[max_ag_box];
 void map_auto_generate_initial_portals(map_type *map)
 {
 	int			i,x,z,ex,ez,initial_count,try_count,split_factor,
-				map_x_sz,map_z_sz,portal_rand_sz,portal_min_sz;
+				map_x_sz,map_z_sz,portal_sz,portal_rand_sz,portal_min_sz;
 
 		// sizes
 
 	map_x_sz=ag_settings.map.right-ag_settings.map.left;
 	map_z_sz=ag_settings.map.bottom-ag_settings.map.top;
 
-	portal_rand_sz=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_random_percent);
-	portal_min_sz=ag_settings.map.portal_sz-portal_rand_sz;
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	portal_rand_sz=(int)(((float)portal_sz)*ag_constant_portal_random_percent);
+	portal_min_sz=portal_sz-portal_rand_sz;
 	
-	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
 	
 		// initial count of portals
 	
-	initial_count=(ag_settings.map.map_sz/ag_settings.map.portal_sz)*4;
+	initial_count=(ag_settings.map.map_sz/portal_sz)*4;
 
 		// create portals
 
@@ -194,11 +195,12 @@ void map_auto_generate_initial_portals(map_type *map)
 void map_auto_generate_merge_portals(void)
 {
 	int						i,n,k,dist,portal_merge_distance,
-							split_factor,merge_try_count;
+							split_factor,merge_try_count,portal_sz;
 	bool					moved;
 	auto_generate_box_type	*chk_portal,*merge_portal;
 
-	portal_merge_distance=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_merge_percent);
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	portal_merge_distance=(int)(((float)portal_sz)*ag_constant_portal_merge_percent);
 
 		// attempt to merge portals within a certain distance
 		// together.  All portals are grided on the split
@@ -208,7 +210,7 @@ void map_auto_generate_merge_portals(void)
 		// so portals that bounce between two don't cause
 		// an infinite loop
 		
-	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
 	merge_try_count=(portal_merge_distance/split_factor)*2;
 
 	for (i=0;i!=merge_try_count;i++) {
@@ -287,21 +289,22 @@ void map_auto_generate_merge_portals(void)
 
 void map_auto_generate_connect_portals(map_type *map)
 {
-	int							n,k,corridor_sz,corridor_rand_sz,corridor_min_sz,
+	int							n,k,corridor_sz,corridor_rand_sz,corridor_min_sz,portal_sz,
 								portal_merge_distance,portal_connect_distance,connect_sz,
 								x,z,ex,ez,x2,z2,ex2,ez2,dist,nportal,cnt,split_factor;
 	auto_generate_box_type		*chk_portal,*cnt_portal;
 
 		// get sizes
 
-	corridor_sz=(int)(((float)ag_settings.map.portal_sz)*ag_constant_corridor_size_percent);
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	corridor_sz=(int)(((float)portal_sz)*ag_constant_corridor_size_percent);
 	corridor_rand_sz=(int)(((float)corridor_sz)*ag_constant_corridor_random_percent);
 	corridor_min_sz=corridor_sz-corridor_rand_sz;
 
-	portal_merge_distance=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_merge_percent);
-	portal_connect_distance=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_connect_percent);
+	portal_merge_distance=(int)(((float)portal_sz)*ag_constant_portal_merge_percent);
+	portal_connect_distance=(int)(((float)portal_sz)*ag_constant_portal_connect_percent);
 	
-	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
 
 		// get original portal count
 
@@ -497,15 +500,16 @@ void map_auto_generate_connect_portals(map_type *map)
 void map_auto_generate_portal_y(void)
 {
 	int							n,by_add,portal_high,portal_high_story_add,
-								corridor_high,y,ty,by,extra_ty,extra_by;
+								corridor_high,y,ty,by,extra_ty,extra_by,portal_sz;
 	auto_generate_box_type		*portal;
 	
 		// portal sizes
 
-	portal_high=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_high_percent);
-	portal_high_story_add=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_story_high_add_percent);
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	portal_high=(int)(((float)portal_sz)*ag_constant_portal_high_percent);
+	portal_high_story_add=(int)(((float)portal_sz)*ag_constant_portal_story_high_add_percent);
 
-	corridor_high=(int)(((float)ag_settings.map.portal_sz)*ag_constant_corridor_high_percent);
+	corridor_high=(int)(((float)portal_sz)*ag_constant_corridor_high_percent);
 
 	ty=(map_max_size/2)-(portal_high/2);
 	by=(map_max_size/2)+(portal_high/2);
@@ -525,7 +529,7 @@ void map_auto_generate_portal_y(void)
 
 				// touching rooms get second stories
 				
-			if (map_auto_generate_portal_touching_any(n)) {
+			if ((map_auto_generate_portal_touching_any(n)) && (ag_settings.second_story)) {
 				portal->min.y-=portal_high_story_add;
 			}
 			
@@ -674,7 +678,7 @@ void map_auto_generate_mesh_window_horz_frame_mesh(map_type *map,int rn,int ty,i
 
 void map_auto_generate_walls(map_type *map)
 {
-	int							n,x,z,xsz,zsz,ty,by,split_factor,txt_idx,slant_sz,
+	int							n,x,z,xsz,zsz,ty,by,split_factor,txt_idx,slant_sz,portal_sz,
 								px[8],py[8],pz[8];
 	float						gx[8],gy[8];
 	bool						lft_edge,rgt_edge,top_edge,bot_edge;
@@ -682,7 +686,8 @@ void map_auto_generate_walls(map_type *map)
 
 		// how we split the walls into a mesh
 
-	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
 
 		// create surrounding walls for portals
 
@@ -801,14 +806,15 @@ void map_auto_generate_walls(map_type *map)
 
 void map_auto_generate_height_walls(map_type *map)
 {
-	int							n,k,x,ex,kx,z,ez,kz,xsz,zsz,split_factor,txt_idx,
+	int							n,k,x,ex,kx,z,ez,kz,xsz,zsz,split_factor,txt_idx,portal_sz,
 								px[8],py[8],pz[8];
 	float						gx[8],gy[8];
 	auto_generate_box_type		*portal,*chk_portal;
 
 		// how we split the walls into a mesh
 
-	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
 
 		// create walls for any portals with different heights
 
@@ -1037,7 +1043,7 @@ void map_auto_generate_corridor_clip_walls(map_type *map)
 
 void map_auto_generate_portal_single_ceilling_pillar(map_type *map,int rn,int lx2,int lz2,int rx2,int rz2,int ty,int by)
 {
-	int							k,split_factor,wall_sz,p_ty,p_by,
+	int							k,split_factor,wall_sz,p_ty,p_by,portal_sz,
 								px[8],py[8],pz[8];
 	float						gx[8],gy[8];
 	auto_generate_box_type		*portal;
@@ -1046,7 +1052,8 @@ void map_auto_generate_portal_single_ceilling_pillar(map_type *map,int rn,int lx
 
 		// get sizes
 		
-	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
 	wall_sz=(int)((float)(portal->max.y-portal->min.y)*ag_constant_portal_ceiling_slant_percent);
 
 		// create pillar
@@ -1129,7 +1136,7 @@ void map_auto_generate_portal_single_ceilling_pillar(map_type *map,int rn,int lx
 
 void map_auto_generate_portal_ceilling_pillar(map_type *map,int rn,int lx2,int lz2,int rx2,int rz2,int ty,bool second_story)
 {
-	int							portal_high,cy;
+	int							portal_sz,portal_high,cy;
 	auto_generate_box_type		*portal;
 		
 	portal=&ag_boxes[rn];
@@ -1143,7 +1150,8 @@ void map_auto_generate_portal_ceilling_pillar(map_type *map,int rn,int lx2,int l
 
 		// two pillars broken by a second story
 		
-	portal_high=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_high_percent);
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	portal_high=(int)(((float)portal_sz)*ag_constant_portal_high_percent);
 	cy=(map_max_size>>1)-((portal_high>>1)+ag_constant_step_story_size);
 
 	map_auto_generate_portal_single_ceilling_pillar(map,rn,lx2,lz2,rx2,rz2,ty,cy);
@@ -1158,7 +1166,7 @@ void map_auto_generate_portal_ceilling_pillar(map_type *map,int rn,int lx2,int l
 
 bool map_auto_generate_portal_ceiling_ok(unsigned char *data,int lx,int lz,int rx,int rz,int lx2,int lz2,int rx2,int rz2)
 {
-	int			k,split_factor,mx,mz;
+	int			k,portal_sz,split_factor,mx,mz;
 
 		// in outer ring?
 
@@ -1166,7 +1174,8 @@ bool map_auto_generate_portal_ceiling_ok(unsigned char *data,int lx,int lz,int r
 
 		// inside sections
 
-	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
 
 	k=((rx-lx)/split_factor)>>1;
 	mx=lx+(k*split_factor);
@@ -1191,7 +1200,7 @@ bool map_auto_generate_portal_ceiling_ok(unsigned char *data,int lx,int lz,int r
 
 void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty)
 {
-	int							ceiling_type,split_factor,lx2,rx2,lz2,rz2,
+	int							portal_sz,ceiling_type,split_factor,lx2,rx2,lz2,rz2,
 								k,kx,kz,mx,wall_sz,
 								px[8],py[8],pz[8];
 	float						gx[8],gy[8];
@@ -1202,7 +1211,8 @@ void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int
 	
 		// get sizes
 		
-	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
 	wall_sz=(int)((float)(portal->max.y-portal->min.y)*ag_constant_portal_ceiling_slant_percent);
 	
 		// get type and data
@@ -1365,7 +1375,7 @@ void map_auto_generate_portal_ceiling_add(map_type *map,int rn,int lx,int lz,int
 
 void map_auto_generate_corridor_ceiling_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int ty)
 {
-	int							split_factor,lx2,rx2,lx3,rx3,lz2,rz2,lz3,rz3,slant_sz,
+	int							split_factor,lx2,rx2,lx3,rx3,lz2,rz2,lz3,rz3,slant_sz,portal_sz,
 								px[8],py[8],pz[8];
 	float						gx[8],gy[8];
 	bool						slant_piece;
@@ -1373,7 +1383,8 @@ void map_auto_generate_corridor_ceiling_add(map_type *map,int rn,int lx,int lz,i
 	
 		// get sizes
 		
-	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
 	
 	slant_piece=(corridor_types[rn]==ag_corridor_type_slanted_ceiling) || (corridor_types[rn]==ag_corridor_type_octagon);
 		
@@ -1504,7 +1515,7 @@ void map_auto_generate_ceilings(map_type *map)
 void map_auto_generate_portal_floor_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int by)
 {
 	int							split_factor,lx2,rx2,lz2,rz2,
-								xadd,zadd,
+								xadd,zadd,portal_sz,
 								px[8],py[8],pz[8];
 	float						gx[8],gy[8];
 	auto_generate_box_type		*portal;
@@ -1513,7 +1524,8 @@ void map_auto_generate_portal_floor_add(map_type *map,int rn,int lx,int lz,int r
 	
 		// get sizes
 		
-	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
 	
 		// create floor polys
 
@@ -1556,7 +1568,7 @@ void map_auto_generate_portal_floor_add(map_type *map,int rn,int lx,int lz,int r
 
 void map_auto_generate_corridor_floor_add(map_type *map,int rn,int lx,int lz,int rx,int rz,int by)
 {
-	int							split_factor,lx2,rx2,lx3,rx3,lz2,rz2,lz3,rz3,slant_sz,
+	int							split_factor,lx2,rx2,lx3,rx3,lz2,rz2,lz3,rz3,slant_sz,portal_sz,
 								px[8],py[8],pz[8];
 	float						gx[8],gy[8];
 	bool						slant_piece;
@@ -1564,7 +1576,8 @@ void map_auto_generate_corridor_floor_add(map_type *map,int rn,int lx,int lz,int
 	
 		// get sizes
 		
-	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
 	
 	slant_piece=(corridor_types[rn]==ag_corridor_type_octagon);
 		
@@ -1752,14 +1765,16 @@ void map_auto_generate_second_story_block(map_type *map,unsigned char *poly_map,
 
 int map_auto_generate_second_story_steps_get_x(int portal_idx,int z,int ez,bool lft,int xsz,int step_wid)
 {
-	int							split_factor;
+	int							portal_sz,split_factor;
 	auto_generate_box_type		*portal;
 	
 	portal=&ag_boxes[portal_idx];
 	
 	z+=portal->min.z;
 	ez+=portal->min.z;
-	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
 	
 	if (lft) {
 		if (!map_auto_generate_portal_horz_edge_touch(portal_idx,z,ez,portal->max.x)) return(xsz-step_wid);
@@ -1775,14 +1790,16 @@ int map_auto_generate_second_story_steps_get_x(int portal_idx,int z,int ez,bool 
 
 int map_auto_generate_second_story_steps_get_z(int portal_idx,int x,int ex,bool top,int zsz,int step_wid)
 {
-	int							split_factor;
+	int							portal_sz,split_factor;
 	auto_generate_box_type		*portal;
 	
 	portal=&ag_boxes[portal_idx];
 	
 	x+=portal->min.x;
 	ex+=portal->min.x;
-	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
 	
 	if (top) {
 		if (!map_auto_generate_portal_vert_edge_touch(portal_idx,x,ex,portal->max.z)) return(zsz-step_wid);
@@ -1799,18 +1816,21 @@ int map_auto_generate_second_story_steps_get_z(int portal_idx,int x,int ex,bool 
 void map_auto_generate_second_story(map_type *map)
 {
 	int							n,portal_high,extra_ty,split_factor,step_wid,step_len,sz,
-								x,y,z,by,mx,mz,xsz,zsz,stair_type;
+								x,y,z,by,mx,mz,xsz,zsz,stair_type,portal_sz;
 	bool						lft,rgt,top,bot,horz,vert,
 								old_lft,old_rgt,old_top,old_bot;
 	unsigned char				*poly_map;
 	auto_generate_box_type		*portal;
+	
+	if (!ag_settings.second_story) return;
 
 		// get sizes
 		
-	portal_high=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_high_percent);
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	portal_high=(int)(((float)portal_sz)*ag_constant_portal_high_percent);
 	extra_ty=(int)(((float)portal_high)*ag_constant_portal_high_extra_top);
 
-	split_factor=(int)(((float)ag_settings.map.portal_sz)*ag_constant_portal_split_factor_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
 
 		// create second story in touching portals
 
@@ -1826,6 +1846,8 @@ void map_auto_generate_second_story(map_type *map)
 		portal->story_bottom_left=FALSE;
 		portal->story_bottom_right=FALSE;
 		portal->story_middle=FALSE;
+		
+		if (!ag_settings.second_story) continue;
 
 			// find touching edges
 		
@@ -2099,9 +2121,9 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 	ags.seed=5;	// supergumba -- testing
 
 	ags.block=ag_block_none;
+	ags.second_story=TRUE;
 	
-	ags.map.map_sz=2000*map_enlarge;
-	ags.map.portal_sz=500*map_enlarge;
+	ags.map.map_sz=250000;
 
 	for (n=0;n!=ag_ceiling_type_count;n++) {
 		ags.ceiling_type_on[n]=TRUE;

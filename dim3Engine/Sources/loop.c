@@ -317,7 +317,7 @@ bool loop_main(char *err_str)
 			break;
 
 		case gs_score_limit:
-			score_limit_run(tick);
+			score_limit_run();
 			break;
 			
 	}

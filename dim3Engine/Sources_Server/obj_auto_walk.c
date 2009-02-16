@@ -69,7 +69,7 @@ bool object_auto_walk_node_setup(obj_type *obj,int from_idx,int to_idx,int event
 		// setup seeking
 		
 	obj->auto_walk.mode=aw_node;
-	obj->auto_walk.node_seek_idx=from_idx;
+	obj->auto_walk.node_from_idx=obj->auto_walk.node_seek_idx=obj->auto_walk.node_last_seek_idx=from_idx;
 	obj->auto_walk.node_dest_idx=to_idx;
 	
 		// setup event and start walking
@@ -158,6 +158,28 @@ bool object_auto_walk_node_resume(obj_type *obj)
 	obj->auto_walk.mode=aw_node;
 
 		// start walking
+		
+	obj->forward_move.moving=TRUE;
+
+	return(TRUE);
+}
+
+bool object_auto_walk_node_reverse(obj_type *obj)
+{
+		// is there something to resume?
+		
+	if ((obj->auto_walk.node_from_idx==-1) || (obj->auto_walk.node_last_seek_idx==-1)) {
+		JS_ReportError(js.cx,"There is no node walk to reverse");
+		return(FALSE);
+	}
+	
+		// reverse
+		
+	obj->auto_walk.mode=aw_node;
+	obj->auto_walk.node_dest_idx=obj->auto_walk.node_from_idx;
+	obj->auto_walk.node_seek_idx=obj->auto_walk.node_last_seek_idx;
+	
+		// start walking if not already
 		
 	obj->forward_move.moving=TRUE;
 
@@ -301,9 +323,10 @@ void object_auto_walk_node(obj_type *obj)
 	dist=distance_get(node->pnt.x,node->pnt.y,node->pnt.z,obj->pnt.x,obj->pnt.y,obj->pnt.z);
 	if (dist>(int)(obj->forward_move.speed*node_slop_speed_factor)) return;
 	
-		// move on to last node
+		// move on to next node
 		
 	if (seek_idx!=dest_idx) {
+		obj->auto_walk.node_last_seek_idx=obj->auto_walk.node_seek_idx;
 		obj->auto_walk.node_seek_idx=map_find_next_node_in_path(&map,seek_idx,dest_idx);
 		scripts_post_event_console(&obj->attach,sd_event_path,sd_event_path_node,node->event_id);
 		return;

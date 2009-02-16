@@ -138,7 +138,8 @@ typedef struct		{
 
 typedef struct		{
 						float							*gl_vertex_array,*gl_color_array,
-														*gl_vertex_normal_array,*gl_light_normal_array;
+														*gl_vertex_normal_array,*gl_bump_normal_array,
+														*gl_specular_intensity_array;
 					} model_mesh_draw_type;
 
 typedef struct		{

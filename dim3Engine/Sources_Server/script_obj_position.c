@@ -41,6 +41,8 @@ JSBool js_get_obj_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
 JSBool js_obj_position_place_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_position_place_random_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_position_place_network_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_obj_position_place_random_spot_no_telefrag_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_obj_position_place_network_spot_no_telefrag_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_position_move_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_position_reset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_position_distance_to_player_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -58,13 +60,15 @@ JSPropertySpec	obj_position_props[]={
 							{0}};
 
 JSFunctionSpec	obj_position_functions[]={
-							{"place",				js_obj_position_place_func,					4},
-							{"placeRandomSpot",		js_obj_position_place_random_spot_func,		2},
-							{"placeNetworkSpot",	js_obj_position_place_network_spot_func,	0},
-							{"move",				js_obj_position_move_func,					3},
-							{"reset",				js_obj_position_reset_func,					0},
-							{"distanceToPlayer",	js_obj_position_distance_to_player_func,	0},
-							{"distanceToObject",	js_obj_position_distance_to_object_func,	1},
+							{"place",							js_obj_position_place_func,								4},
+							{"placeRandomSpot",					js_obj_position_place_random_spot_func,					2},
+							{"placeNetworkSpot",				js_obj_position_place_network_spot_func,				0},
+							{"placeRandomSpotNoTelefrag",		js_obj_position_place_random_spot_no_telefrag_func,		2},
+							{"placeNetworkSpotNoTelefrag",		js_obj_position_place_network_spot_no_telefrag_func,	0},
+							{"move",							js_obj_position_move_func,								3},
+							{"reset",							js_obj_position_reset_func,								0},
+							{"distanceToPlayer",				js_obj_position_distance_to_player_func,				0},
+							{"distanceToObject",				js_obj_position_distance_to_object_func,				1},
 							{0}};
 
 extern void object_setup_motion(obj_type *obj,float ang,float speed);
@@ -130,7 +134,7 @@ JSBool js_obj_position_place_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 	obj=object_find_uid(js.attach.thing_uid);
 
 	object_set_position(obj,JSVAL_TO_INT(argv[0]),JSVAL_TO_INT(argv[2]),JSVAL_TO_INT(argv[1]),script_value_to_float(argv[3]),0);
-	object_telefrag_check(obj);
+	object_telefrag_players(obj,FALSE);
     
     *rval=JSVAL_TRUE;
 
@@ -139,8 +143,6 @@ JSBool js_obj_position_place_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 
 JSBool js_obj_position_place_random_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	int				spot_idx;
-	char			name[name_str_len],type[name_str_len];
 	obj_type		*obj;
 	spot_type		*spot;
 	
@@ -148,61 +150,98 @@ JSBool js_obj_position_place_random_spot_func(JSContext *cx,JSObject *j_obj,uint
 	
 		// find spot
 		
-	script_value_to_string(argv[0],name,name_str_len);
-	script_value_to_string(argv[1],type,name_str_len);
-	
-	spot_idx=map_find_random_spot(&map,name,type);
-	if (spot_idx==-1) {
-		*rval=JSVAL_FALSE;
-		return(JS_TRUE);
-	}
-	
-	spot=&map.spots[spot_idx];
+	spot=script_find_spot_from_name_type(argv[0],argv[1]);
+	if (spot==NULL) return(JS_FALSE);
 	
 		// move player
 	
 	object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
- 	object_telefrag_check(obj);
-  
-    *rval=JSVAL_TRUE;
+ 	object_telefrag_players(obj,FALSE);
 
 	return(JS_TRUE);
 }
 
 JSBool js_obj_position_place_network_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	int				spot_idx;
 	obj_type		*obj;
 	spot_type		*spot;
 	
 	obj=object_find_uid(js.attach.thing_uid);
 
 		// get spot
-
-	if (!net_setup.client.joined) {
-		spot_idx=map_find_random_spot(&map,map.info.player_start_name,map.info.player_start_type);
-	}
-	else {
-		if (obj->spawn_spot_name[0]==0x0) {
-			spot_idx=map_find_random_spot(&map,NULL,"Spawn");
-		}
-		else {
-			spot_idx=map_find_random_spot(&map,obj->spawn_spot_name,"Spawn");
-		}
-	}
-
-	if (spot_idx==-1) {
-		*rval=JSVAL_FALSE;
-		return(JS_TRUE);
-	}
-	
-	spot=&map.spots[spot_idx];
+		
+	spot=script_find_network_spot(obj);
+	if (spot==NULL) return(JS_FALSE);
 	
 		// move player
 	
 	object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
- 	object_telefrag_check(obj);
+ 	object_telefrag_players(obj,FALSE);
    
+    *rval=JSVAL_TRUE;
+
+	return(JS_TRUE);
+}
+
+JSBool js_obj_position_place_random_spot_no_telefrag_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	d3pnt			old_pnt;
+	obj_type		*obj;
+	spot_type		*spot;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+		
+		// find spot
+		
+	spot=script_find_spot_from_name_type(argv[0],argv[1]);
+	if (spot==NULL) return(JS_FALSE);
+	
+		// can we move without telefragging?
+	
+	memmove(&old_pnt,&obj->pnt,sizeof(d3pnt));
+	memmove(&obj->pnt,&spot->pnt,sizeof(d3pnt));
+	
+	if (object_telefrag_players(obj,TRUE)) {
+		memmove(&obj->pnt,&old_pnt,sizeof(d3pnt));
+		*rval=JSVAL_FALSE;
+		return(JS_TRUE);
+	}
+	
+		// move object
+		
+	object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
+    *rval=JSVAL_TRUE;
+  
+	return(JS_TRUE);
+}
+
+JSBool js_obj_position_place_network_spot_no_telefrag_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	d3pnt			old_pnt;
+	obj_type		*obj;
+	spot_type		*spot;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+
+		// get spot
+		
+	spot=script_find_network_spot(obj);
+	if (spot==NULL) return(JS_FALSE);
+	
+		// can we move without telefragging?
+	
+	memmove(&old_pnt,&obj->pnt,sizeof(d3pnt));
+	memmove(&obj->pnt,&spot->pnt,sizeof(d3pnt));
+	
+	if (object_telefrag_players(obj,TRUE)) {
+		memmove(&obj->pnt,&old_pnt,sizeof(d3pnt));
+		*rval=JSVAL_FALSE;
+		return(JS_TRUE);
+	}
+	
+		// move object
+	
+	object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
     *rval=JSVAL_TRUE;
 
 	return(JS_TRUE);
@@ -220,7 +259,7 @@ JSBool js_obj_position_move_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 	yadd=JSVAL_TO_INT(argv[2]);
 	
 	object_set_position(obj,(obj->pnt.x+xadd),(obj->pnt.y+yadd),(obj->pnt.z+zadd),obj->ang.y,0);
- 	object_telefrag_check(obj);
+ 	object_telefrag_players(obj,FALSE);
 
 	*rval=JSVAL_TRUE;
 
@@ -233,10 +272,16 @@ JSBool js_obj_position_reset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	object_reset(obj);
-	object_telefrag_check(obj);
+	object_telefrag_players(obj,FALSE);
 	
 	return(JS_TRUE);
 }
+
+/* =======================================================
+
+      Object Distance Functions
+      
+======================================================= */
 
 JSBool js_obj_position_distance_to_player_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {

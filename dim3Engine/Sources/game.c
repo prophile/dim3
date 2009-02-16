@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "objects.h"
 #include "consoles.h"
 #include "interfaces.h"
+#include "scripts.h"
 
 extern server_type			server;
 extern setup_type			setup;
@@ -124,4 +125,80 @@ void game_end(void)
 		
 	server.game_open=FALSE;
 }
+
+/* =======================================================
+
+      Game Reset
+      
+======================================================= */
+
+void game_reset_single_object(obj_type *obj,bool reposition)
+{
+	spot_type		*spot;
+
+	obj->score.kill=obj->score.death=obj->score.suicide=obj->score.goal=obj->score.score=0;
+	obj->spawning=TRUE;
+	
+	obj->input_freeze=FALSE;
+	obj->death_trigger=FALSE;
+	
+	object_stop(obj);
+	
+	if (reposition) {
+		spot=script_find_network_spot(obj);
+		if (spot!=NULL) object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
+	}
+	
+	object_spawn(obj);
+}
+
+void game_reset(void)
+{
+	int				n;
+	obj_type		*obj;
+	
+		// reset projectiles, effects, etc
+		
+	projectile_start();
+	effect_start();
+	
+		// if a remote player, then just reset yourself and
+		// hide all other players until and update
+		
+	if (!net_setup.host.hosting) {
+	
+		obj=server.objs;
+
+		for (n=0;n!=server.count.obj;n++) {
+			if (obj->uid==server.player_obj_uid) {
+				game_reset_single_object(obj,FALSE);
+			}
+			else {
+				if ((obj->player) || (obj->remote.on) || (obj->bot)) {
+					obj->hidden=TRUE;
+				}
+			}
+			
+			obj++;
+		}
+	
+		return;
+	}
+	
+		// force all players and bots to respawn
+
+	obj=server.objs;
+
+	for (n=0;n!=server.count.obj;n++) {
+		if ((obj->player) || (obj->bot)) game_reset_single_object(obj,TRUE);
+		obj++;
+	}
+	
+		// force all remotes to update
+		
+	obj=object_find_uid(server.player_obj_uid);
+	net_host_player_send_others_packet(obj->remote.uid,net_action_request_game_reset,NULL,0);
+}
+
+
 

@@ -2,14 +2,14 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: Script: utility object
+ Usage: Script: utility.skill object
 
 ***************************** License ********************************
 
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit “Created with dim3 Technology” is given on a single
+2. This credit ‚ÄúCreated with dim3 Technology‚Äù is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -31,17 +31,18 @@ and can be sold or given away.
 
 #include "scripts.h"
 
+extern setup_type		setup;
 extern js_type			js;
 
-JSClass			utility_class={"utility_class",0,
+JSBool js_utility_skill_get_from_min_max_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+
+JSClass			utility_skill_class={"utility_skill_class",0,
 							script_add_property,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-extern void script_add_utility_angle_object(JSObject *parent_obj);
-extern void script_add_utility_point_object(JSObject *parent_obj);
-extern void script_add_utility_random_object(JSObject *parent_obj);
-extern void script_add_utility_pack_object(JSObject *parent_obj);
-extern void script_add_utility_skill_object(JSObject *parent_obj);
+JSFunctionSpec	utility_skill_functions[]={
+							{"getFromMinMax",		js_utility_skill_get_from_min_max_func,		2},
+							{0}};
 
 /* =======================================================
 
@@ -49,16 +50,29 @@ extern void script_add_utility_skill_object(JSObject *parent_obj);
       
 ======================================================= */
 
-void script_add_global_utility_object(JSObject *parent_obj)
+void script_add_utility_skill_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;
     
-	j_obj=JS_DefineObject(js.cx,parent_obj,"utility",&utility_class,NULL,0);
+	j_obj=JS_DefineObject(js.cx,parent_obj,"skill",&utility_skill_class,NULL,0);
+	JS_DefineFunctions(js.cx,j_obj,utility_skill_functions);
+}
+
+/* =======================================================
+
+      Skill Functions
+      
+======================================================= */
+
+JSBool js_utility_skill_get_from_min_max_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int				min,max;
+
+	min=script_value_to_float(argv[0]);
+	max=script_value_to_float(argv[1]);
+
+	*rval=script_float_to_value(min+(((max-min)*setup.network.bot.skill)/4));
 	
-	script_add_utility_angle_object(j_obj);
-	script_add_utility_point_object(j_obj);
-	script_add_utility_random_object(j_obj);
-	script_add_utility_pack_object(j_obj);
-	script_add_utility_skill_object(j_obj);
+	return(JS_TRUE);
 }
 

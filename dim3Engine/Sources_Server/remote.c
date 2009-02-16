@@ -59,6 +59,7 @@ extern void map_end(void);
 extern void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx);
 extern void group_moves_synch_with_host(network_reply_group_synch *synch);
 extern void view_object_get_ui_color(obj_type *obj,bool no_team_to_default,d3col *col);
+extern void score_limit_close(void);
 
 /* =======================================================
 
@@ -246,74 +247,19 @@ void remote_predict_move(obj_type *obj)
 
 /* =======================================================
 
-      Remote Host Resets and Exits
+      Remote Game Resets and Host Exits
       
 ======================================================= */
 
-void remote_host_reset(void)
+void remote_game_reset(void)
 {
-	int							remote_uid,tick_offset;
-	char						game_name[name_str_len],map_name[name_str_len],
-								deny_reason[64],err_str[256];
-	network_reply_join_remotes	remotes;
-
-		// quit current game
+		// force a reset on the objects
 		
-	map_end();
-	game_end();
+	game_reset();
+	
+		// close the score limit UI
 		
-		// attempt to join to new game
-
-	if (!net_client_join_host_start(net_setup.client.joined_ip,setup.network.name,&remote_uid,game_name,map_name,&tick_offset,deny_reason,&remotes)) {
-		error_open("Unable to rejoin server after game reset","Network Game Canceled");
-		return;
-	}
-	
-		// mark remote and joined
-		
-	net_setup.client.joined=TRUE;
-	net_setup.client.latency=0;
-
-		// setup game play type
-
-	net_setup.game_idx=net_client_find_game(game_name);
-	if (net_setup.game_idx==-1) {
-		net_client_send_leave_host(remote_uid);
-		net_client_end_message_queue();
-		net_client_join_host_end();
-		sprintf(err_str,"Could not find game type: %s",game_name);
-		error_open(err_str,"Network Game Canceled");
-		return;	
-	}
-
-	map.info.name[0]=0x0;
-	strcpy(map.info.host_name,map_name);
-	
-		// start the new game
-	
-	if (!game_start(skill_medium,&remotes,err_str)) {
-		net_client_send_leave_host(remote_uid);
-		net_client_end_message_queue();
-		net_client_join_host_end();
-		error_open(err_str,"Network Game Canceled");
-		return;	
-	}
-	
-		// start the map
-		
-	if (!map_start(FALSE,err_str)) {
-		net_client_send_leave_host(remote_uid);
-		net_client_end_message_queue();
-		net_client_join_host_end();
-		error_open(err_str,"Network Game Canceled");
-		return;	
-	}
-	
-	object_player_set_remote_uid(remote_uid);
-		
-		// game is running
-	
-	server.state=gs_running;
+	if (server.state==gs_score_limit) score_limit_close();
 }
 
 void remote_host_exit(void)
@@ -336,7 +282,7 @@ void remote_host_exit(void)
 
 void remote_update(int remote_uid,network_request_remote_update *update)
 {
-	int							n,flags,map_spawn_idx,
+	int							n,flags,map_spawn_idx,old_score,
 								animation_mode,animate_idx,animate_next_idx;
 	d3pnt						org_pnt;
 	obj_type					*obj;
@@ -429,6 +375,8 @@ void remote_update(int remote_uid,network_request_remote_update *update)
 	
 		// update status
 		
+	old_score=obj->score.score;
+	
 	obj->score.score=(signed short)ntohs(update->score);
 	obj->status.health=(signed short)ntohs(update->health);
 	
@@ -752,8 +700,8 @@ bool remote_network_get_updates(int tick)
 		
 		switch (action) {
 		
-			case net_action_request_host_reset:
-				remote_host_reset();
+			case net_action_request_game_reset:
+				remote_game_reset();
 				break;
 				
 			case net_action_request_team:
@@ -802,6 +750,10 @@ bool remote_network_get_updates(int tick)
 
 			case net_action_reply_group_synch:
 				group_moves_synch_with_host((network_reply_group_synch*)data);
+				break;
+				
+			case net_action_request_game_score_limit:
+				score_limit_trigger_set();
 				break;
 				
 		}

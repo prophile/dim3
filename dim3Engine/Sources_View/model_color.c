@@ -99,15 +99,18 @@ void model_build_color_no_light(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int				n,nt;
 	float			tint_r,tint_g,tint_b;
-	float			*pc;
+	float			*pc,*pn,*ps;
 	model_mesh_type	*mesh;
 		
 	mesh=&mdl->meshes[mesh_idx];
 	
-		// run the lighting
+		// build the default color, normal, and specular
 		
 	nt=mesh->nvertex;
+	
 	pc=mesh->draw.gl_color_array;
+	pn=mesh->draw.gl_bump_normal_array;
+	ps=mesh->draw.gl_specular_intensity_array;
 	
 	model_build_color_get_tint(mesh,draw,&tint_r,&tint_g,&tint_b);
 
@@ -117,6 +120,12 @@ void model_build_color_no_light(model_type *mdl,int mesh_idx,model_draw *draw)
 		*pc++=tint_r;
 		*pc++=tint_g;
 		*pc++=tint_b;
+		
+		*pn++=0.5f;
+		*pn++=0.5f;
+		*pn++=1.0f;
+		
+		*ps++=0.0f;
 	}
 }
 
@@ -131,7 +140,7 @@ void model_build_color_flat(model_type *mdl,int mesh_idx,float fx,float fy,float
 	int				n,nt;
 	float			col[3],normal[3],f_intensity,r,g,b,tint_r,tint_g,tint_b,
 					cx,cy,cz;
-	float			*pc,*pn;
+	float			*pc,*pn,*ps;
 	matrix_type		mat;
 	model_mesh_type	*mesh;
 		
@@ -166,7 +175,8 @@ void model_build_color_flat(model_type *mdl,int mesh_idx,float fx,float fy,float
 		
 	nt=mesh->nvertex;
 	pc=mesh->draw.gl_color_array;
-	pn=mesh->draw.gl_light_normal_array;
+	pn=mesh->draw.gl_bump_normal_array;
+	ps=mesh->draw.gl_specular_intensity_array;
 	
 	for (n=0;n!=nt;n++) {
 		*pc++=r;
@@ -176,6 +186,8 @@ void model_build_color_flat(model_type *mdl,int mesh_idx,float fx,float fy,float
 		*pn++=0.5f;
 		*pn++=0.5f;
 		*pn++=1.0f;
+		
+		*ps++=f_intensity;
 	}
 }
 
@@ -189,7 +201,7 @@ void model_build_color_hilite(model_type *mdl,int mesh_idx,float fx,float fy,flo
 {
 	int				n,nt;
 	float			r,g,b,tint_r,tint_g,tint_b;
-	float			*pc,*pn;
+	float			*pc,*pn,*ps;
 	model_mesh_type	*mesh;
 		
 	mesh=&mdl->meshes[mesh_idx];
@@ -206,7 +218,8 @@ void model_build_color_hilite(model_type *mdl,int mesh_idx,float fx,float fy,flo
 		
 	nt=mesh->nvertex;
 	pc=mesh->draw.gl_color_array;
-	pn=mesh->draw.gl_light_normal_array;
+	pn=mesh->draw.gl_bump_normal_array;
+	ps=mesh->draw.gl_specular_intensity_array;
 
 	for (n=0;n!=nt;n++) {
 		*pc++=r;
@@ -216,6 +229,8 @@ void model_build_color_hilite(model_type *mdl,int mesh_idx,float fx,float fy,flo
 		*pn++=0.5f;
 		*pn++=0.5f;
 		*pn++=1.0f;
+		
+		*ps++=0.0f;
 	}
 }
 
@@ -230,7 +245,7 @@ void model_build_color_hilite_diffuse(model_type *mdl,int mesh_idx,float fx,floa
 	int				n,nt;
 	float			col[3],normal[3],f_intensity,f,r,g,b,tint_r,tint_g,tint_b,
 					cx,cy,cz;
-	float			*pc,*pn,*pvn;
+	float			*pc,*pn,*ps,*pvn;
 	d3vct			v1,v2;
 	matrix_type		mat;
 	model_mesh_type	*mesh;
@@ -276,7 +291,8 @@ void model_build_color_hilite_diffuse(model_type *mdl,int mesh_idx,float fx,floa
 		
 	nt=mesh->nvertex;
 	pc=mesh->draw.gl_color_array;
-	pn=mesh->draw.gl_light_normal_array;
+	pn=mesh->draw.gl_bump_normal_array;
+	ps=mesh->draw.gl_specular_intensity_array;
 	
 	for (n=0;n!=nt;n++) {
 	
@@ -302,6 +318,8 @@ void model_build_color_hilite_diffuse(model_type *mdl,int mesh_idx,float fx,floa
 		*pn++=normal[0];
 		*pn++=normal[1];
 		*pn++=normal[2];
+		
+		*ps++=f_intensity;
 	}
 }
 
@@ -316,7 +334,7 @@ void model_build_color_vertex(model_type *mdl,int mesh_idx,float fx,float fy,flo
 	int				n,nt;
 	float			col[3],normal[3],f_intensity,f,tint_r,tint_g,tint_b,
 					cx,cy,cz,kx,ky,kz;
-	float			*pc,*pn,*pv,*pvn;
+	float			*pc,*pn,*ps,*pv,*pvn;
 	double			dx,dy,dz;
 	d3vct			v1,v2;
 	matrix_type		mat;
@@ -340,7 +358,8 @@ void model_build_color_vertex(model_type *mdl,int mesh_idx,float fx,float fy,flo
 	
 	pv=(float*)mesh->draw.gl_vertex_array;
 	pc=mesh->draw.gl_color_array;
-	pn=mesh->draw.gl_light_normal_array;
+	pn=mesh->draw.gl_bump_normal_array;
+	ps=mesh->draw.gl_specular_intensity_array;
 	
 	model_build_color_get_tint(mesh,draw,&tint_r,&tint_g,&tint_b);
 
@@ -381,6 +400,8 @@ void model_build_color_vertex(model_type *mdl,int mesh_idx,float fx,float fy,flo
 			*pn++=normal[0];
 			*pn++=normal[1];
 			*pn++=normal[2];
+			
+			*ps++=f_intensity;
 		}
 		
 		return;
@@ -425,6 +446,8 @@ void model_build_color_vertex(model_type *mdl,int mesh_idx,float fx,float fy,flo
 		*pn++=normal[0];
 		*pn++=normal[1];
 		*pn++=normal[2];
+		
+		*ps++=f_intensity;
 	}
 }
 

@@ -53,7 +53,8 @@ extern bool fog_solid_on(void);
 bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_draw *draw)
 {
 	int				n,k,nvertex,ntrig,idx,t_idx;
-	float			*vl,*tl,*cl,*nl,*vp,*cp,*np,*vertex_ptr,
+	float			f_intensity;
+	float			*vl,*tl,*cl,*nl,*sl,*vp,*cp,*np,*vertex_ptr,
 					*vertex_array,*coord_array,*color_array,*normal_array;
 	unsigned short	*index_ptr;
     model_trig_type	*trig;
@@ -79,7 +80,7 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 
  		// construct VBO
 
-	vertex_ptr=view_bind_map_next_vertex_object(((ntrig*3)*(3+2+3+3)));
+	vertex_ptr=view_bind_map_next_vertex_object(((ntrig*3)*(3+2+3+3+3)));
 	if (vertex_ptr==NULL) return(FALSE);
 
 	index_ptr=view_bind_map_next_index_object(ntrig*3);
@@ -95,6 +96,7 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 	tl=coord_array=vertex_ptr+((ntrig*3)*3);
 	cl=color_array=vertex_ptr+((ntrig*3)*(3+2));
 	nl=normal_array=vertex_ptr+((ntrig*3)*(3+2+3));
+	sl=normal_array=vertex_ptr+((ntrig*3)*(3+2+3+3));
 
 	t_idx=0;
 
@@ -114,7 +116,9 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 
 			vp=mesh->draw.gl_vertex_array+idx;
 			cp=mesh->draw.gl_color_array+idx;
-			np=mesh->draw.gl_light_normal_array+idx;
+			np=mesh->draw.gl_bump_normal_array+idx;
+			
+			f_intensity=*(mesh->draw.gl_specular_intensity_array+trig->v[0]);
 
 			*vl++=*vp++;
 			*vl++=*vp++;
@@ -130,6 +134,10 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 			*nl++=*np++;
 			*nl++=*np++;
 			*nl++=*np;
+			
+			*sl++=f_intensity;
+			*sl++=f_intensity;
+			*sl++=f_intensity;
 
 				// vertex 1
 
@@ -137,7 +145,9 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 
 			vp=mesh->draw.gl_vertex_array+idx;
 			cp=mesh->draw.gl_color_array+idx;
-			np=mesh->draw.gl_light_normal_array+idx;
+			np=mesh->draw.gl_bump_normal_array+idx;
+			
+			f_intensity=*(mesh->draw.gl_specular_intensity_array+trig->v[1]);
 
 			*vl++=*vp++;
 			*vl++=*vp++;
@@ -153,6 +163,10 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 			*nl++=*np++;
 			*nl++=*np++;
 			*nl++=*np;
+			
+			*sl++=f_intensity;
+			*sl++=f_intensity;
+			*sl++=f_intensity;
 
 				// vertex 2
 
@@ -160,7 +174,9 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 
 			vp=mesh->draw.gl_vertex_array+idx;
 			cp=mesh->draw.gl_color_array+idx;
-			np=mesh->draw.gl_light_normal_array+idx;
+			np=mesh->draw.gl_bump_normal_array+idx;
+			
+			f_intensity=*(mesh->draw.gl_specular_intensity_array+trig->v[2]);
 
 			*vl++=*vp++;
 			*vl++=*vp++;
@@ -176,6 +192,10 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 			*nl++=*np++;
 			*nl++=*np++;
 			*nl++=*np;
+			
+			*sl++=f_intensity;
+			*sl++=f_intensity;
+			*sl++=f_intensity;
 
 				// indexes
 
@@ -230,6 +250,11 @@ inline void model_draw_set_vertex_objects_switch_color(model_type *mdl,int mesh_
 inline void model_draw_set_vertex_objects_switch_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	glColorPointer(3,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2+3))*sizeof(float)));
+}
+
+inline void model_draw_set_vertex_objects_switch_specular(model_type *mdl,int mesh_idx,model_draw *draw)
+{
+	glColorPointer(3,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2+3+3))*sizeof(float)));
 }
 
 void model_draw_release_vertex_objects(void)
@@ -329,7 +354,7 @@ void model_draw_stop_mesh_shadow_array(void)
 
 void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw *draw,bool is_fog_lighting)
 {
-	int						n,frame,trig_count,nvertex,
+	int						n,frame,trig_count,
 							trig_start_idx,trig_idx;
 	float					alpha;
 	model_mesh_type			*mesh;
@@ -392,8 +417,6 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 			// need to switch to normal array for bumping
 
 		if (texture->bumpmaps[frame].gl_id!=-1) {
-			nvertex=trig_count*3;
-
 			model_draw_set_vertex_objects_switch_normal(mdl,mesh_idx,draw);
 
 			glEnable(GL_BLEND);
@@ -413,13 +436,23 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 		
 			gl_texture_opaque_tesseled_bump_end();
 
-			model_draw_set_vertex_objects_switch_normal(mdl,mesh_idx,draw);
+			model_draw_set_vertex_objects_switch_color(mdl,mesh_idx,draw);
 		}
 
 			// specular
 
 		if ((!dim3_debug) && (!is_fog_lighting) && (texture->specularmaps[frame].gl_id!=-1)) {
+			model_draw_set_vertex_objects_switch_specular(mdl,mesh_idx,draw);
+
+			glEnable(GL_BLEND);
 			glBlendFunc(GL_ONE,GL_ONE);
+			
+			glEnable(GL_ALPHA_TEST);
+			glAlphaFunc(GL_NOTEQUAL,0);
+
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(GL_EQUAL);
+			glDepthMask(GL_FALSE);
 
 			gl_texture_tesseled_specular_start();
 			gl_texture_tesseled_specular_set(texture->specularmaps[frame].gl_id);
@@ -427,6 +460,8 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 			glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 				
 			gl_texture_tesseled_specular_end();
+			
+			model_draw_set_vertex_objects_switch_color(mdl,mesh_idx,draw);
 		}
 
 			// glow mapped textures
@@ -584,6 +619,7 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,mod
 			// specular mapped textures
 
 		if (texture->specularmaps[frame].gl_id!=-1) {
+			model_draw_set_vertex_objects_switch_specular(mdl,mesh_idx,draw);
 			
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_DST_COLOR,GL_ONE);
@@ -600,6 +636,8 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,mod
 			glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 			
 			gl_texture_transparent_specular_end();
+			
+			model_draw_set_vertex_objects_switch_color(mdl,mesh_idx,draw);
 		}
 
 			// glow mapped textures

@@ -64,7 +64,7 @@ extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-int							host_tab_value,host_map_idx,host_game_type_idx;
+int							host_tab_value,host_map_idx;
 char						*net_host_file_list;
 char						net_game_types[network_setup_max_game+1][32],
 							bot_count_list[max_multiplayer_bot+2][32],
@@ -198,7 +198,7 @@ void host_game_pane(void)
 	x=(int)(((float)hud.scale_x)*0.15f);
 	y=(int)(((float)hud.scale_y)*0.17f);
 	
-	element_combo_add("Game Type",(char*)net_game_types,host_game_type_idx,host_game_type_id,x,y,TRUE);
+	element_combo_add("Game Type",(char*)net_game_types,setup.network.game_type,host_game_type_id,x,y,TRUE);
 	y+=element_get_padding();
 
 		// hosts table
@@ -215,7 +215,7 @@ void host_game_pane(void)
 	
 		// fill table with maps
 
-	host_fill_map_table(net_setup.games[host_game_type_idx].name);
+	host_fill_map_table(net_setup.games[setup.network.game_type].name);
 	host_set_last_map();
 
 	element_set_value(host_table_id,host_map_idx);
@@ -345,7 +345,6 @@ void host_open(void)
 		
 	host_tab_value=0;
 	host_map_idx=-1;
-	host_game_type_idx=0;
 
 	host_create_pane();
 
@@ -372,7 +371,7 @@ void host_game_setup(void)
 	
 		// game type
 		
-	net_setup.game_idx=host_game_type_idx;
+	net_setup.game_idx=setup.network.game_type;
 	
 		// use graphic name to get to original map name
 		
@@ -490,8 +489,8 @@ void host_handle_click(int id)
 
 		case host_game_type_id:
 			idx=element_get_value(host_game_type_id);
-			if (idx!=host_game_type_idx) {
-				host_game_type_idx=idx;
+			if (idx!=setup.network.game_type) {
+				setup.network.game_type=idx;
 				host_fill_map_table(net_setup.games[idx].name);
 				host_set_last_map();
 				element_set_value(host_table_id,host_map_idx);

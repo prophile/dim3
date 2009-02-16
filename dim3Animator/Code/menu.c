@@ -1028,7 +1028,12 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			// --------------------------------
 			
 		case kCommandNewPose:
- 			idx=model_pose_add(&model);
+ 			if (model.nbone==0) {
+				StandardAlert(0,"\pCan't Create Pose","\pYou need to have at least one bone before creating a pose.",NULL,NULL);
+				return(noErr);
+			}
+			
+			idx=model_pose_add(&model);
 			if (idx==-1) return(noErr);
 			
 			if (!dialog_pose_settings_run(&model.poses[idx])) {

@@ -32,8 +32,6 @@ and can be sold or given away.
 #include "effects.h"
 #include "cameras.h"
 
-extern void console_add_error(char *txt);
-
 extern map_type				map;
 extern server_type			server;
 extern setup_type			setup;

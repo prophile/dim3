@@ -32,6 +32,7 @@ and can be sold or given away.
 extern void gui_initialize(char *background_path,char *bitmap_name,bool show_view);
 extern void gui_shutdown(void);
 extern void gui_set_frame(chooser_frame_type *frame);
+extern void gui_draw_background(float alpha);
 extern void gui_draw(float background_alpha,bool cursor);
 extern void gui_draw_message(char *txt);
 extern int gui_click(void);
@@ -205,7 +206,8 @@ extern bool interface_quit_trigger_check(void);
 extern void score_limit_trigger_clear(void);
 extern void score_limit_trigger_check(void);
 extern void score_limit_trigger_set(void);
-extern void score_limit_run(int tick);
+extern void score_limit_trigger_set_check_scores(void);
+extern void score_limit_run(void);
 
 extern void error_open(char *err_str,char *err_str_2);
 extern void error_run(void);

@@ -225,6 +225,8 @@ and can be sold or given away.
 // auto-generate constants
 //
 
+#define ag_constant_portal_percent					0.28f
+
 #define ag_constant_portal_high_percent				0.075f
 #define ag_constant_portal_story_high_add_percent	0.10f
 
@@ -274,7 +276,7 @@ and can be sold or given away.
 //
 
 typedef struct	{
-					int										map_sz,portal_sz,
+					int										map_sz,portal_sz2,
 															left,right,top,bottom;
 				} auto_generate_setting_map_type;
 
@@ -296,7 +298,7 @@ typedef struct	{
 															stair_type_on[ag_stair_type_count],
 															door_type_on[ag_door_type_count],
 															light_type_on[ag_light_type_count];
-					bool									window,frame;
+					bool									second_story,window,frame;
 					auto_generate_setting_map_type			map;
 					auto_generate_setting_sound_type		sound;
 					auto_generate_setting_texture_type		texture;

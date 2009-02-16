@@ -29,6 +29,7 @@
 		26BE14280F44FA57008DB7DB /* score_limit.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BE14270F44FA57008DB7DB /* score_limit.c */; };
 		26BF01C20ECCEC22009996C6 /* script_weap_target_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BF01C10ECCEC22009996C6 /* script_weap_target_color.c */; };
 		26D109610DAC797D006666F2 /* host.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D109600DAC797D006666F2 /* host.c */; };
+		26D9C2440F48BE70005A2FD6 /* script_utility_skill.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D9C2430F48BE70005A2FD6 /* script_utility_skill.c */; };
 		26DAED300DD55C28000EBB48 /* group_move.c in Sources */ = {isa = PBXBuildFile; fileRef = 26DAED2F0DD55C28000EBB48 /* group_move.c */; };
 		26DB6E030DE07A9700BDD008 /* obj_ext_move.c in Sources */ = {isa = PBXBuildFile; fileRef = 26DB6E020DE07A9700BDD008 /* obj_ext_move.c */; };
 		26F08CA20DAC7DB50097E249 /* net_host.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F08C9E0DAC7DB50097E249 /* net_host.c */; };
@@ -410,6 +411,7 @@
 		26BE14270F44FA57008DB7DB /* score_limit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = score_limit.c; path = Sources_View/score_limit.c; sourceTree = "<group>"; };
 		26BF01C10ECCEC22009996C6 /* script_weap_target_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_weap_target_color.c; path = Sources_Server/script_weap_target_color.c; sourceTree = "<group>"; };
 		26D109600DAC797D006666F2 /* host.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = host.c; path = Sources_View/host.c; sourceTree = "<group>"; };
+		26D9C2430F48BE70005A2FD6 /* script_utility_skill.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_utility_skill.c; path = Sources_Server/script_utility_skill.c; sourceTree = "<group>"; };
 		26DAED2F0DD55C28000EBB48 /* group_move.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = group_move.c; path = Sources_Server/group_move.c; sourceTree = "<group>"; };
 		26DB6E020DE07A9700BDD008 /* obj_ext_move.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = obj_ext_move.c; path = Sources_Server/obj_ext_move.c; sourceTree = "<group>"; };
 		26F08C9E0DAC7DB50097E249 /* net_host.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host.c; path = Sources_Network/net_host.c; sourceTree = "<group>"; };
@@ -1143,6 +1145,7 @@
 				F5A581C2090B433F00BE7C36 /* script_utility_point.c */,
 				F5A581C3090B433F00BE7C36 /* script_utility_random.c */,
 				F5C1BD510A047590002D02AB /* script_utility_pack.c */,
+				26D9C2430F48BE70005A2FD6 /* script_utility_skill.c */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -1933,6 +1936,7 @@
 				26A5625B0EF6D0B000D38FC0 /* net_socket_udp.c in Sources */,
 				26A562B90EF6D50D00D38FC0 /* net_utility.c in Sources */,
 				26BE14280F44FA57008DB7DB /* score_limit.c in Sources */,
+				26D9C2440F48BE70005A2FD6 /* script_utility_skill.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
