@@ -173,9 +173,11 @@ void light_add(d3pnt *pnt,int light_type,int intensity,float fall_off,d3col *col
       
 ======================================================= */
 
-int light_create_glsl_array(d3pnt *pnt,float *light_pos,float *light_col,float *light_normal,int *closest_idx)
+int light_create_glsl_array(d3pnt *pnt,float *light_pos,float *light_col,float *light_normal)
 {
-	int						n,d,dist;
+	int						n,k,d,sz,
+							idx,cnt,sort_list[max_light_spot],
+							sort_dist[max_light_spot];
 	float					*pos,*col,*normal;
 	d3vct					vct;
 	light_spot_type			*lspot;
@@ -186,9 +188,54 @@ int light_create_glsl_array(d3pnt *pnt,float *light_pos,float *light_col,float *
 	memset(light_col,0x0,((sizeof(float)*4)*max_light_spot));
 	memset(light_normal,0x0,((sizeof(float)*3)*max_light_spot));
 
-	*closest_idx=0;
-
 	if (nlight==0) return(0);
+
+		// sort the light list
+
+	cnt=0;
+
+	for (n=0;n!=nlight;n++) {
+		lspot=&lspot_cache[n];
+
+			// get distance and reduce light list
+			// to only lights the points touch
+
+		d=(int)distance_get(lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,pnt->x,pnt->y,pnt->z);
+		if (d>lspot->intensity) continue;
+
+			// find position in list (top is closest)
+
+		idx=-1;
+	
+		for (k=0;k!=cnt;k++) {
+			if (sort_dist[k]>d) {
+				idx=k;
+				break;
+			}
+		}
+	
+			// insert at end of list
+			
+		if (idx==-1) {
+			sort_dist[cnt]=d;
+			sort_list[cnt]=n;
+			cnt++;
+			continue;
+		}
+		
+			// insert in list
+			
+		sz=sizeof(int)*(cnt-idx);
+		memmove(&sort_dist[idx+1],&sort_dist[idx],sz);
+		memmove(&sort_list[idx+1],&sort_list[idx],sz);
+		
+		sort_dist[idx]=d;
+		sort_list[idx]=n;
+		
+		cnt++;
+
+		lspot++;
+	}
 
 		// create the list
 
@@ -196,11 +243,9 @@ int light_create_glsl_array(d3pnt *pnt,float *light_pos,float *light_col,float *
 	col=light_col;
 	normal=light_normal;
 
-	dist=map_max_size;
+	for (n=0;n!=cnt;n++) {
+		lspot=&lspot_cache[sort_list[n]];
 
-	lspot=lspot_cache;
-
-	for (n=0;n!=nlight;n++) {
 		*pos++=(float)lspot->pnt.x;
 		*pos++=(float)lspot->pnt.y;
 		*pos++=(float)lspot->pnt.z;
@@ -215,15 +260,7 @@ int light_create_glsl_array(d3pnt *pnt,float *light_pos,float *light_col,float *
 		*normal++=vct.x;
 		*normal++=vct.y;
 		*normal++=vct.z;
-
-		d=(int)distance_get(lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
-		if (d<dist) {
-			dist=d;
-			*closest_idx=n;
-		}
-
-		lspot++;
 	}
 
-	return(nlight);
+	return(cnt);
 }
