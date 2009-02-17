@@ -438,7 +438,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 
 			model_draw_set_vertex_objects_switch_color(mdl,mesh_idx,draw);
 		}
-
+/* supergumba -- specular and glow off for now, needs to be changed
 			// specular
 
 		if ((!dim3_debug) && (!is_fog_lighting) && (texture->specularmaps[frame].gl_id!=-1)) {
@@ -486,6 +486,8 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 			
 			gl_texture_opaque_glow_end();
 		}
+		
+		*/
 	}
 }
 
@@ -617,7 +619,7 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,mod
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 
 		gl_texture_transparent_end();
-
+/* supergumba -- specular and glow off for now -- needs to be fixed
 			// specular mapped textures
 
 		if (texture->specularmaps[frame].gl_id!=-1) {
@@ -663,6 +665,7 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,mod
 			
 			gl_texture_transparent_glow_end();
 		}
+		*/
 	}
 }
 
