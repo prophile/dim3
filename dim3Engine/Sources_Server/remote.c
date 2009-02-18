@@ -51,6 +51,7 @@ extern network_setup_type	net_setup;
 extern bool					game_loop_quit;
 
 extern int game_time_get(void);
+extern void game_reset(void);
 extern void chat_add_message(int tick,char *name,char *str,d3col *col);
 extern bool game_start(int skill,network_reply_join_remotes *remotes,char *err_str);
 extern void game_end(void);

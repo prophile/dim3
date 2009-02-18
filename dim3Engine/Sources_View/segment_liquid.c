@@ -183,12 +183,7 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz)
 				*cl=*(cl+1)=*(cl+2)=1.0f;
 			}
 			else {
-				if (setup.ray_trace_lighting) {
-					map_calculate_ray_trace_light_color_normal((double)x,(double)y,(double)z,cl,normal,&f_intensity);
-				}
-				else {
-					map_calculate_light_color_normal((double)x,(double)y,(double)z,cl,normal,&f_intensity);
-				}
+				map_calculate_light_color_normal((double)x,(double)y,(double)z,cl,normal,&f_intensity);
 			}
 			
 			cl+=3;
