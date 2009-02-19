@@ -51,6 +51,10 @@ extern void view_compile_gl_list_switch_to_specular(void);
 extern void view_compile_gl_list_dettach(void);
 extern light_spot_type* map_find_closest_light(double x,double y,double z,int *p_dist);	// supergumba
 
+extern int					nlight;
+extern int					nlight_reduce,light_reduce_list[max_light_spot];
+extern light_spot_type		lspot_cache[max_light_spot];	// supergumba
+
 /* =======================================================
 
       Opaque Map Normal Textures
@@ -664,6 +668,142 @@ void render_opaque_portal_lighting_fix(int mesh_cnt,int *mesh_list,int stencil_p
       
 ======================================================= */
 
+
+
+
+
+
+
+
+
+
+
+
+void build_light_list_for_poly(map_mesh_poly_type *poly)
+{
+	int						n,k,d,sz,light_id,
+							idx,cnt,sort_list[max_light_spot],
+							sort_dist[max_light_spot];
+	float					f;
+	light_spot_type			*lspot;
+	GLfloat					glf[4];	
+
+		// sort the light list
+
+	cnt=0;
+
+	for (n=0;n!=nlight_reduce;n++) {
+		lspot=&lspot_cache[light_reduce_list[n]];
+
+			// get distance
+
+		d=(int)distance_get(lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z);
+
+			// find position in list (top is closest)
+
+		idx=-1;
+	
+		for (k=0;k!=cnt;k++) {
+			if (sort_dist[k]>d) {
+				idx=k;
+				break;
+			}
+		}
+	
+			// insert at end of list
+			
+		if (idx==-1) {
+			sort_dist[cnt]=d;
+			sort_list[cnt]=light_reduce_list[n];
+			cnt++;
+			continue;
+		}
+		
+			// insert in list
+			
+		sz=sizeof(int)*(cnt-idx);
+		memmove(&sort_dist[idx+1],&sort_dist[idx],sz);
+		memmove(&sort_list[idx+1],&sort_list[idx],sz);
+		
+		sort_dist[idx]=d;
+		sort_list[idx]=light_reduce_list[n];
+		
+		cnt++;
+	}
+	
+		// only use three lights -- supergumba -- work on this, maybe two?
+		
+	if (cnt>3) cnt=3;
+			
+	for (n=0;n!=3;n++) {
+		lspot=&lspot_cache[sort_list[n]];
+		
+		light_id=GL_LIGHT0+n;
+		
+			// null lights
+			
+		if (n>=cnt) {					// supergumba -- in future, we will need shaders for 1, 2, or 3 lights
+			glDisable(light_id);
+			
+			glf[0]=glf[1]=glf[2]=0.0f;
+			glf[3]=1.0f;
+			glLightfv(light_id,GL_POSITION,glf);
+			glLightf(light_id,GL_CONSTANT_ATTENUATION,0.0f);
+			glLightf(light_id,GL_QUADRATIC_ATTENUATION,0.0f);
+		}
+		
+			// regular lights
+			
+		else {
+			glEnable(light_id);			// supergumba -- do this outside of this routine!
+			
+			glf[0]=(float)lspot->pnt.x;
+			glf[1]=(float)lspot->pnt.y;
+			glf[2]=(float)lspot->pnt.z;
+			glf[3]=1.0f;
+			glLightfv(light_id,GL_POSITION,glf);
+
+			glLightf(light_id,GL_CONSTANT_ATTENUATION,0.0f);
+			glLightf(light_id,GL_LINEAR_ATTENUATION,0.0f);
+
+			f=(float)lspot->intensity;
+			f=f*0.4f;
+			f=f*f;
+			glLightf(light_id,GL_QUADRATIC_ATTENUATION,(1.0f/f));
+
+			glf[0]=lspot->col.r;
+			glf[1]=lspot->col.g;
+			glf[2]=lspot->col.b;
+			glf[3]=1.0f;
+			glLightfv(light_id,GL_AMBIENT,glf);
+			glLightfv(light_id,GL_DIFFUSE,glf);
+			
+			glf[0]=glf[1]=glf[2]=1.0f;
+			glf[3]=1.0f;
+			
+			glLightfv(light_id,GL_SPECULAR,glf);
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void render_opaque_portal_shader(int mesh_cnt,int *mesh_list)
 {
 
@@ -694,9 +834,11 @@ void render_opaque_portal_shader(int mesh_cnt,int *mesh_list)
 		
 			// skip meshes with no shaders
 			
-		if (!mesh->flag.has_shader) continue;
+		if (!mesh->flag.has_shader) continue;		// supergumba -- all meshes have shaders now
 
 			// run through the polys
+			
+		map_calculate_light_reduce_mesh(mesh);		// supergumba -- reduce lights before running mesh
 
 		poly=mesh->polys;
 
@@ -719,6 +861,8 @@ void render_opaque_portal_shader(int mesh_cnt,int *mesh_list)
 				poly++;
 				continue;
 			}
+			
+			build_light_list_for_poly(poly);
 
 				// setup shader
 
@@ -754,21 +898,18 @@ void render_opaque_portal_shader(int mesh_cnt,int *mesh_list)
 
 // supergumba -- light testing
 
-void render_opaque_portal_light_test(int mesh_cnt,int *mesh_list)
+
+
+
+
+
+void render_opaque_portal_light_old(int mesh_cnt,int *mesh_list)
 {
 
-	int					n,k,frame,d;
+	int					n,k,frame;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
-	light_spot_type		*lspot;
-	GLfloat				glf[4];	
-	
-//	GLfloat ambientLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
-	GLfloat ambientLight[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	GLfloat diffuseLight[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	GLfloat specularLight[] = { 0.5f, 0.5f, 0.5f, 1.0f };
-
 
 		// setup drawing
 
@@ -782,38 +923,6 @@ void render_opaque_portal_light_test(int mesh_cnt,int *mesh_list)
 	glDepthMask(GL_TRUE);
 
 	gl_texture_opaque_start(TRUE);
-
-	glDisableClientState(GL_COLOR_ARRAY);
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
-
-	glEnable(GL_LIGHTING);
-
-	glEnable(GL_LIGHT1);
-
-	glf[0]=map.ambient.light_color.r+setup.gamma;
-	glf[1]=map.ambient.light_color.g+setup.gamma;
-	glf[2]=map.ambient.light_color.b+setup.gamma;
-	glf[3]=1.0f;
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT,glf);
-
-/*	
-	glf[0]=0.0f;
-	glf[1]=0.0f;
-	glf[2]=0.0f;
-	glf[3]=0.0f;
-	glLightfv(GL_LIGHT1,GL_POSITION,glf);
-
-	glf[0]=1.0f; // map.ambient.light_color.r+setup.gamma;
-	glf[1]=0.0f; // map.ambient.light_color.g+setup.gamma;
-	glf[2]=0.0f; // map.ambient.light_color.b+setup.gamma;
-	glf[3]=1.0f;
-	glLightfv(GL_LIGHT1,GL_AMBIENT,glf);
-	glLightfv(GL_LIGHT1,GL_DIFFUSE,glf);
-		//		glLightfv(GL_LIGHT1,GL_SPECULAR,specularLight);
-*/
-
-//	glEnable(GL_LIGHT0);
-
 
 		// run through the meshes
 
@@ -839,48 +948,7 @@ void render_opaque_portal_light_test(int mesh_cnt,int *mesh_list)
 				poly++;
 				continue;
 			}
-
-		//	lspot=map_find_closest_light(poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,NULL);
-		//	if (lspot==NULL) {
-		//		glDisable(GL_LIGHT0);
-		//	}
-		//	else {
-			/*
-				glEnable(GL_LIGHT0);
-
-				glf[0]=(float)lspot->pnt.x;
-				glf[1]=(float)lspot->pnt.y;
-				glf[2]=(float)lspot->pnt.z;
-				glf[0]=(float)view.camera.pnt.x;
-				glf[1]=(float)view.camera.pnt.y;
-				glf[2]=(float)view.camera.pnt.z;
-				glf[3]=1.0f;
-				glLightfv(GL_LIGHT0,GL_POSITION,glf);
-
-				glLightf(GL_LIGHT0,GL_CONSTANT_ATTENUATION,0.0f);
-				glLightf(GL_LIGHT0,GL_LINEAR_ATTENUATION,0.0f);
-
-				d=map_enlarge*200;
-				d=d*d;
-				glLightf(GL_LIGHT0,GL_QUADRATIC_ATTENUATION,1.0f/((float)d));
-	
-				
-			//	glLightf(GL_LIGHT0,GL_CONSTANT_ATTENUATION,0.0f);
-			//	glLightf(GL_LIGHT0,GL_LINEAR_ATTENUATION,1.0f/((float)(map_enlarge*200)));
-			//	glLightf(GL_LIGHT0,GL_QUADRATIC_ATTENUATION,0.0f);
-
-
-
-				glf[0]=lspot->col.r;
-				glf[1]=lspot->col.g;
-				glf[2]=lspot->col.b;
-				glf[3]=1.0f;
-				glLightfv(GL_LIGHT0,GL_AMBIENT,ambientLight);
-				glLightfv(GL_LIGHT0,GL_DIFFUSE,diffuseLight);
-				glLightfv(GL_LIGHT0,GL_SPECULAR,specularLight);
-				*/
-		//	}
-
+			
 
 			gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
 			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
@@ -892,7 +960,127 @@ void render_opaque_portal_light_test(int mesh_cnt,int *mesh_list)
 		// end drawing
 
 	gl_texture_opaque_end();
+}
 
+
+
+
+
+
+
+void render_opaque_portal_light_test(int mesh_cnt,int *mesh_list)
+{
+
+	int					n,k,frame;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	texture_type		*texture;
+	GLfloat				glf[4];	
+	
+		// setup drawing
+
+	glDisable(GL_BLEND);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+	
+	glEnable(GL_DEPTH_TEST); 
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_TRUE);
+
+	gl_texture_opaque_start(TRUE);
+
+	glDisableClientState(GL_COLOR_ARRAY);
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
+
+	glEnable(GL_LIGHTING);
+	
+	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
+	glEnable(GL_COLOR_MATERIAL);
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
+
+	glf[0]=map.ambient.light_color.r+setup.gamma;
+	glf[1]=map.ambient.light_color.g+setup.gamma;
+	glf[2]=map.ambient.light_color.b+setup.gamma;
+	glf[3]=1.0f;
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT,glf);
+	
+		// run through the meshes
+
+	for (n=0;n!=mesh_cnt;n++) {
+
+		mesh=&map.mesh.meshes[mesh_list[n]];
+
+		map_calculate_light_reduce_mesh(mesh);
+		
+			// run through the polys
+
+		poly=mesh->polys;
+
+		for (k=0;k!=mesh->npoly;k++) {
+
+				// get texture
+
+			texture=&map.textures[poly->txt_idx];
+
+			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+
+			if ((texture->bitmaps[frame].alpha_mode==alpha_mode_transparent) || (poly->alpha!=1.0f)) {
+				poly++;
+				continue;
+			}
+			
+			build_light_list_for_poly(poly);
+			
+			/*
+			cnt=light_list_for_poly(&poly->box.mid,sort_list);
+			if (cnt>3) cnt=3;
+			
+			for (t=0;t!=cnt;t++) {
+				glEnable(GL_LIGHT0+t);
+				
+				lspot=&lspot_cache[sort_list[t]];
+
+				glf[0]=(float)lspot->pnt.x;
+				glf[1]=(float)lspot->pnt.y;
+				glf[2]=(float)lspot->pnt.z;
+				glf[3]=1.0f;
+				glLightfv(GL_LIGHT0+t,GL_POSITION,glf);
+
+				glLightf(GL_LIGHT0+t,GL_CONSTANT_ATTENUATION,0.0f);
+				glLightf(GL_LIGHT0+t,GL_LINEAR_ATTENUATION,0.0f);
+
+				f=(float)lspot->intensity;
+				f=f*0.4f;
+				f=f*f;
+				glLightf(GL_LIGHT0+t,GL_QUADRATIC_ATTENUATION,(1.0f/f));
+
+				glf[0]=lspot->col.r;
+				glf[1]=lspot->col.g;
+				glf[2]=lspot->col.b;
+				glf[3]=1.0f;
+				glLightfv(GL_LIGHT0+t,GL_AMBIENT,glf);
+				glLightfv(GL_LIGHT0+t,GL_DIFFUSE,glf);
+				
+				glf[0]=glf[1]=glf[2]=1.0f;
+				glf[3]=1.0f;
+				
+				glLightfv(GL_LIGHT0+t,GL_SPECULAR,glf);
+			}
+*/
+
+			gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
+			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+
+			poly++;
+		}
+	}
+
+		// end drawing
+
+	gl_texture_opaque_end();
+
+	glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_LIGHTING);
 }
 
@@ -1031,8 +1219,14 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 
 	render_opaque_portal_shader(mesh_cnt,mesh_list);
 */
-	render_opaque_portal_light_test(mesh_cnt,mesh_list);
 
+	if (dim3_debug) {
+	//	render_opaque_portal_light_old(mesh_cnt,mesh_list);
+		render_opaque_portal_shader(mesh_cnt,mesh_list);
+	}
+	else {
+		render_opaque_portal_light_test(mesh_cnt,mesh_list);
+	}
 
 		// dettach any attached lists
 
