@@ -283,7 +283,10 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 	texture->animate.on=xml_get_attribute_boolean(main_tag,"animate");
 	texture->additive=xml_get_attribute_boolean(main_tag,"additive");
 	texture->pixelated=xml_get_attribute_boolean(main_tag,"pixelated");
-	
+
+	texture->bump_factor=xml_get_attribute_float_default(main_tag,"bump_factor",1.0f);
+	texture->specular_factor=xml_get_attribute_float_default(main_tag,"specular_factor",1.0f);
+
 	texture->glow.rate=xml_get_attribute_int(main_tag,"glow_rate");
 	texture->glow.min=xml_get_attribute_float_default(main_tag,"glow_min",0.25f);
 	texture->glow.max=xml_get_attribute_float_default(main_tag,"glow_max",0.75f);
@@ -385,6 +388,9 @@ void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_s
 	xml_add_attribute_boolean("animate",texture->animate.on);
 	xml_add_attribute_boolean("additive",texture->additive);
 	xml_add_attribute_boolean("pixelated",texture->pixelated);
+
+	xml_add_attribute_float("bump_factor",texture->bump_factor);
+	xml_add_attribute_float("specular_factor",texture->specular_factor);
 	
 	xml_add_attribute_int("glow_rate",texture->glow.rate);
 	xml_add_attribute_float("glow_min",texture->glow.min);

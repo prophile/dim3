@@ -29,9 +29,12 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "lights.h"
 #include "effects.h"
 #include "consoles.h"
 #include "video.h"
+
+extern bool				dim3_debug;
 
 extern map_type			map;
 extern server_type		server;
@@ -51,182 +54,17 @@ extern void view_compile_gl_list_switch_to_specular(void);
       
 ======================================================= */
 
-void render_transparent_portal_mesh(bool is_fog_lighting)
+void render_transparent_mesh_simple(void)
 {
-	int						n,sort_cnt,frame;
+	int						n,sort_cnt,frame,cur_mesh_idx;
 	unsigned long			txt_id;
 	float					alpha;
-	bool					txt_setup_reset;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	map_poly_sort_item_type	*sort_list;
 	texture_type			*texture;
 
-	sort_cnt=map.sort.count;
-	sort_list=map.sort.list;
-
-		// this flag tells if we need to reset the
-		// texture setup for transparencies.  It starts
-		// true so we initially set it up, and goes back to
-		// true whenever a specular or glow mapping disrupts
-		// the rendering flow
-
-		// speculars and glows need to render when the actual
-		// transparent segment renders so the sorting works
-		// correctly
-
-	txt_setup_reset=TRUE;
-
-		// texture mapped transparent segments
-		// these are lighted by themselves
-
-	txt_id=-1;
-	alpha=0.0f;
-
-	for (n=0;n!=sort_cnt;n++) {
-		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
-		poly=&mesh->polys[sort_list[n].poly_idx];
-	
-			// get texture
-
-		texture=&map.textures[poly->txt_idx];
-		frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-			// is shader
-
-		if (texture->shader.on) continue;
-
-			// do we need to get back to rendering for transparencies?
-			// this happens when a specular or glow interrupt the normal
-			// rendering flow.  This also forces a reset of the current
-			// texture and alpha
-
-		if (txt_setup_reset) {
-			gl_texture_transparent_start();
-						
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc(GL_NOTEQUAL,0);
-						
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_LEQUAL);
-			glDepthMask(GL_FALSE);
-
-			txt_setup_reset=FALSE;
-
-			txt_id=-1;
-			alpha=0.0f;
-		}
-
-			// draw the transparent texture
-
-		if ((texture->bitmaps[frame].gl_id!=txt_id) || (poly->alpha!=alpha)) {
-		
-			txt_id=texture->bitmaps[frame].gl_id;
-			alpha=poly->alpha;
-			gl_texture_transparent_set(txt_id,alpha);
-			
-			if (texture->additive) {
-				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-			}
-			else {
-				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-			}
-		}
-
-		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-
-			// draw any specular on the transparent segment
-
-		if ((!is_fog_lighting) && (texture->specularmaps[frame].gl_id!=-1)) {
-			
-				// end transparencies drawing and start specular
-
-			gl_texture_transparent_end();
-			
-			gl_texture_transparent_specular_start();
-			view_compile_gl_list_switch_to_specular();
-
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_ONE,GL_ONE);		// speculars are always additive
-
-			glDisable(GL_ALPHA_TEST);
-
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_LEQUAL);
-			glDepthMask(GL_FALSE);
-
-				// draw specular
-
-			gl_texture_transparent_specular_set(texture->specularmaps[frame].gl_id,poly->alpha);
-
-				// use lighting mesh as specular is dependant upon the light
-
-			if (poly->light.simple_tessel) {
-				glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-			}
-			else {
-				glDrawRangeElements(GL_QUADS,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,(poly->light.nquad*4),GL_UNSIGNED_INT,(GLvoid*)poly->light.gl_quad_index_offset);
-			}
-
-				// end specular drawing and force a transparencies reset
-
-			gl_texture_transparent_specular_end();
-			view_compile_gl_list_switch_to_color();
-			
-			txt_setup_reset=TRUE;
-		}
-
-			// draw any glow on the transparent segment
-
-		if (texture->glowmaps[frame].gl_id!=-1) {
-
-				// end transparencies drawing and start glow
-
-			gl_texture_transparent_end();
-		
-			gl_texture_transparent_glow_start();
-			
-			glEnable(GL_BLEND);
-			if (texture->additive) {
-				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-			}
-			else {
-				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);	// glows can also be additive
-			}
-
-			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc(GL_NOTEQUAL,0);
-
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_LEQUAL);
-			glDepthMask(GL_FALSE);
-		
-				// draw glow
-
-			gl_texture_transparent_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,poly->alpha,texture->glow.current_color);
-
-			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-			
-				// end glow drawing and force a transparencies reset
-
-			gl_texture_transparent_glow_end();
-			txt_setup_reset=TRUE;
-		}
-	}
-
-	gl_texture_transparent_end();
-}
-
-void render_transparent_portal_shader(void)
-{
-	int						n,sort_cnt,frame;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-	map_poly_sort_item_type	*sort_list;
-	texture_type			*texture;
+		// setup transparent drawing
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -238,11 +76,101 @@ void render_transparent_portal_shader(void)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 
-	gl_shader_program_start(max_map_texture,map.textures);
-	gl_texture_shader_start();
+		// sorted transparency list
 
 	sort_cnt=map.sort.count;
 	sort_list=map.sort.list;
+
+		// keep track of certain settings so
+		// we can optimize state changes
+
+	txt_id=-1;
+	alpha=0.0f;
+	cur_mesh_idx=-1;
+
+		// draw transparent meshes
+
+	gl_texture_transparent_start();
+
+	for (n=0;n!=sort_cnt;n++) {
+		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
+		poly=&mesh->polys[sort_list[n].poly_idx];
+
+			// reduce the lighting list
+
+		if (cur_mesh_idx!=sort_list[n].mesh_idx) {
+			cur_mesh_idx=sort_list[n].mesh_idx;
+			map_calculate_light_reduce_mesh(mesh);
+		}
+	
+			// get texture
+
+		texture=&map.textures[poly->txt_idx];
+		frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+
+			// do we need texture switching?
+
+		if ((texture->bitmaps[frame].gl_id!=txt_id) || (poly->alpha!=alpha)) {
+		
+			txt_id=texture->bitmaps[frame].gl_id;
+			alpha=poly->alpha;
+
+			if (texture->additive) {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+			}
+			else {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+			}
+
+			gl_texture_transparent_set(txt_id,alpha);
+			
+		}
+
+			// setup the lights
+
+		gl_build_lights_from_reduced_light_list(&poly->box.mid);
+
+			// draw the polygon
+
+		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+	}
+
+	gl_texture_transparent_end();
+}
+
+void render_transparent_mesh_shader(void)
+{
+	int						n,sort_cnt,frame,nlight,cur_mesh_idx;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	map_poly_sort_item_type	*sort_list;
+	texture_type			*texture;
+
+		// set transparent shader calls
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+				
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+
+		// sorted transparent poly list
+
+	sort_cnt=map.sort.count;
+	sort_list=map.sort.list;
+
+		// keep track of state
+
+	cur_mesh_idx=-1;
+
+		// start shaders
+
+	gl_shader_program_start(max_map_texture,map.textures);
+	gl_texture_shader_start();
 	
 	for (n=0;n!=sort_cnt;n++) {
 		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
@@ -257,12 +185,23 @@ void render_transparent_portal_shader(void)
 
 		if (!texture->shader.on) continue;
 
+			// reduce the lighting list
+
+		if (cur_mesh_idx!=sort_list[n].mesh_idx) {
+			cur_mesh_idx=sort_list[n].mesh_idx;
+			map_calculate_light_reduce_mesh(mesh);
+		}
+
+			// setup the lights
+
+		nlight=gl_build_lights_from_reduced_light_list(&poly->box.mid);
+
 			// draw shader
 
 		gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
 		gl_shader_set_program(texture->shader.program_obj);
 		
-		gl_shader_set_variables(texture->shader.program_obj,&poly->box.mid,texture);
+		gl_shader_set_variables(texture->shader.program_obj,&poly->box.mid,texture,nlight);
 
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}
@@ -270,6 +209,60 @@ void render_transparent_portal_shader(void)
 	gl_texture_shader_end();
 	gl_shader_program_end();
 }
+
+
+void render_transparent_mesh_glow(void)
+{
+	int						n,sort_cnt,frame;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	map_poly_sort_item_type	*sort_list;
+	texture_type			*texture;
+
+		// setup glow mapping
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE,GL_ONE);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+
+	sort_cnt=map.sort.count;
+	sort_list=map.sort.list;
+
+	gl_texture_glow_start();
+
+	for (n=0;n!=sort_cnt;n++) {
+		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
+		poly=&mesh->polys[sort_list[n].poly_idx];
+
+			// skip hilited polygons
+			// or meshes with no speculars
+
+		if ((!mesh->flag.has_glow) || (mesh->flag.hilite)) continue;
+
+			// get texture
+
+		texture=&map.textures[poly->txt_idx];
+		frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+
+			// any glow on texture
+
+		if (texture->glowmaps[frame].gl_id==-1) continue;
+		
+			// draw glow
+
+		gl_texture_glow_set(texture->glowmaps[frame].gl_id,texture->glow.current_color);
+		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+	}
+
+	gl_texture_glow_end();
+}
+
 
 /* =======================================================
 
@@ -383,8 +376,6 @@ void render_transparent_sort(int mesh_cnt,int *mesh_list,d3pnt *pnt)
 
 void render_transparent_map(int mesh_cnt,int *mesh_list)
 {
-	bool			is_fog_lighting;
-	
 		// setup view
 
 	gl_setup_viewport(console_y_offset());
@@ -395,10 +386,6 @@ void render_transparent_map(int mesh_cnt,int *mesh_list)
 		// texture binding optimization
 
 	gl_texture_bind_start();
-
-		// check for obscure fog lighting
-
-	is_fog_lighting=fog_solid_on();
 	
 		// attach compiled vertex lists
 
@@ -410,8 +397,14 @@ void render_transparent_map(int mesh_cnt,int *mesh_list)
 
 		// transparent meshes
 
-	render_transparent_portal_mesh(is_fog_lighting);
-	render_transparent_portal_shader();
+	if (dim3_debug) {
+		render_transparent_mesh_shader();
+	}
+	else {
+		render_transparent_mesh_simple();
+	}
+
+	render_transparent_mesh_glow();
 
 		// dettach any attached lists
 

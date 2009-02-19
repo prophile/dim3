@@ -351,8 +351,8 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*3)*sizeof(float)));
 	
-	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(3,GL_FLOAT,0,(void*)((v_sz*(3+2))*sizeof(float)));
+//	glEnableClientState(GL_COLOR_ARRAY);	// supergumba
+//	glColorPointer(3,GL_FLOAT,0,(void*)((v_sz*(3+2))*sizeof(float)));
 
 		// setup texture
 
@@ -381,7 +381,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 		mid.y=liq->y;
 		mid.z=(liq->top+liq->bot)>>1;
 
-		gl_shader_set_variables(texture->shader.program_obj,&mid,texture);
+		gl_shader_set_variables(texture->shader.program_obj,&mid,texture,0);		// supergumba -- fix
 
 		map_calculate_light_reduce_liquid(liq);
 		map_calculate_light_color_normal((double)mid.x,(double)mid.y,(double)mid.z,col,normal,&f_intensity);

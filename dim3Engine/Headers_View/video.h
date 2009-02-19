@@ -47,6 +47,10 @@ extern bool gl_check_texture_generate_mipmaps_ok(void);
 extern bool gl_check_point_sprite_ok(void);
 extern bool gl_check_shader_ok(void);
 
+	// lights
+
+extern int gl_build_lights_from_reduced_light_list(d3pnt *pnt);
+
 	// vbos
 
 extern void view_create_vertex_objects(void);
@@ -96,7 +100,7 @@ extern void view_draw_next_vertex_object_2D_line_quad(int lft,int rgt,int top,in
 extern void gl_shader_program_start(int texture_cnt,texture_type *texture);
 extern void gl_shader_program_end(void);
 extern void gl_shader_set_program(GLhandleARB shader_prog_obj);
-extern void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type *texture);
+extern void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type *texture,int nlight);
 
 	// shadows
 	
@@ -141,9 +145,9 @@ extern void gl_texture_tesseled_lighting_set(int alpha_mask_id,float dark_factor
 extern void gl_texture_tesseled_specular_start(void);
 extern void gl_texture_tesseled_specular_end(void);
 extern void gl_texture_tesseled_specular_set(int specular_id);
-extern void gl_texture_opaque_glow_start(void);
-extern void gl_texture_opaque_glow_end(void);
-extern void gl_texture_opaque_glow_set(int glow_id,float glow_color);
+extern void gl_texture_glow_start(void);
+extern void gl_texture_glow_end(void);
+extern void gl_texture_glow_set(int glow_id,float glow_color);
 extern void gl_texture_decal_start(void);
 extern void gl_texture_decal_end(void);
 extern void gl_texture_decal_set(int txt_id,float r,float g,float b,float alpha);
@@ -153,9 +157,6 @@ extern void gl_texture_transparent_set(int txt_id,float alpha);
 extern void gl_texture_transparent_specular_start(void);
 extern void gl_texture_transparent_specular_end(void);
 extern void gl_texture_transparent_specular_set(int specular_id,float alpha);
-extern void gl_texture_transparent_glow_start(void);
-extern void gl_texture_transparent_glow_end(void);
-extern void gl_texture_transparent_glow_set(int txt_id,int glow_id,float alpha,float glow_color);
 extern void gl_texture_shader_start(void);
 extern void gl_texture_shader_end(void);
 extern void gl_texture_shader_set(int txt_id,int bump_id,int specular_id,int glow_id);

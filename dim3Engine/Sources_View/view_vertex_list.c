@@ -550,32 +550,34 @@ void view_compile_gl_list_attach(void)
 
 		// color array
 
-	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(3,GL_FLOAT,0,(void*)((v_cnt*(3+2))*sizeof(float)));
+//	glEnableClientState(GL_COLOR_ARRAY);	// supergumba
+//	glColorPointer(3,GL_FLOAT,0,(void*)((v_cnt*(3+2))*sizeof(float)));
 }
+
+// supergumba -- delete most of these
 
 void view_compile_gl_list_switch_to_color(void)
 {
-	int				v_cnt;
+//	int				v_cnt;
 	
-	v_cnt=map.mesh.vbo_vertex_count;
-	glColorPointer(3,GL_FLOAT,0,(void*)((v_cnt*(3+2))*sizeof(float)));
+//	v_cnt=map.mesh.vbo_vertex_count;
+//	glColorPointer(3,GL_FLOAT,0,(void*)((v_cnt*(3+2))*sizeof(float)));
 }
 
 void view_compile_gl_list_switch_to_normal(void)
 {
-	int				v_cnt;
+//	int				v_cnt;
 	
-	v_cnt=map.mesh.vbo_vertex_count;
-	glColorPointer(3,GL_FLOAT,0,(void*)((v_cnt*(3+2+3))*sizeof(float)));
+//	v_cnt=map.mesh.vbo_vertex_count;
+//	glColorPointer(3,GL_FLOAT,0,(void*)((v_cnt*(3+2+3))*sizeof(float)));
 }
 
 void view_compile_gl_list_switch_to_specular(void)
 {
-	int				v_cnt;
+//	int				v_cnt;
 	
-	v_cnt=map.mesh.vbo_vertex_count;
-	glColorPointer(3,GL_FLOAT,0,(void*)((v_cnt*(3+2+3+3))*sizeof(float)));
+//	v_cnt=map.mesh.vbo_vertex_count;
+//	glColorPointer(3,GL_FLOAT,0,(void*)((v_cnt*(3+2+3+3))*sizeof(float)));
 }
 
 void view_compile_gl_list_dettach(void)

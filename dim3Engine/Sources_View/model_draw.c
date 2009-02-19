@@ -479,12 +479,12 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 
 			// supergumba -- needs to be fixed
 
-			gl_texture_opaque_glow_start();
-			gl_texture_opaque_glow_set(texture->glowmaps[frame].gl_id,texture->glow.current_color);
+			gl_texture_glow_start();
+			gl_texture_glow_set(texture->glowmaps[frame].gl_id,texture->glow.current_color);
 
 			glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 			
-			gl_texture_opaque_glow_end();
+			gl_texture_glow_end();
 		}
 		
 		*/
@@ -545,7 +545,7 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 		pnt.y=draw->pnt.y;
 		pnt.z=draw->pnt.z;
 	
-		gl_shader_set_variables(texture->shader.program_obj,&pnt,texture);
+		gl_shader_set_variables(texture->shader.program_obj,&pnt,texture,0);	// supergumba -- fix!
 		
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 			
@@ -658,12 +658,12 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,mod
 			glDepthFunc(GL_EQUAL);
 			glDepthMask(GL_FALSE);
 			
-			gl_texture_transparent_glow_start();
-			gl_texture_transparent_glow_set(texture->bitmaps[texture->animate.current_frame].gl_id,texture->glowmaps[texture->animate.current_frame].gl_id,alpha,texture->glow.current_color);
+			gl_texture_glow_start();
+			gl_texture_glow_set(texture->bitmaps[texture->animate.current_frame].gl_id,texture->glowmaps[texture->animate.current_frame].gl_id,alpha,texture->glow.current_color);
 
 			glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 			
-			gl_texture_transparent_glow_end();
+			gl_texture_glow_end();
 		}
 		*/
 	}

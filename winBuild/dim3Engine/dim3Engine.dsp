@@ -1230,11 +1230,19 @@ SOURCE=..\..\dim3Engine\Sources_View\gl_frames.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3Engine\Sources_View\gl_light.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Engine\Sources_View\gl_renderer.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_View\gl_shader.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_View\gl_shader_built_in.c
 # End Source File
 # Begin Source File
 

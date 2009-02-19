@@ -511,7 +511,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						float					txt_scale_x,txt_scale_y;
+						float					txt_scale_x,txt_scale_y,
+												bump_factor,specular_factor;
 						bool					additive,pixelated;
 						char					material_name[name_str_len];
 						d3col					col;
