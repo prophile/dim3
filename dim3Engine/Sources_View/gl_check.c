@@ -44,17 +44,6 @@ extern render_info_type		render_info;
 
 bool gl_check_frame_buffer_ok(void)
 {
-
-	// frame buffer routines not defined in 10.3.9, so we need to check this in OS X
-	
-#ifdef D3_OS_MAC
-	#ifndef GL_EXT_framebuffer_object
-		return(FALSE);
-	#endif
-#endif
-
-		// otherwise just check the string
-		
 	return(strstr(render_info.ext_string,"GL_EXT_framebuffer_object")!=NULL);
 }
 

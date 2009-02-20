@@ -35,6 +35,8 @@
 		26F08CA20DAC7DB50097E249 /* net_host.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F08C9E0DAC7DB50097E249 /* net_host.c */; };
 		26F08CA40DAC7DB50097E249 /* net_host_players.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F08CA00DAC7DB50097E249 /* net_host_players.c */; };
 		26F08CBA0DAC7E990097E249 /* network_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26F08CB90DAC7E990097E249 /* network_defs.h */; };
+		26FE82370F4E1D5C00B659D8 /* gl_light.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FE82350F4E1D5C00B659D8 /* gl_light.c */; };
+		26FE82380F4E1D5C00B659D8 /* gl_shader_built_in.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FE82360F4E1D5C00B659D8 /* gl_shader_built_in.c */; };
 		F500CC680C27942200F7C8CC /* gl_check.c in Sources */ = {isa = PBXBuildFile; fileRef = F500CC670C27942200F7C8CC /* gl_check.c */; };
 		F5022B5B0AC595C000F5C7D4 /* effects_lights.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022B5A0AC595C000F5C7D4 /* effects_lights.c */; };
 		F503D43809830CD100DEDC74 /* model_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D43709830CD100DEDC74 /* model_mesh.c */; };
@@ -417,6 +419,8 @@
 		26F08C9E0DAC7DB50097E249 /* net_host.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host.c; path = Sources_Network/net_host.c; sourceTree = "<group>"; };
 		26F08CA00DAC7DB50097E249 /* net_host_players.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host_players.c; path = Sources_Network/net_host_players.c; sourceTree = "<group>"; };
 		26F08CB90DAC7E990097E249 /* network_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = network_defs.h; path = Headers_Network/network_defs.h; sourceTree = "<group>"; };
+		26FE82350F4E1D5C00B659D8 /* gl_light.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_light.c; path = Sources_View/gl_light.c; sourceTree = "<group>"; };
+		26FE82360F4E1D5C00B659D8 /* gl_shader_built_in.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_shader_built_in.c; path = Sources_View/gl_shader_built_in.c; sourceTree = "<group>"; };
 		F500CC670C27942200F7C8CC /* gl_check.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_check.c; path = Sources_View/gl_check.c; sourceTree = "<group>"; };
 		F5022B5A0AC595C000F5C7D4 /* effects_lights.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = effects_lights.c; path = Sources_View/effects_lights.c; sourceTree = "<group>"; };
 		F503D43709830CD100DEDC74 /* model_mesh.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = model_mesh.c; path = Sources_Server/model_mesh.c; sourceTree = "<group>"; };
@@ -1290,7 +1294,9 @@
 				F5DD1A9209085CAA00721649 /* gl_renderer.c */,
 				F500CC670C27942200F7C8CC /* gl_check.c */,
 				F5DD1A9109085CAA00721649 /* gl_frames.c */,
+				26FE82350F4E1D5C00B659D8 /* gl_light.c */,
 				F5DD1A9309085CAA00721649 /* gl_shader.c */,
+				26FE82360F4E1D5C00B659D8 /* gl_shader_built_in.c */,
 				F52E81000C162BA0003D4818 /* gl_shadow.c */,
 				F5DD1A9609085CAA00721649 /* gl_text.c */,
 				F5DD1A9709085CAA00721649 /* gl_texture.c */,
@@ -1408,6 +1414,8 @@
 			isa = PBXGroup;
 			children = (
 				F5A58253090B51A200BE7C36 /* Headers */,
+				F5AA68A308FC90F200794C2C /* Video */,
+				F5AA681808FC8A9200794C2C /* Sound */,
 				F5A5823D090B50BE00BE7C36 /* Core */,
 				F5DD19E90908311300721649 /* Scene */,
 				F5EF6B280324091F017730E2 /* Segment Render */,
@@ -1418,8 +1426,6 @@
 				F5BC91C608F99C1200E02596 /* Interfaces */,
 				F5DD1AEA0908622100721649 /* Models */,
 				F5A57F2B090AB1E600BE7C36 /* XML */,
-				F5AA68A308FC90F200794C2C /* Video */,
-				F5AA681808FC8A9200794C2C /* Sound */,
 				F510733808F9C66900D0B135 /* Input */,
 				F5B01D2A08F864F700AE5F87 /* SDL */,
 			);
@@ -1462,8 +1468,8 @@
 				F5E8580E0A82B2BA00442059 /* rain.c */,
 				F50F79BD09C492AE0096C059 /* tint.c */,
 				F50F79CB09C4937D0096C059 /* fade.c */,
-				F5DD19EA0908315E00721649 /* hand.c */,
 				F5DD1AD609085FE100721649 /* ambients.c */,
+				F5DD19EA0908315E00721649 /* hand.c */,
 			);
 			name = Scene;
 			sourceTree = "<group>";
@@ -1937,6 +1943,8 @@
 				26A562B90EF6D50D00D38FC0 /* net_utility.c in Sources */,
 				26BE14280F44FA57008DB7DB /* score_limit.c in Sources */,
 				26D9C2440F48BE70005A2FD6 /* script_utility_skill.c in Sources */,
+				26FE82370F4E1D5C00B659D8 /* gl_light.c in Sources */,
+				26FE82380F4E1D5C00B659D8 /* gl_shader_built_in.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

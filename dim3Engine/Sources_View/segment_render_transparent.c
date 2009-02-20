@@ -201,7 +201,7 @@ void render_transparent_mesh_shader(void)
 		gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
 		gl_shader_set_program(texture->shader.program_obj);
 		
-		gl_shader_set_variables(texture->shader.program_obj,&poly->box.mid,texture,nlight);
+		gl_shader_set_variables(texture->shader.program_obj,&poly->box.mid,nlight,poly->dark_factor,texture);
 
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}

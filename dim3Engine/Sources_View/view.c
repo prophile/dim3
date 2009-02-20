@@ -379,6 +379,10 @@ void view_game_start(void)
 		// clear chat messages
 		
 	chat_clear_messages();
+	
+		// built-in shaders
+		
+	shader_built_in_initialize();
 }
 
 void view_game_stop(void)
@@ -391,6 +395,10 @@ void view_game_stop(void)
 		// rings, halos, marks, crosshairs and remote icons
 	
 	view_images_free();
+	
+		// remove any shaders
+		
+	shader_built_in_free_objects();
 }
 
 /* =======================================================

@@ -100,7 +100,7 @@ extern void view_draw_next_vertex_object_2D_line_quad(int lft,int rgt,int top,in
 extern void gl_shader_program_start(int texture_cnt,texture_type *texture);
 extern void gl_shader_program_end(void);
 extern void gl_shader_set_program(GLhandleARB shader_prog_obj);
-extern void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type *texture,int nlight);
+extern void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,int nlight,float dark_factor,texture_type *texture);
 
 	// shadows
 	

@@ -49,6 +49,8 @@ extern void view_compile_gl_list_switch_to_color(void);
 extern void view_compile_gl_list_switch_to_normal(void);
 extern void view_compile_gl_list_switch_to_specular(void);
 extern void view_compile_gl_list_dettach(void);
+
+extern GLhandleARB			bis_program_obj;
 																						
 /* =======================================================
 
@@ -120,9 +122,9 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 				// setup shader
 
 			gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
-			gl_shader_set_program(texture->shader.program_obj);
+			gl_shader_set_program(bis_program_obj);
 				
-			gl_shader_set_variables(texture->shader.program_obj,&poly->box.mid,texture,nlight);
+			gl_shader_set_variables(bis_program_obj,&poly->box.mid,nlight,poly->dark_factor,texture);
 
 				// draw polygon
 
@@ -247,7 +249,6 @@ void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 	
 	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
 
 	glf[0]=map.ambient.light_color.r+setup.gamma;
 	glf[1]=map.ambient.light_color.g+setup.gamma;
@@ -281,6 +282,8 @@ void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 			}
 			
 			gl_build_lights_from_reduced_light_list(&poly->box.mid);
+			
+			glColor4f(poly->dark_factor,poly->dark_factor,poly->dark_factor,1.0f);
 
 			gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
 			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
@@ -345,11 +348,6 @@ void render_opaque_mesh_glow(int mesh_cnt,int *mesh_list)
 				// get texture
 
 			texture=&map.textures[poly->txt_idx];
-			if (texture->shader.on) {
-				poly++;
-				continue;
-			}
-
 			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
 				// glow texture set?

@@ -545,7 +545,7 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 		pnt.y=draw->pnt.y;
 		pnt.z=draw->pnt.z;
 	
-		gl_shader_set_variables(texture->shader.program_obj,&pnt,texture,0);	// supergumba -- fix!
+		gl_shader_set_variables(texture->shader.program_obj,&pnt,0,1.0f,texture);	// supergumba -- fix!
 		
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 			

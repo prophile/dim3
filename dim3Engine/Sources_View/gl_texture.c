@@ -482,20 +482,14 @@ void gl_texture_shader_start(void)
 
 void gl_texture_shader_end(void)
 {
-	if (render_info.texture_unit_count>=4) {
-		glActiveTexture(GL_TEXTURE3);
-		glDisable(GL_TEXTURE_2D);
-	}
+	glActiveTexture(GL_TEXTURE3);
+	glDisable(GL_TEXTURE_2D);
 	
-	if (render_info.texture_unit_count>=3) {
-		glActiveTexture(GL_TEXTURE2);
-		glDisable(GL_TEXTURE_2D);
-	}
+	glActiveTexture(GL_TEXTURE2);
+	glDisable(GL_TEXTURE_2D);
 	
-	if (render_info.texture_unit_count>=2) {
-		glActiveTexture(GL_TEXTURE1);
-		glDisable(GL_TEXTURE_2D);
-	}
+	glActiveTexture(GL_TEXTURE1);
+	glDisable(GL_TEXTURE_2D);
 	
 	glActiveTexture(GL_TEXTURE0);
 	glDisable(GL_TEXTURE_2D);
@@ -505,73 +499,64 @@ void gl_texture_shader_set(int txt_id,int bump_id,int specular_id,int glow_id)
 {
 		// set textures to all replace
 		
-	if (render_info.texture_unit_count>=4) {
+	glActiveTexture(GL_TEXTURE3);
 	
-		glActiveTexture(GL_TEXTURE3);
+	if (glow_id!=-1) {
+		glEnable(GL_TEXTURE_2D);
+		gl_texture_bind(3,glow_id);
 		
-		if (glow_id!=-1) {
-			glEnable(GL_TEXTURE_2D);
-			gl_texture_bind(3,glow_id);
+		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+		
+		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
+		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
+		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
 			
-			glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-			
-			glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
-			glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
-			glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-				
-			glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
-			glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
-			glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-		}
-		else {
-			glDisable(GL_TEXTURE_2D);
-		}
+		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
+		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
+		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+	}
+	else {
+		glDisable(GL_TEXTURE_2D);
 	}
 	
-	if (render_info.texture_unit_count>=3) {
+	glActiveTexture(GL_TEXTURE2);
 	
-		glActiveTexture(GL_TEXTURE2);
+	if (specular_id!=-1) {
+		glEnable(GL_TEXTURE_2D);
+		gl_texture_bind(2,specular_id);
 		
-		if (specular_id!=-1) {
-			glEnable(GL_TEXTURE_2D);
-			gl_texture_bind(2,specular_id);
+		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+		
+		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
+		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
+		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
 			
-			glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-			
-			glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
-			glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
-			glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-				
-			glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
-			glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
-			glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-		}
-		else {
-			glDisable(GL_TEXTURE_2D);
-		}
+		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
+		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
+		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
 	}
-	
-	if (render_info.texture_unit_count>=2) {
+	else {
+		glDisable(GL_TEXTURE_2D);
+	}
 
-		glActiveTexture(GL_TEXTURE1);
+	glActiveTexture(GL_TEXTURE1);
+	
+	if (bump_id!=-1) {
+		glEnable(GL_TEXTURE_2D);
+		gl_texture_bind(1,bump_id);
 		
-		if (bump_id!=-1) {
-			glEnable(GL_TEXTURE_2D);
-			gl_texture_bind(1,bump_id);
+		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+		
+		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
+		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
+		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
 			
-			glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-			
-			glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
-			glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
-			glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-				
-			glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
-			glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
-			glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-		}
-		else {
-			glDisable(GL_TEXTURE_2D);
-		}
+		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
+		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
+		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+	}
+	else {
+		glDisable(GL_TEXTURE_2D);
 	}
 	
 	glActiveTexture(GL_TEXTURE0);

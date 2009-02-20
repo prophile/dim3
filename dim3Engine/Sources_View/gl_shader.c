@@ -92,7 +92,7 @@ void gl_shader_set_program(GLhandleARB shader_prog_obj)
       
 ======================================================= */
 
-void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type *texture,int nlight)
+void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,int nlight,float dark_factor,texture_type *texture)
 {
 	int						n;
 	GLint					var;
@@ -115,15 +115,17 @@ void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type
 		if (var!=-1) glUniform1fARB(var,game_time_fequency_second_get());
 
 			// camera position
-			// camera is always at 0,0,0
 			
 		var=glGetUniformLocationARB(shader_prog_obj,"dim3CameraPosition");
 		if (var!=-1) glUniform3fARB(var,(float)view.camera.pnt.x,(float)view.camera.pnt.y,(float)view.camera.pnt.z);
 
-			// ambient light
-
-		var=glGetUniformLocationARB(shader_prog_obj,"dim3AmbientLightColor");
-		glUniform3fARB(var,map.ambient.light_color.r,map.ambient.light_color.g,map.ambient.light_color.b);
+			// bump and specular factors
+			
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3BumpFactor");
+		if (var!=-1) glUniform1fARB(var,texture->bump_factor);
+		
+		var=glGetUniformLocationARB(shader_prog_obj,"dim3SpecularFactor");
+		if (var!=-1) glUniform1fARB(var,texture->specular_factor);
 			
 			// textures
 			
@@ -183,5 +185,8 @@ void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,texture_type
 
 	var=glGetUniformLocationARB(shader_prog_obj,"dim3LightCount");
 	if (var!=-1) glUniform1iARB(var,nlight);
+	
+	var=glGetUniformLocationARB(shader_prog_obj,"dim3DarkFactor");
+	if (var!=-1) glUniform1fARB(var,dark_factor);
 }
 
