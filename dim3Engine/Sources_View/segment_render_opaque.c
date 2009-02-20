@@ -78,6 +78,8 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 
+	gl_lights_start();
+
 	gl_shader_program_start(max_map_texture,map.textures);
 	gl_texture_shader_start();
 	
@@ -117,7 +119,7 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 				continue;
 			}
 			
-			nlight=gl_build_lights_from_reduced_light_list(&poly->box.mid);
+			nlight=gl_lights_build_from_reduced_light_list(&poly->box.mid);
 
 				// setup shader
 
@@ -125,6 +127,10 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 			gl_shader_set_program(bis_program_obj);
 				
 			gl_shader_set_variables(bis_program_obj,&poly->box.mid,nlight,poly->dark_factor,texture);
+			
+				// dark factor
+
+			glColor4f(poly->dark_factor,poly->dark_factor,poly->dark_factor,1.0f);
 
 				// draw polygon
 
@@ -138,6 +144,8 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 
 	gl_texture_shader_end();
 	gl_shader_program_end();
+
+	gl_lights_end();
 }
 
 
@@ -225,12 +233,10 @@ void render_opaque_mesh_old(int mesh_cnt,int *mesh_list)
 
 void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 {
-
 	int					n,k,frame;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
-	GLfloat				glf[4];	
 	
 		// setup drawing
 
@@ -243,18 +249,9 @@ void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 
+	gl_lights_start();
+
 	gl_texture_opaque_start(TRUE);
-
-	glEnable(GL_LIGHTING);
-	
-	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
-	glEnable(GL_COLOR_MATERIAL);
-
-	glf[0]=map.ambient.light_color.r+setup.gamma;
-	glf[1]=map.ambient.light_color.g+setup.gamma;
-	glf[2]=map.ambient.light_color.b+setup.gamma;
-	glf[3]=1.0f;
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT,glf);
 	
 		// run through the meshes
 
@@ -281,9 +278,15 @@ void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 				continue;
 			}
 			
-			gl_build_lights_from_reduced_light_list(&poly->box.mid);
+				// setup lights
+
+			gl_lights_build_from_reduced_light_list(&poly->box.mid);
 			
+				// dark factor
+
 			glColor4f(poly->dark_factor,poly->dark_factor,poly->dark_factor,1.0f);
+
+				// draw polygon
 
 			gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
 			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
@@ -296,8 +299,7 @@ void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 
 	gl_texture_opaque_end();
 
-	glDisable(GL_COLOR_MATERIAL);
-	glDisable(GL_LIGHTING);
+	gl_lights_end();
 }
 
 

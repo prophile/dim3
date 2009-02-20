@@ -44,12 +44,11 @@ GLhandleARB				bis_vertex_obj,bis_fragment_obj,bis_program_obj;
 
 char bis_vert_test[]={"\
 \
-uniform vec3 dim3LightPositions[64];\n\
-uniform vec3 dim3ClosestLightNormal;\n\
+uniform vec3 dim3LightPositions[3];\n\
 uniform vec3 dim3CameraPosition;\n\
 \
 varying float distanceToLight[3];\n\
-varying vec3 directionOfLight;\n\
+varying vec3 directionOfLight[3];\n\
 varying vec3 directionOfView;\n\
 \
 void main(void)\n\
@@ -60,57 +59,67 @@ void main(void)\n\
 //	directionOfLight = normalize(gl_Vertex.xyz - gl_LightSource[0].position.xyz);\n\
 	directionOfView = normalize(gl_Vertex.xyz - dim3CameraPosition);\n\
 \
-	vec4 cameraPos=gl_ModelViewMatrix*gl_Vertex;\n\
-	vec3 vct=vec3(gl_LightSource[0].position-cameraPos);\n\
-	directionOfLight=normalize(vct);\n\
-	distanceToLight[0]=length(vct);\n\
+//	vec4 cameraPos=gl_ModelViewMatrix*gl_Vertex;\n\
+//	vec3 vct=vec3(gl_LightSource[0].position-cameraPos);\n\
+//	directionOfLight=normalize(vct);\n\
+//	distanceToLight[0]=length(vct);\n\
 \
 //	directionOfLight = normalize(gl_LightSource[0].position.xyz);\n\
-	directionOfLight = normalize(gl_Vertex.xyz - gl_LightSource[0].position.xyz);\n\
+\
+    distanceToLight[0]=normalize(gl_LightSource[0].position.xyz);\n\
+	directionOfLight[0]=normalize(gl_Vertex.xyz - (dim3CameraPosition+gl_LightSource[0].position.xyz));\n\
 }\n\
 \
 "};
 
 char bis_frag_test[]={"\
 \
-uniform sampler2D     dim3Tex;\n\
-uniform sampler2D     dim3TexBump;\n\
-uniform sampler2D		dim3TexSpecular;\n\
+uniform sampler2D dim3Tex;\n\
+uniform sampler2D dim3TexBump;\n\
+uniform sampler2D dim3TexSpecular;\n\
+uniform float dim3DarkFactor;\n\
+uniform float dim3BumpFactor;\n\
+uniform float dim3SpecularFactor;\n\
 \
-varying float         distanceToLight[3];\n\
-varying vec3         directionOfLight;\n\
-varying vec3         directionOfView;\n\
+varying float distanceToLight[3];\n\
+varying vec3 directionOfLight[3];\n\
+varying vec3 directionOfView;\n\
 \
 void main(void)\n\
 {\n\
-	vec3 light_normal=normalize(directionOfLight);\n\
+	vec3 light_normal=normalize(directionOfLight[0]);\n\
 	vec3 view_normal=normalize(directionOfView);\n\
-\
-	vec4 Tex = texture2D(dim3Tex,gl_TexCoord[0].st);\n\
 \
 	vec3 BumpMap = texture2D(dim3TexBump, gl_TexCoord[0].st).xyz;\n\
 	BumpMap = (BumpMap - 0.5) * 2.0;\n\
 	BumpMap.y = -BumpMap.y;\n\
-	float Bump = max(dot(light_normal, BumpMap), 0.0);\n\
+	float Bump = max(dot(light_normal, BumpMap), 0.0) * dim3BumpFactor;\n\
 \
 	vec3 r = light_normal - (2.0 * dot(light_normal, BumpMap) * BumpMap);\n\
-	float Spec = pow(max(dot(r, view_normal), 0.0), 10.0) * (texture2D(dim3TexSpecular,vec2(gl_TexCoord[0].st)).x+0.3);\n\
+	float Spec = pow(max(dot(r, view_normal), 0.0), 10.0) * ((texture2D(dim3TexSpecular,vec2(gl_TexCoord[0].st)).x+0.5)*dim3SpecularFactor);\n\
 \
 	float att = 1.0 / (gl_LightSource[0].constantAttenuation +	\n\
 					gl_LightSource[0].linearAttenuation * distanceToLight[0] +	\n\
 					gl_LightSource[0].quadraticAttenuation * distanceToLight[0] * distanceToLight[0]);\n\
 	vec4 Diffuse=clamp((gl_LightSource[0].ambient*att),0.0,1.0);\n\
 \
-	Diffuse = Tex * Diffuse;\n\
+	vec4 tex = texture2D(dim3Tex,gl_TexCoord[0].st);\n\
+	Diffuse = tex * Diffuse;\n\
 \
 	gl_FragColor.rgb = (Diffuse.rgb + gl_LightModel.ambient.rgb) * Bump + Spec;\n\
 //	gl_FragColor.rgb = (Diffuse.rgb + gl_LightModel.ambient.rgb) * Bump;\n\
 //	gl_FragColor.rgb = BumpMap.rgb;\n\
-	gl_FragColor.a = Tex.a;\n\
+	gl_FragColor.a = tex.a;\n\
 }\n\
 \
 "};
 
+
+// supergumba -- need support for
+// 1. dark factor
+// 2. reduce lighting math
+// 3. use camel hump for shaders
+// 4. high lighted polygons
 
 bool shader_report_error2(char *err_str,char *vertex_name,char *fragment_name,GLhandleARB hand,char *err_type,int check_type)
 {

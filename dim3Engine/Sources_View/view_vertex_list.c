@@ -471,6 +471,8 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 			// moveable meshes always have their
 			// lights recalculated
 
+		/* supergumba -- all this can probably disappear
+
 		if (!mesh->flag.hilite) {
 
 			map_calculate_light_reduce_mesh(mesh);
@@ -492,6 +494,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 			}
 
 		}
+		*/
 
 			// reset the moved list so we'll catch
 			// and update any moved vertexes next time

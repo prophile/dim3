@@ -49,7 +49,9 @@ extern bool gl_check_shader_ok(void);
 
 	// lights
 
-extern int gl_build_lights_from_reduced_light_list(d3pnt *pnt);
+extern void gl_lights_start(void);
+extern void gl_lights_end(void);
+extern int gl_lights_build_from_reduced_light_list(d3pnt *pnt);
 
 	// vbos
 

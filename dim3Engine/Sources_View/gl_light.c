@@ -36,6 +36,7 @@ and can be sold or given away.
 
 extern map_type				map;
 extern view_type			view;
+extern setup_type			setup;
 
 extern int					nlight_reduce,light_reduce_list[max_light_spot];
 extern light_spot_type		lspot_cache[max_light_spot];
@@ -46,7 +47,33 @@ extern light_spot_type		lspot_cache[max_light_spot];
       
 ======================================================= */
 
-int gl_build_lights_from_reduced_light_list(d3pnt *pnt)
+void gl_lights_start(void)
+{
+	GLfloat				glf[4];	
+
+	glEnable(GL_LIGHTING);
+	
+		// enable colored materials for dark factor
+
+	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
+	glEnable(GL_COLOR_MATERIAL);
+
+		// ambient lighting
+
+	glf[0]=map.ambient.light_color.r+setup.gamma;
+	glf[1]=map.ambient.light_color.g+setup.gamma;
+	glf[2]=map.ambient.light_color.b+setup.gamma;
+	glf[3]=1.0f;
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT,glf);
+}
+
+void gl_lights_end(void)
+{
+	glDisable(GL_COLOR_MATERIAL);
+	glDisable(GL_LIGHTING);
+}
+
+int gl_lights_build_from_reduced_light_list(d3pnt *pnt)
 {
 	int						n,k,d,sz,light_id,
 							idx,cnt,sort_list[max_light_spot],

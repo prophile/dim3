@@ -230,9 +230,9 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((ntrig*3)*3)*sizeof(float)));
-
-	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(3,GL_FLOAT,0,(void*)(((ntrig*3)*(3+2))*sizeof(float)));
+// supergumba
+//	glEnableClientState(GL_COLOR_ARRAY);
+//	glColorPointer(3,GL_FLOAT,0,(void*)(((ntrig*3)*(3+2))*sizeof(float)));
 
 	return(TRUE);
 }
@@ -244,22 +244,26 @@ inline int model_draw_set_vertex_objects(model_type *mdl,int mesh_idx,model_draw
 
 inline void model_draw_set_vertex_objects_switch_color(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	glColorPointer(3,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2))*sizeof(float)));
+// supergumba
+//	glColorPointer(3,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2))*sizeof(float)));
 }
 
 inline void model_draw_set_vertex_objects_switch_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	glColorPointer(3,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2+3))*sizeof(float)));
+// supergumba
+//	glColorPointer(3,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2+3))*sizeof(float)));
 }
 
 inline void model_draw_set_vertex_objects_switch_specular(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	glColorPointer(3,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2+3+3))*sizeof(float)));
+// supergumba
+//	glColorPointer(3,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2+3+3))*sizeof(float)));
 }
 
 void model_draw_release_vertex_objects(void)
 {
-	glDisableClientState(GL_COLOR_ARRAY);
+// supergumba
+//	glDisableClientState(GL_COLOR_ARRAY);
 
 	glClientActiveTexture(GL_TEXTURE2);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -354,7 +358,7 @@ void model_draw_stop_mesh_shadow_array(void)
 
 void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw *draw,bool is_fog_lighting)
 {
-	int						n,frame,trig_count,
+	int						n,frame,trig_count,nlight,
 							trig_start_idx,trig_idx;
 	float					alpha;
 	model_mesh_type			*mesh;
@@ -368,6 +372,10 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 	trig_start_idx=model_draw_set_vertex_objects(mdl,mesh_idx,draw);
 	
 		// run through the materials
+
+	gl_lights_start();
+	map_calculate_light_reduce_model(draw);
+	nlight=gl_lights_build_from_reduced_light_list(&draw->pnt);
 
 	for (n=0;n!=max_model_texture;n++) {
 	
@@ -489,11 +497,13 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 		
 		*/
 	}
+
+	gl_lights_end();
 }
 
 void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw *draw)
 {
-	int						n,trig_count,frame,
+	int						n,trig_count,frame,nlight,
 							trig_start_idx,trig_idx;
 	d3pnt					pnt;
 	model_mesh_type			*mesh;
@@ -507,6 +517,10 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 	trig_start_idx=model_draw_set_vertex_objects(mdl,mesh_idx,draw);
 	
 		// run through the materials
+
+	gl_lights_start();
+	map_calculate_light_reduce_model(draw);
+	nlight=gl_lights_build_from_reduced_light_list(&draw->pnt);
 
 	for (n=0;n!=max_model_texture;n++) {
 	
@@ -545,18 +559,20 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 		pnt.y=draw->pnt.y;
 		pnt.z=draw->pnt.z;
 	
-		gl_shader_set_variables(texture->shader.program_obj,&pnt,0,1.0f,texture);	// supergumba -- fix!
+		gl_shader_set_variables(texture->shader.program_obj,&pnt,nlight,1.0f,texture);	// supergumba -- fix!
 		
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 			
 		gl_texture_shader_end();
 		gl_shader_program_end();
 	}
+
+	gl_lights_end();
 }
 
 void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw *draw)
 {
-	int						n,frame,trig_count,
+	int						n,frame,trig_count,nlight,
 							trig_start_idx,trig_idx;
 	float					alpha;
 	model_mesh_type			*mesh;
@@ -570,6 +586,10 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,mod
 	trig_start_idx=model_draw_set_vertex_objects(mdl,mesh_idx,draw);
 	
 		// run through textures
+
+	gl_lights_start();
+	map_calculate_light_reduce_model(draw);
+	nlight=gl_lights_build_from_reduced_light_list(&draw->pnt);
 
 	for (n=0;n!=max_model_texture;n++) {
 	
@@ -667,6 +687,8 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,mod
 		}
 		*/
 	}
+
+	gl_lights_end();
 }
 
 /* =======================================================
@@ -729,8 +751,8 @@ void model_render(int tick,model_draw *draw)
 		if (draw->flip_x) model_flip_draw_vertex(mdl,n);
 
 			// build color lists
-			
-		model_build_color(mdl,n,x,y,z,draw);
+	// supergumba -- delete all this, and color lists		
+	//	model_build_color(mdl,n,x,y,z,draw);
 
 			// translate vertex to view
 			
