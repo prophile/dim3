@@ -66,8 +66,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 256781273;
-			PBXWorkspaceStateSaveDate = 256781273;
+			PBXPerProjectTemplateStateSaveDate = 257056148;
+			PBXWorkspaceStateSaveDate = 257056148;
 		};
 		sourceControlManager = 26A5EABE0D404BD000BB47DE /* Source Control */;
 		userBuildSettings = {
@@ -113,9 +113,9 @@
 	};
 	F5AD52770BBE148C001C7C04 /* dim3baseutility.exp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2800}}";
-			sepNavSelRange = "{3871, 0}";
-			sepNavVisRange = "{2898, 973}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2772}}";
+			sepNavSelRange = "{3747, 0}";
+			sepNavVisRange = "{2749, 998}";
 			sepNavWindowFrame = "{{38, 255}, {1041, 747}}";
 		};
 	};
@@ -161,9 +161,9 @@
 	};
 	F5AD52A00BBE16AC001C7C04 /* baseutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1032, 8596}}";
-			sepNavSelRange = "{20400, 0}";
-			sepNavVisRange = "{0, 1346}";
+			sepNavIntBoundsRect = "{{0, 0}, {1032, 7868}}";
+			sepNavSelRange = "{18787, 0}";
+			sepNavVisRange = "{16764, 2023}";
 			sepNavWindowFrame = "{{467, 148}, {1041, 747}}";
 		};
 	};
@@ -185,9 +185,9 @@
 	};
 	F5AD52F50BBE1A5D001C7C04 /* xml.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 17108}}";
-			sepNavSelRange = "{5122, 40}";
-			sepNavVisRange = "{4594, 792}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 16576}}";
+			sepNavSelRange = "{5047, 130}";
+			sepNavVisRange = "{4574, 767}";
 			sepNavWindowFrame = "{{370, 197}, {1041, 747}}";
 		};
 	};
@@ -207,14 +207,6 @@
 			sepNavWindowFrame = "{{141, 147}, {1041, 747}}";
 		};
 	};
-	F5AD52FB0BBE1A66001C7C04 /* shaders.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4452}}";
-			sepNavSelRange = "{2962, 434}";
-			sepNavVisRange = "{2406, 1053}";
-			sepNavWindowFrame = "{{415, 265}, {1041, 747}}";
-		};
-	};
 	F5AD52FC0BBE1A66001C7C04 /* bitmap_main.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 3416}}";
@@ -225,9 +217,9 @@
 	};
 	F5AD52FD0BBE1A66001C7C04 /* textures.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6832}}";
-			sepNavSelRange = "{10827, 24}";
-			sepNavVisRange = "{9760, 1492}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5110}}";
+			sepNavSelRange = "{9174, 0}";
+			sepNavVisRange = "{8174, 1958}";
 			sepNavWindowFrame = "{{417, 201}, {1041, 747}}";
 		};
 	};

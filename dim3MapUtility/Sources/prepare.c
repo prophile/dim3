@@ -238,12 +238,9 @@ void map_prepare_mesh_box(map_mesh_type *mesh)
 
 void map_prepare(map_type *map)
 {
-	int					n,k,t,simple_cnt,
-						area,d,px[3],pz[3];
-	d3pnt				*pt;
+	int					n,k;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
-	texture_type		*texture;
 	
 		// prepare meshes
 
@@ -255,10 +252,6 @@ void map_prepare(map_type *map)
 
 		mesh->flag.touched=FALSE;
 		mesh->flag.shiftable=FALSE;
-		mesh->flag.has_simple=FALSE;
-		mesh->flag.has_bump=FALSE;
-		mesh->flag.has_shader=FALSE;
-		mesh->flag.has_specular=FALSE;
 		mesh->flag.has_glow=FALSE;
 		
 			// run through the mesh polygons
@@ -270,39 +263,6 @@ void map_prepare(map_type *map)
 				// setup box and slope
 
 			map_prepare_mesh_poly(mesh,poly);
-
-				// detect simple tessel segments
-				// if two of the axises are under simple
-				// tessel size, then entire polygon is simple tessel
-				// triangles determined to be simple by their size
-
-			if (poly->ptsz==3) {
-			
-				if (poly->box.wall_like) {
-					d=distance_2D_get(poly->line.lx,poly->line.lz,poly->line.rx,poly->line.rz);
-					area=(int)sqrt((d*(poly->box.max.y-poly->box.min.y))>>1);
-				}
-				else {
-					for (t=0;t!=3;t++) {
-						pt=&mesh->vertexes[poly->v[t]];
-						px[t]=pt->x;
-						pz[t]=pt->z;
-					}
-					
-					area=(int)(sqrt(area_2D_trig(px,pz)));
-				}
-				
-				poly->draw.simple_tessel=(area<map_simple_tessel_trig_area);
-			}
-			else {
-				simple_cnt=0;
-
-				if ((poly->box.max.x-poly->box.min.x)<map_simple_tessel_poly_side_size) simple_cnt++;
-				if ((poly->box.max.z-poly->box.min.z)<map_simple_tessel_poly_side_size) simple_cnt++;
-				if ((poly->box.max.y-poly->box.min.y)<map_simple_tessel_poly_side_size) simple_cnt++;
-			
-				poly->draw.simple_tessel=(simple_cnt>=2);
-			}
 			
 				// setup texture and shifting flags
 
@@ -314,20 +274,9 @@ void map_prepare(map_type *map)
 
 			mesh->flag.shiftable|=poly->draw.shift_on;
 
-				// mesh rendering flags
+				// glow map optimization flag
 
-			texture=&map->textures[poly->txt_idx];
-
-			if (!texture->shader.on) {
-				if (texture->bumpmaps[0].gl_id!=-1) mesh->flag.has_bump=TRUE;
-				if (texture->specularmaps[0].gl_id!=-1) mesh->flag.has_specular=TRUE;
-				if (poly->draw.simple_tessel) mesh->flag.has_simple=TRUE;
-			}
-			else {
-				mesh->flag.has_shader=TRUE;
-			}
-			
-			if (texture->glowmaps[0].gl_id!=-1) mesh->flag.has_glow=TRUE;
+			if (map->textures[poly->txt_idx].glowmaps[0].gl_id!=-1) mesh->flag.has_glow=TRUE;
 
 			poly++;
 		}

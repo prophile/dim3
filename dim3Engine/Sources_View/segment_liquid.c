@@ -369,43 +369,40 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 		// start shader or regular texture
 
 		// supergumba -- separate these so shader program start isn't called continually
-
+/* supergumba
 	if (texture->shader.on) {
-		gl_shader_program_start(max_map_texture,map.textures);
-		gl_texture_shader_start();
+		gl_shader_start();
 
-		gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
-		gl_shader_set_program(texture->shader.program_obj);
-		
 		mid.x=(liq->lft+liq->rgt)>>1;
 		mid.y=liq->y;
 		mid.z=(liq->top+liq->bot)>>1;
 
-		gl_shader_set_variables(texture->shader.program_obj,&mid,0,1.0f,texture);		// supergumba -- fix
+		gl_shader_execute(texture,frame,&mid,0,1.0f);		// supergumba -- fix
 
 		map_calculate_light_reduce_liquid(liq);
 		map_calculate_light_color_normal((double)mid.x,(double)mid.y,(double)mid.z,col,normal,&f_intensity);
 
 		glNormal3f(normal[0],normal[1],normal[2]);
 	}
-	else {
+*/
+//	else {
 		gl_texture_transparent_start();
 		gl_texture_transparent_set(texture->bitmaps[frame].gl_id,liq->alpha);
-	}
+//	}
 
 		// draw the quads
 
 	glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
 
 		// end texture
-
+/* supergumba
 	if (texture->shader.on) {
-		gl_texture_shader_end();
-		gl_shader_program_end();
+		gl_shader_end();
 	}
-	else {
+	*/
+//	else {
 		gl_texture_transparent_end();
-	}
+	//}
 
 		// end drawing
 

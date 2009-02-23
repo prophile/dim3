@@ -41,12 +41,38 @@ extern server_type		server;
 extern view_type		view;
 extern setup_type		setup;
 
+map_poly_sort_type		trans_sort;
+
 extern bool fog_solid_on(void);
 extern void view_compile_gl_list_attach(void);
 extern void view_compile_gl_list_dettach(void);
 extern void view_compile_gl_list_switch_to_color(void);
 extern void view_compile_gl_list_switch_to_normal(void);
 extern void view_compile_gl_list_switch_to_specular(void);
+
+/* =======================================================
+
+      Transparent Sorting List
+      
+======================================================= */
+
+bool render_transparent_create_sort_list(void)
+{
+	int					sz;
+
+	sz=max_sort_poly*sizeof(map_poly_sort_item_type);
+	trans_sort.list=(map_poly_sort_item_type*)malloc(sz);
+	if (trans_sort.list==NULL) return(FALSE);
+
+	bzero(trans_sort.list,sz);
+	
+	return(TRUE);
+}
+
+void render_transparent_dispose_sort_list(void)
+{
+	free(trans_sort.list);
+}
 
 /* =======================================================
 
@@ -78,8 +104,8 @@ void render_transparent_mesh_simple(void)
 
 		// sorted transparency list
 
-	sort_cnt=map.sort.count;
-	sort_list=map.sort.list;
+	sort_cnt=trans_sort.count;
+	sort_list=trans_sort.list;
 
 		// keep track of certain settings so
 		// we can optimize state changes
@@ -168,8 +194,8 @@ void render_transparent_mesh_shader(void)
 
 		// sorted transparent poly list
 
-	sort_cnt=map.sort.count;
-	sort_list=map.sort.list;
+	sort_cnt=trans_sort.count;
+	sort_list=trans_sort.list;
 
 		// keep track of state
 
@@ -179,8 +205,7 @@ void render_transparent_mesh_shader(void)
 
 	gl_lights_start();
 
-	gl_shader_program_start(max_map_texture,map.textures);
-	gl_texture_shader_start();
+	gl_shader_start();
 	
 	for (n=0;n!=sort_cnt;n++) {
 		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
@@ -190,10 +215,6 @@ void render_transparent_mesh_shader(void)
 
 		texture=&map.textures[poly->txt_idx];
 		frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-			// is shader
-
-		if (!texture->shader.on) continue;
 
 			// reduce the lighting list
 
@@ -212,16 +233,12 @@ void render_transparent_mesh_shader(void)
 
 			// draw shader
 
-		gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
-		gl_shader_set_program(texture->shader.program_obj);
-		
-		gl_shader_set_variables(texture->shader.program_obj,&poly->box.mid,nlight,poly->dark_factor,texture);
+		gl_shader_execute(texture,frame,&poly->box.mid,nlight,poly->dark_factor);
 
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}
 
-	gl_texture_shader_end();
-	gl_shader_program_end();
+	gl_shader_end();
 
 	gl_lights_end();
 }
@@ -247,8 +264,8 @@ void render_transparent_mesh_glow(void)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 
-	sort_cnt=map.sort.count;
-	sort_list=map.sort.list;
+	sort_cnt=trans_sort.count;
+	sort_list=trans_sort.list;
 
 	gl_texture_glow_start();
 
@@ -322,7 +339,7 @@ void render_transparent_sort(int mesh_cnt,int *mesh_list,d3pnt *pnt)
 	map_poly_sort_item_type		*sort_list;
 	texture_type				*texture;
 
-	sort_list=map.sort.list;
+	sort_list=trans_sort.list;
 
 		// create sort list
 
@@ -339,8 +356,6 @@ void render_transparent_sort(int mesh_cnt,int *mesh_list,d3pnt *pnt)
 				// get texture
 
 			texture=&map.textures[poly->txt_idx];
-			if (texture->shader.on) continue;
-			
 			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
 				// transparent?
@@ -381,7 +396,7 @@ void render_transparent_sort(int mesh_cnt,int *mesh_list,d3pnt *pnt)
 		if (sort_cnt>=max_sort_poly) break;
 	}
 
-	map.sort.count=sort_cnt;
+	trans_sort.count=sort_cnt;
 }
 
 /* =======================================================

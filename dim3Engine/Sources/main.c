@@ -225,7 +225,7 @@ int main(int argc,char *argv[])
 {
 	bool			app_start_ok;
 	char			err_str[256];
-
+	
 		// setup paths
 
 	if (!file_paths_setup(&setup.file_path_setup,FALSE)) {

@@ -189,8 +189,3 @@ _bitmap_movie_end
 _bitmap_movie_get_texture_id
 _bitmap_movie_playing
 _bitmap_movie_texture_refresh
-
-_shader_map_add
-_shader_model_add
-_shader_delete
-

@@ -382,10 +382,6 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 		texture=&mdl->textures[n];
 		material=&mesh->materials[n];
 	
-			// no shaders
-			
-		if (texture->shader.on) continue;
-
 			// any opaque trigs?
 			
 		frame=texture->animate.current_frame;
@@ -527,10 +523,6 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 		texture=&mdl->textures[n];
 		material=&mesh->materials[n];
 
-			// only shaders
-			
-		if (!texture->shader.on) continue;
-
 			// don't draw if no trigs
 
 		trig_count=material->trig_count;
@@ -540,8 +532,7 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 		
 			// run the shader
 			
-		gl_shader_program_start(max_model_texture,mdl->textures);
-		gl_texture_shader_start();
+		gl_shader_start();
 		
 		glDisable(GL_BLEND);
 		glDisable(GL_ALPHA_TEST);
@@ -552,19 +543,15 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 		
 		frame=texture->animate.current_frame;
 		
-		gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
-		gl_shader_set_program(texture->shader.program_obj);
-	
 		pnt.x=draw->pnt.x;
 		pnt.y=draw->pnt.y;
 		pnt.z=draw->pnt.z;
 	
-		gl_shader_set_variables(texture->shader.program_obj,&pnt,nlight,1.0f,texture);	// supergumba -- fix!
+		gl_shader_execute(texture,frame,&pnt,nlight,1.0f);	// supergumba -- fix!
 		
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 			
-		gl_texture_shader_end();
-		gl_shader_program_end();
+		gl_shader_end();
 	}
 
 	gl_lights_end();
@@ -595,10 +582,6 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,mod
 	
 		texture=&mdl->textures[n];
 		material=&mesh->materials[n];
-	
-			// no shaders
-			
-		if (texture->shader.on) continue;
 	
 			// any transparent trigs?
 			

@@ -427,21 +427,6 @@ extern bool xml_add_attribute_bit_array(char *name,unsigned char *value,int coun
 #define max_texture_frame_mask					0x1F			// mask for maximum number of textures frames
 
 //
-// shaders
-//
-
-#define max_shader_custom_vars					4
-
-#define shader_var_type_int						0
-#define shader_var_type_float					1
-#define shader_var_type_vec3					2
-#define shader_var_type_vec4					3
-
-#define shader_var_type_xml_list_str			{"int","float","vec3","vec4",""}
-
-#define max_shader_error_len					256
-
-//
 // bitmap structures
 //
 
@@ -450,32 +435,6 @@ typedef struct		{
 						char					name[file_str_len];
 						GLuint					gl_id;
 					} bitmap_type;
-
-//
-// shader structure
-//
-
-typedef union		{
-						int						i;
-						float					f;
-						float					vec3[3];
-						float					vec4[4];
-					} shader_value_type;
-					
-typedef struct		{
-						int						var_type;
-						char					name[name_str_len];
-						shader_value_type		value;
-					} shader_custom_var_type;
-					
-typedef struct		{
-						char					vertex_name[file_str_len],
-												fragment_name[file_str_len],
-												init_error[max_shader_error_len];
-						bool					on,global_vars_set;
-						shader_custom_var_type	custom_vars[max_shader_custom_vars];
-						GLhandleARB				vertex_obj,fragment_obj,program_obj;
-					} shader_type;
 
 //
 // glow structure
@@ -514,14 +473,14 @@ typedef struct		{
 						float					txt_scale_x,txt_scale_y,
 												bump_factor,specular_factor;
 						bool					additive,pixelated;
-						char					material_name[name_str_len];
+						char					material_name[name_str_len],
+												shader_name[name_str_len];
 						d3col					col;
 						bitmap_type				bitmaps[max_texture_frame],
 												bumpmaps[max_texture_frame],
 												specularmaps[max_texture_frame],
 												glowmaps[max_texture_frame];
 						texture_animate_type	animate;
-						shader_type				shader;
 						glow_type				glow;
 						texture_scale_type		scale;
 					} texture_type;
@@ -552,8 +511,3 @@ extern void bitmap_movie_end(void);
 extern int bitmap_movie_get_texture_id(void);
 extern bool bitmap_movie_playing(void);
 extern void bitmap_movie_texture_refresh(void);
-
-extern bool shader_map_add(file_path_setup_type *file_path_setup,shader_type *shader);
-extern bool shader_model_add(file_path_setup_type *file_path_setup,char *model_name,shader_type *shader);
-extern void shader_delete(shader_type *shader);
-

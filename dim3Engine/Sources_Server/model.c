@@ -109,6 +109,8 @@ model_type* model_find(char *name)
 
 void model_shader_errors_write_console(model_type *model)
 {
+/* supergumba -- can get rid of all of this
+
 	int				n;
 	texture_type	*texture;
 	
@@ -118,6 +120,7 @@ void model_shader_errors_write_console(model_type *model)
 		if ((texture->shader.on) && (texture->shader.init_error[0]!=0x0)) console_add_error(texture->shader.init_error);
 		texture++;
 	}
+	*/
 }
 
 /* =======================================================
@@ -177,7 +180,7 @@ model_type* model_load_single(char *name)
 	}
 
 		// deal with shader errors or shaders turned off
-
+/* supergumba -- delete all this
 	if (!load_shaders) {
 		for (n=0;n!=max_model_texture;n++) {
 			mdl->textures[n].shader.on=FALSE;
@@ -186,6 +189,7 @@ model_type* model_load_single(char *name)
 	else {
 		model_shader_errors_write_console(mdl);
 	}
+*/
 
 		// setup some animation indexes to avoid name lookups
 

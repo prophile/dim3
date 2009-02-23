@@ -29,12 +29,7 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-/* =======================================================
-
-      Light Mesh Utility Routines
-      
-======================================================= */
-
+/*
 inline int map_portal_all_light_div_reduce(int dist,int quality_mode)
 {
 	int			div;
@@ -65,11 +60,6 @@ int map_light_grid_point_in_poly_point(map_mesh_type *mesh,map_mesh_poly_type *p
 	return(-1);
 }
 
-/* =======================================================
-
-      Triangle Tesselation
-      
-======================================================= */
 
 void map_portal_add_light_trig_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int quality_mode)
 {
@@ -208,12 +198,6 @@ void map_portal_add_light_trig_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 	poly->light.nquad=div_x*div_y;
 }
 
-/* =======================================================
-
-      Quad Tesselation
-      
-======================================================= */
-
 void map_portal_add_light_quad_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int quality_mode)
 {
 	int					vl_cnt,x,y,d,d2,div_x,div_y;
@@ -315,12 +299,6 @@ void map_portal_add_light_quad_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 	poly->light.nvertex=vl_cnt;
 	poly->light.nquad=div_x*div_y;
 }
-
-/* =======================================================
-
-      Catch All Wall Tessel
-      
-======================================================= */
 
 void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int quality_mode)
 {
@@ -458,12 +436,6 @@ void map_portal_add_light_wall_tessel_vertex_list(map_mesh_type *mesh,map_mesh_p
 	poly->light.nquad=div_x*div_y;
 }
 
-/* =======================================================
-
-      Catch All Floor/Ceiling Tessel
-      
-======================================================= */
-
 void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_poly_type *poly,int quality_mode)
 {
 	int					n,vl_cnt,x,y,z,ptsz,px[8],py[8],pz[8],
@@ -598,12 +570,6 @@ void map_portal_add_light_floor_tessel_vertex_list(map_mesh_type *mesh,map_mesh_
 	poly->light.nquad=div_x*div_y;
 }
 
-/* =======================================================
-
-      Create/Dispose Tesseled Lighting Vertexes For Polygon
-      
-======================================================= */
-
 void map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *poly,int vertex_offset,int quad_index_offset,int quality_mode)
 {
 	poly->light.nvertex=0;
@@ -646,12 +612,6 @@ void map_create_poly_tesseled_vertexes(map_mesh_type *mesh,map_mesh_poly_type *p
 		map_portal_add_light_floor_tessel_vertex_list(mesh,poly,quality_mode);
 	}
 }
-
-/* =======================================================
-
-      Create/Dispose Mesh Vertex Lists
-      
-======================================================= */
 
 bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 {
@@ -758,31 +718,17 @@ bool map_create_mesh_vertexes(map_type *map,int quality_mode)
 
 	return(TRUE);
 }
-
-void map_dispose_mesh_vertexes(map_type *map)
-{
-	int					n;
-	map_mesh_type		*mesh;
-	
-		// dispose tesseled lighting vertexes
-		
-	mesh=map->mesh.meshes;
-	
-	for (n=0;n!=map->mesh.nmesh;n++) {
-		if (mesh->light.quad_vertexes!=NULL) free(mesh->light.quad_vertexes);
-		if (mesh->light.quad_uvs!=NULL) free(mesh->light.quad_uvs);
-		if (mesh->light.quad_indexes!=NULL) free(mesh->light.quad_indexes);
-		mesh++;
-	}
-}
+*/
 
 /* =======================================================
 
-      Create/Dispose Polygon Sorting Lists
+      Create/Dispose Map Vertex Lists
       
 ======================================================= */
 
-bool map_create_sort_lists(map_type *map)
+// supergumba -- can probably rename this
+
+bool map_create_vertex_lists(map_type *map)
 {
 	int					sz;
 
@@ -795,31 +741,8 @@ bool map_create_sort_lists(map_type *map)
 	return(TRUE);
 }
 
-void map_dispose_sort_lists(map_type *map)
+void map_dispose_vertex_lists(map_type *map)
 {
 	free(map->sort.list);
 }
 
-/* =======================================================
-
-      Create/Dispose Map Vertex Lists
-      
-======================================================= */
-
-bool map_create_vertex_lists(map_type *map,int quality_mode)
-{
-	if (!map_create_mesh_vertexes(map,quality_mode)) return(FALSE);
-
-	if (!map_create_sort_lists(map)) {
-		map_dispose_mesh_vertexes(map);
-		return(FALSE);
-	}
-	
-	return(TRUE);
-}
-
-void map_dispose_vertex_lists(map_type *map)
-{
-	map_dispose_sort_lists(map);
-	map_dispose_mesh_vertexes(map);
-}

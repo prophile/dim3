@@ -224,7 +224,7 @@ bool map_new(map_type *map,char *name)
       
 ======================================================= */
 
-bool map_open(map_type *map,char *name,bool in_engine,bool load_shaders)
+bool map_open(map_type *map,char *name,bool in_engine)
 {
 	if (!map_new(map,name)) return(FALSE);
 	
@@ -234,7 +234,6 @@ bool map_open(map_type *map,char *name,bool in_engine,bool load_shaders)
 	if (!read_map_xml(map,in_engine)) return(FALSE);
 
 	if (!map_textures_read(map,in_engine)) return(FALSE);
-	if ((in_engine) && (load_shaders)) if (!map_shaders_read(map)) return(FALSE);
 
 	map_find_random_spot_clear(map,NULL,NULL);
 	
@@ -273,9 +272,8 @@ bool map_save(map_type *map)
 
 void map_close(map_type *map)
 {
-		// shaders and bitmaps
+		// bitmaps
 		
-	map_shaders_close(map);
 	map_textures_close(map);
 
 		// meshes and liquids

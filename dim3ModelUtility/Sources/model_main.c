@@ -135,7 +135,7 @@ bool model_new(model_type *model,char *name)
       
 ======================================================= */
 
-bool model_open(model_type *model,char *name,bool load_bitmaps,bool load_shaders)
+bool model_open(model_type *model,char *name,bool load_bitmaps)
 {
 	char			sub_path[1024];
 	
@@ -165,10 +165,6 @@ bool model_open(model_type *model,char *name,bool load_bitmaps,bool load_shaders
 		// read bitmaps
 
 	if (load_bitmaps) model_textures_read(model);
-	
-		// read shaders
-		
-	if (load_shaders) model_shaders_read(model);
 	
 	return(TRUE);
 }
@@ -202,7 +198,6 @@ void model_close(model_type *model)
 {
 	int				n;
 	
-	model_shaders_close(model);
 	model_textures_close(model);
 	
 	for (n=0;n!=model->nmesh;n++) {

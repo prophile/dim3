@@ -80,7 +80,7 @@ void piece_duplicate(void)
 				mov_pt.y=0;
 				mov_pt.z=zadd;
 				
-				map_mesh_move(&map,index,&mov_pt,TRUE);
+				map_mesh_move(&map,index,&mov_pt);
 				
 				select_duplicate_add(mesh_piece,index,0);
 				break;
@@ -466,7 +466,7 @@ void piece_rotate(float rot_x,float rot_y,float rot_z)
 		if (type!=mesh_piece) continue;
 		
 		map_mesh_calculate_center(&map,mesh_idx,&center_pnt);
-		map_mesh_rotate(&map,mesh_idx,&center_pnt,&rot,TRUE);
+		map_mesh_rotate(&map,mesh_idx,&center_pnt,&rot);
 	}
 	
 	main_wind_draw();
@@ -494,7 +494,7 @@ void piece_move(int move_x,int move_y,int move_z)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map_mesh_move(&map,mesh_idx,&mov_pnt,TRUE);
+		if (type==mesh_piece) map_mesh_move(&map,mesh_idx,&mov_pnt);
 	}
 	
 	main_wind_draw();
@@ -910,7 +910,7 @@ void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch)
 				pt.x=xadd;
 				pt.y=yadd;
 				pt.z=zadd;
-				map_mesh_move(&map,main_idx,&pt,TRUE);
+				map_mesh_move(&map,main_idx,&pt);
 				break;
 				
 			case liquid_piece:

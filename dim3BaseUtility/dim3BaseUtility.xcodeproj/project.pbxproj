@@ -30,7 +30,6 @@
 		F53F28230BC1C7EA00EB3C0F /* pngutility.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AD52F90BBE1A66001C7C04 /* pngutility.c */; };
 		F53F28240BC1C7EB00EB3C0F /* bitmap_movie.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AD52FA0BBE1A66001C7C04 /* bitmap_movie.c */; };
 		F53F28250BC1C7EC00EB3C0F /* bitmap_main.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AD52FC0BBE1A66001C7C04 /* bitmap_main.c */; };
-		F53F28260BC1C7ED00EB3C0F /* shaders.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AD52FB0BBE1A66001C7C04 /* shaders.c */; };
 		F53F28270BC1C7ED00EB3C0F /* textures.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AD52FD0BBE1A66001C7C04 /* textures.c */; };
 		F53F282D0BC1C7F600EB3C0F /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB77AAFE841565C02AAC07 /* Carbon.framework */; };
 		F53F28C30BC1C7F700EB3C0F /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD53110BBE1A83001C7C04 /* QuickTime.framework */; };
@@ -80,7 +79,6 @@
 		F5AD52F50BBE1A5D001C7C04 /* xml.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xml.c; path = Source_XML/xml.c; sourceTree = "<group>"; };
 		F5AD52F90BBE1A66001C7C04 /* pngutility.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pngutility.c; path = Sources_Bitmap/pngutility.c; sourceTree = "<group>"; };
 		F5AD52FA0BBE1A66001C7C04 /* bitmap_movie.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = bitmap_movie.c; path = Sources_Bitmap/bitmap_movie.c; sourceTree = "<group>"; };
-		F5AD52FB0BBE1A66001C7C04 /* shaders.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = shaders.c; path = Sources_Bitmap/shaders.c; sourceTree = "<group>"; };
 		F5AD52FC0BBE1A66001C7C04 /* bitmap_main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = bitmap_main.c; path = Sources_Bitmap/bitmap_main.c; sourceTree = "<group>"; };
 		F5AD52FD0BBE1A66001C7C04 /* textures.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = textures.c; path = Sources_Bitmap/textures.c; sourceTree = "<group>"; };
 		F5AD53110BBE1A83001C7C04 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
@@ -207,7 +205,6 @@
 			children = (
 				F5AD52F90BBE1A66001C7C04 /* pngutility.c */,
 				F5AD52FA0BBE1A66001C7C04 /* bitmap_movie.c */,
-				F5AD52FB0BBE1A66001C7C04 /* shaders.c */,
 				F5AD52FD0BBE1A66001C7C04 /* textures.c */,
 				F5AD52FC0BBE1A66001C7C04 /* bitmap_main.c */,
 			);
@@ -290,7 +287,6 @@
 				F53F28230BC1C7EA00EB3C0F /* pngutility.c in Sources */,
 				F53F28240BC1C7EB00EB3C0F /* bitmap_movie.c in Sources */,
 				F53F28250BC1C7EC00EB3C0F /* bitmap_main.c in Sources */,
-				F53F28260BC1C7ED00EB3C0F /* shaders.c in Sources */,
 				F53F28270BC1C7ED00EB3C0F /* textures.c in Sources */,
 				F556BC750C7BA9E90059E7FC /* file_search.c in Sources */,
 				2612D45F0E6CEEE200994B22 /* area.c in Sources */,

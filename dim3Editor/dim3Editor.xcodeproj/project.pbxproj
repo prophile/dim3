@@ -45,7 +45,6 @@
 		F5239B9E0AFD9C5200241092 /* undo.c in Sources */ = {isa = PBXBuildFile; fileRef = F5239B9D0AFD9C5200241092 /* undo.c */; };
 		F52F19B80946A63100FEFE18 /* selection.c in Sources */ = {isa = PBXBuildFile; fileRef = F52F19B70946A63100FEFE18 /* selection.c */; };
 		F52F19D50946A89C00FEFE18 /* common_view.h in Headers */ = {isa = PBXBuildFile; fileRef = F52F19D40946A89C00FEFE18 /* common_view.h */; };
-		F5442D2B0B8E94B900D8897F /* dialog_shader_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = F5442D2A0B8E94B900D8897F /* dialog_shader_setting.c */; };
 		F54581BB094F75D200CBE89A /* interface.h in Headers */ = {isa = PBXBuildFile; fileRef = F54581BA094F75D200CBE89A /* interface.h */; };
 		F54583E4094F868300CBE89A /* pieces_create.c in Sources */ = {isa = PBXBuildFile; fileRef = F54583E3094F868300CBE89A /* pieces_create.c */; };
 		F545877D0952652700CBE89A /* walk_view_compass.c in Sources */ = {isa = PBXBuildFile; fileRef = F545877C0952652700CBE89A /* walk_view_compass.c */; };
@@ -252,7 +251,6 @@
 		F5239B9D0AFD9C5200241092 /* undo.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = undo.c; path = Code/undo.c; sourceTree = "<group>"; };
 		F52F19B70946A63100FEFE18 /* selection.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = selection.c; path = Code/selection.c; sourceTree = "<group>"; };
 		F52F19D40946A89C00FEFE18 /* common_view.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = common_view.h; path = Headers/common_view.h; sourceTree = "<group>"; };
-		F5442D2A0B8E94B900D8897F /* dialog_shader_setting.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_shader_setting.c; path = Code/dialog_shader_setting.c; sourceTree = "<group>"; };
 		F54581BA094F75D200CBE89A /* interface.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = interface.h; path = Headers/interface.h; sourceTree = "<group>"; };
 		F54583E3094F868300CBE89A /* pieces_create.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pieces_create.c; path = Code/pieces_create.c; sourceTree = "<group>"; };
 		F545877C0952652700CBE89A /* walk_view_compass.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = walk_view_compass.c; path = Code/walk_view_compass.c; sourceTree = "<group>"; };
@@ -516,7 +514,6 @@
 				F5EC5F3C0A26946D001EEB18 /* dialog_map_particle_settings.c */,
 				F56EF55C09A7EA3800F06521 /* dialog_liquid_settings.c */,
 				F5AF0C5609638BC600F99950 /* dialog_texture_setting.c */,
-				F5442D2A0B8E94B900D8897F /* dialog_shader_setting.c */,
 				2644C95B0DF8E349005CE451 /* dialog_mesh_scale.c */,
 				26AFB4BF0D9612570004805A /* dialog_mesh_setting.c */,
 				26791D420E4D626700AAD058 /* dialog_grid_mesh.c */,
@@ -710,7 +707,6 @@
 				F59C30B40ACEDC0B00599150 /* dialog_scenery_setting.c in Sources */,
 				F5239B9E0AFD9C5200241092 /* undo.c in Sources */,
 				F571C8770B34DA6300F979B7 /* xml_setup.c in Sources */,
-				F5442D2B0B8E94B900D8897F /* dialog_shader_setting.c in Sources */,
 				F522DCC90BBC853C00DFF256 /* Course.js in Sources */,
 				F57CACA70C38B76200B595F4 /* texture_palette.c in Sources */,
 				F5D3312D0C39FF2C00BED1CE /* info_status_line.c in Sources */,

@@ -329,4 +329,4 @@ extern void map_auto_generate_add_player_spot(map_type *map);
 extern void map_auto_generate_reset_UVs(map_type *map);
 
 extern void map_auto_generate(map_type *map,auto_generate_settings_type *ags);
-extern bool map_auto_generate_test(map_type *map,bool load_shaders);
+extern bool map_auto_generate_test(map_type *map);

@@ -53,5 +53,6 @@ extern void read_settings_mark(void);
 extern void read_settings_crosshair(void);
 extern void read_settings_sound(void);
 extern void read_settings_action(void);
+extern void read_settings_shader(void);
 
 

@@ -58,6 +58,4 @@ extern bool write_animate_xml(model_type *model);
 extern void model_textures_clear(model_type *model);
 extern void model_textures_read(model_type *model);
 extern void model_textures_close(model_type *model);
-extern bool model_shaders_read(model_type *model);
-extern void model_shaders_close(model_type *model);
 extern void model_calculate_parents(model_type *model);

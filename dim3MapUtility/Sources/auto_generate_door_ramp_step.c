@@ -228,7 +228,7 @@ void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int step_sz
 			pt.x=0;
 			pt.y=0;
 			pt.z=step_sz;
-			map_mesh_move(map,map_ag_mesh_idx,&pt,TRUE);
+			map_mesh_move(map,map_ag_mesh_idx,&pt);
 			
 			map_prepare_mesh_box(mesh);
 			
@@ -241,13 +241,13 @@ void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int step_sz
 	ang.x=ang.z=0.0f;
 	ang.y=ang_y;
 	
-	map_mesh_rotate(map,map_ag_mesh_idx,&pt,&ang,TRUE);
+	map_mesh_rotate(map,map_ag_mesh_idx,&pt,&ang);
 		
 	pt.x=kx;
 	pt.y=0;
 	pt.z=kz;
 		
-	map_mesh_move(map,map_ag_mesh_idx,&pt,TRUE);
+	map_mesh_move(map,map_ag_mesh_idx,&pt);
 }
 
 /* =======================================================

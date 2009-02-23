@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit ÒCreated with dim3 TechnologyÓ is given on a single
+2. This credit â€œCreated with dim3 Technologyâ€ is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -38,7 +38,7 @@ extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
 
-extern int					nlight_reduce,light_reduce_list[max_light_spot];
+extern int					nlight,nlight_reduce,light_reduce_list[max_light_spot];
 extern light_spot_type		lspot_cache[max_light_spot];
 
 /* =======================================================
@@ -73,6 +73,116 @@ void gl_lights_end(void)
 	glDisable(GL_LIGHTING);
 }
 
+
+// supergumba -- use all lights version
+// we will need to clean this up as it's way to slow
+
+int gl_lights_build_from_reduced_light_list(d3pnt *pnt)
+{
+	int						n,k,d,sz,light_id,
+							idx,cnt,sort_list[max_light_spot],
+							sort_dist[max_light_spot];
+	float					f;
+	light_spot_type			*lspot;
+	GLfloat					glf[4];	
+
+		// sort the light list
+
+	cnt=0;
+
+	for (n=0;n!=nlight;n++) {
+		lspot=&lspot_cache[n];
+
+			// get distance
+
+		d=(int)distance_get(lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,pnt->x,pnt->y,pnt->z);
+
+			// find position in list (top is closest)
+
+		idx=-1;
+	
+		for (k=0;k!=cnt;k++) {
+			if (sort_dist[k]>d) {
+				idx=k;
+				break;
+			}
+		}
+	
+			// insert at end of list
+			
+		if (idx==-1) {
+			sort_dist[cnt]=d;
+			sort_list[cnt]=n;
+			cnt++;
+			continue;
+		}
+		
+			// insert in list
+			
+		sz=sizeof(int)*(cnt-idx);
+		memmove(&sort_dist[idx+1],&sort_dist[idx],sz);
+		memmove(&sort_list[idx+1],&sort_list[idx],sz);
+		
+		sort_dist[idx]=d;
+		sort_list[idx]=n;
+		
+		cnt++;
+	}
+	
+		// only use three lights -- supergumba -- work on this, maybe two?
+		
+	if (cnt>3) cnt=3;
+			
+	for (n=0;n!=3;n++) {
+		lspot=&lspot_cache[sort_list[n]];
+		
+		light_id=GL_LIGHT0+n;
+		
+			// null lights
+			
+		if (n>=cnt) {					// supergumba -- in future, we will need shaders for 1, 2, or 3 lights
+			glDisable(light_id);
+			
+			glLightf(light_id,GL_CONSTANT_ATTENUATION,0.0f);
+			glLightf(light_id,GL_LINEAR_ATTENUATION,0.0f);
+			glLightf(light_id,GL_QUADRATIC_ATTENUATION,0.0f);
+		}
+		
+			// regular lights
+			
+		else {
+			glEnable(light_id);			// supergumba -- do this outside of this routine!
+			
+			glf[0]=(float)lspot->pnt.x;
+			glf[1]=(float)lspot->pnt.y;
+			glf[2]=(float)lspot->pnt.z;
+			glf[3]=1.0f;
+			glLightfv(light_id,GL_POSITION,glf);
+
+			glLightf(light_id,GL_CONSTANT_ATTENUATION,0.0f);
+			glLightf(light_id,GL_LINEAR_ATTENUATION,0.0f);
+
+			f=(float)lspot->intensity;
+			f=f*0.4f;
+			f=f*f;
+			glLightf(light_id,GL_QUADRATIC_ATTENUATION,(1.0f/f));
+
+			glf[0]=lspot->col.r;
+			glf[1]=lspot->col.g;
+			glf[2]=lspot->col.b;
+			glf[3]=1.0f;
+			glLightfv(light_id,GL_AMBIENT,glf);
+			glLightfv(light_id,GL_DIFFUSE,glf);
+			glLightfv(light_id,GL_SPECULAR,glf);
+		}
+	}
+
+	return(cnt);
+}
+
+// supergumba -- determine best way to do this
+
+/*
 int gl_lights_build_from_reduced_light_list(d3pnt *pnt)
 {
 	int						n,k,d,sz,light_id,
@@ -138,6 +248,10 @@ int gl_lights_build_from_reduced_light_list(d3pnt *pnt)
 			
 		if (n>=cnt) {					// supergumba -- in future, we will need shaders for 1, 2, or 3 lights
 			glDisable(light_id);
+			
+			glLightf(light_id,GL_CONSTANT_ATTENUATION,0.0f);
+			glLightf(light_id,GL_LINEAR_ATTENUATION,0.0f);
+			glLightf(light_id,GL_QUADRATIC_ATTENUATION,0.0f);
 		}
 		
 			// regular lights
@@ -172,3 +286,4 @@ int gl_lights_build_from_reduced_light_list(d3pnt *pnt)
 	return(cnt);
 }
 
+*/

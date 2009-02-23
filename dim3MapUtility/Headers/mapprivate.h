@@ -172,8 +172,6 @@ typedef struct		{
 extern int map_count_texture_frames(map_type *map,int txt);
 extern bool map_textures_read(map_type *map,bool in_engine);
 extern void map_textures_close(map_type *map);
-extern bool map_shaders_read(map_type *map);
-extern void map_shaders_close(map_type *map);
 extern bool read_map_xml(map_type *map,bool only_current_version);
 extern bool write_map_xml(map_type *map);
 extern void map_textures_new(map_type *map);

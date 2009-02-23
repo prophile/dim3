@@ -102,19 +102,15 @@ JSBool js_set_map_light_color_property(JSContext *cx,JSObject *j_obj,jsval id,js
 	
 		case map_light_color_prop_red:
             map.ambient.light_color.r=script_value_to_float(*vp);
-			map_calculate_light_clear_all();
- 			break;
+			break;
 		case map_light_color_prop_green:
             map.ambient.light_color.g=script_value_to_float(*vp);
-			map_calculate_light_clear_all();
  			break;
 		case map_light_color_prop_blue:
             map.ambient.light_color.b=script_value_to_float(*vp);
-			map_calculate_light_clear_all();
  			break;
 		case map_light_color_prop_drop_off_factor:
             map.ambient.light_drop_off_factor=script_value_to_float(*vp);
-			map_calculate_light_clear_all();
  			break;
 
 	}

@@ -897,7 +897,7 @@ void map_mesh_move_all(int x,int y,int z)
 	pt.z=z;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		map_mesh_move(&map,n,&pt,TRUE);
+		map_mesh_move(&map,n,&pt);
 	}
 }
 

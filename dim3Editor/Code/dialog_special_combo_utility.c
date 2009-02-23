@@ -29,11 +29,13 @@ and can be sold or given away.
 
 extern file_path_setup_type		file_path_setup;
 
-int								sound_count,particle_count,ring_count,script_count,model_count;
+int								sound_count,particle_count,ring_count,
+								shader_count,script_count,model_count;
 
 char							sound_names[256][name_str_len],
 								particle_names[256][name_str_len],
 								ring_names[256][name_str_len],
+								shader_names[256][name_str_len],
 								script_names[256][name_str_len],
 								model_names[256][name_str_len];
 
@@ -235,6 +237,34 @@ void dialog_special_combo_fill_ring(WindowRef wind,unsigned long sig,int id,char
 	dialog_special_combo_fill(wind,sig,id,ring_count,(char*)ring_names,sel_name);
 }
 
+void dialog_special_combo_fill_shader(WindowRef wind,unsigned long sig,int id,char *sel_name)
+{
+	int					head_tag,tag;
+	char				path[1024];
+
+	shader_count=0;
+	
+	file_paths_data(&file_path_setup,path,"Settings","Shaders","xml");
+	if (xml_open_file(path)) {
+	
+		head_tag=xml_findrootchild("Shaders");
+		if (head_tag!=-1) {
+
+			tag=xml_findfirstchild("Shader",head_tag);
+			
+			while (tag!=-1) {
+				xml_get_attribute_text(tag,"name",shader_names[shader_count],name_str_len);
+				shader_count++;
+				tag=xml_findnextchild(tag);
+			}
+		}
+	
+		xml_close_file();
+	}
+
+	dialog_special_combo_fill(wind,sig,id,shader_count,(char*)shader_names,sel_name);
+}
+
 void dialog_special_combo_fill_script(WindowRef wind,unsigned long sig,int id,char *sel_name)
 {
 	int							n;
@@ -290,6 +320,11 @@ void dialog_special_combo_get_particle(WindowRef wind,unsigned long sig,int id,c
 void dialog_special_combo_get_ring(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
 {
 	dialog_special_combo_get(wind,sig,id,ring_count,(char*)ring_names,sel_name,str_len);
+}
+
+void dialog_special_combo_get_shader(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
+{
+	dialog_special_combo_get(wind,sig,id,shader_count,(char*)shader_names,sel_name,str_len);
 }
 
 void dialog_special_combo_get_script(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)

@@ -2091,7 +2091,7 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
       
 ======================================================= */
 
-bool map_auto_generate_test(map_type *map,bool load_shaders)
+bool map_auto_generate_test(map_type *map)
 {
 	int								n;
 	auto_generate_settings_type		ags;
@@ -2178,7 +2178,6 @@ bool map_auto_generate_test(map_type *map,bool load_shaders)
 		// load textures
 
 	if (!map_textures_read(map,TRUE)) return(FALSE);
-	if (load_shaders) if (!map_shaders_read(map)) return(FALSE);
 
 	return(TRUE);
 }

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		26101DCE0E5D075100D2919B /* view_vertex_object.c in Sources */ = {isa = PBXBuildFile; fileRef = 26101DCD0E5D075100D2919B /* view_vertex_object.c */; };
+		264CA5A10F5244D700E90DF2 /* xml_shaders.c in Sources */ = {isa = PBXBuildFile; fileRef = 264CA5A00F5244D700E90DF2 /* xml_shaders.c */; };
 		2657380E0DB07F650061E1B4 /* setup_network.c in Sources */ = {isa = PBXBuildFile; fileRef = 2657380C0DB07F650061E1B4 /* setup_network.c */; };
 		2657380F0DB07F650061E1B4 /* setup_game.c in Sources */ = {isa = PBXBuildFile; fileRef = 2657380D0DB07F650061E1B4 /* setup_game.c */; };
 		265B377D0D7F8D3A004AE124 /* group_change.c in Sources */ = {isa = PBXBuildFile; fileRef = 265B377C0D7F8D3A004AE124 /* group_change.c */; };
@@ -392,6 +393,7 @@
 		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		26101DCD0E5D075100D2919B /* view_vertex_object.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_vertex_object.c; path = Sources_View/view_vertex_object.c; sourceTree = "<group>"; };
+		264CA5A00F5244D700E90DF2 /* xml_shaders.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_shaders.c; path = Sources_View/xml_shaders.c; sourceTree = "<group>"; };
 		2657380C0DB07F650061E1B4 /* setup_network.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = setup_network.c; path = Sources_View/setup_network.c; sourceTree = "<group>"; };
 		2657380D0DB07F650061E1B4 /* setup_game.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = setup_game.c; path = Sources_View/setup_game.c; sourceTree = "<group>"; };
 		265B377C0D7F8D3A004AE124 /* group_change.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = group_change.c; path = Sources_Server/group_change.c; sourceTree = "<group>"; };
@@ -1190,6 +1192,7 @@
 			children = (
 				F51B6B990936F0A800505E9C /* xml_action.c */,
 				F5A57F2D090AB21000BE7C36 /* xml_sound.c */,
+				264CA5A00F5244D700E90DF2 /* xml_shaders.c */,
 			);
 			name = XML;
 			sourceTree = "<group>";
@@ -1945,6 +1948,7 @@
 				26D9C2440F48BE70005A2FD6 /* script_utility_skill.c in Sources */,
 				26FE82370F4E1D5C00B659D8 /* gl_light.c in Sources */,
 				26FE82380F4E1D5C00B659D8 /* gl_shader_built_in.c in Sources */,
+				264CA5A10F5244D700E90DF2 /* xml_shaders.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

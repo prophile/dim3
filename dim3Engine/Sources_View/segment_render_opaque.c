@@ -80,18 +80,13 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 
 	gl_lights_start();
 
-	gl_shader_program_start(max_map_texture,map.textures);
-	gl_texture_shader_start();
+	gl_shader_start();
 	
 		// run through the meshes
 
 	for (n=0;n!=mesh_cnt;n++) {
 
 		mesh=&map.mesh.meshes[mesh_list[n]];
-		
-			// skip meshes with no shaders
-			
-		if (!mesh->flag.has_shader) continue;		// supergumba -- all meshes have shaders now
 
 			// run through the polys
 			
@@ -104,11 +99,6 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 				// get texture
 
 			texture=&map.textures[poly->txt_idx];
-			if (!texture->shader.on) {
-				poly++;
-				continue;
-			}
-
 			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
 				// shaders happen outside of stenciling
@@ -123,11 +113,8 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 
 				// setup shader
 
-			gl_texture_shader_set(texture->bitmaps[frame].gl_id,texture->bumpmaps[frame].gl_id,texture->specularmaps[frame].gl_id,texture->glowmaps[frame].gl_id);
-			gl_shader_set_program(bis_program_obj);
-				
-			gl_shader_set_variables(bis_program_obj,&poly->box.mid,nlight,poly->dark_factor,texture);
-			
+			gl_shader_execute(texture,frame,&poly->box.mid,nlight,poly->dark_factor);
+
 				// dark factor
 
 			glColor4f(poly->dark_factor,poly->dark_factor,poly->dark_factor,1.0f);
@@ -142,8 +129,7 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 
 		// end drawing
 
-	gl_texture_shader_end();
-	gl_shader_program_end();
+	gl_shader_end();
 
 	gl_lights_end();
 }

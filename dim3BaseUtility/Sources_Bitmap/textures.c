@@ -29,8 +29,6 @@ and can be sold or given away.
 	#include "dim3baseutility.h"
 #endif
 
-char					bitmap_shader_var_type_str[][32]=shader_var_type_xml_list_str;
-
 /* =======================================================
 
       Set Texture Properties
@@ -274,9 +272,7 @@ void bitmap_texture_recalc_animation(texture_type *texture)
 
 void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 {
-	int						k,main_image_tag,image_tag,main_var_tag,var_tag,
-							frame_count,shader_count;
-	shader_custom_var_type	*cvar;
+	int						k,main_image_tag,image_tag,frame_count;
 
 		// settings
 		
@@ -291,11 +287,8 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 	texture->glow.min=xml_get_attribute_float_default(main_tag,"glow_min",0.25f);
 	texture->glow.max=xml_get_attribute_float_default(main_tag,"glow_max",0.75f);
 
+	xml_get_attribute_text(main_tag,"shader",texture->shader_name,name_str_len);
 	xml_get_attribute_text(main_tag,"material_name",texture->material_name,name_str_len);
-	
-	xml_get_attribute_text(main_tag,"vertex_shader",texture->shader.vertex_name,file_str_len);
-	xml_get_attribute_text(main_tag,"fragment_shader",texture->shader.fragment_name,file_str_len);
-	texture->shader.on=xml_get_attribute_boolean(main_tag,"shader_use");
 	
 	if (read_scale) {
 		texture->scale.x=xml_get_attribute_float_default(main_tag,"txt_scale_x",0.04f);
@@ -328,60 +321,11 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 			image_tag=xml_findnextchild(image_tag);
 		}
 	}
-	
-		// custom shader variables
-		
-	cvar=texture->shader.custom_vars;
-	
-	for (k=0;k!=max_shader_custom_vars;k++) {
-		cvar->name[0]=0x0;
-		cvar->var_type=shader_var_type_int;
-		cvar->value.i=0;
-		cvar++;
-	}
-
-	main_var_tag=xml_findfirstchild("Vars",main_tag);
-	if (main_var_tag!=-1) {
-
-		shader_count=xml_countchildren(main_var_tag);
-	
-		var_tag=xml_findfirstchild("Var",main_var_tag);
-		if (var_tag!=-1) {
-		
-			cvar=texture->shader.custom_vars;
-			
-			for (k=0;k!=shader_count;k++) {
-				xml_get_attribute_text(var_tag,"name",cvar->name,name_str_len);
-				cvar->var_type=xml_get_attribute_list(var_tag,"type",(char*)bitmap_shader_var_type_str);
-				
-				switch (cvar->var_type) {
-					case shader_var_type_int:
-						cvar->value.i=xml_get_attribute_int(var_tag,"value");
-						break;
-					case shader_var_type_float:
-						cvar->value.f=xml_get_attribute_float(var_tag,"value");
-						break;
-					case shader_var_type_vec3:
-						xml_get_attribute_3_coord_float(var_tag,"value",&cvar->value.vec3[0],&cvar->value.vec3[1],&cvar->value.vec3[2]);
-						break;
-					case shader_var_type_vec4:
-						xml_get_attribute_4_coord_float(var_tag,"value",&cvar->value.vec4[0],&cvar->value.vec4[1],&cvar->value.vec4[2],&cvar->value.vec4[3]);
-						break;
-				}
-
-				cvar++;
-				
-				var_tag=xml_findnextchild(var_tag);
-			}
-		}
-	}
 }
 
 void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_scale)
 {
 	int						k;
-	bool					has_cvar;
-	shader_custom_var_type	*cvar;
 	
 		// settings
 		
@@ -396,12 +340,8 @@ void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_s
 	xml_add_attribute_float("glow_min",texture->glow.min);
 	xml_add_attribute_float("glow_max",texture->glow.max);
 	
+	xml_add_attribute_text("shader",texture->shader_name);
 	xml_add_attribute_text("material_name",texture->material_name);
-	
-	xml_add_attribute_text("vertex_shader",texture->shader.vertex_name);
-	xml_add_attribute_text("fragment_shader",texture->shader.fragment_name);
-	
-	xml_add_attribute_boolean("shader_use",texture->shader.on);
 	
 	if (write_scale) {
 		xml_add_attribute_float("txt_scale_x",texture->scale.x);
@@ -429,60 +369,5 @@ void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_s
 	}
 	
 	xml_add_tagclose("Images");
-
-		// any shader custom variables?
-
-	cvar=texture->shader.custom_vars;
-
-	has_cvar=FALSE;
-
-	for (k=0;k!=max_shader_custom_vars;k++) {
-		if (cvar->name[0]!=0x0) {
-			has_cvar=TRUE;
-			break;
-		}
-		cvar++;
-	}
-
-		// write shader custom variables
-
-	if (has_cvar) {
-
-		cvar=texture->shader.custom_vars;
-
-		xml_add_tagstart("Vars");
-		xml_add_tagend(FALSE);
-			
-		for (k=0;k!=max_shader_custom_vars;k++) {
-
-			if (cvar->name[0]!=0x0) {
-				xml_add_tagstart("Var");
-				xml_add_attribute_text("name",cvar->name);
-				xml_add_attribute_list("type",(char*)bitmap_shader_var_type_str,cvar->var_type);
-				
-				switch (cvar->var_type) {
-					case shader_var_type_int:
-						xml_add_attribute_int("value",cvar->value.i);
-						break;
-					case shader_var_type_float:
-						xml_add_attribute_float("value",cvar->value.f);
-						break;
-					case shader_var_type_vec3:
-						xml_add_attribute_3_coord_float("value",cvar->value.vec3[0],cvar->value.vec3[1],cvar->value.vec3[2]);
-						break;
-					case shader_var_type_vec4:
-						xml_add_attribute_4_coord_float("value",cvar->value.vec4[0],cvar->value.vec4[1],cvar->value.vec4[2],cvar->value.vec4[3]);
-						break;
-				}
-
-				xml_add_tagend(TRUE);
-			}
-				
-			cvar++;
-		}
-		
-		xml_add_tagclose("Vars");
-	}
-
 }
 

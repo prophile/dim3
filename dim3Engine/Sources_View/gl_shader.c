@@ -37,53 +37,54 @@ and can be sold or given away.
 extern map_type				map;
 extern view_type			view;
 
-GLhandleARB					gl_shader_current_prog_obj;
+int							gl_shader_current_idx;
 
 extern int game_time_get(void);
 extern float game_time_fequency_second_get(void);
 
 /* =======================================================
 
-      Shader Programs
+      Shader Start/Stop
       
 ======================================================= */
 
-void gl_shader_program_start(int texture_cnt,texture_type *texture)
+void gl_shader_start(void)
 {
-	int				n;
+	int					n;
+	view_shader_type	*shader;
 
-	gl_shader_current_prog_obj=0;
+	gl_shader_current_idx=-1;
+	
+		// use this flag for variables that only
+		// need to be set once per scene
 
-		// some variables only need to be set once
-
-	for (n=0;n!=texture_cnt;n++) {
-		texture->shader.global_vars_set=FALSE;
-		texture++;
+	shader=view.shaders;
+	
+	for (n=0;n!=view.count.shader;n++) {
+		shader->per_scene_vars_set=FALSE;
+		shader++;
 	}
 }
 
-void gl_shader_program_end(void)
+void gl_shader_end(void)
 {
-	if (gl_shader_current_prog_obj!=0) glUseProgramObjectARB(0);
-}
-
-void gl_shader_set_program(GLhandleARB shader_prog_obj)
-{
-	if (shader_prog_obj==gl_shader_current_prog_obj) return;
-	
-		// turning off shader?
+		// deactivate any current shader
 		
-	if (shader_prog_obj==0) {
-		glUseProgramObjectARB(0);
-		gl_shader_current_prog_obj=0;
-		return;
-	}
+	if (gl_shader_current_prog_obj!=0) glUseProgramObjectARB(0);
 	
-		// use shader
+		// turn off any used textures
+		
+	glActiveTexture(GL_TEXTURE3);
+	glDisable(GL_TEXTURE_2D);
 	
-	glUseProgramObjectARB(shader_prog_obj);
+	glActiveTexture(GL_TEXTURE2);
+	glDisable(GL_TEXTURE_2D);
 	
-	gl_shader_current_prog_obj=shader_prog_obj;
+	glActiveTexture(GL_TEXTURE1);
+	glDisable(GL_TEXTURE_2D);
+	
+	glActiveTexture(GL_TEXTURE0);
+	glDisable(GL_TEXTURE_2D);
 }
 
 /* =======================================================
@@ -92,101 +93,184 @@ void gl_shader_set_program(GLhandleARB shader_prog_obj)
       
 ======================================================= */
 
-void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,int nlight,float dark_factor,texture_type *texture)
+void gl_shader_set_scene_variables(view_shader_type *shader)
 {
-	int						n;
-	GLint					var;
-	shader_custom_var_type	*cvar;
+	int							n;
+	GLint						var;
+	view_shader_custom_var_type	*cvar;
 
-	if (shader_prog_obj==0) return;
+		// time/frequency variables
 
-		// per texture variables
-
-	if (!texture->shader.global_vars_set) {
-
-		texture->shader.global_vars_set=TRUE;
-
-			// time/frequency variables
-
-		var=glGetUniformLocationARB(shader_prog_obj,"dim3TimeMillisec");
-		if (var!=-1) glUniform1iARB(var,game_time_get());
-			
-		var=glGetUniformLocationARB(shader_prog_obj,"dim3FrequencySecond");
-		if (var!=-1) glUniform1fARB(var,game_time_fequency_second_get());
-
-			// camera position
-			
-		var=glGetUniformLocationARB(shader_prog_obj,"dim3CameraPosition");
-		if (var!=-1) glUniform3fARB(var,(float)view.camera.pnt.x,(float)view.camera.pnt.y,(float)view.camera.pnt.z);
-
-			// bump and specular factors
-			
-		var=glGetUniformLocationARB(shader_prog_obj,"dim3BumpFactor");
-		if (var!=-1) glUniform1fARB(var,texture->bump_factor);
+	var=glGetUniformLocationARB(shader->prog_obj,"dim3TimeMillisec");
+	if (var!=-1) glUniform1iARB(var,game_time_get());
 		
-		var=glGetUniformLocationARB(shader_prog_obj,"dim3SpecularFactor");
-		if (var!=-1) glUniform1fARB(var,texture->specular_factor);
-			
-			// textures
-			
-		var=glGetUniformLocationARB(shader_prog_obj,"dim3Tex");
-		if (var!=-1) glUniform1iARB(var,0);
+	var=glGetUniformLocationARB(shader->prog_obj,"dim3FrequencySecond");
+	if (var!=-1) glUniform1fARB(var,game_time_fequency_second_get());
 
-		var=glGetUniformLocationARB(shader_prog_obj,"dim3TexBump");
-		if (var!=-1) glUniform1iARB(var,1);
+		// camera position
 		
-		var=glGetUniformLocationARB(shader_prog_obj,"dim3TexSpecular");
-		if (var!=-1) glUniform1iARB(var,2);
+	var=glGetUniformLocationARB(shader->prog_obj,"dim3CameraPosition");
+	if (var!=-1) glUniform3fARB(var,(float)view.camera.pnt.x,(float)view.camera.pnt.y,(float)view.camera.pnt.z);
 		
-		var=glGetUniformLocationARB(shader_prog_obj,"dim3TexGlow");
-		if (var!=-1) glUniform1iARB(var,3);
+		// textures
 		
-			// texture color
-			
-		var=glGetUniformLocationARB(shader_prog_obj,"dim3TexColor");
-		if (var!=-1) glUniform4fARB(var,texture->col.r,texture->col.g,texture->col.b,1.0f);
+	var=glGetUniformLocationARB(shader->prog_obj,"dim3Tex");
+	if (var!=-1) glUniform1iARB(var,0);
 
-			// custom variables
-			
-		for (n=0;n!=max_shader_custom_vars;n++) {
-			cvar=&texture->shader.custom_vars[n];
+	var=glGetUniformLocationARB(shader->prog_obj,"dim3TexBump");
+	if (var!=-1) glUniform1iARB(var,1);
+	
+	var=glGetUniformLocationARB(shader->prog_obj,"dim3TexSpecular");
+	if (var!=-1) glUniform1iARB(var,2);
 
-			if (cvar->name[0]==0x0) continue;
-			
-			var=glGetUniformLocationARB(shader_prog_obj,cvar->name);
-			if (var==-1) continue;
-			
-			switch (cvar->var_type) {
-			
-				case shader_var_type_int:
-					glUniform1iARB(var,cvar->value.i);
-					break;
-					
-				case shader_var_type_float:
-					glUniform1fARB(var,cvar->value.f);
-					break;
-					
-				case shader_var_type_vec3:
-					glUniform3fARB(var,cvar->value.vec3[0],cvar->value.vec3[1],cvar->value.vec3[2]);
-					break;
-					
-				case shader_var_type_vec4:
-					glUniform4fARB(var,cvar->value.vec4[0],cvar->value.vec4[1],cvar->value.vec4[2],cvar->value.vec4[3]);
-					break;
-			}
+		// custom variables
+		
+	for (n=0;n!=max_view_shader_custom_vars;n++) {
+		cvar=&shader->custom_vars[n];
+
+		if (cvar->name[0]==0x0) continue;
+		
+		var=glGetUniformLocationARB(shader->prog_obj,cvar->name);
+		if (var==-1) continue;
+		
+		switch (cvar->var_type) {
+		
+			case shader_var_type_int:
+				glUniform1iARB(var,cvar->value.i);
+				break;
+				
+			case shader_var_type_float:
+				glUniform1fARB(var,cvar->value.f);
+				break;
+				
+			case shader_var_type_vec3:
+				glUniform3fARB(var,cvar->value.vec3[0],cvar->value.vec3[1],cvar->value.vec3[2]);
+				break;
+				
+			case shader_var_type_vec4:
+				glUniform4fARB(var,cvar->value.vec4[0],cvar->value.vec4[1],cvar->value.vec4[2],cvar->value.vec4[3]);
+				break;
 		}
-		
 	}
+}
 
-		// per-polygon variables
-		
-	var=glGetUniformLocationARB(shader_prog_obj,"dim3RenderPosition");
+void gl_shader_set_draw_variables(view_shader_type *shader,texture_type *texture,d3pnt *pnt,int nlight,float dark_factor)
+{
+	GLint					var;
+
+	var=glGetUniformLocationARB(shader->prog_obj,"dim3RenderPosition");
 	if (var!=-1) glUniform3fARB(var,(float)pnt->x,(float)pnt->y,(float)pnt->z);
 
-	var=glGetUniformLocationARB(shader_prog_obj,"dim3LightCount");
+	var=glGetUniformLocationARB(shader->prog_obj,"dim3LightCount");
 	if (var!=-1) glUniform1iARB(var,nlight);
 	
-	var=glGetUniformLocationARB(shader_prog_obj,"dim3DarkFactor");
+	var=glGetUniformLocationARB(shader->prog_obj,"dim3DarkFactor");
 	if (var!=-1) glUniform1fARB(var,dark_factor);
+		
+	var=glGetUniformLocationARB(shader->prog_obj,"dim3BumpFactor");
+	if (var!=-1) glUniform1fARB(var,texture->bump_factor);
+	
+	var=glGetUniformLocationARB(shader->prog_obj,"dim3SpecularFactor");
+	if (var!=-1) glUniform1fARB(var,texture->specular_factor);
+		
+	var=glGetUniformLocationARB(shader->prog_obj,"dim3TexColor");
+	if (var!=-1) glUniform4fARB(var,texture->col.r,texture->col.g,texture->col.b,1.0f);
+}
+
+/* =======================================================
+
+      Set Shader Textures
+      
+======================================================= */
+
+void gl_shader_texture_set(texture_type *texture,int frame)
+{
+		// set textures to all replace
+		
+	glActiveTexture(GL_TEXTURE3);
+	
+	if (texture->glowmaps[frame].gl_id!=-1) {
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D,texture->glowmaps[frame].gl_id);
+		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	}
+	else {
+		glDisable(GL_TEXTURE_2D);
+	}
+	
+	glActiveTexture(GL_TEXTURE2);
+	
+	if (texture->specularmaps[frame].gl_id!=-1) {
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D,texture->specularmaps[frame].gl_id);
+		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	}
+	else {
+		glDisable(GL_TEXTURE_2D);
+	}
+
+	glActiveTexture(GL_TEXTURE1);
+	
+	if (texture->bumpmaps[frame].gl_id!=-1) {
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D,texture->bumpmaps[frame].gl_id);
+		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	}
+	else {
+		glDisable(GL_TEXTURE_2D);
+	}
+	
+	glActiveTexture(GL_TEXTURE0);
+		
+	if (texture->bitmaps[frame].gl_id!=-1) {
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D,texture->bitmaps[frame].gl_id);
+		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	}
+	else {
+		glDisable(GL_TEXTURE_2D);
+	}
+}
+
+/* =======================================================
+
+      Execute Shader
+      
+======================================================= */
+
+void gl_shader_execute(texture_type *texture,int frame,d3pnt *pnt,int nlight,float dark_factor)
+{
+	view_shader_type				*shader;
+	
+		// get shader
+		
+	shader=&view.shaders[texture->shader_idx];
+	
+		// if we are not in this shader, then
+		// change over
+		
+	if (shader_idx!=gl_shader_current_idx) {
+	
+			// set in the new program
+			
+		gl_shader_current_idx=shader_idx;
+		glUseProgramObjectARB(shader->prog_obj);
+			
+			// set per-texture variables, only do this once
+			// as they don't change per scene
+		
+		if (!shader->per_scene_vars_set) {
+			shader->per_scene_vars_set=TRUE;
+			gl_shader_set_scene_variables(shader);
+		}
+	}
+	
+		// per draw variables
+		
+	gl_shader_set_draw_variables(shader,texture,pnt,nlight,dark_factor);
+	
+		// textures
+		
+	gl_shader_texture_set(texture,frame);
 }
 

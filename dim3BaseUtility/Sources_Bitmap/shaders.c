@@ -240,6 +240,8 @@ bool shader_map_add(file_path_setup_type *file_path_setup,shader_type *shader)
 		// init shaders
 		
 	shader_init_objects(shader);
+/* supergumba -- all this will be moved
+
 	
 		// any shaders?
 		
@@ -254,6 +256,8 @@ bool shader_map_add(file_path_setup_type *file_path_setup,shader_type *shader)
 	if (shader->fragment_name[0]!=0x0) file_paths_data(file_path_setup,frag_path,"Shaders",shader->fragment_name,"frag");
 	
 	return(shader_load(shader,vert_path,frag_path));
+	*/
+	return(TRUE);
 }
 
 bool shader_model_add(file_path_setup_type *file_path_setup,char *model_name,shader_type *shader)
@@ -263,6 +267,7 @@ bool shader_model_add(file_path_setup_type *file_path_setup,char *model_name,sha
 		// init shaders
 		
 	shader_init_objects(shader);
+/* supergumba -- all this will be moved
 	
 		// any shaders?
 		
@@ -279,6 +284,8 @@ bool shader_model_add(file_path_setup_type *file_path_setup,char *model_name,sha
 	if (shader->fragment_name[0]!=0x0) file_paths_data(file_path_setup,frag_path,sub_path,shader->fragment_name,"frag");
 	
 	return(shader_load(shader,vert_path,frag_path));
+	*/
+	return(TRUE);
 }
 
 void shader_delete(shader_type *shader)

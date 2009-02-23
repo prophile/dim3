@@ -232,9 +232,6 @@ void decode_mesh_v1_xml(model_type *model,int model_head)
 		texture->animate.total_wait=0;
 		
       	texture->animate.on=xml_get_attribute_boolean(fill_tag,"animate");
-		
-		xml_get_attribute_text(fill_tag,"vertex_shader",texture->shader.vertex_name,file_str_len);
-		xml_get_attribute_text(fill_tag,"fragment_shader",texture->shader.fragment_name,file_str_len);
          
 		image_tag=xml_findfirstchild("Images",fill_tag);
 			

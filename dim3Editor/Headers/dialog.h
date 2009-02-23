@@ -60,10 +60,12 @@ extern void dialog_redraw(WindowRef wind,unsigned long sig,int id);
 
 extern void dialog_special_combo_fill_sound(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_fill_particle(WindowRef wind,unsigned long sig,int id,char *sel_name);
+extern void dialog_special_combo_fill_shader(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_fill_script(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_fill_model(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_get_sound(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_special_combo_get_particle(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
+extern void dialog_special_combo_get_shader(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_special_combo_get_script(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_special_combo_get_model(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 
@@ -128,7 +130,6 @@ extern bool dialog_mesh_scale_run(float *scale);
 //
 
 extern void dialog_texture_setting_run(int txt);
-extern void dialog_shader_setting_run(int txt);
 
 //
 // import dialogs

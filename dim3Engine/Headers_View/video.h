@@ -99,10 +99,9 @@ extern void view_draw_next_vertex_object_2D_line_quad(int lft,int rgt,int top,in
 
 	// shaders
 	
-extern void gl_shader_program_start(int texture_cnt,texture_type *texture);
-extern void gl_shader_program_end(void);
-extern void gl_shader_set_program(GLhandleARB shader_prog_obj);
-extern void gl_shader_set_variables(GLhandleARB shader_prog_obj,d3pnt *pnt,int nlight,float dark_factor,texture_type *texture);
+extern void gl_shader_start(void);
+extern void gl_shader_end(void);
+extern void gl_shader_execute(texture_type *texture,int frame,d3pnt *pnt,int nlight,float dark_factor);
 
 	// shadows
 	
@@ -159,9 +158,6 @@ extern void gl_texture_transparent_set(int txt_id,float alpha);
 extern void gl_texture_transparent_specular_start(void);
 extern void gl_texture_transparent_specular_end(void);
 extern void gl_texture_transparent_specular_set(int specular_id,float alpha);
-extern void gl_texture_shader_start(void);
-extern void gl_texture_shader_end(void);
-extern void gl_texture_shader_set(int txt_id,int bump_id,int specular_id,int glow_id);
 extern void gl_texture_simple_start(void);
 extern void gl_texture_simple_end(void);
 extern void gl_texture_simple_set(int txt_id,bool clamp,float r,float g,float b,float alpha);

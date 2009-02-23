@@ -244,10 +244,10 @@ int map_mesh_combine_small(map_type *map,int poly_threshold)
       
 ======================================================= */
 
-void map_mesh_move(map_type *map,int mesh_idx,d3pnt *mov_pnt,bool vertex_only)
+void map_mesh_move(map_type *map,int mesh_idx,d3pnt *mov_pnt)
 {
-	int									n,k,nvertex,npoly;
-	d3pnt								*pt,*pl;
+	int									n,nvertex,npoly;
+	d3pnt								*pt;
 	map_mesh_type						*mesh;
 	map_mesh_poly_type					*poly;
 
@@ -264,32 +264,14 @@ void map_mesh_move(map_type *map,int mesh_idx,d3pnt *mov_pnt,bool vertex_only)
 		pt->z+=mov_pnt->z;
 		pt++;
 	}
-	
-	if (vertex_only) return;
 
 		// move all poly boxes
-		// and lighting vertexes
 		
 	npoly=mesh->npoly;
 	poly=mesh->polys;
 	
 	for (n=0;n!=npoly;n++) {
-
-			// light vertexes
-
-		pl=mesh->light.quad_vertexes+poly->light.vertex_offset;
-
-		for (k=0;k!=poly->light.nvertex;k++) {
-			pl->x+=mov_pnt->x;
-			pl->y+=mov_pnt->y;
-			pl->z+=mov_pnt->z;
-			pl++;
-		}
-
-			// fix poly box
-
 		map_prepare_mesh_poly(mesh,poly);
-
 		poly++;
 	}
 
@@ -388,12 +370,12 @@ void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_
       
 ======================================================= */
 
-void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang,bool vertex_only)
+void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang)
 {
-	int									n,k,nvertex,npoly;
+	int									n,nvertex,npoly;
 	float								fx,fy,fz;
 	d3vct								f_mpt;
-	d3pnt								*pt,*pl;
+	d3pnt								*pt;
 	matrix_type							mat;
 	map_mesh_type						*mesh;
 	map_mesh_poly_type					*poly;
@@ -428,37 +410,13 @@ void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang
 
 		pt++;
 	}
-	
-	if (vertex_only) return;
 
-		// rotate polygons
+		// fix boxes
 
 	npoly=mesh->npoly;
 	poly=mesh->polys;
 	
 	for (n=0;n!=npoly;n++) {
-
-			// light vertexes
-
-		pl=mesh->light.quad_vertexes+poly->light.vertex_offset;
-
-		for (k=0;k!=poly->light.nvertex;k++) {
-
-			fx=((float)pl->x)-f_mpt.x;
-			fy=((float)pl->y)-f_mpt.y;
-			fz=((float)pl->z)-f_mpt.z;
-
-			matrix_vertex_multiply(&mat,&fx,&fy,&fz);
-
-			pl->x=(int)(fx+f_mpt.x);
-			pl->y=(int)(fy+f_mpt.y);
-			pl->z=(int)(fz+f_mpt.z);
-			
-			pl++;
-		}
-
-			// fix poly boxes
-			
 		map_prepare_mesh_poly(mesh,poly);
 
 		poly++;

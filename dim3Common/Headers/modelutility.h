@@ -380,7 +380,7 @@ extern void model_flip_uv(model_type *model,int mesh_idx,bool flip_u,bool flip_v
 
 extern void model_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,bool use_compression);
 extern bool model_new(model_type *model,char *name);
-extern bool model_open(model_type *model,char *name,bool load_bitmaps,bool load_shaders);
+extern bool model_open(model_type *model,char *name,bool load_bitmaps);
 extern bool model_save(model_type *model);
 extern void model_close(model_type *model);
 

@@ -26,10 +26,12 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// view images (huds, particles, crosshairs, etc)
+// view maximums
 //
 
 #define max_view_image				1024
+#define max_view_shader				64
+#define max_view_shader_custom_vars	8
 
 //
 // input rate
@@ -42,8 +44,7 @@ and can be sold or given away.
 //
 
 #define stencil_none				0
-#define stencil_sky					1
-#define stencil_poly_start			2
+#define stencil_poly_start			1
 #define stencil_poly_end			255
 
 //
@@ -59,6 +60,15 @@ and can be sold or given away.
 
 #define view_sort_object			0
 #define view_sort_projectile		1
+
+//
+// shader variable types
+//
+
+#define shader_var_type_int			0
+#define shader_var_type_float		1
+#define shader_var_type_vec3		2
+#define shader_var_type_vec4		3
 
 //
 // image structures
@@ -158,11 +168,37 @@ typedef struct		{
 					} view_fps_type;
 
 //
+// shader structures
+//
+
+typedef union		{
+						int							i;
+						float						f;
+						float						vec3[3];
+						float						vec4[4];
+					} view_shader_value_type;
+					
+typedef struct		{
+						int							var_type;
+						char						name[name_str_len];
+						view_shader_value_type		value;
+					} view_shader_custom_var_type;
+					
+typedef struct		{
+						char						name[name_str_len],
+													vertex_name[file_str_len],
+													fragment_name[file_str_len];
+						bool						per_scene_vars_set;
+						view_shader_custom_var_type	custom_vars[max_view_shader_custom_vars];
+						GLhandleARB					vertex_obj,fragment_obj,program_obj;
+					} view_shader_type;
+
+//
 // count structure
 //
 
 typedef struct		{
-						int						image,
+						int						image,shader,
 												halo_draw,halo_draw_in_view;
 					} view_count_type;
 
@@ -177,6 +213,7 @@ typedef struct		{
 						view_fps_type			fps;
 						view_sort_type			sort;
 						view_image_type			*images;
+						view_shader_type		*shaders;
 						halo_draw_type			*halo_draws;
 						rain_draw_type			*rain_draws;
 					} view_type;

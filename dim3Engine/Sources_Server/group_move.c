@@ -235,7 +235,7 @@ void group_move(group_type *group,d3pnt *mpnt)
 					// move mesh and mark as
 					// touched so it can be saved with games
 
-				map_mesh_move(&map,unit_list->idx,mpnt,FALSE);
+				map_mesh_move(&map,unit_list->idx,mpnt);
 				mesh->flag.touched=TRUE;
 
 					// will need to update vertex/lights in vbo
@@ -317,10 +317,10 @@ void group_rotate(group_type *group,d3ang *fpnt)
 				// touched so it can be saved with games
 
 			if (mesh->flag.rot_independent) {
-				map_mesh_rotate(&map,unit_list->idx,&mesh->box.mid,fpnt,FALSE);
+				map_mesh_rotate(&map,unit_list->idx,&mesh->box.mid,fpnt);
 			}
 			else {
-				map_mesh_rotate(&map,unit_list->idx,&group->center_pnt,fpnt,FALSE);
+				map_mesh_rotate(&map,unit_list->idx,&group->center_pnt,fpnt);
 			}
 			
 			mesh->flag.touched=TRUE;

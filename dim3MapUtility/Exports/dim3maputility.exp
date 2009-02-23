@@ -5,9 +5,6 @@ _map_setup_animated_textures
 
 _map_check_game_type
 
-_map_create_vertex_lists
-_map_dispose_vertex_lists
-
 _map_count_spot
 _map_find_spot
 _map_find_random_spot_clear

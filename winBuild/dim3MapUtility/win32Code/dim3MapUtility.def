@@ -8,9 +8,6 @@ EXPORTS
 
 	map_check_game_type								@115
 
-	map_create_vertex_lists							@160
-	map_dispose_vertex_lists						@161
-
 	map_count_spot									@200
 	map_find_spot									@201
 	map_find_random_spot_clear						@202

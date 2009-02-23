@@ -68,7 +68,8 @@ extern void liquid_gl_list_init(void);
 extern void draw_sky_init(void);
 extern bool view_compile_mesh_gl_list_init(void);
 extern void view_compile_mesh_gl_list_free(void);
-extern void map_calculate_light_clear_all(void);
+extern bool render_transparent_create_sort_list(void);
+extern void render_transparent_dispose_sort_list(void);
 
 /* =======================================================
 
@@ -144,6 +145,7 @@ void map_music_start(map_music_type *music)
 
 void map_shader_errors_write_console(void)
 {
+/* supergumba -- can delete all of this
 	int					n;
 	texture_type		*texture;
 
@@ -153,6 +155,7 @@ void map_shader_errors_write_console(void)
 		if ((texture->shader.on) && (texture->shader.init_error[0]!=0x0)) console_add_error(texture->shader.init_error);
 		texture++;
 	}
+	*/
 }
 
 /* =======================================================
@@ -230,7 +233,7 @@ bool map_start(bool skip_media,char *err_str)
 	}
 
 		// deal with shader errors or shaders turned off
-
+/* supergumba -- delete all this
 	if (!load_shaders) {
 		for (n=0;n!=max_map_texture;n++) {
 			map.textures[n].shader.on=FALSE;
@@ -239,19 +242,18 @@ bool map_start(bool skip_media,char *err_str)
 	else {
 		map_shader_errors_write_console();
 	}
-
+*/
 		// prepare map surfaces
 	
 	progress_draw(20);
 
 	map_prepare(&map);
-	map_calculate_light_clear_all();
 
-		// segment, vertex, and light lists for portals
+		// map lists
 
 	progress_draw(30);
 
-	if (!map_create_vertex_lists(&map,setup.quality_mode)) {
+	if (!render_transparent_create_sort_list()) {
 		progress_shutdown();
 		strcpy(err_str,"Out of memory");
 		return(FALSE);
@@ -457,7 +459,7 @@ void map_end(void)
 	progress_draw(65);
 
 	view_compile_mesh_gl_list_free();
-	map_dispose_vertex_lists(&map);
+	render_transparent_dispose_sort_list();
 	map_group_dispose_unit_list(&map);
 	
 		// close map

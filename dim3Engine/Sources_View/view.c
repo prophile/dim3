@@ -74,6 +74,7 @@ bool view_memory_allocate(void)
 		// initialize pointers
 		
 	view.images=NULL;
+	view.shaders=NULL;
 	view.halo_draws=NULL;
 	view.rain_draws=NULL;
 	
@@ -81,6 +82,9 @@ bool view_memory_allocate(void)
 
 	view.images=(view_image_type*)malloc(max_view_image*sizeof(view_image_type));
 	if (view.images==NULL) return(FALSE);
+	
+	view.shaders=(view_shader_type*)malloc(max_view_shader*sizeof(view_shader_type));
+	if (view.shaders==NULL) return(FALSE);
 
 	view.halo_draws=(halo_draw_type*)malloc(max_light_spot*sizeof(halo_draw_type));
 	if (view.halo_draws==NULL) return(FALSE);
@@ -91,6 +95,7 @@ bool view_memory_allocate(void)
 		// clear pointers
 
 	bzero(view.images,(max_view_image*sizeof(view_image_type)));
+	bzero(view.shaders,(max_view_shader*sizeof(view_shader_type)));
 	bzero(view.halo_draws,(max_light_spot*sizeof(halo_draw_type)));
 	bzero(view.rain_draws,(max_rain_density*sizeof(rain_draw_type)));
 			
@@ -100,6 +105,7 @@ bool view_memory_allocate(void)
 void view_memory_release(void)
 {
 	if (view.images!=NULL) free(view.images);
+	if (view.shaders!=NULL) free(view.shaders);
 	if (view.halo_draws!=NULL) free(view.halo_draws);
 	if (view.rain_draws!=NULL) free(view.rain_draws);
 }
@@ -274,7 +280,6 @@ bool view_initialize(char *err_str)
 		return(FALSE);
 	}
 
-
 		// start SDL
 
 	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_JOYSTICK|SDL_INIT_NOPARACHUTE)==-1) {
@@ -316,6 +321,10 @@ bool view_initialize(char *err_str)
 	
 	input_initialize(gl_in_window_mode());
 	setup_to_input();
+	
+		// read in and start the shaders
+		
+	read_settings_shader();
 	
 		// draw timing
 		

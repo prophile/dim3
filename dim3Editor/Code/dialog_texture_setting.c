@@ -42,6 +42,7 @@ and can be sold or given away.
 #define kTextureSettingFrameGlowmapClear			FOUR_CHAR_CODE('clgw')
 #define kTextureSettingFrameWait					FOUR_CHAR_CODE('watm')
 #define kTextureSettingColor						FOUR_CHAR_CODE('colr')
+#define kTextureSettingShader						FOUR_CHAR_CODE('shdr')
 #define kTextureSettingAnimate						FOUR_CHAR_CODE('anmt')
 #define kTextureSettingAlphaAdditive				FOUR_CHAR_CODE('addv')
 #define kTextureSettingPixelated					FOUR_CHAR_CODE('pxld')
@@ -51,7 +52,6 @@ and can be sold or given away.
 #define kTextureSettingBumpFactor					FOUR_CHAR_CODE('bfct')
 #define kTextureSettingSpecularFactor				FOUR_CHAR_CODE('sfct')
 #define kTextureSettingMaterialName					FOUR_CHAR_CODE('mtrl')
-#define kTextureSettingShaderUse					FOUR_CHAR_CODE('tsus')
 #define kTextureSettingScaleX						FOUR_CHAR_CODE('tsxf')
 #define kTextureSettingScaleY						FOUR_CHAR_CODE('tsyf')
 #define kTextureSettingScaleOn						FOUR_CHAR_CODE('tson')
@@ -59,7 +59,6 @@ and can be sold or given away.
 
 #define kTextureSettingButtonAddFrame				FOUR_CHAR_CODE('addt')
 #define kTextureSettingButtonSubFrame				FOUR_CHAR_CODE('subt')
-#define kTextureSettingShaderSettings				FOUR_CHAR_CODE('shad')
 
 #define kTextureSettingButtonColor					FOUR_CHAR_CODE('colh')
 
@@ -623,10 +622,6 @@ static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,Ev
 					dialog_draw_color(dialog_texture_wind,kTextureSettingColor,0,&dialog_texture_color);
 					return(noErr);
 					
-				case kTextureSettingShaderSettings:
-					dialog_shader_setting_run(dialog_texture_wind_current_txt);
-					return(noErr);
-					
 				case kHICommandOK:
 					QuitAppModalLoopForWindow(dialog_texture_wind);
 					return(noErr);
@@ -676,6 +671,7 @@ void dialog_texture_setting_run(int txt)
 	dialog_texture_color.green=(int)(texture->col.g*(float)0xFFFF);
 	dialog_texture_color.blue=(int)(texture->col.b*(float)0xFFFF);
 		
+	dialog_special_combo_fill_shader(dialog_texture_wind,kTextureSettingShader,0,texture->shader_name);
 	dialog_set_boolean(dialog_texture_wind,kTextureSettingAnimate,0,texture->animate.on);
 	dialog_set_boolean(dialog_texture_wind,kTextureSettingAlphaAdditive,0,texture->additive);
 	dialog_set_boolean(dialog_texture_wind,kTextureSettingPixelated,0,texture->pixelated);
@@ -685,7 +681,6 @@ void dialog_texture_setting_run(int txt)
 	dialog_set_float(dialog_texture_wind,kTextureSettingBumpFactor,0,texture->bump_factor);
 	dialog_set_float(dialog_texture_wind,kTextureSettingSpecularFactor,0,texture->specular_factor);
 	dialog_set_text(dialog_texture_wind,kTextureSettingMaterialName,0,texture->material_name);
-	dialog_set_boolean(dialog_texture_wind,kTextureSettingShaderUse,0,texture->shader.on);
 	dialog_set_float(dialog_texture_wind,kTextureSettingScaleX,0,texture->scale.x);
 	dialog_set_float(dialog_texture_wind,kTextureSettingScaleY,0,texture->scale.y);
 	dialog_set_boolean(dialog_texture_wind,kTextureSettingScaleOn,0,texture->scale.on);
@@ -712,6 +707,7 @@ void dialog_texture_setting_run(int txt)
 	texture->col.g=((float)dialog_texture_color.green/(float)0xFFFF);
 	texture->col.b=((float)dialog_texture_color.blue/(float)0xFFFF);
 		
+	dialog_special_combo_get_shader(dialog_texture_wind,kTextureSettingShader,0,texture->shader_name,name_str_len);
 	texture->animate.on=dialog_get_boolean(dialog_texture_wind,kTextureSettingAnimate,0);
 	texture->additive=dialog_get_boolean(dialog_texture_wind,kTextureSettingAlphaAdditive,0);
 	texture->pixelated=dialog_get_boolean(dialog_texture_wind,kTextureSettingPixelated,0);
@@ -721,7 +717,6 @@ void dialog_texture_setting_run(int txt)
 	texture->bump_factor=dialog_get_float(dialog_texture_wind,kTextureSettingBumpFactor,0);
 	texture->specular_factor=dialog_get_float(dialog_texture_wind,kTextureSettingSpecularFactor,0);
 	dialog_get_text(dialog_texture_wind,kTextureSettingMaterialName,0,texture->material_name,name_str_len);
-	texture->shader.on=dialog_get_boolean(dialog_texture_wind,kTextureSettingShaderUse,0);
 	texture->scale.x=dialog_get_float(dialog_texture_wind,kTextureSettingScaleX,0);
 	texture->scale.y=dialog_get_float(dialog_texture_wind,kTextureSettingScaleY,0);
 	texture->scale.on=dialog_get_boolean(dialog_texture_wind,kTextureSettingScaleOn,0);

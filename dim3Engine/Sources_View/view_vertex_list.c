@@ -48,13 +48,12 @@ extern setup_type			setup;
 
 bool view_compile_mesh_gl_list_init(void)
 {
-	int					n,k,t,v_cnt,i_cnt,v_idx,i_idx;
-	unsigned int		v_poly_start_idx,v_light_start_idx;
-	unsigned int		*index_ptr,*qd;
+	int					n,k,t,v_cnt,v_idx,i_idx;
+	unsigned int		v_poly_start_idx;
+	unsigned int		*index_ptr;
 	float				x_shift_offset,y_shift_offset;
 	float				*vertex_ptr,*pv,*pp,*pc,*pn,*ps;
-	d3pnt				*pnt,*lv_pt;
-	d3uv				*lv_uv;
+	d3pnt				*pnt;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 
@@ -62,17 +61,12 @@ bool view_compile_mesh_gl_list_init(void)
 		// and their offsets to setup vertex object for map
 		
 	v_cnt=0;
-	i_cnt=0;
 	
 		// setup meshes
 		
 	mesh=map.mesh.meshes;
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
-
-			// clear the light cache
-
-		mesh->light.nlight_cache=-1;
 
 			// mesh has not been moved
 
@@ -86,14 +80,9 @@ bool view_compile_mesh_gl_list_init(void)
 		
 		for (k=0;k!=mesh->npoly;k++) {
 			poly->draw.vertex_offset=v_cnt;
-			
-			v_cnt+=(poly->ptsz+poly->light.nvertex);
-			i_cnt+=(poly->ptsz+(poly->light.nquad*4));
-			
+			v_cnt+=poly->ptsz;
 			poly++;
 		}
-
-		mesh->draw.vertex_count=v_cnt-mesh->draw.vertex_offset;
 
 		mesh++;
 	}
@@ -160,42 +149,6 @@ bool view_compile_mesh_gl_list_init(void)
 				v_idx++;
 			}
 
-				// tesseled lighting vertexes
-
-			if (!poly->light.simple_tessel) {
-
-					// create the vertexes
-
-				lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
-				lv_uv=mesh->light.quad_uvs+poly->light.vertex_offset;
-
-				for (t=0;t!=poly->light.nvertex;t++) {
-
-					*pv++=(float)lv_pt->x;
-					*pv++=(float)lv_pt->y;
-					*pv++=(float)lv_pt->z;
-					
-					*pc++=1.0f;
-					*pc++=1.0f;
-					*pc++=1.0f;
-				
-					*pn++=0.5f;
-					*pn++=0.5f;
-					*pn++=1.0f;
-					
-					*ps++=1.0f;
-					*ps++=1.0f;
-					*ps++=1.0f;
-					
-					*pp++=(lv_uv->x)+x_shift_offset;
-					*pp++=(lv_uv->y)+y_shift_offset;
-
-					lv_pt++;
-					lv_uv++;
-
-					v_idx++;
-				}
-			}
 
 			poly++;
 		}
@@ -210,7 +163,7 @@ bool view_compile_mesh_gl_list_init(void)
 
 		// initialize index VBO
 		
-	view_init_map_index_object(i_cnt);
+	view_init_map_index_object(v_cnt);
 		
 	index_ptr=view_bind_map_map_index_object();
 	if (index_ptr==NULL) {
@@ -243,35 +196,11 @@ bool view_compile_mesh_gl_list_init(void)
 				i_idx++;
 			}
 
-				// tesseled lighting quads indexes
-
-			if (!poly->light.simple_tessel) {
-					
-				v_light_start_idx=(unsigned int)(v_poly_start_idx+poly->ptsz);
-
-				qd=mesh->light.quad_indexes+poly->light.quad_index_offset;
-				poly->light.gl_quad_index_offset=i_idx*sizeof(unsigned int);
-
-				for (t=0;t!=(poly->light.nquad*4);t++) {
-				
-					if (*qd>=1000) {
-						*index_ptr=v_poly_start_idx+((*qd)-1000);
-					}
-					else {
-						*index_ptr=(*qd)+v_light_start_idx;
-					}
-					
-					qd++;
-					index_ptr++;
-					
-					i_idx++;
-				}
-			}
 			
-				// min/max range of element
+				// min/max for range element draws
 				
 			poly->draw.gl_poly_index_min=v_poly_start_idx;
-			poly->draw.gl_poly_index_max=v_poly_start_idx+(poly->ptsz+poly->light.nvertex);	// rough but will work to get indexes within smaller ranges
+			poly->draw.gl_poly_index_max=v_poly_start_idx+poly->ptsz;
 
 			poly++;
 		}
@@ -293,65 +222,6 @@ void view_compile_mesh_gl_list_free(void)
 
 /* =======================================================
 
-      Calculate Mesh Light Cache
-      
-======================================================= */
-
-void view_compile_mesh_gl_lists_normal(map_mesh_type *mesh,float *pc,float *pn,float *ps)
-{
-	int							n,k;
-	float						f_intensity;
-	d3pnt						*pnt,*lv_pt;
-	map_mesh_poly_type			*poly;
-
-	poly=mesh->polys;
-		
-	for (n=0;n!=mesh->npoly;n++) {
-
-			// polygon lighting vertexes
-
-		for (k=0;k!=poly->ptsz;k++) {
-		
-			pnt=&mesh->vertexes[poly->v[k]];
-			map_calculate_light_color_normal((double)pnt->x,(double)pnt->y,(double)pnt->z,pc,pn,&f_intensity);
-			
-			pc+=3;
-			pn+=3;
-			
-			*ps++=f_intensity;
-			*ps++=f_intensity;
-			*ps++=f_intensity;
-		}
-
-			// if not simple, calculate the lighting mesh
-
-		if (!poly->light.simple_tessel) {
-
-				// tesseled lighting vertexes
-
-			lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
-
-			for (k=0;k!=poly->light.nvertex;k++) {
-			
-				map_calculate_light_color_normal((double)lv_pt->x,(double)lv_pt->y,(double)lv_pt->z,pc,pn,&f_intensity);
-				
-				pc+=3;
-				pn+=3;
-				
-				*ps++=f_intensity;
-				*ps++=f_intensity;
-				*ps++=f_intensity;
-				
-				lv_pt++;
-			}
-		}
-
-		poly++;
-	}
-}
-
-/* =======================================================
-
       Compile OpenGL Lists MainLine
       
 ======================================================= */
@@ -360,10 +230,8 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 {
 	int							n,k,t,v_count;
 	float						x_shift_offset,y_shift_offset;
-	float						*vertex_ptr,*pv,*pp,*pc,*pn,*ps;
-	bool						recalc_light;
-	d3pnt						*pnt,*lv_pt;
-	d3uv						*lv_uv;
+	float						*vertex_ptr,*pv,*pp;
+	d3pnt						*pnt;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 
@@ -406,22 +274,6 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 					*pv++=(float)pnt->z;
 				}
 
-					// tesseled lighting vertexes
-
-				if (!poly->light.simple_tessel) {
-
-					lv_pt=mesh->light.quad_vertexes+poly->light.vertex_offset;
-
-					for (t=0;t!=poly->light.nvertex;t++) {
-
-						*pv++=(float)lv_pt->x;
-						*pv++=(float)lv_pt->y;
-						*pv++=(float)lv_pt->z;
-
-						lv_pt++;
-					}
-				}
-
 				poly++;
 			}
 		}
@@ -447,54 +299,9 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 					*pp++=poly->gy[t]+y_shift_offset;
 				}
 
-					// tesseled lighting uvs
-
-				if (!poly->light.simple_tessel) {
-
-					lv_uv=mesh->light.quad_uvs+poly->light.vertex_offset;
-
-					for (t=0;t!=poly->light.nvertex;t++) {
-						*pp++=(lv_uv->x)+x_shift_offset;
-						*pp++=(lv_uv->y)+y_shift_offset;
-						lv_uv++;
-					}
-				}
-
 				poly++;
 			}
 		}
-
-			// calculate the lights touching
-			// this mesh and find out if they need
-			// to be recalculated
-
-			// moveable meshes always have their
-			// lights recalculated
-
-		/* supergumba -- all this can probably disappear
-
-		if (!mesh->flag.hilite) {
-
-			map_calculate_light_reduce_mesh(mesh);
-
-			if (mesh->draw.moved) {
-				recalc_light=TRUE;
-			}
-			else {
-				recalc_light=!map_calculate_light_reduce_check_equal(mesh);
-			}
-
-			if (recalc_light) {
-				
-				pc=vertex_ptr+((v_count*(3+2))+(mesh->draw.vertex_offset*3));
-				pn=vertex_ptr+((v_count*(3+2+3))+(mesh->draw.vertex_offset*3));
-				ps=vertex_ptr+((v_count*(3+2+3+3))+(mesh->draw.vertex_offset*3));
-
-				view_compile_mesh_gl_lists_normal(mesh,pc,pn,ps);
-			}
-
-		}
-		*/
 
 			// reset the moved list so we'll catch
 			// and update any moved vertexes next time

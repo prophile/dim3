@@ -274,7 +274,7 @@ void open_model_xml(void)
 	windows_start();
     
 	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,FALSE);
-	model_open(&model,file_name,TRUE,FALSE);
+	model_open(&model,file_name,TRUE);
     	
 	InitCursor();
 	

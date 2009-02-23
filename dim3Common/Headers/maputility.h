@@ -145,15 +145,6 @@ extern char light_type_str[][32];
 #define liquid_direction_vertical							1
 
 //
-// light tessel constants
-//
-
-#define map_simple_tessel_trig_area							2500			// below this square of triangle area makes triangles simple lighting tessel
-#define map_simple_tessel_poly_side_size					500				// below this length of side makes simple lighting tessel
-
-#define light_tessel_max_grid_div							8
-
-//
 // group types
 //
 
@@ -219,18 +210,11 @@ typedef struct		{
 					} map_mesh_poly_slope_type;
 
 typedef struct		{
-						int									nvertex,nquad,vertex_offset,
-															quad_index_offset,gl_quad_index_offset,
-															grid_x_sz,grid_y_sz;
-						bool								simple_tessel;
-					} map_mesh_poly_light_type;
-
-typedef struct		{
 						int									txt_frame_offset,vertex_offset,
 															gl_poly_index_min,gl_poly_index_max,gl_poly_index_offset,
 															stencil_pass,stencil_idx,decal_stencil_idx;
 						float								x_shift_offset,y_shift_offset;
-						bool								simple_tessel,shift_on;
+						bool								shift_on;
 					} map_mesh_poly_draw_type;
 
 typedef struct		{
@@ -241,7 +225,6 @@ typedef struct		{
 						map_mesh_poly_box_type				box;
 						map_mesh_poly_line_type				line;
 						map_mesh_poly_slope_type			slope;
-						map_mesh_poly_light_type			light;
 						map_mesh_poly_draw_type				draw;
 					} map_mesh_poly_type;
 					
@@ -254,8 +237,7 @@ typedef struct		{
 															hilite,climbable,shiftable,
 															lock_uv,no_self_obscure,
 															never_obscure,rot_independent,touched,
-															has_simple,has_bump,has_shader,
-															has_specular,has_glow;
+															has_glow;
 					} map_mesh_flag_type;
 
 typedef struct		{
@@ -270,24 +252,9 @@ typedef struct		{
 					} map_mesh_obscure_type;
 
 typedef struct		{
-						int									vertex_count,vertex_offset,
-															stencil_pass_start,stencil_pass_end;
+						int									vertex_offset;
 						bool								moved;
 					} map_mesh_draw_type;
-
-typedef struct		{
-						double								intensity;
-						d3pnt								pnt;
-						d3col								col;
-					} map_mesh_light_cache_type;
-
-typedef struct		{
-						int									nlight_cache;
-						map_mesh_light_cache_type			light_cache[max_mesh_light_cache];
-						d3pnt								*quad_vertexes;
-						d3uv								*quad_uvs;
-						unsigned int						*quad_indexes;
-					} map_mesh_light_type;
 
 typedef struct		{
 						int									nvertex,npoly,group_idx;
@@ -299,7 +266,6 @@ typedef struct		{
 						map_mesh_message_type				msg;
 						map_mesh_obscure_type				obscure;
 						map_mesh_draw_type					draw;
-						map_mesh_light_type					light;
 					} map_mesh_type;
 
 //
@@ -562,7 +528,6 @@ typedef struct		{
 	
 						map_mesh_collection_type			mesh;
 						map_liquid_collection_type			liquid;
-						map_poly_sort_type					sort;
 						
 					} map_type;
 
@@ -572,7 +537,7 @@ typedef struct		{
 
 extern void map_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,bool use_compression);
 extern bool map_new(map_type *map,char *name);
-extern bool map_open(map_type *map,char *name,bool in_engine,bool load_shaders);
+extern bool map_open(map_type *map,char *name,bool in_engine);
 extern bool map_reload(map_type *map);
 extern bool map_save(map_type *map);
 extern void map_close(map_type *map);
@@ -588,7 +553,7 @@ extern void map_setup_animated_textures(map_type *map,int tick);
 
 extern bool map_check_game_type(char *game_type,char *map_name,char *info_name);
 
-extern bool map_create_vertex_lists(map_type *map,int quality_mode);
+extern bool map_create_vertex_lists(map_type *map);
 extern void map_dispose_vertex_lists(map_type *map);
 
 extern int map_count_spot(map_type *map,char *name,char *type);
@@ -625,10 +590,10 @@ extern int map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt);
 
 extern int map_mesh_combine(map_type *map,int mesh_1_idx,int mesh_2_idx);
 extern int map_mesh_combine_small(map_type *map,int poly_threshold);
-extern void map_mesh_move(map_type *map,int mesh_idx,d3pnt *mov_pnt,bool vertex_only);
+extern void map_mesh_move(map_type *map,int mesh_idx,d3pnt *mov_pnt);
 extern void map_mesh_resize(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max);
 extern void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);
-extern void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang,bool vertex_only);
+extern void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang);
 extern bool map_mesh_tesselate(map_type *map,int mesh_idx);
 extern bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *extrude_pnt);
 extern void map_mesh_poly_run_shifts(map_type *map,int tick);

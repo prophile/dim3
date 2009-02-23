@@ -205,7 +205,7 @@ bool file_open_map(void)
 	
 	map_setup(&file_path_setup,anisotropic_mode_none,setup.mipmap_mode,FALSE);
 	
-	ok=map_open(&map,file_name,FALSE,FALSE);
+	ok=map_open(&map,file_name,FALSE);
 
     InitCursor();
 	
