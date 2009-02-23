@@ -1495,6 +1495,10 @@ SOURCE=..\..\dim3Engine\Sources_View\xml_action.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3Engine\Sources_View\xml_shaders.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Engine\Sources_View\xml_sound.c
 # End Source File
 # Begin Source File

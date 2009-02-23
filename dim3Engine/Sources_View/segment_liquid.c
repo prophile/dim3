@@ -371,13 +371,8 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 		// supergumba -- separate these so shader program start isn't called continually
 /* supergumba
 	if (texture->shader.on) {
-		gl_shader_start();
-
-		mid.x=(liq->lft+liq->rgt)>>1;
-		mid.y=liq->y;
-		mid.z=(liq->top+liq->bot)>>1;
-
-		gl_shader_execute(texture,frame,&mid,0,1.0f);		// supergumba -- fix
+		gl_shader_draw_start();
+		gl_shader_draw_execute(texture,frame,0,1.0f);		// supergumba -- fix
 
 		map_calculate_light_reduce_liquid(liq);
 		map_calculate_light_color_normal((double)mid.x,(double)mid.y,(double)mid.z,col,normal,&f_intensity);
@@ -397,7 +392,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 		// end texture
 /* supergumba
 	if (texture->shader.on) {
-		gl_shader_end();
+		gl_shader_draw_end();
 	}
 	*/
 //	else {

@@ -499,9 +499,10 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 
 void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw *draw)
 {
+	/* supergumba -- change all this
+
 	int						n,trig_count,frame,nlight,
 							trig_start_idx,trig_idx;
-	d3pnt					pnt;
 	model_mesh_type			*mesh;
     texture_type			*texture;
 	model_material_type		*material;
@@ -532,7 +533,7 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 		
 			// run the shader
 			
-		gl_shader_start();
+		gl_shader_draw_start();
 		
 		glDisable(GL_BLEND);
 		glDisable(GL_ALPHA_TEST);
@@ -542,19 +543,15 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 		glDepthMask(GL_TRUE);
 		
 		frame=texture->animate.current_frame;
-		
-		pnt.x=draw->pnt.x;
-		pnt.y=draw->pnt.y;
-		pnt.z=draw->pnt.z;
-	
-		gl_shader_execute(texture,frame,&pnt,nlight,1.0f);	// supergumba -- fix!
+		gl_shader_draw_execute(texture,frame,nlight,1.0f);	// supergumba -- fix!
 		
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 			
-		gl_shader_end();
+		gl_shader_draw_end();
 	}
 
 	gl_lights_end();
+	*/
 }
 
 void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw *draw)

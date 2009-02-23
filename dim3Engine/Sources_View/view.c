@@ -222,6 +222,15 @@ bool view_initialize_display(char *err_str)
 	if (!gl_check_fsaa_ok()) setup.fsaa_mode=fsaa_mode_none;
 	if (!gl_check_texture_compress_ok()) setup.texture_compression=FALSE;
 	if (!gl_check_texture_anisotropic_filter_ok()) setup.anisotropic_mode=anisotropic_mode_none;
+	
+		// start the shaders
+		
+	read_settings_shader();
+	if (!gl_shader_initialize(err_str)) {
+		gl_shutdown();
+		SDL_Quit();
+		return(FALSE);
+	}
 
 		// initialize text
 	
@@ -247,6 +256,7 @@ bool view_initialize_display(char *err_str)
 void view_shutdown_display(void)
 {
 	view_dispose_vertex_objects();
+	gl_shader_shutdown();
 	gl_shadow_shutdown();
 	gl_text_shutdown();
 	gl_shutdown();
@@ -299,9 +309,7 @@ bool view_initialize(char *err_str)
 		// sound initialize
 		
 	if (!al_initialize(err_str)) {
-		gl_shadow_shutdown();
-		gl_text_shutdown();
-		gl_shutdown();
+		view_shutdown_display();
 		view_memory_release();
 		SDL_Quit();
 		return(FALSE);
@@ -322,10 +330,6 @@ bool view_initialize(char *err_str)
 	input_initialize(gl_in_window_mode());
 	setup_to_input();
 	
-		// read in and start the shaders
-		
-	read_settings_shader();
-	
 		// draw timing
 		
 	view.time.input_tick=game_time_get();
@@ -342,16 +346,10 @@ bool view_initialize(char *err_str)
 
 void view_shutdown(void)
 {
-		// shutdown input
-		
-	input_shutdown();
-	
-		// al shutdown
-		
-	al_shutdown();
-	
-		// gl shutdown
+		// shutdown view
 
+	input_shutdown();
+	al_shutdown();
 	view_shutdown_display();
 
 		// shutdown SDL
@@ -388,10 +386,6 @@ void view_game_start(void)
 		// clear chat messages
 		
 	chat_clear_messages();
-	
-		// built-in shaders
-		
-	shader_built_in_initialize();
 }
 
 void view_game_stop(void)
@@ -404,10 +398,6 @@ void view_game_stop(void)
 		// rings, halos, marks, crosshairs and remote icons
 	
 	view_images_free();
-	
-		// remove any shaders
-		
-	shader_built_in_free_objects();
 }
 
 /* =======================================================

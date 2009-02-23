@@ -205,7 +205,7 @@ void render_transparent_mesh_shader(void)
 
 	gl_lights_start();
 
-	gl_shader_start();
+	gl_shader_draw_start();
 	
 	for (n=0;n!=sort_cnt;n++) {
 		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
@@ -233,12 +233,12 @@ void render_transparent_mesh_shader(void)
 
 			// draw shader
 
-		gl_shader_execute(texture,frame,&poly->box.mid,nlight,poly->dark_factor);
+		gl_shader_draw_execute(texture,frame,nlight,poly->dark_factor);
 
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}
 
-	gl_shader_end();
+	gl_shader_draw_end();
 
 	gl_lights_end();
 }

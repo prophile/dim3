@@ -225,10 +225,6 @@ SOURCE=..\..\dim3MapUtility\Sources\file_map_read_v3.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3MapUtility\Sources\file_map_shader.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3MapUtility\Sources\file_map_texture.c
 # End Source File
 # Begin Source File
@@ -262,10 +258,6 @@ SOURCE=..\..\dim3MapUtility\Sources\map_mesh.c
 # Begin Source File
 
 SOURCE=..\..\dim3MapUtility\Sources\map_mesh_update.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3MapUtility\Sources\map_vertex_list.c
 # End Source File
 # Begin Source File
 

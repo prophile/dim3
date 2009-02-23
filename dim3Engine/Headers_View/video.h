@@ -99,9 +99,13 @@ extern void view_draw_next_vertex_object_2D_line_quad(int lft,int rgt,int top,in
 
 	// shaders
 	
-extern void gl_shader_start(void);
-extern void gl_shader_end(void);
-extern void gl_shader_execute(texture_type *texture,int frame,d3pnt *pnt,int nlight,float dark_factor);
+extern bool gl_shader_initialize(char *err_str);
+extern void gl_shader_shutdown(void);
+extern void gl_shader_attach_map(void);
+extern void gl_shader_attach_model(model_type *mdl);
+extern void gl_shader_draw_start(void);
+extern void gl_shader_draw_end(void);
+extern void gl_shader_draw_execute(texture_type *texture,int frame,int nlight,float dark_factor);
 
 	// shadows
 	

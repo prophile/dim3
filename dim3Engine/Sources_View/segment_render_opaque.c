@@ -49,8 +49,6 @@ extern void view_compile_gl_list_switch_to_color(void);
 extern void view_compile_gl_list_switch_to_normal(void);
 extern void view_compile_gl_list_switch_to_specular(void);
 extern void view_compile_gl_list_dettach(void);
-
-extern GLhandleARB			bis_program_obj;
 																						
 /* =======================================================
 
@@ -80,7 +78,7 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 
 	gl_lights_start();
 
-	gl_shader_start();
+	gl_shader_draw_start();
 	
 		// run through the meshes
 
@@ -113,7 +111,7 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 
 				// setup shader
 
-			gl_shader_execute(texture,frame,&poly->box.mid,nlight,poly->dark_factor);
+			gl_shader_draw_execute(texture,frame,nlight,poly->dark_factor);
 
 				// dark factor
 
@@ -129,7 +127,7 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 
 		// end drawing
 
-	gl_shader_end();
+	gl_shader_draw_end();
 
 	gl_lights_end();
 }

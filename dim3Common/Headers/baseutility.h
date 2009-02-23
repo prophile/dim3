@@ -470,6 +470,7 @@ typedef struct		{
 //
 
 typedef struct		{
+						int						shader_idx;
 						float					txt_scale_x,txt_scale_y,
 												bump_factor,specular_factor;
 						bool					additive,pixelated;

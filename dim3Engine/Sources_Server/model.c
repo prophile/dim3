@@ -103,37 +103,13 @@ model_type* model_find(char *name)
 
 /* =======================================================
 
-      Write Model Shader Errors to Console
-      
-======================================================= */
-
-void model_shader_errors_write_console(model_type *model)
-{
-/* supergumba -- can get rid of all of this
-
-	int				n;
-	texture_type	*texture;
-	
-	texture=model->textures;
-	
-	for (n=0;n!=max_model_texture;n++) {
-		if ((texture->shader.on) && (texture->shader.init_error[0]!=0x0)) console_add_error(texture->shader.init_error);
-		texture++;
-	}
-	*/
-}
-
-/* =======================================================
-
       Open Models
       
 ======================================================= */
 
 model_type* model_load_single(char *name)
 {
-	int					n;
-	bool				load_shaders;
-	model_type			*mdl,*ptr;
+	model_type		*mdl,*ptr;
 	
 		// has model been already loaded?
 		// if so, return model and increment reference count
@@ -165,31 +141,19 @@ model_type* model_load_single(char *name)
 
 		// load model
 
-	load_shaders=gl_check_shader_ok();
-	
 	model_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.texture_compression);
-	if (!model_open(mdl,name,TRUE,load_shaders)) {
+	if (!model_open(mdl,name,TRUE)) {
 		server.count.model--;		// error loading, leave memory as is an fix next model load
 		return(NULL);
 	}
+
+	gl_shader_attach_model(mdl);
 
 	if (!model_draw_array_initialize(mdl)) {
 		model_close(mdl);
 		server.count.model--;		// error loading, leave memory as is an fix next model load
 		return(NULL);
 	}
-
-		// deal with shader errors or shaders turned off
-/* supergumba -- delete all this
-	if (!load_shaders) {
-		for (n=0;n!=max_model_texture;n++) {
-			mdl->textures[n].shader.on=FALSE;
-		}
-	}
-	else {
-		model_shader_errors_write_console(mdl);
-	}
-*/
 
 		// setup some animation indexes to avoid name lookups
 

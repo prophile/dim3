@@ -41,6 +41,7 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "sounds.h"
 #include "inputs.h"
+#include "video.h"
 
 extern map_type				map;
 extern view_type			view;
@@ -139,27 +140,6 @@ void map_music_start(map_music_type *music)
 
 /* =======================================================
 
-      Map Shader Errors to Console
-      
-======================================================= */
-
-void map_shader_errors_write_console(void)
-{
-/* supergumba -- can delete all of this
-	int					n;
-	texture_type		*texture;
-
-	texture=map.textures;
-	
-	for (n=0;n!=max_map_texture;n++) {
-		if ((texture->shader.on) && (texture->shader.init_error[0]!=0x0)) console_add_error(texture->shader.init_error);
-		texture++;
-	}
-	*/
-}
-
-/* =======================================================
-
       Cache Some Map Lookups
       
 ======================================================= */
@@ -193,9 +173,8 @@ void map_lookups_setup(void)
 
 bool map_start(bool skip_media,char *err_str)
 {
-	int				n,tick;
+	int				tick;
 	char			txt[256];
-	bool			load_shaders;
 	obj_type		*obj;
 
 	game_time_pause_start();
@@ -215,8 +194,6 @@ bool map_start(bool skip_media,char *err_str)
 	console_add_system(txt);
 	
 	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.texture_compression);
-	
-	load_shaders=gl_check_shader_ok();
 
 // supergumba -- auto generator testing
 /*
@@ -226,23 +203,14 @@ bool map_start(bool skip_media,char *err_str)
 		return(FALSE);
 	}
 */
-	if (!map_open(&map,map.info.name,TRUE,load_shaders)) {
+	if (!map_open(&map,map.info.name,TRUE)) {
 		progress_shutdown();
 		sprintf(err_str,"Could not open map: %s.  If this map is from an older version of dim3, use Editor to upgrade it.",map.info.name);
 		return(FALSE);
 	}
 
-		// deal with shader errors or shaders turned off
-/* supergumba -- delete all this
-	if (!load_shaders) {
-		for (n=0;n!=max_map_texture;n++) {
-			map.textures[n].shader.on=FALSE;
-		}
-	}
-	else {
-		map_shader_errors_write_console();
-	}
-*/
+	gl_shader_attach_map();
+
 		// prepare map surfaces
 	
 	progress_draw(20);

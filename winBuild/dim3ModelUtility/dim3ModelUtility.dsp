@@ -225,10 +225,6 @@ SOURCE=..\..\dim3ModelUtility\Sources\file_model_pose.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3ModelUtility\Sources\file_model_shader.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3ModelUtility\Sources\file_model_texture.c
 # End Source File
 # Begin Source File

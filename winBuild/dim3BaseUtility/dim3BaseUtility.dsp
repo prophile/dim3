@@ -261,10 +261,6 @@ SOURCE=..\..\dim3BaseUtility\Sources_Bitmap\pngutility.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3BaseUtility\Sources_Bitmap\shaders.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3BaseUtility\Sources_Bitmap\textures.c
 # End Source File
 # End Group
