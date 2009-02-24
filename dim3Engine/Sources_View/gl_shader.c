@@ -146,13 +146,16 @@ bool gl_shader_report_error(char *err_str,char *vertex_name,char *fragment_name,
 		// operation OK?
 		
 	glGetObjectParameterivARB(hand,check_type,&result);
-	if (result==1) return(FALSE);
+	if (result==1) return(TRUE);
 	
 		// start or append log file
 		
 	file=fopen("glsl_error_log.txt","a");
-	if (file==NULL) return(TRUE);
-		
+	if (file==NULL) {
+		strcpy(err_str,"GLSL Error: Could not write log file");
+		return(FALSE);
+	}
+	
 		// header
 		
 	fwrite("***\n",1,4,file);
@@ -224,7 +227,7 @@ bool gl_shader_report_error(char *err_str,char *vertex_name,char *fragment_name,
 
 	strcpy(err_str,"GLSL: Could not compile or link code, check out glsl_error_log.txt for more information");
 	
-	return(TRUE);
+	return(FALSE);
 }
 
 /* =======================================================
@@ -262,7 +265,7 @@ bool gl_shader_initialize(char *err_str)
 	for (n=0;n!=view.count.shader;n++) {
 
 			// load the shaders
-
+			
 		file_paths_data(&setup.file_path_setup,path,"Shaders",shader->vertex_name,"vert");
 		vertex_data=gl_shader_open_file(path);
 		if (vertex_data==NULL) {
@@ -289,13 +292,14 @@ bool gl_shader_initialize(char *err_str)
 		glCompileShaderARB(shader->vertex_obj);
 		ok=gl_shader_report_error(err_str,shader->vertex_name,NULL,shader->vertex_obj,"Vertex",vertex_data,GL_OBJECT_COMPILE_STATUS_ARB);
 		free(vertex_data);
+				fprintf(stdout,"4: %s\n",err_str);
 		
 		if (!ok) {
 			gl_shader_shutdown();
 			free(fragment_data);
 			return(FALSE);
 		}
-		
+	
 		glAttachObjectARB(shader->program_obj,shader->vertex_obj);
 		
 		shader->fragment_obj=glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
@@ -317,7 +321,7 @@ bool gl_shader_initialize(char *err_str)
 			// link shaders into program
 			
 		glLinkProgramARB(shader->program_obj);
-		if (gl_shader_report_error(err_str,shader->vertex_name,shader->fragment_name,shader->program_obj,"Program",NULL,GL_OBJECT_LINK_STATUS_ARB)) {
+		if (!gl_shader_report_error(err_str,shader->vertex_name,shader->fragment_name,shader->program_obj,"Program",NULL,GL_OBJECT_LINK_STATUS_ARB)) {
 			gl_shader_shutdown();
 			return(FALSE);
 		}
@@ -366,17 +370,34 @@ void gl_shader_shutdown(void)
       
 ======================================================= */
 
-// supergumba -- we need to do this
+int gl_shader_find(char *name)
+{
+	int							n;
+	view_shader_type			*shader;
+
+	shader=view.shaders;
+	
+	for (n=0;n!=view.count.shader;n++) {
+		if (strcasecmp(name,shader->name)==0) return(n);
+		shader++;
+	}
+	
+	return(-1);
+}
 
 void gl_shader_attach_map(void)
 {
 	int					n;
+	bool				shader_on;
 	texture_type		*texture;
+	
+	shader_on=gl_check_shader_ok();
 
 	texture=map.textures;
 	
 	for (n=0;n!=max_map_texture;n++) {
 		texture->shader_idx=-1;
+		if (shader_on) texture->shader_idx=gl_shader_find(texture->shader_name);
 		texture++;
 	}
 }
@@ -384,12 +405,16 @@ void gl_shader_attach_map(void)
 void gl_shader_attach_model(model_type *mdl)
 {
 	int					n;
+	bool				shader_on;
 	texture_type		*texture;
+	
+	shader_on=gl_check_shader_ok();
 
 	texture=mdl->textures;
 	
 	for (n=0;n!=max_model_texture;n++) {
 		texture->shader_idx=-1;
+		if (shader_on) texture->shader_idx=gl_shader_find(texture->shader_name);
 		texture++;
 	}
 }

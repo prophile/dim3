@@ -684,6 +684,8 @@ void model_render(int tick,model_draw *draw)
 	bool			is_fog_lighting;
 	model_type		*mdl;
 	
+	return;	// supergumba
+	
 		// get model
 
 	mdl=model_find_uid(draw->uid);

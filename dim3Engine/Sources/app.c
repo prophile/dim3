@@ -93,12 +93,12 @@ bool app_start(char *err_str)
 	if (!server_initialize(err_str)) return(FALSE);
 
 		// initialize view
-	
+		
 	if (!view_initialize(err_str)) {
 		server_shutdown();
 		return(FALSE);
 	}
-	
+
 		// if no editor launch, start in intro
 		
 	if (!setup.editor_override.on) {
