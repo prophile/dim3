@@ -243,10 +243,9 @@ void render_transparent_mesh_shader(void)
 	gl_lights_end();
 }
 
-
 void render_transparent_mesh_glow(void)
 {
-	int						n,sort_cnt,frame;
+	int						n,sort_cnt;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	map_poly_sort_item_type	*sort_list;
@@ -273,23 +272,15 @@ void render_transparent_mesh_glow(void)
 		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
 		poly=&mesh->polys[sort_list[n].poly_idx];
 
-			// skip hilited polygons
-			// or meshes with no speculars
+			// skip meshes or polys with no glows or transparents
 
-		if ((!mesh->flag.has_glow) || (mesh->flag.hilite)) continue;
-
-			// get texture
-
-		texture=&map.textures[poly->txt_idx];
-		frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-			// any glow on texture
-
-		if (texture->glowmaps[frame].gl_id==-1) continue;
+		if ((!mesh->render.has_transparent) || (!mesh->render.has_glow)) continue;
+		if ((!poly->render.transparent_on) || (!poly->render.glow_on)) continue;
 		
 			// draw glow
 
-		gl_texture_glow_set(texture->glowmaps[frame].gl_id,texture->glow.current_color);
+		texture=&map.textures[poly->txt_idx];
+		gl_texture_glow_set(texture->glowmaps[poly->render.frame].gl_id,texture->glow.current_color);
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}
 
@@ -405,7 +396,7 @@ void render_transparent_sort(int mesh_cnt,int *mesh_list,d3pnt *pnt)
       
 ======================================================= */
 
-void render_transparent_map(int mesh_cnt,int *mesh_list)
+void render_map_transparent(int mesh_cnt,int *mesh_list)
 {
 	return; // supergumba
 		// setup view

@@ -1242,10 +1242,6 @@ SOURCE=..\..\dim3Engine\Sources_View\gl_shader.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_View\gl_shader_built_in.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3Engine\Sources_View\gl_shadow.c
 # End Source File
 # Begin Source File
@@ -1255,6 +1251,26 @@ SOURCE=..\..\dim3Engine\Sources_View\gl_text.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_View\gl_texture.c
+# End Source File
+# End Group
+# Begin Group "Render Map"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_View\render_map_liquid.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_View\render_map_opaque.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_View\render_map_setup.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_View\render_map_transparent.c
 # End Source File
 # End Group
 # Begin Source File
@@ -1408,18 +1424,6 @@ SOURCE=..\..\dim3Engine\Sources_View\rings_draw.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_View\score_limit.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_View\segment_liquid.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_View\segment_render_opaque.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_View\segment_render_transparent.c
 # End Source File
 # Begin Source File
 

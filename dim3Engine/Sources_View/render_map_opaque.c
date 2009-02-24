@@ -56,11 +56,142 @@ extern void view_compile_gl_list_dettach(void);
       
 ======================================================= */
 
+void render_opaque_mesh_debug(int mesh_cnt,int *mesh_list)
+{
+	int					n,k;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	texture_type		*texture;
+	
+		// setup drawing
 
+	glDisable(GL_BLEND);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+	
+	glEnable(GL_DEPTH_TEST); 
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_TRUE);
+
+	gl_texture_opaque_start(FALSE);
+	
+		// run through the meshes
+
+	for (n=0;n!=mesh_cnt;n++) {
+
+		mesh=&map.mesh.meshes[mesh_list[n]];
+
+			// skip meshes with no opaques
+
+		if (!mesh->render.has_opaque) continue;
+		
+			// run through the polys
+
+		poly=mesh->polys;
+
+		for (k=0;k!=mesh->npoly;k++) {
+
+				// skip transparent polys
+
+			if (poly->render.transparent_on) {
+				poly++;
+				continue;
+			}
+			
+				// dark factor
+
+			glColor4f(poly->dark_factor,poly->dark_factor,poly->dark_factor,1.0f);
+
+				// draw polygon
+
+			texture=&map.textures[poly->txt_idx];
+			gl_texture_opaque_set(texture->bitmaps[poly->render.frame].gl_id);
+			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+
+			poly++;
+		}
+	}
+
+		// end drawing
+
+	gl_texture_opaque_end();
+}
+
+void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
+{
+	int					n,k;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	texture_type		*texture;
+	
+		// setup drawing
+
+	glDisable(GL_BLEND);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+	
+	glEnable(GL_DEPTH_TEST); 
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_TRUE);
+
+	gl_lights_start();
+
+	gl_texture_opaque_start(TRUE);
+	
+		// run through the meshes
+
+	for (n=0;n!=mesh_cnt;n++) {
+
+		mesh=&map.mesh.meshes[mesh_list[n]];
+		map_calculate_light_reduce_mesh(mesh);		// supergumba -- reduce lights before running mesh
+
+			// skip meshes with no non-shaders or opaques
+
+		if ((!mesh->render.has_opaque) || (!mesh->render.has_no_shader)) continue;
+		
+			// run through the polys
+
+		poly=mesh->polys;
+
+		for (k=0;k!=mesh->npoly;k++) {
+
+				// skip transparent or shader polys
+
+			if ((poly->render.transparent_on) || (poly->render.shader_on)) {
+				poly++;
+				continue;
+			}
+
+				// setup lights
+
+			gl_lights_build_from_reduced_light_list(&poly->box.mid);
+			
+				// dark factor
+
+			glColor4f(poly->dark_factor,poly->dark_factor,poly->dark_factor,1.0f);
+
+				// draw polygon
+
+			texture=&map.textures[poly->txt_idx];
+			gl_texture_opaque_set(texture->bitmaps[poly->render.frame].gl_id);
+			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+
+			poly++;
+		}
+	}
+
+		// end drawing
+
+	gl_texture_opaque_end();
+
+	gl_lights_end();
+}
 
 void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 {
-	int					n,k,frame,nlight;
+	int					n,k,nlight;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
@@ -85,33 +216,33 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 	for (n=0;n!=mesh_cnt;n++) {
 
 		mesh=&map.mesh.meshes[mesh_list[n]];
+		map_calculate_light_reduce_mesh(mesh);		// supergumba -- reduce lights before running mesh
+
+			// skip meshes with no shaders or opaques
+
+		if ((!mesh->render.has_opaque) || (!mesh->render.has_shader)) continue;
 
 			// run through the polys
 			
-		map_calculate_light_reduce_mesh(mesh);		// supergumba -- reduce lights before running mesh
-
 		poly=mesh->polys;
 
 		for (k=0;k!=mesh->npoly;k++) {
 
-				// get texture
+				// skip transparent or non-shader polys
 
-			texture=&map.textures[poly->txt_idx];
-			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-				// shaders happen outside of stenciling
-				// so we need to check for transparencies here
-
-			if ((texture->bitmaps[frame].alpha_mode==alpha_mode_transparent) || (poly->alpha!=1.0f)) {
+			if ((poly->render.transparent_on) || (!poly->render.shader_on)) {
 				poly++;
 				continue;
 			}
-			
+
+				// build lights
+
 			nlight=gl_lights_build_from_reduced_light_list(&poly->box.mid);
 
 				// setup shader
 
-			gl_shader_draw_execute(texture,frame,nlight,poly->dark_factor);
+			texture=&map.textures[poly->txt_idx];
+			gl_shader_draw_execute(texture,poly->render.frame,nlight,poly->dark_factor);
 
 				// dark factor
 
@@ -132,171 +263,9 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 	gl_lights_end();
 }
 
-
-
-
-
-
-
-
-
-
-
-
-// supergumba -- light testing
-
-
-
-
-
-
-void render_opaque_mesh_old(int mesh_cnt,int *mesh_list)
-{
-
-	int					n,k,frame;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	texture_type		*texture;
-
-		// setup drawing
-
-	glDisable(GL_BLEND);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-	
-	glEnable(GL_DEPTH_TEST); 
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_TRUE);
-
-	gl_texture_opaque_start(TRUE);
-
-		// run through the meshes
-
-	for (n=0;n!=mesh_cnt;n++) {
-
-		mesh=&map.mesh.meshes[mesh_list[n]];
-
-		map_calculate_light_reduce_mesh(mesh);		// supergumba -- reduce lights before running mesh
-		
-			// run through the polys
-
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-
-				// get texture
-
-			texture=&map.textures[poly->txt_idx];
-
-			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-			if ((texture->bitmaps[frame].alpha_mode==alpha_mode_transparent) || (poly->alpha!=1.0f)) {
-				poly++;
-				continue;
-			}
-			
-
-			gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
-			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-			
-			poly++;
-		}
-	}
-
-		// end drawing
-
-	gl_texture_opaque_end();
-}
-
-
-
-
-
-
-
-void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
-{
-	int					n,k,frame;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	texture_type		*texture;
-	
-		// setup drawing
-
-	glDisable(GL_BLEND);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-	
-	glEnable(GL_DEPTH_TEST); 
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_TRUE);
-
-	gl_lights_start();
-
-	gl_texture_opaque_start(TRUE);
-	
-		// run through the meshes
-
-	for (n=0;n!=mesh_cnt;n++) {
-
-		mesh=&map.mesh.meshes[mesh_list[n]];
-
-		map_calculate_light_reduce_mesh(mesh);
-		
-			// run through the polys
-
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-
-				// get texture
-
-			texture=&map.textures[poly->txt_idx];
-
-			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-			if ((texture->bitmaps[frame].alpha_mode==alpha_mode_transparent) || (poly->alpha!=1.0f)) {
-				poly++;
-				continue;
-			}
-			
-				// setup lights
-
-			gl_lights_build_from_reduced_light_list(&poly->box.mid);
-			
-				// dark factor
-
-			glColor4f(poly->dark_factor,poly->dark_factor,poly->dark_factor,1.0f);
-
-				// draw polygon
-
-			gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
-			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-
-			poly++;
-		}
-	}
-
-		// end drawing
-
-	gl_texture_opaque_end();
-
-	gl_lights_end();
-}
-
-
-
-
-
-
-
-
-
 void render_opaque_mesh_glow(int mesh_cnt,int *mesh_list)
 {
-	int					n,k,frame;
+	int					n,k;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
@@ -320,10 +289,9 @@ void render_opaque_mesh_glow(int mesh_cnt,int *mesh_list)
 
 		mesh=&map.mesh.meshes[mesh_list[n]];
 
-			// skip hilited polygons
-			// or meshes with no speculars
+			// skip meshes with no glows or opaques
 
-		if ((!mesh->flag.has_glow) || (mesh->flag.hilite)) continue;
+		if ((!mesh->render.has_opaque) || (!mesh->render.has_glow)) continue;
 
 			// run through the polys
 
@@ -331,21 +299,20 @@ void render_opaque_mesh_glow(int mesh_cnt,int *mesh_list)
 
 		for (k=0;k!=mesh->npoly;k++) {
 
-				// get texture
+				// skip transparent or non-glow polys
 
-			texture=&map.textures[poly->txt_idx];
-			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-				// glow texture set?
-
-			if (texture->glowmaps[frame].gl_id==-1) {
+			if ((poly->render.transparent_on) || (!poly->render.glow_on)) {
 				poly++;
 				continue;
 			}
 
+				// get texture
+
+			texture=&map.textures[poly->txt_idx];
+
 				// draw glow
 
-			gl_texture_glow_set(texture->glowmaps[frame].gl_id,texture->glow.current_color);
+			gl_texture_glow_set(texture->glowmaps[poly->render.frame].gl_id,texture->glow.current_color);
 			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 
 			poly++;
@@ -359,25 +326,13 @@ void render_opaque_mesh_glow(int mesh_cnt,int *mesh_list)
 	gl_texture_glow_end();
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 /* =======================================================
 
       Opaque Map Rendering
       
 ======================================================= */
 
-void render_opaque_map(int mesh_cnt,int *mesh_list)
+void render_map_opaque(int mesh_cnt,int *mesh_list)
 {
 		// setup view
 
@@ -388,18 +343,18 @@ void render_opaque_map(int mesh_cnt,int *mesh_list)
 
 		// texture binding optimization
 
-	gl_texture_bind_start();
+	gl_texture_bind_start();		// supergumba -- we need to work on this
 
 		// attach map complied open gl list
 
 	view_compile_gl_list_attach();
 		
 	if (dim3_debug) {
-	//	render_opaque_portal_light_old(mesh_cnt,mesh_list);
-		render_opaque_mesh_shader(mesh_cnt,mesh_list);
+		render_opaque_mesh_debug(mesh_cnt,mesh_list);
 	}
 	else {
 		render_opaque_mesh_simple(mesh_cnt,mesh_list);
+		render_opaque_mesh_shader(mesh_cnt,mesh_list);
 	}
 
 	render_opaque_mesh_glow(mesh_cnt,mesh_list);

@@ -56,8 +56,9 @@ extern void draw_background(void);
 extern void draw_sky(int tick);
 extern bool model_inview(model_draw *draw);
 extern void model_calc_pose_bones(model_draw *draw);
-extern void render_opaque_map(int mesh_cnt,int *mesh_list);
-extern void render_transparent_map(int mesh_cnt,int *mesh_list);
+extern void render_map_setup(int mesh_cnt,int *mesh_list);
+extern void render_map_opaque(int mesh_cnt,int *mesh_list);
+extern void render_map_transparent(int mesh_cnt,int *mesh_list);
 extern void rain_draw(int tick);
 extern bool fog_solid_on(void);
 extern void fog_draw_textured(int tick);
@@ -72,7 +73,7 @@ extern void view_draw_liquid_tint(int liquid_idx);
 extern void view_draw_effect_tint(int tick,obj_type *obj);
 extern void fade_screen_draw(int tick);
 extern void fade_object_draw(int tick,obj_type *obj);
-extern void liquid_render(int tick);
+extern void render_map_liquid(int tick);
 extern void decal_render(int mesh_draw_count,int *mesh_draw_list);
 extern bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list);
 
@@ -499,22 +500,26 @@ void view_draw(int tick)
 	
 	if (!view_compile_mesh_gl_lists(tick,mesh_draw_count,mesh_draw_list)) return;
 
-		// draw opaque polygons
+		// setup some map polygon drawing flags
 
-	render_opaque_map(mesh_draw_count,mesh_draw_list);
+	render_map_setup(mesh_draw_count,mesh_draw_list);
+
+		// draw opaque map polygons
+
+	render_map_opaque(mesh_draw_count,mesh_draw_list);
 
 		// draw model shadows
 
 	view_draw_models(tick);
 	view_draw_models_shadow(mesh_draw_count,mesh_draw_list);
 	
-		// draw tranparent polygons
+		// draw tranparent map polygons
 
-	render_transparent_map(mesh_draw_count,mesh_draw_list);
+	render_map_transparent(mesh_draw_count,mesh_draw_list);
 
-		// draw liquids
+		// draw map liquids
 
-	liquid_render(tick);
+	render_map_liquid(tick);
 
 		// draw decals
 

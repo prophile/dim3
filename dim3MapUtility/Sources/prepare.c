@@ -252,7 +252,6 @@ void map_prepare(map_type *map)
 
 		mesh->flag.touched=FALSE;
 		mesh->flag.shiftable=FALSE;
-		mesh->flag.has_glow=FALSE;
 		
 			// run through the mesh polygons
 
@@ -273,10 +272,6 @@ void map_prepare(map_type *map)
 			poly->draw.y_shift_offset=0.0f;
 
 			mesh->flag.shiftable|=poly->draw.shift_on;
-
-				// glow map optimization flag
-
-			if (map->textures[poly->txt_idx].glowmaps[0].gl_id!=-1) mesh->flag.has_glow=TRUE;
 
 			poly++;
 		}

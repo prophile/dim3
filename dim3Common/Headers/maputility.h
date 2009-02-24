@@ -218,6 +218,11 @@ typedef struct		{
 					} map_mesh_poly_draw_type;
 
 typedef struct		{
+						int									frame;
+						bool								shader_on,transparent_on,glow_on;
+					} map_mesh_poly_render_type;
+
+typedef struct		{
 						int									ptsz,v[8],txt_idx;
 						float								gx[8],gy[8],
 															x_shift,y_shift,
@@ -226,6 +231,7 @@ typedef struct		{
 						map_mesh_poly_line_type				line;
 						map_mesh_poly_slope_type			slope;
 						map_mesh_poly_draw_type				draw;
+						map_mesh_poly_render_type			render;
 					} map_mesh_poly_type;
 					
 typedef struct		{
@@ -236,8 +242,7 @@ typedef struct		{
 						bool								on,pass_through,moveable,
 															hilite,climbable,shiftable,
 															lock_uv,no_self_obscure,
-															never_obscure,rot_independent,touched,
-															has_glow;
+															never_obscure,rot_independent,touched;
 					} map_mesh_flag_type;
 
 typedef struct		{
@@ -257,6 +262,11 @@ typedef struct		{
 					} map_mesh_draw_type;
 
 typedef struct		{
+						bool								has_opaque,has_transparent,
+															has_shader,has_no_shader,has_glow;
+					} map_mesh_render_type;
+
+typedef struct		{
 						int									nvertex,npoly,group_idx;
 						d3pnt								rot_off;
 						d3pnt								*vertexes;
@@ -266,6 +276,7 @@ typedef struct		{
 						map_mesh_message_type				msg;
 						map_mesh_obscure_type				obscure;
 						map_mesh_draw_type					draw;
+						map_mesh_render_type				render;
 					} map_mesh_type;
 
 //

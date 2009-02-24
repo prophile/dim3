@@ -420,10 +420,12 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
       
 ======================================================= */
 
-void liquid_render(int tick)
+void render_map_liquid(int tick)
 {
 	int					n;
 	map_liquid_type		*liq;
+
+	return;		// supergumba -- put back in later
 
 		// setup view
 
