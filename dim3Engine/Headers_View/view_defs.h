@@ -30,8 +30,11 @@ and can be sold or given away.
 //
 
 #define max_view_image				1024
+
 #define max_view_shader				64
 #define max_view_shader_custom_vars	8
+
+#define max_view_lights_per_poly	3
 
 //
 // input rate

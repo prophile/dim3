@@ -76,220 +76,6 @@ void render_transparent_dispose_sort_list(void)
 
 /* =======================================================
 
-      Transparent Mesh Drawing
-      
-======================================================= */
-
-void render_transparent_mesh_simple(void)
-{
-	int						n,sort_cnt,frame,cur_mesh_idx;
-	unsigned long			txt_id;
-	float					alpha;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-	map_poly_sort_item_type	*sort_list;
-	texture_type			*texture;
-
-		// setup transparent drawing
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-				
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_FALSE);
-
-		// sorted transparency list
-
-	sort_cnt=trans_sort.count;
-	sort_list=trans_sort.list;
-
-		// keep track of certain settings so
-		// we can optimize state changes
-
-	txt_id=-1;
-	alpha=0.0f;
-	cur_mesh_idx=-1;
-
-		// draw transparent meshes
-
-	gl_lights_start();
-
-	gl_texture_transparent_start();
-
-	for (n=0;n!=sort_cnt;n++) {
-		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
-		poly=&mesh->polys[sort_list[n].poly_idx];
-
-			// reduce the lighting list
-
-		if (cur_mesh_idx!=sort_list[n].mesh_idx) {
-			cur_mesh_idx=sort_list[n].mesh_idx;
-			map_calculate_light_reduce_mesh(mesh);
-		}
-	
-			// get texture
-
-		texture=&map.textures[poly->txt_idx];
-		frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-			// do we need texture switching?
-
-		if ((texture->bitmaps[frame].gl_id!=txt_id) || (poly->alpha!=alpha)) {
-		
-			txt_id=texture->bitmaps[frame].gl_id;
-			alpha=poly->alpha;
-
-			if (texture->additive) {
-				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-			}
-			else {
-				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-			}
-
-			gl_texture_transparent_set(txt_id,alpha);
-			
-		}
-
-			// setup the lights
-
-		gl_lights_build_from_reduced_light_list(&poly->box.mid);
-
-			// dark factor
-
-		glColor4f(poly->dark_factor,poly->dark_factor,poly->dark_factor,1.0f);
-
-			// draw the polygon
-
-		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-	}
-
-	gl_texture_transparent_end();
-
-	gl_lights_end();
-}
-
-void render_transparent_mesh_shader(void)
-{
-	int						n,sort_cnt,frame,nlight,cur_mesh_idx;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-	map_poly_sort_item_type	*sort_list;
-	texture_type			*texture;
-
-		// set transparent shader calls
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-				
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_FALSE);
-
-		// sorted transparent poly list
-
-	sort_cnt=trans_sort.count;
-	sort_list=trans_sort.list;
-
-		// keep track of state
-
-	cur_mesh_idx=-1;
-
-		// start shaders
-
-	gl_lights_start();
-
-	gl_shader_draw_start();
-	
-	for (n=0;n!=sort_cnt;n++) {
-		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
-		poly=&mesh->polys[sort_list[n].poly_idx];
-
-			// get texture
-
-		texture=&map.textures[poly->txt_idx];
-		frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-			// reduce the lighting list
-
-		if (cur_mesh_idx!=sort_list[n].mesh_idx) {
-			cur_mesh_idx=sort_list[n].mesh_idx;
-			map_calculate_light_reduce_mesh(mesh);
-		}
-
-			// setup the lights
-
-		nlight=gl_lights_build_from_reduced_light_list(&poly->box.mid);
-
-			// dark factor
-
-		glColor4f(poly->dark_factor,poly->dark_factor,poly->dark_factor,1.0f);
-
-			// draw shader
-
-		gl_shader_draw_execute(texture,frame,nlight,poly->dark_factor);
-
-		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-	}
-
-	gl_shader_draw_end();
-
-	gl_lights_end();
-}
-
-void render_transparent_mesh_glow(void)
-{
-	int						n,sort_cnt;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-	map_poly_sort_item_type	*sort_list;
-	texture_type			*texture;
-
-		// setup glow mapping
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE,GL_ONE);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_FALSE);
-
-	sort_cnt=trans_sort.count;
-	sort_list=trans_sort.list;
-
-	gl_texture_glow_start();
-
-	for (n=0;n!=sort_cnt;n++) {
-		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
-		poly=&mesh->polys[sort_list[n].poly_idx];
-
-			// skip meshes or polys with no glows or transparents
-
-		if ((!mesh->render.has_transparent) || (!mesh->render.has_glow)) continue;
-		if ((!poly->render.transparent_on) || (!poly->render.glow_on)) continue;
-		
-			// draw glow
-
-		texture=&map.textures[poly->txt_idx];
-		gl_texture_glow_set(texture->glowmaps[poly->render.frame].gl_id,texture->glow.current_color);
-		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-	}
-
-	gl_texture_glow_end();
-}
-
-
-/* =======================================================
-
       Transparent Mesh Sorting
       
 ======================================================= */
@@ -392,23 +178,318 @@ void render_transparent_sort(int mesh_cnt,int *mesh_list,d3pnt *pnt)
 
 /* =======================================================
 
+      Transparent Mesh Drawing
+      
+======================================================= */
+
+void render_transparent_mesh_debug(void)
+{
+	int						n,sort_cnt;
+	bool					cur_additive;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	map_poly_sort_item_type	*sort_list;
+	texture_type			*texture;
+
+		// setup transparent drawing
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+				
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+
+		// sorted transparency list
+
+	sort_cnt=trans_sort.count;
+	sort_list=trans_sort.list;
+
+		// keep track of certain settings so
+		// we can optimize state changes
+
+	cur_additive=FALSE;
+
+		// draw transparent meshes
+
+	gl_texture_transparent_start(FALSE);
+
+	for (n=0;n!=sort_cnt;n++) {
+		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
+		poly=&mesh->polys[sort_list[n].poly_idx];
+
+			// skip meshes or polys with no transparents
+
+		if (!mesh->render.has_transparent) continue;
+		if (!poly->render.transparent_on) continue;
+	
+			// need to change texture blending?
+
+		texture=&map.textures[poly->txt_idx];
+
+		if (texture->additive!=cur_additive) {
+			cur_additive=texture->additive;
+
+			if (cur_additive) {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+			}
+			else {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+			}
+		}
+
+			// dark factor
+
+		glColor4f(poly->dark_factor,poly->dark_factor,poly->dark_factor,1.0f);
+
+			// draw the polygon
+
+		gl_texture_transparent_set(texture->bitmaps[poly->render.frame].gl_id,poly->alpha);
+		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+	}
+
+	gl_texture_transparent_end();
+}
+
+void render_transparent_mesh_simple(void)
+{
+	int						n,sort_cnt,cur_mesh_idx;
+	bool					cur_additive,
+							light_on[max_view_lights_per_poly];
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	map_poly_sort_item_type	*sort_list;
+	texture_type			*texture;
+
+		// setup transparent drawing
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+				
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+
+		// sorted transparency list
+
+	sort_cnt=trans_sort.count;
+	sort_list=trans_sort.list;
+
+		// keep track of certain settings so
+		// we can optimize state changes
+
+	cur_additive=FALSE;
+	cur_mesh_idx=-1;
+
+		// draw transparent meshes
+
+	gl_lights_start();
+
+	gl_texture_transparent_start(TRUE);
+
+	for (n=0;n!=sort_cnt;n++) {
+		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
+		poly=&mesh->polys[sort_list[n].poly_idx];
+
+			// skip meshes or polys with no transparents or shaders
+
+		if ((!mesh->render.has_transparent) || (mesh->render.has_shader)) continue;
+		if ((!poly->render.transparent_on) || (poly->render.shader_on)) continue;
+
+			// reduce the lighting list
+
+		if (cur_mesh_idx!=sort_list[n].mesh_idx) {
+			cur_mesh_idx=sort_list[n].mesh_idx;
+			map_calculate_light_reduce_mesh(mesh);
+		}
+	
+			// need to change texture blending?
+
+		texture=&map.textures[poly->txt_idx];
+
+		if (texture->additive!=cur_additive) {
+			cur_additive=texture->additive;
+
+			if (cur_additive) {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+			}
+			else {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+			}
+		}
+
+			// setup the lights
+
+		gl_lights_build_from_reduced_light_list(&poly->box.mid,light_on);
+
+			// dark factor
+
+		glColor4f(poly->dark_factor,poly->dark_factor,poly->dark_factor,1.0f);
+
+			// draw the polygon
+
+		gl_texture_transparent_set(texture->bitmaps[poly->render.frame].gl_id,poly->alpha);
+		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+	}
+
+	gl_texture_transparent_end();
+
+	gl_lights_end();
+}
+
+void render_transparent_mesh_shader(void)
+{
+	int						n,sort_cnt,cur_mesh_idx;
+	bool					cur_additive,
+							light_on[max_view_lights_per_poly];
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	map_poly_sort_item_type	*sort_list;
+	texture_type			*texture;
+
+		// set transparent shader calls
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+				
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+
+		// sorted transparent poly list
+
+	sort_cnt=trans_sort.count;
+	sort_list=trans_sort.list;
+
+		// keep track of certain settings so
+		// we can optimize state changes
+
+	cur_additive=FALSE;
+	cur_mesh_idx=-1;
+
+		// start shaders
+
+	gl_lights_start();
+
+	gl_shader_draw_start();
+	
+	for (n=0;n!=sort_cnt;n++) {
+		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
+		poly=&mesh->polys[sort_list[n].poly_idx];
+
+			// skip meshes or polys with no transparents or no shaders
+
+		if ((!mesh->render.has_transparent) || (mesh->render.has_no_shader)) continue;
+		if ((!poly->render.transparent_on) || (!poly->render.shader_on)) continue;
+
+			// reduce the lighting list
+
+		if (cur_mesh_idx!=sort_list[n].mesh_idx) {
+			cur_mesh_idx=sort_list[n].mesh_idx;
+			map_calculate_light_reduce_mesh(mesh);
+		}
+
+			// need to change texture blending?
+
+		texture=&map.textures[poly->txt_idx];
+
+		if (texture->additive!=cur_additive) {
+			cur_additive=texture->additive;
+
+			if (cur_additive) {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+			}
+			else {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+			}
+		}
+
+			// setup the lights
+
+		gl_lights_build_from_reduced_light_list(&poly->box.mid,light_on);
+
+			// dark factor
+
+		glColor4f(poly->dark_factor,poly->dark_factor,poly->dark_factor,1.0f);
+
+			// draw shader
+
+		gl_shader_draw_execute(texture,poly->render.frame,poly->dark_factor,poly->alpha,light_on);
+		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+	}
+
+	gl_shader_draw_end();
+
+	gl_lights_end();
+}
+
+void render_transparent_mesh_glow(void)
+{
+	int						n,sort_cnt;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	map_poly_sort_item_type	*sort_list;
+	texture_type			*texture;
+
+		// setup glow mapping
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE,GL_ONE);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+
+	sort_cnt=trans_sort.count;
+	sort_list=trans_sort.list;
+
+	gl_texture_glow_start();
+
+	for (n=0;n!=sort_cnt;n++) {
+		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
+		poly=&mesh->polys[sort_list[n].poly_idx];
+
+			// skip meshes or polys with no glows or transparents
+
+		if ((!mesh->render.has_transparent) || (!mesh->render.has_glow)) continue;
+		if ((!poly->render.transparent_on) || (!poly->render.glow_on)) continue;
+		
+			// draw glow
+
+		texture=&map.textures[poly->txt_idx];
+		gl_texture_glow_set(texture->glowmaps[poly->render.frame].gl_id,texture->glow.current_color);
+		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+	}
+
+	gl_texture_glow_end();
+}
+
+/* =======================================================
+
       Transparent Map Rendering
       
 ======================================================= */
 
 void render_map_transparent(int mesh_cnt,int *mesh_list)
 {
-	return; // supergumba
 		// setup view
 
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
 	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
 	gl_setup_project();
-
-		// texture binding optimization
-
-	gl_texture_bind_start();
 	
 		// attach compiled vertex lists
 
@@ -421,9 +502,10 @@ void render_map_transparent(int mesh_cnt,int *mesh_list)
 		// transparent meshes
 
 	if (dim3_debug) {
-		render_transparent_mesh_shader();
+		render_transparent_mesh_debug();
 	}
 	else {
+		render_transparent_mesh_shader();
 		render_transparent_mesh_simple();
 	}
 

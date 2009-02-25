@@ -76,13 +76,14 @@ void gl_lights_end(void)
 
 // supergumba -- use all lights version
 // we will need to clean this up as it's way to slow
+// this version does not consider the reduced list and is a lot slower
 
-int gl_lights_build_from_reduced_light_list(d3pnt *pnt)
+void gl_lights_build_from_reduced_light_list(d3pnt *pnt,bool *light_on)
 {
-	int						n,k,d,sz,light_id,
-							idx,cnt,sort_list[max_light_spot],
-							sort_dist[max_light_spot];
+	int						n,k,light_id,
+							idx,cnt,sort_list[max_light_spot];
 	float					f;
+	double					d,dx,dy,dz,sort_dist[max_light_spot];
 	light_spot_type			*lspot;
 	GLfloat					glf[4];	
 
@@ -95,7 +96,11 @@ int gl_lights_build_from_reduced_light_list(d3pnt *pnt)
 
 			// get distance
 
-		d=(int)distance_get(lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,pnt->x,pnt->y,pnt->z);
+		dx=(double)(lspot->pnt.x-pnt->x);
+		dy=(double)(lspot->pnt.y-pnt->y);
+		dz=(double)(lspot->pnt.z-pnt->z);
+
+		d=sqrt((dx*dx)+(dy*dy)+(dz*dz));
 
 			// find position in list (top is closest)
 
@@ -119,9 +124,8 @@ int gl_lights_build_from_reduced_light_list(d3pnt *pnt)
 		
 			// insert in list
 			
-		sz=sizeof(int)*(cnt-idx);
-		memmove(&sort_dist[idx+1],&sort_dist[idx],sz);
-		memmove(&sort_list[idx+1],&sort_list[idx],sz);
+		memmove(&sort_dist[idx+1],&sort_dist[idx],(sizeof(double)*(cnt-idx)));
+		memmove(&sort_list[idx+1],&sort_list[idx],(sizeof(int)*(cnt-idx)));
 		
 		sort_dist[idx]=d;
 		sort_list[idx]=n;
@@ -129,11 +133,9 @@ int gl_lights_build_from_reduced_light_list(d3pnt *pnt)
 		cnt++;
 	}
 	
-		// only use three lights -- supergumba -- work on this, maybe two?
+		// only use max_view_lights_per_poly lights per polygon
 		
-	if (cnt>3) cnt=3;
-			
-	for (n=0;n!=3;n++) {
+	for (n=0;n!=max_view_lights_per_poly;n++) {
 		lspot=&lspot_cache[sort_list[n]];
 		
 		light_id=GL_LIGHT0+n;
@@ -146,6 +148,8 @@ int gl_lights_build_from_reduced_light_list(d3pnt *pnt)
 			glLightf(light_id,GL_CONSTANT_ATTENUATION,0.0f);
 			glLightf(light_id,GL_LINEAR_ATTENUATION,0.0f);
 			glLightf(light_id,GL_QUADRATIC_ATTENUATION,0.0f);
+
+			light_on[n]=FALSE;
 		}
 		
 			// regular lights
@@ -174,116 +178,9 @@ int gl_lights_build_from_reduced_light_list(d3pnt *pnt)
 			glLightfv(light_id,GL_AMBIENT,glf);
 			glLightfv(light_id,GL_DIFFUSE,glf);
 			glLightfv(light_id,GL_SPECULAR,glf);
+
+			light_on[n]=TRUE;
 		}
 	}
-
-	return(cnt);
 }
 
-// supergumba -- determine best way to do this
-
-/*
-int gl_lights_build_from_reduced_light_list(d3pnt *pnt)
-{
-	int						n,k,d,sz,light_id,
-							idx,cnt,sort_list[max_light_spot],
-							sort_dist[max_light_spot];
-	float					f;
-	light_spot_type			*lspot;
-	GLfloat					glf[4];	
-
-		// sort the light list
-
-	cnt=0;
-
-	for (n=0;n!=nlight_reduce;n++) {
-		lspot=&lspot_cache[light_reduce_list[n]];
-
-			// get distance
-
-		d=(int)distance_get(lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,pnt->x,pnt->y,pnt->z);
-
-			// find position in list (top is closest)
-
-		idx=-1;
-	
-		for (k=0;k!=cnt;k++) {
-			if (sort_dist[k]>d) {
-				idx=k;
-				break;
-			}
-		}
-	
-			// insert at end of list
-			
-		if (idx==-1) {
-			sort_dist[cnt]=d;
-			sort_list[cnt]=light_reduce_list[n];
-			cnt++;
-			continue;
-		}
-		
-			// insert in list
-			
-		sz=sizeof(int)*(cnt-idx);
-		memmove(&sort_dist[idx+1],&sort_dist[idx],sz);
-		memmove(&sort_list[idx+1],&sort_list[idx],sz);
-		
-		sort_dist[idx]=d;
-		sort_list[idx]=light_reduce_list[n];
-		
-		cnt++;
-	}
-	
-		// only use three lights -- supergumba -- work on this, maybe two?
-		
-	if (cnt>3) cnt=3;
-			
-	for (n=0;n!=3;n++) {
-		lspot=&lspot_cache[sort_list[n]];
-		
-		light_id=GL_LIGHT0+n;
-		
-			// null lights
-			
-		if (n>=cnt) {					// supergumba -- in future, we will need shaders for 1, 2, or 3 lights
-			glDisable(light_id);
-			
-			glLightf(light_id,GL_CONSTANT_ATTENUATION,0.0f);
-			glLightf(light_id,GL_LINEAR_ATTENUATION,0.0f);
-			glLightf(light_id,GL_QUADRATIC_ATTENUATION,0.0f);
-		}
-		
-			// regular lights
-			
-		else {
-			glEnable(light_id);			// supergumba -- do this outside of this routine!
-			
-			glf[0]=(float)lspot->pnt.x;
-			glf[1]=(float)lspot->pnt.y;
-			glf[2]=(float)lspot->pnt.z;
-			glf[3]=1.0f;
-			glLightfv(light_id,GL_POSITION,glf);
-
-			glLightf(light_id,GL_CONSTANT_ATTENUATION,0.0f);
-			glLightf(light_id,GL_LINEAR_ATTENUATION,0.0f);
-
-			f=(float)lspot->intensity;
-			f=f*0.4f;
-			f=f*f;
-			glLightf(light_id,GL_QUADRATIC_ATTENUATION,(1.0f/f));
-
-			glf[0]=lspot->col.r;
-			glf[1]=lspot->col.g;
-			glf[2]=lspot->col.b;
-			glf[3]=1.0f;
-			glLightfv(light_id,GL_AMBIENT,glf);
-			glLightfv(light_id,GL_DIFFUSE,glf);
-			glLightfv(light_id,GL_SPECULAR,glf);
-		}
-	}
-
-	return(cnt);
-}
-
-*/

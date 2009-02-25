@@ -51,7 +51,7 @@ extern bool gl_check_shader_ok(void);
 
 extern void gl_lights_start(void);
 extern void gl_lights_end(void);
-extern int gl_lights_build_from_reduced_light_list(d3pnt *pnt);
+extern void gl_lights_build_from_reduced_light_list(d3pnt *pnt,bool *light_on);
 
 	// vbos
 
@@ -105,7 +105,7 @@ extern void gl_shader_attach_map(void);
 extern void gl_shader_attach_model(model_type *mdl);
 extern void gl_shader_draw_start(void);
 extern void gl_shader_draw_end(void);
-extern void gl_shader_draw_execute(texture_type *texture,int frame,int nlight,float dark_factor);
+extern void gl_shader_draw_execute(texture_type *texture,int frame,float dark_factor,float alpha,bool *light_on);
 
 	// shadows
 	
@@ -140,7 +140,7 @@ extern void gl_texture_shutdown(void);
 extern void gl_texture_bind_start(void);
 extern void gl_texture_opaque_start(bool lite);
 extern void gl_texture_opaque_end(void);
-extern void gl_texture_opaque_set(int txt_id);
+extern void gl_texture_opaque_set(GLuint txt_id);
 extern void gl_texture_opaque_tesseled_bump_start(void);
 extern void gl_texture_opaque_tesseled_bump_end(void);
 extern void gl_texture_opaque_tesseled_bump_set(int bump_id);
@@ -152,13 +152,13 @@ extern void gl_texture_tesseled_specular_end(void);
 extern void gl_texture_tesseled_specular_set(int specular_id);
 extern void gl_texture_glow_start(void);
 extern void gl_texture_glow_end(void);
-extern void gl_texture_glow_set(int glow_id,float glow_color);
+extern void gl_texture_glow_set(GLuint glow_id,float glow_color);
 extern void gl_texture_decal_start(void);
 extern void gl_texture_decal_end(void);
 extern void gl_texture_decal_set(int txt_id,float r,float g,float b,float alpha);
-extern void gl_texture_transparent_start(void);
+extern void gl_texture_transparent_start(bool lite);
 extern void gl_texture_transparent_end(void);
-extern void gl_texture_transparent_set(int txt_id,float alpha);
+extern void gl_texture_transparent_set(GLuint txt_id,float alpha);
 extern void gl_texture_transparent_specular_start(void);
 extern void gl_texture_transparent_specular_end(void);
 extern void gl_texture_transparent_specular_set(int specular_id,float alpha);

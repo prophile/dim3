@@ -41,6 +41,9 @@ float						cur_alpha,cur_dark_factor;
 GLfloat						cur_decal_alpha[4];
 bitmap_type					null_bitmap;
 
+float						gl_texture_current_alpha,gl_texture_current_glow_color;
+GLuint						gl_texture_current_txt_id;
+
 // supergumba -- will need to search this for deletes on unused stuff (note vars above, also)
 
 /* =======================================================
@@ -100,7 +103,7 @@ inline void gl_texture_bind(int unit,int txt_id)
       
 ======================================================= */
 
-void gl_texture_opaque_start(bool lite)
+inline void gl_texture_opaque_start(bool lite)
 {
 		// texture unit 0
 		// contains texture
@@ -108,35 +111,29 @@ void gl_texture_opaque_start(bool lite)
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
 
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-	
 	if (!lite) {
-		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
 	}
 	else {
-		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_PRIMARY_COLOR);
-		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
+		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	}
-	
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+
+	gl_texture_current_txt_id=-1;
 }
 
-void gl_texture_opaque_end(void)
+inline void gl_texture_opaque_end(void)
 {
-	glActiveTexture(GL_TEXTURE0);
 	glDisable(GL_TEXTURE_2D);
+	
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 }
 
-inline void gl_texture_opaque_set(int txt_id)
+inline void gl_texture_opaque_set(GLuint txt_id)
 {
-	gl_texture_bind(0,txt_id);
+	if (txt_id!=gl_texture_current_txt_id) {
+		gl_texture_current_txt_id=txt_id;
+		glBindTexture(GL_TEXTURE_2D,txt_id);
+	}
 }
 
 /* =======================================================
@@ -175,6 +172,69 @@ void gl_texture_opaque_tesseled_bump_end(void)
 inline void gl_texture_opaque_tesseled_bump_set(int bump_id)
 {
 	gl_texture_bind(0,bump_id);
+}
+
+/* =======================================================
+
+      Transparent Texture Drawing
+      
+======================================================= */
+
+inline void gl_texture_transparent_start(bool lite)
+{
+		// texture unit 0
+		// contains texture
+
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	
+	if (!lite) {
+		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+	}
+	else {
+		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+
+		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
+		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
+		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_PRIMARY_COLOR);
+		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
+
+		glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_MODULATE);
+		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
+		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+		glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_ALPHA,GL_CONSTANT);
+		glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_ALPHA,GL_SRC_ALPHA);
+	}
+
+	gl_texture_current_txt_id=-1;
+	gl_texture_current_alpha=-1.0f;
+}
+
+inline void gl_texture_transparent_end(void)
+{
+	glDisable(GL_TEXTURE_2D);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+}
+
+inline void gl_texture_transparent_set(GLuint txt_id,float alpha)
+{
+	GLfloat			col4[4];
+	
+	if (txt_id!=gl_texture_current_txt_id) {
+		gl_texture_current_txt_id=txt_id;
+		glBindTexture(GL_TEXTURE_2D,txt_id);
+	}
+	
+	if (alpha!=gl_texture_current_alpha) {
+		gl_texture_current_alpha=alpha;
+
+		col4[0]=col4[1]=col4[2]=1.0f;
+		col4[3]=alpha;
+		
+		glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
+	}
 }
 
 /* =======================================================
@@ -266,7 +326,6 @@ void gl_texture_tesseled_specular_start(void)
 
 void gl_texture_tesseled_specular_end(void)
 {
-	glActiveTexture(GL_TEXTURE0);
 	glDisable(GL_TEXTURE_2D);
 }
 
@@ -281,7 +340,7 @@ inline void gl_texture_tesseled_specular_set(int specular_id)
       
 ======================================================= */
 
-void gl_texture_glow_start(void)
+inline void gl_texture_glow_start(void)
 {
 		// texture unit 0
 		// the glow map modulated with glow constant
@@ -300,29 +359,35 @@ void gl_texture_glow_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+
+	gl_texture_current_txt_id=-1;
+	gl_texture_current_glow_color=-1.0f;
 }
 
-void gl_texture_glow_end(void)
+inline void gl_texture_glow_end(void)
 {
-	glActiveTexture(GL_TEXTURE0);
 	glDisable(GL_TEXTURE_2D);
+
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 }
 
-inline void gl_texture_glow_set(int glow_id,float glow_color)
+inline void gl_texture_glow_set(GLuint glow_id,float glow_color)
 {
 	GLfloat			col4[4];
+	
+	if (glow_id!=gl_texture_current_txt_id) {
+		gl_texture_current_txt_id=glow_id;
+		glBindTexture(GL_TEXTURE_2D,glow_id);
+	}
+	
+	if (glow_color!=gl_texture_current_glow_color) {
+		gl_texture_current_glow_color=glow_color;
 
-		// glow texture
-
-	gl_texture_bind(0,glow_id);
-
-		// glow color
-
-	glActiveTexture(GL_TEXTURE0);
-
-	col4[0]=col4[1]=col4[2]=glow_color;
-	col4[3]=1.0f;
-	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
+		col4[0]=col4[1]=col4[2]=glow_color;
+		col4[3]=1.0f;
+		
+		glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
+	}
 }
 
 /* =======================================================
@@ -375,53 +440,6 @@ inline void gl_texture_decal_set(int txt_id,float r,float g,float b,float alpha)
 	fct[3]=alpha;
 
 	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,fct);
-}
-
-/* =======================================================
-
-      Transparent Texture Drawing
-      
-======================================================= */
-
-void gl_texture_transparent_start(void)
-{
-		// texture unit 0
-		// contains texture
-
-	glActiveTexture(GL_TEXTURE0);
-	glEnable(GL_TEXTURE_2D);
-	
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-	
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_RGB,GL_PRIMARY_COLOR);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_RGB,GL_SRC_COLOR);
-
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_MODULATE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE1_ALPHA,GL_CONSTANT);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_ALPHA,GL_SRC_ALPHA);
-}
-
-void gl_texture_transparent_end(void)
-{
-	glDisable(GL_TEXTURE_2D);
-}
-
-inline void gl_texture_transparent_set(int txt_id,float alpha)
-{
-	GLfloat			col4[4];
-	
-		// set texture and alpha
-
-	gl_texture_bind(0,txt_id);
-	
-	col4[0]=col4[1]=col4[2]=1.0f;
-	col4[3]=alpha;
-	glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
 }
 
 /* =======================================================

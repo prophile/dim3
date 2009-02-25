@@ -320,7 +320,7 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
 void liquid_render_liquid(int tick,map_liquid_type *liq)
 {
 	int						v_sz,quad_cnt,frame;
-	float					col[3],normal[3],f_intensity;
+	bool					light_on[max_view_lights_per_poly];
 	d3pnt					mid;
 	texture_type			*texture;
 
@@ -350,9 +350,12 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*3)*sizeof(float)));
-	
-//	glEnableClientState(GL_COLOR_ARRAY);	// supergumba
-//	glColorPointer(3,GL_FLOAT,0,(void*)((v_sz*(3+2))*sizeof(float)));
+
+	gl_lights_start();
+
+		// reduce lighting
+
+	map_calculate_light_reduce_liquid(liq);
 
 		// setup texture
 
@@ -365,43 +368,46 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 	else {
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	}
+		
+		// setup lights
+
+	mid.x=(liq->lft+liq->rgt)>>1;
+	mid.y=liq->y;
+	mid.z=(liq->top+liq->bot)>>1;
+
+	gl_lights_build_from_reduced_light_list(&mid,light_on);
 
 		// start shader or regular texture
 
-		// supergumba -- separate these so shader program start isn't called continually
-/* supergumba
-	if (texture->shader.on) {
+	if (texture->shader_idx!=-1) {
 		gl_shader_draw_start();
-		gl_shader_draw_execute(texture,frame,0,1.0f);		// supergumba -- fix
-
-		map_calculate_light_reduce_liquid(liq);
-		map_calculate_light_color_normal((double)mid.x,(double)mid.y,(double)mid.z,col,normal,&f_intensity);
-
-		glNormal3f(normal[0],normal[1],normal[2]);
+		gl_shader_draw_execute(texture,frame,1.0f,liq->alpha,light_on);
 	}
-*/
-//	else {
-		gl_texture_transparent_start();
+	else {
+		gl_texture_transparent_start(TRUE);
 		gl_texture_transparent_set(texture->bitmaps[frame].gl_id,liq->alpha);
-//	}
+	}
+
+		// liquids have no dark factor
+
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
 
 		// draw the quads
 
 	glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
 
 		// end texture
-/* supergumba
-	if (texture->shader.on) {
+
+	if (texture->shader_idx!=-1) {
 		gl_shader_draw_end();
 	}
-	*/
-//	else {
+	else {
 		gl_texture_transparent_end();
-	//}
+	}
 
 		// end drawing
 
-	glDisableClientState(GL_COLOR_ARRAY);
+	gl_lights_end();
 
 	glClientActiveTexture(GL_TEXTURE0);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -425,8 +431,6 @@ void render_map_liquid(int tick)
 	int					n;
 	map_liquid_type		*liq;
 
-	return;		// supergumba -- put back in later
-
 		// setup view
 
 	gl_setup_viewport(console_y_offset());
@@ -448,7 +452,7 @@ void render_map_liquid(int tick)
 	
 		// draw liquids
 		
-		// supergumba -- need to sort, obscure, etc
+		// supergumba -- need to sort
 		
 	liq=map.liquid.liquids;
 

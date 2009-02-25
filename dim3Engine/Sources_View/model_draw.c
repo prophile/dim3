@@ -41,7 +41,6 @@ extern server_type		server;
 extern view_type		view;
 extern setup_type		setup;
 
-extern void model_build_color(model_type *mdl,int mesh_idx,int x,int y,int z,model_draw *draw);
 extern bool fog_solid_on(void);
 
 /* =======================================================
@@ -52,10 +51,9 @@ extern bool fog_solid_on(void);
 
 bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_draw *draw)
 {
-	int				n,k,nvertex,ntrig,idx,t_idx;
-	float			f_intensity;
-	float			*vl,*tl,*cl,*nl,*sl,*vp,*cp,*np,*vertex_ptr,
-					*vertex_array,*coord_array,*color_array,*normal_array;
+	int				n,k,nvertex,ntrig,t_idx;
+	float			*vl,*tl,*vp,*vertex_ptr,
+					*vertex_array,*coord_array;
 	unsigned short	*index_ptr;
     model_trig_type	*trig;
 	model_mesh_type	*mesh;
@@ -80,7 +78,7 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 
  		// construct VBO
 
-	vertex_ptr=view_bind_map_next_vertex_object(((ntrig*3)*(3+2+3+3+3)));
+	vertex_ptr=view_bind_map_next_vertex_object(((ntrig*3)*(3+2)));
 	if (vertex_ptr==NULL) return(FALSE);
 
 	index_ptr=view_bind_map_next_index_object(ntrig*3);
@@ -94,9 +92,6 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 
 	vl=vertex_array=vertex_ptr;
 	tl=coord_array=vertex_ptr+((ntrig*3)*3);
-	cl=color_array=vertex_ptr+((ntrig*3)*(3+2));
-	nl=normal_array=vertex_ptr+((ntrig*3)*(3+2+3));
-	sl=normal_array=vertex_ptr+((ntrig*3)*(3+2+3+3));
 
 	t_idx=0;
 
@@ -112,13 +107,7 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 
 				// vertex 0
 
-			idx=trig->v[0]*3;
-
-			vp=mesh->draw.gl_vertex_array+idx;
-			cp=mesh->draw.gl_color_array+idx;
-			np=mesh->draw.gl_bump_normal_array+idx;
-			
-			f_intensity=*(mesh->draw.gl_specular_intensity_array+trig->v[0]);
+			vp=mesh->draw.gl_vertex_array+(trig->v[0]*3);
 
 			*vl++=*vp++;
 			*vl++=*vp++;
@@ -127,27 +116,9 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 			*tl++=trig->gx[0];
 			*tl++=trig->gy[0];
 
-			*cl++=*cp++;
-			*cl++=*cp++;
-			*cl++=*cp;
-			
-			*nl++=*np++;
-			*nl++=*np++;
-			*nl++=*np;
-			
-			*sl++=f_intensity;
-			*sl++=f_intensity;
-			*sl++=f_intensity;
-
 				// vertex 1
 
-			idx=trig->v[1]*3;
-
-			vp=mesh->draw.gl_vertex_array+idx;
-			cp=mesh->draw.gl_color_array+idx;
-			np=mesh->draw.gl_bump_normal_array+idx;
-			
-			f_intensity=*(mesh->draw.gl_specular_intensity_array+trig->v[1]);
+			vp=mesh->draw.gl_vertex_array+(trig->v[1]*3);
 
 			*vl++=*vp++;
 			*vl++=*vp++;
@@ -156,27 +127,9 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 			*tl++=trig->gx[1];
 			*tl++=trig->gy[1];
 
-			*cl++=*cp++;
-			*cl++=*cp++;
-			*cl++=*cp;
-			
-			*nl++=*np++;
-			*nl++=*np++;
-			*nl++=*np;
-			
-			*sl++=f_intensity;
-			*sl++=f_intensity;
-			*sl++=f_intensity;
-
 				// vertex 2
 
-			idx=trig->v[2]*3;
-
-			vp=mesh->draw.gl_vertex_array+idx;
-			cp=mesh->draw.gl_color_array+idx;
-			np=mesh->draw.gl_bump_normal_array+idx;
-			
-			f_intensity=*(mesh->draw.gl_specular_intensity_array+trig->v[2]);
+			vp=mesh->draw.gl_vertex_array+(trig->v[2]*3);
 
 			*vl++=*vp++;
 			*vl++=*vp++;
@@ -184,18 +137,6 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 
 			*tl++=trig->gx[2];
 			*tl++=trig->gy[2];
-
-			*cl++=*cp++;
-			*cl++=*cp++;
-			*cl++=*cp;
-			
-			*nl++=*np++;
-			*nl++=*np++;
-			*nl++=*np;
-			
-			*sl++=f_intensity;
-			*sl++=f_intensity;
-			*sl++=f_intensity;
 
 				// indexes
 
@@ -215,24 +156,14 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 	view_unmap_current_vertex_object();
 
 		// set the pointers
+
+	glClientActiveTexture(GL_TEXTURE0);
 		
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 
-	glClientActiveTexture(GL_TEXTURE2);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((ntrig*3)*3)*sizeof(float)));
-
-	glClientActiveTexture(GL_TEXTURE1);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((ntrig*3)*3)*sizeof(float)));
-
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((ntrig*3)*3)*sizeof(float)));
-// supergumba
-//	glEnableClientState(GL_COLOR_ARRAY);
-//	glColorPointer(3,GL_FLOAT,0,(void*)(((ntrig*3)*(3+2))*sizeof(float)));
 
 	return(TRUE);
 }
@@ -242,36 +173,8 @@ inline int model_draw_set_vertex_objects(model_type *mdl,int mesh_idx,model_draw
 	return(draw->vbo_ptr.index_offset[mesh_idx]);
 }
 
-inline void model_draw_set_vertex_objects_switch_color(model_type *mdl,int mesh_idx,model_draw *draw)
-{
-// supergumba
-//	glColorPointer(3,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2))*sizeof(float)));
-}
-
-inline void model_draw_set_vertex_objects_switch_normal(model_type *mdl,int mesh_idx,model_draw *draw)
-{
-// supergumba
-//	glColorPointer(3,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2+3))*sizeof(float)));
-}
-
-inline void model_draw_set_vertex_objects_switch_specular(model_type *mdl,int mesh_idx,model_draw *draw)
-{
-// supergumba
-//	glColorPointer(3,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2+3+3))*sizeof(float)));
-}
-
 void model_draw_release_vertex_objects(void)
 {
-// supergumba
-//	glDisableClientState(GL_COLOR_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE2);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE1);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE0);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -356,9 +259,9 @@ void model_draw_stop_mesh_shadow_array(void)
       
 ======================================================= */
 
-void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw *draw,bool is_fog_lighting)
+void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw *draw)
 {
-	int						n,frame,trig_count,nlight,
+	int						n,frame,trig_count,
 							trig_start_idx,trig_idx;
 	float					alpha;
 	model_mesh_type			*mesh;
@@ -371,16 +274,29 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 
 	trig_start_idx=model_draw_set_vertex_objects(mdl,mesh_idx,draw);
 	
-		// run through the materials
+		// setup drawing
 
-	gl_lights_start();
-	map_calculate_light_reduce_model(draw);
-	nlight=gl_lights_build_from_reduced_light_list(&draw->pnt);
+	glDisable(GL_BLEND);
+		
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_TRUE);
+
+	gl_texture_opaque_start(TRUE);
+
+		// run through the materials
 
 	for (n=0;n!=max_model_texture;n++) {
 	
 		texture=&mdl->textures[n];
 		material=&mesh->materials[n];
+
+			// skip shader textures
+
+		if (texture->shader_idx!=-1) continue;
 	
 			// any opaque trigs?
 			
@@ -398,110 +314,18 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 
 		trig_idx=trig_start_idx+(material->trig_start*3);
 
-			// regular texture
-			// this is lit on the triangle itself
+			// draw texture
 
-		glDisable(GL_BLEND);
-			
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_NOTEQUAL,0);
-
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LEQUAL);
-		glDepthMask(GL_TRUE);
-
-		gl_texture_opaque_start(!dim3_debug);
 		gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
-
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
-			
-		gl_texture_opaque_end();
-
-			// bump mapping
-			// need to switch to normal array for bumping
-
-		if (texture->bumpmaps[frame].gl_id!=-1) {
-			model_draw_set_vertex_objects_switch_normal(mdl,mesh_idx,draw);
-
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_ZERO,GL_SRC_COLOR);
-			
-			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc(GL_NOTEQUAL,0);
-
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_EQUAL);
-			glDepthMask(GL_FALSE);
-
-			gl_texture_opaque_tesseled_bump_start();
-			gl_texture_opaque_tesseled_bump_set(texture->bumpmaps[frame].gl_id);
-
-			glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
-		
-			gl_texture_opaque_tesseled_bump_end();
-
-			model_draw_set_vertex_objects_switch_color(mdl,mesh_idx,draw);
-		}
-/* supergumba -- specular and glow off for now, needs to be changed
-			// specular
-
-		if ((!dim3_debug) && (!is_fog_lighting) && (texture->specularmaps[frame].gl_id!=-1)) {
-			model_draw_set_vertex_objects_switch_specular(mdl,mesh_idx,draw);
-
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_ONE,GL_ONE);
-			
-			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc(GL_NOTEQUAL,0);
-
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_EQUAL);
-			glDepthMask(GL_FALSE);
-
-			gl_texture_tesseled_specular_start();
-			gl_texture_tesseled_specular_set(texture->specularmaps[frame].gl_id);
-
-			glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
-				
-			gl_texture_tesseled_specular_end();
-			
-			model_draw_set_vertex_objects_switch_color(mdl,mesh_idx,draw);
-		}
-
-			// glow mapped textures
-
-		if (texture->glowmaps[frame].gl_id!=-1) {
-			
-			glDisable(GL_BLEND);
-
-			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc(GL_NOTEQUAL,0);
-			
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_EQUAL);
-			glDepthMask(GL_FALSE);
-
-			// supergumba -- needs to be fixed
-
-			gl_texture_glow_start();
-			gl_texture_glow_set(texture->glowmaps[frame].gl_id,texture->glow.current_color);
-
-			glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
-			
-			gl_texture_glow_end();
-		}
-		
-		*/
 	}
-
-	gl_lights_end();
+			
+	gl_texture_opaque_end();
 }
 
-void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw *draw)
+void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw *draw,bool *light_on)
 {
-	/* supergumba -- change all this
-
-	int						n,trig_count,frame,nlight,
+	int						n,trig_count,
 							trig_start_idx,trig_idx;
 	model_mesh_type			*mesh;
     texture_type			*texture;
@@ -513,16 +337,29 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 
 	trig_start_idx=model_draw_set_vertex_objects(mdl,mesh_idx,draw);
 	
-		// run through the materials
+		// setup drawing
 
-	gl_lights_start();
-	map_calculate_light_reduce_model(draw);
-	nlight=gl_lights_build_from_reduced_light_list(&draw->pnt);
+	glDisable(GL_BLEND);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+	
+	glEnable(GL_DEPTH_TEST); 
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_TRUE);
+
+	gl_shader_draw_start();
+
+		// run through the materials
 
 	for (n=0;n!=max_model_texture;n++) {
 	
 		texture=&mdl->textures[n];
 		material=&mesh->materials[n];
+
+			// skip non-shader textures
+
+		if (texture->shader_idx==-1) continue;
 
 			// don't draw if no trigs
 
@@ -533,32 +370,20 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 		
 			// run the shader
 			
-		gl_shader_draw_start();
-		
-		glDisable(GL_BLEND);
-		glDisable(GL_ALPHA_TEST);
-		
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LEQUAL);
-		glDepthMask(GL_TRUE);
-		
-		frame=texture->animate.current_frame;
-		gl_shader_draw_execute(texture,frame,nlight,1.0f);	// supergumba -- fix!
+		gl_shader_draw_execute(texture,texture->animate.current_frame,1.0f,1.0f,light_on);
 		
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 			
 		gl_shader_draw_end();
 	}
-
-	gl_lights_end();
-	*/
 }
 
 void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw *draw)
 {
-	int						n,frame,trig_count,nlight,
+	int						n,frame,trig_count,
 							trig_start_idx,trig_idx;
 	float					alpha;
+	bool					cur_additive,is_additive;
 	model_mesh_type			*mesh;
     texture_type			*texture;
 	model_material_type		*material;
@@ -568,17 +393,35 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,mod
 		// setup correct mesh pointers
 
 	trig_start_idx=model_draw_set_vertex_objects(mdl,mesh_idx,draw);
+
+		// setup drawing
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+		
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+	
+	gl_texture_transparent_start(TRUE);
+
+		// minimize state changes
+
+	cur_additive=FALSE;
 	
 		// run through textures
-
-	gl_lights_start();
-	map_calculate_light_reduce_model(draw);
-	nlight=gl_lights_build_from_reduced_light_list(&draw->pnt);
 
 	for (n=0;n!=max_model_texture;n++) {
 	
 		texture=&mdl->textures[n];
 		material=&mesh->materials[n];
+
+			// skip shader textures
+
+		if (texture->shader_idx!=-1) continue;
 	
 			// any transparent trigs?
 			
@@ -598,77 +441,80 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,mod
 		
 			// transparent textures
 			
-		glEnable(GL_BLEND);
-		if ((mesh->blend_add) || (texture->additive)) {
-			glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-		}
-		else {
-			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		is_additive=(mesh->blend_add) || (texture->additive);
+		if (is_additive!=cur_additive) {
+			cur_additive=is_additive;
+			if (cur_additive) {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+			}
+			else {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+			}
 		}
 
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_NOTEQUAL,0);
-			
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LEQUAL);
-		glDepthMask(GL_FALSE);
-		
-		gl_texture_transparent_start();
+			// draw texture
+
 		gl_texture_transparent_set(texture->bitmaps[texture->animate.current_frame].gl_id,alpha);
-
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
-
-		gl_texture_transparent_end();
-/* supergumba -- specular and glow off for now -- needs to be fixed
-			// specular mapped textures
-
-		if (texture->specularmaps[frame].gl_id!=-1) {
-			model_draw_set_vertex_objects_switch_specular(mdl,mesh_idx,draw);
-			
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_DST_COLOR,GL_ONE);
-
-			glDisable(GL_ALPHA_TEST);
-			
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_EQUAL);
-			glDepthMask(GL_FALSE);
-			
-			gl_texture_transparent_specular_start();
-			gl_texture_transparent_specular_set(texture->specularmaps[texture->animate.current_frame].gl_id,alpha);
-		
-			glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
-			
-			gl_texture_transparent_specular_end();
-			
-			model_draw_set_vertex_objects_switch_color(mdl,mesh_idx,draw);
-		}
-
-			// glow mapped textures
-
-		if (texture->glowmaps[frame].gl_id!=-1) {
-			
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc(GL_NOTEQUAL,0);
-			
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_EQUAL);
-			glDepthMask(GL_FALSE);
-			
-			gl_texture_glow_start();
-			gl_texture_glow_set(texture->bitmaps[texture->animate.current_frame].gl_id,texture->glowmaps[texture->animate.current_frame].gl_id,alpha,texture->glow.current_color);
-
-			glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
-			
-			gl_texture_glow_end();
-		}
-		*/
 	}
 
-	gl_lights_end();
+	gl_texture_transparent_end();
+}
+
+void model_draw_glow_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw *draw)
+{
+	int						n,frame,trig_count,
+							trig_start_idx,trig_idx;
+	model_mesh_type			*mesh;
+    texture_type			*texture;
+	model_material_type		*material;
+	
+	mesh=&mdl->meshes[mesh_idx];
+
+		// setup correct mesh pointers
+
+	trig_start_idx=model_draw_set_vertex_objects(mdl,mesh_idx,draw);
+
+		// setup drawing
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE,GL_ONE);
+
+	glDisable(GL_ALPHA_TEST);
+
+	glEnable(GL_DEPTH_TEST); 
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+
+	gl_texture_glow_start();
+	
+		// run through the materials
+
+	for (n=0;n!=max_model_texture;n++) {
+	
+			// only draw glow textures
+
+		texture=&mdl->textures[n];
+		frame=texture->animate.current_frame;
+
+		if (texture->glowmaps[frame].gl_id==-1) continue;
+
+		material=&mesh->materials[n];
+	
+			// trig count
+
+		trig_count=material->trig_count;
+		if (trig_count==0) continue;
+
+		trig_idx=trig_start_idx+(material->trig_start*3);
+
+			// draw glow texture
+		
+		gl_texture_glow_set(texture->glowmaps[frame].gl_id,texture->glow.current_color);
+		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
+	}
+	
+	gl_texture_glow_end();
 }
 
 /* =======================================================
@@ -680,11 +526,8 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,mod
 void model_render(int tick,model_draw *draw)
 {
 	int				n,x,y,z,mesh_mask;
-	float			cf[3],f_intensity;
-	bool			is_fog_lighting;
+	bool			light_on[max_view_lights_per_poly];
 	model_type		*mdl;
-	
-	return;	// supergumba
 	
 		// get model
 
@@ -694,18 +537,6 @@ void model_render(int tick,model_draw *draw)
 		// setup animated textures
 
 	model_setup_animated_textures(mdl,draw->cur_texture_frame,tick);
-	
-		// reduce lighting calculations for model
-
-	map_calculate_light_reduce_model(draw);
-
-		// get single drawing normal
-		
-	map_calculate_light_color_normal((double)draw->pnt.x,(double)draw->pnt.y,(double)draw->pnt.z,cf,draw->normal,&f_intensity);
-	
-		// detect obscuring fog lighting
-		
-	is_fog_lighting=fog_solid_on();
 
 		// get the meshes to be drawn
 
@@ -717,7 +548,7 @@ void model_render(int tick,model_draw *draw)
 		}
 	}
 
-		// create vertex and color lists
+		// create vertex and uv lists
 		
 	x=draw->pnt.x;
 	y=draw->pnt.y;
@@ -732,10 +563,6 @@ void model_render(int tick,model_draw *draw)
 		if (draw->resize!=1) model_resize_draw_vertex(mdl,n,draw->resize);
 		if (draw->flip_x) model_flip_draw_vertex(mdl,n);
 
-			// build color lists
-	// supergumba -- delete all this, and color lists		
-	//	model_build_color(mdl,n,x,y,z,draw);
-
 			// translate vertex to view
 			
 		model_translate_draw_vertex(mdl,n,x,y,z);
@@ -745,16 +572,19 @@ void model_render(int tick,model_draw *draw)
 
 	if (!model_draw_initialize_vertex_objects(mdl,mesh_mask,draw)) return;
 
-		// texture binding optimization
+		// start lighting
 
-	gl_texture_bind_start();
+	map_calculate_light_reduce_model(draw);
+
+	gl_lights_start();
+	gl_lights_build_from_reduced_light_list(&draw->pnt,light_on);
 
 		// draw opaque materials
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))!=0) {
-			model_draw_opaque_trigs(mdl,n,mesh_mask,draw,is_fog_lighting);
-			model_draw_shader_trigs(mdl,n,mesh_mask,draw);
+			model_draw_opaque_trigs(mdl,n,mesh_mask,draw);
+			model_draw_shader_trigs(mdl,n,mesh_mask,draw,light_on);
 		}
 	}
 	
@@ -765,6 +595,18 @@ void model_render(int tick,model_draw *draw)
 			model_draw_transparent_trigs(mdl,n,mesh_mask,draw);
 		}
 	}
+
+		// draw glow materials
+
+	for (n=0;n!=mdl->nmesh;n++) {
+		if ((mesh_mask&(0x1<<n))!=0) {
+			model_draw_glow_trigs(mdl,n,mesh_mask,draw);
+		}
+	}
+
+		// end lights
+
+	gl_lights_end();
 
 		// release the vbo
 

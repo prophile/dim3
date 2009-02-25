@@ -1379,10 +1379,6 @@ SOURCE=..\..\dim3Engine\Sources_View\menu_draw.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_View\model_color.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3Engine\Sources_View\model_draw.c
 # End Source File
 # Begin Source File

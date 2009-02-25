@@ -121,6 +121,7 @@ void render_opaque_mesh_debug(int mesh_cnt,int *mesh_list)
 void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 {
 	int					n,k;
+	bool				light_on[max_view_lights_per_poly];
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
@@ -166,7 +167,7 @@ void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 
 				// setup lights
 
-			gl_lights_build_from_reduced_light_list(&poly->box.mid);
+			gl_lights_build_from_reduced_light_list(&poly->box.mid,light_on);
 			
 				// dark factor
 
@@ -191,7 +192,8 @@ void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 
 void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 {
-	int					n,k,nlight;
+	int					n,k;
+	bool				light_on[max_view_lights_per_poly];
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
@@ -237,12 +239,12 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 
 				// build lights
 
-			nlight=gl_lights_build_from_reduced_light_list(&poly->box.mid);
+			gl_lights_build_from_reduced_light_list(&poly->box.mid,light_on);
 
 				// setup shader
 
 			texture=&map.textures[poly->txt_idx];
-			gl_shader_draw_execute(texture,poly->render.frame,nlight,poly->dark_factor);
+			gl_shader_draw_execute(texture,poly->render.frame,poly->dark_factor,1.0f,light_on);
 
 				// dark factor
 
@@ -340,10 +342,6 @@ void render_map_opaque(int mesh_cnt,int *mesh_list)
 	gl_3D_view(&view.camera);
 	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
 	gl_setup_project();
-
-		// texture binding optimization
-
-	gl_texture_bind_start();		// supergumba -- we need to work on this
 
 		// attach map complied open gl list
 
