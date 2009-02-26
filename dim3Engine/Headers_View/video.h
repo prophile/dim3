@@ -49,6 +49,7 @@ extern bool gl_check_shader_ok(void);
 
 	// lights
 
+extern void gl_lights_compile(int tick);
 extern void gl_lights_start(void);
 extern void gl_lights_end(void);
 extern void gl_lights_build_from_reduced_light_list(d3pnt *pnt,bool *light_on);

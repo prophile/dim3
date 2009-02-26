@@ -488,7 +488,7 @@ void gl_shader_draw_end(void)
 
 void gl_shader_set_scene_variables(view_shader_type *shader)
 {
-	GLint					var;
+	GLint			var;
 
 	var=glGetUniformLocationARB(shader->program_obj,"dim3TimeMillisec");
 	if (var!=-1) glUniform1iARB(var,game_time_get());
@@ -502,10 +502,15 @@ void gl_shader_set_scene_variables(view_shader_type *shader)
 
 void gl_shader_set_draw_variables(view_shader_type *shader,texture_type *texture,float dark_factor,float alpha,bool *light_on)
 {
-	GLint					var;
+	int				n;
+	GLint			var,i_light_on[max_view_lights_per_poly];
 
+	for (n=0;n!=max_view_lights_per_poly;n++) {
+		i_light_on[n]=light_on[n]?1:0;
+	}
+	
 	var=glGetUniformLocationARB(shader->program_obj,"dim3LightOn");
-	if (var!=-1) glUniform1ivARB(var,max_view_lights_per_poly,light_on);
+	if (var!=-1) glUniform1ivARB(var,max_view_lights_per_poly,i_light_on);
 	
 	var=glGetUniformLocationARB(shader->program_obj,"dim3DarkFactor");
 	if (var!=-1) glUniform1fARB(var,dark_factor);

@@ -610,6 +610,10 @@ void view_draw_setup(int tick)
 		
 	if (obj->bump.on) view.camera.pnt.y+=obj->bump.smooth_offset;
 	
+		// compile all lights in map
+		
+	gl_lights_compile(tick);
+	
 		// setup viewport
 	
 	gl_setup_viewport(console_y_offset());
