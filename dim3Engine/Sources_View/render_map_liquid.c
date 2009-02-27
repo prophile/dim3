@@ -371,11 +371,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 		
 		// setup lights
 
-	mid.x=(liq->lft+liq->rgt)>>1;
-	mid.y=liq->y;
-	mid.z=(liq->top+liq->bot)>>1;
-
-	gl_lights_build_from_reduced_light_list(&mid,light_on);
+	gl_lights_build_from_liquid(liq,light_on);
 
 		// start shader or regular texture
 

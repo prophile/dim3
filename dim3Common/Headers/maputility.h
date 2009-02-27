@@ -108,7 +108,7 @@ extern char light_type_str[][32];
 // lights
 //
 
-#define max_light_spot										64					// maximum number of lighting objects in a view
+#define max_light_spot										128					// maximum number of lighting objects in a view
 
 #define lt_normal											0
 #define lt_blink											1

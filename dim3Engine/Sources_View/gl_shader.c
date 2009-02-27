@@ -293,7 +293,6 @@ bool gl_shader_initialize(char *err_str)
 		glCompileShaderARB(shader->vertex_obj);
 		ok=gl_shader_report_error(err_str,shader->vertex_name,NULL,shader->vertex_obj,"Vertex",vertex_data,GL_OBJECT_COMPILE_STATUS_ARB);
 		free(vertex_data);
-				fprintf(stdout,"4: %s\n",err_str);
 		
 		if (!ok) {
 			gl_shader_shutdown();
@@ -398,7 +397,8 @@ void gl_shader_attach_map(void)
 	
 	for (n=0;n!=max_map_texture;n++) {
 		texture->shader_idx=-1;
-		if (shader_on) texture->shader_idx=gl_shader_find(texture->shader_name);
+	// supergumba -- testing
+	//	if (shader_on) texture->shader_idx=gl_shader_find(texture->shader_name);
 		texture++;
 	}
 }

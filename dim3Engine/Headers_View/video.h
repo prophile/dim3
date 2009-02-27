@@ -52,7 +52,9 @@ extern bool gl_check_shader_ok(void);
 extern void gl_lights_compile(int tick);
 extern void gl_lights_start(void);
 extern void gl_lights_end(void);
-extern void gl_lights_build_from_reduced_light_list(d3pnt *pnt,bool *light_on);
+extern void gl_lights_build_from_poly(map_mesh_poly_type *poly,bool *light_on);
+extern void gl_lights_build_from_liquid(map_liquid_type *liq,bool *light_on);
+extern void gl_lights_build_from_model(model_draw *draw,bool *light_on);
 
 	// vbos
 

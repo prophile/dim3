@@ -167,7 +167,7 @@ void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 
 				// setup lights
 
-			gl_lights_build_from_reduced_light_list(&poly->box.mid,light_on);
+			gl_lights_build_from_poly(poly,light_on);
 			
 				// dark factor
 
@@ -239,8 +239,8 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 
 				// build lights
 
-			gl_lights_build_from_reduced_light_list(&poly->box.mid,light_on);
-
+			gl_lights_build_from_poly(poly,light_on);
+			
 				// setup shader
 
 			texture=&map.textures[poly->txt_idx];

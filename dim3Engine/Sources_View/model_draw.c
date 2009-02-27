@@ -577,7 +577,7 @@ void model_render(int tick,model_draw *draw)
 	map_calculate_light_reduce_model(draw);
 
 	gl_lights_start();
-	gl_lights_build_from_reduced_light_list(&draw->pnt,light_on);
+	gl_lights_build_from_model(draw,light_on);
 
 		// draw opaque materials
 

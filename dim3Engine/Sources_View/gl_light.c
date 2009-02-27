@@ -54,6 +54,9 @@ extern double light_get_intensity(int light_type,int intensity);		// supergumba 
       
 ======================================================= */
 
+// supergumba -- max light spot will need to chance as we are gathering all lights in the map,
+// we might need to instead do some kind of mass elimination at the beginning
+
 void gl_lights_compile_add(d3pnt *pnt,int light_type,int intensity,d3col *col)
 {
 	light_spot_type			*lspot;
@@ -147,6 +150,8 @@ void gl_lights_compile(int tick)
 	weapon_type			*weap;
 	proj_type			*proj;
 	effect_type			*effect;
+	
+	gl_light_spots_count=0;
 
 		// map lights
 		
@@ -226,9 +231,9 @@ void gl_lights_end(void)
 // we will need to clean this up as it's way to slow
 // this version does not consider the reduced list and is a lot slower
 
-void gl_lights_build_from_reduced_light_list(d3pnt *pnt,bool *light_on)
+void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,bool *light_on)
 {
-	int						n,k,light_id,
+	int						n,k,i_add,light_id,
 							idx,cnt,sort_list[max_light_spot];
 	float					f;
 	double					d,dx,dy,dz,sort_dist[max_light_spot];
@@ -241,15 +246,25 @@ void gl_lights_build_from_reduced_light_list(d3pnt *pnt,bool *light_on)
 
 	for (n=0;n!=gl_light_spots_count;n++) {
 		lspot=&gl_light_spots[n];
+		
+			// does light hit this polygon?
+			
+		i_add=lspot->intensity*2;
+			
+		if ((lspot->pnt.x+lspot->intensity)<min->x) continue;
+		if ((lspot->pnt.x-lspot->intensity)>max->x) continue;
+		if ((lspot->pnt.z+lspot->intensity)<min->z) continue;
+		if ((lspot->pnt.z-lspot->intensity)>max->z) continue;
+		if ((lspot->pnt.y+lspot->intensity)<min->y) continue;
+		if ((lspot->pnt.y-lspot->intensity)>max->y) continue;
 
 			// get distance
 
-		dx=(double)(lspot->pnt.x-pnt->x);
-		dy=(double)(lspot->pnt.y-pnt->y);
-		dz=(double)(lspot->pnt.z-pnt->z);
+		dx=(double)(lspot->pnt.x-mid->x);
+		dy=(double)(lspot->pnt.y-mid->y);
+		dz=(double)(lspot->pnt.z-mid->z);
 
 		d=sqrt((dx*dx)+(dy*dy)+(dz*dz));
-		if (d>(double)lspot->intensity) continue;
 
 			// find position in list (top is closest)
 
@@ -312,13 +327,36 @@ void gl_lights_build_from_reduced_light_list(d3pnt *pnt,bool *light_on)
 			glf[3]=1.0f;
 			glLightfv(light_id,GL_POSITION,glf);
 
+
 			glLightf(light_id,GL_CONSTANT_ATTENUATION,0.0f);
 			glLightf(light_id,GL_LINEAR_ATTENUATION,0.0f);
 
 			f=(float)lspot->intensity;
-			f=f*0.4f;
 			f=f*f;
+			f*=0.1f;
 			glLightf(light_id,GL_QUADRATIC_ATTENUATION,(1.0f/f));
+		
+		
+		
+		/* supergumba -- spot lights
+			glf[0]=0.0f;
+			glf[1]=1.0f;
+			glf[2]=0.0f;
+			glf[3]=0.0f;
+			glLightfv(light_id,GL_SPOT_DIRECTION,glf);
+			
+			glLightf(light_id,GL_SPOT_EXPONENT,0.0f);
+			glLightf(light_id,GL_SPOT_CUTOFF,90.0f);
+			
+			glLightf(light_id,GL_CONSTANT_ATTENUATION,1.0f);
+			glLightf(light_id,GL_LINEAR_ATTENUATION,0.0f);
+			f=(float)lspot->intensity;
+			f=f*f;
+			glLightf(light_id,GL_QUADRATIC_ATTENUATION,0.0f);
+		*/
+
+
+			
 
 			glf[0]=lspot->col.r;
 			glf[1]=lspot->col.g;
@@ -332,4 +370,80 @@ void gl_lights_build_from_reduced_light_list(d3pnt *pnt,bool *light_on)
 		}
 	}
 }
+
+inline void gl_lights_build_from_poly(map_mesh_poly_type *poly,bool *light_on)
+{
+	gl_lights_build_from_box(&poly->box.mid,&poly->box.min,&poly->box.max,light_on);
+}
+
+void gl_lights_build_from_liquid(map_liquid_type *liq,bool *light_on)
+{
+	d3pnt			mid,min,max;
+	
+	mid.x=(liq->lft+liq->rgt)>>1;
+	mid.y=liq->y;
+	mid.z=(liq->top+liq->bot)>>1;
+	
+	min.x=liq->lft;
+	min.y=liq->y;
+	min.z=liq->top;
+	
+	max.x=liq->rgt;
+	max.y=liq->y;
+	max.z=liq->bot;
+	
+	gl_lights_build_from_box(&mid,&min,&max,light_on);
+}
+
+void gl_lights_build_from_model(model_draw *draw,bool *light_on)
+{
+	int					cx,cy,cz,sz;
+	float				fx,fy,fz;
+	d3pnt				pnt,min,max;
+	matrix_type			mat;
+	
+		// need to move model if no rot on
+
+	memmove(&pnt,&draw->pnt,sizeof(d3pnt));
+		
+	if (draw->no_rot.on) {
+		matrix_rotate_y(&mat,draw->no_rot.ang.y);
+
+		fx=(float)(pnt.x-draw->no_rot.center.x);
+		fy=(float)(pnt.y-draw->no_rot.center.y);
+		fz=(float)(pnt.z-draw->no_rot.center.z);
+		
+		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+		
+		pnt.x=((int)fx)+draw->no_rot.center.x;
+		pnt.y=((int)fy)+draw->no_rot.center.y;
+		pnt.z=((int)fz)+draw->no_rot.center.z;
+	}
+
+		// get model bounds
+
+	sz=draw->size.x>>1;
+	min.x=pnt.x-sz;
+	max.x=pnt.x+sz;
+
+	sz=draw->size.z>>1;
+	min.z=pnt.z-sz;
+	max.z=pnt.z+sz;
+
+	min.y=pnt.y-draw->size.y;
+	max.y=pnt.y;
+
+		// any rotations
+
+	cx=pnt.x+draw->center.x;
+	cy=pnt.y+draw->center.y;
+	cz=pnt.z+draw->center.z;
+
+	rotate_point(&min.x,&min.y,&min.z,cx,cy,cz,draw->rot.x,draw->rot.y,draw->rot.z);
+	rotate_point(&max.x,&max.y,&max.z,cx,cy,cz,draw->rot.x,draw->rot.y,draw->rot.z);
+
+	gl_lights_build_from_box(&pnt,&min,&max,light_on);
+}
+
+
 

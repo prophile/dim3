@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit ÒCreated with dim3 TechnologyÓ is given on a single
+2. This credit â€œCreated with dim3 Technologyâ€ is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -326,7 +326,7 @@ void render_transparent_mesh_simple(void)
 
 			// setup the lights
 
-		gl_lights_build_from_reduced_light_list(&poly->box.mid,light_on);
+		gl_lights_build_from_poly(poly,light_on);
 
 			// dark factor
 
@@ -415,7 +415,7 @@ void render_transparent_mesh_shader(void)
 
 			// setup the lights
 
-		gl_lights_build_from_reduced_light_list(&poly->box.mid,light_on);
+		gl_lights_build_from_poly(poly,light_on);
 
 			// dark factor
 

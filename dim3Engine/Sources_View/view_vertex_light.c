@@ -48,6 +48,8 @@ extern bool light_trace_map(d3pnt *spt,d3pnt *ept);
       
 ======================================================= */
 
+
+// supergumba -- can delete all this later
 void map_calculate_light_reduce_mesh(map_mesh_type *mesh)
 {
 	int					n;

@@ -85,7 +85,7 @@ JSBool js_get_weap_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
 			*vp=BOOLEAN_TO_JSVAL(weap->fail_in_liquid);
 			break;
 		case weap_setting_prop_parent_object_id:
-			*vp=BOOLEAN_TO_JSVAL(weap->obj_uid);
+			*vp=INT_TO_JSVAL(weap->obj_uid);
 			break;
 			
 	}
