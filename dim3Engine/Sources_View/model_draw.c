@@ -323,7 +323,7 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 	gl_texture_opaque_end();
 }
 
-void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw *draw,bool *light_on)
+void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw *draw,view_glsl_light_list_type *light_list)
 {
 	int						n,trig_count,
 							trig_start_idx,trig_idx;
@@ -370,7 +370,7 @@ void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 		
 			// run the shader
 			
-		gl_shader_draw_execute(texture,texture->animate.current_frame,1.0f,1.0f,light_on);
+		gl_shader_draw_execute(texture,texture->animate.current_frame,1.0f,1.0f,light_list);
 		
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 			
@@ -525,9 +525,9 @@ void model_draw_glow_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw
 
 void model_render(int tick,model_draw *draw)
 {
-	int				n,x,y,z,mesh_mask;
-	bool			light_on[max_view_lights_per_poly];
-	model_type		*mdl;
+	int							n,x,y,z,mesh_mask;
+	model_type					*mdl;
+	view_glsl_light_list_type	light_list;
 	
 		// get model
 
@@ -576,15 +576,14 @@ void model_render(int tick,model_draw *draw)
 
 	map_calculate_light_reduce_model(draw);
 
-	gl_lights_start();
-	gl_lights_build_from_model(draw,light_on);
+	gl_lights_build_from_model(draw,&light_list);
 
 		// draw opaque materials
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))!=0) {
 			model_draw_opaque_trigs(mdl,n,mesh_mask,draw);
-			model_draw_shader_trigs(mdl,n,mesh_mask,draw,light_on);
+			model_draw_shader_trigs(mdl,n,mesh_mask,draw,&light_list);
 		}
 	}
 	
@@ -603,10 +602,6 @@ void model_render(int tick,model_draw *draw)
 			model_draw_glow_trigs(mdl,n,mesh_mask,draw);
 		}
 	}
-
-		// end lights
-
-	gl_lights_end();
 
 		// release the vbo
 
@@ -692,8 +687,6 @@ void model_render_shadow(model_draw *draw,float draw_sz,int shadow_idx)
 		
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
-	
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	
 		// run through all the meshes
 		

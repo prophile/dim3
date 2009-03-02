@@ -270,6 +270,7 @@ typedef struct		{
 						int									nvertex,npoly,group_idx;
 						d3pnt								rot_off;
 						d3pnt								*vertexes;
+						d3vct								*normals;
 						map_mesh_poly_type					*polys;
 						map_mesh_box_type					box;
 						map_mesh_flag_type					flag;
@@ -352,7 +353,7 @@ typedef struct		{
 
 typedef struct		{
 						int									type,intensity;
-						float								fall_off;
+						float								exponent;
 						bool								on;
 						d3pnt								pnt;
 						d3col								col;
@@ -467,7 +468,7 @@ typedef struct		{
 					} map_settings_type;
 					
 typedef struct		{
-						float								sound_pitch,light_drop_off_factor;
+						float								sound_pitch;
 						char								sound_name[name_str_len];
 						d3col								light_color;
 					} map_ambient_type;					
@@ -598,6 +599,8 @@ extern int map_mesh_find(map_type *map,d3pnt *pnt);
 extern int map_mesh_find_closest(map_type *map,d3pnt *pnt);
 extern int map_mesh_find_always(map_type *map,d3pnt *pnt);
 extern int map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt);
+
+extern void map_mesh_calc_normals(map_mesh_type *mesh);
 
 extern int map_mesh_combine(map_type *map,int mesh_1_idx,int mesh_2_idx);
 extern int map_mesh_combine_small(map_type *map,int poly_threshold);

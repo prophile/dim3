@@ -120,11 +120,11 @@ void render_opaque_mesh_debug(int mesh_cnt,int *mesh_list)
 
 void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 {
-	int					n,k;
-	bool				light_on[max_view_lights_per_poly];
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	texture_type		*texture;
+	int							n,k;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	texture_type				*texture;
+	view_glsl_light_list_type	light_list;
 	
 		// setup drawing
 
@@ -136,8 +136,6 @@ void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 	glEnable(GL_DEPTH_TEST); 
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
-
-	gl_lights_start();
 
 	gl_texture_opaque_start(TRUE);
 	
@@ -167,11 +165,7 @@ void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 
 				// setup lights
 
-			gl_lights_build_from_poly(poly,light_on);
-			
-				// dark factor
-
-			glColor4f(poly->dark_factor,poly->dark_factor,poly->dark_factor,1.0f);
+			gl_lights_build_from_poly(poly,&light_list);
 
 				// draw polygon
 
@@ -186,17 +180,15 @@ void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 		// end drawing
 
 	gl_texture_opaque_end();
-
-	gl_lights_end();
 }
 
 void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 {
-	int					n,k;
-	bool				light_on[max_view_lights_per_poly];
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	texture_type		*texture;
+	int							n,k;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	texture_type				*texture;
+	view_glsl_light_list_type	light_list;
 
 		// setup drawing
 
@@ -208,8 +200,6 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 	glEnable(GL_DEPTH_TEST); 
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
-
-	gl_lights_start();
 
 	gl_shader_draw_start();
 	
@@ -239,16 +229,12 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 
 				// build lights
 
-			gl_lights_build_from_poly(poly,light_on);
+			gl_lights_build_from_poly(poly,&light_list);
 			
 				// setup shader
 
 			texture=&map.textures[poly->txt_idx];
-			gl_shader_draw_execute(texture,poly->render.frame,poly->dark_factor,1.0f,light_on);
-
-				// dark factor
-
-			glColor4f(poly->dark_factor,poly->dark_factor,poly->dark_factor,1.0f);
+			gl_shader_draw_execute(texture,poly->render.frame,poly->dark_factor,1.0f,&light_list);
 
 				// draw polygon
 
@@ -261,8 +247,6 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 		// end drawing
 
 	gl_shader_draw_end();
-
-	gl_lights_end();
 }
 
 void render_opaque_mesh_glow(int mesh_cnt,int *mesh_list)

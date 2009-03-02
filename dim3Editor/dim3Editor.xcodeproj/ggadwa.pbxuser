@@ -143,8 +143,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 257305055;
-			PBXWorkspaceStateSaveDate = 257305055;
+			PBXPerProjectTemplateStateSaveDate = 257626762;
+			PBXWorkspaceStateSaveDate = 257626762;
 		};
 		perUserProjectItems = {
 			26650D7F0F0E95CE00D22461 /* PlistBookmark */ = 26650D7F0F0E95CE00D22461 /* PlistBookmark */;
@@ -369,9 +369,9 @@
 	};
 	26AFB4D10D9615C00004805A /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 9744}}";
-			sepNavSelRange = "{2626, 21}";
-			sepNavVisRange = "{1822, 1702}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 8666}}";
+			sepNavSelRange = "{17433, 21}";
+			sepNavVisRange = "{16597, 3115}";
 			sepNavWindowFrame = "{{626, 94}, {1041, 747}}";
 		};
 	};
@@ -601,9 +601,9 @@
 	};
 	F56EF3F609A6F70700F06521 /* dialog_map_light_settings.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2156}}";
-			sepNavSelRange = "{4353, 0}";
-			sepNavVisRange = "{3051, 1761}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2212}}";
+			sepNavSelRange = "{1143, 0}";
+			sepNavVisRange = "{470, 1519}";
 			sepNavWindowFrame = "{{209, 219}, {1041, 747}}";
 		};
 	};
@@ -759,9 +759,9 @@
 	};
 	F5D458ED0953160300AF9CE1 /* walk_view_draw_piece.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 9688}}";
-			sepNavSelRange = "{16537, 0}";
-			sepNavVisRange = "{14980, 1563}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 10206}}";
+			sepNavSelRange = "{7630, 0}";
+			sepNavVisRange = "{7114, 1014}";
 			sepNavWindowFrame = "{{530, 124}, {1041, 747}}";
 		};
 	};
@@ -807,9 +807,9 @@
 	};
 	F5EB2FBB0A733993009C6342 /* dialog_map_ambient_light_sound_settings.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1041, 2100}}";
-			sepNavSelRange = "{4953, 30}";
-			sepNavVisRange = "{3024, 2310}";
+			sepNavIntBoundsRect = "{{0, 0}, {1041, 2058}}";
+			sepNavSelRange = "{1076, 0}";
+			sepNavVisRange = "{92, 1739}";
 			sepNavWindowFrame = "{{61, 167}, {1056, 814}}";
 		};
 	};

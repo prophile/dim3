@@ -222,6 +222,7 @@ typedef struct		{
 
 typedef struct		{
 						int						type,intensity;
+						float					exponent;
 						bool					on;
 						d3col					col;
 					} model_draw_light;

@@ -279,6 +279,10 @@ void map_prepare(map_type *map)
 			// setup boxes
 
 		map_prepare_mesh_box(mesh);
+
+			// setup normals
+
+		map_mesh_calc_normals(mesh);
 		
 		mesh++;
 	}

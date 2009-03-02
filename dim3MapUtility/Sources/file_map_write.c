@@ -170,7 +170,6 @@ void write_map_settings_xml(map_type *map)
 	
     xml_add_tagstart("Ambient_Light");
 	xml_add_attribute_color("rgb",&map->ambient.light_color);
-	xml_add_attribute_float("drop_off_factor",map->ambient.light_drop_off_factor);
     xml_add_tagend(TRUE);
 	
     xml_add_tagstart("Ambient_Sound");
@@ -619,7 +618,7 @@ bool write_map_xml(map_type *map)
 		xml_add_attribute_list("type",(char*)light_type_str,light->type);
 		xml_add_attribute_3_coord_int("c3",light->pnt.x,light->pnt.y,light->pnt.z);
 		xml_add_attribute_int("intensity",light->intensity);
-		xml_add_attribute_float("fall_off",light->fall_off);
+		xml_add_attribute_float("exponent",light->exponent);
 		xml_add_attribute_color("rgb",&light->col);
 		xml_add_attribute_boolean("off",!light->on);
 		xml_add_tagend(TRUE);

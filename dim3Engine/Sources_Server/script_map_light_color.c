@@ -47,7 +47,6 @@ JSPropertySpec	map_light_color_props[]={
 							{"red",					map_light_color_prop_red,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{"green",				map_light_color_prop_green,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{"blue",				map_light_color_prop_blue,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"dropOffFactor",		map_light_color_prop_drop_off_factor,	JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 
 /* =======================================================
@@ -85,9 +84,6 @@ JSBool js_get_map_light_color_property(JSContext *cx,JSObject *j_obj,jsval id,js
 		case map_light_color_prop_blue:
             *vp=script_float_to_value(map.ambient.light_color.b);
 			break;
-		case map_light_color_prop_drop_off_factor:
-            *vp=script_float_to_value(map.ambient.light_drop_off_factor);
-			break;
 
 	}
 	
@@ -108,9 +104,6 @@ JSBool js_set_map_light_color_property(JSContext *cx,JSObject *j_obj,jsval id,js
  			break;
 		case map_light_color_prop_blue:
             map.ambient.light_color.b=script_value_to_float(*vp);
- 			break;
-		case map_light_color_prop_drop_off_factor:
-            map.ambient.light_drop_off_factor=script_value_to_float(*vp);
  			break;
 
 	}

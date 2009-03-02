@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit ÒCreated with dim3 TechnologyÓ is given on a single
+2. This credit â€œCreated with dim3 Technologyâ€ is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -319,11 +319,10 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
 
 void liquid_render_liquid(int tick,map_liquid_type *liq)
 {
-	int						v_sz,quad_cnt,frame;
-	bool					light_on[max_view_lights_per_poly];
-	d3pnt					mid;
-	texture_type			*texture;
-
+	int							v_sz,quad_cnt,frame;
+	texture_type				*texture;
+	view_glsl_light_list_type	light_list;
+	
 		// liquid in view?
 
 	if (!boundbox_inview(liq->lft,liq->top,liq->rgt,liq->bot,liq->y,liq->y)) return;
@@ -351,8 +350,6 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*3)*sizeof(float)));
 
-	gl_lights_start();
-
 		// reduce lighting
 
 	map_calculate_light_reduce_liquid(liq);
@@ -371,22 +368,18 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 		
 		// setup lights
 
-	gl_lights_build_from_liquid(liq,light_on);
+	gl_lights_build_from_liquid(liq,&light_list);
 
 		// start shader or regular texture
 
 	if (texture->shader_idx!=-1) {
 		gl_shader_draw_start();
-		gl_shader_draw_execute(texture,frame,1.0f,liq->alpha,light_on);
+		gl_shader_draw_execute(texture,frame,1.0f,liq->alpha,&light_list);
 	}
 	else {
 		gl_texture_transparent_start(TRUE);
 		gl_texture_transparent_set(texture->bitmaps[frame].gl_id,liq->alpha);
 	}
-
-		// liquids have no dark factor
-
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
 
 		// draw the quads
 
@@ -402,8 +395,6 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 	}
 
 		// end drawing
-
-	gl_lights_end();
 
 	glClientActiveTexture(GL_TEXTURE0);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);

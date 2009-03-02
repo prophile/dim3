@@ -1286,7 +1286,7 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 
 					light->intensity*=map_enlarge;
 					
-					light->fall_off=0.0f;
+					light->exponent=1.0f;
 				
 					light_tag=xml_findnextchild(light_tag);
 				}

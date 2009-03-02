@@ -256,13 +256,13 @@ void render_transparent_mesh_debug(void)
 
 void render_transparent_mesh_simple(void)
 {
-	int						n,sort_cnt,cur_mesh_idx;
-	bool					cur_additive,
-							light_on[max_view_lights_per_poly];
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-	map_poly_sort_item_type	*sort_list;
-	texture_type			*texture;
+	int							n,sort_cnt,cur_mesh_idx;
+	bool						cur_additive;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	map_poly_sort_item_type		*sort_list;
+	texture_type				*texture;
+	view_glsl_light_list_type	light_list;
 
 		// setup transparent drawing
 
@@ -288,8 +288,6 @@ void render_transparent_mesh_simple(void)
 	cur_mesh_idx=-1;
 
 		// draw transparent meshes
-
-	gl_lights_start();
 
 	gl_texture_transparent_start(TRUE);
 
@@ -326,11 +324,7 @@ void render_transparent_mesh_simple(void)
 
 			// setup the lights
 
-		gl_lights_build_from_poly(poly,light_on);
-
-			// dark factor
-
-		glColor4f(poly->dark_factor,poly->dark_factor,poly->dark_factor,1.0f);
+		gl_lights_build_from_poly(poly,&light_list);
 
 			// draw the polygon
 
@@ -339,19 +333,17 @@ void render_transparent_mesh_simple(void)
 	}
 
 	gl_texture_transparent_end();
-
-	gl_lights_end();
 }
 
 void render_transparent_mesh_shader(void)
 {
-	int						n,sort_cnt,cur_mesh_idx;
-	bool					cur_additive,
-							light_on[max_view_lights_per_poly];
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-	map_poly_sort_item_type	*sort_list;
-	texture_type			*texture;
+	int							n,sort_cnt,cur_mesh_idx;
+	bool						cur_additive;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	map_poly_sort_item_type		*sort_list;
+	texture_type				*texture;
+	view_glsl_light_list_type	light_list;
 
 		// set transparent shader calls
 
@@ -377,8 +369,6 @@ void render_transparent_mesh_shader(void)
 	cur_mesh_idx=-1;
 
 		// start shaders
-
-	gl_lights_start();
 
 	gl_shader_draw_start();
 	
@@ -415,21 +405,15 @@ void render_transparent_mesh_shader(void)
 
 			// setup the lights
 
-		gl_lights_build_from_poly(poly,light_on);
-
-			// dark factor
-
-		glColor4f(poly->dark_factor,poly->dark_factor,poly->dark_factor,1.0f);
+		gl_lights_build_from_poly(poly,&light_list);
 
 			// draw shader
 
-		gl_shader_draw_execute(texture,poly->render.frame,poly->dark_factor,poly->alpha,light_on);
+		gl_shader_draw_execute(texture,poly->render.frame,poly->dark_factor,poly->alpha,&light_list);
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}
 
 	gl_shader_draw_end();
-
-	gl_lights_end();
 }
 
 void render_transparent_mesh_glow(void)

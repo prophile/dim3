@@ -57,7 +57,7 @@ extern double light_get_intensity(int light_type,int intensity);		// supergumba 
 // supergumba -- max light spot will need to chance as we are gathering all lights in the map,
 // we might need to instead do some kind of mass elimination at the beginning
 
-void gl_lights_compile_add(d3pnt *pnt,int light_type,int intensity,d3col *col)
+void gl_lights_compile_add(d3pnt *pnt,int light_type,int intensity,float exponent,d3col *col)
 {
 	light_spot_type			*lspot;
 	
@@ -69,6 +69,8 @@ void gl_lights_compile_add(d3pnt *pnt,int light_type,int intensity,d3col *col)
 		
 	lspot->intensity=light_get_intensity(light_type,intensity);
 	if (lspot->intensity<=0) return;
+	
+	lspot->exponent=exponent;
 	
 		// create light position and color
 		
@@ -104,7 +106,7 @@ void gl_lights_compile_model_add(model_draw *draw)
 				if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&pnt.x,&pnt.y,&pnt.z);
 			}
 			
-			gl_lights_compile_add(&pnt,light->type,light->intensity,&light->col);
+			gl_lights_compile_add(&pnt,light->type,light->intensity,light->exponent,&light->col);
 		}
 
 		light++;
@@ -139,7 +141,7 @@ void gl_lights_compile_effect_add(int tick,effect_type *effect)
 		}
 	}
 	
-	gl_lights_compile_add(&effect->pnt,lt_normal,intensity,&flash->col);
+	gl_lights_compile_add(&effect->pnt,lt_normal,intensity,1.0f,&flash->col);
 }
 
 void gl_lights_compile(int tick)
@@ -158,7 +160,7 @@ void gl_lights_compile(int tick)
 	maplight=map.lights;
 		
 	for (n=0;n!=map.nlight;n++) {
-		if (maplight->on) gl_lights_compile_add(&maplight->pnt,maplight->type,maplight->intensity,&maplight->col);
+		if (maplight->on) gl_lights_compile_add(&maplight->pnt,maplight->type,maplight->intensity,maplight->exponent,&maplight->col);
 		maplight++;
 	}	
 
@@ -200,45 +202,17 @@ void gl_lights_compile(int tick)
       
 ======================================================= */
 
-void gl_lights_start(void)
-{
-	GLfloat				glf[4];	
-
-	glEnable(GL_LIGHTING);
-	
-		// enable colored materials for dark factor
-
-	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
-	glEnable(GL_COLOR_MATERIAL);
-
-		// ambient lighting
-
-	glf[0]=map.ambient.light_color.r+setup.gamma;
-	glf[1]=map.ambient.light_color.g+setup.gamma;
-	glf[2]=map.ambient.light_color.b+setup.gamma;
-	glf[3]=1.0f;
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT,glf);
-}
-
-void gl_lights_end(void)
-{
-	glDisable(GL_COLOR_MATERIAL);
-	glDisable(GL_LIGHTING);
-}
-
 
 // supergumba -- use all lights version
 // we will need to clean this up as it's way to slow
 // this version does not consider the reduced list and is a lot slower
 
-void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,bool *light_on)
+void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_glsl_light_list_type *light_list)
 {
-	int						n,k,i_add,light_id,
+	int						n,k,i_add,
 							idx,cnt,sort_list[max_light_spot];
-	float					f;
 	double					d,dx,dy,dz,sort_dist[max_light_spot];
 	light_spot_type			*lspot;
-	GLfloat					glf[4];
 
 		// sort the light list
 
@@ -248,8 +222,8 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,bool *light_on)
 		lspot=&gl_light_spots[n];
 		
 			// does light hit this polygon?
-			
-		i_add=lspot->intensity*2;
+
+		i_add=(int)lspot->intensity;
 			
 		if ((lspot->pnt.x+lspot->intensity)<min->x) continue;
 		if ((lspot->pnt.x-lspot->intensity)>max->x) continue;
@@ -302,81 +276,47 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,bool *light_on)
 	for (n=0;n!=max_view_lights_per_poly;n++) {
 		lspot=&gl_light_spots[sort_list[n]];
 		
-		light_id=GL_LIGHT0+n;
-		
 			// null lights
 			
 		if (n>=cnt) {
-			glDisable(light_id);
+			idx=n*3;
+			light_list->pos[idx]=0.0f;
+			light_list->pos[idx+1]=0.0f;
+			light_list->pos[idx+2]=0.0f;
 			
-			glLightf(light_id,GL_CONSTANT_ATTENUATION,0.0f);
-			glLightf(light_id,GL_LINEAR_ATTENUATION,0.0f);
-			glLightf(light_id,GL_QUADRATIC_ATTENUATION,0.0f);
-
-			light_on[n]=FALSE;
+			light_list->col[idx]=0.0f;
+			light_list->col[idx+1]=0.0f;
+			light_list->col[idx+2]=0.0f;
+			
+			light_list->intensity[n]=0.0f;		// will effectively make this a light that never effects output
+			light_list->exponent[n]=1.0f;
 		}
 		
 			// regular lights
 			
 		else {
-			glEnable(light_id);
+			idx=n*3;
 			
-			glf[0]=(float)lspot->pnt.x;
-			glf[1]=(float)lspot->pnt.y;
-			glf[2]=(float)lspot->pnt.z;
-			glf[3]=1.0f;
-			glLightfv(light_id,GL_POSITION,glf);
-
-
-			glLightf(light_id,GL_CONSTANT_ATTENUATION,0.0f);
-			glLightf(light_id,GL_LINEAR_ATTENUATION,0.0f);
-
-			f=(float)lspot->intensity;
-			f=f*f;
-			f*=0.1f;
-			glLightf(light_id,GL_QUADRATIC_ATTENUATION,(1.0f/f));
-		
-		
-		
-		/* supergumba -- spot lights
-			glf[0]=0.0f;
-			glf[1]=1.0f;
-			glf[2]=0.0f;
-			glf[3]=0.0f;
-			glLightfv(light_id,GL_SPOT_DIRECTION,glf);
+			light_list->pos[idx]=(float)lspot->pnt.x;
+			light_list->pos[idx+1]=(float)lspot->pnt.y;
+			light_list->pos[idx+2]=(float)lspot->pnt.z;
 			
-			glLightf(light_id,GL_SPOT_EXPONENT,0.0f);
-			glLightf(light_id,GL_SPOT_CUTOFF,90.0f);
+			light_list->col[idx]=(float)lspot->col.r;
+			light_list->col[idx+1]=(float)lspot->col.g;
+			light_list->col[idx+2]=(float)lspot->col.b;
 			
-			glLightf(light_id,GL_CONSTANT_ATTENUATION,1.0f);
-			glLightf(light_id,GL_LINEAR_ATTENUATION,0.0f);
-			f=(float)lspot->intensity;
-			f=f*f;
-			glLightf(light_id,GL_QUADRATIC_ATTENUATION,0.0f);
-		*/
-
-
-			
-
-			glf[0]=lspot->col.r;
-			glf[1]=lspot->col.g;
-			glf[2]=lspot->col.b;
-			glf[3]=1.0f;
-			glLightfv(light_id,GL_AMBIENT,glf);
-			glLightfv(light_id,GL_DIFFUSE,glf);
-			glLightfv(light_id,GL_SPECULAR,glf);
-
-			light_on[n]=TRUE;
+			light_list->intensity[n]=(float)lspot->intensity;
+			light_list->exponent[n]=lspot->exponent;
 		}
 	}
 }
 
-inline void gl_lights_build_from_poly(map_mesh_poly_type *poly,bool *light_on)
+inline void gl_lights_build_from_poly(map_mesh_poly_type *poly,view_glsl_light_list_type *light_list)
 {
-	gl_lights_build_from_box(&poly->box.mid,&poly->box.min,&poly->box.max,light_on);
+	gl_lights_build_from_box(&poly->box.mid,&poly->box.min,&poly->box.max,light_list);
 }
 
-void gl_lights_build_from_liquid(map_liquid_type *liq,bool *light_on)
+void gl_lights_build_from_liquid(map_liquid_type *liq,view_glsl_light_list_type *light_list)
 {
 	d3pnt			mid,min,max;
 	
@@ -392,10 +332,10 @@ void gl_lights_build_from_liquid(map_liquid_type *liq,bool *light_on)
 	max.y=liq->y;
 	max.z=liq->bot;
 	
-	gl_lights_build_from_box(&mid,&min,&max,light_on);
+	gl_lights_build_from_box(&mid,&min,&max,light_list);
 }
 
-void gl_lights_build_from_model(model_draw *draw,bool *light_on)
+void gl_lights_build_from_model(model_draw *draw,view_glsl_light_list_type *light_list)
 {
 	int					cx,cy,cz,sz;
 	float				fx,fy,fz;
@@ -442,7 +382,7 @@ void gl_lights_build_from_model(model_draw *draw,bool *light_on)
 	rotate_point(&min.x,&min.y,&min.z,cx,cy,cz,draw->rot.x,draw->rot.y,draw->rot.z);
 	rotate_point(&max.x,&max.y,&max.z,cx,cy,cz,draw->rot.x,draw->rot.y,draw->rot.z);
 
-	gl_lights_build_from_box(&pnt,&min,&max,light_on);
+	gl_lights_build_from_box(&pnt,&min,&max,light_list);
 }
 
 

@@ -39,6 +39,8 @@ EXPORTS
 	map_mesh_find_closest							@233
 	map_mesh_find_always							@234
 	map_mesh_calculate_distance						@235
+
+	map_mesh_calc_normals							@255
 	
 	map_mesh_combine								@236
 	map_mesh_combine_small							@237

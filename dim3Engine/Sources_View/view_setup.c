@@ -398,6 +398,8 @@ void view_add_model_light(model_draw *draw,int obj_uid)
 	}
 }
 
+
+// supergumba -- can probably delete all this
 void view_add_lights(void)
 {
 	int					i;
@@ -411,7 +413,7 @@ void view_add_lights(void)
 	maplight=map.lights;
 		
 	for (i=0;i!=map.nlight;i++) {
-		if (maplight->on) light_add(&maplight->pnt,maplight->type,maplight->intensity,maplight->fall_off,&maplight->col);
+		if (maplight->on) light_add(&maplight->pnt,maplight->type,maplight->intensity,maplight->exponent,&maplight->col);
 		maplight++;
 	}	
 

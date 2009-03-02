@@ -83,6 +83,17 @@ typedef struct		{
 					} view_image_type;
 
 //
+// light GLSL pass structures
+//
+
+typedef struct		{
+						float					pos[3*max_view_lights_per_poly],
+												col[3*max_view_lights_per_poly],												
+												intensity[max_view_lights_per_poly],
+												exponent[max_view_lights_per_poly];
+					} view_glsl_light_list_type;
+
+//
 // object sorting structures
 //
 

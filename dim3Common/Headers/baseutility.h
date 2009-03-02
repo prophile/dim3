@@ -119,6 +119,7 @@ typedef struct		{
 ======================================================= */
 
 typedef struct		{
+						float						exponent;
 						double						d_x,d_y,d_z,
 													intensity,inv_intensity,
 													d_intensity,d_inv_intensity,

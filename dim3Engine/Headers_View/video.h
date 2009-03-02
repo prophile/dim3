@@ -50,11 +50,9 @@ extern bool gl_check_shader_ok(void);
 	// lights
 
 extern void gl_lights_compile(int tick);
-extern void gl_lights_start(void);
-extern void gl_lights_end(void);
-extern void gl_lights_build_from_poly(map_mesh_poly_type *poly,bool *light_on);
-extern void gl_lights_build_from_liquid(map_liquid_type *liq,bool *light_on);
-extern void gl_lights_build_from_model(model_draw *draw,bool *light_on);
+extern void gl_lights_build_from_poly(map_mesh_poly_type *poly,view_glsl_light_list_type *light_list);
+extern void gl_lights_build_from_liquid(map_liquid_type *liq,view_glsl_light_list_type *light_list);
+extern void gl_lights_build_from_model(model_draw *draw,view_glsl_light_list_type *light_list);
 
 	// vbos
 
@@ -108,7 +106,7 @@ extern void gl_shader_attach_map(void);
 extern void gl_shader_attach_model(model_type *mdl);
 extern void gl_shader_draw_start(void);
 extern void gl_shader_draw_end(void);
-extern void gl_shader_draw_execute(texture_type *texture,int frame,float dark_factor,float alpha,bool *light_on);
+extern void gl_shader_draw_execute(texture_type *texture,int frame,float dark_factor,float alpha,view_glsl_light_list_type *light_list);
 
 	// shadows
 	

@@ -86,6 +86,10 @@ void gl_shader_set_instance_variables(view_shader_type *shader)
 	int							n;
 	GLint						var;
 	view_shader_custom_var_type	*cvar;
+	
+		// need to use program before calling these
+		
+	glUseProgramObjectARB(shader->program_obj);
 
 		// texture pointers
 		
@@ -127,6 +131,10 @@ void gl_shader_set_instance_variables(view_shader_type *shader)
 				break;
 		}
 	}
+	
+		// cancel program
+		
+	glUseProgramObjectARB(0);
 }
 
 /* =======================================================
@@ -205,6 +213,11 @@ bool gl_shader_report_error(char *err_str,char *vertex_name,char *fragment_name,
 		fwrite("001:",1,4,file);
 		
 		while (*c!=0x0) {
+			
+			if (*c=='\r') {
+				c++;
+				continue;
+			}
 			
 			fwrite(c,1,1,file);
 			
@@ -399,6 +412,7 @@ void gl_shader_attach_map(void)
 		texture->shader_idx=-1;
 	// supergumba -- testing
 	//	if (shader_on) texture->shader_idx=gl_shader_find(texture->shader_name);
+		texture->shader_idx=0;
 		texture++;
 	}
 }
@@ -498,19 +512,26 @@ void gl_shader_set_scene_variables(view_shader_type *shader)
 		
 	var=glGetUniformLocationARB(shader->program_obj,"dim3CameraPosition");
 	if (var!=-1) glUniform3fARB(var,(float)view.camera.pnt.x,(float)view.camera.pnt.y,(float)view.camera.pnt.z);
+	
+	var=glGetUniformLocationARB(shader->program_obj,"dim3AmbientColor");
+	if (var!=-1) glUniform3fARB(var,(map.ambient.light_color.r+setup.gamma),(map.ambient.light_color.g+setup.gamma),(map.ambient.light_color.b+setup.gamma));
 }
 
-void gl_shader_set_draw_variables(view_shader_type *shader,texture_type *texture,float dark_factor,float alpha,bool *light_on)
+void gl_shader_set_draw_variables(view_shader_type *shader,texture_type *texture,float dark_factor,float alpha,view_glsl_light_list_type *light_list)
 {
-	int				n;
-	GLint			var,i_light_on[max_view_lights_per_poly];
+	GLint			var;
 
-	for (n=0;n!=max_view_lights_per_poly;n++) {
-		i_light_on[n]=light_on[n]?1:0;
-	}
+	var=glGetUniformLocationARB(shader->program_obj,"dim3LightPosition");
+	if (var!=-1) glUniform3fvARB(var,max_view_lights_per_poly,light_list->pos);
+
+	var=glGetUniformLocationARB(shader->program_obj,"dim3LightColor");
+	if (var!=-1) glUniform3fvARB(var,max_view_lights_per_poly,light_list->col);
 	
-	var=glGetUniformLocationARB(shader->program_obj,"dim3LightOn");
-	if (var!=-1) glUniform1ivARB(var,max_view_lights_per_poly,i_light_on);
+	var=glGetUniformLocationARB(shader->program_obj,"dim3LightIntensity");
+	if (var!=-1) glUniform1fvARB(var,max_view_lights_per_poly,light_list->intensity);
+	
+	var=glGetUniformLocationARB(shader->program_obj,"dim3LightExponent");
+	if (var!=-1) glUniform1fvARB(var,max_view_lights_per_poly,light_list->exponent);
 	
 	var=glGetUniformLocationARB(shader->program_obj,"dim3DarkFactor");
 	if (var!=-1) glUniform1fARB(var,dark_factor);
@@ -525,7 +546,7 @@ void gl_shader_set_draw_variables(view_shader_type *shader,texture_type *texture
 	if (var!=-1) glUniform1fARB(var,texture->specular_factor);
 		
 	var=glGetUniformLocationARB(shader->program_obj,"dim3TexColor");
-	if (var!=-1) glUniform4fARB(var,texture->col.r,texture->col.g,texture->col.b,1.0f);
+	if (var!=-1) glUniform3fARB(var,texture->col.r,texture->col.g,texture->col.b);
 }
 
 /* =======================================================
@@ -599,7 +620,7 @@ void gl_shader_texture_set(texture_type *texture,int frame)
       
 ======================================================= */
 
-void gl_shader_draw_execute(texture_type *texture,int frame,float dark_factor,float alpha,bool *light_on)
+void gl_shader_draw_execute(texture_type *texture,int frame,float dark_factor,float alpha,view_glsl_light_list_type *light_list)
 {
 	view_shader_type				*shader;
 	
@@ -628,7 +649,7 @@ void gl_shader_draw_execute(texture_type *texture,int frame,float dark_factor,fl
 	
 		// per draw variables
 		
-	gl_shader_set_draw_variables(shader,texture,dark_factor,alpha,light_on);
+	gl_shader_set_draw_variables(shader,texture,dark_factor,alpha,light_list);
 	
 		// textures
 		

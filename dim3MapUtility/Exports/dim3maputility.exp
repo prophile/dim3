@@ -37,6 +37,8 @@ _map_mesh_find_closest
 _map_mesh_find_always
 _map_mesh_calculate_distance
 
+_map_mesh_calc_normals
+
 _map_mesh_combine
 _map_mesh_combine_small
 _map_mesh_move

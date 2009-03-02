@@ -93,6 +93,7 @@ int map_mesh_add(map_type *map)
 	
 	mesh->nvertex=0;
 	mesh->vertexes=NULL;
+	mesh->normals=NULL;
 
 	mesh->npoly=0;
 	mesh->polys=NULL;
@@ -112,6 +113,7 @@ bool map_mesh_delete(map_type *map,int mesh_idx)
 	mesh=&map->mesh.meshes[mesh_idx];
 
 	if (mesh->vertexes!=NULL) free(mesh->vertexes);
+	if (mesh->normals!=NULL) free(mesh->normals);
 	if (mesh->polys!=NULL) free(mesh->polys);
 
 		// detele the mesh
@@ -794,6 +796,134 @@ int map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt)
 	}
 	
 	return((int)sqrt((dx*dx)+(dy*dy)+(dz*dz)));
+}
+
+/* =======================================================
+
+      Calculate Mesh Normals
+      
+======================================================= */
+
+float map_mesh_find_normal_angle(float nx1,float nz1,float ny1,float nx2,float nz2,float ny2)
+{
+    float			f,f2,f3;
+    
+    f=(nx1*nx2)+(nz1*nz2)+(ny1*ny2);
+    f2=sqrtf((nx1*nx1)+(nz1*nz1)+(ny1*ny1));
+    f3=sqrtf((nx2*nx2)+(nz2*nz2)+(ny2*ny2));
+        
+	return((float)acos((double)(f/(f2*f3)))*(180.0f/TRIG_PI));
+}
+
+void map_mesh_get_poly_normal(map_mesh_type *mesh,map_mesh_poly_type *poly,d3vct *vct)
+{
+	int					n,ntrig;
+	float				fx,fy,fz,f_cnt;
+	d3pnt				*p0,*p1,*p2;
+	d3vct				v,v1,v2;
+
+        // get the vectors for all triangles
+		// in polygon
+	
+	fx=fy=fz=0;
+
+	ntrig=poly->ptsz-2;
+
+    for (n=0;n!=ntrig;n++) {
+
+        p0=&mesh->vertexes[poly->v[0]];
+		p1=&mesh->vertexes[poly->v[n+1]];
+		p2=&mesh->vertexes[poly->v[n+2]];
+
+		vector_create(&v1,p1->x,p1->y,p1->z,p0->x,p0->y,p0->z);
+		vector_create(&v2,p2->x,p2->y,p2->z,p0->x,p0->y,p0->z);
+	
+		vector_cross_product(&v,&v1,&v2);
+
+		fx+=v.x;
+ 		fy+=v.y;
+		fz+=v.z;
+   }
+
+		// average the product
+
+	if (poly->ptsz!=3) {
+		f_cnt=(float)ntrig;
+		fx/=f_cnt;
+		fy/=f_cnt;
+		fz/=f_cnt;
+	}
+
+	vct->x=fx;
+	vct->y=fy;
+	vct->z=fz;
+}
+
+void map_mesh_calc_normals(map_mesh_type *mesh)
+{
+	int					n,k,t,cnt;
+    float				f,fx,fz,fy;
+	bool				hit;
+	d3vct				v,*normal;
+	d3pnt				*vp;
+	map_mesh_poly_type	*poly;
+
+		// create memory
+
+	if (mesh->normals!=NULL) free(mesh->normals);
+
+	mesh->normals=malloc(mesh->nvertex*sizeof(d3vct));
+	if (mesh->normals==NULL) return;
+
+		// run through the vertexes
+
+	vp=mesh->vertexes;
+
+	normal=mesh->normals;
+
+	for (n=0;n!=mesh->nvertex;n++) {
+	
+			// find all polygons that share this vertex
+		
+		cnt=0;
+		poly=mesh->polys;
+		
+		fx=fz=fy=0;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+
+			hit=FALSE;
+
+			for (t=0;t!=poly->ptsz;t++) {
+				if (poly->v[0]==n) {
+					hit=TRUE;
+					break;
+				}
+			}
+
+			if (hit) {
+				map_mesh_get_poly_normal(mesh,poly,&v);
+				fx+=v.x;
+                fy+=v.y;
+				fz+=v.z;
+				cnt++;
+			}
+
+			poly++;
+		}
+		
+		if (cnt==0) {
+			normal->x=normal->y=normal->z=0.0f;
+		}
+		else {
+			f=(float)cnt;
+			normal->x=-(fx/f);
+			normal->y=-(fy/f);
+			normal->z=-(fz/f);
+		}
+		
+		normal++;
+	}
 }
 
 

@@ -129,7 +129,6 @@ and can be sold or given away.
 #define map_light_color_prop_red					0
 #define map_light_color_prop_green					1
 #define map_light_color_prop_blue					2
-#define map_light_color_prop_drop_off_factor		3
 
 #define map_spot_prop_count							0
 
@@ -236,6 +235,7 @@ and can be sold or given away.
 #define model_light_prop_on							1
 #define model_light_prop_type						2
 #define model_light_prop_intensity					3
+#define model_light_prop_exponent					4
 
 #define model_light_color_prop_red					0
 #define model_light_color_prop_green				1

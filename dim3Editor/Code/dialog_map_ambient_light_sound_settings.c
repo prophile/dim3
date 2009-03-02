@@ -31,7 +31,6 @@ and can be sold or given away.
 extern map_type				map;
 
 #define kLightColor									FOUR_CHAR_CODE('colr')
-#define kLightDropOffFactor							FOUR_CHAR_CODE('ldof')
 #define kSoundName									FOUR_CHAR_CODE('snam')
 #define kSoundPitch									FOUR_CHAR_CODE('pith')
 
@@ -106,7 +105,6 @@ bool dialog_map_ambient_light_sound_settings_run(void)
 	dialog_map_ambient_light_sound_color.red=(int)(map.ambient.light_color.r*(float)0xFFFF);
 	dialog_map_ambient_light_sound_color.green=(int)(map.ambient.light_color.g*(float)0xFFFF);
 	dialog_map_ambient_light_sound_color.blue=(int)(map.ambient.light_color.b*(float)0xFFFF);
-	dialog_set_float(dialog_map_ambient_light_sound_settings_wind,kLightDropOffFactor,0,map.ambient.light_drop_off_factor);
 
 	dialog_special_combo_fill_sound(dialog_map_ambient_light_sound_settings_wind,kSoundName,0,map.ambient.sound_name);
 	dialog_set_float(dialog_map_ambient_light_sound_settings_wind,kSoundPitch,0,map.ambient.sound_pitch);
@@ -135,7 +133,6 @@ bool dialog_map_ambient_light_sound_settings_run(void)
 		map.ambient.light_color.r=((float)dialog_map_ambient_light_sound_color.red/(float)0xFFFF);
 		map.ambient.light_color.g=((float)dialog_map_ambient_light_sound_color.green/(float)0xFFFF);
 		map.ambient.light_color.b=((float)dialog_map_ambient_light_sound_color.blue/(float)0xFFFF);
-		map.ambient.light_drop_off_factor=dialog_get_float(dialog_map_ambient_light_sound_settings_wind,kLightDropOffFactor,0);
 		dialog_special_combo_get_sound(dialog_map_ambient_light_sound_settings_wind,kSoundName,0,map.ambient.sound_name,name_str_len);
 		map.ambient.sound_pitch=dialog_get_float(dialog_map_ambient_light_sound_settings_wind,kSoundPitch,0);
 	}
