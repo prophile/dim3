@@ -410,9 +410,7 @@ void gl_shader_attach_map(void)
 	
 	for (n=0;n!=max_map_texture;n++) {
 		texture->shader_idx=-1;
-	// supergumba -- testing
-	//	if (shader_on) texture->shader_idx=gl_shader_find(texture->shader_name);
-		texture->shader_idx=0;
+		if (shader_on) texture->shader_idx=gl_shader_find(texture->shader_name);
 		texture++;
 	}
 }

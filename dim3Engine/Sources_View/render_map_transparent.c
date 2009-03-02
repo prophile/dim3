@@ -45,10 +45,9 @@ map_poly_sort_type		trans_sort;
 
 extern bool fog_solid_on(void);
 extern void view_compile_gl_list_attach(void);
+extern void view_compile_gl_list_enable_color(void);
+extern void view_compile_gl_list_disable_color(void);
 extern void view_compile_gl_list_dettach(void);
-extern void view_compile_gl_list_switch_to_color(void);
-extern void view_compile_gl_list_switch_to_normal(void);
-extern void view_compile_gl_list_switch_to_specular(void);
 
 /* =======================================================
 
@@ -257,7 +256,7 @@ void render_transparent_mesh_debug(void)
 void render_transparent_mesh_simple(void)
 {
 	int							n,sort_cnt,cur_mesh_idx;
-	bool						cur_additive;
+	bool						cur_additive,enable;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	map_poly_sort_item_type		*sort_list;
@@ -287,6 +286,8 @@ void render_transparent_mesh_simple(void)
 	cur_additive=FALSE;
 	cur_mesh_idx=-1;
 
+	enable=FALSE;
+
 		// draw transparent meshes
 
 	gl_texture_transparent_start(TRUE);
@@ -305,6 +306,13 @@ void render_transparent_mesh_simple(void)
 		if (cur_mesh_idx!=sort_list[n].mesh_idx) {
 			cur_mesh_idx=sort_list[n].mesh_idx;
 			map_calculate_light_reduce_mesh(mesh);
+		}
+
+			// time to enable color array?
+
+		if (!enable) {
+			enable=TRUE;
+			view_compile_gl_list_enable_color();
 		}
 	
 			// need to change texture blending?
@@ -331,6 +339,10 @@ void render_transparent_mesh_simple(void)
 		gl_texture_transparent_set(texture->bitmaps[poly->render.frame].gl_id,poly->alpha);
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}
+
+		// was color array enabled?
+
+	if (enable) view_compile_gl_list_disable_color();
 
 	gl_texture_transparent_end();
 }
@@ -485,14 +497,8 @@ void render_map_transparent(int mesh_cnt,int *mesh_list)
 
 		// transparent meshes
 
-	if (dim3_debug) {
-		render_transparent_mesh_debug();
-	}
-	else {
-		render_transparent_mesh_shader();
-		render_transparent_mesh_simple();
-	}
-
+	render_transparent_mesh_simple();
+	if (!dim3_debug) render_transparent_mesh_shader();
 	render_transparent_mesh_glow();
 
 		// dettach any attached lists

@@ -45,9 +45,6 @@ extern view_type		view;
 extern int game_time_get(void);
 extern bool fog_solid_on(void);
 extern void view_compile_gl_list_attach(void);
-extern void view_compile_gl_list_switch_to_color(void);
-extern void view_compile_gl_list_switch_to_normal(void);
-extern void view_compile_gl_list_switch_to_specular(void);
 extern void view_compile_gl_list_dettach(void);
 																						
 /* =======================================================

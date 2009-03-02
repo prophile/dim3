@@ -43,7 +43,7 @@ int							shadow_texture_count;
 
 extern bool complex_boundbox_inview(int *cbx,int *cby,int *cbz);
 extern void model_render_shadow(model_draw *draw,float draw_z,int shadow_idx);
-extern light_spot_type* map_find_closest_light(double x,double y,double z,int *p_dist);
+extern view_light_spot_type* map_find_closest_light(double x,double y,double z,int *p_dist);
 
 /* =======================================================
 
@@ -58,7 +58,7 @@ bool shadow_get_volume_ground(model_draw *draw)
 								wid,high,dist;
 	float						fx,fy,fz,model_ang,volume_ang;
 	matrix_type					mat;
-	light_spot_type				*lspot;
+	view_light_spot_type		*lspot;
 	model_type					*mdl;
 	model_draw_shadow			*shadow;
 	

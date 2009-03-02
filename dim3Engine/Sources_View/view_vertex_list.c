@@ -32,6 +32,8 @@ and can be sold or given away.
 #include "lights.h"
 #include "video.h"
 
+extern bool					dim3_debug;
+
 extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
@@ -93,7 +95,7 @@ bool view_compile_mesh_gl_list_init(void)
 
 		// initial vertex VBO
 		
-	view_init_map_vertex_object(v_cnt*(3+2+3+3+3));
+	view_init_map_vertex_object(v_cnt*(3+2+3));
 
 	vertex_ptr=view_bind_map_map_vertex_object();
 	if (vertex_ptr==NULL) return(FALSE);
@@ -130,21 +132,13 @@ bool view_compile_mesh_gl_list_init(void)
 				*pv++=(float)pnt->x;
 				*pv++=(float)pnt->y;
 				*pv++=(float)pnt->z;
+				
+				*pp++=poly->gx[t]+x_shift_offset;
+				*pp++=poly->gy[t]+y_shift_offset;
 
 				*pc++=1.0f;
 				*pc++=1.0f;
 				*pc++=1.0f;
-			
-				*pn++=0.5f;
-				*pn++=0.5f;
-				*pn++=1.0f;
-				
-				*ps++=1.0f;
-				*ps++=1.0f;
-				*ps++=1.0f;
-				
-				*pp++=poly->gx[t]+x_shift_offset;
-				*pp++=poly->gy[t]+y_shift_offset;
 				
 				v_idx++;
 			}
@@ -230,7 +224,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 {
 	int							n,k,t,v_count;
 	float						x_shift_offset,y_shift_offset;
-	float						*vertex_ptr,*pv,*pp;
+	float						*vertex_ptr,*pv,*pp,*pc;
 	d3pnt						*pnt;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
@@ -303,6 +297,52 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 			}
 		}
 
+			// if in debug, we are using high lighting,
+			// so recalculate the lights for the mesh
+
+		if (dim3_debug) {
+			
+			pc=vertex_ptr+((v_count*(3+2))+(mesh->draw.vertex_offset*3));
+
+			poly=mesh->polys;
+				
+			for (k=0;k!=mesh->npoly;k++) {
+				for (t=0;t!=poly->ptsz;t++) {
+					*pc++=1.0f;
+					*pc++=1.0f;
+					*pc++=1.0f;
+				}
+				poly++;
+			}
+		}
+
+			// if the mesh has some non-shaders in it,
+			// recalculate the lighting
+			// supergumba -- this needs to be optimized
+
+		else {
+
+			if (mesh->render.has_no_shader) {
+
+				pc=vertex_ptr+((v_count*(3+2))+(mesh->draw.vertex_offset*3));
+
+				poly=mesh->polys;
+				
+				for (k=0;k!=mesh->npoly;k++) {
+
+					for (t=0;t!=poly->ptsz;t++) {
+						pnt=&mesh->vertexes[poly->v[t]];
+
+						gl_lights_calc_vertex((double)pnt->x,(double)pnt->y,(double)pnt->z,pc);
+						pc+=3;
+					}
+
+					poly++;
+				}
+
+			}
+		}
+
 			// reset the moved list so we'll catch
 			// and update any moved vertexes next time
 			// we hit this function
@@ -357,43 +397,25 @@ void view_compile_gl_list_attach(void)
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
-
-		// color array
-
-//	glEnableClientState(GL_COLOR_ARRAY);	// supergumba
-//	glColorPointer(3,GL_FLOAT,0,(void*)((v_cnt*(3+2))*sizeof(float)));
 }
 
-// supergumba -- delete most of these
-
-void view_compile_gl_list_switch_to_color(void)
+void view_compile_gl_list_enable_color(void)
 {
-//	int				v_cnt;
-	
-//	v_cnt=map.mesh.vbo_vertex_count;
-//	glColorPointer(3,GL_FLOAT,0,(void*)((v_cnt*(3+2))*sizeof(float)));
+	int			offset;
+
+	offset=(map.mesh.vbo_vertex_count*(3+2))*sizeof(float);
+
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(3,GL_FLOAT,0,(void*)offset);
 }
 
-void view_compile_gl_list_switch_to_normal(void)
+void view_compile_gl_list_disable_color(void)
 {
-//	int				v_cnt;
-	
-//	v_cnt=map.mesh.vbo_vertex_count;
-//	glColorPointer(3,GL_FLOAT,0,(void*)((v_cnt*(3+2+3))*sizeof(float)));
-}
-
-void view_compile_gl_list_switch_to_specular(void)
-{
-//	int				v_cnt;
-	
-//	v_cnt=map.mesh.vbo_vertex_count;
-//	glColorPointer(3,GL_FLOAT,0,(void*)((v_cnt*(3+2+3+3))*sizeof(float)));
+	glDisableClientState(GL_COLOR_ARRAY);
 }
 
 void view_compile_gl_list_dettach(void)
 {
-	glDisableClientState(GL_COLOR_ARRAY);
-
 	glClientActiveTexture(GL_TEXTURE2);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 

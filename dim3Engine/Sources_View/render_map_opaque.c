@@ -45,9 +45,8 @@ extern view_type		view;
 extern int game_time_get(void);
 extern bool fog_solid_on(void);
 extern void view_compile_gl_list_attach(void);
-extern void view_compile_gl_list_switch_to_color(void);
-extern void view_compile_gl_list_switch_to_normal(void);
-extern void view_compile_gl_list_switch_to_specular(void);
+extern void view_compile_gl_list_enable_color(void);
+extern void view_compile_gl_list_disable_color(void);
 extern void view_compile_gl_list_dettach(void);
 																						
 /* =======================================================
@@ -56,71 +55,10 @@ extern void view_compile_gl_list_dettach(void);
       
 ======================================================= */
 
-void render_opaque_mesh_debug(int mesh_cnt,int *mesh_list)
-{
-	int					n,k;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	texture_type		*texture;
-	
-		// setup drawing
-
-	glDisable(GL_BLEND);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-	
-	glEnable(GL_DEPTH_TEST); 
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_TRUE);
-
-	gl_texture_opaque_start(FALSE);
-	
-		// run through the meshes
-
-	for (n=0;n!=mesh_cnt;n++) {
-
-		mesh=&map.mesh.meshes[mesh_list[n]];
-
-			// skip meshes with no opaques
-
-		if (!mesh->render.has_opaque) continue;
-		
-			// run through the polys
-
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-
-				// skip transparent polys
-
-			if (poly->render.transparent_on) {
-				poly++;
-				continue;
-			}
-			
-				// dark factor
-
-			glColor4f(poly->dark_factor,poly->dark_factor,poly->dark_factor,1.0f);
-
-				// draw polygon
-
-			texture=&map.textures[poly->txt_idx];
-			gl_texture_opaque_set(texture->bitmaps[poly->render.frame].gl_id);
-			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-
-			poly++;
-		}
-	}
-
-		// end drawing
-
-	gl_texture_opaque_end();
-}
-
 void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 {
 	int							n,k;
+	bool						enable;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	texture_type				*texture;
@@ -136,6 +74,8 @@ void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 	glEnable(GL_DEPTH_TEST); 
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
+
+	enable=FALSE;
 
 	gl_texture_opaque_start(TRUE);
 	
@@ -163,6 +103,13 @@ void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 				continue;
 			}
 
+				// time to enable color array?
+
+			if (!enable) {
+				enable=TRUE;
+				view_compile_gl_list_enable_color();
+			}
+
 				// setup lights
 
 			gl_lights_build_from_poly(poly,&light_list);
@@ -176,6 +123,10 @@ void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 			poly++;
 		}
 	}
+
+		// was color array enabled?
+
+	if (enable) view_compile_gl_list_disable_color();
 
 		// end drawing
 
@@ -331,14 +282,10 @@ void render_map_opaque(int mesh_cnt,int *mesh_list)
 
 	view_compile_gl_list_attach();
 		
-	if (dim3_debug) {
-		render_opaque_mesh_debug(mesh_cnt,mesh_list);
-	}
-	else {
-		render_opaque_mesh_simple(mesh_cnt,mesh_list);
-		render_opaque_mesh_shader(mesh_cnt,mesh_list);
-	}
+		// render polygons
 
+	render_opaque_mesh_simple(mesh_cnt,mesh_list);
+	if (!dim3_debug) render_opaque_mesh_shader(mesh_cnt,mesh_list);
 	render_opaque_mesh_glow(mesh_cnt,mesh_list);
 
 		// dettach any attached lists

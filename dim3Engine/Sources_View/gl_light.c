@@ -44,7 +44,7 @@ extern setup_type			setup;
 // supergumba -- can redo a lot of what's in light_spot_type
 
 int							gl_light_spots_count;
-light_spot_type				gl_light_spots[max_light_spot];
+view_light_spot_type		gl_light_spots[max_light_spot];
 
 extern double light_get_intensity(int light_type,int intensity);		// supergumba -- move this
 
@@ -59,7 +59,7 @@ extern double light_get_intensity(int light_type,int intensity);		// supergumba 
 
 void gl_lights_compile_add(d3pnt *pnt,int light_type,int intensity,float exponent,d3col *col)
 {
-	light_spot_type			*lspot;
+	view_light_spot_type			*lspot;
 	
 	if (gl_light_spots_count==max_light_spot) return;
 
@@ -76,6 +76,19 @@ void gl_lights_compile_add(d3pnt *pnt,int light_type,int intensity,float exponen
 		
 	memmove(&lspot->pnt,pnt,sizeof(d3pnt));
 	memmove(&lspot->col,col,sizeof(d3col));
+
+		// non shader calculation speed ups
+
+	lspot->d_intensity=lspot->intensity*lspot->intensity;
+	lspot->d_inv_intensity=1.0/lspot->d_intensity;
+		
+	lspot->d_x=(double)lspot->pnt.x;
+	lspot->d_y=(double)lspot->pnt.y;
+	lspot->d_z=(double)lspot->pnt.z;
+	
+	lspot->d_col_r=(double)lspot->col.r;
+	lspot->d_col_g=(double)lspot->col.g;
+	lspot->d_col_b=(double)lspot->col.b;
 
 	gl_light_spots_count++;
 }
@@ -198,7 +211,111 @@ void gl_lights_compile(int tick)
 
 /* =======================================================
 
-      Lights
+      Per Vertex non GLSL Lighting
+      
+======================================================= */
+
+void gl_lights_calc_vertex(double x,double y,double z,float *cf)
+{
+	int						n;
+	double					dx,dz,dy,r,g,b,d,mult;
+	view_light_spot_type	*lspot;
+
+		// no lights in scene
+
+	if (gl_light_spots_count==0) {
+		*cf++=(map.ambient.light_color.r+setup.gamma);
+		*cf++=(map.ambient.light_color.g+setup.gamma);
+		*cf=(map.ambient.light_color.b+setup.gamma);
+		return;
+	}
+
+		// combine all light spots attenuated for distance
+		
+	r=g=b=0.0;
+	
+	lspot=gl_light_spots;
+
+	for (n=0;n!=gl_light_spots_count;n++) {
+
+		dx=lspot->d_x-x;
+		dy=lspot->d_y-y;
+		dz=lspot->d_z-z;
+		
+		d=(dx*dx)+(dz*dz)+(dy*dy);
+
+		if (d<=lspot->d_intensity) {
+			mult=(lspot->d_intensity-d)*lspot->d_inv_intensity;
+
+			r+=(lspot->d_col_r*mult);
+			g+=(lspot->d_col_g*mult);
+			b+=(lspot->d_col_b*mult);
+		}
+		
+		lspot++;
+	}
+
+		// supergumba -- do exponent here
+
+		// set light value
+
+	*cf++=(map.ambient.light_color.r+setup.gamma)+(float)r;
+	*cf++=(map.ambient.light_color.g+setup.gamma)+(float)g;
+	*cf=(map.ambient.light_color.b+setup.gamma)+(float)b;
+}
+
+view_light_spot_type* gl_light_find_closest_light(double x,double y,double z,int *p_dist)
+{
+	int					n,k;
+	double				dx,dz,dy,d,dist;
+	view_light_spot_type		*lspot;
+
+		// no lights in scene
+
+	if (gl_light_spots_count==0) return(NULL);
+
+		// find closest light
+	
+	k=-1;
+	dist=-1;
+	
+	for (n=0;n!=gl_light_spots_count;n++) {
+
+		lspot=&gl_light_spots[n];
+		
+			// get distance to light spot
+			
+		dx=lspot->d_x-x;
+		dz=lspot->d_z-z;
+		dy=lspot->d_y-y;
+
+		d=(dx*dx)+(dz*dz)+(dy*dy);
+		
+			// reject lights outside globe
+			
+		if (d<=lspot->d_intensity) {
+		
+				// compare distances
+		
+			if ((d<dist) || (dist==-1)) {
+				dist=d;
+				k=n;
+			}
+		}
+		
+		lspot++;
+	}
+	
+	if (k==-1) return(NULL);
+	
+	*p_dist=(int)sqrt(dist);
+
+	return(&gl_light_spots[k]);
+}
+
+/* =======================================================
+
+      GLSL Lights
       
 ======================================================= */
 
@@ -212,7 +329,7 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_glsl_light_l
 	int						n,k,i_add,
 							idx,cnt,sort_list[max_light_spot];
 	double					d,dx,dy,dz,sort_dist[max_light_spot];
-	light_spot_type			*lspot;
+	view_light_spot_type	*lspot;
 
 		// sort the light list
 

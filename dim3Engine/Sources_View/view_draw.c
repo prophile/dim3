@@ -464,7 +464,7 @@ void view_draw(int tick)
 {
 	obj_type		*obj;
 	weapon_type		*weap;
-	
+
 		// get player object and held weapon
 		
 	obj=object_find_uid(server.player_obj_uid);
@@ -524,7 +524,7 @@ void view_draw(int tick)
 		// draw decals
 
 	decal_render(mesh_draw_count,mesh_draw_list);
-	
+
 		// effects
 
 	effect_draw(tick);
@@ -572,8 +572,6 @@ void view_draw(int tick)
 	fade_object_draw(tick,obj);
 
 		// shadow testing code
-
-//	test_me();		// supergumba
 
 //	shadow_render_test();
 }

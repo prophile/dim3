@@ -83,8 +83,18 @@ typedef struct		{
 					} view_image_type;
 
 //
-// light GLSL pass structures
+// lighting structures
 //
+
+typedef struct		{
+						float						exponent;
+						double						d_x,d_y,d_z,
+													intensity,inv_intensity,
+													d_intensity,d_inv_intensity,
+													d_col_r,d_col_g,d_col_b;
+						d3pnt						pnt;
+						d3col						col;
+					} view_light_spot_type;
 
 typedef struct		{
 						float					pos[3*max_view_lights_per_poly],

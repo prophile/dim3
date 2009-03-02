@@ -35,7 +35,7 @@ extern view_type		view;
 extern setup_type		setup;
 
 int						nlight;
-light_spot_type			lspot_cache[max_light_spot];
+view_light_spot_type	lspot_cache[max_light_spot];
 
 double					light_flicker_value[64]={
 													1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,
@@ -59,6 +59,9 @@ double					light_flicker_value[64]={
 												};
 
 extern int game_time_get(void);
+
+
+// supergumba -- all this needs to be removed, fixed, etc
 
 /* =======================================================
 
@@ -124,7 +127,7 @@ double light_get_intensity(int light_type,int intensity)
 
 void light_add(d3pnt *pnt,int light_type,int intensity,float fall_off,d3col *col)
 {
-	light_spot_type			*lspot;
+	view_light_spot_type			*lspot;
 	
 	if (nlight==max_light_spot) return;
 

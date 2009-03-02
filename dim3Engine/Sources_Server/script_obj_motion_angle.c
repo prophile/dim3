@@ -114,7 +114,10 @@ JSBool js_obj_motion_angle_turn_to_angle_func(JSContext *cx,JSObject *j_obj,uint
 	
 	obj=object_find_uid(js.attach.thing_uid);
 	
-	obj->turn.ang_to.y=(float)script_value_to_float(argv[0]);
+	obj->turn.ang_to.y=script_value_to_float(argv[0]);
+	if (obj->turn.ang_to.y<0.0f) obj->turn.ang_to.y=360.0f+obj->turn.ang_to.y;
+	if (obj->turn.ang_to.y>=360.0f) obj->turn.ang_to.y=obj->turn.ang_to.y-360.0f;
+
 	turn_speed=object_get_turn_speed(obj);
 
 	switch (JSVAL_TO_INT(argv[1])) {

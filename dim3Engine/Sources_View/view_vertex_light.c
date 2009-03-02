@@ -36,7 +36,7 @@ extern view_type			view;
 extern setup_type			setup;
 
 extern int					nlight;
-extern light_spot_type		lspot_cache[max_light_spot];
+extern view_light_spot_type	lspot_cache[max_light_spot];
 
 int							nlight_reduce,light_reduce_list[max_light_spot];
 
@@ -53,7 +53,7 @@ extern bool light_trace_map(d3pnt *spt,d3pnt *ept);
 void map_calculate_light_reduce_mesh(map_mesh_type *mesh)
 {
 	int					n;
-	light_spot_type		*lspot;
+	view_light_spot_type		*lspot;
 
 	nlight_reduce=0;
 
@@ -79,7 +79,7 @@ void map_calculate_light_reduce_mesh(map_mesh_type *mesh)
 void map_calculate_light_reduce_liquid(map_liquid_type *liq)
 {
 	int					n;
-	light_spot_type		*lspot;
+	view_light_spot_type		*lspot;
 
 	nlight_reduce=0;
 
@@ -108,7 +108,7 @@ void map_calculate_light_reduce_model(model_draw *draw)
 	float				fx,fy,fz;
 	d3pnt				pnt,min,max;
 	matrix_type			mat;
-	light_spot_type		*lspot;
+	view_light_spot_type		*lspot;
 	
 		// need to move model if no rot on
 
@@ -177,7 +177,7 @@ void map_calculate_light_reduce_effect(effect_type *effect)
 {
 	int					n,sz;
 	d3pnt				min,max;
-	light_spot_type		*lspot;
+	view_light_spot_type		*lspot;
 
 		// get effect bounds
 
@@ -234,7 +234,7 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 {
 	int					n,cnt;
 	double				dx,dz,dy,r,g,b,nx,nz,ny,d,mult,tot_mult;
-	light_spot_type		*lspot;
+	view_light_spot_type		*lspot;
 
 		// no lights in scene
 
@@ -393,11 +393,11 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 	*f_intensity=(float)(d*d);
 }
 
-light_spot_type* map_find_closest_light(double x,double y,double z,int *p_dist)
+view_light_spot_type* map_find_closest_light(double x,double y,double z,int *p_dist)
 {
 	int					n,k;
 	double				dx,dz,dy,d,dist;
-	light_spot_type		*lspot;
+	view_light_spot_type		*lspot;
 
 		// no lights in scene
 
