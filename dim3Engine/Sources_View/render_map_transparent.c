@@ -297,9 +297,10 @@ void render_transparent_mesh_simple(void)
 		poly=&mesh->polys[sort_list[n].poly_idx];
 
 			// skip meshes or polys with no transparents or shaders
+			// unless debug is on
 
-		if ((!mesh->render.has_transparent) || (mesh->render.has_shader)) continue;
-		if ((!poly->render.transparent_on) || (poly->render.shader_on)) continue;
+		if ((!mesh->render.has_transparent) || ((!dim3_debug) && (!mesh->render.has_no_shader))) continue;
+		if ((!poly->render.transparent_on) || ((!dim3_debug) && (poly->render.shader_on))) continue;
 
 			// reduce the lighting list
 

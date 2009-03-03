@@ -79,8 +79,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 257474299;
-			PBXWorkspaceStateSaveDate = 257474299;
+			PBXPerProjectTemplateStateSaveDate = 257724601;
+			PBXWorkspaceStateSaveDate = 257724601;
 		};
 		perUserProjectItems = {
 			26650DDF0F0EC86400D22461 /* PlistBookmark */ = 26650DDF0F0EC86400D22461 /* PlistBookmark */;
@@ -143,18 +143,18 @@
 	};
 	2625D0370F54C9960023B0D3 /* render_map_opaque.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1032, 4760}}";
-			sepNavSelRange = "{5402, 22}";
-			sepNavVisRange = "{4746, 1145}";
+			sepNavIntBoundsRect = "{{0, 0}, {1032, 4116}}";
+			sepNavSelRange = "{2119, 0}";
+			sepNavVisRange = "{1938, 1049}";
 			sepNavWindowFrame = "{{163, 216}, {999, 779}}";
 		};
 	};
 	2625D0390F54C9960023B0D3 /* render_map_transparent.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1008, 6930}}";
-			sepNavSelRange = "{9813, 0}";
-			sepNavVisRange = "{8633, 1363}";
-			sepNavWindowFrame = "{{38, 223}, {999, 779}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1008, 6944}}";
+			sepNavSelRange = "{6725, 0}";
+			sepNavVisRange = "{6581, 1390}";
+			sepNavWindowFrame = "{{245, 127}, {999, 779}}";
 		};
 	};
 	2644F0760D426C6E00470CB5 /* dim3Engine in dim3 */ = {
@@ -459,9 +459,9 @@
 	};
 	26FE82350F4E1D5C00B659D8 /* gl_light.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1041, 5376}}";
-			sepNavSelRange = "{2956, 0}";
-			sepNavVisRange = "{6495, 1367}";
+			sepNavIntBoundsRect = "{{0, 0}, {1041, 6902}}";
+			sepNavSelRange = "{5914, 0}";
+			sepNavVisRange = "{5400, 1173}";
 			sepNavWindowFrame = "{{400, 125}, {1056, 814}}";
 		};
 	};
@@ -1510,9 +1510,9 @@
 	};
 	F5DD19DE0908310200721649 /* view_vertex_list.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 5754}}";
-			sepNavSelRange = "{2031, 0}";
-			sepNavVisRange = "{1746, 764}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6132}}";
+			sepNavSelRange = "{6097, 0}";
+			sepNavVisRange = "{5744, 929}";
 			sepNavWindowFrame = "{{373, 194}, {1041, 747}}";
 		};
 	};

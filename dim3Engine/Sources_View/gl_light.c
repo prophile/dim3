@@ -246,6 +246,8 @@ void gl_lights_calc_vertex(double x,double y,double z,float *cf)
 
 		if (d<=lspot->d_intensity) {
 			mult=(lspot->d_intensity-d)*lspot->d_inv_intensity;
+			
+			mult+=pow(mult,lspot->exponent);
 
 			r+=(lspot->d_col_r*mult);
 			g+=(lspot->d_col_g*mult);

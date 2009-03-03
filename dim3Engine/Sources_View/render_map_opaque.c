@@ -86,9 +86,10 @@ void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 		mesh=&map.mesh.meshes[mesh_list[n]];
 		map_calculate_light_reduce_mesh(mesh);		// supergumba -- reduce lights before running mesh
 
-			// skip meshes with no non-shaders or opaques
+			// skip meshes with no opaques and all non-shaders
+			// unless debug is on
 
-		if ((!mesh->render.has_opaque) || (!mesh->render.has_no_shader)) continue;
+		if ((!mesh->render.has_opaque) || ((!dim3_debug) && (!mesh->render.has_no_shader))) continue;
 		
 			// run through the polys
 
@@ -98,7 +99,7 @@ void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 
 				// skip transparent or shader polys
 
-			if ((poly->render.transparent_on) || (poly->render.shader_on)) {
+			if ((poly->render.transparent_on) || ((!dim3_debug) && (poly->render.shader_on))) {
 				poly++;
 				continue;
 			}

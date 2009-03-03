@@ -332,7 +332,6 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 
 					for (t=0;t!=poly->ptsz;t++) {
 						pnt=&mesh->vertexes[poly->v[t]];
-
 						gl_lights_calc_vertex((double)pnt->x,(double)pnt->y,(double)pnt->z,pc);
 						pc+=3;
 					}
