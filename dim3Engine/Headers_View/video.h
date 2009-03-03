@@ -140,35 +140,22 @@ extern void gl_project_fix_rotation(view_camera_type *camera,int y_off,int *x,in
 	
 extern void gl_texture_initialize(void);
 extern void gl_texture_shutdown(void);
-extern void gl_texture_bind_start(void);
-extern void gl_texture_opaque_start(bool lite);
+extern void gl_texture_opaque_start(void);
 extern void gl_texture_opaque_end(void);
 extern void gl_texture_opaque_set(GLuint txt_id);
-extern void gl_texture_opaque_tesseled_bump_start(void);
-extern void gl_texture_opaque_tesseled_bump_end(void);
-extern void gl_texture_opaque_tesseled_bump_set(int bump_id);
-extern void gl_texture_tesseled_lighting_start(void);
-extern void gl_texture_tesseled_lighting_end(void);
-extern void gl_texture_tesseled_lighting_set(int alpha_mask_id,float dark_factor);
-extern void gl_texture_tesseled_specular_start(void);
-extern void gl_texture_tesseled_specular_end(void);
-extern void gl_texture_tesseled_specular_set(int specular_id);
 extern void gl_texture_glow_start(void);
 extern void gl_texture_glow_end(void);
 extern void gl_texture_glow_set(GLuint glow_id,float glow_color);
 extern void gl_texture_decal_start(void);
 extern void gl_texture_decal_end(void);
-extern void gl_texture_decal_set(int txt_id,float r,float g,float b,float alpha);
-extern void gl_texture_transparent_start(bool lite);
+extern void gl_texture_decal_set(GLuint txt_id,float r,float g,float b,float alpha);
+extern void gl_texture_transparent_start();
 extern void gl_texture_transparent_end(void);
 extern void gl_texture_transparent_set(GLuint txt_id,float alpha);
-extern void gl_texture_transparent_specular_start(void);
-extern void gl_texture_transparent_specular_end(void);
-extern void gl_texture_transparent_specular_set(int specular_id,float alpha);
 extern void gl_texture_simple_start(void);
 extern void gl_texture_simple_end(void);
-extern void gl_texture_simple_set(int txt_id,bool clamp,float r,float g,float b,float alpha);
-extern void gl_texture_movie_start(int txt_id);
+extern void gl_texture_simple_set(GLuint txt_id,bool clamp,float r,float g,float b,float alpha);
+extern void gl_texture_movie_start(GLuint txt_id);
 extern void gl_texture_movie_end(void);
 
 	// text

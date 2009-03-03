@@ -29,50 +29,50 @@ and can be sold or given away.
 // Model Definitions
 //
 
-#define max_model								64			// maximum models in a map
+#define max_model										64			// maximum models in a map
 
-#define max_model_mesh							32			// maximum number of meshes
+#define max_model_mesh									32			// maximum number of meshes
 
-#define max_model_vertex						8000		// maximum number of vertexs
-#define max_model_bone							128			// maximum number of bones
-#define max_model_trig							8000		// maximum number of triangles in a model
+#define max_model_vertex								8000		// maximum number of vertexs
+#define max_model_bone									128			// maximum number of bones
+#define max_model_trig									8000		// maximum number of triangles in a model
 
-#define max_model_texture						32			// maximum number of textures in model
+#define max_model_texture								32			// maximum number of textures in model
 
-#define max_model_pose							256			// maximum number of poses
-#define max_model_animate						128			// maximum number of animations
-#define max_model_animate_pose					32			// maximum number of poses per animation
+#define max_model_pose									256			// maximum number of poses
+#define max_model_animate								128			// maximum number of animations
+#define max_model_animate_pose							32			// maximum number of poses per animation
 
-#define max_model_blend_animation				4			// maximum number of blended animations
-#define max_model_light							8			// maximum number of lights in a model
-#define max_model_halo							8			// maximum number of halos in a model
+#define max_model_blend_animation						4			// maximum number of blended animations
+#define max_model_light									8			// maximum number of lights in a model
+#define max_model_halo									8			// maximum number of halos in a model
 
-#define max_model_animate_particle				8			// maximum number of particles for animation
-#define max_model_animate_ring					8			// maximum number of rings for animation
+#define max_model_animate_particle						8			// maximum number of particles for animation
+#define max_model_animate_ring							8			// maximum number of rings for animation
 
-#define max_model_hit_box						16			// maximum number of hit boxes
+#define max_model_hit_box								16			// maximum number of hit boxes
 
 //
 // Animator vertex select and hide
 //
 
-#define vertex_sel_hide_mask_sz					(((max_model_vertex*max_model_mesh)/8)+1)
+#define vertex_sel_hide_mask_sz							(((max_model_vertex*max_model_mesh)/8)+1)
 
 //
 // Deform Modes
 //
 
-#define deform_mode_single_rotate				0
-#define deform_mode_comulative_rotate			1
+#define deform_mode_single_rotate						0
+#define deform_mode_comulative_rotate					1
 
-#define deform_mode_xml_list_str				{"single_rotate","comulative_rotate",""}
+#define deform_mode_xml_list_str						{"single_rotate","comulative_rotate",""}
 
 //
 // Model Tags
 //
 
-#define model_tag								unsigned long
-#define model_null_tag							0x3F3F3F3F
+#define model_tag										unsigned long
+#define model_null_tag									0x3F3F3F3F
 
 //
 // Drawing Stuctures
@@ -138,8 +138,8 @@ typedef struct		{
 
 typedef struct		{
 						float							*gl_vertex_array,*gl_color_array,
-														*gl_vertex_normal_array,*gl_bump_normal_array,
-														*gl_specular_intensity_array;
+														*gl_vertex_normal_array2,*gl_bump_normal_array2,
+														*gl_specular_intensity_array2;
 					} model_mesh_draw_type;
 
 typedef struct		{

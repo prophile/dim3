@@ -181,81 +181,9 @@ void render_transparent_sort(int mesh_cnt,int *mesh_list,d3pnt *pnt)
       
 ======================================================= */
 
-void render_transparent_mesh_debug(void)
-{
-	int						n,sort_cnt;
-	bool					cur_additive;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-	map_poly_sort_item_type	*sort_list;
-	texture_type			*texture;
-
-		// setup transparent drawing
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-				
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_FALSE);
-
-		// sorted transparency list
-
-	sort_cnt=trans_sort.count;
-	sort_list=trans_sort.list;
-
-		// keep track of certain settings so
-		// we can optimize state changes
-
-	cur_additive=FALSE;
-
-		// draw transparent meshes
-
-	gl_texture_transparent_start(FALSE);
-
-	for (n=0;n!=sort_cnt;n++) {
-		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
-		poly=&mesh->polys[sort_list[n].poly_idx];
-
-			// skip meshes or polys with no transparents
-
-		if (!mesh->render.has_transparent) continue;
-		if (!poly->render.transparent_on) continue;
-	
-			// need to change texture blending?
-
-		texture=&map.textures[poly->txt_idx];
-
-		if (texture->additive!=cur_additive) {
-			cur_additive=texture->additive;
-
-			if (cur_additive) {
-				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-			}
-			else {
-				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-			}
-		}
-
-			// dark factor
-
-		glColor4f(poly->dark_factor,poly->dark_factor,poly->dark_factor,1.0f);
-
-			// draw the polygon
-
-		gl_texture_transparent_set(texture->bitmaps[poly->render.frame].gl_id,poly->alpha);
-		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-	}
-
-	gl_texture_transparent_end();
-}
-
 void render_transparent_mesh_simple(void)
 {
-	int							n,sort_cnt,cur_mesh_idx;
+	int							n,sort_cnt;
 	bool						cur_additive,enable;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
@@ -284,13 +212,12 @@ void render_transparent_mesh_simple(void)
 		// we can optimize state changes
 
 	cur_additive=FALSE;
-	cur_mesh_idx=-1;
 
 	enable=FALSE;
 
 		// draw transparent meshes
 
-	gl_texture_transparent_start(TRUE);
+	gl_texture_transparent_start();
 
 	for (n=0;n!=sort_cnt;n++) {
 		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
@@ -301,13 +228,6 @@ void render_transparent_mesh_simple(void)
 
 		if ((!mesh->render.has_transparent) || ((!dim3_debug) && (!mesh->render.has_no_shader))) continue;
 		if ((!poly->render.transparent_on) || ((!dim3_debug) && (poly->render.shader_on))) continue;
-
-			// reduce the lighting list
-
-		if (cur_mesh_idx!=sort_list[n].mesh_idx) {
-			cur_mesh_idx=sort_list[n].mesh_idx;
-			map_calculate_light_reduce_mesh(mesh);
-		}
 
 			// time to enable color array?
 
@@ -350,7 +270,7 @@ void render_transparent_mesh_simple(void)
 
 void render_transparent_mesh_shader(void)
 {
-	int							n,sort_cnt,cur_mesh_idx;
+	int							n,sort_cnt;
 	bool						cur_additive;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
@@ -379,7 +299,6 @@ void render_transparent_mesh_shader(void)
 		// we can optimize state changes
 
 	cur_additive=FALSE;
-	cur_mesh_idx=-1;
 
 		// start shaders
 
@@ -393,13 +312,6 @@ void render_transparent_mesh_shader(void)
 
 		if ((!mesh->render.has_transparent) || (mesh->render.has_no_shader)) continue;
 		if ((!poly->render.transparent_on) || (!poly->render.shader_on)) continue;
-
-			// reduce the lighting list
-
-		if (cur_mesh_idx!=sort_list[n].mesh_idx) {
-			cur_mesh_idx=sort_list[n].mesh_idx;
-			map_calculate_light_reduce_mesh(mesh);
-		}
 
 			// need to change texture blending?
 

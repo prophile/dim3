@@ -41,12 +41,74 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
-// supergumba -- can redo a lot of what's in light_spot_type
+double						light_flicker_value[64]={
+														1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,
+														0.92,0.85,0.70,0.85,0.92,1.00,0.92,0.85,
+														0.92,1.00,1.00,1.00,1.00,0.92,0.85,0.70,
+														0.50,0.70,0.85,0.70,0.85,0.92,1.00,1.00,
+														1.00,1.00,1.00,1.00,0.92,0.85,0.70,0.85,
+														0.70,0.85,0.92,1.00,1.00,0.92,0.85,0.70,
+														0.50,0.70,0.85,0.92,1.00,1.00,0.92,1.00,
+														0.92,0.85,0.70,0.85,0.92,1.00,1.00,1.00
+													},
+							light_fail_value[64]=	{
+														0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,
+														0.00,0.15,0.45,0.15,0.00,0.00,0.00,0.15,
+														0.00,0.00,0.00,0.00,0.00,0.00,0.15,0.45,
+														0.85,0.45,0.15,0.45,0.15,0.00,0.00,0.00,
+														0.00,0.00,0.00,0.00,0.00,0.15,0.45,0.15,
+														0.45,0.15,0.00,0.00,0.00,0.00,0.15,0.45,
+														0.85,0.45,0.15,0.00,0.00,0.00,0.00,0.00,
+														0.00,0.15,0.45,0.15,0.00,0.00,0.00,0.00
+													};
 
 int							gl_light_spots_count;
 view_light_spot_type		gl_light_spots[max_light_spot];
 
-extern double light_get_intensity(int light_type,int intensity);		// supergumba -- move this
+extern bool light_inview(d3pnt *pnt,int intensity);
+
+/* =======================================================
+
+      Get Light Intensity For Type
+      
+======================================================= */
+
+double gl_light_get_intensity(int tick,int light_type,int intensity)
+{
+	double			d_tick,d_intensity;
+	
+	d_intensity=(double)intensity;
+	
+	switch (light_type) {
+	
+		case lt_normal:
+			return(d_intensity);
+	
+		case lt_blink:
+			if ((tick&0x100)==0) return(d_intensity);
+			return(0);
+			
+		case lt_glow:
+			d_tick=(double)(tick&0x7FF);
+			if (d_tick>1024) d_tick=2048-d_tick;
+			return(d_intensity*(0.75+(d_tick/4096)));
+			
+		case lt_pulse:
+			d_tick=(double)(tick&0x3FF);
+			if (d_tick>512) d_tick=1024-d_tick;
+			return(d_intensity*(0.5+(d_tick/1024)));
+			
+		case lt_flicker:
+			d_intensity*=light_flicker_value[(tick>>7)&0x3F];
+			break;
+			
+		case lt_failing:
+			d_intensity*=light_fail_value[(tick>>7)&0x3F];
+			break;
+	}
+	
+	return(d_intensity);
+}
 
 /* =======================================================
 
@@ -54,20 +116,25 @@ extern double light_get_intensity(int light_type,int intensity);		// supergumba 
       
 ======================================================= */
 
-// supergumba -- max light spot will need to chance as we are gathering all lights in the map,
-// we might need to instead do some kind of mass elimination at the beginning
-
-void gl_lights_compile_add(d3pnt *pnt,int light_type,int intensity,float exponent,d3col *col)
+void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,int intensity,float exponent,d3col *col)
 {
 	view_light_spot_type			*lspot;
 	
+		// already too many lights?
+
 	if (gl_light_spots_count==max_light_spot) return;
+
+		// is light in view?
+
+	if (!light_inview(pnt,intensity)) return;
+
+		// create light
 
 	lspot=&gl_light_spots[gl_light_spots_count];
 	
 		// create intensity for light type
 		
-	lspot->intensity=light_get_intensity(light_type,intensity);
+	lspot->intensity=gl_light_get_intensity(tick,light_type,intensity);
 	if (lspot->intensity<=0) return;
 	
 	lspot->exponent=exponent;
@@ -93,7 +160,7 @@ void gl_lights_compile_add(d3pnt *pnt,int light_type,int intensity,float exponen
 	gl_light_spots_count++;
 }
 
-void gl_lights_compile_model_add(model_draw *draw)
+void gl_lights_compile_model_add(int tick,model_draw *draw)
 {
 	int					n;
 	d3pnt				pnt;
@@ -119,7 +186,7 @@ void gl_lights_compile_model_add(model_draw *draw)
 				if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&pnt.x,&pnt.y,&pnt.z);
 			}
 			
-			gl_lights_compile_add(&pnt,light->type,light->intensity,light->exponent,&light->col);
+			gl_lights_compile_add(tick,&pnt,light->type,light->intensity,light->exponent,&light->col);
 		}
 
 		light++;
@@ -154,7 +221,7 @@ void gl_lights_compile_effect_add(int tick,effect_type *effect)
 		}
 	}
 	
-	gl_lights_compile_add(&effect->pnt,lt_normal,intensity,1.0f,&flash->col);
+	gl_lights_compile_add(tick,&effect->pnt,lt_normal,intensity,1.0f,&flash->col);
 }
 
 void gl_lights_compile(int tick)
@@ -173,7 +240,7 @@ void gl_lights_compile(int tick)
 	maplight=map.lights;
 		
 	for (n=0;n!=map.nlight;n++) {
-		if (maplight->on) gl_lights_compile_add(&maplight->pnt,maplight->type,maplight->intensity,maplight->exponent,&maplight->col);
+		if (maplight->on) gl_lights_compile_add(tick,&maplight->pnt,maplight->type,maplight->intensity,maplight->exponent,&maplight->col);
 		maplight++;
 	}	
 
@@ -182,10 +249,10 @@ void gl_lights_compile(int tick)
 	obj=server.objs;
 	
 	for (n=0;n!=server.count.obj;n++) {
-		gl_lights_compile_model_add(&obj->draw);
+		gl_lights_compile_model_add(tick,&obj->draw);
 		if (obj->held_weapon.current_uid!=-1) {
 			weap=weapon_find_uid(obj->held_weapon.current_uid);
-			if (weap!=NULL) gl_lights_compile_model_add(&weap->draw);
+			if (weap!=NULL) gl_lights_compile_model_add(tick,&weap->draw);
 		}
 		obj++;
 	}
@@ -195,7 +262,7 @@ void gl_lights_compile(int tick)
 	proj=server.projs;
 	
 	for (n=0;n!=server.count.proj;n++) {
-		gl_lights_compile_model_add(&proj->draw);
+		gl_lights_compile_model_add(tick,&proj->draw);
 		proj++;
 	}
 	
@@ -320,11 +387,6 @@ view_light_spot_type* gl_light_find_closest_light(double x,double y,double z,int
       GLSL Lights
       
 ======================================================= */
-
-
-// supergumba -- use all lights version
-// we will need to clean this up as it's way to slow
-// this version does not consider the reduced list and is a lot slower
 
 void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_glsl_light_list_type *light_list)
 {

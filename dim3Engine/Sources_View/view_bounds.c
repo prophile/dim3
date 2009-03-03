@@ -142,6 +142,26 @@ bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by)
 
 /* =======================================================
 
+      Light in View
+      
+======================================================= */
+
+bool light_inview(d3pnt *pnt,int intensity)
+{
+	int			x,z,ex,ez,ty,by;
+
+	x=pnt->x-intensity;
+	ex=pnt->x+intensity;
+	z=pnt->z-intensity;
+	ez=pnt->z+intensity;
+	ty=pnt->y-intensity;
+	by=pnt->y+intensity;
+
+	return(boundbox_inview(x,z,ex,ez,ty,by));
+}
+
+/* =======================================================
+
       Mesh in View
       
 ======================================================= */

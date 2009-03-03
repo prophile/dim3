@@ -35,12 +35,10 @@ extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
 
-extern int					nlight;
-extern view_light_spot_type	lspot_cache[max_light_spot];
+//extern int					nlight;
+//extern view_light_spot_type	lspot_cache[max_light_spot];
 
 int							nlight_reduce,light_reduce_list[max_light_spot];
-
-extern bool light_trace_map(d3pnt *spt,d3pnt *ept);
 
 /* =======================================================
 
@@ -49,7 +47,8 @@ extern bool light_trace_map(d3pnt *spt,d3pnt *ept);
 ======================================================= */
 
 
-// supergumba -- can delete all this later
+/*
+
 void map_calculate_light_reduce_mesh(map_mesh_type *mesh)
 {
 	int					n;
@@ -223,6 +222,7 @@ void map_calculate_light_reduce_all(void)
 	
 	nlight_reduce=nlight;
 }
+*/
 
 /* =======================================================
 
@@ -230,6 +230,7 @@ void map_calculate_light_reduce_all(void)
       
 ======================================================= */
 
+/*
 void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf,float *f_intensity)
 {
 	int					n,cnt;
@@ -366,27 +367,6 @@ void map_calculate_light_color_normal(double x,double y,double z,float *cf,float
 		// give the correct results but will be close
 		// most of the time -- otherwise we're going to
 		// have to calculate polygon vectors
-/*		
-	nx+=nz;
-
-		// normalize normal vector
-
-	d=sqrt((nx*nx)+(ny*ny));
-	if (d!=0.0) {
-		d=1.0/d;
-		nx*=d;
-		ny*=d;
-	}
-
-
-		// convert to needed format
-		// x (1 = right [light from left], 0 = left [light from right])
-		// y (1 = top [light from bottom], 0 = bottom [light from top])
-		
-	*nf++=(float)((nx*0.5)+0.5);
-	*nf++=1.0f-(float)((ny*0.5)+0.5);
-	*nf=1.0f;
-	*/
 		// create the intensity for speculars
 
 	d=tot_mult/cnt;
@@ -447,3 +427,4 @@ view_light_spot_type* map_find_closest_light(double x,double y,double z,int *p_d
 
 
 
+*/

@@ -77,14 +77,13 @@ void render_opaque_mesh_simple(int mesh_cnt,int *mesh_list)
 
 	enable=FALSE;
 
-	gl_texture_opaque_start(TRUE);
+	gl_texture_opaque_start();
 	
 		// run through the meshes
 
 	for (n=0;n!=mesh_cnt;n++) {
 
 		mesh=&map.mesh.meshes[mesh_list[n]];
-		map_calculate_light_reduce_mesh(mesh);		// supergumba -- reduce lights before running mesh
 
 			// skip meshes with no opaques and all non-shaders
 			// unless debug is on
@@ -160,7 +159,6 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 	for (n=0;n!=mesh_cnt;n++) {
 
 		mesh=&map.mesh.meshes[mesh_list[n]];
-		map_calculate_light_reduce_mesh(mesh);		// supergumba -- reduce lights before running mesh
 
 			// skip meshes with no shaders or opaques
 

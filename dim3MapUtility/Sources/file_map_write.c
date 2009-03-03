@@ -336,6 +336,29 @@ void write_map_movements_xml(map_type *map)
     xml_add_tagclose("Movements");
 }
 
+void write_map_areas_xml(map_type *map)
+{
+	int						n;
+	map_area_type			*area;
+
+	xml_add_tagstart("Areas");
+    xml_add_tagend(FALSE);
+    
+    area=map->areas;
+    
+    for (n=0;n!=map->narea;n++) {
+		xml_add_tagstart("Area");
+		xml_add_attribute_color("rgb",&area->color);
+		xml_add_attribute_2_coord_int("v1",area->lft,area->top);
+		xml_add_attribute_2_coord_int("v2",area->rgt,area->bot);
+		xml_add_tagend(TRUE);
+        
+        area++;
+    }
+    
+    xml_add_tagclose("Areas");
+}
+
 /* =======================================================
 
       Write Vertexes, Meshes, Liquids
@@ -547,6 +570,7 @@ bool write_map_xml(map_type *map)
 	write_map_groups_xml(map);
 	write_map_textures_xml(map);
 	write_map_movements_xml(map);
+	write_map_areas_xml(map);
 
 		// meshes
 

@@ -97,12 +97,12 @@ void liquid_gl_list_init(void)
       
 ======================================================= */
 
-void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz)
+void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz,bool shader_on)
 {
 	int				x,y,z,k,x_add,z_add,x_sz,z_sz,
 					v_cnt,tide_split,tide_split_half,
 					tide_high,tide_rate;
-	float			fy,fgx,fgy,normal[3],f_intensity,x_txtoff,y_txtoff,
+	float			fy,fgx,fgy,x_txtoff,y_txtoff,
 					f_break,f_time,f_tick,sn,
 					f_tide_split_half,f_tide_high;
 	bool			x_break,z_break;
@@ -119,10 +119,6 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz)
 	vl=vertex_ptr;
 	uv=vertex_ptr+(v_sz*3);
 	cl=vertex_ptr+(v_sz*(3+2));
-
-		// reduce lighting to liquid space
-
-	map_calculate_light_reduce_liquid(liq);
 
 		// setup tiding
 
@@ -179,11 +175,11 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz)
 
 				// color
 
-			if (dim3_debug) {
+			if ((dim3_debug) || (shader_on)) {
 				*cl=*(cl+1)=*(cl+2)=1.0f;
 			}
 			else {
-				map_calculate_light_color_normal((double)x,(double)y,(double)z,cl,normal,&f_intensity);
+				gl_lights_calc_vertex((double)x,(double)y,(double)z,cl);
 			}
 			
 			cl+=3;
@@ -320,39 +316,13 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
 void liquid_render_liquid(int tick,map_liquid_type *liq)
 {
 	int							v_sz,quad_cnt,frame;
+	bool						shader_on;
 	texture_type				*texture;
 	view_glsl_light_list_type	light_list;
 	
 		// liquid in view?
 
 	if (!boundbox_inview(liq->lft,liq->top,liq->rgt,liq->bot,liq->y,liq->y)) return;
-
-		// create vertexes
-
-	v_sz=liquid_render_liquid_get_max_vertex(liq);
-
-	liquid_render_liquid_create_vertex(tick,liq,v_sz);
-
-		// create quads
-
-	quad_cnt=liquid_render_liquid_create_quads(liq);
-	if (quad_cnt==0) {
-		view_unbind_liquid_vertex_object();
-		return;
-	}
-	
-		// setup drawing
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,0);
-
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*3)*sizeof(float)));
-
-		// reduce lighting
-
-	map_calculate_light_reduce_liquid(liq);
 
 		// setup texture
 
@@ -365,40 +335,74 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 	else {
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	}
+
+		// determine if shader in use
+
+	shader_on=(!dim3_debug) && (texture->shader_idx!=-1);
+
+		// create vertexes
+
+	v_sz=liquid_render_liquid_get_max_vertex(liq);
+
+	liquid_render_liquid_create_vertex(tick,liq,v_sz,shader_on);
+
+		// create quads
+
+	quad_cnt=liquid_render_liquid_create_quads(liq);
+	if (quad_cnt==0) {
+		view_unbind_liquid_vertex_object();
+		return;
+	}
+	
+		// start arrays
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3,GL_FLOAT,0,0);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*3)*sizeof(float)));
 		
-		// setup lights
+		// shader drawing
 
-	gl_lights_build_from_liquid(liq,&light_list);
+	if (shader_on) {
 
-		// start shader or regular texture
+		gl_lights_build_from_liquid(liq,&light_list);
 
-	if (texture->shader_idx!=-1) {
 		gl_shader_draw_start();
 		gl_shader_draw_execute(texture,frame,1.0f,liq->alpha,&light_list);
-	}
-	else {
-		gl_texture_transparent_start(TRUE);
-		gl_texture_transparent_set(texture->bitmaps[frame].gl_id,liq->alpha);
-	}
 
-		// draw the quads
-
-	glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
-
-		// end texture
-
-	if (texture->shader_idx!=-1) {
+		glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
+		
 		gl_shader_draw_end();
+
 	}
+
+		// regular simple texture drawing
+
 	else {
+
+			// need color pointers for simple drawing
+
+		glEnableClientState(GL_COLOR_ARRAY);
+		glColorPointer(3,GL_FLOAT,0,(void*)((v_sz*(3+2))*sizeof(float)));
+
+			// draw texture
+
+		gl_texture_transparent_start();
+		gl_texture_transparent_set(texture->bitmaps[frame].gl_id,liq->alpha);
+
+		glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
+
 		gl_texture_transparent_end();
+
+			// disable color array
+
+		glDisableClientState(GL_COLOR_ARRAY);
 	}
 
-		// end drawing
+		// end arrays
 
-	glClientActiveTexture(GL_TEXTURE0);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 		// unmap VBOs

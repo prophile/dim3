@@ -54,6 +54,7 @@ extern char light_type_str[][32];
 #define max_map_texture										128				// maximum number of textures in a map
 
 #define max_group											128				// maximum number of mesh groups
+#define max_area											128				// maximum number of sight view areas
 
 #define max_map_scenery										1024			// maximum number of ambient scenery
 #define max_map_scenery_model_texture_frame					8				// maximum number of changable texture frames
@@ -107,8 +108,6 @@ extern char light_type_str[][32];
 //
 // lights
 //
-
-#define max_light_spot										128					// maximum number of lighting objects in a view
 
 #define lt_normal											0
 #define lt_blink											1
@@ -505,6 +504,15 @@ typedef struct		{
 					} map_fog_type;
 
 //
+// area structures
+//
+
+typedef struct		{
+						int									lft,rgt,top,bot;
+						d3col								color;
+					} map_area_type;
+
+//
 // main map structure
 //
 
@@ -512,7 +520,7 @@ typedef struct		{
 
 						int									nlight,nsound,nparticle,
 															nspot,nnode,nscenery,nmovement,
-															ngroup,start_game_tick;
+															ngroup,narea,start_game_tick;
 													
 						map_info_type						info;
 						
@@ -537,6 +545,7 @@ typedef struct		{
 						
 						movement_type						*movements;
 						group_type							*groups;
+						map_area_type						*areas;
 	
 						map_mesh_collection_type			mesh;
 						map_liquid_collection_type			liquid;

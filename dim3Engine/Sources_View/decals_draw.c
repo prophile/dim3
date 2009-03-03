@@ -77,7 +77,7 @@ void decal_render_stencil(int stencil_idx,map_mesh_type *mesh,map_mesh_poly_type
 void decal_render_mark(int stencil_idx,decal_type *decal)
 {
 	int				k,tick,fade_out_start_tick;
-	float			alpha,g_size,gx,gy,cf[3],nf[3],f_intensity;
+	float			alpha,g_size,gx,gy,cf[3];
 	mark_type		*mark;
 	
 		// get the alpha
@@ -104,8 +104,7 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 
 		// get lighting
 		
-	map_calculate_light_reduce_all();
-	map_calculate_light_color_normal((double)decal->x[0],(double)decal->y[0],(double)decal->z[0],cf,nf,&f_intensity);
+	gl_lights_calc_vertex((double)decal->x[0],(double)decal->y[0],(double)decal->z[0],cf);
 	
          // draw the polygon
 			

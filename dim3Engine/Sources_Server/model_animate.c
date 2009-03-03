@@ -674,7 +674,7 @@ bool model_find_bone_position_for_current_animation(model_draw *draw,int bone_id
 bool model_get_bone_brightness(model_draw *draw,char *pose_name,char *bone_name,float *bright)
 {
 	int				x,y,z;
-	float			pc[3],pn[3],f_intensity;
+	float			pc[3];
 	
 		// get bone position
 		
@@ -682,8 +682,7 @@ bool model_get_bone_brightness(model_draw *draw,char *pose_name,char *bone_name,
 	
 		// light at position
 
-	map_calculate_light_reduce_model(draw);
-	map_calculate_light_color_normal((double)x,(double)y,(double)z,pc,pn,&f_intensity);
+	gl_lights_calc_vertex((double)x,(double)y,(double)z,pc);
 	
 	*bright=(pc[0]+pc[1]+pc[2])/3.0f;
 	if (*bright<0.0f) *bright=0.0f;

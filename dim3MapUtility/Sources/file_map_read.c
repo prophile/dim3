@@ -257,6 +257,24 @@ void decode_map_movements_xml(map_type *map,int map_head)
 	}
 }
 
+void decode_map_areas_xml(map_type *map,int map_head)
+{
+	int				n,main_area_tag,area_tag;
+
+    main_area_tag=xml_findfirstchild("Areas",map_head);
+    if (main_area_tag==-1) return;
+    
+    map->narea=xml_countchildren(main_area_tag);
+	area_tag=xml_findfirstchild("Area",main_area_tag);
+
+    for (n=0;n!=map->narea;n++) {
+		xml_get_attribute_color(area_tag,"rgb",&map->areas[n].color);
+		xml_get_attribute_2_coord_int(area_tag,"v1",&map->areas[n].lft,&map->areas[n].top);
+		xml_get_attribute_2_coord_int(area_tag,"v2",&map->areas[n].rgt,&map->areas[n].bot);
+		area_tag=xml_findnextchild(area_tag);
+	}
+}
+
 /* =======================================================
 
       Check Map Network Game Types
@@ -383,6 +401,7 @@ bool read_map_xml(map_type *map,bool only_current_version)
 	decode_map_groups_xml(map,map_head);
 	decode_map_textures_xml(map,map_head);
 	decode_map_movements_xml(map,map_head);
+	decode_map_areas_xml(map,map_head);
 	
 		// decode
 

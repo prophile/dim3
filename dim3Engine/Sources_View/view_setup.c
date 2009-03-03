@@ -63,15 +63,56 @@ int			mesh_draw_count,mesh_draw_list[max_mesh],mesh_draw_dist[max_mesh];
       
 ======================================================= */
 
-inline bool mesh_view_bit_get(map_mesh_type *mesh,int idx)
+bool view_area_mark(char *area_flags)
 {
-	return((mesh->obscure.visibility_flag[idx>>3]&(0x1<<(idx&0x7)))!=0x0);
+	int				n;
+	bool			has_area;
+	map_area_type	*area;
+
+	bzero(area_flags,max_area);
+
+	has_area=FALSE;
+
+	for (n=0;n!=map.narea;n++) {
+		area=&map.areas[n];
+
+		if ((view.camera.pnt.x<area->lft) || (view.camera.pnt.x>area->rgt)) continue;
+		if ((view.camera.pnt.z<area->top) || (view.camera.pnt.z>area->bot)) continue;
+
+		area_flags[n]=0x1;
+		has_area=TRUE;
+	}
+
+	return(has_area);
+}
+
+bool view_area_check_mesh(map_mesh_type *mesh,char *area_flags)
+{
+	int				n;
+	map_area_type	*area;
+
+	for (n=0;n!=map.narea;n++) {
+		if (area_flags[n]==0x0) continue;
+
+			// is mesh in this area?
+
+		area=&map.areas[n];
+
+		if ((mesh->box.min.x<area->lft) || (mesh->box.max.x>area->rgt)) continue;
+		if ((mesh->box.min.z<area->top) || (mesh->box.max.z>area->bot)) continue;
+
+		return(TRUE);
+	}
+
+	return(FALSE);
 }
 
 void view_create_mesh_draw_list(void)
 {
 	int					n,t,sz,d,start_mesh_idx,idx,
 						never_obscure_dist,obscure_dist;
+	char				area_flags[max_area];
+	bool				has_area;
 	map_mesh_type		*start_mesh,*mesh;
 	
 		// get mesh camera is in
@@ -91,6 +132,10 @@ void view_create_mesh_draw_list(void)
 
 	never_obscure_dist=abs(view.camera.near_z)*3;
 
+		// if we are in a sight view area, then obscure with that
+
+	has_area=view_area_mark(area_flags);
+
 		// check all visibile meshes from the start mesh
 	
 	mesh_draw_count=0;
@@ -103,8 +148,8 @@ void view_create_mesh_draw_list(void)
 
 				// is this mesh visible?
 
-			if ((n!=start_mesh_idx) && (map.settings.obscure_type!=obscure_type_none)) {
-				if (!mesh_view_bit_get(start_mesh,n)) continue;
+			if ((n!=start_mesh_idx) && (has_area)) {
+				if (!view_area_check_mesh(mesh,area_flags)) continue;
 			}
 
 				// auto-eliminate meshes drawn outside the obscure distance
@@ -338,42 +383,20 @@ void view_setup_projectiles(int tick)
 
 /* =======================================================
 
-      Lights in View
+      Halos in View
       
 ======================================================= */
 
-void view_add_model_light(model_draw *draw,int obj_uid)
+void view_add_model_halo(model_draw *draw,int obj_uid)
 {
 	int					n,x,z,y;
-	d3pnt				pnt;
 	model_type			*mdl;
-	model_draw_light	*light;
 	model_draw_halo		*halo;
 
 		// any model?
 		
 	mdl=NULL;
 	if ((draw->uid!=-1) && (draw->on)) mdl=model_find_uid(draw->uid);
-	
-		// add lights
-		
-	light=draw->lights;
-	
-	for (n=0;n!=max_model_light;n++) {
-
-		if (light->on) {
-			memmove(&pnt,&draw->pnt,sizeof(d3pnt));
-			
-			if (mdl!=NULL) {
-				model_get_light_position(mdl,&draw->setup,n,&pnt.x,&pnt.y,&pnt.z);
-				if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&pnt.x,&pnt.y,&pnt.z);
-			}
-			
-			light_add(&pnt,light->type,light->intensity,0.0f,&light->col);
-		}
-
-		light++;
-	}
 	
 		// add halo
 		
@@ -398,44 +421,27 @@ void view_add_model_light(model_draw *draw,int obj_uid)
 	}
 }
 
-
-// supergumba -- can probably delete all this
-void view_add_lights(void)
+void view_add_halos(void)
 {
-	int					i;
-	map_light_type		*maplight;
+	int					n;
 	obj_type			*obj;
-	weapon_type			*weap;
 	proj_type			*proj;
 
-		// map lights
-		
-	maplight=map.lights;
-		
-	for (i=0;i!=map.nlight;i++) {
-		if (maplight->on) light_add(&maplight->pnt,maplight->type,maplight->intensity,maplight->exponent,&maplight->col);
-		maplight++;
-	}	
-
-		// lights from objects and their weapons
+		// halos from objects and their weapons
 	
 	obj=server.objs;
 	
-	for (i=0;i!=server.count.obj;i++) {
-		view_add_model_light(&obj->draw,obj->uid);
-		if (obj->held_weapon.current_uid!=-1) {
-			weap=weapon_find_uid(obj->held_weapon.current_uid);
-			if (weap!=NULL) view_add_model_light(&weap->draw,-1);
-		}
+	for (n=0;n!=server.count.obj;n++) {
+		view_add_model_halo(&obj->draw,obj->uid);
 		obj++;
 	}
 	
-		// lights from projectiles
+		// halos from projectiles
 
 	proj=server.projs;
 	
-	for (i=0;i!=server.count.proj;i++) {
-		view_add_model_light(&proj->draw,-1);
+	for (n=0;n!=server.count.proj;n++) {
+		view_add_model_halo(&proj->draw,-1);
 		proj++;
 	}
 }
@@ -612,16 +618,16 @@ void view_draw_setup(int tick)
 		
 	if (obj->bump.on) view.camera.pnt.y+=obj->bump.smooth_offset;
 	
-		// compile all lights in map
-		
-	gl_lights_compile(tick);
-	
 		// setup viewport
 	
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
 	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
 	gl_setup_project();
+	
+		// compile all lights in map
+		
+	gl_lights_compile(tick);
 
 		// setup draw meshes
 
@@ -640,14 +646,15 @@ void view_draw_setup(int tick)
 	view_setup_objects(tick);
 	view_setup_projectiles(tick);
 
-		// clear halos
+		// add scene halos
 		
 	halo_draw_clear();
+	view_add_halos();
 	
 		// add lights and halos
 		
-	light_clear();
-	view_add_lights();
-	effect_add_lights(tick);
+//	light_clear();
+//	view_add_lights();
+//	effect_add_lights(tick);
 }
 

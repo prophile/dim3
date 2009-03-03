@@ -1299,10 +1299,6 @@ SOURCE=..\..\dim3Engine\Sources_View\effects_draw.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_View\effects_lights.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3Engine\Sources_View\elemets.c
 # End Source File
 # Begin Source File
@@ -1364,10 +1360,6 @@ SOURCE=..\..\dim3Engine\Sources_View\intro.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_View\join.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_View\light.c
 # End Source File
 # Begin Source File
 

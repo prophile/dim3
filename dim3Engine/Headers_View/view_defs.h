@@ -29,49 +29,50 @@ and can be sold or given away.
 // view maximums
 //
 
-#define max_view_image				1024
+#define max_view_image							1024
 
-#define max_view_shader				64
-#define max_view_shader_custom_vars	8
+#define max_view_shader							64
+#define max_view_shader_custom_vars				8
 
-#define max_view_lights_per_poly	3
+#define max_light_spot							128
+#define max_view_lights_per_poly				3
 
 //
 // input rate
 //
 
-#define input_tick_rate				33
+#define input_tick_rate							33
 
 //
 // stencil constants
 //
 
-#define stencil_none				0
-#define stencil_poly_start			1
-#define stencil_poly_end			255
+#define stencil_none							0
+#define stencil_poly_start						1
+#define stencil_poly_end						255
 
 //
 // remote names
 //
 
-#define remote_name_max_distance	(map_enlarge*500)	// how far away you can see map names
-#define remote_name_min_distance	(map_enlarge*100)	// closest you can see map names in full
+#define remote_name_max_distance				(map_enlarge*500)	// how far away you can see map names
+#define remote_name_min_distance				(map_enlarge*100)	// closest you can see map names in full
 
 //
 // sorting types
 //
 
-#define view_sort_object			0
-#define view_sort_projectile		1
+#define view_sort_object						0
+#define view_sort_projectile					1
 
 //
 // shader variable types
 //
 
-#define shader_var_type_int			0
-#define shader_var_type_float		1
-#define shader_var_type_vec3		2
-#define shader_var_type_vec4		3
+#define shader_var_type_int						0
+#define shader_var_type_float					1
+#define shader_var_type_vec3					2
+#define shader_var_type_vec4					3
 
 //
 // image structures

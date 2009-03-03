@@ -241,7 +241,7 @@ void particle_draw(effect_type *effect,int count)
 	int						i,idx,particle_count,nvertex,
 							ntrail,trail_step,mx,mz,my,
 							pixel_dif;
-	float					gravity,gx,gy,g_size,pixel_sz,f,pc[3],pn[3],f_intensity,
+	float					gravity,gx,gy,g_size,pixel_sz,f,pc[3],
 							alpha,alpha_dif,r,g,b,color_dif,f_count,f_tick;
 	float					*vertex_ptr;
 	d3ang					*rot_ang,rang;
@@ -260,8 +260,7 @@ void particle_draw(effect_type *effect,int count)
 	particle_draw_position(effect,count,&mx,&my,&mz);
 
 	if (particle->ambient_factor!=1.0f) {		// get ambient before position change
-		map_calculate_light_reduce_effect(effect);
-		map_calculate_light_color_normal((double)mx,(double)my,(double)mz,pc,pn,&f_intensity);
+		gl_lights_calc_vertex((double)mx,(double)my,(double)mz,pc);
 		ambient_col.r=pc[0];
 		ambient_col.g=pc[1];
 		ambient_col.b=pc[2];

@@ -49,10 +49,47 @@ extern bool fog_solid_on(void);
       
 ======================================================= */
 
+void model_draw_create_color_vertexes(model_type *mdl,int mesh_mask)
+{
+	int				n,k;
+	float			*cp,*vp;
+	model_mesh_type	*mesh;
+
+	for (n=0;n!=mdl->nmesh;n++) {
+		if ((mesh_mask&(0x1<<n))==0) continue;
+
+		mesh=&mdl->meshes[n];
+		cp=mesh->draw.gl_color_array;
+
+			// debug and hilited meshes
+
+		if ((dim3_debug) || (mesh->no_lighting)) {
+
+			for (k=0;k!=mesh->nvertex;k++) {
+				*cp++=1.0f;
+				*cp++=1.0f;
+				*cp++=1.0f;
+			}
+
+			continue;
+		}
+
+			// vertex lit
+
+		vp=mesh->draw.gl_vertex_array;
+
+		for (k=0;k!=mesh->nvertex;k++) {
+			gl_lights_calc_vertex((double)*vp,(double)*(vp+1),(double)*(vp+2),cp);
+			cp+=3;
+			vp+=3;
+		}
+	}
+}
+
 bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_draw *draw)
 {
-	int				n,k,nvertex,ntrig,t_idx;
-	float			*vl,*tl,*vp,*vertex_ptr,
+	int				n,k,nvertex,ntrig,offset,t_idx;
+	float			*vl,*tl,*cl,*vp,*cp,*vertex_ptr,
 					*vertex_array,*coord_array;
 	unsigned short	*index_ptr;
     model_trig_type	*trig;
@@ -78,7 +115,7 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 
  		// construct VBO
 
-	vertex_ptr=view_bind_map_next_vertex_object(((ntrig*3)*(3+2)));
+	vertex_ptr=view_bind_map_next_vertex_object(((ntrig*3)*(3+2+3)));
 	if (vertex_ptr==NULL) return(FALSE);
 
 	index_ptr=view_bind_map_next_index_object(ntrig*3);
@@ -92,6 +129,7 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 
 	vl=vertex_array=vertex_ptr;
 	tl=coord_array=vertex_ptr+((ntrig*3)*3);
+	cl=coord_array=vertex_ptr+((ntrig*3)*(3+2));
 
 	t_idx=0;
 
@@ -107,7 +145,9 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 
 				// vertex 0
 
-			vp=mesh->draw.gl_vertex_array+(trig->v[0]*3);
+			offset=trig->v[0]*3;
+			vp=mesh->draw.gl_vertex_array+offset;
+			cp=mesh->draw.gl_color_array+offset;
 
 			*vl++=*vp++;
 			*vl++=*vp++;
@@ -116,9 +156,15 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 			*tl++=trig->gx[0];
 			*tl++=trig->gy[0];
 
+			*cl++=*cp++;
+			*cl++=*cp++;
+			*cl++=*cp;
+
 				// vertex 1
 
-			vp=mesh->draw.gl_vertex_array+(trig->v[1]*3);
+			offset=trig->v[1]*3;
+			vp=mesh->draw.gl_vertex_array+offset;
+			cp=mesh->draw.gl_color_array+offset;
 
 			*vl++=*vp++;
 			*vl++=*vp++;
@@ -127,9 +173,15 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 			*tl++=trig->gx[1];
 			*tl++=trig->gy[1];
 
+			*cl++=*cp++;
+			*cl++=*cp++;
+			*cl++=*cp;
+
 				// vertex 2
 
-			vp=mesh->draw.gl_vertex_array+(trig->v[2]*3);
+			offset=trig->v[2]*3;
+			vp=mesh->draw.gl_vertex_array+offset;
+			cp=mesh->draw.gl_color_array+offset;
 
 			*vl++=*vp++;
 			*vl++=*vp++;
@@ -137,6 +189,10 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 
 			*tl++=trig->gx[2];
 			*tl++=trig->gy[2];
+
+			*cl++=*cp++;
+			*cl++=*cp++;
+			*cl++=*cp;
 
 				// indexes
 
@@ -171,6 +227,17 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 inline int model_draw_set_vertex_objects(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	return(draw->vbo_ptr.index_offset[mesh_idx]);
+}
+
+inline void model_draw_enable_color_array(model_draw *draw)
+{
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(3,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2))*sizeof(float)));
+}
+
+inline void model_draw_disable_color_array(void)
+{
+	glDisableClientState(GL_COLOR_ARRAY);
 }
 
 void model_draw_release_vertex_objects(void)
@@ -259,11 +326,12 @@ void model_draw_stop_mesh_shadow_array(void)
       
 ======================================================= */
 
-void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw *draw)
+void model_draw_opaque_simple_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw *draw)
 {
 	int						n,frame,trig_count,
 							trig_start_idx,trig_idx;
 	float					alpha;
+	bool					enabled;
 	model_mesh_type			*mesh;
     texture_type			*texture;
 	model_material_type		*material;
@@ -285,7 +353,9 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 
-	gl_texture_opaque_start(TRUE);
+	enabled=FALSE;
+
+	gl_texture_opaque_start();
 
 		// run through the materials
 
@@ -297,6 +367,13 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 			// skip shader textures
 
 		if (texture->shader_idx!=-1) continue;
+
+			// first color pointer enable?
+
+		if (!enabled) {
+			enabled=TRUE;
+			model_draw_enable_color_array(draw);
+		}
 	
 			// any opaque trigs?
 			
@@ -319,11 +396,13 @@ void model_draw_opaque_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_dr
 		gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 	}
+
+	if (enabled) model_draw_disable_color_array();
 			
 	gl_texture_opaque_end();
 }
 
-void model_draw_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw *draw,view_glsl_light_list_type *light_list)
+void model_draw_opaque_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw *draw,view_glsl_light_list_type *light_list)
 {
 	int						n,trig_count,
 							trig_start_idx,trig_idx;
@@ -382,7 +461,7 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,mod
 {
 	int						n,frame,trig_count,
 							trig_start_idx,trig_idx;
-	float					alpha;
+	float					enabled,alpha;
 	bool					cur_additive,is_additive;
 	model_mesh_type			*mesh;
     texture_type			*texture;
@@ -406,10 +485,11 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,mod
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 	
-	gl_texture_transparent_start(TRUE);
+	gl_texture_transparent_start();
 
 		// minimize state changes
 
+	enabled=FALSE;
 	cur_additive=FALSE;
 	
 		// run through textures
@@ -422,6 +502,13 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,mod
 			// skip shader textures
 
 		if (texture->shader_idx!=-1) continue;
+
+			// first color pointer enable?
+
+		if (!enabled) {
+			enabled=TRUE;
+			model_draw_enable_color_array(draw);
+		}
 	
 			// any transparent trigs?
 			
@@ -457,6 +544,8 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,mod
 		gl_texture_transparent_set(texture->bitmaps[texture->animate.current_frame].gl_id,alpha);
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 	}
+
+	if (enabled) model_draw_disable_color_array();
 
 	gl_texture_transparent_end();
 }
@@ -568,13 +657,12 @@ void model_render(int tick,model_draw *draw)
 		model_translate_draw_vertex(mdl,n,x,y,z);
 	}
 
-		// setup the vbo
+		// setup the colors and vbo
 
+	model_draw_create_color_vertexes(mdl,mesh_mask);
 	if (!model_draw_initialize_vertex_objects(mdl,mesh_mask,draw)) return;
 
 		// start lighting
-
-	map_calculate_light_reduce_model(draw);
 
 	gl_lights_build_from_model(draw,&light_list);
 
@@ -582,8 +670,8 @@ void model_render(int tick,model_draw *draw)
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))!=0) {
-			model_draw_opaque_trigs(mdl,n,mesh_mask,draw);
-			model_draw_shader_trigs(mdl,n,mesh_mask,draw,&light_list);
+			model_draw_opaque_simple_trigs(mdl,n,mesh_mask,draw);
+			if (!dim3_debug) model_draw_opaque_shader_trigs(mdl,n,mesh_mask,draw,&light_list);
 		}
 	}
 	

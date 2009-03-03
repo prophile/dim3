@@ -25,10 +25,6 @@ and can be sold or given away.
  
 *********************************************************************/
 
-extern void light_clear(void);
-extern double light_get_intensity(int light_type,int intensity);
-extern void light_add(d3pnt *pnt,int light_type,int intensity,float fall_off,d3col *col);
-
 extern void halo_initialize(void);
 extern void halo_load_bitmaps(void);
 extern void halo_free_bitmaps(void);
@@ -49,12 +45,3 @@ extern bool shadow_inview(model_draw *draw);
 extern bool shadow_texture_init(void);
 extern void shadow_texture_finish(void);
 extern bool shadow_texture_create(model_draw *draw);
-
-extern void map_calculate_light_reduce_mesh(map_mesh_type *mesh);
-extern void map_calculate_light_reduce_liquid(map_liquid_type *liq);
-extern void map_calculate_light_reduce_model(model_draw *draw);
-extern void map_calculate_light_reduce_effect(effect_type *effect);
-extern void map_calculate_light_reduce_all(void);
-
-extern void map_calculate_light_color_normal(double x,double y,double z,float *cf,float *nf,float *f_intensity);
-

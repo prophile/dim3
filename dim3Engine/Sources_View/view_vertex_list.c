@@ -40,11 +40,7 @@ extern setup_type			setup;
 
 /* =======================================================
 
-      Setup Color and Normal Lists for
-	  Each Mesh
-	  
-	  Create the original map mesh vertex and
-	  uv lists
+      Setup Vertex, UV, and possible Color List for Meshes
       
 ======================================================= */
 
