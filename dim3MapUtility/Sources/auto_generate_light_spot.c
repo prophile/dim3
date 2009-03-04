@@ -133,6 +133,76 @@ void map_auto_generate_lights(map_type *map)
 
 /* =======================================================
 
+      Add Nodes
+      
+======================================================= */
+
+void map_auto_generate_nodes_add(map_type *map,int x,int y,int z)
+{
+	int						n;
+	node_type				*node;
+
+	if (map->nnode>max_node) return;
+
+	node=&map->nodes[map->nnode];
+
+	node->idx=map->nnode;
+	node->event_id=0;
+
+	for (n=0;n!=max_node_link;n++) {
+		node->link[n]=-1;
+	}
+
+	node->name[0]=0x0;
+
+	node->pnt.x=x;
+	node->pnt.y=y;
+	node->pnt.z=z;
+
+	node->ang.x=node->ang.y=node->ang.z=0.0f;
+
+	map->nnode++;
+}
+
+void map_auto_generate_nodes(map_type *map)
+{
+	int						n,x,y,z,x_sz,z_sz;
+	auto_generate_box_type	*portal;
+	
+	portal=ag_boxes;
+	
+	for (n=0;n!=ag_box_count;n++) {
+
+			// corridors get single node
+
+		if (portal->corridor_flag==ag_corridor_flag_portal) {
+			x=(portal->max.x+portal->min.x)>>1;
+			y=portal->max.y;
+			z=(portal->max.z+portal->min.z)>>1;
+
+			map_auto_generate_nodes_add(map,x,y,z);
+		}
+
+			// rooms get 4 nodes
+
+		else {
+			x_sz=(portal->max.x+portal->min.x)>>2;
+			z_sz=(portal->max.z+portal->min.z)>>2;
+
+			y=portal->max.y;
+
+			map_auto_generate_nodes_add(map,(portal->min.x+x_sz),y,(portal->min.z+z_sz));
+			map_auto_generate_nodes_add(map,(portal->max.x-x_sz),y,(portal->min.z+z_sz));
+			map_auto_generate_nodes_add(map,(portal->min.x+x_sz),y,(portal->max.z-z_sz));
+			map_auto_generate_nodes_add(map,(portal->max.x-x_sz),y,(portal->max.z-z_sz));
+		}
+
+		portal++;
+	}
+}
+
+/* =======================================================
+
       Add Spots
       
 ======================================================= */

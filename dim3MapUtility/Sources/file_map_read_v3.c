@@ -31,8 +31,7 @@ and can be sold or given away.
 
 extern maputility_settings_type		maputility_settings;
 
-extern char				obscure_type_str[][32],
-						media_type_str[][32],
+extern char				media_type_str[][32],
 						sky_type_str[][32],
 						gl_fog_type_str[][32],
 						liquid_tide_direction_str[][32],
@@ -153,13 +152,6 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 			poly++;
 			poly_tag=xml_findnextchild(poly_tag);
 		}
-	}
-
-		// obscure flags
-		
-	tag=xml_findfirstchild("Obscure",mesh_tag);
-    if (tag!=-1) {
-		xml_get_attribute_bit_array(tag,"flag",mesh->obscure.visibility_flag,max_mesh_visibility_bytes);
 	}
 
 	return(TRUE);

@@ -241,7 +241,7 @@ void view_setup_model_in_view(model_draw *draw,bool in_air,bool is_camera,int me
 
 		// is model in a mesh that's in the mesh draw list?
 
-	if ((!is_camera) && (mesh_idx!=-1) && (map.settings.obscure_type!=obscure_type_none)) {
+	if ((!is_camera) && (mesh_idx!=-1)) {
 		if (!view_mesh_in_draw_list(mesh_idx)) return;
 	}
 	

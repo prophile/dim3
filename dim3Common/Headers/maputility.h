@@ -49,7 +49,6 @@ extern char light_type_str[][32];
 //
 
 #define max_mesh											8192			// maximum number of meshes in a map
-#define max_mesh_visibility_bytes							1024			// maximum number of bytes for mesh list
 
 #define max_map_texture										128				// maximum number of textures in a map
 
@@ -73,14 +72,6 @@ extern char light_type_str[][32];
 #define max_sort_poly										512				// maximum number of transparent polys in a single scene
 
 #define max_mesh_light_cache								8				// maximum number of cached lights
-
-//
-// obscure types
-//
-
-#define obscure_type_none									0
-#define obscure_type_rough									1
-#define obscure_type_complete								2
 
 //
 // strings
@@ -252,10 +243,6 @@ typedef struct		{
 					} map_mesh_message_type;
 
 typedef struct		{
-						unsigned char						visibility_flag[max_mesh_visibility_bytes];
-					} map_mesh_obscure_type;
-
-typedef struct		{
 						int									vertex_offset;
 						bool								moved;
 					} map_mesh_draw_type;
@@ -274,7 +261,6 @@ typedef struct		{
 						map_mesh_box_type					box;
 						map_mesh_flag_type					flag;
 						map_mesh_message_type				msg;
-						map_mesh_obscure_type				obscure;
 						map_mesh_draw_type					draw;
 						map_mesh_render_type				render;
 					} map_mesh_type;
@@ -459,7 +445,6 @@ typedef struct		{
 					} map_info_type;
 					
 typedef struct		{
-						int									obscure_type;
 						float								gravity,gravity_max_power,gravity_max_speed,
 															resistance,push_factor,txt_scale_x,txt_scale_y;
 						bool								editor_link_always_start;

@@ -70,7 +70,6 @@ bool map_new(map_type *map,char *name)
 	map->settings.push_factor=0.0008f;
 	map->settings.txt_scale_x=0.04f;
 	map->settings.txt_scale_y=0.04f;
-	map->settings.obscure_type=obscure_type_complete;
 	map->settings.editor_link_always_start=FALSE;
 	map->settings.network_game_list[0]=0x0;
 	

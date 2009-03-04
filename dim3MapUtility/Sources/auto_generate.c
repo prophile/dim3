@@ -75,6 +75,7 @@ extern void map_auto_generate_steps_mesh(map_type *map,int rn,int step_type,int 
 extern void map_auto_generate_lift(map_type *map,int rn,int step_high,int ty,int by,int lx,int rx,int lz,int rz);
 
 extern void map_auto_generate_lights(map_type *map);
+extern void map_auto_generate_nodes(map_type *map);
 extern void map_auto_generate_spots(map_type *map);
 extern void map_auto_generate_ramps(map_type *map);
 extern void map_auto_generate_corridor_to_portal_connections(map_type *map);
@@ -2072,12 +2073,11 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 		
 	map_auto_generate_reset_UVs(map);
 	
-		// create lights
+		// create lights, nodes, and
+		// player spot
 		
 	map_auto_generate_lights(map);
-	
-		// create player spot
-		
+	map_auto_generate_nodes(map);
 	map_auto_generate_add_player_spot(map);
 	
 		// center map
@@ -2167,13 +2167,6 @@ bool map_auto_generate_test(map_type *map)
 		// create the map
 
 	map_auto_generate(map,&ags);
-
-		// temporary visibility paths
-		// supergumba -- will need to do something better here
-
-	for (n=0;n!=map->mesh.nmesh;n++) {
-		memset(&map->mesh.meshes[n].obscure.visibility_flag,0xFF,max_mesh_visibility_bytes);
-	}
 
 		// load textures
 

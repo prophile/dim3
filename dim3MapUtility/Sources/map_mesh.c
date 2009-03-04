@@ -98,8 +98,6 @@ int map_mesh_add(map_type *map)
 	mesh->npoly=0;
 	mesh->polys=NULL;
 
-	bzero(mesh->obscure.visibility_flag,max_mesh_visibility_bytes);
-
 	return(mesh_idx);
 }
 
