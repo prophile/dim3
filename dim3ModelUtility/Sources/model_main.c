@@ -238,17 +238,9 @@ bool model_draw_array_initialize(model_type *model)
 		mesh->draw.gl_vertex_normal_array=malloc((mesh->nvertex*3)*sizeof(float));
 		if (mesh->draw.gl_vertex_normal_array==NULL) return(FALSE);
 
-		mesh->draw.gl_bump_normal_array=malloc((mesh->nvertex*3)*sizeof(float));
-		if (mesh->draw.gl_bump_normal_array==NULL) return(FALSE);
-		
-		mesh->draw.gl_specular_intensity_array=malloc(mesh->nvertex*sizeof(float));
-		if (mesh->draw.gl_bump_normal_array==NULL) return(FALSE);
-
 		bzero(mesh->draw.gl_vertex_array,(mesh->nvertex*3)*sizeof(float));
 		bzero(mesh->draw.gl_color_array,(mesh->nvertex*3)*sizeof(float));
 		bzero(mesh->draw.gl_vertex_normal_array,(mesh->nvertex*3)*sizeof(float));
-		bzero(mesh->draw.gl_bump_normal_array,(mesh->nvertex*3)*sizeof(float));
-		bzero(mesh->draw.gl_specular_intensity_array,mesh->nvertex*sizeof(float));
 
 		mesh++;
 	}
@@ -268,8 +260,6 @@ void model_draw_array_free(model_type *model)
 		free(mesh->draw.gl_vertex_array);
 		free(mesh->draw.gl_color_array);
 		free(mesh->draw.gl_vertex_normal_array);
-		free(mesh->draw.gl_bump_normal_array);
-		free(mesh->draw.gl_specular_intensity_array);
 
 		mesh++;
 	}

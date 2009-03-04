@@ -42,7 +42,6 @@
 		26F08CBA0DAC7E990097E249 /* network_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26F08CB90DAC7E990097E249 /* network_defs.h */; };
 		26FE82370F4E1D5C00B659D8 /* gl_light.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FE82350F4E1D5C00B659D8 /* gl_light.c */; };
 		F500CC680C27942200F7C8CC /* gl_check.c in Sources */ = {isa = PBXBuildFile; fileRef = F500CC670C27942200F7C8CC /* gl_check.c */; };
-		F5022B5B0AC595C000F5C7D4 /* effects_lights.c in Sources */ = {isa = PBXBuildFile; fileRef = F5022B5A0AC595C000F5C7D4 /* effects_lights.c */; };
 		F503D43809830CD100DEDC74 /* model_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D43709830CD100DEDC74 /* model_mesh.c */; };
 		F5075AD10A0C368D000196B7 /* models.h in Headers */ = {isa = PBXBuildFile; fileRef = F5075AD00A0C368D000196B7 /* models.h */; };
 		F50AF8A40885FBA200F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF8A30885FBA200F261B1 /* os_defs.h */; };
@@ -301,7 +300,6 @@
 		F5DD1A4C0908598900721649 /* collision_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A470908598900721649 /* collision_utility.c */; };
 		F5DD1A4D0908598900721649 /* collision.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A480908598900721649 /* collision.c */; };
 		F5DD1A4F0908598900721649 /* map_y_check.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A4A0908598900721649 /* map_y_check.c */; };
-		F5DD1A6509085B0200721649 /* light.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A6409085B0200721649 /* light.c */; };
 		F5DD1A6909085B0A00721649 /* halo_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A6809085B0A00721649 /* halo_draw.c */; };
 		F5DD1A6D09085B1100721649 /* shadow_volume.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A6A09085B1100721649 /* shadow_volume.c */; };
 		F5DD1A6F09085B1100721649 /* shadow_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD1A6C09085B1100721649 /* shadow_draw.c */; };
@@ -426,7 +424,6 @@
 		26F08CB90DAC7E990097E249 /* network_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = network_defs.h; path = Headers_Network/network_defs.h; sourceTree = "<group>"; };
 		26FE82350F4E1D5C00B659D8 /* gl_light.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_light.c; path = Sources_View/gl_light.c; sourceTree = "<group>"; };
 		F500CC670C27942200F7C8CC /* gl_check.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_check.c; path = Sources_View/gl_check.c; sourceTree = "<group>"; };
-		F5022B5A0AC595C000F5C7D4 /* effects_lights.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = effects_lights.c; path = Sources_View/effects_lights.c; sourceTree = "<group>"; };
 		F503D43709830CD100DEDC74 /* model_mesh.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = model_mesh.c; path = Sources_Server/model_mesh.c; sourceTree = "<group>"; };
 		F5075AD00A0C368D000196B7 /* models.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = models.h; path = Headers_Server/models.h; sourceTree = "<group>"; };
 		F50AF8A30885FBA200F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
@@ -681,7 +678,6 @@
 		F5DD1A470908598900721649 /* collision_utility.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = collision_utility.c; path = Sources_Server/collision_utility.c; sourceTree = "<group>"; };
 		F5DD1A480908598900721649 /* collision.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = collision.c; path = Sources_Server/collision.c; sourceTree = "<group>"; };
 		F5DD1A4A0908598900721649 /* map_y_check.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = map_y_check.c; path = Sources_Server/map_y_check.c; sourceTree = "<group>"; };
-		F5DD1A6409085B0200721649 /* light.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = light.c; path = Sources_View/light.c; sourceTree = "<group>"; };
 		F5DD1A6809085B0A00721649 /* halo_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = halo_draw.c; path = Sources_View/halo_draw.c; sourceTree = "<group>"; };
 		F5DD1A6A09085B1100721649 /* shadow_volume.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = shadow_volume.c; path = Sources_View/shadow_volume.c; sourceTree = "<group>"; };
 		F5DD1A6C09085B1100721649 /* shadow_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = shadow_draw.c; path = Sources_View/shadow_draw.c; sourceTree = "<group>"; };
@@ -1381,7 +1377,6 @@
 		F5D9F4EC04C3AF1400E2477F /* Lighting */ = {
 			isa = PBXGroup;
 			children = (
-				F5DD1A6409085B0200721649 /* light.c */,
 				F5DD1A6809085B0A00721649 /* halo_draw.c */,
 				F5DD1A6A09085B1100721649 /* shadow_volume.c */,
 				F5DD1A6C09085B1100721649 /* shadow_draw.c */,
@@ -1435,7 +1430,6 @@
 		F5DD18B40907624100721649 /* Effects */ = {
 			isa = PBXGroup;
 			children = (
-				F5022B5A0AC595C000F5C7D4 /* effects_lights.c */,
 				F5DD1A7009085B3800721649 /* effects_draw.c */,
 				F5DD1A7409085B4100721649 /* particles_draw.c */,
 				F55E95740B1A897B004195B1 /* rings_draw.c */,
@@ -1704,7 +1698,6 @@
 				F5DD1A4C0908598900721649 /* collision_utility.c in Sources */,
 				F5DD1A4D0908598900721649 /* collision.c in Sources */,
 				F5DD1A4F0908598900721649 /* map_y_check.c in Sources */,
-				F5DD1A6509085B0200721649 /* light.c in Sources */,
 				F5DD1A6909085B0A00721649 /* halo_draw.c in Sources */,
 				F5DD1A6D09085B1100721649 /* shadow_volume.c in Sources */,
 				F5DD1A6F09085B1100721649 /* shadow_draw.c in Sources */,
@@ -1884,7 +1877,6 @@
 				F5E92CCE0AAFC3430019B693 /* view_bounds.c in Sources */,
 				F587FFDB0AB0F962006ED5CD /* obj_rigid_body.c in Sources */,
 				F52C9A970ABB5B9400C63C19 /* script_weap_recoil.c in Sources */,
-				F5022B5B0AC595C000F5C7D4 /* effects_lights.c in Sources */,
 				F5F0AC580AD35F1800C50A21 /* scenery.c in Sources */,
 				F51EE0AB0AEED99E0013EC4A /* script_game_score.c in Sources */,
 				F51EE0AC0AEED99E0013EC4A /* script_game_setting.c in Sources */,

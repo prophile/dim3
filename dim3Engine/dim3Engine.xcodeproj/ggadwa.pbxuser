@@ -79,8 +79,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 257724601;
-			PBXWorkspaceStateSaveDate = 257724601;
+			PBXPerProjectTemplateStateSaveDate = 257832283;
+			PBXWorkspaceStateSaveDate = 257832283;
 		};
 		perUserProjectItems = {
 			26650DDF0F0EC86400D22461 /* PlistBookmark */ = 26650DDF0F0EC86400D22461 /* PlistBookmark */;
@@ -471,14 +471,6 @@
 			sepNavSelRange = "{1971, 18}";
 			sepNavVisRange = "{1110, 1242}";
 			sepNavWindowFrame = "{{587, 81}, {1041, 747}}";
-		};
-	};
-	F5022B5A0AC595C000F5C7D4 /* effects_lights.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1232}}";
-			sepNavSelRange = "{1233, 912}";
-			sepNavVisRange = "{1146, 999}";
-			sepNavWindowFrame = "{{159, 258}, {1041, 747}}";
 		};
 	};
 	F503D43709830CD100DEDC74 /* model_mesh.c */ = {
@@ -979,10 +971,10 @@
 	};
 	F5A581B4090B433F00BE7C36 /* script_proj_hit.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2912}}";
-			sepNavSelRange = "{5598, 23}";
-			sepNavVisRange = "{4537, 1317}";
-			sepNavWindowFrame = "{{38, 255}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2898}}";
+			sepNavSelRange = "{5347, 0}";
+			sepNavVisRange = "{4708, 1296}";
+			sepNavWindowFrame = "{{338, 232}, {1041, 747}}";
 		};
 	};
 	F5A581B6090B433F00BE7C36 /* script_proj_melee.c */ = {
@@ -1187,9 +1179,9 @@
 	};
 	F5A582BC090C98D500BE7C36 /* script_defs.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 14924}}";
-			sepNavSelRange = "{6142, 0}";
-			sepNavVisRange = "{5318, 1430}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 14490}}";
+			sepNavSelRange = "{20281, 0}";
+			sepNavVisRange = "{19298, 1580}";
 			sepNavWindowFrame = "{{153, 150}, {1041, 747}}";
 		};
 	};
@@ -1818,14 +1810,6 @@
 			sepNavSelRange = "{7538, 0}";
 			sepNavVisRange = "{7149, 976}";
 			sepNavWindowFrame = "{{384, 153}, {1041, 747}}";
-		};
-	};
-	F5DD1A6409085B0200721649 /* light.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2492}}";
-			sepNavSelRange = "{3795, 0}";
-			sepNavVisRange = "{3334, 1233}";
-			sepNavWindowFrame = "{{266, 183}, {1041, 747}}";
 		};
 	};
 	F5DD1A6809085B0A00721649 /* halo_draw.c */ = {

@@ -137,9 +137,9 @@ typedef struct		{
 					} model_material_type;
 
 typedef struct		{
-						float							*gl_vertex_array,*gl_color_array,
-														*gl_vertex_normal_array2,*gl_bump_normal_array2,
-														*gl_specular_intensity_array2;
+						float							*gl_vertex_array,
+														*gl_color_array,
+														*gl_vertex_normal_array;
 					} model_mesh_draw_type;
 
 typedef struct		{

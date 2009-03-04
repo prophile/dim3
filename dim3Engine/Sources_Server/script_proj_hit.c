@@ -47,6 +47,7 @@ JSClass			proj_hit_class={"proj_hit_class",0,
 JSPropertySpec	proj_hit_props[]={
 							{"type",				proj_hit_prop_type,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"name",				proj_hit_prop_name,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"id",					proj_hit_prop_id,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"isPlayer",			proj_hit_prop_is_player,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"startTick",			proj_hit_prop_start_tick,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"materialName",		proj_hit_prop_material_name,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
@@ -174,6 +175,9 @@ JSBool js_get_proj_hit_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 			hit_type=js_get_proj_hit_type(proj);
 			js_get_proj_hit_name(proj,hit_type,hit_name);
 			*vp=script_string_to_value(hit_name);
+			break;
+		case proj_hit_prop_id:
+			*vp=INT_TO_JSVAL(proj->contact.obj_uid);
 			break;
 		case proj_hit_prop_is_player:
 			*vp=BOOLEAN_TO_JSVAL(proj->contact.obj_uid==server.player_obj_uid);
