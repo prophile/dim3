@@ -31,7 +31,7 @@ and can be sold or given away.
 #include "walk_view.h"
 #include "import.h"
 
-extern int				drag_mode,obscure_mesh_idx;
+extern int				drag_mode;
 extern bool				done,map_opened;
 
 extern map_type			map;

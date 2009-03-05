@@ -117,7 +117,6 @@ bool dialog_map_settings_run(void)
 	
 	dialog_set_text(dialog_map_settings_wind,kMapGameTypeList,0,map.settings.network_game_list);
 	
-	dialog_set_combo(dialog_map_settings_wind,kMapObscureType,0,map.settings.obscure_type);
 	dialog_set_boolean(dialog_map_settings_wind,kMapEditorLinkStartAlways,0,map.settings.editor_link_always_start);
 	
 		// counts
@@ -163,7 +162,6 @@ bool dialog_map_settings_run(void)
 		
 		dialog_get_text(dialog_map_settings_wind,kMapGameTypeList,0,map.settings.network_game_list,256);
 		
-		map.settings.obscure_type=dialog_get_combo(dialog_map_settings_wind,kMapObscureType,0);
 		map.settings.editor_link_always_start=dialog_get_boolean(dialog_map_settings_wind,kMapEditorLinkStartAlways,0);
 	}
 

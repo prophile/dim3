@@ -169,12 +169,3 @@ extern void map_optimize(void);
 
 extern bool node_link_click(editor_3D_view_setup *view_setup,d3pnt *pt);
 extern void node_path_rebuild(void);
-
-//
-// obscuring routines
-//
-
-extern bool obscure_test(void);
-extern void obscure_reset(void);
-
-

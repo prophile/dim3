@@ -39,7 +39,6 @@ extern void walk_view_key(editor_3D_view_setup *view_setup,int view_move_dir,cha
 // walk view draw piece
 //
 
-extern bool walk_view_draw_pnt_obscure(d3pnt *pnt);
 extern void walk_view_draw_select_mesh_get_grow_handles(int mesh_idx,int *px,int *py,int *pz);
 extern void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position);
 extern void walk_view_draw_select(d3pnt *cpt);

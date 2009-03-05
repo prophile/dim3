@@ -94,7 +94,6 @@ extern void main_wind_key_cursor(void);
 extern void main_wind_key_down(char ch);
 extern void main_wind_scroll_wheel(d3pnt *pt,int delta);
 extern void main_wind_tool_reset(void);
-extern void main_wind_obscure_tool_reset(void);
 extern void main_wind_tool_fill_object_combo(void);
 extern void main_wind_tool_fill_node_combo(void);
 extern void main_wind_tool_fill_group_combo(void);

@@ -41,9 +41,9 @@ extern setup_type		setup;
 extern CCrsrHandle		handcur,dragcur,cutcur,rotatecur,towardcur,forwardcur,resizecur,addcur;
 
 int						main_wind_view,main_wind_panel_focus,main_wind_perspective,
-						vertex_mode,drag_mode,grid_mode,obscure_mesh_idx;
+						vertex_mode,drag_mode,grid_mode;
 bool					select_toggle_mode,dp_auto_texture,dp_liquid,
-						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide,
+						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide,dp_area,
 						swap_panel_forward,swap_panel_side,swap_panel_top;
 d3rect					main_wind_box;
 
@@ -231,12 +231,7 @@ void main_wind_control_tool(int tool_idx)
 			// obscure, script and run buttons
 			
 		case 19:
-			if (obscure_test()) {
-				SetControlValue(tool_ctrl[tool_idx],1);
-			}
-			else {
-				SetControlValue(tool_ctrl[tool_idx],0);
-			}
+			dp_area=!dp_area;
 			break;
 	
 		case 20:
@@ -840,8 +835,6 @@ void main_wind_open(void)
 	drag_mode=drag_mode_mesh;
 	grid_mode=grid_mode_small;
 	select_toggle_mode=FALSE;
-	
-	obscure_mesh_idx=-1;
 	
         // events
     
@@ -1854,11 +1847,6 @@ void main_wind_tool_reset(void)
 	SetControlValue(tool_ctrl[16],dp_object?1:0);
 	SetControlValue(tool_ctrl[17],dp_lightsoundparticle?1:0);
 	SetControlValue(tool_ctrl[18],dp_node?1:0);
-}
-
-void main_wind_obscure_tool_reset(void)
-{
-	SetControlValue(tool_ctrl[19],(obscure_mesh_idx!=-1)?1:0);
 }
 
 void main_wind_tool_default(void)

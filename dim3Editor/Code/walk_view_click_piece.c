@@ -34,7 +34,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int					magnify_factor,vertex_mode,drag_mode,grid_mode,obscure_mesh_idx;
+extern int					magnify_factor,vertex_mode,drag_mode,grid_mode;
 extern bool					select_toggle_mode,dp_liquid,dp_object,dp_lightsoundparticle,dp_node;
 extern d3rect				main_wind_box;
 
@@ -405,15 +405,6 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
 	
-			// obscure testing
-				
-		if (obscure_mesh_idx!=-1) {
-			if (!obscure_mesh_view_bit_get(map.mesh.meshes[obscure_mesh_idx].obscure.visibility_flag,n)) {
-				mesh++;
-				continue;
-			}
-		}
-	
 			// check polygons
 			
 		for (k=0;k!=mesh->npoly;k++) {
@@ -456,7 +447,6 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 			
 			spot=&map.spots[n];
 			
-			if (walk_view_draw_pnt_obscure(&spot->pnt)) continue;
 			if (!walk_view_model_click_select_size(spot->display_model,&spot->pnt,&spot->ang,px,py,pz)) continue;
 			
 			if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
@@ -475,7 +465,6 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 			
 			scenery=&map.sceneries[n];
 			
-			if (walk_view_draw_pnt_obscure(&scenery->pnt)) continue;
 			if (!walk_view_model_click_select_size(scenery->model_name,&scenery->pnt,&scenery->ang,px,py,pz)) continue;
 			
 			if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
@@ -497,7 +486,6 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 		
 			map_light=&map.lights[n];
 			
-			if (walk_view_draw_pnt_obscure(&map_light->pnt)) continue;
 			walk_view_sprite_select_size(&map_light->pnt,px,py,pz);
 			
 			if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
@@ -516,7 +504,6 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 		
 			map_sound=&map.sounds[n];
 			
-			if (walk_view_draw_pnt_obscure(&map_sound->pnt)) continue;
 			walk_view_sprite_select_size(&map_sound->pnt,px,py,pz);
 			
 			if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
@@ -535,7 +522,6 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 		
 			map_particle=&map.particles[n];
 			
-			if (walk_view_draw_pnt_obscure(&map_particle->pnt)) continue;
 			walk_view_sprite_select_size(&map_particle->pnt,px,py,pz);
 			
 			if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
@@ -557,7 +543,6 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 		
 			node=&map.nodes[n];
 			
-			if (walk_view_draw_pnt_obscure(&node->pnt)) continue;
 			walk_view_sprite_select_size(&node->pnt,px,py,pz);
 			
 			if (walk_view_cube_click_index(view_setup,click_pt,px,py,pz,&fz)) {
@@ -699,10 +684,6 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 		// select mesh/polygon
 		
 	walk_view_click_piece_normal(view_setup,pt,dblclick);
-	
-		// reset any obscure testing
-		
-	obscure_reset();
 	
 		// double-click info
 		

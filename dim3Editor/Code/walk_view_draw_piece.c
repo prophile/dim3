@@ -33,9 +33,9 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int				cy,txt_palette_high,obscure_mesh_idx;
+extern int				cy,txt_palette_high;
 extern float			walk_view_fov,walk_view_y_angle,walk_view_x_angle;
-extern bool				dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_textured;
+extern bool				dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_area,dp_textured;
 
 extern AGLContext		ctx;
 
@@ -205,15 +205,6 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 	mesh=map.mesh.meshes;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
-			
-			// obscure testing
-				
-		if (obscure_mesh_idx!=-1) {
-			if (!obscure_mesh_view_bit_get(map.mesh.meshes[obscure_mesh_idx].obscure.visibility_flag,n)) {
-				mesh++;
-				continue;
-			}
-		}
 		
 			// draw polys
 	
@@ -302,15 +293,6 @@ void walk_view_draw_meshes_line(bool opaque)
 	mesh=map.mesh.meshes;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
-	
-			// obscure testing
-				
-		if (obscure_mesh_idx!=-1) {
-			if (!obscure_mesh_view_bit_get(map.mesh.meshes[obscure_mesh_idx].obscure.visibility_flag,n)) {
-				mesh++;
-				continue;
-			}
-		}
 		
 			// draw polys
 	
@@ -485,21 +467,61 @@ void walk_view_draw_liquids(bool opaque)
 
 /* =======================================================
 
-      Walk View Nodes, Scenery, etc Drawing
+      Walk View Area Drawing
       
 ======================================================= */
 
-bool walk_view_draw_pnt_obscure(d3pnt *pnt)
+void walk_view_draw_areas(void)
 {
-	int			mesh_idx;
+	int					n,y,lx,rx,tz,bz;
+	map_area_type		*area;
 	
-	if (obscure_mesh_idx==-1) return(FALSE);
+	if (!dp_area) return;
 	
-	mesh_idx=map_mesh_find(&map,pnt);
-	if (mesh_idx==-1) return(FALSE);
+		// transparent area draw
+		
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_DEPTH_TEST);
+
+		// run through the liquids
+		
+	area=map.areas;
 	
-	return(obscure_mesh_view_bit_get(map.mesh.meshes[obscure_mesh_idx].obscure.visibility_flag,mesh_idx)==0x0);
+	for (n=0;n!=map.narea;n++) {
+	
+			// textures
+			
+		glColor4f(area->color.r,area->color.g,area->color.b,0.5f);
+		
+			// dimensions
+			
+		y=area->y;
+		
+		lx=area->lft;
+		rx=area->rgt;
+		tz=area->top;
+		bz=area->bot;
+		
+		glBegin(GL_QUADS);
+		glVertex3i(lx,y,tz);
+		glVertex3i(rx,y,tz);
+		glVertex3i(rx,y,bz);
+		glVertex3i(lx,y,bz);
+		glEnd();
+		
+		area++;
+	}
+	
+	glDepthMask(GL_TRUE);
 }
+
+/* =======================================================
+
+      Walk View Nodes, Scenery, etc Drawing
+      
+======================================================= */
 
 void walk_view_draw_nodes(d3pnt *cpt)
 {
@@ -521,11 +543,6 @@ void walk_view_draw_nodes(d3pnt *cpt)
 	node=map.nodes;
 	
 	for (n=0;n!=map.nnode;n++) {
-	
-		if (walk_view_draw_pnt_obscure(&node->pnt)) {
-			node++;
-			continue;
-		}
 			
 		for (k=0;k!=max_node_link;k++) {
 		
@@ -549,13 +566,11 @@ void walk_view_draw_nodes(d3pnt *cpt)
 	node=map.nodes;
 	
 	for (n=0;n!=map.nnode;n++) {
-		if (!walk_view_draw_pnt_obscure(&node->pnt)) {
-			if (node->name[0]==0x0) {
-				walk_view_draw_sprite(&node->pnt,0.0f,node_bitmap.gl_id);
-			}
-			else {
-				walk_view_draw_sprite(&node->pnt,0.0f,node_defined_bitmap.gl_id);
-			}
+		if (node->name[0]==0x0) {
+			walk_view_draw_sprite(&node->pnt,0.0f,node_bitmap.gl_id);
+		}
+		else {
+			walk_view_draw_sprite(&node->pnt,0.0f,node_defined_bitmap.gl_id);
 		}
 		node++;
 	}
@@ -573,10 +588,8 @@ void walk_view_draw_spots_scenery(d3pnt *cpt)
 	
 	for (n=0;n!=map.nspot;n++) {
 	
-		if (!walk_view_draw_pnt_obscure(&spot->pnt)) {
-			if (!walk_view_model_draw(&spot->pnt,&spot->ang,spot->display_model,NULL,0)) {
-				walk_view_draw_sprite(&spot->pnt,spot->ang.y,spot_bitmap.gl_id);
-			}
+		if (!walk_view_model_draw(&spot->pnt,&spot->ang,spot->display_model,NULL,0)) {
+			walk_view_draw_sprite(&spot->pnt,spot->ang.y,spot_bitmap.gl_id);
 		}
 		
 		spot++;
@@ -586,10 +599,8 @@ void walk_view_draw_spots_scenery(d3pnt *cpt)
 	
 	for (n=0;n!=map.nscenery;n++) {
 	
-		if (!walk_view_draw_pnt_obscure(&scenery->pnt)) {
-			if (!walk_view_model_draw(&scenery->pnt,&scenery->ang,scenery->model_name,scenery->texture_frame,max_map_scenery_model_texture_frame)) {
-				walk_view_draw_sprite(&scenery->pnt,scenery->ang.y,scenery_bitmap.gl_id);
-			}
+		if (!walk_view_model_draw(&scenery->pnt,&scenery->ang,scenery->model_name,scenery->texture_frame,max_map_scenery_model_texture_frame)) {
+			walk_view_draw_sprite(&scenery->pnt,scenery->ang.y,scenery_bitmap.gl_id);
 		}
 		
 		scenery++;
@@ -603,18 +614,16 @@ void walk_view_draw_lights_sounds_particles(d3pnt *cpt,bool draw_light_circle)
 	if (!dp_lightsoundparticle) return;
 	
 	for (n=0;n!=map.nlight;n++) {
-		if (!walk_view_draw_pnt_obscure(&map.lights[n].pnt)) {
-			if (draw_light_circle) walk_view_draw_circle(&map.lights[n].pnt,&map.lights[n].col,map.lights[n].intensity);
-			walk_view_draw_sprite(&map.lights[n].pnt,0.0f,light_bitmap.gl_id);
-		}
+		if (draw_light_circle) walk_view_draw_circle(&map.lights[n].pnt,&map.lights[n].col,map.lights[n].intensity);
+		walk_view_draw_sprite(&map.lights[n].pnt,0.0f,light_bitmap.gl_id);
 	}
 	
 	for (n=0;n!=map.nsound;n++) {
-		if (!walk_view_draw_pnt_obscure(&map.sounds[n].pnt)) walk_view_draw_sprite(&map.sounds[n].pnt,0.0f,sound_bitmap.gl_id);
+		walk_view_draw_sprite(&map.sounds[n].pnt,0.0f,sound_bitmap.gl_id);
 	}
 	
 	for (n=0;n!=map.nparticle;n++) {
-		if (!walk_view_draw_pnt_obscure(&map.particles[n].pnt)) walk_view_draw_sprite(&map.particles[n].pnt,0.0f,particle_bitmap.gl_id);
+		walk_view_draw_sprite(&map.particles[n].pnt,0.0f,particle_bitmap.gl_id);
 	}
 }
 
@@ -715,6 +724,10 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
         
 	main_wind_set_3D_projection(view_setup,(walk_view_near_z+10),(walk_view_far_z-10),walk_view_near_offset);
 	walk_view_draw_meshes_line(TRUE);
+	
+		// draw areas
+		
+	if (view_setup->draw_area) walk_view_draw_areas();
 		
 		// draw selection
 		

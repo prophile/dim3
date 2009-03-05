@@ -175,7 +175,7 @@ void map_auto_generate_nodes(map_type *map)
 
 			// corridors get single node
 
-		if (portal->corridor_flag==ag_corridor_flag_portal) {
+		if (portal->corridor_flag!=ag_corridor_flag_portal) {
 			x=(portal->max.x+portal->min.x)>>1;
 			y=portal->max.y;
 			z=(portal->max.z+portal->min.z)>>1;
@@ -186,8 +186,8 @@ void map_auto_generate_nodes(map_type *map)
 			// rooms get 4 nodes
 
 		else {
-			x_sz=(portal->max.x+portal->min.x)>>2;
-			z_sz=(portal->max.z+portal->min.z)>>2;
+			x_sz=(portal->max.x-portal->min.x)>>2;
+			z_sz=(portal->max.z-portal->min.z)>>2;
 
 			y=portal->max.y;
 

@@ -70,7 +70,7 @@ void main_wind_setup_panel_forward(editor_3D_view_setup *view_setup)
 	view_setup->fov=walk_view_forward_fov;
 	
 	view_setup->mesh_only=FALSE;
-	view_setup->draw_portal=FALSE;
+	view_setup->draw_area=FALSE;
 	view_setup->draw_light_circle=FALSE;
 	
 	view_setup->swap_on=swap_panel_forward;
@@ -101,7 +101,7 @@ void main_wind_setup_panel_forward_frame(editor_3D_view_setup *view_setup)
 	view_setup->fov=walk_view_forward_fov;
 	
 	view_setup->mesh_only=TRUE;
-	view_setup->draw_portal=FALSE;
+	view_setup->draw_area=FALSE;
 	view_setup->draw_light_circle=FALSE;
 
 	view_setup->swap_on=swap_panel_forward;
@@ -132,7 +132,7 @@ void main_wind_setup_panel_forward_full(editor_3D_view_setup *view_setup)
 	view_setup->fov=walk_view_forward_fov;
 	
 	view_setup->mesh_only=FALSE;
-	view_setup->draw_portal=FALSE;
+	view_setup->draw_area=FALSE;
 	view_setup->draw_light_circle=FALSE;
 
 	view_setup->swap_on=FALSE;
@@ -169,7 +169,7 @@ void main_wind_setup_panel_side(editor_3D_view_setup *view_setup)
 	view_setup->fov=walk_view_side_fov;
 	
 	view_setup->mesh_only=FALSE;
-	view_setup->draw_portal=FALSE;
+	view_setup->draw_area=FALSE;
 	view_setup->draw_light_circle=FALSE;
 
 	view_setup->swap_on=swap_panel_side;
@@ -200,7 +200,7 @@ void main_wind_setup_panel_side_frame(editor_3D_view_setup *view_setup)
 	view_setup->fov=walk_view_side_fov;
 	
 	view_setup->mesh_only=TRUE;
-	view_setup->draw_portal=FALSE;
+	view_setup->draw_area=FALSE;
 	view_setup->draw_light_circle=FALSE;
 	
 	view_setup->swap_on=swap_panel_side;
@@ -243,7 +243,7 @@ void main_wind_setup_panel_top(editor_3D_view_setup *view_setup)
 	view_setup->fov=top_view_fov;
 	
 	view_setup->mesh_only=FALSE;
-	view_setup->draw_portal=TRUE;
+	view_setup->draw_area=TRUE;
 	view_setup->draw_light_circle=TRUE;
 	
 	view_setup->swap_on=swap_panel_top;
@@ -280,7 +280,7 @@ void main_wind_setup_panel_top_frame(editor_3D_view_setup *view_setup)
 	view_setup->fov=top_view_fov;
 	
 	view_setup->mesh_only=TRUE;
-	view_setup->draw_portal=TRUE;
+	view_setup->draw_area=TRUE;
 	view_setup->draw_light_circle=TRUE;
 	
 	view_setup->swap_on=swap_panel_top;
@@ -315,7 +315,7 @@ void main_wind_setup_panel_top_full(editor_3D_view_setup *view_setup)
 	view_setup->fov=top_view_fov;
 	
 	view_setup->mesh_only=FALSE;
-	view_setup->draw_portal=TRUE;
+	view_setup->draw_area=TRUE;
 	view_setup->draw_light_circle=TRUE;
 	
 	view_setup->swap_on=FALSE;
@@ -352,7 +352,7 @@ void main_wind_setup_panel_walk(editor_3D_view_setup *view_setup)
 	view_setup->fov=walk_view_forward_fov;
 	
 	view_setup->mesh_only=FALSE;
-	view_setup->draw_portal=FALSE;
+	view_setup->draw_area=FALSE;
 	view_setup->draw_light_circle=FALSE;
 	
 	view_setup->swap_on=FALSE;
