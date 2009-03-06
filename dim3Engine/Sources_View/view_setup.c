@@ -65,9 +65,9 @@ int			mesh_draw_count,mesh_draw_list[max_mesh],mesh_draw_dist[max_mesh];
 
 bool view_area_mark(char *area_flags)
 {
-	int				n;
+	int				n,k;
 	bool			has_area;
-	map_area_type	*area;
+	map_area_type	*area,*area2;
 
 	bzero(area_flags,max_area);
 
@@ -79,8 +79,23 @@ bool view_area_mark(char *area_flags)
 		if ((view.camera.pnt.x<area->lft) || (view.camera.pnt.x>area->rgt)) continue;
 		if ((view.camera.pnt.z<area->top) || (view.camera.pnt.z>area->bot)) continue;
 
+			// mark this area
+
 		area_flags[n]=0x1;
 		has_area=TRUE;
+
+			// join with any areas with the same color
+
+		area2=area;
+
+		for (k=0;k!=map.narea;k++) {
+
+			if (k!=n) {
+				if ((area2->col.r==area->col.r) && (area2->col.g==area->col.g) && (area2->col.b==area->col.b)) area_flags[k]=0x1;
+			}
+
+			area2++;
+		}
 	}
 
 	return(has_area);
