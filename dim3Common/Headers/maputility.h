@@ -494,7 +494,7 @@ typedef struct		{
 
 typedef struct		{
 						int									lft,rgt,top,bot;
-						d3col								color;
+						d3col								col;
 					} map_area_type;
 
 //

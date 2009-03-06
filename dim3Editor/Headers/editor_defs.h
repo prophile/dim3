@@ -37,7 +37,7 @@ and can be sold or given away.
 #define tool_group_menu_id						162
 
 #define piece_button_size						36
-#define piece_count								11
+#define piece_count								12
 
 #define toolbar_high							28
 #define info_high								16
@@ -125,6 +125,7 @@ and can be sold or given away.
 #define light_piece								105
 #define sound_piece								106
 #define particle_piece							107
+#define area_piece								108
 
 //
 // view mouse scales

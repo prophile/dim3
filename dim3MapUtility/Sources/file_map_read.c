@@ -266,7 +266,7 @@ void decode_map_areas_xml(map_type *map,int map_head)
 	area_tag=xml_findfirstchild("Area",main_area_tag);
 
     for (n=0;n!=map->narea;n++) {
-		xml_get_attribute_color(area_tag,"rgb",&map->areas[n].color);
+		xml_get_attribute_color(area_tag,"rgb",&map->areas[n].col);
 		xml_get_attribute_2_coord_int(area_tag,"v1",&map->areas[n].lft,&map->areas[n].top);
 		xml_get_attribute_2_coord_int(area_tag,"v2",&map->areas[n].rgt,&map->areas[n].bot);
 		area_tag=xml_findnextchild(area_tag);

@@ -86,7 +86,8 @@ char					piece_tooltip_str[piece_count][64]=
 										"Add Script Spot","Add Light","Add Sound",
 										"Add Particle","Add Scenery","Add Node",
 										"Add OBJ Mesh","Add Height Map Mesh","Add Grid Mesh",
-										"Add Single Polygon Mesh","Add Liquid Volume"
+										"Add Single Polygon Mesh","Add Liquid Volume",
+										"Add Area"
 									};
 
 /* =======================================================
@@ -296,6 +297,10 @@ void main_wind_control_piece(int piece_idx)
 			
 		case 10:
 			piece_create_liquid();
+			break;
+			
+		case 11:
+			piece_create_area();
 			break;
 			
 	}

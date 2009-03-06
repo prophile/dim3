@@ -322,13 +322,14 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>4</integer>
-									<integer>1</integer>
+									<integer>69</integer>
+									<integer>41</integer>
+									<integer>15</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {281, 761}}</string>
+							<string>{{0, 983}, {281, 761}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -432,9 +433,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>2666E86E0F5F4B8D00D35A82</string>
+				<string>264503FA0F60C4E100CDEB13</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>2666E86F0F5F4B8D00D35A82</string>
+				<string>264503FB0F60C4E100CDEB13</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -553,7 +554,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>257918962.142937</real>
+	<real>258003948.15636399</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -568,11 +569,10 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>2666E8CC0F5F87E800D35A82</string>
 		<string>1C78EAAD065D492600B07095</string>
+		<string>260AFEFF0D4050AF00F6C42F</string>
 		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>1CD10A99069EF8BA00B06720</string>
-		<string>260AFEFF0D4050AF00F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3Editor/dim3Editor.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -655,7 +655,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEFF0D4050AF00F6C42F</string>
-				<string>2666E8680F5F46F800D35A82</string>
+				<string>264504150F60C9CD00CDEB13</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -666,7 +666,7 @@
 			<key>WindowToolGUID</key>
 			<string>260AFEFF0D4050AF00F6C42F</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -775,13 +775,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>2666E8820F5F4BF100D35A82</string>
+				<string>264503FC0F60C4E100CDEB13</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>2666E8830F5F4BF100D35A82</string>
-				<string>2666E8840F5F4BF100D35A82</string>
-				<string>2666E8850F5F4BF100D35A82</string>
-				<string>2666E8860F5F4BF100D35A82</string>
-				<string>2666E8870F5F4BF100D35A82</string>
+				<string>264503FD0F60C4E100CDEB13</string>
+				<string>264503FE0F60C4E100CDEB13</string>
+				<string>264503FF0F60C4E100CDEB13</string>
+				<string>264504000F60C4E100CDEB13</string>
+				<string>264504010F60C4E100CDEB13</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -871,8 +871,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>2666E8880F5F4BF100D35A82</string>
-				<string>2666E8890F5F4BF100D35A82</string>
+				<string>264504050F60C79000CDEB13</string>
+				<string>264504060F60C79000CDEB13</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
@@ -935,7 +935,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C78EAAD065D492600B07095</string>
-				<string>2666E8B30F5F850D00D35A82</string>
+				<string>264504350F60D18500CDEB13</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>ToolbarConfiguration</key>

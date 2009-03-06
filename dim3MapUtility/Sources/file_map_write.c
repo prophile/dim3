@@ -347,7 +347,7 @@ void write_map_areas_xml(map_type *map)
     
     for (n=0;n!=map->narea;n++) {
 		xml_add_tagstart("Area");
-		xml_add_attribute_color("rgb",&area->color);
+		xml_add_attribute_color("rgb",&area->col);
 		xml_add_attribute_2_coord_int("v1",area->lft,area->top);
 		xml_add_attribute_2_coord_int("v2",area->rgt,area->bot);
 		xml_add_tagend(TRUE);

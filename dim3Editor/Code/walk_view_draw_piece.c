@@ -36,6 +36,7 @@ and can be sold or given away.
 extern int				cy,txt_palette_high;
 extern float			walk_view_fov,walk_view_y_angle,walk_view_x_angle;
 extern bool				dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_area,dp_textured;
+extern d3pnt			view_pnt;
 
 extern AGLContext		ctx;
 
@@ -493,11 +494,11 @@ void walk_view_draw_areas(void)
 	
 			// textures
 			
-		glColor4f(area->color.r,area->color.g,area->color.b,0.5f);
+		glColor4f(area->col.r,area->col.g,area->col.b,0.5f);
 		
 			// dimensions
 			
-		y=area->y;
+		y=view_pnt.y;
 		
 		lx=area->lft;
 		rx=area->rgt;

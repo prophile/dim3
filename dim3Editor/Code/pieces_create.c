@@ -31,7 +31,7 @@ and can be sold or given away.
 
 extern d3pnt					view_pnt;
 extern int						drag_mode;
-extern bool						dp_object,dp_node,dp_lightsoundparticle,dp_liquid;
+extern bool						dp_object,dp_node,dp_lightsoundparticle,dp_liquid,dp_area;
 
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;
@@ -417,3 +417,55 @@ void piece_create_liquid(void)
 	main_wind_tool_reset();
 	main_wind_tool_fix_enable();
 }
+
+/* =======================================================
+
+      Create Area
+	        
+======================================================= */
+
+void piece_create_area(void)
+{
+	int				index,sz;
+	map_area_type	*area;
+	Point			pt;
+	RGBColor		color;
+	
+		// create the area
+		
+	if (map.narea>max_area) {
+		StandardAlert(kAlertCautionAlert,"\pCan Not Create Area","\pReach maximum number of areas.",NULL,NULL);
+		return;
+	}
+	
+	index=map.narea;
+	
+	color.red=color.green=color.blue=0xFFFF;
+	
+	pt.h=pt.v=-1;
+	if (!GetColor(pt,"\pChoose the Area Color:",&color,&color)) return;
+
+	area=&map.areas[index];
+	map.narea++;
+	
+	sz=map_enlarge*10;
+	area->lft=view_pnt.x-sz;
+	area->rgt=view_pnt.x+sz;
+	area->top=view_pnt.z-sz;
+	area->bot=view_pnt.z+sz;
+
+	area->col.r=((float)color.red/(float)0xFFFF);
+	area->col.g=((float)color.green/(float)0xFFFF);
+	area->col.b=((float)color.blue/(float)0xFFFF);
+
+		// select the liquid
+		
+	dp_area=TRUE;
+	select_clear();
+	select_add(area_piece,index,-1);
+
+	main_wind_draw();
+	main_wind_tool_reset();
+	main_wind_tool_fix_enable();
+}
+
