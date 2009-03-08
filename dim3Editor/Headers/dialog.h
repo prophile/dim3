@@ -48,7 +48,8 @@ extern void dialog_set_value(WindowRef wind,unsigned long sig,int id,int value);
 extern int dialog_get_value(WindowRef wind,unsigned long sig,int id);
 extern void dialog_switch_tab(WindowRef wind,unsigned long sig,int id,int npane);
 extern void dialog_set_tab(WindowRef wind,unsigned long sig,int id,int index,int npane);
-extern void dialog_draw_color(WindowRef wind,unsigned long sig,int id,RGBColor *col);
+extern void dialog_set_color(WindowRef wind,unsigned long sig,int id,d3col *col);
+extern void dialog_click_color(WindowRef wind,unsigned long sig,int id,d3col *col);
 extern void dialog_set_focus(WindowRef wind,unsigned long sig,int id);
 extern void dialog_enable(WindowRef wind,unsigned long sig,int id,bool enable);
 extern void dialog_hide(WindowRef wind,unsigned long sig,int id,bool show);
@@ -94,11 +95,6 @@ extern bool dialog_map_settings_run(void);
 extern bool dialog_map_movements_run(void);
 extern bool dialog_movement_settings_run(movement_type *movement);
 extern bool dialog_movement_move_settings_run(movement_move_type *move);
-extern bool dialog_map_media_run(void);
-extern bool dialog_map_ambient_light_sound_settings_run(void);
-extern bool dialog_background_sky_setting_run(void);
-extern bool dialog_map_fog_settings_run(void);
-extern bool dialog_map_rain_settings_run(void);
 extern bool dialog_optimize_run(int *poly_threshold);
 
 //

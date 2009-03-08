@@ -154,6 +154,11 @@ void object_liquid(int tick,obj_type *obj)
 			
 	}
 	
+		// no damage objects aren't hurt
+		// by liquids
+		
+	if ((!obj->damage.on) || (obj->damage.invincible)) return;
+	
 		// downing
 
 	if (obj->liquid_mode==lm_under) {

@@ -64,7 +64,7 @@ static pascal OSStatus map_ambient_light_sound_settings_event_proc(EventHandlerC
 					if (GetColor(pt,"\pChoose the Light Color:",&dialog_map_ambient_light_sound_color,&color)) {
 						dialog_map_ambient_light_sound_color=color;
 					}
-					dialog_draw_color(dialog_map_ambient_light_sound_settings_wind,kLightColor,0,&dialog_map_ambient_light_sound_color);
+			//		dialog_draw_color(dialog_map_ambient_light_sound_settings_wind,kLightColor,0,&dialog_map_ambient_light_sound_color);
 					return(noErr);
 				
 				case kHICommandCancel:
@@ -115,7 +115,7 @@ bool dialog_map_ambient_light_sound_settings_run(void)
 	
 		// draw color
 		
-	dialog_draw_color(dialog_map_ambient_light_sound_settings_wind,kLightColor,0,&dialog_map_ambient_light_sound_color);
+//	dialog_draw_color(dialog_map_ambient_light_sound_settings_wind,kLightColor,0,&dialog_map_ambient_light_sound_color);
 	
 		// install event handler
 		

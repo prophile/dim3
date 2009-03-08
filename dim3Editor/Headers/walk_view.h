@@ -41,7 +41,7 @@ extern void walk_view_key(editor_3D_view_setup *view_setup,int view_move_dir,cha
 
 extern void walk_view_draw_select_mesh_get_grow_handles(int mesh_idx,int *px,int *py,int *pz);
 extern void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position);
-extern void walk_view_draw_select(d3pnt *cpt);
+extern void walk_view_draw_select(d3pnt *cpt,bool draw_area);
 
 //
 // walk view click
@@ -58,8 +58,10 @@ extern bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt
 extern bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 extern bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 extern bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
+extern bool walk_view_click_drag_area_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 extern bool walk_view_click_drag_item(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 extern bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
+extern bool walk_view_click_drag_area(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir);
 extern bool walk_view_click_drag_texture(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir,bool entire_mesh);
 
 //

@@ -66,7 +66,7 @@ static pascal OSStatus map_light_settings_event_proc(EventHandlerCallRef handler
 					if (GetColor(pt,"\pChoose the Light Color:",&dialog_map_light_color,&color)) {
 						dialog_map_light_color=color;
 					}
-					dialog_draw_color(dialog_map_light_settings_wind,kLightColor,0,&dialog_map_light_color);
+				//	dialog_draw_color(dialog_map_light_settings_wind,kLightColor,0,&dialog_map_light_color);
 					return(noErr);
 				
 				case kHICommandCancel:
@@ -119,7 +119,7 @@ bool dialog_map_light_settings_run(map_light_type *light)
 	
 		// draw color
 		
-	dialog_draw_color(dialog_map_light_settings_wind,kLightColor,0,&dialog_map_light_color);
+//	dialog_draw_color(dialog_map_light_settings_wind,kLightColor,0,&dialog_map_light_color);
 	
 		// install event handler
 		

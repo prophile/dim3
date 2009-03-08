@@ -196,6 +196,23 @@ void piece_duplicate(void)
 				map.nparticle++;
 				break;
 				
+			case area_piece:
+				if (map.narea==max_area) {
+					StandardAlert(kAlertCautionAlert,"\pCan Not Create Area","\pYou've reached the maximum number of areas for a map.",NULL,NULL);
+					return;
+				}
+
+				piece_duplicate_offset(&xadd,&zadd);
+
+				map.areas[map.narea]=map.areas[main_idx];
+				map.areas[map.narea].lft+=xadd;
+				map.areas[map.narea].rgt+=xadd;
+				map.areas[map.narea].top+=zadd;
+				map.areas[map.narea].bot+=zadd;
+				select_duplicate_add(area_piece,map.narea,0);
+				map.narea++;
+				break;
+				
 		}
     }
 	
@@ -327,6 +344,13 @@ void piece_delete(void)
 					map.particles[i]=map.particles[i+1];
 				}
 				map.nparticle--;
+				break;
+				
+			case area_piece:
+				for (i=main_idx;i<map.narea;i++) {
+					map.areas[i]=map.areas[i+1];
+				}
+				map.narea--;
 				break;
 				
 		}

@@ -78,7 +78,7 @@ char					tool_tooltip_str[tool_count][64]=
 										"Combine Meshes","Split Meshes","Tesselate Mesh","Auto-Texture Meshes",
 										"Show/Hide Liquids","Show/Hide Script Spots/Scenery",
 										"Show/Hide Light/Sound/Particles","Show/Hide Nodes",
-										"Test Mesh Obscuring","Edit Map Script","Run Map In Engine",
+										"Show/Hide View Areas","Edit Map Script","Run Map In Engine",
 									};
 									
 char					piece_tooltip_str[piece_count][64]=

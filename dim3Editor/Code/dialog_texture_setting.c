@@ -619,7 +619,7 @@ static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,Ev
 					if (GetColor(pt,"\pChoose the Light Color:",&dialog_texture_color,&color)) {
 						dialog_texture_color=color;
 					}
-					dialog_draw_color(dialog_texture_wind,kTextureSettingColor,0,&dialog_texture_color);
+				//	dialog_draw_color(dialog_texture_wind,kTextureSettingColor,0,&dialog_texture_color);
 					return(noErr);
 					
 				case kHICommandOK:
@@ -693,7 +693,7 @@ void dialog_texture_setting_run(int txt)
 		// redraw bitmaps
 	
 	texture_setting_frame_reset();
-	dialog_draw_color(dialog_texture_wind,kTextureSettingColor,0,&dialog_texture_color);
+//	dialog_draw_color(dialog_texture_wind,kTextureSettingColor,0,&dialog_texture_color);
 	
 		// modal window
 		

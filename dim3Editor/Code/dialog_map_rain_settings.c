@@ -75,7 +75,7 @@ static pascal OSStatus map_rain_settings_event_proc(EventHandlerCallRef handler,
 					if (GetColor(pt,"\pChoose the Start Color:",&dialog_map_rain_start_color,&color)) {
 						dialog_map_rain_start_color=color;
 					}
-					dialog_draw_color(dialog_map_rain_settings_wind,kRainStartColor,0,&dialog_map_rain_start_color);
+				//	dialog_draw_color(dialog_map_rain_settings_wind,kRainStartColor,0,&dialog_map_rain_start_color);
 					return(noErr);
 					
 				case kMapRainButtonEndColor:
@@ -83,7 +83,7 @@ static pascal OSStatus map_rain_settings_event_proc(EventHandlerCallRef handler,
 					if (GetColor(pt,"\pChoose the End Color:",&dialog_map_rain_end_color,&color)) {
 						dialog_map_rain_end_color=color;
 					}
-					dialog_draw_color(dialog_map_rain_settings_wind,kRainEndColor,0,&dialog_map_rain_end_color);
+				//	dialog_draw_color(dialog_map_rain_settings_wind,kRainEndColor,0,&dialog_map_rain_end_color);
 					return(noErr);
 				
 				case kHICommandCancel:
@@ -149,8 +149,8 @@ bool dialog_map_rain_settings_run(void)
 	
 		// draw color
 		
-	dialog_draw_color(dialog_map_rain_settings_wind,kRainStartColor,0,&dialog_map_rain_start_color);
-	dialog_draw_color(dialog_map_rain_settings_wind,kRainEndColor,0,&dialog_map_rain_end_color);
+//	dialog_draw_color(dialog_map_rain_settings_wind,kRainStartColor,0,&dialog_map_rain_start_color);
+//	dialog_draw_color(dialog_map_rain_settings_wind,kRainEndColor,0,&dialog_map_rain_end_color);
 	
 		// install event handler
 		

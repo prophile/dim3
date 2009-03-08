@@ -59,11 +59,6 @@ and can be sold or given away.
 #define kCommandViewOrtho					FOUR_CHAR_CODE('vwot')
 
 #define kCommandMapSettings					FOUR_CHAR_CODE('mset')
-#define kCommandMapMedia					FOUR_CHAR_CODE('medi')
-#define kCommandAmbientLightSoundSettings	FOUR_CHAR_CODE('mamb')
-#define kCommandSkySettings					FOUR_CHAR_CODE('msky')
-#define kCommandRainSettings				FOUR_CHAR_CODE('mrin')
-#define kCommandFogSettings					FOUR_CHAR_CODE('mfog')
 #define kCommandMapRaiseY					FOUR_CHAR_CODE('mrsy')
 #define kCommandMapLowerY					FOUR_CHAR_CODE('mlwy')
 #define kCommandMapCenter					FOUR_CHAR_CODE('mctr')

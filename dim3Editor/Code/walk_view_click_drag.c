@@ -29,12 +29,13 @@ and can be sold or given away.
 	#include "dim3editor.h"
 #endif
 
-#include "interface.h"
+#include "interface.h" 
 #include "common_view.h"
 #include "walk_view.h"
 
 extern int					vertex_mode;
 extern bool					dp_auto_texture;
+extern d3pnt				view_pnt;
 
 extern map_type				map;
 
@@ -741,6 +742,145 @@ bool walk_view_click_drag_liquid_vertex(editor_3D_view_setup *view_setup,d3pnt *
 
 /* =======================================================
 
+      Drag Area Vertex
+      
+======================================================= */
+
+bool walk_view_click_drag_area_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+{
+	int						n,x,y,z,mx,my,mz,xadd,zadd,yadd,hit_z,sz,chk_x,chk_z,
+							px[4],py[4],pz[4],
+							type,area_idx,sub_idx,vertex_idx;
+	d3pnt					old_pt,old_dpt,mpt;
+	bool					first_drag;
+	map_area_type			*area;
+	
+    if (select_count()!=1) return(FALSE);
+	
+	select_get(0,&type,&area_idx,&sub_idx);
+	if (type!=area_piece) return(FALSE);
+	
+		// check for clicking points
+
+	area=&map.areas[area_idx];
+	
+	walk_view_draw_select_area_get_grow_handles(area_idx,px,py,pz);
+		
+	vertex_idx=-1;
+	hit_z=100000;
+
+	sz=(int)(walk_view_handle_size/2);
+	
+	for (n=0;n!=4;n++) {
+		x=px[n];
+		y=py[n];
+		z=pz[n];
+		
+		if (!walk_view_click_rotate_polygon_behind_z(x,y,z)) {
+			walk_view_click_project_point(&view_setup->box,&x,&y,&z);
+			
+			if ((pt->x>=(x-sz)) && (pt->x<=(x+sz)) && (pt->y>=(y-sz)) && (pt->y<=(y+sz))) {
+				if (z<hit_z) {
+					hit_z=z;
+					vertex_idx=n;
+				}
+			}
+		}
+	}
+
+    if (vertex_idx==-1) return(FALSE);
+	
+		// drag area vertex
+	
+    if (!os_button_down()) return(FALSE);
+	
+	undo_save();
+
+	first_drag=TRUE;
+	
+	old_dpt.x=px[vertex_idx];
+	old_dpt.y=py[vertex_idx];
+	old_dpt.z=pz[vertex_idx];
+	
+	memmove(&old_pt,pt,sizeof(d3pnt));
+	
+	mx=my=mz=0;
+	
+	while (!os_track_mouse_location(pt,&view_setup->box)) {
+		
+		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
+		
+		x=old_pt.x-pt->x;
+		y=old_pt.y-pt->y;
+		
+		memmove(&old_pt,pt,sizeof(d3pnt));
+		
+			// turn on drag cursor
+			
+		if (first_drag) {
+			os_set_drag_cursor();
+			first_drag=FALSE;
+		}
+		
+			// get vertex move (never on Y)
+
+		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
+			
+		mx+=xadd;
+		my=view_pnt.y;
+		mz+=zadd;
+		
+		mpt.x=mx;
+		mpt.y=my;
+		mpt.z=mz;
+		
+		walk_view_click_grid(&mpt);
+		
+			// move vertex
+			
+		switch (vertex_idx) {
+			case 0:
+				area->lft=old_dpt.x+mpt.x;
+				area->top=old_dpt.z+mpt.z;
+				break;
+			case 1:
+				area->rgt=old_dpt.x+mpt.x;
+				area->top=old_dpt.z+mpt.z;
+				break;
+			case 2:
+				area->rgt=old_dpt.x+mpt.x;
+				area->bot=old_dpt.z+mpt.z;
+				break;
+			case 3:
+				area->lft=old_dpt.x+mpt.x;
+				area->bot=old_dpt.z+mpt.z;
+				break;
+		}
+
+        main_wind_draw();
+	}
+	
+		// fix any left/right swaps
+		
+	if (area->lft>area->rgt) {
+		chk_x=area->lft;
+		area->lft=area->rgt;
+		area->rgt=chk_x;
+	}
+	
+	if (area->top>area->bot) {
+		chk_z=area->top;
+		area->top=area->bot;
+		area->bot=chk_z;
+	}
+	
+	os_set_arrow_cursor();
+	
+	return(!first_drag);
+}
+
+/* =======================================================
+
       Drag Item
       
 ======================================================= */
@@ -915,6 +1055,90 @@ bool walk_view_click_drag_liquid(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		liq->y=old_y+mpt.y;
 
 		if (dp_auto_texture) map_liquid_reset_uv(&map,main_idx);
+
+        main_wind_draw();
+	}
+	
+	os_set_arrow_cursor();
+	
+	return(!first_drag);
+}
+
+/* =======================================================
+
+      Drag Area
+      
+======================================================= */
+
+bool walk_view_click_drag_area(editor_3D_view_setup *view_setup,d3pnt *pt,int view_move_dir)
+{
+	int						x,y,mx,my,mz,xadd,zadd,yadd,
+							old_lft,old_rgt,old_top,old_bot,
+							type,main_idx,sub_idx;
+	d3pnt					old_pt,mpt;
+	bool					first_drag;
+	map_area_type			*area;
+	
+    if (select_count()!=1) return(FALSE);
+	
+	select_get(0,&type,&main_idx,&sub_idx);
+	if (type!=area_piece) return(FALSE);
+	
+	area=&map.areas[main_idx];
+		
+		// drag item
+	
+    if (!os_button_down()) return(FALSE);
+	
+	undo_save();
+
+	first_drag=TRUE;
+	
+	old_lft=area->lft;
+	old_rgt=area->rgt;
+	old_top=area->top;
+	old_bot=area->bot;
+	
+	memmove(&old_pt,pt,sizeof(d3pnt));
+	
+	mx=my=mz=0;
+	
+	while (!os_track_mouse_location(pt,&view_setup->box)) {
+		
+		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
+		
+		x=old_pt.x-pt->x;
+		y=old_pt.y-pt->y;
+		
+		memmove(&old_pt,pt,sizeof(d3pnt));
+		
+			// turn on drag cursor
+			
+		if (first_drag) {
+			os_set_drag_cursor();
+			first_drag=FALSE;
+		}
+		
+			// get movement
+
+		walk_view_click_drag_movement(view_setup,view_move_dir,x,y,&xadd,&yadd,&zadd);
+			
+		mx+=xadd;
+		my+=yadd;
+		mz+=zadd;
+		
+		mpt.x=mx;
+		mpt.y=my;
+		mpt.z=mz;
+		
+		walk_view_click_grid(&mpt);
+		
+			// move area
+			
+		area->lft=old_lft+mpt.x;
+		area->rgt=old_rgt+mpt.x;
+		area->top=old_top+mpt.z;
+		area->bot=old_bot+mpt.z;
 
         main_wind_draw();
 	}

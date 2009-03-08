@@ -317,26 +317,6 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			dialog_map_settings_run();
 			return(noErr);
 			
-		case kCommandMapMedia:
-			dialog_map_media_run();
-			return(noErr);
-			
-		case kCommandAmbientLightSoundSettings:
-			dialog_map_ambient_light_sound_settings_run();
-			return(noErr);
-            
-		case kCommandSkySettings:
-			dialog_background_sky_setting_run();
-			return(noErr);
-			
-		case kCommandFogSettings:
-			dialog_map_fog_settings_run();
-			return(noErr);
-			
-		case kCommandRainSettings:
-			dialog_map_rain_settings_run();
-			return(noErr);
-			
 		case kCommandMapRaiseY:
 			map_mesh_move_all(0,-(map_enlarge*10),0);
 			main_wind_draw();

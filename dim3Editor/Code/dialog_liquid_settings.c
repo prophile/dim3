@@ -83,7 +83,7 @@ static pascal OSStatus liquid_settings_event_proc(EventHandlerCallRef handler,Ev
 					if (GetColor(pt,"\pChoose the Liquid Color:",&dialog_liquid_settings_color,&color)) {
 						dialog_liquid_settings_color=color;
 					}
-					dialog_draw_color(dialog_liquid_settings_wind,kLiquidColor,0,&dialog_liquid_settings_color);
+			//		dialog_draw_color(dialog_liquid_settings_wind,kLiquidColor,0,&dialog_liquid_settings_color);
 					return(noErr);
 				
 				case kHICommandCancel:
@@ -155,7 +155,7 @@ bool dialog_liquid_settings_run(map_liquid_type *liq)
 	
 		// draw color
 		
-	dialog_draw_color(dialog_liquid_settings_wind,kLiquidColor,0,&dialog_liquid_settings_color);
+//	dialog_draw_color(dialog_liquid_settings_wind,kLiquidColor,0,&dialog_liquid_settings_color);
 	
 		// install event handler
 		

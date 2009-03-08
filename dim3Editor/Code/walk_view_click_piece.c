@@ -35,7 +35,8 @@ and can be sold or given away.
 #include "walk_view.h"
 
 extern int					magnify_factor,vertex_mode,drag_mode,grid_mode;
-extern bool					select_toggle_mode,dp_liquid,dp_object,dp_lightsoundparticle,dp_node;
+extern bool					select_toggle_mode,dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_area;
+extern d3pnt				view_pnt;
 extern d3rect				main_wind_box;
 
 extern map_type				map;
@@ -373,6 +374,19 @@ bool walk_view_liquid_click(editor_3D_view_setup *view_setup,d3pnt *click_pt,map
 	return(walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z));
 }
 
+bool walk_view_area_click(editor_3D_view_setup *view_setup,d3pnt *click_pt,map_area_type *area,int *hit_z)
+{
+	int				px[4],py[4],pz[4];
+
+	px[0]=px[3]=area->lft;
+	px[1]=px[2]=area->rgt;
+	py[0]=py[1]=py[2]=py[3]=view_pnt.y;
+	pz[0]=pz[1]=area->top;
+	pz[2]=pz[3]=area->bot;
+	
+	return(walk_view_quad_click_index(view_setup,click_pt,px,py,pz,hit_z));
+}
+
 /* =======================================================
 
       View Piece Get Clicked Index
@@ -423,15 +437,31 @@ void walk_view_mesh_click_index(editor_3D_view_setup *view_setup,d3pnt *click_pt
 		mesh++;
 	}
 	
+		// liquids
+		
 	if (dp_liquid) {
-	
-			// liquids
 			
 		for (n=0;n!=map.liquid.nliquid;n++) {
 			if (walk_view_liquid_click(view_setup,click_pt,&map.liquid.liquids[n],&fz)) {
 				if (fz<hit_z) {
 					hit_z=fz;
 					*type=liquid_piece;
+					*main_idx=n;
+					*sub_idx=-1;
+				}
+			}
+		}
+	}
+	
+		// areas
+		
+	if (dp_area) {
+			
+		for (n=0;n!=map.narea;n++) {
+			if (walk_view_area_click(view_setup,click_pt,&map.areas[n],&fz)) {
+				if (fz<hit_z) {
+					hit_z=fz;
+					*type=area_piece;
 					*main_idx=n;
 					*sub_idx=-1;
 				}
@@ -663,6 +693,10 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 	pt->x-=view_setup->box.lx;
 	pt->y-=view_setup->box.ty;
 	
+		// area vertex drags
+
+	if (walk_view_click_drag_area_vertex(view_setup,pt,view_move_dir)) return;
+	
 		// liquid vertex drags
 		
 	if (walk_view_click_drag_liquid_vertex(view_setup,pt,view_move_dir)) return;
@@ -692,15 +726,19 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 		return;
 	}
 	
-		// do any item drags
+		// area drags
+		
+	if (walk_view_click_drag_area(view_setup,pt,view_move_dir)) return;
+	
+		// item drags
 			
 	if (walk_view_click_drag_item(view_setup,pt,view_move_dir)) return;
 	
-		// do any liquid drags
+		// liquid drags
 		
 	if (walk_view_click_drag_liquid(view_setup,pt,view_move_dir)) return;
 	
-		// do any mesh or poly drags
+		// mesh or poly drags
 		
 	switch (drag_mode) {
 	

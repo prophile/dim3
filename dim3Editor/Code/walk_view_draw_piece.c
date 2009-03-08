@@ -140,6 +140,8 @@ void walk_view_draw_circle(d3pnt *pnt,d3col *col,int dist)
 	glLineWidth(4.0f);
 	glColor4f(col->r,col->g,col->b,0.75f);
 	
+		// xz line
+		
 	glBegin(GL_LINE_LOOP);
 	
 	for (n=0;n!=360;n+=10) {
@@ -474,10 +476,38 @@ void walk_view_draw_liquids(bool opaque)
 
 void walk_view_draw_areas(void)
 {
-	int					n,y,lx,rx,tz,bz;
-	map_area_type		*area;
+	int					n,k,y,lx,rx,tz,bz;
+	char				area_flags[max_area];
+	map_area_type		*area,*area2;
 	
 	if (!dp_area) return;
+	
+		// get a list of all selected areas
+		
+	bzero(area_flags,max_area);
+
+	for (n=0;n!=map.narea;n++) {
+	
+		if (!select_check(area_piece,n,-1)) continue;
+		
+			// area selected
+				
+		area_flags[n]=0x1;
+
+			// join with any areas with the same color
+
+		area=&map.areas[n];
+		area2=map.areas;
+
+		for (k=0;k!=map.narea;k++) {
+
+			if (k!=n) {
+				if ((area2->col.r==area->col.r) && (area2->col.g==area->col.g) && (area2->col.b==area->col.b)) area_flags[k]=0x1;
+			}
+
+			area2++;
+		}
+	}
 	
 		// transparent area draw
 		
@@ -486,15 +516,51 @@ void walk_view_draw_areas(void)
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 
-		// run through the liquids
+		// area colors
 		
 	area=map.areas;
 	
 	for (n=0;n!=map.narea;n++) {
 	
-			// textures
+			// only draw color for selection
 			
-		glColor4f(area->col.r,area->col.g,area->col.b,0.5f);
+		if (area_flags[n]!=0x0) {
+	
+				// color
+				
+			glColor4f(area->col.r,area->col.g,area->col.b,0.5f);
+			
+				// dimensions
+				
+			y=view_pnt.y;
+			
+			lx=area->lft;
+			rx=area->rgt;
+			tz=area->top;
+			bz=area->bot;
+			
+			glBegin(GL_QUADS);
+			glVertex3i(lx,y,tz);
+			glVertex3i(rx,y,tz);
+			glVertex3i(rx,y,bz);
+			glVertex3i(lx,y,bz);
+			glEnd();
+		}
+		
+		area++;
+	}
+	
+		// area boxes
+		
+	glLineWidth(4.0f);
+
+	area=map.areas;
+	
+	for (n=0;n!=map.narea;n++) {
+	
+			// color
+			
+		glColor4f(area->col.r,area->col.g,area->col.b,1.0f);
 		
 			// dimensions
 			
@@ -505,7 +571,7 @@ void walk_view_draw_areas(void)
 		tz=area->top;
 		bz=area->bot;
 		
-		glBegin(GL_QUADS);
+		glBegin(GL_LINE_LOOP);
 		glVertex3i(lx,y,tz);
 		glVertex3i(rx,y,tz);
 		glVertex3i(rx,y,bz);
@@ -515,7 +581,12 @@ void walk_view_draw_areas(void)
 		area++;
 	}
 	
+	glLineWidth(1.0f);
+	
+	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
+	
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
 }
 
 /* =======================================================
@@ -732,7 +803,7 @@ void walk_view_draw(editor_3D_view_setup *view_setup,bool draw_position)
 		
 		// draw selection
 		
-	walk_view_draw_select(&view_setup->cpt);
+	walk_view_draw_select(&view_setup->cpt,view_setup->draw_area);
 
 		// position
 		

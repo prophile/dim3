@@ -86,7 +86,7 @@ bool view_area_mark(char *area_flags)
 
 			// join with any areas with the same color
 
-		area2=area;
+		area2=map.areas;
 
 		for (k=0;k!=map.narea;k++) {
 
@@ -113,10 +113,15 @@ bool view_area_check_mesh(map_mesh_type *mesh,char *area_flags)
 
 		area=&map.areas[n];
 
-		if ((mesh->box.min.x<area->lft) || (mesh->box.max.x>area->rgt)) continue;
-		if ((mesh->box.min.z<area->top) || (mesh->box.max.z>area->bot)) continue;
-
-		return(TRUE);
+		if (((mesh->box.min.x>=area->lft) && (mesh->box.min.x<=area->rgt)) || ((mesh->box.max.x>=area->lft) && (mesh->box.max.x<=area->rgt))) {
+			if ((mesh->box.min.z>=area->top) && (mesh->box.min.z<=area->bot)) return(TRUE);
+			if ((mesh->box.max.z>=area->top) && (mesh->box.max.z<=area->bot)) return(TRUE);
+		}
+		
+		if (((area->lft>=mesh->box.min.x) && (area->lft<=mesh->box.max.x)) || ((area->rgt>=mesh->box.min.x) && (area->rgt<=mesh->box.max.x))) {
+			if ((area->top>=mesh->box.min.z) && (area->top<=mesh->box.max.z)) return(TRUE);
+			if ((area->bot>=mesh->box.min.z) && (area->bot<=mesh->box.max.z)) return(TRUE);
+		}
 	}
 
 	return(FALSE);

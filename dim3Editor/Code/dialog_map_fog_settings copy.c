@@ -75,7 +75,7 @@ static pascal OSStatus map_fog_settings_event_proc(EventHandlerCallRef handler,E
 					if (GetColor(pt,"\pChoose the Solid Fog Color:",&dialog_map_fog_color,&color)) {
 						dialog_map_fog_color=color;
 					}
-					dialog_draw_color(dialog_map_fog_settings_wind,kFogColor,0,&dialog_map_fog_color);
+				//	dialog_draw_color(dialog_map_fog_settings_wind,kFogColor,0,&dialog_map_fog_color);
 					return(noErr);
 				
 				case kHICommandCancel:
@@ -138,7 +138,7 @@ bool dialog_map_fog_settings_run(void)
 	
 		// draw color
 		
-	dialog_draw_color(dialog_map_fog_settings_wind,kFogColor,0,&dialog_map_fog_color);
+//	dialog_draw_color(dialog_map_fog_settings_wind,kFogColor,0,&dialog_map_fog_color);
 	
 		// install event handler
 		
