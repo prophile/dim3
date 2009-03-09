@@ -118,10 +118,6 @@ extern map_type				map;
 
 bool						dialog_map_settings_cancel;
 WindowRef					dialog_map_settings_wind;
-d3col						dialog_map_setting_ambient_light_color,
-							dialog_map_setting_fog_color,
-							dialog_map_setting_rain_start_color,
-							dialog_map_setting_rain_end_color;
 
 /* =======================================================
 
@@ -173,19 +169,19 @@ static pascal OSStatus map_map_setting_tab_proc(EventHandlerCallRef handler,Even
 		switch (cmd.commandID) {
 
 			case kMapLightColor:
-				dialog_click_color(dialog_map_settings_wind,kMapLightColor,0,&dialog_map_setting_ambient_light_color);
+				dialog_click_color(dialog_map_settings_wind,kMapLightColor,0);
 				return(noErr);
 				
 			case kFogColor:
-				dialog_click_color(dialog_map_settings_wind,kFogColor,0,&dialog_map_setting_fog_color);
+				dialog_click_color(dialog_map_settings_wind,kFogColor,0);
 				return(noErr);
 				
 			case kRainStartColor:
-				dialog_click_color(dialog_map_settings_wind,kRainStartColor,0,&dialog_map_setting_rain_start_color);
+				dialog_click_color(dialog_map_settings_wind,kRainStartColor,0);
 				return(noErr);
 				
 			case kRainEndColor:
-				dialog_click_color(dialog_map_settings_wind,kRainEndColor,0,&dialog_map_setting_rain_end_color);
+				dialog_click_color(dialog_map_settings_wind,kRainEndColor,0);
 				return(noErr);
 				
 		}
@@ -368,7 +364,7 @@ bool dialog_map_settings_run(void)
 		
 			// ambient controls
 			
-		memmove(&map.ambient.light_color,&dialog_map_setting_ambient_light_color,sizeof(d3col));
+		dialog_get_color(dialog_map_settings_wind,kMapLightColor,0,&map.ambient.light_color);
 		dialog_special_combo_get_sound(dialog_map_settings_wind,kMapSoundName,0,map.ambient.sound_name,name_str_len);
 		map.ambient.sound_pitch=dialog_get_float(dialog_map_settings_wind,kMapSoundPitch,0);
 
@@ -416,7 +412,7 @@ bool dialog_map_settings_run(void)
 		map.fog.txt_x_fact=dialog_get_float(dialog_map_settings_wind,kFogTextureXFact,0);
 		map.fog.txt_y_fact=dialog_get_float(dialog_map_settings_wind,kFogTextureYFact,0);
 		
-		memmove(&map.fog.col,&dialog_map_setting_fog_color,sizeof(d3col));
+		dialog_get_color(dialog_map_settings_wind,kFogColor,0,&map.fog.col);
 
 		map.fog.use_solid_color=dialog_get_boolean(dialog_map_settings_wind,kFogUseSolidColor,0);
 		map.fog.alpha=dialog_get_float(dialog_map_settings_wind,kFogAlpha,0);
@@ -431,8 +427,8 @@ bool dialog_map_settings_run(void)
 		map.rain.line_length=dialog_get_int(dialog_map_settings_wind,kRainLength,0);
 		map.rain.alpha=dialog_get_float(dialog_map_settings_wind,kRainAlpha,0);
 		
-		memmove(&map.rain.start_color,&dialog_map_setting_rain_start_color,sizeof(d3col));
-		memmove(&map.rain.start_color,&dialog_map_setting_rain_end_color,sizeof(d3col));
+		dialog_get_color(dialog_map_settings_wind,kRainStartColor,0,&map.rain.start_color);
+		dialog_get_color(dialog_map_settings_wind,kRainEndColor,0,&map.rain.end_color);
 		
 		map.rain.slant_add=dialog_get_int(dialog_map_settings_wind,kRainSlantAdd,0);
 		map.rain.slant_time_msec=dialog_get_int(dialog_map_settings_wind,kRainSlantTimeMSec,0);

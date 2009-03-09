@@ -83,7 +83,6 @@ extern model_type		model;
 #define kAnimationFlashColorEdit			FOUR_CHAR_CODE('colb')
 #define kAnimationFlashLiveTime				FOUR_CHAR_CODE('flvt')
 #define kAnimationFlashFadeTime				FOUR_CHAR_CODE('ffdt')
-#define kAnimationFlashColorButton			FOUR_CHAR_CODE('colh')
 
 #define kAnimationShakeDistance				FOUR_CHAR_CODE('skds')
 #define kAnimationShakeSize					FOUR_CHAR_CODE('sksz')
@@ -96,7 +95,6 @@ extern model_type		model;
 
 WindowRef					dialog_animation_settings_wind;
 ControlRef					dialog_pose_move_list,dialog_particle_list,dialog_ring_list;
-RGBColor					dialog_pose_move_settings_color;
 
 int							dialog_animate_idx,dialog_pose_move_idx,dialog_particle_idx,dialog_ring_idx;
 bool						dialog_pose_move_change_ok,dialog_animation_settings_cancel;
@@ -150,9 +148,7 @@ void dialog_pose_move_settings_load(void)
 	dialog_set_int(dialog_animation_settings_wind,kAnimationFlashLiveTime,0,pose_move->flash.flash_msec);
 	dialog_set_int(dialog_animation_settings_wind,kAnimationFlashFadeTime,0,pose_move->flash.fade_msec);
 	
-	dialog_pose_move_settings_color.red=(int)(pose_move->flash.col.r*(float)0xFFFF);
-	dialog_pose_move_settings_color.green=(int)(pose_move->flash.col.g*(float)0xFFFF);
-	dialog_pose_move_settings_color.blue=(int)(pose_move->flash.col.b*(float)0xFFFF);
+	dialog_set_color(dialog_animation_settings_wind,kAnimationFlashColor,0,&pose_move->flash.col);
 	
 	dialog_set_int(dialog_animation_settings_wind,kAnimationShakeDistance,0,pose_move->shake.distance);
 	dialog_set_int(dialog_animation_settings_wind,kAnimationShakeSize,0,pose_move->shake.size);
@@ -202,9 +198,7 @@ void dialog_pose_move_settings_save(void)
 	pose_move->flash.fade_msec=dialog_get_int(dialog_animation_settings_wind,kAnimationFlashFadeTime,0);
 	
 	pose_move->flash.bone_idx=dialog_get_bone_combo(dialog_animation_settings_wind,kAnimationFlashBone,0);
-	pose_move->flash.col.r=((float)dialog_pose_move_settings_color.red/(float)0xFFFF);
-	pose_move->flash.col.g=((float)dialog_pose_move_settings_color.green/(float)0xFFFF);
-	pose_move->flash.col.b=((float)dialog_pose_move_settings_color.blue/(float)0xFFFF);
+	dialog_get_color(dialog_animation_settings_wind,kAnimationFlashColor,0,&pose_move->flash.col);
 	
 	pose_move->shake.distance=dialog_get_int(dialog_animation_settings_wind,kAnimationShakeDistance,0);
 	pose_move->shake.size=dialog_get_int(dialog_animation_settings_wind,kAnimationShakeSize,0);
@@ -379,13 +373,6 @@ static pascal OSStatus pose_move_setting_tab_proc(EventHandlerCallRef handler,Ev
 	
 	if ((event_class==kEventClassControl) && (event_kind==kEventControlHit)) {
 		dialog_switch_tab(dialog_animation_settings_wind,kAnimationPoseTab,0,kAnimationPoseTabCount);
-
-			// draw color
-
-		if (dialog_get_value(dialog_animation_settings_wind,kAnimationPoseTab,0)==5) {
-			dialog_draw_color(dialog_animation_settings_wind,kAnimationFlashColor,0,&dialog_pose_move_settings_color);
-		}
-		
 	}
 	
 	return(eventNotHandledErr);
@@ -393,15 +380,7 @@ static pascal OSStatus pose_move_setting_tab_proc(EventHandlerCallRef handler,Ev
 
 static pascal OSStatus pose_move_setting_button_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
-	Point			pt;
-	RGBColor		color;
-
-	pt.h=pt.v=-1;
-	if (GetColor(pt,"\pChoose the Light Color:",&dialog_pose_move_settings_color,&color)) {
-		dialog_pose_move_settings_color=color;
-	}
-	dialog_draw_color(dialog_animation_settings_wind,kAnimationFlashColor,0,&dialog_pose_move_settings_color);
-	
+	dialog_click_color(dialog_animation_settings_wind,kAnimationFlashColor,0);
 	return(noErr);
 }
 
@@ -635,7 +614,7 @@ bool dialog_animation_settings_run(int animate_idx)
 		// color button
 		// have to do this because window doesn't get commands for buttons in tabs
 		
-	ctrl_id.signature=kAnimationFlashColorEdit;
+	ctrl_id.signature=kAnimationFlashColor;
 	ctrl_id.id=0;
 	GetControlByID(dialog_animation_settings_wind,&ctrl_id,&ctrl);
 		

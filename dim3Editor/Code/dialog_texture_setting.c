@@ -60,15 +60,12 @@ and can be sold or given away.
 #define kTextureSettingButtonAddFrame				FOUR_CHAR_CODE('addt')
 #define kTextureSettingButtonSubFrame				FOUR_CHAR_CODE('subt')
 
-#define kTextureSettingButtonColor					FOUR_CHAR_CODE('colh')
-
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;
 
 int								dialog_texture_wind_current_txt,dialog_texture_wind_current_frame;
 texture_type					frame_texture;
 WindowRef						dialog_texture_wind;
-RGBColor						dialog_texture_color;
 
 /* =======================================================
 
@@ -515,8 +512,6 @@ static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,Ev
 {
 	char			bitmap_name[file_str_len],bumpmap_name[file_str_len],
 					specularmap_name[file_str_len],glowmap_name[file_str_len];
-	Point			pt;
-	RGBColor		color;
 	HICommand		cmd;
 	
 	switch (GetEventKind(event)) {
@@ -614,12 +609,8 @@ static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,Ev
 					InitCursor();
 					return(noErr);
 					
-				case kTextureSettingButtonColor:
-					pt.h=pt.v=-1;
-					if (GetColor(pt,"\pChoose the Light Color:",&dialog_texture_color,&color)) {
-						dialog_texture_color=color;
-					}
-				//	dialog_draw_color(dialog_texture_wind,kTextureSettingColor,0,&dialog_texture_color);
+				case kTextureSettingColor:
+					dialog_click_color(dialog_texture_wind,kTextureSettingColor,0);
 					return(noErr);
 					
 				case kHICommandOK:
@@ -667,9 +658,7 @@ void dialog_texture_setting_run(int txt)
 	
 		// other dialog controls
 		
-	dialog_texture_color.red=(int)(texture->col.r*(float)0xFFFF);
-	dialog_texture_color.green=(int)(texture->col.g*(float)0xFFFF);
-	dialog_texture_color.blue=(int)(texture->col.b*(float)0xFFFF);
+	dialog_set_color(dialog_texture_wind,kTextureSettingColor,0,&texture->col);
 		
 	dialog_special_combo_fill_shader(dialog_texture_wind,kTextureSettingShader,0,texture->shader_name);
 	dialog_set_boolean(dialog_texture_wind,kTextureSettingAnimate,0,texture->animate.on);
@@ -693,7 +682,6 @@ void dialog_texture_setting_run(int txt)
 		// redraw bitmaps
 	
 	texture_setting_frame_reset();
-//	dialog_draw_color(dialog_texture_wind,kTextureSettingColor,0,&dialog_texture_color);
 	
 		// modal window
 		
@@ -703,9 +691,7 @@ void dialog_texture_setting_run(int txt)
 
 	texture_setting_frame_save();
 	
-	texture->col.r=((float)dialog_texture_color.red/(float)0xFFFF);
-	texture->col.g=((float)dialog_texture_color.green/(float)0xFFFF);
-	texture->col.b=((float)dialog_texture_color.blue/(float)0xFFFF);
+	dialog_get_color(dialog_texture_wind,kTextureSettingColor,0,&texture->col);
 		
 	dialog_special_combo_get_shader(dialog_texture_wind,kTextureSettingShader,0,texture->shader_name,name_str_len);
 	texture->animate.on=dialog_get_boolean(dialog_texture_wind,kTextureSettingAnimate,0);

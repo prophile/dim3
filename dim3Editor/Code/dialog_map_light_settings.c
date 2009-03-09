@@ -36,11 +36,8 @@ extern map_type				map;
 #define kLightColor									FOUR_CHAR_CODE('colr')
 #define kLightOn									FOUR_CHAR_CODE('lgon')
 
-#define kMapLightButtonColor						FOUR_CHAR_CODE('colh')
-
 bool						dialog_map_light_settings_cancel;
 WindowRef					dialog_map_light_settings_wind;
-RGBColor					dialog_map_light_color;
 
 /* =======================================================
 
@@ -51,8 +48,6 @@ RGBColor					dialog_map_light_color;
 static pascal OSStatus map_light_settings_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
 	HICommand		cmd;
-	Point			pt;
-	RGBColor		color;
 	
 	switch (GetEventKind(event)) {
 	
@@ -61,12 +56,8 @@ static pascal OSStatus map_light_settings_event_proc(EventHandlerCallRef handler
 			
 			switch (cmd.commandID) {
 			
-				case kMapLightButtonColor:
-					pt.h=pt.v=-1;
-					if (GetColor(pt,"\pChoose the Light Color:",&dialog_map_light_color,&color)) {
-						dialog_map_light_color=color;
-					}
-				//	dialog_draw_color(dialog_map_light_settings_wind,kLightColor,0,&dialog_map_light_color);
+				case kLightColor:
+					dialog_click_color(dialog_map_light_settings_wind,kLightColor,0);
 					return(noErr);
 				
 				case kHICommandCancel:
@@ -108,18 +99,12 @@ bool dialog_map_light_settings_run(map_light_type *light)
 	dialog_set_int(dialog_map_light_settings_wind,kLightIntensity,0,light->intensity);
 	dialog_set_float(dialog_map_light_settings_wind,kLightExponent,0,light->exponent);
 	dialog_set_boolean(dialog_map_light_settings_wind,kLightOn,0,light->on);
-	
-	dialog_map_light_color.red=(int)(light->col.r*(float)0xFFFF);
-	dialog_map_light_color.green=(int)(light->col.g*(float)0xFFFF);
-	dialog_map_light_color.blue=(int)(light->col.b*(float)0xFFFF);
+
+	dialog_set_color(dialog_map_light_settings_wind,kLightColor,0,&light->col);
 	
 		// show window
 	
 	ShowWindow(dialog_map_light_settings_wind);
-	
-		// draw color
-		
-//	dialog_draw_color(dialog_map_light_settings_wind,kLightColor,0,&dialog_map_light_color);
 	
 		// install event handler
 		
@@ -139,9 +124,7 @@ bool dialog_map_light_settings_run(map_light_type *light)
 		light->exponent=dialog_get_float(dialog_map_light_settings_wind,kLightExponent,0);
 		light->on=dialog_get_boolean(dialog_map_light_settings_wind,kLightOn,0);
 		
-		light->col.r=((float)dialog_map_light_color.red/(float)0xFFFF);
-		light->col.g=((float)dialog_map_light_color.green/(float)0xFFFF);
-		light->col.b=((float)dialog_map_light_color.blue/(float)0xFFFF);
+		dialog_get_color(dialog_map_light_settings_wind,kLightColor,0,&light->col);
 	}
 
 		// close window

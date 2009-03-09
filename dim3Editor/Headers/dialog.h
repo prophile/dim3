@@ -49,7 +49,8 @@ extern int dialog_get_value(WindowRef wind,unsigned long sig,int id);
 extern void dialog_switch_tab(WindowRef wind,unsigned long sig,int id,int npane);
 extern void dialog_set_tab(WindowRef wind,unsigned long sig,int id,int index,int npane);
 extern void dialog_set_color(WindowRef wind,unsigned long sig,int id,d3col *col);
-extern void dialog_click_color(WindowRef wind,unsigned long sig,int id,d3col *col);
+extern void dialog_get_color(WindowRef wind,unsigned long sig,int id,d3col *col);
+extern void dialog_click_color(WindowRef wind,unsigned long sig,int id);
 extern void dialog_set_focus(WindowRef wind,unsigned long sig,int id);
 extern void dialog_enable(WindowRef wind,unsigned long sig,int id,bool enable);
 extern void dialog_hide(WindowRef wind,unsigned long sig,int id,bool show);
@@ -78,6 +79,7 @@ extern int dialog_get_texture_combo(WindowRef wind,unsigned long sig,int id,bool
 //
 
 extern void dialog_about_run(void);
+extern void dialog_preference_run(void);
 
 //
 // open/new/save dialogs

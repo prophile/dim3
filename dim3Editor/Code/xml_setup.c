@@ -134,12 +134,9 @@ bool setup_xml_read(void)
 		// keys
 
     setup_xml_read_key_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
- 
-     setup_xml_read_key_boolean(setup_tag,"Auto_Texture",&setup.auto_texture);
+ 	setup_xml_read_key_boolean(setup_tag,"Auto_Texture",&setup.auto_texture);
 	setup_xml_read_key_int(setup_tag,"Duplicate_Offset",&setup.duplicate_offset);
-	
 	setup_xml_read_key_text(setup_tag,"Engine_Name",setup.engine_name,256);
-	
 	setup_xml_read_key_color(setup_tag,"Color_Mesh_Line",&setup.col.mesh_line);
 	setup_xml_read_key_color(setup_tag,"Color_Mesh_Sel",&setup.col.mesh_sel);
 	setup_xml_read_key_color(setup_tag,"Color_Poly_Sel",&setup.col.poly_sel);
@@ -150,3 +147,77 @@ bool setup_xml_read(void)
 	return(TRUE);
 }
 
+/* =======================================================
+
+      Write Key
+      
+======================================================= */
+
+void setup_xml_write_key_int(char *name,int value)
+{
+    xml_add_tagstart(name);
+    xml_add_attribute_int("value",value);
+    xml_add_tagend(TRUE);
+}
+
+void setup_xml_write_key_float(char *name,float value)
+{
+    xml_add_tagstart(name);
+    xml_add_attribute_float("value",value);
+    xml_add_tagend(TRUE);
+}
+
+void setup_xml_write_key_text(char *name,char *value)
+{
+    xml_add_tagstart(name);
+    xml_add_attribute_text("value",value);
+    xml_add_tagend(TRUE);
+}
+
+void setup_xml_write_key_boolean(char *name,bool value)
+{
+    xml_add_tagstart(name);
+    xml_add_attribute_boolean("value",value);
+    xml_add_tagend(TRUE);
+}
+
+void setup_xml_write_key_color(char *name,d3col *value)
+{
+    xml_add_tagstart(name);
+    xml_add_attribute_color("value",value);
+    xml_add_tagend(TRUE);
+}
+
+bool setup_xml_write(void)
+{
+	char						path[1024];
+	bool						ok;
+	
+		// start the setup file
+		
+    xml_new_file();
+    
+    xml_add_tagstart("Setup");
+    xml_add_tagend(FALSE);
+	
+		// keys
+		
+    setup_xml_write_key_int("Mipmap_Mode",&setup.mipmap_mode);
+ 	setup_xml_write_key_boolean("Auto_Texture",&setup.auto_texture);
+	setup_xml_write_key_int("Duplicate_Offset",&setup.duplicate_offset);
+	setup_xml_write_key_text("Engine_Name",setup.engine_name,256);
+	setup_xml_write_key_color("Color_Mesh_Line",&setup.col.mesh_line);
+	setup_xml_write_key_color("Color_Mesh_Sel",&setup.col.mesh_sel);
+	setup_xml_write_key_color("Color_Poly_Sel",&setup.col.poly_sel);
+	setup_xml_write_key_color("Color_Background",&setup.col.background);
+
+        // save the setup
+		// always save to user specific data
+		
+	file_paths_documents(&setup.file_path_setup,path,"Settings","Setup","xml");
+		
+	ok=xml_save_file(path);
+    xml_close_file();
+	
+	return(ok);
+}

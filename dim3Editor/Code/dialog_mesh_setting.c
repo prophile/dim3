@@ -29,8 +29,9 @@ and can be sold or given away.
 #include "common_view.h"
 #include "dialog.h"
 
-extern int					drag_mode;
-extern map_type				map;
+#define kMeshSettingTabCount					3
+
+#define kMeshSettingTab							FOUR_CHAR_CODE('tabb')
 
 #define kMeshSettingOn							FOUR_CHAR_CODE('fson')
 #define kMeshSettingPassThrough					FOUR_CHAR_CODE('fpth')
@@ -67,6 +68,8 @@ extern map_type				map;
 #define kMeshSendMessageBase					FOUR_CHAR_CODE('tbon')
 #define kMeshSendMessageBaseTeam				FOUR_CHAR_CODE('tbtx')
 
+extern int					drag_mode;
+extern map_type				map;
 
 bool						dialog_mesh_setting_cancel;
 WindowRef					dialog_mesh_setting_wind;
@@ -106,6 +109,20 @@ static pascal OSStatus mesh_setting_event_proc(EventHandlerCallRef handler,Event
 	return(eventNotHandledErr);
 }
 
+static pascal OSStatus mesh_setting_tab_proc(EventHandlerCallRef handler,EventRef event,void *data)
+{
+	int				event_class,event_kind;
+	
+	event_class=GetEventClass(event);
+	event_kind=GetEventKind(event);
+	
+	if ((event_class==kEventClassControl) && (event_kind==kEventControlHit)) {
+		dialog_switch_tab(dialog_mesh_setting_wind,kMeshSettingTab,0,kMeshSettingTabCount);
+	}
+	
+	return(eventNotHandledErr);
+}
+
 /* =======================================================
 
       Run Mesh Setting
@@ -118,8 +135,12 @@ bool dialog_mesh_setting_run(void)
 	float					x_txtoff,y_txtoff,x_txtfact,y_txtfact;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
-	EventHandlerUPP			event_upp;
-	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
+	ControlRef				ctrl;
+	ControlID				ctrl_id;
+	EventHandlerUPP			event_upp,tab_event_upp;
+	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}},
+							tab_event_list[]={{kEventClassCommand,kEventProcessCommand},
+											  {kEventClassControl,kEventControlHit}};
 	
 		// open the dialog
 		
@@ -131,6 +152,17 @@ bool dialog_mesh_setting_run(void)
 	
 	mesh=&map.mesh.meshes[mesh_idx];
 	poly=&mesh->polys[poly_idx];
+	
+		// tab
+		
+	dialog_set_tab(dialog_mesh_setting_wind,kMeshSettingTab,0,0,kMeshSettingTabCount);
+	
+	ctrl_id.signature=kMeshSettingTab;
+	ctrl_id.id=0;
+	GetControlByID(dialog_mesh_setting_wind,&ctrl_id,&ctrl);
+	
+	tab_event_upp=NewEventHandlerUPP(mesh_setting_tab_proc);
+	InstallControlEventHandler(ctrl,tab_event_upp,GetEventTypeCount(tab_event_list),tab_event_list,dialog_mesh_setting_wind,NULL);
 
 		// set controls
 	

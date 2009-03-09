@@ -375,24 +375,81 @@ void dialog_set_tab(WindowRef wind,unsigned long sig,int id,int index,int npane)
       
 ======================================================= */
 
-void dialog_draw_color(WindowRef wind,unsigned long sig,int id,RGBColor *col)
+void dialog_set_color(WindowRef wind,unsigned long sig,int id,d3col *col)
 {
-	ControlRef		ctrl;
-	ControlID		ctrl_id;
-	Rect			box;
-	RGBColor		black={0,0,0};
+	ControlRef					ctrl;
+	ControlID					ctrl_id;
+	ControlButtonContentInfo	info;
+	Rect						box;
+	RGBColor					rgb,black={0x0,0x0,0x0};
+ 	PicHandle					pic;
 	
 	ctrl_id.signature=sig;
 	ctrl_id.id=id;
 	GetControlByID(wind,&ctrl_id,&ctrl);
 	
-	SetPort(GetWindowPort(wind));
-	GetControlBounds(ctrl,&box);
+		// create color
 	
-	RGBForeColor(col);
+	SetRect(&box,0,0,24,12);
+	
+	pic=OpenPicture(&box);
+	rgb.red=(int)(col->r*(float)0xFFFF);
+	rgb.green=(int)(col->g*(float)0xFFFF);
+	rgb.blue=(int)(col->b*(float)0xFFFF);
+	RGBForeColor(&rgb);
 	PaintRect(&box);
 	RGBForeColor(&black);
 	FrameRect(&box);
+	ClosePicture();
+	
+		// set it to button
+		
+	info.contentType=kControlContentPictHandle;
+	info.u.picture=pic;
+
+	SetBevelButtonContentInfo(ctrl,&info);
+	
+		// set the internal data
+		
+	SetControlProperty(ctrl,'dim3','dim3',sizeof(d3col),col);
+
+	Draw1Control(ctrl);
+}
+
+void dialog_get_color(WindowRef wind,unsigned long sig,int id,d3col *col)
+{
+	ControlRef					ctrl;
+	ControlID					ctrl_id;
+ 	ByteCount					sz;
+	
+	ctrl_id.signature=sig;
+	ctrl_id.id=id;
+	GetControlByID(wind,&ctrl_id,&ctrl);
+
+	GetControlProperty(ctrl,'dim3','dim3',sizeof(d3col),&sz,col);
+}
+
+void dialog_click_color(WindowRef wind,unsigned long sig,int id)
+{
+	d3col			col;
+	RGBColor		color;
+	Point			pt;
+	
+	dialog_get_color(wind,sig,id,&col);
+
+	color.red=(int)(col.r*(float)0xFFFF);
+	color.green=(int)(col.g*(float)0xFFFF);
+	color.blue=(int)(col.b*(float)0xFFFF);
+	
+	pt.h=pt.v=-1;
+	
+	if (GetColor(pt,"\pChoose the Light Color:",&color,&color)) {
+		col.r=((float)color.red/(float)0xFFFF);
+		col.g=((float)color.green/(float)0xFFFF);
+		col.b=((float)color.blue/(float)0xFFFF);
+	
+		dialog_set_color(wind,sig,id,&col);
+	}
 }
 
 /* =======================================================

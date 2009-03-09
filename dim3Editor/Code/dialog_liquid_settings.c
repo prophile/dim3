@@ -53,11 +53,8 @@ extern map_type				map;
 #define kLiquidShiftX						FOUR_CHAR_CODE('sftx')
 #define kLiquidShiftY						FOUR_CHAR_CODE('sfty')
 
-#define kLiquidButtonColor					FOUR_CHAR_CODE('colh')
-
 bool						dialog_liquid_settings_cancel;
 WindowRef					dialog_liquid_settings_wind;
-RGBColor					dialog_liquid_settings_color;
 
 /* =======================================================
 
@@ -68,8 +65,6 @@ RGBColor					dialog_liquid_settings_color;
 static pascal OSStatus liquid_settings_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
 	HICommand		cmd;
-	Point			pt;
-	RGBColor		color;
 	
 	switch (GetEventKind(event)) {
 	
@@ -78,12 +73,8 @@ static pascal OSStatus liquid_settings_event_proc(EventHandlerCallRef handler,Ev
 			
 			switch (cmd.commandID) {
 			
-				case kLiquidButtonColor:
-					pt.h=pt.v=-1;
-					if (GetColor(pt,"\pChoose the Liquid Color:",&dialog_liquid_settings_color,&color)) {
-						dialog_liquid_settings_color=color;
-					}
-			//		dialog_draw_color(dialog_liquid_settings_wind,kLiquidColor,0,&dialog_liquid_settings_color);
+				case kLiquidColor:
+					dialog_click_color(dialog_liquid_settings_wind,kLiquidColor,0);
 					return(noErr);
 				
 				case kHICommandCancel:
@@ -133,9 +124,7 @@ bool dialog_liquid_settings_run(map_liquid_type *liq)
 	dialog_set_int(dialog_liquid_settings_wind,kLiquidDrownTick,0,liq->harm.drown_tick);
 	dialog_set_int(dialog_liquid_settings_wind,kLiquidDrownHarm,0,liq->harm.drown_harm);
 	
-	dialog_liquid_settings_color.red=(int)(liq->col.r*(float)0xFFFF);
-	dialog_liquid_settings_color.green=(int)(liq->col.g*(float)0xFFFF);
-	dialog_liquid_settings_color.blue=(int)(liq->col.b*(float)0xFFFF);
+	dialog_set_color(dialog_liquid_settings_wind,kLiquidColor,0,&liq->col);
 	
 	dialog_set_float(dialog_liquid_settings_wind,kLiquidTintAlpha,0,liq->tint_alpha);
 	dialog_set_int(dialog_liquid_settings_wind,kLiquidDepth,0,liq->depth);
@@ -152,10 +141,6 @@ bool dialog_liquid_settings_run(map_liquid_type *liq)
 		// show window
 	
 	ShowWindow(dialog_liquid_settings_wind);
-	
-		// draw color
-		
-//	dialog_draw_color(dialog_liquid_settings_wind,kLiquidColor,0,&dialog_liquid_settings_color);
 	
 		// install event handler
 		
@@ -182,9 +167,7 @@ bool dialog_liquid_settings_run(map_liquid_type *liq)
 		liq->harm.drown_tick=dialog_get_int(dialog_liquid_settings_wind,kLiquidDrownTick,0);
 		liq->harm.drown_harm=dialog_get_int(dialog_liquid_settings_wind,kLiquidDrownHarm,0);
 		
-		liq->col.r=((float)dialog_liquid_settings_color.red/(float)0xFFFF);
-		liq->col.g=((float)dialog_liquid_settings_color.green/(float)0xFFFF);
-		liq->col.b=((float)dialog_liquid_settings_color.blue/(float)0xFFFF);
+		dialog_get_color(dialog_liquid_settings_wind,kLiquidColor,0,&liq->col);
 		
 		liq->tint_alpha=dialog_get_float(dialog_liquid_settings_wind,kLiquidTintAlpha,0);
 		liq->depth=dialog_get_int(dialog_liquid_settings_wind,kLiquidDepth,0);

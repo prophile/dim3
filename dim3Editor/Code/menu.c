@@ -228,6 +228,11 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
         case kCommandAbout:
             dialog_about_run();
             return(noErr);
+			
+        case kCommandPreference:
+            dialog_preference_run();
+			main_wind_draw();
+            return(noErr);
             
 		case kHICommandQuit:
 			if (map_opened) {

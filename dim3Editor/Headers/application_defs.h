@@ -40,6 +40,7 @@ and can be sold or given away.
 #define app_menu_groups						136
 
 #define kCommandAbout						FOUR_CHAR_CODE('abot')
+#define kCommandPreference					FOUR_CHAR_CODE('pref')
 
 #define kCommandNew							FOUR_CHAR_CODE('new ')
 #define kCommandOpen						FOUR_CHAR_CODE('open')
