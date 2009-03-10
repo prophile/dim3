@@ -69,46 +69,6 @@ void setup_xml_default(void)
       
 ======================================================= */
 
-void setup_xml_read_key_int(int setup_tag,char *name,int *value)
-{
-	int			tag;
-
-	tag=xml_findfirstchild(name,setup_tag);
-	if (tag!=-1) *value=xml_get_attribute_int(tag,"value");	
-}
-
-void setup_xml_read_key_float(int setup_tag,char *name,float *value)
-{
-	int			tag;
-
-	tag=xml_findfirstchild(name,setup_tag);
-	if (tag!=-1) *value=xml_get_attribute_float(tag,"value");	
-}
-
-void setup_xml_read_key_text(int setup_tag,char *name,char *value,int value_sz)
-{
-	int			tag;
-
-	tag=xml_findfirstchild(name,setup_tag);
-	if (tag!=-1) xml_get_attribute_text(tag,"value",value,value_sz);	
-}
-
-void setup_xml_read_key_boolean(int setup_tag,char *name,bool *value)
-{
-	int			tag;
-
-	tag=xml_findfirstchild(name,setup_tag);
-	if (tag!=-1) *value=xml_get_attribute_boolean(tag,"value");	
-}
-
-void setup_xml_read_key_color(int setup_tag,char *name,d3col *value)
-{
-	int			tag;
-
-	tag=xml_findfirstchild(name,setup_tag);
-	if (tag!=-1) xml_get_attribute_color(tag,"value",value);	
-}
-
 bool setup_xml_read(void)
 {
 	int							setup_tag;
@@ -119,8 +79,8 @@ bool setup_xml_read(void)
 	setup_xml_default();
     
         // find the setup.xml file
-        
-	file_paths_app(&file_path_setup,path,"Contents/Resources/Settings","Setup","xml");
+		
+	file_paths_preferences(path,"dim3 Editor Setup","xml");
 	if (!xml_open_file(path)) return(FALSE);
     
 		// decode the file
@@ -133,14 +93,14 @@ bool setup_xml_read(void)
 	
 		// keys
 
-    setup_xml_read_key_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
- 	setup_xml_read_key_boolean(setup_tag,"Auto_Texture",&setup.auto_texture);
-	setup_xml_read_key_int(setup_tag,"Duplicate_Offset",&setup.duplicate_offset);
-	setup_xml_read_key_text(setup_tag,"Engine_Name",setup.engine_name,256);
-	setup_xml_read_key_color(setup_tag,"Color_Mesh_Line",&setup.col.mesh_line);
-	setup_xml_read_key_color(setup_tag,"Color_Mesh_Sel",&setup.col.mesh_sel);
-	setup_xml_read_key_color(setup_tag,"Color_Poly_Sel",&setup.col.poly_sel);
-	setup_xml_read_key_color(setup_tag,"Color_Background",&setup.col.background);
+    xml_key_read_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
+ 	xml_key_read_boolean(setup_tag,"Auto_Texture",&setup.auto_texture);
+	xml_key_read_int(setup_tag,"Duplicate_Offset",&setup.duplicate_offset);
+	xml_key_read_text(setup_tag,"Engine_Name",setup.engine_name,256);
+	xml_key_read_color(setup_tag,"Color_Mesh_Line",&setup.col.mesh_line);
+	xml_key_read_color(setup_tag,"Color_Mesh_Sel",&setup.col.mesh_sel);
+	xml_key_read_color(setup_tag,"Color_Poly_Sel",&setup.col.poly_sel);
+	xml_key_read_color(setup_tag,"Color_Background",&setup.col.background);
   
 	xml_close_file();
 	
@@ -152,41 +112,6 @@ bool setup_xml_read(void)
       Write Key
       
 ======================================================= */
-
-void setup_xml_write_key_int(char *name,int value)
-{
-    xml_add_tagstart(name);
-    xml_add_attribute_int("value",value);
-    xml_add_tagend(TRUE);
-}
-
-void setup_xml_write_key_float(char *name,float value)
-{
-    xml_add_tagstart(name);
-    xml_add_attribute_float("value",value);
-    xml_add_tagend(TRUE);
-}
-
-void setup_xml_write_key_text(char *name,char *value)
-{
-    xml_add_tagstart(name);
-    xml_add_attribute_text("value",value);
-    xml_add_tagend(TRUE);
-}
-
-void setup_xml_write_key_boolean(char *name,bool value)
-{
-    xml_add_tagstart(name);
-    xml_add_attribute_boolean("value",value);
-    xml_add_tagend(TRUE);
-}
-
-void setup_xml_write_key_color(char *name,d3col *value)
-{
-    xml_add_tagstart(name);
-    xml_add_attribute_color("value",value);
-    xml_add_tagend(TRUE);
-}
 
 bool setup_xml_write(void)
 {
@@ -202,20 +127,19 @@ bool setup_xml_write(void)
 	
 		// keys
 		
-    setup_xml_write_key_int("Mipmap_Mode",&setup.mipmap_mode);
- 	setup_xml_write_key_boolean("Auto_Texture",&setup.auto_texture);
-	setup_xml_write_key_int("Duplicate_Offset",&setup.duplicate_offset);
-	setup_xml_write_key_text("Engine_Name",setup.engine_name,256);
-	setup_xml_write_key_color("Color_Mesh_Line",&setup.col.mesh_line);
-	setup_xml_write_key_color("Color_Mesh_Sel",&setup.col.mesh_sel);
-	setup_xml_write_key_color("Color_Poly_Sel",&setup.col.poly_sel);
-	setup_xml_write_key_color("Color_Background",&setup.col.background);
+    xml_key_write_int("Mipmap_Mode",setup.mipmap_mode);
+ 	xml_key_write_boolean("Auto_Texture",setup.auto_texture);
+	xml_key_write_int("Duplicate_Offset",setup.duplicate_offset);
+	xml_key_write_text("Engine_Name",setup.engine_name);
+	xml_key_write_color("Color_Mesh_Line",&setup.col.mesh_line);
+	xml_key_write_color("Color_Mesh_Sel",&setup.col.mesh_sel);
+	xml_key_write_color("Color_Poly_Sel",&setup.col.poly_sel);
+	xml_key_write_color("Color_Background",&setup.col.background);
 
         // save the setup
 		// always save to user specific data
 		
-	file_paths_documents(&setup.file_path_setup,path,"Settings","Setup","xml");
-		
+	file_paths_preferences(path,"dim3 Editor Setup","xml");
 	ok=xml_save_file(path);
     xml_close_file();
 	

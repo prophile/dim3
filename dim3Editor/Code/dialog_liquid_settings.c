@@ -30,6 +30,9 @@ and can be sold or given away.
 
 extern map_type				map;
 
+#define kLiquidSettingTabCount				4
+#define kLiquidSettingTab					FOUR_CHAR_CODE('tabb')
+
 #define kLiquidSpeedAlter					FOUR_CHAR_CODE('salt')
 
 #define kLiquidWaveSize						FOUR_CHAR_CODE('wvsz')
@@ -95,6 +98,20 @@ static pascal OSStatus liquid_settings_event_proc(EventHandlerCallRef handler,Ev
 	return(eventNotHandledErr);
 }
 
+static pascal OSStatus liquid_setting_tab_proc(EventHandlerCallRef handler,EventRef event,void *data)
+{
+	int				event_class,event_kind;
+	
+	event_class=GetEventClass(event);
+	event_kind=GetEventKind(event);
+	
+	if ((event_class==kEventClassControl) && (event_kind==kEventControlHit)) {
+		dialog_switch_tab(dialog_liquid_settings_wind,kLiquidSettingTab,0,kLiquidSettingTabCount);
+	}
+	
+	return(eventNotHandledErr);
+}
+
 /* =======================================================
 
       Run Liquid Setting
@@ -103,12 +120,27 @@ static pascal OSStatus liquid_settings_event_proc(EventHandlerCallRef handler,Ev
 
 bool dialog_liquid_settings_run(map_liquid_type *liq)
 {
-	EventHandlerUPP			event_upp;
-	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
+	ControlRef				ctrl;
+	ControlID				ctrl_id;
+	EventHandlerUPP			event_upp,tab_event_upp;
+	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}},
+							tab_event_list[]={{kEventClassCommand,kEventProcessCommand},
+											  {kEventClassControl,kEventControlHit}};
 	
 		// open the dialog
 		
 	dialog_open(&dialog_liquid_settings_wind,"LiquidSettings");
+	
+		// tab
+		
+	dialog_set_tab(dialog_liquid_settings_wind,kLiquidSettingTab,0,0,kLiquidSettingTabCount);
+	
+	ctrl_id.signature=kLiquidSettingTab;
+	ctrl_id.id=0;
+	GetControlByID(dialog_liquid_settings_wind,&ctrl_id,&ctrl);
+	
+	tab_event_upp=NewEventHandlerUPP(liquid_setting_tab_proc);
+	InstallControlEventHandler(ctrl,tab_event_upp,GetEventTypeCount(tab_event_list),tab_event_list,dialog_liquid_settings_wind,NULL);
 
 		// set controls
 		

@@ -1224,3 +1224,83 @@ bool xml_add_attribute_bit_array(char *name,unsigned char *value,int count)
 	return(xml_add_attribute_text(name,txt));
 }
 
+/* =======================================================
+
+      Key Based XML Files
+            
+======================================================= */
+
+void xml_key_read_int(int setup_tag,char *name,int *value)
+{
+	int			tag;
+
+	tag=xml_findfirstchild(name,setup_tag);
+	if (tag!=-1) *value=xml_get_attribute_int(tag,"value");	
+}
+
+void xml_key_read_float(int setup_tag,char *name,float *value)
+{
+	int			tag;
+
+	tag=xml_findfirstchild(name,setup_tag);
+	if (tag!=-1) *value=xml_get_attribute_float(tag,"value");	
+}
+
+void xml_key_read_text(int setup_tag,char *name,char *value,int value_sz)
+{
+	int			tag;
+
+	tag=xml_findfirstchild(name,setup_tag);
+	if (tag!=-1) xml_get_attribute_text(tag,"value",value,value_sz);	
+}
+
+void xml_key_read_boolean(int setup_tag,char *name,bool *value)
+{
+	int			tag;
+
+	tag=xml_findfirstchild(name,setup_tag);
+	if (tag!=-1) *value=xml_get_attribute_boolean(tag,"value");	
+}
+
+void xml_key_read_color(int setup_tag,char *name,d3col *value)
+{
+	int			tag;
+
+	tag=xml_findfirstchild(name,setup_tag);
+	if (tag!=-1) xml_get_attribute_color(tag,"value",value);	
+}
+
+void xml_key_write_int(char *name,int value)
+{
+    xml_add_tagstart(name);
+    xml_add_attribute_int("value",value);
+    xml_add_tagend(TRUE);
+}
+
+void xml_key_write_float(char *name,float value)
+{
+    xml_add_tagstart(name);
+    xml_add_attribute_float("value",value);
+    xml_add_tagend(TRUE);
+}
+
+void xml_key_write_text(char *name,char *value)
+{
+    xml_add_tagstart(name);
+    xml_add_attribute_text("value",value);
+    xml_add_tagend(TRUE);
+}
+
+void xml_key_write_boolean(char *name,bool value)
+{
+    xml_add_tagstart(name);
+    xml_add_attribute_boolean("value",value);
+    xml_add_tagend(TRUE);
+}
+
+void xml_key_write_color(char *name,d3col *value)
+{
+    xml_add_tagstart(name);
+    xml_add_attribute_color("value",value);
+    xml_add_tagend(TRUE);
+}

@@ -294,6 +294,7 @@ extern void file_paths_base(file_path_setup_type *file_path_setup,char *path,cha
 
 extern void file_paths_documents(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name);
 extern bool file_paths_documents_exist(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name);
+extern void file_paths_preferences(char *path,char *file_name,char *ext_name);
 
 extern file_path_directory_type* file_paths_read_directory(file_path_setup_type *file_path_setup,char *sub_path,char *ext_name,bool document_dir_only);
 extern void file_paths_close_directory(file_path_directory_type *fpd);
@@ -358,6 +359,17 @@ extern bool xml_add_attribute_3_coord_float(char *name,float x,float y,float z);
 extern bool xml_add_attribute_4_coord_float(char *name,float r,float g,float b,float a);
 extern bool xml_add_attribute_color(char *name,d3col *col);
 extern bool xml_add_attribute_bit_array(char *name,unsigned char *value,int count);
+
+extern void xml_key_read_int(int setup_tag,char *name,int *value);
+extern void xml_key_read_float(int setup_tag,char *name,float *value);
+extern void xml_key_read_text(int setup_tag,char *name,char *value,int value_sz);
+extern void xml_key_read_boolean(int setup_tag,char *name,bool *value);
+extern void xml_key_read_color(int setup_tag,char *name,d3col *value);
+extern void xml_key_write_int(char *name,int value);
+extern void xml_key_write_float(char *name,float value);
+extern void xml_key_write_text(char *name,char *value);
+extern void xml_key_write_boolean(char *name,bool value);
+extern void xml_key_write_color(char *name,d3col *value);
 
 /* =======================================================
 

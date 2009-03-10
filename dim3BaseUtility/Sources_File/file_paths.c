@@ -333,3 +333,37 @@ bool file_paths_documents_exist(file_path_setup_type *file_path_setup,char *path
 	return(stat(path,&sb)==0);
 }
 
+/* =======================================================
+
+      Preference Directories
+            
+======================================================= */
+
+void file_paths_preferences(char *path,char *file_name,char *ext_name)
+{
+		// get the preferences path
+		
+#ifdef D3_OS_MAC
+	FSRef		fsref;
+	
+	FSFindFolder(kUserDomain,kPreferencesFolderType,kDontCreateFolder,&fsref);
+	FSRefMakePath(&fsref,(unsigned char*)path,1024);
+#endif
+
+#ifdef D3_OS_LINUX
+	strcpy(path,file_path_setup->path_base);
+#endif
+
+#ifdef D3_OS_WINDOWS
+	SHGetSpecialFolderPath(NULL,path,CSIDL_APPDATA,FALSE);
+#endif
+
+		// file name
+	
+	if (file_name!=NULL) {
+		strcat(path,"/");
+		strcat(path,file_name);
+		strcat(path,".");
+		strcat(path,ext_name);
+	}
+}

@@ -103,6 +103,7 @@ _file_paths_base
 
 _file_paths_documents
 _file_paths_documents_exist
+_file_paths_preferences
 
 _file_paths_read_directory
 _file_paths_close_directory
@@ -164,6 +165,17 @@ _xml_add_attribute_3_coord_float
 _xml_add_attribute_4_coord_float
 _xml_add_attribute_color
 _xml_add_attribute_bit_array
+
+_xml_key_read_int
+_xml_key_read_float
+_xml_key_read_text
+_xml_key_read_boolean
+_xml_key_read_color
+_xml_key_write_int
+_xml_key_write_float
+_xml_key_write_text
+_xml_key_write_boolean
+_xml_key_write_color
 
 
 

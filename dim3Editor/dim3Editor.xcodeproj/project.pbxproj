@@ -41,7 +41,6 @@
 		F522DCD70BBC859700DFF256 /* scenery.png in Copy (Icons) */ = {isa = PBXBuildFile; fileRef = F522DCC20BBC853C00DFF256 /* scenery.png */; };
 		F522DCD80BBC859700DFF256 /* sound.png in Copy (Icons) */ = {isa = PBXBuildFile; fileRef = F522DCC30BBC853C00DFF256 /* sound.png */; };
 		F522DCD90BBC859700DFF256 /* spot.png in Copy (Icons) */ = {isa = PBXBuildFile; fileRef = F522DCC40BBC853C00DFF256 /* spot.png */; };
-		F522DCDB0BBC859F00DFF256 /* Setup.xml in Copy (Settings) */ = {isa = PBXBuildFile; fileRef = F522DCC80BBC853C00DFF256 /* Setup.xml */; };
 		F5239B9E0AFD9C5200241092 /* undo.c in Sources */ = {isa = PBXBuildFile; fileRef = F5239B9D0AFD9C5200241092 /* undo.c */; };
 		F52F19B80946A63100FEFE18 /* selection.c in Sources */ = {isa = PBXBuildFile; fileRef = F52F19B70946A63100FEFE18 /* selection.c */; };
 		F52F19D50946A89C00FEFE18 /* common_view.h in Headers */ = {isa = PBXBuildFile; fileRef = F52F19D40946A89C00FEFE18 /* common_view.h */; };
@@ -168,7 +167,6 @@
 			dstPath = Settings;
 			dstSubfolderSpec = 7;
 			files = (
-				F522DCDB0BBC859F00DFF256 /* Setup.xml in Copy (Settings) */,
 			);
 			name = "Copy (Settings)";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -243,7 +241,6 @@
 		F522DCC20BBC853C00DFF256 /* scenery.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = scenery.png; sourceTree = "<group>"; };
 		F522DCC30BBC853C00DFF256 /* sound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sound.png; sourceTree = "<group>"; };
 		F522DCC40BBC853C00DFF256 /* spot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spot.png; sourceTree = "<group>"; };
-		F522DCC80BBC853C00DFF256 /* Setup.xml */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = Setup.xml; sourceTree = "<group>"; };
 		F5239B9D0AFD9C5200241092 /* undo.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = undo.c; path = Code/undo.c; sourceTree = "<group>"; };
 		F52F19B70946A63100FEFE18 /* selection.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = selection.c; path = Code/selection.c; sourceTree = "<group>"; };
 		F52F19D40946A89C00FEFE18 /* common_view.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = common_view.h; path = Headers/common_view.h; sourceTree = "<group>"; };
@@ -438,7 +435,6 @@
 			children = (
 				F522DCBC0BBC853C00DFF256 /* Defaults */,
 				F522DCBE0BBC853C00DFF256 /* Icons */,
-				F522DCC70BBC853C00DFF256 /* Settings */,
 			);
 			name = "Additional Data";
 			path = "Resources/Additional Data";
@@ -464,14 +460,6 @@
 				F522DCC40BBC853C00DFF256 /* spot.png */,
 			);
 			path = Icons;
-			sourceTree = "<group>";
-		};
-		F522DCC70BBC853C00DFF256 /* Settings */ = {
-			isa = PBXGroup;
-			children = (
-				F522DCC80BBC853C00DFF256 /* Setup.xml */,
-			);
-			path = Settings;
 			sourceTree = "<group>";
 		};
 		F5A98817094BF740005E55AE /* Dialogs */ = {
@@ -500,10 +488,10 @@
 				F56EF3F609A6F70700F06521 /* dialog_map_light_settings.c */,
 				F56EF44109A6FC7F00F06521 /* dialog_map_sound_settings.c */,
 				F5EC5F3C0A26946D001EEB18 /* dialog_map_particle_settings.c */,
+				26AFB4BF0D9612570004805A /* dialog_mesh_setting.c */,
 				F56EF55C09A7EA3800F06521 /* dialog_liquid_settings.c */,
 				F5AF0C5609638BC600F99950 /* dialog_texture_setting.c */,
 				2644C95B0DF8E349005CE451 /* dialog_mesh_scale.c */,
-				26AFB4BF0D9612570004805A /* dialog_mesh_setting.c */,
 				26791D420E4D626700AAD058 /* dialog_grid_mesh.c */,
 				2647AD810E4F48D000BA3338 /* dialog_height_import.c */,
 				F5CA0192098D8E6E00039712 /* dialog_map_auto_generate.c */,

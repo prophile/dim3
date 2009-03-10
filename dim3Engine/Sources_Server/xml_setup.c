@@ -137,38 +137,6 @@ void setup_xml_fix_axis(setup_axis_type *axis)
       
 ======================================================= */
 
-void setup_xml_read_key_int(int setup_tag,char *name,int *value)
-{
-	int			tag;
-
-	tag=xml_findfirstchild(name,setup_tag);
-	if (tag!=-1) *value=xml_get_attribute_int(tag,"value");	
-}
-
-void setup_xml_read_key_float(int setup_tag,char *name,float *value)
-{
-	int			tag;
-
-	tag=xml_findfirstchild(name,setup_tag);
-	if (tag!=-1) *value=xml_get_attribute_float(tag,"value");	
-}
-
-void setup_xml_read_key_text(int setup_tag,char *name,char *value,int value_sz)
-{
-	int			tag;
-
-	tag=xml_findfirstchild(name,setup_tag);
-	if (tag!=-1) xml_get_attribute_text(tag,"value",value,value_sz);	
-}
-
-void setup_xml_read_key_boolean(int setup_tag,char *name,bool *value)
-{
-	int			tag;
-
-	tag=xml_findfirstchild(name,setup_tag);
-	if (tag!=-1) *value=xml_get_attribute_boolean(tag,"value");	
-}
-
 bool setup_xml_read_path(char *path)
 {
 	int							n,k,naction,nhost,
@@ -193,60 +161,60 @@ bool setup_xml_read_path(char *path)
 	
 		// keys
 
-    setup_xml_read_key_int(setup_tag,"Screen_Width",&setup.screen_wid);
-    setup_xml_read_key_int(setup_tag,"Screen_Height",&setup.screen_high);
-	setup_xml_read_key_boolean(setup_tag,"Lock_FPS_Refresh",&setup.lock_fps_refresh);
-	setup_xml_read_key_float(setup_tag,"Gamma",&setup.gamma);
-    setup_xml_read_key_boolean(setup_tag,"Texture_Compression",&setup.texture_compression);
-    setup_xml_read_key_int(setup_tag,"Quality_Mode",&setup.quality_mode);
-    setup_xml_read_key_int(setup_tag,"Anisotropic_Mode",&setup.anisotropic_mode);
-    setup_xml_read_key_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
-	setup_xml_read_key_int(setup_tag,"FSAA_Mode",&setup.fsaa_mode);
-	setup_xml_read_key_boolean(setup_tag,"Decal_On",&setup.decal_on);
-	setup_xml_read_key_boolean(setup_tag,"Shadow_On",&setup.shadow_on);
-	setup_xml_read_key_float(setup_tag,"Sound_Volume",&setup.sound_volume);
-	setup_xml_read_key_boolean(setup_tag,"Music_On",&setup.music_on);
-	setup_xml_read_key_float(setup_tag,"Music_Volume",&setup.music_volume);
-	setup_xml_read_key_boolean(setup_tag,"Always_Run",&setup.always_run);
-	setup_xml_read_key_boolean(setup_tag,"Toggle_Run",&setup.toggle_run);
-	setup_xml_read_key_boolean(setup_tag,"Invert_Look",&setup.invert_look);
-	setup_xml_read_key_boolean(setup_tag,"Mouse_Smooth",&setup.mouse_smooth);
-	setup_xml_read_key_float(setup_tag,"Mouse_X_Speed",&setup.mouse_x.speed);
-	setup_xml_read_key_float(setup_tag,"Mouse_X_Speed_Min",&setup.mouse_x.speed_min);
-	setup_xml_read_key_float(setup_tag,"Mouse_X_Speed_Max",&setup.mouse_x.speed_max);
-	setup_xml_read_key_float(setup_tag,"Mouse_X_Acceleration",&setup.mouse_x.acceleration);
-	setup_xml_read_key_float(setup_tag,"Mouse_X_Acceleration_Min",&setup.mouse_x.acceleration_min);
-	setup_xml_read_key_float(setup_tag,"Mouse_X_Acceleration_Max",&setup.mouse_x.acceleration_max);
-	setup_xml_read_key_float(setup_tag,"Mouse_Y_Speed",&setup.mouse_y.speed);
-	setup_xml_read_key_float(setup_tag,"Mouse_Y_Speed_Min",&setup.mouse_y.speed_min);
-	setup_xml_read_key_float(setup_tag,"Mouse_Y_Speed_Max",&setup.mouse_y.speed_max);
-	setup_xml_read_key_float(setup_tag,"Mouse_Y_Acceleration",&setup.mouse_y.acceleration);
-	setup_xml_read_key_float(setup_tag,"Mouse_Y_Acceleration_Min",&setup.mouse_y.acceleration_min);
-	setup_xml_read_key_float(setup_tag,"Mouse_Y_Acceleration_Max",&setup.mouse_y.acceleration_max);
-	setup_xml_read_key_float(setup_tag,"Joystick_X_Speed",&setup.joystick_x.speed);
-	setup_xml_read_key_float(setup_tag,"Joystick_X_Speed_Min",&setup.joystick_x.speed_min);
-	setup_xml_read_key_float(setup_tag,"Joystick_X_Speed_Max",&setup.joystick_x.speed_max);
-	setup_xml_read_key_float(setup_tag,"Joystick_X_Acceleration",&setup.joystick_x.acceleration);
-	setup_xml_read_key_float(setup_tag,"Joystick_X_Acceleration_Min",&setup.joystick_x.acceleration_min);
-	setup_xml_read_key_float(setup_tag,"Joystick_X_Acceleration_Max",&setup.joystick_x.acceleration_max);
-	setup_xml_read_key_float(setup_tag,"Joystick_Y_Speed",&setup.joystick_y.speed);
-	setup_xml_read_key_float(setup_tag,"Joystick_Y_Speed_Min",&setup.joystick_y.speed_min);
-	setup_xml_read_key_float(setup_tag,"Joystick_Y_Speed_Max",&setup.joystick_y.speed_max);
-	setup_xml_read_key_float(setup_tag,"Joystick_Y_Acceleration",&setup.joystick_y.acceleration);
-	setup_xml_read_key_float(setup_tag,"Joystick_Y_Acceleration_Min",&setup.joystick_y.acceleration_min);
-	setup_xml_read_key_float(setup_tag,"Joystick_Y_Acceleration_Max",&setup.joystick_y.acceleration_max);
-	setup_xml_read_key_int(setup_tag,"Joystick_Mode",&setup.joystick_mode);
-	setup_xml_read_key_text(setup_tag,"Network_Name",setup.network.name,name_str_len);
-	setup_xml_read_key_int(setup_tag,"Network_Team",&setup.network.team_idx);
-	setup_xml_read_key_text(setup_tag,"Network_Last_Map",setup.network.last_map,name_str_len);
-	setup_xml_read_key_int(setup_tag,"Host_Bot_Count",&setup.network.bot.count);
-	setup_xml_read_key_int(setup_tag,"Host_Bot_Skill",&setup.network.bot.skill);
-	setup_xml_read_key_int(setup_tag,"Host_Game_Type",&setup.network.game_type);
-	setup_xml_read_key_int(setup_tag,"Host_Score_Limit",&setup.network.score_limit);
-	setup_xml_read_key_boolean(setup_tag,"Network_Show_Names",&setup.network.show_names);
-	setup_xml_read_key_boolean(setup_tag,"Debug_Console",&setup.debug_console);
-	setup_xml_read_key_boolean(setup_tag,"Window",&setup.window);
-	setup_xml_read_key_boolean(setup_tag,"Window_Editor",&setup.window_editor);
+    xml_key_read_int(setup_tag,"Screen_Width",&setup.screen_wid);
+    xml_key_read_int(setup_tag,"Screen_Height",&setup.screen_high);
+	xml_key_read_boolean(setup_tag,"Lock_FPS_Refresh",&setup.lock_fps_refresh);
+	xml_key_read_float(setup_tag,"Gamma",&setup.gamma);
+    xml_key_read_boolean(setup_tag,"Texture_Compression",&setup.texture_compression);
+    xml_key_read_int(setup_tag,"Quality_Mode",&setup.quality_mode);
+    xml_key_read_int(setup_tag,"Anisotropic_Mode",&setup.anisotropic_mode);
+    xml_key_read_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
+	xml_key_read_int(setup_tag,"FSAA_Mode",&setup.fsaa_mode);
+	xml_key_read_boolean(setup_tag,"Decal_On",&setup.decal_on);
+	xml_key_read_boolean(setup_tag,"Shadow_On",&setup.shadow_on);
+	xml_key_read_float(setup_tag,"Sound_Volume",&setup.sound_volume);
+	xml_key_read_boolean(setup_tag,"Music_On",&setup.music_on);
+	xml_key_read_float(setup_tag,"Music_Volume",&setup.music_volume);
+	xml_key_read_boolean(setup_tag,"Always_Run",&setup.always_run);
+	xml_key_read_boolean(setup_tag,"Toggle_Run",&setup.toggle_run);
+	xml_key_read_boolean(setup_tag,"Invert_Look",&setup.invert_look);
+	xml_key_read_boolean(setup_tag,"Mouse_Smooth",&setup.mouse_smooth);
+	xml_key_read_float(setup_tag,"Mouse_X_Speed",&setup.mouse_x.speed);
+	xml_key_read_float(setup_tag,"Mouse_X_Speed_Min",&setup.mouse_x.speed_min);
+	xml_key_read_float(setup_tag,"Mouse_X_Speed_Max",&setup.mouse_x.speed_max);
+	xml_key_read_float(setup_tag,"Mouse_X_Acceleration",&setup.mouse_x.acceleration);
+	xml_key_read_float(setup_tag,"Mouse_X_Acceleration_Min",&setup.mouse_x.acceleration_min);
+	xml_key_read_float(setup_tag,"Mouse_X_Acceleration_Max",&setup.mouse_x.acceleration_max);
+	xml_key_read_float(setup_tag,"Mouse_Y_Speed",&setup.mouse_y.speed);
+	xml_key_read_float(setup_tag,"Mouse_Y_Speed_Min",&setup.mouse_y.speed_min);
+	xml_key_read_float(setup_tag,"Mouse_Y_Speed_Max",&setup.mouse_y.speed_max);
+	xml_key_read_float(setup_tag,"Mouse_Y_Acceleration",&setup.mouse_y.acceleration);
+	xml_key_read_float(setup_tag,"Mouse_Y_Acceleration_Min",&setup.mouse_y.acceleration_min);
+	xml_key_read_float(setup_tag,"Mouse_Y_Acceleration_Max",&setup.mouse_y.acceleration_max);
+	xml_key_read_float(setup_tag,"Joystick_X_Speed",&setup.joystick_x.speed);
+	xml_key_read_float(setup_tag,"Joystick_X_Speed_Min",&setup.joystick_x.speed_min);
+	xml_key_read_float(setup_tag,"Joystick_X_Speed_Max",&setup.joystick_x.speed_max);
+	xml_key_read_float(setup_tag,"Joystick_X_Acceleration",&setup.joystick_x.acceleration);
+	xml_key_read_float(setup_tag,"Joystick_X_Acceleration_Min",&setup.joystick_x.acceleration_min);
+	xml_key_read_float(setup_tag,"Joystick_X_Acceleration_Max",&setup.joystick_x.acceleration_max);
+	xml_key_read_float(setup_tag,"Joystick_Y_Speed",&setup.joystick_y.speed);
+	xml_key_read_float(setup_tag,"Joystick_Y_Speed_Min",&setup.joystick_y.speed_min);
+	xml_key_read_float(setup_tag,"Joystick_Y_Speed_Max",&setup.joystick_y.speed_max);
+	xml_key_read_float(setup_tag,"Joystick_Y_Acceleration",&setup.joystick_y.acceleration);
+	xml_key_read_float(setup_tag,"Joystick_Y_Acceleration_Min",&setup.joystick_y.acceleration_min);
+	xml_key_read_float(setup_tag,"Joystick_Y_Acceleration_Max",&setup.joystick_y.acceleration_max);
+	xml_key_read_int(setup_tag,"Joystick_Mode",&setup.joystick_mode);
+	xml_key_read_text(setup_tag,"Network_Name",setup.network.name,name_str_len);
+	xml_key_read_int(setup_tag,"Network_Team",&setup.network.team_idx);
+	xml_key_read_text(setup_tag,"Network_Last_Map",setup.network.last_map,name_str_len);
+	xml_key_read_int(setup_tag,"Host_Bot_Count",&setup.network.bot.count);
+	xml_key_read_int(setup_tag,"Host_Bot_Skill",&setup.network.bot.skill);
+	xml_key_read_int(setup_tag,"Host_Game_Type",&setup.network.game_type);
+	xml_key_read_int(setup_tag,"Host_Score_Limit",&setup.network.score_limit);
+	xml_key_read_boolean(setup_tag,"Network_Show_Names",&setup.network.show_names);
+	xml_key_read_boolean(setup_tag,"Debug_Console",&setup.debug_console);
+	xml_key_read_boolean(setup_tag,"Window",&setup.window);
+	xml_key_read_boolean(setup_tag,"Window_Editor",&setup.window_editor);
 
 		// fix some items
 
@@ -333,34 +301,6 @@ bool setup_xml_reset(void)
       
 ======================================================= */
 
-void setup_xml_write_key_int(char *name,int value)
-{
-    xml_add_tagstart(name);
-    xml_add_attribute_int("value",value);
-    xml_add_tagend(TRUE);
-}
-
-void setup_xml_write_key_float(char *name,float value)
-{
-    xml_add_tagstart(name);
-    xml_add_attribute_float("value",value);
-    xml_add_tagend(TRUE);
-}
-
-void setup_xml_write_key_text(char *name,char *value)
-{
-    xml_add_tagstart(name);
-    xml_add_attribute_text("value",value);
-    xml_add_tagend(TRUE);
-}
-
-void setup_xml_write_key_boolean(char *name,bool value)
-{
-    xml_add_tagstart(name);
-    xml_add_attribute_boolean("value",value);
-    xml_add_tagend(TRUE);
-}
-
 bool setup_xml_write(void)
 {
 	int							n,k;
@@ -378,60 +318,60 @@ bool setup_xml_write(void)
 	
 		// keys
 
-    setup_xml_write_key_int("Screen_Width",setup.screen_wid);
-    setup_xml_write_key_int("Screen_Height",setup.screen_high);
-    setup_xml_write_key_boolean("Lock_FPS_Refresh",setup.lock_fps_refresh);
-	setup_xml_write_key_float("Gamma",setup.gamma);
-    setup_xml_write_key_boolean("Texture_Compression",setup.texture_compression);
-	setup_xml_write_key_int("Quality_Mode",setup.quality_mode);
-	setup_xml_write_key_int("Anisotropic_Mode",setup.anisotropic_mode);
-    setup_xml_write_key_int("Mipmap_Mode",setup.mipmap_mode);
-	setup_xml_write_key_int("FSAA_Mode",setup.fsaa_mode);
-	setup_xml_write_key_boolean("Decal_On",setup.decal_on);
-	setup_xml_write_key_boolean("Shadow_On",setup.shadow_on);
-	setup_xml_write_key_float("Sound_Volume",setup.sound_volume);
-	setup_xml_write_key_boolean("Music_On",setup.music_on);
-	setup_xml_write_key_float("Music_Volume",setup.music_volume);
-	setup_xml_write_key_boolean("Always_Run",setup.always_run);
-	setup_xml_write_key_boolean("Toggle_Run",setup.toggle_run);
-	setup_xml_write_key_boolean("Invert_Look",setup.invert_look);
-	setup_xml_write_key_boolean("Mouse_Smooth",setup.mouse_smooth);
-	setup_xml_write_key_float("Mouse_X_Speed",setup.mouse_x.speed);
-	setup_xml_write_key_float("Mouse_X_Speed_Min",setup.mouse_x.speed_min);
-	setup_xml_write_key_float("Mouse_X_Speed_Max",setup.mouse_x.speed_max);
-	setup_xml_write_key_float("Mouse_X_Acceleration",setup.mouse_x.acceleration);
-	setup_xml_write_key_float("Mouse_X_Acceleration_Min",setup.mouse_x.acceleration_min);
-	setup_xml_write_key_float("Mouse_X_Acceleration_Max",setup.mouse_x.acceleration_max);
-	setup_xml_write_key_float("Mouse_Y_Speed",setup.mouse_y.speed);
-	setup_xml_write_key_float("Mouse_Y_Speed_Min",setup.mouse_y.speed_min);
-	setup_xml_write_key_float("Mouse_Y_Speed_Max",setup.mouse_y.speed_max);
-	setup_xml_write_key_float("Mouse_Y_Acceleration",setup.mouse_y.acceleration);
-	setup_xml_write_key_float("Mouse_Y_Acceleration_Min",setup.mouse_y.acceleration_min);
-	setup_xml_write_key_float("Mouse_Y_Acceleration_Max",setup.mouse_y.acceleration_max);
-	setup_xml_write_key_float("Joystick_X_Speed",setup.joystick_x.speed);
-	setup_xml_write_key_float("Joystick_X_Speed_Min",setup.joystick_x.speed_min);
-	setup_xml_write_key_float("Joystick_X_Speed_Max",setup.joystick_x.speed_max);
-	setup_xml_write_key_float("Joystick_X_Acceleration",setup.joystick_x.acceleration);
-	setup_xml_write_key_float("Joystick_X_Acceleration_Min",setup.joystick_x.acceleration_min);
-	setup_xml_write_key_float("Joystick_X_Acceleration_Max",setup.joystick_x.acceleration_max);
-	setup_xml_write_key_float("Joystick_Y_Speed",setup.joystick_y.speed);
-	setup_xml_write_key_float("Joystick_Y_Speed_Min",setup.joystick_y.speed_min);
-	setup_xml_write_key_float("Joystick_Y_Speed_Max",setup.joystick_y.speed_max);
-	setup_xml_write_key_float("Joystick_Y_Acceleration",setup.joystick_y.acceleration);
-	setup_xml_write_key_float("Joystick_Y_Acceleration_Min",setup.joystick_y.acceleration_min);
-	setup_xml_write_key_float("Joystick_Y_Acceleration_Max",setup.joystick_y.acceleration_max);
-	setup_xml_write_key_int("Joystick_Mode",setup.joystick_mode);
-	setup_xml_write_key_text("Network_Name",setup.network.name);
-	setup_xml_write_key_int("Network_Team",setup.network.team_idx);
-	setup_xml_write_key_text("Network_Last_Map",setup.network.last_map);
-	setup_xml_write_key_int("Host_Bot_Count",setup.network.bot.count);
-	setup_xml_write_key_int("Host_Bot_Skill",setup.network.bot.skill);
-	setup_xml_write_key_int("Host_Game_Type",setup.network.game_type);
-	setup_xml_write_key_int("Host_Score_Limit",setup.network.score_limit);
-	setup_xml_write_key_boolean("Network_Show_Names",setup.network.show_names);
-	setup_xml_write_key_boolean("Debug_Console",setup.debug_console);
-	setup_xml_write_key_boolean("Window",setup.window);
-	setup_xml_write_key_boolean("Window_Editor",setup.window_editor);
+    xml_key_write_int("Screen_Width",setup.screen_wid);
+    xml_key_write_int("Screen_Height",setup.screen_high);
+    xml_key_write_boolean("Lock_FPS_Refresh",setup.lock_fps_refresh);
+	xml_key_write_float("Gamma",setup.gamma);
+    xml_key_write_boolean("Texture_Compression",setup.texture_compression);
+	xml_key_write_int("Quality_Mode",setup.quality_mode);
+	xml_key_write_int("Anisotropic_Mode",setup.anisotropic_mode);
+    xml_key_write_int("Mipmap_Mode",setup.mipmap_mode);
+	xml_key_write_int("FSAA_Mode",setup.fsaa_mode);
+	xml_key_write_boolean("Decal_On",setup.decal_on);
+	xml_key_write_boolean("Shadow_On",setup.shadow_on);
+	xml_key_write_float("Sound_Volume",setup.sound_volume);
+	xml_key_write_boolean("Music_On",setup.music_on);
+	xml_key_write_float("Music_Volume",setup.music_volume);
+	xml_key_write_boolean("Always_Run",setup.always_run);
+	xml_key_write_boolean("Toggle_Run",setup.toggle_run);
+	xml_key_write_boolean("Invert_Look",setup.invert_look);
+	xml_key_write_boolean("Mouse_Smooth",setup.mouse_smooth);
+	xml_key_write_float("Mouse_X_Speed",setup.mouse_x.speed);
+	xml_key_write_float("Mouse_X_Speed_Min",setup.mouse_x.speed_min);
+	xml_key_write_float("Mouse_X_Speed_Max",setup.mouse_x.speed_max);
+	xml_key_write_float("Mouse_X_Acceleration",setup.mouse_x.acceleration);
+	xml_key_write_float("Mouse_X_Acceleration_Min",setup.mouse_x.acceleration_min);
+	xml_key_write_float("Mouse_X_Acceleration_Max",setup.mouse_x.acceleration_max);
+	xml_key_write_float("Mouse_Y_Speed",setup.mouse_y.speed);
+	xml_key_write_float("Mouse_Y_Speed_Min",setup.mouse_y.speed_min);
+	xml_key_write_float("Mouse_Y_Speed_Max",setup.mouse_y.speed_max);
+	xml_key_write_float("Mouse_Y_Acceleration",setup.mouse_y.acceleration);
+	xml_key_write_float("Mouse_Y_Acceleration_Min",setup.mouse_y.acceleration_min);
+	xml_key_write_float("Mouse_Y_Acceleration_Max",setup.mouse_y.acceleration_max);
+	xml_key_write_float("Joystick_X_Speed",setup.joystick_x.speed);
+	xml_key_write_float("Joystick_X_Speed_Min",setup.joystick_x.speed_min);
+	xml_key_write_float("Joystick_X_Speed_Max",setup.joystick_x.speed_max);
+	xml_key_write_float("Joystick_X_Acceleration",setup.joystick_x.acceleration);
+	xml_key_write_float("Joystick_X_Acceleration_Min",setup.joystick_x.acceleration_min);
+	xml_key_write_float("Joystick_X_Acceleration_Max",setup.joystick_x.acceleration_max);
+	xml_key_write_float("Joystick_Y_Speed",setup.joystick_y.speed);
+	xml_key_write_float("Joystick_Y_Speed_Min",setup.joystick_y.speed_min);
+	xml_key_write_float("Joystick_Y_Speed_Max",setup.joystick_y.speed_max);
+	xml_key_write_float("Joystick_Y_Acceleration",setup.joystick_y.acceleration);
+	xml_key_write_float("Joystick_Y_Acceleration_Min",setup.joystick_y.acceleration_min);
+	xml_key_write_float("Joystick_Y_Acceleration_Max",setup.joystick_y.acceleration_max);
+	xml_key_write_int("Joystick_Mode",setup.joystick_mode);
+	xml_key_write_text("Network_Name",setup.network.name);
+	xml_key_write_int("Network_Team",setup.network.team_idx);
+	xml_key_write_text("Network_Last_Map",setup.network.last_map);
+	xml_key_write_int("Host_Bot_Count",setup.network.bot.count);
+	xml_key_write_int("Host_Bot_Skill",setup.network.bot.skill);
+	xml_key_write_int("Host_Game_Type",setup.network.game_type);
+	xml_key_write_int("Host_Score_Limit",setup.network.score_limit);
+	xml_key_write_boolean("Network_Show_Names",setup.network.show_names);
+	xml_key_write_boolean("Debug_Console",setup.debug_console);
+	xml_key_write_boolean("Window",setup.window);
+	xml_key_write_boolean("Window_Editor",setup.window_editor);
 	
 		// actions
 

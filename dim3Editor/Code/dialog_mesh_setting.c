@@ -30,7 +30,6 @@ and can be sold or given away.
 #include "dialog.h"
 
 #define kMeshSettingTabCount					3
-
 #define kMeshSettingTab							FOUR_CHAR_CODE('tabb')
 
 #define kMeshSettingOn							FOUR_CHAR_CODE('fson')

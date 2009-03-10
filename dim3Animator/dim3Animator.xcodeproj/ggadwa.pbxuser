@@ -42,7 +42,7 @@
 	};
 	0867D6ABFE840B52C02AAC07 /* English */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {12, 98}}";
+			sepNavIntBoundsRect = "{{0, 0}, {546, 84}}";
 			sepNavSelRange = "{206, 0}";
 			sepNavVisRange = "{0, 0}";
 			sepNavWindowFrame = "{{130, 171}, {1041, 747}}";
@@ -121,12 +121,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 258240145;
-			PBXWorkspaceStateSaveDate = 258240145;
+			PBXPerProjectTemplateStateSaveDate = 258346582;
+			PBXWorkspaceStateSaveDate = 258346582;
 		};
 		perUserProjectItems = {
-			268BC8760F64711000E900C2 /* PBXTextBookmark */ = 268BC8760F64711000E900C2 /* PBXTextBookmark */;
-			269BF8A10F64588F00E7C243 /* PBXTextBookmark */ = 269BF8A10F64588F00E7C243 /* PBXTextBookmark */;
+			26E4C5CA0F65FF3A003EE830 /* PBXTextBookmark */ = 26E4C5CA0F65FF3A003EE830 /* PBXTextBookmark */;
+			26E4C6640F661C6E003EE830 /* PBXTextBookmark */ = 26E4C6640F661C6E003EE830 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -251,26 +251,6 @@
 			sepNavWindowFrame = "{{493, 173}, {1041, 747}}";
 		};
 	};
-	268BC8760F64711000E900C2 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
-		name = "InfoPlist.strings: 5";
-		rLen = 0;
-		rLoc = 206;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
-	269BF8A10F64588F00E7C243 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
-		name = "InfoPlist.strings: 5";
-		rLen = 0;
-		rLoc = 206;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
 	26A59FA40F327FB5007C6209 /* mesh_list.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1041, 2884}}";
@@ -302,6 +282,26 @@
 			sepNavVisRange = "{9338, 1762}";
 			sepNavWindowFrame = "{{456, 114}, {1041, 747}}";
 		};
+	};
+	26E4C5CA0F65FF3A003EE830 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
+		name = "InfoPlist.strings: 5";
+		rLen = 0;
+		rLoc = 206;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
+	26E4C6640F661C6E003EE830 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
+		name = "InfoPlist.strings: 5";
+		rLen = 0;
+		rLoc = 206;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
 	};
 	F503D2560981A35B00DEDC74 /* draw_model.c */ = {
 		uiCtxt = {

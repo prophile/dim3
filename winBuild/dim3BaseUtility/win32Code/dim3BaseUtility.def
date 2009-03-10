@@ -106,10 +106,11 @@ EXPORTS
 
 	file_paths_documents						@270
 	file_paths_documents_exist					@271
+	file_paths_preferences						@272
 
-	file_paths_read_directory					@272
-	file_paths_close_directory					@273
-	file_paths_descript_directory_file			@274
+	file_paths_read_directory					@273
+	file_paths_close_directory					@274
+	file_paths_descript_directory_file			@275
 
 
 
@@ -168,7 +169,16 @@ EXPORTS
 	xml_add_attribute_color						@343
 	xml_add_attribute_bit_array					@344
 
-
+	xml_key_read_int							@500
+	xml_key_read_float							@501
+	xml_key_read_text							@502
+	xml_key_read_boolean						@503
+	xml_key_read_color							@504
+	xml_key_write_int							@505
+	xml_key_write_float							@506
+	xml_key_write_text							@507
+	xml_key_write_boolean						@508
+	xml_key_write_color							@509
 
 	bitmap_new									@350
 	bitmap_open									@351

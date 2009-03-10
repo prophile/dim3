@@ -79,8 +79,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 258265302;
-			PBXWorkspaceStateSaveDate = 258265302;
+			PBXPerProjectTemplateStateSaveDate = 258339030;
+			PBXWorkspaceStateSaveDate = 258339030;
 		};
 		perUserProjectItems = {
 			26650DDF0F0EC86400D22461 /* PlistBookmark */ = 26650DDF0F0EC86400D22461 /* PlistBookmark */;
@@ -211,10 +211,10 @@
 	};
 	264CA5A00F5244D700E90DF2 /* xml_shaders.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {984, 2786}}";
-			sepNavSelRange = "{1624, 0}";
-			sepNavVisRange = "{1153, 968}";
-			sepNavWindowFrame = "{{750, 114}, {999, 779}}";
+			sepNavIntBoundsRect = "{{0, 0}, {984, 2758}}";
+			sepNavSelRange = "{1415, 0}";
+			sepNavVisRange = "{1146, 975}";
+			sepNavWindowFrame = "{{400, 153}, {999, 779}}";
 		};
 	};
 	2657380C0DB07F650061E1B4 /* setup_network.c */ = {
@@ -675,9 +675,9 @@
 	};
 	F5A57F37090AB24200BE7C36 /* xml_setup.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7350}}";
-			sepNavSelRange = "{11186, 5814}";
-			sepNavVisRange = "{3621, 1138}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6426}}";
+			sepNavSelRange = "{14876, 0}";
+			sepNavVisRange = "{14394, 935}";
 			sepNavWindowFrame = "{{508, 142}, {1041, 747}}";
 		};
 	};
@@ -1227,9 +1227,9 @@
 	};
 	F5A582CD090C993400BE7C36 /* view_defs.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 3290}}";
-			sepNavSelRange = "{1978, 0}";
-			sepNavVisRange = "{1665, 896}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 3374}}";
+			sepNavSelRange = "{1153, 0}";
+			sepNavVisRange = "{469, 1098}";
 			sepNavWindowFrame = "{{279, 204}, {1041, 747}}";
 		};
 	};
@@ -1974,9 +1974,9 @@
 	};
 	F5DD1A9309085CAA00721649 /* gl_shader.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 8694}}";
-			sepNavSelRange = "{12514, 0}";
-			sepNavVisRange = "{11738, 1858}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 8862}}";
+			sepNavSelRange = "{12568, 24}";
+			sepNavVisRange = "{10933, 2034}";
 			sepNavWindowFrame = "{{171, 221}, {1041, 747}}";
 		};
 	};
