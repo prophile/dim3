@@ -216,6 +216,7 @@ void object_clear_draw(model_draw *draw)
 	for (k=0;k!=max_model_light;k++) {
 		draw->lights[k].on=FALSE;
 		draw->lights[k].type=lt_normal;
+		draw->lights[k].direction=ld_all;
 		draw->lights[k].intensity=0;
 		draw->lights[k].exponent=1.0f;
 		draw->lights[k].col.r=draw->lights[k].col.g=draw->lights[k].col.b=1;

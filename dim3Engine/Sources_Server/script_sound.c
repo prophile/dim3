@@ -101,6 +101,10 @@ bool script_sound_play(char *name,d3pnt *pt,float pitch,bool global)
 		sound_obj_uid=obj->uid;
 		player=obj->player;
 	}
+
+		// turn off global if you aren't the player
+
+	if (!player) global=FALSE;
 	
 		// play sound
 		

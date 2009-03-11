@@ -71,6 +71,14 @@ script_define_type			script_dim3_defines[]={
 								{sd_light_type_flicker,							"",		"DIM3_LIGHT_TYPE_FLICKER"},
 								{sd_light_type_failing,							"",		"DIM3_LIGHT_TYPE_FAILING"},
 
+								{sd_light_direction_all,						"",		"DIM3_LIGHT_DIRECTION_ALL"},
+								{sd_light_direction_neg_x,						"",		"DIM3_LIGHT_DIRECTION_NEG_X"},
+								{sd_light_direction_pos_x,						"",		"DIM3_LIGHT_DIRECTION_POS_X"},
+								{sd_light_direction_neg_y,						"",		"DIM3_LIGHT_DIRECTION_NEG_Y"},
+								{sd_light_direction_pos_y,						"",		"DIM3_LIGHT_DIRECTION_POS_Y"},
+								{sd_light_direction_neg_z,						"",		"DIM3_LIGHT_DIRECTION_NEG_Z"},
+								{sd_light_direction_pos_z,						"",		"DIM3_LIGHT_DIRECTION_POS_Z"},
+
 								{sd_model_lit_flat,								"",		"DIM3_MODEL_LIT_FLAT"},
 								{sd_model_lit_hilite,							"",		"DIM3_MODEL_LIT_HILITE"},
 								{sd_model_lit_hilite_diffuse,					"",		"DIM3_MODEL_LIT_HILITE_DIFFUSE"},

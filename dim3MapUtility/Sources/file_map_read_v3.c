@@ -36,6 +36,7 @@ extern char				media_type_str[][32],
 						gl_fog_type_str[][32],
 						liquid_tide_direction_str[][32],
                         light_type_str[][32],
+						light_direction_str[][32],
 						lighting_mode_str[][32],
 						skill_type_str[][32],
 						spawn_type_str[][32],
@@ -341,6 +342,7 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 			map->nlight++;
 			
 			light->type=xml_get_attribute_list(light_tag,"type",(char*)light_type_str);
+			light->direction=xml_get_attribute_list(light_tag,"direction",(char*)light_direction_str);
 			xml_get_attribute_3_coord_int(light_tag,"c3",&light->pnt.x,&light->pnt.y,&light->pnt.z);
 			light->intensity=xml_get_attribute_int(light_tag,"intensity");
 			light->exponent=xml_get_attribute_float_default(light_tag,"exponent",1.0f);

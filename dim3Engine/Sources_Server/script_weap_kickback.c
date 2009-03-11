@@ -46,7 +46,6 @@ JSClass			weap_kickback_class={"weap_kickback_class",0,
                             
 JSPropertySpec	weap_kickback_props[]={
 							{"size",				weap_kickback_prop_size,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"tick",				weap_kickback_prop_tick,				JSPROP_PERMANENT|JSPROP_SHARED},	// depreciated
 							{0}};
 							
 JSFunctionSpec	weap_kickback_functions[]={

@@ -119,7 +119,8 @@ void map_auto_generate_lights(map_type *map)
 		lit->pnt.x=x;
 		lit->pnt.y=y;
 		lit->pnt.z=z;
-		lit->type=lt_type;
+		lit->type=lt_normal;
+		lit->direction=ld_all;
 		lit->col.r=r;
 		lit->col.g=g;
 		lit->col.b=b;

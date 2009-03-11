@@ -45,13 +45,11 @@ JSPropertySpec	model_light_props[]={
 							{"index",				model_light_prop_index,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{"on",					model_light_prop_on,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{"type",				model_light_prop_type,				JSPROP_PERMANENT|JSPROP_SHARED},
+							{"direction",			model_light_prop_direction,			JSPROP_PERMANENT|JSPROP_SHARED},
 							{"intensity",			model_light_prop_intensity,			JSPROP_PERMANENT|JSPROP_SHARED},
 							{"exponent",			model_light_prop_exponent,			JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 							
-int				light_type_to_jsval[]={sd_light_type_normal,sd_light_type_blink,sd_light_type_glow,sd_light_type_pulse,sd_light_type_flicker,sd_light_type_failing},
-				light_jsval_to_type[]={lt_normal,lt_blink,lt_glow,lt_pulse,lt_flicker,lt_failing};
-
 extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 
 /* =======================================================
@@ -76,7 +74,6 @@ void script_add_model_light_object(JSObject *parent_obj)
 
 JSBool js_get_model_light_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	int					k;
 	model_draw			*draw;
 	model_draw_light	*light;
 
@@ -94,8 +91,10 @@ JSBool js_get_model_light_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 			*vp=BOOLEAN_TO_JSVAL(light->on);
 			break;
 		case model_light_prop_type:
-			k=light->type-lt_normal;
-			*vp=INT_TO_JSVAL(light_type_to_jsval[k]);
+			*vp=INT_TO_JSVAL(light->type-sd_light_type_normal);
+			break;
+		case model_light_prop_direction:
+			*vp=INT_TO_JSVAL(light->direction+sd_light_direction_all);
 			break;
 		case model_light_prop_intensity:
 			*vp=INT_TO_JSVAL(light->intensity);
@@ -110,7 +109,6 @@ JSBool js_get_model_light_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 
 JSBool js_set_model_light_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	int					k;
 	model_draw			*draw;
 	model_draw_light	*light;
 
@@ -129,8 +127,10 @@ JSBool js_set_model_light_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 			light->on=JSVAL_TO_BOOLEAN(*vp);
 			break;
 		case model_light_prop_type:
-			k=JSVAL_TO_INT(*vp)-sd_light_type_normal;
-			light->type=light_jsval_to_type[k];
+			light->type=JSVAL_TO_INT(*vp)-sd_light_type_normal;
+			break;
+		case model_light_prop_direction:
+			light->direction=JSVAL_TO_INT(*vp)-sd_light_direction_all;
 			break;
 		case model_light_prop_intensity:
 			light->intensity=JSVAL_TO_INT(*vp);

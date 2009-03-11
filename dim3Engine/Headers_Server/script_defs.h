@@ -234,8 +234,9 @@ and can be sold or given away.
 #define model_light_prop_index						0
 #define model_light_prop_on							1
 #define model_light_prop_type						2
-#define model_light_prop_intensity					3
-#define model_light_prop_exponent					4
+#define model_light_prop_direction					3
+#define model_light_prop_intensity					4
+#define model_light_prop_exponent					5
 
 #define model_light_color_prop_red					0
 #define model_light_color_prop_green				1
@@ -543,7 +544,6 @@ and can be sold or given away.
 #define weap_crosshair_pickup_color_prop_blue		2
 
 #define weap_kickback_prop_size						0
-#define weap_kickback_prop_tick						1		// depreciated
 
 #define weap_recoil_prop_min_x						0
 #define weap_recoil_prop_max_x						1
@@ -733,6 +733,14 @@ and can be sold or given away.
 #define sd_light_type_pulse								1043
 #define sd_light_type_flicker							1044
 #define sd_light_type_failing							1045
+
+#define sd_light_direction_all							1050
+#define sd_light_direction_neg_x						1051
+#define sd_light_direction_pos_x						1052
+#define sd_light_direction_neg_y						1053
+#define sd_light_direction_pos_y						1054
+#define sd_light_direction_neg_z						1055
+#define sd_light_direction_pos_z						1056
 
 //
 // model constants

@@ -107,6 +107,14 @@ extern char light_type_str[][32];
 #define lt_flicker											4
 #define lt_failing											5
 
+#define ld_all												0
+#define ld_neg_x											1
+#define ld_pos_x											2
+#define ld_neg_y											3
+#define ld_pos_y											4
+#define ld_neg_z											5
+#define ld_pos_z											6
+
 //
 // media types
 //
@@ -337,7 +345,7 @@ typedef struct		{
 					} map_scenery_type;
 
 typedef struct		{
-						int									type,intensity;
+						int									type,direction,intensity;
 						float								exponent;
 						bool								on;
 						d3pnt								pnt;

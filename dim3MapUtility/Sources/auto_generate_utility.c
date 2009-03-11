@@ -759,6 +759,7 @@ void map_auto_generate_add_simple_lights(map_type *map)
 		lit->pnt.y=y;
 		lit->pnt.z=z;
 		lit->type=lt_normal;
+		lit->direction=ld_all;
 		lit->col.r=lit->col.g=lit->col.b=1.0f;
 		lit->intensity=intensity;
 		lit->exponent=1.0f;

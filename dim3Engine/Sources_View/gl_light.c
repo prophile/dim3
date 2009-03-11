@@ -324,8 +324,6 @@ void gl_lights_calc_vertex(double x,double y,double z,float *cf)
 		lspot++;
 	}
 
-		// supergumba -- do exponent here
-
 		// set light value
 
 	*cf++=(map.ambient.light_color.r+setup.gamma)+(float)r;
