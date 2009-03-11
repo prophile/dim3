@@ -27,7 +27,8 @@ and can be sold or given away.
 
 #include "dialog.h"
 
-extern model_type		model;
+#define kModelSettingTabCount				4
+#define kModelSettingTab					FOUR_CHAR_CODE('tabb')
 
 #define kRotateMode							FOUR_CHAR_CODE('rotm')
 #define kCenterXOff							FOUR_CHAR_CODE('cxof')
@@ -47,8 +48,14 @@ extern model_type		model;
 #define kShadowZOff							FOUR_CHAR_CODE('szof')
 #define kShadowFudge						FOUR_CHAR_CODE('fdge')
 
+#define kLightBoneTag						FOUR_CHAR_CODE('lbtg')
+#define kHaloBoneTag						FOUR_CHAR_CODE('hbtg')
+#define kNameBoneTag						FOUR_CHAR_CODE('nbtg')
+
 bool						dialog_model_settings_cancel;
 WindowRef					dialog_model_settings_wind;
+
+extern model_type			model;
 
 /* =======================================================
 
@@ -85,6 +92,20 @@ static pascal OSStatus model_settings_event_proc(EventHandlerCallRef handler,Eve
 	return(eventNotHandledErr);
 }
 
+static pascal OSStatus pose_move_setting_tab_proc(EventHandlerCallRef handler,EventRef event,void *data)
+{
+	int				event_class,event_kind;
+	
+	event_class=GetEventClass(event);
+	event_kind=GetEventKind(event);
+	
+	if ((event_class==kEventClassControl) && (event_kind==kEventControlHit)) {
+		dialog_switch_tab(dialog_model_settings_wind,kModelSettingTab,0,kModelSettingTabCount);
+	}
+	
+	return(eventNotHandledErr);
+}
+
 /* =======================================================
 
       Run Model Setting
@@ -93,17 +114,31 @@ static pascal OSStatus model_settings_event_proc(EventHandlerCallRef handler,Eve
 
 bool dialog_model_settings_run(void)
 {
-	EventHandlerUPP			event_upp;
-	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
+	int						n,idx;
+	ControlRef				ctrl;
+	ControlID				ctrl_id;
+	EventHandlerUPP			event_upp,tab_event_upp;
+	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}},
+							tab_event_list[]={{kEventClassCommand,kEventProcessCommand},
+											  {kEventClassControl,kEventControlHit}};
 	
 		// open the dialog
 		
 	dialog_open(&dialog_model_settings_wind,"ModelSettings");
+	
+		// tab
+		
+	dialog_set_tab(dialog_model_settings_wind,kModelSettingTab,0,0,kModelSettingTabCount);
+	
+	ctrl_id.signature=kModelSettingTab;
+	ctrl_id.id=0;
+	GetControlByID(dialog_model_settings_wind,&ctrl_id,&ctrl);
+	
+	tab_event_upp=NewEventHandlerUPP(pose_move_setting_tab_proc);
+	InstallControlEventHandler(ctrl,tab_event_upp,GetEventTypeCount(tab_event_list),tab_event_list,dialog_model_settings_wind,NULL);
 
 		// set controls
 		
-	dialog_set_boolean(dialog_model_settings_wind,kRotateMode,0,(model.deform_mode==deform_mode_comulative_rotate));
-
 	dialog_set_int(dialog_model_settings_wind,kCenterXOff,0,model.center.x);
 	dialog_set_int(dialog_model_settings_wind,kCenterYOff,0,model.center.y);
 	dialog_set_int(dialog_model_settings_wind,kCenterZOff,0,model.center.z);
@@ -123,6 +158,21 @@ bool dialog_model_settings_run(void)
 	dialog_set_int(dialog_model_settings_wind,kShadowZOff,0,model.shadow_box.offset.z);
 	dialog_set_int(dialog_model_settings_wind,kShadowFudge,0,model.shadow_fudge);
 	
+	dialog_set_boolean(dialog_model_settings_wind,kRotateMode,0,(model.deform_mode==deform_mode_comulative_rotate));
+
+	idx=model_find_bone(&model,model.tags.name_bone_tag);
+	dialog_set_bone_combo(dialog_model_settings_wind,kNameBoneTag,0,idx);
+	
+	for (n=0;n!=max_model_light;n++) {
+		idx=model_find_bone(&model,model.tags.light_bone_tag[n]);
+		dialog_set_bone_combo(dialog_model_settings_wind,kLightBoneTag,n,idx);
+	}
+	
+	for (n=0;n!=max_model_halo;n++) {
+		idx=model_find_bone(&model,model.tags.halo_bone_tag[n]);
+		dialog_set_bone_combo(dialog_model_settings_wind,kHaloBoneTag,n,idx);
+	}
+	
 		// show window
 	
 	ShowWindow(dialog_model_settings_wind);
@@ -140,13 +190,6 @@ bool dialog_model_settings_run(void)
 		// dialog to data
 		
 	if (!dialog_model_settings_cancel) {
-		if (dialog_get_boolean(dialog_model_settings_wind,kRotateMode,0)) {
-			model.deform_mode=deform_mode_comulative_rotate;
-		}
-		else {
-			model.deform_mode=deform_mode_single_rotate;
-		}
-		
 		model.center.x=dialog_get_int(dialog_model_settings_wind,kCenterXOff,0);
 		model.center.y=dialog_get_int(dialog_model_settings_wind,kCenterYOff,0);
 		model.center.z=dialog_get_int(dialog_model_settings_wind,kCenterZOff,0);
@@ -165,6 +208,41 @@ bool dialog_model_settings_run(void)
 		model.shadow_box.offset.y=dialog_get_int(dialog_model_settings_wind,kShadowYOff,0);
 		model.shadow_box.offset.z=dialog_get_int(dialog_model_settings_wind,kShadowZOff,0);
 		model.shadow_fudge=dialog_get_int(dialog_model_settings_wind,kShadowFudge,0);
+		
+		if (dialog_get_boolean(dialog_model_settings_wind,kRotateMode,0)) {
+			model.deform_mode=deform_mode_comulative_rotate;
+		}
+		else {
+			model.deform_mode=deform_mode_single_rotate;
+		}
+		
+		idx=dialog_get_bone_combo(dialog_model_settings_wind,kNameBoneTag,n);
+		if (idx==-1) {
+			model.tags.name_bone_tag=model_null_tag;
+		}
+		else {
+			model.tags.name_bone_tag=model.bones[idx].tag;
+		}
+
+		for (n=0;n!=max_model_light;n++) {
+			idx=dialog_get_bone_combo(dialog_model_settings_wind,kLightBoneTag,n);
+			if (idx==-1) {
+				model.tags.light_bone_tag[n]=model_null_tag;
+			}
+			else {
+				model.tags.light_bone_tag[n]=model.bones[idx].tag;
+			}
+		}
+		
+		for (n=0;n!=max_model_halo;n++) {
+			idx=dialog_get_bone_combo(dialog_model_settings_wind,kHaloBoneTag,n);
+			if (idx==-1) {
+				model.tags.halo_bone_tag[n]=model_null_tag;
+			}
+			else {
+				model.tags.halo_bone_tag[n]=model.bones[idx].tag;
+			}
+		}
 	}
 
 		// close window

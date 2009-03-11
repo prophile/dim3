@@ -644,12 +644,22 @@ void walk_view_click_info(void)
 	switch (type) {
 	
 		case mesh_piece:
-			dialog_mesh_setting_run();
+			if (drag_mode!=drag_mode_polygon) {
+				dialog_mesh_setting_run();
+			}
+			else {
+				dialog_poly_setting_run();
+			}
 			break;
 			
 		case liquid_piece:
-			liq=&map.liquid.liquids[main_idx];
-			dialog_liquid_settings_run(liq);
+			if (drag_mode!=drag_mode_polygon) {
+				liq=&map.liquid.liquids[main_idx];
+				dialog_liquid_settings_run(liq);
+			}
+			else {
+				dialog_poly_setting_run();
+			}
 			break;
 	
 		case node_piece:

@@ -34,11 +34,10 @@ extern bool				play_animate;
 extern model_type		model;
 
 #define kAnimationPoseTabCount				6
+#define kAnimationPoseTab					FOUR_CHAR_CODE('tabb')
 
 #define kAnimationName						FOUR_CHAR_CODE('name')
 #define kAnimationLoop						FOUR_CHAR_CODE('loop')
-
-#define kAnimationPoseTab					FOUR_CHAR_CODE('tabb')
 
 #define kAnimationPoseList					FOUR_CHAR_CODE('psls')
 #define kAniamtionPostListNameColumn		FOUR_CHAR_CODE('pnme')

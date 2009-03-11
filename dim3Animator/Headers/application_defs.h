@@ -54,7 +54,6 @@
 #define kCommandUndo					FOUR_CHAR_CODE('undo')
 
 #define kCommandSettings				FOUR_CHAR_CODE('sets')
-#define kCommandSpecialBones			FOUR_CHAR_CODE('spbn')
 #define kCommandHitBoxes				FOUR_CHAR_CODE('hbox')
 #define kCommandPrepareModel			FOUR_CHAR_CODE('pmdl')
 #define kCommandCalcBoxes				FOUR_CHAR_CODE('cbox')

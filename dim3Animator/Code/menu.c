@@ -647,11 +647,6 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
             redraw_model();
 			return(noErr);
 			
- 		case kCommandSpecialBones:
-			dialog_special_bones_settings_run();
-            redraw_model();
-			return(noErr);
-			
 		case kCommandHitBoxes:
 			dialog_hit_box_settings_run();
             redraw_model();

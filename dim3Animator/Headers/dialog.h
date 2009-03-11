@@ -83,7 +83,6 @@ extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *exten
 extern void dialog_import_finish_run(model_type *mdl,float *scale);
 
 extern bool dialog_model_settings_run(void);
-extern bool dialog_special_bones_settings_run(void);
 
 extern void dialog_texture_setting_run(int txt);
 extern void dialog_shader_setting_run(int txt);
