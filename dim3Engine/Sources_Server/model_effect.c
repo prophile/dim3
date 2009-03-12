@@ -207,6 +207,7 @@ void model_animation_effect_launch_ring(model_ring_type *ring,d3pnt *pt,d3ang *a
 void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx)
 {
 	int						t;
+	bool					global;
 	d3pnt					pt;
 	model_type				*mdl;
 	model_draw_setup		*setup;
@@ -228,7 +229,10 @@ void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx
 	if (pose_move->sound.buffer_idx!=-1) {
 		model_animation_effect_launch_bone_position(draw,animate_idx,pose_move->pose_idx,pose_move->sound.bone_idx,&pt);
 
-		al_play_source(pose_move->sound.buffer_idx,&pt,pose_move->sound.pitch,FALSE,FALSE,pose_move->sound.no_position,draw->player);
+		global=pose_move->sound.no_position;		// only use global sounds if launched by player
+		if (!draw->player) global=FALSE;
+
+		al_play_source(pose_move->sound.buffer_idx,&pt,pose_move->sound.pitch,FALSE,FALSE,global,draw->player);
 		object_watch_sound_alert(&pt,draw->connect.obj_uid,pose_move->sound.name);	// sound watches
 
 		if ((net_setup.client.joined) && (draw->connect.net_sound)) net_client_send_sound(draw->connect.net_remote_uid,pt.x,pt.y,pt.z,pose_move->sound.pitch,pose_move->sound.name);

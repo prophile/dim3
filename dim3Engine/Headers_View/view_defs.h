@@ -88,6 +88,7 @@ typedef struct		{
 //
 
 typedef struct		{
+						int							direction;
 						float						exponent;
 						double						d_x,d_y,d_z,
 													intensity,inv_intensity,
@@ -101,7 +102,8 @@ typedef struct		{
 						float					pos[3*max_view_lights_per_poly],
 												col[3*max_view_lights_per_poly],												
 												intensity[max_view_lights_per_poly],
-												exponent[max_view_lights_per_poly];
+												exponent[max_view_lights_per_poly],
+												direction[3*max_view_lights_per_poly];
 					} view_glsl_light_list_type;
 
 //

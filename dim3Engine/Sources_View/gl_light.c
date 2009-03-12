@@ -41,6 +41,8 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
+float						light_shader_direction[7][3]={0.0f,0.0f,0.0f,-1.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,-1.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,-1.0f,0.0f,0.0f,1.0f};
+
 double						light_flicker_value[64]={
 														1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,
 														0.92,0.85,0.70,0.85,0.92,1.00,0.92,0.85,
@@ -116,7 +118,7 @@ double gl_light_get_intensity(int tick,int light_type,int intensity)
       
 ======================================================= */
 
-void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,int intensity,float exponent,d3col *col)
+void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,int intensity,float exponent,int direction,d3col *col)
 {
 	view_light_spot_type			*lspot;
 	
@@ -138,6 +140,7 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,int intensity,floa
 	if (lspot->intensity<=0) return;
 	
 	lspot->exponent=exponent;
+	lspot->direction=direction;
 	
 		// create light position and color
 		
@@ -186,7 +189,7 @@ void gl_lights_compile_model_add(int tick,model_draw *draw)
 				if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&pnt.x,&pnt.y,&pnt.z);
 			}
 			
-			gl_lights_compile_add(tick,&pnt,light->type,light->intensity,light->exponent,&light->col);
+			gl_lights_compile_add(tick,&pnt,light->type,light->intensity,light->exponent,light->direction,&light->col);
 		}
 
 		light++;
@@ -221,7 +224,7 @@ void gl_lights_compile_effect_add(int tick,effect_type *effect)
 		}
 	}
 	
-	gl_lights_compile_add(tick,&effect->pnt,lt_normal,intensity,1.0f,&flash->col);
+	gl_lights_compile_add(tick,&effect->pnt,lt_normal,intensity,1.0f,ld_all,&flash->col);
 }
 
 void gl_lights_compile(int tick)
@@ -240,7 +243,7 @@ void gl_lights_compile(int tick)
 	maplight=map.lights;
 		
 	for (n=0;n!=map.nlight;n++) {
-		if (maplight->on) gl_lights_compile_add(tick,&maplight->pnt,maplight->type,maplight->intensity,maplight->exponent,&maplight->col);
+		if (maplight->on) gl_lights_compile_add(tick,&maplight->pnt,maplight->type,maplight->intensity,maplight->exponent,maplight->direction,&maplight->col);
 		maplight++;
 	}	
 
@@ -274,6 +277,42 @@ void gl_lights_compile(int tick)
 		gl_lights_compile_effect_add(tick,effect);		
 		effect++;
 	}
+}
+
+/* =======================================================
+
+      Light Direction Elimination
+      
+======================================================= */
+
+inline bool gl_lights_direction_ok(double x,double y,double z,view_light_spot_type *lspot)
+{
+	switch (lspot->direction) {
+
+		case ld_all:
+			return(TRUE);
+
+		case ld_neg_x:
+			return(x<=lspot->d_x);
+
+		case ld_pos_x:
+			return(x>=lspot->d_x);
+
+		case ld_neg_y:
+			return(y<=lspot->d_y);
+
+		case ld_pos_y:
+			return(y>=lspot->d_y);
+
+		case ld_neg_z:
+			return(z<=lspot->d_z);
+
+		case ld_pos_z:
+			return(z>=lspot->d_z);
+
+	}
+
+	return(TRUE);
 }
 
 /* =======================================================
@@ -312,13 +351,17 @@ void gl_lights_calc_vertex(double x,double y,double z,float *cf)
 		d=(dx*dx)+(dz*dz)+(dy*dy);
 
 		if (d<=lspot->d_intensity) {
-			mult=(lspot->d_intensity-d)*lspot->d_inv_intensity;
-			
-			mult+=pow(mult,lspot->exponent);
 
-			r+=(lspot->d_col_r*mult);
-			g+=(lspot->d_col_g*mult);
-			b+=(lspot->d_col_b*mult);
+			if (gl_lights_direction_ok(x,y,z,lspot)) {
+
+				mult=(lspot->d_intensity-d)*lspot->d_inv_intensity;
+				
+				mult+=pow(mult,lspot->exponent);
+
+				r+=(lspot->d_col_r*mult);
+				g+=(lspot->d_col_g*mult);
+				b+=(lspot->d_col_b*mult);
+			}
 		}
 		
 		lspot++;
@@ -359,14 +402,18 @@ view_light_spot_type* gl_light_find_closest_light(double x,double y,double z,int
 		d=(dx*dx)+(dz*dz)+(dy*dy);
 		
 			// reject lights outside globe
-			
+			// and in wrong direction
+
 		if (d<=lspot->d_intensity) {
+
+			if (gl_lights_direction_ok(x,y,z,lspot)) {
 		
-				// compare distances
-		
-			if ((d<dist) || (dist==-1)) {
-				dist=d;
-				k=n;
+					// compare distances
+			
+				if ((d<dist) || (dist==-1)) {
+					dist=d;
+					k=n;
+				}
 			}
 		}
 		
@@ -410,6 +457,31 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_glsl_light_l
 		if ((lspot->pnt.z-lspot->intensity)>max->z) continue;
 		if ((lspot->pnt.y+lspot->intensity)<min->y) continue;
 		if ((lspot->pnt.y-lspot->intensity)>max->y) continue;
+
+			// in direction
+
+		switch (lspot->direction) {
+
+			case ld_neg_x:
+				if (min->x>lspot->pnt.x) continue;
+
+			case ld_pos_x:
+				if (max->x<lspot->pnt.x) continue;
+
+			case ld_neg_y:
+				if (min->y>lspot->pnt.y) continue;
+
+			case ld_pos_y:
+				if (max->y<lspot->pnt.y) continue;
+
+			case ld_neg_z:
+				if (min->z>lspot->pnt.z) continue;
+
+			case ld_pos_z:
+				if (max->z<lspot->pnt.z) continue;
+
+		}
+
 
 			// get distance
 
@@ -467,8 +539,12 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_glsl_light_l
 			light_list->col[idx+1]=0.0f;
 			light_list->col[idx+2]=0.0f;
 			
-			light_list->intensity[n]=0.0f;		// will effectively make this a light that never effects output
+			light_list->intensity[n]=0.0f;
 			light_list->exponent[n]=1.0f;
+
+			light_list->direction[idx]=0.0f;
+			light_list->direction[idx+1]=0.0f;
+			light_list->direction[idx+2]=0.0f;
 		}
 		
 			// regular lights
@@ -486,6 +562,10 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_glsl_light_l
 			
 			light_list->intensity[n]=(float)lspot->intensity;
 			light_list->exponent[n]=lspot->exponent;
+
+			light_list->direction[idx]=light_shader_direction[lspot->direction][0];
+			light_list->direction[idx+1]=light_shader_direction[lspot->direction][1];
+			light_list->direction[idx+2]=light_shader_direction[lspot->direction][2];
 		}
 	}
 }

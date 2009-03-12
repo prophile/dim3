@@ -530,6 +530,9 @@ void gl_shader_set_draw_variables(view_shader_type *shader,texture_type *texture
 	
 	var=glGetUniformLocationARB(shader->program_obj,"dim3LightExponent");
 	if (var!=-1) glUniform1fvARB(var,max_view_lights_per_poly,light_list->exponent);
+
+	var=glGetUniformLocationARB(shader->program_obj,"dim3LightDirection");
+	if (var!=-1) glUniform3fvARB(var,max_view_lights_per_poly,light_list->direction);
 	
 	var=glGetUniformLocationARB(shader->program_obj,"dim3DarkFactor");
 	if (var!=-1) glUniform1fARB(var,dark_factor);
