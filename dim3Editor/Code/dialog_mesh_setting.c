@@ -29,7 +29,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "dialog.h"
 
-#define kMeshSettingTabCount					3
+#define kMeshSettingTabCount					2
 #define kMeshSettingTab							FOUR_CHAR_CODE('tabb')
 
 #define kMeshSettingOn							FOUR_CHAR_CODE('fson')
@@ -47,15 +47,6 @@ and can be sold or given away.
 #define kMeshSettingRotY						FOUR_CHAR_CODE('roty')
 #define kMeshSettingRotZ						FOUR_CHAR_CODE('rotz')
 
-#define kMeshPolySettingOffX					FOUR_CHAR_CODE('offx')
-#define kMeshPolySettingOffY					FOUR_CHAR_CODE('offy')
-#define kMeshPolySettingSizeX					FOUR_CHAR_CODE('sizx')
-#define kMeshPolySettingSizeY					FOUR_CHAR_CODE('sizy')
-#define kMeshPolySettingAlpha					FOUR_CHAR_CODE('alph')
-#define kMeshPolySettingDark					FOUR_CHAR_CODE('dark')
-#define kMeshPolySettingShiftX					FOUR_CHAR_CODE('sftx')
-#define kMeshPolySettingShiftY					FOUR_CHAR_CODE('sfty')
-
 #define kMeshSendMessageEnter					FOUR_CHAR_CODE('smen')
 #define kMeshSendMessageEnterId					FOUR_CHAR_CODE('meid')
 #define kMeshSendMessageExit					FOUR_CHAR_CODE('smex')
@@ -67,7 +58,6 @@ and can be sold or given away.
 #define kMeshSendMessageBase					FOUR_CHAR_CODE('tbon')
 #define kMeshSendMessageBaseTeam				FOUR_CHAR_CODE('tbtx')
 
-extern int					drag_mode;
 extern map_type				map;
 
 bool						dialog_mesh_setting_cancel;
@@ -131,7 +121,6 @@ static pascal OSStatus mesh_setting_tab_proc(EventHandlerCallRef handler,EventRe
 bool dialog_mesh_setting_run(void)
 {
 	int						n,cnt,type,mesh_idx,poly_idx;
-	float					x_txtoff,y_txtoff,x_txtfact,y_txtfact;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	ControlRef				ctrl;
@@ -178,30 +167,6 @@ bool dialog_mesh_setting_run(void)
 	dialog_set_int(dialog_mesh_setting_wind,kMeshSettingRotX,0,mesh->rot_off.x);
 	dialog_set_int(dialog_mesh_setting_wind,kMeshSettingRotY,0,mesh->rot_off.y);
 	dialog_set_int(dialog_mesh_setting_wind,kMeshSettingRotZ,0,mesh->rot_off.z);
-	
-	if (drag_mode==drag_mode_polygon) {
-		map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
-		
-		dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingOffX,0,x_txtoff);
-		dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingOffY,0,y_txtoff);
-		dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingSizeX,0,x_txtfact);
-		dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingSizeY,0,y_txtfact);
-		
-		dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingAlpha,0,poly->alpha);
-		dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingDark,0,poly->dark_factor);
-		dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingShiftX,0,poly->x_shift);
-		dialog_set_float(dialog_mesh_setting_wind,kMeshPolySettingShiftY,0,poly->y_shift);
-	}
-	else {
-		dialog_enable(dialog_mesh_setting_wind,kMeshPolySettingOffX,0,FALSE);
-		dialog_enable(dialog_mesh_setting_wind,kMeshPolySettingOffY,0,FALSE);
-		dialog_enable(dialog_mesh_setting_wind,kMeshPolySettingSizeX,0,FALSE);
-		dialog_enable(dialog_mesh_setting_wind,kMeshPolySettingSizeY,0,FALSE);
-		dialog_enable(dialog_mesh_setting_wind,kMeshPolySettingAlpha,0,FALSE);
-		dialog_enable(dialog_mesh_setting_wind,kMeshPolySettingDark,0,FALSE);
-		dialog_enable(dialog_mesh_setting_wind,kMeshPolySettingShiftX,0,FALSE);
-		dialog_enable(dialog_mesh_setting_wind,kMeshPolySettingShiftY,0,FALSE);
-	}
 	
 	dialog_set_boolean(dialog_mesh_setting_wind,kMeshSendMessageEnter,0,mesh->msg.entry_on);
 	dialog_set_int(dialog_mesh_setting_wind,kMeshSendMessageEnterId,0,mesh->msg.entry_id);
@@ -255,20 +220,6 @@ bool dialog_mesh_setting_run(void)
 			mesh->rot_off.x=dialog_get_int(dialog_mesh_setting_wind,kMeshSettingRotX,0);
 			mesh->rot_off.y=dialog_get_int(dialog_mesh_setting_wind,kMeshSettingRotY,0);
 			mesh->rot_off.z=dialog_get_int(dialog_mesh_setting_wind,kMeshSettingRotZ,0);
-		
-			if (drag_mode==drag_mode_polygon) {
-				x_txtoff=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingOffX,0);
-				y_txtoff=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingOffY,0);
-				x_txtfact=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingSizeX,0);
-				y_txtfact=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingSizeY,0);
-
-				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,x_txtoff,y_txtoff,x_txtfact,y_txtfact);
-
-				poly->dark_factor=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingDark,0);
-				poly->alpha=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingAlpha,0);
-				poly->x_shift=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingShiftX,0);
-				poly->y_shift=dialog_get_float(dialog_mesh_setting_wind,kMeshPolySettingShiftY,0);
-			}
 			
 			mesh->msg.entry_on=dialog_get_boolean(dialog_mesh_setting_wind,kMeshSendMessageEnter,0);
 			mesh->msg.entry_id=dialog_get_int(dialog_mesh_setting_wind,kMeshSendMessageEnterId,0);
