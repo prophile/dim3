@@ -56,13 +56,7 @@ bool gl_shadow_initialize(char *err_str)
 	
 		// best size for shadow
 
-	if (setup.quality_mode==quality_mode_high) {
-		shadow_pbuffer_pixel_size=render_info.texture_max_size;
-	}
-	else {
-		shadow_pbuffer_pixel_size=shadow_pbuffer_min_pixel_size;
-	}
-
+	shadow_pbuffer_pixel_size=render_info.texture_max_size;
 	if (shadow_pbuffer_pixel_size>shadow_pbuffer_max_pixel_size) shadow_pbuffer_pixel_size=shadow_pbuffer_max_pixel_size;
 
 		// create the frame buffer object

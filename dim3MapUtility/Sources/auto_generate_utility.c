@@ -716,6 +716,21 @@ void map_auto_generate_mesh_punch_hole_last_poly(map_type *map,int x,int z)
 	map_mesh_poly_punch_hole(map,map_ag_mesh_idx,(map->mesh.meshes[map_ag_mesh_idx].npoly-1),&extrude_pnt);
 }
 
+void map_auto_generate_mesh_effect_uv_last_poly(map_type *map,float mult_x,float mult_y,bool rot)
+{
+	int						n;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+
+	mesh=&map->mesh.meshes[map_ag_mesh_idx];
+	poly=&mesh->polys[mesh->npoly-1];
+
+	for (n=0;n!=poly->ptsz;n++) {
+		poly->gx[n]*=mult_x;
+		poly->gy[n]*=mult_y;
+	}
+}
+
 /* =======================================================
 
       Create Simple Lights

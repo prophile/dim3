@@ -31,6 +31,7 @@ and can be sold or given away.
 extern map_type				map;
 
 #define kLightType									FOUR_CHAR_CODE('type')
+#define kLightDirection								FOUR_CHAR_CODE('dirr')
 #define kLightIntensity								FOUR_CHAR_CODE('ints')
 #define kLightExponent								FOUR_CHAR_CODE('fall')
 #define kLightColor									FOUR_CHAR_CODE('colr')
@@ -96,6 +97,7 @@ bool dialog_map_light_settings_run(map_light_type *light)
 		// set controls
 		
 	dialog_set_combo(dialog_map_light_settings_wind,kLightType,0,light->type);
+	dialog_set_combo(dialog_map_light_settings_wind,kLightDirection,0,light->direction);
 	dialog_set_int(dialog_map_light_settings_wind,kLightIntensity,0,light->intensity);
 	dialog_set_float(dialog_map_light_settings_wind,kLightExponent,0,light->exponent);
 	dialog_set_boolean(dialog_map_light_settings_wind,kLightOn,0,light->on);
@@ -120,6 +122,7 @@ bool dialog_map_light_settings_run(map_light_type *light)
 		
 	if (!dialog_map_light_settings_cancel) {
 		light->type=dialog_get_combo(dialog_map_light_settings_wind,kLightType,0);
+		light->direction=dialog_get_combo(dialog_map_light_settings_wind,kLightDirection,0);
 		light->intensity=dialog_get_int(dialog_map_light_settings_wind,kLightIntensity,0);
 		light->exponent=dialog_get_float(dialog_map_light_settings_wind,kLightExponent,0);
 		light->on=dialog_get_boolean(dialog_map_light_settings_wind,kLightOn,0);

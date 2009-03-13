@@ -326,9 +326,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>51</integer>
-									<integer>43</integer>
-									<integer>15</integer>
+									<integer>75</integer>
+									<integer>72</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -380,10 +379,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>26C752A90F688580002AA23A</string>
+										<string>26ADC7040F6A0AF600A05457</string>
 										<key>history</key>
 										<array>
-											<string>262D0C8B0F672D940082E58B</string>
+											<string>26C752A90F688580002AA23A</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -441,9 +440,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26C7529A0F68852A002AA23A</string>
+				<string>26ADC7000F6A0ABD00A05457</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26C7529B0F68852A002AA23A</string>
+				<string>26ADC7010F6A0ABD00A05457</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -562,7 +561,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>258508160.68456501</real>
+	<real>258607862.08665401</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -577,8 +576,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C78EAAD065D492600B07095</string>
-		<string>1CD10A99069EF8BA00B06720</string>
 		<string>260AFEE90D40505C00F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3Animator/dim3Animator.xcodeproj</string>
 	</array>
@@ -660,7 +657,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEE90D40505C00F6C42F</string>
-				<string>26C7529E0F68855B002AA23A</string>
+				<string>26ADC6FD0F6A0ABA00A05457</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

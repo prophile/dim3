@@ -41,7 +41,7 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
-float						light_shader_direction[7][3]={0.0f,0.0f,0.0f,-1.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,-1.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,-1.0f,0.0f,0.0f,1.0f};
+float						light_shader_direction[7][3]={{0.0f,0.0f,0.0f},{1.0f,0.0f,0.0f},{-1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,-1.0f,0.0f},{0.0f,0.0f,1.0f},{0.0f,0.0f,-1.0f}};
 
 double						light_flicker_value[64]={
 														1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,
@@ -464,21 +464,27 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_glsl_light_l
 
 			case ld_neg_x:
 				if (min->x>lspot->pnt.x) continue;
+				break;
 
 			case ld_pos_x:
 				if (max->x<lspot->pnt.x) continue;
+				break;
 
 			case ld_neg_y:
 				if (min->y>lspot->pnt.y) continue;
+				break;
 
 			case ld_pos_y:
 				if (max->y<lspot->pnt.y) continue;
+				break;
 
 			case ld_neg_z:
 				if (min->z>lspot->pnt.z) continue;
+				break;
 
 			case ld_pos_z:
 				if (max->z<lspot->pnt.z) continue;
+				break;
 
 		}
 
@@ -539,7 +545,7 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_glsl_light_l
 			light_list->col[idx+1]=0.0f;
 			light_list->col[idx+2]=0.0f;
 			
-			light_list->intensity[n]=0.0f;
+			light_list->intensity[n]=0.0f;		// effectively turns light off
 			light_list->exponent[n]=1.0f;
 
 			light_list->direction[idx]=0.0f;

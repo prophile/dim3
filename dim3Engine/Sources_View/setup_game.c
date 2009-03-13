@@ -44,7 +44,6 @@ and can be sold or given away.
 #define ctrl_screen_size_id					0
 #define ctrl_fsaa_id						1
 #define ctrl_lock_fps_refresh_id			2
-#define ctrl_quality_id						3
 #define ctrl_decal_on_id					4
 #define ctrl_shadow_on_id					5
 #define ctrl_anisotropic_id					6
@@ -100,7 +99,6 @@ char						setup_screen_size_list[max_screen_size][32],
 							setup_anisotropic_mode_list[][32]=anisotropic_mode_setup_list_def,
 							setup_mipmap_mode_list[][32]=mipmap_mode_setup_list_def,
 							setup_fsaa_mode_list[][32]=setup_fsaa_mode_list_def,
-							setup_quality_mode_list[][32]=quality_mode_setup_list_def,
 							setup_joystick_mode_list[][32]=setup_joystick_mode_list_def,
 							setup_control_names[][32]=control_names,
 							setup_action_list[ncontrol+1][128];
@@ -124,7 +122,7 @@ void setup_game_video_pane(void)
 	
 	control_y_add=element_get_control_high();
 	separate_y_add=element_get_separator_high();
-	control_y_sz=(control_y_add*10)+(separate_y_add*3);
+	control_y_sz=(control_y_add*9)+(separate_y_add*3);
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
@@ -152,8 +150,6 @@ void setup_game_video_pane(void)
 	element_checkbox_add("Lock FPS to Refresh Rate",setup.lock_fps_refresh,ctrl_lock_fps_refresh_id,x,y,TRUE);
 	y+=control_y_add+separate_y_add;
 
-	element_combo_add("Quality",(char*)setup_quality_mode_list,setup.quality_mode,ctrl_quality_id,x,y,TRUE);
-	y+=control_y_add;
 	element_checkbox_add("Decals",setup.decal_on,ctrl_decal_on_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Shadow",setup.shadow_on,ctrl_shadow_on_id,x,y,TRUE);
@@ -573,7 +569,7 @@ void setup_game_save_close(void)
 		// need shadow reset?
 		
 	if (setup_in_game) {
-		if (setup_backup.quality_mode!=setup.quality_mode) {
+		if (setup_backup.shadaw_on!=setup.shadow_on) {
 			gl_shadow_shutdown();
 			gl_shadow_initialize(err_str);
 		}
@@ -701,10 +697,6 @@ void setup_game_handle_click(int id)
 			
 		case ctrl_compression_id:
 			setup.texture_compression=element_get_value(ctrl_compression_id);
-			break;
-			
-		case ctrl_quality_id:
-			setup.quality_mode=element_get_value(ctrl_quality_id);
 			break;
 			
 		case ctrl_decal_on_id:

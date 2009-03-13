@@ -44,8 +44,6 @@ void setup_xml_default(void)
 	setup.screen_wid=640;
 	setup.screen_high=480;
 	setup.lock_fps_refresh=FALSE;
-
-	setup.quality_mode=quality_mode_medium;
 	
 	setup.anisotropic_mode=anisotropic_mode_none;
 	setup.mipmap_mode=mipmap_mode_trilinear;
@@ -166,7 +164,6 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_boolean(setup_tag,"Lock_FPS_Refresh",&setup.lock_fps_refresh);
 	xml_key_read_float(setup_tag,"Gamma",&setup.gamma);
     xml_key_read_boolean(setup_tag,"Texture_Compression",&setup.texture_compression);
-    xml_key_read_int(setup_tag,"Quality_Mode",&setup.quality_mode);
     xml_key_read_int(setup_tag,"Anisotropic_Mode",&setup.anisotropic_mode);
     xml_key_read_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
 	xml_key_read_int(setup_tag,"FSAA_Mode",&setup.fsaa_mode);
@@ -323,7 +320,6 @@ bool setup_xml_write(void)
     xml_key_write_boolean("Lock_FPS_Refresh",setup.lock_fps_refresh);
 	xml_key_write_float("Gamma",setup.gamma);
     xml_key_write_boolean("Texture_Compression",setup.texture_compression);
-	xml_key_write_int("Quality_Mode",setup.quality_mode);
 	xml_key_write_int("Anisotropic_Mode",setup.anisotropic_mode);
     xml_key_write_int("Mipmap_Mode",setup.mipmap_mode);
 	xml_key_write_int("FSAA_Mode",setup.fsaa_mode);
@@ -440,8 +436,6 @@ void setup_restore(void)
 	setup.screen_wid=640;
 	setup.screen_high=480;
 	setup.lock_fps_refresh=FALSE;
-
-	setup.quality_mode=quality_mode_low;
 	
 	setup.decal_on=FALSE;
 	setup.shadow_on=FALSE;
