@@ -719,6 +719,7 @@ void map_auto_generate_mesh_punch_hole_last_poly(map_type *map,int x,int z)
 void map_auto_generate_mesh_effect_uv_last_poly(map_type *map,float mult_x,float mult_y,bool rot)
 {
 	int						n;
+	float					f;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 
@@ -728,6 +729,12 @@ void map_auto_generate_mesh_effect_uv_last_poly(map_type *map,float mult_x,float
 	for (n=0;n!=poly->ptsz;n++) {
 		poly->gx[n]*=mult_x;
 		poly->gy[n]*=mult_y;
+
+		if (rot) {
+			f=poly->gx[n];
+			poly->gx[n]=poly->gy[n];
+			poly->gy[n]=f;
+		}
 	}
 }
 

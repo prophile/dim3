@@ -569,7 +569,7 @@ void setup_game_save_close(void)
 		// need shadow reset?
 		
 	if (setup_in_game) {
-		if (setup_backup.shadaw_on!=setup.shadow_on) {
+		if (setup_backup.shadow_on!=setup.shadow_on) {
 			gl_shadow_shutdown();
 			gl_shadow_initialize(err_str);
 		}

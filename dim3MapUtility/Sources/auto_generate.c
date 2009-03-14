@@ -678,124 +678,177 @@ void map_auto_generate_mesh_window_horz_frame_mesh(map_type *map,int rn,int ty,i
 	map_auto_generate_horz_frame_mesh(map,rn,ty,by,x,z,wid,reverse,TRUE);
 }
 
-void map_auto_generate_walls(map_type *map)
+void map_auto_generate_portal_walls_add(map_type *map,int rn,auto_generate_box_type *portal)
 {
-	int							n,x,z,xsz,zsz,ty,by,split_factor,txt_idx,slant_sz,portal_sz,
-								px[8],py[8],pz[8];
-	float						gx[8],gy[8];
-	bool						lft_edge,rgt_edge,top_edge,bot_edge;
-	auto_generate_box_type		*portal;
+	int				x,z,xsz,zsz,ty,by,split_factor,portal_sz,
+					px[8],py[8],pz[8];
+	float			gx[8],gy[8];
+	bool			lft_edge,rgt_edge,top_edge,bot_edge;
 
 		// how we split the walls into a mesh
 
 	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
 	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
 
+		// start mesh
+		
+	if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.portal_wall,FALSE,FALSE)) return;
+	
+		// detect if we are on an outside edge of the map
+	
+	lft_edge=map_auto_generate_portal_on_map_left_edge(rn);
+	rgt_edge=map_auto_generate_portal_on_map_right_edge(rn);
+	top_edge=map_auto_generate_portal_on_map_top_edge(rn);
+	bot_edge=map_auto_generate_portal_on_map_bottom_edge(rn);
+	
+		// portal height
+
+	ty=portal->min.y;
+	by=portal->max.y;
+	
+		// portal size
+
+	xsz=portal->max.x-portal->min.x;
+	zsz=portal->max.z-portal->min.z;
+
+		// build left/right walls
+
+	for (z=0;z<zsz;z+=split_factor) {
+
+			// left
+
+		if (!map_auto_generate_portal_horz_edge_block(rn,(z+portal->min.z),((z+portal->min.z)+split_factor),portal->min.x)) {
+			map_auto_generate_poly_from_square_wall(0,z,0,(z+split_factor),ty,by,px,py,pz,gx,gy);
+			map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+			if ((lft_edge) && (z!=0) && (z!=(zsz-split_factor))) {
+				if (map_auto_generate_mesh_window_last_poly(map,-ag_constant_window_depth,0,px,py,pz)) {
+					map_auto_generate_mesh_window_horz_frame_mesh(map,rn,ty,by,0,z,split_factor,FALSE);
+				}
+			}
+		}
+
+			// right
+
+		if (!map_auto_generate_portal_horz_edge_block(rn,(z+portal->min.z),((z+portal->min.z)+split_factor),portal->max.x)) {
+			map_auto_generate_poly_from_square_wall(xsz,z,xsz,(z+split_factor),ty,by,px,py,pz,gx,gy);
+			map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+			if ((rgt_edge) && (z!=0) && (z!=(zsz-split_factor))) {
+				if (map_auto_generate_mesh_window_last_poly(map,ag_constant_window_depth,0,px,py,pz)) {
+					map_auto_generate_mesh_window_horz_frame_mesh(map,rn,ty,by,(portal->max.x-portal->min.x),z,split_factor,TRUE);
+				}
+			}
+		}
+	}
+
+		// build top/bottom walls
+
+	for (x=0;x<xsz;x+=split_factor) {
+
+			// top
+
+		if (!map_auto_generate_portal_vert_edge_block(rn,(x+portal->min.x),((x+portal->min.x)+split_factor),portal->min.z)) {
+			map_auto_generate_poly_from_square_wall(x,0,(x+split_factor),0,ty,by,px,py,pz,gx,gy);
+			map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+			if ((top_edge) && (x!=0) && (x!=(xsz-split_factor))) {
+				if (map_auto_generate_mesh_window_last_poly(map,0,-ag_constant_window_depth,px,py,pz)) {
+					map_auto_generate_mesh_window_vert_frame_mesh(map,rn,ty,by,x,0,split_factor,FALSE);
+				}
+			}
+		}
+
+			// bottom
+
+		if (!map_auto_generate_portal_vert_edge_block(rn,(x+portal->min.x),((x+portal->min.x)+split_factor),portal->max.z)) {
+			map_auto_generate_poly_from_square_wall(x,zsz,(x+split_factor),zsz,ty,by,px,py,pz,gx,gy);
+			map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+			if ((bot_edge) && (x!=0) && (x!=(xsz-split_factor))) {
+				if (map_auto_generate_mesh_window_last_poly(map,0,ag_constant_window_depth,px,py,pz)) {
+					map_auto_generate_mesh_window_vert_frame_mesh(map,rn,ty,by,x,(portal->max.z-portal->min.z),split_factor,TRUE);
+				}
+			}
+		}
+	}
+}
+
+
+void map_auto_generate_corridor_walls_add(map_type *map,int rn,auto_generate_box_type *portal)
+{
+	int				xsz,zsz,ty,by,split_factor,slant_sz,portal_sz,
+					px[8],py[8],pz[8];
+	float			gx[8],gy[8];
+
+		// how we split the walls into a mesh
+
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
+
+		// start mesh
+		
+	if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.corridor,FALSE,FALSE)) return;
+	
+		// portal height
+
+	ty=portal->min.y;
+	by=portal->max.y;
+	
+		// fix cooridors with slants in them
+		
+	slant_sz=(portal->max.y-portal->min.y)>>2;
+	if ((corridor_types[rn]==ag_corridor_type_slanted_ceiling) || (corridor_types[rn]==ag_corridor_type_octagon)) ty+=slant_sz;
+	if (corridor_types[rn]==ag_corridor_type_octagon) by-=slant_sz;
+	
+		// portal size
+
+	xsz=portal->max.x-portal->min.x;
+	zsz=portal->max.z-portal->min.z;
+
+		// build left/right walls
+
+	if (portal->corridor_flag==ag_corridor_flag_vertical) {
+		map_auto_generate_poly_from_square_wall(0,0,0,zsz,ty,by,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_effect_uv_last_poly(map,(float)(zsz/split_factor),1.0f,FALSE);
+
+		map_auto_generate_poly_from_square_wall(xsz,0,xsz,zsz,ty,by,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_effect_uv_last_poly(map,(float)(zsz/split_factor),1.0f,FALSE);
+	}
+
+		// build top/bottom walls
+
+	if (portal->corridor_flag==ag_corridor_flag_horizontal) {
+		map_auto_generate_poly_from_square_wall(0,0,xsz,0,ty,by,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_effect_uv_last_poly(map,(float)(xsz/split_factor),1.0f,FALSE);
+
+		map_auto_generate_poly_from_square_wall(0,zsz,xsz,zsz,ty,by,px,py,pz,gx,gy);
+		map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+		map_auto_generate_mesh_effect_uv_last_poly(map,(float)(xsz/split_factor),1.0f,FALSE);
+	}
+	
+		// if a corridor, we need to lock uvs
+		
+	map_auto_generate_mesh_set_lock(map);
+}
+
+void map_auto_generate_walls(map_type *map)
+{
+	int							n;
+	auto_generate_box_type		*portal;
+
 		// create surrounding walls for portals
 
 	portal=ag_boxes;
 
 	for (n=0;n!=ag_box_count;n++) {
-		
-			// start mesh
-			
-		txt_idx=(portal->corridor_flag==ag_corridor_flag_portal)?ag_settings.texture.portal_wall:ag_settings.texture.corridor;
-		if (!map_auto_generate_mesh_start(map,n,-1,txt_idx,FALSE,FALSE)) return;
-		
-			// detect if we are on an outside edge of the map
-		
+
 		if (portal->corridor_flag==ag_corridor_flag_portal) {
-			lft_edge=map_auto_generate_portal_on_map_left_edge(n);
-			rgt_edge=map_auto_generate_portal_on_map_right_edge(n);
-			top_edge=map_auto_generate_portal_on_map_top_edge(n);
-			bot_edge=map_auto_generate_portal_on_map_bottom_edge(n);
+			map_auto_generate_portal_walls_add(map,n,portal);
 		}
 		else {
-			lft_edge=rgt_edge=top_edge=bot_edge=FALSE;
-		}
-		
-			// portal height
-
-		ty=portal->min.y;
-		by=portal->max.y;
-		
-			// fix cooridors with slants in them
-			
-		if (portal->corridor_flag!=ag_corridor_flag_portal) {
-			slant_sz=(portal->max.y-portal->min.y)>>2;
-			if ((corridor_types[n]==ag_corridor_type_slanted_ceiling) || (corridor_types[n]==ag_corridor_type_octagon)) ty+=slant_sz;
-			if (corridor_types[n]==ag_corridor_type_octagon) by-=slant_sz;
-		}
-		
-			// portal size
-
-		xsz=portal->max.x-portal->min.x;
-		zsz=portal->max.z-portal->min.z;
-
-			// build left/right walls
-
-		for (z=0;z<zsz;z+=split_factor) {
-
-				// left
-
-			if (!map_auto_generate_portal_horz_edge_block(n,(z+portal->min.z),((z+portal->min.z)+split_factor),portal->min.x)) {
-				map_auto_generate_poly_from_square_wall(0,z,0,(z+split_factor),ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-				if ((lft_edge) && (z!=0) && (z!=(zsz-split_factor))) {
-					if (map_auto_generate_mesh_window_last_poly(map,-ag_constant_window_depth,0,px,py,pz)) {
-						map_auto_generate_mesh_window_horz_frame_mesh(map,n,ty,by,0,z,split_factor,FALSE);
-					}
-				}
-			}
-
-				// right
-
-			if (!map_auto_generate_portal_horz_edge_block(n,(z+portal->min.z),((z+portal->min.z)+split_factor),portal->max.x)) {
-				map_auto_generate_poly_from_square_wall(xsz,z,xsz,(z+split_factor),ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-				if ((rgt_edge) && (z!=0) && (z!=(zsz-split_factor))) {
-					if (map_auto_generate_mesh_window_last_poly(map,ag_constant_window_depth,0,px,py,pz)) {
-						map_auto_generate_mesh_window_horz_frame_mesh(map,n,ty,by,(portal->max.x-portal->min.x),z,split_factor,TRUE);
-					}
-				}
-			}
+			map_auto_generate_corridor_walls_add(map,n,portal);
 		}
 
-			// build top/bottom walls
-
-		for (x=0;x<xsz;x+=split_factor) {
-
-				// top
-
-			if (!map_auto_generate_portal_vert_edge_block(n,(x+portal->min.x),((x+portal->min.x)+split_factor),portal->min.z)) {
-				map_auto_generate_poly_from_square_wall(x,0,(x+split_factor),0,ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-				if ((top_edge) && (x!=0) && (x!=(xsz-split_factor))) {
-					if (map_auto_generate_mesh_window_last_poly(map,0,-ag_constant_window_depth,px,py,pz)) {
-						map_auto_generate_mesh_window_vert_frame_mesh(map,n,ty,by,x,0,split_factor,FALSE);
-					}
-				}
-			}
-
-				// bottom
-
-			if (!map_auto_generate_portal_vert_edge_block(n,(x+portal->min.x),((x+portal->min.x)+split_factor),portal->max.z)) {
-				map_auto_generate_poly_from_square_wall(x,zsz,(x+split_factor),zsz,ty,by,px,py,pz,gx,gy);
-				map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-				if ((bot_edge) && (x!=0) && (x!=(xsz-split_factor))) {
-					if (map_auto_generate_mesh_window_last_poly(map,0,ag_constant_window_depth,px,py,pz)) {
-						map_auto_generate_mesh_window_vert_frame_mesh(map,n,ty,by,x,(portal->max.z-portal->min.z),split_factor,TRUE);
-					}
-				}
-			}
-		}
-		
-			// if a cooridor, force segments to 0..1 uv
-			
-		if (portal->corridor_flag!=ag_corridor_flag_portal) {
-			map_auto_generate_mesh_set_lock(map);
-		}
-		
 		portal++;
 	}
 }
@@ -1081,35 +1134,45 @@ void map_auto_generate_portal_single_ceilling_pillar(map_type *map,int rn,int lx
 
 	map_auto_generate_poly_from_square_wall(lx2,lz2,rx2,lz2,ty,p_ty,px,py,pz,gx,gy);
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_effect_uv_last_poly(map,2,1,FALSE);
 
 	map_auto_generate_poly_from_square_wall(lx2,rz2,rx2,rz2,ty,p_ty,px,py,pz,gx,gy);
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_effect_uv_last_poly(map,2,1,FALSE);
 
 	map_auto_generate_poly_from_square_wall(lx2,lz2,lx2,rz2,ty,p_ty,px,py,pz,gx,gy);
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_effect_uv_last_poly(map,2,1,FALSE);
 
 	map_auto_generate_poly_from_square_wall(rx2,lz2,rx2,rz2,ty,p_ty,px,py,pz,gx,gy);
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_effect_uv_last_poly(map,2,1,FALSE);
 
 	map_auto_generate_poly_from_square_floor(lx2,lz2,rx2,rz2,p_ty,px,py,pz,gx,gy);
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_effect_uv_last_poly(map,2,2,FALSE);
 
 		// bottom of pillar
 
 	map_auto_generate_poly_from_square_wall(lx2,lz2,rx2,lz2,p_by,by,px,py,pz,gx,gy);
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_effect_uv_last_poly(map,2,1,FALSE);
 
 	map_auto_generate_poly_from_square_wall(lx2,rz2,rx2,rz2,p_by,by,px,py,pz,gx,gy);
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_effect_uv_last_poly(map,2,1,FALSE);
 
 	map_auto_generate_poly_from_square_wall(lx2,lz2,lx2,rz2,p_by,by,px,py,pz,gx,gy);
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_effect_uv_last_poly(map,2,1,FALSE);
 
 	map_auto_generate_poly_from_square_wall(rx2,lz2,rx2,rz2,p_by,by,px,py,pz,gx,gy);
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_effect_uv_last_poly(map,2,1,FALSE);
 
 	map_auto_generate_poly_from_square_floor(lx2,lz2,rx2,rz2,p_by,px,py,pz,gx,gy);
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+	map_auto_generate_mesh_effect_uv_last_poly(map,2,2,FALSE);
 
 		// pillar
 
@@ -1417,7 +1480,7 @@ void map_auto_generate_corridor_ceiling_add(map_type *map,int rn,int lx,int lz,i
 	if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.corridor,FALSE,FALSE)) return;
 	map_auto_generate_poly_from_square_floor(lx2,lz2,rx2,rz2,ty,px,py,pz,gx,gy);
 	if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
-	map_auto_generate_mesh_effect_uv_last_poly(map,(float)((rx-lx)/split_factor),(float)((rz-lz)/split_factor),FALSE);
+	map_auto_generate_mesh_effect_uv_last_poly(map,(float)((rx-lx)/split_factor),(float)((rz-lz)/split_factor),(portal->corridor_flag==ag_corridor_flag_vertical));
 	
 		// additional slanted ceilings for corridors
 		
@@ -1437,11 +1500,11 @@ void map_auto_generate_corridor_ceiling_add(map_type *map,int rn,int lx,int lz,i
 		else {
 			map_auto_generate_poly_from_square_floor_slant(lx,lz,(lx+slant_sz),rz,ty,slant_sz,ag_ceiling_lower_neg_x,TRUE,px,py,pz,gx,gy);
 			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
-			map_auto_generate_mesh_effect_uv_last_poly(map,1.0f,(float)((rz-lz)/split_factor),FALSE);
+			map_auto_generate_mesh_effect_uv_last_poly(map,1.0f,(float)((rz-lz)/split_factor),TRUE);
 
 			map_auto_generate_poly_from_square_floor_slant((rx-slant_sz),lz,rx,rz,ty,slant_sz,ag_ceiling_lower_pos_x,TRUE,px,py,pz,gx,gy);
 			if (!map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy)) return;
-			map_auto_generate_mesh_effect_uv_last_poly(map,1.0f,(float)((rz-lz)/split_factor),FALSE);
+			map_auto_generate_mesh_effect_uv_last_poly(map,1.0f,(float)((rz-lz)/split_factor),TRUE);
 		}
 	}
 }
@@ -1575,7 +1638,7 @@ void map_auto_generate_corridor_floor_add(map_type *map,int rn,int lx,int lz,int
 	if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.corridor,FALSE,FALSE)) return;
 	map_auto_generate_poly_from_square_floor(lx2,lz2,rx2,rz2,by,px,py,pz,gx,gy);
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-	map_auto_generate_mesh_effect_uv_last_poly(map,(float)((rx-lx)/split_factor),(float)((rz-lz)/split_factor),FALSE);
+	map_auto_generate_mesh_effect_uv_last_poly(map,(float)((rx-lx)/split_factor),(float)((rz-lz)/split_factor),(portal->corridor_flag==ag_corridor_flag_vertical));
 	
 		// additional slanted floors for corridors
 		
@@ -2028,17 +2091,25 @@ bool map_auto_generate_test(map_type *map)
 
 		// start new map
 
-	if (!map_new(map,"Bot Test")) return(FALSE);
+	if (!map_new(map,"DM Map")) return(FALSE);
 
 		// setup textures
 
-	strcpy(map->textures[0].bitmaps[0].name,"Castle Wall");
-	strcpy(map->textures[1].bitmaps[0].name,"Brick Brown");
-	strcpy(map->textures[2].bitmaps[0].name,"Rock");
-	strcpy(map->textures[3].bitmaps[0].name,"Rusty Metal");
-	strcpy(map->textures[4].bitmaps[0].name,"Brick Red");
-	strcpy(map->textures[5].bitmaps[0].name,"Stone Wall");
-	strcpy(map->textures[6].bitmaps[0].name,"Planks Old");
+	strcpy(map->textures[0].bitmaps[0].name,"demo_main_wall");
+	strcpy(map->textures[1].bitmaps[0].name,"demo_main_floor");
+	strcpy(map->textures[2].bitmaps[0].name,"demo_ceiling");
+	strcpy(map->textures[3].bitmaps[0].name,"demo_corridor_wall");
+	strcpy(map->textures[4].bitmaps[0].name,"demo_second_story");
+	strcpy(map->textures[5].bitmaps[0].name,"demo_chain_link");
+	strcpy(map->textures[6].bitmaps[0].name,"demo_door");
+	strcpy(map->textures[7].bitmaps[0].name,"demo_steps");
+	strcpy(map->textures[8].bitmaps[0].name,"demo_ramp");
+	strcpy(map->textures[9].bitmaps[0].name,"demo_column");
+	strcpy(map->textures[10].bitmaps[0].name,"demo_column_base");
+	strcpy(map->textures[11].bitmaps[0].name,"demo_frame");
+	strcpy(map->textures[12].bitmaps[0].name,"demo_corridor_floor");
+	strcpy(map->textures[13].bitmaps[0].name,"demo_water");
+	strcpy(map->textures[14].bitmaps[0].name,"demo_sky");
 
 		// setup auto generation values
 
@@ -2047,8 +2118,6 @@ bool map_auto_generate_test(map_type *map)
 #else
 	ags.seed=GetTickCount();
 #endif
-
-	ags.seed=5;	// supergumba -- testing
 
 	ags.block=ag_block_none;
 	ags.second_story=TRUE;
@@ -2076,17 +2145,17 @@ bool map_auto_generate_test(map_type *map)
 	}
 	
 	ags.texture.portal_wall=0;
-	ags.texture.portal_floor=2;
-	ags.texture.portal_ceiling=1;
-	ags.texture.steps=5;
-	ags.texture.ramp=5;
-	ags.texture.column=4;
-	ags.texture.column_base=4;
-	ags.texture.corridor=4;
-	ags.texture.window=7;
-	ags.texture.door=3;
-	ags.texture.second_story=6;
-	ags.texture.frame=6;
+	ags.texture.portal_floor=1;
+	ags.texture.portal_ceiling=2;
+	ags.texture.steps=7;
+	ags.texture.ramp=8;
+	ags.texture.column=9;
+	ags.texture.column_base=10;
+	ags.texture.corridor=3;
+	ags.texture.window=5;
+	ags.texture.door=6;
+	ags.texture.second_story=4;
+	ags.texture.frame=11;
 	
 	ags.window=TRUE;
 	ags.frame=TRUE;
