@@ -729,6 +729,10 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 		
 	walk_view_click_piece_normal(view_setup,pt,dblclick);
 	
+		// changes in palette
+		
+	palette_reset();
+	
 		// double-click info
 		
 	if (dblclick) {

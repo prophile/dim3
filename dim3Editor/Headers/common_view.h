@@ -99,6 +99,15 @@ extern void select_duplicate_copy(void);
 extern void select_get_extent(d3pnt *min,d3pnt *max);
 
 //
+// palette routines
+//
+
+extern void palette_initialize(void);
+extern void palette_shutdown(void);
+extern void palette_close(void);
+extern void palette_reset(void);
+
+//
 // groups
 //
 

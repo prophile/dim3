@@ -218,7 +218,6 @@
 		F5B01DA908F867E600AE5F87 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B01DA808F867E600AE5F87 /* Cocoa.framework */; };
 		F5B140530B44910300486A6C /* script_game_join.c in Sources */ = {isa = PBXBuildFile; fileRef = F5B140520B44910300486A6C /* script_game_join.c */; };
 		F5BC90FB0C1A139B00B9261B /* map_light_trace.c in Sources */ = {isa = PBXBuildFile; fileRef = F5BC90FA0C1A139B00B9261B /* map_light_trace.c */; };
-		F5BD968C0C20EF34000F74E1 /* view_vertex_light.c in Sources */ = {isa = PBXBuildFile; fileRef = F5BD968B0C20EF34000F74E1 /* view_vertex_light.c */; };
 		F5BE44EC09F5C18700292ECD /* script_weap_alt_ammo.c in Sources */ = {isa = PBXBuildFile; fileRef = F5BE44EB09F5C18700292ECD /* script_weap_alt_ammo.c */; };
 		F5C1BCDA0A03DDA4002D02AB /* scripts_defines.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C1BCD90A03DDA4002D02AB /* scripts_defines.c */; };
 		F5C1BD520A047590002D02AB /* script_utility_pack.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C1BD510A047590002D02AB /* script_utility_pack.c */; };
@@ -600,7 +599,6 @@
 		F5B01DA808F867E600AE5F87 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		F5B140520B44910300486A6C /* script_game_join.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_game_join.c; path = Sources_Server/script_game_join.c; sourceTree = "<group>"; };
 		F5BC90FA0C1A139B00B9261B /* map_light_trace.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = map_light_trace.c; path = Sources_Server/map_light_trace.c; sourceTree = "<group>"; };
-		F5BD968B0C20EF34000F74E1 /* view_vertex_light.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = view_vertex_light.c; path = Sources_View/view_vertex_light.c; sourceTree = "<group>"; };
 		F5BE44EB09F5C18700292ECD /* script_weap_alt_ammo.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_weap_alt_ammo.c; path = Sources_Server/script_weap_alt_ammo.c; sourceTree = "<group>"; };
 		F5C1BCD90A03DDA4002D02AB /* scripts_defines.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = scripts_defines.c; path = Sources_Server/scripts_defines.c; sourceTree = "<group>"; };
 		F5C1BD510A047590002D02AB /* script_utility_pack.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_utility_pack.c; path = Sources_Server/script_utility_pack.c; sourceTree = "<group>"; };
@@ -1225,7 +1223,6 @@
 				F5AEF0F50D1CD57B00C99FF6 /* view_images.c */,
 				F5DD19E00908310200721649 /* view_setup.c */,
 				F5DD19DE0908310200721649 /* view_vertex_list.c */,
-				F5BD968B0C20EF34000F74E1 /* view_vertex_light.c */,
 				26101DCD0E5D075100D2919B /* view_vertex_object.c */,
 				F5DD19E10908310200721649 /* view_draw.c */,
 				F5DD19A70908101700721649 /* player_input.c */,
@@ -1893,7 +1890,6 @@
 				F52036090C0FA1B800B779EC /* obj_grow.c in Sources */,
 				F52E81010C162BA0003D4818 /* gl_shadow.c in Sources */,
 				F5BC90FB0C1A139B00B9261B /* map_light_trace.c in Sources */,
-				F5BD968C0C20EF34000F74E1 /* view_vertex_light.c in Sources */,
 				F534781B0C23B3A500B34D05 /* script_obj_sight.c in Sources */,
 				F500CC680C27942200F7C8CC /* gl_check.c in Sources */,
 				F574FAEE0C289AB700D4A2AD /* script_obj_melee.c in Sources */,
@@ -1957,7 +1953,8 @@
 		F5DB0BF1085671A9005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

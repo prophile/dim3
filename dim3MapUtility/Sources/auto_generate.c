@@ -1635,7 +1635,7 @@ void map_auto_generate_corridor_floor_add(map_type *map,int rn,int lx,int lz,int
 		rx2-=slant_sz;
 	}
 
-	if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.corridor,FALSE,FALSE)) return;
+	if (!map_auto_generate_mesh_start(map,rn,-1,ag_settings.texture.corridor_floor,FALSE,FALSE)) return;
 	map_auto_generate_poly_from_square_floor(lx2,lz2,rx2,rz2,by,px,py,pz,gx,gy);
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 	map_auto_generate_mesh_effect_uv_last_poly(map,(float)((rx-lx)/split_factor),(float)((rz-lz)/split_factor),(portal->corridor_flag==ag_corridor_flag_vertical));
@@ -1658,11 +1658,11 @@ void map_auto_generate_corridor_floor_add(map_type *map,int rn,int lx,int lz,int
 		else {
 			map_auto_generate_poly_from_square_floor_slant(lx,lz,(lx+slant_sz),rz,by,slant_sz,ag_ceiling_lower_neg_x,FALSE,px,py,pz,gx,gy);
 			map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-			map_auto_generate_mesh_effect_uv_last_poly(map,1.0f,(float)((rz-lz)/split_factor),FALSE);
+			map_auto_generate_mesh_effect_uv_last_poly(map,1.0f,(float)((rz-lz)/split_factor),TRUE);
 
 			map_auto_generate_poly_from_square_floor_slant((rx-slant_sz),lz,rx,rz,by,slant_sz,ag_ceiling_lower_pos_x,FALSE,px,py,pz,gx,gy);
 			map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
-			map_auto_generate_mesh_effect_uv_last_poly(map,1.0f,(float)((rz-lz)/split_factor),FALSE);
+			map_auto_generate_mesh_effect_uv_last_poly(map,1.0f,(float)((rz-lz)/split_factor),TRUE);
 		}
 	}
 }
@@ -2152,6 +2152,7 @@ bool map_auto_generate_test(map_type *map)
 	ags.texture.column=9;
 	ags.texture.column_base=10;
 	ags.texture.corridor=3;
+	ags.texture.corridor_floor=12;
 	ags.texture.window=5;
 	ags.texture.door=6;
 	ags.texture.second_story=4;

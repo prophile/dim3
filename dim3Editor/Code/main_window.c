@@ -136,6 +136,7 @@ void main_wind_control_tool(int tool_idx)
 			SetControlValue(tool_ctrl[4],1);
 			SetControlValue(tool_ctrl[5],0);
 			SetControlValue(tool_ctrl[6],0);
+			palette_reset();
 			break;
 			
 		case 5:
@@ -143,6 +144,7 @@ void main_wind_control_tool(int tool_idx)
 			SetControlValue(tool_ctrl[4],0);
 			SetControlValue(tool_ctrl[5],1);
 			SetControlValue(tool_ctrl[6],0);
+			palette_reset();
 			break;
 			
 		case 6:
@@ -150,6 +152,7 @@ void main_wind_control_tool(int tool_idx)
 			SetControlValue(tool_ctrl[4],0);
 			SetControlValue(tool_ctrl[5],0);
 			SetControlValue(tool_ctrl[6],1);
+			palette_reset();
 			break;
 			
 			// grid mode buttons
@@ -306,6 +309,8 @@ void main_wind_control_piece(int piece_idx)
 	}
 	
 	SetControlValue(piece_ctrl[piece_idx],0);
+	
+	palette_reset();
 }
 
 void main_wind_control(ControlRef ctrl)
@@ -845,11 +850,19 @@ void main_wind_open(void)
     
 	main_wind_upp=NewEventHandlerUPP(main_wind_event_callback);
 	InstallEventHandler(GetWindowEventTarget(mainwind),main_wind_upp,GetEventTypeCount(wind_events),wind_events,NULL,&main_wind_event);
+	
+		// start palettes
+		
+	palette_initialize();
 }
 
 void main_wind_close(void)
 {
 	int			n;
+	
+		// close the palettes
+		
+	palette_shutdown();
 	
 		// gl shutdown
 		

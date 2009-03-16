@@ -74,10 +74,24 @@ bool gl_check_point_sprite_ok(void)
 
 bool gl_check_shader_ok(void)
 {
+#ifdef D3_OS_MAC
+	GLint			fragGPU,vertGPU;
+#endif
+
+		// check GL string
+		
 	if (strstr(render_info.ext_string,"GL_ARB_shader_objects")==NULL) return(FALSE);
 	if (strstr(render_info.ext_string,"GL_ARB_fragment_shader")==NULL) return(FALSE);
 	if (strstr(render_info.ext_string,"GL_ARB_vertex_shader")==NULL) return(FALSE);
 	if (strstr(render_info.ext_string,"GL_ARB_shading_language_100")==NULL) return(FALSE);
+	
+		// check if GPU will actually handle it
+		
+#ifdef D3_OS_MAC
+	CGLGetParameter(CGLGetCurrentContext(),kCGLCPGPUFragmentProcessing,&fragGPU);
+	CGLGetParameter(CGLGetCurrentContext(),kCGLCPGPUVertexProcessing,&vertGPU);
+	if (!(fragGPU && vertGPU)) return(FALSE);
+#endif
 
 	return(TRUE);
 }

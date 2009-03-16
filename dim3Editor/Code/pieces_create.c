@@ -381,7 +381,9 @@ void piece_create_liquid(void)
 	liq->rgt=pnt.x+sz;
 	liq->top=pnt.z-sz;
 	liq->bot=pnt.z+sz;
+	
 	liq->y=pnt.y;
+	liq->depth=5000;
 	
 	liq->txt_idx=0;
 	liq->group_idx=-1;
@@ -400,12 +402,11 @@ void piece_create_liquid(void)
 	liq->tide.high=100;
 	liq->tide.division=liquid_min_division;
 	liq->tide.direction=liquid_direction_horizontal;
+	liq->tide.flat=FALSE;
 	
 	liq->harm.in_harm=0;
 	liq->harm.drown_tick=10000;
 	liq->harm.drown_harm=10;
-	
-	liq->depth=5000;
 
 		// select the liquid
 		
