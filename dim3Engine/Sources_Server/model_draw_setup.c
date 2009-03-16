@@ -40,6 +40,7 @@ extern server_type			server;
 extern view_type			view;
 extern camera_type			camera;
 extern map_type				map;
+extern network_setup_type	net_setup;
 
 /* =======================================================
 
@@ -127,7 +128,12 @@ void model_draw_setup_object(int tick,obj_type *obj)
 
 		// team tint
 
-	view_object_get_tint(obj,&draw->tint);
+	if (net_setup.client.joined) {
+		view_object_get_tint(obj,&draw->tint);
+	}
+	else {
+		draw->tint.r=draw->tint.g=draw->tint.b=1.0f;
+	}
 }
 
 /* =======================================================

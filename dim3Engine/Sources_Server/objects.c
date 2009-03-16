@@ -199,7 +199,6 @@ void object_clear_draw(model_draw *draw)
 	draw->on=FALSE;
 	draw->uid=-1;
 	draw->name[0]=0x0;
-	draw->lit_type=ml_flat;
 	draw->bounce=FALSE;
 	draw->face_forward=FALSE;
 	draw->offset.x=draw->offset.z=draw->offset.y=0;
@@ -221,8 +220,6 @@ void object_clear_draw(model_draw *draw)
 		draw->lights[k].exponent=1.0f;
 		draw->lights[k].col.r=draw->lights[k].col.g=draw->lights[k].col.b=1;
 	}
-
-	draw->hilite.r=draw->hilite.g=draw->hilite.b=1;
 	
 		// halos
 		

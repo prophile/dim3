@@ -463,10 +463,28 @@ bool weapon_script_projectile_spawn_center(int tick,obj_type *obj,weapon_type *w
 {
 	d3pnt			pt;
 	d3ang			ang;
+	model_type		*mdl;
+
+		// model point
 
 	pt.x=obj->pnt.x;
 	pt.z=obj->pnt.z;
-	pt.y=(obj->pnt.y+obj->duck.y_move)+obj->size.eye_offset;
+	pt.y=obj->pnt.y;
+
+		// need to add in any centering
+
+	mdl=model_find_uid(obj->draw.uid);
+	if (mdl!=NULL) {
+		pt.x+=mdl->center.x;
+		pt.y+=mdl->center.y;
+		pt.z+=mdl->center.z;
+	}
+
+		// and add in ducking and eye offset
+
+	pt.y=(pt.y+obj->duck.y_move)+obj->size.eye_offset;
+
+		// get fire the angle
 
 	ang.x=-(obj->view_ang.x*(1.0f-(((float)fabs(obj->view_ang.x)/90.0f)*0.5f)));
 	ang.y=obj->ang.y;

@@ -670,11 +670,5 @@ void view_draw_setup(int tick)
 		
 	halo_draw_clear();
 	view_add_halos();
-	
-		// add lights and halos
-		
-//	light_clear();
-//	view_add_lights();
-//	effect_add_lights(tick);
 }
 

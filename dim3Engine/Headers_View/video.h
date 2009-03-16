@@ -109,6 +109,7 @@ extern void gl_shader_attach_model(model_type *mdl);
 extern void gl_shader_draw_start(void);
 extern void gl_shader_draw_end(void);
 extern void gl_shader_draw_execute(texture_type *texture,int frame,float dark_factor,float alpha,view_glsl_light_list_type *light_list);
+extern void gl_shader_draw_hilite_execute(texture_type *texture,int frame,float dark_factor,float alpha,d3pnt *pnt,d3col *col);
 
 	// shadows
 	

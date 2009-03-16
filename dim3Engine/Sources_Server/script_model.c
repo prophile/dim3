@@ -55,7 +55,6 @@ JSClass			model_class={"model_class",JSCLASS_HAS_PRIVATE,
 JSPropertySpec	model_props[]={
 							{"on",					model_prop_on,						JSPROP_PERMANENT|JSPROP_SHARED},
 							{"name",				model_prop_name,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"lit",					model_prop_lit,						JSPROP_PERMANENT|JSPROP_SHARED},
 							{"bounce",				model_prop_bounce,					JSPROP_PERMANENT|JSPROP_SHARED},
 							{"alpha",				model_prop_alpha,					JSPROP_PERMANENT|JSPROP_SHARED},
 							{"resize",				model_prop_resize,					JSPROP_PERMANENT|JSPROP_SHARED},
@@ -67,7 +66,6 @@ extern void script_add_model_rotate_object(JSObject *parent_obj);
 extern void script_add_model_spin_object(JSObject *parent_obj);
 extern void script_add_model_light_object(JSObject *parent_obj);
 extern void script_add_model_light_color_object(JSObject *parent_obj);
-extern void script_add_model_hilite_color_object(JSObject *parent_obj);
 extern void script_add_model_halo_object(JSObject *parent_obj);
 extern void script_add_model_shadow_object(JSObject *parent_obj);
 extern void script_add_model_animation_object(JSObject *parent_obj);
@@ -93,7 +91,6 @@ void script_add_model_object(JSObject *parent_obj)
 	script_add_model_spin_object(j_obj);
 	script_add_model_light_object(j_obj);
 	script_add_model_light_color_object(j_obj);
-	script_add_model_hilite_color_object(j_obj);
 	script_add_model_halo_object(j_obj);
 	script_add_model_shadow_object(j_obj);
 	script_add_model_animation_object(j_obj);
@@ -163,9 +160,6 @@ JSBool js_get_model_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 		case model_prop_name:
 			*vp=script_string_to_value(draw->name);
 			break;
-		case model_prop_lit:
-			*vp=INT_TO_JSVAL(draw->lit_type+sd_model_lit_flat);
-			break;
 		case model_prop_bounce:
 			*vp=BOOLEAN_TO_JSVAL(draw->bounce);
 			break;
@@ -198,9 +192,6 @@ JSBool js_set_model_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 			break;
 		case model_prop_name:
 			script_value_to_string(*vp,draw->name,name_str_len);
-			break;
-		case model_prop_lit:
-			draw->lit_type=JSVAL_TO_INT(*vp)-sd_model_lit_flat;
 			break;
 		case model_prop_bounce:
 			draw->bounce=JSVAL_TO_BOOLEAN(*vp);

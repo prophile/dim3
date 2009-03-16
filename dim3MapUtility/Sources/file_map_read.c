@@ -37,7 +37,6 @@ char					media_type_str[][32]={"none","story","title","movie"},
 						liquid_tide_direction_str[][32]={"horizontal","vertical",""},
                         light_type_str[][32]={"normal","blink","glow","pulse","flicker","failing",""},
                         light_direction_str[][32]={"all","neg_x","pos_x","neg_y","pos_y","neg_z","pos_z",""},
-						lighting_mode_str[][32]={"flat","hilite","hilite_diffuse","vertex"},
 						skill_type_str[][32]={"easy","medium","hard",""},
 						spawn_type_str[][32]={"always","single_player","multiplayer",""};
 

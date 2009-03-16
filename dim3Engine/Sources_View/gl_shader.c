@@ -410,7 +410,7 @@ void gl_shader_attach_map(void)
 	
 	for (n=0;n!=max_map_texture;n++) {
 		texture->shader_idx=-1;
-		if (shader_on) texture->shader_idx=gl_shader_find(texture->shader_name);
+		if ((shader_on) && (texture->shader_name[0]!=0x0)) texture->shader_idx=gl_shader_find(texture->shader_name);
 		texture++;
 	}
 }
@@ -418,18 +418,25 @@ void gl_shader_attach_map(void)
 void gl_shader_attach_model(model_type *mdl)
 {
 	int					n;
-	bool				shader_on;
+	bool				shader_on,has_no_shader;
 	texture_type		*texture;
 	
 	shader_on=gl_check_shader_ok();
+
+	has_no_shader=TRUE;
 
 	texture=mdl->textures;
 	
 	for (n=0;n!=max_model_texture;n++) {
 		texture->shader_idx=-1;
-		if (shader_on) texture->shader_idx=gl_shader_find(texture->shader_name);
+		if ((shader_on) && (texture->shader_name[0]!=0x0)) {
+			texture->shader_idx=gl_shader_find(texture->shader_name);
+			if (texture->shader_idx!=-1) has_no_shader=FALSE;
+		}
 		texture++;
 	}
+
+	mdl->has_no_shader=has_no_shader;
 }
 
 /* =======================================================
@@ -657,3 +664,33 @@ void gl_shader_draw_execute(texture_type *texture,int frame,float dark_factor,fl
 	gl_shader_texture_set(texture,frame);
 }
 
+void gl_shader_draw_hilite_execute(texture_type *texture,int frame,float dark_factor,float alpha,d3pnt *pnt,d3col *col)
+{
+	view_glsl_light_list_type	light_list;
+
+		// create highlight list
+
+	bzero(&light_list,sizeof(view_glsl_light_list_type));
+
+	light_list.pos[0]=(float)pnt->x;
+	light_list.pos[1]=(float)pnt->y;
+	light_list.pos[2]=(float)pnt->z;
+	
+	if (col==NULL) {
+		light_list.col[0]=light_list.col[1]=light_list.col[2]=1.0f;
+	}
+	else {
+		light_list.col[0]=col->r;
+		light_list.col[1]=col->g;
+		light_list.col[2]=col->b;
+	}
+
+	light_list.intensity[0]=(float)map_max_size;
+	light_list.exponent[0]=0.0f;		// hard light
+
+	light_list.direction[0]=0.0f;
+	light_list.direction[1]=0.0f;
+	light_list.direction[2]=0.0f;
+
+	gl_shader_draw_execute(texture,frame,dark_factor,alpha,&light_list);
+}

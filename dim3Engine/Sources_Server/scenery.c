@@ -84,7 +84,6 @@ void scenery_create(void)
 		strcpy(obj->draw.name,map_scenery->model_name);
 		
 		obj->draw.on=TRUE;
-		obj->draw.lit_type=map_scenery->lighting_mode;
 		obj->draw.face_forward=map_scenery->face_forward;
 		obj->draw.shadow.on=map_scenery->shadow;
 		obj->draw.shadow.always_in_air=map_scenery->shadow_cast_down;

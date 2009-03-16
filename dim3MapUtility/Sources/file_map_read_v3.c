@@ -37,7 +37,6 @@ extern char				media_type_str[][32],
 						liquid_tide_direction_str[][32],
                         light_type_str[][32],
 						light_direction_str[][32],
-						lighting_mode_str[][32],
 						skill_type_str[][32],
 						spawn_type_str[][32],
 						map_bump_mode_str[][32];
@@ -310,7 +309,6 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 			xml_get_attribute_text(obj_tag,"model_name",scenery->model_name,name_str_len);
 			xml_get_attribute_text(obj_tag,"animation_name",scenery->animation_name,name_str_len);
 			xml_get_attribute_3_coord_float(obj_tag,"angle",&scenery->ang.x,&scenery->ang.y,&scenery->ang.z);
-			scenery->lighting_mode=xml_get_attribute_list(obj_tag,"lighting_mode",(char*)lighting_mode_str);
 			scenery->contact_object_on=xml_get_attribute_boolean(obj_tag,"contact");
 			scenery->contact_projectile_on=xml_get_attribute_boolean(obj_tag,"contact_projectile");
 			scenery->contact_hit_box=xml_get_attribute_boolean(obj_tag,"contact_hit_box");

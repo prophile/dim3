@@ -274,6 +274,7 @@ typedef struct		{
 														nmesh,nbone,npose,nanimate,nhit_box,
 														deform_mode,shadow_fudge;
 						char							name[name_str_len],load_base_path[1024];
+						bool							has_no_shader;
 						d3pnt							center;
 						model_box_type					view_box,shadow_box;
 						model_tags						tags;

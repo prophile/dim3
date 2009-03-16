@@ -334,7 +334,6 @@ typedef struct		{
 //
 					
 typedef struct		{
-						int									lighting_mode;
 						short								texture_frame[max_map_scenery_model_texture_frame];
 						char								model_name[name_str_len],animation_name[name_str_len];
 						bool								contact_object_on,contact_projectile_on,

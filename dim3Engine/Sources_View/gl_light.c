@@ -602,7 +602,7 @@ void gl_lights_build_from_liquid(map_liquid_type *liq,view_glsl_light_list_type 
 
 void gl_lights_build_from_model(model_draw *draw,view_glsl_light_list_type *light_list)
 {
-	int					cx,cy,cz,sz;
+	int					n,cx,cy,cz,sz,idx;
 	float				fx,fy,fz;
 	d3pnt				pnt,min,max;
 	matrix_type			mat;
@@ -648,7 +648,16 @@ void gl_lights_build_from_model(model_draw *draw,view_glsl_light_list_type *ligh
 	rotate_point(&max.x,&max.y,&max.z,cx,cy,cz,draw->rot.x,draw->rot.y,draw->rot.z);
 
 	gl_lights_build_from_box(&pnt,&min,&max,light_list);
+
+		// do any tints
+
+	for (n=0;n!=max_view_lights_per_poly;n++) {
+		idx=n*3;
+
+		light_list->col[idx]*=draw->tint.r;
+		light_list->col[idx+1]*=draw->tint.g;
+		light_list->col[idx+2]*=draw->tint.b;
+	}
+
 }
-
-
 

@@ -49,11 +49,17 @@ extern bool fog_solid_on(void);
       
 ======================================================= */
 
-void model_draw_create_color_vertexes(model_type *mdl,int mesh_mask)
+void model_draw_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw *draw)
 {
 	int				n,k;
 	float			*cp,*vp;
 	model_mesh_type	*mesh;
+
+		// if only shaders, then no color list required
+
+	if (!mdl->has_no_shader) return;
+
+		// need color lists
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))==0) continue;
@@ -65,10 +71,19 @@ void model_draw_create_color_vertexes(model_type *mdl,int mesh_mask)
 
 		if ((dim3_debug) || (mesh->no_lighting)) {
 
-			for (k=0;k!=mesh->nvertex;k++) {
-				*cp++=1.0f;
-				*cp++=1.0f;
-				*cp++=1.0f;
+			if (mesh->tintable) {
+				for (k=0;k!=mesh->nvertex;k++) {
+					*cp++=draw->tint.r;
+					*cp++=draw->tint.g;
+					*cp++=draw->tint.b;
+				}
+			}
+			else {
+				for (k=0;k!=mesh->nvertex;k++) {
+					*cp++=1.0f;
+					*cp++=1.0f;
+					*cp++=1.0f;
+				}
 			}
 
 			continue;
@@ -83,6 +98,18 @@ void model_draw_create_color_vertexes(model_type *mdl,int mesh_mask)
 			cp+=3;
 			vp+=3;
 		}
+
+		if (mesh->tintable) {
+
+			cp=mesh->draw.gl_color_array;
+
+			for (k=0;k!=mesh->nvertex;k++) {
+				*cp++=(*cp)*draw->tint.r;
+				*cp++=(*cp)*draw->tint.g;
+				*cp++=(*cp)*draw->tint.b;
+			}
+		}
+
 	}
 }
 
@@ -449,7 +476,17 @@ void model_draw_opaque_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,m
 		
 			// run the shader
 			
-		gl_shader_draw_execute(texture,texture->animate.current_frame,1.0f,1.0f,light_list);
+		if (!mesh->no_lighting) {
+			gl_shader_draw_execute(texture,texture->animate.current_frame,1.0f,1.0f,light_list);
+		}
+		else {
+			if (mesh->tintable) {
+				gl_shader_draw_hilite_execute(texture,texture->animate.current_frame,1.0f,1.0f,&draw->pnt,&draw->tint);
+			}
+			else {
+				gl_shader_draw_hilite_execute(texture,texture->animate.current_frame,1.0f,1.0f,&draw->pnt,NULL);
+			}
+		}
 		
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 			
@@ -659,7 +696,7 @@ void model_render(int tick,model_draw *draw)
 
 		// setup the colors and vbo
 
-	model_draw_create_color_vertexes(mdl,mesh_mask);
+	model_draw_create_color_vertexes(mdl,mesh_mask,draw);
 	if (!model_draw_initialize_vertex_objects(mdl,mesh_mask,draw)) return;
 
 		// start lighting

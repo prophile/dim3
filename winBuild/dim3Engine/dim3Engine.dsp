@@ -735,10 +735,6 @@ SOURCE=..\..\dim3Engine\Sources_Server\script_model_halo.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_Server\script_model_hilite_color.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3Engine\Sources_Server\script_model_light.c
 # End Source File
 # Begin Source File

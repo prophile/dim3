@@ -165,15 +165,6 @@ and can be sold or given away.
 #define aw_position								4
 
 //
-// model lighting
-//
- 
-#define ml_flat									0
-#define ml_hilite								1
-#define ml_hilite_diffuse						2
-#define ml_vertex								3
-
-//
 // shadow settings
 //
 
@@ -276,7 +267,7 @@ typedef struct		{
 					} model_draw_vbo_ptr;
 
 typedef struct		{
-						int						uid,lit_type,spin_tick,
+						int						uid,spin_tick,
 												mesh_mask,lod_dist,script_animation_idx,
 												script_light_idx,script_halo_idx;
 						char					name[name_str_len];
@@ -286,7 +277,7 @@ typedef struct		{
 						unsigned char			cur_texture_frame[max_model_texture];
 						d3pnt					pnt,size,center,offset;
 						d3ang					rot,spin;
-						d3col					hilite,tint;
+						d3col					tint;
 						model_draw_connect		connect;
 						model_draw_light		lights[max_model_light];
 						model_draw_halo			halos[max_model_halo];

@@ -296,7 +296,7 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 			// if in debug, we are using high lighting,
 			// so recalculate the lights for the mesh
 
-		if (dim3_debug) {
+		if ((dim3_debug) || (mesh->flag.hilite)) {
 			
 			pc=vertex_ptr+((v_count*(3+2))+(mesh->draw.vertex_offset*3));
 

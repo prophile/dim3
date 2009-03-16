@@ -213,7 +213,6 @@ and can be sold or given away.
 
 #define model_prop_on								0
 #define model_prop_name								1
-#define model_prop_lit								2
 #define model_prop_bounce							3
 #define model_prop_alpha							4
 #define model_prop_resize							5
@@ -241,10 +240,6 @@ and can be sold or given away.
 #define model_light_color_prop_red					0
 #define model_light_color_prop_green				1
 #define model_light_color_prop_blue					2
-
-#define model_hilite_color_prop_red					0
-#define model_hilite_color_prop_green				1
-#define model_hilite_color_prop_blue				2
 
 #define model_halo_prop_index						0
 #define model_halo_prop_on							1
