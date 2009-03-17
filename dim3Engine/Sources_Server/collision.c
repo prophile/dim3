@@ -115,7 +115,7 @@ int collide_find_object_for_object_move(obj_type *obj,int x,int z)
 	return(-1);
 }
 
-int collide_find_object_for_object(obj_type *obj)
+inline int collide_find_object_for_object(obj_type *obj)
 {
 	return(collide_find_object_for_object_move(obj,0,0));
 }

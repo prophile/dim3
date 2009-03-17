@@ -44,8 +44,6 @@ bitmap_type					null_bitmap;
 float						gl_texture_current_alpha,gl_texture_current_glow_color;
 GLuint						gl_texture_current_txt_id;
 
-// supergumba -- will need to search this for deletes on unused stuff (note vars above, also)
-
 /* =======================================================
 
       Texture Utility Initialization
@@ -63,27 +61,6 @@ void gl_texture_initialize(void)
 void gl_texture_shutdown(void)
 {
 	bitmap_close(&null_bitmap);
-}
-
-/* =======================================================
-
-      Texture Binding
-      
-======================================================= */
-
-inline void gl_texture_bind(int unit,int txt_id)
-{
-		// NOP if texture is already bound to this unit
-
-	if (cur_bind_txt_id[unit]==txt_id) return;
-
-		// bind to unit
-		// GL_TEXTURE0+unit works for the OpenGL header values
-
-	glActiveTexture(GL_TEXTURE0+unit);
-	glBindTexture(GL_TEXTURE_2D,txt_id);
-
-	cur_bind_txt_id[unit]=txt_id;
 }
 
 /* =======================================================
@@ -125,7 +102,7 @@ inline void gl_texture_opaque_set(GLuint txt_id)
       
 ======================================================= */
 
-inline void gl_texture_transparent_start()
+inline void gl_texture_transparent_start(void)
 {
 		// texture unit 0
 		// contains texture

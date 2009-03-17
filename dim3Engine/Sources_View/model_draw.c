@@ -477,14 +477,14 @@ void model_draw_opaque_shader_trigs(model_type *mdl,int mesh_idx,int mesh_mask,m
 			// run the shader
 			
 		if (!mesh->no_lighting) {
-			gl_shader_draw_execute(texture,texture->animate.current_frame,1.0f,1.0f,light_list);
+			gl_shader_draw_execute(texture,n,texture->animate.current_frame,1.0f,1.0f,light_list);
 		}
 		else {
 			if (mesh->tintable) {
-				gl_shader_draw_hilite_execute(texture,texture->animate.current_frame,1.0f,1.0f,&draw->pnt,&draw->tint);
+				gl_shader_draw_hilite_execute(texture,n,texture->animate.current_frame,1.0f,1.0f,&draw->pnt,&draw->tint);
 			}
 			else {
-				gl_shader_draw_hilite_execute(texture,texture->animate.current_frame,1.0f,1.0f,&draw->pnt,NULL);
+				gl_shader_draw_hilite_execute(texture,n,texture->animate.current_frame,1.0f,1.0f,&draw->pnt,NULL);
 			}
 		}
 		

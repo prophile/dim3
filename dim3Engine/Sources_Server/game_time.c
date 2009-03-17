@@ -74,7 +74,7 @@ void game_time_reset(void)
 	game_last_tick=time_get();
 }
 
-int game_time_get(void)
+inline int game_time_get(void)
 {
 	return(game_tick);
 }

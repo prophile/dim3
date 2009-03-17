@@ -186,10 +186,10 @@ void render_opaque_mesh_shader(int mesh_cnt,int *mesh_list)
 			texture=&map.textures[poly->txt_idx];
 
 			if (!mesh->flag.hilite) {
-				gl_shader_draw_execute(texture,poly->render.frame,poly->dark_factor,1.0f,&light_list);
+				gl_shader_draw_execute(texture,poly->txt_idx,poly->render.frame,poly->dark_factor,1.0f,&light_list);
 			}
 			else {
-				gl_shader_draw_hilite_execute(texture,poly->render.frame,poly->dark_factor,1.0f,&poly->box.mid,NULL);
+				gl_shader_draw_hilite_execute(texture,poly->txt_idx,poly->render.frame,poly->dark_factor,1.0f,&poly->box.mid,NULL);
 			}
 
 				// draw polygon

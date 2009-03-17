@@ -340,7 +340,7 @@ void view_draw_models_setup(void)
 
 void view_draw_models(int tick)
 {
-	int					i;
+	int					n;
 	d3col				col;
 	obj_type			*obj;
 	proj_type			*proj;
@@ -357,12 +357,12 @@ void view_draw_models(int tick)
 		
 	sort=&view.sort;
 	
-	for (i=0;i!=sort->count;i++) {
+	for (n=0;n!=sort->count;n++) {
 
-		switch (sort->items[i].type) {
+		switch (sort->items[n].type) {
 
 			case view_sort_object:
-				obj=&server.objs[sort->items[i].idx];
+				obj=&server.objs[sort->items[n].idx];
 				if (!obj->draw.in_view) break;
 				
 				model_render(tick,&obj->draw);
@@ -375,7 +375,7 @@ void view_draw_models(int tick)
 				break;
 
 			case view_sort_projectile:
-				proj=&server.projs[sort->items[i].idx];
+				proj=&server.projs[sort->items[n].idx];
 				if (proj->draw.in_view) model_render(tick,&proj->draw);
 				break;
 
@@ -495,6 +495,10 @@ void view_draw(int tick)
 	else {
 		fog_solid_start();
 	}
+
+		// setup per-scene shader variables
+
+	gl_shader_draw_scene_initialize();
 
 		// compile meshes for drawing
 	

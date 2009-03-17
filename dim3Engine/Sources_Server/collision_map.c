@@ -29,6 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#define collide_obj_ray_count			60
+
 #include "scripts.h"
 #include "objects.h"
 #include "projectiles.h"
@@ -37,10 +39,6 @@ and can be sold or given away.
 
 extern map_type			map;
 extern server_type		server;
-
-bool		test_me_ok=FALSE;	// supergumba
-d3pnt		test_me_spnt[32],test_me_epnt[32];
-int			test_me_px[21],test_me_py[21],test_me_pz[21];
 
 /* =======================================================
 
@@ -75,184 +73,75 @@ int collide_point_distance(d3pnt *pt_1,d3pnt *pt_2)
 	return((int)sqrt((dx*dx)+(dy*dy)+(dz*dz)));
 }
 
-void collide_object_box_ray_trace_points(d3pnt *pt,d3pnt *box_sz,int side,float face_ang,int *px,int *py,int *pz)
-{
-	int			ty,by,y_sz;
-
-		// get points for that poly face
-
-	switch (side) {
-
-			// front side
-
-		case 0:
-			pz[0]=pz[1]=pz[2]=pz[3]=pz[4]=pz[5]=pz[6]=pz[7]=pz[8]=pz[9]=pz[10]=pz[11]=pz[12]=pz[13]=pz[14]=pz[15]=pt->z-(box_sz->z>>1);
-			px[0]=px[3]=px[6]=px[9]=px[12]=pt->x-(box_sz->x>>1);
-			px[1]=px[4]=px[7]=px[10]=px[13]=pt->x;
-			px[2]=px[5]=px[8]=px[11]=px[14]=pt->x+(box_sz->x>>1);
-			break;
-
-			// right side
-
-		case 1:
-			px[0]=px[1]=px[2]=px[3]=px[4]=px[5]=px[6]=px[7]=px[8]=px[9]=px[10]=px[11]=px[12]=px[13]=px[14]=px[15]=pt->x+(box_sz->x>>1);
-			pz[0]=pz[3]=pz[6]=pz[9]=pz[12]=pt->z-(box_sz->z>>1);
-			pz[1]=pz[4]=pz[7]=pz[10]=pz[13]=pt->z;
-			pz[2]=pz[5]=pz[8]=pz[11]=pz[14]=pt->z+(box_sz->z>>1);
-			break;
-
-			// back side
-
-		case 2:
-			pz[0]=pz[1]=pz[2]=pz[3]=pz[4]=pz[5]=pz[6]=pz[7]=pz[8]=pz[9]=pz[10]=pz[11]=pz[12]=pz[13]=pz[14]=pz[15]=pt->z+(box_sz->z>>1);
-			px[0]=px[3]=px[6]=px[9]=px[12]=pt->x-(box_sz->x>>1);
-			px[1]=px[4]=px[7]=px[10]=px[13]=pt->x;
-			px[2]=px[5]=px[8]=px[11]=px[14]=pt->x+(box_sz->x>>1);
-			break;
-
-			// left side
-
-		case 3:
-			px[0]=px[1]=px[2]=px[3]=px[4]=px[5]=px[6]=px[7]=px[8]=px[9]=px[10]=px[11]=px[12]=px[13]=px[14]=px[15]=pt->x-(box_sz->x>>1);
-			pz[0]=pz[3]=pz[6]=pz[9]=pz[12]=pt->z-(box_sz->z>>1);
-			pz[1]=pz[4]=pz[7]=pz[10]=pz[13]=pt->z;
-			pz[2]=pz[5]=pz[8]=pz[11]=pz[14]=pt->z+(box_sz->z>>1);
-			break;
-
-	}
-
-		// rotate face
-
-	rotate_2D_polygon(15,px,pz,pt->x,pt->z,face_ang);
-
-		// setup Ys
-		
-	ty=pt->y-box_sz->y;
-	by=pt->y;
-	
-	y_sz=(by-ty)>>2;
-
-	py[0]=py[1]=py[2]=ty;
-	py[3]=py[4]=py[5]=ty+y_sz;
-	py[6]=py[7]=py[8]=(ty+by)>>1;
-	py[9]=py[10]=py[11]=by-y_sz;
-	py[12]=py[13]=py[14]=by-(map_enlarge>>1);
-}
-
-void test_me(void)	// supergumba
-{
-	int		n;
-	if (!test_me_ok) return;
-
-			glColor4f(1.0f,1.0f,0.0f,1.0f);
-		glBegin(GL_LINES);
-		for (n=0;n!=21;n++) {
-			glVertex3i(test_me_spnt[n].x,test_me_spnt[n].y,test_me_spnt[n].z);
-			glVertex3i(test_me_epnt[n].x,test_me_epnt[n].y,test_me_epnt[n].z);
-		}
-		glEnd();
-		glColor4f(1.0f,0.0f,1.0f,1.0f);
-		glBegin(GL_LINE_LOOP);
-			glVertex3i(test_me_px[0],test_me_py[0],test_me_pz[0]);
-			glVertex3i(test_me_px[2],test_me_py[2],test_me_pz[2]);
-			glVertex3i(test_me_px[14],test_me_py[14],test_me_pz[14]);
-			glVertex3i(test_me_px[12],test_me_py[12],test_me_pz[12]);
-		glEnd();
-}
-
 bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,int *yadd,int *zadd)
 {
-	int						n,x,z,idx,xadd2,yadd2,zadd2,mvx,mvz,radius,
-							px[21],py[21],pz[21],
-							d,dist,mv_dist,side,move_side,face_side;
-	float					move_ang,face_ang;
-	bool					bump,hits[21];
-	d3pnt					spt[21],ept[21],hpt[21];
+	int						n,k,mx,mz,y,idx,d,dist,vert_y[5];
+	float					move_ang;
+	double					radius,rad;
+	bool					bump,hits[collide_obj_ray_count];
+	d3pnt					obj_pnt,mov,
+							spt[collide_obj_ray_count],ept[collide_obj_ray_count],hpt[collide_obj_ray_count];
+	ray_trace_contact_type	base_contact,contacts[collide_obj_ray_count];
 	map_mesh_poly_type		*poly;
-	ray_trace_contact_type	base_contact,contacts[21];
+	model_type				*mdl;
 
-		// determine the polygon face to
-		// check hit points for
+		// get movements out of pointers
 
-	move_ang=angle_find(0,0,(*xadd),(*zadd));
-	face_ang=angle_add(obj->ang.y,obj->draw.rot.y);
+	mov.x=*xadd;
+	mov.y=*yadd;
+	mov.z=*zadd;
 
-	move_side=((int)((move_ang+45.0f)/90.0f))&0x3;
-	face_side=((int)((face_ang+45.0f)/90.0f))&0x3;
-	side=(move_side-face_side)&0x3;
+		// find the object center
 
-		// run our ray traces from the opposite
-		// side through the polygon side we
-		// are checking hits for
+	memmove(&obj_pnt,&obj->pnt,sizeof(d3pnt));
 
-	xadd2=*xadd;
-	yadd2=*yadd;
-	zadd2=*zadd;
-/* supergumba -- test
-	switch (side) {
-
-			// front side
-
-		case 0:
-			angle_get_movement(face_ang,obj->size.z,&mvx,&mvz);
-			xadd2+=mvx;
-			zadd2+=mvz;
-			side=2;
-			break;
-
-			// right side
-
-		case 1:
-			angle_get_movement(angle_add(face_ang,90.0f),obj->size.x,&mvx,&mvz);
-			xadd2+=mvx;
-			zadd2+=mvz;
-			side=3;
-			break;
-
-			// back side
-
-		case 2:
-			angle_get_movement(angle_add(face_ang,180.0f),obj->size.z,&mvx,&mvz);
-			xadd2+=mvx;
-			zadd2+=mvz;
-			side=0;
-			break;
-
-			// left side
-
-		case 3:
-			angle_get_movement(angle_add(face_ang,270.0f),obj->size.x,&mvx,&mvz);
-			xadd2+=mvx;
-			zadd2+=mvz;
-			side=1;
-			break;
+	mdl=model_find_uid(obj->draw.uid);
+	if (mdl!=NULL) {
+		obj_pnt.x+=mdl->center.x;
+		obj_pnt.y+=mdl->center.y;
+		obj_pnt.z+=mdl->center.z;
 	}
-*/
-		// get collision points
 
-	collide_object_box_ray_trace_points(pt,box_sz,side,face_ang,px,py,pz);
+		// get movement radius
 
-		// need to increase ray check distance
-		// to avoid objects getting close to polygons
-		// and then turning their corner into them
+	radius=(double)obj->size.radius;
 
-	radius=obj->size.radius;
+		// vertical race trace positions
 
-	x=*xadd;
-	z=*zadd;
+	vert_y[0]=(obj_pnt.y-obj->size.y)+(map_enlarge<<1);
+	vert_y[2]=obj_pnt.y-(obj->size.y>>1);
+	vert_y[4]=obj_pnt.y-(map_enlarge<<1);
 
-	mv_dist=(int)(sqrt((double)(x*x)+(double)(z*z)));
+	vert_y[1]=(vert_y[0]+vert_y[2])>>1;
+	vert_y[3]=(vert_y[2]+vert_y[4])>>1;
 
-	if (radius>mv_dist) {
-		angle_get_movement(move_ang,radius,&xadd2,&zadd2);
-		
-		yadd2=*yadd;
-		if (mv_dist!=0) yadd2=((*yadd)*radius)/mv_dist;
-	}
-	else {
-		xadd2=x;
-		zadd2=z;
-		yadd2=*yadd;
+		// create the ray trace points
+
+	idx=0;
+
+	for (n=0;n!=12;n++) {
+
+		rad=(double)((float)(n*30)*ANG_to_RAD);
+
+		mx=(int)(radius*sin(rad));
+		mz=-(int)(radius*cos(rad));
+
+		mx+=mov.x;
+		mz+=mov.z;
+
+		for (k=0;k!=5;k++) {
+
+			y=vert_y[k];
+
+			spt[idx].x=obj_pnt.x;
+			spt[idx].y=y;
+			spt[idx].z=obj_pnt.z;
+			ept[idx].x=obj_pnt.x+mx;
+			ept[idx].y=y+mov.y;
+			ept[idx].z=obj_pnt.z+mz;
+
+			idx++;
+		}
 	}
 
 		// set the collisions and run the
@@ -267,76 +156,9 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 	base_contact.hit_mode=poly_ray_trace_hit_mode_wall_only;
 	base_contact.origin=poly_ray_trace_origin_object;
 
-		// straight forward rays
-
-	for (n=0;n!=15;n++) {
-		spt[n].x=px[n];
-		spt[n].y=py[n];
-		spt[n].z=pz[n];
-
-		ept[n].x=spt[n].x+xadd2;
-		ept[n].y=spt[n].y+yadd2;
-		ept[n].z=spt[n].z+zadd2;
-	}
-		
-		// cross-over rays
-
-	spt[15].x=px[15]=px[0];
-	spt[15].y=py[15]=py[0];
-	spt[15].z=pz[15]=pz[0];
-	ept[15].x=px[14]+xadd2;
-	ept[15].y=py[14]+yadd2;
-	ept[15].z=pz[14]+zadd2;
-
-	spt[16].x=px[16]=px[2];
-	spt[16].y=py[16]=py[2];
-	spt[16].z=pz[16]=pz[2];
-	ept[16].x=px[12]+xadd2;
-	ept[16].y=py[12]+yadd2;
-	ept[16].z=pz[12]+zadd2;
-
-	spt[17].x=px[17]=px[12];
-	spt[17].y=py[17]=py[12];
-	spt[17].z=pz[17]=pz[12];
-	ept[17].x=px[2]+xadd2;
-	ept[17].y=py[2]+yadd2;
-	ept[17].z=pz[2]+zadd2;
-
-	spt[18].x=px[18]=px[14];
-	spt[18].y=py[18]=py[14];
-	spt[18].z=pz[18]=pz[14];
-	ept[18].x=px[0]+xadd2;
-	ept[18].y=py[0]+yadd2;
-	ept[18].z=pz[0]+zadd2;
-
-	spt[19].x=px[19]=px[6];
-	spt[19].y=py[19]=py[6];
-	spt[19].z=pz[19]=pz[6];
-	ept[19].x=px[8]+xadd2;
-	ept[19].y=py[8]+yadd2;
-	ept[19].z=pz[8]+zadd2;
-
-	spt[20].x=px[20]=px[8];
-	spt[20].y=py[20]=py[8];
-	spt[20].z=pz[20]=pz[8];
-	ept[20].x=px[6]+xadd2;
-	ept[20].y=py[6]+yadd2;
-	ept[20].z=pz[6]+zadd2;
-
-		// debug mode ray traces
-
-	if (obj->player) {
-		test_me_ok=TRUE;
-		memmove(test_me_spnt,spt,(sizeof(d3pnt)*21));
-		memmove(test_me_epnt,ept,(sizeof(d3pnt)*21));
-		memmove(test_me_px,px,(sizeof(int)*21));
-		memmove(test_me_py,py,(sizeof(int)*21));
-		memmove(test_me_pz,pz,(sizeof(int)*21));
-	}
-
 		// run ray trace
 
-	ray_trace_map_by_point_array(21,spt,ept,hpt,hits,&base_contact,contacts);
+	ray_trace_map_by_point_array(collide_obj_ray_count,spt,ept,hpt,hits,&base_contact,contacts);
 
 		// find the one that moves the leasts
 		// as the most suitable hit point
@@ -344,7 +166,7 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 	idx=-1;
 	dist=0;
 
-	for (n=0;n!=21;n++) {
+	for (n=0;n!=collide_obj_ray_count;n++) {
 			
 		if (hits[n]) {
 			d=collide_point_distance(&spt[n],&hpt[n]);
@@ -380,18 +202,20 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 		// object radius
 
 	if (!bump) {
-		x=hpt[idx].x-px[idx];
-		z=hpt[idx].z-pz[idx];
+		mx=hpt[idx].x-spt[idx].x;
+		mz=hpt[idx].z-spt[idx].z;
 
-		d=(int)(sqrt((double)(x*x)+(double)(z*z)));
+		d=(int)(sqrt((double)(mx*mx)+(double)(mz*mz)));
 
-		angle_get_movement(move_ang,(radius-d),&xadd2,&zadd2);
-		*xadd=(*xadd)-xadd2;
-		*zadd=(*zadd)-zadd2;
+		move_ang=angle_find(0,0,mov.x,mov.z);
+
+		angle_get_movement(move_ang,(obj->size.radius-d),&mx,&mz);
+		*xadd=(*xadd)-mx;
+		*zadd=(*zadd)-mz;
 	}
 	else {
-		*xadd=hpt[idx].x-px[idx];
-		*zadd=hpt[idx].z-pz[idx];
+		*xadd=hpt[idx].x-spt[idx].x;
+		*zadd=hpt[idx].z-spt[idx].z;
 	}
 	
 		// setup the hits

@@ -369,7 +369,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 		gl_lights_build_from_liquid(liq,&light_list);
 
 		gl_shader_draw_start();
-		gl_shader_draw_execute(texture,frame,1.0f,liq->alpha,&light_list);
+		gl_shader_draw_execute(texture,liq->txt_idx,frame,1.0f,liq->alpha,&light_list);
 
 		glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
 		

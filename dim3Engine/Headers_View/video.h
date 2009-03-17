@@ -106,10 +106,11 @@ extern bool gl_shader_initialize(char *err_str);
 extern void gl_shader_shutdown(void);
 extern void gl_shader_attach_map(void);
 extern void gl_shader_attach_model(model_type *mdl);
+extern void gl_shader_draw_scene_initialize(void);
 extern void gl_shader_draw_start(void);
 extern void gl_shader_draw_end(void);
-extern void gl_shader_draw_execute(texture_type *texture,int frame,float dark_factor,float alpha,view_glsl_light_list_type *light_list);
-extern void gl_shader_draw_hilite_execute(texture_type *texture,int frame,float dark_factor,float alpha,d3pnt *pnt,d3col *col);
+extern void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,float dark_factor,float alpha,view_glsl_light_list_type *light_list);
+extern void gl_shader_draw_hilite_execute(texture_type *texture,int txt_idx,int frame,float dark_factor,float alpha,d3pnt *pnt,d3col *col);
 
 	// shadows
 	
@@ -150,7 +151,7 @@ extern void gl_texture_glow_set(GLuint glow_id,float glow_color);
 extern void gl_texture_decal_start(void);
 extern void gl_texture_decal_end(void);
 extern void gl_texture_decal_set(GLuint txt_id,float r,float g,float b,float alpha);
-extern void gl_texture_transparent_start();
+extern void gl_texture_transparent_start(void);
 extern void gl_texture_transparent_end(void);
 extern void gl_texture_transparent_set(GLuint txt_id,float alpha);
 extern void gl_texture_simple_start(void);

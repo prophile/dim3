@@ -37,7 +37,7 @@ extern map_type				map;
 extern server_type			server;
 extern view_type			view;
 
-extern bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd);	// supergumba
+extern bool collide_projectile_to_map(proj_type *proj,int xadd,int yadd,int zadd);
 
 /* =======================================================
 

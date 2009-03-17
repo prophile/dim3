@@ -335,10 +335,10 @@ void render_transparent_mesh_shader(void)
 			// draw shader
 
 		if (mesh->flag.hilite) {
-			gl_shader_draw_execute(texture,poly->render.frame,poly->dark_factor,poly->alpha,&light_list);
+			gl_shader_draw_execute(texture,poly->txt_idx,poly->render.frame,poly->dark_factor,poly->alpha,&light_list);
 		}
 		else {
-			gl_shader_draw_hilite_execute(texture,poly->render.frame,poly->dark_factor,1.0f,&poly->box.mid,NULL);
+			gl_shader_draw_hilite_execute(texture,poly->txt_idx,poly->render.frame,poly->dark_factor,1.0f,&poly->box.mid,NULL);
 		}
 
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
