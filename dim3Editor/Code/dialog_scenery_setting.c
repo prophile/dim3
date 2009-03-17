@@ -32,7 +32,6 @@ and can be sold or given away.
 extern map_type				map;
 
 #define kSceneryModelName							FOUR_CHAR_CODE('mnme')
-#define kSceneryLightingMode						FOUR_CHAR_CODE('ltmd')
 #define kSceneryAnimationName						FOUR_CHAR_CODE('anme')
 #define kSceneryAngleX								FOUR_CHAR_CODE('angx')
 #define kSceneryAngleY								FOUR_CHAR_CODE('angy')
@@ -106,7 +105,6 @@ bool dialog_scenery_setting_run(map_scenery_type *scenery)
 		// set controls
 
 	dialog_special_combo_fill_model(dialog_scenery_setting_wind,kSceneryModelName,0,scenery->model_name);
-	dialog_set_combo(dialog_scenery_setting_wind,kSceneryLightingMode,0,scenery->lighting_mode);
 	dialog_set_text(dialog_scenery_setting_wind,kSceneryAnimationName,0,scenery->animation_name);
 	dialog_set_float(dialog_scenery_setting_wind,kSceneryAngleX,0,scenery->ang.x);
 	dialog_set_float(dialog_scenery_setting_wind,kSceneryAngleY,0,scenery->ang.y);
@@ -144,7 +142,6 @@ bool dialog_scenery_setting_run(map_scenery_type *scenery)
 		
 	if (!dialog_scenery_setting_cancel) {
 		dialog_special_combo_get_model(dialog_scenery_setting_wind,kSceneryModelName,0,scenery->model_name,name_str_len);
-		scenery->lighting_mode=dialog_get_combo(dialog_scenery_setting_wind,kSceneryLightingMode,0);
 		dialog_get_text(dialog_scenery_setting_wind,kSceneryAnimationName,0,scenery->animation_name,name_str_len);
 		scenery->ang.x=dialog_get_float(dialog_scenery_setting_wind,kSceneryAngleX,0);
 		scenery->ang.y=dialog_get_float(dialog_scenery_setting_wind,kSceneryAngleY,0);

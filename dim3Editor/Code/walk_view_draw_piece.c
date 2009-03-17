@@ -362,18 +362,16 @@ void walk_view_draw_liquids(bool opaque)
 		glDepthMask(GL_FALSE);
 	}
 	
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
-	
 	old_gl_id=-1;
 
 		// run through the liquids
 		
 	nliquid=map.liquid.nliquid;
-	liquid=map.liquid.liquids;
 	
 	glEnable(GL_TEXTURE_2D);
 	
 	for (n=0;n!=nliquid;n++) {
+		liquid=&map.liquid.liquids[n];
 	
 			// textures
 			
@@ -392,6 +390,8 @@ void walk_view_draw_liquids(bool opaque)
 			old_gl_id=texture->bitmaps[0].gl_id;
 			glBindTexture(GL_TEXTURE_2D,old_gl_id);
 		}
+		
+		glColor4f(1.0f,1.0f,1.0f,liquid->alpha);
 		
 			// dimensions
 			
@@ -456,8 +456,6 @@ void walk_view_draw_liquids(bool opaque)
 		glVertex3i(x,y2,z);
 
 		glEnd();
-		
-		liquid++;
 	}
 	
 	if (!opaque) glDepthMask(GL_TRUE);

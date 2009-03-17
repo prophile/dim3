@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		262D0CA10F6773DC0082E58B /* dialog_polygon_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = 262D0CA00F6773DC0082E58B /* dialog_polygon_setting.c */; };
 		263013CB0D713B7E00564E2C /* main_window_panels.c in Sources */ = {isa = PBXBuildFile; fileRef = 263013CA0D713B7E00564E2C /* main_window_panels.c */; };
 		2630141E0D72844300564E2C /* walk_view_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = 2630141D0D72844300564E2C /* walk_view_swap.c */; };
 		263614460DC41DF6002345C0 /* walk_view_click_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 263614450DC41DF6002345C0 /* walk_view_click_texture.c */; };
@@ -24,7 +23,6 @@
 		268BC8A60F64C8E400E900C2 /* dialog_preference.c in Sources */ = {isa = PBXBuildFile; fileRef = 268BC8A50F64C8E400E900C2 /* dialog_preference.c */; };
 		26934B110D876A800009F81E /* walk_view_click_drag.c in Sources */ = {isa = PBXBuildFile; fileRef = 26934B100D876A800009F81E /* walk_view_click_drag.c */; };
 		26AFB4490D95E0E60004805A /* pieces_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AFB4480D95E0E60004805A /* pieces_mesh.c */; };
-		26AFB4C00D9612570004805A /* dialog_mesh_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AFB4BF0D9612570004805A /* dialog_mesh_setting.c */; };
 		26AFB4D20D9615C00004805A /* maputility.h in Headers */ = {isa = PBXBuildFile; fileRef = 26AFB4D10D9615C00004805A /* maputility.h */; };
 		26B8C2D70F62F2A200C6DEBD /* palettes.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B8C2D60F62F2A200C6DEBD /* palettes.c */; };
 		26BE521B0E5FD01A009B6925 /* dialog_save.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BE521A0E5FD01A009B6925 /* dialog_save.c */; };
@@ -59,7 +57,6 @@
 		F56EF3F709A6F70700F06521 /* dialog_map_light_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = F56EF3F609A6F70700F06521 /* dialog_map_light_settings.c */; };
 		F56EF44209A6FC7F00F06521 /* dialog_map_sound_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = F56EF44109A6FC7F00F06521 /* dialog_map_sound_settings.c */; };
 		F56EF4C209A7D4A400F06521 /* dialog_group_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = F56EF4C109A7D4A400F06521 /* dialog_group_settings.c */; };
-		F56EF55D09A7EA3800F06521 /* dialog_liquid_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = F56EF55C09A7EA3800F06521 /* dialog_liquid_settings.c */; };
 		F56EF57B09A7EBEF00F06521 /* dialog_node_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = F56EF57A09A7EBEF00F06521 /* dialog_node_settings.c */; };
 		F571C8770B34DA6300F979B7 /* xml_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = F571C8760B34DA6300F979B7 /* xml_setup.c */; };
 		F57537BA055B5F4900D42FAF /* dim3 Editor.nib in Resources */ = {isa = PBXBuildFile; fileRef = F57537B9055B5F4900D42FAF /* dim3 Editor.nib */; };
@@ -210,7 +207,6 @@
 		0123D87500C0AFD57F000001 /* walk_view_draw_select.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = walk_view_draw_select.c; path = Code/walk_view_draw_select.c; sourceTree = "<group>"; };
 		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		262D0CA00F6773DC0082E58B /* dialog_polygon_setting.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_polygon_setting.c; path = Code/dialog_polygon_setting.c; sourceTree = "<group>"; };
 		263013CA0D713B7E00564E2C /* main_window_panels.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_window_panels.c; path = Code/main_window_panels.c; sourceTree = "<group>"; };
 		2630141D0D72844300564E2C /* walk_view_swap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = walk_view_swap.c; path = Code/walk_view_swap.c; sourceTree = "<group>"; };
 		263614450DC41DF6002345C0 /* walk_view_click_texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = walk_view_click_texture.c; path = Code/walk_view_click_texture.c; sourceTree = "<group>"; };
@@ -226,7 +222,6 @@
 		268BC8A50F64C8E400E900C2 /* dialog_preference.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_preference.c; path = Code/dialog_preference.c; sourceTree = "<group>"; };
 		26934B100D876A800009F81E /* walk_view_click_drag.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = walk_view_click_drag.c; path = Code/walk_view_click_drag.c; sourceTree = "<group>"; };
 		26AFB4480D95E0E60004805A /* pieces_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pieces_mesh.c; path = Code/pieces_mesh.c; sourceTree = "<group>"; };
-		26AFB4BF0D9612570004805A /* dialog_mesh_setting.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_mesh_setting.c; path = Code/dialog_mesh_setting.c; sourceTree = "<group>"; };
 		26AFB4D10D9615C00004805A /* maputility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = maputility.h; path = ../dim3Common/Headers/maputility.h; sourceTree = SOURCE_ROOT; };
 		26B8C2D60F62F2A200C6DEBD /* palettes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palettes.c; path = Code/palettes.c; sourceTree = "<group>"; };
 		26BE521A0E5FD01A009B6925 /* dialog_save.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_save.c; path = Code/dialog_save.c; sourceTree = "<group>"; };
@@ -266,7 +261,6 @@
 		F56EF3F609A6F70700F06521 /* dialog_map_light_settings.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_map_light_settings.c; path = Code/dialog_map_light_settings.c; sourceTree = "<group>"; };
 		F56EF44109A6FC7F00F06521 /* dialog_map_sound_settings.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_map_sound_settings.c; path = Code/dialog_map_sound_settings.c; sourceTree = "<group>"; };
 		F56EF4C109A7D4A400F06521 /* dialog_group_settings.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_group_settings.c; path = Code/dialog_group_settings.c; sourceTree = "<group>"; };
-		F56EF55C09A7EA3800F06521 /* dialog_liquid_settings.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_liquid_settings.c; path = Code/dialog_liquid_settings.c; sourceTree = "<group>"; };
 		F56EF57A09A7EBEF00F06521 /* dialog_node_settings.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_node_settings.c; path = Code/dialog_node_settings.c; sourceTree = "<group>"; };
 		F571C8760B34DA6300F979B7 /* xml_setup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xml_setup.c; path = Code/xml_setup.c; sourceTree = "<group>"; };
 		F57537B9055B5F4900D42FAF /* dim3 Editor.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = "dim3 Editor.nib"; path = "Resources/dim3 Editor.nib"; sourceTree = "<group>"; };
@@ -509,9 +503,6 @@
 				F56EF44109A6FC7F00F06521 /* dialog_map_sound_settings.c */,
 				F5EC5F3C0A26946D001EEB18 /* dialog_map_particle_settings.c */,
 				F5AF0C5609638BC600F99950 /* dialog_texture_setting.c */,
-				26AFB4BF0D9612570004805A /* dialog_mesh_setting.c */,
-				262D0CA00F6773DC0082E58B /* dialog_polygon_setting.c */,
-				F56EF55C09A7EA3800F06521 /* dialog_liquid_settings.c */,
 				2644C95B0DF8E349005CE451 /* dialog_mesh_scale.c */,
 				26791D420E4D626700AAD058 /* dialog_grid_mesh.c */,
 				2647AD810E4F48D000BA3338 /* dialog_height_import.c */,
@@ -684,7 +675,6 @@
 				F56EF3F709A6F70700F06521 /* dialog_map_light_settings.c in Sources */,
 				F56EF44209A6FC7F00F06521 /* dialog_map_sound_settings.c in Sources */,
 				F56EF4C209A7D4A400F06521 /* dialog_group_settings.c in Sources */,
-				F56EF55D09A7EA3800F06521 /* dialog_liquid_settings.c in Sources */,
 				F56EF57B09A7EBEF00F06521 /* dialog_node_settings.c in Sources */,
 				F5EA6BA709B176BD00E31EE7 /* dialog_map_movements.c in Sources */,
 				F5EA6CB809B29F0E00E31EE7 /* dialog_movement_settings.c in Sources */,
@@ -705,7 +695,6 @@
 				2630141E0D72844300564E2C /* walk_view_swap.c in Sources */,
 				26934B110D876A800009F81E /* walk_view_click_drag.c in Sources */,
 				26AFB4490D95E0E60004805A /* pieces_mesh.c in Sources */,
-				26AFB4C00D9612570004805A /* dialog_mesh_setting.c in Sources */,
 				263614460DC41DF6002345C0 /* walk_view_click_texture.c in Sources */,
 				26DB6D970DDFCE4100BDD008 /* dialog_resize.c in Sources */,
 				2644C95C0DF8E349005CE451 /* dialog_mesh_scale.c in Sources */,
@@ -717,7 +706,6 @@
 				26FC3AFF0ECF8F2F00DD6F37 /* dialog_optimize.c in Sources */,
 				26B8C2D70F62F2A200C6DEBD /* palettes.c in Sources */,
 				268BC8A60F64C8E400E900C2 /* dialog_preference.c in Sources */,
-				262D0CA10F6773DC0082E58B /* dialog_polygon_setting.c in Sources */,
 				265DCEA00F6CC13100C1E65D /* palette_mesh.c in Sources */,
 				265DCEFB0F6D6A3E00C1E65D /* palette_polygon.c in Sources */,
 				265DCF4D0F6DBF9D00C1E65D /* palette_liquid.c in Sources */,

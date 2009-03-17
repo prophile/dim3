@@ -635,32 +635,12 @@ void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,boo
 void walk_view_click_info(void)
 {
 	int				type,main_idx,sub_idx;
-	map_liquid_type	*liq;
 	
     if (select_count()==0) return;
 	
 	select_get(0,&type,&main_idx,&sub_idx);
 
 	switch (type) {
-	
-		case mesh_piece:
-			if (drag_mode!=drag_mode_polygon) {
-				dialog_mesh_setting_run();
-			}
-			else {
-				dialog_poly_setting_run();
-			}
-			break;
-			
-		case liquid_piece:
-			if (drag_mode!=drag_mode_polygon) {
-				liq=&map.liquid.liquids[main_idx];
-				dialog_liquid_settings_run(liq);
-			}
-			else {
-				dialog_poly_setting_run();
-			}
-			break;
 	
 		case node_piece:
 			dialog_node_settings_run(&map.nodes[main_idx]);

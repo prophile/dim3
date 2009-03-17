@@ -44,127 +44,9 @@ WindowRef					palette_poly_wind;
 
 /* =======================================================
 
-      Palette Poly Event Handlers
+      Palette Poly Data
       
 ======================================================= */
-
-
-/* =======================================================
-
-      Run Poly Setting
-      
-======================================================= */
-/*
-bool dialog_poly_setting_run(void)
-{
-	int						type,main_idx,poly_idx;
-	float					x_txtoff,y_txtoff,x_txtfact,y_txtfact;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-	map_liquid_type			*liq;
-	EventHandlerUPP			event_upp;
-	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
-	
-		// open the dialog
-		
-	dialog_open(&dialog_poly_setting_wind,"PolySetting");
-	
-		// use first selected mesh as basis
-		
-	select_get(0,&type,&main_idx,&poly_idx);
-	
-		// polygon data
-	
-	if (type==mesh_piece) {
-		mesh=&map.mesh.meshes[main_idx];
-		poly=&mesh->polys[poly_idx];
-
-		map_mesh_get_poly_uv_as_box(&map,main_idx,poly_idx,&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
-		
-		dialog_set_float(dialog_poly_setting_wind,kMeshPolySettingOffX,0,x_txtoff);
-		dialog_set_float(dialog_poly_setting_wind,kMeshPolySettingOffY,0,y_txtoff);
-		dialog_set_float(dialog_poly_setting_wind,kMeshPolySettingSizeX,0,x_txtfact);
-		dialog_set_float(dialog_poly_setting_wind,kMeshPolySettingSizeY,0,y_txtfact);
-		
-		dialog_set_float(dialog_poly_setting_wind,kMeshPolySettingAlpha,0,poly->alpha);
-		dialog_set_float(dialog_poly_setting_wind,kMeshPolySettingDark,0,poly->dark_factor);
-		dialog_set_float(dialog_poly_setting_wind,kMeshPolySettingShiftX,0,poly->x_shift);
-		dialog_set_float(dialog_poly_setting_wind,kMeshPolySettingShiftY,0,poly->y_shift);
-	}
-	
-		// liquid data
-		
-	else {
-		liq=&map.liquid.liquids[main_idx];
-		
-		dialog_enable(dialog_poly_setting_wind,kMeshPolySettingDark,0,FALSE);
-		
-		dialog_set_float(dialog_poly_setting_wind,kMeshPolySettingOffX,0,liq->x_txtoff);
-		dialog_set_float(dialog_poly_setting_wind,kMeshPolySettingOffY,0,liq->y_txtoff);
-		dialog_set_float(dialog_poly_setting_wind,kMeshPolySettingSizeX,0,liq->x_txtfact);
-		dialog_set_float(dialog_poly_setting_wind,kMeshPolySettingSizeY,0,liq->y_txtfact);
-
-		dialog_set_float(dialog_poly_setting_wind,kMeshPolySettingAlpha,0,liq->alpha);
-		dialog_set_float(dialog_poly_setting_wind,kMeshPolySettingShiftX,0,liq->x_shift);
-		dialog_set_float(dialog_poly_setting_wind,kMeshPolySettingShiftY,0,liq->y_shift);
-	}
-	
-		// show window
-	
-	ShowWindow(dialog_poly_setting_wind);
-	
-		// install event handler
-		
-	event_upp=NewEventHandlerUPP(poly_setting_event_proc);
-	InstallWindowEventHandler(dialog_poly_setting_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
-	
-		// modal window
-		
-	dialog_poly_setting_cancel=FALSE;
-	RunAppModalLoopForWindow(dialog_poly_setting_wind);
-	
-		// dialog to data
-		
-	if (!dialog_poly_setting_cancel) {
-	
-			// polygon data
-			
-		if (type==mesh_piece) {
-			x_txtoff=dialog_get_float(dialog_poly_setting_wind,kMeshPolySettingOffX,0);
-			y_txtoff=dialog_get_float(dialog_poly_setting_wind,kMeshPolySettingOffY,0);
-			x_txtfact=dialog_get_float(dialog_poly_setting_wind,kMeshPolySettingSizeX,0);
-			y_txtfact=dialog_get_float(dialog_poly_setting_wind,kMeshPolySettingSizeY,0);
-
-			map_mesh_set_poly_uv_as_box(&map,main_idx,poly_idx,x_txtoff,y_txtoff,x_txtfact,y_txtfact);
-
-			poly->dark_factor=dialog_get_float(dialog_poly_setting_wind,kMeshPolySettingDark,0);
-			poly->alpha=dialog_get_float(dialog_poly_setting_wind,kMeshPolySettingAlpha,0);
-			poly->x_shift=dialog_get_float(dialog_poly_setting_wind,kMeshPolySettingShiftX,0);
-			poly->y_shift=dialog_get_float(dialog_poly_setting_wind,kMeshPolySettingShiftY,0);
-		}
-		
-			// liquid data
-			
-		else {
-			liq->x_txtoff=dialog_get_float(dialog_poly_setting_wind,kMeshPolySettingOffX,0);
-			liq->y_txtoff=dialog_get_float(dialog_poly_setting_wind,kMeshPolySettingOffY,0);
-			liq->x_txtfact=dialog_get_float(dialog_poly_setting_wind,kMeshPolySettingSizeX,0);
-			liq->y_txtfact=dialog_get_float(dialog_poly_setting_wind,kMeshPolySettingSizeY,0);
-			
-			liq->alpha=dialog_get_float(dialog_poly_setting_wind,kMeshPolySettingAlpha,0);
-			liq->x_shift=dialog_get_float(dialog_poly_setting_wind,kMeshPolySettingShiftX,0);
-			liq->y_shift=dialog_get_float(dialog_poly_setting_wind,kMeshPolySettingShiftY,0);
-		}
-	}
-	
-		// close window
-		
-	DisposeWindow(dialog_poly_setting_wind);
-	
-	return(!dialog_poly_setting_cancel);
-}
-*/
-
 
 void palette_polygon_load(void)
 {
@@ -211,6 +93,8 @@ void palette_polygon_load(void)
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftX,0,liq->x_shift);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftY,0,liq->y_shift);
 	}
+	
+	DrawControls(palette_poly_wind);
 }
 
 void palette_polygon_save(void)
@@ -262,6 +146,12 @@ static pascal OSStatus palette_poly_event_proc(EventHandlerCallRef handler,Event
 	return(eventNotHandledErr);
 }
 
+/* =======================================================
+
+      Palette Polygon Open/Close
+      
+======================================================= */
+
 void palette_polygon_open(int x,int y)
 {
 	EventHandlerUPP			event_upp;
@@ -283,8 +173,14 @@ void palette_polygon_open(int x,int y)
 	InstallWindowEventHandler(palette_poly_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
 }
 
-void palette_polygon_close(void)
+void palette_polygon_close(int *x,int *y)
 {
+	Rect			box;
+	
+	GetWindowBounds(palette_poly_wind,kWindowTitleBarRgn,&box);
+	*x=box.left;
+	*y=box.top;
+
 	DisposeWindow(palette_poly_wind);
 }
 

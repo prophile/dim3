@@ -119,7 +119,6 @@
 		F5A581F3090B434000BE7C36 /* script_model_bone.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A5818F090B433F00BE7C36 /* script_model_bone.c */; };
 		F5A581F4090B434000BE7C36 /* script_model_fill.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A58190090B433F00BE7C36 /* script_model_fill.c */; };
 		F5A581F5090B434000BE7C36 /* script_model_halo.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A58191090B433F00BE7C36 /* script_model_halo.c */; };
-		F5A581F6090B434000BE7C36 /* script_model_hilite_color.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A58192090B433F00BE7C36 /* script_model_hilite_color.c */; };
 		F5A581F7090B434000BE7C36 /* script_model_light_color.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A58193090B433F00BE7C36 /* script_model_light_color.c */; };
 		F5A581F8090B434000BE7C36 /* script_model_light.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A58194090B433F00BE7C36 /* script_model_light.c */; };
 		F5A581F9090B434000BE7C36 /* script_model_offset.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A58195090B433F00BE7C36 /* script_model_offset.c */; };
@@ -501,7 +500,6 @@
 		F5A5818F090B433F00BE7C36 /* script_model_bone.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_model_bone.c; path = Sources_Server/script_model_bone.c; sourceTree = "<group>"; };
 		F5A58190090B433F00BE7C36 /* script_model_fill.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_model_fill.c; path = Sources_Server/script_model_fill.c; sourceTree = "<group>"; };
 		F5A58191090B433F00BE7C36 /* script_model_halo.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_model_halo.c; path = Sources_Server/script_model_halo.c; sourceTree = "<group>"; };
-		F5A58192090B433F00BE7C36 /* script_model_hilite_color.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_model_hilite_color.c; path = Sources_Server/script_model_hilite_color.c; sourceTree = "<group>"; };
 		F5A58193090B433F00BE7C36 /* script_model_light_color.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_model_light_color.c; path = Sources_Server/script_model_light_color.c; sourceTree = "<group>"; };
 		F5A58194090B433F00BE7C36 /* script_model_light.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_model_light.c; path = Sources_Server/script_model_light.c; sourceTree = "<group>"; };
 		F5A58195090B433F00BE7C36 /* script_model_offset.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_model_offset.c; path = Sources_Server/script_model_offset.c; sourceTree = "<group>"; };
@@ -1323,7 +1321,6 @@
 				F5A58198090B433F00BE7C36 /* script_model_spin.c */,
 				F5A58194090B433F00BE7C36 /* script_model_light.c */,
 				F5A58193090B433F00BE7C36 /* script_model_light_color.c */,
-				F5A58192090B433F00BE7C36 /* script_model_hilite_color.c */,
 				F5A58191090B433F00BE7C36 /* script_model_halo.c */,
 				F5A58197090B433F00BE7C36 /* script_model_shadow.c */,
 				F5A5818E090B433F00BE7C36 /* script_model_animation.c */,
@@ -1775,7 +1772,6 @@
 				F5A581F3090B434000BE7C36 /* script_model_bone.c in Sources */,
 				F5A581F4090B434000BE7C36 /* script_model_fill.c in Sources */,
 				F5A581F5090B434000BE7C36 /* script_model_halo.c in Sources */,
-				F5A581F6090B434000BE7C36 /* script_model_hilite_color.c in Sources */,
 				F5A581F7090B434000BE7C36 /* script_model_light_color.c in Sources */,
 				F5A581F8090B434000BE7C36 /* script_model_light.c in Sources */,
 				F5A581F9090B434000BE7C36 /* script_model_offset.c in Sources */,
@@ -1953,8 +1949,7 @@
 		F5DB0BF1085671A9005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = "$(NATIVE_ARCH)";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

@@ -73,15 +73,15 @@ void palette_close(void)
 	switch (palette_cur_type) {
 	
 		case palette_type_mesh:
-			palette_mesh_close();
+			palette_mesh_close(&palette_x,&palette_y);
 			break;
 			
 		case palette_type_liquid:
-			palette_liquid_close();
+			palette_liquid_close(&palette_x,&palette_y);
 			break;
 			
 		case palette_type_polygon:
-			palette_polygon_close();
+			palette_polygon_close(&palette_x,&palette_y);
 			break;
 	
 	}

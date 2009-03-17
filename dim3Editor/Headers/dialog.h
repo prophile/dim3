@@ -104,9 +104,6 @@ extern bool dialog_optimize_run(int *poly_threshold);
 //
 
 extern bool dialog_group_settings_run(group_type *group);
-extern bool dialog_mesh_setting_run(void);
-extern bool dialog_poly_setting_run(void);
-extern bool dialog_liquid_settings_run(map_liquid_type *liq);
 extern bool dialog_node_settings_run(node_type *node);
 extern bool dialog_map_light_settings_run(map_light_type *light);
 extern bool dialog_map_sound_settings_run(map_sound_type *sound);
