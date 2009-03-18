@@ -331,7 +331,7 @@
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {283, 816}}</string>
+							<string>{{0, 731}, {283, 816}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -378,10 +378,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>26DE2E340F6F093900613684</string>
+										<string>263B67750F70A5BA0065AB38</string>
 										<key>history</key>
 										<array>
-											<string>265DCE000F6C3C7100C1E65D</string>
+											<string>26DE2E340F6F093900613684</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -439,9 +439,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26DE2E350F6F093900613684</string>
+				<string>263B67660F70A58B0065AB38</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26DE2E360F6F093900613684</string>
+				<string>263B67670F70A58B0065AB38</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -560,7 +560,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>258935097.29485199</real>
+	<real>259040698.51871601</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -575,6 +575,8 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>1C78EAAD065D492600B07095</string>
+		<string>1CD10A99069EF8BA00B06720</string>
 		<string>260AFEE90D40505C00F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3Animator/dim3Animator.xcodeproj</string>
 	</array>
@@ -656,7 +658,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEE90D40505C00F6C42F</string>
-				<string>26DE2E320F6F093000613684</string>
+				<string>263B676A0F70A59E0065AB38</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -776,13 +778,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>265DCDF90F6C3C4D00C1E65D</string>
+				<string>263B676E0F70A5AE0065AB38</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>265DCDFA0F6C3C4D00C1E65D</string>
-				<string>265DCDFB0F6C3C4D00C1E65D</string>
-				<string>265DCDFC0F6C3C4D00C1E65D</string>
-				<string>265DCDFD0F6C3C4D00C1E65D</string>
-				<string>265DCDFE0F6C3C4D00C1E65D</string>
+				<string>263B676F0F70A5AE0065AB38</string>
+				<string>263B67700F70A5AE0065AB38</string>
+				<string>263B67710F70A5AE0065AB38</string>
+				<string>263B67720F70A5AE0065AB38</string>
+				<string>263B67730F70A5AE0065AB38</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -936,7 +938,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C78EAAD065D492600B07095</string>
-				<string>265DCDFF0F6C3C4D00C1E65D</string>
+				<string>263B67740F70A5AE0065AB38</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>ToolbarConfiguration</key>
