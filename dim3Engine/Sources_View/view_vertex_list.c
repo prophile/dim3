@@ -216,7 +216,7 @@ void view_compile_mesh_gl_list_free(void)
       
 ======================================================= */
 
-bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
+bool view_compile_mesh_gl_lists(int tick,view_render_type *view_render)
 {
 	int							n,k,t,v_count;
 	float						x_shift_offset,y_shift_offset;
@@ -238,9 +238,9 @@ bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list)
 		// in this scene and update any
 		// relevant data
 		
-	for (n=0;n!=mesh_cnt;n++) {
+	for (n=0;n!=view_render->mesh_draw.count;n++) {
 
-		mesh=&map.mesh.meshes[mesh_list[n]];
+		mesh=&map.mesh.meshes[view_render->mesh_draw.list[n]];
 
 			// recalculate the vertexes if this
 			// mesh is moving

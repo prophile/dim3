@@ -53,7 +53,7 @@ extern void view_compile_gl_list_dettach(void);
       
 ======================================================= */
 
-void render_map_setup(int mesh_cnt,int *mesh_list)
+void render_map_setup(view_render_type *view_render)
 {
 	int					n,k,frame;
 	map_mesh_type		*mesh;
@@ -62,9 +62,9 @@ void render_map_setup(int mesh_cnt,int *mesh_list)
 	
 		// run through the meshes
 
-	for (n=0;n!=mesh_cnt;n++) {
+	for (n=0;n!=view_render->mesh_draw.count;n++) {
 
-		mesh=&map.mesh.meshes[mesh_list[n]];
+		mesh=&map.mesh.meshes[view_render->mesh_draw.list[n]];
 
 			// clear mesh flags
 

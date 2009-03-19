@@ -37,7 +37,7 @@ extern void effect_draw_lightning_lines(int nline,float varient,int k,int sx,int
 extern void effect_draw_lightning(int tick,effect_type *effect);
 extern void effect_draw_ray(effect_type *effect,int count);
 extern void effect_image_animate_get_uv(int tick,image_animation_type *animate,float *gx,float *gy,float *g_size);
-extern void effect_draw(int tick);
+extern void effect_draw(int tick,view_render_type *view_render);
 
 extern void particle_initialize(void);
 extern void particle_precalculate(particle_type *particle);

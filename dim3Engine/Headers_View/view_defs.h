@@ -88,14 +88,14 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							direction;
-						float						exponent;
-						double						d_x,d_y,d_z,
-													intensity,inv_intensity,
-													d_intensity,d_inv_intensity,
-													d_col_r,d_col_g,d_col_b;
-						d3pnt						pnt;
-						d3col						col;
+						int						direction;
+						float					exponent;
+						double					d_x,d_y,d_z,
+												intensity,inv_intensity,
+												d_intensity,d_inv_intensity,
+												d_col_r,d_col_g,d_col_b;
+						d3pnt					pnt;
+						d3col					col;
 					} view_light_spot_type;
 
 typedef struct		{
@@ -107,37 +107,14 @@ typedef struct		{
 					} view_glsl_light_list_type;
 
 //
-// object sorting structures
-//
-
-typedef struct		{
-						short					type,idx;
-						double					dist;
-					} view_sort_item_type;
-
-typedef struct		{
-						int						count;
-						view_sort_item_type		items[max_object+max_projectile];
-					} view_sort_type;
-
-//
-// effect sorting structures
-//
-
-typedef struct		{
-						short					idx;
-						int						dist;
-					} view_sort_effect_type;
-
-//
 // join UI structures
 //
 
 typedef struct		{
-						int							ping_msec,player_count,player_max_count;
-						bool						local;
-						char						ip[256],name[name_str_len],
-													game_name[name_str_len],map_name[name_str_len];
+						int						ping_msec,player_count,player_max_count;
+						bool					local;
+						char					ip[256],name[name_str_len],
+												game_name[name_str_len],map_name[name_str_len];
 					} join_server_info;
 
 //
@@ -221,28 +198,66 @@ typedef struct		{
 					} view_shader_type;
 
 //
+// view rendering structure
+//
+
+typedef struct		{
+						int									count,
+															list[max_mesh],dist[max_mesh];
+					} view_render_mesh_draw_type;
+
+typedef struct		{
+						short								type,idx;
+						double								dist;
+					} view_render_sort_model_item_type;
+
+typedef struct		{
+						int									count;
+						view_render_sort_model_item_type	items[max_object+max_projectile];
+					} view_render_sort_model_type;
+
+typedef struct		{
+						short								idx;
+						int									dist;
+					} view_render_sort_effect_item_type;
+
+typedef struct		{
+						int									count;
+						view_render_sort_effect_item_type	items[max_effect];
+					} view_render_sort_effect_type;
+
+typedef struct		{
+						int									count,in_view_count;
+						halo_draw_type						halos[max_light_spot];
+					} view_render_halo_type;
+
+typedef struct		{
+						view_render_mesh_draw_type			mesh_draw;
+						view_render_sort_model_type			sort_model;
+						view_render_sort_effect_type		sort_effect;
+						view_render_halo_type				halo_draw;
+					} view_render_type;
+
+//
 // count structure
 //
 
 typedef struct		{
-						int						image,shader,
-												halo_draw,halo_draw_in_view;
+						int							image,shader;
 					} view_count_type;
 
 //
-// main display structure
+// main view structure
 //
  
 typedef struct		{
-						view_count_type			count;
-						view_camera_type		camera;
-						view_time_type			time;
-						view_fps_type			fps;
-						view_sort_type			sort;
-						view_image_type			*images;
-						view_shader_type		*shaders;
-						halo_draw_type			*halo_draws;
-						rain_draw_type			*rain_draws;
+						view_count_type				count;
+						view_time_type				time;
+						view_fps_type				fps;
+						view_camera_type			camera;
+						view_image_type				*images;
+						view_shader_type			*shaders;
+						rain_draw_type				*rain_draws;
 					} view_type;
 
 

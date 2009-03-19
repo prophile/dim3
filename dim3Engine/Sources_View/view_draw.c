@@ -48,6 +48,8 @@ extern server_type			server;
 extern setup_type			setup;
 extern hud_type				hud;
 
+view_render_type			view_render;		// supergumba -- temporary
+
 float						shake_ang_x[16]={-1,0,1,2,1,0,-1,-2,-4,-2,0,4,8,12,8,4};
 float						team_color_tint[net_team_count][3]=net_team_color_tint_def;
 
@@ -56,9 +58,9 @@ extern void draw_background(void);
 extern void draw_sky(int tick);
 extern bool model_inview(model_draw *draw);
 extern void model_calc_pose_bones(model_draw *draw);
-extern void render_map_setup(int mesh_cnt,int *mesh_list);
-extern void render_map_opaque(int mesh_cnt,int *mesh_list);
-extern void render_map_transparent(int mesh_cnt,int *mesh_list);
+extern void render_map_setup(view_render_type *view_render);
+extern void render_map_opaque(view_render_type *view_render);
+extern void render_map_transparent(view_render_type *view_render);
 extern void rain_draw(int tick);
 extern bool fog_solid_on(void);
 extern void fog_draw_textured(int tick);
@@ -74,10 +76,9 @@ extern void view_draw_effect_tint(int tick,obj_type *obj);
 extern void fade_screen_draw(int tick);
 extern void fade_object_draw(int tick,obj_type *obj);
 extern void render_map_liquid(int tick);
-extern void decal_render(int mesh_draw_count,int *mesh_draw_list);
-extern bool view_compile_mesh_gl_lists(int tick,int mesh_cnt,int *mesh_list);
+extern void decal_render(view_render_type *view_render);
+extern bool view_compile_mesh_gl_lists(int tick,view_render_type *view_render);
 
-extern int			mesh_draw_count,mesh_draw_list[max_mesh];
 extern bool			dim3_debug;
 
 /* =======================================================
@@ -247,21 +248,21 @@ void view_draw_object_path(obj_type *obj)
       
 ======================================================= */
 
-void view_draw_models_setup(void)
+void view_draw_models_setup(view_render_type *view_render)
 {
-	int					i,k,t,dist,sz;
-	obj_type			*obj;
-	proj_type			*proj;
-	view_sort_type		*sort;
+	int							n,k,t,dist,sz;
+	obj_type					*obj;
+	proj_type					*proj;
+	view_render_sort_model_type	*sort;
 
-	sort=&view.sort;
+	sort=&view_render->sort_model;
 
 	sort->count=0;
 	
 		// sort objects
 	
-	for (i=0;i!=server.count.obj;i++) {
-		obj=&server.objs[i];
+	for (n=0;n!=server.count.obj;n++) {
+		obj=&server.objs[n];
 		if ((obj->hidden) || (obj->draw.uid==-1) || (!obj->draw.on)) continue;
 		if (!((obj->draw.in_view) || (obj->draw.shadow.in_view))) continue;
 		
@@ -286,12 +287,12 @@ void view_draw_models_setup(void)
 			t=sort->count;
 		}
 		else {
-			sz=(sort->count-t)*sizeof(view_sort_item_type);
+			sz=(sort->count-t)*sizeof(view_render_sort_model_item_type);
 			memmove(&sort->items[t+1],&sort->items[t],sz);
 		}
 		
 		sort->items[t].type=view_sort_object;
-		sort->items[t].idx=(short)i;
+		sort->items[t].idx=(short)n;
 		sort->items[t].dist=dist;
 		
 		sort->count++;
@@ -300,8 +301,8 @@ void view_draw_models_setup(void)
 		// sort projectiles
 
 
-	for (i=0;i!=server.count.proj;i++) {
-		proj=&server.projs[i];
+	for (n=0;n!=server.count.proj;n++) {
+		proj=&server.projs[n];
 		if ((proj->draw.uid==-1) || (!proj->draw.on)) continue;
 		if (!((proj->draw.in_view) || (proj->draw.shadow.in_view))) continue;
 		
@@ -326,25 +327,25 @@ void view_draw_models_setup(void)
 			t=sort->count;
 		}
 		else {
-			sz=(sort->count-t)*sizeof(view_sort_item_type);
+			sz=(sort->count-t)*sizeof(view_render_sort_model_item_type);
 			memmove(&sort->items[t+1],&sort->items[t],sz);
 		}
 		
 		sort->items[t].type=view_sort_projectile;
-		sort->items[t].idx=(short)i;
+		sort->items[t].idx=(short)n;
 		sort->items[t].dist=dist;
 		
 		sort->count++;
 	}
 }
 
-void view_draw_models(int tick)
+void view_draw_models(int tick,view_render_type *view_render)
 {
-	int					n;
-	d3col				col;
-	obj_type			*obj;
-	proj_type			*proj;
-	view_sort_type		*sort;
+	int							n;
+	d3col						col;
+	obj_type					*obj;
+	proj_type					*proj;
+	view_render_sort_model_type	*sort;
 
 		// setup draw
 		
@@ -355,7 +356,7 @@ void view_draw_models(int tick)
 
 		// draw models
 		
-	sort=&view.sort;
+	sort=&view_render->sort_model;
 	
 	for (n=0;n!=sort->count;n++) {
 
@@ -389,33 +390,33 @@ void view_draw_models(int tick)
       
 ======================================================= */
 
-void view_create_models_shadow(void)
+void view_create_models_shadow(view_render_type *view_render)
 {
-	int					i;
-	obj_type			*obj;
-	proj_type			*proj;
-	view_sort_type		*sort;
+	int							n;
+	obj_type					*obj;
+	proj_type					*proj;
+	view_render_sort_model_type	*sort;
 
-	sort=&view.sort;
+	sort=&view_render->sort_model;
 
 	if (sort->count==0) return;
 
 		// create shadows backwards to make sure nearest
 		// objects get shadow preferences
 	
-	for (i=(sort->count-1);i>=0;i--) {
+	for (n=(sort->count-1);n>=0;n--) {
 
-		switch (sort->items[i].type) {
+		switch (sort->items[n].type) {
 
 			case view_sort_object:
-				obj=&server.objs[sort->items[i].idx];
+				obj=&server.objs[sort->items[n].idx];
 				if (obj->draw.shadow.in_view) {
 					if (!shadow_texture_create(&obj->draw)) obj->draw.shadow.in_view=FALSE;
 				}
 				break;
 
 			case view_sort_projectile:
-				proj=&server.projs[sort->items[i].idx];
+				proj=&server.projs[sort->items[n].idx];
 				if (proj->draw.shadow.in_view) {
 					if (!shadow_texture_create(&proj->draw)) proj->draw.shadow.in_view=FALSE;
 				}
@@ -425,29 +426,29 @@ void view_create_models_shadow(void)
 	}
 }
 
-void view_draw_models_shadow(int mesh_draw_count,int *mesh_draw_list)
+void view_draw_models_shadow(view_render_type *view_render)
 {
-	int					i;
-	obj_type			*obj;
-	proj_type			*proj;
-	view_sort_type		*sort;
+	int							n;
+	obj_type					*obj;
+	proj_type					*proj;
+	view_render_sort_model_type	*sort;
 	
 	shadow_render_init();
 
-	sort=&view.sort;
+	sort=&view_render->sort_model;
 	
-	for (i=0;i!=sort->count;i++) {
+	for (n=0;n!=sort->count;n++) {
 
-		switch (sort->items[i].type) {
+		switch (sort->items[n].type) {
 
 			case view_sort_object:
-				obj=&server.objs[sort->items[i].idx];
-				if (obj->draw.shadow.in_view) shadow_render(&obj->draw,mesh_draw_count,mesh_draw_list);
+				obj=&server.objs[sort->items[n].idx];
+				if (obj->draw.shadow.in_view) shadow_render(view_render,&obj->draw);
 				break;
 
 			case view_sort_projectile:
-				proj=&server.projs[sort->items[i].idx];
-				if (proj->draw.shadow.in_view) shadow_render(&proj->draw,mesh_draw_count,mesh_draw_list);
+				proj=&server.projs[sort->items[n].idx];
+				if (proj->draw.shadow.in_view) shadow_render(view_render,&proj->draw);
 				break;
 
 		}
@@ -476,12 +477,12 @@ void view_draw(int tick)
 
 		// setup the models
 
-	view_draw_models_setup();
+	view_draw_models_setup(&view_render);
 	
 		// render the shadows onto the shadow back buffer
 		
 	if (shadow_texture_init()) {
-		view_create_models_shadow();
+		view_create_models_shadow(&view_render);
 		shadow_texture_finish();
 	}
 	
@@ -502,24 +503,24 @@ void view_draw(int tick)
 
 		// compile meshes for drawing
 	
-	if (!view_compile_mesh_gl_lists(tick,mesh_draw_count,mesh_draw_list)) return;
+	if (!view_compile_mesh_gl_lists(tick,&view_render)) return;
 
 		// setup some map polygon drawing flags
 
-	render_map_setup(mesh_draw_count,mesh_draw_list);
+	render_map_setup(&view_render);
 
 		// draw opaque map polygons
 
-	render_map_opaque(mesh_draw_count,mesh_draw_list);
+	render_map_opaque(&view_render);
 
 		// draw model shadows
 
-	view_draw_models(tick);
-	view_draw_models_shadow(mesh_draw_count,mesh_draw_list);
+	view_draw_models(tick,&view_render);
+	view_draw_models_shadow(&view_render);
 	
 		// draw tranparent map polygons
 
-	render_map_transparent(mesh_draw_count,mesh_draw_list);
+	render_map_transparent(&view_render);
 
 		// draw map liquids
 
@@ -527,11 +528,11 @@ void view_draw(int tick)
 
 		// draw decals
 
-	decal_render(mesh_draw_count,mesh_draw_list);
+	decal_render(&view_render);
 
 		// effects
 
-	effect_draw(tick);
+	effect_draw(tick,&view_render);
 	
 		// draw rain
 		
@@ -546,7 +547,7 @@ void view_draw(int tick)
 		// setup halos, crosshairs, zoom masks
 		
 	remote_draw_names_setup();
-	halo_draw_setup();
+	halo_draw_setup(&view_render);
 	
 	if (weap!=NULL) {
 		crosshair_setup(tick,obj,weap);
@@ -560,7 +561,7 @@ void view_draw(int tick)
 		// draw the remote names, halos, crosshairs, and zoom masks
 	
 	remote_draw_names_render();
-	halo_draw_render();
+	halo_draw_render(&view_render);
 	
 	if (weap!=NULL) {
 		crosshair_draw(obj,weap);
@@ -574,9 +575,5 @@ void view_draw(int tick)
 
 	fade_screen_draw(tick);
 	fade_object_draw(tick,obj);
-
-		// shadow testing code
-
-//	shadow_render_test();
 }
 

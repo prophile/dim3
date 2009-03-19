@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#define collide_obj_ray_count			60
+#define collide_obj_ray_count			72
 
 #include "scripts.h"
 #include "objects.h"
@@ -75,7 +75,7 @@ int collide_point_distance(d3pnt *pt_1,d3pnt *pt_2)
 
 bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,int *yadd,int *zadd)
 {
-	int						n,k,mx,mz,y,idx,d,dist,vert_y[5];
+	int						n,k,mx,mz,y,idx,d,dist,vert_y[6];
 	float					move_ang;
 	double					radius,rad;
 	bool					bump,hits[collide_obj_ray_count];
@@ -104,13 +104,14 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 		// get movement radius
 
-	radius=(double)obj->size.radius;
+	radius=(double)(obj->size.radius+map_enlarge);
 
 		// vertical race trace positions
 
 	vert_y[0]=(obj_pnt.y-obj->size.y)+(map_enlarge<<1);
 	vert_y[2]=obj_pnt.y-(obj->size.y>>1);
 	vert_y[4]=obj_pnt.y-(map_enlarge<<1);
+	vert_y[5]=obj_pnt.y-(map_enlarge<<2);
 
 	vert_y[1]=(vert_y[0]+vert_y[2])>>1;
 	vert_y[3]=(vert_y[2]+vert_y[4])>>1;
@@ -129,7 +130,7 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 		mx+=mov.x;
 		mz+=mov.z;
 
-		for (k=0;k!=5;k++) {
+		for (k=0;k!=6;k++) {
 
 			y=vert_y[k];
 

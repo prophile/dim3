@@ -75,7 +75,6 @@ bool view_memory_allocate(void)
 		
 	view.images=NULL;
 	view.shaders=NULL;
-	view.halo_draws=NULL;
 	view.rain_draws=NULL;
 	
 		// view pointers
@@ -86,9 +85,6 @@ bool view_memory_allocate(void)
 	view.shaders=(view_shader_type*)malloc(max_view_shader*sizeof(view_shader_type));
 	if (view.shaders==NULL) return(FALSE);
 
-	view.halo_draws=(halo_draw_type*)malloc(max_light_spot*sizeof(halo_draw_type));
-	if (view.halo_draws==NULL) return(FALSE);
-
 	view.rain_draws=(rain_draw_type*)malloc(max_rain_density*sizeof(rain_draw_type));
 	if (view.rain_draws==NULL) return(FALSE);
 	
@@ -96,7 +92,6 @@ bool view_memory_allocate(void)
 
 	bzero(view.images,(max_view_image*sizeof(view_image_type)));
 	bzero(view.shaders,(max_view_shader*sizeof(view_shader_type)));
-	bzero(view.halo_draws,(max_light_spot*sizeof(halo_draw_type)));
 	bzero(view.rain_draws,(max_rain_density*sizeof(rain_draw_type)));
 			
 	return(TRUE);
@@ -106,7 +101,6 @@ void view_memory_release(void)
 {
 	if (view.images!=NULL) free(view.images);
 	if (view.shaders!=NULL) free(view.shaders);
-	if (view.halo_draws!=NULL) free(view.halo_draws);
 	if (view.rain_draws!=NULL) free(view.rain_draws);
 }
 
@@ -440,8 +434,6 @@ void view_loop_draw(int tick)
 	if (tick<view.time.draw_tick) return;
 	view.time.draw_tick=tick+view.time.draw_time;
 
-	view_draw_setup(tick);
-	
 	if (!fog_solid_on()) {
 		gl_frame_start(NULL);
 	}
@@ -449,6 +441,7 @@ void view_loop_draw(int tick)
 		gl_frame_start(&map.fog.col);		// is obscuring fog on, then background = fog color
 	}
 
+	view_draw_setup(tick);
 	view_draw(tick);
 	hud_draw(tick);
 	radar_draw(tick);

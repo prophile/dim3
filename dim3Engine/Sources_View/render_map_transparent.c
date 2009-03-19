@@ -106,7 +106,7 @@ float render_transparent_segments_far_z(map_mesh_type *mesh,map_mesh_poly_type *
 	return(dist);
 }
 
-void render_transparent_sort(int mesh_cnt,int *mesh_list,d3pnt *pnt)
+void render_transparent_sort(view_render_type *view_render,d3pnt *pnt)
 {
 	int							n,k,i,frame,sort_cnt,sort_idx;
 	float						dist;
@@ -121,9 +121,9 @@ void render_transparent_sort(int mesh_cnt,int *mesh_list,d3pnt *pnt)
 
 	sort_cnt=0;
 		
-	for (n=0;n!=mesh_cnt;n++) {
+	for (n=0;n!=view_render->mesh_draw.count;n++) {
 
-		mesh=&map.mesh.meshes[mesh_list[n]];
+		mesh=&map.mesh.meshes[view_render->mesh_draw.list[n]];
 		
 		for (k=0;k!=mesh->npoly;k++) {
 		
@@ -159,7 +159,7 @@ void render_transparent_sort(int mesh_cnt,int *mesh_list,d3pnt *pnt)
 				memmove(&sort_list[sort_idx+1],&sort_list[sort_idx],((sort_cnt-sort_idx)*sizeof(map_poly_sort_item_type)));
 			}
 
-			sort_list[sort_idx].mesh_idx=mesh_list[n];
+			sort_list[sort_idx].mesh_idx=view_render->mesh_draw.list[n];
 			sort_list[sort_idx].poly_idx=k;
 			sort_list[sort_idx].dist=dist;
 
@@ -397,7 +397,7 @@ void render_transparent_mesh_glow(void)
       
 ======================================================= */
 
-void render_map_transparent(int mesh_cnt,int *mesh_list)
+void render_map_transparent(view_render_type *view_render)
 {
 		// setup view
 
@@ -412,7 +412,7 @@ void render_map_transparent(int mesh_cnt,int *mesh_list)
 
 		// sort meshes
 
-	render_transparent_sort(mesh_cnt,mesh_list,&view.camera.pnt);
+	render_transparent_sort(view_render,&view.camera.pnt);
 
 		// transparent meshes
 

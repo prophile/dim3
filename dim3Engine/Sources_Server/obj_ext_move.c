@@ -373,7 +373,12 @@ bool object_push_with_object(obj_type *obj,int xmove,int zmove)
 
 		// movement
 
-	object_move_with_move(pushed_obj,(int)f_xmove,(int)f_zmove);
+	pushed_obj->pnt.x+=f_xmove;
+	pushed_obj->pnt.z+=f_zmove;
+
+// supergumba -- work on this!
+
+//	object_move_with_move(pushed_obj,(int)f_xmove,(int)f_zmove);
 
 	return(FALSE);
 }
