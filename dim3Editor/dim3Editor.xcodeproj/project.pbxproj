@@ -11,6 +11,7 @@
 		2630141E0D72844300564E2C /* walk_view_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = 2630141D0D72844300564E2C /* walk_view_swap.c */; };
 		263614460DC41DF6002345C0 /* walk_view_click_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 263614450DC41DF6002345C0 /* walk_view_click_texture.c */; };
 		263B67380F7072EE0065AB38 /* palette_spot.c in Sources */ = {isa = PBXBuildFile; fileRef = 263B67370F7072EE0065AB38 /* palette_spot.c */; };
+		263B683C0F730FA40065AB38 /* palette_area.c in Sources */ = {isa = PBXBuildFile; fileRef = 263B683B0F730FA40065AB38 /* palette_area.c */; };
 		2644C95C0DF8E349005CE451 /* dialog_mesh_scale.c in Sources */ = {isa = PBXBuildFile; fileRef = 2644C95B0DF8E349005CE451 /* dialog_mesh_scale.c */; };
 		2647AD820E4F48D000BA3338 /* dialog_height_import.c in Sources */ = {isa = PBXBuildFile; fileRef = 2647AD810E4F48D000BA3338 /* dialog_height_import.c */; };
 		265DCEA00F6CC13100C1E65D /* palette_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 265DCE9F0F6CC13100C1E65D /* palette_mesh.c */; };
@@ -62,7 +63,6 @@
 		F571C8770B34DA6300F979B7 /* xml_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = F571C8760B34DA6300F979B7 /* xml_setup.c */; };
 		F57537BA055B5F4900D42FAF /* dim3 Editor.nib in Resources */ = {isa = PBXBuildFile; fileRef = F57537B9055B5F4900D42FAF /* dim3 Editor.nib */; };
 		F57CACA70C38B76200B595F4 /* texture_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = F57CACA60C38B76200B595F4 /* texture_palette.c */; };
-		F58860EB09A188F4000408ED /* dialog_spot_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = F58860EA09A188F4000408ED /* dialog_spot_setting.c */; };
 		F58D0FB005B8C0A800DBBDC5 /* walk_view_click_piece.c in Sources */ = {isa = PBXBuildFile; fileRef = F58D0FAF05B8C0A800DBBDC5 /* walk_view_click_piece.c */; };
 		F5934BF2099E7A530063E081 /* PNG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5934BF1099E7A530063E081 /* PNG.framework */; };
 		F5934BFA099E7A760063E081 /* PNG.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F5934BF1099E7A530063E081 /* PNG.framework */; };
@@ -212,6 +212,7 @@
 		2630141D0D72844300564E2C /* walk_view_swap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = walk_view_swap.c; path = Code/walk_view_swap.c; sourceTree = "<group>"; };
 		263614450DC41DF6002345C0 /* walk_view_click_texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = walk_view_click_texture.c; path = Code/walk_view_click_texture.c; sourceTree = "<group>"; };
 		263B67370F7072EE0065AB38 /* palette_spot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_spot.c; path = Code/palette_spot.c; sourceTree = "<group>"; };
+		263B683B0F730FA40065AB38 /* palette_area.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_area.c; path = Code/palette_area.c; sourceTree = "<group>"; };
 		2644C95B0DF8E349005CE451 /* dialog_mesh_scale.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_mesh_scale.c; path = Code/dialog_mesh_scale.c; sourceTree = "<group>"; };
 		2647AD810E4F48D000BA3338 /* dialog_height_import.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_height_import.c; path = Code/dialog_height_import.c; sourceTree = "<group>"; };
 		265DCE9F0F6CC13100C1E65D /* palette_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_mesh.c; path = Code/palette_mesh.c; sourceTree = "<group>"; };
@@ -268,7 +269,6 @@
 		F57537B9055B5F4900D42FAF /* dim3 Editor.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = "dim3 Editor.nib"; path = "Resources/dim3 Editor.nib"; sourceTree = "<group>"; };
 		F577353100F0085D01000001 /* dim3 Editor.rsrc */ = {isa = PBXFileReference; lastKnownFileType = archive.rsrc; name = "dim3 Editor.rsrc"; path = "Resources/dim3 Editor.rsrc"; sourceTree = "<group>"; };
 		F57CACA60C38B76200B595F4 /* texture_palette.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = texture_palette.c; path = Code/texture_palette.c; sourceTree = "<group>"; };
-		F58860EA09A188F4000408ED /* dialog_spot_setting.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_spot_setting.c; path = Code/dialog_spot_setting.c; sourceTree = "<group>"; };
 		F58D0FAF05B8C0A800DBBDC5 /* walk_view_click_piece.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = walk_view_click_piece.c; path = Code/walk_view_click_piece.c; sourceTree = "<group>"; };
 		F5934BF1099E7A530063E081 /* PNG.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PNG.framework; path = ../dim3Common/Frameworks/PNG.framework; sourceTree = SOURCE_ROOT; };
 		F595F3390A8BBEF0004AB8BA /* modelutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = modelutility.h; path = ../dim3Common/Headers/modelutility.h; sourceTree = SOURCE_ROOT; };
@@ -414,6 +414,7 @@
 				265DCEFA0F6D6A3E00C1E65D /* palette_polygon.c */,
 				265DCF4C0F6DBF9D00C1E65D /* palette_liquid.c */,
 				263B67370F7072EE0065AB38 /* palette_spot.c */,
+				263B683B0F730FA40065AB38 /* palette_area.c */,
 			);
 			name = Palettes;
 			sourceTree = "<group>";
@@ -499,7 +500,6 @@
 				26DB6D960DDFCE4100BDD008 /* dialog_resize.c */,
 				26772F800EBE8A6600F9E241 /* dialog_reposition.c */,
 				F5AF023209CFB5A0008B576A /* dialog_free_rotate.c */,
-				F58860EA09A188F4000408ED /* dialog_spot_setting.c */,
 				F59C30B30ACEDC0B00599150 /* dialog_scenery_setting.c */,
 				F56EF57A09A7EBEF00F06521 /* dialog_node_settings.c */,
 				F56EF3F609A6F70700F06521 /* dialog_map_light_settings.c */,
@@ -673,7 +673,6 @@
 				F5AF0C5709638BC600F99950 /* dialog_texture_setting.c in Sources */,
 				F5C461460970A68600FBB643 /* dialog_about.c in Sources */,
 				F5CA0193098D8E6E00039712 /* dialog_map_auto_generate.c in Sources */,
-				F58860EB09A188F4000408ED /* dialog_spot_setting.c in Sources */,
 				F56EF37C09A69A3400F06521 /* dialog_map_settings.c in Sources */,
 				F56EF3F709A6F70700F06521 /* dialog_map_light_settings.c in Sources */,
 				F56EF44209A6FC7F00F06521 /* dialog_map_sound_settings.c in Sources */,
@@ -713,6 +712,7 @@
 				265DCEFB0F6D6A3E00C1E65D /* palette_polygon.c in Sources */,
 				265DCF4D0F6DBF9D00C1E65D /* palette_liquid.c in Sources */,
 				263B67380F7072EE0065AB38 /* palette_spot.c in Sources */,
+				263B683C0F730FA40065AB38 /* palette_area.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -733,8 +733,7 @@
 		F5DB0C540856A994005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = "$(NATIVE_ARCH)";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

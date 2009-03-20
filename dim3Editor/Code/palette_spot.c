@@ -32,35 +32,79 @@ and can be sold or given away.
 #define kSpotSettingTabCount					2
 #define kSpotSettingTab							FOUR_CHAR_CODE('tabb')
 
-#define kMeshSettingOn							FOUR_CHAR_CODE('fson')
-#define kMeshSettingPassThrough					FOUR_CHAR_CODE('fpth')
-#define kMeshSettingMovable						FOUR_CHAR_CODE('fmov')
-#define kMeshSettingShiftable					FOUR_CHAR_CODE('fsht')
-#define kMeshSettingClimbable					FOUR_CHAR_CODE('fclb')
-#define kMeshSettingHilite						FOUR_CHAR_CODE('hilt')
-#define kMeshSettingLockUV						FOUR_CHAR_CODE('lkuv')
-#define kMeshSettingNoSelfObscure				FOUR_CHAR_CODE('nsob')
-#define kMeshSettingNeverObscure				FOUR_CHAR_CODE('nvob')
-#define kMeshSettingRotIndependent				FOUR_CHAR_CODE('rtip')
-
-#define kMeshSettingRotX						FOUR_CHAR_CODE('rotx')
-#define kMeshSettingRotY						FOUR_CHAR_CODE('roty')
-#define kMeshSettingRotZ						FOUR_CHAR_CODE('rotz')
-
-#define kMeshSendMessageEnter					FOUR_CHAR_CODE('smen')
-#define kMeshSendMessageEnterId					FOUR_CHAR_CODE('meid')
-#define kMeshSendMessageExit					FOUR_CHAR_CODE('smex')
-#define kMeshSendMessageExitId					FOUR_CHAR_CODE('mxid')
-#define kMeshSendMessageMapChange				FOUR_CHAR_CODE('samc')
-#define kMeshSendMessageMapChangeName			FOUR_CHAR_CODE('amnm')
-#define kMeshSendMessageMapChangeSpotName		FOUR_CHAR_CODE('amsn')
-#define kMeshSendMessageMapChangeSpotType		FOUR_CHAR_CODE('amst')
-#define kMeshSendMessageBase					FOUR_CHAR_CODE('tbon')
-#define kMeshSendMessageBaseTeam				FOUR_CHAR_CODE('tbtx')
+#define kSpotName								FOUR_CHAR_CODE('name')
+#define kSpotType								FOUR_CHAR_CODE('type')
+#define kSpotScript								FOUR_CHAR_CODE('scpt')
+#define kSpotParams								FOUR_CHAR_CODE('parm')
+#define kSpotAngle								FOUR_CHAR_CODE('ange')
+#define kSpotSkill								FOUR_CHAR_CODE('skil')
+#define kSpotSpawn								FOUR_CHAR_CODE('spwn')
+#define kSpotDisplayModel						FOUR_CHAR_CODE('dspm')
+#define kSpotButtonEdit							FOUR_CHAR_CODE('edit')
 
 extern map_type				map;
 
 WindowRef					palette_spot_wind;
+ControlRef					palette_spot_tab;
+
+/* =======================================================
+
+      Break Up/Combine Parameters
+      
+======================================================= */
+
+void palette_spot_setting_break_params(char *str)
+{
+	int				n;
+	char			*c,*c2,tstr[param_str_len];
+	
+	c=str;
+	
+	for (n=0;n!=8;n++) {
+		if (c==0x0) break;
+		
+		c2=strchr(c,'|');
+		if (c2==NULL) {
+			dialog_set_text(palette_spot_wind,kSpotParams,n,c);
+			break;
+		}
+		
+		strcpy(tstr,c);
+		c=strchr(tstr,'|');
+		*c=0x0;
+		
+		dialog_set_text(palette_spot_wind,kSpotParams,n,tstr);
+		
+		c=c2+1;
+	}
+}
+
+void palette_spot_setting_combine_params(char *str)
+{
+	int				n,cnt;
+	char			tstr[param_str_len];
+	
+	str[0]=0x0;
+	
+		// find last non-blank
+	
+	cnt=-1;
+	
+	for (n=0;n!=8;n++) {
+		dialog_get_text(palette_spot_wind,kSpotParams,n,tstr,param_str_len);
+		if (tstr[0]!=0x0) cnt=n;
+	}
+	
+	if (cnt==-1) return;
+	
+		// fill in params
+		
+	for (n=0;n<=cnt;n++) {
+		if (n!=0) strcat(str,"|");
+		dialog_get_text(palette_spot_wind,kSpotParams,n,tstr,param_str_len);
+		strcat(str,tstr);
+	}
+}
 
 /* =======================================================
 
@@ -70,92 +114,107 @@ WindowRef					palette_spot_wind;
 
 void palette_spot_load(void)
 {
-	int						type,mesh_idx,poly_idx;
-	map_mesh_type			*mesh;
+	int						type,spot_idx,sub_idx;
+	spot_type				*spot;
 
 		// get mesh
 		
-	select_get(0,&type,&mesh_idx,&poly_idx);
-	mesh=&map.mesh.meshes[mesh_idx];
+	select_get(0,&type,&spot_idx,&sub_idx);
+	spot=&map.spots[spot_idx];
 
 		// set controls
 	
-	dialog_set_boolean(palette_spot_wind,kMeshSettingOn,0,mesh->flag.on);
-	dialog_set_boolean(palette_spot_wind,kMeshSettingPassThrough,0,mesh->flag.pass_through);
-	dialog_set_boolean(palette_spot_wind,kMeshSettingMovable,0,mesh->flag.moveable);
-	dialog_set_boolean(palette_spot_wind,kMeshSettingClimbable,0,mesh->flag.climbable);
-	dialog_set_boolean(palette_spot_wind,kMeshSettingHilite,0,mesh->flag.hilite);
-	dialog_set_boolean(palette_spot_wind,kMeshSettingLockUV,0,mesh->flag.lock_uv);
-	dialog_set_boolean(palette_spot_wind,kMeshSettingNoSelfObscure,0,mesh->flag.no_self_obscure);
-	dialog_set_boolean(palette_spot_wind,kMeshSettingNeverObscure,0,mesh->flag.never_obscure);
-	dialog_set_boolean(palette_spot_wind,kMeshSettingRotIndependent,0,mesh->flag.rot_independent);
-
-	dialog_set_int(palette_spot_wind,kMeshSettingRotX,0,mesh->rot_off.x);
-	dialog_set_int(palette_spot_wind,kMeshSettingRotY,0,mesh->rot_off.y);
-	dialog_set_int(palette_spot_wind,kMeshSettingRotZ,0,mesh->rot_off.z);
+	dialog_set_text(palette_spot_wind,kSpotName,0,spot->name);
+	dialog_set_text(palette_spot_wind,kSpotType,0,spot->type);
+	dialog_special_combo_fill_script(palette_spot_wind,kSpotScript,0,spot->script);
+	dialog_set_float(palette_spot_wind,kSpotAngle,0,spot->ang.y);
+	dialog_set_combo(palette_spot_wind,kSpotSkill,0,spot->skill);
+	dialog_set_combo(palette_spot_wind,kSpotSpawn,0,spot->spawn);
 	
-	dialog_set_boolean(palette_spot_wind,kMeshSendMessageEnter,0,mesh->msg.entry_on);
-	dialog_set_int(palette_spot_wind,kMeshSendMessageEnterId,0,mesh->msg.entry_id);
-	dialog_set_boolean(palette_spot_wind,kMeshSendMessageExit,0,mesh->msg.exit_on);
-	dialog_set_int(palette_spot_wind,kMeshSendMessageExitId,0,mesh->msg.exit_id);
-	dialog_set_boolean(palette_spot_wind,kMeshSendMessageMapChange,0,mesh->msg.map_change_on);
-	dialog_set_text(palette_spot_wind,kMeshSendMessageMapChangeName,0,mesh->msg.map_name);
-	dialog_set_text(palette_spot_wind,kMeshSendMessageMapChangeSpotName,0,mesh->msg.map_spot_name);
-	dialog_set_text(palette_spot_wind,kMeshSendMessageMapChangeSpotType,0,mesh->msg.map_spot_type);
-	dialog_set_boolean(palette_spot_wind,kMeshSendMessageBase,0,mesh->msg.base_on);
-	dialog_set_combo(palette_spot_wind,kMeshSendMessageBaseTeam,0,mesh->msg.base_team);
+	dialog_special_combo_fill_model(palette_spot_wind,kSpotDisplayModel,0,spot->display_model);
+	
+	palette_spot_setting_break_params(spot->params);
 
 	DrawControls(palette_spot_wind);
 }
 
 void palette_spot_save(void)
 {
-	int						type,mesh_idx,poly_idx;
-	map_mesh_type			*mesh;
+	int						type,spot_idx,sub_idx;
+	spot_type				*spot;
 
 		// get mesh
 		
-	select_get(0,&type,&mesh_idx,&poly_idx);
-	mesh=&map.mesh.meshes[mesh_idx];
+	select_get(0,&type,&spot_idx,&sub_idx);
+	spot=&map.spots[spot_idx];
 		
 		// get controls
 
-	mesh->flag.on=dialog_get_boolean(palette_spot_wind,kMeshSettingOn,0);
-	mesh->flag.pass_through=dialog_get_boolean(palette_spot_wind,kMeshSettingPassThrough,0);
-	mesh->flag.moveable=dialog_get_boolean(palette_spot_wind,kMeshSettingMovable,0);
-	mesh->flag.climbable=dialog_get_boolean(palette_spot_wind,kMeshSettingClimbable,0);
-	mesh->flag.hilite=dialog_get_boolean(palette_spot_wind,kMeshSettingHilite,0);
-	mesh->flag.lock_uv=dialog_get_boolean(palette_spot_wind,kMeshSettingLockUV,0);
-	mesh->flag.no_self_obscure=dialog_get_boolean(palette_spot_wind,kMeshSettingNoSelfObscure,0);
-	mesh->flag.never_obscure=dialog_get_boolean(palette_spot_wind,kMeshSettingNeverObscure,0);
-	mesh->flag.rot_independent=dialog_get_boolean(palette_spot_wind,kMeshSettingRotIndependent,0);
+	dialog_get_text(palette_spot_wind,kSpotName,0,spot->name,name_str_len);
+	dialog_get_text(palette_spot_wind,kSpotType,0,spot->type,name_str_len);
+	dialog_special_combo_get_script(palette_spot_wind,kSpotScript,0,spot->script,name_str_len);
+	spot->ang.y=dialog_get_float(palette_spot_wind,kSpotAngle,0);
+	spot->skill=dialog_get_combo(palette_spot_wind,kSpotSkill,0);
+	spot->spawn=dialog_get_combo(palette_spot_wind,kSpotSpawn,0);
 	
-	mesh->rot_off.x=dialog_get_int(palette_spot_wind,kMeshSettingRotX,0);
-	mesh->rot_off.y=dialog_get_int(palette_spot_wind,kMeshSettingRotY,0);
-	mesh->rot_off.z=dialog_get_int(palette_spot_wind,kMeshSettingRotZ,0);
+	dialog_special_combo_get_model(palette_spot_wind,kSpotDisplayModel,0,spot->display_model,name_str_len);
 	
-	mesh->msg.entry_on=dialog_get_boolean(palette_spot_wind,kMeshSendMessageEnter,0);
-	mesh->msg.entry_id=dialog_get_int(palette_spot_wind,kMeshSendMessageEnterId,0);
-	mesh->msg.exit_on=dialog_get_boolean(palette_spot_wind,kMeshSendMessageExit,0);
-	mesh->msg.exit_id=dialog_get_int(palette_spot_wind,kMeshSendMessageExitId,0);
-	mesh->msg.map_change_on=dialog_get_boolean(palette_spot_wind,kMeshSendMessageMapChange,0);
-	dialog_get_text(palette_spot_wind,kMeshSendMessageMapChangeName,0,mesh->msg.map_name,name_str_len);
-	dialog_get_text(palette_spot_wind,kMeshSendMessageMapChangeSpotName,0,mesh->msg.map_spot_name,name_str_len);
-	dialog_get_text(palette_spot_wind,kMeshSendMessageMapChangeSpotType,0,mesh->msg.map_spot_type,name_str_len);
-	mesh->msg.base_on=dialog_get_boolean(palette_spot_wind,kMeshSendMessageBase,0);
-	mesh->msg.base_team=dialog_get_combo(palette_spot_wind,kMeshSendMessageBaseTeam,0);
+	palette_spot_setting_combine_params(spot->params);
+	
+		// need to reset object combo and loaded models
+		
+	walk_view_models_reset();
+	main_wind_tool_fill_object_combo();
 }
 
 static pascal OSStatus palette_spot_tab_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
 	int				event_class,event_kind;
+	char			script_name[name_str_len];
+	HICommand		cmd;
+	ControlRef		ctrl;
 	
 	event_class=GetEventClass(event);
 	event_kind=GetEventKind(event);
 	
+		// button inside tab
+		
+	if ((event_class==kEventClassCommand) && (event_kind==kEventProcessCommand)) {
+		GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
+			
+		switch (cmd.commandID) {
+			
+			case kSpotButtonEdit:
+				palette_spot_save();
+				dialog_special_combo_get_script(palette_spot_wind,kSpotScript,0,script_name,name_str_len);
+				launch_spot_script_editor(script_name);
+				return(noErr);
+		}
+		
+		return(eventNotHandledErr);
+	}
+	
+		// control changes
+		
 	if ((event_class==kEventClassControl) && (event_kind==kEventControlHit)) {
+	
+			// save the changes
+			
 		palette_spot_save();
-		dialog_switch_tab(palette_spot_wind,kSpotSettingTab,0,kSpotSettingTabCount);
+		
+			// tab change?
+			
+		GetEventParameter(event,kEventParamDirectObject,typeControlRef,NULL,sizeof(ControlRef),NULL,&ctrl);
+		if (ctrl==palette_spot_tab) dialog_switch_tab(palette_spot_wind,kSpotSettingTab,0,kSpotSettingTabCount);
+		
+		return(eventNotHandledErr);
+	}
+	
+		// keyboard changes
+		
+	if (event_class==kEventClassKeyboard) {
+		palette_spot_save();
+		return(eventNotHandledErr);
 	}
 	
 	return(eventNotHandledErr);
@@ -169,11 +228,11 @@ static pascal OSStatus palette_spot_tab_proc(EventHandlerCallRef handler,EventRe
 
 void palette_spot_open(int x,int y)
 {
-	ControlRef				ctrl;
 	ControlID				ctrl_id;
 	EventHandlerUPP			tab_event_upp;
 	EventTypeSpec			tab_event_list[]={{kEventClassCommand,kEventProcessCommand},
-											  {kEventClassControl,kEventControlHit}};
+											  {kEventClassControl,kEventControlHit},
+											  {kEventClassKeyboard,kEventRawKeyUp}};
 
 		// open the window
 		
@@ -186,10 +245,10 @@ void palette_spot_open(int x,int y)
 
 	ctrl_id.signature=kSpotSettingTab;
 	ctrl_id.id=0;
-	GetControlByID(palette_spot_wind,&ctrl_id,&ctrl);
+	GetControlByID(palette_spot_wind,&ctrl_id,&palette_spot_tab);
 	
 	tab_event_upp=NewEventHandlerUPP(palette_spot_tab_proc);
-	InstallControlEventHandler(ctrl,tab_event_upp,GetEventTypeCount(tab_event_list),tab_event_list,palette_spot_wind,NULL);
+	InstallControlEventHandler(palette_spot_tab,tab_event_upp,GetEventTypeCount(tab_event_list),tab_event_list,palette_spot_wind,NULL);
 
 		// show palette
 		
@@ -200,7 +259,7 @@ void palette_spot_close(int *x,int *y)
 {
 	Rect			box;
 	
-	GetWindowBounds(palette_spot_wind,kWindowTitleBarRgn,&box);
+	GetWindowBounds(palette_spot_wind,kWindowGlobalPortRgn,&box);
 	*x=box.left;
 	*y=box.top;
 	

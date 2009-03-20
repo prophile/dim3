@@ -79,8 +79,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 259040762;
-			PBXWorkspaceStateSaveDate = 259040762;
+			PBXPerProjectTemplateStateSaveDate = 259215422;
+			PBXWorkspaceStateSaveDate = 259215422;
 		};
 		perUserProjectItems = {
 			26650DDF0F0EC86400D22461 /* PlistBookmark */ = 26650DDF0F0EC86400D22461 /* PlistBookmark */;
@@ -547,9 +547,9 @@
 	};
 	F52BF9340C70E55900FDB222 /* map_pick.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2520}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2492}}";
 			sepNavSelRange = "{1659, 0}";
-			sepNavVisRange = "{1109, 1007}";
+			sepNavVisRange = "{1109, 1065}";
 			sepNavWindowFrame = "{{272, 253}, {1041, 747}}";
 		};
 	};
@@ -1227,10 +1227,10 @@
 	};
 	F5A582CD090C993400BE7C36 /* view_defs.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 3374}}";
-			sepNavSelRange = "{1153, 0}";
-			sepNavVisRange = "{469, 1098}";
-			sepNavWindowFrame = "{{279, 204}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 3696}}";
+			sepNavSelRange = "{5044, 33}";
+			sepNavVisRange = "{4430, 1183}";
+			sepNavWindowFrame = "{{586, 180}, {1041, 747}}";
 		};
 	};
 	F5A5AED10B20EF6100B1901F /* model_fade.c */ = {
@@ -1363,7 +1363,7 @@
 	};
 	F5C5EB0E0913264E00F94729 /* debug.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7700}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7658}}";
 			sepNavSelRange = "{12228, 216}";
 			sepNavVisRange = "{12011, 1172}";
 			sepNavWindowFrame = "{{274, 254}, {1041, 747}}";
@@ -1694,9 +1694,9 @@
 	};
 	F5DD1A2A0908588500721649 /* weapon_projectile.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 10948}}";
-			sepNavSelRange = "{12297, 0}";
-			sepNavVisRange = "{11206, 1603}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 11046}}";
+			sepNavSelRange = "{8408, 29}";
+			sepNavVisRange = "{8034, 1218}";
 			sepNavWindowFrame = "{{353, 166}, {1041, 747}}";
 		};
 	};
@@ -1830,10 +1830,10 @@
 	};
 	F5DD1A7009085B3800721649 /* effects_draw.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6594}}";
-			sepNavSelRange = "{8464, 16}";
-			sepNavVisRange = "{811, 1192}";
-			sepNavWindowFrame = "{{38, 255}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5992}}";
+			sepNavSelRange = "{8331, 0}";
+			sepNavVisRange = "{7767, 930}";
+			sepNavWindowFrame = "{{299, 201}, {1041, 747}}";
 		};
 	};
 	F5DD1A7209085B3D00721649 /* decals_draw.c */ = {

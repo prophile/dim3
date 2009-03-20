@@ -646,10 +646,6 @@ void walk_view_click_info(void)
 			dialog_node_settings_run(&map.nodes[main_idx]);
 			break;
 		
-		case spot_piece:
-			dialog_spot_setting_run(&map.spots[main_idx]);
-			break;
-			
 		case scenery_piece:
 			dialog_scenery_setting_run(&map.sceneries[main_idx]);
 			break;

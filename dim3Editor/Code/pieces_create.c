@@ -120,8 +120,6 @@ void piece_create_spot(void)
 	main_wind_draw();
 	main_wind_tool_reset();
 	main_wind_tool_fix_enable();
-    
-	dialog_spot_setting_run(spot);
 	
 	main_wind_tool_fill_object_combo();
 }

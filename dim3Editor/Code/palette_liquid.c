@@ -198,7 +198,7 @@ void palette_liquid_close(int *x,int *y)
 {
 	Rect			box;
 	
-	GetWindowBounds(palette_liquid_wind,kWindowTitleBarRgn,&box);
+	GetWindowBounds(palette_liquid_wind,kWindowGlobalPortRgn,&box);
 	*x=box.left;
 	*y=box.top;
 

@@ -315,15 +315,15 @@ void effect_image_animate_get_uv(int tick,image_animation_type *animate,float *g
 
 void effect_draw(int tick,view_render_type *view_render)
 {
-	int						i,k,t,dist,sz,count;
+	int						n,k,t,dist,sz,count;
 	effect_type				*effect;
 	
 		// sort effects
 		
 	view_render->sort_effect.count=0;
 	
-	for (i=0;i!=server.count.effect;i++) {
-		effect=&server.effects[i];
+	for (n=0;n!=server.count.effect;n++) {
+		effect=&server.effects[n];
 
 			// effect inside a mesh that's hidden?
 
@@ -357,11 +357,11 @@ void effect_draw(int tick,view_render_type *view_render)
 			t=view_render->sort_effect.count;
 		}
 		else {
-			sz=(view_render->sort_effect.count-t)*sizeof(view_render_sort_effect_type);
+			sz=(view_render->sort_effect.count-t)*sizeof(view_render_sort_effect_item_type);
 			memmove(&view_render->sort_effect.items[t+1],&view_render->sort_effect.items[t],sz);
 		}
 		
-		view_render->sort_effect.items[t].idx=i;
+		view_render->sort_effect.items[t].idx=n;
 		view_render->sort_effect.items[t].dist=dist;
 		
 		view_render->sort_effect.count++;
@@ -378,8 +378,8 @@ void effect_draw(int tick,view_render_type *view_render)
 		
 		// draw effects
 		
-	for (i=0;i!=view_render->sort_effect.count;i++) {
-		effect=&server.effects[view_render->sort_effect.items[i].idx];
+	for (n=0;n!=view_render->sort_effect.count;n++) {
+		effect=&server.effects[view_render->sort_effect.items[n].idx];
 		
 		count=tick-effect->start_tick;
 

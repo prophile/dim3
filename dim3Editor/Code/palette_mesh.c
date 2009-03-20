@@ -200,7 +200,7 @@ void palette_mesh_close(int *x,int *y)
 {
 	Rect			box;
 	
-	GetWindowBounds(palette_mesh_wind,kWindowTitleBarRgn,&box);
+	GetWindowBounds(palette_mesh_wind,kWindowGlobalPortRgn,&box);
 	*x=box.left;
 	*y=box.top;
 	

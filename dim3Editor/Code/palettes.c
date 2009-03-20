@@ -33,6 +33,13 @@ and can be sold or given away.
 #define palette_type_mesh				1
 #define palette_type_liquid				2
 #define palette_type_polygon			3
+#define palette_type_spot				4
+#define palette_type_light				5
+#define palette_type_sound				6
+#define palette_type_particle			7
+#define palette_type_scenery			8
+#define palette_type_node				9
+#define palette_type_area				10
 
 extern int				drag_mode;
 
@@ -83,6 +90,14 @@ void palette_close(void)
 		case palette_type_polygon:
 			palette_polygon_close(&palette_x,&palette_y);
 			break;
+			
+		case palette_type_spot:
+			palette_spot_close(&palette_x,&palette_y);
+			break;
+			
+		case palette_type_area:
+			palette_area_close(&palette_x,&palette_y);
+			break;
 	
 	}
 
@@ -131,6 +146,15 @@ void palette_reset(void)
 				cur_type=palette_type_liquid;
 			}
 			break;
+			
+		case spot_piece:
+			cur_type=palette_type_spot;
+			break;
+			
+		case area_piece:
+			cur_type=palette_type_area;
+			break;
+			
 	}
 	
 		// if no palettes to open, then
@@ -176,6 +200,28 @@ void palette_reset(void)
 			}
 			
 			palette_polygon_load();
+			return;
+			
+		case palette_type_spot:
+		
+			if (palette_cur_type!=palette_type_spot) {
+				palette_close();
+				palette_cur_type=palette_type_spot;
+				palette_spot_open(palette_x,palette_y);
+			}
+			
+			palette_spot_load();
+			return;
+			
+		case palette_type_area:
+		
+			if (palette_cur_type!=palette_type_area) {
+				palette_close();
+				palette_cur_type=palette_type_area;
+				palette_area_open(palette_x,palette_y);
+			}
+			
+			palette_area_load();
 			return;
 	}
 }

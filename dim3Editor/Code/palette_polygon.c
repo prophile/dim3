@@ -177,7 +177,7 @@ void palette_polygon_close(int *x,int *y)
 {
 	Rect			box;
 	
-	GetWindowBounds(palette_poly_wind,kWindowTitleBarRgn,&box);
+	GetWindowBounds(palette_poly_wind,kWindowGlobalPortRgn,&box);
 	*x=box.left;
 	*y=box.top;
 

@@ -55,7 +55,7 @@ void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,c
 		
 			// check extension
 			
-		c=strchr(de->d_name,'.');
+		c=strrchr(de->d_name,'.');
 			
 		if (ext_name==NULL) {			// looking for directory
 			if (c!=NULL) continue;
@@ -71,7 +71,7 @@ void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,c
 		strncpy(file_name,de->d_name,file_str_len);
 		file_name[file_str_len-1]=0x0;
 		
-		c=strchr(file_name,'.');
+		c=strrchr(file_name,'.');
 		if (c!=NULL) *c=0x0;
 		
 		idx=-1;
@@ -150,7 +150,7 @@ void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,c
 		strncpy(file_name,find_data.cFileName,file_str_len);
 		file_name[file_str_len-1]=0x0;
 	
-		c=strchr(file_name,'.');
+		c=strrchr(file_name,'.');
 		if (c!=NULL) *c=0x0;
 		
 		idx=-1;

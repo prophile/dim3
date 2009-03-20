@@ -108,7 +108,6 @@ extern bool dialog_node_settings_run(node_type *node);
 extern bool dialog_map_light_settings_run(map_light_type *light);
 extern bool dialog_map_sound_settings_run(map_sound_type *sound);
 extern bool dialog_map_particle_settings_run(map_particle_type *particle);
-extern bool dialog_spot_setting_run(spot_type *spot);
 extern bool dialog_scenery_setting_run(map_scenery_type *scenery);
 extern bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z);
 extern bool dialog_reposition_run(d3pnt *min,d3pnt *max);
