@@ -342,6 +342,7 @@ bool object_push_with_object(obj_type *obj,int xmove,int zmove)
 {
 	int				weight_dif;
 	float			f,f_xmove,f_zmove;
+	bool			contact_on;
 	obj_type		*pushed_obj;
 	
 	if (obj->contact.obj_uid==-1) return(TRUE);
@@ -356,29 +357,39 @@ bool object_push_with_object(obj_type *obj,int xmove,int zmove)
 		// compare weights
 
 	weight_dif=obj->size.weight-pushed_obj->size.weight;
-	if (weight_dif<0) return(FALSE);
+	if (weight_dif<0) return(TRUE);
 
 		// calculate the force by weight
 
-	if (weight_dif>2000) weight_dif=2000;
-	f=0.25f+(map.settings.push_factor*weight_dif);
+	f=0.25f+(((float)weight_dif)/((float)obj->size.weight));
+	if (f>1.0f) f=1.0f;
+
+		// slow down pushing object
+
+	obj->forward_move.speed*=f;
+	obj->side_move.speed*=f;
 	
 		// add in vector
 
 	f_xmove=((float)xmove)*f;
 	f_zmove=((float)zmove)*f;
+
+	f_xmove=(pushed_obj->force.vct.x+f_xmove)/2.0f;
+	f_zmove=(pushed_obj->force.vct.z+f_zmove)/2.0f;
 	
 	pushed_obj->force.vct.x=f_xmove;
 	pushed_obj->force.vct.z=f_zmove;
 
-		// movement
+		// movement, turn off contact for
+		// pushing object so pushed object
+		// doesn't collide with it
 
-	pushed_obj->pnt.x+=f_xmove;
-	pushed_obj->pnt.z+=f_zmove;
+	contact_on=obj->contact.object_on;
+	obj->contact.object_on=FALSE;
 
-// supergumba -- work on this!
+	object_move_with_move(pushed_obj,(int)f_xmove,(int)f_zmove);
 
-//	object_move_with_move(pushed_obj,(int)f_xmove,(int)f_zmove);
+	obj->contact.object_on=contact_on;
 
 	return(FALSE);
 }

@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#define collide_obj_ray_count			72
+#define collide_obj_ray_count			35
 
 #include "scripts.h"
 #include "objects.h"
@@ -75,8 +75,8 @@ int collide_point_distance(d3pnt *pt_1,d3pnt *pt_2)
 
 bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,int *yadd,int *zadd)
 {
-	int						n,k,mx,mz,y,idx,d,dist,vert_y[6];
-	float					move_ang;
+	int						n,k,mx,mz,y,idx,d,dist,hx[7],hz[7],vert_y[5];
+	float					move_ang,ang;
 	double					radius,rad;
 	bool					bump,hits[collide_obj_ray_count];
 	d3pnt					obj_pnt,mov,
@@ -86,10 +86,13 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 	model_type				*mdl;
 
 		// get movements out of pointers
+		// and movement angle
 
 	mov.x=*xadd;
 	mov.y=*yadd;
 	mov.z=*zadd;
+
+	move_ang=angle_find(0,0,mov.x,mov.z);
 
 		// find the object center
 
@@ -108,38 +111,46 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 
 		// vertical race trace positions
 
-	vert_y[0]=(obj_pnt.y-obj->size.y)+(map_enlarge<<1);
+	vert_y[0]=obj_pnt.y-obj->size.y;
 	vert_y[2]=obj_pnt.y-(obj->size.y>>1);
-	vert_y[4]=obj_pnt.y-(map_enlarge<<1);
-	vert_y[5]=obj_pnt.y-(map_enlarge<<2);
+	vert_y[4]=obj_pnt.y-1;
 
 	vert_y[1]=(vert_y[0]+vert_y[2])>>1;
 	vert_y[3]=(vert_y[2]+vert_y[4])>>1;
 
 		// create the ray trace points
 
-	idx=0;
+	for (n=0;n!=7;n++) {
+		ang=(move_ang-90.0f)+(float)(n*30);
+		if (ang<0) ang=360.0f+ang;
+		if (ang>=360) ang=ang-360.0f;
 
-	for (n=0;n!=12;n++) {
-
-		rad=(double)((float)(n*30)*ANG_to_RAD);
+		rad=(double)(ang*ANG_to_RAD);
 
 		mx=(int)(radius*sin(rad));
 		mz=-(int)(radius*cos(rad));
 
-		mx+=mov.x;
-		mz+=mov.z;
+		hx[n]=mx+mov.x;
+		hz[n]=mz+mov.z;
+	}
 
-		for (k=0;k!=6;k++) {
+		// create the rays that come from
+		// center of object
+
+	idx=0;
+
+	for (n=0;n!=7;n++) {
+
+		for (k=0;k!=5;k++) {
 
 			y=vert_y[k];
 
 			spt[idx].x=obj_pnt.x;
 			spt[idx].y=y;
 			spt[idx].z=obj_pnt.z;
-			ept[idx].x=obj_pnt.x+mx;
+			ept[idx].x=obj_pnt.x+hx[n];
 			ept[idx].y=y+mov.y;
-			ept[idx].z=obj_pnt.z+mz;
+			ept[idx].z=obj_pnt.z+hz[n];
 
 			idx++;
 		}
@@ -207,8 +218,6 @@ bool collide_object_box_to_map(obj_type *obj,d3pnt *pt,d3pnt *box_sz,int *xadd,i
 		mz=hpt[idx].z-spt[idx].z;
 
 		d=(int)(sqrt((double)(mx*mx)+(double)(mz*mz)));
-
-		move_ang=angle_find(0,0,mov.x,mov.z);
 
 		angle_get_movement(move_ang,(obj->size.radius-d),&mx,&mz);
 		*xadd=(*xadd)-mx;

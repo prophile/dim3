@@ -453,7 +453,7 @@ typedef struct		{
 					
 typedef struct		{
 						float								gravity,gravity_max_power,gravity_max_speed,
-															resistance,push_factor,txt_scale_x,txt_scale_y;
+															resistance,txt_scale_x,txt_scale_y;
 						bool								editor_link_always_start;
 						char								network_game_list[256];
 					} map_settings_type;

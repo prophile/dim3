@@ -67,7 +67,6 @@ bool map_new(map_type *map,char *name)
 	map->settings.gravity_max_power=32;
 	map->settings.gravity_max_speed=400;
 	map->settings.resistance=1;
-	map->settings.push_factor=0.0008f;
 	map->settings.txt_scale_x=0.04f;
 	map->settings.txt_scale_y=0.04f;
 	map->settings.editor_link_always_start=FALSE;

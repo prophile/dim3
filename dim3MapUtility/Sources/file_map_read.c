@@ -70,7 +70,6 @@ void decode_map_settings_xml(map_type *map,int map_head)
         map->settings.gravity_max_power=xml_get_attribute_float_default(tag,"gravity_max_power",32);
 		map->settings.gravity_max_speed=xml_get_attribute_float_default(tag,"gravity_max_speed",400);
 		map->settings.resistance=xml_get_attribute_float_default(tag,"resistance",1);
-		map->settings.push_factor=xml_get_attribute_float_default(tag,"push_factor",0.0008f);
 		map->settings.txt_scale_x=xml_get_attribute_float_default(tag,"txt_scale_x",0.04f);
 		map->settings.txt_scale_y=xml_get_attribute_float_default(tag,"txt_scale_y",0.04f);
 		map->settings.editor_link_always_start=xml_get_attribute_boolean(tag,"editor_link_always_start");

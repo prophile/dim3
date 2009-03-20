@@ -149,7 +149,6 @@ void write_map_settings_xml(map_type *map)
 	xml_add_attribute_float("gravity_max_power",map->settings.gravity_max_power);
 	xml_add_attribute_float("gravity_max_speed",map->settings.gravity_max_speed);
     xml_add_attribute_float("resistance",map->settings.resistance);
-    xml_add_attribute_float("push_factor",map->settings.push_factor);
 	xml_add_attribute_float("txt_scale_x",map->settings.txt_scale_x);
 	xml_add_attribute_float("txt_scale_y",map->settings.txt_scale_y);
 	xml_add_attribute_boolean("editor_link_always_start",map->settings.editor_link_always_start);
