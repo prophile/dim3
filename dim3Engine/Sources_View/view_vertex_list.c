@@ -378,13 +378,10 @@ void view_compile_gl_list_attach(void)
 	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 
 		// uvs
+		// glow maps use two texture units
 		
 	offset=(v_cnt*3)*sizeof(float);
 	
-	glClientActiveTexture(GL_TEXTURE2);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
-
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
@@ -411,9 +408,6 @@ void view_compile_gl_list_disable_color(void)
 
 void view_compile_gl_list_dettach(void)
 {
-	glClientActiveTexture(GL_TEXTURE2);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
 	glClientActiveTexture(GL_TEXTURE1);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 

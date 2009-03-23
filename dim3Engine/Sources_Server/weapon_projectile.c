@@ -332,6 +332,23 @@ bool weapon_get_projectile_position_angle_object_model(int tick,obj_type *obj,we
 	return(TRUE);
 }
 
+void weapon_get_projectile_position_center(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang)
+{
+		// model point
+
+	fire_pnt->x=obj->pnt.x;
+	fire_pnt->y=(obj->pnt.y+obj->duck.y_move)+obj->size.eye_offset;
+	fire_pnt->z=obj->pnt.z;
+
+		// get fire the angle
+
+	fire_ang->x=-(obj->view_ang.x*(1.0f-(((float)fabs(obj->view_ang.x)/90.0f)*0.5f)));
+	fire_ang->y=obj->ang.y;
+	fire_ang->z=0.0f;
+
+	weapon_recoil_add(obj,weap,fire_ang);
+}
+
 void weapon_get_projectile_position_angle_add_offset(d3ang *ang,d3ang *off_ang)
 {
 	if (off_ang==NULL) return;
@@ -464,20 +481,7 @@ bool weapon_script_projectile_spawn_center(int tick,obj_type *obj,weapon_type *w
 	d3pnt			pt;
 	d3ang			ang;
 
-		// model point
-
-	pt.x=obj->pnt.x;
-	pt.y=(obj->pnt.y+obj->duck.y_move)+obj->size.eye_offset;
-	pt.z=obj->pnt.z;
-
-		// get fire the angle
-
-	ang.x=-(obj->view_ang.x*(1.0f-(((float)fabs(obj->view_ang.x)/90.0f)*0.5f)));
-	ang.y=obj->ang.y;
-	ang.z=0.0f;
-
-	weapon_recoil_add(obj,weap,&ang);
-		
+	weapon_get_projectile_position_center(obj,weap,&pt,&ang);
 	return(weapon_script_projectile_spawn(tick,obj,weap,proj_name,&pt,&ang,count,slop,err_str));
 }
 

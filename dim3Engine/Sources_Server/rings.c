@@ -149,10 +149,12 @@ bool ring_line_spawn(int ring_idx,d3pnt *start_pt,d3pnt *end_pt,int count)
 	if (count<=0) return(TRUE);
 
 		// get angle between lines
+		// right now only do y rotations as two
+		// many rotations can cause math errors
 
-	ang.x=angle_find(start_pt->y,start_pt->z,end_pt->y,end_pt->z);
+	ang.x=0.0f;
 	ang.y=angle_find(start_pt->x,start_pt->z,end_pt->x,end_pt->z);
-	ang.z=angle_find(start_pt->x,start_pt->y,end_pt->x,end_pt->y);
+	ang.z=0.0f;
 
 		// start rings
 

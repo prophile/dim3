@@ -137,7 +137,7 @@ void ring_draw(effect_type *effect,int count)
 
 	matrix_rotate_x(&mat_x,-fx);
 	matrix_rotate_z(&mat_z,fz);
-	matrix_rotate_y(&mat_y,-angle_add(fy,180.0f));
+	matrix_rotate_y(&mat_y,fy);
 
 		// construct VBO
 

@@ -461,60 +461,6 @@ void view_draw_models_shadow(view_render_type *view_render)
       
 ======================================================= */
 
-
-void test_me(void)
-{
-	d3ang						ang;
-	d3pnt						spt,ept;
-	d3vct						vct;
-	matrix_type					mat;
-	obj_type		*obj;
-	
-	gl_setup_viewport(console_y_offset());
-	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
-	gl_setup_project();
-	obj=object_find_uid(server.player_obj_uid);
-	spt.x=obj->pnt.x;
-	spt.y=(obj->pnt.y+obj->duck.y_move)+obj->size.eye_offset;
-	spt.z=obj->pnt.z;
-	
-	vct.x=0.0f;
-	vct.y=0.0f;
-	vct.z=(float)-(map_enlarge*400);
-	ang.x=-(obj->view_ang.x*(1.0f-(((float)fabs(obj->view_ang.x)/90.0f)*0.5f)));
-	ang.y=obj->ang.y;
-	ang.z=0.0f;
-
-	if (ang.x!=0.0f) {
-		matrix_rotate_x(&mat,ang.x);
-		matrix_vertex_multiply(&mat,&vct.x,&vct.y,&vct.z);
-	}
-	
-	if (ang.z!=0.0f) {
-		matrix_rotate_z(&mat,ang.z);
-		matrix_vertex_multiply(&mat,&vct.x,&vct.y,&vct.z);
-	}
-	
-	if (ang.y!=0.0f) {
-		matrix_rotate_y(&mat,ang.y);
-		matrix_vertex_multiply(&mat,&vct.x,&vct.y,&vct.z);
-	}
-	
-		// get end point
-	
-	ept.x=spt.x+(int)vct.x;
-	ept.y=spt.y+(int)vct.y;
-	ept.z=spt.z+(int)vct.z;
-	
-	glLineWidth(3.0f);
-	glColor4f(0.0f,0.0f,1.0f,1.0f);
-	glBegin(GL_LINES);
-	glVertex3i(spt.x,spt.y,spt.z);
-	glVertex3i(ept.x,ept.y,ept.z);
-	glEnd();
-}
-
 void view_draw(int tick)
 {
 	obj_type		*obj;
@@ -579,8 +525,6 @@ void view_draw(int tick)
 		// draw map liquids
 
 	render_map_liquid(tick);
-	
-	test_me();
 
 		// draw decals
 

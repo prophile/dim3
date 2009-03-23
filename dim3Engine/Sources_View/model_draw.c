@@ -239,12 +239,16 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,int mesh_mask,model_dr
 	view_unmap_current_vertex_object();
 
 		// set the pointers
+		// glow maps use two texture units
 
-	glClientActiveTexture(GL_TEXTURE0);
-		
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((ntrig*3)*3)*sizeof(float)));
+	
+	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((ntrig*3)*3)*sizeof(float)));
 
@@ -269,6 +273,10 @@ inline void model_draw_disable_color_array(void)
 
 void model_draw_release_vertex_objects(void)
 {
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glClientActiveTexture(GL_TEXTURE0);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -603,10 +611,10 @@ void model_draw_glow_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw
 
 		// setup drawing
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE,GL_ONE);
+	glDisable(GL_BLEND);
 
-	glDisable(GL_ALPHA_TEST);
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
 
 	glEnable(GL_DEPTH_TEST); 
 	glDepthFunc(GL_LEQUAL);
@@ -636,7 +644,7 @@ void model_draw_glow_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw
 
 			// draw glow texture
 		
-		gl_texture_glow_set(texture->glowmaps[frame].gl_id,texture->glow.current_color);
+		gl_texture_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,texture->glow.current_color);
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 	}
 	

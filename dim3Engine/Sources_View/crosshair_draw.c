@@ -68,11 +68,21 @@ bool crosshair_get_location(int tick,obj_type *obj,weapon_type *weap,int *kx,int
 
 		// get projectile position and angle
 
-	if ((weap->crosshair.type==ct_bone_tracking) || (weap->crosshair.type==ct_bone_tracking_resizing)) {
-		if (!weapon_get_projectile_position_angle_weapon_model(tick,obj,weap,&fpt,&ang,NULL)) return(FALSE);
-	}
-	else {
-		if (!weapon_get_projectile_position_angle_weapon_barrel(tick,obj,weap,&fpt,&ang,NULL)) return(FALSE);
+	switch (weap->crosshair.type) {
+
+		case ct_bone_tracking:
+		case ct_bone_tracking_resizing:
+			if (!weapon_get_projectile_position_angle_weapon_model(tick,obj,weap,&fpt,&ang,NULL)) return(FALSE);
+			break;
+
+		case ct_barrel_tracking:
+		case ct_barrel_tracking_resizing:
+			if (!weapon_get_projectile_position_angle_weapon_barrel(tick,obj,weap,&fpt,&ang,NULL)) return(FALSE);
+			break;
+
+		default:
+			weapon_get_projectile_position_center(obj,weap,&fpt,&ang);
+			break;
 	}
 
 		// trace
@@ -143,7 +153,7 @@ void crosshair_setup_click(int tick,obj_type *obj)
 
 void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 {
-	int					crosshair_type,x,y,z,tx,ty,tz,sz,dist,obj_uid,
+	int					x,y,z,tx,ty,tz,sz,dist,obj_uid,
 						item_count,weap_mode,move_tick,swap_tick;
 	float				alpha;
 	obj_crosshair_draw	*crosshair_draw;
@@ -159,45 +169,37 @@ void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 	if (weap->crosshair.fire_idx==-1) return;
 	if ((weap->zoom.on) && (weap->zoom.active)) return;
 	
-		// get crosshair screen location
+		// get crosshair location
 
-	crosshair_type=weap->crosshair.type;
-		
-	if (crosshair_type==ct_center) {
-		tx=setup.screen.x_sz>>1;
-		ty=setup.screen.y_sz>>1;
-		sz=weap->crosshair.min_size;
+	if (!crosshair_get_location(tick,obj,weap,&x,&z,&y,&obj_uid)) return;
 	
-		crosshair_draw->on=TRUE;
-	}
-	else {
+	crosshair_draw->on=TRUE;
+	crosshair_draw->aim_obj_uid=obj_uid;
+	
+		// get the crosshair place
 		
-			// get crosshair location
-		
-		if (!crosshair_get_location(tick,obj,weap,&x,&z,&y,&obj_uid)) return;
-		
-		crosshair_draw->on=TRUE;
-		crosshair_draw->aim_obj_uid=obj_uid;
-		
-			// get the crosshair place
-			
-		gl_setup_viewport(0);
-		gl_3D_view(&view.camera);
-		gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
-		gl_setup_project();
-		
-		tx=x;
-		ty=y;
-		tz=z;
-		
-		gl_project_point(&tx,&ty,&tz);
-		
-			// get the crosshair size
-			
-		if ((crosshair_type==ct_bone_tracking) || (crosshair_type==ct_barrel_tracking)) {
+	gl_setup_viewport(0);
+	gl_3D_view(&view.camera);
+	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
+	gl_setup_project();
+	
+	tx=x;
+	ty=y;
+	tz=z;
+	
+	gl_project_point(&tx,&ty,&tz);
+	
+		// get the crosshair size
+
+	switch (weap->crosshair.type) {
+
+		case ct_bone_tracking:
+		case ct_barrel_tracking:
 			sz=setup.screen.x_sz>>5;
-		}
-		else {
+			break;
+
+		case ct_bone_tracking_resizing:
+		case ct_barrel_tracking_resizing:
 			dist=distance_get(view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z,x,y,z);
 
 			if (dist>weap->crosshair.distance) {
@@ -207,7 +209,12 @@ void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 				sz=weap->crosshair.max_size-((weap->crosshair.max_size*dist)/weap->crosshair.distance);
 				if (sz<weap->crosshair.min_size) sz=weap->crosshair.min_size;
 			}
-		}
+			break;
+
+		default:
+			sz=weap->crosshair.min_size;
+			break;
+
 	}
 	
 		// crosshair alpha if weapon changing

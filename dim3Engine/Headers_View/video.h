@@ -147,7 +147,7 @@ extern void gl_texture_opaque_end(void);
 extern void gl_texture_opaque_set(GLuint txt_id);
 extern void gl_texture_glow_start(void);
 extern void gl_texture_glow_end(void);
-extern void gl_texture_glow_set(GLuint glow_id,float glow_color);
+extern void gl_texture_glow_set(GLuint txt_id,GLuint glow_id,float glow_color);
 extern void gl_texture_decal_start(void);
 extern void gl_texture_decal_end(void);
 extern void gl_texture_decal_set(GLuint txt_id,float r,float g,float b,float alpha);

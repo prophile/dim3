@@ -357,8 +357,7 @@ void render_transparent_mesh_glow(void)
 
 		// setup glow mapping
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE,GL_ONE);
+	glDisable(GL_BLEND);
 
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
@@ -384,7 +383,7 @@ void render_transparent_mesh_glow(void)
 			// draw glow
 
 		texture=&map.textures[poly->txt_idx];
-		gl_texture_glow_set(texture->glowmaps[poly->render.frame].gl_id,texture->glow.current_color);
+		gl_texture_glow_set(texture->bitmaps[poly->render.frame].gl_id,texture->glowmaps[poly->render.frame].gl_id,texture->glow.current_color);
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}
 
