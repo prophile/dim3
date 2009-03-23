@@ -34,10 +34,10 @@ and can be sold or given away.
 #define palette_type_liquid				2
 #define palette_type_polygon			3
 #define palette_type_spot				4
-#define palette_type_light				5
-#define palette_type_sound				6
-#define palette_type_particle			7
-#define palette_type_scenery			8
+#define palette_type_scenery			5
+#define palette_type_light				6
+#define palette_type_sound				7
+#define palette_type_particle			8
 #define palette_type_node				9
 #define palette_type_area				10
 
@@ -95,6 +95,18 @@ void palette_close(void)
 			palette_spot_close(&palette_x,&palette_y);
 			break;
 			
+		case palette_type_scenery:
+			palette_scenery_close(&palette_x,&palette_y);
+			break;
+			
+		case palette_type_particle:
+			palette_particle_close(&palette_x,&palette_y);
+			break;
+			
+		case palette_type_node:
+			palette_node_close(&palette_x,&palette_y);
+			break;
+			
 		case palette_type_area:
 			palette_area_close(&palette_x,&palette_y);
 			break;
@@ -149,6 +161,26 @@ void palette_reset(void)
 			
 		case spot_piece:
 			cur_type=palette_type_spot;
+			break;
+			
+		case scenery_piece:
+			cur_type=palette_type_scenery;
+			break;
+			
+		case light_piece:
+			cur_type=palette_type_light;
+			break;
+			
+		case sound_piece:
+			cur_type=palette_type_sound;
+			break;
+			
+		case particle_piece:
+			cur_type=palette_type_particle;
+			break;
+			
+		case node_piece:
+			cur_type=palette_type_node;
 			break;
 			
 		case area_piece:
@@ -211,6 +243,61 @@ void palette_reset(void)
 			}
 			
 			palette_spot_load();
+			return;
+			
+		case palette_type_scenery:
+		
+			if (palette_cur_type!=palette_type_scenery) {
+				palette_close();
+				palette_cur_type=palette_type_scenery;
+				palette_scenery_open(palette_x,palette_y);
+			}
+			
+			palette_scenery_load();
+			return;
+			
+		case palette_type_light:
+		
+			if (palette_cur_type!=palette_type_light) {
+				palette_close();
+				palette_cur_type=palette_type_light;
+				palette_light_open(palette_x,palette_y);
+			}
+			
+			palette_light_load();
+			return;
+			
+		case palette_type_sound:
+		
+			if (palette_cur_type!=palette_type_sound) {
+				palette_close();
+				palette_cur_type=palette_type_sound;
+				palette_sound_open(palette_x,palette_y);
+			}
+			
+			palette_sound_load();
+			return;
+			
+		case palette_type_particle:
+		
+			if (palette_cur_type!=palette_type_particle) {
+				palette_close();
+				palette_cur_type=palette_type_particle;
+				palette_particle_open(palette_x,palette_y);
+			}
+			
+			palette_particle_load();
+			return;
+			
+		case palette_type_node:
+		
+			if (palette_cur_type!=palette_type_node) {
+				palette_close();
+				palette_cur_type=palette_type_node;
+				palette_node_open(palette_x,palette_y);
+			}
+			
+			palette_node_load();
 			return;
 			
 		case palette_type_area:

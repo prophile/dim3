@@ -628,46 +628,6 @@ void walk_view_click_piece_normal(editor_3D_view_setup *view_setup,d3pnt *pt,boo
 
 /* =======================================================
 
-      Double Clicking
-      
-======================================================= */
-
-void walk_view_click_info(void)
-{
-	int				type,main_idx,sub_idx;
-	
-    if (select_count()==0) return;
-	
-	select_get(0,&type,&main_idx,&sub_idx);
-
-	switch (type) {
-	
-		case node_piece:
-			dialog_node_settings_run(&map.nodes[main_idx]);
-			break;
-		
-		case scenery_piece:
-			dialog_scenery_setting_run(&map.sceneries[main_idx]);
-			break;
-		
-		case light_piece:
-			dialog_map_light_settings_run(&map.lights[main_idx]);
-			break;
-		
-		case sound_piece:
-			dialog_map_sound_settings_run(&map.sounds[main_idx]);
-			break;
-			
-		case particle_piece:
-			dialog_map_particle_settings_run(&map.particles[main_idx]);
-			break;
-	}
-	
-	main_wind_draw();
-}
-
-/* =======================================================
-
       View Map Clicking
       
 ======================================================= */
@@ -708,13 +668,6 @@ void walk_view_click_piece(editor_3D_view_setup *view_setup,d3pnt *pt,int view_m
 		// changes in palette
 		
 	palette_reset();
-	
-		// double-click info
-		
-	if (dblclick) {
-		walk_view_click_info();
-		return;
-	}
 	
 		// area drags
 		

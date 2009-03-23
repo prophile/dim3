@@ -77,35 +77,9 @@ void palette_area_save(void)
 
 static pascal OSStatus palette_area_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
-	int				event_class,event_kind;
-	HICommand		cmd;
-	
-	event_class=GetEventClass(event);
-	event_kind=GetEventKind(event);
-	
-		// button inside tab
+		// force save on all control changes
 		
-	if ((event_class==kEventClassCommand) && (event_kind==kEventProcessCommand)) {
-		GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
-			
-		switch (cmd.commandID) {
-			
-			case kAreaColor:
-				dialog_click_color(palette_area_wind,kAreaColor,0);
-				palette_area_save();
-				return(noErr);
-		}
-		
-		return(eventNotHandledErr);
-	}
-	
-		// control changes
-		
-	if ((event_class==kEventClassControl) || (event_class==kEventClassKeyboard)) {
-		palette_area_save();
-		return(eventNotHandledErr);
-	}
-
+	palette_area_save();
 	return(eventNotHandledErr);
 }
 
@@ -118,8 +92,7 @@ static pascal OSStatus palette_area_event_proc(EventHandlerCallRef handler,Event
 void palette_area_open(int x,int y)
 {
 	EventHandlerUPP			event_upp;
-	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand},
-										  {kEventClassControl,kEventControlHit},
+	EventTypeSpec			event_list[]={{kEventClassControl,kEventControlHit},
 										  {kEventClassKeyboard,kEventRawKeyUp}};
 
 		// open the window

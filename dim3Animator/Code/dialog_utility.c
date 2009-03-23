@@ -375,21 +375,15 @@ void dialog_set_tab(WindowRef wind,unsigned long sig,int id,int index,int npane)
       
 ======================================================= */
 
-void dialog_set_color(WindowRef wind,unsigned long sig,int id,d3col *col)
+void dialog_set_color_icon(ControlRef ctrl,d3col *col)
 {
-	ControlRef					ctrl;
-	ControlID					ctrl_id;
 	ControlButtonContentInfo	info;
 	Rect						box;
 	RGBColor					rgb,black={0x0,0x0,0x0};
  	PicHandle					pic;
-	
-	ctrl_id.signature=sig;
-	ctrl_id.id=id;
-	GetControlByID(wind,&ctrl_id,&ctrl);
-	
-		// create color
-	
+
+		// draw the color
+		
 	SetRect(&box,0,0,24,12);
 	
 	pic=OpenPicture(&box);
@@ -412,7 +406,61 @@ void dialog_set_color(WindowRef wind,unsigned long sig,int id,d3col *col)
 		// set the internal data
 		
 	SetControlProperty(ctrl,'dim3','dim3',sizeof(d3col),col);
+}
 
+static pascal OSStatus dialog_set_color_proc(EventHandlerCallRef handler,EventRef event,void *data)
+{
+	d3col			col;
+	RGBColor		color;
+	Point			pt;
+	WindowRef		wind;
+	ControlRef		ctrl;
+	
+	GetEventParameter(event,kEventParamDirectObject,typeControlRef,NULL,sizeof(ControlRef),NULL,&ctrl);
+	wind=GetControlOwner(ctrl);
+	
+	GetControlProperty(ctrl,'dim3','dim3',sizeof(d3col),NULL,&col);
+
+	color.red=(int)(col.r*(float)0xFFFF);
+	color.green=(int)(col.g*(float)0xFFFF);
+	color.blue=(int)(col.b*(float)0xFFFF);
+	
+	pt.h=pt.v=-1;
+	
+	if (GetColor(pt,"\pChoose the Light Color:",&color,&color)) {
+		col.r=((float)color.red/(float)0xFFFF);
+		col.g=((float)color.green/(float)0xFFFF);
+		col.b=((float)color.blue/(float)0xFFFF);
+	
+		dialog_set_color_icon(ctrl,&col);
+		Draw1Control(ctrl);
+	}
+	
+	return(eventNotHandledErr);
+}
+
+void dialog_set_color(WindowRef wind,unsigned long sig,int id,d3col *col)
+{
+	ControlRef					ctrl;
+	ControlID					ctrl_id;
+	EventHandlerUPP				ctrl_event_upp;
+	EventTypeSpec				ctrl_event_list[]={{kEventClassControl,kEventControlHit}};
+	d3col						col2;
+	
+	ctrl_id.signature=sig;
+	ctrl_id.id=id;
+	GetControlByID(wind,&ctrl_id,&ctrl);
+	
+		// if no property yet, then we can setup event
+		
+	if (GetControlProperty(ctrl,'dim3','dim3',sizeof(d3col),NULL,&col2)!=0) {
+		ctrl_event_upp=NewEventHandlerUPP(dialog_set_color_proc);
+		InstallControlEventHandler(ctrl,ctrl_event_upp,GetEventTypeCount(ctrl_event_list),ctrl_event_list,wind,NULL);
+	}
+	
+		// create color
+		
+	dialog_set_color_icon(ctrl,col);
 	Draw1Control(ctrl);
 }
 
@@ -427,29 +475,6 @@ void dialog_get_color(WindowRef wind,unsigned long sig,int id,d3col *col)
 	GetControlByID(wind,&ctrl_id,&ctrl);
 
 	GetControlProperty(ctrl,'dim3','dim3',sizeof(d3col),&sz,col);
-}
-
-void dialog_click_color(WindowRef wind,unsigned long sig,int id)
-{
-	d3col			col;
-	RGBColor		color;
-	Point			pt;
-	
-	dialog_get_color(wind,sig,id,&col);
-
-	color.red=(int)(col.r*(float)0xFFFF);
-	color.green=(int)(col.g*(float)0xFFFF);
-	color.blue=(int)(col.b*(float)0xFFFF);
-	
-	pt.h=pt.v=-1;
-	
-	if (GetColor(pt,"\pChoose the Light Color:",&color,&color)) {
-		col.r=((float)color.red/(float)0xFFFF);
-		col.g=((float)color.green/(float)0xFFFF);
-		col.b=((float)color.blue/(float)0xFFFF);
-	
-		dialog_set_color(wind,sig,id,&col);
-	}
 }
 
 /* =======================================================

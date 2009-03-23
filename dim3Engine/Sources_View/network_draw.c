@@ -79,7 +79,7 @@ void network_score_single_box_draw(int lx,int rx,int y,int yadd,d3col *team_col)
 	glEnd();
 }
 
-void network_score_single_name_draw(char *name,int score,int lx,int rx,int y)
+void network_score_single_name_draw(char *name,int score,int lx,int rx,int y,int fnt_sz)
 {
 	char		txt[256];
 	d3col		col;
@@ -87,7 +87,7 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int y)
 	col.r=col.g=col.b=0.0f;
 	sprintf(txt,"%d",score);
 		
-	gl_text_start(hud.font.text_size_large);
+	gl_text_start(fnt_sz);
 	gl_text_draw(lx,(y+1),name,tx_left,FALSE,&col,0.75f);
 	gl_text_draw(rx,(y+1),txt,tx_right,FALSE,&col,0.75f);
 	gl_text_end();
@@ -99,9 +99,29 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int y)
       
 ======================================================= */
 
+int network_score_get_list_high(int nscore,int *fnt_sz)
+{
+	int			high,yadd;
+	
+		// default height or scale to fit
+		
+	high=gl_text_get_char_height(hud.font.text_size_large);
+	*fnt_sz=hud.font.text_size_large;
+
+	if (nscore!=0) {
+		yadd=((hud.scale_y/10)*6)/nscore;
+		if (yadd<high) {
+			*fnt_sz=(hud.font.text_size_large*yadd)/high;
+			high=yadd;
+		}
+	}
+	
+	return(high);
+}
+
 int network_score_players_draw(bool center)
 {
-	int				n,k,lx,rx,y,y2,yadd,high,nscore,idx,sz;
+	int				n,k,lx,rx,y,y2,yadd,high,nscore,idx,sz,fnt_sz;
 	short			s_score,
 					sort_idx[max_object],sort_score[max_object];
 	d3col			col;
@@ -153,14 +173,15 @@ int network_score_players_draw(bool center)
 		rx=(hud.scale_x>>1)-(hud.scale_x>>5);
 	}
 	
-	yadd=gl_text_get_char_height(hud.font.text_size_large);
+	yadd=network_score_get_list_high(nscore,&fnt_sz);
 	high=(yadd+3)*nscore;
+	
 	y=((hud.scale_y-high)>>1)+(yadd+3);
 
 		// header
 
 	col.r=col.g=col.b=1.0f;
-	gl_text_start(hud.font.text_size_large);
+	gl_text_start(fnt_sz);
 	gl_text_draw(lx,(y-(yadd+3)),"Players",tx_left,FALSE,&col,1.0f);
 	gl_text_end();
 	
@@ -186,7 +207,7 @@ int network_score_players_draw(bool center)
 	for (n=0;n!=nscore;n++) {
 
 		obj=&server.objs[sort_idx[n]];
-		network_score_single_name_draw(obj->name,obj->score.score,lx,rx,y);
+		network_score_single_name_draw(obj->name,obj->score.score,lx,rx,y,fnt_sz);
 
 		y+=(yadd+3);
 	}
@@ -196,7 +217,7 @@ int network_score_players_draw(bool center)
 
 int network_score_teams_draw(void)
 {
-	int				n,k,lx,rx,y,y2,yadd,high,nscore,nplayer,idx,sz;
+	int				n,k,lx,rx,y,y2,yadd,high,nscore,nplayer,idx,sz,fnt_sz;
 	short			s_score,team_score[net_team_count],
 					sort_idx[net_team_count],sort_score[net_team_count];
 	bool			team_on[net_team_count];
@@ -262,14 +283,14 @@ int network_score_teams_draw(void)
 	lx=(hud.scale_x>>1)+(hud.scale_x>>5);
 	rx=hud.scale_x-(hud.scale_x>>4);
 		
-	yadd=gl_text_get_char_height(hud.font.text_size_large);
-	high=(yadd+3)*nplayer;
+	yadd=network_score_get_list_high(nscore,&fnt_sz);
+	high=(yadd+3)*nscore;
 	y=((hud.scale_y-high)>>1)+(yadd+3);
 
 		// header
 
 	col.r=col.g=col.b=1.0f;
-	gl_text_start(hud.font.text_size_large);
+	gl_text_start(fnt_sz);
 	gl_text_draw(rx,(y-(yadd+3)),"Teams",tx_right,FALSE,&col,1.0f);
 	gl_text_end();
 	
@@ -298,7 +319,7 @@ int network_score_teams_draw(void)
 	for (n=0;n!=nscore;n++) {
 
 		idx=sort_idx[n];
-		network_score_single_name_draw(setup_team_color_list[idx],(int)sort_score[n],lx,rx,y);
+		network_score_single_name_draw(setup_team_color_list[idx],(int)sort_score[n],lx,rx,y,fnt_sz);
 
 		y+=(yadd+3);
 	}

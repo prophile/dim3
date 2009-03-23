@@ -43,7 +43,6 @@ extern map_type				map;
 #define kMapGravityPower							FOUR_CHAR_CODE('gpwr')
 #define kMapGravitySpeed							FOUR_CHAR_CODE('gspd')
 #define kMapResistance								FOUR_CHAR_CODE('rest')
-#define kMapPushFactor								FOUR_CHAR_CODE('push')
 #define kMapTextureXFactor							FOUR_CHAR_CODE('trxf')
 #define kMapTextureYFactor							FOUR_CHAR_CODE('tryf')
 #define kMapGameTypeList							FOUR_CHAR_CODE('gtyp')
@@ -156,43 +155,7 @@ static pascal OSStatus map_map_setting_event_proc(EventHandlerCallRef handler,Ev
 
 static pascal OSStatus map_map_setting_tab_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
-	int				event_class,event_kind;
-	HICommand		cmd;
-	
-	event_class=GetEventClass(event);
-	event_kind=GetEventKind(event);
-	
-	if ((event_class==kEventClassCommand) && (event_kind==kEventProcessCommand)) {
-			
-		GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
-		
-		switch (cmd.commandID) {
-
-			case kMapLightColor:
-				dialog_click_color(dialog_map_settings_wind,kMapLightColor,0);
-				return(noErr);
-				
-			case kFogColor:
-				dialog_click_color(dialog_map_settings_wind,kFogColor,0);
-				return(noErr);
-				
-			case kRainStartColor:
-				dialog_click_color(dialog_map_settings_wind,kRainStartColor,0);
-				return(noErr);
-				
-			case kRainEndColor:
-				dialog_click_color(dialog_map_settings_wind,kRainEndColor,0);
-				return(noErr);
-				
-		}
-			
-		return(eventNotHandledErr);
-	}
-	
-	if ((event_class==kEventClassControl) && (event_kind==kEventControlHit)) {
-		dialog_switch_tab(dialog_map_settings_wind,kMapSettingTab,0,kMapSettingTabCount);
-	}
-	
+	dialog_switch_tab(dialog_map_settings_wind,kMapSettingTab,0,kMapSettingTabCount);
 	return(eventNotHandledErr);
 }
 
@@ -209,8 +172,7 @@ bool dialog_map_settings_run(void)
 	ControlID				ctrl_id;
 	EventHandlerUPP			event_upp,tab_event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}},
-							tab_event_list[]={{kEventClassCommand,kEventProcessCommand},
-											  {kEventClassControl,kEventControlHit}};
+							tab_event_list[]={{kEventClassControl,kEventControlHit}};
 	
 		// open the dialog
 		
@@ -235,7 +197,6 @@ bool dialog_map_settings_run(void)
 	dialog_set_float(dialog_map_settings_wind,kMapGravityPower,0,map.settings.gravity_max_power);
 	dialog_set_float(dialog_map_settings_wind,kMapGravitySpeed,0,map.settings.gravity_max_speed);
 	dialog_set_float(dialog_map_settings_wind,kMapResistance,0,map.settings.resistance);
-	dialog_set_float(dialog_map_settings_wind,kMapPushFactor,0,map.settings.push_factor);
 	dialog_set_float(dialog_map_settings_wind,kMapTextureXFactor,0,map.settings.txt_scale_x);
 	dialog_set_float(dialog_map_settings_wind,kMapTextureYFactor,0,map.settings.txt_scale_y);
 	dialog_set_text(dialog_map_settings_wind,kMapGameTypeList,0,map.settings.network_game_list);
@@ -356,7 +317,6 @@ bool dialog_map_settings_run(void)
 		map.settings.gravity_max_power=dialog_get_float(dialog_map_settings_wind,kMapGravityPower,0);
 		map.settings.gravity_max_speed=dialog_get_float(dialog_map_settings_wind,kMapGravitySpeed,0);
 		map.settings.resistance=dialog_get_float(dialog_map_settings_wind,kMapResistance,0);
-		map.settings.push_factor=dialog_get_float(dialog_map_settings_wind,kMapPushFactor,0);
 		map.settings.txt_scale_x=dialog_get_float(dialog_map_settings_wind,kMapTextureXFactor,0);
 		map.settings.txt_scale_y=dialog_get_float(dialog_map_settings_wind,kMapTextureYFactor,0);
 		dialog_get_text(dialog_map_settings_wind,kMapGameTypeList,0,map.settings.network_game_list,256);

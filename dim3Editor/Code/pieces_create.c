@@ -173,8 +173,6 @@ void piece_create_scenery(void)
 	main_wind_draw();
 	main_wind_tool_reset();
 	main_wind_tool_fix_enable();
-    
-	dialog_scenery_setting_run(scenery);
 }
 
 /* =======================================================
@@ -215,7 +213,6 @@ void piece_create_light(void)
 	select_add(light_piece,index,-1);
 	
 	main_wind_draw();
-	dialog_map_light_settings_run(lit);
 }
 
 /* =======================================================
@@ -255,7 +252,6 @@ void piece_create_sound(void)
 	select_add(sound_piece,index,-1);
 	
 	main_wind_draw();
-	dialog_map_sound_settings_run(snd);
 }
 
 /* =======================================================
@@ -296,7 +292,6 @@ void piece_create_particle(void)
 	select_add(particle_piece,index,-1);
 	
 	main_wind_draw();
-	dialog_map_particle_settings_run(prt);
 }
 
 /* =======================================================

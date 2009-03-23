@@ -142,7 +142,7 @@ void palette_polygon_save(void)
 
 static pascal OSStatus palette_poly_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
-	if ((GetEventClass(event)==kEventClassControl) || (GetEventClass(event)==kEventClassKeyboard)) palette_polygon_save();
+	palette_polygon_save();
 	return(eventNotHandledErr);
 }
 

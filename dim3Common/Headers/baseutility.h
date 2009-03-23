@@ -44,7 +44,7 @@ and can be sold or given away.
 //
 
 #define name_str_len					32
-#define file_str_len					64
+#define file_str_len					128
 
 //
 // dim3 base types

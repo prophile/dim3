@@ -377,12 +377,6 @@ static pascal OSStatus pose_move_setting_tab_proc(EventHandlerCallRef handler,Ev
 	return(eventNotHandledErr);
 }
 
-static pascal OSStatus pose_move_setting_button_proc(EventHandlerCallRef handler,EventRef event,void *data)
-{
-	dialog_click_color(dialog_animation_settings_wind,kAnimationFlashColor,0);
-	return(noErr);
-}
-
 /* =======================================================
 
       Timer
@@ -574,13 +568,12 @@ bool dialog_animation_settings_run(int animate_idx)
 	DataBrowserCallbacks			dbcall;
 	DataBrowserItemDataUPP			pose_list_item_upp,particle_list_item_upp,ring_list_item_upp;
 	DataBrowserItemNotificationUPP	pose_list_notify_upp,particle_list_notify_upp,ring_list_notify_upp;
-	EventHandlerUPP					event_upp,tab_event_upp,button_event_upp;
+	EventHandlerUPP					event_upp,tab_event_upp;
 	EventLoopTimerRef				timer_event;
 	EventLoopTimerUPP				timer_upp;
 	EventTypeSpec					event_list[]={{kEventClassCommand,kEventProcessCommand}},
 									tab_event_list[]={{kEventClassCommand,kEventProcessCommand},
-													  {kEventClassControl,kEventControlHit}},
-									button_event_list[]={{kEventClassControl,kEventControlHit}};
+													  {kEventClassControl,kEventControlHit}};
 	
 		// backup animation for cancel
 		
@@ -609,16 +602,6 @@ bool dialog_animation_settings_run(int animate_idx)
 	
 	tab_event_upp=NewEventHandlerUPP(pose_move_setting_tab_proc);
 	InstallControlEventHandler(ctrl,tab_event_upp,GetEventTypeCount(tab_event_list),tab_event_list,dialog_animation_settings_wind,NULL);
-
-		// color button
-		// have to do this because window doesn't get commands for buttons in tabs
-		
-	ctrl_id.signature=kAnimationFlashColor;
-	ctrl_id.id=0;
-	GetControlByID(dialog_animation_settings_wind,&ctrl_id,&ctrl);
-		
-	button_event_upp=NewEventHandlerUPP(pose_move_setting_button_proc);
-	InstallControlEventHandler(ctrl,button_event_upp,GetEventTypeCount(button_event_list),button_event_list,dialog_animation_settings_wind,NULL);
 
 		// set pose list
 		

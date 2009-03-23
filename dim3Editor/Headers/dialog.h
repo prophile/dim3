@@ -50,7 +50,6 @@ extern void dialog_switch_tab(WindowRef wind,unsigned long sig,int id,int npane)
 extern void dialog_set_tab(WindowRef wind,unsigned long sig,int id,int index,int npane);
 extern void dialog_set_color(WindowRef wind,unsigned long sig,int id,d3col *col);
 extern void dialog_get_color(WindowRef wind,unsigned long sig,int id,d3col *col);
-extern void dialog_click_color(WindowRef wind,unsigned long sig,int id);
 extern void dialog_set_focus(WindowRef wind,unsigned long sig,int id);
 extern void dialog_enable(WindowRef wind,unsigned long sig,int id,bool enable);
 extern void dialog_hide(WindowRef wind,unsigned long sig,int id,bool show);
@@ -104,11 +103,6 @@ extern bool dialog_optimize_run(int *poly_threshold);
 //
 
 extern bool dialog_group_settings_run(group_type *group);
-extern bool dialog_node_settings_run(node_type *node);
-extern bool dialog_map_light_settings_run(map_light_type *light);
-extern bool dialog_map_sound_settings_run(map_sound_type *sound);
-extern bool dialog_map_particle_settings_run(map_particle_type *particle);
-extern bool dialog_scenery_setting_run(map_scenery_type *scenery);
 extern bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z);
 extern bool dialog_reposition_run(d3pnt *min,d3pnt *max);
 extern bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z);

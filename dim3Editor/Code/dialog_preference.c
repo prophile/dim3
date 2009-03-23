@@ -63,13 +63,6 @@ static pascal OSStatus preference_event_proc(EventHandlerCallRef handler,EventRe
 			
 			switch (cmd.commandID) {
 			
-				case kPrefBackgroundColor:
-				case kPrefLineColor:
-				case kPrefMeshSelColor:
-				case kPrefPolySelColor:
-					dialog_click_color(dialog_preference_wind,cmd.commandID,0);
-					return(noErr);
-				
 				case kHICommandCancel:
 					dialog_preference_cancel=TRUE;
 					QuitAppModalLoopForWindow(dialog_preference_wind);

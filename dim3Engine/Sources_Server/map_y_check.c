@@ -323,6 +323,10 @@ bool map_stand_crush_object(obj_type *obj)
 	
 	if (poly.mesh_idx==-1) return(FALSE);
 	
+		// can only be crushed by moveable meshes
+		
+	if (!map.mesh.meshes[poly.mesh_idx].flag.moveable) return(FALSE);
+	
 		// if we can, go into auto duck before crushing
 		// if already in duck, crush
 		

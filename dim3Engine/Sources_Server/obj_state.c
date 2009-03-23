@@ -187,6 +187,7 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 		check_obj=&server.objs[n];
 	
 		if ((!check_obj->player) && (!check_obj->remote.on) && (!check_obj->bot)) continue;
+		if ((check_obj->hidden) || (!check_obj->contact.object_on)) continue;
 		if (obj->uid==check_obj->uid) continue;
 		
 		if (collide_object_to_object(obj,0,0,check_obj,TRUE,FALSE)) {

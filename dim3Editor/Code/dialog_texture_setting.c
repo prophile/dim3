@@ -609,10 +609,6 @@ static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,Ev
 					InitCursor();
 					return(noErr);
 					
-				case kTextureSettingColor:
-					dialog_click_color(dialog_texture_wind,kTextureSettingColor,0);
-					return(noErr);
-					
 				case kHICommandOK:
 					QuitAppModalLoopForWindow(dialog_texture_wind);
 					return(noErr);

@@ -121,41 +121,16 @@ void palette_liquid_save(void)
 
 static pascal OSStatus palette_liquid_tab_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
-	int				event_class,event_kind;
-	HICommand		cmd;
 	ControlRef		ctrl;
 	
-	event_class=GetEventClass(event);
-	event_kind=GetEventKind(event);
+		// save the changes
+		
+	palette_liquid_save();
 	
-		// button inside tab
+		// tab change?
 		
-	if ((event_class==kEventClassCommand) && (event_kind==kEventProcessCommand)) {
-		GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
-			
-		switch (cmd.commandID) {
-			
-			case kLiquidColor:
-				dialog_click_color(palette_liquid_wind,kLiquidColor,0);
-				return(noErr);
-		}
-		
-		return(eventNotHandledErr);
-	}
-	
-		// control changes
-		
-	if ((event_class==kEventClassControl) && (event_kind==kEventControlHit)) {
-	
-			// save the changes
-			
-		palette_liquid_save();
-		
-			// tab change?
-			
-		GetEventParameter(event,kEventParamDirectObject,typeControlRef,NULL,sizeof(ControlRef),NULL,&ctrl);
-		if (ctrl==palette_liquid_tab) dialog_switch_tab(palette_liquid_wind,kLiquidSettingTab,0,kLiquidSettingTabCount);
-	}
+	GetEventParameter(event,kEventParamDirectObject,typeControlRef,NULL,sizeof(ControlRef),NULL,&ctrl);
+	if (ctrl==palette_liquid_tab) dialog_switch_tab(palette_liquid_wind,kLiquidSettingTab,0,kLiquidSettingTabCount);
 	
 	return(eventNotHandledErr);
 }
@@ -170,8 +145,8 @@ void palette_liquid_open(int x,int y)
 {
 	ControlID				ctrl_id;
 	EventHandlerUPP			tab_event_upp;
-	EventTypeSpec			tab_event_list[]={{kEventClassCommand,kEventProcessCommand},
-											  {kEventClassControl,kEventControlHit}};
+	EventTypeSpec			tab_event_list[]={{kEventClassControl,kEventControlHit},
+											  {kEventClassKeyboard,kEventRawKeyUp}};
 
 		// open the window
 		

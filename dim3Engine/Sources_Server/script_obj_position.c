@@ -200,13 +200,13 @@ JSBool js_obj_position_place_random_spot_no_telefrag_func(JSContext *cx,JSObject
 	
 	memmove(&old_pnt,&obj->pnt,sizeof(d3pnt));
 	memmove(&obj->pnt,&spot->pnt,sizeof(d3pnt));
-	
+
 	if (object_telefrag_players(obj,TRUE)) {
 		memmove(&obj->pnt,&old_pnt,sizeof(d3pnt));
 		*rval=JSVAL_FALSE;
 		return(JS_TRUE);
 	}
-	
+
 		// move object
 		
 	object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
@@ -232,13 +232,13 @@ JSBool js_obj_position_place_network_spot_no_telefrag_func(JSContext *cx,JSObjec
 	
 	memmove(&old_pnt,&obj->pnt,sizeof(d3pnt));
 	memmove(&obj->pnt,&spot->pnt,sizeof(d3pnt));
-	
+
 	if (object_telefrag_players(obj,TRUE)) {
 		memmove(&obj->pnt,&old_pnt,sizeof(d3pnt));
 		*rval=JSVAL_FALSE;
 		return(JS_TRUE);
 	}
-	
+
 		// move object
 	
 	object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);

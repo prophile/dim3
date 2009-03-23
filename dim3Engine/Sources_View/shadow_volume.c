@@ -374,6 +374,8 @@ bool shadow_texture_create(model_draw *draw)
 	}
 
 		// draw model
+		
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
 	memmove(&shd_draw,draw,sizeof(model_draw));
 	
