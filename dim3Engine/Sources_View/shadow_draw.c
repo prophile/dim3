@@ -181,7 +181,7 @@ int shadow_render_stencil_mesh(int mesh_idx,int y,int ty,int by,int cnt,poly_poi
 	return(cnt);
 }
 
-int shadow_render_stencil_map(view_render_type *view_render,model_draw_shadow *shadow,poly_pointer_type *poly_list)
+int shadow_render_stencil_map(model_draw_shadow *shadow,poly_pointer_type *poly_list)
 {
 	int				n,cnt,ty,by,y,high;
 		
@@ -216,8 +216,8 @@ int shadow_render_stencil_map(view_render_type *view_render,model_draw_shadow *s
 
 		// run through show meshes
 
-	for (n=0;n!=view_render->mesh_draw.count;n++) {
-		cnt=shadow_render_stencil_mesh(view_render->mesh_draw.list[n],y,ty,by,cnt,poly_list);
+	for (n=0;n!=view.render->mesh_draw.count;n++) {
+		cnt=shadow_render_stencil_mesh(view.render->mesh_draw.list[n],y,ty,by,cnt,poly_list);
 	}
 
 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
@@ -438,7 +438,7 @@ void shadow_render_test(void)
       
 ======================================================= */
 
-void shadow_render(view_render_type *view_render,model_draw *draw)
+void shadow_render(model_draw *draw)
 {
 	int					poly_cnt;
 	float				gx,gy,slice_percent;
@@ -447,7 +447,7 @@ void shadow_render(view_render_type *view_render,model_draw *draw)
 		// stencil the segments that collide
 		// with shadow volume
 		
-	poly_cnt=shadow_render_stencil_map(view_render,&draw->shadow,poly_list);
+	poly_cnt=shadow_render_stencil_map(&draw->shadow,poly_list);
 	if (poly_cnt==0) return;
 	
 		// get the texture offsets

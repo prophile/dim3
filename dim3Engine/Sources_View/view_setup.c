@@ -49,7 +49,7 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
-extern view_render_type		view_render;		// supergumba -- temporary
+view_render_type			view_global_render;		// supergumba -- temporary
 
 extern bool fog_solid_on(void);
 extern bool model_inview(model_draw *draw);
@@ -127,7 +127,7 @@ bool view_area_check_mesh(map_mesh_type *mesh,char *area_flags)
 	return(FALSE);
 }
 
-void view_create_mesh_draw_list(view_render_type *view_render)
+void view_create_mesh_draw_list(void)
 {
 	int					n,t,sz,d,start_mesh_idx,idx,
 						never_obscure_dist,obscure_dist;
@@ -158,7 +158,7 @@ void view_create_mesh_draw_list(view_render_type *view_render)
 
 		// check all visibile meshes from the start mesh
 	
-	view_render->mesh_draw.count=0;
+	view.render->mesh_draw.count=0;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
 
@@ -194,8 +194,8 @@ void view_create_mesh_draw_list(view_render_type *view_render)
 
 		idx=-1;
 	
-		for (t=0;t!=view_render->mesh_draw.count;t++) {
-			if (view_render->mesh_draw.dist[t]>d) {
+		for (t=0;t!=view.render->mesh_draw.count;t++) {
+			if (view.render->mesh_draw.dist[t]>d) {
 				idx=t;
 				break;
 			}
@@ -204,31 +204,31 @@ void view_create_mesh_draw_list(view_render_type *view_render)
 			// insert at end of list
 			
 		if (idx==-1) {
-			view_render->mesh_draw.dist[view_render->mesh_draw.count]=d;
-			view_render->mesh_draw.list[view_render->mesh_draw.count]=n;
-			view_render->mesh_draw.count++;
+			view.render->mesh_draw.dist[view.render->mesh_draw.count]=d;
+			view.render->mesh_draw.list[view.render->mesh_draw.count]=n;
+			view.render->mesh_draw.count++;
 			continue;
 		}
 		
 			// insert in list
 			
-		sz=sizeof(int)*(view_render->mesh_draw.count-idx);
-		memmove(&view_render->mesh_draw.dist[idx+1],&view_render->mesh_draw.dist[idx],sz);
-		memmove(&view_render->mesh_draw.list[idx+1],&view_render->mesh_draw.list[idx],sz);
+		sz=sizeof(int)*(view.render->mesh_draw.count-idx);
+		memmove(&view.render->mesh_draw.dist[idx+1],&view.render->mesh_draw.dist[idx],sz);
+		memmove(&view.render->mesh_draw.list[idx+1],&view.render->mesh_draw.list[idx],sz);
 		
-		view_render->mesh_draw.dist[idx]=d;
-		view_render->mesh_draw.list[idx]=n;
+		view.render->mesh_draw.dist[idx]=d;
+		view.render->mesh_draw.list[idx]=n;
 		
-		view_render->mesh_draw.count++;
+		view.render->mesh_draw.count++;
 	}
 }
 
-bool view_mesh_in_draw_list(view_render_type *view_render,int mesh_idx)
+bool view_mesh_in_draw_list(int mesh_idx)
 {
 	int			n;
 
-	for (n=0;n!=view_render->mesh_draw.count;n++) {
-		if (view_render->mesh_draw.list[n]==mesh_idx) return(TRUE);
+	for (n=0;n!=view.render->mesh_draw.count;n++) {
+		if (view.render->mesh_draw.list[n]==mesh_idx) return(TRUE);
 	}
 
 	return(FALSE);
@@ -253,7 +253,7 @@ void view_clear_draw_in_view(model_draw *draw)
 	if (mdl!=NULL) model_clear_draw_setup(mdl,&draw->setup);
 }
 
-void view_setup_model_in_view(view_render_type *view_render,model_draw *draw,bool in_air,bool is_camera,int mesh_idx)
+void view_setup_model_in_view(model_draw *draw,bool in_air,bool is_camera,int mesh_idx)
 {
 	int					x,z,y,obscure_dist;
 
@@ -262,7 +262,7 @@ void view_setup_model_in_view(view_render_type *view_render,model_draw *draw,boo
 		// is model in a mesh that's in the mesh draw list?
 
 	if ((!is_camera) && (mesh_idx!=-1)) {
-		if (!view_mesh_in_draw_list(view_render,mesh_idx)) return;
+		if (!view_mesh_in_draw_list(mesh_idx)) return;
 	}
 	
 		// is model within obscure distance
@@ -314,7 +314,7 @@ void view_setup_model_animation(model_draw *draw)
       
 ======================================================= */
 
-void view_setup_objects(int tick,view_render_type *view_render)
+void view_setup_objects(int tick)
 {
 	int					i;
 	bool				is_air,is_camera;
@@ -343,7 +343,7 @@ void view_setup_objects(int tick,view_render_type *view_render)
 	
 			// find model, shadows, and light in view
 		
-		view_setup_model_in_view(view_render,draw,is_air,is_camera,obj->mesh.cur_mesh_idx);
+		view_setup_model_in_view(draw,is_air,is_camera,obj->mesh.cur_mesh_idx);
 	
 			// setup model animations for models in view
 		
@@ -358,7 +358,7 @@ void view_setup_objects(int tick,view_render_type *view_render)
 				draw=&weap->draw;
 				view_clear_draw_in_view(draw);
 				model_draw_setup_weapon(tick,obj,weap,FALSE,FALSE);
-				view_setup_model_in_view(view_render,draw,FALSE,FALSE,obj->mesh.cur_mesh_idx);
+				view_setup_model_in_view(draw,FALSE,FALSE,obj->mesh.cur_mesh_idx);
 			}
 		}
 	}
@@ -370,7 +370,7 @@ void view_setup_objects(int tick,view_render_type *view_render)
       
 ======================================================= */
 
-void view_setup_projectiles(int tick,view_render_type *view_render)
+void view_setup_projectiles(int tick)
 {
 	int					i,mesh_idx;
 	proj_type			*proj;
@@ -391,7 +391,7 @@ void view_setup_projectiles(int tick,view_render_type *view_render)
 			// find model and shadows in view
 			
 		mesh_idx=map_mesh_find(&map,&proj->draw.pnt);
-		view_setup_model_in_view(view_render,&proj->draw,TRUE,FALSE,mesh_idx);
+		view_setup_model_in_view(&proj->draw,TRUE,FALSE,mesh_idx);
 		
 			// setup model animations for models in view
 			
@@ -407,7 +407,7 @@ void view_setup_projectiles(int tick,view_render_type *view_render)
       
 ======================================================= */
 
-void view_add_model_halo(view_render_type *view_render,model_draw *draw,int obj_uid)
+void view_add_model_halo(model_draw *draw,int obj_uid)
 {
 	int					n,x,z,y;
 	model_type			*mdl;
@@ -434,14 +434,14 @@ void view_add_model_halo(view_render_type *view_render,model_draw *draw,int obj_
 				if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&x,&y,&z);
 			}
 			
-			halo_draw_add(view_render,x,z,y,obj_uid,halo);
+			halo_draw_add(x,z,y,obj_uid,halo);
 		}
 
 		halo++;
 	}
 }
 
-void view_add_halos(view_render_type *view_render)
+void view_add_halos(void)
 {
 	int					n;
 	obj_type			*obj;
@@ -452,7 +452,7 @@ void view_add_halos(view_render_type *view_render)
 	obj=server.objs;
 	
 	for (n=0;n!=server.count.obj;n++) {
-		view_add_model_halo(view_render,&obj->draw,obj->uid);
+		view_add_model_halo(&obj->draw,obj->uid);
 		obj++;
 	}
 	
@@ -461,7 +461,7 @@ void view_add_halos(view_render_type *view_render)
 	proj=server.projs;
 	
 	for (n=0;n!=server.count.proj;n++) {
-		view_add_model_halo(view_render,&proj->draw,-1);
+		view_add_model_halo(&proj->draw,-1);
 		proj++;
 	}
 }
@@ -603,6 +603,10 @@ void view_draw_setup(int tick)
 {
 	obj_type		*obj,*camera_obj;
 
+		// supergumba -- global view render
+
+	view.render=&view_global_render;
+
 		// get player object
 		
 	obj=object_find_uid(server.player_obj_uid);
@@ -651,7 +655,7 @@ void view_draw_setup(int tick)
 
 		// setup draw meshes
 
-	view_create_mesh_draw_list(&view_render);
+	view_create_mesh_draw_list();
 
 		// do texture animations
 		
@@ -663,12 +667,12 @@ void view_draw_setup(int tick)
 	
 		// setup objects, projectiles, and scenery in path
 		
-	view_setup_objects(tick,&view_render);
-	view_setup_projectiles(tick,&view_render);
+	view_setup_objects(tick);
+	view_setup_projectiles(tick);
 
 		// add scene halos
 		
-	halo_draw_clear(&view_render);
-	view_add_halos(&view_render);
+	halo_draw_clear();
+	view_add_halos();
 }
 

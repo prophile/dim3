@@ -48,8 +48,6 @@ extern server_type			server;
 extern setup_type			setup;
 extern hud_type				hud;
 
-view_render_type			view_render;		// supergumba -- temporary
-
 float						shake_ang_x[16]={-1,0,1,2,1,0,-1,-2,-4,-2,0,4,8,12,8,4};
 float						team_color_tint[net_team_count][3]=net_team_color_tint_def;
 
@@ -58,9 +56,9 @@ extern void draw_background(void);
 extern void draw_sky(int tick);
 extern bool model_inview(model_draw *draw);
 extern void model_calc_pose_bones(model_draw *draw);
-extern void render_map_setup(view_render_type *view_render);
-extern void render_map_opaque(view_render_type *view_render);
-extern void render_map_transparent(view_render_type *view_render);
+extern void render_map_setup(void);
+extern void render_map_opaque(void);
+extern void render_map_transparent(void);
 extern void rain_draw(int tick);
 extern bool fog_solid_on(void);
 extern void fog_draw_textured(int tick);
@@ -76,8 +74,8 @@ extern void view_draw_effect_tint(int tick,obj_type *obj);
 extern void fade_screen_draw(int tick);
 extern void fade_object_draw(int tick,obj_type *obj);
 extern void render_map_liquid(int tick);
-extern void decal_render(view_render_type *view_render);
-extern bool view_compile_mesh_gl_lists(int tick,view_render_type *view_render);
+extern void decal_render(void);
+extern bool view_compile_mesh_gl_lists(int tick);
 
 extern bool			dim3_debug;
 
@@ -248,14 +246,14 @@ void view_draw_object_path(obj_type *obj)
       
 ======================================================= */
 
-void view_draw_models_setup(view_render_type *view_render)
+void view_draw_models_setup(void)
 {
 	int							n,k,t,dist,sz;
 	obj_type					*obj;
 	proj_type					*proj;
 	view_render_sort_model_type	*sort;
 
-	sort=&view_render->sort_model;
+	sort=&view.render->sort_model;
 
 	sort->count=0;
 	
@@ -339,7 +337,7 @@ void view_draw_models_setup(view_render_type *view_render)
 	}
 }
 
-void view_draw_models(int tick,view_render_type *view_render)
+void view_draw_models(int tick)
 {
 	int							n;
 	d3col						col;
@@ -356,7 +354,7 @@ void view_draw_models(int tick,view_render_type *view_render)
 
 		// draw models
 		
-	sort=&view_render->sort_model;
+	sort=&view.render->sort_model;
 	
 	for (n=0;n!=sort->count;n++) {
 
@@ -390,14 +388,14 @@ void view_draw_models(int tick,view_render_type *view_render)
       
 ======================================================= */
 
-void view_create_models_shadow(view_render_type *view_render)
+void view_create_models_shadow(void)
 {
 	int							n;
 	obj_type					*obj;
 	proj_type					*proj;
 	view_render_sort_model_type	*sort;
 
-	sort=&view_render->sort_model;
+	sort=&view.render->sort_model;
 
 	if (sort->count==0) return;
 
@@ -426,7 +424,7 @@ void view_create_models_shadow(view_render_type *view_render)
 	}
 }
 
-void view_draw_models_shadow(view_render_type *view_render)
+void view_draw_models_shadow(void)
 {
 	int							n;
 	obj_type					*obj;
@@ -435,7 +433,7 @@ void view_draw_models_shadow(view_render_type *view_render)
 	
 	shadow_render_init();
 
-	sort=&view_render->sort_model;
+	sort=&view.render->sort_model;
 	
 	for (n=0;n!=sort->count;n++) {
 
@@ -443,12 +441,12 @@ void view_draw_models_shadow(view_render_type *view_render)
 
 			case view_sort_object:
 				obj=&server.objs[sort->items[n].idx];
-				if (obj->draw.shadow.in_view) shadow_render(view_render,&obj->draw);
+				if (obj->draw.shadow.in_view) shadow_render(&obj->draw);
 				break;
 
 			case view_sort_projectile:
 				proj=&server.projs[sort->items[n].idx];
-				if (proj->draw.shadow.in_view) shadow_render(view_render,&proj->draw);
+				if (proj->draw.shadow.in_view) shadow_render(&proj->draw);
 				break;
 
 		}
@@ -477,12 +475,12 @@ void view_draw(int tick)
 
 		// setup the models
 
-	view_draw_models_setup(&view_render);
+	view_draw_models_setup();
 	
 		// render the shadows onto the shadow back buffer
 		
 	if (shadow_texture_init()) {
-		view_create_models_shadow(&view_render);
+		view_create_models_shadow();
 		shadow_texture_finish();
 	}
 	
@@ -503,24 +501,24 @@ void view_draw(int tick)
 
 		// compile meshes for drawing
 	
-	if (!view_compile_mesh_gl_lists(tick,&view_render)) return;
+	if (!view_compile_mesh_gl_lists(tick)) return;
 
 		// setup some map polygon drawing flags
 
-	render_map_setup(&view_render);
+	render_map_setup();
 
 		// draw opaque map polygons
 
-	render_map_opaque(&view_render);
+	render_map_opaque();
 
 		// draw model shadows
 
-	view_draw_models(tick,&view_render);
-	view_draw_models_shadow(&view_render);
+	view_draw_models(tick);
+	view_draw_models_shadow();
 	
 		// draw tranparent map polygons
 
-	render_map_transparent(&view_render);
+	render_map_transparent();
 
 		// draw map liquids
 
@@ -528,11 +526,11 @@ void view_draw(int tick)
 
 		// draw decals
 
-	decal_render(&view_render);
+	decal_render();
 
 		// effects
 
-	effect_draw(tick,&view_render);
+	effect_draw(tick);
 	
 		// draw rain
 		
@@ -547,7 +545,7 @@ void view_draw(int tick)
 		// setup halos, crosshairs, zoom masks
 		
 	remote_draw_names_setup();
-	halo_draw_setup(&view_render);
+	halo_draw_setup();
 	
 	if (weap!=NULL) {
 		crosshair_setup(tick,obj,weap);
@@ -561,7 +559,7 @@ void view_draw(int tick)
 		// draw the remote names, halos, crosshairs, and zoom masks
 	
 	remote_draw_names_render();
-	halo_draw_render(&view_render);
+	halo_draw_render();
 	
 	if (weap!=NULL) {
 		crosshair_draw(obj,weap);

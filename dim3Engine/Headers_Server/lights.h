@@ -30,13 +30,13 @@ extern void halo_load_bitmaps(void);
 extern void halo_free_bitmaps(void);
 extern int halo_find(char *name);
 
-extern void halo_draw_clear(view_render_type *view_render);
-extern void halo_draw_add(view_render_type *view_render,int x,int z,int y,int obj_uid,model_draw_halo *mdl_halo);
-extern void halo_draw_setup(view_render_type *view_render);
-extern void halo_draw_render(view_render_type *view_render);
+extern void halo_draw_clear(void);
+extern void halo_draw_add(int x,int z,int y,int obj_uid,model_draw_halo *mdl_halo);
+extern void halo_draw_setup(void);
+extern void halo_draw_render(void);
 
 extern void shadow_render_init(void);
-extern void shadow_render(view_render_type *view_render,model_draw *draw);
+extern void shadow_render(model_draw *draw);
 
 extern bool shadow_get_volume_ground(model_draw *draw);
 extern bool shadow_get_volume_air(model_draw *draw);

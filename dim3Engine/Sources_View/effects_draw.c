@@ -41,7 +41,7 @@ extern view_type		view;
 
 extern bool effect_inview(effect_type *effect,int count);
 extern int distance_to_view_center(int x,int y,int z);
-extern bool view_mesh_in_draw_list(view_render_type *view_render,int mesh_idx);
+extern bool view_mesh_in_draw_list(int mesh_idx);
 
 /* =======================================================
 
@@ -313,14 +313,14 @@ void effect_image_animate_get_uv(int tick,image_animation_type *animate,float *g
       
 ======================================================= */
 
-void effect_draw(int tick,view_render_type *view_render)
+void effect_draw(int tick)
 {
 	int						n,k,t,dist,sz,count;
 	effect_type				*effect;
 	
 		// sort effects
 		
-	view_render->sort_effect.count=0;
+	view.render->sort_effect.count=0;
 	
 	for (n=0;n!=server.count.effect;n++) {
 		effect=&server.effects[n];
@@ -328,7 +328,7 @@ void effect_draw(int tick,view_render_type *view_render)
 			// effect inside a mesh that's hidden?
 
 		if (effect->mesh_idx!=-1) {
-			if (!view_mesh_in_draw_list(view_render,effect->mesh_idx)) continue;
+			if (!view_mesh_in_draw_list(effect->mesh_idx)) continue;
 		}
 
 			// effect in view
@@ -342,10 +342,10 @@ void effect_draw(int tick,view_render_type *view_render)
 		
 			// sort into list
 		
-		t=view_render->sort_effect.count;
+		t=view.render->sort_effect.count;
 		
-		for (k=0;k!=view_render->sort_effect.count;k++) {
-			if (dist>view_render->sort_effect.items[k].dist) {
+		for (k=0;k!=view.render->sort_effect.count;k++) {
+			if (dist>view.render->sort_effect.items[k].dist) {
 				t=k;
 				break;
 			}
@@ -353,21 +353,21 @@ void effect_draw(int tick,view_render_type *view_render)
 		
 			// add to list
 
-		if (t>=view_render->sort_effect.count) {
-			t=view_render->sort_effect.count;
+		if (t>=view.render->sort_effect.count) {
+			t=view.render->sort_effect.count;
 		}
 		else {
-			sz=(view_render->sort_effect.count-t)*sizeof(view_render_sort_effect_item_type);
-			memmove(&view_render->sort_effect.items[t+1],&view_render->sort_effect.items[t],sz);
+			sz=(view.render->sort_effect.count-t)*sizeof(view_render_sort_effect_item_type);
+			memmove(&view.render->sort_effect.items[t+1],&view.render->sort_effect.items[t],sz);
 		}
 		
-		view_render->sort_effect.items[t].idx=n;
-		view_render->sort_effect.items[t].dist=dist;
+		view.render->sort_effect.items[t].idx=n;
+		view.render->sort_effect.items[t].dist=dist;
 		
-		view_render->sort_effect.count++;
+		view.render->sort_effect.count++;
 	}
 
-	if (view_render->sort_effect.count==0) return;
+	if (view.render->sort_effect.count==0) return;
 
 		// setup view
 
@@ -378,8 +378,8 @@ void effect_draw(int tick,view_render_type *view_render)
 		
 		// draw effects
 		
-	for (n=0;n!=view_render->sort_effect.count;n++) {
-		effect=&server.effects[view_render->sort_effect.items[n].idx];
+	for (n=0;n!=view.render->sort_effect.count;n++) {
+		effect=&server.effects[view.render->sort_effect.items[n].idx];
 		
 		count=tick-effect->start_tick;
 

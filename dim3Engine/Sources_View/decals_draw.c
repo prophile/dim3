@@ -40,7 +40,7 @@ extern view_type		view;
 extern setup_type		setup;
 
 extern int game_time_get(void);
-extern bool view_mesh_in_draw_list(view_render_type *view_render,int mesh_idx);
+extern bool view_mesh_in_draw_list(int mesh_idx);
 
 /* =======================================================
 
@@ -124,7 +124,7 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
     glEnd();
 }
 
-void decal_render(view_render_type *view_render)
+void decal_render(void)
 {
 	int					n,stencil_idx;
 	decal_type			*decal;
@@ -140,7 +140,7 @@ void decal_render(view_render_type *view_render)
 
 	for (n=0;n!=server.count.decal;n++) {
 	
-		decal->in_view=view_mesh_in_draw_list(view_render,decal->mesh_idx);
+		decal->in_view=view_mesh_in_draw_list(decal->mesh_idx);
 		
 		if (decal->in_view) {
 			mesh_poly=&map.mesh.meshes[decal->mesh_idx].polys[decal->poly_idx];

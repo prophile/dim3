@@ -251,6 +251,7 @@ typedef struct		{
 //
  
 typedef struct		{
+						view_render_type			*render;
 						view_count_type				count;
 						view_time_type				time;
 						view_fps_type				fps;

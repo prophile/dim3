@@ -37,14 +37,21 @@ and can be sold or given away.
 
 #ifndef D3_OS_WINDOWS
 
-void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,char *ext_name,int dir_type)
+void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,char *path_add,char *ext_name,int dir_type)
 {
 	int						n,sz,idx;
-	char					*c,file_name[file_str_len];
+	char					*c,path2[1024],path_add2[1024],file_name[file_str_len];
 	DIR						*dir;
 	struct dirent			*de;
 	
-	dir=opendir(path);
+	if (path_add!=NULL) {
+		sprintf(path2,"%s\\%s",path,path_add);
+	}
+	else {
+		strcpy(path2,path);
+	}
+
+	dir=opendir(path2);
 	if (dir==NULL) return;
 	
 	while (TRUE) {
@@ -61,7 +68,22 @@ void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,c
 			if (c!=NULL) continue;
 		}
 		else {
-			if (c==NULL) continue;		// looking for file
+
+				// go deeper into directories
+
+			if (c==NULL) {
+				if (path_add!=NULL) {
+					sprintf(path_add2,"%s\\%s",path_add,de->d_name);
+				}
+				else {
+					strcpy(path_add2,de->d_name);
+				}
+				file_paths_read_directory_single(fpd,path,path_add2,ext_name,dir_type);
+				continue;
+			}
+			
+				// looking for file
+
 			if (strcasecmp((c+1),ext_name)!=0) continue;
 		}
 		
@@ -92,7 +114,12 @@ void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,c
 			// new name
 			
 		fpd->files[fpd->nfile].dir_type=dir_type;
-		strcpy(fpd->files[fpd->nfile].file_name,file_name);
+		if (path_add!=NULL) {
+			sprintf(fpd->files[fpd->nfile].file_name,"%s\\%s",path_add,file_name);
+		}
+		else {
+			strcpy(fpd->files[fpd->nfile].file_name,file_name);
+		}
 		fpd->nfile++;
 		
 			// move on to next file
@@ -113,19 +140,19 @@ void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,c
 
 #ifdef D3_OS_WINDOWS
 
-void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,char *ext_name,int dir_type)
+void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,char *path_add,char *ext_name,int dir_type)
 {
 	int					n,sz,idx;
-	char				*c,path2[1024],file_name[file_str_len];
+	char				*c,path2[1024],path_add2[1024],file_name[file_str_len];
 	bool				find_first;
 	WIN32_FIND_DATA		find_data;
 	HANDLE				find_hand;
 
-	if (ext_name==NULL) {
-		sprintf(path2,"%s\\*.*",path);
+	if (path_add!=NULL) {
+		sprintf(path2,"%s\\%s\\*",path,path_add);
 	}
 	else {
-		sprintf(path2,"%s\\*.%s",path,ext_name);
+		sprintf(path2,"%s\\*",path);
 	}
 
 	find_hand=FindFirstFile(path2,&find_data);
@@ -139,10 +166,31 @@ void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,c
 			if (!FindNextFile(find_hand,&find_data)) break;
 		}
 		find_first=FALSE;
-		
-			// no directories
 
-		if ((find_data.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY)!=0) continue;
+			// skip dot paths
+
+		if (find_data.cFileName[0]=='.') continue;
+		
+			// go deeper into directories
+
+		if ((find_data.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY)!=0) {
+			if (path_add!=NULL) {
+				sprintf(path_add2,"%s\\%s",path_add,find_data.cFileName);
+			}
+			else {
+				strcpy(path_add2,find_data.cFileName);
+			}
+
+			file_paths_read_directory_single(fpd,path,path_add2,ext_name,dir_type);
+			continue;
+		}
+
+			// check extension
+
+		c=strrchr(find_data.cFileName,'.');
+		if ((c==NULL) || (ext_name==NULL)) continue;
+
+		if (strcasecmp((c+1),ext_name)!=0) continue;
 
 			// is name a override?
 			// if so, delete original
@@ -171,7 +219,12 @@ void file_paths_read_directory_single(file_path_directory_type *fpd,char *path,c
 			// new name
 			
 		fpd->files[fpd->nfile].dir_type=dir_type;
-		strcpy(fpd->files[fpd->nfile].file_name,file_name);
+		if (path_add!=NULL) {
+			sprintf(fpd->files[fpd->nfile].file_name,"%s\\%s",path_add,file_name);
+		}
+		else {
+			strcpy(fpd->files[fpd->nfile].file_name,file_name);
+		}
 		fpd->nfile++;
 		
 			// move on to next file
@@ -206,7 +259,7 @@ file_path_directory_type* file_paths_read_directory(file_path_setup_type *file_p
 
 	if (document_dir_only) {
 		file_paths_documents(file_path_setup,path,sub_path,NULL,NULL);
-		file_paths_read_directory_single(fpd,path,ext_name,file_paths_dir_type_documents);
+		file_paths_read_directory_single(fpd,path,NULL,ext_name,file_paths_dir_type_documents);
 	}
 	
 		// run through the dim3 directories
@@ -221,7 +274,7 @@ file_path_directory_type* file_paths_read_directory(file_path_setup_type *file_p
 				strcat(path,sub_path);
 			}
 			
-			file_paths_read_directory_single(fpd,path,ext_name,file_paths_dir_type_app);
+			file_paths_read_directory_single(fpd,path,NULL,ext_name,file_paths_dir_type_app);
 		}
 		
 		if (file_path_setup->path_data[0]!=0x0) {
@@ -232,7 +285,7 @@ file_path_directory_type* file_paths_read_directory(file_path_setup_type *file_p
 				strcat(path,sub_path);
 			}
 			
-			file_paths_read_directory_single(fpd,path,ext_name,file_paths_dir_type_data);
+			file_paths_read_directory_single(fpd,path,NULL,ext_name,file_paths_dir_type_data);
 		}
 		
 		if (file_path_setup->path_data_2[0]!=0x0) {
@@ -243,7 +296,7 @@ file_path_directory_type* file_paths_read_directory(file_path_setup_type *file_p
 				strcat(path,sub_path);
 			}
 			
-			file_paths_read_directory_single(fpd,path,ext_name,file_paths_dir_type_data2);
+			file_paths_read_directory_single(fpd,path,NULL,ext_name,file_paths_dir_type_data2);
 		}
 
 	}

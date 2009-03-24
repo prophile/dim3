@@ -55,7 +55,7 @@ extern void view_compile_gl_list_dettach(void);
       
 ======================================================= */
 
-void render_opaque_mesh_simple(view_render_type *view_render)
+void render_opaque_mesh_simple(void)
 {
 	int							n,k;
 	bool						enable;
@@ -81,9 +81,9 @@ void render_opaque_mesh_simple(view_render_type *view_render)
 	
 		// run through the meshes
 
-	for (n=0;n!=view_render->mesh_draw.count;n++) {
+	for (n=0;n!=view.render->mesh_draw.count;n++) {
 
-		mesh=&map.mesh.meshes[view_render->mesh_draw.list[n]];
+		mesh=&map.mesh.meshes[view.render->mesh_draw.list[n]];
 
 			// skip meshes with no opaques and all non-shaders
 			// unless debug is on
@@ -133,7 +133,7 @@ void render_opaque_mesh_simple(view_render_type *view_render)
 	gl_texture_opaque_end();
 }
 
-void render_opaque_mesh_shader(view_render_type *view_render)
+void render_opaque_mesh_shader(void)
 {
 	int							n,k;
 	map_mesh_type				*mesh;
@@ -156,9 +156,9 @@ void render_opaque_mesh_shader(view_render_type *view_render)
 	
 		// run through the meshes
 
-	for (n=0;n!=view_render->mesh_draw.count;n++) {
+	for (n=0;n!=view.render->mesh_draw.count;n++) {
 
-		mesh=&map.mesh.meshes[view_render->mesh_draw.list[n]];
+		mesh=&map.mesh.meshes[view.render->mesh_draw.list[n]];
 
 			// skip meshes with no shaders or opaques
 
@@ -205,7 +205,7 @@ void render_opaque_mesh_shader(view_render_type *view_render)
 	gl_shader_draw_end();
 }
 
-void render_opaque_mesh_glow(view_render_type *view_render)
+void render_opaque_mesh_glow(void)
 {
 	int					n,k;
 	map_mesh_type		*mesh;
@@ -227,9 +227,9 @@ void render_opaque_mesh_glow(view_render_type *view_render)
 	
 		// run through the meshes
 
-	for (n=0;n!=view_render->mesh_draw.count;n++) {
+	for (n=0;n!=view.render->mesh_draw.count;n++) {
 
-		mesh=&map.mesh.meshes[view_render->mesh_draw.list[n]];
+		mesh=&map.mesh.meshes[view.render->mesh_draw.list[n]];
 
 			// skip meshes with no glows or opaques
 
@@ -274,7 +274,7 @@ void render_opaque_mesh_glow(view_render_type *view_render)
       
 ======================================================= */
 
-void render_map_opaque(view_render_type *view_render)
+void render_map_opaque(void)
 {
 		// setup view
 
@@ -289,9 +289,9 @@ void render_map_opaque(view_render_type *view_render)
 		
 		// render polygons
 
-	render_opaque_mesh_simple(view_render);
-	if (!dim3_debug) render_opaque_mesh_shader(view_render);
-	render_opaque_mesh_glow(view_render);
+	render_opaque_mesh_simple();
+	if (!dim3_debug) render_opaque_mesh_shader();
+	render_opaque_mesh_glow();
 
 		// dettach any attached lists
 

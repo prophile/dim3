@@ -46,20 +46,20 @@ extern setup_type			setup;
       
 ======================================================= */
 
-void halo_draw_clear(view_render_type *view_render)
+void halo_draw_clear(void)
 {
-	view_render->halo_draw.count=0;
+	view.render->halo_draw.count=0;
 }
 
-void halo_draw_add(view_render_type *view_render,int x,int z,int y,int obj_uid,model_draw_halo *mdl_halo)
+void halo_draw_add(int x,int z,int y,int obj_uid,model_draw_halo *mdl_halo)
 {
 	halo_draw_type		*halo_draw;
 	
 	if (mdl_halo->idx==-1) return;
-	if (view_render->halo_draw.count>=max_light_spot) return;
+	if (view.render->halo_draw.count>=max_light_spot) return;
 	
-	halo_draw=&view_render->halo_draw.halos[view_render->halo_draw.count];
-	view_render->halo_draw.count++;
+	halo_draw=&view.render->halo_draw.halos[view.render->halo_draw.count];
+	view.render->halo_draw.count++;
 	
 	halo_draw->idx=mdl_halo->idx;
 
@@ -88,9 +88,9 @@ void halo_draw_add(view_render_type *view_render,int x,int z,int y,int obj_uid,m
       
 ======================================================= */
 
-void halo_draw_setup(view_render_type *view_render)
+void halo_draw_setup(void)
 {
-	int						i,x,y,z,pixel_sz,dist,d;
+	int						n,x,y,z,pixel_sz,dist,d;
 	float					alpha;
 	bool					hit;
 	d3pnt					spt,ept,hpt;
@@ -98,13 +98,13 @@ void halo_draw_setup(view_render_type *view_render)
 	halo_draw_type			*halo_draw;
 	ray_trace_contact_type	contact;
 	
-	view_render->halo_draw.in_view_count=0;
+	view.render->halo_draw.in_view_count=0;
 	
 		// clear all halo spots
 	
-	halo_draw=view_render->halo_draw.halos;
+	halo_draw=view.render->halo_draw.halos;
 	
-	for (i=0;i<view_render->halo_draw.count;i++) {
+	for (n=0;n!=view.render->halo_draw.count;n++) {
 		halo_draw->in_view=TRUE;
 		halo_draw++;
 	}
@@ -117,8 +117,8 @@ void halo_draw_setup(view_render_type *view_render)
 	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
 	gl_setup_project();
 
-	for (i=0;i<view_render->halo_draw.count;i++) {
-		halo_draw=&view_render->halo_draw.halos[i];
+	for (n=0;n!=view.render->halo_draw.count;n++) {
+		halo_draw=&view.render->halo_draw.halos[n];
 		
 			// translate and rotate point
 			
@@ -154,8 +154,8 @@ void halo_draw_setup(view_render_type *view_render)
 	contact.hit_mode=poly_ray_trace_hit_mode_all;
 	contact.origin=poly_ray_trace_origin_object;
 
-	for (i=0;i<view_render->halo_draw.count;i++) {
-		halo_draw=&view_render->halo_draw.halos[i];
+	for (n=0;n!=view.render->halo_draw.count;n++) {
+		halo_draw=&view.render->halo_draw.halos[n];
 		if (!halo_draw->in_view) continue;
 
 		spt.x=halo_draw->pnt.x;
@@ -239,7 +239,7 @@ void halo_draw_setup(view_render_type *view_render)
 		
 			// add to view count
 
-		view_render->halo_draw.in_view_count++;
+		view.render->halo_draw.in_view_count++;
 	}
 }
 
@@ -249,14 +249,14 @@ void halo_draw_setup(view_render_type *view_render)
       
 ======================================================= */
 
-void halo_draw_render(view_render_type *view_render)
+void halo_draw_render(void)
 {
-	int						i,x,y,psz;
+	int						n,x,y,psz;
 	halo_draw_type			*halo_draw;
 	
 		// any halos to draw?
 		
-	if (view_render->halo_draw.in_view_count==0) return;
+	if (view.render->halo_draw.in_view_count==0) return;
 		
 		// halos are post-render overlay effects
 		
@@ -273,8 +273,8 @@ void halo_draw_render(view_render_type *view_render)
 
 	glDisable(GL_DEPTH_TEST);
 	
-	for (i=0;i<view_render->halo_draw.count;i++) {
-		halo_draw=&view_render->halo_draw.halos[i];
+	for (n=0;n!=view.render->halo_draw.count;n++) {
+		halo_draw=&view.render->halo_draw.halos[n];
 		if (!halo_draw->in_view) continue;
 	
 			// halo size
