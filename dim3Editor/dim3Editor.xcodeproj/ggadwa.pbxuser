@@ -143,8 +143,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 259437472;
-			PBXWorkspaceStateSaveDate = 259437472;
+			PBXPerProjectTemplateStateSaveDate = 259553013;
+			PBXWorkspaceStateSaveDate = 259553013;
 		};
 		perUserProjectItems = {
 			26650D7F0F0E95CE00D22461 /* PlistBookmark */ = 26650D7F0F0E95CE00D22461 /* PlistBookmark */;
@@ -355,10 +355,10 @@
 	};
 	265DCEFA0F6D6A3E00C1E65D /* palette_polygon.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {984, 2646}}";
-			sepNavSelRange = "{5169, 0}";
-			sepNavVisRange = "{4960, 1175}";
-			sepNavWindowFrame = "{{556, 125}, {999, 779}}";
+			sepNavIntBoundsRect = "{{0, 0}, {984, 2702}}";
+			sepNavSelRange = "{3780, 0}";
+			sepNavVisRange = "{5130, 1095}";
+			sepNavWindowFrame = "{{433, 103}, {999, 779}}";
 		};
 	};
 	265DCF4C0F6DBF9D00C1E65D /* palette_liquid.c */ = {

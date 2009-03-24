@@ -111,6 +111,8 @@ void palette_polygon_save(void)
 		// save data
 		
 	if (type==mesh_piece) {
+		poly=&map.mesh.meshes[main_idx].polys[poly_idx];
+
 		x_txtoff=dialog_get_float(palette_poly_wind,kMeshPolySettingOffX,0);
 		y_txtoff=dialog_get_float(palette_poly_wind,kMeshPolySettingOffY,0);
 		x_txtfact=dialog_get_float(palette_poly_wind,kMeshPolySettingSizeX,0);
@@ -127,6 +129,8 @@ void palette_polygon_save(void)
 		// liquid data
 		
 	else {
+		liq=&map.liquid.liquids[main_idx];
+
 		liq->x_txtoff=dialog_get_float(palette_poly_wind,kMeshPolySettingOffX,0);
 		liq->y_txtoff=dialog_get_float(palette_poly_wind,kMeshPolySettingOffY,0);
 		liq->x_txtfact=dialog_get_float(palette_poly_wind,kMeshPolySettingSizeX,0);
