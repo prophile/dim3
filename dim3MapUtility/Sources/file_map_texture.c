@@ -77,7 +77,7 @@ void map_textures_new(map_type *map)
 bool map_textures_read(map_type *map,bool in_engine)
 {
 	int					i,k,n;
-	char				path[1024];
+	char				path[1024],name[256];
 	bool				txt_ok[max_map_texture];
 	texture_type		*texture;
 	bitmap_type			*bitmap,*bumpmap,*specularmap,*glowmap;
@@ -149,25 +149,22 @@ bool map_textures_read(map_type *map,bool in_engine)
 				bitmap_open(bitmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated,FALSE);
 			
 					// bumpmap
-
-				if (bumpmap->name[0]!=0x0) {
-					file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures_dot3",bumpmap->name,"png");
-					bitmap_open(bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated,FALSE);
-				}
-				
+					
+				sprintf(name,"%s_n",bitmap->name);
+				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
+				bitmap_open(bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated,FALSE);
+								
 					// specular map
 					
-				if (specularmap->name[0]!=0x0) {
-					file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures_Specular",specularmap->name,"png");
-					bitmap_open(specularmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated,FALSE);
-				}
+				sprintf(name,"%s_s",bitmap->name);
+				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
+				bitmap_open(specularmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated,FALSE);
 				
 					// glow map
 					
-				if (glowmap->name[0]!=0x0) {
-					file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures_Glow",glowmap->name,"png");
-					bitmap_open(glowmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated,TRUE);
-				}
+				sprintf(name,"%s_g",bitmap->name);
+				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
+				bitmap_open(glowmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated,TRUE);
 			}
 			
 			bitmap++;

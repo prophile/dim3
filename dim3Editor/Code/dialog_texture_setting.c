@@ -32,14 +32,8 @@ and can be sold or given away.
 #define kTextureSettingFrameBitmap					FOUR_CHAR_CODE('bitm')
 #define kTextureSettingFrameBitmapEdit				FOUR_CHAR_CODE('edbt')
 #define kTextureSettingFrameBumpmap					FOUR_CHAR_CODE('bmpm')
-#define kTextureSettingFrameBumpmapEdit				FOUR_CHAR_CODE('edbm')
-#define kTextureSettingFrameBumpmapClear			FOUR_CHAR_CODE('clbm')
 #define kTextureSettingFrameSpecularmap				FOUR_CHAR_CODE('spmp')
-#define kTextureSettingFrameSpecularmapEdit			FOUR_CHAR_CODE('edsp')
-#define kTextureSettingFrameSpecularmapClear		FOUR_CHAR_CODE('clsp')
 #define kTextureSettingFrameGlowmap					FOUR_CHAR_CODE('gwmp')
-#define kTextureSettingFrameGlowmapEdit				FOUR_CHAR_CODE('edgw')
-#define kTextureSettingFrameGlowmapClear			FOUR_CHAR_CODE('clgw')
 #define kTextureSettingFrameWait					FOUR_CHAR_CODE('watm')
 #define kTextureSettingColor						FOUR_CHAR_CODE('colr')
 #define kTextureSettingShader						FOUR_CHAR_CODE('shdr')
@@ -510,8 +504,7 @@ bool texture_setting_glowmap_open(char *glowmap_name)
 
 static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
-	char			bitmap_name[file_str_len],bumpmap_name[file_str_len],
-					specularmap_name[file_str_len],glowmap_name[file_str_len];
+	char			bitmap_name[file_str_len];
 	HICommand		cmd;
 	
 	switch (GetEventKind(event)) {
@@ -554,61 +547,7 @@ static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,Ev
 						InitCursor();
 					}
 					return(noErr);
-					
-				case kTextureSettingFrameBumpmapEdit:
-					if (texture_setting_bumpmap_open(bumpmap_name)) {
-						strcpy(map.textures[dialog_texture_wind_current_txt].bumpmaps[dialog_texture_wind_current_frame].name,bumpmap_name);
-						SetCursor(*GetCursor(watchCursor));
-						map_refresh_textures(&map);
-						texture_setting_frame_reset();
-						InitCursor();
-					}
-					return(noErr);
-					
-				case kTextureSettingFrameBumpmapClear:
-					map.textures[dialog_texture_wind_current_txt].bumpmaps[dialog_texture_wind_current_frame].name[0]=0x0;
-					SetCursor(*GetCursor(watchCursor));
-					map_refresh_textures(&map);
-					texture_setting_frame_reset();
-					InitCursor();
-					return(noErr);
-					
-				case kTextureSettingFrameSpecularmapEdit:
-					if (texture_setting_specularmap_open(specularmap_name)) {
-						strcpy(map.textures[dialog_texture_wind_current_txt].specularmaps[dialog_texture_wind_current_frame].name,specularmap_name);
-						SetCursor(*GetCursor(watchCursor));
-						map_refresh_textures(&map);
-						texture_setting_frame_reset();
-						InitCursor();
-					}
-					return(noErr);
-					
-				case kTextureSettingFrameSpecularmapClear:
-					map.textures[dialog_texture_wind_current_txt].specularmaps[dialog_texture_wind_current_frame].name[0]=0x0;
-					SetCursor(*GetCursor(watchCursor));
-					map_refresh_textures(&map);
-					texture_setting_frame_reset();
-					InitCursor();
-					return(noErr);
-
-				case kTextureSettingFrameGlowmapEdit:
-					if (texture_setting_glowmap_open(glowmap_name)) {
-						strcpy(map.textures[dialog_texture_wind_current_txt].glowmaps[dialog_texture_wind_current_frame].name,glowmap_name);
-						SetCursor(*GetCursor(watchCursor));
-						map_refresh_textures(&map);
-						texture_setting_frame_reset();
-						InitCursor();
-					}
-					return(noErr);
-					
-				case kTextureSettingFrameGlowmapClear:
-					map.textures[dialog_texture_wind_current_txt].glowmaps[dialog_texture_wind_current_frame].name[0]=0x0;
-					SetCursor(*GetCursor(watchCursor));
-					map_refresh_textures(&map);
-					texture_setting_frame_reset();
-					InitCursor();
-					return(noErr);
-					
+										
 				case kHICommandOK:
 					QuitAppModalLoopForWindow(dialog_texture_wind);
 					return(noErr);

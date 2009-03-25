@@ -187,7 +187,7 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 	
 		// scan for files
 		
-	fpd=file_paths_read_directory(&file_path_setup,search_path,extension,FALSE);
+	fpd=file_paths_read_directory_data(&file_path_setup,search_path,extension);
 	
 		// setup the list
 		

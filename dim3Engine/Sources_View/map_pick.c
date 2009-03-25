@@ -93,7 +93,7 @@ void map_pick_open(void)
 {
 	gui_initialize(NULL,NULL,TRUE);
 
-	map_pick_fpd=file_paths_read_directory(&setup.file_path_setup,"Maps","xml",FALSE);
+	map_pick_fpd=file_paths_read_directory_data(&setup.file_path_setup,"Maps","xml");
 	map_pick_setup_control();
 	
 	server.state=gs_map_pick;

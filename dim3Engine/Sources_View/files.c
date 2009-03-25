@@ -148,7 +148,7 @@ void file_build_list(void)
 	
 		// grab the files
 		
-	fpd=file_paths_read_directory(&setup.file_path_setup,"Saved Games","sav",TRUE);
+	fpd=file_paths_read_directory_document(&setup.file_path_setup,"Saved Games","sav");
 	if (fpd==NULL) return;
 	
 	for (n=0;n!=fpd->nfile;n++) {

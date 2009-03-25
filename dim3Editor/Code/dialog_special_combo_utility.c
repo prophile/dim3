@@ -270,7 +270,7 @@ void dialog_special_combo_fill_script(WindowRef wind,unsigned long sig,int id,ch
 	int							n;
 	file_path_directory_type	*fpd;
 	
-	fpd=file_paths_read_directory(&file_path_setup,"Scripts/Objects","js",FALSE);
+	fpd=file_paths_read_directory_data(&file_path_setup,"Scripts/Objects","js");
 
 	script_count=fpd->nfile;
 	
@@ -288,7 +288,7 @@ void dialog_special_combo_fill_model(WindowRef wind,unsigned long sig,int id,cha
 	int							n;
 	file_path_directory_type	*fpd;
 	
-	fpd=file_paths_read_directory(&file_path_setup,"Models",NULL,FALSE);
+	fpd=file_paths_read_directory_data(&file_path_setup,"Models",NULL);
 
 	model_count=fpd->nfile;
 	

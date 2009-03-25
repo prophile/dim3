@@ -296,7 +296,9 @@ extern void file_paths_documents(file_path_setup_type *file_path_setup,char *pat
 extern bool file_paths_documents_exist(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name);
 extern void file_paths_preferences(char *path,char *file_name,char *ext_name);
 
-extern file_path_directory_type* file_paths_read_directory(file_path_setup_type *file_path_setup,char *sub_path,char *ext_name,bool document_dir_only);
+extern file_path_directory_type* file_paths_read_directory_data(file_path_setup_type *file_path_setup,char *sub_path,char *ext_name);
+extern file_path_directory_type* file_paths_read_directory_data_dir(file_path_setup_type *file_path_setup,char *sub_path,char *required_file_name);
+extern file_path_directory_type* file_paths_read_directory_document(file_path_setup_type *file_path_setup,char *sub_path,char *ext_name);
 extern void file_paths_close_directory(file_path_directory_type *fpd);
 extern void file_paths_descript_directory_file(char *descript,int dir_type);
 

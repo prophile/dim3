@@ -88,7 +88,7 @@ void host_fill_map_table(char *game_type)
 
 		// load in all maps with the correct game type
 
-	map_pick_fpd=file_paths_read_directory(&setup.file_path_setup,"Maps","xml",FALSE);
+	map_pick_fpd=file_paths_read_directory_data(&setup.file_path_setup,"Maps","xml");
 
 	nfile=map_pick_fpd->nfile;
 

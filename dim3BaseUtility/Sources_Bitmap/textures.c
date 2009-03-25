@@ -314,9 +314,6 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 			texture->animate.wait[k]=xml_get_attribute_int_default(image_tag,"wait",0);
 			texture->animate.end_tick[k]=texture->animate.total_wait=texture->animate.total_wait+texture->animate.wait[k];
 			xml_get_attribute_text_default_blank(image_tag,"bitmap",texture->bitmaps[k].name,file_str_len);
-			xml_get_attribute_text_default_blank(image_tag,"bumpmap",texture->bumpmaps[k].name,file_str_len);
-			xml_get_attribute_text_default_blank(image_tag,"specularmap",texture->specularmaps[k].name,file_str_len);
-			xml_get_attribute_text_default_blank(image_tag,"glowmap",texture->glowmaps[k].name,file_str_len);
 
 			image_tag=xml_findnextchild(image_tag);
 		}
@@ -362,9 +359,6 @@ void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_s
 		xml_add_tagstart("Image");
 		if (texture->animate.wait[k]!=0) xml_add_attribute_int("wait",texture->animate.wait[k]);
 		if (texture->bitmaps[k].name[0]!=0x0) xml_add_attribute_text("bitmap",texture->bitmaps[k].name);
-		if (texture->bumpmaps[k].name[0]!=0x0) xml_add_attribute_text("bumpmap",texture->bumpmaps[k].name);
-		if (texture->specularmaps[k].name[0]!=0x0) xml_add_attribute_text("specularmap",texture->specularmaps[k].name);
-		if (texture->glowmaps[k].name[0]!=0x0) xml_add_attribute_text("glowmap",texture->glowmaps[k].name);
 		xml_add_tagend(TRUE);
 	}
 	
