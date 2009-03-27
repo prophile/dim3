@@ -143,8 +143,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 259623782;
-			PBXWorkspaceStateSaveDate = 259623782;
+			PBXPerProjectTemplateStateSaveDate = 259798311;
+			PBXWorkspaceStateSaveDate = 259798311;
 		};
 		perUserProjectItems = {
 			26650D7F0F0E95CE00D22461 /* PlistBookmark */ = 26650D7F0F0E95CE00D22461 /* PlistBookmark */;
@@ -270,7 +270,7 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 1099;
-		modificationTime = 259212575.836439;
+		modificationTime = 259823527.266983;
 		state = 0;
 	};
 	263614450DC41DF6002345C0 /* walk_view_click_texture.c */ = {
@@ -533,9 +533,9 @@
 	};
 	F51B05230A85391500714D26 /* dialog_special_combo_utility.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4774}}";
-			sepNavSelRange = "{7234, 0}";
-			sepNavVisRange = "{6175, 1171}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4732}}";
+			sepNavSelRange = "{7173, 30}";
+			sepNavVisRange = "{6412, 1154}";
 			sepNavWindowFrame = "{{419, 226}, {1041, 747}}";
 		};
 	};
@@ -645,10 +645,10 @@
 	};
 	F5691684084E6B9000ADFA44 /* dialog_file_open.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1044, 3080}}";
-			sepNavSelRange = "{5166, 0}";
-			sepNavVisRange = "{4549, 1342}";
-			sepNavWindowFrame = "{{357, 259}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1044, 3276}}";
+			sepNavSelRange = "{4625, 0}";
+			sepNavVisRange = "{3877, 1354}";
+			sepNavWindowFrame = "{{518, 241}, {1041, 747}}";
 		};
 	};
 	F56EF37B09A69A3400F06521 /* dialog_map_settings.c */ = {
@@ -739,17 +739,17 @@
 	};
 	F5AF0C5409638BC100F99950 /* dialog_utility.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7518}}";
-			sepNavSelRange = "{8285, 2650}";
-			sepNavVisRange = "{9926, 1242}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7504}}";
+			sepNavSelRange = "{336, 0}";
+			sepNavVisRange = "{0, 1517}";
 			sepNavWindowFrame = "{{359, 164}, {1041, 747}}";
 		};
 	};
 	F5AF0C5609638BC600F99950 /* dialog_texture_setting.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 9156}}";
-			sepNavSelRange = "{12859, 0}";
-			sepNavVisRange = "{12271, 1411}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 8064}}";
+			sepNavSelRange = "{10918, 0}";
+			sepNavVisRange = "{10525, 1399}";
 			sepNavWindowFrame = "{{255, 164}, {1041, 747}}";
 		};
 	};

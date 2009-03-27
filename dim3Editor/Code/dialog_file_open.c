@@ -28,7 +28,6 @@ and can be sold or given away.
 #include "dialog.h"
 
 #define kFileOpenList				FOUR_CHAR_CODE('list')
-#define kFileOpenListDirColumn		FOUR_CHAR_CODE('pdir')
 #define kFileOpenListNameColumn		FOUR_CHAR_CODE('pnme')
 
 char							fp_file_name[256];
@@ -98,26 +97,18 @@ void file_open_enable_open_button(bool enable)
 static pascal OSStatus file_open_list_item_proc(ControlRef ctrl,DataBrowserItemID itemID,DataBrowserPropertyID property,DataBrowserItemDataRef itemData,Boolean changeValue)
 {
 	int				idx;
-	char			txt[file_str_len];
+	char			dir_name[file_str_len],str[256];
 	CFStringRef		cfstr;
 	
 	switch (property) {
-	
-		case kFileOpenListDirColumn:
-			idx=itemID-1;
-			file_paths_descript_directory_file(txt,fpd->files[idx].dir_type);
-			
-			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,txt,kCFStringEncodingMacRoman);
-			SetDataBrowserItemDataText(itemData,cfstr);
-			CFRelease(cfstr);
-			return(noErr);
-		
+
 		case kFileOpenListNameColumn:
 			idx=itemID-1;
-			strncpy(txt,fpd->files[idx].file_name,file_str_len);
-			txt[file_str_len-1]=0x0;
+			file_paths_descript_directory_file(dir_name,fpd->files[idx].dir_type);
+			sprintf(str,"%s/%s",dir_name,fpd->files[idx].file_name);
+			str[255]=0x0;
 			
-			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,txt,kCFStringEncodingMacRoman);
+			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,str,kCFStringEncodingMacRoman);
 			SetDataBrowserItemDataText(itemData,cfstr);
 			CFRelease(cfstr);
 			return(noErr);
@@ -160,6 +151,7 @@ static pascal void file_open_list_notify_proc(ControlRef ctrl,DataBrowserItemID 
 
 bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *file_name)
 {
+	CFStringRef						cfstr;
 	ControlRef						ctrl;
 	ControlID						ctrl_id;
 	DataBrowserCallbacks			dbcall;
@@ -170,7 +162,11 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 	
 		// open the dialog
 		
-	dialog_open(&dialog_file_open_wind,dialog_name);
+	dialog_open(&dialog_file_open_wind,"FileOpen");
+	
+	cfstr=CFStringCreateWithCString(kCFAllocatorDefault,dialog_name,kCFStringEncodingMacRoman);
+	SetWindowTitleWithCFString(dialog_file_open_wind,cfstr);
+	CFRelease(cfstr);
 	
 		// disable open
 		

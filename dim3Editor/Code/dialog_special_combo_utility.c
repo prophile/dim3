@@ -288,7 +288,7 @@ void dialog_special_combo_fill_model(WindowRef wind,unsigned long sig,int id,cha
 	int							n;
 	file_path_directory_type	*fpd;
 	
-	fpd=file_paths_read_directory_data(&file_path_setup,"Models",NULL);
+	fpd=file_paths_read_directory_data_dir(&file_path_setup,"Models","Mesh.xml");
 
 	model_count=fpd->nfile;
 	

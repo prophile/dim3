@@ -433,69 +433,6 @@ bool texture_setting_bitmap_open(char *bitmap_name)
 	return(TRUE);
 }
 
-bool texture_setting_bumpmap_open(char *bumpmap_name)
-{
-    char				err_str[256],path[1024];
-	unsigned char		p_err_str[256];
-	
-		// get bumpmap
-		
-	if (!dialog_file_open_run("BumpmapOpen","Bitmaps/Textures_dot3","png",bumpmap_name)) return(FALSE);
-	
-		// check bumpmap
-		
-	file_paths_data(&file_path_setup,path,"Bitmaps/Textures_dot3",bumpmap_name,"png");
-	if (!bitmap_check(path,err_str)) {
-		CopyCStringToPascal(err_str,p_err_str);
-		StandardAlert(0,"\pTexture Error",p_err_str,NULL,NULL);
-		return(FALSE);
-	}
-	
-	return(TRUE);
-}
-
-bool texture_setting_specularmap_open(char *specularmap_name)
-{
-    char				err_str[256],path[1024];
-	unsigned char		p_err_str[256];
-	
-		// get specularmap
-				
-	if (!dialog_file_open_run("SpecularmapOpen","Bitmaps/Textures_Specular","png",specularmap_name)) return(FALSE);
-	
-		// check specularmap
-		
-	file_paths_data(&file_path_setup,path,"Bitmaps/Textures_Specular",specularmap_name,"png");
-	if (!bitmap_check(path,err_str)) {
-		CopyCStringToPascal(err_str,p_err_str);
-		StandardAlert(0,"\pTexture Error",p_err_str,NULL,NULL);
-		return(FALSE);
-	}
-	
-	return(TRUE);
-}
-
-bool texture_setting_glowmap_open(char *glowmap_name)
-{
-    char				err_str[256],path[1024];
-	unsigned char		p_err_str[256];
-	
-		// get glowmap
-				
-	if (!dialog_file_open_run("GlowmapOpen","Bitmaps/Textures_Glow","png",glowmap_name)) return(FALSE);
-	
-		// check glowmap
-		
-	file_paths_data(&file_path_setup,path,"Bitmaps/Textures_Glow",glowmap_name,"png");
-	if (!bitmap_check(path,err_str)) {
-		CopyCStringToPascal(err_str,p_err_str);
-		StandardAlert(0,"\pTexture Error",p_err_str,NULL,NULL);
-		return(FALSE);
-	}
-	
-	return(TRUE);
-}
-
 /* =======================================================
 
       Texture Setting Event Handlers
