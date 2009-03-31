@@ -33,7 +33,6 @@ and can be sold or given away.
 #include "physics.h"
 #include "video.h"
 
-extern int					shadow_pbuffer_pixel_size;
 extern bool					shadow_on,dim3_debug;
 
 extern map_type				map;
@@ -281,12 +280,12 @@ bool shadow_texture_init(void)
 		
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(0.0f,shadow_pbuffer_gl_transform_size,0.0f,shadow_pbuffer_gl_transform_size);
+	gluOrtho2D(0.0f,shadow_texture_gl_transform_size,0.0f,shadow_texture_gl_transform_size);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	glViewport(0,0,shadow_pbuffer_pixel_size,shadow_pbuffer_pixel_size);
+	glViewport(0,0,shadow_texture_pixel_size,shadow_texture_pixel_size);
 
 	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -329,7 +328,7 @@ bool shadow_texture_create(model_draw *draw)
 	shadow=&draw->shadow;
 	shadow->texture_idx=-1;
 	
-	if (shadow_texture_count==(shadow_pbuffer_slice_count*shadow_pbuffer_slice_count)) return(FALSE);
+	if (shadow_texture_count==(shadow_texture_slice_count*shadow_texture_slice_count)) return(FALSE);
 	
 		// get model
 	
@@ -341,10 +340,10 @@ bool shadow_texture_create(model_draw *draw)
 		
 	shadow->texture_idx=shadow_texture_count;
 
-	slice_pixel_size=(shadow_pbuffer_pixel_size/shadow_pbuffer_slice_count);
+	slice_pixel_size=(shadow_texture_pixel_size/shadow_texture_slice_count);
 	
-	x_org=slice_pixel_size*(shadow_texture_count%shadow_pbuffer_slice_count);
-	y_org=slice_pixel_size*(shadow_texture_count/shadow_pbuffer_slice_count);
+	x_org=slice_pixel_size*(shadow_texture_count%shadow_texture_slice_count);
+	y_org=slice_pixel_size*(shadow_texture_count/shadow_texture_slice_count);
 
 	glViewport(x_org,y_org,slice_pixel_size,slice_pixel_size);
 
@@ -358,16 +357,16 @@ bool shadow_texture_create(model_draw *draw)
 
 		glBegin(GL_LINES);
 		glVertex2f(0.0f,0.0f);
-		glVertex2f(shadow_pbuffer_gl_transform_size,shadow_pbuffer_gl_transform_size);
-		glVertex2f(shadow_pbuffer_gl_transform_size,0.0f);
-		glVertex2f(0.0f,shadow_pbuffer_gl_transform_size);
+		glVertex2f(shadow_texture_gl_transform_size,shadow_texture_gl_transform_size);
+		glVertex2f(shadow_texture_gl_transform_size,0.0f);
+		glVertex2f(0.0f,shadow_texture_gl_transform_size);
 		glEnd();
 
 		glBegin(GL_LINE_LOOP);
 		glVertex2f(0.0f,0.0f);
-		glVertex2f(shadow_pbuffer_gl_transform_size,0.0f);
-		glVertex2f(shadow_pbuffer_gl_transform_size,shadow_pbuffer_gl_transform_size);
-		glVertex2f(0.0f,shadow_pbuffer_gl_transform_size);
+		glVertex2f(shadow_texture_gl_transform_size,0.0f);
+		glVertex2f(shadow_texture_gl_transform_size,shadow_texture_gl_transform_size);
+		glVertex2f(0.0f,shadow_texture_gl_transform_size);
 		glEnd();
 
 		draw->shadow.alpha=1.0f;
@@ -385,7 +384,7 @@ bool shadow_texture_create(model_draw *draw)
 	shd_draw.setup.ang.x=shadow->ang.x;
 	shd_draw.setup.ang.z=0;
 
-	model_render_shadow(&shd_draw,shadow_pbuffer_gl_transform_size,shadow->texture_idx);
+	model_render_shadow(&shd_draw,shadow_texture_gl_transform_size,shadow->texture_idx);
 
 	return(TRUE);
 }

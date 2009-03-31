@@ -39,29 +39,23 @@ extern maputility_settings_type		maputility_settings;
 
 void map_textures_new(map_type *map)
 {
-	int					i,k;
+	int					n,k;
 	texture_type		*texture;
-	bitmap_type			*bitmap,*bumpmap,*specularmap,*glowmap;
+	texture_frame_type	*frame;
 	
 	texture=map->textures;
 	
-	for (i=0;i!=max_map_texture;i++) {
+	for (n=0;n!=max_map_texture;n++) {
 	
-		bitmap=texture->bitmaps;
-		bumpmap=texture->bumpmaps;
-		specularmap=texture->specularmaps;
-		glowmap=texture->glowmaps;
+		frame=texture->frames;
 		
 		for (k=0;k!=max_texture_frame;k++) {
-			bitmap_new(bitmap);
-			bitmap_new(bumpmap);
-			bitmap_new(specularmap);
-			bitmap_new(glowmap);
+			bitmap_new(&frame->bitmap);
+			bitmap_new(&frame->bumpmap);
+			bitmap_new(&frame->specularmap);
+			bitmap_new(&frame->glowmap);
 			
-			bitmap++;
-			bumpmap++;
-			specularmap++;
-			glowmap++;
+			frame++;
 		}
 		
 		texture++;
@@ -80,7 +74,7 @@ bool map_textures_read(map_type *map,bool in_engine)
 	char				path[1024],name[256];
 	bool				txt_ok[max_map_texture];
 	texture_type		*texture;
-	bitmap_type			*bitmap,*bumpmap,*specularmap,*glowmap;
+	texture_frame_type	*frame;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	map_liquid_type		*liq;
@@ -123,7 +117,6 @@ bool map_textures_read(map_type *map,bool in_engine)
 		if (map->sky.south_fill!=-1) txt_ok[map->sky.south_fill]=TRUE;
 		if (map->sky.east_fill!=-1) txt_ok[map->sky.east_fill]=TRUE;
 		if (map->sky.west_fill!=-1) txt_ok[map->sky.west_fill]=TRUE;
-	
 	}
 	
 		// load textures
@@ -134,43 +127,37 @@ bool map_textures_read(map_type *map,bool in_engine)
 	
 		if ((in_engine) && (!txt_ok[i])) continue;
 			
-		bitmap=texture->bitmaps;
-		bumpmap=texture->bumpmaps;
-		specularmap=texture->specularmaps;
-		glowmap=texture->glowmaps;
+		frame=texture->frames;
 		
 		for (k=0;k!=max_texture_frame;k++) {
 		
-			if (bitmap->name[0]!=0x0) {
+			if (frame->name[0]!=0x0) {
 			
 					// bitmap
 					
-				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",bitmap->name,"png");
-				bitmap_open(bitmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated,FALSE);
+				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",frame->name,"png");
+				bitmap_open(&frame->bitmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated,FALSE);
 			
 					// bumpmap
 					
-				sprintf(name,"%s_n",bitmap->name);
+				sprintf(name,"%s_n",frame->name);
 				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
-				bitmap_open(bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated,FALSE);
+				bitmap_open(&frame->bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated,FALSE);
 								
 					// specular map
 					
-				sprintf(name,"%s_s",bitmap->name);
+				sprintf(name,"%s_s",frame->name);
 				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
-				bitmap_open(specularmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated,FALSE);
+				bitmap_open(&frame->specularmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated,FALSE);
 				
 					// glow map
 					
-				sprintf(name,"%s_g",bitmap->name);
+				sprintf(name,"%s_g",frame->name);
 				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
-				bitmap_open(glowmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated,TRUE);
+				bitmap_open(&frame->glowmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.compression,texture->pixelated,TRUE);
 			}
 			
-			bitmap++;
-			bumpmap++;
-			specularmap++;
-			glowmap++;
+			frame++;
 		}
 	}
 	
@@ -187,27 +174,21 @@ void map_textures_close(map_type *map)
 {
 	int						i,k;
 	texture_type			*texture;
-	bitmap_type				*bitmap,*bumpmap,*specularmap,*glowmap;
+	texture_frame_type		*frame;
 	
 	texture=map->textures;
 	
 	for (i=0;i!=max_map_texture;i++) {
 		
-		bitmap=texture->bitmaps;
-		bumpmap=texture->bumpmaps;
-		specularmap=texture->specularmaps;
-		glowmap=texture->glowmaps;
+		frame=texture->frames;
 		
 		for (k=0;k!=max_texture_frame;k++) {
-			bitmap_close(bitmap);
-			bitmap_close(bumpmap);
-			bitmap_close(specularmap);
-			bitmap_close(glowmap);
+			bitmap_close(&frame->bitmap);
+			bitmap_close(&frame->bumpmap);
+			bitmap_close(&frame->specularmap);
+			bitmap_close(&frame->glowmap);
 			
-			bitmap++;
-			bumpmap++;
-			specularmap++;
-			glowmap++;
+			frame++;
 		}
 		
 		texture++;

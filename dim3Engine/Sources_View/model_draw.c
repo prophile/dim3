@@ -417,7 +417,7 @@ void model_draw_opaque_simple_trigs(model_type *mdl,int mesh_idx,int mesh_mask,m
 		alpha=draw->alpha;
 		if (draw->mesh_fades[mesh_idx].on) alpha=draw->mesh_fades[mesh_idx].alpha;
 			
-		if ((texture->bitmaps[frame].alpha_mode==alpha_mode_transparent) || (alpha!=1.0)) continue;
+		if ((texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) || (alpha!=1.0)) continue;
 
 			// trig count
 
@@ -428,7 +428,7 @@ void model_draw_opaque_simple_trigs(model_type *mdl,int mesh_idx,int mesh_mask,m
 
 			// draw texture
 
-		gl_texture_opaque_set(texture->bitmaps[frame].gl_id);
+		gl_texture_opaque_set(texture->frames[frame].bitmap.gl_id);
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 	}
 
@@ -562,7 +562,7 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,mod
 		alpha=draw->alpha;
 		if (draw->mesh_fades[mesh_idx].on) alpha=draw->mesh_fades[mesh_idx].alpha;
 			
-		if (!((texture->bitmaps[frame].alpha_mode==alpha_mode_transparent) || (alpha!=1.0))) continue;
+		if (!((texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) || (alpha!=1.0))) continue;
 
 			// don't draw if no trigs
 
@@ -586,7 +586,7 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,int mesh_mask,mod
 
 			// draw texture
 
-		gl_texture_transparent_set(texture->bitmaps[texture->animate.current_frame].gl_id,alpha);
+		gl_texture_transparent_set(texture->frames[texture->animate.current_frame].bitmap.gl_id,alpha);
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 	}
 
@@ -631,7 +631,7 @@ void model_draw_glow_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw
 		texture=&mdl->textures[n];
 		frame=texture->animate.current_frame;
 
-		if (texture->glowmaps[frame].gl_id==-1) continue;
+		if (texture->frames[frame].glowmap.gl_id==-1) continue;
 
 		material=&mesh->materials[n];
 	
@@ -644,7 +644,7 @@ void model_draw_glow_trigs(model_type *mdl,int mesh_idx,int mesh_mask,model_draw
 
 			// draw glow texture
 		
-		gl_texture_glow_set(texture->bitmaps[frame].gl_id,texture->glowmaps[frame].gl_id,texture->glow.current_color);
+		gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
 	}
 	
@@ -869,7 +869,7 @@ void model_render_target(model_draw *draw,d3col *col)
 	ty=draw->pnt.y-mdl->view_box.size.y;
 	by=draw->pnt.y;
 
-	rang=angle_find(view.camera.pnt.x,view.camera.pnt.z,draw->pnt.x,draw->pnt.z);
+	rang=angle_find(view.render->camera.pnt.x,view.render->camera.pnt.z,draw->pnt.x,draw->pnt.z);
 
 	wid=(mdl->view_box.size.x+mdl->view_box.size.z)>>2;
 

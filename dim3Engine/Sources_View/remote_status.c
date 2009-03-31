@@ -67,7 +67,7 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 	x_sz=map_enlarge<<1;
 	y_sz=map_enlarge<<2;
 	z_sz=0;
-	rotate_2D_point_center(&x_sz,&z_sz,view.camera.ang.y);
+	rotate_2D_point_center(&x_sz,&z_sz,view.render->camera.ang.y);
 
 		// draw the bitmap
 		
@@ -148,7 +148,7 @@ void remote_draw_names_setup(void)
 		
 	gl_setup_viewport(0);
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 	
 	for (n=0;n!=server.count.obj;n++) {
@@ -180,7 +180,7 @@ void remote_draw_names_setup(void)
 		
 			// translate and rotate point
 			
-		dist=distance_get(x,y,z,view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
+		dist=distance_get(x,y,z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
 		if (dist>=remote_name_max_distance) continue;
 
 		obj->draw.remote_name.pnt.x=x;
@@ -217,9 +217,9 @@ void remote_draw_names_setup(void)
 		// ray trace remote name to camera's eye level
 		// to check for visibility
 
-	ept.x=view.camera.pnt.x;
-	ept.y=view.camera.pnt.y;
-	ept.z=view.camera.pnt.z;
+	ept.x=view.render->camera.pnt.x;
+	ept.y=view.render->camera.pnt.y;
+	ept.z=view.render->camera.pnt.z;
 
 	contact.obj.on=TRUE;
 	contact.proj.on=FALSE;

@@ -117,7 +117,7 @@ void render_opaque_mesh_simple(void)
 				// draw polygon
 
 			texture=&map.textures[poly->txt_idx];
-			gl_texture_opaque_set(texture->bitmaps[poly->render.frame].gl_id);
+			gl_texture_opaque_set(texture->frames[poly->render.frame].bitmap.gl_id);
 			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 
 			poly++;
@@ -254,7 +254,7 @@ void render_opaque_mesh_glow(void)
 
 				// draw glow
 
-			gl_texture_glow_set(texture->bitmaps[poly->render.frame].gl_id,texture->glowmaps[poly->render.frame].gl_id,texture->glow.current_color);
+			gl_texture_glow_set(texture->frames[poly->render.frame].bitmap.gl_id,texture->frames[poly->render.frame].glowmap.gl_id,texture->glow.current_color);
 			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 
 			poly++;
@@ -280,7 +280,7 @@ void render_map_opaque(void)
 
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 
 		// attach map complied open gl list

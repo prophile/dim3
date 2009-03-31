@@ -181,7 +181,7 @@ void gui_screenshot_load(void)
 
 		// save screenshot
 
-	bitmap_data(&gui_screenshot_bitmap,"gui_background",data,gui_screenshot_wid,gui_screenshot_high,FALSE,anisotropic_mode_none,mipmap_mode_trilinear,FALSE);
+	bitmap_data(&gui_screenshot_bitmap,data,gui_screenshot_wid,gui_screenshot_high,FALSE,anisotropic_mode_none,mipmap_mode_trilinear,FALSE);
 		
 	free(data);
 	free(data2);

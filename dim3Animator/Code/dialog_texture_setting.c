@@ -32,14 +32,8 @@ and can be sold or given away.
 #define kTextureSettingFrameBitmap					FOUR_CHAR_CODE('bitm')
 #define kTextureSettingFrameBitmapEdit				FOUR_CHAR_CODE('edbt')
 #define kTextureSettingFrameBumpmap					FOUR_CHAR_CODE('bmpm')
-#define kTextureSettingFrameBumpmapEdit				FOUR_CHAR_CODE('edbm')
-#define kTextureSettingFrameBumpmapClear			FOUR_CHAR_CODE('clbm')
 #define kTextureSettingFrameSpecularmap				FOUR_CHAR_CODE('spmp')
-#define kTextureSettingFrameSpecularmapEdit			FOUR_CHAR_CODE('edsp')
-#define kTextureSettingFrameSpecularmapClear		FOUR_CHAR_CODE('clsp')
 #define kTextureSettingFrameGlowmap					FOUR_CHAR_CODE('gwmp')
-#define kTextureSettingFrameGlowmapEdit				FOUR_CHAR_CODE('edgw')
-#define kTextureSettingFrameGlowmapClear			FOUR_CHAR_CODE('clgw')
 #define kTextureSettingFrameWait					FOUR_CHAR_CODE('watm')
 #define kTextureSettingColor						FOUR_CHAR_CODE('colr')
 #define kTextureSettingShader						FOUR_CHAR_CODE('shdr')
@@ -334,14 +328,14 @@ void texture_setting_frame_reset(void)
 	
 	GetControlBounds(ctrl,&box);
 		
-	if (texture->bitmaps[cframe].gl_id==-1) {
+	if (texture->frames[cframe].bitmap.gl_id==-1) {
 		RGBForeColor(&ltgraycolor);
 		PaintRect(&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
 	else {
-		texture_setting_bitmap_draw(&texture->bitmaps[cframe],GetWindowPort(dialog_texture_wind),&box);
+		texture_setting_bitmap_draw(&texture->frames[cframe].bitmap,GetWindowPort(dialog_texture_wind),&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
@@ -354,14 +348,14 @@ void texture_setting_frame_reset(void)
 	
 	GetControlBounds(ctrl,&box);
 	
-	if (texture->bumpmaps[cframe].gl_id==-1) {
+	if (texture->frames[cframe].bumpmap.gl_id==-1) {
 		RGBForeColor(&ltgraycolor);
 		PaintRect(&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
 	else {
-		texture_setting_bitmap_draw(&texture->bumpmaps[cframe],GetWindowPort(dialog_texture_wind),&box);
+		texture_setting_bitmap_draw(&texture->frames[cframe].bumpmap,GetWindowPort(dialog_texture_wind),&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
@@ -374,14 +368,14 @@ void texture_setting_frame_reset(void)
 	
 	GetControlBounds(ctrl,&box);
 	
-	if (texture->specularmaps[cframe].gl_id==-1) {
+	if (texture->frames[cframe].specularmap.gl_id==-1) {
 		RGBForeColor(&ltgraycolor);
 		PaintRect(&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
 	else {
-		texture_setting_bitmap_draw(&texture->specularmaps[cframe],GetWindowPort(dialog_texture_wind),&box);
+		texture_setting_bitmap_draw(&texture->frames[cframe].specularmap,GetWindowPort(dialog_texture_wind),&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
@@ -394,14 +388,14 @@ void texture_setting_frame_reset(void)
 	
 	GetControlBounds(ctrl,&box);
 	
-	if (texture->glowmaps[cframe].gl_id==-1) {
+	if (texture->frames[cframe].glowmap.gl_id==-1) {
 		RGBForeColor(&ltgraycolor);
 		PaintRect(&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
 	else {
-		texture_setting_bitmap_draw(&texture->glowmaps[cframe],GetWindowPort(dialog_texture_wind),&box);
+		texture_setting_bitmap_draw(&texture->frames[cframe].glowmap,GetWindowPort(dialog_texture_wind),&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
@@ -424,74 +418,12 @@ bool texture_setting_bitmap_open(char *bitmap_name)
 	
 		// get bitmap
 				
-	sprintf(sub_path,"Models/%s/Bitmaps/Textures",model.name);
-	if (!dialog_file_open_run("BitmapOpen",sub_path,"png",bitmap_name)) return(FALSE);
+	sprintf(sub_path,"Models/%s/Textures",model.name);
+	if (!dialog_file_open_run("Open a Bitmap",sub_path,"png",NULL,bitmap_name)) return(FALSE);
 	
 		// check bitmap
 		
 	file_paths_data(&file_path_setup,path,sub_path,bitmap_name,"png");
-	if (!bitmap_check(path,err_str)) {
-		CopyCStringToPascal(err_str,p_err_str);
-		StandardAlert(0,"\pTexture Error",p_err_str,NULL,NULL);
-		return(FALSE);
-	}
-	
-	return(TRUE);
-}
-
-bool texture_setting_bumpmap_open(char *bumpmap_name)
-{
-    char				err_str[256],path[1024],sub_path[1024];
-	unsigned char		p_err_str[256];
-	
-	sprintf(sub_path,"Models/%s/Bitmaps/Textures_dot3",model.name);
-	if (!dialog_file_open_run("BumpmapOpen",sub_path,"png",bumpmap_name)) return(FALSE);
-	
-	file_paths_data(&file_path_setup,path,sub_path,bumpmap_name,"png");
-	if (!bitmap_check(path,err_str)) {
-		CopyCStringToPascal(err_str,p_err_str);
-		StandardAlert(0,"\pTexture Error",p_err_str,NULL,NULL);
-		return(FALSE);
-	}
-	
-	return(TRUE);
-}
-
-bool texture_setting_specularmap_open(char *specularmap_name)
-{
-    char				err_str[256],path[1024],sub_path[1024];
-	unsigned char		p_err_str[256];
-	
-		// get specularmap
-				
-	sprintf(sub_path,"Models/%s/Bitmaps/Textures_Specular",model.name);
-	if (!dialog_file_open_run("SpecularmapOpen",sub_path,"png",specularmap_name)) return(FALSE);
-	
-		// check specularmap
-		
-	file_paths_data(&file_path_setup,path,sub_path,specularmap_name,"png");
-	if (!bitmap_check(path,err_str)) {
-		CopyCStringToPascal(err_str,p_err_str);
-		StandardAlert(0,"\pTexture Error",p_err_str,NULL,NULL);
-		return(FALSE);
-	}
-	
-	return(TRUE);
-}
-
-bool texture_setting_glowmap_open(char *glowmap_name)
-{
-    char				err_str[256],path[1024],sub_path[1024];
-	unsigned char		p_err_str[256];
-	
-		// get specularmap
-				
-	sprintf(sub_path,"Models/%s/Bitmaps/Textures_Glow",model.name);
-	if (!dialog_file_open_run("GlowmapOpen",sub_path,"png",glowmap_name)) return(FALSE);
-	
-		// check specularmap
-		
-	file_paths_data(&file_path_setup,path,sub_path,glowmap_name,"png");
 	if (!bitmap_check(path,err_str)) {
 		CopyCStringToPascal(err_str,p_err_str);
 		StandardAlert(0,"\pTexture Error",p_err_str,NULL,NULL);
@@ -509,8 +441,7 @@ bool texture_setting_glowmap_open(char *glowmap_name)
 
 static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
-	char			bitmap_name[file_str_len],bumpmap_name[file_str_len],
-					specularmap_name[file_str_len],glowmap_name[file_str_len];
+	char			bitmap_name[file_str_len];
 	HICommand		cmd;
 	
 	switch (GetEventKind(event)) {
@@ -528,7 +459,7 @@ static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,Ev
 					texture_setting_frame_save();
 					if (texture_setting_bitmap_open(bitmap_name)) {
 						SetCursor(*GetCursor(watchCursor));
-						model_add_texture_frame(&model,dialog_texture_wind_current_txt,bitmap_name,"","","");
+						model_add_texture_frame(&model,dialog_texture_wind_current_txt,bitmap_name);
 						texture_setting_frame_build_combo(FALSE);
 						texture_setting_frame_reset();
 						InitCursor();
@@ -546,66 +477,12 @@ static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,Ev
 					
 				case kTextureSettingFrameBitmapEdit:
 					if (texture_setting_bitmap_open(bitmap_name)) {
-						strcpy(model.textures[dialog_texture_wind_current_txt].bitmaps[dialog_texture_wind_current_frame].name,bitmap_name);
+						strcpy(model.textures[dialog_texture_wind_current_txt].frames[dialog_texture_wind_current_frame].name,bitmap_name);
 						SetCursor(*GetCursor(watchCursor));
 						model_refresh_textures(&model);
 						texture_setting_frame_reset();
 						InitCursor();
 					}
-					return(noErr);
-					
-				case kTextureSettingFrameBumpmapEdit:
-					if (texture_setting_bumpmap_open(bumpmap_name)) {
-						strcpy(model.textures[dialog_texture_wind_current_txt].bumpmaps[dialog_texture_wind_current_frame].name,bumpmap_name);
-						SetCursor(*GetCursor(watchCursor));
-						model_refresh_textures(&model);
-						texture_setting_frame_reset();
-						InitCursor();
-					}
-					return(noErr);
-					
-				case kTextureSettingFrameBumpmapClear:
-					model.textures[dialog_texture_wind_current_txt].bumpmaps[dialog_texture_wind_current_frame].name[0]=0x0;
-					SetCursor(*GetCursor(watchCursor));
-					model_refresh_textures(&model);
-					texture_setting_frame_reset();
-					InitCursor();
-					return(noErr);
-					
-				case kTextureSettingFrameSpecularmapEdit:
-					if (texture_setting_specularmap_open(specularmap_name)) {
-						strcpy(model.textures[dialog_texture_wind_current_txt].specularmaps[dialog_texture_wind_current_frame].name,specularmap_name);
-						SetCursor(*GetCursor(watchCursor));
-						model_refresh_textures(&model);
-						texture_setting_frame_reset();
-						InitCursor();
-					}
-					return(noErr);
-					
-				case kTextureSettingFrameSpecularmapClear:
-					model.textures[dialog_texture_wind_current_txt].specularmaps[dialog_texture_wind_current_frame].name[0]=0x0;
-					SetCursor(*GetCursor(watchCursor));
-					model_refresh_textures(&model);
-					texture_setting_frame_reset();
-					InitCursor();
-					return(noErr);
-
-				case kTextureSettingFrameGlowmapEdit:
-					if (texture_setting_glowmap_open(glowmap_name)) {
-						strcpy(model.textures[dialog_texture_wind_current_txt].glowmaps[dialog_texture_wind_current_frame].name,glowmap_name);
-						SetCursor(*GetCursor(watchCursor));
-						model_refresh_textures(&model);
-						texture_setting_frame_reset();
-						InitCursor();
-					}
-					return(noErr);
-					
-				case kTextureSettingFrameGlowmapClear:
-					model.textures[dialog_texture_wind_current_txt].glowmaps[dialog_texture_wind_current_frame].name[0]=0x0;
-					SetCursor(*GetCursor(watchCursor));
-					model_refresh_textures(&model);
-					texture_setting_frame_reset();
-					InitCursor();
 					return(noErr);
 					
 				case kHICommandOK:

@@ -158,8 +158,9 @@ static pascal void file_open_list_notify_proc(ControlRef ctrl,DataBrowserItemID 
       
 ======================================================= */
 
-bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *file_name)
+bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name)
 {
+	CFStringRef						cfstr;
 	ControlRef						ctrl;
 	ControlID						ctrl_id;
 	DataBrowserCallbacks			dbcall;
@@ -170,7 +171,11 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 	
 		// open the dialog
 		
-	dialog_open(&dialog_file_open_wind,dialog_name);
+	dialog_open(&dialog_file_open_wind,"FileOpen");
+	
+	cfstr=CFStringCreateWithCString(kCFAllocatorDefault,dialog_name,kCFStringEncodingMacRoman);
+	SetWindowTitleWithCFString(dialog_file_open_wind,cfstr);
+	CFRelease(cfstr);
 	
 		// disable open
 		
@@ -187,7 +192,12 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 	
 		// scan for files
 		
-	fpd=file_paths_read_directory_data(&file_path_setup,search_path,extension);
+	if (extension!=NULL) {
+		fpd=file_paths_read_directory_data(&file_path_setup,search_path,extension);
+	}
+	else {
+		fpd=file_paths_read_directory_data_dir(&file_path_setup,search_path,required_file_name);
+	}
 	
 		// setup the list
 		
@@ -234,4 +244,3 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 	strcpy(file_name,fp_file_name);
 	return(TRUE);
 }
-

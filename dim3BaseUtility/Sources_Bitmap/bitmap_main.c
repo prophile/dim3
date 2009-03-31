@@ -37,7 +37,6 @@ and can be sold or given away.
 
 void bitmap_new(bitmap_type *bitmap)
 {
-	bitmap->name[0]=0x0;
 	bitmap->wid=bitmap->high=0;
 	bitmap->gl_id=-1;
 }
@@ -51,19 +50,10 @@ void bitmap_new(bitmap_type *bitmap)
 bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool use_compression,bool pixelated,bool scrub_black_to_alpha)
 {
 	int					n,psz;
-	char				*c;
 	unsigned char		*png_data,*data;
 	bool				ok,alpha_channel;
 
 	bitmap_new(bitmap);
-	
-		// get name
-		
-	c=strrchr(path,'/');
-	if (c!=NULL) strcpy(bitmap->name,(c+1));
-	
-	c=strrchr(bitmap->name,'.');
-	if (c!=NULL) *c=0x0;
 	
 		// read bitmap
 	
@@ -124,13 +114,12 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
       
 ======================================================= */
 
-bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col)
+bool bitmap_color(bitmap_type *bitmap,d3col *col)
 {
 	int				i,kr,kg,kb;
 	unsigned char	*png_data,*dptr;
 	bool			ok;
 	
-	strcpy(bitmap->name,name);
 	bitmap->wid=bitmap->high=32;
 	bitmap->alpha_mode=alpha_mode_none;
 	
@@ -162,12 +151,11 @@ bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col)
       
 ======================================================= */
 
-bool bitmap_data(bitmap_type *bitmap,char *name,unsigned char *data,int wid,int high,bool alpha_channel,int anisotropic_mode,int mipmap_mode,bool use_compression)
+bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,int anisotropic_mode,int mipmap_mode,bool use_compression)
 {
 	int				n,psz;
 	unsigned char	*ptr;
 	
-	strcpy(bitmap->name,name);
 	bitmap->wid=wid;
 	bitmap->high=high;
 	

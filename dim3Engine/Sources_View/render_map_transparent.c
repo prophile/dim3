@@ -136,7 +136,7 @@ void render_transparent_sort(d3pnt *pnt)
 
 				// transparent?
 
-			if ((texture->bitmaps[frame].alpha_mode!=alpha_mode_transparent) && (poly->alpha==1.0f)) continue;
+			if ((texture->frames[frame].bitmap.alpha_mode!=alpha_mode_transparent) && (poly->alpha==1.0f)) continue;
 
 				// find distance from camera
 
@@ -257,7 +257,7 @@ void render_transparent_mesh_simple(void)
 
 			// draw the polygon
 
-		gl_texture_transparent_set(texture->bitmaps[poly->render.frame].gl_id,poly->alpha);
+		gl_texture_transparent_set(texture->frames[poly->render.frame].bitmap.gl_id,poly->alpha);
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}
 
@@ -383,7 +383,7 @@ void render_transparent_mesh_glow(void)
 			// draw glow
 
 		texture=&map.textures[poly->txt_idx];
-		gl_texture_glow_set(texture->bitmaps[poly->render.frame].gl_id,texture->glowmaps[poly->render.frame].gl_id,texture->glow.current_color);
+		gl_texture_glow_set(texture->frames[poly->render.frame].bitmap.gl_id,texture->frames[poly->render.frame].glowmap.gl_id,texture->glow.current_color);
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}
 
@@ -402,7 +402,7 @@ void render_map_transparent(void)
 
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 	
 		// attach compiled vertex lists
@@ -411,7 +411,7 @@ void render_map_transparent(void)
 
 		// sort meshes
 
-	render_transparent_sort(&view.camera.pnt);
+	render_transparent_sort(&view.render->camera.pnt);
 
 		// transparent meshes
 

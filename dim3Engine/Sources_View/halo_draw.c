@@ -114,7 +114,7 @@ void halo_draw_setup(void)
 		
 	gl_setup_viewport(0);
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 
 	for (n=0;n!=view.render->halo_draw.count;n++) {
@@ -145,9 +145,9 @@ void halo_draw_setup(void)
 		// ray trace halos to camera's eye level
 		// to check for visibility
 
-	ept.x=view.camera.pnt.x;
-	ept.y=view.camera.pnt.y;
-	ept.z=view.camera.pnt.z;
+	ept.x=view.render->camera.pnt.x;
+	ept.y=view.render->camera.pnt.y;
+	ept.z=view.render->camera.pnt.z;
 
 	contact.proj.on=FALSE;
 

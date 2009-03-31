@@ -421,7 +421,7 @@ extern void xml_key_write_color(char *name,d3col *value);
 
 typedef struct		{
 						int						wid,high,alpha_mode;
-						char					name[file_str_len];
+						char					name2[file_str_len];
 						GLuint					gl_id;
 					} bitmap_type;
 
@@ -432,7 +432,7 @@ typedef struct		{
 typedef struct		{
 						int						rate;
 						float					min,max,current_color;
-					} glow_type;
+					} texture_glow_type;
 
 //
 // scaling structure (only used for Editor)
@@ -453,7 +453,16 @@ typedef struct		{
 												end_tick[max_texture_frame];
 						bool					on;
 					} texture_animate_type;
-					
+
+//
+// texture frames
+//
+
+typedef struct		{
+						char					name[file_str_len];
+						bitmap_type				bitmap,bumpmap,specularmap,glowmap;
+					} texture_frame_type;
+
 //
 // texture structure
 //
@@ -466,13 +475,10 @@ typedef struct		{
 						char					material_name[name_str_len],
 												shader_name[name_str_len];
 						d3col					col;
-						bitmap_type				bitmaps[max_texture_frame],
-												bumpmaps[max_texture_frame],
-												specularmaps[max_texture_frame],
-												glowmaps[max_texture_frame];
 						texture_animate_type	animate;
-						glow_type				glow;
+						texture_glow_type		glow;
 						texture_scale_type		scale;
+						texture_frame_type		frames[max_texture_frame];
 					} texture_type;
 
 //
@@ -481,8 +487,8 @@ typedef struct		{
 
 extern void bitmap_new(bitmap_type *bitmap);
 extern bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool use_compression,bool pixelated,bool scrub_black_to_alpha);
-extern bool bitmap_color(bitmap_type *bitmap,char *name,d3col *col);
-extern bool bitmap_data(bitmap_type *bitmap,char *name,unsigned char *data,int wid,int high,bool alpha_channel,int anisotropic_mode,int mipmap_mode,bool use_compression);
+extern bool bitmap_color(bitmap_type *bitmap,d3col *col);
+extern bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,int anisotropic_mode,int mipmap_mode,bool use_compression);
 extern void bitmap_close(bitmap_type *bitmap);
 
 extern void bitmap_texture_setup_animation(texture_type *texture,int texture_count,unsigned char *user_frames,int tick);

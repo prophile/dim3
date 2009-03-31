@@ -2095,21 +2095,21 @@ bool map_auto_generate_test(map_type *map)
 
 		// setup textures
 
-	strcpy(map->textures[0].bitmaps[0].name,"demo_main_wall");
-	strcpy(map->textures[1].bitmaps[0].name,"demo_main_floor");
-	strcpy(map->textures[2].bitmaps[0].name,"demo_ceiling");
-	strcpy(map->textures[3].bitmaps[0].name,"demo_corridor_wall");
-	strcpy(map->textures[4].bitmaps[0].name,"demo_second_story");
-	strcpy(map->textures[5].bitmaps[0].name,"demo_chain_link");
-	strcpy(map->textures[6].bitmaps[0].name,"demo_door");
-	strcpy(map->textures[7].bitmaps[0].name,"demo_steps");
-	strcpy(map->textures[8].bitmaps[0].name,"demo_ramp");
-	strcpy(map->textures[9].bitmaps[0].name,"demo_column");
-	strcpy(map->textures[10].bitmaps[0].name,"demo_column_base");
-	strcpy(map->textures[11].bitmaps[0].name,"demo_frame");
-	strcpy(map->textures[12].bitmaps[0].name,"demo_corridor_floor");
-	strcpy(map->textures[13].bitmaps[0].name,"demo_water");
-	strcpy(map->textures[14].bitmaps[0].name,"demo_sky");
+	strcpy(map->textures[0].frames[0].name,"demo_main_wall");
+	strcpy(map->textures[1].frames[0].name,"demo_main_floor");
+	strcpy(map->textures[2].frames[0].name,"demo_ceiling");
+	strcpy(map->textures[3].frames[0].name,"demo_corridor_wall");
+	strcpy(map->textures[4].frames[0].name,"demo_second_story");
+	strcpy(map->textures[5].frames[0].name,"demo_chain_link");
+	strcpy(map->textures[6].frames[0].name,"demo_door");
+	strcpy(map->textures[7].frames[0].name,"demo_steps");
+	strcpy(map->textures[8].frames[0].name,"demo_ramp");
+	strcpy(map->textures[9].frames[0].name,"demo_column");
+	strcpy(map->textures[10].frames[0].name,"demo_column_base");
+	strcpy(map->textures[11].frames[0].name,"demo_frame");
+	strcpy(map->textures[12].frames[0].name,"demo_corridor_floor");
+	strcpy(map->textures[13].frames[0].name,"demo_water");
+	strcpy(map->textures[14].frames[0].name,"demo_sky");
 
 		// setup auto generation values
 

@@ -65,7 +65,7 @@ int texture_count(void)
 	texture=model.textures;
 	
     for (n=0;n!=max_model_texture;n++) {
-		if (texture->bitmaps[0].gl_id!=-1) count++;
+		if (texture->frames[0].bitmap.gl_id!=-1) count++;
 		texture++;
 	}
 	
@@ -80,7 +80,7 @@ int texture_find_free(void)
 	texture=model.textures;
 	
     for (n=0;n!=max_model_texture;n++) {
-		if (texture->bitmaps[0].gl_id==-1) return(n);
+		if (texture->frames[0].bitmap.gl_id==-1) return(n);
 		texture++;
 	}
 	
@@ -123,15 +123,15 @@ int texture_pick(char *material_name,char *err_str)
 	
 		// open texture
 	
-	if (!bitmap_open(&texture->bitmaps[0],path,anisotropic_mode_none,mipmap_mode_none,FALSE,texture->pixelated,FALSE)) {
+	if (!bitmap_open(&texture->frames[0].bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,texture->pixelated,FALSE)) {
 		strcpy(err_str,"Unable to open bitmap.");
 		return(-1);
 	}
 	
 		// copy bitmap to model folder
 		
-	sprintf(sub_path,"Models/%s/Bitmaps/Textures",model.name);
-	file_paths_data_default(&file_path_setup,path2,sub_path,texture->bitmaps[0].name,"png");	
+	sprintf(sub_path,"Models/%s/Textures",model.name);
+	file_paths_data_default(&file_path_setup,path2,sub_path,texture->frames[0].name,"png");	
 	
 	bitmap_copy(path,path2);
 

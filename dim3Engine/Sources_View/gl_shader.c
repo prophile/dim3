@@ -455,7 +455,7 @@ void gl_shader_set_scene_variables(view_shader_type *shader)
 	if (var!=-1) glUniform1fARB(var,game_time_fequency_second_get());
 		
 	var=glGetUniformLocationARB(shader->program_obj,"dim3CameraPosition");
-	if (var!=-1) glUniform3fARB(var,(float)view.camera.pnt.x,(float)view.camera.pnt.y,(float)view.camera.pnt.z);
+	if (var!=-1) glUniform3fARB(var,(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z);
 	
 	var=glGetUniformLocationARB(shader->program_obj,"dim3AmbientColor");
 	if (var!=-1) glUniform3fARB(var,(map.ambient.light_color.r+setup.gamma),(map.ambient.light_color.g+setup.gamma),(map.ambient.light_color.b+setup.gamma));
@@ -585,7 +585,7 @@ void gl_shader_texture_set(view_shader_type *shader,texture_type *texture,int tx
 
 		// spec map
 
-	gl_id=texture->specularmaps[frame].gl_id;
+	gl_id=texture->frames[frame].specularmap.gl_id;
 
 	if (gl_id!=-1) {
 		glActiveTexture(GL_TEXTURE2);
@@ -594,7 +594,7 @@ void gl_shader_texture_set(view_shader_type *shader,texture_type *texture,int tx
 
 		// bump map
 
-	gl_id=texture->bumpmaps[frame].gl_id;
+	gl_id=texture->frames[frame].bumpmap.gl_id;
 
 	if (gl_id!=-1) {
 		glActiveTexture(GL_TEXTURE1);
@@ -603,7 +603,7 @@ void gl_shader_texture_set(view_shader_type *shader,texture_type *texture,int tx
 	
 		// color map
 
-	gl_id=texture->bitmaps[frame].gl_id;
+	gl_id=texture->frames[frame].bitmap.gl_id;
 
 	if (gl_id!=-1) {
 		glActiveTexture(GL_TEXTURE0);

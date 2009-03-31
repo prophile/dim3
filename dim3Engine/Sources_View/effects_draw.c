@@ -373,7 +373,7 @@ void effect_draw(int tick)
 
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 		
 		// draw effects

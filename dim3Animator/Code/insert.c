@@ -141,13 +141,13 @@ void insert_model(char *file_name)
 	
 	for (i=0;i!=max_model_texture;i++) {
 	
-		if (ins_texture->bitmaps[0].gl_id==-1) continue;
+		if (ins_texture->frames[0].bitmap.gl_id==-1) continue;
 	
 			// find next blank texture
 			
 		k=0;
 		while (k<max_model_texture) {
-			if (model.textures[k].bitmaps[0].gl_id==-1) break;
+			if (model.textures[k].frames[0].bitmap.gl_id==-1) break;
 			k++;
 		}
 		
@@ -159,8 +159,8 @@ void insert_model(char *file_name)
 		memmove(texture,ins_texture,sizeof(texture_type));
 		
 		for (t=0;t!=max_model_texture;t++) {
-			if (texture->bitmaps[t].gl_id!=-1) {
-				sprintf(texture->bitmaps[t].name,"Image_%d_%d",k,t);
+			if (texture->frames[t].bitmap.gl_id!=-1) {
+				sprintf(texture->frames[t].name,"Image_%d_%d",k,t);
 			}
 		}
 		
@@ -172,18 +172,18 @@ void insert_model(char *file_name)
 			// force bitmap to not close when closing insert model
 					
 		for (t=0;t!=max_model_texture;t++) {
-			ins_texture->bitmaps[t].gl_id=-1;
+			ins_texture->frames[t].bitmap.gl_id=-1;
 		}
 		
 			// copy over bitmap
 
 		for (t=0;t!=max_model_texture;t++) {
-			if (texture->bitmaps[t].gl_id!=-1) {
-				sprintf(sub_path,"Models/%s/Bitmaps/Textures",file_name);
-				file_paths_data_default(&file_path_setup,path,sub_path,ins_texture->bitmaps[t].name,"png");	
+			if (texture->frames[t].bitmap.gl_id!=-1) {
+				sprintf(sub_path,"Models/%s/Textures",file_name);
+				file_paths_data_default(&file_path_setup,path,sub_path,ins_texture->frames[t].name,"png");	
 
-				sprintf(sub_path,"Models/%s/Bitmaps/Textures",model.name);
-				file_paths_data_default(&file_path_setup,path2,sub_path,texture->bitmaps[t].name,"png");
+				sprintf(sub_path,"Models/%s/Textures",model.name);
+				file_paths_data_default(&file_path_setup,path2,sub_path,texture->frames[t].name,"png");
 				
 				bitmap_copy(path,path2);
 			}

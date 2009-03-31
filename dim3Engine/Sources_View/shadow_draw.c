@@ -273,7 +273,7 @@ void shadow_render_draw_wall_like_poly(map_mesh_type *mesh,map_mesh_poly_type *p
 	
 		// draw the shadow to the stencil
 		
-	slice_percent=1.0f/(float)shadow_pbuffer_slice_count;
+	slice_percent=1.0f/(float)shadow_texture_slice_count;
 	
 	glBegin(GL_QUADS);
 	
@@ -322,7 +322,7 @@ void shadow_render_draw_floor_like_poly(map_mesh_type *mesh,map_mesh_poly_type *
 	
 		// draw shadow
 		
-	slice_percent=1.0f/(float)shadow_pbuffer_slice_count;
+	slice_percent=1.0f/(float)shadow_texture_slice_count;
 	
 	glBegin(GL_QUADS);
 
@@ -452,10 +452,10 @@ void shadow_render(model_draw *draw)
 	
 		// get the texture offsets
 		
-	slice_percent=1.0f/(float)shadow_pbuffer_slice_count;
+	slice_percent=1.0f/(float)shadow_texture_slice_count;
 
-	gx=((float)(draw->shadow.texture_idx%shadow_pbuffer_slice_count))*slice_percent;
-	gy=((float)(draw->shadow.texture_idx/shadow_pbuffer_slice_count))*slice_percent;
+	gx=((float)(draw->shadow.texture_idx%shadow_texture_slice_count))*slice_percent;
+	gy=((float)(draw->shadow.texture_idx/shadow_texture_slice_count))*slice_percent;
 
 		// draw shadow to stenciled segments
 

@@ -211,7 +211,7 @@ void walk_view_model_draw_material(model_type *model,texture_type *texture,model
 
 		// setup texture
 
-	bitmap_gl_id=texture->bitmaps[frame].gl_id;
+	bitmap_gl_id=texture->frames[frame].bitmap.gl_id;
 	glBindTexture(GL_TEXTURE_2D,bitmap_gl_id);
 	
 		// triangles
@@ -295,7 +295,7 @@ bool walk_view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,
     for (n=0;n!=max_model_texture;n++) {
 		frame=0;
 		if (n<frame_count) frame=(int)texture_frame[n];
-		if (texture->bitmaps[0].alpha_mode!=alpha_mode_transparent) walk_view_model_draw_material(model,texture,material,frame);
+		if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) walk_view_model_draw_material(model,texture,material,frame);
 		texture++;
 		material++;
 	}
@@ -311,7 +311,7 @@ bool walk_view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,
     for (n=0;n!=max_model_texture;n++) {
 		frame=0;
 		if (n<frame_count) frame=(int)texture_frame[n];
-		if (texture->bitmaps[0].alpha_mode==alpha_mode_transparent) walk_view_model_draw_material(model,texture,material,frame);
+		if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) walk_view_model_draw_material(model,texture,material,frame);
 		texture++;
 		material++;
 	}

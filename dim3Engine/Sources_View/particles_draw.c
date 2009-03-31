@@ -303,8 +303,8 @@ void particle_draw(effect_type *effect,int count)
 
 		// particle sprite rotation
 
-	matrix_rotate_x(&pixel_mat_x,view.camera.ang.x);
-	matrix_rotate_y(&pixel_mat_y,view.camera.ang.y);
+	matrix_rotate_x(&pixel_mat_x,view.render->camera.ang.x);
+	matrix_rotate_y(&pixel_mat_y,view.render->camera.ang.y);
 	
 		// reverse
 		

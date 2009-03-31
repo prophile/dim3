@@ -53,17 +53,17 @@ void model_start_texture(texture_type *texture)
 		// get texture ids
 		
 	if (play_animate) {
-		bitmap_gl_id=texture->bitmaps[texture->animate.current_frame].gl_id;
-		bumpmap_gl_id=texture->bumpmaps[texture->animate.current_frame].gl_id;
+		bitmap_gl_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
+		bumpmap_gl_id=texture->frames[texture->animate.current_frame].bumpmap.gl_id;
 	}
 	else {
-		bitmap_gl_id=texture->bitmaps[0].gl_id;
-		bumpmap_gl_id=texture->bumpmaps[0].gl_id;
+		bitmap_gl_id=texture->frames[0].bitmap.gl_id;
+		bumpmap_gl_id=texture->frames[0].bumpmap.gl_id;
 	}
 	
 		// no bump maps
 		
-	if ((texture->bumpmaps[0].gl_id==-1) || (!model_bump_on)) {
+	if ((texture->frames[0].bumpmap.gl_id==-1) || (!model_bump_on)) {
 		glActiveTexture(GL_TEXTURE0);
 		glEnable(GL_TEXTURE_2D);
 		
@@ -137,7 +137,7 @@ void model_end_texture(texture_type *texture)
 
 		// no bump maps
 		
-	if (texture->bumpmaps[0].gl_id==-1) {
+	if (texture->frames[0].bumpmap.gl_id==-1) {
 		glActiveTexture(GL_TEXTURE0);
 		glDisable(GL_TEXTURE_2D);
 		return;
@@ -233,7 +233,7 @@ void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 	material=mesh->materials;
     
     for (n=0;n!=max_model_texture;n++) {
-		if (texture->bitmaps[0].alpha_mode!=alpha_mode_transparent) draw_model_material(model,mesh_idx,texture,material);
+		if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) draw_model_material(model,mesh_idx,texture,material);
 		texture++;
 		material++;
 	}
@@ -248,7 +248,7 @@ void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 	material=mesh->materials;
     
     for (n=0;n!=max_model_texture;n++) {
-		if (texture->bitmaps[0].alpha_mode==alpha_mode_transparent) draw_model_material(model,mesh_idx,texture,material);
+		if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) draw_model_material(model,mesh_idx,texture,material);
 		texture++;
 		material++;
 	}

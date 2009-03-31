@@ -101,9 +101,9 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
         tag=xml_findfirstchild("Map",msg_tag);
         if (tag!=-1) {
             mesh->msg.map_change_on=xml_get_attribute_boolean(tag,"on");
-			xml_get_attribute_text(tag,"name", mesh->msg.map_name,name_str_len);
-			xml_get_attribute_text(tag,"spot_name", mesh->msg.map_spot_name,name_str_len);
-			xml_get_attribute_text(tag,"spot_type", mesh->msg.map_spot_type,name_str_len);
+			xml_get_attribute_text(tag,"name",mesh->msg.map_name,name_str_len);
+			xml_get_attribute_text(tag,"spot_name",mesh->msg.map_spot_name,name_str_len);
+			xml_get_attribute_text(tag,"spot_type",mesh->msg.map_spot_type,name_str_len);
         }
 	}
 
@@ -149,6 +149,8 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 			poly->dark_factor=xml_get_attribute_float_default(poly_tag,"dark_fct",1.0f);
 			poly->alpha=xml_get_attribute_float_default(poly_tag,"alpha",1.0f);
 
+			xml_get_attribute_text(poly_tag,"camera",poly->camera,name_str_len);
+
 			poly++;
 			poly_tag=xml_findnextchild(poly_tag);
 		}
@@ -182,6 +184,7 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->alpha=xml_get_attribute_float_default(tag,"alpha",1.0f);
 		liq->tint_alpha=xml_get_attribute_float(tag,"tint_alpha");
 		xml_get_attribute_2_coord_float(tag,"shift",&liq->x_shift,&liq->y_shift);
+		xml_get_attribute_text(tag,"camera",liq->camera,name_str_len);
 	}
 
 		// physics

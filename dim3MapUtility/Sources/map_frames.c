@@ -39,16 +39,13 @@ extern maputility_settings_type		maputility_settings;
 
 int map_count_texture_frames(map_type *map,int txt)
 {
-	int					i;
+	int					n;
 	texture_type		*texture;
-	bitmap_type			*bitmap;
 		
 	texture=&map->textures[txt];
-	bitmap=texture->bitmaps;
 	
-	for (i=0;i!=max_texture_frame;i++) {
-		if (bitmap->name[0]==0x0) return(i);
-		bitmap++;
+	for (n=0;n!=max_texture_frame;n++) {
+		if (texture->frames[0].name[0]==0x0) return(n);
 	}
 	
 	return(max_texture_frame);
@@ -71,7 +68,7 @@ void map_setup_animated_textures(map_type *map,int tick)
       
 ======================================================= */
 
-bool map_add_texture_frame(map_type *map,int txt,char *bitmap_name,char *bumpmap_name,char *specularmap_name,char *glowmap_name)
+bool map_add_texture_frame(map_type *map,int txt,char *bitmap_name)
 {
 	int			count;
 	
@@ -80,10 +77,7 @@ bool map_add_texture_frame(map_type *map,int txt,char *bitmap_name,char *bumpmap
 	
 	map_textures_close(map);
 	
-	strcpy(map->textures[txt].bitmaps[count].name,bitmap_name);
-	strcpy(map->textures[txt].bumpmaps[count].name,bumpmap_name);
-	strcpy(map->textures[txt].specularmaps[count].name,specularmap_name);
-	strcpy(map->textures[txt].glowmaps[count].name,glowmap_name);
+	strcpy(map->textures[txt].frames[count].name,bitmap_name);
 	
 	return(map_textures_read(map,FALSE));
 }
@@ -98,14 +92,11 @@ bool map_delete_texture_frame(map_type *map,int txt)
 	map_textures_close(map);
 	
 	count--;
-	map->textures[txt].bitmaps[count].name[0]=0x0;
-	map->textures[txt].bitmaps[count].gl_id=-1;
-	map->textures[txt].bumpmaps[count].name[0]=0x0;
-	map->textures[txt].bumpmaps[count].gl_id=-1;
-	map->textures[txt].specularmaps[count].name[0]=0x0;
-	map->textures[txt].specularmaps[count].gl_id=-1;
-	map->textures[txt].glowmaps[count].name[0]=0x0;
-	map->textures[txt].glowmaps[count].gl_id=-1;
+	
+	bitmap_new(&map->textures[txt].frames[count].bitmap);
+	bitmap_new(&map->textures[txt].frames[count].bumpmap);
+	bitmap_new(&map->textures[txt].frames[count].specularmap);
+	bitmap_new(&map->textures[txt].frames[count].glowmap);
 	
 	return(map_textures_read(map,FALSE));
 }

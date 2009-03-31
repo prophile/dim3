@@ -329,14 +329,14 @@ void texture_setting_frame_reset(void)
 	
 	GetControlBounds(ctrl,&box);
 		
-	if (texture->bitmaps[cframe].gl_id==-1) {
+	if (texture->frames[cframe].bitmap.gl_id==-1) {
 		RGBForeColor(&ltgraycolor);
 		PaintRect(&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
 	else {
-		texture_setting_bitmap_draw(&texture->bitmaps[cframe],GetWindowPort(dialog_texture_wind),&box);
+		texture_setting_bitmap_draw(&texture->frames[cframe].bitmap,GetWindowPort(dialog_texture_wind),&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
@@ -349,14 +349,14 @@ void texture_setting_frame_reset(void)
 	
 	GetControlBounds(ctrl,&box);
 	
-	if (texture->bumpmaps[cframe].gl_id==-1) {
+	if (texture->frames[cframe].bumpmap.gl_id==-1) {
 		RGBForeColor(&ltgraycolor);
 		PaintRect(&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
 	else {
-		texture_setting_bitmap_draw(&texture->bumpmaps[cframe],GetWindowPort(dialog_texture_wind),&box);
+		texture_setting_bitmap_draw(&texture->frames[cframe].bumpmap,GetWindowPort(dialog_texture_wind),&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
@@ -369,14 +369,14 @@ void texture_setting_frame_reset(void)
 	
 	GetControlBounds(ctrl,&box);
 	
-	if (texture->specularmaps[cframe].gl_id==-1) {
+	if (texture->frames[cframe].specularmap.gl_id==-1) {
 		RGBForeColor(&ltgraycolor);
 		PaintRect(&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
 	else {
-		texture_setting_bitmap_draw(&texture->specularmaps[cframe],GetWindowPort(dialog_texture_wind),&box);
+		texture_setting_bitmap_draw(&texture->frames[cframe].specularmap,GetWindowPort(dialog_texture_wind),&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
@@ -389,14 +389,14 @@ void texture_setting_frame_reset(void)
 	
 	GetControlBounds(ctrl,&box);
 	
-	if (texture->glowmaps[cframe].gl_id==-1) {
+	if (texture->frames[cframe].glowmap.gl_id==-1) {
 		RGBForeColor(&ltgraycolor);
 		PaintRect(&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
 	else {
-		texture_setting_bitmap_draw(&texture->glowmaps[cframe],GetWindowPort(dialog_texture_wind),&box);
+		texture_setting_bitmap_draw(&texture->frames[cframe].glowmap,GetWindowPort(dialog_texture_wind),&box);
 		RGBForeColor(&blackcolor);
 		FrameRect(&box);
 	}
@@ -419,7 +419,7 @@ bool texture_setting_bitmap_open(char *bitmap_name)
 	
 		// get bitmap
 				
-	if (!dialog_file_open_run("BitmapOpen","Bitmaps/Textures","png",bitmap_name)) return(FALSE);
+	if (!dialog_file_open_run("Open a Bitmap","Bitmaps/Textures","png",NULL,bitmap_name)) return(FALSE);
 	
 		// check bitmap
 		
@@ -459,7 +459,7 @@ static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,Ev
 					texture_setting_frame_save();
 					if (texture_setting_bitmap_open(bitmap_name)) {
 						SetCursor(*GetCursor(watchCursor));
-						map_add_texture_frame(&map,dialog_texture_wind_current_txt,bitmap_name,"","","");
+						map_add_texture_frame(&map,dialog_texture_wind_current_txt,bitmap_name);
 						texture_setting_frame_build_combo(FALSE);
 						texture_setting_frame_reset();
 						InitCursor();
@@ -477,7 +477,7 @@ static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,Ev
 					
 				case kTextureSettingFrameBitmapEdit:
 					if (texture_setting_bitmap_open(bitmap_name)) {
-						strcpy(map.textures[dialog_texture_wind_current_txt].bitmaps[dialog_texture_wind_current_frame].name,bitmap_name);
+						strcpy(map.textures[dialog_texture_wind_current_txt].frames[dialog_texture_wind_current_frame].name,bitmap_name);
 						SetCursor(*GetCursor(watchCursor));
 						map_refresh_textures(&map);
 						texture_setting_frame_reset();

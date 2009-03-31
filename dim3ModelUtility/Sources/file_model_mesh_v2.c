@@ -509,7 +509,7 @@ void encode_mesh_v2_xml(model_type *model)
 		
 		for (n=0;n!=max_model_texture;n++) {
 		
-			if (texture->bitmaps[0].name[0]==0x0) {
+			if (texture->frames[0].name[0]==0x0) {
 				texture++;
 				material++;
 				continue;
@@ -562,7 +562,7 @@ void encode_mesh_v2_xml(model_type *model)
     
     for (n=0;n!=max_model_texture;n++) {
     
-        if (texture->bitmaps[0].name[0]==0x0) {
+        if (texture->frames[0].name[0]==0x0) {
             texture++;
             continue;
         }

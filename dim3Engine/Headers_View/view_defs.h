@@ -79,8 +79,8 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						char					path[1024];
-						bitmap_type				bitmap;
+						char								path[1024];
+						bitmap_type							bitmap;
 					} view_image_type;
 
 //
@@ -88,22 +88,22 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						direction;
-						float					exponent;
-						double					d_x,d_y,d_z,
-												intensity,inv_intensity,
-												d_intensity,d_inv_intensity,
-												d_col_r,d_col_g,d_col_b;
-						d3pnt					pnt;
-						d3col					col;
+						int									direction;
+						float								exponent;
+						double								d_x,d_y,d_z,
+															intensity,inv_intensity,
+															d_intensity,d_inv_intensity,
+															d_col_r,d_col_g,d_col_b;
+						d3pnt								pnt;
+						d3col								col;
 					} view_light_spot_type;
 
 typedef struct		{
-						float					pos[3*max_view_lights_per_poly],
-												col[3*max_view_lights_per_poly],												
-												intensity[max_view_lights_per_poly],
-												exponent[max_view_lights_per_poly],
-												direction[3*max_view_lights_per_poly];
+						float								pos[3*max_view_lights_per_poly],
+															col[3*max_view_lights_per_poly],												
+															intensity[max_view_lights_per_poly],
+															exponent[max_view_lights_per_poly],
+															direction[3*max_view_lights_per_poly];
 					} view_glsl_light_list_type;
 
 //
@@ -111,10 +111,10 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						ping_msec,player_count,player_max_count;
-						bool					local;
-						char					ip[256],name[name_str_len],
-												game_name[name_str_len],map_name[name_str_len];
+						int									ping_msec,player_count,player_max_count;
+						bool								local;
+						char								ip[256],name[name_str_len],
+															game_name[name_str_len],map_name[name_str_len];
 					} join_server_info;
 
 //
@@ -122,12 +122,12 @@ typedef struct		{
 //
  
 typedef struct		{
-						int						idx,obj_uid,
-												min_dist,max_dist,
-												min_pixel_sz,max_pixel_sz,pixel_sz;
-						float					min_alpha,max_alpha,alpha;
-						bool					in_view,no_clip_object,no_clip_self;
-						d3pnt					pnt,proj_pnt;
+						int									idx,obj_uid,
+															min_dist,max_dist,
+															min_pixel_sz,max_pixel_sz,pixel_sz;
+						float								min_alpha,max_alpha,alpha;
+						bool								in_view,no_clip_object,no_clip_self;
+						d3pnt								pnt,proj_pnt;
 					} halo_draw_type;
 
 //
@@ -135,8 +135,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						x,z,y,by,
-												x_off,z_off;
+						int									x,z,y,by,
+															x_off,z_off;
 					} rain_draw_type;
 
 //
@@ -144,8 +144,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						input_tick,draw_tick,draw_time,
-												run_tick;
+						int									input_tick,draw_tick,draw_time,
+															run_tick;
 					} view_time_type;
 
 //
@@ -153,13 +153,11 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						projection_type,
-												lft,rgt,top,bot,
-												near_z,far_z,near_z_offset,
-												under_liquid_idx;
-						float					fov,aspect_ratio;
-						d3pnt					pnt;
-						d3ang					ang;
+						int									projection_type,
+															lft,rgt,top,bot,
+															near_z,far_z,near_z_offset,
+															under_liquid_idx;
+						float								fov,aspect_ratio;
 					} view_camera_type;
 
 //
@@ -167,8 +165,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						tick,count,time;
-						float					total;
+						int									tick,count,time;
+						float								total;
 					} view_fps_type;
 
 //
@@ -176,31 +174,36 @@ typedef struct		{
 //
 
 typedef union		{
-						int							i;
-						float						f;
-						float						vec3[3];
-						float						vec4[4];
+						int									i;
+						float								f;
+						float								vec3[3];
+						float								vec4[4];
 					} view_shader_value_type;
 					
 typedef struct		{
-						int							var_type;
-						char						name[name_str_len];
-						view_shader_value_type		value;
+						int									var_type;
+						char								name[name_str_len];
+						view_shader_value_type				value;
 					} view_shader_custom_var_type;
 					
 typedef struct		{
-						char						name[name_str_len],
-													vertex_name[file_str_len],
-													fragment_name[file_str_len];
-						bool						per_scene_vars_set;
-						view_shader_custom_var_type	custom_vars[max_view_shader_custom_vars];
-						GLhandleARB					vertex_obj,fragment_obj,program_obj;
+						char								name[name_str_len],
+															vertex_name[file_str_len],
+															fragment_name[file_str_len];
+						bool								per_scene_vars_set;
+						view_shader_custom_var_type			custom_vars[max_view_shader_custom_vars];
+						GLhandleARB							vertex_obj,fragment_obj,program_obj;
 					} view_shader_type;
 
 //
 // view rendering structure
 //
 
+typedef struct		{
+						d3pnt								pnt;
+						d3ang								ang;
+					} view_render_camera_type;
+					
 typedef struct		{
 						int									count,
 															list[max_mesh],dist[max_mesh];
@@ -227,14 +230,21 @@ typedef struct		{
 					} view_render_sort_effect_type;
 
 typedef struct		{
+						int									count;
+						view_light_spot_type				spots[max_light_spot];
+					} view_render_light_type;
+					
+typedef struct		{
 						int									count,in_view_count;
 						halo_draw_type						halos[max_light_spot];
 					} view_render_halo_type;
 
 typedef struct		{
+						view_render_camera_type				camera;
 						view_render_mesh_draw_type			mesh_draw;
 						view_render_sort_model_type			sort_model;
 						view_render_sort_effect_type		sort_effect;
+						view_render_light_type				light;
 						view_render_halo_type				halo_draw;
 					} view_render_type;
 
@@ -243,7 +253,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int							image,shader;
+						int									image,shader;
 					} view_count_type;
 
 //
@@ -251,14 +261,14 @@ typedef struct		{
 //
  
 typedef struct		{
-						view_render_type			*render;
-						view_count_type				count;
-						view_time_type				time;
-						view_fps_type				fps;
-						view_camera_type			camera;
-						view_image_type				*images;
-						view_shader_type			*shaders;
-						rain_draw_type				*rain_draws;
+						view_render_type					*render;
+						view_count_type						count;
+						view_time_type						time;
+						view_fps_type						fps;
+						view_camera_type					camera;
+						view_image_type						*images;
+						view_shader_type					*shaders;
+						rain_draw_type						*rain_draws;
 					} view_type;
 
 

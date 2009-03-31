@@ -121,7 +121,7 @@ void rain_draw(int tick)
 		
 	if (map.rain.reset) {
 		map.rain.reset=FALSE;
-		rain_setup(tick,view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
+		rain_setup(tick,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
 	}
 	
 		// rain slant
@@ -187,7 +187,7 @@ void rain_draw(int tick)
 		rain_draw->y+=yadd;
 		rain_draw->z+=zadd;
 		
-		if (rain_draw->y>rain_draw->by) rain_setup_single_reset(rain_draw,view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z);
+		if (rain_draw->y>rain_draw->by) rain_setup_single_reset(rain_draw,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
 
 			// draw rain
 
@@ -218,7 +218,7 @@ void rain_draw(int tick)
 
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 	
 	glEnable(GL_BLEND);

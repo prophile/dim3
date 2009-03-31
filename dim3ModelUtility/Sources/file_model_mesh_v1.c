@@ -241,9 +241,7 @@ void decode_mesh_v1_xml(model_type *model,int model_head)
 		for (k=0;k!=frame_count;k++) {
 			texture->animate.wait[k]=xml_get_attribute_int(tag,"wait");
 			texture->animate.end_tick[k]=texture->animate.total_wait=texture->animate.total_wait+texture->animate.wait[k];
-			
-			xml_get_attribute_text(tag,"bitmap",texture->bitmaps[k].name,64);
-			xml_get_attribute_text(tag,"bumpmap",texture->bumpmaps[k].name,64);
+			xml_get_attribute_text(tag,"bitmap",texture->frames[k].name,file_str_len);
 			
 			tag=xml_findnextchild(tag);
 		}

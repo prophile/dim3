@@ -31,15 +31,19 @@ and can be sold or given away.
 
 #define view_vertex_object_count				8
 
+//
+// reflections
+//
+
+#define reflection_texture_pixel_size			256
 
 //
 // shadows
 //
 
-#define shadow_pbuffer_min_pixel_size			512				// min size for shadow back texture
-#define shadow_pbuffer_max_pixel_size			1024			// max size for shadow back texture
-#define shadow_pbuffer_slice_count				4				// 16 shadows per texture
-#define shadow_pbuffer_gl_transform_size		1000.0f
+#define shadow_texture_pixel_size				512
+#define shadow_texture_slice_count				4				// 16 shadows per texture
+#define shadow_texture_gl_transform_size		1000.0f
 
 //
 // screen sizes

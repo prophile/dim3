@@ -98,7 +98,7 @@ void gl_3D_view(view_camera_type *camera)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	gluLookAt(view.camera.pnt.x,view.camera.pnt.y,(view.camera.pnt.z+view.camera.near_z),view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z,0.0f,1.0f,0.0f);
+	gluLookAt(view.render->camera.pnt.x,view.render->camera.pnt.y,(view.render->camera.pnt.z+view.camera.near_z),view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z,0.0f,1.0f,0.0f);
 
 	glTranslatef(0.0f,0.0f,(float)view.camera.near_z_offset);
 }
@@ -240,7 +240,7 @@ void gl_project_fix_rotation(view_camera_type *camera,int y_off,int *x,int *y,in
 	gl_setup_project();
 	gluProject(dx,dy,dz,mod_matrix,proj_matrix,(GLint*)vport,&dx2,&dy2,&dz2);
 
-	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 	gluUnProject(dx2,dy2,dz2,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
 

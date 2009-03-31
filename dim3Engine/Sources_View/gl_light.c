@@ -64,9 +64,6 @@ double						light_flicker_value[64]={
 														0.00,0.15,0.45,0.15,0.00,0.00,0.00,0.00
 													};
 
-int							gl_light_spots_count;
-view_light_spot_type		gl_light_spots[max_light_spot];
-
 extern bool light_inview(d3pnt *pnt,int intensity);
 
 /* =======================================================
@@ -124,7 +121,7 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,int intensity,floa
 	
 		// already too many lights?
 
-	if (gl_light_spots_count==max_light_spot) return;
+	if (view.render->light.count==max_light_spot) return;
 
 		// is light in view?
 
@@ -132,7 +129,7 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,int intensity,floa
 
 		// create light
 
-	lspot=&gl_light_spots[gl_light_spots_count];
+	lspot=&view.render->light.spots[view.render->light.count];
 	
 		// create intensity for light type
 		
@@ -160,7 +157,7 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,int intensity,floa
 	lspot->d_col_g=(double)lspot->col.g;
 	lspot->d_col_b=(double)lspot->col.b;
 
-	gl_light_spots_count++;
+	view.render->light.count++;
 }
 
 void gl_lights_compile_model_add(int tick,model_draw *draw)
@@ -236,7 +233,7 @@ void gl_lights_compile(int tick)
 	proj_type			*proj;
 	effect_type			*effect;
 	
-	gl_light_spots_count=0;
+	view.render->light.count=0;
 
 		// map lights
 		
@@ -329,7 +326,7 @@ void gl_lights_calc_vertex(double x,double y,double z,float *cf)
 
 		// no lights in scene
 
-	if (gl_light_spots_count==0) {
+	if (view.render->light.count==0) {
 		*cf++=(map.ambient.light_color.r+setup.gamma);
 		*cf++=(map.ambient.light_color.g+setup.gamma);
 		*cf=(map.ambient.light_color.b+setup.gamma);
@@ -340,9 +337,9 @@ void gl_lights_calc_vertex(double x,double y,double z,float *cf)
 		
 	r=g=b=0.0;
 	
-	lspot=gl_light_spots;
+	lspot=view.render->light.spots;
 
-	for (n=0;n!=gl_light_spots_count;n++) {
+	for (n=0;n!=view.render->light.count;n++) {
 
 		dx=lspot->d_x-x;
 		dy=lspot->d_y-y;
@@ -382,16 +379,16 @@ view_light_spot_type* gl_light_find_closest_light(double x,double y,double z,int
 
 		// no lights in scene
 
-	if (gl_light_spots_count==0) return(NULL);
+	if (view.render->light.count==0) return(NULL);
 
 		// find closest light
 	
 	k=-1;
 	dist=-1;
 	
-	for (n=0;n!=gl_light_spots_count;n++) {
+	for (n=0;n!=view.render->light.count;n++) {
 
-		lspot=&gl_light_spots[n];
+		lspot=&view.render->light.spots[n];
 		
 			// get distance to light spot
 			
@@ -424,7 +421,7 @@ view_light_spot_type* gl_light_find_closest_light(double x,double y,double z,int
 	
 	*p_dist=(int)sqrt(dist);
 
-	return(&gl_light_spots[k]);
+	return(&view.render->light.spots[k]);
 }
 
 /* =======================================================
@@ -444,8 +441,8 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_glsl_light_l
 
 	cnt=0;
 
-	for (n=0;n!=gl_light_spots_count;n++) {
-		lspot=&gl_light_spots[n];
+	for (n=0;n!=view.render->light.count;n++) {
+		lspot=&view.render->light.spots[n];
 		
 			// does light hit this polygon?
 
@@ -531,7 +528,7 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_glsl_light_l
 		// only use max_view_lights_per_poly lights per polygon
 		
 	for (n=0;n!=max_view_lights_per_poly;n++) {
-		lspot=&gl_light_spots[sort_list[n]];
+		lspot=&view.render->light.spots[sort_list[n]];
 		
 			// null lights
 			

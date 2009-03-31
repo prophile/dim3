@@ -37,6 +37,7 @@ and can be sold or given away.
 #define kMeshPolySettingDark					FOUR_CHAR_CODE('dark')
 #define kMeshPolySettingShiftX					FOUR_CHAR_CODE('sftx')
 #define kMeshPolySettingShiftY					FOUR_CHAR_CODE('sfty')
+#define kMeshPolySettingCamera					FOUR_CHAR_CODE('cnde')
 
 extern map_type				map;
 
@@ -75,6 +76,8 @@ void palette_polygon_load(void)
 		dialog_set_float(palette_poly_wind,kMeshPolySettingDark,0,poly->dark_factor);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftX,0,poly->x_shift);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftY,0,poly->y_shift);
+		
+		dialog_special_combo_fill_node(palette_poly_wind,kMeshPolySettingCamera,0,poly->camera);
 	}
 	
 		// liquid data
@@ -92,6 +95,8 @@ void palette_polygon_load(void)
 		dialog_set_float(palette_poly_wind,kMeshPolySettingAlpha,0,liq->alpha);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftX,0,liq->x_shift);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftY,0,liq->y_shift);
+		
+		dialog_special_combo_fill_node(palette_poly_wind,kMeshPolySettingCamera,0,liq->camera);
 	}
 	
 	DrawControls(palette_poly_wind);
@@ -124,6 +129,8 @@ void palette_polygon_save(void)
 		poly->alpha=dialog_get_float(palette_poly_wind,kMeshPolySettingAlpha,0);
 		poly->x_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftX,0);
 		poly->y_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftY,0);
+		
+		dialog_special_combo_get_node(palette_poly_wind,kMeshPolySettingCamera,0,poly->camera,name_str_len);
 	}
 	
 		// liquid data
@@ -139,6 +146,8 @@ void palette_polygon_save(void)
 		liq->alpha=dialog_get_float(palette_poly_wind,kMeshPolySettingAlpha,0);
 		liq->x_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftX,0);
 		liq->y_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftY,0);
+		
+		dialog_special_combo_get_node(palette_poly_wind,kMeshPolySettingCamera,0,liq->camera,name_str_len);
 	}
 	
 	main_wind_draw();

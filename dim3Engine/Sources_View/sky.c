@@ -60,13 +60,13 @@ void draw_background(void)
 	
 		// get scrolling
 		
-	gx=((float)(view.camera.pnt.x+view.camera.pnt.z))*(map.background.x_scroll_fact*0.001f);
-	gy=((float)view.camera.pnt.y)*(map.background.y_scroll_fact*0.001f);
+	gx=((float)(view.render->camera.pnt.x+view.render->camera.pnt.z))*(map.background.x_scroll_fact*0.001f);
+	gy=((float)view.render->camera.pnt.y)*(map.background.y_scroll_fact*0.001f);
 
 		// draw background
 		
 	texture=&map.textures[map.background.fill];
-	txt_id=texture->bitmaps[texture->animate.current_frame].gl_id;
+	txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 	
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
@@ -228,7 +228,7 @@ void draw_sky_dome_panoramic(int tick)
 
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(NULL,&view.camera.ang);
+	gl_3D_rotate(NULL,&view.render->camera.ang);
 	gl_setup_project();
 	
 		// construct VBO
@@ -252,7 +252,7 @@ void draw_sky_dome_panoramic(int tick)
 	glTranslatef(txt_x_shift,txt_y_shift,0.0f);
 
 	texture=&map.textures[map.sky.fill];
-	txt_id=texture->bitmaps[texture->animate.current_frame].gl_id;
+	txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 	
 	gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
 
@@ -463,7 +463,7 @@ void draw_sky_dome_hemisphere(int tick)
 
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(NULL,&view.camera.ang);
+	gl_3D_rotate(NULL,&view.render->camera.ang);
 	gl_setup_project();
 	
 		// setup texture
@@ -478,7 +478,7 @@ void draw_sky_dome_hemisphere(int tick)
 	glTranslatef(txt_x_shift,txt_y_shift,0.0f);
 
 	texture=&map.textures[map.sky.fill];
-	txt_id=texture->bitmaps[texture->animate.current_frame].gl_id;
+	txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 	
 	gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
 
@@ -762,7 +762,7 @@ void draw_sky_cube(int tick)
 
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(NULL,&view.camera.ang);
+	gl_3D_rotate(NULL,&view.render->camera.ang);
 	gl_setup_project();
 
 		// setup texture
@@ -793,7 +793,7 @@ void draw_sky_cube(int tick)
 
 	if (map.sky.fill!=-1) {
 		texture=&map.textures[map.sky.fill];
-		txt_id=texture->bitmaps[texture->animate.current_frame].gl_id;
+		txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
 		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
 		glDrawArrays(GL_QUADS,0,4);
@@ -805,7 +805,7 @@ void draw_sky_cube(int tick)
 		
 	if (map.sky.bottom_fill!=-1) {
 		texture=&map.textures[map.sky.bottom_fill];
-		txt_id=texture->bitmaps[texture->animate.current_frame].gl_id;
+		txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
 		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
 		glDrawArrays(GL_QUADS,offset,4);
@@ -817,7 +817,7 @@ void draw_sky_cube(int tick)
 		
 	if (map.sky.north_fill!=-1) {
 		texture=&map.textures[map.sky.north_fill];
-		txt_id=texture->bitmaps[texture->animate.current_frame].gl_id;
+		txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
 		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
 		glDrawArrays(GL_QUADS,offset,4);
@@ -829,7 +829,7 @@ void draw_sky_cube(int tick)
 
 	if (map.sky.east_fill!=-1) {
 		texture=&map.textures[map.sky.east_fill];
-		txt_id=texture->bitmaps[texture->animate.current_frame].gl_id;
+		txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
 		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
 		glDrawArrays(GL_QUADS,offset,4);
@@ -841,7 +841,7 @@ void draw_sky_cube(int tick)
 
 	if (map.sky.south_fill!=-1) {
 		texture=&map.textures[map.sky.south_fill];
-		txt_id=texture->bitmaps[texture->animate.current_frame].gl_id;
+		txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
 		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
 		glDrawArrays(GL_QUADS,offset,4);
@@ -853,7 +853,7 @@ void draw_sky_cube(int tick)
 
 	if (map.sky.west_fill!=-1) {
 		texture=&map.textures[map.sky.west_fill];
-		txt_id=texture->bitmaps[texture->animate.current_frame].gl_id;
+		txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
 		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
 		glDrawArrays(GL_QUADS,offset,4);

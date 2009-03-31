@@ -221,7 +221,7 @@ void bitmap_texture_setup_animation(texture_type *texture,int texture_count,unsi
 	
 	for (n=0;n!=texture_count;n++) {
 	
-		if (texture->bitmaps[0].gl_id==-1) {
+		if (texture->frames[0].bitmap.gl_id==-1) {
 			texture++;
 			continue;
 		}
@@ -239,7 +239,7 @@ void bitmap_texture_setup_animation(texture_type *texture,int texture_count,unsi
 		
 			// set the glow
 
-		if (texture->glowmaps[0].gl_id!=-1) bitmap_texture_set_glow(texture,tick);
+		if (texture->frames[0].glowmap.gl_id!=-1) bitmap_texture_set_glow(texture,tick);
 		
 		texture++;
 	}
@@ -259,8 +259,7 @@ void bitmap_texture_recalc_animation(texture_type *texture)
 	texture->animate.total_wait=0;
 		
 	for (n=0;n!=max_texture_frame;n++) {
-		if (texture->bitmaps[n].name[0]==0x0) break;
-		texture->animate.end_tick[n]=texture->animate.total_wait=texture->animate.total_wait+texture->animate.wait[n];
+		if (texture->frames[n].bitmap.gl_id!=-1) texture->animate.end_tick[n]=texture->animate.total_wait=texture->animate.total_wait+texture->animate.wait[n];
 	}
 }
 
@@ -313,7 +312,7 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 		for (k=0;k!=frame_count;k++) {
 			texture->animate.wait[k]=xml_get_attribute_int_default(image_tag,"wait",0);
 			texture->animate.end_tick[k]=texture->animate.total_wait=texture->animate.total_wait+texture->animate.wait[k];
-			xml_get_attribute_text_default_blank(image_tag,"bitmap",texture->bitmaps[k].name,file_str_len);
+			xml_get_attribute_text_default_blank(image_tag,"bitmap",texture->frames[k].name,file_str_len);
 
 			image_tag=xml_findnextchild(image_tag);
 		}
@@ -358,7 +357,7 @@ void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_s
 	for (k=0;k!=frame_count;k++) {
 		xml_add_tagstart("Image");
 		if (texture->animate.wait[k]!=0) xml_add_attribute_int("wait",texture->animate.wait[k]);
-		if (texture->bitmaps[k].name[0]!=0x0) xml_add_attribute_text("bitmap",texture->bitmaps[k].name);
+		if (texture->frames[k].name[0]!=0x0) xml_add_attribute_text("bitmap",texture->frames[k].name);
 		xml_add_tagend(TRUE);
 	}
 	

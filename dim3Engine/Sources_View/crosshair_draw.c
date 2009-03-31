@@ -180,7 +180,7 @@ void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 		
 	gl_setup_viewport(0);
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 	
 	tx=x;
@@ -200,7 +200,7 @@ void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 
 		case ct_bone_tracking_resizing:
 		case ct_barrel_tracking_resizing:
-			dist=distance_get(view.camera.pnt.x,view.camera.pnt.y,view.camera.pnt.z,x,y,z);
+			dist=distance_get(view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z,x,y,z);
 
 			if (dist>weap->crosshair.distance) {
 				sz=weap->crosshair.min_size;

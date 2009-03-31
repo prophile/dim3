@@ -99,7 +99,7 @@ void palette_mesh_load(void)
 	dialog_set_boolean(palette_mesh_wind,kMeshSendMessageExit,0,mesh->msg.exit_on);
 	dialog_set_int(palette_mesh_wind,kMeshSendMessageExitId,0,mesh->msg.exit_id);
 	dialog_set_boolean(palette_mesh_wind,kMeshSendMessageMapChange,0,mesh->msg.map_change_on);
-	dialog_set_text(palette_mesh_wind,kMeshSendMessageMapChangeName,0,mesh->msg.map_name);
+	dialog_special_combo_fill_map(palette_mesh_wind,kMeshSendMessageMapChangeName,0,mesh->msg.map_name);
 	dialog_set_text(palette_mesh_wind,kMeshSendMessageMapChangeSpotName,0,mesh->msg.map_spot_name);
 	dialog_set_text(palette_mesh_wind,kMeshSendMessageMapChangeSpotType,0,mesh->msg.map_spot_type);
 	dialog_set_boolean(palette_mesh_wind,kMeshSendMessageBase,0,mesh->msg.base_on);
@@ -139,7 +139,7 @@ void palette_mesh_save(void)
 	mesh->msg.exit_on=dialog_get_boolean(palette_mesh_wind,kMeshSendMessageExit,0);
 	mesh->msg.exit_id=dialog_get_int(palette_mesh_wind,kMeshSendMessageExitId,0);
 	mesh->msg.map_change_on=dialog_get_boolean(palette_mesh_wind,kMeshSendMessageMapChange,0);
-	dialog_get_text(palette_mesh_wind,kMeshSendMessageMapChangeName,0,mesh->msg.map_name,name_str_len);
+	dialog_special_combo_get_map(palette_mesh_wind,kMeshSendMessageMapChangeName,0,mesh->msg.map_name,file_str_len);
 	dialog_get_text(palette_mesh_wind,kMeshSendMessageMapChangeSpotName,0,mesh->msg.map_spot_name,name_str_len);
 	dialog_get_text(palette_mesh_wind,kMeshSendMessageMapChangeSpotType,0,mesh->msg.map_spot_type,name_str_len);
 	mesh->msg.base_on=dialog_get_boolean(palette_mesh_wind,kMeshSendMessageBase,0);

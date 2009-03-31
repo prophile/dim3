@@ -37,16 +37,13 @@ and can be sold or given away.
 
 int model_count_texture_frames(model_type *model,int txt)
 {
-	int					i;
+	int					n;
 	texture_type		*texture;
-	bitmap_type			*bitmap;
 	
 	texture=&model->textures[txt];
-	bitmap=texture->bitmaps;
 	
-	for (i=0;i!=max_texture_frame;i++) {
-		if (bitmap->name[0]==0x0) return(i);
-		bitmap++;
+	for (n=0;n!=max_texture_frame;n++) {
+		if (texture->frames[n].name[0]==0x0) return(n);
 	}
 	
 	return(max_texture_frame);
@@ -69,7 +66,7 @@ void model_setup_animated_textures(model_type *model,unsigned char *user_frames,
       
 ======================================================= */
 
-bool model_add_texture_frame(model_type *model,int txt,char *bitmap_name,char *bumpmap_name,char *specularmap_name,char *glowmap_name)
+bool model_add_texture_frame(model_type *model,int txt,char *bitmap_name)
 {
 	int			count;
 	
@@ -78,10 +75,7 @@ bool model_add_texture_frame(model_type *model,int txt,char *bitmap_name,char *b
 	
 	model_textures_close(model);
 	
-	strcpy(model->textures[txt].bitmaps[count].name,bitmap_name);
-	strcpy(model->textures[txt].bumpmaps[count].name,bumpmap_name);
-	strcpy(model->textures[txt].specularmaps[count].name,specularmap_name);
-	strcpy(model->textures[txt].glowmaps[count].name,glowmap_name);
+	strcpy(model->textures[txt].frames[count].name,bitmap_name);
 	
 	model_textures_read(model);
 	
@@ -98,14 +92,11 @@ bool model_delete_texture_frame(model_type *model,int txt)
 	model_textures_close(model);
 	
 	count--;
-	model->textures[txt].bitmaps[count].name[0]=0x0;
-	model->textures[txt].bitmaps[count].gl_id=-1;
-	model->textures[txt].bumpmaps[count].name[0]=0x0;
-	model->textures[txt].bumpmaps[count].gl_id=-1;
-	model->textures[txt].specularmaps[count].name[0]=0x0;
-	model->textures[txt].specularmaps[count].gl_id=-1;
-	model->textures[txt].glowmaps[count].name[0]=0x0;
-	model->textures[txt].glowmaps[count].gl_id=-1;
+
+	bitmap_new(&model->textures[txt].frames[count].bitmap);
+	bitmap_new(&model->textures[txt].frames[count].bumpmap);
+	bitmap_new(&model->textures[txt].frames[count].specularmap);
+	bitmap_new(&model->textures[txt].frames[count].glowmap);
 	
 	model_textures_read(model);
 	

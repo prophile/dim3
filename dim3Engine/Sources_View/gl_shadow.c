@@ -31,8 +31,7 @@ and can be sold or given away.
 
 #include "video.h"
 
-int							shadow_pbuffer_pixel_size;
-unsigned long				shadow_fbo_id,shadow_fbo_txt_id;
+GLuint						shadow_fbo_id,shadow_fbo_txt_id;
 bool						shadow_on;
 
 extern setup_type			setup;
@@ -53,26 +52,17 @@ bool gl_shadow_initialize(char *err_str)
 		
 	shadow_on=(gl_check_frame_buffer_ok()) && (setup.shadow_on);
 	if (!shadow_on) return(TRUE);
-	
-		// best size for shadow
-
-	shadow_pbuffer_pixel_size=render_info.texture_max_size;
-	if (shadow_pbuffer_pixel_size>shadow_pbuffer_max_pixel_size) shadow_pbuffer_pixel_size=shadow_pbuffer_max_pixel_size;
 
 		// create the frame buffer object
 
-	glGenFramebuffersEXT(1,&gl_id);
+	glGenFramebuffersEXT(1,&shadow_fbo_id);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,gl_id);
-
-	shadow_fbo_id=gl_id;
 
 		// create texture
 
-	glGenTextures(1,&gl_id);
-	glBindTexture(GL_TEXTURE_2D,gl_id);
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,shadow_pbuffer_pixel_size,shadow_pbuffer_pixel_size,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
-
-	shadow_fbo_txt_id=gl_id;
+	glGenTextures(1,&shadow_fbo_txt_id);
+	glBindTexture(GL_TEXTURE_2D,shadow_fbo_txt_id);
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,shadow_texture_pixel_size,shadow_texture_pixel_size,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
 
 		// attach texture to frame buffer object
 
@@ -85,7 +75,7 @@ bool gl_shadow_initialize(char *err_str)
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
 
 	if (status!=GL_FRAMEBUFFER_COMPLETE_EXT) {
-		strcpy(err_str,"Unable to create frame buffer shadow buffer");
+		strcpy(err_str,"Unable to create shadow FBO");
 		return(FALSE);
 	}
 
@@ -94,19 +84,12 @@ bool gl_shadow_initialize(char *err_str)
 
 void gl_shadow_shutdown(void)
 {
-	GLuint			gl_id;
-	
 	if (!shadow_on) return;
 
-		// destroy frame buffer
+		// destroy frame buffer and texture
 
-	gl_id=shadow_fbo_id;
-	glDeleteFramebuffersEXT(1,&gl_id);
-
-		// destroy texture
-
-	gl_id=shadow_fbo_txt_id;
-	glDeleteTextures(1,&gl_id);
+	glDeleteFramebuffersEXT(1,&shadow_fbo_id);
+	glDeleteTextures(1,&shadow_fbo_txt_id);
 }
 
 /* =======================================================

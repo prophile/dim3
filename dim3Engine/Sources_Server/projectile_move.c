@@ -329,7 +329,7 @@ void projectile_eject_vector(proj_type *proj,d3vct *vct)
 	mesh_poly=&map.mesh.meshes[poly->mesh_idx].polys[poly->poly_idx];
 		
 	if (!mesh_poly->box.wall_like) {
-		if (view.camera.pnt.y<proj->pnt.y) {
+		if (view.render->camera.pnt.y<proj->pnt.y) {
 			vct->y=-1.0f;
 		}
 		else {
@@ -348,10 +348,10 @@ void projectile_eject_vector(proj_type *proj,d3vct *vct)
 	angle_get_movement(wall_ang,1000,&x,&z);
 	
 	x=abs(x);
-	if (view.camera.pnt.x<proj->pnt.x) x=-x;
+	if (view.render->camera.pnt.x<proj->pnt.x) x=-x;
 	
 	z=abs(z);
-	if (view.camera.pnt.z<proj->pnt.z) z=-z;
+	if (view.render->camera.pnt.z<proj->pnt.z) z=-z;
 	
 	vct->x=(float)x;
 	vct->y=0;

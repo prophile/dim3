@@ -54,22 +54,22 @@ extern void dialog_set_focus(WindowRef wind,unsigned long sig,int id);
 extern void dialog_enable(WindowRef wind,unsigned long sig,int id,bool enable);
 extern void dialog_hide(WindowRef wind,unsigned long sig,int id,bool show);
 extern void dialog_redraw(WindowRef wind,unsigned long sig,int id);
-
-//
-// special dialog combos
-//
-
 extern void dialog_special_combo_fill_sound(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_fill_particle(WindowRef wind,unsigned long sig,int id,char *sel_name);
+extern void dialog_special_combo_fill_ring(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_fill_shader(WindowRef wind,unsigned long sig,int id,char *sel_name);
+extern void dialog_special_combo_fill_node(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_fill_script(WindowRef wind,unsigned long sig,int id,char *sel_name);
+extern void dialog_special_combo_fill_map(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_fill_model(WindowRef wind,unsigned long sig,int id,char *sel_name);
 extern void dialog_special_combo_get_sound(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_special_combo_get_particle(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
+extern void dialog_special_combo_get_ring(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_special_combo_get_shader(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
+extern void dialog_special_combo_get_node(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_special_combo_get_script(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
+extern void dialog_special_combo_get_map(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_special_combo_get_model(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
-
 extern void dialog_fill_texture_combo(WindowRef wind,unsigned long sig,int id,bool none,int idx);
 extern int dialog_get_texture_combo(WindowRef wind,unsigned long sig,int id,bool none);
 
@@ -85,7 +85,7 @@ extern void dialog_preference_run(void);
 //
 
 extern bool dialog_file_new_run(char *title,char *file_name);
-extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *file_name);
+extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name);
 extern bool dialog_save_run(void);
 
 //

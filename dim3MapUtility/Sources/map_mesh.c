@@ -352,6 +352,8 @@ int map_mesh_add_poly(map_type *map,int mesh_idx,int ptsz,int *x,int *y,int *z,f
 	poly->x_shift=poly->y_shift=0.0f;
 	poly->dark_factor=1.0f;
 	poly->alpha=1.0f;
+	
+	poly->camera[0]=0x0;
 
 	return(poly_idx);
 }

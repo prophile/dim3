@@ -134,22 +134,7 @@ bool create_binary(void)
 	
 	mkdir(base_path,S_IRWXU|S_IRWXG|S_IRWXO);
 	
-	sprintf(path,"%s/Bitmaps",base_path);
-	mkdir(path,S_IRWXU|S_IRWXG|S_IRWXO);
-	
-	sprintf(path,"%s/Bitmaps/Textures",base_path);
-	mkdir(path,S_IRWXU|S_IRWXG|S_IRWXO);
-	
-	sprintf(path,"%s/Bitmaps/Textures_dot3",base_path);
-	mkdir(path,S_IRWXU|S_IRWXG|S_IRWXO);
-	
-	sprintf(path,"%s/Bitmaps/Textures_Height",base_path);
-	mkdir(path,S_IRWXU|S_IRWXG|S_IRWXO);
-	
-	sprintf(path,"%s/Bitmaps/Textures_Specular",base_path);
-	mkdir(path,S_IRWXU|S_IRWXG|S_IRWXO);
-	
-	sprintf(path,"%s/Bitmaps/Textures_Glow",base_path);
+	sprintf(path,"%s/Textures",base_path);
 	mkdir(path,S_IRWXU|S_IRWXG|S_IRWXO);
 
 	sprintf(path,"%s/Shaders",base_path);
@@ -265,7 +250,7 @@ void open_model_xml(void)
 	
 	InitCursor();
 
-    if (!dialog_file_open_run("FileOpen","Models",NULL,file_name)) return;
+    if (!dialog_file_open_run("Open a Model","Models",NULL,"Mesh.xml",file_name)) return;
 	
 		// open model
 		
@@ -445,7 +430,7 @@ void insert_mesh_dim3_model(void)
 	
 	InitCursor();
 
-    if (!dialog_file_open_run("FileOpen","Models",NULL,file_name)) return;
+    if (!dialog_file_open_run("Open a Model","Models",NULL,"Mesh.xml",file_name)) return;
 	
 	if (cur_mesh==-1) cur_mesh=0;
 	

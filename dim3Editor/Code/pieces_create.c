@@ -44,7 +44,7 @@ extern map_type					map;
 
 bool piece_create_texture_ok(void)
 {
-	if (map.textures[0].bitmaps[0].gl_id!=-1) return(TRUE);
+	if (map.textures[0].frames[0].bitmap.gl_id!=-1) return(TRUE);
 
 	StandardAlert(kAlertCautionAlert,"\pYou need at least one texture","\pYou need a default texture in the first spot to add pieces with.  Please add a texture (by double clicking the first open texture) before adding pieces to the map.",NULL,NULL);
 	return(FALSE);

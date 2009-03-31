@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: NIB Dialog Utilities
+ Usage: Dialog Utilities
 
 ***************************** License ********************************
 
@@ -27,6 +27,16 @@ and can be sold or given away.
 
 #include "dialog.h"
 
+#define DIALOG_IS_EDITOR			1
+
+#ifdef DIALOG_IS_EDITOR
+	extern map_type					map;
+#else
+	extern model_type				model;
+#endif
+
+extern file_path_setup_type			file_path_setup;
+
 /* =======================================================
 
       Open Dialogs
@@ -40,7 +50,11 @@ void dialog_open(WindowRef *wind,char *name)
 	
 	InitCursor();
 	
+#ifdef DIALOG_IS_EDITOR
 	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"dim3 Editor",kCFStringEncodingMacRoman);
+#else
+	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"dim3 Animator",kCFStringEncodingMacRoman);
+#endif
 	CreateNibReference(cf_str,&nib);
 	CFRelease(cf_str);
 	
@@ -540,5 +554,431 @@ void dialog_redraw(WindowRef wind,unsigned long sig,int id)
 	GetControlByID(wind,&ctrl_id,&ctrl);
 	
 	Draw1Control(ctrl);
+}
+
+/* =======================================================
+
+      Special Dialog Combo Utilities
+      
+======================================================= */
+
+void dialog_special_combo_fill(WindowRef wind,unsigned long sig,int id,int count,char *names,int str_len,char *sel_name)
+{
+	int				n,sel_idx;
+	char			*c;
+	ControlRef		ctrl;
+	ControlID		ctrl_id;
+	MenuRef			menu;
+	CFStringRef		cf_str;
+	
+		// clear
+		
+	ctrl_id.signature=sig;
+	ctrl_id.id=id;
+	GetControlByID(wind,&ctrl_id,&ctrl);
+
+	menu=GetControlPopupMenuHandle(ctrl);
+	DeleteMenuItems(menu,1,CountMenuItems(menu));
+	
+	SetControl32BitMaximum(ctrl,0);
+
+		// fill
+	
+	sel_idx=-1;
+
+	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"None",kCFStringEncodingMacRoman);		// none
+	AppendMenuItemTextWithCFString(menu,cf_str,0,0,NULL);
+	CFRelease(cf_str);
+	
+	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"-",kCFStringEncodingMacRoman);		// divider
+	AppendMenuItemTextWithCFString(menu,cf_str,0,0,NULL);
+	CFRelease(cf_str);
+	
+		// items
+		
+	c=names;
+	
+	for (n=0;n!=count;n++) {
+		if (strcmp(c,sel_name)==0) sel_idx=n;
+		cf_str=CFStringCreateWithCString(kCFAllocatorDefault,c,kCFStringEncodingMacRoman);
+		AppendMenuItemTextWithCFString(menu,cf_str,0,0,NULL);
+		CFRelease(cf_str);
+		c+=str_len;
+	}
+	
+	SetControl32BitMaximum(ctrl,CountMenuItems(menu));
+	
+		// select
+		
+	if (sel_idx==-1) {
+		SetControl32BitValue(ctrl,1);
+	}
+	else {
+		SetControl32BitValue(ctrl,(sel_idx+3));
+	}
+}
+
+void dialog_special_combo_get(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
+{
+	int				sel_idx;
+	ControlRef		ctrl;
+	ControlID		ctrl_id;
+	MenuRef			menu;
+	CFStringRef		cf_str;
+	
+	ctrl_id.signature=sig;
+	ctrl_id.id=id;
+	GetControlByID(wind,&ctrl_id,&ctrl);
+
+	sel_idx=GetControl32BitValue(ctrl);
+	if (sel_idx<2) {
+		sel_name[0]=0x0;
+		return;
+	}
+	
+	menu=GetControlPopupMenuHandle(ctrl);
+	
+	CopyMenuItemTextAsCFString(menu,sel_idx,&cf_str);
+	CFStringGetCString(cf_str,sel_name,str_len,kCFStringEncodingMacRoman);
+    CFRelease(cf_str);
+	
+	sel_name[str_len-1]=0x0;
+}
+
+/* =======================================================
+
+      Fill Special Dialogs
+      
+======================================================= */
+
+void dialog_special_combo_fill_sound(WindowRef wind,unsigned long sig,int id,char *sel_name)
+{
+	int					sound_count,head_tag,tag;
+	char				path[1024],sound_names[256][name_str_len];
+	
+	sound_count=0;
+		
+	file_paths_data(&file_path_setup,path,"Settings","Sounds","xml");
+	if (xml_open_file(path)) {
+	
+		head_tag=xml_findrootchild("Sounds");
+		if (head_tag!=-1) {
+	
+			tag=xml_findfirstchild("Sound",head_tag);
+		
+			while (tag!=-1) {
+				xml_get_attribute_text(tag,"name",sound_names[sound_count],name_str_len);
+				sound_count++;
+				tag=xml_findnextchild(tag);
+			}
+		}
+		
+		xml_close_file();
+	}
+
+	dialog_special_combo_fill(wind,sig,id,sound_count,(char*)sound_names,name_str_len,sel_name);
+}
+
+void dialog_special_combo_fill_particle(WindowRef wind,unsigned long sig,int id,char *sel_name)
+{
+	int					particle_count,data_head_tag,head_tag,tag;
+	char				path[1024],particle_names[256][name_str_len];
+
+	particle_count=0;
+	
+	file_paths_data(&file_path_setup,path,"Settings","Particles","xml");
+	if (xml_open_file(path)) {
+	
+		data_head_tag=xml_findrootchild("Particle_Data");
+		
+		if (data_head_tag==-1) {
+			head_tag=xml_findrootchild("Particles");
+		}
+		else {
+			head_tag=xml_findfirstchild("Particles",data_head_tag);
+		}
+	
+		if (head_tag!=-1) {
+
+			tag=xml_findfirstchild("Particle",head_tag);
+			
+			while (tag!=-1) {
+				xml_get_attribute_text(tag,"name",particle_names[particle_count],name_str_len);
+				particle_count++;
+				tag=xml_findnextchild(tag);
+			}
+		}
+		
+		if (data_head_tag==-1) {
+			head_tag=xml_findrootchild("Particle_Groups");
+		}
+		else {
+			head_tag=xml_findfirstchild("Particle_Groups",data_head_tag);
+		}
+
+		if (head_tag!=-1) {
+
+			tag=xml_findfirstchild("Particle_Group",head_tag);
+			
+			while (tag!=-1) {
+				xml_get_attribute_text(tag,"name",particle_names[particle_count],name_str_len);
+				particle_count++;
+				tag=xml_findnextchild(tag);
+			}
+		}
+	
+		xml_close_file();
+	}
+
+	dialog_special_combo_fill(wind,sig,id,particle_count,(char*)particle_names,name_str_len,sel_name);
+}
+
+void dialog_special_combo_fill_ring(WindowRef wind,unsigned long sig,int id,char *sel_name)
+{
+	int					ring_count,head_tag,tag;
+	char				path[1024],ring_names[256][name_str_len];
+
+	ring_count=0;
+	
+	file_paths_data(&file_path_setup,path,"Settings","Rings","xml");
+	if (xml_open_file(path)) {
+	
+		head_tag=xml_findrootchild("Rings");
+		if (head_tag!=-1) {
+
+			tag=xml_findfirstchild("Ring",head_tag);
+			
+			while (tag!=-1) {
+				xml_get_attribute_text(tag,"name",ring_names[ring_count],name_str_len);
+				ring_count++;
+				tag=xml_findnextchild(tag);
+			}
+		}
+	
+		xml_close_file();
+	}
+
+	dialog_special_combo_fill(wind,sig,id,ring_count,(char*)ring_names,name_str_len,sel_name);
+}
+
+void dialog_special_combo_fill_shader(WindowRef wind,unsigned long sig,int id,char *sel_name)
+{
+	int					shader_count,head_tag,tag;
+	char				path[1024],shader_names[256][file_str_len];
+
+	shader_count=0;
+	
+	file_paths_data(&file_path_setup,path,"Settings","Shaders","xml");
+	if (xml_open_file(path)) {
+	
+		head_tag=xml_findrootchild("Shaders");
+		if (head_tag!=-1) {
+
+			tag=xml_findfirstchild("Shader",head_tag);
+			
+			while (tag!=-1) {
+				xml_get_attribute_text(tag,"name",shader_names[shader_count],file_str_len);
+				shader_count++;
+				tag=xml_findnextchild(tag);
+			}
+		}
+	
+		xml_close_file();
+	}
+
+	dialog_special_combo_fill(wind,sig,id,shader_count,(char*)shader_names,file_str_len,sel_name);
+}
+
+void dialog_special_combo_fill_node(WindowRef wind,unsigned long sig,int id,char *sel_name)
+{
+#ifdef DIALOG_IS_EDITOR
+
+	int							n,node_count;
+	char						node_names[max_node][name_str_len];
+	
+	node_count=0;
+	
+	for (n=0;n!=map.nnode;n++) {
+		if (map.nodes[n].name[0]!=0x0) {
+			strcpy(node_names[node_count],map.nodes[n].name);
+			node_count++;
+		}
+	}
+	
+	dialog_special_combo_fill(wind,sig,id,node_count,(char*)node_names,name_str_len,sel_name);
+	
+#endif
+}
+
+void dialog_special_combo_fill_script(WindowRef wind,unsigned long sig,int id,char *sel_name)
+{
+	int							n,script_count;
+	char						script_names[256][file_str_len];
+	file_path_directory_type	*fpd;
+	
+	fpd=file_paths_read_directory_data(&file_path_setup,"Scripts/Objects","js");
+
+	script_count=fpd->nfile;
+	
+	for (n=0;n!=fpd->nfile;n++) {
+		strcpy(script_names[n],fpd->files[n].file_name);
+	}
+	
+	file_paths_close_directory(fpd);
+	
+	dialog_special_combo_fill(wind,sig,id,script_count,(char*)script_names,file_str_len,sel_name);
+}
+
+void dialog_special_combo_fill_map(WindowRef wind,unsigned long sig,int id,char *sel_name)
+{
+	int							n,map_count;
+	char						map_names[256][file_str_len];
+	file_path_directory_type	*fpd;
+	
+	fpd=file_paths_read_directory_data(&file_path_setup,"Maps","xml");
+
+	map_count=fpd->nfile;
+	
+	for (n=0;n!=fpd->nfile;n++) {
+		strcpy(map_names[n],fpd->files[n].file_name);
+	}
+	
+	file_paths_close_directory(fpd);
+	
+	dialog_special_combo_fill(wind,sig,id,map_count,(char*)map_names,file_str_len,sel_name);
+}
+
+void dialog_special_combo_fill_model(WindowRef wind,unsigned long sig,int id,char *sel_name)
+{
+	int							n,model_count;
+	char						model_names[256][file_str_len];
+	file_path_directory_type	*fpd;
+	
+	fpd=file_paths_read_directory_data_dir(&file_path_setup,"Models","Mesh.xml");
+
+	model_count=fpd->nfile;
+	
+	for (n=0;n!=fpd->nfile;n++) {
+		strcpy(model_names[n],fpd->files[n].file_name);
+	}
+	
+	file_paths_close_directory(fpd);
+
+	dialog_special_combo_fill(wind,sig,id,model_count,(char*)model_names,file_str_len,sel_name);
+}
+
+/* =======================================================
+
+      Get Special Dialogs
+      
+======================================================= */
+
+inline void dialog_special_combo_get_sound(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
+{
+	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
+}
+
+inline void dialog_special_combo_get_particle(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
+{
+	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
+}
+
+inline void dialog_special_combo_get_ring(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
+{
+	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
+}
+
+inline void dialog_special_combo_get_node(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
+{
+	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
+}
+
+inline void dialog_special_combo_get_shader(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
+{
+	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
+}
+
+inline void dialog_special_combo_get_script(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
+{
+	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
+}
+
+inline void dialog_special_combo_get_map(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
+{
+	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
+}
+
+inline void dialog_special_combo_get_model(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len)
+{
+	dialog_special_combo_get(wind,sig,id,sel_name,str_len);
+}
+
+/* =======================================================
+
+      Dialog Map Texture Combo Utilities
+      
+======================================================= */
+
+void dialog_fill_texture_combo(WindowRef wind,unsigned long sig,int id,bool none,int idx)
+{
+	int					n,ntexture;
+	texture_type		*texture;
+	
+		// clear combo
+		
+	dialog_clear_combo(wind,sig,id);
+	
+		// none items
+		
+	if (none) {
+		dialog_add_combo_item(wind,sig,id,"None",0);
+		dialog_add_combo_item(wind,sig,id,"-",0);
+	}
+	
+		// textures
+		
+#ifdef DIALOG_IS_EDITOR
+	texture=map.textures;
+	ntexture=max_map_texture;
+#else
+	texture=model.textures;
+	ntexture=max_model_texture;
+#endif
+
+	for (n=0;n!=ntexture;n++) {
+	
+		if (texture->frames[0].name[0]==0x0) {
+			dialog_add_combo_item(wind,sig,id,"(no texture)",0);
+		}
+		else {
+			dialog_add_combo_item(wind,sig,id,texture->frames[0].name,0);
+		}
+		
+		texture++;
+	}
+	
+	if (idx==-1) {
+		dialog_set_combo(wind,sig,id,0);
+	}
+	else {
+		if (!none) {
+			dialog_set_combo(wind,sig,id,idx);
+		}
+		else {
+			dialog_set_combo(wind,sig,id,(idx+2));
+		}
+	}
+}
+
+int dialog_get_texture_combo(WindowRef wind,unsigned long sig,int id,bool none)
+{
+	int			idx;
+	
+	idx=dialog_get_combo(wind,sig,id);
+	
+	if (!none) return(idx);
+	
+	if (idx==0) return(-1);
+	return(idx-2);
 }
 

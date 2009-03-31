@@ -90,11 +90,11 @@ void texture_palette_draw(void)
 		
 			// the textures
 			
-		if (texture->bitmaps[0].gl_id!=-1) {
+		if (texture->frames[0].bitmap.gl_id!=-1) {
 			glColor4f(1.0f,1.0f,1.0f,1.0f);
 			
 			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D,texture->bitmaps[0].gl_id);
+			glBindTexture(GL_TEXTURE_2D,texture->frames[0].bitmap.gl_id);
 
 			glBegin(GL_QUADS);
 			glTexCoord2f(0,0);

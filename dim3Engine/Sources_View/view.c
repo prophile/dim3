@@ -57,7 +57,7 @@ extern void menu_input(void);
 extern void file_input(void);
 extern void debug_input(void);
 extern void view_run(int tick);
-extern void view_draw_setup(int tick);
+extern void view_draw_setup_camera(int tick);
 extern void view_draw(int tick);
 extern int game_time_get(void);
 extern void chat_clear_messages(void);
@@ -229,10 +229,21 @@ bool view_initialize_display(char *err_str)
 		// initialize text
 	
 	gl_text_initialize();
+	
+		// reflections
+		
+	if (!gl_reflection_initialize(err_str)) {
+		gl_text_shutdown();
+		gl_shutdown();
+		view_memory_release();
+		SDL_Quit();
+		return(FALSE);
+	}
 
 		// shadows
 
 	if (!gl_shadow_initialize(err_str)) {
+		gl_reflection_shutdown();
 		gl_text_shutdown();
 		gl_shutdown();
 		view_memory_release();
@@ -251,6 +262,7 @@ void view_shutdown_display(void)
 {
 	view_dispose_vertex_objects();
 	gl_shader_shutdown();
+	gl_reflection_shutdown();
 	gl_shadow_shutdown();
 	gl_text_shutdown();
 	gl_shutdown();
@@ -433,7 +445,14 @@ void view_loop_draw(int tick)
 {
 	if (tick<view.time.draw_tick) return;
 	view.time.draw_tick=tick+view.time.draw_time;
+	
+		// texture setup
+	
+	map_setup_animated_textures(&map,tick);
+	map_mesh_poly_run_shifts(&map,tick);
 
+		// start frame
+		
 	if (!fog_solid_on()) {
 		gl_frame_start(NULL);
 	}
@@ -441,7 +460,9 @@ void view_loop_draw(int tick)
 		gl_frame_start(&map.fog.col);		// is obscuring fog on, then background = fog color
 	}
 
-	view_draw_setup(tick);
+		// draw frame
+		
+	view_draw_setup_camera(tick);
 	view_draw(tick);
 	hud_draw(tick);
 	radar_draw(tick);
@@ -467,7 +488,7 @@ void view_capture_draw(char *path)
 
 	gl_frame_start(NULL);
 	
-	view_draw_setup(tick);
+	view_draw_setup_camera(tick);
 	view_draw(tick);
 	
 	gl_screen_shot(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz,TRUE,path);

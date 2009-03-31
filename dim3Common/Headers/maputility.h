@@ -225,6 +225,7 @@ typedef struct		{
 						float								gx[8],gy[8],
 															x_shift,y_shift,
 															dark_factor,alpha;
+						char								camera[name_str_len];
 						map_mesh_poly_box_type				box;
 						map_mesh_poly_line_type				line;
 						map_mesh_poly_slope_type			slope;
@@ -246,7 +247,7 @@ typedef struct		{
 typedef struct		{
 						int									entry_id,exit_id,base_team;
 						bool								entry_on,exit_on,base_on,map_change_on;
-						char								map_name[name_str_len],
+						char								map_name[file_str_len],
 															map_spot_name[name_str_len],map_spot_type[name_str_len];
 					} map_mesh_message_type;
 
@@ -295,6 +296,7 @@ typedef struct		{
 						float								alpha,speed_alter,tint_alpha,
 															x_txtfact,y_txtfact,x_txtoff,y_txtoff,
 															x_shift,y_shift;
+						char								camera[name_str_len];
 						d3col								col;
 						map_liquid_harm_type				harm;
 						map_liquid_tide_type				tide;
@@ -640,5 +642,5 @@ extern void map_movement_delete(map_type *map,int movement_idx);
 extern int map_movement_move_add(map_type *map,int movement_idx);
 extern void map_movement_move_delete(map_type *map,int movement_idx,int move_idx);
 
-extern bool map_add_texture_frame(map_type *map,int txt,char *bitmap_name,char *bumpmap_name,char *specularmap_name,char *glowmap_name);
+extern bool map_add_texture_frame(map_type *map,int txt,char *bitmap_name);
 extern bool map_delete_texture_frame(map_type *map,int txt);

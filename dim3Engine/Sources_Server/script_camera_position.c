@@ -76,13 +76,13 @@ JSBool js_get_camera_position_property(JSContext *cx,JSObject *j_obj,jsval id,js
 	switch (JSVAL_TO_INT(id)) {
 	
 		case camera_position_prop_x:
-			*vp=INT_TO_JSVAL(view.camera.pnt.x);
+			*vp=INT_TO_JSVAL(view.render->camera.pnt.x);
 			break;
 		case camera_position_prop_z:
-			*vp=INT_TO_JSVAL(view.camera.pnt.z);
+			*vp=INT_TO_JSVAL(view.render->camera.pnt.z);
 			break;
 		case camera_position_prop_y:
-			*vp=INT_TO_JSVAL(view.camera.pnt.y);
+			*vp=INT_TO_JSVAL(view.render->camera.pnt.y);
 			break;
 
 	}

@@ -219,10 +219,10 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 				// opaque or transparent flag
 				
 			if (opaque) {
-				if ((mesh_poly->alpha!=1.0f) || (texture->bitmaps[0].alpha_mode==alpha_mode_transparent)) continue;
+				if ((mesh_poly->alpha!=1.0f) || (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent)) continue;
 			}
 			else {
-				if ((mesh_poly->alpha==1.0f) && (texture->bitmaps[0].alpha_mode!=alpha_mode_transparent)) continue;
+				if ((mesh_poly->alpha==1.0f) && (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent)) continue;
 			}
 			
 				// y clipping
@@ -243,8 +243,8 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 		
 				// setup texture
 				
-			if (texture->bitmaps[0].gl_id!=old_gl_id) {
-				old_gl_id=texture->bitmaps[0].gl_id;
+			if (texture->frames[0].bitmap.gl_id!=old_gl_id) {
+				old_gl_id=texture->frames[0].bitmap.gl_id;
 				glBindTexture(GL_TEXTURE_2D,old_gl_id);
 			}
 			
@@ -305,10 +305,10 @@ void walk_view_draw_meshes_line(bool opaque)
 			texture=&map.textures[mesh_poly->txt_idx];
 		
 			if (opaque) {
-				if ((mesh_poly->alpha!=1.0f) || (texture->bitmaps[0].alpha_mode==alpha_mode_transparent)) continue;
+				if ((mesh_poly->alpha!=1.0f) || (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent)) continue;
 			}
 			else {
-				if ((mesh_poly->alpha==1.0f) && (texture->bitmaps[0].alpha_mode!=alpha_mode_transparent)) continue;
+				if ((mesh_poly->alpha==1.0f) && (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent)) continue;
 			}
 		
 			glBegin(GL_LINE_LOOP);
@@ -380,14 +380,14 @@ void walk_view_draw_liquids(bool opaque)
 		texture=&map.textures[liquid->txt_idx];
 	
 		if (opaque) {
-			if ((liquid->alpha!=1.0f) || (texture->bitmaps[0].alpha_mode==alpha_mode_transparent)) continue;
+			if ((liquid->alpha!=1.0f) || (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent)) continue;
 		}
 		else {
-			if ((liquid->alpha==1.0f) && (texture->bitmaps[0].alpha_mode!=alpha_mode_transparent)) continue;
+			if ((liquid->alpha==1.0f) && (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent)) continue;
 		}
 		
-		if (texture->bitmaps[0].gl_id!=old_gl_id) {
-			old_gl_id=texture->bitmaps[0].gl_id;
+		if (texture->frames[0].bitmap.gl_id!=old_gl_id) {
+			old_gl_id=texture->frames[0].bitmap.gl_id;
 			glBindTexture(GL_TEXTURE_2D,old_gl_id);
 		}
 		

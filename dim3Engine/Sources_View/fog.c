@@ -62,12 +62,12 @@ void fog_draw_textured(int tick)
 
 		// setup viewpoint
 		
-	memmove(&ang,&view.camera.ang,sizeof(d3ang));
+	memmove(&ang,&view.render->camera.ang,sizeof(d3ang));
 	ang.y=180.0f;
 		
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.pnt,&ang);
+	gl_3D_rotate(&view.render->camera.pnt,&ang);
 	gl_setup_project();
 
 		// drawing layers
@@ -88,7 +88,7 @@ void fog_draw_textured(int tick)
 		// get drawing setup
 
 	txt_x_off=((float)(tick>>7))*map.fog.speed;
-	txt_x_turn=(map.fog.txt_x_fact*(view.camera.ang.y/360.0f));			// change texture offset with camera rotation
+	txt_x_turn=(map.fog.txt_x_fact*(view.render->camera.ang.y/360.0f));			// change texture offset with camera rotation
 	txt_x_off_add=1.0f/(float)count;
 
 	r_add=ANG_to_RAD*(float)(180/8);
@@ -176,7 +176,7 @@ void fog_draw_textured(int tick)
 
 	texture=&map.textures[map.fog.texture_idx];
 	frame=texture->animate.current_frame&max_texture_frame_mask;
-	gl_id=texture->bitmaps[frame].gl_id;
+	gl_id=texture->frames[frame].bitmap.gl_id;
 
 	gl_texture_simple_start();
 	gl_texture_simple_set(gl_id,FALSE,1.0f,1.0f,1.0f,map.fog.alpha);

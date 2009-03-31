@@ -49,7 +49,8 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
-view_render_type			view_global_render;		// supergumba -- temporary
+bool						view_in_node_render;
+view_render_type			view_camera_render,view_node_render;
 
 extern bool fog_solid_on(void);
 extern bool model_inview(model_draw *draw);
@@ -76,8 +77,8 @@ bool view_area_mark(char *area_flags)
 	for (n=0;n!=map.narea;n++) {
 		area=&map.areas[n];
 
-		if ((view.camera.pnt.x<area->lft) || (view.camera.pnt.x>area->rgt)) continue;
-		if ((view.camera.pnt.z<area->top) || (view.camera.pnt.z>area->bot)) continue;
+		if ((view.render->camera.pnt.x<area->lft) || (view.render->camera.pnt.x>area->rgt)) continue;
+		if ((view.render->camera.pnt.z<area->top) || (view.render->camera.pnt.z>area->bot)) continue;
 
 			// mark this area
 
@@ -137,7 +138,7 @@ void view_create_mesh_draw_list(void)
 	
 		// get mesh camera is in
 
-	start_mesh_idx=map_mesh_find_always(&map,&view.camera.pnt);
+	start_mesh_idx=map_mesh_find_always(&map,&view.render->camera.pnt);
 	start_mesh=&map.mesh.meshes[start_mesh_idx];
 
 		// obscure distance -- normally is the opengl projection
@@ -174,7 +175,7 @@ void view_create_mesh_draw_list(void)
 
 				// auto-eliminate meshes drawn outside the obscure distance
 				
-			d=map_mesh_calculate_distance(mesh,&view.camera.pnt);
+			d=map_mesh_calculate_distance(mesh,&view.render->camera.pnt);
 			if (d>obscure_dist) continue;
 				
 				// within a certain distance, don't check for obscuring
@@ -186,7 +187,7 @@ void view_create_mesh_draw_list(void)
 			}
 		}
 		else {
-			d=map_mesh_calculate_distance(mesh,&view.camera.pnt);
+			d=map_mesh_calculate_distance(mesh,&view.render->camera.pnt);
 		}
 		
 			// sort meshes into drawing list
@@ -508,7 +509,7 @@ void view_calculate_recoil(obj_type *obj)
 	weap=weapon_find_current(obj);
 	if (weap==NULL) return;
 
-	weapon_recoil_add(obj,weap,&view.camera.ang);
+	weapon_recoil_add(obj,weap,&view.render->camera.ang);
 }
 
 /* =======================================================
@@ -558,7 +559,7 @@ void view_calculate_shakes(int tick,obj_type *obj)
 	k=(int)((float)(tick-effect->start_tick)*shake_freq)%shake_sz;
 	if (k>(shake_sz>>1)) k=shake_sz-k;
 	
-	view.camera.ang.x=angle_add(view.camera.ang.x,((float)k/25));
+	view.render->camera.ang.x=angle_add(view.render->camera.ang.x,((float)k/25));
 }
 
 void view_calculate_sways(int tick,obj_type *obj)
@@ -568,7 +569,7 @@ void view_calculate_sways(int tick,obj_type *obj)
 	return;
 
 	f=(float)(((tick>>4)%12)-6);
-	view.camera.ang.z+=f;
+	view.render->camera.ang.z+=f;
 
 	// supergumba -- work on sways
 
@@ -584,7 +585,7 @@ void view_script_transform_3D_to_2D(int x,int y,int z,int *x2,int *y2)
 {
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 	
 	gl_project_point(&x,&y,&z);
@@ -601,23 +602,6 @@ void view_script_transform_3D_to_2D(int x,int y,int z,int *x2,int *y2)
 
 void view_draw_setup(int tick)
 {
-	obj_type		*obj,*camera_obj;
-
-		// supergumba -- global view render
-
-	view.render=&view_global_render;
-
-		// get player object
-		
-	obj=object_find_uid(server.player_obj_uid);
-	
-		// set view camera
-	
-	camera_obj=object_find_uid(camera.obj_uid);
-	camera_get_position(&view.camera.pnt,&view.camera.ang,camera_obj->size.eye_offset);
-
-	view.camera.under_liquid_idx=camera_check_liquid(&view.camera.pnt);
-
 	view.camera.projection_type=camera.plane.type;
 	view.camera.lft=camera.plane.lft;
 	view.camera.rgt=camera.plane.rgt;
@@ -629,24 +613,13 @@ void view_draw_setup(int tick)
 	view.camera.fov=camera.plane.fov;
 	view.camera.aspect_ratio=camera.plane.aspect_ratio;
 
-		// camera adjustments
-	
-	if (camera.mode==cv_fpp) {
-		view_calculate_scope(obj,camera_obj);
-		view_calculate_recoil(obj);
-	}
-	view_calculate_shakes(tick,obj);
-	view_calculate_sways(tick,obj);
-	
-		// bump smoothing
-		
-	if (obj->bump.on) view.camera.pnt.y+=obj->bump.smooth_offset;
+	view.camera.under_liquid_idx=camera_check_liquid(&view.render->camera.pnt);
 	
 		// setup viewport
 	
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 	
 		// compile all lights in map
@@ -656,16 +629,8 @@ void view_draw_setup(int tick)
 		// setup draw meshes
 
 	view_create_mesh_draw_list();
-
-		// do texture animations
-		
-	map_setup_animated_textures(&map,tick);
 	
-		// any texture shifting updates
-		
-	map_mesh_poly_run_shifts(&map,tick);
-	
-		// setup objects, projectiles, and scenery in path
+		// setup objects and projectiles in path
 		
 	view_setup_objects(tick);
 	view_setup_projectiles(tick);
@@ -674,5 +639,73 @@ void view_draw_setup(int tick)
 		
 	halo_draw_clear();
 	view_add_halos();
+}
+
+void view_draw_setup_camera(int tick)
+{
+	obj_type		*obj,*camera_obj;
+
+		// camera render
+
+	view.render=&view_camera_render;
+
+		// get player object
+		
+	obj=object_find_uid(server.player_obj_uid);
+	
+		// set view camera
+	
+	camera_obj=object_find_uid(camera.obj_uid);
+	camera_get_position(&view.render->camera.pnt,&view.render->camera.ang,camera_obj->size.eye_offset);
+
+		// camera adjustments
+	
+	if (camera.mode==cv_fpp) {
+		view_calculate_scope(obj,camera_obj);
+		view_calculate_recoil(obj);
+	}
+	
+	view_calculate_shakes(tick,obj);
+	view_calculate_sways(tick,obj);
+	
+		// bump smoothing
+		
+	if (obj->bump.on) view.render->camera.pnt.y+=obj->bump.smooth_offset;
+	
+		// main draw setup
+		
+	view_draw_setup(tick);
+}
+
+bool view_draw_setup_node_start(int tick,node_type *node)
+{
+		// only allow it to go into node
+		// renderer once
+		
+	if (view_in_node_render) return(FALSE);
+	
+		// switch out to node render
+		
+	view_in_node_render=TRUE;
+	view.render=&view_node_render;
+	
+		// camera position
+		
+	memmove(&view.render->camera.pnt,&node->pnt,sizeof(d3pnt));
+	memmove(&view.render->camera.ang,&node->ang,sizeof(d3ang));
+
+		// main draw setup
+	
+	view_draw_setup(tick);
+	
+	return(TRUE);
+}
+
+void view_draw_setup_node_finish(void)
+{
+		// put back in camera render
+		
+	view_in_node_render=FALSE;
+	view.render=&view_camera_render;
 }
 

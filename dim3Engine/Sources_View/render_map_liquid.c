@@ -389,7 +389,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 			// draw texture
 
 		gl_texture_transparent_start();
-		gl_texture_transparent_set(texture->bitmaps[frame].gl_id,liq->alpha);
+		gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,liq->alpha);
 
 		glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
 
@@ -426,7 +426,7 @@ void render_map_liquid(int tick)
 
 	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.camera.pnt,&view.camera.ang);
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 	
 		// setup drawing
