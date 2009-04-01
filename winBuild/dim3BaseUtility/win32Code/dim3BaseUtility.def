@@ -110,7 +110,7 @@ EXPORTS
 
 	file_paths_read_directory_data				@273
 	file_paths_read_directory_data_dir			@274
-	file_paths_read_directory_data_document		@275
+	file_paths_read_directory_document			@275
 	file_paths_close_directory					@276
 	file_paths_descript_directory_file			@277
 

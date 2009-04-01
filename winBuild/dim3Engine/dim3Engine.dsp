@@ -1218,6 +1218,10 @@ SOURCE=..\..\dim3Engine\Sources_View\ambients.c
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\..\dim3Engine\Sources_View\gl_back_render.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Engine\Sources_View\gl_check.c
 # End Source File
 # Begin Source File

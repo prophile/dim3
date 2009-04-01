@@ -394,12 +394,18 @@ typedef struct		{
 //
 
 typedef struct		{
+						bool								render;
+						GLuint								txt_id;
+					} node_back_render_type;
+
+typedef struct		{
 						int									idx,event_id;
 						short								link[max_node_link],
 															path_hint[max_node];
 						char								name[name_str_len];
 						d3pnt								pnt;
 						d3ang								ang;
+						node_back_render_type				back_render;
 					} node_type;
 
 //

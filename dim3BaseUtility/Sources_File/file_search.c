@@ -236,7 +236,6 @@ void file_paths_read_directory_dirs(file_path_directory_type *fpd,char *path,cha
 
 void file_paths_read_directory_files(file_path_directory_type *fpd,char *path,char *path_add,char *ext_name,int dir_type)
 {
-	int					n,sz,idx;
 	char				*c,path2[1024],path_add2[1024],file_name[file_str_len];
 	bool				find_first;
 	WIN32_FIND_DATA		find_data;
@@ -300,8 +299,7 @@ void file_paths_read_directory_files(file_path_directory_type *fpd,char *path,ch
 
 void file_paths_read_directory_dirs(file_path_directory_type *fpd,char *path,char *path_add,char *required_file_name,int dir_type)
 {
-	int					n,sz,idx;
-	char				*c,path2[1024],path_add2[1024],file_name[file_str_len];
+	char				path2[1024],path_add2[1024],file_name[file_str_len];
 	bool				find_first;
 	WIN32_FIND_DATA		find_data;
 	HANDLE				find_hand;
@@ -346,7 +344,7 @@ void file_paths_read_directory_dirs(file_path_directory_type *fpd,char *path,cha
 				strcpy(path_add2,find_data.cFileName);
 			}
 
-			file_paths_read_directory_files(fpd,path,path_add2,ext_name,dir_type);
+			file_paths_read_directory_dirs(fpd,path,path_add2,required_file_name,dir_type);
 			continue;
 		}
 
