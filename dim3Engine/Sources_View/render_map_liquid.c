@@ -316,6 +316,7 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
 void liquid_render_liquid(int tick,map_liquid_type *liq)
 {
 	int							v_sz,quad_cnt,frame;
+	GLuint						gl_id;
 	bool						shader_on;
 	texture_type				*texture;
 	view_glsl_light_list_type	light_list;
@@ -380,6 +381,10 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 		// regular simple texture drawing
 
 	else {
+	
+			// do any back buffering
+		
+		gl_id=gl_back_render_for_node(tick,liq->camera,texture->frames[frame].bitmap.gl_id);
 
 			// need color pointers for simple drawing
 
@@ -389,7 +394,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 			// draw texture
 
 		gl_texture_transparent_start();
-		gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,liq->alpha);
+		gl_texture_transparent_set(gl_id,liq->alpha);
 
 		glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
 

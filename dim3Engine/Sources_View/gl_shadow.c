@@ -47,6 +47,9 @@ bool gl_shadow_initialize(char *err_str)
 {
 	int				status;
 	GLuint			gl_id;
+	
+	shadow_on=FALSE;
+	return(TRUE);		// supergumba
 
 		// check if shadows are enabled
 		

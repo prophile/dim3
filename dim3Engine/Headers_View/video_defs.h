@@ -32,10 +32,10 @@ and can be sold or given away.
 #define view_vertex_object_count				8
 
 //
-// reflections
+// back renderers
 //
 
-#define reflection_texture_pixel_size			256
+#define back_render_texture_pixel_size			256
 
 //
 // shadows

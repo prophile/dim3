@@ -471,19 +471,19 @@ void view_draw(int tick)
 
 		// setup viewport
 	
-	gl_setup_viewport(console_y_offset());
-
+//	gl_setup_viewport(console_y_offset());
+// supergumba
 		// setup the models
 
 	view_draw_models_setup();
 	
 		// render the shadows onto the shadow back buffer
-		
+	/*	
 	if (shadow_texture_init()) {
 		view_create_models_shadow();
 		shadow_texture_finish();
-	}
-	
+	} // supergumba
+	*/
 		// draw background and sky
 		// unless obscured by fog
 	

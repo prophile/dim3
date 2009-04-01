@@ -600,6 +600,9 @@ void view_script_transform_3D_to_2D(int x,int y,int z,int *x2,int *y2)
       
 ======================================================= */
 
+
+/* supergumba
+void view_draw_setup_
 void view_draw_setup(int tick)
 {
 	view.camera.projection_type=camera.plane.type;
@@ -617,11 +620,32 @@ void view_draw_setup(int tick)
 	
 		// setup viewport
 	
-	gl_setup_viewport(console_y_offset());
 	gl_3D_view(&view.camera);
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 	
+		// compile all lights in map
+		
+	gl_lights_compile(tick);
+
+		// setup draw meshes
+
+	view_create_mesh_draw_list();
+	
+		// setup objects and projectiles in path
+		
+	view_setup_objects(tick);
+	view_setup_projectiles(tick);
+
+		// add scene halos
+		
+	halo_draw_clear();
+	view_add_halos();
+}
+*/
+
+void view_draw_setup_compile(int tick)
+{
 		// compile all lights in map
 		
 	gl_lights_compile(tick);
@@ -671,13 +695,33 @@ void view_draw_setup_camera(int tick)
 		// bump smoothing
 		
 	if (obj->bump.on) view.render->camera.pnt.y+=obj->bump.smooth_offset;
-	
-		// main draw setup
+
+		// setup camera
 		
-	view_draw_setup(tick);
+	view.camera.projection_type=camera.plane.type;
+	view.camera.lft=camera.plane.lft;
+	view.camera.rgt=camera.plane.rgt;
+	view.camera.top=camera.plane.top;
+	view.camera.bot=camera.plane.bot;
+	view.camera.near_z=camera.plane.near_z;
+	view.camera.far_z=camera.plane.far_z;
+	view.camera.near_z_offset=camera.plane.near_z_offset;
+	view.camera.fov=camera.plane.fov;
+	view.camera.aspect_ratio=camera.plane.aspect_ratio;
+
+	view.camera.under_liquid_idx=camera_check_liquid(&view.render->camera.pnt);
+
+	gl_setup_viewport(console_y_offset());
+	gl_3D_view(&view.camera);
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
+	gl_setup_project();
+	
+		// compile map objects
+		
+	view_draw_setup_compile(tick);
 }
 
-bool view_draw_setup_node_start(int tick,node_type *node)
+bool view_draw_setup_node_start(int tick,node_type *node,int pixel_size)
 {
 		// only allow it to go into node
 		// renderer once
@@ -694,9 +738,20 @@ bool view_draw_setup_node_start(int tick,node_type *node)
 	memmove(&view.render->camera.pnt,&node->pnt,sizeof(d3pnt));
 	memmove(&view.render->camera.ang,&node->ang,sizeof(d3ang));
 
-		// main draw setup
+		// setup camera
+
+	view.camera.under_liquid_idx=-1;
+
+	glViewport(0,0,pixel_size,pixel_size);
+	gl_3D_view(&view.camera);
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
+	gl_setup_project();
 	
-	view_draw_setup(tick);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	
+		// compile map objects
+		
+	view_draw_setup_compile(tick);
 	
 	return(TRUE);
 }
@@ -707,5 +762,14 @@ void view_draw_setup_node_finish(void)
 		
 	view_in_node_render=FALSE;
 	view.render=&view_camera_render;
+	
+		// restore matrixes and viewport
+
+	view.camera.under_liquid_idx=camera_check_liquid(&view.render->camera.pnt);
+
+	gl_setup_viewport(console_y_offset());
+	gl_3D_view(&view.camera);
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
+	gl_setup_project();
 }
 

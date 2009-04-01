@@ -230,9 +230,9 @@ bool view_initialize_display(char *err_str)
 	
 	gl_text_initialize();
 	
-		// reflections
+		// back renderer
 		
-	if (!gl_reflection_initialize(err_str)) {
+	if (!gl_back_render_initialize(err_str)) {
 		gl_text_shutdown();
 		gl_shutdown();
 		view_memory_release();
@@ -243,7 +243,7 @@ bool view_initialize_display(char *err_str)
 		// shadows
 
 	if (!gl_shadow_initialize(err_str)) {
-		gl_reflection_shutdown();
+		gl_back_render_shutdown();
 		gl_text_shutdown();
 		gl_shutdown();
 		view_memory_release();
@@ -262,7 +262,7 @@ void view_shutdown_display(void)
 {
 	view_dispose_vertex_objects();
 	gl_shader_shutdown();
-	gl_reflection_shutdown();
+	gl_back_render_shutdown();
 	gl_shadow_shutdown();
 	gl_text_shutdown();
 	gl_shutdown();
