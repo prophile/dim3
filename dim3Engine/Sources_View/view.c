@@ -57,7 +57,6 @@ extern void menu_input(void);
 extern void file_input(void);
 extern void debug_input(void);
 extern void view_run(int tick);
-extern void view_draw_setup_camera(int tick);
 extern void view_draw(int tick);
 extern int game_time_get(void);
 extern void chat_clear_messages(void);
@@ -462,7 +461,6 @@ void view_loop_draw(int tick)
 
 		// draw frame
 		
-	view_draw_setup_camera(tick);
 	view_draw(tick);
 	hud_draw(tick);
 	radar_draw(tick);
@@ -487,8 +485,6 @@ void view_capture_draw(char *path)
 	tick=game_time_get();
 
 	gl_frame_start(NULL);
-	
-	view_draw_setup_camera(tick);
 	view_draw(tick);
 	
 	gl_screen_shot(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz,TRUE,path);

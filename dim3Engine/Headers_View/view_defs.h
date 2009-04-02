@@ -234,6 +234,8 @@ typedef struct		{
 					} view_render_halo_type;
 
 typedef struct		{
+						bool								has_area;
+						char								area_mask[max_area];
 						view_render_camera_type				camera;
 						view_render_draw_list_type			mesh_draw,liquid_draw,
 															model_draw,effect_draw;

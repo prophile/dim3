@@ -48,8 +48,12 @@ extern server_type			server;
 extern setup_type			setup;
 extern hud_type				hud;
 
+extern bool					dim3_debug;
+
 float						shake_ang_x[16]={-1,0,1,2,1,0,-1,-2,-4,-2,0,4,8,12,8,4};
 float						team_color_tint[net_team_count][3]=net_team_color_tint_def;
+
+view_render_type			view_camera_render,view_node_render;
 
 extern void draw_weapon_hand(int tick,obj_type *obj,weapon_type *weap);
 extern void draw_background(void);
@@ -75,9 +79,18 @@ extern void fade_screen_draw(int tick);
 extern void fade_object_draw(int tick,obj_type *obj);
 extern void render_map_liquid(int tick);
 extern void decal_render(void);
+extern void view_create_area_mask(void);
+extern void view_create_mesh_draw_list(void);
+extern void view_create_liquid_draw_list(void);
+extern void view_setup_objects(int tick);
+extern void view_setup_projectiles(int tick);
+extern void view_add_halos(void);
 extern bool view_compile_mesh_gl_lists(int tick);
-
-extern bool			dim3_debug;
+extern void view_calculate_scope(obj_type *obj,obj_type *camera_obj);
+extern void view_calculate_recoil(obj_type *obj);
+extern void view_calculate_shakes(int tick,obj_type *obj);
+extern void view_calculate_sways(int tick,obj_type *obj);
+extern void view_calculate_bump(obj_type *obj);
 
 /* =======================================================
 
@@ -445,24 +458,58 @@ void view_draw_models_shadow(void)
 
 /* =======================================================
 
-      Frame Drawing Mainline
+      Drawing Mainline
       
 ======================================================= */
 
-void view_draw(int tick)
+
+
+void view_draw_scene(int tick,obj_type *obj,weapon_type *weap)
 {
-	obj_type		*obj;
-	weapon_type		*weap;
-
-		// get player object and held weapon
+		// setup camera
 		
-	obj=object_find_uid(server.player_obj_uid);
-	weap=weapon_find_current(obj);
+	view.camera.projection_type=camera.plane.type;
+	view.camera.lft=camera.plane.lft;
+	view.camera.rgt=camera.plane.rgt;
+	view.camera.top=camera.plane.top;
+	view.camera.bot=camera.plane.bot;
+	view.camera.near_z=camera.plane.near_z;
+	view.camera.far_z=camera.plane.far_z;
+	view.camera.near_z_offset=camera.plane.near_z_offset;
+	view.camera.fov=camera.plane.fov;
+	view.camera.aspect_ratio=camera.plane.aspect_ratio;
 
-		// setup viewport
+	if (obj==NULL) {
+		view.camera.under_liquid_idx=-1;
+	}
+	else {
+		view.camera.under_liquid_idx=camera_check_liquid(&view.render->camera.pnt);
+	}
+
+	gl_3D_view(&view.camera);
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
+	gl_setup_project();
 	
-//	gl_setup_viewport(console_y_offset());
-// supergumba
+		// compile all lights in map
+		
+	gl_lights_compile(tick);
+
+		// setup draw lists
+
+	view_create_area_mask();
+	view_create_mesh_draw_list();
+	view_create_liquid_draw_list();
+	
+		// setup objects and projectiles in path
+		
+	view_setup_objects(tick);
+	view_setup_projectiles(tick);
+
+		// add scene halos
+		
+	halo_draw_clear();
+	view_add_halos();
+	
 		// setup the models
 
 	view_draw_models_setup();
@@ -474,6 +521,189 @@ void view_draw(int tick)
 		shadow_texture_finish();
 	} // supergumba
 	*/
+		// draw background and sky
+		// unless obscured by fog
+	
+	if (!fog_solid_on()) {
+		draw_background();
+		draw_sky(tick);
+	}
+	else {
+		fog_solid_start();
+	}
+
+		// setup per-scene shader variables
+
+	gl_shader_draw_scene_initialize();
+
+		// compile meshes for drawing
+	
+	if (!view_compile_mesh_gl_lists(tick)) return;
+
+		// setup some map polygon drawing flags
+
+	render_map_setup();
+
+		// draw opaque map polygons
+
+	render_map_opaque();
+
+		// draw model shadows
+
+	view_draw_models(tick);
+	view_draw_models_shadow();
+	
+		// draw tranparent map polygons
+
+	render_map_transparent();
+
+		// draw map liquids
+
+	render_map_liquid(tick);
+
+		// draw decals
+
+	decal_render();
+
+		// effects
+
+	effect_draw(tick);
+	
+		// draw rain
+		
+	rain_draw(tick);
+
+		// draw fog
+
+	fog_draw_textured(tick);
+	
+	if (fog_solid_on()) fog_solid_end();
+	
+		// setup halos, crosshairs, zoom masks
+		
+	remote_draw_names_setup();
+	halo_draw_setup();
+	
+	if ((obj!=NULL) && (weap!=NULL)) {
+		crosshair_setup(tick,obj,weap);
+		zoom_setup(tick,obj,weap);
+	
+			// draw the weapons in hand
+
+		if (camera.mode==cv_fpp) draw_weapon_hand(tick,obj,weap);
+	}
+
+		// draw the remote names, halos, crosshairs, and zoom masks
+	
+	remote_draw_names_render();
+	halo_draw_render();
+	
+	if ((obj!=NULL) && (weap!=NULL)) {
+		crosshair_draw(obj,weap);
+		zoom_draw(obj,weap);
+	}
+}
+
+
+
+
+
+void view_draw(int tick)
+{
+	obj_type		*obj,*camera_obj;
+	weapon_type		*weap;
+
+		// back rendering for cameras
+
+	gl_back_render_frame_start(tick);
+
+		// get player object and held weapon
+		
+	obj=object_find_uid(server.player_obj_uid);
+	weap=weapon_find_current(obj);
+
+		// camera render
+
+	view.render=&view_camera_render;
+	
+		// set view camera
+	
+	camera_obj=object_find_uid(camera.obj_uid);
+	camera_get_position(&view.render->camera.pnt,&view.render->camera.ang,camera_obj->size.eye_offset);
+
+		// camera adjustments
+	
+	if (camera.mode==cv_fpp) {
+		view_calculate_scope(obj,camera_obj);
+		view_calculate_recoil(obj);
+	}
+	
+	view_calculate_shakes(tick,obj);
+	view_calculate_sways(tick,obj);
+	view_calculate_bump(obj);
+
+		// draw main scene
+
+	gl_setup_viewport(console_y_offset());
+	view_draw_scene(tick,obj,weap);
+
+
+	/* supergumba
+
+		// setup camera
+		
+	view.camera.projection_type=camera.plane.type;
+	view.camera.lft=camera.plane.lft;
+	view.camera.rgt=camera.plane.rgt;
+	view.camera.top=camera.plane.top;
+	view.camera.bot=camera.plane.bot;
+	view.camera.near_z=camera.plane.near_z;
+	view.camera.far_z=camera.plane.far_z;
+	view.camera.near_z_offset=camera.plane.near_z_offset;
+	view.camera.fov=camera.plane.fov;
+	view.camera.aspect_ratio=camera.plane.aspect_ratio;
+
+	view.camera.under_liquid_idx=camera_check_liquid(&view.render->camera.pnt);
+
+	gl_3D_view(&view.camera);
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
+	gl_setup_project();
+	
+		// compile all lights in map
+		
+	gl_lights_compile(tick);
+
+		// setup draw lists
+
+	view_create_area_mask();
+	view_create_mesh_draw_list();
+	view_create_liquid_draw_list();
+	
+		// setup objects and projectiles in path
+		
+	view_setup_objects(tick);
+	view_setup_projectiles(tick);
+
+		// add scene halos
+		
+	halo_draw_clear();
+	view_add_halos();
+	
+		// setup the models
+
+	view_draw_models_setup();
+
+		// back rendering for cameras
+
+	gl_back_render_frame_start(tick);
+	
+		// render the shadows onto the shadow back buffer
+
+  if (shadow_texture_init()) {
+		view_create_models_shadow();
+		shadow_texture_finish();
+	} // supergumba
+
 		// draw background and sky
 		// unless obscured by fog
 	
@@ -555,7 +785,7 @@ void view_draw(int tick)
 		crosshair_draw(obj,weap);
 		zoom_draw(obj,weap);
 	}
-	
+*/	
 		// draw tints and fades
 		
 	view_draw_liquid_tint(view.camera.under_liquid_idx);

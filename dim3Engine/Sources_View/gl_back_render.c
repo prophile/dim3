@@ -31,11 +31,12 @@ and can be sold or given away.
 
 #include "video.h"
 
-GLuint						back_render_fbo_id,back_render_fbo_depth_id,back_render_fbo_txt_id;
+GLuint						back_render_fbo_id,back_render_fbo_depth_id;
 bool						back_render_on;
 
 extern map_type				map;
 extern setup_type			setup;
+extern view_type			view;
 extern render_info_type		render_info;
 
 /* =======================================================
@@ -60,18 +61,11 @@ bool gl_back_render_initialize(char *err_str)
 	glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT,GL_DEPTH_COMPONENT,back_render_texture_pixel_size,back_render_texture_pixel_size);
 	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT,0);
 
-		// create texture
-
-	glGenTextures(1,&back_render_fbo_txt_id);
-	glBindTexture(GL_TEXTURE_2D,back_render_fbo_txt_id);
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,back_render_texture_pixel_size,back_render_texture_pixel_size,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
-
-		// create the frame buffer object and attach
+		// create the frame buffer object and attach depth
 
 	glGenFramebuffersEXT(1,&back_render_fbo_id);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,back_render_fbo_id);
 
-	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_2D,back_render_fbo_txt_id,0);
 	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_id);
 
 		// is object OK?
@@ -92,11 +86,10 @@ void gl_back_render_shutdown(void)
 {
 	if (!back_render_on) return;
 
-		// destroy frame buffer and texture
+		// destroy frame buffer and depth
 
 	glDeleteFramebuffersEXT(1,&back_render_fbo_id);
 	glDeleteFramebuffersEXT(1,&back_render_fbo_depth_id);
-	glDeleteTextures(1,&back_render_fbo_id);
 }
 
 /* =======================================================
@@ -109,7 +102,9 @@ void gl_back_render_map_start(void)
 {
 	int				n;
 	node_type		*node;
-	
+
+	if (!back_render_on) return;
+
 	node=map.nodes;
 	
 	for (n=0;n!=map.nnode;n++) {
@@ -122,7 +117,9 @@ void gl_back_render_map_end(void)
 {
 	int				n;
 	node_type		*node;
-	
+
+	if (!back_render_on) return;
+
 	node=map.nodes;
 	
 	for (n=0;n!=map.nnode;n++) {
@@ -139,51 +136,39 @@ void gl_back_render_map_end(void)
       
 ======================================================= */
 
-void gl_back_render_frame_start(void)
+void gl_back_render_frame_node(int tick,char *node_name)
 {
-	int				n;
-	node_type		*node;
-	
-	node=map.nodes;
-	
-	for (n=0;n!=map.nnode;n++) {
-		node->back_render.render=FALSE;
-		node++;
-	}
-}
-
-/* =======================================================
-
-      Render Node Camera to Texture
-      
-======================================================= */
-
-GLuint gl_back_render_for_node(int tick,char *node_name,GLuint gl_id)
-{
-	return(gl_id);
-	
-	/*
 	int				node_idx;
 	node_type		*node;
-	
-	if (!back_render_on) return(gl_id);
-	
-		// find node
-		
-	if (node_name[0]==0x0) return(gl_id);
-	
+
+		// get node
+
 	node_idx=map_find_node(&map,node_name);
-	if (node_idx==-1) return(gl_id);
+	if (node_idx==-1) return;
 	
 	node=&map.nodes[node_idx];
 
-		// draw to the back buffer and reset the camera
-		
+		// alread rendered?
+
+	if (node->back_render.render) return;
+
+		// need to create a texture?
+
+	if (node->back_render.txt_id==-1) {
+		glGenTextures(1,&node->back_render.txt_id);
+		glBindTexture(GL_TEXTURE_2D,node->back_render.txt_id);
+		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,back_render_texture_pixel_size,back_render_texture_pixel_size,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
+	}
+
+		// render
+
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,back_render_fbo_id);
 
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_2D,node->back_render.txt_id,0);
+/*
 	if (!view_draw_setup_node_start(tick,node,back_render_texture_pixel_size)) {
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
-		return(gl_id);
+		return;
 	}
 
 	view_draw(tick);
@@ -193,10 +178,52 @@ GLuint gl_back_render_for_node(int tick,char *node_name,GLuint gl_id)
 	glFlush();
 		
 	view_draw_setup_node_finish();
-
+*/
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
-	
-	return(back_render_fbo_txt_id);
-	*/
 }
+
+void gl_back_render_frame_start(int tick)
+{
+	int					n,k,mesh_idx,liq_idx;
+	node_type			*node;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	map_liquid_type		*liq;
+
+	if (!back_render_on) return;
+
+		// flag rendering so we don't draw twice
+
+	node=map.nodes;
+	
+	for (n=0;n!=map.nnode;n++) {
+		node->back_render.render=FALSE;
+		node++;
+	}
+
+		// run through all the meshes
+	
+	for (n=0;n!=view.render->mesh_draw.count;n++) {
+		mesh_idx=view.render->mesh_draw.items[n].idx;
+
+		mesh=&map.mesh.meshes[mesh_idx];
+		poly=mesh->polys;
+
+		for (k=0;k!=mesh->npoly;k++) {
+			if (poly->camera[0]!=0x0) gl_back_render_frame_node(tick,poly->camera);
+			poly++;
+		}
+	}
+
+		// run through all liquids
+
+	for (n=0;n!=view.render->liquid_draw.count;n++) {
+		liq_idx=view.render->liquid_draw.items[n].idx;
+
+		liq=&map.liquid.liquids[liq_idx];
+		if (liq->camera[0]!=0x0) gl_back_render_frame_node(tick,liq->camera);
+	}
+
+}
+
 

@@ -384,7 +384,9 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 	
 			// do any back buffering
 		
-		gl_id=gl_back_render_for_node(tick,liq->camera,texture->frames[frame].bitmap.gl_id);
+//		gl_id=gl_back_render_for_node(tick,liq->camera,texture->frames[frame].bitmap.gl_id);
+// supergumba
+		gl_id=texture->frames[frame].bitmap.gl_id;
 
 			// need color pointers for simple drawing
 
@@ -448,13 +450,9 @@ void render_map_liquid(int tick)
 	
 		// draw liquids
 		
-		// supergumba -- need to sort
-		
-	liq=map.liquid.liquids;
-
-	for (n=0;n!=map.liquid.nliquid;n++) {
+	for (n=0;n!=view.render->liquid_draw.count;n++) {
+		liq=&map.liquid.liquids[view.render->liquid_draw.items[n].idx];
 		liquid_render_liquid(tick,liq);
-		liq++;
 	}
 }
 

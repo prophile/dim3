@@ -62,6 +62,7 @@ _map_liquid_add
 _map_liquid_delete
 _map_liquid_duplicate
 _map_liquid_calculate_center
+_map_liquid_calculate_distance
 
 _map_liquid_move
 _map_liquid_reset_uv

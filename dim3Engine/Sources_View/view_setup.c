@@ -49,8 +49,10 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
+/* supergumba 
 bool						view_in_node_render;
 view_render_type			view_camera_render,view_node_render;
+*/
 
 extern bool fog_solid_on(void);
 extern bool model_inview(model_draw *draw);
@@ -60,19 +62,18 @@ extern bool mesh_inview(map_mesh_type *mesh);
 
 /* =======================================================
 
-      Create Mesh Draw List
+      View Areas
       
 ======================================================= */
 
-bool view_area_mark(char *area_flags)
+void view_create_area_mask(void)
 {
 	int				n,k;
-	bool			has_area;
 	map_area_type	*area,*area2;
 
-	bzero(area_flags,max_area);
+	bzero(view.render->area_mask,max_area);
 
-	has_area=FALSE;
+	view.render->has_area=FALSE;
 
 	for (n=0;n!=map.narea;n++) {
 		area=&map.areas[n];
@@ -82,8 +83,8 @@ bool view_area_mark(char *area_flags)
 
 			// mark this area
 
-		area_flags[n]=0x1;
-		has_area=TRUE;
+		view.render->area_mask[n]=0x1;
+		view.render->has_area=TRUE;
 
 			// join with any areas with the same color
 
@@ -92,23 +93,21 @@ bool view_area_mark(char *area_flags)
 		for (k=0;k!=map.narea;k++) {
 
 			if (k!=n) {
-				if ((area2->col.r==area->col.r) && (area2->col.g==area->col.g) && (area2->col.b==area->col.b)) area_flags[k]=0x1;
+				if ((area2->col.r==area->col.r) && (area2->col.g==area->col.g) && (area2->col.b==area->col.b)) view.render->area_mask[k]=0x1;
 			}
 
 			area2++;
 		}
 	}
-
-	return(has_area);
 }
 
-bool view_area_check_mesh(map_mesh_type *mesh,char *area_flags)
+bool view_area_check_mesh(map_mesh_type *mesh)
 {
 	int				n;
 	map_area_type	*area;
 
 	for (n=0;n!=map.narea;n++) {
-		if (area_flags[n]==0x0) continue;
+		if (view.render->area_mask[n]==0x0) continue;
 
 			// is mesh in this area?
 
@@ -128,13 +127,45 @@ bool view_area_check_mesh(map_mesh_type *mesh,char *area_flags)
 	return(FALSE);
 }
 
+bool view_area_check_liquid(map_liquid_type *liq)
+{
+	int				n;
+	map_area_type	*area;
+
+	for (n=0;n!=map.narea;n++) {
+		if (view.render->area_mask[n]==0x0) continue;
+
+			// is mesh in this area?
+
+		area=&map.areas[n];
+
+		if (((liq->lft>=area->lft) && (liq->lft<=area->rgt)) || ((liq->rgt>=area->lft) && (liq->rgt<=area->rgt))) {
+			if ((liq->top>=area->top) && (liq->top<=area->bot)) return(TRUE);
+			if ((liq->bot>=area->top) && (liq->bot<=area->bot)) return(TRUE);
+		}
+		
+		if (((area->lft>=liq->lft) && (area->lft<=liq->rgt)) || ((area->rgt>=liq->lft) && (area->rgt<=liq->rgt))) {
+			if ((area->top>=liq->top) && (area->top<=liq->bot)) return(TRUE);
+			if ((area->bot>=liq->top) && (area->bot<=liq->bot)) return(TRUE);
+		}
+	}
+
+	return(FALSE);
+}
+
+/* =======================================================
+
+      Mesh Draw List
+      
+======================================================= */
+
 void view_create_mesh_draw_list(void)
 {
 	int					n,t,sz,start_mesh_idx,idx;
-	char				area_flags[max_area];
-	bool				has_area;
 	double				d,never_obscure_dist,obscure_dist;
 	map_mesh_type		*start_mesh,*mesh;
+	
+	view.render->mesh_draw.count=0;
 	
 		// get mesh camera is in
 
@@ -153,13 +184,7 @@ void view_create_mesh_draw_list(void)
 
 	never_obscure_dist=(double)(abs(view.camera.near_z)*3);
 
-		// if we are in a sight view area, then obscure with that
-
-	has_area=view_area_mark(area_flags);
-
 		// check all visibile meshes from the start mesh
-	
-	view.render->mesh_draw.count=0;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
 
@@ -169,8 +194,8 @@ void view_create_mesh_draw_list(void)
 
 				// is this mesh visible?
 
-			if ((n!=start_mesh_idx) && (has_area)) {
-				if (!view_area_check_mesh(mesh,area_flags)) continue;
+			if ((n!=start_mesh_idx) && (view.render->has_area)) {
+				if (!view_area_check_mesh(mesh)) continue;
 			}
 
 				// auto-eliminate meshes drawn outside the obscure distance
@@ -233,6 +258,92 @@ bool view_mesh_in_draw_list(int mesh_idx)
 	}
 
 	return(FALSE);
+}
+
+/* =======================================================
+
+      Liquid Draw List
+      
+======================================================= */
+
+void view_create_liquid_draw_list(void)
+{
+	int					n,t,idx,sz;
+	double				d,never_obscure_dist,obscure_dist;
+	map_liquid_type		*liq;
+
+	view.render->liquid_draw.count=0;
+
+		// obscure distance -- normally is the opengl projection
+		// distance but can be the fog distance if fog is on
+
+	if (!fog_solid_on()) {
+		obscure_dist=(double)(view.camera.far_z-view.camera.near_z);
+	}
+	else {
+		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
+	}
+
+	never_obscure_dist=(double)(abs(view.camera.near_z)*3);
+
+		// find all drawable liquids
+
+	for (n=0;n!=map.liquid.nliquid;n++) {
+
+		liq=&map.liquid.liquids[n];
+			
+			// is this liquid visible?
+
+		if (view.render->has_area) {
+			if (!view_area_check_liquid(liq)) continue;
+		}
+
+			// auto-eliminate liquids drawn outside the obscure distance
+				
+		d=map_liquid_calculate_distance(liq,&view.render->camera.pnt);
+		if (d>obscure_dist) continue;
+				
+			// within a certain distance, don't check for obscuring
+			// by the view to fix some bugs with large polygons very
+			// close to the camera
+
+		if (d>never_obscure_dist) {
+			if (!boundbox_inview(liq->lft,liq->top,liq->rgt,liq->bot,liq->y,liq->y)) continue;
+		}
+		
+			// sort liquids into drawing list
+			// top of list is closest items
+
+		idx=-1;
+	
+		for (t=0;t!=view.render->liquid_draw.count;t++) {
+			if (view.render->liquid_draw.items[t].dist>d) {
+				idx=t;
+				break;
+			}
+		}
+	
+			// insert at end of list
+			
+		if (idx==-1) {
+			view.render->liquid_draw.items[view.render->liquid_draw.count].dist=d;
+			view.render->liquid_draw.items[view.render->liquid_draw.count].idx=(short)n;
+			view.render->liquid_draw.count++;
+			continue;
+		}
+		
+			// insert in list
+			
+		sz=sizeof(view_render_draw_list_item_type)*(view.render->liquid_draw.count-idx);
+		memmove(&view.render->liquid_draw.items[idx+1],&view.render->liquid_draw.items[idx],sz);
+		
+		view.render->liquid_draw.items[idx].dist=d;
+		view.render->liquid_draw.items[idx].idx=(short)n;
+		
+		view.render->liquid_draw.count++;
+		if (view.render->liquid_draw.count==max_view_render_item) break;
+	}
+
 }
 
 /* =======================================================
@@ -575,6 +686,11 @@ void view_calculate_sways(int tick,obj_type *obj)
 
 }
 
+void view_calculate_bump(obj_type *obj)
+{
+	if (obj->bump.on) view.render->camera.pnt.y+=obj->bump.smooth_offset;
+}
+
 /* =======================================================
 
       View Script 3D to 2D transform
@@ -642,7 +758,7 @@ void view_draw_setup(int tick)
 	halo_draw_clear();
 	view_add_halos();
 }
-*/
+
 
 void view_draw_setup_compile(int tick)
 {
@@ -650,9 +766,11 @@ void view_draw_setup_compile(int tick)
 		
 	gl_lights_compile(tick);
 
-		// setup draw meshes
+		// setup draw lists
 
+	view_create_area_mask();
 	view_create_mesh_draw_list();
+	view_create_liquid_draw_list();
 	
 		// setup objects and projectiles in path
 		
@@ -772,4 +890,4 @@ void view_draw_setup_node_finish(void)
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 }
-
+*/

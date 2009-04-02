@@ -324,6 +324,7 @@ bool map_start(bool skip_media,char *err_str)
 	
 	map_movements_initialize();
 	map_lookups_setup();
+	gl_back_render_map_start();
 	
 	progress_draw(100);
 	
@@ -396,6 +397,10 @@ void map_end(void)
 	scripts_post_event_console(&js.game_attach,sd_event_map,sd_event_map_close,0);
 	scripts_post_event_console(&js.course_attach,sd_event_map,sd_event_map_close,0);
 	scripts_post_event_console(&obj->attach,sd_event_map,sd_event_map_close,0);
+
+		// clear all back buffers
+
+	gl_back_render_map_end();
 	
 		// stop sounds
 			

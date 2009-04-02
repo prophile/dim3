@@ -65,6 +65,7 @@ EXPORTS
 	map_liquid_delete								@261
 	map_liquid_duplicate							@262
 	map_liquid_calculate_center						@263
+	map_liquid_calculate_distance					@264
 	
 	map_liquid_move									@265
 	map_liquid_reset_uv								@266

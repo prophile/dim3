@@ -635,6 +635,7 @@ extern int map_liquid_add(map_type *map);
 extern bool map_liquid_delete(map_type *map,int liquid_idx);
 extern int map_liquid_duplicate(map_type *map,int liquid_idx);
 extern void map_liquid_calculate_center(map_type *map,int liquid_idx,d3pnt *pt);
+extern double map_liquid_calculate_distance(map_liquid_type *liq,d3pnt *pnt);
 
 extern void map_liquid_move(map_type *map,int liquid_idx,int x,int y,int z);
 extern void map_liquid_reset_uv(map_type *map,int liquid_idx);

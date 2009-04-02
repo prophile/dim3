@@ -116,7 +116,9 @@ extern void gl_shader_draw_hilite_execute(texture_type *texture,int txt_idx,int 
 	
 extern bool gl_back_render_initialize(char *err_str);
 extern void gl_back_render_shutdown(void);
-extern GLuint gl_back_render_for_node(int tick,char *node_name,GLuint gl_id);
+extern void gl_back_render_map_start(void);
+extern void gl_back_render_map_end(void);
+extern void gl_back_render_frame_start(int tick);
 
 	// shadows
 	

@@ -131,3 +131,44 @@ void map_liquid_calculate_center(map_type *map,int liquid_idx,d3pnt *pt)
 	pt->z=(liq->top+liq->bot)>>1;
 }
 
+/* =======================================================
+
+      Liquid Distance
+      
+======================================================= */
+
+double map_liquid_calculate_distance(map_liquid_type *liq,d3pnt *pnt)
+{
+	double			dx,dy,dz;
+	
+		// find collision points
+		
+	if ((pnt->x>=liq->lft) && (pnt->x<=liq->rgt)) {
+		dx=0;
+	}
+	else {
+		if (pnt->x<liq->lft) {
+			dx=liq->lft-pnt->x;
+		}
+		else {
+			dx=pnt->x-liq->rgt;
+		}
+	}
+	
+	dy=liq->y-pnt->y;
+	
+	if ((pnt->z>=liq->top) && (pnt->z<=liq->bot)) {
+		dz=0;
+	}
+	else {
+		if (pnt->z<liq->top) {
+			dz=liq->top-pnt->z;
+		}
+		else {
+			dz=pnt->z-liq->bot;
+		}
+	}
+	
+	return(sqrt((dx*dx)+(dy*dy)+(dz*dz)));
+}
+
