@@ -320,7 +320,7 @@ void effect_draw(int tick)
 	
 		// sort effects
 		
-	view.render->sort_effect.count=0;
+	view.render->effect_draw.count=0;
 	
 	for (n=0;n!=server.count.effect;n++) {
 		effect=&server.effects[n];
@@ -342,10 +342,10 @@ void effect_draw(int tick)
 		
 			// sort into list
 		
-		t=view.render->sort_effect.count;
+		t=view.render->effect_draw.count;
 		
-		for (k=0;k!=view.render->sort_effect.count;k++) {
-			if (dist>view.render->sort_effect.items[k].dist) {
+		for (k=0;k!=view.render->effect_draw.count;k++) {
+			if (dist>view.render->effect_draw.items[k].dist) {
 				t=k;
 				break;
 			}
@@ -353,21 +353,22 @@ void effect_draw(int tick)
 		
 			// add to list
 
-		if (t>=view.render->sort_effect.count) {
-			t=view.render->sort_effect.count;
+		if (t>=view.render->effect_draw.count) {
+			t=view.render->effect_draw.count;
 		}
 		else {
-			sz=(view.render->sort_effect.count-t)*sizeof(view_render_sort_effect_item_type);
-			memmove(&view.render->sort_effect.items[t+1],&view.render->sort_effect.items[t],sz);
+			sz=(view.render->effect_draw.count-t)*sizeof(view_render_draw_list_item_type);
+			memmove(&view.render->effect_draw.items[t+1],&view.render->effect_draw.items[t],sz);
 		}
 		
-		view.render->sort_effect.items[t].idx=n;
-		view.render->sort_effect.items[t].dist=dist;
+		view.render->effect_draw.items[t].idx=(short)n;
+		view.render->effect_draw.items[t].dist=dist;
 		
-		view.render->sort_effect.count++;
+		view.render->effect_draw.count++;
+		if (view.render->effect_draw.count==max_view_render_item) break;
 	}
 
-	if (view.render->sort_effect.count==0) return;
+	if (view.render->effect_draw.count==0) return;
 
 		// setup view
 
@@ -378,8 +379,8 @@ void effect_draw(int tick)
 		
 		// draw effects
 		
-	for (n=0;n!=view.render->sort_effect.count;n++) {
-		effect=&server.effects[view.render->sort_effect.items[n].idx];
+	for (n=0;n!=view.render->effect_draw.count;n++) {
+		effect=&server.effects[view.render->effect_draw.items[n].idx];
 		
 		count=tick-effect->start_tick;
 

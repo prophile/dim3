@@ -64,7 +64,7 @@ void render_map_setup(void)
 
 	for (n=0;n!=view.render->mesh_draw.count;n++) {
 
-		mesh=&map.mesh.meshes[view.render->mesh_draw.list[n]];
+		mesh=&map.mesh.meshes[view.render->mesh_draw.items[n].idx];
 
 			// clear mesh flags
 

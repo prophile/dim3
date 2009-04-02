@@ -49,6 +49,7 @@ extern char light_type_str[][32];
 //
 
 #define max_mesh											8192			// maximum number of meshes in a map
+#define max_liquid											256				// maximum number of liquids in a a map
 
 #define max_map_texture										128				// maximum number of textures in a map
 
@@ -607,7 +608,7 @@ extern void map_mesh_calculate_uv_center(map_type *map,int mesh_idx,float *gx,fl
 extern int map_mesh_find(map_type *map,d3pnt *pnt);
 extern int map_mesh_find_closest(map_type *map,d3pnt *pnt);
 extern int map_mesh_find_always(map_type *map,d3pnt *pnt);
-extern int map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt);
+extern double map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt);
 
 extern void map_mesh_calc_normals(map_mesh_type *mesh);
 

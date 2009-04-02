@@ -37,6 +37,8 @@ and can be sold or given away.
 #define max_light_spot							128
 #define max_view_lights_per_poly				8
 
+#define max_view_render_item					2048
+
 //
 // input rate
 //
@@ -57,6 +59,13 @@ and can be sold or given away.
 
 #define remote_name_max_distance				(map_enlarge*500)	// how far away you can see map names
 #define remote_name_min_distance				(map_enlarge*100)	// closest you can see map names in full
+
+//
+// render item type
+//
+
+#define view_render_type_mesh					0
+#define view_render_type_liquid					1
 
 //
 // sorting types
@@ -203,31 +212,16 @@ typedef struct		{
 						d3pnt								pnt;
 						d3ang								ang;
 					} view_render_camera_type;
-					
-typedef struct		{
-						int									count,
-															list[max_mesh],dist[max_mesh];
-					} view_render_mesh_draw_type;
-
+	
 typedef struct		{
 						short								type,idx;
 						double								dist;
-					} view_render_sort_model_item_type;
-
+					} view_render_draw_list_item_type;
+					
 typedef struct		{
 						int									count;
-						view_render_sort_model_item_type	items[max_object+max_projectile];
-					} view_render_sort_model_type;
-
-typedef struct		{
-						short								idx;
-						int									dist;
-					} view_render_sort_effect_item_type;
-
-typedef struct		{
-						int									count;
-						view_render_sort_effect_item_type	items[max_effect];
-					} view_render_sort_effect_type;
+						view_render_draw_list_item_type		items[max_view_render_item];
+					} view_render_draw_list_type;
 
 typedef struct		{
 						int									count;
@@ -241,9 +235,8 @@ typedef struct		{
 
 typedef struct		{
 						view_render_camera_type				camera;
-						view_render_mesh_draw_type			mesh_draw;
-						view_render_sort_model_type			sort_model;
-						view_render_sort_effect_type		sort_effect;
+						view_render_draw_list_type			mesh_draw,liquid_draw,
+															model_draw,effect_draw;
 						view_render_light_type				light;
 						view_render_halo_type				halo_draw;
 					} view_render_type;

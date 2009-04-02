@@ -753,7 +753,7 @@ int map_mesh_find_always(map_type *map,d3pnt *pnt)
 	return(mesh_idx);
 }
 
-int map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt)
+double map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt)
 {
 	double			dx,dy,dz;
 	
@@ -795,7 +795,7 @@ int map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt)
 		}
 	}
 	
-	return((int)sqrt((dx*dx)+(dy*dy)+(dz*dz)));
+	return(sqrt((dx*dx)+(dy*dy)+(dz*dz)));
 }
 
 /* =======================================================

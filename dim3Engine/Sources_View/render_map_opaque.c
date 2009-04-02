@@ -83,7 +83,7 @@ void render_opaque_mesh_simple(void)
 
 	for (n=0;n!=view.render->mesh_draw.count;n++) {
 
-		mesh=&map.mesh.meshes[view.render->mesh_draw.list[n]];
+		mesh=&map.mesh.meshes[view.render->mesh_draw.items[n].idx];
 
 			// skip meshes with no opaques and all non-shaders
 			// unless debug is on
@@ -158,7 +158,7 @@ void render_opaque_mesh_shader(void)
 
 	for (n=0;n!=view.render->mesh_draw.count;n++) {
 
-		mesh=&map.mesh.meshes[view.render->mesh_draw.list[n]];
+		mesh=&map.mesh.meshes[view.render->mesh_draw.items[n].idx];
 
 			// skip meshes with no shaders or opaques
 
@@ -229,7 +229,7 @@ void render_opaque_mesh_glow(void)
 
 	for (n=0;n!=view.render->mesh_draw.count;n++) {
 
-		mesh=&map.mesh.meshes[view.render->mesh_draw.list[n]];
+		mesh=&map.mesh.meshes[view.render->mesh_draw.items[n].idx];
 
 			// skip meshes with no glows or opaques
 

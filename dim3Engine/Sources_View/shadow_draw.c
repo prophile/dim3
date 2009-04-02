@@ -217,7 +217,7 @@ int shadow_render_stencil_map(model_draw_shadow *shadow,poly_pointer_type *poly_
 		// run through show meshes
 
 	for (n=0;n!=view.render->mesh_draw.count;n++) {
-		cnt=shadow_render_stencil_mesh(view.render->mesh_draw.list[n],y,ty,by,cnt,poly_list);
+		cnt=shadow_render_stencil_mesh(view.render->mesh_draw.items[n].idx,y,ty,by,cnt,poly_list);
 	}
 
 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);

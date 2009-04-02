@@ -123,7 +123,7 @@ void render_transparent_sort(d3pnt *pnt)
 		
 	for (n=0;n!=view.render->mesh_draw.count;n++) {
 
-		mesh=&map.mesh.meshes[view.render->mesh_draw.list[n]];
+		mesh=&map.mesh.meshes[view.render->mesh_draw.items[n].idx];
 		
 		for (k=0;k!=mesh->npoly;k++) {
 		
@@ -159,7 +159,7 @@ void render_transparent_sort(d3pnt *pnt)
 				memmove(&sort_list[sort_idx+1],&sort_list[sort_idx],((sort_cnt-sort_idx)*sizeof(map_poly_sort_item_type)));
 			}
 
-			sort_list[sort_idx].mesh_idx=view.render->mesh_draw.list[n];
+			sort_list[sort_idx].mesh_idx=view.render->mesh_draw.items[n].idx;
 			sort_list[sort_idx].poly_idx=k;
 			sort_list[sort_idx].dist=dist;
 

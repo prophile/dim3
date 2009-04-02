@@ -40,7 +40,7 @@ extern render_info_type		render_info;
 
 /* =======================================================
 
-      Open and Close Back Render OpenGL Context
+      Initialize Back Renderer
       
 ======================================================= */
 
@@ -48,7 +48,7 @@ bool gl_back_render_initialize(char *err_str)
 {
 	int				status;
 
-		// check if shadows are enabled
+		// check if back rendering is enabled
 		
 	back_render_on=gl_check_frame_buffer_ok();
 	if (!back_render_on) return(TRUE);
@@ -101,12 +101,68 @@ void gl_back_render_shutdown(void)
 
 /* =======================================================
 
+      Per Map Back rendering
+      
+======================================================= */
+
+void gl_back_render_map_start(void)
+{
+	int				n;
+	node_type		*node;
+	
+	node=map.nodes;
+	
+	for (n=0;n!=map.nnode;n++) {
+		node->back_render.txt_id=-1;
+		node++;
+	}
+}
+
+void gl_back_render_map_end(void)
+{
+	int				n;
+	node_type		*node;
+	
+	node=map.nodes;
+	
+	for (n=0;n!=map.nnode;n++) {
+		if (node->back_render.txt_id!=-1) {
+			glDeleteTextures(1,&node->back_render.txt_id);
+		}
+		node++;
+	}
+}
+
+/* =======================================================
+
+      Per Frame Back rendering
+      
+======================================================= */
+
+void gl_back_render_frame_start(void)
+{
+	int				n;
+	node_type		*node;
+	
+	node=map.nodes;
+	
+	for (n=0;n!=map.nnode;n++) {
+		node->back_render.render=FALSE;
+		node++;
+	}
+}
+
+/* =======================================================
+
       Render Node Camera to Texture
       
 ======================================================= */
 
 GLuint gl_back_render_for_node(int tick,char *node_name,GLuint gl_id)
 {
+	return(gl_id);
+	
+	/*
 	int				node_idx;
 	node_type		*node;
 	
@@ -141,5 +197,6 @@ GLuint gl_back_render_for_node(int tick,char *node_name,GLuint gl_id)
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
 	
 	return(back_render_fbo_txt_id);
+	*/
 }
 

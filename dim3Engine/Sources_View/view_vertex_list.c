@@ -240,7 +240,7 @@ bool view_compile_mesh_gl_lists(int tick)
 		
 	for (n=0;n!=view.render->mesh_draw.count;n++) {
 
-		mesh=&map.mesh.meshes[view.render->mesh_draw.list[n]];
+		mesh=&map.mesh.meshes[view.render->mesh_draw.items[n].idx];
 
 			// recalculate the vertexes if this
 			// mesh is moving

@@ -251,11 +251,8 @@ void view_draw_models_setup(void)
 	int							n,k,t,dist,sz;
 	obj_type					*obj;
 	proj_type					*proj;
-	view_render_sort_model_type	*sort;
 
-	sort=&view.render->sort_model;
-
-	sort->count=0;
+	view.render->model_draw.count=0;
 	
 		// sort objects
 	
@@ -270,10 +267,10 @@ void view_draw_models_setup(void)
 		
 			// sort into list
 		
-		t=sort->count;
+		t=view.render->model_draw.count;
 		
-		for (k=0;k!=sort->count;k++) {
-			if (dist>sort->items[k].dist) {
+		for (k=0;k!=view.render->model_draw.count;k++) {
+			if (dist>view.render->model_draw.items[k].dist) {
 				t=k;
 				break;
 			}
@@ -281,19 +278,20 @@ void view_draw_models_setup(void)
 		
 			// add to list
 
-		if (t>=sort->count) {
-			t=sort->count;
+		if (t>=view.render->model_draw.count) {
+			t=view.render->model_draw.count;
 		}
 		else {
-			sz=(sort->count-t)*sizeof(view_render_sort_model_item_type);
-			memmove(&sort->items[t+1],&sort->items[t],sz);
+			sz=(view.render->model_draw.count-t)*sizeof(view_render_draw_list_item_type);
+			memmove(&view.render->model_draw.items[t+1],&view.render->model_draw.items[t],sz);
 		}
 		
-		sort->items[t].type=view_sort_object;
-		sort->items[t].idx=(short)n;
-		sort->items[t].dist=dist;
+		view.render->model_draw.items[t].type=view_sort_object;
+		view.render->model_draw.items[t].idx=(short)n;
+		view.render->model_draw.items[t].dist=dist;
 		
-		sort->count++;
+		view.render->model_draw.count++;
+		if (view.render->model_draw.count==max_view_render_item) break;
 	}
 
 		// sort projectiles
@@ -310,10 +308,10 @@ void view_draw_models_setup(void)
 		
 			// sort into list
 		
-		t=sort->count;
+		t=view.render->model_draw.count;
 		
-		for (k=0;k!=sort->count;k++) {
-			if (dist>sort->items[k].dist) {
+		for (k=0;k!=view.render->model_draw.count;k++) {
+			if (dist>view.render->model_draw.items[k].dist) {
 				t=k;
 				break;
 			}
@@ -321,19 +319,20 @@ void view_draw_models_setup(void)
 		
 			// add to list
 
-		if (t>=sort->count) {
-			t=sort->count;
+		if (t>=view.render->model_draw.count) {
+			t=view.render->model_draw.count;
 		}
 		else {
-			sz=(sort->count-t)*sizeof(view_render_sort_model_item_type);
-			memmove(&sort->items[t+1],&sort->items[t],sz);
+			sz=(view.render->model_draw.count-t)*sizeof(view_render_draw_list_item_type);
+			memmove(&view.render->model_draw.items[t+1],&view.render->model_draw.items[t],sz);
 		}
 		
-		sort->items[t].type=view_sort_projectile;
-		sort->items[t].idx=(short)n;
-		sort->items[t].dist=dist;
+		view.render->model_draw.items[t].type=view_sort_projectile;
+		view.render->model_draw.items[t].idx=(short)n;
+		view.render->model_draw.items[t].dist=dist;
 		
-		sort->count++;
+		view.render->model_draw.count++;
+		if (view.render->model_draw.count==max_view_render_item) break;
 	}
 }
 
@@ -343,7 +342,6 @@ void view_draw_models(int tick)
 	d3col						col;
 	obj_type					*obj;
 	proj_type					*proj;
-	view_render_sort_model_type	*sort;
 
 		// setup draw
 		
@@ -353,15 +351,13 @@ void view_draw_models(int tick)
 	gl_setup_project();
 
 		// draw models
-		
-	sort=&view.render->sort_model;
 	
-	for (n=0;n!=sort->count;n++) {
+	for (n=0;n!=view.render->model_draw.count;n++) {
 
-		switch (sort->items[n].type) {
+		switch (view.render->model_draw.items[n].type) {
 
 			case view_sort_object:
-				obj=&server.objs[sort->items[n].idx];
+				obj=&server.objs[view.render->model_draw.items[n].idx];
 				if (!obj->draw.in_view) break;
 				
 				model_render(tick,&obj->draw);
@@ -374,7 +370,7 @@ void view_draw_models(int tick)
 				break;
 
 			case view_sort_projectile:
-				proj=&server.projs[sort->items[n].idx];
+				proj=&server.projs[view.render->model_draw.items[n].idx];
 				if (proj->draw.in_view) model_render(tick,&proj->draw);
 				break;
 
@@ -393,28 +389,25 @@ void view_create_models_shadow(void)
 	int							n;
 	obj_type					*obj;
 	proj_type					*proj;
-	view_render_sort_model_type	*sort;
 
-	sort=&view.render->sort_model;
-
-	if (sort->count==0) return;
+	if (view.render->model_draw.count==0) return;
 
 		// create shadows backwards to make sure nearest
 		// objects get shadow preferences
 	
-	for (n=(sort->count-1);n>=0;n--) {
+	for (n=(view.render->model_draw.count-1);n>=0;n--) {
 
-		switch (sort->items[n].type) {
+		switch (view.render->model_draw.items[n].type) {
 
 			case view_sort_object:
-				obj=&server.objs[sort->items[n].idx];
+				obj=&server.objs[view.render->model_draw.items[n].idx];
 				if (obj->draw.shadow.in_view) {
 					if (!shadow_texture_create(&obj->draw)) obj->draw.shadow.in_view=FALSE;
 				}
 				break;
 
 			case view_sort_projectile:
-				proj=&server.projs[sort->items[n].idx];
+				proj=&server.projs[view.render->model_draw.items[n].idx];
 				if (proj->draw.shadow.in_view) {
 					if (!shadow_texture_create(&proj->draw)) proj->draw.shadow.in_view=FALSE;
 				}
@@ -429,23 +422,20 @@ void view_draw_models_shadow(void)
 	int							n;
 	obj_type					*obj;
 	proj_type					*proj;
-	view_render_sort_model_type	*sort;
 	
 	shadow_render_init();
-
-	sort=&view.render->sort_model;
 	
-	for (n=0;n!=sort->count;n++) {
+	for (n=0;n!=view.render->model_draw.count;n++) {
 
-		switch (sort->items[n].type) {
+		switch (view.render->model_draw.items[n].type) {
 
 			case view_sort_object:
-				obj=&server.objs[sort->items[n].idx];
+				obj=&server.objs[view.render->model_draw.items[n].idx];
 				if (obj->draw.shadow.in_view) shadow_render(&obj->draw);
 				break;
 
 			case view_sort_projectile:
-				proj=&server.projs[sort->items[n].idx];
+				proj=&server.projs[view.render->model_draw.items[n].idx];
 				if (proj->draw.shadow.in_view) shadow_render(&proj->draw);
 				break;
 

@@ -130,10 +130,10 @@ bool view_area_check_mesh(map_mesh_type *mesh,char *area_flags)
 
 void view_create_mesh_draw_list(void)
 {
-	int					n,t,sz,d,start_mesh_idx,idx,
-						never_obscure_dist,obscure_dist;
+	int					n,t,sz,start_mesh_idx,idx;
 	char				area_flags[max_area];
 	bool				has_area;
+	double				d,never_obscure_dist,obscure_dist;
 	map_mesh_type		*start_mesh,*mesh;
 	
 		// get mesh camera is in
@@ -145,13 +145,13 @@ void view_create_mesh_draw_list(void)
 		// distance but can be the fog distance if fog is on
 
 	if (!fog_solid_on()) {
-		obscure_dist=view.camera.far_z-view.camera.near_z;
+		obscure_dist=(double)(view.camera.far_z-view.camera.near_z);
 	}
 	else {
-		obscure_dist=(map.fog.outer_radius>>1)*3;
+		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
 	}
 
-	never_obscure_dist=abs(view.camera.near_z)*3;
+	never_obscure_dist=(double)(abs(view.camera.near_z)*3);
 
 		// if we are in a sight view area, then obscure with that
 
@@ -196,7 +196,7 @@ void view_create_mesh_draw_list(void)
 		idx=-1;
 	
 		for (t=0;t!=view.render->mesh_draw.count;t++) {
-			if (view.render->mesh_draw.dist[t]>d) {
+			if (view.render->mesh_draw.items[t].dist>d) {
 				idx=t;
 				break;
 			}
@@ -205,22 +205,22 @@ void view_create_mesh_draw_list(void)
 			// insert at end of list
 			
 		if (idx==-1) {
-			view.render->mesh_draw.dist[view.render->mesh_draw.count]=d;
-			view.render->mesh_draw.list[view.render->mesh_draw.count]=n;
+			view.render->mesh_draw.items[view.render->mesh_draw.count].dist=d;
+			view.render->mesh_draw.items[view.render->mesh_draw.count].idx=(short)n;
 			view.render->mesh_draw.count++;
 			continue;
 		}
 		
 			// insert in list
 			
-		sz=sizeof(int)*(view.render->mesh_draw.count-idx);
-		memmove(&view.render->mesh_draw.dist[idx+1],&view.render->mesh_draw.dist[idx],sz);
-		memmove(&view.render->mesh_draw.list[idx+1],&view.render->mesh_draw.list[idx],sz);
+		sz=sizeof(view_render_draw_list_item_type)*(view.render->mesh_draw.count-idx);
+		memmove(&view.render->mesh_draw.items[idx+1],&view.render->mesh_draw.items[idx],sz);
 		
-		view.render->mesh_draw.dist[idx]=d;
-		view.render->mesh_draw.list[idx]=n;
+		view.render->mesh_draw.items[idx].dist=d;
+		view.render->mesh_draw.items[idx].idx=(short)n;
 		
 		view.render->mesh_draw.count++;
+		if (view.render->mesh_draw.count==max_view_render_item) break;
 	}
 }
 
@@ -229,7 +229,7 @@ bool view_mesh_in_draw_list(int mesh_idx)
 	int			n;
 
 	for (n=0;n!=view.render->mesh_draw.count;n++) {
-		if (view.render->mesh_draw.list[n]==mesh_idx) return(TRUE);
+		if (view.render->mesh_draw.items[n].idx==mesh_idx) return(TRUE);
 	}
 
 	return(FALSE);
