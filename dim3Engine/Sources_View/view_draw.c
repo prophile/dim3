@@ -613,10 +613,6 @@ void view_draw(int tick)
 	obj_type		*obj,*camera_obj;
 	weapon_type		*weap;
 
-		// back rendering for cameras
-
-	gl_back_render_frame_start(tick);
-
 		// get player object and held weapon
 		
 	obj=object_find_uid(server.player_obj_uid);
@@ -625,6 +621,9 @@ void view_draw(int tick)
 		// camera render
 
 	view.render=&view_camera_render;
+	
+		gl_back_render_frame_start(tick);		// supergumba
+
 	
 		// set view camera
 	
@@ -645,6 +644,9 @@ void view_draw(int tick)
 		// draw main scene
 
 	gl_setup_viewport(console_y_offset());
+	view.camera.render_wid=setup.screen.x_sz;
+	view.camera.render_high=setup.screen.y_sz;
+	
 	view_draw_scene(tick,obj,weap);
 
 
@@ -793,5 +795,33 @@ void view_draw(int tick)
 
 	fade_screen_draw(tick);
 	fade_object_draw(tick,obj);
+}
+
+bool view_draw_node(int tick,node_type *node,int pixel_size)
+{
+		// switch out to node render
+		
+	view.render=&view_node_render;
+	
+		// camera position
+		
+	memmove(&view.render->camera.pnt,&node->pnt,sizeof(d3pnt));
+	memmove(&view.render->camera.ang,&node->ang,sizeof(d3ang));
+
+		// setup camera
+
+	glViewport(0,0,pixel_size,pixel_size);
+	view.camera.render_wid=pixel_size;		// can probably delete this
+	view.camera.render_high=pixel_size;
+	
+	glClearColor(0.0f,0.0f,0.0f,1.0f);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	
+		// compile map objects
+		
+	view_draw_scene(tick,NULL,NULL);
+	view.render=&view_camera_render;
+	
+	return(TRUE);
 }
 

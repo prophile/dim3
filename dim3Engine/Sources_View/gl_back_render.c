@@ -70,15 +70,15 @@ bool gl_back_render_initialize(char *err_str)
 
 		// is object OK?
 
-	status=glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+//	status=glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
 	
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
-
+/*
 	if (status!=GL_FRAMEBUFFER_COMPLETE_EXT) {
 		strcpy(err_str,"Unable to create back render FBO");
 		return(FALSE);
 	}
-
+*/
 	return(TRUE);
 }
 
@@ -138,11 +138,11 @@ void gl_back_render_map_end(void)
 
 void gl_back_render_frame_node(int tick,char *node_name)
 {
-	int				node_idx;
+	int				n,node_idx;
 	node_type		*node;
 
 		// get node
-
+		
 	node_idx=map_find_node(&map,node_name);
 	if (node_idx==-1) return;
 	
@@ -158,28 +158,35 @@ void gl_back_render_frame_node(int tick,char *node_name)
 		glGenTextures(1,&node->back_render.txt_id);
 		glBindTexture(GL_TEXTURE_2D,node->back_render.txt_id);
 		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,back_render_texture_pixel_size,back_render_texture_pixel_size,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
+		glBindTexture(GL_TEXTURE_2D,0);
 	}
 
-		// render
+		// setup fbo
 
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,back_render_fbo_id);
-
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_2D,node->back_render.txt_id,0);
-/*
-	if (!view_draw_setup_node_start(tick,node,back_render_texture_pixel_size)) {
+	
+	if (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT)!=GL_FRAMEBUFFER_COMPLETE_EXT) {
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
 		return;
 	}
 
-	view_draw(tick);
-
-		// finish up and return to view camera
+		// draw back buffer
 		
+	view_draw_node(tick,node,back_render_texture_pixel_size);
 	glFlush();
-		
-	view_draw_setup_node_finish();
-*/
+
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
+
+		// generate mipmaps
+		
+	glBindTexture(GL_TEXTURE_2D,node->back_render.txt_id);
+	glGenerateMipmapEXT(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D,0);
+	
+		// mark as rendered for this frame
+		
+	node->back_render.render=TRUE;
 }
 
 void gl_back_render_frame_start(int tick)
@@ -189,7 +196,8 @@ void gl_back_render_frame_start(int tick)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	map_liquid_type		*liq;
-
+	
+	
 	if (!back_render_on) return;
 
 		// flag rendering so we don't draw twice
@@ -200,7 +208,10 @@ void gl_back_render_frame_start(int tick)
 		node->back_render.render=FALSE;
 		node++;
 	}
-
+	
+	
+	gl_back_render_frame_node(tick,"Liquid Camera 2");
+/* supergumba
 		// run through all the meshes
 	
 	for (n=0;n!=view.render->mesh_draw.count;n++) {
@@ -223,7 +234,35 @@ void gl_back_render_frame_start(int tick)
 		liq=&map.liquid.liquids[liq_idx];
 		if (liq->camera[0]!=0x0) gl_back_render_frame_node(tick,liq->camera);
 	}
+*/
+}
 
+/* =======================================================
+
+      Back Render Texture
+      
+======================================================= */
+
+bool gl_back_render_get_texture(char *node_name,GLuint *txt_id)
+{
+	int				node_idx;
+	node_type		*node;
+	
+	if (node_name[0]==0x0) return(FALSE);
+
+		// get node
+		
+	node_idx=map_find_node(&map,node_name);
+	if (node_idx==-1) return(FALSE);
+	
+	node=&map.nodes[node_idx];
+	
+		// get back render texture
+		
+	if (!node->back_render.render) return(FALSE);
+
+	*txt_id=node->back_render.txt_id;
+	return(TRUE);
 }
 
 

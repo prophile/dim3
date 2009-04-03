@@ -82,7 +82,7 @@ void gl_3D_view(view_camera_type *camera)
 	switch (camera->projection_type) {
 
 		case cp_fov:
-			ratio=(((float)setup.screen.x_sz)/((float)setup.screen.y_sz))*camera->aspect_ratio;
+			ratio=(((float)camera->render_wid)/((float)camera->render_high))*camera->aspect_ratio;
 			gluPerspective(camera->fov,ratio,camera->near_z,camera->far_z);
 			glScalef(-1.0f,-1.0f,-1.0f);
 			break;

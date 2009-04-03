@@ -163,7 +163,7 @@ typedef struct		{
 
 typedef struct		{
 						int									projection_type,
-															lft,rgt,top,bot,
+															lft,rgt,top,bot,render_wid,render_high,	// supergumba -- move all this
 															near_z,far_z,near_z_offset,
 															under_liquid_idx;
 						float								fov,aspect_ratio;
