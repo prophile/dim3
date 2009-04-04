@@ -109,6 +109,7 @@ extern void gl_shader_attach_model(model_type *mdl);
 extern void gl_shader_draw_scene_initialize(void);
 extern void gl_shader_draw_start(void);
 extern void gl_shader_draw_end(void);
+extern void gl_shader_texture_override(GLuint gl_id);
 extern void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,float dark_factor,float alpha,view_glsl_light_list_type *light_list);
 extern void gl_shader_draw_hilite_execute(texture_type *texture,int txt_idx,int frame,float dark_factor,float alpha,d3pnt *pnt,d3col *col);
 
@@ -119,6 +120,7 @@ extern void gl_back_render_shutdown(void);
 extern void gl_back_render_map_start(void);
 extern void gl_back_render_map_end(void);
 extern void gl_back_render_frame_start(int tick);
+extern bool gl_back_render_get_texture(char *node_name,GLuint *txt_id);
 
 	// shadows
 	

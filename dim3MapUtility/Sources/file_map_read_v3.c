@@ -184,7 +184,6 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->alpha=xml_get_attribute_float_default(tag,"alpha",1.0f);
 		liq->tint_alpha=xml_get_attribute_float(tag,"tint_alpha");
 		xml_get_attribute_2_coord_float(tag,"shift",&liq->x_shift,&liq->y_shift);
-		xml_get_attribute_text(tag,"camera",liq->camera,name_str_len);
 	}
 
 		// physics

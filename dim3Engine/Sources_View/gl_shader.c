@@ -615,6 +615,18 @@ void gl_shader_texture_set(view_shader_type *shader,texture_type *texture,int tx
 	gl_shader_set_texture_variables(shader,texture);
 }
 
+void gl_shader_texture_override(GLuint gl_id)
+{
+		// normally used to override for back rendering
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,gl_id);
+
+		// need to force a reset for next time
+
+	gl_shader_current_txt_idx=-1;
+}
+
 /* =======================================================
 
       Execute Shader

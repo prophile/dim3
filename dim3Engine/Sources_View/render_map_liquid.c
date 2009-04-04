@@ -87,7 +87,7 @@ void liquid_gl_list_init(void)
 		liq++;
 	}
 
-	view_init_liquid_vertex_object(v_sz*(3+2+2+3));
+	view_init_liquid_vertex_object(v_sz*(3+2+3));
 	view_init_liquid_index_object(v_sz*4);
 }
 
@@ -106,7 +106,7 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz,b
 					f_break,f_time,f_tick,sn,
 					f_tide_split_half,f_tide_high;
 	bool			x_break,z_break;
-	float			*vertex_ptr,*vl,*uv,*uv2,*cl;
+	float			*vertex_ptr,*vl,*uv,*cl;
 	
 	y=liq->y;
 	fy=(float)y;
@@ -118,8 +118,7 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz,b
 	
 	vl=vertex_ptr;
 	uv=vertex_ptr+(v_sz*3);
-	uv2=vertex_ptr+(v_sz*(3+2));
-	cl=vertex_ptr+(v_sz*(3+2+2));
+	cl=vertex_ptr+(v_sz*(3+2));
 
 		// setup tiding
 
@@ -207,11 +206,6 @@ void liquid_render_liquid_create_vertex(int tick,map_liquid_type *liq,int v_sz,b
 			*uv++=x_txtoff+((liq->x_txtfact*(float)(x-liq->lft))/fgx);
 			*uv++=y_txtoff+((liq->y_txtfact*(float)(z-liq->top))/fgy);
 			
-				// special uv for reflections
-				
-			*uv2++=((float)(x-liq->lft))/fgx;
-			*uv2++=((float)(z-liq->top))/fgy;
-
 			v_cnt++;
 			
 			x_sz++;
@@ -322,7 +316,6 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
 void liquid_render_liquid(int tick,map_liquid_type *liq)
 {
 	int							v_sz,quad_cnt,frame;
-	GLuint						gl_id;
 	bool						shader_on;
 	texture_type				*texture;
 	view_glsl_light_list_type	light_list;
@@ -357,36 +350,10 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 		return;
 	}
 	
-		// start vertex array
+		// start vertex and UV array
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,0);
-	
-		// any back rendering
-		// use secondary UV array that is always 0...1
-		
-	if (gl_back_render_get_texture(liq->camera,&gl_id)) {
-	
-		glDisable(GL_BLEND);
-		glDisable(GL_ALPHA_TEST);
-		
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*(3+2))*sizeof(float)));
-		
-		glColor4f(1.0f,1.0f,1.0f,1.0f);
-	
-		gl_texture_opaque_start();
-		gl_texture_opaque_set(gl_id);
-		
-		glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
-		
-		gl_texture_opaque_end();
-	
-		glEnable(GL_BLEND);
-		glEnable(GL_ALPHA_TEST);
-	}
-	
-		// start UV array
 		
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*3)*sizeof(float)));
@@ -413,14 +380,14 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 			// need color pointers for simple drawing
 
 		glEnableClientState(GL_COLOR_ARRAY);
-		glColorPointer(3,GL_FLOAT,0,(void*)((v_sz*(3+2+2))*sizeof(float)));
+		glColorPointer(3,GL_FLOAT,0,(void*)((v_sz*(3+2))*sizeof(float)));
 
 			// draw texture
 
 		gl_texture_transparent_start();
 		gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,liq->alpha);
 
-//		glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
+		glDrawElements(GL_QUADS,(quad_cnt*4),GL_UNSIGNED_INT,(GLvoid*)0);
 
 		gl_texture_transparent_end();
 

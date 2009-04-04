@@ -33,7 +33,8 @@ unsigned char		ag_block_data_none[max_ag_block_sz][max_ag_block_sz]=ag_block_dat
 					ag_block_data_circle[max_ag_block_sz][max_ag_block_sz]=ag_block_data_circle_bytes,
 					ag_block_data_u[max_ag_block_sz][max_ag_block_sz]=ag_block_data_u_bytes,
 					ag_block_data_h[max_ag_block_sz][max_ag_block_sz]=ag_block_data_h_bytes,
-					ag_block_data_l[max_ag_block_sz][max_ag_block_sz]=ag_block_data_l_bytes;
+					ag_block_data_l[max_ag_block_sz][max_ag_block_sz]=ag_block_data_l_bytes,
+					ag_block_data_i[max_ag_block_sz][max_ag_block_sz]=ag_block_data_i_bytes;
 
 /* =======================================================
 
@@ -68,6 +69,10 @@ bool map_auto_generate_block_collision(auto_generate_settings_type *ags,int x,in
 			
 		case ag_block_preset_l:
 			block=(unsigned char*)ag_block_data_l;
+			break;
+
+		case ag_block_preset_i:
+			block=(unsigned char*)ag_block_data_i;
 			break;
 			
 	}

@@ -155,6 +155,7 @@ and can be sold or given away.
 #define ag_block_u									2
 #define ag_block_preset_h							3
 #define ag_block_preset_l							4
+#define ag_block_preset_i							5
 
 #define ag_block_data_none_bytes					{ \
 													 {0,0,0,0,0,0,0,0,0,0}, \
@@ -219,6 +220,19 @@ and can be sold or given away.
 													 {0,0,0,0,0,0,0,0,0,0}, \
 													 {0,0,0,0,0,0,0,0,0,0}, \
 													 {0,0,0,0,0,0,0,0,0,0} \
+													}
+
+#define ag_block_data_i_bytes						{ \
+													 {1,1,1,0,0,0,0,1,1,1}, \
+													 {1,1,1,0,0,0,0,1,1,1}, \
+													 {1,1,1,0,0,0,0,1,1,1}, \
+													 {1,1,1,0,0,0,0,1,1,1}, \
+													 {1,1,1,0,0,0,0,1,1,1}, \
+													 {1,1,1,0,0,0,0,1,1,1}, \
+													 {1,1,1,0,0,0,0,1,1,1}, \
+													 {1,1,1,0,0,0,0,1,1,1}, \
+													 {1,1,1,0,0,0,0,1,1,1}, \
+													 {1,1,1,0,0,0,0,1,1,1} \
 													}
 
 //
@@ -298,7 +312,7 @@ typedef struct	{
 															stair_type_on[ag_stair_type_count],
 															door_type_on[ag_door_type_count],
 															light_type_on[ag_light_type_count];
-					bool									second_story,window,frame;
+					bool									corridor,second_story,window,frame;
 					auto_generate_setting_map_type			map;
 					auto_generate_setting_sound_type		sound;
 					auto_generate_setting_texture_type		texture;

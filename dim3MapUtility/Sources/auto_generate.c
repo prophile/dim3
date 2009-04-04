@@ -283,6 +283,91 @@ void map_auto_generate_merge_portals(void)
 	}
 }
 
+void map_auto_generate_merge_portals_center(void)
+{
+	int						n,x,z,cx,cz,move_cnt,portal_sz,split_factor,
+							xadd[max_portal],zadd[max_portal];
+	bool					moved;
+	auto_generate_box_type	*portal;
+
+		// movement variables
+
+	portal_sz=(int)(((float)ag_settings.map.map_sz)*ag_constant_portal_percent);
+	split_factor=(int)(((float)portal_sz)*ag_constant_portal_split_factor_percent);
+
+		// find center
+
+	cx=cz=0;
+
+	for (n=0;n!=ag_box_count;n++) {
+		portal=&ag_boxes[n];
+
+		cx+=((portal->min.x+portal->max.x)>>1);
+		cz+=((portal->min.z+portal->max.z)>>1);
+	}
+
+	cx/=ag_box_count;
+	cz/=ag_box_count;
+
+		// get movement directions
+
+	for (n=0;n!=ag_box_count;n++) {
+		portal=&ag_boxes[n];
+
+		if (((portal->min.x+portal->max.x)>>1)<cx) {
+			xadd[n]=split_factor;
+		}
+		else {
+			xadd[n]=-split_factor;
+		}
+
+		if (((portal->min.z+portal->max.z)>>1)<cz) {
+			zadd[n]=split_factor;
+		}
+		else {
+			zadd[n]=-split_factor;
+		}
+	}
+
+		// move all portals towards center
+		// until no more movement or over a move count
+
+	move_cnt=0;
+
+	while (move_cnt<100) {
+
+		moved=FALSE;
+
+		for (n=0;n!=ag_box_count;n++) {
+			portal=&ag_boxes[n];
+
+			x=(portal->min.x+portal->max.x)>>1;
+			z=(portal->min.z+portal->max.z)>>1;
+
+			if (((xadd[n]>0) && (x<cx)) || ((xadd[n]<0) && (x>cx))) {
+				if (!map_auto_generate_portal_collision((portal->min.x+xadd[n]),portal->min.z,(portal->max.x+xadd[n]),portal->max.z,n)) {
+					portal->min.x+=xadd[n];
+					portal->max.x+=xadd[n];
+					moved=TRUE;
+				}
+			}
+
+			if (((zadd[n]>0) && (z<cz)) || ((zadd[n]<0) && (z>cz))) {
+				if (!map_auto_generate_portal_collision(portal->min.x,(portal->min.z+zadd[n]),portal->max.x,(portal->max.z+zadd[n]),n)) {
+					portal->min.z+=zadd[n];
+					portal->max.z+=zadd[n];
+					moved=TRUE;
+				}
+			}
+
+		}
+
+		if (!moved) break;
+
+		move_cnt++;
+	}
+}
+
 /* =======================================================
 
       Connect Portals
@@ -2040,8 +2125,15 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 		// create portals
 
 	map_auto_generate_initial_portals(map);
-	map_auto_generate_merge_portals();
-	map_auto_generate_connect_portals(map);
+
+	if (ag_settings.corridor) {
+		map_auto_generate_merge_portals();
+		map_auto_generate_connect_portals(map);
+	}
+	else {
+		map_auto_generate_merge_portals_center();
+	}
+
 	map_auto_generate_portal_y();
 	
 		// walls and floors
@@ -2120,6 +2212,8 @@ bool map_auto_generate_test(map_type *map)
 #endif
 
 	ags.block=ag_block_none;
+
+	ags.corridor=FALSE;
 	ags.second_story=TRUE;
 	
 	ags.map.map_sz=250000;

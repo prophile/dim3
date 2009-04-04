@@ -39,6 +39,8 @@ extern setup_type			setup;
 extern view_type			view;
 extern render_info_type		render_info;
 
+extern bool view_draw_node(int tick,node_type *node,int pixel_size);
+
 /* =======================================================
 
       Initialize Back Renderer
@@ -47,8 +49,6 @@ extern render_info_type		render_info;
 
 bool gl_back_render_initialize(char *err_str)
 {
-	int				status;
-
 		// check if back rendering is enabled
 		
 	back_render_on=gl_check_frame_buffer_ok();
@@ -68,17 +68,8 @@ bool gl_back_render_initialize(char *err_str)
 
 	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_id);
 
-		// is object OK?
-
-//	status=glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
-	
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
-/*
-	if (status!=GL_FRAMEBUFFER_COMPLETE_EXT) {
-		strcpy(err_str,"Unable to create back render FBO");
-		return(FALSE);
-	}
-*/
+
 	return(TRUE);
 }
 
@@ -191,11 +182,10 @@ void gl_back_render_frame_node(int tick,char *node_name)
 
 void gl_back_render_frame_start(int tick)
 {
-	int					n,k,mesh_idx,liq_idx;
+	int					n,k,mesh_idx;
 	node_type			*node;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
-	map_liquid_type		*liq;
 	
 	
 	if (!back_render_on) return;
@@ -226,14 +216,6 @@ void gl_back_render_frame_start(int tick)
 		}
 	}
 
-		// run through all liquids
-
-	for (n=0;n!=view.render->liquid_draw.count;n++) {
-		liq_idx=view.render->liquid_draw.items[n].idx;
-
-		liq=&map.liquid.liquids[liq_idx];
-		if (liq->camera[0]!=0x0) gl_back_render_frame_node(tick,liq->camera);
-	}
 */
 }
 

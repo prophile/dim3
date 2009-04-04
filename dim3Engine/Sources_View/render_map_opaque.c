@@ -59,6 +59,7 @@ void render_opaque_mesh_simple(void)
 {
 	int							n,k;
 	bool						enable;
+	GLuint						gl_id;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	texture_type				*texture;
@@ -114,10 +115,18 @@ void render_opaque_mesh_simple(void)
 
 			gl_lights_build_from_poly(poly,&light_list);
 
-				// draw polygon
+				// get texture
 
 			texture=&map.textures[poly->txt_idx];
-			gl_texture_opaque_set(texture->frames[poly->render.frame].bitmap.gl_id);
+
+			if (!gl_back_render_get_texture(poly->camera,&gl_id)) {
+				gl_id=texture->frames[poly->render.frame].bitmap.gl_id;
+			}
+
+			gl_texture_opaque_set(gl_id);
+
+				// draw polygon
+
 			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 
 			poly++;
@@ -136,6 +145,7 @@ void render_opaque_mesh_simple(void)
 void render_opaque_mesh_shader(void)
 {
 	int							n,k;
+	GLuint						gl_id;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	texture_type				*texture;
@@ -190,6 +200,12 @@ void render_opaque_mesh_shader(void)
 			}
 			else {
 				gl_shader_draw_hilite_execute(texture,poly->txt_idx,poly->render.frame,poly->dark_factor,1.0f,&poly->box.mid,NULL);
+			}
+
+				// fix texture if any back rendering
+
+			if (!gl_back_render_get_texture(poly->camera,&gl_id)) {
+				gl_shader_texture_override(gl_id);
 			}
 
 				// draw polygon

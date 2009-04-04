@@ -499,7 +499,6 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_float("alpha",liq->alpha);
 	xml_add_attribute_float("tint_alpha",liq->tint_alpha);
 	if ((liq->x_shift!=0) || (liq->y_shift!=0)) xml_add_attribute_2_coord_float("shift",liq->x_shift,liq->y_shift);
-	if (liq->camera[0]!=0x0) xml_add_attribute_text("camera",liq->camera);
 	xml_add_tagend(TRUE);
 
 		// physics
