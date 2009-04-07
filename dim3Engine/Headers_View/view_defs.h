@@ -158,18 +158,6 @@ typedef struct		{
 					} view_time_type;
 
 //
-// view draw type
-//
-
-typedef struct		{
-						int									projection_type,
-															lft,rgt,top,bot,render_wid,render_high,	// supergumba -- move all this
-															near_z,far_z,near_z_offset,
-															under_liquid_idx;
-						float								fov,aspect_ratio;
-					} view_camera_type;
-
-//
 // fps type
 //
 
@@ -209,6 +197,9 @@ typedef struct		{
 //
 
 typedef struct		{
+						int									under_liquid_idx;
+						float								fov;
+						bool								flip;
 						d3pnt								pnt;
 						d3ang								ang;
 					} view_render_camera_type;
@@ -260,7 +251,6 @@ typedef struct		{
 						view_count_type						count;
 						view_time_type						time;
 						view_fps_type						fps;
-						view_camera_type					camera;
 						view_image_type						*images;
 						view_shader_type					*shaders;
 						rain_draw_type						*rain_draws;

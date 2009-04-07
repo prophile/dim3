@@ -115,7 +115,7 @@ void rain_draw(int tick)
 		// is rain on and not under liquid?
 
 	if (!map.rain.on) return;
-	if (view.camera.under_liquid_idx!=-1) return;
+	if (view.render->camera.under_liquid_idx!=-1) return;
 	
 		// reset on?
 		
@@ -216,8 +216,7 @@ void rain_draw(int tick)
 
 		// setup view
 
-	gl_setup_viewport(console_y_offset());
-	gl_3D_view(&view.camera);
+	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 	

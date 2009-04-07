@@ -205,7 +205,7 @@ bool melee_strike_position_weapon_model(int tick,obj_type *obj,weapon_type *weap
 	fire_pnt->y+=weap->draw.pnt.y+obj->duck.y_move;
 	fire_pnt->z+=weap->draw.pnt.z;
 
-	if (weap->draw.no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
+	if (weap->draw.no_rot.on) gl_project_fix_rotation(&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 
 	return(TRUE);
 }
@@ -265,7 +265,7 @@ bool melee_strike_position_object_model(int tick,obj_type *obj,weapon_type *weap
 	fire_pnt->y+=obj->draw.pnt.y+obj->duck.y_move;
 	fire_pnt->z+=obj->draw.pnt.z;
 
-	if (obj->draw.no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
+	if (obj->draw.no_rot.on) gl_project_fix_rotation(&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 
 	return(TRUE);
 }
@@ -315,7 +315,7 @@ bool melee_strike_position_projectile_model(int tick,obj_type *obj,weapon_type *
 	fire_pnt->y+=proj->draw.pnt.y;
 	fire_pnt->z+=proj->draw.pnt.z;
 
-	if (proj->draw.no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
+	if (proj->draw.no_rot.on) gl_project_fix_rotation(&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 
 	return(TRUE);
 }

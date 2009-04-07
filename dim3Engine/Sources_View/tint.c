@@ -55,7 +55,6 @@ void view_draw_liquid_tint(int liquid_idx)
 	
 		// draw tint
 
-	gl_setup_viewport(console_y_offset());
 	gl_2D_view_screen();
 
 	glEnable(GL_BLEND);
@@ -103,7 +102,6 @@ void view_draw_effect_tint(int tick,obj_type *obj)
 	
 		// draw tint
 		
-	gl_setup_viewport(console_y_offset());
 	gl_2D_view_screen();
 
 	glEnable(GL_BLEND);

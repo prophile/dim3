@@ -65,8 +65,7 @@ void fog_draw_textured(int tick)
 	memmove(&ang,&view.render->camera.ang,sizeof(d3ang));
 	ang.y=180.0f;
 		
-	gl_setup_viewport(console_y_offset());
-	gl_3D_view(&view.camera);
+	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&ang);
 	gl_setup_project();
 

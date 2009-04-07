@@ -502,7 +502,6 @@ void view_pause_draw(void)
 
 	gl_frame_start(NULL);
 
-	gl_setup_viewport(0);
 	gl_2D_view_screen();
 
 	col.r=col.g=col.b=1.0f;

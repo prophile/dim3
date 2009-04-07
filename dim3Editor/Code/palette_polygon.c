@@ -86,6 +86,7 @@ void palette_polygon_load(void)
 		liq=&map.liquid.liquids[main_idx];
 		
 		dialog_enable(palette_poly_wind,kMeshPolySettingDark,0,FALSE);
+		dialog_enable(palette_poly_wind,kMeshPolySettingCamera,0,FALSE);
 		
 		dialog_set_float(palette_poly_wind,kMeshPolySettingOffX,0,liq->x_txtoff);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingOffY,0,liq->y_txtoff);
@@ -95,8 +96,6 @@ void palette_polygon_load(void)
 		dialog_set_float(palette_poly_wind,kMeshPolySettingAlpha,0,liq->alpha);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftX,0,liq->x_shift);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftY,0,liq->y_shift);
-		
-		dialog_special_combo_fill_node(palette_poly_wind,kMeshPolySettingCamera,0,liq->camera);
 	}
 	
 	DrawControls(palette_poly_wind);
@@ -146,8 +145,6 @@ void palette_polygon_save(void)
 		liq->alpha=dialog_get_float(palette_poly_wind,kMeshPolySettingAlpha,0);
 		liq->x_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftX,0);
 		liq->y_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftY,0);
-		
-		dialog_special_combo_get_node(palette_poly_wind,kMeshPolySettingCamera,0,liq->camera,name_str_len);
 	}
 	
 	main_wind_draw();

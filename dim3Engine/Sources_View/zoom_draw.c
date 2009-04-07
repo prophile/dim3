@@ -79,8 +79,7 @@ void zoom_setup(int tick,obj_type *obj,weapon_type *weap)
 	
 		// get the zoom place
 		
-	gl_setup_viewport(0);
-	gl_3D_view(&view.camera);
+	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 
@@ -139,7 +138,6 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 	
 		// setup drawing
 		
-	gl_setup_viewport(console_y_offset());
 	gl_2D_view_screen();
 
 	glDisable(GL_BLEND);

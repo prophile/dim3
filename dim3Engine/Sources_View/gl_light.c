@@ -183,7 +183,7 @@ void gl_lights_compile_model_add(int tick,model_draw *draw)
 			
 			if (mdl!=NULL) {
 				model_get_light_position(mdl,&draw->setup,n,&pnt.x,&pnt.y,&pnt.z);
-				if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&pnt.x,&pnt.y,&pnt.z);
+				if (draw->no_rot.on) gl_project_fix_rotation(&pnt.x,&pnt.y,&pnt.z);
 			}
 			
 			gl_lights_compile_add(tick,&pnt,light->type,light->intensity,light->exponent,light->direction,&light->col);

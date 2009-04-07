@@ -55,19 +55,20 @@ bool gl_back_render_initialize(char *err_str)
 	if (!back_render_on) return(TRUE);
 	
 		// create depth buffer object
-		
-	glGenFramebuffersEXT(1,&back_render_fbo_depth_id);
-	glBindFramebufferEXT(GL_RENDERBUFFER_EXT,back_render_fbo_depth_id);
-	glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT,GL_DEPTH_COMPONENT,back_render_texture_pixel_size,back_render_texture_pixel_size);
-	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT,0);
+	
+	glGenTextures(1,&back_render_fbo_depth_id);
+	glBindTexture(GL_TEXTURE_2D,back_render_fbo_depth_id);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+	glTexImage2D(GL_TEXTURE_2D,0,GL_DEPTH_COMPONENT,back_render_texture_pixel_size,back_render_texture_pixel_size,0,GL_DEPTH_COMPONENT,GL_FLOAT,0);
 
 		// create the frame buffer object and attach depth
 
 	glGenFramebuffersEXT(1,&back_render_fbo_id);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,back_render_fbo_id);
-
-	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_id);
-
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_TEXTURE_2D,back_render_fbo_depth_id,0);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
 
 	return(TRUE);
@@ -80,7 +81,7 @@ void gl_back_render_shutdown(void)
 		// destroy frame buffer and depth
 
 	glDeleteFramebuffersEXT(1,&back_render_fbo_id);
-	glDeleteFramebuffersEXT(1,&back_render_fbo_depth_id);
+	glDeleteTextures(1,&back_render_fbo_depth_id);
 }
 
 /* =======================================================
@@ -123,13 +124,76 @@ void gl_back_render_map_end(void)
 
 /* =======================================================
 
+      Back Render Texture
+      
+======================================================= */
+
+GLuint gl_back_render_create_texture(void)
+{
+	GLuint				gl_id;
+	
+	glGenTextures(1,&gl_id);
+	glBindTexture(GL_TEXTURE_2D,gl_id);
+	
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,back_render_texture_pixel_size,back_render_texture_pixel_size,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
+
+		// animsotropic modes
+		
+	switch (setup.anisotropic_mode) {
+	
+		case anisotropic_mode_none:
+			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.0);
+			break;
+			
+		case anisotropic_mode_low:
+			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,2.0);
+			break;
+			
+		case anisotropic_mode_medium:
+			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,4.0);
+			break;
+			
+		case anisotropic_mode_high:
+			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,8.0);
+			break;
+			
+	}
+
+		// mipmap modes
+		
+	switch (setup.mipmap_mode) {
+	
+		case mipmap_mode_none:
+			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+			break;
+			
+		case mipmap_mode_bilinear:
+			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST);
+			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+			break;
+			
+		case mipmap_mode_trilinear:
+			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+			break;
+			
+	}
+	
+	glBindTexture(GL_TEXTURE_2D,0);
+	
+	return(gl_id);
+}
+
+/* =======================================================
+
       Per Frame Back rendering
       
 ======================================================= */
 
 void gl_back_render_frame_node(int tick,char *node_name)
 {
-	int				n,node_idx;
+	int				node_idx;
 	node_type		*node;
 
 		// get node
@@ -146,16 +210,14 @@ void gl_back_render_frame_node(int tick,char *node_name)
 		// need to create a texture?
 
 	if (node->back_render.txt_id==-1) {
-		glGenTextures(1,&node->back_render.txt_id);
-		glBindTexture(GL_TEXTURE_2D,node->back_render.txt_id);
-		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,back_render_texture_pixel_size,back_render_texture_pixel_size,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
-		glBindTexture(GL_TEXTURE_2D,0);
+		node->back_render.txt_id=gl_back_render_create_texture();
 	}
 
 		// setup fbo
 
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,back_render_fbo_id);
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_2D,node->back_render.txt_id,0);
+	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,back_render_fbo_depth_id);
 	
 	if (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT)!=GL_FRAMEBUFFER_COMPLETE_EXT) {
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
@@ -187,7 +249,6 @@ void gl_back_render_frame_start(int tick)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
-	
 	if (!back_render_on) return;
 
 		// flag rendering so we don't draw twice
@@ -199,9 +260,6 @@ void gl_back_render_frame_start(int tick)
 		node++;
 	}
 	
-	
-	gl_back_render_frame_node(tick,"Liquid Camera 2");
-/* supergumba
 		// run through all the meshes
 	
 	for (n=0;n!=view.render->mesh_draw.count;n++) {
@@ -215,8 +273,6 @@ void gl_back_render_frame_start(int tick)
 			poly++;
 		}
 	}
-
-*/
 }
 
 /* =======================================================

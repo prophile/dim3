@@ -26,6 +26,13 @@ and can be sold or given away.
 *********************************************************************/
 
 //
+// auto-generate types
+//
+
+#define ag_type_room_and_corridor					0
+#define ag_type_room_only							1
+
+//
 // auto-generate flags and modes
 //
 
@@ -148,16 +155,16 @@ and can be sold or given away.
 // auto-generate blockings
 //
 
-#define max_ag_block_sz								10
+#define max_ag_flow_sz								10
 
-#define ag_block_none								0
-#define ag_block_circle								1
-#define ag_block_u									2
-#define ag_block_preset_h							3
-#define ag_block_preset_l							4
-#define ag_block_preset_i							5
+#define ag_flow_none								0
+#define ag_flow_circle								1
+#define ag_flow_u									2
+#define ag_flow_preset_h							3
+#define ag_flow_preset_l							4
+#define ag_flow_preset_i							5
 
-#define ag_block_data_none_bytes					{ \
+#define ag_flow_data_none_bytes						{ \
 													 {0,0,0,0,0,0,0,0,0,0}, \
 													 {0,0,0,0,0,0,0,0,0,0}, \
 													 {0,0,0,0,0,0,0,0,0,0}, \
@@ -170,7 +177,7 @@ and can be sold or given away.
 													 {0,0,0,0,0,0,0,0,0,0} \
 													}
 
-#define ag_block_data_circle_bytes					{ \
+#define ag_flow_data_circle_bytes					{ \
 													 {0,0,0,0,0,0,0,0,0,0}, \
 													 {0,0,0,0,0,0,0,0,0,0}, \
 													 {0,0,0,0,0,0,0,0,0,0}, \
@@ -183,7 +190,7 @@ and can be sold or given away.
 													 {0,0,0,0,0,0,0,0,0,0} \
 													}
 
-#define ag_block_data_u_bytes						{ \
+#define ag_flow_data_u_bytes						{ \
 													 {0,0,0,1,1,1,1,0,0,0}, \
 													 {0,0,0,1,1,1,1,0,0,0}, \
 													 {0,0,0,1,1,1,1,0,0,0}, \
@@ -196,7 +203,7 @@ and can be sold or given away.
 													 {0,0,0,0,0,0,0,0,0,0} \
 													}
 
-#define ag_block_data_h_bytes						{ \
+#define ag_flow_data_h_bytes						{ \
 													 {0,0,0,1,1,1,1,0,0,0}, \
 													 {0,0,0,1,1,1,1,0,0,0}, \
 													 {0,0,0,1,1,1,1,0,0,0}, \
@@ -209,7 +216,7 @@ and can be sold or given away.
 													 {0,0,0,1,1,1,1,0,0,0} \
 													}
 													
-#define ag_block_data_l_bytes						{ \
+#define ag_flow_data_l_bytes						{ \
 													 {0,0,0,0,0,1,1,1,1,1}, \
 													 {0,0,0,0,0,1,1,1,1,1}, \
 													 {0,0,0,0,0,1,1,1,1,1}, \
@@ -222,7 +229,7 @@ and can be sold or given away.
 													 {0,0,0,0,0,0,0,0,0,0} \
 													}
 
-#define ag_block_data_i_bytes						{ \
+#define ag_flow_data_i_bytes						{ \
 													 {1,1,1,0,0,0,0,1,1,1}, \
 													 {1,1,1,0,0,0,0,1,1,1}, \
 													 {1,1,1,0,0,0,0,1,1,1}, \
@@ -239,51 +246,51 @@ and can be sold or given away.
 // auto-generate constants
 //
 
-#define ag_constant_portal_percent					0.28f
+#define ag_constant_portal_percent						0.28f
 
-#define ag_constant_portal_high_percent				0.075f
-#define ag_constant_portal_story_high_add_percent	0.10f
+#define ag_constant_portal_high_percent					0.075f
+#define ag_constant_portal_story_high_add_percent		0.10f
 
-#define ag_constant_portal_random_percent			0.4f
-#define ag_constant_portal_merge_percent			0.08f
-#define ag_constant_portal_connect_percent			1.0f
-#define ag_constant_portal_split_factor_percent		0.1f
+#define ag_constant_portal_random_percent				0.4f
+#define ag_constant_portal_merge_percent				0.08f
+#define ag_constant_portal_connect_percent				1.0f
+#define ag_constant_portal_split_factor_percent			0.1f
 
-#define ag_constant_portal_high_extra_top			0.75f
-#define ag_constant_portal_high_extra_bottom		0.65f
-#define ag_constant_portal_high_slop_y				0.10f
-#define ag_constant_portal_rough_floor_percent		0.025f
-#define ag_constant_portal_ceiling_slant_percent	0.40f
+#define ag_constant_portal_high_extra_top				0.75f
+#define ag_constant_portal_high_extra_bottom			0.65f
+#define ag_constant_portal_high_slop_y					0.10f
+#define ag_constant_portal_rough_floor_percent			0.025f
+#define ag_constant_portal_ceiling_slant_percent		0.40f
 
-#define ag_constant_story_floor_high				(5*map_enlarge)
-#define ag_constant_story_steps_split_factor		1
+#define ag_constant_story_floor_high					(5*map_enlarge)
+#define ag_constant_story_steps_split_factor			1
 
-#define ag_constant_corridor_size_percent			0.20f
-#define ag_constant_corridor_random_percent			0.5f
-#define ag_constant_corridor_high_percent			0.07f
+#define ag_constant_corridor_size_percent				0.20f
+#define ag_constant_corridor_random_percent				0.5f
+#define ag_constant_corridor_high_percent				0.07f
 
-#define ag_constant_door_percentage					0.5f
-#define ag_constant_door_width						(2*map_enlarge)
-#define ag_constant_door_open_millisec				500
+#define ag_constant_door_percentage						0.5f
+#define ag_constant_door_width							(2*map_enlarge)
+#define ag_constant_door_open_millisec					500
 
-#define ag_constant_lift_move_millisec				1000
+#define ag_constant_lift_move_millisec					1000
 
-#define ag_constant_light_animate_percentage		0.1f
+#define ag_constant_light_animate_percentage			0.1f
 
-#define ag_constant_step_corridor_size				(12*map_enlarge)
-#define ag_constant_step_corridor_high				(3*map_enlarge)
-#define ag_constant_step_story_size					(10*map_enlarge)
-#define ag_constant_step_story_high					(5*map_enlarge)
+#define ag_constant_step_corridor_size					(12*map_enlarge)
+#define ag_constant_step_corridor_high					(3*map_enlarge)
+#define ag_constant_step_story_size						(10*map_enlarge)
+#define ag_constant_step_story_high						(5*map_enlarge)
 
-#define ag_constant_step_side_wid					(4*map_enlarge)
+#define ag_constant_step_side_wid						(4*map_enlarge)
 
-#define ag_constant_door_frame_depth				(4*map_enlarge)
+#define ag_constant_door_frame_depth					(4*map_enlarge)
 
-#define ag_constant_ramp_min_high					(4*map_enlarge)
-#define ag_constant_ramp_length						(35*map_enlarge)
+#define ag_constant_ramp_min_high						(4*map_enlarge)
+#define ag_constant_ramp_length							(35*map_enlarge)
 
-#define ag_constant_window_percent					0.3f
-#define ag_constant_window_depth					(8*map_enlarge)
+#define ag_constant_window_percent						0.3f
+#define ag_constant_window_depth						(8*map_enlarge)
 
 //
 // auto-generate setup structure
@@ -306,13 +313,13 @@ typedef struct	{
 				} auto_generate_setting_texture_type;
 
 typedef struct	{
-					int										seed,block;
+					int										seed,type,flow;
 					unsigned char							ceiling_type_on[ag_ceiling_type_count],
 															corridor_type_on[ag_corridor_type_count],
 															stair_type_on[ag_stair_type_count],
 															door_type_on[ag_door_type_count],
 															light_type_on[ag_light_type_count];
-					bool									corridor,second_story,window,frame;
+					bool									second_story,window,frame;
 					auto_generate_setting_map_type			map;
 					auto_generate_setting_sound_type		sound;
 					auto_generate_setting_texture_type		texture;

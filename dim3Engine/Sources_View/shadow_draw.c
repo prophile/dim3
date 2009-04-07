@@ -398,7 +398,6 @@ void shadow_render_draw_map(model_draw_shadow *shadow,float gx,float gy,int poly
 
 void shadow_render_test(void)
 {
-	gl_setup_viewport(console_y_offset());
 	gl_2D_view_screen();
 		
 	glDisable(GL_BLEND);

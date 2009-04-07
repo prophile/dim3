@@ -78,7 +78,6 @@ void fade_screen_draw(int tick)
 	
 		// draw
 		
-	gl_setup_viewport(console_y_offset());
 	gl_2D_view_screen();
 
 	glEnable(GL_BLEND);
@@ -133,7 +132,6 @@ void fade_object_draw(int tick,obj_type *obj)
 
 		// draw fade
 
-	gl_setup_viewport(console_y_offset());
 	gl_2D_view_screen();
 
 	glDisable(GL_BLEND);

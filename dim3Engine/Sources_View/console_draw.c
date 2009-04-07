@@ -98,7 +98,6 @@ void console_draw_fps(void)
 	
 		// setup view
 				
-	gl_setup_viewport(0);
 	gl_2D_view_interface();
 	
 		// setup fonts
@@ -161,7 +160,6 @@ void console_draw_open(void)
 	
 		// setup view
 				
-	gl_setup_viewport(0);
 	gl_2D_view_interface();
 	
 		// setup fonts

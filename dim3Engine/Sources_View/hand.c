@@ -69,8 +69,7 @@ void draw_weapon_hand(int tick,obj_type *obj,weapon_type *weap)
 		// always draw weapons over view
 		// without rotation
 		
-	gl_setup_viewport(console_y_offset());
-	gl_3D_view(&view.camera);
+	gl_3D_view();
 	gl_setup_project();
 	
 	glDepthMask(GL_TRUE);

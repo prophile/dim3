@@ -43,6 +43,7 @@ extern network_setup_type	net_setup;
 JSBool js_sound_play_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_sound_play_at_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_sound_play_global_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_sound_play_global_player_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_sound_start_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_sound_stop_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_sound_fade_in_music_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -57,6 +58,7 @@ JSFunctionSpec	sound_functions[]={
 							{"play",				js_sound_play_func,						5},
 							{"playAtObject",		js_sound_play_at_object_func,			3},
 							{"playGlobal",			js_sound_play_global_func,				2},
+							{"playGlobalPlayer",	js_sound_play_global_player_func,		2},
 							{"startMusic",			js_sound_start_music_func,				1},
 							{"stopMusic",			js_sound_stop_music_func,				0},
 							{"fadeInMusic",			js_sound_fade_in_music_func,			2},
@@ -84,7 +86,7 @@ void script_add_global_sound_object(JSObject *parent_obj)
       
 ======================================================= */
 
-bool script_sound_play(char *name,d3pnt *pt,float pitch,bool global)
+bool script_sound_play(char *name,d3pnt *pt,float pitch,bool global,bool atplayer)
 {
 	int				buffer_idx,sound_obj_uid;
 	bool			remote_ok,player;
@@ -93,15 +95,21 @@ bool script_sound_play(char *name,d3pnt *pt,float pitch,bool global)
 
 		// check if this is player
 
-	player=FALSE;
-	sound_obj_uid=-1;
-
-	if (js.attach.thing_type==thing_type_object) {
-		obj=object_find_uid(js.attach.thing_uid);
-		sound_obj_uid=obj->uid;
-		player=obj->player;
+	if (atplayer) {
+		player=TRUE;
+		sound_obj_uid=server.player_obj_uid;
 	}
+	else {
+		player=FALSE;
+		sound_obj_uid=-1;
 
+		if (js.attach.thing_type==thing_type_object) {
+			obj=object_find_uid(js.attach.thing_uid);
+			sound_obj_uid=obj->uid;
+			player=obj->player;
+		}
+	}
+	
 		// turn off global if you aren't the player
 
 	if (!player) global=FALSE;
@@ -160,7 +168,7 @@ JSBool js_sound_play_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,j
 	pt.y=JSVAL_TO_INT(argv[3]);
 	pitch=script_value_to_float(argv[4]);
 
-	if (!script_sound_play(name,&pt,pitch,FALSE)) return(JS_FALSE);
+	if (!script_sound_play(name,&pt,pitch,FALSE,FALSE)) return(JS_FALSE);
 	
 	return(JS_TRUE);
 }
@@ -177,7 +185,7 @@ JSBool js_sound_play_at_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 	script_value_to_string(argv[0],name,name_str_len);
 	pitch=script_value_to_float(argv[2]);
 
-	if (!script_sound_play(name,&obj->pnt,pitch,FALSE)) return(JS_FALSE);
+	if (!script_sound_play(name,&obj->pnt,pitch,FALSE,FALSE)) return(JS_FALSE);
 	
 	return(JS_TRUE);
 }
@@ -193,7 +201,23 @@ JSBool js_sound_play_global_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 	
 	pt.x=pt.y=pt.z=0;
 
-	if (!script_sound_play(name,&pt,pitch,TRUE)) return(JS_FALSE);
+	if (!script_sound_play(name,&pt,pitch,TRUE,FALSE)) return(JS_FALSE);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_sound_play_global_player_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	float			pitch;
+	char			name[name_str_len];
+	d3pnt			pt;
+	
+	script_value_to_string(argv[0],name,name_str_len);
+	pitch=script_value_to_float(argv[1]);
+	
+	pt.x=pt.y=pt.z=0;
+
+	if (!script_sound_play(name,&pt,pitch,TRUE,TRUE)) return(JS_FALSE);
 	
 	return(JS_TRUE);
 }

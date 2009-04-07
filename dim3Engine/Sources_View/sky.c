@@ -55,7 +55,6 @@ void draw_background(void)
 
 		// setup view
 
-	gl_setup_viewport(console_y_offset());
 	gl_2D_view_screen();
 	
 		// get scrolling
@@ -226,8 +225,7 @@ void draw_sky_dome_panoramic(int tick)
 					
 		// setup view
 
-	gl_setup_viewport(console_y_offset());
-	gl_3D_view(&view.camera);
+	gl_3D_view();
 	gl_3D_rotate(NULL,&view.render->camera.ang);
 	gl_setup_project();
 	
@@ -461,8 +459,7 @@ void draw_sky_dome_hemisphere(int tick)
 
 		// setup view
 
-	gl_setup_viewport(console_y_offset());
-	gl_3D_view(&view.camera);
+	gl_3D_view();
 	gl_3D_rotate(NULL,&view.render->camera.ang);
 	gl_setup_project();
 	
@@ -760,8 +757,7 @@ void draw_sky_cube(int tick)
 
 		// setup view
 
-	gl_setup_viewport(console_y_offset());
-	gl_3D_view(&view.camera);
+	gl_3D_view();
 	gl_3D_rotate(NULL,&view.render->camera.ang);
 	gl_setup_project();
 

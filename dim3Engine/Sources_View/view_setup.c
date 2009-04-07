@@ -49,11 +49,6 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
-/* supergumba 
-bool						view_in_node_render;
-view_render_type			view_camera_render,view_node_render;
-*/
-
 extern bool fog_solid_on(void);
 extern bool model_inview(model_draw *draw);
 extern int distance_to_view_center(int x,int y,int z);
@@ -176,13 +171,13 @@ void view_create_mesh_draw_list(void)
 		// distance but can be the fog distance if fog is on
 
 	if (!fog_solid_on()) {
-		obscure_dist=(double)(view.camera.far_z-view.camera.near_z);
+		obscure_dist=(double)(camera.plane.far_z-camera.plane.near_z);
 	}
 	else {
 		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
 	}
 
-	never_obscure_dist=(double)(abs(view.camera.near_z)*3);
+	never_obscure_dist=(double)(abs(camera.plane.near_z)*3);
 
 		// check all visibile meshes from the start mesh
 	
@@ -278,13 +273,13 @@ void view_create_liquid_draw_list(void)
 		// distance but can be the fog distance if fog is on
 
 	if (!fog_solid_on()) {
-		obscure_dist=(double)(view.camera.far_z-view.camera.near_z);
+		obscure_dist=(double)(camera.plane.far_z-camera.plane.near_z);
 	}
 	else {
 		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
 	}
 
-	never_obscure_dist=(double)(abs(view.camera.near_z)*3);
+	never_obscure_dist=(double)(abs(camera.plane.near_z)*3);
 
 		// find all drawable liquids
 
@@ -380,7 +375,7 @@ void view_setup_model_in_view(model_draw *draw,bool in_air,bool is_camera,int me
 		// is model within obscure distance
 
 	if (!fog_solid_on()) {
-		obscure_dist=view.camera.far_z-view.camera.near_z;
+		obscure_dist=camera.plane.far_z-camera.plane.near_z;
 	}
 	else {
 		obscure_dist=(map.fog.outer_radius>>1)*3;
@@ -543,7 +538,7 @@ void view_add_model_halo(model_draw *draw,int obj_uid)
 			
 			if (mdl!=NULL) {
 				model_get_halo_position(mdl,&draw->setup,n,&x,&y,&z);
-				if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&x,&y,&z);
+				if (draw->no_rot.on) gl_project_fix_rotation(&x,&y,&z);
 			}
 			
 			halo_draw_add(x,z,y,obj_uid,halo);
@@ -603,14 +598,14 @@ void view_calculate_scope(obj_type *obj,obj_type *camera_obj)
 		// calculate fov
 		
 	if (weap->zoom.step_count<=1) {
-		view.camera.fov=weap->zoom.fov_max;
+		view.render->camera.fov=weap->zoom.fov_max;
 		return;
 	}
 		
 	f_step=(float)weap->zoom.current_step;
 	f_max_step=(float)(weap->zoom.step_count-1);
 	
-	view.camera.fov=weap->zoom.fov_max-(((weap->zoom.fov_max-weap->zoom.fov_min)/f_max_step)*f_step);
+	view.render->camera.fov=weap->zoom.fov_max-(((weap->zoom.fov_max-weap->zoom.fov_min)/f_max_step)*f_step);
 }
 
 void view_calculate_recoil(obj_type *obj)
@@ -699,8 +694,7 @@ void view_calculate_bump(obj_type *obj)
 
 void view_script_transform_3D_to_2D(int x,int y,int z,int *x2,int *y2)
 {
-	gl_setup_viewport(console_y_offset());
-	gl_3D_view(&view.camera);
+	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 	
@@ -710,184 +704,3 @@ void view_script_transform_3D_to_2D(int x,int y,int z,int *x2,int *y2)
 	*y2=y;
 }
 
-/* =======================================================
-
-      View Setup Mainline
-      
-======================================================= */
-
-
-/* supergumba
-void view_draw_setup_
-void view_draw_setup(int tick)
-{
-	view.camera.projection_type=camera.plane.type;
-	view.camera.lft=camera.plane.lft;
-	view.camera.rgt=camera.plane.rgt;
-	view.camera.top=camera.plane.top;
-	view.camera.bot=camera.plane.bot;
-	view.camera.near_z=camera.plane.near_z;
-	view.camera.far_z=camera.plane.far_z;
-	view.camera.near_z_offset=camera.plane.near_z_offset;
-	view.camera.fov=camera.plane.fov;
-	view.camera.aspect_ratio=camera.plane.aspect_ratio;
-
-	view.camera.under_liquid_idx=camera_check_liquid(&view.render->camera.pnt);
-	
-		// setup viewport
-	
-	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
-	
-		// compile all lights in map
-		
-	gl_lights_compile(tick);
-
-		// setup draw meshes
-
-	view_create_mesh_draw_list();
-	
-		// setup objects and projectiles in path
-		
-	view_setup_objects(tick);
-	view_setup_projectiles(tick);
-
-		// add scene halos
-		
-	halo_draw_clear();
-	view_add_halos();
-}
-
-
-void view_draw_setup_compile(int tick)
-{
-		// compile all lights in map
-		
-	gl_lights_compile(tick);
-
-		// setup draw lists
-
-	view_create_area_mask();
-	view_create_mesh_draw_list();
-	view_create_liquid_draw_list();
-	
-		// setup objects and projectiles in path
-		
-	view_setup_objects(tick);
-	view_setup_projectiles(tick);
-
-		// add scene halos
-		
-	halo_draw_clear();
-	view_add_halos();
-}
-
-void view_draw_setup_camera(int tick)
-{
-	obj_type		*obj,*camera_obj;
-
-		// camera render
-
-	view.render=&view_camera_render;
-
-		// get player object
-		
-	obj=object_find_uid(server.player_obj_uid);
-	
-		// set view camera
-	
-	camera_obj=object_find_uid(camera.obj_uid);
-	camera_get_position(&view.render->camera.pnt,&view.render->camera.ang,camera_obj->size.eye_offset);
-
-		// camera adjustments
-	
-	if (camera.mode==cv_fpp) {
-		view_calculate_scope(obj,camera_obj);
-		view_calculate_recoil(obj);
-	}
-	
-	view_calculate_shakes(tick,obj);
-	view_calculate_sways(tick,obj);
-	
-		// bump smoothing
-		
-	if (obj->bump.on) view.render->camera.pnt.y+=obj->bump.smooth_offset;
-
-		// setup camera
-		
-	view.camera.projection_type=camera.plane.type;
-	view.camera.lft=camera.plane.lft;
-	view.camera.rgt=camera.plane.rgt;
-	view.camera.top=camera.plane.top;
-	view.camera.bot=camera.plane.bot;
-	view.camera.near_z=camera.plane.near_z;
-	view.camera.far_z=camera.plane.far_z;
-	view.camera.near_z_offset=camera.plane.near_z_offset;
-	view.camera.fov=camera.plane.fov;
-	view.camera.aspect_ratio=camera.plane.aspect_ratio;
-
-	view.camera.under_liquid_idx=camera_check_liquid(&view.render->camera.pnt);
-
-	gl_setup_viewport(console_y_offset());
-	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
-	
-		// compile map objects
-		
-	view_draw_setup_compile(tick);
-}
-
-bool view_draw_setup_node_start(int tick,node_type *node,int pixel_size)
-{
-		// only allow it to go into node
-		// renderer once
-		
-	if (view_in_node_render) return(FALSE);
-	
-		// switch out to node render
-		
-	view_in_node_render=TRUE;
-	view.render=&view_node_render;
-	
-		// camera position
-		
-	memmove(&view.render->camera.pnt,&node->pnt,sizeof(d3pnt));
-	memmove(&view.render->camera.ang,&node->ang,sizeof(d3ang));
-
-		// setup camera
-
-	view.camera.under_liquid_idx=-1;
-
-	glViewport(0,0,pixel_size,pixel_size);
-	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
-	
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	
-		// compile map objects
-		
-	view_draw_setup_compile(tick);
-	
-	return(TRUE);
-}
-
-void view_draw_setup_node_finish(void)
-{
-		// put back in camera render
-		
-	view_in_node_render=FALSE;
-	view.render=&view_camera_render;
-	
-		// restore matrixes and viewport
-
-	view.camera.under_liquid_idx=camera_check_liquid(&view.render->camera.pnt);
-
-	gl_setup_viewport(console_y_offset());
-	gl_3D_view(&view.camera);
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
-}
-*/

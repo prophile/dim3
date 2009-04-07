@@ -630,7 +630,7 @@ bool model_find_bone_position(model_draw *draw,char *pose_name,char *bone_name,i
 	*y=(*y)+draw->pnt.y;
 	*z=(*z)+draw->pnt.z;
 
-	if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),x,y,z);
+	if (draw->no_rot.on) gl_project_fix_rotation(x,y,z);
 	
 	return(TRUE);
 }
@@ -666,7 +666,7 @@ bool model_find_bone_position_for_current_animation(model_draw *draw,int bone_id
 
 		// fix rotation
 
-	if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),x,y,z);
+	if (draw->no_rot.on) gl_project_fix_rotation(x,y,z);
 
 	return(TRUE);
 }

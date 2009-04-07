@@ -35,6 +35,7 @@ extern render_info_type		render_info;
 extern server_type			server;
 extern map_type				map;
 extern view_type			view;
+extern camera_type			camera;
 
 int							vport[4];
 double						mod_matrix[16],proj_matrix[16],
@@ -70,7 +71,7 @@ void gl_frame_end(void)
       
 ======================================================= */
 
-void gl_3D_view(view_camera_type *camera)
+void gl_3D_view(void)
 {
 	float			ratio;
 
@@ -79,18 +80,25 @@ void gl_3D_view(view_camera_type *camera)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	switch (camera->projection_type) {
+	switch (camera.plane.type) {
 
 		case cp_fov:
-			ratio=(((float)camera->render_wid)/((float)camera->render_high))*camera->aspect_ratio;
-			gluPerspective(camera->fov,ratio,camera->near_z,camera->far_z);
-			glScalef(-1.0f,-1.0f,-1.0f);
+			ratio=(((float)setup.screen.x_sz)/((float)setup.screen.y_sz))*camera.plane.aspect_ratio;
+			gluPerspective(view.render->camera.fov,ratio,camera.plane.near_z,camera.plane.far_z);
 			break;
 
 		case cp_frustum:
-			glFrustum(camera->lft,camera->rgt,camera->top,camera->bot,camera->near_z,camera->far_z);
-			glScalef(-1.0f,-1.0f,-1.0f);
+			glFrustum(camera.plane.lft,camera.plane.rgt,camera.plane.top,camera.plane.bot,camera.plane.near_z,camera.plane.far_z);
 			break;
+	}
+	
+		// projection flips
+		
+	if (view.render->camera.flip) {
+		glScalef(1.0f,1.0f,-1.0f);
+	}
+	else {
+		glScalef(-1.0f,-1.0f,-1.0f);
 	}
 
 		// default rotations
@@ -98,9 +106,9 @@ void gl_3D_view(view_camera_type *camera)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	gluLookAt(view.render->camera.pnt.x,view.render->camera.pnt.y,(view.render->camera.pnt.z+view.camera.near_z),view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z,0.0f,1.0f,0.0f);
+	gluLookAt(view.render->camera.pnt.x,view.render->camera.pnt.y,(view.render->camera.pnt.z+camera.plane.near_z),view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z,0.0f,1.0f,0.0f);
 
-	glTranslatef(0.0f,0.0f,(float)view.camera.near_z_offset);
+	glTranslatef(0.0f,0.0f,(float)camera.plane.near_z_offset);
 }
 
 void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
@@ -110,8 +118,8 @@ void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	angle_get_movement_float(ang->y,(float)view.camera.near_z,&fx,&fz);
-	angle_get_movement_float(-ang->x,(float)view.camera.near_z,&fy,&f_temp);
+	angle_get_movement_float(ang->y,(float)camera.plane.near_z,&fx,&fz);
+	angle_get_movement_float(-ang->x,(float)camera.plane.near_z,&fy,&f_temp);
 
 	if (pnt==NULL) {
 		gluLookAt(fx,fy,fz,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
@@ -120,7 +128,7 @@ void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 		gluLookAt((pnt->x+fx),(pnt->y+fy),(pnt->z+fz),pnt->x,pnt->y,pnt->z,0.0f,1.0f,0.0f);
 	}
 
-	glTranslatef(0.0f,0.0f,(float)view.camera.near_z_offset);
+	glTranslatef(0.0f,0.0f,(float)camera.plane.near_z_offset);
 }
 
 /* =======================================================
@@ -147,17 +155,6 @@ void gl_2D_view_interface(void)
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-}
-
-/* =======================================================
-
-      Setup ViewPort
-      
-======================================================= */
-
-void gl_setup_viewport(int y_off)
-{
-	glViewport(render_info.view_x,(render_info.view_y+y_off),setup.screen.x_sz,(setup.screen.y_sz-y_off));
 }
 
 /* =======================================================
@@ -215,11 +212,9 @@ inline void gl_unproject_point(float fx,float fy,float fz,int *x,int *y,int *z)
 	*z=(int)dz;
 }
 
-void gl_project_fix_rotation(view_camera_type *camera,int y_off,int *x,int *y,int *z)
+void gl_project_fix_rotation(int *x,int *y,int *z)
 {
 	double			dx,dy,dz,dx2,dy2,dz2;
-
-	gl_setup_viewport(y_off);
 
 		// remember current settings
 
@@ -236,7 +231,7 @@ void gl_project_fix_rotation(view_camera_type *camera,int y_off,int *x,int *y,in
 	dy=(double)(*y);
 	dz=(double)(*z);
 
-	gl_3D_view(&view.camera);
+	gl_3D_view();
 	gl_setup_project();
 	gluProject(dx,dy,dz,mod_matrix,proj_matrix,(GLint*)vport,&dx2,&dy2,&dz2);
 

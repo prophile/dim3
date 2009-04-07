@@ -115,7 +115,7 @@ void model_animation_effect_launch_bone_position(model_draw *draw,int animate_id
 		pt->y+=draw->pnt.y;
 		pt->z+=draw->pnt.z;
 
-		if (draw->no_rot.on) gl_project_fix_rotation(&view.camera,console_y_offset(),&pt->x,&pt->y,&pt->z);
+		if (draw->no_rot.on) gl_project_fix_rotation(&pt->x,&pt->y,&pt->z);
 	}
 }
 

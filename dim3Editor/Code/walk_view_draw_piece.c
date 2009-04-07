@@ -596,16 +596,43 @@ void walk_view_draw_areas(void)
 void walk_view_draw_nodes(d3pnt *cpt)
 {
 	int			n,k;
+	float		fx,fy,fz;
 	node_type	*node,*lnode;
+	matrix_type	mat;
 
 	if (!dp_node) return;
 	
-		// connections
+		// angles
 		
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_BLEND);
-
+		
 	glLineWidth(3.0f);
+	glColor4f(1.0f,0.7f,0.0f,1.0f);
+	
+	glBegin(GL_LINES);
+		
+	node=map.nodes;
+	
+	for (n=0;n!=map.nnode;n++) {
+	
+		fx=0.0f;
+		fy=0.0f;
+		fz=-(float)(map_enlarge*8);
+	
+		matrix_rotate_xyz(&mat,node->ang.x,node->ang.y,node->ang.z);
+		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+			
+		glVertex3i(node->pnt.x,(node->pnt.y-(map_enlarge*2)),node->pnt.z);
+		glVertex3i((node->pnt.x+(int)fx),((node->pnt.y-(map_enlarge*2))+(int)fy),(node->pnt.z+(int)fz));
+		
+		node++;
+	}
+	
+	glEnd();
+	
+		// connections
+		
 	glColor4f(0.0f,1.0f,0.0f,1.0f);
 	
 	glBegin(GL_LINES);

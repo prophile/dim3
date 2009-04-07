@@ -2126,7 +2126,7 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 
 	map_auto_generate_initial_portals(map);
 
-	if (ag_settings.corridor) {
+	if (ag_settings.type==ag_type_room_and_corridor) {
 		map_auto_generate_merge_portals();
 		map_auto_generate_connect_portals(map);
 	}
@@ -2211,9 +2211,9 @@ bool map_auto_generate_test(map_type *map)
 	ags.seed=GetTickCount();
 #endif
 
-	ags.block=ag_block_none;
+	ags.type=ag_type_room_and_corridor;
+	ags.flow=ag_flow_none;
 
-	ags.corridor=FALSE;
 	ags.second_story=TRUE;
 	
 	ags.map.map_sz=250000;

@@ -70,7 +70,6 @@ void radar_draw(int tick)
 
 		// set up view
 		
-	gl_setup_viewport(console_y_offset());
 	gl_2D_view_interface();
 	
 	glEnable(GL_BLEND);

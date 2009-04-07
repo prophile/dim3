@@ -204,7 +204,7 @@ void render_opaque_mesh_shader(void)
 
 				// fix texture if any back rendering
 
-			if (!gl_back_render_get_texture(poly->camera,&gl_id)) {
+			if (gl_back_render_get_texture(poly->camera,&gl_id)) {
 				gl_shader_texture_override(gl_id);
 			}
 
@@ -294,8 +294,7 @@ void render_map_opaque(void)
 {
 		// setup view
 
-	gl_setup_viewport(console_y_offset());
-	gl_3D_view(&view.camera);
+	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 

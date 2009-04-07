@@ -958,9 +958,10 @@ void spot_start_attach(void)
 
 void spot_add_multiplayer_bots(void)
 {
-	int				n,spot_idx;
-	char			err_str[256];
+	int				n,uid,spot_idx;
+	char			name[name_str_len],err_str[256];
 	spot_type		spot;
+	obj_type		*obj;
 
 		// only spawn on hosts
 
@@ -981,13 +982,19 @@ void spot_add_multiplayer_bots(void)
 		strcpy(spot.attach_script,"Bot");
 		spot.attach_params[0]=0x0;
 		
-		spot_idx=map_find_random_spot(&map,"Spawn","Spawn");
-		if (spot_idx==-1) break;
+		uid=object_start(&spot,FALSE,bt_map,-1,err_str);
+		if (uid==-1) continue;
+		
+		obj=object_find_uid(uid);
+		
+		strcpy(name,"Spawn");
+		if (obj->spawn_spot_name[0]!=0x0) strcpy(name,obj->spawn_spot_name);
+		
+		spot_idx=map_find_random_spot(&map,name,"Spawn");
+		if (spot_idx==-1) continue;
 		
 		memmove(&spot.pnt,&map.spots[spot_idx].pnt,sizeof(d3pnt));
 		memmove(&spot.ang,&map.spots[spot_idx].ang,sizeof(d3ang));
-		
-		object_start(&spot,FALSE,bt_map,-1,err_str);
 	}
 }
 

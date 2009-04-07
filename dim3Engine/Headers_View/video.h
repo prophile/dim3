@@ -135,18 +135,17 @@ extern void gl_shadow_texture_bind_end(void);
 	
 extern void gl_frame_start(d3col *col);
 extern void gl_frame_end(void);
-extern void gl_3D_view(view_camera_type *camera);
+extern void gl_3D_view(void);
 extern void gl_3D_rotate(d3pnt *pnt,d3ang *ang);
 extern void gl_2D_view_screen(void);
 extern void gl_2D_view_interface(void);
-extern void gl_setup_viewport(int y_off);
 extern void gl_setup_project(void);
 extern bool gl_project_in_view_z(int x,int y,int z);
 extern void gl_project_point(int *x,int *y,int *z);
 extern void gl_project_poly(int ptsz,int *x,int *y,int *z);
 extern float gl_project_get_depth(int x,int y,int z);
 extern void gl_unproject_point(float fx,float fy,float fz,int *x,int *y,int *z);
-extern void gl_project_fix_rotation(view_camera_type *camera,int y_off,int *x,int *y,int *z);
+extern void gl_project_fix_rotation(int *x,int *y,int *z);
 
 	// textures
 	

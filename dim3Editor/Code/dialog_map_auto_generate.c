@@ -34,7 +34,8 @@ and can be sold or given away.
 #define kMapGenerateTab								FOUR_CHAR_CODE('tabb')
 
 #define kMapGenerateSeed							FOUR_CHAR_CODE('seed')
-#define kMapGenerateBlock							FOUR_CHAR_CODE('blck')
+#define kMapGenerateType							FOUR_CHAR_CODE('type')
+#define kMapGenerateFlow							FOUR_CHAR_CODE('blck')
 #define kMapGenerateMapSize							FOUR_CHAR_CODE('mpsz')
 
 #define kMapGenerateCeilingType						FOUR_CHAR_CODE('clgt')
@@ -177,7 +178,8 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_set_int(dialog_map_generate_wind,kMapGenerateSeed,0,ag_settings.seed);
 		
 		dialog_set_value(dialog_map_generate_wind,kMapGenerateMapSize,0,ag_settings.map.map_sz);
-		dialog_set_combo(dialog_map_generate_wind,kMapGenerateBlock,0,ag_settings.block);
+		dialog_set_combo(dialog_map_generate_wind,kMapGenerateType,0,ag_settings.type);
+		dialog_set_combo(dialog_map_generate_wind,kMapGenerateFlow,0,ag_settings.flow);
 		
 		for (n=0;n!=ag_ceiling_type_count;n++) {
 			dialog_set_boolean(dialog_map_generate_wind,kMapGenerateCeilingType,n,ag_settings.ceiling_type_on[n]);
@@ -260,7 +262,8 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		// dialog to data
 		
 	ag_settings.seed=dialog_get_int(dialog_map_generate_wind,kMapGenerateSeed,0);
-	ag_settings.block=dialog_get_combo(dialog_map_generate_wind,kMapGenerateBlock,0);
+	ag_settings.type=dialog_get_combo(dialog_map_generate_wind,kMapGenerateType,0);
+	ag_settings.flow=dialog_get_combo(dialog_map_generate_wind,kMapGenerateFlow,0);
 
 	ag_settings.map.map_sz=dialog_get_value(dialog_map_generate_wind,kMapGenerateMapSize,0);
 	
