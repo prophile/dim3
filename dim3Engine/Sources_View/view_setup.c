@@ -150,17 +150,39 @@ bool view_area_check_liquid(map_liquid_type *liq)
 
 /* =======================================================
 
-      Mesh Draw List
+      Draw Lists
       
 ======================================================= */
 
-void view_create_mesh_draw_list(void)
+void view_start_draw_list(void)
+{
+	view.render->draw_list.count=0;
+}
+
+bool view_mesh_in_draw_list(int mesh_idx)
+{
+	int			n;
+
+	for (n=0;n!=view.render->draw_list.count;n++) {
+		if (view.render->draw_list.items[n].type==view_render_type_mesh) {
+			if (view.render->draw_list.items[n].idx==mesh_idx) return(TRUE);
+		}
+	}
+
+	return(FALSE);
+}
+
+/* =======================================================
+
+      Add Items to Draw Lists
+      
+======================================================= */
+
+void view_add_mesh_draw_list(void)
 {
 	int					n,t,sz,start_mesh_idx,idx;
 	double				d,never_obscure_dist,obscure_dist;
 	map_mesh_type		*start_mesh,*mesh;
-	
-	view.render->mesh_draw.count=0;
 	
 		// get mesh camera is in
 
@@ -215,8 +237,8 @@ void view_create_mesh_draw_list(void)
 
 		idx=-1;
 	
-		for (t=0;t!=view.render->mesh_draw.count;t++) {
-			if (view.render->mesh_draw.items[t].dist>d) {
+		for (t=0;t!=view.render->draw_list.count;t++) {
+			if (view.render->draw_list.items[t].dist>d) {
 				idx=t;
 				break;
 			}
@@ -225,49 +247,32 @@ void view_create_mesh_draw_list(void)
 			// insert at end of list
 			
 		if (idx==-1) {
-			view.render->mesh_draw.items[view.render->mesh_draw.count].dist=d;
-			view.render->mesh_draw.items[view.render->mesh_draw.count].idx=(short)n;
-			view.render->mesh_draw.count++;
+			view.render->draw_list.items[view.render->draw_list.count].type=view_render_type_mesh;
+			view.render->draw_list.items[view.render->draw_list.count].dist=d;
+			view.render->draw_list.items[view.render->draw_list.count].idx=(short)n;
+			view.render->draw_list.count++;
 			continue;
 		}
 		
 			// insert in list
 			
-		sz=sizeof(view_render_draw_list_item_type)*(view.render->mesh_draw.count-idx);
-		memmove(&view.render->mesh_draw.items[idx+1],&view.render->mesh_draw.items[idx],sz);
+		sz=sizeof(view_render_draw_list_item_type)*(view.render->draw_list.count-idx);
+		memmove(&view.render->draw_list.items[idx+1],&view.render->draw_list.items[idx],sz);
 		
-		view.render->mesh_draw.items[idx].dist=d;
-		view.render->mesh_draw.items[idx].idx=(short)n;
+		view.render->draw_list.items[idx].type=view_render_type_mesh;
+		view.render->draw_list.items[idx].dist=d;
+		view.render->draw_list.items[idx].idx=(short)n;
 		
-		view.render->mesh_draw.count++;
-		if (view.render->mesh_draw.count==max_view_render_item) break;
+		view.render->draw_list.count++;
+		if (view.render->draw_list.count==max_view_render_item) break;
 	}
 }
 
-bool view_mesh_in_draw_list(int mesh_idx)
-{
-	int			n;
-
-	for (n=0;n!=view.render->mesh_draw.count;n++) {
-		if (view.render->mesh_draw.items[n].idx==mesh_idx) return(TRUE);
-	}
-
-	return(FALSE);
-}
-
-/* =======================================================
-
-      Liquid Draw List
-      
-======================================================= */
-
-void view_create_liquid_draw_list(void)
+void view_add_liquid_draw_list(void)
 {
 	int					n,t,idx,sz;
 	double				d,never_obscure_dist,obscure_dist;
 	map_liquid_type		*liq;
-
-	view.render->liquid_draw.count=0;
 
 		// obscure distance -- normally is the opengl projection
 		// distance but can be the fog distance if fog is on
@@ -311,8 +316,8 @@ void view_create_liquid_draw_list(void)
 
 		idx=-1;
 	
-		for (t=0;t!=view.render->liquid_draw.count;t++) {
-			if (view.render->liquid_draw.items[t].dist>d) {
+		for (t=0;t!=view.render->draw_list.count;t++) {
+			if (view.render->draw_list.items[t].dist>d) {
 				idx=t;
 				break;
 			}
@@ -321,22 +326,24 @@ void view_create_liquid_draw_list(void)
 			// insert at end of list
 			
 		if (idx==-1) {
-			view.render->liquid_draw.items[view.render->liquid_draw.count].dist=d;
-			view.render->liquid_draw.items[view.render->liquid_draw.count].idx=(short)n;
-			view.render->liquid_draw.count++;
+			view.render->draw_list.items[view.render->draw_list.count].type=view_render_type_liquid;
+			view.render->draw_list.items[view.render->draw_list.count].dist=d;
+			view.render->draw_list.items[view.render->draw_list.count].idx=(short)n;
+			view.render->draw_list.count++;
 			continue;
 		}
 		
 			// insert in list
 			
-		sz=sizeof(view_render_draw_list_item_type)*(view.render->liquid_draw.count-idx);
-		memmove(&view.render->liquid_draw.items[idx+1],&view.render->liquid_draw.items[idx],sz);
+		sz=sizeof(view_render_draw_list_item_type)*(view.render->draw_list.count-idx);
+		memmove(&view.render->draw_list.items[idx+1],&view.render->draw_list.items[idx],sz);
 		
-		view.render->liquid_draw.items[idx].dist=d;
-		view.render->liquid_draw.items[idx].idx=(short)n;
+		view.render->draw_list.items[idx].type=view_render_type_liquid;
+		view.render->draw_list.items[idx].dist=d;
+		view.render->draw_list.items[idx].idx=(short)n;
 		
-		view.render->liquid_draw.count++;
-		if (view.render->liquid_draw.count==max_view_render_item) break;
+		view.render->draw_list.count++;
+		if (view.render->draw_list.count==max_view_render_item) break;
 	}
 
 }

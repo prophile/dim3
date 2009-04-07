@@ -82,9 +82,11 @@ void render_opaque_mesh_simple(void)
 	
 		// run through the meshes
 
-	for (n=0;n!=view.render->mesh_draw.count;n++) {
+	for (n=0;n!=view.render->draw_list.count;n++) {
 
-		mesh=&map.mesh.meshes[view.render->mesh_draw.items[n].idx];
+		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
+
+		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
 
 			// skip meshes with no opaques and all non-shaders
 			// unless debug is on
@@ -166,9 +168,11 @@ void render_opaque_mesh_shader(void)
 	
 		// run through the meshes
 
-	for (n=0;n!=view.render->mesh_draw.count;n++) {
+	for (n=0;n!=view.render->draw_list.count;n++) {
 
-		mesh=&map.mesh.meshes[view.render->mesh_draw.items[n].idx];
+		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
+
+		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
 
 			// skip meshes with no shaders or opaques
 
@@ -243,9 +247,11 @@ void render_opaque_mesh_glow(void)
 	
 		// run through the meshes
 
-	for (n=0;n!=view.render->mesh_draw.count;n++) {
+	for (n=0;n!=view.render->draw_list.count;n++) {
 
-		mesh=&map.mesh.meshes[view.render->mesh_draw.items[n].idx];
+		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
+
+		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
 
 			// skip meshes with no glows or opaques
 

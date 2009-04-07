@@ -62,9 +62,11 @@ void render_map_setup(void)
 	
 		// run through the meshes
 
-	for (n=0;n!=view.render->mesh_draw.count;n++) {
+	for (n=0;n!=view.render->draw_list.count;n++) {
 
-		mesh=&map.mesh.meshes[view.render->mesh_draw.items[n].idx];
+		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
+
+		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
 
 			// clear mesh flags
 

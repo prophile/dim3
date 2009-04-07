@@ -238,9 +238,11 @@ bool view_compile_mesh_gl_lists(int tick)
 		// in this scene and update any
 		// relevant data
 		
-	for (n=0;n!=view.render->mesh_draw.count;n++) {
+	for (n=0;n!=view.render->draw_list.count;n++) {
 
-		mesh=&map.mesh.meshes[view.render->mesh_draw.items[n].idx];
+		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
+
+		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
 
 			// recalculate the vertexes if this
 			// mesh is moving

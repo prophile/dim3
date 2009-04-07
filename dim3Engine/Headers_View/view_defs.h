@@ -37,7 +37,7 @@ and can be sold or given away.
 #define max_light_spot							128
 #define max_view_lights_per_poly				8
 
-#define max_view_render_item					2048
+#define max_view_render_item					4096
 
 //
 // input rate
@@ -228,7 +228,7 @@ typedef struct		{
 						bool								has_area;
 						char								area_mask[max_area];
 						view_render_camera_type				camera;
-						view_render_draw_list_type			mesh_draw,liquid_draw,
+						view_render_draw_list_type			draw_list,
 															model_draw,effect_draw;
 						view_render_light_type				light;
 						view_render_halo_type				halo_draw;

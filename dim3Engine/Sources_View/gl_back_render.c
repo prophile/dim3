@@ -262,8 +262,10 @@ void gl_back_render_frame_start(int tick)
 	
 		// run through all the meshes
 	
-	for (n=0;n!=view.render->mesh_draw.count;n++) {
-		mesh_idx=view.render->mesh_draw.items[n].idx;
+	for (n=0;n!=view.render->draw_list.count;n++) {
+		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
+
+		mesh_idx=view.render->draw_list.items[n].idx;
 
 		mesh=&map.mesh.meshes[mesh_idx];
 		poly=mesh->polys;

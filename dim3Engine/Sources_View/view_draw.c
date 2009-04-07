@@ -81,8 +81,9 @@ extern void fade_object_draw(int tick,obj_type *obj);
 extern void render_map_liquid(int tick);
 extern void decal_render(void);
 extern void view_create_area_mask(void);
-extern void view_create_mesh_draw_list(void);
-extern void view_create_liquid_draw_list(void);
+extern void view_start_draw_list(void);
+extern void view_add_mesh_draw_list(void);
+extern void view_add_liquid_draw_list(void);
 extern void view_setup_objects(int tick);
 extern void view_setup_projectiles(int tick);
 extern void view_add_halos(void);
@@ -478,8 +479,10 @@ void view_draw_scene_build(int tick)
 		// setup draw lists
 
 	view_create_area_mask();
-	view_create_mesh_draw_list();
-	view_create_liquid_draw_list();
+	view_start_draw_list();
+
+	view_add_mesh_draw_list();
+	view_add_liquid_draw_list();
 	
 		// setup objects and projectiles in path
 		

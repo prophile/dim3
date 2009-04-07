@@ -416,7 +416,6 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 void render_map_liquid(int tick)
 {
 	int					n;
-	map_liquid_type		*liq;
 
 		// setup view
 
@@ -438,9 +437,10 @@ void render_map_liquid(int tick)
 	
 		// draw liquids
 		
-	for (n=0;n!=view.render->liquid_draw.count;n++) {
-		liq=&map.liquid.liquids[view.render->liquid_draw.items[n].idx];
-		liquid_render_liquid(tick,liq);
+	for (n=0;n!=view.render->draw_list.count;n++) {
+		if (view.render->draw_list.items[n].type==view_render_type_liquid) {
+			liquid_render_liquid(tick,&map.liquid.liquids[view.render->draw_list.items[n].idx]);
+		}
 	}
 }
 
