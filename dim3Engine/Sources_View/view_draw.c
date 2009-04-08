@@ -62,8 +62,8 @@ extern void draw_sky(int tick);
 extern bool model_inview(model_draw *draw);
 extern void model_calc_pose_bones(model_draw *draw);
 extern void render_map_setup(void);
-extern void render_map_opaque(void);
-extern void render_map_transparent(void);
+extern void render_map_mesh_opaque(void);
+extern void render_map_mesh_transparent(void);
 extern void rain_draw(int tick);
 extern bool fog_solid_on(void);
 extern void fog_draw_textured(int tick);
@@ -78,7 +78,8 @@ extern void view_draw_liquid_tint(int liquid_idx);
 extern void view_draw_effect_tint(int tick,obj_type *obj);
 extern void fade_screen_draw(int tick);
 extern void fade_object_draw(int tick,obj_type *obj);
-extern void render_map_liquid(int tick);
+extern void render_map_liquid_opaque(int tick);
+extern void render_map_liquid_transparent(int tick);
 extern void decal_render(void);
 extern void view_create_area_mask(void);
 extern void view_start_draw_list(void);
@@ -232,6 +233,8 @@ void view_draw_debug_bounding_box(obj_type *obj)
 	glEnd();
 
 	glLineWidth(1.0f);
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
 }
 
 void view_draw_object_path(obj_type *obj)
@@ -261,102 +264,11 @@ void view_draw_object_path(obj_type *obj)
       
 ======================================================= */
 
-void view_draw_models_setup(void)
+void view_draw_model_opaque(int tick)
 {
-	int							n,k,t,dist,sz;
-	obj_type					*obj;
-	proj_type					*proj;
-
-	view.render->model_draw.count=0;
-	
-		// sort objects
-	
-	for (n=0;n!=server.count.obj;n++) {
-		obj=&server.objs[n];
-		if ((obj->hidden) || (obj->draw.uid==-1) || (!obj->draw.on)) continue;
-		if (!((obj->draw.in_view) || (obj->draw.shadow.in_view))) continue;
-		
-			// get object distance
-			
-		dist=obj->draw.lod_dist;
-		
-			// sort into list
-		
-		t=view.render->model_draw.count;
-		
-		for (k=0;k!=view.render->model_draw.count;k++) {
-			if (dist>view.render->model_draw.items[k].dist) {
-				t=k;
-				break;
-			}
-		}
-		
-			// add to list
-
-		if (t>=view.render->model_draw.count) {
-			t=view.render->model_draw.count;
-		}
-		else {
-			sz=(view.render->model_draw.count-t)*sizeof(view_render_draw_list_item_type);
-			memmove(&view.render->model_draw.items[t+1],&view.render->model_draw.items[t],sz);
-		}
-		
-		view.render->model_draw.items[t].type=view_sort_object;
-		view.render->model_draw.items[t].idx=(short)n;
-		view.render->model_draw.items[t].dist=dist;
-		
-		view.render->model_draw.count++;
-		if (view.render->model_draw.count==max_view_render_item) break;
-	}
-
-		// sort projectiles
-
-
-	for (n=0;n!=server.count.proj;n++) {
-		proj=&server.projs[n];
-		if ((proj->draw.uid==-1) || (!proj->draw.on)) continue;
-		if (!((proj->draw.in_view) || (proj->draw.shadow.in_view))) continue;
-		
-			// get object distance
-			
-		dist=proj->draw.lod_dist;
-		
-			// sort into list
-		
-		t=view.render->model_draw.count;
-		
-		for (k=0;k!=view.render->model_draw.count;k++) {
-			if (dist>view.render->model_draw.items[k].dist) {
-				t=k;
-				break;
-			}
-		}
-		
-			// add to list
-
-		if (t>=view.render->model_draw.count) {
-			t=view.render->model_draw.count;
-		}
-		else {
-			sz=(view.render->model_draw.count-t)*sizeof(view_render_draw_list_item_type);
-			memmove(&view.render->model_draw.items[t+1],&view.render->model_draw.items[t],sz);
-		}
-		
-		view.render->model_draw.items[t].type=view_sort_projectile;
-		view.render->model_draw.items[t].idx=(short)n;
-		view.render->model_draw.items[t].dist=dist;
-		
-		view.render->model_draw.count++;
-		if (view.render->model_draw.count==max_view_render_item) break;
-	}
-}
-
-void view_draw_models(int tick)
-{
-	int							n;
-	d3col						col;
-	obj_type					*obj;
-	proj_type					*proj;
+	int					n;
+	obj_type			*obj;
+	proj_type			*proj;
 
 		// setup draw
 		
@@ -364,17 +276,53 @@ void view_draw_models(int tick)
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 
-		// draw models
-	
-	for (n=0;n!=view.render->model_draw.count;n++) {
+		// render the models
 
-		switch (view.render->model_draw.items[n].type) {
+	for (n=0;n!=view.render->draw_list.count;n++) {
 
-			case view_sort_object:
-				obj=&server.objs[view.render->model_draw.items[n].idx];
-				if (!obj->draw.in_view) break;
-				
+		switch (view.render->draw_list.items[n].type) {
+
+			case view_render_type_object:
+				obj=&server.objs[view.render->draw_list.items[n].idx];
 				model_render(tick,&obj->draw);
+				break;
+
+			case view_render_type_projectile:
+				proj=&server.projs[view.render->draw_list.items[n].idx];
+				model_render(tick,&proj->draw);
+				break;
+
+		}
+	}
+}
+
+void view_draw_model_transparent(int tick)
+{
+}
+
+void view_draw_models_final(void)
+{
+	int					n;
+	d3col				col;
+	obj_type			*obj;
+	proj_type			*proj;
+
+		// setup draw
+		
+	gl_3D_view();
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
+	gl_setup_project();
+
+		// render the shadows, remote names,
+		// and any debugging information
+
+	for (n=0;n!=view.render->draw_list.count;n++) {
+
+		switch (view.render->draw_list.items[n].type) {
+
+			case view_render_type_object:
+				obj=&server.objs[view.render->draw_list.items[n].idx];
+				
 				shadow_render(&obj->draw,(obj->air_mode!=am_ground));
 				if (obj->remote.on) remote_draw_status(obj);
 				if (object_is_targetted(obj,&col)) model_render_target(&obj->draw,&col);
@@ -384,11 +332,9 @@ void view_draw_models(int tick)
 				}
 				break;
 
-			case view_sort_projectile:
-				proj=&server.projs[view.render->model_draw.items[n].idx];
-				if (!proj->draw.in_view) break;
-				
-				model_render(tick,&proj->draw);
+			case view_render_type_projectile:
+				proj=&server.projs[view.render->draw_list.items[n].idx];
+
 				shadow_render(&proj->draw,TRUE);
 				break;
 
@@ -486,10 +432,13 @@ void view_draw_scene_build(int tick)
 	view_create_area_mask();
 	view_start_draw_list();
 
+		// add mesh and liquids to draw list
+
 	view_add_mesh_draw_list();
 	view_add_liquid_draw_list();
 	
-		// setup objects and projectiles in path
+		// setup objects and projectiles
+		// and add to draw list
 		
 	view_setup_objects(tick);
 	view_setup_projectiles(tick);
@@ -498,10 +447,6 @@ void view_draw_scene_build(int tick)
 		
 	halo_draw_clear();
 	view_add_halos();
-	
-		// setup the models
-
-	view_draw_models_setup();
 }
 
 void view_draw_scene_render(int tick,obj_type *obj,weapon_type *weap)
@@ -535,21 +480,22 @@ void view_draw_scene_render(int tick,obj_type *obj,weapon_type *weap)
 
 	render_map_setup();
 
-		// draw opaque map polygons
+		// draw opaque scene items
 
-	render_map_opaque();
-
-		// draw models
-
-	view_draw_models(tick);
+	render_map_mesh_opaque();
+	render_map_liquid_opaque(tick);
+	view_draw_model_opaque(tick);
 	
-		// draw tranparent map polygons
+		// draw transparent scene items
 
-	render_map_transparent();
+	render_map_mesh_transparent();
+	render_map_liquid_transparent(tick);
+	view_draw_model_transparent(tick);
 
-		// draw map liquids
+		// additional model drawing
+		// shadows, remote names, etc
 
-	render_map_liquid(tick);
+	view_draw_models_final();
 
 		// draw decals
 
@@ -627,15 +573,6 @@ void view_draw(int tick)
 	view_calculate_shakes(tick,obj);
 	view_calculate_sways(tick,obj);
 	view_calculate_bump(obj);
-	
-		// render the shadows onto the shadow back buffer
-		// supergumba -- move this to main draw routine
-	/*	
-	if (shadow_texture_init()) {
-		view_create_models_shadow();
-		shadow_texture_finish();
-	} // supergumba
-	*/
 	
 		// build the scene
 		

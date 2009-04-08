@@ -54,9 +54,15 @@ void model_draw_setup_object(int tick,obj_type *obj)
 	float				spin_ang;
 	model_draw			*draw;
 	model_draw_setup	*setup;
+	model_type			*mdl;
 		
 	draw=&obj->draw;
 	setup=&draw->setup;
+
+		// clear setup
+
+	mdl=model_find_uid(draw->uid);
+	if (mdl!=NULL) model_clear_draw_setup(mdl,&draw->setup);
 
 		// special player mark
 
@@ -148,9 +154,15 @@ void model_draw_setup_projectile(int tick,proj_type *proj)
 	float				spin_ang;
 	model_draw			*draw;
 	model_draw_setup	*setup;
+	model_type			*mdl;
 		
 	draw=&proj->draw;
 	setup=&draw->setup;
+
+		// clear setup
+
+	mdl=model_find_uid(draw->uid);
+	if (mdl!=NULL) model_clear_draw_setup(mdl,&draw->setup);
 
 		// player check flag
 
@@ -233,6 +245,7 @@ void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignor
 	float				fx,fy,fz;
     model_draw			*draw;
 	model_draw_setup	*setup;
+	model_type			*mdl;
 	
 		// get proper draw and setup
 		
@@ -244,6 +257,11 @@ void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignor
 	}
 	
 	setup=&draw->setup;
+
+		// clear setup
+
+	mdl=model_find_uid(draw->uid);
+	if (mdl!=NULL) model_clear_draw_setup(mdl,&draw->setup);
 
 		// special check for player
 

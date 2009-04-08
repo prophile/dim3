@@ -398,7 +398,7 @@ void render_transparent_mesh_glow(void)
       
 ======================================================= */
 
-void render_map_transparent(void)
+void render_map_mesh_transparent(void)
 {
 		// setup view
 

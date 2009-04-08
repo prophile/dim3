@@ -296,7 +296,7 @@ void render_opaque_mesh_glow(void)
       
 ======================================================= */
 
-void render_map_opaque(void)
+void render_map_mesh_opaque(void)
 {
 		// setup view
 

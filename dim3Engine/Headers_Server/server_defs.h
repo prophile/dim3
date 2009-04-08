@@ -231,7 +231,7 @@ typedef struct		{
 						int						texture_idx,high,
 												px[4],pz[4],static_size;
 						float					alpha,static_face_angle,static_alpha;
-						bool					on,always_in_air,static_in_air,in_view;
+						bool					on,always_in_air,static_in_air;
 						d3pnt					pnt;
 						d3ang					ang;
 					} model_draw_shadow;
@@ -272,7 +272,7 @@ typedef struct		{
 												script_light_idx,script_halo_idx;
 						char					name[name_str_len];
 						float					alpha,resize,normal[3];
-						bool					on,in_view,flip_x,
+						bool					on,flip_x,
 												bounce,face_forward,player;
 						unsigned char			cur_texture_frame[max_model_texture];
 						d3pnt					pnt,size,center,offset;

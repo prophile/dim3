@@ -37,7 +37,7 @@ and can be sold or given away.
 #define max_light_spot							128
 #define max_view_lights_per_poly				8
 
-#define max_view_render_item					4096
+#define max_view_render_item					5120
 
 //
 // input rate
@@ -66,6 +66,9 @@ and can be sold or given away.
 
 #define view_render_type_mesh					0
 #define view_render_type_liquid					1
+#define view_render_type_object					2
+#define view_render_type_projectile				3
+#define view_render_type_effect					4
 
 //
 // sorting types
@@ -228,8 +231,7 @@ typedef struct		{
 						bool								has_area;
 						char								area_mask[max_area];
 						view_render_camera_type				camera;
-						view_render_draw_list_type			draw_list,
-															model_draw,effect_draw;
+						view_render_draw_list_type			draw_list,effect_draw;
 						view_render_light_type				light;
 						view_render_halo_type				halo_draw;
 					} view_render_type;

@@ -93,6 +93,17 @@ void liquid_gl_list_init(void)
 
 /* =======================================================
 
+      Check if Liquid is Transparent
+      
+======================================================= */
+
+bool liquid_is_transparent(map_liquid_type *liq)
+{
+	return((map.textures[liq->txt_idx].frames[texture->animate.current_frame&max_texture_frame_mask].bitmap.alpha_mode==alpha_mode_transparent) || (liq->alpha!=1.0f));
+}
+
+/* =======================================================
+
       Setup Liquid Vertexes
       
 ======================================================= */
@@ -313,7 +324,7 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
       
 ======================================================= */
 
-void liquid_render_liquid(int tick,map_liquid_type *liq)
+void liquid_render_liquid(int tick,bool opaque,map_liquid_type *liq)
 {
 	int							v_sz,quad_cnt,frame;
 	bool						shader_on;
@@ -324,7 +335,7 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
 
 	texture=&map.textures[liq->txt_idx];
 	frame=texture->animate.current_frame&max_texture_frame_mask;
-			
+
 	if (texture->additive) {
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE);
 	}
@@ -413,7 +424,39 @@ void liquid_render_liquid(int tick,map_liquid_type *liq)
       
 ======================================================= */
 
-void render_map_liquid(int tick)
+void render_map_liquid_opaque(int tick)
+{
+	int					n;
+
+		// setup view
+
+	gl_3D_view();
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
+	gl_setup_project();
+	
+		// setup drawing
+
+	glDisable(GL_BLEND);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+						
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+	
+		// draw opaque liquids
+		
+	for (n=0;n!=view.render->draw_list.count;n++) {
+		if (view.render->draw_list.items[n].type==view_render_type_liquid) {
+			if (!liquid_is_transparent()) {
+				liquid_render_liquid(tick,&map.liquid.liquids[view.render->draw_list.items[n].idx]);
+			}
+		}
+	}
+}
+
+void render_map_liquid_transparent(int tick)
 {
 	int					n;
 
@@ -435,11 +478,13 @@ void render_map_liquid(int tick)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 	
-		// draw liquids
+		// draw transparent liquids
 		
 	for (n=0;n!=view.render->draw_list.count;n++) {
 		if (view.render->draw_list.items[n].type==view_render_type_liquid) {
-			liquid_render_liquid(tick,&map.liquid.liquids[view.render->draw_list.items[n].idx]);
+			if (liquid_is_transparent()) {
+				liquid_render_liquid(tick,&map.liquid.liquids[view.render->draw_list.items[n].idx]);
+			}
 		}
 	}
 }

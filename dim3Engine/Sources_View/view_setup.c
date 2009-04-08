@@ -159,6 +159,49 @@ void view_start_draw_list(void)
 	view.render->draw_list.count=0;
 }
 
+void view_add_draw_list(int item_type,int item_idx,double item_dist)
+{
+	int				t,idx,sz;
+
+		// room for any more items?
+
+	if (view.render->draw_list.count==max_view_render_item) return;
+
+		// find place in sorted list
+
+	idx=-1;
+
+	for (t=0;t!=view.render->draw_list.count;t++) {
+		if (view.render->draw_list.items[t].dist>item_dist) {
+			idx=t;
+			break;
+		}
+	}
+
+		// insert at end of list
+		
+	if (idx==-1) {
+		view.render->draw_list.items[view.render->draw_list.count].type=item_type;
+		view.render->draw_list.items[view.render->draw_list.count].dist=item_dist;
+		view.render->draw_list.items[view.render->draw_list.count].idx=(short)item_idx;
+	}
+	
+		// insert in list
+	
+	else {
+		sz=sizeof(view_render_draw_list_item_type)*(view.render->draw_list.count-idx);
+		memmove(&view.render->draw_list.items[idx+1],&view.render->draw_list.items[idx],sz);
+		
+		view.render->draw_list.items[idx].type=item_type;
+		view.render->draw_list.items[idx].dist=item_dist;
+		view.render->draw_list.items[idx].idx=(short)item_idx;
+	}
+
+		// add up list
+
+	view.render->draw_list.count++;
+}
+
 bool view_mesh_in_draw_list(int mesh_idx)
 {
 	int			n;
@@ -174,13 +217,13 @@ bool view_mesh_in_draw_list(int mesh_idx)
 
 /* =======================================================
 
-      Add Items to Draw Lists
+      Add Map Items to Draw Lists
       
 ======================================================= */
 
 void view_add_mesh_draw_list(void)
 {
-	int					n,t,sz,start_mesh_idx,idx;
+	int					n,start_mesh_idx;
 	double				d,never_obscure_dist,obscure_dist;
 	map_mesh_type		*start_mesh,*mesh;
 	
@@ -233,44 +276,14 @@ void view_add_mesh_draw_list(void)
 		}
 		
 			// sort meshes into drawing list
-			// top of list is closest items
 
-		idx=-1;
-	
-		for (t=0;t!=view.render->draw_list.count;t++) {
-			if (view.render->draw_list.items[t].dist>d) {
-				idx=t;
-				break;
-			}
-		}
-	
-			// insert at end of list
-			
-		if (idx==-1) {
-			view.render->draw_list.items[view.render->draw_list.count].type=view_render_type_mesh;
-			view.render->draw_list.items[view.render->draw_list.count].dist=d;
-			view.render->draw_list.items[view.render->draw_list.count].idx=(short)n;
-			view.render->draw_list.count++;
-			continue;
-		}
-		
-			// insert in list
-			
-		sz=sizeof(view_render_draw_list_item_type)*(view.render->draw_list.count-idx);
-		memmove(&view.render->draw_list.items[idx+1],&view.render->draw_list.items[idx],sz);
-		
-		view.render->draw_list.items[idx].type=view_render_type_mesh;
-		view.render->draw_list.items[idx].dist=d;
-		view.render->draw_list.items[idx].idx=(short)n;
-		
-		view.render->draw_list.count++;
-		if (view.render->draw_list.count==max_view_render_item) break;
+		view_add_draw_list(view_render_type_mesh,n,d);
 	}
 }
 
 void view_add_liquid_draw_list(void)
 {
-	int					n,t,idx,sz;
+	int					n;
 	double				d,never_obscure_dist,obscure_dist;
 	map_liquid_type		*liq;
 
@@ -312,71 +325,27 @@ void view_add_liquid_draw_list(void)
 		}
 		
 			// sort liquids into drawing list
-			// top of list is closest items
 
-		idx=-1;
-	
-		for (t=0;t!=view.render->draw_list.count;t++) {
-			if (view.render->draw_list.items[t].dist>d) {
-				idx=t;
-				break;
-			}
-		}
-	
-			// insert at end of list
-			
-		if (idx==-1) {
-			view.render->draw_list.items[view.render->draw_list.count].type=view_render_type_liquid;
-			view.render->draw_list.items[view.render->draw_list.count].dist=d;
-			view.render->draw_list.items[view.render->draw_list.count].idx=(short)n;
-			view.render->draw_list.count++;
-			continue;
-		}
-		
-			// insert in list
-			
-		sz=sizeof(view_render_draw_list_item_type)*(view.render->draw_list.count-idx);
-		memmove(&view.render->draw_list.items[idx+1],&view.render->draw_list.items[idx],sz);
-		
-		view.render->draw_list.items[idx].type=view_render_type_liquid;
-		view.render->draw_list.items[idx].dist=d;
-		view.render->draw_list.items[idx].idx=(short)n;
-		
-		view.render->draw_list.count++;
-		if (view.render->draw_list.count==max_view_render_item) break;
+		view_add_draw_list(view_render_type_liquid,n,d);
 	}
-
 }
 
 /* =======================================================
 
-      Model Setup
+      Model Setup and Draw List
       
 ======================================================= */
 
-void view_clear_draw_in_view(model_draw *draw)
+bool view_setup_model_in_view(model_draw *draw,bool is_camera,int mesh_idx)
 {
-	model_type			*mdl;
-	
-	draw->in_view=FALSE;
+	int					obscure_dist;
 
-	draw->shadow.in_view=FALSE;
-	draw->shadow.texture_idx=-1;
-		
-	mdl=model_find_uid(draw->uid);
-	if (mdl!=NULL) model_clear_draw_setup(mdl,&draw->setup);
-}
-
-void view_setup_model_in_view(model_draw *draw,bool in_air,bool is_camera,int mesh_idx)
-{
-	int					x,z,y,obscure_dist;
-
-	if ((draw->uid==-1) || (!draw->on)) return;
+	if ((draw->uid==-1) || (!draw->on)) return(FALSE);
 
 		// is model in a mesh that's in the mesh draw list?
 
 	if ((!is_camera) && (mesh_idx!=-1)) {
-		if (!view_mesh_in_draw_list(mesh_idx)) return;
+		if (!view_mesh_in_draw_list(mesh_idx)) return(FALSE);
 	}
 	
 		// is model within obscure distance
@@ -388,66 +357,28 @@ void view_setup_model_in_view(model_draw *draw,bool in_air,bool is_camera,int me
 		obscure_dist=(map.fog.outer_radius>>1)*3;
 	}
 		
-	x=draw->pnt.x;
-	y=draw->pnt.y;
-	z=draw->pnt.z;
-	
-	draw->lod_dist=distance_to_view_center(x,y,z);
-	if (draw->lod_dist>=obscure_dist) return;
+	draw->lod_dist=distance_to_view_center(draw->pnt.x,draw->pnt.y,draw->pnt.z);
+	if (draw->lod_dist>=obscure_dist) return(FALSE);
 	
 		// is model in view?
 
-	if (!is_camera) {
-		draw->in_view=model_inview(draw);
-	}
-		
-		// is shadow in view
-		// shadows have a shorter obscure distance
+	if (is_camera) return(FALSE);
 
-	if ((!shadow_on) || (!draw->shadow.on)) return;
-
-	if (draw->lod_dist>=(obscure_dist>>1)) return;
-	
-	if (shadow_get_volume(draw,in_air)) {
-		draw->shadow.in_view=shadow_inview(draw);
-	}
+	return(model_inview(draw));
 }
-
-void view_setup_model_animation(model_draw *draw)
-{
-	if ((draw->uid==-1) || (!draw->on)) return;
-	if ((!draw->in_view) && (!draw->shadow.in_view)) return;
-	
-	model_calc_animation(draw);
-	model_calc_draw_bones(draw);
-}
-
-/* =======================================================
-
-      Setup Objects in Scene
-      
-======================================================= */
 
 void view_setup_objects(int tick)
 {
-	int					i;
-	bool				is_air,is_camera;
+	int					n;
+	bool				is_camera;
 	obj_type			*obj;
 	weapon_type			*weap;
-	model_draw			*draw;
 	
-	for (i=0;i!=server.count.obj;i++) {
-		obj=&server.objs[i];
+	for (n=0;n!=server.count.obj;n++) {
+		obj=&server.objs[n];
 		if (obj->hidden) continue;
 		
-		draw=&obj->draw;
-		
-		is_air=(obj->air_mode!=am_ground);		// supergumba -- can dispose of this later when new shadows
 		is_camera=((camera.mode==cv_fpp) && (obj->uid==camera.obj_uid));
-		
-			// clear out all view flags
-			
-		view_clear_draw_in_view(draw);
 		
 			// setup model positions
 			
@@ -455,13 +386,18 @@ void view_setup_objects(int tick)
 		object_fly_reset_angle(obj);
 		model_draw_setup_object(tick,obj);
 	
-			// find model, shadows, and light in view
+			// detect if model is in view
 		
-		view_setup_model_in_view(draw,is_air,is_camera,obj->mesh.cur_mesh_idx);
+		if (!view_setup_model_in_view(&obj->draw,is_camera,obj->mesh.cur_mesh_idx)) continue;
+
+			// add to draw list
+
+		view_add_draw_list(view_render_type_object,n,obj->draw.lod_dist);
 	
 			// setup model animations for models in view
 		
-		view_setup_model_animation(draw);
+		model_calc_animation(&obj->draw);
+		model_calc_draw_bones(&obj->draw);
 		
 			// setup held weapon model
 
@@ -469,33 +405,20 @@ void view_setup_objects(int tick)
 
 			weap=weapon_find_uid(obj->held_weapon.current_uid);
 			if (weap!=NULL) {
-				draw=&weap->draw;
-				view_clear_draw_in_view(draw);
 				model_draw_setup_weapon(tick,obj,weap,FALSE,FALSE);
-				view_setup_model_in_view(draw,FALSE,FALSE,obj->mesh.cur_mesh_idx);
+				view_setup_model_in_view(&weap->draw,FALSE,obj->mesh.cur_mesh_idx);
 			}
 		}
 	}
 }
 
-/* =======================================================
-
-      Setup Projectiles in Scene
-      
-======================================================= */
-
 void view_setup_projectiles(int tick)
 {
-	int					i,mesh_idx;
+	int					n,mesh_idx;
 	proj_type			*proj;
 
-	proj=server.projs;
-	
-	for (i=0;i!=server.count.proj;i++) {
-		
-			// clear out all view flags
-			
-		view_clear_draw_in_view(&proj->draw);
+	for (n=0;n!=server.count.proj;n++) {
+		proj=&server.projs[n];
 		
 			// setup model positions
 			
@@ -505,13 +428,16 @@ void view_setup_projectiles(int tick)
 			// find model and shadows in view
 			
 		mesh_idx=map_mesh_find(&map,&proj->draw.pnt);
-		view_setup_model_in_view(&proj->draw,TRUE,FALSE,mesh_idx);
+		if (!view_setup_model_in_view(&proj->draw,FALSE,mesh_idx)) continue;
+
+			// add to draw list
+
+		view_add_draw_list(view_render_type_projectile,n,proj->draw.lod_dist);
 		
 			// setup model animations for models in view
 			
-		view_setup_model_animation(&proj->draw);
-		
-		proj++;
+		model_calc_animation(&proj->draw);
+		model_calc_draw_bones(&proj->draw);
 	}
 }
 

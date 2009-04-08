@@ -150,12 +150,12 @@ void remote_draw_names_setup(void)
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 	
-	for (n=0;n!=server.count.obj;n++) {
-		obj=&server.objs[n];
+	for (n=0;n!=view.render->draw_list.count;n++) {
+		if (view.render->draw_list.items[n].type!=view_render_type_object) continue;
+		obj=&server.objs[view.render->draw_list.items[n].idx];
 		
 		if ((!obj->remote.on) && (!obj->bot)) continue;
 		if (obj->hidden) continue;
-		if (!obj->draw.in_view) continue;
 		
 			// get name point
 		
