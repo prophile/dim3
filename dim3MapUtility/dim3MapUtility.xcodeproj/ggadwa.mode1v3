@@ -321,13 +321,14 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>5</integer>
-									<integer>1</integer>
+									<integer>31</integer>
+									<integer>30</integer>
+									<integer>9</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {284, 692}}</string>
+							<string>{{0, 146}, {284, 692}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -427,9 +428,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26B98EAE0F8954F80019F3C5</string>
+				<string>2605153A0F8C550E00721411</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26B98EAF0F8954F80019F3C5</string>
+				<string>2605153B0F8C550E00721411</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -548,7 +549,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>260659865.84253499</real>
+	<real>260855054.23949501</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -564,6 +565,7 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>260AFEBC0D404E7500F6C42F</string>
+		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>/Users/ggadwa/dim3Code/dim3MapUtility/dim3MapUtility.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -605,8 +607,6 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -646,7 +646,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEBC0D404E7500F6C42F</string>
-				<string>26B98EAC0F8954F20019F3C5</string>
+				<string>260515390F8C54DE00721411</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -862,8 +862,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>26F2D8F30F845B7200AAEF92</string>
-				<string>26F2D8F40F845B7200AAEF92</string>
+				<string>260515350F8C54D900721411</string>
+				<string>260515360F8C54D900721411</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>

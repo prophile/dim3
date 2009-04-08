@@ -33,6 +33,8 @@ and can be sold or given away.
 #include "video.h"
 #include "consoles.h"
 
+extern bool					shadow_on;
+
 extern map_type				map;
 extern view_type			view;
 
@@ -360,7 +362,9 @@ void shadow_render_draw_map(model_draw_shadow *shadow,float gx,float gy,int poly
 
 		// draw the shadow texture
 
-	gl_shadow_texture_bind_start(shadow->alpha);
+//	gl_shadow_texture_bind_start(shadow->alpha);
+
+	glColor4f(1.0f,0.0f,0.0f,1.0f);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -389,7 +393,7 @@ void shadow_render_draw_map(model_draw_shadow *shadow,float gx,float gy,int poly
 	
 	glDisable(GL_STENCIL_TEST);
 
-	gl_shadow_texture_bind_end();
+//	gl_shadow_texture_bind_end();
 }
 
 /* =======================================================
@@ -439,12 +443,22 @@ void shadow_render_test(void)
       
 ======================================================= */
 
-void shadow_render(model_draw *draw)
+void shadow_render(model_draw *draw,bool in_air)
 {
 	int					poly_cnt;
 	float				gx,gy,slice_percent;
 	poly_pointer_type	poly_list[max_shadow_poly];
+	
+	return;
 
+		// model has a shadow?
+// draw all shadows for now		
+//	if ((!shadow_on) || (!draw->shadow.on)) return;
+	
+		// get shadow volume
+		
+	if (!shadow_get_volume(draw,in_air)) return;
+	
 		// stencil the segments that collide
 		// with shadow volume
 		

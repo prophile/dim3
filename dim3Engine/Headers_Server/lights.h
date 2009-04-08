@@ -36,7 +36,7 @@ extern void halo_draw_setup(void);
 extern void halo_draw_render(void);
 
 extern void shadow_render_init(void);
-extern void shadow_render(model_draw *draw);
+extern void shadow_render(model_draw *draw,bool in_air);
 
 extern bool shadow_get_volume_ground(model_draw *draw);
 extern bool shadow_get_volume_air(model_draw *draw);

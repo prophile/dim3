@@ -375,6 +375,7 @@ void view_draw_models(int tick)
 				if (!obj->draw.in_view) break;
 				
 				model_render(tick,&obj->draw);
+				shadow_render(&obj->draw,(obj->air_mode!=am_ground));
 				if (obj->remote.on) remote_draw_status(obj);
 				if (object_is_targetted(obj,&col)) model_render_target(&obj->draw,&col);
 				if (dim3_debug) {
@@ -385,7 +386,10 @@ void view_draw_models(int tick)
 
 			case view_sort_projectile:
 				proj=&server.projs[view.render->model_draw.items[n].idx];
-				if (proj->draw.in_view) model_render(tick,&proj->draw);
+				if (!proj->draw.in_view) break;
+				
+				model_render(tick,&proj->draw);
+				shadow_render(&proj->draw,TRUE);
 				break;
 
 		}
@@ -398,6 +402,8 @@ void view_draw_models(int tick)
       
 ======================================================= */
 
+
+/* supergumba -- remove
 void view_create_models_shadow(void)
 {
 	int							n;
@@ -456,13 +462,12 @@ void view_draw_models_shadow(void)
 		}
 	}
 }
-
+*/
 /* =======================================================
 
       Drawing Mainline
       
 ======================================================= */
-
 
 void view_draw_scene_build(int tick)
 {
@@ -506,15 +511,7 @@ void view_draw_scene_render(int tick,obj_type *obj,weapon_type *weap)
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
-	
-		// render the shadows onto the shadow back buffer
-		// supergumba -- move this to main draw routine
-	/*	
-	if (shadow_texture_init()) {
-		view_create_models_shadow();
-		shadow_texture_finish();
-	} // supergumba
-	*/
+
 		// draw background and sky
 		// unless obscured by fog
 	
@@ -542,10 +539,9 @@ void view_draw_scene_render(int tick,obj_type *obj,weapon_type *weap)
 
 	render_map_opaque();
 
-		// draw model shadows
+		// draw models
 
 	view_draw_models(tick);
-	view_draw_models_shadow();
 	
 		// draw tranparent map polygons
 
@@ -598,10 +594,6 @@ void view_draw_scene_render(int tick,obj_type *obj,weapon_type *weap)
 	}
 }
 
-
-
-
-
 void view_draw(int tick)
 {
 	obj_type		*obj,*camera_obj;
@@ -635,6 +627,15 @@ void view_draw(int tick)
 	view_calculate_shakes(tick,obj);
 	view_calculate_sways(tick,obj);
 	view_calculate_bump(obj);
+	
+		// render the shadows onto the shadow back buffer
+		// supergumba -- move this to main draw routine
+	/*	
+	if (shadow_texture_init()) {
+		view_create_models_shadow();
+		shadow_texture_finish();
+	} // supergumba
+	*/
 	
 		// build the scene
 		

@@ -442,7 +442,7 @@ void view_setup_objects(int tick)
 		
 		draw=&obj->draw;
 		
-		is_air=(obj->air_mode!=am_ground);
+		is_air=(obj->air_mode!=am_ground);		// supergumba -- can dispose of this later when new shadows
 		is_camera=((camera.mode==cv_fpp) && (obj->uid==camera.obj_uid));
 		
 			// clear out all view flags
