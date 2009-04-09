@@ -137,11 +137,12 @@ void setup_xml_fix_axis(setup_axis_type *axis)
 
 bool setup_xml_read_path(char *path)
 {
-	int							n,k,naction,nhost,
-								setup_tag,actions_tag,hosts_tag,tag;
-	char						tag_name[32];
+	int							n,k,naction,nhost,noption,
+								setup_tag,actions_tag,hosts_tag,options_tag,tag;
+	char						tag_name[32],name[name_str_len];
 	setup_action_type			*action;
 	setup_network_hosts_type	*host;
+	setup_network_option_type	*option;
 	
 		// read file
 		
@@ -261,7 +262,32 @@ bool setup_xml_read_path(char *path)
 			host++;
         }
 	}
-   
+	
+ 		// options
+
+    options_tag=xml_findfirstchild("Options",setup_tag);
+    if (options_tag!=-1) {
+	
+		noption=xml_countchildren(options_tag);
+		tag=xml_findfirstchild("Option",options_tag);
+		
+        for (n=0;n!=noption;n++) {
+			xml_get_attribute_text(tag,"name",name,name_str_len);
+			
+			option=setup.network.options;
+			
+			for (k=0;k!=setup.network.noption;k++) {
+				if (strcasecmp(option->name,name)==0) {
+					option->on=xml_get_attribute_boolean(tag,"on");
+					break;
+				}
+				option++;
+			}
+			
+			tag=xml_findnextchild(tag);
+        }
+	}
+  
 	xml_close_file();
 	
 	return(TRUE);
@@ -305,6 +331,7 @@ bool setup_xml_write(void)
 	bool						ok;
 	setup_action_type			*action;
 	setup_network_hosts_type	*host;
+	setup_network_option_type	*option;
 	
 		// start the setup file
 		
@@ -408,7 +435,26 @@ bool setup_xml_write(void)
 	}
 
     xml_add_tagclose("Hosts");
+	
+		// options
+		
+    xml_add_tagstart("Options");
+    xml_add_tagend(FALSE);
+	
+	option=setup.network.options;
+		
+	for (n=0;n!=setup.network.noption;n++) {
+		xml_add_tagstart("Option");
+		xml_add_attribute_text("name",option->name);
+		xml_add_attribute_boolean("on",option->on);
+	    xml_add_tagend(TRUE);
+		option++;
+	}
 
+    xml_add_tagclose("Options");
+		
+		// close setup
+		
     xml_add_tagclose("Setup");
 
         // save the setup

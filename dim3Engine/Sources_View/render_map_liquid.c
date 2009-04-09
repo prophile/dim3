@@ -99,7 +99,10 @@ void liquid_gl_list_init(void)
 
 bool liquid_is_transparent(map_liquid_type *liq)
 {
-	return((map.textures[liq->txt_idx].frames[texture->animate.current_frame&max_texture_frame_mask].bitmap.alpha_mode==alpha_mode_transparent) || (liq->alpha!=1.0f));
+	texture_type				*texture;
+
+	texture=&map.textures[liq->txt_idx];
+	return((texture->frames[texture->animate.current_frame&max_texture_frame_mask].bitmap.alpha_mode==alpha_mode_transparent) || (liq->alpha!=1.0f));
 }
 
 /* =======================================================
@@ -324,7 +327,7 @@ int liquid_render_liquid_create_quads(map_liquid_type *liq)
       
 ======================================================= */
 
-void liquid_render_liquid(int tick,bool opaque,map_liquid_type *liq)
+void liquid_render_liquid(int tick,map_liquid_type *liq)
 {
 	int							v_sz,quad_cnt,frame;
 	bool						shader_on;
@@ -427,6 +430,7 @@ void liquid_render_liquid(int tick,bool opaque,map_liquid_type *liq)
 void render_map_liquid_opaque(int tick)
 {
 	int					n;
+	map_liquid_type		*liq;
 
 		// setup view
 
@@ -449,8 +453,9 @@ void render_map_liquid_opaque(int tick)
 		
 	for (n=0;n!=view.render->draw_list.count;n++) {
 		if (view.render->draw_list.items[n].type==view_render_type_liquid) {
-			if (!liquid_is_transparent()) {
-				liquid_render_liquid(tick,&map.liquid.liquids[view.render->draw_list.items[n].idx]);
+			liq=&map.liquid.liquids[view.render->draw_list.items[n].idx];
+			if (!liquid_is_transparent(liq)) {
+				liquid_render_liquid(tick,liq);
 			}
 		}
 	}
@@ -459,6 +464,7 @@ void render_map_liquid_opaque(int tick)
 void render_map_liquid_transparent(int tick)
 {
 	int					n;
+	map_liquid_type		*liq;
 
 		// setup view
 
@@ -482,8 +488,9 @@ void render_map_liquid_transparent(int tick)
 		
 	for (n=0;n!=view.render->draw_list.count;n++) {
 		if (view.render->draw_list.items[n].type==view_render_type_liquid) {
-			if (liquid_is_transparent()) {
-				liquid_render_liquid(tick,&map.liquid.liquids[view.render->draw_list.items[n].idx]);
+			liq=&map.liquid.liquids[view.render->draw_list.items[n].idx];
+			if (liquid_is_transparent(liq)) {
+				liquid_render_liquid(tick,liq);
 			}
 		}
 	}

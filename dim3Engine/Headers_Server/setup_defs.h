@@ -34,6 +34,8 @@ and can be sold or given away.
 
 #define max_setup_network_host			32
 
+#define max_setup_network_option		32
+
 //
 // setup values
 //
@@ -103,13 +105,19 @@ typedef struct		{
 typedef struct		{
 						int							count,skill;
 					} setup_network_bot_type;
+					
+typedef struct		{
+						char						name[name_str_len],descript[64];
+						bool						on;
+					} setup_network_option_type;
 
 typedef struct		{
-						int							nhost,team_idx,game_type,score_limit;
+						int							nhost,noption,team_idx,game_type,score_limit;
 						char						name[name_str_len],last_map[name_str_len];
 						bool						show_names;
 						setup_network_hosts_type	hosts[max_setup_network_host];
 						setup_network_bot_type		bot;
+						setup_network_option_type	options[max_setup_network_option];
 					} setup_network_type;
 
 //
