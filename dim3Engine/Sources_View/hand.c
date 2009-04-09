@@ -40,7 +40,9 @@ extern camera_type			camera;
 extern server_type			server;
 extern view_type			view;
 
-extern void model_render(int tick,model_draw *draw);
+extern void model_render_setup(int tick,model_draw *draw);
+extern void model_render_opaque(model_draw *draw);
+extern void model_render_transparent(model_draw *draw);
 
 /* =======================================================
 
@@ -83,7 +85,9 @@ void draw_weapon_hand(int tick,obj_type *obj,weapon_type *weap)
 	model_calc_animation(draw);
 	model_calc_draw_bones(draw);
 	
-	model_render(tick,draw);
+	model_render_setup(tick,draw);
+	model_render_opaque(draw);
+	model_render_transparent(draw);
 
 		// dual wielded weapons
 
@@ -96,7 +100,9 @@ void draw_weapon_hand(int tick,obj_type *obj,weapon_type *weap)
 		model_calc_animation(draw);
 		model_calc_draw_bones(draw);
 		
-		model_render(tick,draw);
+		model_render_setup(tick,draw);
+		model_render_opaque(draw);
+		model_render_transparent(draw);
 	}
 }
 

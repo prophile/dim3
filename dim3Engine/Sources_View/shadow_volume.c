@@ -88,21 +88,14 @@ bool shadow_get_volume_ground(model_draw *draw)
 
 			// find closest light
 		
-	//	lspot=gl_light_find_closest_light((double)x,(double)y,(double)z,&dist);
-	//	if (lspot==NULL) return(FALSE);
+		lspot=gl_light_find_closest_light((double)x,(double)y,(double)z,&dist);
+		if (lspot==NULL) return(FALSE);
 
 			// find angle and size
 
-	//	volume_ang=angle_find(lspot->pnt.x,lspot->pnt.z,x,z);
-	//	shadow->alpha=0.55f-((0.5f*(float)dist)/(float)lspot->intensity);
-	//	high=((mdl->shadow_box.size.y<<2)*dist)/(int)lspot->intensity;
-		
-		
-			// supergumba -- cheating for now for test
-			
-		volume_ang=0.0f;
-		shadow->alpha=1.0f;
-		high=mdl->shadow_box.size.y;
+		volume_ang=angle_find(lspot->pnt.x,lspot->pnt.z,x,z);
+		shadow->alpha=0.55f-((0.5f*(float)dist)/(float)lspot->intensity);
+		high=((mdl->shadow_box.size.y<<2)*dist)/(int)lspot->intensity;
 	}
 	
 		// static shadow mode

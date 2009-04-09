@@ -238,6 +238,8 @@ void default_settings_interface(void)
 
 	net_setup.ngame=1;
 	strcpy(net_setup.games[0].name,"Deathmatch");
+
+	net_setup.noption=0;
 	
 		// bot names
 		
@@ -724,12 +726,12 @@ void read_settings_interface_button(int tag,hud_intro_button_type *btn)
 
 void read_settings_interface(void)
 {
-	int					cnt,interface_head_tag,scale_tag,
-						bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
-						radar_head_tag,menu_head_tag,menu_tag,chooser_head_tag,chooser_tag,
-						color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,music_tag,
-						proj_tag,games_head_tag,game_tag,bot_head_tag,bot_tag;
-	char				path[1024];
+	int			cnt,interface_head_tag,scale_tag,
+				bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
+				radar_head_tag,menu_head_tag,menu_tag,chooser_head_tag,chooser_tag,
+				color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,music_tag,
+				proj_tag,games_head_tag,game_tag,options_head_tag,option_tag,bot_head_tag,bot_tag;
+	char		path[1024];
 
 	default_settings_interface();
 	
@@ -948,6 +950,26 @@ void read_settings_interface(void)
 			if (net_setup.ngame==network_setup_max_game) break;
 
 			game_tag=xml_findnextchild(game_tag);
+		}
+	}
+
+		// network options
+
+	options_head_tag=xml_findfirstchild("Options",interface_head_tag);
+	if (options_head_tag!=-1) {
+		
+		net_setup.noption=0;
+		
+		option_tag=xml_findfirstchild("Option",options_head_tag);
+		while (option_tag!=-1) {
+		
+			xml_get_attribute_text(option_tag,"name",net_setup.options[net_setup.noption].name,name_str_len);
+			xml_get_attribute_text(option_tag,"description",net_setup.options[net_setup.noption].descript,64);
+			
+			net_setup.noption++;
+			if (net_setup.noption==network_setup_max_option) break;
+
+			option_tag=xml_findnextchild(option_tag);
 		}
 	}
 	

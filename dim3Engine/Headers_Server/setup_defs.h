@@ -29,12 +29,12 @@ and can be sold or given away.
 // setup sizes
 //
 
-#define max_setup_action				128
-#define max_setup_action_attach			4
+#define max_setup_action							128
+#define max_setup_action_attach						4
 
-#define max_setup_network_host			32
+#define max_setup_network_host						32
 
-#define max_setup_network_option		32
+#define max_setup_network_option					32
 
 //
 // setup values
@@ -42,19 +42,19 @@ and can be sold or given away.
 
 // anistropic mode, texture quality mode, mipmap mode, and mipmap mode all defined in baseutility.h
 
-#define fsaa_mode_none					0
-#define fsaa_mode_low					1
-#define fsaa_mode_medium				2
-#define fsaa_mode_high					3
+#define fsaa_mode_none								0
+#define fsaa_mode_low								1
+#define fsaa_mode_medium							2
+#define fsaa_mode_high								3
 
-#define setup_fsaa_mode_list_def		{"None","Low","Medium","High",""}
+#define setup_fsaa_mode_list_def					{"None","Low","Medium","High",""}
 
-#define setup_joystick_mode_list_def	{"Not Used","Turn Only","Turning and Moving","Turning and Looking",""}
+#define setup_joystick_mode_list_def				{"Not Used","Turn Only","Turning and Moving","Turning and Looking",""}
 
-#define joystick_mode_not_used			0
-#define joystick_mode_turn_only			1
-#define joystick_mode_turn_move			2
-#define joystick_mode_turn_look			3
+#define joystick_mode_not_used						0
+#define joystick_mode_turn_only						1
+#define joystick_mode_turn_move						2
+#define joystick_mode_turn_look						3
 
 //
 // setup paths
@@ -107,8 +107,7 @@ typedef struct		{
 					} setup_network_bot_type;
 					
 typedef struct		{
-						char						name[name_str_len],descript[64];
-						bool						on;
+						char						name[name_str_len];
 					} setup_network_option_type;
 
 typedef struct		{

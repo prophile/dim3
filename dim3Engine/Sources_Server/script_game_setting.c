@@ -38,8 +38,7 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 
 JSBool js_get_game_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_map_set_ambient_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_map_clear_ambient_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_game_setting_check_option_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			game_setting_class={"game_setting_class",0,
 							script_add_property,JS_PropertyStub,
@@ -50,6 +49,10 @@ JSPropertySpec	game_setting_props[]={
 							{"type",				game_setting_prop_type,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"multiplayer",			game_setting_prop_multiplayer,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"skill",				game_setting_prop_skill,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{0}};
+
+JSFunctionSpec	game_setting_functions[]={
+							{"checkOption",			js_game_setting_check_option_func,	1},
 							{0}};
 
 /* =======================================================
@@ -64,6 +67,7 @@ void script_add_game_setting_object(JSObject *parent_obj)
     
 	j_obj=JS_DefineObject(js.cx,parent_obj,"setting",&game_setting_class,NULL,0);
 	JS_DefineProperties(js.cx,j_obj,game_setting_props);
+	JS_DefineFunctions(js.cx,j_obj,game_setting_functions);
 }
 
 /* =======================================================
@@ -95,6 +99,32 @@ JSBool js_get_game_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
 
 	}
 	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setting Functions
+      
+======================================================= */
+
+JSBool js_game_setting_check_option_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int				n;
+	char			name[name_str_len];
+
+		// find if option is on
+
+	script_value_to_string(argv[0],name,name_str_len);
+
+	for (n=0;n!=setup.network.noption;n++) {
+		if (strcasecmp(name,setup.network.options[n].name)==0) {
+			*rval=JSVAL_TRUE;
+			return(JS_TRUE);
+		}
+	}
+
+	*rval=JSVAL_FALSE;
 	return(JS_TRUE);
 }
 

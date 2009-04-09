@@ -52,6 +52,8 @@ and can be sold or given away.
 
 #define host_game_score_limit_id		22
 
+#define host_game_option_base			100
+
 extern void intro_open(void);
 extern bool net_host_game_start(char *err_str);
 extern void net_host_game_end(void);
@@ -224,12 +226,16 @@ void host_game_pane(void)
 
 void host_options_pane(void)
 {
-	int				n,x,y;
-	char			str[32];
+	int							n,k,x,y;
+	char						str[32];
+	bool						on;
+	network_setup_option_type	*option;
 
 	x=(int)(((float)hud.scale_x)*0.15f);
 	y=(int)(((float)hud.scale_y)*0.17f);
 	
+		// bots
+
 	for (n=0;n!=(max_multiplayer_bot+1);n++) {
 		if (n==0) {
 			strcpy(bot_count_list[n],"None");
@@ -246,8 +252,35 @@ void host_options_pane(void)
 	element_combo_add("Bot Skill",(char*)bot_skill_list,setup.network.bot.skill,host_game_bot_skill_id,x,y,TRUE);
 	y+=element_get_control_high();
 
+		// score limit
+
 	sprintf(str,"%d",setup.network.score_limit);
 	element_text_field_add("Score Limit:",str,32,host_game_score_limit_id,x,y,TRUE);
+	y+=element_get_control_high();
+
+		// project options
+
+	x=hud.scale_x/2;
+	y+=element_get_padding();
+
+	option=net_setup.options;
+
+	for (n=0;n!=net_setup.noption;n++) {
+
+		on=FALSE;
+
+		for (k=0;k!=setup.network.noption;k++) {
+			if (strcasecmp(option->name,setup.network.options[k].name)==0) {
+				on=TRUE;
+				break;
+			}
+		}
+
+		element_checkbox_add(option->descript,on,(host_game_option_base+n),x,y,TRUE);
+		y+=element_get_control_high();
+
+		option++;
+	}
 }
 
 void host_create_pane(void)
@@ -261,7 +294,7 @@ void host_create_pane(void)
 	
 		// tabs
 		
-	padding=element_get_padding();;
+	padding=element_get_padding();
 	
 	wid=hud.scale_x;
 	yadd=(int)(((float)hud.scale_y)*0.015f);
@@ -471,9 +504,31 @@ void host_game(void)
 
 void host_handle_click(int id)
 {
-	int			idx;
-	char		str[32];
+	int							n,idx;
+	char						str[32];
+	network_setup_option_type	*option;
+
+		// special option clicks
+		// rebuild the options list
+
+	if (id>=host_game_option_base) {
 	
+		setup.network.noption=0;
+		option=net_setup.options;
+
+		for (n=0;n!=net_setup.noption;n++) {
+
+			if (element_get_value(host_game_option_base+n)!=0) {
+				strcpy(setup.network.options[setup.network.noption].name,option->name);
+				setup.network.noption++;
+			}
+
+			option++;
+		}
+
+		return;
+	}
+
 		// run selection
 
 	switch (id) {

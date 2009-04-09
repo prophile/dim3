@@ -100,6 +100,7 @@ void setup_xml_default(void)
 	setup.network.team_idx=net_team_none;
 	setup.network.show_names=TRUE;
 	setup.network.nhost=0;
+	setup.network.noption=0;
 
 	setup.network.last_map[0]=0x0;
 	
@@ -139,7 +140,7 @@ bool setup_xml_read_path(char *path)
 {
 	int							n,k,naction,nhost,noption,
 								setup_tag,actions_tag,hosts_tag,options_tag,tag;
-	char						tag_name[32],name[name_str_len];
+	char						tag_name[32];
 	setup_action_type			*action;
 	setup_network_hosts_type	*host;
 	setup_network_option_type	*option;
@@ -270,22 +271,16 @@ bool setup_xml_read_path(char *path)
 	
 		noption=xml_countchildren(options_tag);
 		tag=xml_findfirstchild("Option",options_tag);
+
+		setup.network.noption=noption;
+		option=setup.network.options;
 		
         for (n=0;n!=noption;n++) {
-			xml_get_attribute_text(tag,"name",name,name_str_len);
-			
-			option=setup.network.options;
-			
-			for (k=0;k!=setup.network.noption;k++) {
-				if (strcasecmp(option->name,name)==0) {
-					option->on=xml_get_attribute_boolean(tag,"on");
-					break;
-				}
-				option++;
-			}
+			xml_get_attribute_text(tag,"name",option->name,name_str_len);
 			
 			tag=xml_findnextchild(tag);
-        }
+  			option++;
+		}
 	}
   
 	xml_close_file();
@@ -446,7 +441,6 @@ bool setup_xml_write(void)
 	for (n=0;n!=setup.network.noption;n++) {
 		xml_add_tagstart("Option");
 		xml_add_attribute_text("name",option->name);
-		xml_add_attribute_boolean("on",option->on);
 	    xml_add_tagend(TRUE);
 		option++;
 	}

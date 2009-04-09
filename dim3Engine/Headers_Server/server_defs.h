@@ -267,28 +267,29 @@ typedef struct		{
 					} model_draw_vbo_ptr;
 
 typedef struct		{
-						int						uid,spin_tick,
-												mesh_mask,lod_dist,script_animation_idx,
-												script_light_idx,script_halo_idx;
-						char					name[name_str_len];
-						float					alpha,resize,normal[3];
-						bool					on,flip_x,
-												bounce,face_forward,player;
-						unsigned char			cur_texture_frame[max_model_texture];
-						d3pnt					pnt,size,center,offset;
-						d3ang					rot,spin;
-						d3col					tint;
-						model_draw_connect		connect;
-						model_draw_light		lights[max_model_light];
-						model_draw_halo			halos[max_model_halo];
-						model_draw_animation	animations[max_model_blend_animation];
-						model_draw_mesh_fade	mesh_fades[max_model_mesh];
-						model_draw_shadow		shadow;
-						model_draw_fade			fade;
-						model_draw_no_rot		no_rot;
-						model_draw_remote_name	remote_name;
-						model_draw_vbo_ptr		vbo_ptr;
-						model_draw_setup		setup;
+						int							uid,spin_tick,
+													mesh_mask,render_mesh_mask,
+													lod_dist,script_animation_idx,
+													script_light_idx,script_halo_idx;
+						char						name[name_str_len];
+						float						alpha,resize,normal[3];
+						bool						on,flip_x,has_opaque,has_transparent,
+													bounce,face_forward,player;
+						unsigned char				cur_texture_frame[max_model_texture];
+						d3pnt						pnt,size,center,offset;
+						d3ang						rot,spin;
+						d3col						tint;
+						model_draw_connect			connect;
+						model_draw_light			lights[max_model_light];
+						model_draw_halo				halos[max_model_halo];
+						model_draw_animation		animations[max_model_blend_animation];
+						model_draw_mesh_fade		mesh_fades[max_model_mesh];
+						model_draw_shadow			shadow;
+						model_draw_fade				fade;
+						model_draw_no_rot			no_rot;
+						model_draw_remote_name		remote_name;
+						model_draw_vbo_ptr			vbo_ptr;
+						model_draw_setup			setup;
 					} model_draw;
 
 //

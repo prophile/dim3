@@ -122,6 +122,7 @@ typedef struct		{
 //
 
 #define network_setup_max_game						32
+#define network_setup_max_option					32
 
 typedef struct		{
 						char						name[name_str_len],
@@ -144,10 +145,15 @@ typedef struct		{
 					} network_setup_game_type;
 
 typedef struct		{
-						int							ngame,game_idx;
+						char						name[name_str_len],descript[64];
+					} network_setup_option_type;
+
+typedef struct		{
+						int							ngame,noption,game_idx;
 						network_setup_host_type		host;
 						network_setup_client_type	client;
 						network_setup_game_type		games[network_setup_max_game];
+						network_setup_option_type	options[network_setup_max_option];
 					} network_setup_type;
 
 //

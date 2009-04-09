@@ -72,7 +72,9 @@ extern void fog_solid_end(void);
 extern void polygon_segment_start(void);
 extern void polygon_segment_end(void);
 extern bool model_inview(model_draw *draw);
-extern void model_render(int tick,model_draw *draw);
+extern void model_render_setup(int tick,model_draw *draw);
+extern void model_render_opaque(model_draw *draw);
+extern void model_render_transparent(model_draw *draw);
 extern void model_render_target(model_draw *draw,d3col *col);
 extern void view_draw_liquid_tint(int liquid_idx);
 extern void view_draw_effect_tint(int tick,obj_type *obj);
@@ -284,12 +286,14 @@ void view_draw_model_opaque(int tick)
 
 			case view_render_type_object:
 				obj=&server.objs[view.render->draw_list.items[n].idx];
-				model_render(tick,&obj->draw);
+				model_render_setup(tick,&obj->draw);
+				model_render_opaque(&obj->draw);
 				break;
 
 			case view_render_type_projectile:
 				proj=&server.projs[view.render->draw_list.items[n].idx];
-				model_render(tick,&proj->draw);
+				model_render_setup(tick,&proj->draw);
+				model_render_opaque(&proj->draw);
 				break;
 
 		}
@@ -298,6 +302,34 @@ void view_draw_model_opaque(int tick)
 
 void view_draw_model_transparent(int tick)
 {
+	int					n;
+	obj_type			*obj;
+	proj_type			*proj;
+
+		// setup draw
+		
+	gl_3D_view();
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
+	gl_setup_project();
+
+		// render the models
+
+	for (n=0;n!=view.render->draw_list.count;n++) {
+
+		switch (view.render->draw_list.items[n].type) {
+
+			case view_render_type_object:
+				obj=&server.objs[view.render->draw_list.items[n].idx];
+				model_render_transparent(&obj->draw);
+				break;
+
+			case view_render_type_projectile:
+				proj=&server.projs[view.render->draw_list.items[n].idx];
+				model_render_transparent(&proj->draw);
+				break;
+
+		}
+	}
 }
 
 void view_draw_models_final(void)
