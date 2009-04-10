@@ -50,7 +50,9 @@ bool file_paths_add_file(file_path_directory_type *fpd,char *path_add,char *file
 	if (remove_subfile) {
 		k=strlen(file_name);
 		if (k>2) {
-			if (file_name[k-2]=='_') return(TRUE);
+			if (file_name[k-2]=='_') {
+				if ((file_name[k-1]=='n') || (file_name[k-1]=='s') || (file_name[k-1]=='g')) return(TRUE);
+			}
 		}
 	}
 	

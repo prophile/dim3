@@ -112,6 +112,13 @@ JSBool js_game_setting_check_option_func(JSContext *cx,JSObject *j_obj,uintN arg
 {
 	int				n;
 	char			name[name_str_len];
+	
+		// all options are false if not in networking
+		
+	if ((!net_setup.host.hosting) && (!net_setup.client.joined)) {
+		*rval=JSVAL_FALSE;
+		return(JS_TRUE);
+	}
 
 		// find if option is on
 

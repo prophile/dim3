@@ -44,6 +44,7 @@ JSBool js_get_map_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 JSBool js_set_map_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_set_ambient_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_clear_ambient_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_check_option_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			map_setting_class={"map_setting_class",0,
 							script_add_property,JS_PropertyStub,
@@ -62,6 +63,7 @@ JSPropertySpec	map_setting_props[]={
 JSFunctionSpec	map_setting_functions[]={
 							{"setAmbient",			js_map_set_ambient_func,				2},
 							{"clearAmbient",		js_map_clear_ambient_func,				0},
+							{"checkOption",			js_map_check_option_func,				1},
 							{0}};
 
 /* =======================================================
@@ -160,6 +162,33 @@ JSBool js_map_set_ambient_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 JSBool js_map_clear_ambient_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
 	map_clear_ambient();
+	return(JS_TRUE);
+}
+
+JSBool js_map_check_option_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int				n;
+	char			name[name_str_len];
+
+		// all options are false if not in networking
+		
+	if ((!net_setup.host.hosting) && (!net_setup.client.joined)) {
+		*rval=JSVAL_FALSE;
+		return(JS_TRUE);
+	}
+	
+		// find if option is on
+
+	script_value_to_string(argv[0],name,name_str_len);
+
+	for (n=0;n!=setup.network.noption;n++) {
+		if (strcasecmp(name,setup.network.options[n].name)==0) {
+			*rval=JSVAL_TRUE;
+			return(JS_TRUE);
+		}
+	}
+
+	*rval=JSVAL_FALSE;
 	return(JS_TRUE);
 }
 
