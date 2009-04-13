@@ -59,10 +59,12 @@ JSBool js_map_object_get_position_func(JSContext *cx,JSObject *j_obj,uintN argc,
 JSBool js_map_object_get_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_size_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_health_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_object_is_dead_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_is_hidden_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_is_contact_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_is_max_health_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_last_damage_object_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_object_was_telefrag_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_move_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_shove_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_shove_direct_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -102,10 +104,12 @@ JSFunctionSpec	map_object_functions[]={
 							{"getAngle",					js_map_object_get_angle_func,						1},
 							{"getSize",						js_map_object_get_size_func,						1},
 							{"getHealth",					js_map_object_get_health_func,						1},
+							{"isDead",						js_map_object_is_dead_func,							1},
 							{"isHidden",					js_map_object_is_hidden_func,						1},
 							{"isContact",					js_map_object_is_contact_func,						1},
 							{"isMaxHealth",					js_map_object_is_max_health_func,					1},
 							{"getLastDamageObjectId",		js_map_object_get_last_damage_object_id_func,		1},
+							{"wasTelefrag",					js_map_object_was_telefrag_func,					1},
 							{"moveTo",						js_map_object_move_to_func,							5},
 							{"shove",						js_map_object_shove_func,							5},
 							{"shoveDirect",					js_map_object_shove_direct_func,					4},
@@ -698,6 +702,17 @@ JSBool js_map_object_get_health_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 	return(JS_TRUE);
 }
 
+JSBool js_map_object_is_dead_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	obj_type		*obj;
+
+	obj=script_find_obj_from_uid_arg(argv[0]);
+	if (obj==NULL) return(JS_FALSE);
+		
+	*rval=BOOLEAN_TO_JSVAL(obj->status.health<=0);
+	return(JS_TRUE);
+}
+
 JSBool js_map_object_is_hidden_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
 	obj_type		*obj;
@@ -739,6 +754,17 @@ JSBool js_map_object_get_last_damage_object_id_func(JSContext *cx,JSObject *j_ob
 	if (obj==NULL) return(JS_FALSE);
 		
 	*rval=INT_TO_JSVAL(obj->damage_obj_uid);
+	return(JS_TRUE);
+}
+
+JSBool js_map_object_was_telefrag_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	obj_type		*obj;
+
+	obj=script_find_obj_from_uid_arg(argv[0]);
+	if (obj==NULL) return(JS_FALSE);
+		
+	*rval=BOOLEAN_TO_JSVAL(obj->death_telefrag);
 	return(JS_TRUE);
 }
 

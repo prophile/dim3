@@ -103,10 +103,11 @@ and can be sold or given away.
 #define game_setting_prop_multiplayer				1
 #define game_setting_prop_skill						2
 
-#define game_score_prop_kill						0
-#define game_score_prop_death						1
-#define game_score_prop_suicide						2
-#define game_score_prop_goal						3
+#define game_score_prop_object_id					0
+#define game_score_prop_kill						1
+#define game_score_prop_death						2
+#define game_score_prop_suicide						3
+#define game_score_prop_goal						4
 
 #define game_join_prop_name							0
 #define game_join_prop_team							1
@@ -148,6 +149,15 @@ and can be sold or given away.
 #define map_fog_color_prop_red						0
 #define map_fog_color_prop_green					1
 #define map_fog_color_prop_blue						2
+
+//
+// multiplayer property IDs
+//
+
+#define multiplayer_setting_prop_on					0
+#define multiplayer_setting_prop_type				1
+
+#define multiplayer_bot_prop_skill					0
 
 //
 // camera property IDs
@@ -954,12 +964,12 @@ and can be sold or given away.
 #define sd_event_rule_join								3077
 #define sd_event_rule_score								3078
 
-#define sd_event_remote_join							3079
-#define sd_event_remote_leave							3080
-#define sd_event_remote_team							3081
-#define sd_event_remote_death							3082
-#define sd_event_remote_suicide							3083
-#define sd_event_remote_telefrag						3084
+#define sd_event_remote_join							3080
+#define sd_event_remote_leave							3081
+#define sd_event_remote_team							3082
+#define sd_event_remote_death							3083
+#define sd_event_remote_suicide							3084
+#define sd_event_remote_telefrag						3085
 
 //
 // define structure

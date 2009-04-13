@@ -313,8 +313,9 @@ void view_draw_model_transparent(int tick)
 	gl_setup_project();
 
 		// render the models
+		// draw backwards to sort back to front
 
-	for (n=0;n!=view.render->draw_list.count;n++) {
+	for (n=(view.render->draw_list.count-1);n>=0;n--) {
 
 		switch (view.render->draw_list.items[n].type) {
 

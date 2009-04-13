@@ -48,6 +48,7 @@ JSClass			game_score_class={"game_score_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 JSPropertySpec	game_score_props[]={
+							{"objectId",			game_score_prop_object_id,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"kill",				game_score_prop_kill,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"death",				game_score_prop_death,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"suicide",				game_score_prop_suicide,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
@@ -91,16 +92,19 @@ JSBool js_get_game_score_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 
 	switch (JSVAL_TO_INT(id)) {
 	
-		case obj_score_prop_kill:
+		case game_score_prop_object_id:
+            *vp=INT_TO_JSVAL(obj->uid);
+			break;
+		case game_score_prop_kill:
             *vp=INT_TO_JSVAL(obj->score.kill);
 			break;
-		case obj_score_prop_death:
+		case game_score_prop_death:
             *vp=INT_TO_JSVAL(obj->score.death);
 			break;
-		case obj_score_prop_suicide:
+		case game_score_prop_suicide:
             *vp=INT_TO_JSVAL(obj->score.suicide);
 			break;
-		case obj_score_prop_goal:
+		case game_score_prop_goal:
             *vp=INT_TO_JSVAL(obj->score.goal);
 			break;
 			

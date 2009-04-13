@@ -121,6 +121,27 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 	unsigned short	*index_ptr;
     model_trig_type	*trig;
 	model_mesh_type	*mesh;
+	
+		// create vertex and uv lists
+		// in the model's data area
+		
+	for (n=0;n!=mdl->nmesh;n++) {
+		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
+
+			// build model vertex list
+			
+		model_create_draw_vertexes(mdl,n,&draw->setup);
+		if (draw->resize!=1) model_resize_draw_vertex(mdl,n,draw->resize);
+		if (draw->flip_x) model_flip_draw_vertex(mdl,n);
+
+			// translate vertex to view
+			
+		model_translate_draw_vertex(mdl,n,draw->pnt.x,draw->pnt.y,draw->pnt.z);
+	}
+
+		// setup the colors
+
+	model_draw_create_color_vertexes(mdl,draw->render_mesh_mask,draw);
 
 		// get the total number of trigs and vertexes
 
@@ -439,8 +460,9 @@ void model_draw_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *dra
 
 void model_draw_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw,view_glsl_light_list_type *light_list)
 {
-	int						n,trig_count,
+	int						n,trig_count,frame,
 							trig_start_idx,trig_idx;
+	float					alpha;
 	model_mesh_type			*mesh;
     texture_type			*texture;
 	model_material_type		*material;
@@ -474,6 +496,15 @@ void model_draw_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *dra
 			// skip non-shader textures
 
 		if (texture->shader_idx==-1) continue;
+		
+			// any opaque trigs?
+			
+		frame=texture->animate.current_frame;
+		
+		alpha=draw->alpha;
+		if (draw->mesh_fades[mesh_idx].on) alpha=draw->mesh_fades[mesh_idx].alpha;
+			
+		if ((texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) || (alpha!=1.0)) continue;
 
 			// don't draw if no trigs
 
@@ -502,12 +533,12 @@ void model_draw_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *dra
 	}
 }
 
-void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
+void model_draw_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int						n,frame,trig_count,
 							trig_start_idx,trig_idx;
-	float					enabled,alpha;
-	bool					cur_additive,is_additive;
+	float					alpha;
+	bool					enabled,cur_additive,is_additive;
 	model_mesh_type			*mesh;
     texture_type			*texture;
 	model_material_type		*material;
@@ -593,6 +624,100 @@ void model_draw_transparent_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 	if (enabled) model_draw_disable_color_array();
 
 	gl_texture_transparent_end();
+}
+
+void model_draw_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_draw *draw,view_glsl_light_list_type *light_list)
+{
+	int						n,frame,trig_count,
+							trig_start_idx,trig_idx;
+	float					alpha;
+	bool					cur_additive,is_additive;
+	model_mesh_type			*mesh;
+    texture_type			*texture;
+	model_material_type		*material;
+
+	mesh=&mdl->meshes[mesh_idx];
+
+		// setup correct mesh pointers
+
+	trig_start_idx=model_draw_set_vertex_objects(mdl,mesh_idx,draw);
+
+		// setup drawing
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+		
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+	
+	gl_shader_draw_start();
+	
+		// minimize state changes
+
+	cur_additive=FALSE;
+
+		// run through the materials
+
+	for (n=0;n!=max_model_texture;n++) {
+	
+		texture=&mdl->textures[n];
+		material=&mesh->materials[n];
+
+			// skip non-shader textures
+
+		if (texture->shader_idx==-1) continue;
+		
+			// any transparent trigs?
+			
+		frame=texture->animate.current_frame;
+		
+		alpha=draw->alpha;
+		if (draw->mesh_fades[mesh_idx].on) alpha=draw->mesh_fades[mesh_idx].alpha;
+			
+		if (!((texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) || (alpha!=1.0))) continue;
+
+			// don't draw if no trigs
+
+		trig_count=material->trig_count;
+		if (trig_count==0) continue;
+
+		trig_idx=trig_start_idx+(material->trig_start*3);
+		
+			// transparent textures
+			
+		is_additive=(mesh->blend_add) || (texture->additive);
+		if (is_additive!=cur_additive) {
+			cur_additive=is_additive;
+			if (cur_additive) {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+			}
+			else {
+				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+			}
+		}
+		
+			// run the shader
+			
+		if (!mesh->no_lighting) {
+			gl_shader_draw_execute(texture,n,texture->animate.current_frame,1.0f,alpha,light_list);
+		}
+		else {
+			if (mesh->tintable) {
+				gl_shader_draw_hilite_execute(texture,n,texture->animate.current_frame,1.0f,alpha,&draw->pnt,&draw->tint);
+			}
+			else {
+				gl_shader_draw_hilite_execute(texture,n,texture->animate.current_frame,1.0f,alpha,&draw->pnt,NULL);
+			}
+		}
+		
+		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
+			
+		gl_shader_draw_end();
+	}
 }
 
 void model_draw_glow_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
@@ -715,26 +840,6 @@ void model_render_setup(int tick,model_draw *draw)
 
 		texture++;
 	}
-
-		// create vertex and uv lists
-		
-	for (n=0;n!=mdl->nmesh;n++) {
-		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
-
-			// build model vertex list
-			
-		model_create_draw_vertexes(mdl,n,&draw->setup);
-		if (draw->resize!=1) model_resize_draw_vertex(mdl,n,draw->resize);
-		if (draw->flip_x) model_flip_draw_vertex(mdl,n);
-
-			// translate vertex to view
-			
-		model_translate_draw_vertex(mdl,n,draw->pnt.x,draw->pnt.y,draw->pnt.z);
-	}
-
-		// setup the colors
-
-	model_draw_create_color_vertexes(mdl,draw->render_mesh_mask,draw);
 }
 
 void model_render_opaque(model_draw *draw)
@@ -784,8 +889,9 @@ void model_render_opaque(model_draw *draw)
 
 void model_render_transparent(model_draw *draw)
 {
-	int					n;
-	model_type			*mdl;
+	int							n;
+	model_type					*mdl;
+	view_glsl_light_list_type	light_list;
 
 		// any transparent?
 
@@ -795,16 +901,21 @@ void model_render_transparent(model_draw *draw)
 
 	mdl=model_find_uid(draw->uid);
 	if (mdl==NULL) return;
+	
+		// start lighting
+
+	gl_lights_build_from_model(draw,&light_list);
 
 		// setup the vbo
 
-	if (!model_draw_initialize_vertex_objects(mdl,draw)) return;
+	if (!model_draw_initialize_vertex_objects(mdl,draw)) return;	
 	
 		// draw transparent materials
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((draw->render_mesh_mask&(0x1<<n))!=0) {
-			model_draw_transparent_trigs(mdl,n,draw);
+			model_draw_transparent_simple_trigs(mdl,n,draw);
+			if (!dim3_debug) model_draw_transparent_shader_trigs(mdl,n,draw,&light_list);
 		}
 	}
 

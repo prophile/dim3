@@ -40,7 +40,7 @@ extern server_type		server;
 extern view_type		view;
 
 extern bool effect_inview(effect_type *effect,int count);
-extern int distance_to_view_center(int x,int y,int z);
+extern double distance_to_view_center(int x,int y,int z);
 extern bool view_mesh_in_draw_list(int mesh_idx);
 
 /* =======================================================

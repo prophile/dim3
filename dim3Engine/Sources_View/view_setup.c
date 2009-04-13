@@ -51,7 +51,7 @@ extern setup_type			setup;
 
 extern bool fog_solid_on(void);
 extern bool model_inview(model_draw *draw);
-extern int distance_to_view_center(int x,int y,int z);
+extern double distance_to_view_center(int x,int y,int z);
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
 extern bool mesh_inview(map_mesh_type *mesh);
 
@@ -338,7 +338,7 @@ void view_add_liquid_draw_list(void)
 
 bool view_setup_model_in_view(model_draw *draw,bool is_camera,int mesh_idx)
 {
-	int					obscure_dist;
+	double					obscure_dist;
 
 	if ((draw->uid==-1) || (!draw->on)) return(FALSE);
 
@@ -351,14 +351,14 @@ bool view_setup_model_in_view(model_draw *draw,bool is_camera,int mesh_idx)
 		// is model within obscure distance
 
 	if (!fog_solid_on()) {
-		obscure_dist=camera.plane.far_z-camera.plane.near_z;
+		obscure_dist=(double)(camera.plane.far_z-camera.plane.near_z);
 	}
 	else {
-		obscure_dist=(map.fog.outer_radius>>1)*3;
+		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
 	}
 		
-	draw->lod_dist=distance_to_view_center(draw->pnt.x,draw->pnt.y,draw->pnt.z);
-	if (draw->lod_dist>=obscure_dist) return(FALSE);
+	draw->draw_dist=distance_to_view_center(draw->pnt.x,draw->pnt.y,draw->pnt.z);
+	if (draw->draw_dist>=obscure_dist) return(FALSE);
 	
 		// is model in view?
 
@@ -392,7 +392,7 @@ void view_setup_objects(int tick)
 
 			// add to draw list
 
-		view_add_draw_list(view_render_type_object,n,obj->draw.lod_dist);
+		view_add_draw_list(view_render_type_object,n,obj->draw.draw_dist);
 	
 			// setup model animations for models in view
 		
@@ -432,7 +432,7 @@ void view_setup_projectiles(int tick)
 
 			// add to draw list
 
-		view_add_draw_list(view_render_type_projectile,n,proj->draw.lod_dist);
+		view_add_draw_list(view_render_type_projectile,n,proj->draw.draw_dist);
 		
 			// setup model animations for models in view
 			

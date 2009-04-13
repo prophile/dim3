@@ -87,6 +87,7 @@ bool script_create_prototype_objects(char *err_str)
 	script_set_property_lock(TRUE);
 	
 	script_add_global_map_object(js.global_prototype);
+	script_add_global_multiplayer_object(js.global_prototype);
 	script_add_global_camera_object(js.global_prototype);
 	script_add_global_interface_object(js.global_prototype);
 	script_add_global_data_object(js.global_prototype);

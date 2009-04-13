@@ -80,6 +80,7 @@ extern int script_find_group_from_name(jsval arg);
 extern int script_find_map_movement_from_name(jsval arg);
 
 extern void script_add_global_map_object(JSObject *parent_obj);
+extern void script_add_global_multiplayer_object(JSObject *parent_obj);
 extern void script_add_global_camera_object(JSObject *parent_obj);
 extern void script_add_global_interface_object(JSObject *parent_obj);
 extern void script_add_global_data_object(JSObject *parent_obj);

@@ -141,6 +141,7 @@ void object_death(obj_type *obj)
 		// turn off trigger
 		
 	obj->death_trigger=FALSE;
+	obj->death_telefrag=FALSE;
 
 		// send alert to all objects with watches on
 
@@ -164,6 +165,7 @@ void object_telefrag(obj_type *obj,obj_type *source_obj)
 	scripts_post_event_console(&obj->attach,sd_event_telefrag,0,0);
 	
 	obj->death_trigger=TRUE;		// trigger death
+	obj->death_telefrag=TRUE;
 	obj->damage_obj_uid=source_obj->uid;
 	
 	object_death(obj);

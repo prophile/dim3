@@ -41,7 +41,6 @@ extern void script_add_utility_angle_object(JSObject *parent_obj);
 extern void script_add_utility_point_object(JSObject *parent_obj);
 extern void script_add_utility_random_object(JSObject *parent_obj);
 extern void script_add_utility_pack_object(JSObject *parent_obj);
-extern void script_add_utility_skill_object(JSObject *parent_obj);
 
 /* =======================================================
 
@@ -59,6 +58,5 @@ void script_add_global_utility_object(JSObject *parent_obj)
 	script_add_utility_point_object(j_obj);
 	script_add_utility_random_object(j_obj);
 	script_add_utility_pack_object(j_obj);
-	script_add_utility_skill_object(j_obj);
 }
 

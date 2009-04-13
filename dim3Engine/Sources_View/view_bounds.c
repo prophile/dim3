@@ -319,13 +319,13 @@ bool effect_inview(effect_type *effect,int count)
       
 ======================================================= */
 
-int distance_to_view_center(int x,int y,int z)
+double distance_to_view_center(int x,int y,int z)
 {
 	double			dx,dz,dy;
 	
 	dx=(double)(x-view.render->camera.pnt.x);
 	dy=(double)(y-view.render->camera.pnt.y);
 	dz=(double)(z-view.render->camera.pnt.z);
-	return((int)sqrt((dx*dx)+(dy*dy)+(dz*dz)));
+	return(sqrt((dx*dx)+(dy*dy)+(dz*dz)));
 }
 

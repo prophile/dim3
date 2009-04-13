@@ -269,10 +269,11 @@ typedef struct		{
 typedef struct		{
 						int							uid,spin_tick,
 													mesh_mask,render_mesh_mask,
-													lod_dist,script_animation_idx,
+													script_animation_idx,
 													script_light_idx,script_halo_idx;
 						char						name[name_str_len];
 						float						alpha,resize,normal[3];
+						double						draw_dist;
 						bool						on,flip_x,has_opaque,has_transparent,
 													bounce,face_forward,player;
 						unsigned char				cur_texture_frame[max_model_texture];
@@ -796,7 +797,7 @@ typedef struct		{
 												player,bot,side_step,crawl,single_speed,no_slide,
 												open_doors,input_freeze,hide_all_weapons,
 												find_on,in_collide_event,on_ladder,
-												quick_reverse,death_trigger;
+												quick_reverse,death_trigger,death_telefrag;
 						d3pnt					pnt,org_pnt,last_pnt;
 						d3ang					ang,view_ang,org_ang,last_ang;
 						obj_motion				motion;
