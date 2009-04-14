@@ -57,7 +57,7 @@ void model_draw_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw *
 
 		// if only shaders, then no color list required
 
-	if (!mdl->has_no_shader) return;
+	if ((!dim3_debug) && (!mdl->has_no_shader)) return;
 
 		// need color lists
 
@@ -67,9 +67,22 @@ void model_draw_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw *
 		mesh=&mdl->meshes[n];
 		cp=mesh->draw.gl_color_array;
 
-			// debug and hilited meshes
+			// debug draw
+			
+		if (dim3_debug) {
+		
+			for (k=0;k!=mesh->nvertex;k++) {
+				*cp++=1.0f;
+				*cp++=1.0f;
+				*cp++=1.0f;
+			}
+			
+			continue;
+		}
+		
+			// hilited meshes
 
-		if ((dim3_debug) || (mesh->no_lighting)) {
+		if (mesh->no_lighting) {
 
 			if (mesh->tintable) {
 				for (k=0;k!=mesh->nvertex;k++) {
@@ -422,7 +435,7 @@ void model_draw_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *dra
 
 			// skip shader textures
 
-		if (texture->shader_idx!=-1) continue;
+		if ((!dim3_debug) && (texture->shader_idx!=-1)) continue;
 
 			// first color pointer enable?
 
@@ -577,7 +590,7 @@ void model_draw_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_draw
 
 			// skip shader textures
 
-		if (texture->shader_idx!=-1) continue;
+		if ((!dim3_debug) && (texture->shader_idx!=-1)) continue;
 
 			// first color pointer enable?
 

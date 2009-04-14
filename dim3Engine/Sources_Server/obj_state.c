@@ -478,10 +478,18 @@ void object_crush(obj_type *obj,bool auto_crush)
 		
 	if (!auto_crush) if (!map_stand_crush_object(obj)) return;
 	
-		// send events and post max damage
+		// send events
 		
 	scripts_post_event_console(&obj->attach,sd_event_crush,0,0);
-	object_damage(obj,NULL,NULL,NULL,NULL,obj->status.max_health);
+	
+		// kill if not a remote or invincible
+		
+	if (obj->remote.on) return;
+	if (obj->damage.invincible) return;
+
+	obj->damage_obj_uid=-1;
+	obj->status.health=0;
+	obj->death_trigger=TRUE;
 }
 
 /* =======================================================
