@@ -231,7 +231,7 @@ typedef struct		{
 						bool								has_area;
 						char								area_mask[max_area];
 						view_render_camera_type				camera;
-						view_render_draw_list_type			draw_list,effect_draw;
+						view_render_draw_list_type			draw_list;
 						view_render_light_type				light;
 						view_render_halo_type				halo_draw;
 					} view_render_type;

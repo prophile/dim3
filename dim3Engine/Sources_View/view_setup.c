@@ -54,6 +54,7 @@ extern bool model_inview(model_draw *draw);
 extern double distance_to_view_center(int x,int y,int z);
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
 extern bool mesh_inview(map_mesh_type *mesh);
+extern bool effect_inview(effect_type *effect,int count);
 
 /* =======================================================
 
@@ -438,6 +439,61 @@ void view_setup_projectiles(int tick)
 			
 		model_calc_animation(&proj->draw);
 		model_calc_draw_bones(&proj->draw);
+	}
+}
+
+/* =======================================================
+
+      Effects in View
+      
+======================================================= */
+
+void view_add_effect_draw_list(int tick)
+{
+	int					n;
+	double				d,never_obscure_dist,obscure_dist;
+	effect_type			*effect;
+
+		// obscure distance -- normally is the opengl projection
+		// distance but can be the fog distance if fog is on
+
+	if (!fog_solid_on()) {
+		obscure_dist=(double)(camera.plane.far_z-camera.plane.near_z);
+	}
+	else {
+		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
+	}
+
+	never_obscure_dist=(double)(abs(camera.plane.near_z)*3);
+
+		// find all effects
+
+	for (n=0;n!=server.count.effect;n++) {
+
+		effect=&server.effects[n];
+
+			// effect inside a mesh that's hidden?
+
+		if (effect->mesh_idx!=-1) {
+			if (!view_mesh_in_draw_list(effect->mesh_idx)) continue;
+		}
+
+			// auto-eliminate effects drawn outside the obscure distance
+				
+		d=distance_to_view_center(effect->pnt.x,effect->pnt.y,effect->pnt.z);
+		if (d>obscure_dist) continue;
+				
+			// within a certain distance, don't check for obscuring
+			// by the view to fix some bugs with large polygons very
+			// close to the camera
+
+		if (d>never_obscure_dist) {
+			if (!effect_inview(effect,(tick-effect->start_tick))) continue;
+		}
+		
+			// sort liquids into drawing list
+
+		view_add_draw_list(view_render_type_effect,n,d);
 	}
 }
 

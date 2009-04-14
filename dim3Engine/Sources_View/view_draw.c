@@ -89,6 +89,7 @@ extern void view_add_mesh_draw_list(void);
 extern void view_add_liquid_draw_list(void);
 extern void view_setup_objects(int tick);
 extern void view_setup_projectiles(int tick);
+extern void view_add_effect_draw_list(int tick);
 extern void view_add_halos(void);
 extern bool view_compile_mesh_gl_lists(int tick);
 extern void view_calculate_scope(obj_type *obj,obj_type *camera_obj);
@@ -475,6 +476,10 @@ void view_draw_scene_build(int tick)
 		
 	view_setup_objects(tick);
 	view_setup_projectiles(tick);
+
+		// add scene effects
+
+	view_add_effect_draw_list(tick);
 
 		// add scene halos
 		

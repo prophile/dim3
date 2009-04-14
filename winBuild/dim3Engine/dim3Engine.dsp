@@ -353,6 +353,410 @@ SOURCE=..\..\dim3Engine\Headers_Server\xmls.h
 # Begin Group "Server Sources"
 
 # PROP Default_Filter ""
+# Begin Group "Script API"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_camera.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_camera_angle.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_camera_chase.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_camera_chase_angle.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_camera_chase_offset.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_camera_chase_slop.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_camera_plane.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_camera_position.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_camera_setting.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_camera_state.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_camera_static_position.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_data.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_event.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_game_join.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_game_score.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_game_setting.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_interface.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_interface_bar.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_interface_bitmap.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_interface_console.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_interface_fade.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_interface_interaction.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_interface_radar.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_interface_screen.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_interface_text.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_map.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_map_action.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_map_fog.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_map_fog_color.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_map_group.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_map_info.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_map_light_color.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_map_movement.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_map_node.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_map_object.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_map_setting.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_map_spot.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_model.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_model_animation.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_model_bone.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_model_fill.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_model_halo.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_model_light.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_model_light_color.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_model_mesh.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_model_offset.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_model_rotate.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_model_shadow.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_model_spin.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_multiplayer.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_multiplayer_bot.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_multiplayer_setting.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_angle.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_click.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_forward_speed.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_health.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_held.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_hit.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_hit_angle.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_hit_position.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_lock.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_look.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_melee.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_motion_angle.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_motion_vector.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_object_speed.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_object_thrust.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_pickup.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_position.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_radar.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_rigid_body.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_score.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_setting.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_side_speed.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_sight.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_size.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_status.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_touch.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_touch_angle.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_touch_position.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_turn_speed.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_vehicle.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_vert_speed.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_watch.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_weapon.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_obj_weapon_fire.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_proj_action.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_proj_hit.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_proj_mark.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_proj_melee.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_proj_motion_angle.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_proj_motion_vector.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_proj_origin.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_proj_position.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_proj_push.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_proj_setting.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_proj_size.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_proj_speed.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_sound.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_spawn.c
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_Server\camera.c
@@ -567,394 +971,6 @@ SOURCE=..\..\dim3Engine\Sources_Server\scenery.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_Server\script_camera.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_camera_angle.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_camera_chase.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_camera_chase_angle.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_camera_chase_offset.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_camera_chase_slop.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_camera_plane.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_camera_position.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_camera_setting.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_camera_state.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_camera_static_position.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_data.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_event.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_game_join.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_game_score.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_game_setting.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_interface.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_interface_bar.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_interface_bitmap.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_interface_console.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_interface_fade.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_interface_interaction.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_interface_radar.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_interface_screen.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_interface_text.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_map.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_map_action.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_map_fog.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_map_fog_color.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_map_group.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_map_info.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_map_light_color.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_map_movement.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_map_node.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_map_object.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_map_setting.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_map_spot.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_model.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_model_animation.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_model_bone.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_model_fill.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_model_halo.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_model_light.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_model_light_color.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_model_mesh.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_model_offset.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_model_rotate.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_model_shadow.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_model_spin.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_angle.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_click.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_forward_speed.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_health.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_held.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_hit.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_hit_angle.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_hit_position.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_lock.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_look.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_melee.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_motion_angle.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_motion_vector.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_object_speed.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_object_thrust.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_pickup.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_position.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_radar.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_rigid_body.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_score.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_setting.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_side_speed.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_sight.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_size.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_status.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_touch.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_touch_angle.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_touch_position.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_turn_speed.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_vehicle.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_vert_speed.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_watch.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_weapon.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_obj_weapon_fire.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_proj_action.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_proj_hit.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_proj_mark.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_proj_melee.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_proj_motion_angle.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_proj_motion_vector.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_proj_origin.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_proj_position.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_proj_push.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_proj_setting.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_proj_size.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_proj_speed.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_sound.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_spawn.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3Engine\Sources_Server\script_timers.c
 # End Source File
 # Begin Source File
@@ -976,10 +992,6 @@ SOURCE=..\..\dim3Engine\Sources_Server\script_utility_point.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_Server\script_utility_random.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_utility_skill.c
 # End Source File
 # Begin Source File
 

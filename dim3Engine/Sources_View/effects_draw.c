@@ -315,60 +315,8 @@ void effect_image_animate_get_uv(int tick,image_animation_type *animate,float *g
 
 void effect_draw(int tick)
 {
-	int						n,k,t,dist,sz,count;
-	effect_type				*effect;
-	
-		// sort effects
-		
-	view.render->effect_draw.count=0;
-	
-	for (n=0;n!=server.count.effect;n++) {
-		effect=&server.effects[n];
-
-			// effect inside a mesh that's hidden?
-
-		if (effect->mesh_idx!=-1) {
-			if (!view_mesh_in_draw_list(effect->mesh_idx)) continue;
-		}
-
-			// effect in view
-			
-		count=tick-effect->start_tick;
-		if (!effect_inview(effect,count)) continue;
-		
-			// get effect distance
-			
-		dist=distance_to_view_center(effect->pnt.x,effect->pnt.y,effect->pnt.z);
-		
-			// sort into list
-		
-		t=view.render->effect_draw.count;
-		
-		for (k=0;k!=view.render->effect_draw.count;k++) {
-			if (dist>view.render->effect_draw.items[k].dist) {
-				t=k;
-				break;
-			}
-		}
-		
-			// add to list
-
-		if (t>=view.render->effect_draw.count) {
-			t=view.render->effect_draw.count;
-		}
-		else {
-			sz=(view.render->effect_draw.count-t)*sizeof(view_render_draw_list_item_type);
-			memmove(&view.render->effect_draw.items[t+1],&view.render->effect_draw.items[t],sz);
-		}
-		
-		view.render->effect_draw.items[t].idx=(short)n;
-		view.render->effect_draw.items[t].dist=dist;
-		
-		view.render->effect_draw.count++;
-		if (view.render->effect_draw.count==max_view_render_item) break;
-	}
-
-	if (view.render->effect_draw.count==0) return;
+	int				n,count;
+	effect_type		*effect;
 
 		// setup view
 
@@ -378,8 +326,10 @@ void effect_draw(int tick)
 		
 		// draw effects
 		
-	for (n=0;n!=view.render->effect_draw.count;n++) {
-		effect=&server.effects[view.render->effect_draw.items[n].idx];
+	for (n=0;n!=view.render->draw_list.count;n++) {
+		if (view.render->draw_list.items[n].type!=view_render_type_effect) continue;
+
+		effect=&server.effects[view.render->draw_list.items[n].idx];
 		
 		count=tick-effect->start_tick;
 
