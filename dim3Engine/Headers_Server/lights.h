@@ -34,14 +34,3 @@ extern void halo_draw_clear(void);
 extern void halo_draw_add(int x,int z,int y,int obj_uid,model_draw_halo *mdl_halo);
 extern void halo_draw_setup(void);
 extern void halo_draw_render(void);
-
-extern void shadow_render_init(void);
-extern void shadow_render(model_draw *draw,bool in_air);
-
-extern bool shadow_get_volume_ground(model_draw *draw);
-extern bool shadow_get_volume_air(model_draw *draw);
-extern bool shadow_get_volume(model_draw *draw,bool in_air);
-extern bool shadow_inview(model_draw *draw);
-extern bool shadow_texture_init(void);
-extern void shadow_texture_finish(void);
-extern bool shadow_texture_create(model_draw *draw);

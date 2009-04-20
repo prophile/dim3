@@ -122,15 +122,6 @@ extern void gl_back_render_map_end(void);
 extern void gl_back_render_frame_start(int tick);
 extern bool gl_back_render_get_texture(char *node_name,GLuint *txt_id);
 
-	// shadows
-	
-extern bool gl_shadow_initialize(char *err_str);
-extern void gl_shadow_shutdown(void);
-extern bool gl_shadow_texture_render_start(void);
-extern void gl_shadow_texture_render_end(void);
-extern bool gl_shadow_texture_bind_start(float alpha);
-extern void gl_shadow_texture_bind_end(void);
-
 	// view
 	
 extern void gl_frame_start(d3col *col);

@@ -566,15 +566,6 @@ void setup_game_save_close(void)
 	al_music_set_volume(setup.music_volume);
 	al_music_set_state(setup.music_on);
 	
-		// need shadow reset?
-		
-	if (setup_in_game) {
-		if (setup_backup.shadow_on!=setup.shadow_on) {
-			gl_shadow_shutdown();
-			gl_shadow_initialize(err_str);
-		}
-	}
-	
 		// need to reset SDL?
 		// can't do it in game (not possible, anyway, but just in case)
 		

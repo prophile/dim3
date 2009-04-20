@@ -61,6 +61,8 @@ extern void view_draw(int tick);
 extern int game_time_get(void);
 extern void chat_clear_messages(void);
 extern bool fog_solid_on(void);
+extern bool shadow_initialize(char *err_str);
+extern void shadow_shutdown(void);
 
 /* =======================================================
 
@@ -241,7 +243,7 @@ bool view_initialize_display(char *err_str)
 
 		// shadows
 
-	if (!gl_shadow_initialize(err_str)) {
+	if (!shadow_initialize(err_str)) {
 		gl_back_render_shutdown();
 		gl_text_shutdown();
 		gl_shutdown();
@@ -260,9 +262,9 @@ bool view_initialize_display(char *err_str)
 void view_shutdown_display(void)
 {
 	view_dispose_vertex_objects();
+	shadow_shutdown();
 	gl_shader_shutdown();
 	gl_back_render_shutdown();
-	gl_shadow_shutdown();
 	gl_text_shutdown();
 	gl_shutdown();
 }

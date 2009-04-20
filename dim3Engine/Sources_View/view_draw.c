@@ -97,6 +97,7 @@ extern void view_calculate_recoil(obj_type *obj);
 extern void view_calculate_shakes(int tick,obj_type *obj);
 extern void view_calculate_sways(int tick,obj_type *obj);
 extern void view_calculate_bump(obj_type *obj);
+extern void shadow_draw(model_draw *draw);
 
 /* =======================================================
 
@@ -334,6 +335,9 @@ void view_draw_model_transparent(int tick)
 	}
 }
 
+
+// supergumba -- put back shadow render here!
+
 void view_draw_models_final(void)
 {
 	int					n;
@@ -357,7 +361,7 @@ void view_draw_models_final(void)
 			case view_render_type_object:
 				obj=&server.objs[view.render->draw_list.items[n].idx];
 				
-				shadow_render(&obj->draw,(obj->air_mode!=am_ground));
+//				shadow_render(&obj->draw);
 				if (obj->remote.on) remote_draw_status(obj);
 				if (object_is_targetted(obj,&col)) model_render_target(&obj->draw,&col);
 				if (dim3_debug) {
@@ -369,80 +373,13 @@ void view_draw_models_final(void)
 			case view_render_type_projectile:
 				proj=&server.projs[view.render->draw_list.items[n].idx];
 
-				shadow_render(&proj->draw,TRUE);
+//				shadow_render(&proj->draw);
 				break;
 
 		}
 	}
 }
 
-/* =======================================================
-
-      Model Shadows in Scene
-      
-======================================================= */
-
-
-/* supergumba -- remove
-void view_create_models_shadow(void)
-{
-	int							n;
-	obj_type					*obj;
-	proj_type					*proj;
-
-	if (view.render->model_draw.count==0) return;
-
-		// create shadows backwards to make sure nearest
-		// objects get shadow preferences
-	
-	for (n=(view.render->model_draw.count-1);n>=0;n--) {
-
-		switch (view.render->model_draw.items[n].type) {
-
-			case view_sort_object:
-				obj=&server.objs[view.render->model_draw.items[n].idx];
-				if (obj->draw.shadow.in_view) {
-					if (!shadow_texture_create(&obj->draw)) obj->draw.shadow.in_view=FALSE;
-				}
-				break;
-
-			case view_sort_projectile:
-				proj=&server.projs[view.render->model_draw.items[n].idx];
-				if (proj->draw.shadow.in_view) {
-					if (!shadow_texture_create(&proj->draw)) proj->draw.shadow.in_view=FALSE;
-				}
-				break;
-
-		}
-	}
-}
-
-void view_draw_models_shadow(void)
-{
-	int							n;
-	obj_type					*obj;
-	proj_type					*proj;
-	
-	shadow_render_init();
-	
-	for (n=0;n!=view.render->model_draw.count;n++) {
-
-		switch (view.render->model_draw.items[n].type) {
-
-			case view_sort_object:
-				obj=&server.objs[view.render->model_draw.items[n].idx];
-				if (obj->draw.shadow.in_view) shadow_render(&obj->draw);
-				break;
-
-			case view_sort_projectile:
-				proj=&server.projs[view.render->model_draw.items[n].idx];
-				if (proj->draw.shadow.in_view) shadow_render(&proj->draw);
-				break;
-
-		}
-	}
-}
-*/
 /* =======================================================
 
       Drawing Mainline

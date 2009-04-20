@@ -1254,10 +1254,6 @@ SOURCE=..\..\dim3Engine\Sources_View\gl_shader.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_View\gl_shadow.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3Engine\Sources_View\gl_text.c
 # End Source File
 # Begin Source File
@@ -1268,6 +1264,10 @@ SOURCE=..\..\dim3Engine\Sources_View\gl_texture.c
 # Begin Group "Render Map"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_View\model_draw.c
+# End Source File
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_View\render_map_liquid.c
@@ -1283,6 +1283,10 @@ SOURCE=..\..\dim3Engine\Sources_View\render_map_setup.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_View\render_map_transparent.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_View\render_shadow.c
 # End Source File
 # End Group
 # Begin Source File
@@ -1383,10 +1387,6 @@ SOURCE=..\..\dim3Engine\Sources_View\menu_draw.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_View\model_draw.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3Engine\Sources_View\movie.c
 # End Source File
 # Begin Source File
@@ -1432,14 +1432,6 @@ SOURCE=..\..\dim3Engine\Sources_View\setup_game.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_View\setup_network.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_View\shadow_draw.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_View\shadow_volume.c
 # End Source File
 # Begin Source File
 
