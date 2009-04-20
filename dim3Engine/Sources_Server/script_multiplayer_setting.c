@@ -83,16 +83,17 @@ JSBool js_get_multiplayer_setting_property(JSContext *cx,JSObject *j_obj,jsval i
 
 	switch (JSVAL_TO_INT(id)) {
 	
-		case game_setting_prop_type:
-			if ((!net_setup.host.hosting) && (!net_setup.client.joined)) {
+		case multiplayer_setting_prop_on:
+           *vp=BOOLEAN_TO_JSVAL((net_setup.host.hosting) || (net_setup.client.joined));
+			break;
+			
+		case multiplayer_setting_prop_type:
+ 			if ((!net_setup.host.hosting) && (!net_setup.client.joined)) {
 				*vp=JSVAL_NULL;
 			}
 			else {
 				*vp=script_string_to_value(net_setup.games[net_setup.game_idx].name);
 			}
-			break;
-		case game_setting_prop_multiplayer:
-            *vp=BOOLEAN_TO_JSVAL((net_setup.host.hosting) || (net_setup.client.joined));
 			break;
 
 	}

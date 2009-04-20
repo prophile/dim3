@@ -43,6 +43,215 @@ extern setup_type		setup;
 
 extern bool fog_solid_on(void);
 
+
+
+
+void model_shadow_stencil_poly(poly_pointer_type *poly_ptr,int stencil_idx)
+{
+	int						n;
+	d3pnt					*pt;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+
+		// get the poly to stencil
+		
+	mesh=&map.mesh.meshes[poly_ptr->mesh_idx];
+	poly=&mesh->polys[poly_ptr->poly_idx];
+
+	glEnable(GL_DEPTH_TEST);
+	
+	glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
+
+	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
+	glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
+
+	glBegin(GL_POLYGON);
+
+	for (n=0;n!=poly->ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+		glVertex3i(pt->x,pt->y,pt->z);
+	}
+	
+	glEnd();
+
+	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
+}
+
+void model_shadow_lines(model_draw *draw)
+{
+	int				n,k,t;
+	float			*vp;
+    model_trig_type	*trig;
+	model_mesh_type	*mesh;
+	model_type		*mdl;
+	d3pnt			spt[1000],ept[1000],hpt[1000];
+	view_light_spot_type	*lspot;
+	int	p_dist,poly_count;
+	double		dx,dy,dz;
+	bool		add_poly;
+	d3vct		ray_move;
+	float		f_dist;
+	bool		hits[1000];
+	ray_trace_contact_type	base_contact,contacts[1000];
+	poly_pointer_type	poly_ptrs[32];
+	
+	if (!draw->shadow.on) return;
+	
+		// get model
+
+	mdl=model_find_uid(draw->uid);
+	if (mdl==NULL) return;
+	
+		// get nearest light
+
+	lspot=gl_light_find_closest_light(draw->pnt.x,draw->pnt.y,draw->pnt.z,&p_dist);		// supergumba -- passing back distance my not be necessary anymore
+	if (lspot==NULL) return;
+	
+		// create vertex and uv lists
+		// in the model's data area
+		
+	for (n=0;n!=mdl->nmesh;n++) {
+		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
+
+			// build model vertex list
+			
+		model_create_draw_vertexes(mdl,n,&draw->setup);
+		if (draw->resize!=1) model_resize_draw_vertex(mdl,n,draw->resize);
+		if (draw->flip_x) model_flip_draw_vertex(mdl,n);
+
+			// translate vertex to view
+			
+		model_translate_draw_vertex(mdl,n,draw->pnt.x,draw->pnt.y,draw->pnt.z);
+	}
+	
+		// draw distance
+	
+	dx=(lspot->pnt.x-draw->pnt.x);
+	dy=(lspot->pnt.y-(draw->pnt.y-(draw->size.y>>1)));
+	dz=(lspot->pnt.z-draw->pnt.z);
+	
+	f_dist=(float)lspot->intensity-(float)sqrt((dx*dx)+(dy*dy)+(dz*dz));
+	
+		// start stenciling
+		
+	glEnable(GL_STENCIL_TEST);
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+	
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+
+		// translate all the vertexes
+
+	for (n=0;n!=mdl->nmesh;n++) {
+		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
+
+		mesh=&mdl->meshes[n];
+		
+		vp=mesh->draw.gl_vertex_array;
+		
+		for (k=0;k!=mesh->nvertex;k++) {
+			spt[k].x=*vp++;
+			spt[k].y=*vp++;
+			spt[k].z=*vp++;
+			
+			vector_create(&ray_move,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,spt[k].x,spt[k].y,spt[k].z);
+				
+			ept[k].x=spt[k].x-(int)(ray_move.x*f_dist);
+			ept[k].y=spt[k].y-(int)(ray_move.y*f_dist);
+			ept[k].z=spt[k].z-(int)(ray_move.z*f_dist);
+		}
+		
+		base_contact.obj.on=FALSE;
+		base_contact.obj.ignore_uid=-1;
+
+		base_contact.proj.on=FALSE;
+		base_contact.proj.ignore_uid=-1;
+
+		base_contact.hit_mode=poly_ray_trace_hit_mode_all;
+		base_contact.origin=poly_ray_trace_origin_object;
+
+			// run ray trace
+
+		ray_trace_map_by_point_array(mesh->nvertex,spt,ept,hpt,hits,&base_contact,contacts);
+		
+			// find all hit polygons
+			
+		poly_count=0;
+		
+		for (k=0;k!=mesh->nvertex;k++) {
+			if (!hits[k]) continue;
+			
+			add_poly=TRUE;
+			
+			for (t=0;t!=poly_count;t++) {
+				if ((contacts[k].poly.mesh_idx==poly_ptrs[t].mesh_idx) && (contacts[k].poly.poly_idx==poly_ptrs[t].poly_idx)) {
+					add_poly=FALSE;
+					break;
+				}
+			}
+			
+			if (add_poly) {
+				poly_ptrs[poly_count].mesh_idx=contacts[k].poly.mesh_idx;
+				poly_ptrs[poly_count].poly_idx=contacts[k].poly.poly_idx;
+				poly_count++;
+				if (poly_count==32) break;
+			}
+		}
+		
+			// draw the trigs for each hit polygon
+		
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+			
+		for (t=0;t!=poly_count;t++) {
+		
+				// stencil the polygon
+				
+			model_shadow_stencil_poly(&poly_ptrs[t],0x5);
+
+				// draw the shadow
+				
+			glStencilOp(GL_KEEP,GL_KEEP,GL_KEEP);
+			glStencilFunc(GL_EQUAL,0x5,0xFF);
+			
+			glDisable(GL_DEPTH_TEST);
+		
+			glBegin(GL_TRIANGLES);
+			
+			trig=mesh->trigs;
+
+			for (k=0;k!=mesh->ntrig;k++) {
+			
+					// skip if no hit
+					
+				if ((!hits[trig->v[0]]) || (!hits[trig->v[1]]) || (!hits[trig->v[2]])) {
+					trig++;
+					continue;
+				}
+				
+				glVertex3i(hpt[trig->v[0]].x,hpt[trig->v[0]].y,hpt[trig->v[0]].z);
+				glVertex3i(hpt[trig->v[1]].x,hpt[trig->v[1]].y,hpt[trig->v[1]].z);
+				glVertex3i(hpt[trig->v[2]].x,hpt[trig->v[2]].y,hpt[trig->v[2]].z);
+				
+				trig++;
+			}
+			
+			glEnd();
+			
+				// remove the stencil
+				
+			model_shadow_stencil_poly(&poly_ptrs[t],0x0);
+		}
+	}
+	
+	glDepthMask(GL_TRUE);
+	glDisable(GL_STENCIL_TEST);
+}
+
+
+
+
 /* =======================================================
 
       Model Drawing Arrays
@@ -898,6 +1107,9 @@ void model_render_opaque(model_draw *draw)
 		// release the vbo
 
 	model_draw_release_vertex_objects();
+	
+	
+	model_shadow_lines(draw);		// supergumba
 }
 
 void model_render_transparent(model_draw *draw)
@@ -1107,3 +1319,11 @@ void model_render_target(model_draw *draw,d3col *col)
 	glVertex3i(lx,by,lz);
 	glEnd();
 }
+
+
+
+
+
+
+
+

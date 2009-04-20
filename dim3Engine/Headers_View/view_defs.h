@@ -40,6 +40,12 @@ and can be sold or given away.
 #define max_view_render_item					5120
 
 //
+// close never obscure distance
+//
+
+#define view_never_obscure_dist					(double)(map_enlarge*15)
+
+//
 // input rate
 //
 

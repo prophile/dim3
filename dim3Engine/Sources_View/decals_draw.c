@@ -99,13 +99,27 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 		}
 	}
 	
+		// blending
+		
+	if (mark->blend_add) {
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+	}
+	else {
+		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	}
+	
 		// get the decal image
 		
 	effect_image_animate_get_uv(tick,&mark->animate,&gx,&gy,&g_size);
 
 		// get lighting
 		
-	gl_lights_calc_vertex((double)decal->x[0],(double)decal->y[0],(double)decal->z[0],cf);
+	if (mark->hilite) {
+		cf[0]=cf[1]=cf[2]=1.0f;
+	}
+	else {
+		gl_lights_calc_vertex((double)decal->x[0],(double)decal->y[0],(double)decal->z[0],cf);
+	}
 	
          // draw the polygon
 			
@@ -193,7 +207,6 @@ void decal_render(void)
 	gl_texture_decal_start();
 				
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	
 	glDisable(GL_DEPTH_TEST);
 			

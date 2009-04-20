@@ -220,6 +220,8 @@ void piece_duplicate(void)
 		
 	select_duplicate_copy();
 	
+	palette_reset();
+	
 	main_wind_draw();
 }
 
@@ -228,31 +230,6 @@ void piece_duplicate(void)
       Delete Piece
       
 ======================================================= */
-
-void piece_delete_face(void)
-{
-	int				type,main_idx,sub_idx;
-	
-	undo_clear();
-	
-		// only delete in polygon mode
-		
-	if (drag_mode!=drag_mode_polygon) return;
-	
-		// is a face selected?
-		
-	select_get(0,&type,&main_idx,&sub_idx);
-	if (type!=mesh_piece) return;
-	if (sub_idx==-1) return;
-	
-	undo_save();
-	
-	map_mesh_delete_poly(&map,main_idx,sub_idx);
-	
-	select_switch(0,mesh_piece,main_idx,0);
-	
-	main_wind_draw();
-}
 
 void piece_delete(void)
 {
@@ -357,6 +334,8 @@ void piece_delete(void)
 	}
 	
 	select_clear();
+	
+	palette_reset();
     
 	main_wind_draw();
 }

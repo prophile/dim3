@@ -152,6 +152,7 @@ void undo_restore(void)
 void undo_run(void)
 {
 	undo_restore();
+	palette_reset();
 	main_wind_draw();
 }
 

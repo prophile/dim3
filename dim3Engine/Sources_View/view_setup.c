@@ -225,7 +225,7 @@ bool view_mesh_in_draw_list(int mesh_idx)
 void view_add_mesh_draw_list(void)
 {
 	int					n,start_mesh_idx;
-	double				d,never_obscure_dist,obscure_dist;
+	double				d,obscure_dist;
 	map_mesh_type		*start_mesh,*mesh;
 	
 		// get mesh camera is in
@@ -242,8 +242,6 @@ void view_add_mesh_draw_list(void)
 	else {
 		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
 	}
-
-	never_obscure_dist=(double)(abs(camera.plane.near_z)*3);
 
 		// check all visibile meshes from the start mesh
 	
@@ -268,7 +266,7 @@ void view_add_mesh_draw_list(void)
 				// by the view to fix some bugs with large polygons very
 				// close to the camera
 
-			if (d>never_obscure_dist) {
+			if (d>view_never_obscure_dist) {
 				if (!mesh_inview(mesh)) continue;
 			}
 		}
@@ -285,7 +283,7 @@ void view_add_mesh_draw_list(void)
 void view_add_liquid_draw_list(void)
 {
 	int					n;
-	double				d,never_obscure_dist,obscure_dist;
+	double				d,obscure_dist;
 	map_liquid_type		*liq;
 
 		// obscure distance -- normally is the opengl projection
@@ -297,8 +295,6 @@ void view_add_liquid_draw_list(void)
 	else {
 		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
 	}
-
-	never_obscure_dist=(double)(abs(camera.plane.near_z)*3);
 
 		// find all drawable liquids
 
@@ -321,7 +317,7 @@ void view_add_liquid_draw_list(void)
 			// by the view to fix some bugs with large polygons very
 			// close to the camera
 
-		if (d>never_obscure_dist) {
+		if (d>view_never_obscure_dist) {
 			if (!boundbox_inview(liq->lft,liq->top,liq->rgt,liq->bot,liq->y,liq->y)) continue;
 		}
 		
@@ -451,7 +447,7 @@ void view_setup_projectiles(int tick)
 void view_add_effect_draw_list(int tick)
 {
 	int					n;
-	double				d,never_obscure_dist,obscure_dist;
+	double				d,obscure_dist;
 	effect_type			*effect;
 
 		// obscure distance -- normally is the opengl projection
@@ -463,8 +459,6 @@ void view_add_effect_draw_list(int tick)
 	else {
 		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
 	}
-
-	never_obscure_dist=(double)(abs(camera.plane.near_z)*3);
 
 		// find all effects
 
@@ -487,7 +481,7 @@ void view_add_effect_draw_list(int tick)
 			// by the view to fix some bugs with large polygons very
 			// close to the camera
 
-		if (d>never_obscure_dist) {
+		if (d>view_never_obscure_dist) {
 			if (!effect_inview(effect,(tick-effect->start_tick))) continue;
 		}
 		

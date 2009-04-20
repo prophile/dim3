@@ -97,6 +97,8 @@ void read_settings_mark(void)
 			mark->no_rotate=xml_get_attribute_boolean(tag,"no_rotate");
 			mark->no_transparent=xml_get_attribute_boolean(tag,"no_transparent");
 			mark->no_opaque=xml_get_attribute_boolean(tag,"no_opaque");
+            mark->hilite=xml_get_attribute_boolean(tag,"highlight");
+            mark->blend_add=xml_get_attribute_boolean(tag,"additive");
 		}
 		else {
 			mark->life_msec=1000;
@@ -104,6 +106,8 @@ void read_settings_mark(void)
 			mark->no_rotate=FALSE;
 			mark->no_transparent=FALSE;
 			mark->no_opaque=FALSE;
+			mark->hilite=FALSE;
+			mark->blend_add=FALSE;
 		}
 		
 		mark->total_msec=mark->life_msec+mark->fade_in_msec+mark->fade_out_msec;

@@ -1078,7 +1078,7 @@ typedef struct		{
 						int						image_idx,
 												fade_in_msec,life_msec,fade_out_msec,total_msec;
 						char					name[name_str_len],bitmap_name[name_str_len];
-						bool					no_rotate,no_transparent,no_opaque;
+						bool					no_rotate,no_transparent,no_opaque,hilite,blend_add;
 						image_animation_type	animate;
 					} mark_type;
 
