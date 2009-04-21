@@ -75,7 +75,6 @@ void model_scale_all(model_type *model,float x_fact,float y_fact,float z_fact)
         // boxes
         
 	model_rescale_box(&model->view_box,x_fact,z_fact,y_fact);
-	model_rescale_box(&model->shadow_box,x_fact,z_fact,y_fact);
 	
 		// scale meshes
 		

@@ -62,7 +62,7 @@ void model_draw_setup_object(int tick,obj_type *obj)
 		// clear setup
 
 	mdl=model_find_uid(draw->uid);
-	if (mdl!=NULL) model_clear_draw_setup(mdl,&draw->setup);
+	if (mdl!=NULL) model_draw_setup_clear(mdl,&draw->setup);
 
 		// special player mark
 
@@ -162,7 +162,7 @@ void model_draw_setup_projectile(int tick,proj_type *proj)
 		// clear setup
 
 	mdl=model_find_uid(draw->uid);
-	if (mdl!=NULL) model_clear_draw_setup(mdl,&draw->setup);
+	if (mdl!=NULL) model_draw_setup_clear(mdl,&draw->setup);
 
 		// player check flag
 
@@ -261,7 +261,7 @@ void model_draw_setup_weapon(int tick,obj_type *obj,weapon_type *weap,bool ignor
 		// clear setup
 
 	mdl=model_find_uid(draw->uid);
-	if (mdl!=NULL) model_clear_draw_setup(mdl,&draw->setup);
+	if (mdl!=NULL) model_draw_setup_clear(mdl,&draw->setup);
 
 		// special check for player
 

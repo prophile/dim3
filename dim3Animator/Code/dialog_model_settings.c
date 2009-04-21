@@ -40,13 +40,6 @@ and can be sold or given away.
 #define kViewXOff							FOUR_CHAR_CODE('vxof')
 #define kViewYOff							FOUR_CHAR_CODE('vyof')
 #define kViewZOff							FOUR_CHAR_CODE('vzof')
-#define kShadowXSize						FOUR_CHAR_CODE('sxsz')
-#define kShadowYSize						FOUR_CHAR_CODE('sysz')
-#define kShadowZSize						FOUR_CHAR_CODE('szsz')
-#define kShadowXOff							FOUR_CHAR_CODE('sxof')
-#define kShadowYOff							FOUR_CHAR_CODE('syof')
-#define kShadowZOff							FOUR_CHAR_CODE('szof')
-#define kShadowFudge						FOUR_CHAR_CODE('fdge')
 
 #define kLightBoneTag						FOUR_CHAR_CODE('lbtg')
 #define kHaloBoneTag						FOUR_CHAR_CODE('hbtg')
@@ -149,14 +142,6 @@ bool dialog_model_settings_run(void)
 	dialog_set_int(dialog_model_settings_wind,kViewXOff,0,model.view_box.offset.x);
 	dialog_set_int(dialog_model_settings_wind,kViewYOff,0,model.view_box.offset.y);
 	dialog_set_int(dialog_model_settings_wind,kViewZOff,0,model.view_box.offset.z);
-
-	dialog_set_int(dialog_model_settings_wind,kShadowXSize,0,model.shadow_box.size.x);
-	dialog_set_int(dialog_model_settings_wind,kShadowYSize,0,model.shadow_box.size.y);
-	dialog_set_int(dialog_model_settings_wind,kShadowZSize,0,model.shadow_box.size.z);
-	dialog_set_int(dialog_model_settings_wind,kShadowXOff,0,model.shadow_box.offset.x);
-	dialog_set_int(dialog_model_settings_wind,kShadowYOff,0,model.shadow_box.offset.y);
-	dialog_set_int(dialog_model_settings_wind,kShadowZOff,0,model.shadow_box.offset.z);
-	dialog_set_int(dialog_model_settings_wind,kShadowFudge,0,model.shadow_fudge);
 	
 	dialog_set_boolean(dialog_model_settings_wind,kRotateMode,0,(model.deform_mode==deform_mode_comulative_rotate));
 
@@ -200,14 +185,6 @@ bool dialog_model_settings_run(void)
 		model.view_box.offset.x=dialog_get_int(dialog_model_settings_wind,kViewXOff,0);
 		model.view_box.offset.y=dialog_get_int(dialog_model_settings_wind,kViewYOff,0);
 		model.view_box.offset.z=dialog_get_int(dialog_model_settings_wind,kViewZOff,0);
-		
-		model.shadow_box.size.x=dialog_get_int(dialog_model_settings_wind,kShadowXSize,0);
-		model.shadow_box.size.y=dialog_get_int(dialog_model_settings_wind,kShadowYSize,0);
-		model.shadow_box.size.z=dialog_get_int(dialog_model_settings_wind,kShadowZSize,0);
-		model.shadow_box.offset.x=dialog_get_int(dialog_model_settings_wind,kShadowXOff,0);
-		model.shadow_box.offset.y=dialog_get_int(dialog_model_settings_wind,kShadowYOff,0);
-		model.shadow_box.offset.z=dialog_get_int(dialog_model_settings_wind,kShadowZOff,0);
-		model.shadow_fudge=dialog_get_int(dialog_model_settings_wind,kShadowFudge,0);
 		
 		if (dialog_get_boolean(dialog_model_settings_wind,kRotateMode,0)) {
 			model.deform_mode=deform_mode_comulative_rotate;

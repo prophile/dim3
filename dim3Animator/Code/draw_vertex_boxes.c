@@ -122,11 +122,6 @@ void draw_model_boxes(model_type *model,model_draw_setup *draw_setup)
 {
 	int				n;
 	
-		// shadow box
-		
-	glColor4f(0,0,1,0.5);
-	draw_model_box(&model->shadow_box,draw_setup,FALSE);
-	
 		// hit boxes
 		
 	for (n=0;n<model->nhit_box;n++) {

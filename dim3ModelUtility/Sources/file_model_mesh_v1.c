@@ -70,12 +70,6 @@ void decode_mesh_v1_xml(model_type *model,int model_head)
     
         // boxes
     
-    tag=xml_findfirstchild("Shadow_Box",model_head);
-    if (tag!=-1) {
-        xml_get_attribute_3_coord_int(tag,"size",&model->shadow_box.size.x,&model->shadow_box.size.y,&model->shadow_box.size.z);
-		xml_get_attribute_3_coord_int(tag,"offset",&model->shadow_box.offset.x,&model->shadow_box.offset.y,&model->shadow_box.offset.z);
-    }
-    
     tag=xml_findfirstchild("View_Box",model_head);
     if (tag!=-1) {
         xml_get_attribute_3_coord_int(tag,"size",&model->view_box.size.x,&model->view_box.size.y,&model->view_box.size.z);

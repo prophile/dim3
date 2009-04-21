@@ -615,7 +615,7 @@ void model_wind_timer(EventLoopTimerRef inTimer,void *inUserData)
 	
 		// clear the draw setup
 		
-	model_clear_draw_setup(&model,&draw_setup);
+	model_draw_setup_clear(&model,&draw_setup);
 	
 		// calc the pose
 		

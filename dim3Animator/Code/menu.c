@@ -224,7 +224,6 @@ void new_model_xml(void)
 	strcpy(model.meshes[0].name,"Default");
 	
 	model.view_box.size.x=model.view_box.size.y=model.view_box.size.z=100;
-	model.shadow_box.size.x=model.shadow_box.size.y=model.shadow_box.size.z=100;
 
 	windows_start();
 	

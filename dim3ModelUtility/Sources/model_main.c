@@ -70,8 +70,6 @@ bool model_new(model_type *model,char *name)
 	model->nmesh=1;
 	model->deform_mode=deform_mode_comulative_rotate;
 	
-	model->shadow_fudge=0;
-	
 	for (n=0;n!=max_model_light;n++) {
 		model->tags.light_bone_tag[n]=model_null_tag;
 		model->tags.light_bone_idx[n]=-1;

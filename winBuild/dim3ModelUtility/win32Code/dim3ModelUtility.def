@@ -47,7 +47,9 @@ EXPORTS
 	model_add_texture_frame					@172
 	model_delete_texture_frame				@173
 
-	model_clear_draw_setup					@180
+	model_draw_setup_initialize				@180
+	model_draw_setup_shutdown				@181
+	model_draw_setup_clear					@182
 
 	model_calculate_parents					@190
 

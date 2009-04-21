@@ -91,6 +91,10 @@ typedef struct		{
                         int								idx_1,idx_2;
                         float							factor,acceleration;
 					} model_draw_pose_type;
+					
+typedef struct		{
+						float							*gl_vertex_array,*gl_color_array;
+					} model_draw_mesh_array_type;
 
 typedef struct		{
 						d3pnt							center;
@@ -99,6 +103,7 @@ typedef struct		{
 						d3ang							sway;
 						model_draw_pose_type			poses[max_model_blend_animation];
 						model_draw_bone_type			bones[max_model_bone];
+						model_draw_mesh_array_type		mesh_arrays[max_model_mesh];
                     } model_draw_setup;
 
 //
@@ -272,11 +277,11 @@ typedef struct		{
 typedef struct		{
 						int								uid,reference_count,
 														nmesh,nbone,npose,nanimate,nhit_box,
-														deform_mode,shadow_fudge;
+														deform_mode;
 						char							name[name_str_len],load_base_path[1024];
 						bool							has_no_shader;
 						d3pnt							center;
-						model_box_type					view_box,shadow_box;
+						model_box_type					view_box;
 						model_tags						tags;
  						model_mesh_type					meshes[max_model_mesh];
 						model_bone_type					*bones;
@@ -336,7 +341,10 @@ extern void model_setup_animated_textures(model_type *model,unsigned char *user_
 extern bool model_add_texture_frame(model_type *model,int txt,char *bitmap_name);
 extern bool model_delete_texture_frame(model_type *model,int txt);
 
-extern void model_clear_draw_setup(model_type *model,model_draw_setup *draw_setup);
+extern bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup);
+extern void model_draw_setup_shutdown(model_type *model,model_draw_setup *draw_setup);
+extern void model_draw_setup_clear(model_type *model,model_draw_setup *draw_setup);
+
 extern void model_calculate_parents(model_type *model);
 
 extern void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup);

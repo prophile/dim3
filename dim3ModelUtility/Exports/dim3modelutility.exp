@@ -44,7 +44,9 @@ _model_setup_animated_textures
 _model_add_texture_frame
 _model_delete_texture_frame
 
-_model_clear_draw_setup
+_model_draw_setup_initialize
+_model_draw_setup_shutdown
+_model_draw_setup_clear
 
 _model_calculate_parents
 

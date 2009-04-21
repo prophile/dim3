@@ -219,7 +219,7 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 
 void draw_model_setup_pose(model_type *model,model_draw_setup *draw_setup,int wpose)
 {
-	model_clear_draw_setup(model,draw_setup);
+	model_draw_setup_clear(model,draw_setup);
 
     draw_setup->poses[0].idx_1=wpose;
 	draw_setup->poses[0].idx_2=-1;

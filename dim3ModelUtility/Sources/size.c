@@ -166,7 +166,5 @@ void model_recalc_boxes(model_type *model)
 	model->view_box.size.z=abs(maxz-minz);
 	model->view_box.size.y=abs(maxy-miny);
     model->view_box.offset.x=model->view_box.offset.z=model->view_box.offset.y=0;
-    
-    model->shadow_box=model->view_box;
 }
 

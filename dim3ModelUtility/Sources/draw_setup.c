@@ -31,11 +31,57 @@ and can be sold or given away.
 
 /* =======================================================
 
+      Draw Setup Memory
+      
+======================================================= */
+
+bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup)
+{
+	int				n,sz;
+	model_mesh_type	*mesh;
+	
+	for (n=0;n!=model->nmesh;n++) {
+		draw_setup->mesh_arrays[n].gl_vertex_array=NULL;
+		draw_setup->mesh_arrays[n].gl_color_array=NULL;
+	}
+	
+	mesh=model->meshes;
+	
+	for (n=0;n!=model->nmesh;n++) {
+		sz=(mesh->nvertex*3)*sizeof(float);
+		
+		draw_setup->mesh_arrays[n].gl_vertex_array=malloc(sz);
+		if (draw_setup->mesh_arrays[n].gl_vertex_array==NULL) return(FALSE);
+
+		draw_setup->mesh_arrays[n].gl_color_array=malloc(sz);
+		if (draw_setup->mesh_arrays[n].gl_color_array==NULL) return(FALSE);
+
+		bzero(draw_setup->mesh_arrays[n].gl_vertex_array,sz);
+		bzero(draw_setup->mesh_arrays[n].gl_color_array,sz);
+		
+		mesh++;
+	}
+	
+	return(TRUE);
+}
+
+void model_draw_setup_shutdown(model_type *model,model_draw_setup *draw_setup)
+{
+	int				n;
+	
+	for (n=0;n!=model->nmesh;n++) {
+		if (draw_setup->mesh_arrays[n].gl_vertex_array!=NULL) free(draw_setup->mesh_arrays[n].gl_vertex_array);
+		if (draw_setup->mesh_arrays[n].gl_color_array!=NULL) free(draw_setup->mesh_arrays[n].gl_color_array);
+	}
+}
+
+/* =======================================================
+
       Clear Draw Setup
       
 ======================================================= */
 
-void model_clear_draw_setup(model_type *model,model_draw_setup *draw_setup)
+void model_draw_setup_clear(model_type *model,model_draw_setup *draw_setup)
 {
 	int				n;
 	

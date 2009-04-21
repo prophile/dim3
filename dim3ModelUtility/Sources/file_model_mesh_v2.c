@@ -73,13 +73,6 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
     
         // boxes
     
-    tag=xml_findfirstchild("Shadow_Box",model_head);
-    if (tag!=-1) {
-        xml_get_attribute_3_coord_int(tag,"size",&model->shadow_box.size.x,&model->shadow_box.size.y,&model->shadow_box.size.z);
-		xml_get_attribute_3_coord_int(tag,"offset",&model->shadow_box.offset.x,&model->shadow_box.offset.y,&model->shadow_box.offset.z);
-		model->shadow_fudge=xml_get_attribute_int_default(tag,"fudge",0);
-    }
-    
     tag=xml_findfirstchild("View_Box",model_head);
     if (tag!=-1) {
         xml_get_attribute_3_coord_int(tag,"size",&model->view_box.size.x,&model->view_box.size.y,&model->view_box.size.z);
@@ -370,12 +363,6 @@ void encode_mesh_v2_xml(model_type *model)
     xml_add_tagend(TRUE);
     
         // boxes
-    
-    xml_add_tagstart("Shadow_Box");
-    xml_add_attribute_3_coord_int("size",model->shadow_box.size.x,model->shadow_box.size.y,model->shadow_box.size.z);
-    xml_add_attribute_3_coord_int("offset",model->shadow_box.offset.x,model->shadow_box.offset.y,model->shadow_box.offset.z);
-    xml_add_attribute_int("fudge",model->shadow_fudge);
-    xml_add_tagend(TRUE);
     
     xml_add_tagstart("View_Box");
     xml_add_attribute_3_coord_int("size",model->view_box.size.x,model->view_box.size.y,model->view_box.size.z);
