@@ -966,11 +966,11 @@ typedef struct		{
 #define ray_trace_face_hit_neg_y						4
 #define ray_trace_face_hit_pos_y						5
 
-#define ray_trace_max_check_item						256
+#define ray_trace_max_check_item						512
 
 #define ray_trace_check_item_object						0
 #define ray_trace_check_item_projectile					1
-#define ray_trace_check_item_mesh						2
+#define ray_trace_check_item_mesh_poly					2
 
 
 typedef struct		{
@@ -985,7 +985,7 @@ typedef struct		{
 					} ray_trace_contact_type;
 
 typedef struct		{
-						int								type,index;
+						int								type,index,index_2;
 					} ray_trace_check_item_type;
 
 //

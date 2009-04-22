@@ -864,7 +864,7 @@ void object_dispose_single(int idx)
 		// dispose object
 
 	scripts_dispose(obj->attach.script_uid);
-	models_dispose(obj->draw.uid);
+	models_dispose(&obj->draw);
 
 		// is the list completely empty?
 

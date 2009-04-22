@@ -29,7 +29,7 @@ extern void model_initialize(void);
 extern model_type* model_find_uid(int uid);
 extern model_type* model_find(char *name);
 extern void model_load_and_init(model_draw *draw);
-extern void models_dispose(int uid);
+extern void models_dispose(model_draw *draw);
 extern void models_reset_uid(void);
 
 extern void model_draw_setup_object(int tick,obj_type *obj);

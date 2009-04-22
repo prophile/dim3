@@ -185,6 +185,8 @@ void model_load_and_init(model_draw *draw)
 	draw->script_halo_idx=0;
 	draw->script_light_idx=0;
 	
+	mdl=NULL;
+	
 	if (draw->name[0]!=0x0) {
 		mdl=model_load_single(draw->name);
 		if (mdl!=NULL) {
@@ -202,6 +204,10 @@ void model_load_and_init(model_draw *draw)
 	else {
 		draw->on=FALSE;
 	}
+	
+		// initialize draw memory
+		
+	if (mdl!=NULL) model_draw_setup_initialize(mdl,draw);
 
 		// stop all animations and fades
 
@@ -221,31 +227,35 @@ void model_load_and_init(model_draw *draw)
       
 ======================================================= */
 
-void models_dispose(int uid)
+void models_dispose(model_draw *draw)
 {
 	int					idx;
-	model_type			*model,*ptr;
+	model_type			*mdl,*ptr;
 
 		// was model loaded?
 		
-	if (uid==-1) return;
+	if (draw->uid==-1) return;
 
-		// find model index
+		// find model
 
-	idx=model_find_uid_index(uid);
+	idx=model_find_uid_index(draw->uid);
 	if (idx==-1) return;
+	
+	mdl=&server.models[idx];
+	
+		// clear draw memory
+		
+	model_draw_setup_shutdown(mdl,draw);
 
 		// decrement reference count
 
-	model=&server.models[idx];
-		
-	model->reference_count--;
-	if (model->reference_count>0) return;
+	mdl->reference_count--;
+	if (mdl->reference_count>0) return;
 
 		// dispose model
 
-	model_draw_array_free(model);
-	model_close(model);
+	model_draw_array_free(mdl);
+	model_close(mdl);
 
 		// is the list completely empty?
 

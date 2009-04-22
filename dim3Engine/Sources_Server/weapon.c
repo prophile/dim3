@@ -332,7 +332,7 @@ void weapon_dispose(int idx)
 		// clear weapon
 
 	scripts_dispose(weap->attach.script_uid);
-	models_dispose(weap->draw.uid);
+	models_dispose(&weap->draw);
 
 		// is the list completely empty?
 

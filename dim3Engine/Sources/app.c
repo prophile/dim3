@@ -70,6 +70,10 @@ bool app_start(char *err_str)
 		
 	fast_trig_setup();
 	
+		// ray tracing structures
+		
+	if (!ray_trace_initialize(err_str)) return(FALSE);
+	
 		// OS network initialization
 		
 	net_initialize();
@@ -146,6 +150,10 @@ void app_end(void)
 		// shutdown server
 		
 	server_shutdown();
+	
+		// ray trace cleanup
+		
+	ray_trace_shutdown();
 	
 		// OS network shutdown
 		

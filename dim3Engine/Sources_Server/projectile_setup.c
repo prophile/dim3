@@ -261,7 +261,7 @@ void proj_setup_dispose(int idx)
 		// clear setup
 
 	scripts_dispose(proj_setup->attach.script_uid);
-	models_dispose(proj_setup->draw.uid);
+	models_dispose(&proj_setup->draw);
 
 		// is the list completely empty?
 

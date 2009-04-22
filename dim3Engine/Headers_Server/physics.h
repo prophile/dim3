@@ -60,9 +60,13 @@ extern int pin_upward_movement_obj(obj_type *obj,int my);
 extern bool map_stand_crush_object(obj_type *obj);
 extern bool map_stand_check_object(obj_type *obj);
 
+extern bool ray_trace_initialize(char *err_str);
+extern void ray_trace_shutdown(void);
+extern ray_trace_check_item_type* ray_trace_get_last_item_list(int *item_count);
 extern void ray_push(d3pnt *pt,d3ang *ang,int dist);
 extern void ray_push_to_end(d3pnt *pt,d3pnt *ept,int dist);
 extern bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_contact_type *contact);
 extern bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_type *contact);
 extern void ray_trace_map_by_point_array(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact,ray_trace_contact_type *contacts);
+extern void ray_trace_map_by_point_array_no_hit(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_type *base_contact);
 

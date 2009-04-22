@@ -50,7 +50,7 @@ extern bool gl_check_shader_ok(void);
 	// lights
 
 extern void gl_lights_calc_vertex(double x,double y,double z,float *cf);
-extern view_light_spot_type* gl_light_find_closest_light(double x,double y,double z,int *p_dist);
+extern view_light_spot_type* gl_light_find_closest_light(double x,double y,double z);
 extern void gl_lights_compile(int tick);
 extern void gl_lights_build_from_poly(map_mesh_poly_type *poly,view_glsl_light_list_type *light_list);
 extern void gl_lights_build_from_liquid(map_liquid_type *liq,view_glsl_light_list_type *light_list);

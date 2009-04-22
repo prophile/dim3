@@ -371,7 +371,7 @@ void gl_lights_calc_vertex(double x,double y,double z,float *cf)
 	*cf=(map.ambient.light_color.b+setup.gamma)+(float)b;
 }
 
-view_light_spot_type* gl_light_find_closest_light(double x,double y,double z,int *p_dist)
+view_light_spot_type* gl_light_find_closest_light(double x,double y,double z)
 {
 	int					n,k;
 	double				dx,dz,dy,d,dist;
@@ -418,8 +418,6 @@ view_light_spot_type* gl_light_find_closest_light(double x,double y,double z,int
 	}
 	
 	if (k==-1) return(NULL);
-	
-	*p_dist=(int)sqrt(dist);
 
 	return(&view.render->light.spots[k]);
 }
