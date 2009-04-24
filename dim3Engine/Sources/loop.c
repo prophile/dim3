@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "inputs.h"
 #include "video.h"
+#include "consoles.h"
 
 extern bool					game_loop_pause;
 
@@ -238,7 +239,7 @@ bool loop_main(char *err_str)
 		
 	tick=game_time_calculate();
 	
-		// clear story, title, and file trigger
+		// clear all triggers
 		
 	story_trigger_clear();
 	title_trigger_clear();
@@ -249,6 +250,7 @@ bool loop_main(char *err_str)
 	file_trigger_clear();
 	map_pick_trigger_clear();
 	score_limit_trigger_clear();
+	console_trigger_clear();
 	
 		// clear map changes
 	
@@ -319,6 +321,10 @@ bool loop_main(char *err_str)
 		case gs_score_limit:
 			score_limit_run();
 			break;
+
+		case gs_console:
+			console_run();
+			break;
 			
 	}
 	
@@ -330,7 +336,7 @@ bool loop_main(char *err_str)
 		}
 	}
 	
-		// check if we've gone into story, title, setup, or file
+		// check all triggers
 		
 	story_trigger_check();
 	title_trigger_check();
@@ -341,6 +347,7 @@ bool loop_main(char *err_str)
 	file_trigger_check();
 	map_pick_trigger_check();
 	score_limit_trigger_check();
+	console_trigger_check();
 		
 		// if we are changing state from game
 		// play to interface element, capture screen

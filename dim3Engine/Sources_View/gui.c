@@ -230,10 +230,6 @@ void gui_initialize(char *background_path,char *bitmap_name,bool show_view)
 		// stop playing ambients
 		
 	al_stop_all_looping_sources();
-
-		// make sure console is closed
-
-	console_hide();
 	
 		// initialize cursor and elements
 		

@@ -33,11 +33,12 @@ extern void console_add(char *txt);
 extern void console_add_system(char *txt);
 extern void console_add_error(char *txt);
 
-extern void console_show(void);
-extern void console_hide(void);
-extern void console_next_mode(void);
-
-extern int console_y_offset(void);
-
 extern void console_input(void);
 extern void console_draw(void);
+
+extern void console_trigger_clear(void);
+extern void console_trigger_check(void);
+extern void console_trigger_set(void);
+extern void console_input(void);
+extern void console_run(void);
+

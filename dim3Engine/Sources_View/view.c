@@ -467,7 +467,6 @@ void view_loop_draw(int tick)
 	hud_draw(tick);
 	radar_draw(tick);
 	network_draw(tick);
-	console_draw();
 	
 	gl_frame_end();
 

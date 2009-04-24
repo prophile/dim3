@@ -34,8 +34,6 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_interface_console_show_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
-JSBool js_interface_console_hide_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_console_write_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			interface_console_class={"interface_console_class",0,
@@ -44,8 +42,6 @@ JSClass			interface_console_class={"interface_console_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 JSFunctionSpec	interface_console_functions[]={
-							{"show",				js_interface_console_show_func,			0},
-							{"hide",				js_interface_console_hide_func,			0},
 							{"write",				js_interface_console_write_func,		1},
 							{0}};
 
@@ -68,18 +64,6 @@ void script_add_interface_console_object(JSObject *parent_obj)
       Console Function
       
 ======================================================= */
-
-JSBool js_interface_console_show_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
-{
-	console_show();
-	return(JS_TRUE);
-}
-
-JSBool js_interface_console_hide_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
-{
-	console_hide();
-	return(JS_TRUE);
-}
 
 JSBool js_interface_console_write_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {

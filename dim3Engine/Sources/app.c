@@ -36,6 +36,7 @@ and can be sold or given away.
 #include "inputs.h"
 #include "xmls.h"
 #include "network.h"
+#include "physics.h"
 
 extern server_type			server;
 extern setup_type			setup;

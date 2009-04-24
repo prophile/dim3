@@ -217,12 +217,8 @@ typedef struct		{
 // console
 //
 
-#define max_console_line						8
-#define max_console_txt_sz						80
-
-#define console_mode_close						0
-#define console_mode_fps						1
-#define console_mode_open						2
+#define max_console_line						32
+#define max_console_txt_sz						128
 
 typedef struct		{
 						int						style;

@@ -43,7 +43,6 @@ extern server_type				server;
 
 void console_initialize(void)
 {
-	console_mode=console_mode_close;
 	console_count=0;
 }
 
@@ -161,24 +160,3 @@ void console_add_error(char *txt)
 	console_add_line(txt,&col);
 }
 
-/* =======================================================
-
-      Console States
-      
-======================================================= */
-
-void console_show(void)
-{
-	console_mode=console_mode_open;
-}
-
-void console_hide(void)
-{
-	console_mode=console_mode_close;
-}
-
-void console_next_mode(void)
-{
-	console_mode++;
-	if (console_mode>console_mode_open) console_mode=console_mode_close;
-}

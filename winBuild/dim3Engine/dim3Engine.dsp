@@ -283,10 +283,6 @@ SOURCE=..\..\dim3Engine\Headers_Server\cameras.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Headers_Server\console_defs.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3Engine\Headers_Server\consoles.h
 # End Source File
 # Begin Source File
