@@ -142,7 +142,7 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 	
 		// draw memory
 		
-	model_draw_array_initialize(model);
+	model_draw_setup_initialize(model,draw_setup,TRUE);
 	
 		// draw the center
 		
@@ -158,12 +158,12 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 		case dt_model:
 			if ((model_show_first_mesh) && (mesh_idx!=0)) draw_model(model,0,draw_setup);
 			draw_model(model,mesh_idx,draw_setup);
-			draw_model_selected_vertexes(model,mesh_idx);
+			draw_model_selected_vertexes(model,mesh_idx,draw_setup);
 			break;
 		case dt_mesh:
-			if ((model_show_first_mesh) && (mesh_idx!=0)) draw_model_mesh(model,0);
-			draw_model_mesh(model,mesh_idx);
-			draw_model_selected_vertexes(model,mesh_idx);
+			if ((model_show_first_mesh) && (mesh_idx!=0)) draw_model_mesh(model,0,draw_setup);
+			draw_model_mesh(model,mesh_idx,draw_setup);
+			draw_model_selected_vertexes(model,mesh_idx,draw_setup);
 			break;
 		case dt_bones:
 			draw_model_bones(model,draw_setup,cur_bone);
@@ -171,21 +171,21 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 		case dt_model_bones:
 			if ((model_show_first_mesh) && (mesh_idx!=0)) draw_model(model,0,draw_setup);
 			draw_model(model,mesh_idx,draw_setup);
-			draw_model_selected_vertexes(model,mesh_idx);
+			draw_model_selected_vertexes(model,mesh_idx,draw_setup);
 			glClear(GL_DEPTH_BUFFER_BIT);
 			draw_model_bones(model,draw_setup,cur_bone);
 			break;
 		case dt_mesh_bones:
-			if ((model_show_first_mesh) && (mesh_idx!=0)) draw_model_mesh(model,0);
-			draw_model_mesh(model,mesh_idx);
-			draw_model_selected_vertexes(model,mesh_idx);
+			if ((model_show_first_mesh) && (mesh_idx!=0)) draw_model_mesh(model,0,draw_setup);
+			draw_model_mesh(model,mesh_idx,draw_setup);
+			draw_model_selected_vertexes(model,mesh_idx,draw_setup);
 			draw_model_bones(model,draw_setup,cur_bone);
 			break;
 	}
 	
 		// draw the normals
 		
-	if (model_normal_on) draw_model_normals(model,mesh_idx);
+	if (model_normal_on) draw_model_normals(model,mesh_idx,draw_setup);
   
         // draw the view, shadow, and hit boxes
     
@@ -214,7 +214,7 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 	
 		// free memory
 		
-	model_draw_array_free(model);
+	model_draw_setup_shutdown(model,draw_setup);
 }
 
 void draw_model_setup_pose(model_type *model,model_draw_setup *draw_setup,int wpose)

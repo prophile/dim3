@@ -797,7 +797,8 @@ typedef struct		{
 												player,bot,side_step,crawl,single_speed,no_slide,
 												open_doors,input_freeze,hide_all_weapons,
 												find_on,in_collide_event,on_ladder,
-												quick_reverse,death_trigger,death_telefrag;
+												quick_reverse,death_trigger,death_telefrag,
+												model_in_view,shadow_in_view;
 						d3pnt					pnt,org_pnt,last_pnt;
 						d3ang					ang,view_ang,org_ang,last_ang;
 						obj_motion				motion;

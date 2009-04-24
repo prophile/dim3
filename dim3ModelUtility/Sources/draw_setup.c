@@ -35,7 +35,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup)
+bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup,bool normals)
 {
 	int				n,sz;
 	model_mesh_type	*mesh;
@@ -43,6 +43,7 @@ bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup)
 	for (n=0;n!=model->nmesh;n++) {
 		draw_setup->mesh_arrays[n].gl_vertex_array=NULL;
 		draw_setup->mesh_arrays[n].gl_color_array=NULL;
+		draw_setup->mesh_arrays[n].gl_normal_array=NULL;
 	}
 	
 	mesh=model->meshes;
@@ -50,14 +51,19 @@ bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup)
 	for (n=0;n!=model->nmesh;n++) {
 		sz=(mesh->nvertex*3)*sizeof(float);
 		
-		draw_setup->mesh_arrays[n].gl_vertex_array=malloc(sz);
+		draw_setup->mesh_arrays[n].gl_vertex_array=(float*)malloc(sz);
 		if (draw_setup->mesh_arrays[n].gl_vertex_array==NULL) return(FALSE);
-
-		draw_setup->mesh_arrays[n].gl_color_array=malloc(sz);
-		if (draw_setup->mesh_arrays[n].gl_color_array==NULL) return(FALSE);
-
 		bzero(draw_setup->mesh_arrays[n].gl_vertex_array,sz);
+
+		draw_setup->mesh_arrays[n].gl_color_array=(float*)malloc(sz);
+		if (draw_setup->mesh_arrays[n].gl_color_array==NULL) return(FALSE);
 		bzero(draw_setup->mesh_arrays[n].gl_color_array,sz);
+		
+		if (normals) {
+			draw_setup->mesh_arrays[n].gl_normal_array=(float*)malloc(sz);
+			if (draw_setup->mesh_arrays[n].gl_normal_array==NULL) return(FALSE);
+			bzero(draw_setup->mesh_arrays[n].gl_normal_array,sz);
+		}
 		
 		mesh++;
 	}
@@ -72,6 +78,7 @@ void model_draw_setup_shutdown(model_type *model,model_draw_setup *draw_setup)
 	for (n=0;n!=model->nmesh;n++) {
 		if (draw_setup->mesh_arrays[n].gl_vertex_array!=NULL) free(draw_setup->mesh_arrays[n].gl_vertex_array);
 		if (draw_setup->mesh_arrays[n].gl_color_array!=NULL) free(draw_setup->mesh_arrays[n].gl_color_array);
+		if (draw_setup->mesh_arrays[n].gl_normal_array!=NULL) free(draw_setup->mesh_arrays[n].gl_normal_array);
 	}
 }
 

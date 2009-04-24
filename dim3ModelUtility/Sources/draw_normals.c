@@ -119,7 +119,7 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 		
 	nt=mesh->nvertex;
 	vertex=mesh->vertexes;
-	pn=mesh->draw.gl_vertex_normal_array;
+	pn=draw_setup->mesh_arrays[mesh_idx].gl_normal_array;
 
 		// normals with sways
 		

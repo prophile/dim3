@@ -65,7 +65,7 @@ void model_draw_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw *
 		if ((mesh_mask&(0x1<<n))==0) continue;
 
 		mesh=&mdl->meshes[n];
-		cp=mesh->draw.gl_color_array;
+		cp=draw->setup.mesh_arrays[n].gl_color_array;
 
 			// debug draw
 			
@@ -104,7 +104,7 @@ void model_draw_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw *
 
 			// vertex lit
 
-		vp=mesh->draw.gl_vertex_array;
+		vp=draw->setup.mesh_arrays[n].gl_vertex_array;
 
 		for (k=0;k!=mesh->nvertex;k++) {
 			gl_lights_calc_vertex((double)*vp,(double)*(vp+1),(double)*(vp+2),cp);
@@ -114,7 +114,7 @@ void model_draw_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw *
 
 		if (mesh->tintable) {
 
-			cp=mesh->draw.gl_color_array;
+			cp=draw->setup.mesh_arrays[n].gl_color_array;
 
 			for (k=0;k!=mesh->nvertex;k++) {
 				*cp++=(*cp)*draw->tint.r;
@@ -128,58 +128,19 @@ void model_draw_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw *
 
 bool model_draw_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 {
-	int				n,k,nvertex,ntrig,offset,t_idx;
+	int				n,k,offset,t_idx;
 	float			*vl,*tl,*cl,*vp,*cp,*vertex_ptr,
 					*vertex_array,*coord_array;
 	unsigned short	*index_ptr;
     model_trig_type	*trig;
 	model_mesh_type	*mesh;
-	
-		// create vertex and uv lists
-		// in the model's data area
-		
-	for (n=0;n!=mdl->nmesh;n++) {
-		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
-
-			// build model vertex list
-			
-		model_create_draw_vertexes(mdl,n,&draw->setup);
-		if (draw->resize!=1) model_resize_draw_vertex(mdl,n,draw->resize);
-		if (draw->flip_x) model_flip_draw_vertex(mdl,n);
-
-			// translate vertex to view
-			
-		model_translate_draw_vertex(mdl,n,draw->pnt.x,draw->pnt.y,draw->pnt.z);
-	}
-
-		// setup the colors
-
-	model_draw_create_color_vertexes(mdl,draw->render_mesh_mask,draw);
-
-		// get the total number of trigs and vertexes
-
-	nvertex=0;
-	ntrig=0;
-
-	for (n=0;n!=mdl->nmesh;n++) {
-		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
-
-		mesh=&mdl->meshes[n];
-
-		nvertex+=mesh->nvertex;
-		ntrig+=mesh->ntrig;
-	}
-
-	if ((nvertex==0) || (ntrig==0)) return(FALSE);
-	
-	draw->vbo_ptr.ntrig=ntrig;
 
  		// construct VBO
 
-	vertex_ptr=view_bind_map_next_vertex_object(((ntrig*3)*(3+2+3)));
+	vertex_ptr=view_bind_map_next_vertex_object(((draw->vbo_ptr.ntrig*3)*(3+2+3)));
 	if (vertex_ptr==NULL) return(FALSE);
 
-	index_ptr=view_bind_map_next_index_object(ntrig*3);
+	index_ptr=view_bind_map_next_index_object(draw->vbo_ptr.ntrig*3);
 	if (index_ptr==NULL) {
 		view_unmap_current_vertex_object();
 		view_unbind_current_vertex_object();
@@ -189,8 +150,8 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 		// build the vertexes and indexes
 
 	vl=vertex_array=vertex_ptr;
-	tl=coord_array=vertex_ptr+((ntrig*3)*3);
-	cl=coord_array=vertex_ptr+((ntrig*3)*(3+2));
+	tl=coord_array=vertex_ptr+((draw->vbo_ptr.ntrig*3)*3);
+	cl=coord_array=vertex_ptr+((draw->vbo_ptr.ntrig*3)*(3+2));
 
 	t_idx=0;
 
@@ -207,8 +168,8 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 				// vertex 0
 
 			offset=trig->v[0]*3;
-			vp=mesh->draw.gl_vertex_array+offset;
-			cp=mesh->draw.gl_color_array+offset;
+			vp=draw->setup.mesh_arrays[n].gl_vertex_array+offset;
+			cp=draw->setup.mesh_arrays[n].gl_color_array+offset;
 
 			*vl++=*vp++;
 			*vl++=*vp++;
@@ -224,8 +185,8 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 				// vertex 1
 
 			offset=trig->v[1]*3;
-			vp=mesh->draw.gl_vertex_array+offset;
-			cp=mesh->draw.gl_color_array+offset;
+			vp=draw->setup.mesh_arrays[n].gl_vertex_array+offset;
+			cp=draw->setup.mesh_arrays[n].gl_color_array+offset;
 
 			*vl++=*vp++;
 			*vl++=*vp++;
@@ -241,8 +202,8 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 				// vertex 2
 
 			offset=trig->v[2]*3;
-			vp=mesh->draw.gl_vertex_array+offset;
-			cp=mesh->draw.gl_color_array+offset;
+			vp=draw->setup.mesh_arrays[n].gl_vertex_array+offset;
+			cp=draw->setup.mesh_arrays[n].gl_color_array+offset;
 
 			*vl++=*vp++;
 			*vl++=*vp++;
@@ -280,11 +241,11 @@ bool model_draw_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((ntrig*3)*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*3)*sizeof(float)));
 	
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((ntrig*3)*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*3)*sizeof(float)));
 
 	return(TRUE);
 }
@@ -313,76 +274,6 @@ void model_draw_release_vertex_objects(void)
 	glClientActiveTexture(GL_TEXTURE0);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-	view_unbind_current_index_object();
-	view_unbind_current_vertex_object();
-}
-
-/* =======================================================
-
-      Model Shadow Drawing Arrays
-      
-======================================================= */
-
-bool model_draw_start_mesh_shadow_array(model_type *mdl,model_mesh_type *mesh)
-{
-	int				n,trig_count;
-	float			*vl,*vp,*vertex_ptr;
-	unsigned short	*index_ptr;
-    model_trig_type	*trig;
-
-	trig_count=mesh->ntrig;
-
- 		// construct VBO
-
-	vertex_ptr=view_bind_map_next_vertex_object(mesh->nvertex*2);
-	if (vertex_ptr==NULL) return(FALSE);
-
-	index_ptr=view_bind_map_next_index_object(trig_count*3);
-	if (index_ptr==NULL) {
-		view_unmap_current_vertex_object();
-		view_unbind_current_vertex_object();
-		return(FALSE);
-	}
-	
-		// build the vertexs and indexes
-		// there's no z coordinate in these arrays
-
-	vl=vertex_ptr;
-	vp=mesh->draw.gl_vertex_array;
-
-	for (n=0;n!=mesh->nvertex;n++) {
-		*vl++=*vp++;
-		*vl++=*vp++;
-	}
-
-	trig=mesh->trigs;
-
-	for (n=0;n!=trig_count;n++) {
-
-		*index_ptr++=(unsigned short)trig->v[0];
-		*index_ptr++=(unsigned short)trig->v[1];
-		*index_ptr++=(unsigned short)trig->v[2];
-		
-		trig++;
-	}
-
-		// unmap VBO
-
-	view_unmap_current_index_object();
-	view_unmap_current_vertex_object();
-
-		// set the arrays
-		
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2,GL_FLOAT,0,0);
-	
-	return(TRUE);
-}
-
-void model_draw_stop_mesh_shadow_array(void)
-{
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 	view_unbind_current_index_object();
@@ -853,6 +744,35 @@ void model_render_setup(int tick,model_draw *draw)
 
 		texture++;
 	}
+	
+		// create vertex and uv lists
+		
+	for (n=0;n!=mdl->nmesh;n++) {
+		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
+
+			// build model vertex list
+			
+		model_create_draw_vertexes(mdl,n,&draw->setup);
+		if (draw->resize!=1) model_resize_draw_vertex(mdl,n,draw->resize,&draw->setup);
+		if (draw->flip_x) model_flip_draw_vertex(mdl,n,&draw->setup);
+
+			// translate vertex to view
+			
+		model_translate_draw_vertex(mdl,n,draw->pnt.x,draw->pnt.y,draw->pnt.z,&draw->setup);
+	}
+
+		// setup the colors
+
+	model_draw_create_color_vertexes(mdl,draw->render_mesh_mask,draw);
+
+		// get the total number of trigs
+
+	draw->vbo_ptr.ntrig=0;
+
+	for (n=0;n!=mdl->nmesh;n++) {
+		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
+		draw->vbo_ptr.ntrig+=mdl->meshes[n].ntrig;
+	}
 }
 
 void model_render_opaque(model_draw *draw)
@@ -898,9 +818,6 @@ void model_render_opaque(model_draw *draw)
 		// release the vbo
 
 	model_draw_release_vertex_objects();
-	
-	
-	shadow_render(draw);		// supergumba
 }
 
 void model_render_transparent(model_draw *draw)
@@ -938,112 +855,6 @@ void model_render_transparent(model_draw *draw)
 		// release the vbo
 
 	model_draw_release_vertex_objects();
-}
-
-/* =======================================================
-
-      Draw Shadow Model
-      
-======================================================= */
-
-void model_render_shadow(model_draw *draw,float draw_sz,int shadow_idx)
-{
-	int						n,mesh_mask,
-							xsz,ysz,xoff,yoff;
-	float					min_x,max_x,min_y,max_y,
-							f,fx[8],fy[8],fz[8],
-							x_resize,y_resize;
-	model_type				*mdl;
-	model_mesh_type			*mesh;
-	matrix_type				rot_x_mat,rot_z_mat,rot_y_mat;
-	
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return;
-	
-		// get the resize box
-		
-	matrix_rotate_x(&rot_x_mat,draw->setup.ang.x);
-	matrix_rotate_z(&rot_z_mat,draw->setup.ang.z);
-	matrix_rotate_y(&rot_y_mat,draw->setup.ang.y);
-
-	f=(float)(mdl->view_box.size.x>>1);
-	fx[0]=fx[3]=fx[4]=fx[7]=-f;
-	fx[1]=fx[2]=fx[5]=fx[6]=f;
-	
-	f=(float)(mdl->view_box.size.z>>1);
-	fz[0]=fz[1]=fz[2]=fz[3]=-f;
-	fz[4]=fz[5]=fz[6]=fz[7]=f;
-	
-	f=(float)(mdl->view_box.size.y>>1);
-	fy[0]=fy[1]=fy[4]=fy[5]=-f;
-	fy[2]=fy[3]=fy[6]=fy[7]=f;
-	
-	for (n=0;n!=8;n++) {
-		matrix_vertex_multiply(&rot_x_mat,&fx[n],&fy[n],&fz[n]);
-		matrix_vertex_multiply(&rot_z_mat,&fx[n],&fy[n],&fz[n]);
-		matrix_vertex_multiply(&rot_y_mat,&fx[n],&fy[n],&fz[n]);
-	}
-	
-	min_x=max_x=fx[0];
-	min_y=max_y=fy[0];
-	for (n=1;n!=8;n++) {
-		if (fx[n]<min_x) min_x=fx[n];
-		if (fx[n]>max_x) max_x=fx[n];
-		if (fy[n]<min_y) min_y=fy[n];
-		if (fy[n]>max_y) max_y=fy[n];
-	}
-	
-	xsz=abs((int)(max_x-min_x));
-	ysz=abs((int)(max_y-min_y));
-	
-	fx[0]=(float)(mdl->view_box.size.x>>1);
-	fy[0]=(float)mdl->view_box.size.y;
-	fz[0]=(float)(mdl->view_box.size.z>>1);
-	
-	matrix_vertex_multiply(&rot_x_mat,&fx[0],&fy[0],&fz[0]);
-	matrix_vertex_multiply(&rot_z_mat,&fx[0],&fy[0],&fz[0]);
-	matrix_vertex_multiply(&rot_y_mat,&fx[0],&fy[0],&fz[0]);
-
-	x_resize=draw_sz/(float)xsz;
-	y_resize=draw_sz/(float)ysz;
-
-	xoff=(xsz>>1)+((int)((draw_sz/x_resize)-xsz)>>1);
-	yoff=(int)fy[0];
-
-		// draw setup
-		
-	glEnable(GL_POLYGON_SMOOTH);
-		
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA_SATURATE,GL_ONE);		// smooth out the shadows
-		
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_DEPTH_TEST);
-	
-		// run through all the meshes
-		
-	mesh_mask=draw->mesh_mask;
-	
-	for (n=0;n!=mdl->nmesh;n++) {
-		if ((mesh_mask&(0x1<<n))==0) continue;
-		
-		mesh=&mdl->meshes[n];
-		if (mesh->ntrig==0) continue;
-
-			// create vertexes
-
-		model_create_draw_2D_vertexes(mdl,n,&draw->setup,xoff,yoff,x_resize,y_resize);
-		
-			// draw trigs
-		
-		if (!model_draw_start_mesh_shadow_array(mdl,mesh)) continue;
-		
-		glDrawRangeElements(GL_TRIANGLES,0,mesh->nvertex,(mesh->ntrig*3),GL_UNSIGNED_SHORT,(GLvoid*)0);
-		
-		model_draw_stop_mesh_shadow_array();
-	}
-
-	glDisable(GL_POLYGON_SMOOTH);
 }
 
 /* =======================================================

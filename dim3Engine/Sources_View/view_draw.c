@@ -289,7 +289,7 @@ void view_draw_model_opaque(int tick)
 			case view_render_type_object:
 				obj=&server.objs[view.render->draw_list.items[n].idx];
 				model_render_setup(tick,&obj->draw);
-				model_render_opaque(&obj->draw);
+				if (obj->model_in_view) model_render_opaque(&obj->draw);
 				break;
 
 			case view_render_type_projectile:
@@ -323,7 +323,7 @@ void view_draw_model_transparent(int tick)
 
 			case view_render_type_object:
 				obj=&server.objs[view.render->draw_list.items[n].idx];
-				model_render_transparent(&obj->draw);
+				if (obj->model_in_view) model_render_transparent(&obj->draw);
 				break;
 
 			case view_render_type_projectile:
@@ -334,9 +334,6 @@ void view_draw_model_transparent(int tick)
 		}
 	}
 }
-
-
-// supergumba -- put back shadow render here!
 
 void view_draw_models_final(void)
 {
@@ -361,19 +358,21 @@ void view_draw_models_final(void)
 			case view_render_type_object:
 				obj=&server.objs[view.render->draw_list.items[n].idx];
 				
-//				shadow_render(&obj->draw);
-				if (obj->remote.on) remote_draw_status(obj);
-				if (object_is_targetted(obj,&col)) model_render_target(&obj->draw,&col);
-				if (dim3_debug) {
-					view_draw_debug_bounding_box(obj);
-					view_draw_object_path(obj);
+				if (obj->shadow_in_view) shadow_render(&obj->draw);
+				
+				if (obj->model_in_view) {
+					if (obj->remote.on) remote_draw_status(obj);
+					if (object_is_targetted(obj,&col)) model_render_target(&obj->draw,&col);
+					if (dim3_debug) {
+						view_draw_debug_bounding_box(obj);
+						view_draw_object_path(obj);
+					}
 				}
 				break;
 
 			case view_render_type_projectile:
 				proj=&server.projs[view.render->draw_list.items[n].idx];
-
-//				shadow_render(&proj->draw);
+				shadow_render(&proj->draw);
 				break;
 
 		}

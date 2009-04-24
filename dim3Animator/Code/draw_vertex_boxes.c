@@ -33,7 +33,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-void draw_model_selected_vertexes(model_type *model,int mesh_idx)
+void draw_model_selected_vertexes(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 {
 	int				n,nvertex;
 	float			*pv;
@@ -42,7 +42,7 @@ void draw_model_selected_vertexes(model_type *model,int mesh_idx)
 	glPointSize(5);
 	
 	nvertex=model->meshes[mesh_idx].nvertex;
-	pv=model->meshes[mesh_idx].draw.gl_vertex_array;
+	pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array;
 
 	glBegin(GL_POINTS);
 	
@@ -141,7 +141,7 @@ void draw_model_boxes(model_type *model,model_draw_setup *draw_setup)
       
 ======================================================= */
 
-void draw_model_normals(model_type *model,int mesh_idx)
+void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 {
 	int				n,nvertex,
 					sx,sy,sz,lsz;
@@ -163,8 +163,8 @@ void draw_model_normals(model_type *model,int mesh_idx)
 	glLineWidth(2);
 	
 	nvertex=model->meshes[mesh_idx].nvertex;
-	pv=model->meshes[mesh_idx].draw.gl_vertex_array;
-	pn=model->meshes[mesh_idx].draw.gl_vertex_normal_array;
+	pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array;
+	pn=draw_setup->mesh_arrays[mesh_idx].gl_normal_array;
 
 	glBegin(GL_LINES);
 	

@@ -138,7 +138,7 @@ void model_create_draw_vertexes_normal(model_type *model,int mesh_idx,model_draw
     
 	nvertex=mesh->nvertex;
 	vertex=mesh->vertexes;
-	pv=mesh->draw.gl_vertex_array;
+	pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array;
     
 	for (n=0;n!=nvertex;n++) {
 
@@ -194,7 +194,7 @@ void model_create_draw_vertexes_no_xzrot(model_type *model,int mesh_idx,model_dr
     
 	nvertex=mesh->nvertex;
 	vertex=mesh->vertexes;
-	pv=mesh->draw.gl_vertex_array;
+	pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array;
     
 	for (n=0;n!=nvertex;n++) {
 
@@ -246,7 +246,7 @@ void model_create_draw_vertexes_no_sway(model_type *model,int mesh_idx,model_dra
     
 	nvertex=mesh->nvertex;
 	vertex=mesh->vertexes;
-	pv=mesh->draw.gl_vertex_array;
+	pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array;
     
 	for (n=0;n!=nvertex;n++) {
 
@@ -297,7 +297,7 @@ void model_create_draw_vertexes_no_sway_xzrot(model_type *model,int mesh_idx,mod
     
 	nvertex=mesh->nvertex;
 	vertex=mesh->vertexes;
-	pv=mesh->draw.gl_vertex_array;
+	pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array;
     
 	for (n=0;n!=nvertex;n++) {
 
@@ -338,7 +338,7 @@ void model_create_draw_vertexes_no_sway_center_move(model_type *model,int mesh_i
     
 	nvertex=mesh->nvertex;
 	vertex=mesh->vertexes;
-	pv=mesh->draw.gl_vertex_array;
+	pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array;
     
 	for (n=0;n!=nvertex;n++) {
 
@@ -375,7 +375,7 @@ void model_create_draw_vertexes_no_sway_center_move_xzrot(model_type *model,int 
     
 	nvertex=mesh->nvertex;
 	vertex=mesh->vertexes;
-	pv=mesh->draw.gl_vertex_array;
+	pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array;
     
 	for (n=0;n!=nvertex;n++) {
 
@@ -467,7 +467,7 @@ void model_create_draw_2D_vertexes(model_type *model,int mesh_idx,model_draw_set
 	
 	nvertex=mesh->nvertex;
 	vertex=mesh->vertexes;
-	pv=mesh->draw.gl_vertex_array;
+	pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array;
 	
 		// with sways
 		
@@ -547,7 +547,7 @@ void model_create_draw_2D_vertexes(model_type *model,int mesh_idx,model_draw_set
       
 ======================================================= */
 
-void model_resize_draw_vertex(model_type *model,int mesh_idx,float resize)
+void model_resize_draw_vertex(model_type *model,int mesh_idx,float resize,model_draw_setup *draw_setup)
 {
 	int			n,nt,yadd;
 	float		*pv;
@@ -557,7 +557,7 @@ void model_resize_draw_vertex(model_type *model,int mesh_idx,float resize)
 	yadd=model->view_box.size.y>>1;
 	
 	nt=model->meshes[mesh_idx].nvertex;
-	pv=model->meshes[mesh_idx].draw.gl_vertex_array;
+	pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array;
 	
 	for (n=0;n!=nt;n++) {
 		*pv=((*pv)*resize);
@@ -569,13 +569,13 @@ void model_resize_draw_vertex(model_type *model,int mesh_idx,float resize)
 	}
 }
 
-void model_flip_draw_vertex(model_type *model,int mesh_idx)
+void model_flip_draw_vertex(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 {
 	int			n,nt;
 	float		*pv;
 	
 	nt=model->meshes[mesh_idx].nvertex;
-	pv=model->meshes[mesh_idx].draw.gl_vertex_array;
+	pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array;
 	
 	for (n=0;n!=nt;n++) {
 		*pv=-(*pv);
@@ -589,14 +589,14 @@ void model_flip_draw_vertex(model_type *model,int mesh_idx)
       
 ======================================================= */
 
-void model_translate_draw_vertex(model_type *model,int mesh_idx,int x,int y,int z)
+void model_translate_draw_vertex(model_type *model,int mesh_idx,int x,int y,int z,model_draw_setup *draw_setup)
 {
 	int			n,nt;
 	float		fx,fy,fz;
 	float		*pv;
 	
 	nt=model->meshes[mesh_idx].nvertex;
-	pv=model->meshes[mesh_idx].draw.gl_vertex_array;
+	pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array;
 	
 	fx=(float)x;
 	fy=(float)y;

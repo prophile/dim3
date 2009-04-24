@@ -28,12 +28,12 @@ and can be sold or given away.
 extern void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 extern void draw_model_faded(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 
-extern void draw_model_mesh(model_type *model,int mesh_idx);
+extern void draw_model_mesh(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 extern void draw_model_bones(model_type *model,model_draw_setup *draw_setup,int sel_bone_idx);
 
-extern void draw_model_selected_vertexes(model_type *model,int mesh_idx);
+extern void draw_model_selected_vertexes(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 extern void draw_model_boxes(model_type *model,model_draw_setup *draw_setup);
-extern void draw_model_normals(model_type *model,int mesh_idx);
+extern void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 extern void draw_model_axis(model_type *model);
 
 extern void draw_model_gl_setup(model_type *model);

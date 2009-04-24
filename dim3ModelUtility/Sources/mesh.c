@@ -158,9 +158,6 @@ bool model_mesh_delete(model_type *model,int mesh_idx)
 	free(mesh->vertexes);
 	free(mesh->trigs);
 	free(mesh->materials);
-	free(mesh->draw.gl_vertex_array);
-	free(mesh->draw.gl_color_array);
-	free(mesh->draw.gl_vertex_normal_array);
 	
 		// delete current mesh
 				

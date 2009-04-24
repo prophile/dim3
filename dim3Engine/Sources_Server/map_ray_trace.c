@@ -69,21 +69,21 @@ void ray_trace_shutdown(void)
       
 ======================================================= */
 
-void ray_trace_create_vector_from_points(d3vct *v,int x1,int y1,int z1,int x2,int y2,int z2)
+inline void ray_trace_create_vector_from_points(d3vct *v,int x1,int y1,int z1,int x2,int y2,int z2)
 {
 	v->x=(float)(x1-x2);
 	v->y=(float)(y1-y2);
 	v->z=(float)(z1-z2);
 }
 
-void ray_trace_vector_cross_product(d3vct *cp,d3vct *v1,d3vct *v2)
+inline void ray_trace_vector_cross_product(d3vct *cp,d3vct *v1,d3vct *v2)
 {
 	cp->x=(v1->y*v2->z)-(v2->y*v1->z);
 	cp->y=(v1->z*v2->x)-(v2->z*v1->x);
 	cp->z=(v1->x*v2->y)-(v2->x*v1->y);
 }
 
-float ray_trace_vector_inner_product(d3vct *v1,d3vct *v2)
+inline float ray_trace_vector_inner_product(d3vct *v1,d3vct *v2)
 {
 	return((v1->x*v2->x)+(v1->y*v2->y)+(v1->z*v2->z));
 }
@@ -1008,7 +1008,7 @@ void ray_trace_map_by_point_array(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool 
 	}
 }
 
-void ray_trace_map_by_point_array_no_hit(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_type *base_contact)
+void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact)
 {
 	int							n;
 	float						hit_t;
@@ -1046,5 +1046,7 @@ void ray_trace_map_by_point_array_no_hit(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hp
 
 		ray_trace_contact_clear(&contact);
 		ray_trace_map(&spt[n],&ept[n],&vct,&hpt[n],&hit_t,&contact);
+		
+		hits[n]=(hit_t>=0.0f) && (hit_t<=1.0f);
 	}
 }

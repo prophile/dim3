@@ -149,12 +149,6 @@ model_type* model_load_single(char *name)
 
 	gl_shader_attach_model(mdl);
 
-	if (!model_draw_array_initialize(mdl)) {
-		model_close(mdl);
-		server.count.model--;		// error loading, leave memory as is an fix next model load
-		return(NULL);
-	}
-
 		// setup some animation indexes to avoid name lookups
 
 	model_animation_effect_setup(mdl);
@@ -207,7 +201,7 @@ void model_load_and_init(model_draw *draw)
 	
 		// initialize draw memory
 		
-	if (mdl!=NULL) model_draw_setup_initialize(mdl,draw);
+	if (mdl!=NULL) model_draw_setup_initialize(mdl,&draw->setup,FALSE);
 
 		// stop all animations and fades
 
@@ -245,7 +239,7 @@ void models_dispose(model_draw *draw)
 	
 		// clear draw memory
 		
-	model_draw_setup_shutdown(mdl,draw);
+	model_draw_setup_shutdown(mdl,&draw->setup);
 
 		// decrement reference count
 
@@ -254,7 +248,6 @@ void models_dispose(model_draw *draw)
 
 		// dispose model
 
-	model_draw_array_free(mdl);
 	model_close(mdl);
 
 		// is the list completely empty?

@@ -123,7 +123,7 @@ void select_model_wind(Point start_pt,unsigned long modifiers)
 		// need to save off array as drawing will reuse
 		// array and free it
 		
-	model_draw_array_initialize(&model);
+	model_draw_setup_initialize(&model,&draw_setup,TRUE);
 		
 	draw_model_setup_pose(&model,&draw_setup,cur_pose);
 	
@@ -134,9 +134,9 @@ void select_model_wind(Point start_pt,unsigned long modifiers)
 	pv=(float*)malloc(sz);
 	if (pv==NULL) return;
 	
-	memmove(pv,model.meshes[cur_mesh].draw.gl_vertex_array,sz);
+	memmove(pv,draw_setup.mesh_arrays[cur_mesh].gl_vertex_array,sz);
 		
-	model_draw_array_free(&model);
+	model_draw_setup_shutdown(&model,&draw_setup);
 	
 		// setup transforms
 		

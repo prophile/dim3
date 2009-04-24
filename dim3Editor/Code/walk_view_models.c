@@ -65,7 +65,6 @@ void walk_view_models_close(void)
 		model=models;
 	
 		for (n=0;n!=nmodel;n++) {
-			model_draw_array_free(model);
 			model_close(model);
 			model++;
 		}
@@ -142,7 +141,6 @@ void walk_view_models_reset(void)
 			continue;
 		}
 		
-		model_draw_array_free(&models[n]);
 		model_close(&models[n]);
 	
 		if (n<(nmodel-1)) {
@@ -166,7 +164,6 @@ void walk_view_models_reset(void)
 			
 			if ((idx==-1) && (nmodel<max_model)) {
 				if (model_open(&models[nmodel],spot->display_model,TRUE)) {
-					model_draw_array_initialize(&models[nmodel]);
 					nmodel++;
 				}
 			}
@@ -185,7 +182,6 @@ void walk_view_models_reset(void)
 			
 			if ((idx==-1) && (nmodel<max_model)) {
 				if (model_open(&models[nmodel],scenery->model_name,TRUE)) {
-					model_draw_array_initialize(&models[nmodel]);
 					nmodel++;
 				}
 			}
@@ -254,7 +250,8 @@ bool walk_view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,
 
 		// build model vertex list
 		
-	model_clear_draw_setup(model,&draw_setup);
+	model_draw_setup_initialize(model,&draw_setup,FALSE);
+	model_draw_setup_clear(model,&draw_setup);
 	
     draw_setup.poses[0].idx_1=draw_setup.poses[0].idx_2=-1;
     draw_setup.poses[0].factor=0;
@@ -266,7 +263,7 @@ bool walk_view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,
 	model_create_draw_bones(model,&draw_setup);
 	model_create_draw_vertexes(model,0,&draw_setup);
 
-	model_translate_draw_vertex(model,0,pnt->x,pnt->y,pnt->z);
+	model_translate_draw_vertex(model,0,pnt->x,pnt->y,pnt->z,&draw_setup);
 
 		// draw triangles
 
@@ -275,7 +272,7 @@ bool walk_view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,
 	glEnable(GL_TEXTURE_2D);
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,mesh->draw.gl_vertex_array);
+	glVertexPointer(3,GL_FLOAT,0,draw_setup.mesh_arrays[0].gl_vertex_array);
 	glLockArraysEXT(0,mesh->nvertex);	
 	
 	glEnable(GL_ALPHA_TEST);
@@ -324,6 +321,8 @@ bool walk_view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,
 	glDisableClientState(GL_VERTEX_ARRAY);
 	
 	glDisable(GL_TEXTURE_2D);
+	
+	model_draw_setup_shutdown(model,&draw_setup);
 	
 	return(TRUE);
 }

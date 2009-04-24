@@ -214,57 +214,6 @@ void model_close(model_type *model)
 
 /* =======================================================
 
-      Model Arrays
-      
-======================================================= */
-
-bool model_draw_array_initialize(model_type *model)
-{
-	int				n;
-	model_mesh_type	*mesh;
-
-	mesh=model->meshes;
-
-	for (n=0;n!=model->nmesh;n++) {
-
-		mesh->draw.gl_vertex_array=malloc((mesh->nvertex*3)*sizeof(float));
-		if (mesh->draw.gl_vertex_array==NULL) return(FALSE);
-
-		mesh->draw.gl_color_array=malloc((mesh->nvertex*3)*sizeof(float));
-		if (mesh->draw.gl_color_array==NULL) return(FALSE);
-
-		mesh->draw.gl_vertex_normal_array=malloc((mesh->nvertex*3)*sizeof(float));
-		if (mesh->draw.gl_vertex_normal_array==NULL) return(FALSE);
-
-		bzero(mesh->draw.gl_vertex_array,(mesh->nvertex*3)*sizeof(float));
-		bzero(mesh->draw.gl_color_array,(mesh->nvertex*3)*sizeof(float));
-		bzero(mesh->draw.gl_vertex_normal_array,(mesh->nvertex*3)*sizeof(float));
-
-		mesh++;
-	}
-
-	return(TRUE);
-}
-
-void model_draw_array_free(model_type *model)
-{
-	int				n;
-	model_mesh_type	*mesh;
-
-	mesh=model->meshes;
-
-	for (n=0;n!=model->nmesh;n++) {
-
-		free(mesh->draw.gl_vertex_array);
-		free(mesh->draw.gl_color_array);
-		free(mesh->draw.gl_vertex_normal_array);
-
-		mesh++;
-	}
-}
-
-/* =======================================================
-
       Refresh Model Textures
       
 ======================================================= */

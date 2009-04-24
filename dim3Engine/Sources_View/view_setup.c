@@ -333,7 +333,7 @@ void view_add_liquid_draw_list(void)
       
 ======================================================= */
 
-bool view_setup_model_in_view(model_draw *draw,bool is_camera,int mesh_idx)
+bool view_setup_model_in_view(model_draw *draw,int mesh_idx)
 {
 	double					obscure_dist;
 
@@ -341,7 +341,7 @@ bool view_setup_model_in_view(model_draw *draw,bool is_camera,int mesh_idx)
 
 		// is model in a mesh that's in the mesh draw list?
 
-	if ((!is_camera) && (mesh_idx!=-1)) {
+	if (mesh_idx!=-1) {
 		if (!view_mesh_in_draw_list(mesh_idx)) return(FALSE);
 	}
 	
@@ -358,8 +358,6 @@ bool view_setup_model_in_view(model_draw *draw,bool is_camera,int mesh_idx)
 	if (draw->draw_dist>=obscure_dist) return(FALSE);
 	
 		// is model in view?
-
-	if (is_camera) return(FALSE);
 
 	return(model_inview(draw));
 }
@@ -384,9 +382,20 @@ void view_setup_objects(int tick)
 		model_draw_setup_object(tick,obj);
 	
 			// detect if model is in view
+			
+		obj->model_in_view=obj->shadow_in_view=FALSE;
 		
-		if (!view_setup_model_in_view(&obj->draw,is_camera,obj->mesh.cur_mesh_idx)) continue;
-
+		if (is_camera) {
+			obj->shadow_in_view=TRUE;
+		}
+		else {
+			if (!view_setup_model_in_view(&obj->draw,obj->mesh.cur_mesh_idx)) continue;
+			
+			obj->model_in_view=obj->shadow_in_view=TRUE;
+			
+			// supergumba -- deal with shadows in view here
+		}
+		
 			// add to draw list
 
 		view_add_draw_list(view_render_type_object,n,obj->draw.draw_dist);
@@ -403,7 +412,7 @@ void view_setup_objects(int tick)
 			weap=weapon_find_uid(obj->held_weapon.current_uid);
 			if (weap!=NULL) {
 				model_draw_setup_weapon(tick,obj,weap,FALSE,FALSE);
-				view_setup_model_in_view(&weap->draw,FALSE,obj->mesh.cur_mesh_idx);
+				view_setup_model_in_view(&weap->draw,obj->mesh.cur_mesh_idx);
 			}
 		}
 	}
@@ -425,7 +434,7 @@ void view_setup_projectiles(int tick)
 			// find model and shadows in view
 			
 		mesh_idx=map_mesh_find(&map,&proj->draw.pnt);
-		if (!view_setup_model_in_view(&proj->draw,FALSE,mesh_idx)) continue;
+		if (!view_setup_model_in_view(&proj->draw,mesh_idx)) continue;
 
 			// add to draw list
 

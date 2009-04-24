@@ -93,7 +93,9 @@ typedef struct		{
 					} model_draw_pose_type;
 					
 typedef struct		{
-						float							*gl_vertex_array,*gl_color_array;
+						float							*gl_vertex_array,
+														*gl_color_array,
+														*gl_normal_array;
 					} model_draw_mesh_array_type;
 
 typedef struct		{
@@ -142,19 +144,12 @@ typedef struct		{
 					} model_material_type;
 
 typedef struct		{
-						float							*gl_vertex_array,
-														*gl_color_array,
-														*gl_vertex_normal_array;
-					} model_mesh_draw_type;
-
-typedef struct		{
 						int								nvertex,ntrig;
 						char							name[name_str_len];
 						bool							no_lighting,blend_add,tintable;
  						model_vertex_type				*vertexes;
                         model_trig_type					*trigs;
 						model_material_type				*materials;
-						model_mesh_draw_type			draw;
 					} model_mesh_type;
 
 //
@@ -341,7 +336,7 @@ extern void model_setup_animated_textures(model_type *model,unsigned char *user_
 extern bool model_add_texture_frame(model_type *model,int txt,char *bitmap_name);
 extern bool model_delete_texture_frame(model_type *model,int txt);
 
-extern bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup);
+extern bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup,bool normals);
 extern void model_draw_setup_shutdown(model_type *model,model_draw_setup *draw_setup);
 extern void model_draw_setup_clear(model_type *model,model_draw_setup *draw_setup);
 
@@ -351,9 +346,9 @@ extern void model_create_draw_bones(model_type *model,model_draw_setup *draw_set
 extern void model_create_draw_vertexes(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 extern void model_create_draw_2D_vertexes(model_type *model,int mesh_idx,model_draw_setup *draw_setup,int x_offset,int y_offset,float x_resize,float y_resize);
 
-extern void model_resize_draw_vertex(model_type *model,int mesh_idx,float resize);
-extern void model_flip_draw_vertex(model_type *model,int mesh_idx);
-extern void model_translate_draw_vertex(model_type *model,int mesh_idx,int x,int y,int z);
+extern void model_resize_draw_vertex(model_type *model,int mesh_idx,float resize,model_draw_setup *draw_setup);
+extern void model_flip_draw_vertex(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
+extern void model_translate_draw_vertex(model_type *model,int mesh_idx,int x,int y,int z,model_draw_setup *draw_setup);
 
 extern void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 
@@ -392,9 +387,6 @@ extern bool model_new(model_type *model,char *name);
 extern bool model_open(model_type *model,char *name,bool load_bitmaps);
 extern bool model_save(model_type *model);
 extern void model_close(model_type *model);
-
-extern bool model_draw_array_initialize(model_type *model);
-extern void model_draw_array_free(model_type *model);
 
 extern void model_refresh_textures(model_type *model);
 

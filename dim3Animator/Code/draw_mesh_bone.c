@@ -35,7 +35,7 @@ extern int					cur_pose;
       
 ======================================================= */
 
-void draw_model_mesh(model_type *model,int mesh_idx)
+void draw_model_mesh(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 {
 	int					n,ntrig;
     model_trig_type		*trig;
@@ -45,7 +45,7 @@ void draw_model_mesh(model_type *model,int mesh_idx)
 		
 	mesh=&model->meshes[mesh_idx];
 		
-	glVertexPointer(3,GL_FLOAT,0,mesh->draw.gl_vertex_array);
+	glVertexPointer(3,GL_FLOAT,0,draw_setup->mesh_arrays[mesh_idx].gl_vertex_array);
 	glLockArraysEXT(0,mesh->nvertex);
 	
 	glColor4f(0.75,0.75,0.75,1);

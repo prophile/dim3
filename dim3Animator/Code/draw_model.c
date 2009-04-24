@@ -209,8 +209,8 @@ void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 		
 	mesh=&model->meshes[mesh_idx];
 	
-	glVertexPointer(3,GL_FLOAT,0,mesh->draw.gl_vertex_array);
-	glNormalPointer(GL_FLOAT,0,mesh->draw.gl_vertex_normal_array);
+	glVertexPointer(3,GL_FLOAT,0,draw_setup->mesh_arrays[mesh_idx].gl_vertex_array);
+	glNormalPointer(GL_FLOAT,0,draw_setup->mesh_arrays[mesh_idx].gl_normal_array);
 		
 	glLockArraysEXT(0,mesh->nvertex);
 	
@@ -279,8 +279,8 @@ void draw_model_faded(model_type *model,int mesh_idx,model_draw_setup *draw_setu
 		
 	mesh=&model->meshes[mesh_idx];
 	
-	glVertexPointer(3,GL_FLOAT,0,mesh->draw.gl_vertex_array);
-	glNormalPointer(GL_FLOAT,0,mesh->draw.gl_vertex_normal_array);
+	glVertexPointer(3,GL_FLOAT,0,draw_setup->mesh_arrays[mesh_idx].gl_vertex_array);
+	glNormalPointer(GL_FLOAT,0,draw_setup->mesh_arrays[mesh_idx].gl_normal_array);
 		
 	glLockArraysEXT(0,mesh->nvertex);
 	
