@@ -32,9 +32,11 @@ and can be sold or given away.
 #include "scripts.h"
 #include "consoles.h"
 
+extern char				console_input_str[max_console_txt_sz];
 extern js_type			js;
 
 JSBool js_interface_console_write_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_interface_console_read_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			interface_console_class={"interface_console_class",0,
 							script_add_property,JS_PropertyStub,
@@ -43,6 +45,7 @@ JSClass			interface_console_class={"interface_console_class",0,
 
 JSFunctionSpec	interface_console_functions[]={
 							{"write",				js_interface_console_write_func,		1},
+							{"read",				js_interface_console_read_func,			0},
 							{0}};
 
 /* =======================================================
@@ -74,4 +77,11 @@ JSBool js_interface_console_write_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	
 	return(JS_TRUE);
 }
+
+JSBool js_interface_console_read_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	*rval=script_string_to_value(console_input_str);
+	return(JS_TRUE);
+}
+
 

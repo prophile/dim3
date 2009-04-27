@@ -409,7 +409,3 @@ void shadow_render(model_draw *draw)
 	glDepthMask(GL_TRUE);
 	glDisable(GL_STENCIL_TEST);
 }
-
-
-
-

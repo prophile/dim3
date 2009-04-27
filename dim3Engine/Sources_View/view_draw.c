@@ -72,10 +72,10 @@ extern void fog_solid_end(void);
 extern void polygon_segment_start(void);
 extern void polygon_segment_end(void);
 extern bool model_inview(model_draw *draw);
-extern void model_render_setup(int tick,model_draw *draw);
-extern void model_render_opaque(model_draw *draw);
-extern void model_render_transparent(model_draw *draw);
-extern void model_render_target(model_draw *draw,d3col *col);
+extern void render_model_setup(int tick,model_draw *draw);
+extern void render_model_opaque(model_draw *draw);
+extern void render_model_transparent(model_draw *draw);
+extern void render_model_target(model_draw *draw,d3col *col);
 extern void view_draw_liquid_tint(int liquid_idx);
 extern void view_draw_effect_tint(int tick,obj_type *obj);
 extern void fade_screen_draw(int tick);
@@ -288,14 +288,14 @@ void view_draw_model_opaque(int tick)
 
 			case view_render_type_object:
 				obj=&server.objs[view.render->draw_list.items[n].idx];
-				model_render_setup(tick,&obj->draw);
-				if (obj->model_in_view) model_render_opaque(&obj->draw);
+				render_model_setup(tick,&obj->draw);
+				if (obj->model_in_view) render_model_opaque(&obj->draw);
 				break;
 
 			case view_render_type_projectile:
 				proj=&server.projs[view.render->draw_list.items[n].idx];
-				model_render_setup(tick,&proj->draw);
-				model_render_opaque(&proj->draw);
+				render_model_setup(tick,&proj->draw);
+				render_model_opaque(&proj->draw);
 				break;
 
 		}
@@ -323,12 +323,12 @@ void view_draw_model_transparent(int tick)
 
 			case view_render_type_object:
 				obj=&server.objs[view.render->draw_list.items[n].idx];
-				if (obj->model_in_view) model_render_transparent(&obj->draw);
+				if (obj->model_in_view) render_model_transparent(&obj->draw);
 				break;
 
 			case view_render_type_projectile:
 				proj=&server.projs[view.render->draw_list.items[n].idx];
-				model_render_transparent(&proj->draw);
+				render_model_transparent(&proj->draw);
 				break;
 
 		}
@@ -362,7 +362,7 @@ void view_draw_models_final(void)
 				
 				if (obj->model_in_view) {
 					if (obj->remote.on) remote_draw_status(obj);
-					if (object_is_targetted(obj,&col)) model_render_target(&obj->draw,&col);
+					if (object_is_targetted(obj,&col)) render_model_target(&obj->draw,&col);
 					if (dim3_debug) {
 						view_draw_debug_bounding_box(obj);
 						view_draw_object_path(obj);

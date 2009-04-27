@@ -858,10 +858,11 @@ and can be sold or given away.
 #define sd_event_move									2030
 #define sd_event_menu									2031
 #define sd_event_chooser								2032
-#define sd_event_interface								2033
-#define sd_event_state									2034
-#define sd_event_rule									2035
-#define sd_event_remote									2036
+#define sd_event_console								2033
+#define sd_event_interface								2034
+#define sd_event_state									2035
+#define sd_event_rule									2036
+#define sd_event_remote									2037
 
 //
 // sub events constants

@@ -155,6 +155,7 @@ script_define_type			script_dim3_defines[]={
 								{sd_event_move,									"",		"DIM3_EVENT_MOVE"},
 								{sd_event_menu,									"",		"DIM3_EVENT_MENU"},
 								{sd_event_chooser,								"",		"DIM3_EVENT_CHOOSER"},
+								{sd_event_console,								"",		"DIM3_EVENT_CONSOLE"},
 								{sd_event_interface,							"",		"DIM3_EVENT_INTERFACE"},
 								{sd_event_state,								"",		"DIM3_EVENT_STATE"},
 								{sd_event_rule,									"",		"DIM3_EVENT_RULE"},
