@@ -79,8 +79,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 262492526;
-			PBXWorkspaceStateSaveDate = 262492526;
+			PBXPerProjectTemplateStateSaveDate = 262576048;
+			PBXWorkspaceStateSaveDate = 262576048;
 		};
 		perUserProjectItems = {
 			26650DDF0F0EC86400D22461 /* PlistBookmark */ = 26650DDF0F0EC86400D22461 /* PlistBookmark */;
@@ -859,17 +859,17 @@
 	};
 	F5A58188090B433F00BE7C36 /* script_map_node.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 3346}}";
-			sepNavSelRange = "{4392, 29}";
-			sepNavVisRange = "{3920, 913}";
-			sepNavWindowFrame = "{{382, 243}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4130}}";
+			sepNavSelRange = "{5713, 0}";
+			sepNavVisRange = "{5262, 879}";
+			sepNavWindowFrame = "{{154, 255}, {1041, 747}}";
 		};
 	};
 	F5A58189090B433F00BE7C36 /* script_map_object.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 13062}}";
-			sepNavSelRange = "{7141, 21}";
-			sepNavVisRange = "{5396, 2820}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 13342}}";
+			sepNavSelRange = "{20731, 96}";
+			sepNavVisRange = "{20231, 1131}";
 			sepNavWindowFrame = "{{123, 236}, {1041, 747}}";
 		};
 	};
@@ -1027,9 +1027,9 @@
 	};
 	F5A581B2090B433F00BE7C36 /* script_obj_weapon.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 5180}}";
-			sepNavSelRange = "{6504, 0}";
-			sepNavVisRange = "{6054, 1188}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4690}}";
+			sepNavSelRange = "{6055, 0}";
+			sepNavVisRange = "{5478, 1144}";
 			sepNavWindowFrame = "{{301, 144}, {1041, 747}}";
 		};
 	};
@@ -1171,9 +1171,9 @@
 	};
 	F5A5823F090B512000BE7C36 /* weapons.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1456}}";
-			sepNavSelRange = "{2240, 0}";
-			sepNavVisRange = "{1036, 3434}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1470}}";
+			sepNavSelRange = "{1680, 0}";
+			sepNavVisRange = "{1079, 3428}";
 			sepNavWindowFrame = "{{15, 276}, {1041, 747}}";
 		};
 	};
@@ -1267,9 +1267,9 @@
 	};
 	F5A582BD090C98D500BE7C36 /* server_defs.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 15512}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 15498}}";
 			sepNavSelRange = "{23029, 22}";
-			sepNavVisRange = "{22441, 1125}";
+			sepNavVisRange = "{17207, 1651}";
 			sepNavWindowFrame = "{{416, 224}, {1041, 747}}";
 		};
 	};
@@ -1774,10 +1774,10 @@
 	};
 	F5DD1A290908588500721649 /* weapon_select.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7910}}";
-			sepNavSelRange = "{4080, 11}";
-			sepNavVisRange = "{3746, 1040}";
-			sepNavWindowFrame = "{{964, 31}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7994}}";
+			sepNavSelRange = "{2727, 0}";
+			sepNavVisRange = "{2072, 1248}";
+			sepNavWindowFrame = "{{495, 128}, {1041, 747}}";
 		};
 	};
 	F5DD1A2A0908588500721649 /* weapon_projectile.c */ = {

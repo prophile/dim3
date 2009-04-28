@@ -32,12 +32,14 @@ and can be sold or given away.
 #include "scripts.h"
 
 extern map_type			map;
+extern server_type		server;
 extern js_type			js;
 
 JSBool js_map_node_find_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_node_find_random_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_node_find_nearest_to_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_node_find_nearest_names_in_path_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_node_find_nearest_unheld_weapon_in_path_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_node_next_in_path_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_node_get_name_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_node_get_distance_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -50,15 +52,16 @@ JSClass			map_node_class={"map_node_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 JSFunctionSpec	map_node_functions[]={
-							{"find",					js_map_node_find_func,							1},
-							{"findRandom",				js_map_node_find_random_func,					1},
-							{"findNearestToObject",		js_map_node_find_nearest_to_object_func,		1},
-							{"findNearestNamesInPath",	js_map_node_find_nearest_names_in_path_func,	2},
-							{"nextInPath",				js_map_node_next_in_path_func,					2},
-							{"getName",					js_map_node_get_name_func,						1},
-							{"getDistance",				js_map_node_get_distance_func,					4},
-							{"getAngleTo",				js_map_node_get_angle_to_func,					4},
-							{"getPosition",				js_map_node_get_position_func,					1},
+							{"find",							js_map_node_find_func,									1},
+							{"findRandom",						js_map_node_find_random_func,							1},
+							{"findNearestToObject",				js_map_node_find_nearest_to_object_func,				1},
+							{"findNearestNamesInPath",			js_map_node_find_nearest_names_in_path_func,			2},
+							{"findNearestUnheldWeaponInPath",	js_map_node_find_nearest_unheld_weapon_in_path_func,	2},
+							{"nextInPath",						js_map_node_next_in_path_func,							2},
+							{"getName",							js_map_node_get_name_func,								1},
+							{"getDistance",						js_map_node_get_distance_func,							4},
+							{"getAngleTo",						js_map_node_get_angle_to_func,							4},
+							{"getPosition",						js_map_node_get_position_func,							1},
 							{0}};
 
 /* =======================================================
@@ -77,7 +80,7 @@ void script_add_map_node_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Find Node Functions
+      Find Node Find Functions
       
 ======================================================= */
 
@@ -159,6 +162,49 @@ JSBool js_map_node_find_nearest_names_in_path_func(JSContext *cx,JSObject *j_obj
 	
 	return(JS_TRUE);
 }
+
+JSBool js_map_node_find_nearest_unheld_weapon_in_path_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int				n,idx,from_idx,k,d,dist;
+	obj_type		*obj;
+	weapon_type		*weap;
+	
+		// from node and object
+		
+	from_idx=JSVAL_TO_INT(argv[0]);
+
+	obj=script_find_obj_from_uid_arg(argv[1]);
+	if (obj==NULL) return(JS_FALSE);
+	
+		// check all unheld weapons
+		
+	idx=-1;
+	dist=-1;
+	
+	for (n=0;n!=server.count.weapon;n++) {
+		weap=&server.weapons[n];
+		if (weap->obj_uid!=obj->uid) continue;
+		if (!weap->hidden) continue;
+		
+		k=map_find_nearest_node_in_path(&map,from_idx,weap->name,&d);
+		if (k==-1) continue;
+		
+		if ((dist==-1) || (d<dist)) {
+			dist=d;
+			idx=k;
+		}
+	}
+	
+	*rval=INT_TO_JSVAL(idx);
+	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Find Node Path Functions
+      
+======================================================= */
 
 JSBool js_map_node_next_in_path_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
