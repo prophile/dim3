@@ -815,7 +815,7 @@ void map_mesh_set_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,float x
 
 /* =======================================================
 
-      Rotate UVs
+      Rotate and Flip UVs
       
 ======================================================= */
 
@@ -852,6 +852,47 @@ void map_mesh_rotate_poly_uv(map_type *map,int mesh_idx,int poly_idx,int rot_ang
 				poly->gy[n]=g;
 				break;
 		
+		}
+	}
+}
+
+void map_mesh_flip_poly_uv(map_type *map,int mesh_idx,int poly_idx,bool flip_u,bool flip_v)
+{
+	int						n;
+	float					min_gx,max_gx,min_gy,max_gy,g;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	
+	mesh=&map->mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+	
+		// get min and max
+		
+	min_gx=max_gx=poly->gx[0];
+	min_gy=max_gy=poly->gy[0];
+	
+	for (n=1;n<poly->ptsz;n++) {
+		if (poly->gx[n]<min_gx) min_gx=poly->gx[n];
+		if (poly->gx[n]>max_gx) max_gx=poly->gx[n];
+		if (poly->gy[n]<min_gy) min_gy=poly->gy[n];
+		if (poly->gy[n]>max_gy) max_gy=poly->gy[n];
+	}
+	
+	if ((flip_u) && (max_gx==min_gx)) return;
+	if ((flip_v) && (max_gy==min_gy)) return;
+	
+		// flip
+		
+	for (n=0;n!=poly->ptsz;n++) {
+		
+		if (flip_u) {
+			g=1.0f-((poly->gx[n]-min_gx)/(max_gx-min_gx));
+			poly->gx[n]=min_gx+((max_gx-min_gx)*g);
+		}
+			
+		if (flip_v) {
+			g=1.0f-((poly->gy[n]-min_gy)/(max_gy-min_gy));
+			poly->gy[n]=min_gy+((max_gy-min_gy)*g);
 		}
 	}
 }

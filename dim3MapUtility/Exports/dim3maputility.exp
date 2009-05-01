@@ -51,6 +51,7 @@ _map_mesh_poly_run_shifts
 _map_mesh_get_poly_uv_as_box
 _map_mesh_set_poly_uv_as_box
 _map_mesh_rotate_poly_uv
+_map_mesh_flip_poly_uv
 _map_mesh_reset_poly_uv
 _map_mesh_reset_uv
 _map_mesh_whole_poly_uv

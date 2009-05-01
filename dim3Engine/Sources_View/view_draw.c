@@ -289,7 +289,7 @@ void view_draw_model_opaque(int tick)
 			case view_render_type_object:
 				obj=&server.objs[view.render->draw_list.items[n].idx];
 				render_model_setup(tick,&obj->draw);
-				if (obj->model_in_view) render_model_opaque(&obj->draw);
+				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) render_model_opaque(&obj->draw);
 				break;
 
 			case view_render_type_projectile:
@@ -323,7 +323,7 @@ void view_draw_model_transparent(int tick)
 
 			case view_render_type_object:
 				obj=&server.objs[view.render->draw_list.items[n].idx];
-				if (obj->model_in_view) render_model_transparent(&obj->draw);
+				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) render_model_transparent(&obj->draw);
 				break;
 
 			case view_render_type_projectile:
@@ -358,9 +358,11 @@ void view_draw_models_final(void)
 			case view_render_type_object:
 				obj=&server.objs[view.render->draw_list.items[n].idx];
 				
-				if (obj->shadow_in_view) shadow_render(&obj->draw);
+				if (!view.render->no_shadow) {
+					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) shadow_render(&obj->draw);
+				}
 				
-				if (obj->model_in_view) {
+				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
 					if (obj->remote.on) remote_draw_status(obj);
 					if (object_is_targetted(obj,&col)) render_model_target(&obj->draw,&col);
 					if (dim3_debug) {
@@ -536,6 +538,8 @@ void view_draw(int tick)
 	view.render->camera.fov=camera.plane.fov;
 	view.render->camera.flip=FALSE;
 	view.render->camera.under_liquid_idx=camera_check_liquid(&view.render->camera.pnt);
+	
+	view.render->no_shadow=FALSE;
 
 		// camera adjustments
 	
@@ -584,6 +588,8 @@ bool view_draw_node(int tick,node_type *node,int pixel_size)
 	view.render->camera.fov=camera.plane.fov;
 	view.render->camera.flip=TRUE;
 	view.render->camera.under_liquid_idx=-1;
+	
+	view.render->no_shadow=TRUE;
 
 		// draw the scene
 	

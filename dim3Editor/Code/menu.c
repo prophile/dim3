@@ -460,6 +460,16 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			piece_rotate_uvs();
 			main_wind_draw();
 			return(noErr);
+			
+		case kCommandPolygonFlipU:
+			piece_flip_uvs(TRUE,FALSE);
+			main_wind_draw();
+			return(noErr);
+			
+		case kCommandPolygonFlipV:
+			piece_flip_uvs(FALSE,TRUE);
+			main_wind_draw();
+			return(noErr);
 
 		case kCommandPolygonResetUV:
 			piece_reset_uvs(TRUE);

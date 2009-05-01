@@ -284,7 +284,7 @@ void object_auto_walk_set_motion(obj_type *obj)
 
 void object_auto_walk_node(obj_type *obj)
 {
-	int				dist,seek_idx,dest_idx;
+	int				dist,chk_dist,seek_idx,dest_idx;
 	float			ang_y,dif_y;
 	bool			cwise;
 	node_type		*node;
@@ -312,16 +312,26 @@ void object_auto_walk_node(obj_type *obj)
 	
 		// stop walking if turn is too hard
 		
-	obj->forward_move.moving=(dif_y<45.0f);
+//	obj->forward_move.moving=(dif_y<45.0f);		// supergumba
+	object_auto_walk_set_motion(obj);
 	
 		// if flying, put in a seek angle
 		
 	object_auto_walk_set_vertical_move(obj,node->pnt.y,node->pnt.z);
 	
+		// get node slop
+		
+	if (obj->forward_move.running) {
+		chk_dist=(int)(obj->forward_move.max_run_speed*node_slop_speed_factor);
+	}
+	else {
+		chk_dist=(int)(obj->forward_move.max_walk_speed*node_slop_speed_factor);
+	}
+	
 		// near node?
 		
 	dist=distance_get(node->pnt.x,node->pnt.y,node->pnt.z,obj->pnt.x,obj->pnt.y,obj->pnt.z);
-	if (dist>(int)(obj->forward_move.speed*node_slop_speed_factor)) return;
+	if (dist>chk_dist) return;
 	
 		// move on to next node
 		

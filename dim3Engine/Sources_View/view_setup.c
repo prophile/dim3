@@ -160,7 +160,7 @@ void view_start_draw_list(void)
 	view.render->draw_list.count=0;
 }
 
-void view_add_draw_list(int item_type,int item_idx,double item_dist)
+void view_add_draw_list(int item_type,int item_idx,double item_dist,int item_flag)
 {
 	int				t,idx,sz;
 
@@ -184,6 +184,7 @@ void view_add_draw_list(int item_type,int item_idx,double item_dist)
 	if (idx==-1) {
 		view.render->draw_list.items[view.render->draw_list.count].type=item_type;
 		view.render->draw_list.items[view.render->draw_list.count].dist=item_dist;
+		view.render->draw_list.items[view.render->draw_list.count].flag=item_flag;
 		view.render->draw_list.items[view.render->draw_list.count].idx=(short)item_idx;
 	}
 	
@@ -195,6 +196,7 @@ void view_add_draw_list(int item_type,int item_idx,double item_dist)
 		
 		view.render->draw_list.items[idx].type=item_type;
 		view.render->draw_list.items[idx].dist=item_dist;
+		view.render->draw_list.items[idx].flag=item_flag;
 		view.render->draw_list.items[idx].idx=(short)item_idx;
 	}
 
@@ -276,7 +278,7 @@ void view_add_mesh_draw_list(void)
 		
 			// sort meshes into drawing list
 
-		view_add_draw_list(view_render_type_mesh,n,d);
+		view_add_draw_list(view_render_type_mesh,n,d,0x0);
 	}
 }
 
@@ -323,7 +325,7 @@ void view_add_liquid_draw_list(void)
 		
 			// sort liquids into drawing list
 
-		view_add_draw_list(view_render_type_liquid,n,d);
+		view_add_draw_list(view_render_type_liquid,n,d,0x0);
 	}
 }
 
@@ -364,7 +366,7 @@ bool view_setup_model_in_view(model_draw *draw,int mesh_idx)
 
 void view_setup_objects(int tick)
 {
-	int					n;
+	int					n,flag;
 	bool				is_camera;
 	obj_type			*obj;
 	weapon_type			*weap;
@@ -383,22 +385,23 @@ void view_setup_objects(int tick)
 	
 			// detect if model is in view
 			
-		obj->model_in_view=obj->shadow_in_view=FALSE;
+		flag=0x0;
 		
 		if (is_camera) {
-			obj->shadow_in_view=TRUE;
+			flag|=view_list_item_flag_shadow_in_view;
 		}
 		else {
 			if (!view_setup_model_in_view(&obj->draw,obj->mesh.cur_mesh_idx)) continue;
 			
-			obj->model_in_view=obj->shadow_in_view=TRUE;
+			flag|=view_list_item_flag_model_in_view;
+			flag|=view_list_item_flag_shadow_in_view;
 			
 			// supergumba -- deal with shadows in view here
 		}
 		
 			// add to draw list
 
-		view_add_draw_list(view_render_type_object,n,obj->draw.draw_dist);
+		view_add_draw_list(view_render_type_object,n,obj->draw.draw_dist,flag);
 	
 			// setup model animations for models in view
 		
@@ -438,7 +441,7 @@ void view_setup_projectiles(int tick)
 
 			// add to draw list
 
-		view_add_draw_list(view_render_type_projectile,n,proj->draw.draw_dist);
+		view_add_draw_list(view_render_type_projectile,n,proj->draw.draw_dist,0x0);
 		
 			// setup model animations for models in view
 			
@@ -496,7 +499,7 @@ void view_add_effect_draw_list(int tick)
 		
 			// sort liquids into drawing list
 
-		view_add_draw_list(view_render_type_effect,n,d);
+		view_add_draw_list(view_render_type_effect,n,d,0x0);
 	}
 }
 

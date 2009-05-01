@@ -138,6 +138,7 @@ extern void piece_mesh_snap_closest_vertex(void);
 extern void piece_mesh_poly_snap_to_grid(void);
 extern void piece_mesh_vertexes_snap_to_grid(void);
 extern void piece_rotate_uvs(void);
+extern void piece_flip_uvs(bool flip_u,bool flip_v);
 extern void piece_reset_uvs(bool poly_only);
 extern void piece_whole_uvs(bool poly_only);
 extern void piece_single_uvs(bool poly_only);

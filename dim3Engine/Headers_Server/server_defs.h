@@ -178,9 +178,9 @@ and can be sold or given away.
 // node walking
 //
 
-#define node_slop_speed_factor					2.0f				// how close to a node do we have to be (compared with speed) to be a hit
+#define node_slop_speed_factor					2.5f				// how close to a node do we have to be (compared with speed) to be a hit
 #define node_pause_max_angle					45.0f				// angle needed to get out of a pause to turn
-#define node_pause_min_angle					30.0f				// angle needed to get out of a pause when already paused
+#define node_pause_min_angle					25.0f				// angle needed to get out of a pause when already paused
 
 //
 // misc settings
@@ -798,8 +798,7 @@ typedef struct		{
 												player,bot,side_step,crawl,single_speed,no_slide,
 												open_doors,input_freeze,hide_all_weapons,
 												find_on,in_collide_event,on_ladder,
-												quick_reverse,death_trigger,death_telefrag,
-												model_in_view,shadow_in_view;
+												quick_reverse,death_trigger,death_telefrag;
 						d3pnt					pnt,org_pnt,last_pnt;
 						d3ang					ang,view_ang,org_ang,last_ang;
 						obj_motion				motion;

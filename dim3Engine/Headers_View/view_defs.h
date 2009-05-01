@@ -205,6 +205,9 @@ typedef struct		{
 // view rendering structure
 //
 
+#define view_list_item_flag_model_in_view					0x1
+#define view_list_item_flag_shadow_in_view					0x2
+
 typedef struct		{
 						int									under_liquid_idx;
 						float								fov;
@@ -214,6 +217,7 @@ typedef struct		{
 					} view_render_camera_type;
 	
 typedef struct		{
+						int									flag;
 						short								type,idx;
 						double								dist;
 					} view_render_draw_list_item_type;
@@ -234,7 +238,7 @@ typedef struct		{
 					} view_render_halo_type;
 
 typedef struct		{
-						bool								has_area;
+						bool								has_area,no_shadow;
 						char								area_mask[max_area];
 						view_render_camera_type				camera;
 						view_render_draw_list_type			draw_list;

@@ -91,6 +91,8 @@ and can be sold or given away.
 #define kCommandPolygonHole					FOUR_CHAR_CODE('fhl1')
 #define kCommandPolygonSnapToGrid			FOUR_CHAR_CODE('psnp')
 #define kCommandPolygonRotateUV				FOUR_CHAR_CODE('pyru')
+#define kCommandPolygonFlipU				FOUR_CHAR_CODE('pyfu')
+#define kCommandPolygonFlipV				FOUR_CHAR_CODE('pyfv')
 #define kCommandPolygonResetUV				FOUR_CHAR_CODE('pyuv')
 #define kCommandPolygonWholeUV				FOUR_CHAR_CODE('pywv')
 #define kCommandPolygonSingleUV				FOUR_CHAR_CODE('pyss')

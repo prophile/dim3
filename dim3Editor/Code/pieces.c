@@ -826,6 +826,21 @@ void piece_rotate_uvs(void)
 	}
 }
 
+void piece_flip_uvs(bool flip_u,bool flip_v)
+{
+	int						n,sel_count,
+							type,mesh_idx,poly_idx;
+
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
+
+		map_mesh_flip_poly_uv(&map,mesh_idx,poly_idx,flip_u,flip_v);
+	}
+}
+
 /* =======================================================
 
       Piece Holes

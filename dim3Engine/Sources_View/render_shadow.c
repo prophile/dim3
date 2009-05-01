@@ -237,7 +237,7 @@ void shadow_render(model_draw *draw)
     model_trig_type				*trig;
 	model_mesh_type				*mesh;
 	model_type					*mdl;
-	view_light_spot_type		*lspot;
+	view_light_spot_type		*lspot,temp_lspot;
 	ray_trace_contact_type		base_contact;
 	ray_trace_check_item_type	*item_list;
 	
@@ -251,9 +251,16 @@ void shadow_render(model_draw *draw)
 	if (mdl==NULL) return;
 	
 		// get nearest light
+		// or from directly above if no light
 
 	lspot=gl_light_find_closest_light(draw->pnt.x,draw->pnt.y,draw->pnt.z);
-	if (lspot==NULL) return;
+	
+	if (lspot==NULL) {
+		lspot=&temp_lspot;
+		memmove(&lspot->pnt,&draw->pnt,sizeof(d3pnt));
+		lspot->pnt.y-=map_enlarge*100;
+		lspot->intensity=(map_enlarge*100)+draw->size.y;
+	}
 
 		// draw distance
 	

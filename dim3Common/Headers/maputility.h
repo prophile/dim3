@@ -623,6 +623,7 @@ extern void map_mesh_poly_run_shifts(map_type *map,int tick);
 extern void map_mesh_get_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact);
 extern void map_mesh_set_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact);
 extern void map_mesh_rotate_poly_uv(map_type *map,int mesh_idx,int poly_idx,int rot_ang);
+extern void map_mesh_flip_poly_uv(map_type *map,int mesh_idx,int poly_idx,bool flip_u,bool flip_v);
 extern void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx);
 extern void map_mesh_reset_uv(map_type *map,int mesh_idx);
 extern void map_mesh_whole_poly_uv(map_type *map,int mesh_idx,int poly_idx);

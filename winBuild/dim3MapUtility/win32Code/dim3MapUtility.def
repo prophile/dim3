@@ -54,12 +54,13 @@ EXPORTS
 	map_mesh_get_poly_uv_as_box						@245
 	map_mesh_set_poly_uv_as_box						@246
 	map_mesh_rotate_poly_uv							@247
-	map_mesh_reset_poly_uv							@248
-	map_mesh_reset_uv								@249
-	map_mesh_whole_poly_uv							@250
-	map_mesh_whole_uv								@251
-	map_mesh_single_poly_uv							@252
-	map_mesh_single_uv								@253
+	map_mesh_flip_poly_uv							@248
+	map_mesh_reset_poly_uv							@249
+	map_mesh_reset_uv								@250
+	map_mesh_whole_poly_uv							@251
+	map_mesh_whole_uv								@252
+	map_mesh_single_poly_uv							@253
+	map_mesh_single_uv								@254
 
 	map_liquid_add									@260
 	map_liquid_delete								@261
