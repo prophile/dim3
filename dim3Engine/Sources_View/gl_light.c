@@ -122,6 +122,7 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,int intensity,floa
 		// already too many lights?
 
 	if (view.render->light.count==max_light_spot) return;
+	if (intensity<=0) return;
 
 		// is light in view?
 
@@ -373,9 +374,9 @@ void gl_lights_calc_vertex(double x,double y,double z,float *cf)
 
 view_light_spot_type* gl_light_find_closest_light(double x,double y,double z)
 {
-	int					n,k;
-	double				dx,dz,dy,d,dist;
-	view_light_spot_type		*lspot;
+	int						n,k;
+	double					dx,dz,dy,d,dist;
+	view_light_spot_type	*lspot;
 
 		// no lights in scene
 
@@ -482,7 +483,6 @@ void gl_lights_build_from_box(d3pnt *mid,d3pnt *min,d3pnt *max,view_glsl_light_l
 				break;
 
 		}
-
 
 			// get distance
 

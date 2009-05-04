@@ -615,6 +615,7 @@ and can be sold or given away.
 #define weap_zoom_prop_crawl_turn_factor			6
 #define weap_zoom_prop_look_factor					7
 #define weap_zoom_prop_mask_name					8
+#define weap_zoom_prop_tick							9
 
 //
 // projectile property IDs

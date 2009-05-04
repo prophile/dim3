@@ -71,12 +71,16 @@ void zoom_setup(int tick,obj_type *obj,weapon_type *weap)
 	if (obj->hide_all_weapons) return;
 	if ((!weap->zoom.on) || (!weap->zoom.active)) return;
 	
+		// iron sites effect masking
+				
+	if (tick<(zoom_draw->start_tick+weap->zoom.tick)) return;
+	
 		// get zoom screen location from crosshair
 
 	if (!crosshair_get_location(tick,obj,weap,&tx,&tz,&ty,&obj_uid)) return;
 
 	zoom_draw->on=TRUE;
-	
+		
 		// get the zoom place
 		
 	gl_3D_view();
@@ -118,6 +122,7 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 	
 		// is there a mask?
 		
+	if (!obj->zoom_draw.on) return;
 	if (weap->zoom.mask_idx==-1) return;
 		
 		// position

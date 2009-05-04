@@ -574,9 +574,9 @@ void view_add_halos(void)
       
 ======================================================= */
 
-void view_calculate_scope(obj_type *obj,obj_type *camera_obj)
+void view_calculate_scope(int tick,obj_type *obj,obj_type *camera_obj)
 {
-	float			f_step,f_max_step;
+	float			f_step,f_max_step,f_zoom;
 	weapon_type		*weap;
 	
 		// is object the camera object?
@@ -600,7 +600,17 @@ void view_calculate_scope(obj_type *obj,obj_type *camera_obj)
 	f_step=(float)weap->zoom.current_step;
 	f_max_step=(float)(weap->zoom.step_count-1);
 	
-	view.render->camera.fov=weap->zoom.fov_max-(((weap->zoom.fov_max-weap->zoom.fov_min)/f_max_step)*f_step);
+	f_zoom=(weap->zoom.fov_max-(((weap->zoom.fov_max-weap->zoom.fov_min)/f_max_step)*f_step))-view.render->camera.fov;
+	
+		// iron sites
+		
+	if (tick<(obj->zoom_draw.start_tick+weap->zoom.tick)) {
+		f_zoom*=((float)(tick-obj->zoom_draw.start_tick)/(float)weap->zoom.tick);
+	}
+	
+		// change perspective
+	
+	view.render->camera.fov+=f_zoom;
 }
 
 void view_calculate_recoil(obj_type *obj)

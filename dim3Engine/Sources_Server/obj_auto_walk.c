@@ -312,7 +312,6 @@ void object_auto_walk_node(obj_type *obj)
 	
 		// stop walking if turn is too hard
 		
-//	obj->forward_move.moving=(dif_y<45.0f);		// supergumba
 	object_auto_walk_set_motion(obj);
 	
 		// if flying, put in a seek angle

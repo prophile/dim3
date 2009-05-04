@@ -47,7 +47,7 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 extern hud_type				hud;
-render_info_type			render_info;
+extern render_info_type		render_info;
 
 extern bool					dim3_debug;
 
@@ -92,7 +92,7 @@ extern void view_setup_projectiles(int tick);
 extern void view_add_effect_draw_list(int tick);
 extern void view_add_halos(void);
 extern bool view_compile_mesh_gl_lists(int tick);
-extern void view_calculate_scope(obj_type *obj,obj_type *camera_obj);
+extern void view_calculate_scope(int tick,obj_type *obj,obj_type *camera_obj);
 extern void view_calculate_recoil(obj_type *obj);
 extern void view_calculate_shakes(int tick,obj_type *obj);
 extern void view_calculate_sways(int tick,obj_type *obj);
@@ -544,7 +544,7 @@ void view_draw(int tick)
 		// camera adjustments
 	
 	if (camera.mode==cv_fpp) {
-		view_calculate_scope(obj,camera_obj);
+		view_calculate_scope(tick,obj,camera_obj);
 		view_calculate_recoil(obj);
 	}
 	

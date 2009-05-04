@@ -629,7 +629,7 @@ typedef struct		{
 					} obj_crosshair_draw;
 					
 typedef struct		{
-						int						x,y,old_camera_mode;
+						int						x,y,old_camera_mode,start_tick;
 						bool					on;
 					} obj_zoom_draw;
 
@@ -737,7 +737,7 @@ typedef struct		{
 					} weap_target_type;
 					
 typedef struct		{
-						int						mask_idx,step_count,current_step;
+						int						mask_idx,tick,step_count,current_step;
 						float					fov_min,fov_max,
 												turn_factor,crawl_turn_factor,look_factor;
 						char					mask_name[name_str_len];

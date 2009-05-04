@@ -449,6 +449,8 @@ void weapon_zoom_on(obj_type *obj,weapon_type *weap)
 		// save old camera mode and switch to fpp
 
 	obj->zoom_draw.old_camera_mode=camera.mode;
+	obj->zoom_draw.start_tick=game_time_get();
+	
 	camera.mode=cv_fpp;
 
  	scripts_post_event_console(&weap->attach,sd_event_weapon_fire,sd_event_weapon_fire_zoom_enter,0);

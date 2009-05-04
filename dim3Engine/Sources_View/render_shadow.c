@@ -76,7 +76,7 @@ bool shadow_initialize(char *err_str)
 	
 		// create memory for stencil vbo
 		
-	shadow_stencil_vbo=(float*)malloc(((stencil_poly_end-stencil_poly_start)*3)*sizeof(float));
+	shadow_stencil_vbo=(float*)malloc((((stencil_poly_end-stencil_poly_start)*3)*8)*sizeof(float));
 	
 		// check for memory errors
 	
@@ -244,6 +244,8 @@ void shadow_render(model_draw *draw)
 		// shadows on for this object?
 		
 	if ((!setup.shadow_on) || (!draw->shadow.on)) return;
+	
+	return;		// supergumba -- turn off for now
 
 		// get model
 
@@ -271,7 +273,7 @@ void shadow_render(model_draw *draw)
 	f_dist=(float)lspot->intensity-(float)sqrt((dx*dx)+(dy*dy)+(dz*dz));
 	
 		// start stenciling
-		
+
 	glEnable(GL_STENCIL_TEST);
 	glDepthMask(GL_FALSE);
 
@@ -321,7 +323,7 @@ void shadow_render(model_draw *draw)
 			// reduce list if it's over the number of items we can stencil
 			
 		item_list=ray_trace_get_last_item_list(&item_count);
-		
+
 		if (item_count==0) continue;
 		if (item_count>(stencil_poly_end-stencil_poly_start)) item_count=stencil_poly_end-stencil_poly_start;
 		
@@ -412,7 +414,7 @@ void shadow_render(model_draw *draw)
 
 		shadow_stencil_poly_clear(item_count,item_list);
 	}
-	
+
 	glDepthMask(GL_TRUE);
 	glDisable(GL_STENCIL_TEST);
 }
