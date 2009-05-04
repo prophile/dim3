@@ -47,6 +47,7 @@ float					shadow_alpha;
 float					*shadow_stencil_vbo;
 bool					*shadow_hits;
 d3pnt					*shadow_spt,*shadow_ept,*shadow_hpt;
+view_light_spot_type	shadow_above_lspot;
 
 /* =======================================================
 
@@ -95,6 +96,103 @@ void shadow_shutdown(void)
 	free(shadow_hpt);
 	free(shadow_hits);
 	free(shadow_stencil_vbo);
+}
+
+/* =======================================================
+
+      Shadow Draw Volume
+      
+======================================================= */
+
+view_light_spot_type* shadow_get_light_spot(model_draw *draw)
+{
+	view_light_spot_type			*lspot;
+
+		// get closest light
+
+	lspot=gl_light_find_closest_light(draw->pnt.x,draw->pnt.y,draw->pnt.z);
+	if (lspot!=NULL) return(lspot);
+
+		// if no light, get light directly above
+
+	lspot=&shadow_above_lspot;
+	memmove(&lspot->pnt,&draw->pnt,sizeof(d3pnt));
+	lspot->pnt.y-=map_enlarge*100;
+	lspot->intensity=(map_enlarge*100)+draw->size.y;
+	
+	return(lspot);
+}
+
+float shadow_get_ray_distance(model_draw *draw,view_light_spot_type *lspot)
+{
+	double			dx,dy,dz;
+
+	dx=(lspot->pnt.x-draw->pnt.x);
+	dy=(lspot->pnt.y-(draw->pnt.y-(draw->size.y>>1)));
+	dz=(lspot->pnt.z-draw->pnt.z);
+	
+	return((float)lspot->intensity-(float)sqrt((dx*dx)+(dy*dy)+(dz*dz)));
+}
+
+bool shadow_get_volume(model_draw *draw,int *px,int *py,int *pz)
+{
+	int							n;
+	float						f_dist;
+	bool						hits[8];
+	d3pnt						spt[8],ept[8],hpt[8];
+	d3vct						ray_move;
+	model_type					*mdl;
+	view_light_spot_type		*lspot;
+	ray_trace_contact_type		base_contact;
+
+		// get bounding box
+
+	if ((draw->uid==-1) || (!draw->on)) return(FALSE);
+	
+	mdl=model_find_uid(draw->uid);
+	if (mdl==NULL) return(FALSE);
+		
+	model_get_view_complex_bounding_box(mdl,&draw->pnt,&draw->setup.ang,px,py,pz);
+
+		// get light and draw distance
+
+	lspot=shadow_get_light_spot(draw);
+	f_dist=shadow_get_ray_distance(draw,lspot);
+
+		// ray trace bounding box
+
+	for (n=0;n!=8;n++) {
+		spt[n].x=px[n];
+		spt[n].y=py[n];
+		spt[n].z=pz[n];
+
+		vector_create(&ray_move,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,spt->x,spt->y,spt->z);
+				
+		ept[n].x=spt[n].x-(int)(ray_move.x*f_dist);
+		ept[n].y=spt[n].y-(int)(ray_move.y*f_dist);
+		ept[n].z=spt[n].z-(int)(ray_move.z*f_dist);
+	}
+
+	base_contact.obj.on=FALSE;
+	base_contact.obj.ignore_uid=-1;
+
+	base_contact.proj.on=FALSE;
+	base_contact.proj.ignore_uid=-1;
+
+	base_contact.hit_mode=poly_ray_trace_hit_mode_all;
+	base_contact.origin=poly_ray_trace_origin_object;
+
+	ray_trace_map_by_point_array_no_contact(8,spt,ept,hpt,hits,&base_contact);
+
+		// set the volume
+
+	for (n=0;n!=8;n++) {
+		px[n]=hpt[n].x;
+		py[n]=hpt[n].y;
+		pz[n]=hpt[n].z;
+	}
+
+	return(TRUE);
 }
 
 /* =======================================================
@@ -231,47 +329,29 @@ void shadow_render(model_draw *draw)
 	float						f_dist;
 	float						*vp,*vertex_ptr;
 	unsigned short				*index_ptr;
-	double						dx,dy,dz;
 	d3vct						ray_move;
 	d3pnt						*spt,*ept,*hpt;
     model_trig_type				*trig;
 	model_mesh_type				*mesh;
 	model_type					*mdl;
-	view_light_spot_type		*lspot,temp_lspot;
+	view_light_spot_type		*lspot;
 	ray_trace_contact_type		base_contact;
 	ray_trace_check_item_type	*item_list;
 	
 		// shadows on for this object?
 		
 	if ((!setup.shadow_on) || (!draw->shadow.on)) return;
-	
-	return;		// supergumba -- turn off for now
 
 		// get model
 
 	mdl=model_find_uid(draw->uid);
 	if (mdl==NULL) return;
 	
-		// get nearest light
-		// or from directly above if no light
+		// get light and draw distance
 
-	lspot=gl_light_find_closest_light(draw->pnt.x,draw->pnt.y,draw->pnt.z);
-	
-	if (lspot==NULL) {
-		lspot=&temp_lspot;
-		memmove(&lspot->pnt,&draw->pnt,sizeof(d3pnt));
-		lspot->pnt.y-=map_enlarge*100;
-		lspot->intensity=(map_enlarge*100)+draw->size.y;
-	}
+	lspot=shadow_get_light_spot(draw);
+	f_dist=shadow_get_ray_distance(draw,lspot);
 
-		// draw distance
-	
-	dx=(lspot->pnt.x-draw->pnt.x);
-	dy=(lspot->pnt.y-(draw->pnt.y-(draw->size.y>>1)));
-	dz=(lspot->pnt.z-draw->pnt.z);
-	
-	f_dist=(float)lspot->intensity-(float)sqrt((dx*dx)+(dy*dy)+(dz*dz));
-	
 		// start stenciling
 
 	glEnable(GL_STENCIL_TEST);

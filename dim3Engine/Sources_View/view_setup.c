@@ -51,6 +51,7 @@ extern setup_type			setup;
 
 extern bool fog_solid_on(void);
 extern bool model_inview(model_draw *draw);
+extern bool shadow_inview(model_draw *draw);
 extern double distance_to_view_center(int x,int y,int z);
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
 extern bool mesh_inview(map_mesh_type *mesh);
@@ -383,7 +384,7 @@ void view_setup_objects(int tick)
 		object_fly_reset_angle(obj);
 		model_draw_setup_object(tick,obj);
 	
-			// detect if model is in view
+			// detect if model or shadow is in view
 			
 		flag=0x0;
 		
@@ -391,12 +392,13 @@ void view_setup_objects(int tick)
 			flag|=view_list_item_flag_shadow_in_view;
 		}
 		else {
-			if (!view_setup_model_in_view(&obj->draw,obj->mesh.cur_mesh_idx)) continue;
-			
-			flag|=view_list_item_flag_model_in_view;
-			flag|=view_list_item_flag_shadow_in_view;
-			
-			// supergumba -- deal with shadows in view here
+			if (view_setup_model_in_view(&obj->draw,obj->mesh.cur_mesh_idx)) flag|=view_list_item_flag_model_in_view;
+
+			if (obj->draw.shadow.on) {
+				if (shadow_inview(&obj->draw)) flag|=view_list_item_flag_shadow_in_view;
+			}
+
+			if (flag==0x0) continue;
 		}
 		
 			// add to draw list

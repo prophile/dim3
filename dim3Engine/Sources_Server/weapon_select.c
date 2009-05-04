@@ -37,6 +37,8 @@ and can be sold or given away.
 extern server_type				server;
 extern camera_type				camera;
 
+extern int game_time_get(void);
+
 /* =======================================================
 
       Reset Ammo for Weapons

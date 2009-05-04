@@ -1262,10 +1262,6 @@ SOURCE=..\..\dim3Engine\Sources_View\gl_texture.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_View\model_draw.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3Engine\Sources_View\render_map_liquid.c
 # End Source File
 # Begin Source File
@@ -1279,6 +1275,10 @@ SOURCE=..\..\dim3Engine\Sources_View\render_map_setup.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_View\render_map_transparent.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_View\render_model.c
 # End Source File
 # Begin Source File
 

@@ -50,6 +50,7 @@ extern setup_type			setup;
 extern void particle_draw_position(effect_type *effect,int count,int *x,int *y,int *z);
 extern void ring_draw_position(effect_type *effect,int count,int *x,int *y,int *z);
 extern bool fog_solid_on(void);
+extern bool shadow_get_volume(model_draw *draw,int *px,int *py,int *pz);
 
 /* =======================================================
 
@@ -126,7 +127,7 @@ bool complex_boundbox_inview(int *cbx,int *cby,int *cbz)
 
 bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by)
 {
-	int				px[8],pz[8],py[8];
+	int				px[8],py[8],pz[8];
 	
 	px[0]=px[3]=px[4]=px[7]=x;
 	px[1]=px[2]=px[5]=px[6]=ex;
@@ -142,7 +143,7 @@ bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by)
 
 /* =======================================================
 
-      Light in View
+      Pieces in View
       
 ======================================================= */
 
@@ -159,12 +160,6 @@ bool light_inview(d3pnt *pnt,int intensity)
 
 	return(boundbox_inview(x,z,ex,ez,ty,by));
 }
-
-/* =======================================================
-
-      Mesh in View
-      
-======================================================= */
 
 bool mesh_inview(map_mesh_type *mesh)
 {
@@ -199,15 +194,9 @@ bool mesh_inview(map_mesh_type *mesh)
 	return(!(lft||rgt||top||bot));
 }
 
-/* =======================================================
-
-      Models in View
-      
-======================================================= */
-
 bool model_inview(model_draw *draw)
 {
-	int				px[8],pz[8],py[8];
+	int				px[8],py[8],pz[8];
 	model_type		*mdl;
 
 	if ((draw->uid==-1) || (!draw->on)) return(FALSE);
@@ -219,11 +208,13 @@ bool model_inview(model_draw *draw)
 	return(complex_boundbox_inview(px,py,pz));
 }
 
-/* =======================================================
+bool shadow_inview(model_draw *draw)
+{
+	int				px[8],pz[8],py[8];
 
-      Effects in View
-      
-======================================================= */
+	if (!shadow_get_volume(draw,px,py,pz)) return(FALSE);
+	return(complex_boundbox_inview(px,py,pz));
+}
 
 bool effect_inview(effect_type *effect,int count)
 {
