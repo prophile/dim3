@@ -99,6 +99,14 @@ void palette_close(void)
 			palette_scenery_close(&palette_x,&palette_y);
 			break;
 			
+		case palette_type_light:
+			palette_light_close(&palette_x,&palette_y);
+			break;
+			
+		case palette_type_sound:
+			palette_sound_close(&palette_x,&palette_y);
+			break;
+			
 		case palette_type_particle:
 			palette_particle_close(&palette_x,&palette_y);
 			break;

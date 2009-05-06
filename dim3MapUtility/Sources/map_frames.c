@@ -45,7 +45,7 @@ int map_count_texture_frames(map_type *map,int txt)
 	texture=&map->textures[txt];
 	
 	for (n=0;n!=max_texture_frame;n++) {
-		if (texture->frames[0].name[0]==0x0) return(n);
+		if (texture->frames[n].name[0]==0x0) return(n);
 	}
 	
 	return(max_texture_frame);
@@ -92,6 +92,8 @@ bool map_delete_texture_frame(map_type *map,int txt)
 	map_textures_close(map);
 	
 	count--;
+	
+	map->textures[txt].frames[count].name[0]=0x0;
 	
 	bitmap_new(&map->textures[txt].frames[count].bitmap);
 	bitmap_new(&map->textures[txt].frames[count].bumpmap);

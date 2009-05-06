@@ -92,6 +92,8 @@ bool model_delete_texture_frame(model_type *model,int txt)
 	model_textures_close(model);
 	
 	count--;
+	
+	model->textures[txt].frames[count].name[0]=0x0;
 
 	bitmap_new(&model->textures[txt].frames[count].bitmap);
 	bitmap_new(&model->textures[txt].frames[count].bumpmap);
