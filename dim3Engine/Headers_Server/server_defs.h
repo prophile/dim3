@@ -183,6 +183,15 @@ and can be sold or given away.
 #define node_pause_min_angle					25.0f				// angle needed to get out of a pause when already paused
 
 //
+// zoom modes
+//
+
+#define zoom_mode_off							0
+#define zoom_mode_in							1
+#define zoom_mode_on							2
+#define zoom_mode_out							3
+
+//
 // misc settings
 //
 
@@ -737,11 +746,11 @@ typedef struct		{
 					} weap_target_type;
 					
 typedef struct		{
-						int						mask_idx,tick,step_count,current_step;
+						int						mode,mask_idx,tick,step_count,current_step;
 						float					fov_min,fov_max,
 												turn_factor,crawl_turn_factor,look_factor;
 						char					mask_name[name_str_len];
-						bool					on,active;
+						bool					on;
 					} weap_zoom_type;
 					
 typedef struct		{

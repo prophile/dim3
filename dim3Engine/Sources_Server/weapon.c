@@ -208,7 +208,7 @@ bool weapon_create(obj_type *obj,char *name)
 	weap->target.col.b=1.0f;
 	
 	weap->zoom.on=FALSE;
-	weap->zoom.active=FALSE;
+	weap->zoom.mode=zoom_mode_off;
 	weap->zoom.fov_min=10.0f;
 	weap->zoom.fov_max=30.0f;
 	weap->zoom.step_count=3;

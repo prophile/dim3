@@ -56,8 +56,10 @@ extern void weapon_target_previous_object(obj_type *obj,weapon_type *weap);
 extern bool weapon_target_start(obj_type *obj,weapon_type *weap,char *target_type);
 extern bool weapon_target_end(obj_type *obj,weapon_type *weap);
 
-extern void weapon_zoom_on(obj_type *obj,weapon_type *weap);
+extern void weapon_zoom_enter(obj_type *obj,weapon_type *weap);
+extern void weapon_zoom_exit(obj_type *obj,weapon_type *weap);
 extern void weapon_zoom_off(obj_type *obj,weapon_type *weap);
+extern void weapon_zoom_key(obj_type *obj,weapon_type *weap);
 
 extern void weapon_run_hand(obj_type *obj,int tick);
 extern void weapon_hand_bounce(obj_type *obj);

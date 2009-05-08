@@ -194,7 +194,7 @@ void object_player_turn(obj_type *obj)
 	if (camera.mode==cv_fpp) {
 		weap=weapon_find_current(obj);
 		if (weap!=NULL) {
-			if ((weap->zoom.on) && (weap->zoom.active)) {
+			if ((weap->zoom.on) && (weap->zoom.mode!=zoom_mode_off)) {
 				if (obj->duck.mode!=dm_duck) {
 					turn_add*=weap->zoom.turn_factor;
 				}
@@ -252,7 +252,7 @@ float object_player_look_constrain(obj_type *obj,weapon_type *weap,float ang_x)
 	down_angle=obj->look.down_angle;
 
 	if (weap!=NULL) {
-		if ((weap->zoom.on) && (weap->zoom.active)) {
+		if ((weap->zoom.on) && (weap->zoom.mode!=zoom_mode_off)) {
 			up_angle*=weap->zoom.look_factor;
 			down_angle*=weap->zoom.look_factor;
 		}
@@ -280,7 +280,7 @@ void object_player_look(obj_type *obj)
 
 	weap=weapon_find_current(obj);
 	if (weap!=NULL) {
-		if ((weap->zoom.on) && (weap->zoom.active)) {
+		if ((weap->zoom.on) && (weap->zoom.mode!=zoom_mode_off)) {
 			look_add*=weap->zoom.look_factor;
 		}
 	}

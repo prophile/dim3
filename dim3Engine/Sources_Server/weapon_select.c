@@ -437,11 +437,9 @@ bool weapon_target_end(obj_type *obj,weapon_type *weap)
       
 ======================================================= */
 
-void weapon_zoom_on(obj_type *obj,weapon_type *weap)
+void weapon_zoom_enter(obj_type *obj,weapon_type *weap)
 {
-	if (weap->zoom.active) return;
-
-	weap->zoom.active=TRUE;
+	weap->zoom.mode=zoom_mode_in;
 	obj->zoom_draw.on=FALSE;
 
 		// fix looking problems when zooming
@@ -458,20 +456,41 @@ void weapon_zoom_on(obj_type *obj,weapon_type *weap)
  	scripts_post_event_console(&weap->attach,sd_event_weapon_fire,sd_event_weapon_fire_zoom_enter,0);
 }
 
+void weapon_zoom_exit(obj_type *obj,weapon_type *weap)
+{
+	weap->zoom.mode=zoom_mode_out;
+	obj->zoom_draw.start_tick=game_time_get();
+}
+
 void weapon_zoom_off(obj_type *obj,weapon_type *weap)
 {
-	if (!weap->zoom.active) return;
-
 		// switch back to original camera mode
 
 	camera.mode=obj->zoom_draw.old_camera_mode;
 
 		// turn off zoom
 
-	weap->zoom.active=FALSE;
+	weap->zoom.mode=zoom_mode_off;
 	obj->zoom_draw.on=FALSE;
 
 	scripts_post_event_console(&weap->attach,sd_event_weapon_fire,sd_event_weapon_fire_zoom_exit,0);
+}
+
+void weapon_zoom_key(obj_type *obj,weapon_type *weap)
+{
+		// starting zoom
+
+	if (weap->zoom.mode==zoom_mode_off) {
+		weapon_zoom_enter(obj,weap);
+		return;
+	}
+
+		// ending zoom
+
+	if (weap->zoom.mode==zoom_mode_on) {
+		weapon_zoom_exit(obj,weap);
+		return;
+	}
 }
 
 /* =======================================================

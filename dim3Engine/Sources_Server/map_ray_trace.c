@@ -1050,3 +1050,110 @@ void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt
 		hits[n]=(hit_t>=0.0f) && (hit_t<=1.0f);
 	}
 }
+
+/* =======================================================
+
+      Ray Trace Plane
+      
+======================================================= */
+
+float ray_trace_plane(d3pnt *spt,d3vct *vct,d3pnt *hpt,int ptsz,d3pnt *plane)
+{
+	int			n,trig_count;
+	int			px[3],py[3],pz[3];
+	float		t,hit_t;
+	d3pnt		pt,*m_pt;
+	
+	hit_t=-1.0f;
+	
+		// first vertex is always 0
+
+	m_pt=&plane[0];
+		
+	px[0]=m_pt->x;
+	py[0]=m_pt->y;
+	pz[0]=m_pt->z;
+	
+		// run through all the triangles of the polygon
+		
+	trig_count=ptsz-2;
+	
+	for (n=0;n<trig_count;n++) {
+		m_pt=&plane[n+1];
+		px[1]=m_pt->x;
+		py[1]=m_pt->y;
+		pz[1]=m_pt->z;
+
+		m_pt=&plane[n+2];
+		px[2]=m_pt->x;
+		py[2]=m_pt->y;
+		pz[2]=m_pt->z;
+		
+			// check for hit
+			
+		t=ray_trace_triangle(spt,vct,&pt,px,py,pz);
+		if (t==-1.0f) continue;
+		
+			// closer hit or first hit?
+			
+		if ((t<hit_t) || (hit_t==-1.0f)) {
+			hit_t=t;
+			hpt->x=pt.x;
+			hpt->y=pt.y;
+			hpt->z=pt.z;
+		}
+	}
+	
+	return(hit_t);
+}
+
+void ray_trace_mesh_poly_plane(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,int mesh_idx,int poly_idx)
+{
+	int						n;
+	float					hit_t,f_dist;
+	d3pnt					*pt,plane[8];
+	d3vct					vct;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+
+		// plane enlargement
+
+	f_dist=(float)(map_enlarge*100);
+
+		// create plane from poly
+
+	mesh=&map.mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+
+	for (n=0;n!=poly->ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+		vector_create(&vct,pt->x,pt->y,pt->z,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z);
+		plane[n].x=poly->box.mid.x+(int)(vct.x*f_dist);
+		plane[n].y=poly->box.mid.y+(int)(vct.y*f_dist);
+		plane[n].z=poly->box.mid.z+(int)(vct.z*f_dist);
+	}
+
+		// run the ray array
+		
+	for (n=0;n!=cnt;n++) {
+	
+			// create vector from points
+
+		vct.x=(float)(ept[n].x-spt[n].x);
+		vct.y=(float)(ept[n].y-spt[n].y);
+		vct.z=(float)(ept[n].z-spt[n].z);
+		
+			// default is past end of line
+			
+		hpt[n].x=ept[n].x;
+		hpt[n].y=ept[n].y;
+		hpt[n].z=ept[n].z;
+		
+			// check against plane
+
+		hit_t=ray_trace_plane(&spt[n],&vct,&hpt[n],poly->ptsz,plane);
+		
+		hits[n]=(hit_t>=0.0f) && (hit_t<=1.0f);
+	}
+}
+

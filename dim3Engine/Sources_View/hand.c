@@ -58,7 +58,7 @@ void draw_weapon_hand(int tick,obj_type *obj,weapon_type *weap)
 		// weapons hidden or zoom on?
 		
 	if (obj->hide_all_weapons) return;
-	if ((weap->zoom.on) && (weap->zoom.active) && (obj->zoom_draw.on)) return;
+	if ((weap->zoom.on) && (weap->zoom.mode!=zoom_mode_off) && (obj->zoom_draw.on)) return;
 	
 		// weapon model draw
 		

@@ -552,21 +552,14 @@ void player_weapon_zoom_input(obj_type *obj,weapon_type *weap)
 		// check zoom activate/deactive key
 		
 	if (zoom_key) {
-
-		if (!weap->zoom.active) {
-			weapon_zoom_on(obj,weap);
-		}
-		else {
-			weapon_zoom_off(obj,weap);
-		}
-		
+		weapon_zoom_key(obj,weap);
 		weapon_zoom_key_down=TRUE;
 		return;
 	}
 		
 		// if zoom active, check increase/decrease keys
 		
-	if (!weap->zoom.active) return;
+	if (weap->zoom.mode!=zoom_mode_on) return;
 	
 	if ((zoom_increase_key) && (weap->zoom.current_step<(weap->zoom.step_count-1))) {
 		weap->zoom.current_step++;
@@ -594,7 +587,7 @@ void player_weapon_change_input(int tick,obj_type *obj,weapon_type *weap)
 	next_weapon_key=input_action_get_state(nc_next_weapon);
 	previous_weapon_key=input_action_get_state(nc_previous_weapon);
 		
-	if ((weap->zoom.on) && (weap->zoom.active)) {
+	if ((weap->zoom.on) && (weap->zoom.mode!=zoom_mode_off)) {
 		if (input_check_action_same_attachment(nc_next_weapon,nc_weapon_zoom_increase)) next_weapon_key=FALSE;
 		if (input_check_action_same_attachment(nc_next_weapon,nc_weapon_zoom_decrease)) next_weapon_key=FALSE;
 		if (input_check_action_same_attachment(nc_previous_weapon,nc_weapon_zoom_increase)) previous_weapon_key=FALSE;

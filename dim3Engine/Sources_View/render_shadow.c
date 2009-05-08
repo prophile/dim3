@@ -42,14 +42,13 @@ extern server_type		server;
 extern view_type		view;
 extern setup_type		setup;
 
-int						shadow_stencil_poly_vertex_count,shadow_max_stencil_poly;
+int						shadow_stencil_poly_vertex_count;
 float					shadow_alpha;
-float					*shadow_stencil_vbo;
+float					*shadow_poly_stencil_vbo;
 bool					*shadow_hits;
 d3pnt					*shadow_spt,*shadow_ept,*shadow_hpt;
 poly_pointer_type		*shadow_poly_ptrs;
 view_light_spot_type	shadow_above_lspot;
-
 
 /* =======================================================
 
@@ -77,18 +76,14 @@ bool shadow_initialize(char *err_str)
 	
 	shadow_hits=(bool*)malloc(sizeof(bool)*max_model_vertex);
 	
-		// maximum number of stencils
-		
-	shadow_max_stencil_poly=stencil_poly_end-stencil_poly_start;
-	
 		// memory for stencil vbo and poly ptrs
 	
-	shadow_poly_ptrs=(poly_pointer_type*)malloc(shadow_max_stencil_poly*sizeof(poly_pointer_type));
-	shadow_stencil_vbo=(float*)malloc((shadow_max_stencil_poly*(3*8))*sizeof(float));
+	shadow_poly_ptrs=(poly_pointer_type*)malloc(shadow_max_poly_draw*sizeof(poly_pointer_type));
+	shadow_poly_stencil_vbo=(float*)malloc((3*8)*sizeof(float));
 	
 		// check for memory errors
 	
-	if ((shadow_spt==NULL) || (shadow_ept==NULL) || (shadow_hpt==NULL) || (shadow_hits==NULL) || (shadow_poly_ptrs==NULL) || (shadow_stencil_vbo==NULL)) {
+	if ((shadow_spt==NULL) || (shadow_ept==NULL) || (shadow_hpt==NULL) || (shadow_hits==NULL) || (shadow_poly_ptrs==NULL) || (shadow_poly_stencil_vbo==NULL)) {
 		strcpy(err_str,"Out of Memory");
 		return(FALSE);
 	}
@@ -103,7 +98,7 @@ void shadow_shutdown(void)
 	free(shadow_hpt);
 	free(shadow_hits);
 	free(shadow_poly_ptrs);
-	free(shadow_stencil_vbo);
+	free(shadow_poly_stencil_vbo);
 }
 
 /* =======================================================
@@ -232,6 +227,17 @@ int shadow_build_poly_set(model_draw *draw)
 		if (pz[n]<min.z) min.z=pz[n];
 		if (pz[n]>max.z) max.z=pz[n];
 	}
+
+		// add in some slop for shadows
+		// that directly collide with a polygon
+		// and don't pass through it
+
+	min.x-=map_enlarge;
+	max.x+=map_enlarge;
+	min.y-=map_enlarge;
+	max.y+=map_enlarge;
+	min.z-=map_enlarge;
+	max.z+=map_enlarge;
 	
 		// check meshes
 		
@@ -258,7 +264,7 @@ int shadow_build_poly_set(model_draw *draw)
 			
 				// can only shadow for max stencil count
 				
-			if (cnt==shadow_max_stencil_poly) return(cnt);
+			if (cnt==shadow_max_poly_draw) return(cnt);
 		}
 	}
 	
@@ -271,46 +277,43 @@ int shadow_build_poly_set(model_draw *draw)
       
 ======================================================= */
 
-void shadow_stencil_poly_set(int poly_count)
+void shadow_stencil_mesh_poly(int mesh_idx,int poly_idx)
 {
-	int						k,n,offset,stencil_idx;
+	int						n;
 	float					*vp,*vertex_ptr;
 	d3pnt					*pt;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
+
+	mesh=&map.mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
 	
 		// setup memory
 		
-	shadow_stencil_poly_vertex_count=0;
-	vp=shadow_stencil_vbo;
+	vp=shadow_poly_stencil_vbo;
 	
-	for (k=0;k!=poly_count;k++) {
-		mesh=&map.mesh.meshes[shadow_poly_ptrs[k].mesh_idx];
-		poly=&mesh->polys[shadow_poly_ptrs[k].poly_idx];
-		
-		for (n=0;n!=poly->ptsz;n++) {
-			pt=&mesh->vertexes[poly->v[n]];
-			*vp++=(float)pt->x;
-			*vp++=(float)pt->y;
-			*vp++=(float)pt->z;
-		}
-		
-		shadow_stencil_poly_vertex_count+=poly->ptsz;
+	for (n=0;n!=poly->ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+		*vp++=(float)pt->x;
+		*vp++=(float)pt->y;
+		*vp++=(float)pt->z;
 	}
+	
+	shadow_stencil_poly_vertex_count=poly->ptsz;
 
 		// setup vertex ptr
 		
 	vertex_ptr=view_bind_map_next_vertex_object(shadow_stencil_poly_vertex_count*3);
 	if (vertex_ptr==NULL) return;
 	
-	memmove(vertex_ptr,shadow_stencil_vbo,((shadow_stencil_poly_vertex_count*3)*sizeof(float)));
+	memmove(vertex_ptr,shadow_poly_stencil_vbo,((shadow_stencil_poly_vertex_count*3)*sizeof(float)));
 	
 	view_unmap_current_vertex_object();
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,0);
 		
-		// setup the stenciling
+		// stencil the polygon
 		
 	glDisable(GL_BLEND);
 	
@@ -320,20 +323,9 @@ void shadow_stencil_poly_set(int poly_count)
 	glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
 
 	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
+	glStencilFunc(GL_ALWAYS,stencil_shadow,0xFF);
 	
-		// stencil the polygons
-		
-	stencil_idx=stencil_poly_start;
-	offset=0;
-		
-	for (k=0;k!=poly_count;k++) {
-		poly=&map.mesh.meshes[shadow_poly_ptrs[k].mesh_idx].polys[shadow_poly_ptrs[k].poly_idx];
-
-		glStencilFunc(GL_ALWAYS,stencil_idx++,0xFF);
-		glDrawArrays(GL_POLYGON,offset,poly->ptsz);
-		
-		offset+=poly->ptsz;
-	}
+	glDrawArrays(GL_POLYGON,0,poly->ptsz);
 	
 	glDisableClientState(GL_VERTEX_ARRAY);
 	view_unbind_current_vertex_object();
@@ -341,18 +333,16 @@ void shadow_stencil_poly_set(int poly_count)
 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
 }
 
-void shadow_stencil_poly_clear(int poly_count)
+void shadow_stencil_clear_mesh_poly(void)
 {
-	int						k,offset;
 	float					*vertex_ptr;
-	map_mesh_poly_type		*poly;
 	
 		// use the set data to setup the clear vbo
 		
 	vertex_ptr=view_bind_map_next_vertex_object(shadow_stencil_poly_vertex_count*3);
 	if (vertex_ptr==NULL) return;
 	
-	memmove(vertex_ptr,shadow_stencil_vbo,((shadow_stencil_poly_vertex_count*3)*sizeof(float)));
+	memmove(vertex_ptr,shadow_poly_stencil_vbo,((shadow_stencil_poly_vertex_count*3)*sizeof(float)));
 	
 	view_unmap_current_vertex_object();
 	
@@ -373,13 +363,7 @@ void shadow_stencil_poly_clear(int poly_count)
 	
 		// stencil the polygons
 		
-	offset=0;
-		
-	for (k=0;k!=poly_count;k++) {
-		poly=&map.mesh.meshes[shadow_poly_ptrs[k].mesh_idx].polys[shadow_poly_ptrs[k].poly_idx];
-		glDrawArrays(GL_POLYGON,offset,poly->ptsz);
-		offset+=poly->ptsz;
-	}
+	glDrawArrays(GL_POLYGON,0,shadow_stencil_poly_vertex_count);
 	
 	glDisableClientState(GL_VERTEX_ARRAY);
 	view_unbind_current_vertex_object();
@@ -395,7 +379,7 @@ void shadow_stencil_poly_clear(int poly_count)
 
 void shadow_render(model_draw *draw)
 {
-	int							n,k,poly_count,stencil_idx,trig_count;
+	int							n,k,t,poly_count,trig_count;
 	float						f_dist;
 	float						*vp,*vertex_ptr;
 	unsigned short				*index_ptr;
@@ -405,8 +389,6 @@ void shadow_render(model_draw *draw)
 	model_mesh_type				*mesh;
 	model_type					*mdl;
 	view_light_spot_type		*lspot;
-	ray_trace_contact_type		base_contact;
-	ray_trace_check_item_type	*item_list;
 	
 		// shadows on for this object?
 		
@@ -428,159 +410,140 @@ void shadow_render(model_draw *draw)
 	f_dist=shadow_get_ray_distance(draw,lspot);
 
 		// start stenciling
+		// never write to the depth buffer during this operation
 
 	glEnable(GL_STENCIL_TEST);
+	glDisable(GL_ALPHA_TEST);
+
 	glDepthMask(GL_FALSE);
 
-	glDisable(GL_ALPHA_TEST);
-	
-		// stencil in the polys the shadow
-		// is projected on
-		
-	shadow_stencil_poly_set(poly_count);	
+		// setup blending
 
-		// translate all the vertexes
-/*
-	for (n=0;n!=mdl->nmesh;n++) {
-		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
+	glColor4f(0.0f,0.0f,0.0f,shadow_alpha);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-		mesh=&mdl->meshes[n];
-		
-		vp=draw->setup.mesh_arrays[n].gl_vertex_array;
-		
-		spt=shadow_spt;
-		ept=shadow_ept;
-		
-		for (k=0;k!=mesh->nvertex;k++) {
-			spt->x=(int)*vp++;
-			spt->y=(int)*vp++;
-			spt->z=(int)*vp++;
+		// run through all the stenciled polygons
+		// and ray trace against their planes
+		// to create the shadow polygons
 			
-			vector_create(&ray_move,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,spt->x,spt->y,spt->z);
+	for (k=0;k!=poly_count;k++) {
+
+			// stencil the poly we are going
+			// to draw a shadow on
+
+		shadow_stencil_mesh_poly(shadow_poly_ptrs[k].mesh_idx,shadow_poly_ptrs[k].poly_idx);
+
+			// shadows are blended and stenciled
+			// we clear the stencil as we draw so
+			// we can maintain the alpha levels
+
+		glEnable(GL_BLEND);
+		glDisable(GL_DEPTH_TEST);
+
+		glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
+		glStencilFunc(GL_EQUAL,stencil_shadow,0xFF);
+
+			// run through all the meshes of this model
+
+		for (n=0;n!=mdl->nmesh;n++) {
+			if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
+
+				// ray trace the mesh against
+				// the plane of the polygon
+
+			mesh=&mdl->meshes[n];
+			
+			vp=draw->setup.mesh_arrays[n].gl_vertex_array;
+			
+			spt=shadow_spt;
+			ept=shadow_ept;
+			
+			for (t=0;t!=mesh->nvertex;t++) {
+				spt->x=(int)*vp++;
+				spt->y=(int)*vp++;
+				spt->z=(int)*vp++;
 				
-			ept->x=shadow_spt->x-(int)(ray_move.x*f_dist);
-			ept->y=shadow_spt->y-(int)(ray_move.y*f_dist);
-			ept->z=shadow_spt->z-(int)(ray_move.z*f_dist);
-			
-			spt++;
-			ept++;
-		}
-		
-		base_contact.obj.on=FALSE;
-		base_contact.obj.ignore_uid=-1;
-
-		base_contact.proj.on=FALSE;
-		base_contact.proj.ignore_uid=-1;
-
-		base_contact.hit_mode=poly_ray_trace_hit_mode_all;
-		base_contact.origin=poly_ray_trace_origin_object;
-
-			// run ray trace
-
-		ray_trace_map_by_point_array_no_contact(mesh->nvertex,shadow_spt,shadow_ept,shadow_hpt,shadow_hits,&base_contact);
-
-			// get list of hit items
-			// reduce list if it's over the number of items we can stencil
-			
-		item_list=ray_trace_get_last_item_list(&item_count);
-
-		if (item_count==0) continue;
-		if (item_count>(stencil_poly_end-stencil_poly_start)) item_count=stencil_poly_end-stencil_poly_start;
-		
-			// stencil shadow polygons
-			
-		shadow_stencil_poly_set(item_count,item_list);
-
-			// create the vertex object
-			
-		vertex_ptr=view_bind_map_next_vertex_object(mesh->nvertex*3);
-		if (vertex_ptr==NULL) {
-			glDisable(GL_STENCIL_TEST);
-			glDepthMask(GL_TRUE);
-			return;
-		}
-		
-		hpt=shadow_hpt;
-		
-		for (k=0;k!=mesh->nvertex;k++) {
-			*vertex_ptr++=(float)hpt->x;
-			*vertex_ptr++=(float)hpt->y;
-			*vertex_ptr++=(float)hpt->z;
-			hpt++;
-		}
-		
-		view_unmap_current_vertex_object();
-
-			// create the index object
-			
-		index_ptr=view_bind_map_next_index_object(mesh->ntrig*3);
-		if (index_ptr==NULL) {
-			view_unbind_current_vertex_object();
-			glDisable(GL_STENCIL_TEST);
-			glDepthMask(GL_TRUE);
-			return;
-		}
-
-		trig_count=0;
-		trig=mesh->trigs;
-
-		for (k=0;k!=mesh->ntrig;k++) {
-
-			if ((shadow_hits[trig->v[0]]) && (shadow_hits[trig->v[1]]) && (shadow_hits[trig->v[2]])) {
-			
-				*index_ptr++=trig->v[0];
-				*index_ptr++=trig->v[1];
-				*index_ptr++=trig->v[2];
+				vector_create(&ray_move,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,spt->x,spt->y,spt->z);
+					
+				ept->x=shadow_spt->x-(int)(ray_move.x*f_dist);
+				ept->y=shadow_spt->y-(int)(ray_move.y*f_dist);
+				ept->z=shadow_spt->z-(int)(ray_move.z*f_dist);
 				
-				trig_count++;
+				spt++;
+				ept++;
+			}
+
+			ray_trace_mesh_poly_plane(mesh->nvertex,shadow_spt,shadow_ept,shadow_hpt,shadow_hits,shadow_poly_ptrs[k].mesh_idx,shadow_poly_ptrs[k].poly_idx);
+
+				// setup the vertex objects
+
+			vertex_ptr=view_bind_map_next_vertex_object(mesh->nvertex*3);
+			if (vertex_ptr==NULL) {
+				glDisable(GL_STENCIL_TEST);
+				glDepthMask(GL_TRUE);
+				return;
 			}
 			
-			trig++;
-		}
-
-		view_unmap_current_index_object();
-
-			// draw the trigs for each hit polygon
-			// clear the stencil so we don't overdraw and destroy
-			// the shadow alpha
-		
-		stencil_idx=stencil_poly_start;
-
-		glColor4f(0.0f,0.0f,0.0f,shadow_alpha);
+			hpt=shadow_hpt;
 			
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-		
-		glDisable(GL_DEPTH_TEST);
-		
-		glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
-		
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(3,GL_FLOAT,0,0);
+			for (t=0;t!=mesh->nvertex;t++) {
+				*vertex_ptr++=(float)hpt->x;
+				*vertex_ptr++=(float)hpt->y;
+				*vertex_ptr++=(float)hpt->z;
+				hpt++;
+			}
 			
-		for (k=0;k!=item_count;k++) {
-			glStencilFunc(GL_EQUAL,stencil_idx++,0xFF);
+			view_unmap_current_vertex_object();
+
+				// create the index object
+				
+			index_ptr=view_bind_map_next_index_object(mesh->ntrig*3);
+			if (index_ptr==NULL) {
+				view_unbind_current_vertex_object();
+				glDisable(GL_STENCIL_TEST);
+				glDepthMask(GL_TRUE);
+				return;
+			}
+
+			trig_count=0;
+			trig=mesh->trigs;
+
+			for (t=0;t!=mesh->ntrig;t++) {
+
+				if ((shadow_hits[trig->v[0]]) && (shadow_hits[trig->v[1]]) && (shadow_hits[trig->v[2]])) {
+				
+					*index_ptr++=trig->v[0];
+					*index_ptr++=trig->v[1];
+					*index_ptr++=trig->v[2];
+					
+					trig_count++;
+				}
+				
+				trig++;
+			}
+
+			view_unmap_current_index_object();
+
+				// draw the shadow trigs
+			
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glVertexPointer(3,GL_FLOAT,0,0);
+				
 			glDrawRangeElements(GL_TRIANGLES,0,mesh->nvertex,(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)0);
+
+			glDisableClientState(GL_VERTEX_ARRAY);
+		
+				// unbind the vertex and index object
+				
+			view_unbind_current_vertex_object();
+			view_unbind_current_index_object();
 		}
-	
-			// unbind the vertex and index object
-			
-		glDisableClientState(GL_VERTEX_ARRAY);
-			
-		view_unbind_current_vertex_object();
-		view_unbind_current_index_object();
-		
-			// clear shadow polygons
 
-		shadow_stencil_poly_clear(item_count,item_list);
+		shadow_stencil_clear_mesh_poly();
 	}
-*/
 
-		// clear all the poly stencils
-		
-	shadow_stencil_poly_clear(poly_count);
-
-		// fix some state
+		// restore depth buffer and turn
+		// off stenciling
 		
 	glDepthMask(GL_TRUE);
 	glDisable(GL_STENCIL_TEST);

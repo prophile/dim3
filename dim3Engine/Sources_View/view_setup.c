@@ -388,7 +388,7 @@ void view_setup_objects(int tick)
 			
 		flag=0x0;
 		
-		if (is_camera) {
+		if ((is_camera) && (!view.render->force_camera_obj)) {
 			flag|=view_list_item_flag_shadow_in_view;
 		}
 		else {
@@ -590,7 +590,7 @@ void view_calculate_scope(int tick,obj_type *obj,obj_type *camera_obj)
 	weap=weapon_find_current(obj);
 	if (weap==NULL) return;
 	
-	if ((!weap->zoom.on) || (!weap->zoom.active)) return;
+	if ((!weap->zoom.on) || (weap->zoom.mode==zoom_mode_off)) return;
 	
 		// calculate fov
 		
@@ -604,10 +604,28 @@ void view_calculate_scope(int tick,obj_type *obj,obj_type *camera_obj)
 	
 	f_zoom=(weap->zoom.fov_max-(((weap->zoom.fov_max-weap->zoom.fov_min)/f_max_step)*f_step))-view.render->camera.fov;
 	
-		// iron sites
-		
-	if (tick<(obj->zoom_draw.start_tick+weap->zoom.tick)) {
-		f_zoom*=((float)(tick-obj->zoom_draw.start_tick)/(float)weap->zoom.tick);
+		// zoom look down sites
+
+	switch (weap->zoom.mode) {
+
+		case zoom_mode_in:
+			if (tick<(obj->zoom_draw.start_tick+weap->zoom.tick)) {
+				f_zoom*=((float)(tick-obj->zoom_draw.start_tick)/(float)weap->zoom.tick);
+			}
+			else {
+				weap->zoom.mode=zoom_mode_on;
+			}
+			break;
+
+		case zoom_mode_out:
+			if (tick<(obj->zoom_draw.start_tick+weap->zoom.tick)) {
+				f_zoom*=1.0f-((float)(tick-obj->zoom_draw.start_tick)/(float)weap->zoom.tick);
+			}
+			else {
+				weapon_zoom_off(obj,weap);
+				return;
+			}
+			break;
 	}
 	
 		// change perspective

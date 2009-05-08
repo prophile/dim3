@@ -69,7 +69,7 @@ void zoom_setup(int tick,obj_type *obj,weapon_type *weap)
 	zoom_draw->on=FALSE;
 	
 	if (obj->hide_all_weapons) return;
-	if ((!weap->zoom.on) || (!weap->zoom.active)) return;
+	if ((!weap->zoom.on) || (weap->zoom.mode==zoom_mode_off)) return;
 	
 		// iron sites effect masking
 				
@@ -118,7 +118,7 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 	
 		// is weapon not in zoom?
 		
-	if ((!weap->zoom.on) || (!weap->zoom.active)) return;
+	if ((!weap->zoom.on) || (weap->zoom.mode==zoom_mode_off)) return;
 	
 		// is there a mask?
 		

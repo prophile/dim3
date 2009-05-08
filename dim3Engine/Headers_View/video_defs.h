@@ -41,9 +41,7 @@ and can be sold or given away.
 // shadows
 //
 
-#define shadow_texture_pixel_size				512
-#define shadow_texture_slice_count				4				// 16 shadows per texture
-#define shadow_texture_gl_transform_size		1000.0f
+#define shadow_max_poly_draw					128
 
 //
 // screen sizes

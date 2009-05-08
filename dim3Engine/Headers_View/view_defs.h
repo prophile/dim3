@@ -59,6 +59,8 @@ and can be sold or given away.
 #define stencil_poly_start						1
 #define stencil_poly_end						255
 
+#define stencil_shadow							1
+
 //
 // remote names
 //
@@ -238,7 +240,7 @@ typedef struct		{
 					} view_render_halo_type;
 
 typedef struct		{
-						bool								has_area,no_shadow;
+						bool								has_area,no_shadow,force_camera_obj;
 						char								area_mask[max_area];
 						view_render_camera_type				camera;
 						view_render_draw_list_type			draw_list;

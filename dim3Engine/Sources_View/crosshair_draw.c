@@ -167,7 +167,7 @@ void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 	if (obj->hide_all_weapons) return;
 	if (!weap->crosshair.on) return;
 	if (weap->crosshair.fire_idx==-1) return;
-	if ((weap->zoom.on) && (weap->zoom.active)) return;
+	if ((weap->zoom.on) && (weap->zoom.mode!=zoom_mode_off)) return;
 	
 		// get crosshair location
 
@@ -289,7 +289,7 @@ void crosshair_draw(obj_type *obj,weapon_type *weap)
 	
 		// is scope on?
 		
-	if ((weap->zoom.on) && (weap->zoom.active)) return;
+	if ((weap->zoom.on) && (weap->zoom.mode!=zoom_mode_off)) return;
 
 		// can't use centered crosshairs when not in FPP
 

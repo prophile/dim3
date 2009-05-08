@@ -89,7 +89,7 @@ JSBool js_get_weap_zoom_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 			*vp=BOOLEAN_TO_JSVAL(weap->zoom.on);
 			break;
 		case weap_zoom_prop_active:
-			*vp=BOOLEAN_TO_JSVAL(weap->zoom.active);
+			*vp=BOOLEAN_TO_JSVAL(weap->zoom.mode!=zoom_mode_off);
 			break;
 		case weap_zoom_prop_fov_minimum:
 			*vp=script_float_to_value(weap->zoom.fov_min);
