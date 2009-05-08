@@ -42,12 +42,14 @@ extern server_type		server;
 extern view_type		view;
 extern setup_type		setup;
 
-int						shadow_stencil_poly_vertex_count;
+int						shadow_stencil_poly_vertex_count,shadow_max_stencil_poly;
 float					shadow_alpha;
 float					*shadow_stencil_vbo;
 bool					*shadow_hits;
 d3pnt					*shadow_spt,*shadow_ept,*shadow_hpt;
+poly_pointer_type		*shadow_poly_ptrs;
 view_light_spot_type	shadow_above_lspot;
+
 
 /* =======================================================
 
@@ -75,13 +77,18 @@ bool shadow_initialize(char *err_str)
 	
 	shadow_hits=(bool*)malloc(sizeof(bool)*max_model_vertex);
 	
-		// create memory for stencil vbo
+		// maximum number of stencils
 		
-	shadow_stencil_vbo=(float*)malloc((((stencil_poly_end-stencil_poly_start)*3)*8)*sizeof(float));
+	shadow_max_stencil_poly=stencil_poly_end-stencil_poly_start;
+	
+		// memory for stencil vbo and poly ptrs
+	
+	shadow_poly_ptrs=(poly_pointer_type*)malloc(shadow_max_stencil_poly*sizeof(poly_pointer_type));
+	shadow_stencil_vbo=(float*)malloc((shadow_max_stencil_poly*(3*8))*sizeof(float));
 	
 		// check for memory errors
 	
-	if ((shadow_spt==NULL) || (shadow_ept==NULL) || (shadow_hpt==NULL) || (shadow_hits==NULL) || (shadow_stencil_vbo==NULL)) {
+	if ((shadow_spt==NULL) || (shadow_ept==NULL) || (shadow_hpt==NULL) || (shadow_hits==NULL) || (shadow_poly_ptrs==NULL) || (shadow_stencil_vbo==NULL)) {
 		strcpy(err_str,"Out of Memory");
 		return(FALSE);
 	}
@@ -95,6 +102,7 @@ void shadow_shutdown(void)
 	free(shadow_ept);
 	free(shadow_hpt);
 	free(shadow_hits);
+	free(shadow_poly_ptrs);
 	free(shadow_stencil_vbo);
 }
 
@@ -197,11 +205,73 @@ bool shadow_get_volume(model_draw *draw,int *px,int *py,int *pz)
 
 /* =======================================================
 
+      Find Polygons that Shadows Cross
+      
+======================================================= */
+
+int shadow_build_poly_set(model_draw *draw)
+{
+	int					n,k,cnt,px[8],py[8],pz[8];
+	d3pnt				min,max;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+		// get shadow volume for collision check
+		
+	if (!shadow_get_volume(draw,px,py,pz)) return(0);
+	
+	min.x=max.x=px[0];
+	min.y=max.y=py[0];
+	min.z=max.z=pz[0];
+	
+	for (n=1;n!=8;n++) {
+		if (px[n]<min.x) min.x=px[n];
+		if (px[n]>max.x) max.x=px[n];
+		if (py[n]<min.y) min.y=py[n];
+		if (py[n]>max.y) max.y=py[n];
+		if (pz[n]<min.z) min.z=pz[n];
+		if (pz[n]>max.z) max.z=pz[n];
+	}
+	
+		// check meshes
+		
+	cnt=0;
+	
+	for (n=0;n!=view.render->draw_list.count;n++) {
+	
+		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
+
+		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
+		
+			// find polys colliding with shadow
+			
+		for (k=0;k!=mesh->npoly;k++) {
+			poly=&mesh->polys[k];
+			
+			if ((poly->box.max.x<min.x) || (poly->box.min.x>max.x)) continue;
+			if ((poly->box.max.z<min.z) || (poly->box.min.z>max.z)) continue;
+			if ((poly->box.max.y<min.y) || (poly->box.min.y>max.y)) continue;		// check Y last as X/Z are usually better eliminations
+			
+			shadow_poly_ptrs[cnt].mesh_idx=view.render->draw_list.items[n].idx;
+			shadow_poly_ptrs[cnt].poly_idx=k;
+			cnt++;
+			
+				// can only shadow for max stencil count
+				
+			if (cnt==shadow_max_stencil_poly) return(cnt);
+		}
+	}
+	
+	return(cnt);
+}
+
+/* =======================================================
+
       Stencil Shadows Polygons
       
 ======================================================= */
 
-void shadow_stencil_poly_set(int item_count,ray_trace_check_item_type *item_list)
+void shadow_stencil_poly_set(int poly_count)
 {
 	int						k,n,offset,stencil_idx;
 	float					*vp,*vertex_ptr;
@@ -214,9 +284,9 @@ void shadow_stencil_poly_set(int item_count,ray_trace_check_item_type *item_list
 	shadow_stencil_poly_vertex_count=0;
 	vp=shadow_stencil_vbo;
 	
-	for (k=0;k!=item_count;k++) {
-		mesh=&map.mesh.meshes[item_list[k].index];
-		poly=&mesh->polys[item_list[k].index_2];
+	for (k=0;k!=poly_count;k++) {
+		mesh=&map.mesh.meshes[shadow_poly_ptrs[k].mesh_idx];
+		poly=&mesh->polys[shadow_poly_ptrs[k].poly_idx];
 		
 		for (n=0;n!=poly->ptsz;n++) {
 			pt=&mesh->vertexes[poly->v[n]];
@@ -256,8 +326,8 @@ void shadow_stencil_poly_set(int item_count,ray_trace_check_item_type *item_list
 	stencil_idx=stencil_poly_start;
 	offset=0;
 		
-	for (k=0;k!=item_count;k++) {
-		poly=&map.mesh.meshes[item_list[k].index].polys[item_list[k].index_2];
+	for (k=0;k!=poly_count;k++) {
+		poly=&map.mesh.meshes[shadow_poly_ptrs[k].mesh_idx].polys[shadow_poly_ptrs[k].poly_idx];
 
 		glStencilFunc(GL_ALWAYS,stencil_idx++,0xFF);
 		glDrawArrays(GL_POLYGON,offset,poly->ptsz);
@@ -271,7 +341,7 @@ void shadow_stencil_poly_set(int item_count,ray_trace_check_item_type *item_list
 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
 }
 
-void shadow_stencil_poly_clear(int item_count,ray_trace_check_item_type *item_list)
+void shadow_stencil_poly_clear(int poly_count)
 {
 	int						k,offset;
 	float					*vertex_ptr;
@@ -305,8 +375,8 @@ void shadow_stencil_poly_clear(int item_count,ray_trace_check_item_type *item_li
 		
 	offset=0;
 		
-	for (k=0;k!=item_count;k++) {
-		poly=&map.mesh.meshes[item_list[k].index].polys[item_list[k].index_2];
+	for (k=0;k!=poly_count;k++) {
+		poly=&map.mesh.meshes[shadow_poly_ptrs[k].mesh_idx].polys[shadow_poly_ptrs[k].poly_idx];
 		glDrawArrays(GL_POLYGON,offset,poly->ptsz);
 		offset+=poly->ptsz;
 	}
@@ -325,7 +395,7 @@ void shadow_stencil_poly_clear(int item_count,ray_trace_check_item_type *item_li
 
 void shadow_render(model_draw *draw)
 {
-	int							n,k,item_count,stencil_idx,trig_count;
+	int							n,k,poly_count,stencil_idx,trig_count;
 	float						f_dist;
 	float						*vp,*vertex_ptr;
 	unsigned short				*index_ptr;
@@ -347,6 +417,11 @@ void shadow_render(model_draw *draw)
 	mdl=model_find_uid(draw->uid);
 	if (mdl==NULL) return;
 	
+		// find all polys the shadow ray hits
+		
+	poly_count=shadow_build_poly_set(draw);
+	if (poly_count==0) return;
+	
 		// get light and draw distance
 
 	lspot=shadow_get_light_spot(draw);
@@ -358,9 +433,14 @@ void shadow_render(model_draw *draw)
 	glDepthMask(GL_FALSE);
 
 	glDisable(GL_ALPHA_TEST);
+	
+		// stencil in the polys the shadow
+		// is projected on
+		
+	shadow_stencil_poly_set(poly_count);	
 
 		// translate all the vertexes
-
+/*
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
 
@@ -494,7 +574,14 @@ void shadow_render(model_draw *draw)
 
 		shadow_stencil_poly_clear(item_count,item_list);
 	}
+*/
 
+		// clear all the poly stencils
+		
+	shadow_stencil_poly_clear(poly_count);
+
+		// fix some state
+		
 	glDepthMask(GL_TRUE);
 	glDisable(GL_STENCIL_TEST);
 }
