@@ -460,16 +460,16 @@ void view_draw_scene_render(int tick,obj_type *obj,weapon_type *weap)
 	render_map_liquid_opaque(tick);
 	view_draw_model_opaque(tick);
 	
-		// draw transparent scene items
-
-	render_map_mesh_transparent();
-	render_map_liquid_transparent(tick);
-	view_draw_model_transparent(tick);
-
 		// additional model drawing
 		// shadows, remote names, etc
 
 	view_draw_models_final();
+	
+		// draw transparent scene items
+
+	render_map_mesh_transparent();
+	view_draw_model_transparent(tick);
+	render_map_liquid_transparent(tick);
 
 		// draw decals
 

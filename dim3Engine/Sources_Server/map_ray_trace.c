@@ -1059,8 +1059,7 @@ void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt
 
 float ray_trace_plane(d3pnt *spt,d3vct *vct,d3pnt *hpt,int ptsz,d3pnt *plane)
 {
-	int			n,trig_count;
-	int			px[3],py[3],pz[3];
+	int			n,trig_count,px[3],py[3],pz[3];
 	float		t,hit_t;
 	d3pnt		pt,*m_pt;
 	
@@ -1110,29 +1109,26 @@ float ray_trace_plane(d3pnt *spt,d3vct *vct,d3pnt *hpt,int ptsz,d3pnt *plane)
 void ray_trace_mesh_poly_plane(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,int mesh_idx,int poly_idx)
 {
 	int						n;
-	float					hit_t,f_dist;
+	float					hit_t;
 	d3pnt					*pt,plane[8];
 	d3vct					vct;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
-
-		// plane enlargement
-
-	f_dist=(float)(map_enlarge*100);
-
-		// create plane from poly
-
+	
+		// get polygon
+		
 	mesh=&map.mesh.meshes[mesh_idx];
 	poly=&mesh->polys[poly_idx];
+	
+		// create plane by enlarging poly
 
 	for (n=0;n!=poly->ptsz;n++) {
 		pt=&mesh->vertexes[poly->v[n]];
-		vector_create(&vct,pt->x,pt->y,pt->z,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z);
-		plane[n].x=poly->box.mid.x+(int)(vct.x*f_dist);
-		plane[n].y=poly->box.mid.y+(int)(vct.y*f_dist);
-		plane[n].z=poly->box.mid.z+(int)(vct.z*f_dist);
+		plane[n].x=((pt->x-poly->box.mid.x)*100)+poly->box.mid.x;
+		plane[n].y=((pt->y-poly->box.mid.y)*100)+poly->box.mid.y;
+		plane[n].z=((pt->z-poly->box.mid.z)*100)+poly->box.mid.z;
 	}
-
+	
 		// run the ray array
 		
 	for (n=0;n!=cnt;n++) {

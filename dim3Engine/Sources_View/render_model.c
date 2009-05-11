@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit ÒCreated with dim3 TechnologyÓ is given on a single
+2. This credit â€œCreated with dim3 Technologyâ€ is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -45,7 +45,7 @@ extern bool fog_solid_on(void);
 
 /* =======================================================
 
-      Model Drawing Arrays
+      Model Colors and Normals
       
 ======================================================= */
 
@@ -126,18 +126,54 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 	}
 }
 
+void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_draw *draw)
+{
+	int				n;
+	d3ang			org_ang;
+	
+		// if no rot, add in original rot to diffuse calc
+		
+	if (draw->no_rot.on) {
+		memmove(&org_ang,&draw->setup.ang,sizeof(d3ang));
+		draw->setup.ang.x=draw->no_rot.ang.x;
+		draw->setup.ang.y=draw->no_rot.ang.y;
+		draw->setup.ang.z=draw->no_rot.ang.z;
+	}
+	
+		// run through the meshes
+	
+	for (n=0;n!=mdl->nmesh;n++) {
+		if ((mesh_mask&(0x1<<n))==0) continue;
+		model_create_draw_normals(mdl,n,&draw->setup);
+	}
+	
+		// restore angle if no rot
+		
+	if (draw->no_rot.on) {
+		memmove(&draw->setup.ang,&org_ang,sizeof(d3ang));
+	}
+}
+
+/* =======================================================
+
+      Model Drawing Arrays
+      
+======================================================= */
+
 bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 {
 	int				n,k,offset,t_idx;
-	float			*vl,*tl,*cl,*vp,*cp,*vertex_ptr,
+	float			*vl,*tl,*cl,*nl,*vp,*cp,*np,*vertex_ptr,
 					*vertex_array,*coord_array;
 	unsigned short	*index_ptr;
     model_trig_type	*trig;
 	model_mesh_type	*mesh;
+	
+		// create 
 
  		// construct VBO
 
-	vertex_ptr=view_bind_map_next_vertex_object(((draw->vbo_ptr.ntrig*3)*(3+2+3)));
+	vertex_ptr=view_bind_map_next_vertex_object(((draw->vbo_ptr.ntrig*3)*(3+2+3+3)));
 	if (vertex_ptr==NULL) return(FALSE);
 
 	index_ptr=view_bind_map_next_index_object(draw->vbo_ptr.ntrig*3);
@@ -152,6 +188,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 	vl=vertex_array=vertex_ptr;
 	tl=coord_array=vertex_ptr+((draw->vbo_ptr.ntrig*3)*3);
 	cl=coord_array=vertex_ptr+((draw->vbo_ptr.ntrig*3)*(3+2));
+	nl=coord_array=vertex_ptr+((draw->vbo_ptr.ntrig*3)*(3+2+3));
 
 	t_idx=0;
 
@@ -170,6 +207,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 			offset=trig->v[0]*3;
 			vp=draw->setup.mesh_arrays[n].gl_vertex_array+offset;
 			cp=draw->setup.mesh_arrays[n].gl_color_array+offset;
+			np=draw->setup.mesh_arrays[n].gl_normal_array+offset;
 
 			*vl++=*vp++;
 			*vl++=*vp++;
@@ -181,12 +219,17 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 			*cl++=*cp++;
 			*cl++=*cp++;
 			*cl++=*cp;
+			
+			*nl++=*np++;
+			*nl++=*np++;
+			*nl++=*np;
 
 				// vertex 1
 
 			offset=trig->v[1]*3;
 			vp=draw->setup.mesh_arrays[n].gl_vertex_array+offset;
 			cp=draw->setup.mesh_arrays[n].gl_color_array+offset;
+			np=draw->setup.mesh_arrays[n].gl_normal_array+offset;
 
 			*vl++=*vp++;
 			*vl++=*vp++;
@@ -199,11 +242,16 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 			*cl++=*cp++;
 			*cl++=*cp;
 
+			*nl++=*np++;
+			*nl++=*np++;
+			*nl++=*np;
+
 				// vertex 2
 
 			offset=trig->v[2]*3;
 			vp=draw->setup.mesh_arrays[n].gl_vertex_array+offset;
 			cp=draw->setup.mesh_arrays[n].gl_color_array+offset;
+			np=draw->setup.mesh_arrays[n].gl_normal_array+offset;
 
 			*vl++=*vp++;
 			*vl++=*vp++;
@@ -215,6 +263,10 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 			*cl++=*cp++;
 			*cl++=*cp++;
 			*cl++=*cp;
+
+			*nl++=*np++;
+			*nl++=*np++;
+			*nl++=*np;
 
 				// indexes
 
@@ -247,6 +299,9 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*3)*sizeof(float)));
 
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glColorPointer(3,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2+3))*sizeof(float)));
+
 	return(TRUE);
 }
 
@@ -274,6 +329,7 @@ void render_model_release_vertex_objects(void)
 	glClientActiveTexture(GL_TEXTURE0);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
+	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 	view_unbind_current_index_object();
@@ -297,7 +353,7 @@ void render_model_opaque_simple_trigs(model_type *mdl,int mesh_idx,model_draw *d
 	model_material_type		*material;
 	
 	mesh=&mdl->meshes[mesh_idx];
-
+	
 		// setup correct mesh pointers
 
 	trig_start_idx=render_model_set_vertex_objects(mdl,mesh_idx,draw);
@@ -688,7 +744,7 @@ void render_model_glow_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
 
 void render_model_setup(int tick,model_draw *draw)
 {
-	int					n,k,frame;
+	int					n,k,t,frame;
 	float				alpha;
 	model_type			*mdl;
     texture_type		*texture;
@@ -721,13 +777,29 @@ void render_model_setup(int tick,model_draw *draw)
 
 	for (n=0;n!=max_model_texture;n++) {
 	
-			// need to detect if fades are on for transparencies
+			// need to detect if this texture
+			// is involved in a fade for a mesh
 
 		alpha=draw->alpha;
+		
 		for (k=0;k!=mdl->nmesh;k++) {
-			if (draw->mesh_fades[k].on) {
-				alpha=draw->mesh_fades[k].alpha;
-				break;
+		
+				// already in alpha?
+				
+			if (alpha!=1.0f) break;
+		
+				// is the fade on?
+				
+			if (!draw->mesh_fades[k].on) continue;
+			
+				// is this texture used in this
+				// fading mesh?
+				
+			for (t=0;t!=max_model_texture;t++) {
+				if (mdl->meshes[k].materials[n].trig_count!=0) {
+					alpha=draw->mesh_fades[k].alpha;
+					break;
+				}
 			}
 		}
 		
@@ -761,9 +833,10 @@ void render_model_setup(int tick,model_draw *draw)
 		model_translate_draw_vertex(mdl,n,draw->pnt.x,draw->pnt.y,draw->pnt.z,&draw->setup);
 	}
 
-		// setup the colors
+		// setup the colors and normals
 
 	render_model_create_color_vertexes(mdl,draw->render_mesh_mask,draw);
+	render_model_create_normal_vertexes(mdl,draw->render_mesh_mask,draw);
 
 		// get the total number of trigs
 
@@ -921,11 +994,3 @@ void render_model_target(model_draw *draw,d3col *col)
 	glVertex3i(lx,by,lz);
 	glEnd();
 }
-
-
-
-
-
-
-
-

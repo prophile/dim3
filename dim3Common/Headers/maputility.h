@@ -70,7 +70,7 @@ extern char light_type_str[][32];
 #define max_movement										64				// maximum number of movements
 #define max_movement_move									16				// maximum number of separate moves in a movement
 
-#define max_sort_poly										512				// maximum number of transparent polys in a single scene
+#define max_sort_poly										2048			// maximum number of transparent polys in a single scene
 
 #define max_mesh_light_cache								8				// maximum number of cached lights
 

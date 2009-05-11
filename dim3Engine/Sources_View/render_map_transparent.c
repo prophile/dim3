@@ -336,7 +336,7 @@ void render_transparent_mesh_shader(void)
 
 			// draw shader
 
-		if (mesh->flag.hilite) {
+		if (!mesh->flag.hilite) {
 			gl_shader_draw_execute(texture,poly->txt_idx,poly->render.frame,poly->dark_factor,poly->alpha,&light_list);
 		}
 		else {

@@ -152,8 +152,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 263274893;
-			PBXWorkspaceStateSaveDate = 263274893;
+			PBXPerProjectTemplateStateSaveDate = 263705840;
+			PBXWorkspaceStateSaveDate = 263705840;
 		};
 		sourceControlManager = 260AFEDB0D404F5000F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -217,9 +217,9 @@
 	};
 	F59413200978BC6600223F2A /* draw_setup.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {984, 1638}}";
-			sepNavSelRange = "{1978, 0}";
-			sepNavVisRange = "{1216, 1599}";
+			sepNavIntBoundsRect = "{{0, 0}, {984, 1596}}";
+			sepNavSelRange = "{1162, 27}";
+			sepNavVisRange = "{998, 1556}";
 			sepNavWindowFrame = "{{240, 221}, {999, 779}}";
 		};
 	};
@@ -234,9 +234,9 @@
 	F594147B0979776300223F2A /* draw_normals.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 2240}}";
-			sepNavSelRange = "{3184, 0}";
-			sepNavVisRange = "{2526, 1154}";
-			sepNavWindowFrame = "{{374, 180}, {1041, 747}}";
+			sepNavSelRange = "{2683, 25}";
+			sepNavVisRange = "{2932, 968}";
+			sepNavWindowFrame = "{{475, 132}, {1041, 747}}";
 		};
 	};
 	F5941501097A002C00223F2A /* file_model_mesh_v1.c */ = {

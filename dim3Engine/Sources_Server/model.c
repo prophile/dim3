@@ -201,7 +201,7 @@ void model_load_and_init(model_draw *draw)
 	
 		// initialize draw memory
 		
-	if (mdl!=NULL) model_draw_setup_initialize(mdl,&draw->setup,FALSE);
+	if (mdl!=NULL) model_draw_setup_initialize(mdl,&draw->setup,TRUE);
 
 		// stop all animations and fades
 

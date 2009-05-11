@@ -114,27 +114,17 @@ view_light_spot_type* shadow_get_light_spot(model_draw *draw)
 		// get closest light
 
 	lspot=gl_light_find_closest_light(draw->pnt.x,draw->pnt.y,draw->pnt.z);
-	if (lspot!=NULL) return(lspot);
 
 		// if no light, get light directly above
 
-	lspot=&shadow_above_lspot;
-	memmove(&lspot->pnt,&draw->pnt,sizeof(d3pnt));
-	lspot->pnt.y-=map_enlarge*100;
-	lspot->intensity=(map_enlarge*100)+draw->size.y;
-	
+	if (lspot==NULL) {
+		lspot=&shadow_above_lspot;
+		memmove(&lspot->pnt,&draw->pnt,sizeof(d3pnt));
+		lspot->pnt.y-=map_enlarge*100;
+		lspot->intensity=(map_enlarge*100)+draw->size.y;
+	}
+
 	return(lspot);
-}
-
-float shadow_get_ray_distance(model_draw *draw,view_light_spot_type *lspot)
-{
-	double			dx,dy,dz;
-
-	dx=(lspot->pnt.x-draw->pnt.x);
-	dy=(lspot->pnt.y-(draw->pnt.y-(draw->size.y>>1)));
-	dz=(lspot->pnt.z-draw->pnt.z);
-	
-	return((float)lspot->intensity-(float)sqrt((dx*dx)+(dy*dy)+(dz*dz)));
 }
 
 bool shadow_get_volume(model_draw *draw,int *px,int *py,int *pz)
@@ -142,7 +132,7 @@ bool shadow_get_volume(model_draw *draw,int *px,int *py,int *pz)
 	int							n;
 	float						f_dist;
 	bool						hits[8];
-	d3pnt						spt[8],ept[8],hpt[8];
+	d3pnt						spt[8],ept[8],hpt[8],*sp,*ep;
 	d3vct						ray_move;
 	model_type					*mdl;
 	view_light_spot_type		*lspot;
@@ -160,20 +150,26 @@ bool shadow_get_volume(model_draw *draw,int *px,int *py,int *pz)
 		// get light and draw distance
 
 	lspot=shadow_get_light_spot(draw);
-	f_dist=shadow_get_ray_distance(draw,lspot);
+	f_dist=(float)lspot->intensity;
 
 		// ray trace bounding box
+		
+	sp=spt;
+	ep=ept;
 
 	for (n=0;n!=8;n++) {
-		spt[n].x=px[n];
-		spt[n].y=py[n];
-		spt[n].z=pz[n];
+		sp->x=px[n];
+		sp->y=py[n];
+		sp->z=pz[n];
 
-		vector_create(&ray_move,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,spt->x,spt->y,spt->z);
+		vector_create(&ray_move,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,sp->x,sp->y,sp->z);
 				
-		ept[n].x=spt[n].x-(int)(ray_move.x*f_dist);
-		ept[n].y=spt[n].y-(int)(ray_move.y*f_dist);
-		ept[n].z=spt[n].z-(int)(ray_move.z*f_dist);
+		ep->x=sp->x-(int)(ray_move.x*f_dist);
+		ep->y=sp->y-(int)(ray_move.y*f_dist);
+		ep->z=sp->z-(int)(ray_move.z*f_dist);
+		
+		sp++;
+		ep++;
 	}
 
 	base_contact.obj.on=FALSE;
@@ -254,6 +250,12 @@ int shadow_build_poly_set(model_draw *draw)
 		for (k=0;k!=mesh->npoly;k++) {
 			poly=&mesh->polys[k];
 			
+				// skip all transparent polys
+				
+			if (poly->render.transparent_on) continue;
+
+				// check if within shadow volume
+				
 			if ((poly->box.max.x<min.x) || (poly->box.min.x>max.x)) continue;
 			if ((poly->box.max.z<min.z) || (poly->box.min.z>max.z)) continue;
 			if ((poly->box.max.y<min.y) || (poly->box.min.y>max.y)) continue;		// check Y last as X/Z are usually better eliminations
@@ -325,7 +327,7 @@ void shadow_stencil_mesh_poly(int mesh_idx,int poly_idx)
 	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
 	glStencilFunc(GL_ALWAYS,stencil_shadow,0xFF);
 	
-	glDrawArrays(GL_POLYGON,0,poly->ptsz);
+	glDrawArrays(GL_POLYGON,0,shadow_stencil_poly_vertex_count);
 	
 	glDisableClientState(GL_VERTEX_ARRAY);
 	view_unbind_current_vertex_object();
@@ -361,7 +363,7 @@ void shadow_stencil_clear_mesh_poly(void)
 	glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
 	glStencilFunc(GL_ALWAYS,0x0,0xFF);
 	
-		// stencil the polygons
+		// stencil the polygon
 		
 	glDrawArrays(GL_POLYGON,0,shadow_stencil_poly_vertex_count);
 	
@@ -407,7 +409,7 @@ void shadow_render(model_draw *draw)
 		// get light and draw distance
 
 	lspot=shadow_get_light_spot(draw);
-	f_dist=shadow_get_ray_distance(draw,lspot);
+	f_dist=(float)lspot->intensity;
 
 		// start stenciling
 		// never write to the depth buffer during this operation
@@ -465,9 +467,9 @@ void shadow_render(model_draw *draw)
 				
 				vector_create(&ray_move,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,spt->x,spt->y,spt->z);
 					
-				ept->x=shadow_spt->x-(int)(ray_move.x*f_dist);
-				ept->y=shadow_spt->y-(int)(ray_move.y*f_dist);
-				ept->z=shadow_spt->z-(int)(ray_move.z*f_dist);
+				ept->x=spt->x-(int)(ray_move.x*f_dist);
+				ept->y=spt->y-(int)(ray_move.y*f_dist);
+				ept->z=spt->z-(int)(ray_move.z*f_dist);
 				
 				spt++;
 				ept++;
