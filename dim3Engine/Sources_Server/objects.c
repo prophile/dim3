@@ -967,12 +967,16 @@ void spot_add_multiplayer_bots(void)
 
 	if (!net_setup.host.hosting) return;
 
-		// spawn
+		// are bots allowed in this game?
+
+	if (!hud.bot.on) return;
+
+		// spawn bots
 
 	for (n=0;n!=setup.network.bot.count;n++) {
 	
-		if (hud.bot_names.names[n][0]!=0x0) {
-			strcpy(spot.attach_name,hud.bot_names.names[n]);
+		if (hud.bot.names[n][0]!=0x0) {
+			strcpy(spot.attach_name,hud.bot.names[n]);
 		}
 		else {
 			sprintf(spot.attach_name,"Bot %d",(n+1));

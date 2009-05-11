@@ -226,31 +226,42 @@ void host_game_pane(void)
 
 void host_options_pane(void)
 {
-	int							n,k,x,y;
+	int							n,k,x,y,control_y_add,separate_y_add,control_y_sz;
 	char						str[32];
 	bool						on;
 	network_setup_option_type	*option;
 
-	x=(int)(((float)hud.scale_x)*0.15f);
-	y=(int)(((float)hud.scale_y)*0.17f);
+		// panel sizes
+
+	control_y_add=element_get_control_high();
+	separate_y_add=element_get_separator_high();
+
+	control_y_sz=(control_y_add+(control_y_add*net_setup.noption))+separate_y_add;
+	if (hud.bot.on) control_y_sz+=(control_y_add*2);
+	
+	x=(int)(((float)hud.scale_x)*0.4f);
+	y=(hud.scale_y>>1)-(control_y_sz>>1);
 	
 		// bots
 
-	for (n=0;n!=(max_multiplayer_bot+1);n++) {
-		if (n==0) {
-			strcpy(bot_count_list[n],"None");
-		}
-		else {
-			sprintf(bot_count_list[n],"%d",n);
-		}
-	}
-	bot_count_list[max_multiplayer_bot+1][0]=0x0;
-	
-	element_combo_add("Bot Count",(char*)bot_count_list,setup.network.bot.count,host_game_bot_count_id,x,y,TRUE);
-	y+=element_get_control_high();
+	if (hud.bot.on) {
 
-	element_combo_add("Bot Skill",(char*)bot_skill_list,setup.network.bot.skill,host_game_bot_skill_id,x,y,TRUE);
-	y+=element_get_control_high();
+		for (n=0;n!=(max_multiplayer_bot+1);n++) {
+			if (n==0) {
+				strcpy(bot_count_list[n],"None");
+			}
+			else {
+				sprintf(bot_count_list[n],"%d",n);
+			}
+		}
+		bot_count_list[max_multiplayer_bot+1][0]=0x0;
+		
+		element_combo_add("Bot Count",(char*)bot_count_list,setup.network.bot.count,host_game_bot_count_id,x,y,TRUE);
+		y+=element_get_control_high();
+
+		element_combo_add("Bot Skill",(char*)bot_skill_list,setup.network.bot.skill,host_game_bot_skill_id,x,y,TRUE);
+		y+=element_get_control_high();
+	}
 
 		// score limit
 
@@ -260,7 +271,6 @@ void host_options_pane(void)
 
 		// project options
 
-	x=hud.scale_x/2;
 	y+=element_get_padding();
 
 	option=net_setup.options;

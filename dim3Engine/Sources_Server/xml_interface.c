@@ -243,8 +243,10 @@ void default_settings_interface(void)
 	
 		// bot names
 		
+	hud.bot.on=TRUE;
+
 	for (n=0;n!=max_multiplayer_bot;n++) {
-		hud.bot_names.names[n][0]=0x0;
+		hud.bot.names[n][0]=0x0;
 	}
 }
 
@@ -977,12 +979,14 @@ void read_settings_interface(void)
 	
     bot_head_tag=xml_findfirstchild("Bots",interface_head_tag);
     if (bot_head_tag!=-1) {
+
+		hud.bot.on=!xml_get_attribute_boolean(bot_head_tag,"hide");
 	
 		cnt=0;
 		bot_tag=xml_findfirstchild("Bot",bot_head_tag);
 		
 		while (bot_tag!=-1) {
-			xml_get_attribute_text(bot_tag,"name",hud.bot_names.names[cnt],name_str_len);
+			xml_get_attribute_text(bot_tag,"name",hud.bot.names[cnt],name_str_len);
 			cnt++;
 			bot_tag=xml_findnextchild(bot_tag);
 		}
