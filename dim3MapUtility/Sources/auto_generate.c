@@ -65,7 +65,7 @@ extern bool map_auto_generate_mesh_start(map_type *map,int box_idx,int group_idx
 extern void map_auto_generate_mesh_set_lock(map_type *map);
 extern int map_auto_generate_mesh_change_texture(int txt_idx);
 extern bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z,float *gx,float *gy);
-extern void map_auto_generate_mesh_punch_hole_last_poly(map_type *map,int x,int z);
+extern void map_auto_generate_mesh_punch_hole_last_poly(map_type *map,int x,int z,int txt_idx);
 extern void map_auto_generate_mesh_effect_uv_last_poly(map_type *map,float mult_x,float mult_y,bool rot);
 
 extern void map_auto_generate_vert_frame_mesh(map_type *map,int rn,int ty,int by,int x,int z,int frame_sz,bool reverse,bool full_frame);
@@ -692,7 +692,7 @@ bool map_auto_generate_mesh_window_last_poly(map_type *map,int x,int z,int *px,i
 
 		// create window hole
 		
-	map_auto_generate_mesh_punch_hole_last_poly(map,x,z);
+	map_auto_generate_mesh_punch_hole_last_poly(map,x,z,ag_settings.texture.frame);
 	
 		// window vertexes
 
@@ -2212,7 +2212,7 @@ bool map_auto_generate_test(map_type *map)
 #endif
 
 	ags.type=ag_type_room_and_corridor;
-	ags.flow=ag_flow_none;
+	ags.flow=ag_flow_circle; // ag_flow_none;
 
 	ags.second_story=TRUE;
 	

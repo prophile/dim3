@@ -706,15 +706,31 @@ bool map_auto_generate_mesh_add_poly(map_type *map,int ptsz,int *x,int *y,int *z
 	return(map_mesh_add_poly(map,map_ag_mesh_idx,ptsz,px,y,pz,gx,gy,map_ag_poly_txt_idx)!=-1);
 }
 
-void map_auto_generate_mesh_punch_hole_last_poly(map_type *map,int x,int z)
+void map_auto_generate_mesh_punch_hole_last_poly(map_type *map,int x,int z,int txt_idx)
 {
+	int				n,start_idx;
 	d3pnt			extrude_pnt;
+	map_mesh_type	*mesh;
+
+
+		// remember last poly
+
+	mesh=&map->mesh.meshes[map_ag_mesh_idx];
+	start_idx=mesh->npoly+3;
+
+		// punch the hole
 
 	extrude_pnt.x=x;
 	extrude_pnt.y=0;
 	extrude_pnt.z=z;
 	
-	map_mesh_poly_punch_hole(map,map_ag_mesh_idx,(map->mesh.meshes[map_ag_mesh_idx].npoly-1),&extrude_pnt);
+	map_mesh_poly_punch_hole(map,map_ag_mesh_idx,(mesh->npoly-1),&extrude_pnt);
+
+		// fix the textures
+
+	for (n=start_idx;n<mesh->npoly;n++) {
+		mesh->polys[n].txt_idx=txt_idx;
+	}
 }
 
 void map_auto_generate_mesh_effect_uv_last_poly(map_type *map,float mult_x,float mult_y,bool rot)
