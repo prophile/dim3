@@ -300,7 +300,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,model_draw *draw)
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*3)*sizeof(float)));
 
 	glEnableClientState(GL_NORMAL_ARRAY);
-	glColorPointer(3,GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2+3))*sizeof(float)));
+	glNormalPointer(GL_FLOAT,0,(void*)(((draw->vbo_ptr.ntrig*3)*(3+2+3))*sizeof(float)));
 
 	return(TRUE);
 }
