@@ -43,7 +43,6 @@ extern view_type		view;
 extern setup_type		setup;
 
 int						shadow_stencil_poly_vertex_count;
-float					shadow_alpha;
 float					*shadow_poly_stencil_vbo;
 bool					*shadow_hits;
 d3pnt					*shadow_spt,*shadow_ept,*shadow_hpt;
@@ -59,12 +58,6 @@ view_light_spot_type	shadow_above_lspot;
 bool shadow_initialize(char *err_str)
 {
 	int					sz;
-	
-		// setup shadow alpha
-
-	shadow_alpha=1.0f-((map.ambient.light_color.r+map.ambient.light_color.g+map.ambient.light_color.b)/3.0f);
-	if (shadow_alpha<0.2f) shadow_alpha=0.2f;
-	if (shadow_alpha>0.8f) shadow_alpha=0.8f;
 	
 		// create ray trace points
 		
@@ -383,7 +376,8 @@ void shadow_render(model_draw *draw)
 {
 	int							n,k,t,poly_count,trig_count;
 	float						f_dist;
-	float						*vp,*vertex_ptr;
+	double						dx,dy,dz,d_alpha;
+	float						*vp,*vertex_ptr,*vl,*cl;
 	unsigned short				*index_ptr;
 	d3vct						ray_move;
 	d3pnt						*spt,*ept,*hpt;
@@ -411,6 +405,11 @@ void shadow_render(model_draw *draw)
 	lspot=shadow_get_light_spot(draw);
 	f_dist=(float)lspot->intensity;
 
+		// get distance alpha factor
+
+	d_alpha=(double)lspot->intensity;
+	d_alpha=1.0/(d_alpha*d_alpha);
+
 		// start stenciling
 		// never write to the depth buffer during this operation
 
@@ -421,7 +420,7 @@ void shadow_render(model_draw *draw)
 
 		// setup blending
 
-	glColor4f(0.0f,0.0f,0.0f,shadow_alpha);
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 		// run through all the stenciled polygons
@@ -479,20 +478,39 @@ void shadow_render(model_draw *draw)
 
 				// setup the vertex objects
 
-			vertex_ptr=view_bind_map_next_vertex_object(mesh->nvertex*3);
+			vertex_ptr=view_bind_map_next_vertex_object(mesh->nvertex*(3+4));
 			if (vertex_ptr==NULL) {
 				glDisable(GL_STENCIL_TEST);
 				glDepthMask(GL_TRUE);
 				return;
 			}
+
+			vl=vertex_ptr;
+			cl=vertex_ptr+(mesh->nvertex*3);
 			
+				// vertexes
+
 			hpt=shadow_hpt;
 			
 			for (t=0;t!=mesh->nvertex;t++) {
-				*vertex_ptr++=(float)hpt->x;
-				*vertex_ptr++=(float)hpt->y;
-				*vertex_ptr++=(float)hpt->z;
+
+					// vertex
+
+				*vl++=(float)hpt->x;
+				*vl++=(float)hpt->y;
+				*vl++=(float)hpt->z;
+
+					// color
+
+				dx=(hpt->x-lspot->pnt.x);
+				dy=(hpt->y-lspot->pnt.y);
+				dz=(hpt->z-lspot->pnt.z);
 				hpt++;
+
+				*cl++=0.0f;
+				*cl++=0.0f;
+				*cl++=0.0f;
+				*cl++=1.0f-(float)(((dx*dx)+(dy*dy)+(dz*dz))*d_alpha);
 			}
 			
 			view_unmap_current_vertex_object();
@@ -530,9 +548,13 @@ void shadow_render(model_draw *draw)
 			
 			glEnableClientState(GL_VERTEX_ARRAY);
 			glVertexPointer(3,GL_FLOAT,0,0);
+
+			glEnableClientState(GL_COLOR_ARRAY);
+			glColorPointer(4,GL_FLOAT,0,(void*)((mesh->nvertex*3)*sizeof(float)));
 				
 			glDrawRangeElements(GL_TRIANGLES,0,mesh->nvertex,(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)0);
 
+			glDisableClientState(GL_COLOR_ARRAY);
 			glDisableClientState(GL_VERTEX_ARRAY);
 		
 				// unbind the vertex and index object

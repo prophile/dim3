@@ -439,6 +439,7 @@ typedef struct		{
 						int						scale_x,scale_y;
 						char					click_sound[name_str_len],
 												intro_music[name_str_len];
+						bool					debug;
 						hud_count_type			count;
 						hud_color_type			color;
 						hud_font_type			font;

@@ -39,7 +39,7 @@ and can be sold or given away.
 #define setup_pane_audio					1
 #define setup_pane_mouse					2
 #define setup_pane_action					3
-#define setup_pane_network					4
+#define setup_pane_debug					4
 
 #define ctrl_screen_size_id					0
 #define ctrl_fsaa_id						1
@@ -69,10 +69,14 @@ and can be sold or given away.
 
 #define ctrl_action_id						60
 
-#define ctrl_tab_id							70
+#define ctrl_debug_console_id				70
+#define ctrl_debug_engine_windowed_id		71
+#define ctrl_debug_editor_windowed_id		72
 
-#define setup_action_set_button				80
-#define setup_action_clear_button			81
+#define ctrl_tab_id							80
+
+#define setup_action_set_button				90
+#define setup_action_clear_button			91
 
 #define setup_game_ok_button				100
 #define setup_game_cancel_button			101
@@ -297,11 +301,30 @@ void setup_game_action_pane(void)
 	element_enable(setup_action_clear_button,FALSE);
 }
 
+void setup_game_debug_pane(void)
+{
+	int			x,y,control_y_add,separate_y_add,control_y_sz;
+	
+	control_y_add=element_get_control_high();
+	separate_y_add=element_get_separator_high();
+	control_y_sz=control_y_add*3;
+	
+	x=(int)(((float)hud.scale_x)*0.5f);
+	y=(hud.scale_y>>1)-(control_y_sz>>1);
+	
+	element_checkbox_add("Script Errors Shows Console",setup.debug_console,ctrl_debug_console_id,x,y,TRUE);
+	y+=control_y_add;
+	element_checkbox_add("Engine Windowed Mode (requires restart)",setup.window,ctrl_debug_engine_windowed_id,x,y,TRUE);
+	y+=control_y_add;
+	element_checkbox_add("Editor Windowed Run Mode",setup.window_editor,ctrl_debug_editor_windowed_id,x,y,TRUE);
+	y+=control_y_add;
+}
+
 void setup_game_create_pane(void)
 {
 	int			x,y,wid,high,yadd,padding,
 				tab_list_wid,tab_pane_high,ntab,stab,pane;
-	char		tab_list[][name_str_len]={"Video","Audio","Control","Actions"};
+	char		tab_list[][name_str_len]={"Video","Audio","Control","Actions","Debug"};
 							
 	element_clear();
 	
@@ -309,7 +332,12 @@ void setup_game_create_pane(void)
 		
 	if (!setup_in_game) {
 		stab=0;
-		ntab=4;
+		if (hud.debug) {
+			ntab=5;
+		}
+		else {
+			ntab=4;
+		}
 	}
 	else {
 		stab=1;
@@ -362,6 +390,9 @@ void setup_game_create_pane(void)
 			break;
 		case setup_pane_action:
 			setup_game_action_pane();
+			break;
+		case setup_pane_debug:
+			setup_game_debug_pane();
 			break;
 	}
 }
@@ -778,6 +809,19 @@ void setup_game_handle_click(int id)
 			
 		case ctrl_action_id:
 			setup_game_action_enable_buttons();
+			break;
+
+			// debug pane
+
+		case ctrl_debug_console_id:
+			setup.debug_console=element_get_value(ctrl_debug_console_id);
+			break;
+
+		case ctrl_debug_engine_windowed_id:
+			setup.window=element_get_value(ctrl_debug_engine_windowed_id);
+			break;
+		case ctrl_debug_editor_windowed_id:
+			setup.window_editor=element_get_value(ctrl_debug_editor_windowed_id);
 			break;
 			
 	}

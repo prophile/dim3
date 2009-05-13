@@ -76,6 +76,10 @@ void default_settings_interface(void)
 		
 	hud.click_sound[0]=0x0;
 	hud.intro_music[0]=0x0;
+
+		// debug mode
+
+	hud.debug=FALSE;
 	
 		// colors
 		
@@ -732,7 +736,8 @@ void read_settings_interface(void)
 				bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
 				radar_head_tag,menu_head_tag,menu_tag,chooser_head_tag,chooser_tag,
 				color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,music_tag,
-				proj_tag,games_head_tag,game_tag,options_head_tag,option_tag,bot_head_tag,bot_tag;
+				proj_tag,debug_tag,games_head_tag,game_tag,options_head_tag,option_tag,
+				bot_head_tag,bot_tag;
 	char		path[1024];
 
 	default_settings_interface();
@@ -933,6 +938,13 @@ void read_settings_interface(void)
 	proj_tag=xml_findfirstchild("Project",interface_head_tag);
 	if (proj_tag!=-1) {
 		xml_get_attribute_text(proj_tag,"name",net_setup.host.proj_name,name_str_len);
+	}
+
+		// debug setup
+
+	debug_tag=xml_findfirstchild("Debug",interface_head_tag);
+	if (debug_tag!=-1) {
+		hud.debug=xml_get_attribute_boolean(debug_tag,"on");
 	}
 
 		// network games
