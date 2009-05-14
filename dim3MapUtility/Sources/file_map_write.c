@@ -459,10 +459,10 @@ void write_single_mesh(map_mesh_type *mesh)
 		xml_add_attribute_int("txt",poly->txt_idx);
 		
 		xml_add_attribute_int_array("v",poly->v,poly->ptsz,FALSE);
-		xml_add_attribute_float_array("x",poly->gx,poly->ptsz);
-		xml_add_attribute_float_array("y",poly->gy,poly->ptsz);
+		xml_add_attribute_float_array("x",poly->uv[0].x,poly->ptsz);
+		xml_add_attribute_float_array("y",poly->uv[0].y,poly->ptsz);
 		
-		if ((poly->x_shift!=0) || (poly->y_shift!=0)) xml_add_attribute_2_coord_float("shift",poly->x_shift,poly->y_shift);
+		if ((poly->uv[0].x_shift!=0) || (poly->uv[0].y_shift!=0)) xml_add_attribute_2_coord_float("shift",poly->uv[0].x_shift,poly->uv[0].y_shift);
 		if (poly->dark_factor!=1.0f) xml_add_attribute_float("dark_fct",poly->dark_factor);
 		if (poly->alpha!=1.0f) xml_add_attribute_float("alpha",poly->alpha);
 		

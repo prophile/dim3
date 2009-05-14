@@ -129,8 +129,8 @@ bool view_compile_mesh_gl_list_init(void)
 				*pv++=(float)pnt->y;
 				*pv++=(float)pnt->z;
 				
-				*pp++=poly->gx[t]+x_shift_offset;
-				*pp++=poly->gy[t]+y_shift_offset;
+				*pp++=poly->uv[0].x[t]+x_shift_offset;
+				*pp++=poly->uv[0].y[t]+y_shift_offset;
 
 				*pc++=1.0f;
 				*pc++=1.0f;
@@ -287,8 +287,8 @@ bool view_compile_mesh_gl_lists(int tick)
 				y_shift_offset=poly->draw.y_shift_offset;
 
 				for (t=0;t!=poly->ptsz;t++) {
-					*pp++=poly->gx[t]+x_shift_offset;
-					*pp++=poly->gy[t]+y_shift_offset;
+					*pp++=poly->uv[0].x[t]+x_shift_offset;
+					*pp++=poly->uv[0].y[t]+y_shift_offset;
 				}
 
 				poly++;

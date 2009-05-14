@@ -74,6 +74,8 @@ extern char light_type_str[][32];
 
 #define max_mesh_light_cache								8				// maximum number of cached lights
 
+#define max_mesh_poly_uv_layer								3				// maximum number of uv layers
+
 //
 // strings
 //
@@ -222,11 +224,15 @@ typedef struct		{
 					} map_mesh_poly_render_type;
 
 typedef struct		{
+						float								x[8],y[8],
+															x_shift,y_shift;
+					} map_mesh_poly_uv_type;
+
+typedef struct		{
 						int									ptsz,v[8],txt_idx;
-						float								gx[8],gy[8],
-															x_shift,y_shift,
-															dark_factor,alpha;
+						float								dark_factor,alpha;
 						char								camera[name_str_len];
+						map_mesh_poly_uv_type				uv[max_mesh_poly_uv_layer];
 						map_mesh_poly_box_type				box;
 						map_mesh_poly_line_type				line;
 						map_mesh_poly_slope_type			slope;
@@ -263,7 +269,7 @@ typedef struct		{
 					} map_mesh_render_type;
 
 typedef struct		{
-						int									nvertex,npoly,group_idx;
+						int									nvertex,npoly,nuv,group_idx;
 						d3pnt								rot_off;
 						d3pnt								*vertexes;
 						d3vct								*normals;

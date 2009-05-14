@@ -142,10 +142,10 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 			poly->txt_idx=xml_get_attribute_int(poly_tag,"txt");
 			
 			poly->ptsz=xml_get_attribute_int_array(poly_tag,"v",poly->v,8);
-			xml_get_attribute_float_array(poly_tag,"x",poly->gx,8);
-			xml_get_attribute_float_array(poly_tag,"y",poly->gy,8);
+			xml_get_attribute_float_array(poly_tag,"x",poly->uv[0].x,8);
+			xml_get_attribute_float_array(poly_tag,"y",poly->uv[0].y,8);
 
-			xml_get_attribute_2_coord_float(poly_tag,"shift",&poly->x_shift,&poly->y_shift);
+			xml_get_attribute_2_coord_float(poly_tag,"shift",&poly->uv[0].x_shift,&poly->uv[0].y_shift);
 			poly->dark_factor=xml_get_attribute_float_default(poly_tag,"dark_fct",1.0f);
 			poly->alpha=xml_get_attribute_float_default(poly_tag,"alpha",1.0f);
 

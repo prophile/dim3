@@ -98,6 +98,8 @@ int map_mesh_add(map_type *map)
 	mesh->npoly=0;
 	mesh->polys=NULL;
 
+	mesh->nuv=1;
+
 	return(mesh_idx);
 }
 
@@ -340,8 +342,8 @@ int map_mesh_add_poly(map_type *map,int mesh_idx,int ptsz,int *x,int *y,int *z,f
 		
 			// add in UV coords
 			
-		poly->gx[t]=gx[t];
-		poly->gy[t]=gy[t];
+		poly->uv[0].x[t]=gx[t];
+		poly->uv[0].y[t]=gy[t];
 	}
 	
 		// finish up
@@ -349,7 +351,8 @@ int map_mesh_add_poly(map_type *map,int mesh_idx,int ptsz,int *x,int *y,int *z,f
 	poly->ptsz=ptsz;
 	poly->txt_idx=txt_idx;
 	
-	poly->x_shift=poly->y_shift=0.0f;
+	poly->uv[0].x_shift=0.0f;
+	poly->uv[0].y_shift=0.0f;
 	poly->dark_factor=1.0f;
 	poly->alpha=1.0f;
 	
@@ -645,8 +648,8 @@ void map_mesh_calculate_uv_center(map_type *map,int mesh_idx,float *gx,float *gy
 	for (n=0;n!=mesh->npoly;n++) {
 
 		for (k=0;k!=poly->ptsz;k++) {
-			kx+=poly->gx[k];
-			ky+=poly->gy[k];
+			kx+=poly->uv[0].x[k];
+			ky+=poly->uv[0].y[k];
 		}
 
 		cnt+=poly->ptsz;
