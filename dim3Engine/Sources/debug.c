@@ -45,6 +45,7 @@ extern map_type				map;
 extern server_type			server;
 extern js_type				js;
 extern setup_type			setup;
+extern hud_type				hud;
 extern network_setup_type	net_setup;
 
 char						bind_type_str[][16]={"Game","Map","Remote"},
@@ -507,6 +508,17 @@ void debug_screenshot(void)
 
 void debug_input(void)
 {
+		// screenshot always works
+		
+	if (input_action_get_state_single(nc_debug_screenshot)) {
+		debug_screenshot();
+		return;
+	}
+	
+		// others require debug mode to be on
+		
+	if (!hud.debug) return;
+	
 	if (input_action_get_state_single(nc_debug_status)) {
 		debug_dump();
 		return;
@@ -514,11 +526,6 @@ void debug_input(void)
 	
 	if (input_action_get_state_single(nc_debug_game)) {
 		debug_game();
-		return;
-	}
-	
-	if (input_action_get_state_single(nc_debug_screenshot)) {
-		debug_screenshot();
 		return;
 	}
 	
