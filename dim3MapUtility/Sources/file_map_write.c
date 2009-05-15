@@ -370,9 +370,36 @@ void write_single_vertex(int x,int y,int z)
     xml_add_tagend(TRUE);
 }
 
+void write_single_mesh_poly_uv(map_mesh_poly_type *poly,int uv_index)
+{
+	char			str[32];
+
+	if (uv_index==0) {
+		xml_add_attribute_int("txt",poly->uv[0].txt_idx);
+		xml_add_attribute_float_array("x",poly->uv[0].x,poly->ptsz);
+		xml_add_attribute_float_array("y",poly->uv[0].y,poly->ptsz);
+		if ((poly->uv[0].x_shift!=0) || (poly->uv[0].y_shift!=0)) xml_add_attribute_2_coord_float("shift",poly->uv[0].x_shift,poly->uv[0].y_shift);
+		return;
+	}
+
+	sprintf(str,"txt_%d",uv_index);
+	xml_add_attribute_int("txt",poly->uv[uv_index].txt_idx);
+
+	sprintf(str,"x_%d",uv_index);
+	xml_add_attribute_float_array("x",poly->uv[uv_index].x,poly->ptsz);
+
+	sprintf(str,"y_%d",uv_index);
+	xml_add_attribute_float_array("y",poly->uv[uv_index].y,poly->ptsz);
+
+	if ((poly->uv[uv_index].x_shift!=0) || (poly->uv[uv_index].y_shift!=0)) {
+		sprintf(str,"shift_%d",uv_index);
+		xml_add_attribute_2_coord_float("shift",poly->uv[uv_index].x_shift,poly->uv[uv_index].y_shift);
+	}
+}
+
 void write_single_mesh(map_mesh_type *mesh)
 {
-	int					n,nvertex,npoly;
+	int					n,k,nvertex,npoly;
 	d3pnt				*pt;
 	map_mesh_poly_type	*poly;
 
@@ -456,13 +483,12 @@ void write_single_mesh(map_mesh_type *mesh)
 
 		xml_add_tagstart("p");
 		
-		xml_add_attribute_int("txt",poly->uv[0].txt_idx);
-		
 		xml_add_attribute_int_array("v",poly->v,poly->ptsz,FALSE);
-		xml_add_attribute_float_array("x",poly->uv[0].x,poly->ptsz);
-		xml_add_attribute_float_array("y",poly->uv[0].y,poly->ptsz);
-		
-		if ((poly->uv[0].x_shift!=0) || (poly->uv[0].y_shift!=0)) xml_add_attribute_2_coord_float("shift",poly->uv[0].x_shift,poly->uv[0].y_shift);
+
+		for (k=0;k!=mesh->nuv;k++) {
+			write_single_mesh_poly_uv(poly,k);
+		}
+
 		if (poly->dark_factor!=1.0f) xml_add_attribute_float("dark_fct",poly->dark_factor);
 		if (poly->alpha!=1.0f) xml_add_attribute_float("alpha",poly->alpha);
 		

@@ -134,7 +134,7 @@ void render_transparent_sort(d3pnt *pnt)
 				// get texture
 
 			texture=&map.textures[poly->uv[0].txt_idx];
-			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+			frame=(texture->animate.current_frame+poly->draw.uv[0].txt_frame_offset)&max_texture_frame_mask;
 
 				// transparent?
 
@@ -260,7 +260,7 @@ void render_transparent_mesh_simple(void)
 			// draw the polygon
 
 		gl_texture_transparent_set(texture->frames[poly->render.frame].bitmap.gl_id,poly->alpha);
-		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+		glDrawRangeElements(GL_POLYGON,poly->draw.uv[0].gl_poly_index_min,poly->draw.uv[0].gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.uv[0].gl_poly_index_offset);
 	}
 
 		// was color array enabled?
@@ -343,7 +343,7 @@ void render_transparent_mesh_shader(void)
 			gl_shader_draw_hilite_execute(texture,poly->uv[0].txt_idx,poly->render.frame,poly->dark_factor,1.0f,&poly->box.mid,NULL);
 		}
 
-		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+		glDrawRangeElements(GL_POLYGON,poly->draw.uv[0].gl_poly_index_min,poly->draw.uv[0].gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.uv[0].gl_poly_index_offset);
 	}
 
 	gl_shader_draw_end();
@@ -386,7 +386,7 @@ void render_transparent_mesh_glow(void)
 
 		texture=&map.textures[poly->uv[0].txt_idx];
 		gl_texture_glow_set(texture->frames[poly->render.frame].bitmap.gl_id,texture->frames[poly->render.frame].glowmap.gl_id,texture->glow.current_color);
-		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+		glDrawRangeElements(GL_POLYGON,poly->draw.uv[0].gl_poly_index_min,poly->draw.uv[0].gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.uv[0].gl_poly_index_offset);
 	}
 
 	gl_texture_glow_end();

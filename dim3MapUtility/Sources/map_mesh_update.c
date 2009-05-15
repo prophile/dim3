@@ -669,7 +669,7 @@ inline float map_mesh_poly_run_shifts_single_choord(float f_tick,float shift)
 
 void map_mesh_poly_run_shifts(map_type *map,int tick)
 {
-	int						n,k,nmesh,npoly;
+	int						n,k,t,nmesh,npoly;
 	float					f_tick;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
@@ -697,9 +697,13 @@ void map_mesh_poly_run_shifts(map_type *map,int tick)
 
 		for (k=0;k!=npoly;k++) {
 
-			if (poly->draw.shift_on) {
-				poly->draw.x_shift_offset=map_mesh_poly_run_shifts_single_choord(f_tick,poly->uv[0].x_shift);
-				poly->draw.y_shift_offset=map_mesh_poly_run_shifts_single_choord(f_tick,poly->uv[0].y_shift);
+			for (t=0;t!=mesh->nuv;t++) {
+
+				if (poly->draw.uv[t].shift_on) {
+					poly->draw.uv[t].x_shift_offset=map_mesh_poly_run_shifts_single_choord(f_tick,poly->uv[t].x_shift);
+					poly->draw.uv[t].y_shift_offset=map_mesh_poly_run_shifts_single_choord(f_tick,poly->uv[t].y_shift);
+				}
+
 			}
 
 			poly++;

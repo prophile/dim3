@@ -145,7 +145,7 @@ void group_texture(int group_idx,int index)
 		poly=mesh->polys;
 
 		for (k=0;k!=mesh->npoly;k++) {
-			poly->draw.txt_frame_offset=index;
+			poly->draw.uv[0].txt_frame_offset=index;
 			poly++;
 		}
 

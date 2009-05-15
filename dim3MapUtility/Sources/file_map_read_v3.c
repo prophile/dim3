@@ -47,9 +47,34 @@ extern char				media_type_str[][32],
       
 ======================================================= */
 
+void read_single_mesh_poly_uv_v3(int poly_tag,map_mesh_poly_type *poly,int uv_index)
+{
+	char			str[32];
+
+	if (uv_index==0) {
+		poly->uv[0].txt_idx=xml_get_attribute_int(poly_tag,"txt");
+		xml_get_attribute_float_array(poly_tag,"x",poly->uv[0].x,8);
+		xml_get_attribute_float_array(poly_tag,"y",poly->uv[0].y,8);
+		xml_get_attribute_2_coord_float(poly_tag,"shift",&poly->uv[0].x_shift,&poly->uv[0].y_shift);
+		return;
+	}
+
+	sprintf(str,"txt_%d",uv_index);
+	poly->uv[uv_index].txt_idx=xml_get_attribute_int_default(poly_tag,str,-1);
+
+	sprintf(str,"x_%d",uv_index);
+	xml_get_attribute_float_array(poly_tag,str,poly->uv[uv_index].x,8);
+
+	sprintf(str,"y_%d",uv_index);
+	xml_get_attribute_float_array(poly_tag,str,poly->uv[uv_index].y,8);
+
+	sprintf(str,"shift_%d",uv_index);
+	xml_get_attribute_2_coord_float(poly_tag,"shift",&poly->uv[uv_index].x_shift,&poly->uv[uv_index].y_shift);
+}
+
 bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 {
-	int					n,nvertex,npoly,
+	int					n,k,nvertex,npoly,
 						msg_tag,main_vertex_tag,vertex_tag,main_poly_tag,poly_tag,tag;
 	d3pnt				*pt;
 	map_mesh_type		*mesh;
@@ -72,6 +97,8 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 	mesh->flag.rot_independent=xml_get_attribute_boolean(mesh_tag,"rot_independent");
 	
 	xml_get_attribute_3_coord_int(mesh_tag,"rot_off",&mesh->rot_off.x,&mesh->rot_off.y,&mesh->rot_off.z);
+
+	mesh->nuv=xml_get_attribute_int_default(mesh_tag,"uv_count",1);
 
 		// messages
 
@@ -139,13 +166,12 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 		poly=mesh->polys;
 
 		for (n=0;n!=npoly;n++) {
-			poly->uv[0].txt_idx=xml_get_attribute_int(poly_tag,"txt");
-			
 			poly->ptsz=xml_get_attribute_int_array(poly_tag,"v",poly->v,8);
-			xml_get_attribute_float_array(poly_tag,"x",poly->uv[0].x,8);
-			xml_get_attribute_float_array(poly_tag,"y",poly->uv[0].y,8);
 
-			xml_get_attribute_2_coord_float(poly_tag,"shift",&poly->uv[0].x_shift,&poly->uv[0].y_shift);
+			for (k=0;k!=mesh->nuv;k++) {
+				read_single_mesh_poly_uv_v3(poly_tag,poly,k);
+			}
+
 			poly->dark_factor=xml_get_attribute_float_default(poly_tag,"dark_fct",1.0f);
 			poly->alpha=xml_get_attribute_float_default(poly_tag,"alpha",1.0f);
 

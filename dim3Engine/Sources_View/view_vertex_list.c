@@ -118,8 +118,8 @@ bool view_compile_mesh_gl_list_init(void)
 
 				// polygon vertexes
 
-			x_shift_offset=poly->draw.x_shift_offset;
-			y_shift_offset=poly->draw.y_shift_offset;
+			x_shift_offset=poly->draw.uv[0].x_shift_offset;
+			y_shift_offset=poly->draw.uv[0].y_shift_offset;
 
 			for (t=0;t!=poly->ptsz;t++) {
 			
@@ -179,7 +179,7 @@ bool view_compile_mesh_gl_list_init(void)
 				// polygon indexes
 				
 			v_poly_start_idx=poly->draw.vertex_offset;
-			poly->draw.gl_poly_index_offset=i_idx*sizeof(unsigned int);
+			poly->draw.uv[0].gl_poly_index_offset=i_idx*sizeof(unsigned int);
 				
 			for (t=0;t!=poly->ptsz;t++) {
 				*index_ptr++=v_poly_start_idx+t;
@@ -189,8 +189,8 @@ bool view_compile_mesh_gl_list_init(void)
 			
 				// min/max for range element draws
 				
-			poly->draw.gl_poly_index_min=v_poly_start_idx;
-			poly->draw.gl_poly_index_max=v_poly_start_idx+poly->ptsz;
+			poly->draw.uv[0].gl_poly_index_min=v_poly_start_idx;
+			poly->draw.uv[0].gl_poly_index_max=v_poly_start_idx+poly->ptsz;
 
 			poly++;
 		}
@@ -283,8 +283,8 @@ bool view_compile_mesh_gl_lists(int tick)
 
 					// polygon uvs
 
-				x_shift_offset=poly->draw.x_shift_offset;
-				y_shift_offset=poly->draw.y_shift_offset;
+				x_shift_offset=poly->draw.uv[0].x_shift_offset;
+				y_shift_offset=poly->draw.uv[0].y_shift_offset;
 
 				for (t=0;t!=poly->ptsz;t++) {
 					*pp++=poly->uv[0].x[t]+x_shift_offset;

@@ -84,7 +84,7 @@ void render_map_setup(void)
 				// get texture and frame
 
 			texture=&map.textures[poly->uv[0].txt_idx];
-			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+			frame=(texture->animate.current_frame+poly->draw.uv[0].txt_frame_offset)&max_texture_frame_mask;
 
 				// set the flags
 

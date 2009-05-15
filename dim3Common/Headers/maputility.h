@@ -211,11 +211,15 @@ typedef struct		{
 					} map_mesh_poly_slope_type;
 
 typedef struct		{
-						int									txt_frame_offset,vertex_offset,
-															gl_poly_index_min,gl_poly_index_max,gl_poly_index_offset,
-															stencil_pass,stencil_idx,decal_stencil_idx;
+						int									txt_frame_offset,
+															gl_poly_index_min,gl_poly_index_max,gl_poly_index_offset;
 						float								x_shift_offset,y_shift_offset;
 						bool								shift_on;
+					} map_mesh_poly_draw_uv_type;
+
+typedef struct		{
+						int									vertex_offset,decal_stencil_idx;
+						map_mesh_poly_draw_uv_type			uv[max_mesh_poly_uv_layer];
 					} map_mesh_poly_draw_type;
 
 typedef struct		{
