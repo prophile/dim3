@@ -100,7 +100,7 @@ decal_type* decal_find_free(void)
 
 bool decal_segment_ok(map_mesh_poly_type *poly,int mark_idx)
 {
-	if ((poly->alpha==1.0f) && (map.textures[poly->txt_idx].frames[0].bitmap.alpha_mode!=alpha_mode_transparent)) {
+	if ((poly->alpha==1.0f) && (map.textures[poly->uv[0].txt_idx].frames[0].bitmap.alpha_mode!=alpha_mode_transparent)) {
 		return(!server.marks[mark_idx].no_opaque);
 	}
 

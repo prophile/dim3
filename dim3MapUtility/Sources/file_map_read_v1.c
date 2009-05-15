@@ -130,7 +130,7 @@ void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,
 	if (seg->climbable) map_mesh->flag.climbable=TRUE;
 
 	mesh_poly->ptsz=ptsz;
-	mesh_poly->txt_idx=seg->fill;
+	mesh_poly->uv[0].txt_idx=seg->fill;
 
 	map_mesh->npoly++;
 }

@@ -33,7 +33,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int				cy,txt_palette_high;
+extern int				cy,uv_index,txt_palette_high;
 extern float			walk_view_fov,walk_view_y_angle,walk_view_x_angle;
 extern bool				dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_area,dp_textured;
 extern d3pnt			view_pnt;
@@ -208,13 +208,21 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 	mesh=map.mesh.meshes;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
+	
+			// skip any meshes that don't have
+			// the correct UV level
+			
+		if (uv_index>mesh->nuv) {
+			mesh++;
+			continue;
+		}
 		
 			// draw polys
 	
 		for (k=0;k!=mesh->npoly;k++) {
 		
 			mesh_poly=&mesh->polys[k];
-			texture=&map.textures[mesh_poly->txt_idx];
+			texture=&map.textures[mesh_poly->uv[uv_index].txt_idx];
 		
 				// opaque or transparent flag
 				
@@ -261,7 +269,7 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 			
 			for (t=0;t!=mesh_poly->ptsz;t++) {
 				pt=&mesh->vertexes[mesh_poly->v[t]];
-				glTexCoord2f(mesh_poly->gx[t],mesh_poly->gy[t]);
+				glTexCoord2f(mesh_poly->uv[uv_index].x[t],mesh_poly->uv[uv_index].y[t]);
 				glVertex3i(pt->x,pt->y,pt->z);
 			}
 			
@@ -302,7 +310,7 @@ void walk_view_draw_meshes_line(bool opaque)
 		for (k=0;k!=mesh->npoly;k++) {
 		
 			mesh_poly=&mesh->polys[k];
-			texture=&map.textures[mesh_poly->txt_idx];
+			texture=&map.textures[mesh_poly->uv[uv_index].txt_idx];
 		
 			if (opaque) {
 				if ((mesh_poly->alpha!=1.0f) || (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent)) continue;

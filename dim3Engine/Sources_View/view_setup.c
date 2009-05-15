@@ -344,7 +344,7 @@ bool view_setup_model_in_view(model_draw *draw,int mesh_idx)
 
 		// is model in a mesh that's in the mesh draw list?
 
-	if (mesh_idx!=-1) {
+	if ((mesh_idx!=-1) && (view.render->has_area)) {
 		if (!view_mesh_in_draw_list(mesh_idx)) return(FALSE);
 	}
 	
@@ -482,7 +482,7 @@ void view_add_effect_draw_list(int tick)
 
 			// effect inside a mesh that's hidden?
 
-		if (effect->mesh_idx!=-1) {
+		if ((effect->mesh_idx!=-1) && (view.render->has_area)) {
 			if (!view_mesh_in_draw_list(effect->mesh_idx)) continue;
 		}
 

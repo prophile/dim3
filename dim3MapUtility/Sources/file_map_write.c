@@ -456,7 +456,7 @@ void write_single_mesh(map_mesh_type *mesh)
 
 		xml_add_tagstart("p");
 		
-		xml_add_attribute_int("txt",poly->txt_idx);
+		xml_add_attribute_int("txt",poly->uv[0].txt_idx);
 		
 		xml_add_attribute_int_array("v",poly->v,poly->ptsz,FALSE);
 		xml_add_attribute_float_array("x",poly->uv[0].x,poly->ptsz);

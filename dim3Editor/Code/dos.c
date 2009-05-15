@@ -46,11 +46,6 @@ map_type						map;
             
 ======================================================= */
 
-void open_windows(void)
-{
-	main_wind_open();
-}
-
 void redraw_windows(void)
 {
         // center
@@ -163,7 +158,7 @@ bool file_new_map(void)
 	
 	map_opened=TRUE;
     
-    open_windows();
+    main_wind_open();
 	main_wind_set_title(file_name);
 	
 		// start models
@@ -200,7 +195,7 @@ bool file_open_map(void)
 		
 	SetCursor(*GetCursor(watchCursor));
 	
-	open_windows();
+	main_wind_open();
 	main_wind_set_title(file_name);
 	
 	map_setup(&file_path_setup,anisotropic_mode_none,setup.mipmap_mode,FALSE);

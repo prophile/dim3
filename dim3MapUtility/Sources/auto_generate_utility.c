@@ -729,7 +729,7 @@ void map_auto_generate_mesh_punch_hole_last_poly(map_type *map,int x,int z,int t
 		// fix the textures
 
 	for (n=start_idx;n<mesh->npoly;n++) {
-		mesh->polys[n].txt_idx=txt_idx;
+		mesh->polys[n].uv[0].txt_idx=txt_idx;
 	}
 }
 

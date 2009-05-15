@@ -35,7 +35,7 @@ and can be sold or given away.
 
 #define drag_texture_shift_factor		100.0f
 
-extern int					vertex_mode;
+extern int					vertex_mode,uv_index;
 extern bool					dp_auto_texture;
 
 extern map_type				map;
@@ -124,8 +124,8 @@ bool walk_view_click_drag_texture(editor_3D_view_setup *view_setup,d3pnt *pt,int
 			if ((entire_mesh) || (n==poly_idx)) {
 		
 				for (k=0;k!=poly->ptsz;k++) {
-					poly->gx[k]+=gx_add;
-					poly->gy[k]+=gy_add;
+					poly->uv[uv_index].x[k]+=gx_add;
+					poly->uv[uv_index].y[k]+=gy_add;
 				}
 				
 			}

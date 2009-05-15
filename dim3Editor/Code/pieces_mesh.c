@@ -32,7 +32,7 @@ and can be sold or given away.
 #define import_obj_float_to_int			1000.0f
 #define import_obj_max_dimension		5000
 
-extern int								drag_mode;
+extern int								drag_mode,uv_index;
 extern bool								dp_object,dp_node,dp_lightsoundparticle,dp_auto_texture;
 
 extern map_type							map;
@@ -853,7 +853,7 @@ void piece_split_mesh(void)
 			z[k]=pt->z;
 		}
 		
-		map_mesh_add_poly(&map,mesh_idx,poly->ptsz,x,y,z,poly->gx,poly->gy,poly->txt_idx);
+		map_mesh_add_poly(&map,mesh_idx,poly->ptsz,x,y,z,poly->uv[uv_index].x,poly->uv[uv_index].y,poly->uv[uv_index].txt_idx);
 		
 			// delete poly from mesh
 			

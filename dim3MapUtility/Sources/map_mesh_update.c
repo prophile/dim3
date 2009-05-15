@@ -600,7 +600,7 @@ bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *ext
 		k_gx[3]=gx[n];
 		k_gy[3]=gy[n];
 
-		if (map_mesh_add_poly(map,mesh_idx,4,kx,ky,kz,k_gx,k_gy,poly->txt_idx)==-1) return(FALSE);
+		if (map_mesh_add_poly(map,mesh_idx,4,kx,ky,kz,k_gx,k_gy,poly->uv[0].txt_idx)==-1) return(FALSE);
 	}
 	
 		// extruded polys
@@ -642,7 +642,7 @@ bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *ext
 			k_gx[3]=0.0f;
 			k_gy[3]=1.0f;
 
-			if (map_mesh_add_poly(map,mesh_idx,4,kx,ky,kz,k_gx,k_gy,poly->txt_idx)==-1) return(FALSE);
+			if (map_mesh_add_poly(map,mesh_idx,4,kx,ky,kz,k_gx,k_gy,poly->uv[0].txt_idx)==-1) return(FALSE);
 		}
 	}
 
@@ -934,7 +934,7 @@ void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 	
 		// get scale
 
-	map_get_texture_uv_get_scale(map,poly->txt_idx,&txt_scale_x,&txt_scale_y);
+	map_get_texture_uv_get_scale(map,poly->uv[0].txt_idx,&txt_scale_x,&txt_scale_y);
 	
 		// setup box and slope
 		// needed for texture calculations
@@ -973,7 +973,7 @@ void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 	
 			// deal with offset locks
 			
-		if (map->textures[poly->txt_idx].scale.lock_offset) {
+		if (map->textures[poly->uv[0].txt_idx].scale.lock_offset) {
 			x_txtoff=0.0f;
 			y_txtoff=0.0f;
 		}
@@ -1019,7 +1019,7 @@ void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 	
 		// deal with offset locks
 		
-	if (map->textures[poly->txt_idx].scale.lock_offset) {
+	if (map->textures[poly->uv[0].txt_idx].scale.lock_offset) {
 		x_txtoff=0.0f;
 		y_txtoff=0.0f;
 	}

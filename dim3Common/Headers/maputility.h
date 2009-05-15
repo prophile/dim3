@@ -224,12 +224,13 @@ typedef struct		{
 					} map_mesh_poly_render_type;
 
 typedef struct		{
+						int									txt_idx;
 						float								x[8],y[8],
 															x_shift,y_shift;
 					} map_mesh_poly_uv_type;
 
 typedef struct		{
-						int									ptsz,v[8],txt_idx;
+						int									ptsz,v[8];
 						float								dark_factor,alpha;
 						char								camera[name_str_len];
 						map_mesh_poly_uv_type				uv[max_mesh_poly_uv_layer];

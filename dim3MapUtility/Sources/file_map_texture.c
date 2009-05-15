@@ -95,7 +95,7 @@ bool map_textures_read(map_type *map,bool in_engine)
 			poly=mesh->polys;
 			
 			for (k=0;k!=mesh->npoly;k++) {
-				txt_ok[poly->txt_idx]=TRUE;
+				txt_ok[poly->uv[0].txt_idx]=TRUE;
 				poly++;
 			}
 			

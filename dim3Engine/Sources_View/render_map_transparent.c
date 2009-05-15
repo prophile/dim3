@@ -133,7 +133,7 @@ void render_transparent_sort(d3pnt *pnt)
 
 				// get texture
 
-			texture=&map.textures[poly->txt_idx];
+			texture=&map.textures[poly->uv[0].txt_idx];
 			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
 				// transparent?
@@ -240,7 +240,7 @@ void render_transparent_mesh_simple(void)
 	
 			// need to change texture blending?
 
-		texture=&map.textures[poly->txt_idx];
+		texture=&map.textures[poly->uv[0].txt_idx];
 
 		if (texture->additive!=cur_additive) {
 			cur_additive=texture->additive;
@@ -317,7 +317,7 @@ void render_transparent_mesh_shader(void)
 
 			// need to change texture blending?
 
-		texture=&map.textures[poly->txt_idx];
+		texture=&map.textures[poly->uv[0].txt_idx];
 
 		if (texture->additive!=cur_additive) {
 			cur_additive=texture->additive;
@@ -337,10 +337,10 @@ void render_transparent_mesh_shader(void)
 			// draw shader
 
 		if (!mesh->flag.hilite) {
-			gl_shader_draw_execute(texture,poly->txt_idx,poly->render.frame,poly->dark_factor,poly->alpha,&light_list);
+			gl_shader_draw_execute(texture,poly->uv[0].txt_idx,poly->render.frame,poly->dark_factor,poly->alpha,&light_list);
 		}
 		else {
-			gl_shader_draw_hilite_execute(texture,poly->txt_idx,poly->render.frame,poly->dark_factor,1.0f,&poly->box.mid,NULL);
+			gl_shader_draw_hilite_execute(texture,poly->uv[0].txt_idx,poly->render.frame,poly->dark_factor,1.0f,&poly->box.mid,NULL);
 		}
 
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
@@ -384,7 +384,7 @@ void render_transparent_mesh_glow(void)
 		
 			// draw glow
 
-		texture=&map.textures[poly->txt_idx];
+		texture=&map.textures[poly->uv[0].txt_idx];
 		gl_texture_glow_set(texture->frames[poly->render.frame].bitmap.gl_id,texture->frames[poly->render.frame].glowmap.gl_id,texture->glow.current_color);
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}

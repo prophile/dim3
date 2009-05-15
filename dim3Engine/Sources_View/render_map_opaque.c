@@ -119,7 +119,7 @@ void render_opaque_mesh_simple(void)
 
 				// get texture
 
-			texture=&map.textures[poly->txt_idx];
+			texture=&map.textures[poly->uv[0].txt_idx];
 
 			if (!gl_back_render_get_texture(poly->camera,&gl_id)) {
 				gl_id=texture->frames[poly->render.frame].bitmap.gl_id;
@@ -197,13 +197,13 @@ void render_opaque_mesh_shader(void)
 			
 				// setup shader
 
-			texture=&map.textures[poly->txt_idx];
+			texture=&map.textures[poly->uv[0].txt_idx];
 
 			if (!mesh->flag.hilite) {
-				gl_shader_draw_execute(texture,poly->txt_idx,poly->render.frame,poly->dark_factor,1.0f,&light_list);
+				gl_shader_draw_execute(texture,poly->uv[0].txt_idx,poly->render.frame,poly->dark_factor,1.0f,&light_list);
 			}
 			else {
-				gl_shader_draw_hilite_execute(texture,poly->txt_idx,poly->render.frame,poly->dark_factor,1.0f,&poly->box.mid,NULL);
+				gl_shader_draw_hilite_execute(texture,poly->uv[0].txt_idx,poly->render.frame,poly->dark_factor,1.0f,&poly->box.mid,NULL);
 			}
 
 				// fix texture if any back rendering
@@ -272,7 +272,7 @@ void render_opaque_mesh_glow(void)
 
 				// get texture
 
-			texture=&map.textures[poly->txt_idx];
+			texture=&map.textures[poly->uv[0].txt_idx];
 
 				// draw glow
 
