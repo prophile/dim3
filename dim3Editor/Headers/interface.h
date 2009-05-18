@@ -33,6 +33,7 @@ extern void menu_start(void);
 extern void menu_fix_enable(void);
 extern void menu_set_view_check(int view);
 extern void menu_set_perspective_check(int perspective);
+extern void menu_set_uv_check(int uv_layer);
 extern void menu_save_changes_dialog(void);
 
 extern void undo_clear(void);
@@ -77,6 +78,7 @@ extern void main_wind_resize(void);
 extern void main_wind_set_title(char *file_name);
 extern void main_wind_set_view(int view);
 extern void main_wind_set_perspective(int perspective);
+extern void main_wind_set_uv_layer(int uv_layer);
 extern void main_wind_rotate_view(void);
 extern void main_wind_set_viewport(d3rect *view_box,bool erase,bool use_background);
 extern void main_wind_set_3D_projection(editor_3D_view_setup *view_setup,float near_z,float far_z,float near_z_offset);

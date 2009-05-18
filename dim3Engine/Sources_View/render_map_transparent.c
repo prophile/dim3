@@ -193,18 +193,6 @@ void render_transparent_mesh_simple(void)
 	texture_type				*texture;
 	view_glsl_light_list_type	light_list;
 
-		// setup transparent drawing
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-				
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_FALSE);
-
 		// sorted transparency list
 
 	sort_cnt=trans_sort.count;
@@ -280,18 +268,6 @@ void render_transparent_mesh_shader(void)
 	texture_type				*texture;
 	view_glsl_light_list_type	light_list;
 
-		// set transparent shader calls
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-				
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_FALSE);
-
 		// sorted transparent poly list
 
 	sort_cnt=trans_sort.count;
@@ -357,16 +333,7 @@ void render_transparent_mesh_glow(void)
 	map_poly_sort_item_type	*sort_list;
 	texture_type			*texture;
 
-		// setup glow mapping
-
-	glDisable(GL_BLEND);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_FALSE);
+		// sorted transparent poly list
 
 	sort_cnt=trans_sort.count;
 	sort_list=trans_sort.list;
@@ -414,11 +381,28 @@ void render_map_mesh_transparent(void)
 
 	render_transparent_sort(&view.render->camera.pnt);
 
+		// common setup
+		
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+				
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+
 		// transparent meshes
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 	render_transparent_mesh_simple();
 	if (!dim3_debug) render_transparent_mesh_shader();
+
+	glDisable(GL_BLEND);
+
 	render_transparent_mesh_glow();
+	
+	glDepthMask(GL_TRUE);
 
 		// dettach any attached lists
 

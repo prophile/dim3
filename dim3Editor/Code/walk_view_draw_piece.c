@@ -33,7 +33,7 @@ and can be sold or given away.
 #include "common_view.h"
 #include "walk_view.h"
 
-extern int				cy,uv_index,txt_palette_high;
+extern int				cy,main_wind_uv_layer,txt_palette_high;
 extern float			walk_view_fov,walk_view_y_angle,walk_view_x_angle;
 extern bool				dp_liquid,dp_object,dp_lightsoundparticle,dp_node,dp_area,dp_textured;
 extern d3pnt			view_pnt;
@@ -203,8 +203,6 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 
 		// draw meshes
 		
-		// supergumba -- need view clipping here
-		
 	mesh=map.mesh.meshes;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
@@ -212,7 +210,7 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 			// skip any meshes that don't have
 			// the correct UV level
 			
-		if (uv_index>mesh->nuv) {
+		if (main_wind_uv_layer>=mesh->nuv) {
 			mesh++;
 			continue;
 		}
@@ -222,7 +220,7 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 		for (k=0;k!=mesh->npoly;k++) {
 		
 			mesh_poly=&mesh->polys[k];
-			texture=&map.textures[mesh_poly->uv[uv_index].txt_idx];
+			texture=&map.textures[mesh_poly->uv[main_wind_uv_layer].txt_idx];
 		
 				// opaque or transparent flag
 				
@@ -269,7 +267,7 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 			
 			for (t=0;t!=mesh_poly->ptsz;t++) {
 				pt=&mesh->vertexes[mesh_poly->v[t]];
-				glTexCoord2f(mesh_poly->uv[uv_index].x[t],mesh_poly->uv[uv_index].y[t]);
+				glTexCoord2f(mesh_poly->uv[main_wind_uv_layer].x[t],mesh_poly->uv[main_wind_uv_layer].y[t]);
 				glVertex3i(pt->x,pt->y,pt->z);
 			}
 			
@@ -310,7 +308,7 @@ void walk_view_draw_meshes_line(bool opaque)
 		for (k=0;k!=mesh->npoly;k++) {
 		
 			mesh_poly=&mesh->polys[k];
-			texture=&map.textures[mesh_poly->uv[uv_index].txt_idx];
+			texture=&map.textures[mesh_poly->uv[0].txt_idx];		// always use first layer for lines
 		
 			if (opaque) {
 				if ((mesh_poly->alpha!=1.0f) || (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent)) continue;

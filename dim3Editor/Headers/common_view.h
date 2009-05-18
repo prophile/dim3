@@ -165,6 +165,7 @@ extern void piece_create_area(void);
 //
 
 extern void piece_add_obj_mesh(void);
+extern void piece_add_obj_mesh_uv(void);
 extern void piece_add_height_map_mesh(void);
 extern void piece_add_grid_mesh(void);
 extern void piece_add_polygon_mesh(void);

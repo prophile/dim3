@@ -46,7 +46,7 @@ extern setup_type			setup;
 
 bool view_compile_mesh_gl_list_init(void)
 {
-	int					n,k,t,v_cnt,v_idx,i_idx;
+	int					n,k,t,uv_idx,v_cnt,v_idx,i_idx;
 	unsigned int		v_poly_start_idx;
 	unsigned int		*index_ptr;
 	float				x_shift_offset,y_shift_offset;
@@ -74,14 +74,21 @@ bool view_compile_mesh_gl_list_init(void)
 
 		mesh->draw.vertex_offset=v_cnt;
 
-		poly=mesh->polys;
+			// the UV layers
+			
+		for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
 		
-		for (k=0;k!=mesh->npoly;k++) {
-			poly->draw.vertex_offset=v_cnt;
-			v_cnt+=poly->ptsz;
-			poly++;
+				// the polys
+				
+			poly=mesh->polys;
+			
+			for (k=0;k!=mesh->npoly;k++) {
+				poly->draw.uv[uv_idx].vertex_offset=v_cnt;
+				v_cnt+=poly->ptsz;
+				poly++;
+			}
 		}
-
+		
 		mesh++;
 	}
 
@@ -109,40 +116,44 @@ bool view_compile_mesh_gl_list_init(void)
 	mesh=map.mesh.meshes;
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
-
-			// run through the polys
-
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-
-				// polygon vertexes
-
-			x_shift_offset=poly->draw.uv[0].x_shift_offset;
-			y_shift_offset=poly->draw.uv[0].y_shift_offset;
-
-			for (t=0;t!=poly->ptsz;t++) {
-			
-				pnt=&mesh->vertexes[poly->v[t]];
-
-				*pv++=(float)pnt->x;
-				*pv++=(float)pnt->y;
-				*pv++=(float)pnt->z;
-				
-				*pp++=poly->uv[0].x[t]+x_shift_offset;
-				*pp++=poly->uv[0].y[t]+y_shift_offset;
-
-				*pc++=1.0f;
-				*pc++=1.0f;
-				*pc++=1.0f;
-				
-				v_idx++;
-			}
-
-
-			poly++;
-		}
 	
+			// the UV layers
+			
+		for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
+
+				// run through the polys
+
+			poly=mesh->polys;
+			
+			for (k=0;k!=mesh->npoly;k++) {
+
+					// polygon vertexes
+
+				x_shift_offset=poly->draw.uv[uv_idx].x_shift_offset;
+				y_shift_offset=poly->draw.uv[uv_idx].y_shift_offset;
+
+				for (t=0;t!=poly->ptsz;t++) {
+				
+					pnt=&mesh->vertexes[poly->v[t]];
+
+					*pv++=(float)pnt->x;
+					*pv++=(float)pnt->y;
+					*pv++=(float)pnt->z;
+					
+					*pp++=poly->uv[uv_idx].x[t]+x_shift_offset;
+					*pp++=poly->uv[uv_idx].y[t]+y_shift_offset;
+
+					*pc++=1.0f;
+					*pc++=1.0f;
+					*pc++=1.0f;
+					
+					v_idx++;
+				}
+
+				poly++;
+			}
+		}
+		
 		mesh++;
 	}
 
@@ -169,32 +180,37 @@ bool view_compile_mesh_gl_list_init(void)
 	mesh=map.mesh.meshes;
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
-
-			// run through the polys
-
-		poly=mesh->polys;
-		
-		for (k=0;k!=mesh->npoly;k++) {
-		
-				// polygon indexes
-				
-			v_poly_start_idx=poly->draw.vertex_offset;
-			poly->draw.uv[0].gl_poly_index_offset=i_idx*sizeof(unsigned int);
-				
-			for (t=0;t!=poly->ptsz;t++) {
-				*index_ptr++=v_poly_start_idx+t;
-				i_idx++;
-			}
-
-			
-				// min/max for range element draws
-				
-			poly->draw.uv[0].gl_poly_index_min=v_poly_start_idx;
-			poly->draw.uv[0].gl_poly_index_max=v_poly_start_idx+poly->ptsz;
-
-			poly++;
-		}
 	
+			// the UV layers
+			
+		for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
+
+				// run through the polys
+
+			poly=mesh->polys;
+			
+			for (k=0;k!=mesh->npoly;k++) {
+			
+					// polygon indexes
+					
+				v_poly_start_idx=poly->draw.uv[uv_idx].vertex_offset;
+				poly->draw.uv[uv_idx].gl_poly_index_offset=i_idx*sizeof(unsigned int);
+					
+				for (t=0;t!=poly->ptsz;t++) {
+					*index_ptr++=v_poly_start_idx+t;
+					i_idx++;
+				}
+
+				
+					// min/max for range element draws
+					
+				poly->draw.uv[uv_idx].gl_poly_index_min=v_poly_start_idx;
+				poly->draw.uv[uv_idx].gl_poly_index_max=v_poly_start_idx+poly->ptsz;
+
+				poly++;
+			}
+		}
+		
 		mesh++;
 	}
 	
@@ -218,7 +234,7 @@ void view_compile_mesh_gl_list_free(void)
 
 bool view_compile_mesh_gl_lists(int tick)
 {
-	int							n,k,t,v_count;
+	int							n,k,t,uv_idx,v_count;
 	float						x_shift_offset,y_shift_offset;
 	float						*vertex_ptr,*pv,*pp,*pc;
 	d3pnt						*pnt;
@@ -251,22 +267,27 @@ bool view_compile_mesh_gl_lists(int tick)
 
 			pv=vertex_ptr+(mesh->draw.vertex_offset*3);
 
-			poly=mesh->polys;
+				// the UV layers
 			
-			for (k=0;k!=mesh->npoly;k++) {
-
-					// polygon vertexes
-
-				for (t=0;t!=poly->ptsz;t++) {
+			for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
+			
+				poly=mesh->polys;
 				
-					pnt=&mesh->vertexes[poly->v[t]];
+				for (k=0;k!=mesh->npoly;k++) {
 
-					*pv++=(float)pnt->x;
-					*pv++=(float)pnt->y;
-					*pv++=(float)pnt->z;
+						// polygon vertexes
+
+					for (t=0;t!=poly->ptsz;t++) {
+					
+						pnt=&mesh->vertexes[poly->v[t]];
+
+						*pv++=(float)pnt->x;
+						*pv++=(float)pnt->y;
+						*pv++=(float)pnt->z;
+					}
+
+					poly++;
 				}
-
-				poly++;
 			}
 		}
 
@@ -277,21 +298,26 @@ bool view_compile_mesh_gl_lists(int tick)
 
 			pp=vertex_ptr+((v_count*3)+(mesh->draw.vertex_offset*2));
 
-			poly=mesh->polys;
+				// the UV layers
 			
-			for (k=0;k!=mesh->npoly;k++) {
+			for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
+			
+				poly=mesh->polys;
+				
+				for (k=0;k!=mesh->npoly;k++) {
 
-					// polygon uvs
+						// polygon uvs
 
-				x_shift_offset=poly->draw.uv[0].x_shift_offset;
-				y_shift_offset=poly->draw.uv[0].y_shift_offset;
+					x_shift_offset=poly->draw.uv[uv_idx].x_shift_offset;
+					y_shift_offset=poly->draw.uv[uv_idx].y_shift_offset;
 
-				for (t=0;t!=poly->ptsz;t++) {
-					*pp++=poly->uv[0].x[t]+x_shift_offset;
-					*pp++=poly->uv[0].y[t]+y_shift_offset;
+					for (t=0;t!=poly->ptsz;t++) {
+						*pp++=poly->uv[uv_idx].x[t]+x_shift_offset;
+						*pp++=poly->uv[uv_idx].y[t]+y_shift_offset;
+					}
+
+					poly++;
 				}
-
-				poly++;
 			}
 		}
 
@@ -302,21 +328,26 @@ bool view_compile_mesh_gl_lists(int tick)
 			
 			pc=vertex_ptr+((v_count*(3+2))+(mesh->draw.vertex_offset*3));
 
-			poly=mesh->polys;
-				
-			for (k=0;k!=mesh->npoly;k++) {
-				for (t=0;t!=poly->ptsz;t++) {
-					*pc++=1.0f;
-					*pc++=1.0f;
-					*pc++=1.0f;
+				// the UV layers
+			
+			for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
+			
+				poly=mesh->polys;
+					
+				for (k=0;k!=mesh->npoly;k++) {
+					for (t=0;t!=poly->ptsz;t++) {
+						*pc++=1.0f;
+						*pc++=1.0f;
+						*pc++=1.0f;
+					}
+					poly++;
 				}
-				poly++;
 			}
 		}
 
 			// if the mesh has some non-shaders in it,
 			// recalculate the lighting
-			// supergumba -- this needs to be optimized
+			// supergumba -- this needs to be optimized -- especially with multitexture
 
 		else {
 
@@ -324,19 +355,23 @@ bool view_compile_mesh_gl_lists(int tick)
 
 				pc=vertex_ptr+((v_count*(3+2))+(mesh->draw.vertex_offset*3));
 
-				poly=mesh->polys;
+					// the UV layers
+			
+				for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
 				
-				for (k=0;k!=mesh->npoly;k++) {
+					poly=mesh->polys;
+					
+					for (k=0;k!=mesh->npoly;k++) {
 
-					for (t=0;t!=poly->ptsz;t++) {
-						pnt=&mesh->vertexes[poly->v[t]];
-						gl_lights_calc_vertex((double)pnt->x,(double)pnt->y,(double)pnt->z,pc);
-						pc+=3;
+						for (t=0;t!=poly->ptsz;t++) {
+							pnt=&mesh->vertexes[poly->v[t]];
+							gl_lights_calc_vertex((double)pnt->x,(double)pnt->y,(double)pnt->z,pc);
+							pc+=3;
+						}
+
+						poly++;
 					}
-
-					poly++;
 				}
-
 			}
 		}
 

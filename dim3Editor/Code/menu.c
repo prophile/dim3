@@ -31,7 +31,7 @@ and can be sold or given away.
 #include "walk_view.h"
 #include "import.h"
 
-extern int				drag_mode;
+extern int				drag_mode,main_wind_uv_layer;
 extern bool				done,map_opened;
 
 extern map_type			map;
@@ -141,52 +141,23 @@ void menu_fix_enable(void)
 
 void menu_set_view_check(int view)
 {
-	switch (view) {
-		case vw_3_panel:
-			CheckMenuItem(GetMenuHandle(app_menu_view),1,TRUE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),2,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),3,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),4,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),5,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),6,FALSE);
-			break;
-		case vw_4_panel:
-			CheckMenuItem(GetMenuHandle(app_menu_view),1,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),2,TRUE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),3,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),4,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),5,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),6,FALSE);
-			break;
-		case vw_top_only:
-			CheckMenuItem(GetMenuHandle(app_menu_view),1,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),2,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),3,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),4,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),5,TRUE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),6,FALSE);
-			break;
-		case vw_forward_only:
-			CheckMenuItem(GetMenuHandle(app_menu_view),1,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),2,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),3,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),4,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),5,FALSE);
-			CheckMenuItem(GetMenuHandle(app_menu_view),6,TRUE);
-			break;
-	}
+	CheckMenuItem(GetMenuHandle(app_menu_view),1,(view==vw_3_panel));
+	CheckMenuItem(GetMenuHandle(app_menu_view),2,(view==vw_4_panel));
+	CheckMenuItem(GetMenuHandle(app_menu_view),3,(view==vw_top_only));
+	CheckMenuItem(GetMenuHandle(app_menu_view),4,(view==vw_forward_only));
 }
 
 void menu_set_perspective_check(int perspective)
 {
-	if (perspective==ps_perspective) {
-		CheckMenuItem(GetMenuHandle(app_menu_view),8,TRUE);
-		CheckMenuItem(GetMenuHandle(app_menu_view),9,FALSE);
-	}
-	else {
-		CheckMenuItem(GetMenuHandle(app_menu_view),8,FALSE);
-		CheckMenuItem(GetMenuHandle(app_menu_view),9,TRUE);
-	}
+	CheckMenuItem(GetMenuHandle(app_menu_view),6,(perspective==ps_perspective));
+	CheckMenuItem(GetMenuHandle(app_menu_view),7,(perspective==ps_ortho));
+}
+
+void menu_set_uv_check(int uv_layer)
+{
+	CheckMenuItem(GetMenuHandle(app_menu_view),9,(uv_layer==0));
+	CheckMenuItem(GetMenuHandle(app_menu_view),10,(uv_layer==1));
+	CheckMenuItem(GetMenuHandle(app_menu_view),11,(uv_layer==2));
 }
 
 /* =======================================================
@@ -313,6 +284,21 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			
 		case kCommandViewOrtho:
 			main_wind_set_perspective(ps_ortho);
+			main_wind_draw();
+			return(noErr);
+			
+		case kCommandViewUVLayer1:
+			main_wind_set_uv_layer(0);
+			main_wind_draw();
+			return(noErr);
+			
+		case kCommandViewUVLayer2:
+			main_wind_set_uv_layer(1);
+			main_wind_draw();
+			return(noErr);
+			
+		case kCommandViewUVLayer3:
+			main_wind_set_uv_layer(2);
 			main_wind_draw();
 			return(noErr);
 			

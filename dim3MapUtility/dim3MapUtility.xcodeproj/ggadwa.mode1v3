@@ -427,9 +427,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26A178110FBCCA0D00B64C03</string>
+				<string>269FEFE00FBFCF1B00792FBD</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26A178120FBCCA0D00B64C03</string>
+				<string>269FEFE10FBFCF1B00792FBD</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -548,7 +548,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>264035431.69299001</real>
+	<real>264229898.222745</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -563,13 +563,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>26A1782C0FBCDC6700B64C03</string>
-		<string>26A1782D0FBCDC6700B64C03</string>
-		<string>26A1782E0FBCDC6700B64C03</string>
-		<string>26A1782F0FBCDC6700B64C03</string>
-		<string>26A178300FBCDC6700B64C03</string>
-		<string>26A178310FBCDC6700B64C03</string>
-		<string>26A178320FBCDC6700B64C03</string>
+		<string>269FEFF30FBFD40A00792FBD</string>
 		<string>260AFEBC0D404E7500F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3MapUtility/dim3MapUtility.xcodeproj</string>
 	</array>
@@ -612,8 +606,6 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -653,7 +645,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEBC0D404E7500F6C42F</string>
-				<string>26A178180FBCCA3C00B64C03</string>
+				<string>269FEFE50FBFCF5500792FBD</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

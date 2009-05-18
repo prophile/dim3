@@ -32,7 +32,7 @@ and can be sold or given away.
 #define import_obj_float_to_int			1000.0f
 #define import_obj_max_dimension		5000
 
-extern int								drag_mode,uv_index;
+extern int								drag_mode,main_wind_uv_layer;
 extern bool								dp_object,dp_node,dp_lightsoundparticle,dp_auto_texture;
 
 extern map_type							map;
@@ -432,6 +432,179 @@ void piece_add_obj_mesh(void)
 		// if no uvs, force auto-texture
 		
 	if (nuv==0) map_mesh_reset_uv(&map,mesh_idx);
+}
+
+/* =======================================================
+
+      Add OBJ Mesh UV
+      
+======================================================= */
+
+void piece_add_obj_mesh_uv(void)
+{
+	int					n,k,type,nline,nvertex,npoly,nuv,npt,uv_idx,
+						mesh_idx,poly_idx;
+	char				*c,txt[256],vstr[256],uvstr[256],path[1024];
+	float				fx,fy,fz;
+	float				*uvs,*uv;
+	d3fpnt				min,max;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	
+		// get mesh to replace UVs on
+		
+	select_get(0,&type,&mesh_idx,&poly_idx);
+	if (type!=mesh_piece) {
+		StandardAlert(kAlertCautionAlert,"\pNo mesh selected","\pYou need to select a mesh to replace the UVs on.",NULL,NULL);
+		return;
+	}
+	
+	mesh=&map.mesh.meshes[mesh_idx];
+	
+		// import the file
+		
+	if (!import_load_file(path,"obj")) return;
+
+	if (!textdecode_open(path,0x20)) {
+		StandardAlert(kAlertStopAlert,"\pImport Failed","\pCould not open OBJ file.",NULL,NULL);
+		return;
+    }
+	
+    nline=textdecode_count();
+	
+		// count vertexes, uvs, and faces
+		
+	nvertex=0;
+	npoly=0;
+	nuv=0;
+	
+	min.x=min.y=min.z=0.0f;
+	max.x=max.y=max.z=0.0f;
+	
+    for (n=0;n!=nline;n++) {
+        textdecode_get_piece(n,0,txt);
+        
+        if (strcmp(txt,"v")==0) {
+			nvertex++;
+			
+			textdecode_get_piece(n,1,txt);
+			fx=strtod(txt,NULL);
+			textdecode_get_piece(n,2,txt);
+			fy=strtod(txt,NULL);
+			textdecode_get_piece(n,3,txt);
+			fz=strtod(txt,NULL);
+			
+			if (fx<min.x) min.x=fx;
+			if (fx>max.x) max.x=fx;
+			if (fy<min.y) min.y=fy;
+			if (fy>max.y) max.y=fy;
+			if (fz<min.z) min.z=fz;
+			if (fz>max.z) max.z=fz;
+		}
+		else {
+			if (strcmp(txt,"f")==0) {
+				npoly++;
+			}
+			else {
+				if (strcmp(txt,"vt")==0) {
+					nuv++;
+				}
+			}
+		}
+	}
+	
+		// does this OBJ match OBJ importing over?
+		
+	if ((nvertex!=mesh->npoly) || (nuv==0)) {
+		textdecode_close();
+		StandardAlert(kAlertStopAlert,"\pImport Failed","\pThe imported OBJ must have the same number of polygons as the selected mesh.",NULL,NULL);
+		return;
+    }
+	
+		// get the UVs
+		
+	uvs=(float*)malloc(sizeof(float)*(2*nuv));
+	if (uvs==NULL) {
+		textdecode_close();
+		StandardAlert(kAlertStopAlert,"\pImport Failed","\pOut of Memory.",NULL,NULL);
+		return;
+	}
+
+	uv=uvs;
+
+	for (n=0;n!=nline;n++) {
+		textdecode_get_piece(n,0,txt);
+		if (strcmp(txt,"vt")!=0) continue;
+				
+		textdecode_get_piece(n,1,uvstr);
+		*uv++=strtod(uvstr,NULL);
+		textdecode_get_piece(n,2,uvstr);
+		*uv++=1.0f-strtod(uvstr,NULL);
+	}
+
+		// replace the UVs
+		
+	poly_idx=0;
+	
+    for (n=0;n!=nline;n++) {
+	
+			// a face?
+			
+		textdecode_get_piece(n,0,txt);
+		if (strcmp(txt,"f")!=0) continue;
+		
+			// out of polys?
+			
+		if (poly_idx>=mesh->npoly) break;
+		
+		poly=&mesh->polys[poly_idx];
+		poly_idx++;
+		
+            // get the face points
+        
+        npt=0;
+        
+        for (k=0;k!=8;k++) {
+            textdecode_get_piece(n,(k+1),txt);
+            if (txt[0]==0x0) break;
+            
+            uvstr[0]=0x0;
+            
+            strcpy(vstr,txt);
+            c=strchr(vstr,'/');
+            if (c!=NULL) {
+                strcpy(uvstr,(c+1));
+                *c=0x0;
+            }
+            c=strchr(uvstr,'/');
+            if (c!=NULL) *c=0x0;
+            
+			if ((uvstr[0]==0x0) || (nuv==0)) {
+				poly->uv[main_wind_uv_layer].x[npt]=poly->uv[main_wind_uv_layer].y[npt]=0.0f;
+			}
+			else {
+				uv_idx=atoi(uvstr)-1;
+				
+				uv=uvs+(uv_idx*2);
+                poly->uv[main_wind_uv_layer].x[npt]=*uv++;
+                poly->uv[main_wind_uv_layer].y[npt]=*uv;
+            }
+			
+            npt++;
+        }
+	}
+	
+	free(uvs);
+	
+	textdecode_close();
+	
+		// activate this UV
+		
+	if (mesh->nuv<(main_wind_uv_layer+1)) mesh->nuv=main_wind_uv_layer+1;
+	
+		// finish up
+		
+	main_wind_draw();
 }
 
 /* =======================================================
@@ -853,7 +1026,7 @@ void piece_split_mesh(void)
 			z[k]=pt->z;
 		}
 		
-		map_mesh_add_poly(&map,mesh_idx,poly->ptsz,x,y,z,poly->uv[uv_index].x,poly->uv[uv_index].y,poly->uv[uv_index].txt_idx);
+		map_mesh_add_poly(&map,mesh_idx,poly->ptsz,x,y,z,poly->uv[main_wind_uv_layer].x,poly->uv[main_wind_uv_layer].y,poly->uv[main_wind_uv_layer].txt_idx);
 		
 			// delete poly from mesh
 			

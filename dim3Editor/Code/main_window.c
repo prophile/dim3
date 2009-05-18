@@ -41,7 +41,7 @@ extern setup_type		setup;
 extern CCrsrHandle		handcur,dragcur,cutcur,rotatecur,towardcur,forwardcur,resizecur,addcur;
 
 int						main_wind_view,main_wind_panel_focus,main_wind_perspective,
-						vertex_mode,drag_mode,grid_mode,uv_index;
+						vertex_mode,drag_mode,grid_mode,main_wind_uv_layer;
 bool					select_toggle_mode,dp_auto_texture,dp_liquid,
 						dp_object,dp_lightsoundparticle,dp_node,dp_textured,dp_y_hide,dp_area,
 						swap_panel_forward,swap_panel_side,swap_panel_top;
@@ -85,7 +85,8 @@ char					piece_tooltip_str[piece_count][64]=
 									{
 										"Add Script Spot","Add Light","Add Sound",
 										"Add Particle","Add Scenery","Add Node",
-										"Add OBJ Mesh","Add Height Map Mesh","Add Grid Mesh",
+										"Add OBJ Mesh","Replace Mesh UV",
+										"Add Height Map Mesh","Add Grid Mesh",
 										"Add Single Polygon Mesh","Add Liquid Volume",
 										"Add Area"
 									};
@@ -287,22 +288,26 @@ void main_wind_control_piece(int piece_idx)
 			break;
 			
 		case 7:
-			piece_add_height_map_mesh();
+			piece_add_obj_mesh_uv();
 			break;
 			
 		case 8:
-			piece_add_grid_mesh();
+			piece_add_height_map_mesh();
 			break;
 			
 		case 9:
-			piece_add_polygon_mesh();
+			piece_add_grid_mesh();
 			break;
 			
 		case 10:
-			piece_create_liquid();
+			piece_add_polygon_mesh();
 			break;
 			
 		case 11:
+			piece_create_liquid();
+			break;
+			
+		case 12:
 			piece_create_area();
 			break;
 			
@@ -846,7 +851,7 @@ void main_wind_open(void)
 	grid_mode=grid_mode_small;
 	select_toggle_mode=FALSE;
 	
-	uv_index=0;
+	main_wind_set_uv_layer(0);
 	
         // events
     
@@ -1021,6 +1026,12 @@ void main_wind_set_perspective(int perspective)
 {
 	main_wind_perspective=perspective;
 	menu_set_perspective_check(perspective);
+}
+
+void main_wind_set_uv_layer(int uv_layer)
+{
+	main_wind_uv_layer=uv_layer;
+	menu_set_uv_check(uv_layer);
 }
 
 /* =======================================================

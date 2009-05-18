@@ -48,14 +48,31 @@ extern void view_compile_gl_list_attach(void);
 extern void view_compile_gl_list_enable_color(void);
 extern void view_compile_gl_list_disable_color(void);
 extern void view_compile_gl_list_dettach(void);
-																						
+		
+/* =======================================================
+
+      MultiTexture Blending
+      
+======================================================= */
+
+void render_opaque_mesh_multitexture_blend(int uv_idx)
+{
+	if (uv_idx==0) {
+		glDisable(GL_BLEND);
+	}
+	else {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_DST_COLOR,GL_ZERO);
+	}
+}
+
 /* =======================================================
 
       Opaque Map Shaders
       
 ======================================================= */
 
-void render_opaque_mesh_simple(void)
+void render_opaque_mesh_simple(int uv_idx)
 {
 	int							n,k;
 	bool						enable;
@@ -66,15 +83,6 @@ void render_opaque_mesh_simple(void)
 	view_glsl_light_list_type	light_list;
 	
 		// setup drawing
-
-	glDisable(GL_BLEND);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-	
-	glEnable(GL_DEPTH_TEST); 
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_TRUE);
 
 	enable=FALSE;
 
@@ -87,6 +95,10 @@ void render_opaque_mesh_simple(void)
 		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
 
 		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
+		
+			// skip meshes without proper uv layer
+			
+		if (uv_idx>=mesh->nuv) continue;
 
 			// skip meshes with no opaques and all non-shaders
 			// unless debug is on
@@ -119,7 +131,7 @@ void render_opaque_mesh_simple(void)
 
 				// get texture
 
-			texture=&map.textures[poly->uv[0].txt_idx];
+			texture=&map.textures[poly->uv[uv_idx].txt_idx];
 
 			if (!gl_back_render_get_texture(poly->camera,&gl_id)) {
 				gl_id=texture->frames[poly->render.frame].bitmap.gl_id;
@@ -129,7 +141,7 @@ void render_opaque_mesh_simple(void)
 
 				// draw polygon
 
-			glDrawRangeElements(GL_POLYGON,poly->draw.uv[0].gl_poly_index_min,poly->draw.uv[0].gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.uv[0].gl_poly_index_offset);
+			glDrawRangeElements(GL_POLYGON,poly->draw.uv[uv_idx].gl_poly_index_min,poly->draw.uv[uv_idx].gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.uv[uv_idx].gl_poly_index_offset);
 
 			poly++;
 		}
@@ -144,7 +156,7 @@ void render_opaque_mesh_simple(void)
 	gl_texture_opaque_end();
 }
 
-void render_opaque_mesh_shader(void)
+void render_opaque_mesh_shader(int uv_idx)
 {
 	int							n,k;
 	GLuint						gl_id;
@@ -155,15 +167,6 @@ void render_opaque_mesh_shader(void)
 
 		// setup drawing
 
-	glDisable(GL_BLEND);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-	
-	glEnable(GL_DEPTH_TEST); 
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_TRUE);
-
 	gl_shader_draw_start();
 	
 		// run through the meshes
@@ -173,6 +176,10 @@ void render_opaque_mesh_shader(void)
 		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
 
 		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
+
+			// skip meshes without proper uv layer
+			
+		if (uv_idx>=mesh->nuv) continue;
 
 			// skip meshes with no shaders or opaques
 
@@ -197,13 +204,13 @@ void render_opaque_mesh_shader(void)
 			
 				// setup shader
 
-			texture=&map.textures[poly->uv[0].txt_idx];
+			texture=&map.textures[poly->uv[uv_idx].txt_idx];
 
 			if (!mesh->flag.hilite) {
-				gl_shader_draw_execute(texture,poly->uv[0].txt_idx,poly->render.frame,poly->dark_factor,1.0f,&light_list);
+				gl_shader_draw_execute(texture,poly->uv[uv_idx].txt_idx,poly->render.frame,poly->dark_factor,1.0f,&light_list);
 			}
 			else {
-				gl_shader_draw_hilite_execute(texture,poly->uv[0].txt_idx,poly->render.frame,poly->dark_factor,1.0f,&poly->box.mid,NULL);
+				gl_shader_draw_hilite_execute(texture,poly->uv[uv_idx].txt_idx,poly->render.frame,poly->dark_factor,1.0f,&poly->box.mid,NULL);
 			}
 
 				// fix texture if any back rendering
@@ -214,7 +221,7 @@ void render_opaque_mesh_shader(void)
 
 				// draw polygon
 
-			glDrawRangeElements(GL_POLYGON,poly->draw.uv[0].gl_poly_index_min,poly->draw.uv[0].gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.uv[0].gl_poly_index_offset);
+			glDrawRangeElements(GL_POLYGON,poly->draw.uv[uv_idx].gl_poly_index_min,poly->draw.uv[uv_idx].gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.uv[uv_idx].gl_poly_index_offset);
 			
 			poly++;
 		}
@@ -233,15 +240,6 @@ void render_opaque_mesh_glow(void)
 	texture_type		*texture;
 	
 		// setup drawing
-
-	glDisable(GL_BLEND);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glEnable(GL_DEPTH_TEST); 
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_FALSE);
 
 	gl_texture_glow_start();
 	
@@ -285,8 +283,6 @@ void render_opaque_mesh_glow(void)
 
 		// end drawing
 
-	glDepthMask(GL_TRUE);
-
 	gl_texture_glow_end();
 }
 
@@ -298,6 +294,8 @@ void render_opaque_mesh_glow(void)
 
 void render_map_mesh_opaque(void)
 {
+	int					uv_idx;
+	
 		// setup view
 
 	gl_3D_view();
@@ -307,12 +305,31 @@ void render_map_mesh_opaque(void)
 		// attach map complied open gl list
 
 	view_compile_gl_list_attach();
+	
+		// common setup
+		
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glEnable(GL_DEPTH_TEST); 
+	glDepthFunc(GL_LEQUAL);
 		
 		// render polygons
 
-	render_opaque_mesh_simple();
-	if (!dim3_debug) render_opaque_mesh_shader();
+	glDepthMask(GL_TRUE);
+
+	for (uv_idx=0;uv_idx!=max_mesh_poly_uv_layer;uv_idx++) {
+		render_opaque_mesh_multitexture_blend(uv_idx);
+		render_opaque_mesh_simple(uv_idx);
+		if (!dim3_debug) render_opaque_mesh_shader(uv_idx);
+	}
+	
+	glDisable(GL_BLEND);
+	glDepthMask(GL_FALSE);
+
 	render_opaque_mesh_glow();
+
+	glDepthMask(GL_TRUE);
 
 		// dettach any attached lists
 

@@ -79,8 +79,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 264035434;
-			PBXWorkspaceStateSaveDate = 264035434;
+			PBXPerProjectTemplateStateSaveDate = 264226934;
+			PBXWorkspaceStateSaveDate = 264226934;
 		};
 		perUserProjectItems = {
 			26650DDF0F0EC86400D22461 /* PlistBookmark */ = 26650DDF0F0EC86400D22461 /* PlistBookmark */;
@@ -159,25 +159,25 @@
 	};
 	2625D0370F54C9960023B0D3 /* render_map_opaque.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1032, 4480}}";
-			sepNavSelRange = "{6261, 0}";
-			sepNavVisRange = "{5668, 1215}";
-			sepNavWindowFrame = "{{163, 216}, {999, 779}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1230, 4746}}";
+			sepNavSelRange = "{2228, 0}";
+			sepNavVisRange = "{3739, 1022}";
+			sepNavWindowFrame = "{{493, 205}, {999, 779}}";
 		};
 	};
 	2625D0380F54C9960023B0D3 /* render_map_setup.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {984, 1526}}";
 			sepNavSelRange = "{2225, 0}";
-			sepNavVisRange = "{1122, 1230}";
-			sepNavWindowFrame = "{{84, 107}, {999, 779}}";
+			sepNavVisRange = "{1613, 1349}";
+			sepNavWindowFrame = "{{401, 148}, {999, 779}}";
 		};
 	};
 	2625D0390F54C9960023B0D3 /* render_map_transparent.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1008, 5978}}";
-			sepNavSelRange = "{9149, 0}";
-			sepNavVisRange = "{8522, 1369}";
+			sepNavIntBoundsRect = "{{0, 0}, {1116, 5768}}";
+			sepNavSelRange = "{4576, 0}";
+			sepNavVisRange = "{4806, 1344}";
 			sepNavWindowFrame = "{{579, 152}, {999, 779}}";
 		};
 	};
@@ -667,9 +667,9 @@
 	};
 	F57CAC770527D9E000A68578 /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 9170}}";
-			sepNavSelRange = "{2420, 13}";
-			sepNavVisRange = "{4336, 960}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 9800}}";
+			sepNavSelRange = "{7270, 0}";
+			sepNavVisRange = "{6410, 1497}";
 			sepNavWindowFrame = "{{43, 157}, {1041, 747}}";
 		};
 	};
@@ -1590,10 +1590,10 @@
 	};
 	F5DD19DE0908310200721649 /* view_vertex_list.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6020}}";
-			sepNavSelRange = "{3949, 65}";
-			sepNavVisRange = "{4139, 1083}";
-			sepNavWindowFrame = "{{656, 174}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 6524}}";
+			sepNavSelRange = "{7075, 0}";
+			sepNavVisRange = "{6590, 962}";
+			sepNavWindowFrame = "{{438, 145}, {1041, 747}}";
 		};
 	};
 	F5DD19E00908310200721649 /* view_setup.c */ = {

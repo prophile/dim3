@@ -58,6 +58,9 @@ and can be sold or given away.
 #define kCommandViewForwardOnly				FOUR_CHAR_CODE('vw04')
 #define kCommandViewPerspective				FOUR_CHAR_CODE('vwps')
 #define kCommandViewOrtho					FOUR_CHAR_CODE('vwot')
+#define kCommandViewUVLayer1				FOUR_CHAR_CODE('uvl1')
+#define kCommandViewUVLayer2				FOUR_CHAR_CODE('uvl2')
+#define kCommandViewUVLayer3				FOUR_CHAR_CODE('uvl3')
 
 #define kCommandMapSettings					FOUR_CHAR_CODE('mset')
 #define kCommandMapRaiseY					FOUR_CHAR_CODE('mrsy')
