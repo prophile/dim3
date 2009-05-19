@@ -331,7 +331,7 @@
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 754}, {290, 776}}</string>
+							<string>{{0, 0}, {290, 776}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -378,10 +378,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>26BD17C10FB91D78004EC7D2</string>
+										<string>269FF0400FC2537000792FBD</string>
 										<key>history</key>
 										<array>
-											<string>26E75B430FAEA6FA0091B1FA</string>
+											<string>26BD17C10FB91D78004EC7D2</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -439,9 +439,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26BD17BF0FB91D78004EC7D2</string>
+				<string>269FF03E0FC250CF00792FBD</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26BD17C00FB91D78004EC7D2</string>
+				<string>269FF03F0FC250CF00792FBD</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -560,7 +560,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>263789944.05224201</real>
+	<real>264393584.974794</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -656,7 +656,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEE90D40505C00F6C42F</string>
-				<string>26BD17BC0FB91D6C004EC7D2</string>
+				<string>269FF0390FC250CC00792FBD</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

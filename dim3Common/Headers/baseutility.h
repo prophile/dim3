@@ -409,6 +409,13 @@ extern void xml_key_write_color(char *name,d3col *value);
 #define mipmap_mode_setup_list_def				{"None","Bilinear","Trilinear",""}
 
 //
+// in game multitexture modes
+//
+
+#define multitexture_mode_replace				0
+#define multitexture_mode_multiply				1
+
+//
 // texture maximums
 //
 
@@ -468,7 +475,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						shader_idx;
+						int						shader_idx,multitexture_mode;
 						float					txt_scale_x,txt_scale_y,
 												bump_factor,specular_factor;
 						bool					additive,pixelated;

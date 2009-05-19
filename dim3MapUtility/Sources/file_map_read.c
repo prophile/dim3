@@ -31,9 +31,9 @@ and can be sold or given away.
 
 extern maputility_settings_type		maputility_settings;
 
-char					media_type_str[][32]={"none","story","title","movie"},
-						sky_type_str[][32]={"dome_panoramic","dome_hemisphere","cube"},
-						gl_fog_type_str[][32]={"linear","exp","exp2"},
+char					media_type_str[][32]={"none","story","title","movie",""},
+						sky_type_str[][32]={"dome_panoramic","dome_hemisphere","cube",""},
+						gl_fog_type_str[][32]={"linear","exp","exp2",""},
 						liquid_tide_direction_str[][32]={"horizontal","vertical",""},
                         light_type_str[][32]={"normal","blink","glow","pulse","flicker","failing",""},
                         light_direction_str[][32]={"all","neg_x","pos_x","neg_y","pos_y","neg_z","pos_z",""},

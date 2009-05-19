@@ -34,6 +34,8 @@ and can be sold or given away.
 #include "consoles.h"
 #include "video.h"
 
+int						render_current_multitexture_mode;
+
 extern bool				dim3_debug;
 
 extern map_type			map;
@@ -55,15 +57,50 @@ extern void view_compile_gl_list_dettach(void);
       
 ======================================================= */
 
-void render_opaque_mesh_multitexture_blend(int uv_idx)
+void render_opaque_mesh_multitexture_blend(int multitexture_mode,int uv_idx)
 {
+	int			mode;
+	
+		// find new mode
+		
 	if (uv_idx==0) {
-		glDisable(GL_BLEND);
+		mode=-1;
 	}
 	else {
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_DST_COLOR,GL_ZERO);
+		mode=multitexture_mode;
 	}
+	
+		// need a switch?
+		
+	if (mode==render_current_multitexture_mode) return;
+	
+		// change mode
+	
+	switch (mode) {
+	
+		case -1:
+			glDisable(GL_BLEND);
+			break;
+			
+		case multitexture_mode_replace:
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_DST_COLOR,GL_ZERO);
+			break;
+			
+		case multitexture_mode_multiply:
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_DST_COLOR,GL_ZERO);
+			break;
+			
+	}
+	
+	render_current_multitexture_mode=mode;
+}
+
+void render_opaque_mesh_multitexture_blend_start()
+{
+	glDisable(GL_BLEND);
+	render_current_multitexture_mode=-1;
 }
 
 /* =======================================================
@@ -106,7 +143,7 @@ void render_opaque_mesh_simple(int uv_idx)
 		if ((!mesh->render.has_opaque) || ((!dim3_debug) && (!mesh->render.has_no_shader))) continue;
 		
 			// run through the polys
-
+			
 		poly=mesh->polys;
 
 		for (k=0;k!=mesh->npoly;k++) {
@@ -140,6 +177,8 @@ void render_opaque_mesh_simple(int uv_idx)
 			gl_texture_opaque_set(gl_id);
 
 				// draw polygon
+
+			render_opaque_mesh_multitexture_blend(texture->multitexture_mode,uv_idx);
 
 			glDrawRangeElements(GL_POLYGON,poly->draw.uv[uv_idx].gl_poly_index_min,poly->draw.uv[uv_idx].gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.uv[uv_idx].gl_poly_index_offset);
 
@@ -220,6 +259,8 @@ void render_opaque_mesh_shader(int uv_idx)
 			}
 
 				// draw polygon
+
+			render_opaque_mesh_multitexture_blend(texture->multitexture_mode,uv_idx);
 
 			glDrawRangeElements(GL_POLYGON,poly->draw.uv[uv_idx].gl_poly_index_min,poly->draw.uv[uv_idx].gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.uv[uv_idx].gl_poly_index_offset);
 			
@@ -318,8 +359,9 @@ void render_map_mesh_opaque(void)
 
 	glDepthMask(GL_TRUE);
 
+	render_opaque_mesh_multitexture_blend_start();
+	
 	for (uv_idx=0;uv_idx!=max_mesh_poly_uv_layer;uv_idx++) {
-		render_opaque_mesh_multitexture_blend(uv_idx);
 		render_opaque_mesh_simple(uv_idx);
 		if (!dim3_debug) render_opaque_mesh_shader(uv_idx);
 	}

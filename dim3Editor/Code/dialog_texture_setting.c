@@ -37,6 +37,7 @@ and can be sold or given away.
 #define kTextureSettingFrameWait					FOUR_CHAR_CODE('watm')
 #define kTextureSettingColor						FOUR_CHAR_CODE('colr')
 #define kTextureSettingShader						FOUR_CHAR_CODE('shdr')
+#define kTextureSettingMultiTextureMode				FOUR_CHAR_CODE('mtmd')
 #define kTextureSettingAnimate						FOUR_CHAR_CODE('anmt')
 #define kTextureSettingAlphaAdditive				FOUR_CHAR_CODE('addv')
 #define kTextureSettingPixelated					FOUR_CHAR_CODE('pxld')
@@ -533,6 +534,7 @@ void dialog_texture_setting_run(int txt)
 	dialog_set_color(dialog_texture_wind,kTextureSettingColor,0,&texture->col);
 		
 	dialog_special_combo_fill_shader(dialog_texture_wind,kTextureSettingShader,0,texture->shader_name);
+	dialog_set_combo(dialog_texture_wind,kTextureSettingMultiTextureMode,0,texture->multitexture_mode);
 	dialog_set_boolean(dialog_texture_wind,kTextureSettingAnimate,0,texture->animate.on);
 	dialog_set_boolean(dialog_texture_wind,kTextureSettingAlphaAdditive,0,texture->additive);
 	dialog_set_boolean(dialog_texture_wind,kTextureSettingPixelated,0,texture->pixelated);
@@ -566,6 +568,7 @@ void dialog_texture_setting_run(int txt)
 	dialog_get_color(dialog_texture_wind,kTextureSettingColor,0,&texture->col);
 		
 	dialog_special_combo_get_shader(dialog_texture_wind,kTextureSettingShader,0,texture->shader_name,name_str_len);
+	texture->multitexture_mode=dialog_get_combo(dialog_texture_wind,kTextureSettingMultiTextureMode,0);
 	texture->animate.on=dialog_get_boolean(dialog_texture_wind,kTextureSettingAnimate,0);
 	texture->additive=dialog_get_boolean(dialog_texture_wind,kTextureSettingAlphaAdditive,0);
 	texture->pixelated=dialog_get_boolean(dialog_texture_wind,kTextureSettingPixelated,0);
