@@ -414,6 +414,7 @@ typedef struct		{
 						short								link[max_node_link],
 															path_hint[max_node];
 						char								name[name_str_len];
+						bool								follow_camera;
 						d3pnt								pnt;
 						d3ang								ang;
 						node_back_render_type				back_render;

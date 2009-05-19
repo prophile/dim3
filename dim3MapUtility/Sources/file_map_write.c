@@ -721,6 +721,7 @@ bool write_map_xml(map_type *map)
 		xml_add_attribute_int("id",k);
 		xml_add_attribute_3_coord_int("c3",node->pnt.x,node->pnt.y,node->pnt.z);
 		xml_add_attribute_3_coord_float("angle",node->ang.x,node->ang.y,node->ang.z);
+		xml_add_attribute_boolean("follow_camera",node->follow_camera);
 		xml_add_attribute_text("name",node->name);
 		xml_add_attribute_int("event_id",node->event_id);
 		xml_add_tagend(FALSE);

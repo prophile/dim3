@@ -51,7 +51,7 @@ extern int map_auto_generate_get_ceiling_type(auto_generate_settings_type *ags);
 extern int map_auto_generate_get_corridor_type(auto_generate_settings_type *ags);
 extern int map_auto_generate_get_stair_type(auto_generate_settings_type *ags);
 
-extern bool map_auto_generate_block_collision(auto_generate_settings_type *ags,int x,int z,int ex,int ez);
+extern bool map_auto_generate_block_collision(auto_generate_settings_type *ags,int x,int z,int ex,int ez,bool corridor_only);
 
 extern void map_auto_generate_story_extra_floor(bool *lft,bool *rgt,bool *top,bool *bot,bool *horz,bool *vert);
 
@@ -166,7 +166,7 @@ void map_auto_generate_initial_portals(map_type *map)
 
 				// check for collisions
 
-			if ((!map_auto_generate_block_collision(&ag_settings,x,z,ex,ez)) && (!map_auto_generate_portal_collision(x,z,ex,ez,-1))) break;
+			if ((!map_auto_generate_block_collision(&ag_settings,x,z,ex,ez,FALSE)) && (!map_auto_generate_portal_collision(x,z,ex,ez,-1))) break;
 			
 				// try to much?
 				
@@ -464,7 +464,7 @@ void map_auto_generate_connect_portals(map_type *map)
 			z2=z-split_factor;
 			ez2=ez+split_factor;			// don't create if z's will touch other portals, then it's no longer a corridor
 
-			if ((map_auto_generate_block_collision(&ag_settings,x,z2,ex,ez2)) || (map_auto_generate_portal_collision(x,z2,ex,ez2,-1))) continue;
+			if ((map_auto_generate_block_collision(&ag_settings,x,z2,ex,ez2,TRUE)) || (map_auto_generate_portal_collision(x,z2,ex,ez2,-1))) continue;
 
 				// create portal
 
@@ -551,7 +551,7 @@ void map_auto_generate_connect_portals(map_type *map)
 			x2=x-split_factor;
 			ex2=ex+split_factor;			// don't create if x's will touch other portals, then it's no longer a corridor
 
-			if ((map_auto_generate_block_collision(&ag_settings,x2,z,ex2,ez)) || (map_auto_generate_portal_collision(x2,z,ex2,ez,-1))) continue;
+			if ((map_auto_generate_block_collision(&ag_settings,x2,z,ex2,ez,TRUE)) || (map_auto_generate_portal_collision(x2,z,ex2,ez,-1))) continue;
 
 				// create portal
 				
@@ -2212,7 +2212,7 @@ bool map_auto_generate_test(map_type *map)
 #endif
 
 	ags.type=ag_type_room_and_corridor;
-	ags.flow=ag_flow_circle; // ag_flow_none;
+	ags.flow=ag_flow_none;
 
 	ags.second_story=TRUE;
 	

@@ -574,6 +574,10 @@ void view_draw(int tick)
 
 bool view_draw_node(int tick,node_type *node,int pixel_size)
 {
+	d3pnt			pnt;
+	d3ang			ang;
+	obj_type		*camera_obj;
+
 		// switch out to node render
 		
 	glViewport(0,0,pixel_size,pixel_size);
@@ -582,8 +586,19 @@ bool view_draw_node(int tick,node_type *node,int pixel_size)
 		// camera position
 		
 	memmove(&view.render->camera.pnt,&node->pnt,sizeof(d3pnt));
-	memmove(&view.render->camera.ang,&node->ang,sizeof(d3ang));
-	
+
+	if (!node->follow_camera) {
+		memmove(&view.render->camera.ang,&node->ang,sizeof(d3ang));
+	}
+	else {
+		camera_obj=object_find_uid(camera.obj_uid);
+		camera_get_position(&pnt,&ang,camera_obj->size.eye_offset);
+
+		view.render->camera.ang.x=angle_find(node->pnt.y,node->pnt.z,pnt.y,pnt.z);
+		view.render->camera.ang.y=angle_find(node->pnt.x,node->pnt.z,pnt.x,pnt.z);
+		view.render->camera.ang.z=angle_find(node->pnt.x,node->pnt.y,pnt.x,pnt.y);
+	}
+
 	view.render->camera.fov=camera.plane.fov;
 	view.render->camera.flip=TRUE;
 	view.render->camera.under_liquid_idx=-1;

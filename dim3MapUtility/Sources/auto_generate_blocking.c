@@ -42,10 +42,10 @@ unsigned char		ag_flow_data_none[max_ag_flow_sz][max_ag_flow_sz]=ag_flow_data_no
       
 ======================================================= */
 
-bool map_auto_generate_block_collision(auto_generate_settings_type *ags,int x,int z,int ex,int ez)
+bool map_auto_generate_block_collision(auto_generate_settings_type *ags,int x,int z,int ex,int ez,bool corridor_only)
 {
 	int				blck_x,blck_z,lx,rx,tz,bz,map_x_factor,map_z_factor;
-	unsigned char	*block;
+	unsigned char	blk,*block;
 	
 		// get block data
 		
@@ -96,7 +96,17 @@ bool map_auto_generate_block_collision(auto_generate_settings_type *ags,int x,in
 			lx=rx;
 			rx+=map_x_factor;
 
-			if (block[(blck_z*max_ag_flow_sz)+blck_x]!=0x0) {
+			blk=block[(blck_z*max_ag_flow_sz)+blck_x];
+			if (blk==0x2) {
+				if (corridor_only) {
+					blk=0x0;
+				}
+				else {
+					blk=0x1;
+				}
+			}
+
+			if (blk!=0x0) {
 				if (ez<=tz) continue;
 				if (ex<=lx) continue;
 				if (x>=rx) continue;

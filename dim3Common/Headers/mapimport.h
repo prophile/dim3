@@ -159,10 +159,12 @@ and can be sold or given away.
 
 #define ag_flow_none								0
 #define ag_flow_circle								1
-#define ag_flow_u									2
-#define ag_flow_preset_h							3
-#define ag_flow_preset_l							4
-#define ag_flow_preset_i							5
+#define ag_flow_four_corner							2
+#define ag_flow_spokes								3
+#define ag_flow_u									4
+#define ag_flow_preset_h							5
+#define ag_flow_preset_l							6
+#define ag_flow_preset_i							7
 
 #define ag_flow_data_none_bytes						{ \
 													 {0,0,0,0,0,0,0,0,0,0}, \
@@ -188,6 +190,32 @@ and can be sold or given away.
 													 {0,0,0,0,0,0,0,0,0,0}, \
 													 {0,0,0,0,0,0,0,0,0,0}, \
 													 {0,0,0,0,0,0,0,0,0,0} \
+													}
+
+#define ag_flow_data_four_corner_bytes				{ \
+													 {0,0,0,0,2,2,0,0,0,0}, \
+													 {0,0,0,0,2,2,0,0,0,0}, \
+													 {0,0,0,0,2,2,0,0,0,0}, \
+													 {0,0,0,0,2,2,0,0,0,0}, \
+													 {2,2,2,2,1,1,2,2,2,2}, \
+													 {2,2,2,2,1,1,2,2,2,2}, \
+													 {0,0,0,0,1,1,0,0,0,0}, \
+													 {0,0,0,0,1,1,0,0,0,0}, \
+													 {0,0,0,0,1,1,0,0,0,0}, \
+													 {0,0,0,0,1,1,0,0,0,0} \
+													}
+
+#define ag_flow_data_spokes_bytes					{ \
+													 {0,0,0,2,0,0,2,0,0,0}, \
+													 {0,0,0,2,0,0,2,0,0,0}, \
+													 {0,0,0,2,0,0,2,0,0,0}, \
+													 {2,2,2,2,2,2,2,2,2,2}, \
+													 {0,0,0,2,0,0,2,0,0,0}, \
+													 {0,0,0,2,0,0,2,0,0,0}, \
+													 {2,2,2,2,2,2,2,2,2,2}, \
+													 {0,0,0,2,0,0,2,0,0,0}, \
+													 {0,0,0,2,0,0,2,0,0,0}, \
+													 {0,0,0,2,0,0,2,0,0,0} \
 													}
 
 #define ag_flow_data_u_bytes						{ \
@@ -246,51 +274,51 @@ and can be sold or given away.
 // auto-generate constants
 //
 
-#define ag_constant_portal_percent						0.28f
+#define ag_constant_portal_percent							0.28f
 
-#define ag_constant_portal_high_percent					0.075f
-#define ag_constant_portal_story_high_add_percent		0.10f
+#define ag_constant_portal_high_percent						0.075f
+#define ag_constant_portal_story_high_add_percent			0.10f
 
-#define ag_constant_portal_random_percent				0.4f
-#define ag_constant_portal_merge_percent				0.08f
-#define ag_constant_portal_connect_percent				1.0f
-#define ag_constant_portal_split_factor_percent			0.1f
+#define ag_constant_portal_random_percent					0.4f
+#define ag_constant_portal_merge_percent					0.1f
+#define ag_constant_portal_connect_percent					2.0f
+#define ag_constant_portal_split_factor_percent				0.1f
 
-#define ag_constant_portal_high_extra_top				0.75f
-#define ag_constant_portal_high_extra_bottom			0.65f
-#define ag_constant_portal_high_slop_y					0.10f
-#define ag_constant_portal_rough_floor_percent			0.025f
-#define ag_constant_portal_ceiling_slant_percent		0.40f
+#define ag_constant_portal_high_extra_top					0.75f
+#define ag_constant_portal_high_extra_bottom				0.65f
+#define ag_constant_portal_high_slop_y						0.10f
+#define ag_constant_portal_rough_floor_percent				0.025f
+#define ag_constant_portal_ceiling_slant_percent			0.40f
 
-#define ag_constant_story_floor_high					(5*map_enlarge)
-#define ag_constant_story_steps_split_factor			1
+#define ag_constant_story_floor_high						(5*map_enlarge)
+#define ag_constant_story_steps_split_factor				1
 
-#define ag_constant_corridor_size_percent				0.20f
-#define ag_constant_corridor_random_percent				0.5f
-#define ag_constant_corridor_high_percent				0.07f
+#define ag_constant_corridor_size_percent					0.20f
+#define ag_constant_corridor_random_percent					0.5f
+#define ag_constant_corridor_high_percent					0.07f
 
-#define ag_constant_door_percentage						0.5f
-#define ag_constant_door_width							(2*map_enlarge)
-#define ag_constant_door_open_millisec					500
+#define ag_constant_door_percentage							0.5f
+#define ag_constant_door_width								(2*map_enlarge)
+#define ag_constant_door_open_millisec						500
 
-#define ag_constant_lift_move_millisec					1000
+#define ag_constant_lift_move_millisec						1000
 
-#define ag_constant_light_animate_percentage			0.1f
+#define ag_constant_light_animate_percentage				0.1f
 
-#define ag_constant_step_corridor_size					(12*map_enlarge)
-#define ag_constant_step_corridor_high					(3*map_enlarge)
-#define ag_constant_step_story_size						(10*map_enlarge)
-#define ag_constant_step_story_high						(5*map_enlarge)
+#define ag_constant_step_corridor_size						(12*map_enlarge)
+#define ag_constant_step_corridor_high						(3*map_enlarge)
+#define ag_constant_step_story_size							(10*map_enlarge)
+#define ag_constant_step_story_high							(5*map_enlarge)
 
-#define ag_constant_step_side_wid						(4*map_enlarge)
+#define ag_constant_step_side_wid							(4*map_enlarge)
 
-#define ag_constant_door_frame_depth					(4*map_enlarge)
+#define ag_constant_door_frame_depth						(4*map_enlarge)
 
-#define ag_constant_ramp_min_high						(4*map_enlarge)
-#define ag_constant_ramp_length							(35*map_enlarge)
+#define ag_constant_ramp_min_high							(4*map_enlarge)
+#define ag_constant_ramp_length								(35*map_enlarge)
 
-#define ag_constant_window_percent						0.3f
-#define ag_constant_window_depth						(8*map_enlarge)
+#define ag_constant_window_percent							0.3f
+#define ag_constant_window_depth							(8*map_enlarge)
 
 //
 // auto-generate setup structure
