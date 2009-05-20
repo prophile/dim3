@@ -336,14 +336,14 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>155</integer>
-									<integer>153</integer>
+									<integer>143</integer>
+									<integer>135</integer>
 									<integer>116</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 2248}, {289, 785}}</string>
+							<string>{{0, 0}, {289, 785}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -362,7 +362,7 @@
 							<real>289</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>7 174 311 844 0 0 1680 1028 </string>
+						<string>23 171 311 844 0 0 1680 1028 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -403,7 +403,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {0, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>7 174 311 844 0 0 1680 1028 </string>
+								<string>23 171 311 844 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -423,7 +423,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {0, 798}}</string>
 								<key>RubberWindowFrame</key>
-								<string>7 174 311 844 0 0 1680 1028 </string>
+								<string>23 171 311 844 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -447,9 +447,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>269FF07A0FC2699A00792FBD</string>
+				<string>26A7F9210FC3B8050036FE02</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>269FF07B0FC2699A00792FBD</string>
+				<string>26A7F9220FC3B8050036FE02</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -568,7 +568,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>264399719.485531</real>
+	<real>264484796.58399299</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -583,15 +583,11 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>269FF0860FC26AC200792FBD</string>
-		<string>1C78EAAD065D492600B07095</string>
 		<string>1CD10A99069EF8BA00B06720</string>
-		<string>260AFF5E0D40530200F6C42F</string>
-		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>/Users/ggadwa/dim3Code/dim3Engine/dim3Engine.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>7 174 311 844 0 0 1680 1028 </string>
+	<string>23 171 311 844 0 0 1680 1028 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -670,7 +666,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFF5E0D40530200F6C42F</string>
-				<string>269FF0780FC2699700792FBD</string>
+				<string>267055ED0FC36693003F6DEC</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -790,13 +786,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>269FF07F0FC26AC100792FBD</string>
+				<string>26A7F9230FC3B8050036FE02</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>269FF0800FC26AC100792FBD</string>
-				<string>269FF0810FC26AC100792FBD</string>
-				<string>269FF0820FC26AC100792FBD</string>
-				<string>269FF0830FC26AC100792FBD</string>
-				<string>269FF0840FC26AC100792FBD</string>
+				<string>26A7F9240FC3B8050036FE02</string>
+				<string>26A7F9250FC3B8050036FE02</string>
+				<string>26A7F9260FC3B8050036FE02</string>
+				<string>26A7F9270FC3B8050036FE02</string>
+				<string>26A7F9280FC3B8050036FE02</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -950,7 +946,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C78EAAD065D492600B07095</string>
-				<string>269FF0850FC26AC100792FBD</string>
+				<string>267055F90FC36C0A003F6DEC</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>ToolbarConfiguration</key>

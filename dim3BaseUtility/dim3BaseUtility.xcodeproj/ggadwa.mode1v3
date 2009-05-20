@@ -320,8 +320,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>27</integer>
-									<integer>26</integer>
+									<integer>24</integer>
+									<integer>23</integer>
 									<integer>7</integer>
 									<integer>0</integer>
 								</array>
@@ -427,9 +427,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>269FF0660FC267C200792FBD</string>
+				<string>26A7F91F0FC3B8030036FE02</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>269FF0670FC267C200792FBD</string>
+				<string>26A7F9200FC3B8030036FE02</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -548,7 +548,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>264398671.136415</real>
+	<real>264484802.645767</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -563,7 +563,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>/Users/ggadwa/dim3Code/dim3BaseUtility/dim3BaseUtility.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -646,7 +645,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>26A5EAC70D404C5F00BB47DE</string>
-				<string>269FF00C0FC24FB300792FBD</string>
+				<string>2670559C0FC35F9A003F6DEC</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

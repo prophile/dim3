@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Node Palette
+ Usage: Particle Palette
 
 ***************************** License ********************************
 
@@ -29,60 +29,57 @@ and can be sold or given away.
 #include "common_view.h"
 #include "dialog.h"
 
-#define kNodeName						FOUR_CHAR_CODE('name')
-#define kNodeEventID					FOUR_CHAR_CODE('vale')
-#define kNodeAngleX						FOUR_CHAR_CODE('angx')
-#define kNodeAngleY						FOUR_CHAR_CODE('angy')
-#define kNodeAngleZ						FOUR_CHAR_CODE('angz')
+#define kParticleName								FOUR_CHAR_CODE('pnam')
+#define kParticleSpawnTick							FOUR_CHAR_CODE('sptk')
+#define kParticleSlopTick							FOUR_CHAR_CODE('sltk')
+#define kParticleOn									FOUR_CHAR_CODE('pton')
 
 extern map_type				map;
 
-WindowRef					palette_node_wind;
+WindowRef					palette_particle_wind;
 
 /* =======================================================
 
-      Node Poly Data
+      Particle Poly Data
       
 ======================================================= */
 
-void palette_node_load(void)
+void palette_particle_load(void)
 {
 	int						type,main_idx,poly_idx;
-	node_type				*node;
+	map_particle_type		*particle;
 	
-		// get node
+		// get particle
 		
 	select_get(0,&type,&main_idx,&poly_idx);
-	node=&map.nodes[main_idx];
+	particle=&map.particles[main_idx];
 	
 		// get controls
 		
-	dialog_set_text(palette_node_wind,kNodeName,0,node->name);
-	dialog_set_int(palette_node_wind,kNodeEventID,0,node->event_id);
-	dialog_set_float(palette_node_wind,kNodeAngleX,0,node->ang.x);
-	dialog_set_float(palette_node_wind,kNodeAngleY,0,node->ang.y);
-	dialog_set_float(palette_node_wind,kNodeAngleZ,0,node->ang.z);
+	dialog_special_combo_fill_particle(palette_particle_wind,kParticleName,0,particle->name);
+	dialog_set_int(palette_particle_wind,kParticleSpawnTick,0,particle->spawn_tick);
+	dialog_set_int(palette_particle_wind,kParticleSlopTick,0,particle->slop_tick);
+	dialog_set_boolean(palette_particle_wind,kParticleOn,0,particle->on);
 	
-	DrawControls(palette_node_wind);
+	DrawControls(palette_particle_wind);
 }
 
-void palette_node_save(void)
+void palette_particle_save(void)
 {
 	int						type,main_idx,poly_idx;
-	node_type				*node;
+	map_particle_type		*particle;
 	
-		// get node
+		// get particle
 		
 	select_get(0,&type,&main_idx,&poly_idx);
-	node=&map.nodes[main_idx];
+	particle=&map.particles[main_idx];
 	
 		// set controls
 	
-	dialog_get_text(palette_node_wind,kNodeName,0,node->name,name_str_len);
-	node->event_id=dialog_get_int(palette_node_wind,kNodeEventID,0);
-	node->ang.x=dialog_get_float(palette_node_wind,kNodeAngleX,0);
-	node->ang.y=dialog_get_float(palette_node_wind,kNodeAngleY,0);
-	node->ang.z=dialog_get_float(palette_node_wind,kNodeAngleZ,0);
+	dialog_special_combo_get_particle(palette_particle_wind,kParticleName,0,particle->name,name_str_len);
+	particle->spawn_tick=dialog_get_int(palette_particle_wind,kParticleSpawnTick,0);
+	particle->slop_tick=dialog_get_int(palette_particle_wind,kParticleSlopTick,0);
+	particle->on=dialog_get_boolean(palette_particle_wind,kParticleOn,0);
 	
 		// need to reset node combo
 		
@@ -91,19 +88,19 @@ void palette_node_save(void)
 	main_wind_draw();
 }
 
-static pascal OSStatus palette_node_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
+static pascal OSStatus palette_particle_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
-	palette_node_save();
+	palette_particle_save();
 	return(eventNotHandledErr);
 }
 
 /* =======================================================
 
-      Palette Node Open/Close
+      Palette Particle Open/Close
       
 ======================================================= */
 
-void palette_node_open(int x,int y)
+void palette_particle_open(int x,int y)
 {
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassControl,kEventControlHit},
@@ -111,29 +108,27 @@ void palette_node_open(int x,int y)
 
 		// open the window
 		
-	dialog_open(&palette_node_wind,"NodePalette");
-	MoveWindow(palette_node_wind,x,y,FALSE);
+	dialog_open(&palette_particle_wind,"ParticlePalette");
+	MoveWindow(palette_particle_wind,x,y,FALSE);
 
 		// show palette
 		
-	ShowWindow(palette_node_wind);
+	ShowWindow(palette_particle_wind);
 	
 		// install event handler
 		
-	event_upp=NewEventHandlerUPP(palette_node_event_proc);
-	InstallWindowEventHandler(palette_node_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
+	event_upp=NewEventHandlerUPP(palette_particle_event_proc);
+	InstallWindowEventHandler(palette_particle_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
 }
 
-void palette_node_close(int *x,int *y)
+void palette_particle_close(int *x,int *y)
 {
 	Rect			box;
 	
-	GetWindowBounds(palette_node_wind,kWindowGlobalPortRgn,&box);
+	GetWindowBounds(palette_particle_wind,kWindowGlobalPortRgn,&box);
 	*x=box.left;
 	*y=box.top;
 
-	DisposeWindow(palette_node_wind);
+	DisposeWindow(palette_particle_wind);
 }
-
-
 

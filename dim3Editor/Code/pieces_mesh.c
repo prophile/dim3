@@ -515,7 +515,13 @@ void piece_add_obj_mesh_uv(void)
 	
 		// does this OBJ match OBJ importing over?
 		
-	if ((nvertex!=mesh->npoly) || (nuv==0)) {
+	if (nuv==0) {
+		textdecode_close();
+		StandardAlert(kAlertStopAlert,"\pImport Failed","\pThe imported OBJ has no UVs.",NULL,NULL);
+		return;
+    }
+		
+	if (npoly!=mesh->npoly) {
 		textdecode_close();
 		StandardAlert(kAlertStopAlert,"\pImport Failed","\pThe imported OBJ must have the same number of polygons as the selected mesh.",NULL,NULL);
 		return;
@@ -560,6 +566,10 @@ void piece_add_obj_mesh_uv(void)
 		poly=&mesh->polys[poly_idx];
 		poly_idx++;
 		
+			// set texture if this is a new layer
+			
+		if (mesh->nuv<(main_wind_uv_layer+1)) poly->uv[main_wind_uv_layer].txt_idx=poly->uv[0].txt_idx;
+		
             // get the face points
         
         npt=0;
@@ -579,7 +589,7 @@ void piece_add_obj_mesh_uv(void)
             c=strchr(uvstr,'/');
             if (c!=NULL) *c=0x0;
             
-			if ((uvstr[0]==0x0) || (nuv==0)) {
+			if (uvstr[0]==0x0) {
 				poly->uv[main_wind_uv_layer].x[npt]=poly->uv[main_wind_uv_layer].y[npt]=0.0f;
 			}
 			else {
