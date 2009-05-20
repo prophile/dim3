@@ -183,6 +183,9 @@ SOURCE=..\..\dim3MapUtility\Headers\mapprivate.h
 # Begin Group "MapSources"
 
 # PROP Default_Filter ""
+# Begin Group "Auto Generate"
+
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\..\dim3MapUtility\Sources\auto_generate.c
@@ -201,8 +204,13 @@ SOURCE=..\..\dim3MapUtility\Sources\auto_generate_light_spot.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3MapUtility\Sources\auto_generate_second_story.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3MapUtility\Sources\auto_generate_utility.c
 # End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\..\dim3MapUtility\Sources\file_map_read.c

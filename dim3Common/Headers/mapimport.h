@@ -360,12 +360,15 @@ typedef struct	{
 #define max_ag_box											256
 
 typedef struct	{
+					bool									on,left,right,top,bottom,middle_horz,middle_vert,
+															org_left,org_right,org_top,org_bottom;
+				} auto_generate_box_story_type;
+
+typedef struct	{
 					int										mesh_idx,corridor_connect_box_idx[2],
 															corridor_flag,corridor_type,ceiling_type;
-					bool									story_top_left,story_top_right,
-															story_bottom_left,story_bottom_right,
-															story_middle;
 					d3pnt									min,max;
+					auto_generate_box_story_type			story;
 				} auto_generate_box_type;
 
 //

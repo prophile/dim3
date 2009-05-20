@@ -435,65 +435,6 @@ bool map_auto_generate_has_door_type(auto_generate_settings_type *ags)
 
 /* =======================================================
 
-      Second Story Utilities
-      
-======================================================= */
-
-void map_auto_generate_story_extra_floor(bool *lft,bool *rgt,bool *top,bool *bot,bool *horz,bool *vert)
-{
-	*horz=FALSE;
-	*vert=FALSE;
-
-		// if only one side is filled, create an L from the other
-
-	if ((*lft) && (!(*rgt)) && (!(*top)) && (!(*bot))) {
-		if (map_auto_generate_random_int(100)>50) {
-			*top=TRUE;
-		}
-		else {
-			*bot=TRUE;
-		}
-		return;
-	}
-
-	if ((*rgt) && (!(*lft)) && (!(*top)) && (!(*bot))) {
-		if (map_auto_generate_random_int(100)>50) {
-			*top=TRUE;
-		}
-		else {
-			*bot=TRUE;
-		}
-		return;
-	}
-
-	if ((*top) && (!(*bot)) && (!(*lft)) && (!(*rgt))) {
-		if (map_auto_generate_random_int(100)>50) {
-			*lft=TRUE;
-		}
-		else {
-			*rgt=TRUE;
-		}
-		return;
-	}
-
-	if ((*bot) && (!(*top)) && (!(*lft)) && (!(*rgt))) {
-		if (map_auto_generate_random_int(100)>50) {
-			*lft=TRUE;
-		}
-		else {
-			*rgt=TRUE;
-		}
-		return;
-	}
-
-		// if opposite sides, connect
-
-	*horz=((*lft) && (*rgt));
-	*vert=((*top) && (*bot));
-}
-
-/* =======================================================
-
       Polygon Utilities
       
 ======================================================= */
