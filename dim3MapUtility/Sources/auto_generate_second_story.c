@@ -33,6 +33,8 @@ extern int map_auto_generate_random_int(int max);
 
 extern bool map_auto_generate_portal_horz_edge_touch(int skip_portal_idx,int z,int ez,int x);
 extern bool map_auto_generate_portal_vert_edge_touch(int skip_portal_idx,int x,int ex,int z);
+extern bool map_auto_generate_portal_horz_edge_block(int skip_portal_idx,int z,int ez,int x);
+extern bool map_auto_generate_portal_vert_edge_block(int skip_portal_idx,int x,int ex,int z);
 extern bool map_auto_generate_portal_touching_left(int portal_idx);
 extern bool map_auto_generate_portal_touching_right(int portal_idx);
 extern bool map_auto_generate_portal_touching_top(int portal_idx);
@@ -113,9 +115,9 @@ void map_auto_generate_story_extra_floor(bool *lft,bool *rgt,bool *top,bool *bot
 	*vert=((*top) && (*bot));
 }
 
-void map_auto_generate_second_story_block(map_type *map,unsigned char *poly_map,int x,int z,int xsz,int zsz,int split_factor,int y)
+void map_auto_generate_second_story_block(map_type *map,unsigned char *poly_map,int x,int z,int xsz,int zsz,int split_factor,int ty,int by)
 {
-	int				lx,rx,lz,rz,by,px[8],py[8],pz[8];
+	int				lx,rx,lz,rz,px[8],py[8],pz[8];
 	float			gx[8],gy[8];
 
 		// floor here?
@@ -129,11 +131,9 @@ void map_auto_generate_second_story_block(map_type *map,unsigned char *poly_map,
 	lz=z*split_factor;
 	rz=lz+split_factor;
 
-	by=y+ag_constant_story_floor_high;
-
 		// create floor and ceiling
 
-	map_auto_generate_poly_from_square_floor(lx,lz,rx,rz,y,px,py,pz,gx,gy);
+	map_auto_generate_poly_from_square_floor(lx,lz,rx,rz,ty,px,py,pz,gx,gy);
 	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 
 	map_auto_generate_poly_from_square_floor(lx,lz,rx,rz,by,px,py,pz,gx,gy);
@@ -143,31 +143,49 @@ void map_auto_generate_second_story_block(map_type *map,unsigned char *poly_map,
 
 	if (x!=0) {
 		if (poly_map[(z*xsz)+(x-1)]==0x0) {
-			map_auto_generate_poly_from_square_wall(lx,lz,lx,rz,y,by,px,py,pz,gx,gy);
+			map_auto_generate_poly_from_square_wall(lx,lz,lx,rz,ty,by,px,py,pz,gx,gy);
 			map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 		}
 	}
 
 	if (x!=(xsz-1)) {
 		if (poly_map[(z*xsz)+(x+1)]==0x0) {
-			map_auto_generate_poly_from_square_wall(rx,lz,rx,rz,y,by,px,py,pz,gx,gy);
+			map_auto_generate_poly_from_square_wall(rx,lz,rx,rz,ty,by,px,py,pz,gx,gy);
 			map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 		}
 	}
 
 	if (z!=0) {
 		if (poly_map[((z-1)*xsz)+x]==0x0) {
-			map_auto_generate_poly_from_square_wall(lx,lz,rx,lz,y,by,px,py,pz,gx,gy);
+			map_auto_generate_poly_from_square_wall(lx,lz,rx,lz,ty,by,px,py,pz,gx,gy);
 			map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 		}
 	}
 
 	if (z!=(zsz-1)) {
 		if (poly_map[((z+1)*xsz)+x]==0x0) {
-			map_auto_generate_poly_from_square_wall(lx,rz,rx,rz,y,by,px,py,pz,gx,gy);
+			map_auto_generate_poly_from_square_wall(lx,rz,rx,rz,ty,by,px,py,pz,gx,gy);
 			map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 		}
 	}
+}
+
+void map_auto_generate_second_story_stand(map_type *map,int lx,int rx,int lz,int rz,int ty,int by)
+{
+	int							px[8],py[8],pz[8];
+	float						gx[8],gy[8];
+	
+	map_auto_generate_poly_from_square_wall(lx,lz,lx,rz,ty,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(rx,lz,rx,rz,ty,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(lx,lz,rx,lz,ty,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
+
+	map_auto_generate_poly_from_square_wall(lx,rz,rx,rz,ty,by,px,py,pz,gx,gy);
+	map_auto_generate_mesh_add_poly(map,4,px,py,pz,gx,gy);
 }
 
 int map_auto_generate_second_story_steps_get_x(int portal_idx,int z,int ez,bool lft,int xsz,int step_wid)
@@ -352,7 +370,57 @@ void map_auto_generate_second_story(map_type *map)
 
 		for (z=0;z<zsz;z++) {
 			for (x=0;x<xsz;x++) {
-				map_auto_generate_second_story_block(map,poly_map,x,z,xsz,zsz,split_factor,y);
+				map_auto_generate_second_story_block(map,poly_map,x,z,xsz,zsz,split_factor,y,(y+ag_constant_story_floor_high));
+			}
+		}
+
+			// create second story stands
+
+		if (portal->story.left) {
+			if (!map_auto_generate_portal_vert_edge_block(n,portal->min.x,(portal->min.x+split_factor),portal->min.z)) {
+				map_auto_generate_second_story_stand(map,0,split_factor,0,(split_factor/2),(y+ag_constant_story_floor_high),portal->max.y);
+			}
+
+			if (!map_auto_generate_portal_vert_edge_block(n,portal->min.x,(portal->min.x+split_factor),portal->max.z)) {
+				z=zsz*split_factor;
+				map_auto_generate_second_story_stand(map,0,split_factor,(z-(split_factor/2)),z,(y+ag_constant_story_floor_high),portal->max.y);
+			}
+		}
+
+		if (portal->story.right) {
+			x=xsz*split_factor;
+
+			if (!map_auto_generate_portal_vert_edge_block(n,(portal->min.x+(x-split_factor)),(portal->min.x+x),portal->min.z)) {
+				map_auto_generate_second_story_stand(map,(x-split_factor),x,0,(split_factor/2),(y+ag_constant_story_floor_high),portal->max.y);
+			}
+
+			if (!map_auto_generate_portal_vert_edge_block(n,(portal->min.x+(x-split_factor)),(portal->min.x+x),portal->max.z)) {
+				z=zsz*split_factor;
+				map_auto_generate_second_story_stand(map,(x-split_factor),x,(z-(split_factor/2)),z,(y+ag_constant_story_floor_high),portal->max.y);
+			}
+		}
+
+		if (portal->story.top) {
+			if (!map_auto_generate_portal_horz_edge_block(n,portal->min.z,(portal->min.z+split_factor),portal->min.x)) {
+				map_auto_generate_second_story_stand(map,0,(split_factor/2),0,split_factor,(y+ag_constant_story_floor_high),portal->max.y);
+			}
+
+			if (!map_auto_generate_portal_horz_edge_block(n,portal->min.z,(portal->min.z+split_factor),portal->max.x)) {
+				x=xsz*split_factor;
+				map_auto_generate_second_story_stand(map,(x-(split_factor/2)),x,0,split_factor,(y+ag_constant_story_floor_high),portal->max.y);
+			}
+		}
+
+		if (portal->story.bottom) {
+			z=zsz*split_factor;
+
+			if (!map_auto_generate_portal_horz_edge_block(n,(portal->min.z+(z-split_factor)),(portal->min.z+z),portal->min.x)) {
+				map_auto_generate_second_story_stand(map,0,(split_factor/2),(z-split_factor),z,(y+ag_constant_story_floor_high),portal->max.y);
+			}
+
+			if (!map_auto_generate_portal_horz_edge_block(n,(portal->min.z+(z-split_factor)),(portal->min.z+z),portal->max.x)) {
+				x=xsz*split_factor;
+				map_auto_generate_second_story_stand(map,(x-(split_factor/2)),x,(z-split_factor),z,(y+ag_constant_story_floor_high),portal->max.y);
 			}
 		}
 

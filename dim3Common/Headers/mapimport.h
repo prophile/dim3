@@ -335,7 +335,8 @@ typedef struct	{
 				} auto_generate_setting_sound_type;
 
 typedef struct	{
-					int										portal_wall,portal_floor,portal_ceiling,
+					int										portal_wall,portal_wall_2,
+															portal_floor,portal_ceiling,
 															corridor,corridor_floor,second_story,window,
 															door,steps,ramp,column,column_base,frame;
 				} auto_generate_setting_texture_type;
