@@ -45,6 +45,7 @@ map_poly_sort_type		trans_sort;
 
 extern bool fog_solid_on(void);
 extern void view_compile_gl_list_attach(void);
+extern void view_compile_gl_list_uv_layer_attach(int uv_idx);
 extern void view_compile_gl_list_enable_color(void);
 extern void view_compile_gl_list_disable_color(void);
 extern void view_compile_gl_list_dettach(void);
@@ -191,7 +192,6 @@ void render_transparent_mesh_simple(void)
 	map_mesh_poly_type			*poly;
 	map_poly_sort_item_type		*sort_list;
 	texture_type				*texture;
-	view_glsl_light_list_type	light_list;
 
 		// sorted transparency list
 
@@ -241,14 +241,10 @@ void render_transparent_mesh_simple(void)
 			}
 		}
 
-			// setup the lights
-
-		gl_lights_build_from_poly(poly,&light_list);
-
 			// draw the polygon
 
 		gl_texture_transparent_set(texture->frames[poly->render.frame].bitmap.gl_id,poly->alpha);
-		glDrawRangeElements(GL_POLYGON,poly->draw.uv[0].gl_poly_index_min,poly->draw.uv[0].gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.uv[0].gl_poly_index_offset);
+		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}
 
 		// was color array enabled?
@@ -319,7 +315,7 @@ void render_transparent_mesh_shader(void)
 			gl_shader_draw_hilite_execute(texture,poly->uv[0].txt_idx,poly->render.frame,poly->dark_factor,1.0f,&poly->box.mid,NULL);
 		}
 
-		glDrawRangeElements(GL_POLYGON,poly->draw.uv[0].gl_poly_index_min,poly->draw.uv[0].gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.uv[0].gl_poly_index_offset);
+		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}
 
 	gl_shader_draw_end();
@@ -353,7 +349,7 @@ void render_transparent_mesh_glow(void)
 
 		texture=&map.textures[poly->uv[0].txt_idx];
 		gl_texture_glow_set(texture->frames[poly->render.frame].bitmap.gl_id,texture->frames[poly->render.frame].glowmap.gl_id,texture->glow.current_color);
-		glDrawRangeElements(GL_POLYGON,poly->draw.uv[0].gl_poly_index_min,poly->draw.uv[0].gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.uv[0].gl_poly_index_offset);
+		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}
 
 	gl_texture_glow_end();
@@ -376,6 +372,7 @@ void render_map_mesh_transparent(void)
 		// attach compiled vertex lists
 
 	view_compile_gl_list_attach();
+	view_compile_gl_list_uv_layer_attach(0);
 
 		// sort meshes
 

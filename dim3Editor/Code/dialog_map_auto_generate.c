@@ -52,6 +52,7 @@ and can be sold or given away.
 #define kMapGenerateRampSize						FOUR_CHAR_CODE('rmsz')
 
 #define kMapGenerateTexturePortalWall				FOUR_CHAR_CODE('pwtx')
+#define kMapGenerateTexturePortalWall2				FOUR_CHAR_CODE('pw2x')
 #define kMapGenerateTexturePortalFloor				FOUR_CHAR_CODE('pftx')
 #define kMapGenerateTexturePortalCeiling			FOUR_CHAR_CODE('pctx')
 #define kMapGenerateTextureCorridor					FOUR_CHAR_CODE('crtx')
@@ -209,6 +210,7 @@ bool dialog_map_auto_generate_setting_run(bool first)
 		dialog_set_text(dialog_map_generate_wind,kMapGenerateLiftSound,0,ag_settings.sound.lift);
 	
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalWall,0,FALSE,ag_settings.texture.portal_wall);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalWall2,0,FALSE,ag_settings.texture.portal_wall_2);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalFloor,0,FALSE,ag_settings.texture.portal_floor);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalCeiling,0,FALSE,ag_settings.texture.portal_ceiling);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridor,0,FALSE,ag_settings.texture.corridor);
@@ -231,6 +233,7 @@ bool dialog_map_auto_generate_setting_run(bool first)
 			// always need to set textures
 			
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalWall,0,FALSE,0);
+		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalWall2,0,FALSE,0);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalFloor,0,FALSE,1);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalCeiling,0,FALSE,2);
 		dialog_fill_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridor,0,FALSE,3);
@@ -295,6 +298,7 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	dialog_get_text(dialog_map_generate_wind,kMapGenerateLiftSound,0,ag_settings.sound.lift,name_str_len);
 	
 	ag_settings.texture.portal_wall=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalWall,0,FALSE);
+	ag_settings.texture.portal_wall_2=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalWall2,0,FALSE);
 	ag_settings.texture.portal_floor=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalFloor,0,FALSE);
 	ag_settings.texture.portal_ceiling=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTexturePortalCeiling,0,FALSE);
 	ag_settings.texture.corridor=dialog_get_texture_combo(dialog_map_generate_wind,kMapGenerateTextureCorridor,0,FALSE);

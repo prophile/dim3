@@ -244,7 +244,7 @@ int map_auto_generate_second_story_steps_get_z(int portal_idx,int x,int ex,bool 
       
 ======================================================= */
 
-void map_auto_generate_second_story_setup(map_type *map)
+void map_auto_generate_second_story_setup(void)
 {
 	int							n;
 	bool						lft,rgt,top,bot,horz,vert;

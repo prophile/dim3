@@ -82,7 +82,7 @@ extern void map_auto_generate_ramps(map_type *map);
 extern void map_auto_generate_corridor_to_portal_connections(map_type *map);
 extern void map_auto_generate_doors(map_type *map);
 
-extern void map_auto_generate_second_story_setup(map_type *map);
+extern void map_auto_generate_second_story_setup(void);
 extern void map_auto_generate_second_story(map_type *map);
 
 int									ag_box_count;
@@ -1891,7 +1891,7 @@ void map_auto_generate(map_type *map,auto_generate_settings_type *ags)
 
 		// setup second stories
 
-	map_auto_generate_second_story_setup(map);
+	map_auto_generate_second_story_setup();
 	
 		// walls and floors
 

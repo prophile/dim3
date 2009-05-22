@@ -46,11 +46,11 @@ extern setup_type			setup;
 
 bool view_compile_mesh_gl_list_init(void)
 {
-	int					n,k,t,uv_idx,v_cnt,v_idx,i_idx;
+	int					n,k,t,uv_idx,vertex_cnt,uv_cnt,i_idx;
 	unsigned int		v_poly_start_idx;
 	unsigned int		*index_ptr;
 	float				x_shift_offset,y_shift_offset;
-	float				*vertex_ptr,*pv,*pp,*pc,*pn,*ps;
+	float				*vertex_ptr,*pv,*pp,*pc;
 	d3pnt				*pnt;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
@@ -58,7 +58,11 @@ bool view_compile_mesh_gl_list_init(void)
 		// get total number of vertexes and indexes
 		// and their offsets to setup vertex object for map
 		
-	v_cnt=0;
+		// do the UV count separately so we can work around
+		// multiple UVs for layers
+		
+	vertex_cnt=0;
+	uv_cnt=0;
 	
 		// setup meshes
 		
@@ -72,19 +76,28 @@ bool view_compile_mesh_gl_list_init(void)
 
 			// setup offsets
 
-		mesh->draw.vertex_offset=v_cnt;
+		mesh->draw.vertex_offset=vertex_cnt;
+		mesh->draw.uv_offset=uv_cnt;
 
-			// the UV layers
+			// poly vertexes
 			
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+			poly->draw.vertex_offset=vertex_cnt;
+			vertex_cnt+=poly->ptsz;
+			poly++;
+		}
+			
+			// poly uvs
+				
 		for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
 		
-				// the polys
-				
 			poly=mesh->polys;
 			
 			for (k=0;k!=mesh->npoly;k++) {
-				poly->draw.uv[uv_idx].vertex_offset=v_cnt;
-				v_cnt+=poly->ptsz;
+				poly->draw.uv[uv_idx].uv_offset=uv_cnt;
+				uv_cnt+=poly->ptsz;
 				poly++;
 			}
 		}
@@ -94,37 +107,63 @@ bool view_compile_mesh_gl_list_init(void)
 
 		// total vertexes
 
-	map.mesh.vbo_vertex_count=v_cnt;
+	map.mesh.vbo_vertex_count=vertex_cnt;
+	map.mesh.vbo_uv_count=uv_cnt;
 
 		// initial vertex VBO
 		
-	view_init_map_vertex_object(v_cnt*(3+2+3));
+	view_init_map_vertex_object((vertex_cnt*(3+3))+(uv_cnt*2));
 
 	vertex_ptr=view_bind_map_map_vertex_object();
 	if (vertex_ptr==NULL) return(FALSE);
 
 	pv=vertex_ptr;
-	pp=pv+(v_cnt*3);
-	pc=pp+(v_cnt*2);
-	pn=pc+(v_cnt*3);
-	ps=pn+(v_cnt*3);
+	pp=pv+(vertex_cnt*3);
+	pc=pp+(uv_cnt*2);
+	
+		// vertexes and color
+		// we run this separate from the UVs
+		// as they are grouped for layers
 
-		// create the vertexes
-
-	v_idx=0;
-		
 	mesh=map.mesh.meshes;
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
 	
-			// the UV layers
+			// vertexes and colors
+
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+
+			for (t=0;t!=poly->ptsz;t++) {
 			
-		for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
+				pnt=&mesh->vertexes[poly->v[t]];
 
-				// run through the polys
+				*pv++=(float)pnt->x;
+				*pv++=(float)pnt->y;
+				*pv++=(float)pnt->z;
 
+				*pc++=1.0f;
+				*pc++=1.0f;
+				*pc++=1.0f;
+			}
+
+			poly++;
+		}
+		
+		mesh++;
+	}
+	
+		// uvs
+				
+	for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
+
+		mesh=map.mesh.meshes;
+
+		for (n=0;n!=map.mesh.nmesh;n++) {
+		
 			poly=mesh->polys;
-			
+				
 			for (k=0;k!=mesh->npoly;k++) {
 
 					// polygon vertexes
@@ -133,21 +172,8 @@ bool view_compile_mesh_gl_list_init(void)
 				y_shift_offset=poly->draw.uv[uv_idx].y_shift_offset;
 
 				for (t=0;t!=poly->ptsz;t++) {
-				
-					pnt=&mesh->vertexes[poly->v[t]];
-
-					*pv++=(float)pnt->x;
-					*pv++=(float)pnt->y;
-					*pv++=(float)pnt->z;
-					
 					*pp++=poly->uv[uv_idx].x[t]+x_shift_offset;
 					*pp++=poly->uv[uv_idx].y[t]+y_shift_offset;
-
-					*pc++=1.0f;
-					*pc++=1.0f;
-					*pc++=1.0f;
-					
-					v_idx++;
 				}
 
 				poly++;
@@ -164,7 +190,7 @@ bool view_compile_mesh_gl_list_init(void)
 
 		// initialize index VBO
 		
-	view_init_map_index_object(v_cnt);
+	view_init_map_index_object(vertex_cnt);
 		
 	index_ptr=view_bind_map_map_index_object();
 	if (index_ptr==NULL) {
@@ -181,34 +207,28 @@ bool view_compile_mesh_gl_list_init(void)
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
 	
-			// the UV layers
-			
-		for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
+			// run through the polys
 
-				// run through the polys
-
-			poly=mesh->polys;
-			
-			for (k=0;k!=mesh->npoly;k++) {
-			
-					// polygon indexes
-					
-				v_poly_start_idx=poly->draw.uv[uv_idx].vertex_offset;
-				poly->draw.uv[uv_idx].gl_poly_index_offset=i_idx*sizeof(unsigned int);
-					
-				for (t=0;t!=poly->ptsz;t++) {
-					*index_ptr++=v_poly_start_idx+t;
-					i_idx++;
-				}
-
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+		
+				// polygon indexes
 				
-					// min/max for range element draws
-					
-				poly->draw.uv[uv_idx].gl_poly_index_min=v_poly_start_idx;
-				poly->draw.uv[uv_idx].gl_poly_index_max=v_poly_start_idx+poly->ptsz;
-
-				poly++;
+			v_poly_start_idx=poly->draw.vertex_offset;
+			poly->draw.gl_poly_index_offset=i_idx*sizeof(unsigned int);
+				
+			for (t=0;t!=poly->ptsz;t++) {
+				*index_ptr++=v_poly_start_idx+t;
+				i_idx++;
 			}
+			
+				// min/max for range element draws
+				
+			poly->draw.gl_poly_index_min=v_poly_start_idx;
+			poly->draw.gl_poly_index_max=v_poly_start_idx+poly->ptsz;
+
+			poly++;
 		}
 		
 		mesh++;
@@ -234,7 +254,7 @@ void view_compile_mesh_gl_list_free(void)
 
 bool view_compile_mesh_gl_lists(int tick)
 {
-	int							n,k,t,uv_idx,v_count;
+	int							n,k,t,uv_idx,vertex_cnt,uv_cnt;
 	float						x_shift_offset,y_shift_offset;
 	float						*vertex_ptr,*pv,*pp,*pc;
 	d3pnt						*pnt;
@@ -243,7 +263,8 @@ bool view_compile_mesh_gl_lists(int tick)
 
 		// total number of vertexes
 
-	v_count=map.mesh.vbo_vertex_count;
+	vertex_cnt=map.mesh.vbo_vertex_count;
+	uv_cnt=map.mesh.vbo_uv_count;
 
 		// map VBO to memory
 
@@ -267,27 +288,22 @@ bool view_compile_mesh_gl_lists(int tick)
 
 			pv=vertex_ptr+(mesh->draw.vertex_offset*3);
 
-				// the UV layers
+			poly=mesh->polys;
 			
-			for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
-			
-				poly=mesh->polys;
+			for (k=0;k!=mesh->npoly;k++) {
+
+					// polygon vertexes
+
+				for (t=0;t!=poly->ptsz;t++) {
 				
-				for (k=0;k!=mesh->npoly;k++) {
+					pnt=&mesh->vertexes[poly->v[t]];
 
-						// polygon vertexes
-
-					for (t=0;t!=poly->ptsz;t++) {
-					
-						pnt=&mesh->vertexes[poly->v[t]];
-
-						*pv++=(float)pnt->x;
-						*pv++=(float)pnt->y;
-						*pv++=(float)pnt->z;
-					}
-
-					poly++;
+					*pv++=(float)pnt->x;
+					*pv++=(float)pnt->y;
+					*pv++=(float)pnt->z;
 				}
+
+				poly++;
 			}
 		}
 
@@ -296,7 +312,7 @@ bool view_compile_mesh_gl_lists(int tick)
 
 		if (mesh->flag.shiftable) {
 
-			pp=vertex_ptr+((v_count*3)+(mesh->draw.vertex_offset*2));
+			pp=vertex_ptr+((vertex_cnt*3)+(mesh->draw.vertex_offset*2));
 
 				// the UV layers
 			
@@ -326,51 +342,41 @@ bool view_compile_mesh_gl_lists(int tick)
 
 		if ((dim3_debug) || (mesh->flag.hilite)) {
 			
-			pc=vertex_ptr+((v_count*(3+2))+(mesh->draw.vertex_offset*3));
+			pc=vertex_ptr+((vertex_cnt*3)+(uv_cnt*2)+(mesh->draw.vertex_offset*3));
 
-				// the UV layers
-			
-			for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
-			
-				poly=mesh->polys;
-					
-				for (k=0;k!=mesh->npoly;k++) {
-					for (t=0;t!=poly->ptsz;t++) {
-						*pc++=1.0f;
-						*pc++=1.0f;
-						*pc++=1.0f;
-					}
-					poly++;
+			poly=mesh->polys;
+				
+			for (k=0;k!=mesh->npoly;k++) {
+				for (t=0;t!=poly->ptsz;t++) {
+					*pc++=1.0f;
+					*pc++=1.0f;
+					*pc++=1.0f;
 				}
+				poly++;
 			}
 		}
 
 			// if the mesh has some non-shaders in it,
 			// recalculate the lighting
-			// supergumba -- this needs to be optimized -- especially with multitexture
+			// supergumba -- this needs to be optimized 
 
 		else {
 
 			if (mesh->render.has_no_shader) {
 
-				pc=vertex_ptr+((v_count*(3+2))+(mesh->draw.vertex_offset*3));
+				pc=vertex_ptr+((vertex_cnt*3)+(uv_cnt*2)+(mesh->draw.vertex_offset*3));
 
-					// the UV layers
-			
-				for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
+				poly=mesh->polys;
 				
-					poly=mesh->polys;
-					
-					for (k=0;k!=mesh->npoly;k++) {
+				for (k=0;k!=mesh->npoly;k++) {
 
-						for (t=0;t!=poly->ptsz;t++) {
-							pnt=&mesh->vertexes[poly->v[t]];
-							gl_lights_calc_vertex((double)pnt->x,(double)pnt->y,(double)pnt->z,pc);
-							pc+=3;
-						}
-
-						poly++;
+					for (t=0;t!=poly->ptsz;t++) {
+						pnt=&mesh->vertexes[poly->v[t]];
+						gl_lights_calc_vertex((double)pnt->x,(double)pnt->y,(double)pnt->z,pc);
+						pc+=3;
 					}
+
+					poly++;
 				}
 			}
 		}
@@ -400,10 +406,6 @@ bool view_compile_mesh_gl_lists(int tick)
 
 void view_compile_gl_list_attach(void)
 {
-	int				v_cnt,offset;
-	
-	v_cnt=map.mesh.vbo_vertex_count;
-
 		// use last compiled buffer
 
 	view_bind_map_vertex_object();
@@ -413,11 +415,13 @@ void view_compile_gl_list_attach(void)
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,(void*)0);
+}
 
-		// uvs
-		// glow maps use two texture units
-		
-	offset=(v_cnt*3)*sizeof(float);
+void view_compile_gl_list_uv_layer_attach(int uv_idx)
+{
+	int				offset;
+
+	offset=((map.mesh.vbo_vertex_count*3)*(map.mesh.vbo_vertex_count*(uv_idx*2)))*sizeof(float);
 	
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -432,7 +436,7 @@ void view_compile_gl_list_enable_color(void)
 {
 	int			offset;
 
-	offset=(map.mesh.vbo_vertex_count*(3+2))*sizeof(float);
+	offset=((map.mesh.vbo_vertex_count*3)+(map.mesh.vbo_uv_count*2))*sizeof(float);
 
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(3,GL_FLOAT,0,(void*)offset);

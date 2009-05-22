@@ -47,6 +47,7 @@ extern view_type		view;
 extern int game_time_get(void);
 extern bool fog_solid_on(void);
 extern void view_compile_gl_list_attach(void);
+extern void view_compile_gl_list_uv_layer_attach(int uv_idx);
 extern void view_compile_gl_list_enable_color(void);
 extern void view_compile_gl_list_disable_color(void);
 extern void view_compile_gl_list_dettach(void);
@@ -117,7 +118,6 @@ void render_opaque_mesh_simple(int uv_idx)
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	texture_type				*texture;
-	view_glsl_light_list_type	light_list;
 	
 		// setup drawing
 
@@ -162,10 +162,6 @@ void render_opaque_mesh_simple(int uv_idx)
 				view_compile_gl_list_enable_color();
 			}
 
-				// setup lights
-
-			gl_lights_build_from_poly(poly,&light_list);
-
 				// get texture
 
 			texture=&map.textures[poly->uv[uv_idx].txt_idx];
@@ -180,7 +176,7 @@ void render_opaque_mesh_simple(int uv_idx)
 
 			render_opaque_mesh_multitexture_blend(texture->multitexture_mode,uv_idx);
 
-			glDrawRangeElements(GL_POLYGON,poly->draw.uv[uv_idx].gl_poly_index_min,poly->draw.uv[uv_idx].gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.uv[uv_idx].gl_poly_index_offset);
+			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 
 			poly++;
 		}
@@ -262,7 +258,7 @@ void render_opaque_mesh_shader(int uv_idx)
 
 			render_opaque_mesh_multitexture_blend(texture->multitexture_mode,uv_idx);
 
-			glDrawRangeElements(GL_POLYGON,poly->draw.uv[uv_idx].gl_poly_index_min,poly->draw.uv[uv_idx].gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.uv[uv_idx].gl_poly_index_offset);
+			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 			
 			poly++;
 		}
@@ -316,7 +312,7 @@ void render_opaque_mesh_glow(void)
 				// draw glow
 
 			gl_texture_glow_set(texture->frames[poly->render.frame].bitmap.gl_id,texture->frames[poly->render.frame].glowmap.gl_id,texture->glow.current_color);
-			glDrawRangeElements(GL_POLYGON,poly->draw.uv[0].gl_poly_index_min,poly->draw.uv[0].gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.uv[0].gl_poly_index_offset);
+			glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 
 			poly++;
 		}
@@ -362,6 +358,7 @@ void render_map_mesh_opaque(void)
 	render_opaque_mesh_multitexture_blend_start();
 	
 	for (uv_idx=0;uv_idx!=max_mesh_poly_uv_layer;uv_idx++) {
+		view_compile_gl_list_uv_layer_attach(uv_idx);
 		render_opaque_mesh_simple(uv_idx);
 		if (!dim3_debug) render_opaque_mesh_shader(uv_idx);
 	}
