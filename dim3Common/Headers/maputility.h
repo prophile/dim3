@@ -211,7 +211,7 @@ typedef struct		{
 					} map_mesh_poly_slope_type;
 
 typedef struct		{
-						int									txt_frame_offset,uv_offset;
+						int									txt_frame_offset;
 						float								x_shift_offset,y_shift_offset;
 						bool								shift_on;
 					} map_mesh_poly_draw_uv_type;
@@ -264,7 +264,7 @@ typedef struct		{
 					} map_mesh_message_type;
 
 typedef struct		{
-						int									vertex_offset,uv_offset;
+						int									vertex_offset;
 						bool								moved;
 					} map_mesh_draw_type;
 
@@ -319,7 +319,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int									nmesh,vbo_vertex_count,vbo_uv_count;
+						int									nmesh,vbo_vertex_count;
 						map_mesh_type						*meshes;
 					} map_mesh_collection_type;
 

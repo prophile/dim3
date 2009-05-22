@@ -46,7 +46,7 @@ extern setup_type			setup;
 
 bool view_compile_mesh_gl_list_init(void)
 {
-	int					n,k,t,uv_idx,vertex_cnt,uv_cnt,i_idx;
+	int					n,k,t,uv_idx,vertex_cnt,i_idx;
 	unsigned int		v_poly_start_idx;
 	unsigned int		*index_ptr;
 	float				x_shift_offset,y_shift_offset;
@@ -58,11 +58,7 @@ bool view_compile_mesh_gl_list_init(void)
 		// get total number of vertexes and indexes
 		// and their offsets to setup vertex object for map
 		
-		// do the UV count separately so we can work around
-		// multiple UVs for layers
-		
 	vertex_cnt=0;
-	uv_cnt=0;
 	
 		// setup meshes
 		
@@ -77,9 +73,8 @@ bool view_compile_mesh_gl_list_init(void)
 			// setup offsets
 
 		mesh->draw.vertex_offset=vertex_cnt;
-		mesh->draw.uv_offset=uv_cnt;
 
-			// poly vertexes
+			// poly vertexes and uv counts
 			
 		poly=mesh->polys;
 		
@@ -88,19 +83,6 @@ bool view_compile_mesh_gl_list_init(void)
 			vertex_cnt+=poly->ptsz;
 			poly++;
 		}
-			
-			// poly uvs
-				
-		for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
-		
-			poly=mesh->polys;
-			
-			for (k=0;k!=mesh->npoly;k++) {
-				poly->draw.uv[uv_idx].uv_offset=uv_cnt;
-				uv_cnt+=poly->ptsz;
-				poly++;
-			}
-		}
 		
 		mesh++;
 	}
@@ -108,18 +90,18 @@ bool view_compile_mesh_gl_list_init(void)
 		// total vertexes
 
 	map.mesh.vbo_vertex_count=vertex_cnt;
-	map.mesh.vbo_uv_count=uv_cnt;
 
 		// initial vertex VBO
+		// we need a UV list for every possible layer
 		
-	view_init_map_vertex_object((vertex_cnt*(3+3))+(uv_cnt*2));
+	view_init_map_vertex_object((vertex_cnt*(3+3))+((vertex_cnt*max_mesh_poly_uv_layer)*2));
 
 	vertex_ptr=view_bind_map_map_vertex_object();
 	if (vertex_ptr==NULL) return(FALSE);
 
 	pv=vertex_ptr;
-	pp=pv+(vertex_cnt*3);
-	pc=pp+(uv_cnt*2);
+	pc=pv+(vertex_cnt*3);
+	pp=pv+(vertex_cnt*(3+3));
 	
 		// vertexes and color
 		// we run this separate from the UVs
@@ -156,31 +138,47 @@ bool view_compile_mesh_gl_list_init(void)
 	
 		// uvs
 				
-	for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
+	for (uv_idx=0;uv_idx!=max_mesh_poly_uv_layer;uv_idx++) {
 
 		mesh=map.mesh.meshes;
 
 		for (n=0;n!=map.mesh.nmesh;n++) {
 		
 			poly=mesh->polys;
+
+				// mesh has a UV for this layer
+
+			if (mesh->nuv>uv_idx) {
 				
-			for (k=0;k!=mesh->npoly;k++) {
+				for (k=0;k!=mesh->npoly;k++) {
+					x_shift_offset=poly->draw.uv[uv_idx].x_shift_offset;
+					y_shift_offset=poly->draw.uv[uv_idx].y_shift_offset;
 
-					// polygon vertexes
+					for (t=0;t!=poly->ptsz;t++) {
+						*pp++=poly->uv[uv_idx].x[t]+x_shift_offset;
+						*pp++=poly->uv[uv_idx].y[t]+y_shift_offset;
+					}
 
-				x_shift_offset=poly->draw.uv[uv_idx].x_shift_offset;
-				y_shift_offset=poly->draw.uv[uv_idx].y_shift_offset;
-
-				for (t=0;t!=poly->ptsz;t++) {
-					*pp++=poly->uv[uv_idx].x[t]+x_shift_offset;
-					*pp++=poly->uv[uv_idx].y[t]+y_shift_offset;
+					poly++;
 				}
-
-				poly++;
 			}
+
+				// mesh does not have a UV for this layer
+
+			else {
+
+				for (k=0;k!=mesh->npoly;k++) {
+					for (t=0;t!=poly->ptsz;t++) {
+						*pp++=0.0f;
+						*pp++=0.0f;
+					}
+
+					poly++;
+				}
+			}
+
+			mesh++;
 		}
-		
-		mesh++;
 	}
 
 		// unmap vertex VBO
@@ -254,7 +252,7 @@ void view_compile_mesh_gl_list_free(void)
 
 bool view_compile_mesh_gl_lists(int tick)
 {
-	int							n,k,t,uv_idx,vertex_cnt,uv_cnt;
+	int							n,k,t,uv_idx,vertex_cnt;
 	float						x_shift_offset,y_shift_offset;
 	float						*vertex_ptr,*pv,*pp,*pc;
 	d3pnt						*pnt;
@@ -264,7 +262,6 @@ bool view_compile_mesh_gl_lists(int tick)
 		// total number of vertexes
 
 	vertex_cnt=map.mesh.vbo_vertex_count;
-	uv_cnt=map.mesh.vbo_uv_count;
 
 		// map VBO to memory
 
@@ -274,7 +271,7 @@ bool view_compile_mesh_gl_lists(int tick)
 		// run throught the meshes
 		// in this scene and update any
 		// relevant data
-		
+
 	for (n=0;n!=view.render->draw_list.count;n++) {
 
 		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
@@ -312,27 +309,29 @@ bool view_compile_mesh_gl_lists(int tick)
 
 		if (mesh->flag.shiftable) {
 
-			pp=vertex_ptr+((vertex_cnt*3)+(mesh->draw.vertex_offset*2));
-
 				// the UV layers
 			
 			for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
 			
-				poly=mesh->polys;
-				
-				for (k=0;k!=mesh->npoly;k++) {
+					// only redo layers that are in use
 
-						// polygon uvs
+				if (mesh->nuv>uv_idx) {
+					
+					pp=vertex_ptr+((vertex_cnt*(3*3))+((vertex_cnt*uv_idx)*2))+(mesh->draw.vertex_offset*2);
+					poly=mesh->polys;
 
-					x_shift_offset=poly->draw.uv[uv_idx].x_shift_offset;
-					y_shift_offset=poly->draw.uv[uv_idx].y_shift_offset;
+					for (k=0;k!=mesh->npoly;k++) {
 
-					for (t=0;t!=poly->ptsz;t++) {
-						*pp++=poly->uv[uv_idx].x[t]+x_shift_offset;
-						*pp++=poly->uv[uv_idx].y[t]+y_shift_offset;
+						x_shift_offset=poly->draw.uv[uv_idx].x_shift_offset;
+						y_shift_offset=poly->draw.uv[uv_idx].y_shift_offset;
+
+						for (t=0;t!=poly->ptsz;t++) {
+							*pp++=poly->uv[uv_idx].x[t]+x_shift_offset;
+							*pp++=poly->uv[uv_idx].y[t]+y_shift_offset;
+						}
+
+						poly++;
 					}
-
-					poly++;
 				}
 			}
 		}
@@ -342,7 +341,7 @@ bool view_compile_mesh_gl_lists(int tick)
 
 		if ((dim3_debug) || (mesh->flag.hilite)) {
 			
-			pc=vertex_ptr+((vertex_cnt*3)+(uv_cnt*2)+(mesh->draw.vertex_offset*3));
+			pc=vertex_ptr+((vertex_cnt*3)+(mesh->draw.vertex_offset*3));
 
 			poly=mesh->polys;
 				
@@ -364,7 +363,7 @@ bool view_compile_mesh_gl_lists(int tick)
 
 			if (mesh->render.has_no_shader) {
 
-				pc=vertex_ptr+((vertex_cnt*3)+(uv_cnt*2)+(mesh->draw.vertex_offset*3));
+				pc=vertex_ptr+((vertex_cnt*3)+(mesh->draw.vertex_offset*3));
 
 				poly=mesh->polys;
 				
@@ -419,9 +418,9 @@ void view_compile_gl_list_attach(void)
 
 void view_compile_gl_list_uv_layer_attach(int uv_idx)
 {
-	int				offset;
+	int			offset;
 
-	offset=((map.mesh.vbo_vertex_count*3)*(map.mesh.vbo_vertex_count*(uv_idx*2)))*sizeof(float);
+	offset=((map.mesh.vbo_vertex_count*(3+3))+((map.mesh.vbo_vertex_count*uv_idx)*2))*sizeof(float);
 	
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -436,7 +435,7 @@ void view_compile_gl_list_enable_color(void)
 {
 	int			offset;
 
-	offset=((map.mesh.vbo_vertex_count*3)+(map.mesh.vbo_uv_count*2))*sizeof(float);
+	offset=(map.mesh.vbo_vertex_count*3)*sizeof(float);
 
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(3,GL_FLOAT,0,(void*)offset);

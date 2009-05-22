@@ -35,7 +35,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-void model_move_single_normal(model_draw_bone_type *draw_bones,model_vertex_type *vertex,float *nx,float *nz,float *ny)
+void model_move_single_normal(model_draw_bone_type *draw_bones,model_vertex_type *vertex,float *nx,float *ny,float *nz)
 {
 	int						n;
 	float					bone_factor,
@@ -47,8 +47,8 @@ void model_move_single_normal(model_draw_bone_type *draw_bones,model_vertex_type
 	n=vertex->major_bone_idx;
 	if (n==-1) {
 		*nx=vertex->normal.x;
-		*nz=vertex->normal.z;
 		*ny=vertex->normal.y;
+		*nz=vertex->normal.z;
 		return;
 	}
 	major_bone=&draw_bones[n];
@@ -68,8 +68,8 @@ void model_move_single_normal(model_draw_bone_type *draw_bones,model_vertex_type
 	n=vertex->minor_bone_idx;
 	if ((n==-1) || (bone_factor==1)) {
 		*nx=majx;
-		*nz=majz;
 		*ny=majy;
+		*nz=majz;
 		return;
 	}
 	minor_bone=&draw_bones[n];
@@ -122,7 +122,7 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 	pn=draw_setup->mesh_arrays[mesh_idx].gl_normal_array;
 
 		// normals with sways
-		
+/*	supergumba	
 	no_sway=((draw_setup->sway.x==0) && (draw_setup->sway.y==0) && (draw_setup->sway.z==0));
 
 	if (!no_sway) {
@@ -130,7 +130,7 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 		matrix_rotate_zyx(&sway_mat,draw_setup->sway.x,draw_setup->sway.y,draw_setup->sway.z);
 		
 		for (i=0;i!=nt;i++) {
-			model_move_single_normal(draw_setup->bones,vertex,&x,&z,&y);
+			model_move_single_normal(draw_setup->bones,vertex,&x,&y,&z);
 			matrix_vertex_multiply(&sway_mat,&x,&z,&y);
 			matrix_vertex_multiply(&rot_mat,&x,&y,&z);
 
@@ -143,17 +143,22 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 		
 		return;
 	}
-	
+*/
 		// normals with no sways
 		
 	for (i=0;i!=nt;i++) {
-		model_move_single_normal(draw_setup->bones,vertex,&x,&z,&y);
+
+		*pn++=vertex->normal.x;
+		*pn++=vertex->normal.y;
+		*pn++=vertex->normal.z;
+/* supergumba
+		model_move_single_normal(draw_setup->bones,vertex,&x,&y,&z);
 		matrix_vertex_multiply(&rot_mat,&x,&y,&z);
 
 		*pn++=x;
 		*pn++=y;
 		*pn++=z;
-		
+*/
 		vertex++;
 	}
 }
