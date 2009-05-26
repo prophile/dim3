@@ -238,7 +238,7 @@ void map_prepare_mesh_box(map_mesh_type *mesh)
 
 void map_prepare(map_type *map)
 {
-	int					n,k,t;
+	int					n,k;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
@@ -265,14 +265,11 @@ void map_prepare(map_type *map)
 			
 				// setup texture and shifting flags
 
-			for (t=0;t!=mesh->nuv;t++) {
-				poly->draw.uv[t].txt_frame_offset=0;
-				poly->draw.uv[t].shift_on=((poly->uv[t].x_shift!=0.0f) || (poly->uv[t].y_shift!=0.0f));
-				poly->draw.uv[t].x_shift_offset=0.0f;
-				poly->draw.uv[t].y_shift_offset=0.0f;
-				mesh->flag.shiftable|=poly->draw.uv[t].shift_on;
-			}
-
+			poly->draw.txt_frame_offset=0;
+			poly->draw.shift_on=((poly->x_shift!=0.0f) || (poly->y_shift!=0.0f));
+			poly->draw.x_shift_offset=0.0f;
+			poly->draw.y_shift_offset=0.0f;
+			mesh->flag.shiftable|=poly->draw.shift_on;
 
 			poly++;
 		}

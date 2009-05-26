@@ -151,9 +151,15 @@ bool view_compile_mesh_gl_list_init(void)
 			if (mesh->nuv>uv_idx) {
 				
 				for (k=0;k!=mesh->npoly;k++) {
-					x_shift_offset=poly->draw.uv[uv_idx].x_shift_offset;
-					y_shift_offset=poly->draw.uv[uv_idx].y_shift_offset;
-
+				
+					if (uv_idx==0) {
+						x_shift_offset=poly->draw.x_shift_offset;
+						y_shift_offset=poly->draw.y_shift_offset;
+					}
+					else {
+						x_shift_offset=y_shift_offset=0.0f;
+					}
+					
 					for (t=0;t!=poly->ptsz;t++) {
 						*pp++=poly->uv[uv_idx].x[t]+x_shift_offset;
 						*pp++=poly->uv[uv_idx].y[t]+y_shift_offset;
@@ -322,8 +328,13 @@ bool view_compile_mesh_gl_lists(int tick)
 
 					for (k=0;k!=mesh->npoly;k++) {
 
-						x_shift_offset=poly->draw.uv[uv_idx].x_shift_offset;
-						y_shift_offset=poly->draw.uv[uv_idx].y_shift_offset;
+						if (uv_idx==0) {
+							x_shift_offset=poly->draw.x_shift_offset;
+							y_shift_offset=poly->draw.y_shift_offset;
+						}
+						else {
+							x_shift_offset=y_shift_offset=0.0f;
+						}
 
 						for (t=0;t!=poly->ptsz;t++) {
 							*pp++=poly->uv[uv_idx].x[t]+x_shift_offset;
@@ -361,7 +372,7 @@ bool view_compile_mesh_gl_lists(int tick)
 
 		else {
 
-			if (mesh->render.has_no_shader) {
+			if (mesh->draw.has_no_shader) {
 
 				pc=vertex_ptr+((vertex_cnt*3)+(mesh->draw.vertex_offset*3));
 
@@ -416,11 +427,28 @@ void view_compile_gl_list_attach(void)
 	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 }
 
-void view_compile_gl_list_uv_layer_attach(int uv_idx)
+void view_compile_gl_list_attach_uv_normal(void)
 {
 	int			offset;
 
-	offset=((map.mesh.vbo_vertex_count*(3+3))+((map.mesh.vbo_vertex_count*uv_idx)*2))*sizeof(float);
+	offset=((map.mesh.vbo_vertex_count*(3+3))+(map.mesh.vbo_vertex_count*2))*sizeof(float);
+
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
+	
+	offset=(map.mesh.vbo_vertex_count*(3+3))*sizeof(float);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
+}
+
+void view_compile_gl_list_attach_uv_glow(void)
+{
+	int			offset;
+
+	offset=(map.mesh.vbo_vertex_count*(3+3))*sizeof(float);
 	
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);

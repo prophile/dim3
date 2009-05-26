@@ -52,24 +52,18 @@ void read_single_mesh_poly_uv_v3(int poly_tag,map_mesh_poly_type *poly,int uv_in
 	char			str[32];
 
 	if (uv_index==0) {
-		poly->uv[0].txt_idx=xml_get_attribute_int(poly_tag,"txt");
+		poly->txt_idx=xml_get_attribute_int(poly_tag,"txt");
 		xml_get_attribute_float_array(poly_tag,"x",poly->uv[0].x,8);
 		xml_get_attribute_float_array(poly_tag,"y",poly->uv[0].y,8);
-		xml_get_attribute_2_coord_float(poly_tag,"shift",&poly->uv[0].x_shift,&poly->uv[0].y_shift);
+		xml_get_attribute_2_coord_float(poly_tag,"shift",&poly->x_shift,&poly->y_shift);
 		return;
 	}
-
-	sprintf(str,"txt_%d",uv_index);
-	poly->uv[uv_index].txt_idx=xml_get_attribute_int_default(poly_tag,str,-1);
 
 	sprintf(str,"x_%d",uv_index);
 	xml_get_attribute_float_array(poly_tag,str,poly->uv[uv_index].x,8);
 
 	sprintf(str,"y_%d",uv_index);
 	xml_get_attribute_float_array(poly_tag,str,poly->uv[uv_index].y,8);
-
-	sprintf(str,"shift_%d",uv_index);
-	xml_get_attribute_2_coord_float(poly_tag,"shift",&poly->uv[uv_index].x_shift,&poly->uv[uv_index].y_shift);
 }
 
 bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)

@@ -566,10 +566,6 @@ void piece_add_obj_mesh_uv(void)
 		poly=&mesh->polys[poly_idx];
 		poly_idx++;
 		
-			// set texture if this is a new layer
-			
-		if (mesh->nuv<(main_wind_uv_layer+1)) poly->uv[main_wind_uv_layer].txt_idx=poly->uv[0].txt_idx;
-		
             // get the face points
         
         npt=0;
@@ -1036,7 +1032,7 @@ void piece_split_mesh(void)
 			z[k]=pt->z;
 		}
 		
-		map_mesh_add_poly(&map,mesh_idx,poly->ptsz,x,y,z,poly->uv[main_wind_uv_layer].x,poly->uv[main_wind_uv_layer].y,poly->uv[main_wind_uv_layer].txt_idx);
+		map_mesh_add_poly(&map,mesh_idx,poly->ptsz,x,y,z,poly->uv[main_wind_uv_layer].x,poly->uv[main_wind_uv_layer].y,poly->txt_idx);
 		
 			// delete poly from mesh
 			

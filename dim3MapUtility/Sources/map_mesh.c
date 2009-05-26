@@ -349,10 +349,10 @@ int map_mesh_add_poly(map_type *map,int mesh_idx,int ptsz,int *x,int *y,int *z,f
 		// finish up
 		
 	poly->ptsz=ptsz;
-	poly->uv[0].txt_idx=txt_idx;
+	poly->txt_idx=txt_idx;
 	
-	poly->uv[0].x_shift=0.0f;
-	poly->uv[0].y_shift=0.0f;
+	poly->x_shift=0.0f;
+	poly->y_shift=0.0f;
 	poly->dark_factor=1.0f;
 	poly->alpha=1.0f;
 	

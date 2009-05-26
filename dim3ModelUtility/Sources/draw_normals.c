@@ -122,7 +122,7 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 	pn=draw_setup->mesh_arrays[mesh_idx].gl_normal_array;
 
 		// normals with sways
-/*	supergumba	
+
 	no_sway=((draw_setup->sway.x==0) && (draw_setup->sway.y==0) && (draw_setup->sway.z==0));
 
 	if (!no_sway) {
@@ -143,22 +143,17 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 		
 		return;
 	}
-*/
+
 		// normals with no sways
 		
 	for (i=0;i!=nt;i++) {
-
-		*pn++=vertex->normal.x;
-		*pn++=vertex->normal.y;
-		*pn++=vertex->normal.z;
-/* supergumba
 		model_move_single_normal(draw_setup->bones,vertex,&x,&y,&z);
 		matrix_vertex_multiply(&rot_mat,&x,&y,&z);
 
 		*pn++=x;
 		*pn++=y;
 		*pn++=z;
-*/
+
 		vertex++;
 	}
 }

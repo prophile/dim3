@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit ÒCreated with dim3 TechnologyÓ is given on a single
+2. This credit â€œCreated with dim3 Technologyâ€ is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -65,13 +65,13 @@ void render_map_setup(void)
 		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
 
 		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
-
+		
 			// clear mesh flags
 
-		mesh->render.has_shader=FALSE;
-		mesh->render.has_opaque=FALSE;
-		mesh->render.has_transparent=FALSE;
-		mesh->render.has_glow=FALSE;
+		mesh->draw.has_shader=FALSE;
+		mesh->draw.has_opaque=FALSE;
+		mesh->draw.has_transparent=FALSE;
+		mesh->draw.has_glow=FALSE;
 		
 			// run through the polys
 
@@ -81,23 +81,23 @@ void render_map_setup(void)
 
 				// get texture and frame
 
-			texture=&map.textures[poly->uv[0].txt_idx];
-			frame=(texture->animate.current_frame+poly->draw.uv[0].txt_frame_offset)&max_texture_frame_mask;
+			texture=&map.textures[poly->txt_idx];
+			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
 				// set the flags
 
-			poly->render.frame=frame;
-			poly->render.shader_on=(texture->shader_idx!=-1);
-			poly->render.transparent_on=((texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) || (poly->alpha!=1.0f));
-			poly->render.glow_on=(texture->frames[frame].glowmap.gl_id!=-1);
+			poly->draw.frame=frame;
+			poly->draw.shader_on=(texture->shader_idx!=-1);
+			poly->draw.transparent_on=((texture->frames[frame].bitmap.alpha_mode==alpha_mode_transparent) || (poly->alpha!=1.0f));
+			poly->draw.glow_on=(texture->frames[frame].glowmap.gl_id!=-1);
 
 				// or to the mesh flags
 
-			mesh->render.has_opaque|=(!poly->render.transparent_on);
-			mesh->render.has_transparent|=poly->render.transparent_on;
-			mesh->render.has_shader|=poly->render.shader_on;
-			mesh->render.has_no_shader|=(!poly->render.shader_on);
-			mesh->render.has_glow|=poly->render.glow_on;
+			mesh->draw.has_opaque|=(!poly->draw.transparent_on);
+			mesh->draw.has_transparent|=poly->draw.transparent_on;
+			mesh->draw.has_shader|=poly->draw.shader_on;
+			mesh->draw.has_no_shader|=(!poly->draw.shader_on);
+			mesh->draw.has_glow|=poly->draw.glow_on;
 
 			poly++;
 		}

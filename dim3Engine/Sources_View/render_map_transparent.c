@@ -45,7 +45,8 @@ map_poly_sort_type		trans_sort;
 
 extern bool fog_solid_on(void);
 extern void view_compile_gl_list_attach(void);
-extern void view_compile_gl_list_uv_layer_attach(int uv_idx);
+extern void view_compile_gl_list_attach_uv_normal(void);
+extern void view_compile_gl_list_attach_uv_glow(void);
 extern void view_compile_gl_list_enable_color(void);
 extern void view_compile_gl_list_disable_color(void);
 extern void view_compile_gl_list_dettach(void);
@@ -134,8 +135,8 @@ void render_transparent_sort(d3pnt *pnt)
 
 				// get texture
 
-			texture=&map.textures[poly->uv[0].txt_idx];
-			frame=(texture->animate.current_frame+poly->draw.uv[0].txt_frame_offset)&max_texture_frame_mask;
+			texture=&map.textures[poly->txt_idx];
+			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
 				// transparent?
 
@@ -216,8 +217,8 @@ void render_transparent_mesh_simple(void)
 			// skip meshes or polys with no transparents or shaders
 			// unless debug is on
 
-		if ((!mesh->render.has_transparent) || ((!dim3_debug) && (!mesh->render.has_no_shader))) continue;
-		if ((!poly->render.transparent_on) || ((!dim3_debug) && (poly->render.shader_on))) continue;
+		if ((!mesh->draw.has_transparent) || ((!dim3_debug) && (!mesh->draw.has_no_shader))) continue;
+		if ((!poly->draw.transparent_on) || ((!dim3_debug) && (poly->draw.shader_on))) continue;
 
 			// time to enable color array?
 
@@ -228,7 +229,7 @@ void render_transparent_mesh_simple(void)
 	
 			// need to change texture blending?
 
-		texture=&map.textures[poly->uv[0].txt_idx];
+		texture=&map.textures[poly->txt_idx];
 
 		if (texture->additive!=cur_additive) {
 			cur_additive=texture->additive;
@@ -243,7 +244,7 @@ void render_transparent_mesh_simple(void)
 
 			// draw the polygon
 
-		gl_texture_transparent_set(texture->frames[poly->render.frame].bitmap.gl_id,poly->alpha);
+		gl_texture_transparent_set(texture->frames[poly->draw.frame].bitmap.gl_id,poly->alpha);
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}
 
@@ -284,12 +285,12 @@ void render_transparent_mesh_shader(void)
 
 			// skip meshes or polys with no transparents or no shaders
 
-		if ((!mesh->render.has_transparent) || (mesh->render.has_no_shader)) continue;
-		if ((!poly->render.transparent_on) || (!poly->render.shader_on)) continue;
+		if ((!mesh->draw.has_transparent) || (mesh->draw.has_no_shader)) continue;
+		if ((!poly->draw.transparent_on) || (!poly->draw.shader_on)) continue;
 
 			// need to change texture blending?
 
-		texture=&map.textures[poly->uv[0].txt_idx];
+		texture=&map.textures[poly->txt_idx];
 
 		if (texture->additive!=cur_additive) {
 			cur_additive=texture->additive;
@@ -309,10 +310,10 @@ void render_transparent_mesh_shader(void)
 			// draw shader
 
 		if (!mesh->flag.hilite) {
-			gl_shader_draw_execute(texture,poly->uv[0].txt_idx,poly->render.frame,poly->dark_factor,poly->alpha,&light_list);
+			gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,poly->dark_factor,poly->alpha,&light_list);
 		}
 		else {
-			gl_shader_draw_hilite_execute(texture,poly->uv[0].txt_idx,poly->render.frame,poly->dark_factor,1.0f,&poly->box.mid,NULL);
+			gl_shader_draw_hilite_execute(texture,poly->txt_idx,poly->draw.frame,poly->dark_factor,1.0f,&poly->box.mid,NULL);
 		}
 
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
@@ -342,13 +343,13 @@ void render_transparent_mesh_glow(void)
 
 			// skip meshes or polys with no glows or transparents
 
-		if ((!mesh->render.has_transparent) || (!mesh->render.has_glow)) continue;
-		if ((!poly->render.transparent_on) || (!poly->render.glow_on)) continue;
+		if ((!mesh->draw.has_transparent) || (!mesh->draw.has_glow)) continue;
+		if ((!poly->draw.transparent_on) || (!poly->draw.glow_on)) continue;
 		
 			// draw glow
 
-		texture=&map.textures[poly->uv[0].txt_idx];
-		gl_texture_glow_set(texture->frames[poly->render.frame].bitmap.gl_id,texture->frames[poly->render.frame].glowmap.gl_id,texture->glow.current_color);
+		texture=&map.textures[poly->txt_idx];
+		gl_texture_glow_set(texture->frames[poly->draw.frame].bitmap.gl_id,texture->frames[poly->draw.frame].glowmap.gl_id,texture->glow.current_color);
 		glDrawRangeElements(GL_POLYGON,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	}
 
@@ -372,7 +373,6 @@ void render_map_mesh_transparent(void)
 		// attach compiled vertex lists
 
 	view_compile_gl_list_attach();
-	view_compile_gl_list_uv_layer_attach(0);
 
 		// sort meshes
 
@@ -392,11 +392,13 @@ void render_map_mesh_transparent(void)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
+	view_compile_gl_list_attach_uv_normal();
 	render_transparent_mesh_simple();
 	if (!dim3_debug) render_transparent_mesh_shader();
 
 	glDisable(GL_BLEND);
 
+	view_compile_gl_list_attach_uv_glow();
 	render_transparent_mesh_glow();
 	
 	glDepthMask(GL_TRUE);

@@ -150,7 +150,7 @@ void js_get_proj_hit_material_name(proj_type *proj,int hit_type,char *name)
 	
 		// get material name
 
-	texture=&map.textures[mesh_poly->uv[0].txt_idx];
+	texture=&map.textures[mesh_poly->txt_idx];
 	strcpy(name,texture->material_name);
 }
 

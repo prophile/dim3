@@ -100,6 +100,9 @@ void gl_shader_set_instance_variables(view_shader_type *shader)
 	
 	var=glGetUniformLocationARB(shader->program_obj,"dim3TexSpecular");
 	if (var!=-1) glUniform1iARB(var,2);
+	
+	var=glGetUniformLocationARB(shader->program_obj,"dim3TexExtra");
+	if (var!=-1) glUniform1iARB(var,3);
 
 		// custom variables
 		
@@ -537,15 +540,20 @@ void gl_shader_draw_start(void)
 	gl_shader_current_frame=-1;
 
 		// make all textures replace
+		
+	glColor4f(1.0f,0.0f,1.0f,1.0f);
 
+	glActiveTexture(GL_TEXTURE3);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+	
 	glActiveTexture(GL_TEXTURE2);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
 
 	glActiveTexture(GL_TEXTURE1);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
 
 	glActiveTexture(GL_TEXTURE0);
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
 }
 
 void gl_shader_draw_end(void)
@@ -556,13 +564,20 @@ void gl_shader_draw_end(void)
 	
 		// turn off any used textures
 		
+	glActiveTexture(GL_TEXTURE3);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	glDisable(GL_TEXTURE_2D);
+	
 	glActiveTexture(GL_TEXTURE2);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
 	
 	glActiveTexture(GL_TEXTURE1);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
 	
 	glActiveTexture(GL_TEXTURE0);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	glDisable(GL_TEXTURE_2D);
 }
 
@@ -582,7 +597,18 @@ void gl_shader_texture_set(view_shader_type *shader,texture_type *texture,int tx
 
 	gl_shader_current_txt_idx=txt_idx;
 	gl_shader_current_frame=frame;
+	
+		// extra texture map
 
+	if (texture->extra_txt_idx!=-1) {
+		gl_id=map.textures[texture->extra_txt_idx].frames[0].bitmap.gl_id;
+
+		if (gl_id!=-1) {
+			glActiveTexture(GL_TEXTURE3);
+			glBindTexture(GL_TEXTURE_2D,gl_id);
+		}
+	}
+	
 		// spec map
 
 	gl_id=texture->frames[frame].specularmap.gl_id;

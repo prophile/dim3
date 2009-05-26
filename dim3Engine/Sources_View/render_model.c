@@ -130,18 +130,18 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 {
 	int				n;
 	d3ang			org_ang;
-
+	
 		// if no rot, add in original rot to diffuse calc
 		
 	if (draw->no_rot.on) {
 		memmove(&org_ang,&draw->setup.ang,sizeof(d3ang));
 		draw->setup.ang.x=draw->no_rot.ang.x;
-		draw->setup.ang.y=draw->no_rot.ang.y;
+		draw->setup.ang.y=angle_add(draw->no_rot.ang.y,-180.0f);
 		draw->setup.ang.z=draw->no_rot.ang.z;
 	}
 	
-		// run through the meshes
-	
+		// create the normals
+		
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))==0) continue;
 		model_create_draw_normals(mdl,n,&draw->setup);
@@ -488,9 +488,9 @@ void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *d
 		}
 		
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
-			
-		gl_shader_draw_end();
 	}
+			
+	gl_shader_draw_end();
 }
 
 void render_model_transparent_simple_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
@@ -675,9 +675,9 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 		}
 		
 		glDrawRangeElements(GL_TRIANGLES,trig_idx,(trig_idx+(trig_count*3)),(trig_count*3),GL_UNSIGNED_SHORT,(GLvoid*)(trig_idx*sizeof(unsigned short)));
-			
-		gl_shader_draw_end();
 	}
+			
+	gl_shader_draw_end();
 }
 
 void render_model_glow_trigs(model_type *mdl,int mesh_idx,model_draw *draw)
@@ -854,14 +854,6 @@ void render_model_opaque(model_draw *draw)
 	model_type					*mdl;
 	view_glsl_light_list_type	light_list;
 
-	
-	
-	float			*vp,*np,x,y,z,nx,ny,nz;		// supergumba
-
-
-
-
-
 		// any opaque?
 
 	if (!draw->has_opaque) return;
@@ -899,38 +891,6 @@ void render_model_opaque(model_draw *draw)
 		// release the vbo
 
 	render_model_release_vertex_objects();
-
-
-
-	
-		// test draw
-		// supergumba
-
-	glColor4f(0,0,1,1);
-	vp=draw->setup.mesh_arrays[0].gl_vertex_array;
-	np=draw->setup.mesh_arrays[0].gl_normal_array;
-	glBegin(GL_LINES);
-	for (n=0;n!=mdl->meshes[0].nvertex;n++) {
-
-		x=*vp++;
-		y=*vp++;
-		z=*vp++;
-
-		nx=*np++;
-		ny=*np++;
-		nz=*np++;
-
-		glVertex3f(x,y,z);
-
-		x+=(nx*100);
-		y+=(ny*100);
-		z+=(nz*100);
-
-		glVertex3f(x,y,z);
-	}
-	glEnd();
-
-
 }
 
 void render_model_transparent(model_draw *draw)

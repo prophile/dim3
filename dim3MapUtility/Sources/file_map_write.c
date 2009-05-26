@@ -375,26 +375,18 @@ void write_single_mesh_poly_uv(map_mesh_poly_type *poly,int uv_index)
 	char			str[32];
 
 	if (uv_index==0) {
-		xml_add_attribute_int("txt",poly->uv[0].txt_idx);
+		xml_add_attribute_int("txt",poly->txt_idx);
 		xml_add_attribute_float_array("x",poly->uv[0].x,poly->ptsz);
 		xml_add_attribute_float_array("y",poly->uv[0].y,poly->ptsz);
-		if ((poly->uv[0].x_shift!=0) || (poly->uv[0].y_shift!=0)) xml_add_attribute_2_coord_float("shift",poly->uv[0].x_shift,poly->uv[0].y_shift);
+		if ((poly->x_shift!=0) || (poly->y_shift!=0)) xml_add_attribute_2_coord_float("shift",poly->x_shift,poly->y_shift);
 		return;
 	}
-
-	sprintf(str,"txt_%d",uv_index);
-	xml_add_attribute_int(str,poly->uv[uv_index].txt_idx);
 
 	sprintf(str,"x_%d",uv_index);
 	xml_add_attribute_float_array(str,poly->uv[uv_index].x,poly->ptsz);
 
 	sprintf(str,"y_%d",uv_index);
 	xml_add_attribute_float_array(str,poly->uv[uv_index].y,poly->ptsz);
-
-	if ((poly->uv[uv_index].x_shift!=0) || (poly->uv[uv_index].y_shift!=0)) {
-		sprintf(str,"shift_%d",uv_index);
-		xml_add_attribute_2_coord_float(str,poly->uv[uv_index].x_shift,poly->uv[uv_index].y_shift);
-	}
 }
 
 void write_single_mesh(map_mesh_type *mesh)

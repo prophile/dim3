@@ -297,11 +297,6 @@ OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,voi
 			main_wind_draw();
 			return(noErr);
 			
-		case kCommandViewUVLayer3:
-			main_wind_set_uv_layer(2);
-			main_wind_draw();
-			return(noErr);
-			
 			// map menu
 
 		case kCommandMapSettings:

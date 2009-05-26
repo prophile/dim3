@@ -74,7 +74,7 @@ extern char light_type_str[][32];
 
 #define max_mesh_light_cache								8				// maximum number of cached lights
 
-#define max_mesh_poly_uv_layer								3				// maximum number of uv layers
+#define max_mesh_poly_uv_layer								2				// maximum number of uv layers
 
 //
 // strings
@@ -211,38 +211,26 @@ typedef struct		{
 					} map_mesh_poly_slope_type;
 
 typedef struct		{
-						int									txt_frame_offset;
-						float								x_shift_offset,y_shift_offset;
-						bool								shift_on;
-					} map_mesh_poly_draw_uv_type;
-
-typedef struct		{
 						int									vertex_offset,decal_stencil_idx,
+															frame,txt_frame_offset,
 															gl_poly_index_min,gl_poly_index_max,gl_poly_index_offset;
-						map_mesh_poly_draw_uv_type			uv[max_mesh_poly_uv_layer];
+						float								x_shift_offset,y_shift_offset;
+						bool								shift_on,shader_on,transparent_on,glow_on;
 					} map_mesh_poly_draw_type;
 
 typedef struct		{
-						int									frame;
-						bool								shader_on,transparent_on,glow_on;
-					} map_mesh_poly_render_type;
-
-typedef struct		{
-						int									txt_idx;
-						float								x[8],y[8],
-															x_shift,y_shift;
+						float								x[8],y[8];
 					} map_mesh_poly_uv_type;
 
 typedef struct		{
-						int									ptsz,v[8];
-						float								dark_factor,alpha;
+						int									txt_idx,ptsz,v[8];
+						float								x_shift,y_shift,dark_factor,alpha;
 						char								camera[name_str_len];
 						map_mesh_poly_uv_type				uv[max_mesh_poly_uv_layer];
 						map_mesh_poly_box_type				box;
 						map_mesh_poly_line_type				line;
 						map_mesh_poly_slope_type			slope;
 						map_mesh_poly_draw_type				draw;
-						map_mesh_poly_render_type			render;
 					} map_mesh_poly_type;
 					
 typedef struct		{
@@ -265,13 +253,9 @@ typedef struct		{
 
 typedef struct		{
 						int									vertex_offset;
-						bool								moved;
-					} map_mesh_draw_type;
-
-typedef struct		{
-						bool								has_opaque,has_transparent,
+						bool								moved,has_opaque,has_transparent,
 															has_shader,has_no_shader,has_glow;
-					} map_mesh_render_type;
+					} map_mesh_draw_type;
 
 typedef struct		{
 						int									nvertex,npoly,nuv,group_idx;
@@ -283,7 +267,6 @@ typedef struct		{
 						map_mesh_flag_type					flag;
 						map_mesh_message_type				msg;
 						map_mesh_draw_type					draw;
-						map_mesh_render_type				render;
 					} map_mesh_type;
 
 //

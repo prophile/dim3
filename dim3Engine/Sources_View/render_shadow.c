@@ -245,7 +245,7 @@ int shadow_build_poly_set(model_draw *draw)
 			
 				// skip all transparent polys
 				
-			if (poly->render.transparent_on) continue;
+			if (poly->draw.transparent_on) continue;
 
 				// check if within shadow volume
 				

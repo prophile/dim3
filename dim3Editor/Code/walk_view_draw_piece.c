@@ -220,7 +220,16 @@ void walk_view_draw_meshes_texture(int clip_y,bool opaque)
 		for (k=0;k!=mesh->npoly;k++) {
 		
 			mesh_poly=&mesh->polys[k];
-			texture=&map.textures[mesh_poly->uv[main_wind_uv_layer].txt_idx];
+			
+				// get texture.  If in second UV, we use extra
+				// texture for display if it exists
+				
+			texture=&map.textures[mesh_poly->txt_idx];
+			if (main_wind_uv_layer!=0) {
+				if (texture->extra_txt_idx!=-1) {
+					texture=&map.textures[texture->extra_txt_idx];
+				}
+			}
 		
 				// opaque or transparent flag
 				
@@ -308,7 +317,7 @@ void walk_view_draw_meshes_line(bool opaque)
 		for (k=0;k!=mesh->npoly;k++) {
 		
 			mesh_poly=&mesh->polys[k];
-			texture=&map.textures[mesh_poly->uv[0].txt_idx];		// always use first layer for lines
+			texture=&map.textures[mesh_poly->txt_idx];
 		
 			if (opaque) {
 				if ((mesh_poly->alpha!=1.0f) || (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent)) continue;

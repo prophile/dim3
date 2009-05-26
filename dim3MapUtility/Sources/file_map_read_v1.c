@@ -120,8 +120,8 @@ void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,
 	memmove(mesh_poly->uv[0].x,gx,(sizeof(float)*ptsz));
 	memmove(mesh_poly->uv[0].y,gy,(sizeof(float)*ptsz));
 	
-	mesh_poly->uv[0].x_shift=seg->x_shift;
-	mesh_poly->uv[0].y_shift=seg->y_shift;
+	mesh_poly->x_shift=seg->x_shift;
+	mesh_poly->y_shift=seg->y_shift;
 	mesh_poly->dark_factor=seg->dark_factor;
 	mesh_poly->alpha=seg->alpha;
 
@@ -130,7 +130,7 @@ void map_convert_segment_to_mesh_add_mesh_poly(map_mesh_type *map_mesh,int ptsz,
 	if (seg->climbable) map_mesh->flag.climbable=TRUE;
 
 	mesh_poly->ptsz=ptsz;
-	mesh_poly->uv[0].txt_idx=seg->fill;
+	mesh_poly->txt_idx=seg->fill;
 
 	map_mesh->npoly++;
 }

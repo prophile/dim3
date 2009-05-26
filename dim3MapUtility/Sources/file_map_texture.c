@@ -47,6 +47,9 @@ void map_textures_new(map_type *map)
 	
 	for (n=0;n!=max_map_texture;n++) {
 	
+		texture->shader_idx=-1;
+		texture->extra_txt_idx=-1;
+	
 		frame=texture->frames;
 		
 		for (k=0;k!=max_texture_frame;k++) {
@@ -70,7 +73,7 @@ void map_textures_new(map_type *map)
 
 bool map_textures_read(map_type *map,bool in_engine)
 {
-	int					i,k,n,uv_idx;
+	int					i,k,n;
 	char				path[1024],name[256];
 	bool				txt_ok[max_map_texture];
 	texture_type		*texture;
@@ -91,15 +94,13 @@ bool map_textures_read(map_type *map,bool in_engine)
 		mesh=map->mesh.meshes;
 		
 		for (n=0;n!=map->mesh.nmesh;n++) {
-		
-			for (uv_idx=0;uv_idx!=mesh->nuv;uv_idx++) {
 			
-				poly=mesh->polys;
-				
-				for (k=0;k!=mesh->npoly;k++) {
-					txt_ok[poly->uv[uv_idx].txt_idx]=TRUE;
-					poly++;
-				}
+			poly=mesh->polys;
+			
+			for (k=0;k!=mesh->npoly;k++) {
+				txt_ok[poly->txt_idx]=TRUE;
+				if (map->textures[poly->txt_idx].extra_txt_idx!=-1) txt_ok[map->textures[poly->txt_idx].extra_txt_idx]=TRUE;
+				poly++;
 			}
 			
 			mesh++;

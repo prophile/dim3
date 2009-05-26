@@ -29,8 +29,6 @@ and can be sold or given away.
 	#include "dim3baseutility.h"
 #endif
 
-char					multitexture_mode_str[][32]={"replace","multiply",""};
-
 /* =======================================================
 
       Set Texture Properties
@@ -288,7 +286,7 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 	texture->glow.min=xml_get_attribute_float_default(main_tag,"glow_min",0.25f);
 	texture->glow.max=xml_get_attribute_float_default(main_tag,"glow_max",0.75f);
 	
-	texture->multitexture_mode=xml_get_attribute_list(main_tag,"multitexture_mode",(char*)multitexture_mode_str);
+	texture->extra_txt_idx=xml_get_attribute_int_default(main_tag,"extra_txt_idx",-1);
 
 	xml_get_attribute_text(main_tag,"shader",texture->shader_name,name_str_len);
 	xml_get_attribute_text(main_tag,"material_name",texture->material_name,name_str_len);
@@ -340,7 +338,7 @@ void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_s
 	xml_add_attribute_float("glow_min",texture->glow.min);
 	xml_add_attribute_float("glow_max",texture->glow.max);
 	
-	xml_add_attribute_list("multitexture_mode",(char*)multitexture_mode_str,texture->multitexture_mode);
+	xml_add_attribute_int("extra_txt_idx",texture->extra_txt_idx);
 	
 	xml_add_attribute_text("shader",texture->shader_name);
 	xml_add_attribute_text("material_name",texture->material_name);

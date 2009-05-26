@@ -75,8 +75,8 @@ void palette_polygon_load(void)
 		
 		dialog_set_float(palette_poly_wind,kMeshPolySettingAlpha,0,poly->alpha);
 		dialog_set_float(palette_poly_wind,kMeshPolySettingDark,0,poly->dark_factor);
-		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftX,0,poly->uv[main_wind_uv_layer].x_shift);
-		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftY,0,poly->uv[main_wind_uv_layer].y_shift);
+		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftX,0,poly->x_shift);
+		dialog_set_float(palette_poly_wind,kMeshPolySettingShiftY,0,poly->y_shift);
 		
 		dialog_special_combo_fill_node(palette_poly_wind,kMeshPolySettingCamera,0,poly->camera);
 	}
@@ -127,8 +127,8 @@ void palette_polygon_save(void)
 
 		poly->dark_factor=dialog_get_float(palette_poly_wind,kMeshPolySettingDark,0);
 		poly->alpha=dialog_get_float(palette_poly_wind,kMeshPolySettingAlpha,0);
-		poly->uv[main_wind_uv_layer].x_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftX,0);
-		poly->uv[main_wind_uv_layer].y_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftY,0);
+		poly->x_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftX,0);
+		poly->y_shift=dialog_get_float(palette_poly_wind,kMeshPolySettingShiftY,0);
 		
 		dialog_special_combo_get_node(palette_poly_wind,kMeshPolySettingCamera,0,poly->camera,name_str_len);
 	}

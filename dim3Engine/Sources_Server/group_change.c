@@ -145,7 +145,7 @@ void group_texture(int group_idx,int index)
 		poly=mesh->polys;
 
 		for (k=0;k!=mesh->npoly;k++) {
-			poly->draw.uv[0].txt_frame_offset=index;
+			poly->draw.txt_frame_offset=index;
 			poly++;
 		}
 
@@ -178,8 +178,8 @@ void group_texture_shift(int group_idx,float x_shift,float y_shift)
 		poly=mesh->polys;
 
 		for (k=0;k!=mesh->npoly;k++) {
-			poly->uv[0].x_shift=x_shift;
-			poly->uv[0].y_shift=y_shift;
+			poly->x_shift=x_shift;
+			poly->y_shift=y_shift;
 			poly++;
 		}
 
