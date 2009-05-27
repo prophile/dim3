@@ -152,6 +152,7 @@ bool weapon_get_projectile_position_angle_weapon_model(int tick,obj_type *obj,we
 {
 	int						pose_idx,bone_idx;
 	model_type				*mdl;
+	model_draw				*draw;
 	model_draw_setup		*setup;
 
 		// get model
@@ -178,20 +179,27 @@ bool weapon_get_projectile_position_angle_weapon_model(int tick,obj_type *obj,we
 		return(FALSE);
 	}
 
-	model_draw_setup_weapon(tick,obj,weap,TRUE,FALSE);
+	model_draw_setup_weapon(tick,obj,weap,TRUE,weap->dual.in_dual);
 
-	setup=&weap->draw.setup;
+	if (weap->dual.in_dual) {
+		draw=&weap->draw_dual;
+	}
+	else {
+		draw=&weap->draw;
+	}
+
+	setup=&draw->setup;
 
 	setup->move.x=setup->move.y=setup->move.z=0;
 	setup->sway.x=setup->sway.y=setup->sway.z=0.0f;
 
 	model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 
-	fire_pnt->x+=weap->draw.pnt.x;
-	fire_pnt->y+=weap->draw.pnt.y;
-	fire_pnt->z+=weap->draw.pnt.z;
+	fire_pnt->x+=draw->pnt.x;
+	fire_pnt->y+=draw->pnt.y;
+	fire_pnt->z+=draw->pnt.z;
 
-	if (weap->draw.no_rot.on) gl_project_fix_rotation(&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
+	if (draw->no_rot.on) gl_project_fix_rotation(&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 	
 		// fire angle
 
@@ -207,6 +215,7 @@ bool weapon_get_projectile_position_angle_weapon_barrel(int tick,obj_type *obj,w
 	int						pose_idx,bone_idx,dist;
 	d3pnt					barrel_pnt;
 	model_type				*mdl;
+	model_draw				*draw;
 	model_draw_setup		*setup;
 
 		// get model
@@ -233,20 +242,27 @@ bool weapon_get_projectile_position_angle_weapon_barrel(int tick,obj_type *obj,w
 		return(FALSE);
 	}
 
-	model_draw_setup_weapon(tick,obj,weap,TRUE,FALSE);
+	model_draw_setup_weapon(tick,obj,weap,TRUE,weap->dual.in_dual);
 
-	setup=&weap->draw.setup;
+	if (weap->dual.in_dual) {
+		draw=&weap->draw_dual;
+	}
+	else {
+		draw=&weap->draw;
+	}
+
+	setup=&draw->setup;
 
 	setup->move.x=setup->move.y=setup->move.z=0;
 	setup->sway.x=setup->sway.y=setup->sway.z=0.0f;
 
 	model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 
-	fire_pnt->x+=weap->draw.pnt.x;
-	fire_pnt->y+=weap->draw.pnt.y;
-	fire_pnt->z+=weap->draw.pnt.z;
+	fire_pnt->x+=draw->pnt.x;
+	fire_pnt->y+=draw->pnt.y;
+	fire_pnt->z+=draw->pnt.z;
 
-	if (weap->draw.no_rot.on) gl_project_fix_rotation(&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
+	if (draw->no_rot.on) gl_project_fix_rotation(&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 
 		// get 'barrel' bone offset (draw bones already calced above)
 
@@ -258,11 +274,11 @@ bool weapon_get_projectile_position_angle_weapon_barrel(int tick,obj_type *obj,w
 
 	model_get_draw_bone_position(setup,bone_idx,&barrel_pnt.x,&barrel_pnt.y,&barrel_pnt.z);
 	
-	barrel_pnt.x+=weap->draw.pnt.x;
-	barrel_pnt.y+=weap->draw.pnt.y;
-	barrel_pnt.z+=weap->draw.pnt.z;
+	barrel_pnt.x+=draw->pnt.x;
+	barrel_pnt.y+=draw->pnt.y;
+	barrel_pnt.z+=draw->pnt.z;
 
-	if (weap->draw.no_rot.on) gl_project_fix_rotation(&barrel_pnt.x,&barrel_pnt.y,&barrel_pnt.z);
+	if (draw->no_rot.on) gl_project_fix_rotation(&barrel_pnt.x,&barrel_pnt.y,&barrel_pnt.z);
 
 		// angles between them
 

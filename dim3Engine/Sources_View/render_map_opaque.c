@@ -179,10 +179,10 @@ void render_opaque_mesh_shader(void)
 			texture=&map.textures[poly->txt_idx];
 
 			if (!mesh->flag.hilite) {
-				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,poly->dark_factor,1.0f,&light_list);
+				gl_shader_draw_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,1.0f,&light_list);
 			}
 			else {
-				gl_shader_draw_hilite_execute(texture,poly->txt_idx,poly->draw.frame,poly->dark_factor,1.0f,&poly->box.mid,NULL);
+				gl_shader_draw_hilite_execute(texture,poly->txt_idx,poly->draw.frame,mesh->extra_txt_idx,poly->dark_factor,1.0f,&poly->box.mid,NULL);
 			}
 
 				// fix texture if any back rendering

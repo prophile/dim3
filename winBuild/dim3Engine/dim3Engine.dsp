@@ -752,6 +752,102 @@ SOURCE=..\..\dim3Engine\Sources_Server\script_sound.c
 
 SOURCE=..\..\dim3Engine\Sources_Server\script_spawn.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_utility.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_utility_angle.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_utility_pack.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_utility_point.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_utility_random.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_alt_ammo.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_ammo.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_crosshair.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_crosshair_color.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_crosshair_empty_color.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_crosshair_pickup_color.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_dual.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_fire.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_hand.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_hand_angle.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_hand_position.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_kickback.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_melee.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_projectile.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_recoil.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_setting.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_target.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_target_color.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\script_weap_zoom.c
+# End Source File
 # End Group
 # Begin Source File
 
@@ -968,102 +1064,6 @@ SOURCE=..\..\dim3Engine\Sources_Server\scenery.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_Server\script_timers.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_utility.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_utility_angle.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_utility_pack.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_utility_point.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_utility_random.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_alt_ammo.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_ammo.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_crosshair.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_crosshair_color.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_crosshair_empty_color.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_crosshair_pickup_color.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_dual.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_fire.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_hand.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_hand_angle.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_hand_position.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_kickback.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_melee.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_projectile.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_recoil.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_setting.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_target.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_target_color.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\script_weap_zoom.c
 # End Source File
 # Begin Source File
 

@@ -48,7 +48,6 @@ void model_textures_clear(model_type *model)
 	for (n=0;n!=max_model_texture;n++) {
 	
 		texture->shader_idx=-1;
-		texture->extra_txt_idx=-1;
     
 		frame=texture->frames;
     

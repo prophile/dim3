@@ -587,7 +587,7 @@ void gl_shader_draw_end(void)
       
 ======================================================= */
 
-void gl_shader_texture_set(view_shader_type *shader,texture_type *texture,int txt_idx,int frame)
+void gl_shader_texture_set(view_shader_type *shader,texture_type *texture,int txt_idx,int extra_txt_idx,int frame)
 {
 	GLuint			gl_id;
 
@@ -600,8 +600,8 @@ void gl_shader_texture_set(view_shader_type *shader,texture_type *texture,int tx
 	
 		// extra texture map
 
-	if (texture->extra_txt_idx!=-1) {
-		gl_id=map.textures[texture->extra_txt_idx].frames[0].bitmap.gl_id;
+	if (extra_txt_idx!=-1) {
+		gl_id=map.textures[extra_txt_idx].frames[0].bitmap.gl_id;
 
 		if (gl_id!=-1) {
 			glActiveTexture(GL_TEXTURE3);
@@ -659,7 +659,7 @@ void gl_shader_texture_override(GLuint gl_id)
       
 ======================================================= */
 
-void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,float dark_factor,float alpha,view_glsl_light_list_type *light_list)
+void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,int extra_txt_idx,float dark_factor,float alpha,view_glsl_light_list_type *light_list)
 {
 	view_shader_type				*shader;
 	
@@ -694,14 +694,14 @@ void gl_shader_draw_execute(texture_type *texture,int txt_idx,int frame,float da
 	
 		// textures and per-texture variables
 		
-	gl_shader_texture_set(shader,texture,txt_idx,frame);
+	gl_shader_texture_set(shader,texture,txt_idx,extra_txt_idx,frame);
 	
 		// per-poly variables
 		
 	gl_shader_set_poly_variables(shader,dark_factor,alpha,light_list);
 }
 
-void gl_shader_draw_hilite_execute(texture_type *texture,int txt_idx,int frame,float dark_factor,float alpha,d3pnt *pnt,d3col *col)
+void gl_shader_draw_hilite_execute(texture_type *texture,int txt_idx,int frame,int extra_txt_idx,float dark_factor,float alpha,d3pnt *pnt,d3col *col)
 {
 	view_glsl_light_list_type	light_list;
 
@@ -729,5 +729,5 @@ void gl_shader_draw_hilite_execute(texture_type *texture,int txt_idx,int frame,f
 	light_list.direction[1]=0.0f;
 	light_list.direction[2]=0.0f;
 
-	gl_shader_draw_execute(texture,txt_idx,frame,dark_factor,alpha,&light_list);
+	gl_shader_draw_execute(texture,txt_idx,frame,extra_txt_idx,dark_factor,alpha,&light_list);
 }

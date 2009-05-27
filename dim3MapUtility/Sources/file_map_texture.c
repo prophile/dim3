@@ -48,7 +48,6 @@ void map_textures_new(map_type *map)
 	for (n=0;n!=max_map_texture;n++) {
 	
 		texture->shader_idx=-1;
-		texture->extra_txt_idx=-1;
 	
 		frame=texture->frames;
 		
@@ -94,12 +93,13 @@ bool map_textures_read(map_type *map,bool in_engine)
 		mesh=map->mesh.meshes;
 		
 		for (n=0;n!=map->mesh.nmesh;n++) {
+
+			if (mesh->extra_txt_idx!=-1) txt_ok[mesh->extra_txt_idx]=TRUE;
 			
 			poly=mesh->polys;
 			
 			for (k=0;k!=mesh->npoly;k++) {
 				txt_ok[poly->txt_idx]=TRUE;
-				if (map->textures[poly->txt_idx].extra_txt_idx!=-1) txt_ok[map->textures[poly->txt_idx].extra_txt_idx]=TRUE;
 				poly++;
 			}
 			

@@ -476,14 +476,14 @@ void render_model_opaque_shader_trigs(model_type *mdl,int mesh_idx,model_draw *d
 			// run the shader
 			
 		if (!mesh->no_lighting) {
-			gl_shader_draw_execute(texture,n,texture->animate.current_frame,1.0f,1.0f,light_list);
+			gl_shader_draw_execute(texture,n,texture->animate.current_frame,-1,1.0f,1.0f,light_list);
 		}
 		else {
 			if (mesh->tintable) {
-				gl_shader_draw_hilite_execute(texture,n,texture->animate.current_frame,1.0f,1.0f,&draw->pnt,&draw->tint);
+				gl_shader_draw_hilite_execute(texture,n,texture->animate.current_frame,-1,1.0f,1.0f,&draw->pnt,&draw->tint);
 			}
 			else {
-				gl_shader_draw_hilite_execute(texture,n,texture->animate.current_frame,1.0f,1.0f,&draw->pnt,NULL);
+				gl_shader_draw_hilite_execute(texture,n,texture->animate.current_frame,-1,1.0f,1.0f,&draw->pnt,NULL);
 			}
 		}
 		
@@ -663,14 +663,14 @@ void render_model_transparent_shader_trigs(model_type *mdl,int mesh_idx,model_dr
 			// run the shader
 			
 		if (!mesh->no_lighting) {
-			gl_shader_draw_execute(texture,n,texture->animate.current_frame,1.0f,alpha,light_list);
+			gl_shader_draw_execute(texture,n,texture->animate.current_frame,-1,1.0f,alpha,light_list);
 		}
 		else {
 			if (mesh->tintable) {
-				gl_shader_draw_hilite_execute(texture,n,texture->animate.current_frame,1.0f,alpha,&draw->pnt,&draw->tint);
+				gl_shader_draw_hilite_execute(texture,n,texture->animate.current_frame,-1,1.0f,alpha,&draw->pnt,&draw->tint);
 			}
 			else {
-				gl_shader_draw_hilite_execute(texture,n,texture->animate.current_frame,1.0f,alpha,&draw->pnt,NULL);
+				gl_shader_draw_hilite_execute(texture,n,texture->animate.current_frame,-1,1.0f,alpha,&draw->pnt,NULL);
 			}
 		}
 		

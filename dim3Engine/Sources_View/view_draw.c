@@ -95,7 +95,8 @@ extern void view_calculate_recoil(obj_type *obj);
 extern void view_calculate_shakes(int tick,obj_type *obj);
 extern void view_calculate_sways(int tick,obj_type *obj);
 extern void view_calculate_bump(obj_type *obj);
-extern void shadow_render(model_draw *draw);
+extern void shadow_render_model(model_draw *draw);
+extern void shadow_render_mesh(int mesh_idx);
 
 /* =======================================================
 
@@ -262,6 +263,34 @@ void view_draw_object_path(obj_type *obj)
 
 /* =======================================================
 
+      Mesh Shadows
+      
+======================================================= */
+
+void view_draw_mesh_shadows(void)
+{
+	int					n;
+
+		// shadows on?
+	
+	if ((!setup.shadow_on) || (view.render->no_shadow)) return;
+
+		// setup draw
+		
+	gl_3D_view();
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
+	gl_setup_project();
+
+		// render the shadows
+
+	for (n=0;n!=view.render->draw_list.count;n++) {
+		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
+		if ((map.mesh.meshes[view.render->draw_list.items[n].idx].flag.shadow) || (map.mesh.meshes[view.render->draw_list.items[n].idx].polys[0].txt_idx==7)) shadow_render_mesh(view.render->draw_list.items[n].idx);		// supergumba -- test
+	}
+}
+
+/* =======================================================
+
       Draw Models in Scene
       
 ======================================================= */
@@ -336,6 +365,7 @@ void view_draw_model_transparent(int tick)
 void view_draw_models_final(void)
 {
 	int					n;
+	bool				shadow_on;
 	d3col				col;
 	obj_type			*obj;
 	proj_type			*proj;
@@ -345,6 +375,10 @@ void view_draw_models_final(void)
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
+
+		// shadow overrides
+
+	shadow_on=(setup.shadow_on) && (!view.render->no_shadow);
 
 		// render the shadows, remote names,
 		// and any debugging information
@@ -356,8 +390,8 @@ void view_draw_models_final(void)
 			case view_render_type_object:
 				obj=&server.objs[view.render->draw_list.items[n].idx];
 				
-				if (!view.render->no_shadow) {
-					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) shadow_render(&obj->draw);
+				if ((shadow_on) && (obj->draw.shadow.on)) {
+					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) shadow_render_model(&obj->draw);
 				}
 				
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
@@ -372,7 +406,9 @@ void view_draw_models_final(void)
 
 			case view_render_type_projectile:
 				proj=&server.projs[view.render->draw_list.items[n].idx];
-				shadow_render(&proj->draw);
+				if ((shadow_on) && (proj->draw.shadow.on)) {
+					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) shadow_render_model(&proj->draw);
+				}
 				break;
 
 		}
@@ -460,9 +496,10 @@ void view_draw_scene_render(int tick,obj_type *obj,weapon_type *weap)
 	render_map_liquid_opaque(tick);
 	view_draw_model_opaque(tick);
 	
-		// additional model drawing
+		// additional mesh and model drawing
 		// shadows, remote names, etc
 
+	view_draw_mesh_shadows();
 	view_draw_models_final();
 	
 		// draw transparent scene items

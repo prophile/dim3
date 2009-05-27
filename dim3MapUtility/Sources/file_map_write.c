@@ -400,6 +400,7 @@ void write_single_mesh(map_mesh_type *mesh)
     xml_add_tagstart("Mesh");
 
   	if (mesh->group_idx!=-1) xml_add_attribute_int("group",mesh->group_idx);
+  	if (mesh->extra_txt_idx!=-1) xml_add_attribute_int("extra_txt_idx",mesh->extra_txt_idx);
 
 	xml_add_attribute_boolean("off",!mesh->flag.on);
 	xml_add_attribute_boolean("pass",mesh->flag.pass_through);
@@ -407,9 +408,9 @@ void write_single_mesh(map_mesh_type *mesh)
 	xml_add_attribute_boolean("climbable",mesh->flag.climbable);
 	xml_add_attribute_boolean("hilite",mesh->flag.hilite);
 	xml_add_attribute_boolean("lock_uv",mesh->flag.lock_uv);
-	xml_add_attribute_boolean("no_self_obscure",mesh->flag.no_self_obscure);
 	xml_add_attribute_boolean("never_obscure",mesh->flag.never_obscure);
 	xml_add_attribute_boolean("rot_independent",mesh->flag.rot_independent);
+	xml_add_attribute_boolean("shadow",mesh->flag.shadow);
 	
 	xml_add_attribute_3_coord_int("rot_off",mesh->rot_off.x,mesh->rot_off.y,mesh->rot_off.z);
 	

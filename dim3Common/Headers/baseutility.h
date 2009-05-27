@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version					"3.0b10"
+#define dim3_version					"3.0b11"
 
 /* =======================================================
 
@@ -468,7 +468,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						shader_idx,extra_txt_idx;
+						int						shader_idx;
 						float					txt_scale_x,txt_scale_y,
 												bump_factor,specular_factor;
 						bool					additive,pixelated;

@@ -96,53 +96,49 @@ void shadow_shutdown(void)
 
 /* =======================================================
 
-      Shadow Draw Volume
+      Shadow Light
       
 ======================================================= */
 
-view_light_spot_type* shadow_get_light_spot(model_draw *draw)
+view_light_spot_type* shadow_get_light_spot(d3pnt *pnt,int high)
 {
 	view_light_spot_type			*lspot;
 
 		// get closest light
 
-	lspot=gl_light_find_closest_light(draw->pnt.x,draw->pnt.y,draw->pnt.z);
+	lspot=gl_light_find_closest_light(pnt->x,pnt->y,pnt->z);
 
 		// if no light, get light directly above
 
 	if (lspot==NULL) {
 		lspot=&shadow_above_lspot;
-		memmove(&lspot->pnt,&draw->pnt,sizeof(d3pnt));
+		memmove(&lspot->pnt,pnt,sizeof(d3pnt));
 		lspot->pnt.y-=map_enlarge*100;
-		lspot->intensity=(map_enlarge*100)+draw->size.y;
+		lspot->intensity=(map_enlarge*100)+high;
 	}
 
 	return(lspot);
 }
 
-bool shadow_get_volume(model_draw *draw,int *px,int *py,int *pz)
+/* =======================================================
+
+      Shadow Draw Volumes
+      
+======================================================= */
+
+bool shadow_get_volume(d3pnt *pnt,int high,int *px,int *py,int *pz)
 {
 	int							n;
 	float						f_dist;
 	bool						hits[8];
 	d3pnt						spt[8],ept[8],hpt[8],*sp,*ep;
 	d3vct						ray_move;
-	model_type					*mdl;
 	view_light_spot_type		*lspot;
 	ray_trace_contact_type		base_contact;
 
-		// get bounding box
-
-	if ((draw->uid==-1) || (!draw->on)) return(FALSE);
-	
-	mdl=model_find_uid(draw->uid);
-	if (mdl==NULL) return(FALSE);
-		
-	model_get_view_complex_bounding_box(mdl,&draw->pnt,&draw->setup.ang,px,py,pz);
-
 		// get light and draw distance
 
-	lspot=shadow_get_light_spot(draw);
+	lspot=shadow_get_light_spot(pnt,high);
 	f_dist=(float)lspot->intensity;
 
 		// ray trace bounding box
@@ -187,23 +183,39 @@ bool shadow_get_volume(model_draw *draw,int *px,int *py,int *pz)
 	return(TRUE);
 }
 
+inline bool shadow_get_volume_model(model_type *mdl,model_draw *draw,int *px,int *py,int *pz)
+{
+	model_get_view_complex_bounding_box(mdl,&draw->pnt,&draw->setup.ang,px,py,pz);
+	return(shadow_get_volume(&draw->pnt,draw->size.y,px,py,pz));
+}
+
+inline bool shadow_get_volume_mesh(map_mesh_type *mesh,int *px,int *py,int *pz)
+{
+	px[0]=px[3]=px[4]=px[7]=mesh->box.min.x;
+	px[1]=px[2]=px[5]=px[6]=mesh->box.max.x;
+	py[0]=py[1]=py[2]=py[3]=mesh->box.min.y;
+	py[4]=py[5]=py[6]=py[7]=mesh->box.max.y;
+	pz[0]=pz[1]=pz[4]=pz[5]=mesh->box.min.z;
+	pz[2]=pz[3]=pz[6]=pz[7]=mesh->box.max.z;
+
+	return(shadow_get_volume(&mesh->box.mid,(mesh->box.max.y-mesh->box.min.y),px,py,pz));
+}
+
 /* =======================================================
 
       Find Polygons that Shadows Cross
       
 ======================================================= */
 
-int shadow_build_poly_set(model_draw *draw)
+int shadow_build_poly_set(int *px,int *py,int *pz,int skip_mesh_idx)
 {
-	int					n,k,cnt,px[8],py[8],pz[8];
+	int					n,k,cnt;
 	d3pnt				min,max;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 
 		// get shadow volume for collision check
 		
-	if (!shadow_get_volume(draw,px,py,pz)) return(0);
-	
 	min.x=max.x=px[0];
 	min.y=max.y=py[0];
 	min.z=max.z=pz[0];
@@ -235,6 +247,7 @@ int shadow_build_poly_set(model_draw *draw)
 	for (n=0;n!=view.render->draw_list.count;n++) {
 	
 		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
+		if (view.render->draw_list.items[n].idx==skip_mesh_idx) continue;
 
 		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
 		
@@ -264,6 +277,22 @@ int shadow_build_poly_set(model_draw *draw)
 	}
 	
 	return(cnt);
+}
+
+inline int shadow_build_poly_set_model(model_type *mdl,model_draw *draw)
+{
+	int				px[8],py[8],pz[8];
+
+	if (!shadow_get_volume_model(mdl,draw,px,py,pz)) return(0);
+	return(shadow_build_poly_set(px,py,pz,-1));	
+}
+
+inline int shadow_build_poly_set_mesh(int mesh_idx)
+{
+	int				px[8],py[8],pz[8];
+
+	if (!shadow_get_volume_mesh(&map.mesh.meshes[mesh_idx],px,py,pz)) return(0);
+	return(shadow_build_poly_set(px,py,pz,mesh_idx));	
 }
 
 /* =======================================================
@@ -368,11 +397,11 @@ void shadow_stencil_clear_mesh_poly(void)
 
 /* =======================================================
 
-      Render Shadows
+      Render Model Shadows
       
 ======================================================= */
 
-void shadow_render(model_draw *draw)
+void shadow_render_model(model_draw *draw)
 {
 	int							n,k,t,poly_count,trig_count;
 	float						f_dist;
@@ -386,10 +415,6 @@ void shadow_render(model_draw *draw)
 	model_type					*mdl;
 	view_light_spot_type		*lspot;
 	
-		// shadows on for this object?
-		
-	if ((!setup.shadow_on) || (!draw->shadow.on)) return;
-
 		// get model
 
 	mdl=model_find_uid(draw->uid);
@@ -397,12 +422,12 @@ void shadow_render(model_draw *draw)
 	
 		// find all polys the shadow ray hits
 		
-	poly_count=shadow_build_poly_set(draw);
+	poly_count=shadow_build_poly_set_model(mdl,draw);
 	if (poly_count==0) return;
 	
 		// get light and draw distance
 
-	lspot=shadow_get_light_spot(draw);
+	lspot=shadow_get_light_spot(&draw->pnt,draw->size.y);
 	f_dist=(float)lspot->intensity;
 
 		// get distance alpha factor
@@ -572,3 +597,171 @@ void shadow_render(model_draw *draw)
 	glDepthMask(GL_TRUE);
 	glDisable(GL_STENCIL_TEST);
 }
+
+/* =======================================================
+
+      Render Mesh Shadows
+      
+======================================================= */
+
+void shadow_render_mesh(int mesh_idx)
+{
+	int							n,k,t,poly_count;
+	float						f_dist;
+	double						dx,dy,dz,d_alpha;
+	float						*vertex_ptr,*vl,*cl;
+	d3vct						ray_move;
+	d3pnt						*pt,*spt,*ept,*hpt;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	view_light_spot_type		*lspot;
+	
+		// find all polys the shadow ray hits
+		
+	mesh=&map.mesh.meshes[mesh_idx];
+
+	poly_count=shadow_build_poly_set_mesh(mesh_idx);
+	if (poly_count==0) return;
+	
+		// get light and draw distance
+
+	lspot=shadow_get_light_spot(&mesh->box.mid,(mesh->box.max.y-mesh->box.min.y));
+	f_dist=(float)lspot->intensity;
+
+		// get distance alpha factor
+
+	d_alpha=(double)lspot->intensity;
+	d_alpha=1.0/(d_alpha*d_alpha);
+
+		// start stenciling
+		// never write to the depth buffer during this operation
+
+	glEnable(GL_STENCIL_TEST);
+	glDisable(GL_ALPHA_TEST);
+
+	glDepthMask(GL_FALSE);
+
+		// setup blending
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+		// run through all the stenciled polygons
+		// and ray trace against their planes
+		// to create the shadow polygons
+			
+	for (k=0;k!=poly_count;k++) {
+
+			// stencil the poly we are going
+			// to draw a shadow on
+
+		shadow_stencil_mesh_poly(shadow_poly_ptrs[k].mesh_idx,shadow_poly_ptrs[k].poly_idx);
+
+			// shadows are blended and stenciled
+			// we clear the stencil as we draw so
+			// we can maintain the alpha levels
+
+		glEnable(GL_BLEND);
+		glDisable(GL_DEPTH_TEST);
+
+		glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
+		glStencilFunc(GL_EQUAL,stencil_shadow,0xFF);
+
+			// run through all the polygons of this mesh
+
+		for (n=0;n!=mesh->npoly;n++) {
+
+				// ray trace the polygon against
+				// the plane of the polygon
+
+			poly=&mesh->polys[n];
+			
+			spt=shadow_spt;
+			ept=shadow_ept;
+			
+			for (t=0;t!=poly->ptsz;t++) {
+				pt=&mesh->vertexes[poly->v[t]];
+
+				spt->x=pt->x;
+				spt->y=pt->y;
+				spt->z=pt->z;
+				
+				vector_create(&ray_move,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,spt->x,spt->y,spt->z);
+					
+				ept->x=spt->x-(int)(ray_move.x*f_dist);
+				ept->y=spt->y-(int)(ray_move.y*f_dist);
+				ept->z=spt->z-(int)(ray_move.z*f_dist);
+				
+				spt++;
+				ept++;
+			}
+
+			ray_trace_mesh_poly_plane(poly->ptsz,shadow_spt,shadow_ept,shadow_hpt,shadow_hits,shadow_poly_ptrs[k].mesh_idx,shadow_poly_ptrs[k].poly_idx);
+
+				// setup the vertex objects
+
+			vertex_ptr=view_bind_map_next_vertex_object(poly->ptsz*(3+4));
+			if (vertex_ptr==NULL) {
+				glDisable(GL_STENCIL_TEST);
+				glDepthMask(GL_TRUE);
+				return;
+			}
+
+			vl=vertex_ptr;
+			cl=vertex_ptr+(poly->ptsz*3);
+			
+				// vertexes
+
+			hpt=shadow_hpt;
+			
+			for (t=0;t!=poly->ptsz;t++) {
+
+					// vertex
+
+				*vl++=(float)hpt->x;
+				*vl++=(float)hpt->y;
+				*vl++=(float)hpt->z;
+
+					// color
+
+				dx=(hpt->x-lspot->pnt.x);
+				dy=(hpt->y-lspot->pnt.y);
+				dz=(hpt->z-lspot->pnt.z);
+				hpt++;
+
+				*cl++=0.0f;
+				*cl++=0.0f;
+				*cl++=0.0f;
+				*cl++=1.0f-(float)(((dx*dx)+(dy*dy)+(dz*dz))*d_alpha);
+			}
+			
+			view_unmap_current_vertex_object();
+
+				// draw the shadow trigs
+			
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glVertexPointer(3,GL_FLOAT,0,0);
+
+			glEnableClientState(GL_COLOR_ARRAY);
+			glColorPointer(4,GL_FLOAT,0,(void*)((poly->ptsz*3)*sizeof(float)));
+				
+			glDrawArrays(GL_POLYGON,0,poly->ptsz);
+
+			glDisableClientState(GL_COLOR_ARRAY);
+			glDisableClientState(GL_VERTEX_ARRAY);
+		
+				// unbind the vertex and index object
+				
+			view_unbind_current_vertex_object();
+		}
+
+		shadow_stencil_clear_mesh_poly();
+	}
+
+		// restore depth buffer and turn
+		// off stenciling
+		
+	glDepthMask(GL_TRUE);
+	glDisable(GL_STENCIL_TEST);
+}
+

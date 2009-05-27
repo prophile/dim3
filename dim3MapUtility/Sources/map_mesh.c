@@ -66,6 +66,7 @@ int map_mesh_add(map_type *map)
 	mesh=&map->mesh.meshes[mesh_idx];
 
 	mesh->group_idx=-1;
+	mesh->extra_txt_idx=-1;
 		
 	mesh->flag.on=TRUE;
 	mesh->flag.pass_through=FALSE;
@@ -74,9 +75,9 @@ int map_mesh_add(map_type *map)
 	mesh->flag.hilite=FALSE;
 	mesh->flag.touched=FALSE;
 	mesh->flag.lock_uv=FALSE;
-	mesh->flag.no_self_obscure=FALSE;
 	mesh->flag.never_obscure=FALSE;
 	mesh->flag.rot_independent=FALSE;
+	mesh->flag.shadow=FALSE;
 
 	mesh->rot_off.x=mesh->rot_off.y=mesh->rot_off.z=0;
 

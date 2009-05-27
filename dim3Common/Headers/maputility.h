@@ -240,8 +240,9 @@ typedef struct		{
 typedef struct		{
 						bool								on,pass_through,moveable,
 															hilite,climbable,shiftable,
-															lock_uv,no_self_obscure,
-															never_obscure,rot_independent,touched;
+															lock_uv,never_obscure,
+															rot_independent,shadow,
+															touched;
 					} map_mesh_flag_type;
 
 typedef struct		{
@@ -258,7 +259,8 @@ typedef struct		{
 					} map_mesh_draw_type;
 
 typedef struct		{
-						int									nvertex,npoly,nuv,group_idx;
+						int									nvertex,npoly,nuv,group_idx,
+															extra_txt_idx;
 						d3pnt								rot_off;
 						d3pnt								*vertexes;
 						d3vct								*normals;
