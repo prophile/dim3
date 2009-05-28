@@ -285,7 +285,7 @@ void view_draw_mesh_shadows(void)
 
 	for (n=0;n!=view.render->draw_list.count;n++) {
 		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
-		if ((map.mesh.meshes[view.render->draw_list.items[n].idx].flag.shadow) || (map.mesh.meshes[view.render->draw_list.items[n].idx].polys[0].txt_idx==7)) shadow_render_mesh(view.render->draw_list.items[n].idx);		// supergumba -- test
+		if (map.mesh.meshes[view.render->draw_list.items[n].idx].flag.shadow) shadow_render_mesh(view.render->draw_list.items[n].idx);
 	}
 }
 

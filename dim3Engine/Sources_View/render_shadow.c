@@ -615,11 +615,16 @@ void shadow_render_mesh(int mesh_idx)
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	view_light_spot_type		*lspot;
+
+		// for now, leverage the model shadow
+		// arrays and only allow meshes with a limited
+		// number of vertexes
+
+	mesh=&map.mesh.meshes[mesh_idx];
+	if (mesh->nvertex>=max_model_vertex) return;
 	
 		// find all polys the shadow ray hits
 		
-	mesh=&map.mesh.meshes[mesh_idx];
-
 	poly_count=shadow_build_poly_set_mesh(mesh_idx);
 	if (poly_count==0) return;
 	
@@ -667,93 +672,91 @@ void shadow_render_mesh(int mesh_idx)
 		glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
 		glStencilFunc(GL_EQUAL,stencil_shadow,0xFF);
 
-			// run through all the polygons of this mesh
+			// run through all the vertexes of this mesh
+
+		spt=shadow_spt;
+		ept=shadow_ept;
+		pt=mesh->vertexes;
+		
+		for (t=0;t!=mesh->nvertex;t++) {
+			spt->x=pt->x;
+			spt->y=pt->y;
+			spt->z=pt->z;
+			
+			vector_create(&ray_move,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,spt->x,spt->y,spt->z);
+				
+			ept->x=spt->x-(int)(ray_move.x*f_dist);
+			ept->y=spt->y-(int)(ray_move.y*f_dist);
+			ept->z=spt->z-(int)(ray_move.z*f_dist);
+			
+			spt++;
+			ept++;
+			pt++;
+		}
+
+		ray_trace_mesh_poly_plane(mesh->nvertex,shadow_spt,shadow_ept,shadow_hpt,shadow_hits,shadow_poly_ptrs[k].mesh_idx,shadow_poly_ptrs[k].poly_idx);
+
+			// setup the vertex objects
+
+		vertex_ptr=view_bind_map_next_vertex_object(mesh->nvertex*(3+4));
+		if (vertex_ptr==NULL) {
+			glDisable(GL_STENCIL_TEST);
+			glDepthMask(GL_TRUE);
+			return;
+		}
+
+		vl=vertex_ptr;
+		cl=vertex_ptr+(mesh->nvertex*3);
+		
+			// vertexes
+
+		hpt=shadow_hpt;
+		
+		for (t=0;t!=mesh->nvertex;t++) {
+
+				// vertex
+
+			*vl++=(float)hpt->x;
+			*vl++=(float)hpt->y;
+			*vl++=(float)hpt->z;
+
+				// color
+
+			dx=(hpt->x-lspot->pnt.x);
+			dy=(hpt->y-lspot->pnt.y);
+			dz=(hpt->z-lspot->pnt.z);
+			hpt++;
+
+			*cl++=0.0f;
+			*cl++=0.0f;
+			*cl++=0.0f;
+			*cl++=1.0f-(float)(((dx*dx)+(dy*dy)+(dz*dz))*d_alpha);
+		}
+		
+		view_unmap_current_vertex_object();
+
+			// ray trace the polygon against
+			// the plane of the polygon
+
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(3,GL_FLOAT,0,0);
+
+		glEnableClientState(GL_COLOR_ARRAY);
+		glColorPointer(4,GL_FLOAT,0,(void*)((mesh->nvertex*3)*sizeof(float)));
+
+		poly=mesh->polys;
 
 		for (n=0;n!=mesh->npoly;n++) {
-
-				// ray trace the polygon against
-				// the plane of the polygon
-
-			poly=&mesh->polys[n];
-			
-			spt=shadow_spt;
-			ept=shadow_ept;
-			
-			for (t=0;t!=poly->ptsz;t++) {
-				pt=&mesh->vertexes[poly->v[t]];
-
-				spt->x=pt->x;
-				spt->y=pt->y;
-				spt->z=pt->z;
-				
-				vector_create(&ray_move,lspot->pnt.x,lspot->pnt.y,lspot->pnt.z,spt->x,spt->y,spt->z);
-					
-				ept->x=spt->x-(int)(ray_move.x*f_dist);
-				ept->y=spt->y-(int)(ray_move.y*f_dist);
-				ept->z=spt->z-(int)(ray_move.z*f_dist);
-				
-				spt++;
-				ept++;
-			}
-
-			ray_trace_mesh_poly_plane(poly->ptsz,shadow_spt,shadow_ept,shadow_hpt,shadow_hits,shadow_poly_ptrs[k].mesh_idx,shadow_poly_ptrs[k].poly_idx);
-
-				// setup the vertex objects
-
-			vertex_ptr=view_bind_map_next_vertex_object(poly->ptsz*(3+4));
-			if (vertex_ptr==NULL) {
-				glDisable(GL_STENCIL_TEST);
-				glDepthMask(GL_TRUE);
-				return;
-			}
-
-			vl=vertex_ptr;
-			cl=vertex_ptr+(poly->ptsz*3);
-			
-				// vertexes
-
-			hpt=shadow_hpt;
-			
-			for (t=0;t!=poly->ptsz;t++) {
-
-					// vertex
-
-				*vl++=(float)hpt->x;
-				*vl++=(float)hpt->y;
-				*vl++=(float)hpt->z;
-
-					// color
-
-				dx=(hpt->x-lspot->pnt.x);
-				dy=(hpt->y-lspot->pnt.y);
-				dz=(hpt->z-lspot->pnt.z);
-				hpt++;
-
-				*cl++=0.0f;
-				*cl++=0.0f;
-				*cl++=0.0f;
-				*cl++=1.0f-(float)(((dx*dx)+(dy*dy)+(dz*dz))*d_alpha);
-			}
-			
-			view_unmap_current_vertex_object();
-
-				// draw the shadow trigs
-			
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glVertexPointer(3,GL_FLOAT,0,0);
-
-			glEnableClientState(GL_COLOR_ARRAY);
-			glColorPointer(4,GL_FLOAT,0,(void*)((poly->ptsz*3)*sizeof(float)));
-				
-			glDrawArrays(GL_POLYGON,0,poly->ptsz);
-
-			glDisableClientState(GL_COLOR_ARRAY);
-			glDisableClientState(GL_VERTEX_ARRAY);
-		
-				// unbind the vertex and index object
-				
-			view_unbind_current_vertex_object();
+			glDrawRangeElements(GL_POLYGON,0,mesh->nvertex,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->v);
+			poly++;
 		}
+
+		glDisableClientState(GL_COLOR_ARRAY);
+		glDisableClientState(GL_VERTEX_ARRAY);
+		
+			// unbind the vertex object
+				
+		view_unbind_current_vertex_object();
 
 		shadow_stencil_clear_mesh_poly();
 	}
