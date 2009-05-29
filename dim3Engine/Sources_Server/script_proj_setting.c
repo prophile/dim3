@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "objects.h"
 #include "scripts.h"
 #include "projectiles.h"
 
@@ -47,6 +48,7 @@ JSPropertySpec	proj_setting_props[]={
 							{"hitScan",				proj_setting_prop_hitscan,			JSPROP_PERMANENT|JSPROP_SHARED},
 							{"resetAngle",			proj_setting_prop_reset_angle,		JSPROP_PERMANENT|JSPROP_SHARED},
 							{"parentObjectId",		proj_setting_prop_parent_object_id,	JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"parentTeam",			proj_setting_prop_parent_team,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 
 /* =======================================================
@@ -73,6 +75,7 @@ JSBool js_get_proj_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
 {
 	proj_setup_type		*proj_setup;
 	proj_type			*proj;
+	obj_type			*obj;
 
 	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
@@ -95,6 +98,15 @@ JSBool js_get_proj_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
 			if (proj==NULL) return(INT_TO_JSVAL(-1));
 
 			*vp=INT_TO_JSVAL(proj->obj_uid);
+			break;
+		case proj_setting_prop_parent_team:
+			proj=proj_get_attach();
+			if (proj==NULL) return(INT_TO_JSVAL(-1));
+
+			obj=object_find_uid(proj->obj_uid);
+			if (obj==NULL) return(INT_TO_JSVAL(-1));
+
+			*vp=INT_TO_JSVAL(obj->team_idx);
 			break;
 			
 	}

@@ -52,6 +52,7 @@ JSPropertySpec	weap_zoom_props[]={
 							{"crawlTurnFactor",		weap_zoom_prop_crawl_turn_factor,		JSPROP_PERMANENT|JSPROP_SHARED},
 							{"lookFactor",			weap_zoom_prop_look_factor,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{"maskName",			weap_zoom_prop_mask_name,				JSPROP_PERMANENT|JSPROP_SHARED},
+							{"showWeapon",			weap_zoom_prop_show_weapon,				JSPROP_PERMANENT|JSPROP_SHARED},
 							{"tick",				weap_zoom_prop_tick,					JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 
@@ -112,6 +113,9 @@ JSBool js_get_weap_zoom_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 		case weap_zoom_prop_mask_name:
 			*vp=script_string_to_value(weap->zoom.mask_name);
 			break;
+		case weap_zoom_prop_show_weapon:
+			*vp=BOOLEAN_TO_JSVAL(weap->zoom.show_weapon);
+			break;
 		case weap_zoom_prop_tick:
 			*vp=INT_TO_JSVAL(weap->zoom.tick);
 			break;
@@ -156,6 +160,9 @@ JSBool js_set_weap_zoom_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 			script_value_to_string(*vp,weap->zoom.mask_name,name_str_len);
 			weapon_attach_zoom_mask(weap);
 			break;
+        case weap_zoom_prop_show_weapon:
+            weap->zoom.show_weapon=JSVAL_TO_BOOLEAN(*vp);
+            break;
 		case weap_zoom_prop_tick:
 			weap->zoom.tick=JSVAL_TO_INT(*vp);
 			break;

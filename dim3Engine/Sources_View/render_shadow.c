@@ -606,7 +606,7 @@ void shadow_render_model(model_draw *draw)
 
 void shadow_render_mesh(int mesh_idx)
 {
-	int							n,k,t,poly_count;
+	int							n,k,poly_count;
 	float						f_dist;
 	double						dx,dy,dz,d_alpha;
 	float						*vertex_ptr,*vl,*cl;
@@ -662,15 +662,6 @@ void shadow_render_mesh(int mesh_idx)
 
 		shadow_stencil_mesh_poly(shadow_poly_ptrs[k].mesh_idx,shadow_poly_ptrs[k].poly_idx);
 
-			// shadows are blended and stenciled
-			// we clear the stencil as we draw so
-			// we can maintain the alpha levels
-
-		glEnable(GL_BLEND);
-		glDisable(GL_DEPTH_TEST);
-
-		glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
-		glStencilFunc(GL_EQUAL,stencil_shadow,0xFF);
 
 			// run through all the vertexes of this mesh
 
@@ -678,7 +669,7 @@ void shadow_render_mesh(int mesh_idx)
 		ept=shadow_ept;
 		pt=mesh->vertexes;
 		
-		for (t=0;t!=mesh->nvertex;t++) {
+		for (n=0;n!=mesh->nvertex;n++) {
 			spt->x=pt->x;
 			spt->y=pt->y;
 			spt->z=pt->z;
@@ -712,7 +703,7 @@ void shadow_render_mesh(int mesh_idx)
 
 		hpt=shadow_hpt;
 		
-		for (t=0;t!=mesh->nvertex;t++) {
+		for (n=0;n!=mesh->nvertex;n++) {
 
 				// vertex
 
@@ -734,6 +725,16 @@ void shadow_render_mesh(int mesh_idx)
 		}
 		
 		view_unmap_current_vertex_object();
+
+			// shadows are blended and stenciled
+			// we clear the stencil as we draw so
+			// we can maintain the alpha levels
+
+		glEnable(GL_BLEND);
+		glDisable(GL_DEPTH_TEST);
+
+		glStencilOp(GL_KEEP,GL_KEEP,GL_ZERO);
+		glStencilFunc(GL_EQUAL,stencil_shadow,0xFF);
 
 			// ray trace the polygon against
 			// the plane of the polygon
@@ -757,6 +758,8 @@ void shadow_render_mesh(int mesh_idx)
 			// unbind the vertex object
 				
 		view_unbind_current_vertex_object();
+
+			// erase the stencil
 
 		shadow_stencil_clear_mesh_poly();
 	}

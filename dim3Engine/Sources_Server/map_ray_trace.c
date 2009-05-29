@@ -893,20 +893,8 @@ bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_
 	vct.y=0.0f;
 	vct.z=(float)-dist;
 
-	if (ang->x!=0.0f) {
-		matrix_rotate_x(&mat,ang->x);
-		matrix_vertex_multiply(&mat,&vct.x,&vct.y,&vct.z);
-	}
-	
-	if (ang->z!=0.0f) {
-		matrix_rotate_z(&mat,ang->z);
-		matrix_vertex_multiply(&mat,&vct.x,&vct.y,&vct.z);
-	}
-	
-	if (ang->y!=0.0f) {
-		matrix_rotate_y(&mat,ang->y);
-		matrix_vertex_multiply(&mat,&vct.x,&vct.y,&vct.z);
-	}
+	matrix_rotate_zyx(&mat,ang->x,ang->y,ang->z);
+	matrix_vertex_multiply(&mat,&vct.x,&vct.y,&vct.z);
 	
 		// get end point
 	

@@ -298,7 +298,7 @@ void object_fix_force(obj_type *obj)
 	if (vct->z!=0) {
 		if (vct->z>0) {
 			vct->z-=decelerate;
-			if (vct->z<0) vct->x=0;
+			if (vct->z<0) vct->z=0;
 		}
 		else {
 			vct->z+=decelerate;

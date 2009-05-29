@@ -218,6 +218,7 @@ bool weapon_create(obj_type *obj,char *name)
 	weap->zoom.look_factor=0.5f;
 	weap->zoom.mask_name[0]=0x0;
 	weap->zoom.mask_idx=-1;
+	weap->zoom.show_weapon=FALSE;
 	weap->zoom.tick=500;
 	
 	weap->crosshair.on=FALSE;

@@ -34,6 +34,8 @@ and can be sold or given away.
 #include "scripts.h"
 #include "physics.h"
 
+extern float			team_color_tint[net_team_count][3];
+
 extern server_type		server;
 extern js_type			js;
 
@@ -45,6 +47,7 @@ JSBool js_spawn_ring_line_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 JSBool js_spawn_flash_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_spawn_lightning_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_spawn_ray_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_spawn_ray_team_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_spawn_shake_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_spawn_push_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
@@ -62,6 +65,7 @@ JSFunctionSpec	spawn_functions[]={
 							{"flash",				js_spawn_flash_func,				9},
 							{"lightning",			js_spawn_lightning_func,			12},
 							{"ray",					js_spawn_ray_func,					11},
+							{"rayTeamColor",		js_spawn_ray_func,					9},
 							{"shake",				js_spawn_shake_func,				6},
 							{"push",				js_spawn_push_func,					5},
 							{0}};
@@ -351,6 +355,41 @@ JSBool js_spawn_ray_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,js
 	col.b=script_value_to_float(argv[9]);
 
 	life_msec=JSVAL_TO_INT(argv[10]);
+
+	if (!effect_spawn_ray(&start_pt,&end_pt,wid,&col,life_msec)) {
+		*rval=JSVAL_FALSE;
+	}
+    else {
+		*rval=JSVAL_TRUE;
+	}
+    
+	return(JS_TRUE);
+}
+
+JSBool js_spawn_ray_team_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	int				team_idx,wid,life_msec;
+	d3pnt			start_pt,end_pt;
+	d3col			col;
+	
+	start_pt.x=JSVAL_TO_INT(argv[0]);
+	start_pt.z=JSVAL_TO_INT(argv[1]);
+	start_pt.y=JSVAL_TO_INT(argv[2]);
+
+	end_pt.x=JSVAL_TO_INT(argv[3]);
+	end_pt.z=JSVAL_TO_INT(argv[4]);
+	end_pt.y=JSVAL_TO_INT(argv[5]);
+	
+	wid=JSVAL_TO_INT(argv[6]);
+
+	team_idx=JSVAL_TO_INT(argv[7])-sd_team_none;
+	if ((team_idx<0) || (team_idx>=net_team_count)) team_idx=0;
+
+	col.r=team_color_tint[team_idx][0];
+	col.g=team_color_tint[team_idx][1];
+	col.b=team_color_tint[team_idx][2];
+
+	life_msec=JSVAL_TO_INT(argv[8]);
 
 	if (!effect_spawn_ray(&start_pt,&end_pt,wid,&col,life_msec)) {
 		*rval=JSVAL_FALSE;

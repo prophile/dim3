@@ -66,6 +66,7 @@ extern jsval script_string_to_value(char *str);
 extern jsval script_int_array_to_value(int cnt,int *values);
 extern jsval script_angle_to_value(float x,float y,float z);
 extern jsval script_point_to_value(int x,int y,int z);
+extern jsval script_color_to_value(d3col *col);
 
 extern obj_type* script_find_obj_from_uid_arg(jsval arg);
 extern weapon_type* script_find_weapon_from_name_arg(obj_type *obj,jsval arg);

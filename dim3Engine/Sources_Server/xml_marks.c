@@ -127,7 +127,16 @@ void read_settings_mark(void)
 			mark->animate.loop=xml_get_attribute_boolean(tag,"loop");
 			mark->animate.loop_back=xml_get_attribute_boolean(tag,"loop_back");
 		}
-		
+	
+		mark->color.r=mark->color.g=mark->color.b=1.0f;
+		mark->team_tint=FALSE;
+
+        tag=xml_findfirstchild("Color",mark_tag);
+        if (tag!=-1) {
+			xml_get_attribute_color(tag,"color",&mark->color);
+            mark->team_tint=xml_get_attribute_boolean(tag,"team");
+        }
+
 			// move on to next mark
 			
 		server.count.mark++;

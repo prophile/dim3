@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "models.h"
 
 extern char				setup_team_color_list[net_team_count+1][32];
+extern float			team_color_tint[net_team_count][3];
 
 extern server_type		server;
 extern js_type			js;
@@ -51,6 +52,7 @@ JSBool js_map_object_get_name_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 JSBool js_map_object_get_type_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_team_name_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_map_object_get_team_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_distance_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_angle_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_object_get_angle_to_id_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -96,6 +98,7 @@ JSFunctionSpec	map_object_functions[]={
 							{"getType",						js_map_object_get_type_func,						1},
 							{"getTeam",						js_map_object_get_team_func,						1},
 							{"getTeamName",					js_map_object_get_team_name_func,					1},
+							{"getTeamColor",				js_map_object_get_team_color_func,					1},
 							{"getDistance",					js_map_object_get_distance_func,					4},
 							{"getAngleTo",					js_map_object_get_angle_to_func,					4},
 							{"getAngleToId",				js_map_object_get_angle_to_id_func,					2},
@@ -498,8 +501,6 @@ JSBool js_map_object_get_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 {
 	obj_type		*obj;
 	
-		// uid
-	
 	obj=script_find_obj_from_uid_arg(argv[0]);
 	if (obj==NULL) return(JS_FALSE);
 
@@ -511,12 +512,26 @@ JSBool js_map_object_get_team_name_func(JSContext *cx,JSObject *j_obj,uintN argc
 {
 	obj_type		*obj;
 	
-		// uid
-	
 	obj=script_find_obj_from_uid_arg(argv[0]);
 	if (obj==NULL) return(JS_FALSE);
 
 	*rval=script_string_to_value(setup_team_color_list[obj->team_idx]);
+	return(JS_TRUE);
+}
+
+JSBool js_map_object_get_team_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	d3col			col;
+	obj_type		*obj;
+	
+	obj=script_find_obj_from_uid_arg(argv[0]);
+	if (obj==NULL) return(JS_FALSE);
+
+	col.r=team_color_tint[obj->team_idx][0];
+	col.g=team_color_tint[obj->team_idx][1];
+	col.b=team_color_tint[obj->team_idx][2];
+
+	*rval=script_color_to_value(&col);
 	return(JS_TRUE);
 }
 

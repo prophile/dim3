@@ -691,7 +691,7 @@ typedef struct		{
 												damage,decel_grace;
 						char					name[name_str_len];
 						float					speed,decel_speed,decel_min_speed;
-						bool					collision,reset_angle;
+						bool					collision,reset_angle,inherit_motion;
 						obj_size				size;
 						model_draw				draw;
 						melee_type				melee;
@@ -750,7 +750,7 @@ typedef struct		{
 						float					fov_min,fov_max,
 												turn_factor,crawl_turn_factor,look_factor;
 						char					mask_name[name_str_len];
-						bool					on;
+						bool					on,show_weapon;
 					} weap_zoom_type;
 					
 typedef struct		{
@@ -1048,7 +1048,7 @@ typedef struct		{
 												start_alpha,end_alpha,reduce_pixel_fact,
 												ambient_factor;
 						char					name[name_str_len],bitmap_name[name_str_len];
-						bool					reverse,blend_add,globe;
+						bool					reverse,blend_add,globe,team_tint;
 						d3pnt					pt;
 						d3ang					rot;
 						d3vct					vct,rot_accel;
@@ -1068,7 +1068,7 @@ typedef struct		{
 												start_inner_size,end_inner_size;
 						float					start_alpha,end_alpha;
 						char					name[name_str_len],bitmap_name[name_str_len];
-						bool					blend_add;
+						bool					blend_add,team_tint;
 						d3ang					ang,rot;
 						d3vct					vct,rot_accel;
 						d3col					start_color,end_color;
@@ -1088,7 +1088,8 @@ typedef struct		{
 						int						image_idx,
 												fade_in_msec,life_msec,fade_out_msec,total_msec;
 						char					name[name_str_len],bitmap_name[name_str_len];
-						bool					no_rotate,no_transparent,no_opaque,hilite,blend_add;
+						bool					no_rotate,no_transparent,no_opaque,hilite,blend_add,team_tint;
+						d3col					color;
 						image_animation_type	animate;
 					} mark_type;
 

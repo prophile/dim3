@@ -615,7 +615,8 @@ and can be sold or given away.
 #define weap_zoom_prop_crawl_turn_factor			6
 #define weap_zoom_prop_look_factor					7
 #define weap_zoom_prop_mask_name					8
-#define weap_zoom_prop_tick							9
+#define weap_zoom_prop_show_weapon					9
+#define weap_zoom_prop_tick							10
 
 //
 // projectile property IDs
@@ -625,6 +626,7 @@ and can be sold or given away.
 #define proj_setting_prop_hitscan					1
 #define proj_setting_prop_reset_angle				2
 #define proj_setting_prop_parent_object_id			3
+#define proj_setting_prop_parent_team				4
 
 #define proj_position_prop_x						0
 #define proj_position_prop_y						1
@@ -647,6 +649,7 @@ and can be sold or given away.
 #define proj_speed_prop_deceleration_wait			2
 #define proj_speed_prop_deceleration_min_speed		3
 #define proj_speed_prop_max_hitscan_distance		4
+#define proj_speed_prop_inherit_motion				5
 
 #define proj_hit_prop_type							0
 #define proj_hit_prop_name							1

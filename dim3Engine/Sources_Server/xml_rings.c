@@ -146,11 +146,16 @@ void read_settings_ring(void)
             ring->vct.z=xml_get_attribute_float(tag,"z");
         }
 		
+		ring->start_color.r=ring->start_color.g=ring->start_color.b=1.0f;
+		ring->end_color.r=ring->end_color.g=ring->end_color.b=1.0f;
+		ring->team_tint=FALSE;
+
         tag=xml_findfirstchild("Color",ring_tag);
         if (tag!=-1) {
 			xml_get_attribute_color(tag,"start",&ring->start_color);
 			xml_get_attribute_color(tag,"end",&ring->end_color);
-        }
+			ring->team_tint=xml_get_attribute_boolean(tag,"team");
+       }
 		
         tag=xml_findfirstchild("Alpha",ring_tag);
         if (tag!=-1) {

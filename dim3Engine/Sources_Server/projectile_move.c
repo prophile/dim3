@@ -71,10 +71,55 @@ void projectile_gravity(proj_type *proj)
 
 void projectile_speed(proj_type *proj)
 {
+	d3vct			*vct;
+
+		// are we within the grace period?
+
 	if (proj->decel_grace>0) {
 		proj->decel_grace--;
 		return;
 	}
+
+	if (proj->decel_speed==0) return;
+
+		// reduce any forces
+
+	vct=&proj->force.vct;
+		
+	if (vct->x!=0) {
+		if (vct->x>0) {
+			vct->x-=proj->decel_speed;
+			if (vct->x<0) vct->x=0;
+		}
+		else {
+			vct->x+=proj->decel_speed;
+			if (vct->x>0) vct->x=0;
+		}
+	}
+
+	if (vct->y!=0) {
+		if (vct->y>0) {
+			vct->y-=proj->decel_speed;
+			if (vct->y<0) vct->y=0;
+		}
+		else {
+			vct->y+=proj->decel_speed;
+			if (vct->y>0) vct->y=0;
+		}
+	}
+	
+	if (vct->z!=0) {
+		if (vct->z>0) {
+			vct->z-=proj->decel_speed;
+			if (vct->z<0) vct->z=0;
+		}
+		else {
+			vct->z+=proj->decel_speed;
+			if (vct->z>0) vct->z=0;
+		}
+	}
+
+		// alter the speed
 
 	proj->speed=proj->speed-proj->decel_speed;
 	if (proj->speed<proj->decel_min_speed) proj->speed=proj->decel_min_speed;

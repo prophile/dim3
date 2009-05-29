@@ -39,6 +39,9 @@ JSClass			d3_ang_class={"d3_ang_class",0,
 JSClass			d3_point_class={"d3_point_class",0,
 							JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
+JSClass			d3_color_class={"d3_color_class",0,
+							JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
+							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 /* =======================================================
 
@@ -148,6 +151,20 @@ jsval script_point_to_value(int x,int y,int z)
 	JS_DefineProperty(js.cx,j_obj,"x",INT_TO_JSVAL(x),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
 	JS_DefineProperty(js.cx,j_obj,"y",INT_TO_JSVAL(y),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
 	JS_DefineProperty(js.cx,j_obj,"z",INT_TO_JSVAL(z),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
+	
+	return(OBJECT_TO_JSVAL(j_obj));
+}
+
+jsval script_color_to_value(d3col *col)
+{
+	JSObject		*j_obj;
+
+	j_obj=JS_NewObject(js.cx,&d3_color_class,NULL,NULL);
+	if (j_obj==NULL) return(JSVAL_NULL);
+
+	JS_DefineProperty(js.cx,j_obj,"r",script_float_to_value(col->r),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
+	JS_DefineProperty(js.cx,j_obj,"g",script_float_to_value(col->g),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
+	JS_DefineProperty(js.cx,j_obj,"b",script_float_to_value(col->b),NULL,NULL,JSPROP_READONLY|JSPROP_PERMANENT);
 	
 	return(OBJECT_TO_JSVAL(j_obj));
 }

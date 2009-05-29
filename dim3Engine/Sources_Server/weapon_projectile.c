@@ -107,6 +107,14 @@ bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_t
 		}
 	}
 
+		// add in object motion
+
+	if (proj_setup->inherit_motion) {
+		proj->force.vct.x=obj->motion.vct.x;
+		proj->force.vct.y=obj->motion.vct.y;
+		proj->force.vct.z=obj->motion.vct.z;
+	}
+
 		// detect weapons being fired into walls
 		// if so, destroy projectile
 
@@ -360,7 +368,7 @@ void weapon_get_projectile_position_center(obj_type *obj,weapon_type *weap,d3pnt
 
 		// get fire the angle
 
-	fire_ang->x=-(obj->view_ang.x*(1.0f-(((float)fabs(obj->view_ang.x)/90.0f)*0.5f)));
+	fire_ang->x=-obj->view_ang.x;
 	fire_ang->y=obj->ang.y;
 	fire_ang->z=0.0f;
 
