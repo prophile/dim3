@@ -39,13 +39,15 @@ and can be sold or given away.
 #define kMeshSettingClimbable					FOUR_CHAR_CODE('fclb')
 #define kMeshSettingHilite						FOUR_CHAR_CODE('hilt')
 #define kMeshSettingLockUV						FOUR_CHAR_CODE('lkuv')
-#define kMeshSettingNoSelfObscure				FOUR_CHAR_CODE('nsob')
+#define kMeshSettingShadow						FOUR_CHAR_CODE('shad')
 #define kMeshSettingNeverObscure				FOUR_CHAR_CODE('nvob')
 #define kMeshSettingRotIndependent				FOUR_CHAR_CODE('rtip')
 
 #define kMeshSettingRotX						FOUR_CHAR_CODE('rotx')
 #define kMeshSettingRotY						FOUR_CHAR_CODE('roty')
 #define kMeshSettingRotZ						FOUR_CHAR_CODE('rotz')
+
+#define kMeshSettingExtraTexture				FOUR_CHAR_CODE('etxt')
 
 #define kMeshSendMessageEnter					FOUR_CHAR_CODE('smen')
 #define kMeshSendMessageEnterId					FOUR_CHAR_CODE('meid')
@@ -86,13 +88,15 @@ void palette_mesh_load(void)
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingClimbable,0,mesh->flag.climbable);
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingHilite,0,mesh->flag.hilite);
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingLockUV,0,mesh->flag.lock_uv);
-	dialog_set_boolean(palette_mesh_wind,kMeshSettingNoSelfObscure,0,mesh->flag.no_self_obscure);
+	dialog_set_boolean(palette_mesh_wind,kMeshSettingShadow,0,mesh->flag.shadow);
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingNeverObscure,0,mesh->flag.never_obscure);
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingRotIndependent,0,mesh->flag.rot_independent);
 
 	dialog_set_int(palette_mesh_wind,kMeshSettingRotX,0,mesh->rot_off.x);
 	dialog_set_int(palette_mesh_wind,kMeshSettingRotY,0,mesh->rot_off.y);
 	dialog_set_int(palette_mesh_wind,kMeshSettingRotZ,0,mesh->rot_off.z);
+	
+	dialog_fill_texture_combo(palette_mesh_wind,kMeshSettingExtraTexture,0,TRUE,mesh->extra_txt_idx);
 	
 	dialog_set_boolean(palette_mesh_wind,kMeshSendMessageEnter,0,mesh->msg.entry_on);
 	dialog_set_int(palette_mesh_wind,kMeshSendMessageEnterId,0,mesh->msg.entry_id);
@@ -126,13 +130,15 @@ void palette_mesh_save(void)
 	mesh->flag.climbable=dialog_get_boolean(palette_mesh_wind,kMeshSettingClimbable,0);
 	mesh->flag.hilite=dialog_get_boolean(palette_mesh_wind,kMeshSettingHilite,0);
 	mesh->flag.lock_uv=dialog_get_boolean(palette_mesh_wind,kMeshSettingLockUV,0);
-	mesh->flag.no_self_obscure=dialog_get_boolean(palette_mesh_wind,kMeshSettingNoSelfObscure,0);
+	mesh->flag.shadow=dialog_get_boolean(palette_mesh_wind,kMeshSettingShadow,0);
 	mesh->flag.never_obscure=dialog_get_boolean(palette_mesh_wind,kMeshSettingNeverObscure,0);
 	mesh->flag.rot_independent=dialog_get_boolean(palette_mesh_wind,kMeshSettingRotIndependent,0);
 	
 	mesh->rot_off.x=dialog_get_int(palette_mesh_wind,kMeshSettingRotX,0);
 	mesh->rot_off.y=dialog_get_int(palette_mesh_wind,kMeshSettingRotY,0);
 	mesh->rot_off.z=dialog_get_int(palette_mesh_wind,kMeshSettingRotZ,0);
+	
+	mesh->extra_txt_idx=dialog_get_texture_combo(palette_mesh_wind,kMeshSettingExtraTexture,0,TRUE);
 	
 	mesh->msg.entry_on=dialog_get_boolean(palette_mesh_wind,kMeshSendMessageEnter,0);
 	mesh->msg.entry_id=dialog_get_int(palette_mesh_wind,kMeshSendMessageEnterId,0);

@@ -113,13 +113,16 @@ void gl_3D_view(void)
 
 void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 {
-	float		fx,fz,fy,f_temp;
+	float		fx,fz,fy;
+	matrix_type	mat;
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	angle_get_movement_float(ang->y,(float)camera.plane.near_z,&fx,&fz);
-	angle_get_movement_float(-ang->x,(float)camera.plane.near_z,&fy,&f_temp);
+	matrix_rotate_zyx(&mat,ang->x,ang->y,0.0f);
+	fx=fy=0.0f;
+	fz=-((float)camera.plane.near_z);
+	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
 	if (pnt==NULL) {
 		gluLookAt(fx,fy,fz,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);

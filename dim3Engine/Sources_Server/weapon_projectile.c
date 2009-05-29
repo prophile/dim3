@@ -194,7 +194,7 @@ bool weapon_get_projectile_position_angle_weapon_model(int tick,obj_type *obj,we
 	setup->sway.x=setup->sway.y=setup->sway.z=0.0f;
 
 	model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
-
+	
 	fire_pnt->x+=draw->pnt.x;
 	fire_pnt->y+=draw->pnt.y;
 	fire_pnt->z+=draw->pnt.z;
@@ -206,6 +206,8 @@ bool weapon_get_projectile_position_angle_weapon_model(int tick,obj_type *obj,we
 	fire_ang->x=angle_add(setup->ang.x,obj->draw.setup.ang.x);
 	fire_ang->y=angle_add(setup->ang.y,angle_add(obj->draw.setup.ang.y,180.0f));
 	fire_ang->z=angle_add(setup->ang.z,obj->draw.setup.ang.z);
+	
+	if (draw->flip_x) fire_ang->x=angle_add(fire_ang->x,180.0f);
 
 	return(TRUE);
 }
