@@ -425,7 +425,7 @@ void view_setup_objects(int tick)
 
 void view_setup_projectiles(int tick)
 {
-	int					n,mesh_idx;
+	int					n,mesh_idx,flag;
 	proj_type			*proj;
 
 	for (n=0;n!=server.count.proj;n++) {
@@ -438,12 +438,20 @@ void view_setup_projectiles(int tick)
 		
 			// find model and shadows in view
 			
+		flag=0x0;
+		
 		mesh_idx=map_mesh_find(&map,&proj->draw.pnt);
-		if (!view_setup_model_in_view(&proj->draw,mesh_idx)) continue;
+		if (view_setup_model_in_view(&proj->draw,mesh_idx)) flag|=view_list_item_flag_model_in_view;
+
+		if (proj->draw.shadow.on) {
+			if (shadow_inview(&proj->draw)) flag|=view_list_item_flag_shadow_in_view;
+		}
+
+		if (flag==0x0) continue;
 
 			// add to draw list
 
-		view_add_draw_list(view_render_type_projectile,n,proj->draw.draw_dist,0x0);
+		view_add_draw_list(view_render_type_projectile,n,proj->draw.draw_dist,flag);
 		
 			// setup model animations for models in view
 			

@@ -202,6 +202,8 @@ bool weapon_get_projectile_position_angle_weapon_model(int tick,obj_type *obj,we
 	setup->sway.x=setup->sway.y=setup->sway.z=0.0f;
 
 	model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
+
+	if (draw->flip_x) fire_pnt->x=-fire_pnt->x;
 	
 	fire_pnt->x+=draw->pnt.x;
 	fire_pnt->y+=draw->pnt.y;
@@ -228,7 +230,7 @@ bool weapon_get_projectile_position_angle_weapon_barrel(int tick,obj_type *obj,w
 	model_draw				*draw;
 	model_draw_setup		*setup;
 
-		// get model
+		// get weapon model
 
 	mdl=model_find_uid(weap->draw.uid);
 	if (mdl==NULL) {
@@ -268,6 +270,8 @@ bool weapon_get_projectile_position_angle_weapon_barrel(int tick,obj_type *obj,w
 
 	model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 
+	if (draw->flip_x) fire_pnt->x=-fire_pnt->x;
+
 	fire_pnt->x+=draw->pnt.x;
 	fire_pnt->y+=draw->pnt.y;
 	fire_pnt->z+=draw->pnt.z;
@@ -283,7 +287,9 @@ bool weapon_get_projectile_position_angle_weapon_barrel(int tick,obj_type *obj,w
 	}
 
 	model_get_draw_bone_position(setup,bone_idx,&barrel_pnt.x,&barrel_pnt.y,&barrel_pnt.z);
-	
+
+	if (draw->flip_x) barrel_pnt.x=-barrel_pnt.x;
+
 	barrel_pnt.x+=draw->pnt.x;
 	barrel_pnt.y+=draw->pnt.y;
 	barrel_pnt.z+=draw->pnt.z;
@@ -294,10 +300,10 @@ bool weapon_get_projectile_position_angle_weapon_barrel(int tick,obj_type *obj,w
 
 	dist=distance_2D_get(0,0,(fire_pnt->x-barrel_pnt.x),(fire_pnt->z-barrel_pnt.z));
 	fire_ang->x=-(180.0f-angle_find(0,0,(fire_pnt->y-barrel_pnt.y),dist));
-
 	fire_ang->y=angle_find(barrel_pnt.x,barrel_pnt.z,fire_pnt->x,fire_pnt->z);
-
 	fire_ang->z=0.0f;
+
+	if (draw->flip_x) fire_ang->x=angle_add(fire_ang->x,180.0f);
 
 	return(TRUE);
 }
