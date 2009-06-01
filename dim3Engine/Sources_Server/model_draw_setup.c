@@ -116,7 +116,7 @@ void model_draw_setup_object(int tick,obj_type *obj)
 	if (draw->face_forward) {
 		setup->ang.x=angle_find(view.render->camera.pnt.y,view.render->camera.pnt.z,draw->pnt.y,draw->pnt.z);
 		setup->ang.y=angle_find(view.render->camera.pnt.x,view.render->camera.pnt.z,draw->pnt.x,draw->pnt.z);
-		setup->ang.z=0;
+		setup->ang.z=0.0f;
 	}
 	else {
 		setup->ang.x=angle_add(obj->ang.x,draw->rot.x);

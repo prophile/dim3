@@ -721,7 +721,7 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 	}
 
 		// check objects
-		
+
 	if (contact->obj.on) {
 	
 		for (n=0;n!=server.count.obj;n++) {
@@ -807,7 +807,7 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 			if (ray_item_count==ray_trace_max_check_item) return;
 		}
 	}
-	
+
 		// check all meshes
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
@@ -855,7 +855,7 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 			if (min.y>poly->box.max.y) continue;
 			if (max.z<poly->box.min.z) continue;
 			if (min.z>poly->box.max.z) continue;
-		
+
 				// add to item list
 
 			item->type=ray_trace_check_item_mesh_poly;

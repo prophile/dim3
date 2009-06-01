@@ -360,11 +360,22 @@ bool weapon_get_projectile_position_angle_object_model(int tick,obj_type *obj,we
 
 void weapon_get_projectile_position_center(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang)
 {
+	model_type				*mdl;
+	
 		// model point
 
 	fire_pnt->x=obj->pnt.x;
 	fire_pnt->y=(obj->pnt.y+obj->duck.y_move)+obj->size.eye_offset;
 	fire_pnt->z=obj->pnt.z;
+	
+		// model centering
+
+	mdl=model_find_uid(obj->draw.uid);
+	if (mdl!=NULL) {
+		fire_pnt->x+=mdl->center.x;
+		fire_pnt->y+=mdl->center.y;
+		fire_pnt->z+=mdl->center.z;
+	}
 
 		// get fire the angle
 

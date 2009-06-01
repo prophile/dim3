@@ -100,12 +100,12 @@ void camera_connect(obj_type *obj)
       
 ======================================================= */
 
-void camera_get_position(d3pnt *pnt,d3ang *ang,int eye_offset)
+void camera_get_position(d3pnt *pnt,d3ang *ang)
 {
 	switch (camera.mode) {
 	
 		case cv_fpp:
-            camera_fpp_get_position(pnt,ang,eye_offset);
+            camera_fpp_get_position(pnt,ang);
 			break;
 		case cv_chase:
             camera_chase_get_position(pnt,ang);
@@ -125,19 +125,13 @@ void camera_get_position(d3pnt *pnt,d3ang *ang,int eye_offset)
 
 void camera_get_angle_from(d3pnt *pt,d3ang *ang)
 {
-	int				dist,eye_offset;
+	int				dist;
 	d3pnt			pnt;
 	d3ang			temp_ang;
-	obj_type		*camera_obj;
 
 		// get camera position
 
-	eye_offset=0;
-
-	camera_obj=object_find_uid(camera.obj_uid);
-	if (camera_obj!=NULL) eye_offset=camera_obj->size.eye_offset;
-		
-	camera_get_position(&pnt,&temp_ang,eye_offset);
+	camera_get_position(&pnt,&temp_ang);
 
 		// find angle
 

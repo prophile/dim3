@@ -568,7 +568,7 @@ void view_draw(int tick)
 		// set view camera
 	
 	camera_obj=object_find_uid(camera.obj_uid);
-	camera_get_position(&view.render->camera.pnt,&view.render->camera.ang,camera_obj->size.eye_offset);
+	camera_get_position(&view.render->camera.pnt,&view.render->camera.ang);
 
 	view.render->camera.fov=camera.plane.fov;
 	view.render->camera.flip=FALSE;
@@ -613,7 +613,6 @@ bool view_draw_node(int tick,node_type *node,int pixel_size)
 {
 	d3pnt			pnt;
 	d3ang			ang;
-	obj_type		*camera_obj;
 
 		// switch out to node render
 		
@@ -628,8 +627,7 @@ bool view_draw_node(int tick,node_type *node,int pixel_size)
 		memmove(&view.render->camera.ang,&node->ang,sizeof(d3ang));
 	}
 	else {
-		camera_obj=object_find_uid(camera.obj_uid);
-		camera_get_position(&pnt,&ang,camera_obj->size.eye_offset);
+		camera_get_position(&pnt,&ang);
 
 		view.render->camera.ang.x=angle_find(node->pnt.y,node->pnt.z,pnt.y,pnt.z);
 		view.render->camera.ang.y=angle_find(node->pnt.x,node->pnt.z,pnt.x,pnt.z);

@@ -27,14 +27,14 @@ and can be sold or given away.
 
 extern void camera_initialize(void);
 extern void camera_connect(obj_type *obj);
-extern void camera_get_position(d3pnt *pnt,d3ang *ang,int eye_offset);
+extern void camera_get_position(d3pnt *pnt,d3ang *ang);
 extern void camera_get_angle_from(d3pnt *pt,d3ang *ang);
 extern int camera_check_liquid(d3pnt *pnt);
 extern void camera_save(void);
 extern void camera_restore(void);
 extern void camera_run(void);
 
-extern void camera_fpp_get_position(d3pnt *pnt,d3ang *ang,int eye_offset);
+extern void camera_fpp_get_position(d3pnt *pnt,d3ang *ang);
 
 extern void camera_chase_connect(void);
 extern float camera_chase_run_slop(float ang,float goal,float slop,float chase_track_speed);
