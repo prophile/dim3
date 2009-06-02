@@ -97,7 +97,7 @@ void setup_xml_default(void)
 	setup.action_list.naction=0;
 
 	strcpy(setup.network.name,"Player");
-	setup.network.team_idx=net_team_none;
+	setup.network.team_idx=net_team_red;
 	setup.network.show_names=TRUE;
 	setup.network.nhost=0;
 	setup.network.noption=0;

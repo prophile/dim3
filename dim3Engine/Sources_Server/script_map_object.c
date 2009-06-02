@@ -439,7 +439,7 @@ JSBool js_map_object_nearest_team_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	
 		// team
 		
-	team_idx=JSVAL_TO_INT(argv[3])-sd_team_none;
+	team_idx=JSVAL_TO_INT(argv[3])-sd_team_red;
 
 		// angle and sweep
 	
@@ -504,7 +504,7 @@ JSBool js_map_object_get_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 	obj=script_find_obj_from_uid_arg(argv[0]);
 	if (obj==NULL) return(JS_FALSE);
 
-	*rval=INT_TO_JSVAL(obj->team_idx+sd_team_none);
+	*rval=INT_TO_JSVAL(obj->team_idx+sd_team_red);
 	return(JS_TRUE);
 }
 

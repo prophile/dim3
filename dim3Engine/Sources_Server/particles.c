@@ -29,12 +29,14 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "objects.h"
 #include "effects.h"
 #include "cameras.h"
 
 extern map_type				map;
 extern server_type			server;
 extern setup_type			setup;
+extern network_setup_type	net_setup;
 
 /* =======================================================
 
@@ -259,8 +261,9 @@ int particle_get_effect_size(particle_type *particle)
       
 ======================================================= */
 
-bool particle_spawn_single(int particle_idx,d3pnt *pt,particle_rotate *rot,particle_motion *motion)
+bool particle_spawn_single(int particle_idx,int obj_uid,d3pnt *pt,particle_rotate *rot,particle_motion *motion)
 {
+	obj_type				*obj;
 	effect_type				*effect;
 	particle_effect_data	*eff_particle;
 	particle_type			*particle;
@@ -307,11 +310,20 @@ bool particle_spawn_single(int particle_idx,d3pnt *pt,particle_rotate *rot,parti
 		// setup size
 
 	effect->size=particle_get_effect_size(particle);
+
+		// any tinting
+
+	eff_particle->tint.r=eff_particle->tint.g=eff_particle->tint.b=1.0f;
+
+	if ((particle->team_tint) && (obj_uid!=-1)) {
+		obj=object_find_uid(obj_uid);
+		if (obj!=NULL) object_get_tint(obj,&eff_particle->tint);
+	}
 	
 	return(TRUE);
 }
 
-bool particle_spawn(int particle_idx,d3pnt *pt,particle_rotate *rot,particle_motion *motion)
+bool particle_spawn(int particle_idx,int obj_uid,d3pnt *pt,particle_rotate *rot,particle_motion *motion)
 {
 	int						n,count,shift,idx;
 	float					xoff,yoff,zoff;
@@ -325,7 +337,7 @@ bool particle_spawn(int particle_idx,d3pnt *pt,particle_rotate *rot,particle_mot
 		// single particles
 
 	if (!particle->group.on) {
-		return(particle_spawn_single(particle_idx,pt,rot,motion));
+		return(particle_spawn_single(particle_idx,obj_uid,pt,rot,motion));
 	}
 
 		// get offset to camera position
@@ -362,13 +374,13 @@ bool particle_spawn(int particle_idx,d3pnt *pt,particle_rotate *rot,particle_mot
 
 			// spawn particle
 
-		if (!particle_spawn_single(idx,&ppt,rot,motion)) return(FALSE);
+		if (!particle_spawn_single(idx,obj_uid,&ppt,rot,motion)) return(FALSE);
 	}
 
 	return(TRUE);
 }
 
-bool particle_line_spawn(int particle_idx,d3pnt *start_pt,d3pnt *end_pt,int count)
+bool particle_line_spawn(int particle_idx,int obj_uid,d3pnt *start_pt,d3pnt *end_pt,int count)
 {
 	int				n,dx,dz,dy;
 	d3pnt			pt;
@@ -384,7 +396,7 @@ bool particle_line_spawn(int particle_idx,d3pnt *start_pt,d3pnt *end_pt,int coun
 		pt.y=start_pt->y+((dy*n)/count);
 		pt.z=start_pt->z+((dz*n)/count);
 
-		if (!particle_spawn(particle_idx,&pt,NULL,NULL)) return(FALSE);
+		if (!particle_spawn(particle_idx,obj_uid,&pt,NULL,NULL)) return(FALSE);
 	}
 
 	return(TRUE);
@@ -455,7 +467,7 @@ void particle_map_run(void)
 
 		particle->next_spawn_tick-=10;
 		if (particle->next_spawn_tick<=0) {
-			particle_spawn(particle->particle_idx,&particle->pnt,NULL,NULL);
+			particle_spawn(particle->particle_idx,-1,&particle->pnt,NULL,NULL);
 			particle_map_set_next_tick(particle);
 		}
 

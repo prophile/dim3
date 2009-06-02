@@ -109,7 +109,6 @@ script_define_type			script_dim3_defines[]={
 								{sd_projection_type_fov,						"",		"DIM3_PROJECTION_TYPE_FOV"},
 								{sd_projection_type_frustum,					"",		"DIM3_PROJECTION_TYPE_FRUSTUM"},
 
-								{sd_team_none,									"",		"DIM3_TEAM_NONE"},
 								{sd_team_red,									"",		"DIM3_TEAM_RED"},
 								{sd_team_blue,									"",		"DIM3_TEAM_BLUE"},
 								{sd_team_green,									"",		"DIM3_TEAM_GREEN"},

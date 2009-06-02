@@ -79,6 +79,7 @@ extern hud_bitmap_type* script_find_bitmap_from_name(jsval arg);
 extern hud_bar_type* script_find_bar_from_name(jsval arg);
 extern int script_find_group_from_name(jsval arg);
 extern int script_find_map_movement_from_name(jsval arg);
+extern int script_get_attached_object_uid(void);
 
 extern void script_add_global_map_object(JSObject *parent_obj);
 extern void script_add_global_multiplayer_object(JSObject *parent_obj);

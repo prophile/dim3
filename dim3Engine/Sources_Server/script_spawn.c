@@ -34,8 +34,6 @@ and can be sold or given away.
 #include "scripts.h"
 #include "physics.h"
 
-extern float			team_color_tint[net_team_count][3];
-
 extern server_type		server;
 extern js_type			js;
 
@@ -65,7 +63,7 @@ JSFunctionSpec	spawn_functions[]={
 							{"flash",				js_spawn_flash_func,				9},
 							{"lightning",			js_spawn_lightning_func,			12},
 							{"ray",					js_spawn_ray_func,					11},
-							{"rayTeamColor",		js_spawn_ray_func,					9},
+							{"rayTeamColor",		js_spawn_ray_team_color_func,		7},
 							{"shake",				js_spawn_shake_func,				6},
 							{"push",				js_spawn_push_func,					5},
 							{0}};
@@ -108,7 +106,7 @@ JSBool js_spawn_particle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *ar
 		return(JS_FALSE);
 	}
 	
-	if (!particle_spawn(idx,&pt,NULL,NULL)) {
+	if (!particle_spawn(idx,script_get_attached_object_uid(),&pt,NULL,NULL)) {
 		*rval=JSVAL_FALSE;
 	}
     else {
@@ -142,7 +140,7 @@ JSBool js_spawn_particle_moving_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 		return(JS_FALSE);
 	}
 	
-	if (!particle_spawn(idx,&pt,NULL,&motion)) {
+	if (!particle_spawn(idx,script_get_attached_object_uid(),&pt,NULL,&motion)) {
 		*rval=JSVAL_FALSE;
 	}
     else {
@@ -176,7 +174,7 @@ JSBool js_spawn_particle_line_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 		return(JS_FALSE);
 	}
 	
-	if (!particle_line_spawn(idx,&start_pt,&end_pt,count)) {
+	if (!particle_line_spawn(idx,script_get_attached_object_uid(),&start_pt,&end_pt,count)) {
 		*rval=JSVAL_FALSE;
 	}
     else {
@@ -210,7 +208,7 @@ JSBool js_spawn_ring_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,j
 		return(JS_FALSE);
 	}
 	
-	if (!ring_spawn(idx,&pt,NULL)) {
+	if (!ring_spawn(idx,script_get_attached_object_uid(),&pt,NULL)) {
 		*rval=JSVAL_FALSE;
 	}
     else {
@@ -244,7 +242,7 @@ JSBool js_spawn_ring_line_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 		return(JS_FALSE);
 	}
 	
-	if (!ring_line_spawn(idx,&start_pt,&end_pt,count)) {
+	if (!ring_line_spawn(idx,script_get_attached_object_uid(),&start_pt,&end_pt,count)) {
 		*rval=JSVAL_FALSE;
 	}
     else {
@@ -368,9 +366,10 @@ JSBool js_spawn_ray_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,js
 
 JSBool js_spawn_ray_team_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
-	int				team_idx,wid,life_msec;
+	int				wid,life_msec,obj_uid;
 	d3pnt			start_pt,end_pt;
 	d3col			col;
+	obj_type		*obj;
 	
 	start_pt.x=JSVAL_TO_INT(argv[0]);
 	start_pt.z=JSVAL_TO_INT(argv[1]);
@@ -382,14 +381,17 @@ JSBool js_spawn_ray_team_color_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 	
 	wid=JSVAL_TO_INT(argv[6]);
 
-	team_idx=JSVAL_TO_INT(argv[7])-sd_team_none;
-	if ((team_idx<0) || (team_idx>=net_team_count)) team_idx=0;
+	life_msec=JSVAL_TO_INT(argv[7]);
 
-	col.r=team_color_tint[team_idx][0];
-	col.g=team_color_tint[team_idx][1];
-	col.b=team_color_tint[team_idx][2];
+		// team color
 
-	life_msec=JSVAL_TO_INT(argv[8]);
+	col.r=col.g=col.b=1.0f;
+
+	obj_uid=script_get_attached_object_uid();
+	if (obj_uid!=-1) {
+		obj=object_find_uid(obj_uid);
+		if (obj!=NULL) object_get_tint(obj,&col);
+	}
 
 	if (!effect_spawn_ray(&start_pt,&end_pt,wid,&col,life_msec)) {
 		*rval=JSVAL_FALSE;

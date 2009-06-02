@@ -211,17 +211,16 @@ typedef struct		{
 // team definitions
 //
 
-#define net_team_count								6
+#define net_team_count								5
 
-#define net_team_none								0
-#define net_team_red								1
-#define net_team_blue								2
-#define net_team_green								3
-#define net_team_yellow								4
-#define net_team_purple								5
+#define net_team_red								0
+#define net_team_blue								1
+#define net_team_green								2
+#define net_team_yellow								3
+#define net_team_purple								4
 
-#define net_team_color_tint_def						{{0.7f,0.7f,0.7f},{1.0f,0.25f,0.25f},{0.25f,0.25f,1.0f},{0.25f,1.0f,0.25f},{1.0f,1.0f,0.25f},{1.0f,0.25f,1.0f}}
-#define net_team_color_list_def						{"None","Red","Blue","Green","Yellow","Purple",""}
+#define net_team_color_tint_def						{{1.0f,0.25f,0.25f},{0.25f,0.25f,1.0f},{0.25f,1.0f,0.25f},{1.0f,1.0f,0.25f},{1.0f,0.25f,1.0f}}
+#define net_team_color_list_def						{"Red","Blue","Green","Yellow","Purple",""}
 
 //
 // flags

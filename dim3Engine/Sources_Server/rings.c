@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "objects.h"
 #include "effects.h"
 #include "cameras.h"
 
@@ -106,8 +107,9 @@ int ring_get_effect_size(ring_type *ring)
       
 ======================================================= */
 
-bool ring_spawn(int ring_idx,d3pnt *pt,d3ang *ang)
+bool ring_spawn(int ring_idx,int obj_uid,d3pnt *pt,d3ang *ang)
 {
+	obj_type				*obj;
 	effect_type				*effect;
 	ring_effect_data		*eff_ring;
 	ring_type				*ring;
@@ -136,11 +138,20 @@ bool ring_spawn(int ring_idx,d3pnt *pt,d3ang *ang)
 		// setup size
 
 	effect->size=ring_get_effect_size(ring);
+
+		// any tinting
+
+	eff_ring->tint.r=eff_ring->tint.g=eff_ring->tint.b=1.0f;
+
+	if ((ring->team_tint) && (obj_uid!=-1)) {
+		obj=object_find_uid(obj_uid);
+		if (obj!=NULL) object_get_tint(obj,&eff_ring->tint);
+	}
 	
 	return(TRUE);
 }
 
-bool ring_line_spawn(int ring_idx,d3pnt *start_pt,d3pnt *end_pt,int count)
+bool ring_line_spawn(int ring_idx,int obj_uid,d3pnt *start_pt,d3pnt *end_pt,int count)
 {
 	int				n,dx,dz,dy;
 	d3pnt			pt;
@@ -167,7 +178,7 @@ bool ring_line_spawn(int ring_idx,d3pnt *start_pt,d3pnt *end_pt,int count)
 		pt.y=start_pt->y+((dy*n)/count);
 		pt.z=start_pt->z+((dz*n)/count);
 
-		if (!ring_spawn(ring_idx,&pt,&ang)) return(FALSE);
+		if (!ring_spawn(ring_idx,obj_uid,&pt,&ang)) return(FALSE);
 	}
 
 	return(TRUE);

@@ -28,6 +28,9 @@ and can be sold or given away.
 extern void object_initialize_list(void);
 extern void object_free_list(void);
 
+extern void object_team_get_tint(int team_idx,d3col *tint);
+extern void object_get_tint(obj_type *obj,d3col *tint);
+
 extern obj_type* object_create(int bind,int reserve_uid);
 extern int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_str);
 extern void object_dispose_single(int idx);

@@ -75,10 +75,11 @@ void ring_draw(effect_type *effect,int count)
 							life_tick;
 	float					mx,my,mz,fx,fy,fz,
 							outer_sz,inner_sz,
-							color_dif,r,g,b,alpha,gx,gy,g_size,
+							color_dif,alpha,gx,gy,g_size,
 							f_count,f_tick;
 	float					*vl,*vt,*vertex_ptr,*vertex_array,*coord_array;
 	double					rd,rd2;
+	d3col					col;
 	ring_type				*ring;
 	ring_effect_data		*eff_ring;
 	matrix_type				mat_x,mat_y,mat_z;
@@ -102,11 +103,15 @@ void ring_draw(effect_type *effect,int count)
 		// color and alpha
 
 	color_dif=ring->end_color.r-ring->start_color.r;
-    r=ring->start_color.r+((color_dif*f_count)/f_tick);
+    col.r=ring->start_color.r+((color_dif*f_count)/f_tick);
 	color_dif=ring->end_color.g-ring->start_color.g;
-    g=ring->start_color.g+((color_dif*f_count)/f_tick);
+    col.g=ring->start_color.g+((color_dif*f_count)/f_tick);
 	color_dif=ring->end_color.b-ring->start_color.b;
-    b=ring->start_color.b+((color_dif*f_count)/f_tick);
+    col.b=ring->start_color.b+((color_dif*f_count)/f_tick);
+
+	col.r*=eff_ring->tint.r;
+	col.g*=eff_ring->tint.g;
+	col.b*=eff_ring->tint.b;
 
 	alpha=ring->end_alpha-ring->start_alpha;
 	alpha=((alpha*f_count)/f_tick)+ring->start_alpha;
@@ -231,7 +236,7 @@ void ring_draw(effect_type *effect,int count)
 		// draw ring
 		
 	gl_texture_simple_start();
-	gl_texture_simple_set(view_images_get_gl_id(ring->image_idx),FALSE,r,g,b,alpha);
+	gl_texture_simple_set(view_images_get_gl_id(ring->image_idx),FALSE,col.r,col.g,col.b,alpha);
 	
 	glEnable(GL_BLEND);
 	

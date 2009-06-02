@@ -167,7 +167,7 @@ void model_animation_effect_launch_particle(model_particle_type *particle,d3pnt 
 
 		// spawn particle
 
-	particle_spawn(particle->particle_idx,&spt,&rot,&motion);
+	particle_spawn(particle->particle_idx,connect->obj_uid,&spt,&rot,&motion);
 }
 
 /* =======================================================
@@ -176,7 +176,7 @@ void model_animation_effect_launch_particle(model_particle_type *particle,d3pnt 
       
 ======================================================= */
 
-void model_animation_effect_launch_ring(model_ring_type *ring,d3pnt *pt,d3ang *ang)
+void model_animation_effect_launch_ring(model_ring_type *ring,d3pnt *pt,d3ang *ang,model_draw_connect *connect)
 {
 	d3pnt			spt;
 
@@ -191,10 +191,10 @@ void model_animation_effect_launch_ring(model_ring_type *ring,d3pnt *pt,d3ang *a
 		// spawn ring
 		
 	if (ring->angle) {
-		ring_spawn(ring->ring_idx,&spt,ang);
+		ring_spawn(ring->ring_idx,connect->obj_uid,&spt,ang);
 	}
 	else {
-		ring_spawn(ring->ring_idx,&spt,NULL);
+		ring_spawn(ring->ring_idx,connect->obj_uid,&spt,NULL);
 	}
 }
 
@@ -271,7 +271,7 @@ void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx
 	for (t=0;t!=pose_move->ring.count;t++) {
 		if (pose_move->ring.rings[t].ring_idx!=-1) {
 			model_animation_effect_launch_bone_position(draw,animate_idx,pose_move->pose_idx,pose_move->ring.rings[t].bone_idx,&pt);
-			model_animation_effect_launch_ring(&pose_move->ring.rings[t],&pt,&setup->ang);
+			model_animation_effect_launch_ring(&pose_move->ring.rings[t],&pt,&setup->ang,&draw->connect);
 		}
 	}
 }

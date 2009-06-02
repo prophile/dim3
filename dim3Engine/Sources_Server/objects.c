@@ -50,6 +50,9 @@ extern js_type				js;
 int							ndelayed_obj_spawn,
 							game_obj_rule_uid=-1;
 
+float						team_color_tint[net_team_count][3]=net_team_color_tint_def;
+char						setup_team_color_list[net_team_count+1][32]=net_team_color_list_def;
+
 delayed_obj_spawn_type		*delayed_obj_spawns;
 
 /* =======================================================
@@ -374,6 +377,33 @@ void object_stop(obj_type *obj)
 
 /* =======================================================
 
+      Object Team Colors
+      
+======================================================= */
+
+void object_team_get_tint(int team_idx,d3col *tint)
+{
+	if ((team_idx<0) || (team_idx>=net_team_count)) team_idx=0;
+	
+	tint->r=team_color_tint[team_idx][0];
+	tint->g=team_color_tint[team_idx][1];
+	tint->b=team_color_tint[team_idx][2];
+}
+
+void object_get_tint(obj_type *obj,d3col *tint)
+{
+	int			team_idx;
+
+	team_idx=obj->team_idx;
+	if ((team_idx<0) || (team_idx>=net_team_count)) team_idx=0;
+
+	tint->r=team_color_tint[team_idx][0];
+	tint->g=team_color_tint[team_idx][1];
+	tint->b=team_color_tint[team_idx][2];
+}
+
+/* =======================================================
+
       Create a New Object
       
 ======================================================= */
@@ -466,7 +496,7 @@ obj_type* object_create(int bind,int reserve_uid)
 	obj->on_ladder=FALSE;
 	
 	obj->name[0]=0x0;
-	obj->team_idx=net_team_none;
+	obj->team_idx=net_team_red;
 	obj->spawn_spot_name[0]=0x0;
 	
 	obj->click.on=FALSE;

@@ -121,4 +121,3 @@ void effect_dispose(void)
 		if (server.count.effect==0) break;
 	}
 }
-

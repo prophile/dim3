@@ -242,10 +242,10 @@ void particle_draw(effect_type *effect,int count)
 							ntrail,trail_step,mx,mz,my,
 							pixel_dif;
 	float					gravity,gx,gy,g_size,pixel_sz,f,pc[3],
-							alpha,alpha_dif,r,g,b,color_dif,f_count,f_tick;
+							alpha,alpha_dif,color_dif,f_count,f_tick;
 	float					*vertex_ptr;
 	d3ang					*rot_ang,rang;
-	d3col					ambient_col;
+	d3col					col,ambient_col;
 	particle_type			*particle;
 	particle_effect_data	*eff_particle;
 	matrix_type				pixel_mat_x,pixel_mat_y;
@@ -327,21 +327,25 @@ void particle_draw(effect_type *effect,int count)
 		// setup color
 		
 	color_dif=particle->end_color.r-particle->start_color.r;
-    r=particle->start_color.r+((color_dif*f_count)/f_tick);
+    col.r=particle->start_color.r+((color_dif*f_count)/f_tick);
 	color_dif=particle->end_color.g-particle->start_color.g;
-    g=particle->start_color.g+((color_dif*f_count)/f_tick);
+    col.g=particle->start_color.g+((color_dif*f_count)/f_tick);
 	color_dif=particle->end_color.b-particle->start_color.b;
-    b=particle->start_color.b+((color_dif*f_count)/f_tick);
+    col.b=particle->start_color.b+((color_dif*f_count)/f_tick);
+
+	col.r*=eff_particle->tint.r;
+	col.g*=eff_particle->tint.g;
+	col.b*=eff_particle->tint.b;
 
 	if (particle->ambient_factor!=1.0f) {
-		r=(r*particle->ambient_factor)+((1.0f-particle->ambient_factor)*ambient_col.r);
-		if (r>1.0f) r=1.0f;
+		col.r=(col.r*particle->ambient_factor)+((1.0f-particle->ambient_factor)*ambient_col.r);
+		if (col.r>1.0f) col.r=1.0f;
 
-		g=(g*particle->ambient_factor)+((1.0f-particle->ambient_factor)*ambient_col.g);
-		if (g>1.0f) g=1.0f;
+		col.g=(col.g*particle->ambient_factor)+((1.0f-particle->ambient_factor)*ambient_col.g);
+		if (col.g>1.0f) col.g=1.0f;
 
-		b=(b*particle->ambient_factor)+((1.0f-particle->ambient_factor)*ambient_col.b);
-		if (b>1.0f) b=1.0f;
+		col.b=(col.b*particle->ambient_factor)+((1.0f-particle->ambient_factor)*ambient_col.b);
+		if (col.b>1.0f) col.b=1.0f;
 	}
 	
 		// setup images
@@ -391,7 +395,7 @@ void particle_draw(effect_type *effect,int count)
 		// draw arrays
 		
 	gl_texture_simple_start();
-	gl_texture_simple_set(view_images_get_gl_id(particle->image_idx),FALSE,r,g,b,alpha);
+	gl_texture_simple_set(view_images_get_gl_id(particle->image_idx),FALSE,col.r,col.g,col.b,alpha);
 
 	glEnable(GL_BLEND);
 

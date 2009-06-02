@@ -29,13 +29,11 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "objects.h"
 #include "scripts.h"
 #include "interfaces.h"
 
 extern js_type			js;
-
-extern void view_team_get_tint(int team_idx,d3col *tint);
-extern void view_object_get_ui_color(obj_type *obj,bool no_team_to_default,d3col *col);
 
 JSBool js_interface_text_show_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_interface_text_hide_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -196,9 +194,9 @@ JSBool js_interface_text_set_team_color_func(JSContext *cx,JSObject *j_obj,uintN
 	text=script_find_text_from_name(argv[0]);
 	if (text==NULL) return(JS_FALSE);
 
-	team_idx=JSVAL_TO_INT(argv[1])-sd_team_none;
+	team_idx=JSVAL_TO_INT(argv[1])-sd_team_red;
 	
-	view_team_get_tint(team_idx,&text->color);
+	object_team_get_tint(team_idx,&text->color);
 	
 	return(JS_TRUE);
 }
@@ -214,7 +212,7 @@ JSBool js_interface_text_set_object_color_func(JSContext *cx,JSObject *j_obj,uin
 	obj=script_find_obj_from_uid_arg(argv[1]);
 	if (obj==NULL) return(JS_TRUE);
 	
-	view_object_get_ui_color(obj,TRUE,&text->color);
+	object_get_tint(obj,&text->color);
 	
 	return(JS_TRUE);
 }

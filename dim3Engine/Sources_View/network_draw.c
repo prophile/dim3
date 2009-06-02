@@ -49,7 +49,6 @@ extern float				team_color_tint[net_team_count][3];
 extern char					setup_team_color_list[][32];
 
 extern void chat_time_out(int tick);
-extern void view_object_get_ui_color(obj_type *obj,bool no_team_to_default,d3col *col);
 
 /* =======================================================
 
@@ -196,7 +195,7 @@ int network_score_players_draw(bool center)
 
 		obj=&server.objs[sort_idx[n]];
 	
-		view_object_get_ui_color(obj,FALSE,&col);
+		object_get_tint(obj,&col);
 		network_score_single_box_draw(lx,rx,y2,yadd,&col);
 
 		y2+=(yadd+3);
@@ -369,7 +368,7 @@ void network_score_draw(int tick)
 	
 		if (!use_teams) {
 			sprintf(str,"Player %s Won!",server.objs[win_idx].name);
-			view_object_get_ui_color(&server.objs[win_idx],FALSE,&col);
+			object_get_tint(&server.objs[win_idx],&col);
 		}
 		else {
 			sprintf(str,"Team %s Won!",setup_team_color_list[win_idx]);

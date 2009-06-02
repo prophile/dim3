@@ -59,7 +59,6 @@ extern bool map_start(bool skip_media,char *err_str);
 extern void map_end(void);
 extern void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx);
 extern void group_moves_synch_with_host(network_reply_group_synch *synch);
-extern void view_object_get_ui_color(obj_type *obj,bool no_team_to_default,d3col *col);
 extern void score_limit_close(void);
 
 /* =======================================================
@@ -483,7 +482,7 @@ void remote_chat(int remote_uid,network_request_remote_chat *chat)
 	
 		// update chat
 
-	view_object_get_ui_color(obj,FALSE,&col);
+	object_get_tint(obj,&col);
 	chat_add_message(game_time_get(),obj->name,chat->str,&col);
 }
 

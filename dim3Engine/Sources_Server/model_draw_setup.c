@@ -29,12 +29,11 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "objects.h"
 #include "remotes.h"
 #include "weapons.h"
 #include "models.h"
 #include "effects.h"
-
-extern void view_object_get_tint(obj_type *obj,d3col *tint);
 
 extern server_type			server;
 extern view_type			view;
@@ -135,7 +134,7 @@ void model_draw_setup_object(int tick,obj_type *obj)
 		// team tint
 
 	if (net_setup.client.joined) {
-		view_object_get_tint(obj,&draw->tint);
+		object_get_tint(obj,&draw->tint);
 	}
 	else {
 		draw->tint.r=draw->tint.g=draw->tint.b=1.0f;

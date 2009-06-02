@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 #include "weapons.h"
+#include "projectiles.h"
 #include "interfaces.h"
 
 extern int group_find_by_index(char *name);
@@ -232,3 +233,28 @@ int script_find_map_movement_from_name(jsval arg)
 	return(idx);
 }
 
+/* =======================================================
+
+      Attached Objects
+      
+======================================================= */
+
+int script_get_attached_object_uid(void)
+{
+	weapon_type		*weap;
+	proj_type		*proj;
+
+	if (js.attach.thing_type==thing_type_object) return(js.attach.thing_uid);
+
+	if (js.attach.thing_type==thing_type_weapon) {
+		weap=weapon_find_uid(js.attach.thing_uid);
+		if (weap!=NULL) return(weap->obj_uid);
+	}
+
+	if (js.attach.thing_type==thing_type_projectile) {
+		proj=projectile_find_uid(js.attach.thing_uid);
+		if (proj!=NULL) return(proj->obj_uid);
+	}
+
+	return(-1);
+}

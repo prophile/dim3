@@ -145,7 +145,7 @@ int net_host_player_join(d3socket sock,char *name,char *deny_reason)
 	player->sock=sock;
 	player->score=0;
 	strcpy(player->name,name);
-	player->team_idx=net_team_none;
+	player->team_idx=net_team_red;
 
 	player->bot=FALSE;
 	

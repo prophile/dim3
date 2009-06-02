@@ -897,6 +897,7 @@ typedef struct		{
 
 typedef struct		{
 						int						particle_idx,variation_idx;
+						d3col					tint;
 						particle_rotate			rot;
 						particle_motion			motion;
 					} particle_effect_data;
@@ -904,6 +905,7 @@ typedef struct		{
 typedef struct		{
 						int						ring_idx;
 						d3ang					ang;
+						d3col					tint;
 					} ring_effect_data;
 					
 typedef struct		{
@@ -955,6 +957,7 @@ typedef struct		{
 												start_tick,x[4],z[4],y[4];
                         float					alpha;
 						bool					in_view;
+						d3col					tint;
 					} decal_type;
 
 //

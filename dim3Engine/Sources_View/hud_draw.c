@@ -44,8 +44,6 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern render_info_type		render_info;
 
-extern void view_object_get_ui_color(obj_type *obj,bool no_team_to_default,d3col *col);
-
 /* =======================================================
 
       Run HUD Item Fades
@@ -110,7 +108,7 @@ void hud_bitmaps_draw(int tick)
 	cur_tint.r=cur_tint.g=cur_tint.b=1.0f;
 	
 	obj=object_find_uid(server.player_obj_uid);
-	view_object_get_ui_color(obj,TRUE,&team_tint);
+	object_get_tint(obj,&team_tint);
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);

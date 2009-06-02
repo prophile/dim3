@@ -104,7 +104,7 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 		remote_add.uid=htons((short)remote_uid);
 		strncpy(remote_add.name,request_join->name,name_str_len);
 		remote_add.name[name_str_len-1]=0x0;
-		remote_add.team_idx=htons((short)net_team_none);
+		remote_add.team_idx=htons((short)net_team_red);
 		remote_add.score=0;
 		remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
 		net_host_player_send_others_packet(remote_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add));
@@ -127,7 +127,7 @@ int net_host_client_handle_local_join(network_request_join *request_join,char *e
 		
 	strncpy(remote_add.name,request_join->name,name_str_len);
 	remote_add.name[name_str_len-1]=0x0;
-	remote_add.team_idx=htons((short)net_team_none);
+	remote_add.team_idx=htons((short)net_team_red);
 	remote_add.score=0;
 	remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
 	net_host_player_send_others_packet(remote_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add));

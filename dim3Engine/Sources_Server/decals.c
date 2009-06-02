@@ -29,6 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "objects.h"
+
 extern map_type			map;
 extern server_type		server;
 extern setup_type		setup;
@@ -237,11 +239,12 @@ void decal_add_floor_like(d3pnt *pnt,decal_type *decal,map_mesh_type *mesh,map_m
       
 ======================================================= */
 
-void decal_add(d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha)
+void decal_add(int obj_uid,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha)
 {
 	decal_type			*decal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
+	obj_type			*obj;
     
 		// any more decals?
 
@@ -272,6 +275,16 @@ void decal_add(d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,int sz,float 
 	else {
 		decal_add_floor_like(pnt,decal,mesh,poly,mark_idx,sz);
 	}
+
+		// tinting
+
+	decal->tint.r=decal->tint.g=decal->tint.b=1.0f;
+
+	if ((server.marks[mark_idx].team_tint) && (obj_uid!=-1)) {
+		obj=object_find_uid(obj_uid);
+		if (obj!=NULL) object_get_tint(obj,&decal->tint);
+	}
+
 
 		// finish decal setup
 

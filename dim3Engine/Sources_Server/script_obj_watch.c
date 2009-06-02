@@ -151,14 +151,14 @@ JSBool js_get_obj_watch_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 		case obj_watch_prop_object_team:
 			watch_obj=object_find_uid(obj->watch.obj_uid);
 			if (watch_obj==NULL) {
-				*vp=INT_TO_JSVAL(sd_team_none);
+				*vp=INT_TO_JSVAL(sd_team_red);
 				break;
 			}
-			*vp=INT_TO_JSVAL(watch_obj->team_idx+sd_team_none);
+			*vp=INT_TO_JSVAL(watch_obj->team_idx+sd_team_red);
 			break;
 			
 		case obj_watch_prop_base_team:
-			*vp=INT_TO_JSVAL(obj->watch.base_team+sd_team_none);
+			*vp=INT_TO_JSVAL(obj->watch.base_team+sd_team_red);
 			break;
 
 		case obj_watch_prop_sound_name:

@@ -115,11 +115,17 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 		// get lighting
 		
 	if (mark->hilite) {
-		cf[0]=cf[1]=cf[2]=1.0f;
+		cf[0]=decal->tint.r;
+		cf[1]=decal->tint.g;
+		cf[2]=decal->tint.b;
 	}
 	else {
 		gl_lights_calc_vertex((double)decal->x[0],(double)decal->y[0],(double)decal->z[0],cf);
+		cf[0]*=decal->tint.r;
+		cf[1]*=decal->tint.g;
+		cf[2]*=decal->tint.b;
 	}
+
 	
          // draw the polygon
 			

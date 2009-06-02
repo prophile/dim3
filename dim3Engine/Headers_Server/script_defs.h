@@ -810,12 +810,11 @@ and can be sold or given away.
 // (these must be equal to defines in networkutility.h)
 //
 
-#define sd_team_none									1140
-#define sd_team_red										1141
-#define sd_team_blue									1142
-#define sd_team_green									1143
-#define sd_team_yellow									1144
-#define sd_team_purple									1145
+#define sd_team_red										1140
+#define sd_team_blue									1141
+#define sd_team_green									1142
+#define sd_team_yellow									1143
+#define sd_team_purple									1144
 
 //
 // skill constants

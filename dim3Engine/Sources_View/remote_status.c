@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "objects.h"
 #include "models.h"
 #include "remotes.h"
 #include "physics.h"
@@ -45,8 +46,6 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 
 int							remote_slow_image_idx,remote_talk_image_idx;
-
-extern void view_object_get_ui_color(obj_type *obj,bool no_team_to_default,d3col *col);
 
 /* =======================================================
 
@@ -299,7 +298,7 @@ void remote_draw_names_render(void)
 				gl_text_start(text_size);
 			}
 
-			view_object_get_ui_color(obj,FALSE,&col);
+			object_get_tint(obj,&col);
 			gl_text_draw(x,y,obj->name,tx_center,FALSE,&col,obj->draw.remote_name.fade);
 		}
 		
