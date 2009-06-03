@@ -113,13 +113,21 @@ void gl_3D_view(void)
 
 void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 {
-	float		fx,fz,fy;
+	float		fx,fz,fy,ang_x;
 	matrix_type	mat;
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	
+		// need to cap look up/down at 90
+		
+	ang_x=ang->x;
+	if (ang_x>=90.0f) ang_x=89.9f;
+	if (ang_x<=-90.0f) ang_x=-89.9f;
 
-	matrix_rotate_zyx(&mat,ang->x,ang->y,0.0f);
+		// create the look at vector
+		
+	matrix_rotate_zyx(&mat,ang_x,ang->y,0.0f);
 	fx=fy=0.0f;
 	fz=-((float)camera.plane.near_z);
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);

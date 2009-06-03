@@ -50,7 +50,7 @@ extern setup_type			setup;
 
 void zoom_setup(int tick,obj_type *obj,weapon_type *weap)
 {
-	int					tx,ty,tz,old_x,old_y,obj_uid;
+	int					tx,ty,old_x,old_y,obj_uid;
 	obj_zoom_draw		*zoom_draw;
 	
 	zoom_draw=&obj->zoom_draw;
@@ -74,31 +74,19 @@ void zoom_setup(int tick,obj_type *obj,weapon_type *weap)
 		// iron sites effect masking
 				
 	if (tick<(zoom_draw->start_tick+weap->zoom.tick)) return;
-	
-		// get zoom screen location from crosshair
-
-	if (!crosshair_get_location(tick,obj,weap,&tx,&tz,&ty,&obj_uid)) return;
-
-	zoom_draw->on=TRUE;
 		
 		// get the zoom place
 		
-	gl_3D_view();
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
-
-	gl_project_point(&tx,&ty,&tz);
+	if (!crosshair_get_location(tick,obj,weap,&tx,&ty,&obj_uid)) return;
+	
+	zoom_draw->on=TRUE;
 	
 		// smooth out
-		
-	ty=setup.screen.y_sz-ty;				// 2D view has Y flipped
 	
 	if (old_x!=-1) {
 		tx=(tx+old_x)>>1;
 		ty=(ty+old_y)>>1;
 	}
-	
-		// setup
 		
 	zoom_draw->x=tx;
 	zoom_draw->y=ty;

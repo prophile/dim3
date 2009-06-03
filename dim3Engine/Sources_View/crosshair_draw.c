@@ -60,8 +60,9 @@ void crosshair_show_alt(int tick,obj_type *obj)
       
 ======================================================= */
 
-bool crosshair_get_location(int tick,obj_type *obj,weapon_type *weap,int *kx,int *kz,int *ky,int *hit_obj_uid)
+bool crosshair_get_location(int tick,obj_type *obj,weapon_type *weap,int *kx,int *ky,int *hit_obj_uid)
 {
+	int						tx,ty,tz;
 	d3pnt					fpt,hpt;
 	d3ang					ang;
 	ray_trace_contact_type	contact;
@@ -85,7 +86,7 @@ bool crosshair_get_location(int tick,obj_type *obj,weapon_type *weap,int *kx,int
 			break;
 	}
 
-		// trace
+		// trace to find any clicking or hit objects
 
 	contact.obj.on=TRUE;
 	contact.obj.ignore_uid=obj->uid;
@@ -95,14 +96,29 @@ bool crosshair_get_location(int tick,obj_type *obj,weapon_type *weap,int *kx,int
 	contact.origin=poly_ray_trace_origin_object;
 
 	ray_trace_map_by_angle(&fpt,&ang,(map_enlarge*400),&hpt,&contact);
-	
-		// return hit
-	
-	*kx=hpt.x;
-	*ky=hpt.y;
-	*kz=hpt.z;
-	
+
 	*hit_obj_uid=contact.obj.uid;
+	
+		// get the 2D point
+		
+	if (weap->crosshair.type==ct_center) {
+		*kx=setup.screen.x_sz/2;
+		*ky=setup.screen.y_sz/2;
+	}
+	else {
+		gl_3D_view();
+		gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
+		gl_setup_project();
+		
+		tx=hpt.x;
+		ty=hpt.y;
+		tz=hpt.z;
+		
+		gl_project_point(&tx,&ty,&tz);
+		
+		*kx=tx;
+		*ky=setup.screen.y_sz-ty;
+	}
 	
 	return(TRUE);
 }
@@ -153,7 +169,7 @@ void crosshair_setup_click(int tick,obj_type *obj)
 
 void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 {
-	int					x,y,z,tx,ty,tz,sz,dist,obj_uid,
+	int					x,y,z,sz,dist,obj_uid,
 						item_count,weap_mode,move_tick,swap_tick;
 	float				alpha;
 	obj_crosshair_draw	*crosshair_draw;
@@ -171,22 +187,13 @@ void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 	
 		// get crosshair location
 
-	if (!crosshair_get_location(tick,obj,weap,&x,&z,&y,&obj_uid)) return;
+	if (!crosshair_get_location(tick,obj,weap,&x,&y,&obj_uid)) return;
 	
 	crosshair_draw->on=TRUE;
 	crosshair_draw->aim_obj_uid=obj_uid;
 	
-		// get the crosshair place
-		
-	gl_3D_view();
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
-	
-	tx=x;
-	ty=y;
-	tz=z;
-	
-	gl_project_point(&tx,&ty,&tz);
+	crosshair_draw->x=x;
+	crosshair_draw->y=y;
 	
 		// get the crosshair size
 
@@ -216,6 +223,8 @@ void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 
 	}
 	
+	crosshair_draw->sz=sz;
+	
 		// crosshair alpha if weapon changing
 	
 	weap_mode=obj->held_weapon.mode;
@@ -233,12 +242,7 @@ void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
         move_tick-=swap_tick;
         alpha=1-((float)(weap->hand.raise_tick-move_tick)/(float)weap->hand.raise_tick);
 	}
-	
-		// setup
-		
-	crosshair_draw->x=tx;
-	crosshair_draw->y=setup.screen.y_sz-ty;				// 2D view has Y flipped
-	crosshair_draw->sz=sz;
+
 	crosshair_draw->alpha=alpha;
 	
 		// regular weapon crosshair
