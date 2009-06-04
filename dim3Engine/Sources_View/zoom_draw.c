@@ -50,7 +50,7 @@ extern setup_type			setup;
 
 void zoom_setup(int tick,obj_type *obj,weapon_type *weap)
 {
-	int					tx,ty,old_x,old_y,obj_uid;
+	int					tx,ty,old_x,old_y;
 	obj_zoom_draw		*zoom_draw;
 	
 	zoom_draw=&obj->zoom_draw;
@@ -77,7 +77,7 @@ void zoom_setup(int tick,obj_type *obj,weapon_type *weap)
 		
 		// get the zoom place
 		
-	if (!crosshair_get_location(tick,obj,weap,&tx,&ty,&obj_uid)) return;
+	if (!crosshair_get_location(tick,obj,weap,&tx,&ty,NULL,NULL)) return;
 	
 	zoom_draw->on=TRUE;
 	

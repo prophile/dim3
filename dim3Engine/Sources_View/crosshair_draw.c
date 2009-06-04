@@ -60,7 +60,7 @@ void crosshair_show_alt(int tick,obj_type *obj)
       
 ======================================================= */
 
-bool crosshair_get_location(int tick,obj_type *obj,weapon_type *weap,int *kx,int *ky,int *hit_obj_uid)
+bool crosshair_get_location(int tick,obj_type *obj,weapon_type *weap,int *kx,int *ky,int *hit_obj_uid,int *dist)
 {
 	int						tx,ty,tz;
 	d3pnt					fpt,hpt;
@@ -97,13 +97,14 @@ bool crosshair_get_location(int tick,obj_type *obj,weapon_type *weap,int *kx,int
 
 	ray_trace_map_by_angle(&fpt,&ang,(map_enlarge*400),&hpt,&contact);
 
-	*hit_obj_uid=contact.obj.uid;
+	if (hit_obj_uid!=NULL) *hit_obj_uid=contact.obj.uid;
 	
 		// get the 2D point
 		
 	if (weap->crosshair.type==ct_center) {
 		*kx=setup.screen.x_sz/2;
 		*ky=setup.screen.y_sz/2;
+		if (dist!=NULL) *dist=0;
 	}
 	else {
 		gl_3D_view();
@@ -118,6 +119,8 @@ bool crosshair_get_location(int tick,obj_type *obj,weapon_type *weap,int *kx,int
 		
 		*kx=tx;
 		*ky=setup.screen.y_sz-ty;
+		
+		if (dist!=NULL) *dist=distance_get(view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z,hpt.x,hpt.y,hpt.z);
 	}
 	
 	return(TRUE);
@@ -169,7 +172,7 @@ void crosshair_setup_click(int tick,obj_type *obj)
 
 void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 {
-	int					x,y,z,sz,dist,obj_uid,
+	int					x,y,sz,dist,obj_uid,
 						item_count,weap_mode,move_tick,swap_tick;
 	float				alpha;
 	obj_crosshair_draw	*crosshair_draw;
@@ -187,7 +190,7 @@ void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 	
 		// get crosshair location
 
-	if (!crosshair_get_location(tick,obj,weap,&x,&y,&obj_uid)) return;
+	if (!crosshair_get_location(tick,obj,weap,&x,&y,&obj_uid,&dist)) return;
 	
 	crosshair_draw->on=TRUE;
 	crosshair_draw->aim_obj_uid=obj_uid;
@@ -206,8 +209,6 @@ void crosshair_setup_weapon(int tick,obj_type *obj,weapon_type *weap)
 
 		case ct_bone_tracking_resizing:
 		case ct_barrel_tracking_resizing:
-			dist=distance_get(view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z,x,y,z);
-
 			if (dist>weap->crosshair.distance) {
 				sz=weap->crosshair.min_size;
 			}
