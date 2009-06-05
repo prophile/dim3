@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: Script: multiplayer object
+ Usage: Script: multiplayer.setting object
 
 ***************************** License ********************************
 

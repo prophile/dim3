@@ -141,8 +141,7 @@ bool proj_setup_add(obj_type *obj,weapon_type *weap,char *name)
 	proj_setup->decel_speed=0;
 	proj_setup->decel_grace=0;
 	proj_setup->decel_min_speed=0;
-
-	proj_setup->inherit_motion=FALSE;
+	proj_setup->inherit_motion_factor=0.0f;
 	
 	proj_setup->collision=FALSE;
 	proj_setup->reset_angle=FALSE;

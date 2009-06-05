@@ -649,7 +649,7 @@ and can be sold or given away.
 #define proj_speed_prop_deceleration_wait			2
 #define proj_speed_prop_deceleration_min_speed		3
 #define proj_speed_prop_max_hitscan_distance		4
-#define proj_speed_prop_inherit_motion				5
+#define proj_speed_prop_inherit_motion_factor		5
 
 #define proj_hit_prop_type							0
 #define proj_hit_prop_name							1

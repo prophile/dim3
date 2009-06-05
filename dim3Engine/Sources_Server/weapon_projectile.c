@@ -109,11 +109,9 @@ bool weapon_add_projectile(int tick,obj_type *obj,weapon_type *weap,proj_setup_t
 
 		// add in object motion
 
-	if (proj_setup->inherit_motion) {
-		proj->force.vct.x=obj->motion.vct.x;
-		proj->force.vct.y=obj->motion.vct.y;
-		proj->force.vct.z=obj->motion.vct.z;
-	}
+	proj->force.vct.x=obj->motion.vct.x*proj_setup->inherit_motion_factor;
+	proj->force.vct.y=obj->motion.vct.y*proj_setup->inherit_motion_factor;
+	proj->force.vct.z=obj->motion.vct.z*proj_setup->inherit_motion_factor;
 
 		// detect weapons being fired into walls
 		// if so, destroy projectile

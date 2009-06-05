@@ -558,6 +558,10 @@ SOURCE=..\..\dim3Engine\Sources_Server\script_multiplayer_bot.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\dim3Engine\Sources_Server\script_multiplayer_score.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\dim3Engine\Sources_Server\script_multiplayer_setting.c
 # End Source File
 # Begin Source File
@@ -849,6 +853,114 @@ SOURCE=..\..\dim3Engine\Sources_Server\script_weap_target_color.c
 SOURCE=..\..\dim3Engine\Sources_Server\script_weap_zoom.c
 # End Source File
 # End Group
+# Begin Group "Objects"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\obj_action.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\obj_auto_walk.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\obj_ext_move.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\obj_find.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\obj_grow.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\obj_held.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\obj_liquid.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\obj_move.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\obj_rigid_body.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\obj_state.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\obj_turn.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\obj_watch.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\objects.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\player.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\remote.c
+# End Source File
+# End Group
+# Begin Group "Weapons"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\weapon.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\weapon_melee.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\weapon_projectile.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\weapon_select.c
+# End Source File
+# End Group
+# Begin Group "Projectiles"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\projectile.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\projectile_hit.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\projectile_hitscan.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\projectile_move.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3Engine\Sources_Server\projectile_setup.c
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_Server\camera.c
@@ -971,87 +1083,7 @@ SOURCE=..\..\dim3Engine\Sources_Server\model_mesh.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dim3Engine\Sources_Server\obj_action.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\obj_auto_walk.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\obj_ext_move.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\obj_find.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\obj_grow.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\obj_held.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\obj_liquid.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\obj_move.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\obj_rigid_body.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\obj_state.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\obj_turn.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\obj_watch.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\objects.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\dim3Engine\Sources_Server\particles.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\player.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\projectile.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\projectile_hit.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\projectile_hitscan.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\projectile_move.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\projectile_setup.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\remote.c
 # End Source File
 # Begin Source File
 
@@ -1112,22 +1144,6 @@ SOURCE=..\..\dim3Engine\Sources_Server\server.c
 # Begin Source File
 
 SOURCE=..\..\dim3Engine\Sources_Server\server_run.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\weapon.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\weapon_melee.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\weapon_projectile.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\dim3Engine\Sources_Server\weapon_select.c
 # End Source File
 # Begin Source File
 

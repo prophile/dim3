@@ -48,7 +48,7 @@ JSPropertySpec	proj_speed_props[]={
 							{"decelerationWait",		proj_speed_prop_deceleration_wait,		JSPROP_PERMANENT|JSPROP_SHARED},
 							{"decelerationMinSpeed",	proj_speed_prop_deceleration_min_speed,	JSPROP_PERMANENT|JSPROP_SHARED},
 							{"maxHitScanDistance",		proj_speed_prop_max_hitscan_distance,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"inheritMotion",			proj_speed_prop_inherit_motion,			JSPROP_PERMANENT|JSPROP_SHARED},
+							{"inheritMotionFactor",		proj_speed_prop_inherit_motion_factor,	JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 
 /* =======================================================
@@ -97,8 +97,8 @@ JSBool js_get_proj_speed_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 		case proj_speed_prop_max_hitscan_distance:
 			*vp=INT_TO_JSVAL(proj_setup->hitscan.max_dist);
 			break;
-		case proj_speed_prop_inherit_motion:
-			*vp=BOOLEAN_TO_JSVAL(proj_setup->inherit_motion);
+		case proj_speed_prop_inherit_motion_factor:
+			*vp=script_float_to_value(proj_setup->inherit_motion_factor);
 			break;
 			
 	}
@@ -132,8 +132,8 @@ JSBool js_set_proj_speed_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 		case proj_speed_prop_max_hitscan_distance:
 			proj_setup->hitscan.max_dist=JSVAL_TO_INT(*vp);
 			break;
-		case proj_speed_prop_inherit_motion:
-			proj_setup->inherit_motion=JSVAL_TO_BOOLEAN(*vp);
+		case proj_speed_prop_inherit_motion_factor:
+			proj_setup->inherit_motion_factor=script_value_to_float(*vp);
 			break;
          
 	}

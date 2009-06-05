@@ -40,6 +40,7 @@ JSClass			multiplayer_class={"multiplayer_class",0,
 
 extern void script_add_multiplayer_setting_object(JSObject *parent_obj);
 extern void script_add_multiplayer_bot_object(JSObject *parent_obj);
+extern void script_add_multiplayer_score_object(JSObject *parent_obj);
 
 /* =======================================================
 
@@ -55,5 +56,6 @@ void script_add_global_multiplayer_object(JSObject *parent_obj)
 	
 	script_add_multiplayer_setting_object(j_obj);
 	script_add_multiplayer_bot_object(j_obj);
+	script_add_multiplayer_score_object(j_obj);
 }
 

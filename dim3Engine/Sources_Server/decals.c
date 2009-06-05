@@ -82,20 +82,6 @@ void decal_clear(void)
 
 /* =======================================================
 
-      Get Free Decal
-      
-======================================================= */
-
-decal_type* decal_find_free(void)
-{
-	if (server.count.decal>=max_decal) return(NULL);
-	
-    server.count.decal++;
-    return(&server.decals[server.count.decal-1]);
-}
-
-/* =======================================================
-
       Check if Segment is OK for Decal
       
 ======================================================= */
@@ -245,10 +231,6 @@ void decal_add(int obj_uid,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,i
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	obj_type			*obj;
-    
-		// any more decals?
-
-	if (server.count.decal>=max_decal) return;
 
 		// can decal this poly?
 
@@ -256,8 +238,16 @@ void decal_add(int obj_uid,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,i
 	poly=&mesh->polys[poly_ptr->poly_idx];
 	
 	if (!decal_segment_ok(poly,mark_idx)) return;
-    
-        // find a decal spot
+     
+		// if no more decals, delete the first one
+		// in the list as it will be the oldest
+
+	if (server.count.decal>=max_decal) {
+		memmove(&server.decals[0],&server.decals[1],(sizeof(decal_type)*(server.count.decal-1)));
+		server.count.decal--;
+	}
+   
+        // get decal spot
         
     decal=&server.decals[server.count.decal];
 	server.count.decal++;

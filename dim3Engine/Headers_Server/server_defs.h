@@ -690,8 +690,9 @@ typedef struct		{
 						int						uid,weap_uid,obj_uid,script_uid,
 												damage,decel_grace;
 						char					name[name_str_len];
-						float					speed,decel_speed,decel_min_speed;
-						bool					collision,reset_angle,inherit_motion;
+						float					speed,decel_speed,decel_min_speed,
+												inherit_motion_factor;
+						bool					collision,reset_angle;
 						obj_size				size;
 						model_draw				draw;
 						melee_type				melee;
