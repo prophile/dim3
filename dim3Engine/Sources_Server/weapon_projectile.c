@@ -217,7 +217,7 @@ bool weapon_get_projectile_position_angle_weapon_model(int tick,obj_type *obj,we
 	fire_ang->y=angle_add(setup->ang.y,angle_add(obj->draw.setup.ang.y,180.0f));
 	fire_ang->z=angle_add(setup->ang.z,obj->draw.setup.ang.z);
 	
-	if (draw->flip_x) fire_ang->x=angle_add(fire_ang->x,180.0f);
+	if (draw->flip_x) fire_ang->y=angle_add(fire_ang->y,180.0f);
 
 	return(TRUE);
 }
@@ -303,8 +303,6 @@ bool weapon_get_projectile_position_angle_weapon_barrel(int tick,obj_type *obj,w
 	fire_ang->y=angle_find(barrel_pnt.x,barrel_pnt.z,fire_pnt->x,fire_pnt->z);
 	fire_ang->z=0.0f;
 
-	if (draw->flip_x) fire_ang->x=angle_add(fire_ang->x,180.0f);
-
 	return(TRUE);
 }
 
@@ -366,22 +364,11 @@ bool weapon_get_projectile_position_angle_object_model(int tick,obj_type *obj,we
 
 void weapon_get_projectile_position_center(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang)
 {
-	model_type				*mdl;
-	
 		// model point
 
 	fire_pnt->x=obj->pnt.x;
 	fire_pnt->y=(obj->pnt.y+obj->duck.y_move)+obj->size.eye_offset;
 	fire_pnt->z=obj->pnt.z;
-	
-		// model centering
-
-	mdl=model_find_uid(obj->draw.uid);
-	if (mdl!=NULL) {
-		fire_pnt->x+=mdl->center.x;
-		fire_pnt->y+=mdl->center.y;
-		fire_pnt->z+=mdl->center.z;
-	}
 
 		// get fire the angle
 

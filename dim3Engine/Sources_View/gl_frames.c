@@ -100,6 +100,8 @@ void gl_3D_view(void)
 	else {
 		glScalef(-1.0f,-1.0f,-1.0f);
 	}
+	
+	glTranslatef(0.0f,0.0f,(float)camera.plane.near_z_offset);
 
 		// default rotations
 
@@ -107,8 +109,6 @@ void gl_3D_view(void)
 	glLoadIdentity();
 	
 	gluLookAt(view.render->camera.pnt.x,view.render->camera.pnt.y,(view.render->camera.pnt.z+camera.plane.near_z),view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z,0.0f,1.0f,0.0f);
-
-	glTranslatef(0.0f,0.0f,(float)camera.plane.near_z_offset);
 }
 
 void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
@@ -138,8 +138,6 @@ void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 	else {
 		gluLookAt((pnt->x+fx),(pnt->y+fy),(pnt->z+fz),pnt->x,pnt->y,pnt->z,0.0f,1.0f,0.0f);
 	}
-
-	glTranslatef(0.0f,0.0f,(float)camera.plane.near_z_offset);
 }
 
 /* =======================================================
