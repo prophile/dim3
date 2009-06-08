@@ -39,6 +39,7 @@ and can be sold or given away.
 #include "consoles.h"
 
 extern int					current_map_spawn_idx;
+extern char					setup_team_color_list[net_team_count+1][32];
 
 extern map_type				map;
 extern server_type			server;
@@ -49,9 +50,7 @@ extern js_type				js;
 
 int							ndelayed_obj_spawn,
 							game_obj_rule_uid=-1;
-
 float						team_color_tint[net_team_count][3]=net_team_color_tint_def;
-char						setup_team_color_list[net_team_count+1][32]=net_team_color_list_def;
 
 delayed_obj_spawn_type		*delayed_obj_spawns;
 
