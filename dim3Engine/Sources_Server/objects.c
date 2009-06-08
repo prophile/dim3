@@ -391,14 +391,25 @@ void object_team_get_tint(int team_idx,d3col *tint)
 
 void object_get_tint(obj_type *obj,d3col *tint)
 {
-	int			team_idx;
+	d3col		*col;
 
-	team_idx=obj->team_idx;
-	if ((team_idx<0) || (team_idx>=net_team_count)) team_idx=0;
+		// if in multiplayer and using teams,
+		// then get team tint
 
-	tint->r=team_color_tint[team_idx][0];
-	tint->g=team_color_tint[team_idx][1];
-	tint->b=team_color_tint[team_idx][2];
+	if (net_setup.client.joined) {
+		if (net_setup.games[net_setup.game_idx].use_teams) {
+			object_team_get_tint(obj->team_idx,tint);
+			return;
+		}
+	}
+
+		// otherwise use set interface color
+
+	col=&hud.color.tints[setup.tint_color_idx];
+
+	tint->r=col->r;
+	tint->g=col->g;
+	tint->b=col->b;
 }
 
 /* =======================================================

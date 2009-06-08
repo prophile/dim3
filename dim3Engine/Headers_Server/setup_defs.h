@@ -137,7 +137,7 @@ typedef struct		{
 typedef struct		{
 						int							screen_wid,screen_high,
 													anisotropic_mode,mipmap_mode,fsaa_mode,
-													joystick_mode;
+													joystick_mode,tint_color_idx;
 						float						gamma,sound_volume,music_volume;
 						bool						lock_fps_refresh,texture_compression,
 													decal_on,shadow_on,

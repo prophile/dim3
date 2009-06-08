@@ -580,6 +580,35 @@ void element_tab_add(char *tab_list,int value,int id,int ntab,int x,int y,int wi
 	pthread_mutex_unlock(&element_thread_lock);
 }
 
+void element_color_add(char *str,int value,int id,int x,int y,bool selectable)
+{
+	element_type	*element;
+
+	pthread_mutex_lock(&element_thread_lock);
+
+	element=&elements[nelement];
+	nelement++;
+	
+	element->id=id;
+	element->type=element_type_color;
+	
+	element->x=x;
+	element->y=y;
+	
+	element->selectable=selectable;
+	element->enabled=TRUE;
+	element->hidden=FALSE;
+
+	element->wid=(int)(((float)hud.scale_x)*element_control_draw_long_width);
+	element->high=(int)(((float)hud.scale_x)*element_control_draw_height);
+
+	strcpy(element->str,str);
+
+	element->value=value;
+
+	pthread_mutex_unlock(&element_thread_lock);
+}
+
 /* =======================================================
 
       Change Elements
@@ -679,7 +708,10 @@ void element_get_box(element_type *element,int *lft,int *rgt,int *top,int *bot)
 			return;
 
 		case element_type_text_field:
-			*lft=element->x;
+		case element_type_combo:
+		case element_type_slider:
+		case element_type_color:
+			*lft=element->x+5;
 			*rgt=(element->x+10)+element->wid;
 			*top=(element->y-element->high)-1;
 			*bot=element->y+1;
@@ -688,20 +720,6 @@ void element_get_box(element_type *element,int *lft,int *rgt,int *top,int *bot)
 		case element_type_checkbox:
 			*lft=element->x+5;
 			*rgt=(element->x+5)+element->wid;
-			*top=element->y-element->high;
-			*bot=element->y;
-			return;
-			
-		case element_type_combo:
-			*lft=element->x;
-			*rgt=element->x+element->wid;
-			*top=(element->y-element->high)-1;
-			*bot=element->y+1;
-			return;
-			
-		case element_type_slider:
-			*lft=element->x;
-			*rgt=element->x+element->wid;
 			*top=element->y-element->high;
 			*bot=element->y;
 			return;
@@ -814,8 +832,6 @@ void element_draw_button(element_type *element,int sel_id)
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 
-	glDisable(GL_DEPTH_TEST);
-
 	if (element->setup.button.text_only) {
 		element_draw_button_text(element,sel_id);
 	}
@@ -849,8 +865,6 @@ void element_draw_bitmap(element_type *element)
 
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_NOTEQUAL,0);
-
-		glDisable(GL_DEPTH_TEST);
 
 		gl_texture_simple_set(element->setup.button.bitmap.gl_id,TRUE,1,1,1,1);
 		
@@ -989,15 +1003,13 @@ void element_draw_text_field(element_type *element,int sel_id)
 	
 	alpha=(element->enabled?1.0f:0.3f);
 
+		// background
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glDisable(GL_DEPTH_TEST);
-	
-		// background and outline
 		
 	col.r=0.0f;
 	col.g=0.0f;
@@ -1011,10 +1023,12 @@ void element_draw_text_field(element_type *element,int sel_id)
 		glColor4f(hud.color.outline.r,hud.color.outline.g,hud.color.outline.b,alpha);
 	}
 
-	view_draw_next_vertex_object_2D_line_quad(lft,rgt,top,bot);
-
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
+
+		// outline
+
+	view_draw_next_vertex_object_2D_line_quad(lft,rgt,top,bot);
 
 		// control text
 
@@ -1080,8 +1094,6 @@ void element_draw_checkbox(element_type *element,int sel_id)
 
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glDisable(GL_DEPTH_TEST);
 
 		// background
 
@@ -1222,8 +1234,6 @@ void element_draw_combo(element_type *element,int sel_id)
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 
-	glDisable(GL_DEPTH_TEST);
-
 		// background
 
 	view_draw_next_vertex_object_2D_color_quad(lft,top,&hud.color.gradient_start,rgt,top,&hud.color.gradient_start,rgt,bot,&hud.color.gradient_end,lft,bot,&hud.color.gradient_end,alpha);
@@ -1313,8 +1323,6 @@ void element_draw_combo_open(element_type *element)
 
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glDisable(GL_DEPTH_TEST);
 
 		// background
 
@@ -1422,8 +1430,6 @@ void element_draw_slider(element_type *element,int sel_id)
 
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glDisable(GL_DEPTH_TEST);
 	
 		// slider value
 		
@@ -1432,7 +1438,7 @@ void element_draw_slider(element_type *element,int sel_id)
 		col2.g=hud.color.hilite.g*0.7f;
 		col2.b=hud.color.hilite.b*0.7f;
 
-		view_draw_next_vertex_object_2D_color_quad(lft,top,&hud.color.hilite,mid,top,&hud.color.hilite,mid,bot,&col2,lft,bot,&col2,alpha);
+		view_draw_next_vertex_object_2D_color_quad(lft,top,&hud.color.hilite,mid,top,&hud.color.hilite,mid,(bot-2),&col2,lft,(bot-2),&col2,alpha);
 	}
 
 		// outline
@@ -1444,7 +1450,7 @@ void element_draw_slider(element_type *element,int sel_id)
 		glColor4f(hud.color.outline.r,hud.color.outline.g,hud.color.outline.b,alpha);
 	}
 
-	view_draw_next_vertex_object_2D_line_quad(lft,rgt,top,bot);
+	view_draw_next_vertex_object_2D_line_quad(lft,rgt,(top+1),(bot-2));
 
 		// slider drag
 
@@ -1495,7 +1501,7 @@ inline int element_get_table_row_high(element_type *element)
 
 void element_click_table(element_type *element,int x,int y)
 {
-	int				high,row_high,row_cnt,cnt;
+	int				high,row_high,row_cnt,cnt,scroll_high,my;
 	bool			up_ok,down_ok;
 	
 		// get text sizes
@@ -1506,22 +1512,28 @@ void element_click_table(element_type *element,int x,int y)
 	row_cnt=element_get_table_row_count(element);
 	
 		// check for clicking in scroll bar
-		
-	if (x>((element->x+element->wid)-24)) {
-		
+
+	if ((x>((element->x+element->wid)-24)) && (row_cnt!=0)) {
+
 			// get scrolling sizes
 			
 		cnt=((element->high-(high+4))/row_high)-1;
+
+		scroll_high=element->high/row_cnt;
+		my=(28+(scroll_high*element->offset))+((scroll_high*(cnt+1))/2);
+
+			// is up and down OK?
+
 		up_ok=(element->offset!=0);
 		down_ok=((element->offset+(cnt+1))<row_cnt);
 		
 		y-=element->y;
 		
-		if ((y>=(high+4)) && (y<=(high+28)) && (up_ok)) {
+		if ((y>=(high+4)) && (y<=my) && (up_ok)) {
 			element->offset-=(cnt+1);
 		}
 		else {
-			if ((y>=(element->high-24)) && (down_ok)) {
+			if ((y>=my) && (down_ok)) {
 				element->offset+=(cnt+1);
 			}
 		}
@@ -1746,7 +1758,6 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 
 				glDisable(GL_BLEND);
 				glDisable(GL_ALPHA_TEST);
-				glDisable(GL_DEPTH_TEST);
 
 				view_draw_next_vertex_object_2D_texture_quad(dx,(dx+element_table_bitmap_size),(y+1),((y+1)+element_table_bitmap_size));
 
@@ -1878,8 +1889,6 @@ void element_draw_table(element_type *element,int sel_id)
 
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glDisable(GL_DEPTH_TEST);
 
 		// scroll up
 
@@ -2082,8 +2091,6 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 	max_sz=(int)(((float)hud.scale_x)*0.2f);
 	if (xadd>max_sz) xadd=max_sz;
 
-	glDisable(GL_DEPTH_TEST);
-
 		// top and bottom borders
 
 	lx=lft;
@@ -2183,6 +2190,100 @@ void element_draw_tab(element_type *element,int sel_id,int x)
 
 /* =======================================================
 
+      Color Element
+      
+======================================================= */
+
+void element_click_color(element_type *element,int x)
+{
+	int				idx;
+
+	idx=(x-element->x)/(element->wid/max_tint_color);
+	if (idx<0) idx=0;
+	if (idx>=max_tint_color) idx=max_tint_color-1;
+
+	element->value=idx;
+}
+
+void element_draw_color(element_type *element,int sel_id)
+{
+	int				n,x,y,ky,lft,rgt,top,bot,lx,rx,xadd,s_lx,s_rx;
+	float			alpha;
+	d3col			col;
+	
+	x=element->x;
+	y=element->y;
+	
+		// label
+	
+	ky=y-(element->high>>1);
+
+	gl_text_start(hud.font.text_size_small);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&hud.color.base,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&hud.color.base,1.0f);
+	gl_text_end();
+
+		// color size
+		
+	lft=x+10;
+	rgt=lft+element->wid;
+	top=ky-(element->high>>1);
+	bot=top+element->high;
+
+	alpha=(element->enabled?1.0f:0.3f);
+
+		// colors
+
+	lx=lft;
+	xadd=(rgt-lft)/max_tint_color;
+
+	for (n=0;n!=max_tint_color;n++) {
+		if (n==(max_tint_color-1)) {
+			rx=rgt;
+		}
+		else {
+			rx=lx+xadd;
+		}
+
+		if (n==element->value) {
+			s_lx=lx;
+			s_rx=rx;
+		}
+
+		col.r=hud.color.tints[n].r*0.5f;
+		col.g=hud.color.tints[n].g*0.5f;
+		col.b=hud.color.tints[n].b*0.5f;
+
+		view_draw_next_vertex_object_2D_color_quad(lx,top,&hud.color.tints[n],rx,top,&hud.color.tints[n],rx,bot,&col,lx,bot,&col,alpha);
+
+		lx=rx;
+	}
+
+		// outline and selection
+
+	if ((element->id==sel_id) && (element->enabled)) {
+		glColor4f(hud.color.mouse_over.r,hud.color.mouse_over.g,hud.color.mouse_over.b,alpha);
+	}
+	else {
+		glColor4f(hud.color.outline.r,hud.color.outline.g,hud.color.outline.b,alpha);
+	}
+
+	view_draw_next_vertex_object_2D_line_quad(lft,rgt,top,bot);
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	view_draw_next_vertex_object_2D_line_quad((s_lx+1),(s_rx-2),(top+1),(bot-2));
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glColor4f(1.0f,1.0f,1.0f,0.5f);
+	view_draw_next_vertex_object_2D_line_quad((s_lx+2),(s_rx-3),(top+2),(bot-3));
+
+	glDisable(GL_BLEND);
+}
+
+/* =======================================================
+
       Draw Elements
       
 ======================================================= */
@@ -2272,6 +2373,9 @@ void element_draw_lock(bool cursor_hilite)
 				break;
 			case element_type_tab:
 				element_draw_tab(element,id,x);
+				break;
+			case element_type_color:
+				element_draw_color(element,id);
 				break;
 				
 		}
@@ -2405,6 +2509,9 @@ int element_click_up_lock(int x,int y)
 				element_click_down_id=-1;
 				return(-1);
 			}
+			break;
+		case element_type_color:
+			element_click_color(element,x);
 			break;
 			
 	}

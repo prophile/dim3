@@ -77,6 +77,7 @@ extern void element_combo_add(char *str,char *combo_data,int value,int id,int x,
 extern void element_slider_add(char *str,float value,float value_min,float value_max,int id,int x,int y,bool selectable);
 extern void element_table_add(element_column_type* cols,char *row_data,int id,int ncolumn,int x,int y,int wid,int high,int bitmap_mode);
 extern void element_tab_add(char *tab_list,int value,int id,int ntab,int x,int y,int wid,int high,int list_wid,int ext_high);
+extern void element_color_add(char *str,int value,int id,int x,int y,bool selectable);
 
 extern int element_get_selected(void);
 

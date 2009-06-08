@@ -48,6 +48,7 @@ and can be sold or given away.
 #define element_type_slider						6
 #define element_type_table						7
 #define element_type_tab						8
+#define element_type_color						9
 
 //
 // GUI position mode
@@ -206,6 +207,8 @@ typedef struct		{
 
 #define max_story_page							16
 
+#define max_tint_color							8
+
 //
 // chat
 //
@@ -233,6 +236,7 @@ typedef struct		{
 typedef struct		{
 						d3col					base,header,disabled,mouse_over,hilite,outline,
 												gradient_text,gradient_start,gradient_end,default_tint;
+						d3col					tints[max_tint_color];
 					} hud_color_type;
 
 typedef struct		{

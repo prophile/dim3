@@ -106,6 +106,38 @@ void default_settings_interface(void)
 	
 	hud.color.default_tint.r=hud.color.default_tint.g=hud.color.default_tint.b=1.0f;
 
+	hud.color.tints[0].r=1.0f;
+	hud.color.tints[0].g=1.0f;
+	hud.color.tints[0].b=1.0f;
+
+	hud.color.tints[1].r=1.0f;
+	hud.color.tints[1].g=1.0f;
+	hud.color.tints[1].b=0.0f;
+
+	hud.color.tints[2].r=1.0f;
+	hud.color.tints[2].g=0.6f;
+	hud.color.tints[2].b=0.0f;
+
+	hud.color.tints[3].r=1.0f;
+	hud.color.tints[3].g=0.0f;
+	hud.color.tints[3].b=0.0f;
+
+	hud.color.tints[4].r=0.0f;
+	hud.color.tints[4].g=1.0f;
+	hud.color.tints[4].b=0.0f;
+
+	hud.color.tints[5].r=0.0f;
+	hud.color.tints[5].g=0.0f;
+	hud.color.tints[5].b=1.0f;
+
+	hud.color.tints[6].r=1.0f;
+	hud.color.tints[6].g=0.0f;
+	hud.color.tints[6].b=1.0f;
+
+	hud.color.tints[7].r=0.6f;
+	hud.color.tints[7].g=0.4f;
+	hud.color.tints[7].b=0.0f;
+
 		// fonts
 
 	strcpy(hud.font.name,"Arial");
@@ -854,6 +886,10 @@ void read_settings_interface(void)
 		xml_get_attribute_color(color_tag,"gradient_end",&hud.color.gradient_end);
 		xml_get_attribute_color(color_tag,"default_tint",&hud.color.default_tint);
 	}
+
+		// first tint is always the default tint
+
+	memmove(&hud.color.tints[0],&hud.color.default_tint,sizeof(d3col));
 
 		// fonts
 
