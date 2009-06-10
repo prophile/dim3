@@ -2271,13 +2271,13 @@ void element_draw_color(element_type *element,int sel_id)
 	view_draw_next_vertex_object_2D_line_quad(lft,rgt,top,bot);
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
-	view_draw_next_vertex_object_2D_line_quad((s_lx+1),(s_rx-2),(top+1),(bot-2));
+	view_draw_next_vertex_object_2D_line_quad((s_lx+1),(s_rx-1),(top+1),(bot-1));
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 	glColor4f(1.0f,1.0f,1.0f,0.5f);
-	view_draw_next_vertex_object_2D_line_quad((s_lx+2),(s_rx-3),(top+2),(bot-3));
+	view_draw_next_vertex_object_2D_line_quad((s_lx+2),(s_rx-2),(top+2),(bot-2));
 
 	glDisable(GL_BLEND);
 }

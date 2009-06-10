@@ -102,10 +102,10 @@ JSBool js_get_map_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
             *vp=script_float_to_value(map.settings.resistance);
 			break;
 		case map_setting_prop_multiplayer:
-            *vp=BOOLEAN_TO_JSVAL((net_setup.host.hosting) || (net_setup.client.joined));
+            *vp=BOOLEAN_TO_JSVAL(net_setup.client.joined);
 			break;
 		case map_setting_prop_multiplayer_type:
-			if ((!net_setup.host.hosting) && (!net_setup.client.joined)) {
+			if (!net_setup.client.joined) {
 				*vp=JSVAL_NULL;
 			}
 			else {

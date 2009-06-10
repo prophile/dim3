@@ -779,6 +779,7 @@ int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_
 			// special check for bots
 
 		obj->bot=(strcasecmp(obj->type,"bot")==0);
+		obj->player=spot->attach_is_player;
 
 			// if there's an editor display model, then
 			// default model to it
@@ -975,10 +976,7 @@ void spot_start_attach(void)
 {
 	int					n;
 	char				err_str[256];
-	bool				multiplayer;
 	spot_type			*spot;
-	
-	multiplayer=(net_setup.host.hosting) || (net_setup.client.joined);
 	
 		// check if a spot was attached by a
 		// script.  If it was, and the skill levels
@@ -989,8 +987,10 @@ void spot_start_attach(void)
 		spot=&map.spots[n];
 		if (!spot->attach) continue;
 		if (spot->skill>server.skill) continue;
-		if ((spot->spawn==spawn_single_player_only) && (multiplayer)) continue;
-		if ((spot->spawn==spawn_multiplayer_only) && (!multiplayer)) continue;
+		if ((spot->spawn==spawn_single_player_only) && (net_setup.client.joined)) continue;
+		if ((spot->spawn==spawn_multiplayer_only) && (!net_setup.client.joined)) continue;
+		
+		spot->attach_is_player=FALSE;
 		 
 		object_start(spot,FALSE,bt_map,-1,err_str);
 	}
@@ -1025,6 +1025,7 @@ void spot_add_multiplayer_bots(void)
 		strcpy(spot.attach_type,"Bot");
 		strcpy(spot.attach_script,"Bot");
 		spot.attach_params[0]=0x0;
+		spot.attach_is_player=TRUE;
 		
 		uid=object_start(&spot,FALSE,bt_map,-1,err_str);
 		if (uid==-1) continue;

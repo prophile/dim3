@@ -103,7 +103,7 @@ JSBool js_map_action_set_host_map_func(JSContext *cx,JSObject *j_obj,uintN argc,
 {
 		// clients can not set maps
 
-	if ((!net_setup.host.hosting) && (!net_setup.client.joined)) {
+	if (!net_setup.client.joined) {
 		JS_ReportError(cx,"setHostMap() illegal for normal games");
 		return(JS_FALSE);
 	}

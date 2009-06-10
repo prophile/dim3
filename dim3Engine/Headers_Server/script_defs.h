@@ -156,6 +156,7 @@ and can be sold or given away.
 
 #define multiplayer_setting_prop_on					0
 #define multiplayer_setting_prop_type				1
+#define multiplayer_setting_prop_team_play			2
 
 #define multiplayer_bot_prop_skill					0
 

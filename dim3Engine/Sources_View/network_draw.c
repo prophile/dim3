@@ -133,7 +133,7 @@ int network_score_players_draw(bool center)
 
 	for (n=0;n!=server.count.obj;n++) {
 
-		if ((obj->player) || (obj->remote.on) || (obj->bot)) {
+		if (obj->player) {
 
 			s_score=(short)obj->score.score;
 			
@@ -238,7 +238,7 @@ int network_score_teams_draw(void)
 
 	for (n=0;n!=server.count.obj;n++) {
 
-		if ((obj->player) || (obj->remote.on) || (obj->bot)) {
+		if (obj->player) {
 			team_on[obj->team_idx]=TRUE;
 			team_score[obj->team_idx]+=(short)obj->score.score;
 			nplayer++;

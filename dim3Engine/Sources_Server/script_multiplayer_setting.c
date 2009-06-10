@@ -50,6 +50,7 @@ JSClass			multiplayer_setting_class={"multiplayer_setting_class",0,
 JSPropertySpec	multiplayer_setting_props[]={
 							{"on",					multiplayer_setting_prop_on,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{"type",				multiplayer_setting_prop_type,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+							{"teamPlay",			multiplayer_setting_prop_team_play,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
 							{0}};
 
 JSFunctionSpec	multiplayer_setting_functions[]={
@@ -84,15 +85,24 @@ JSBool js_get_multiplayer_setting_property(JSContext *cx,JSObject *j_obj,jsval i
 	switch (JSVAL_TO_INT(id)) {
 	
 		case multiplayer_setting_prop_on:
-           *vp=BOOLEAN_TO_JSVAL((net_setup.host.hosting) || (net_setup.client.joined));
+           *vp=BOOLEAN_TO_JSVAL(net_setup.client.joined);
 			break;
 			
 		case multiplayer_setting_prop_type:
- 			if ((!net_setup.host.hosting) && (!net_setup.client.joined)) {
+ 			if (!net_setup.client.joined) {
 				*vp=JSVAL_NULL;
 			}
 			else {
 				*vp=script_string_to_value(net_setup.games[net_setup.game_idx].name);
+			}
+			break;
+			
+		case multiplayer_setting_prop_team_play:
+ 			if (!net_setup.client.joined) {
+				*vp=JSVAL_FALSE;
+			}
+			else {
+				*vp=BOOLEAN_TO_JSVAL(net_setup.games[net_setup.game_idx].use_teams);
 			}
 			break;
 
@@ -114,7 +124,7 @@ JSBool js_multiplayer_setting_check_option_func(JSContext *cx,JSObject *j_obj,ui
 	
 		// all options are false if not in networking
 		
-	if ((!net_setup.host.hosting) && (!net_setup.client.joined)) {
+	if (!net_setup.client.joined) {
 		*rval=JSVAL_FALSE;
 		return(JS_TRUE);
 	}

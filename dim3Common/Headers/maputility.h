@@ -380,7 +380,7 @@ typedef struct		{
 															attach_type[name_str_len],
 															attach_script[file_str_len],
 															attach_params[param_str_len];
-						bool								attach,random_hit;
+						bool								attach,attach_is_player,random_hit;
 						d3pnt								pnt;
 						d3ang								ang;
 					} spot_type;

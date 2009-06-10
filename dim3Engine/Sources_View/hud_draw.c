@@ -143,12 +143,7 @@ void hud_bitmaps_draw(int tick)
 			tint.r=tint.g=tint.b=1.0f;
 		}
 		else {
-			if (!net_setup.client.joined) {
-				memmove(&tint,&hud.color.default_tint,sizeof(d3col));
-			}
-			else {
-				memmove(&tint,&team_tint,sizeof(d3col));
-			}
+			memmove(&tint,&team_tint,sizeof(d3col));
 		}
 
             // get bitmap and position
