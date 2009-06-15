@@ -126,7 +126,7 @@ JSBool js_get_obj_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 			*vp=script_string_to_value(obj->name);
 			break;
 		case obj_setting_prop_team:
-			*vp=INT_TO_JSVAL(obj->team_idx+sd_team_red);
+			*vp=INT_TO_JSVAL(obj->team_idx+sd_team_none);
 			break;
 		case obj_setting_prop_hidden:
 			*vp=BOOLEAN_TO_JSVAL(obj->hidden);
@@ -233,7 +233,7 @@ JSBool js_set_obj_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval 
 	switch (JSVAL_TO_INT(id)) {
 	
 		case obj_setting_prop_team:
-			obj->team_idx=JSVAL_TO_INT(*vp)-sd_team_red;
+			obj->team_idx=JSVAL_TO_INT(*vp)-sd_team_none;
 			break;
 		case obj_setting_prop_hidden:
 			object_hide(obj,JSVAL_TO_BOOLEAN(*vp));

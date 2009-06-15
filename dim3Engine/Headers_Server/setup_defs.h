@@ -111,7 +111,7 @@ typedef struct		{
 					} setup_network_option_type;
 
 typedef struct		{
-						int							nhost,noption,team_idx,game_type,score_limit;
+						int							nhost,noption,game_type,score_limit;
 						char						name[name_str_len],last_map[name_str_len];
 						bool						show_names;
 						setup_network_hosts_type	hosts[max_setup_network_host];

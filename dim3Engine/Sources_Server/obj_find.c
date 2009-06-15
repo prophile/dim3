@@ -244,47 +244,6 @@ int object_count_team(int team_idx,int ignore_obj_uid)
 
 void object_set_even_team(obj_type *obj)
 {
-	int			n,tot_team,small_team_idx,small_count,
-				count[net_team_count];
-	
-		// get total number of active teams
-		
-	tot_team=0;
-	
-	small_team_idx=1;
-	small_count=host_max_remote_count;
-	
-	for (n=1;n!=net_team_count;n++) {
-		count[n]=object_count_team(n,obj->uid);
-		if (count[n]!=0) {
-			tot_team++;
-			if (count[n]<small_count) {
-				small_team_idx=n;
-				small_count=count[n];
-			}
-		}
-	}
-	
-		// if only one team, then create a new
-		// one and add object to it
-		
-	if (tot_team<=1) {
-		for (n=1;n!=net_team_count;n++) {
-			if (count[n]==0) {
-				obj->team_idx=n;
-				return;
-			}
-		}
-		return;
-	}
-	
-		// add to team with least players
-		
-	obj->team_idx=small_team_idx;
-}
-
-void object_set_even_opposite(obj_type *obj)
-{
 	if (object_count_team(net_team_red,obj->uid)<object_count_team(net_team_blue,obj->uid)) {
 		obj->team_idx=net_team_red;
 	}

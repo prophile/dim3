@@ -698,7 +698,7 @@ void view_calculate_shakes(int tick,obj_type *obj)
 	k=(int)((float)(tick-effect->start_tick)*shake_freq)%shake_sz;
 	if (k>(shake_sz>>1)) k=shake_sz-k;
 	
-	view.render->camera.ang.x=angle_add(view.render->camera.ang.x,((float)k/25));
+	view.render->camera.ang.x=view.render->camera.ang.x+((float)k/25.0f);
 }
 
 void view_calculate_sways(int tick,obj_type *obj)

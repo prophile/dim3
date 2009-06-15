@@ -98,7 +98,6 @@ void setup_xml_default(void)
 	setup.action_list.naction=0;
 
 	strcpy(setup.network.name,"Player");
-	setup.network.team_idx=net_team_red;
 	setup.network.show_names=TRUE;
 	setup.network.nhost=0;
 	setup.network.noption=0;
@@ -206,7 +205,6 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_float(setup_tag,"Joystick_Y_Acceleration_Max",&setup.joystick_y.acceleration_max);
 	xml_key_read_int(setup_tag,"Joystick_Mode",&setup.joystick_mode);
 	xml_key_read_text(setup_tag,"Network_Name",setup.network.name,name_str_len);
-	xml_key_read_int(setup_tag,"Network_Team",&setup.network.team_idx);
 	xml_key_read_text(setup_tag,"Network_Last_Map",setup.network.last_map,name_str_len);
 	xml_key_read_int(setup_tag,"Host_Bot_Count",&setup.network.bot.count);
 	xml_key_read_int(setup_tag,"Host_Bot_Skill",&setup.network.bot.skill);
@@ -383,7 +381,6 @@ bool setup_xml_write(void)
 	xml_key_write_float("Joystick_Y_Acceleration_Max",setup.joystick_y.acceleration_max);
 	xml_key_write_int("Joystick_Mode",setup.joystick_mode);
 	xml_key_write_text("Network_Name",setup.network.name);
-	xml_key_write_int("Network_Team",setup.network.team_idx);
 	xml_key_write_text("Network_Last_Map",setup.network.last_map);
 	xml_key_write_int("Host_Bot_Count",setup.network.bot.count);
 	xml_key_write_int("Host_Bot_Skill",setup.network.bot.skill);

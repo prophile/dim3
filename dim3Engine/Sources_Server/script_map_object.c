@@ -33,9 +33,6 @@ and can be sold or given away.
 #include "objects.h"
 #include "models.h"
 
-extern char				setup_team_color_list[net_team_count+1][32];
-extern float			team_color_tint[net_team_count][3];
-
 extern server_type		server;
 extern js_type			js;
 
@@ -439,7 +436,7 @@ JSBool js_map_object_nearest_team_func(JSContext *cx,JSObject *j_obj,uintN argc,
 	
 		// team
 		
-	team_idx=JSVAL_TO_INT(argv[3])-sd_team_red;
+	team_idx=JSVAL_TO_INT(argv[3])-sd_team_none;
 
 		// angle and sweep
 	
@@ -504,18 +501,21 @@ JSBool js_map_object_get_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 	obj=script_find_obj_from_uid_arg(argv[0]);
 	if (obj==NULL) return(JS_FALSE);
 
-	*rval=INT_TO_JSVAL(obj->team_idx+sd_team_red);
+	*rval=INT_TO_JSVAL(obj->team_idx+sd_team_none);
 	return(JS_TRUE);
 }
 
 JSBool js_map_object_get_team_name_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
 {
+	char			str[32];
 	obj_type		*obj;
 	
 	obj=script_find_obj_from_uid_arg(argv[0]);
 	if (obj==NULL) return(JS_FALSE);
+	
+	object_team_get_name(obj->team_idx,str);
+	*rval=script_string_to_value(str);
 
-	*rval=script_string_to_value(setup_team_color_list[obj->team_idx]);
 	return(JS_TRUE);
 }
 
@@ -526,10 +526,8 @@ JSBool js_map_object_get_team_color_func(JSContext *cx,JSObject *j_obj,uintN arg
 	
 	obj=script_find_obj_from_uid_arg(argv[0]);
 	if (obj==NULL) return(JS_FALSE);
-
-	col.r=team_color_tint[obj->team_idx][0];
-	col.g=team_color_tint[obj->team_idx][1];
-	col.b=team_color_tint[obj->team_idx][2];
+	
+	object_team_get_tint(obj->team_idx,&col);
 
 	*rval=script_color_to_value(&col);
 	return(JS_TRUE);

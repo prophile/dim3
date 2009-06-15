@@ -73,7 +73,7 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 		// if correct version, add player to host
 
 	if (strncmp(request_join->vers,dim3_version,name_str_len)==0) {
-		remote_uid=net_host_player_join(sock,request_join->name,reply_join.deny_reason);
+		remote_uid=net_host_player_join(sock,request_join->name,request_join->tint_color_idx,reply_join.deny_reason);
 	}
 	else {
 		remote_uid=-1;
@@ -104,7 +104,8 @@ int net_host_client_handle_join(int sock,network_request_join *request_join)
 		remote_add.uid=htons((short)remote_uid);
 		strncpy(remote_add.name,request_join->name,name_str_len);
 		remote_add.name[name_str_len-1]=0x0;
-		remote_add.team_idx=htons((short)net_team_red);
+		remote_add.team_idx=htons((short)net_team_none);
+		remote_add.tint_color_idx=request_join->tint_color_idx;		// already in network byte order
 		remote_add.score=0;
 		remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
 		net_host_player_send_others_packet(remote_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add));
@@ -120,14 +121,15 @@ int net_host_client_handle_local_join(network_request_join *request_join,char *e
 
 		// join directly to host
 
-	remote_uid=net_host_player_join(D3_NULL_SOCKET,request_join->name,err_str);
+	remote_uid=net_host_player_join(D3_NULL_SOCKET,request_join->name,request_join->tint_color_idx,err_str);
 	if (remote_uid==-1) return(-1);
 
 		// send all other players on host the new player for remote add
 		
 	strncpy(remote_add.name,request_join->name,name_str_len);
 	remote_add.name[name_str_len-1]=0x0;
-	remote_add.team_idx=htons((short)net_team_red);
+	remote_add.team_idx=htons((short)net_team_none);
+	remote_add.tint_color_idx=htons((short)request_join->tint_color_idx);
 	remote_add.score=0;
 	remote_add.pnt_x=remote_add.pnt_y=remote_add.pnt_z=0;
 	net_host_player_send_others_packet(remote_uid,net_action_request_remote_add,(unsigned char*)&remote_add,sizeof(network_request_object_add));

@@ -111,7 +111,7 @@ typedef struct		{
 
 typedef struct		{
 						d3socket					sock;
-						int							remote_uid,team_idx,score;
+						int							remote_uid,team_idx,tint_color_idx,score;
 						char						name[name_str_len];
 						bool						ready,bot;
 						d3pnt						pnt;
@@ -211,16 +211,9 @@ typedef struct		{
 // team definitions
 //
 
-#define net_team_count								5
-
-#define net_team_red								0
-#define net_team_blue								1
-#define net_team_green								2
-#define net_team_yellow								3
-#define net_team_purple								4
-
-#define net_team_color_tint_def						{{1.0f,0.25f,0.25f},{0.25f,0.25f,1.0f},{0.25f,1.0f,0.25f},{1.0f,1.0f,0.25f},{1.0f,0.25f,1.0f}}
-#define net_team_color_list_def						{"Red","Blue","Green","Yellow","Purple",""}
+#define net_team_none								0
+#define net_team_red								1
+#define net_team_blue								2
 
 //
 // flags
@@ -242,7 +235,7 @@ typedef struct		{
 
 typedef struct		{
 						int							pnt_x,pnt_y,pnt_z;
-						short						uid,bot,score,team_idx;
+						short						uid,bot,score,team_idx,tint_color_idx;
 						char						name[name_str_len];
 					} network_request_object_add;
 
@@ -264,7 +257,7 @@ typedef struct		{
 					} network_reply_info;
 					
 typedef struct		{
-						short						team_idx;
+						short						tint_color_idx;
 						char						name[name_str_len],vers[name_str_len];
 					} network_request_join;
 

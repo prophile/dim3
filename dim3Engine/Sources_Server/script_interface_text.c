@@ -194,7 +194,7 @@ JSBool js_interface_text_set_team_color_func(JSContext *cx,JSObject *j_obj,uintN
 	text=script_find_text_from_name(argv[0]);
 	if (text==NULL) return(JS_FALSE);
 
-	team_idx=JSVAL_TO_INT(argv[1])-sd_team_red;
+	team_idx=JSVAL_TO_INT(argv[1])-sd_team_none;
 	
 	object_team_get_tint(team_idx,&text->color);
 	

@@ -41,10 +41,9 @@ and can be sold or given away.
 #define ctrl_network_tab_id					0
 
 #define ctrl_network_name_id				10
-#define ctrl_network_team_id				11
-#define ctrl_network_show_names_id			12
-#define ctrl_network_host_id				13
-#define ctrl_network_host_ip_id				14
+#define ctrl_network_show_names_id			11
+#define ctrl_network_host_id				12
+#define ctrl_network_host_ip_id				13
 
 #define setup_network_host_add_button		20
 #define setup_network_host_update_button	21
@@ -64,8 +63,7 @@ extern hud_type				hud;
 extern setup_type			setup_backup;
 
 int							setup_network_tab_value,setup_network_host_scroll_pos;
-char						setup_team_color_list[net_team_count+1][32],
-							setup_host_list[max_setup_network_host+1][128];
+char						setup_host_list[max_setup_network_host+1][128];
 
 /* =======================================================
 
@@ -94,7 +92,7 @@ void setup_network_player_pane(void)
 						control_y_add,control_y_sz;
 
 	control_y_add=element_get_control_high();
-	control_y_sz=control_y_add*3;
+	control_y_sz=control_y_add*2;
 	
 	x=(int)(((float)hud.scale_x)*0.4f);
 	y=(hud.scale_y>>1)-(control_y_sz>>1);
@@ -102,8 +100,6 @@ void setup_network_player_pane(void)
 		// name and timeout
 		
 	element_text_field_add("Name",setup.network.name,name_str_len,ctrl_network_name_id,x,y,TRUE);
-	y+=control_y_add;
-	element_combo_add("Team",(char*)setup_team_color_list,setup.network.team_idx,ctrl_network_team_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Show Names",setup.network.show_names,ctrl_network_show_names_id,x,y,TRUE);
 }
@@ -403,10 +399,6 @@ void setup_network_handle_click(int id)
 
 		case ctrl_network_name_id:
 			element_get_value_string(ctrl_network_name_id,setup.network.name);
-			break;
-
-		case ctrl_network_team_id:
-			setup.network.team_idx=element_get_value(ctrl_network_team_id);
 			break;
 
 		case ctrl_network_show_names_id:

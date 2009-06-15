@@ -87,7 +87,7 @@ JSBool js_multiplayer_score_get_team_func(JSContext *cx,JSObject *j_obj,uintN ar
 	int				n,score,team_idx;
 	obj_type		*obj;
 
-	team_idx=JSVAL_TO_INT(argv[0])-sd_team_red;
+	team_idx=JSVAL_TO_INT(argv[0])-sd_team_none;
 
 		// add up team scores
 

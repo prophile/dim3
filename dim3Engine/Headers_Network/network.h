@@ -112,7 +112,7 @@ extern void net_host_player_shutdown(void);
 
 extern int net_host_player_find(int remote_uid);
 
-extern int net_host_player_join(d3socket sock,char *name,char *deny_reason);
+extern int net_host_player_join(d3socket sock,char *name,int tint_color_idx,char *deny_reason);
 extern void net_host_player_ready(int remote_uid,bool ready);
 extern void net_host_player_leave(int remote_uid);
 extern int net_host_bot_join(obj_type *obj);

@@ -133,7 +133,7 @@ void model_draw_setup_object(int tick,obj_type *obj)
 
 		// team tint
 
-	if (net_setup.client.joined) {
+	if ((net_setup.client.joined) && (obj->player) && (net_setup.games[net_setup.game_idx].use_teams)) {
 		object_get_tint(obj,&draw->tint);
 	}
 	else {

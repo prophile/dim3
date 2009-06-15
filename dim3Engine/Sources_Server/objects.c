@@ -39,7 +39,6 @@ and can be sold or given away.
 #include "consoles.h"
 
 extern int					current_map_spawn_idx;
-extern char					setup_team_color_list[net_team_count+1][32];
 
 extern map_type				map;
 extern server_type			server;
@@ -50,7 +49,6 @@ extern js_type				js;
 
 int							ndelayed_obj_spawn,
 							game_obj_rule_uid=-1;
-float						team_color_tint[net_team_count][3]=net_team_color_tint_def;
 
 delayed_obj_spawn_type		*delayed_obj_spawns;
 
@@ -380,13 +378,28 @@ void object_stop(obj_type *obj)
       
 ======================================================= */
 
+void object_team_get_name(int team_idx,char *str)
+{
+	if (team_idx==net_team_red) {
+		strcpy(str,"Red");
+	}
+	else {
+		strcpy(str,"Blue");
+	}
+}
+
 void object_team_get_tint(int team_idx,d3col *tint)
 {
-	if ((team_idx<0) || (team_idx>=net_team_count)) team_idx=0;
-	
-	tint->r=team_color_tint[team_idx][0];
-	tint->g=team_color_tint[team_idx][1];
-	tint->b=team_color_tint[team_idx][2];
+	if (team_idx==net_team_red) {
+		tint->r=1.0f;
+		tint->g=0.0f;
+		tint->b=0.0f;
+	}
+	else {
+		tint->r=0.0f;
+		tint->g=0.0f;
+		tint->b=1.0f;
+	}
 }
 
 void object_get_tint(obj_type *obj,d3col *tint)
@@ -405,7 +418,7 @@ void object_get_tint(obj_type *obj,d3col *tint)
 
 		// otherwise use set interface color
 
-	col=&hud.color.tints[setup.tint_color_idx];
+	col=&hud.color.tints[obj->tint_color_idx];
 
 	tint->r=col->r;
 	tint->g=col->g;
@@ -494,6 +507,8 @@ obj_type* object_create(int bind,int reserve_uid)
 	obj->damage.invincible=FALSE;
 	obj->damage.in_damage=FALSE;
 	
+	obj->tint_color_idx=0;
+	
 	obj->input_mode=im_fpp;
 	
 	obj->in_collide_event=FALSE;
@@ -506,7 +521,7 @@ obj_type* object_create(int bind,int reserve_uid)
 	obj->on_ladder=FALSE;
 	
 	obj->name[0]=0x0;
-	obj->team_idx=net_team_red;
+	obj->team_idx=net_team_none;
 	obj->spawn_spot_name[0]=0x0;
 	
 	obj->click.on=FALSE;
@@ -761,11 +776,13 @@ int object_start(spot_type *spot,bool player,int bind,int reserve_uid,char *err_
 		
 	if (player) {
 		strcpy(obj->name,setup.network.name);
-		obj->team_idx=setup.network.team_idx;
+		obj->team_idx=net_team_none;
 		obj->spawn_spot_name[0]=0x0;
 		
 		obj->player=TRUE;
 		obj->hidden=FALSE;
+		
+		obj->tint_color_idx=setup.tint_color_idx;
 
 		server.player_obj_uid=obj->uid;
 	}

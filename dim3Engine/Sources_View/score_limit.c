@@ -108,7 +108,7 @@ void score_limit_trigger_set(void)
 
 void score_limit_trigger_set_check_scores(void)
 {
-	int				n,limit,team_score[net_team_count];
+	int				n,limit,red_score,blue_score;
 	obj_type		*obj;
 
 		// get score limit
@@ -120,22 +120,33 @@ void score_limit_trigger_set_check_scores(void)
 		
 	if (net_setup.games[net_setup.game_idx].use_teams) {
 		
-		for (n=0;n!=net_team_count;n++) {
-			team_score[n]=0;
-		}
+		red_score=blue_score=0;
 
 		obj=server.objs;
 
 		for (n=0;n!=server.count.obj;n++) {
-			if ((obj->player) || (obj->remote.on) || (obj->bot)) team_score[obj->team_idx]+=obj->score.score;
-			obj++;
-		}
 		
-		for (n=0;n!=net_team_count;n++) {
-			if (team_score[n]>=limit) {
-				score_limit_trigger_set();
-				return;
+			if (!obj->player) {
+				obj++;
+				continue;
 			}
+			
+			if (obj->team_idx==net_team_red) {
+				red_score+=obj->score.score;
+				if (red_score>=limit) {
+					score_limit_trigger_set();
+					return;
+				}
+			}
+			else {
+				blue_score+=obj->score.score;
+				if (blue_score>=limit) {
+					score_limit_trigger_set();
+					return;
+				}
+			}
+			
+			obj++;
 		}
 		
 		return;
@@ -146,7 +157,7 @@ void score_limit_trigger_set_check_scores(void)
 	obj=server.objs;
 
 	for (n=0;n!=server.count.obj;n++) {
-		if ((obj->player) || (obj->remote.on) || (obj->bot)) {
+		if (obj->player) {
 			if (obj->score.score>=limit) {
 				score_limit_trigger_set();
 				return;

@@ -447,6 +447,7 @@ void host_game(void)
 
 	strcpy(request_join.name,setup.network.name);
 	strcpy(request_join.vers,dim3_version);
+	request_join.tint_color_idx=(signed short)ntohs(setup.tint_color_idx);
 
 	remote_uid=net_host_client_handle_local_join(&request_join,err_str);
 	if (remote_uid==-1) {

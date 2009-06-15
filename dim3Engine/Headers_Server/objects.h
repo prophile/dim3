@@ -28,6 +28,7 @@ and can be sold or given away.
 extern void object_initialize_list(void);
 extern void object_free_list(void);
 
+extern void object_team_get_name(int team_idx,char *str);
 extern void object_team_get_tint(int team_idx,d3col *tint);
 extern void object_get_tint(obj_type *obj,d3col *tint);
 
@@ -77,7 +78,6 @@ extern obj_type* object_find_name(char *name);
 extern obj_type* object_find_nearest(d3pnt *pt,char *name,char *type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,bool remote,int skip_obj_uid);
 extern int object_count_team(int team_idx,int ignore_obj_uid);
 extern void object_set_even_team(obj_type *obj);
-extern void object_set_even_opposite(obj_type *obj);
 extern int object_find_uid_click_object(obj_type *obj);
 extern int object_find_uid_by_stood_on_object_uid(int stand_obj_uid);
 extern int object_find_network_spawn_spot(obj_type *obj);
