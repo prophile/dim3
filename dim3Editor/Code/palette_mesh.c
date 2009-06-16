@@ -154,13 +154,9 @@ void palette_mesh_save(void)
 
 static pascal OSStatus palette_mesh_tab_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
-	int				event_class,event_kind;
+	palette_mesh_save();
 	
-	event_class=GetEventClass(event);
-	event_kind=GetEventKind(event);
-	
-	if ((event_class==kEventClassControl) && (event_kind==kEventControlHit)) {
-		palette_mesh_save();
+	if ((GetEventClass(event)==kEventClassControl) && (GetEventKind(event)==kEventControlHit)) {
 		dialog_switch_tab(palette_mesh_wind,kMeshSettingTab,0,kMeshSettingTabCount);
 	}
 	
@@ -179,7 +175,8 @@ void palette_mesh_open(int x,int y)
 	ControlID				ctrl_id;
 	EventHandlerUPP			tab_event_upp;
 	EventTypeSpec			tab_event_list[]={{kEventClassCommand,kEventProcessCommand},
-											  {kEventClassControl,kEventControlHit}};
+											  {kEventClassControl,kEventControlHit},
+											  {kEventClassKeyboard,kEventRawKeyUp}};
 
 		// open the window
 		

@@ -813,6 +813,7 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 	for (n=0;n!=map.mesh.nmesh;n++) {
 
 		mesh=&map.mesh.meshes[n];
+		if (!mesh->flag.on) continue;
 		
 			// rough vector box bounds check
 

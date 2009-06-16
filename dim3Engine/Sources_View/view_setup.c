@@ -251,6 +251,7 @@ void view_add_mesh_draw_list(void)
 	for (n=0;n!=map.mesh.nmesh;n++) {
 
 		mesh=&map.mesh.meshes[n];
+		if (!mesh->flag.on) continue;
 			
 		if (!mesh->flag.never_obscure) {
 
