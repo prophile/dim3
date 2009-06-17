@@ -81,9 +81,9 @@ void render_transparent_dispose_sort_list(void)
       
 ======================================================= */
 
-float render_transparent_segments_far_z(map_mesh_type *mesh,map_mesh_poly_type *poly,d3pnt *pnt)
+float render_transparent_poly_far_z(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	int				n,kx,ky,kz;
+	int				n;
 	float			d,dist;
 	d3pnt			*pt;
 
@@ -95,27 +95,23 @@ float render_transparent_segments_far_z(map_mesh_type *mesh,map_mesh_poly_type *
 	for (n=0;n!=poly->ptsz;n++) {
 
 		pt=&mesh->vertexes[poly->v[n]];
-		kx=pt->x-pnt->x;
-		ky=pt->y-pnt->y;
-		kz=pnt->z-pt->z;
 
-		if (!gl_project_in_view_z(kx,ky,kz)) continue;
+		if (!gl_project_in_view_z(pt->x,pt->y,pt->z)) continue;
 
-		d=gl_project_get_depth(kx,ky,kz);
+		d=gl_project_get_depth(pt->x,pt->y,pt->z);
 		if (d>dist) dist=d;
 	}
 
 	return(dist);
 }
 
-void render_transparent_sort(d3pnt *pnt)
+void render_transparent_sort(void)
 {
-	int							n,k,i,frame,sort_cnt,sort_idx;
+	int							n,k,i,sort_cnt,sort_idx;
 	float						dist;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	map_poly_sort_item_type		*sort_list;
-	texture_type				*texture;
 
 	sort_list=trans_sort.list;
 
@@ -128,23 +124,16 @@ void render_transparent_sort(d3pnt *pnt)
 		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
 
 		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
+		if (!mesh->draw.has_transparent) continue;
 		
 		for (k=0;k!=mesh->npoly;k++) {
 		
 			poly=&mesh->polys[k];
-
-				// get texture
-
-			texture=&map.textures[poly->txt_idx];
-			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-				// transparent?
-
-			if ((texture->frames[frame].bitmap.alpha_mode!=alpha_mode_transparent) && (poly->alpha==1.0f)) continue;
+			if (!poly->draw.transparent_on) continue;
 
 				// find distance from camera
 
-			dist=render_transparent_segments_far_z(mesh,poly,pnt);
+			dist=render_transparent_poly_far_z(mesh,poly);
 
 				// find position in sort list
 
@@ -214,11 +203,11 @@ void render_transparent_mesh_simple(void)
 		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
 		poly=&mesh->polys[sort_list[n].poly_idx];
 
-			// skip meshes or polys with no transparents or shaders
+			// skip meshes or polys with no shaders
 			// unless debug is on
 
-		if ((!mesh->draw.has_transparent) || ((!dim3_debug) && (!mesh->draw.has_no_shader))) continue;
-		if ((!poly->draw.transparent_on) || ((!dim3_debug) && (poly->draw.shader_on))) continue;
+		if ((!dim3_debug) && (!mesh->draw.has_no_shader)) continue;
+		if ((!dim3_debug) && (poly->draw.shader_on)) continue;
 
 			// time to enable color array?
 
@@ -283,10 +272,9 @@ void render_transparent_mesh_shader(void)
 		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
 		poly=&mesh->polys[sort_list[n].poly_idx];
 
-			// skip meshes or polys with no transparents or no shaders
+			// skip meshes or polys with no shaders
 
-		if ((!mesh->draw.has_transparent) || (mesh->draw.has_no_shader)) continue;
-		if ((!poly->draw.transparent_on) || (!poly->draw.shader_on)) continue;
+		if ((mesh->draw.has_no_shader) || (!poly->draw.shader_on)) continue;
 
 			// need to change texture blending?
 
@@ -341,10 +329,9 @@ void render_transparent_mesh_glow(void)
 		mesh=&map.mesh.meshes[sort_list[n].mesh_idx];
 		poly=&mesh->polys[sort_list[n].poly_idx];
 
-			// skip meshes or polys with no glows or transparents
+			// skip meshes or polys with no glows
 
-		if ((!mesh->draw.has_transparent) || (!mesh->draw.has_glow)) continue;
-		if ((!poly->draw.transparent_on) || (!poly->draw.glow_on)) continue;
+		if ((!mesh->draw.has_glow) || (!poly->draw.glow_on)) continue;
 		
 			// draw glow
 
@@ -376,7 +363,7 @@ void render_map_mesh_transparent(void)
 
 		// sort meshes
 
-	render_transparent_sort(&view.render->camera.pnt);
+	render_transparent_sort();
 
 		// common setup
 		
