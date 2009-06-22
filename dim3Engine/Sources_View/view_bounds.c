@@ -50,6 +50,7 @@ extern setup_type			setup;
 extern void particle_draw_position(effect_type *effect,int count,int *x,int *y,int *z);
 extern void ring_draw_position(effect_type *effect,int count,int *x,int *y,int *z);
 extern bool fog_solid_on(void);
+extern bool shadow_get_volume_mesh(map_mesh_type *mesh,int *px,int *py,int *pz);
 extern bool shadow_get_volume_model(model_type *mdl,model_draw *draw,int *px,int *py,int *pz);
 
 /* =======================================================
@@ -194,6 +195,14 @@ bool mesh_inview(map_mesh_type *mesh)
 	return(!(lft||rgt||top||bot));
 }
 
+bool mesh_shadow_inview(map_mesh_type *mesh)
+{
+	int				px[8],py[8],pz[8];
+
+	if (!shadow_get_volume_mesh(mesh,px,py,pz)) return(FALSE);
+	return(complex_boundbox_inview(px,py,pz));
+}
+
 bool model_inview(model_draw *draw)
 {
 	int				px[8],py[8],pz[8];
@@ -208,9 +217,9 @@ bool model_inview(model_draw *draw)
 	return(complex_boundbox_inview(px,py,pz));
 }
 
-bool shadow_inview(model_draw *draw)
+bool model_shadow_inview(model_draw *draw)
 {
-	int				px[8],pz[8],py[8];
+	int				px[8],py[8],pz[8];
 	model_type		*mdl;
 
 	if ((draw->uid==-1) || (!draw->on)) return(FALSE);

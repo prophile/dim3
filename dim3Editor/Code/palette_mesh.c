@@ -39,6 +39,7 @@ and can be sold or given away.
 #define kMeshSettingClimbable					FOUR_CHAR_CODE('fclb')
 #define kMeshSettingHilite						FOUR_CHAR_CODE('hilt')
 #define kMeshSettingLockUV						FOUR_CHAR_CODE('lkuv')
+#define kMeshSettingLockMove					FOUR_CHAR_CODE('lkps')
 #define kMeshSettingShadow						FOUR_CHAR_CODE('shad')
 #define kMeshSettingNeverObscure				FOUR_CHAR_CODE('nvob')
 #define kMeshSettingRotIndependent				FOUR_CHAR_CODE('rtip')
@@ -88,6 +89,7 @@ void palette_mesh_load(void)
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingClimbable,0,mesh->flag.climbable);
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingHilite,0,mesh->flag.hilite);
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingLockUV,0,mesh->flag.lock_uv);
+	dialog_set_boolean(palette_mesh_wind,kMeshSettingLockMove,0,mesh->flag.lock_move);
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingShadow,0,mesh->flag.shadow);
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingNeverObscure,0,mesh->flag.never_obscure);
 	dialog_set_boolean(palette_mesh_wind,kMeshSettingRotIndependent,0,mesh->flag.rot_independent);
@@ -130,6 +132,7 @@ void palette_mesh_save(void)
 	mesh->flag.climbable=dialog_get_boolean(palette_mesh_wind,kMeshSettingClimbable,0);
 	mesh->flag.hilite=dialog_get_boolean(palette_mesh_wind,kMeshSettingHilite,0);
 	mesh->flag.lock_uv=dialog_get_boolean(palette_mesh_wind,kMeshSettingLockUV,0);
+	mesh->flag.lock_move=dialog_get_boolean(palette_mesh_wind,kMeshSettingLockMove,0);
 	mesh->flag.shadow=dialog_get_boolean(palette_mesh_wind,kMeshSettingShadow,0);
 	mesh->flag.never_obscure=dialog_get_boolean(palette_mesh_wind,kMeshSettingNeverObscure,0);
 	mesh->flag.rot_independent=dialog_get_boolean(palette_mesh_wind,kMeshSettingRotIndependent,0);

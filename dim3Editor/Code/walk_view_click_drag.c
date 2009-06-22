@@ -113,6 +113,8 @@ bool walk_view_click_drag_mesh_handle(editor_3D_view_setup *view_setup,d3pnt *pt
 	
 	mesh=&map.mesh.meshes[mesh_idx];
 	
+	if (mesh->flag.lock_move) return(FALSE);
+	
 		// are we clicking in the grow handles?
 		
 	handle_idx=-1;
@@ -261,6 +263,8 @@ bool walk_view_click_drag_mesh(editor_3D_view_setup *view_setup,d3pnt *pt,int vi
 	if (type!=mesh_piece) return(FALSE);
 	
 	mesh=&map.mesh.meshes[mesh_idx];
+	
+	if (mesh->flag.lock_move) return(FALSE);
 		
 		// are we clicking in a selected mesh
 		
@@ -414,6 +418,8 @@ bool walk_view_click_drag_mesh_poly(editor_3D_view_setup *view_setup,d3pnt *pt,i
 	mesh=&map.mesh.meshes[mesh_idx];
 	mesh_poly=&mesh->polys[poly_idx];
 	
+	if (mesh->flag.lock_move) return(FALSE);
+	
 	if (!walk_view_mesh_poly_click_index(view_setup,pt,mesh,poly_idx,&fz))  return(FALSE);
 	
 		// drag
@@ -508,6 +514,8 @@ bool walk_view_click_drag_vertex(editor_3D_view_setup *view_setup,d3pnt *pt,int 
 		// check for clicking points
 
 	mesh=&map.mesh.meshes[mesh_idx];
+	
+	if (mesh->flag.lock_move) return(FALSE);
 		
 	vertex_idx=-1;
 	hit_z=100000;

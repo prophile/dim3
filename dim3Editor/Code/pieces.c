@@ -497,7 +497,9 @@ void piece_move(int move_x,int move_y,int move_z)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map_mesh_move(&map,mesh_idx,&mov_pnt);
+		if (type==mesh_piece) {
+			if (!map.mesh.meshes[mesh_idx].flag.lock_move) map_mesh_move(&map,mesh_idx,&mov_pnt);
+		}
 	}
 	
 	main_wind_draw();
@@ -925,6 +927,7 @@ void piece_key(editor_3D_view_setup *view_setup,int view_move_dir,char ch)
 		switch (type) {
 		
 			case mesh_piece:
+				if (map.mesh.meshes[main_idx].flag.lock_move) break;
 				pt.x=xadd;
 				pt.y=yadd;
 				pt.z=zadd;

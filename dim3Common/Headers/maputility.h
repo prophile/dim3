@@ -240,7 +240,7 @@ typedef struct		{
 typedef struct		{
 						bool								on,pass_through,moveable,
 															hilite,climbable,shiftable,
-															lock_uv,never_obscure,
+															lock_uv,lock_move,never_obscure,
 															rot_independent,shadow,
 															touched;
 					} map_mesh_flag_type;

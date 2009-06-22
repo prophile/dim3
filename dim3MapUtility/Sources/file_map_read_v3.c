@@ -87,6 +87,7 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 	mesh->flag.climbable=xml_get_attribute_boolean(mesh_tag,"climbable");
 	mesh->flag.hilite=xml_get_attribute_boolean(mesh_tag,"hilite");
 	mesh->flag.lock_uv=xml_get_attribute_boolean(mesh_tag,"lock_uv");
+	mesh->flag.lock_move=xml_get_attribute_boolean(mesh_tag,"lock_move");
 	mesh->flag.never_obscure=xml_get_attribute_boolean(mesh_tag,"never_obscure");
 	mesh->flag.rot_independent=xml_get_attribute_boolean(mesh_tag,"rot_independent");
 	mesh->flag.shadow=xml_get_attribute_boolean(mesh_tag,"shadow");

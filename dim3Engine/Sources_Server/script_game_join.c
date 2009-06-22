@@ -43,6 +43,7 @@ JSBool js_game_join_set_team_even_func(JSContext *cx,JSObject *j_obj,uintN argc,
 JSBool js_game_join_clear_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_game_join_count_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_game_join_set_spawn_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
+JSBool js_game_join_set_spawn_spot_to_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_game_join_clear_spawn_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			game_join_class={"game_join_class",0,
@@ -56,12 +57,13 @@ JSPropertySpec	game_join_props[]={
 							{0}};
 							
 JSFunctionSpec	game_join_functions[]={
-							{"setTeam",				js_game_join_set_team_func,				1},
-							{"setTeamEven",			js_game_join_set_team_even_func,		0},
-							{"clearTeam",			js_game_join_clear_team_func,			0},
-							{"countTeam",			js_game_join_count_team_func,			1},
-							{"setSpawnSpot",		js_game_join_set_spawn_spot_func,		1},
-							{"clearSpawnSpot",		js_game_join_clear_spawn_spot_func,		0},
+							{"setTeam",				js_game_join_set_team_func,					1},
+							{"setTeamEven",			js_game_join_set_team_even_func,			0},
+							{"clearTeam",			js_game_join_clear_team_func,				0},
+							{"countTeam",			js_game_join_count_team_func,				1},
+							{"setSpawnSpot",		js_game_join_set_spawn_spot_func,			1},
+							{"setSpawnSpotToTeam",	js_game_join_set_spawn_spot_to_team_func,	0},
+							{"clearSpawnSpot",		js_game_join_clear_spawn_spot_func,			0},
 							{0}};
 
 /* =======================================================
@@ -169,6 +171,24 @@ JSBool js_game_join_set_spawn_spot_func(JSContext *cx,JSObject *j_obj,uintN argc
 
 	obj=object_find_uid(game_obj_rule_uid);
 	script_value_to_string(argv[0],obj->spawn_spot_name,name_str_len);
+
+	return(JS_TRUE);
+}
+
+JSBool js_game_join_set_spawn_spot_to_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval)
+{
+	obj_type		*obj;
+
+	if (game_obj_rule_uid==-1) return(JS_TRUE);
+
+	obj=object_find_uid(game_obj_rule_uid);
+	
+	if (obj->team_idx==net_team_red) {
+		strcpy(obj->spawn_spot_name,"Red");
+	}
+	else {
+		strcpy(obj->spawn_spot_name,"Blue");
+	}
 
 	return(JS_TRUE);
 }

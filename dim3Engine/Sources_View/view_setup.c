@@ -50,11 +50,12 @@ extern server_type			server;
 extern setup_type			setup;
 
 extern bool fog_solid_on(void);
+extern bool mesh_inview(map_mesh_type *mesh);
+extern bool mesh_shadow_inview(map_mesh_type *mesh);
 extern bool model_inview(model_draw *draw);
-extern bool shadow_inview(model_draw *draw);
+extern bool model_shadow_inview(model_draw *draw);
 extern double distance_to_view_center(int x,int y,int z);
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
-extern bool mesh_inview(map_mesh_type *mesh);
 extern bool effect_inview(effect_type *effect,int count);
 
 /* =======================================================
@@ -271,7 +272,10 @@ void view_add_mesh_draw_list(void)
 				// close to the camera
 
 			if (d>view_never_obscure_dist) {
-				if (!mesh_inview(mesh)) continue;
+				if (!mesh_inview(mesh)) {
+					if (!mesh->flag.shadow) continue;
+					if (!mesh_shadow_inview(mesh)) continue;
+				}
 			}
 		}
 		else {
@@ -396,7 +400,7 @@ void view_setup_objects(int tick)
 			if (view_setup_model_in_view(&obj->draw,obj->mesh.cur_mesh_idx)) flag|=view_list_item_flag_model_in_view;
 
 			if (obj->draw.shadow.on) {
-				if (shadow_inview(&obj->draw)) flag|=view_list_item_flag_shadow_in_view;
+				if (model_shadow_inview(&obj->draw)) flag|=view_list_item_flag_shadow_in_view;
 			}
 
 			if (flag==0x0) continue;
@@ -445,7 +449,7 @@ void view_setup_projectiles(int tick)
 		if (view_setup_model_in_view(&proj->draw,mesh_idx)) flag|=view_list_item_flag_model_in_view;
 
 		if (proj->draw.shadow.on) {
-			if (shadow_inview(&proj->draw)) flag|=view_list_item_flag_shadow_in_view;
+			if (model_shadow_inview(&proj->draw)) flag|=view_list_item_flag_shadow_in_view;
 		}
 
 		if (flag==0x0) continue;
