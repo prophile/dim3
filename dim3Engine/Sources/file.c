@@ -148,26 +148,14 @@ unsigned char* game_file_replace_chunk(void)
 
 bool game_file_compress_save(char *path,char *err_str)
 {
-	int				err;
 	unsigned long   compress_sz;
 	ptr				compress_data;
 	FILE			*file;
 	
 		// compress it
-		
-	compress_sz=game_file_sz+(int)(((double)game_file_sz)*0.1)+12;
-	compress_data=malloc(compress_sz);
-	if (compress_data==NULL) {
-		strcpy(err_str,"Out of memory");
-		return(FALSE);
-	}
 
-	err=compress2(compress_data,&compress_sz,game_file_data,game_file_sz,9);
-	if (err!=Z_OK) {
-		sprintf(err_str,"Could not compress file (%d: %s)",err,zError(err));
-		free(compress_data);
-		return(FALSE);
-	}
+	compress_data=zip_compress(game_file_data,game_file_sz,&compress_sz,err_str);
+	if (compress_data==NULL) return(FALSE);
 	
 		// save file
 		
@@ -194,7 +182,6 @@ bool game_file_compress_save(char *path,char *err_str)
 
 bool game_file_expand_load(char *path,char *err_str)
 {
-	int				err;
 	unsigned long   file_sz,compress_sz;
 	ptr				compress_data;
 	FILE			*file;
@@ -229,19 +216,10 @@ bool game_file_expand_load(char *path,char *err_str)
 	fclose(file);
 	
 		// decompress file
-		
-	game_file_data=malloc(game_file_sz);
+
+	game_file_data=zip_expand(compress_data,compress_sz,&game_file_sz,err_str);
 	if (game_file_data==NULL) {
-		strcpy(err_str,"Out of memory");
 		free(compress_data);
-		return(FALSE);
-	}
-	
-	err=uncompress(game_file_data,&game_file_sz,compress_data,compress_sz);
-	if (err!=Z_OK) {
-		sprintf(err_str,"Could not uncompress file (%d: %s)",err,zError(err));
-		free(compress_data);
-		free(game_file_data);
 		return(FALSE);
 	}
 	

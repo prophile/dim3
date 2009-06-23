@@ -133,7 +133,7 @@ SOURCE=..\win32Includes\PNG\libpng.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\win32Includes\ZLib\zdll.lib
+SOURCE=..\win32Includes\ZLib\zlib.lib
 # End Source File
 # End Group
 # End Group
@@ -234,6 +234,10 @@ SOURCE=..\..\dim3BaseUtility\Sources_File\file_paths.c
 # Begin Source File
 
 SOURCE=..\..\dim3BaseUtility\Sources_File\file_search.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\dim3BaseUtility\Sources_File\zip.c
 # End Source File
 # End Group
 # Begin Group "XML"

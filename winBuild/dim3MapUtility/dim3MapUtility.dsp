@@ -108,42 +108,6 @@ SOURCE=..\win32Includes\pthreads\pthread.h
 SOURCE=..\win32Includes\pthreads\pthreadVC2.lib
 # End Source File
 # End Group
-# Begin Group "glew"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\win32Includes\GLEW\glew.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\win32Includes\GLEW\wglew.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\win32Includes\GLEW\glew32.lib
-# End Source File
-# End Group
-# Begin Group "PNG"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\win32Includes\PNG\png.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\win32Includes\ZLib\zlib.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\win32Includes\PNG\libpng.lib
-# End Source File
-# Begin Source File
-
-SOURCE=..\win32Includes\ZLib\zdll.lib
-# End Source File
-# End Group
 # Begin Group "dim3 Libraries"
 
 # PROP Default_Filter ""

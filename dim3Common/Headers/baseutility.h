@@ -302,6 +302,13 @@ extern file_path_directory_type* file_paths_read_directory_document(file_path_se
 extern void file_paths_close_directory(file_path_directory_type *fpd);
 extern void file_paths_descript_directory_file(char *descript,int dir_type);
 
+//
+// zipping
+//
+
+extern unsigned char* zip_compress(unsigned char *data,int data_sz,int *p_compress_sz,char *err_str);
+extern unsigned char* zip_expand(unsigned char *compress_data,int compress_data_sz,int *p_data_sz,char *err_str);
+
 /* =======================================================
 
       XML
