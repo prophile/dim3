@@ -35,9 +35,10 @@ and can be sold or given away.
             
 ======================================================= */
 
-unsigned char* zip_compress(unsigned char *data,int data_sz,int *p_compress_sz,char *err_str)
+unsigned char* zip_compress(unsigned char *data,unsigned long data_sz,unsigned long *p_compress_sz,char *err_str)
 {
-	int				err,compress_sz;
+	int				err;
+	unsigned long	compress_sz;
 	unsigned char	*compress_data;
 
 	compress_sz=data_sz+(int)(((double)data_sz)*0.1)+12;
@@ -59,9 +60,10 @@ unsigned char* zip_compress(unsigned char *data,int data_sz,int *p_compress_sz,c
 	return(compress_data);
 }
 
-unsigned char* zip_expand(unsigned char *compress_data,int compress_data_sz,int *p_data_sz,char *err_str)
+unsigned char* zip_expand(unsigned char *compress_data,unsigned long compress_data_sz,unsigned long *p_data_sz,char *err_str)
 {
-	int						err,data_sz;
+	int						err;
+	unsigned long			data_sz;
 	unsigned char			*data;
 
 	data_sz=*p_data_sz;

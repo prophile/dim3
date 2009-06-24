@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version					"3.0b10d"
+#define dim3_version					"3.0b10e"
 
 /* =======================================================
 
@@ -306,8 +306,8 @@ extern void file_paths_descript_directory_file(char *descript,int dir_type);
 // zipping
 //
 
-extern unsigned char* zip_compress(unsigned char *data,int data_sz,int *p_compress_sz,char *err_str);
-extern unsigned char* zip_expand(unsigned char *compress_data,int compress_data_sz,int *p_data_sz,char *err_str);
+extern unsigned char* zip_compress(unsigned char *data,unsigned long data_sz,unsigned long *p_compress_sz,char *err_str);
+extern unsigned char* zip_expand(unsigned char *compress_data,unsigned long compress_data_sz,unsigned long *p_data_sz,char *err_str);
 
 /* =======================================================
 
