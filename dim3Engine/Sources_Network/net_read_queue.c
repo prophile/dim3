@@ -51,7 +51,7 @@ bool net_queue_initialize(net_queue_type *queue)
 	
 		// create queue lock
 
-	pthread_mutex_init(&queue->lock,NULL);
+	queue->lock=SDL_CreateMutex();
 
 	return(TRUE);
 }
@@ -61,7 +61,7 @@ void net_queue_shutdown(net_queue_type *queue)
 	if (queue->data==NULL) return;
 	
 	free(queue->data);
-	pthread_mutex_destroy(&queue->lock);
+	SDL_DestroyMutex(queue->lock);
 }
 
 /* =======================================================
@@ -95,7 +95,7 @@ bool net_queue_feed(d3socket sock,net_queue_type *queue)
 	int				len,read_sz;
 	bool			err;
 
-	pthread_mutex_unlock(&queue->lock);
+	SDL_mutexV(queue->lock);
 	
 		// read data until there is no more or
 		// the queue is full
@@ -130,7 +130,7 @@ bool net_queue_feed(d3socket sock,net_queue_type *queue)
 		if (len<read_sz) break;
 	}
 	
-	pthread_mutex_unlock(&queue->lock);
+	SDL_mutexV(queue->lock);
 	
 	return(!err);
 }
@@ -147,12 +147,12 @@ bool net_queue_push_message(net_queue_type *queue,int action,int remote_uid,unsi
 	unsigned char		tag[net_header_tag_size]=net_header_tag;
 	network_header		head;
 
-	pthread_mutex_lock(&queue->lock);
+	SDL_mutexP(queue->lock);
 	
 		// enough room on queue?
 		
 	if ((queue->len+(sizeof(network_header)+msg_len))>net_queue_max_data_size) {
-		pthread_mutex_unlock(&queue->lock);
+		SDL_mutexV(queue->lock);
 		return(FALSE);
 	}
 	
@@ -177,7 +177,7 @@ bool net_queue_push_message(net_queue_type *queue,int action,int remote_uid,unsi
 	
 	queue->len=idx;
 
-	pthread_mutex_unlock(&queue->lock);
+	SDL_mutexV(queue->lock);
 
 	return(TRUE);
 }
@@ -195,7 +195,7 @@ bool net_queue_check_message(net_queue_type *queue,int *action,int *from_remote_
 	unsigned char		tag[net_header_tag_size]=net_header_tag;
 	network_header		head;
 	
-	pthread_mutex_lock(&queue->lock);
+	SDL_mutexP(queue->lock);
 	
 		// search for next message start tag
 		// this allows us to work around broken or garbled messages
@@ -230,7 +230,7 @@ bool net_queue_check_message(net_queue_type *queue,int *action,int *from_remote_
 		if ((tag_idx!=0) && (idx>tag_idx)) memmove(queue->data,(queue->data+(idx-tag_idx)),tag_idx);
 		queue->len=tag_idx;
 		
-		pthread_mutex_unlock(&queue->lock);
+		SDL_mutexV(queue->lock);
 		
 		return(FALSE);
 	}
@@ -238,7 +238,7 @@ bool net_queue_check_message(net_queue_type *queue,int *action,int *from_remote_
 		// do we have enough to get header?
 		
 	if ((idx+(int)sizeof(network_header))>queue->len) {
-		pthread_mutex_unlock(&queue->lock);
+		SDL_mutexV(queue->lock);
 		return(FALSE);
 	}
 	
@@ -254,7 +254,7 @@ bool net_queue_check_message(net_queue_type *queue,int *action,int *from_remote_
 		// enough for data?
 		
 	if ((idx+msg_len)>queue->len) {
-		pthread_mutex_unlock(&queue->lock);
+		SDL_mutexV(queue->lock);
 		return(FALSE);
 	}
 	
@@ -268,7 +268,7 @@ bool net_queue_check_message(net_queue_type *queue,int *action,int *from_remote_
 	if (queue->len>idx) memmove(queue->data,(queue->data+idx),(queue->len-idx));
 	queue->len-=idx;
 		
-	pthread_mutex_unlock(&queue->lock);
+	SDL_mutexV(queue->lock);
 		
 	return(TRUE);
 }

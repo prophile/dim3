@@ -38,7 +38,7 @@ extern server_type		server;
 int						net_host_player_count,server_next_remote_uid;
 net_host_player_type	net_host_players[host_max_remote_count];
 
-pthread_mutex_t			net_host_player_lock;
+SDL_mutex				*net_host_player_lock;
 
 /* =======================================================
 
@@ -51,12 +51,12 @@ void net_host_player_initialize(void)
 	net_host_player_count=0;
 	server_next_remote_uid=net_remote_uid_client_start;
 	
-	pthread_mutex_init(&net_host_player_lock,NULL);
+	net_host_player_lock=SDL_CreateMutex();
 }
 
 void net_host_player_shutdown(void)
 {
-	pthread_mutex_destroy(&net_host_player_lock);
+	SDL_DestroyMutex(net_host_player_lock);
 }
 
 /* =======================================================
@@ -87,7 +87,7 @@ bool net_host_player_find_name(int remote_uid,char *name)
 	
 	hit=FALSE;
 
-	pthread_mutex_lock(&net_host_player_lock);
+	SDL_mutexP(net_host_player_lock);
 
 	idx=net_host_player_find(remote_uid);
 	
@@ -96,7 +96,7 @@ bool net_host_player_find_name(int remote_uid,char *name)
 		hit=TRUE;
 	}
 	
-	pthread_mutex_unlock(&net_host_player_lock);
+	SDL_mutexV(net_host_player_lock);
 	
 	return(hit);
 }
@@ -114,13 +114,13 @@ int net_host_player_join(d3socket sock,char *name,int tint_color_idx,char *deny_
 
 		// lock all player operations
 		
-	pthread_mutex_lock(&net_host_player_lock);
+	SDL_mutexP(net_host_player_lock);
 	
 		// host full?
 		
 	if (net_host_player_count==host_max_remote_count) {
 		strcpy(deny_reason,"Server is full");
-		pthread_mutex_unlock(&net_host_player_lock);
+		SDL_mutexV(net_host_player_lock);
 		return(-1);
 	}
 
@@ -131,7 +131,7 @@ int net_host_player_join(d3socket sock,char *name,int tint_color_idx,char *deny_
 	for (n=0;n!=net_host_player_count;n++) {
 		if (strcasecmp(player->name,name)==0) {
 			sprintf(deny_reason,"Player name '%s' already in use",name);
-			pthread_mutex_unlock(&net_host_player_lock);
+			SDL_mutexV(net_host_player_lock);
 			return(-1);
 		}
 		player++;
@@ -159,7 +159,7 @@ int net_host_player_join(d3socket sock,char *name,int tint_color_idx,char *deny_
 	
 	remote_uid=player->remote_uid;
 	
-	pthread_mutex_unlock(&net_host_player_lock);
+	SDL_mutexV(net_host_player_lock);
 	
 	return(remote_uid);
 }
@@ -170,7 +170,7 @@ void net_host_player_ready(int remote_uid,bool ready)
 	
 		// lock all player operations
 		
-	pthread_mutex_lock(&net_host_player_lock);
+	SDL_mutexP(net_host_player_lock);
 		
 		// set player ready state
 		
@@ -179,7 +179,7 @@ void net_host_player_ready(int remote_uid,bool ready)
 	
 		// unlock player operation
 		
-	pthread_mutex_unlock(&net_host_player_lock);
+	SDL_mutexV(net_host_player_lock);
 }
 
 void net_host_player_leave(int remote_uid)
@@ -189,13 +189,13 @@ void net_host_player_leave(int remote_uid)
 	
 		// lock all player operations
 		
-	pthread_mutex_lock(&net_host_player_lock);
+	SDL_mutexP(net_host_player_lock);
 		
 		// find player
 		
 	idx=net_host_player_find(remote_uid);
 	if (idx==-1) {
-		pthread_mutex_unlock(&net_host_player_lock);
+		SDL_mutexV(net_host_player_lock);
 		return;
 	}
 
@@ -211,7 +211,7 @@ void net_host_player_leave(int remote_uid)
 	
 	net_host_player_count--;
 	
-	pthread_mutex_unlock(&net_host_player_lock);
+	SDL_mutexV(net_host_player_lock);
 }
 
 /* =======================================================
@@ -227,12 +227,12 @@ int net_host_bot_join(obj_type *obj)
 
 		// lock all player operations
 		
-	pthread_mutex_lock(&net_host_player_lock);
+	SDL_mutexP(net_host_player_lock);
 	
 		// host full?
 		
 	if (net_host_player_count==host_max_remote_count) {
-		pthread_mutex_unlock(&net_host_player_lock);
+		SDL_mutexV(net_host_player_lock);
 		return(-1);
 	}
 
@@ -258,7 +258,7 @@ int net_host_bot_join(obj_type *obj)
 	
 	remote_uid=player->remote_uid;
 	
-	pthread_mutex_unlock(&net_host_player_lock);
+	SDL_mutexV(net_host_player_lock);
 	
 	return(remote_uid);
 }
@@ -297,11 +297,11 @@ void net_host_player_update_team(int remote_uid,network_request_team *team)
 	int							idx;
 	net_host_player_type		*player;
 	
-	pthread_mutex_lock(&net_host_player_lock);
+	SDL_mutexP(net_host_player_lock);
 
 	idx=net_host_player_find(remote_uid);
 	if (idx==-1) {
-		pthread_mutex_unlock(&net_host_player_lock);
+		SDL_mutexV(net_host_player_lock);
 		return;
 	}
 
@@ -310,7 +310,7 @@ void net_host_player_update_team(int remote_uid,network_request_team *team)
 	player=&net_host_players[idx];
 	player->team_idx=(signed short)ntohs(team->team_idx);
 
-	pthread_mutex_unlock(&net_host_player_lock);
+	SDL_mutexV(net_host_player_lock);
 }
 
 void net_host_player_update(int remote_uid,network_request_remote_update *update)
@@ -323,11 +323,11 @@ void net_host_player_update(int remote_uid,network_request_remote_update *update
 	
 		// update score
 		
-	pthread_mutex_lock(&net_host_player_lock);
+	SDL_mutexP(net_host_player_lock);
 
 	idx=net_host_player_find(remote_uid);
 	if (idx==-1) {
-		pthread_mutex_unlock(&net_host_player_lock);
+		SDL_mutexV(net_host_player_lock);
 		return;
 	}
 
@@ -344,7 +344,7 @@ void net_host_player_update(int remote_uid,network_request_remote_update *update
 	score_update=(score!=player->score);
 	player->score=score;
 	
-	pthread_mutex_unlock(&net_host_player_lock);
+	SDL_mutexV(net_host_player_lock);
 }
 
 /* =======================================================
@@ -385,7 +385,7 @@ void net_host_player_create_remote_list(int player_remote_uid,network_reply_join
 	
 		// set up the player remotes
 
-	pthread_mutex_lock(&net_host_player_lock);
+	SDL_mutexP(net_host_player_lock);
 
 	player=net_host_players;
 	
@@ -410,7 +410,7 @@ void net_host_player_create_remote_list(int player_remote_uid,network_reply_join
 		player++;
 	}
 	
-	pthread_mutex_unlock(&net_host_player_lock);
+	SDL_mutexV(net_host_player_lock);
 
 		// finish with the count
 
@@ -434,7 +434,7 @@ void net_host_player_send_others_packet(int player_remote_uid,int action,unsigne
 		// we then send outside the lock so we don't hold
 		// the lock too long
 		
-	pthread_mutex_lock(&net_host_player_lock);
+	SDL_mutexP(net_host_player_lock);
 	
 	nsock=0;
 	player=net_host_players;
@@ -444,7 +444,7 @@ void net_host_player_send_others_packet(int player_remote_uid,int action,unsigne
 		player++;
 	}
 	
-	pthread_mutex_unlock(&net_host_player_lock);
+	SDL_mutexV(net_host_player_lock);
 	
 		// send to all other players
 	

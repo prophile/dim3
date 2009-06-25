@@ -86,7 +86,7 @@ and can be sold or given away.
 typedef struct		{
 						int							len;
 						unsigned char				*data;
-						pthread_mutex_t				lock;
+						SDL_mutex					*lock;
 					} net_queue_type;
 
 //

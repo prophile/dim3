@@ -39,7 +39,7 @@ int							nelement,element_click_down_id,
 							element_open_text_field_id,element_open_combo_id;
 element_type				elements[max_element];
 
-pthread_mutex_t				element_thread_lock;
+SDL_mutex					*element_thread_lock;
 
 /* =======================================================
 
@@ -93,14 +93,14 @@ void element_initialize(void)
 {
 	element_reset_controls();
 
-	pthread_mutex_init(&element_thread_lock,NULL);		// used to make elements thread safe for certain UIs
+	element_thread_lock=SDL_CreateMutex();		// used to make elements thread safe for certain UIs
 }
 
 void element_shutdown(void)
 {
 	element_release_control_memory();
 
-	pthread_mutex_destroy(&element_thread_lock);
+	SDL_DestroyMutex(element_thread_lock);
 }
 
 /* =======================================================
@@ -111,12 +111,12 @@ void element_shutdown(void)
 
 void element_clear(void)
 {
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element_release_control_memory();
 	element_reset_controls();
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 /* =======================================================
@@ -150,7 +150,7 @@ void element_button_text_add(char *name,int id,int x,int y,int wid,int high,int 
 {
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 	
 	element=&elements[nelement];
 	nelement++;
@@ -189,14 +189,14 @@ void element_button_text_add(char *name,int id,int x,int y,int wid,int high,int 
 			break;
 	}
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid,int high,int x_pos,int y_pos)
 {
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 	
 	element=&elements[nelement];
 	nelement++;
@@ -217,7 +217,7 @@ void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid
 
 	if (!bitmap_open(&element->setup.button.bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE)) {
 		nelement--;
-		pthread_mutex_unlock(&element_thread_lock);
+		SDL_mutexV(element_thread_lock);
 		return;
 	}
 
@@ -254,14 +254,14 @@ void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid
 			break;
 	}
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool framed)
 {
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 	
 	element=&elements[nelement];
 	nelement++;
@@ -298,7 +298,7 @@ void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool fram
 	element->hidden=FALSE;
 	element->framed=framed;
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 void element_text_add(char *str,int id,int x,int y,int size,int just,bool selectable,bool alert)
@@ -307,7 +307,7 @@ void element_text_add(char *str,int id,int x,int y,int size,int just,bool select
 	char			*c,*c2;
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 	
 	element=&elements[nelement];
 	nelement++;
@@ -353,14 +353,14 @@ void element_text_add(char *str,int id,int x,int y,int size,int just,bool select
 		c=c2+3;
 	}
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 void element_text_field_add(char *str,char *value_str,int max_value_str_sz,int id,int x,int y,bool selectable)
 {
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element=&elements[nelement];
 	nelement++;
@@ -384,14 +384,14 @@ void element_text_field_add(char *str,char *value_str,int max_value_str_sz,int i
 
 	element->max_value_str_sz=max_value_str_sz;
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 void element_checkbox_add(char *str,int value,int id,int x,int y,bool selectable)
 {
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element=&elements[nelement];
 	nelement++;
@@ -413,14 +413,14 @@ void element_checkbox_add(char *str,int value,int id,int x,int y,bool selectable
 	
 	element->value=value;
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 void element_combo_add(char *str,char *combo_data,int value,int id,int x,int y,bool selectable)
 {
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element=&elements[nelement];
 	nelement++;
@@ -443,14 +443,14 @@ void element_combo_add(char *str,char *combo_data,int value,int id,int x,int y,b
 	element->value=value;
 	element->data=combo_data;
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 void element_slider_add(char *str,float value,float value_min,float value_max,int id,int x,int y,bool selectable)
 {
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element=&elements[nelement];
 	nelement++;
@@ -474,7 +474,7 @@ void element_slider_add(char *str,float value,float value_min,float value_max,in
 	element->setup.slider.max=value_max;
 	element->setup.slider.value=(value-value_min)/(value_max-value_min);
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 int element_table_add_get_data_size(char *row_data)
@@ -499,7 +499,7 @@ void element_table_add(element_column_type* cols,char *row_data,int id,int ncolu
 	int				n,sz;
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element=&elements[nelement];
 	nelement++;
@@ -541,7 +541,7 @@ void element_table_add(element_column_type* cols,char *row_data,int id,int ncolu
 	
 	element->setup.table.next_image_idx=0;
 	
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 void element_tab_add(char *tab_list,int value,int id,int ntab,int x,int y,int wid,int high,int list_wid,int ext_high)
@@ -549,7 +549,7 @@ void element_tab_add(char *tab_list,int value,int id,int ntab,int x,int y,int wi
 	int				n;
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element=&elements[nelement];
 	nelement++;
@@ -577,14 +577,14 @@ void element_tab_add(char *tab_list,int value,int id,int ntab,int x,int y,int wi
 		strcpy(element->setup.tab.name[n],(char*)&tab_list[n*name_str_len]);
 	}
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 void element_color_add(char *str,int value,int id,int x,int y,bool selectable)
 {
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element=&elements[nelement];
 	nelement++;
@@ -606,7 +606,7 @@ void element_color_add(char *str,int value,int id,int x,int y,bool selectable)
 
 	element->value=value;
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 /* =======================================================
@@ -2396,9 +2396,9 @@ void element_draw_lock(bool cursor_hilite)
 
 void element_draw(bool cursor_hilite)
 {
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 	element_draw_lock(cursor_hilite);
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 /* =======================================================
@@ -2525,18 +2525,18 @@ int element_click_up_lock(int x,int y)
 
 void element_click_down(int x,int y)
 {
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 	element_click_down_lock(x,y);
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 int element_click_up(int x,int y)
 {
 	int			id;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 	id=element_click_up_lock(x,y);
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 
 	return(id);
 }
@@ -2591,9 +2591,9 @@ int element_key(char ch)
 {
 	int			rtn;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 	rtn=element_key_lock(ch);
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 
 	return(rtn);
 }
@@ -2627,7 +2627,7 @@ int element_get_value(int id)
 	int				rtn;
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element=element_find(id);
 	if (element==NULL) {
@@ -2637,7 +2637,7 @@ int element_get_value(int id)
 		rtn=element->value;
 	}
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 
 	return(rtn);
 }
@@ -2647,7 +2647,7 @@ float element_get_slider_value(int id)
 	float			rtn;
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element=element_find(id);
 	if (element==NULL) {
@@ -2657,7 +2657,7 @@ float element_get_slider_value(int id)
 		rtn=element->setup.slider.min+((element->setup.slider.max-element->setup.slider.min)*element->setup.slider.value);
 	}
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 
 	return(rtn);
 }
@@ -2666,50 +2666,50 @@ void element_get_value_string(int id,char *str)
 {
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	str[0]=0x0;
 
 	element=element_find(id);
 	if (element!=NULL) strcpy(str,element->value_str);
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 void element_set_value(int id,int value)
 {
 	element_type	*element;
 	
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element=element_find(id);
 	if (element!=NULL) element->value=value;
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 void element_set_slider_value(int id,float value)
 {
 	element_type	*element;
 	
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element=element_find(id);
 	if (element!=NULL) element->setup.slider.value=(value-element->setup.slider.min)/(element->setup.slider.max-element->setup.slider.min);
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 void element_set_value_string(int id,char *str)
 {
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element=element_find(id);
 	if (element!=NULL) strcpy(element->value_str,str);
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 void element_set_table_data(int id,char *row_data)
@@ -2719,7 +2719,7 @@ void element_set_table_data(int id,char *row_data)
 	
 	idx=element_get_value(id);
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element=element_find(id);
 	if (element!=NULL) {
@@ -2736,7 +2736,7 @@ void element_set_table_data(int id,char *row_data)
 		}
 	}
 	
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 	
 	element_set_value(id,idx);
 }
@@ -2745,7 +2745,7 @@ void element_set_bitmap(int id,char *path)
 {
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element=element_find(id);
 	if (element!=NULL) {
@@ -2759,7 +2759,7 @@ void element_set_bitmap(int id,char *path)
 		}
 	}
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 int element_get_scroll_position(int id)
@@ -2767,7 +2767,7 @@ int element_get_scroll_position(int id)
 	int				rtn;
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element=element_find(id);
 	if (element==NULL) {
@@ -2777,7 +2777,7 @@ int element_get_scroll_position(int id)
 		rtn=element->offset;
 	}
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 
 	return(rtn);
 }
@@ -2786,12 +2786,12 @@ void element_set_scroll_position(int id,int pos)
 {
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element=element_find(id);
 	if (element!=NULL) element->offset=pos;
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 void element_make_selection_visible(int id)
@@ -2799,7 +2799,7 @@ void element_make_selection_visible(int id)
 	int				high,row_high,cnt;
 	element_type	*element;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element=element_find(id);
 	if (element!=NULL) {
@@ -2817,7 +2817,7 @@ void element_make_selection_visible(int id)
 		}
 	}
 	
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 }
 
 int element_get_x_position(int id)
@@ -2827,12 +2827,12 @@ int element_get_x_position(int id)
 
 	x=0;
 
-	pthread_mutex_lock(&element_thread_lock);
+	SDL_mutexP(element_thread_lock);
 
 	element=element_find(id);
 	if (element!=NULL) x=element->x;
 
-	pthread_mutex_unlock(&element_thread_lock);
+	SDL_mutexV(element_thread_lock);
 
 	return(x);
 }

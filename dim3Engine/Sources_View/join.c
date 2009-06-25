@@ -56,7 +56,7 @@ extern int					client_timeout_values[];
 char						*join_table_data;
 bool						join_local,join_thread_quit;
 pthread_t					join_thread,join_thread_accept;
-pthread_mutex_t				join_thread_lock;
+SDL_mutex					*join_thread_lock;
 
 int							join_count,join_start_tick_local;
 bool						join_list_done;
@@ -130,7 +130,7 @@ void* join_ping_thread_local_accept_read(void *arg)
 
 		if (strcasecmp(reply_info->proj_name,net_setup.host.proj_name)==0) {
 	
-			pthread_mutex_lock(&join_thread_lock);
+			SDL_mutexP(join_thread_lock);
 
 				// setup info
 
@@ -151,7 +151,7 @@ void* join_ping_thread_local_accept_read(void *arg)
 			element_set_table_data(join_table_id,row_data);
 			free(row_data);
 			
-			pthread_mutex_unlock(&join_thread_lock);
+			SDL_mutexV(join_thread_lock);
 		}
 	}
 	
@@ -283,7 +283,7 @@ void* join_ping_thread_network(void *arg)
 				
 			if (strcasecmp(proj_name,net_setup.host.proj_name)==0) {
 
-				pthread_mutex_lock(&join_thread_lock);
+				SDL_mutexP(join_thread_lock);
 				
 					// setup info
 
@@ -304,7 +304,7 @@ void* join_ping_thread_network(void *arg)
 				element_set_table_data(join_table_id,row_data);
 				free(row_data);
 				
-				pthread_mutex_unlock(&join_thread_lock);
+				SDL_mutexV(join_thread_lock);
 			}
 		}
 		
@@ -337,7 +337,7 @@ void join_ping_thread_start(bool local)
 	
 		// table update locks
 		
-	pthread_mutex_init(&join_thread_lock,NULL);
+	join_thread_lock=SDL_CreateMutex();
 
 		// start pinging hosts
 		
@@ -363,7 +363,7 @@ void join_ping_thread_end(void)
 	
 	pthread_join(join_thread,NULL);
 	
-	pthread_mutex_destroy(&join_thread_lock);
+	SDL_DestroyMutex(join_thread_lock);
 }
 
 /* =======================================================
