@@ -76,36 +76,12 @@ SOURCE=..\..\dim3Common\Headers\os_defs.h
 SOURCE=..\..\dim3Common\Headers\win32_os_defs.h
 # End Source File
 # End Group
-# Begin Group "OS Libraries"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE="..\..\..\..\Program Files\Microsoft Visual Studio\VC98\Lib\OPENGL32.LIB"
-# End Source File
-# Begin Source File
-
-SOURCE="..\..\..\..\Program Files\Microsoft Visual Studio\VC98\Lib\GLU32.LIB"
-# End Source File
-# End Group
-# Begin Group "pthreads"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\win32Includes\pthreads\pthread.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\win32Includes\pthreads\pthreadVC2.lib
-# End Source File
-# End Group
 # Begin Group "dim3 Libraries"
 
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\dim3BaseUtility\Release\dim3BaseUtility.lib
+SOURCE=..\win32Includes\dim3\dim3BaseUtility.lib
 # End Source File
 # End Group
 # End Group

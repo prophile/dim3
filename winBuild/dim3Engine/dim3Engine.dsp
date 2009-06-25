@@ -195,15 +195,15 @@ SOURCE=..\win32Includes\JS\js32.lib
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\dim3BaseUtility\Release\dim3BaseUtility.lib
+SOURCE=..\win32Includes\dim3\dim3BaseUtility.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\dim3ModelUtility\Release\dim3ModelUtility.lib
+SOURCE=..\win32Includes\dim3\dim3ModelUtility.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\dim3MapUtility\Release\dim3MapUtility.lib
+SOURCE=..\win32Includes\dim3\dim3MapUtility.lib
 # End Source File
 # End Group
 # End Group
