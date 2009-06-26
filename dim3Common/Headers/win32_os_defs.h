@@ -42,6 +42,7 @@ and can be sold or given away.
 
 #include <shlobj.h>
 
+#define GLEW_STATIC
 #include "glew.h"
 #include "wglew.h"
 
@@ -50,7 +51,6 @@ and can be sold or given away.
 
 #include "SDL_syswm.h"
 
-#include "pthread.h"
 #include "zlib.h"
 #include "png.h"
 

@@ -94,26 +94,6 @@ SOURCE="..\..\..\..\Program Files\Microsoft Visual Studio\VC98\Lib\OPENGL32.LIB"
 SOURCE="..\..\..\..\Program Files\Microsoft Visual Studio\VC98\Lib\GLU32.LIB"
 # End Source File
 # End Group
-# Begin Group "pthreads"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\win32Includes\pthreads\pthread.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\win32Includes\pthreads\sched.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\win32Includes\pthreads\semaphore.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\win32Includes\pthreads\pthreadVC2.lib
-# End Source File
-# End Group
 # Begin Group "glew"
 
 # PROP Default_Filter ""
@@ -124,10 +104,6 @@ SOURCE=..\win32Includes\GLEW\glew.h
 # Begin Source File
 
 SOURCE=..\win32Includes\GLEW\wglew.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\win32Includes\GLEW\glew32.lib
 # End Source File
 # End Group
 # Begin Group "SDL"
