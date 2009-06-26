@@ -36,7 +36,7 @@ extern network_setup_type	net_setup;
 d3socket					broadcast_listen_socket;
 bool						broadcast_listen_complete;
 char						broadcast_listen_err_str[256];
-pthread_t					broadcast_listen_thread;
+SDL_Thread					*broadcast_listen_thread;
 
 extern void net_host_client_handle_info(int sock);
 
@@ -53,7 +53,8 @@ bool net_host_broadcast_initialize(char *err_str)
 	broadcast_listen_complete=FALSE;
 	broadcast_listen_socket=D3_NULL_SOCKET;
 	
-	if (pthread_create(&broadcast_listen_thread,NULL,net_host_broadcast_thread,NULL)!=0) {
+	broadcast_listen_thread=SDL_CreateThread(net_host_broadcast_thread,NULL);
+	if (broadcast_listen_thread==NULL) {
 		strcpy(err_str,"Networking: Could not start broadcast listener thread");
 		return(FALSE);
 	}
@@ -84,7 +85,7 @@ void net_host_broadcast_shutdown(void)
 		// shutdown socket and then wait for termination
 		
 	net_close_socket(&broadcast_listen_socket);
-	pthread_join(broadcast_listen_thread,NULL);
+	SDL_WaitThread(broadcast_listen_thread,NULL);
 }
 
 /* =======================================================
@@ -93,7 +94,7 @@ void net_host_broadcast_shutdown(void)
       
 ======================================================= */
 
-void* net_host_broadcast_thread(void *arg)
+int net_host_broadcast_thread(void *arg)
 {
 	char				ip[32],err_str[256];
 	unsigned char		*uc_ptr;
@@ -110,8 +111,7 @@ void* net_host_broadcast_thread(void *arg)
 	if (broadcast_listen_socket==D3_NULL_SOCKET) {
 		strcpy(broadcast_listen_err_str,"Networking: Unable to open socket");
 		broadcast_listen_complete=TRUE;
-		pthread_exit(NULL);
-		return(NULL);
+		return(0);
 	}
 		
 	net_socket_blocking(broadcast_listen_socket,TRUE);
@@ -122,8 +122,7 @@ void* net_host_broadcast_thread(void *arg)
 	if (!net_udp_bind_broadcast(broadcast_listen_socket,net_port_host_broadcast,broadcast_listen_err_str)) {
 		net_close_socket(&broadcast_listen_socket);
 		broadcast_listen_complete=TRUE;
-		pthread_exit(NULL);
-		return(NULL);
+		return(0);
 	}
 
 		// listener is OK, free thread to run independantly
@@ -153,7 +152,6 @@ void* net_host_broadcast_thread(void *arg)
 		net_close_socket(&sock);
 	}
 	
-	pthread_exit(NULL);
-	return(NULL);
+	return(0);
 }
 

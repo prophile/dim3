@@ -184,7 +184,7 @@ void net_host_client_handle_group_synch(int sock)
       
 ======================================================= */
 
-void* net_host_client_handler_thread(void *arg)
+int net_host_client_handler_thread(void *arg)
 {
 	d3socket				sock;
 	int						client_remote_uid,action,from_remote_uid,len;
@@ -276,8 +276,7 @@ void* net_host_client_handler_thread(void *arg)
 	net_queue_shutdown(&queue);
 	net_close_socket(&sock);
 	
-	pthread_exit(NULL);
-	return(NULL);
+	return(0);
 }
 
 

@@ -37,7 +37,7 @@ extern network_setup_type	net_setup;
 d3socket					host_socket;
 bool						host_complete;
 char						host_err_str[256];
-pthread_t					host_thread;
+SDL_Thread					*host_thread;
 
 /* =======================================================
 
@@ -52,7 +52,8 @@ bool net_host_initialize(char *err_str)
 	host_complete=FALSE;
 	host_socket=D3_NULL_SOCKET;
 	
-	if (pthread_create(&host_thread,NULL,net_host_thread,NULL)!=0) {
+	host_thread=SDL_CreateThread(net_host_thread,NULL);
+	if (host_thread==NULL) {
 		strcpy(err_str,"Networking: Could not start host listener thread");
 		return(FALSE);
 	}
@@ -83,7 +84,7 @@ void net_host_shutdown(void)
 		// shutdown socket and then wait for termination
 		
 	net_close_socket(&host_socket);
-	pthread_join(host_thread,NULL);
+	SDL_WaitThread(host_thread,NULL);
 }
 
 /* =======================================================
@@ -92,13 +93,13 @@ void net_host_shutdown(void)
       
 ======================================================= */
 
-void* net_host_thread(void *arg)
+int net_host_thread(void *arg)
 {
 	d3socket			sock;
 	int					err;
 	socklen_t			addr_len;
 	struct sockaddr		addr;
-	pthread_t			message_thread;
+	SDL_Thread			*message_thread;
 	
 		// use host err_str to flag if errors occured
 		
@@ -110,8 +111,7 @@ void* net_host_thread(void *arg)
 	if (host_socket==D3_NULL_SOCKET) {
 		strcpy(host_err_str,"Networking: Unable to open socket");
 		host_complete=TRUE;
-		pthread_exit(NULL);
-		return(NULL);
+		return(0);
 	}
 	
 	net_socket_blocking(host_socket,TRUE);
@@ -121,8 +121,7 @@ void* net_host_thread(void *arg)
 	if (!net_bind(host_socket,net_setup.host.ip_resolve,net_port_host,host_err_str)) {
 		net_close_socket(&host_socket);
 		host_complete=TRUE;
-		pthread_exit(NULL);
-		return(NULL);
+		return(0);
 	}
 
 		// start listening
@@ -132,8 +131,7 @@ void* net_host_thread(void *arg)
 		net_close_socket(&host_socket);
 		sprintf(host_err_str,"Networking: Could not start listener on %s (error: %d)",net_setup.host.ip_resolve,errno);
 		host_complete=TRUE;
-		pthread_exit(NULL);
-		return(NULL);
+		return(0);
 	}
 
 		// host is OK, free thread to run independantly
@@ -152,13 +150,11 @@ void* net_host_thread(void *arg)
 			
 		net_socket_blocking(sock,FALSE);
 		
-		if (pthread_create(&message_thread,NULL,net_host_client_handler_thread,(void*)sock)!=0) {
-			net_close_socket(&sock);
-		}
+		message_thread=SDL_CreateThread(net_host_client_handler_thread,(void*)sock);
+		if (message_thread==NULL) net_close_socket(&sock);
 	}
 	
-	pthread_exit(NULL);
-	return(NULL);
+	return(0);
 }
 
 /* =======================================================

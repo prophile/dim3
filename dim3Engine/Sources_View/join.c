@@ -55,7 +55,7 @@ extern int					client_timeout_values[];
 
 char						*join_table_data;
 bool						join_local,join_thread_quit;
-pthread_t					join_thread,join_thread_accept;
+SDL_Thread					*join_thread,*join_thread_accept;
 SDL_mutex					*join_thread_lock;
 
 int							join_count,join_start_tick_local;
@@ -103,7 +103,7 @@ char* join_create_list(void)
       
 ======================================================= */
 
-void* join_ping_thread_local_accept_read(void *arg)
+int join_ping_thread_local_accept_read(void *arg)
 {
 	int					msec;
 	unsigned char		data[net_max_msg_size];
@@ -156,13 +156,11 @@ void* join_ping_thread_local_accept_read(void *arg)
 	}
 	
 	net_close_socket(&sock);
-	
-	pthread_exit(NULL);
 
 	return(0);
 }
 
-void* join_ping_thread_local_accept(void *arg)
+int join_ping_thread_local_accept(void *arg)
 {
 	d3socket			broadcast_reply_sock,sock;
 	socklen_t			addr_len;
@@ -180,15 +178,13 @@ void* join_ping_thread_local_accept(void *arg)
 		
 			// spawn a thread to deal with replies
 			
-		pthread_create(&join_thread_accept,NULL,join_ping_thread_local_accept_read,(void*)sock);
+		join_thread_accept=SDL_CreateThread(join_ping_thread_local_accept_read,(void*)sock);
 	}
-
-	pthread_exit(NULL);
 
 	return(0);
 }
 
-void* join_ping_thread_local(void *arg)
+int join_ping_thread_local(void *arg)
 {
 	int			count;
 	char		ip_name[256],ip_resolve[256],err_str[256];
@@ -208,20 +204,18 @@ void* join_ping_thread_local(void *arg)
 
 	if (!net_bind(broadcast_reply_sock,ip_resolve,net_port_host_broadcast_reply,err_str)) {
 		join_list_done=TRUE;
-		pthread_exit(NULL);
 		return(0);
 	}
 	
 	if (listen(broadcast_reply_sock,32)!=0) {
 		net_close_socket(&broadcast_reply_sock);
 		join_list_done=TRUE;
-		pthread_exit(NULL);
 		return(0);
 	}
 
 		// run thread and wait for accepts to start
 		
-	pthread_create(&join_thread_accept,NULL,join_ping_thread_local_accept,(void*)broadcast_reply_sock);
+	join_thread_accept=SDL_CreateThread(join_ping_thread_local_accept,(void*)broadcast_reply_sock);
 	
 		// send broadcast to all network nodes
 		// asking for connections from hosts
@@ -244,10 +238,10 @@ void* join_ping_thread_local(void *arg)
 		// join the thread to wait for end
 		
 	net_close_socket(&broadcast_reply_sock);
-	pthread_join(join_thread_accept,NULL);
+	SDL_WaitThread(join_thread_accept,NULL);
 	
 	join_list_done=TRUE;
-	pthread_exit(NULL);
+
 	return(0);
 }
 
@@ -257,7 +251,7 @@ void* join_ping_thread_local(void *arg)
       
 ======================================================= */
 
-void* join_ping_thread_network(void *arg)
+int join_ping_thread_network(void *arg)
 {
 	int							idx,player_count,player_max_count,ping_msec;
 	char						status[32],host_name[name_str_len],
@@ -313,8 +307,6 @@ void* join_ping_thread_network(void *arg)
 	
 	join_list_done=TRUE;
 	
-	pthread_exit(NULL);
-	
 	return(0);
 }
 
@@ -344,10 +336,10 @@ void join_ping_thread_start(bool local)
 	join_list_done=FALSE;
 	
 	if (local) {
-		pthread_create(&join_thread,NULL,join_ping_thread_local,NULL);
+		join_thread=SDL_CreateThread(join_ping_thread_local,NULL);
 	}
 	else {
-		pthread_create(&join_thread,NULL,join_ping_thread_network,NULL);
+		join_thread=SDL_CreateThread(join_ping_thread_network,NULL);
 	}
 }
 
@@ -361,7 +353,7 @@ void join_ping_thread_end(void)
 {
 	join_thread_quit=TRUE;
 	
-	pthread_join(join_thread,NULL);
+	SDL_WaitThread(join_thread,NULL);
 	
 	SDL_DestroyMutex(join_thread_lock);
 }

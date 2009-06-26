@@ -40,11 +40,11 @@ extern setup_type			setup;
 
 extern bool					join_thread_quit;
 
-void* net_client_receive_thread(void *arg);			// forward reference
+int net_client_receive_thread(void *arg);			// forward reference
 
 d3socket					client_socket;
 bool						client_complete;
-pthread_t					client_thread;
+SDL_Thread					*client_thread;
 net_queue_type				client_queue;
 
 /* =======================================================
@@ -64,7 +64,8 @@ bool net_client_start_message_queue(char *err_str)
 	
 		// start receive thread
 		
-	if (pthread_create(&client_thread,NULL,net_client_receive_thread,NULL)==0) return(TRUE);
+	client_thread=SDL_CreateThread(net_client_receive_thread,NULL);
+	if (client_thread!=NULL) return(TRUE);
 	
 		// could not start thread
 		
@@ -79,14 +80,14 @@ void net_client_end_message_queue(void)
 		// shutdown message handler
 		
 	client_complete=FALSE;
-	pthread_join(client_thread,NULL);
+	SDL_WaitThread(client_thread,NULL);
 
 		// free queue
 		
 	net_queue_shutdown(&client_queue);
 }
 
-void* net_client_receive_thread(void *arg)
+int net_client_receive_thread(void *arg)
 {
 	bool				client_err;
 	
@@ -116,8 +117,6 @@ void* net_client_receive_thread(void *arg)
 	if (client_err) net_queue_push_message(&client_queue,net_action_request_host_exit,0,NULL,0);
 	
 		// exit thread
-	
-	pthread_exit(NULL);
 	
 	return(0);
 }

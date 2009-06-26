@@ -82,17 +82,17 @@ extern bool net_queue_block_single_message(d3socket sock,int req_action,int req_
 
 extern bool net_host_initialize(char *err_str);
 extern void net_host_shutdown(void);
-extern void* net_host_thread(void *arg);
+extern int net_host_thread(void *arg);
 
 extern bool net_host_broadcast_initialize(char *err_str);
 extern void net_host_broadcast_shutdown(void);
-extern void* net_host_broadcast_thread(void *arg);
+extern int net_host_broadcast_thread(void *arg);
 
 extern void net_host_client_handle_leave(int remote_uid);
 extern void net_host_client_handle_set_team(int remote_uid,network_request_team *team);
 extern void net_host_client_handle_update(int remote_uid,network_request_remote_update *update);
 
-extern void* net_host_client_handler_thread(void *arg);
+extern int net_host_client_handler_thread(void *arg);
 
 //
 // host local joins
