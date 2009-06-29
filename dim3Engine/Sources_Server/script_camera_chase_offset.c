@@ -57,10 +57,7 @@ JSPropertySpec	camera_chase_offset_props[]={
 
 void script_add_camera_chase_offset_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"chaseOffset",&camera_chase_offset_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,camera_chase_offset_props);
+	script_create_child_object(parent_obj,"chaseOffset",&camera_chase_offset_class,camera_chase_offset_props,NULL);
 }
 
 /* =======================================================

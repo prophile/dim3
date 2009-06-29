@@ -63,11 +63,7 @@ JSFunctionSpec	weap_fire_functions[]={
 
 void script_add_weap_fire_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"fire",&weap_fire_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,weap_fire_props);
-	JS_DefineFunctions(js.cx,j_obj,weap_fire_functions);
+	script_create_child_object(parent_obj,"fire",&weap_fire_class,weap_fire_props,weap_fire_functions);
 }
 
 /* =======================================================

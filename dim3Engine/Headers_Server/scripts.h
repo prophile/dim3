@@ -170,9 +170,9 @@ extern bool scripts_direct_call(attach_type *attach,char *func_name,int arg_coun
 
 extern void script_initialize_prototype_objects(void);
 extern void script_release_prototype_objects(void);
-extern bool script_create_prototype_objects(char *err_str);
-extern JSObject* script_get_prototype_objects(attach_type *attach);
 extern bool script_add_global_object(script_type *script,char *err_str);
+extern JSObject* script_create_main_object(attach_type *attach);
+extern JSObject* script_create_child_object(JSObject *parent_obj,char *name,JSClass *class,JSPropertySpec *props,JSFunctionSpec *funcs);
 
 extern void script_set_property_lock(bool lock);
 extern JSBool script_add_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);

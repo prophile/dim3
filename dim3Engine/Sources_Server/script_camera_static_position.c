@@ -66,11 +66,7 @@ JSFunctionSpec	camera_static_position_functions[]={
 
 void script_add_camera_static_position_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"staticPosition",&camera_static_position_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,camera_static_position_props);
-	JS_DefineFunctions(js.cx,j_obj,camera_static_position_functions);
+	script_create_child_object(parent_obj,"staticPosition",&camera_static_position_class,camera_static_position_props,camera_static_position_functions);
 }
 
 /* =======================================================

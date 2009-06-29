@@ -56,10 +56,7 @@ JSPropertySpec	weap_setting_props[]={
 
 void script_add_weap_setting_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"setting",&weap_setting_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,weap_setting_props);
+	script_create_child_object(parent_obj,"setting",&weap_setting_class,weap_setting_props,NULL);
 }
 
 /* =======================================================

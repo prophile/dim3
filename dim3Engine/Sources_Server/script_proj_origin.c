@@ -55,10 +55,7 @@ JSPropertySpec	proj_origin_props[]={
 
 void script_add_proj_origin_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"origin",&proj_origin_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,proj_origin_props);
+	script_create_child_object(parent_obj,"origin",&proj_origin_class,proj_origin_props,NULL);
 }
 
 /* =======================================================

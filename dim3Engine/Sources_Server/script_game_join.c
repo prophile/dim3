@@ -74,11 +74,7 @@ JSFunctionSpec	game_join_functions[]={
 
 void script_add_game_join_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"join",&game_join_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,game_join_props);
-	JS_DefineFunctions(js.cx,j_obj,game_join_functions);
+	script_create_child_object(parent_obj,"join",&game_join_class,game_join_props,game_join_functions);
 }
 
 /* =======================================================

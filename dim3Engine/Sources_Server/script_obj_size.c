@@ -70,11 +70,7 @@ JSFunctionSpec	obj_size_functions[]={
 
 void script_add_obj_size_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"size",&obj_size_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,obj_size_props);
-	JS_DefineFunctions(js.cx,j_obj,obj_size_functions);
+	script_create_child_object(parent_obj,"size",&obj_size_class,obj_size_props,obj_size_functions);
 }
 
 /* =======================================================

@@ -57,10 +57,7 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 
 void script_add_model_offset_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"offset",&model_offset_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,model_offset_props);
+	script_create_child_object(parent_obj,"offset",&model_offset_class,model_offset_props,NULL);
 }
 
 /* =======================================================

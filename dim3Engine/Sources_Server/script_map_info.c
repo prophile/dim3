@@ -55,10 +55,7 @@ JSPropertySpec	map_info_props[]={
 
 void script_add_map_info_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"info",&map_info_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,map_info_props);
+	script_create_child_object(parent_obj,"info",&map_info_class,map_info_props,NULL);
 }
 
 /* =======================================================

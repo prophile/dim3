@@ -57,10 +57,7 @@ JSPropertySpec	camera_position_props[]={
 
 void script_add_camera_position_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"position",&camera_position_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,camera_position_props);
+	script_create_child_object(parent_obj,"position",&camera_position_class,camera_position_props,NULL);
 }
 
 /* =======================================================

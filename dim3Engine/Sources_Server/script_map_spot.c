@@ -72,11 +72,7 @@ JSFunctionSpec	map_spot_functions[]={
 
 void script_add_map_spot_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"spot",&map_spot_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,map_spot_props);
-	JS_DefineFunctions(js.cx,j_obj,map_spot_functions);
+	script_create_child_object(parent_obj,"spot",&map_spot_class,map_spot_props,map_spot_functions);
 }
 
 /* =======================================================

@@ -82,11 +82,7 @@ JSFunctionSpec	proj_action_functions[]={
 
 void script_add_proj_action_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"action",&proj_action_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,proj_action_props);
-	JS_DefineFunctions(js.cx,j_obj,proj_action_functions);
+	script_create_child_object(parent_obj,"action",&proj_action_class,proj_action_props,proj_action_functions);
 }
 
 /* =======================================================

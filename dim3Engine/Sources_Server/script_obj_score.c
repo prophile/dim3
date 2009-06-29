@@ -63,11 +63,7 @@ JSFunctionSpec	obj_score_functions[]={
 
 void script_add_obj_score_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"score",&obj_score_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,obj_score_props);
-	JS_DefineFunctions(js.cx,j_obj,obj_score_functions);
+	script_create_child_object(parent_obj,"score",&obj_score_class,obj_score_props,obj_score_functions);
 }
 
 /* =======================================================

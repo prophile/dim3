@@ -65,11 +65,7 @@ JSFunctionSpec	multiplayer_setting_functions[]={
 
 void script_add_multiplayer_setting_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"setting",&multiplayer_setting_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,multiplayer_setting_props);
-	JS_DefineFunctions(js.cx,j_obj,multiplayer_setting_functions);
+	script_create_child_object(parent_obj,"setting",&multiplayer_setting_class,multiplayer_setting_props,multiplayer_setting_functions);
 }
 
 /* =======================================================

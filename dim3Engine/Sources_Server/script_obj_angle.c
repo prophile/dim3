@@ -65,11 +65,7 @@ extern void object_setup_motion(obj_type *obj,float ang,float speed);
 
 void script_add_obj_angle_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"angle",&obj_angle_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,obj_angle_props);
-	JS_DefineFunctions(js.cx,j_obj,obj_angle_functions);
+	script_create_child_object(parent_obj,"angle",&obj_angle_class,obj_angle_props,obj_angle_functions);
 }
 
 /* =======================================================

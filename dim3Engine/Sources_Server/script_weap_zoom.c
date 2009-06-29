@@ -64,10 +64,7 @@ JSPropertySpec	weap_zoom_props[]={
 
 void script_add_weap_zoom_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"zoom",&weap_zoom_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,weap_zoom_props);
+	script_create_child_object(parent_obj,"zoom",&weap_zoom_class,weap_zoom_props,NULL);
 }
 
 /* =======================================================

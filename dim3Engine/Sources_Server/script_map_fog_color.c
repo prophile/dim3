@@ -56,10 +56,7 @@ JSPropertySpec	map_fog_color_props[]={
 
 void script_add_map_fog_color_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"fogColor",&map_fog_color_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,map_fog_color_props);
+	script_create_child_object(parent_obj,"fogColor",&map_fog_color_class,map_fog_color_props,NULL);
 }
 
 /* =======================================================

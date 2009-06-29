@@ -66,11 +66,7 @@ JSFunctionSpec	obj_melee_functions[]={
 
 void script_add_obj_melee_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"melee",&obj_melee_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,obj_melee_props);
-	JS_DefineFunctions(js.cx,j_obj,obj_melee_functions);
+	script_create_child_object(parent_obj,"melee",&obj_melee_class,obj_melee_props,obj_melee_functions);
 }
 
 /* =======================================================

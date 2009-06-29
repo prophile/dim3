@@ -71,11 +71,7 @@ JSFunctionSpec	weap_recoil_functions[]={
 
 void script_add_weap_recoil_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"recoil",&weap_recoil_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,weap_recoil_props);
-	JS_DefineFunctions(js.cx,j_obj,weap_recoil_functions);
+	script_create_child_object(parent_obj,"recoil",&weap_recoil_class,weap_recoil_props,weap_recoil_functions);
 }
 
 /* =======================================================

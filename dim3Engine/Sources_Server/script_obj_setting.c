@@ -96,11 +96,7 @@ JSFunctionSpec	obj_setting_functions[]={
 
 void script_add_obj_setting_object(JSObject *parent_obj)
 {
-	JSObject		*j_obj;
-	
-	j_obj=JS_DefineObject(js.cx,parent_obj,"setting",&obj_setting_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,obj_setting_props);
-	JS_DefineFunctions(js.cx,j_obj,obj_setting_functions);
+	script_create_child_object(parent_obj,"setting",&obj_setting_class,obj_setting_props,obj_setting_functions);
 }
 
 /* =======================================================

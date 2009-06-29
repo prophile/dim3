@@ -1031,8 +1031,6 @@ typedef struct		{
 typedef struct		{
 						JSRuntime			*rt;
 						JSContext			*cx;
-						JSObject			*global_prototype,*game_prototype,*course_prototype,
-											*obj_prototype,*weap_prototype,*proj_setup_prototype;
 						
 						int					script_current_uid;
 						char				last_error_str[256];

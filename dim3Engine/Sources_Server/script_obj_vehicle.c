@@ -66,11 +66,7 @@ JSFunctionSpec	obj_vehicle_functions[]={
 
 void script_add_obj_vehicle_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"vehicle",&obj_vehicle_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,obj_vehicle_props);
-	JS_DefineFunctions(js.cx,j_obj,obj_vehicle_functions);
+	script_create_child_object(parent_obj,"vehicle",&obj_vehicle_class,obj_vehicle_props,obj_vehicle_functions);
 }
 
 /* =======================================================

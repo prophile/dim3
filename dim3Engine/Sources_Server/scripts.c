@@ -89,10 +89,6 @@ bool scripts_engine_initialize(char *err_str)
 		
 	// JS_SetGCCallback(js.cx,scripts_gc_reporter);		// supergumba -- for testing
 	
-		// create the prototype objects
-
-	if (!script_create_prototype_objects(err_str)) return(FALSE);
-	
 		// load up the define file
 		
 	script_load_user_defines();
@@ -349,7 +345,6 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 	int						idx;
 	bool					ok;
 	script_type				*script;
-	JSObject				*prototype;
 	
 		// no script
 		
@@ -403,9 +398,7 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *params,char 
 	
 		// create the object
 	
-	prototype=script_get_prototype_objects(attach);
-	
-	script->obj=JS_NewObject(js.cx,&dim3_class,prototype,NULL);
+	script->obj=script_create_main_object(attach);
 	if (script->obj==NULL) {
 		strcpy(err_str,"JavaScript Engine: Not enough memory to create an object");
 		script_free_file(script);

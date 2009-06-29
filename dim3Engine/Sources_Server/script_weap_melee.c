@@ -70,11 +70,7 @@ JSFunctionSpec	weap_melee_functions[]={
 
 void script_add_weap_melee_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"melee",&weap_melee_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,weap_melee_props);
-	JS_DefineFunctions(js.cx,j_obj,weap_melee_functions);
+	script_create_child_object(parent_obj,"melee",&weap_melee_class,weap_melee_props,weap_melee_functions);
 }
 
 /* =======================================================

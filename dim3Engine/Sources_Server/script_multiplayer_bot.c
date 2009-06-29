@@ -62,11 +62,7 @@ JSFunctionSpec	multiplayer_bot_functions[]={
 
 void script_add_multiplayer_bot_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"bot",&multiplayer_bot_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,multiplayer_bot_props);
-	JS_DefineFunctions(js.cx,j_obj,multiplayer_bot_functions);
+	script_create_child_object(parent_obj,"bot",&multiplayer_bot_class,multiplayer_bot_props,multiplayer_bot_functions);
 }
 
 /* =======================================================

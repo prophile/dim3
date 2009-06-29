@@ -99,11 +99,7 @@ JSFunctionSpec	weap_projectile_functions[]={
 
 void script_add_weap_projectile_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"projectile",&weap_projectile_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,weap_projectile_props);
-	JS_DefineFunctions(js.cx,j_obj,weap_projectile_functions);
+	script_create_child_object(parent_obj,"projectile",&weap_projectile_class,weap_projectile_props,weap_projectile_functions);
 }
 
 /* =======================================================

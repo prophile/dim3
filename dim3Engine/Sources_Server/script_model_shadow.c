@@ -61,10 +61,7 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 
 void script_add_model_shadow_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"shadow",&model_shadow_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,model_shadow_props);
+	script_create_child_object(parent_obj,"shadow",&model_shadow_class,model_shadow_props,NULL);
 }
 
 /* =======================================================

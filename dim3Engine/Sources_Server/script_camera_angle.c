@@ -57,10 +57,7 @@ JSPropertySpec	camera_angle_props[]={
 
 void script_add_camera_angle_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"angle",&camera_angle_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,camera_angle_props);
+	script_create_child_object(parent_obj,"angle",&camera_angle_class,camera_angle_props,NULL);
 }
 
 /* =======================================================

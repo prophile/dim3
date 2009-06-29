@@ -60,10 +60,7 @@ JSPropertySpec	interface_radar_props[]={
 
 void script_add_interface_radar_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"radar",&interface_radar_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,interface_radar_props);
+	script_create_child_object(parent_obj,"radar",&interface_radar_class,interface_radar_props,NULL);
 }
 
 /* =======================================================

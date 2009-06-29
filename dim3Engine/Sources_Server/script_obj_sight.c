@@ -66,11 +66,7 @@ JSFunctionSpec	obj_sight_functions[]={
 
 void script_add_obj_sight_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"sight",&obj_sight_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,obj_sight_props);
-	JS_DefineFunctions(js.cx,j_obj,obj_sight_functions);
+	script_create_child_object(parent_obj,"sight",&obj_sight_class,obj_sight_props,obj_sight_functions);
 }
 
 /* =======================================================

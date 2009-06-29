@@ -56,10 +56,7 @@ JSPropertySpec	weap_target_color_props[]={
 
 void script_add_weap_target_color_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"color",&weap_target_color_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,weap_target_color_props);
+	script_create_child_object(parent_obj,"color",&weap_target_color_class,weap_target_color_props,NULL);
 }
 
 /* =======================================================

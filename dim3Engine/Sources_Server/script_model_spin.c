@@ -57,10 +57,7 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 
 void script_add_model_spin_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"spin",&model_spin_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,model_spin_props);
+	script_create_child_object(parent_obj,"spin",&model_spin_class,model_spin_props,NULL);
 }
 
 /* =======================================================

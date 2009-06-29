@@ -63,10 +63,7 @@ JSPropertySpec	proj_hit_props[]={
 
 void script_add_proj_hit_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"hit",&proj_hit_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,proj_hit_props);
+	script_create_child_object(parent_obj,"hit",&proj_hit_class,proj_hit_props,NULL);
 }
 
 /* =======================================================

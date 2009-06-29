@@ -57,10 +57,7 @@ JSPropertySpec	proj_mark_props[]={
 
 void script_add_proj_mark_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"mark",&proj_mark_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,proj_mark_props);
+	script_create_child_object(parent_obj,"mark",&proj_mark_class,proj_mark_props,NULL);
 }
 
 /* =======================================================

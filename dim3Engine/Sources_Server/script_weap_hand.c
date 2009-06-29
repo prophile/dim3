@@ -58,10 +58,7 @@ JSPropertySpec	weap_hand_props[]={
 
 void script_add_weap_hand_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"hand",&weap_hand_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,weap_hand_props);
+	script_create_child_object(parent_obj,"hand",&weap_hand_class,weap_hand_props,NULL);
 }
 
 /* =======================================================

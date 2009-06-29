@@ -63,10 +63,7 @@ JSPropertySpec	obj_turn_speed_props[]={
 
 void script_add_obj_turn_speed_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"turnSpeed",&obj_turn_speed_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,obj_turn_speed_props);
+	script_create_child_object(parent_obj,"turnSpeed",&obj_turn_speed_class,obj_turn_speed_props,NULL);
 }
 
 /* =======================================================

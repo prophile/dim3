@@ -55,10 +55,7 @@ JSPropertySpec	proj_motion_vector_props[]={
 
 void script_add_proj_motion_vector_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"motionVector",&proj_motion_vector_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,proj_motion_vector_props);
+	script_create_child_object(parent_obj,"motionVector",&proj_motion_vector_class,proj_motion_vector_props,NULL);
 }
 
 /* =======================================================

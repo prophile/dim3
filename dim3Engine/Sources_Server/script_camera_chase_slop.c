@@ -57,10 +57,7 @@ JSPropertySpec	camera_chase_slop_props[]={
 
 void script_add_camera_chase_slop_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"chaseSlop",&camera_chase_slop_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,camera_chase_slop_props);
+	script_create_child_object(parent_obj,"chaseSlop",&camera_chase_slop_class,camera_chase_slop_props,NULL);
 }
 
 /* =======================================================

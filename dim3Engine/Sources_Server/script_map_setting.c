@@ -73,11 +73,7 @@ JSFunctionSpec	map_setting_functions[]={
 
 void script_add_map_setting_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"setting",&map_setting_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,map_setting_props);
-	JS_DefineFunctions(js.cx,j_obj,map_setting_functions);
+	script_create_child_object(parent_obj,"setting",&map_setting_class,map_setting_props,map_setting_functions);
 }
 
 /* =======================================================

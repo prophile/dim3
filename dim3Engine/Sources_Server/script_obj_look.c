@@ -63,11 +63,7 @@ JSFunctionSpec	obj_look_functions[]={
 
 void script_add_obj_look_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"look",&obj_look_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,obj_look_props);
-	JS_DefineFunctions(js.cx,j_obj,obj_look_functions);
+	script_create_child_object(parent_obj,"look",&obj_look_class,obj_look_props,obj_look_functions);
 }
 
 /* =======================================================

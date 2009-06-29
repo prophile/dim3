@@ -73,11 +73,7 @@ JSFunctionSpec	obj_watch_functions[]={
 
 void script_add_obj_watch_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"watch",&obj_watch_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,obj_watch_props);
-	JS_DefineFunctions(js.cx,j_obj,obj_watch_functions);
+	script_create_child_object(parent_obj,"watch",&obj_watch_class,obj_watch_props,obj_watch_functions);
 }
 
 /* =======================================================

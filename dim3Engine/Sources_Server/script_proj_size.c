@@ -57,10 +57,7 @@ JSPropertySpec	proj_size_props[]={
 
 void script_add_proj_size_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"size",&proj_size_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,proj_size_props);
+	script_create_child_object(parent_obj,"size",&proj_size_class,proj_size_props,NULL);
 }
 
 /* =======================================================

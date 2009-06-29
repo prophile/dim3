@@ -71,11 +71,7 @@ JSFunctionSpec	weap_alt_ammo_functions[]={
 
 void script_add_weap_alt_ammo_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"altAmmo",&weap_alt_ammo_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,weap_alt_ammo_props);
-	JS_DefineFunctions(js.cx,j_obj,weap_alt_ammo_functions);
+	script_create_child_object(parent_obj,"altAmmo",&weap_alt_ammo_class,weap_alt_ammo_props,weap_alt_ammo_functions);
 }
 
 /* =======================================================

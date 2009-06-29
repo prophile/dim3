@@ -59,10 +59,7 @@ JSPropertySpec	proj_speed_props[]={
 
 void script_add_proj_speed_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"speed",&proj_speed_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,proj_speed_props);
+	script_create_child_object(parent_obj,"speed",&proj_speed_class,proj_speed_props,NULL);
 }
 
 /* =======================================================

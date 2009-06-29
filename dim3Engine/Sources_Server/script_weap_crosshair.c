@@ -64,9 +64,8 @@ extern void script_add_weap_crosshair_pickup_color_object(JSObject *parent_obj);
 void script_add_weap_crosshair_object(JSObject *parent_obj)
 {
     JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"crosshair",&weap_crosshair_class,NULL,0);
-	JS_DefineProperties(js.cx,j_obj,weap_crosshair_props);
+	
+	j_obj=script_create_child_object(parent_obj,"crosshair",&weap_crosshair_class,weap_crosshair_props,NULL);
 	
 		// crosshair color objects
 		
