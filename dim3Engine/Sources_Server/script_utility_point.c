@@ -44,7 +44,7 @@ JSClass			utility_point_class={"utility_point_class",0,
 							script_add_property,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	utility_point_functions[]={
+script_js_function	utility_point_functions[]={
 							{"equal",				js_utility_point_equal_func,				7},
 							{"angleTo",				js_utility_point_angle_to_func,				4},
 							{"distanceTo",			js_utility_point_distance_to_func,			6},
@@ -59,10 +59,7 @@ JSFunctionSpec	utility_point_functions[]={
 
 void script_add_utility_point_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"point",&utility_point_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,utility_point_functions);
+	script_create_child_object(parent_obj,"point",&utility_point_class,NULL,utility_point_functions);
 }
 
 /* =======================================================

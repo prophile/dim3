@@ -42,18 +42,18 @@ JSClass			weap_zoom_class={"weap_zoom_class",0,
 							js_get_weap_zoom_property,js_set_weap_zoom_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	weap_zoom_props[]={
-							{"on",					weap_zoom_prop_on,						JSPROP_PERMANENT|JSPROP_SHARED},
-							{"active",				weap_zoom_prop_active,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"fovMinimum",			weap_zoom_prop_fov_minimum,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"fovMaximum",			weap_zoom_prop_fov_maximum,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"fovSteps",			weap_zoom_prop_fov_steps,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"turnFactor",			weap_zoom_prop_turn_factor,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"crawlTurnFactor",		weap_zoom_prop_crawl_turn_factor,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"lookFactor",			weap_zoom_prop_look_factor,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"maskName",			weap_zoom_prop_mask_name,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"showWeapon",			weap_zoom_prop_show_weapon,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"tick",				weap_zoom_prop_tick,					JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	weap_zoom_props[]={
+							{"on",					weap_zoom_prop_on,						FALSE},
+							{"active",				weap_zoom_prop_active,					TRUE},
+							{"fovMinimum",			weap_zoom_prop_fov_minimum,				FALSE},
+							{"fovMaximum",			weap_zoom_prop_fov_maximum,				FALSE},
+							{"fovSteps",			weap_zoom_prop_fov_steps,				FALSE},
+							{"turnFactor",			weap_zoom_prop_turn_factor,				FALSE},
+							{"crawlTurnFactor",		weap_zoom_prop_crawl_turn_factor,		FALSE},
+							{"lookFactor",			weap_zoom_prop_look_factor,				FALSE},
+							{"maskName",			weap_zoom_prop_mask_name,				FALSE},
+							{"showWeapon",			weap_zoom_prop_show_weapon,				FALSE},
+							{"tick",				weap_zoom_prop_tick,					FALSE},
 							{0}};
 
 /* =======================================================

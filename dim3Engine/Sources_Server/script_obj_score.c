@@ -43,15 +43,15 @@ JSClass			obj_score_class={"obj_score_class",0,
 							js_get_obj_score_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_score_props[]={
-							{"kill",				obj_score_prop_kill,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"death",				obj_score_prop_death,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"suicide",				obj_score_prop_suicide,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"goal",				obj_score_prop_goal,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"score",				obj_score_prop_score,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_score_props[]={
+							{"kill",				obj_score_prop_kill,				TRUE},
+							{"death",				obj_score_prop_death,				TRUE},
+							{"suicide",				obj_score_prop_suicide,				TRUE},
+							{"goal",				obj_score_prop_goal,				TRUE},
+							{"score",				obj_score_prop_score,				TRUE},
 							{0}};
 
-JSFunctionSpec	obj_score_functions[]={
+script_js_function	obj_score_functions[]={
 							{"addGoal",				js_obj_score_add_goal_func,			0},
 							{0}};
 

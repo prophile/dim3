@@ -41,7 +41,7 @@ JSClass			utility_pack_class={"utility_pack_class",0,
 							script_add_property,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	utility_pack_functions[]={
+script_js_function	utility_pack_functions[]={
 							{"pack",				js_utility_pack_pack_func,				2},
 							{"unpackHigh",			js_utility_pack_unpack_high_func,		1},
 							{"unpackLow",			js_utility_pack_unpack_low_func,		1},
@@ -55,10 +55,7 @@ JSFunctionSpec	utility_pack_functions[]={
 
 void script_add_utility_pack_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"pack",&utility_pack_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,utility_pack_functions);
+	script_create_child_object(parent_obj,"pack",&utility_pack_class,NULL,utility_pack_functions);
 }
 
 /* =======================================================

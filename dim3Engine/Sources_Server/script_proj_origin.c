@@ -41,10 +41,10 @@ JSClass			proj_origin_class={"proj_position_class",0,
 							js_get_proj_origin_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	proj_origin_props[]={
-							{"x",					proj_origin_prop_x,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"z",					proj_origin_prop_z,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"y",					proj_origin_prop_y,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	proj_origin_props[]={
+							{"x",					proj_origin_prop_x,					TRUE},
+							{"z",					proj_origin_prop_z,					TRUE},
+							{"y",					proj_origin_prop_y,					TRUE},
 							{0}};
 
 /* =======================================================

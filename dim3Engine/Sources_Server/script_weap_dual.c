@@ -44,13 +44,13 @@ JSClass			weap_dual_class={"weap_dual_class",0,
 							js_get_weap_dual_property,js_set_weap_dual_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	weap_dual_props[]={
-							{"on",					weap_dual_prop_on,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"active",				weap_dual_prop_active,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"handOffset",			weap_dual_prop_hand_offset,			JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	weap_dual_props[]={
+							{"on",					weap_dual_prop_on,					FALSE},
+							{"active",				weap_dual_prop_active,				FALSE},
+							{"handOffset",			weap_dual_prop_hand_offset,			FALSE},
 							{0}};
 							
-JSFunctionSpec	weap_dual_functions[]={
+script_js_function	weap_dual_functions[]={
 							{"switchHand",			js_weap_dual_switch_hand_func,		1},
 							{0}};
 

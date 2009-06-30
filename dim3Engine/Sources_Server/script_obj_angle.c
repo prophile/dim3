@@ -44,13 +44,13 @@ JSClass			obj_angle_class={"obj_angle_class",0,
 							js_get_obj_angle_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_angle_props[]={
-							{"x",					obj_angle_prop_x,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"y",					obj_angle_prop_y,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"z",					obj_angle_prop_z,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_angle_props[]={
+							{"x",					obj_angle_prop_x,					TRUE},
+							{"y",					obj_angle_prop_y,					TRUE},
+							{"z",					obj_angle_prop_z,					TRUE},
 							{0}};
 
-JSFunctionSpec	obj_angle_functions[]={
+script_js_function	obj_angle_functions[]={
 							{"rotate",				js_obj_angle_rotate_func,			1},
 							{"rotateTo",			js_obj_angle_rotate_to_func,		1},
 							{0}};

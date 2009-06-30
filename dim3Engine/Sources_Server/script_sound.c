@@ -54,7 +54,7 @@ JSClass			sound_class={"sound_class",0,
 							script_add_property,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 							
-JSFunctionSpec	sound_functions[]={
+script_js_function	sound_functions[]={
 							{"play",				js_sound_play_func,						5},
 							{"playAtObject",		js_sound_play_at_object_func,			3},
 							{"playGlobal",			js_sound_play_global_func,				2},
@@ -74,10 +74,7 @@ JSFunctionSpec	sound_functions[]={
 
 void script_add_global_sound_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"sound",&sound_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,sound_functions);
+	script_create_child_object(parent_obj,"sound",&sound_class,NULL,sound_functions);
 }
 
 /* =======================================================

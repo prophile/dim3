@@ -42,17 +42,17 @@ JSClass			obj_turn_speed_class={"obj_turn_speed_class",0,
 							js_get_obj_turn_speed_property,js_set_obj_turn_speed_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_turn_speed_props[]={
-							{"facingWalk",				obj_turn_speed_prop_facing_walk,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"motionWalk",				obj_turn_speed_prop_motion_walk,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"facingRun",				obj_turn_speed_prop_facing_run,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"motionRun",				obj_turn_speed_prop_motion_run,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"facingCrawl",				obj_turn_speed_prop_facing_crawl,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"motionCrawl",				obj_turn_speed_prop_motion_crawl,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"facingAir",				obj_turn_speed_prop_facing_air,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"motionAir",				obj_turn_speed_prop_motion_air,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"key",						obj_turn_speed_prop_key,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"topDownAngleOffset",		obj_turn_speed_prop_top_down_ang_offset,	JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_turn_speed_props[]={
+							{"facingWalk",				obj_turn_speed_prop_facing_walk,			FALSE},
+							{"motionWalk",				obj_turn_speed_prop_motion_walk,			FALSE},
+							{"facingRun",				obj_turn_speed_prop_facing_run,				FALSE},
+							{"motionRun",				obj_turn_speed_prop_motion_run,				FALSE},
+							{"facingCrawl",				obj_turn_speed_prop_facing_crawl,			FALSE},
+							{"motionCrawl",				obj_turn_speed_prop_motion_crawl,			FALSE},
+							{"facingAir",				obj_turn_speed_prop_facing_air,				FALSE},
+							{"motionAir",				obj_turn_speed_prop_motion_air,				FALSE},
+							{"key",						obj_turn_speed_prop_key,					FALSE},
+							{"topDownAngleOffset",		obj_turn_speed_prop_top_down_ang_offset,	FALSE},
 							{0}};
 
 /* =======================================================

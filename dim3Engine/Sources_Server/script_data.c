@@ -46,7 +46,7 @@ JSClass			data_class={"data_class",0,
 							script_add_property,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	data_functions[]={
+script_js_function	data_functions[]={
 							{"add",					js_data_add_func,					2},
 							{"sub",					js_data_sub_func,					1},
 							{"set",					js_data_set_func,					2},
@@ -65,10 +65,7 @@ JSFunctionSpec	data_functions[]={
 
 void script_add_global_data_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"data",&data_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,data_functions);
+	script_create_child_object(parent_obj,"data",&data_class,NULL,data_functions);
 }
 
 /* =======================================================

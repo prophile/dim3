@@ -44,13 +44,13 @@ JSClass			obj_look_class={"obj_look_class",0,
 							js_get_obj_look_property,js_set_obj_look_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_look_props[]={
-							{"upAngle",					obj_look_prop_up_angle,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"downAngle",				obj_look_prop_down_angle,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"effectWeapons",			obj_look_prop_effect_weapons,			JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_look_props[]={
+							{"upAngle",					obj_look_prop_up_angle,					FALSE},
+							{"downAngle",				obj_look_prop_down_angle,				FALSE},
+							{"effectWeapons",			obj_look_prop_effect_weapons,			FALSE},
 							{0}};
 							
-JSFunctionSpec	obj_look_functions[]={
+script_js_function	obj_look_functions[]={
 							{"setLook",					js_obj_look_set_look_func,				1},
 							{"setLookAt",				js_obj_look_set_look_at_func,			1},
 							{0}};

@@ -42,15 +42,15 @@ JSClass			obj_forward_speed_class={"obj_forward_speed_class",0,
 							js_get_obj_forward_speed_property,js_set_obj_forward_speed_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_forward_speed_props[]={
-							{"walk",					obj_forward_speed_prop_walk,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"run",						obj_forward_speed_prop_run,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"crawl",					obj_forward_speed_prop_crawl,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"air",						obj_forward_speed_prop_air,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"acceleration",			obj_forward_speed_prop_acceleration,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"deceleration",			obj_forward_speed_prop_deceleration,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"accelerationAir",			obj_forward_speed_prop_acceleration_air,JSPROP_PERMANENT|JSPROP_SHARED},
-							{"decelerationAir",			obj_forward_speed_prop_deceleration_air,JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_forward_speed_props[]={
+							{"walk",					obj_forward_speed_prop_walk,			FALSE},
+							{"run",						obj_forward_speed_prop_run,				FALSE},
+							{"crawl",					obj_forward_speed_prop_crawl,			FALSE},
+							{"air",						obj_forward_speed_prop_air,				FALSE},
+							{"acceleration",			obj_forward_speed_prop_acceleration,	FALSE},
+							{"deceleration",			obj_forward_speed_prop_deceleration,	FALSE},
+							{"accelerationAir",			obj_forward_speed_prop_acceleration_air,FALSE},
+							{"decelerationAir",			obj_forward_speed_prop_deceleration_air,FALSE},
 							{0}};
 
 /* =======================================================

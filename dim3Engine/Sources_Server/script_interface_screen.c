@@ -41,9 +41,9 @@ JSClass			interface_screen_class={"interface_screen_class",0,
 							js_get_interface_screen_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	interface_screen_props[]={
-							{"width",				interface_screen_prop_width,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"height",				interface_screen_prop_height,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	interface_screen_props[]={
+							{"width",				interface_screen_prop_width,		TRUE},
+							{"height",				interface_screen_prop_height,		TRUE},
 							{0}};
 
 /* =======================================================

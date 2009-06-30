@@ -63,7 +63,7 @@ JSClass			event_class={"event_class",JSCLASS_HAS_PRIVATE,
 							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	event_functions[]={
+script_js_function	event_functions[]={
 							{"startTimer",					js_event_start_timer_func,						2},
 							{"clearTimer",					js_event_clear_timer_func,						0},
 							{"startWait",					js_event_start_wait_func,						2},
@@ -94,10 +94,7 @@ JSFunctionSpec	event_functions[]={
 
 void script_add_event_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"event",&event_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,event_functions);
+	script_create_child_object(parent_obj,"event",&event_class,NULL,event_functions);
 }
 
 /* =======================================================

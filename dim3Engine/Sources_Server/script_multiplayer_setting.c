@@ -47,13 +47,13 @@ JSClass			multiplayer_setting_class={"multiplayer_setting_class",0,
 							js_get_multiplayer_setting_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	multiplayer_setting_props[]={
-							{"on",					multiplayer_setting_prop_on,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"type",				multiplayer_setting_prop_type,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"teamPlay",			multiplayer_setting_prop_team_play,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	multiplayer_setting_props[]={
+							{"on",					multiplayer_setting_prop_on,				TRUE},
+							{"type",				multiplayer_setting_prop_type,				TRUE},
+							{"teamPlay",			multiplayer_setting_prop_team_play,			TRUE},
 							{0}};
 
-JSFunctionSpec	multiplayer_setting_functions[]={
+script_js_function	multiplayer_setting_functions[]={
 							{"checkOption",			js_multiplayer_setting_check_option_func,	1},
 							{0}};
 

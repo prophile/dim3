@@ -44,12 +44,12 @@ JSClass			camera_setting_class={"camera_class",JSCLASS_HAS_PRIVATE,
 							js_get_camera_setting_property,js_set_camera_setting_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	camera_setting_props[]={
-							{"type",				camera_setting_prop_type,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"attachObjectId",		camera_setting_prop_attach_object_id,	JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	camera_setting_props[]={
+							{"type",				camera_setting_prop_type,				FALSE},
+							{"attachObjectId",		camera_setting_prop_attach_object_id,	TRUE},
 							{0}};
 
-JSFunctionSpec	camera_setting_functions[]={
+script_js_function	camera_setting_functions[]={
 							{"attach",				js_camera_setting_attach_func,			1},
 							{0}};
 

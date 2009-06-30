@@ -42,14 +42,14 @@ JSClass			obj_object_speed_class={"obj_object_speed_class",0,
 							js_get_obj_object_speed_property,js_set_obj_object_speed_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_object_speed_props[]={
-							{"jumpHeight",				obj_object_speed_prop_jump_height,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"duckAdd",					obj_object_speed_prop_duck_add,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"duckChange",				obj_object_speed_prop_duck_change,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"bumpHeight",				obj_object_speed_prop_bump_height,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"bumpSmoothFactor",		obj_object_speed_prop_bump_smooth_factor,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"bounceFactor",			obj_object_speed_prop_bounce_factor,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"noSlide",					obj_object_speed_prop_no_slide,				JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_object_speed_props[]={
+							{"jumpHeight",				obj_object_speed_prop_jump_height,			FALSE},
+							{"duckAdd",					obj_object_speed_prop_duck_add,				FALSE},
+							{"duckChange",				obj_object_speed_prop_duck_change,			FALSE},
+							{"bumpHeight",				obj_object_speed_prop_bump_height,			FALSE},
+							{"bumpSmoothFactor",		obj_object_speed_prop_bump_smooth_factor,	FALSE},
+							{"bounceFactor",			obj_object_speed_prop_bounce_factor,		FALSE},
+							{"noSlide",					obj_object_speed_prop_no_slide,				FALSE},
 							{0}};
 
 /* =======================================================

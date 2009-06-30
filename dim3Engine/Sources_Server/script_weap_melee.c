@@ -45,19 +45,19 @@ JSClass			weap_melee_class={"weap_melee_class",0,
 							js_get_weap_melee_property,js_set_weap_melee_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	weap_melee_props[]={
-							{"strikeBoneTag",			weap_melee_prop_strike_bone_tag,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"strikePoseName",			weap_melee_prop_strike_pose_name,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectStrikeBoneTag",		weap_melee_prop_object_strike_bone_tag,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectStrikePoseName",	weap_melee_prop_object_strike_pose_name,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"radius",					weap_melee_prop_radius,						JSPROP_PERMANENT|JSPROP_SHARED},
-							{"distance",				weap_melee_prop_distance,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"damage",					weap_melee_prop_damage,						JSPROP_PERMANENT|JSPROP_SHARED},
-							{"force",					weap_melee_prop_force,						JSPROP_PERMANENT|JSPROP_SHARED},
-							{"fallOff",					weap_melee_prop_fall_off,					JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	weap_melee_props[]={
+							{"strikeBoneTag",			weap_melee_prop_strike_bone_tag,			FALSE},
+							{"strikePoseName",			weap_melee_prop_strike_pose_name,			FALSE},
+							{"objectStrikeBoneTag",		weap_melee_prop_object_strike_bone_tag,		FALSE},
+							{"objectStrikePoseName",	weap_melee_prop_object_strike_pose_name,	FALSE},
+							{"radius",					weap_melee_prop_radius,						FALSE},
+							{"distance",				weap_melee_prop_distance,					FALSE},
+							{"damage",					weap_melee_prop_damage,						FALSE},
+							{"force",					weap_melee_prop_force,						FALSE},
+							{"fallOff",					weap_melee_prop_fall_off,					FALSE},
 							{0}};
 
-JSFunctionSpec	weap_melee_functions[]={
+script_js_function	weap_melee_functions[]={
 							{"spawnFromWeaponBone",		js_weap_melee_spawn_from_weapon_bone_func,		0},
 							{"spawnFromObjectBone",		js_weap_melee_spawn_from_object_bone_func,		0},
 							{0}};

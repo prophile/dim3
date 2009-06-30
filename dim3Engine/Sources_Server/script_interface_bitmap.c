@@ -51,7 +51,7 @@ JSClass			interface_bitmap_class={"interface_bitmap_class",0,
 							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	interface_bitmap_functions[]={
+script_js_function	interface_bitmap_functions[]={
 							{"show",				js_interface_bitmap_show_func,			1},
 							{"hide",				js_interface_bitmap_hide_func,			1},
 							{"hideAll",				js_interface_bitmap_hide_all_func,		0},
@@ -73,10 +73,7 @@ JSFunctionSpec	interface_bitmap_functions[]={
 
 void script_add_interface_bitmap_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"bitmap",&interface_bitmap_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,interface_bitmap_functions);
+	script_create_child_object(parent_obj,"bitmap",&interface_bitmap_class,NULL,interface_bitmap_functions);
 }
 
 /* =======================================================

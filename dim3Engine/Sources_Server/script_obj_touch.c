@@ -42,11 +42,11 @@ JSClass			obj_touch_class={"obj_touch_class",0,
 							js_get_obj_touch_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_touch_props[]={
-							{"objectId",			obj_touch_prop_object_id,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectName",			obj_touch_prop_object_name,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectIsPlayer",		obj_touch_prop_object_is_player,	JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"stand",				obj_touch_prop_stand,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_touch_props[]={
+							{"objectId",			obj_touch_prop_object_id,			TRUE},
+							{"objectName",			obj_touch_prop_object_name,			TRUE},
+							{"objectIsPlayer",		obj_touch_prop_object_is_player,	TRUE},
+							{"stand",				obj_touch_prop_stand,				TRUE},
 							{0}};
 
 /* =======================================================

@@ -46,18 +46,18 @@ JSClass			weap_alt_ammo_class={"weap_alt_ammo_class",0,
 							js_get_weap_alt_ammo_property,js_set_weap_alt_ammo_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	weap_alt_ammo_props[]={
-							{"clip",				weap_alt_ammo_prop_clip,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"count",				weap_alt_ammo_prop_count,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"initCount",			weap_alt_ammo_prop_init_count,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"maxCount",			weap_alt_ammo_prop_max_count,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"clipCount",			weap_alt_ammo_prop_clip_count,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"initClipCount",		weap_alt_ammo_prop_init_clip_count,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"maxClipCount",		weap_alt_ammo_prop_max_clip_count,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"lastReloadTick",		weap_alt_ammo_prop_last_reload_tick,JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	weap_alt_ammo_props[]={
+							{"clip",				weap_alt_ammo_prop_clip,			FALSE},
+							{"count",				weap_alt_ammo_prop_count,			FALSE},
+							{"initCount",			weap_alt_ammo_prop_init_count,		FALSE},
+							{"maxCount",			weap_alt_ammo_prop_max_count,		FALSE},
+							{"clipCount",			weap_alt_ammo_prop_clip_count,		FALSE},
+							{"initClipCount",		weap_alt_ammo_prop_init_clip_count,	FALSE},
+							{"maxClipCount",		weap_alt_ammo_prop_max_clip_count,	FALSE},
+							{"lastReloadTick",		weap_alt_ammo_prop_last_reload_tick,TRUE},
 							{0}};
 							
-JSFunctionSpec	weap_alt_ammo_functions[]={
+script_js_function	weap_alt_ammo_functions[]={
 							{"useAmmo",				js_weap_alt_ammo_use_ammo_func,			1},
 							{"addAmmo",				js_weap_alt_ammo_add_ammo_func,			1},
 							{"changeClip",			js_weap_alt_ammo_change_clip_func,		0},

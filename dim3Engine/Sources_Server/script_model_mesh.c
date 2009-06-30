@@ -45,7 +45,7 @@ JSClass			model_mesh_class={"model_mesh_class",0,
 							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	model_mesh_functions[]={
+script_js_function	model_mesh_functions[]={
 							{"showMesh",			js_model_mesh_show_mesh_func,				1},
 							{"showAllMesh",			js_model_mesh_show_all_mesh_func,			0},
 							{"showOnlyMesh",		js_model_mesh_show_only_mesh_func,			1},
@@ -63,10 +63,7 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 
 void script_add_model_mesh_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"mesh",&model_mesh_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,model_mesh_functions);
+	script_create_child_object(parent_obj,"mesh",&model_mesh_class,NULL,model_mesh_functions);
 }
 
 /* =======================================================

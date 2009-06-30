@@ -47,7 +47,7 @@ JSClass			interface_bar_class={"interface_bar_class",0,
 							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	interface_bar_functions[]={
+script_js_function	interface_bar_functions[]={
 							{"show",				js_interface_bar_show_func,				1},
 							{"hide",				js_interface_bar_hide_func,				1},
 							{"hideAll",				js_interface_bar_hide_all_func,			0},
@@ -65,10 +65,7 @@ JSFunctionSpec	interface_bar_functions[]={
 
 void script_add_interface_bar_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"bar",&interface_bar_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,interface_bar_functions);
+	script_create_child_object(parent_obj,"bar",&interface_bar_class,NULL,interface_bar_functions);
 }
 
 /* =======================================================

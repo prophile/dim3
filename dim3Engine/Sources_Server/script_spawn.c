@@ -54,7 +54,7 @@ JSClass			spawn_class={"spawn_class",0,
 							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	spawn_functions[]={
+script_js_function	spawn_functions[]={
 							{"particle",			js_spawn_particle_func,				4},
 							{"particleMoving",		js_spawn_particle_moving_func,		7},
 							{"particleLine",		js_spawn_particle_line_func,		8},
@@ -76,10 +76,7 @@ JSFunctionSpec	spawn_functions[]={
 
 void script_add_global_spawn_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"spawn",&spawn_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,spawn_functions);
+	script_create_child_object(parent_obj,"spawn",&spawn_class,NULL,spawn_functions);
 }
 
 /* =======================================================

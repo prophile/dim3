@@ -41,10 +41,10 @@ JSClass			map_info_class={"map_info_class",0,
 							js_get_map_info_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	map_info_props[]={
-							{"file",				map_info_prop_file,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"title",				map_info_prop_title,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"author",				map_info_prop_author,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	map_info_props[]={
+							{"file",				map_info_prop_file,					TRUE},
+							{"title",				map_info_prop_title,				TRUE},
+							{"author",				map_info_prop_author,				TRUE},
 							{0}};
 
 /* =======================================================

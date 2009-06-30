@@ -41,10 +41,10 @@ JSClass			model_light_color_class={"model_light_color_class",0,
 							js_get_model_light_color_property,js_set_model_light_color_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	model_light_color_props[]={
-							{"red",					model_light_color_prop_red,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"green",				model_light_color_prop_green,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"blue",				model_light_color_prop_blue,		JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	model_light_color_props[]={
+							{"red",					model_light_color_prop_red,			FALSE},
+							{"green",				model_light_color_prop_green,		FALSE},
+							{"blue",				model_light_color_prop_blue,		FALSE},
 							{0}};
 
 extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);

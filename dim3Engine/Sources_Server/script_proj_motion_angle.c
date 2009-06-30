@@ -41,10 +41,10 @@ JSClass			proj_motion_angle_class={"proj_motion_angle_class",0,
 							js_get_proj_motion_angle_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	proj_motion_angle_props[]={
-							{"x",					proj_motion_angle_prop_x,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"y",					proj_motion_angle_prop_y,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"z",					proj_motion_angle_prop_z,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	proj_motion_angle_props[]={
+							{"x",					proj_motion_angle_prop_x,			TRUE},
+							{"y",					proj_motion_angle_prop_y,			TRUE},
+							{"z",					proj_motion_angle_prop_z,			TRUE},
 							{0}};
 
 /* =======================================================

@@ -46,19 +46,19 @@ JSClass			obj_watch_class={"obj_watch_class",0,
 							js_get_obj_watch_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_watch_props[]={
-							{"objectId",				obj_watch_prop_object_id,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectName",				obj_watch_prop_object_name,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectIsPlayer",			obj_watch_prop_object_is_player,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectIsRemote",			obj_watch_prop_object_is_remote,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectIsBot",				obj_watch_prop_object_is_bot,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectIsPlayerRemoteBot",	obj_watch_prop_object_is_player_remote_bot,	JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectTeam",				obj_watch_prop_object_team,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"baseTeam",				obj_watch_prop_base_team,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"soundName",				obj_watch_prop_sound_name,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_watch_props[]={
+							{"objectId",				obj_watch_prop_object_id,					TRUE},
+							{"objectName",				obj_watch_prop_object_name,					TRUE},
+							{"objectIsPlayer",			obj_watch_prop_object_is_player,			TRUE},
+							{"objectIsRemote",			obj_watch_prop_object_is_remote,			TRUE},
+							{"objectIsBot",				obj_watch_prop_object_is_bot,				TRUE},
+							{"objectIsPlayerRemoteBot",	obj_watch_prop_object_is_player_remote_bot,	TRUE},
+							{"objectTeam",				obj_watch_prop_object_team,					TRUE},
+							{"baseTeam",				obj_watch_prop_base_team,					TRUE},
+							{"soundName",				obj_watch_prop_sound_name,					TRUE},
 							{0}};
 							
-JSFunctionSpec	obj_watch_functions[]={
+script_js_function	obj_watch_functions[]={
 							{"start",					js_obj_watch_start_func,					1},
 							{"stop",					js_obj_watch_stop_func,						0},
 							{"setRestrictSight",		js_obj_watch_set_restrict_sight_func,		1},

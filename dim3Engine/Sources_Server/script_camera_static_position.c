@@ -47,12 +47,12 @@ JSClass			camera_static_position_class={"camera_static_position_class",JSCLASS_H
 							js_get_camera_static_position_property,js_set_camera_static_position_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	camera_static_position_props[]={
-							{"follow",				camera_static_position_prop_follow,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"walkTurnSpeed",		camera_static_position_prop_walk_turn_speed,	JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	camera_static_position_props[]={
+							{"follow",				camera_static_position_prop_follow,				FALSE},
+							{"walkTurnSpeed",		camera_static_position_prop_walk_turn_speed,	FALSE},
 							{0}};
 							
-JSFunctionSpec	camera_static_position_functions[]={
+script_js_function	camera_static_position_functions[]={
 							{"move",				js_camera_static_position_move_func,			3},
 							{"moveToSpot",			js_camera_static_position_move_to_spot_func,	1},
 							{"walkToNode",			js_camera_static_position_walk_to_node_func,	6},

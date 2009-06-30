@@ -47,15 +47,15 @@ JSClass			game_score_class={"game_score_class",0,
 							js_get_game_score_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	game_score_props[]={
-							{"objectId",			game_score_prop_object_id,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"kill",				game_score_prop_kill,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"death",				game_score_prop_death,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"suicide",				game_score_prop_suicide,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"goal",				game_score_prop_goal,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	game_score_props[]={
+							{"objectId",			game_score_prop_object_id,			TRUE},
+							{"kill",				game_score_prop_kill,				TRUE},
+							{"death",				game_score_prop_death,				TRUE},
+							{"suicide",				game_score_prop_suicide,			TRUE},
+							{"goal",				game_score_prop_goal,				TRUE},
 							{0}};
 							
-JSFunctionSpec	game_score_functions[]={
+script_js_function	game_score_functions[]={
 							{"setScore",			js_game_score_set_score_func,		1},
 							{0}};
 

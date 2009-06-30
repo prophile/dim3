@@ -45,15 +45,15 @@ JSClass			obj_sight_class={"obj_sight_class",0,
 							js_get_obj_sight_property,js_set_obj_sight_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_sight_props[]={
-							{"sideFieldAngle",		obj_sight_prop_side_field_angle,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"lookFieldAngle",		obj_sight_prop_look_field_angle,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"sideFieldDivision",	obj_sight_prop_side_field_division,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"lookFieldDivision",	obj_sight_prop_look_field_division,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"distance",			obj_sight_prop_distance,			JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_sight_props[]={
+							{"sideFieldAngle",		obj_sight_prop_side_field_angle,	FALSE},
+							{"lookFieldAngle",		obj_sight_prop_look_field_angle,	FALSE},
+							{"sideFieldDivision",	obj_sight_prop_side_field_division,	FALSE},
+							{"lookFieldDivision",	obj_sight_prop_look_field_division,	FALSE},
+							{"distance",			obj_sight_prop_distance,			FALSE},
 							{0}};
 
-JSFunctionSpec	obj_sight_functions[]={
+script_js_function	obj_sight_functions[]={
 							{"testObject",			js_obj_sight_test_object_func,		1},
 							{"testPlayer",			js_obj_sight_test_player_func,		0},
 							{0}};

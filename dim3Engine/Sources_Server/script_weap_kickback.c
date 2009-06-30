@@ -44,11 +44,11 @@ JSClass			weap_kickback_class={"weap_kickback_class",0,
                             js_get_weap_kickback_property,js_set_weap_kickback_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
                             
-JSPropertySpec	weap_kickback_props[]={
-							{"size",				weap_kickback_prop_size,				JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	weap_kickback_props[]={
+							{"size",				weap_kickback_prop_size,				FALSE},
 							{0}};
 							
-JSFunctionSpec	weap_kickback_functions[]={
+script_js_function	weap_kickback_functions[]={
 							{"kick",				js_weap_kickback_kick_func,				0},
 							{0}};
 

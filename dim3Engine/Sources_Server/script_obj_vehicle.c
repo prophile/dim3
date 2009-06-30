@@ -47,12 +47,12 @@ JSClass			obj_vehicle_class={"obj_vehicle_class",0,
 							js_get_obj_vehicle_property,js_set_obj_vehicle_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_vehicle_props[]={
-							{"on",					obj_vehicle_prop_on,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"hasOccupant",			obj_vehicle_prop_has_occupant,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_vehicle_props[]={
+							{"on",					obj_vehicle_prop_on,				FALSE},
+							{"hasOccupant",			obj_vehicle_prop_has_occupant,		TRUE},
 							{0}};
 
-JSFunctionSpec	obj_vehicle_functions[]={
+script_js_function	obj_vehicle_functions[]={
 							{"enter",				js_obj_vehicle_enter_func,			0},
 							{"exit",				js_obj_vehicle_exit_func,			0},
 							{"removeOccupant",		js_obj_vehicle_exit_func,			0},

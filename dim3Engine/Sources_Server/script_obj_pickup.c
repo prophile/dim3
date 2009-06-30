@@ -51,15 +51,15 @@ JSClass			obj_pickup_class={"obj_pickup_class",0,
 							js_get_obj_pickup_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_pickup_props[]={
-							{"objectId",			obj_pickup_prop_object_id,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectName",			obj_pickup_prop_object_name,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectIsPlayer",		obj_pickup_prop_object_is_player,	JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"itemId",				obj_pickup_prop_item_id,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"itemName",			obj_pickup_prop_item_name,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_pickup_props[]={
+							{"objectId",			obj_pickup_prop_object_id,			TRUE},
+							{"objectName",			obj_pickup_prop_object_name,		TRUE},
+							{"objectIsPlayer",		obj_pickup_prop_object_is_player,	TRUE},
+							{"itemId",				obj_pickup_prop_item_id,			TRUE},
+							{"itemName",			obj_pickup_prop_item_name,			TRUE},
 							{0}};
 							
-JSFunctionSpec	obj_pickup_functions[]={
+script_js_function	obj_pickup_functions[]={
 							{"addWeapon",			js_obj_pickup_add_weapon_func,		2},
 							{"swapWeapon",			js_obj_pickup_swap_weapon_func,		2},
 							{"addAmmo",				js_obj_pickup_add_ammo_func,		3},

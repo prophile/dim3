@@ -42,11 +42,11 @@ JSClass			proj_mark_class={"proj_mark_class",0,
 							js_get_proj_mark_property,js_set_proj_mark_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	proj_mark_props[]={
-							{"on",					proj_mark_prop_on,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"name",				proj_mark_prop_name,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"size",				proj_mark_prop_size,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"alpha",				proj_mark_prop_alpha,				JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	proj_mark_props[]={
+							{"on",					proj_mark_prop_on,					FALSE},
+							{"name",				proj_mark_prop_name,				FALSE},
+							{"size",				proj_mark_prop_size,				FALSE},
+							{"alpha",				proj_mark_prop_alpha,				FALSE},
 							{0}};
 
 /* =======================================================

@@ -41,14 +41,14 @@ JSClass			model_shadow_class={"model_shadow_class",0,
 							js_get_model_shadow_property,js_set_model_shadow_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	model_shadow_props[]={
-							{"on",					model_shadow_prop_on,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"mode",				model_shadow_prop_mode,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"alwaysInAir",			model_shadow_prop_always_in_air,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"staticInAir",			model_shadow_prop_static_in_air,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"staticFaceAngle",		model_shadow_prop_static_face_angle,JSPROP_PERMANENT|JSPROP_SHARED},
-							{"staticSize",			model_shadow_prop_static_size,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"staticAlpha",			model_shadow_prop_static_alpha,		JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	model_shadow_props[]={
+							{"on",					model_shadow_prop_on,				FALSE},
+							{"mode",				model_shadow_prop_mode,				FALSE},
+							{"alwaysInAir",			model_shadow_prop_always_in_air,	FALSE},
+							{"staticInAir",			model_shadow_prop_static_in_air,	FALSE},
+							{"staticFaceAngle",		model_shadow_prop_static_face_angle,FALSE},
+							{"staticSize",			model_shadow_prop_static_size,		FALSE},
+							{"staticAlpha",			model_shadow_prop_static_alpha,		FALSE},
 							{0}};
 
 extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);

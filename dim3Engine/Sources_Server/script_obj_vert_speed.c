@@ -42,11 +42,11 @@ JSClass			obj_vert_speed_class={"obj_vert_speed_class",0,
 							js_get_obj_vert_speed_property,js_set_obj_vert_speed_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_vert_speed_props[]={
-							{"normal",					obj_vert_speed_prop_normal,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"acceleration",			obj_vert_speed_prop_acceleration,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"deceleration",			obj_vert_speed_prop_deceleration,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"flySlop",					obj_vert_speed_prop_fly_slop,			JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_vert_speed_props[]={
+							{"normal",					obj_vert_speed_prop_normal,				FALSE},
+							{"acceleration",			obj_vert_speed_prop_acceleration,		FALSE},
+							{"deceleration",			obj_vert_speed_prop_deceleration,		FALSE},
+							{"flySlop",					obj_vert_speed_prop_fly_slop,			FALSE},
 							{0}};
 
 /* =======================================================

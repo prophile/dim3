@@ -975,6 +975,22 @@ and can be sold or given away.
 #define sd_event_remote_telefrag						3085
 
 //
+// object setup structures
+//
+
+typedef struct		{
+						const char			*name;
+						int					id;
+						bool				read_only;
+					} script_js_property;
+
+typedef struct		{
+						const char			*name;
+						JSNative			call;
+						int					nargs;
+					} script_js_function;
+
+//
 // define structure
 //
  

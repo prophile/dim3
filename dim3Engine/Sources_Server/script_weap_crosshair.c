@@ -42,13 +42,13 @@ JSClass			weap_crosshair_class={"weap_crosshair_class",0,
 							js_get_weap_crosshair_property,js_set_weap_crosshair_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	weap_crosshair_props[]={
-							{"on",					weap_crosshair_prop_on,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"type",				weap_crosshair_prop_type,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"name",				weap_crosshair_prop_name,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"minSize",				weap_crosshair_prop_min_size,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"maxSize",				weap_crosshair_prop_max_size,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"distance",			weap_crosshair_prop_distance,		JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	weap_crosshair_props[]={
+							{"on",					weap_crosshair_prop_on,				FALSE},
+							{"type",				weap_crosshair_prop_type,			FALSE},
+							{"name",				weap_crosshair_prop_name,			FALSE},
+							{"minSize",				weap_crosshair_prop_min_size,		FALSE},
+							{"maxSize",				weap_crosshair_prop_max_size,		FALSE},
+							{"distance",			weap_crosshair_prop_distance,		FALSE},
 							{0}};
 
 extern void script_add_weap_crosshair_color_object(JSObject *parent_obj);

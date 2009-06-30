@@ -41,10 +41,10 @@ JSClass			model_spin_class={"model_spin_class",0,
 							js_get_model_spin_property,js_set_model_spin_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	model_spin_props[]={
-							{"x",					model_spin_prop_x,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"z",					model_spin_prop_z,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"y",					model_spin_prop_y,					JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	model_spin_props[]={
+							{"x",					model_spin_prop_x,					FALSE},
+							{"z",					model_spin_prop_z,					FALSE},
+							{"y",					model_spin_prop_y,					FALSE},
 							{0}};
 
 extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);

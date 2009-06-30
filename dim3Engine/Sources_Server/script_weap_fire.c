@@ -44,12 +44,12 @@ JSClass			weap_fire_class={"weap_fire_class",0,
 							js_get_weap_fire_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	weap_fire_props[]={
-							{"method",				weap_fire_prop_method,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"lastFireTick",		weap_fire_prop_last_fire_tick,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	weap_fire_props[]={
+							{"method",				weap_fire_prop_method,					TRUE},
+							{"lastFireTick",		weap_fire_prop_last_fire_tick,			TRUE},
 							{0}};
 							
-JSFunctionSpec	weap_fire_functions[]={
+script_js_function	weap_fire_functions[]={
 							{"pastLastFire",		js_weap_fire_past_last_fire_func,		1},
 							{"resetLastFire",		js_weap_fire_reset_last_fire_func,		0},
 							{"cancel",				js_weap_fire_cancel_func,				0},

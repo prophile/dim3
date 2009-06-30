@@ -46,11 +46,11 @@ JSClass			multiplayer_bot_class={"multiplayer_bot_class",0,
 							js_get_multiplayer_bot_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	multiplayer_bot_props[]={
-							{"skill",				multiplayer_bot_prop_skill,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	multiplayer_bot_props[]={
+							{"skill",				multiplayer_bot_prop_skill,					TRUE},
 							{0}};
 							
-JSFunctionSpec	multiplayer_bot_functions[]={
+script_js_function	multiplayer_bot_functions[]={
 							{"getFromMinMax",		js_multiplayer_bot_get_from_min_max_func,	2},
 							{0}};
 

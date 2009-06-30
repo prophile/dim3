@@ -44,10 +44,10 @@ JSClass			obj_lock_class={"obj_lock_class",0,
 							js_get_obj_lock_property,js_set_obj_lock_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_lock_props[]={
-							{"x",					obj_lock_prop_x,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"y",					obj_lock_prop_y,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"z",					obj_lock_prop_z,					JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_lock_props[]={
+							{"x",					obj_lock_prop_x,					FALSE},
+							{"y",					obj_lock_prop_y,					FALSE},
+							{"z",					obj_lock_prop_z,					FALSE},
 							{0}};
 							
 /* =======================================================

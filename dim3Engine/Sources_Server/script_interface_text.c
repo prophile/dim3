@@ -54,7 +54,7 @@ JSClass			interface_text_class={"interface_text_class",0,
 							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	interface_text_functions[]={
+script_js_function	interface_text_functions[]={
 							{"show",						js_interface_text_show_func,				1},
 							{"hide",						js_interface_text_hide_func,				1},
 							{"hideAll",						js_interface_text_hide_all_func,			0},
@@ -78,10 +78,7 @@ JSFunctionSpec	interface_text_functions[]={
 
 void script_add_interface_text_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"text",&interface_text_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,interface_text_functions);
+	script_create_child_object(parent_obj,"text",&interface_text_class,NULL,interface_text_functions);
 }
 
 /* =======================================================

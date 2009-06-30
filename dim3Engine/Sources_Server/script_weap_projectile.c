@@ -61,17 +61,17 @@ JSClass			weap_projectile_class={"weap_projectile_class",0,
 							js_get_weap_projectile_property,js_set_weap_projectile_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 							
-JSPropertySpec	weap_projectile_props[]={
-							{"fireBoneTag",				weap_projectile_prop_fire_bone_tag,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"barrelBoneTag",			weap_projectile_prop_barrel_bone_tag,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"firePoseName",			weap_projectile_prop_fire_pose_name,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectFireBoneTag",		weap_projectile_prop_object_fire_bone_tag,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectFirePoseName",		weap_projectile_prop_object_fire_pose_name,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"repeatOn",				weap_projectile_prop_repeat_on,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"repeatTick",				weap_projectile_prop_repeat_tick,				JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	weap_projectile_props[]={
+							{"fireBoneTag",				weap_projectile_prop_fire_bone_tag,				FALSE},
+							{"barrelBoneTag",			weap_projectile_prop_barrel_bone_tag,			FALSE},
+							{"firePoseName",			weap_projectile_prop_fire_pose_name,			FALSE},
+							{"objectFireBoneTag",		weap_projectile_prop_object_fire_bone_tag,		FALSE},
+							{"objectFirePoseName",		weap_projectile_prop_object_fire_pose_name,		FALSE},
+							{"repeatOn",				weap_projectile_prop_repeat_on,					FALSE},
+							{"repeatTick",				weap_projectile_prop_repeat_tick,				FALSE},
 							{0}};
 
-JSFunctionSpec	weap_projectile_functions[]={
+script_js_function	weap_projectile_functions[]={
 							{"add",										js_weap_projectile_add_func,											2},
 							{"spawnFromWeaponBone",						js_weap_projectile_spawn_from_weapon_bone_func,							1},
 							{"spawnFromWeaponBoneSlop",					js_weap_projectile_spawn_from_weapon_bone_slop_func,					2},

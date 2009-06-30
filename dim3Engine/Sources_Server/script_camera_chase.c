@@ -43,10 +43,10 @@ JSClass			camera_chase_class={"camera_chase_class",JSCLASS_HAS_PRIVATE,
 							js_get_camera_chase_property,js_set_camera_chase_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	camera_chase_props[]={
-							{"size",				camera_chase_prop_size,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"distance",			camera_chase_prop_distance,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"trackSpeed",			camera_chase_prop_track_speed,		JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	camera_chase_props[]={
+							{"size",				camera_chase_prop_size,				FALSE},
+							{"distance",			camera_chase_prop_distance,			FALSE},
+							{"trackSpeed",			camera_chase_prop_track_speed,		FALSE},
 							{0}};
 
 /* =======================================================

@@ -42,13 +42,13 @@ JSClass			proj_speed_class={"proj_speed_class",0,
 							js_get_proj_speed_property,js_set_proj_speed_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	proj_speed_props[]={
-							{"speed",					proj_speed_prop_speed,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"deceleration",			proj_speed_prop_deceleration,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"decelerationWait",		proj_speed_prop_deceleration_wait,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"decelerationMinSpeed",	proj_speed_prop_deceleration_min_speed,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"maxHitScanDistance",		proj_speed_prop_max_hitscan_distance,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"inheritMotionFactor",		proj_speed_prop_inherit_motion_factor,	JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	proj_speed_props[]={
+							{"speed",					proj_speed_prop_speed,					FALSE},
+							{"deceleration",			proj_speed_prop_deceleration,			FALSE},
+							{"decelerationWait",		proj_speed_prop_deceleration_wait,		FALSE},
+							{"decelerationMinSpeed",	proj_speed_prop_deceleration_min_speed,	FALSE},
+							{"maxHitScanDistance",		proj_speed_prop_max_hitscan_distance,	FALSE},
+							{"inheritMotionFactor",		proj_speed_prop_inherit_motion_factor,	FALSE},
 							{0}};
 
 /* =======================================================

@@ -50,12 +50,12 @@ JSClass			model_animation_class={"model_animation_class",0,
 							js_get_model_animation_property,js_set_model_animation_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	model_animation_props[]={
-							{"index",					model_animation_prop_index,						JSPROP_PERMANENT|JSPROP_SHARED},
-							{"currentAnimationName",	model_animation_prop_cur_animation_name,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	model_animation_props[]={
+							{"index",					model_animation_prop_index,						FALSE},
+							{"currentAnimationName",	model_animation_prop_cur_animation_name,		TRUE},
 							{0}};
 
-JSFunctionSpec	model_animation_functions[]={
+script_js_function	model_animation_functions[]={
 							{"start",					js_model_animation_start_func,					1},
 							{"stop",					js_model_animation_stop_func,					0},
 							{"cancel",					js_model_animation_cancel_func,					1},

@@ -46,16 +46,16 @@ JSClass			obj_size_class={"obj_size_class",0,
 							js_get_obj_size_property,js_set_obj_size_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_size_props[]={
-							{"x",					obj_size_prop_x,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"z",					obj_size_prop_z,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"y",					obj_size_prop_y,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"eyeOffset",			obj_size_prop_eye_offset,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"weight",				obj_size_prop_weight,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"clickDistance",		obj_size_prop_click_distance,		JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_size_props[]={
+							{"x",					obj_size_prop_x,					FALSE},
+							{"z",					obj_size_prop_z,					FALSE},
+							{"y",					obj_size_prop_y,					FALSE},
+							{"eyeOffset",			obj_size_prop_eye_offset,			FALSE},
+							{"weight",				obj_size_prop_weight,				FALSE},
+							{"clickDistance",		obj_size_prop_click_distance,		FALSE},
 							{0}};
 
-JSFunctionSpec	obj_size_functions[]={
+script_js_function	obj_size_functions[]={
 							{"growTo",						js_obj_size_grow_to_func,						1},
 							{"growOverTime",				js_obj_size_grow_over_time_func,				2},
 							{"growOverTimeChangeSize",		js_obj_size_grow_over_time_change_size_func,	5},

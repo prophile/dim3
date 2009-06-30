@@ -42,17 +42,17 @@ JSClass			obj_rigid_body_class={"obj_rigid_body_class",0,
 							js_get_obj_rigid_body_property,js_set_obj_rigid_body_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_rigid_body_props[]={
-							{"on",					obj_rigid_body_prop_on,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"maxDropY",			obj_rigid_body_prop_max_drop_y,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"resetFactorY",		obj_rigid_body_prop_reset_factor_y,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"smoothFactorY",		obj_rigid_body_prop_smooth_factor_y,JSPROP_PERMANENT|JSPROP_SHARED},
-							{"maxAngleX",			obj_rigid_body_prop_max_angle_x,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"resetFactorX",		obj_rigid_body_prop_reset_factor_x,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"smoothFactorX",		obj_rigid_body_prop_smooth_factor_x,JSPROP_PERMANENT|JSPROP_SHARED},
-							{"maxAngleZ",			obj_rigid_body_prop_max_angle_z,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"resetFactorZ",		obj_rigid_body_prop_reset_factor_z,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"smoothFactorZ",		obj_rigid_body_prop_smooth_factor_z,JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_rigid_body_props[]={
+							{"on",					obj_rigid_body_prop_on,				FALSE},
+							{"maxDropY",			obj_rigid_body_prop_max_drop_y,		FALSE},
+							{"resetFactorY",		obj_rigid_body_prop_reset_factor_y,	FALSE},
+							{"smoothFactorY",		obj_rigid_body_prop_smooth_factor_y,FALSE},
+							{"maxAngleX",			obj_rigid_body_prop_max_angle_x,	FALSE},
+							{"resetFactorX",		obj_rigid_body_prop_reset_factor_x,	FALSE},
+							{"smoothFactorX",		obj_rigid_body_prop_smooth_factor_x,FALSE},
+							{"maxAngleZ",			obj_rigid_body_prop_max_angle_z,	FALSE},
+							{"resetFactorZ",		obj_rigid_body_prop_reset_factor_z,	FALSE},
+							{"smoothFactorZ",		obj_rigid_body_prop_smooth_factor_z,FALSE},
 							{0}};
 
 /* =======================================================

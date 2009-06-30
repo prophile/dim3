@@ -42,10 +42,10 @@ JSClass			weap_crosshair_color_class={"weap_crosshair_color_class",0,
 							js_get_weap_crosshair_color_property,js_set_weap_crosshair_color_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	weap_crosshair_color_props[]={
-							{"red",					weap_crosshair_color_prop_red,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"green",				weap_crosshair_color_prop_green,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"blue",				weap_crosshair_color_prop_blue,		JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	weap_crosshair_color_props[]={
+							{"red",					weap_crosshair_color_prop_red,		FALSE},
+							{"green",				weap_crosshair_color_prop_green,	FALSE},
+							{"blue",				weap_crosshair_color_prop_blue,		FALSE},
 							{0}};
 
 /* =======================================================

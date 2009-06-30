@@ -42,11 +42,11 @@ JSClass			proj_size_class={"proj_size_class",0,
 							js_get_proj_size_property,js_set_proj_size_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	proj_size_props[]={
-							{"x",					proj_size_prop_x,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"z",					proj_size_prop_z,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"y",					proj_size_prop_y,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"weight",				proj_size_prop_weight,				JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	proj_size_props[]={
+							{"x",					proj_size_prop_x,					FALSE},
+							{"z",					proj_size_prop_z,					FALSE},
+							{"y",					proj_size_prop_y,					FALSE},
+							{"weight",				proj_size_prop_weight,				FALSE},
 							{0}};
 
 /* =======================================================

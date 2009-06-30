@@ -42,19 +42,19 @@ JSClass			map_fog_class={"map_fog_class",0,
 							js_get_map_fog_property,js_set_map_fog_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	map_fog_props[]={
-							{"on",					map_fog_prop_on,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"layerCount",			map_fog_prop_count,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"outerRadius",			map_fog_prop_outer_radius,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"innerRadius",			map_fog_prop_inner_radius,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"height",				map_fog_prop_high,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"drop",				map_fog_prop_drop,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"textureIndex",		map_fog_prop_texture_index,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"speed",				map_fog_prop_speed,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"textureXFact",		map_fog_prop_txt_x_fact,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"textureYFact",		map_fog_prop_txt_y_fact,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"alpha",				map_fog_prop_alpha,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"useSolidColor",		map_fog_prop_use_solid_color,		JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	map_fog_props[]={
+							{"on",					map_fog_prop_on,					FALSE},
+							{"layerCount",			map_fog_prop_count,					FALSE},
+							{"outerRadius",			map_fog_prop_outer_radius,			FALSE},
+							{"innerRadius",			map_fog_prop_inner_radius,			FALSE},
+							{"height",				map_fog_prop_high,					FALSE},
+							{"drop",				map_fog_prop_drop,					FALSE},
+							{"textureIndex",		map_fog_prop_texture_index,			FALSE},
+							{"speed",				map_fog_prop_speed,					FALSE},
+							{"textureXFact",		map_fog_prop_txt_x_fact,			FALSE},
+							{"textureYFact",		map_fog_prop_txt_y_fact,			FALSE},
+							{"alpha",				map_fog_prop_alpha,					FALSE},
+							{"useSolidColor",		map_fog_prop_use_solid_color,		FALSE},
 							{0}};
 
 /* =======================================================

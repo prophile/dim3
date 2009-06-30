@@ -43,11 +43,11 @@ JSClass			obj_radar_class={"obj_radar_class",0,
 							js_get_obj_radar_property,js_set_obj_radar_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_radar_props[]={
-							{"on",					obj_radar_prop_on,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"icon",				obj_radar_prop_icon,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"motionOnly",			obj_radar_prop_motion_only,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"alwaysVisible",		obj_radar_prop_always_visible,	JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_radar_props[]={
+							{"on",					obj_radar_prop_on,				FALSE},
+							{"icon",				obj_radar_prop_icon,			FALSE},
+							{"motionOnly",			obj_radar_prop_motion_only,		FALSE},
+							{"alwaysVisible",		obj_radar_prop_always_visible,	FALSE},
 							{0}};
 							
 /* =======================================================

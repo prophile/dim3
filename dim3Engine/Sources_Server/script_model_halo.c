@@ -43,18 +43,18 @@ JSClass			model_halo_class={"model_halo_class",0,
 							js_get_model_halo_property,js_set_model_halo_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	model_halo_props[]={
-							{"index",				model_halo_prop_index,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"on",					model_halo_prop_on,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"name",				model_halo_prop_name,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"minDistance",			model_halo_prop_min_distance,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"maxDistance",			model_halo_prop_max_distance,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"minSize",				model_halo_prop_min_size,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"maxSize",				model_halo_prop_max_size,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"minAlpha",			model_halo_prop_min_alpha,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"maxAlpha",			model_halo_prop_max_alpha,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"noClipObject",		model_halo_prop_no_clip_object,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"noClipSelf",			model_halo_prop_no_clip_self,		JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	model_halo_props[]={
+							{"index",				model_halo_prop_index,				FALSE},
+							{"on",					model_halo_prop_on,					FALSE},
+							{"name",				model_halo_prop_name,				FALSE},
+							{"minDistance",			model_halo_prop_min_distance,		FALSE},
+							{"maxDistance",			model_halo_prop_max_distance,		FALSE},
+							{"minSize",				model_halo_prop_min_size,			FALSE},
+							{"maxSize",				model_halo_prop_max_size,			FALSE},
+							{"minAlpha",			model_halo_prop_min_alpha,			FALSE},
+							{"maxAlpha",			model_halo_prop_max_alpha,			FALSE},
+							{"noClipObject",		model_halo_prop_no_clip_object,		FALSE},
+							{"noClipSelf",			model_halo_prop_no_clip_self,		FALSE},
 							{0}};
 
 extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);

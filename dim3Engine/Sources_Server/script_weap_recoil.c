@@ -45,21 +45,21 @@ JSClass			weap_recoil_class={"weap_recoil_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 
-JSPropertySpec	weap_recoil_props[]={
-							{"minX",				weap_recoil_prop_min_x,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"maxX",				weap_recoil_prop_max_x,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"resetX",				weap_recoil_prop_reset_x,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"minY",				weap_recoil_prop_min_y,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"maxY",				weap_recoil_prop_max_y,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"resetY",				weap_recoil_prop_reset_y,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"minZ",				weap_recoil_prop_min_z,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"maxZ",				weap_recoil_prop_max_z,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"resetZ",				weap_recoil_prop_reset_z,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"resetLook",			weap_recoil_prop_reset_look,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"resetTurn",			weap_recoil_prop_reset_turn,		JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	weap_recoil_props[]={
+							{"minX",				weap_recoil_prop_min_x,				FALSE},
+							{"maxX",				weap_recoil_prop_max_x,				FALSE},
+							{"resetX",				weap_recoil_prop_reset_x,			FALSE},
+							{"minY",				weap_recoil_prop_min_y,				FALSE},
+							{"maxY",				weap_recoil_prop_max_y,				FALSE},
+							{"resetY",				weap_recoil_prop_reset_y,			FALSE},
+							{"minZ",				weap_recoil_prop_min_z,				FALSE},
+							{"maxZ",				weap_recoil_prop_max_z,				FALSE},
+							{"resetZ",				weap_recoil_prop_reset_z,			FALSE},
+							{"resetLook",			weap_recoil_prop_reset_look,		FALSE},
+							{"resetTurn",			weap_recoil_prop_reset_turn,		FALSE},
 							{0}};
 							
-JSFunctionSpec	weap_recoil_functions[]={
+script_js_function	weap_recoil_functions[]={
 							{"go",					js_weap_recoil_go_func,				0},
 							{0}};
 

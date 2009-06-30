@@ -53,17 +53,17 @@ JSClass			proj_action_class={"proj_action_class",0,
 							js_get_proj_action_property,js_set_proj_action_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	proj_action_props[]={
-							{"damage",				proj_action_prop_damage,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"collision",			proj_action_prop_collision,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"autoHitTick",			proj_action_prop_auto_hit_tick,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"autoBounce",			proj_action_prop_auto_bounce,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"autoBounceMinMove",	proj_action_prop_auto_bounce_min_move,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"autoBounceReduce",	proj_action_prop_auto_bounce_reduce,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"autoReflect",			proj_action_prop_auto_reflect,			JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	proj_action_props[]={
+							{"damage",				proj_action_prop_damage,				FALSE},
+							{"collision",			proj_action_prop_collision,				FALSE},
+							{"autoHitTick",			proj_action_prop_auto_hit_tick,			FALSE},
+							{"autoBounce",			proj_action_prop_auto_bounce,			FALSE},
+							{"autoBounceMinMove",	proj_action_prop_auto_bounce_min_move,	FALSE},
+							{"autoBounceReduce",	proj_action_prop_auto_bounce_reduce,	FALSE},
+							{"autoReflect",			proj_action_prop_auto_reflect,			FALSE},
 							{0}};
 
-JSFunctionSpec	proj_action_functions[]={
+script_js_function	proj_action_functions[]={
 							{"rotate",				js_proj_action_rotate_func,				1},
 							{"turnTowards",			js_proj_action_turn_towards_func,		2},
 							{"seek",				js_proj_action_seek_func,				3},

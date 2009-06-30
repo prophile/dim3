@@ -49,11 +49,11 @@ JSClass			map_spot_class={"map_spot_class",0,
 							js_get_map_spot_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	map_spot_props[]={
-							{"count",				map_spot_prop_count,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	map_spot_props[]={
+							{"count",				map_spot_prop_count,				TRUE},
 							{0}};
 							
-JSFunctionSpec	map_spot_functions[]={
+script_js_function	map_spot_functions[]={
 							{"find",				js_map_spot_find_func,				2},
 							{"getName",				js_map_spot_get_name_func,			1},
 							{"getType",				js_map_spot_get_type_func,			1},

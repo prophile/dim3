@@ -45,17 +45,17 @@ JSClass			obj_health_class={"obj_health_class",0,
 							js_get_obj_health_property,js_set_obj_health_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_health_props[]={
-							{"maximum",					obj_health_prop_maximum,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"start",					obj_health_prop_start,						JSPROP_PERMANENT|JSPROP_SHARED},
-							{"current",					obj_health_prop_current,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"recoverTick",				obj_health_prop_recover_tick,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"recoverAmount",			obj_health_prop_recover_amount,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"fallDamageMinimumHeight",	obj_health_prop_fall_damage_minimum_height,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"fallDamageFactor",		obj_health_prop_fall_damage_factor,			JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_health_props[]={
+							{"maximum",					obj_health_prop_maximum,					FALSE},
+							{"start",					obj_health_prop_start,						FALSE},
+							{"current",					obj_health_prop_current,					TRUE},
+							{"recoverTick",				obj_health_prop_recover_tick,				FALSE},
+							{"recoverAmount",			obj_health_prop_recover_amount,				FALSE},
+							{"fallDamageMinimumHeight",	obj_health_prop_fall_damage_minimum_height,	FALSE},
+							{"fallDamageFactor",		obj_health_prop_fall_damage_factor,			FALSE},
 							{0}};
 							
-JSFunctionSpec	obj_health_functions[]={
+script_js_function	obj_health_functions[]={
 							{"add",					js_obj_health_add_func,				1},
 							{"remove",				js_obj_health_remove_func,			1},
 							{"reset",				js_obj_health_reset_func,			0},

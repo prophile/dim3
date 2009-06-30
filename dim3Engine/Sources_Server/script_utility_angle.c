@@ -41,7 +41,7 @@ JSClass			utility_angle_class={"utility_angle_class",0,
 							script_add_property,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	utility_angle_functions[]={
+script_js_function	utility_angle_functions[]={
 							{"add",					js_utility_angle_add_func,			2},
 							{"sub",					js_utility_angle_sub_func,			2},
 							{"dif",					js_utility_angle_dif_func,			2},
@@ -55,10 +55,7 @@ JSFunctionSpec	utility_angle_functions[]={
 
 void script_add_utility_angle_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"angle",&utility_angle_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,utility_angle_functions);
+	script_create_child_object(parent_obj,"angle",&utility_angle_class,NULL,utility_angle_functions);
 }
 
 /* =======================================================

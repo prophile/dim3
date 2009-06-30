@@ -53,13 +53,13 @@ JSClass			obj_position_class={"obj_position_class",0,
 							js_get_obj_position_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_position_props[]={
-							{"x",					obj_position_prop_x,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"y",					obj_position_prop_y,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"z",					obj_position_prop_z,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_position_props[]={
+							{"x",					obj_position_prop_x,				TRUE},
+							{"y",					obj_position_prop_y,				TRUE},
+							{"z",					obj_position_prop_z,				TRUE},
 							{0}};
 
-JSFunctionSpec	obj_position_functions[]={
+script_js_function	obj_position_functions[]={
 							{"place",							js_obj_position_place_func,								4},
 							{"placeRandomSpot",					js_obj_position_place_random_spot_func,					2},
 							{"placeNetworkSpot",				js_obj_position_place_network_spot_func,				0},

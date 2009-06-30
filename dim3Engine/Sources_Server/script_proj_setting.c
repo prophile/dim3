@@ -43,12 +43,12 @@ JSClass			proj_setting_class={"proj_setting_class",0,
 							js_get_proj_setting_property,js_set_proj_setting_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	proj_setting_props[]={
-							{"name",				proj_setting_prop_name,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"hitScan",				proj_setting_prop_hitscan,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"resetAngle",			proj_setting_prop_reset_angle,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"parentObjectId",		proj_setting_prop_parent_object_id,	JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"parentTeam",			proj_setting_prop_parent_team,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	proj_setting_props[]={
+							{"name",				proj_setting_prop_name,				TRUE},
+							{"hitScan",				proj_setting_prop_hitscan,			FALSE},
+							{"resetAngle",			proj_setting_prop_reset_angle,		FALSE},
+							{"parentObjectId",		proj_setting_prop_parent_object_id,	TRUE},
+							{"parentTeam",			proj_setting_prop_parent_team,		TRUE},
 							{0}};
 
 /* =======================================================

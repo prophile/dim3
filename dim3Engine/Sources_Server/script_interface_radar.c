@@ -44,12 +44,12 @@ JSClass			interface_radar_class={"interface_radar_class",0,
 							js_get_interface_radar_property,js_set_interface_radar_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	interface_radar_props[]={
-							{"on",					interface_radar_prop_on,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"x",					interface_radar_prop_x,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"y",					interface_radar_prop_y,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"displayRadius",		interface_radar_prop_display_radius,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"viewRadius",			interface_radar_prop_view_radius,		JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	interface_radar_props[]={
+							{"on",					interface_radar_prop_on,				FALSE},
+							{"x",					interface_radar_prop_x,					FALSE},
+							{"y",					interface_radar_prop_y,					FALSE},
+							{"displayRadius",		interface_radar_prop_display_radius,	FALSE},
+							{"viewRadius",			interface_radar_prop_view_radius,		FALSE},
 							{0}};
 
 /* =======================================================

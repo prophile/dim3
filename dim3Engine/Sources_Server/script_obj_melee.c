@@ -44,17 +44,17 @@ JSClass			obj_melee_class={"obj_melee_class",0,
 							js_get_obj_melee_property,js_set_obj_melee_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_melee_props[]={
-							{"strikeBoneTag",			obj_melee_prop_strike_bone_tag,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"strikePoseName",			obj_melee_prop_strike_pose_name,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"radius",					obj_melee_prop_radius,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"distance",				obj_melee_prop_distance,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"damage",					obj_melee_prop_damage,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"force",					obj_melee_prop_force,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"lifeTick",				obj_melee_prop_life_tick,			JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_melee_props[]={
+							{"strikeBoneTag",			obj_melee_prop_strike_bone_tag,		FALSE},
+							{"strikePoseName",			obj_melee_prop_strike_pose_name,	FALSE},
+							{"radius",					obj_melee_prop_radius,				FALSE},
+							{"distance",				obj_melee_prop_distance,			FALSE},
+							{"damage",					obj_melee_prop_damage,				FALSE},
+							{"force",					obj_melee_prop_force,				FALSE},
+							{"lifeTick",				obj_melee_prop_life_tick,			FALSE},
 							{0}};
 
-JSFunctionSpec	obj_melee_functions[]={
+script_js_function	obj_melee_functions[]={
 							{"spawnFromObjectBone",		js_obj_melee_spawn_from_object_bone_func,		0},
 							{0}};
 

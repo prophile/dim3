@@ -56,13 +56,13 @@ JSClass			obj_motion_vector_class={"obj_motion_vector_class",0,
 							js_get_obj_motion_vector_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_motion_vector_props[]={
-							{"x",					obj_motion_vector_prop_x,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"y",					obj_motion_vector_prop_y,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"z",					obj_motion_vector_prop_z,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_motion_vector_props[]={
+							{"x",					obj_motion_vector_prop_x,			TRUE},
+							{"y",					obj_motion_vector_prop_y,			TRUE},
+							{"z",					obj_motion_vector_prop_z,			TRUE},
 							{0}};
 							
-JSFunctionSpec	obj_motion_vector_functions[]={
+script_js_function	obj_motion_vector_functions[]={
 							{"go",					js_obj_motion_vector_go_func,						0},
 							{"stop",				js_obj_motion_vector_stop_func,						0},
 							{"jump",				js_obj_motion_vector_jump_func,						0},

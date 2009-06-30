@@ -42,10 +42,10 @@ JSClass			weap_setting_class={"weap_setting_class",0,
 							js_get_weap_setting_property,js_set_weap_setting_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	weap_setting_props[]={
-							{"name",				weap_setting_prop_name,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"failInLiquid",		weap_setting_prop_fail_in_liquid,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"parentObjectId",		weap_setting_prop_parent_object_id,	JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	weap_setting_props[]={
+							{"name",				weap_setting_prop_name,				TRUE},
+							{"failInLiquid",		weap_setting_prop_fail_in_liquid,	FALSE},
+							{"parentObjectId",		weap_setting_prop_parent_object_id,	TRUE},
 							{0}};
 
 /* =======================================================

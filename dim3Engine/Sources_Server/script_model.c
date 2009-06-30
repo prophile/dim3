@@ -52,13 +52,13 @@ JSClass			model_class={"model_class",JSCLASS_HAS_PRIVATE,
 							js_get_model_property,js_set_model_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	model_props[]={
-							{"on",					model_prop_on,						JSPROP_PERMANENT|JSPROP_SHARED},
-							{"name",				model_prop_name,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"bounce",				model_prop_bounce,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"alpha",				model_prop_alpha,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"resize",				model_prop_resize,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"faceForward",			model_prop_face_forward,			JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	model_props[]={
+							{"on",					model_prop_on,						FALSE},
+							{"name",				model_prop_name,					FALSE},
+							{"bounce",				model_prop_bounce,					FALSE},
+							{"alpha",				model_prop_alpha,					FALSE},
+							{"resize",				model_prop_resize,					FALSE},
+							{"faceForward",			model_prop_face_forward,			FALSE},
 							{0}};
 
 extern void script_add_model_offset_object(JSObject *parent_obj);

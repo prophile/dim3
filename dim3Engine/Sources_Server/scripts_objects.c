@@ -224,11 +224,12 @@ JSObject* script_create_main_object(attach_type *attach)
 	return(j_obj);
 }
 
-JSObject* script_create_child_object(JSObject *parent_obj,char *name,JSClass *class,JSPropertySpec *props,JSFunctionSpec *funcs)
+JSObject* script_create_child_object(JSObject *parent_obj,char *name,JSClass *class,script_js_property *props,script_js_function *funcs)
 {
-	JSPropertySpec	*prop;
-	JSFunctionSpec	*func;
-	JSObject		*j_obj;
+	int					flags;
+	script_js_property	*prop;
+	script_js_function	*func;
+	JSObject			*j_obj;
 
 		// object
 
@@ -241,7 +242,12 @@ JSObject* script_create_child_object(JSObject *parent_obj,char *name,JSClass *cl
 		prop=props;
 
 		while (prop->name!=NULL) {
-			JS_DefinePropertyWithTinyId(js.cx,j_obj,prop->name,prop->tinyid,JSVAL_NULL,NULL,NULL,prop->flags);
+
+			flags=JSPROP_PERMANENT|JSPROP_SHARED;
+			if (prop->read_only) flags|=JSPROP_READONLY;
+
+			JS_DefinePropertyWithTinyId(js.cx,j_obj,prop->name,(unsigned char)prop->id,JSVAL_NULL,NULL,NULL,flags);
+
 			prop++;
 		}
 	}
@@ -253,7 +259,7 @@ JSObject* script_create_child_object(JSObject *parent_obj,char *name,JSClass *cl
 		func=funcs;
 
 		while (func->name!=NULL) {
-			JS_DefineFunction(js.cx,j_obj,func->name,func->call,func->nargs,func->flags);
+			JS_DefineFunction(js.cx,j_obj,func->name,func->call,func->nargs,0);
 			func++;
 		}
 	}

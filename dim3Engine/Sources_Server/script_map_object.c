@@ -81,7 +81,7 @@ JSClass			map_object_class={"map_object_class",0,
 							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	map_object_functions[]={
+script_js_function	map_object_functions[]={
 							{"find",						js_map_object_find_func,							1},
 							{"findPlayer",					js_map_object_find_player_func,						0},
 							{"findAllPlayers",				js_map_object_find_all_players_func,				0},
@@ -131,10 +131,7 @@ JSFunctionSpec	map_object_functions[]={
 
 void script_add_map_object_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"object",&map_object_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,map_object_functions);
+	script_create_child_object(parent_obj,"object",&map_object_class,NULL,map_object_functions);
 }
 
 /* =======================================================

@@ -41,9 +41,9 @@ JSClass			obj_weapon_fire_class={"obj_weapon_fire_class",0,
 							js_get_obj_weapon_fire_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_weapon_fire_props[]={
-							{"name",				obj_weapon_fire_prop_name,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"method",				obj_weapon_fire_prop_method,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_weapon_fire_props[]={
+							{"name",				obj_weapon_fire_prop_name,			TRUE},
+							{"method",				obj_weapon_fire_prop_method,		TRUE},
 							{0}};
 
 /* =======================================================

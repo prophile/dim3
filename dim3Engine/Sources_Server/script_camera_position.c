@@ -43,10 +43,10 @@ JSClass			camera_position_class={"camera_position_class",JSCLASS_HAS_PRIVATE,
 							js_get_camera_position_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	camera_position_props[]={
-							{"x",					camera_position_prop_x,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"z",					camera_position_prop_z,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"y",					camera_position_prop_y,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	camera_position_props[]={
+							{"x",					camera_position_prop_x,				TRUE},
+							{"z",					camera_position_prop_z,				TRUE},
+							{"y",					camera_position_prop_y,				TRUE},
 							{0}};
 							
 /* =======================================================

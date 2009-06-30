@@ -46,7 +46,7 @@ JSClass			model_bone_class={"model_bone_class",0,
 							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	model_bone_functions[]={
+script_js_function	model_bone_functions[]={
 							{"findOffset",			js_model_bone_find_offset_func,			2},
 							{"findPosition",		js_model_bone_find_position_func,		2},
 							{"getBrightness",		js_model_bone_get_brightness_func,		2},
@@ -62,10 +62,7 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 
 void script_add_model_bone_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"bone",&model_bone_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,model_bone_functions);
+	script_create_child_object(parent_obj,"bone",&model_bone_class,NULL,model_bone_functions);
 }
 
 /* =======================================================

@@ -43,7 +43,7 @@ JSClass			interface_console_class={"interface_console_class",0,
 							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	interface_console_functions[]={
+script_js_function	interface_console_functions[]={
 							{"write",				js_interface_console_write_func,		1},
 							{"read",				js_interface_console_read_func,			0},
 							{0}};
@@ -56,10 +56,7 @@ JSFunctionSpec	interface_console_functions[]={
 
 void script_add_interface_console_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"console",&interface_console_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,interface_console_functions);
+	script_create_child_object(parent_obj,"console",&interface_console_class,NULL,interface_console_functions);
 }
 
 /* =======================================================

@@ -43,7 +43,7 @@ JSClass			obj_held_class={"obj_held_class",0,
 							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	obj_held_functions[]={
+script_js_function	obj_held_functions[]={
 							{"add",					js_obj_held_add_func,				4},
 							{"drop",				js_obj_held_drop_func,				3},
 							{0}};
@@ -56,10 +56,7 @@ JSFunctionSpec	obj_held_functions[]={
 
 void script_add_obj_held_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"held",&obj_held_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,obj_held_functions);
+	script_create_child_object(parent_obj,"held",&obj_held_class,NULL,obj_held_functions);
 }
 
 /* =======================================================

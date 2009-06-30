@@ -42,12 +42,12 @@ JSClass			weap_hand_class={"weap_hand_class",0,
 							js_get_weap_hand_property,js_set_weap_hand_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	weap_hand_props[]={
-							{"raiseTick",			weap_hand_prop_raise_tick,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"lowerTick",			weap_hand_prop_lower_tick,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"selectShift",			weap_hand_prop_select_shift,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"bobSpeed",			weap_hand_prop_bob_speed,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"bobAngle",			weap_hand_prop_bob_angle,				JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	weap_hand_props[]={
+							{"raiseTick",			weap_hand_prop_raise_tick,				FALSE},
+							{"lowerTick",			weap_hand_prop_lower_tick,				FALSE},
+							{"selectShift",			weap_hand_prop_select_shift,			FALSE},
+							{"bobSpeed",			weap_hand_prop_bob_speed,				FALSE},
+							{"bobAngle",			weap_hand_prop_bob_angle,				FALSE},
 							{0}};
 
 /* =======================================================

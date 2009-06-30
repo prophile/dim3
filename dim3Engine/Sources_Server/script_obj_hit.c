@@ -44,14 +44,14 @@ JSClass			obj_hit_class={"obj_hit_class",0,
 							js_get_obj_hit_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_hit_props[]={
-							{"objectId",			obj_hit_prop_object_id,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectName",			obj_hit_prop_object_name,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectIsPlayer",		obj_hit_prop_object_is_player,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"weaponName",			obj_hit_prop_weapon_name,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"projectileName",		obj_hit_prop_projectile_name,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"hitBoxName",			obj_hit_prop_hit_box_name,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"damage",				obj_hit_prop_damage,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_hit_props[]={
+							{"objectId",			obj_hit_prop_object_id,				TRUE},
+							{"objectName",			obj_hit_prop_object_name,			TRUE},
+							{"objectIsPlayer",		obj_hit_prop_object_is_player,		TRUE},
+							{"weaponName",			obj_hit_prop_weapon_name,			TRUE},
+							{"projectileName",		obj_hit_prop_projectile_name,		TRUE},
+							{"hitBoxName",			obj_hit_prop_hit_box_name,			TRUE},
+							{"damage",				obj_hit_prop_damage,				TRUE},
 							{0}};
 
 /* =======================================================

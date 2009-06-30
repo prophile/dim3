@@ -47,7 +47,7 @@ JSClass			map_action_class={"map_action_class",0,
 							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	map_action_functions[]={
+script_js_function	map_action_functions[]={
 							{"setMap",				js_map_action_set_map_func,					3},
 							{"setHostMap",			js_map_action_set_host_map_func,			0},
 							{"restartMap",			js_map_action_restart_map_func,				0},
@@ -66,10 +66,7 @@ extern void game_time_pause_end(void);
 
 void script_add_map_action_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"action",&map_action_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,map_action_functions);
+	script_create_child_object(parent_obj,"action",&map_action_class,NULL,map_action_functions);
 }
 
 /* =======================================================

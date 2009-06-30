@@ -41,7 +41,7 @@ JSClass			model_fill_class={"model_fill_class",0,
 							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	model_fill_functions[]={
+script_js_function	model_fill_functions[]={
 							{"change",				js_model_fill_change_func,				2},
 							{0}};
 
@@ -55,10 +55,7 @@ extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
 
 void script_add_model_fill_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"fill",&model_fill_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,model_fill_functions);
+	script_create_child_object(parent_obj,"fill",&model_fill_class,NULL,model_fill_functions);
 }
 
 /* =======================================================

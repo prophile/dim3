@@ -42,10 +42,10 @@ JSClass			obj_thrust_class={"obj_thrust_class",0,
 							js_get_obj_thrust_property,js_set_obj_thrust_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_thrust_props[]={
-							{"speed",					obj_thrust_prop_speed,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"maxSpeed",				obj_thrust_prop_max_speed,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"drag",					obj_thrust_prop_drag,				JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_thrust_props[]={
+							{"speed",					obj_thrust_prop_speed,				FALSE},
+							{"maxSpeed",				obj_thrust_prop_max_speed,			FALSE},
+							{"drag",					obj_thrust_prop_drag,				FALSE},
 							{0}};
 
 /* =======================================================

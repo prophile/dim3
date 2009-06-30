@@ -41,10 +41,10 @@ JSClass			model_offset_class={"model_offset_class",0,
 							js_get_model_offset_property,js_set_model_offset_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	model_offset_props[]={
-							{"x",					model_offset_prop_x,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"z",					model_offset_prop_z,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"y",					model_offset_prop_y,				JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	model_offset_props[]={
+							{"x",					model_offset_prop_x,				FALSE},
+							{"z",					model_offset_prop_z,				FALSE},
+							{"y",					model_offset_prop_y,				FALSE},
 							{0}};
 
 extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);

@@ -46,17 +46,17 @@ JSClass			proj_melee_class={"proj_melee_class",0,
 							js_get_proj_melee_property,js_set_proj_melee_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	proj_melee_props[]={
-							{"strikeBoneTag",			proj_melee_prop_strike_bone_tag,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"strikePoseName",			proj_melee_prop_strike_pose_name,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"radius",					proj_melee_prop_radius,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"distance",				proj_melee_prop_distance,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"damage",					proj_melee_prop_damage,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"force",					proj_melee_prop_force,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"fallOff",					proj_melee_prop_fall_off,			JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	proj_melee_props[]={
+							{"strikeBoneTag",			proj_melee_prop_strike_bone_tag,	FALSE},
+							{"strikePoseName",			proj_melee_prop_strike_pose_name,	FALSE},
+							{"radius",					proj_melee_prop_radius,				FALSE},
+							{"distance",				proj_melee_prop_distance,			FALSE},
+							{"damage",					proj_melee_prop_damage,				FALSE},
+							{"force",					proj_melee_prop_force,				FALSE},
+							{"fallOff",					proj_melee_prop_fall_off,			FALSE},
 							{0}};
 
-JSFunctionSpec	proj_melee_functions[]={
+script_js_function	proj_melee_functions[]={
 							{"spawnFromProjectileBone",	js_proj_melee_spawn_from_projectile_bone_func,	0},
 							{"spawnFromPosition",		js_proj_melee_spawn_from_position_func,			3},
 							{0}};

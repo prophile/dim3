@@ -51,7 +51,7 @@ JSClass			map_node_class={"map_node_class",0,
 							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	map_node_functions[]={
+script_js_function	map_node_functions[]={
 							{"find",							js_map_node_find_func,									1},
 							{"findRandom",						js_map_node_find_random_func,							1},
 							{"findNearestToObject",				js_map_node_find_nearest_to_object_func,				1},
@@ -72,10 +72,7 @@ JSFunctionSpec	map_node_functions[]={
 
 void script_add_map_node_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"node",&map_node_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,map_node_functions);
+	script_create_child_object(parent_obj,"node",&map_node_class,NULL,map_node_functions);
 }
 
 /* =======================================================

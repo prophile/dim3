@@ -50,7 +50,7 @@ JSClass			interface_interaction_class={"interface_interaction_class",0,
 							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	interface_interaction_functions[]={
+script_js_function	interface_interaction_functions[]={
 							{"startStory",			js_interface_interaction_start_story_func,				2},
 							{"startTitle",			js_interface_interaction_start_title_func,				3},
 							{"startMovie",			js_interface_interaction_start_movie_func,				2},
@@ -69,10 +69,7 @@ JSFunctionSpec	interface_interaction_functions[]={
 
 void script_add_interface_interaction_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"interaction",&interface_interaction_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,interface_interaction_functions);
+	script_create_child_object(parent_obj,"interaction",&interface_interaction_class,NULL,interface_interaction_functions);
 }
 
 /* =======================================================

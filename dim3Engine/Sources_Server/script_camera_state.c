@@ -43,7 +43,7 @@ JSClass			camera_state_class={"camera_state_class",0,
 							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	camera_state_functions[]={
+script_js_function	camera_state_functions[]={
 							{"save",				js_camera_state_save_func,				0},
 							{"restore",				js_camera_state_restore_func,			0},
 							{0}};
@@ -56,10 +56,7 @@ JSFunctionSpec	camera_state_functions[]={
 
 void script_add_camera_state_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"state",&camera_state_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,camera_state_functions);
+	script_create_child_object(parent_obj,"state",&camera_state_class,NULL,camera_state_functions);
 }
 
 /* =======================================================

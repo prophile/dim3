@@ -41,10 +41,10 @@ JSClass			model_rotate_class={"model_rotate_class",0,
 							js_get_model_rotate_property,js_set_model_rotate_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	model_rotate_props[]={
-							{"x",					model_rotate_prop_x,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"z",					model_rotate_prop_z,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"y",					model_rotate_prop_y,				JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	model_rotate_props[]={
+							{"x",					model_rotate_prop_x,				FALSE},
+							{"z",					model_rotate_prop_z,				FALSE},
+							{"y",					model_rotate_prop_y,				FALSE},
 							{0}};
 
 extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);

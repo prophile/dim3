@@ -44,10 +44,10 @@ JSClass			game_setting_class={"game_setting_class",0,
 							js_get_game_setting_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	game_setting_props[]={
-							{"type",				game_setting_prop_type,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"multiplayer",			game_setting_prop_multiplayer,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"skill",				game_setting_prop_skill,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	game_setting_props[]={
+							{"type",				game_setting_prop_type,				TRUE},
+							{"multiplayer",			game_setting_prop_multiplayer,		TRUE},
+							{"skill",				game_setting_prop_skill,			TRUE},
 							{0}};
 
 /* =======================================================

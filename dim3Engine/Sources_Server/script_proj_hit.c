@@ -44,15 +44,15 @@ JSClass			proj_hit_class={"proj_hit_class",0,
 							js_get_proj_hit_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	proj_hit_props[]={
-							{"type",				proj_hit_prop_type,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"name",				proj_hit_prop_name,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"id",					proj_hit_prop_id,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"isPlayer",			proj_hit_prop_is_player,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"startTick",			proj_hit_prop_start_tick,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"materialName",		proj_hit_prop_material_name,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"ejectVector",			proj_hit_prop_eject_vector,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"reflectVector",		proj_hit_prop_reflect_vector,		JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	proj_hit_props[]={
+							{"type",				proj_hit_prop_type,					TRUE},
+							{"name",				proj_hit_prop_name,					TRUE},
+							{"id",					proj_hit_prop_id,					TRUE},
+							{"isPlayer",			proj_hit_prop_is_player,			TRUE},
+							{"startTick",			proj_hit_prop_start_tick,			TRUE},
+							{"materialName",		proj_hit_prop_material_name,		TRUE},
+							{"ejectVector",			proj_hit_prop_eject_vector,			TRUE},
+							{"reflectVector",		proj_hit_prop_reflect_vector,		TRUE},
 							{0}};
 
 /* =======================================================

@@ -42,10 +42,10 @@ JSClass			obj_hit_angle_class={"obj_hit_angle_class",0,
 							js_get_obj_hit_angle_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_hit_angle_props[]={
-							{"x",					obj_hit_angle_prop_x,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"y",					obj_hit_angle_prop_y,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"z",					obj_hit_angle_prop_z,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_hit_angle_props[]={
+							{"x",					obj_hit_angle_prop_x,				TRUE},
+							{"y",					obj_hit_angle_prop_y,				TRUE},
+							{"z",					obj_hit_angle_prop_z,				TRUE},
 							{0}};
 
 /* =======================================================

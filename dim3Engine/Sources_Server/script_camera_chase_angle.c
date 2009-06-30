@@ -43,10 +43,10 @@ JSClass			camera_chase_angle_class={"camera_chase_angle_class",JSCLASS_HAS_PRIVA
 							js_get_camera_chase_angle_property,js_set_camera_chase_angle_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	camera_chase_angle_props[]={
-							{"x",					camera_chase_angle_prop_x,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"y",					camera_chase_angle_prop_y,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"z",					camera_chase_angle_prop_z,			JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	camera_chase_angle_props[]={
+							{"x",					camera_chase_angle_prop_x,			FALSE},
+							{"y",					camera_chase_angle_prop_y,			FALSE},
+							{"z",					camera_chase_angle_prop_z,			FALSE},
 							{0}};
 
 /* =======================================================

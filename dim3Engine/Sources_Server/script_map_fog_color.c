@@ -42,10 +42,10 @@ JSClass			map_fog_color_class={"map_fog_color_class",0,
 							js_get_map_fog_color_property,js_set_map_fog_color_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	map_fog_color_props[]={
-							{"red",					map_fog_color_prop_red,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"green",				map_fog_color_prop_green,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"blue",				map_fog_color_prop_blue,		JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	map_fog_color_props[]={
+							{"red",					map_fog_color_prop_red,			FALSE},
+							{"green",				map_fog_color_prop_green,		FALSE},
+							{"blue",				map_fog_color_prop_blue,		FALSE},
 							{0}};
 
 /* =======================================================

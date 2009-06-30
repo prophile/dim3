@@ -46,7 +46,7 @@ JSClass			map_movement_class={"map_movement_class",0,
 							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	map_movement_functions[]={
+script_js_function	map_movement_functions[]={
 							{"start",				js_map_movement_start_func,			1},
 							{"startReverse",		js_map_movement_start_reverse_func,	1},
 							{"startOrThaw",			js_map_movement_start_or_thaw_func,	1},
@@ -69,10 +69,7 @@ extern bool map_movements_script_is_looping(int movement_idx);
 
 void script_add_map_movement_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"movement",&map_movement_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,map_movement_functions);
+	script_create_child_object(parent_obj,"movement",&map_movement_class,NULL,map_movement_functions);
 }
 
 /* =======================================================

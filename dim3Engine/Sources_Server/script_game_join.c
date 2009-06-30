@@ -51,12 +51,12 @@ JSClass			game_join_class={"game_join_class",0,
 							js_get_game_join_property,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	game_join_props[]={
-							{"name",				game_join_prop_name,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"team",				game_join_prop_team,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	game_join_props[]={
+							{"name",				game_join_prop_name,					TRUE},
+							{"team",				game_join_prop_team,					TRUE},
 							{0}};
 							
-JSFunctionSpec	game_join_functions[]={
+script_js_function	game_join_functions[]={
 							{"setTeam",				js_game_join_set_team_func,					1},
 							{"setTeamEven",			js_game_join_set_team_even_func,			0},
 							{"clearTeam",			js_game_join_clear_team_func,				0},

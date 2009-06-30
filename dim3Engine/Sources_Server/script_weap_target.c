@@ -46,13 +46,13 @@ JSClass			weap_target_class={"weap_target_class",0,
                             js_get_weap_target_property,js_set_weap_target_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
                             
-JSPropertySpec	weap_target_props[]={
-							{"on",					weap_target_prop_on,					JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"distance",			weap_target_prop_distance,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectId",			weap_target_prop_objectId,				JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	weap_target_props[]={
+							{"on",					weap_target_prop_on,					TRUE},
+							{"distance",			weap_target_prop_distance,				FALSE},
+							{"objectId",			weap_target_prop_objectId,				TRUE},
 							{0}};
 							
-JSFunctionSpec	weap_target_functions[]={
+script_js_function	weap_target_functions[]={
 							{"start",				js_weap_target_start_func,				1},
 							{"startOpponent",		js_weap_target_start_opponent_func,		0},
 							{"end",					js_weap_target_end_func,				0},

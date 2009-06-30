@@ -57,7 +57,7 @@ JSClass			obj_weapon_class={"obj_weapon_class",0,
 							script_add_property,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
                             
-JSFunctionSpec	obj_weapon_functions[]={
+script_js_function	obj_weapon_functions[]={
 							{"add",					js_obj_weapon_add_func,						1},
 							{"getSelect",			js_obj_weapon_get_select_func,				0},
 							{"setSelect",			js_obj_weapon_set_select_func,				1},
@@ -85,10 +85,7 @@ JSFunctionSpec	obj_weapon_functions[]={
 
 void script_add_obj_weapon_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-
-	j_obj=JS_DefineObject(js.cx,parent_obj,"weapon",&obj_weapon_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,obj_weapon_functions);
+	script_create_child_object(parent_obj,"weapon",&obj_weapon_class,NULL,obj_weapon_functions);
 }
 
 /* =======================================================

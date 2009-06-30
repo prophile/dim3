@@ -42,10 +42,10 @@ JSClass			weap_hand_angle_class={"weap_hand_angle_class",0,
 							js_get_weap_hand_angle_property,js_set_weap_hand_angle_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	weap_hand_angle_props[]={
-							{"x",				weap_hand_angle_prop_x,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"y",				weap_hand_angle_prop_y,					JSPROP_PERMANENT|JSPROP_SHARED},
-							{"z",				weap_hand_angle_prop_z,					JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	weap_hand_angle_props[]={
+							{"x",				weap_hand_angle_prop_x,					FALSE},
+							{"y",				weap_hand_angle_prop_y,					FALSE},
+							{"z",				weap_hand_angle_prop_z,					FALSE},
 							{0}};
 
 /* =======================================================

@@ -43,17 +43,17 @@ JSClass			camera_plane_class={"camera_plane_class",JSCLASS_HAS_PRIVATE,
 							js_get_camera_plane_property,js_set_camera_plane_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	camera_plane_props[]={
-							{"projectionType",		camera_plane_prop_projection_type,	JSPROP_PERMANENT|JSPROP_SHARED},
-							{"fov",					camera_plane_prop_fov,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"aspectRatio",			camera_plane_prop_aspect_ratio,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"left",				camera_plane_prop_left,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"right",				camera_plane_prop_right,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"top",					camera_plane_prop_top,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"bottom",				camera_plane_prop_bottom,			JSPROP_PERMANENT|JSPROP_SHARED},
-							{"near",				camera_plane_prop_near,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"far",					camera_plane_prop_far,				JSPROP_PERMANENT|JSPROP_SHARED},
-							{"nearOffset",			camera_plane_prop_near_offset,		JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	camera_plane_props[]={
+							{"projectionType",		camera_plane_prop_projection_type,	FALSE},
+							{"fov",					camera_plane_prop_fov,				FALSE},
+							{"aspectRatio",			camera_plane_prop_aspect_ratio,		FALSE},
+							{"left",				camera_plane_prop_left,				FALSE},
+							{"right",				camera_plane_prop_right,			FALSE},
+							{"top",					camera_plane_prop_top,				FALSE},
+							{"bottom",				camera_plane_prop_bottom,			FALSE},
+							{"near",				camera_plane_prop_near,				FALSE},
+							{"far",					camera_plane_prop_far,				FALSE},
+							{"nearOffset",			camera_plane_prop_near_offset,		FALSE},
 							{0}};
 
 /* =======================================================

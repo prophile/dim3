@@ -42,7 +42,7 @@ JSClass			utility_random_class={"utility_random_class",0,
 							script_add_property,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSFunctionSpec	utility_random_functions[]={
+script_js_function	utility_random_functions[]={
 							{"getInteger",			js_utility_random_get_integer_func,		2},
 							{"getFloat",			js_utility_random_get_float_func,		2},
 							{"getBoolean",			js_utility_random_get_boolean_func,		0},
@@ -57,10 +57,7 @@ JSFunctionSpec	utility_random_functions[]={
 
 void script_add_utility_random_object(JSObject *parent_obj)
 {
-    JSObject		*j_obj;
-    
-	j_obj=JS_DefineObject(js.cx,parent_obj,"random",&utility_random_class,NULL,0);
-	JS_DefineFunctions(js.cx,j_obj,utility_random_functions);
+	script_create_child_object(parent_obj,"random",&utility_random_class,NULL,utility_random_functions);
 }
 
 /* =======================================================

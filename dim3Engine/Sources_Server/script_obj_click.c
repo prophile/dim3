@@ -43,11 +43,11 @@ JSClass			obj_click_class={"obj_click_class",0,
 							js_get_obj_click_property,js_set_obj_click_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
-JSPropertySpec	obj_click_props[]={
-							{"crosshairUp",			obj_click_prop_crosshair_up,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"crosshairDown",		obj_click_prop_crosshair_down,		JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectId",			obj_click_prop_object_id,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
-							{"objectName",			obj_click_prop_object_name,			JSPROP_READONLY|JSPROP_PERMANENT|JSPROP_SHARED},
+script_js_property	obj_click_props[]={
+							{"crosshairUp",			obj_click_prop_crosshair_up,		FALSE},
+							{"crosshairDown",		obj_click_prop_crosshair_down,		FALSE},
+							{"objectId",			obj_click_prop_object_id,			TRUE},
+							{"objectName",			obj_click_prop_object_name,			TRUE},
 							{0}};
 
 /* =======================================================
