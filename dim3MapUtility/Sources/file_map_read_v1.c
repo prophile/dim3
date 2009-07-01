@@ -1253,6 +1253,8 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					scenery->pnt.y=(scenery->pnt.y+1)*map_enlarge;
 					scenery->pnt.z=(scenery->pnt.z*map_enlarge)+(portal->z*map_enlarge);
 					
+					scenery->resize=1.0f;
+					
 					obj_tag=xml_findnextchild(obj_tag);
 				}
 			}

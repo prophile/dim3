@@ -333,6 +333,7 @@ typedef struct		{
 					
 typedef struct		{
 						short								texture_frame[max_map_scenery_model_texture_frame];
+						float								resize;
 						char								model_name[name_str_len],animation_name[name_str_len];
 						bool								contact_object_on,contact_projectile_on,
 															contact_hit_box,face_forward,

@@ -53,6 +53,15 @@ void launch_engine(void)
 	FSRef					fsref;
 	FILE					*file;
 	
+		// get path to engine
+		
+	file_paths_base(&file_path_setup,path,setup.engine_name,"app");
+
+	if (FSPathMakeRef((unsigned char*)path,&fsref,NULL)!=0) {
+		StandardAlert(kAlertStopAlert,"\pLaunch Engine","\pCould not find Engine, check engine name in preferences.",NULL,NULL);
+		return;
+    }
+	
 		// ok to save?
 	
 	memset(&alert_param,0x0,sizeof(AlertStdAlertParamRec));
@@ -98,10 +107,6 @@ void launch_engine(void)
 	
 		// run engine
 		
-	file_paths_base(&file_path_setup,path,setup.engine_name,"app");
-
-	FSPathMakeRef((unsigned char*)path,&fsref,NULL);
-	
 	cf_url=CFURLCreateFromFSRef(kCFAllocatorDefault,&fsref);
 	LSOpenCFURLRef(cf_url,NULL);
 	CFRelease(cf_url);

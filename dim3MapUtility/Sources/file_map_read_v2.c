@@ -356,6 +356,8 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 					scenery->pnt.x+=portal->x;
 					scenery->pnt.z+=portal->z;
 					
+					scenery->resize=1.0f;
+					
 					obj_tag=xml_findnextchild(obj_tag);
 				}
 			}

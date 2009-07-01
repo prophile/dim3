@@ -344,6 +344,7 @@ bool decode_map_v3_xml(map_type *map,int map_head)
 			
 			scenery->override_size=xml_get_attribute_boolean(obj_tag,"override_size");
 			xml_get_attribute_3_coord_int(obj_tag,"size",&scenery->size.x,&scenery->size.y,&scenery->size.z);
+			scenery->resize=xml_get_attribute_float_default(obj_tag,"resize",1.0f);
 			
 			obj_tag=xml_findnextchild(obj_tag);
 		}
