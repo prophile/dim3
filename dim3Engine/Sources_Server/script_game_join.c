@@ -37,7 +37,8 @@ extern network_setup_type	net_setup;
 
 extern int					game_obj_rule_uid;
 
-JSBool js_get_game_join_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_game_join_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_game_join_get_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_game_join_set_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_game_join_set_team_even_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_game_join_clear_team_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -48,12 +49,12 @@ JSBool js_game_join_clear_spawn_spot_func(JSContext *cx,JSObject *j_obj,uintN ar
 
 JSClass			game_join_class={"game_join_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_game_join_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	game_join_props[]={
-							{"name",				game_join_prop_name,					TRUE},
-							{"team",				game_join_prop_team,					TRUE},
+							{"name",				js_game_join_get_name,						NULL},
+							{"team",				js_game_join_get_team,						NULL},
 							{0}};
 							
 script_js_function	game_join_functions[]={
@@ -79,37 +80,37 @@ void script_add_game_join_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_game_join_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_game_join_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
-
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	if (game_obj_rule_uid==-1) return(JS_TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
+	*vp=script_string_to_value(obj->name);
 
-	switch (JSVAL_TO_INT(id)) {
-	
-		case game_join_prop_name:
-            *vp=script_string_to_value(obj->name);
-			break;
-		case game_join_prop_team:
-            *vp=INT_TO_JSVAL(obj->team_idx+sd_team_none);
-			break;
-			
-	}
-	
+	return(JS_TRUE);
+}
+
+JSBool js_game_join_get_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	if (game_obj_rule_uid==-1) return(JS_TRUE);
+
+	obj=object_find_uid(game_obj_rule_uid);
+    *vp=INT_TO_JSVAL(obj->team_idx+sd_team_none);
+
 	return(JS_TRUE);
 }
 
 /* =======================================================
 
-      Join Functions
+      Functions
       
 ======================================================= */
 

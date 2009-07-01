@@ -47,13 +47,13 @@ JSClass			proj_melee_class={"proj_melee_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	proj_melee_props[]={
-							{"strikeBoneTag",			proj_melee_prop_strike_bone_tag,	FALSE},
-							{"strikePoseName",			proj_melee_prop_strike_pose_name,	FALSE},
-							{"radius",					proj_melee_prop_radius,				FALSE},
-							{"distance",				proj_melee_prop_distance,			FALSE},
-							{"damage",					proj_melee_prop_damage,				FALSE},
-							{"force",					proj_melee_prop_force,				FALSE},
-							{"fallOff",					proj_melee_prop_fall_off,			FALSE},
+							{"strikeBoneTag",			js_proj_melee_get_strikeBoneTag,		js_proj_melee_set_strikeBoneTag},
+							{"strikePoseName",			js_proj_melee_get_strikePoseName,		js_proj_melee_set_strikePoseName},
+							{"radius",					js_proj_melee_get_radius,				js_proj_melee_set_radius},
+							{"distance",				js_proj_melee_get_distance,				js_proj_melee_set_distance},
+							{"damage",					js_proj_melee_get_damage,				js_proj_melee_set_damage},
+							{"force",					js_proj_melee_get_force,				js_proj_melee_set_force},
+							{"fallOff",					js_proj_melee_get_fallOff,				js_proj_melee_set_fallOff},
 							{0}};
 
 script_js_function	proj_melee_functions[]={

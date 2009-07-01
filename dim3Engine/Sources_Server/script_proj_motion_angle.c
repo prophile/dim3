@@ -42,9 +42,9 @@ JSClass			proj_motion_angle_class={"proj_motion_angle_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	proj_motion_angle_props[]={
-							{"x",					proj_motion_angle_prop_x,			TRUE},
-							{"y",					proj_motion_angle_prop_y,			TRUE},
-							{"z",					proj_motion_angle_prop_z,			TRUE},
+							{"x",					js_proj_motion_angle_get_x,			NULL},
+							{"y",					js_proj_motion_angle_get_y,			NULL},
+							{"z",					js_proj_motion_angle_get_z,			NULL},
 							{0}};
 
 /* =======================================================

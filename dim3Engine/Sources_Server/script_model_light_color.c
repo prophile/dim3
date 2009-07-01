@@ -42,9 +42,9 @@ JSClass			model_light_color_class={"model_light_color_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	model_light_color_props[]={
-							{"red",					model_light_color_prop_red,			FALSE},
-							{"green",				model_light_color_prop_green,		FALSE},
-							{"blue",				model_light_color_prop_blue,		FALSE},
+							{"red",					js_model_light_color_get_red,			js_model_light_color_set_red},
+							{"green",				js_model_light_color_get_green,			js_model_light_color_set_green},
+							{"blue",				js_model_light_color_get_blue,			js_model_light_color_set_blue},
 							{0}};
 
 extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);

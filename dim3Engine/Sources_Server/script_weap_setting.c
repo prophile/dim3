@@ -43,9 +43,9 @@ JSClass			weap_setting_class={"weap_setting_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	weap_setting_props[]={
-							{"name",				weap_setting_prop_name,				TRUE},
-							{"failInLiquid",		weap_setting_prop_fail_in_liquid,	FALSE},
-							{"parentObjectId",		weap_setting_prop_parent_object_id,	TRUE},
+							{"name",				js_weap_setting_get_name,				NULL},
+							{"failInLiquid",		js_weap_setting_get_failInLiquid,		js_weap_setting_set_failInLiquid},
+							{"parentObjectId",		js_weap_setting_get_parentObjectId,		NULL},
 							{0}};
 
 /* =======================================================

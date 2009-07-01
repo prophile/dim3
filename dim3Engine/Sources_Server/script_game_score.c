@@ -39,20 +39,24 @@ extern network_setup_type	net_setup;
 
 extern int				game_obj_rule_uid;
 
-JSBool js_get_game_score_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_game_score_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_game_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_game_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_game_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_game_score_get_goal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_game_score_set_score_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			game_score_class={"game_score_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_game_score_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	game_score_props[]={
-							{"objectId",			game_score_prop_object_id,			TRUE},
-							{"kill",				game_score_prop_kill,				TRUE},
-							{"death",				game_score_prop_death,				TRUE},
-							{"suicide",				game_score_prop_suicide,			TRUE},
-							{"goal",				game_score_prop_goal,				TRUE},
+							{"objectId",			js_game_score_get_objectId,			NULL},
+							{"kill",				js_game_score_get_kill,				NULL},
+							{"death",				js_game_score_get_death,			NULL},
+							{"suicide",				js_game_score_get_suicide,			NULL},
+							{"goal",				js_game_score_get_goal,				NULL},
 							{0}};
 							
 script_js_function	game_score_functions[]={
@@ -72,46 +76,73 @@ void script_add_game_score_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_game_score_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_game_score_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
-
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	if (game_obj_rule_uid==-1) return(JS_TRUE);
 
 	obj=object_find_uid(game_obj_rule_uid);
-
-	switch (JSVAL_TO_INT(id)) {
+	*vp=INT_TO_JSVAL(obj->uid);
 	
-		case game_score_prop_object_id:
-            *vp=INT_TO_JSVAL(obj->uid);
-			break;
-		case game_score_prop_kill:
-            *vp=INT_TO_JSVAL(obj->score.kill);
-			break;
-		case game_score_prop_death:
-            *vp=INT_TO_JSVAL(obj->score.death);
-			break;
-		case game_score_prop_suicide:
-            *vp=INT_TO_JSVAL(obj->score.suicide);
-			break;
-		case game_score_prop_goal:
-            *vp=INT_TO_JSVAL(obj->score.goal);
-			break;
-			
-	}
+	return(JS_TRUE);
+}
+
+JSBool js_game_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	if (game_obj_rule_uid==-1) return(JS_TRUE);
+
+	obj=object_find_uid(game_obj_rule_uid);
+	*vp=INT_TO_JSVAL(obj->score.kill);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_game_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	if (game_obj_rule_uid==-1) return(JS_TRUE);
+
+	obj=object_find_uid(game_obj_rule_uid);
+	*vp=INT_TO_JSVAL(obj->score.death);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_game_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	if (game_obj_rule_uid==-1) return(JS_TRUE);
+
+	obj=object_find_uid(game_obj_rule_uid);
+	*vp=INT_TO_JSVAL(obj->score.suicide);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_game_score_get_goal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	if (game_obj_rule_uid==-1) return(JS_TRUE);
+
+	obj=object_find_uid(game_obj_rule_uid);
+	*vp=INT_TO_JSVAL(obj->score.goal);
 	
 	return(JS_TRUE);
 }
 
 /* =======================================================
 
-      Score Functions
+      Functions
       
 ======================================================= */
 

@@ -42,12 +42,12 @@ JSClass			model_light_class={"model_light_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	model_light_props[]={
-							{"index",				model_light_prop_index,				FALSE},
-							{"on",					model_light_prop_on,				FALSE},
-							{"type",				model_light_prop_type,				FALSE},
-							{"direction",			model_light_prop_direction,			FALSE},
-							{"intensity",			model_light_prop_intensity,			FALSE},
-							{"exponent",			model_light_prop_exponent,			FALSE},
+							{"index",				js_model_light_get_index,				js_model_light_set_index},
+							{"on",					js_model_light_get_on,					js_model_light_set_on},
+							{"type",				js_model_light_get_type,				js_model_light_set_type},
+							{"direction",			js_model_light_get_direction,			js_model_light_set_direction},
+							{"intensity",			js_model_light_get_intensity,			js_model_light_set_intensity},
+							{"exponent",			js_model_light_get_exponent,			js_model_light_set_exponent},
 							{0}};
 							
 extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);

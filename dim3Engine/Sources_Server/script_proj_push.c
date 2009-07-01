@@ -44,8 +44,8 @@ JSClass			proj_push_class={"proj_push_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	proj_push_props[]={
-							{"on",					proj_push_prop_on,					FALSE},
-							{"force",				proj_push_prop_force,				FALSE},
+							{"on",					js_proj_push_get_on,				js_proj_push_set_on},
+							{"force",				js_proj_push_get_force,				js_proj_push_set_force},
 							{0}};
 
 /* =======================================================

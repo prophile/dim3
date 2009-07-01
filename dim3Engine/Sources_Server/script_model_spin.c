@@ -42,9 +42,9 @@ JSClass			model_spin_class={"model_spin_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	model_spin_props[]={
-							{"x",					model_spin_prop_x,					FALSE},
-							{"z",					model_spin_prop_z,					FALSE},
-							{"y",					model_spin_prop_y,					FALSE},
+							{"x",					js_model_spin_get_x,					js_model_spin_set_x},
+							{"y",					js_model_spin_get_y,					js_model_spin_set_y},
+							{"z",					js_model_spin_get_z,					js_model_spin_set_z},
 							{0}};
 
 extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);

@@ -46,17 +46,17 @@ JSClass			weap_recoil_class={"weap_recoil_class",0,
 
 
 script_js_property	weap_recoil_props[]={
-							{"minX",				weap_recoil_prop_min_x,				FALSE},
-							{"maxX",				weap_recoil_prop_max_x,				FALSE},
-							{"resetX",				weap_recoil_prop_reset_x,			FALSE},
-							{"minY",				weap_recoil_prop_min_y,				FALSE},
-							{"maxY",				weap_recoil_prop_max_y,				FALSE},
-							{"resetY",				weap_recoil_prop_reset_y,			FALSE},
-							{"minZ",				weap_recoil_prop_min_z,				FALSE},
-							{"maxZ",				weap_recoil_prop_max_z,				FALSE},
-							{"resetZ",				weap_recoil_prop_reset_z,			FALSE},
-							{"resetLook",			weap_recoil_prop_reset_look,		FALSE},
-							{"resetTurn",			weap_recoil_prop_reset_turn,		FALSE},
+							{"minX",				js_weap_recoil_get_minX,			js_weap_recoil_set_minX},
+							{"maxX",				js_weap_recoil_get_maxX,			js_weap_recoil_set_maxX},
+							{"resetX",				js_weap_recoil_get_resetX,			js_weap_recoil_set_resetX},
+							{"minY",				js_weap_recoil_get_minY,			js_weap_recoil_set_minY},
+							{"maxY",				js_weap_recoil_get_maxY,			js_weap_recoil_set_maxY},
+							{"resetY",				js_weap_recoil_get_resetY,			js_weap_recoil_set_resetY},
+							{"minZ",				js_weap_recoil_get_minZ,			js_weap_recoil_set_minZ},
+							{"maxZ",				js_weap_recoil_get_maxZ,			js_weap_recoil_set_maxZ},
+							{"resetZ",				js_weap_recoil_get_resetZ,			js_weap_recoil_set_resetZ},
+							{"resetLook",			js_weap_recoil_get_resetLook,		js_weap_recoil_set_resetLook},
+							{"resetTurn",			js_weap_recoil_get_resetTurn,		js_weap_recoil_set_resetTurn},
 							{0}};
 							
 script_js_function	weap_recoil_functions[]={

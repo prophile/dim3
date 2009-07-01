@@ -43,18 +43,18 @@ JSClass			map_fog_class={"map_fog_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	map_fog_props[]={
-							{"on",					map_fog_prop_on,					FALSE},
-							{"layerCount",			map_fog_prop_count,					FALSE},
-							{"outerRadius",			map_fog_prop_outer_radius,			FALSE},
-							{"innerRadius",			map_fog_prop_inner_radius,			FALSE},
-							{"height",				map_fog_prop_high,					FALSE},
-							{"drop",				map_fog_prop_drop,					FALSE},
-							{"textureIndex",		map_fog_prop_texture_index,			FALSE},
-							{"speed",				map_fog_prop_speed,					FALSE},
-							{"textureXFact",		map_fog_prop_txt_x_fact,			FALSE},
-							{"textureYFact",		map_fog_prop_txt_y_fact,			FALSE},
-							{"alpha",				map_fog_prop_alpha,					FALSE},
-							{"useSolidColor",		map_fog_prop_use_solid_color,		FALSE},
+							{"on",					js_map_fog_get_on,					js_map_fog_set_on},
+							{"layerCount",			js_map_fog_get_count,				js_map_fog_set_count},
+							{"outerRadius",			js_map_fog_get_outerRadius,			js_map_fog_set_outerRadius},
+							{"innerRadius",			js_map_fog_get_innerRadius,			js_map_fog_set_innerRadius},
+							{"height",				js_map_fog_get_high,				js_map_fog_set_high},
+							{"drop",				js_map_fog_get_drop,				js_map_fog_set_drop},
+							{"textureIndex",		js_map_fog_get_textureIndex,		js_map_fog_set_textureIndex},
+							{"speed",				js_map_fog_get_speed,				js_map_fog_set_speed},
+							{"textureXFact",		js_map_fog_get_textureXFact,		js_map_fog_set_textureXFact},
+							{"textureYFact",		js_map_fog_get_textureYFact,		js_map_fog_set_textureYFact},
+							{"alpha",				js_map_fog_get_alpha,				js_map_fog_set_alpha},
+							{"useSolidColor",		js_map_fog_get_useSolidColor,		js_map_fog_set_useSolidColor},
 							{0}};
 
 /* =======================================================

@@ -43,9 +43,9 @@ JSClass			weap_crosshair_pickup_color_class={"weap_crosshair_pickup_color_class"
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	weap_crosshair_pickup_color_props[]={
-							{"red",					weap_crosshair_pickup_color_prop_red,   FALSE},
-							{"green",				weap_crosshair_pickup_color_prop_green,	FALSE},
-							{"blue",				weap_crosshair_pickup_color_prop_blue,  FALSE},
+							{"red",					js_weap_crosshair_pickup_color_get_red,		js_weap_crosshair_pickup_color_set_red},
+							{"green",				js_weap_crosshair_pickup_color_get_green,	js_weap_crosshair_pickup_color_set_green},
+							{"blue",				js_weap_crosshair_pickup_color_get_blue,	js_weap_crosshair_pickup_color_set_blue},
 							{0}};
 
 /* =======================================================

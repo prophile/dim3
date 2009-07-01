@@ -36,20 +36,22 @@ extern map_type			map;
 extern camera_type		camera;
 extern js_type			js;
 
-JSBool js_get_camera_static_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_camera_static_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_static_position_get_follow(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_static_position_get_walkTurnSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_static_position_set_follow(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_static_position_set_walkTurnSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_static_position_move_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_camera_static_position_move_to_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_camera_static_position_walk_to_node_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			camera_static_position_class={"camera_static_position_class",JSCLASS_HAS_PRIVATE,
+JSClass			camera_static_position_class={"camera_static_position_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_camera_static_position_property,js_set_camera_static_position_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	camera_static_position_props[]={
-							{"follow",				camera_static_position_prop_follow,				FALSE},
-							{"walkTurnSpeed",		camera_static_position_prop_walk_turn_speed,	FALSE},
+							{"follow",				js_camera_static_position_get_follow,			js_camera_static_position_set_follow},
+							{"walkTurnSpeed",		js_camera_static_position_get_walkTurnSpeed,	js_camera_static_position_set_walkTurnSpeed},
 							{0}};
 							
 script_js_function	camera_static_position_functions[]={
@@ -71,49 +73,43 @@ void script_add_camera_static_position_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_camera_static_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_camera_static_position_get_follow(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
-	switch (JSVAL_TO_INT(id)) {
-	
-		case camera_static_position_prop_follow:
-            *vp=BOOLEAN_TO_JSVAL(camera.static_follow);
-			break;
-		case camera_static_position_prop_walk_turn_speed:
-            *vp=script_float_to_value(camera.auto_walk.turn_speed);
-			break;
-
-	}
-
+	*vp=BOOLEAN_TO_JSVAL(camera.static_follow);
 	return(JS_TRUE);
 }
 
-JSBool js_set_camera_static_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_camera_static_position_get_walkTurnSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case camera_static_position_prop_follow:
-            camera.static_follow=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case camera_static_position_prop_walk_turn_speed:
-			camera.auto_walk.turn_speed=script_value_to_float(*vp);
-			break;
-			
-	}
-	
+	*vp=script_float_to_value(camera.auto_walk.turn_speed);
 	return(JS_TRUE);
 }
 
 /* =======================================================
 
-      Camera Static Functions
+      Setters
+      
+======================================================= */
+
+JSBool js_camera_static_position_set_follow(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	camera.static_follow=JSVAL_TO_BOOLEAN(*vp);
+	return(JS_TRUE);
+}
+
+JSBool js_camera_static_position_set_walkTurnSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	camera.auto_walk.turn_speed=script_value_to_float(*vp);
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Functions
       
 ======================================================= */
 

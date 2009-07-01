@@ -36,20 +36,28 @@ extern js_type			js;
 extern setup_type		setup;
 extern hud_type			hud;
 
-JSBool js_get_interface_radar_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_interface_radar_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_interface_radar_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_interface_radar_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_interface_radar_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_interface_radar_get_displayRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_interface_radar_get_viewRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_interface_radar_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_interface_radar_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_interface_radar_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_interface_radar_set_displayRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_interface_radar_set_viewRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			interface_radar_class={"interface_radar_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_interface_radar_property,js_set_interface_radar_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	interface_radar_props[]={
-							{"on",					interface_radar_prop_on,				FALSE},
-							{"x",					interface_radar_prop_x,					FALSE},
-							{"y",					interface_radar_prop_y,					FALSE},
-							{"displayRadius",		interface_radar_prop_display_radius,	FALSE},
-							{"viewRadius",			interface_radar_prop_view_radius,		FALSE},
+							{"on",					js_interface_radar_get_on,				js_interface_radar_set_on},
+							{"x",					js_interface_radar_get_x,				js_interface_radar_set_x},
+							{"y",					js_interface_radar_get_y,				js_interface_radar_set_y},
+							{"displayRadius",		js_interface_radar_get_displayRadius,	js_interface_radar_set_displayRadius},
+							{"viewRadius",			js_interface_radar_get_viewRadius,		js_interface_radar_set_viewRadius},
 							{0}};
 
 /* =======================================================
@@ -65,61 +73,73 @@ void script_add_interface_radar_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_interface_radar_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_interface_radar_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
-	switch (JSVAL_TO_INT(id)) {
-	
-		case interface_radar_prop_on:
 			*vp=BOOLEAN_TO_JSVAL(hud.radar.on);
-			break;
-		case interface_radar_prop_x:
-			*vp=INT_TO_JSVAL(hud.radar.x);
-			break;
-		case interface_radar_prop_y:
-			*vp=INT_TO_JSVAL(hud.radar.y);
-			break;
-		case interface_radar_prop_display_radius:
-			*vp=INT_TO_JSVAL(hud.radar.display_radius);
-			break;
-		case interface_radar_prop_view_radius:
-			*vp=INT_TO_JSVAL(hud.radar.view_radius);
-			break;
-
-	}
-
 	return(JS_TRUE);
 }
 
-JSBool js_set_interface_radar_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_interface_radar_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+	*vp=INT_TO_JSVAL(hud.radar.x);
+	return(JS_TRUE);
+}
 
-	switch (JSVAL_TO_INT(id)) {
+JSBool js_interface_radar_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	*vp=INT_TO_JSVAL(hud.radar.y);
+	return(JS_TRUE);
+}
 
-		case interface_radar_prop_on:
-			hud.radar.on=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case interface_radar_prop_x:
-			hud.radar.x=JSVAL_TO_INT(*vp);
-			break;
-		case interface_radar_prop_y:
-			hud.radar.y=JSVAL_TO_INT(*vp);
-			break;
-		case interface_radar_prop_display_radius:
-			hud.radar.display_radius=JSVAL_TO_INT(*vp);
-			break;
-		case interface_radar_prop_view_radius:
-			hud.radar.view_radius=JSVAL_TO_INT(*vp);
-			break;
+JSBool js_interface_radar_get_displayRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	*vp=INT_TO_JSVAL(hud.radar.display_radius);
+	return(JS_TRUE);
+}
 
-	}
-	
+JSBool js_interface_radar_get_viewRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	*vp=INT_TO_JSVAL(hud.radar.view_radius);
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_interface_radar_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	hud.radar.on=JSVAL_TO_BOOLEAN(*vp);
+	return(JS_TRUE);
+}
+
+JSBool js_interface_radar_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	hud.radar.x=JSVAL_TO_INT(*vp);
+	return(JS_TRUE);
+}
+
+JSBool js_interface_radar_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	hud.radar.y=JSVAL_TO_INT(*vp);
+	return(JS_TRUE);
+}
+
+JSBool js_interface_radar_set_displayRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	hud.radar.display_radius=JSVAL_TO_INT(*vp);
+	return(JS_TRUE);
+}
+
+JSBool js_interface_radar_set_viewRadius(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	hud.radar.view_radius=JSVAL_TO_INT(*vp);
 	return(JS_TRUE);
 }
 

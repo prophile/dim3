@@ -37,17 +37,19 @@ extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-JSBool js_get_game_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_game_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_game_setting_get_multiplayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_game_setting_get_skill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			game_setting_class={"game_setting_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_game_setting_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	game_setting_props[]={
-							{"type",				game_setting_prop_type,				TRUE},
-							{"multiplayer",			game_setting_prop_multiplayer,		TRUE},
-							{"skill",				game_setting_prop_skill,			TRUE},
+							{"type",				js_game_setting_get_type,				NULL},
+							{"multiplayer",			js_game_setting_get_multiplayer,		NULL},
+							{"skill",				js_game_setting_get_skill,				NULL},
 							{0}};
 
 /* =======================================================
@@ -63,33 +65,31 @@ void script_add_game_setting_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_game_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_game_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
-	switch (JSVAL_TO_INT(id)) {
-	
-		case game_setting_prop_type:
-			if (!net_setup.client.joined) {
-				*vp=JSVAL_NULL;
-			}
-			else {
-				*vp=script_string_to_value(net_setup.games[net_setup.game_idx].name);
-			}
-			break;
-		case game_setting_prop_multiplayer:
-            *vp=BOOLEAN_TO_JSVAL(net_setup.client.joined);
-			break;
-		case game_setting_prop_skill:
-            *vp=INT_TO_JSVAL(server.skill);
-			break;
-
+	if (!net_setup.client.joined) {
+		*vp=JSVAL_NULL;
+	}
+	else {
+		*vp=script_string_to_value(net_setup.games[net_setup.game_idx].name);
 	}
 	
+	return(JS_TRUE);
+}
+
+JSBool js_game_setting_get_multiplayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	*vp=BOOLEAN_TO_JSVAL(net_setup.client.joined);
+	return(JS_TRUE);
+}
+
+JSBool js_game_setting_get_skill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	*vp=INT_TO_JSVAL(server.skill);
 	return(JS_TRUE);
 }
 

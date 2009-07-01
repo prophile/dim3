@@ -43,10 +43,10 @@ JSClass			proj_mark_class={"proj_mark_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	proj_mark_props[]={
-							{"on",					proj_mark_prop_on,					FALSE},
-							{"name",				proj_mark_prop_name,				FALSE},
-							{"size",				proj_mark_prop_size,				FALSE},
-							{"alpha",				proj_mark_prop_alpha,				FALSE},
+							{"on",					js_proj_mark_get_on,				js_proj_mark_set_on},
+							{"name",				js_proj_mark_get_name,				js_proj_mark_set_name},
+							{"size",				js_proj_mark_get_size,				js_proj_mark_set_size},
+							{"alpha",				js_proj_mark_get_alpha,				js_proj_mark_set_alpha},
 							{0}};
 
 /* =======================================================

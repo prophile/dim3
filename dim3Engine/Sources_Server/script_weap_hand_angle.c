@@ -43,9 +43,9 @@ JSClass			weap_hand_angle_class={"weap_hand_angle_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	weap_hand_angle_props[]={
-							{"x",				weap_hand_angle_prop_x,					FALSE},
-							{"y",				weap_hand_angle_prop_y,					FALSE},
-							{"z",				weap_hand_angle_prop_z,					FALSE},
+							{"x",				js_weap_hand_angle_get_x,			js_weap_hand_angle_set_x},
+							{"y",				js_weap_hand_angle_get_y,			js_weap_hand_angle_set_y},
+							{"z",				js_weap_hand_angle_get_z,			js_weap_hand_angle_set_z},
 							{0}};
 
 /* =======================================================

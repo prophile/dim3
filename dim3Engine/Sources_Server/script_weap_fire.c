@@ -34,6 +34,10 @@ and can be sold or given away.
 
 extern js_type			js;
 
+JSBool js_weap_fire_get_method(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_fire_get_lastFireTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+
+
 JSBool js_get_weap_fire_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_fire_past_last_fire_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_weap_fire_reset_last_fire_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -45,8 +49,8 @@ JSClass			weap_fire_class={"weap_fire_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	weap_fire_props[]={
-							{"method",				weap_fire_prop_method,					TRUE},
-							{"lastFireTick",		weap_fire_prop_last_fire_tick,			TRUE},
+							{"method",				js_weap_fire_get_method,				NULL},
+							{"lastFireTick",		js_weap_fire_get_lastFireTick,			NULL},
 							{0}};
 							
 script_js_function	weap_fire_functions[]={
@@ -100,9 +104,34 @@ JSBool js_get_weap_fire_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 	return(JS_TRUE);
 }
 
+JSBool js_weap_fire_get_method(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(weap->fire.method);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_weap_fire_get_lastFireTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	if (!weap->dual.in_dual) {
+		*vp=INT_TO_JSVAL(weap->fire.last_fire_tick);
+	}
+	else {
+		*vp=INT_TO_JSVAL(weap->fire.last_fire_dual_tick);
+	}
+	
+	return(JS_TRUE);
+}
+
 /* =======================================================
 
-      Weapon Fire Routines
+      Functions
       
 ======================================================= */
 

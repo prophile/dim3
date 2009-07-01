@@ -51,8 +51,8 @@ JSClass			model_animation_class={"model_animation_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	model_animation_props[]={
-							{"index",					model_animation_prop_index,						FALSE},
-							{"currentAnimationName",	model_animation_prop_cur_animation_name,		TRUE},
+							{"index",					js_model_animation_get_index,					js_model_animation_set_index},
+							{"currentAnimationName",	js_model_animation_get_currentAnimationName,	NULL},
 							{0}};
 
 script_js_function	model_animation_functions[]={

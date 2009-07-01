@@ -42,9 +42,9 @@ JSClass			proj_origin_class={"proj_position_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	proj_origin_props[]={
-							{"x",					proj_origin_prop_x,					TRUE},
-							{"z",					proj_origin_prop_z,					TRUE},
-							{"y",					proj_origin_prop_y,					TRUE},
+							{"x",					js_proj_origin_get_x,					NULL},
+							{"y",					js_proj_origin_get_y,					NULL},
+							{"z",					js_proj_origin_get_z,					NULL},
 							{0}};
 
 /* =======================================================

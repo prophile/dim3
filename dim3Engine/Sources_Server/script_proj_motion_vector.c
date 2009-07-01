@@ -42,9 +42,9 @@ JSClass			proj_motion_vector_class={"proj_motion_vector_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	proj_motion_vector_props[]={
-							{"x",					proj_motion_vector_prop_x,			TRUE},
-							{"y",					proj_motion_vector_prop_y,			TRUE},
-							{"z",					proj_motion_vector_prop_z,			TRUE},
+							{"x",					js_proj_motion_vector_get_x,			NULL},
+							{"y",					js_proj_motion_vector_get_y,			NULL},
+							{"z",					js_proj_motion_vector_get_z,			NULL},
 							{0}};
 
 /* =======================================================

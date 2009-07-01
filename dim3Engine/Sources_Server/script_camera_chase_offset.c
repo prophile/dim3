@@ -35,18 +35,22 @@ and can be sold or given away.
 extern camera_type		camera;
 extern js_type			js;
 
-JSBool js_get_camera_chase_offset_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_camera_chase_offset_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_chase_offset_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_chase_offset_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_chase_offset_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_chase_offset_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_chase_offset_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_chase_offset_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			camera_chase_offset_class={"camera_chase_offset_class",JSCLASS_HAS_PRIVATE,
+JSClass			camera_chase_offset_class={"camera_chase_offset_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_camera_chase_offset_property,js_set_camera_chase_offset_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	camera_chase_offset_props[]={
-							{"x",					camera_chase_offset_prop_x,			FALSE},
-							{"y",					camera_chase_offset_prop_y,			FALSE},
-							{"z",					camera_chase_offset_prop_z,			FALSE},
+							{"x",					js_camera_chase_offset_get_x,			js_camera_chase_offset_set_x},
+							{"y",					js_camera_chase_offset_get_y,			js_camera_chase_offset_set_y},
+							{"z",					js_camera_chase_offset_get_z,			js_camera_chase_offset_set_z},
 							{0}};
 
 /* =======================================================
@@ -62,48 +66,48 @@ void script_add_camera_chase_offset_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_camera_chase_offset_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_camera_chase_offset_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
-	switch (JSVAL_TO_INT(id)) {
-	
-		case camera_chase_offset_prop_x:
-			*vp=INT_TO_JSVAL(camera.chase_offset.x);
-			break;
-		case camera_chase_offset_prop_y:
-			*vp=INT_TO_JSVAL(camera.chase_offset.y);
-			break;
-		case camera_chase_offset_prop_z:
-			*vp=INT_TO_JSVAL(camera.chase_offset.z);
-			break;
-
-	}
-
+	*vp=INT_TO_JSVAL(camera.chase_offset.x);
 	return(JS_TRUE);
 }
 
-JSBool js_set_camera_chase_offset_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_camera_chase_offset_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case camera_chase_offset_prop_x:
-			camera.chase_offset.x=JSVAL_TO_INT(*vp);
-			break;
-		case camera_chase_offset_prop_y:
-			camera.chase_offset.y=JSVAL_TO_INT(*vp);
-			break;
-		case camera_chase_offset_prop_z:
-			camera.chase_offset.z=JSVAL_TO_INT(*vp);
-			break;
-			
-	}
-	
+	*vp=INT_TO_JSVAL(camera.chase_offset.y);
+	return(JS_TRUE);
+}
+
+JSBool js_camera_chase_offset_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	*vp=INT_TO_JSVAL(camera.chase_offset.z);
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_camera_chase_offset_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	camera.chase_offset.x=JSVAL_TO_INT(*vp);
+	return(JS_TRUE);
+}
+
+JSBool js_camera_chase_offset_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	camera.chase_offset.y=JSVAL_TO_INT(*vp);
+	return(JS_TRUE);
+}
+
+JSBool js_camera_chase_offset_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	camera.chase_offset.z=JSVAL_TO_INT(*vp);
 	return(JS_TRUE);
 }

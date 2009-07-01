@@ -45,9 +45,9 @@ JSClass			weap_dual_class={"weap_dual_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	weap_dual_props[]={
-							{"on",					weap_dual_prop_on,					FALSE},
-							{"active",				weap_dual_prop_active,				FALSE},
-							{"handOffset",			weap_dual_prop_hand_offset,			FALSE},
+							{"on",					js_weap_dual_get_on,					js_weap_dual_set_on},
+							{"active",				js_weap_dual_get_active,				js_weap_dual_set_active},
+							{"handOffset",			js_weap_dual_get_handOffset,			js_weap_dual_set_handOffset},
 							{0}};
 							
 script_js_function	weap_dual_functions[]={

@@ -47,14 +47,14 @@ JSClass			weap_alt_ammo_class={"weap_alt_ammo_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	weap_alt_ammo_props[]={
-							{"clip",				weap_alt_ammo_prop_clip,			FALSE},
-							{"count",				weap_alt_ammo_prop_count,			FALSE},
-							{"initCount",			weap_alt_ammo_prop_init_count,		FALSE},
-							{"maxCount",			weap_alt_ammo_prop_max_count,		FALSE},
-							{"clipCount",			weap_alt_ammo_prop_clip_count,		FALSE},
-							{"initClipCount",		weap_alt_ammo_prop_init_clip_count,	FALSE},
-							{"maxClipCount",		weap_alt_ammo_prop_max_clip_count,	FALSE},
-							{"lastReloadTick",		weap_alt_ammo_prop_last_reload_tick,TRUE},
+							{"clip",				js_weap_alt_ammo_get_clip,				js_weap_alt_ammo_set_clip},
+							{"count",				js_weap_alt_ammo_get_count,				js_weap_alt_ammo_set_count},
+							{"initCount",			js_weap_alt_ammo_get_initCount,			js_weap_alt_ammo_set_initCount},
+							{"maxCount",			js_weap_alt_ammo_get_maxCount,			js_weap_alt_ammo_set_maxCount},
+							{"clipCount",			js_weap_alt_ammo_get_clipCount,			js_weap_alt_ammo_set_clipCount},
+							{"initClipCount",		js_weap_alt_ammo_get_initClipCount,		js_weap_alt_ammo_set_initClipCount},
+							{"maxClipCount",		js_weap_alt_ammo_get_maxClipCount,		js_weap_alt_ammo_set_maxClipCount},
+							{"lastReloadTick",		js_weap_alt_ammo_get_lastReloadTick,	NULL},
 							{0}};
 							
 script_js_function	weap_alt_ammo_functions[]={

@@ -34,7 +34,7 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSClass			camera_class={"camera_class",JSCLASS_HAS_PRIVATE,
+JSClass			camera_class={"camera_class",0,
 							script_add_property,JS_PropertyStub,
 							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};

@@ -265,12 +265,6 @@ and can be sold or given away.
 #define model_halo_prop_no_clip_self				10
 
 #define model_shadow_prop_on						0
-#define model_shadow_prop_mode						1
-#define model_shadow_prop_always_in_air				2
-#define model_shadow_prop_static_in_air				3
-#define model_shadow_prop_static_face_angle			4
-#define model_shadow_prop_static_size				5
-#define model_shadow_prop_static_alpha				6
 
 #define model_animation_prop_index					0
 #define model_animation_prop_cur_animation_name		1
@@ -980,8 +974,7 @@ and can be sold or given away.
 
 typedef struct		{
 						const char			*name;
-						int					id;
-						bool				read_only;
+						JSPropertyOp		getter,setter;
 					} script_js_property;
 
 typedef struct		{

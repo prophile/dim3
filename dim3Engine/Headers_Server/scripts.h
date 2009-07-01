@@ -168,8 +168,8 @@ extern bool scripts_chain(attach_type *attach,char *func_name,char *err_str);
 extern void scripts_chain_console(attach_type *attach,char *func_name);
 extern bool scripts_direct_call(attach_type *attach,char *func_name,int arg_count,jsval *args,jsval *rval);
 
-extern void script_initialize_prototype_objects(void);
-extern void script_release_prototype_objects(void);
+extern void script_initialize_classes(void);
+extern void script_release_classes(void);
 extern bool script_add_global_object(script_type *script,char *err_str);
 extern JSObject* script_create_main_object(attach_type *attach);
 extern JSObject* script_create_child_object(JSObject *parent_obj,char *name,JSClass *class,script_js_property *props,script_js_function *funcs);

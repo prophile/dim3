@@ -35,18 +35,19 @@ and can be sold or given away.
 extern camera_type		camera;
 extern js_type			js;
 
-JSBool js_get_camera_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_camera_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_setting_get_attachObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_setting_set_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_camera_setting_attach_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			camera_setting_class={"camera_class",JSCLASS_HAS_PRIVATE,
+JSClass			camera_setting_class={"camera_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_camera_setting_property,js_set_camera_setting_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	camera_setting_props[]={
-							{"type",				camera_setting_prop_type,				FALSE},
-							{"attachObjectId",		camera_setting_prop_attach_object_id,	TRUE},
+							{"type",				js_camera_setting_get_type,				js_camera_setting_set_type},
+							{"attachObjectId",		js_camera_setting_get_attachObjectId,	NULL},
 							{0}};
 
 script_js_function	camera_setting_functions[]={
@@ -66,41 +67,31 @@ void script_add_camera_setting_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_camera_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_camera_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
-	switch (JSVAL_TO_INT(id)) {
-	
-		case camera_setting_prop_type:
-			*vp=INT_TO_JSVAL(camera.mode+sd_camera_type_fpp);
-			break;
-
-		case camera_setting_prop_attach_object_id:
-			*vp=INT_TO_JSVAL(camera.obj_uid);
-			break;
-
-	}
-
+	*vp=INT_TO_JSVAL(camera.mode+sd_camera_type_fpp);
 	return(JS_TRUE);
 }
 
-JSBool js_set_camera_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_camera_setting_get_attachObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case camera_setting_prop_type:
-			camera.mode=JSVAL_TO_INT(*vp)-sd_camera_type_fpp;
-			break;
-			
-	}
-	
+	*vp=INT_TO_JSVAL(camera.obj_uid);
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_camera_setting_set_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	camera.mode=JSVAL_TO_INT(*vp)-sd_camera_type_fpp;
 	return(JS_TRUE);
 }
 

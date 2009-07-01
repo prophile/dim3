@@ -47,9 +47,9 @@ JSClass			weap_target_class={"weap_target_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
                             
 script_js_property	weap_target_props[]={
-							{"on",					weap_target_prop_on,					TRUE},
-							{"distance",			weap_target_prop_distance,				FALSE},
-							{"objectId",			weap_target_prop_objectId,				TRUE},
+							{"on",					js_weap_target_get_on,					NULL},
+							{"distance",			js_weap_target_get_distance,			js_weap_target_set_distance},
+							{"objectId",			js_weap_target_get_objectId,			NULL},
 							{0}};
 							
 script_js_function	weap_target_functions[]={

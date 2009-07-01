@@ -43,10 +43,10 @@ JSClass			proj_size_class={"proj_size_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	proj_size_props[]={
-							{"x",					proj_size_prop_x,					FALSE},
-							{"z",					proj_size_prop_z,					FALSE},
-							{"y",					proj_size_prop_y,					FALSE},
-							{"weight",				proj_size_prop_weight,				FALSE},
+							{"x",					js_proj_size_get_x,					js_proj_size_set_x},
+							{"y",					js_proj_size_get_y,					js_proj_size_set_y},
+							{"z",					js_proj_size_get_z,					js_proj_size_set_z},
+							{"weight",				js_proj_size_get_weight,			js_proj_size_set_weight},
 							{0}};
 
 /* =======================================================

@@ -42,9 +42,9 @@ JSClass			map_info_class={"map_info_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	map_info_props[]={
-							{"file",				map_info_prop_file,					TRUE},
-							{"title",				map_info_prop_title,				TRUE},
-							{"author",				map_info_prop_author,				TRUE},
+							{"file",				js_map_info_get_file,				NULL},
+							{"title",				js_map_info_get_title,				NULL},
+							{"author",				js_map_info_get_author,				NULL},
 							{0}};
 
 /* =======================================================

@@ -47,18 +47,18 @@ JSBool js_model_change_fill_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 JSBool js_model_find_bone_offset_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_model_find_bone_position_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			model_class={"model_class",JSCLASS_HAS_PRIVATE,
+JSClass			model_class={"model_class",0,
 							script_add_property,JS_PropertyStub,
 							js_get_model_property,js_set_model_property,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	model_props[]={
-							{"on",					model_prop_on,						FALSE},
-							{"name",				model_prop_name,					FALSE},
-							{"bounce",				model_prop_bounce,					FALSE},
-							{"alpha",				model_prop_alpha,					FALSE},
-							{"resize",				model_prop_resize,					FALSE},
-							{"faceForward",			model_prop_face_forward,			FALSE},
+							{"on",					js_model_get_on,					js_model_set_on},
+							{"name",				js_model_get_name,					js_model_set_name},
+							{"bounce",				js_model_get_bounce,				js_model_set_bounce},
+							{"alpha",				js_model_get_alpha,					js_model_set_alpha},
+							{"resize",				js_model_get_resize,				js_model_set_resize},
+							{"faceForward",			js_model_get_faceForward,			js_model_set_faceForward},
 							{0}};
 
 extern void script_add_model_offset_object(JSObject *parent_obj);

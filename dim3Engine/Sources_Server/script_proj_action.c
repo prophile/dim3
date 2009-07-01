@@ -54,13 +54,13 @@ JSClass			proj_action_class={"proj_action_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	proj_action_props[]={
-							{"damage",				proj_action_prop_damage,				FALSE},
-							{"collision",			proj_action_prop_collision,				FALSE},
-							{"autoHitTick",			proj_action_prop_auto_hit_tick,			FALSE},
-							{"autoBounce",			proj_action_prop_auto_bounce,			FALSE},
-							{"autoBounceMinMove",	proj_action_prop_auto_bounce_min_move,	FALSE},
-							{"autoBounceReduce",	proj_action_prop_auto_bounce_reduce,	FALSE},
-							{"autoReflect",			proj_action_prop_auto_reflect,			FALSE},
+							{"damage",				js_proj_action_get_damage,				js_proj_action_set_damage},
+							{"collision",			js_proj_action_get_collision,			js_proj_action_set_collision},
+							{"autoHitTick",			js_proj_action_get_auto_hitTick,		js_proj_action_set_auto_hitTick},
+							{"autoBounce",			js_proj_action_get_auto_bounce,			js_proj_action_set_auto_bounce},
+							{"autoBounceMinMove",	js_proj_action_get_auto_bounceMinMove,	js_proj_action_set_auto_bounceMinMove},
+							{"autoBounceReduce",	js_proj_action_get_auto_bounceReduce,	js_proj_action_set_auto_bounceReduce},
+							{"autoReflect",			js_proj_action_get_auto_reflect,		js_proj_action_set_auto_reflect},
 							{0}};
 
 script_js_function	proj_action_functions[]={

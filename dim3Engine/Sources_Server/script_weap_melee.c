@@ -46,15 +46,15 @@ JSClass			weap_melee_class={"weap_melee_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	weap_melee_props[]={
-							{"strikeBoneTag",			weap_melee_prop_strike_bone_tag,			FALSE},
-							{"strikePoseName",			weap_melee_prop_strike_pose_name,			FALSE},
-							{"objectStrikeBoneTag",		weap_melee_prop_object_strike_bone_tag,		FALSE},
-							{"objectStrikePoseName",	weap_melee_prop_object_strike_pose_name,	FALSE},
-							{"radius",					weap_melee_prop_radius,						FALSE},
-							{"distance",				weap_melee_prop_distance,					FALSE},
-							{"damage",					weap_melee_prop_damage,						FALSE},
-							{"force",					weap_melee_prop_force,						FALSE},
-							{"fallOff",					weap_melee_prop_fall_off,					FALSE},
+							{"strikeBoneTag",			js_weap_melee_get_strikeBoneTag,			js_weap_melee_set_strikeBoneTag},
+							{"strikePoseName",			js_weap_melee_get_strikePoseName,			js_weap_melee_set_strikePoseName},
+							{"objectStrikeBoneTag",		js_weap_melee_get_objectStrikeBoneTag,		js_weap_melee_set_objectStrikeBoneTag},
+							{"objectStrikePoseName",	js_weap_melee_get_objectStrikePoseName,		js_weap_melee_set_objectStrikePoseName},
+							{"radius",					js_weap_melee_get_radius,					js_weap_melee_set_radius},
+							{"distance",				js_weap_melee_get_distance,					js_weap_melee_set_distance},
+							{"damage",					js_weap_melee_get_damage,					js_weap_melee_set_damage},
+							{"force",					js_weap_melee_get_force,					js_weap_melee_set_force},
+							{"fallOff",					js_weap_melee_get_fallOff,					js_weap_melee_set_fallOff},
 							{0}};
 
 script_js_function	weap_melee_functions[]={

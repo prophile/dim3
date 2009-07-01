@@ -58,7 +58,7 @@ JSBool js_event_call_object_by_id_func(JSContext *cx,JSObject *j_obj,uintN argc,
 JSBool js_event_call_course_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_event_call_game_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
-JSClass			event_class={"event_class",JSCLASS_HAS_PRIVATE,
+JSClass			event_class={"event_class",0,
 							script_add_property,JS_PropertyStub,
 							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};

@@ -42,13 +42,7 @@ JSClass			model_shadow_class={"model_shadow_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	model_shadow_props[]={
-							{"on",					model_shadow_prop_on,				FALSE},
-							{"mode",				model_shadow_prop_mode,				FALSE},
-							{"alwaysInAir",			model_shadow_prop_always_in_air,	FALSE},
-							{"staticInAir",			model_shadow_prop_static_in_air,	FALSE},
-							{"staticFaceAngle",		model_shadow_prop_static_face_angle,FALSE},
-							{"staticSize",			model_shadow_prop_static_size,		FALSE},
-							{"staticAlpha",			model_shadow_prop_static_alpha,		FALSE},
+							{"on",					js_model_shadow_get_on,				js_model_shadow_set_on},
 							{0}};
 
 extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);
@@ -85,24 +79,6 @@ JSBool js_get_model_shadow_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
 		case model_shadow_prop_on:
 			*vp=BOOLEAN_TO_JSVAL(shadow->on);
 			break;
-		case model_shadow_prop_mode:
-			*vp=INT_TO_JSVAL(shadow->mode+sd_model_shadow_mode_normal);
-			break;
-		case model_shadow_prop_always_in_air:
-			*vp=BOOLEAN_TO_JSVAL(shadow->always_in_air);
-			break;
-		case model_shadow_prop_static_in_air:
-			*vp=BOOLEAN_TO_JSVAL(shadow->static_in_air);
-			break;
-		case model_shadow_prop_static_face_angle:
-			*vp=script_float_to_value(shadow->static_face_angle);
-			break;
-		case model_shadow_prop_static_size:
-			*vp=INT_TO_JSVAL(shadow->static_size);
-			break;
-		case model_shadow_prop_static_alpha:
-			*vp=script_float_to_value(shadow->static_alpha);
-			break;
 			
 	}
 
@@ -123,24 +99,6 @@ JSBool js_set_model_shadow_property(JSContext *cx,JSObject *j_obj,jsval id,jsval
 	
 		case model_shadow_prop_on:
 			shadow->on=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case model_shadow_prop_mode:
-			shadow->mode=JSVAL_TO_INT(*vp)-sd_model_shadow_mode_normal;
-			break;
-		case model_shadow_prop_always_in_air:
-			shadow->always_in_air=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case model_shadow_prop_static_in_air:
-			shadow->static_in_air=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case model_shadow_prop_static_face_angle:
-			shadow->static_face_angle=script_value_to_float(*vp);
-			break;
-		case model_shadow_prop_static_size:
-			shadow->static_size=JSVAL_TO_INT(*vp);
-			break;
-		case model_shadow_prop_static_alpha:
-			shadow->static_alpha=script_value_to_float(*vp);
 			break;
 			
 	}

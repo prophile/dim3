@@ -169,9 +169,6 @@ and can be sold or given away.
 // shadow settings
 //
 
-#define sm_normal								0
-#define sm_static								1
-
 #define max_shadow_poly							64
 
 //
@@ -237,11 +234,10 @@ typedef struct		{
 					} model_draw_halo;
 					
 typedef struct		{
-						short					mode;
 						int						texture_idx,high,
-												px[4],pz[4],static_size;
-						float					alpha,static_face_angle,static_alpha;
-						bool					on,always_in_air,static_in_air;
+												px[4],pz[4];
+						float					alpha;
+						bool					on;
 						d3pnt					pnt;
 						d3ang					ang;
 					} model_draw_shadow;

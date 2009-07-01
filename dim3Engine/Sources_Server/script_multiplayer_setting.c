@@ -39,18 +39,20 @@ extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-JSBool js_get_multiplayer_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_multiplayer_setting_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_multiplayer_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_multiplayer_setting_get_teamPlay(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_multiplayer_setting_check_option_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			multiplayer_setting_class={"multiplayer_setting_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_multiplayer_setting_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	multiplayer_setting_props[]={
-							{"on",					multiplayer_setting_prop_on,				TRUE},
-							{"type",				multiplayer_setting_prop_type,				TRUE},
-							{"teamPlay",			multiplayer_setting_prop_team_play,			TRUE},
+							{"on",					js_multiplayer_setting_get_on,				NULL},
+							{"type",				js_multiplayer_setting_get_type,			NULL},
+							{"teamPlay",			js_multiplayer_setting_get_teamPlay,		NULL},
 							{0}};
 
 script_js_function	multiplayer_setting_functions[]={
@@ -70,38 +72,35 @@ void script_add_multiplayer_setting_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_multiplayer_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_multiplayer_setting_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+	*vp=BOOLEAN_TO_JSVAL(net_setup.client.joined);
+	return(JS_TRUE);
+}
 
-	switch (JSVAL_TO_INT(id)) {
-	
-		case multiplayer_setting_prop_on:
-           *vp=BOOLEAN_TO_JSVAL(net_setup.client.joined);
-			break;
-			
-		case multiplayer_setting_prop_type:
- 			if (!net_setup.client.joined) {
-				*vp=JSVAL_NULL;
-			}
-			else {
-				*vp=script_string_to_value(net_setup.games[net_setup.game_idx].name);
-			}
-			break;
-			
-		case multiplayer_setting_prop_team_play:
- 			if (!net_setup.client.joined) {
-				*vp=JSVAL_FALSE;
-			}
-			else {
-				*vp=BOOLEAN_TO_JSVAL(net_setup.games[net_setup.game_idx].use_teams);
-			}
-			break;
+JSBool js_multiplayer_setting_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+ 	if (!net_setup.client.joined) {
+		*vp=JSVAL_NULL;
+	}
+	else {
+		*vp=script_string_to_value(net_setup.games[net_setup.game_idx].name);
+	}
 
+	return(JS_TRUE);
+}
+
+JSBool js_multiplayer_setting_get_teamPlay(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+ 	if (!net_setup.client.joined) {
+		*vp=JSVAL_FALSE;
+	}
+	else {
+		*vp=BOOLEAN_TO_JSVAL(net_setup.games[net_setup.game_idx].use_teams);
 	}
 	
 	return(JS_TRUE);
@@ -109,7 +108,7 @@ JSBool js_get_multiplayer_setting_property(JSContext *cx,JSObject *j_obj,jsval i
 
 /* =======================================================
 
-      Setting Functions
+      Functions
       
 ======================================================= */
 

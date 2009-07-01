@@ -42,9 +42,9 @@ JSClass			model_offset_class={"model_offset_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	model_offset_props[]={
-							{"x",					model_offset_prop_x,				FALSE},
-							{"z",					model_offset_prop_z,				FALSE},
-							{"y",					model_offset_prop_y,				FALSE},
+							{"x",					js_model_offset_get_x,				js_model_offset_set_x},
+							{"y",					js_model_offset_get_y,				js_model_offset_set_y},
+							{"z",					js_model_offset_get_z,				js_model_offset_set_z},
 							{0}};
 
 extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);

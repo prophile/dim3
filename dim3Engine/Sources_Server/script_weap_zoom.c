@@ -43,17 +43,17 @@ JSClass			weap_zoom_class={"weap_zoom_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	weap_zoom_props[]={
-							{"on",					weap_zoom_prop_on,						FALSE},
-							{"active",				weap_zoom_prop_active,					TRUE},
-							{"fovMinimum",			weap_zoom_prop_fov_minimum,				FALSE},
-							{"fovMaximum",			weap_zoom_prop_fov_maximum,				FALSE},
-							{"fovSteps",			weap_zoom_prop_fov_steps,				FALSE},
-							{"turnFactor",			weap_zoom_prop_turn_factor,				FALSE},
-							{"crawlTurnFactor",		weap_zoom_prop_crawl_turn_factor,		FALSE},
-							{"lookFactor",			weap_zoom_prop_look_factor,				FALSE},
-							{"maskName",			weap_zoom_prop_mask_name,				FALSE},
-							{"showWeapon",			weap_zoom_prop_show_weapon,				FALSE},
-							{"tick",				weap_zoom_prop_tick,					FALSE},
+							{"on",					js_weap_zoom_get_on,						js_weap_zoom_set_on},
+							{"active",				js_weap_zoom_get_active,					NULL},
+							{"fovMinimum",			js_weap_zoom_get_fovMinimum,				js_weap_zoom_set_fovMinimum},
+							{"fovMaximum",			js_weap_zoom_get_fovMaximum,				js_weap_zoom_set_fovMaximum},
+							{"fovSteps",			js_weap_zoom_get_fovSteps,					js_weap_zoom_set_fovSteps},
+							{"turnFactor",			js_weap_zoom_get_turnFactor,				js_weap_zoom_set_turnFactor},
+							{"crawlTurnFactor",		js_weap_zoom_get_crawlTurnFactor,			js_weap_zoom_set_crawlTurnFactor},
+							{"lookFactor",			js_weap_zoom_get_lookFactor,				js_weap_zoom_set_lookFactor},
+							{"maskName",			js_weap_zoom_get_maskMame,					js_weap_zoom_set_maskMame},
+							{"showWeapon",			js_weap_zoom_get_showWeapon,				js_weap_zoom_set_showWeapon},
+							{"tick",				js_weap_zoom_get_tick,						js_weap_zoom_set_tick},
 							{0}};
 
 /* =======================================================

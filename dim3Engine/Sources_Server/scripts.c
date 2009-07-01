@@ -35,7 +35,7 @@ and can be sold or given away.
 extern js_type				js;
 extern setup_type			setup;
 
-JSClass			dim3_class={"dim3_class",JSCLASS_HAS_PRIVATE,
+JSClass			dim3_class={"dim3_class",0,
 							JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
@@ -59,7 +59,7 @@ bool scripts_engine_initialize(char *err_str)
 	js.rt=NULL;
 	js.cx=NULL;
 	
-	script_initialize_prototype_objects();
+	script_initialize_classes();
 	
 		// create runtime
 		
@@ -99,7 +99,7 @@ bool scripts_engine_initialize(char *err_str)
 void scripts_engine_shutdown(void)
 {
 	script_free_user_defines();
-	script_release_prototype_objects();
+	script_release_classes();
 	
 	if (js.cx!=NULL) JS_DestroyContext(js.cx);
 	if (js.rt!=NULL) JS_DestroyRuntime(js.rt);

@@ -38,16 +38,16 @@ extern server_type		server;
 extern js_type			js;
 extern setup_type		setup;
 
-JSBool js_get_multiplayer_bot_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_multiplayer_bot_get_skill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_multiplayer_bot_get_from_min_max_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			multiplayer_bot_class={"multiplayer_bot_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_multiplayer_bot_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	multiplayer_bot_props[]={
-							{"skill",				multiplayer_bot_prop_skill,					TRUE},
+							{"skill",				js_multiplayer_bot_get_skill,				NULL},
 							{0}};
 							
 script_js_function	multiplayer_bot_functions[]={
@@ -67,28 +67,19 @@ void script_add_multiplayer_bot_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_multiplayer_bot_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_multiplayer_bot_get_skill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
-	switch (JSVAL_TO_INT(id)) {
-	
-		case multiplayer_bot_prop_skill:
-            *vp=INT_TO_JSVAL(server.skill);
-			break;
-
-	}
-	
+	*vp=INT_TO_JSVAL(server.skill);
 	return(JS_TRUE);
 }
 
 /* =======================================================
 
-      Bot Functions
+      Functions
       
 ======================================================= */
 

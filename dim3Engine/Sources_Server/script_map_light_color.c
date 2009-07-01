@@ -44,9 +44,9 @@ JSClass			map_light_color_class={"map_light_color_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	map_light_color_props[]={
-							{"red",					map_light_color_prop_red,				FALSE},
-							{"green",				map_light_color_prop_green,				FALSE},
-							{"blue",				map_light_color_prop_blue,				FALSE},
+							{"red",					js_map_light_color_get_red,				js_map_light_color_set_red},
+							{"green",				js_map_light_color_get_green,			js_map_light_color_set_green},
+							{"blue",				js_map_light_color_get_blue,			js_map_light_color_set_blue},
 							{0}};
 
 /* =======================================================

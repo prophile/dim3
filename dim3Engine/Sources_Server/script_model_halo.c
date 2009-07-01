@@ -44,17 +44,17 @@ JSClass			model_halo_class={"model_halo_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	model_halo_props[]={
-							{"index",				model_halo_prop_index,				FALSE},
-							{"on",					model_halo_prop_on,					FALSE},
-							{"name",				model_halo_prop_name,				FALSE},
-							{"minDistance",			model_halo_prop_min_distance,		FALSE},
-							{"maxDistance",			model_halo_prop_max_distance,		FALSE},
-							{"minSize",				model_halo_prop_min_size,			FALSE},
-							{"maxSize",				model_halo_prop_max_size,			FALSE},
-							{"minAlpha",			model_halo_prop_min_alpha,			FALSE},
-							{"maxAlpha",			model_halo_prop_max_alpha,			FALSE},
-							{"noClipObject",		model_halo_prop_no_clip_object,		FALSE},
-							{"noClipSelf",			model_halo_prop_no_clip_self,		FALSE},
+							{"index",				js_model_halo_get_index,				js_model_halo_set_index},
+							{"on",					js_model_halo_get_on,					js_model_halo_set_on},
+							{"name",				js_model_halo_get_name,					js_model_halo_set_name},
+							{"minDistance",			js_model_halo_get_minDistance,			js_model_halo_set_minDistance},
+							{"maxDistance",			js_model_halo_get_maxDistance,			js_model_halo_set_maxDistance},
+							{"minSize",				js_model_halo_get_minSize,				js_model_halo_set_minSize},
+							{"maxSize",				js_model_halo_get_maxSize,				js_model_halo_set_maxSize},
+							{"minAlpha",			js_model_halo_get_minAlpha,				js_model_halo_set_minAlpha},
+							{"maxAlpha",			js_model_halo_get_maxAlpha,				js_model_halo_set_maxAlpha},
+							{"noClipObject",		js_model_halo_get_noClipObject,			js_model_halo_set_noClipObject},
+							{"noClipSelf",			js_model_halo_get_noClipSelf,			js_model_halo_set_noClipSelf},
 							{0}};
 
 extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);

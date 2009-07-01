@@ -52,12 +52,12 @@ JSClass			map_setting_class={"map_setting_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	map_setting_props[]={
-							{"scale",				map_setting_prop_scale,					TRUE},
-							{"gravity",				map_setting_prop_gravity,				FALSE},
-							{"resistance",			map_setting_prop_resistance,			FALSE},
-							{"multiplayer",			map_setting_prop_multiplayer,			TRUE},
-							{"multiplayerType",		map_setting_prop_multiplayer_type,		TRUE},
-							{"botSkill",			map_setting_prop_bot_skill,				TRUE},
+							{"scale",				js_map_setting_get_scale,				NULL},
+							{"gravity",				js_map_setting_get_gravity,				js_map_setting_set_gravity},
+							{"resistance",			js_map_setting_get_resistance,			js_map_setting_set_resistance},
+							{"multiplayer",			js_map_setting_get_multiplayer,			NULL},
+							{"multiplayerType",		js_map_setting_get_multiplayerType,		NULL},
+							{"botSkill",			js_map_setting_get_botSkill,			NULL},
 							{0}};
 							
 script_js_function	map_setting_functions[]={

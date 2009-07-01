@@ -42,9 +42,9 @@ JSClass			model_rotate_class={"model_rotate_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	model_rotate_props[]={
-							{"x",					model_rotate_prop_x,				FALSE},
-							{"z",					model_rotate_prop_z,				FALSE},
-							{"y",					model_rotate_prop_y,				FALSE},
+							{"x",					js_model_rotate_get_x,				js_model_rotate_set_x},
+							{"y",					js_model_rotate_get_y,				js_model_rotate_set_y},
+							{"z",					js_model_rotate_get_z,				js_model_rotate_set_z},
 							{0}};
 
 extern model_draw* js_find_model_draw(JSObject *j_obj,bool is_child);

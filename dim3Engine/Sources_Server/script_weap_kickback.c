@@ -45,7 +45,7 @@ JSClass			weap_kickback_class={"weap_kickback_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
                             
 script_js_property	weap_kickback_props[]={
-							{"size",				weap_kickback_prop_size,				FALSE},
+							{"size",				js_weap_kickback_get_size,				js_weap_kickback_set_size},
 							{0}};
 							
 script_js_function	weap_kickback_functions[]={

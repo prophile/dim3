@@ -45,14 +45,14 @@ JSClass			proj_hit_class={"proj_hit_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	proj_hit_props[]={
-							{"type",				proj_hit_prop_type,					TRUE},
-							{"name",				proj_hit_prop_name,					TRUE},
-							{"id",					proj_hit_prop_id,					TRUE},
-							{"isPlayer",			proj_hit_prop_is_player,			TRUE},
-							{"startTick",			proj_hit_prop_start_tick,			TRUE},
-							{"materialName",		proj_hit_prop_material_name,		TRUE},
-							{"ejectVector",			proj_hit_prop_eject_vector,			TRUE},
-							{"reflectVector",		proj_hit_prop_reflect_vector,		TRUE},
+							{"type",				js_proj_hit_get_type,				js_proj_hit_set_type},
+							{"name",				js_proj_hit_get_name,				js_proj_hit_set_name},
+							{"id",					js_proj_hit_get_id,					js_proj_hit_set_id},
+							{"isPlayer",			js_proj_hit_get_isPlayer,			js_proj_hit_set_isPlayer},
+							{"startTick",			js_proj_hit_get_startTick,			js_proj_hit_set_startTick},
+							{"materialName",		js_proj_hit_get_materialName,		js_proj_hit_set_materialName},
+							{"ejectVector",			js_proj_hit_get_ejectVector,		js_proj_hit_set_ejectVector},
+							{"reflectVector",		js_proj_hit_get_reflectVector,		js_proj_hit_set_reflectVector},
 							{0}};
 
 /* =======================================================

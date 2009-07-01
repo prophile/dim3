@@ -62,13 +62,13 @@ JSClass			weap_projectile_class={"weap_projectile_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 							
 script_js_property	weap_projectile_props[]={
-							{"fireBoneTag",				weap_projectile_prop_fire_bone_tag,				FALSE},
-							{"barrelBoneTag",			weap_projectile_prop_barrel_bone_tag,			FALSE},
-							{"firePoseName",			weap_projectile_prop_fire_pose_name,			FALSE},
-							{"objectFireBoneTag",		weap_projectile_prop_object_fire_bone_tag,		FALSE},
-							{"objectFirePoseName",		weap_projectile_prop_object_fire_pose_name,		FALSE},
-							{"repeatOn",				weap_projectile_prop_repeat_on,					FALSE},
-							{"repeatTick",				weap_projectile_prop_repeat_tick,				FALSE},
+							{"fireBoneTag",				js_weap_projectile_get_fireBoneTag,				js_weap_projectile_set_fireBoneTag},
+							{"barrelBoneTag",			js_weap_projectile_get_barrelBoneTag,			js_weap_projectile_set_barrelBoneTag},
+							{"firePoseName",			js_weap_projectile_get_firePoseName,			js_weap_projectile_set_firePoseName},
+							{"objectFireBoneTag",		js_weap_projectile_get_objectFireBoneTag,		js_weap_projectile_set_objectFireBoneTag},
+							{"objectFirePoseName",		js_weap_projectile_get_objectFirePoseName,		js_weap_projectile_set_objectFirePoseName},
+							{"repeatOn",				js_weap_projectile_get_repeat_on,				js_weap_projectile_set_repeat_on},
+							{"repeatTick",				js_weap_projectile_get_repeat_tick,				js_weap_projectile_set_repeat_tick},
 							{0}};
 
 script_js_function	weap_projectile_functions[]={

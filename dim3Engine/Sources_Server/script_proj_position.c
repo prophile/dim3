@@ -42,9 +42,9 @@ JSClass			proj_position_class={"proj_position_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	proj_position_props[]={
-							{"x",					proj_position_prop_x,				TRUE},
-							{"z",					proj_position_prop_z,				TRUE},
-							{"y",					proj_position_prop_y,				TRUE},
+							{"x",					js_proj_position_get_x,				NULL},
+							{"y",					js_proj_position_get_y,				NULL},
+							{"z",					js_proj_position_get_z,				NULL},
 							{0}};
 
 /* =======================================================

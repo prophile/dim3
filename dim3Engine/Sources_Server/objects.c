@@ -240,12 +240,6 @@ void object_clear_draw(model_draw *draw)
 		// shadow
 		
 	draw->shadow.on=FALSE;
-	draw->shadow.mode=sm_normal;
-	draw->shadow.always_in_air=FALSE;
-	draw->shadow.static_in_air=FALSE;
-	draw->shadow.static_face_angle=0;
-	draw->shadow.static_size=0;
-	draw->shadow.static_alpha=1.0f;
 
 		// default normal
 

@@ -34,24 +34,22 @@ and can be sold or given away.
 extern js_type			js;
 extern JSClass			dim3_class;
 
-JSClass			global_class={"global_class",0,
-							JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,
-							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
+JSClass			global_class={"global_class",0,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,JS_PropertyStub,JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 /* =======================================================
 
-      Initialize/Release Prototype Objects
+      Initialize/Release Classes
       
 ======================================================= */
 
-void script_initialize_prototype_objects(void)
+void script_initialize_classes(void)
 {
 	/*
 */	
 	script_set_property_lock(FALSE);
 }
 
-void script_release_prototype_objects(void)
+void script_release_classes(void)
 {
 	/*
 	*/
@@ -244,9 +242,9 @@ JSObject* script_create_child_object(JSObject *parent_obj,char *name,JSClass *cl
 		while (prop->name!=NULL) {
 
 			flags=JSPROP_PERMANENT|JSPROP_SHARED;
-			if (prop->read_only) flags|=JSPROP_READONLY;
+			if (prop->setter==NULL) flags|=JSPROP_READONLY;
 
-			JS_DefinePropertyWithTinyId(js.cx,j_obj,prop->name,(unsigned char)prop->id,JSVAL_NULL,NULL,NULL,flags);
+			JS_DefineProperty(js.cx,j_obj,prop->name,JSVAL_NULL,prop->getter,prop->setter,flags);
 
 			prop++;
 		}

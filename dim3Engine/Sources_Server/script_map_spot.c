@@ -50,7 +50,7 @@ JSClass			map_spot_class={"map_spot_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	map_spot_props[]={
-							{"count",				map_spot_prop_count,				TRUE},
+							{"count",				js_map_spot_get_count,				NULL},
 							{0}};
 							
 script_js_function	map_spot_functions[]={

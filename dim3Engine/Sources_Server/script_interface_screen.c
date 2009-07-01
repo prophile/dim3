@@ -34,16 +34,17 @@ and can be sold or given away.
 extern js_type			js;
 extern setup_type		setup;
 
-JSBool js_get_interface_screen_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_interface_screen_get_width(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_interface_screen_get_height(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			interface_screen_class={"interface_screen_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_interface_screen_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	interface_screen_props[]={
-							{"width",				interface_screen_prop_width,		TRUE},
-							{"height",				interface_screen_prop_height,		TRUE},
+							{"width",				js_interface_screen_get_width,		NULL},
+							{"height",				js_interface_screen_get_height,		NULL},
 							{0}};
 
 /* =======================================================
@@ -59,23 +60,19 @@ void script_add_interface_screen_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_interface_screen_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_interface_screen_get_width(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+	*vp=INT_TO_JSVAL(setup.screen.x_sz);
+	return(JS_TRUE);
+}
 
-	switch (JSVAL_TO_INT(id)) {
-	
-		case interface_screen_prop_width:
-			*vp=INT_TO_JSVAL(setup.screen.x_sz);
-			break;
-		case interface_screen_prop_height:
-			*vp=INT_TO_JSVAL(setup.screen.y_sz);
-			break;
-	}
 
+JSBool js_interface_screen_get_height(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	*vp=INT_TO_JSVAL(setup.screen.y_sz);
 	return(JS_TRUE);
 }

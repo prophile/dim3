@@ -36,17 +36,19 @@ extern camera_type		camera;
 extern view_type		view;
 extern js_type			js;
 
-JSBool js_get_camera_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_camera_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
-JSClass			camera_position_class={"camera_position_class",JSCLASS_HAS_PRIVATE,
+JSClass			camera_position_class={"camera_position_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_camera_position_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	camera_position_props[]={
-							{"x",					camera_position_prop_x,				TRUE},
-							{"z",					camera_position_prop_z,				TRUE},
-							{"y",					camera_position_prop_y,				TRUE},
+							{"x",					js_camera_position_get_x,				NULL},
+							{"y",					js_camera_position_get_y,				NULL},
+							{"z",					js_camera_position_get_z,				NULL},
 							{0}};
 							
 /* =======================================================
@@ -62,28 +64,25 @@ void script_add_camera_position_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_camera_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_camera_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+	*vp=INT_TO_JSVAL(view.render->camera.pnt.x);
+	return(JS_TRUE);
+}
 
-	switch (JSVAL_TO_INT(id)) {
-	
-		case camera_position_prop_x:
-			*vp=INT_TO_JSVAL(view.render->camera.pnt.x);
-			break;
-		case camera_position_prop_z:
-			*vp=INT_TO_JSVAL(view.render->camera.pnt.z);
-			break;
-		case camera_position_prop_y:
-			*vp=INT_TO_JSVAL(view.render->camera.pnt.y);
-			break;
+JSBool js_camera_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	*vp=INT_TO_JSVAL(view.render->camera.pnt.y);
+	return(JS_TRUE);
+}
 
-	}
-
+JSBool js_camera_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	*vp=INT_TO_JSVAL(view.render->camera.pnt.z);
 	return(JS_TRUE);
 }
 
