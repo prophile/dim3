@@ -38,12 +38,12 @@ JSBool js_get_obj_weapon_fire_property(JSContext *cx,JSObject *j_obj,jsval id,js
 
 JSClass			obj_weapon_fire_class={"obj_weapon_fire_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_weapon_fire_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_weapon_fire_props[]={
-							{"name",				obj_weapon_fire_prop_name,			TRUE},
-							{"method",				obj_weapon_fire_prop_method,		TRUE},
+							{"name",				js_obj_weapon_fire_get_name,		NULL},
+							{"method",				js_obj_weapon_fire_get_method,		NULL},
 							{0}};
 
 /* =======================================================

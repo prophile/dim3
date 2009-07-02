@@ -38,7 +38,7 @@ extern js_type			js;
 
 JSClass			model_shadow_class={"model_shadow_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_model_shadow_property,js_set_model_shadow_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	model_shadow_props[]={

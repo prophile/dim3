@@ -42,7 +42,7 @@ JSBool js_weap_melee_spawn_from_object_bone_func(JSContext *cx,JSObject *j_obj,u
 
 JSClass			weap_melee_class={"weap_melee_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_weap_melee_property,js_set_weap_melee_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	weap_melee_props[]={

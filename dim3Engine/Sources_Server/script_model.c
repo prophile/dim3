@@ -49,7 +49,7 @@ JSBool js_model_find_bone_position_func(JSContext *cx,JSObject *j_obj,uintN argc
 
 JSClass			model_class={"model_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_model_property,js_set_model_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	model_props[]={

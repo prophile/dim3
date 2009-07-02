@@ -35,17 +35,19 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_get_obj_hit_angle_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_hit_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_hit_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_hit_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			obj_hit_angle_class={"obj_hit_angle_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_hit_angle_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_hit_angle_props[]={
-							{"x",					obj_hit_angle_prop_x,				TRUE},
-							{"y",					obj_hit_angle_prop_y,				TRUE},
-							{"z",					obj_hit_angle_prop_z,				TRUE},
+							{"x",					js_obj_hit_angle_get_x,				NULL},
+							{"y",					js_obj_hit_angle_get_y,				NULL},
+							{"z",					js_obj_hit_angle_get_z,				NULL},
 							{0}};
 
 /* =======================================================
@@ -61,31 +63,36 @@ void script_add_obj_hit_angle_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_hit_angle_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_hit_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type			*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=script_float_to_value(obj->hit.ang.x);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_hit_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type			*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-
-	switch (JSVAL_TO_INT(id)) {
+	*vp=script_float_to_value(obj->hit.ang.y);
 	
-		case obj_hit_angle_prop_x:
-            *vp=script_float_to_value(obj->hit.ang.x);
-			break;
-		case obj_hit_angle_prop_y:
-            *vp=script_float_to_value(obj->hit.ang.y);
-			break;
-		case obj_hit_angle_prop_z:
-            *vp=script_float_to_value(obj->hit.ang.z);
-			break;
-			
-	}
+	return(JS_TRUE);
+}
+
+JSBool js_obj_hit_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type			*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=script_float_to_value(obj->hit.ang.z);
 	
 	return(JS_TRUE);
 }

@@ -39,14 +39,14 @@ JSBool js_set_obj_vert_speed_property(JSContext *cx,JSObject *j_obj,jsval id,jsv
 
 JSClass			obj_vert_speed_class={"obj_vert_speed_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_vert_speed_property,js_set_obj_vert_speed_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_vert_speed_props[]={
-							{"normal",					obj_vert_speed_prop_normal,				FALSE},
-							{"acceleration",			obj_vert_speed_prop_acceleration,		FALSE},
-							{"deceleration",			obj_vert_speed_prop_deceleration,		FALSE},
-							{"flySlop",					obj_vert_speed_prop_fly_slop,			FALSE},
+							{"normal",					js_obj_vert_speed_get_normal,			js_obj_vert_speed_set_normal},
+							{"acceleration",			js_obj_vert_speed_get_acceleration,		js_obj_vert_speed_set_acceleration},
+							{"deceleration",			js_obj_vert_speed_get_deceleration,		js_obj_vert_speed_set_deceleration},
+							{"flySlop",					js_obj_vert_speed_get_flySlop,			js_obj_vert_speed_set_flySlop},
 							{0}};
 
 /* =======================================================

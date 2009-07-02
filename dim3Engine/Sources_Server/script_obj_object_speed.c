@@ -39,17 +39,17 @@ JSBool js_set_obj_object_speed_property(JSContext *cx,JSObject *j_obj,jsval id,j
 
 JSClass			obj_object_speed_class={"obj_object_speed_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_object_speed_property,js_set_obj_object_speed_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_object_speed_props[]={
-							{"jumpHeight",				obj_object_speed_prop_jump_height,			FALSE},
-							{"duckAdd",					obj_object_speed_prop_duck_add,				FALSE},
-							{"duckChange",				obj_object_speed_prop_duck_change,			FALSE},
-							{"bumpHeight",				obj_object_speed_prop_bump_height,			FALSE},
-							{"bumpSmoothFactor",		obj_object_speed_prop_bump_smooth_factor,	FALSE},
-							{"bounceFactor",			obj_object_speed_prop_bounce_factor,		FALSE},
-							{"noSlide",					obj_object_speed_prop_no_slide,				FALSE},
+							{"jumpHeight",				js_obj_object_speed_get_jumpHeight,			js_obj_object_speed_set_jumpHeight},
+							{"duckAdd",					js_obj_object_speed_get_duckAdd,			js_obj_object_speed_set_duckAdd},
+							{"duckChange",				js_obj_object_speed_get_duckChange,			js_obj_object_speed_set_duckChange},
+							{"bumpHeight",				js_obj_object_speed_get_bumpHeight,			js_obj_object_speed_set_bumpHeight},
+							{"bumpSmoothFactor",		js_obj_object_speed_get_bumpSmoothFactor,	js_obj_object_speed_set_bumpSmoothFactor},
+							{"bounceFactor",			js_obj_object_speed_get_bounceFactor,		js_obj_object_speed_set_bounceFactor},
+							{"noSlide",					js_obj_object_speed_get_noSlide,			js_obj_object_speed_set_noSlide},
 							{0}};
 
 /* =======================================================

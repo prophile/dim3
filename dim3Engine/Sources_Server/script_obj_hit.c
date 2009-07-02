@@ -37,21 +37,27 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_get_obj_hit_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_hit_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_hit_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_hit_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_hit_get_weaponName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_hit_get_projectileName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_hit_get_hitBoxName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_hit_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			obj_hit_class={"obj_hit_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_hit_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_hit_props[]={
-							{"objectId",			obj_hit_prop_object_id,				TRUE},
-							{"objectName",			obj_hit_prop_object_name,			TRUE},
-							{"objectIsPlayer",		obj_hit_prop_object_is_player,		TRUE},
-							{"weaponName",			obj_hit_prop_weapon_name,			TRUE},
-							{"projectileName",		obj_hit_prop_projectile_name,		TRUE},
-							{"hitBoxName",			obj_hit_prop_hit_box_name,			TRUE},
-							{"damage",				obj_hit_prop_damage,				TRUE},
+							{"objectId",			js_obj_hit_get_objectId,			NULL},
+							{"objectName",			js_obj_hit_get_objectName,			NULL},
+							{"objectIsPlayer",		js_obj_hit_get_objectIsPlayer,		NULL},
+							{"weaponName",			js_obj_hit_get_weaponName,			NULL},
+							{"projectileName",		js_obj_hit_get_projectileName,		NULL},
+							{"hitBoxName",			js_obj_hit_get_hitBoxName,			NULL},
+							{"damage",				js_obj_hit_get_damage,				NULL},
 							{0}};
 
 /* =======================================================
@@ -67,72 +73,107 @@ void script_add_obj_hit_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_hit_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_hit_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type			*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->hit.obj_uid);
+
+	return(JS_TRUE);
+}
+
+JSBool js_obj_hit_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type			*obj,*hit_obj;
-	weapon_type			*hit_weap;
-	proj_type			*hit_proj;
-	proj_setup_type		*hit_proj_setup;
-
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	obj=object_find_uid(js.attach.thing_uid);
 
-	switch (JSVAL_TO_INT(id)) {
-	
-		case obj_hit_prop_object_id:
-			*vp=INT_TO_JSVAL(obj->hit.obj_uid);
-			break;
-
-		case obj_hit_prop_object_name:
-			hit_obj=object_find_uid(obj->hit.obj_uid);
-			if (hit_obj==NULL) {
-				*vp=JSVAL_NULL;
-				break;
-			}
-			*vp=script_string_to_value(hit_obj->name);
-			break;
-
-		case obj_hit_prop_object_is_player:
-			*vp=BOOLEAN_TO_JSVAL(obj->hit.obj_uid==server.player_obj_uid);
-			break;
-
-		case obj_hit_prop_weapon_name:
-			hit_weap=weapon_find_uid(obj->hit.weap_uid);
-			if (hit_weap==NULL) {
-				*vp=JSVAL_NULL;
-				break;
-			}
-			*vp=script_string_to_value(hit_weap->name);
-			break;
-
-		case obj_hit_prop_projectile_name:
-			hit_proj=projectile_find_uid(obj->hit.proj_uid);
-			if (hit_proj==NULL) {
-				*vp=JSVAL_NULL;
-				break;
-			}
-			hit_proj_setup=proj_setups_find_uid(hit_proj->proj_setup_uid);
-			*vp=script_string_to_value(hit_proj_setup->name);
-			break;
-
-		case obj_hit_prop_hit_box_name:
-			if (obj->hit.hit_box_name[0]==0x0) {
-				*vp=JSVAL_NULL;
-				break;
-			}
-			*vp=script_string_to_value(obj->hit.hit_box_name);
-			break;
-
-		case obj_hit_prop_damage:
-			*vp=INT_TO_JSVAL(obj->hit.damage);
-			break;
-			
+	hit_obj=object_find_uid(obj->hit.obj_uid);
+	if (hit_obj==NULL) {
+		*vp=JSVAL_NULL;
 	}
+	else {
+		*vp=script_string_to_value(hit_obj->name);
+	}
+
+	return(JS_TRUE);
+}
+
+JSBool js_obj_hit_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type			*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->hit.obj_uid==server.player_obj_uid);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_hit_get_weaponName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type			*obj;
+	weapon_type			*hit_weap;
+
+	obj=object_find_uid(js.attach.thing_uid);
+
+	hit_weap=weapon_find_uid(obj->hit.weap_uid);
+	if (hit_weap==NULL) {
+		*vp=JSVAL_NULL;
+	}
+	else {
+		*vp=script_string_to_value(hit_weap->name);
+	}
+
+	return(JS_TRUE);
+}
+
+JSBool js_obj_hit_get_projectileName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type			*obj;
+	proj_type			*hit_proj;
+	proj_setup_type		*hit_proj_setup;
+
+	obj=object_find_uid(js.attach.thing_uid);
+
+	hit_proj=projectile_find_uid(obj->hit.proj_uid);
+	if (hit_proj==NULL) {
+		*vp=JSVAL_NULL;
+	}
+	else {
+		hit_proj_setup=proj_setups_find_uid(hit_proj->proj_setup_uid);
+		*vp=script_string_to_value(hit_proj_setup->name);
+	}
+
+	return(JS_TRUE);
+}
+
+JSBool js_obj_hit_get_hitBoxName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type			*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+
+	if (obj->hit.hit_box_name[0]==0x0) {
+		*vp=JSVAL_NULL;
+	}
+	else {
+		*vp=script_string_to_value(obj->hit.hit_box_name);
+	}
+
+	return(JS_TRUE);
+}
+
+JSBool js_obj_hit_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type			*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->hit.damage);
 	
 	return(JS_TRUE);
 }

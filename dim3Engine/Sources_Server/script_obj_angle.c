@@ -35,19 +35,21 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSBool js_get_obj_angle_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_angle_rotate_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_angle_rotate_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			obj_angle_class={"obj_angle_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_angle_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_angle_props[]={
-							{"x",					obj_angle_prop_x,					TRUE},
-							{"y",					obj_angle_prop_y,					TRUE},
-							{"z",					obj_angle_prop_z,					TRUE},
+							{"x",					js_obj_angle_get_x,					NULL},
+							{"y",					js_obj_angle_get_y,					NULL},
+							{"z",					js_obj_angle_get_z,					NULL},
 							{0}};
 
 script_js_function	obj_angle_functions[]={
@@ -70,38 +72,43 @@ void script_add_obj_angle_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_angle_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=script_float_to_value(obj->ang.x);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-
-	switch (JSVAL_TO_INT(id)) {
+	*vp=script_float_to_value(obj->ang.y);
 	
-		case obj_angle_prop_x:
-            *vp=script_float_to_value(obj->ang.x);
-			break;
-		case obj_angle_prop_y:
-            *vp=script_float_to_value(obj->ang.y);
-			break;
-		case obj_angle_prop_z:
-            *vp=script_float_to_value(obj->ang.z);
-			break;
-			
-	}
+	return(JS_TRUE);
+}
+
+JSBool js_obj_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=script_float_to_value(obj->ang.z);
 	
 	return(JS_TRUE);
 }
 
 /* =======================================================
 
-      Rotational Functions
+      Functions
       
 ======================================================= */
 

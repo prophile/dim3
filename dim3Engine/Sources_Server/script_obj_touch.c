@@ -39,14 +39,14 @@ JSBool js_get_obj_touch_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 
 JSClass			obj_touch_class={"obj_touch_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_touch_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_touch_props[]={
-							{"objectId",			obj_touch_prop_object_id,			TRUE},
-							{"objectName",			obj_touch_prop_object_name,			TRUE},
-							{"objectIsPlayer",		obj_touch_prop_object_is_player,	TRUE},
-							{"stand",				obj_touch_prop_stand,				TRUE},
+							{"objectId",			js_obj_touch_get_objectId,			NULL},
+							{"objectName",			js_obj_touch_get_objectName,		NULL},
+							{"objectIsPlayer",		js_obj_touch_get_objectIsPlayer,	NULL},
+							{"stand",				js_obj_touch_get_stand,				NULL},
 							{0}};
 
 /* =======================================================

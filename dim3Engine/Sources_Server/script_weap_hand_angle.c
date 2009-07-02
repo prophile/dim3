@@ -39,7 +39,7 @@ JSBool js_set_weap_hand_angle_property(JSContext *cx,JSObject *j_obj,jsval id,js
 
 JSClass			weap_hand_angle_class={"weap_hand_angle_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_weap_hand_angle_property,js_set_weap_hand_angle_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	weap_hand_angle_props[]={

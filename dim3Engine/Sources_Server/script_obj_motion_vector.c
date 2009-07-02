@@ -53,13 +53,13 @@ JSBool js_obj_motion_vector_turn_to_player_func(JSContext *cx,JSObject *j_obj,ui
 
 JSClass			obj_motion_vector_class={"obj_motion_vector_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_motion_vector_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_motion_vector_props[]={
-							{"x",					obj_motion_vector_prop_x,			TRUE},
-							{"y",					obj_motion_vector_prop_y,			TRUE},
-							{"z",					obj_motion_vector_prop_z,			TRUE},
+							{"x",					js_obj_motion_vector_get_x,							NULL},
+							{"y",					js_obj_motion_vector_get_y,							NULL},
+							{"z",					js_obj_motion_vector_get_z,							NULL},
 							{0}};
 							
 script_js_function	obj_motion_vector_functions[]={

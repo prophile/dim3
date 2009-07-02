@@ -39,7 +39,7 @@ extern js_type			js;
 
 JSClass			weap_crosshair_empty_color_class={"weap_crosshair_empty_color_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_weap_crosshair_empty_color_property,js_set_weap_crosshair_empty_color_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	weap_crosshair_empty_color_props[]={

@@ -34,20 +34,24 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_obj_look_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_obj_look_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_look_get_upAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_look_get_downAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_look_get_effectWeapons(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_look_set_upAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_look_set_downAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_look_set_effectWeapons(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_look_set_look_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_look_set_look_at_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			obj_look_class={"obj_look_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_look_property,js_set_obj_look_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_look_props[]={
-							{"upAngle",					obj_look_prop_up_angle,					FALSE},
-							{"downAngle",				obj_look_prop_down_angle,				FALSE},
-							{"effectWeapons",			obj_look_prop_effect_weapons,			FALSE},
+							{"upAngle",					js_obj_look_get_upAngle,				js_obj_look_set_upAngle},
+							{"downAngle",				js_obj_look_get_downAngle,				js_obj_look_set_downAngle},
+							{"effectWeapons",			js_obj_look_get_effectWeapons,			js_obj_look_set_effectWeapons},
 							{0}};
 							
 script_js_function	obj_look_functions[]={
@@ -68,63 +72,79 @@ void script_add_obj_look_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_look_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_look_get_upAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	obj=object_find_uid(js.attach.thing_uid);
-
-	switch (JSVAL_TO_INT(id)) {
-    
-		case obj_look_prop_up_angle:
-            *vp=script_float_to_value(obj->look.up_angle);
-            break;
-		case obj_look_prop_down_angle:
-            *vp=script_float_to_value(obj->look.down_angle);
-            break;
-		case obj_look_prop_effect_weapons:
-            *vp=BOOLEAN_TO_JSVAL(obj->look.effect_weapons);
-            break;
-			
-	}
+	*vp=script_float_to_value(obj->look.up_angle);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_set_obj_look_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_look_get_downAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
-	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	obj=object_find_uid(js.attach.thing_uid);
+	*vp=script_float_to_value(obj->look.down_angle);
 	
-	switch (JSVAL_TO_INT(id)) {
+	return(JS_TRUE);
+}
 
-		case obj_look_prop_up_angle:
-           obj->look.up_angle=fabsf(script_value_to_float(*vp));
-            break;
-		case obj_look_prop_down_angle:
-            obj->look.down_angle=fabsf(script_value_to_float(*vp));
-            break;
-		case obj_look_prop_effect_weapons:
-			obj->look.effect_weapons=JSVAL_TO_BOOLEAN(*vp);
-			break;
+JSBool js_obj_look_get_effectWeapons(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
 
-	}
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->look.effect_weapons);
 	
 	return(JS_TRUE);
 }
 
 /* =======================================================
 
-      Look Functions
+      Setters
+      
+======================================================= */
+
+JSBool js_obj_look_set_upAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->look.up_angle=fabsf(script_value_to_float(*vp));
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_look_set_downAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->look.down_angle=fabsf(script_value_to_float(*vp));
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_look_set_effectWeapons(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->look.effect_weapons=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Functions
       
 ======================================================= */
 

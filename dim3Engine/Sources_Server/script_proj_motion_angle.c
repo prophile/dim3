@@ -38,7 +38,7 @@ JSBool js_get_proj_motion_angle_property(JSContext *cx,JSObject *j_obj,jsval id,
 
 JSClass			proj_motion_angle_class={"proj_motion_angle_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_proj_motion_angle_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	proj_motion_angle_props[]={

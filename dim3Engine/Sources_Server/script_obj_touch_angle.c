@@ -38,13 +38,13 @@ JSBool js_get_obj_touch_angle_property(JSContext *cx,JSObject *j_obj,jsval id,js
 
 JSClass			obj_touch_angle_class={"obj_touch_angle_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_touch_angle_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_touch_angle_props[]={
-							{"x",					obj_touch_angle_prop_x,				TRUE},
-							{"y",					obj_touch_angle_prop_y,				TRUE},
-							{"z",					obj_touch_angle_prop_z,				TRUE},
+							{"x",					js_obj_touch_angle_get_x,				NULL},
+							{"y",					js_obj_touch_angle_get_y,				NULL},
+							{"z",					js_obj_touch_angle_get_z,				NULL},
 							{0}};
 
 /* =======================================================

@@ -58,7 +58,7 @@ JSBool js_weap_projectile_spawn_from_center_offset_angle_func(JSContext *cx,JSOb
 
 JSClass			weap_projectile_class={"weap_projectile_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_weap_projectile_property,js_set_weap_projectile_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 							
 script_js_property	weap_projectile_props[]={

@@ -41,25 +41,25 @@ JSBool js_obj_status_tint_view_func(JSContext *cx,JSObject *j_obj,uintN argc,jsv
 
 JSClass			obj_status_class={"obj_status_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_status_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_status_props[]={
-							{"speed",				obj_status_prop_speed,					TRUE},
-							{"moving",				obj_status_prop_moving,					TRUE},
-							{"running",				obj_status_prop_running,				TRUE},
-							{"backward",			obj_status_prop_backward,				TRUE},
-							{"sliding",				obj_status_prop_sliding,				TRUE},
-							{"stand",				obj_status_prop_stand,					TRUE},
-							{"air",					obj_status_prop_air,					TRUE},
-							{"liquid",				obj_status_prop_liquid,					TRUE},
-							{"standOnObjectId",		obj_status_prop_stand_on_object_id,		TRUE},
-							{"standUnderObjectId",	obj_status_prop_stand_under_object_id,	TRUE},
+							{"speed",				js_obj_status_get_speed,				NULL},
+							{"moving",				js_obj_status_get_moving,				NULL},
+							{"running",				js_obj_status_get_running,				NULL},
+							{"backward",			js_obj_status_get_backward,				NULL},
+							{"sliding",				js_obj_status_get_sliding,				NULL},
+							{"stand",				js_obj_status_get_stand,				NULL},
+							{"air",					js_obj_status_get_air,					NULL},
+							{"liquid",				js_obj_status_get_liquid,				NULL},
+							{"standOnObjectId",		js_obj_status_get_standOnObjectId,		NULL},
+							{"standUnderObjectId",	js_obj_status_get_standUnderObjectId,	NULL},
 							{0}};
 							
 script_js_function	obj_status_functions[]={
-							{"freezeInput",			js_obj_status_freeze_input_func,	1},
-							{"tintView",			js_obj_status_tint_view_func,		7},
+							{"freezeInput",			js_obj_status_freeze_input_func,		1},
+							{"tintView",			js_obj_status_tint_view_func,			7},
 							{0}};
 
 /* =======================================================

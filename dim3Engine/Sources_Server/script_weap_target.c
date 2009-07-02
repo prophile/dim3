@@ -43,7 +43,7 @@ JSBool js_weap_target_end_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *a
 
 JSClass			weap_target_class={"weap_target_class",0,
 							script_add_property,JS_PropertyStub,
-                            js_get_weap_target_property,js_set_weap_target_property,
+                            JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
                             
 script_js_property	weap_target_props[]={

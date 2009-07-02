@@ -39,7 +39,7 @@ JSBool js_set_weap_zoom_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 
 JSClass			weap_zoom_class={"weap_zoom_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_weap_zoom_property,js_set_weap_zoom_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	weap_zoom_props[]={

@@ -50,13 +50,13 @@ JSBool js_obj_position_distance_to_object_func(JSContext *cx,JSObject *j_obj,uin
 
 JSClass			obj_position_class={"obj_position_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_position_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_position_props[]={
-							{"x",					obj_position_prop_x,				TRUE},
-							{"y",					obj_position_prop_y,				TRUE},
-							{"z",					obj_position_prop_z,				TRUE},
+							{"x",					js_obj_position_get_x,				NULL},
+							{"y",					js_obj_position_get_y,				NULL},
+							{"z",					js_obj_position_get_z,				NULL},
 							{0}};
 
 script_js_function	obj_position_functions[]={

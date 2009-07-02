@@ -46,7 +46,7 @@ JSBool js_map_spot_attach_object_func(JSContext *cx,JSObject *j_obj,uintN argc,j
 
 JSClass			map_spot_class={"map_spot_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_map_spot_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	map_spot_props[]={

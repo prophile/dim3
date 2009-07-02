@@ -39,18 +39,18 @@ JSBool js_set_obj_side_speed_property(JSContext *cx,JSObject *j_obj,jsval id,jsv
 
 JSClass			obj_side_speed_class={"obj_side_speed_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_side_speed_property,js_set_obj_side_speed_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_side_speed_props[]={
-							{"walk",					obj_side_speed_prop_walk,				FALSE},
-							{"run",						obj_side_speed_prop_run,				FALSE},
-							{"crawl",					obj_side_speed_prop_crawl,				FALSE},
-							{"air",						obj_side_speed_prop_air,				FALSE},
-							{"acceleration",			obj_side_speed_prop_acceleration,		FALSE},
-							{"deceleration",			obj_side_speed_prop_deceleration,		FALSE},
-							{"accelerationAir",			obj_side_speed_prop_acceleration_air,	FALSE},
-							{"decelerationAir",			obj_side_speed_prop_deceleration_air,	FALSE},
+							{"walk",					js_obj_side_speed_get_walk,				js_obj_side_speed_set_walk},
+							{"run",						js_obj_side_speed_get_run,				js_obj_side_speed_set_run},
+							{"crawl",					js_obj_side_speed_get_crawl,			js_obj_side_speed_set_crawl},
+							{"air",						js_obj_side_speed_get_air,				js_obj_side_speed_set_air},
+							{"acceleration",			js_obj_side_speed_get_acceleration,		js_obj_side_speed_set_acceleration},
+							{"deceleration",			js_obj_side_speed_get_deceleration,		js_obj_side_speed_set_deceleration},
+							{"accelerationAir",			js_obj_side_speed_get_accelerationAir,	js_obj_side_speed_set_accelerationAir},
+							{"decelerationAir",			js_obj_side_speed_get_decelerationAir,	js_obj_side_speed_set_decelerationAir},
 							{0}};
 
 /* =======================================================

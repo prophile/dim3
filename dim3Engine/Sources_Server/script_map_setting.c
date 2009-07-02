@@ -48,7 +48,7 @@ JSBool js_map_check_option_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *
 
 JSClass			map_setting_class={"map_setting_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_map_setting_property,js_set_map_setting_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	map_setting_props[]={

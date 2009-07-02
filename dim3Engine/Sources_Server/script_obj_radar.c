@@ -40,14 +40,14 @@ JSBool js_set_obj_radar_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 
 JSClass			obj_radar_class={"obj_radar_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_radar_property,js_set_obj_radar_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_radar_props[]={
-							{"on",					obj_radar_prop_on,				FALSE},
-							{"icon",				obj_radar_prop_icon,			FALSE},
-							{"motionOnly",			obj_radar_prop_motion_only,		FALSE},
-							{"alwaysVisible",		obj_radar_prop_always_visible,	FALSE},
+							{"on",					js_obj_radar_get_on,				js_obj_radar_set_on},
+							{"icon",				js_obj_radar_get_icon,				js_obj_radar_set_icon},
+							{"motionOnly",			js_obj_radar_get_motionOnly,		js_obj_radar_set_motionOnly},
+							{"alwaysVisible",		js_obj_radar_get_alwaysVisible,		js_obj_radar_set_alwaysVisible},
 							{0}};
 							
 /* =======================================================

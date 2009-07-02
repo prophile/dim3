@@ -43,19 +43,19 @@ JSBool js_obj_watch_clear_restrict_sight_func(JSContext *cx,JSObject *j_obj,uint
 
 JSClass			obj_watch_class={"obj_watch_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_watch_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_watch_props[]={
-							{"objectId",				obj_watch_prop_object_id,					TRUE},
-							{"objectName",				obj_watch_prop_object_name,					TRUE},
-							{"objectIsPlayer",			obj_watch_prop_object_is_player,			TRUE},
-							{"objectIsRemote",			obj_watch_prop_object_is_remote,			TRUE},
-							{"objectIsBot",				obj_watch_prop_object_is_bot,				TRUE},
-							{"objectIsPlayerRemoteBot",	obj_watch_prop_object_is_player_remote_bot,	TRUE},
-							{"objectTeam",				obj_watch_prop_object_team,					TRUE},
-							{"baseTeam",				obj_watch_prop_base_team,					TRUE},
-							{"soundName",				obj_watch_prop_sound_name,					TRUE},
+							{"objectId",				js_obj_watch_get_objectId,					NULL},
+							{"objectName",				js_obj_watch_get_objectName,				NULL},
+							{"objectIsPlayer",			js_obj_watch_get_objectIsPlayer,			NULL},
+							{"objectIsRemote",			js_obj_watch_get_objectIsRemote,			NULL},
+							{"objectIsBot",				js_obj_watch_get_objectIsBot,				NULL},
+							{"objectIsPlayerRemoteBot",	js_obj_watch_get_objectIsPlayerRemoteBot,	NULL},
+							{"objectTeam",				js_obj_watch_get_objectTeam,				NULL},
+							{"baseTeam",				js_obj_watch_get_baseTeam,					NULL},
+							{"soundName",				js_obj_watch_get_soundName,					NULL},
 							{0}};
 							
 script_js_function	obj_watch_functions[]={

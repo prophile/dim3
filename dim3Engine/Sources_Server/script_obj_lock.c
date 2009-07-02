@@ -36,18 +36,22 @@ extern map_type			map;
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_get_obj_lock_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_obj_lock_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_lock_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_lock_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_lock_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_lock_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_lock_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_lock_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			obj_lock_class={"obj_lock_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_lock_property,js_set_obj_lock_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_lock_props[]={
-							{"x",					obj_lock_prop_x,					FALSE},
-							{"y",					obj_lock_prop_y,					FALSE},
-							{"z",					obj_lock_prop_z,					FALSE},
+							{"x",					js_obj_lock_get_x,					js_obj_lock_set_x},
+							{"y",					js_obj_lock_get_y,					js_obj_lock_set_y},
+							{"z",					js_obj_lock_get_z,					js_obj_lock_set_z},
 							{0}};
 							
 /* =======================================================
@@ -63,56 +67,72 @@ void script_add_obj_lock_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_lock_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_lock_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	obj=object_find_uid(js.attach.thing_uid);
-
-	switch (JSVAL_TO_INT(id)) {
-    
-		case obj_lock_prop_x:
-            *vp=BOOLEAN_TO_JSVAL(obj->lock.x);
-            break;
-		case obj_lock_prop_y:
-            *vp=BOOLEAN_TO_JSVAL(obj->lock.y);
-            break;
-		case obj_lock_prop_z:
-            *vp=BOOLEAN_TO_JSVAL(obj->lock.z);
-            break;
-			
-	}
+	*vp=BOOLEAN_TO_JSVAL(obj->lock.x);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_set_obj_lock_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_lock_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->lock.y);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_lock_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->lock.z);
+	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_obj_lock_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	obj=object_find_uid(js.attach.thing_uid);
+	obj->lock.x=JSVAL_TO_BOOLEAN(*vp);
 	
-	switch (JSVAL_TO_INT(id)) {
+	return(JS_TRUE);
+}
 
-		case obj_lock_prop_x:
-            obj->lock.x=JSVAL_TO_BOOLEAN(*vp);
-            break;
-		case obj_lock_prop_y:
-            obj->lock.y=JSVAL_TO_BOOLEAN(*vp);
-            break;
-		case obj_lock_prop_z:
-            obj->lock.z=JSVAL_TO_BOOLEAN(*vp);
-            break;
+JSBool js_obj_lock_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->lock.y=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
 
-	}
+JSBool js_obj_lock_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->lock.z=JSVAL_TO_BOOLEAN(*vp);
 	
 	return(JS_TRUE);
 }

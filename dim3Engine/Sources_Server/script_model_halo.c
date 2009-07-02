@@ -40,7 +40,7 @@ extern js_type			js;
 
 JSClass			model_halo_class={"model_halo_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_model_halo_property,js_set_model_halo_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	model_halo_props[]={

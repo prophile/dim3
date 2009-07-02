@@ -42,15 +42,15 @@ JSBool js_obj_sight_test_player_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 
 JSClass			obj_sight_class={"obj_sight_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_sight_property,js_set_obj_sight_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_sight_props[]={
-							{"sideFieldAngle",		obj_sight_prop_side_field_angle,	FALSE},
-							{"lookFieldAngle",		obj_sight_prop_look_field_angle,	FALSE},
-							{"sideFieldDivision",	obj_sight_prop_side_field_division,	FALSE},
-							{"lookFieldDivision",	obj_sight_prop_look_field_division,	FALSE},
-							{"distance",			obj_sight_prop_distance,			FALSE},
+							{"sideFieldAngle",		js_obj_sight_get_sideFieldAngle,	js_obj_sight_set_sideFieldAngle},
+							{"lookFieldAngle",		js_obj_sight_get_lookFieldAngle,	js_obj_sight_set_lookFieldAngle},
+							{"sideFieldDivision",	js_obj_sight_get_sideFieldDivision,	js_obj_sight_set_sideFieldDivision},
+							{"lookFieldDivision",	js_obj_sight_get_lookFieldDivision,	js_obj_sight_set_lookFieldDivision},
+							{"distance",			js_obj_sight_get_distance,			js_obj_sight_set_distance},
 							{0}};
 
 script_js_function	obj_sight_functions[]={

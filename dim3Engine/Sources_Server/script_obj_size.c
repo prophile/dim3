@@ -43,16 +43,16 @@ JSBool js_obj_size_grow_over_time_change_offset_func(JSContext *cx,JSObject *j_o
 
 JSClass			obj_size_class={"obj_size_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_size_property,js_set_obj_size_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_size_props[]={
-							{"x",					obj_size_prop_x,					FALSE},
-							{"z",					obj_size_prop_z,					FALSE},
-							{"y",					obj_size_prop_y,					FALSE},
-							{"eyeOffset",			obj_size_prop_eye_offset,			FALSE},
-							{"weight",				obj_size_prop_weight,				FALSE},
-							{"clickDistance",		obj_size_prop_click_distance,		FALSE},
+							{"x",					js_obj_size_get_x,					js_obj_size_set_x},
+							{"y",					js_obj_size_get_y,					js_obj_size_set_y},
+							{"z",					js_obj_size_get_z,					js_obj_size_set_z},
+							{"eyeOffset",			js_obj_size_get_eyeOffset,			js_obj_size_set_eyeOffset},
+							{"weight",				js_obj_size_get_weight,				js_obj_size_set_weight},
+							{"clickDistance",		js_obj_size_get_clickDistance,		js_obj_size_set_clickDistance},
 							{0}};
 
 script_js_function	obj_size_functions[]={

@@ -41,7 +41,7 @@ JSBool js_get_proj_hit_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 
 JSClass			proj_hit_class={"proj_hit_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_proj_hit_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	proj_hit_props[]={

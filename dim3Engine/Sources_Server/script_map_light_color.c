@@ -40,7 +40,7 @@ JSBool js_set_map_light_color_property(JSContext *cx,JSObject *j_obj,jsval id,js
 
 JSClass			map_light_color_class={"map_light_color_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_map_light_color_property,js_set_map_light_color_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	map_light_color_props[]={

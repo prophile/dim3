@@ -50,7 +50,7 @@ JSBool js_proj_action_destroy_func(JSContext *cx,JSObject *j_obj,uintN argc,jsva
 
 JSClass			proj_action_class={"proj_action_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_proj_action_property,js_set_proj_action_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	proj_action_props[]={

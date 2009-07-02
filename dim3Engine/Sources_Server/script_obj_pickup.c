@@ -48,15 +48,15 @@ JSBool js_obj_pickup_cancel_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval 
 
 JSClass			obj_pickup_class={"obj_pickup_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_pickup_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_pickup_props[]={
-							{"objectId",			obj_pickup_prop_object_id,			TRUE},
-							{"objectName",			obj_pickup_prop_object_name,		TRUE},
-							{"objectIsPlayer",		obj_pickup_prop_object_is_player,	TRUE},
-							{"itemId",				obj_pickup_prop_item_id,			TRUE},
-							{"itemName",			obj_pickup_prop_item_name,			TRUE},
+							{"objectId",			js_obj_pickup_get_objectId,			NULL},
+							{"objectName",			js_obj_pickup_get_objectName,		NULL},
+							{"objectIsPlayer",		js_obj_pickup_get_objectIsPlayer,	NULL},
+							{"itemId",				js_obj_pickup_get_itemId,			NULL},
+							{"itemName",			js_obj_pickup_get_itemName,			NULL},
 							{0}};
 							
 script_js_function	obj_pickup_functions[]={

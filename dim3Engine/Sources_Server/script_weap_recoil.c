@@ -41,7 +41,7 @@ JSBool js_weap_recoil_go_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *ar
 
 JSClass			weap_recoil_class={"weap_recoil_class",0,
 							script_add_property,JS_PropertyStub,
-                            js_get_weap_recoil_property,js_set_weap_recoil_property,
+                            JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 

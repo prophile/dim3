@@ -43,7 +43,7 @@ JSBool js_weap_ammo_change_clip_func(JSContext *cx,JSObject *j_obj,uintN argc,js
 
 JSClass			weap_ammo_class={"weap_ammo_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_weap_ammo_property,js_set_weap_ammo_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	weap_ammo_props[]={

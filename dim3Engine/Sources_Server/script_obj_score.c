@@ -40,15 +40,15 @@ JSBool js_obj_score_add_goal_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval
 
 JSClass			obj_score_class={"obj_score_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_score_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_score_props[]={
-							{"kill",				obj_score_prop_kill,				TRUE},
-							{"death",				obj_score_prop_death,				TRUE},
-							{"suicide",				obj_score_prop_suicide,				TRUE},
-							{"goal",				obj_score_prop_goal,				TRUE},
-							{"score",				obj_score_prop_score,				TRUE},
+							{"kill",				js_obj_score_get_kill,				NULL},
+							{"death",				js_obj_score_get_death,				NULL},
+							{"suicide",				js_obj_score_get_suicide,			NULL},
+							{"goal",				js_obj_score_get_goal,				NULL},
+							{"score",				js_obj_score_get_score,				NULL},
 							{0}};
 
 script_js_function	obj_score_functions[]={

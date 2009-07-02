@@ -39,20 +39,20 @@ JSBool js_set_obj_turn_speed_property(JSContext *cx,JSObject *j_obj,jsval id,jsv
 
 JSClass			obj_turn_speed_class={"obj_turn_speed_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_turn_speed_property,js_set_obj_turn_speed_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_turn_speed_props[]={
-							{"facingWalk",				obj_turn_speed_prop_facing_walk,			FALSE},
-							{"motionWalk",				obj_turn_speed_prop_motion_walk,			FALSE},
-							{"facingRun",				obj_turn_speed_prop_facing_run,				FALSE},
-							{"motionRun",				obj_turn_speed_prop_motion_run,				FALSE},
-							{"facingCrawl",				obj_turn_speed_prop_facing_crawl,			FALSE},
-							{"motionCrawl",				obj_turn_speed_prop_motion_crawl,			FALSE},
-							{"facingAir",				obj_turn_speed_prop_facing_air,				FALSE},
-							{"motionAir",				obj_turn_speed_prop_motion_air,				FALSE},
-							{"key",						obj_turn_speed_prop_key,					FALSE},
-							{"topDownAngleOffset",		obj_turn_speed_prop_top_down_ang_offset,	FALSE},
+							{"facingWalk",				js_obj_turn_speed_get_facingWalk,			js_obj_turn_speed_set_facingWalk},
+							{"motionWalk",				js_obj_turn_speed_get_motionWalk,			js_obj_turn_speed_set_motionWalk},
+							{"facingRun",				js_obj_turn_speed_get_facingRun,			js_obj_turn_speed_set_facingRun},
+							{"motionRun",				js_obj_turn_speed_get_motionRun,			js_obj_turn_speed_set_motionRun},
+							{"facingCrawl",				js_obj_turn_speed_get_facingCrawl,			js_obj_turn_speed_set_facingCrawl},
+							{"motionCrawl",				js_obj_turn_speed_get_motionCrawl,			js_obj_turn_speed_set_motionCrawl},
+							{"facingAir",				js_obj_turn_speed_get_facingAir,			js_obj_turn_speed_set_facingAir},
+							{"motionAir",				js_obj_turn_speed_get_motionAir,			js_obj_turn_speed_set_motionAir},
+							{"key",						js_obj_turn_speed_get_key,					js_obj_turn_speed_set_key},
+							{"topDownAngleOffset",		js_obj_turn_speed_get_topDownAngleOffset,	js_obj_turn_speed_set_topDownAngleOffset},
 							{0}};
 
 /* =======================================================

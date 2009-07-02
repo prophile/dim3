@@ -44,12 +44,12 @@ JSBool js_obj_vehicle_remove_occupant_func(JSContext *cx,JSObject *j_obj,uintN a
 
 JSClass			obj_vehicle_class={"obj_vehicle_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_vehicle_property,js_set_obj_vehicle_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_vehicle_props[]={
-							{"on",					obj_vehicle_prop_on,				FALSE},
-							{"hasOccupant",			obj_vehicle_prop_has_occupant,		TRUE},
+							{"on",					js_obj_vehicle_get_on,				js_obj_vehicle_set_on},
+							{"hasOccupant",			js_obj_vehicle_get_hasOccupant,		NULL},
 							{0}};
 
 script_js_function	obj_vehicle_functions[]={

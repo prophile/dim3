@@ -39,20 +39,20 @@ JSBool js_set_obj_rigid_body_property(JSContext *cx,JSObject *j_obj,jsval id,jsv
 
 JSClass			obj_rigid_body_class={"obj_rigid_body_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_rigid_body_property,js_set_obj_rigid_body_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_rigid_body_props[]={
-							{"on",					obj_rigid_body_prop_on,				FALSE},
-							{"maxDropY",			obj_rigid_body_prop_max_drop_y,		FALSE},
-							{"resetFactorY",		obj_rigid_body_prop_reset_factor_y,	FALSE},
-							{"smoothFactorY",		obj_rigid_body_prop_smooth_factor_y,FALSE},
-							{"maxAngleX",			obj_rigid_body_prop_max_angle_x,	FALSE},
-							{"resetFactorX",		obj_rigid_body_prop_reset_factor_x,	FALSE},
-							{"smoothFactorX",		obj_rigid_body_prop_smooth_factor_x,FALSE},
-							{"maxAngleZ",			obj_rigid_body_prop_max_angle_z,	FALSE},
-							{"resetFactorZ",		obj_rigid_body_prop_reset_factor_z,	FALSE},
-							{"smoothFactorZ",		obj_rigid_body_prop_smooth_factor_z,FALSE},
+							{"on",					js_obj_rigid_body_get_on,				js_obj_rigid_body_set_on},
+							{"maxDropY",			js_obj_rigid_body_get_maxDropY,			js_obj_rigid_body_set_maxDropY},
+							{"resetFactorY",		js_obj_rigid_body_get_resetFactorY,		js_obj_rigid_body_set_resetFactorY},
+							{"smoothFactorY",		js_obj_rigid_body_get_smoothFactorY,	js_obj_rigid_body_set_smoothFactorY},
+							{"maxAngleX",			js_obj_rigid_body_get_maxAngleX,		js_obj_rigid_body_set_maxAngleX},
+							{"resetFactorX",		js_obj_rigid_body_get_resetFactorX,		js_obj_rigid_body_set_resetFactorX},
+							{"smoothFactorX",		js_obj_rigid_body_get_smoothFactorX,	js_obj_rigid_body_set_smoothFactorX},
+							{"maxAngleZ",			js_obj_rigid_body_get_maxAngleZ,		js_obj_rigid_body_set_maxAngleZ},
+							{"resetFactorZ",		js_obj_rigid_body_get_resetFactorZ,		js_obj_rigid_body_set_resetFactorZ},
+							{"smoothFactorZ",		js_obj_rigid_body_get_smoothFactorZ,	js_obj_rigid_body_set_smoothFactorZ},
 							{0}};
 
 /* =======================================================

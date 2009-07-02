@@ -38,7 +38,7 @@ JSBool js_get_map_info_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp
 
 JSClass			map_info_class={"map_info_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_map_info_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	map_info_props[]={

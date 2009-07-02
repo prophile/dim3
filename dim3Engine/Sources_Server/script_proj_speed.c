@@ -39,7 +39,7 @@ JSBool js_set_proj_speed_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 
 JSClass			proj_speed_class={"proj_speed_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_proj_speed_property,js_set_proj_speed_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	proj_speed_props[]={

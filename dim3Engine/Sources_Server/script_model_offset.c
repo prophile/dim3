@@ -38,7 +38,7 @@ extern js_type			js;
 
 JSClass			model_offset_class={"model_offset_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_model_offset_property,js_set_model_offset_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	model_offset_props[]={

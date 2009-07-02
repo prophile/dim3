@@ -38,7 +38,7 @@ extern js_type			js;
 
 JSClass			model_spin_class={"model_spin_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_model_spin_property,js_set_model_spin_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	model_spin_props[]={

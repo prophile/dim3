@@ -40,13 +40,13 @@ JSBool js_obj_motion_angle_turn_stop_func(JSContext *cx,JSObject *j_obj,uintN ar
 
 JSClass			obj_motion_angle_class={"obj_motion_angle_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_motion_angle_property,JS_PropertyStub,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_motion_angle_props[]={
-							{"x",					obj_motion_angle_prop_x,			TRUE},
-							{"y",					obj_motion_angle_prop_y,			TRUE},
-							{"z",					obj_motion_angle_prop_z,			TRUE},
+							{"x",					js_obj_motion_angle_get_x,				NULL},
+							{"y",					js_obj_motion_angle_get_y,				NULL},
+							{"z",					js_obj_motion_angle_get_z,				NULL},
 							{0}};
 
 script_js_function	obj_motion_angle_functions[]={

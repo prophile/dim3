@@ -39,13 +39,13 @@ JSBool js_set_obj_thrust_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *
 
 JSClass			obj_thrust_class={"obj_thrust_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_obj_thrust_property,js_set_obj_thrust_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_thrust_props[]={
-							{"speed",					obj_thrust_prop_speed,				FALSE},
-							{"maxSpeed",				obj_thrust_prop_max_speed,			FALSE},
-							{"drag",					obj_thrust_prop_drag,				FALSE},
+							{"speed",					js_obj_thrust_get_speed,			js_obj_thrust_set_speed},
+							{"maxSpeed",				js_obj_thrust_get_maxSpeed,			js_obj_thrust_set_maxSpeed},
+							{"drag",					js_obj_thrust_get_drag,				js_obj_thrust_set_drag},
 							{0}};
 
 /* =======================================================

@@ -39,7 +39,7 @@ JSBool js_set_proj_mark_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 
 JSClass			proj_mark_class={"proj_mark_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_proj_mark_property,js_set_proj_mark_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	proj_mark_props[]={

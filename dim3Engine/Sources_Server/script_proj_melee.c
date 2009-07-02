@@ -43,7 +43,7 @@ JSBool js_proj_melee_spawn_from_position_func(JSContext *cx,JSObject *j_obj,uint
 
 JSClass			proj_melee_class={"proj_melee_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_proj_melee_property,js_set_proj_melee_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	proj_melee_props[]={

@@ -39,7 +39,7 @@ JSBool js_set_proj_size_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *v
 
 JSClass			proj_size_class={"proj_size_class",0,
 							script_add_property,JS_PropertyStub,
-							js_get_proj_size_property,js_set_proj_size_property,
+							JS_PropertyStub,JS_PropertyStub,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	proj_size_props[]={
