@@ -337,8 +337,8 @@ typedef struct		{
 						char								model_name[name_str_len],animation_name[name_str_len];
 						bool								contact_object_on,contact_projectile_on,
 															contact_hit_box,face_forward,
-															shadow,override_size;
-						d3pnt								pnt,size;
+															shadow;
+						d3pnt								pnt;
 						d3ang								ang;
 					} map_scenery_type;
 

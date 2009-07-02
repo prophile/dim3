@@ -348,11 +348,7 @@ bool decode_map_v2_xml(map_type *map,int map_head)
 					scenery->contact_hit_box=xml_get_attribute_boolean(obj_tag,"contact_hit_box");
 					scenery->face_forward=xml_get_attribute_boolean(obj_tag,"face_forward");
 					scenery->shadow=xml_get_attribute_boolean(obj_tag,"shadow");
-					scenery->shadow_cast_down=xml_get_attribute_boolean(obj_tag,"shadow_cast_down");
 					
-					scenery->override_size=xml_get_attribute_boolean(obj_tag,"override_size");
-					xml_get_attribute_3_coord_int(obj_tag,"size",&scenery->size.x,&scenery->size.y,&scenery->size.z);
-
 					scenery->pnt.x+=portal->x;
 					scenery->pnt.z+=portal->z;
 					

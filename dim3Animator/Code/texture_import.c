@@ -128,10 +128,12 @@ int texture_pick(char *material_name,char *err_str)
 		return(-1);
 	}
 	
+	strcpy(texture->frames[0].name,material_name);
+	
 		// copy bitmap to model folder
 		
 	sprintf(sub_path,"Models/%s/Textures",model.name);
-	file_paths_data_default(&file_path_setup,path2,sub_path,texture->frames[0].name,"png");	
+	file_paths_data_default(&file_path_setup,path2,sub_path,texture->frames[0].name,"png");
 	
 	bitmap_copy(path,path2);
 

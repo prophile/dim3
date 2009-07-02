@@ -148,7 +148,12 @@ void piece_create_scenery(void)
 	
 	piece_create_get_spot(&scenery->pnt);
     
-	scenery->ang.y=0;
+	scenery->ang.x=0.0f;
+	scenery->ang.y=0.0f;
+	scenery->ang.z=0.0f;
+	
+	scenery->resize=1.0f;
+	
 	scenery->model_name[0]=0x0;
 	scenery->animation_name[0]=0x0;
 	scenery->contact_object_on=TRUE;
@@ -156,8 +161,6 @@ void piece_create_scenery(void)
 	scenery->contact_hit_box=TRUE;
 	scenery->face_forward=FALSE;
 	scenery->shadow=FALSE;
-	scenery->override_size=FALSE;
-	scenery->size.x=scenery->size.y=scenery->size.z=0;
 	
 	for (n=0;n!=max_map_scenery_model_texture_frame;n++) {
 		scenery->texture_frame[n]=0;

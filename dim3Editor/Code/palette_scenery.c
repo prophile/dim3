@@ -36,16 +36,12 @@ and can be sold or given away.
 #define kSceneryAngleX						FOUR_CHAR_CODE('angx')
 #define kSceneryAngleY						FOUR_CHAR_CODE('angy')
 #define kSceneryAngleZ						FOUR_CHAR_CODE('angz')
+#define kSceneryResize						FOUR_CHAR_CODE('resz')
 #define kSceneryContactObject				FOUR_CHAR_CODE('cnct')
 #define kSceneryContactProjectile			FOUR_CHAR_CODE('cnpj')
 #define kSceneryContactHitBox				FOUR_CHAR_CODE('hbox')
 #define kSceneryFaceFront					FOUR_CHAR_CODE('afft')
 #define kSceneryShadow						FOUR_CHAR_CODE('shdw')
-#define kSceneryShadowCastDown				FOUR_CHAR_CODE('swcd')
-#define kSceneryOverrideSize				FOUR_CHAR_CODE('orsz')
-#define kScenerySizeX						FOUR_CHAR_CODE('rszX')
-#define kScenerySizeY						FOUR_CHAR_CODE('rszY')
-#define kScenerySizeZ						FOUR_CHAR_CODE('rszZ')
 #define kSceneryFrame						FOUR_CHAR_CODE('txtf')
 
 extern map_type				map;
@@ -76,16 +72,12 @@ void palette_scenery_load(void)
 	dialog_set_float(palette_scenery_wind,kSceneryAngleX,0,scenery->ang.x);
 	dialog_set_float(palette_scenery_wind,kSceneryAngleY,0,scenery->ang.y);
 	dialog_set_float(palette_scenery_wind,kSceneryAngleZ,0,scenery->ang.z);
+	dialog_set_float(palette_scenery_wind,kSceneryResize,0,scenery->resize);
 	dialog_set_boolean(palette_scenery_wind,kSceneryContactObject,0,scenery->contact_object_on);
 	dialog_set_boolean(palette_scenery_wind,kSceneryContactProjectile,0,scenery->contact_projectile_on);
 	dialog_set_boolean(palette_scenery_wind,kSceneryContactHitBox,0,scenery->contact_hit_box);
 	dialog_set_boolean(palette_scenery_wind,kSceneryFaceFront,0,scenery->face_forward);
 	dialog_set_boolean(palette_scenery_wind,kSceneryShadow,0,scenery->shadow);
-	dialog_set_boolean(palette_scenery_wind,kSceneryShadowCastDown,0,scenery->shadow_cast_down);
-	dialog_set_boolean(palette_scenery_wind,kSceneryOverrideSize,0,scenery->override_size);
-	dialog_set_int(palette_scenery_wind,kScenerySizeX,0,scenery->size.x);
-	dialog_set_int(palette_scenery_wind,kScenerySizeY,0,scenery->size.y);
-	dialog_set_int(palette_scenery_wind,kScenerySizeZ,0,scenery->size.z);
 	
 	for (n=0;n!=max_map_scenery_model_texture_frame;n++) {
 		dialog_set_int(palette_scenery_wind,kSceneryFrame,n,(int)scenery->texture_frame[n]);
@@ -111,16 +103,12 @@ void palette_scenery_save(void)
 	scenery->ang.x=dialog_get_float(palette_scenery_wind,kSceneryAngleX,0);
 	scenery->ang.y=dialog_get_float(palette_scenery_wind,kSceneryAngleY,0);
 	scenery->ang.z=dialog_get_float(palette_scenery_wind,kSceneryAngleZ,0);
+	scenery->resize=dialog_get_float(palette_scenery_wind,kSceneryResize,0);
 	scenery->contact_object_on=dialog_get_boolean(palette_scenery_wind,kSceneryContactObject,0);
 	scenery->contact_projectile_on=dialog_get_boolean(palette_scenery_wind,kSceneryContactProjectile,0);
 	scenery->contact_hit_box=dialog_get_boolean(palette_scenery_wind,kSceneryContactHitBox,0);
 	scenery->face_forward=dialog_get_boolean(palette_scenery_wind,kSceneryFaceFront,0);
 	scenery->shadow=dialog_get_boolean(palette_scenery_wind,kSceneryShadow,0);
-	scenery->shadow_cast_down=dialog_get_boolean(palette_scenery_wind,kSceneryShadowCastDown,0);
-	scenery->override_size=dialog_get_boolean(palette_scenery_wind,kSceneryOverrideSize,0);
-	scenery->size.x=dialog_get_int(palette_scenery_wind,kScenerySizeX,0);
-	scenery->size.y=dialog_get_int(palette_scenery_wind,kScenerySizeY,0);
-	scenery->size.z=dialog_get_int(palette_scenery_wind,kScenerySizeZ,0);
 	
 	for (n=0;n!=max_map_scenery_model_texture_frame;n++) {
 		scenery->texture_frame[n]=(short)dialog_get_int(palette_scenery_wind,kSceneryFrame,n);
