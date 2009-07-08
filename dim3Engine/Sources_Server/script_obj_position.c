@@ -37,7 +37,9 @@ extern server_type			server;
 extern js_type				js;
 extern network_setup_type	net_setup;
 
-JSBool js_get_obj_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_position_place_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_position_place_random_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_position_place_network_spot_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -54,9 +56,9 @@ JSClass			obj_position_class={"obj_position_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	obj_position_props[]={
-							{"x",					js_obj_position_get_x,				NULL},
-							{"y",					js_obj_position_get_y,				NULL},
-							{"z",					js_obj_position_get_z,				NULL},
+							{"x",								js_obj_position_get_x,				NULL},
+							{"y",								js_obj_position_get_y,				NULL},
+							{"z",								js_obj_position_get_z,				NULL},
 							{0}};
 
 script_js_function	obj_position_functions[]={
@@ -88,31 +90,36 @@ void script_add_obj_position_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->pnt.x);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-
-	switch (JSVAL_TO_INT(id)) {
+	*vp=INT_TO_JSVAL(obj->pnt.y);
 	
-		case obj_position_prop_x:
-			*vp=INT_TO_JSVAL(obj->pnt.x);
-			break;
-		case obj_position_prop_y:
-			*vp=INT_TO_JSVAL(obj->pnt.y);
-			break;
-		case obj_position_prop_z:
-			*vp=INT_TO_JSVAL(obj->pnt.z);
-			break;
-			
-	}
+	return(JS_TRUE);
+}
+
+JSBool js_obj_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->pnt.z);
 	
 	return(JS_TRUE);
 }

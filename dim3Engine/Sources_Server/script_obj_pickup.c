@@ -35,7 +35,11 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_get_obj_pickup_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_pickup_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_pickup_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_pickup_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_pickup_get_itemId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_pickup_get_itemName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_pickup_add_weapon_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_pickup_swap_weapon_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_pickup_add_ammo_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -84,50 +88,69 @@ void script_add_obj_pickup_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_pickup_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_pickup_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	obj_type		*obj,*pickup_obj,*pickup_item;
+	obj_type		*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->pickup.obj_uid);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_pickup_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj,*pickup_obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
 
-	switch (JSVAL_TO_INT(id)) {
+	pickup_obj=object_find_uid(obj->pickup.obj_uid);
+	if (pickup_obj==NULL) {
+		*vp=JSVAL_NULL;
+	}
+	else {
+		*vp=script_string_to_value(pickup_obj->name);
+	}
 	
-		case obj_pickup_prop_object_id:
-			*vp=INT_TO_JSVAL(obj->pickup.obj_uid);
-			break;
-	
-		case obj_pickup_prop_object_name:
-			pickup_obj=object_find_uid(obj->pickup.obj_uid);
-			if (pickup_obj==NULL) {
-				*vp=JSVAL_NULL;
-				break;
-			}
-			*vp=script_string_to_value(pickup_obj->name);
-			break;
+	return(JS_TRUE);
+}
 
-		case obj_pickup_prop_object_is_player:
-			*vp=BOOLEAN_TO_JSVAL(obj->pickup.obj_uid==server.player_obj_uid);
-			break;
-			
-		case obj_pickup_prop_item_id:
-			*vp=INT_TO_JSVAL(obj->pickup.item_uid);
-			break;
-			
-		case obj_pickup_prop_item_name:
-			pickup_item=object_find_uid(obj->pickup.item_uid);
-			if (pickup_item==NULL) {
-				*vp=JSVAL_NULL;
-				break;
-			}
-			*vp=script_string_to_value(pickup_item->name);
-			break;
-			
+JSBool js_obj_pickup_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->pickup.obj_uid==server.player_obj_uid);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_pickup_get_itemId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->pickup.item_uid);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_pickup_get_itemName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj,*pickup_item;
+
+	obj=object_find_uid(js.attach.thing_uid);
+
+	pickup_item=object_find_uid(obj->pickup.item_uid);
+	if (pickup_item==NULL) {
+		*vp=JSVAL_NULL;
+	}
+	else {
+		*vp=script_string_to_value(pickup_item->name);
 	}
 	
 	return(JS_TRUE);

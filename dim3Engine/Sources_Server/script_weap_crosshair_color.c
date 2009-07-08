@@ -32,8 +32,12 @@ and can be sold or given away.
 #include "scripts.h"
 #include "weapons.h"
 
-JSBool js_get_weap_crosshair_color_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_weap_crosshair_color_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_crosshair_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_crosshair_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_crosshair_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_crosshair_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_crosshair_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_crosshair_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 extern js_type			js;
 
@@ -61,55 +65,72 @@ void script_add_weap_crosshair_color_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_weap_crosshair_color_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_crosshair_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	weap=weapon_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case weap_crosshair_color_prop_red:
-            *vp=script_float_to_value(weap->crosshair.col.r);
-			break;
-		case weap_crosshair_color_prop_green:
-            *vp=script_float_to_value(weap->crosshair.col.g);
-			break;
-		case weap_crosshair_color_prop_blue:
-            *vp=script_float_to_value(weap->crosshair.col.b);
-			break;
-	}
+	*vp=script_float_to_value(weap->crosshair.col.r);
 
 	return(JS_TRUE);
 }
 
-JSBool js_set_weap_crosshair_color_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_crosshair_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+	weap=weapon_find_uid(js.attach.thing_uid);
+	*vp=script_float_to_value(weap->crosshair.col.g);
+
+	return(JS_TRUE);
+}
+
+JSBool js_weap_crosshair_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case weap_crosshair_color_prop_red:
-			weap->crosshair.col.r=script_value_to_float(*vp);
-			break;
-		case weap_crosshair_color_prop_green:
-			weap->crosshair.col.g=script_value_to_float(*vp);
-			break;
-		case weap_crosshair_color_prop_blue:
-			weap->crosshair.col.b=script_value_to_float(*vp);
-			break;
+	*vp=script_float_to_value(weap->crosshair.col.b);
 
-	}
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_weap_crosshair_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	weap->crosshair.col.r=script_value_to_float(*vp);
+
+	return(JS_TRUE);
+}
+
+JSBool js_weap_crosshair_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	weap->crosshair.col.g=script_value_to_float(*vp);
+
+	return(JS_TRUE);
+}
+
+JSBool js_weap_crosshair_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	weap->crosshair.col.b=script_value_to_float(*vp);
 
 	return(JS_TRUE);
 }

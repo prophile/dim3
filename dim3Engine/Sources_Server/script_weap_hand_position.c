@@ -34,8 +34,12 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_weap_hand_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_weap_hand_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_hand_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_hand_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_hand_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_hand_position_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_hand_position_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_hand_position_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			weap_hand_position_class={"weap_hand_position_class",0,
 							script_add_property,JS_PropertyStub,
@@ -61,56 +65,72 @@ void script_add_weap_hand_position_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_weap_hand_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_hand_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	weap=weapon_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case weap_hand_position_prop_x:
-			*vp=INT_TO_JSVAL(weap->hand.shift.x);
-			break;
-		case weap_hand_position_prop_y:
-			*vp=INT_TO_JSVAL(weap->hand.shift.y);
-			break;
-		case weap_hand_position_prop_z:
-			*vp=INT_TO_JSVAL(weap->hand.shift.z);
-			break;
-			
-	}
+	*vp=INT_TO_JSVAL(weap->hand.shift.x);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_set_weap_hand_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_hand_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(weap->hand.shift.y);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_weap_hand_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(weap->hand.shift.z);
+	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_weap_hand_position_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	weap=weapon_find_uid(js.attach.thing_uid);
+	weap->hand.shift.x=JSVAL_TO_INT(*vp);
 	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case weap_hand_position_prop_x:
-			weap->hand.shift.x=JSVAL_TO_INT(*vp);
-			break;
-		case weap_hand_position_prop_y:
-			weap->hand.shift.y=JSVAL_TO_INT(*vp);
-			break;
-		case weap_hand_position_prop_z:
-			weap->hand.shift.z=JSVAL_TO_INT(*vp);
-			break;
+	return(JS_TRUE);
+}
 
-	}
+JSBool js_weap_hand_position_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+	
+	weap=weapon_find_uid(js.attach.thing_uid);
+	weap->hand.shift.y=JSVAL_TO_INT(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_weap_hand_position_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+	
+	weap=weapon_find_uid(js.attach.thing_uid);
+	weap->hand.shift.z=JSVAL_TO_INT(*vp);
 	
 	return(JS_TRUE);
 }

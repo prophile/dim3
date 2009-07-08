@@ -35,8 +35,16 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_get_obj_sight_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_obj_sight_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_sight_get_sideFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_sight_get_lookFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_sight_get_sideFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_sight_get_lookFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_sight_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_sight_set_sideFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_sight_set_lookFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_sight_set_sideFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_sight_set_lookFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_sight_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_sight_test_object_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_sight_test_player_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
@@ -71,68 +79,112 @@ void script_add_obj_sight_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_sight_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_sight_get_sideFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	obj=object_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case obj_sight_prop_side_field_angle:
-			*vp=script_float_to_value(obj->sight.side_angle);
-			break;
-		case obj_sight_prop_look_field_angle:
-			*vp=script_float_to_value(obj->sight.look_angle);
-			break;
-		case obj_sight_prop_side_field_division:
-			*vp=INT_TO_JSVAL(obj->sight.side_division);
-			break;
-		case obj_sight_prop_look_field_division:
-			*vp=INT_TO_JSVAL(obj->sight.look_division);
-			break;
-		case obj_sight_prop_distance:
-			*vp=INT_TO_JSVAL(obj->sight.distance);
-			break;
-			
-	}
+	*vp=script_float_to_value(obj->sight.side_angle);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_set_obj_sight_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_sight_get_lookFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=script_float_to_value(obj->sight.look_angle);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_sight_get_sideFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->sight.side_division);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_sight_get_lookFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->sight.look_division);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_sight_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->sight.distance);
+	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_obj_sight_set_sideFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	obj=object_find_uid(js.attach.thing_uid);
+	obj->sight.side_angle=script_value_to_float(*vp);
 	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case obj_sight_prop_side_field_angle:
-			obj->sight.side_angle=script_value_to_float(*vp);
-			break;
-		case obj_sight_prop_look_field_angle:
-			obj->sight.look_angle=script_value_to_float(*vp);
-			break;
-		case obj_sight_prop_side_field_division:
-			obj->sight.side_division=JSVAL_TO_INT(*vp);
-			break;
-		case obj_sight_prop_look_field_division:
-			obj->sight.look_division=JSVAL_TO_INT(*vp);
-			break;
-		case obj_sight_prop_distance:
-			obj->sight.distance=JSVAL_TO_INT(*vp);
-			break;
+	return(JS_TRUE);
+}
 
-	}
+JSBool js_obj_sight_set_lookFieldAngle(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->sight.look_angle=script_value_to_float(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_sight_set_sideFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->sight.side_division=JSVAL_TO_INT(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_sight_set_lookFieldDivision(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->sight.look_division=JSVAL_TO_INT(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_sight_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->sight.distance=JSVAL_TO_INT(*vp);
 	
 	return(JS_TRUE);
 }

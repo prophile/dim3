@@ -35,7 +35,11 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSBool js_get_obj_score_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_score_get_goal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_score_get_score(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_score_add_goal_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			obj_score_class={"obj_score_class",0,
@@ -68,44 +72,63 @@ void script_add_obj_score_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_score_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_score_get_kill(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->score.kill);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_score_get_death(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-
-	switch (JSVAL_TO_INT(id)) {
+	*vp=INT_TO_JSVAL(obj->score.death);
 	
-		case obj_score_prop_kill:
-            *vp=INT_TO_JSVAL(obj->score.kill);
-			break;
-		case obj_score_prop_death:
-            *vp=INT_TO_JSVAL(obj->score.death);
-			break;
-		case obj_score_prop_suicide:
-            *vp=INT_TO_JSVAL(obj->score.suicide);
-			break;
-		case obj_score_prop_goal:
-            *vp=INT_TO_JSVAL(obj->score.goal);
-			break;
-		case obj_score_prop_score:
-            *vp=INT_TO_JSVAL(obj->score.score);
-			break;
-			
-	}
+	return(JS_TRUE);
+}
+
+JSBool js_obj_score_get_suicide(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->score.suicide);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_score_get_goal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->score.goal);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_score_get_score(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->score.score);
 	
 	return(JS_TRUE);
 }
 
 /* =======================================================
 
-      Goal Functions
+      Functions
       
 ======================================================= */
 

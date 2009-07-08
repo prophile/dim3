@@ -34,8 +34,18 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_obj_size_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_obj_size_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_size_get_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_size_get_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_size_get_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_size_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_size_set_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_size_set_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_size_set_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_size_grow_to_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_size_grow_over_time_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_size_grow_over_time_change_size_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -75,83 +85,141 @@ void script_add_obj_size_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_size_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	obj=object_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case obj_size_prop_x:
-			*vp=INT_TO_JSVAL(obj->size.x);
-			break;
-		case obj_size_prop_z:
-			*vp=INT_TO_JSVAL(obj->size.z);
-			break;
-		case obj_size_prop_y:
-			*vp=INT_TO_JSVAL(obj->size.y);
-			break;
-		case obj_size_prop_eye_offset:
-			*vp=INT_TO_JSVAL(obj->size.eye_offset);
-			break;
-		case obj_size_prop_weight:
-			*vp=INT_TO_JSVAL(obj->size.weight);
-			break;
-		case obj_size_prop_click_distance:
-			*vp=INT_TO_JSVAL(obj->click.distance);
-			break;
-			
-	}
+	*vp=INT_TO_JSVAL(obj->size.x);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_set_obj_size_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
-	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->size.y);
 	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case obj_size_prop_x:
-			obj->size.x=JSVAL_TO_INT(*vp);
-			object_set_radius(obj);
-			break;
-		case obj_size_prop_z:
-			obj->size.z=JSVAL_TO_INT(*vp);
-			object_set_radius(obj);
-			break;
-		case obj_size_prop_y:
-			obj->size.y=JSVAL_TO_INT(*vp);
-			break;
-		case obj_size_prop_eye_offset:
-			obj->size.eye_offset=JSVAL_TO_INT(*vp);
-			break;
-		case obj_size_prop_weight:
-			obj->size.weight=JSVAL_TO_INT(*vp);
-			break;
-		case obj_size_prop_click_distance:
-			obj->click.distance=JSVAL_TO_INT(*vp);
-			break;
+	return(JS_TRUE);
+}
 
-	}
+JSBool js_obj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->size.z);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_size_get_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->size.eye_offset);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_size_get_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->size.weight);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_size_get_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->click.distance);
 	
 	return(JS_TRUE);
 }
 
 /* =======================================================
 
-      Grow Function
+      Setters
+      
+======================================================= */
+
+JSBool js_obj_size_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->size.x=JSVAL_TO_INT(*vp);
+	object_set_radius(obj);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->size.y=JSVAL_TO_INT(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->size.z=JSVAL_TO_INT(*vp);
+	object_set_radius(obj);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_size_set_eyeOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->size.eye_offset=JSVAL_TO_INT(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_size_set_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->size.weight=JSVAL_TO_INT(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_size_set_clickDistance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->click.distance=JSVAL_TO_INT(*vp);
+	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Function
       
 ======================================================= */
 

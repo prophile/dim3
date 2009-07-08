@@ -34,8 +34,10 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_weap_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_weap_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_setting_get_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_setting_get_parentObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_setting_set_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			weap_setting_class={"weap_setting_class",0,
 							script_add_property,JS_PropertyStub,
@@ -61,50 +63,52 @@ void script_add_weap_setting_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_weap_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	weap=weapon_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case weap_setting_prop_name:
-			*vp=script_string_to_value(weap->name);
-			break;
-		case weap_setting_prop_fail_in_liquid:
-			*vp=BOOLEAN_TO_JSVAL(weap->fail_in_liquid);
-			break;
-		case weap_setting_prop_parent_object_id:
-			*vp=INT_TO_JSVAL(weap->obj_uid);
-			break;
-			
-	}
+	*vp=script_string_to_value(weap->name);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_set_weap_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_setting_get_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(weap->fail_in_liquid);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_weap_setting_get_parentObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(weap->obj_uid);
+	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_weap_setting_set_failInLiquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	weap=weapon_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-
-		case weap_setting_prop_fail_in_liquid:
-            weap->fail_in_liquid=JSVAL_TO_BOOLEAN(*vp);
-            break;
-           
-	}
+	weap->fail_in_liquid=JSVAL_TO_BOOLEAN(*vp);
 	
 	return(JS_TRUE);
 }

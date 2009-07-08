@@ -34,7 +34,9 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_obj_motion_angle_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_motion_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_motion_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_motion_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_motion_angle_turn_to_angle_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_motion_angle_turn_stop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
@@ -67,31 +69,36 @@ void script_add_obj_motion_angle_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_motion_angle_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_motion_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=script_float_to_value(obj->motion.ang.x);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_motion_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-
-	switch (JSVAL_TO_INT(id)) {
+	*vp=script_float_to_value(obj->motion.ang.y);
 	
-		case obj_motion_angle_prop_x:
-            *vp=script_float_to_value(obj->motion.ang.x);
-			break;
-		case obj_motion_angle_prop_y:
-            *vp=script_float_to_value(obj->motion.ang.y);
-			break;
-		case obj_motion_angle_prop_z:
-            *vp=script_float_to_value(obj->motion.ang.z);
-			break;
-			
-	}
+	return(JS_TRUE);
+}
+
+JSBool js_obj_motion_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=script_float_to_value(obj->motion.ang.z);
 	
 	return(JS_TRUE);
 }

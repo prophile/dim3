@@ -35,8 +35,12 @@ and can be sold or given away.
 
 extern js_type				js;
 
-JSBool js_get_weap_dual_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_weap_dual_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_dual_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_dual_get_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_dual_get_handOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_dual_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_dual_set_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_dual_set_handOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_dual_switch_hand_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			weap_dual_class={"weap_dual_class",0,
@@ -67,56 +71,72 @@ void script_add_weap_dual_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_weap_dual_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_dual_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	weap=weapon_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case weap_dual_prop_on:
-			*vp=BOOLEAN_TO_JSVAL(weap->dual.on);
-			break;
-		case weap_dual_prop_active:
-			*vp=BOOLEAN_TO_JSVAL(weap->dual.active);
-			break;
-		case weap_dual_prop_hand_offset:
-			*vp=INT_TO_JSVAL(weap->dual.hand_offset);
-			break;
-			
-	}
+	*vp=BOOLEAN_TO_JSVAL(weap->dual.on);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_set_weap_dual_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_dual_get_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(weap->dual.active);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_weap_dual_get_handOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(weap->dual.hand_offset);
+	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_weap_dual_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	weap=weapon_find_uid(js.attach.thing_uid);
+	weap->dual.on=JSVAL_TO_BOOLEAN(*vp);
 	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case weap_dual_prop_on:
-			weap->dual.on=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case weap_dual_prop_active:
-			weap->dual.active=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case weap_dual_prop_hand_offset:
-			weap->dual.hand_offset=JSVAL_TO_INT(*vp);
-			break;
+	return(JS_TRUE);
+}
 
-	}
+JSBool js_weap_dual_set_active(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+	
+	weap=weapon_find_uid(js.attach.thing_uid);
+	weap->dual.active=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_weap_dual_set_handOffset(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+	
+	weap=weapon_find_uid(js.attach.thing_uid);
+	weap->dual.hand_offset=JSVAL_TO_INT(*vp);
 	
 	return(JS_TRUE);
 }

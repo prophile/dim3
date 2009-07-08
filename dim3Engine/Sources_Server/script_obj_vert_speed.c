@@ -34,8 +34,14 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_obj_vert_speed_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_obj_vert_speed_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_vert_speed_get_normal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_vert_speed_get_acceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_vert_speed_get_deceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_vert_speed_get_flySlop(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_vert_speed_set_normal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_vert_speed_set_acceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_vert_speed_set_deceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_vert_speed_set_flySlop(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			obj_vert_speed_class={"obj_vert_speed_class",0,
 							script_add_property,JS_PropertyStub,
@@ -62,63 +68,96 @@ void script_add_obj_vert_speed_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_vert_speed_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_vert_speed_get_normal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	obj=object_find_uid(js.attach.thing_uid);
-
-	switch (JSVAL_TO_INT(id)) {
-    
-		case obj_vert_speed_prop_normal:
-            *vp=script_float_to_value(obj->vert_move.max_walk_speed);
-            break;
-		case obj_vert_speed_prop_acceleration:
-            *vp=script_float_to_value(obj->vert_move.accelerate);
-            break;
-		case obj_vert_speed_prop_deceleration:
-            *vp=script_float_to_value(obj->vert_move.decelerate);
-            break;
-		case obj_vert_speed_prop_fly_slop:
-            *vp=script_float_to_value(obj->vert_move.slop);
-            break;
-			
-	}
+	*vp=script_float_to_value(obj->vert_move.max_walk_speed);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_set_obj_vert_speed_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_vert_speed_get_acceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
-	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	obj=object_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-
-		case obj_vert_speed_prop_normal:
-            obj->vert_move.max_walk_speed=fabsf(script_value_to_float(*vp));
-            break;
-		case obj_vert_speed_prop_acceleration:
-            obj->vert_move.accelerate=fabsf(script_value_to_float(*vp));
-            break;
-		case obj_vert_speed_prop_deceleration:
-            obj->vert_move.decelerate=fabsf(script_value_to_float(*vp));
-            break;
-		case obj_vert_speed_prop_fly_slop:
-            obj->vert_move.slop=fabsf(script_value_to_float(*vp));
-            break;
-
-	}
+	*vp=script_float_to_value(obj->vert_move.accelerate);
 	
 	return(JS_TRUE);
 }
+
+JSBool js_obj_vert_speed_get_deceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=script_float_to_value(obj->vert_move.decelerate);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_vert_speed_get_flySlop(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=script_float_to_value(obj->vert_move.slop);
+	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_obj_vert_speed_set_normal(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->vert_move.max_walk_speed=fabsf(script_value_to_float(*vp));
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_vert_speed_set_acceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->vert_move.accelerate=fabsf(script_value_to_float(*vp));
+	
+	return(JS_TRUE);
+}
+
+
+JSBool js_obj_vert_speed_set_deceleration(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->vert_move.decelerate=fabsf(script_value_to_float(*vp));
+	
+	return(JS_TRUE);
+}
+
+
+JSBool js_obj_vert_speed_set_flySlop(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->vert_move.slop=fabsf(script_value_to_float(*vp));
+	
+	return(JS_TRUE);
+}
+
 

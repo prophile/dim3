@@ -35,7 +35,15 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_get_obj_watch_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_watch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_watch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_watch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_watch_get_objectIsRemote(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_watch_get_objectIsBot(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_watch_get_objectIsPlayerRemoteBot(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_watch_get_objectTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_watch_get_baseTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_watch_get_soundName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_watch_start_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_watch_stop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_watch_set_restrict_sight_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -78,90 +86,136 @@ void script_add_obj_watch_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_watch_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_watch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->watch.obj_uid);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_watch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj,*watch_obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+	obj=object_find_uid(js.attach.thing_uid);
+	
+	watch_obj=object_find_uid(obj->watch.obj_uid);
+	if (watch_obj==NULL) {
+		*vp=JSVAL_NULL;
+	}
+	else {
+		*vp=script_string_to_value(watch_obj->name);
+	}
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_watch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-
-	switch (JSVAL_TO_INT(id)) {
+	*vp=BOOLEAN_TO_JSVAL(obj->watch.obj_uid==server.player_obj_uid);
 	
-		case obj_watch_prop_object_id:
-			*vp=INT_TO_JSVAL(obj->watch.obj_uid);
-			break;
+	return(JS_TRUE);
+}
+
+JSBool js_obj_watch_get_objectIsRemote(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj,*watch_obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
 	
-		case obj_watch_prop_object_name:
-			watch_obj=object_find_uid(obj->watch.obj_uid);
-			if (watch_obj==NULL) {
-				*vp=JSVAL_NULL;
-				break;
-			}
-			*vp=script_string_to_value(watch_obj->name);
-			break;
-
-		case obj_watch_prop_object_is_player:
-			*vp=BOOLEAN_TO_JSVAL(obj->watch.obj_uid==server.player_obj_uid);
-			break;
-
-		case obj_watch_prop_object_is_remote:
-			watch_obj=object_find_uid(obj->watch.obj_uid);
-			if (watch_obj==NULL) {
-				*vp=JSVAL_FALSE;
-				break;
-			}
-
-			*vp=BOOLEAN_TO_JSVAL(watch_obj->remote.on);
-			break;
-
-		case obj_watch_prop_object_is_bot:
-			watch_obj=object_find_uid(obj->watch.obj_uid);
-			if (watch_obj==NULL) {
-				*vp=JSVAL_FALSE;
-				break;
-			}
-
-			*vp=BOOLEAN_TO_JSVAL(watch_obj->bot);
-			break;
-
-		case obj_watch_prop_object_is_player_remote_bot:
-			if (obj->watch.obj_uid==server.player_obj_uid) {
-				*vp=JSVAL_TRUE;
-				break;
-			}
-
-			watch_obj=object_find_uid(obj->watch.obj_uid);
-			if (watch_obj==NULL) {
-				*vp=JSVAL_FALSE;
-				break;
-			}
-
-			*vp=BOOLEAN_TO_JSVAL((watch_obj->remote.on) || (watch_obj->bot));
-			break;
-
-		case obj_watch_prop_object_team:
-			watch_obj=object_find_uid(obj->watch.obj_uid);
-			if (watch_obj==NULL) {
-				*vp=INT_TO_JSVAL(sd_team_none);
-				break;
-			}
-			*vp=INT_TO_JSVAL(watch_obj->team_idx+sd_team_none);
-			break;
-			
-		case obj_watch_prop_base_team:
-			*vp=INT_TO_JSVAL(obj->watch.base_team+sd_team_none);
-			break;
-
-		case obj_watch_prop_sound_name:
-			*vp=script_string_to_value(obj->watch.sound_name);
-			break;
-			
+	watch_obj=object_find_uid(obj->watch.obj_uid);
+	if (watch_obj==NULL) {
+		*vp=JSVAL_FALSE;
 	}
+	else {
+		*vp=BOOLEAN_TO_JSVAL(watch_obj->remote.on);
+	}
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_watch_get_objectIsBot(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj,*watch_obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	
+	watch_obj=object_find_uid(obj->watch.obj_uid);
+	if (watch_obj==NULL) {
+		*vp=JSVAL_FALSE;
+	}
+	else {
+		*vp=BOOLEAN_TO_JSVAL(watch_obj->bot);
+	}
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_watch_get_objectIsPlayerRemoteBot(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj,*watch_obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	
+	if (obj->watch.obj_uid==server.player_obj_uid) {
+		*vp=JSVAL_TRUE;
+	}
+	else {
+		watch_obj=object_find_uid(obj->watch.obj_uid);
+		if (watch_obj==NULL) {
+			*vp=JSVAL_FALSE;
+		}
+		else {
+			*vp=BOOLEAN_TO_JSVAL((watch_obj->remote.on) || (watch_obj->bot));
+		}
+	}
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_watch_get_objectTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj,*watch_obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	
+	watch_obj=object_find_uid(obj->watch.obj_uid);
+	if (watch_obj==NULL) {
+		*vp=INT_TO_JSVAL(sd_team_none);
+	}
+	else {
+		*vp=INT_TO_JSVAL(watch_obj->team_idx+sd_team_none);
+	}
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_watch_get_baseTeam(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->watch.base_team+sd_team_none);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_watch_get_soundName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=script_string_to_value(obj->watch.sound_name);
 	
 	return(JS_TRUE);
 }

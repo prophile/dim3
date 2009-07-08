@@ -36,8 +36,20 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_weap_projectile_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_weap_projectile_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_projectile_get_fireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_projectile_get_barrelBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_projectile_get_firePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_projectile_get_objectFireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_projectile_get_objectFirePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_projectile_get_repeat_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_projectile_get_repeat_tick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_projectile_set_fireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_projectile_set_barrelBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_projectile_set_firePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_projectile_set_objectFireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_projectile_set_objectFirePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_projectile_set_repeat_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_projectile_set_repeat_tick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_projectile_add_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_weap_projectile_spawn_from_weapon_bone_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_weap_projectile_spawn_from_weapon_bone_slop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -104,89 +116,171 @@ void script_add_weap_projectile_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_weap_projectile_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_projectile_get_fireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	char			str[32];
 	weapon_type		*weap;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	weap=weapon_find_uid(js.attach.thing_uid);
 	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case weap_projectile_prop_fire_bone_tag:
-			model_tag_to_text(weap->proj.fire_bone_tag,str);
-			*vp=script_string_to_value(str);
-			break;
-		case weap_projectile_prop_barrel_bone_tag:
-			model_tag_to_text(weap->proj.barrel_bone_tag,str);
-			*vp=script_string_to_value(str);
-			break;
-		case weap_projectile_prop_fire_pose_name:
-			*vp=script_string_to_value(weap->proj.fire_pose_name);
-			break;
-		case weap_projectile_prop_object_fire_bone_tag:
-			model_tag_to_text(weap->proj.object_fire_bone_tag,str);
-			*vp=script_string_to_value(str);
-			break;
-		case weap_projectile_prop_object_fire_pose_name:
-			*vp=script_string_to_value(weap->proj.object_fire_pose_name);
-			break;
-		case weap_projectile_prop_repeat_on:
-			*vp=BOOLEAN_TO_JSVAL(weap->proj.repeat_on);
-			break;
-		case weap_projectile_prop_repeat_tick:
-            *vp=INT_TO_JSVAL(weap->proj.repeat_tick);
-			break;
-			
-	}
+	model_tag_to_text(weap->proj.fire_bone_tag,str);
+	*vp=script_string_to_value(str);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_set_weap_projectile_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_projectile_get_barrelBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	char			str[32];
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+
+	model_tag_to_text(weap->proj.barrel_bone_tag,str);
+	*vp=script_string_to_value(str);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_weap_projectile_get_firePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	*vp=script_string_to_value(weap->proj.fire_pose_name);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_weap_projectile_get_objectFireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	char			str[32];
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+
+	model_tag_to_text(weap->proj.object_fire_bone_tag,str);
+	*vp=script_string_to_value(str);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_weap_projectile_get_objectFirePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	*vp=script_string_to_value(weap->proj.object_fire_pose_name);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_weap_projectile_get_repeat_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(weap->proj.repeat_on);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_weap_projectile_get_repeat_tick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(weap->proj.repeat_tick);
+	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_weap_projectile_set_fireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	char			str[32];
 	weapon_type		*weap;
 	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	weap=weapon_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
 
-		case weap_projectile_prop_fire_bone_tag:
-			script_value_to_string(*vp,str,32);
-			weap->proj.fire_bone_tag=text_to_model_tag(str);
-			break;
-		case weap_projectile_prop_barrel_bone_tag:
-			script_value_to_string(*vp,str,32);
-			weap->proj.barrel_bone_tag=text_to_model_tag(str);
-			break;
- 		case weap_projectile_prop_fire_pose_name:
-			script_value_to_string(*vp,weap->proj.fire_pose_name,name_str_len);
-			break;
-		case weap_projectile_prop_object_fire_bone_tag:
-			script_value_to_string(*vp,str,32);
-			weap->proj.object_fire_bone_tag=text_to_model_tag(str);
-			break;
- 		case weap_projectile_prop_object_fire_pose_name:
-			script_value_to_string(*vp,weap->proj.object_fire_pose_name,name_str_len);
-			break;
-        case weap_projectile_prop_repeat_on:
-            weap->proj.repeat_on=JSVAL_TO_BOOLEAN(*vp);
-            break;
-		case weap_projectile_prop_repeat_tick:
-			weap->proj.repeat_tick=JSVAL_TO_INT(*vp);
-			break;
-            
-	}
+	script_value_to_string(*vp,str,32);
+	weap->proj.fire_bone_tag=text_to_model_tag(str);
+
+	return(JS_TRUE);
+}
+
+JSBool js_weap_projectile_set_barrelBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	char			str[32];
+	weapon_type		*weap;
 	
+	weap=weapon_find_uid(js.attach.thing_uid);
+
+	script_value_to_string(*vp,str,32);
+	weap->proj.barrel_bone_tag=text_to_model_tag(str);
+
+	return(JS_TRUE);
+}
+
+JSBool js_weap_projectile_set_firePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+	
+	weap=weapon_find_uid(js.attach.thing_uid);
+	script_value_to_string(*vp,weap->proj.fire_pose_name,name_str_len);
+
+	return(JS_TRUE);
+}
+
+JSBool js_weap_projectile_set_objectFireBoneTag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	char			str[32];
+	weapon_type		*weap;
+	
+	weap=weapon_find_uid(js.attach.thing_uid);
+
+	script_value_to_string(*vp,str,32);
+	weap->proj.object_fire_bone_tag=text_to_model_tag(str);
+
+	return(JS_TRUE);
+}
+
+JSBool js_weap_projectile_set_objectFirePoseName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+	
+	weap=weapon_find_uid(js.attach.thing_uid);
+	script_value_to_string(*vp,weap->proj.object_fire_pose_name,name_str_len);
+
+	return(JS_TRUE);
+}
+
+JSBool js_weap_projectile_set_repeat_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+	
+	weap=weapon_find_uid(js.attach.thing_uid);
+	weap->proj.repeat_on=JSVAL_TO_BOOLEAN(*vp);
+
+	return(JS_TRUE);
+}
+
+JSBool js_weap_projectile_set_repeat_tick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+	
+	weap=weapon_find_uid(js.attach.thing_uid);
+	weap->proj.repeat_tick=JSVAL_TO_INT(*vp);
+
 	return(JS_TRUE);
 }
 

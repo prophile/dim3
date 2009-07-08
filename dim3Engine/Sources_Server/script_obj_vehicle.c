@@ -36,8 +36,9 @@ extern map_type			map;
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_get_obj_vehicle_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_obj_vehicle_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_vehicle_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_vehicle_get_hasOccupant(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_vehicle_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_vehicle_enter_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_vehicle_exit_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_vehicle_remove_occupant_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -71,56 +72,49 @@ void script_add_obj_vehicle_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_vehicle_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_vehicle_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	obj=object_find_uid(js.attach.thing_uid);
-
-	switch (JSVAL_TO_INT(id)) {
-	
-		case obj_vehicle_prop_on:
-			*vp=BOOLEAN_TO_JSVAL(obj->vehicle.on);
-			break;
-			
-		case obj_vehicle_prop_has_occupant:
-			*vp=BOOLEAN_TO_JSVAL(obj->vehicle.attach_obj_uid!=-1);
-			break;
-			
-	}
+	*vp=BOOLEAN_TO_JSVAL(obj->vehicle.on);
 	
 	return(JS_TRUE);
 }
 
-
-JSBool js_set_obj_vehicle_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_vehicle_get_hasOccupant(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
-	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	obj=object_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case obj_vehicle_prop_on:
-			obj->vehicle.on=JSVAL_TO_BOOLEAN(*vp);
-			break;
-
-	}
+	*vp=BOOLEAN_TO_JSVAL(obj->vehicle.attach_obj_uid!=-1);
 	
 	return(JS_TRUE);
 }
 
 /* =======================================================
 
-      Vehicle Functions
+      Setters
+      
+======================================================= */
+
+JSBool js_obj_vehicle_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->vehicle.on=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Functions
       
 ======================================================= */
 

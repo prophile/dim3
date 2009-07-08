@@ -35,8 +35,10 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_weap_target_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_weap_target_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_target_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_target_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_target_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_target_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_target_start_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_weap_target_start_opponent_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_weap_target_end_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -79,50 +81,52 @@ void script_add_weap_target_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_weap_target_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_target_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	weap=weapon_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case weap_target_prop_on:
-			*vp=BOOLEAN_TO_JSVAL(weap->target.on);
-			break;
-		case weap_target_prop_distance:
-			*vp=INT_TO_JSVAL(weap->target.distance);
-			break;
-		case weap_target_prop_objectId:
-			*vp=INT_TO_JSVAL(weap->target.obj_uid);
-			break;
-			
-	}
+	*vp=BOOLEAN_TO_JSVAL(weap->target.on);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_set_weap_target_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_target_get_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(weap->target.distance);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_weap_target_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(weap->target.obj_uid);
+	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_weap_target_set_distance(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	weap=weapon_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case weap_target_prop_distance:
-			weap->target.distance=JSVAL_TO_INT(*vp);
-			break;
-
-	}
+	weap->target.distance=JSVAL_TO_INT(*vp);
 	
 	return(JS_TRUE);
 }

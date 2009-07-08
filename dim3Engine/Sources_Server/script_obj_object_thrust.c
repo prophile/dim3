@@ -34,8 +34,12 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_obj_thrust_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_obj_thrust_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_thrust_get_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_thrust_get_maxSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_thrust_get_drag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_thrust_set_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_thrust_set_maxSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_thrust_set_drag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			obj_thrust_class={"obj_thrust_class",0,
 							script_add_property,JS_PropertyStub,
@@ -61,57 +65,73 @@ void script_add_obj_thrust_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_thrust_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_thrust_get_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	obj=object_find_uid(js.attach.thing_uid);
-
-	switch (JSVAL_TO_INT(id)) {
-    
-		case obj_thrust_prop_speed:
-			*vp=script_float_to_value(obj->thrust.speed);
-            break;
-		case obj_thrust_prop_max_speed:
-			*vp=script_float_to_value(obj->thrust.max_speed);
-            break;
-		case obj_thrust_prop_drag:
-			*vp=BOOLEAN_TO_JSVAL(obj->thrust.drag);
-            break;
-			
-	}
+	*vp=script_float_to_value(obj->thrust.speed);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_set_obj_thrust_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_thrust_get_maxSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
-	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	obj=object_find_uid(js.attach.thing_uid);
 	
-	switch (JSVAL_TO_INT(id)) {
+	return(JS_TRUE);
+}
 
-		case obj_thrust_prop_speed:
-			obj->thrust.speed=script_value_to_float(*vp);
-            break;
-		case obj_thrust_prop_max_speed:
-			obj->thrust.max_speed=script_value_to_float(*vp);
-            break;
-		case obj_thrust_prop_drag:
-			obj->thrust.drag=JSVAL_TO_BOOLEAN(*vp);
-            break;
+JSBool js_obj_thrust_get_drag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
 
-	}
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->thrust.drag);
 	
 	return(JS_TRUE);
 }
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_obj_thrust_set_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->thrust.speed=script_value_to_float(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_thrust_set_maxSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->thrust.max_speed=script_value_to_float(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_thrust_set_drag(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->thrust.drag=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
 

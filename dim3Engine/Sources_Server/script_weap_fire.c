@@ -36,8 +36,6 @@ extern js_type			js;
 
 JSBool js_weap_fire_get_method(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_fire_get_lastFireTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-
-
 JSBool js_get_weap_fire_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_fire_past_last_fire_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_weap_fire_reset_last_fire_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -72,37 +70,9 @@ void script_add_weap_fire_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
-
-JSBool js_get_weap_fire_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
-{
-	weapon_type		*weap;
-
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
-	weap=weapon_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case weap_fire_prop_method:
-			*vp=INT_TO_JSVAL(weap->fire.method);
-			break;
-			
-		case weap_fire_prop_last_fire_tick:
-			if (!weap->dual.in_dual) {
-				*vp=INT_TO_JSVAL(weap->fire.last_fire_tick);
-			}
-			else {
-				*vp=INT_TO_JSVAL(weap->fire.last_fire_dual_tick);
-			}
-			break;
-			
-	}
-	
-	return(JS_TRUE);
-}
 
 JSBool js_weap_fire_get_method(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {

@@ -35,8 +35,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_weap_kickback_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_weap_kickback_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_kickback_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_kickback_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_weap_kickback_kick_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
 JSClass			weap_kickback_class={"weap_kickback_class",0,
@@ -65,44 +65,32 @@ void script_add_weap_kickback_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_weap_kickback_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_kickback_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	weap=weapon_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case weap_kickback_prop_size:
-			*vp=INT_TO_JSVAL(weap->kickback.size);
-			break;
-			
-	}
+	*vp=INT_TO_JSVAL(weap->kickback.size);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_set_weap_kickback_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_weap_kickback_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	weap=weapon_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case weap_kickback_prop_size:
-			weap->kickback.size=JSVAL_TO_INT(*vp);
-			break;
-
-	}
+	weap->kickback.size=JSVAL_TO_INT(*vp);
 	
 	return(JS_TRUE);
 }

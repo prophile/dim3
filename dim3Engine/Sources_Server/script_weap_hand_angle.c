@@ -34,8 +34,12 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_weap_hand_angle_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_weap_hand_angle_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_hand_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_hand_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_hand_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_hand_angle_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_hand_angle_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_weap_hand_angle_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			weap_hand_angle_class={"weap_hand_angle_class",0,
 							script_add_property,JS_PropertyStub,
@@ -61,59 +65,74 @@ void script_add_weap_hand_angle_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_weap_hand_angle_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_hand_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	weap=weapon_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case weap_hand_angle_prop_x:
-            *vp=script_float_to_value(weap->hand.ang.x);
-			break;
-		case weap_hand_angle_prop_y:
-            *vp=script_float_to_value(weap->hand.ang.y);
-			break;
-		case weap_hand_angle_prop_z:
-            *vp=script_float_to_value(weap->hand.ang.z);
-			break;
-			
-	}
+	*vp=script_float_to_value(weap->hand.ang.x);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_set_weap_hand_angle_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_weap_hand_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	weapon_type		*weap;
-	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	weap=weapon_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case weap_hand_angle_prop_x:
-			weap->hand.ang.x=script_value_to_float(*vp);
-			break;
-		case weap_hand_angle_prop_y:
-			weap->hand.ang.y=script_value_to_float(*vp);
-			break;
-		case weap_hand_angle_prop_z:
-			weap->hand.ang.z=script_value_to_float(*vp);
-			break;
-
-	}
+	*vp=script_float_to_value(weap->hand.ang.y);
 	
 	return(JS_TRUE);
 }
 
+JSBool js_weap_hand_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+
+	weap=weapon_find_uid(js.attach.thing_uid);
+	*vp=script_float_to_value(weap->hand.ang.z);
+	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_weap_hand_angle_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+	
+	weap=weapon_find_uid(js.attach.thing_uid);
+	weap->hand.ang.x=script_value_to_float(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_weap_hand_angle_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+	
+	weap=weapon_find_uid(js.attach.thing_uid);
+	weap->hand.ang.y=script_value_to_float(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_weap_hand_angle_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	weapon_type		*weap;
+	
+	weap=weapon_find_uid(js.attach.thing_uid);
+	weap->hand.ang.z=script_value_to_float(*vp);
+	
+	return(JS_TRUE);
+}
 
 

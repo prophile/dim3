@@ -34,7 +34,9 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_obj_motion_vector_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_motion_vector_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_motion_vector_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_motion_vector_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_motion_vector_go_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_motion_vector_stop_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_motion_vector_jump_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -92,31 +94,36 @@ void script_add_obj_motion_vector_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_motion_vector_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_motion_vector_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=script_float_to_value(obj->motion.vct.x);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_motion_vector_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-
-	switch (JSVAL_TO_INT(id)) {
+	*vp=script_float_to_value(obj->motion.vct.y);
 	
-		case obj_motion_vector_prop_x:
-			*vp=script_float_to_value(obj->motion.vct.x);
-			break;
-		case obj_motion_vector_prop_y:
-			*vp=script_float_to_value(obj->motion.vct.y);
-			break;
-		case obj_motion_vector_prop_z:
-			*vp=script_float_to_value(obj->motion.vct.z);
-			break;
-			
-	}
+	return(JS_TRUE);
+}
+
+JSBool js_obj_motion_vector_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=script_float_to_value(obj->motion.vct.z);
 	
 	return(JS_TRUE);
 }

@@ -34,7 +34,8 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_obj_weapon_fire_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_weapon_fire_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_weapon_fire_get_method(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			obj_weapon_fire_class={"obj_weapon_fire_class",0,
 							script_add_property,JS_PropertyStub,
@@ -59,29 +60,26 @@ void script_add_obj_weapon_fire_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_weapon_fire_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_weapon_fire_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	obj=object_find_uid(js.attach.thing_uid);
-
-	switch (JSVAL_TO_INT(id)) {
-	
-		case obj_weapon_fire_prop_name:
-			*vp=script_string_to_value(obj->weapon_fire.name);
-			break;
-		case obj_weapon_fire_prop_method:
-			*vp=INT_TO_JSVAL(obj->weapon_fire.method);
-			break;
-			
-	}
+	*vp=script_string_to_value(obj->weapon_fire.name);
 	
 	return(JS_TRUE);
 }
 
+JSBool js_obj_weapon_fire_get_method(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->weapon_fire.method);
+	
+	return(JS_TRUE);
+}

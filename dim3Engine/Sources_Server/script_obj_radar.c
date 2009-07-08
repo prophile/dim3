@@ -35,8 +35,14 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_get_obj_radar_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_obj_radar_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_radar_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_radar_get_icon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_radar_get_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_radar_get_alwaysVisible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_radar_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_radar_set_icon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_radar_set_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_radar_set_alwaysVisible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			obj_radar_class={"obj_radar_class",0,
 							script_add_property,JS_PropertyStub,
@@ -63,70 +69,95 @@ void script_add_obj_radar_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_radar_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_radar_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	obj=object_find_uid(js.attach.thing_uid);
-
-	switch (JSVAL_TO_INT(id)) {
-	
-		case obj_radar_prop_on:
-			*vp=BOOLEAN_TO_JSVAL(obj->radar.on);
-			break;
-	
-		case obj_radar_prop_icon:
-			*vp=script_string_to_value(obj->radar.icon);
-			break;
-			
-		case obj_radar_prop_motion_only:
-			*vp=BOOLEAN_TO_JSVAL(obj->radar.motion_only);
-			break;
-
-		case obj_radar_prop_always_visible:
-			*vp=BOOLEAN_TO_JSVAL(obj->radar.always_visible);
-			break;
-
-	}
+	*vp=BOOLEAN_TO_JSVAL(obj->radar.on);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_set_obj_radar_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_radar_get_icon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
-	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	obj=object_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-
-		case obj_radar_prop_on:
-			obj->radar.on=JSVAL_TO_BOOLEAN(*vp);
-			break;
-	
-		case obj_radar_prop_icon:
-			script_value_to_string(*vp,obj->radar.icon,name_str_len);
-			if (!object_set_radar_icon(obj)) return(JS_FALSE);
-			break;
-			
-		case obj_radar_prop_motion_only:
-			obj->radar.motion_only=JSVAL_TO_BOOLEAN(*vp);
-			break;
-
-		case obj_radar_prop_always_visible:
-			obj->radar.always_visible=JSVAL_TO_BOOLEAN(*vp);
-			break;
-
-	}
+	*vp=script_string_to_value(obj->radar.icon);
 	
 	return(JS_TRUE);
 }
+
+JSBool js_obj_radar_get_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->radar.motion_only);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_radar_get_alwaysVisible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->radar.always_visible);
+	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_obj_radar_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->radar.on=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_radar_set_icon(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	script_value_to_string(*vp,obj->radar.icon,name_str_len);
+	if (!object_set_radar_icon(obj)) return(JS_FALSE);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_radar_set_motionOnly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->radar.motion_only=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_radar_set_alwaysVisible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->radar.always_visible=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
 

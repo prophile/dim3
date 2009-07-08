@@ -35,7 +35,10 @@ and can be sold or given away.
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_get_obj_touch_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_touch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_touch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_touch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_touch_get_stand(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			obj_touch_class={"obj_touch_class",0,
 							script_add_property,JS_PropertyStub,
@@ -62,43 +65,55 @@ void script_add_obj_touch_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_touch_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_touch_get_objectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->touch.obj_uid);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_touch_get_objectName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj,*touch_obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	obj=object_find_uid(js.attach.thing_uid);
-
-	switch (JSVAL_TO_INT(id)) {
 	
-		case obj_touch_prop_object_id:
-			*vp=INT_TO_JSVAL(obj->touch.obj_uid);
-			break;
-
-		case obj_touch_prop_object_name:
-			touch_obj=object_find_uid(obj->touch.obj_uid);
-			if (touch_obj==NULL) {
-				*vp=JSVAL_NULL;
-				break;
-			}
-			*vp=script_string_to_value(touch_obj->name);
-			break;
-
-		case obj_touch_prop_object_is_player:
-			*vp=BOOLEAN_TO_JSVAL(obj->touch.obj_uid==server.player_obj_uid);
-			break;
-
-		case obj_touch_prop_stand:
-			*vp=BOOLEAN_TO_JSVAL(obj->touch.stand);
-			break;
-			
+	touch_obj=object_find_uid(obj->touch.obj_uid);
+	if (touch_obj==NULL) {
+		*vp=JSVAL_NULL;
+	}
+	else {
+		*vp=script_string_to_value(touch_obj->name);
 	}
 	
 	return(JS_TRUE);
 }
+
+JSBool js_obj_touch_get_objectIsPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->touch.obj_uid==server.player_obj_uid);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_touch_get_stand(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->touch.stand);
+	
+	return(JS_TRUE);
+}
+
 

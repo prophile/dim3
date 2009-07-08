@@ -34,7 +34,9 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_obj_touch_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_touch_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_touch_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_touch_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			obj_touch_position_class={"obj_touch_position_class",0,
 							script_add_property,JS_PropertyStub,
@@ -60,32 +62,36 @@ void script_add_obj_touch_position_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_touch_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_touch_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	obj=object_find_uid(js.attach.thing_uid);
-
-	switch (JSVAL_TO_INT(id)) {
-	
-		case obj_touch_position_prop_x:
-			*vp=INT_TO_JSVAL(obj->touch.pnt.x);
-			break;
-		case obj_touch_position_prop_y:
-			*vp=INT_TO_JSVAL(obj->touch.pnt.y);
-			break;
-		case obj_touch_position_prop_z:
-			*vp=INT_TO_JSVAL(obj->touch.pnt.z);
-			break;
-			
-	}
+	*vp=INT_TO_JSVAL(obj->touch.pnt.x);
 	
 	return(JS_TRUE);
 }
 
+JSBool js_obj_touch_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->touch.pnt.y);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_touch_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->touch.pnt.z);
+	
+	return(JS_TRUE);
+}

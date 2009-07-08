@@ -34,8 +34,68 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_obj_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_obj_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_id(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_hidden(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_suspend(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_fly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_find(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_contact(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_contactObject(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_contactProjectile(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_contactForce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_hitBox(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_crushable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_invincible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_clickable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_pickup(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_ignorePickUpItems(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_ignoreMouse(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_turnOnlyWhenMoving(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_restrictPlayerTurning(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_quickReverse(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_sideStep(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_jump(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_duck(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_crawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_singleSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_bumpUp(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_slopeGravity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_pushable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_openDoors(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_get_inputMode(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_hidden(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_suspend(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_fly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_find(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_contact(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_contactObject(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_contactProjectile(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_contactForce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_hitBox(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_crushable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_invincible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_clickable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_pickup(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_ignorePickUpItems(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_ignoreMouse(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_turnOnlyWhenMoving(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_restrictPlayerTurning(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_quickReverse(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_sideStep(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_jump(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_duck(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_crawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_singleSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_bumpUp(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_slopeGravity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_pushable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_openDoors(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_setting_set_inputMode(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_get_parameter_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_set_ambient_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_change_ambient_pitch_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -82,10 +142,10 @@ script_js_property	obj_setting_props[]={
 							{0}};
 
 script_js_function	obj_setting_functions[]={
-							{"getParameter",		js_obj_get_parameter_func,			1},
-							{"setAmbient",			js_obj_set_ambient_func,			2},
-							{"changeAmbientPitch",	js_obj_change_ambient_pitch_func,	1},
-							{"clearAmbient",		js_obj_clear_ambient_func,			0},
+							{"getParameter",			js_obj_get_parameter_func,					1},
+							{"setAmbient",				js_obj_set_ambient_func,					2},
+							{"changeAmbientPitch",		js_obj_change_ambient_pitch_func,			1},
+							{"clearAmbient",			js_obj_clear_ambient_func,					0},
 							{0}};
 
 /* =======================================================
@@ -101,235 +161,644 @@ void script_add_obj_setting_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_setting_get_id(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	obj=object_find_uid(js.attach.thing_uid);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case obj_setting_prop_id:
-			*vp=INT_TO_JSVAL(obj->uid);
-			break;
-		case obj_setting_prop_name:
-			*vp=script_string_to_value(obj->name);
-			break;
-		case obj_setting_prop_team:
-			*vp=INT_TO_JSVAL(obj->team_idx+sd_team_none);
-			break;
-		case obj_setting_prop_hidden:
-			*vp=BOOLEAN_TO_JSVAL(obj->hidden);
-			break;
-		case obj_setting_prop_suspend:
-			*vp=BOOLEAN_TO_JSVAL(obj->suspend);
-			break;
-		case obj_setting_prop_fly:
-			*vp=BOOLEAN_TO_JSVAL(obj->fly);
-			break;
-		case obj_setting_prop_find:
-			*vp=BOOLEAN_TO_JSVAL(obj->find_on);
-			break;
-		case obj_setting_prop_contact:
-			*vp=BOOLEAN_TO_JSVAL((obj->contact.object_on) || (obj->contact.projectile_on) || (obj->contact.force_on));
-			break;
-		case obj_setting_prop_contact_object:
-			*vp=BOOLEAN_TO_JSVAL(obj->contact.object_on);
-			break;
-		case obj_setting_prop_contact_projectile:
-			*vp=BOOLEAN_TO_JSVAL(obj->contact.projectile_on);
-			break;
-		case obj_setting_prop_contact_force:
-			*vp=BOOLEAN_TO_JSVAL(obj->contact.force_on);
-			break;
-		case obj_setting_prop_hit_box:
-			*vp=BOOLEAN_TO_JSVAL(obj->hit_box.on);
-			break;
-		case obj_setting_prop_damage:
-			*vp=BOOLEAN_TO_JSVAL(obj->damage.on);
-			break;
-		case obj_setting_prop_crushable:
-			*vp=BOOLEAN_TO_JSVAL(obj->damage.crushable);
-			break;
-		case obj_setting_prop_invincible:
-			*vp=BOOLEAN_TO_JSVAL(obj->damage.invincible);
-			break;
-		case obj_setting_prop_clickable:
-			*vp=BOOLEAN_TO_JSVAL(obj->click.on);
-			break;
-		case obj_setting_prop_pickup:
-			*vp=BOOLEAN_TO_JSVAL(obj->pickup.on);
-			break;
-		case obj_setting_prop_ignore_pickup_items:
-			*vp=BOOLEAN_TO_JSVAL(obj->pickup.ignore);
-			break;
-		case obj_setting_prop_ignore_mouse:
-			*vp=BOOLEAN_TO_JSVAL(obj->turn.ignore_mouse);
-			break;
-		case obj_setting_prop_turn_only_when_moving:
-			*vp=BOOLEAN_TO_JSVAL(obj->turn.only_when_moving);
-			break;
-		case obj_setting_prop_restrict_player_turning:
-			*vp=BOOLEAN_TO_JSVAL(obj->turn.restrict_player_turning);
-			break;
-		case obj_setting_prop_quick_reverse:
-			*vp=BOOLEAN_TO_JSVAL(obj->quick_reverse);
-			break;
-		case obj_setting_prop_side_step:
-			*vp=BOOLEAN_TO_JSVAL(obj->side_step);
-			break;
-		case obj_setting_prop_jump:
-			*vp=BOOLEAN_TO_JSVAL(obj->jump.on);
-			break;
-		case obj_setting_prop_duck:
-			*vp=BOOLEAN_TO_JSVAL(obj->duck.on);
-			break;
-		case obj_setting_prop_crawl:
-			*vp=BOOLEAN_TO_JSVAL(obj->crawl);
-			break;
-		case obj_setting_prop_single_speed:
-			*vp=BOOLEAN_TO_JSVAL(obj->single_speed);
-			break;
-		case obj_setting_prop_bump_up:
-			*vp=BOOLEAN_TO_JSVAL(obj->bump.on);
-			break;
-		case obj_setting_prop_slope_gravity:
-			*vp=BOOLEAN_TO_JSVAL(obj->slope_gravity);
-			break;
-		case obj_setting_prop_pushable:
-			*vp=BOOLEAN_TO_JSVAL(obj->contact.pushable);
-			break;
-		case obj_setting_prop_open_doors:
-			*vp=BOOLEAN_TO_JSVAL(obj->open_doors);
-			break;
-		case obj_setting_prop_input_mode:
-			*vp=INT_TO_JSVAL(obj->input_mode+sd_input_mode_fpp);
-			break;
-			
-	}
+	*vp=INT_TO_JSVAL(obj->uid);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_set_obj_setting_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_setting_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	bool			on;
 	obj_type		*obj;
-	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	obj=object_find_uid(js.attach.thing_uid);
+	*vp=script_string_to_value(obj->name);
 	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case obj_setting_prop_team:
-			obj->team_idx=JSVAL_TO_INT(*vp)-sd_team_none;
-			break;
-		case obj_setting_prop_hidden:
-			object_hide(obj,JSVAL_TO_BOOLEAN(*vp));
-			break;
-		case obj_setting_prop_suspend:
-			obj->suspend=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_fly:
-			obj->fly=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_find:
-			obj->find_on=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_contact:
-			on=JSVAL_TO_BOOLEAN(*vp);
-			obj->contact.object_on=on;
-			obj->contact.projectile_on=on;
-			obj->contact.force_on=on;
-			break;
-		case obj_setting_prop_contact_object:
-			obj->contact.object_on=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_contact_projectile:
-			obj->contact.projectile_on=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_contact_force:
-			obj->contact.force_on=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_hit_box:
-			obj->hit_box.on=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_damage:
-			obj->damage.on=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_crushable:
-			obj->damage.crushable=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_invincible:
-			obj->damage.invincible=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_clickable:
-			obj->click.on=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_pickup:
-			obj->pickup.on=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_ignore_pickup_items:
-			obj->pickup.ignore=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_ignore_mouse:
-			obj->turn.ignore_mouse=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_turn_only_when_moving:
-			obj->turn.only_when_moving=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_restrict_player_turning:
-			obj->turn.restrict_player_turning=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_quick_reverse:
-			obj->quick_reverse=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_side_step:
-			obj->side_step=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_jump:
-			obj->jump.on=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_duck:
-			obj->duck.on=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_crawl:
-			obj->crawl=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_single_speed:
-			obj->single_speed=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_bump_up:
-			obj->bump.on=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_slope_gravity:
-			obj->slope_gravity=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_pushable:
-			obj->contact.pushable=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_open_doors:
-			obj->open_doors=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case obj_setting_prop_input_mode:
-			obj->input_mode=JSVAL_TO_INT(*vp)-sd_input_mode_fpp;
-			break;
+	return(JS_TRUE);
+}
 
-	}
+JSBool js_obj_setting_get_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->team_idx+sd_team_none);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_hidden(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->hidden);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_suspend(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->suspend);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_fly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->fly);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_find(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->find_on);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_contact(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL((obj->contact.object_on) || (obj->contact.projectile_on) || (obj->contact.force_on));
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_contactObject(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->contact.object_on);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_contactProjectile(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->contact.projectile_on);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_contactForce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->contact.force_on);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_hitBox(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->hit_box.on);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->damage.on);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_crushable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->damage.crushable);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_invincible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->damage.invincible);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_clickable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->click.on);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_pickup(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->pickup.on);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_ignorePickUpItems(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->pickup.ignore);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_ignoreMouse(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->turn.ignore_mouse);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_turnOnlyWhenMoving(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->turn.only_when_moving);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_restrictPlayerTurning(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->turn.restrict_player_turning);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_quickReverse(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->quick_reverse);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_sideStep(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->side_step);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_jump(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->jump.on);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_duck(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->duck.on);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_crawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->crawl);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_singleSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->single_speed);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_bumpUp(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->bump.on);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_slopeGravity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->slope_gravity);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_pushable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->contact.pushable);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_openDoors(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->open_doors);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_get_inputMode(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->input_mode+sd_input_mode_fpp);
 	
 	return(JS_TRUE);
 }
 
 /* =======================================================
 
-      Setting Functions
+      Setters
+      
+======================================================= */
+
+JSBool js_obj_setting_set_team(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->team_idx=JSVAL_TO_INT(*vp)-sd_team_none;
+
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_hidden(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	object_hide(obj,JSVAL_TO_BOOLEAN(*vp));
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_suspend(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->suspend=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_fly(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->fly=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_find(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->find_on=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_contact(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	bool			on;
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+
+	on=JSVAL_TO_BOOLEAN(*vp);
+	obj->contact.object_on=on;
+	obj->contact.projectile_on=on;
+	obj->contact.force_on=on;
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_contactObject(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->contact.object_on=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_contactProjectile(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->contact.projectile_on=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_contactForce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->contact.force_on=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_hitBox(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->hit_box.on=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_damage(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->damage.on=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_crushable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->damage.crushable=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_invincible(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->damage.invincible=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_clickable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->click.on=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_pickup(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->pickup.on=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_ignorePickUpItems(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->pickup.ignore=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_ignoreMouse(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->turn.ignore_mouse=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_turnOnlyWhenMoving(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->turn.only_when_moving=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_restrictPlayerTurning(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->turn.restrict_player_turning=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_quickReverse(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->quick_reverse=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_sideStep(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->side_step=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_jump(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->jump.on=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_duck(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->duck.on=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_crawl(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->crawl=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_singleSpeed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->single_speed=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_bumpUp(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->bump.on=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_slopeGravity(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->slope_gravity=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_pushable(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->contact.pushable=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_openDoors(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->open_doors=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_setting_set_inputMode(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+	
+	obj=object_find_uid(js.attach.thing_uid);
+	obj->input_mode=JSVAL_TO_INT(*vp)-sd_input_mode_fpp;
+	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Functions
       
 ======================================================= */
 

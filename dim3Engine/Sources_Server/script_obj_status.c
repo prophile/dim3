@@ -35,7 +35,16 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSBool js_get_obj_status_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_status_get_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_status_get_moving(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_status_get_running(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_status_get_backward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_status_get_sliding(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_status_get_stand(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_status_get_air(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_status_get_liquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_status_get_standOnObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_obj_status_get_standUnderObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_obj_status_freeze_input_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_obj_status_tint_view_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 
@@ -75,52 +84,106 @@ void script_add_obj_status_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_obj_status_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_obj_status_get_speed(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	obj_type		*obj;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=script_float_to_value(obj->forward_move.speed);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_status_get_moving(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
 
 	obj=object_find_uid(js.attach.thing_uid);
-
-	switch (JSVAL_TO_INT(id)) {
+	*vp=BOOLEAN_TO_JSVAL(obj->forward_move.moving);
 	
-		case obj_status_prop_speed:
-            *vp=script_float_to_value(obj->forward_move.speed);
-			break;
-		case obj_status_prop_moving:
-			*vp=BOOLEAN_TO_JSVAL(obj->forward_move.moving);
-			break;
-		case obj_status_prop_running:
-			*vp=BOOLEAN_TO_JSVAL(obj->forward_move.running);
-			break;
-		case obj_status_prop_backward:
-			*vp=BOOLEAN_TO_JSVAL(obj->forward_move.reverse);
-			break;
-		case obj_status_prop_sliding:
-			*vp=BOOLEAN_TO_JSVAL(obj->side_move.moving);
-			break;
-		case obj_status_prop_stand:
-			*vp=INT_TO_JSVAL(obj->duck.mode+sd_stand_standing);
-			break;
-		case obj_status_prop_air:
-			*vp=INT_TO_JSVAL(obj->air_mode+sd_air_up);
-			break;
-		case obj_status_prop_liquid:
-			*vp=INT_TO_JSVAL(obj->liquid_mode+sd_liquid_out);
-			break;
-		case obj_status_prop_stand_on_object_id:
-			*vp=INT_TO_JSVAL(obj->stand_obj_uid);
-			break;
-		case obj_status_prop_stand_under_object_id:
-			*vp=INT_TO_JSVAL(object_find_uid_by_stood_on_object_uid(obj->uid));
-			break;
-			
-	}
+	return(JS_TRUE);
+}
+
+JSBool js_obj_status_get_running(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->forward_move.running);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_status_get_backward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->forward_move.reverse);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_status_get_sliding(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=BOOLEAN_TO_JSVAL(obj->side_move.moving);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_status_get_stand(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->duck.mode+sd_stand_standing);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_status_get_air(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->air_mode+sd_air_up);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_status_get_liquid(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->liquid_mode+sd_liquid_out);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_status_get_standOnObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(obj->stand_obj_uid);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_obj_status_get_standUnderObjectId(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	obj_type		*obj;
+
+	obj=object_find_uid(js.attach.thing_uid);
+	*vp=INT_TO_JSVAL(object_find_uid_by_stood_on_object_uid(obj->uid));
 	
 	return(JS_TRUE);
 }
