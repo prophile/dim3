@@ -34,8 +34,14 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_proj_mark_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_proj_mark_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_mark_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_mark_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_mark_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_mark_get_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_mark_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_mark_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_mark_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_mark_set_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			proj_mark_class={"proj_mark_class",0,
 							script_add_property,JS_PropertyStub,
@@ -62,68 +68,114 @@ void script_add_proj_mark_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_proj_mark_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_proj_mark_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
-
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case proj_mark_prop_on:
-			*vp=BOOLEAN_TO_JSVAL(proj_setup->mark.on);
-			break;
-		case proj_mark_prop_name:
-			*vp=script_string_to_value(proj_setup->mark.name);
-			break;
-		case proj_mark_prop_size:
-			*vp=INT_TO_JSVAL(proj_setup->mark.size);
-			break;
-		case proj_mark_prop_alpha:
-            *vp=script_float_to_value(proj_setup->mark.alpha);
-			break;
-			
-	}
+	*vp=BOOLEAN_TO_JSVAL(proj_setup->mark.on);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_set_proj_mark_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_proj_mark_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
-	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	switch (JSVAL_TO_INT(id)) {
-
-        case proj_mark_prop_on:
-            proj_setup->mark.on=JSVAL_TO_BOOLEAN(*vp);
-            break;
-		case proj_mark_prop_name:
-			script_value_to_string(*vp,proj_setup->mark.name,name_str_len);
-			proj_setup_attach_mark(proj_setup);
-			break;
-		case proj_mark_prop_size:
-			proj_setup->mark.size=JSVAL_TO_INT(*vp);
-			break;
-		case proj_mark_prop_alpha:
-			proj_setup->mark.alpha=script_value_to_float(*vp);
-			break;
-            
-	}
+	*vp=script_string_to_value(proj_setup->mark.name);
 	
 	return(JS_TRUE);
 }
+
+JSBool js_proj_mark_get_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_setup_type		*proj_setup;
+
+	proj_setup=proj_setup_get_attach();
+	if (proj_setup==NULL) return(JS_TRUE);
+	
+	*vp=INT_TO_JSVAL(proj_setup->mark.size);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_proj_mark_get_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_setup_type		*proj_setup;
+
+	proj_setup=proj_setup_get_attach();
+	if (proj_setup==NULL) return(JS_TRUE);
+	
+    *vp=script_float_to_value(proj_setup->mark.alpha);
+	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_proj_mark_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_setup_type		*proj_setup;
+	
+	proj_setup=proj_setup_get_attach();
+	if (proj_setup==NULL) return(JS_TRUE);
+	
+    proj_setup->mark.on=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_proj_mark_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_setup_type		*proj_setup;
+	
+	proj_setup=proj_setup_get_attach();
+	if (proj_setup==NULL) return(JS_TRUE);
+	
+	script_value_to_string(*vp,proj_setup->mark.name,name_str_len);
+	proj_setup_attach_mark(proj_setup);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_proj_mark_set_size(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_setup_type		*proj_setup;
+	
+	proj_setup=proj_setup_get_attach();
+	if (proj_setup==NULL) return(JS_TRUE);
+	
+	proj_setup->mark.size=JSVAL_TO_INT(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_proj_mark_set_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_setup_type		*proj_setup;
+	
+	proj_setup=proj_setup_get_attach();
+	if (proj_setup==NULL) return(JS_TRUE);
+	
+	proj_setup->mark.alpha=script_value_to_float(*vp);
+	
+	return(JS_TRUE);
+}
+
+
 
 
 

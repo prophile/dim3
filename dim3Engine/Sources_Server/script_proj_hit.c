@@ -37,7 +37,14 @@ extern map_type			map;
 extern server_type		server;
 extern js_type			js;
 
-JSBool js_get_proj_hit_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_hit_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_hit_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_hit_get_id(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_hit_get_isPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_hit_get_startTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_hit_get_materialName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_hit_get_ejectVector(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_hit_get_reflectVector(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			proj_hit_class={"proj_hit_class",0,
 							script_add_property,JS_PropertyStub,
@@ -45,14 +52,14 @@ JSClass			proj_hit_class={"proj_hit_class",0,
 							JS_EnumerateStub,JS_ResolveStub,JS_ConvertStub,JS_FinalizeStub};
 
 script_js_property	proj_hit_props[]={
-							{"type",				js_proj_hit_get_type,				js_proj_hit_set_type},
-							{"name",				js_proj_hit_get_name,				js_proj_hit_set_name},
-							{"id",					js_proj_hit_get_id,					js_proj_hit_set_id},
-							{"isPlayer",			js_proj_hit_get_isPlayer,			js_proj_hit_set_isPlayer},
-							{"startTick",			js_proj_hit_get_startTick,			js_proj_hit_set_startTick},
-							{"materialName",		js_proj_hit_get_materialName,		js_proj_hit_set_materialName},
-							{"ejectVector",			js_proj_hit_get_ejectVector,		js_proj_hit_set_ejectVector},
-							{"reflectVector",		js_proj_hit_get_reflectVector,		js_proj_hit_set_reflectVector},
+							{"type",				js_proj_hit_get_type,				NULL},
+							{"name",				js_proj_hit_get_name,				NULL},
+							{"id",					js_proj_hit_get_id,					NULL},
+							{"isPlayer",			js_proj_hit_get_isPlayer,			NULL},
+							{"startTick",			js_proj_hit_get_startTick,			NULL},
+							{"materialName",		js_proj_hit_get_materialName,		NULL},
+							{"ejectVector",			js_proj_hit_get_ejectVector,		NULL},
+							{"reflectVector",		js_proj_hit_get_reflectVector,		NULL},
 							{0}};
 
 /* =======================================================
@@ -68,7 +75,7 @@ void script_add_proj_hit_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters Utilities
       
 ======================================================= */
 
@@ -151,52 +158,116 @@ void js_get_proj_hit_material_name(proj_type *proj,int hit_type,char *name)
 	strcpy(name,texture->material_name);
 }
 
-JSBool js_get_proj_hit_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
-{
-	int					hit_type;
-	char				hit_name[name_str_len];
-	d3vct				vct;
-	proj_type			*proj;
+/* =======================================================
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+      Getters
+      
+======================================================= */
+
+JSBool js_proj_hit_get_type(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_type			*proj;
 
 	proj=proj_get_attach();
 	if (proj==NULL) return(JS_TRUE);
 
-	switch (JSVAL_TO_INT(id)) {
+	*vp=INT_TO_JSVAL(js_get_proj_hit_type(proj));
 	
-		case proj_hit_prop_type:
-			*vp=INT_TO_JSVAL(js_get_proj_hit_type(proj));
-			break;
-		case proj_hit_prop_name:
-			hit_type=js_get_proj_hit_type(proj);
-			js_get_proj_hit_name(proj,hit_type,hit_name);
-			*vp=script_string_to_value(hit_name);
-			break;
-		case proj_hit_prop_id:
-			*vp=INT_TO_JSVAL(proj->contact.obj_uid);
-			break;
-		case proj_hit_prop_is_player:
-			*vp=BOOLEAN_TO_JSVAL(proj->contact.obj_uid==server.player_obj_uid);
-			break;
-		case proj_hit_prop_start_tick:
-			*vp=INT_TO_JSVAL(proj->start_tick);
-			break;
-		case proj_hit_prop_material_name:
-			hit_type=js_get_proj_hit_type(proj);
-			js_get_proj_hit_material_name(proj,hit_type,hit_name);
-			*vp=script_string_to_value(hit_name);
-			break;
-		case proj_hit_prop_eject_vector:
-			projectile_eject_vector(proj,&vct);
-			*vp=script_angle_to_value(vct.x,vct.y,vct.z);
-			break;
-		case proj_hit_prop_reflect_vector:
-			projectile_reflect_vector(proj,&vct);
-			*vp=script_angle_to_value(vct.x,vct.y,vct.z);
-			break;
+	return(JS_TRUE);
+}
 
-	}
+JSBool js_proj_hit_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	int					hit_type;
+	char				hit_name[name_str_len];
+	proj_type			*proj;
+
+	proj=proj_get_attach();
+	if (proj==NULL) return(JS_TRUE);
+
+	hit_type=js_get_proj_hit_type(proj);
+	js_get_proj_hit_name(proj,hit_type,hit_name);
+	*vp=script_string_to_value(hit_name);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_proj_hit_get_id(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_type			*proj;
+
+	proj=proj_get_attach();
+	if (proj==NULL) return(JS_TRUE);
+
+	*vp=INT_TO_JSVAL(proj->contact.obj_uid);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_proj_hit_get_isPlayer(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_type			*proj;
+
+	proj=proj_get_attach();
+	if (proj==NULL) return(JS_TRUE);
+
+	*vp=BOOLEAN_TO_JSVAL(proj->contact.obj_uid==server.player_obj_uid);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_proj_hit_get_startTick(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_type			*proj;
+
+	proj=proj_get_attach();
+	if (proj==NULL) return(JS_TRUE);
+
+	*vp=INT_TO_JSVAL(proj->start_tick);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_proj_hit_get_materialName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	int					hit_type;
+	char				hit_name[name_str_len];
+	proj_type			*proj;
+
+	proj=proj_get_attach();
+	if (proj==NULL) return(JS_TRUE);
+
+	hit_type=js_get_proj_hit_type(proj);
+	js_get_proj_hit_material_name(proj,hit_type,hit_name);
+	*vp=script_string_to_value(hit_name);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_proj_hit_get_ejectVector(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	d3vct				vct;
+	proj_type			*proj;
+
+	proj=proj_get_attach();
+	if (proj==NULL) return(JS_TRUE);
+
+	projectile_eject_vector(proj,&vct);
+	*vp=script_angle_to_value(vct.x,vct.y,vct.z);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_proj_hit_get_reflectVector(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	d3vct				vct;
+	proj_type			*proj;
+
+	proj=proj_get_attach();
+	if (proj==NULL) return(JS_TRUE);
+
+	projectile_reflect_vector(proj,&vct);
+	*vp=script_angle_to_value(vct.x,vct.y,vct.z);
 	
 	return(JS_TRUE);
 }
