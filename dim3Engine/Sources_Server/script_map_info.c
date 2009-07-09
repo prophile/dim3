@@ -34,7 +34,9 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSBool js_get_map_info_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_info_get_file(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_info_get_title(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_info_get_author(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			map_info_class={"map_info_class",0,
 							script_add_property,JS_PropertyStub,
@@ -60,28 +62,26 @@ void script_add_map_info_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_map_info_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_info_get_file(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
-	switch (JSVAL_TO_INT(id)) {
-	
-		case map_info_prop_file:
-			*vp=script_string_to_value(map.info.name);
-			break;
-		case map_info_prop_title:
-			*vp=script_string_to_value(map.info.title);
-			break;
-		case map_info_prop_author:
-			*vp=script_string_to_value(map.info.author);
-			break;
-
-	}
-	
+	*vp=script_string_to_value(map.info.name);
 	return(JS_TRUE);
 }
+
+JSBool js_map_info_get_title(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	*vp=script_string_to_value(map.info.title);
+	return(JS_TRUE);
+}
+
+JSBool js_map_info_get_author(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	*vp=script_string_to_value(map.info.author);
+	return(JS_TRUE);
+}
+
 

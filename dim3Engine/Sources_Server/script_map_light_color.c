@@ -35,8 +35,12 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSBool js_get_map_light_color_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_map_light_color_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_light_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_light_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_light_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_light_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_light_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_light_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			map_light_color_class={"map_light_color_class",0,
 							script_add_property,JS_PropertyStub,
@@ -62,49 +66,49 @@ void script_add_map_light_color_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_map_light_color_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_light_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
-	switch (JSVAL_TO_INT(id)) {
-	
-		case map_light_color_prop_red:
-            *vp=script_float_to_value(map.ambient.light_color.r);
-			break;
-		case map_light_color_prop_green:
-            *vp=script_float_to_value(map.ambient.light_color.g);
-			break;
-		case map_light_color_prop_blue:
-            *vp=script_float_to_value(map.ambient.light_color.b);
-			break;
-
-	}
-	
+	*vp=script_float_to_value(map.ambient.light_color.r);
 	return(JS_TRUE);
 }
 
-JSBool js_set_map_light_color_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_light_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+	*vp=script_float_to_value(map.ambient.light_color.g);
+	return(JS_TRUE);
+}
 
-	switch (JSVAL_TO_INT(id)) {
-	
-		case map_light_color_prop_red:
-            map.ambient.light_color.r=script_value_to_float(*vp);
-			break;
-		case map_light_color_prop_green:
-            map.ambient.light_color.g=script_value_to_float(*vp);
- 			break;
-		case map_light_color_prop_blue:
-            map.ambient.light_color.b=script_value_to_float(*vp);
- 			break;
+JSBool js_map_light_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	*vp=script_float_to_value(map.ambient.light_color.b);
+	return(JS_TRUE);
+}
 
-	}
-	
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_map_light_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	map.ambient.light_color.r=script_value_to_float(*vp);
+	return(JS_TRUE);
+}
+
+JSBool js_map_light_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	map.ambient.light_color.g=script_value_to_float(*vp);
+	return(JS_TRUE);
+}
+
+JSBool js_map_light_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	map.ambient.light_color.b=script_value_to_float(*vp);
 	return(JS_TRUE);
 }
 

@@ -34,8 +34,12 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSBool js_get_map_fog_color_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_map_fog_color_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_fog_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_fog_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_fog_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_fog_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_fog_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_fog_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			map_fog_color_class={"map_fog_color_class",0,
 							script_add_property,JS_PropertyStub,
@@ -61,49 +65,49 @@ void script_add_map_fog_color_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_map_fog_color_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_fog_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
-	switch (JSVAL_TO_INT(id)) {
-	
-		case map_fog_color_prop_red:
-            *vp=script_float_to_value(map.fog.col.r);
-			break;
-		case map_fog_color_prop_green:
-            *vp=script_float_to_value(map.fog.col.g);
-			break;
-		case map_fog_color_prop_blue:
-            *vp=script_float_to_value(map.fog.col.b);
-			break;
-
-	}
-
+	*vp=script_float_to_value(map.fog.col.r);
 	return(JS_TRUE);
 }
 
-JSBool js_set_map_fog_color_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_fog_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+	*vp=script_float_to_value(map.fog.col.g);
+	return(JS_TRUE);
+}
 
-	switch (JSVAL_TO_INT(id)) {
-	
-		case map_fog_color_prop_red:
-            map.fog.col.r=script_value_to_float(*vp);
- 			break;
-		case map_fog_color_prop_green:
-            map.fog.col.g=script_value_to_float(*vp);
- 			break;
-		case map_fog_color_prop_blue:
-            map.fog.col.b=script_value_to_float(*vp);
- 			break;
+JSBool js_map_fog_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	*vp=script_float_to_value(map.fog.col.b);
+	return(JS_TRUE);
+}
 
-	}
+/* =======================================================
 
+      Setters
+      
+======================================================= */
+
+JSBool js_map_fog_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	map.fog.col.r=script_value_to_float(*vp);
+	return(JS_TRUE);
+}
+
+JSBool js_map_fog_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	map.fog.col.g=script_value_to_float(*vp);
+	return(JS_TRUE);
+}
+
+JSBool js_map_fog_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	map.fog.col.b=script_value_to_float(*vp);
 	return(JS_TRUE);
 }
 

@@ -34,7 +34,7 @@ and can be sold or given away.
 extern map_type			map;
 extern js_type			js;
 
-JSBool js_get_map_spot_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_map_spot_get_count(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_map_spot_find_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_spot_get_name_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_map_spot_get_type_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -77,22 +77,13 @@ void script_add_map_spot_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_map_spot_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_map_spot_get_count(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
-	switch (JSVAL_TO_INT(id)) {
-	
-		case map_spot_prop_count:
-			*vp=INT_TO_JSVAL(map.nspot);
-			break;
-
-	}
-	
+	*vp=INT_TO_JSVAL(map.nspot);
 	return(JS_TRUE);
 }
 
