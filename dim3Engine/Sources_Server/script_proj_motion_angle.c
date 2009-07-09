@@ -34,7 +34,9 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_proj_motion_angle_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_motion_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_motion_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_motion_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			proj_motion_angle_class={"proj_motion_angle_class",0,
 							script_add_property,JS_PropertyStub,
@@ -60,32 +62,42 @@ void script_add_proj_motion_angle_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_proj_motion_angle_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_proj_motion_angle_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_type			*proj;
-
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	proj=proj_get_attach();
 	if (proj==NULL) return(JS_TRUE);
 
-	switch (JSVAL_TO_INT(id)) {
+	*vp=script_float_to_value(proj->motion.ang.x);
 	
-		case proj_motion_angle_prop_x:
-			*vp=script_float_to_value(proj->motion.ang.x);
-			break;
-		case proj_motion_angle_prop_y:
-			*vp=script_float_to_value(proj->motion.ang.y);
-			break;
-		case proj_motion_angle_prop_z:
-			*vp=script_float_to_value(proj->motion.ang.z);
-			break;
-			
-	}
+	return(JS_TRUE);
+}
+
+JSBool js_proj_motion_angle_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_type			*proj;
+
+	proj=proj_get_attach();
+	if (proj==NULL) return(JS_TRUE);
+
+	*vp=script_float_to_value(proj->motion.ang.y);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_proj_motion_angle_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_type			*proj;
+
+	proj=proj_get_attach();
+	if (proj==NULL) return(JS_TRUE);
+
+	*vp=script_float_to_value(proj->motion.ang.z);
 	
 	return(JS_TRUE);
 }

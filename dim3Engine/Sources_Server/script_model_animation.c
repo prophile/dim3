@@ -80,50 +80,47 @@ void script_add_model_animation_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_model_animation_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_animation_get_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
-	char				name[64];
 	model_draw			*draw;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	draw=js_find_model_draw(j_obj,TRUE);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case model_animation_prop_index:
-			*vp=INT_TO_JSVAL(draw->script_animation_idx);
-			break;
-		case model_animation_prop_cur_animation_name:
-			model_get_current_animation_name(draw,name);
-			*vp=script_string_to_value(name);
-			break;
-
-	}
+	*vp=INT_TO_JSVAL(draw->script_animation_idx);
 
 	return(JS_TRUE);
 }
 
-JSBool js_set_model_animation_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_animation_get_currentAnimationName(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	char				name[64];
+	model_draw			*draw;
+
+	draw=js_find_model_draw(j_obj,TRUE);
+
+	model_get_current_animation_name(draw,name);
+	*vp=script_string_to_value(name);
+
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_model_animation_set_index(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	draw=js_find_model_draw(j_obj,TRUE);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case model_animation_prop_index:
-			draw->script_animation_idx=JSVAL_TO_INT(*vp);
-			if ((draw->script_animation_idx<0) || (draw->script_animation_idx>=max_model_blend_animation)) draw->script_animation_idx=0;
-			break;
-			
-	}
+
+	draw->script_animation_idx=JSVAL_TO_INT(*vp);
+	if ((draw->script_animation_idx<0) || (draw->script_animation_idx>=max_model_blend_animation)) draw->script_animation_idx=0;
 
 	return(JS_TRUE);
 }

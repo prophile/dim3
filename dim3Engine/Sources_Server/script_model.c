@@ -36,8 +36,18 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_model_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_model_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_get_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_get_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_get_resize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_get_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_set_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_set_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_set_resize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_set_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 JSBool js_model_start_animation_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_model_stop_animation_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
 JSBool js_model_cancel_animation_func(JSContext *cx,JSObject *j_obj,uintN argc,jsval *argv,jsval *rval);
@@ -139,72 +149,132 @@ model_draw* js_find_model_draw(JSObject *j_obj,bool is_child)
 	
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_model_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	draw=js_find_model_draw(j_obj,FALSE);
-
-	switch (JSVAL_TO_INT(id)) {
-	
-		case model_prop_on:
-			*vp=BOOLEAN_TO_JSVAL(draw->on);
-			break;
-		case model_prop_name:
-			*vp=script_string_to_value(draw->name);
-			break;
-		case model_prop_bounce:
-			*vp=BOOLEAN_TO_JSVAL(draw->bounce);
-			break;
-		case model_prop_alpha:
-			*vp=script_float_to_value(draw->alpha);
-			break;
-		case model_prop_resize:
-			*vp=script_float_to_value(draw->resize);
-			break;
-		case model_prop_face_forward:
-			*vp=BOOLEAN_TO_JSVAL(draw->face_forward);
-			break;
-	}
+	*vp=BOOLEAN_TO_JSVAL(draw->on);
 
 	return(JS_TRUE);
 }
 
-JSBool js_set_model_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_get_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+	draw=js_find_model_draw(j_obj,FALSE);
+	*vp=script_string_to_value(draw->name);
+
+	return(JS_TRUE);
+}
+
+JSBool js_model_get_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
 
 	draw=js_find_model_draw(j_obj,FALSE);
+	*vp=BOOLEAN_TO_JSVAL(draw->bounce);
 
-	switch (JSVAL_TO_INT(id)) {
+	return(JS_TRUE);
+}
+
+JSBool js_model_get_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+
+	draw=js_find_model_draw(j_obj,FALSE);
+	*vp=script_float_to_value(draw->alpha);
+
+	return(JS_TRUE);
+}
+
+JSBool js_model_get_resize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+
+	draw=js_find_model_draw(j_obj,FALSE);
+	*vp=script_float_to_value(draw->resize);
+
+	return(JS_TRUE);
+}
+
+JSBool js_model_get_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+
+	draw=js_find_model_draw(j_obj,FALSE);
+	*vp=BOOLEAN_TO_JSVAL(draw->face_forward);
+
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_model_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+
+	draw=js_find_model_draw(j_obj,FALSE);
+	draw->on=JSVAL_TO_BOOLEAN(*vp);
 	
-		case model_prop_on:
-			draw->on=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case model_prop_name:
-			script_value_to_string(*vp,draw->name,name_str_len);
-			break;
-		case model_prop_bounce:
-			draw->bounce=JSVAL_TO_BOOLEAN(*vp);
-			break;
-		case model_prop_alpha:
-			draw->alpha=script_value_to_float(*vp);
-			break;
-		case model_prop_resize:
-			draw->resize=script_value_to_float(*vp);
-			break;
-		case model_prop_face_forward:
-			draw->face_forward=JSVAL_TO_BOOLEAN(*vp);
-			break;
-	}
+	return(JS_TRUE);
+}
+
+JSBool js_model_set_name(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+
+	draw=js_find_model_draw(j_obj,FALSE);
+	script_value_to_string(*vp,draw->name,name_str_len);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_model_set_bounce(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+
+	draw=js_find_model_draw(j_obj,FALSE);
+	draw->bounce=JSVAL_TO_BOOLEAN(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_model_set_alpha(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+
+	draw=js_find_model_draw(j_obj,FALSE);
+	draw->alpha=script_value_to_float(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_model_set_resize(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+
+	draw=js_find_model_draw(j_obj,FALSE);
+	draw->resize=script_value_to_float(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_model_set_faceForward(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+
+	draw=js_find_model_draw(j_obj,FALSE);
+	draw->face_forward=JSVAL_TO_BOOLEAN(*vp);
 	
 	return(JS_TRUE);
 }

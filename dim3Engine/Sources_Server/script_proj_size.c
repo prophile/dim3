@@ -34,8 +34,14 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_proj_size_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_proj_size_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_size_get_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_size_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_size_set_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			proj_size_class={"proj_size_class",0,
 							script_add_property,JS_PropertyStub,
@@ -62,68 +68,111 @@ void script_add_proj_size_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_proj_size_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_proj_size_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
-
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case obj_size_prop_x:
-			*vp=INT_TO_JSVAL(proj_setup->size.x);
-			break;
-		case obj_size_prop_z:
-			*vp=INT_TO_JSVAL(proj_setup->size.z);
-			break;
-		case obj_size_prop_y:
-			*vp=INT_TO_JSVAL(proj_setup->size.y);
-			break;
-		case obj_size_prop_weight:
-			*vp=INT_TO_JSVAL(proj_setup->size.weight);
-			break;
-			
-	}
+	*vp=INT_TO_JSVAL(proj_setup->size.x);
 	
 	return(JS_TRUE);
 }
 
-JSBool js_set_proj_size_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_proj_size_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_setup_type		*proj_setup;
-
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	proj_setup=proj_setup_get_attach();
 	if (proj_setup==NULL) return(JS_TRUE);
 	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case proj_size_prop_x:
-			proj_setup->size.x=JSVAL_TO_INT(*vp);
-			proj_setup_set_radius(proj_setup);
-			break;
-		case proj_size_prop_z:
-			proj_setup->size.z=JSVAL_TO_INT(*vp);
-			proj_setup_set_radius(proj_setup);
-			break;
-		case proj_size_prop_y:
-			proj_setup->size.y=JSVAL_TO_INT(*vp);
-			break;
-		case proj_size_prop_weight:
-			proj_setup->size.weight=JSVAL_TO_INT(*vp);
-			break;
-
-	}
+	*vp=INT_TO_JSVAL(proj_setup->size.y);
 	
 	return(JS_TRUE);
 }
 
+JSBool js_proj_size_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_setup_type		*proj_setup;
+
+	proj_setup=proj_setup_get_attach();
+	if (proj_setup==NULL) return(JS_TRUE);
+	
+	*vp=INT_TO_JSVAL(proj_setup->size.z);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_proj_size_get_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_setup_type		*proj_setup;
+
+	proj_setup=proj_setup_get_attach();
+	if (proj_setup==NULL) return(JS_TRUE);
+	
+	*vp=INT_TO_JSVAL(proj_setup->size.weight);
+	
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_proj_size_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_setup_type		*proj_setup;
+
+	proj_setup=proj_setup_get_attach();
+	if (proj_setup==NULL) return(JS_TRUE);
+	
+	proj_setup->size.x=JSVAL_TO_INT(*vp);
+	proj_setup_set_radius(proj_setup);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_proj_size_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_setup_type		*proj_setup;
+
+	proj_setup=proj_setup_get_attach();
+	if (proj_setup==NULL) return(JS_TRUE);
+	
+	proj_setup->size.y=JSVAL_TO_INT(*vp);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_proj_size_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_setup_type		*proj_setup;
+
+	proj_setup=proj_setup_get_attach();
+	if (proj_setup==NULL) return(JS_TRUE);
+	
+	proj_setup->size.z=JSVAL_TO_INT(*vp);
+	proj_setup_set_radius(proj_setup);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_proj_size_set_weight(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_setup_type		*proj_setup;
+
+	proj_setup=proj_setup_get_attach();
+	if (proj_setup==NULL) return(JS_TRUE);
+	
+	proj_setup->size.weight=JSVAL_TO_INT(*vp);
+	
+	return(JS_TRUE);
+}
 

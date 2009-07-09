@@ -34,7 +34,9 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_proj_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			proj_position_class={"proj_position_class",0,
 							script_add_property,JS_PropertyStub,
@@ -64,28 +66,38 @@ void script_add_proj_position_object(JSObject *parent_obj)
       
 ======================================================= */
 
-JSBool js_get_proj_position_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_proj_position_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_type			*proj;
-
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	proj=proj_get_attach();
 	if (proj==NULL) return(JS_TRUE);
 
-	switch (JSVAL_TO_INT(id)) {
+	*vp=INT_TO_JSVAL(proj->pnt.x);
 	
-		case proj_position_prop_x:
-			*vp=INT_TO_JSVAL(proj->pnt.x);
-			break;
-		case proj_position_prop_z:
-			*vp=INT_TO_JSVAL(proj->pnt.z);
-			break;
-		case proj_position_prop_y:
-			*vp=INT_TO_JSVAL(proj->pnt.y);
-			break;
-			
-	}
+	return(JS_TRUE);
+}
+
+JSBool js_proj_position_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_type			*proj;
+
+	proj=proj_get_attach();
+	if (proj==NULL) return(JS_TRUE);
+
+	*vp=INT_TO_JSVAL(proj->pnt.y);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_proj_position_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_type			*proj;
+
+	proj=proj_get_attach();
+	if (proj==NULL) return(JS_TRUE);
+
+	*vp=INT_TO_JSVAL(proj->pnt.z);
 	
 	return(JS_TRUE);
 }

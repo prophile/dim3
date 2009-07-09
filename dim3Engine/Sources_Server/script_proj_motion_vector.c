@@ -34,7 +34,9 @@ and can be sold or given away.
 
 extern js_type			js;
 
-JSBool js_get_proj_motion_vector_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_motion_vector_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_motion_vector_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_proj_motion_vector_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 JSClass			proj_motion_vector_class={"proj_motion_vector_class",0,
 							script_add_property,JS_PropertyStub,
@@ -60,32 +62,42 @@ void script_add_proj_motion_vector_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_proj_motion_vector_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_proj_motion_vector_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	proj_type			*proj;
-
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	proj=proj_get_attach();
 	if (proj==NULL) return(JS_TRUE);
 
-	switch (JSVAL_TO_INT(id)) {
+	*vp=INT_TO_JSVAL(proj->motion.vct.x);
 	
-		case proj_motion_vector_prop_x:
-			*vp=INT_TO_JSVAL(proj->motion.vct.x);
-			break;
-		case proj_motion_vector_prop_y:
-			*vp=INT_TO_JSVAL(proj->motion.vct.y);
-			break;
-		case proj_motion_vector_prop_z:
-			*vp=INT_TO_JSVAL(proj->motion.vct.z);
-			break;
-			
-	}
+	return(JS_TRUE);
+}
+
+JSBool js_proj_motion_vector_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_type			*proj;
+
+	proj=proj_get_attach();
+	if (proj==NULL) return(JS_TRUE);
+
+	*vp=INT_TO_JSVAL(proj->motion.vct.y);
+	
+	return(JS_TRUE);
+}
+
+JSBool js_proj_motion_vector_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	proj_type			*proj;
+
+	proj=proj_get_attach();
+	if (proj==NULL) return(JS_TRUE);
+
+	*vp=INT_TO_JSVAL(proj->motion.vct.z);
 	
 	return(JS_TRUE);
 }
