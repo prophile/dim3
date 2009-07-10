@@ -31,8 +31,12 @@ and can be sold or given away.
 
 #include "scripts.h"
 
-JSBool js_get_model_rotate_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_model_rotate_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_rotate_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_rotate_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_rotate_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_rotate_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_rotate_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_rotate_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 extern js_type			js;
 
@@ -62,58 +66,73 @@ void script_add_model_rotate_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_model_rotate_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_rotate_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	draw=js_find_model_draw(j_obj,TRUE);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case model_rotate_prop_x:
-			*vp=script_float_to_value(draw->rot.x);
-			break;
-		case model_rotate_prop_z:
-			*vp=script_float_to_value(draw->rot.z);
-			break;
-		case model_rotate_prop_y:
-			*vp=script_float_to_value(draw->rot.y);
-			break;
-			
-	}
+	*vp=script_float_to_value(draw->rot.x);
 
 	return(JS_TRUE);
 }
 
-JSBool js_set_model_rotate_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_rotate_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
-	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	draw=js_find_model_draw(j_obj,TRUE);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case model_rotate_prop_x:
-			draw->rot.x=script_value_to_float(*vp);
-			break;
-		case model_rotate_prop_z:
-			draw->rot.z=script_value_to_float(*vp);
-			break;
-		case model_rotate_prop_y:
-			draw->rot.y=script_value_to_float(*vp);
-			break;
-
-	}
+	*vp=script_float_to_value(draw->rot.y);
 
 	return(JS_TRUE);
 }
 
+JSBool js_model_rotate_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+
+	draw=js_find_model_draw(j_obj,TRUE);
+	*vp=script_float_to_value(draw->rot.z);
+
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_model_rotate_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+	
+	draw=js_find_model_draw(j_obj,TRUE);
+	draw->rot.x=script_value_to_float(*vp);
+
+	return(JS_TRUE);
+}
+
+JSBool js_model_rotate_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+	
+	draw=js_find_model_draw(j_obj,TRUE);
+	draw->rot.y=script_value_to_float(*vp);
+
+	return(JS_TRUE);
+}
+
+JSBool js_model_rotate_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+	
+	draw=js_find_model_draw(j_obj,TRUE);
+	draw->rot.z=script_value_to_float(*vp);
+
+	return(JS_TRUE);
+}
 

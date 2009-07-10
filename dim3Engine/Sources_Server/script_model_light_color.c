@@ -31,8 +31,12 @@ and can be sold or given away.
 
 #include "scripts.h"
 
-JSBool js_get_model_light_color_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_model_light_color_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_light_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_light_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_light_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_light_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_light_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_light_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 extern js_type			js;
 
@@ -62,59 +66,90 @@ void script_add_model_light_color_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_model_light_color_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_light_color_get_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	draw=js_find_model_draw(j_obj,TRUE);
 	light=&draw->lights[draw->script_light_idx];
 	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case model_light_color_prop_red:
-            *vp=script_float_to_value(light->col.r);
-			break;
-		case model_light_color_prop_green:
-            *vp=script_float_to_value(light->col.g);
-			break;
-		case model_light_color_prop_blue:
-            *vp=script_float_to_value(light->col.b);
-			break;
-	}
+	*vp=script_float_to_value(light->col.r);
 
 	return(JS_TRUE);
 }
 
-JSBool js_set_model_light_color_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_light_color_get_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_light	*light;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
+	draw=js_find_model_draw(j_obj,TRUE);
+	light=&draw->lights[draw->script_light_idx];
+
+	*vp=script_float_to_value(light->col.g);
+
+	return(JS_TRUE);
+}
+
+JSBool js_model_light_color_get_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw			*draw;
+	model_draw_light	*light;
 
 	draw=js_find_model_draw(j_obj,TRUE);
 	light=&draw->lights[draw->script_light_idx];
 	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case model_light_color_prop_red:
-			light->col.r=script_value_to_float(*vp);
-			break;
-		case model_light_color_prop_green:
-			light->col.g=script_value_to_float(*vp);
-			break;
-		case model_light_color_prop_blue:
-			light->col.b=script_value_to_float(*vp);
-			break;
+	*vp=script_float_to_value(light->col.b);
 
-	}
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_model_light_color_set_red(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw			*draw;
+	model_draw_light	*light;
+
+	draw=js_find_model_draw(j_obj,TRUE);
+	light=&draw->lights[draw->script_light_idx];
+
+	light->col.r=script_value_to_float(*vp);
+
+	return(JS_TRUE);
+}
+
+JSBool js_model_light_color_set_green(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw			*draw;
+	model_draw_light	*light;
+
+	draw=js_find_model_draw(j_obj,TRUE);
+	light=&draw->lights[draw->script_light_idx];
+
+	light->col.g=script_value_to_float(*vp);
+
+	return(JS_TRUE);
+}
+
+JSBool js_model_light_color_set_blue(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw			*draw;
+	model_draw_light	*light;
+
+	draw=js_find_model_draw(j_obj,TRUE);
+	light=&draw->lights[draw->script_light_idx];
+
+	light->col.b=script_value_to_float(*vp);
 
 	return(JS_TRUE);
 }

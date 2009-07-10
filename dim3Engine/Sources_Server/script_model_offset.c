@@ -31,8 +31,12 @@ and can be sold or given away.
 
 #include "scripts.h"
 
-JSBool js_get_model_offset_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_model_offset_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_offset_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_offset_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_offset_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_offset_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_offset_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_offset_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 extern js_type			js;
 
@@ -62,56 +66,72 @@ void script_add_model_offset_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_model_offset_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_offset_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	draw=js_find_model_draw(j_obj,TRUE);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case model_offset_prop_x:
-			*vp=INT_TO_JSVAL(draw->offset.x);
-			break;
-		case model_offset_prop_z:
-			*vp=INT_TO_JSVAL(draw->offset.z);
-			break;
-		case model_offset_prop_y:
-			*vp=INT_TO_JSVAL(draw->offset.y);
-			break;
-			
-	}
+	*vp=INT_TO_JSVAL(draw->offset.x);
 
 	return(JS_TRUE);
 }
 
-JSBool js_set_model_offset_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_offset_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+
+	draw=js_find_model_draw(j_obj,TRUE);
+	*vp=INT_TO_JSVAL(draw->offset.y);
+
+	return(JS_TRUE);
+}
+
+JSBool js_model_offset_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+
+	draw=js_find_model_draw(j_obj,TRUE);
+	*vp=INT_TO_JSVAL(draw->offset.z);
+
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_model_offset_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	draw=js_find_model_draw(j_obj,TRUE);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case model_offset_prop_x:
-			draw->offset.x=JSVAL_TO_INT(*vp);
-			break;
-		case model_offset_prop_z:
-			draw->offset.z=JSVAL_TO_INT(*vp);
-			break;
-		case model_offset_prop_y:
-			draw->offset.y=JSVAL_TO_INT(*vp);
-			break;
+	draw->offset.x=JSVAL_TO_INT(*vp);
 
-	}
+	return(JS_TRUE);
+}
+
+JSBool js_model_offset_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+	
+	draw=js_find_model_draw(j_obj,TRUE);
+	draw->offset.y=JSVAL_TO_INT(*vp);
+
+	return(JS_TRUE);
+}
+
+JSBool js_model_offset_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+	
+	draw=js_find_model_draw(j_obj,TRUE);
+	draw->offset.z=JSVAL_TO_INT(*vp);
 
 	return(JS_TRUE);
 }

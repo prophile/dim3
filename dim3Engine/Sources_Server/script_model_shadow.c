@@ -31,8 +31,8 @@ and can be sold or given away.
 
 #include "scripts.h"
 
-JSBool js_get_model_shadow_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_model_shadow_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_shadow_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_shadow_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 extern js_type			js;
 
@@ -60,48 +60,38 @@ void script_add_model_shadow_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_model_shadow_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_shadow_get_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_shadow	*shadow;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	draw=js_find_model_draw(j_obj,TRUE);
 	shadow=&draw->shadow;
 	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case model_shadow_prop_on:
-			*vp=BOOLEAN_TO_JSVAL(shadow->on);
-			break;
-			
-	}
+	*vp=BOOLEAN_TO_JSVAL(shadow->on);
 
 	return(JS_TRUE);
 }
 
-JSBool js_set_model_shadow_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_model_shadow_set_on(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw			*draw;
 	model_draw_shadow	*shadow;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	draw=js_find_model_draw(j_obj,TRUE);
 	shadow=&draw->shadow;
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case model_shadow_prop_on:
-			shadow->on=JSVAL_TO_BOOLEAN(*vp);
-			break;
-			
-	}
+
+	shadow->on=JSVAL_TO_BOOLEAN(*vp);
 
 	return(JS_TRUE);
 }

@@ -133,18 +133,9 @@ void scenery_start(void)
 		
 			map_scenery=&map.sceneries[obj->scenery.idx];
 			
-				// override scenery size?
-				
-			if (map_scenery->override_size) {
-				obj->size.x=map_scenery->size.x;
-				obj->size.y=map_scenery->size.y;
-				obj->size.z=map_scenery->size.z;
-			}
-			else {
-				obj->size.x=obj->draw.size.x;
-				obj->size.y=obj->draw.size.y;
-				obj->size.z=obj->draw.size.z;
-			}
+			obj->size.x=obj->draw.size.x;
+			obj->size.y=obj->draw.size.y;
+			obj->size.z=obj->draw.size.z;
 		
 			object_set_radius(obj);
 			

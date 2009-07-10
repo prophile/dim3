@@ -31,8 +31,12 @@ and can be sold or given away.
 
 #include "scripts.h"
 
-JSBool js_get_model_spin_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
-JSBool js_set_model_spin_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_spin_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_spin_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_spin_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_spin_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_spin_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
+JSBool js_model_spin_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp);
 
 extern js_type			js;
 
@@ -62,61 +66,79 @@ void script_add_model_spin_object(JSObject *parent_obj)
 
 /* =======================================================
 
-      Properties
+      Getters
       
 ======================================================= */
 
-JSBool js_get_model_spin_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_spin_get_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
 
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
-
 	draw=js_find_model_draw(j_obj,TRUE);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case model_spin_prop_x:
-			*vp=script_float_to_value(draw->spin.x);
-			break;
-		case model_spin_prop_z:
-			*vp=script_float_to_value(draw->spin.z);
-			break;
-		case model_spin_prop_y:
-			*vp=script_float_to_value(draw->spin.y);
-			break;
-			
-	}
+	*vp=script_float_to_value(draw->spin.x);
 
 	return(JS_TRUE);
 }
 
-JSBool js_set_model_spin_property(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+JSBool js_model_spin_get_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
 {
 	model_draw		*draw;
-	
-	if (!JSVAL_IS_INT(id)) return(JS_TRUE);
 
 	draw=js_find_model_draw(j_obj,TRUE);
-	
-	switch (JSVAL_TO_INT(id)) {
-	
-		case model_spin_prop_x:
-			draw->spin.x=script_value_to_float(*vp);
-			draw->spin_tick=js.time.current_tick;
-			break;
-		case model_spin_prop_z:
-			draw->spin.z=script_value_to_float(*vp);
-			draw->spin_tick=js.time.current_tick;
-			break;
-		case model_spin_prop_y:
-			draw->spin.y=script_value_to_float(*vp);
-			draw->spin_tick=js.time.current_tick;
-			break;
-
-	}
+	*vp=script_float_to_value(draw->spin.y);
 
 	return(JS_TRUE);
 }
 
+JSBool js_model_spin_get_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+
+	draw=js_find_model_draw(j_obj,TRUE);
+	*vp=script_float_to_value(draw->spin.z);
+
+	return(JS_TRUE);
+}
+
+/* =======================================================
+
+      Setters
+      
+======================================================= */
+
+JSBool js_model_spin_set_x(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+	
+	draw=js_find_model_draw(j_obj,TRUE);
+
+	draw->spin.x=script_value_to_float(*vp);
+	draw->spin_tick=js.time.current_tick;
+
+	return(JS_TRUE);
+}
+
+JSBool js_model_spin_set_y(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+	
+	draw=js_find_model_draw(j_obj,TRUE);
+
+	draw->spin.y=script_value_to_float(*vp);
+	draw->spin_tick=js.time.current_tick;
+
+	return(JS_TRUE);
+}
+
+JSBool js_model_spin_set_z(JSContext *cx,JSObject *j_obj,jsval id,jsval *vp)
+{
+	model_draw		*draw;
+	
+	draw=js_find_model_draw(j_obj,TRUE);
+
+	draw->spin.z=script_value_to_float(*vp);
+	draw->spin_tick=js.time.current_tick;
+
+	return(JS_TRUE);
+}
 
